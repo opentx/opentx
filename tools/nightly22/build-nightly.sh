@@ -27,15 +27,15 @@ docker rmi -f new-${docker}
 code/tools/nightly22/build-sdcard.sh
 
 # Build Linux companion
+docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
+docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
+docker exec companion rm -rf build
 if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb ]; then
-  docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
-  docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
-  docker exec companion rm -rf build
   docker exec companion /opentx/code/tools/build-companion.sh /opentx/code /opentx/binaries/ ${suffix}
-  docker stop companion
-  docker rm companion
   cp -f  binaries/*.deb ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb
 fi
+docker stop companion
+docker rm companion
 
 # Request companion compilation on Windows
 if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
