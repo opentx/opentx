@@ -22,6 +22,7 @@
 #include "modelprinter.h"
 #include <QPainter>
 #include <QFile>
+#include <QUrl>
 #include "multiprotocols.h"
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
