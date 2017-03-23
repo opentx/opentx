@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x
+ *   th9x - http://code.google.com/p/th9x 
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -1238,11 +1238,7 @@ OPTIMIZE("O0") SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint1
   DMAEndOfTransfer = 0;
 
   SDIO->DCTRL = 0x0;
-
-  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
-  SDIO_DMACmd(ENABLE);
-  SD_LowLevel_DMA_RxConfig((uint32_t *)readbuff, BlockSize);
-
+  
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
     BlockSize = 512;
   else
@@ -1286,6 +1282,10 @@ OPTIMIZE("O0") SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint1
     return(errorstatus);
   }
 
+  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
+  SDIO_DMACmd(ENABLE);
+  SD_LowLevel_DMA_RxConfig((uint32_t *)readbuff, BlockSize);
+
   return(errorstatus);
 }
 
@@ -1311,12 +1311,8 @@ OPTIMIZE("O0") SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr,
   TransferEnd = 0;
   StopCondition = 1;
   DMAEndOfTransfer = 0;
-
+	
   SDIO->DCTRL = 0x0;
-
-  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
-  SD_LowLevel_DMA_RxConfig((uint32_t *)readbuff, (NumberOfBlocks * BlockSize));
-  SDIO_DMACmd(ENABLE);
 
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
     BlockSize = 512;
@@ -1360,6 +1356,10 @@ OPTIMIZE("O0") SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr,
   {
     return(errorstatus);
   }
+
+  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
+  SD_LowLevel_DMA_RxConfig((uint32_t *)readbuff, (NumberOfBlocks * BlockSize));
+  SDIO_DMACmd(ENABLE);
 
   return(errorstatus);
 }
@@ -1442,10 +1442,6 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
 
   SDIO->DCTRL = 0x0;
 
-  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
-  SD_LowLevel_DMA_TxConfig((uint32_t *)writebuff, BlockSize);
-  SDIO_DMACmd(ENABLE);
-
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD)
     BlockSize = 512;
   else
@@ -1489,6 +1485,10 @@ OPTIMIZE("O0") SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, ui
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
   SDIO_DataConfig(&SDIO_DataInitStructure);
 
+  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_RXOVERR | SDIO_IT_STBITERR, ENABLE);
+  SD_LowLevel_DMA_TxConfig((uint32_t *)writebuff, BlockSize);
+  SDIO_DMACmd(ENABLE);
+
   return(errorstatus);
 }
 
@@ -1516,10 +1516,6 @@ OPTIMIZE("O0") SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAd
   StopCondition = 1;
 
   SDIO->DCTRL = 0x0;
-
-  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_TXUNDERR | SDIO_IT_STBITERR, ENABLE);
-  SD_LowLevel_DMA_TxConfig((uint32_t *)writebuff, (NumberOfBlocks * BlockSize));
-  SDIO_DMACmd(ENABLE);
 
   if (CardType == SDIO_HIGH_CAPACITY_SD_CARD) {
     BlockSize = 512;
@@ -1596,6 +1592,10 @@ OPTIMIZE("O0") SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAd
   SDIO_DataInitStructure.SDIO_TransferMode = SDIO_TransferMode_Block;
   SDIO_DataInitStructure.SDIO_DPSM = SDIO_DPSM_Enable;
   SDIO_DataConfig(&SDIO_DataInitStructure);
+
+  SDIO_ITConfig(SDIO_IT_DCRCFAIL | SDIO_IT_DTIMEOUT | SDIO_IT_DATAEND | SDIO_IT_TXUNDERR | SDIO_IT_STBITERR, ENABLE);
+  SD_LowLevel_DMA_TxConfig((uint32_t *)writebuff, (NumberOfBlocks * BlockSize));
+  SDIO_DMACmd(ENABLE);
 
   return(errorstatus);
 }
@@ -1999,7 +1999,7 @@ OPTIMIZE("O0") void SD_ProcessIRQ(void)
   */
 OPTIMIZE("O0") void SD_ProcessDMAIRQ(void)
 {
-  if(DMA2->LISR & SD_SDIO_DMA_FLAG_TCIF)
+  if (DMA2->LISR & SD_SDIO_DMA_FLAG_TCIF)
   {
     DMAEndOfTransfer = 1;
     DMA_ClearFlag(SD_SDIO_DMA_STREAM, SD_SDIO_DMA_FLAG_TCIF|SD_SDIO_DMA_FLAG_FEIF);
