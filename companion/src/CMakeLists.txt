@@ -134,6 +134,7 @@ set(common_SRCS
   eeprominterface.cpp
   helpers.cpp
   radiodata.cpp
+  translations.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
   firmwares/ersky9x/ersky9xeeprom.cpp
