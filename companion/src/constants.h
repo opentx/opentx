@@ -43,17 +43,19 @@
 #define CPN_MAX_KEYS                   32
 #define CPN_MAX_MOUSE_ANALOGS          2
 
-#define HEX_FILES_FILTER              "HEX files (*.hex);;"
-#define BIN_FILES_FILTER              "BIN files (*.bin);;"
-#define DFU_FILES_FILTER              "DFU files (*.dfu);;"
-#define EEPE_FILES_FILTER             "EEPE files (*.eepe);;"
-#define OTX_FILES_FILTER              "OpenTX files (*.otx);;"
-#define EEPROM_FILES_FILTER           "Radio and Models settings files (*.otx *.eepe *.bin *.hex);;" OTX_FILES_FILTER EEPE_FILES_FILTER BIN_FILES_FILTER HEX_FILES_FILTER
-#define FLASH_FILES_FILTER            "FLASH files (*.bin *.hex *.dfu);;" BIN_FILES_FILTER HEX_FILES_FILTER DFU_FILES_FILTER
-#define EXTERNAL_EEPROM_FILES_FILTER  "EEPROM files (*.bin *.hex);;" BIN_FILES_FILTER HEX_FILES_FILTER
-#define ER9X_EEPROM_FILE_TYPE         "ER9X_EEPROM_FILE"
-#define EEPE_EEPROM_FILE_HEADER       "EEPE EEPROM FILE"
-#define EEPE_MODEL_FILE_HEADER        "EEPE MODEL FILE"
+#define CPN_STR_FILES                  QT_TRANSLATE_NOOP("CompanionMacros", "files")
+#define CPN_STR_RAD_MOD_SETTINGS       QT_TRANSLATE_NOOP("CompanionMacros", "Radio and Models settings")
+#define HEX_FILES_FILTER               "HEX " CPN_STR_FILES " (*.hex);;"
+#define BIN_FILES_FILTER               "BIN " CPN_STR_FILES " (*.bin);;"
+#define DFU_FILES_FILTER               "DFU " CPN_STR_FILES " (*.dfu);;"
+#define EEPE_FILES_FILTER              "EEPE " CPN_STR_FILES " (*.eepe);;"
+#define OTX_FILES_FILTER               "OpenTX " CPN_STR_FILES " (*.otx);;"
+#define EEPROM_FILES_FILTER            CPN_STR_RAD_MOD_SETTINGS " " CPN_STR_FILES " (*.otx *.eepe *.bin *.hex);;" OTX_FILES_FILTER EEPE_FILES_FILTER BIN_FILES_FILTER HEX_FILES_FILTER
+#define FLASH_FILES_FILTER             "FLASH " CPN_STR_FILES " (*.bin *.hex *.dfu);;" BIN_FILES_FILTER HEX_FILES_FILTER DFU_FILES_FILTER
+#define EXTERNAL_EEPROM_FILES_FILTER   "EEPROM " CPN_STR_FILES " (*.bin *.hex);;" BIN_FILES_FILTER HEX_FILES_FILTER
+#define ER9X_EEPROM_FILE_TYPE          "ER9X_EEPROM_FILE"
+#define EEPE_EEPROM_FILE_HEADER        "EEPE EEPROM FILE"
+#define EEPE_MODEL_FILE_HEADER         "EEPE MODEL FILE"
 
 const char * const ARROW_LEFT  = "\xE2\x86\x90";
 const char * const ARROW_UP    = "\xE2\x86\x91";
