@@ -27,7 +27,7 @@ docker rmi -f new-${docker}
 code/tools/nightly22/build-sdcard.sh
 
 # Build Linux companion
-if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb]; then
+if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb ]; then
   docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
   docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
   docker exec companion rm -rf build
@@ -38,7 +38,7 @@ if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb]; 
 fi
 
 # Request companion compilation on Windows
-if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe]; then
+if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
   cd ${output}/companion/windows
   wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch\&suffix=${suffix}
   wget -O companion-windows-${version}${suffix}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}${suffix}.exe
@@ -47,7 +47,7 @@ fi
 
 
 # Request companion compilation on Mac OS X
-if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg]; then
+if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ]; then
   cd ${output}/companion/macosx
   wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
   wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
