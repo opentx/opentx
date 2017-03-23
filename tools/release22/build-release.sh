@@ -21,26 +21,32 @@ docker rmi -f new-${docker}
 code/tools/release22/build-sdcard.sh
 
 # Build Linux companion
-docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
-docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
-docker exec companion rm -rf build
-docker exec companion /opentx/code/tools/build-companion.sh /opentx/code /opentx/binaries/
-docker stop companion
-docker rm companion
-cp -f binaries/*.deb ${output}/companion/linux/companion22_${version}_amd64.deb
-cp -f binaries/radio/src/lua/lua_fields_*.txt ${output}/firmware
+if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb ]; then
+  docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
+  docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
+  docker exec companion rm -rf build
+  docker exec companion /opentx/code/tools/build-companion.sh /opentx/code /opentx/binaries/
+  docker stop companion
+  docker rm companion
+  cp -f binaries/*.deb ${output}/companion/linux/companion22_${version}_amd64.deb
+  cp -f binaries/radio/src/lua/lua_fields_*.txt ${output}/firmware
+fi
 
 # Request companion compilation on Windows
-cd ${output}/companion/windows
-wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch
-wget -O companion-windows-${version}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}.exe
-chmod -f g+w companion-windows-${version.exe
+if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
+  cd ${output}/companion/windows
+  wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch
+  wget -O companion-windows-${version}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}.exe
+  chmod -f g+w companion-windows-${version.exe
+fi
 
 # Request companion compilation on Mac OS X
-cd ${output}/companion/macosx
-wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}
-wget -O opentx-companion-${version}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}.dmg
-chmod -f g+w opentx-companion-${version}.dmg
+if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ]; then
+  cd ${output}/companion/macosx
+  wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}
+  wget -O opentx-companion-${version}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}.dmg
+  chmod -f g+w opentx-companion-${version}.dmg
+fi
 
 # Update stamps
 cp -f  $workdir/binaries/stamp-opentx.txt ${output}/firmware
