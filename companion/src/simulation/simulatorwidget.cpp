@@ -225,6 +225,7 @@ bool SimulatorWidget::setStartupData(const QByteArray & dataSource, bool fromFil
       else {
         // the binary file will be read/written directly by the fw interface, save the file name for simulator->start()
         startupData = dataSource;
+        ret = 1;
       }
     }
   }
