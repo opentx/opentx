@@ -218,7 +218,7 @@ class RawSource {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    QString toString(const ModelData * model = NULL) const;
+    QString toString(const ModelData * model = NULL, const GeneralSettings * const generalSettings = NULL) const;
 
     RawSourceRange getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags=0) const;
 
@@ -231,8 +231,8 @@ class RawSource {
     }
 
     bool isTimeBased() const;
-    bool isPot() const;
-    bool isSlider() const;
+    bool isPot(int * potsIndex = NULL) const;
+    bool isSlider(int * sliderIndex = NULL) const;
 
     RawSourceType type;
     int index;
@@ -277,7 +277,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString(Board::Type board = Board::BOARD_UNKNOWN) const;
+    QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL) const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);

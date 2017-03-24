@@ -61,9 +61,9 @@
 #define EEPE_EEPROM_FILE_HEADER        "EEPE EEPROM FILE"
 #define EEPE_MODEL_FILE_HEADER         "EEPE MODEL FILE"
 
-const char * const ARROW_LEFT  = "\xE2\x86\x90";
-const char * const ARROW_UP    = "\xE2\x86\x91";
-const char * const ARROW_RIGHT = "\xE2\x86\x92";
-const char * const ARROW_DOWN  = "\xE2\x86\x93";
+#define CPN_STR_SW_INDICATOR_UP        QT_TRANSLATE_NOOP("RawSwitch", "\xE2\x86\x91")   // Switch up position indicator: Up arrow, or similar.
+#define CPN_STR_SW_INDICATOR_DN        QT_TRANSLATE_NOOP("RawSwitch", "\xE2\x86\x93")  // Switch down position indicator: Down arrow, or similar.
+#define CPN_STR_SW_INDICATOR_NEUT      QT_TRANSLATE_NOOP("RawSwitch", "-")             // Switch neutral (middle) position indicator.
+#define CPN_STR_SW_INDICATOR_REV       QT_TRANSLATE_NOOP("RawSwitch", "!")             // Switch reversed logic (NOT) indicator.
 
 #endif // _CONSTANTS_H_
