@@ -127,16 +127,6 @@ endforeach(language)
 # .ts -> .qm
 qt5_add_translation(companion_QM ${companion_TS})
 
-# try to find the Qt base translations
-execute_process(
-  COMMAND ${QT_QMAKE_EXECUTABLE} -query QT_INSTALL_TRANSLATIONS
-  OUTPUT_VARIABLE qt_translations_hint
-  ERROR_VARIABLE qt_translations_hint
-  OUTPUT_STRIP_TRAILING_WHITESPACE
-  )
-
-find_path(QT_TRANSLATIONS_DIR NAMES "qt_en.qm" HINTS "${qt_translations_hint}" DOC "Path to prebuilt Qt translations (qtbase_*.qm).")
-
 # add Qt translations if found
 if(QT_TRANSLATIONS_DIR)
   # Some languages have all translations in one qt_*.qm file and others break them up into modules, in which case we need qt_base_*.qm
@@ -158,12 +148,10 @@ endforeach()
 file(APPEND ${TRANSLATIONS_QRC} "\n\t</qresource>\n</RCC>")  # RCC footer
 
 ### Add optional "translations" target for updating .ts files
-find_package(Lupdate)
-if(LUPDATE_FOUND)
-  message(STATUS "Qt lupdate: " ${LUPDATE_EXECUTABLE})
+if(QT_LUPDATE_EXECUTABLE)
   add_custom_target(translations
     WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
-    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
+    COMMAND ${QT_LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
     )
 else()
   message(STATUS "Qt lupdate not found, 'translations' target will not be availabe.")
@@ -365,8 +353,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 elseif(WIN32)
 
-  get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
-  get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
+  set(QT_DLL_DIR ${QT_LIB_DIR})
   set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia Qt5Svg)
   set(INSTALL_TEMP_ICUDLL_FILES icudt54.dll icuin54.dll icuuc54.dll)
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -445,7 +432,7 @@ if(WIN32)
 
   set(SYSDIR "$ENV{windir}/system32")
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${COMPANION_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/companion.nsi @ONLY)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/simulator.nsi @ONLY)
+  #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/simulator.nsi @ONLY)
 
   find_program(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
@@ -458,16 +445,16 @@ if(WIN32)
     DEPENDS companion simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion/companion.nsi
     COMMENT "Companion Windows NSIS Installer")
 
-  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/simulator-install.exe
-    COMMAND "${NSIS_EXE}" ARGS ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-    DEPENDS simulator ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-    COMMENT "Simulator Windows NSIS Installer")
+#  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/simulator-install.exe
+#    COMMAND "${NSIS_EXE}" ARGS ${PROJECT_BINARY_DIR}/companion/simulator.nsi
+#    DEPENDS simulator ${PROJECT_BINARY_DIR}/companion/simulator.nsi
+#    COMMENT "Simulator Windows NSIS Installer")
 
   add_custom_target(installer
     DEPENDS ${PROJECT_BINARY_DIR}/companion/companion-windows.exe
-    DEPENDS ${PROJECT_BINARY_DIR}/companion/simulator-windows.exe
+#    DEPENDS ${PROJECT_BINARY_DIR}/companion/simulator-windows.exe
     SOURCES ${PROJECT_BINARY_DIR}/companion/companion.nsi
-    SOURCES ${PROJECT_BINARY_DIR}/companion/simulator.nsi
+#    SOURCES ${PROJECT_BINARY_DIR}/companion/simulator.nsi
     )
 endif()
 
@@ -537,11 +524,6 @@ IF(APPLE)
   install(PROGRAMS ${DFU_UTIL_ABSOLUTE_PATH} ${AVRDUDE_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
   set(bundle_tools_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util;\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/avrdude")
 
-  # These needs to be relative to CMAKE_INSTALL_PREFIX
-  get_target_property(QT_LIBRARY_DIR Qt5::Core LOCATION)
-  get_filename_component(QT_LIBRARY_DIR ${QT_LIBRARY_DIR} PATH)
-  get_filename_component(QT_LIBRARY_DIR "${QT_LIBRARY_DIR}/.." ABSOLUTE)
-
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
   # technically a hack (that is already is in the Bundle library ...)
@@ -549,7 +531,7 @@ IF(APPLE)
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
    set(BU_CHMOD_BUNDLE_ITEMS on)
-   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_tools_path}\"   \"${QT_LIBRARY_DIR}\")
+   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_tools_path}\"   \"${QT_LIB_DIR}\")
    file(RENAME \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_OSX_APP_BUNDLE_NAME}.app\")
    " COMPONENT Runtime)
 endif()
