@@ -137,15 +137,15 @@ else()
   message(STATUS "QT_TRANSLATIONS_DIR not found, unable to package pre-built Qt translations with application.")
 endif()
 
-# Dynamically create translations.qrc file (XML) from all collected translation files.
 set(TRANSLATIONS_QRC "${CMAKE_CURRENT_BINARY_DIR}/translations.qrc")
-file(WRITE ${TRANSLATIONS_QRC} "<RCC>\n\t<qresource prefix=\"/translations\">")  # RCC header
+
+# Dynamically create translations.qrc file (XML) from all collected translation files.
 foreach(qm_file ${companion_QM} ${qt_QM} ${qtbase_QM})
-    get_filename_component(qm_file_name ${qm_file} NAME)
-    # Add file with full path and file name (w/out path) as alias to be used in actual code
-    file(APPEND ${TRANSLATIONS_QRC} "\n\t\t<file alias=\"${qm_file_name}\">${qm_file}</file>")
+  get_filename_component(qm_file_name ${qm_file} NAME)
+  # Add file with full path and file name (w/out path) as alias to be used in actual code
+  set(TRANSLATION_FILES_LIST "${TRANSLATION_FILES_LIST}    <file alias=\"${qm_file_name}\">${qm_file}</file>\n")
 endforeach()
-file(APPEND ${TRANSLATIONS_QRC} "\n\t</qresource>\n</RCC>")  # RCC footer
+configure_file(${COMPANION_SRC_DIRECTORY}/translations.qrc.in ${TRANSLATIONS_QRC} @ONLY)
 
 ### Add optional "translations" target for updating .ts files
 if(QT_LUPDATE_EXECUTABLE)
@@ -156,16 +156,6 @@ if(QT_LUPDATE_EXECUTABLE)
 else()
   message(STATUS "Qt lupdate not found, 'translations' target will not be availabe.")
 endif()
-
-############# Supporting libraries ###############
-
-add_subdirectory(shared)
-add_subdirectory(modeledit)
-add_subdirectory(generaledit)
-add_subdirectory(simulation)
-add_subdirectory(storage)
-add_subdirectory(thirdparty/qcustomplot)
-add_subdirectory(thirdparty/qxtcommandoptions)
 
 ############# Common lib ###############
 
@@ -200,10 +190,24 @@ set(common_RESOURCES
 
 qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
 qt5_add_resources(common_RCC ${common_RESOURCES})
+#add_custom_target(gen_qrc DEPENDS ${common_RCC} ${companion_QM})
 
 add_library(common ${common_SRCS} ${common_RCC})
 qt5_use_modules(common Core Xml Widgets)
 target_link_libraries(common PRIVATE simulation)
+#add_dependencies(common gen_qrc)
+
+set(CPN_COMMON_LIB common)
+
+############# Supporting libraries ###############
+
+add_subdirectory(shared)
+add_subdirectory(modeledit)
+add_subdirectory(generaledit)
+add_subdirectory(simulation)
+add_subdirectory(storage)
+add_subdirectory(thirdparty/qcustomplot)
+add_subdirectory(thirdparty/qxtcommandoptions)
 
 ############# Companion ###############
 
@@ -302,7 +306,7 @@ qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
 
 add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${icon_RC})
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
-target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation ${CPN_COMMON_LIB} qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 PrintTargetReport("${COMPANION_NAME}")
 
@@ -311,7 +315,7 @@ PrintTargetReport("${COMPANION_NAME}")
 set(simu_SRCS simulator.cpp )
 
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation ${CPN_COMMON_LIB} storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Install ####################
 

@@ -167,6 +167,6 @@ endif()
 
 add_subdirectory(${RADIO_SRC_DIRECTORY})
 
-if(Qt5Widgets_FOUND)
+if(Qt5Core_FOUND)
   add_subdirectory(${COMPANION_SRC_DIRECTORY})
 endif()
