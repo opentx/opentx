@@ -45,6 +45,8 @@
 #include "radiointerface.h"
 #include "progressdialog.h"
 #include "storage.h"
+#include "translations.h"
+
 #include <QtGui>
 #include <QNetworkProxyFactory>
 #include <QFileInfo>
@@ -69,7 +71,16 @@
 
 MainWindow::MainWindow():
   downloadDialog_forWait(NULL),
-  checkForUpdatesState(0)
+  checkForUpdatesState(0),
+  fileMenu(NULL),
+  editMenu(NULL),
+  settingsMenu(NULL),
+  burnMenu(NULL),
+  helpMenu(NULL),
+  fileToolBar(NULL),
+  editToolBar(NULL),
+  burnToolBar(NULL),
+  helpToolBar(NULL)
 {
   mdiArea = new QMdiArea(this);
   mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -518,10 +529,37 @@ void MainWindow::closeEvent(QCloseEvent *event)
   }
 }
 
+void MainWindow::changeEvent(QEvent * e)
+{
+  QMainWindow::changeEvent(e);
+  switch (e->type()) {
+    case QEvent::LanguageChange:
+      retranslateUi();
+      break;
+    default:
+      break;
+  }
+}
+
+void MainWindow::retranslateUi()
+{
+  createActions();
+  createMenus();
+  createToolBars();
+  QMessageBox::information(this, tr("Companion"), tr("Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete."));
+}
+
 void MainWindow::setLanguage(const QString & langString)
 {
   g.locale(langString);
-  QMessageBox::information(this, tr("Companion"), tr("The selected language will be used the next time you start Companion."));
+  Translations::installTranslators();
+}
+
+void MainWindow::onLanguageChanged(QAction * act)
+{
+  QString lang = act->property("locale").toString();
+  if (!lang.isNull())
+    setLanguage(lang);
 }
 
 void  MainWindow::setTheme(int index)
@@ -530,20 +568,36 @@ void  MainWindow::setTheme(int index)
   QMessageBox::information(this, tr("Companion"), tr("The new theme will be loaded the next time you start Companion."));
 }
 
+void MainWindow::onThemeChanged(QAction * act)
+{
+  bool ok;
+  int id = act->property("themeId").toInt(&ok);
+  if (ok && id >= 0 && id < 5)
+    setTheme(id);
+}
+
 void  MainWindow::setIconThemeSize(int index)
 {
   g.iconSize(index);
   QMessageBox::information(this, tr("Companion"), tr("The icon size will be used the next time you start Companion."));
 }
 
+void MainWindow::onIconSizeChanged(QAction * act)
+{
+  bool ok;
+  int id = act->property("sizeId").toInt(&ok);
+  if (ok && id >= 0 && id < 4)
+    setIconThemeSize(id);
+}
+
 void MainWindow::newFile()
 {
   MdiChild * child = createMdiChild();
   child->newFile();
-    
+
   if (IS_HORUS(getCurrentBoard())) {
     child->categoryAdd();
-  }    
+  }
   child->show();
 }
 
@@ -889,9 +943,6 @@ void MainWindow::updateMenus()
   compareAct->setEnabled(activeMdiChild());
   updateRecentFileActions();
   updateProfilesActions();
-  updateLanguageActions();
-  updateIconSizeActions();
-  updateIconThemeActions();
   setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(VERSION).arg(getCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
 }
 
@@ -929,6 +980,7 @@ QAction * MainWindow::addAct(const QString & icon, const QString & sName, const 
   if (slotObj == NULL)
     slotObj = this;
   connect(newAction, SIGNAL(triggered()), slotObj, slot);
+  actionsList.append(newAction);
   return newAction;
 }
 
@@ -938,33 +990,46 @@ QAction * MainWindow::addAct(const QString & icon, const QString & sName, const 
   return addAct(icon, sName, lName, QKeySequence::UnknownKey, slot);
 }
 
-QAction * MainWindow::addAct(QActionGroup *aGroup, const QString & sName, const QString & lName, const char *slot)
+QAction * MainWindow::addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName, const char * propName, const QVariant & propValue, const QVariant & dfltValue)
 {
-  QAction *action = addAct("", sName, lName, QKeySequence::UnknownKey, slot);
-  action->setCheckable(true);
-  aGroup->addAction(action);
-  return action;
+  QAction * act = aGroup->addAction(sName);
+  act->setStatusTip(lName);
+  act->setCheckable(true);
+  if (propName) {
+    act->setProperty(propName, propValue);
+    if (propValue == dfltValue)
+      act->setChecked(true);
+  }
+  return act;
 }
 
 void MainWindow::createActions()
 {
+  foreach (QAction * act, actionsList) {
+    if (act)
+      act->deleteLater();
+  }
+  actionsList.clear();
+
   separatorAct = new QAction(this);
   separatorAct->setSeparator(true);
+  actionsList.append(separatorAct);
 
   for (int i = 0; i < MAX_RECENT; ++i) {
     recentFileActs[i] = new QAction(this);
     recentFileActs[i]->setVisible(false);
     connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
+    actionsList.append(recentFileActs[i]);
   }
   updateRecentFileActions();
 
   QActionGroup *profilesAlignmentGroup = new QActionGroup(this);
   for (int i=0; i<MAX_PROFILES; i++) {
-    profileActs[i] = new QAction(this);
+    profileActs[i] = new QAction(profilesAlignmentGroup);
     profileActs[i]->setVisible(false);
     profileActs[i]->setCheckable(true);
-    profilesAlignmentGroup->addAction(profileActs[i]);
     connect(profileActs[i], SIGNAL(triggered()), this, SLOT(loadProfile()));
+    actionsList.append(profileActs[i]);
   }
   updateProfilesActions();
 
@@ -976,36 +1041,6 @@ void MainWindow::createActions()
   cutAct =             addAct("cut.png",    tr("Cut Model"),              tr("Cut current model to the clipboard"),    QKeySequence::Cut,    SLOT(cut()));
   copyAct =            addAct("copy.png",   tr("Copy Model"),             tr("Copy current model to the clipboard"),   QKeySequence::Copy,   SLOT(copy()));
   pasteAct =           addAct("paste.png",  tr("Paste Model"),            tr("Paste model from clipboard"),            QKeySequence::Paste,  SLOT(paste()));
-
-  QActionGroup *themeAlignGroup = new QActionGroup(this);
-  classicThemeAct =    addAct( themeAlignGroup,    tr("Classical"),       tr("The classic companion9x icon theme"),   SLOT(setClassicTheme()));
-  yericoThemeAct =     addAct( themeAlignGroup,    tr("Yerico"),          tr("Yellow round honey sweet icon theme"),  SLOT(setYericoTheme()));
-  monoThemeAct =       addAct( themeAlignGroup,    tr("Monochrome"),      tr("A monochrome black icon theme"),        SLOT(setMonochromeTheme()));
-  monoWhiteAct =       addAct( themeAlignGroup,    tr("MonoWhite"),       tr("A monochrome white icon theme"),        SLOT(setMonoWhiteTheme()));
-  monoBlueAct =        addAct( themeAlignGroup,    tr("MonoBlue"),        tr("A monochrome blue icon theme"),         SLOT(setMonoBlueTheme()));
-
-  QActionGroup *iconAlignGroup = new QActionGroup(this);
-  smallIconAct =       addAct( iconAlignGroup,     tr("Small"),           tr("Use small toolbar icons"),              SLOT(setSmallIconThemeSize()));
-  normalIconAct =      addAct( iconAlignGroup,     tr("Normal"),          tr("Use normal size toolbar icons"),        SLOT(setNormalIconThemeSize()));
-  bigIconAct =         addAct( iconAlignGroup,     tr("Big"),             tr("Use big toolbar icons"),                SLOT(setBigIconThemeSize()));
-  hugeIconAct =        addAct( iconAlignGroup,     tr("Huge"),            tr("Use huge toolbar icons"),               SLOT(setHugeIconThemeSize()));
-
-  QActionGroup *langAlignGroup = new QActionGroup(this);
-  sysLangAct =         addAct( langAlignGroup,     tr("System language"), tr("Use system language in menus"),         SLOT(setSysLanguage()));
-  czechLangAct =       addAct( langAlignGroup,     tr("Czech"),           tr("Use Czech in menus"),                   SLOT(setCZLanguage()));
-  germanLangAct =      addAct( langAlignGroup,     tr("German"),          tr("Use German in menus"),                  SLOT(setDELanguage()));
-  englishLangAct =     addAct( langAlignGroup,     tr("English"),         tr("Use English in menus"),                 SLOT(setENLanguage()));
-  finnishLangAct =     addAct( langAlignGroup,     tr("Finnish"),         tr("Use Finnish in menus"),                 SLOT(setFILanguage()));
-  frenchLangAct =      addAct( langAlignGroup,     tr("French"),          tr("Use French in menus"),                  SLOT(setFRLanguage()));
-  italianLangAct =     addAct( langAlignGroup,     tr("Italian"),         tr("Use Italian in menus"),                 SLOT(setITLanguage()));
-//    hebrewLangAct =      addAct( langAlignGroup,     tr("Hebrew"),          tr("Use Hebrew in menus"),                  SLOT(setHELanguage()));
-  polishLangAct =      addAct( langAlignGroup,     tr("Polish"),          tr("Use Polish in menus"),                  SLOT(setPLLanguage()));
-//    portugueseLangAct =  addAct( langAlignGroup,     tr("Portuguese"),      tr("Use Portuguese in menus"),              SLOT(setPTLanguage()));
-  spanishLangAct =     addAct( langAlignGroup,     tr("Spanish"),         tr("Use Spanish in menus"),                 SLOT(setESLanguage()));
-  swedishLangAct =     addAct( langAlignGroup,     tr("Swedish"),         tr("Use Swedish in menus"),                 SLOT(setSELanguage()));
-//    russianLangAct =     addAct( langAlignGroup,     tr("Russian"),         tr("Use Russian in menus"),                 SLOT(setRULanguage()));
-//    dutchLangAct =       addAct( langAlignGroup,     tr("Dutch"),           tr("Use Dutch in menus"),                   SLOT(setNLLanguage()));
-  chineseLangAct =     addAct( langAlignGroup,     tr("Chinese"),         tr("Use Chinese in menus"),                 SLOT(setCNLanguage()));
 
   aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
   printAct =           addAct("print.png",         tr("Print..."),                tr("Print current model"),                QKeySequence::Print,       SLOT(print()));
@@ -1038,23 +1073,42 @@ void MainWindow::createActions()
   printAct->setEnabled(false);
 }
 
+QMenu * MainWindow::createLanguageMenu(QWidget * parent)
+{
+  QMenu * menu = new QMenu(tr("Set Menu Language"), parent);
+  QActionGroup * actGroup = new QActionGroup(menu);
+  QString lName;
+
+  addActToGroup(actGroup, tr("System language"), tr("Use default system language."), "locale", QString(""), g.locale());
+  foreach (const QString & lang, Translations::getAvailableTranslations()) {
+    QLocale locale(lang);
+    lName = locale.nativeLanguageName();
+    addActToGroup(actGroup, lName.left(1).toUpper() % lName.mid(1), tr("Use %1 language (some translations may not be complete).").arg(lName), "locale", lang, g.locale());
+  }
+  if (!actGroup->checkedAction())
+    actGroup->actions().first()->setChecked(true);
+
+  connect(actGroup, &QActionGroup::triggered, this, &MainWindow::onLanguageChanged);
+  menu->addActions(actGroup->actions());
+  return menu;
+}
+
 void MainWindow::createMenus()
 {
-  QMenu *recentFileMenu = new QMenu(tr("Recent Files"), this);
-  QMenu *languageMenu = new QMenu(tr("Set Menu Language"), this);
-  QMenu *themeMenu = new QMenu(tr("Set Icon Theme"), this);
-  QMenu *iconThemeSizeMenu = new QMenu(tr("Set Icon Size"), this);
+  menuBar()->clear();
 
+  if (fileMenu) {
+    fileMenu->deleteLater();
+  }
   fileMenu = menuBar()->addMenu(tr("File"));
-  fileMenu->addAction(newAct);
-  fileMenu->addAction(openAct);
-  fileMenu->addAction(saveAct);
-  fileMenu->addAction(saveAsAct);
-  fileMenu->addMenu(recentFileMenu);
+
+  QMenu *recentFileMenu = new QMenu(tr("Recent Files"), fileMenu);
   recentFileMenu->setIcon(CompanionIcon("recentdocument.png"));
   for (int i=0; i<MAX_RECENT; ++i) {
     recentFileMenu->addAction(recentFileActs[i]);
   }
+
+  fileMenu->addMenu(recentFileMenu);
   fileMenu->addSeparator();
   fileMenu->addAction(logsAct);
   fileMenu->addAction(fwPrefsAct);
@@ -1066,46 +1120,50 @@ void MainWindow::createMenus()
   fileMenu->addSeparator();
   fileMenu->addAction(exitAct);
 
+  if (editMenu) {
+    editMenu->deleteLater();
+  }
   editMenu = menuBar()->addMenu(tr("Edit"));
   editMenu->addAction(cutAct);
   editMenu->addAction(copyAct);
   editMenu->addAction(pasteAct);
 
+  if (settingsMenu) {
+    settingsMenu->deleteLater();
+  }
   settingsMenu = menuBar()->addMenu(tr("Settings"));
-  settingsMenu->addMenu(languageMenu);
-    languageMenu->addAction(sysLangAct);
-    languageMenu->addAction(englishLangAct);
-    languageMenu->addAction(czechLangAct);
-    languageMenu->addAction(germanLangAct);
-    languageMenu->addAction(finnishLangAct);
-    languageMenu->addAction(frenchLangAct);
-    languageMenu->addAction(italianLangAct);
-//      languageMenu->addAction(hebrewLangAct);
-    languageMenu->addAction(polishLangAct);
-//      languageMenu->addAction(portugueseLangAct);
-    languageMenu->addAction(spanishLangAct);
-    languageMenu->addAction(swedishLangAct);
-//      languageMenu->addAction(russianLangAct);
-//      languageMenu->addAction(dutchLangAct);
-  languageMenu->addAction(chineseLangAct);
 
+  QMenu *themeMenu = new QMenu(tr("Set Icon Theme"), settingsMenu);
+  QActionGroup * themeGroup = new QActionGroup(themeMenu);
+  addActToGroup(themeGroup, tr("Classical"),  tr("The classic companion9x icon theme"),  "themeId", 0, g.theme());
+  addActToGroup(themeGroup, tr("Yerico"),     tr("Yellow round honey sweet icon theme"), "themeId", 1, g.theme());
+  addActToGroup(themeGroup, tr("Monochrome"), tr("A monochrome black icon theme"),       "themeId", 3, g.theme());
+  addActToGroup(themeGroup, tr("MonoBlue"),   tr("A monochrome blue icon theme"),        "themeId", 4, g.theme());
+  addActToGroup(themeGroup, tr("MonoWhite"),  tr("A monochrome white icon theme"),       "themeId", 2, g.theme());
+  connect(themeGroup, &QActionGroup::triggered, this, &MainWindow::onThemeChanged);
+  themeMenu->addActions(themeGroup->actions());
+
+  QMenu *iconThemeSizeMenu = new QMenu(tr("Set Icon Size"), settingsMenu);
+  QActionGroup * szGroup = new QActionGroup(iconThemeSizeMenu);
+  addActToGroup(szGroup, tr("Small"),  tr("Use small toolbar icons"),       "sizeId", 0, g.iconSize());
+  addActToGroup(szGroup, tr("Normal"), tr("Use normal size toolbar icons"), "sizeId", 1, g.iconSize());
+  addActToGroup(szGroup, tr("Big"),    tr("Use big toolbar icons"),         "sizeId", 2, g.iconSize());
+  addActToGroup(szGroup, tr("Huge"),   tr("Use huge toolbar icons"),        "sizeId", 3, g.iconSize());
+  connect(szGroup, &QActionGroup::triggered, this, &MainWindow::onIconSizeChanged);
+  iconThemeSizeMenu->addActions(szGroup->actions());
+
+  settingsMenu->addMenu(createLanguageMenu(settingsMenu));
   settingsMenu->addMenu(themeMenu);
-    themeMenu->addAction(classicThemeAct);
-    themeMenu->addAction(yericoThemeAct);
-    themeMenu->addAction(monoThemeAct);
-    themeMenu->addAction(monoBlueAct);
-    themeMenu->addAction(monoWhiteAct);
   settingsMenu->addMenu(iconThemeSizeMenu);
-    iconThemeSizeMenu->addAction(smallIconAct);
-    iconThemeSizeMenu->addAction(normalIconAct);
-    iconThemeSizeMenu->addAction(bigIconAct);
-    iconThemeSizeMenu->addAction(hugeIconAct);
   settingsMenu->addSeparator();
   settingsMenu->addAction(appPrefsAct);
   settingsMenu->addMenu(createProfilesMenu());
   settingsMenu->addAction(editSplashAct);
   settingsMenu->addAction(burnConfigAct);
 
+  if (burnMenu) {
+    burnMenu->deleteLater();
+  }
   burnMenu = menuBar()->addMenu(tr("Read/Write"));
   burnMenu->addAction(writeEepromAct);
   burnMenu->addAction(readEepromAct);
@@ -1121,7 +1179,10 @@ void MainWindow::createMenus()
     burnMenu->addAction(burnFusesAct);
     burnMenu->addAction(burnListAct);
   }
-  menuBar()->addSeparator();
+
+  if (helpMenu) {
+    helpMenu->deleteLater();
+  }
   helpMenu = menuBar()->addMenu(tr("Help"));
   helpMenu->addSeparator();
   helpMenu->addAction(checkForUpdatesAct);
@@ -1177,6 +1238,12 @@ void MainWindow::createToolBars()
       size=QSize(24,24);
       break;
   }
+
+  if (fileToolBar) {
+    removeToolBar(fileToolBar);
+    fileToolBar->deleteLater();
+  }
+
   fileToolBar = addToolBar(tr("File"));
   fileToolBar->setIconSize(size);
   fileToolBar->setObjectName("File");
@@ -1215,12 +1282,22 @@ void MainWindow::createToolBars()
   fileToolBar->addAction(compareAct);
   fileToolBar->addAction(sdsyncAct);
 
+  if (editToolBar) {
+    removeToolBar(editToolBar);
+    editToolBar->deleteLater();
+  }
+
   editToolBar = addToolBar(tr("Edit"));
   editToolBar->setIconSize(size);
   editToolBar->setObjectName("Edit");
   editToolBar->addAction(cutAct);
   editToolBar->addAction(copyAct);
   editToolBar->addAction(pasteAct);
+
+  if (burnToolBar) {
+    removeToolBar(burnToolBar);
+    burnToolBar->deleteLater();
+  }
 
   burnToolBar = new QToolBar(tr("Write"));
   addToolBar( Qt::LeftToolBarArea, burnToolBar );
@@ -1236,6 +1313,11 @@ void MainWindow::createToolBars()
   burnToolBar->addAction(readFlashAct);
   burnToolBar->addSeparator();
   burnToolBar->addAction(burnConfigAct);
+
+  if (helpToolBar) {
+    removeToolBar(helpToolBar);
+    helpToolBar->deleteLater();
+  }
 
   helpToolBar = addToolBar(tr("Help"));
   helpToolBar->setIconSize(size);
@@ -1292,63 +1374,6 @@ void MainWindow::updateRecentFileActions()
       recentFileActs[i]->setData(files[i]);
       recentFileActs[i]->setVisible(true);
     }
-  }
-}
-
-void MainWindow::updateIconSizeActions()
-{
-  switch (g.iconSize()) {
-    case 0:  smallIconAct->setChecked(true);  break;
-    case 1:  normalIconAct->setChecked(true); break;
-    case 2:  bigIconAct->setChecked(true);    break;
-    case 3:  hugeIconAct->setChecked(true);   break;
-  }
-}
-
-void MainWindow::updateLanguageActions()
-{
-  QString langId = g.locale();
-
-  if (langId=="")
-    sysLangAct->setChecked(true);
-  else if (langId=="cs_CZ")
-    czechLangAct->setChecked(true);
-  else if (langId=="de_DE")
-    germanLangAct->setChecked(true);
-  else if (langId=="en")
-    englishLangAct->setChecked(true);
-  else if (langId=="fi_FI")
-    finnishLangAct->setChecked(true);
-  else if (langId=="fr_FR")
-    frenchLangAct->setChecked(true);
-  else if (langId=="it_IT")
-    italianLangAct->setChecked(true);
-  // else if (langId=="he_IL")
-  //   hebrewLangAct->setChecked(true);
-  else if (langId=="pl_PL")
-    polishLangAct->setChecked(true);
-  // else if (langId=="pt_PT")
-  //   portugueseLangAct->setChecked(true);
-  else if (langId=="es_ES")
-    spanishLangAct->setChecked(true);
-  else if (langId=="sv_SE")
-    swedishLangAct->setChecked(true);
-  // else if (langId=="ru_RU")
-  //   russianLangAct->setChecked(true);
-  // else if (langId=="nl_NL")
-  //   dutchLangAct->setChecked(true);
-  else if (langId=="zh_CN")
-    chineseLangAct->setChecked(true);
-}
-
-void MainWindow::updateIconThemeActions()
-{
-  switch (g.theme()) {
-    case 0:  classicThemeAct->setChecked(true); break;
-    case 1:  yericoThemeAct->setChecked(true);  break;
-    case 2:  monoWhiteAct->setChecked(true);    break;
-    case 3:  monoThemeAct->setChecked(true);    break;
-    case 4:  monoBlueAct->setChecked(true);     break;
   }
 }
 
