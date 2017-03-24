@@ -955,9 +955,9 @@ class FlightModeField: public TransformedField {
     Board::Type board;
     unsigned int version;
     int rotencCount;
-    int trimBase[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
-    int trimExt[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
-    unsigned int trimMode[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
+    int trimBase[CPN_MAX_TRIMS];
+    int trimExt[CPN_MAX_TRIMS];
+    unsigned int trimMode[CPN_MAX_TRIMS];
 };
 
 class MixField: public TransformedField {

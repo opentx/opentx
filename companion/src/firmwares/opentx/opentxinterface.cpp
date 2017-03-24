@@ -207,7 +207,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != getEEpromSize(board)) {
+  if (size != Boards::getEEpromSize(board)) {
     if (size == 4096) {
       int notnull = false;
       for (int i = 2048; i < 4096; i++) {
@@ -227,7 +227,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       }
     }
     else {
-      std::cout << " wrong size (" << size << "/" << getEEpromSize(board) << ")\n";
+      std::cout << " wrong size (" << size << "/" << Boards::getEEpromSize(board) << ")\n";
       errors.set(WRONG_SIZE);
       return errors.to_ulong();
     }
@@ -330,7 +330,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     version = getLastDataVersion(board);
   }
 
-  int size = getEEpromSize(board);
+  int size = Boards::getEEpromSize(board);
 
   efile->EeFsCreate(eeprom, size, board, version);
 
@@ -379,8 +379,8 @@ int OpenTxEepromInterface::getSize(const ModelData &model)
   if (model.isEmpty())
     return 0;
 
-  QByteArray tmp(EESIZE_MAX, 0);
-  efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255/*version max*/);
+  QByteArray tmp(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
+  efile->EeFsCreate((uint8_t *) tmp.data(), Boards::getEEpromSize(Board::BOARD_UNKNOWN), board, 255/*version max*/);
 
   OpenTxModelData open9xModel((ModelData &) model, board, 255/*version max*/, getCurrentFirmware()->getVariantNumber());
 
@@ -398,8 +398,8 @@ int OpenTxEepromInterface::getSize(const GeneralSettings &settings)
   if (IS_SKY9X(board))
     return 0;
 
-  QByteArray tmp(EESIZE_MAX, 0);
-  efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255);
+  QByteArray tmp(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
+  efile->EeFsCreate((uint8_t *) tmp.data(), Boards::getEEpromSize(Board::BOARD_UNKNOWN), board, 255);
 
   OpenTxGeneralData open9xGeneral((GeneralSettings &) settings, board, 255, getCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();
@@ -570,7 +570,9 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return (IS_ARM(board) ? 1 : 0);
     case ExtraInputs:
       return 1;
-    case ExtendedTrims:
+    case TrimsRange:
+      return 125;
+    case ExtendedTrimsRange:
       return 500;
     case Simulation:
       return 1;
@@ -727,7 +729,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
 
 QString OpenTxFirmware::getAnalogInputName(unsigned int index)
 {
-  if (index < 4) {
+  if ((int)index < getBoardCapability(board, Board::Sticks)) {
     const QString sticks[] = {
       QObject::tr("Rud"),
       QObject::tr("Ele"),
@@ -737,7 +739,7 @@ QString OpenTxFirmware::getAnalogInputName(unsigned int index)
     return sticks[index];
   }
 
-  index -= 4;
+  index -= getBoardCapability(board, Board::Sticks);
 
   if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
     const QString pots[] = {

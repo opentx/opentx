@@ -124,7 +124,7 @@ bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEpr
   if (!storage.load(*radioData))
     return false;
 
-  QByteArray eeprom(EESIZE_MAX, 0);
+  QByteArray eeprom(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
   int size = getCurrentEEpromInterface()->save((uint8_t *)eeprom.data(), *radioData, version, variant);
   if (size == 0) {
     return false;

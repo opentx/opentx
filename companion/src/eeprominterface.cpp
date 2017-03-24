@@ -1063,7 +1063,7 @@ GeneralSettings::GeneralSettings()
   contrast  = 25;
   vBatWarn  = 90;
 
-  for (int i=0; i<CPN_MAX_STICKS+CPN_MAX_POTS; ++i) {
+  for (int i=0; i < CPN_MAX_ANALOGS; ++i) {
     calibMid[i]     = 0x200;
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
@@ -1073,7 +1073,7 @@ GeneralSettings::GeneralSettings()
   Board::Type board = firmware->getBoard();
 
   for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
-    switchConfig[i] = getSwitchInfo(board, i).config;
+    switchConfig[i] = Boards::getSwitchInfo(board, i).config;
   }
 
   backlightMode = 3; // keys and sticks
@@ -1719,68 +1719,6 @@ void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long err
   msgBox.setInformativeText(warningsList.join("\n"));
   msgBox.setStandardButtons(QMessageBox::Ok);
   msgBox.exec();
-}
-
-QString getBoardName(Board::Type board)
-{
-  switch (board) {
-    case Board::BOARD_STOCK:
-      return "9X";
-    case Board::BOARD_M128:
-      return "9X128";
-    case Board::BOARD_GRUVIN9X:
-      return "Gruvin9x";
-    case Board::BOARD_MEGA2560:
-      return "MEGA2560";
-    case Board::BOARD_TARANIS_X7:
-      return "Taranis X7";
-    case Board::BOARD_TARANIS_X9D:
-      return "Taranis X9D";
-    case Board::BOARD_TARANIS_X9DP:
-      return "Taranis X9D+";
-    case Board::BOARD_TARANIS_X9E:
-      return "Taranis X9E";
-    case Board::BOARD_SKY9X:
-      return "Sky9x";
-    case Board::BOARD_9XRPRO:
-      return "9XR-PRO";
-    case Board::BOARD_AR9X:
-      return "AR9X";
-    case Board::BOARD_X12S:
-      return "Horus";
-    case Board::BOARD_X10:
-      return "X10";
-    default:
-      return "Unknown";
-  }
-}
-
-const int Firmware::getFlashSize()
-{
-  switch (board) {
-    case Board::BOARD_STOCK:
-      return FSIZE_STOCK;
-    case Board::BOARD_M128:
-      return FSIZE_M128;
-    case Board::BOARD_MEGA2560:
-    case Board::BOARD_GRUVIN9X:
-      return FSIZE_GRUVIN9X;
-    case Board::BOARD_SKY9X:
-      return FSIZE_SKY9X;
-    case Board::BOARD_9XRPRO:
-    case Board::BOARD_AR9X:
-      return FSIZE_9XRPRO;
-    case Board::BOARD_TARANIS_X9D:
-    case Board::BOARD_TARANIS_X9DP:
-    case Board::BOARD_TARANIS_X9E:
-    case Board::BOARD_FLAMENCO:
-      return FSIZE_TARANIS;
-    case Board::BOARD_X12S:
-    case Board::BOARD_X10:
-      return FSIZE_HORUS;
-    default:
-      return 0;
-  }
 }
 
 Firmware * getFirmware(const QString & id)

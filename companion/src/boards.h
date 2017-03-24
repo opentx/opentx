@@ -21,13 +21,17 @@
 #ifndef _BOARDS_H_
 #define _BOARDS_H_
 
+#include <QObject>
+#include <QString>
+
 // TODO create a Board class with all these functions
 
 namespace Board {
 
   enum Type
   {
-    BOARD_STOCK,
+    BOARD_UNKNOWN = -1,
+    BOARD_STOCK = 0,
     BOARD_M128,
     BOARD_MEGA2560,
     BOARD_GRUVIN9X,
@@ -41,7 +45,7 @@ namespace Board {
     BOARD_FLAMENCO,
     BOARD_X12S,
     BOARD_X10,
-    BOARD_UNKNOWN = -1
+    BOARD_ENUM_COUNT
   };
 
   enum PotType
@@ -66,6 +70,14 @@ namespace Board {
     SWITCH_3POS
   };
 
+  enum StickAxes {
+    STICK_AXIS_LH = 0,
+    STICK_AXIS_LV,
+    STICK_AXIS_RV,
+    STICK_AXIS_RH,
+    STICK_AXIS_COUNT
+  };
+
   enum TrimAxes {
     TRIM_AXIS_LH = 0,
     TRIM_AXIS_LV,
@@ -73,9 +85,10 @@ namespace Board {
     TRIM_AXIS_RH,
     TRIM_AXIS_T5,
     TRIM_AXIS_T6,
+    TRIM_AXIS_COUNT
   };
 
-  enum TrimSwitchIndex
+  enum TrimSwitches
   {
     TRIM_SW_LH_DEC,
     TRIM_SW_LH_INC,
@@ -89,10 +102,11 @@ namespace Board {
     TRIM_SW_T5_INC,
     TRIM_SW_T6_DEC,
     TRIM_SW_T6_INC,
-    TRIM_SW_ENUM_END
+    TRIM_SW_COUNT
   };
 
   enum Capability {
+    Sticks,
     Pots,
     Sliders,
     MouseAnalogs,
@@ -105,7 +119,7 @@ namespace Board {
   struct SwitchInfo
   {
     SwitchType config;
-    const char * name;
+    QString name;
   };
 
   struct SwitchPosition {
@@ -120,29 +134,38 @@ namespace Board {
 
 }
 
-// TODO remove all those constants
-#define EESIZE_STOCK                   2048
-#define EESIZE_M128                    4096
-#define EESIZE_GRUVIN9X                4096
-#define EESIZE_TARANIS                 (32*1024)
-#define EESIZE_SKY9X                   (128*4096)
-#define EESIZE_9XRPRO                  (128*4096)
-#define EESIZE_MAX                     EESIZE_9XRPRO
+class Boards
+{
+  public:
 
-// TODO remove all those constants
-#define FSIZE_STOCK                    (64*1024)
-#define FSIZE_M128                     (128*1024)
-#define FSIZE_GRUVIN9X                 (256*1024)
-#define FSIZE_TARANIS                  (512*1024)
-#define FSIZE_SKY9X                    (256*1024)
-#define FSIZE_9XRPRO                   (512*1024)
-#define FSIZE_HORUS                    (2048*1024)
-#define FSIZE_MAX                      FSIZE_HORUS
+    Boards(Board::Type board)
+    {
+      setBoardType(board);
+    }
 
-int getEEpromSize(Board::Type board);
-Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
+    void setBoardType(const Board::Type & board);
+    Board::Type getBoardType() const { return m_boardType; }
 
-int getBoardCapability(Board::Type board, Board::Capability capability);
+    const int getEEpromSize() { return getEEpromSize(m_boardType); }
+    const int getFlashSize() { return getFlashSize(m_boardType); }
+    const Board::SwitchInfo getSwitchInfo(unsigned index) { return getSwitchInfo(m_boardType, index); }
+    const int getCapability(Board::Capability capability) { return getCapability(m_boardType, capability); }
+
+    static const int getEEpromSize(Board::Type board);
+    static const int getFlashSize(Board::Type board);
+    static const Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
+    static const int getCapability(Board::Type board, Board::Capability capability);
+    static const QString getAxisName(int index);
+
+  protected:
+
+    Board::Type m_boardType;
+};
+
+// temporary aliases for transition period, use Boards class instead.
+#define getBoardCapability(b__, c__)   Boards::getCapability(b__, c__)
+#define getEEpromSize(b__)             Boards::getEEpromSize(b__)
+#define getSwitchInfo(b__, i__)        Boards::getSwitchInfo(b__, i__)
 
 #define IS_9X(board)                   (board==Board::BOARD_STOCK || board==Board::BOARD_M128)
 #define IS_STOCK(board)                (board==Board::BOARD_STOCK)

@@ -30,18 +30,22 @@
 #define CPN_MAX_CURVES                 32
 #define CPN_MAX_POINTS                 17
 #define CPN_MAX_GVARS                  9
-#define CPN_MAX_ENCODERS               2
-#define CPN_MAX_CHNOUT                 32 // number of real output channels
-#define CPN_MAX_CSW                    64 // number of custom switches
-#define CPN_MAX_CUSTOM_FUNCTIONS       64 // number of functions assigned to switches
+#define CPN_MAX_ENCODERS               2   // rotary encoders
+#define CPN_MAX_CHNOUT                 32  // number of real output channels
+#define CPN_MAX_CSW                    64  // number of custom switches
+#define CPN_MAX_CUSTOM_FUNCTIONS       64  // number of functions assigned to switches
 #define CPN_MAX_MODULES                2
-#define CPN_MAX_STICKS                 4
-#define CPN_MAX_AUX_TRIMS              2
-#define CPN_MAX_POTS                   8
+#define CPN_MAX_STICKS                 Board::STICK_AXIS_COUNT
+#define CPN_MAX_TRIMS                  Board::TRIM_AXIS_COUNT
+#define CPN_MAX_TRIM_SW                Board::TRIM_SW_COUNT
+#define CPN_MAX_KNOBS                  4
+#define CPN_MAX_SLIDERS                4
+#define CPN_MAX_POTS                   (CPN_MAX_KNOBS + CPN_MAX_SLIDERS)
 #define CPN_MAX_CYC                    3
 #define CPN_MAX_SWITCHES               32
 #define CPN_MAX_KEYS                   32
 #define CPN_MAX_MOUSE_ANALOGS          2
+#define CPN_MAX_ANALOGS                (CPN_MAX_STICKS + CPN_MAX_POTS + CPN_MAX_MOUSE_ANALOGS)
 
 #define CPN_STR_FILES                  QT_TRANSLATE_NOOP("CompanionMacros", "files")
 #define CPN_STR_RAD_MOD_SETTINGS       QT_TRANSLATE_NOOP("CompanionMacros", "Radio and Models settings")

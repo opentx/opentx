@@ -74,7 +74,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     ui->fadeIn->setDisabled(true);
     ui->fadeOut->setDisabled(true);
   }
-    
+
   // The trims
   QString labels[CPN_MAX_STICKS];
   for(int i=0; i < CPN_MAX_STICKS; i++) {
@@ -185,7 +185,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       gvValues[i]->setMinimum(-1024);
       gvValues[i]->setMaximum(1024);
       gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
-      
+
       // Popups
       if (IS_TARANIS(board) && phaseIdx == 0) {
         gvPopups[i] = new QCheckBox(ui->gvGB);
@@ -219,9 +219,9 @@ void FlightModePanel::update()
   ui->fadeOut->setValue(float(phase.fadeOut)/scale);
 
   for (int i=0; i<4; i++) {
-    int trimsMax = firmware->getCapability(ExtendedTrims);
+    int trimsMax = firmware->getCapability(ExtendedTrimsRange);
     if (trimsMax == 0 || !model->extendedTrims) {
-      trimsMax = 125;
+      trimsMax = firmware->getCapability(TrimsRange);
     }
     trimsSlider[i]->setRange(-trimsMax, +trimsMax);
     trimsValue[i]->setRange(-trimsMax, +trimsMax);
@@ -244,7 +244,7 @@ void FlightModePanel::update()
     }
   }
 
-  for (int i=0; i<reCount; i++) {    
+  for (int i=0; i<reCount; i++) {
     reValues[i]->setDisabled(false);
     int idx = phase.rotaryEncoders[i];
     FlightModeData *phasere = &phase;
