@@ -19,13 +19,9 @@
  */
 
 #include <QApplication>
-#include <QDir>
-#include <QLibraryInfo>
-#include <QLocale>
 #include <QMessageBox>
 #include <QString>
 #include <QTextStream>
-#include <QTranslator>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
   #undef main

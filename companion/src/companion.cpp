@@ -19,7 +19,6 @@
  */
 
 #include <QApplication>
-#include <QDir>
 #include <QSplashScreen>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
