@@ -29,6 +29,8 @@ RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
   int value = repeatParam/step;
 
+  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+
   if (step == 1) {
     addItem(QObject::tr("Played once, not during startup"), -1);
     value++;
