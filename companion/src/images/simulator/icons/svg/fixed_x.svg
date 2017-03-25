@@ -1,18 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.2" width="24" height="24" viewBox="0 0 24 24" id="svg2">
-  <metadata id="metadata12">
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   id="svg2"
+   viewBox="0 0 24 24"
+   height="24"
+   width="24"
+   version="1.2">
+  <metadata
+     id="metadata12">
     <rdf:RDF>
-      <cc:Work rdf:about="">
+      <cc:Work
+         rdf:about="">
         <dc:format>image/svg+xml</dc:format>
-        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
         <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <defs id="defs10" />
-  <g id="g4">
-    <path d="M 18.719627,16.714495 C 18.255424,13.416386 15.423783,10.867797 12,10.867797 9.8080542,10.867797 7.9784136,9.3042237 7.5617627,7.2345559 8.8298305,6.7409153 9.7355932,5.514739 9.7355932,4.0745763 c 0,-1.8726644 -1.5239457,-3.3966102 -3.3966101,-3.3966102 -1.8726645,0 -3.3966102,1.5239458 -3.3966102,3.3966102 0,1.5013017 0.9850169,2.7625762 2.338,3.2109288 C 5.7445763,10.583614 8.5762169,13.132203 12,13.132203 c 2.191946,0 4.021586,1.563573 4.438237,3.633241 -1.268068,0.493641 -2.17383,1.719817 -2.17383,3.15998 0,1.872664 1.523946,3.39661 3.39661,3.39661 1.872664,0 3.39661,-1.523946 3.39661,-3.39661 0,-1.501302 -0.985017,-2.762577 -2.338,-3.210929 z M 6.3389831,2.9423729 c 0.6249762,0 1.1322033,0.5083593 1.1322033,1.1322034 0,0.623844 -0.5072271,1.1322034 -1.1322033,1.1322034 -0.6249763,0 -1.1322034,-0.5083594 -1.1322034,-1.1322034 0,-0.6238441 0.5072271,-1.1322034 1.1322034,-1.1322034 z M 17.661017,21.057627 c -0.624976,0 -1.132203,-0.508359 -1.132203,-1.132203 0,-0.623844 0.507227,-1.132204 1.132203,-1.132204 0.624976,0 1.132203,0.50836 1.132203,1.132204 0,0.623844 -0.507227,1.132203 -1.132203,1.132203 z" id="path6" />
-  </g>
+  <defs
+     id="defs10" />
+  <path
+     id="path3336"
+     d="m 11.998047,14.830593 a 3.1280487,3.1280487 0 0 0 3.128906,-3.128906 3.1280487,3.1280487 0 0 0 -3.128906,-3.1289062 3.1280487,3.1280487 0 0 0 -3.1289061,3.1289062 3.1280487,3.1280487 0 0 0 3.1289061,3.128906 z m 0,-1.007813 A 2.1213202,2.1213202 0 0 1 9.8769529,11.701687 2.1213202,2.1213202 0 0 1 11.998047,9.5805928 2.1213202,2.1213202 0 0 1 14.11914,11.701687 2.1213202,2.1213202 0 0 1 11.998047,13.82278 Z"
+     style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.70899999;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <path
+     id="rect4153"
+     d="M 11.294922 0.90234375 L 11.294922 2.5429688 L 12.972656 2.5429688 L 12.972656 0.90234375 L 11.294922 0.90234375 z M 11.294922 4.1191406 L 11.294922 5.6445312 L 12.972656 5.6445312 L 12.972656 4.1191406 L 11.294922 4.1191406 z M 11.294922 7.2207031 L 11.294922 9.4257812 A 2.2112069 2.3010933 0 0 1 11.939453 9.3242188 A 2.2112069 2.3010933 0 0 1 12.972656 9.5917969 L 12.972656 7.2207031 L 11.294922 7.2207031 z M 12.972656 13.658203 A 2.2112069 2.3010933 0 0 1 11.939453 13.925781 A 2.2112069 2.3010933 0 0 1 11.294922 13.826172 L 11.294922 16.220703 L 12.972656 16.220703 L 12.972656 13.658203 z M 11.294922 17.796875 L 11.294922 19.423828 L 12.972656 19.423828 L 12.972656 17.796875 L 11.294922 17.796875 z M 11.294922 21 L 11.294922 22.800781 L 12.972656 22.800781 L 12.972656 21 L 11.294922 21 z "
+     style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.70899999;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <circle
+     r="0"
+     cy="13.5"
+     cx="74.440681"
+     id="path3336-6"
+     style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.70899999;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" />
+  <circle
+     r="0"
+     style="opacity:1;fill:#fffdfd;fill-opacity:1;stroke:none;stroke-width:0.70899999;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+     id="circle3343-7"
+     cx="74.440681"
+     cy="13.5" />
 </svg>
