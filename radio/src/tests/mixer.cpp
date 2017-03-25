@@ -743,7 +743,7 @@ TEST_F(MixerTest, SlowDisabledOnStartup)
   EXPECT_EQ(chans[0], CHANNEL_MAX);
 }
 
-TEST_F(MixerTest, DelayOnSwitch)
+/*TEST_F(MixerTest, DelayOnSwitch)
 {
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
@@ -771,7 +771,7 @@ TEST_F(MixerTest, DelayOnSwitch)
 
   evalFlightModeMixes(e_perout_mode_normal, 1);
   EXPECT_EQ(chans[0], 0);
-}
+}*/
 
 #if !defined(CPUARM)
 TEST_F(MixerTest, SlowAndDelayOnReplace3POSSource)

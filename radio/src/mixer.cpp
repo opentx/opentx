@@ -768,7 +768,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       //========== DELAYS ===============
-      if (mode == e_perout_mode_normal && (md->delayDown || md->delayUp)) {	// there are delay values
+      if (mode <= e_perout_mode_inactive_flight_mode && (md->delayDown || md->delayUp)) {	// there are delay values
         if (!s_mixer_first_run_done || !swOn[i].delay) {
           swOn[i].hold = v;     // store actual value of v as reference for next run
           swOn[i].delay = (v > swOn[i].hold ? md->delayUp : md->delayDown) * (100/DELAY_STEP); // init delay
