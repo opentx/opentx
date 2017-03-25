@@ -852,6 +852,9 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           if (md->carryTrim == 0) {
             trim = getSourceTrimValue(md->srcRaw, v);
           }
+          if (md->curve.type != CURVE_REF_DIFF) {
+            v += trim;
+          }
 #else
           int8_t mix_trim = md->carryTrim;
           if (mix_trim < TRIM_ON)
