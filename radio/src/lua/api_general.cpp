@@ -796,13 +796,12 @@ static int luaPlayHaptic(lua_State * L)
 /*luadoc
 @function killEvents(key)
 
-Stops key state machine.
+Stops key state machine. See [Key Events](../key_events.md) for the detailed description.
 
-@param key (number) key to be killed, can also include event type (only key part is used)
+@param key (number) key to be killed, can also include event type (only the key part is used)
 
 @status current Introduced in 2.0.0
 
-TODO table of events/masks
 */
 static int luaKillEvents(lua_State * L)
 {
