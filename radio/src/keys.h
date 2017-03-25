@@ -41,15 +41,16 @@
 #define EVT_ENTRY_UP                   0xbe
 #endif
 
-#define EVT_KEY_BREAK(key)             ((key)|_MSK_KEY_BREAK)
-#define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)
-#define EVT_KEY_REPT(key)              ((key)|_MSK_KEY_REPT)
-#define EVT_KEY_LONG(key)              ((key)|_MSK_KEY_LONG)
+// normal order of events is: FIRST, LONG, REPEAT, REPEAT, ..., BREAK
+#define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)  // fired when key is pressed
+#define EVT_KEY_LONG(key)              ((key)|_MSK_KEY_LONG)   // fired when key is held pressed for a while
+#define EVT_KEY_REPT(key)              ((key)|_MSK_KEY_REPT)   // fired when key is held pressed long enough, fires multiple times with increasing speed
+#define EVT_KEY_BREAK(key)             ((key)|_MSK_KEY_BREAK)  // fired when key is released (short or long), but only if the event was not killed
 
-#define IS_KEY_BREAK(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK)
 #define IS_KEY_FIRST(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_FIRST)
 #define IS_KEY_LONG(evt)               (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_LONG)
 #define IS_KEY_REPT(evt)               (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_REPT)
+#define IS_KEY_BREAK(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK)
 
 #if (defined(PCBHORUS) || defined(PCBFLAMENCO) || defined(PCBTARANIS)) && defined(ROTARY_ENCODER_NAVIGATION)
   typedef uint16_t event_t;
@@ -79,34 +80,19 @@
 
 class Key
 {
-#define FILTERBITS                     4
-
-#ifdef SIMU
-  #define FFVAL 1
-#else
-  #define FFVAL                        ((1<<FILTERBITS)-1)
-#endif
-
-#define KSTATE_OFF                     0
-#define KSTATE_RPTDELAY                95 // gruvin: delay state before key repeating starts
-#define KSTATE_START                   97
-#define KSTATE_PAUSE                   98
-#define KSTATE_KILLED                  99
-
   private:
-    uint8_t m_vals;   // key debounce?  4 = 40ms
+    uint8_t m_vals;
     uint8_t m_cnt;
     uint8_t m_state;
   public:
     void input(bool val);
-    bool state()       { return m_vals > 0; }
-    void pauseEvents() { m_state = KSTATE_PAUSE; m_cnt = 0; }
-    void killEvents()  { m_state = KSTATE_KILLED; }
+    bool state() const { return m_vals > 0; }
+    void pauseEvents();
+    void killEvents();
     uint8_t key() const;
 };
 
 extern Key keys[NUM_KEYS];
-
 extern event_t s_evt;
 
 #define putEvent(evt) s_evt = evt
