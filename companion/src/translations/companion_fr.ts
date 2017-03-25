@@ -61,49 +61,41 @@
     <name>AppPreferencesDialog</name>
     <message>
         <location filename="../apppreferencesdialog.ui" line="26"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="742"/>
         <source>Edit Settings</source>
         <translation>Modifier les réglages</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="46"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="839"/>
         <source>Radio Profile</source>
         <translation>Profil de radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="424"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="798"/>
         <source>Default Channel Order</source>
         <translation>Ordre des voies par défaut</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="169"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="751"/>
         <source>Build Options</source>
         <translation>Options de compilation</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="105"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="745"/>
         <source>Menu Language</source>
         <translation>Langue des menus</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="357"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="769"/>
         <source>Default Stick Mode</source>
         <translation>Mode par défaut</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="616"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="832"/>
         <source>Select Image</source>
         <translation>Sélectionner une image</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="370"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="778"/>
         <source>Mode selection:
 
 Mode 1:
@@ -145,207 +137,172 @@ Manche Droit:  Profondeur, Direction
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="395"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="772"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mode 1 (DIR PROF GAZ AIL)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="400"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="773"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mode 2 (DIR GAZ PROF AIL)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="405"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="774"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation>Mode 3 (AIL PROF GAZ DIR)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="410"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="775"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mode 4 (AIL GAZ PROF DIR)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="201"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="752"/>
         <source>Splash Screen</source>
         <translation>Ecran d&apos;accueil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="304"/>
         <location filename="../apppreferencesdialog.ui" line="637"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="758"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="836"/>
         <source>The profile specific folder,  if set, will override general Backup folder</source>
         <translation>Dossier de sauvegarde spécifique au profil courant, si défini remplace le réglage de l&apos;application</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="307"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="760"/>
         <source>Backup folder</source>
         <translation>Dossier de sauvegarde</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="314"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="762"/>
         <source>If set it will override the application general setting</source>
         <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="324"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="765"/>
         <source>if set, will override general backup enable</source>
         <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="452"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="827"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="459"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="801"/>
         <source>R E T A</source>
         <translation>D P G A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="464"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="802"/>
         <source>R E A T</source>
         <translation>D P A G</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="469"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="803"/>
         <source>R T E A</source>
         <translation>D G P A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="474"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="804"/>
         <source>R T A E</source>
         <translation>D G A P</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="479"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="805"/>
         <source>R A E T</source>
         <translation>D A P G</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="484"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="806"/>
         <source>R A T E</source>
         <translation>D A G P</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="489"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="807"/>
         <source>E R T A</source>
         <translation>P D G A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="494"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="808"/>
         <source>E R A T</source>
         <translation>P D A G</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="499"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="809"/>
         <source>E T R A</source>
         <translation>P G D A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="504"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="810"/>
         <source>E T A R</source>
         <translation>P G A D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="509"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="811"/>
         <source>E A R T</source>
         <translation>P A D G</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="514"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="812"/>
         <source>E A T R</source>
         <translation>P A G D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="519"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="813"/>
         <source>T R E A</source>
         <translation>G D P A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="524"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="814"/>
         <source>T R A E</source>
         <translation>G D A P</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="529"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="815"/>
         <source>T E R A</source>
         <translation>G P D A</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="534"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="816"/>
         <source>T E A R</source>
         <translation>G P A D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="539"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="817"/>
         <source>T A R E</source>
         <translation>G A D P</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="544"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="818"/>
         <source>T A E R</source>
         <translation>G A P D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="549"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="819"/>
         <source>A R E T</source>
         <translation>A D P G</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="554"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="820"/>
         <source>A R T E</source>
         <translation>A D G P</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="559"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="821"/>
         <source>A E R T</source>
         <translation>A P D G</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="564"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="822"/>
         <source>A E T R</source>
         <translation>A P G D</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="569"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="823"/>
         <source>A T R E</source>
         <translation>A G D P</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="574"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="824"/>
         <source>A T E R</source>
         <translation>A G P D</translation>
     </message>
@@ -355,95 +312,76 @@ Manche Droit:  Profondeur, Direction
         <location filename="../apppreferencesdialog.ui" line="857"/>
         <location filename="../apppreferencesdialog.ui" line="884"/>
         <location filename="../apppreferencesdialog.ui" line="1004"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="834"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="838"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="855"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="857"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="873"/>
         <source>Select Folder</source>
         <translation>Sélectionner dossier</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="877"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="856"/>
         <source>Select Executable</source>
         <translation>Sélectionner exécutable</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="891"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="858"/>
         <source>Use OpenTX firmware nightly builds</source>
         <translation>Utlilser les nightly builds du firmware</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="901"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="859"/>
         <source>Use Companion nightly builds</source>
         <translation>Utlilser les nightly builds de Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1072"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="877"/>
         <source>Simulator Volume Gain</source>
         <translation>Gain de volume du simulateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="58"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="743"/>
         <source>Profile Name</source>
         <translation>Nom du profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="623"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="833"/>
         <source>Remove Profile</source>
         <translation>Supprimer le profil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="609"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="831"/>
         <source>Clear Image</source>
         <translation>Effacer l&apos;image</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="582"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="829"/>
         <source>Append version number to FW file name</source>
         <translation>Ajouter le numéro de version au nom du fichier téléchargé</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="589"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="830"/>
         <source>Offer to write FW to Tx after download</source>
         <translation>Proposer de transférer le firmware à la radio après téléchargement</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="88"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="744"/>
         <source>Radio Type</source>
         <translation>Type de radio</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="268"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="754"/>
         <source>Other Settings</source>
         <translation>Autres réglages</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="334"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="768"/>
         <source>General Settings</source>
         <translation>Paramètres généraux</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="281"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="755"/>
         <source>SD Structure path</source>
         <translation>Chemin de la structure de la carte SD</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="159"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="748"/>
         <source>Set voice language.
 May be different from firmware language</source>
         <translation>Langue des voix.
@@ -451,165 +389,137 @@ Peut être différente de la langue du firmware</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="143"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="746"/>
         <source>Voice Language</source>
         <translation>Langue des voix</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="648"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="860"/>
         <source>Application Settings</source>
         <translation>Réglages de l&apos;application</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="664"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="841"/>
         <source>Show splash screen when Companion starts</source>
         <translation>Afficher l&apos;écran d&apos;accueil au lancement de Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="654"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="840"/>
         <source>Automatic check for Companion updates</source>
         <translation>Vérifier la présence de mises à jour de Companion automatiquement</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="327"/>
         <location filename="../apppreferencesdialog.ui" line="674"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="767"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="842"/>
         <source>Enable automatic backup before writing firmware</source>
         <translation>Sauvegarder les réglages et modèles automatiquement lors des transferts</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="708"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="843"/>
         <source>Automatic check for OpenTX firmware updates</source>
         <translation>Vérifier la présence de mises à jour de firmware automatiquement</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="724"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="844"/>
         <source>Splash Screen Library</source>
         <translation>Bibliothèque d&apos;écrans d&apos;accueil</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="737"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="845"/>
         <source>Files to keep</source>
         <translation>Fichiers à conserver</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="751"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="846"/>
         <source>Google Earth Executable</source>
         <translation>Exécutable Google Earth</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="831"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="852"/>
         <source>Only show user splash images</source>
         <translation>Ne montrer que les images de l&apos;utilisateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="836"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="853"/>
         <source>Show user and companion splash images</source>
         <translation>Montrer les images de Companion et de l&apos;utilisateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="764"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="847"/>
         <source>User Splash Screens</source>
         <translation>Ecrans d&apos;accueil personnalisés</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="793"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="848"/>
         <source>Automatic Backup Folder</source>
         <translation>Dossier de sauvegardes automatiques</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="807"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="849"/>
         <source>Use model wizard when creating a new model</source>
         <translation>Utiliser l&apos;assistant à la création d&apos;un nouveau modèle</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="912"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="878"/>
         <source>Simulator Settings</source>
         <translation>Paramètres du simulateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1033"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="875"/>
         <source>Simulator BackLight</source>
         <translation>Rétroéclairage du simulateur</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="997"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="872"/>
         <source>Enable</source>
         <translation>Actif</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="942"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="864"/>
         <source>Blue</source>
         <translation>Bleu</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="947"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="865"/>
         <source>Green</source>
         <translation>Vert</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="952"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="866"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="957"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="867"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="962"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="868"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1020"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="874"/>
         <source>Joystick</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="928"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="861"/>
         <source>Calibrate</source>
         <translation>Calibrer</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="970"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="870"/>
         <source>Simulator capture folder</source>
         <translation>Dossier des captures d&apos;écran</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="990"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="871"/>
         <source>Only capture to clipboard</source>
         <translation>Capturer dans le presse-papiers uniquement</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1065"/>
-        <location filename="../../../build-x9e/companion/src/ui_apppreferencesdialog.h" line="876"/>
         <source>Remember simulator switch values</source>
         <translation>Mémoriser les positions des inters du simulateur</translation>
     </message>
@@ -689,96 +599,103 @@ Peut être différente de la langue du firmware</translation>
 <context>
     <name>Channels</name>
     <message>
-        <location filename="../modeledit/channels.cpp" line="101"/>
+        <location filename="../modeledit/channels.cpp" line="102"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="103"/>
+        <location filename="../modeledit/channels.cpp" line="104"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="103"/>
+        <location filename="../modeledit/channels.cpp" line="104"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="103"/>
+        <location filename="../modeledit/channels.cpp" line="104"/>
         <source>Subtrim</source>
         <translation>Subtrim</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="103"/>
+        <location filename="../modeledit/channels.cpp" line="104"/>
         <source>Direction</source>
         <translation>Direction</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="105"/>
+        <location filename="../modeledit/channels.cpp" line="106"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="107"/>
+        <location filename="../modeledit/channels.cpp" line="108"/>
         <source>PPM Center</source>
         <translation>Neutre PPM</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="109"/>
+        <location filename="../modeledit/channels.cpp" line="110"/>
         <source>Linear Subtrim</source>
         <translation>Subtrim linéaire</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="119"/>
+        <location filename="../modeledit/channels.cpp" line="120"/>
         <source>CH%1</source>
         <translation>VOIE%1</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="146"/>
+        <location filename="../modeledit/channels.cpp" line="147"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="146"/>
+        <location filename="../modeledit/channels.cpp" line="147"/>
         <source>INV</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>CompanionMacros</name>
+    <message>
+        <location filename="../constants.h" line="46"/>
+        <source>files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../constants.h" line="47"/>
+        <source>Radio and Models settings</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>CompareDialog</name>
     <message>
         <location filename="../comparedialog.ui" line="29"/>
-        <location filename="../../../build-x9e/companion/src/ui_comparedialog.h" line="120"/>
         <source>Compare Models</source>
         <translation>Comparer les modèles</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="49"/>
-        <location filename="../../../build-x9e/companion/src/ui_comparedialog.h" line="121"/>
         <source>Drag first model here</source>
         <translation>Glisser le premier modèle ici</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="71"/>
-        <location filename="../../../build-x9e/companion/src/ui_comparedialog.h" line="122"/>
         <source>Drag second model here</source>
         <translation>Glisser le second modèle ici</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="105"/>
-        <location filename="../../../build-x9e/companion/src/ui_comparedialog.h" line="123"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="112"/>
-        <location filename="../../../build-x9e/companion/src/ui_comparedialog.h" line="124"/>
         <source>Print</source>
         <translation>Imprimer</translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="119"/>
-        <location filename="../../../build-x9e/companion/src/ui_comparedialog.h" line="125"/>
         <source>Print to file</source>
         <translation>Imprimer vers un fichier</translation>
     </message>
@@ -877,22 +794,22 @@ Peut être différente de la langue du firmware</translation>
 <context>
     <name>CurveGroup</name>
     <message>
-        <location filename="../helpers.cpp" line="221"/>
+        <location filename="../helpers.cpp" line="226"/>
         <source>Diff</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="222"/>
+        <location filename="../helpers.cpp" line="227"/>
         <source>Expo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="223"/>
+        <location filename="../helpers.cpp" line="228"/>
         <source>Func</source>
         <translation>Fonc</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="224"/>
+        <location filename="../helpers.cpp" line="229"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
@@ -901,99 +818,82 @@ Peut être différente de la langue du firmware</translation>
     <name>Curves</name>
     <message>
         <location filename="../modeledit/curves.ui" line="68"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="297"/>
         <source>Fixed X</source>
         <translation>X fixe</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="73"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="298"/>
         <source>Custom X</source>
         <translation>X configurable</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="82"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="302"/>
         <source>Lines</source>
         <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="87"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="303"/>
         <source>Smooth</source>
         <translation>Adoucie</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="104"/>
         <location filename="../modeledit/curves.ui" line="309"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="305"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="317"/>
         <source>Curve type</source>
         <translation>Type de courbe</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="176"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="306"/>
         <source>Curve Creator</source>
         <translation>Créateur de courbe</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="185"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="307"/>
         <source>Y at X=0</source>
         <translation>Y pour X=0</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="208"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="308"/>
         <source>Y at X=100</source>
         <translation>Y pour X=100</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="232"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="311"/>
         <source>Both</source>
         <translation>Les 2</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="237"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="312"/>
         <source>x&gt;0</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="242"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="313"/>
         <source>x&lt;0</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="266"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="315"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="273"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="316"/>
         <source>Side</source>
         <translation>Côté</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="316"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="318"/>
         <source>Y at X=-100</source>
         <translation>Y pour X=-100</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="323"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="319"/>
         <source>Coefficient</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="49"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_curves.h" line="294"/>
         <source>Curve name</source>
         <translation>Nom de la courbe</translation>
     </message>
@@ -1183,29 +1083,21 @@ Peut être différente de la langue du firmware</translation>
     <name>DebugOutput</name>
     <message>
         <location filename="../simulation/debugoutput.ui" line="20"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="210"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="210"/>
         <source>Debug Output</source>
         <translation>Sortie débogage</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="68"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="228"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="228"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the filter. If the button won&apos;t stay enabled, it is likely there is a syntax error in the Regular Expression entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Activer ou désactiver le filtre. Si le bouton ne reste pas actif, c&apos;est qu&apos;il y a probablement une erreur dans la &lt;i&gt;Regular Expression&lt;/i&gt;.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="74"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="230"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="230"/>
         <source>Filter:</source>
         <translation>Filtre:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="105"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="232"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="232"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter filter text here. Click the help/info button for details about using the filter. &lt;/p&gt;&lt;p&gt;
 To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first choose it, and then press &lt;code&gt;Shift-Delete&lt;/code&gt; (or &lt;code&gt;Shift-Backspace&lt;/code&gt;) key combination.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Entrer le filtre ici. Cliquer sur le bouton d&apos;aide/info pour plus de détails sur l&apos;utilisation du filtre. &lt;/p&gt;&lt;p&gt;
@@ -1213,81 +1105,61 @@ Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="164"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="236"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="236"/>
         <source>Buffer:</source>
         <translation>Tampon:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="177"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="238"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="238"/>
         <source>Number of lines to keep in display.</source>
         <translation>Nombre de lignes du tampon.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="274"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="211"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="211"/>
         <source>Filter &amp;Help</source>
         <translation>Filtre &amp;Aide</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="213"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="213"/>
         <source>Show information about using the filter.</source>
         <translation>Affiche les informations concernant l&apos;usage du filtre.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="215"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="215"/>
         <source>Word &amp;Wrap</source>
         <translation>Renvoi &amp;Ligne</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="217"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="217"/>
         <source>Toggle word wrapping on/off.</source>
         <translation>Retour automatique à la ligne on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="219"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="219"/>
         <source>&amp;Clear</source>
         <translation>&amp;Effacer</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="221"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="221"/>
         <source>Clear the output window of all text.</source>
         <translation>Effacer tout le texte dans la fenêtre de sortie.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="223"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="223"/>
         <source>Enable &amp;Filter</source>
         <translation>Activer &amp;Filtre</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_debugoutput.h" line="225"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_debugoutput.h" line="225"/>
         <source>Turn the filter on/off.</source>
         <translation>Basculer le filtre on/off.</translation>
     </message>
     <message>
-        <location filename="../simulation/debugoutput.cpp" line="281"/>
+        <location filename="../simulation/debugoutput.cpp" line="285"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;The filter supports two syntax types: basic matching with common wildcards as well as full Perl-style (&lt;code&gt;pcre&lt;/code&gt;) Regular Expressions.&lt;/p&gt;&lt;p&gt;By default a filter will only show lines which match (&lt;b&gt;inclusive&lt;/b&gt;). To make an &lt;b&gt;exclusive&lt;/b&gt; filter which removes matching lines, prefix the filter expression with a &lt;kbd&gt;!&lt;/kbd&gt; (exclamation mark).&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;Regular Expressions&lt;/b&gt; (RegEx), prefix the filter text with a &lt;kbd&gt;/&lt;/kbd&gt; (slash) or &lt;kbd&gt;^&lt;/kbd&gt; (up caret). &lt;ul&gt;&lt;li&gt;Put the &lt;kbd&gt;/&lt;/kbd&gt; or &lt;kbd&gt;^&lt;/kbd&gt; after the exclusive &lt;kbd&gt;!&lt;/kbd&gt; indicator if you&apos;re using one.&lt;/li&gt;&lt;li&gt;By default the match is case-sensitive. To make it insensitive, add the typical &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) operator at the end of your RegEx.&lt;/li&gt;&lt;li&gt;If you use a caret (^) to denote a RegEx, it will become part of the Reg. Ex. (that is, matches from start of line).&lt;/li&gt;&lt;li&gt;If the RegEx is invalid, the filter edit field should show a red border and you will not be able to enable the filter.&lt;/li&gt;&lt;li&gt;A useful resource for testing REs (with a full reference) can be found at &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;basic matching&lt;/b&gt; just type any text.&lt;ul&gt;&lt;li&gt;Wildcards: &lt;kbd&gt;*&lt;/kbd&gt; (asterisk) matches zero or more of any character(s), and &lt;kbd&gt;?&lt;/kbd&gt; (question mark) matches any single character.&lt;/li&gt;&lt;li&gt;The match is always case-insensitive.&lt;/li&gt;&lt;li&gt;The match always starts from the beginning of a log line. To ignore characters at the start, use a leading &lt;kbd&gt;*&lt;/kbd&gt; wildcard.&lt;/li&gt;&lt;li&gt;A trailing &lt;kbd&gt;*&lt;/kbd&gt; is always implied (that is, matches anything to the end of the log line). To avoid this, use a RegEx.&lt;/li&gt;&lt;li&gt;You can match literal wildcard characters by prefixing them with a &lt;kbd&gt;\&lt;/kbd&gt; (backslash) character (eg. &quot;foo\*bar&quot; matches &quot;foo*bar&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;After &lt;b&gt;editing text&lt;/b&gt;, press ENTER or TAB key (or click anywhere outside the box) to update the filter.&lt;/p&gt;&lt;p&gt;To &lt;b&gt;remove an entry&lt;/b&gt; from the filter selector list, first choose it, and while in the line editor press &lt;kbd&gt;Shift-Delete&lt;/kbd&gt; (or &lt;kbd&gt;Shift-Backspace&lt;/kbd&gt;) key combination. The default filters cannot be removed. Up to 50 filters are stored.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Le filtre supporte deux types de syntaxes: la recherche simple utilisant les métacaractères ou la recherche avancée utilisant les expressions régulières (&lt;code&gt;RegEx&lt;/code&gt;) de type Perl.&lt;/p&gt;&lt;p&gt;Par défaut, un filtre ne montre que les lignes qui correspondent (&lt;b&gt;inclusif&lt;/b&gt;). Pour faire un filtre &lt;b&gt;exclusif&lt;/b&gt; qui supprime les lignes de correspondance, préfixez l&apos;expression du filtre avec un &lt;kbd&gt;!&lt;/kbd&gt; (point d&apos;exclamation).&lt;/p&gt;&lt;p&gt;Pour utiliser les &lt;b&gt;Expressions Régulières&lt;/b&gt; (RegEx), préfixez le texte du filtre avec un &lt;kbd&gt;/&lt;/kbd&gt; (slash) ou &lt;kbd&gt;^&lt;/kbd&gt; (accent circonflexe).&lt;ul&gt;&lt;li&gt;Il faut mettre le &lt;kbd&gt;!&lt;/kbd&gt; &lt;u&gt;avant&lt;/u&gt; le &lt;kbd&gt;/&lt;/kbd&gt; ou &lt;kbd&gt;^&lt;/kbd&gt; dans le cas d&apos;un filtre exclusif.&lt;/li&gt;&lt;li&gt;Par défaut, la correspondance est sensible à la casse (ex: a &amp;ne; A). Pour la rendre insensible (ex: a = A), ajoutez l&apos;opérateur typique &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) à la fin de votre RegEx.&lt;/li&gt;&lt;li&gt;Si vous utilisez un &lt;kbd&gt;^&lt;/kbd&gt; pour désigner une RegEx, il deviendra une partie de la RegEx (&lt;kbd&gt;^&lt;/kbd&gt; est le caractère de début de chaîne).&lt;/li&gt;&lt;li&gt;Si la RegEx n&apos;est pas valide, le champ d&apos;édition du filtre affichera une bordure rouge et vous ne pourrez pas activer le filtre.&lt;/li&gt;&lt;li&gt;Une ressource utile pour tester les RegExs (avec une référence complète) peut être trouvée sur le site &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt; (tutoriel en français: &lt;a href=&quot;http://perl.mines-albi.fr/DocFr/perlretut.html&quot;&gt;Expressions rationnelles/régulières en Perl&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Pour utiliser la &lt;b&gt;recherche simple&lt;/b&gt;, tapez simplement le texte recherché.&lt;ul&gt;&lt;li&gt;Métacaractères: le quantificateur &lt;kbd&gt;*&lt;/kbd&gt; (astérisque) correspond à zéro ou plus de n&apos;importe quel caractère, et le quantificateur &lt;kbd&gt;?&lt;/kbd&gt; (point d&apos;interrogation) correspond à un caractère unique.&lt;/li&gt;&lt;li&gt;La correspondance est toujours sensible à la casse.&lt;/li&gt;&lt;li&gt;La correspondance commence toujours au début du Log. Pour ignorer les caractères au début, utilisez le métacaractère &lt;kbd&gt;*&lt;/kbd&gt;.&lt;/li&gt;&lt;li&gt;Un métacaractère &lt;kbd&gt;*&lt;/kbd&gt; est implicitement ajouté à la fin (ainsi, toutes les correspondances valides soient bien affichées jusqu&apos;à la fin du Log). Si vous voulez éviter ce métacaractère implicite, il faut utiliser une RegEx.&lt;/li&gt;&lt;li&gt;Pour rechercher un caractère qui est lui-même un métacaractère, il faut préfixer avec un &lt;kbd&gt;\&lt;/kbd&gt; (backslash) (ex: &quot;&lt;i&gt;toto\*titi&lt;/i&gt;&quot; correspond à &quot;&lt;i&gt;toto*titi&lt;/i&gt;&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Quand l&apos;&lt;b&gt;édition&lt;/b&gt; est terminée, appuyez sur la touche ENTRER ou TAB (ou cliquez n&apos;importe où à l&apos;extérieur du champ du filtre) afin de mettre à jour le filtre.&lt;/p&gt;&lt;p&gt;Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le d&apos;abord, puis faite le raccourci clavier &lt;kbd&gt;Shift-Supprimer&lt;/kbd&gt; (ou &lt;kbd&gt;Shift-Retour Arrière&lt;/kbd&gt;). Les filtres par défaut ne peuvent pas être effacés. Jusqu&apos;à 50 filtres peuvent être mémorisés.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../simulation/debugoutput.cpp" line="307"/>
+        <location filename="../simulation/debugoutput.cpp" line="311"/>
         <source>Debug Console Filter Help</source>
         <translation>Aide sur les filtres pour la console de débogage</translation>
     </message>
@@ -1403,19 +1275,16 @@ Il est recommandé d&apos;&quot;Enregistrer Sous&quot; au plus vite pour ne pas 
     <name>ExpoDialog</name>
     <message>
         <location filename="../modeledit/expodialog.ui" line="98"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="449"/>
         <source>Weight</source>
         <translation>Ratio</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="36"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="440"/>
         <source>Flight modes</source>
         <translation>Phases de vol</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="441"/>
         <source>Input name</source>
         <translation>Nom de l&apos;entrée</translation>
     </message>
@@ -1423,51 +1292,41 @@ Il est recommandé d&apos;&quot;Enregistrer Sous&quot; au plus vite pour ne pas 
         <location filename="../modeledit/expodialog.ui" line="52"/>
         <location filename="../modeledit/expodialog.ui" line="395"/>
         <location filename="../modeledit/expodialog.ui" line="444"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="442"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="488"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="495"/>
         <source>GV</source>
         <translation>VG</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="262"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="459"/>
         <source>Switch</source>
         <translation>Interrupteur</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="388"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="486"/>
         <source>Curve applied to the source.</source>
         <translation>Courbe appliquée à la source.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="414"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="492"/>
         <source>Source</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="421"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="493"/>
         <source>Line name</source>
         <translation>Nom de la ligne</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="277"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="464"/>
         <source>Stick Side</source>
         <translation>Direction</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="91"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="447"/>
         <source>Source for the mixer.</source>
         <translation>La voie maître du mixage.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="269"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="461"/>
         <source>Switch used to enable the line.
 If blank then the input is considered to be &quot;ON&quot; all the time.</source>
         <translation>Interrupteur utilisé pour activer la ligne.
@@ -1475,61 +1334,51 @@ Si vide, la ligne est toujours active.</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="348"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="474"/>
         <source>Scale</source>
         <translation>Echelle</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="355"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="475"/>
         <source>Include Trim</source>
         <translation>Inclure Trim</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="363"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="478"/>
         <source>No</source>
         <translation>Non</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="368"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="479"/>
         <source>Yes</source>
         <translation>Oui</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="376"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="481"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="435"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="494"/>
         <source>Offset</source>
         <translation>Décalage</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="454"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="497"/>
         <source>The source for the mixer</source>
         <translation>La voie maître du mixage</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="285"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="467"/>
         <source>NEG</source>
         <translation>Négative</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="290"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="468"/>
         <source>POS</source>
         <translation>Positive</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="295"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_expodialog.h" line="469"/>
         <source>ALL</source>
         <translation>Les 2</translation>
     </message>
@@ -1586,25 +1435,21 @@ Si vide, la ligne est toujours active.</translation>
     <name>FirmwarePreferencesDialog</name>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="26"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="165"/>
         <source>Downloads</source>
         <translation>Téléchargements</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="54"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="166"/>
         <source>Check for updates</source>
         <translation>Vérifier les mises à jour</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="68"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="167"/>
         <source>Voice</source>
         <translation>Voix</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="81"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="169"/>
         <source>Set voice language.
 May be different from firmware language</source>
         <translation>Langue des voix.
@@ -1612,25 +1457,21 @@ Peut être différente de la langue du firmware</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="89"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="172"/>
         <source>Download Voice</source>
         <translation>Télécharger les fichiers son</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="96"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="173"/>
         <source>Download FW</source>
         <translation>Télécharger le firmware</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="143"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="174"/>
         <source>Firmware</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="173"/>
-        <location filename="../../../build-x9e/companion/src/ui_fwpreferencesdialog.h" line="175"/>
         <source>Latest Download</source>
         <translation>Dernière version téléchargée</translation>
     </message>
@@ -1667,80 +1508,67 @@ Peut être différente de la langue du firmware</translation>
     <name>FlashEEpromDialog</name>
     <message>
         <location filename="../flasheepromdialog.ui" line="26"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="156"/>
         <location filename="../flasheepromdialog.cpp" line="249"/>
         <source>Write Models and Settings to Radio</source>
         <translation>Transférer les réglages et modèles vers la radio</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="66"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="157"/>
         <source>Load...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="81"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="158"/>
         <source>Current Profile</source>
         <translation>Profil courant</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="97"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="160"/>
         <source>Allows Companion to write to older version of the firmware</source>
         <translation>Permet à Companion de transférer des réglages à une ancienne version de firmware</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="100"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="162"/>
         <source>Check Firmware compatibility</source>
         <translation>Vérifier la compatibilité du firmware</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="113"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="164"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves a dated copy of your eeprom to the backup folder you specified in the Companion settings before writing the current model to the radio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enregistre une copie datée de votre eeprom actuelle dans le dossier de sauvegarde avant de transférer les modèles à la radio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="116"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="166"/>
         <source>Backup before Write</source>
         <translation>Sauvegarder les réglages actuels avant d&apos;écrire</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="123"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="168"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify calibration parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Charger l&apos;étalonnage du profil courant&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="126"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="170"/>
         <source>Patch calibration setting from profile</source>
         <translation>Patcher l&apos;étalonnage du profil courant</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="133"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="172"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Modify HW parameters using settings from current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Charger les paramètres hardware du profil courant&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="136"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="174"/>
         <source>Patch HW settings from profile</source>
         <translation>Patcher les paramètres hardware du profil courant</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="164"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="175"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="180"/>
-        <location filename="../../../build-x9e/companion/src/ui_flasheepromdialog.h" line="176"/>
         <source>Write to TX</source>
         <translation>Transférer</translation>
     </message>
@@ -1813,85 +1641,71 @@ Peut être différente de la langue du firmware</translation>
     <name>FlashFirmwareDialog</name>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="26"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="252"/>
         <source>Flash Firmware</source>
         <translation>Programmer le firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="66"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="253"/>
         <source>Load...</source>
         <translation>Parcourir...</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="90"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="254"/>
         <source>Date &amp; Time</source>
         <translation>Date et heure</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="104"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="255"/>
         <source>Variant</source>
         <translation>Variante</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="118"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="256"/>
         <source>Version</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="152"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="257"/>
         <source>Use profile start screen</source>
         <translation>Utiliser l&apos;écran d&apos;accueil du profil</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="159"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="258"/>
         <source>Use firmware start screen</source>
         <translation>Utiliser l&apos;écran d&apos;accueil du firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="166"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="259"/>
         <source>Use library start screen</source>
         <translation>Utiliser un écran d&apos;accueil de la bibliothèque</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="173"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="260"/>
         <source>Use another start screen</source>
         <translation>Utiliser un autre écran d&apos;accueil</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="228"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="263"/>
         <source>Allows Companion to write to older version of the firmware</source>
         <translation>Permet à Companion de transférer des réglages à une ancienne version de firmware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="231"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="265"/>
         <source>Check Hardware compatibility</source>
         <translation>Vérifier la compatibilité du hardware</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="241"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="266"/>
         <source>Backup and restore Models and Settings</source>
         <translation>Sauvegarder et restaurer les réglages et modèles</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="285"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="267"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
         <location filename="../flashfirmwaredialog.ui" line="301"/>
-        <location filename="../../../build-x9e/companion/src/ui_flashfirmwaredialog.h" line="268"/>
         <source>Write to TX</source>
         <translation>Transférer</translation>
     </message>
@@ -2116,25 +1930,21 @@ Veuillez utiliser Zadig pour installer le pilote.</translation>
     <name>FlightMode</name>
     <message>
         <location filename="../modeledit/flightmode.ui" line="22"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_flightmode.h" line="410"/>
         <source>Fade In</source>
         <translation>Fondu en entrée</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="43"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_flightmode.h" line="411"/>
         <source>Fade Out</source>
         <translation>Fondu en sortie</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="57"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_flightmode.h" line="412"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmode.ui" line="77"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_flightmode.h" line="413"/>
         <source>Switch</source>
         <translation>Interrupteur</translation>
     </message>
@@ -2212,13 +2022,11 @@ Veuillez utiliser Zadig pour installer le pilote.</translation>
     <name>FusesDialog</name>
     <message>
         <location filename="../fusesdialog.ui" line="14"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="71"/>
         <source>Fuses</source>
         <translation>Fusibles</translation>
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="20"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="73"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2248,13 +2056,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="35"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="89"/>
         <source>Read Fuses</source>
         <translation>Lire Fusibles</translation>
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="42"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="91"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2289,7 +2095,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="59"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="110"/>
         <source>Reset Fuses
 EEPROM - PROTECT</source>
         <translation>Réinitialiser Fusibles
@@ -2297,7 +2102,6 @@ PROTECTION EEPROM</translation>
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="67"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="113"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2330,7 +2134,6 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="84"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="132"/>
         <source>Reset Fuses
 EEPROM - DELETE</source>
         <translation>Réinitialiser Fusibles
@@ -2338,7 +2141,6 @@ EFFACEMENT EEPROM</translation>
     </message>
     <message>
         <location filename="../fusesdialog.ui" line="101"/>
-        <location filename="../../../build-x9e/companion/src/ui_fusesdialog.h" line="134"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2377,13 +2179,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="20"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generaledit.h" line="114"/>
         <source>Radio settings</source>
         <translation>Réglages Radio</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="105"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generaledit.h" line="118"/>
         <source>General settings used throught the transmitter.
 These will be relevant for all models in the same EEPROM.</source>
         <translation>Paramètres généraux de l&apos;émetteur.
@@ -2396,13 +2196,11 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="84"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generaledit.h" line="116"/>
         <source>Store calib. and hw settings in selected profile</source>
         <translation>Sauver étalonnage et réglages hw dans profil</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="55"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generaledit.h" line="115"/>
         <source>Retrieve calib. and hw settings from profile</source>
         <translation>Lire étalonnage et réglages hw du profil</translation>
     </message>
@@ -2458,257 +2256,213 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <name>GeneralSetup</name>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="14"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1111"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="20"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1112"/>
         <source>Readonly Unlock</source>
         <translation>Débloquage lecture seule</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="47"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1113"/>
         <source>SC</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="109"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1114"/>
         <source>SE</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="404"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1115"/>
         <source>SA</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="420"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1116"/>
         <source>SF</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="436"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1117"/>
         <source>SH</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="452"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1118"/>
         <source>SD</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="468"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1119"/>
         <source>SB</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="533"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1120"/>
         <source>SG</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1093"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1203"/>
         <source>Timeshift from UTC</source>
         <translation>Décalage horaire (UTC)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1086"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1202"/>
         <source>Voice Language</source>
         <translation>Langue des voix</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="573"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1122"/>
         <source>Country Code</source>
         <translation>Zone géograhpique RF</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="566"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1121"/>
         <source>Stick reverse</source>
         <translation>Inversion des manches</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="590"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1127"/>
         <source>FAI Mode</source>
         <translation>Mode FAI</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="580"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1124"/>
         <source>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</source>
         <translation>Lorsque le mode FAI est activé, le variomètre ainsi que l&apos;écran et la lecture des valeurs de télémesure sont désactivés. Ce mode ne peut pas être désactivé sur la radio.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="618"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1131"/>
         <source>Adjust RTC</source>
         <translation>Ajuster l&apos;heure par GPS</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="685"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1134"/>
         <source>Vario pitch at max</source>
         <translation>Tonalité du vario au max</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="666"/>
         <location filename="../generaledit/generalsetup.ui" line="931"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1133"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1163"/>
         <source> Hz</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="659"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1132"/>
         <source>Speaker Volume</source>
         <translation>Volume haut-parleur</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="692"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1135"/>
         <source>Backlight Switch</source>
         <translation>Inter de rétroéclairage</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="743"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1138"/>
         <source>Sound Mode</source>
         <translation>Mode Son</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="714"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1136"/>
         <source>Color 1</source>
         <translation>Couleur 1</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="734"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1137"/>
         <source>Color 2</source>
         <translation>Couleur 2</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="785"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1150"/>
         <source>Speaker Pitch (spkr only)</source>
         <translation>Tonalité (HP uniquement)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="762"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1146"/>
         <source>If this value is not 0, any keypress will turn on the backlight and turn it off after the specified number of seconds.</source>
         <translation>Si cette valeur est différente de 0, l&apos;appui sur une touche de navigation déclenche le rétroéclairage qui s&apos;éteint après la durée spécifiée (en secondes).</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="765"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1148"/>
         <source> sec</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="778"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1149"/>
         <source>Backlight color</source>
         <translation>Couleur du rétroéclairage</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="793"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1153"/>
         <source>Beeper</source>
         <translation>Bipeur</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="798"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1154"/>
         <source>Speaker</source>
         <translation>Haut-parleur</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="803"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1155"/>
         <source>BeeperVoice</source>
         <translation>Bipeur/Voix</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="808"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1156"/>
         <source>SpeakerVoice</source>
         <translation>Haut-parleur/Voix</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="818"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1158"/>
         <source>Beep volume</source>
         <translation>Volume des bips</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="841"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1159"/>
         <source>Wav volume</source>
         <translation>Volume des fichiers audio</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="864"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1160"/>
         <source>Vario volume</source>
         <translation>Volume du variomètre</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="887"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1161"/>
         <source>Background volume</source>
         <translation>Volume de la musique d&apos;ambiance</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="912"/>
         <location filename="../generaledit/generalsetup.ui" line="1372"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1162"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1297"/>
         <source> ms</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="978"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1167"/>
         <source>Backlight  Auto OFF after</source>
         <translation>Arrêt rétroéclairage après</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="950"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1164"/>
         <source>Backlight flash on alarm</source>
         <translation>Clignotement rétroécl. alarmes</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="957"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1165"/>
         <source>Vario pitch at zero</source>
         <translation>Tonalité du vario à 0</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="964"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1166"/>
         <source>Vario repeat at zero</source>
         <translation>Répétition du vario à 0</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="991"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1175"/>
         <source>This is the switch selectrion for turning on the backlight (if installed).
 
 </source>
@@ -2717,8 +2471,6 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1009"/>
         <location filename="../generaledit/generalsetup.ui" line="1364"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1186"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1290"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -2734,49 +2486,41 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1044"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1195"/>
         <source>Backlight Brightness</source>
         <translation>Luminosité du rétroéclairage</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1030"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1193"/>
         <source>RotEnc Navigation</source>
         <translation>Navigation sélecteur rotatif</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="612"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1129"/>
         <source>Automatically adjust the radio&apos;s clock if a GPS is connected to telemetry.</source>
         <translation>Régle automatique l&apos;heure de la radio si un GPS est présent.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1052"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1198"/>
         <source>America</source>
         <translation>Amérique</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1057"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1199"/>
         <source>Japan</source>
         <translation>Japon</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1062"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1200"/>
         <source>Europe</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1103"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1204"/>
         <source>Backlight OFF Brightness</source>
         <translation>Luminosité écran éteint</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1133"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1219"/>
         <source>Mode selection:
 
 Mode 1:
@@ -2818,327 +2562,270 @@ Mode 4:
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1158"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1207"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mode 1 (DIR PRF GAZ AIL)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1163"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1208"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mode 2 (DIR GAZ PRF AIL)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1168"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1209"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation>Mode 3 (AIL PRF GAZ DIR)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1173"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1210"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mode 4 (AIL GAZ PRF DIR)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1187"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1273"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1194"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1241"/>
         <source>R E T A</source>
         <translation>D P G A</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1199"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1242"/>
         <source>R E A T</source>
         <translation>D P A G</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1204"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1243"/>
         <source>R T E A</source>
         <translation>D G P A</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1209"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1244"/>
         <source>R T A E</source>
         <translation>D G A P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1214"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1245"/>
         <source>R A E T</source>
         <translation>D A P G</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1219"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1246"/>
         <source>R A T E</source>
         <translation>D A G P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1224"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1247"/>
         <source>E R T A</source>
         <translation>P D G A</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1229"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1248"/>
         <source>E R A T</source>
         <translation>P D A G</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1234"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1249"/>
         <source>E T R A</source>
         <translation>P G D A</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1239"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1250"/>
         <source>E T A R</source>
         <translation>P G A D</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1244"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1251"/>
         <source>E A R T</source>
         <translation>P A D G</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1249"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1252"/>
         <source>E A T R</source>
         <translation>P A G D</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1254"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1253"/>
         <source>T R E A</source>
         <translation>G D P A</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1259"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1254"/>
         <source>T R A E</source>
         <translation>G D A P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1264"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1255"/>
         <source>T E R A</source>
         <translation>G P D A</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1269"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1256"/>
         <source>T E A R</source>
         <translation>G P A D</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1274"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1257"/>
         <source>T A R E</source>
         <translation>G A D P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1279"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1258"/>
         <source>T A E R</source>
         <translation>G A P D</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1284"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1259"/>
         <source>A R E T</source>
         <translation>A D P G</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1289"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1260"/>
         <source>A R T E</source>
         <translation>A D G P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1294"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1261"/>
         <source>A E R T</source>
         <translation>A P D G</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1299"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1262"/>
         <source>A E T R</source>
         <translation>A P G D</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1304"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1263"/>
         <source>A T R E</source>
         <translation>A G D P</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1309"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1264"/>
         <source>A T E R</source>
         <translation>A G P D</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1317"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1275"/>
         <source>Stick Mode</source>
         <translation>Mode</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1325"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1278"/>
         <source>Metric</source>
         <translation>Métrique</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1330"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1279"/>
         <source>Imperial</source>
         <translation>Impérial</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1344"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1281"/>
         <source>Default Channel Order</source>
         <translation>Ordre des voies par défaut</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1351"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1282"/>
         <source>GPS Coordinates</source>
         <translation>Coordonnées GPS</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1393"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1298"/>
         <source>Min</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1400"/>
         <location filename="../generaledit/generalsetup.ui" line="1429"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1299"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1301"/>
         <source>v</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1422"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1300"/>
         <source>Max</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1465"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1302"/>
         <source>Low Memory Warning</source>
         <translation>Alerte mémoire pleine</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1484"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1303"/>
         <source>Inactivity Timer</source>
         <translation>Alerte d&apos;inactivité</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1503"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1304"/>
         <source>Show Splash Screen on Startup</source>
         <translation>Afficher l&apos;écran de démarrage</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1525"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1308"/>
         <source>Contrast</source>
         <translation>Contraste</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1544"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1309"/>
         <source>Battery Meter Range</source>
         <translation>Plage de l&apos;indicateur de batterie</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1563"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1310"/>
         <source>Haptic Strength</source>
         <translation>Puissance vibreur</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1582"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1311"/>
         <source>LCD Display Type</source>
         <translation>Type de LCD</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1601"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1312"/>
         <source>&quot;No Sound&quot; Warning</source>
         <translation>Alerte &quot;son coupé&quot;</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1623"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1316"/>
         <source>Battery Warning</source>
         <translation>Alerte batterie</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1642"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1317"/>
         <source>Haptic Length</source>
         <translation>Durée vibreur</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1655"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1318"/>
         <source>MAVLink Baud Rate</source>
         <translation>Baudrate Mavlink</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1675"/>
         <location filename="../generaledit/generalsetup.ui" line="2238"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1321"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1441"/>
         <source>Quiet</source>
         <translation>Mode silencieux</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1680"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1322"/>
         <source>Only Alarms</source>
         <translation>Seulement les alarmes</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1685"/>
         <location filename="../generaledit/generalsetup.ui" line="2248"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1323"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1443"/>
         <source>No Keys</source>
         <translation>Touches silencieuses</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1690"/>
         <location filename="../generaledit/generalsetup.ui" line="2253"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1324"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1444"/>
         <source>All</source>
         <translation>Tous</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1778"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1342"/>
         <source>Battery warning voltage.
 This is the threashhold where the battery warning sounds.
 
@@ -3150,138 +2837,114 @@ Plage de valeurs: 5v...10v</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1822"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1349"/>
         <source>Standard</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1827"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1350"/>
         <source>Optrex</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1853"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1359"/>
         <source>If not zero will sound beeps if the transmitter has been left without inputs for the specified number of minutes.</source>
         <translation>Si différent de 0, émission d&apos;un bip sonore régulier si aucune action n&apos;a été effectuée sur l&apos;émetteur depuis le temps spécifié (en minutes).
 Réinitialisation en agissant sur n&apos;importe lequel des manches / touches de navigation.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1856"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1361"/>
         <source> min</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1880"/>
         <location filename="../generaledit/generalsetup.ui" line="1883"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1363"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1366"/>
         <source>Show splash screen on startup</source>
         <translation>Affiche l&apos;écran d&apos;accueil au démarrage</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1900"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1371"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1905"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1372"/>
         <source>2s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1910"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1373"/>
         <source>3s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1915"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1374"/>
         <source>4s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1920"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1375"/>
         <source>6s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1925"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1376"/>
         <source>8s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1930"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1377"/>
         <source>10s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1935"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1378"/>
         <source>15s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1946"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1382"/>
         <source>4800 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1951"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1383"/>
         <source>9600 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1956"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1384"/>
         <source>14400 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1961"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1385"/>
         <source>19200 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1966"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1386"/>
         <source>38400 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1971"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1387"/>
         <source>57600 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1976"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1388"/>
         <source>76800 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1981"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1389"/>
         <source>115200 Baud</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2007"/>
         <location filename="../generaledit/generalsetup.ui" line="2042"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1392"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1407"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -3308,88 +2971,70 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2078"/>
         <location filename="../generaledit/generalsetup.ui" line="2274"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1423"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1463"/>
         <source>X-Short</source>
         <translation>Très court</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2083"/>
         <location filename="../generaledit/generalsetup.ui" line="2279"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1424"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1464"/>
         <source>Short</source>
         <translation>Court</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2088"/>
         <location filename="../generaledit/generalsetup.ui" line="2284"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1425"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1465"/>
         <source>Normal</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2093"/>
         <location filename="../generaledit/generalsetup.ui" line="2289"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1426"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1466"/>
         <source>Long</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2098"/>
         <location filename="../generaledit/generalsetup.ui" line="2294"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1427"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1467"/>
         <source>X-Long</source>
         <translation>Très long</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2107"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1431"/>
         <source>hh° (N/S) mm&apos; ss&apos;&apos;.dd</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2112"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1432"/>
         <source>NMEA</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2126"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1434"/>
         <source>Play Delay (switch mid position)</source>
         <translation>Délai position centrale inters</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2133"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1435"/>
         <source>Measurement Units</source>
         <translation>Unités de mesure</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2165"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1436"/>
         <source>Haptic Mode</source>
         <translation>Mode du vibreur</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2184"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1437"/>
         <source>Beeper Length</source>
         <translation>Durée des bips</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2203"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1438"/>
         <source>Beeper Mode</source>
         <translation>Réglage des bips</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2228"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1453"/>
         <source>Beeper volume
 
 0 - Quiet.  No beeps at all.
@@ -3407,7 +3052,6 @@ Extra long : bips extra longs.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2243"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_generalsetup.h" line="1442"/>
         <source>Alarms Only</source>
         <translation>Seulement les Alarmes</translation>
     </message>
@@ -3444,61 +3088,51 @@ Are you sure ?</source>
     <name>Hardware</name>
     <message>
         <location filename="../generaledit/hardware.ui" line="14"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="776"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="20"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="777"/>
         <source>SQ</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="34"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="778"/>
         <source>SR</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="55"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="779"/>
         <source>LS2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="82"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="789"/>
         <source>SP</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="89"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="790"/>
         <source>SO</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="96"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="791"/>
         <source>S4</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="110"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="792"/>
         <source>RS</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="117"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="793"/>
         <source>SB</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="124"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="794"/>
         <source>PPM 2</source>
         <translation></translation>
     </message>
@@ -3513,16 +3147,6 @@ Are you sure ?</source>
         <location filename="../generaledit/hardware.ui" line="1028"/>
         <location filename="../generaledit/hardware.ui" line="1047"/>
         <location filename="../generaledit/hardware.ui" line="1066"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="802"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="817"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1044"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1059"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1074"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1089"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1104"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1119"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1134"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1149"/>
         <source>Beeper volume
 
 0 - Quiet.  No beeps at all.
@@ -3540,223 +3164,186 @@ Extra long : bips extra longs.</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="190"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="827"/>
         <source>OFF</source>
         <translation>Eteint</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="195"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="828"/>
         <source>S-Port Mirror</source>
         <translation>Recopie S. Port</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="200"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="829"/>
         <source>Telemetry</source>
         <translation>Télémetrie</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="205"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="830"/>
         <source>SBUS Trainer</source>
         <translation>Écolage SBUS</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="210"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="831"/>
         <source>Debug</source>
         <translation>Débogage</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="239"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="833"/>
         <source>Rud</source>
         <translation>Dir</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="256"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="834"/>
         <source>PPM 3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="270"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="835"/>
         <source>S1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="284"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="836"/>
         <source>S2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="291"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="837"/>
         <source>S3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="298"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="838"/>
         <source>PPM 1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="324"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="848"/>
         <source>Serial Port</source>
         <translation>Port série</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="337"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="852"/>
         <source>v</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="356"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="853"/>
         <source>PPM Multiplier</source>
         <translation>Coeff. multiplicateur PPM</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="395"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="872"/>
         <source>Current Offset</source>
         <translation>Correction  courant</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="402"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="873"/>
         <source>PPM 4</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="416"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="874"/>
         <source>SA</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="423"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="875"/>
         <source>Ele</source>
         <translation>Prf</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="444"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="876"/>
         <source>Ail</source>
         <translation>Ail</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="458"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="877"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="472"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="878"/>
         <source>SC</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="486"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="879"/>
         <source>LS</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="520"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="889"/>
         <source>SD</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="559"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="908"/>
         <source>Battery Offset</source>
         <translation>Correction tension </translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="592"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="918"/>
         <source>SE</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="619"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="928"/>
         <source>SF</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="646"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="938"/>
         <source>SG</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="673"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="948"/>
         <source>SH</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="687"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="949"/>
         <source>SI</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="701"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="950"/>
         <source>SJ</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="715"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="951"/>
         <source>SK</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="729"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="952"/>
         <source>SL</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="762"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="953"/>
         <source>SM</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="776"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="954"/>
         <source>SN</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="803"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="955"/>
         <source>RS2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="1079"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1157"/>
         <source>Bluetooth</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="1121"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_hardware.h" line="1160"/>
         <source>ADC Filter</source>
         <translation>Filtre ADC</translation>
     </message>
@@ -3810,85 +3397,71 @@ Extra long : bips extra longs.</translation>
     <name>Heli</name>
     <message>
         <location filename="../modeledit/heli.ui" line="54"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="210"/>
         <source>Invert Elevator</source>
         <translation>Profondeur</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="61"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="211"/>
         <source>Invert Aileron</source>
         <translation>Aileron</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="68"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="212"/>
         <source>Invert Collective</source>
         <translation>Pas collectif</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="103"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="215"/>
         <source>Invert</source>
         <translation>Inversion</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="24"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="204"/>
         <source>Off</source>
         <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="29"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="205"/>
         <source>120</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="34"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="206"/>
         <source>120X</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="39"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="207"/>
         <source>140</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="44"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="208"/>
         <source>90</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="77"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="213"/>
         <source>Long. cyc</source>
         <translation>Cyc. longitudinal</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="166"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="219"/>
         <source>Lateral cyc</source>
         <translation>Cyc. latéral</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="231"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="222"/>
         <source>Collective</source>
         <translation>Source du pas collectif</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="130"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="217"/>
         <source>Swash Type</source>
         <translation>Type de plateau cyclique</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="123"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_heli.h" line="216"/>
         <source>Swash Ring</source>
         <translation>Limite cyclique</translation>
     </message>
@@ -4131,49 +3704,41 @@ Extra long : bips extra longs.</translation>
     <name>LogsDialog</name>
     <message>
         <location filename="../logsdialog.ui" line="14"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="263"/>
         <source>Companion Log Viewer</source>
         <translation>Visualiseur de Log</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="216"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="270"/>
         <source>Filename</source>
         <translation>Nom de fichier</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="230"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="271"/>
         <source>Open LogFile</source>
         <translation>Ouvrir fichier de Log</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="136"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="265"/>
         <source>Zoom</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="143"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="266"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="150"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="267"/>
         <source>Y</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="157"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="268"/>
         <source>Reset</source>
         <translation>Remise à zéro</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="25"/>
-        <location filename="../../../build-x9e/companion/src/ui_logsdialog.h" line="264"/>
         <source>Fly sessions</source>
         <translation>Sessions de vol</translation>
     </message>
@@ -4312,111 +3877,111 @@ Les colonnes contenant l&apos;altitude &quot;GAlt&quot; et la vitesse &quot;GSpd
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.cpp" line="1069"/>
-        <location filename="../mainwindow.cpp" line="1218"/>
+        <location filename="../mainwindow.cpp" line="1126"/>
+        <location filename="../mainwindow.cpp" line="1290"/>
         <source>Edit</source>
         <translation>Edition</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1048"/>
-        <location filename="../mainwindow.cpp" line="1180"/>
+        <location filename="../mainwindow.cpp" line="1103"/>
+        <location filename="../mainwindow.cpp" line="1247"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="154"/>
+        <location filename="../mainwindow.cpp" line="165"/>
         <source>Display previous warning again at startup ?</source>
         <translation>Afficher les alertes précédentes lors du prochain démarrage ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="297"/>
+        <location filename="../mainwindow.cpp" line="308"/>
         <source>New release available</source>
         <translation>Nouvelle version disponible</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="324"/>
-        <location filename="../mainwindow.cpp" line="363"/>
+        <location filename="../mainwindow.cpp" line="335"/>
+        <location filename="../mainwindow.cpp" line="374"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="325"/>
+        <location filename="../mainwindow.cpp" line="336"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Erreur à l&apos;ouverture du fichier %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="343"/>
+        <location filename="../mainwindow.cpp" line="354"/>
         <source>Compilation server too busy, try later</source>
         <translation>Serveur de compilation surchargé, veuillez réessayer plus tard</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="358"/>
+        <location filename="../mainwindow.cpp" line="369"/>
         <source>Unknown server failure, try later</source>
         <translation>Erreur inconnue du serveur de compilation, veuillez réessayer plus tard</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="369"/>
+        <location filename="../mainwindow.cpp" line="380"/>
         <source>Do you want to write the firmware to the radio now ?</source>
         <translation>Voulez vous transférer le firmware à la radio maintenant ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="411"/>
-        <location filename="../mainwindow.cpp" line="439"/>
+        <location filename="../mainwindow.cpp" line="422"/>
+        <location filename="../mainwindow.cpp" line="450"/>
         <source>Yes</source>
         <translation>Oui</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="412"/>
-        <location filename="../mainwindow.cpp" line="440"/>
+        <location filename="../mainwindow.cpp" line="423"/>
+        <location filename="../mainwindow.cpp" line="451"/>
         <source>No</source>
         <translation>Non</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="414"/>
-        <location filename="../mainwindow.cpp" line="442"/>
+        <location filename="../mainwindow.cpp" line="425"/>
+        <location filename="../mainwindow.cpp" line="453"/>
         <source>Release Notes</source>
         <translation>Notes de version</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="422"/>
-        <location filename="../mainwindow.cpp" line="450"/>
+        <location filename="../mainwindow.cpp" line="433"/>
+        <location filename="../mainwindow.cpp" line="461"/>
         <source>Do you want to download release %1 now ?</source>
         <translation>Voulez-vous télécharger la version %1 maintenant ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="671"/>
+        <location filename="../mainwindow.cpp" line="725"/>
         <source>Firmware updates</source>
         <translation>Mises à jour de firmware</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="671"/>
+        <location filename="../mainwindow.cpp" line="725"/>
         <source>Current firmware does not provide release notes informations.</source>
         <translation>Le firmware actuel ne contient pas de notes de version.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1013"/>
+        <location filename="../mainwindow.cpp" line="1048"/>
         <source>Load backup from file</source>
         <translation>Charger une sauvegarde à partir du fichier</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1020"/>
+        <location filename="../mainwindow.cpp" line="1055"/>
         <source>Compare models</source>
         <translation>Comparer les modèles</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1023"/>
+        <location filename="../mainwindow.cpp" line="1058"/>
         <source>Show fuses dialog</source>
         <translation>Afficher les réglages des fusibles</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="983"/>
+        <location filename="../mainwindow.cpp" line="1140"/>
         <source>A monochrome black icon theme</source>
         <translation>Thème avec icônes monochromes noires</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="410"/>
+        <location filename="../mainwindow.cpp" line="421"/>
         <source>Firmware %1 does not seem to have ever been downloaded.
 Release %2 is available.
 Do you want to download it now?
@@ -4429,7 +3994,7 @@ Voulez-vous la télécharger maintenant ?
 Nous recommandons de lire attentivement les notes de version à l&apos;aide du bouton ci-dessous, celles-ci peuvent contenir des infos importantes concernant les changements effectués depuis la version précédente.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="438"/>
+        <location filename="../mainwindow.cpp" line="449"/>
         <source>A new version of %1 firmware is available:
   - current is %2
   - newer is %3
@@ -4446,756 +4011,661 @@ Voulez vous la télécharger maintenant ?
 Nous recommandons de lire attentivement les notes de version à l&apos;aide du bouton ci-dessous, celles-ci peuvent contenir des infos importantes concernant les changements effectués depuis la version précédente.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="653"/>
-        <location filename="../mainwindow.cpp" line="1034"/>
+        <location filename="../mainwindow.cpp" line="707"/>
+        <location filename="../mainwindow.cpp" line="1069"/>
         <source>Synchronize SD</source>
         <translation>Synchroniser la carte SD</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="971"/>
+        <location filename="../mainwindow.cpp" line="1036"/>
         <source>New</source>
         <translation>Nouveau</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="972"/>
+        <location filename="../mainwindow.cpp" line="1037"/>
         <source>Open...</source>
         <translation>Ouvrir...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="977"/>
+        <location filename="../mainwindow.cpp" line="1042"/>
         <source>Copy Model</source>
         <translation>Copier le modèle</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="984"/>
+        <location filename="../mainwindow.cpp" line="1142"/>
         <source>A monochrome white icon theme</source>
         <translation>Thème avec icônes monochromes blanches</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="985"/>
+        <location filename="../mainwindow.cpp" line="1141"/>
         <source>A monochrome blue icon theme</source>
         <translation>Thème avec icônes monochromes bleues</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="988"/>
+        <location filename="../mainwindow.cpp" line="1148"/>
         <source>Small</source>
         <translation>Petites</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="988"/>
+        <location filename="../mainwindow.cpp" line="1148"/>
         <source>Use small toolbar icons</source>
         <translation>Petites icônes de barre d&apos;outils</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="989"/>
+        <location filename="../mainwindow.cpp" line="1149"/>
         <source>Use normal size toolbar icons</source>
         <translation>Icônes de barre d&apos;outils normales</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="989"/>
+        <location filename="../mainwindow.cpp" line="1149"/>
         <source>Normal</source>
         <translation>Normales</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="990"/>
+        <location filename="../mainwindow.cpp" line="1150"/>
         <source>Use big toolbar icons</source>
         <translation>Grosses icônes de barre d&apos;outils</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="990"/>
+        <location filename="../mainwindow.cpp" line="1150"/>
         <source>Big</source>
         <translation>Grandes</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="991"/>
+        <location filename="../mainwindow.cpp" line="1151"/>
         <source>Use huge toolbar icons</source>
         <translation>Immenses icônes de barre d&apos;outils</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="991"/>
+        <location filename="../mainwindow.cpp" line="1151"/>
         <source>Huge</source>
         <translation>Immenses</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="995"/>
-        <source>Czech</source>
-        <translation>Tchèque</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="995"/>
-        <source>Use Czech in menus</source>
-        <translation>Menus en Tchèque</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="996"/>
-        <source>German</source>
-        <translation>Allemand</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="996"/>
-        <source>Use German in menus</source>
-        <translation>Menus en Allemand</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="997"/>
-        <source>English</source>
-        <translation>Anglais</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="997"/>
-        <source>Use English in menus</source>
-        <translation>Menus en Anglais</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="999"/>
-        <source>French</source>
-        <translation>Français</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="999"/>
-        <source>Use French in menus</source>
-        <translation>Menus en Français</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1000"/>
-        <source>Italian</source>
-        <translation>Italien</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1000"/>
-        <source>Use Italian in menus</source>
-        <translation>Menus en Italien</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1002"/>
-        <source>Polish</source>
-        <translation>Polonais</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1002"/>
-        <source>Use Polish in menus</source>
-        <translation>Menus en Polonais</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1005"/>
-        <source>Swedish</source>
-        <translation>Suédois</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1005"/>
-        <source>Use Swedish in menus</source>
-        <translation>Menus en Suédois</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1022"/>
+        <location filename="../mainwindow.cpp" line="1057"/>
         <source>List programmers...</source>
         <translation>Lister les programmateurs...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1023"/>
+        <location filename="../mainwindow.cpp" line="1058"/>
         <source>Fuses...</source>
         <translation>Fusibles...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="750"/>
-        <location filename="../mainwindow.cpp" line="1024"/>
+        <location filename="../mainwindow.cpp" line="804"/>
+        <location filename="../mainwindow.cpp" line="1059"/>
         <source>Read Firmware from Radio</source>
         <translation>Lire le firmware de la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1024"/>
+        <location filename="../mainwindow.cpp" line="1059"/>
         <source>Read firmware from Radio</source>
         <translation>Lire le firmware de la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1025"/>
+        <location filename="../mainwindow.cpp" line="1060"/>
         <source>Write Firmware to Radio</source>
         <translation>Transférer le firmware à la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1025"/>
+        <location filename="../mainwindow.cpp" line="1060"/>
         <source>Write firmware to Radio</source>
         <translation>Transférer le firmware à la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1026"/>
+        <location filename="../mainwindow.cpp" line="1061"/>
         <source>Add Radio Profile</source>
         <translation>Ajouter un profil de radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1026"/>
+        <location filename="../mainwindow.cpp" line="1061"/>
         <source>Create a new Radio Setting Profile</source>
         <translation>Créér un nouveau profil de radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1027"/>
+        <location filename="../mainwindow.cpp" line="1062"/>
         <source>Manuals and other Documents</source>
         <translation>Manuels et documents</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1027"/>
+        <location filename="../mainwindow.cpp" line="1062"/>
         <source>Open the OpenTX document page in a web browser</source>
         <translation>Ouvre la page de documentation d&apos;OpenTX dans un navigateur</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1028"/>
+        <location filename="../mainwindow.cpp" line="1063"/>
         <source>Write Models and Settings To Radio</source>
         <translation>Transférer les réglages et modèles vers la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1028"/>
+        <location filename="../mainwindow.cpp" line="1063"/>
         <source>Write Models and Settings to Radio</source>
         <translation>Transférer les réglages et modèles vers la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="524"/>
-        <location filename="../mainwindow.cpp" line="530"/>
-        <location filename="../mainwindow.cpp" line="536"/>
+        <location filename="../mainwindow.cpp" line="549"/>
+        <location filename="../mainwindow.cpp" line="568"/>
+        <location filename="../mainwindow.cpp" line="582"/>
         <source>Companion</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="760"/>
-        <location filename="../mainwindow.cpp" line="1029"/>
+        <location filename="../mainwindow.cpp" line="814"/>
+        <location filename="../mainwindow.cpp" line="1064"/>
         <source>Read Models and Settings from Radio</source>
         <translation>Lire les réglages et modèles depuis la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="895"/>
+        <location filename="../mainwindow.cpp" line="946"/>
         <source>OpenTX Companion %1 - Radio: %2 - Profile: %3</source>
         <translation>OpenTX Companion %1 - Radio: %2 - Profil: %3</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1030"/>
+        <location filename="../mainwindow.cpp" line="1065"/>
         <source>Configure Communications...</source>
         <translation>Configurer les communications...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1030"/>
+        <location filename="../mainwindow.cpp" line="1065"/>
         <source>Configure software for communicating with the Radio</source>
         <translation>Configurer le programme gérant les communications avec la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1031"/>
+        <location filename="../mainwindow.cpp" line="1066"/>
         <source>Write Backup to Radio</source>
         <translation>Transférer une sauvegarde à la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1031"/>
+        <location filename="../mainwindow.cpp" line="1066"/>
         <source>Write Backup from file to Radio</source>
         <translation>Transférer une sauvegarde à la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1032"/>
+        <location filename="../mainwindow.cpp" line="1067"/>
         <source>Backup Radio to File</source>
         <translation>Sauvegarder la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1032"/>
+        <location filename="../mainwindow.cpp" line="1067"/>
         <source>Save a complete backup file of all settings and model data in the Radio</source>
         <translation>Créer une copie de sauvegarde de tous les réglages et modèles de la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1033"/>
+        <location filename="../mainwindow.cpp" line="1068"/>
         <source>Contributors...</source>
         <translation>Contributeurs...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1033"/>
+        <location filename="../mainwindow.cpp" line="1068"/>
         <source>A tribute to those who have contributed to OpenTX and Companion</source>
         <translation>Remerciements à tout ceux qui ont contribué à OpenTX et Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1034"/>
+        <location filename="../mainwindow.cpp" line="1069"/>
         <source>SD card synchronization</source>
         <translation>Synchronisation de la carte SD</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1043"/>
+        <location filename="../mainwindow.cpp" line="1105"/>
         <source>Recent Files</source>
         <translation>Fichiers récents</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1191"/>
+        <location filename="../mainwindow.cpp" line="1258"/>
         <source>Recent Models+Settings</source>
         <translation>Fichiers de réglages et modèles récents</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1045"/>
+        <location filename="../mainwindow.cpp" line="1136"/>
         <source>Set Icon Theme</source>
         <translation>Choisir le thème d&apos;icônes</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1046"/>
+        <location filename="../mainwindow.cpp" line="1146"/>
         <source>Set Icon Size</source>
         <translation>Choisir la taille des icônes</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1225"/>
+        <location filename="../mainwindow.cpp" line="1302"/>
         <source>Write</source>
         <translation>Ecrire</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="281"/>
+        <location filename="../mainwindow.cpp" line="292"/>
         <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
         <translation>Une nouvelle version de Companion est disponible (version %1)&lt;br&gt;Voulez-vous la télécharger ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="850"/>
+        <location filename="../mainwindow.cpp" line="904"/>
         <source>OpenTX Home Page: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</source>
         <translation>Page d&apos;accueil d&apos;OpenTX: &lt;a href=&apos;%1&apos;&gt;%1&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="854"/>
+        <location filename="../mainwindow.cpp" line="908"/>
         <source>If you&apos;ve found this program useful, please support by &lt;a href=&apos;%1&apos;&gt;donating&lt;/a&gt;</source>
         <translation>Si vous trouvez ce programme utile, merci de le supporter par une &lt;a href=&apos;%1&apos;&gt;donation&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1208"/>
+        <location filename="../mainwindow.cpp" line="1275"/>
         <source>Show the list of radio profiles</source>
         <translation>Voir la liste des profils de radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1249"/>
+        <location filename="../mainwindow.cpp" line="1331"/>
         <source>Ready</source>
         <translation>Prêt</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1010"/>
+        <location filename="../mainwindow.cpp" line="1045"/>
         <source>Show the application&apos;s About box</source>
         <translation>Afficher la fenêtre &quot;A propos&quot; de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="129"/>
-        <location filename="../mainwindow.cpp" line="571"/>
+        <location filename="../mainwindow.cpp" line="140"/>
+        <location filename="../mainwindow.cpp" line="625"/>
         <source>File loaded</source>
         <translation>Fichier chargé</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="297"/>
+        <location filename="../mainwindow.cpp" line="308"/>
         <source>A new release of Companion is available, please check the OpenTX website!</source>
         <translation>Une nouvelle version de Companion est disponible, veuillez vous référer au site web d&apos;OpenTX !</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="581"/>
-        <location filename="../mainwindow.cpp" line="972"/>
+        <location filename="../mainwindow.cpp" line="635"/>
+        <location filename="../mainwindow.cpp" line="1037"/>
         <source>Open Models and Settings file</source>
         <translation>Ouvrir un fichier de réglages et modèles</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="588"/>
-        <location filename="../mainwindow.cpp" line="595"/>
+        <location filename="../mainwindow.cpp" line="642"/>
+        <location filename="../mainwindow.cpp" line="649"/>
         <source>File saved</source>
         <translation>Fichier sauvegardé</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1029"/>
+        <location filename="../mainwindow.cpp" line="1064"/>
         <source>Read Models and Settings From Radio</source>
         <translation>Lire les réglages et modèles depuis la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="474"/>
+        <location filename="../mainwindow.cpp" line="485"/>
         <source>Ignore this release %1?</source>
         <translation>Ignorer la version %1 ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="337"/>
+        <location filename="../mainwindow.cpp" line="348"/>
         <source>Not enough flash available on this board for all the selected options</source>
         <translation>Pas assez de place disponible pour les options sélectionnées</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="340"/>
+        <location filename="../mainwindow.cpp" line="351"/>
         <source>Compilation server temporary failure, try later</source>
         <translation>Erreur de compilation sur le serveur, veuillez réessayer plus tard</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="346"/>
+        <location filename="../mainwindow.cpp" line="357"/>
         <source>Compilation error</source>
         <translation>Erreur de compilation</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="349"/>
+        <location filename="../mainwindow.cpp" line="360"/>
         <source>Invalid firmware</source>
         <translation>Firmware invalide</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="352"/>
+        <location filename="../mainwindow.cpp" line="363"/>
         <source>Invalid board</source>
         <translation>Carte non valide</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="355"/>
+        <location filename="../mainwindow.cpp" line="366"/>
         <source>Invalid language</source>
         <translation>Language non valide</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="768"/>
+        <location filename="../mainwindow.cpp" line="549"/>
+        <source>Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="822"/>
         <source>Models and Settings read</source>
         <translation>Lecture des modèles et réglages</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="776"/>
-        <location filename="../mainwindow.cpp" line="793"/>
+        <location filename="../mainwindow.cpp" line="830"/>
+        <location filename="../mainwindow.cpp" line="847"/>
         <source>This function is not yet implemented</source>
         <translation>Cette fonction n&apos;est pas implémentée pour l&apos;instant</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="797"/>
+        <location filename="../mainwindow.cpp" line="851"/>
         <source>Save Radio Backup to File</source>
         <translation>Sauvegarder la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="806"/>
+        <location filename="../mainwindow.cpp" line="860"/>
         <source>Read Radio Firmware to File</source>
         <translation>Sauvegarder le firmware de la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="852"/>
+        <location filename="../mainwindow.cpp" line="906"/>
         <source>The OpenTX Companion project was originally forked from &lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</source>
         <translation>Le projet OpenTX Companion a été créé à partir d&apos;&lt;a href=&apos;%1&apos;&gt;eePe&lt;/a&gt;</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="858"/>
+        <location filename="../mainwindow.cpp" line="912"/>
         <source>Copyright OpenTX Team</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="971"/>
+        <location filename="../mainwindow.cpp" line="1036"/>
         <source>Create a new Models and Settings file</source>
         <translation>Créer un nouveau fichier de réglages et modèles</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="973"/>
-        <location filename="../mainwindow.cpp" line="974"/>
+        <location filename="../mainwindow.cpp" line="1038"/>
+        <location filename="../mainwindow.cpp" line="1039"/>
         <source>Save Models and Settings file</source>
         <translation>Enregistrer le fichier de réglages et modèles</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="973"/>
+        <location filename="../mainwindow.cpp" line="1038"/>
         <source>Save</source>
         <translation>Enregistrer</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="974"/>
+        <location filename="../mainwindow.cpp" line="1039"/>
         <source>Save As...</source>
         <translation>Enregistrer sous...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="975"/>
+        <location filename="../mainwindow.cpp" line="1040"/>
         <source>Exit the application</source>
         <translation>Quitter l&apos;application</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="975"/>
+        <location filename="../mainwindow.cpp" line="1040"/>
         <source>Exit</source>
         <translation>Quitter</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="976"/>
+        <location filename="../mainwindow.cpp" line="1041"/>
         <source>Cut Model</source>
         <translation>Couper le modèle</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="976"/>
+        <location filename="../mainwindow.cpp" line="1041"/>
         <source>Cut current model to the clipboard</source>
         <translation>Couper le modèle courant dans le presse-papier</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="977"/>
+        <location filename="../mainwindow.cpp" line="1042"/>
         <source>Copy current model to the clipboard</source>
         <translation>Copier le modèle courant dans le presse-papier</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="978"/>
+        <location filename="../mainwindow.cpp" line="1043"/>
         <source>Paste model from clipboard</source>
         <translation>Coller le modèle depuis le presse-papier</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="978"/>
+        <location filename="../mainwindow.cpp" line="1043"/>
         <source>Paste Model</source>
         <translation>Coller le modèle</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="981"/>
+        <location filename="../mainwindow.cpp" line="1082"/>
+        <source>Use default system language.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1086"/>
+        <source>Use %1 language (some translations may not be complete).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1138"/>
         <source>Classical</source>
         <translation>Classique</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="981"/>
+        <location filename="../mainwindow.cpp" line="1138"/>
         <source>The classic companion9x icon theme</source>
         <translation>Thème d&apos;icônes classique de Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="982"/>
+        <location filename="../mainwindow.cpp" line="1139"/>
         <source>Yerico</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="982"/>
+        <location filename="../mainwindow.cpp" line="1139"/>
         <source>Yellow round honey sweet icon theme</source>
         <translation>Thème d&apos;icônes rondes jaunes</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="983"/>
+        <location filename="../mainwindow.cpp" line="1140"/>
         <source>Monochrome</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="984"/>
+        <location filename="../mainwindow.cpp" line="1142"/>
         <source>MonoWhite</source>
         <translation>Monochrome Blanc</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="985"/>
+        <location filename="../mainwindow.cpp" line="1141"/>
         <source>MonoBlue</source>
         <translation>Monochrome Bleu</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="994"/>
+        <location filename="../mainwindow.cpp" line="1082"/>
         <source>System language</source>
         <translation>Langue du système</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="994"/>
-        <source>Use system language in menus</source>
-        <translation>Utiliser la langue système dans les menus</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="998"/>
-        <source>Finnish</source>
-        <translation>Finlandais</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="998"/>
-        <source>Use Finnish in menus</source>
-        <translation>Menus en Finlandais</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1004"/>
-        <source>Spanish</source>
-        <translation>Espagnol</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1004"/>
-        <source>Use Spanish in menus</source>
-        <translation>Menus en espagnol</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1008"/>
-        <source>Chinese</source>
-        <translation>Chinois</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1008"/>
-        <source>Use Chinese in menus</source>
-        <translation>Utiliser les menus Chinois</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1010"/>
+        <location filename="../mainwindow.cpp" line="1045"/>
         <source>About...</source>
         <translation>A propos...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1011"/>
+        <location filename="../mainwindow.cpp" line="1046"/>
         <source>Print...</source>
         <translation>Imprimer...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1011"/>
+        <location filename="../mainwindow.cpp" line="1046"/>
         <source>Print current model</source>
         <translation>Imprimer le modèle courant</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1012"/>
+        <location filename="../mainwindow.cpp" line="1047"/>
         <source>Simulate...</source>
         <translation>Simuler...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1012"/>
+        <location filename="../mainwindow.cpp" line="1047"/>
         <source>Simulate current model</source>
         <translation>Simuler le modèle courant</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1012"/>
+        <location filename="../mainwindow.cpp" line="1047"/>
         <source>Alt+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1013"/>
+        <location filename="../mainwindow.cpp" line="1048"/>
         <source>Load Backup...</source>
         <translation>Ouvrir la sauvegarde...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1014"/>
+        <location filename="../mainwindow.cpp" line="1049"/>
         <source>View Log File...</source>
         <translation>Ouvrir un Log...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1014"/>
+        <location filename="../mainwindow.cpp" line="1049"/>
         <source>Open and view log file</source>
         <translation>Ouvrir et visualiser un log</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1015"/>
+        <location filename="../mainwindow.cpp" line="1050"/>
         <source>Settings...</source>
         <translation>Préférences...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1015"/>
+        <location filename="../mainwindow.cpp" line="1050"/>
         <source>Edit Settings</source>
         <translation>Modifier les réglages</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1016"/>
+        <location filename="../mainwindow.cpp" line="1051"/>
         <source>Download...</source>
         <translation>Télécharger...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1016"/>
+        <location filename="../mainwindow.cpp" line="1051"/>
         <source>Download firmware and voice files</source>
         <translation>Télécharger firmware et fichiers son</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1017"/>
+        <location filename="../mainwindow.cpp" line="1052"/>
         <source>Check for Updates...</source>
         <translation>Vérifier les mises à jour...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1017"/>
+        <location filename="../mainwindow.cpp" line="1052"/>
         <source>Check OpenTX and Companion updates</source>
         <translation>Vérifier les mises à jour d&apos;OpenTX et Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1018"/>
+        <location filename="../mainwindow.cpp" line="1053"/>
         <source>Companion Changes...</source>
         <translation>Changements de Companion...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1018"/>
+        <location filename="../mainwindow.cpp" line="1053"/>
         <source>Show Companion change log</source>
         <translation>Voir l&apos;historique des changements de Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1019"/>
+        <location filename="../mainwindow.cpp" line="1054"/>
         <source>Firmware Changes...</source>
         <translation>Changements du firmware...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1019"/>
+        <location filename="../mainwindow.cpp" line="1054"/>
         <source>Show firmware change log</source>
         <translation>Voir l&apos;historique des changements du firmware</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1020"/>
+        <location filename="../mainwindow.cpp" line="1055"/>
         <source>Compare Models...</source>
         <translation>Comparer 2 modèles...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1021"/>
+        <location filename="../mainwindow.cpp" line="1056"/>
         <source>Edit Radio Splash Image...</source>
         <translation>Modifier l&apos;écran d&apos;accueil de la radio...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1021"/>
+        <location filename="../mainwindow.cpp" line="1056"/>
         <source>Edit the splash image of your Radio</source>
         <translation>Modifier l&apos;écran d&apos;accueil de la radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1022"/>
+        <location filename="../mainwindow.cpp" line="1057"/>
         <source>List available programmers</source>
         <translation>Lister les programmateurs supportés</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="287"/>
-        <location filename="../mainwindow.cpp" line="498"/>
+        <location filename="../mainwindow.cpp" line="298"/>
+        <location filename="../mainwindow.cpp" line="509"/>
         <source>Save As</source>
         <translation>Enregistrer Sous</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="287"/>
+        <location filename="../mainwindow.cpp" line="298"/>
         <source>Executable (*.exe)</source>
         <translation>Exécutable (*.exe)</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="302"/>
-        <location filename="../mainwindow.cpp" line="468"/>
+        <location filename="../mainwindow.cpp" line="313"/>
+        <location filename="../mainwindow.cpp" line="479"/>
         <source>No updates available at this time.</source>
         <translation>Aucune mise à jour disponible.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="241"/>
+        <location filename="../mainwindow.cpp" line="252"/>
         <source>Unable to check for updates.</source>
         <translation>Impossible de rechercher des mises à jour.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="311"/>
+        <location filename="../mainwindow.cpp" line="322"/>
         <source>Would you like to launch the installer?</source>
         <translation>Voulez-vous lancer l&apos;installation ?</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1125"/>
-        <location filename="../mainwindow.cpp" line="1240"/>
+        <location filename="../mainwindow.cpp" line="1186"/>
+        <location filename="../mainwindow.cpp" line="1322"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="204"/>
+        <location filename="../mainwindow.cpp" line="215"/>
         <source>Checking for updates</source>
         <translation>Recherche de mises à jour</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="524"/>
-        <source>The selected language will be used the next time you start Companion.</source>
-        <translation>La langue sélectionnée sera utilisée lors du prochain lancement de Companion.</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="530"/>
+        <location filename="../mainwindow.cpp" line="568"/>
         <source>The new theme will be loaded the next time you start Companion.</source>
         <translation>Le nouveau thème sera utilisé lors du prochain lancement de Companion.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="536"/>
+        <location filename="../mainwindow.cpp" line="582"/>
         <source>The icon size will be used the next time you start Companion.</source>
         <translation>La nouvelle taille d&apos;icônes sera utilisée lors du prochain lancement de Companion.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="861"/>
+        <location filename="../mainwindow.cpp" line="915"/>
         <source>About Companion</source>
         <translation>A propos de Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1044"/>
+        <location filename="../mainwindow.cpp" line="1078"/>
         <source>Set Menu Language</source>
         <translation>Choisir la langue des menus</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1074"/>
+        <location filename="../mainwindow.cpp" line="1134"/>
         <source>Settings</source>
         <translation>Réglages</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1109"/>
+        <location filename="../mainwindow.cpp" line="1167"/>
         <source>Read/Write</source>
         <translation>Transfert</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1149"/>
-        <location filename="../mainwindow.cpp" line="1207"/>
+        <location filename="../mainwindow.cpp" line="1210"/>
+        <location filename="../mainwindow.cpp" line="1274"/>
         <source>Radio Profile</source>
         <translation>Profil de radio</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1192"/>
+        <location filename="../mainwindow.cpp" line="1259"/>
         <source>Show recent Models+Settings documents</source>
         <translation>Voir les fichiers récents</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1359"/>
+        <location filename="../mainwindow.cpp" line="1384"/>
         <source>%2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1381"/>
+        <location filename="../mainwindow.cpp" line="1406"/>
         <source>New Radio</source>
         <translation>Nouvelle radio</translation>
     </message>
@@ -5451,13 +4921,11 @@ Enregistrer les changements ?</translation>
     </message>
     <message>
         <location filename="../mdichild.ui" line="20"/>
-        <location filename="../../../build-x9e/companion/src/ui_mdichild.h" line="63"/>
         <source>Radio settings</source>
         <translation>Réglage Radio</translation>
     </message>
     <message>
         <location filename="../mdichild.ui" line="30"/>
-        <location filename="../../../build-x9e/companion/src/ui_mdichild.h" line="64"/>
         <source>Simulate Tx</source>
         <translation>Simulation de l&apos;émetteur</translation>
     </message>
@@ -5466,49 +4934,41 @@ Enregistrer les changements ?</translation>
     <name>MixerDialog</name>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="46"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="507"/>
         <source>Up</source>
         <translation>Haut</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="511"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="610"/>
         <source>ADD</source>
         <translation>Ajouter</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="430"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="590"/>
         <source>OFF</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="56"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="508"/>
         <source>Down</source>
         <translation>Bas</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="39"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="506"/>
         <source>Slow</source>
         <translation>Ralenti</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="32"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="505"/>
         <source>Delay</source>
         <translation>Délai</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="536"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="626"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="501"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="615"/>
         <source>Multiplexer
 
 This determines how mixer values are added.
@@ -5526,7 +4986,6 @@ Spécifie comment les valeurs de mixage  sont interprétées.
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="390"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="582"/>
         <source>The curve used by the mix</source>
         <translation>Courbe utilisée par le mixage</translation>
     </message>
@@ -5534,27 +4993,21 @@ Spécifie comment les valeurs de mixage  sont interprétées.
         <location filename="../modeledit/mixerdialog.ui" line="469"/>
         <location filename="../modeledit/mixerdialog.ui" line="545"/>
         <location filename="../modeledit/mixerdialog.ui" line="594"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="604"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="627"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="635"/>
         <source>GV</source>
         <translation>VG</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="459"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="602"/>
         <source>Yes</source>
         <translation>Oui</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="454"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="601"/>
         <source>No</source>
         <translation>Non</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="425"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="596"/>
         <source>Mixer warning.
 Setting this value will cause a beep to be emmitted when this value is active.</source>
         <translation>Alerte de mixage.
@@ -5562,31 +5015,26 @@ Si activée, signale par des bips que le mixage est actif.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="435"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="591"/>
         <source>1 Beep</source>
         <translation>1 Bip</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="440"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="592"/>
         <source>2 Beep</source>
         <translation>2 Bips</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="445"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="593"/>
         <source>3 Beep</source>
         <translation>3 Bips</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="376"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="579"/>
         <source>Multiplex</source>
         <translation>Multiplexage</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="20"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="504"/>
         <source>Dialog</source>
         <translation>Dialogue</translation>
     </message>
@@ -5595,10 +5043,6 @@ Si activée, signale par des bips que le mixage est actif.</translation>
         <location filename="../modeledit/mixerdialog.ui" line="95"/>
         <location filename="../modeledit/mixerdialog.ui" line="124"/>
         <location filename="../modeledit/mixerdialog.ui" line="147"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="510"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="524"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="538"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="552"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -5624,31 +5068,26 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="191"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="566"/>
         <source>Offset</source>
         <translation>Décalage</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="369"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="578"/>
         <source>Source</source>
         <translation>Source</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="411"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="586"/>
         <source>Switch</source>
         <translation>Interrupteur</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="198"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="567"/>
         <source>Weight</source>
         <translation>Ratio</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="521"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="612"/>
         <source>REPLACE</source>
         <translation>Remplacer</translation>
     </message>
@@ -5657,22 +5096,16 @@ p, li { white-space: pre-wrap; }
         <location filename="../modeledit/mixerdialog.ui" line="529"/>
         <location filename="../modeledit/mixerdialog.ui" line="552"/>
         <location filename="../modeledit/mixerdialog.ui" line="601"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="606"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="624"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="629"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="637"/>
         <source>The source for the mixer</source>
         <translation>La source du mixage</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="516"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="611"/>
         <source>MULTIPLY</source>
         <translation>Multiplier</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="577"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="632"/>
         <source>Switch used by the mix.
 If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>Interrupteur utilisé par le mixage.
@@ -5680,13 +5113,11 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="383"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="580"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="362"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="577"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
@@ -5717,19 +5148,16 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="184"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="565"/>
         <source>Include Trim</source>
         <translation>Inclure Trim</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="404"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="585"/>
         <source>Flight modes</source>
         <translation>Phases de vol</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="397"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_mixerdialog.h" line="584"/>
         <source>Include DR/Expo</source>
         <translation>Inclure DR/Expo</translation>
     </message>
@@ -5870,7 +5298,6 @@ Mixage actif par défaut si non-renseigné.</translation>
     <name>ModelEdit</name>
     <message>
         <location filename="../modeledit/modeledit.ui" line="51"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_modeledit.h" line="78"/>
         <source>Simulate</source>
         <translation>Simulation</translation>
     </message>
@@ -5906,7 +5333,6 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.ui" line="20"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_modeledit.h" line="77"/>
         <source>Dialog</source>
         <translation>Dialogue</translation>
     </message>
@@ -5934,308 +5360,308 @@ Mixage actif par défaut si non-renseigné.</translation>
 <context>
     <name>ModelPrinter</name>
     <message>
-        <location filename="../modelprinter.cpp" line="71"/>
+        <location filename="../modelprinter.cpp" line="72"/>
         <source>%1 bytes</source>
         <translation>%1 octets</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="76"/>
+        <location filename="../modelprinter.cpp" line="77"/>
         <source>CH%1</source>
         <translation>VOIE%1</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="94"/>
+        <location filename="../modelprinter.cpp" line="95"/>
         <source>Exponential</source>
         <translation>Exponentiel</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="96"/>
+        <location filename="../modelprinter.cpp" line="97"/>
         <source>Extra Fine</source>
         <translation>Extra fin</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="98"/>
+        <location filename="../modelprinter.cpp" line="99"/>
         <source>Fine</source>
         <translation>Fin</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="100"/>
+        <location filename="../modelprinter.cpp" line="101"/>
         <source>Medium</source>
         <translation>Moyen</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="102"/>
+        <location filename="../modelprinter.cpp" line="103"/>
         <source>Coarse</source>
         <translation>Grossier</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="104"/>
+        <location filename="../modelprinter.cpp" line="105"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="110"/>
+        <location filename="../modelprinter.cpp" line="111"/>
         <source>Enabled</source>
         <translation>Actif</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="110"/>
+        <location filename="../modelprinter.cpp" line="111"/>
         <source>Disabled</source>
         <translation>Inactif</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="162"/>
+        <location filename="../modelprinter.cpp" line="163"/>
         <source>%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)</source>
         <translation>%1, Voies(%2-%3), Impulsion(%4µs), Polarité(%5)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="164"/>
+        <location filename="../modelprinter.cpp" line="165"/>
         <source>%1, Channels(%2-%3)</source>
         <translation>%1, Voies(%2-%3)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="166"/>
+        <location filename="../modelprinter.cpp" line="167"/>
         <source>Receiver number(%1)</source>
         <translation>No. de récepteur(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="169"/>
+        <location filename="../modelprinter.cpp" line="170"/>
         <source>radio Protocol %1, subType %2, option value %3</source>
         <translation>radio Protocol %1, sousType %2, option  %3</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="179"/>
+        <location filename="../modelprinter.cpp" line="180"/>
         <source>Slave/Jack</source>
         <translation>Elève/Jack</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="182"/>
+        <location filename="../modelprinter.cpp" line="183"/>
         <source>Master/SBUS Module</source>
         <translation>Maître/SBUS module</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="185"/>
+        <location filename="../modelprinter.cpp" line="186"/>
         <source>Master/CPPM Module</source>
         <translation>Maître/CPPM Module</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="188"/>
+        <location filename="../modelprinter.cpp" line="189"/>
         <source>Master/SBUS in battery compartment</source>
         <translation>Maître/SBUS compartiment batterie</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="191"/>
+        <location filename="../modelprinter.cpp" line="192"/>
         <source>Master/Jack</source>
         <translation>Maître/Jack</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="200"/>
+        <location filename="../modelprinter.cpp" line="201"/>
         <source>90</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="202"/>
+        <location filename="../modelprinter.cpp" line="203"/>
         <source>120</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="204"/>
+        <location filename="../modelprinter.cpp" line="205"/>
         <source>120X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="206"/>
+        <location filename="../modelprinter.cpp" line="207"/>
         <source>140</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="219"/>
+        <location filename="../modelprinter.cpp" line="220"/>
         <source>Rudder</source>
         <translation>Dérive</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="221"/>
+        <location filename="../modelprinter.cpp" line="222"/>
         <source>Elevator</source>
         <translation>Profondeur</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="223"/>
+        <location filename="../modelprinter.cpp" line="224"/>
         <source>Throttle</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="225"/>
+        <location filename="../modelprinter.cpp" line="226"/>
         <source>Aileron</source>
         <translation>Ailerons</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="262"/>
+        <location filename="../modelprinter.cpp" line="263"/>
         <source>Name(%1)</source>
         <translation>Nom(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="266"/>
+        <location filename="../modelprinter.cpp" line="267"/>
         <source>Persistent</source>
         <translation>Persistant</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="268"/>
+        <location filename="../modelprinter.cpp" line="269"/>
         <source>MinuteBeep</source>
         <translation>Bip minutes</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="270"/>
+        <location filename="../modelprinter.cpp" line="271"/>
         <source>CountDown(Beeps)</source>
         <translation>Cpte à rebours(bips)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="272"/>
+        <location filename="../modelprinter.cpp" line="273"/>
         <source>CountDown(Voice)</source>
         <translation>Cpte à rebours(voix)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="274"/>
+        <location filename="../modelprinter.cpp" line="275"/>
         <source>CountDown(Haptic)</source>
         <translation>Cpte à rebours(vibreur)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="208"/>
-        <location filename="../modelprinter.cpp" line="283"/>
+        <location filename="../modelprinter.cpp" line="209"/>
+        <location filename="../modelprinter.cpp" line="284"/>
         <source>Off</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="291"/>
-        <location filename="../modelprinter.cpp" line="313"/>
-        <location filename="../modelprinter.cpp" line="327"/>
-        <location filename="../modelprinter.cpp" line="485"/>
+        <location filename="../modelprinter.cpp" line="292"/>
+        <location filename="../modelprinter.cpp" line="314"/>
+        <location filename="../modelprinter.cpp" line="328"/>
+        <location filename="../modelprinter.cpp" line="489"/>
         <source>FM%1</source>
         <translation>PV%1</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="295"/>
+        <location filename="../modelprinter.cpp" line="296"/>
         <source>FM%1%2</source>
         <translation>PV%1%2</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="297"/>
+        <location filename="../modelprinter.cpp" line="298"/>
         <source>FM%1+%2</source>
         <translation>PV%1+%2</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="336"/>
+        <location filename="../modelprinter.cpp" line="337"/>
         <source>[I%1]</source>
         <translation>[E%1]</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="340"/>
+        <location filename="../modelprinter.cpp" line="341"/>
         <source>Input%1</source>
         <translation>Entrée%1</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="368"/>
+        <location filename="../modelprinter.cpp" line="369"/>
         <source>Weight</source>
         <translation>Ratio</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="375"/>
+        <location filename="../modelprinter.cpp" line="376"/>
         <source>Switch</source>
         <translation>Inter</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="379"/>
-        <location filename="../modelprinter.cpp" line="442"/>
+        <location filename="../modelprinter.cpp" line="380"/>
+        <location filename="../modelprinter.cpp" line="446"/>
         <source>NoTrim</source>
         <translation>Pas de trim</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="432"/>
+        <location filename="../modelprinter.cpp" line="436"/>
         <source>Weight(%1)</source>
         <translation>Ratio(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="439"/>
+        <location filename="../modelprinter.cpp" line="443"/>
         <source>Switch(%1)</source>
         <translation>Inter(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="447"/>
+        <location filename="../modelprinter.cpp" line="451"/>
         <source>No DR/Expo</source>
         <translation>Pas d&apos;expo/DR</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="384"/>
-        <location filename="../modelprinter.cpp" line="449"/>
+        <location filename="../modelprinter.cpp" line="385"/>
+        <location filename="../modelprinter.cpp" line="453"/>
         <source>Offset(%1)</source>
         <translation>Décalage(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="456"/>
+        <location filename="../modelprinter.cpp" line="460"/>
         <source>Delay(u%1:d%2)</source>
         <translation>Délai(h%1:b%2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="458"/>
+        <location filename="../modelprinter.cpp" line="462"/>
         <source>Slow(u%1:d%2)</source>
         <translation>Ralenti(h%1:b%2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="460"/>
+        <location filename="../modelprinter.cpp" line="464"/>
         <source>Warn(%1)</source>
         <translation>Alerte(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="494"/>
+        <location filename="../modelprinter.cpp" line="498"/>
         <source>Disabled in all flight modes</source>
         <translation>Désactivé pour toutes les phases de vol</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="504"/>
+        <location filename="../modelprinter.cpp" line="508"/>
         <source>Flight modes(%1)</source>
         <translation>Phases de vol(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="506"/>
+        <location filename="../modelprinter.cpp" line="510"/>
         <source>Flight mode(%1)</source>
         <translation>Phase de vol(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="525"/>
+        <location filename="../modelprinter.cpp" line="529"/>
         <source>Edge(%1, [%2:%3])</source>
         <translation>Flanc(%1, [%2:%3])</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="525"/>
+        <location filename="../modelprinter.cpp" line="529"/>
         <source>instant</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="528"/>
+        <location filename="../modelprinter.cpp" line="532"/>
         <source>Sticky(%1, %2)</source>
         <translation>Bistable(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="531"/>
+        <location filename="../modelprinter.cpp" line="535"/>
         <source>Timer(%1, %2)</source>
         <translation>Chrono(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="624"/>
+        <location filename="../modelprinter.cpp" line="628"/>
         <source>Duration(%1s)</source>
         <translation>Durée(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="626"/>
+        <location filename="../modelprinter.cpp" line="630"/>
         <source>Delay(%1s)</source>
         <translation>Délai(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="650"/>
+        <location filename="../modelprinter.cpp" line="654"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="650"/>
+        <location filename="../modelprinter.cpp" line="654"/>
         <source>Standard</source>
         <translation></translation>
     </message>
@@ -6280,237 +5706,198 @@ Mixage actif par défaut si non-renseigné.</translation>
     <name>Module</name>
     <message>
         <location filename="../modeledit/setup_module.ui" line="571"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="495"/>
         <source>Failsafe Mode</source>
         <translation>Mode Failsafe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="111"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="460"/>
         <source>Start</source>
         <translation>1ère voie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="418"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="489"/>
         <source>PPM delay</source>
         <translation>Impulsion</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="198"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="467"/>
         <source>Negative</source>
         <translation>Négative</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="203"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="468"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="178"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="464"/>
         <source>Polarity</source>
         <translation>Polarité</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="625"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="504"/>
         <source>Trainer Mode</source>
         <translation>Mode écolage</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="462"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="491"/>
         <source>PPM Frame Length</source>
         <translation>Longueur de trame PPM</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="133"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="462"/>
         <source>CH </source>
         <translation>VOIE </translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="217"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="470"/>
         <source>Antenna</source>
         <translation>Antenne</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="237"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="473"/>
         <source>Internal</source>
         <translation>Interne</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="242"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="474"/>
         <source>Ext. + Int.</source>
         <translation>Ext. + Int.</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="287"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="482"/>
         <source>Option value</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="437"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="490"/>
         <source> us</source>
         <translation> µs</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="645"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="507"/>
         <source>Master/Jack</source>
         <translation>Maître/Jack</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="650"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="508"/>
         <source>Slave/Jack</source>
         <translation>Elève/Jack</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="655"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="509"/>
         <source>Master/SBUS Module</source>
         <translation>Maître/SBUS module</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="660"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="510"/>
         <source>Master/CPPM Module</source>
         <translation>Maître/CPPM Module</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="665"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="511"/>
         <source>Master/SBUS in battery compartment</source>
         <translation>Maître/SBUS dans compartiment batterie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="721"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="514"/>
         <source>Show values in:</source>
         <translation>Afficher les valeurs en:</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="728"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="515"/>
         <source>%</source>
         <extracomment>abbreviation for percent</extracomment>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="741"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="516"/>
         <source>μs</source>
         <extracomment>abbreviation for microseconds</extracomment>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="478"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="492"/>
         <source> ms</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="319"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="483"/>
         <source>Channels</source>
         <translation>Nb de voies</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="591"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="498"/>
         <source>Not set</source>
         <translation>Non défini</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="596"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="499"/>
         <source>Hold</source>
         <translation>Maintien</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="601"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="500"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="606"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="501"/>
         <source>No Pulses</source>
         <translation>Pas d&apos;impulsions</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="611"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="502"/>
         <source>Receiver</source>
         <translation>Récepteur</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="679"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="513"/>
         <source>Failsafe Positions</source>
         <translation>Positions</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="519"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="493"/>
         <source>Protocol</source>
         <translation>Protocole</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="542"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="494"/>
         <source>Multi Radio Protocol</source>
         <translation>Protocol Multi</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="363"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="485"/>
         <source>Receiver No.</source>
         <translation>Récepteur No.</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="250"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="476"/>
         <source>Output type</source>
         <translation>Type de sortie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="267"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="479"/>
         <source>Open Drain</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="272"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="480"/>
         <source>Push Pull</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="152"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="463"/>
         <source>SubType</source>
         <translation>SousType</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="398"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="487"/>
         <source>Bind on startup</source>
         <translation>Bind au démarage</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="405"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_module.h" line="488"/>
         <source>Low Power</source>
         <translation>Puiss Réd</translation>
     </message>
@@ -6817,6 +6204,49 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
 </context>
 <context>
+    <name>Multiprotocols</name>
+    <message>
+        <location filename="../multiprotocols.cpp" line="26"/>
+        <source>Subtype</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../multiprotocols.cpp" line="27"/>
+        <source>Video TX frequency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../multiprotocols.cpp" line="28"/>
+        <source>C2500 frequency fine tune</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../multiprotocols.cpp" line="29"/>
+        <source>Telemetry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../multiprotocols.cpp" line="30"/>
+        <source>Radio output power</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../multiprotocols.cpp" line="31"/>
+        <source>Servo output frequency</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../multiprotocols.cpp" line="32"/>
+        <source>Option value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../multiprotocols.cpp" line="33"/>
+        <source>DEFAULT</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MultirotorPage</name>
     <message>
         <location filename="../wizarddialog.cpp" line="923"/>
@@ -6861,19 +6291,16 @@ Mixage actif par défaut si non-renseigné.</translation>
     <name>PrintDialog</name>
     <message>
         <location filename="../printdialog.ui" line="54"/>
-        <location filename="../../../build-x9e/companion/src/ui_printdialog.h" line="90"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="61"/>
-        <location filename="../../../build-x9e/companion/src/ui_printdialog.h" line="91"/>
         <source>Print</source>
         <translation>Imprimer</translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="68"/>
-        <location filename="../../../build-x9e/companion/src/ui_printdialog.h" line="92"/>
         <source>Print to file</source>
         <translation>Imprimer vers un fichier</translation>
     </message>
@@ -6897,13 +6324,11 @@ Mixage actif par défaut si non-renseigné.</translation>
     <name>ProgressDialog</name>
     <message>
         <location filename="../progressdialog.ui" line="26"/>
-        <location filename="../../../build-x9e/companion/src/ui_progressdialog.h" line="85"/>
         <source>Flash Firmware</source>
         <translation>Flasher le firmware</translation>
     </message>
     <message>
         <location filename="../progressdialog.ui" line="76"/>
-        <location filename="../../../build-x9e/companion/src/ui_progressdialog.h" line="86"/>
         <source>Close</source>
         <translation>Fermer</translation>
     </message>
@@ -6912,13 +6337,11 @@ Mixage actif par défaut si non-renseigné.</translation>
     <name>ProgressWidget</name>
     <message>
         <location filename="../progresswidget.ui" line="29"/>
-        <location filename="../../../build-x9e/companion/src/ui_progresswidget.h" line="108"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../progresswidget.ui" line="75"/>
-        <location filename="../../../build-x9e/companion/src/ui_progresswidget.h" line="110"/>
         <source>Show Details</source>
         <translation>Voir les détails</translation>
     </message>
@@ -7408,33 +6831,33 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="724"/>
-        <location filename="../helpers.cpp" line="77"/>
-        <location filename="../helpers.cpp" line="731"/>
+        <location filename="../helpers.cpp" line="76"/>
+        <location filename="../helpers.cpp" line="740"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Rud Trim</source>
         <translation>Trim Dir</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Ele Trim</source>
         <translation>Trim Prf</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Thr Trim</source>
         <translation>Trim Gaz</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Ail Trim</source>
         <translation>Trim Ail</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Rot Enc</source>
         <translation>Mol Enc</translation>
     </message>
@@ -7596,22 +7019,22 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>Vol</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="120"/>
+        <location filename="../helpers.cpp" line="119"/>
         <source>!Flight mode %1</source>
         <translation>!Phase de vol %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="122"/>
+        <location filename="../helpers.cpp" line="121"/>
         <source>Flight mode %1</source>
         <translation>Phase de vol %1</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="369"/>
+        <location filename="../helpers.cpp" line="378"/>
         <source>Own value</source>
         <translation>Valeur indépendante</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="372"/>
+        <location filename="../helpers.cpp" line="381"/>
         <source>Flight mode %1 value</source>
         <oldsource>Flight phase %1 value</oldsource>
         <translation>Valeur de la phase de vol %1</translation>
@@ -7633,7 +7056,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="152"/>
-        <location filename="../helpers.cpp" line="514"/>
+        <location filename="../helpers.cpp" line="523"/>
         <source>-GV%1</source>
         <translation>-VG%1</translation>
     </message>
@@ -7678,74 +7101,85 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>Sélecteur Rotatif</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="512"/>
+        <location filename="../helpers.cpp" line="521"/>
         <source>-GV%1 (%2)</source>
         <translation>-VG%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="524"/>
+        <location filename="../helpers.cpp" line="533"/>
         <source>GV%1 (%2)</source>
         <translation>VG%1 (%2)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="717"/>
+        <location filename="../helpers.cpp" line="726"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="719"/>
+        <location filename="../helpers.cpp" line="728"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="721"/>
+        <location filename="../helpers.cpp" line="730"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="742"/>
+        <location filename="../helpers.cpp" line="751"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="744"/>
+        <location filename="../helpers.cpp" line="753"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (non supporté)</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="746"/>
+        <location filename="../helpers.cpp" line="755"/>
         <source>FrSky Sensor Hub</source>
         <translation>Sensor Hub FrSky</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="748"/>
+        <location filename="../helpers.cpp" line="757"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="756"/>
+        <location filename="../helpers.cpp" line="765"/>
         <source>Imperial</source>
         <translation>Impérial</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="758"/>
+        <location filename="../helpers.cpp" line="767"/>
         <source>Metric</source>
         <translation>Métrique</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="814"/>
+        <location filename="../helpers.cpp" line="839"/>
+        <location filename="../simulator.cpp" line="218"/>
+        <source>Uknown error during Simulator startup.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../helpers.cpp" line="840"/>
+        <source>Simulator Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../helpers.cpp" line="848"/>
         <source>Data Load Error</source>
         <translation>Erreur de lecture des données</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="814"/>
+        <location filename="../helpers.cpp" line="848"/>
         <source>Error occurred while starting simulator.</source>
         <translation>Une erreur s&apos;est produite lors du démarrage du simulateur.</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="154"/>
         <location filename="../eeprominterface.cpp" line="574"/>
-        <location filename="../helpers.cpp" line="526"/>
+        <location filename="../helpers.cpp" line="535"/>
         <source>GV%1</source>
         <translation>VG%1</translation>
     </message>
@@ -7753,7 +7187,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../eeprominterface.cpp" line="529"/>
         <location filename="../eeprominterface.cpp" line="576"/>
         <location filename="../eeprominterface.cpp" line="666"/>
-        <location filename="../helpers.cpp" line="124"/>
+        <location filename="../helpers.cpp" line="123"/>
         <source>----</source>
         <translation></translation>
     </message>
@@ -7775,7 +7209,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="744"/>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>P1</source>
         <translation></translation>
     </message>
@@ -7877,13 +7311,13 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="745"/>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>P2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="746"/>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>P3</source>
         <translation></translation>
     </message>
@@ -8039,25 +7473,25 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="732"/>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Rud</source>
         <translation>Dir</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="733"/>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Ele</source>
         <translation>Prf</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="734"/>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="735"/>
-        <location filename="../helpers.cpp" line="77"/>
+        <location filename="../helpers.cpp" line="76"/>
         <source>Ail</source>
         <translation>Ail</translation>
     </message>
@@ -8991,69 +8425,69 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="833"/>
+        <location filename="../helpers.cpp" line="814"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="834"/>
+        <location filename="../helpers.cpp" line="815"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Le simulateur n&apos;est pas encore disponible pour ce firmware</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="420"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="423"/>
         <source>Switch</source>
         <translation>Inter</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="421"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="424"/>
         <source>Switch </source>
         <translation>L&apos;inter </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="421"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="424"/>
         <source> cannot be exported on this board!</source>
         <translation> n&apos;est pas supporté sur cette carte !</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="584"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="587"/>
         <source>Source %1 cannot be exported on this board!</source>
         <translation>La source %1 n&apos;est pas supportée sur cette plateforme !</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1563"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1566"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1570"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1573"/>
         <source>OpenTx only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2148"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2152"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2388"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2396"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2403"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2407"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2151"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2155"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2391"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2399"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2406"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2410"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX ne supporte pas cette fonction sur cette carte</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3129"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3132"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
         <translation>OpenTX ne supporte pas ce protocole de télémesure</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3263"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3275"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3282"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3266"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3278"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3285"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX ne supporte pas ce protocole radio</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3142"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3145"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX ne supporte pas ce nombre de voies</translation>
     </message>
@@ -9102,8 +8536,8 @@ The OpenTX Team.</source>
 L&apos;équipe OpenTX.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="644"/>
-        <location filename="../mainwindow.cpp" line="649"/>
+        <location filename="../mainwindow.cpp" line="698"/>
+        <location filename="../mainwindow.cpp" line="703"/>
         <location filename="../process_sync.cpp" line="50"/>
         <location filename="../process_sync.cpp" line="55"/>
         <location filename="../process_sync.cpp" line="64"/>
@@ -9111,12 +8545,12 @@ L&apos;équipe OpenTX.</translation>
         <translation>Erreur de synchronisation</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="644"/>
+        <location filename="../mainwindow.cpp" line="698"/>
         <source>No SD directory configured!</source>
         <translation>Aucun dossier SD configuré !</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="649"/>
+        <location filename="../mainwindow.cpp" line="703"/>
         <source>No Radio connected!</source>
         <translation>Aucune radio connectée !</translation>
     </message>
@@ -9196,12 +8630,12 @@ L&apos;équipe OpenTX.</translation>
         <translation>Impossible de trouver la carte SD Horus !</translation>
     </message>
     <message>
-        <location filename="../radiodata.h" line="845"/>
+        <location filename="../radiodata.h" line="831"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../radiodata.h" line="845"/>
+        <location filename="../radiodata.h" line="831"/>
         <source>Negative</source>
         <translation>Négative</translation>
     </message>
@@ -9227,79 +8661,79 @@ L&apos;équipe OpenTX.</translation>
         <translation>Modèles</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorstartupdialog.cpp" line="231"/>
+        <location filename="../simulation/simulatorstartupdialog.cpp" line="232"/>
         <source>Select a data file</source>
         <translation>Sélectionnez un fichier</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorstartupdialog.cpp" line="241"/>
+        <location filename="../simulation/simulatorstartupdialog.cpp" line="242"/>
         <source>Select Data Directory</source>
         <translation>Slectionnez un répertoire</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorstartupdialog.cpp" line="252"/>
+        <location filename="../simulation/simulatorstartupdialog.cpp" line="253"/>
         <source>Select SD Card Image Folder</source>
         <translation>Slelectionnez le répertoire image carte SD</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="60"/>
+        <location filename="../simulator.cpp" line="58"/>
         <source>Available profiles:</source>
         <translation>Profils disponibles:</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="64"/>
+        <location filename="../simulator.cpp" line="62"/>
         <source>ID: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="64"/>
+        <location filename="../simulator.cpp" line="62"/>
         <source> Name: </source>
         <translation>Nom:</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="67"/>
+        <location filename="../simulator.cpp" line="65"/>
         <source>Available radios:</source>
         <translation>Radio disponibles:</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="116"/>
+        <location filename="../simulator.cpp" line="104"/>
         <source>WARNING: couldn&apos;t initialize SDL:
 %1</source>
         <translation>ATTENTION: erreur initialisation SDL:
 %1</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="130"/>
+        <location filename="../simulator.cpp" line="118"/>
         <source>ERROR: No simulator libraries available.</source>
         <translation>ERREUR: pas de simulateur disponible.</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="134"/>
+        <location filename="../simulator.cpp" line="122"/>
         <source>Radio profile ID or Name to use for simulator.</source>
         <translation>Nom du profil radio pour le simulateur.</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="136"/>
+        <location filename="../simulator.cpp" line="124"/>
         <source>Radio type to simulate (usually defined in profile).</source>
         <translation>Type de radio à simuler (souvent défini dans le profil).</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="138"/>
+        <location filename="../simulator.cpp" line="126"/>
         <source>show this help text</source>
         <translation>afficher ce texte d&apos;aide</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="144"/>
+        <location filename="../simulator.cpp" line="131"/>
         <source>Usage: simulator [OPTION]... [EEPROM.BIN FILE OR DATA FOLDER] </source>
         <translation>Utilisation: simulator [OPTION]... [EEPROM.BIN FICHIER OUT REPERTOIRE DE DONNER] </translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="145"/>
+        <location filename="../simulator.cpp" line="132"/>
         <source>Options:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="209"/>
+        <location filename="../simulator.cpp" line="196"/>
         <source>ERROR: Couldn&apos;t start simulator, missing radio/profile/data file/folder.
   Profile ID: [%1]; Radio ID: [%2];
 Data File: [%3]</source>
@@ -9308,21 +8742,11 @@ Data File: [%3]</source>
 Fichier de Données: [%3]</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="216"/>
+        <location filename="../simulator.cpp" line="202"/>
         <source>ERROR: Radio profile or simulator firmware not found.
 Profile ID: [%1]; Radio ID: [%2]</source>
         <translation>ERREUR: Profil radio ou firmware du simulateur non trouvé
 Profil ID: [%1]; Radio ID: [%2]</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="225"/>
-        <source>ERROR: Simulator %1 not found</source>
-        <translation>ERREUR: Simulateur %1 non trouvé</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="230"/>
-        <source>ERROR: Failed to create simulator interface, possibly missing or bad library.</source>
-        <translation>ERREUR: Impossible de créer l&apos;interface du simulateur, bibliothèque éventuellement manquante ou mauvaise.</translation>
     </message>
     <message>
         <location filename="../storage/bineeprom.cpp" line="42"/>
@@ -9429,7 +8853,7 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
 %2.</translation>
     </message>
     <message>
-        <location filename="../storage/storage.cpp" line="71"/>
+        <location filename="../storage/storage.cpp" line="77"/>
         <source>Unable to find file %1!</source>
         <translation>Fichier %1 introuvable !</translation>
     </message>
@@ -9615,19 +9039,16 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
     <name>RadioNotFoundDialog</name>
     <message>
         <location filename="../radionotfound.ui" line="32"/>
-        <location filename="../../../build-x9e/companion/src/ui_radionotfound.h" line="104"/>
         <source>No Radio Found</source>
         <translation>Radio non détectée</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="40"/>
-        <location filename="../../../build-x9e/companion/src/ui_radionotfound.h" line="105"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No Radio was found!&lt;/p&gt;&lt;p&gt;Make sure that you hold the lower trim buttons towards the center while you turn it on.&lt;/p&gt;&lt;p&gt;Then connect the USB wire.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: if you have a Taranis that has not had the firmware upgraded to 2.0 then this version of Companion will not work.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Aucune radio détectée !&lt;/p&gt;&lt;p&gt;Veuillez vous assurer de maintenir les 2 trims horizontaux vers l&apos;intérieur lors de la mise sous tension de la radio.&lt;/p&gt;&lt;p&gt;Ensuite connecter le câble USB.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:&apos;arial,sans-serif&apos;; font-size:13px; font-style:italic; color:#222222; background-color:#ffffff;&quot;&gt;Note: Cette version de Companion ne doit être utilisée pour éditer des réglages que si la version du firmware de la radio est au moins 2.0.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../radionotfound.ui" line="92"/>
-        <location filename="../../../build-x9e/companion/src/ui_radionotfound.h" line="107"/>
         <source>OK</source>
         <translation></translation>
     </message>
@@ -9636,43 +9057,31 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
     <name>RadioOutputsWidget</name>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="14"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="248"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="248"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="68"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="249"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="249"/>
         <source>View:</source>
         <translation>Vue:</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="75"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="250"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="250"/>
         <source>Logical Switches</source>
         <translation>Inters Logiques</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="94"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="251"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="251"/>
         <source>Global Variables</source>
         <translation>Variables Globales</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="113"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="252"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="252"/>
         <source>Channel Outputs</source>
         <translation>Sorties Voies</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="191"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="253"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="253"/>
         <source>L
 o
 g
@@ -9683,8 +9092,6 @@ L</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="268"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="259"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="259"/>
         <source>G
 l
 o
@@ -9696,8 +9103,6 @@ G</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="343"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_radiooutputswidget.h" line="265"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_radiooutputswidget.h" line="265"/>
         <source>C
 h
 a
@@ -9758,187 +9163,156 @@ E</translation>
     <name>Setup</name>
     <message>
         <location filename="../modeledit/setup.ui" line="330"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="459"/>
         <source>Center beep</source>
         <translation>Bip de centrage</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="231"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="454"/>
         <source>OFF</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="87"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="447"/>
         <source>Model Image</source>
         <translation>Image du modèle</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="445"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="474"/>
         <source>Exponential</source>
         <translation>Exponentiel</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="408"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="470"/>
         <source>Throttle Trim Idle Only</source>
         <translation>Trim ralenti uniquement</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="588"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="491"/>
         <source>Timer 3</source>
         <translation>Chrono 3</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="450"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="475"/>
         <source>Extra Fine</source>
         <translation>Extra fin</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="455"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="476"/>
         <source>Fine</source>
         <translation>Fin</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="460"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="477"/>
         <source>Medium</source>
         <translation>Moyen</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="465"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="478"/>
         <source>Coarse</source>
         <translation>Grossier</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="362"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="461"/>
         <source>Display Checklist</source>
         <translation>Afficher la checklist</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="572"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="490"/>
         <source>Timer 2</source>
         <translation>Chrono 2</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="28"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="445"/>
         <source>Timer 1</source>
         <translation>Chrono 1</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="480"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="482"/>
         <source>Never</source>
         <translation>Jamais</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="485"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="483"/>
         <source>On change</source>
         <translation>Au changement</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="490"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="484"/>
         <source>Always</source>
         <translation>Toujours</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="498"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="486"/>
         <source>Global Functions</source>
         <translation>Fonctions globales</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="515"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="487"/>
         <source>Throttle Source</source>
         <translation>Source des gaz</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="531"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="488"/>
         <source>Trim Step</source>
         <translation>Pas des trims</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="547"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="489"/>
         <source>Trims Display</source>
         <translation>Affichage des trims</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="167"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="449"/>
         <source>Warnings</source>
         <translation>Avertissements</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="44"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="446"/>
         <source>Top LCD Timer</source>
         <translation>Chrono LCD supérieur</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="181"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="450"/>
         <source>Switch Warnings</source>
         <translation>Positions des interrupteurs</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="221"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="451"/>
         <source>Pot Warnings</source>
         <translation>Positions des potentiomètres</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="236"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="455"/>
         <source>Manual</source>
         <translation>Manuel</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="241"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="456"/>
         <source>Auto</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="287"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="458"/>
         <source>Model</source>
         <translation>Modèle</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="372"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="462"/>
         <source>Extended Limits</source>
         <translation>Débattements étendus</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="352"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="460"/>
         <source>Extended Trims</source>
         <translation>Trims étendus</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="418"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="471"/>
         <source>Throttle Warning</source>
         <translation>Alerte gaz</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="379"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="464"/>
         <source>Reverse throttle operation.
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
@@ -9950,7 +9324,6 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="388"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup.h" line="469"/>
         <source>Reverse Throttle</source>
         <translation>Gaz inversés</translation>
     </message>
@@ -10170,8 +9543,6 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <name>SimulatedUIWidgetX7</name>
     <message>
         <location filename="../simulation/simulateduiwidgetX7.ui" line="32"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulateduiwidgetX7.h" line="138"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulateduiwidgetX7.h" line="138"/>
         <source>Taranis X7 Simulator</source>
         <translation>Simulateur Taranis X7</translation>
     </message>
@@ -10393,483 +9764,219 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     </message>
 </context>
 <context>
-    <name>SimulatorDialog</name>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="267"/>
-        <source>Companion Simulator</source>
-        <translation>Simulateur Companion</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="268"/>
-        <source>Radio Simulator</source>
-        <translation>Simulateur radio</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="270"/>
-        <source>Show Help/Keymap (F1)</source>
-        <translation>Afficher Aide/Raccourci (F1)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="273"/>
-        <source>Show Help/Keymap</source>
-        <translation>Afficher Aide/Raccourci</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="275"/>
-        <source>Keymap</source>
-        <translation>Raccourci</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="276"/>
-        <source>F1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="277"/>
-        <source>help</source>
-        <translation>aide</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="279"/>
-        <source>Open the Joystick Settings window (F3)</source>
-        <translation>Ouvrir la boite de dialogue de la configuration du Joystick (F3)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="282"/>
-        <source>Joystick Configuration</source>
-        <translation>Configuration du Joystick</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="284"/>
-        <source>Joystick Config.</source>
-        <translation>Configuration Joy.</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="285"/>
-        <source>F3</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="286"/>
-        <source>joystick</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="288"/>
-        <source>Open Telemetry Simulator window (F4)</source>
-        <translation>Ouvrir la boite de dialogue de la télémétrie (F4)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="291"/>
-        <source>Telemetry Simulator</source>
-        <translation>Simulateur de télémesure</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="293"/>
-        <source>Telemetry Sim.</source>
-        <translation>Simulateur Telem.</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="294"/>
-        <source>F4</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="295"/>
-        <source>telemetry</source>
-        <translation>télémétrie</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="297"/>
-        <source>Open Trainer Simulator window (F5)</source>
-        <translation>Ouvrir le simulateur d&apos;écolage (F5)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="300"/>
-        <source>Trainer Simulator</source>
-        <translation>Simulateur d&apos;écolage</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="302"/>
-        <source>Trainer Sim.</source>
-        <translation>Simulateur Écol.</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="303"/>
-        <source>F5</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="304"/>
-        <source>trainer</source>
-        <translation>écolage</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="306"/>
-        <source>Open Debug Console window (F6)</source>
-        <translation>Ouvrir la console de débogage (F6)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="309"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="311"/>
-        <source>Debug Console</source>
-        <translation>Console de débogage</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="312"/>
-        <source>F6</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="313"/>
-        <source>debug</source>
-        <translation>débogage</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="315"/>
-        <source>Reload Lua Scripts (F7)</source>
-        <translation>Recharger le script Lua (F7)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="318"/>
-        <source>Reload Lua Scripts</source>
-        <translation>Recharger le script Lua</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="320"/>
-        <source>Reload Lua</source>
-        <translation>Recharger Lua</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="321"/>
-        <source>F7</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="322"/>
-        <source>reloadLua</source>
-        <translation>rechargeLua</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="324"/>
-        <source>Save a screenshot of the radio LCD screen (F8)</source>
-        <translation>Enregistrez une capture de l&apos;écran LCD de la radio (F8)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="327"/>
-        <source>LCD Screenshot</source>
-        <translation>Capture LCD</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="329"/>
-        <source>Screenshot</source>
-        <translation>Capture d&apos;écran</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="330"/>
-        <source>F8</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="331"/>
-        <source>lcdScreenshot</source>
-        <translation>captureLcd</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="333"/>
-        <source>Reload all radio data (F9)</source>
-        <translation>Recharger les données radio (F9)</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="336"/>
-        <source>Reload Radio Data</source>
-        <translation>Recharger les données radio</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="338"/>
-        <source>Reload Radio</source>
-        <translation>Recharger la radio</translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="339"/>
-        <source>F9</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatordialog.h" line="340"/>
-        <source>reloadradio</source>
-        <translation>rechargerRadio</translation>
-    </message>
-</context>
-<context>
     <name>SimulatorMainWindow</name>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="14"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="144"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="144"/>
         <source>OpenTx Simulator</source>
         <translation>Simulateur OpenTX</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="48"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="187"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="187"/>
         <source>View</source>
         <translation>Vue</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="52"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="188"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="188"/>
         <source>Radio Window</source>
         <translation>Fenêtre radio</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="63"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="189"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="189"/>
         <source>Reload...</source>
         <translation>Recharger...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="70"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="190"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="190"/>
         <source>Tools</source>
         <translation>Outils</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="82"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="191"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="191"/>
         <source>Toolbar</source>
         <translation>Barre d&apos;outils</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="103"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="145"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="145"/>
         <source>Reload Lua Scripts</source>
         <translation>Recharger le script Lua</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="106"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="147"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="147"/>
         <source>Reload the Lua environment on the simulated radio.</source>
         <translation>Recharger l&apos;environnement Lua dans le simulateur.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="109"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="149"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="149"/>
         <source>F7</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="118"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="150"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="150"/>
         <source>Reload Radio Data</source>
         <translation>Recharger les données radio</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="121"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="152"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="152"/>
         <source>Reload all radio data without restarting the simulator.</source>
         <translation>Recharger les données radio sans redémarrer le simulateur.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="124"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="154"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="154"/>
         <source>F9</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="133"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="155"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="155"/>
         <source>Key Mapping</source>
         <translation>Raccourcis clavier</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="136"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="157"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="157"/>
         <source>Show keyboard maping reference.</source>
         <translation>Afficher les raccourcis clavier.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="139"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="159"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="159"/>
         <source>F1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="148"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="160"/>
         <source>Joystick Settings</source>
         <translation>Paramètres Joystick</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="151"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="162"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="162"/>
         <source>Open joystick configuration settings dialog.</source>
         <translation>Ouvrir la boite de dialogue de la configuration du Joystick.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="154"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="164"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="164"/>
         <source>F3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="163"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="165"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="165"/>
         <source>LCD Screenshot</source>
         <translation>Capture LCD</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="166"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="167"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="167"/>
         <source>Save a screenshot of the current simulated LCD screen.</source>
         <translation>Enregistrez une capture de l&apos;écran LCD actuellement simulé.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="169"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="169"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="169"/>
         <source>F8</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="177"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="170"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="170"/>
         <source>Dock In Main Window</source>
         <translation>Ancrer dans la fenêtre principale</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="180"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="172"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="172"/>
         <source>Show the radio in the main window or as a separate &quot;floating&quot; window.</source>
         <translation>Afficher la radio dans la fenêtre principale ou comme une fenêtre &quot;flottante&quot; séparée.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="188"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="174"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="174"/>
         <source>Menu Bar</source>
         <translation>Barre de menus</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="191"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="176"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="176"/>
         <source>Show or hide the top menu bar.</source>
         <translation>Afficher ou masquer la barre de menus.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="194"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="178"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="178"/>
         <source>Alt+M</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="202"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="179"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="179"/>
         <source>Constrain Width</source>
         <translation>Contraindre la largeur</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="205"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="181"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="181"/>
         <source>Set radio widget width to be a fixed size.</source>
         <translation>Défini la largeur du widget radio comme étant une taille fixe.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="213"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="183"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="183"/>
         <source>Constrain Height</source>
         <translation>Contraindre la hauteur</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.ui" line="216"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatormainwindow.h" line="185"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatormainwindow.h" line="185"/>
         <source>Set radio widget height to be a fixed size.</source>
         <translation>Défini la hauteur du widget radio comme étant une taille fixe.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="82"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="67"/>
+        <source>ERROR: Failed to create simulator interface, possibly missing or bad library.</source>
+        <translation type="unfinished">ERREUR: Impossible de créer l&apos;interface du simulateur, bibliothèque éventuellement manquante ou mauvaise.</translation>
+    </message>
+    <message>
+        <location filename="../simulation/simulatormainwindow.cpp" line="95"/>
         <source>Alt+T</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="242"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="268"/>
         <source>Radio Outputs</source>
         <translation>Sorties de la radio</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="246"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="272"/>
         <source>F2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="251"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="277"/>
         <source>Telemetry Simulator</source>
         <translation>Simulateur de télémesure</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="255"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="281"/>
         <source>F4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="260"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="286"/>
         <source>Trainer Simulator</source>
         <translation>Simulateur d&apos;écolage</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="264"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="290"/>
         <source>F5</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="269"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="295"/>
         <source>Debug Output</source>
         <translation>Fenêtre de débogage</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="273"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="299"/>
         <source>F6</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="444"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="470"/>
         <source>Simulator Controls:</source>
         <translation>Contrôles du simulateur:</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="446"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="472"/>
         <source>&lt;tr&gt;&lt;th&gt;Key/Mouse&lt;/td&gt;&lt;th&gt;Action&lt;/td&gt;&lt;/tr&gt;</source>
         <translation>&lt;tr&gt;&lt;th&gt;Touche/Souris&lt;/td&gt;&lt;th&gt;Action&lt;/td&gt;&lt;/tr&gt;</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatormainwindow.cpp" line="456"/>
+        <location filename="../simulation/simulatormainwindow.cpp" line="482"/>
         <source>Simulator Help</source>
         <translation>Aide du simulateur</translation>
     </message>
@@ -10878,29 +9985,21 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <name>SimulatorStartupDialog</name>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="20"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="264"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="264"/>
         <source>OpenTX Simulator - Startup Options</source>
         <translation>Simulateur OpenTX - Options de démarrage</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="38"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="265"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="265"/>
         <source>Simulator Startup Options:</source>
         <translation>Options de démarrage:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="74"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="266"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="266"/>
         <source>Radio Profile:</source>
         <translation>Profil Radio:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="87"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="268"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="268"/>
         <source>Existing radio profiles are shown here.&lt;br /&gt;
 Create or edit profiles using the Companion application.</source>
         <translation>Les profils existants sont affichés ici.&lt;br /&gt;
@@ -10908,15 +10007,11 @@ Créer ou éditer les profils avec l&apos;application Companion.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="95"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="271"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="271"/>
         <source>Radio Type:</source>
         <translation>Type de Radio:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="108"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="273"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="273"/>
         <source>Existing radio simulators are shown here.&lt;br /&gt;
 The radio type specified in the selected profile is used by default.</source>
         <translation>Les simulateurs radios existants sont affichés ici.&lt;br /&gt;
@@ -10924,36 +10019,26 @@ Le type de radio choisi par défaut est celui défini dans le profil selectionn�
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="276"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="276"/>
         <source>Data Source:</source>
         <translation>Source Données:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="277"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="277"/>
         <source>Data File:</source>
         <translation>Fichier Données:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="278"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="278"/>
         <source>Data Folder:</source>
         <translation>Répertoire Données:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="279"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="279"/>
         <source>SD Image Path:</source>
         <translation>Répertoire Image SD:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="281"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="281"/>
         <source>Radio data (.bin/.eeprom/.otx) image file to use. A new file with a default image will be created if necessary.&lt;br /&gt;
 &lt;b&gt;NOTE&lt;/b&gt;: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
         <translation>Fichier de données utilisé (.bin/.eeprom/.otx).Un nouveau fichier avec une nouvelle image sera créé si nécessaire.&lt;br /&gt;
@@ -10961,8 +10046,6 @@ Le type de radio choisi par défaut est celui défini dans le profil selectionn�
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="176"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="285"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="285"/>
         <source>Select data file...</source>
         <translation>Choisir le fichier de données...</translation>
     </message>
@@ -10970,19 +10053,11 @@ Le type de radio choisi par défaut est celui défini dans le profil selectionn�
         <location filename="../simulation/simulatorstartupdialog.ui" line="179"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="231"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="283"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="287"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="295"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="303"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="287"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="295"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="303"/>
         <source>...</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="289"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="289"/>
         <source>Directory containing RADIO and MODELS folders to use.&lt;br /&gt;
 New folder(s) with default radio/model will be created here if necessary.</source>
         <translation>Chemin contenant les répertoires RADIO et MODELS à utiliser.&lt;br /&gt;
@@ -10990,15 +10065,11 @@ Un (ou plusieurs) répertoire peut être créé ici si nécessaire.</translation
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="293"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="293"/>
         <source>Select data folder...</source>
         <translation>Sélectionner le répertoire de données...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="297"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="297"/>
         <source>Directory containing the SD card image to use.&lt;br/&gt;
 The default is configured in the chosen Radio Profile.</source>
         <translation>Répertoire contenant l&apos;image de la carte SD.&lt;br/&gt;
@@ -11006,41 +10077,31 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="280"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="301"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="301"/>
         <source>Select SD card image folder...</source>
         <translation>Choisir le répertoire contenant l&apos;image de la carte SD...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="305"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="305"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
         <translation>Choisir la source (Fichier/Répertoire/Image SD) du type de donnée utilisé par le simulateur.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="307"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="307"/>
         <source>File</source>
         <translation>Fichier</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="308"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="308"/>
         <source>Folder</source>
         <translation>Répertoire</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorstartupdialog.h" line="309"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorstartupdialog.h" line="309"/>
         <source>SD Path</source>
         <translation>Image SD</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorstartupdialog.cpp" line="230"/>
+        <location filename="../simulation/simulatorstartupdialog.cpp" line="231"/>
         <source>All files (*.*)</source>
         <translation>Tous les fichiers (*.*)</translation>
     </message>
@@ -11049,79 +10110,71 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <name>SimulatorWidget</name>
     <message>
         <location filename="../simulation/simulatorwidget.ui" line="20"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_simulatorwidget.h" line="198"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_simulatorwidget.h" line="198"/>
         <source>Companion Simulator</source>
         <translation>Simulateur Companion</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="75"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="76"/>
         <source>Radio Simulator (%1)</source>
         <translation>Simulateur Radio (%1)</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="237"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="240"/>
         <source>Could not determine startup data source.</source>
         <translation>Impossible de déterminer les données source.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="242"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="245"/>
         <source>Could not load data, possibly wrong format.</source>
         <translation>Impossible de charger les données, mauvais format.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="243"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="246"/>
         <source>Data Load Error</source>
         <translation>Erreur de lecture des données</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="298"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="301"/>
         <source>Invalid startup data provided. Plese specify a proper file/path.</source>
         <translation>Données de démarrage fournies non valides. Veuillez spécifier un fichier/chemin approprié.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="299"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="302"/>
         <source>Simulator Startup Error</source>
         <translation>Erreur de démarrage du simulateur</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="359"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="362"/>
         <source>Error saving data: could open file for writing: &apos;%1&apos;</source>
         <translation>Erreur de sauvegarde des données: impossible d&apos;écrire le fichier &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="365"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="368"/>
         <source>Error saving data: could not get data from simulator interface.</source>
         <translation>Erreur de sauvegarde des données: impossible de récupérer les données depuis l&apos;interface de simulation.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="390"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="393"/>
         <source>An unexpected error occurred while attempting to save radio data to file &apos;%1&apos;.</source>
         <translation>Une erreur inattendue s&apos;est produite lors de l&apos;enregistrement des données radio dans le fichier &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="391"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="394"/>
         <source>Data Save Error</source>
         <translation>Erreur de sauvegarde des données</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="600"/>
-        <location filename="../simulation/simulatorwidget.cpp" line="624"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="606"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="600"/>
-        <source>Joystick enabled but not configured correctly</source>
-        <translation>Joystick activé mais non configuré correctement</translation>
-    </message>
-    <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="624"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="606"/>
         <source>Cannot open joystick, joystick disabled</source>
         <translation>Impossible d&apos;accéder au Joystick, Joystick désactivé</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="820"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="798"/>
         <source>Firmware %1 error: %2</source>
         <translation>Firmware %1 erreur : %2</translation>
     </message>
@@ -11139,8 +10192,6 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../splashlibrarydialog.ui" line="47"/>
         <location filename="../splashlibrarydialog.ui" line="879"/>
-        <location filename="../../../build-x9e/companion/src/ui_splashlibrarydialog.h" line="410"/>
-        <location filename="../../../build-x9e/companion/src/ui_splashlibrarydialog.h" line="431"/>
         <source>...</source>
         <translation></translation>
     </message>
@@ -11247,219 +10298,180 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <name>Telemetry</name>
     <message>
         <location filename="../modeledit/telemetry.ui" line="302"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="665"/>
         <source>A1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="336"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="666"/>
         <source>A2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="256"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="664"/>
         <source>RSSI</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="95"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="646"/>
         <source>Alarm 1</source>
         <translation>Alarme 1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="109"/>
         <location filename="../modeledit/telemetry.ui" line="186"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="649"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="658"/>
         <source>----</source>
         <translation>----</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="114"/>
         <location filename="../modeledit/telemetry.ui" line="191"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="650"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="659"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="119"/>
         <location filename="../modeledit/telemetry.ui" line="196"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="651"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="660"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="124"/>
         <location filename="../modeledit/telemetry.ui" line="201"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="652"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="661"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="172"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="655"/>
         <source>Alarm 2</source>
         <translation>Alarme 2</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="909"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="688"/>
         <source>Serial Protocol</source>
         <translation>Protocole Série</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="732"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="679"/>
         <source>Volt source</source>
         <translation>Source de mesure de tension</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="774"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="680"/>
         <source>Current source</source>
         <translation>Source de mesure de courant</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="37"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="645"/>
         <source>Protocol</source>
         <translation>Protocole</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="923"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="691"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="928"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="692"/>
         <source>FrSky Sensor Hub</source>
         <translation>Sensor Hub FrSky</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="809"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="681"/>
         <source>Blades</source>
         <translation>Pales</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="378"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="667"/>
         <source>Sink Max</source>
         <translation>Chute max</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="488"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="668"/>
         <source>Climb Max</source>
         <translation>Montée max</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="504"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="669"/>
         <source>Sink Min</source>
         <translation>Chute min</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="520"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="670"/>
         <source>Climb Min</source>
         <translation>Montée min</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="536"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="671"/>
         <source>Center Silent</source>
         <translation>Neutre silencieux</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="571"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="674"/>
         <source>Vario source</source>
         <translation>Source vario</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="558"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="673"/>
         <source>Vario limits</source>
         <translation>Limites vario</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="594"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="675"/>
         <source>Altimetry</source>
         <translation>Altitude</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="628"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="676"/>
         <source>Altitude source</source>
         <translation>Source de l&apos;altitude</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="641"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="677"/>
         <source>Volts source</source>
         <translation>Source de la tension</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="664"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="678"/>
         <source>Top Bar</source>
         <translation>Barre de titre de l&apos;écran d&apos;accueil</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="829"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="683"/>
         <source> mAh</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="845"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="684"/>
         <source> A</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="896"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="687"/>
         <source>Various</source>
         <translation>Divers</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="971"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="694"/>
         <source>Sensors</source>
         <translation>Capteurs</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="978"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="695"/>
         <source>Disable multi sensor handling</source>
         <translation>Désactiver la gestion des capteurs multiples</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="816"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="682"/>
         <source>mAh count</source>
         <translation>Valeur enregistrée</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="870"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="685"/>
         <source>FAS Offset</source>
         <translation>Décalage FAS</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.ui" line="877"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry.h" line="686"/>
         <source>Persistent mAh</source>
         <translation>Mémorisation des mAh</translation>
     </message>
@@ -11468,133 +10480,107 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <name>TelemetryAnalog</name>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="34"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="198"/>
         <source>Unit</source>
         <translation>Unité</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="47"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="199"/>
         <source>Max Value</source>
         <translation>Valeur Max</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="60"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="200"/>
         <source>Alarm 1    </source>
         <translation>Alarme 1</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="74"/>
         <location filename="../modeledit/telemetry_analog.ui" line="137"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="203"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="216"/>
         <source>----</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="79"/>
         <location filename="../modeledit/telemetry_analog.ui" line="142"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="204"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="217"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="84"/>
         <location filename="../modeledit/telemetry_analog.ui" line="147"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="205"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="218"/>
         <source>Orange</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="89"/>
         <location filename="../modeledit/telemetry_analog.ui" line="152"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="206"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="219"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="104"/>
         <location filename="../modeledit/telemetry_analog.ui" line="167"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="210"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="223"/>
         <source>&lt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="109"/>
         <location filename="../modeledit/telemetry_analog.ui" line="172"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="211"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="224"/>
         <source>&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="123"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="213"/>
         <source>Alarm 2</source>
         <translation>Alarme 2</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="265"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="226"/>
         <source>Offset</source>
         <translation>Décalage</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="279"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="229"/>
         <source>Volts (V)</source>
         <translation>Tension (V)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="284"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="230"/>
         <source>Amps (A)</source>
         <translation>Courant (A)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="289"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="231"/>
         <source>Speed (m/s or ft/s)</source>
         <translation>Vitesse (m/s ou ft/s)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="294"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="232"/>
         <source>Raw (-)</source>
         <translation>Chiffres bruts (-)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="299"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="233"/>
         <source>Speed (km/h or miles/h)</source>
         <translation>Vitesse (km/h ou miles/h)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="304"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="234"/>
         <source>Meters (m or ft)</source>
         <translation>Distance (m ou ft)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="309"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="235"/>
         <source>Temp (°)</source>
         <translation>Température (°)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="314"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="236"/>
         <source>Fuel (%)</source>
         <translation>Carburant (%)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_analog.ui" line="319"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_analog.h" line="237"/>
         <source>mAmps (mA)</source>
         <translation>Courant (mA)</translation>
     </message>
@@ -11608,7 +10594,6 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <name>TelemetryCustomScreen</name>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_customscreen.h" line="141"/>
         <source>Custom Screen Type</source>
         <translation>Type d&apos;écran personnalisé</translation>
     </message>
@@ -11634,25 +10619,21 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="82"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_customscreen.h" line="142"/>
         <source>Min</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="92"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_customscreen.h" line="143"/>
         <source>Source</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="102"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_customscreen.h" line="144"/>
         <source>Gauge</source>
         <translation>Jauge</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="112"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_customscreen.h" line="145"/>
         <source>Max</source>
         <translation></translation>
     </message>
@@ -11761,91 +10742,76 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <name>TelemetrySensor</name>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="14"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="356"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="46"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="359"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="51"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="360"/>
         <source>Calculated</source>
         <translation>Calculé</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="65"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="362"/>
         <source>Id</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="94"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="363"/>
         <source>Instance</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="127"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="366"/>
         <source>Add</source>
         <translation>Addition</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="132"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="367"/>
         <source>Average</source>
         <translation>Moyenne</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="137"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="368"/>
         <source>Min</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="142"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="369"/>
         <source>Max</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="147"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="370"/>
         <source>Multiply</source>
         <translation>Multiplication</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="152"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="371"/>
         <source>Totalize</source>
         <translation>Totalisation</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="157"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="372"/>
         <source>Cell</source>
         <translation>Element LiPo</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="162"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="373"/>
         <source>Consumption</source>
         <translation>Consommation</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="167"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="374"/>
         <source>Dist</source>
         <translation>Distance</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="181"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="376"/>
         <source>Cells Sensor :</source>
         <translation>Capteur d&apos;éléments:</translation>
     </message>
@@ -11858,236 +10824,191 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
         <location filename="../modeledit/telemetry_sensor.ui" line="319"/>
         <location filename="../modeledit/telemetry_sensor.ui" line="334"/>
         <location filename="../modeledit/telemetry_sensor.ui" line="349"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="379"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="384"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="389"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="394"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="398"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="402"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="406"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="410"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="219"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="381"/>
         <source>GPS Sensor :</source>
         <translation>Capteur GPS:</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="247"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="386"/>
         <source>Alt. Sensor :</source>
         <translation>Capteur d&apos;altitude:</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="275"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="391"/>
         <source>Sensor :</source>
         <translation>Capteur:</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="369"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="415"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="374"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="416"/>
         <source>A</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="379"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="417"/>
         <source>mA</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="384"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="418"/>
         <source>kt</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="389"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="419"/>
         <source>m/s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="420"/>
         <source>ft/s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="399"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="421"/>
         <source>km/h</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="404"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="422"/>
         <source>mph</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="409"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="423"/>
         <source>m</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="414"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="424"/>
         <source>ft</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="419"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="425"/>
         <source>°C</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="426"/>
         <source>°F</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="429"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="427"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="434"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="428"/>
         <source>mAh</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="439"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="429"/>
         <source>W</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="444"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="430"/>
         <source>mW</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="431"/>
         <source>dBm</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="433"/>
         <source>g</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="464"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="434"/>
         <source>°</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="469"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="435"/>
         <source>Rad</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="474"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="436"/>
         <source>mL</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="479"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="437"/>
         <source>US fl.Oz.</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="364"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="414"/>
         <source>Raw (-)</source>
         <translation>Chiffres bruts (-)</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="454"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="432"/>
         <source>RPM</source>
         <translation>Tours/minute</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="493"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="439"/>
         <source>Precision</source>
         <translation>Précision</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="525"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="440"/>
         <source>Ratio</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="532"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="441"/>
         <source>Blades</source>
         <translation>Pales</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="567"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="442"/>
         <source>Offset</source>
         <translation>Décalage</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="574"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="443"/>
         <source>Multiplier</source>
         <translation>Multiplicateur</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="606"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="444"/>
         <source>Auto Offset</source>
         <translation>Offset auto</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="616"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="445"/>
         <source>Filter</source>
         <translation>Filtre</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="626"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="446"/>
         <source>Persistent</source>
         <translation>Persistant</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="636"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="447"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="646"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_telemetry_sensor.h" line="448"/>
         <source>Logs</source>
         <translation></translation>
     </message>
@@ -12119,120 +11040,86 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <name>TelemetrySimulator</name>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="19"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1532"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1532"/>
         <source>Telemetry Simulator</source>
         <translation>Simulateur de télémesure</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1811"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1591"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1591"/>
         <source>VFAS</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1134"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1564"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1564"/>
         <source>RSSI</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="531"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1550"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1550"/>
         <source>SWR</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="57"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1536"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1536"/>
         <source>Simulate</source>
         <translation>Simuler</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="75"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1537"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1537"/>
         <source>Replay SD Log File</source>
         <translation>Rejouer le fichier de Log SD</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="98"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1538"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1538"/>
         <source>Replay rate</source>
         <translation>Vitesse</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="171"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1540"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1540"/>
         <source>|&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="199"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1541"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1541"/>
         <source>&lt;|</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="233"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1542"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1542"/>
         <source>&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="267"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1543"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1543"/>
         <source>&lt;-</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="298"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1544"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1544"/>
         <source>X</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="353"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1547"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1547"/>
         <source>1/5x</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="369"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1548"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1548"/>
         <source>5x</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="381"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1549"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1549"/>
         <source>No Log File Currently Loaded</source>
         <translation>Pas de fichier de Log chargé</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="114"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1539"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1539"/>
         <source>Load</source>
         <translation>Charger</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="334"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1545"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1545"/>
         <source>Row # 
 Timestamp</source>
         <translation>Ligne # 
@@ -12240,8 +11127,6 @@ Horodatage</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="872"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1555"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1555"/>
         <source>RxBt</source>
         <translation></translation>
     </message>
@@ -12249,12 +11134,6 @@ Horodatage</translation>
         <location filename="../simulation/telemetrysimu.ui" line="594"/>
         <location filename="../simulation/telemetrysimu.ui" line="747"/>
         <location filename="../simulation/telemetrysimu.ui" line="987"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1552"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1554"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1557"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1552"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1554"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1557"/>
         <source>V / ratio</source>
         <translation></translation>
     </message>
@@ -12272,175 +11151,105 @@ Horodatage</translation>
         <location filename="../simulation/telemetrysimu.ui" line="2578"/>
         <location filename="../simulation/telemetrysimu.ui" line="2711"/>
         <location filename="../simulation/telemetrysimu.ui" line="2867"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1559"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1566"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1578"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1582"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1589"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1593"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1597"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1603"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1612"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1619"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1624"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1628"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1635"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1559"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1566"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1578"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1582"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1589"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1593"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1597"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1603"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1612"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1619"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1624"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1628"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1635"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2560"/>
         <location filename="../simulation/telemetrysimu.ui" line="2759"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1622"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1631"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1622"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1631"/>
         <source>Volts</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="702"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1553"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1553"/>
         <source>Db</source>
         <translation>dB</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2714"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1630"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1630"/>
         <source>Curr</source>
         <translation>Courant</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2377"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1615"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1615"/>
         <source>Amps</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2581"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1626"/>
         <source>Cels</source>
         <translation>Elément</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="890"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1556"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1556"/>
         <source>A1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="549"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1551"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1551"/>
         <source>A2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1907"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1599"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1599"/>
         <source>ASpd</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1775"/>
         <location filename="../simulation/telemetrysimu.ui" line="1997"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1601"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1587"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1601"/>
         <source>km/h</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1044"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1562"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1562"/>
         <source>A3</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2461"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1621"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1621"/>
         <source>GAlt</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1452"/>
         <location filename="../simulation/telemetrysimu.ui" line="2795"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1576"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1576"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1633"/>
         <source>Meters</source>
         <translation>Mètres</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1116"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1563"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1563"/>
         <source>A4</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2870"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1637"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1637"/>
         <source>GSpd</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1026"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1561"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1561"/>
         <source>Tmp1</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1380"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1573"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1573"/>
         <source>Deg. C</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1859"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1595"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1595"/>
         <source>Hdg</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2144"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1606"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1606"/>
         <source>Lat,Lon
 (dec.deg.)</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2265"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1609"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1609"/>
         <source>dd-MM-yyyy
 hh:mm:ss</source>
         <translation>jj-MM-aaaa
@@ -12448,57 +11257,41 @@ hh:mm:ss</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2888"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1638"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1638"/>
         <source>Degrees</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1173"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1568"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1568"/>
         <source>Tmp2</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1326"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1571"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1571"/>
         <source>°C</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2359"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1614"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1614"/>
         <source>Date</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2018"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1605"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1605"/>
         <source>GPS</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1281"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1570"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1570"/>
         <source>Fuel</source>
         <translation>Carburant</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1434"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1575"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1575"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2220"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1608"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1608"/>
         <source>AccX</source>
         <translation></translation>
     </message>
@@ -12506,93 +11299,67 @@ hh:mm:ss</translation>
         <location filename="../simulation/telemetrysimu.ui" line="1925"/>
         <location filename="../simulation/telemetrysimu.ui" line="2395"/>
         <location filename="../simulation/telemetrysimu.ui" line="2933"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1600"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1616"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1639"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1600"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1616"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1639"/>
         <source>G</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1686"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1586"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1586"/>
         <source>Fuel Qty</source>
         <translation>Qté Carburant</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1362"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1572"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1572"/>
         <source>ml</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2777"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1632"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1632"/>
         <source>AccY</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1650"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1584"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1584"/>
         <source>VSpd</source>
         <translation>Vitesse Verticale</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1668"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1585"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1585"/>
         <source>m/s</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2413"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1617"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1617"/>
         <source>AccZ</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1527"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1580"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1580"/>
         <source>Alt</source>
         <translation>Altitude</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1218"/>
         <location filename="../simulation/telemetrysimu.ui" line="1416"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1569"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1574"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1569"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1574"/>
         <source>RPM</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="54"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_telemetrysimu.h" line="1534"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_telemetrysimu.h" line="1534"/>
         <source>When enabled, sends any non-blank values as simulated telemetry data.</source>
         <translation>Transmet les valeurs non vides au simulateur.</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="702"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="696"/>
         <source>Log File</source>
         <translation>Fichier de Log</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="702"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="696"/>
         <source>LOG Files (*.csv)</source>
         <translation>Fichier LOG (*.csv)</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="706"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="700"/>
         <source>ERROR - invalid file</source>
         <translation>ERREUR - fichier non valide</translation>
     </message>
@@ -12836,13 +11603,11 @@ hh:mm:ss</translation>
     <name>Timer</name>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="55"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_timer.h" line="113"/>
         <source>Countdown</source>
         <translation>Compte à rebours</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="65"/>
-        <location filename="../../../build-x9e/companion/src/modeledit/ui_setup_timer.h" line="114"/>
         <source>Minute Call</source>
         <translation>Annonces minutes</translation>
     </message>
@@ -12889,31 +11654,26 @@ hh:mm:ss</translation>
     <name>Trainer</name>
     <message>
         <location filename="../generaledit/trainer.ui" line="14"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="184"/>
         <source>Form</source>
         <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="39"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="194"/>
         <source>Mode</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="46"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="195"/>
         <source>Input</source>
         <translation>Entrée</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="53"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="196"/>
         <source>Weight</source>
         <translation>Ratio</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="66"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="197"/>
         <source>Rud</source>
         <translation>Dir</translation>
     </message>
@@ -12926,14 +11686,6 @@ hh:mm:ss</translation>
         <location filename="../generaledit/trainer.ui" line="328"/>
         <location filename="../generaledit/trainer.ui" line="375"/>
         <location filename="../generaledit/trainer.ui" line="409"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="211"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="233"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="264"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="286"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="308"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="339"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="361"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="383"/>
         <source>Beeper volume
 
 0 - Quiet.  No beeps at all.
@@ -12954,10 +11706,6 @@ Extra long : bips extra longs.</translation>
         <location filename="../generaledit/trainer.ui" line="194"/>
         <location filename="../generaledit/trainer.ui" line="338"/>
         <location filename="../generaledit/trainer.ui" line="385"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="200"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="253"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="328"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="350"/>
         <source>Off</source>
         <translation></translation>
     </message>
@@ -12966,10 +11714,6 @@ Extra long : bips extra longs.</translation>
         <location filename="../generaledit/trainer.ui" line="199"/>
         <location filename="../generaledit/trainer.ui" line="343"/>
         <location filename="../generaledit/trainer.ui" line="390"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="201"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="254"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="329"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="351"/>
         <source>+= (Sum)</source>
         <translation>+= (Additionner)</translation>
     </message>
@@ -12978,10 +11722,6 @@ Extra long : bips extra longs.</translation>
         <location filename="../generaledit/trainer.ui" line="204"/>
         <location filename="../generaledit/trainer.ui" line="348"/>
         <location filename="../generaledit/trainer.ui" line="395"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="202"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="255"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="330"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="352"/>
         <source>:= (Replace)</source>
         <translation>:= (Remplacer)</translation>
     </message>
@@ -12990,10 +11730,6 @@ Extra long : bips extra longs.</translation>
         <location filename="../generaledit/trainer.ui" line="228"/>
         <location filename="../generaledit/trainer.ui" line="267"/>
         <location filename="../generaledit/trainer.ui" line="419"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="221"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="274"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="296"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="371"/>
         <source>chn1</source>
         <translation>VOIE1</translation>
     </message>
@@ -13002,10 +11738,6 @@ Extra long : bips extra longs.</translation>
         <location filename="../generaledit/trainer.ui" line="233"/>
         <location filename="../generaledit/trainer.ui" line="272"/>
         <location filename="../generaledit/trainer.ui" line="424"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="222"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="275"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="297"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="372"/>
         <source>chn2</source>
         <translation>VOIE2</translation>
     </message>
@@ -13014,10 +11746,6 @@ Extra long : bips extra longs.</translation>
         <location filename="../generaledit/trainer.ui" line="238"/>
         <location filename="../generaledit/trainer.ui" line="277"/>
         <location filename="../generaledit/trainer.ui" line="429"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="223"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="276"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="298"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="373"/>
         <source>chn3</source>
         <translation>VOIE3</translation>
     </message>
@@ -13026,28 +11754,21 @@ Extra long : bips extra longs.</translation>
         <location filename="../generaledit/trainer.ui" line="243"/>
         <location filename="../generaledit/trainer.ui" line="282"/>
         <location filename="../generaledit/trainer.ui" line="434"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="224"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="277"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="299"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="374"/>
         <source>chn4</source>
         <translation>VOIE4</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="171"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="250"/>
         <source>Ele</source>
         <translation>Prf</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="315"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="325"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="362"/>
-        <location filename="../../../build-x9e/companion/src/generaledit/ui_trainer.h" line="347"/>
         <source>Ail</source>
         <translation></translation>
     </message>
@@ -13056,8 +11777,6 @@ Extra long : bips extra longs.</translation>
     <name>TrainerSimulator</name>
     <message>
         <location filename="../simulation/trainersimu.ui" line="20"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_trainersimu.h" line="77"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_trainersimu.h" line="77"/>
         <source>Trainer simulator</source>
         <translation>Simulateur d&apos;écolage</translation>
     </message>
@@ -13096,24 +11815,44 @@ Extra long : bips extra longs.</translation>
 <context>
     <name>VirtualJoystickWidget</name>
     <message>
-        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="364"/>
-        <source>Hold Y</source>
-        <translation>Retenir Y</translation>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="317"/>
+        <source>Hld Y</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="367"/>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="318"/>
+        <source>Hold Vertical stick position.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="322"/>
         <source>Fix Y</source>
         <translation>Blocage Y</translation>
     </message>
     <message>
-        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="370"/>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="323"/>
+        <source>Prevent Vertical movement of stick.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="327"/>
         <source>Fix X</source>
         <translation>Blocage X</translation>
     </message>
     <message>
-        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="374"/>
-        <source>Hold X</source>
-        <translation>Retenir X</translation>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="328"/>
+        <source>Prevent Horizontal movement of stick.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="332"/>
+        <source>Hld X</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="333"/>
+        <source>Hold Horizontal stick position.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13446,14 +12185,11 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../burnconfigdialog.ui" line="599"/>
         <location filename="../burnconfigdialog.ui" line="717"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="417"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="446"/>
         <source>Port</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="425"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="396"/>
         <source>List all available programmers.</source>
         <translation>Lister tous les programmateurs supportés.</translation>
     </message>
@@ -13462,17 +12198,12 @@ Extra long : bips extra longs.</translation>
         <location filename="../burnconfigdialog.ui" line="74"/>
         <location filename="../burnconfigdialog.ui" line="697"/>
         <location filename="../burnconfigdialog.ui" line="730"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="377"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="384"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="443"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="451"/>
         <source>The location of the AVRDUDE executable.</source>
         <oldsource>The location of the AVRDUDE.EXE executable.</oldsource>
         <translation>Chemin d&apos;accès de l&apos;exécutable AVRDUDE.</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="64"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="379"/>
         <source>DFU-Util Location</source>
         <translation>Chemin de DFU-UTIL</translation>
     </message>
@@ -13480,15 +12211,11 @@ Extra long : bips extra longs.</translation>
         <location filename="../burnconfigdialog.ui" line="84"/>
         <location filename="../burnconfigdialog.ui" line="763"/>
         <location filename="../burnconfigdialog.ui" line="773"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="387"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="464"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="468"/>
         <source>Use this button to browse and look for the AVRDUDE executable file.</source>
         <translation>Utiliser ce bouton pour parcourir à la recherche du fichier exécutable AVRDUDE.EXE.</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="104"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="392"/>
         <source>Programmer used for communicating with the controller.
 Please consult the programmer&apos;s documentation and the AVRDUDE documentation to select the appropriate programmer.</source>
         <translation>Programmateur utilisé pour la communication avec le contrôleur.
@@ -13496,7 +12223,6 @@ Consulter la documentation du programmateur utilisé et celle d&apos;AVRDUDE pou
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="471"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="414"/>
         <source>Communication port to the programmer.
 </source>
         <translation>Port de communication pour le programmateur.
@@ -13504,37 +12230,31 @@ Consulter la documentation du programmateur utilisé et celle d&apos;AVRDUDE pou
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="619"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="419"/>
         <source>MCU</source>
         <translation>Processeur</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="676"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="428"/>
         <source>at91sam3s8-9xr</source>
         <translation></translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="740"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="453"/>
         <source>Alternate device</source>
         <translation>Dispositif alternatif</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="790"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="472"/>
         <source>Use advanced controls</source>
         <translation>Utiliser les contrôles avancés</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="451"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="408"/>
         <source>Extra Arguments</source>
         <translation>Paramètres supplémentaires</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="464"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="412"/>
         <source>Show Help</source>
         <translation>Aide</translation>
     </message>
@@ -13542,9 +12262,6 @@ Consulter la documentation du programmateur utilisé et celle d&apos;AVRDUDE pou
         <location filename="../burnconfigdialog.ui" line="87"/>
         <location filename="../burnconfigdialog.ui" line="766"/>
         <location filename="../burnconfigdialog.ui" line="776"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="389"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="466"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="470"/>
         <source>Browse...</source>
         <translation>Parcourir...</translation>
     </message>
@@ -13587,15 +12304,12 @@ Consulter la documentation du programmateur utilisé et celle d&apos;AVRDUDE pou
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="428"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="398"/>
         <source>List Available</source>
         <translation>Affiche Liste</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="438"/>
         <location filename="../burnconfigdialog.ui" line="750"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="403"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="458"/>
         <source>Extra arguments used in AVRDUDE.
 This can be used for providing extra information to AVRDUDE.
 
@@ -13607,19 +12321,16 @@ A n&apos;utiliser qu&apos;en connaissance de cause: il n&apos;y a pas de contrô
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="609"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="418"/>
         <source>AVRDUDE Location</source>
         <translation>Emplacement d&apos;AVRDUDE</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="461"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="410"/>
         <source>Show AVRDUDE help</source>
         <translation>Affiche l&apos;aide d&apos;AVRDUDE</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="26"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="372"/>
         <source>Programmer Configuration</source>
         <oldsource> Configuration AVRDUDE / SAM-BA</oldsource>
         <translation>Configuration du programmateur</translation>
@@ -13627,8 +12338,6 @@ A n&apos;utiliser qu&apos;en connaissance de cause: il n&apos;y a pas de contrô
     <message>
         <location filename="../burnconfigdialog.ui" line="435"/>
         <location filename="../burnconfigdialog.ui" line="747"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="400"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="455"/>
         <source>Extra arguments that will be passed to AVRDUDE on every call</source>
         <translation>Paramètres complémentaires passés à chaque appel d&apos;AVRDUDE</translation>
     </message>
@@ -13639,29 +12348,23 @@ A n&apos;utiliser qu&apos;en connaissance de cause: il n&apos;y a pas de contrô
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="71"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="381"/>
         <source>Location of AVRDUDE executable</source>
         <translation>Chemin d&apos;accès de l&apos;exécutable AVRDUDE</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="94"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="390"/>
         <source>Programmer</source>
         <translation>Programmateur</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="629"/>
         <location filename="../burnconfigdialog.ui" line="659"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="421"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="431"/>
         <source>CPU of your TX</source>
         <translation>CPU de l&apos;émetteur</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="632"/>
         <location filename="../burnconfigdialog.ui" line="662"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="424"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="434"/>
         <source>CPU present on your 9x radio
 Should be m64 for stock radios
 m2560 for v4.1 boards</source>
@@ -13669,27 +12372,22 @@ m2560 for v4.1 boards</source>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="684"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="438"/>
         <source>SAM-BA Location</source>
         <translation>Emplacement de SAM-BA</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="51"/>
         <location filename="../burnconfigdialog.ui" line="694"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="374"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="440"/>
         <source>Location of sam-ba executable</source>
         <translation>Emplacement de l&apos;exécutable SAM-BA</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="707"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="445"/>
         <source>ARM MCU</source>
         <translation>Processeur ARM</translation>
     </message>
     <message>
         <location filename="../burnconfigdialog.ui" line="727"/>
-        <location filename="../../../build-x9e/companion/src/ui_burnconfigdialog.h" line="448"/>
         <source>sam-ba serial port</source>
         <translation>Port série de SAM-BA</translation>
     </message>
@@ -13698,55 +12396,42 @@ m2560 for v4.1 boards</source>
     <name>customizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="475"/>
         <source>Transmitter Splash Screen Editor</source>
         <translation>Editeur d&apos;écran d&apos;accueil</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="209"/>
         <location filename="../customizesplashdialog.ui" line="517"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="477"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="489"/>
         <source>Invert</source>
         <translation>Inverser</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="272"/>
         <location filename="../customizesplashdialog.ui" line="583"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="483"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="495"/>
         <source>Load FW</source>
         <translation>Ouvrir le firmware</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="282"/>
         <location filename="../customizesplashdialog.ui" line="593"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="484"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="496"/>
         <source>Load Pict</source>
         <translation>Ouvrir l&apos;image</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="262"/>
         <location filename="../customizesplashdialog.ui" line="570"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="482"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="494"/>
         <source>Load Profile</source>
         <translation>Charger le profil</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="308"/>
         <location filename="../customizesplashdialog.ui" line="619"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="485"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="497"/>
         <source>Save</source>
         <translation>Sauvegarder</translation>
     </message>
     <message>
         <location filename="../customizesplashdialog.ui" line="232"/>
         <location filename="../customizesplashdialog.ui" line="540"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="479"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="491"/>
         <source>Open Splash Library</source>
         <translation>Ouvrir la bibliothèque des écrans d&apos;accueil</translation>
     </message>
@@ -13755,10 +12440,6 @@ m2560 for v4.1 boards</source>
         <location filename="../customizesplashdialog.ui" line="335"/>
         <location filename="../customizesplashdialog.ui" line="345"/>
         <location filename="../customizesplashdialog.ui" line="543"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="481"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="486"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="487"/>
-        <location filename="../../../build-x9e/companion/src/ui_customizesplashdialog.h" line="493"/>
         <source>...</source>
         <translation></translation>
     </message>
@@ -13840,7 +12521,6 @@ m2560 for v4.1 boards</source>
     <name>downloadDialog</name>
     <message>
         <location filename="../downloaddialog.ui" line="14"/>
-        <location filename="../../../build-x9e/companion/src/ui_downloaddialog.h" line="67"/>
         <source>Downloading: </source>
         <translation>Téléchargement: </translation>
     </message>
@@ -13864,438 +12544,185 @@ m2560 for v4.1 boards</source>
     <name>joystickDialog</name>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="20"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="467"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="467"/>
         <source>Configure Joystick</source>
         <translation>Configuration du Joystick</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.ui" line="50"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="468"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="468"/>
         <source>Ch2</source>
         <translation>VOIE2</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="95"/>
-        <location filename="../simulation/joystickdialog.ui" line="160"/>
-        <location filename="../simulation/joystickdialog.ui" line="246"/>
-        <location filename="../simulation/joystickdialog.ui" line="353"/>
-        <location filename="../simulation/joystickdialog.ui" line="439"/>
-        <location filename="../simulation/joystickdialog.ui" line="525"/>
-        <location filename="../simulation/joystickdialog.ui" line="625"/>
-        <location filename="../simulation/joystickdialog.ui" line="718"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="471"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="484"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="496"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="511"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="523"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="535"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="549"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="562"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="471"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="484"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="496"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="511"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="523"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="535"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="549"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="562"/>
-        <source>Not  Assigned</source>
-        <translation>Non assignée</translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="100"/>
-        <location filename="../simulation/joystickdialog.ui" line="165"/>
-        <location filename="../simulation/joystickdialog.ui" line="251"/>
-        <location filename="../simulation/joystickdialog.ui" line="358"/>
-        <location filename="../simulation/joystickdialog.ui" line="444"/>
-        <location filename="../simulation/joystickdialog.ui" line="530"/>
-        <location filename="../simulation/joystickdialog.ui" line="630"/>
-        <location filename="../simulation/joystickdialog.ui" line="723"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="472"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="485"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="497"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="512"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="524"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="536"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="550"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="563"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="472"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="485"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="497"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="512"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="524"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="536"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="550"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="563"/>
+        <location filename="../simulation/joystickdialog.cpp" line="103"/>
         <source>Right Vertical</source>
         <translation>Droit Vertical</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="105"/>
-        <location filename="../simulation/joystickdialog.ui" line="170"/>
-        <location filename="../simulation/joystickdialog.ui" line="256"/>
-        <location filename="../simulation/joystickdialog.ui" line="363"/>
-        <location filename="../simulation/joystickdialog.ui" line="449"/>
-        <location filename="../simulation/joystickdialog.ui" line="535"/>
-        <location filename="../simulation/joystickdialog.ui" line="635"/>
-        <location filename="../simulation/joystickdialog.ui" line="728"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="473"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="486"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="498"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="513"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="525"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="537"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="551"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="564"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="473"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="486"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="498"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="513"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="525"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="537"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="551"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="564"/>
+        <location filename="../simulation/joystickdialog.cpp" line="104"/>
         <source>Right Horizontal</source>
         <translation>Droit Horizontal</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="110"/>
-        <location filename="../simulation/joystickdialog.ui" line="175"/>
-        <location filename="../simulation/joystickdialog.ui" line="261"/>
-        <location filename="../simulation/joystickdialog.ui" line="368"/>
-        <location filename="../simulation/joystickdialog.ui" line="454"/>
-        <location filename="../simulation/joystickdialog.ui" line="540"/>
-        <location filename="../simulation/joystickdialog.ui" line="640"/>
-        <location filename="../simulation/joystickdialog.ui" line="733"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="474"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="487"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="499"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="514"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="526"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="538"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="552"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="565"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="474"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="487"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="499"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="514"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="526"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="538"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="552"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="565"/>
+        <location filename="../simulation/joystickdialog.cpp" line="102"/>
         <source>Left Vertical</source>
         <translation>Gauche Vertical</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="115"/>
-        <location filename="../simulation/joystickdialog.ui" line="180"/>
-        <location filename="../simulation/joystickdialog.ui" line="266"/>
-        <location filename="../simulation/joystickdialog.ui" line="373"/>
-        <location filename="../simulation/joystickdialog.ui" line="459"/>
-        <location filename="../simulation/joystickdialog.ui" line="545"/>
-        <location filename="../simulation/joystickdialog.ui" line="645"/>
-        <location filename="../simulation/joystickdialog.ui" line="738"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="475"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="488"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="500"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="515"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="527"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="539"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="553"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="566"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="475"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="488"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="500"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="515"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="527"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="539"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="553"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="566"/>
+        <location filename="../simulation/joystickdialog.cpp" line="101"/>
         <source>Left Horizontal</source>
         <translation>Gauche Horizontal</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="120"/>
-        <location filename="../simulation/joystickdialog.ui" line="185"/>
-        <location filename="../simulation/joystickdialog.ui" line="271"/>
-        <location filename="../simulation/joystickdialog.ui" line="378"/>
-        <location filename="../simulation/joystickdialog.ui" line="464"/>
-        <location filename="../simulation/joystickdialog.ui" line="550"/>
-        <location filename="../simulation/joystickdialog.ui" line="650"/>
-        <location filename="../simulation/joystickdialog.ui" line="743"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="476"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="489"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="501"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="516"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="528"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="540"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="554"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="567"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="476"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="489"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="501"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="516"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="528"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="540"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="554"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="567"/>
-        <source>P1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="125"/>
-        <location filename="../simulation/joystickdialog.ui" line="190"/>
-        <location filename="../simulation/joystickdialog.ui" line="276"/>
-        <location filename="../simulation/joystickdialog.ui" line="383"/>
-        <location filename="../simulation/joystickdialog.ui" line="469"/>
-        <location filename="../simulation/joystickdialog.ui" line="555"/>
-        <location filename="../simulation/joystickdialog.ui" line="655"/>
-        <location filename="../simulation/joystickdialog.ui" line="748"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="477"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="490"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="502"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="517"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="529"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="541"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="555"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="568"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="477"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="490"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="502"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="517"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="529"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="541"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="555"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="568"/>
-        <source>P2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="130"/>
-        <location filename="../simulation/joystickdialog.ui" line="195"/>
-        <location filename="../simulation/joystickdialog.ui" line="281"/>
-        <location filename="../simulation/joystickdialog.ui" line="388"/>
-        <location filename="../simulation/joystickdialog.ui" line="474"/>
-        <location filename="../simulation/joystickdialog.ui" line="560"/>
-        <location filename="../simulation/joystickdialog.ui" line="660"/>
-        <location filename="../simulation/joystickdialog.ui" line="753"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="478"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="491"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="503"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="518"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="530"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="542"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="556"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="569"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="478"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="491"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="503"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="518"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="530"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="542"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="556"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="569"/>
-        <source>P3/LS</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="135"/>
-        <location filename="../simulation/joystickdialog.ui" line="200"/>
-        <location filename="../simulation/joystickdialog.ui" line="286"/>
-        <location filename="../simulation/joystickdialog.ui" line="393"/>
-        <location filename="../simulation/joystickdialog.ui" line="479"/>
-        <location filename="../simulation/joystickdialog.ui" line="565"/>
-        <location filename="../simulation/joystickdialog.ui" line="665"/>
-        <location filename="../simulation/joystickdialog.ui" line="758"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="479"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="492"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="504"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="519"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="531"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="543"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="557"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="570"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="479"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="492"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="504"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="519"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="531"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="543"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="557"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="570"/>
-        <source>RS</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.ui" line="143"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="481"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="481"/>
+        <location filename="../simulation/joystickdialog.ui" line="98"/>
         <source>Ch1</source>
         <translation>VOIE1</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="294"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="506"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="506"/>
+        <location filename="../simulation/joystickdialog.ui" line="159"/>
         <source>Ch4</source>
         <translation>VOIE4</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="329"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="507"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="507"/>
+        <location filename="../simulation/joystickdialog.ui" line="194"/>
         <source>Ch6</source>
         <translation>VOIE6</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="336"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="508"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="508"/>
+        <location filename="../simulation/joystickdialog.ui" line="201"/>
         <source>Ch3</source>
         <translation>VOIE3</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="573"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="545"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="545"/>
+        <location filename="../simulation/joystickdialog.ui" line="303"/>
         <source>Ch5</source>
         <translation>VOIE5</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="580"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="546"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="546"/>
+        <location filename="../simulation/joystickdialog.ui" line="310"/>
         <source>Ch7</source>
         <translation>VOIE7</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="673"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="559"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="559"/>
+        <location filename="../simulation/joystickdialog.ui" line="358"/>
         <source>Ch8</source>
         <translation>VOIE8</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="897"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="572"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="572"/>
+        <location filename="../simulation/joystickdialog.ui" line="537"/>
         <source>Instructions</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="922"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="573"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="573"/>
+        <location filename="../simulation/joystickdialog.ui" line="562"/>
         <source>Enable</source>
         <translation>Actif</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="939"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="574"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="574"/>
+        <location filename="../simulation/joystickdialog.ui" line="579"/>
         <source>Cancel</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="968"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="575"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="575"/>
+        <location filename="../simulation/joystickdialog.ui" line="608"/>
         <source>Back</source>
         <translation>Précédent</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="984"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="576"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="576"/>
+        <location filename="../simulation/joystickdialog.ui" line="624"/>
         <source>Start</source>
         <translation>Démarrer</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="174"/>
+        <location filename="../simulation/joystickdialog.cpp" line="196"/>
         <source>Next</source>
         <translation>Suivant</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.ui" line="997"/>
-        <location filename="../../../build-x12s/companion/src/simulation/ui_joystickdialog.h" line="577"/>
-        <location filename="../../../build-x9e/companion/src/simulation/ui_joystickdialog.h" line="577"/>
+        <location filename="../simulation/joystickdialog.ui" line="637"/>
         <source>Ok</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="94"/>
+        <location filename="../simulation/joystickdialog.cpp" line="107"/>
+        <source>Not Assigned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="109"/>
+        <source> Stick</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="112"/>
+        <source>Knob/Slider %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="122"/>
         <source>No joysticks found</source>
         <translation>Aucun Joystick trouvé</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="131"/>
-        <location filename="../simulation/joystickdialog.cpp" line="249"/>
+        <location filename="../simulation/joystickdialog.cpp" line="155"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="131"/>
+        <location filename="../simulation/joystickdialog.cpp" line="155"/>
         <source>Cannot open joystick.</source>
         <translation>Impossible d&apos;accéder au Joystick.</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="167"/>
+        <location filename="../simulation/joystickdialog.cpp" line="189"/>
         <source>Press the Start button to start the stick range calibration procedure.
 You may change the channel assignments or inversion at any time.</source>
         <translation>Appuyer sur le bouton Démarrer afin de lancer la procédure de calibration.
 Vous pouvez changer l&apos;ordre et la direction des VOIES à n&apos;importe quel moment.</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="173"/>
+        <location filename="../simulation/joystickdialog.cpp" line="195"/>
         <source>Move sticks and pots in every direction making full movement
 Press Next when finished</source>
         <translation>Bouger les manches à fond dans toutes les directions.
 Cliquer sur Suivant lorsque vous avez terminé</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="178"/>
+        <location filename="../simulation/joystickdialog.cpp" line="200"/>
         <source>Place sticks and pots in middle position.
 Press Next when done</source>
         <translation>Positionner les manches et pots en positon milieu.
 Cliquer sur Suivant lorsque vous êtes prêts</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="190"/>
+        <location filename="../simulation/joystickdialog.cpp" line="212"/>
         <source>Map joystick channels to controls using comboboxes.
 Press Next when done.</source>
         <translation>Assigner les voies du Joystick en utilisant les boutons.
 Cliquer sur Suivant lorsque vous êtes prêts.</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="194"/>
+        <location filename="../simulation/joystickdialog.cpp" line="216"/>
         <source>Check inversion checkbox to if necessary to reverse direction.
 Press Next when done.</source>
         <translation>Inverser la direction des VOIES si nécessaire.
 Cliquer sur Suivant lorsque vous êtes prêts.</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="198"/>
+        <location filename="../simulation/joystickdialog.cpp" line="220"/>
         <source>Press OK to save configuration
 Press Cancel to abort joystick calibration without saving.</source>
         <translation>Cliquer sur OK pour sauvegarder.
 Cliquer sur Annuler pour interrompre la calibration sans sauvegarder.</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="238"/>
+        <location filename="../simulation/joystickdialog.cpp" line="263"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="238"/>
+        <location filename="../simulation/joystickdialog.cpp" line="263"/>
         <source>Calibration not complete, save anyway?</source>
         <translation>Calibration incomplète, sauvegarder tout de même ?</translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="249"/>
-        <source>Duplicated stick assignment!</source>
-        <translation>Manche déjà assigné !</translation>
     </message>
 </context>
 <context>
