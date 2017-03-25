@@ -24,7 +24,6 @@
 #include "appdata.h"
 #include "constants.h"
 #include "simulatorinterface.h"
-#include "helpers.h"
 
 #include <QFileDialog>
 
@@ -52,7 +51,7 @@ SimulatorStartupDialog::SimulatorStartupDialog(SimulatorOptions * options, int *
   ui->optGrp_dataSource->setId(ui->optFolder, SimulatorOptions::START_WITH_FOLDER);
   ui->optGrp_dataSource->setId(ui->optSdPath, SimulatorOptions::START_WITH_SDPATH);
 
-  CompanionIcon icon("open.png");
+  SimulatorIcon icon("folder_open");
   ui->btnSelectDataFile->setIcon(icon);
   ui->btnSelectDataFolder->setIcon(icon);
   ui->btnSelectSdPath->setIcon(icon);
