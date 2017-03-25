@@ -659,12 +659,12 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../constants.h" line="46"/>
         <source>files</source>
-        <translation type="unfinished"></translation>
+        <translation>fichiers</translation>
     </message>
     <message>
         <location filename="../constants.h" line="47"/>
         <source>Radio and Models settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Réglages Radio et Modèles</translation>
     </message>
 </context>
 <context>
@@ -4326,7 +4326,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="549"/>
         <source>Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Certains textes ne seront pas traduits avant le prochain redémarrage de Companion. Veuillez noter que certaines traductions peuvent ne pas être complètes.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="822"/>
@@ -4418,12 +4418,12 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1082"/>
         <source>Use default system language.</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le langage système par défaut.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1086"/>
         <source>Use %1 language (some translations may not be complete).</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser la langue %1 (certaines traductions peuvent être incomplètes).</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1138"/>
@@ -6208,42 +6208,42 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multiprotocols.cpp" line="26"/>
         <source>Subtype</source>
-        <translation type="unfinished"></translation>
+        <translation>Sous-type</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="27"/>
         <source>Video TX frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence vidéo TX</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="28"/>
         <source>C2500 frequency fine tune</source>
-        <translation type="unfinished"></translation>
+        <translation>Affiner fréquence C2500</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="29"/>
         <source>Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Télémetrie</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="30"/>
         <source>Radio output power</source>
-        <translation type="unfinished"></translation>
+        <translation>Puissance de sortie</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="31"/>
         <source>Servo output frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Taux rafraichissement servo</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="32"/>
         <source>Option value</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur optionnelle</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="33"/>
         <source>DEFAULT</source>
-        <translation type="unfinished"></translation>
+        <translation>DÉFAUT</translation>
     </message>
 </context>
 <context>
@@ -7159,12 +7159,12 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../helpers.cpp" line="839"/>
         <location filename="../simulator.cpp" line="218"/>
         <source>Uknown error during Simulator startup.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur inconnue pendant le démarrage du simulateur.</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="840"/>
         <source>Simulator Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur Simulateur</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="848"/>
@@ -9918,7 +9918,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="67"/>
         <source>ERROR: Failed to create simulator interface, possibly missing or bad library.</source>
-        <translation type="unfinished">ERREUR: Impossible de créer l&apos;interface du simulateur, bibliothèque éventuellement manquante ou mauvaise.</translation>
+        <translation>ERREUR: Impossible de créer l&apos;interface du simulateur, bibliothèque éventuellement manquante ou mauvaise.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatormainwindow.cpp" line="95"/>
@@ -11817,42 +11817,42 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="317"/>
         <source>Hld Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintien Y</translation>
     </message>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="318"/>
         <source>Hold Vertical stick position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintien la position verticale du manche.</translation>
     </message>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="322"/>
         <source>Fix Y</source>
-        <translation>Blocage Y</translation>
+        <translation>Bloque Y</translation>
     </message>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="323"/>
         <source>Prevent Vertical movement of stick.</source>
-        <translation type="unfinished"></translation>
+        <translation>Empêche le mouvement vertical du manche.</translation>
     </message>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="327"/>
         <source>Fix X</source>
-        <translation>Blocage X</translation>
+        <translation>Bloque X</translation>
     </message>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="328"/>
         <source>Prevent Horizontal movement of stick.</source>
-        <translation type="unfinished"></translation>
+        <translation>Empêche le mouvement horizontal du manche.</translation>
     </message>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="332"/>
         <source>Hld X</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintien X</translation>
     </message>
     <message>
         <location filename="../simulation/widgets/virtualjoystickwidget.cpp" line="333"/>
         <source>Hold Horizontal stick position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Maintien la position horizontale du manche.</translation>
     </message>
 </context>
 <context>
@@ -12645,17 +12645,17 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="107"/>
         <source>Not Assigned</source>
-        <translation type="unfinished"></translation>
+        <translation>Non assigné</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="109"/>
         <source> Stick</source>
-        <translation type="unfinished"></translation>
+        <translation>Manche</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="112"/>
         <source>Knob/Slider %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Potar/Slider %1</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="122"/>
