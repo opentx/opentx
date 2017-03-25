@@ -113,10 +113,6 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
   ui->actionJoystickSettings->setDisabled(true);
 #endif
 
-  // Add radio-specific help text from simulator widget
-  foreach (keymapHelp_t item, *m_simulatorWidget->getKeymapHelp())
-    m_keymapHelp.append(item);
-
   restoreUiState();
 
   setStyleSheet(SimulatorStyle::styleSheet());
@@ -472,19 +468,34 @@ void SimulatorMainWindow::openJoystickDialog(bool)
 
 void SimulatorMainWindow::showHelp(bool show)
 {
-  QString helpText = tr("Simulator Controls:");
+  QString helpText = ""
+      "<style>"
+      "  td { text-align: center; vertical-align: middle; font-size: large; padding: 0 1em; white-space: nowrap; }"
+      "  th { background-color: palette(alternate-base); }"
+      "  img { vertical-align: text-top; }"
+      "</style>";
+  helpText += tr("<b>Simulator Controls:</b>");
   helpText += "<table cellspacing=4 cellpadding=0>";
-  helpText += tr("<tr><th>Key/Mouse</td><th>Action</td></tr>");
-  QString keyTemplate = "<tr><td align='center'><pre>%1</pre></td><td align='center'>%2</td></tr>";
-  foreach (keymapHelp_t pair, m_keymapHelp)
+  helpText += tr("<tr><th>Key/Mouse</th><th>Action</th></tr>", "note: must match html layout of each table row (keyTemplate).");
+
+  QString keyTemplate = tr("<tr><td><kbd>%1</kbd></td><td>%2</td></tr>", "note: must match html layout of help text table header.");
+  keymapHelp_t pair;
+  // Add our own help text (if any)
+  foreach (pair, m_keymapHelp)
     helpText += keyTemplate.arg(pair.first, pair.second);
+  // Add any radio-specific help text from simulator widget
+  foreach (pair, m_simulatorWidget->getKeymapHelp())
+    helpText += keyTemplate.arg(pair.first, pair.second);
+
   helpText += "</table>";
 
   QMessageBox * msgBox = new QMessageBox(this);
+  msgBox->setObjectName("SimulatorHelpText");
   msgBox->setAttribute(Qt::WA_DeleteOnClose);
   msgBox->setWindowFlags(msgBox->windowFlags() | Qt::WindowStaysOnTopHint);
   msgBox->setStandardButtons( QMessageBox::Ok );
   msgBox->setWindowTitle(tr("Simulator Help"));
+  msgBox->setTextFormat(Qt::RichText);
   msgBox->setText(helpText);
   msgBox->setModal(false);
   msgBox->show();

@@ -30,11 +30,6 @@
 #include <QWidget>
 #include <QVector>
 
-#define FLASH_DURATION 10
-
-#define CBEEP_ON      "QLabel { background-color: #FF364E }"
-#define CBEEP_OFF     "QLabel { }"
-
 void traceCb(const char * text);
 
 class Firmware;
@@ -55,8 +50,6 @@ class QFrame;
 namespace Ui {
   class SimulatorWidget;
 }
-
-using namespace Simulator;
 
 class SimulatorWidget : public QWidget
 {
@@ -84,7 +77,7 @@ class SimulatorWidget : public QWidget
 
     QString getSdPath()   const { return sdCardPath; }
     QString getDataPath() const { return radioDataPath; }
-    QVector<keymapHelp_t> * getKeymapHelp() { return &keymapHelp; }
+    QVector<Simulator::keymapHelp_t> getKeymapHelp() const { return keymapHelp; }
 
   public slots:
     void start();
@@ -111,7 +104,7 @@ class SimulatorWidget : public QWidget
 
     QTimer * timer;
     QString windowName;
-    QVector<keymapHelp_t> keymapHelp;
+    QVector<Simulator::keymapHelp_t> keymapHelp;
 
     SimulatedUIWidget     * radioUiWidget;
     VirtualJoystickWidget * vJoyLeft;

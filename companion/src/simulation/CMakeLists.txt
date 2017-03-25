@@ -49,6 +49,7 @@ set(simulation_HDRS
   widgets/lcdwidget.h
   widgets/radiowidget.h
   widgets/radiofaderwidget.h
+  widgets/radiokeywidget.h
   widgets/radioknobwidget.h
   widgets/radioswitchwidget.h
   widgets/radiotrimwidget.h

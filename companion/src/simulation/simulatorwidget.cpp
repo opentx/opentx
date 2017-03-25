@@ -41,7 +41,9 @@
 #include <QMessageBox>
 #include <iostream>
 
-SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator, quint8 flags):
+using namespace Simulator;
+
+SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulator, quint8 flags):
   QWidget(parent),
   ui(new Ui::SimulatorWidget),
   simulator(simulator),
@@ -96,7 +98,7 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface *simulator
       break;
   }
 
-  foreach (keymapHelp_t item, *radioUiWidget->getKeymapHelp())
+  foreach (keymapHelp_t item, radioUiWidget->getKeymapHelp())
     keymapHelp.append(item);
 
   ui->radioUiWidget->layout()->removeItem(ui->radioUiTempSpacer);
