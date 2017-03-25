@@ -368,6 +368,11 @@ inline int divRoundClosest(const int n, const int d)
   return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
+inline int calcRESXto100(int x)
+{
+  return divRoundClosest(x*100, 1024);
+}
+
 #define CHECK_IN_ARRAY(T, index) ((unsigned int)index < DIM(T) ? T[(unsigned int)index] : "???")
 
 extern QList<EEPROMInterface *> eepromInterfaces;
