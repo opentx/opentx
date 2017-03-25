@@ -53,14 +53,14 @@ class ModelPrinter: public QObject
   public:
     ModelPrinter(Firmware * firmware, const GeneralSettings & generalSettings, const ModelData & model);
     virtual ~ModelPrinter();
-  
+
     QString printEEpromSize();
     QString printTrimIncrementMode();
     QString printThrottleTrimMode();
     static QString printModuleProtocol(unsigned int protocol);
     static QString printMultiRfProtocol(int rfProtocol, bool custom);
     static QString printMultiSubType(int rfProtocol, bool custom, unsigned int subType);
-    QString printFlightModeSwitch(int index);
+    QString printFlightModeSwitch(const RawSwitch & swtch);
     QString printFlightModeName(int index);
     QString printFlightModes(unsigned int flightModes);
     QString printModule(int idx);

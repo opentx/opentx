@@ -20,6 +20,8 @@
 
 #include "helpers.h"
 #include "modelprinter.h"
+#include "multiprotocols.h"
+
 #include <QPainter>
 #include <QFile>
 #include <QUrl>
@@ -342,7 +344,7 @@ QString ModelPrinter::printInputName(int idx)
     }
   }
   else {
-    result = RawSource(SOURCE_TYPE_STICK, idx).toString(&model);
+    result = RawSource(SOURCE_TYPE_STICK, idx).toString(&model, &generalSettings);
   }
   return result.toHtmlEscaped();
 }
@@ -363,22 +365,26 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
   }
 
   if (firmware->getCapability(VirtualInputs)) {
-    str += input.srcRaw.toString(&model).toHtmlEscaped();
+    str += input.srcRaw.toString(&model, &generalSettings).toHtmlEscaped();
   }
 
   str += " " + tr("Weight").toHtmlEscaped() + QString("(%1)").arg(getGVarString(input.weight,true).toHtmlEscaped());
-  if (input.curve.value) str += " " + input.curve.toString().toHtmlEscaped();
+  if (input.curve.value)
+    str += " " + input.curve.toString().toHtmlEscaped();
 
   QString flightModesStr = printFlightModes(input.flightModes);
-  if (!flightModesStr.isEmpty()) str += " " + flightModesStr.toHtmlEscaped();
+  if (!flightModesStr.isEmpty())
+    str += " " + flightModesStr.toHtmlEscaped();
 
   if (input.swtch.type != SWITCH_TYPE_NONE)
-    str += " " + tr("Switch").toHtmlEscaped() + QString("(%1)").arg(input.swtch.toString().toHtmlEscaped());
+    str += " " + tr("Switch").toHtmlEscaped() + QString("(%1)").arg(input.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
 
 
   if (firmware->getCapability(VirtualInputs)) {
-    if (input.carryTrim>0) str += " " + tr("NoTrim").toHtmlEscaped();
-    else if (input.carryTrim<0) str += " " + RawSource(SOURCE_TYPE_TRIM, (-(input.carryTrim)-1)).toString(&model).toHtmlEscaped();
+    if (input.carryTrim>0)
+      str += " " + tr("NoTrim").toHtmlEscaped();
+    else if (input.carryTrim<0)
+      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(input.carryTrim)-1)).toString(&model, &generalSettings).toHtmlEscaped();
   }
 
   if (input.offset)
@@ -424,7 +430,7 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
     str += "&nbsp;&nbsp;";
   }
   // highlight source if needed
-  QString source = mix.srcRaw.toString(&model).toHtmlEscaped();
+  QString source = mix.srcRaw.toString(&model, &generalSettings).toHtmlEscaped();
   if ( (mix.srcRaw.type == SOURCE_TYPE_CH) && (mix.srcRaw.index+1 == (int)highlightedSource) ) {
     source = "<b>" + source + "</b>";
   }
@@ -440,12 +446,12 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
     str += " " + flightModesStr.toHtmlEscaped();
 
   if (mix.swtch.type != SWITCH_TYPE_NONE)
-    str += " " + tr("Switch(%1)").arg(mix.swtch.toString()).toHtmlEscaped();
+    str += " " + tr("Switch(%1)").arg(mix.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
 
   if (mix.carryTrim > 0)
     str += " " + tr("NoTrim").toHtmlEscaped();
   else if (mix.carryTrim < 0)
-    str += " " + RawSource(SOURCE_TYPE_TRIM, (-(mix.carryTrim)-1)).toString(&model);
+    str += " " + RawSource(SOURCE_TYPE_TRIM, (-(mix.carryTrim)-1)).toString(&model, &generalSettings);
 
   if (firmware->getCapability(HasNoExpo) && mix.noExpo)
     str += " " + tr("No DR/Expo").toHtmlEscaped();
@@ -467,16 +473,9 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   return str;
 }
 
-QString ModelPrinter::printFlightModeSwitch(int index)
+QString ModelPrinter::printFlightModeSwitch(const RawSwitch & swtch)
 {
-  if (index == 0)
-    return "---";
-  else if (index > 0) {
-    return printFlightModeName(index-1);
-  }
-  else {
-    return "!" + printFlightModeName(-index-1);
-  }
+  return swtch.toString(getCurrentBoard(), &generalSettings);
 }
 
 QString ModelPrinter::printFlightModeName(int index)
@@ -517,6 +516,8 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
 {
   QString result = "";
   const LogicalSwitchData & ls = model.logicalSw[idx];
+  const QString sw1Name = RawSwitch(ls.val1).toString(getCurrentBoard(), &generalSettings);
+  const QString sw2Name = RawSwitch(ls.val2).toString(getCurrentBoard(), &generalSettings);
 
   if (!ls.func)
     return result;
@@ -526,10 +527,10 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
   }
   switch (ls.getFunctionFamily()) {
     case LS_FAMILY_EDGE:
-      result += tr("Edge(%1, [%2:%3])").arg(RawSwitch(ls.val1).toString()).arg(ValToTim(ls.val2)).arg(ls.val3<0 ? tr("instant") : QString("%1").arg(ValToTim(ls.val2+ls.val3)));
+      result += tr("Edge(%1, [%2:%3])").arg(sw1Name).arg(ValToTim(ls.val2)).arg(ls.val3<0 ? tr("instant") : QString("%1").arg(ValToTim(ls.val2+ls.val3)));
       break;
     case LS_FAMILY_STICKY:
-      result += tr("Sticky(%1, %2)").arg(RawSwitch(ls.val1).toString()).arg(RawSwitch(ls.val2).toString());
+      result += tr("Sticky(%1, %2)").arg(sw1Name).arg(sw2Name);
       break;
     case LS_FAMILY_TIMER:
       result += tr("Timer(%1, %2)").arg(ValToTim(ls.val1)).arg(ValToTim(ls.val2));
@@ -539,7 +540,7 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
       RawSourceRange range = source.getRange(&model, generalSettings);
       QString res;
       if (ls.val1)
-        res += source.toString(&model);
+        res += source.toString(&model, &generalSettings);
       else
         res += "0";
       res.remove(" ");
@@ -564,7 +565,7 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
       break;
     }
     case LS_FAMILY_VBOOL:
-      result += RawSwitch(ls.val1).toString();
+      result += sw1Name;
       switch (ls.func) {
         case LS_FN_AND:
           result += " AND ";
@@ -579,12 +580,12 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
           result += " bar ";
           break;
       }
-      result += RawSwitch(ls.val2).toString();
+      result += sw2Name;
       break;
 
     case LS_FAMILY_VCOMP:
       if (ls.val1)
-        result += RawSource(ls.val1).toString(&model);
+        result += RawSource(ls.val1).toString(&model, &generalSettings);
       else
         result += "0";
       switch (ls.func) {
@@ -612,7 +613,7 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
           break;
       }
       if (ls.val2)
-        result += RawSource(ls.val2).toString(&model);
+        result += RawSource(ls.val2).toString(&model, &generalSettings);
       else
         result += "0";
       break;
@@ -620,7 +621,7 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
 
   if (ls.andsw != 0) {
     result +=" ) AND ";
-    result += RawSwitch(ls.andsw).toString();
+    result += RawSwitch(ls.andsw).toString(getCurrentBoard(), &generalSettings);
   }
 
   if (firmware->getCapability(LogicalSwitchesExt)) {
@@ -637,13 +638,16 @@ QString ModelPrinter::printCustomFunctionLine(int idx)
 {
   QString result;
   const CustomFunctionData & cf = model.customFn[idx];
-  if (cf.swtch.type == SWITCH_TYPE_NONE) return result;
+  if (cf.swtch.type == SWITCH_TYPE_NONE)
+    return result;
 
-  result += cf.swtch.toString() + " - ";
+  result += cf.swtch.toString(getCurrentBoard(), &generalSettings) + " - ";
   result += cf.funcToString() + "(";
   result += cf.paramToString(&model) + ")";
-  if (!cf.repeatToString().isEmpty()) result += " " + cf.repeatToString();
-  if (!cf.enabledToString().isEmpty()) result += " " + cf.enabledToString();
+  if (!cf.repeatToString().isEmpty())
+    result += " " + cf.repeatToString();
+  if (!cf.enabledToString().isEmpty())
+    result += " " + cf.enabledToString();
   return result;
 }
 

@@ -101,9 +101,9 @@ bool MultiModelPrinter::MultiColumns::isEmpty()
 
 #define COMPARE(what) \
   columns.beginCompare(); \
-  for (int cc=0; cc<models.size(); cc++) { \
-    ModelPrinter * modelPrinter = modelPrinters[cc]; \
-    ModelData * model = models[cc]; \
+  for (int cc=0; cc < modelPrinterMap.size(); cc++) { \
+    ModelPrinter * modelPrinter = modelPrinterMap.value(cc).second; \
+    const ModelData * model = modelPrinterMap.value(cc).first; \
     (void)(model); (void)(modelPrinter); \
     columns.append(cc, (what)); \
   } \
@@ -111,7 +111,7 @@ bool MultiModelPrinter::MultiColumns::isEmpty()
 
 QString MultiModelPrinter::printTitle(const QString & label)
 {
-  return QString("<tr><td colspan='%1'><h2>").arg(modelPrinters.count()) + label + "</h2></td></tr>";
+  return QString("<tr><td colspan='%1'><h2>").arg(modelPrinterMap.count()) + label + "</h2></td></tr>";
 }
 
 MultiModelPrinter::MultiModelPrinter(Firmware * firmware):
@@ -121,25 +121,27 @@ MultiModelPrinter::MultiModelPrinter(Firmware * firmware):
 
 MultiModelPrinter::~MultiModelPrinter()
 {
-  for(int i=0; i<modelPrinters.size(); i++) {
-    delete modelPrinters[i];
+  for(int i=0; i < modelPrinterMap.size(); i++) {
+    if (modelPrinterMap.value(i).second)
+      delete modelPrinterMap.value(i).second;
   }
+}
+
+void MultiModelPrinter::setModel(int idx, const ModelData & model, const GeneralSettings & generalSettings)
+{
+  if (modelPrinterMap.contains(idx) && modelPrinterMap.value(idx).second) {
+    // free existing model printer
+    delete modelPrinterMap.value(idx).second;
+    modelPrinterMap[idx].second = NULL;
+  }
+
+  QPair<const ModelData *, ModelPrinter *> pair(&model, new ModelPrinter(firmware, generalSettings, model));
+  modelPrinterMap.insert(idx, pair);  // QMap.insert will replace any existing key
 }
 
 void MultiModelPrinter::setModel(int idx, const ModelData & model)
 {
-  int count = std::max(models.size(), idx+1);
-  models.resize(count);
-  modelPrinters.resize(count);
-
-  if (modelPrinters[idx]) {
-    // free existing model printer
-    delete modelPrinters[idx];
-    modelPrinters[idx] = 0;
-  }
-
-  models[idx] = (ModelData *)&model; // TODO remove cast
-  modelPrinters[idx] = new ModelPrinter(firmware, defaultSettings, model);
+  setModel(idx, model, defaultSettings);
 }
 
 QString MultiModelPrinter::print(QTextDocument * document)
@@ -169,7 +171,7 @@ QString MultiModelPrinter::printSetup()
 {
   QString str = printTitle(tr("General Model Settings"));
 
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   columns.appendTitle(tr("Name:"));
   COMPARE(model->name);
   columns.append("<br/>");
@@ -207,15 +209,15 @@ QString MultiModelPrinter::printSetup()
 QString MultiModelPrinter::printHeliSetup()
 {
   bool heliEnabled = false;
-  for (int k=0; k<models.size(); k++) {
-    heliEnabled =  heliEnabled || models[k]->swashRingData.type != HELI_SWASH_TYPE_NONE;
+  for (int k=0; k < modelPrinterMap.size(); k++) {
+    heliEnabled =  heliEnabled || modelPrinterMap.value(k).first->swashRingData.type != HELI_SWASH_TYPE_NONE;
   }
 
   if (!heliEnabled)
     return "";
 
   QString str = printTitle(tr("Helicopter Setup"));
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   columns.appendTitle (tr("Swash Type:"));
   COMPARE(modelPrinter->printHeliSwashType());
   columns.append ("<br/>");
@@ -260,15 +262,15 @@ QString MultiModelPrinter::printFlightModes()
 
   // Trims
   {
-    MultiColumns columns(models.size());
+    MultiColumns columns(modelPrinterMap.size());
     columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
     columns.append("<tr>");
     columns.append("<td><b>" + tr("Flight mode") + "</b></td>");
     columns.append("<td><b>" + tr("Switch") + "</b></td>");
     columns.append("<td><b>" + tr("Fade IN") + "</b></td>");
     columns.append("<td><b>" + tr("Fade OUT") + "</b></td>");
-    for (int i=0; i<4; i++) {
-      columns.append("<td><b>" + getCurrentFirmware()->getAnalogInputName(i) + " trim</b></td>");
+    for (int i=0; i < getBoardCapability(getCurrentBoard(), Board::NumTrims); i++) {
+      columns.append("<td><b>" + RawSource(SOURCE_TYPE_TRIM, i).toString() + "</b></td>");
     }
     columns.append("</tr>");
 
@@ -276,13 +278,13 @@ QString MultiModelPrinter::printFlightModes()
       columns.append("<tr><td><b>" + tr("FM%1").arg(i) + "</b>&nbsp;");
       COMPARE(model->flightModeData[i].name);
       columns.append("</td><td>");
-      COMPARE(model->flightModeData[i].swtch.toString());
+      COMPARE(modelPrinter->printFlightModeSwitch(model->flightModeData[i].swtch));
       columns.append("</td><td>");
       COMPARE(model->flightModeData[i].fadeIn);
       columns.append("</td><td>");
       COMPARE(model->flightModeData[i].fadeOut);
       columns.append("</td>");
-      for (int k=0; k<CPN_MAX_STICKS; k++) {
+      for (int k=0; k < getBoardCapability(getCurrentBoard(), Board::NumTrims); k++) {
         columns.append("<td>");
         COMPARE(modelPrinter->printTrim(i, k));
         columns.append("</td>");
@@ -297,7 +299,7 @@ QString MultiModelPrinter::printFlightModes()
   // GVars and Rotary Encoders
   int gvars = firmware->getCapability(Gvars);
   if ((gvars && firmware->getCapability(GvarsFlightModes)) || firmware->getCapability(RotaryEncoders)) {
-    MultiColumns columns(models.size());
+    MultiColumns columns(modelPrinterMap.size());
     columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
     columns.append("<tr><td><b>" + tr("Flight mode") + "</b></td>");
     if (firmware->getCapability(GvarsFlightModes)) {
@@ -339,7 +341,7 @@ QString MultiModelPrinter::printFlightModes()
 QString MultiModelPrinter::printLimits()
 {
   QString str = printTitle(tr("Limits"));
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>" \
                  "<tr>" \
                  " <td><b>" + tr("Channel") + "</b></td>" \
@@ -350,6 +352,11 @@ QString MultiModelPrinter::printLimits()
                  " <td><b>" + tr("Invert") + "</b></td>" \
                  "</tr>");
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
+    int count = 0;
+    for (int k=0; k < modelPrinterMap.size(); k++)
+      count = std::max(count, modelPrinterMap.value(k).first->mixes(i).size());
+    if (!count)
+      continue;
     columns.append("<tr><td><b>");
     COMPARE(modelPrinter->printChannelName(i));
     columns.append("</b></td><td>");
@@ -363,6 +370,7 @@ QString MultiModelPrinter::printLimits()
     columns.append("</td><td>");
     COMPARE(model->limitData[i].revertToString());
     columns.append("</td></tr>");
+
   }
   columns.append("</table>");
   str.append(columns.print());
@@ -373,7 +381,7 @@ QString MultiModelPrinter::printGvars()
 {
   QString str = printTitle(tr("Global Variables"));
   int gvars = firmware->getCapability(Gvars);
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'><tr>");
   for (int i=0; i<gvars; i++) {
     columns.append(QString("<td><b>") + tr("GV%1").arg(i+1) + "</b></td>");
@@ -392,12 +400,12 @@ QString MultiModelPrinter::printGvars()
 QString MultiModelPrinter::printInputs()
 {
   QString str = printTitle(tr("Inputs"));
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
   for (int i=0; i<std::max(4, firmware->getCapability(VirtualInputs)); i++) {
     int count = 0;
-    for (int k=0; k<models.size(); k++) {
-      count = std::max(count, models[k]->expos(i).size());
+    for (int k=0; k < modelPrinterMap.size(); k++) {
+      count = std::max(count, modelPrinterMap.value(k).first->expos(i).size());
     }
     if (count > 0) {
       columns.append("<tr><td width='20%'><b>");
@@ -418,12 +426,12 @@ QString MultiModelPrinter::printInputs()
 QString MultiModelPrinter::printMixers()
 {
   QString str = printTitle(tr("Mixers"));
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
     int count = 0;
-    for (int k=0; k<models.size(); k++) {
-      count = std::max(count, models[k]->mixes(i).size());
+    for (int k=0; k < modelPrinterMap.size(); k++) {
+      count = std::max(count, modelPrinterMap.value(k).first->mixes(i).size());
     }
     if (count > 0) {
       columns.append("<tr><td width='20%'><b>");
@@ -444,13 +452,13 @@ QString MultiModelPrinter::printMixers()
 QString MultiModelPrinter::printCurves(QTextDocument * document)
 {
   QString str;
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   int count = 0;
   columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
   for (int i=0; i<firmware->getCapability(NumCurves); i++) {
     bool curveEmpty = true;
-    for (int k=0; k<models.size(); k++) {
-      if (!models[k]->curves[i].isEmpty()) {
+    for (int k=0; k < modelPrinterMap.size(); k++) {
+      if (!modelPrinterMap.value(k).first->curves[i].isEmpty()) {
         curveEmpty = false;
         break;
       }
@@ -459,8 +467,8 @@ QString MultiModelPrinter::printCurves(QTextDocument * document)
       count++;
       columns.append("<tr><td width='20%'><b>" + tr("CV%1").arg(i+1) + "</b></td><td>");
       COMPARE(modelPrinter->printCurve(i));
-      for (int k=0; k<models.size(); k++)
-        columns.append(k, QString("<br/><img src='%1' border='0' />").arg(modelPrinters[k]->createCurveImage(i, document)));
+      for (int k=0; k < modelPrinterMap.size(); k++)
+        columns.append(k, QString("<br/><img src='%1' border='0' />").arg(modelPrinterMap.value(k).second->createCurveImage(i, document)));
       columns.append("</td></tr>");
     }
   }
@@ -475,13 +483,13 @@ QString MultiModelPrinter::printCurves(QTextDocument * document)
 QString MultiModelPrinter::printLogicalSwitches()
 {
   QString str;
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   int count = 0;
   columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     bool lsEmpty = true;
-    for (int k=0; k<models.size(); k++) {
-      if (!modelPrinters[k]->printLogicalSwitchLine(i).isEmpty()) {
+    for (int k=0; k < modelPrinterMap.size(); k++) {
+      if (!modelPrinterMap.value(k).second->printLogicalSwitchLine(i).isEmpty()) {
         lsEmpty = false;
         break;
       }
@@ -504,13 +512,13 @@ QString MultiModelPrinter::printLogicalSwitches()
 QString MultiModelPrinter::printCustomFunctions()
 {
   QString str;
-  MultiColumns columns(models.size());
+  MultiColumns columns(modelPrinterMap.size());
   int count = 0;
   columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
-  for (int i=0; i<firmware->getCapability(CustomFunctions); i++) {
+  for (int i=0; i < firmware->getCapability(CustomFunctions); i++) {
     bool sfEmpty = true;
-    for (int k=0; k<models.size(); k++) {
-      if (!modelPrinters[k]->printCustomFunctionLine(i).isEmpty()) {
+    for (int k=0; k < modelPrinterMap.size(); k++) {
+      if (modelPrinterMap.value(k).first->customFn[i].swtch.type != SWITCH_TYPE_NONE) {
         sfEmpty = false;
         break;
       }
@@ -536,7 +544,7 @@ QString MultiModelPrinter::printTelemetry()
 
   // Analogs on non ARM boards
   if (!IS_ARM(firmware->getBoard())) {
-    MultiColumns columns(models.size());
+    MultiColumns columns(modelPrinterMap.size());
     columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>" \
                    "<tr><td width='22%'><b>" + tr("Analogs") + "</b></td><td width='26%'><b>" + tr("Unit") + "</b></td><td width='26%'><b>" + tr("Scale") + "</b></td><td width='26%'><b>" + tr("Offset") + "</b></td></tr>");
     for (int i=0; i<2; i++) {
@@ -555,7 +563,7 @@ QString MultiModelPrinter::printTelemetry()
 
   // RSSI alarms
   {
-    MultiColumns columns(models.size());
+    MultiColumns columns(modelPrinterMap.size());
     columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>");
     for (int i=0; i<2; i++) {
       columns.append("<tr><td><b>" + QString(i==0 ? tr("RSSI Alarms") : "") + "</b></td><td>");
