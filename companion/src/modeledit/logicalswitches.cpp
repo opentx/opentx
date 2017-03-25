@@ -397,7 +397,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
     cswitchDuration[i]->setVisible(mask & DURATION_ENABLED);
     cswitchDelay[i]->setVisible(mask & DELAY_ENABLED);
     if (mask & DURATION_ENABLED)
-    cswitchDuration[i]->setValue(model->logicalSw[i].duration/10.0);
+      cswitchDuration[i]->setValue(model->logicalSw[i].duration/10.0);
     if (mask & DELAY_ENABLED)
       cswitchDelay[i]->setValue(model->logicalSw[i].delay/10.0);
   }

@@ -413,7 +413,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           cfn.adjustMode = fswtchGVmode[i]->currentIndex();
         widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
         if (cfn.adjustMode==FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
-          if (modified) cfn.param = fswtchParam[i]->value();
+          if (modified)
+            cfn.param = fswtchParam[i]->value();
           fswtchParam[i]->setDecimals(0);
           fswtchParam[i]->setSingleStep(1);
           if (IS_ARM(getCurrentBoard())) {
