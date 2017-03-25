@@ -355,128 +355,149 @@ void CustomFunctionsPanel::onChildModified()
 void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 {
     CustomFunctionData & cfn = functions[i];
-    AssignFunc func = (AssignFunc)fswtchFunc[i]->itemData(fswtchFunc[i]->currentIndex()).toInt();
+    AssignFunc func = (AssignFunc)fswtchFunc[i]->currentData().toInt();
 
     unsigned int widgetsMask = 0;
     if (modified) {
-      cfn.swtch = RawSwitch(fswtchSwtch[i]->itemData(fswtchSwtch[i]->currentIndex()).toInt());
+      cfn.swtch = RawSwitch(fswtchSwtch[i]->currentData().toInt());
       cfn.func = func;
       cfn.enabled = fswtchEnable[i]->isChecked();
       cfn.adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
 
-    if (func>=FuncOverrideCH1 && func<=FuncOverrideCH32) {
-      if (model) {
-        int channelsMax = model->getChannelsMax(true);
-        fswtchParam[i]->setDecimals(0);
-        fswtchParam[i]->setSingleStep(1);
-        fswtchParam[i]->setMinimum(-channelsMax);
-        fswtchParam[i]->setMaximum(channelsMax);
-        if (modified) {
-          cfn.param = fswtchParam[i]->value();
-        }
-        fswtchParam[i]->setValue(cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
-      }
-    }
-    else if (func==FuncLogs) {
-      fswtchParam[i]->setDecimals(1);
-      fswtchParam[i]->setMinimum(0);
-      fswtchParam[i]->setMaximum(25.5);
-      fswtchParam[i]->setSingleStep(0.1);
-      if (modified) cfn.param = fswtchParam[i]->value()*10.0;
-      fswtchParam[i]->setValue(cfn.param/10.0);
-      widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
-    }
-    else if (func>=FuncAdjustGV1 && func<=FuncAdjustGVLast) {
-      if (modified) cfn.adjustMode = fswtchGVmode[i]->currentIndex();
-      widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
-      if (cfn.adjustMode==FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
-        if (modified) cfn.param = fswtchParam[i]->value();
-        fswtchParam[i]->setDecimals(0);
-        fswtchParam[i]->setSingleStep(1);
-        if (IS_ARM(getCurrentBoard())) {
-          fswtchParam[i]->setMinimum(-500);
-          fswtchParam[i]->setMaximum(500);
-        }
-        else {
-          fswtchParam[i]->setMinimum(-125);
-          fswtchParam[i]->setMaximum(125);
-        }
-        fswtchParam[i]->setValue(cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
-      }
-      else {
-        if (modified) cfn.param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-        populateFuncParamCB(fswtchParamT[i], func, cfn.param, cfn.adjustMode);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
-      }
-    }
-    else if (func==FuncReset) {
-      if (modified) cfn.param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-      populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-      widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
-    }
-    else if (func>=FuncSetTimer1 && func<=FuncSetTimer3) {
-      if (modified) cfn.param = QTimeS(fswtchParamTime[i]->time()).seconds();
-      fswtchParamTime[i]->setMinimumTime(QTime(0, 0, 0));
-      fswtchParamTime[i]->setMaximumTime(firmware->getMaxTimerStart());
-      fswtchParamTime[i]->setTime(QTimeS(cfn.param));
-      widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM + CUSTOM_FUNCTION_ENABLE;
-    }
-    else if (func>=FuncSetFailsafeInternalModule && func<=FuncBindExternalModule) {
-      widgetsMask |= CUSTOM_FUNCTION_ENABLE;
-    }
-    else if (func==FuncVolume) {
-      if (modified) cfn.param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-      populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-      widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
-    }
-    else if (func==FuncPlaySound || func==FuncPlayHaptic || func==FuncPlayValue || func==FuncPlayPrompt || func==FuncPlayBoth || func==FuncBackgroundMusic) {
-      if (func != FuncBackgroundMusic) {
-        widgetsMask |= CUSTOM_FUNCTION_REPEAT;
-        fswtchRepeat[i]->update();
-      }
-      if (func==FuncPlayValue) {
-        if (modified) cfn.param = fswtchParamT[i]->itemData(fswtchParamT[i]->currentIndex()).toInt();
-        populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
-      }
-      else if (func==FuncPlayPrompt || func==FuncPlayBoth) {
-        if (firmware->getCapability(VoicesAsNumbers)) {
+    if (cfn.swtch.toValue()){
+
+      if (func>=FuncOverrideCH1 && func<=FuncOverrideCH32) {
+        if (model) {
+          int channelsMax = model->getChannelsMax(true);
           fswtchParam[i]->setDecimals(0);
           fswtchParam[i]->setSingleStep(1);
-          fswtchParam[i]->setMinimum(0);
-          if (func==FuncPlayPrompt) {
-            widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT + CUSTOM_FUNCTION_GV_TOOGLE;
-          }
-          else {
-            widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT;
-            fswtchParamGV[i]->setChecked(false);
-          }
-          fswtchParam[i]->setMaximum(func==FuncPlayBoth ? 254 : 255);
+          fswtchParam[i]->setMinimum(-channelsMax);
+          fswtchParam[i]->setMaximum(channelsMax);
           if (modified) {
-            if (fswtchParamGV[i]->isChecked()) {
-              fswtchParam[i]->setMinimum(1);
-              cfn.param = std::min(fswtchParam[i]->value(),5.0)+(fswtchParamGV[i]->isChecked() ? 250 : 0);
-            }
-            else {
-              cfn.param = fswtchParam[i]->value();
-            }
+            cfn.param = fswtchParam[i]->value();
           }
-          if (cfn.param>250 && (func!=FuncPlayBoth)) {
-            fswtchParamGV[i]->setChecked(true);
-            fswtchParam[i]->setValue(cfn.param-250);
-            fswtchParam[i]->setMaximum(5);
+          fswtchParam[i]->setValue(cfn.param);
+          widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
+        }
+      }
+      else if (func==FuncLogs) {
+        fswtchParam[i]->setDecimals(1);
+        fswtchParam[i]->setMinimum(0);
+        fswtchParam[i]->setMaximum(25.5);
+        fswtchParam[i]->setSingleStep(0.1);
+        if (modified)
+          cfn.param = fswtchParam[i]->value()*10.0;
+        fswtchParam[i]->setValue(cfn.param/10.0);
+        widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
+      }
+      else if (func>=FuncAdjustGV1 && func<=FuncAdjustGVLast) {
+        if (modified)
+          cfn.adjustMode = fswtchGVmode[i]->currentIndex();
+        widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
+        if (cfn.adjustMode==FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
+          if (modified)
+            cfn.param = fswtchParam[i]->value();
+          fswtchParam[i]->setDecimals(0);
+          fswtchParam[i]->setSingleStep(1);
+          if (IS_ARM(getCurrentBoard())) {
+            fswtchParam[i]->setMinimum(-500);
+            fswtchParam[i]->setMaximum(500);
           }
           else {
-            fswtchParamGV[i]->setChecked(false);
-            fswtchParam[i]->setValue(cfn.param);
+            fswtchParam[i]->setMinimum(-125);
+            fswtchParam[i]->setMaximum(125);
           }
-          if (cfn.param < 251)
-            widgetsMask |= CUSTOM_FUNCTION_PLAY;
+          fswtchParam[i]->setValue(cfn.param);
+          widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM;
         }
         else {
+          if (modified)
+            cfn.param = fswtchParamT[i]->currentData().toInt();
+          populateFuncParamCB(fswtchParamT[i], func, cfn.param, cfn.adjustMode);
+          widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
+        }
+      }
+      else if (func==FuncReset) {
+        if (modified)
+          cfn.param = fswtchParamT[i]->currentData().toInt();
+        populateFuncParamCB(fswtchParamT[i], func, cfn.param);
+        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
+      }
+      else if (func>=FuncSetTimer1 && func<=FuncSetTimer3) {
+        if (modified)
+          cfn.param = QTimeS(fswtchParamTime[i]->time()).seconds();
+        fswtchParamTime[i]->setMinimumTime(QTime(0, 0, 0));
+        fswtchParamTime[i]->setMaximumTime(firmware->getMaxTimerStart());
+        fswtchParamTime[i]->setTime(QTimeS(cfn.param));
+        widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM + CUSTOM_FUNCTION_ENABLE;
+      }
+      else if (func>=FuncSetFailsafeInternalModule && func<=FuncBindExternalModule) {
+        widgetsMask |= CUSTOM_FUNCTION_ENABLE;
+      }
+      else if (func==FuncVolume) {
+        if (modified)
+          cfn.param = fswtchParamT[i]->currentData().toInt();
+        populateFuncParamCB(fswtchParamT[i], func, cfn.param);
+        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
+      }
+      else if (func==FuncPlaySound || func==FuncPlayHaptic || func==FuncPlayValue || func==FuncPlayPrompt || func==FuncPlayBoth || func==FuncBackgroundMusic) {
+        if (func != FuncBackgroundMusic) {
+          widgetsMask |= CUSTOM_FUNCTION_REPEAT;
+          fswtchRepeat[i]->update();
+        }
+        if (func==FuncPlayValue) {
+          if (modified)
+            cfn.param = fswtchParamT[i]->currentData().toInt();
+          populateFuncParamCB(fswtchParamT[i], func, cfn.param);
+          widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
+        }
+        else if (func==FuncPlayPrompt || func==FuncPlayBoth) {
+          if (firmware->getCapability(VoicesAsNumbers)) {
+            fswtchParam[i]->setDecimals(0);
+            fswtchParam[i]->setSingleStep(1);
+            fswtchParam[i]->setMinimum(0);
+            if (func==FuncPlayPrompt) {
+              widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT + CUSTOM_FUNCTION_GV_TOOGLE;
+            }
+            else {
+              widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT;
+              fswtchParamGV[i]->setChecked(false);
+            }
+            fswtchParam[i]->setMaximum(func==FuncPlayBoth ? 254 : 255);
+            if (modified) {
+              if (fswtchParamGV[i]->isChecked()) {
+                fswtchParam[i]->setMinimum(1);
+                cfn.param = std::min(fswtchParam[i]->value(),5.0)+(fswtchParamGV[i]->isChecked() ? 250 : 0);
+              }
+              else {
+                cfn.param = fswtchParam[i]->value();
+              }
+            }
+            if (cfn.param>250 && (func!=FuncPlayBoth)) {
+              fswtchParamGV[i]->setChecked(true);
+              fswtchParam[i]->setValue(cfn.param-250);
+              fswtchParam[i]->setMaximum(5);
+            }
+            else {
+              fswtchParamGV[i]->setChecked(false);
+              fswtchParam[i]->setValue(cfn.param);
+            }
+            if (cfn.param < 251)
+              widgetsMask |= CUSTOM_FUNCTION_PLAY;
+          }
+          else {
+            widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
+            if (modified) {
+              getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, firmware->getCapability(VoicesMaxLength));
+            }
+            populateFileComboBox(fswtchParamArmT[i], tracksSet, cfn.paramarm);
+            if (fswtchParamArmT[i]->currentText() != "----") {
+              widgetsMask |= CUSTOM_FUNCTION_PLAY;
+            }
+          }
+        }
+        else if (func==FuncBackgroundMusic) {
           widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
           if (modified) {
             getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, firmware->getCapability(VoicesMaxLength));
@@ -486,50 +507,46 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             widgetsMask |= CUSTOM_FUNCTION_PLAY;
           }
         }
+        else if (func==FuncPlaySound) {
+          if (modified)
+            cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
+          populateFuncParamCB(fswtchParamT[i], func, cfn.param);
+          widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
+        }
+        else if (func==FuncPlayHaptic) {
+          if (modified)
+            cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
+          populateFuncParamCB(fswtchParamT[i], func, cfn.param);
+          widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
+        }
       }
-      else if (func==FuncBackgroundMusic) {
+      else if (func==FuncPlayScript) {
         widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
         if (modified) {
-          getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, firmware->getCapability(VoicesMaxLength));
+          getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, 8);
         }
-        populateFileComboBox(fswtchParamArmT[i], tracksSet, cfn.paramarm);
-        if (fswtchParamArmT[i]->currentText() != "----") {
-          widgetsMask |= CUSTOM_FUNCTION_PLAY;
+        populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
+      }
+      else if (func==FuncBacklight && IS_TARANIS_PLUS(getCurrentBoard())) {
+        if (modified)
+          cfn.param = (uint8_t)fswtchBLcolor[i]->value();
+        fswtchBLcolor[i]->setValue(cfn.param);
+        widgetsMask |= CUSTOM_FUNCTION_BL_COLOR;
+      }
+      else {
+        if (modified)
+          cfn.param = fswtchParam[i]->value();
+        fswtchParam[i]->setDecimals(0);
+        fswtchParam[i]->setSingleStep(1);
+        fswtchParam[i]->setValue(cfn.param);
+        if (func <= FuncInstantTrim) {
+          widgetsMask |= CUSTOM_FUNCTION_ENABLE;
         }
       }
-      else if (func==FuncPlaySound) {
-        if (modified) cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
-        populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
-      }
-      else if (func==FuncPlayHaptic) {
-        if (modified) cfn.param = (uint8_t)fswtchParamT[i]->currentIndex();
-        populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
-      }
-    }
-    else if (func==FuncPlayScript) {
-      widgetsMask |= CUSTOM_FUNCTION_FILE_PARAM;
-      if (modified) {
-        getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, 8);
-      }
-      populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
-    }
-    else if (func==FuncBacklight && IS_TARANIS_PLUS(getCurrentBoard())) {
-      if (modified) cfn.param = (uint8_t)fswtchBLcolor[i]->value();
-      fswtchBLcolor[i]->setValue(cfn.param);
-      widgetsMask |= CUSTOM_FUNCTION_BL_COLOR;
-    }
-    else {
-      if (modified) cfn.param = fswtchParam[i]->value();
-      fswtchParam[i]->setDecimals(0);
-      fswtchParam[i]->setSingleStep(1);
-      fswtchParam[i]->setValue(cfn.param);
-      if (func <= FuncInstantTrim) {
-        widgetsMask |= CUSTOM_FUNCTION_ENABLE;
-      }
+
     }
 
+    fswtchFunc[i]->setVisible(widgetsMask);
     fswtchParam[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_NUMERIC_PARAM);
     fswtchParamTime[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_TIME_PARAM);
     fswtchParamGV[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_TOOGLE);
