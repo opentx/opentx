@@ -19,8 +19,6 @@
  */
 
 #include <QApplication>
-#include <QTranslator>
-#include <QDir>
 #include <QSplashScreen>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
@@ -33,6 +31,7 @@
 #include "version.h"
 #include "appdata.h"
 #include "storage.h"
+#include "translations.h"
 
 #ifdef __APPLE__
 #include <QProxyStyle>
@@ -61,7 +60,6 @@ int main(int argc, char *argv[])
 #endif
 
   Q_INIT_RESOURCE(companion);
-  Q_INIT_RESOURCE(translations);
 
   if (AppDebugMessageHandler::instance())
     AppDebugMessageHandler::instance()->installAppMessageHandler();
@@ -81,17 +79,7 @@ int main(int argc, char *argv[])
   app.setStyle(new MyProxyStyle);
 #endif
 
-  QTranslator companionTranslator;
-  companionTranslator.load(":/companion_" + g.locale());
-  QTranslator qtTranslator;
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 3, 0))
-  QString qtfile = "qtbase_";
-#else
-  QString qtfile = "qt_";
-#endif
-  qtTranslator.load(qtfile + g.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-  app.installTranslator(&companionTranslator);
-  app.installTranslator(&qtTranslator);
+  Translations::installTranslators();
 
   // QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 

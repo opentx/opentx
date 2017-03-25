@@ -19,13 +19,9 @@
  */
 
 #include <QApplication>
-#include <QDir>
-#include <QLibraryInfo>
-#include <QLocale>
 #include <QMessageBox>
 #include <QString>
 #include <QTextStream>
-#include <QTranslator>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
   #undef main
@@ -41,6 +37,7 @@
 #include "simulatorstartupdialog.h"
 #include "storage.h"
 #include "qxtcommandoptions.h"
+#include "translations.h"
 #include "version.h"
 
 using namespace Simulator;
@@ -83,7 +80,6 @@ int main(int argc, char *argv[])
 #endif
 
   Q_INIT_RESOURCE(companion);
-  Q_INIT_RESOURCE(translations);
 
   if (AppDebugMessageHandler::instance())
     AppDebugMessageHandler::instance()->installAppMessageHandler();
@@ -94,17 +90,7 @@ int main(int argc, char *argv[])
 
   QString resultMsg;
 
-  QTranslator companionTranslator;
-  companionTranslator.load(":/companion_" + g.locale());
-  QTranslator qtTranslator;
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 3, 0))
-  QString qtfile = "qtbase_";
-#else
-  QString qtfile = "qt_";
-#endif
-  qtTranslator.load(qtfile + g.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-  app.installTranslator(&companionTranslator);
-  app.installTranslator(&qtTranslator);
+  Translations::installTranslators();
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   uint32_t sdlFlags = 0;

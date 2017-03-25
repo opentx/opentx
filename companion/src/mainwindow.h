@@ -52,47 +52,32 @@ class MainWindow : public QMainWindow
 
   public:
     MainWindow();
-    
+
   signals:
     void FirmwareChanged();
 
   protected:
     QString getCompanionUpdateBaseUrl();
+    QString seekCodeString(const QByteArray & qba, const QString & label);
+
+  protected slots:
     void dowloadLastFirmwareUpdate();
     void startFirmwareDownload();
-    void closeEvent(QCloseEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dropEvent(QDropEvent *event);
-    void setLanguage(const QString & langString);
-    QString seekCodeString(const QByteArray & qba, const QString & label);
+    virtual void closeEvent(QCloseEvent *event);
+    virtual void changeEvent(QEvent *e);
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dropEvent(QDropEvent *event);
 
   private slots:
     void openDocURL();
+    void retranslateUi();
 
-    void setSysLanguage() { setLanguage("");      };
-    void setCZLanguage()  { setLanguage("cs_CZ"); };
-    void setDELanguage()  { setLanguage("de_DE"); };
-    void setENLanguage()  { setLanguage("en");    };
-    void setFILanguage()  { setLanguage("fi_FI"); };
-    void setFRLanguage()  { setLanguage("fr_FR"); };
-    void setITLanguage()  { setLanguage("it_IT"); };
-    void setPLLanguage()  { setLanguage("pl_PL"); };
-    void setESLanguage()  { setLanguage("es_ES"); };
-    void setSELanguage()  { setLanguage("sv_SE"); };
-    void setCNLanguage()  { setLanguage("zh_CN"); };
-
+    void setLanguage(const QString & langString);
+    void onLanguageChanged(QAction * act);
     void setTheme(int index);
-    void setClassicTheme()   {setTheme(0);};
-    void setYericoTheme()    {setTheme(1);};
-    void setMonoWhiteTheme() {setTheme(2);};
-    void setMonochromeTheme(){setTheme(3);};
-    void setMonoBlueTheme()  {setTheme(4);};
-
+    void onThemeChanged(QAction * act);
     void setIconThemeSize(int index);
-    void setSmallIconThemeSize()  {setIconThemeSize(0);};
-    void setNormalIconThemeSize() {setIconThemeSize(1);};
-    void setBigIconThemeSize()    {setIconThemeSize(2);};
-    void setHugeIconThemeSize()   {setIconThemeSize(3);};
+    void onIconSizeChanged(QAction * act);
 
     void checkForUpdates();
     void checkForFirmwareUpdate();
@@ -138,34 +123,34 @@ class MainWindow : public QMainWindow
     void fwPrefs();
     void updateMenus();
     void createProfile();
-    MdiChild * createMdiChild();
     void setActiveSubWindow(QWidget *window);
-    QMenu * createRecentFileMenu();
-    QMenu * createProfilesMenu();
     void autoClose();
 
-  private:
     void closeUpdatesWaitDialog();
     void onUpdatesError();
+    void openFile(const QString & fileName, bool updateLastUsedDir = false);
 
-    void createActions();
+  private:
     QAction * addAct(const QString &, const QString &, const QString &, enum QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
     QAction * addAct(const QString &, const QString &, const QString &, const QKeySequence &, const char *, QObject *slotObj=NULL);
-    QAction * addAct(QActionGroup *, const QString &, const QString &, const char *);
     QAction * addAct(const QString &, const QString &, const QString &, const char *);
+    QAction * addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName,
+                            const char * propName = 0, const QVariant & propValue = QVariant(), const QVariant & dfltValue = QVariant());
 
+    QMenu * createLanguageMenu(QWidget * parent = Q_NULLPTR);
+    QMenu * createRecentFileMenu();
+    QMenu * createProfilesMenu();
+
+    void createActions();
     void createMenus();
     void createToolBars();
     void createStatusBar();
     void updateRecentFileActions();
     void updateProfilesActions();
-    void updateIconSizeActions();
-    void updateLanguageActions();
-    void updateIconThemeActions();
-    void openFile(const QString & fileName, bool updateLastUsedDir = false);
 
     QString strippedName(const QString & fullFileName);
 
+    MdiChild * createMdiChild();
     MdiChild * activeMdiChild();
     QMdiSubWindow * findMdiChild(const QString & fileName);
 
@@ -181,6 +166,8 @@ class MainWindow : public QMainWindow
     QString firmwareVersionString;
 
     QNetworkAccessManager *networkManager;
+
+    QVector<QAction *> actionsList;
 
     QMenu *fileMenu;
     QMenu *editMenu;
@@ -226,28 +213,6 @@ class MainWindow : public QMainWindow
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];
     QAction *createProfileAct;
-    QAction *classicThemeAct;
-    QAction *yericoThemeAct;
-    QAction *monoThemeAct;
-    QAction *monoBlueAct;
-    QAction *monoWhiteAct;
-    QAction *smallIconAct;
-    QAction *normalIconAct;
-    QAction *bigIconAct;
-    QAction *hugeIconAct;
-
-    QAction *sysLangAct;
-    QAction *czechLangAct;
-    QAction *germanLangAct;
-    QAction *englishLangAct;
-    QAction *finnishLangAct;
-    QAction *frenchLangAct;
-    QAction *italianLangAct;
-    QAction *polishLangAct;
-    QAction *spanishLangAct;
-    QAction *swedishLangAct;
-    QAction *chineseLangAct;
-
     QAction *openDocURLAct;
 };
 

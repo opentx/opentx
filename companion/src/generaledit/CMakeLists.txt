@@ -23,9 +23,10 @@ foreach(name ${generaledit_NAMES})
   set(generaledit_HDRS ${generaledit_HDRS} ${name}.h)
   set(generaledit_UIS  ${generaledit_UIS}  ${name}.ui)
 endforeach()
- 
+
 qt5_wrap_ui(generaledit_SRCS ${generaledit_UIS})
 qt5_wrap_cpp(generaledit_SRCS ${generaledit_HDRS})
 
 add_library(generaledit ${generaledit_SRCS})
 qt5_use_modules(generaledit Widgets Xml Multimedia)
+target_link_libraries(generaledit PRIVATE ${CPN_COMMON_LIB})

@@ -1,13 +1,6 @@
-<!DOCTYPE RCC><RCC version="1.0">
-    <qresource prefix="/">
-        <file>companion_cs.qm</file>
-        <file>companion_de.qm</file>
-        <file>companion_es.qm</file>
-        <file>companion_fi.qm</file>
-        <file>companion_fr.qm</file>
-        <file>companion_it.qm</file>
-        <file>companion_pl.qm</file>
-        <file>companion_sv.qm</file>
-        <file>companion_zh.qm</file>
-    </qresource>
+<!DOCTYPE RCC>
+<RCC version="1.0">
+  <qresource prefix="/translations">
+@TRANSLATION_FILES_LIST@
+  </qresource>
 </RCC>

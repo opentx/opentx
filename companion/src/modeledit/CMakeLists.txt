@@ -59,3 +59,4 @@ qt5_wrap_cpp(modeledit_SRCS ${modeledit_HDRS})
 
 add_library(modeledit ${modeledit_SRCS})
 qt5_use_modules(modeledit Widgets Xml Multimedia)
+target_link_libraries(modeledit PRIVATE ${CPN_COMMON_LIB})
