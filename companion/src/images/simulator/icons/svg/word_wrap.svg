@@ -1,40 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   version="1.1"
-   width="64"
-   height="64"
    id="svg3254"
-   inkscape:version="0.91 r13725"
-   sodipodi:docname="word_wrap.svg">
-  <sodipodi:namedview
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1"
-     objecttolerance="10"
-     gridtolerance="10"
-     guidetolerance="10"
-     inkscape:pageopacity="0"
-     inkscape:pageshadow="2"
-     inkscape:window-width="1215"
-     inkscape:window-height="1000"
-     id="namedview8"
-     showgrid="false"
-     inkscape:zoom="2.6074563"
-     inkscape:cx="94.851293"
-     inkscape:cy="-2.6463556"
-     inkscape:window-x="65"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg3254" />
+   height="64"
+   width="64"
+   version="1.1">
   <defs
      id="defs3256" />
   <metadata
@@ -50,28 +24,23 @@
     </rdf:RDF>
   </metadata>
   <path
-     style="fill:#000000;fill-opacity:1"
-     d="m 6.6852387,56.408075 0,-2.638845 9.3616333,0 9.361634,0 0,2.638845 0,2.638852 -9.361634,0 -9.3616333,0 0,-2.638852 z"
      id="path3361"
-     inkscape:connector-curvature="0" />
-  <path
-     style="fill:#000000;fill-opacity:1"
-     d="m 6.6852387,44.350575 0,-2.638852 9.3616333,0 9.361634,0 0,2.638852 0,2.638847 -9.361634,0 -9.3616333,0 0,-2.638847 z"
-     id="path3355"
-     inkscape:connector-curvature="0" />
-  <path
-     style="fill:#000000;fill-opacity:1"
-     d="m 6.6852387,20.02057 0,-2.638846 25.4460523,0 25.446052,0 0,2.638846 0,2.638853 -25.446052,0 -25.4460523,0 0,-2.638853 z"
-     id="path3353"
-     inkscape:connector-curvature="0" />
-  <path
-     style="fill:#000000;fill-opacity:1"
-     d="m 6.6852387,8.1548255 0,-2.638852 25.4460523,0 25.446052,0 0,2.638852 0,2.6388475 -25.446052,0 -25.4460523,0 0,-2.6388475 z"
-     id="path3347"
-     inkscape:connector-curvature="0" />
-  <path
-     inkscape:connector-curvature="0"
-     id="path4201"
-     d="m 6.6852387,31.681587 0,-2.638846 25.4460523,0 25.446052,0 0,2.638846 0,2.638853 -25.446052,0 -25.4460523,0 0,-2.638853 z"
+     d="m 6.6852387,56.408075 0,-2.638845 9.3616333,0 9.361634,0 0,2.638845 0,2.638852 -9.361634,0 -9.3616333,0 0,-2.638852 z"
      style="fill:#000000;fill-opacity:1" />
+  <path
+     id="path3355"
+     d="m 6.6852387,44.350575 0,-2.638852 9.3616333,0 9.361634,0 0,2.638852 0,2.638847 -9.361634,0 -9.3616333,0 0,-2.638847 z"
+     style="fill:#000000;fill-opacity:1" />
+  <path
+     id="path3353"
+     d="m 6.6852387,20.02057 0,-2.638846 25.4460523,0 25.446052,0 0,2.638846 0,2.638853 -25.446052,0 -25.4460523,0 0,-2.638853 z"
+     style="fill:#000000;fill-opacity:1" />
+  <path
+     id="path3347"
+     d="m 6.6852387,8.1548255 0,-2.638852 25.4460523,0 25.446052,0 0,2.638852 0,2.6388475 -25.446052,0 -25.4460523,0 0,-2.6388475 z"
+     style="fill:#000000;fill-opacity:1" />
+  <path
+     style="fill:#000000;fill-opacity:1"
+     d="m 6.6852387,31.681587 0,-2.638846 25.4460523,0 25.446052,0 0,2.638846 0,2.638853 -25.446052,0 -25.4460523,0 0,-2.638853 z"
+     id="path4201" />
 </svg>
