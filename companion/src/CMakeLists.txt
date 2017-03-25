@@ -1,6 +1,6 @@
 set(SIMULATOR_INSTALL_PREFIX "" CACHE STRING "Alternative simulator library search path")
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "(Linux|FreeBSD)")
   set(C9X_NAME_SUFFIX ${VERSION_MAJOR}${VERSION_MINOR})
   set(COMPANION_NAME "companion${C9X_NAME_SUFFIX}")
   set(SIMULATOR_NAME "simulator${C9X_NAME_SUFFIX}")
@@ -11,10 +11,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
   message(STATUS "Simulators library search path: " ${SIMULATOR_LIB_PATH})
   set(SIMULATOR_LIB_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/companion${C9X_NAME_SUFFIX})
-else(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+else()
   set(COMPANION_NAME "companion")
   set(SIMULATOR_NAME "simulator")
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+endif()
 
 # This the name that the user will see in the generated DMG and what the application
 # will be called under /Applications. We include the version string to make installing
