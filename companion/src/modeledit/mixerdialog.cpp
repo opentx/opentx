@@ -42,8 +42,8 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
 
   this->setWindowTitle(tr("DEST -> CH%1").arg(md->destCh));
 
-  populateSourceCB(ui->sourceCB, md->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS |
-                                                                      POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+  ui->sourceCB->setModel(Helpers::getRawSourceItemModel(&generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS));
+  ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(md->srcRaw.toValue()));
   ui->sourceCB->removeItem(0);
 
   int limit = firmware->getCapability(OffsetWeight);
@@ -103,7 +103,8 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     }
   }
 
-  populateSwitchCB(ui->switchesCB, md->swtch, generalSettings, MixesContext);
+  ui->switchesCB->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::MixesContext));
+  ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(md->swtch.toValue()));
   ui->warningCB->setCurrentIndex(md->mixWarn);
   ui->mltpxCB->setCurrentIndex(md->mltpx);
   int scale=firmware->getCapability(SlowScale);

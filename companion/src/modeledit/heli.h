@@ -41,6 +41,7 @@ class HeliPanel : public ModelPanel
 
   private:
     Ui::Heli *ui;
+    QStandardItemModel * rawSourceItemModel;
 };
 
 #endif // _HELI_H_

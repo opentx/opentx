@@ -50,7 +50,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
   // Phase switch
   if (phaseIdx > 0) {
-    populateSwitchCB(ui->swtch, phase.swtch, generalSettings, MixesContext);
+    ui->swtch->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::MixesContext));
+    ui->swtch->setCurrentIndex(ui->swtch->findData(phase.swtch.toValue()));
     connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
   }
   else {
@@ -129,7 +130,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
         // RE link to another RE
         reUse[i] = new QComboBox(ui->reGB);
         reUse[i]->setProperty("index", i);
-        populateGvarUseCB(reUse[i], phaseIdx);
+        Helpers::populateGvarUseCB(reUse[i], phaseIdx);
         if (phase.rotaryEncoders[i] > 1024) {
           reUse[i]->setCurrentIndex(phase.rotaryEncoders[i] - 1024);
         }
@@ -171,7 +172,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
         // GVar link to another GVar
         gvUse[i] = new QComboBox(ui->gvGB);
         gvUse[i]->setProperty("index", i);
-        populateGvarUseCB(gvUse[i], phaseIdx);
+        Helpers::populateGvarUseCB(gvUse[i], phaseIdx);
         if (phase.gvars[i] > 1024) {
           gvUse[i]->setCurrentIndex(phase.gvars[i] - 1024);
         }

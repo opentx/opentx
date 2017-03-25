@@ -49,7 +49,9 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
 
   // Mode
-  populateSwitchCB(ui->mode, timer.mode, generalSettings, TimersContext);
+  ui->mode->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::TimersContext));
+  ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
+  //Helpers::populateSwitchCB(ui->mode, timer.mode, generalSettings, Helpers::TimersContext);
 
   if (!firmware->getCapability(PermTimers)) {
     ui->persistent->hide();
@@ -887,19 +889,20 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   // Beep Center checkboxes
   prevFocus = ui->trimsDisplay;
   int analogs = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders);
-  for (int i=0; i<analogs+firmware->getCapability(RotaryEncoders); i++) {
+  int genAryIdx = 0;
+  for (int i=0; i < analogs + firmware->getCapability(RotaryEncoders); i++) {
+    RawSource src((i < analogs) ? SOURCE_TYPE_STICK : SOURCE_TYPE_ROTARY_ENCODER, (i < analogs) ? i : analogs - i);
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
-    checkbox->setText(i<analogs ? firmware->getAnalogInputName(i) : RotaryEncoderString(i-analogs));
+    checkbox->setText(src.toString(&model, &generalSettings));
     ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
     if (IS_HORUS_OR_TARANIS(board)) {
-      RawSource src(SOURCE_TYPE_STICK, i);
-      if (src.isPot() && !generalSettings.isPotAvailable(i-CPN_MAX_STICKS)) {
+      if (src.isPot(&genAryIdx) && !generalSettings.isPotAvailable(genAryIdx)) {
         checkbox->hide();
       }
-      else if (src.isSlider() && !generalSettings.isSliderAvailable(i-CPN_MAX_STICKS-getBoardCapability(board, Board::Pots))) {
+      else if (src.isSlider(&genAryIdx) && !generalSettings.isSliderAvailable(genAryIdx)) {
         checkbox->hide();
       }
     }
@@ -909,13 +912,12 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   // Startup switches warnings
   for (int i=0; i<getBoardCapability(board, Board::Switches); i++) {
-    Board::SwitchInfo switchInfo = getSwitchInfo(board, i);
-    if (IS_HORUS_OR_TARANIS(board)) {
-      switchInfo.config = Board::SwitchType(generalSettings.switchConfig[i]);
-    }
+    Board::SwitchInfo switchInfo = Boards::getSwitchInfo(board, i);
+    switchInfo.config = Board::SwitchType(generalSettings.switchConfig[i]);
     if (switchInfo.config == Board::SWITCH_NOT_AVAILABLE || switchInfo.config == Board::SWITCH_TOGGLE) {
       continue;
     }
+    RawSource src(RawSourceType::SOURCE_TYPE_SWITCH, i);
     QLabel * label = new QLabel(this);
     QSlider * slider = new QSlider(this);
     QCheckBox * cb = new QCheckBox(this);
@@ -923,13 +925,14 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     slider->setOrientation(Qt::Vertical);
     slider->setMinimum(0);
     slider->setInvertedAppearance(true);
+    slider->setInvertedControls(true);
     slider->setTickPosition(QSlider::TicksBothSides);
     slider->setMinimumSize(QSize(30, 50));
     slider->setMaximumSize(QSize(50, 50));
     slider->setSingleStep(1);
     slider->setPageStep(1);
     slider->setTickInterval(1);
-    label->setText(switchInfo.name);
+    label->setText(src.toString(&model, &generalSettings));
     slider->setMaximum(switchInfo.config == Board::SWITCH_3POS ? 2 : 1);
     cb->setProperty("index", i);
     ui->switchesStartupLayout->addWidget(label, 0, i+1);
@@ -951,21 +954,18 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   prevFocus = ui->potWarningMode;
   if (IS_HORUS_OR_TARANIS(board)) {
     for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++) {
+      RawSource src(SOURCE_TYPE_STICK, CPN_MAX_STICKS + i);
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i);
-      cb->setText(firmware->getAnalogInputName(i+4));
+      cb->setText(src.toString(&model, &generalSettings));
       ui->potWarningLayout->addWidget(cb, 0, i+1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
-      if (RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+i).isPot()) {
-        if (!generalSettings.isPotAvailable(i)) {
-          cb->hide();
-        }
+      if (src.isPot(&genAryIdx) && !generalSettings.isPotAvailable(genAryIdx)) {
+        cb->hide();
       }
-      else {
-        if (!generalSettings.isSliderAvailable(i-getBoardCapability(board, Board::Pots))) {
-          cb->hide();
-        }
+      else if (src.isSlider(&genAryIdx) && !generalSettings.isSliderAvailable(genAryIdx)) {
+        cb->hide();
       }
       QWidget::setTabOrder(prevFocus, cb);
       prevFocus = cb;

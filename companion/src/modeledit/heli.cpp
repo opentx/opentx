@@ -28,6 +28,9 @@ HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & gener
 {
   ui->setupUi(this);
 
+  rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+  rawSourceItemModel->setParent(this);
+
   connect(ui->swashType, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
   connect(ui->swashRingVal, SIGNAL(editingFinished()), this, SLOT(edited()));
   connect(ui->swashCollectiveSource, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
@@ -68,11 +71,14 @@ void HeliPanel::update()
   lock = true;
 
   ui->swashType->setCurrentIndex(model->swashRingData.type);
-  populateSourceCB(ui->swashCollectiveSource, model->swashRingData.collectiveSource, generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+  ui->swashCollectiveSource->setModel(rawSourceItemModel);
+  ui->swashCollectiveSource->setCurrentIndex(ui->swashCollectiveSource->findData(model->swashRingData.collectiveSource.toValue()));
   ui->swashRingVal->setValue(model->swashRingData.value);
   if (firmware->getCapability(VirtualInputs)) {
-    populateSourceCB(ui->swashElevatorSource, model->swashRingData.elevatorSource, generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
-    populateSourceCB(ui->swashAileronSource, model->swashRingData.aileronSource, generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+    ui->swashElevatorSource->setModel(rawSourceItemModel);
+    ui->swashElevatorSource->setCurrentIndex(ui->swashElevatorSource->findData(model->swashRingData.elevatorSource.toValue()));
+    ui->swashAileronSource->setModel(rawSourceItemModel);
+    ui->swashAileronSource->setCurrentIndex(ui->swashAileronSource->findData(model->swashRingData.aileronSource.toValue()));
     ui->swashElevatorWeight->setValue(model->swashRingData.elevatorWeight);
     ui->swashAileronWeight->setValue(model->swashRingData.aileronWeight);
     ui->swashCollectiveWeight->setValue(model->swashRingData.collectiveWeight);
