@@ -313,7 +313,7 @@ void RadioOutputsWidget::setValues()
     for (ch = m_channelsMap.constBegin(); ch != m_channelsMap.constEnd(); ++ch) {
       if (ch.key() >= CPN_MAX_CHNOUT)
         continue;
-      ch.value().first->setText(QString("%1%").arg((outputs.chans[ch.key()] * 100 + 512) / 1024));
+      ch.value().first->setText(QString("%1%").arg((outputs.chans[ch.key()]*25) >> 8)); // This is how chan value are mapped to % in the radio
       ch.value().second->setValue(qMin(1024, qMax(-1024, outputs.chans[ch.key()])));
     }
   }
