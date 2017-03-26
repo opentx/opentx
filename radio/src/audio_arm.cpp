@@ -833,9 +833,7 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
 
   CoEnterMutexSection(audioMutex);
 
-  if (freq && freq < BEEP_MIN_FREQ) {
-    freq = BEEP_MIN_FREQ;
-  }
+  freq = limit<uint16_t>(BEEP_MIN_FREQ, freq, BEEP_MAX_FREQ);
 
   if (flags & PLAY_BACKGROUND) {
     varioContext.setFragment(freq, len, pause, 0, 0, (flags & PLAY_NOW));
