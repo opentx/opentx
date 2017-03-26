@@ -4940,7 +4940,7 @@ Enregistrer les changements ?</translation>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="511"/>
         <source>ADD</source>
-        <translation>Ajouter</translation>
+        <translation>+= Ajouter</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="430"/>
@@ -5089,7 +5089,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="521"/>
         <source>REPLACE</source>
-        <translation>Remplacer</translation>
+        <translation>:= Remplacer</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="476"/>
@@ -5102,7 +5102,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="516"/>
         <source>MULTIPLY</source>
-        <translation>Multiplier</translation>
+        <translation>*= Multiplier</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="577"/>
@@ -6772,7 +6772,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="953"/>
         <source>played once, not during startup</source>
-        <translation>Lu une fois, mais pas à la mise en route</translation>
+        <translation>!1x Lu une fois, mais pas à la mise en route</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="960"/>
@@ -6919,7 +6919,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="37"/>
         <source>No repeat</source>
-        <translation>Pas de rép.</translation>
+        <translation>1x Lu une fois</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="807"/>
@@ -6986,7 +6986,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="33"/>
         <source>Played once, not during startup</source>
-        <translation>Lu une fois, mais pas à la mise en route</translation>
+        <translation>1x Lu une fois, mais pas à la mise en route</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="40"/>
