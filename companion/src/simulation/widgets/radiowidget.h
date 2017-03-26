@@ -85,7 +85,6 @@ class RadioWidget : public QWidget
   public slots:
 
     virtual void setIndex(const int & index);
-    virtual void setInvertValue(bool invertValue);
     virtual void setType(const RadioWidgetType & type);
     virtual void setValue(const int & value);
     virtual void setValueQual(const RadioWidgetType & type, const int & index, const int & value);
@@ -117,7 +116,6 @@ class RadioWidget : public QWidget
     int m_value;
     int m_index;
     quint16 m_flags;
-    bool m_invertValue;
     bool m_showLabel;
     QString m_labelText;
     RadioWidgetType m_type;

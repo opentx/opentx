@@ -40,6 +40,7 @@ set(simulation_HDRS
   radiouiaction.h
   simulateduiwidget.h
   # simulator.h
+  simulatorinterface.h
   simulatormainwindow.h
   simulatorstartupdialog.h
   simulatorwidget.h

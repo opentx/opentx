@@ -29,7 +29,6 @@ RadioWidget::RadioWidget(QWidget * parent, Qt::WindowFlags f) :
   m_action(NULL),
   m_value(0),
   m_flags(0),
-  m_invertValue(false),
   m_showLabel(false),
   m_labelText("")
 {
@@ -53,11 +52,6 @@ RadioWidget::RadioWidget(const QString & labelText, int value, QWidget * parent,
 void RadioWidget::setIndex(const int & index)
 {
   m_index = index;
-}
-
-void RadioWidget::setInvertValue(bool invertValue)
-{
-  m_invertValue = invertValue;
 }
 
 void RadioWidget::setType(const RadioWidgetType & type)
@@ -146,7 +140,7 @@ void RadioWidget::setAction(RadioUiAction * action)
 
 int RadioWidget::getValue() const
 {
-  return m_value * (m_invertValue ? -1 : 1);
+  return m_value;
 }
 
 int RadioWidget::getIndex() const

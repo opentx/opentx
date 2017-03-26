@@ -57,16 +57,12 @@ class SimulatedUIWidget : public QWidget
     RadioUiAction * addRadioAction(RadioUiAction * act);
 
     QVector<Simulator::keymapHelp_t> getKeymapHelp() const;
-    QList<RadioUiAction *> getActions() const { return m_actions; }
-    RadioUiAction * getRotEncAction() const   { return m_mouseMidClickAction; }
 
     static QPolygon polyArc(int ctrX, int ctrY, int radius, int startAngle = 0, int endAngle = 360, int step = 10);
 
   public slots:
 
-    void updateUi();
     void captureScreenshot();
-    void simulatorWheelEvent(qint8 steps);
 
     void wheelEvent(QWheelEvent *event);
     void mousePressEvent(QMouseEvent *event);
@@ -76,11 +72,13 @@ class SimulatedUIWidget : public QWidget
 
     void controlValueChange(RadioWidget::RadioWidgetType type, int index, int value);
     void customStyleRequest(const QString & style);
+    void simulatorWheelEvent(qint8 steps);
 
   protected slots:
 
     void setLcd(LcdWidget * lcd);
     void connectScrollActions();
+    void onLcdChange(bool backlightEnable);
     virtual void setLightOn(bool enable) { }
 
   protected:
@@ -97,7 +95,6 @@ class SimulatedUIWidget : public QWidget
     RadioUiAction * m_screenshotAction;
     Board::Type m_board;
     unsigned int m_backLight;
-    bool m_lightOn;
     int m_beepShow;
     int m_beepVal;
 

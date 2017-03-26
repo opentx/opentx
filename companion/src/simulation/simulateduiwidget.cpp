@@ -45,6 +45,9 @@ SimulatedUIWidget::SimulatedUIWidget(SimulatorInterface * simulator, QWidget * p
 {
   m_screenshotAction = new RadioUiAction(-1, Qt::Key_Print);
   connect(m_screenshotAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), this, &SimulatedUIWidget::captureScreenshot);
+
+  connect(m_simulator, &SimulatorInterface::lcdChange, this, &SimulatedUIWidget::onLcdChange);
+  connect(this, &SimulatedUIWidget::simulatorWheelEvent, m_simulator, &SimulatorInterface::rotaryEncoderEvent);
 }
 
 SimulatedUIWidget::~SimulatedUIWidget()
@@ -103,20 +106,10 @@ QPolygon SimulatedUIWidget::polyArc(int ctrX, int ctrY, int radius, int startAng
   return polygon;
 }
 
+/*  TODO : beep indicator
 void SimulatedUIWidget::updateUi()
 {
   //static quint32 loop = 0;
-  if (m_lcd->isVisible()) {
-    bool lightEnable;
-    if (m_simulator->lcdChanged(lightEnable)) {
-      m_lcd->onLcdChanged(lightEnable);
-      if (m_lightOn != lightEnable) {
-        setLightOn(lightEnable);
-        m_lightOn = lightEnable;
-      }
-    }
-  }
-  /*  TODO : beep indicator
       if (!(loop % 5)) {
         TxOutputs outputs;
         simulator->getValues(outputs);
@@ -131,7 +124,16 @@ void SimulatedUIWidget::updateUi()
           beepShow--;
         }
         ui->label_beep->setStyleSheet(beepShow ? CBEEP_ON : CBEEP_OFF);
-      } */
+      }
+} */
+
+void SimulatedUIWidget::onLcdChange(bool backlightEnable)
+{
+  if (!m_lcd || !m_lcd->isVisible())
+    return;
+
+  m_lcd->onLcdChanged(backlightEnable);
+  setLightOn(backlightEnable);
 }
 
 void SimulatedUIWidget::captureScreenshot()
@@ -156,18 +158,13 @@ void SimulatedUIWidget::captureScreenshot()
   m_lcd->makeScreenshot(fileName);
 }
 
-// steps can be negative or positive to determine direction (negative is UP/RIGHT scroll)
-void SimulatedUIWidget::simulatorWheelEvent(qint8 steps)
-{
-  m_simulator->wheelEvent(steps);
-}
-
 void SimulatedUIWidget::wheelEvent(QWheelEvent * event)
 {
   if (event->angleDelta().isNull())
     return;
+  // steps can be negative or positive to determine direction (negative is UP/LEFT scroll)
   QPoint numSteps = event->angleDelta() / 8 / 15 * -1;  // one step per 15deg
-  simulatorWheelEvent(numSteps.y());
+  emit simulatorWheelEvent(numSteps.y());
 }
 
 void SimulatedUIWidget::mousePressEvent(QMouseEvent * event)
@@ -204,13 +201,19 @@ void SimulatedUIWidget::setLcd(LcdWidget * lcd)
 
 void SimulatedUIWidget::connectScrollActions()
 {
-  connect(m_scrollUpAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
-    this->simulatorWheelEvent(-1);
-    m_scrollUpAction->toggle(false);
-  });
+  if (m_scrollUpAction) {
+    addRadioAction(m_scrollUpAction);
+    connect(m_scrollUpAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
+      emit simulatorWheelEvent(-1);
+      m_scrollUpAction->toggle(false);
+    });
+  }
 
-  connect(m_scrollDnAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
-    simulatorWheelEvent(1);
-    m_scrollDnAction->toggle(false);
-  });
+  if (m_scrollDnAction) {
+    addRadioAction(m_scrollDnAction);
+    connect(m_scrollDnAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
+      emit simulatorWheelEvent(1);
+      m_scrollDnAction->toggle(false);
+    });
+  }
 }

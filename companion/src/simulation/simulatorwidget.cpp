@@ -24,12 +24,12 @@
 #include "appdata.h"
 #include "appdebugmessagehandler.h"
 #include "radiofaderwidget.h"
+#include "radiokeywidget.h"
 #include "radioknobwidget.h"
 #include "radioswitchwidget.h"
 #include "radiouiaction.h"
 #include "sdcard.h"
 #include "simulateduiwidget.h"
-#include "simulatorinterface.h"
 #include "storage.h"
 #include "virtualjoystickwidget.h"
 #ifdef JOYSTICKS
@@ -49,29 +49,19 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   simulator(simulator),
   firmware(getCurrentFirmware()),
   radioSettings(GeneralSettings()),
-  timer(new QTimer(this)),
   radioUiWidget(NULL),
   vJoyLeft(NULL),
   vJoyRight(NULL),
   m_board(getCurrentBoard()),
   flags(flags),
-  lastPhase(-1),
-  buttonPressed(0),
-  trimPressed(255),
   startupFromFile(false),
   deleteTempRadioData(false),
-  saveTempRadioData(false),
-  middleButtonPressed(false),
-  firstShow(true)
+  saveTempRadioData(false)
 {
 
 #ifdef JOYSTICKS
   joystick = NULL;
 #endif
-
-  // defaults
-  setRadioProfileId(g.sessionId());
-  setSdPath(g.profile[radioProfileId].sdPath());
 
   ui->setupUi(this);
 
@@ -107,6 +97,7 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   radioUiWidget->setFocusPolicy(Qt::WheelFocus);
   radioUiWidget->setFocus();
 
+  connect(radioUiWidget, &SimulatedUIWidget::controlValueChange, this, &SimulatorWidget::onRadioWidgetValueChange);
   connect(radioUiWidget, &SimulatedUIWidget::customStyleRequest, this, &SimulatorWidget::setUiAreaStyle);
 
   vJoyLeft = new VirtualJoystickWidget(this, 'L');
@@ -115,25 +106,40 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   vJoyRight = new VirtualJoystickWidget(this, 'R');
   ui->rightStickLayout->addWidget(vJoyRight);
 
-  connect(vJoyLeft, &VirtualJoystickWidget::trimButtonPressed, this, &SimulatorWidget::onTrimPressed);
-  connect(vJoyLeft, &VirtualJoystickWidget::trimButtonReleased, this, &SimulatorWidget::onTrimReleased);
-  connect(vJoyLeft, &VirtualJoystickWidget::trimSliderMoved, this, &SimulatorWidget::onTrimSliderMoved);
+  connect(vJoyLeft, &VirtualJoystickWidget::valueChange, this, &SimulatorWidget::onRadioWidgetValueChange);
+  connect(vJoyRight, &VirtualJoystickWidget::valueChange, this, &SimulatorWidget::onRadioWidgetValueChange);
+  connect(this, &SimulatorWidget::widgetValueChange, vJoyLeft, &VirtualJoystickWidget::setWidgetValue);
+  connect(this, &SimulatorWidget::widgetValueChange, vJoyRight, &VirtualJoystickWidget::setWidgetValue);
+  connect(this, &SimulatorWidget::trimRangeChanged, vJoyLeft, &VirtualJoystickWidget::setTrimRange);
+  connect(this, &SimulatorWidget::trimRangeChanged, vJoyRight, &VirtualJoystickWidget::setTrimRange);
 
-  connect(vJoyRight, &VirtualJoystickWidget::trimButtonPressed, this, &SimulatorWidget::onTrimPressed);
-  connect(vJoyRight, &VirtualJoystickWidget::trimButtonReleased, this, &SimulatorWidget::onTrimReleased);
-  connect(vJoyRight, &VirtualJoystickWidget::trimSliderMoved, this, &SimulatorWidget::onTrimSliderMoved);
+  connect(this, &SimulatorWidget::simulatorStart, simulator, &SimulatorInterface::start);
+  //connect(this, &SimulatorWidget::simulatorStop, simulator, &SimulatorInterface::stop);
+  //connect(this, &SimulatorWidget::simulatorSetData, simulator, &SimulatorInterface::setRadioData);
+  connect(this, &SimulatorWidget::inputValueChange, simulator, &SimulatorInterface::setInputValue);
+  connect(this, &SimulatorWidget::simulatorSdPathChange, simulator, &SimulatorInterface::setSdPath);
+  connect(this, &SimulatorWidget::simulatorVolumeGainChange, simulator, &SimulatorInterface::setVolumeGain);
 
-  timer->setInterval(10);
-  connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
-  connect(timer, SIGNAL(timeout()), radioUiWidget, SLOT(updateUi()));
+  connect(simulator, &SimulatorInterface::started, this, &SimulatorWidget::onSimulatorStarted);
+  //connect(simulator, &SimulatorInterface::stopped, this, &SimulatorWidget::onSimulatorStopped);
+  connect(simulator, &SimulatorInterface::heartbeat, this, &SimulatorWidget::onSimulatorHeartbeat);
+  connect(simulator, &SimulatorInterface::runtimeError, this, &SimulatorWidget::onSimulatorError);
+  connect(simulator, &SimulatorInterface::trimValueChange, this, &SimulatorWidget::onTrimValueChanged);
+  connect(simulator, &SimulatorInterface::trimRangeChange, this, &SimulatorWidget::onTrimRangeChanged);
+  connect(simulator, &SimulatorInterface::phaseChanged, this, &SimulatorWidget::onPhaseChanged);
+
+  m_timer.setInterval(SIMULATOR_INTERFACE_HEARTBEAT_PERIOD * 6);
+  connect(&m_timer, &QTimer::timeout, this, &SimulatorWidget::onTimerEvent);
+
+  // defaults
+  setRadioProfileId(g.sessionId());
+  setSdPath(g.profile[radioProfileId].sdPath());
 }
 
 SimulatorWidget::~SimulatorWidget()
 {
   shutdown();
 
-  if (timer)
-    timer->deleteLater();
   if (radioUiWidget)
     delete radioUiWidget;
   if (vJoyLeft)
@@ -144,10 +150,7 @@ SimulatorWidget::~SimulatorWidget()
   if (joystick)
     delete joystick;
 #endif
-
-  firmware = NULL;  // Not sure we should delete this but at least release our pointer.
-  // NOTE : <simulator> should be deleted (or not) in the parent process which gave it to us in the first place.
-
+  firmware = NULL;
   delete ui;
 }
 
@@ -170,8 +173,7 @@ void SimulatorWidget::setPaths(const QString & sdPath, const QString & dataPath)
 {
   sdCardPath = sdPath;
   radioDataPath = dataPath;
-  if (simulator)
-    simulator->setSdPath(sdPath, dataPath);
+  emit simulatorSdPathChange(sdPath, dataPath);
 }
 
 void SimulatorWidget::setRadioSettings(const GeneralSettings settings)
@@ -266,7 +268,7 @@ bool SimulatorWidget::setRadioData(RadioData * radioData)
 
   if (ret) {
     if (radioDataPath.isEmpty()) {
-      startupData.fill(0, getEEpromSize(m_board));
+      startupData.fill(0, Boards::getEEpromSize(m_board));
       if (firmware->getEEpromInterface()->save((uint8_t *)startupData.data(), *radioData, 0, firmware->getCapability(SimulatorVariant)) <= 0) {
         ret = false;
       }
@@ -412,8 +414,7 @@ void SimulatorWidget::deleteTempData()
 void SimulatorWidget::saveState()
 {
   SimulatorOptions opts = g.profile[radioProfileId].simulatorOptions();
-  //opts.windowGeometry = saveGeometry();
-  opts.controlsState = saveRadioWidgetsState();
+  saveRadioWidgetsState(opts.controlsState);
   g.profile[radioProfileId].simulatorOptions(opts);
 }
 
@@ -436,30 +437,48 @@ void SimulatorWidget::start()
 {
   setupRadioWidgets();
   setupJoysticks();
-  restoreRadioWidgetsState();
 
-  if (startupData.isEmpty())
-    simulator->start((const char *)0);
-  else if (startupFromFile)
-    simulator->start(startupData.constData());
-  else
-    simulator->start(startupData, (flags & SIMULATOR_FLAGS_NOTX) ? false : true);
+  bool tests = !(flags & SIMULATOR_FLAGS_NOTX);
 
-  setTrims();
-  getValues();
-  setupTimer();
+  if (!startupData.isEmpty()) {
+    if (startupFromFile) {
+      emit simulatorStart(startupData.constData(), tests);
+    }
+    else {
+      simulator->setRadioData(startupData);
+      //emit simulatorSetData(startupData);
+      emit simulatorStart((const char *)0, tests);
+    }
+  }
+  else {
+    emit simulatorStart((const char *)0, tests);
+  }
 }
 
 void SimulatorWidget::stop()
 {
-  if (timer)
-    timer->stop();
-  if (simulator) {
-    simulator->stop();
-    if (saveTempRadioData) {
-      startupData.fill(0, getEEpromSize(m_board));
-      simulator->readEepromData(startupData);
-    }
+  simulator->stop();
+  onSimulatorStopped();
+  //emit simulatorStop();
+}
+
+void SimulatorWidget::onSimulatorStarted()
+{
+  restoreRadioWidgetsState();
+
+  m_heartbeatTimer.start();
+  m_timer.start();
+}
+
+void SimulatorWidget::onSimulatorStopped()
+{
+  m_timer.stop();
+  m_heartbeatTimer.invalidate();
+
+  if (simulator && saveTempRadioData) {
+    startupData.fill(0, getEEpromSize(m_board));
+    // this is cheating a bit (simulator might be in different thread) but should be OK since we own the data container
+    simulator->readEepromData(startupData);
   }
 }
 
@@ -488,100 +507,95 @@ void SimulatorWidget::shutdown()
 void SimulatorWidget::setRadioProfileId(int value)
 {
   radioProfileId = value;
-  if (simulator)
-    simulator->setVolumeGain(g.profile[radioProfileId].volumeGain());
+  emit simulatorVolumeGainChange(g.profile[radioProfileId].volumeGain());
 }
 
 void SimulatorWidget::setupRadioWidgets()
 {
-  int i, midpos, aIdx;
   QString wname;
-  Board::Type board = firmware->getBoard();
+  int i, midpos;
+  const int ttlSticks = Boards::getCapability(m_board, Board::Sticks);
+  const int ttlSwitches = Boards::getCapability(m_board, Board::Switches);
+  const int ttlKnobs = Boards::getCapability(m_board, Board::Pots);
+  const int ttlFaders = Boards::getCapability(m_board, Board::Sliders);
 
   // First clear out any existing widgets.
-  if (switches.size()) {
-    foreach (RadioWidget * w, switches) {
-      ui->radioWidgetsHTLayout->removeWidget(w);
-      w->deleteLater();
+  foreach (RadioWidget * rw, QVector<RadioWidget *>() << switches << analogs) {
+    switch(rw->getType()) {
+      case RadioWidget::RADIO_WIDGET_SWITCH :
+      case RadioWidget::RADIO_WIDGET_KNOB   :
+        ui->radioWidgetsHTLayout->removeWidget(rw);
+        break;
+      case RadioWidget::RADIO_WIDGET_FADER  :
+        ui->VCGridLayout->removeWidget(rw);
+        break;
+      default :
+        break;
     }
-    switches.clear();
+    disconnect(rw, 0, this, 0);
+    disconnect(this, 0, rw, 0);
+    rw->deleteLater();
   }
-  if (analogs.size()) {
-    foreach (RadioWidget * w, analogs) {
-      if (w->getType() == RadioWidget::RADIO_WIDGET_KNOB)
-        ui->radioWidgetsHTLayout->removeWidget(w);
-      else
-        ui->VCGridLayout->removeWidget(w);
-      w->deleteLater();
-    }
-    analogs.clear();
-  }
+  switches.clear();
+  analogs.clear();
 
   // Now set up new widgets.
 
   // switches
-  Board::SwitchInfo switchInfo;
   Board::SwitchType swcfg;
-  for (i = 0; i < getBoardCapability(board, Board::Switches) && i < CPN_MAX_SWITCHES; ++i) {
+  for (i = 0; i < ttlSwitches; ++i) {
     if (radioSettings.switchConfig[i] == Board::SWITCH_NOT_AVAILABLE)
       continue;
 
     swcfg = Board::SwitchType(radioSettings.switchConfig[i]);
-
-    if ((wname = QString(radioSettings.switchName[i])).isEmpty()) {
-      switchInfo = getSwitchInfo(board, i);
-      wname = QString(switchInfo.name);
-    }
+    wname = RawSource(RawSourceType::SOURCE_TYPE_SWITCH, i).toString(NULL, &radioSettings);
     RadioSwitchWidget * sw = new RadioSwitchWidget(swcfg, wname, -1, ui->radioWidgetsHT);
     sw->setIndex(i);
     ui->radioWidgetsHTLayout->addWidget(sw);
+
     switches.append(sw);
   }
 
   midpos = (int)floorf(switches.size() / 2.0f);
-  aIdx = 0;
 
   // pots in middle of switches
-  for (i = 0; i < getBoardCapability(board, Board::Pots) && i < CPN_MAX_POTS; ++i) {
+  for (i = 0; i < ttlKnobs; ++i) {
     if (!radioSettings.isPotAvailable(i))
       continue;
 
-    if ((wname = QString(radioSettings.potName[i])).isEmpty())
-      wname = firmware->getAnalogInputName(4 + aIdx + i);
-
+    wname = RawSource(RawSourceType::SOURCE_TYPE_STICK, ttlSticks + i).toString(NULL, &radioSettings);
     RadioKnobWidget * pot = new RadioKnobWidget(Board::PotType(radioSettings.potConfig[i]), wname, 0, ui->radioWidgetsHT);
-    pot->setIndex(aIdx + i);
-    // FIXME : total hack here -- this needs to follow the exception in radio/src/mixer.cpp:evalInputs()
-    if (i == 0 && IS_TARANIS(board) && !IS_TARANIS_X7(board))
-      pot->setInvertValue(true);
+    pot->setIndex(i);
     ui->radioWidgetsHTLayout->insertWidget(midpos++, pot);
+
     analogs.append(pot);
   }
 
-  aIdx += i;
-
   // faders between sticks
   int r = 0, c = 0;
-  for (i = 0; i < getBoardCapability(board, Board::Sliders) && i + aIdx < CPN_MAX_POTS; ++i) {
+  for (i = 0; i < ttlFaders; ++i) {
     if (!radioSettings.isSliderAvailable(i))
       continue;
 
-    if ((wname = QString(radioSettings.sliderName[i])).isEmpty())
-      wname = firmware->getAnalogInputName(4 + aIdx + i);
-
+    wname = RawSource(RawSourceType::SOURCE_TYPE_STICK, ttlSticks + ttlKnobs + i).toString(NULL, &radioSettings);
     RadioFaderWidget * sl = new RadioFaderWidget(wname, 0, ui->radioWidgetsVC);
-    sl->setIndex(aIdx + i);
-    // FIXME : total hack here -- this needs to follow the exception in radio/src/mixer.cpp:evalInputs()
-    if (i == 0 && IS_TARANIS(board) && !IS_TARANIS_X7(board))
-      sl->setInvertValue(true);
+    sl->setIndex(i);
     /* 2-row option
     if (!(i % 2)) {
       ++r;
       c = 0;
     } */
     ui->VCGridLayout->addWidget(sl, r, c++, 1, 1);
+
     analogs.append(sl);
   }
+
+  // connect all the widgets
+  foreach (RadioWidget * rw, QVector<RadioWidget *>() << switches << analogs) {
+    connect(rw, &RadioWidget::valueChange, this, &SimulatorWidget::onRadioWidgetValueChange);
+    connect(this, &SimulatorWidget::widgetValueChange, rw, &RadioWidget::setValueQual);
+  }
+
 }
 
 void SimulatorWidget::setupJoysticks()
@@ -614,26 +628,11 @@ void SimulatorWidget::setupJoysticks()
     joystick->deleteLater();
     joystick = NULL;
   }
-  if (vJoyRight) {
-    vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_X, joysticksEnabled);
-    vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, joysticksEnabled);
-  }
-  if (vJoyLeft) {
-    vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_X, joysticksEnabled);
-    vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, joysticksEnabled);
-  }
+  if (vJoyRight)
+    vJoyRight->setStickConstraint((VirtualJoystickWidget::HOLD_X | VirtualJoystickWidget::HOLD_Y), joysticksEnabled);
+  if (vJoyLeft)
+    vJoyLeft->setStickConstraint((VirtualJoystickWidget::HOLD_X | VirtualJoystickWidget::HOLD_Y), joysticksEnabled);
 #endif
-}
-
-void SimulatorWidget::setupTimer()
-{
-  if (!timer)
-    return;
-
-  if (timer->isActive())
-    timer->stop();
-
-  timer->start();
 }
 
 void SimulatorWidget::restoreRadioWidgetsState()
@@ -646,129 +645,52 @@ void SimulatorWidget::restoreRadioWidgetsState()
   foreach (QByteArray ba, states) {
     QDataStream stream(ba);
     stream >> state;
-    if (state.type == RadioWidget::RADIO_WIDGET_SWITCH)
-      switchesMap.insert(state.index, ba);
-    else
-      analogsMap.insert(state.index, ba);
+    switch(state.type) {
+      case RadioWidget::RADIO_WIDGET_SWITCH :
+        switchesMap.insert(state.index, ba);
+        break;
+      case RadioWidget::RADIO_WIDGET_KNOB   :
+      case RadioWidget::RADIO_WIDGET_FADER  :
+        analogsMap.insert(state.index, ba);
+        break;
+      default :
+        break;
+    }
+  }
+  foreach (RadioWidget * rw, analogs) {
+    if (analogsMap.contains(rw->getIndex()))
+      rw->setStateData(analogsMap.value(rw->getIndex()));
+    // make sure the current values are emitted regardless
+    onRadioWidgetValueChange(RadioWidget::RadioWidgetType(rw->getType()), rw->getIndex(), rw->getValue());  // set initial value
   }
 
-  for (int i = 0; i < analogs.size(); ++i) {
-    if (analogsMap.contains(analogs[i]->getIndex()))
-      analogs[i]->setStateData(analogsMap.value(analogs[i]->getIndex()));
-  }
-
-  for (int i = 0; i < switches.size(); ++i) {
-    if (switchesMap.contains(switches[i]->getIndex()))
-      switches[i]->setStateData(switchesMap.value(switches[i]->getIndex()));
+  foreach (RadioWidget * rw, switches) {
+    if (switchesMap.contains(rw->getIndex()))
+      rw->setStateData(switchesMap.value(rw->getIndex()));
+    // make sure the current values are emitted regardless
+    onRadioWidgetValueChange(RadioWidget::RadioWidgetType(rw->getType()), rw->getIndex(), rw->getValue());  // set initial value
   }
 
   // Set throttle stick down and locked, side depends on mode
   if (radioSettings.stickMode & 1) {
     vJoyLeft->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
-    vJoyLeft->setStickY(1);
+    emit widgetValueChange(RadioWidget::RADIO_WIDGET_STICK, Board::STICK_AXIS_LV, 1024);
   }
   else {
     vJoyRight->setStickConstraint(VirtualJoystickWidget::HOLD_Y, true);
-    vJoyRight->setStickY(1);
+    emit widgetValueChange(RadioWidget::RADIO_WIDGET_STICK, Board::STICK_AXIS_RV, 1024);
   }
 }
 
-QList<QByteArray> SimulatorWidget::saveRadioWidgetsState()
+void SimulatorWidget::saveRadioWidgetsState(QList<QByteArray> & state)
 {
-  QList<QByteArray> states;
-
-  for (int i = 0; i < analogs.size(); ++i)
-    states.append(analogs[i]->getStateData());
-
-  for (int i = 0; i < switches.size(); ++i)
-    states.append(switches[i]->getStateData());
-
-  return states;
-}
-
-/*
- * Input/Output handlers for SimulatorInterface
- */
-
-// Read various values from firmware simulator and populate values in this UI
-void SimulatorWidget::setValues()
-{
-  int currentPhase = simulator->getPhase();
-
-  // display current flight mode in window title
-  if (currentPhase != lastPhase) {
-    lastPhase = currentPhase;
-    QString phase_name = QString(simulator->getPhaseName(currentPhase));
-    if (phase_name.isEmpty())
-      phase_name = QString::number(currentPhase);
-    setWindowTitle(windowName + QString(" - Flight Mode %1").arg(phase_name));
+  if (analogs.size() || switches.size()) {
+    state.clear();
+    foreach (RadioWidget * rw, QVector<RadioWidget *>() << switches << analogs)
+      state.append(rw->getStateData());
   }
 }
 
-// "get" values from this UI and send them to the firmware simulator.
-void SimulatorWidget::getValues()
-{
-  static const int numTrims  = getBoardCapability(m_board, Board::NumTrimSwitches);
-  int i;
-
-  TxInputs inp;
-  memset(&inp, 0, sizeof(TxInputs));
-
-  inp.sticks[0] = int(1024 * vJoyLeft->getStickX());    // LEFT HORZ
-  inp.sticks[1] = int(-1024 * vJoyLeft->getStickY());   // LEFT VERT
-  inp.sticks[2] = int(-1024 * vJoyRight->getStickY());  // RGHT VERT
-  inp.sticks[3] = int(1024 * vJoyRight->getStickX());   // RGHT HORZ
-
-  for (i = 0; i < analogs.size() && i < CPN_MAX_POTS; ++i)
-    inp.pots[analogs[i]->getIndex()] = analogs[i]->getValue();
-
-  for (i = 0; i < switches.size() && i < CPN_MAX_SWITCHES; ++i)
-    inp.switches[switches[i]->getIndex()] = switches[i]->getValue();
-
-  for (i = 0; i < numTrims; ++i)
-    inp.trims[i] = (trimPressed == i);
-
-  foreach (RadioUiAction * act, radioUiWidget->getActions()) {
-    if (act->getIndex() > -1 && act->getIndex() < CPN_MAX_KEYS)
-      inp.keys[act->getIndex()] = act->isActive();
-  }
-
-  if (radioUiWidget->getRotEncAction())
-    inp.rotenc = radioUiWidget->getRotEncAction()->isActive();
-
-  simulator->setValues(inp);
-}
-
-// Read stick trim values from firmware simulator and set joystick widgets as needed.
-void SimulatorWidget::setTrims()
-{
-  using namespace Board;
-  static Trims lastTrims;
-  Trims trims;
-  simulator->getTrims(trims);
-
-  if (trims.values[TRIM_AXIS_LH] != lastTrims.values[TRIM_AXIS_LH])
-    vJoyLeft->setTrimValue(TRIM_AXIS_LH, trims.values[TRIM_AXIS_LH]);
-  if (trims.values[TRIM_AXIS_LV] != lastTrims.values[TRIM_AXIS_LV])
-    vJoyLeft->setTrimValue(TRIM_AXIS_LV, trims.values[TRIM_AXIS_LV]);
-  if (trims.values[TRIM_AXIS_RV] != lastTrims.values[TRIM_AXIS_RV])
-    vJoyRight->setTrimValue(TRIM_AXIS_RV, trims.values[TRIM_AXIS_RV]);
-  if (trims.values[TRIM_AXIS_RH] != lastTrims.values[TRIM_AXIS_RH])
-    vJoyRight->setTrimValue(TRIM_AXIS_RH, trims.values[TRIM_AXIS_RH]);
-
-  if (trims.extended != lastTrims.extended) {
-    int trimMin = -125, trimMax = +125;
-    if (trims.extended) {
-      trimMin = -500;
-      trimMax = +500;
-    }
-    vJoyLeft->setTrimRange(TRIM_AXIS_LH, trimMin, trimMax);
-    vJoyLeft->setTrimRange(TRIM_AXIS_LV, trimMin, trimMax);
-    vJoyRight->setTrimRange(TRIM_AXIS_RV, trimMin, trimMax);
-    vJoyRight->setTrimRange(TRIM_AXIS_RH, trimMin, trimMax);
-  }
-  lastTrims = trims;
-}
 
 /*
  * Event handlers/private slots
@@ -794,51 +716,105 @@ void SimulatorWidget::wheelEvent(QWheelEvent *event)
 
 void SimulatorWidget::onTimerEvent()
 {
-  static unsigned int lcd_counter = 0;
+  if (m_heartbeatTimer.isValid() && m_heartbeatTimer.hasExpired(m_timer.interval()))
+    onSimulatorError("Heartbeat timeout!");
+}
 
-  if (!simulator->timer10ms()) {
-    QMessageBox::critical(this, "Companion", tr("Firmware %1 error: %2").arg(firmware->getName()).arg(simulator->getError()));
-    timer->stop();
+void SimulatorWidget::onSimulatorHeartbeat(qint32 loops, qint64 timestamp)
+{
+  Q_UNUSED(loops)
+  Q_UNUSED(timestamp)
+  m_heartbeatTimer.start();
+
+#if 0
+  static qint64 lastTs = 0;
+  if (!(loops % 1000)) {
+    qDebug() << "loops:" << loops << "ts:" << timestamp << "ts-delta:" << timestamp - lastTs;
+    lastTs = timestamp;
+  }
+#endif
+}
+
+void SimulatorWidget::onSimulatorError(const QString & error)
+{
+  QMessageBox::critical(this, windowName, tr("Radio firmware error: %1").arg(error.isEmpty() ? "Unknown reason" : error));
+  onSimulatorStopped();
+  //stop();
+}
+
+void SimulatorWidget::onTrimValueChanged(quint8 index, qint32 value)
+{
+  emit widgetValueChange(RadioWidget::RADIO_WIDGET_TRIM, index, value);
+}
+
+void SimulatorWidget::onTrimRangeChanged(quint8, qint32 value)
+{
+  int trimRng = firmware->getCapability(value ? ExtendedTrimsRange : TrimsRange);
+  emit trimRangeChanged(Board::TRIM_AXIS_COUNT, -trimRng, trimRng);  // all
+}
+
+void SimulatorWidget::onPhaseChanged(qint32 phase, const QString & name)
+{
+  setWindowTitle(windowName + tr(" - Flight Mode %1 (#%2)").arg(name).arg(phase));
+}
+
+void SimulatorWidget::onRadioWidgetValueChange(RadioWidget::RadioWidgetType type, int index, int value)
+{
+  //qDebug() << type << index << value;
+  if (!simulator || index < 0)
     return;
+
+  SimulatorInterface::InputSourceType inpType = SimulatorInterface::INPUT_SRC_NONE;
+
+  switch (type) {
+    case RadioWidget::RADIO_WIDGET_SWITCH :
+      inpType = SimulatorInterface::INPUT_SRC_SWITCH;
+      break;
+
+    case RadioWidget::RADIO_WIDGET_KNOB :
+      inpType = SimulatorInterface::INPUT_SRC_KNOB;
+      break;
+
+    case RadioWidget::RADIO_WIDGET_FADER :
+      inpType = SimulatorInterface::INPUT_SRC_SLIDER;
+      break;
+
+    case RadioWidget::RADIO_WIDGET_TRIM :
+      switch (value) {
+        case RadioWidget::RADIO_TRIM_BTN_ON :
+          inpType = SimulatorInterface::INPUT_SRC_TRIM_SW;
+          value = 1;
+          break;
+        case RadioWidget::RADIO_TRIM_BTN_OFF :
+          inpType = SimulatorInterface::INPUT_SRC_TRIM_SW;
+          value = 0;
+          break;
+        default :
+          inpType = SimulatorInterface::INPUT_SRC_TRIM;
+          break;
+      }
+      break;
+
+    case RadioWidget::RADIO_WIDGET_STICK :
+      inpType = SimulatorInterface::INPUT_SRC_STICK;
+      break;
+
+    case RadioWidget::RADIO_WIDGET_KEY :
+      inpType = SimulatorInterface::INPUT_SRC_KEY;
+      break;
+
+    default :
+      return;
   }
 
-  getValues();
-
-  if (!(lcd_counter++ % 5)) {
-    setValues();
-    setTrims();
-    centerSticks();
-  }
-}
-
-void SimulatorWidget::onTrimPressed(int index)
-{
-  trimPressed = index;
-}
-
-void SimulatorWidget::onTrimReleased(int)
-{
-  trimPressed = 255;
-}
-
-void SimulatorWidget::onTrimSliderMoved(int index, int value)
-{
-  simulator->setTrim(index, value);
-}
-
-void SimulatorWidget::centerSticks()
-{
-  if (vJoyLeft)
-    vJoyLeft->centerStick();
-
-  if (vJoyRight)
-    vJoyRight->centerStick();
+  emit inputValueChange(inpType, index, value);
 }
 
 void SimulatorWidget::onjoystickAxisValueChanged(int axis, int value)
 {
 #ifdef JOYSTICKS
-  static const int ttlSticks = CPN_MAX_STICKS;
+  static const int ttlSticks = 4;
+  static const int ttlKnobs = Boards::getCapability(m_board, Board::Pots);
   static const int valueRange = 1024;
 
   if (!joystick || axis >= MAX_JOYSTICKS)
@@ -863,20 +839,15 @@ void SimulatorWidget::onjoystickAxisValueChanged(int axis, int value)
   if (g.joystick[axis].stick_inv())
     stickval *= -1;
 
-  if (stick==1 ) {
-    vJoyRight->setStickY(-stickval/1024.0);
+  if (stick < ttlSticks) {
+    emit widgetValueChange(RadioWidget::RADIO_WIDGET_STICK, stick, stickval);
   }
-  else if (stick==2) {
-    vJoyRight->setStickX(stickval/1024.0);
-  }
-  else if (stick==3) {
-    vJoyLeft->setStickY(-stickval/1024.0);
-  }
-  else if (stick==4) {
-    vJoyLeft->setStickX(stickval/1024.0);
-  }
-  else if (stick > ttlSticks) {
-    analogs[stick-ttlSticks-1]->setValue(stickval);
+  else {
+    stick -= ttlSticks;
+    if (stick < ttlKnobs)
+      emit widgetValueChange(RadioWidget::RADIO_WIDGET_KNOB, stick, stickval);
+    else
+      emit widgetValueChange(RadioWidget::RADIO_WIDGET_FADER, stick, stickval);
   }
 
 #endif

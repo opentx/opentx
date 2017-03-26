@@ -67,6 +67,7 @@ class SimulatorMainWindow : public QMainWindow
 
   signals:
     void simulatorStart();
+    void simulatorRestart();
 
   protected slots:
     virtual void closeEvent(QCloseEvent *);
@@ -76,7 +77,6 @@ class SimulatorMainWindow : public QMainWindow
     void toggleMenuBar(bool show);
     void setRadioSizePolicy(int fixType);
     void toggleRadioDocked(bool dock);
-    void luaReload(bool);
     void openJoystickDialog(bool);
     void showHelp(bool show);
 

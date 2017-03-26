@@ -119,18 +119,27 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
 
   connect(ui->actionShowKeymap, &QAction::triggered, this, &SimulatorMainWindow::showHelp);
   connect(ui->actionJoystickSettings, &QAction::triggered, this, &SimulatorMainWindow::openJoystickDialog);
-  connect(ui->actionReloadLua, &QAction::triggered, this, &SimulatorMainWindow::luaReload);
   connect(ui->actionToggleMenuBar, &QAction::toggled, this, &SimulatorMainWindow::showMenuBar);
   connect(ui->actionFixedRadioWidth, &QAction::toggled, this, &SimulatorMainWindow::showRadioFixedWidth);
   connect(ui->actionFixedRadioHeight, &QAction::toggled, this, &SimulatorMainWindow::showRadioFixedHeight);
   connect(ui->actionDockRadio, &QAction::toggled, this, &SimulatorMainWindow::showRadioDocked);
+  connect(ui->actionReloadRadioData, &QAction::triggered, this, &SimulatorMainWindow::simulatorRestart);
+
+  connect(ui->actionReloadLua, &QAction::triggered, m_simulator, &SimulatorInterface::setLuaStateReloadPermanentScripts);
+
+  if (m_outputsWidget) {
+    connect(this, &SimulatorMainWindow::simulatorStart, m_outputsWidget, &RadioOutputsWidget::start);
+    connect(this, &SimulatorMainWindow::simulatorRestart, m_outputsWidget, &RadioOutputsWidget::restart);
+  }
+
   if (m_simulatorWidget) {
+    connect(this, &SimulatorMainWindow::simulatorStart, m_simulatorWidget, &SimulatorWidget::start);
+    connect(this, &SimulatorMainWindow::simulatorRestart, m_simulatorWidget, &SimulatorWidget::restart);
     connect(ui->actionScreenshot, &QAction::triggered, m_simulatorWidget, &SimulatorWidget::captureScreenshot);
-    connect(ui->actionReloadRadioData, &QAction::triggered, m_simulatorWidget, &SimulatorWidget::restart);
     connect(m_simulatorWidget, &SimulatorWidget::windowTitleChanged, this, &SimulatorMainWindow::setWindowTitle);
   }
-  if (m_outputsWidget)
-    connect(ui->actionReloadRadioData, &QAction::triggered, m_outputsWidget, &RadioOutputsWidget::restart);
+
+
 }
 
 SimulatorMainWindow::~SimulatorMainWindow()
@@ -164,14 +173,13 @@ void SimulatorMainWindow::closeEvent(QCloseEvent *)
 void SimulatorMainWindow::show()
 {
   QMainWindow::show();
+#ifdef Q_OS_LINUX
+  // for whatever reason, w/out this workaround any floating docks may appear and get "stuck" behind other windows, eg. Terminal or Companion.
   if (m_firstShow) {
+    restoreUiState();
     m_firstShow = false;
-    #ifdef Q_OS_LINUX
-      // for whatever reason, w/out this workaround any floating docks may appear and get "stuck" behind other windows, eg. Terminal or Companion.
-      restoreUiState();
-    #endif
-    start();
   }
+#endif
 }
 
 void SimulatorMainWindow::changeEvent(QEvent *e)
@@ -252,11 +260,6 @@ bool SimulatorMainWindow::setOptions(SimulatorOptions & options, bool withSave)
 
 void SimulatorMainWindow::start()
 {
-  if (m_simulatorWidget)
-    m_simulatorWidget->start();
-  if (m_outputsWidget)
-    m_outputsWidget->start();
-
   emit simulatorStart();
 }
 
@@ -278,8 +281,6 @@ void SimulatorMainWindow::createDockWidgets()
     m_telemetryDockWidget->setWidget(telem);
     m_telemetryDockWidget->setObjectName("TELEMETRY_SIMULATOR");
     addTool(m_telemetryDockWidget, Qt::LeftDockWidgetArea, icon, QKeySequence(tr("F4")));
-    connect(this, &SimulatorMainWindow::simulatorStart, telem, &TelemetrySimulator::onSimulatorStarted);
-    connect(ui->actionReloadRadioData, &QAction::triggered, telem, &TelemetrySimulator::onSimulatorStarted);
   }
 
   if (!m_trainerDockWidget) {
@@ -447,13 +448,6 @@ void SimulatorMainWindow::toggleRadioDocked(bool dock)
   if (ui->actionDockRadio->isChecked() != dock)
     ui->actionDockRadio->setChecked(dock);
 
-}
-
-void SimulatorMainWindow::luaReload(bool)
-{
-  // force a reload of the lua environment
-  if (m_simulator)
-    m_simulator->setLuaStateReloadPermanentScripts();
 }
 
 void SimulatorMainWindow::openJoystickDialog(bool)

@@ -21,6 +21,8 @@
 #ifndef VIRTUALJOYSTICKWIDGET_H
 #define VIRTUALJOYSTICKWIDGET_H
 
+#include "radiowidget.h"
+
 #include <QWidget>
 #include <QResizeEvent>
 #include <QBoxLayout>
@@ -28,6 +30,7 @@
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include <QToolButton>
+#include <QTimer>
 #include <QLabel>
 
 class CustomGraphicsScene;
@@ -40,38 +43,46 @@ class VirtualJoystickWidget : public QWidget
 
   public:
     enum ConstraintTypes {
-      HOLD_X = 0,
-      HOLD_Y,
-      FIX_X,
-      FIX_Y
+      HOLD_X = 0x01,
+      HOLD_Y = 0x02,
+      FIX_X  = 0x04,
+      FIX_Y  = 0x08
     };
 
     explicit VirtualJoystickWidget(QWidget * parent = NULL, QChar side = 'L', bool showTrims = true, bool showBtns = true, bool showValues = true, QSize size = QSize(125, 125));
 
-    void setStickX(qreal x);
-    void setStickY(qreal y);
-    void setStickPos(QPointF xy);
-    void centerStick();
     qreal getStickX();
     qreal getStickY();
     QPointF getStickPos();
-
-    void setTrimValue(int which, int value);
-    void setTrimRange(int which, int min, int max);
     int getTrimValue(int which);
-
-    void setStickConstraint(int which, bool active);
-    void setStickColor(const QColor & color);
-
     virtual QSize sizeHint() const;
     virtual void resizeEvent(QResizeEvent *event);
 
+    int getStickScale() const;
+    void setStickScale(int stickScale);
+
+  public slots:
+    void setStickX(qreal x);
+    void setStickY(qreal y);
+    void setStickPos(QPointF xy);
+    void setStickAxisValue(int index, int value);
+    void centerStick();
+    void setTrimsRange(int min, int max);
+    void setTrimsRange(int rng);
+    void setTrimRange(int index, int min, int max);
+    void setTrimValue(int index, int value);
+    void setWidgetValue(RadioWidget::RadioWidgetType type, int index, int value);
+
+    void setStickIndices(int xIdx = -1, int yIdx = -1);
+    void setStickConstraint(quint8 index, bool active);
+    void setStickColor(const QColor & color);
+
   signals:
-    void trimButtonPressed(int index);
-    void trimButtonReleased(int index);
-    void trimSliderMoved(int index, int value);
+    void valueChange(RadioWidget::RadioWidgetType type, int index, int value);
 
   protected slots:
+    void onNodeXChanged();
+    void onNodeYChanged();
     void onButtonChange(bool checked);
     void updateNodeValueLabels();
     void onGsMouseEvent(QGraphicsSceneMouseEvent * event);
@@ -81,6 +92,7 @@ class VirtualJoystickWidget : public QWidget
     RadioTrimWidget * createTrimWidget(QChar type);
     QToolButton * createButtonWidget(int type);
     QLayout * createNodeValueLayout(QChar type, QLabel *& valLabel);
+    int getStickIndex(QChar type);
     int getTrimSliderType(QChar type);
     int getTrimButtonType(QChar type, int pos);
     RadioTrimWidget * getTrimWidget(int which);
@@ -97,7 +109,11 @@ class VirtualJoystickWidget : public QWidget
     QToolButton * btnFixX, * btnFixY;
     QLabel * nodeLabelX, * nodeLabelY;
     QSize extraSize;
+    QTimer centerStickTimer;
     float ar;  // aspect ratio
+    int m_xIndex;
+    int m_yIndex;
+    int m_stickScale;
     bool m_stickPressed;
 };
 

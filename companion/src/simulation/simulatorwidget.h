@@ -24,8 +24,11 @@
 #include "constants.h"
 #include "helpers.h"
 #include "radiodata.h"
+#include "radiowidget.h"
 #include "simulator.h"
+#include "simulatorinterface.h"
 
+#include <QElapsedTimer>
 #include <QTimer>
 #include <QWidget>
 #include <QVector>
@@ -35,8 +38,6 @@ void traceCb(const char * text);
 class Firmware;
 class SimulatorInterface;
 class SimulatedUIWidget;
-class RadioWidget;
-class RadioSwitchWidget;
 class VirtualJoystickWidget;
 #ifdef JOYSTICKS
 class Joystick;
@@ -85,52 +86,16 @@ class SimulatorWidget : public QWidget
     void restart();
     void shutdown();
 
-  private:
-    void setRadioProfileId(int value);
-    void setupRadioWidgets();
-    void setupTimer();
-    void restoreRadioWidgetsState();
-    QList<QByteArray> saveRadioWidgetsState();
-
-    void setValues();
-    void getValues();
-    void setTrims();
-
-
-    Ui::SimulatorWidget * ui;
-    SimulatorInterface * simulator;
-    Firmware * firmware;
-    GeneralSettings radioSettings;
-
-    QTimer * timer;
-    QString windowName;
-    QVector<Simulator::keymapHelp_t> keymapHelp;
-
-    SimulatedUIWidget     * radioUiWidget;
-    VirtualJoystickWidget * vJoyLeft;
-    VirtualJoystickWidget * vJoyRight;
-
-    QVector<RadioSwitchWidget *> switches;
-    QVector<RadioWidget       *> analogs;
-
-    QString sdCardPath;
-    QString radioDataPath;
-    QByteArray startupData;
-    Board::Type m_board;
-    quint8 flags;
-    int radioProfileId;
-    int lastPhase;
-    int buttonPressed;
-    int trimPressed;
-    bool startupFromFile;
-    bool deleteTempRadioData;
-    bool saveTempRadioData;
-    bool middleButtonPressed;
-    bool firstShow;
-
-#ifdef JOYSTICKS
-    Joystick *joystick;
-#endif
+  signals:
+    void trimValueChanged(int index, int value);
+    void trimRangeChanged(int axis, int min, int max);
+    void widgetValueChange(RadioWidget::RadioWidgetType type, int index, int value);
+    void inputValueChange(int type, quint8 index, qint16 value);
+    void simulatorSetData(const QByteArray & data);
+    void simulatorStart(const char * filename, bool tests);
+    void simulatorStop();
+    void simulatorSdPathChange(const QString & sdPath, const QString & dataPath);
+    void simulatorVolumeGainChange(const int gain);
 
   private slots:
     virtual void mousePressEvent(QMouseEvent *event);
@@ -138,11 +103,52 @@ class SimulatorWidget : public QWidget
     virtual void wheelEvent(QWheelEvent *event);
 
     void onTimerEvent();
-    void onTrimPressed(int index);
-    void onTrimReleased(int);
-    void onTrimSliderMoved(int index, int value);
-    void centerSticks();
+    void onSimulatorStarted();
+    void onSimulatorStopped();
+    void onSimulatorHeartbeat(qint32 loops, qint64 timestamp);
+    void onTrimValueChanged(quint8 index, qint32 value);
+    void onTrimRangeChanged(quint8, qint32 value);
+    void onPhaseChanged(qint32 phase, const QString & name);
+    void onSimulatorError(const QString & error);
+    void onRadioWidgetValueChange(RadioWidget::RadioWidgetType type, int index, int value);
     void onjoystickAxisValueChanged(int axis, int value);
+
+    void setRadioProfileId(int value);
+    void setupRadioWidgets();
+    void restoreRadioWidgetsState();
+
+  private:
+    void saveRadioWidgetsState(QList<QByteArray> & state);
+
+    Ui::SimulatorWidget * ui;
+    SimulatorInterface * simulator;
+    Firmware * firmware;
+    GeneralSettings radioSettings;
+
+    QTimer m_timer;
+    QString windowName;
+    QVector<Simulator::keymapHelp_t> keymapHelp;
+    QElapsedTimer m_heartbeatTimer;
+
+    SimulatedUIWidget     * radioUiWidget;
+    VirtualJoystickWidget * vJoyLeft;
+    VirtualJoystickWidget * vJoyRight;
+    QVector<RadioWidget *> switches;
+    QVector<RadioWidget *> analogs;
+
+    QString sdCardPath;
+    QString radioDataPath;
+    QByteArray startupData;
+    Board::Type m_board;
+    quint8 flags;
+    int radioProfileId;
+    bool startupFromFile;
+    bool deleteTempRadioData;
+    bool saveTempRadioData;
+
+#ifdef JOYSTICKS
+    Joystick *joystick;
+#endif
 
 };
 

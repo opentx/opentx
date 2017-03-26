@@ -38,12 +38,6 @@ class RadioTrimWidget : public RadioWidget
     {
       init(orientation);
     }
-    explicit RadioTrimWidget(const QString & labelText, Qt::Orientation orientation = Qt::Vertical, int value = 0, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags()) :
-      RadioWidget(labelText, value, parent, f),
-      m_slider(NULL)
-    {
-      init(orientation);
-    }
 
     void setIndices(int sliderIdx = -1, int decrBtnIdx = -1, int incrBtnIdx = -1)
     {
@@ -58,11 +52,18 @@ class RadioTrimWidget : public RadioWidget
         m_slider->setRange(min, max);
     }
 
-  signals:
-
-    void trimButtonPressed(int index);
-    void trimButtonReleased(int index);
-    void trimSliderMoved(int index, int value);
+    void setValue(const int & value)
+    {
+      if (sender() && qobject_cast<SliderWidget *>(sender())) {
+        RadioWidget::setValue(value);
+      }
+      else if (m_slider) {
+        //const QSignalBlocker blocker(m_slider);  // Qt %5.3+ only
+        const bool blocker = m_slider->blockSignals(true);
+        m_slider->setValue(value);
+        m_slider->blockSignals(blocker);
+      }
+    }
 
   protected slots:
 
@@ -107,21 +108,11 @@ class RadioTrimWidget : public RadioWidget
 
       setWidget(trimWidget, algn);
 
-      connect(m_slider, &SliderWidget::valueChanged, this, &RadioWidget::setValue);
-      connect(this, &RadioWidget::valueChanged, this, &RadioTrimWidget::onValueChanged);
-
-      connect(trimBtnInc, &QToolButton::pressed,  [this]() { emit trimButtonPressed(m_btnIncIndex);  });
-      connect(trimBtnInc, &QToolButton::released, [this]() { emit trimButtonReleased(m_btnIncIndex); });
-      connect(trimBtnDec, &QToolButton::pressed,  [this]() { emit trimButtonPressed(m_btnDecIndex);  });
-      connect(trimBtnDec, &QToolButton::released, [this]() { emit trimButtonReleased(m_btnDecIndex); });
-    }
-
-    void onValueChanged(int value)
-    {
-      m_slider->blockSignals(true);
-      m_slider->setValue(value);
-      m_slider->blockSignals(false);
-      emit trimSliderMoved(m_index, m_value);
+      connect(m_slider, &SliderWidget::valueChanged, this, &RadioTrimWidget::setValue);
+      connect(trimBtnInc, &QToolButton::pressed,  [this]() { emit valueChange(m_type, m_btnIncIndex, RADIO_TRIM_BTN_ON); });
+      connect(trimBtnInc, &QToolButton::released, [this]() { emit valueChange(m_type, m_btnIncIndex, RADIO_TRIM_BTN_OFF); });
+      connect(trimBtnDec, &QToolButton::pressed,  [this]() { emit valueChange(m_type, m_btnDecIndex, RADIO_TRIM_BTN_ON); });
+      connect(trimBtnDec, &QToolButton::released, [this]() { emit valueChange(m_type, m_btnDecIndex, RADIO_TRIM_BTN_OFF); });
     }
 
   protected:
@@ -129,6 +120,5 @@ class RadioTrimWidget : public RadioWidget
     int m_btnDecIndex;
     int m_btnIncIndex;
 };
-
 
 #endif // _RADIOTRIMWIDGET_H_
