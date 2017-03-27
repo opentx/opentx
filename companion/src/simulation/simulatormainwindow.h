@@ -25,6 +25,7 @@
 
 #include <QDockWidget>
 #include <QMainWindow>
+#include <QThread>
 
 class DebugOutput;
 class RadioData;
@@ -97,6 +98,7 @@ class SimulatorMainWindow : public QMainWindow
     QDockWidget * m_trainerDockWidget;
     QDockWidget * m_outputsDockWidget;
 
+    QThread simuThread;
     QVector<keymapHelp_t> m_keymapHelp;
     QString m_simulatorId;
     QString m_exitStatusMsg;

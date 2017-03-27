@@ -114,14 +114,14 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   connect(this, &SimulatorWidget::trimRangeChanged, vJoyRight, &VirtualJoystickWidget::setTrimRange);
 
   connect(this, &SimulatorWidget::simulatorStart, simulator, &SimulatorInterface::start);
-  //connect(this, &SimulatorWidget::simulatorStop, simulator, &SimulatorInterface::stop);
+  connect(this, &SimulatorWidget::simulatorStop, simulator, &SimulatorInterface::stop);
   //connect(this, &SimulatorWidget::simulatorSetData, simulator, &SimulatorInterface::setRadioData);
   connect(this, &SimulatorWidget::inputValueChange, simulator, &SimulatorInterface::setInputValue);
   connect(this, &SimulatorWidget::simulatorSdPathChange, simulator, &SimulatorInterface::setSdPath);
   connect(this, &SimulatorWidget::simulatorVolumeGainChange, simulator, &SimulatorInterface::setVolumeGain);
 
   connect(simulator, &SimulatorInterface::started, this, &SimulatorWidget::onSimulatorStarted);
-  //connect(simulator, &SimulatorInterface::stopped, this, &SimulatorWidget::onSimulatorStopped);
+  connect(simulator, &SimulatorInterface::stopped, this, &SimulatorWidget::onSimulatorStopped);
   connect(simulator, &SimulatorInterface::heartbeat, this, &SimulatorWidget::onSimulatorHeartbeat);
   connect(simulator, &SimulatorInterface::runtimeError, this, &SimulatorWidget::onSimulatorError);
   connect(simulator, &SimulatorInterface::trimValueChange, this, &SimulatorWidget::onTrimValueChanged);
@@ -457,9 +457,16 @@ void SimulatorWidget::start()
 
 void SimulatorWidget::stop()
 {
-  simulator->stop();
-  onSimulatorStopped();
-  //emit simulatorStop();
+  emit simulatorStop();
+  QElapsedTimer tmout;
+  tmout.start();
+  // block until simulator stops or times out
+  while (simulator->isRunning()) {
+    if (tmout.hasExpired(2000)) {
+      onSimulatorError("Timeout while trying to stop simulation!");
+      return;
+    }
+  }
 }
 
 void SimulatorWidget::onSimulatorStarted()
@@ -477,8 +484,7 @@ void SimulatorWidget::onSimulatorStopped()
 
   if (simulator && saveTempRadioData) {
     startupData.fill(0, getEEpromSize(m_board));
-    // this is cheating a bit (simulator might be in different thread) but should be OK since we own the data container
-    simulator->readEepromData(startupData);
+    simulator->readRadioData(startupData);
   }
 }
 
@@ -729,7 +735,7 @@ void SimulatorWidget::onSimulatorHeartbeat(qint32 loops, qint64 timestamp)
 #if 0
   static qint64 lastTs = 0;
   if (!(loops % 1000)) {
-    qDebug() << "loops:" << loops << "ts:" << timestamp << "ts-delta:" << timestamp - lastTs;
+    qDebug() << "loops:" << loops << "ts:" << timestamp << "ts-delta:" << timestamp - lastTs << "This:" << QThread::currentThread() << "Simu:" << simulator->thread();
     lastTs = timestamp;
   }
 #endif

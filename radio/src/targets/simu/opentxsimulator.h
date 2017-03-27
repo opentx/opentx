@@ -19,6 +19,7 @@
 
 #include "simulatorinterface.h"
 
+#include <QMutex>
 #include <QObject>
 #include <QTimer>
 
@@ -37,51 +38,59 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
     OpenTxSimulator();
     virtual ~OpenTxSimulator();
 
+    virtual QString name();
     virtual bool isRunning();
-    virtual void readEepromData(QByteArray & dest);
+    virtual void readRadioData(QByteArray & dest);
     virtual uint8_t * getLcd();
-    virtual bool lcdChanged(bool & lightEnable);
-    virtual unsigned int getPhase();
-    virtual const char * getPhaseName(unsigned int phase);
-    virtual const QString getCurrentPhaseName();
-    virtual const char * getError();
     virtual uint8_t getSensorInstance(uint16_t id, uint8_t defaultValue = 0);
     virtual uint16_t getSensorRatio(uint16_t id);
-    virtual QString name();
     virtual void installTraceHook(void (*callback)(const char *));
 
   public slots:
 
+    virtual void start(const char * filename = NULL, bool tests = true);
+    virtual void stop();
     virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "");
     virtual void setVolumeGain(const int value);
     virtual void setRadioData(const QByteArray & data);
-    virtual void start(const char * filename = NULL, bool tests = true);
-    virtual void stop();
     virtual void setAnalogValue(uint8_t index, int16_t value);
     virtual void setKey(uint8_t key, bool state);
     virtual void setSwitch(uint8_t swtch, int8_t state);
     virtual void setTrim(unsigned int idx, int value);
     virtual void setTrimSwitch(uint8_t trim, bool state);
+    virtual void setTrainerInput(unsigned int inputNumber, int16_t value);
     virtual void setInputValue(int type, uint8_t index, int16_t value);
     virtual void rotaryEncoderEvent(int steps);
-    virtual void sendTelemetry(uint8_t * data, unsigned int len);
     virtual void setTrainerTimeout(uint16_t ms);
-    virtual void setTrainerInput(unsigned int inputNumber, int16_t value);
+    virtual void sendTelemetry(uint8_t * data, unsigned int len);
     virtual void setLuaStateReloadPermanentScripts();
+
+  protected slots:
+    void run();
 
   protected:
 
-    virtual void timer10ms();
+    bool isStopRequested();
+    void setStopRequested(bool stop);
     bool checkLcdChanged();
     void checkOutputsChanged();
     bool hasExtendedTrims();
     uint8_t getStickMode();
+    unsigned int getPhase();
+    const char * getPhaseName(unsigned int phase);
+    const QString getCurrentPhaseName();
+    const char * getError();
 
     QString simuSdDirectory;
     QString simuSettingsDirectory;
     QTimer * m_timer10ms;
+    QMutex m_mtxStopReq;
+    QMutex m_mtxSimuMain;
+    QMutex m_mtxRadioData;
+    QMutex m_mtxSettings;
     int volumeGain;
     bool m_resetOutputsData;
+    bool m_stopRequested;
 
 };
 

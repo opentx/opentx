@@ -69,6 +69,9 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
     return;
   }
 
+  m_simulator->moveToThread(&simuThread);
+  simuThread.start();
+
   ui->setupUi(this);
 
   setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
@@ -159,9 +162,11 @@ SimulatorMainWindow::~SimulatorMainWindow()
 
   delete ui;
 
-  if (m_simulator)
+  if (m_simulator) {
+    simuThread.quit();
+    simuThread.wait();
     delete m_simulator;
-
+  }
   SimulatorLoader::unloadSimulator(m_simulatorId);
 }
 

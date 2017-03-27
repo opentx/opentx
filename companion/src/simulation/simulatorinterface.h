@@ -105,36 +105,31 @@ class SimulatorInterface : public QObject
 
     virtual ~SimulatorInterface() {}
 
+    virtual QString name() = 0;
     virtual bool isRunning() = 0;
-    virtual void readEepromData(QByteArray & dest) = 0;
+    virtual void readRadioData(QByteArray & dest) = 0;
     virtual uint8_t * getLcd() = 0;
-    virtual bool lcdChanged(bool &lightEnable) = 0;
-    virtual unsigned int getPhase() = 0;
-    virtual const char * getPhaseName(unsigned int phase) = 0;
-    virtual const QString getCurrentPhaseName() = 0;
-    virtual const char * getError() = 0;
     virtual uint8_t getSensorInstance(uint16_t id, uint8_t defaultValue = 0) = 0;
     virtual uint16_t getSensorRatio(uint16_t id) = 0;
-    virtual QString name() = 0;
     virtual void installTraceHook(void (*callback)(const char *)) = 0;
 
   public slots:
 
+    virtual void start(const char * filename = NULL, bool tests = true) = 0;
+    virtual void stop() = 0;
     virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") = 0;
     virtual void setVolumeGain(const int value) = 0;
     virtual void setRadioData(const QByteArray & data) = 0;
-    virtual void start(const char * filename = NULL, bool tests = true) = 0;
-    virtual void stop() = 0;
     virtual void setAnalogValue(uint8_t index, int16_t value) = 0;
     virtual void setKey(uint8_t key, bool state) = 0;
     virtual void setSwitch(uint8_t swtch, int8_t state) = 0;
     virtual void setTrim(unsigned int idx, int value) = 0;
     virtual void setTrimSwitch(uint8_t trim, bool state) = 0;
+    virtual void setTrainerInput(unsigned int inputNumber, int16_t value) = 0;
     virtual void setInputValue(int type, uint8_t index, int16_t value) = 0;
     virtual void rotaryEncoderEvent(int steps) = 0;
-    virtual void sendTelemetry(uint8_t * data, unsigned int len) = 0;
     virtual void setTrainerTimeout(uint16_t ms) = 0;
-    virtual void setTrainerInput(unsigned int inputNumber, int16_t value) = 0;
+    virtual void sendTelemetry(uint8_t * data, unsigned int len) = 0;
     virtual void setLuaStateReloadPermanentScripts() = 0;
 
   signals:
@@ -152,11 +147,6 @@ class SimulatorInterface : public QObject
     void trimRangeChange(quint8 index, qint32 value);
     void gVarValueChange(quint8 index, qint32 value);
     void outputValueChange(int type, quint8 index, qint32 value);
-
-  protected:
-
-    virtual void timer10ms() = 0;
-
 };
 
 class SimulatorFactory {

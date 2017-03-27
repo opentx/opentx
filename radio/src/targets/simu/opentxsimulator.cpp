@@ -18,7 +18,6 @@
 #include "opentx.h"
 #include "simulcd.h"
 
-#include <QTimer>
 #include <QDebug>
 #include <QElapsedTimer>
 
@@ -47,7 +46,8 @@ uint16_t getAnalogValue(uint8_t index)
 OpenTxSimulator::OpenTxSimulator() :
   SimulatorInterface(),
   m_timer10ms(NULL),
-  m_resetOutputsData(true)
+  m_resetOutputsData(true),
+  m_stopRequested(false)
 {
 }
 
@@ -55,31 +55,263 @@ OpenTxSimulator::~OpenTxSimulator()
 {
   if (m_timer10ms)
     m_timer10ms->deleteLater();
+
+  if (isRunning()) {
+    stop();
+    QElapsedTimer tmout;
+    tmout.start();
+    while (isRunning() && !tmout.hasExpired(1000))
+      ;
+  }
   //qDebug() << "Deleting OpenTxSimulator";
 }
 
-bool OpenTxSimulator::hasExtendedTrims()
+QString OpenTxSimulator::name()
 {
-  return g_model.extendedTrims;
+  return QString(SIMULATOR_FLAVOUR);
 }
 
-uint8_t OpenTxSimulator::getStickMode()
+bool OpenTxSimulator::isRunning()
 {
-  return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
+  QMutexLocker lckr(&m_mtxSimuMain);
+  return (bool)main_thread_running;
+}
+
+void OpenTxSimulator::start(const char * filename, bool tests)
+{
+  if (isRunning())
+    return;
+
+  if (!m_timer10ms) {
+    // make sure we create & control the timer from current thread
+    m_timer10ms = new QTimer();
+    m_timer10ms->setInterval(10);
+    connect(m_timer10ms, &QTimer::timeout, this, &OpenTxSimulator::run);
+    connect(this, SIGNAL(started()), m_timer10ms, SLOT(start()));
+    connect(this, SIGNAL(stopped()), m_timer10ms, SLOT(stop()));
+  }
+
+  m_resetOutputsData = true;
+  setStopRequested(false);
+
+  QMutexLocker lckr(&m_mtxSimuMain);
+  QMutexLocker slckr(&m_mtxSettings);
+  simuInit();
+  StartEepromThread(filename);
+  StartAudioThread(volumeGain);
+  StartSimu(tests, simuSdDirectory.toLatin1().constData(), simuSettingsDirectory.toLatin1().constData());
+
+  emit started();
+  QTimer::singleShot(0, this, &OpenTxSimulator::run);
+}
+
+void OpenTxSimulator::stop()
+{
+  if (!isRunning())
+    return;
+
+  setStopRequested(true);
+
+  QMutexLocker lckr(&m_mtxSimuMain);
+  StopSimu();
+  StopAudioThread();
+  StopEepromThread();
+
+  emit stopped();
 }
 
 void OpenTxSimulator::setSdPath(const QString & sdPath, const QString & settingsPath)
 {
+  QMutexLocker lckr(&m_mtxSettings);
   simuSdDirectory = sdPath;
   simuSettingsDirectory = settingsPath;
 }
 
 void OpenTxSimulator::setVolumeGain(const int value)
 {
+  QMutexLocker lckr(&m_mtxSettings);
   volumeGain = value;
 }
 
-void OpenTxSimulator::timer10ms()
+void OpenTxSimulator::setRadioData(const QByteArray & data)
+{
+#if defined(EEPROM_SIZE)
+  QMutexLocker lckr(&m_mtxRadioData);
+  memcpy(eeprom, data.data(), qMin<int>(EEPROM_SIZE, data.size()));
+#endif
+}
+
+void OpenTxSimulator::readRadioData(QByteArray & dest)
+{
+#if defined(EEPROM_SIZE)
+  QMutexLocker lckr(&m_mtxRadioData);
+  memcpy(dest.data(), eeprom, std::min<int>(EEPROM_SIZE, dest.size()));
+#endif
+}
+
+uint8_t * OpenTxSimulator::getLcd()
+{
+  return (uint8_t *)simuLcdBuf;
+}
+
+void OpenTxSimulator::setAnalogValue(uint8_t index, int16_t value)
+{
+  if (index < NUM_STICKS + NUM_POTS + NUM_SLIDERS) {
+#if defined(PCBTARANIS) && !defined(PCBX7)
+    // this needs to follow the exception in radio/src/mixer.cpp:evalInputs()
+    if (index == POT1 || index == SLIDER1)
+      value = -value;
+#endif
+    g_anas[index] = value;
+  }
+}
+
+void OpenTxSimulator::setSwitch(uint8_t swtch, int8_t state)
+{
+  simuSetSwitch(swtch, state);
+}
+
+void OpenTxSimulator::setKey(uint8_t key, bool state)
+{
+  simuSetKey(key, state);
+}
+
+void OpenTxSimulator::setTrimSwitch(uint8_t trim, bool state)
+{
+  simuSetTrim(trim, state);
+}
+
+void OpenTxSimulator::setTrim(unsigned int idx, int value)
+{
+  idx = modn12x3[4*getStickMode() + idx];
+  uint8_t phase = getTrimFlightMode(getFlightMode(), idx);
+  setTrimValue(phase, idx, value);
+}
+
+void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
+{
+  //setTrainerTimeout(100);
+  ppmInput[inputNumber] = qMin(qMax((int16_t)-512, value), (int16_t)512);
+}
+
+void OpenTxSimulator::setInputValue(int type, uint8_t index, int16_t value)
+{
+  //qDebug() << type << index << value << this->thread();
+  switch (type) {
+    case INPUT_SRC_STICK :
+      setAnalogValue(index, value);
+      break;
+    case INPUT_SRC_KNOB :
+      setAnalogValue(index + NUM_STICKS, value);
+      break;
+    case INPUT_SRC_SLIDER :
+      setAnalogValue(index + NUM_STICKS + NUM_POTS, value);
+      break;
+    case INPUT_SRC_SWITCH :
+      setSwitch(index, (int8_t)value);
+      break;
+    case INPUT_SRC_TRIM_SW :
+      setTrimSwitch(index, (bool)value);
+      break;
+    case INPUT_SRC_TRIM :
+      setTrim(index, value);
+      break;
+    case INPUT_SRC_KEY :
+      setKey(index, (bool)value);
+      break;
+    case INPUT_SRC_TRAINER :
+      setTrainerInput(index, value);
+      break;
+    case INPUT_SRC_ROTENC :  // TODO
+    default:
+      return;
+  }
+}
+
+void OpenTxSimulator::rotaryEncoderEvent(int steps)
+{
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  ROTARY_ENCODER_NAVIGATION_VALUE += steps * ROTARY_ENCODER_GRANULARITY;
+#else
+  int key;
+  if (steps > 0)
+    key = KEY_MINUS;
+  else if (steps < 0)
+    key = KEY_PLUS;
+
+  setKey(key, 1);
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
+  QTimer::singleShot(5, [this, key]() { setKey(key, 0); });
+#else
+  QTimer *timer = new QTimer(this);
+  timer->setSingleShot(true);
+  connect(timer, &QTimer::timeout, [=]() {
+    setKey(key, 0);
+    timer->deleteLater();
+  } );
+  timer->start(10);
+#endif
+#endif  // defined(ROTARY_ENCODER_NAVIGATION)
+}
+
+void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
+{
+  ppmInputValidityTimer = ms;
+}
+
+void OpenTxSimulator::sendTelemetry(uint8_t * data, unsigned int len)
+{
+#if defined(TELEMETRY_FRSKY_SPORT)
+  sportProcessTelemetryPacket(data);
+#endif
+}
+
+uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
+{
+#if defined(TELEMETRY_FRSKY_SPORT)
+  for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
+    if (isTelemetryFieldAvailable(i)) {
+      TelemetrySensor * sensor = &g_model.telemetrySensors[i];
+      if (sensor->id == id) {
+        return sensor->instance;
+      }
+    }
+  }
+#endif
+  return defaultValue;
+}
+
+uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
+{
+#if defined(TELEMETRY_FRSKY_SPORT)
+  for (int i = 0; i < MAX_TELEMETRY_SENSORS; i++) {
+    if (isTelemetryFieldAvailable(i)) {
+      TelemetrySensor * sensor = &g_model.telemetrySensors[i];
+      if (sensor->id == id) {
+        return sensor->custom.ratio;
+      }
+    }
+  }
+#endif
+  return 0;
+}
+
+void OpenTxSimulator::setLuaStateReloadPermanentScripts()
+{
+#if defined(LUA)
+  luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
+#endif
+}
+
+void OpenTxSimulator::installTraceHook(void (*callback)(const char *))
+{
+  traceCallback = callback;
+}
+
+
+/*** Protected classes ***/
+
+void OpenTxSimulator::run()
 {
   static uint32_t loops = 0;
   static QElapsedTimer ts;
@@ -87,10 +319,12 @@ void OpenTxSimulator::timer10ms()
   if (!loops)
     ts.start();
 
+  if (isStopRequested()) {
+    return;
+  }
   if (!isRunning()) {
     QString err(getError());
     emit runtimeError(err);
-    stop();
     return;
   }
 
@@ -107,12 +341,19 @@ void OpenTxSimulator::timer10ms()
   if (!(loops % (SIMULATOR_INTERFACE_HEARTBEAT_PERIOD / 10))) {
     emit heartbeat(loops, ts.elapsed());
   }
-
 }
 
-uint8_t * OpenTxSimulator::getLcd()
+bool OpenTxSimulator::isStopRequested()
 {
-  return (uint8_t *)simuLcdBuf;
+  QMutexLocker lckr(&m_mtxStopReq);
+  return m_stopRequested;
+}
+
+void OpenTxSimulator::setStopRequested(bool stop)
+{
+  QMutexLocker lckr(&m_mtxStopReq);
+  m_stopRequested = stop;
+  QTimer::singleShot(0, this, &OpenTxSimulator::run);
 }
 
 bool OpenTxSimulator::checkLcdChanged()
@@ -124,16 +365,6 @@ bool OpenTxSimulator::checkLcdChanged()
   }
   return false;
 }
-
-bool OpenTxSimulator::lcdChanged(bool & lightEnable)
-{
-  if (checkLcdChanged()) {
-    lightEnable = isBacklightEnabled();
-    return true;
-  }
-  return false;
-}
-
 
 void OpenTxSimulator::checkOutputsChanged()
 {
@@ -210,152 +441,14 @@ void OpenTxSimulator::checkOutputsChanged()
   m_resetOutputsData = false;
 }
 
-void OpenTxSimulator::setRadioData(const QByteArray & data)
+bool OpenTxSimulator::hasExtendedTrims()
 {
-#if defined(EEPROM_SIZE)
-  memcpy(eeprom, data.data(), qMin<int>(EEPROM_SIZE, data.size()));
-#endif
+  return g_model.extendedTrims;
 }
 
-void OpenTxSimulator::start(const char * filename, bool tests)
+uint8_t OpenTxSimulator::getStickMode()
 {
-  if (isRunning())
-    return;
-
-  if (!m_timer10ms) {
-    m_timer10ms = new QTimer(this);
-    m_timer10ms->setInterval(10);
-    connect(m_timer10ms, &QTimer::timeout, this, &OpenTxSimulator::timer10ms);
-  }
-  simuInit();
-  StartEepromThread(filename);
-  StartAudioThread(volumeGain);
-  StartSimu(tests, simuSdDirectory.toLatin1().constData(), simuSettingsDirectory.toLatin1().constData());
-  m_resetOutputsData = true;
-  m_timer10ms->start();
-  timer10ms();
-  emit started();
-}
-
-void OpenTxSimulator::stop()
-{
-  if (!isRunning())
-    return;
-
-  if (m_timer10ms)
-    m_timer10ms->stop();
-  StopSimu();
-#if defined(CPUARM)
-  StopAudioThread();
-#endif
-  StopEepromThread();
-  emit stopped();
-}
-
-bool OpenTxSimulator::isRunning()
-{
-  return (bool)main_thread_running;
-}
-
-void OpenTxSimulator::readEepromData(QByteArray & dest)
-{
-#if defined(EEPROM_SIZE)
-  memcpy(dest.data(), eeprom, std::min<int>(EEPROM_SIZE, dest.size()));
-#endif
-}
-
-void OpenTxSimulator::setAnalogValue(uint8_t index, int16_t value)
-{
-  if (index < NUM_STICKS + NUM_POTS + NUM_SLIDERS) {
-#if defined(PCBTARANIS) && !defined(PCBX7)
-    // this needs to follow the exception in radio/src/mixer.cpp:evalInputs()
-    if (index == POT1 || index == SLIDER1)
-      value = -value;
-#endif
-    g_anas[index] = value;
-  }
-}
-
-void OpenTxSimulator::setSwitch(uint8_t swtch, int8_t state)
-{
-  simuSetSwitch(swtch, state);
-}
-
-void OpenTxSimulator::setKey(uint8_t key, bool state)
-{
-  simuSetKey(key, state);
-}
-
-void OpenTxSimulator::setTrimSwitch(uint8_t trim, bool state)
-{
-  simuSetTrim(trim, state);
-}
-
-void OpenTxSimulator::setTrim(unsigned int idx, int value)
-{
-  idx = modn12x3[4*getStickMode() + idx];
-  uint8_t phase = getTrimFlightMode(getFlightMode(), idx);
-  setTrimValue(phase, idx, value);
-}
-
-void OpenTxSimulator::setInputValue(int type, uint8_t index, int16_t value)
-{
-  //qDebug() << type << index << value;
-  switch (type) {
-    case INPUT_SRC_STICK :
-      setAnalogValue(index, value);
-      break;
-    case INPUT_SRC_KNOB :
-      setAnalogValue(index + NUM_STICKS, value);
-      break;
-    case INPUT_SRC_SLIDER :
-      setAnalogValue(index + NUM_STICKS + NUM_POTS, value);
-      break;
-    case INPUT_SRC_SWITCH :
-      setSwitch(index, (int8_t)value);
-      break;
-    case INPUT_SRC_TRIM_SW :
-      setTrimSwitch(index, (bool)value);
-      break;
-    case INPUT_SRC_TRIM :
-      setTrim(index, value);
-      break;
-    case INPUT_SRC_KEY :
-      setKey(index, (bool)value);
-      break;
-    case INPUT_SRC_TRAINER :
-      setTrainerInput(index, value);
-      break;
-    case INPUT_SRC_ROTENC :  // TODO
-    default:
-      return;
-  }
-}
-
-void OpenTxSimulator::rotaryEncoderEvent(int steps)
-{
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  ROTARY_ENCODER_NAVIGATION_VALUE += steps * ROTARY_ENCODER_GRANULARITY;
-#else
-  int key;
-  if (steps > 0)
-    key = KEY_MINUS;
-  else if (steps < 0)
-    key = KEY_PLUS;
-
-  setKey(key, 1);
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
-  QTimer::singleShot(10, [this, key]() { setKey(key, 0); });
-#else
-  QTimer *timer = new QTimer(this);
-  timer->setSingleShot(true);
-  connect(timer, &QTimer::timeout, [=]() {
-    setKey(key, 0);
-    timer->deleteLater();
-  } );
-  timer->start(10);
-#endif
-#endif  // defined(ROTARY_ENCODER_NAVIGATION)
+  return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
 }
 
 unsigned int OpenTxSimulator::getPhase()
@@ -381,71 +474,6 @@ const QString OpenTxSimulator::getCurrentPhaseName()
 const char * OpenTxSimulator::getError()
 {
   return main_thread_error;
-}
-
-void OpenTxSimulator::sendTelemetry(uint8_t * data, unsigned int len)
-{
-#if defined(TELEMETRY_FRSKY_SPORT)
-  sportProcessTelemetryPacket(data);
-#endif
-}
-
-uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
-{
-#if defined(TELEMETRY_FRSKY_SPORT)
-  for (int i = 0; i<MAX_TELEMETRY_SENSORS; i++) {
-    if (isTelemetryFieldAvailable(i)) {
-      TelemetrySensor * sensor = &g_model.telemetrySensors[i];
-      if (sensor->id == id) {
-        return sensor->instance;
-      }
-    }
-  }
-#endif
-  return defaultValue;
-}
-
-uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
-{
-#if defined(TELEMETRY_FRSKY_SPORT)
-  for (int i = 0; i<MAX_TELEMETRY_SENSORS; i++) {
-    if (isTelemetryFieldAvailable(i)) {
-      TelemetrySensor * sensor = &g_model.telemetrySensors[i];
-      if (sensor->id == id) {
-        return sensor->custom.ratio;
-      }
-    }
-  }
-#endif
-  return 0;
-}
-
-void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
-{
-  ppmInputValidityTimer = ms;
-}
-
-void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
-{
-  //setTrainerTimeout(100);
-  ppmInput[inputNumber] = qMin(qMax((int16_t)-512, value), (int16_t)512);
-}
-
-void OpenTxSimulator::setLuaStateReloadPermanentScripts()
-{
-#if defined(LUA)
-  luaState = INTERPRETER_RELOAD_PERMANENT_SCRIPTS;
-#endif
-}
-
-QString OpenTxSimulator::name()
-{
-  return QString(SIMULATOR_FLAVOUR);
-}
-
-void OpenTxSimulator::installTraceHook(void (*callback)(const char *))
-{
-  traceCallback = callback;
 }
 
 
