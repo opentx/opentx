@@ -428,10 +428,10 @@ void evalInputs(uint8_t mode)
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i) : i);
     int16_t v = anaIn(i);
 
-#if !defined(SIMU)
     if (IS_POT_MULTIPOS(i)) {
       v -= RESX;
     }
+#if !defined(SIMU)
     else {
       CalibData * calib = &g_eeGeneral.calib[i];
       v -= calib->mid;
