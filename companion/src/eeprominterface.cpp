@@ -1528,9 +1528,9 @@ void ModelData::clear()
     limitData[i].clear();
   for (int i=0; i<CPN_MAX_STICKS; i++)
     expoData[i].clear();
-  for (int i=0; i<CPN_MAX_CSW; i++)
+  for (int i=0; i<CPN_MAX_LOGICAL_SWITCHES; i++)
     logicalSw[i].clear();
-  for (int i=0; i<CPN_MAX_CUSTOM_FUNCTIONS; i++)
+  for (int i=0; i<CPN_MAX_SPECIAL_FUNCTIONS; i++)
     customFn[i].clear();
   for (int i=0; i<CPN_MAX_CURVES; i++)
     curves[i].clear(5);

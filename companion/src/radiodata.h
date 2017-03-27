@@ -211,7 +211,7 @@ class RawSource {
     {
     }
 
-    void convert(Board::Type before, Board::Type after);
+    RawSource convert(Board::Type before, Board::Type after);
 
     inline const int toValue() const
     {
@@ -287,6 +287,8 @@ class RawSwitch {
       return (this->type != other.type) || (this->index != other.index);
     }
 
+    RawSwitch convert(Board::Type before, Board::Type after);
+
     RawSwitchType type;
     int index;
 };
@@ -338,6 +340,7 @@ class ExpoData {
     int carryTrim;
     char name[10+1];
     void clear() { memset(this, 0, sizeof(ExpoData)); }
+    void convert(Board::Type before, Board::Type after);
 };
 
 class CurvePoint {
@@ -468,6 +471,7 @@ class LogicalSwitchData { // Logical Switches data
     CSFunctionFamily getFunctionFamily() const;
     unsigned int getRangeFlags() const;
     QString funcToString() const;
+    void convert(Board::Type before, Board::Type after);
 };
 
 enum AssignFunc {
@@ -536,6 +540,8 @@ class CustomFunctionData { // Function Switches data
     static void populatePlaySoundParams(QStringList & qs);
     static void populateHapticParams(QStringList & qs);
 
+    void convert(Board::Type before, Board::Type after);
+
 };
 
 class FlightModeData {
@@ -551,6 +557,7 @@ class FlightModeData {
     int rotaryEncoders[CPN_MAX_ENCODERS];
     int gvars[CPN_MAX_GVARS];
     void clear(const int phase);
+    void convert(Board::Type before, Board::Type after);
 };
 
 class SwashRingData { // Swash Ring data
@@ -1033,8 +1040,8 @@ class ModelData {
     ExpoData  expoData[CPN_MAX_EXPOS];
 
     CurveData curves[CPN_MAX_CURVES];
-    LogicalSwitchData  logicalSw[CPN_MAX_CSW];
-    CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
+    LogicalSwitchData  logicalSw[CPN_MAX_LOGICAL_SWITCHES];
+    CustomFunctionData customFn[CPN_MAX_SPECIAL_FUNCTIONS];
     SwashRingData swashRingData;
     unsigned int thrTraceSrc;
     uint64_t switchWarningStates;
@@ -1200,7 +1207,7 @@ class GeneralSettings {
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
     unsigned int backlightColor;
-    CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
+    CustomFunctionData customFn[CPN_MAX_SPECIAL_FUNCTIONS];
     char switchName[CPN_MAX_SWITCHES][3+1];
     unsigned int switchConfig[CPN_MAX_SWITCHES];
     char stickName[CPN_MAX_STICKS][3+1];

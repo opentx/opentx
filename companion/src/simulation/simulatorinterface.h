@@ -49,7 +49,7 @@ class TxOutputs
   public:
     TxOutputs() { memset(this, 0, sizeof(TxOutputs)); }
     int chans[CPN_MAX_CHNOUT];
-    bool vsw[CPN_MAX_CSW];
+    bool vsw[CPN_MAX_LOGICAL_SWITCHES];
     int gvars[CPN_MAX_FLIGHT_MODES][CPN_MAX_GVARS];
     unsigned int beep;
     // uint8_t phase;
