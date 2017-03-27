@@ -846,34 +846,40 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== TRIMS ================
       int16_t trim = 0;
-      if (apply_offset_and_curve) {
-        if (!(mode & e_perout_mode_notrims)) {
-#if defined(VIRTUAL_INPUTS)
-          if (md->carryTrim == 0) {
-            trim = getSourceTrimValue(md->srcRaw, v);
-          }
-          if (md->curve.type != CURVE_REF_DIFF) {
+      if (apply_offset_and_curve && !(mode & e_perout_mode_notrims)) {
+#if defined(VIRTUALINPUTS)
+        if (md->carryTrim == 0) {
+          trim = getSourceTrimValue(md->srcRaw, v);
+        }
+#if defined(CPUARM)
+		    if (md->curve.type != CURVE_REF_DIFF) {
+#else
+        if (md->curveMode != MODE_DIFFERENTIAL) {
+#endif
+          v += trim;
+        }
+#else
+        int8_t mix_trim = md->carryTrim;
+        if (mix_trim < TRIM_ON)
+          mix_trim = -mix_trim - 1;
+        else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
+          mix_trim = stickIndex;
+        else
+          mix_trim = -1;
+        if (mix_trim >= 0) {
+          trim = trims[mix_trim];
+#if defined(CPUARM)
+		      if (md->curve.type != CURVE_REF_DIFF) {
+#else
+          if (md->curveMode != MODE_DIFFERENTIAL) {
+#endif
+          if (mix_trim == THR_STICK && g_model.throttleReversed)
+            v -= trim;
+          else
             v += trim;
           }
-#else
-          int8_t mix_trim = md->carryTrim;
-          if (mix_trim < TRIM_ON)
-            mix_trim = -mix_trim - 1;
-            else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
-            mix_trim = stickIndex;
-          else
-          mix_trim = -1;
-          if (mix_trim >= 0) {
-            trim = trims[mix_trim];
-            if (md->curveMode != MODE_DIFFERENTIAL) {
-            if (mix_trim == THR_STICK && g_model.throttleReversed)
-              v -= trim;
-            else
-              v += trim;
-            }
-          }
-#endif
         }
+#endif
       }
 
       //========== CURVES ===============
