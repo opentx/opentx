@@ -218,7 +218,7 @@ class RawSource {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    QString toString(const ModelData * model = NULL) const;
+    QString toString(const ModelData * model = NULL, const GeneralSettings * const generalSettings = NULL) const;
 
     RawSourceRange getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags=0) const;
 
@@ -231,8 +231,8 @@ class RawSource {
     }
 
     bool isTimeBased() const;
-    bool isPot() const;
-    bool isSlider() const;
+    bool isPot(int * potsIndex = NULL) const;
+    bool isSlider(int * sliderIndex = NULL) const;
 
     RawSourceType type;
     int index;
@@ -277,7 +277,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString(Board::Type board = Board::BOARD_UNKNOWN) const;
+    QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL) const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -541,9 +541,9 @@ class CustomFunctionData { // Function Switches data
 class FlightModeData {
   public:
     FlightModeData() { clear(0); }
-    int trimMode[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
-    int trimRef[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
-    int trim[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
+    int trimMode[CPN_MAX_TRIMS];
+    int trimRef[CPN_MAX_TRIMS];
+    int trim[CPN_MAX_TRIMS];
     RawSwitch swtch;
     char name[10+1];
     unsigned int fadeIn;
@@ -1127,9 +1127,9 @@ class GeneralSettings {
 
     unsigned int version;
     unsigned int variant;
-    int   calibMid[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
-    int   calibSpanNeg[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
-    int   calibSpanPos[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
+    int   calibMid[CPN_MAX_ANALOGS];
+    int   calibSpanNeg[CPN_MAX_ANALOGS];
+    int   calibSpanPos[CPN_MAX_ANALOGS];
     unsigned int  currModelIndex;
     char currModelFilename[16+1];
     unsigned int   contrast;
@@ -1201,13 +1201,13 @@ class GeneralSettings {
     unsigned int hw_uartMode;
     unsigned int backlightColor;
     CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
-    char switchName[18][3+1];
+    char switchName[CPN_MAX_SWITCHES][3+1];
     unsigned int switchConfig[CPN_MAX_SWITCHES];
-    char stickName[4][3+1];
-    char potName[4][3+1];
-    unsigned int potConfig[4];
-    char sliderName[4][3+1];
-    unsigned int sliderConfig[4];
+    char stickName[CPN_MAX_STICKS][3+1];
+    char potName[CPN_MAX_KNOBS][3+1];
+    unsigned int potConfig[CPN_MAX_KNOBS];
+    char sliderName[CPN_MAX_SLIDERS][3+1];
+    unsigned int sliderConfig[CPN_MAX_SLIDERS];
 
     char themeName[8+1];
     typedef uint8_t ThemeOptionData[8+1];

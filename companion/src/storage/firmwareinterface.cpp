@@ -31,6 +31,7 @@
 #define DATE_MARK   "DATE"
 #define TIME_MARK   "TIME"
 #define EEPR_MARK   "EEPR"
+#define FSIZE_MAX   Boards::getFlashSize(Board::BOARD_UNKNOWN)
 
 FirmwareInterface::FirmwareInterface(const QString & filename):
   flash(FSIZE_MAX, 0),

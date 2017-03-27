@@ -58,6 +58,8 @@ class LogicalSwitchesPanel : public ModelPanel
     QDoubleSpinBox  * cswitchDelay[CPN_MAX_CSW];
     QComboBox * cswitchSource1[CPN_MAX_CSW];
     QComboBox * cswitchSource2[CPN_MAX_CSW];
+    QStandardItemModel * rawSwitchItemModel;
+    QStandardItemModel * rawSourceItemModel;
     void setSwitchWidgetVisibility(int i);
     int selectedSwitch;
 

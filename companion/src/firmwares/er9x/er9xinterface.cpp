@@ -116,7 +116,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != getEEpromSize(Board::BOARD_STOCK)) {
+  if (size != Boards::getEEpromSize(Board::BOARD_STOCK)) {
     std::cout << "wrong size\n";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
@@ -127,7 +127,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();
   }
-    
+
   efile->openRd(FILE_GENERAL);
   Er9xGeneral er9xGeneral;
 
@@ -164,7 +164,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
 
   }
   radioData.generalSettings = er9xGeneral;
-  
+
   for (int i=0; i<getCapability(Models); i++) {
     Er9xModelData er9xModel;
     efile->openRd(FILE_MODEL(i));
@@ -174,7 +174,7 @@ unsigned long Er9xInterface::load(RadioData &radioData, const uint8_t *eeprom, i
     else {
       applyStickModeToModel(er9xModel, radioData.generalSettings.stickMode+1);
       radioData.models[i] = er9xModel;
-    } 
+    }
   }
 
   std::cout << "ok\n";

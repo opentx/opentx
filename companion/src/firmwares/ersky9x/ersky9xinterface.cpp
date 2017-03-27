@@ -158,7 +158,7 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != EESIZE_SKY9X) {
+  if (size != Boards::getEEpromSize(Board::BOARD_SKY9X)) {
     std::cout << "wrong size\n";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
@@ -169,7 +169,7 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();
   }
-    
+
   efile->openRd(FILE_GENERAL);
   Ersky9xGeneral ersky9xGeneral;
 
@@ -198,13 +198,13 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
     return errors.to_ulong();
   }
   radioData.generalSettings = ersky9xGeneral;
-  
+
   for (int i=0; i<getCapability(Models); i++) {
     uint8_t buffer[4096];
     uint size;
     memset(buffer,0,sizeof(buffer));
     efile->openRd(FILE_MODEL(i));
-    
+
 //    if (!efile->readRlc2((uint8_t*)&ersky9xModel, sizeof(Ersky9xModelData))) {
     size = efile->readRlc2(buffer, 4096);
     if (!size) {
@@ -222,7 +222,7 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
         applyStickModeToModel(ersky9xModel, radioData.generalSettings.stickMode+1);
         radioData.models[i] = ersky9xModel;
       }
-    } 
+    }
   }
 
   std::cout << "ok\n";

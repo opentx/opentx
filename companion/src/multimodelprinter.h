@@ -33,7 +33,8 @@ class MultiModelPrinter: public QObject
   public:
     MultiModelPrinter(Firmware * firmware);
     virtual ~MultiModelPrinter();
-    
+
+    void setModel(int idx, const ModelData & model, const GeneralSettings & generalSettings);
     void setModel(int idx, const ModelData & model);
     QString print(QTextDocument * document);
 
@@ -58,8 +59,7 @@ class MultiModelPrinter: public QObject
 
     Firmware * firmware;
     GeneralSettings defaultSettings;
-    QVector<ModelData *> models; // TODO const
-    QVector<ModelPrinter *> modelPrinters;
+    QMap<int, QPair<const ModelData *, ModelPrinter *> > modelPrinterMap;
 
     QString printTitle(const QString & label);
     QString printSetup();

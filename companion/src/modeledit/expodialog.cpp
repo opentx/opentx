@@ -60,7 +60,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, model,
                               firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
 
-  populateSwitchCB(ui->switchesCB, ed->swtch, generalSettings, MixesContext);
+  ui->switchesCB->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::MixesContext));
+  ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
 
@@ -90,8 +91,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
-    populateSourceCB(ui->sourceCB, ed->srcRaw, generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES |
-                                                  POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY);
+    ui->sourceCB->setModel(Helpers::getRawSourceItemModel(&generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY));
+    ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(ed->srcRaw.toValue()));
     ui->sourceCB->removeItem(0);
     ui->inputName->setValidator(new QRegExpValidator(rx, this));
     ui->inputName->setText(inputName);

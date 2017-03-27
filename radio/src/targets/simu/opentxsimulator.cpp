@@ -134,7 +134,7 @@ void OpenTxSimulator::getTrims(Trims & trims)
 {
   uint8_t phase = getFlightMode();
   trims.extended = hasExtendedTrims();
-  for (uint8_t idx=0; idx < CPN_MAX_STICKS + CPN_MAX_AUX_TRIMS; idx++) {
+  for (uint8_t idx=0; idx < CPN_MAX_TRIMS; idx++) {
     trims.values[idx] = getTrimValue(getTrimFlightMode(phase, idx), idx);
   }
 

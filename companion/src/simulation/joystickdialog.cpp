@@ -21,6 +21,7 @@
 #include "joystickdialog.h"
 #include "ui_joystickdialog.h"
 
+#include "boards.h"
 #include "constants.h"
 
 joystickDialog::joystickDialog(QWidget *parent, int stick) :
@@ -97,19 +98,13 @@ joystickDialog::~joystickDialog()
 void joystickDialog::populateSourceCombo(QComboBox * cb)
 {
   int i;
-  const QString axes[] = {
-    tr("Left Horizontal"),
-    tr("Left Vertical"),
-    tr("Right Vertical"),
-    tr("Right Horizontal")
-  };
   cb->clear();
   cb->addItem(tr("Not Assigned"), -1);
-  for (i=0; i < 4; ++i) {
-    cb->addItem(axes[i] % tr(" Stick"), i);
+  for (i=0; i < Board::STICK_AXIS_COUNT; ++i) {
+    cb->addItem(Boards::getAxisName(i) % tr(" Stick"), i);
   }
-  for (; i < CPN_MAX_STICKS + CPN_MAX_POTS; ++i) {
-    cb->addItem(tr("Knob/Slider %1").arg(i - CPN_MAX_STICKS + 1), i);
+  for (; i < Board::STICK_AXIS_COUNT + CPN_MAX_POTS; ++i) {
+    cb->addItem(tr("Knob/Slider %1").arg(i - Board::STICK_AXIS_COUNT + 1), i);
   }
 }
 

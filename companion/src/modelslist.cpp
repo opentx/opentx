@@ -247,7 +247,7 @@ void TreeModel::refresh()
   Board::Type board = eepromInterface->getBoard();
 
   if (!IS_SKY9X(board) && !IS_HORUS(board)) {
-    availableEEpromSize = getEEpromSize(board) - 64; // let's consider fat
+    availableEEpromSize = Boards::getEEpromSize(board) - 64; // let's consider fat
     availableEEpromSize -= 16 * ((eepromInterface->getSize(radioData->generalSettings) + 14) / 15);
   }
 

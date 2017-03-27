@@ -71,7 +71,7 @@ void RleFile::EeFsCreate(uint8_t *eeprom, int size, Board::Type board, unsigned 
     eeFsBlockSize = 64;
     eeFsFirstBlock = 1;
     eeFsBlocksOffset = eeFsSize - eeFsBlockSize;
-    eeFsBlocksMax = 1 + (EESIZE_TARANIS-eeFsSize)/eeFsBlockSize;
+    eeFsBlocksMax = 1 + (Boards::getEEpromSize(board)-eeFsSize) / eeFsBlockSize;
     eeFsLinkSize = sizeof(int16_t);
     memset(eeprom, 0, size);
     eeFsArm->version  = eeFsVersion;
@@ -154,7 +154,7 @@ bool RleFile::EeFsOpen(uint8_t *eeprom, int size, Board::Type board)
     eeFsLinkSize = sizeof(int16_t);
     eeFsFirstBlock = 1;
     eeFsBlocksOffset = eeFsSize - eeFsBlockSize;
-    eeFsBlocksMax = 1 + (EESIZE_TARANIS-eeFsSize)/eeFsBlockSize;
+    eeFsBlocksMax = 1 + (Boards::getEEpromSize(board)-eeFsSize) / eeFsBlockSize;
     return eeFsArm->mySize == eeFsSize;
   }
   else {
@@ -406,7 +406,7 @@ unsigned int RleFile::readRlc12(uint8_t *buf, unsigned int i_len, bool rlc2)
         qDebug() << "RLC decoding error!";
         return 0;
       }
-      
+
       if (rlc2) {
         if(m_bRlc&0x80){ // if contains high byte
           m_zeroes  =(m_bRlc>>4) & 0x7;

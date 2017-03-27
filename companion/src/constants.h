@@ -30,18 +30,22 @@
 #define CPN_MAX_CURVES                 32
 #define CPN_MAX_POINTS                 17
 #define CPN_MAX_GVARS                  9
-#define CPN_MAX_ENCODERS               2
-#define CPN_MAX_CHNOUT                 32 // number of real output channels
-#define CPN_MAX_CSW                    64 // number of custom switches
-#define CPN_MAX_CUSTOM_FUNCTIONS       64 // number of functions assigned to switches
+#define CPN_MAX_ENCODERS               2   // rotary encoders
+#define CPN_MAX_CHNOUT                 32  // number of real output channels
+#define CPN_MAX_CSW                    64  // number of custom switches
+#define CPN_MAX_CUSTOM_FUNCTIONS       64  // number of functions assigned to switches
 #define CPN_MAX_MODULES                2
-#define CPN_MAX_STICKS                 4
-#define CPN_MAX_AUX_TRIMS              2
-#define CPN_MAX_POTS                   8
+#define CPN_MAX_STICKS                 Board::STICK_AXIS_COUNT
+#define CPN_MAX_TRIMS                  Board::TRIM_AXIS_COUNT
+#define CPN_MAX_TRIM_SW                Board::TRIM_SW_COUNT
+#define CPN_MAX_KNOBS                  4
+#define CPN_MAX_SLIDERS                4
+#define CPN_MAX_POTS                   (CPN_MAX_KNOBS + CPN_MAX_SLIDERS)
 #define CPN_MAX_CYC                    3
 #define CPN_MAX_SWITCHES               32
 #define CPN_MAX_KEYS                   32
 #define CPN_MAX_MOUSE_ANALOGS          2
+#define CPN_MAX_ANALOGS                (CPN_MAX_STICKS + CPN_MAX_POTS + CPN_MAX_MOUSE_ANALOGS)
 
 #define CPN_STR_FILES                  QT_TRANSLATE_NOOP("CompanionMacros", "files")
 #define CPN_STR_RAD_MOD_SETTINGS       QT_TRANSLATE_NOOP("CompanionMacros", "Radio and Models settings")
@@ -57,9 +61,9 @@
 #define EEPE_EEPROM_FILE_HEADER        "EEPE EEPROM FILE"
 #define EEPE_MODEL_FILE_HEADER         "EEPE MODEL FILE"
 
-const char * const ARROW_LEFT  = "\xE2\x86\x90";
-const char * const ARROW_UP    = "\xE2\x86\x91";
-const char * const ARROW_RIGHT = "\xE2\x86\x92";
-const char * const ARROW_DOWN  = "\xE2\x86\x93";
+#define CPN_STR_SW_INDICATOR_UP        QT_TRANSLATE_NOOP("RawSwitch", "\xE2\x86\x91")   // Switch up position indicator: Up arrow, or similar.
+#define CPN_STR_SW_INDICATOR_DN        QT_TRANSLATE_NOOP("RawSwitch", "\xE2\x86\x93")  // Switch down position indicator: Down arrow, or similar.
+#define CPN_STR_SW_INDICATOR_NEUT      QT_TRANSLATE_NOOP("RawSwitch", "-")             // Switch neutral (middle) position indicator.
+#define CPN_STR_SW_INDICATOR_REV       QT_TRANSLATE_NOOP("RawSwitch", "!")             // Switch reversed logic (NOT) indicator.
 
 #endif // _CONSTANTS_H_

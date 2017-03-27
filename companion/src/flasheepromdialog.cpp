@@ -227,7 +227,7 @@ void FlashEEpromDialog::on_burnButton_clicked()
   if (patch) {
     QString filename = generateProcessUniqueTempFileName("temp.bin");
     QFile file(filename);
-    uint8_t *eeprom = (uint8_t*)malloc(getEEpromSize(getCurrentBoard()));
+    uint8_t *eeprom = (uint8_t*)malloc(Boards::getEEpromSize(getCurrentBoard()));
     int eeprom_size = getCurrentEEpromInterface()->save(eeprom, *radioData, 0, getCurrentFirmware()->getVariantNumber());
     if (eeprom_size == 0) {
       return;

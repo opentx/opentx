@@ -500,7 +500,12 @@ QString RotaryEncoderString(int index)
   return CHECK_IN_ARRAY(rotary, index);
 }
 
-QString RawSource::toString(const ModelData * model) const
+
+/*
+ * RawSource
+ */
+
+QString RawSource::toString(const ModelData * model, const GeneralSettings * const generalSettings) const
 {
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA"), QObject::tr("Trm5"), QObject::tr("Trm6")
@@ -529,69 +534,109 @@ QString RawSource::toString(const ModelData * model) const
     return QObject::tr("----");
   }
 
+  QString result;
+  int genAryIdx = 0;
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
-    {
-      QString result = QObject::tr("[I%1]").arg(index+1);
-      if (model && strlen(model->inputNames[index]) > 0) {
+      result = QObject::tr("[I%1]").arg(index+1);
+      if (model)
         result += QString(model->inputNames[index]);
-      }
       return result;
-    }
+
     case SOURCE_TYPE_LUA_OUTPUT:
       return QObject::tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
+
     case SOURCE_TYPE_STICK:
-      return getCurrentFirmware()->getAnalogInputName(index);
+      if (generalSettings) {
+        if (isPot(&genAryIdx))
+          result = QString(generalSettings->potName[genAryIdx]);
+        else if (isSlider(&genAryIdx))
+          result = QString(generalSettings->sliderName[genAryIdx]);
+        else
+          result = QString(generalSettings->stickName[index]);
+      }
+      if (result.isEmpty())
+        result = getCurrentFirmware()->getAnalogInputName(index);;
+      return result;
+
     case SOURCE_TYPE_TRIM:
       return CHECK_IN_ARRAY(trims, index);
     case SOURCE_TYPE_ROTARY_ENCODER:
       return RotaryEncoderString(index);
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
+
     case SOURCE_TYPE_SWITCH:
-      return getSwitchInfo(getCurrentBoard(), index).name;
+      if (generalSettings)
+        result = QString(generalSettings->switchName[index]);
+      if (result.isEmpty())
+        result = getSwitchInfo(getCurrentBoard(), index).name;
+      return result;
+
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return QObject::tr("L%1").arg(index+1);
+
     case SOURCE_TYPE_CYC:
       return QObject::tr("CYC%1").arg(index+1);
+
     case SOURCE_TYPE_PPM:
       return QObject::tr("TR%1").arg(index+1);
+
     case SOURCE_TYPE_CH:
       return QObject::tr("CH%1").arg(index+1);
+
     case SOURCE_TYPE_SPECIAL:
       return CHECK_IN_ARRAY(special, index);
+
     case SOURCE_TYPE_TELEMETRY:
       if (IS_ARM(getCurrentBoard())) {
         div_t qr = div(index, 3);
-        QString result = QString(model ? model->sensorData[qr.quot].label : QString("[T%1]").arg(qr.quot+1));
-        if (qr.rem) result += qr.rem == 1 ? "-" : "+";
+        result = model ? QString(model->sensorData[qr.quot].label) : QString("[T%1]").arg(qr.quot+1);
+        if (qr.rem)
+          result += (qr.rem == 1 ? "-" : "+");
         return result;
       }
       else {
         return CHECK_IN_ARRAY(telemetry, index);
       }
+
     case SOURCE_TYPE_GVAR:
       return QObject::tr("GV%1").arg(index+1);
+
     default:
       return QObject::tr("----");
   }
 }
 
-bool RawSource::isPot() const
+bool RawSource::isPot(int * potsIndex) const
 {
-  return (type == SOURCE_TYPE_STICK &&
-          index >= CPN_MAX_STICKS &&
-          index < CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots));
+  if (type == SOURCE_TYPE_STICK &&
+          index >= getBoardCapability(getCurrentBoard(), Board::Sticks) &&
+          index < getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots)) {
+    if (potsIndex)
+      *potsIndex = index - getBoardCapability(getCurrentBoard(), Board::Sticks);
+    return true;
+  }
+  return false;
 }
 
-bool RawSource::isSlider() const
+bool RawSource::isSlider(int * sliderIndex) const
 {
-  return (type == SOURCE_TYPE_STICK &&
-          index >= CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) &&
-          index < CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders));
+  if (type == SOURCE_TYPE_STICK &&
+          index >= getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots) &&
+          index < getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders)) {
+    if (sliderIndex)
+      *sliderIndex = index - getBoardCapability(getCurrentBoard(), Board::Sticks) - getBoardCapability(getCurrentBoard(), Board::Pots);
+    return true;
+  }
+  return false;
 }
 
-QString RawSwitch::toString(Board::Type board) const
+/*
+ * RawSwitch
+ */
+
+QString RawSwitch::toString(Board::Type board, const GeneralSettings * const generalSettings) const
 {
   if (board == Board::BOARD_UNKNOWN) {
     board = getCurrentBoard();
@@ -605,12 +650,6 @@ QString RawSwitch::toString(Board::Type board) const
 
   static const QString flightModes[] = {
     QObject::tr("FM0"), QObject::tr("FM1"), QObject::tr("FM2"), QObject::tr("FM3"), QObject::tr("FM4"), QObject::tr("FM5"), QObject::tr("FM6"), QObject::tr("FM7"), QObject::tr("FM8")
-  };
-
-  static const QString multiposPots[] = {
-    QObject::tr("S11"), QObject::tr("S12"), QObject::tr("S13"), QObject::tr("S14"), QObject::tr("S15"), QObject::tr("S16"),
-    QObject::tr("S21"), QObject::tr("S22"), QObject::tr("S23"), QObject::tr("S24"), QObject::tr("S25"), QObject::tr("S26"),
-    QObject::tr("S31"), QObject::tr("S32"), QObject::tr("S33"), QObject::tr("S34"), QObject::tr("S35"), QObject::tr("S36")
   };
 
   static const QString trimsSwitches[] = {
@@ -631,46 +670,76 @@ QString RawSwitch::toString(Board::Type board) const
     QObject::tr("THs"), QObject::tr("TH%"), QObject::tr("THt")
   };
 
+  const QStringList directionIndicators = QStringList()
+      << CPN_STR_SW_INDICATOR_UP
+      << CPN_STR_SW_INDICATOR_NEUT
+      << CPN_STR_SW_INDICATOR_DN;
+
   if (index < 0) {
-    return QString("!") + RawSwitch(type, -index).toString();
+    return CPN_STR_SW_INDICATOR_REV % RawSwitch(type, -index).toString(board, generalSettings);
   }
   else {
+    QString swName;
+    div_t qr;
     switch(type) {
       case SWITCH_TYPE_SWITCH:
         if (IS_HORUS_OR_TARANIS(board)) {
-          div_t qr = div(index-1, 3);
-          Board::SwitchInfo switchInfo = getSwitchInfo(board, qr.quot);
-          const char * positions[] = { ARROW_UP, "-", ARROW_DOWN };
-          return QString(switchInfo.name) + QString(positions[qr.rem]);
+          qr = div(index-1, 3);
+          if (generalSettings)
+            swName = QString(generalSettings->switchName[qr.quot]);
+          if (swName.isEmpty())
+            swName = getSwitchInfo(board, qr.quot).name;
+          return swName + directionIndicators.at(qr.rem < directionIndicators.size() ? qr.rem : 1);
         }
         else {
           return CHECK_IN_ARRAY(switches9X, index - 1);
         }
+
       case SWITCH_TYPE_VIRTUAL:
         return QObject::tr("L%1").arg(index);
+
       case SWITCH_TYPE_MULTIPOS_POT:
-        return CHECK_IN_ARRAY(multiposPots, index-1);
+        qr = div(index - 1, getCurrentFirmware()->getCapability(MultiposPotsPositions));
+        if (generalSettings && qr.quot < (int)DIM(generalSettings->potConfig))
+          swName = QString(generalSettings->potName[qr.quot]);
+        if (swName.isEmpty())
+          swName = getCurrentFirmware()->getAnalogInputName(qr.quot + getBoardCapability(board, Board::Sticks));;
+        return swName + "_" + QString::number(qr.rem + 1);
+
       case SWITCH_TYPE_TRIM:
         return CHECK_IN_ARRAY(trimsSwitches, index-1);
+
       case SWITCH_TYPE_ROTARY_ENCODER:
         return CHECK_IN_ARRAY(rotaryEncoders, index-1);
+
       case SWITCH_TYPE_ON:
         return QObject::tr("ON");
+
       case SWITCH_TYPE_OFF:
         return QObject::tr("OFF");
+
       case SWITCH_TYPE_ONE:
         return QObject::tr("One");
+
       case SWITCH_TYPE_FLIGHT_MODE:
         return CHECK_IN_ARRAY(flightModes, index-1);
+
       case SWITCH_TYPE_NONE:
         return QObject::tr("----");
+
       case SWITCH_TYPE_TIMER_MODE:
         return CHECK_IN_ARRAY(timerModes, index);
+
       default:
         return QObject::tr("???");
     }
   }
 }
+
+
+/*
+ * CurveReference
+ */
 
 QString CurveReference::toString() const
 {
@@ -1063,7 +1132,7 @@ GeneralSettings::GeneralSettings()
   contrast  = 25;
   vBatWarn  = 90;
 
-  for (int i=0; i<CPN_MAX_STICKS+CPN_MAX_POTS; ++i) {
+  for (int i=0; i < CPN_MAX_ANALOGS; ++i) {
     calibMid[i]     = 0x200;
     calibSpanNeg[i] = 0x180;
     calibSpanPos[i] = 0x180;
@@ -1073,7 +1142,7 @@ GeneralSettings::GeneralSettings()
   Board::Type board = firmware->getBoard();
 
   for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
-    switchConfig[i] = getSwitchInfo(board, i).config;
+    switchConfig[i] = Boards::getSwitchInfo(board, i).config;
   }
 
   backlightMode = 3; // keys and sticks
@@ -1719,68 +1788,6 @@ void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long err
   msgBox.setInformativeText(warningsList.join("\n"));
   msgBox.setStandardButtons(QMessageBox::Ok);
   msgBox.exec();
-}
-
-QString getBoardName(Board::Type board)
-{
-  switch (board) {
-    case Board::BOARD_STOCK:
-      return "9X";
-    case Board::BOARD_M128:
-      return "9X128";
-    case Board::BOARD_GRUVIN9X:
-      return "Gruvin9x";
-    case Board::BOARD_MEGA2560:
-      return "MEGA2560";
-    case Board::BOARD_TARANIS_X7:
-      return "Taranis X7";
-    case Board::BOARD_TARANIS_X9D:
-      return "Taranis X9D";
-    case Board::BOARD_TARANIS_X9DP:
-      return "Taranis X9D+";
-    case Board::BOARD_TARANIS_X9E:
-      return "Taranis X9E";
-    case Board::BOARD_SKY9X:
-      return "Sky9x";
-    case Board::BOARD_9XRPRO:
-      return "9XR-PRO";
-    case Board::BOARD_AR9X:
-      return "AR9X";
-    case Board::BOARD_X12S:
-      return "Horus";
-    case Board::BOARD_X10:
-      return "X10";
-    default:
-      return "Unknown";
-  }
-}
-
-const int Firmware::getFlashSize()
-{
-  switch (board) {
-    case Board::BOARD_STOCK:
-      return FSIZE_STOCK;
-    case Board::BOARD_M128:
-      return FSIZE_M128;
-    case Board::BOARD_MEGA2560:
-    case Board::BOARD_GRUVIN9X:
-      return FSIZE_GRUVIN9X;
-    case Board::BOARD_SKY9X:
-      return FSIZE_SKY9X;
-    case Board::BOARD_9XRPRO:
-    case Board::BOARD_AR9X:
-      return FSIZE_9XRPRO;
-    case Board::BOARD_TARANIS_X9D:
-    case Board::BOARD_TARANIS_X9DP:
-    case Board::BOARD_TARANIS_X9E:
-    case Board::BOARD_FLAMENCO:
-      return FSIZE_TARANIS;
-    case Board::BOARD_X12S:
-    case Board::BOARD_X10:
-      return FSIZE_HORUS;
-    default:
-      return 0;
-  }
 }
 
 Firmware * getFirmware(const QString & id)

@@ -74,6 +74,9 @@ class CustomFunctionsPanel : public GenericPanel
     void populateFuncCB(QComboBox *b, unsigned int value);
     void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
+    QStandardItemModel * rawSwitchItemModel;
+    QStandardItemModel * rawSrcInputsItemModel;
+    QStandardItemModel * rawSrcAllItemModel;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
