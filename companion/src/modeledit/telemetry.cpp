@@ -758,7 +758,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     connect(analogs[1], SIGNAL(modified()), this, SLOT(onModified()));
   }
 
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     ui->voltsSource->setField(model.frsky.voltsSource, this);
     ui->altitudeSource->setField(model.frsky.altitudeSource, this);
     ui->varioSource->setField(model.frsky.varioSource, this);
