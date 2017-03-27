@@ -619,7 +619,7 @@
   #define OFS_EXIT             sizeof(TR_ENTER)
 #endif
 
-#define TR_MENUWHENDONE        CENTER "\006"TR_ENTER " > DALEJ  "
+#define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " > DALEJ"
 #define TR_FREE                "woln"
 #define TR_DELETEMODEL         "SKASUJ MODEL"
 #define TR_COPYINGMODEL        "Kopiuj model.."
@@ -1221,7 +1221,7 @@
 #define TR_SERVOS_OK           "Servos OK"
 #define TR_SERVOS_KO           "Servos KO"
 //TODO: translation
-#define TR_INVERTED SERIAL     INDENT "Invert"
+#define TR_INVERTED_SERIAL     INDENT "Invert"
 #define TR_IGNORE_INSTANCE     INDENT "Ignoruj przypadek"
 #define TR_DISCOVER_SENSORS    INDENT "Znajdź nowe czujniki"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Szukanie STOP "
