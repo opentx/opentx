@@ -1141,5 +1141,5 @@ Robin Wienke
 Jeffrey Johnson
 Franz Josef Hahn
 Burt Gray
-Hans-Åke Rahm
 Daniel Dupont
+Felix Kaiser
