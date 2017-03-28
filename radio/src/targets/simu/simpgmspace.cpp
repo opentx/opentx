@@ -18,6 +18,13 @@
  * GNU General Public License for more details.
  */
 
+#if defined(QT_CORE_LIB) && 0    // experimental
+  #define SIMPGMSPC_USE_QT    1
+  #include <QElapsedTimer>
+#else
+  #define SIMPGMSPC_USE_QT    0
+#endif
+
 #include "opentx.h"
 #include <errno.h>
 #include <stdarg.h>
@@ -74,32 +81,17 @@ void toplcdOff()
 {
 }
 
-uint16_t getTmr16KHz()
+U64 microsTimer(void)
 {
-#if defined(_MSC_VER)
-  return get_tmr10ms() * 16;
-#else
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_usec * 2 / 125;
-#endif
-}
+#if SIMPGMSPC_USE_QT
 
-uint16_t getTmr2MHz()
-{
-#if defined(_MSC_VER)
-  return get_tmr10ms() * 125;
-#else
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  return tv.tv_usec * 2;
-#endif
-}
+  static QElapsedTimer ticker;
+  if (!ticker.isValid())
+    ticker.start();
+  return ticker.nsecsElapsed();
 
-// return 2ms resolution to match CoOS settings
-U64 CoGetOSTime(void)
-{
-#if defined(_MSC_VER)
+#elif defined(_MSC_VER)
+
   static double freqScale = 0.0;
   static LARGE_INTEGER firstTick;
   LARGE_INTEGER newTick;
@@ -108,21 +100,39 @@ U64 CoGetOSTime(void)
     LARGE_INTEGER frequency;
     // get ticks per second
     QueryPerformanceFrequency(&frequency);
-    // 2ms resolution
-    freqScale = 500.0 / frequency.QuadPart;
+    // 1us resolution
+    freqScale = 1e6 / frequency.QuadPart;
     // init timer
     QueryPerformanceCounter(&firstTick);
-    TRACE_SIMPGMSPACE("CoGetOSTime() init: first tick = %llu @ %llu Hz", firstTick.QuadPart, frequency.QuadPart);
+    TRACE_SIMPGMSPACE("microsTimer() init: first tick = %llu @ %llu Hz: %g", firstTick.QuadPart, frequency.QuadPart);
   }
   // read the timer
   QueryPerformanceCounter(&newTick);
   // compute the elapsed time
   return U64((newTick.QuadPart - firstTick.QuadPart) * freqScale);
-  //return GetTickCount64() / 2;  // only 10-16ms typical resolution
-#else
+
+#else  // GNUC
+
   auto now = std::chrono::steady_clock::now();
-  return (U64) std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count() / 2;
+  return (U64) std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
+
 #endif
+}
+
+uint16_t getTmr16KHz()
+{
+  return microsTimer() * 2 / 125;
+}
+
+uint16_t getTmr2MHz()
+{
+  return microsTimer() * 2;
+}
+
+// return 2ms resolution to match CoOS settings
+U64 CoGetOSTime(void)
+{
+  return microsTimer() * 500;
 }
 
 void simuInit()
@@ -135,11 +145,11 @@ void simuInit()
     simuSetSwitch(i, 0);
     simuSetKey(i, false);  // a little dirty, but setting keys that don't exist is perfectly OK here
   }
-  for (int i=0; i<(NUM_STICKS+NUM_AUX_TRIMS)*2; i++)
+  for (int i=0; i < (NUM_STICKS+NUM_AUX_TRIMS)*2; i++)
     simuSetTrim(i, false);
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  for (uint8_t i=0; i<DIM(rotencValue); i++)
+#if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION)
+  for (uint8_t i=0; i < DIM(rotencValue); i++)
     rotencValue[i] = 0;
 #endif
 }
@@ -589,7 +599,7 @@ void lcdRefresh()
   TW8823_SendScreen();
 #endif
 
-  if ((bool(isBacklightEnabled()) != lightEnabled) || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE)) {
+  if (bool(isBacklightEnabled()) != lightEnabled || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE)) {
     memcpy(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE);
     lightEnabled = (bool)isBacklightEnabled();
     simuLcdRefresh = true;
