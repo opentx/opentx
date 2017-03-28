@@ -851,32 +851,21 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         if (md->carryTrim == 0) {
           trim = getSourceTrimValue(md->srcRaw, v);
         }
-#if defined(CPUARM)
-		    if (md->curve.type != CURVE_REF_DIFF) {
-#else
-        if (md->curveMode != MODE_DIFFERENTIAL) {
-#endif
-          v += trim;
-        }
 #else
         int8_t mix_trim = md->carryTrim;
-        if (mix_trim < TRIM_ON)
+        if (mix_trim < TRIM_ON) {
           mix_trim = -mix_trim - 1;
-        else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
+        }
+        else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS) {
           mix_trim = stickIndex;
-        else
+        }
+        else {
           mix_trim = -1;
+        }
         if (mix_trim >= 0) {
           trim = trims[mix_trim];
-#if defined(CPUARM)
-		      if (md->curve.type != CURVE_REF_DIFF) {
-#else
-          if (md->curveMode != MODE_DIFFERENTIAL) {
-#endif
-          if (mix_trim == THR_STICK && g_model.throttleReversed)
-            v -= trim;
-          else
-            v += trim;
+          if (mix_trim == THR_STICK && g_model.throttleReversed) {
+            trim = -trim;
           }
         }
 #endif
@@ -884,12 +873,18 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== CURVES ===============
 #if defined(CPUARM)
-      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
-        v = applyCurve(v, md->curve);
+      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF) {
+        v += trim;
+        if (md->curve.value) {
+          v = applyCurve(v, md->curve);
+        }
       }
 #else
-      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
-        v = applyCurve(v, md->curveParam);
+      if (apply_offset_and_curve && md->curveMode != MODE_DIFFERENTIAL) {
+        v += trim;
+        if (md->curveMode == MODE_CURVE && md->curveParam) {
+          v = applyCurve(v, md->curveParam);
+        }
       }
 #endif
 
@@ -898,7 +893,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       int32_t weight = GET_GVAR_PREC1(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
 #else
-      // saves 12 bytes code if done here and not together with weight; unknown reason
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
 #endif
@@ -910,14 +904,16 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
-      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
-        dv = applyCurve(dv, md->curve);
-        dtrim = applyCurve(dtrim, md->curve);
+      if (md->curve.type == CURVE_REF_DIFF) {
+        if (md->curve.value) {
+          dv = applyCurve(dv, md->curve);
+          dtrim = applyCurve(dtrim, md->curve);
+        }
         dv += dtrim;
       }
 #else
       if (md->curveMode == MODE_DIFFERENTIAL) {
-		    // stick and trim are computed separatly
+        // stick and trim are computed separatly
         // curveParam recalculated to a 256 basis which ease the calculation later a lot
         int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));  
         if (curveParam > 0 && dv < 0) {
