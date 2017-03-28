@@ -1101,6 +1101,10 @@ void MainWindow::createMenus()
     fileMenu->deleteLater();
   }
   fileMenu = menuBar()->addMenu(tr("File"));
+  fileMenu->addAction(newAct);
+  fileMenu->addAction(openAct);
+  fileMenu->addAction(saveAct);
+  fileMenu->addAction(saveAsAct);
 
   QMenu *recentFileMenu = new QMenu(tr("Recent Files"), fileMenu);
   recentFileMenu->setIcon(CompanionIcon("recentdocument.png"));
