@@ -451,7 +451,7 @@ bool menuRadioSetup(event_t event)
       case ITEM_SETUP_SWITCHES_DELAY:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCHES_DELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT, 0, NULL, STR_MS);
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, +15);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, 100-15);
         break;
 
       case ITEM_SETUP_RX_CHANNEL_ORD:
