@@ -1145,3 +1145,5 @@ Daniel Dupont
 Felix Kaiser
 Nicola Claudio Rossi
 Gary Clayton
+John Bitzer
+Scott Campbell
