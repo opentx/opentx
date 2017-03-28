@@ -32,6 +32,7 @@
 #endif
 
 int16_t g_anas[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
+QVector<QIODevice *> OpenTxSimulator::tracebackDevices;
 
 uint16_t anaIn(uint8_t chan)
 {
@@ -43,18 +44,31 @@ uint16_t getAnalogValue(uint8_t index)
   return anaIn(index);
 }
 
+void firmwareTraceCb(const char * text)
+{
+  foreach (QIODevice * dev, OpenTxSimulator::tracebackDevices) {
+    if (dev)
+      dev->write(text);
+  }
+}
+
 OpenTxSimulator::OpenTxSimulator() :
   SimulatorInterface(),
   m_timer10ms(NULL),
   m_resetOutputsData(true),
   m_stopRequested(false)
 {
+  tracebackDevices.clear();
+  traceCallback = firmwareTraceCb;
 }
 
 OpenTxSimulator::~OpenTxSimulator()
 {
+  traceCallback = NULL;
+  tracebackDevices.clear();
+
   if (m_timer10ms)
-    m_timer10ms->deleteLater();
+    delete m_timer10ms;
 
   if (isRunning()) {
     stop();
@@ -156,14 +170,9 @@ uint8_t * OpenTxSimulator::getLcd()
 
 void OpenTxSimulator::setAnalogValue(uint8_t index, int16_t value)
 {
-  if (index < NUM_STICKS + NUM_POTS + NUM_SLIDERS) {
-#if defined(PCBTARANIS) && !defined(PCBX7)
-    // this needs to follow the exception in radio/src/mixer.cpp:evalInputs()
-    if (index == POT1 || index == SLIDER1)
-      value = -value;
-#endif
+  static int dim = DIM(g_anas);
+  if (index < dim)
     g_anas[index] = value;
-  }
 }
 
 void OpenTxSimulator::setSwitch(uint8_t swtch, int8_t state)
@@ -183,21 +192,24 @@ void OpenTxSimulator::setTrimSwitch(uint8_t trim, bool state)
 
 void OpenTxSimulator::setTrim(unsigned int idx, int value)
 {
-  idx = modn12x3[4*getStickMode() + idx];
+  idx = modn12x3[ 4 * getStickMode() + idx];
   uint8_t phase = getTrimFlightMode(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
 {
+  static int dim = DIM(ppmInput);
   //setTrainerTimeout(100);
-  ppmInput[inputNumber] = qMin(qMax((int16_t)-512, value), (int16_t)512);
+  if (inputNumber < dim)
+    ppmInput[inputNumber] = qMin(qMax((int16_t)-512, value), (int16_t)512);
 }
 
 void OpenTxSimulator::setInputValue(int type, uint8_t index, int16_t value)
 {
   //qDebug() << type << index << value << this->thread();
   switch (type) {
+    case INPUT_SRC_ANALOG :
     case INPUT_SRC_STICK :
       setAnalogValue(index, value);
       break;
@@ -233,6 +245,7 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
 #if defined(ROTARY_ENCODER_NAVIGATION)
   ROTARY_ENCODER_NAVIGATION_VALUE += steps * ROTARY_ENCODER_GRANULARITY;
 #else
+  // TODO : this should probably be handled in the GUI
   int key;
   if (steps > 0)
     key = KEY_MINUS;
@@ -241,7 +254,7 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
 
   setKey(key, 1);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
-  QTimer::singleShot(5, [this, key]() { setKey(key, 0); });
+  QTimer::singleShot(10, [this, key]() { setKey(key, 0); });
 #else
   QTimer *timer = new QTimer(this);
   timer->setSingleShot(true);
@@ -261,8 +274,11 @@ void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
 
 void OpenTxSimulator::sendTelemetry(uint8_t * data, unsigned int len)
 {
+  Q_UNUSED(len)
 #if defined(TELEMETRY_FRSKY_SPORT)
   sportProcessTelemetryPacket(data);
+#else
+  Q_UNUSED(data)
 #endif
 }
 
@@ -277,6 +293,8 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
       }
     }
   }
+#else
+  Q_UNUSED(id)
 #endif
   return defaultValue;
 }
@@ -292,8 +310,41 @@ uint16_t OpenTxSimulator::getSensorRatio(uint16_t id)
       }
     }
   }
+#else
+  Q_UNUSED(id)
 #endif
   return 0;
+}
+
+const int OpenTxSimulator::getCapability(Capability cap)
+{
+  int ret = 0;
+  switch(cap) {
+    case CAP_LUA :
+      #ifdef LUA
+        ret = 1;
+      #endif
+      break;
+
+    case CAP_ROTARY_ENC :
+      #ifdef ROTARY_ENCODERS
+        ret = ROTARY_ENCODERS;
+      #endif
+      break;
+
+    case CAP_ROTARY_ENC_NAV :
+      #ifdef ROTARY_ENCODER_NAVIGATION
+        ret = 1;
+      #endif
+      break;
+
+    case CAP_TELEM_FRSKY_SPORT :
+      #ifdef TELEMETRY_FRSKY_SPORT
+        ret = 1;
+      #endif
+      break;
+  }
+  return ret;
 }
 
 void OpenTxSimulator::setLuaStateReloadPermanentScripts()
@@ -303,9 +354,19 @@ void OpenTxSimulator::setLuaStateReloadPermanentScripts()
 #endif
 }
 
-void OpenTxSimulator::installTraceHook(void (*callback)(const char *))
+void OpenTxSimulator::addTracebackDevice(QIODevice * device)
 {
-  traceCallback = callback;
+  QMutexLocker lckr(&m_mtxTbDevices);
+  if (device && !tracebackDevices.contains(device))
+    tracebackDevices.append(device);
+}
+
+void OpenTxSimulator::removeTracebackDevice(QIODevice * device)
+{
+  if (device) {
+    QMutexLocker lckr(&m_mtxTbDevices);
+    tracebackDevices.removeAll(device);
+  }
 }
 
 

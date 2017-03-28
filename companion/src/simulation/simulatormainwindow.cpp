@@ -106,11 +106,10 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
   ui->menuView->insertSeparator(ui->actionToggleMenuBar);
   ui->menuView->insertAction(ui->actionToggleMenuBar, ui->toolBar->toggleViewAction());
 
-  // Hide some actions based on board capabilities.
-  Firmware * firmware = getCurrentFirmware();
-  if(!firmware->getCapability(Capability(LuaInputsPerScript)))
+  // Hide some actions based on simulator capabilities.
+  if(!m_simulator->getCapability(SimulatorInterface::CAP_LUA))
     ui->actionReloadLua->setDisabled(true);
-  if (!firmware->getCapability(Capability(SportTelemetry)))
+  if(!m_simulator->getCapability(SimulatorInterface::CAP_TELEM_FRSKY_SPORT))
     m_telemetryDockWidget->toggleViewAction()->setDisabled(true);
 #ifndef JOYSTICKS
   ui->actionJoystickSettings->setDisabled(true);

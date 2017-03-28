@@ -44,15 +44,17 @@ class SimulatorInterface : public QObject
 
     enum InputSourceType {
       INPUT_SRC_NONE = 0,
-      INPUT_SRC_STICK,      // Board::StickAxes
-      INPUT_SRC_KNOB,       // analog
-      INPUT_SRC_SLIDER,     // analog
+      INPUT_SRC_ANALOG,     // any analog source, index into g_anas[]
+      INPUT_SRC_STICK,      // Board::StickAxes, g_anas[index]
+      INPUT_SRC_KNOB,       // g_anas[index + StickAxes]
+      INPUT_SRC_SLIDER,     // g_anas[index + StickAxes + num_pots]
       INPUT_SRC_SWITCH,     // Named 2/3-pos switches
       INPUT_SRC_TRIM_SW,    // Board::TrimSwitches
       INPUT_SRC_TRIM,       // Board::TrimAxes
       INPUT_SRC_KEY,        // UI key/pushbutton
       INPUT_SRC_ROTENC,     // Rotary encoder (TODO)
       INPUT_SRC_TRAINER,    // Virtual trainer input
+      INPUT_SRC_TXVIN,      // Transmitter voltage (TODO)
       INPUT_SRC_ENUM_COUNT
     };
 
@@ -66,6 +68,15 @@ class SimulatorInterface : public QObject
       OUTPUT_SRC_PHASE,
       OUTPUT_SRC_GVAR,
       OUTPUT_SRC_ENUM_COUNT
+    };
+
+    // only for data not available from Boards or Firmware, eg. compile-time options
+    enum Capability {
+      CAP_LUA,                // LUA
+      CAP_ROTARY_ENC,         // ROTARY_ENCODERS
+      CAP_ROTARY_ENC_NAV,     // ROTARY_ENCODER_NAVIGATION
+      CAP_TELEM_FRSKY_SPORT,  // TELEMETRY_FRSKY_SPORT
+      CAP_ENUM_COUNT
     };
 
     // This allows automatic en/decoding of flight mode + gvar value to/from any int32
@@ -111,7 +122,7 @@ class SimulatorInterface : public QObject
     virtual uint8_t * getLcd() = 0;
     virtual uint8_t getSensorInstance(uint16_t id, uint8_t defaultValue = 0) = 0;
     virtual uint16_t getSensorRatio(uint16_t id) = 0;
-    virtual void installTraceHook(void (*callback)(const char *)) = 0;
+    virtual const int getCapability(Capability cap) = 0;
 
   public slots:
 
@@ -131,6 +142,8 @@ class SimulatorInterface : public QObject
     virtual void setTrainerTimeout(uint16_t ms) = 0;
     virtual void sendTelemetry(uint8_t * data, unsigned int len) = 0;
     virtual void setLuaStateReloadPermanentScripts() = 0;
+    virtual void addTracebackDevice(QIODevice * device) = 0;
+    virtual void removeTracebackDevice(QIODevice * device) = 0;
 
   signals:
 

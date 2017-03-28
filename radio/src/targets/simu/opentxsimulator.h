@@ -44,7 +44,9 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
     virtual uint8_t * getLcd();
     virtual uint8_t getSensorInstance(uint16_t id, uint8_t defaultValue = 0);
     virtual uint16_t getSensorRatio(uint16_t id);
-    virtual void installTraceHook(void (*callback)(const char *));
+    virtual const int getCapability(Capability cap);
+
+    static QVector<QIODevice *> tracebackDevices;
 
   public slots:
 
@@ -64,6 +66,8 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
     virtual void setTrainerTimeout(uint16_t ms);
     virtual void sendTelemetry(uint8_t * data, unsigned int len);
     virtual void setLuaStateReloadPermanentScripts();
+    virtual void addTracebackDevice(QIODevice * device);
+    virtual void removeTracebackDevice(QIODevice * device);
 
   protected slots:
     void run();
@@ -88,6 +92,7 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
     QMutex m_mtxSimuMain;
     QMutex m_mtxRadioData;
     QMutex m_mtxSettings;
+    QMutex m_mtxTbDevices;
     int volumeGain;
     bool m_resetOutputsData;
     bool m_stopRequested;
