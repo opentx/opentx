@@ -88,7 +88,7 @@ U64 microsTimer(void)
   static QElapsedTimer ticker;
   if (!ticker.isValid())
     ticker.start();
-  return ticker.nsecsElapsed();
+  return ticker.nsecsElapsed() / 1000;
 
 #elif defined(_MSC_VER)
 
