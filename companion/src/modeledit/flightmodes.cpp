@@ -153,12 +153,27 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   // GVars
   if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes) || phaseIdx == 0) ) {
     QGridLayout *gvLayout = new QGridLayout(ui->gvGB);
+    
+    // Column headers
+    int headerCol = 1;
+    QLabel *nameLabel = new QLabel(ui->gvGB);
+    nameLabel->setText(tr("Name"));
+    gvLayout->addWidget(nameLabel, 0, headerCol++, 1, 1);
+    if (phaseIdx > 0) {
+      QLabel *sourceLabel = new QLabel(ui->gvGB);
+      sourceLabel->setText(tr("Value source"));
+      gvLayout->addWidget(sourceLabel, 0, headerCol++, 1, 1);
+    }
+    QLabel *valueLabel = new QLabel(ui->gvGB);
+    valueLabel->setText(tr("Value"));
+    gvLayout->addWidget(valueLabel, 0, headerCol++, 1, 1);
+    
     for (int i=0; i<gvCount; i++) {
       int col = 0;
       // GVar label
       QLabel *label = new QLabel(ui->gvGB);
       label->setText(tr("GVAR%1").arg(i+1));
-      gvLayout->addWidget(label, i, col++, 1, 1);
+      gvLayout->addWidget(label, i+1, col++, 1, 1);
       // GVar name
       int nameLen = firmware->getCapability(GvarsName);
       if (nameLen > 0) {
@@ -166,7 +181,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
         gvNames[i]->setProperty("index", i);
         gvNames[i]->setMaxLength(nameLen);
         connect(gvNames[i], SIGNAL(editingFinished()), this, SLOT(GVName_editingFinished()));
-        gvLayout->addWidget(gvNames[i], i, col++, 1, 1);
+        gvLayout->addWidget(gvNames[i], i+1, col++, 1, 1);
       }
       if (phaseIdx > 0) {
         // GVar link to another GVar
@@ -177,7 +192,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
           gvUse[i]->setCurrentIndex(phase.gvars[i] - 1024);
         }
         connect(gvUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseGVUse_currentIndexChanged(int)));
-        gvLayout->addWidget(gvUse[i], i, col++, 1, 1);
+        gvLayout->addWidget(gvUse[i], i+1, col++, 1, 1);
       }
       // GVar value
       gvValues[i] = new QSpinBox(ui->gvGB);
@@ -185,7 +200,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       connect(gvValues[i], SIGNAL(editingFinished()), this, SLOT(phaseGVValue_editingFinished()));
       gvValues[i]->setMinimum(-1024);
       gvValues[i]->setMaximum(1024);
-      gvLayout->addWidget(gvValues[i], i, col++, 1, 1);
+      gvLayout->addWidget(gvValues[i], i+1, col++, 1, 1);
 
       // Popups
       if (IS_TARANIS(board) && phaseIdx == 0) {
@@ -193,7 +208,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
         gvPopups[i]->setProperty("index", i);
         gvPopups[i]->setText(tr("Popup enabled"));
         connect(gvPopups[i], SIGNAL(toggled(bool)), this, SLOT(phaseGVPopupToggled(bool)));
-        gvLayout->addWidget(gvPopups[i], i, col++, 1, 1);
+        gvLayout->addWidget(gvPopups[i], i+1, col++, 1, 1);
       }
     }
   }
