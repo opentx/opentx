@@ -1405,8 +1405,7 @@ void MainWindow::createProfile()
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
 
-  // Copy current profile to new and give it a new name
-  g.profile[i] = g.profile[g.id()];
+  g.profile[i].init(i);
   g.profile[i].name(tr("New Radio"));
 
   g.id(i);
