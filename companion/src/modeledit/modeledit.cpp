@@ -114,7 +114,8 @@ void ModelEdit::launchSimulation()
 {
   RadioData * simuData = new RadioData();
   simuData->generalSettings = generalSettings;
-  CategoryData category("Models");
+  /*: Translators do NOT use accent for this, this is the default category name on Horus. */
+  CategoryData category(qPrintable(tr("Models")));
   simuData->categories.push_back(category);
   if (simuData->models.size() == 0) {
     simuData->models.push_back(model);
