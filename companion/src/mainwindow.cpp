@@ -1403,15 +1403,12 @@ void MainWindow::updateProfilesActions()
 
 void MainWindow::copyProfile()
 {
-  int i;
-  for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++);
-  if (i==MAX_PROFILES)  //Failed to find free slot
+  int previous = g.id();
+
+  createProfile();
+  if (g.id() == previous) //Failed to find free slot
     return;
-
-  g.profile[i] = g.profile[g.id()];
-  g.profile[i].name(tr("New Radio"));
-
-  g.id(i);
+  g.profile[g.id()] = g.profile[previous];
   updateMenus();
 }
 
