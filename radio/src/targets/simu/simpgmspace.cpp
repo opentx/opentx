@@ -104,7 +104,7 @@ U64 microsTimer(void)
     freqScale = 1e6 / frequency.QuadPart;
     // init timer
     QueryPerformanceCounter(&firstTick);
-    TRACE_SIMPGMSPACE("microsTimer() init: first tick = %llu @ %llu Hz: %g", firstTick.QuadPart, frequency.QuadPart);
+    TRACE_SIMPGMSPACE("microsTimer() init: first tick = %llu @ %llu Hz", firstTick.QuadPart, frequency.QuadPart);
   }
   // read the timer
   QueryPerformanceCounter(&newTick);
