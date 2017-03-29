@@ -135,7 +135,7 @@ QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
   static const char *strings[] = {
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
     "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS",
-    "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008"
+    "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002"
   };
   if (custom)
     return "Custom - proto " + QString::number(rfProtocol);
