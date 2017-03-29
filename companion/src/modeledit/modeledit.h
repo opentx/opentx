@@ -46,7 +46,7 @@ class ModelEdit : public QDialog
   public:
     ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware);
     ~ModelEdit();
-  
+
   protected:
     void closeEvent(QCloseEvent *event);
 
@@ -54,15 +54,12 @@ class ModelEdit : public QDialog
     void modified();
 
   private slots:
-    void onTabModified();
-    void on_pushButton_clicked();
-    void on_tabWidget_currentChanged(int index);
+    void onTabIndexChanged(int index);
 
   private:
     Ui::ModelEdit *ui;
     int modelId;
-    ModelData & model;
-    GeneralSettings & generalSettings;
+    RadioData & radioData;
     Firmware * firmware;
     QVector<GenericPanel *> panels;
 
