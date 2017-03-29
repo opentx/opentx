@@ -58,10 +58,7 @@ class RadioTrimWidget : public RadioWidget
         RadioWidget::setValue(value);
       }
       else if (m_slider) {
-        //const QSignalBlocker blocker(m_slider);  // Qt %5.3+ only
-        const bool blocker = m_slider->blockSignals(true);
         m_slider->setValue(value);
-        m_slider->blockSignals(blocker);
       }
     }
 

@@ -551,9 +551,9 @@ void VirtualJoystickWidget::onButtonChange(bool checked)
 void VirtualJoystickWidget::updateNodeValueLabels()
 {
   if (nodeLabelX)
-    nodeLabelX->setText(QString("%1").arg((qreal)node->getX() *  100 + getTrimValue(Board::TRIM_AXIS_LH) / 5, 2, 'f', 0));
+    nodeLabelX->setText(QString("%1").arg(node->getX() *  100.0f, 2, 'f', 0));
   if (nodeLabelY)
-    nodeLabelY->setText(QString("%1").arg((qreal)node->getY() * -100 + getTrimValue(Board::TRIM_AXIS_LV) / 5, 2, 'f', 0));
+    nodeLabelY->setText(QString("%1").arg(node->getY() * -100.0f, 2, 'f', 0));
 }
 
 void VirtualJoystickWidget::onGsMouseEvent(QGraphicsSceneMouseEvent * event)
