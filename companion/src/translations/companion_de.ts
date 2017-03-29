@@ -4112,6 +4112,52 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <translation>Erzeuge eine neue Modell-und Einstellungen-Datei</translation>
     </message>
     <message>
+        <location filename="../mainwindow.cpp" line="348"/>
+        <source>Not enough flash available on this board for all the selected options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="351"/>
+        <source>Compilation server temporary failure, try later</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="357"/>
+        <source>Compilation error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="360"/>
+        <source>Invalid firmware</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="363"/>
+        <source>Invalid board</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="366"/>
+        <source>Invalid language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="549"/>
+        <source>Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="822"/>
+        <source>Models and Settings read</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="830"/>
+        <location filename="../mainwindow.cpp" line="847"/>
+        <source>This function is not yet implemented</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../mainwindow.cpp" line="1038"/>
         <location filename="../mainwindow.cpp" line="1039"/>
         <source>Save Models and Settings file</source>
@@ -4146,6 +4192,16 @@ The columns for altitude &quot;GAlt&quot; and for speed &quot;GSpd&quot; are opt
         <location filename="../mainwindow.cpp" line="1043"/>
         <source>Paste Model</source>
         <translation>Einfüge Modell</translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1082"/>
+        <source>Use default system language.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="1086"/>
+        <source>Use %1 language (some translations may not be complete).</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1142"/>
@@ -4368,36 +4424,6 @@ We recommend you view the release notes using the button below to learn about an
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="348"/>
-        <source>Not enough flash available on this board for all the selected options</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="351"/>
-        <source>Compilation server temporary failure, try later</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="357"/>
-        <source>Compilation error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="360"/>
-        <source>Invalid firmware</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="363"/>
-        <source>Invalid board</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="366"/>
-        <source>Invalid language</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="449"/>
         <source>A new version of %1 firmware is available:
   - current is %2
@@ -4416,11 +4442,6 @@ We recommend you view the release notes using the button below to learn about an
         <translation type="unfinished">Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="549"/>
-        <source>Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../mainwindow.cpp" line="707"/>
         <location filename="../mainwindow.cpp" line="1069"/>
         <source>Synchronize SD</source>
@@ -4431,17 +4452,6 @@ We recommend you view the release notes using the button below to learn about an
         <location filename="../mainwindow.cpp" line="1064"/>
         <source>Read Models and Settings from Radio</source>
         <translation>Lese Modelle und Einstellungen aus dem Sender</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="822"/>
-        <source>Models and Settings read</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="830"/>
-        <location filename="../mainwindow.cpp" line="847"/>
-        <source>This function is not yet implemented</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="946"/>
@@ -4491,16 +4501,6 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1069"/>
         <source>SD card synchronization</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1082"/>
-        <source>Use default system language.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="1086"/>
-        <source>Use %1 language (some translations may not be complete).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -6137,42 +6137,44 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../multiprotocols.cpp" line="26"/>
         <source>Subtype</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Subtyp</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="27"/>
         <source>Video TX frequency</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Videosender Frequenz</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="28"/>
         <source>C2500 frequency fine tune</source>
-        <translation type="unfinished"></translation>
+        <translation>Frequenzfeineinstellung CC2500</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="29"/>
         <source>Telemetry</source>
-        <translation type="unfinished">Telemetrie</translation>
+        <translation>Telemetrie</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="30"/>
         <source>Radio output power</source>
-        <translation type="unfinished"></translation>
+        <translation>Sender-Sendeleistung</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="31"/>
         <source>Servo output frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausgabefrequenz des Servosignals</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="32"/>
         <source>Option value</source>
-        <translation type="unfinished"></translation>
+        <translation>Optionswert</translation>
     </message>
     <message>
         <location filename="../multiprotocols.cpp" line="33"/>
         <source>DEFAULT</source>
-        <translation type="unfinished"></translation>
+        <translation>Standard</translation>
     </message>
 </context>
 <context>
@@ -6254,7 +6256,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../progressdialog.ui" line="26"/>
         <source>Flash Firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Flashe Firmware</translation>
     </message>
     <message>
         <location filename="../progressdialog.ui" line="76"/>
@@ -6392,57 +6394,57 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>English</source>
-        <translation>English</translation>
+        <translation>Englisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>French</source>
-        <translation>French</translation>
+        <translation>Französisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Italian</source>
-        <translation>Italien</translation>
+        <translation>Italienisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>German</source>
-        <translation>Deutch</translation>
+        <translation>Deutsch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Czech</source>
-        <translation>Czech</translation>
+        <translation>Tschechisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Slovak</source>
-        <translation>Slovak</translation>
+        <translation>Slowakisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Spanish</source>
-        <translation>Spanish</translation>
+        <translation>Spanisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Portuguese</source>
-        <translation>Portuguese</translation>
+        <translation>Portogiesisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Swedish</source>
-        <translation>Swedish</translation>
+        <translation>Schwedisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Dutch</source>
-        <translation type="unfinished"></translation>
+        <translation>Niederländisch</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="308"/>
         <source>Hungarian</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungarisch</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="39"/>
@@ -6636,6 +6638,26 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>FM8</translation>
     </message>
     <message>
+        <location filename="../eeprominterface.cpp" line="660"/>
+        <source>Trim 5 Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="660"/>
+        <source>Trim 5 Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="661"/>
+        <source>Trim 6 Down</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../eeprominterface.cpp" line="661"/>
+        <source>Trim 6 Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../eeprominterface.cpp" line="722"/>
         <source>One</source>
         <translation>Einmal</translation>
@@ -6772,6 +6794,11 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
+        <location filename="../eeprominterface.cpp" line="882"/>
+        <source>SD Logs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../eeprominterface.cpp" line="1022"/>
         <source>played once, not during startup</source>
         <translation type="unfinished"></translation>
@@ -6829,11 +6856,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     <message>
         <location filename="../eeprominterface.cpp" line="880"/>
         <source>Play Script</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.cpp" line="882"/>
-        <source>SD Logs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -7178,26 +7200,6 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <location filename="../eeprominterface.cpp" line="659"/>
         <source>AilTrim Right</source>
         <translation>QuerTrim rechts</translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.cpp" line="660"/>
-        <source>Trim 5 Down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.cpp" line="660"/>
-        <source>Trim 5 Up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.cpp" line="661"/>
-        <source>Trim 6 Down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../eeprominterface.cpp" line="661"/>
-        <source>Trim 6 Up</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="670"/>
@@ -12422,6 +12424,72 @@ Please only use this if you know what you are doing.  There are no error checks 
         <translation>Ch2</translation>
     </message>
     <message>
+        <location filename="../simulation/joystickdialog.cpp" line="102"/>
+        <source>Not Assigned</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="104"/>
+        <source> Stick</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="107"/>
+        <source>Knob/Slider %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="117"/>
+        <source>No joysticks found</source>
+        <translation type="unfinished">Kein Joystick gefunden</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="184"/>
+        <source>Press the Start button to start the stick range calibration procedure.
+You may change the channel assignments or inversion at any time.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="190"/>
+        <source>Move sticks and pots in every direction making full movement
+Press Next when finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="195"/>
+        <source>Place sticks and pots in middle position.
+Press Next when done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="207"/>
+        <source>Map joystick channels to controls using comboboxes.
+Press Next when done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="211"/>
+        <source>Check inversion checkbox to if necessary to reverse direction.
+Press Next when done.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="215"/>
+        <source>Press OK to save configuration
+Press Cancel to abort joystick calibration without saving.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="258"/>
+        <source>Warning</source>
+        <translation type="unfinished">Warnung</translation>
+    </message>
+    <message>
+        <location filename="../simulation/joystickdialog.cpp" line="258"/>
+        <source>Calibration not complete, save anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../simulation/joystickdialog.ui" line="98"/>
         <source>Ch1</source>
         <translation>Ch1</translation>
@@ -12492,26 +12560,6 @@ Please only use this if you know what you are doing.  There are no error checks 
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../simulation/joystickdialog.cpp" line="102"/>
-        <source>Not Assigned</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="104"/>
-        <source> Stick</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="107"/>
-        <source>Knob/Slider %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="117"/>
-        <source>No joysticks found</source>
-        <translation type="unfinished">Kein Joystick gefunden</translation>
-    </message>
-    <message>
         <location filename="../simulation/joystickdialog.cpp" line="150"/>
         <source>Error</source>
         <translation>Fehler</translation>
@@ -12520,52 +12568,6 @@ Please only use this if you know what you are doing.  There are no error checks 
         <location filename="../simulation/joystickdialog.cpp" line="150"/>
         <source>Cannot open joystick.</source>
         <translation>kann Joystick nicht öffnen.</translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="184"/>
-        <source>Press the Start button to start the stick range calibration procedure.
-You may change the channel assignments or inversion at any time.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="190"/>
-        <source>Move sticks and pots in every direction making full movement
-Press Next when finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="195"/>
-        <source>Place sticks and pots in middle position.
-Press Next when done</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="207"/>
-        <source>Map joystick channels to controls using comboboxes.
-Press Next when done.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="211"/>
-        <source>Check inversion checkbox to if necessary to reverse direction.
-Press Next when done.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="215"/>
-        <source>Press OK to save configuration
-Press Cancel to abort joystick calibration without saving.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="258"/>
-        <source>Warning</source>
-        <translation type="unfinished">Warnung</translation>
-    </message>
-    <message>
-        <location filename="../simulation/joystickdialog.cpp" line="258"/>
-        <source>Calibration not complete, save anyway?</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
