@@ -123,6 +123,7 @@ class MainWindow : public QMainWindow
     void fwPrefs();
     void updateMenus();
     void createProfile();
+    void copyProfile();
     void setActiveSubWindow(QWidget *window);
     void autoClose();
 
@@ -213,6 +214,7 @@ class MainWindow : public QMainWindow
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];
     QAction *createProfileAct;
+    QAction *copyProfileAct;
     QAction *openDocURLAct;
 };
 
