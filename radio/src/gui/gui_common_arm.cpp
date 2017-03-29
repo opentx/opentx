@@ -674,7 +674,6 @@ const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     2,  nullptr             },
   { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
   { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
-  { MM_RF_PROTO_GW08,       NO_SUBTYPE,           0,  nullptr             },
   { MM_RF_CUSTOM_SELECTED,  NO_SUBTYPE,           7,  STR_MULTI_OPTION    },
 
   //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()
