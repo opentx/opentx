@@ -48,13 +48,13 @@ class SimulatorInterface : public QObject
       INPUT_SRC_STICK,      // Board::StickAxes, g_anas[index]
       INPUT_SRC_KNOB,       // g_anas[index + StickAxes]
       INPUT_SRC_SLIDER,     // g_anas[index + StickAxes + num_pots]
+      INPUT_SRC_TXVIN,      // g_anas[Analogs::TX_VOLTAGE]
       INPUT_SRC_SWITCH,     // Named 2/3-pos switches
       INPUT_SRC_TRIM_SW,    // Board::TrimSwitches
       INPUT_SRC_TRIM,       // Board::TrimAxes
       INPUT_SRC_KEY,        // UI key/pushbutton
       INPUT_SRC_ROTENC,     // Rotary encoder (TODO)
       INPUT_SRC_TRAINER,    // Virtual trainer input
-      INPUT_SRC_TXVIN,      // Transmitter voltage (TODO)
       INPUT_SRC_ENUM_COUNT
     };
 
@@ -76,6 +76,7 @@ class SimulatorInterface : public QObject
       CAP_ROTARY_ENC,         // ROTARY_ENCODERS
       CAP_ROTARY_ENC_NAV,     // ROTARY_ENCODER_NAVIGATION
       CAP_TELEM_FRSKY_SPORT,  // TELEMETRY_FRSKY_SPORT
+      CAP_DEFAULT_TXVIN,      // default Tx battery voltage ADC value
       CAP_ENUM_COUNT
     };
 

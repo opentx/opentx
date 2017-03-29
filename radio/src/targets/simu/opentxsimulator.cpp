@@ -31,7 +31,7 @@
   #define GET_SWITCH_BOOL(sw__)    getSwitch(sw__);
 #endif
 
-int16_t g_anas[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
+int16_t g_anas[Analogs::NUM_ANALOGS];
 QVector<QIODevice *> OpenTxSimulator::tracebackDevices;
 
 uint16_t anaIn(uint8_t chan)
@@ -110,6 +110,8 @@ void OpenTxSimulator::start(const char * filename, bool tests)
 
   QMutexLocker lckr(&m_mtxSimuMain);
   QMutexLocker slckr(&m_mtxSettings);
+  memset(g_anas, 0, sizeof(g_anas));
+
   simuInit();
   StartEepromThread(filename);
   StartAudioThread(volumeGain);
@@ -199,7 +201,7 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
 {
-  static int dim = DIM(ppmInput);
+  static unsigned dim = DIM(ppmInput);
   //setTrainerTimeout(100);
   if (inputNumber < dim)
     ppmInput[inputNumber] = qMin(qMax((int16_t)-512, value), (int16_t)512);
@@ -218,6 +220,9 @@ void OpenTxSimulator::setInputValue(int type, uint8_t index, int16_t value)
       break;
     case INPUT_SRC_SLIDER :
       setAnalogValue(index + NUM_STICKS + NUM_POTS, value);
+      break;
+    case INPUT_SRC_TXVIN :
+      setAnalogValue(Analogs::TX_VOLTAGE, voltageToAdc(value));
       break;
     case INPUT_SRC_SWITCH :
       setSwitch(index, (int8_t)value);
@@ -343,6 +348,15 @@ const int OpenTxSimulator::getCapability(Capability cap)
         ret = 1;
       #endif
       break;
+
+    case CAP_DEFAULT_TXVIN :
+      #if (defined(PCBTARANIS) && !defined(PCBX9E)) || defined(PCBFLAMENCO)
+        ret = 76;
+      #else
+        ret = 106;
+      #endif
+      break;
+
   }
   return ret;
 }
@@ -535,6 +549,21 @@ const QString OpenTxSimulator::getCurrentPhaseName()
 const char * OpenTxSimulator::getError()
 {
   return main_thread_error;
+}
+
+const int OpenTxSimulator::voltageToAdc(const int volts)
+{
+  int ret = 0;
+#if defined(PCBHORUS) || defined(PCBX7)
+  ret = (float)volts * 16.2f;
+#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBSKY9X)
+  ret = (float)volts * 13.3f;
+#elif defined(PCBGRUVIN9X)
+  ret = (float)volts * 1.63f;
+#else
+  ret = (float)volts * 14.15f;
+#endif
+  return ret;
 }
 
 
