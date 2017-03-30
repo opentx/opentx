@@ -789,13 +789,17 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== DELAYS ===============
       if (mode==e_perout_mode_normal && (md->delayDown || md->delayUp)) {	// there are delay values
-        if (!s_mixer_first_run_done || !swOn[i].delay) {
-          swOn[i].hold = v;     // store actual value of v as reference for next run
-          swOn[i].delay = (v > swOn[i].hold ? md->delayUp : md->delayDown) * (100/DELAY_STEP); // init delay
+        if (!s_mixer_first_run_done) {
+          swOn[i].delay = 0;
+          swOn[i].hold = v; // first value of v stored as reference for next run(s)
         }
-        else if ((swOn[i].delay > 0) && ((v > swOn[i].hold +10) || (v < swOn[i].hold -10))) {  // compare v to value stored at previous run, with +/-10% tolerance
-          swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms);   // decrement delay
-          v = swOn[i].hold;     // keep v to stored value until end of delay
+        else if (swOn[i].delay == 0) {
+          swOn[i].delay = (v > swOn[i].hold ? md->delayUp : md->delayDown) * (100/DELAY_STEP); // init delay
+          swOn[i].hold = v; // store actual value of v for delay
+        }
+        else if (swOn[i].delay > 0) {
+          swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms); // decrement delay
+          v = swOn[i].hold; // keep v to stored value until end of delay
         }
       }
 	  
