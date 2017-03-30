@@ -233,15 +233,16 @@ if os.path.isfile(errpath):
     print filename
     exit(COMPILATION_ERROR)
 
+if os.path.isfile(path):
+    print filename
+    exit(0)
+
 lockpath = path + ".lock"
 lock = filelock.FileLock(lockpath)
 try:
     with lock.acquire(timeout = 60*60):
         if not os.path.isfile(path):
             build_firmware(path)
-        else:
-            print filename
-            exit(0)
 except filelock.Timeout:
     print filename
     exit(COMPILATION_ERROR)
