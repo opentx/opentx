@@ -9261,7 +9261,8 @@ E</translation>
         <location filename="../modeledit/setup.ui" line="221"/>
         <source>Pot Warnings</source>
         <translation>Positions des potentiomètres</translation>
-    </message>
+
+		</message>
     <message>
         <location filename="../modeledit/setup.ui" line="236"/>
         <source>Manual</source>
