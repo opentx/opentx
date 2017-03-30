@@ -356,14 +356,15 @@ extern char * main_thread_error;
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
 #define SIMU_SLEEP_NORET(x) do { sleep(x/*ms*/); } while (0)
 
+uint64_t simuTimerMicros(void);
+
 void simuInit();
+void StartSimu(bool tests=true, const char * sdPath = 0, const char * settingsPath = 0);
+void StopSimu();
 
 void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);
 void simuSetSwitch(uint8_t swtch, int8_t state);
-
-void StartSimu(bool tests=true, const char * sdPath = 0, const char * settingsPath = 0);
-void StopSimu();
 
 void StartEepromThread(const char *filename="eeprom.bin");
 void StopEepromThread();
@@ -419,6 +420,7 @@ OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, ui
 #define CoTickDelay(x)                 sleep(2*(x))
 #define CoCreateFlag(...)              0
 U64 CoGetOSTime(void);
+
 #define UART_Stop(...)
 #define UART3_Stop(...)
 #define USART_GetITStatus(...)         0

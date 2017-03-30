@@ -81,7 +81,7 @@ void toplcdOff()
 {
 }
 
-U64 microsTimer(void)
+uint64_t simuTimerMicros(void)
 {
 #if SIMPGMSPC_USE_QT
 
@@ -121,18 +121,18 @@ U64 microsTimer(void)
 
 uint16_t getTmr16KHz()
 {
-  return microsTimer() * 2 / 125;
+  return simuTimerMicros() * 2 / 125;
 }
 
 uint16_t getTmr2MHz()
 {
-  return microsTimer() * 2;
+  return simuTimerMicros() * 2;
 }
 
 // return 2ms resolution to match CoOS settings
 U64 CoGetOSTime(void)
 {
-  return microsTimer() / 2000;
+  return simuTimerMicros() / 2000;
 }
 
 void simuInit()
