@@ -767,8 +767,28 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
+      //========== Active Mix ===========
+      bool apply_offset_and_curve = true;
+      if (!mixEnabled) {
+        if ((md->speedDown || md->speedUp) && md->mltpx!=MLTPX_REP) {
+          if (mixCondition) {
+            v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
+            apply_offset_and_curve = false;
+          }
+        }
+        else if (mixCondition) {
+          continue;
+        }
+      }
+      if (mode==e_perout_mode_normal && (!mixCondition || mixEnabled || swOn[i].delay)) {
+        if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1);
+#if defined(BOLD_FONT)
+        swOn[i].activeMix = true;
+#endif
+      }
+
       //========== DELAYS ===============
-      if (mode <= e_perout_mode_inactive_flight_mode && (md->delayDown || md->delayUp)) {	// there are delay values
+      if (mode==e_perout_mode_normal && (md->delayDown || md->delayUp)) {	// there are delay values
         if (!s_mixer_first_run_done || !swOn[i].delay) {
           swOn[i].hold = v;     // store actual value of v as reference for next run
           swOn[i].delay = (v > swOn[i].hold ? md->delayUp : md->delayDown) * (100/DELAY_STEP); // init delay
@@ -814,26 +834,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           } // endif tick10ms ; in case no time passed assign the old value, not the current value from source
           v = tact>>8;
         }
-      }
-
-      //========== Active Mix ===========
-      bool apply_offset_and_curve = true;
-      if (!mixEnabled) {
-        if ((md->delayDown || md->delayUp) && md->mltpx!=MLTPX_REP) {
-          if (mixCondition) {
-            v = (md->mltpx == MLTPX_ADD ? 0 : RESX);
-            apply_offset_and_curve = false;
-          }
-        }
-        else if (mixCondition) {
-          continue;
-        }
-      }
-      if (mode==e_perout_mode_normal && (!mixCondition || mixEnabled || swOn[i].delay)) {
-        if (md->mixWarn) lv_mixWarning |= 1 << (md->mixWarn - 1);
-#if defined(BOLD_FONT)
-        swOn[i].activeMix = true;
-#endif
       }
 	  
       //========== OFFSET BEFORE ========
