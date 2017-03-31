@@ -360,15 +360,6 @@ const int OpenTxSimulator::getCapability(Capability cap)
         ret = 1;
       #endif
       break;
-
-    case CAP_DEFAULT_TXVIN :
-      #if (defined(PCBTARANIS) && !defined(PCBX9E)) || defined(PCBFLAMENCO)
-        ret = 76;
-      #else
-        ret = 106;
-      #endif
-      break;
-
   }
   return ret;
 }

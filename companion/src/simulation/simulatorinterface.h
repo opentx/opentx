@@ -76,7 +76,6 @@ class SimulatorInterface : public QObject
       CAP_ROTARY_ENC,         // ROTARY_ENCODERS
       CAP_ROTARY_ENC_NAV,     // ROTARY_ENCODER_NAVIGATION
       CAP_TELEM_FRSKY_SPORT,  // TELEMETRY_FRSKY_SPORT
-      CAP_DEFAULT_TXVIN,      // default Tx battery voltage ADC value
       CAP_ENUM_COUNT
     };
 

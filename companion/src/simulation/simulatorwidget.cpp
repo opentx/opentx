@@ -653,18 +653,23 @@ void SimulatorWidget::setupJoysticks()
 
 void SimulatorWidget::restoreRadioWidgetsState()
 {
+  // All RadioWidgets
   RadioWidget::RadioWidgetState state;
   QList<QByteArray> states = g.profile[radioProfileId].simulatorOptions().controlsState;
-
   foreach (QByteArray ba, states) {
     QDataStream stream(ba);
     stream >> state;
     emit widgetStateChange(state);
   }
+
   // Set throttle stick down and locked, side depends on mode
   emit stickModeChange(radioSettings.stickMode);
+
   // TODO : custom voltages
-  emit inputValueChange(SimulatorInterface::INPUT_SRC_TXVIN, 0, simulator->getCapability(SimulatorInterface::CAP_DEFAULT_TXVIN));
+  qint16 volts = radioSettings.vBatWarn + 2;
+  if (firmware->getCapability(Capability::HasBatMeterRange))
+    volts = (radioSettings.vBatMin + 90) + ((radioSettings.vBatMax + 30) - radioSettings.vBatMin) / 2;
+  emit inputValueChange(SimulatorInterface::INPUT_SRC_TXVIN, 0, volts);
 }
 
 void SimulatorWidget::saveRadioWidgetsState(QList<QByteArray> & state)
