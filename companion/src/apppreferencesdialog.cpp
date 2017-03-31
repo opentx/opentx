@@ -77,7 +77,7 @@ void AppPreferencesDialog::writeValues()
   g.enableBackup(ui->backupEnable->isChecked());
 
   if (ui->joystickChkB ->isChecked() && ui->joystickCB->isEnabled()) {
-    g.jsSupport(ui->joystickChkB ->isChecked());  
+    g.jsSupport(ui->joystickChkB ->isChecked());
     g.jsCtrl(ui->joystickCB ->currentIndex());
   }
   else {
@@ -193,7 +193,7 @@ void AppPreferencesDialog::initSettings()
     ui->joystickCB->setDisabled(true);
     ui->joystickcalButton->setDisabled(true);
   }
-#endif  
+#endif
   //  Profile Tab Inits
   ui->channelorderCB->setCurrentIndex(g.profile[g.id()].channelOrder());
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
@@ -213,7 +213,6 @@ void AppPreferencesDialog::initSettings()
   }
 
   ui->profileNameLE->setText(g.profile[g.id()].name());
-  ui->SplashFileName->setText(g.profile[g.id()].splashFile());
 
   QString hwSettings;
   if (g.profile[g.id()].stickPotCalib() == "" ) {
@@ -229,30 +228,13 @@ void AppPreferencesDialog::initSettings()
   ui->lblGeneralSettings->setText(hwSettings);
 
   Firmware * current_firmware = getCurrentFirmware();
-  
-  if (!IS_HORUS(current_firmware->getBoard())) {
-    displayImage(g.profile[g.id()].splashFile());
-  }
-  // TODO: Remove once splash replacement supported on Horus
-  // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
-  else {
-    ui->imageLabel->hide();
-    ui->splashLabel->hide();
-    ui->SplashFileName->hide();
-    ui->SplashSelect->hide();
-    ui->SplashSelect->setEnabled(false);
-    ui->clearImageButton->hide();
-    ui->clearImageButton->setEnabled(false);
-    ui->splashSeparator->hide();
-  }
-
   foreach(Firmware * firmware, firmwares) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
     if (current_firmware->getFirmwareBase() == firmware) {
       ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
     }
   }
-  
+
   baseFirmwareChanged();
 }
 
@@ -306,7 +288,7 @@ void AppPreferencesDialog::on_ge_pathButton_clicked()
     ui->ge_lineedit->setText(fileName);
   }
 }
- 
+
 #if defined(JOYSTICKS)
 void AppPreferencesDialog::on_joystickChkB_clicked() {
   if (ui->joystickChkB->isChecked()) {
@@ -367,10 +349,13 @@ bool AppPreferencesDialog::displayImage(const QString & fileName)
   // Start by clearing the label
   ui->imageLabel->clear();
 
-  QImage image(fileName);
-  if (image.isNull()) 
+  if (fileName.isEmpty())
     return false;
-  
+
+  QImage image(fileName);
+  if (image.isNull())
+    return false;
+
   ui->imageLabel->setPixmap(makePixMap(image));
   ui->imageLabel->setFixedSize(getCurrentFirmware()->getCapability(LcdWidth), getCurrentFirmware()->getCapability(LcdHeight));
   return true;
@@ -388,7 +373,7 @@ void AppPreferencesDialog::on_SplashSelect_clicked()
 
   if (!fileName.isEmpty()){
     g.imagesDir(QFileInfo(fileName).dir().absolutePath());
-   
+
     displayImage(fileName);
     ui->SplashFileName->setText(fileName);
   }
@@ -478,7 +463,7 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
         }
       }
     }
-  } 
+  }
 }
 
 void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
@@ -541,6 +526,18 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
   }
 
   showVoice(voice && voice->isChecked());
+
+  // TODO: Remove once splash replacement supported on Horus
+  // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
+  if (IS_HORUS(parent->getBoard())) {
+    ui->widget_splashImage->hide();
+    ui->SplashFileName->setText("");
+  }
+  else {
+    ui->widget_splashImage->show();
+    ui->SplashFileName->setText(g.profile[g.id()].splashFile());
+    displayImage(g.profile[g.id()].splashFile());
+  }
 
   updateLock = false;
   QTimer::singleShot(0, this, SLOT(shrink()));
