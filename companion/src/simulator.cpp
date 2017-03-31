@@ -219,7 +219,6 @@ int main(int argc, char *argv[])
     showMessage(resultMsg, QMessageBox::Critical);
   }
   else if (mainWindow->setOptions(simOptions, true)) {
-    mainWindow->start();
     mainWindow->show();
     result = app.exec();
     if (!result) {

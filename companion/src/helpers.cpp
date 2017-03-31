@@ -762,7 +762,6 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
     dialog->deleteLater();
   }
    else if (dialog->setRadioData(simuData)) {
-    dialog->start();
     dialog->show();
   }
   else {
