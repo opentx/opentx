@@ -1121,7 +1121,7 @@ void moveTrimsToOffsets();
 #define delayval_t         int16_t
 PACK(typedef struct {
   uint16_t delay;
-  int16_t  hold;
+  int32_t  hold;
   bool  activeMix;
   bool  activeExpo;
 }) SwOn;
