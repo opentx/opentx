@@ -652,7 +652,7 @@ bool MdiChild::saveAs(bool isNew)
 #ifdef __APPLE__
     fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
 #else
-    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(EEPROM_FILES_FILTER));
+    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(OTX_FILES_FILTER));
 #endif
   }
   if (fileName.isEmpty())
