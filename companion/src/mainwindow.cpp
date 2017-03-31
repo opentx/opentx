@@ -1059,6 +1059,7 @@ void MainWindow::createActions()
   readFlashAct =       addAct("read_flash.png",    tr("Read Firmware from Radio"),tr("Read firmware from Radio"),           SLOT(readFlash()));
   writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware to Radio"), tr("Write firmware to Radio"),            SLOT(writeFlash()));
   createProfileAct =   addAct("",                  tr("Add Radio Profile"),       tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
+  copyProfileAct =     addAct("",                  tr("Copy Current Radio Profile"), tr("Duplicate current Radio Setting Profile"), SLOT(copyProfile()));
   openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
   writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"),       SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Radio"), tr("Read Models and Settings from Radio"),      SLOT(readEeprom()));
@@ -1218,6 +1219,7 @@ QMenu *MainWindow::createProfilesMenu()
   profilesMenu->addSeparator();
 
   profilesMenu->addAction(createProfileAct);
+  profilesMenu->addAction(copyProfileAct);
   profilesMenu->setIcon(CompanionIcon("profiles.png"));
   return profilesMenu;
 }
@@ -1398,6 +1400,18 @@ void MainWindow::updateProfilesActions()
   }
 }
 
+
+void MainWindow::copyProfile()
+{
+  int previous = g.id();
+
+  createProfile();
+  if (g.id() == previous) //Failed to find free slot
+    return;
+  g.profile[g.id()] = g.profile[previous];
+  updateMenus();
+}
+
 void MainWindow::createProfile()
 {
   int i;
@@ -1405,8 +1419,7 @@ void MainWindow::createProfile()
   if (i==MAX_PROFILES)  //Failed to find free slot
     return;
 
-  // Copy current profile to new and give it a new name
-  g.profile[i] = g.profile[g.id()];
+  g.profile[i].init(i);
   g.profile[i].name(tr("New Radio"));
 
   g.id(i);
