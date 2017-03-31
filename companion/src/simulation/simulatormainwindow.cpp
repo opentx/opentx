@@ -177,13 +177,14 @@ void SimulatorMainWindow::closeEvent(QCloseEvent *)
 void SimulatorMainWindow::show()
 {
   QMainWindow::show();
-#ifdef Q_OS_LINUX
-  // for whatever reason, w/out this workaround any floating docks may appear and get "stuck" behind other windows, eg. Terminal or Companion.
   if (m_firstShow) {
-    restoreUiState();
     m_firstShow = false;
+    #ifdef Q_OS_LINUX
+      // for whatever reason, w/out this workaround any floating docks may appear and get "stuck" behind other windows, eg. Terminal or Companion.
+      restoreUiState();
+    #endif
+    start();
   }
-#endif
 }
 
 void SimulatorMainWindow::changeEvent(QEvent *e)

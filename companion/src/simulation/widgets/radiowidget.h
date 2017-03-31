@@ -91,15 +91,15 @@ class RadioWidget : public QWidget
     virtual void setFlags(const quint16 & flags);
     virtual void setShowLabel(const bool show);
     virtual void setLabelText(const QString & labelText, bool showLabel = true);
-    virtual void setStateData(const QByteArray & data);
+    virtual void setStateData(const RadioWidgetState & state);
     virtual void changeVisibility(bool visible);
     virtual void setAction(RadioUiAction * action);
 
   signals:
 
-    void valueChange(RadioWidgetType type, int index, int value);
-    void valueChanged(int value);
-    void flagsChanged(quint16 flags);
+    void valueChange(const RadioWidgetType type, const int index, int value);
+    void valueChanged(const int value);
+    void flagsChanged(const quint16 flags);
 
   protected:
 
@@ -116,10 +116,13 @@ class RadioWidget : public QWidget
     int m_value;
     int m_index;
     quint16 m_flags;
+    bool m_valueReset;
     bool m_showLabel;
     QString m_labelText;
     RadioWidgetType m_type;
 
 };
+
+Q_DECLARE_METATYPE(RadioWidget::RadioWidgetState)
 
 #endif // _RADIOWIDGET_H_

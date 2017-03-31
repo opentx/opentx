@@ -71,14 +71,15 @@ class VirtualJoystickWidget : public QWidget
     void setTrimsRange(int rng);
     void setTrimRange(int index, int min, int max);
     void setTrimValue(int index, int value);
-    void setWidgetValue(RadioWidget::RadioWidgetType type, int index, int value);
+    void setWidgetValue(const RadioWidget::RadioWidgetType type, const int index, const int value);
 
     void setStickIndices(int xIdx = -1, int yIdx = -1);
     void setStickConstraint(quint8 index, bool active);
     void setStickColor(const QColor & color);
+    void loadDefaultsForMode(const unsigned mode);
 
   signals:
-    void valueChange(RadioWidget::RadioWidgetType type, int index, int value);
+    void valueChange(const RadioWidget::RadioWidgetType type, const int index, int value);
 
   protected slots:
     void onNodeXChanged();

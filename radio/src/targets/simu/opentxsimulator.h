@@ -50,6 +50,7 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
 
   public slots:
 
+    virtual void init();
     virtual void start(const char * filename = NULL, bool tests = true);
     virtual void stop();
     virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "");
@@ -78,9 +79,7 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
     void setStopRequested(bool stop);
     bool checkLcdChanged();
     void checkOutputsChanged();
-    bool hasExtendedTrims();
     uint8_t getStickMode();
-    unsigned int getPhase();
     const char * getPhaseName(unsigned int phase);
     const QString getCurrentPhaseName();
     const char * getError();

@@ -31,6 +31,8 @@
   #define GET_SWITCH_BOOL(sw__)    getSwitch(sw__);
 #endif
 
+#define OTXS_DBG    qDebug() << "(" << simuTimerMicros() << "us)"
+
 int16_t g_anas[Analogs::NUM_ANALOGS];
 QVector<QIODevice *> OpenTxSimulator::tracebackDevices;
 
@@ -91,10 +93,11 @@ bool OpenTxSimulator::isRunning()
   return (bool)main_thread_running;
 }
 
-void OpenTxSimulator::start(const char * filename, bool tests)
+void OpenTxSimulator::init()
 {
   if (isRunning())
     return;
+  OTXS_DBG;
 
   if (!m_timer10ms) {
     // make sure we create & control the timer from current thread
@@ -109,10 +112,18 @@ void OpenTxSimulator::start(const char * filename, bool tests)
   setStopRequested(false);
 
   QMutexLocker lckr(&m_mtxSimuMain);
-  QMutexLocker slckr(&m_mtxSettings);
   memset(g_anas, 0, sizeof(g_anas));
-
   simuInit();
+}
+
+void OpenTxSimulator::start(const char * filename, bool tests)
+{
+  if (isRunning())
+    return;
+  OTXS_DBG << "file:" << filename << "tests:" << tests;
+
+  QMutexLocker lckr(&m_mtxSimuMain);
+  QMutexLocker slckr(&m_mtxSettings);
   StartEepromThread(filename);
   StartAudioThread(volumeGain);
   StartSimu(tests, simuSdDirectory.toLatin1().constData(), simuSettingsDirectory.toLatin1().constData());
@@ -125,6 +136,7 @@ void OpenTxSimulator::stop()
 {
   if (!isRunning())
     return;
+  OTXS_DBG;
 
   setStopRequested(true);
 
@@ -400,6 +412,7 @@ void OpenTxSimulator::run()
   if (!isRunning()) {
     QString err(getError());
     emit runtimeError(err);
+    emit stopped();
     return;
   }
 
@@ -414,7 +427,7 @@ void OpenTxSimulator::run()
   }
 
   if (!(loops % (SIMULATOR_INTERFACE_HEARTBEAT_PERIOD / 10))) {
-    emit heartbeat(loops, ts.elapsed());
+    emit heartbeat(loops, simuTimerMicros() / 1000);
   }
 }
 
@@ -428,7 +441,6 @@ void OpenTxSimulator::setStopRequested(bool stop)
 {
   QMutexLocker lckr(&m_mtxStopReq);
   m_stopRequested = stop;
-  QTimer::singleShot(0, this, &OpenTxSimulator::run);
 }
 
 bool OpenTxSimulator::checkLcdChanged()
@@ -447,7 +459,7 @@ void OpenTxSimulator::checkOutputsChanged()
   static size_t chansDim = DIM(channelOutputs);
   qint32 tmpVal;
   uint8_t i, idx;
-  uint8_t phase = getPhase();
+  uint8_t phase = getFlightMode();  // opentx.cpp
   uint8_t mode = getStickMode();
 
   for (i=0; i < chansDim; i++) {
@@ -469,7 +481,7 @@ void OpenTxSimulator::checkOutputsChanged()
     }
   }
 
-  for (i=0; i < CPN_MAX_TRIMS; i++) {
+  for (i=0; i < Board::TRIM_AXIS_COUNT; i++) {
     if (i < 4)  // swap axes
       idx = modn12x3[4 * mode + i];
     else
@@ -483,10 +495,10 @@ void OpenTxSimulator::checkOutputsChanged()
     }
   }
 
-  tmpVal = (qint32)hasExtendedTrims();
-  if (lastOutputs.trimRange != (bool)tmpVal || m_resetOutputsData) {
-    emit trimRangeChange(0, tmpVal);
-    emit outputValueChange(OUTPUT_SRC_TRIM_RANGE, 0, tmpVal);
+  tmpVal = g_model.extendedTrims ? TRIM_EXTENDED_MAX : TRIM_MAX;
+  if (lastOutputs.trimRange != tmpVal || m_resetOutputsData) {
+    emit trimRangeChange(Board::TRIM_AXIS_COUNT, -tmpVal, tmpVal);
+    emit outputValueChange(OUTPUT_SRC_TRIM_RANGE, Board::TRIM_AXIS_COUNT, tmpVal);
     lastOutputs.trimRange = tmpVal;
   }
 
@@ -516,19 +528,9 @@ void OpenTxSimulator::checkOutputsChanged()
   m_resetOutputsData = false;
 }
 
-bool OpenTxSimulator::hasExtendedTrims()
-{
-  return g_model.extendedTrims;
-}
-
 uint8_t OpenTxSimulator::getStickMode()
 {
   return limit<uint8_t>(0, g_eeGeneral.stickMode, 3);
-}
-
-unsigned int OpenTxSimulator::getPhase()
-{
-  return getFlightMode();
 }
 
 const char * OpenTxSimulator::getPhaseName(unsigned int phase)
@@ -540,9 +542,10 @@ const char * OpenTxSimulator::getPhaseName(unsigned int phase)
 
 const QString OpenTxSimulator::getCurrentPhaseName()
 {
-  QString name(getPhaseName(getPhase()));
+  unsigned phase = getFlightMode();
+  QString name(getPhaseName(phase));
   if (name.isEmpty())
-    name = QString::number(getPhase());
+    name = QString::number(phase);
   return name;
 }
 

@@ -111,7 +111,7 @@ class SimulatorInterface : public QObject
       int trims[CPN_MAX_TRIMS];            // Board::TrimAxes enum
       bool vsw[CPN_MAX_LOGICAL_SWITCHES];  // virtual/logic switches
       int8_t phase;
-      bool trimRange;                      // true for extended (maybe store actual +/- ranges instead?)
+      qint16 trimRange;                  // TRIM_MAX or TRIM_EXTENDED_MAX
       // bool beep;
     };
 
@@ -127,6 +127,7 @@ class SimulatorInterface : public QObject
 
   public slots:
 
+    virtual void init() = 0;
     virtual void start(const char * filename = NULL, bool tests = true) = 0;
     virtual void stop() = 0;
     virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") = 0;
@@ -158,7 +159,7 @@ class SimulatorInterface : public QObject
     void channelMixValueChange(quint8 index, qint32 value);
     void virtualSwValueChange(quint8 index, qint32 value);
     void trimValueChange(quint8 index, qint32 value);
-    void trimRangeChange(quint8 index, qint32 value);
+    void trimRangeChange(quint8 index, qint32 min, qint16 max);
     void gVarValueChange(quint8 index, qint32 value);
     void outputValueChange(int type, quint8 index, qint32 value);
 };

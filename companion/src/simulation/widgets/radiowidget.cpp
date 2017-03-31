@@ -29,9 +29,11 @@ RadioWidget::RadioWidget(QWidget * parent, Qt::WindowFlags f) :
   m_action(NULL),
   m_value(0),
   m_flags(0),
+  m_valueReset(false),
   m_showLabel(false),
   m_labelText("")
 {
+  qRegisterMetaType<RadioWidgetState>();
   setIndex(-1);
   setType(RADIO_WIDGET_NONE);
 }
@@ -61,8 +63,9 @@ void RadioWidget::setType(const RadioWidgetType & type)
 
 void RadioWidget::setValue(const int & value)
 {
-  if (value != m_value) {
+  if (value != m_value || m_valueReset) {
     m_value = value;
+    m_valueReset = false;
     emit valueChanged(value);
     emit valueChange(m_type, m_index, value);
   }
@@ -97,13 +100,12 @@ void RadioWidget::setLabelText(const QString & labelText, bool showLabel)
   addLabel();
 }
 
-void RadioWidget::setStateData(const QByteArray & data)
+void RadioWidget::setStateData(const RadioWidgetState & state)
 {
-  RadioWidgetState state;
-  QDataStream stream(data);
-  stream >> state;
+  if (state.type != m_type || state.index != m_index)
+    return;
 
-  //setIndex(state.index);
+  m_valueReset = true;
   setValue(state.value);
   setFlags(state.flags);
 }

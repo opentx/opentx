@@ -87,11 +87,13 @@ class SimulatorWidget : public QWidget
     void shutdown();
 
   signals:
-    void trimValueChanged(int index, int value);
-    void trimRangeChanged(int axis, int min, int max);
-    void widgetValueChange(RadioWidget::RadioWidgetType type, int index, int value);
+    void stickValueChange(int axis, int value);
+    void stickModeChange(const unsigned mode);
+    void widgetValueChange(const RadioWidget::RadioWidgetType type, const int index, const int value);
+    void widgetStateChange(const RadioWidget::RadioWidgetState & state);
     void inputValueChange(int type, quint8 index, qint16 value);
     void simulatorSetData(const QByteArray & data);
+    void simulatorInit();
     void simulatorStart(const char * filename, bool tests);
     void simulatorStop();
     void simulatorSdPathChange(const QString & sdPath, const QString & dataPath);
@@ -106,11 +108,9 @@ class SimulatorWidget : public QWidget
     void onSimulatorStarted();
     void onSimulatorStopped();
     void onSimulatorHeartbeat(qint32 loops, qint64 timestamp);
-    void onTrimValueChanged(quint8 index, qint32 value);
-    void onTrimRangeChanged(quint8, qint32 value);
     void onPhaseChanged(qint32 phase, const QString & name);
     void onSimulatorError(const QString & error);
-    void onRadioWidgetValueChange(RadioWidget::RadioWidgetType type, int index, int value);
+    void onRadioWidgetValueChange(const RadioWidget::RadioWidgetType type, const int index, int value);
     void onjoystickAxisValueChanged(int axis, int value);
 
     void setRadioProfileId(int value);

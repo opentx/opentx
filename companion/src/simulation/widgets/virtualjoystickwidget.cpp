@@ -253,7 +253,7 @@ void VirtualJoystickWidget::setStickScale(int stickScale)
   m_stickScale = stickScale;
 }
 
-void VirtualJoystickWidget::setWidgetValue(RadioWidget::RadioWidgetType type, int index, int value)
+void VirtualJoystickWidget::setWidgetValue(const RadioWidget::RadioWidgetType type, const int index, const int value)
 {
   if (type == RadioWidget::RADIO_WIDGET_TRIM)
     setTrimValue(index, value);
@@ -294,6 +294,15 @@ void VirtualJoystickWidget::setStickConstraint(quint8 index, bool active)
 void VirtualJoystickWidget::setStickColor(const QColor & color)
 {
   node->setColor(color);
+}
+
+void VirtualJoystickWidget::loadDefaultsForMode(const unsigned mode)
+{
+  if (((mode & 1) && stickSide == 'L') || (!(mode & 1) && stickSide == 'R')) {
+    setStickConstraint(HOLD_Y, true);
+    setStickY(1.0);
+    onNodeYChanged();
+  }
 }
 
 QSize VirtualJoystickWidget::sizeHint() const {
