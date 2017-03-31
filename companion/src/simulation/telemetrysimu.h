@@ -45,6 +45,7 @@ class TelemetrySimulator : public QWidget
 
     explicit TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator);
     virtual ~TelemetrySimulator();
+    void onSimulatorStarted();
 
   protected slots:
 

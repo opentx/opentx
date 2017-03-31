@@ -259,6 +259,8 @@ void SimulatorMainWindow::start()
     m_simulatorWidget->start();
   if (m_outputsWidget)
     m_outputsWidget->start();
+
+  emit simulatorStart();
 }
 
 void SimulatorMainWindow::createDockWidgets()
@@ -279,6 +281,8 @@ void SimulatorMainWindow::createDockWidgets()
     m_telemetryDockWidget->setWidget(telem);
     m_telemetryDockWidget->setObjectName("TELEMETRY_SIMULATOR");
     addTool(m_telemetryDockWidget, Qt::LeftDockWidgetArea, icon, QKeySequence(tr("F4")));
+    connect(this, &SimulatorMainWindow::simulatorStart, telem, &TelemetrySimulator::onSimulatorStarted);
+    connect(ui->actionReloadRadioData, &QAction::triggered, telem, &TelemetrySimulator::onSimulatorStarted);
   }
 
   if (!m_trainerDockWidget) {

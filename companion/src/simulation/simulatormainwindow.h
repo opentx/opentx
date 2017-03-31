@@ -65,6 +65,9 @@ class SimulatorMainWindow : public QMainWindow
     void showRadioFixedHeight(bool fixed);
     void showRadioDocked(bool dock);
 
+  signals:
+    void simulatorStart();
+
   protected slots:
     virtual void closeEvent(QCloseEvent *);
     virtual void changeEvent(QEvent *e);
