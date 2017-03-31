@@ -1122,8 +1122,8 @@ void moveTrimsToOffsets();
 PACK(typedef struct {
   uint16_t delay;
   int16_t  hold;
-  uint8_t  activeMix;
-  uint8_t  activeExpo;
+  bool  activeMix;
+  bool  activeExpo;
 }) SwOn;
 #else
 #define ACTIVE_PHASES_TYPE uint8_t
@@ -1131,10 +1131,10 @@ PACK(typedef struct {
 #define DELAY_POS_MARGIN   0
 #define delayval_t         int8_t
 PACK(typedef struct {
-	uint16_t delay:10;
+	uint16_t delay;
 	int16_t hold;
-	bool activeMix:1;
-	bool activeExpo:1;
+	bool activeMix;
+	bool activeExpo;
 }) SwOn;
 
 #endif
