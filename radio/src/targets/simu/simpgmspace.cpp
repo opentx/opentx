@@ -132,7 +132,7 @@ uint16_t getTmr2MHz()
 // return 2ms resolution to match CoOS settings
 U64 CoGetOSTime(void)
 {
-  return microsTimer() * 500;
+  return microsTimer() / 2000;
 }
 
 void simuInit()
