@@ -265,7 +265,7 @@ void TreeModel::refresh()
   for (unsigned i=0; i<radioData->models.size(); i++) {
     ModelData & model = radioData->models[i];
     int currentColumn = 0;
-    TreeItem * current;
+    TreeItem * current = NULL;
     if (IS_HORUS(board)) {
       if (!model.isEmpty()) {
         TreeItem * categoryItem;
@@ -290,7 +290,7 @@ void TreeModel::refresh()
       current->setData(currentColumn++, QString().sprintf("%02d", i + 1));
     }
 
-    if (!model.isEmpty()) {
+    if (!model.isEmpty() && current) {
       QString modelName;
       if (strlen(model.name) > 0)
         modelName = model.name;
