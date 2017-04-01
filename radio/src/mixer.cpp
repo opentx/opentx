@@ -851,7 +851,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== TRIMS ================
       int16_t trim = 0;
       if (apply_offset_and_curve && !(mode & e_perout_mode_notrims)) {
-#if defined(VIRTUALINPUTS)
+#if defined(VIRTUAL_INPUTS)
         if (md->carryTrim == 0) {
           trim = getSourceTrimValue(md->srcRaw, v);
         }
@@ -902,9 +902,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       int32_t dv = (int32_t)v * weight;
       int32_t dtrim = (int32_t) trim * weight;
-#if defined(CPUARM)
-      dv = div_and_round(dv, 10);
-#endif
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
@@ -934,6 +931,10 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
         dv += dtrim;
       }
+#endif
+
+#if defined(CPUARM)
+      dv = div_and_round(dv, 10);
 #endif
 
       //========== OFFSET AFTER ===============
