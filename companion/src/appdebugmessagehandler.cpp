@@ -98,7 +98,7 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
 
   qSetMessagePattern(msgPattern);
 
-  if (!m_defaultHandler || receivers(SIGNAL(messageOutput(quint8, const QString &, const QMessageLogContext &)))) {
+  if (!m_defaultHandler || receivers(SIGNAL(messageOutput(quint8, const QString &)))) {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
     msgPattern = qFormatLogMessage(type, context, msg);
 #else
@@ -111,7 +111,7 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
     }
 #endif
 
-    emit messageOutput(lvl, msgPattern, context);
+    emit messageOutput(lvl, msgPattern);
   }
 
   // if (QThread::currentThread() == qApp->thread())  // gui thread

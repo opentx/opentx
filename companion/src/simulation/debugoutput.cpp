@@ -94,10 +94,8 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   connect(ui->actionToggleFilter, &QAction::toggled, this, &DebugOutput::onFilterToggled);
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
 
-  if (AppDebugMessageHandler::instance()) {
-    // use old-style connection syntax here due to some possible Qt issues (still occasionally in 5.7)
-    connect(AppDebugMessageHandler::instance(), SIGNAL(messageOutput(quint8,QString,QMessageLogContext)), this, SLOT(onAppDebugMessage(quint8,QString,QMessageLogContext)));
-  }
+  if (AppDebugMessageHandler::instance())
+    connect(AppDebugMessageHandler::instance(), &AppDebugMessageHandler::messageOutput, this, &DebugOutput::onAppDebugMessage);
 
   // send firmware TRACE events to our data collector
   m_simulator->addTracebackDevice(m_dataBufferDevice);
@@ -203,7 +201,7 @@ void DebugOutput::onDataBufferOverflow(const qint64 len)
   }
 }
 
-void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext &)
+void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg)
 {
   if (level > 0 && m_dataBufferDevice) {
     m_dataBufferDevice->write(qPrintable(msg % "\n"));
