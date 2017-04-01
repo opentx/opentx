@@ -841,6 +841,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
 #endif
+
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
@@ -902,21 +903,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== WEIGHT ===============
       int32_t dv = (int32_t)v * weight;
       int32_t dtrim = (int32_t) trim * weight;
-#if defined(CPUARM)
-      dv = div_and_round(dv, 10);
-      dtrim = div_and_round(dtrim, 10);
-#endif
-
-      //========== OFFSET / AFTER ===============
-      if (apply_offset_and_curve) {
-#if defined(CPUARM)
-        int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-        if (offset) dv += div_and_round(calc100toRESX_16Bits(offset), 10) << 8;
-#else
-        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
-#endif
-      }
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
@@ -947,6 +933,21 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         dv += dtrim;
       }
 #endif
+
+#if defined(CPUARM)
+      dv = div_and_round(dv, 10);
+#endif
+
+      //========== OFFSET / AFTER ===============
+      if (apply_offset_and_curve) {
+#if defined(CPUARM)
+        int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+        if (offset) dv += div_and_round(calc100toRESX_16Bits(offset), 10) << 8;
+#else
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
+#endif
+      }
 
       int32_t * ptr = &chans[md->destCh]; // Save calculating address several times
 
