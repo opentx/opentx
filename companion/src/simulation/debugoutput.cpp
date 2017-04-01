@@ -87,8 +87,8 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   m_dataBufferDevice->setInputBufferMaxSize(DEBUG_OUTPUT_WIDGET_INP_BUFF_SIZE);
   m_dataBufferDevice->open(QIODevice::ReadWrite | QIODevice::Text);
 
-	connect(m_dataBufferDevice, &FilteredTextBuffer::readyRead, this, &DebugOutput::processBytesReceived);
-  connect(m_dataBufferDevice, &FilteredTextBuffer::bufferOverflow, this, &DebugOutput::onDataBufferOverflow);
+  connect(m_dataBufferDevice, &FilteredTextBuffer::readyRead, this, &DebugOutput::processBytesReceived, Qt::QueuedConnection);
+  connect(m_dataBufferDevice, &FilteredTextBuffer::bufferOverflow, this, &DebugOutput::onDataBufferOverflow, Qt::QueuedConnection);
   connect(this, &DebugOutput::filterChanged, m_dataBufferDevice, &FilteredTextBuffer::setLineFilter);
   connect(this, &DebugOutput::filterEnabledChanged, m_dataBufferDevice, &FilteredTextBuffer::setLineFilterEnabled);
   connect(this, &DebugOutput::filterExprChanged, m_dataBufferDevice, &FilteredTextBuffer::setLineFilterExpr);

@@ -31,8 +31,6 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 {
   ui->setupUi(this);
 
-  setupDataFields();
-
   timer.setInterval(10);
   connect(&timer, &QTimer::timeout, this, &TelemetrySimulator::generateTelemetryFrame);
 
@@ -68,6 +66,11 @@ TelemetrySimulator::~TelemetrySimulator()
   logTimer.stop();
   delete logPlayback;
   delete ui;
+}
+
+void TelemetrySimulator::onSimulatorStarted()
+{
+  setupDataFields();
 }
 
 void TelemetrySimulator::onSimulateToggled(bool isChecked)

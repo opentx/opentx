@@ -74,7 +74,7 @@ static void sendByteMulti(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
   uint8_t len = BITLEN_MULTI; //max val: 10*20 < 256
   for (uint8_t i=0; i<=9; i++) { //8Bits + 1Parity + Stop=1
     bool nlev = b & 1; //lsb first
-    parity = parity ^ nlev;
+    parity = parity ^ (uint8_t)nlev;
     if (lev == nlev) {
       len += BITLEN_MULTI;
     }

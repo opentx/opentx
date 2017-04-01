@@ -197,7 +197,7 @@ Draw a text beginning at (x,y)
 
 @param flags (unsigned number) drawing flags. All values can be
 combined together using the + character. ie BLINK + DBLSIZE.
-See the Appendix for available characters in each font set.
+See the [Appendix](../appendix/fonts.md) for available characters in each font set.
  * `0 or not specified` normal font
  * `XXLSIZE` jumbo sized font
  * `DBLSIZE` double size font

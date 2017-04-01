@@ -168,13 +168,14 @@ void SimulatorMainWindow::closeEvent(QCloseEvent *)
 void SimulatorMainWindow::show()
 {
   QMainWindow::show();
-#ifdef Q_OS_LINUX
-  // for whatever reason, w/out this workaround any floating docks may appear and get "stuck" behind other windows, eg. Terminal or Companion.
   if (m_firstShow) {
-    restoreUiState();
     m_firstShow = false;
+    #ifdef Q_OS_LINUX
+      // for whatever reason, w/out this workaround any floating docks may appear and get "stuck" behind other windows, eg. Terminal or Companion.
+      restoreUiState();
+    #endif
+    start();
   }
-#endif
 }
 
 void SimulatorMainWindow::changeEvent(QEvent *e)
@@ -259,6 +260,8 @@ void SimulatorMainWindow::start()
     m_simulatorWidget->start();
   if (m_outputsWidget)
     m_outputsWidget->start();
+
+  emit simulatorStart();
 }
 
 void SimulatorMainWindow::createDockWidgets()
@@ -279,6 +282,8 @@ void SimulatorMainWindow::createDockWidgets()
     m_telemetryDockWidget->setWidget(telem);
     m_telemetryDockWidget->setObjectName("TELEMETRY_SIMULATOR");
     addTool(m_telemetryDockWidget, Qt::LeftDockWidgetArea, icon, QKeySequence(tr("F4")));
+    connect(this, &SimulatorMainWindow::simulatorStart, telem, &TelemetrySimulator::onSimulatorStarted);
+    connect(ui->actionReloadRadioData, &QAction::triggered, telem, &TelemetrySimulator::onSimulatorStarted);
   }
 
   if (!m_trainerDockWidget) {

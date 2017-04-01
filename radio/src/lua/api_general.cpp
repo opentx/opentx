@@ -408,7 +408,7 @@ static int luaCrossfireTelemetryPop(lua_State * L)
     }
   }
 
-  uint8_t length, data;
+  uint8_t length = 0, data = 0;
   if (luaInputTelemetryFifo->probe(length) && luaInputTelemetryFifo->size() >= uint32_t(length)) {
     // length value includes the length field
     luaInputTelemetryFifo->pop(length);

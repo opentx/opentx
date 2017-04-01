@@ -81,7 +81,7 @@ void toplcdOff()
 {
 }
 
-U64 microsTimer(void)
+uint64_t simuTimerMicros(void)
 {
 #if SIMPGMSPC_USE_QT
 
@@ -104,7 +104,7 @@ U64 microsTimer(void)
     freqScale = 1e6 / frequency.QuadPart;
     // init timer
     QueryPerformanceCounter(&firstTick);
-    TRACE_SIMPGMSPACE("microsTimer() init: first tick = %llu @ %llu Hz: %g", firstTick.QuadPart, frequency.QuadPart);
+    TRACE_SIMPGMSPACE("microsTimer() init: first tick = %llu @ %llu Hz", firstTick.QuadPart, frequency.QuadPart);
   }
   // read the timer
   QueryPerformanceCounter(&newTick);
@@ -121,18 +121,18 @@ U64 microsTimer(void)
 
 uint16_t getTmr16KHz()
 {
-  return microsTimer() * 2 / 125;
+  return simuTimerMicros() * 2 / 125;
 }
 
 uint16_t getTmr2MHz()
 {
-  return microsTimer() * 2;
+  return simuTimerMicros() * 2;
 }
 
 // return 2ms resolution to match CoOS settings
 U64 CoGetOSTime(void)
 {
-  return microsTimer() * 500;
+  return simuTimerMicros() / 2000;
 }
 
 void simuInit()

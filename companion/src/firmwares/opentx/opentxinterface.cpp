@@ -254,6 +254,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
     errors.set(HAS_WARNINGS);
+    ShowEepromWarnings(NULL, QObject::tr("Warning"), errors.to_ulong());
   }
   else if (version_error == NOT_OPENTX) {
     std::cout << " not open9x\n";
@@ -281,7 +282,6 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       return errors.to_ulong();
     }
   }
-
   std::cout << " ok\n";
   errors.set(ALL_OK);
   return errors.to_ulong();
