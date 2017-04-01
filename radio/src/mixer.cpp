@@ -810,8 +810,17 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
+      //========== OFFSET BEFORE ========
+//#define OFFSET_ON_INPUT //uncomment this line to have classical offset
+#if defined(OFFSET_ON_INPUT)
+      if (apply_offset_and_curve) {
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+        if (offset) v += calc100toRESX_16Bits(offset);
+      }
+#endif
+
       //========== TRIMS ================
-      int16_t trim = 0;
+      getvalue_t trim = 0;
       if (apply_offset_and_curve && !(mode & e_perout_mode_notrims)) {
 #if defined(VIRTUAL_INPUTS)
         if (md->carryTrim == 0) {
@@ -831,6 +840,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
             trim = -trim;
         }
 #endif
+        v += trim;
       }
 
 #if defined(CPUARM)
@@ -885,42 +895,36 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== CURVES ===============
 #if defined(CPUARM)
-      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF) {
-        v += trim;
-        if (md->curve.value) {
-          v = applyCurve(v, md->curve);
-        }
+      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
+        v = applyCurve(v, md->curve);
       }
 #else
-      if (apply_offset_and_curve && md->curveMode != MODE_DIFFERENTIAL) {
-        v += trim;
-        if (md->curveMode == MODE_CURVE && md->curveParam) {
-          v = applyCurve(v, md->curveParam);
-        }
+      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
+        v = applyCurve(v, md->curveParam);
       }
 #endif
 
       //========== WEIGHT ===============
       int32_t dv = (int32_t)v * weight;
-      int32_t dtrim = (int32_t) trim * weight;
+      int32_t dtrim = (int32_t)trim * weight;
 #if defined(CPUARM)
       dv = div_and_round(dv, 10);
 #endif
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
-      if (md->curve.type == CURVE_REF_DIFF) {
-        if (md->curve.value) {
-          dv = applyCurve(dv, md->curve);
-          dtrim = applyCurve(dtrim, md->curve);
-        }
+      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
+        dv -= dtrim;
+        dv = applyCurve(dv, md->curve);
+        dtrim = applyCurve(dtrim, md->curve);
         dv += dtrim;
       }
 #else
       if (md->curveMode == MODE_DIFFERENTIAL) {
         // stick and trim are computed separatly
         // curveParam recalculated to a 256 basis which ease the calculation later a lot
-        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));  
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
+        dv -= dtrim;
         if (curveParam > 0 && dv < 0) {
           dv = (dv * (256 - curveParam)) >> 8;
         }
@@ -938,6 +942,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
 
       //========== OFFSET / AFTER ===============
+#if !defined(OFFSET_ON_INPUT)
       if (apply_offset_and_curve) {
 #if defined(CPUARM)
         int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
@@ -947,6 +952,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
 #endif
       }
+#endif
 
       int32_t * ptr = &chans[md->destCh]; // Save calculating address several times
 

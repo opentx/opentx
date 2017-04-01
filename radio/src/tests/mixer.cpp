@@ -894,7 +894,7 @@ TEST_F(MixerTest, DiffConservationThroughTrim)
   g_model.mixData[0].curve.type = CURVE_REF_DIFF;
   g_model.mixData[0].curve.value = 50;    //diff = +50%
 #endif
-  setTrimValue(0, AIL_STICK, TRIM_MAX);   //trim = +25%
+  setTrimValue(0, AIL_STICK, +128);       //trim = +25%
 
   anaInValues[AIL_STICK] = +256;          //stick = +25%
   evalMixes(1);
