@@ -40,6 +40,7 @@ class MixerTest : public OpenTxTest {};
 
 #define CHECK_DELAY(channel, duration) \
     do { \
+      evalFlightModeMixes(e_perout_mode_normal, 1); \
       int32_t value = chans[(channel)]; \
       for (int i=1; i<=(duration); i++) { \
         evalFlightModeMixes(e_perout_mode_normal, 1); \
@@ -743,7 +744,7 @@ TEST_F(MixerTest, SlowDisabledOnStartup)
   EXPECT_EQ(chans[0], CHANNEL_MAX);
 }
 
-/*TEST_F(MixerTest, DelayOnSwitch)
+TEST_F(MixerTest, DelayOnSwitch)
 {
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
@@ -771,7 +772,7 @@ TEST_F(MixerTest, SlowDisabledOnStartup)
 
   evalFlightModeMixes(e_perout_mode_normal, 1);
   EXPECT_EQ(chans[0], 0);
-}*/
+}
 
 #if !defined(CPUARM)
 TEST_F(MixerTest, SlowAndDelayOnReplace3POSSource)
