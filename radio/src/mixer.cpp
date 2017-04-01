@@ -907,6 +907,10 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       //========== WEIGHT ===============
       int32_t dv = (int32_t)v * weight;
       int32_t dtrim = (int32_t)trim * weight;
+#if defined(CPUARM)
+      dv = div_and_round(dv, 10);
+      dtrim = div_and_round(dtrim, 10);
+#endif
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
@@ -936,10 +940,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
         dv += dtrim;
       }
-#endif
-
-#if defined(CPUARM)
-      dv = div_and_round(dv, 10);
 #endif
 
       //========== OFFSET / AFTER ===============
