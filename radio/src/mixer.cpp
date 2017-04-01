@@ -826,7 +826,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         else
           mix_trim = -1;
         if (mix_trim >= 0) {
-          int16_t trim = trims[mix_trim];
+            trim = trims[mix_trim];
           if (mix_trim == THR_STICK && g_model.throttleReversed)
             trim = -trim;
         }
