@@ -206,7 +206,8 @@ void OpenTxSimulator::setTrimSwitch(uint8_t trim, bool state)
 
 void OpenTxSimulator::setTrim(unsigned int idx, int value)
 {
-  idx = modn12x3[ 4 * getStickMode() + idx];
+  if (idx < 4)  // swap axes
+    idx = modn12x3[4 * getStickMode() + idx];
   uint8_t phase = getTrimFlightMode(getFlightMode(), idx);
   setTrimValue(phase, idx, value);
 }

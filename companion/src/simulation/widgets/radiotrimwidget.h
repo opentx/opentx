@@ -22,6 +22,7 @@
 #define _RADIOTRIMWIDGET_H_
 
 #include "radiowidget.h"
+#include "boards.h"
 #include "sliderwidget.h"
 
 #include <QToolButton>
@@ -52,6 +53,18 @@ class RadioTrimWidget : public RadioWidget
         m_slider->setRange(min, max);
     }
 
+    void setTrimRangeQual(const int index, const int min, const int max)
+    {
+      if (index == m_index || index == Board::TRIM_AXIS_COUNT)
+        setTrimRange(min, max);
+    }
+
+    void setTrimValue(const int index, const int value)
+    {
+      if (index == m_index || index == Board::TRIM_AXIS_COUNT)
+        setValue(value);
+    }
+
     void setValue(const int & value)
     {
       if (sender() && qobject_cast<SliderWidget *>(sender())) {
@@ -73,20 +86,20 @@ class RadioTrimWidget : public RadioWidget
       setTrimRange(-125, 125);
       setIndices();
 
-      QSize btnIcnSz(12, 12);
+      const QSize btnSz(18, 18);
       QWidget * trimWidget = new QWidget(this);
       QBoxLayout * trimLayout = new QVBoxLayout(trimWidget);
-      trimLayout->setSpacing(5);
-      trimLayout->setContentsMargins(8, 8, 8, 8);
+      trimLayout->setSpacing(4);
       QToolButton * trimBtnInc = new QToolButton(trimWidget);
-      trimBtnInc->setIconSize(btnIcnSz);
+      trimBtnInc->setMaximumSize(btnSz);
       QToolButton * trimBtnDec = new QToolButton(trimWidget);
-      trimBtnDec->setIconSize(btnIcnSz);
+      trimBtnDec->setMaximumSize(btnSz);
 
       Qt::Alignment algn;
       if (orientation == Qt::Horizontal) {
         trimWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
         trimLayout->setDirection(QBoxLayout::RightToLeft);
+        trimLayout->setContentsMargins(0, 8, 0, 8);
         trimBtnInc->setArrowType(Qt::RightArrow);
         trimBtnDec->setArrowType(Qt::LeftArrow);
         algn = Qt::AlignVCenter;
@@ -94,6 +107,7 @@ class RadioTrimWidget : public RadioWidget
       else {
         trimWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
         trimLayout->setDirection(QBoxLayout::TopToBottom);
+        trimLayout->setContentsMargins(8, 0, 8, 0);
         trimBtnInc->setArrowType(Qt::UpArrow);
         trimBtnDec->setArrowType(Qt::DownArrow);
         algn = Qt::AlignHCenter;

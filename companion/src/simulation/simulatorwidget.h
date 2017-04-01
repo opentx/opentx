@@ -133,8 +133,7 @@ class SimulatorWidget : public QWidget
     SimulatedUIWidget     * radioUiWidget;
     VirtualJoystickWidget * vJoyLeft;
     VirtualJoystickWidget * vJoyRight;
-    QVector<RadioWidget *> switches;
-    QVector<RadioWidget *> analogs;
+    QVector<RadioWidget *> m_radioWidgets;
 
     QString sdCardPath;
     QString radioDataPath;

@@ -27,6 +27,7 @@
 #include "radiokeywidget.h"
 #include "radioknobwidget.h"
 #include "radioswitchwidget.h"
+#include "radiotrimwidget.h"
 #include "radiouiaction.h"
 #include "sdcard.h"
 #include "simulateduiwidget.h"
@@ -525,15 +526,17 @@ void SimulatorWidget::setupRadioWidgets()
   const int ttlSwitches = Boards::getCapability(m_board, Board::Switches);
   const int ttlKnobs = Boards::getCapability(m_board, Board::Pots);
   const int ttlFaders = Boards::getCapability(m_board, Board::Sliders);
+  const int extraTrims = Boards::getCapability(m_board, Board::NumTrims) - ttlSticks;
 
   // First clear out any existing widgets.
-  foreach (RadioWidget * rw, QVector<RadioWidget *>() << switches << analogs) {
+  foreach (RadioWidget * rw, m_radioWidgets) {
     switch(rw->getType()) {
       case RadioWidget::RADIO_WIDGET_SWITCH :
       case RadioWidget::RADIO_WIDGET_KNOB   :
         ui->radioWidgetsHTLayout->removeWidget(rw);
         break;
-      case RadioWidget::RADIO_WIDGET_FADER  :
+      case RadioWidget::RADIO_WIDGET_FADER :
+      case RadioWidget::RADIO_WIDGET_TRIM  :
         ui->VCGridLayout->removeWidget(rw);
         break;
       default :
@@ -543,8 +546,7 @@ void SimulatorWidget::setupRadioWidgets()
     disconnect(this, 0, rw, 0);
     rw->deleteLater();
   }
-  switches.clear();
-  analogs.clear();
+  m_radioWidgets.clear();
 
   // Now set up new widgets.
 
@@ -560,10 +562,10 @@ void SimulatorWidget::setupRadioWidgets()
     sw->setIndex(i);
     ui->radioWidgetsHTLayout->addWidget(sw);
 
-    switches.append(sw);
+    m_radioWidgets.append(sw);
   }
 
-  midpos = (int)floorf(switches.size() / 2.0f);
+  midpos = (int)floorf(m_radioWidgets.size() / 2.0f);
 
   // pots in middle of switches
   for (i = 0; i < ttlKnobs; ++i) {
@@ -575,11 +577,11 @@ void SimulatorWidget::setupRadioWidgets()
     pot->setIndex(i);
     ui->radioWidgetsHTLayout->insertWidget(midpos++, pot);
 
-    analogs.append(pot);
+    m_radioWidgets.append(pot);
   }
 
   // faders between sticks
-  int r = 0, c = 0;
+  int c = extraTrims / 2;  // leave space for any extra trims
   for (i = 0; i < ttlFaders; ++i) {
     if (!radioSettings.isSliderAvailable(i))
       continue;
@@ -587,18 +589,33 @@ void SimulatorWidget::setupRadioWidgets()
     wname = RawSource(RawSourceType::SOURCE_TYPE_STICK, ttlSticks + ttlKnobs + i).toString(NULL, &radioSettings);
     RadioFaderWidget * sl = new RadioFaderWidget(wname, 0, ui->radioWidgetsVC);
     sl->setIndex(i);
-    /* 2-row option
-    if (!(i % 2)) {
-      ++r;
-      c = 0;
-    } */
-    ui->VCGridLayout->addWidget(sl, r, c++, 1, 1);
+    ui->VCGridLayout->addWidget(sl, 0, c++, 1, 1);
 
-    analogs.append(sl);
+    m_radioWidgets.append(sl);
+  }
+
+  // extra trims around faders
+  int tridx = Board::TRIM_AXIS_COUNT;
+  int trswidx = Board::TRIM_SW_COUNT;
+  for (i = extraTrims; i > 0; --i) {
+    trswidx -= 2;
+    --tridx;
+    wname = RawSource(RawSourceType::SOURCE_TYPE_TRIM, tridx).toString(NULL, &radioSettings);
+    wname = wname.left(1) % wname.right(1);
+    RadioTrimWidget * tw = new RadioTrimWidget(Qt::Vertical, ui->radioWidgetsVC);
+    tw->setIndices(tridx, trswidx, trswidx + 1);
+    tw->setLabelText(wname);
+    if (i <= extraTrims / 2)
+      c = 0;
+    ui->VCGridLayout->addWidget(tw, 0, c++, 1, 1);
+
+    connect(simulator, &SimulatorInterface::trimValueChange, tw, &RadioTrimWidget::setTrimValue);
+    connect(simulator, &SimulatorInterface::trimRangeChange, tw, &RadioTrimWidget::setTrimRangeQual);
+    m_radioWidgets.append(tw);
   }
 
   // connect all the widgets
-  foreach (RadioWidget * rw, QVector<RadioWidget *>() << switches << analogs) {
+  foreach (RadioWidget * rw, m_radioWidgets) {
     connect(rw, &RadioWidget::valueChange, this, &SimulatorWidget::onRadioWidgetValueChange);
     connect(this, &SimulatorWidget::widgetValueChange, rw, &RadioWidget::setValueQual);
     connect(this, &SimulatorWidget::widgetStateChange, rw, &RadioWidget::setStateData);
@@ -674,9 +691,9 @@ void SimulatorWidget::restoreRadioWidgetsState()
 
 void SimulatorWidget::saveRadioWidgetsState(QList<QByteArray> & state)
 {
-  if (analogs.size() || switches.size()) {
+  if (m_radioWidgets.size()) {
     state.clear();
-    foreach (RadioWidget * rw, QVector<RadioWidget *>() << switches << analogs)
+    foreach (RadioWidget * rw, m_radioWidgets)
       state.append(rw->getStateData());
   }
 }
@@ -794,6 +811,7 @@ void SimulatorWidget::onjoystickAxisValueChanged(int axis, int value)
 #ifdef JOYSTICKS
   static const int ttlSticks = 4;
   static const int ttlKnobs = Boards::getCapability(m_board, Board::Pots);
+  static const int ttlFaders = Boards::getCapability(m_board, Board::Sliders);
   static const int valueRange = 1024;
 
   if (!joystick || axis >= MAX_JOYSTICKS)
@@ -802,7 +820,7 @@ void SimulatorWidget::onjoystickAxisValueChanged(int axis, int value)
   int dlta;
   int stick = g.joystick[axis].stick_axe();
 
-  if (stick < 0 || stick >= ttlSticks + analogs.count())
+  if (stick < 0 || stick >= ttlSticks + ttlKnobs + ttlFaders)
     return;
 
   int stickval = valueRange * (value - g.joystick[axis].stick_med());
