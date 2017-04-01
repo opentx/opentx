@@ -810,31 +810,27 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
-      if (apply_offset_and_curve) {
-
-        //========== TRIMS ================
-        if (!(mode & e_perout_mode_notrims)) {
+      //========== TRIMS ================
+      int16_t trim = 0;
+      if (apply_offset_and_curve && !(mode & e_perout_mode_notrims)) {
 #if defined(VIRTUAL_INPUTS)
-          if (md->carryTrim == 0) {
-            v += getSourceTrimValue(md->srcRaw, v);
-          }
-#else
-          int8_t mix_trim = md->carryTrim;
-          if (mix_trim < TRIM_ON)
-            mix_trim = -mix_trim - 1;
-          else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
-            mix_trim = stickIndex;
-          else
-            mix_trim = -1;
-          if (mix_trim >= 0) {
-            int16_t trim = trims[mix_trim];
-            if (mix_trim == THR_STICK && g_model.throttleReversed)
-              v -= trim;
-            else
-              v += trim;
-          }
-#endif
+        if (md->carryTrim == 0) {
+          trim = getSourceTrimValue(md->srcRaw, v);
         }
+#else
+        int8_t mix_trim = md->carryTrim;
+        if (mix_trim < TRIM_ON)
+          mix_trim = -mix_trim - 1;
+        else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
+          mix_trim = stickIndex;
+        else
+          mix_trim = -1;
+        if (mix_trim >= 0) {
+          int16_t trim = trims[mix_trim];
+          if (mix_trim == THR_STICK && g_model.throttleReversed)
+            trim = -trim;
+        }
+#endif
       }
 
 #if defined(CPUARM)
@@ -888,19 +884,27 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== CURVES ===============
 #if defined(CPUARM)
-      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
-        v = applyCurve(v, md->curve);
+      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF) {
+        v += trim;
+        if (md->curve.value) {
+          v = applyCurve(v, md->curve);
+        }
       }
 #else
-      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
-        v = applyCurve(v, md->curveParam);
+      if (apply_offset_and_curve && md->curveMode != MODE_DIFFERENTIAL) {
+        v += trim;
+        if (md->curveMode == MODE_CURVE && md->curveParam) {
+          v = applyCurve(v, md->curveParam);
+        }
       }
 #endif
 
       //========== WEIGHT ===============
       int32_t dv = (int32_t)v * weight;
+      int32_t dtrim = (int32_t) trim * weight;
 #if defined(CPUARM)
       dv = div_and_round(dv, 10);
+      dtrim = div_and_round(dtrim, 10);
 #endif
 
       //========== OFFSET / AFTER ===============
@@ -916,17 +920,31 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
-      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
-        dv = applyCurve(dv, md->curve);
+      if (md->curve.type == CURVE_REF_DIFF) {
+        if (md->curve.value) {
+          dv = applyCurve(dv, md->curve);
+          dtrim = applyCurve(dtrim, md->curve);
+        }
+        dv += dtrim;
       }
 #else
       if (md->curveMode == MODE_DIFFERENTIAL) {
-        // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
-        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
-        if (curveParam > 0 && dv < 0)
+        // stick and trim are computed separatly
+        // curveParam recalculated to a 256 basis which ease the calculation later a lot
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));  
+        if (curveParam > 0 && dv < 0) {
           dv = (dv * (256 - curveParam)) >> 8;
-        else if (curveParam < 0 && dv > 0)
+        }
+        else if (curveParam < 0 && dv > 0) {
           dv = (dv * (256 + curveParam)) >> 8;
+        }
+        if (curveParam > 0 && dtrim < 0) {
+          dtrim = (dtrim * (256 - curveParam)) >> 8;
+        }
+        else if (curveParam < 0 && dtrim > 0) {
+          dtrim = (dtrim * (256 + curveParam)) >> 8;
+        }
+        dv += dtrim;
       }
 #endif
 
