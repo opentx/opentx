@@ -295,12 +295,12 @@ Mode 4:
         <location filename="../apppreferencesdialog.ui" line="884"/>
         <location filename="../apppreferencesdialog.ui" line="1004"/>
         <source>Select Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz Folder</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="877"/>
         <source>Select Executable</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz EXE</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="891"/>
@@ -603,7 +603,7 @@ Może być różny od języka firmware</translation>
     <message>
         <location filename="../modeledit/channels.cpp" line="120"/>
         <source>CH%1</source>
-        <translation type="unfinished">Kan %1</translation>
+        <translation>Kan %1</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="104"/>
@@ -641,12 +641,12 @@ Może być różny od języka firmware</translation>
     <message>
         <location filename="../constants.h" line="50"/>
         <source>files</source>
-        <translation type="unfinished"></translation>
+        <translation>Pliki</translation>
     </message>
     <message>
         <location filename="../constants.h" line="51"/>
         <source>Radio and Models settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia Radia i Modeli</translation>
     </message>
 </context>
 <context>
@@ -1071,78 +1071,79 @@ Może być różny od języka firmware</translation>
     <message>
         <location filename="../simulation/debugoutput.ui" line="68"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable or disable the filter. If the button won&apos;t stay enabled, it is likely there is a syntax error in the Regular Expression entered.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;hrad/&gt;&lt;body&gt;&lt;p&gt;Włącz lub wyłącz filtr. Jeśli przycisk nie będzie aktywny to znaczy że jest błąd składni we wprowadzonym wyrażeniu regularnym.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="74"/>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Filtr:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="105"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enter filter text here. Click the help/info button for details about using the filter. &lt;/p&gt;&lt;p&gt;
 To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first choose it, and then press &lt;code&gt;Shift-Delete&lt;/code&gt; (or &lt;code&gt;Shift-Backspace&lt;/code&gt;) key combination.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Wpisz teks filtru tutaj. Kliknij przycisk. pomoc/info w celu uzyskania szczegółów użycia filtra.&lt;/p&gt;&lt;p&gt;
+W celu &lt;b&gt;usunięcia filtru&lt;/b&gt; z listy, najpierw wybierz go, a nastepnie użyj kombinacji klawiszy &lt;code&gt;Shift-Delete&lt;/code&gt; (lub &lt;code&gt;Shift-Backspace&lt;/code&gt;).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="164"/>
         <source>Buffer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bufor:</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="177"/>
         <source>Number of lines to keep in display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ilość linii trzymanej na wyświetlaczu.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="274"/>
         <source>Filter &amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pomoc Filtra</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="277"/>
         <source>Show information about using the filter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokaż informacje jak uzywać filtra.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="289"/>
         <source>Word &amp;Wrap</source>
-        <translation type="unfinished"></translation>
+        <translation>Podział &amp;Słowa</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="292"/>
         <source>Toggle word wrapping on/off.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przełącz dzielenie słowa on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="301"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wyczyść</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="304"/>
         <source>Clear the output window of all text.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść tekst z okna.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="316"/>
         <source>Enable &amp;Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Włącz &amp;Filtr</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.ui" line="319"/>
         <source>Turn the filter on/off.</source>
-        <translation type="unfinished"></translation>
+        <translation>Przełącz filtr on/off.</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.cpp" line="285"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;The filter supports two syntax types: basic matching with common wildcards as well as full Perl-style (&lt;code&gt;pcre&lt;/code&gt;) Regular Expressions.&lt;/p&gt;&lt;p&gt;By default a filter will only show lines which match (&lt;b&gt;inclusive&lt;/b&gt;). To make an &lt;b&gt;exclusive&lt;/b&gt; filter which removes matching lines, prefix the filter expression with a &lt;kbd&gt;!&lt;/kbd&gt; (exclamation mark).&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;Regular Expressions&lt;/b&gt; (RegEx), prefix the filter text with a &lt;kbd&gt;/&lt;/kbd&gt; (slash) or &lt;kbd&gt;^&lt;/kbd&gt; (up caret). &lt;ul&gt;&lt;li&gt;Put the &lt;kbd&gt;/&lt;/kbd&gt; or &lt;kbd&gt;^&lt;/kbd&gt; after the exclusive &lt;kbd&gt;!&lt;/kbd&gt; indicator if you&apos;re using one.&lt;/li&gt;&lt;li&gt;By default the match is case-sensitive. To make it insensitive, add the typical &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) operator at the end of your RegEx.&lt;/li&gt;&lt;li&gt;If you use a caret (^) to denote a RegEx, it will become part of the Reg. Ex. (that is, matches from start of line).&lt;/li&gt;&lt;li&gt;If the RegEx is invalid, the filter edit field should show a red border and you will not be able to enable the filter.&lt;/li&gt;&lt;li&gt;A useful resource for testing REs (with a full reference) can be found at &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;basic matching&lt;/b&gt; just type any text.&lt;ul&gt;&lt;li&gt;Wildcards: &lt;kbd&gt;*&lt;/kbd&gt; (asterisk) matches zero or more of any character(s), and &lt;kbd&gt;?&lt;/kbd&gt; (question mark) matches any single character.&lt;/li&gt;&lt;li&gt;The match is always case-insensitive.&lt;/li&gt;&lt;li&gt;The match always starts from the beginning of a log line. To ignore characters at the start, use a leading &lt;kbd&gt;*&lt;/kbd&gt; wildcard.&lt;/li&gt;&lt;li&gt;A trailing &lt;kbd&gt;*&lt;/kbd&gt; is always implied (that is, matches anything to the end of the log line). To avoid this, use a RegEx.&lt;/li&gt;&lt;li&gt;You can match literal wildcard characters by prefixing them with a &lt;kbd&gt;\&lt;/kbd&gt; (backslash) character (eg. &quot;foo\*bar&quot; matches &quot;foo*bar&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;After &lt;b&gt;editing text&lt;/b&gt;, press ENTER or TAB key (or click anywhere outside the box) to update the filter.&lt;/p&gt;&lt;p&gt;To &lt;b&gt;remove an entry&lt;/b&gt; from the filter selector list, first choose it, and while in the line editor press &lt;kbd&gt;Shift-Delete&lt;/kbd&gt; (or &lt;kbd&gt;Shift-Backspace&lt;/kbd&gt;) key combination. The default filters cannot be removed. Up to 50 filters are stored.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DUPA</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.cpp" line="311"/>
         <source>Debug Console Filter Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Debug Konsola Filtr Help</translation>
     </message>
 </context>
 <context>
@@ -1370,22 +1371,22 @@ Jeśli puste linia jest uznawana za aktywną cały czas.</translation>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="76"/>
         <source>Click to access popup menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknij by uzyskać wyskakujące mene</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="214"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyść wszytko</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="215"/>
         <source>Set All</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw wszystko</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="216"/>
         <source>Invert All</source>
-        <translation type="unfinished"></translation>
+        <translation>Odwróć wszytko</translation>
     </message>
 </context>
 <context>
@@ -1515,7 +1516,7 @@ Może być różny od języka firmware</translation>
     <message>
         <location filename="../flasheepromdialog.ui" line="113"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves a dated copy of your eeprom to the backup folder you specified in the Companion settings before writing the current model to the radio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DUPA</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="116"/>
@@ -1938,59 +1939,44 @@ W celu instalacji drivera użyj ZADIG.</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="160"/>
-        <source>Name</source>
-        <translation type="unfinished">Nazwa</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/flightmodes.cpp" line="164"/>
-        <source>Value source</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/flightmodes.cpp" line="168"/>
-        <source>Value</source>
-        <translation type="unfinished">Wartość</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/flightmodes.cpp" line="175"/>
         <source>GVAR%1</source>
         <translation>ZmGl%1</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="209"/>
+        <location filename="../modeledit/flightmodes.cpp" line="194"/>
         <source>Popup enabled</source>
         <translation>Wyskakujące okna aktywne</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="480"/>
+        <location filename="../modeledit/flightmodes.cpp" line="465"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Clear</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="480"/>
+        <location filename="../modeledit/flightmodes.cpp" line="465"/>
         <source>Clear</source>
-        <translation type="unfinished">Wyczyść</translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="486"/>
+        <location filename="../modeledit/flightmodes.cpp" line="471"/>
         <source>Clear all current Flight Mode properties?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyczyścić wszystkie ustawienia Trybów Lotu ?</translation>
     </message>
 </context>
 <context>
     <name>FlightModesPanel</name>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="549"/>
+        <location filename="../modeledit/flightmodes.cpp" line="534"/>
         <source>Flight Mode %1</source>
         <translation>Faza lotu %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="552"/>
+        <location filename="../modeledit/flightmodes.cpp" line="537"/>
         <source> (%1)</source>
         <translation> (%1)</translation>
     </message>
     <message>
-        <location filename="../modeledit/flightmodes.cpp" line="555"/>
+        <location filename="../modeledit/flightmodes.cpp" line="540"/>
         <source> (default)</source>
         <translation> (bazowa)</translation>
     </message>
@@ -2180,7 +2166,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generaledit.ui" line="20"/>
         <source>Radio settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawinia radia</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="105"/>
@@ -2207,12 +2193,12 @@ Będą one obowiązywać dla wszystkich modeli w tym samym EEPROM-ie.</translati
     <message>
         <location filename="../generaledit/generaledit.cpp" line="63"/>
         <source>Hardware</source>
-        <translation type="unfinished"></translation>
+        <translation>Sprzęt</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="64"/>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalibracja</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="154"/>
@@ -2229,7 +2215,7 @@ Będą one obowiązywać dla wszystkich modeli w tym samym EEPROM-ie.</translati
     <message>
         <location filename="../generaledit/generaledit.cpp" line="196"/>
         <source>Wrong data in profile, Switch/pot config not retrieved</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędne dane w profilu, Ustawienia przełączników/potencjometrów nie uzyskane</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="237"/>
@@ -2836,12 +2822,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="612"/>
         <source>Automatically adjust the radio&apos;s clock if a GPS is connected to telemetry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostrój automatycznie zegar radia jesli GPS jest podłączony do telemetri.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1103"/>
         <source>Backlight OFF Brightness</source>
-        <translation type="unfinished"></translation>
+        <translation>Jacność wyłączonego podświetlenia</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1133"/>
@@ -3120,7 +3106,7 @@ Jesteś pewien ?</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="110"/>
         <source>RS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Prawy suwak</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="117"/>
@@ -3266,7 +3252,7 @@ Jesteś pewien ?</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="486"/>
         <source>LS</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lewy suwak</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="520"/>
@@ -3351,42 +3337,42 @@ Jesteś pewien ?</translation>
         <location filename="../generaledit/hardware.cpp" line="58"/>
         <location filename="../generaledit/hardware.cpp" line="78"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Brak</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="29"/>
         <source>2 Positions Toggle</source>
-        <translation type="unfinished">2 Poz. Przełącznik chwilowy</translation>
+        <translation>2 Poz. Przełącznik chwilowy</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="30"/>
         <source>2 Positions</source>
-        <translation type="unfinished">2 Pozycje</translation>
+        <translation>2 Pozycje</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="32"/>
         <source>3 Positions</source>
-        <translation type="unfinished">3 Pozycje</translation>
+        <translation>3 Pozycje</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="59"/>
         <source>Pot with detent</source>
-        <translation type="unfinished">Potencj. z zapadką</translation>
+        <translation>Potencj. z zapadką</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="60"/>
         <source>Multipos switch</source>
-        <translation type="unfinished">Przeł. wielopoz</translation>
+        <translation>Przeł. wielopoz</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="61"/>
         <source>Pot without detent</source>
-        <translation type="unfinished">Potencjometr bez zapadki</translation>
+        <translation>Potencjometr bez zapadki</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="79"/>
         <source>Slider with detent</source>
-        <translation type="unfinished">Suwak z zapadką</translation>
+        <translation>Suwak z zapadką</translation>
     </message>
 </context>
 <context>
@@ -3808,22 +3794,22 @@ Kolumny wysokości &quot;GAlt&quot; i prędkości &quot;GSpd&quot; są opcjonaln
     <message>
         <location filename="../logsdialog.cpp" line="483"/>
         <source>Cursor A: %1 m</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaźnik A: %1 m</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="486"/>
         <source>Cursor B: %1 m</source>
-        <translation type="unfinished"></translation>
+        <translation>Wskaźnik B: %1 m</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="498"/>
         <source>Time delta: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Delta czasu: %1</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="499"/>
         <source>Climb rate: %1 m/s</source>
-        <translation type="unfinished"></translation>
+        <translation>Wznoszenie: %1 m/s</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="571"/>
@@ -3947,22 +3933,22 @@ Kolumny wysokości &quot;GAlt&quot; i prędkości &quot;GSpd&quot; są opcjonaln
     <message>
         <location filename="../mainwindow.cpp" line="357"/>
         <source>Compilation error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd kompilacji</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="360"/>
         <source>Invalid firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Błedne firmware</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="363"/>
         <source>Invalid board</source>
-        <translation type="unfinished"></translation>
+        <translation>Błędna płyta główna</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="366"/>
         <source>Invalid language</source>
-        <translation type="unfinished"></translation>
+        <translation>Błedny język</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="369"/>
@@ -4131,7 +4117,7 @@ Kolumny wysokości &quot;GAlt&quot; i prędkości &quot;GSpd&quot; są opcjonaln
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1144"/>
+        <location filename="../mainwindow.cpp" line="1140"/>
         <source>A monochrome black icon theme</source>
         <translation>Monochromatyczny czarny wygląd ikon</translation>
     </message>
@@ -4198,57 +4184,57 @@ Kolumny wysokości &quot;GAlt&quot; i prędkości &quot;GSpd&quot; są opcjonaln
         <translation>Wklej Model ze schowka</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1142"/>
+        <location filename="../mainwindow.cpp" line="1138"/>
         <source>The classic companion9x icon theme</source>
         <translation>Klasyczny zestaw ikon Companion</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1146"/>
+        <location filename="../mainwindow.cpp" line="1142"/>
         <source>A monochrome white icon theme</source>
         <translation>Monochromatyczny biały wygląd ikon</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1145"/>
+        <location filename="../mainwindow.cpp" line="1141"/>
         <source>A monochrome blue icon theme</source>
         <translation>Monochromatyczny niebieski wygląd ikon</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1152"/>
+        <location filename="../mainwindow.cpp" line="1148"/>
         <source>Small</source>
         <translation>Małe</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1152"/>
+        <location filename="../mainwindow.cpp" line="1148"/>
         <source>Use small toolbar icons</source>
         <translation>Użyj małych ikon paska narzędzi</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1153"/>
+        <location filename="../mainwindow.cpp" line="1149"/>
         <source>Use normal size toolbar icons</source>
         <translation>Użyj normalnych ikon paska narzędzi</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1153"/>
+        <location filename="../mainwindow.cpp" line="1149"/>
         <source>Normal</source>
         <translation>Normalne</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1154"/>
+        <location filename="../mainwindow.cpp" line="1150"/>
         <source>Use big toolbar icons</source>
         <translation>Użyj dużych ikon paska narzędzi</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1154"/>
+        <location filename="../mainwindow.cpp" line="1150"/>
         <source>Big</source>
         <translation>Duże</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1155"/>
+        <location filename="../mainwindow.cpp" line="1151"/>
         <source>Use huge toolbar icons</source>
         <translation>Użyj olbrzymich ikon paska narzędzi</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1155"/>
+        <location filename="../mainwindow.cpp" line="1151"/>
         <source>Huge</source>
         <translation>Olbrzymie</translation>
     </message>
@@ -4320,12 +4306,12 @@ Kolumny wysokości &quot;GAlt&quot; i prędkości &quot;GSpd&quot; są opcjonaln
         <translation>Zachowaj kompletny plik backup wszystkich ustawień i danych modeli z radia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1109"/>
+        <location filename="../mainwindow.cpp" line="1105"/>
         <source>Recent Files</source>
         <translation>Ostatnie Pliki</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1263"/>
+        <location filename="../mainwindow.cpp" line="1259"/>
         <source>Show recent Models+Settings documents</source>
         <translation>Pokaż ostatnie dokumenty Modeli i Ustawień</translation>
     </message>
@@ -4365,17 +4351,17 @@ Kolumny wysokości &quot;GAlt&quot; i prędkości &quot;GSpd&quot; są opcjonaln
         <translation>Współpracownicy...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1262"/>
+        <location filename="../mainwindow.cpp" line="1258"/>
         <source>Recent Models+Settings</source>
         <translation>Ostatnie Modele+Ustawienia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1140"/>
+        <location filename="../mainwindow.cpp" line="1136"/>
         <source>Set Icon Theme</source>
         <translation>Ustaw wygląd ikon</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1150"/>
+        <location filename="../mainwindow.cpp" line="1146"/>
         <source>Set Icon Size</source>
         <translation>Ustaw wielkość ikon</translation>
     </message>
@@ -4467,17 +4453,17 @@ Zalecamy przeczytanie informacji o wydaniu (przycisk poniżej) w celu poznania z
         <translation>OpenTX Companion %1 - Radio: %2 - Profil: %3</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1144"/>
+        <location filename="../mainwindow.cpp" line="1140"/>
         <source>Monochrome</source>
         <translation>Monochromatyczny</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1146"/>
+        <location filename="../mainwindow.cpp" line="1142"/>
         <source>MonoWhite</source>
         <translation>Mono-Biały</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1145"/>
+        <location filename="../mainwindow.cpp" line="1141"/>
         <source>MonoBlue</source>
         <translation>Mono-Niebieski</translation>
     </message>
@@ -4537,28 +4523,28 @@ Zalecamy przeczytanie informacji o wydaniu (przycisk poniżej) w celu poznania z
         <translation>Ustaw komunikację...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1143"/>
+        <location filename="../mainwindow.cpp" line="1139"/>
         <source>Yerico</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1143"/>
+        <location filename="../mainwindow.cpp" line="1139"/>
         <source>Yellow round honey sweet icon theme</source>
         <translation>Żółty zaokrąglony miodowy motyw ikon</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1214"/>
-        <location filename="../mainwindow.cpp" line="1278"/>
+        <location filename="../mainwindow.cpp" line="1210"/>
+        <location filename="../mainwindow.cpp" line="1274"/>
         <source>Radio Profile</source>
         <translation>Profil radia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1306"/>
+        <location filename="../mainwindow.cpp" line="1302"/>
         <source>Write</source>
         <translation>Zapis</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1388"/>
+        <location filename="../mainwindow.cpp" line="1384"/>
         <source>%2</source>
         <translation>%2</translation>
     </message>
@@ -4593,7 +4579,7 @@ Zalecamy przeczytanie informacji o wydaniu (przycisk poniżej) w celu poznania z
         <translation>Prawa Zespół  OpenTX</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1142"/>
+        <location filename="../mainwindow.cpp" line="1138"/>
         <source>Classical</source>
         <translation>Klasyczny</translation>
     </message>
@@ -4624,44 +4610,44 @@ Zalecamy przeczytanie informacji o wydaniu (przycisk poniżej) w celu poznania z
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1103"/>
-        <location filename="../mainwindow.cpp" line="1251"/>
+        <location filename="../mainwindow.cpp" line="1247"/>
         <source>File</source>
         <translation>Plik</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1130"/>
-        <location filename="../mainwindow.cpp" line="1294"/>
+        <location filename="../mainwindow.cpp" line="1126"/>
+        <location filename="../mainwindow.cpp" line="1290"/>
         <source>Edit</source>
         <translation>Edycja</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1138"/>
+        <location filename="../mainwindow.cpp" line="1134"/>
         <source>Settings</source>
         <translation>Ustawienia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1171"/>
+        <location filename="../mainwindow.cpp" line="1167"/>
         <source>Read/Write</source>
         <translation>Odczyt/Zapis</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1190"/>
-        <location filename="../mainwindow.cpp" line="1326"/>
+        <location filename="../mainwindow.cpp" line="1186"/>
+        <location filename="../mainwindow.cpp" line="1322"/>
         <source>Help</source>
         <translation>Pomoc</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1279"/>
+        <location filename="../mainwindow.cpp" line="1275"/>
         <source>Show the list of radio profiles</source>
         <translation>Pokaż listę profili radia</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1335"/>
+        <location filename="../mainwindow.cpp" line="1331"/>
         <source>Ready</source>
         <translation>Gotowe</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="1410"/>
+        <location filename="../mainwindow.cpp" line="1406"/>
         <source>New Radio</source>
         <translation>Nowe Radio</translation>
     </message>
@@ -4777,12 +4763,12 @@ Zapisać?</translation>
     <message>
         <location filename="../mdichild.cpp" line="143"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ctrl+C</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="144"/>
         <source>&amp;Cut</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">W&amp;ytnij</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="144"/>
@@ -4916,7 +4902,7 @@ and choose the correct radio type/profile before reopening it.</source>
     <message>
         <location filename="../mdichild.ui" line="20"/>
         <source>Radio settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustawinia radia</translation>
     </message>
     <message>
         <location filename="../mdichild.ui" line="30"/>
@@ -5138,22 +5124,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="90"/>
         <source>Click to access popup menu</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kliknij by uzyskać wyskakujące mene</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="213"/>
         <source>Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wyczyść wszytko</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="214"/>
         <source>Set All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ustaw wszystko</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="215"/>
         <source>Invert All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Odwróć wszytko</translation>
     </message>
 </context>
 <context>
@@ -5691,7 +5677,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>ModelsListWidget</name>
     <message>
-        <location filename="../modelslist.cpp" line="484"/>
+        <location filename="../modelslist.cpp" line="483"/>
         <source>No free slot available, cannot duplicate</source>
         <translation>Brak wolnych miejsc, nie mogę zduplikować</translation>
     </message>
@@ -8602,10 +8588,9 @@ Zespół OpenTX.</translation>
         <translation type="unfinished">Dodatni zakres</translation>
     </message>
     <message>
-        <location filename="../modelslist.cpp" line="281"/>
+        <location filename="../modelslist.cpp" line="280"/>
         <location filename="../radiodata.cpp" line="238"/>
         <source>Models</source>
-        <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -11422,7 +11407,7 @@ hh:mm:ss</source>
         <location filename="../modeledit/templates.cpp" line="370"/>
         <location filename="../modeledit/templates.cpp" line="492"/>
         <source>THR</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">THR</translation>
     </message>
     <message>
         <location filename="../modeledit/templates.cpp" line="215"/>
@@ -11732,17 +11717,17 @@ hh:mm:ss</source>
     <message>
         <location filename="../modelslist.cpp" line="112"/>
         <source>Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Indeks</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="113"/>
         <source>Name</source>
-        <translation type="unfinished">Nazwa</translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <location filename="../modelslist.cpp" line="115"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Wielkość</translation>
     </message>
 </context>
 <context>
