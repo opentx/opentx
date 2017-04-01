@@ -40,7 +40,6 @@ class MixerTest : public OpenTxTest {};
 
 #define CHECK_DELAY(channel, duration) \
     do { \
-      evalFlightModeMixes(e_perout_mode_normal, 1); \
       int32_t value = chans[(channel)]; \
       for (int i=1; i<=(duration); i++) { \
         evalFlightModeMixes(e_perout_mode_normal, 1); \
