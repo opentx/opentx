@@ -879,7 +879,7 @@ TEST_F(MixerTest, SlowOnMultiply)
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 }
 
-TEST(Mixer, DiffConservationThroughTrim)
+TEST_F(MixerTest, DiffConservationThroughTrim)
 {
   MODEL_RESET();
   MIXER_RESET();
@@ -887,11 +887,16 @@ TEST(Mixer, DiffConservationThroughTrim)
   g_model.mixData[0].mltpx = MLTPX_ADD;
   g_model.mixData[0].srcRaw = MIXSRC_Ail;
   g_model.mixData[0].weight = 100;
+#if !defined(CPUARM)
   g_model.mixData[0].curveMode = 0;
   g_model.mixData[0].curveParam = 50;    //diff = +50%
-  setTrimValue(0, AIL_STICK, +128);      //trim = +25%
+#else
+  g_model.mixData[0].curve.type = CURVE_REF_DIFF;
+  g_model.mixData[0].curve.value = 50;    //diff = +50%
+#endif
+  setTrimValue(0, AIL_STICK, +128);       //trim = +25%
 
-  anaInValues[AIL_STICK] = +256;
+  anaInValues[AIL_STICK] = +256;          //stick = +25%
   evalMixes(1);
   //output = 25%(trim)*100%(nodiffside) + 25%(stick)*100%(nodiffside) = +50%
   EXPECT_EQ(channelOutputs[0], +512);

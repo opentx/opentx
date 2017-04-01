@@ -767,6 +767,22 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
+      //========== DELAYS ===============
+      if (mode==e_perout_mode_normal && (md->delayDown || md->delayUp)) {	// there are delay values
+        if (!s_mixer_first_run_done) {
+          swOn[i].delay = 0;
+          swOn[i].hold = v; // first value of v stored as reference for next run(s)
+        }
+        else if (swOn[i].delay == 0) {
+          swOn[i].delay = (v > swOn[i].hold ? md->delayUp : md->delayDown) * (100/DELAY_STEP); // init delay
+          swOn[i].hold = v; // store actual value of v for delay
+        }
+        else if (swOn[i].delay > 0) {
+          swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms); // decrement delay
+          v = swOn[i].hold; // keep v to stored value until end of delay
+        }
+      }
+
       //========== Active Mix ===========
       bool apply_offset_and_curve = true;
       if (!mixEnabled) {
@@ -787,22 +803,38 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #endif
       }
 
-      //========== DELAYS ===============
-      if (mode==e_perout_mode_normal && (md->delayDown || md->delayUp)) {	// there are delay values
-        if (!s_mixer_first_run_done) {
-          swOn[i].delay = 0;
-          swOn[i].hold = v; // first value of v stored as reference for next run(s)
-        }
-        else if (swOn[i].delay == 0) {
-          swOn[i].delay = (v > swOn[i].hold ? md->delayUp : md->delayDown) * (100/DELAY_STEP); // init delay
-          swOn[i].hold = v; // store actual value of v for delay
-        }
-        else if (swOn[i].delay > 0) {
-          swOn[i].delay = max<int16_t>(0, (int16_t)swOn[i].delay - tick10ms); // decrement delay
-          v = swOn[i].hold; // keep v to stored value until end of delay
-        }
+      //========== OFFSET BEFORE ========
+#if defined(OFFSET_ON_INPUT)
+      if (apply_offset_and_curve) {
+        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
+        if (offset) v += calc100toRESX_16Bits(offset);
       }
-	  
+#endif
+
+      //========== TRIMS ================
+      getvalue_t trim = 0;
+      if (apply_offset_and_curve && !(mode & e_perout_mode_notrims)) {
+#if defined(VIRTUAL_INPUTS)
+        if (md->carryTrim == 0) {
+          trim = getSourceTrimValue(md->srcRaw, v);
+        }
+#else
+        int8_t mix_trim = md->carryTrim;
+        if (mix_trim < TRIM_ON)
+          mix_trim = -mix_trim - 1;
+        else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS)
+          mix_trim = stickIndex;
+        else
+          mix_trim = -1;
+        if (mix_trim >= 0) {
+            trim = trims[mix_trim];
+          if (mix_trim == THR_STICK && g_model.throttleReversed)
+            trim = -trim;
+        }
+#endif
+        v += trim;
+      }
+
       //========== SLOW DOWN ============
       // lower weight causes slower movement
       if (mode <= e_perout_mode_inactive_flight_mode && (md->speedUp || md->speedDown)) { // there are delay values
@@ -839,56 +871,15 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
           v = tact>>8;
         }
       }
-	  
-      //========== OFFSET BEFORE ========
-#if defined(OFFSET_ON_INPUT)
-      if (apply_offset_and_curve) {
-        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-        if (offset) v += calc100toRESX_16Bits(offset);
-      }
-#endif
-
-      //========== TRIMS ================
-      int16_t trim = 0;
-      if (apply_offset_and_curve && !(mode & e_perout_mode_notrims)) {
-#if defined(VIRTUAL_INPUTS)
-        if (md->carryTrim == 0) {
-          trim = getSourceTrimValue(md->srcRaw, v);
-        }
-#else
-        int8_t mix_trim = md->carryTrim;
-        if (mix_trim < TRIM_ON) {
-          mix_trim = -mix_trim - 1;
-        }
-        else if (mix_trim == TRIM_ON && stickIndex < NUM_STICKS) {
-          mix_trim = stickIndex;
-        }
-        else {
-          mix_trim = -1;
-        }
-        if (mix_trim >= 0) {
-          trim = trims[mix_trim];
-          if (mix_trim == THR_STICK && g_model.throttleReversed) {
-            trim = -trim;
-          }
-        }
-#endif
-      }
 
       //========== CURVES ===============
 #if defined(CPUARM)
-      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF) {
-        v += trim;
-        if (md->curve.value) {
-          v = applyCurve(v, md->curve);
-        }
+      if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
+        v = applyCurve(v, md->curve);
       }
 #else
-      if (apply_offset_and_curve && md->curveMode != MODE_DIFFERENTIAL) {
-        v += trim;
-        if (md->curveMode == MODE_CURVE && md->curveParam) {
-          v = applyCurve(v, md->curveParam);
-        }
+      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
+        v = applyCurve(v, md->curveParam);
       }
 #endif
 
@@ -901,22 +892,26 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       weight = calc100to256_16Bits(weight);
 #endif
       int32_t dv = (int32_t)v * weight;
-      int32_t dtrim = (int32_t) trim * weight;
+      int32_t dtrim = (int32_t)trim * weight;
+#if defined(CPUARM)
+      dv = div_and_round(dv, 10);
+      dtrim = div_and_round(dtrim, 10);
+#endif
 
       //========== DIFFERENTIAL =========
 #if defined(CPUARM)
-      if (md->curve.type == CURVE_REF_DIFF) {
-        if (md->curve.value) {
-          dv = applyCurve(dv, md->curve);
-          dtrim = applyCurve(dtrim, md->curve);
-        }
+      if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
+        dv -= dtrim;
+        dv = applyCurve(dv, md->curve);
+        dtrim = applyCurve(dtrim, md->curve);
         dv += dtrim;
       }
 #else
       if (md->curveMode == MODE_DIFFERENTIAL) {
         // stick and trim are computed separatly
         // curveParam recalculated to a 256 basis which ease the calculation later a lot
-        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));  
+        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
+        dv -= dtrim;
         if (curveParam > 0 && dv < 0) {
           dv = (dv * (256 - curveParam)) >> 8;
         }
@@ -931,10 +926,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
         dv += dtrim;
       }
-#endif
-
-#if defined(CPUARM)
-      dv = div_and_round(dv, 10);
 #endif
 
       //========== OFFSET AFTER ===============
