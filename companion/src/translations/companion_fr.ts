@@ -9373,42 +9373,42 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../simulation/simulateduiwidget.cpp" line="150"/>
         <source>screenshot</source>
         <comment>Simulator LCD screenshot file name prefix</comment>
-        <translation type="unfinished"></translation>
+        <translation>capture</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="6"/>
         <source>ENTER</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrer</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="7"/>
         <source>PG-UP</source>
-        <translation type="unfinished"></translation>
+        <translation>PgPréc</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="8"/>
         <source>PG-DN</source>
-        <translation type="unfinished"></translation>
+        <translation>PgSuiv</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="9"/>
         <source>DEL</source>
-        <translation type="unfinished"></translation>
+        <translation>Suppr</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="10"/>
         <source>BKSP</source>
-        <translation type="unfinished"></translation>
+        <translation>RetArr</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="11"/>
         <source>ESC</source>
-        <translation></translation>
+        <translation>Échap</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="12"/>
         <source>INS</source>
-        <translation></translation>
+        <translation>Inser</translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="13"/>
@@ -9509,12 +9509,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulator_strings.h" line="42"/>
         <source>&lt;pre&gt;[ UP ]&lt;/pre&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="43"/>
         <source>&lt;pre&gt;[ DN ]&lt;/pre&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="44"/>
@@ -9529,22 +9529,22 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulator_strings.h" line="46"/>
         <source>&lt;pre&gt;[ PgUp ]&lt;/pre&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="47"/>
         <source>&lt;pre&gt;[ PgDn ]&lt;/pre&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="48"/>
         <source>&lt;pre&gt;[ MDL ]&lt;/pre&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="49"/>
         <source>&lt;pre&gt;[ RTN ]&lt;/pre&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="50"/>
