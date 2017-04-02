@@ -115,7 +115,9 @@ qint64 FIFOBufferDevice::readData(char * data, qint64 len)
 
 qint64 FIFOBufferDevice::readLine(char * data, qint64 maxSize)
 {
+  m_dataRWLock.lockForRead();
   qint64 len = buffer().indexOf('\n', 0);
+  m_dataRWLock.unlock();
 
   if (len < 0 || maxSize <= 0)
     return 0;
@@ -128,7 +130,9 @@ qint64 FIFOBufferDevice::readLine(char * data, qint64 maxSize)
 QByteArray FIFOBufferDevice::readLine(qint64 maxSize)
 {
   QByteArray ba;
+  m_dataRWLock.lockForRead();
   qint64 len = buffer().indexOf('\n', 0);
+  m_dataRWLock.unlock();
 
   if (len < 0)
     return ba;
@@ -169,9 +173,9 @@ FilteredTextBuffer::FilteredTextBuffer(QObject * parent) :
   setInputBufferMaxSize(m_inBuffMaxSize);
   setInputBufferTimeout(m_inBuffFlushTimeout);
 
-  connect(m_inBuffer, &FIFOBufferDevice::readyRead, this, &FilteredTextBuffer::processInputBuffer);
-  connect(m_inBuffer, &FIFOBufferDevice::bytesWritten, this, &FilteredTextBuffer::onInputBufferWrite);
-  connect(m_inBuffer, &FIFOBufferDevice::bufferOverflow, this, &FilteredTextBuffer::onInputBufferOverflow);
+  connect(m_inBuffer, &FIFOBufferDevice::readyRead, this, &FilteredTextBuffer::processInputBuffer, Qt::QueuedConnection);
+  connect(m_inBuffer, &FIFOBufferDevice::bytesWritten, this, &FilteredTextBuffer::onInputBufferWrite, Qt::QueuedConnection);
+  connect(m_inBuffer, &FIFOBufferDevice::bufferOverflow, this, &FilteredTextBuffer::onInputBufferOverflow, Qt::QueuedConnection);
   connect(m_bufferFlushTimer, &QTimer::timeout, this, &FilteredTextBuffer::processInputBuffer);
   connect(this, &FilteredTextBuffer::timerStart, m_bufferFlushTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
   connect(this, &FilteredTextBuffer::timerStop, m_bufferFlushTimer, &QTimer::stop);
