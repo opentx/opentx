@@ -129,7 +129,7 @@ void OpenTxSimulator::start(const char * filename, bool tests)
   StartSimu(tests, simuSdDirectory.toLatin1().constData(), simuSettingsDirectory.toLatin1().constData());
 
   emit started();
-  QTimer::singleShot(0, this, &OpenTxSimulator::run);
+  QTimer::singleShot(0, this, SLOT(OpenTxSimulator::run));  // old style for Qt < 5.4
 }
 
 void OpenTxSimulator::stop()
@@ -394,7 +394,13 @@ void OpenTxSimulator::removeTracebackDevice(QIODevice * device)
 {
   if (device) {
     QMutexLocker lckr(&m_mtxTbDevices);
-    tracebackDevices.removeAll(device);
+    // no QVector::removeAll() in Qt < 5.4
+    int i = 0;
+    foreach (QIODevice * d, tracebackDevices) {
+      if (d == device)
+        tracebackDevices.remove(i);
+      ++i;
+    }
   }
 }
 
