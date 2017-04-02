@@ -206,10 +206,21 @@ void OpenTxSimulator::setTrimSwitch(uint8_t trim, bool state)
 
 void OpenTxSimulator::setTrim(unsigned int idx, int value)
 {
-  if (idx < 4)  // swap axes
-    idx = modn12x3[4 * getStickMode() + idx];
-  uint8_t phase = getTrimFlightMode(getFlightMode(), idx);
-  setTrimValue(phase, idx, value);
+  unsigned i = idx;
+  if (i < 4)  // swap axes
+    i = modn12x3[4 * getStickMode() + idx];
+  uint8_t phase = getTrimFlightMode(getFlightMode(), i);
+
+  if (!setTrimValue(phase, i, value)) {
+    QTimer *timer = new QTimer(this);
+    timer->setSingleShot(true);
+    connect(timer, &QTimer::timeout, [=]() {
+      emit trimValueChange(idx, 0);
+      emit outputValueChange(OUTPUT_SRC_TRIM_VALUE, idx, 0);
+      timer->deleteLater();
+    });
+    timer->start(350);
+  }
 }
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
