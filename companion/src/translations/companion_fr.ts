@@ -4434,7 +4434,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1090"/>
         <source>Delete the current Radio Settings Profile</source>
-        <translation>Affacer les réglages radio du profil actuel</translation>
+        <translation>Effacer les réglages radio du profil actuel</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1103"/>
@@ -4499,7 +4499,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1470"/>
         <source>Are you sure you wish to delete the &quot;%1&quot; radio profile? There is no way to undo this action!</source>
-        <translation>Etes-vous sûr de vouloir effacer le profil radio %1 ? C&apos;est action est irréversible !</translation>
+        <translation>Etes-vous sûr de vouloir effacer le profil radio %1 ? Cette action est irréversible !</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1166"/>
@@ -9373,32 +9373,32 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../simulation/simulateduiwidget.cpp" line="150"/>
         <source>screenshot</source>
         <comment>Simulator LCD screenshot file name prefix</comment>
-        <translation>capture</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="6"/>
         <source>ENTER</source>
-        <translation>ENTRER</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="7"/>
         <source>PG-UP</source>
-        <translation>PG-HAUT</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="8"/>
         <source>PG-DN</source>
-        <translation>PG-BAS</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="9"/>
         <source>DEL</source>
-        <translation>SUP</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="10"/>
         <source>BKSP</source>
-        <translation>RET-ARR</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="11"/>
@@ -9509,12 +9509,12 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulator_strings.h" line="42"/>
         <source>&lt;pre&gt;[ UP ]&lt;/pre&gt;</source>
-        <translation>&lt;pre&gt;[ HAUT ]&lt;/pre&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="43"/>
         <source>&lt;pre&gt;[ DN ]&lt;/pre&gt;</source>
-        <translation>&lt;pre&gt;[ BAS ]&lt;/pre&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="44"/>
@@ -9529,22 +9529,22 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulator_strings.h" line="46"/>
         <source>&lt;pre&gt;[ PgUp ]&lt;/pre&gt;</source>
-        <translation>&lt;pre&gt;[ PgHaut ]&lt;/pre&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="47"/>
         <source>&lt;pre&gt;[ PgDn ]&lt;/pre&gt;</source>
-        <translation>&lt;pre&gt;[ PgBas ]&lt;/pre&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="48"/>
         <source>&lt;pre&gt;[ MDL ]&lt;/pre&gt;</source>
-        <translation>&lt;pre&gt;[ MIL ]&lt;/pre&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="49"/>
         <source>&lt;pre&gt;[ RTN ]&lt;/pre&gt;</source>
-        <translation>&lt;pre&gt;[ RET-ARR ]&lt;/pre&gt;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="50"/>
