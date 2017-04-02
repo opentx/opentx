@@ -375,7 +375,7 @@ void MainWindow::firmwareDownloadAccepted()
     return;
   }
   file.close();
-  g.fwRev.set(current_firmware_variant->getId(), version2index(firmwareVersionString));
+  g.fwRev.set(Firmware::getCurrentVariant()->getId(), version2index(firmwareVersionString));
   if (g.profile[g.id()].burnFirmware()) {
     int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
     if (ret == QMessageBox::Yes) {
@@ -406,7 +406,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     download = true;
   }
   else {
-    int currentVersion = g.fwRev.get(current_firmware_variant->getId());
+    int currentVersion = g.fwRev.get(Firmware::getCurrentVariant()->getId());
     QString currentVersionString = index2version(currentVersion);
 
     QMessageBox msgBox;
@@ -418,7 +418,8 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     if (currentVersion == 0) {
       QString rn = getCurrentFirmware()->getReleaseNotesUrl();
       QAbstractButton *rnButton = NULL;
-      msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(fullVersionString));
+      msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
+                     .arg(Firmware::getCurrentVariant()->getId()).arg(fullVersionString));
       QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
       msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
@@ -446,7 +447,8 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     else if (version > currentVersion) {
       QString rn = getCurrentFirmware()->getReleaseNotesUrl();
       QAbstractButton *rnButton = NULL;
-      msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.").arg(current_firmware_variant->getId()).arg(currentVersionString).arg(fullVersionString));
+      msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
+                     .arg(Firmware::getCurrentVariant()->getId()).arg(currentVersionString).arg(fullVersionString));
       QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
       msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
       if (!rn.isEmpty()) {
@@ -484,7 +486,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
   if (ignore) {
     int res = QMessageBox::question(this, "Companion", tr("Ignore this release %1?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
     if (res==QMessageBox::Yes)   {
-      g.fwRev.set(current_firmware_variant->getId(), version);
+      g.fwRev.set(Firmware::getCurrentVariant()->getId(), version);
     }
   }
   else if (download == true) {
@@ -497,10 +499,10 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
 void MainWindow::startFirmwareDownload()
 {
-  QString url = current_firmware_variant->getFirmwareUrl();
+  QString url = Firmware::getCurrentVariant()->getFirmwareUrl();
   qDebug() << "Downloading firmware" << url;
   QString ext = url.mid(url.lastIndexOf("."));
-  QString defaultFilename = g.flashDir() + "/" + current_firmware_variant->getId();
+  QString defaultFilename = g.flashDir() + "/" + Firmware::getCurrentVariant()->getId();
   if (g.profile[g.id()].renameFwFiles()) {
     defaultFilename += "-" + firmwareVersionString;
   }
@@ -659,36 +661,49 @@ void MainWindow::openRecentFile()
   }
 }
 
-void MainWindow::loadProfile() // TODO Load all variables - Also HW!
+void MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables - Also HW!
+{
+  if (pid >= MAX_PROFILES)
+    return;
+
+  // Set the new profile number
+  g.id(pid);
+  Firmware::setCurrentVariant(Firmware::getFirmwareForId(g.profile[pid].fwType()));
+  emit FirmwareChanged();
+  updateMenus();
+}
+
+void MainWindow::loadProfile()
 {
   QAction * action = qobject_cast<QAction *>(sender());
   if (action) {
-    // Set the new profile number
-    int profnum = action->data().toInt();
-    g.id(profnum);
-    current_firmware_variant = getFirmware(g.profile[g.id()].fwType());
-    emit FirmwareChanged();
-    updateMenus();
+    bool ok = false;
+    unsigned profnum = action->data().toUInt(&ok);
+    if (ok)
+      loadProfileId(profnum);
   }
 }
 
 void MainWindow::appPrefs()
 {
   AppPreferencesDialog * dialog = new AppPreferencesDialog(this);
+  connect(dialog, &AppPreferencesDialog::firmwareProfileChanged, this, &MainWindow::loadProfileId);
   dialog->exec();
-  updateMenus();
+  dialog->deleteLater();
 }
 
 void MainWindow::fwPrefs()
 {
   FirmwarePreferencesDialog * dialog = new FirmwarePreferencesDialog(this);
   dialog->exec();
+  dialog->deleteLater();
 }
 
 void MainWindow::contributors()
 {
   ContributorsDialog * dialog = new ContributorsDialog(this);
   dialog->exec();
+  dialog->deleteLater();
 }
 
 void MainWindow::sdsync()
@@ -715,6 +730,7 @@ void MainWindow::changelog()
 {
   ReleaseNotesDialog * dialog = new ReleaseNotesDialog(this);
   dialog->exec();
+  dialog->deleteLater();
 }
 
 void MainWindow::fwchangelog()
@@ -727,6 +743,7 @@ void MainWindow::fwchangelog()
   else {
     ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, url);
     dialog->exec();
+    dialog->deleteLater();
   }
 }
 
@@ -734,6 +751,7 @@ void MainWindow::customizeSplash()
 {
   customizeSplashDialog * dialog = new customizeSplashDialog(this);
   dialog->exec();
+  dialog->deleteLater();
 }
 
 void MainWindow::cut()
@@ -1058,8 +1076,6 @@ void MainWindow::createActions()
   burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),                tr("Show fuses dialog"),                  SLOT(burnFuses()));
   readFlashAct =       addAct("read_flash.png",    tr("Read Firmware from Radio"),tr("Read firmware from Radio"),           SLOT(readFlash()));
   writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware to Radio"), tr("Write firmware to Radio"),            SLOT(writeFlash()));
-  createProfileAct =   addAct("",                  tr("Add Radio Profile"),       tr("Create a new Radio Setting Profile"), SLOT(createProfile()));
-  copyProfileAct =     addAct("",                  tr("Copy Current Radio Profile"), tr("Duplicate current Radio Setting Profile"), SLOT(copyProfile()));
   openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
   writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"),       SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Radio"), tr("Read Models and Settings from Radio"),      SLOT(readEeprom()));
@@ -1068,6 +1084,10 @@ void MainWindow::createActions()
   readBackupToFileAct = addAct("read_eeprom_file.png", tr("Backup Radio to File"), tr("Save a complete backup file of all settings and model data in the Radio"), SLOT(readBackup()));
   contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
   sdsyncAct =          addAct("sdsync.png",        tr("Synchronize SD"),          tr("SD card synchronization"),            SLOT(sdsync()));
+
+  createProfileAct =   addAct("new.png",           tr("Add Radio Profile"),            tr("Create a new Radio Settings Profile"),       SLOT(createProfile()));
+  copyProfileAct =     addAct("copy.png",          tr("Copy Current Radio Profile"),   tr("Duplicate current Radio Settings Profile"),  SLOT(copyProfile()));
+  deleteProfileAct =   addAct("clear.png",         tr("Delete Current Radio Profile"), tr("Delete the current Radio Settings Profile"), SLOT(deleteCurrentProfile()));
 
   compareAct->setEnabled(false);
   simulateAct->setEnabled(false);
@@ -1220,6 +1240,7 @@ QMenu *MainWindow::createProfilesMenu()
 
   profilesMenu->addAction(createProfileAct);
   profilesMenu->addAction(copyProfileAct);
+  profilesMenu->addAction(deleteProfileAct);
   profilesMenu->setIcon(CompanionIcon("profiles.png"));
   return profilesMenu;
 }
@@ -1400,30 +1421,63 @@ void MainWindow::updateProfilesActions()
   }
 }
 
-
-void MainWindow::copyProfile()
-{
-  int previous = g.id();
-
-  createProfile();
-  if (g.id() == previous) //Failed to find free slot
-    return;
-  g.profile[g.id()] = g.profile[previous];
-  updateMenus();
-}
-
-void MainWindow::createProfile()
+int MainWindow::newProfile(bool loadProfile)
 {
   int i;
-  for (i=0; i<MAX_PROFILES && g.profile[i].existsOnDisk(); i++);
-  if (i==MAX_PROFILES)  //Failed to find free slot
-    return;
+  for (i=0; i < MAX_PROFILES && g.profile[i].existsOnDisk(); i++)
+    ;
+  if (i == MAX_PROFILES)  //Failed to find free slot
+    return -1;
 
   g.profile[i].init(i);
   g.profile[i].name(tr("New Radio"));
 
-  g.id(i);
-  updateMenus();
+  if (loadProfile) {
+    g.id(i);
+    loadProfileId(i);
+    appPrefs();
+  }
+
+  return i;
+}
+
+void MainWindow::createProfile()
+{
+  newProfile(true);
+}
+
+void MainWindow::copyProfile()
+{
+  int newId = newProfile(false);
+
+  if (newId > -1) {
+    g.profile[newId] = g.profile[g.id()];
+    g.id(newId);
+    g.profile[newId].name(g.profile[newId].name() + tr(" - Copy"));
+    loadProfileId(newId);
+    appPrefs();
+  }
+}
+
+void MainWindow::deleteProfile(const int pid)
+{
+  if (pid == 0) {
+    QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
+    return;
+  }
+  int ret = QMessageBox::question(this,
+                                  tr("Confirm Delete Profile"),
+                                  tr("Are you sure you wish to delete the \"%1\" radio profile? There is no way to undo this action!").arg(g.profile[pid].name()));
+  if (ret != QMessageBox::Yes)
+    return;
+
+  g.profile[pid].remove();
+  loadProfileId(0);
+}
+
+void MainWindow::deleteCurrentProfile()
+{
+  deleteProfile(g.id());
 }
 
 QString MainWindow::strippedName(const QString &fullFileName)

@@ -100,12 +100,13 @@ void AppPreferencesDialog::writeValues()
     g.profile[g.id()].name(ui->profileNameLE->text());
 
   // If a new fw type has been choosen, several things need to reset
-  current_firmware_variant = getFirmwareVariant();
-  QString id = current_firmware_variant->getId();
+  Firmware::setCurrentVariant(getFirmwareVariant());
+  QString id = Firmware::getCurrentVariant()->getId();
   if (g.profile[g.id()].fwType() != id) {
     g.profile[g.id()].fwName("");
     g.profile[g.id()].initFwVariables();
     g.profile[g.id()].fwType(id);
+    emit firmwareProfileChanged(g.id());
   }
 }
 
@@ -227,10 +228,10 @@ void AppPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
-  Firmware * current_firmware = getCurrentFirmware();
-  foreach(Firmware * firmware, firmwares) {
+  QString currType = QStringList(g.profile[g.id()].fwType().split('-').mid(0, 2)).join('-');
+  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
-    if (current_firmware->getFirmwareBase() == firmware) {
+    if (currType == firmware->getId()) {
       ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
     }
   }
@@ -332,18 +333,6 @@ void AppPreferencesDialog::on_sdPathButton_clicked()
   }
 }
 
-void AppPreferencesDialog::on_removeProfileButton_clicked()
-{
-  if ( g.id() == 0 ) {
-     QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
-  }
-  else {
-    g.profile[g.id()].remove();
-    g.id( 0 );
-    initSettings();
-  }
-}
-
 bool AppPreferencesDialog::displayImage(const QString & fileName)
 {
   // Start by clearing the label
@@ -395,9 +384,9 @@ void AppPreferencesDialog::showVoice(bool show)
 
 void AppPreferencesDialog::baseFirmwareChanged()
 {
-  QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
+  QString selected_firmware = ui->downloadVerCB->currentData().toString();
 
-  foreach(Firmware * firmware, firmwares) {
+  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
     if (firmware->getId() == selected_firmware) {
       populateFirmwareOptions(firmware);
       break;
@@ -407,31 +396,31 @@ void AppPreferencesDialog::baseFirmwareChanged()
 
 Firmware * AppPreferencesDialog::getFirmwareVariant()
 {
-  QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
+  QString selected_firmware = ui->downloadVerCB->currentData().toString();
 
-  foreach(Firmware * firmware, firmwares) {
+  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
     QString id = firmware->getId();
     if (id == selected_firmware) {
       foreach(QCheckBox *cb, optionsCheckBoxes) {
         if (cb->isChecked()) {
-          id += QString("-") + cb->text();
+          id += "-" + cb->text();
         }
       }
 
       if (voice && voice->isChecked()) {
-        id += QString("-tts") + ui->voiceCombo->currentText();
+        id += "-tts" + ui->voiceCombo->currentText();
       }
 
       if (ui->langCombo->count()) {
-        id += QString("-") + ui->langCombo->currentText();
+        id += "-" + ui->langCombo->currentText();
       }
 
-      return getFirmware(id);
+      return Firmware::getFirmwareForId(id);
     }
   }
 
   // Should never occur...
-  return default_firmware_variant;
+  return Firmware::getDefaultVariant();
 }
 
 void AppPreferencesDialog::firmwareOptionChanged(bool state)
@@ -442,8 +431,8 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
   }
   Firmware * firmware=NULL;
   if (cb && state) {
-    QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
-    foreach(firmware, firmwares) {
+    QVariant selected_firmware = ui->downloadVerCB->currentData();
+    foreach(firmware, Firmware::getRegisteredFirmwares()) {
       if (firmware->getId() == selected_firmware) {
         foreach(QList<Option> opts, firmware->opts) {
           foreach(Option opt, opts) {
@@ -472,7 +461,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 
   updateLock = true;
 
-  QString id = current_firmware_variant->getId();
+  QString id = Firmware::getCurrentVariant()->getId();
   ui->langCombo->clear();
   foreach(const char *lang, parent->languages) {
     ui->langCombo->addItem(lang);
