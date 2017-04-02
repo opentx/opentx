@@ -29,7 +29,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Taranis X7 Simulator</string>
+   <string notr="true">Taranis X7 Simulator</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.757062 rgba(241, 238, 238, 255), stop:1 rgba(247, 245, 245, 255));</string>

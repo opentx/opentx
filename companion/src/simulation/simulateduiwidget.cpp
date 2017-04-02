@@ -22,7 +22,12 @@
 #include "eeprominterface.h"
 #include "lcdwidget.h"
 #include "radiouiaction.h"
+#include "radiokeywidget.h"
 #include "simulatorinterface.h"
+
+//#define FLASH_DURATION 10
+//#define CBEEP_ON      "QLabel { background-color: #FF364E }"
+//#define CBEEP_OFF     "QLabel { }"
 
 SimulatedUIWidget::SimulatedUIWidget(SimulatorInterface * simulator, QWidget * parent) :
   QWidget(parent),
@@ -31,16 +36,18 @@ SimulatedUIWidget::SimulatedUIWidget(SimulatorInterface * simulator, QWidget * p
   m_lcd(NULL),
   m_scrollUpAction(NULL),
   m_scrollDnAction(NULL),
-  m_rotEncClickAction(NULL),
+  m_mouseMidClickAction(NULL),
+  m_screenshotAction(NULL),
   m_board(getCurrentBoard()),
   m_backLight(0),
-  m_lightOn(false),
   m_beepShow(0),
   m_beepVal(0)
 {
-  m_rotEncClickAction = addRadioUiAction(-1, 0, tr("Rotary encoder click"));
-  m_screenshotAction = addRadioUiAction(-1, Qt::Key_Print, tr("Take Screenshot"));
+  m_screenshotAction = new RadioUiAction(-1, Qt::Key_Print);
   connect(m_screenshotAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), this, &SimulatedUIWidget::captureScreenshot);
+
+  connect(m_simulator, &SimulatorInterface::lcdChange, this, &SimulatedUIWidget::onLcdChange);
+  connect(this, &SimulatedUIWidget::simulatorWheelEvent, m_simulator, &SimulatorInterface::rotaryEncoderEvent);
 }
 
 SimulatedUIWidget::~SimulatedUIWidget()
@@ -49,28 +56,44 @@ SimulatedUIWidget::~SimulatedUIWidget()
     if (act)
       delete act;
   }
+  foreach (RadioWidget * w, m_widgets) {
+    if (w)
+      delete w;
+  }
 }
 
-RadioUiAction * SimulatedUIWidget::addRadioUiAction(RadioUiAction * act)
+RadioWidget * SimulatedUIWidget::addRadioWidget(RadioWidget * widget)
 {
-  if (act) {
+  if (widget && !m_widgets.contains(widget)) {
+    m_widgets.append(widget);
+    // TODO : connect to actions instead
+    connect(widget, &RadioWidget::valueChange, this, &SimulatedUIWidget::controlValueChange);
+    if (widget->getAction())
+      addRadioAction(widget->getAction());
+  }
+  return widget;
+}
+
+RadioUiAction * SimulatedUIWidget::addRadioAction(RadioUiAction * act)
+{
+  if (act && !m_actions.contains(act)) {
+    act->setParent(m_parent);
     m_actions.append(act);
-    if (!act->getText().isEmpty() && !act->getDescription().isEmpty())
-      m_keymapHelp.append(keymapHelp_t(act->getText(), act->getDescription()));
   }
   return act;
 }
 
-RadioUiAction * SimulatedUIWidget::addRadioUiAction(int index, int key, const QString & text, const QString & descript)
+QVector<Simulator::keymapHelp_t> SimulatedUIWidget::getKeymapHelp() const
 {
-  return addRadioUiAction(new RadioUiAction(index, key, m_parent, text, descript));
+  QVector<Simulator::keymapHelp_t> keymapHelp;
+  foreach (RadioUiAction * act, m_actions) {
+    if (act && !act->getText().isEmpty())
+      keymapHelp.append(Simulator::keymapHelp_t(act->getText(), act->getDescription()));
+  }
+  return keymapHelp;
 }
 
-RadioUiAction * SimulatedUIWidget::addRadioUiAction(int index, QList<int> keys, const QString & text, const QString & descript)
-{
-  return addRadioUiAction(new RadioUiAction(index, keys, m_parent, text, descript));
-}
-
+// static
 QPolygon SimulatedUIWidget::polyArc(int ctrX, int ctrY, int radius, int startAngle, int endAngle, int step)
 {
   QPolygon polygon;
@@ -83,20 +106,10 @@ QPolygon SimulatedUIWidget::polyArc(int ctrX, int ctrY, int radius, int startAng
   return polygon;
 }
 
+/*  TODO : beep indicator
 void SimulatedUIWidget::updateUi()
 {
   //static quint32 loop = 0;
-  if (m_lcd->isVisible()) {
-    bool lightEnable;
-    if (m_simulator->lcdChanged(lightEnable)) {
-      m_lcd->onLcdChanged(lightEnable);
-      if (m_lightOn != lightEnable) {
-        setLightOn(lightEnable);
-        m_lightOn = lightEnable;
-      }
-    }
-  }
-  /*  TODO : beep indicator
       if (!(loop % 5)) {
         TxOutputs outputs;
         simulator->getValues(outputs);
@@ -111,7 +124,16 @@ void SimulatedUIWidget::updateUi()
           beepShow--;
         }
         ui->label_beep->setStyleSheet(beepShow ? CBEEP_ON : CBEEP_OFF);
-      } */
+      }
+} */
+
+void SimulatedUIWidget::onLcdChange(bool backlightEnable)
+{
+  if (!m_lcd || !m_lcd->isVisible())
+    return;
+
+  m_lcd->onLcdChanged(backlightEnable);
+  setLightOn(backlightEnable);
 }
 
 void SimulatedUIWidget::captureScreenshot()
@@ -136,32 +158,27 @@ void SimulatedUIWidget::captureScreenshot()
   m_lcd->makeScreenshot(fileName);
 }
 
-// steps can be negative or positive to determine direction (negative is UP/RIGHT scroll)
-void SimulatedUIWidget::simulatorWheelEvent(qint8 steps)
-{
-  m_simulator->wheelEvent(steps);
-}
-
 void SimulatedUIWidget::wheelEvent(QWheelEvent * event)
 {
   if (event->angleDelta().isNull())
     return;
+  // steps can be negative or positive to determine direction (negative is UP/LEFT scroll)
   QPoint numSteps = event->angleDelta() / 8 / 15 * -1;  // one step per 15deg
-  simulatorWheelEvent(numSteps.y());
+  emit simulatorWheelEvent(numSteps.y());
 }
 
 void SimulatedUIWidget::mousePressEvent(QMouseEvent * event)
 {
-  if (event->button() == Qt::MidButton && m_rotEncClickAction)
-    m_rotEncClickAction->trigger(true);
+  if (event->button() == Qt::MidButton && m_mouseMidClickAction)
+    m_mouseMidClickAction->trigger(true);
   else
     event->ignore();
 }
 
 void SimulatedUIWidget::mouseReleaseEvent(QMouseEvent * event)
 {
-  if (event->button() == Qt::MidButton && m_rotEncClickAction)
-    m_rotEncClickAction->trigger(false);
+  if (event->button() == Qt::MidButton && m_mouseMidClickAction)
+    m_mouseMidClickAction->trigger(false);
   else
     event->ignore();
 }
@@ -184,13 +201,19 @@ void SimulatedUIWidget::setLcd(LcdWidget * lcd)
 
 void SimulatedUIWidget::connectScrollActions()
 {
-  connect(m_scrollUpAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
-    this->simulatorWheelEvent(-1);
-    m_scrollUpAction->toggle(false);
-  });
+  if (m_scrollUpAction) {
+    addRadioAction(m_scrollUpAction);
+    connect(m_scrollUpAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
+      emit simulatorWheelEvent(-1);
+      m_scrollUpAction->toggle(false);
+    });
+  }
 
-  connect(m_scrollDnAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
-    simulatorWheelEvent(1);
-    m_scrollDnAction->toggle(false);
-  });
+  if (m_scrollDnAction) {
+    addRadioAction(m_scrollDnAction);
+    connect(m_scrollDnAction, static_cast<void (RadioUiAction::*)(void)>(&RadioUiAction::pushed), [this](void) {
+      emit simulatorWheelEvent(1);
+      m_scrollDnAction->toggle(false);
+    });
+  }
 }

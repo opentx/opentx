@@ -26,39 +26,32 @@
 #include "eeprominterface.h"
 #include "radiodata.h"
 #include "simulator.h"
-#include "simulatorinterface.h"
 
 extern AppData g;  // ensure what "g" means
 
-const int RadioOutputsWidget::m_dataUpdateFreqDefault = 10;  // ms
 const quint16 RadioOutputsWidget::m_savedViewStateVersion = 1;
 
 RadioOutputsWidget::RadioOutputsWidget(SimulatorInterface * simulator, Firmware * firmware, QWidget *parent) :
   QWidget(parent),
   m_simulator(simulator),
   m_firmware(firmware),
-  m_tmrUpdateData(new QTimer),
   m_radioProfileId(g.sessionId()),
-  m_lastFlightPhase(-1),
-  m_started(false),
   ui(new Ui::RadioOutputsWidget)
 {
   ui->setupUi(this);
 
   restoreState();
 
-  m_dataUpdateFreq = m_dataUpdateFreqDefault;
-  m_tmrUpdateData->setInterval(m_dataUpdateFreq);
-
-  connect(m_tmrUpdateData, &QTimer::timeout, this, &RadioOutputsWidget::setValues);
+  connect(m_simulator, &SimulatorInterface::channelOutValueChange, this, &RadioOutputsWidget::onChannelOutValueChange);
+  connect(m_simulator, &SimulatorInterface::virtualSwValueChange, this, &RadioOutputsWidget::onVirtSwValueChange);
+  connect(m_simulator, &SimulatorInterface::gVarValueChange, this, &RadioOutputsWidget::onGVarValueChange);
+  connect(m_simulator, &SimulatorInterface::phaseChanged, this, &RadioOutputsWidget::onPhaseChanged);
 }
 
 RadioOutputsWidget::~RadioOutputsWidget()
 {
-  stop();
+  //stop();
   saveState();
-  if (m_tmrUpdateData)
-    delete m_tmrUpdateData;
   delete ui;
 }
 
@@ -74,36 +67,20 @@ void RadioOutputsWidget::changeEvent(QEvent *e)
   }
 }
 
-void RadioOutputsWidget::showEvent(QShowEvent * event)
-{
-  if (m_started)
-    m_tmrUpdateData->start();
-}
-
-void RadioOutputsWidget::hideEvent(QHideEvent * event)
-{
-  m_tmrUpdateData->stop();
-}
-
 void RadioOutputsWidget::start()
 {
   setupChannelsDisplay();
   setupGVarsDisplay();
   setupLsDisplay();
-  m_lastFlightPhase = -1;
-  m_tmrUpdateData->start();
-  m_started = true;
 }
 
-void RadioOutputsWidget::stop()
-{
-  m_tmrUpdateData->stop();
-  m_started = false;
-}
+//void RadioOutputsWidget::stop()
+//{
+//}
 
 void RadioOutputsWidget::restart()
 {
-  stop();
+  //stop();
   start();
 }
 
@@ -138,7 +115,6 @@ void RadioOutputsWidget::restoreState()
   if (!splitterState.isEmpty())
     ui->splitter->restoreState(splitterState);
 }
-
 
 void RadioOutputsWidget::setupChannelsDisplay()
 {
@@ -297,68 +273,73 @@ QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo
   return swtch;
 }
 
-// Read various values from firmware simulator and populate values in this UI
-void RadioOutputsWidget::setValues()
+void RadioOutputsWidget::onChannelOutValueChange(quint8 index, qint32 value)
 {
-  static TxOutputs prevOutputs = TxOutputs();
-  int currentPhase;
-  TxOutputs outputs;
+  if (m_channelsMap.contains(index)) {
+    QPair<QLabel *, QSlider *> ch = m_channelsMap.value(index);
+    ch.first->setText(QString("%1%").arg(calcRESXto100(value)));
+    ch.second->setValue(qMin(1024, qMax(-1024, value)));
+  }
+  //qDebug() << index << value;
+}
+
+void RadioOutputsWidget::onVirtSwValueChange(quint8 index, qint32 value)
+{
+  if (!m_logicSwitchMap.contains(index))
+    return;
+
+  QLabel * ls = m_logicSwitchMap.value(index);
+  ls->setBackgroundRole(value ? QPalette::Dark : QPalette::Background);
+  ls->setForegroundRole(value ? QPalette::BrightText : QPalette::WindowText);
+  ls->setFrameShadow(value ? QFrame::Sunken : QFrame::Raised);
+  QFont font = ls->font();
+  font.setBold((bool)value);
+  ls->setFont(font);
+  //qDebug() << index << value;
+}
+
+void RadioOutputsWidget::onGVarValueChange(quint8 index, qint32 value)
+{
+  if (!m_globalVarsMap.contains(index))
+    return;
+
+  QHash<int, QLabel *> fmMap = m_globalVarsMap.value(index);
+  SimulatorInterface::gVarMode_t gv(value);
+
+  if (fmMap.contains(gv.mode)) {
+    QLabel * lbl = fmMap.value(gv.mode);
+    if (lbl)
+      lbl->setText(QString::number(gv.value));
+  }
+  //qDebug() << index << value << gv.mode << gv.value;
+}
+
+void RadioOutputsWidget::onPhaseChanged(qint32 phase, const QString &)
+{
+  QPalette::ColorRole fgrole, bgrole;
+  QLabel * lbl;
   QFont font;
+  QHash<int, QHash<int, QLabel *> >::const_iterator gv;
+  QHash<int, QLabel *>::const_iterator fm;
 
-  m_simulator->getValues(outputs);
-  currentPhase = m_simulator->getPhase();
-
-  if (ui->channelsWidget->isVisible()) {
-    QHash<int, QPair<QLabel *, QSlider *> >::const_iterator ch;
-    for (ch = m_channelsMap.constBegin(); ch != m_channelsMap.constEnd(); ++ch) {
-      if (ch.key() >= CPN_MAX_CHNOUT)
-        continue;
-      ch.value().first->setText(QString("%1%").arg(calcRESXto100(outputs.chans[ch.key()])));
-      ch.value().second->setValue(qMin(1024, qMax(-1024, outputs.chans[ch.key()])));
-    }
-  }
-
-  if (ui->logicalSwitchesWidget->isVisible()) {
-    QHash<int, QLabel* >::const_iterator ls;
-    for (ls = m_logicSwitchMap.constBegin(); ls != m_logicSwitchMap.constEnd(); ++ls) {
-      if (ls.key() >= CPN_MAX_LOGICAL_SWITCHES || (prevOutputs.vsw[ls.key()] == outputs.vsw[ls.key()] && m_lastFlightPhase > -1))
-        continue;
-      ls.value()->setBackgroundRole(outputs.vsw[ls.key()] ? QPalette::Dark : QPalette::Background);
-      ls.value()->setForegroundRole(outputs.vsw[ls.key()] ? QPalette::BrightText : QPalette::WindowText);
-      ls.value()->setFrameShadow(outputs.vsw[ls.key()] ? QFrame::Sunken : QFrame::Raised);
-      font = ls.value()->font();
-      font.setBold(outputs.vsw[ls.key()]);
-      ls.value()->setFont(font);
-      prevOutputs.vsw[ls.key()] = outputs.vsw[ls.key()];
-    }
-  }
-
-  if (ui->globalVarsWidget->isVisible()) {
-    QPalette::ColorRole bgrole;
-    QHash<int, QHash<int, QLabel *> >::const_iterator gv;
-    QHash<int, QLabel *>::const_iterator fm;
-    for (gv = m_globalVarsMap.constBegin(); gv != m_globalVarsMap.constEnd(); ++gv) {
-      if (gv.key() >= CPN_MAX_GVARS)
-        continue;
-      for (fm = gv.value().constBegin(); fm != gv.value().constEnd(); ++fm) {
-        if (fm.key() >= CPN_MAX_FLIGHT_MODES)
-          continue;
-        if (currentPhase != m_lastFlightPhase || prevOutputs.gvars[fm.key()][gv.key()] != outputs.gvars[fm.key()][gv.key()]) {
-          if (fm.key() == currentPhase)
-            bgrole = QPalette::Dark;
-          else
-            bgrole = ((gv.key() % 2) ? QPalette::Background : QPalette::AlternateBase);
-          fm.value()->setBackgroundRole(bgrole);
-          fm.value()->setForegroundRole(fm.key() == currentPhase ? QPalette::BrightText : QPalette::WindowText);
-          font = fm.value()->font();
-          font.setBold(fm.key() == currentPhase);
-          fm.value()->setFont(font);
-          fm.value()->setText(QString::number(outputs.gvars[fm.key()][gv.key()]));
-          prevOutputs.gvars[fm.key()][gv.key()] = outputs.gvars[fm.key()][gv.key()];
-        }
+  for (gv = m_globalVarsMap.constBegin(); gv != m_globalVarsMap.constEnd(); ++gv) {
+    for (fm = gv.value().constBegin(); fm != gv.value().constEnd(); ++fm) {
+      lbl = fm.value();
+      font = lbl->font();
+      if (fm.key() == phase) {
+        fgrole =  QPalette::BrightText;
+        bgrole = QPalette::Dark;
+        font.setBold(true);
       }
+      else {
+        fgrole =  QPalette::WindowText;
+        bgrole = ((gv.key() % 2) ? QPalette::Background : QPalette::AlternateBase);
+        font.setBold(false);
+      }
+      lbl->setForegroundRole(fgrole);
+      lbl->setBackgroundRole(bgrole);
+      lbl->setFont(font);
     }
   }
-
-  m_lastFlightPhase = currentPhase;
+  //qDebug() << phase;
 }

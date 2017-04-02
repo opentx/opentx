@@ -69,6 +69,9 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
     return;
   }
 
+  m_simulator->moveToThread(&simuThread);
+  simuThread.start();
+
   ui->setupUi(this);
 
   setCorner(Qt::TopLeftCorner, Qt::LeftDockWidgetArea);
@@ -103,19 +106,14 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
   ui->menuView->insertSeparator(ui->actionToggleMenuBar);
   ui->menuView->insertAction(ui->actionToggleMenuBar, ui->toolBar->toggleViewAction());
 
-  // Hide some actions based on board capabilities.
-  Firmware * firmware = getCurrentFirmware();
-  if(!firmware->getCapability(Capability(LuaInputsPerScript)))
+  // Hide some actions based on simulator capabilities.
+  if(!m_simulator->getCapability(SimulatorInterface::CAP_LUA))
     ui->actionReloadLua->setDisabled(true);
-  if (!firmware->getCapability(Capability(SportTelemetry)))
+  if(!m_simulator->getCapability(SimulatorInterface::CAP_TELEM_FRSKY_SPORT))
     m_telemetryDockWidget->toggleViewAction()->setDisabled(true);
 #ifndef JOYSTICKS
   ui->actionJoystickSettings->setDisabled(true);
 #endif
-
-  // Add radio-specific help text from simulator widget
-  foreach (keymapHelp_t item, *m_simulatorWidget->getKeymapHelp())
-    m_keymapHelp.append(item);
 
   restoreUiState();
 
@@ -123,18 +121,27 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
 
   connect(ui->actionShowKeymap, &QAction::triggered, this, &SimulatorMainWindow::showHelp);
   connect(ui->actionJoystickSettings, &QAction::triggered, this, &SimulatorMainWindow::openJoystickDialog);
-  connect(ui->actionReloadLua, &QAction::triggered, this, &SimulatorMainWindow::luaReload);
   connect(ui->actionToggleMenuBar, &QAction::toggled, this, &SimulatorMainWindow::showMenuBar);
   connect(ui->actionFixedRadioWidth, &QAction::toggled, this, &SimulatorMainWindow::showRadioFixedWidth);
   connect(ui->actionFixedRadioHeight, &QAction::toggled, this, &SimulatorMainWindow::showRadioFixedHeight);
   connect(ui->actionDockRadio, &QAction::toggled, this, &SimulatorMainWindow::showRadioDocked);
+  connect(ui->actionReloadRadioData, &QAction::triggered, this, &SimulatorMainWindow::simulatorRestart);
+
+  connect(ui->actionReloadLua, &QAction::triggered, m_simulator, &SimulatorInterface::setLuaStateReloadPermanentScripts);
+
+  if (m_outputsWidget) {
+    connect(this, &SimulatorMainWindow::simulatorStart, m_outputsWidget, &RadioOutputsWidget::start);
+    connect(this, &SimulatorMainWindow::simulatorRestart, m_outputsWidget, &RadioOutputsWidget::restart);
+  }
+
   if (m_simulatorWidget) {
+    connect(this, &SimulatorMainWindow::simulatorStart, m_simulatorWidget, &SimulatorWidget::start);
+    connect(this, &SimulatorMainWindow::simulatorRestart, m_simulatorWidget, &SimulatorWidget::restart);
     connect(ui->actionScreenshot, &QAction::triggered, m_simulatorWidget, &SimulatorWidget::captureScreenshot);
-    connect(ui->actionReloadRadioData, &QAction::triggered, m_simulatorWidget, &SimulatorWidget::restart);
     connect(m_simulatorWidget, &SimulatorWidget::windowTitleChanged, this, &SimulatorMainWindow::setWindowTitle);
   }
-  if (m_outputsWidget)
-    connect(ui->actionReloadRadioData, &QAction::triggered, m_outputsWidget, &RadioOutputsWidget::restart);
+
+
 }
 
 SimulatorMainWindow::~SimulatorMainWindow()
@@ -154,9 +161,11 @@ SimulatorMainWindow::~SimulatorMainWindow()
 
   delete ui;
 
-  if (m_simulator)
+  if (m_simulator) {
+    simuThread.quit();
+    simuThread.wait();
     delete m_simulator;
-
+  }
   SimulatorLoader::unloadSimulator(m_simulatorId);
 }
 
@@ -256,11 +265,6 @@ bool SimulatorMainWindow::setOptions(SimulatorOptions & options, bool withSave)
 
 void SimulatorMainWindow::start()
 {
-  if (m_simulatorWidget)
-    m_simulatorWidget->start();
-  if (m_outputsWidget)
-    m_outputsWidget->start();
-
   emit simulatorStart();
 }
 
@@ -282,8 +286,6 @@ void SimulatorMainWindow::createDockWidgets()
     m_telemetryDockWidget->setWidget(telem);
     m_telemetryDockWidget->setObjectName("TELEMETRY_SIMULATOR");
     addTool(m_telemetryDockWidget, Qt::LeftDockWidgetArea, icon, QKeySequence(tr("F4")));
-    connect(this, &SimulatorMainWindow::simulatorStart, telem, &TelemetrySimulator::onSimulatorStarted);
-    connect(ui->actionReloadRadioData, &QAction::triggered, telem, &TelemetrySimulator::onSimulatorStarted);
   }
 
   if (!m_trainerDockWidget) {
@@ -453,13 +455,6 @@ void SimulatorMainWindow::toggleRadioDocked(bool dock)
 
 }
 
-void SimulatorMainWindow::luaReload(bool)
-{
-  // force a reload of the lua environment
-  if (m_simulator)
-    m_simulator->setLuaStateReloadPermanentScripts();
-}
-
 void SimulatorMainWindow::openJoystickDialog(bool)
 {
 #ifdef JOYSTICKS
@@ -472,19 +467,34 @@ void SimulatorMainWindow::openJoystickDialog(bool)
 
 void SimulatorMainWindow::showHelp(bool show)
 {
-  QString helpText = tr("Simulator Controls:");
+  QString helpText = ""
+      "<style>"
+      "  td { text-align: center; vertical-align: middle; font-size: large; padding: 0 1em; white-space: nowrap; }"
+      "  th { background-color: palette(alternate-base); }"
+      "  img { vertical-align: text-top; }"
+      "</style>";
+  helpText += tr("<b>Simulator Controls:</b>");
   helpText += "<table cellspacing=4 cellpadding=0>";
-  helpText += tr("<tr><th>Key/Mouse</td><th>Action</td></tr>");
-  QString keyTemplate = "<tr><td align='center'><pre>%1</pre></td><td align='center'>%2</td></tr>";
-  foreach (keymapHelp_t pair, m_keymapHelp)
+  helpText += tr("<tr><th>Key/Mouse</th><th>Action</th></tr>", "note: must match html layout of each table row (keyTemplate).");
+
+  QString keyTemplate = tr("<tr><td><kbd>%1</kbd></td><td>%2</td></tr>", "note: must match html layout of help text table header.");
+  keymapHelp_t pair;
+  // Add our own help text (if any)
+  foreach (pair, m_keymapHelp)
     helpText += keyTemplate.arg(pair.first, pair.second);
+  // Add any radio-specific help text from simulator widget
+  foreach (pair, m_simulatorWidget->getKeymapHelp())
+    helpText += keyTemplate.arg(pair.first, pair.second);
+
   helpText += "</table>";
 
   QMessageBox * msgBox = new QMessageBox(this);
+  msgBox->setObjectName("SimulatorHelpText");
   msgBox->setAttribute(Qt::WA_DeleteOnClose);
   msgBox->setWindowFlags(msgBox->windowFlags() | Qt::WindowStaysOnTopHint);
   msgBox->setStandardButtons( QMessageBox::Ok );
   msgBox->setWindowTitle(tr("Simulator Help"));
+  msgBox->setTextFormat(Qt::RichText);
   msgBox->setText(helpText);
   msgBox->setModal(false);
   msgBox->show();

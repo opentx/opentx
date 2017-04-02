@@ -36,20 +36,13 @@
 
 extern AppData g;  // ensure what "g" means
 
-FilteredTextBuffer * DebugOutput::m_dataBufferDevice = Q_NULLPTR;
 const quint16 DebugOutput::m_savedViewStateVersion = 1;
-
-void firmwareTraceCb(const char * text)
-{
-  if (DebugOutput::m_dataBufferDevice) {
-    DebugOutput::m_dataBufferDevice->write(text);
-  }
-}
 
 DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   QWidget(parent),
   ui(new Ui::DebugOutput),
   m_simulator(simulator),
+  m_dataBufferDevice(NULL),
   m_radioProfileId(g.sessionId()),
   m_filterEnable(false),
   m_filterExclude(false)
@@ -101,32 +94,27 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   connect(ui->actionToggleFilter, &QAction::toggled, this, &DebugOutput::onFilterToggled);
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
 
-  if (AppDebugMessageHandler::instance()) {
-#if (QT_VERSION < QT_VERSION_CHECK(5, 3, 0))  // https://bugreports.qt.io/browse/QTBUG-36119
-    connect(AppDebugMessageHandler::instance(), SIGNAL(messageOutput(quint8,QString,QMessageLogContext)), this, SLOT(onAppDebugMessage(quint8,QString,QMessageLogContext)));
-#else
+  if (AppDebugMessageHandler::instance())
     connect(AppDebugMessageHandler::instance(), &AppDebugMessageHandler::messageOutput, this, &DebugOutput::onAppDebugMessage);
-#endif
-  }
 
   // send firmware TRACE events to our data collector
-  m_simulator->installTraceHook(firmwareTraceCb);
+  m_simulator->addTracebackDevice(m_dataBufferDevice);
 }
 
 DebugOutput::~DebugOutput()
 {
-  m_simulator->installTraceHook(NULL);
-  saveState();
-
   if (AppDebugMessageHandler::instance())
     disconnect(AppDebugMessageHandler::instance(), 0, this, 0);
 
   if (m_dataBufferDevice) {
+    m_simulator->removeTracebackDevice(m_dataBufferDevice);
     disconnect(m_dataBufferDevice, 0, this, 0);
     disconnect(this, 0, m_dataBufferDevice, 0);
-    m_dataBufferDevice->deleteLater();
+    delete m_dataBufferDevice;
     m_dataBufferDevice = Q_NULLPTR;
   }
+
+  saveState();
 
   delete ui;
 }
@@ -213,11 +201,10 @@ void DebugOutput::onDataBufferOverflow(const qint64 len)
   }
 }
 
-void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext & context)
+void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg)
 {
-  if (level > 0) {
-    firmwareTraceCb(qPrintable(msg));
-    firmwareTraceCb("\n");
+  if (level > 0 && m_dataBufferDevice) {
+    m_dataBufferDevice->write(qPrintable(msg % "\n"));
   }
 }
 

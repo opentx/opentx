@@ -23,16 +23,17 @@
 
 #include "boards.h"
 #include "constants.h"
+#include "radiowidget.h"
 #include "simulator.h"
+#include "simulator_strings.h"
 
 #include <QWidget>
 #include <QMouseEvent>
 
 class SimulatorInterface;
 class LcdWidget;
+class RadioKeyWidget;
 class RadioUiAction;
-
-using namespace Simulator;
 
 /*
  * This is a base class for the main hardware-specific radio user interface, including LCD screen and navigation buttons/widgets.
@@ -52,50 +53,50 @@ class SimulatedUIWidget : public QWidget
 
     ~SimulatedUIWidget();
 
-    RadioUiAction * addRadioUiAction(RadioUiAction * act);
-    RadioUiAction * addRadioUiAction(int index = -1, int key = 0, const QString &text = "", const QString &descript = "");
-    RadioUiAction * addRadioUiAction(int index, QList<int> keys, const QString &text = "", const QString &descript = "");
+    RadioWidget * addRadioWidget(RadioWidget * keyWidget);
+    RadioUiAction * addRadioAction(RadioUiAction * act);
 
-    QVector<keymapHelp_t> * getKeymapHelp()         { return &m_keymapHelp; }
-    QList<RadioUiAction *>  getActions()      const { return m_actions;   }
-    RadioUiAction *         getRotEncAction() const { return m_rotEncClickAction; }
+    QVector<Simulator::keymapHelp_t> getKeymapHelp() const;
 
-    QPolygon polyArc(int ctrX, int ctrY, int radius, int startAngle = 0, int endAngle = 360, int step = 10);
+    static QPolygon polyArc(int ctrX, int ctrY, int radius, int startAngle = 0, int endAngle = 360, int step = 10);
 
   public slots:
 
-    void updateUi();
     void captureScreenshot();
-    void simulatorWheelEvent(qint8 steps);
 
     void wheelEvent(QWheelEvent *event);
     void mousePressEvent(QMouseEvent *event);
     void mouseReleaseEvent(QMouseEvent *event);
 
-  protected:
+  signals:
+
+    void controlValueChange(RadioWidget::RadioWidgetType type, int index, int value);
+    void customStyleRequest(const QString & style);
+    void simulatorWheelEvent(qint8 steps);
+
+  protected slots:
 
     void setLcd(LcdWidget * lcd);
     void connectScrollActions();
+    void onLcdChange(bool backlightEnable);
     virtual void setLightOn(bool enable) { }
+
+  protected:
 
     SimulatorInterface * m_simulator;
     QWidget * m_parent;
     LcdWidget * m_lcd;
     QVector<QColor> m_backlightColors;
-    QVector<keymapHelp_t> m_keymapHelp;
     QList<RadioUiAction *> m_actions;
+    QList<RadioWidget *> m_widgets;
     RadioUiAction * m_scrollUpAction;
     RadioUiAction * m_scrollDnAction;
-    RadioUiAction * m_rotEncClickAction;
+    RadioUiAction * m_mouseMidClickAction;
     RadioUiAction * m_screenshotAction;
     Board::Type m_board;
     unsigned int m_backLight;
-    bool m_lightOn;
     int m_beepShow;
     int m_beepVal;
-
-  signals:
-    void customStyleRequest(const QString & style);
 
 };
 

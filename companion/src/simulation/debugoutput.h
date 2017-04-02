@@ -60,20 +60,19 @@ class DebugOutput : public QWidget
 
     static QRegularExpression makeRegEx(const QString & input, bool * isExlusive = NULL);
 
-    static FilteredTextBuffer * m_dataBufferDevice;
-
   signals:
     void filterExprChanged(const QRegularExpression & expr);
     void filterEnabledChanged(const bool enabled);
     void filterExclusiveChanged(const bool exlusive);
     void filterChanged(bool enable, bool exclusive, const QRegularExpression & expr);
+    void tracebackDeviceChange(QIODevice * device);
 
   protected slots:
     void saveState();
     void restoreState();
     void processBytesReceived();
     void onDataBufferOverflow(const qint64 len);
-    void onAppDebugMessage(quint8 level, const QString & msg, const QMessageLogContext & context);
+    void onAppDebugMessage(quint8 level, const QString & msg);
     void onFilterStateChanged();
     void onFilterTextChanged(const QString &);
     void onFilterToggled(bool enable);
@@ -85,6 +84,7 @@ class DebugOutput : public QWidget
   protected:
     Ui::DebugOutput * ui;
     SimulatorInterface * m_simulator;
+    FilteredTextBuffer * m_dataBufferDevice;
     int m_radioProfileId;
     bool m_filterEnable;
     bool m_filterExclude;

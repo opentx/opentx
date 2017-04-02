@@ -26,7 +26,7 @@
 
 #include <QDial>
 #include <QMouseEvent>
-#include <QDebug>
+#include <QToolTip>
 #include <math.h>
 
 class RadioKnobWidget : public RadioWidget
@@ -65,7 +65,6 @@ class RadioKnobWidget : public RadioWidget
 
     Board::PotType m_potType;
 
-
     class KnobWidget : public QDial
     {
       public:
@@ -73,6 +72,8 @@ class RadioKnobWidget : public RadioWidget
         explicit KnobWidget(Board::PotType type, QWidget * parent = 0):
           QDial(parent)
         {
+          m_toolTip = tr("<p>Value (input): <b>%1</b></p>");
+
           setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
           setFixedSize(QSize(42, 42));
           setNotchesVisible(true);
@@ -88,7 +89,7 @@ class RadioKnobWidget : public RadioWidget
           }
           else {
             m_stepSize = 1;
-            setToolTip(tr("Right-double-click to reset to center."));
+            m_toolTip.append(tr("Right-double-click to reset to center."));
             setMinimum(-1024);
             setMaximum(1024);
             setPageStep(128);
@@ -102,6 +103,19 @@ class RadioKnobWidget : public RadioWidget
             value = value / m_stepSize * m_stepSize;
           }
           QDial::setValue(value);
+        }
+
+
+        bool event(QEvent *event)
+        {
+          if (event->type() == QEvent::ToolTip) {
+            QHelpEvent * helpEvent = static_cast<QHelpEvent *>(event);
+            if (helpEvent) {
+              QToolTip::showText(helpEvent->globalPos(), m_toolTip.arg(this->value()));
+              return true;
+            }
+          }
+          return QWidget::event(event);
         }
 
         void mousePressEvent(QMouseEvent * event)
@@ -129,6 +143,7 @@ class RadioKnobWidget : public RadioWidget
         }
 
         quint16 m_stepSize;
+        QString m_toolTip;
     };
 
 };
