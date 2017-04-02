@@ -1516,7 +1516,7 @@ Może być różny od języka firmware</translation>
     <message>
         <location filename="../flasheepromdialog.ui" line="113"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves a dated copy of your eeprom to the backup folder you specified in the Companion settings before writing the current model to the radio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves a dated copy of your eeprom to the backup folder you specified in the Companion settings before writing the current model to the radio.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Zapisuje datowaną kopię Twojego eepromu do folderu backupowego zdefiniowanego w Companion przed zapisem aktualnego modelu do radia.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.ui" line="116"/>
@@ -8830,163 +8830,163 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="101"/>
         <source>sets the application GUI style</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw styl GUI aplikacji</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="102"/>
         <source>sets the application stylesheet</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustaw arkusz stylów aplikacji</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="103"/>
         <source>restores the application from an earlier session</source>
-        <translation type="unfinished"></translation>
+        <translation>odtwarza aplikacji z poprzedniej sesji</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="104"/>
         <source>displays debugging information about widgets</source>
-        <translation type="unfinished"></translation>
+        <translation>wyswietla informacje debugowania widgetów</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="105"/>
         <source>use right-to-left layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj uladu or prawej do lewej</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="107"/>
         <source>never grab the mouse or keyboard</source>
-        <translation type="unfinished"></translation>
+        <translation>nie przechwytuj myszy ani klawiatury</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="110"/>
         <source>grab the mouse/keyboard even in a debugger</source>
-        <translation type="unfinished"></translation>
+        <translation>przechwytuj mysz/klawiarutę nawet w debugerze</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="111"/>
         <source>run in synchronous mode for debugging</source>
-        <translation type="unfinished"></translation>
+        <translation>pracuj w trybie sunchronicznym w debugerze</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="114"/>
         <source>use Direct3D by default</source>
-        <translation type="unfinished"></translation>
+        <translation>użyj domyślnie Dirext3D</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="117"/>
         <source>sets the X11 display</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw wyświetlacz X11</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="118"/>
         <source>sets the geometry of the first window</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw geometrię pierwszego okna</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="120"/>
         <source>sets the default font</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw domyślny font</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="122"/>
         <source>sets the default background color</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw domyśly kolor tła</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="124"/>
         <source>sets the default foreground color</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw kolor pierwszego planu</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="126"/>
         <source>sets the default button color</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw domyślny kolor przycisku</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="127"/>
         <source>sets the application name</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw nazwę aplikacji</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="128"/>
         <source>sets the application title</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw tytuł aplikacji</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="129"/>
         <source>sets the X11 visual type</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw typ widoku X11</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="130"/>
         <source>limit the number of colors on an 8-bit display</source>
-        <translation type="unfinished"></translation>
+        <translation>ogranicz ilość kolorów na 8-bitowym wyświetlaczu</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="131"/>
         <source>use a private color map</source>
-        <translation type="unfinished"></translation>
+        <translation>uzyj własnej palety barw</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="132"/>
         <source>sets the input method server</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw metodę wprowadzania serwera</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="133"/>
         <source>disable the X Input Method</source>
-        <translation type="unfinished"></translation>
+        <translation>zdezaktywuj Metodę Wprowadzania X</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="134"/>
         <source>sets the style used by the input method</source>
-        <translation type="unfinished"></translation>
+        <translation>ustaw styl uzywany przez metodę wprowadzania</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="238"/>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="252"/>
         <source>option &quot;%1&quot; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>opcja %1 nie znaloziona</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="387"/>
         <source>Short options cannot have optional parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Którkie opcje nie mogą posiadać parametrów dodatkowych</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="399"/>
         <source>positional() called before parse()</source>
-        <translation type="unfinished"></translation>
+        <translation>positional() wołana przed parse()</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="413"/>
         <source>unrecognized() called before parse()</source>
-        <translation type="unfinished"></translation>
+        <translation>unrecognized() wołana przed parse()</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="426"/>
         <source>count() called before parse()</source>
-        <translation type="unfinished"></translation>
+        <translation>count() wołana przed parse()</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="446"/>
         <source>value() called before parse()</source>
-        <translation type="unfinished"></translation>
+        <translation>value() wołana przed parse()</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="461"/>
         <source>parameters() called before parse()</source>
-        <translation type="unfinished"></translation>
+        <translation>parameters() wołana przed parse()</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="752"/>
         <source>unrecognized parameters: </source>
-        <translation type="unfinished"></translation>
+        <translation>nierozpoznane parametry:</translation>
     </message>
     <message>
         <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="755"/>
         <source>%1 requires a parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 wymaga parametru</translation>
     </message>
 </context>
 <context>
@@ -8994,7 +8994,7 @@ Profile ID: [%1]; Radio ID: [%2]</source>
     <message>
         <location filename="../simulation/widgets/radioknobwidget.h" line="91"/>
         <source>Right-double-click to reset to center.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podwójny klik PPM w celu zresetowania środka.</translation>
     </message>
 </context>
 <context>
@@ -9980,119 +9980,123 @@ Wolne obroty będą na górze, trymer i ostrzeżenie o otwartym gazie również 
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="20"/>
         <source>OpenTX Simulator - Startup Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Symulator OpenTX - Opcje Startowe</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="38"/>
         <source>Simulator Startup Options:</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje Startowe Symulatora:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="74"/>
         <source>Radio Profile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Profil radia:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="87"/>
         <source>Existing radio profiles are shown here.&lt;br /&gt;
 Create or edit profiles using the Companion application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tu są pokazane istniejące profile radia.&lt;br /&gt;
+Stwórz lub edytuj profile używając aplikacji Companion.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="95"/>
         <source>Radio Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ Radia:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="108"/>
         <source>Existing radio simulators are shown here.&lt;br /&gt;
 The radio type specified in the selected profile is used by default.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tu są pokazane istniejące profile radia.&lt;br /&gt;
+Typ radia określony w wybranym profilu zostanie użyty jako domyślny.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="116"/>
         <source>Data Source:</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło Danych:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="123"/>
         <source>Data File:</source>
-        <translation type="unfinished"></translation>
+        <translation>Źródło Pliku:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
         <source>Data Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Folder Danych:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
         <source>SD Image Path:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ścieżka Obrazu SD:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
         <source>Radio data (.bin/.eeprom/.otx) image file to use. A new file with a default image will be created if necessary.&lt;br /&gt;
 &lt;b&gt;NOTE&lt;/b&gt;: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik obrazu danych radia (.bin/.eeprom/.otx) do użytku. W razie potrzeby zostanie stworzony nowy plik z domyślnym obrazem.&lt;br /&gt;
+&lt;b&gt;UWAGA&lt;/b&gt;: każdy istniejący EEPROM niekompatybilny z wybranym typem radia zostanie nadpisany!</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="176"/>
         <source>Select data file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz plik danych...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="179"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="231"/>
         <location filename="../simulation/simulatorstartupdialog.ui" line="283"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
         <source>Directory containing RADIO and MODELS folders to use.&lt;br /&gt;
 New folder(s) with default radio/model will be created here if necessary.</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog zawierajacy foldery RADIA i MODELI do użycia.&lt;br /&gt;W razie potrzeby zostanią stworzone nowe foldery z domyślnym Radiem/Modelami.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
         <source>Select data folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz folder danych...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
         <source>Directory containing the SD card image to use.&lt;br/&gt;
 The default is configured in the chosen Radio Profile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog zawierajacy obraz karty SD do użycia.&lt;br/&gt;
+Domyślny jest skonfigurowany w wybranym Profilu Radia.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="280"/>
         <source>Select SD card image folder...</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz folder obrazu karty SD...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybierz jakie źródło danych (Plik/Folder/Karta SD) chcesz użyć do uruchomienia symulatora.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
         <source>File</source>
-        <translation type="unfinished">Plik</translation>
+        <translation>Plik</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
         <source>Folder</source>
-        <translation type="unfinished"></translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
         <source>SD Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Scieżka SD</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.cpp" line="230"/>
         <source>All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Wszytkie pliki (*.*)</translation>
     </message>
 </context>
 <context>
@@ -10100,72 +10104,72 @@ The default is configured in the chosen Radio Profile.</source>
     <message>
         <location filename="../simulation/simulatorwidget.ui" line="20"/>
         <source>Companion Simulator</source>
-        <translation type="unfinished">Symulator Companion</translation>
+        <translation>Symulator Companion</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="76"/>
         <source>Radio Simulator (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Symulator Radia (%1)</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="240"/>
         <source>Could not determine startup data source.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie mogę ustalić startowego źródła danych.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="245"/>
         <source>Could not load data, possibly wrong format.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie mogę załadować danych, prawdopodobnie zły format.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="246"/>
         <source>Data Load Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd odczytu danych</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="301"/>
         <source>Invalid startup data provided. Plese specify a proper file/path.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostarczone błędne dane startowe. Proszę określić prawidłowy plik/ścieżkę.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="302"/>
         <source>Simulator Startup Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd startu symulatora</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="362"/>
         <source>Error saving data: could open file for writing: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd zapisu danych: nie mogę otworzyć pliku do zapisu: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="368"/>
         <source>Error saving data: could not get data from simulator interface.</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd zapisu danych: nie mogę pobrać danych z interfacu symulatora.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="393"/>
         <source>An unexpected error occurred while attempting to save radio data to file &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nastąpił nieoczekiwany błąd w trakcie próby zapisu danych radia do pliku &apos;%1&apos;.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="394"/>
         <source>Data Save Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Błąd zapisu danych</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="606"/>
         <source>Warning</source>
-        <translation type="unfinished">Ostrzeżenie</translation>
+        <translation>Ostrzeżenie</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="606"/>
         <source>Cannot open joystick, joystick disabled</source>
-        <translation type="unfinished">Nie mogę otworzyć joysticka, dezaktywowany</translation>
+        <translation>Nie mogę otworzyć joysticka, dezaktywowany</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorwidget.cpp" line="798"/>
         <source>Firmware %1 error: %2</source>
-        <translation type="unfinished">Firmware %1 błąd: %2</translation>
+        <translation>Firmware %1 błąd: %2</translation>
     </message>
 </context>
 <context>
@@ -10173,7 +10177,7 @@ The default is configured in the chosen Radio Profile.</source>
     <message>
         <location filename="../simulation/widgets/sliderwidget.h" line="36"/>
         <source>Right-double-click to reset to center.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podwójny klik PPM w celu zresetowania środka.</translation>
     </message>
 </context>
 <context>
@@ -11243,7 +11247,7 @@ Timestamp</translation>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1907"/>
         <source>ASpd</source>
-        <translation>Prędk. Pow.</translation>
+        <translation>Prędk. Pow</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1925"/>
@@ -12626,7 +12630,7 @@ m2560 dla platformy V4</translation>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="107"/>
         <source>Knob/Slider %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gałka/Suwak %1</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="117"/>
@@ -12647,37 +12651,43 @@ m2560 dla platformy V4</translation>
         <location filename="../simulation/joystickdialog.cpp" line="184"/>
         <source>Press the Start button to start the stick range calibration procedure.
 You may change the channel assignments or inversion at any time.</source>
-        <translation type="unfinished"></translation>
+        <translation>W celu uruchomeinia procedury kalibracji wciśnij przycisk Start.
+W każdej chwili możesz zmienić przypisanie kanału lub rewers.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="190"/>
         <source>Move sticks and pots in every direction making full movement
 Press Next when finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Porusz drążkami i potencjometrami we wszytkich kierunkach po oporach
+Wciśnij Dalej kiedy skończysz</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="195"/>
         <source>Place sticks and pots in middle position.
 Press Next when done</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyśrodkuj drążki i potencjomety.
+Wciśnij Dalej kiedy skończysz</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="207"/>
         <source>Map joystick channels to controls using comboboxes.
 Press Next when done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zmapuj kanały joystika do elementów sterujących używając pól kombi.
+Wciśnij Dalej kiedy skończysz.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="211"/>
         <source>Check inversion checkbox to if necessary to reverse direction.
 Press Next when done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zaznacz pola wyboru rewersu jeśli konieczne jest odwrócenie działania.
+Wciśnij Dalej kiedy skończysz.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="215"/>
         <source>Press OK to save configuration
 Press Cancel to abort joystick calibration without saving.</source>
-        <translation type="unfinished"></translation>
+        <translation>Naciśnij OK w celu zapisania konfiguracji
+Naciśnij Porzuć w celu zakończyć kalibrację joystika bez zapisu.</translation>
     </message>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="258"/>
@@ -12687,7 +12697,7 @@ Press Cancel to abort joystick calibration without saving.</source>
     <message>
         <location filename="../simulation/joystickdialog.cpp" line="258"/>
         <source>Calibration not complete, save anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalibracja nie zakończona, zapisać mimo to?</translation>
     </message>
 </context>
 <context>
