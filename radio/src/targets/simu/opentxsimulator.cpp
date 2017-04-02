@@ -129,7 +129,7 @@ void OpenTxSimulator::start(const char * filename, bool tests)
   StartSimu(tests, simuSdDirectory.toLatin1().constData(), simuSettingsDirectory.toLatin1().constData());
 
   emit started();
-  QTimer::singleShot(0, this, SLOT(OpenTxSimulator::run));  // old style for Qt < 5.4
+  QTimer::singleShot(0, this, SLOT(run()));  // old style for Qt < 5.4
 }
 
 void OpenTxSimulator::stop()
