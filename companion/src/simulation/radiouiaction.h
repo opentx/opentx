@@ -37,12 +37,12 @@ class RadioUiAction : public QObject
     /*
      * @param index    Typically this is the hardware array index corresponding to button on current radio model,
      *                   but it could be anything. Use -1 or any other negative value for non-hardware indices.
-     * @param key      An optional Qt:Key code for shortcut.
+     * @param key      An optional Qt:Key code for shortcut (zero for none).
      * @param parent   Parent widget, required for handling keyboard events.
      * @param text     Optional title for this action. The text and description are currently used in generated help text.
      * @param descript Optional longer description text for this action.
      */
-    RadioUiAction(int index = -1, int key = 0, QWidget * parent = NULL, const QString &text = "", const QString &descript = ""):
+    RadioUiAction(int index = -1, int key = 0, const QString &text = "", const QString &descript = "", QWidget * parent = NULL):
       m_hwIndex(index),
       m_active(false),
       m_keys(QList<int>()),
@@ -50,36 +50,50 @@ class RadioUiAction : public QObject
       m_description(descript),
       m_parent(parent)
     {
-      if (key)
-        m_keys.append(key);
-
-      init();
+      addKey(key);
     }
     /*
      * @param keys QList of Qt:Key codes to use as shortcuts.
      *   [See above for other params.]
      */
-    RadioUiAction(int index, QList<int> keys, QWidget * parent = NULL, const QString &text = "", const QString &descript = ""):
-      m_hwIndex(index),
-      m_active(false),
-      m_keys(keys),
-      m_text(text),
-      m_description(descript),
-      m_parent(parent)
+    RadioUiAction(int index, QList<int> keys, const QString &text = "", const QString &descript = "", QWidget * parent = NULL):
+      RadioUiAction(index, 0, text, descript, parent)
     {
-      init();
+      addKeys(keys);
     }
 
-    void init()
+    void addKey(const int & key)
     {
-      if (m_keys.size())
+      if (key > 0 && !m_keys.contains(key)) {
+        m_keys.append(key);
         addShortcut();
+      }
+    }
+
+    void addKeys(const QList<int> & keys)
+    {
+      foreach (int key, keys)
+        addKey(key);
     }
 
     void addShortcut()
     {
-      if (m_parent)
-        m_parent->installEventFilter(this);
+      if (m_parent) {
+        m_parent->removeEventFilter(this);
+        if (m_keys.size())
+          m_parent->installEventFilter(this);
+      }
+    }
+
+    // override
+    void setParent(QObject * parent)
+    {
+      QObject::setParent(parent);
+      QWidget * w = qobject_cast<QWidget *>(parent);
+      if (w && w != m_parent) {
+        m_parent = w;
+        addShortcut();
+      }
     }
 
     void setDescription(const QString & description)    { m_description = description; }

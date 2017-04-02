@@ -442,7 +442,7 @@ void evalInputs(uint8_t mode)
     if (v < -RESX) v = -RESX;
     if (v >  RESX) v =  RESX;
 
-#if defined(PCBTARANIS) && !defined(PCBX7)
+#if defined(PCBTARANIS) && !defined(PCBX7) && !defined(SIMU)
     // TODO why not in the driver?
     if (i==POT1 || i==SLIDER1) {
       v = -v;

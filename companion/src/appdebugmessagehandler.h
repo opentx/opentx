@@ -127,7 +127,7 @@ class AppDebugMessageHandler : public QObject
     bool m_showFunctionDeclarations;
 
   signals:
-    void messageOutput(quint8 level, const QString & msg, const QMessageLogContext & context);
+    void messageOutput(quint8 level, const QString & msg);
 };
 
 // Message handler which is installed using qInstallMessageHandler. This needs to be global.

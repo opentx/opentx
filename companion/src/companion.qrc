@@ -12,6 +12,7 @@
     <file>images/track.png</file>
     <file>images/track0.png</file>
     <file>images/taranison.png</file>
+    <file>images/simulator/icons/svg/arrow_click.svg</file>
     <file>images/simulator/icons/svg/camera.svg</file>
     <file>images/simulator/icons/svg/camera-active.svg</file>
     <file>images/simulator/icons/svg/console.svg</file>
@@ -32,6 +33,7 @@
     <file>images/simulator/icons/svg/joystick_settings.svg</file>
     <file>images/simulator/icons/svg/joystick_settings-active.svg</file>
     <file>images/simulator/icons/svg/line_horiz.svg</file>
+    <file>images/simulator/icons/svg/mouse.svg</file>
     <file>images/simulator/icons/svg/toggle_lock.svg</file>
     <file>images/simulator/icons/svg/toggle_lock-on.svg</file>
     <file>images/simulator/icons/svg/radio_outputs.svg</file>

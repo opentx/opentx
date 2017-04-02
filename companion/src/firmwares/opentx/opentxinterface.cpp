@@ -1198,7 +1198,7 @@ void registerOpenTxFirmware(OpenTxFirmware * firmware)
   firmware->setEEpromInterface(eepromInterface);
   opentxEEpromInterfaces.push_back(eepromInterface);
   eepromInterfaces.push_back(eepromInterface);
-  firmwares.push_back(firmware);
+  Firmware::addRegisteredFirmware(firmware);
 }
 
 void registerOpenTxFirmwares()
@@ -1507,13 +1507,13 @@ void registerOpenTxFirmwares()
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
-  default_firmware_variant = getFirmware("opentx-x9d+");
-  current_firmware_variant = default_firmware_variant;
+  Firmware::setDefaultVariant(Firmware::getFirmwareForId("opentx-x9d+"));
+  Firmware::setCurrentVariant(Firmware::getDefaultVariant());
 }
 
 void unregisterOpenTxFirmwares()
 {
-  foreach (Firmware * f, firmwares) {
+  foreach (Firmware * f, Firmware::getRegisteredFirmwares()) {
     delete f;
   }
   unregisterEEpromInterfaces();

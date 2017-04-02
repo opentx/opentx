@@ -22,6 +22,7 @@
 #define RADIOOUTPUTSWIDGET_H
 
 #include "simulator.h"
+#include "simulatorinterface.h"
 
 #include <QTimer>
 #include <QWidget>
@@ -31,7 +32,7 @@ class RadioOutputsWidget;
 }
 
 class Firmware;
-class SimulatorInterface;
+//class SimulatorInterface;
 
 class QFrame;
 class QLabel;
@@ -47,16 +48,18 @@ class RadioOutputsWidget : public QWidget
     explicit RadioOutputsWidget(SimulatorInterface * simulator, Firmware * firmware, QWidget * parent = 0);
     ~RadioOutputsWidget();
 
+  public slots:
     void start();
-    void stop();
+    //void stop();
     void restart();
 
   protected slots:
     void saveState();
     void restoreState();
-    void setValues();
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
+    void onChannelOutValueChange(quint8 index, qint32 value);
+    void onVirtSwValueChange(quint8 index, qint32 value);
+    void onGVarValueChange(quint8 index, qint32 value);
+    void onPhaseChanged(qint32 phase, const QString &);
 
   protected:
     void changeEvent(QEvent *e);
@@ -67,7 +70,6 @@ class RadioOutputsWidget : public QWidget
 
     SimulatorInterface * m_simulator;
     Firmware * m_firmware;
-    QTimer * m_tmrUpdateData;
 
     QHash<int, QPair<QLabel *, QSlider *> > m_channelsMap;  // m_channelsMap[chanIndex] = {QLabel*, QSlider*}
     QHash<int, QLabel *> m_logicSwitchMap;                  // m_logicSwitchMap[lsIndex] = QLabel*
@@ -75,10 +77,7 @@ class RadioOutputsWidget : public QWidget
 
     int m_radioProfileId;
     int m_dataUpdateFreq;
-    int m_lastFlightPhase;
-    bool m_started;
 
-    const static int m_dataUpdateFreqDefault;
     const static quint16 m_savedViewStateVersion;
 
   private:

@@ -21,11 +21,11 @@
 #define GBALL_SIZE       25
 #define GBALL_SIZE_MN    20
 #define GBALL_SIZE_MX    35
+#define CENTER_INTERVAL  50  // ms
 
 #include "virtualjoystickwidget.h"
 
 #include "boards.h"
-#include "constants.h"
 #include "modeledit/node.h"
 #include "helpers.h"
 #include "radiotrimwidget.h"
@@ -43,6 +43,7 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   btnFixY(NULL),
   nodeLabelX(NULL),
   nodeLabelY(NULL),
+  m_stickScale(1024),
   m_stickPressed(false)
 {
   ar = (float)size.width() / size.height();
@@ -135,12 +136,18 @@ VirtualJoystickWidget::VirtualJoystickWidget(QWidget *parent, QChar side, bool s
   layout->addItem(new QSpacerItem(0, 0), 1, 4, 2, 1);  // r1-2 c4: right h spacer
   layout->addItem(new QSpacerItem(0, 0), 3, 0, 1, 5);  // r4 c0-4: bot v spacer
 
-  connect(node, &Node::xChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
-  connect(node, &Node::yChanged, this, &VirtualJoystickWidget::updateNodeValueLabels);
+  setStickIndices(getStickIndex('H'), getStickIndex('V'));
+
+  connect(node, &Node::xChanged, this, &VirtualJoystickWidget::onNodeXChanged);
+  connect(node, &Node::yChanged, this, &VirtualJoystickWidget::onNodeYChanged);
 
   connect(scene, &CustomGraphicsScene::mouseEvent, this, &VirtualJoystickWidget::onGsMouseEvent);
 
   setSize(prefSize, frameSize());
+
+  centerStickTimer.setInterval(CENTER_INTERVAL);
+  connect(&centerStickTimer, &QTimer::timeout, this, &VirtualJoystickWidget::centerStick);
+  centerStickTimer.start();
 }
 
 void VirtualJoystickWidget::setStickX(qreal x)
@@ -156,6 +163,31 @@ void VirtualJoystickWidget::setStickY(qreal y)
 void VirtualJoystickWidget::setStickPos(QPointF xy)
 {
   node->setPos(xy);
+}
+
+void VirtualJoystickWidget::setStickAxisValue(int index, int value)
+{
+  using namespace Board;
+  qreal rvalue = value / 1024.0f;
+
+  switch (index) {
+    case STICK_AXIS_LH :
+      if (stickSide == 'L')
+        setStickX(rvalue);
+      break;
+    case STICK_AXIS_RH :
+      if (stickSide == 'R')
+        setStickX(rvalue);
+      break;
+    case STICK_AXIS_LV :
+      if (stickSide == 'L')
+        setStickY(rvalue);
+      break;
+    case STICK_AXIS_RV :
+      if (stickSide == 'R')
+        setStickY(rvalue);
+      break;
+  }
 }
 
 void VirtualJoystickWidget::centerStick()
@@ -178,20 +210,55 @@ QPointF VirtualJoystickWidget::getStickPos()
   return QPointF(node->getX(), node->getY());
 }
 
-void VirtualJoystickWidget::setTrimValue(int which, int value)
+void VirtualJoystickWidget::setTrimsRange(int min, int max)
 {
-  RadioTrimWidget * trim = getTrimWidget(which);
+  if (hTrimWidget)
+    hTrimWidget->setTrimRange(min, max);
+  if (vTrimWidget)
+    vTrimWidget->setTrimRange(min, max);
+}
+
+void VirtualJoystickWidget::setTrimsRange(int rng)
+{
+  setTrimsRange(-rng, rng);
+}
+
+void VirtualJoystickWidget::setTrimRange(int index, int min, int max)
+{
+  if (index == Board::TRIM_AXIS_COUNT) {
+    setTrimsRange(min, max);
+    return;
+  }
+  RadioTrimWidget * trim = getTrimWidget(index);
+  if (trim) {
+    trim->setTrimRange(min, max);
+  }
+}
+
+void VirtualJoystickWidget::setTrimValue(int index, int value)
+{
+  RadioTrimWidget * trim = getTrimWidget(index);
   if (trim) {
     trim->setValue(value);
   }
 }
 
-void VirtualJoystickWidget::setTrimRange(int which, int min, int max)
+int VirtualJoystickWidget::getStickScale() const
 {
-  RadioTrimWidget * trim = getTrimWidget(which);
-  if (trim) {
-    trim->setTrimRange(min, max);
-  }
+  return m_stickScale;
+}
+
+void VirtualJoystickWidget::setStickScale(int stickScale)
+{
+  m_stickScale = stickScale;
+}
+
+void VirtualJoystickWidget::setWidgetValue(const RadioWidget::RadioWidgetType type, const int index, const int value)
+{
+  if (type == RadioWidget::RADIO_WIDGET_TRIM)
+    setTrimValue(index, value);
+  else if (type == RadioWidget::RADIO_WIDGET_STICK)
+    setStickAxisValue(index, value);
 }
 
 int VirtualJoystickWidget::getTrimValue(int which)
@@ -203,32 +270,39 @@ int VirtualJoystickWidget::getTrimValue(int which)
   return 0;
 }
 
-void VirtualJoystickWidget::setStickConstraint(int which, bool active)
+void VirtualJoystickWidget::setStickIndices(int xIdx, int yIdx)
 {
-  if (btnHoldX == NULL)
+  m_xIndex = xIdx;
+  m_yIndex = yIdx;
+}
+
+void VirtualJoystickWidget::setStickConstraint(quint8 index, bool active)
+{
+  if (btnHoldX == NULL || !index)
     return;  // no buttons
 
-  switch (which) {
-    case HOLD_X:
-      btnHoldX->setChecked(active);
-      break;
-    case HOLD_Y:
-      btnHoldY->setChecked(active);
-      break;
-    case FIX_X:
-      btnFixX->setChecked(active);
-      break;
-    case FIX_Y:
-      btnFixY->setChecked(active);
-      break;
-    default:
-      break;
-  }
+  if (index & HOLD_X)
+    btnHoldX->setChecked(active);
+  if (index & HOLD_Y)
+    btnHoldY->setChecked(active);
+  if (index & FIX_X)
+    btnFixX->setChecked(active);
+  if (index & FIX_Y)
+    btnFixY->setChecked(active);
 }
 
 void VirtualJoystickWidget::setStickColor(const QColor & color)
 {
   node->setColor(color);
+}
+
+void VirtualJoystickWidget::loadDefaultsForMode(const unsigned mode)
+{
+  if (((mode & 1) && stickSide == 'L') || (!(mode & 1) && stickSide == 'R')) {
+    setStickConstraint(HOLD_Y, true);
+    setStickY(1.0);
+    onNodeYChanged();
+  }
 }
 
 QSize VirtualJoystickWidget::sizeHint() const {
@@ -239,6 +313,18 @@ void VirtualJoystickWidget::resizeEvent(QResizeEvent * event)
 {
   QWidget::resizeEvent(event);
   setSize(event->size(), event->oldSize());
+}
+
+void VirtualJoystickWidget::onNodeXChanged()
+{
+  emit valueChange(RadioWidget::RADIO_WIDGET_STICK, m_xIndex, int(m_stickScale * getStickX()));
+  updateNodeValueLabels();
+}
+
+void VirtualJoystickWidget::onNodeYChanged()
+{
+  emit valueChange(RadioWidget::RADIO_WIDGET_STICK, m_yIndex, int(-m_stickScale * getStickY()));
+  updateNodeValueLabels();
 }
 
 void VirtualJoystickWidget::setSize(const QSize & size, const QSize &)
@@ -301,9 +387,7 @@ RadioTrimWidget * VirtualJoystickWidget::createTrimWidget(QChar type)
   RadioTrimWidget * trimWidget = new RadioTrimWidget(type == 'H' ? Qt::Horizontal : Qt::Vertical);
   trimWidget->setIndices(getTrimSliderType(type), getTrimButtonType(type, 0), getTrimButtonType(type, 1));
 
-  connect(trimWidget, &RadioTrimWidget::trimButtonPressed, this, &VirtualJoystickWidget::trimButtonPressed);
-  connect(trimWidget, &RadioTrimWidget::trimButtonReleased, this, &VirtualJoystickWidget::trimButtonReleased);
-  connect(trimWidget, &RadioTrimWidget::trimSliderMoved, this, &VirtualJoystickWidget::trimSliderMoved);
+  connect(trimWidget, &RadioTrimWidget::valueChange, this, &VirtualJoystickWidget::valueChange);
 
   return trimWidget;
 }
@@ -371,6 +455,24 @@ QLayout *VirtualJoystickWidget::createNodeValueLayout(QChar type, QLabel *& valL
   return layout;
 }
 
+int VirtualJoystickWidget::getStickIndex(QChar type)
+{
+  using namespace Board;
+
+  if (stickSide == 'L') {
+    if (type == 'H')
+      return STICK_AXIS_LH;
+    else
+      return STICK_AXIS_LV;
+  }
+  else {
+    if (type == 'H')
+      return STICK_AXIS_RH;
+    else
+      return STICK_AXIS_RV;
+  }
+}
+
 int VirtualJoystickWidget::getTrimSliderType(QChar type)
 {
   using namespace Board;
@@ -426,10 +528,12 @@ int VirtualJoystickWidget::getTrimButtonType(QChar type, int pos)
 
 RadioTrimWidget * VirtualJoystickWidget::getTrimWidget(int which)
 {
-  if (which == Board::TRIM_AXIS_LH || which == Board::TRIM_AXIS_RH)
+  if ((stickSide == 'L' && which == Board::TRIM_AXIS_LH) || (stickSide == 'R' && which == Board::TRIM_AXIS_RH))
     return hTrimWidget;
-  else
+  else if ((stickSide == 'L' && which == Board::TRIM_AXIS_LV) || (stickSide == 'R' && which == Board::TRIM_AXIS_RV))
     return vTrimWidget;
+  else
+    return NULL;
 }
 
 void VirtualJoystickWidget::onButtonChange(bool checked)
@@ -456,9 +560,9 @@ void VirtualJoystickWidget::onButtonChange(bool checked)
 void VirtualJoystickWidget::updateNodeValueLabels()
 {
   if (nodeLabelX)
-    nodeLabelX->setText(QString("%1").arg((qreal)node->getX() *  100 + getTrimValue(0) / 5, 2, 'f', 0));
+    nodeLabelX->setText(QString("%1").arg(node->getX() *  100.0f, 2, 'f', 0));
   if (nodeLabelY)
-    nodeLabelY->setText(QString("%1").arg((qreal)node->getY() * -100 + getTrimValue(1) / 5, 2, 'f', 0));
+    nodeLabelY->setText(QString("%1").arg(node->getY() * -100.0f, 2, 'f', 0));
 }
 
 void VirtualJoystickWidget::onGsMouseEvent(QGraphicsSceneMouseEvent * event)

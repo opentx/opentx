@@ -68,7 +68,6 @@ uint32_t readTrims()
     result |= 0x40;
   if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
     result |= 0x80;
-#if !defined(SIMU)
   if (~TRIMS_GPIO_REG_LSD & TRIMS_GPIO_PIN_LSD)
     result |= 0x100;
   if (~TRIMS_GPIO_REG_LSU & TRIMS_GPIO_PIN_LSU)
@@ -77,7 +76,6 @@ uint32_t readTrims()
     result |= 0x400;
   if (~TRIMS_GPIO_REG_RSU & TRIMS_GPIO_PIN_RSU)
     result |= 0x800;
-#endif
   // TRACE("readTrims(): result=0x%04x", result);
 
   return result;
@@ -164,7 +162,7 @@ uint8_t keyState(uint8_t index)
 uint32_t switchState(uint8_t index)
 {
   uint32_t xxx = 0;
-  
+
   switch (index) {
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);

@@ -26,6 +26,7 @@
 #include <QCloseEvent>
 #include <QWidget>
 #include <QTimer>
+#include "radiowidget.h"
 #include "simulatorinterface.h"
 
 namespace Ui {
@@ -42,21 +43,27 @@ class TrainerSimulator : public QWidget
     explicit TrainerSimulator(QWidget * parent, SimulatorInterface * simulator);
     virtual ~TrainerSimulator();
 
+  signals:
+    void trainerHeartbeat(quint16 ms);
+    void trainerChannelChange(quint8 index, qint16 value);
 
   protected slots:
+    void start();
+    void stop();
     virtual void showEvent(QShowEvent *event);
-    virtual void closeEvent(QCloseEvent *event);
-    void centerSticks();
-    void setTrainerInputs();
-    void onTimerEvent();
+    virtual void hideEvent(QHideEvent *event);
+    void onSimulatorStarted();
+    void onSimulatorStopped();
+    void onRadioWidgetValueChange(RadioWidget::RadioWidgetType type, int index, int value);
+    void emitHeartbeat();
 
   protected:
     Ui::TrainerSimulator * ui;
-    QTimer * timer;
     SimulatorInterface *simulator;
-
     VirtualJoystickWidget * vJoyLeft;
     VirtualJoystickWidget * vJoyRight;
+    QTimer timer;
+    bool m_simuStarted;
 
 };
 
