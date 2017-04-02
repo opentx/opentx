@@ -46,13 +46,6 @@
        <string>Radio Profile</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0">
-       <item row="0" column="2" colspan="2">
-        <widget class="QPushButton" name="removeProfileButton">
-         <property name="text">
-          <string>Remove Profile</string>
-         </property>
-        </widget>
-       </item>
        <item row="8" column="2" colspan="2">
         <widget class="QPushButton" name="sdPathButton">
          <property name="text">
@@ -1128,7 +1121,6 @@ Mode 4:
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>profileNameLE</tabstop>
-  <tabstop>removeProfileButton</tabstop>
   <tabstop>downloadVerCB</tabstop>
   <tabstop>langCombo</tabstop>
   <tabstop>voiceCombo</tabstop>

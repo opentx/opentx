@@ -325,10 +325,40 @@ class Firmware {
 
     const int getFlashSize();
 
+    static Firmware * getFirmwareForId(const QString & id);
+
+    static QVector<Firmware *> getRegisteredFirmwares()
+    {
+      return registeredFirmwares;
+    }
+    static void addRegisteredFirmware(Firmware * fw)
+    {
+      registeredFirmwares.append(fw);
+    }
+
+    static Firmware * getDefaultVariant()
+    {
+      return defaultVariant;
+    }
+    static void setDefaultVariant(Firmware * value)
+    {
+      defaultVariant = value;
+    }
+
+    static Firmware * getCurrentVariant()
+    {
+      return currentVariant;
+    }
+    static void setCurrentVariant(Firmware * value)
+    {
+      currentVariant = value;
+    }
+
   public:
     QList<const char *> languages;
     QList<const char *> ttslanguages;
     QList< QList<Option> > opts;
+
 
   protected:
     QString id;
@@ -338,30 +368,28 @@ class Firmware {
     Firmware * base;
     EEPROMInterface * eepromInterface;
 
+    static QVector<Firmware *> registeredFirmwares;
+    static Firmware * defaultVariant;
+    static Firmware * currentVariant;
+
   private:
     Firmware();
 
 };
 
-extern QList<Firmware *> firmwares;
-extern Firmware * default_firmware_variant;
-extern Firmware * current_firmware_variant;
-
-Firmware * getFirmware(const QString & id);
-
 inline Firmware * getCurrentFirmware()
 {
-  return current_firmware_variant;
+  return Firmware::getCurrentVariant();
 }
 
 inline EEPROMInterface * getCurrentEEpromInterface()
 {
-  return getCurrentFirmware()->getEEpromInterface();
+  return Firmware::getCurrentVariant()->getEEpromInterface();
 }
 
 inline Board::Type getCurrentBoard()
 {
-  return getCurrentFirmware()->getBoard();
+  return Firmware::getCurrentVariant()->getBoard();
 }
 
 inline int divRoundClosest(const int n, const int d)

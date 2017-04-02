@@ -206,7 +206,7 @@ int main(int argc, char *argv[])
     return finish(2);
   }
 
-  current_firmware_variant = getFirmware(simOptions.firmwareId);
+  Firmware::setCurrentVariant(Firmware::getFirmwareForId(simOptions.firmwareId));
 
   g.sessionId(profileId);
   g.simuLastProfId(profileId);

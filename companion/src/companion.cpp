@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
   SimulatorLoader::registerSimulators();
 
   if (g.profile[g.id()].fwType().isEmpty()){
-    g.profile[g.id()].fwType(default_firmware_variant->getId());
+    g.profile[g.id()].fwType(Firmware::getDefaultVariant()->getId());
     g.profile[g.id()].fwName("");
   }
 
@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
   QPixmap pixmap = QPixmap(splashScreen);
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
-  current_firmware_variant = getFirmware(g.profile[g.id()].fwType());
+  Firmware::setCurrentVariant(Firmware::getFirmwareForId(g.profile[g.id()].fwType()));
 
   MainWindow *mainWin = new MainWindow();
   if (g.showSplash()) {

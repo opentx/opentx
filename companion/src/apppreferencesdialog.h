@@ -40,6 +40,9 @@ class AppPreferencesDialog : public QDialog
     ~AppPreferencesDialog();
     Joystick * joystick;
 
+  signals:
+    void firmwareProfileChanged(int profId);
+
   private:
     QList<QCheckBox *> optionsCheckBoxes;
     bool updateLock;
@@ -69,7 +72,6 @@ class AppPreferencesDialog : public QDialog
     void on_ge_pathButton_clicked();
 
     void on_sdPathButton_clicked();
-    void on_removeProfileButton_clicked();
     void on_SplashSelect_clicked();
     void on_clearImageButton_clicked();
 

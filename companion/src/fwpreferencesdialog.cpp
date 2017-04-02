@@ -37,7 +37,7 @@ FirmwarePreferencesDialog::FirmwarePreferencesDialog(QWidget *parent) :
 
   foreach(const char *lang, getCurrentFirmware()->getFirmwareBase()->ttslanguages) {
     ui->voiceCombo->addItem(lang);
-    if (current_firmware_variant->getId().contains(QString("-tts%1").arg(lang)))
+    if (Firmware::getCurrentVariant()->getId().contains(QString("-tts%1").arg(lang)))
       ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
   }
 }
