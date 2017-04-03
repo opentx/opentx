@@ -94,6 +94,33 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_SET_FAILSAFE_OFS  100
 #define MODEL_SETUP_SLIDPOT_SPACING   45
 
+#if defined(BINDING_OPTIONS)
+bool static bindingChoiceMade = false;
+void onBindMenu(const char * result)
+{
+  if (result == STR_BINDING_1_8_TELEM_ON) {
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off = false;
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 = false;
+    bindingChoiceMade = true;
+  }
+  else if (result == STR_BINDING_1_8_TELEM_OFF) {
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off = true;
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 = false;
+    bindingChoiceMade = true;
+  }
+  else if (result == STR_BINDING_9_16_TELEM_ON) {
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off = false;
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 = true;
+    bindingChoiceMade = true;
+  }
+  else if (result == STR_BINDING_9_16_TELEM_OFF) {
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off = true;
+    g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 = true;
+    bindingChoiceMade = true;
+  }
+}
+#endif
+
 void onModelSetupBitmapMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {
@@ -794,11 +821,41 @@ bool menuModelSetup(event_t event)
               s_editMode=0;
             }
 #endif
+#if defined(BINDING_OPTIONS)
+            if (attr && l_posHorz>0) {
+              if(s_editMode>0) {
+                if (l_posHorz == 1) {
+                  if (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16 && s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
+                    if(!popupMenuNoItems && !bindingChoiceMade) {
+                      POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
+                      POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_OFF);
+                      POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
+                      POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
+                      bindingChoiceMade = false;
+                      POPUP_MENU_SELECT_ITEM(g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off + (g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 << 1));
+                      POPUP_MENU_START(onBindMenu);
+                      continue;
+                    }
+                    if (bindingChoiceMade)
+                      newFlag = MODULE_BIND;
+                  }
+                  else {
+                    newFlag = MODULE_BIND;
+                  }
+                }
+                else if (l_posHorz == 2) {
+                  newFlag = MODULE_RANGECHECK;
+                }
+              }
+              else {
+                bindingChoiceMade = false;
+#else
             if (attr && l_posHorz>0 && s_editMode>0) {
               if (l_posHorz == 1)
                 newFlag = MODULE_BIND;
               else if (l_posHorz == 2) {
                 newFlag = MODULE_RANGECHECK;
+#endif
               }
             }
             moduleFlag[moduleIdx] = newFlag;

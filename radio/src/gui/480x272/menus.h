@@ -483,6 +483,7 @@ extern uint8_t warningInfoFlags;
 
 #define NAVIGATION_MENUS
 #define POPUP_MENU_ADD_ITEM(s)         do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuNoItems < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuNoItems++] = s; } while (0)
+#define POPUP_MENU_SELECT_ITEM(s)      s_menu_item =  (s > 0 ? (s < popupMenuNoItems ? s : popupMenuNoItems) : 0)
 #define POPUP_MENU_START(func)         do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while(0)
 #define POPUP_MENU_MAX_LINES           12
 #define MENU_MAX_DISPLAY_LINES         9
@@ -496,6 +497,7 @@ enum {
   MENU_OFFSET_EXTERNAL
 };
 extern uint8_t popupMenuOffsetType;
+extern uint8_t s_menu_item;
 const char * runPopupMenu(event_t event);
 extern void (*popupMenuHandler)(const char * result);
 

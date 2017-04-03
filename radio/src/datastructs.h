@@ -676,7 +676,13 @@ PACK(struct ModuleData {
       int8_t optionValue;
     } multi);
     NOBACKUP(struct {
+#if defined(BINDING_OPTIONS)
+      uint8_t spare:4;
+      uint8_t receiver_telem_off:1;     // false = receiver telem enabled
+      uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
+#else
       uint8_t spare:6;
+#endif
       uint8_t external_antenna:1; // false = internal antenna, true = external antenna
       uint8_t spare2:1;
       uint8_t spare3;
@@ -1086,7 +1092,7 @@ static inline void check_struct()
 
   CHKSIZE(RadioData, 850);
   CHKSIZE(ModelData, 6025);
-  
+
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);

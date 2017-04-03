@@ -857,6 +857,10 @@
 #define TR_MODULE_NO_INPUT     TR("Pas de sign.", "Aucun signal série")
 #define TR_MODULE_NO_TELEMETRY TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_BINDING      "Bind..."
+#define TR_BINDING_MODE1               "Ch1-8 Telem ON"
+#define TR_BINDING_MODE2               "Ch1-8 Telem OFF"
+#define TR_BINDING_MODE3               "Ch9-16 Telem ON"
+#define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID    TR("Sél. invalide", "Protocole invalide")
 #define TR_MODULE_STATUS       TR(INDENT "Etat", INDENT "Etat module")
 #define TR_MULTI_SERVOFREQ     TR(INDENT "Fréq.servo", INDENT "Fréquence servos")

@@ -247,7 +247,8 @@ options_taranis = {
     "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO")
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "bindopt": ("BINDING_OPTIONS", "YES", "NO")
 }
 
 options_taranisplus = {
@@ -266,7 +267,8 @@ options_taranisplus = {
     "internalppm": ("TARANIS_INTERNAL_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO")
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "bindopt": ("BINDING_OPTIONS", "YES", "NO")
 }
 
 options_taranisx9e = {
@@ -286,7 +288,8 @@ options_taranisx9e = {
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "horussticks": ("STICKS", "HORUS", "STANDARD"),
-    "multimodule": ("MULTIMODULE", "YES", "NO")
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "bindopt": ("BINDING_OPTIONS", "YES", "NO")
 }
 
 options_x12s = {
@@ -303,6 +306,7 @@ options_x12s = {
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
     "pcbdev": ("PCBREV", "10", None),
+    "bindopt": ("BINDING_OPTIONS", "YES", "NO")
 }
 
 options_x10 = {
@@ -318,4 +322,5 @@ options_x10 = {
     "cli": ("USB", "SERIAL", None),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "bindopt": ("BINDING_OPTIONS", "YES", "NO")
 }
