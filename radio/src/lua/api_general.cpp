@@ -482,6 +482,9 @@ The list of valid sources is available:
 * for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt (depreciated)
 * for OpenTX 2.1.x Taranis and Taranis Plus at http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt
 * for OpenTX 2.1.x Taranis X9E at http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt
+* for OpenTX 2.2.x Taranis and Taranis Plus at http://downloads-22.open-tx.org/firmware/lua_fields_x9d.txt
+* for OpenTX 2.2.x Taranis X9E at  http://downloads-22.open-tx.org/firmware/lua_fields_x9e.txt
+* for OpenTX 2.2.x Horus at  http://downloads-22.open-tx.org/firmware/lua_fields_x12s.txt
 
 @param name (string) name of the field
 
@@ -489,8 +492,39 @@ The list of valid sources is available:
  * `id`   (number) field identifier
  * `name` (string) field name
  * `desc` (string) field description
+ * 'unit' (number) unit identifier
 
 @retval nil the requested field was not found
+
+| Index  | Unit            |
+| --- | ---                |
+| 0   | (no unit played)   |
+| 1   | Volts              |
+| 2   | Amps               |
+| 3   | Milliamps          |
+| 4   | Knots              |
+| 5   | Meters per Second  |
+| 6   | Feet per Second    |
+| 7   | Kilometers per Hour|
+| 8   | Miles per Hour     |
+| 9   | Meters             |
+| 10  | Feet               |
+| 11  | Degrees Celsius    |
+| 12  | Degrees Fahrenheit |
+| 13  | Percent            |
+| 14  | Milliamp Hours     |
+| 15  | Watts              |
+| 16  | Milliwatts         |
+| 17  | DB                 |
+| 18  | RPM                |
+| 19  | Gee                |
+| 20  | Degrees            |
+| 21  | Radians            |
+| 22  | Milliliters        |
+| 23  | Fluid Ounces       |
+| 24  | Hours              |
+| 25  | Minutes            |
+| 26  | Seconds            |
 
 @status current Introduced in 2.0.8
 */
@@ -504,6 +538,11 @@ static int luaGetFieldInfo(lua_State * L)
     lua_pushtableinteger(L, "id", field.id);
     lua_pushtablestring(L, "name", what);
     lua_pushtablestring(L, "desc", field.desc);
+    if (field.id >= MIXSRC_FIRST_TELEM && field.id <= MIXSRC_LAST_TELEM) {
+      div_t qr = div(field.id-MIXSRC_FIRST_TELEM, 3);
+      TelemetrySensor & telemetrySensor = g_model.telemetrySensors[qr.quot];
+      lua_pushtableinteger(L, "unit", telemetrySensor.unit);
+    }
     return 1;
   }
   return 0;
@@ -574,71 +613,6 @@ static int luaGetValue(lua_State * L)
     }
   }
   luaGetValueAndPush(L, src);
-  return 1;
-}
-
-/*luadoc
-@function getUnit(telemetry source)
-
-Return an integer representing the unit used
-
-@Return an unsigned integer representing the unit used or nil if no valid sensor was found
-
-| Index  | Unit            |
-| --- | ---                |
-| 0   | (no unit played)   |
-| 1   | Volts              |
-| 2   | Amps               |
-| 3   | Milliamps          |
-| 4   | Knots              |
-| 5   | Meters per Second  |
-| 6   | Feet per Second    |
-| 7   | Kilometers per Hour|
-| 8   | Miles per Hour     |
-| 9   | Meters             |
-| 10  | Feet               |
-| 11  | Degrees Celsius    |
-| 12  | Degrees Fahrenheit |
-| 13  | Percent            |
-| 14  | Milliamp Hours     |
-| 15  | Watts              |
-| 16  | Milliwatts         |
-| 17  | DB                 |
-| 18  | RPM                |
-| 19  | Gee                |
-| 20  | Degrees            |
-| 21  | Radians            |
-| 22  | Milliliters        |
-| 23  | Fluid Ounces       |
-| 24  | Hours              |
-| 25  | Minutes            |
-| 26  | Seconds            |
-
-@status current Introduced in 2.2.0
-*/
-static int luaGetUnit(lua_State * L)
-{
-  int src = 0;
-  if (lua_isnumber(L, 1)) {
-    src = luaL_checkinteger(L, 1);
-  }
-  else {
-    // convert from field name to its id
-    const char *name = luaL_checkstring(L, 1);
-    LuaField field;
-    bool found = luaFindFieldByName(name, field);
-    if (found) {
-      src = field.id;
-    }
-  }
-  if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
-    div_t qr = div(src-MIXSRC_FIRST_TELEM, 3);
-    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[qr.quot];
-    lua_pushunsigned(L, telemetrySensor.unit);
-  }
-  else {
-    lua_pushnil(L);
-  }
   return 1;
 }
 
@@ -1263,7 +1237,6 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
-  { "getUnit", luaGetUnit },
   { "getRAS", luaGetRAS },
   { "getFieldInfo", luaGetFieldInfo },
   { "getFlightMode", luaGetFlightMode },
