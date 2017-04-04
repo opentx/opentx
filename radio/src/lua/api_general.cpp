@@ -478,13 +478,11 @@ static int luaCrossfireTelemetryPush(lua_State * L)
 Return detailed information about field (source)
 
 The list of valid sources is available:
-* for OpenTX 2.0.x at http://downloads-20.open-tx.org/firmware/lua_fields.txt
-* for OpenTX 2.1.x at http://downloads-21.open-tx.org/firmware/lua_fields.txt (depreciated)
-* for OpenTX 2.1.x Taranis and Taranis Plus at http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt
-* for OpenTX 2.1.x Taranis X9E at http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt
-* for OpenTX 2.2.x Taranis and Taranis Plus at http://downloads-22.open-tx.org/firmware/lua_fields_x9d.txt
-* for OpenTX 2.2.x Taranis X9E at  http://downloads-22.open-tx.org/firmware/lua_fields_x9e.txt
-* for OpenTX 2.2.x Horus at  http://downloads-22.open-tx.org/firmware/lua_fields_x12s.txt
+| OpenTX Version | Radio |
+|----------------|-------|
+| 2.0 | [all](http://downloads-20.open-tx.org/firmware/lua_fields.txt) |
+| 2.1 | [X9D and X9D+](http://downloads-21.open-tx.org/firmware/lua_fields_taranis.txt), [X9E](http://downloads-21.open-tx.org/firmware/lua_fields_taranis_x9e.txt) |
+| 2.2 | [X9D and X9D+](http://downloads.open-tx.org/2.2/firmware/lua_fields_x9d.txt), [X9E](http://downloads.open-tx.org/2.2/firmware/lua_fields_x9e.txt), [Horus](http://downloads.open-tx.org/2.2/firmware/lua_fields_x12s.txt) |
 
 @param name (string) name of the field
 
@@ -496,7 +494,7 @@ The list of valid sources is available:
 
 @retval nil the requested field was not found
 
-@status current Introduced in 2.0.8
+@status current Introduced in 2.0.8, 'unit' field added in 2.2.0
 */
 static int luaGetFieldInfo(lua_State * L)
 {
@@ -512,6 +510,9 @@ static int luaGetFieldInfo(lua_State * L)
       div_t qr = div(field.id-MIXSRC_FIRST_TELEM, 3);
       TelemetrySensor & telemetrySensor = g_model.telemetrySensors[qr.quot];
       lua_pushtableinteger(L, "unit", telemetrySensor.unit);
+    }
+    else {
+      lua_pushtablenil(L, "unit");
     }
     return 1;
   }
