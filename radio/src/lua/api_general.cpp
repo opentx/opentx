@@ -492,39 +492,9 @@ The list of valid sources is available:
  * `id`   (number) field identifier
  * `name` (string) field name
  * `desc` (string) field description
- * 'unit' (number) unit identifier
+ * 'unit' (number) unit identifier (https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/appendix/units.html)
 
 @retval nil the requested field was not found
-
-| Index  | Unit            |
-| --- | ---                |
-| 0   | (no unit played)   |
-| 1   | Volts              |
-| 2   | Amps               |
-| 3   | Milliamps          |
-| 4   | Knots              |
-| 5   | Meters per Second  |
-| 6   | Feet per Second    |
-| 7   | Kilometers per Hour|
-| 8   | Miles per Hour     |
-| 9   | Meters             |
-| 10  | Feet               |
-| 11  | Degrees Celsius    |
-| 12  | Degrees Fahrenheit |
-| 13  | Percent            |
-| 14  | Milliamp Hours     |
-| 15  | Watts              |
-| 16  | Milliwatts         |
-| 17  | DB                 |
-| 18  | RPM                |
-| 19  | Gee                |
-| 20  | Degrees            |
-| 21  | Radians            |
-| 22  | Milliliters        |
-| 23  | Fluid Ounces       |
-| 24  | Hours              |
-| 25  | Minutes            |
-| 26  | Seconds            |
 
 @status current Introduced in 2.0.8
 */
@@ -702,7 +672,7 @@ Play a numerical value (text to speech)
 
 @param value (number) number to play. Value is interpreted as integer.
 
-@param unit (number) unit identifier (see table todo)
+@param unit (number) unit identifier ((https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/appendix/units.html))
 
 @param attributes (unsigned number) possible values:
  * `0 or not present` plays integral part of the number (for a number 123 it plays 123)
@@ -710,37 +680,6 @@ Play a numerical value (text to speech)
  * `PREC2` plays a number with two decimal places (for a number 123 it plays 1.23)
 
 @status current Introduced in 2.0.0
-
-
-| 2.2 Unit  | Sound        |
-| --- | ---                |
-| 0   | (no unit played)   |
-| 1   | Volts              |
-| 2   | Amps               |
-| 3   | Milliamps          |
-| 4   | Knots              |
-| 5   | Meters per Second  |
-| 6   | Feet per Second    |
-| 7   | Kilometers per Hour|
-| 8   | Miles per Hour     |
-| 9   | Meters             |
-| 10  | Feet               |
-| 11  | Degrees Celsius    |
-| 12  | Degrees Fahrenheit |
-| 13  | Percent            |
-| 14  | Milliamp Hours     |
-| 15  | Watts              |
-| 16  | Milliwatts         |
-| 17  | DB                 |
-| 18  | RPM                |
-| 19  | Gee                |
-| 20  | Degrees            |
-| 21  | Radians            |
-| 22  | Milliliters        |
-| 23  | Fluid Ounces       |
-| 24  | Hours              |
-| 25  | Minutes            |
-| 26  | Seconds            |
 
 */
 static int luaPlayNumber(lua_State * L)
@@ -1043,14 +982,7 @@ static int luaDefaultStick(lua_State * L)
 
 @param value fed to the sensor
 
-@param unit unit of the sensor.
- * `0 or not present` UNIT_RAW.
- * `!= 0` Valid values are 1 (UNIT_VOLTS), 2 (UNIT_AMPS), 3 (UNIT_MILLIAMPS),
- 4 (UNIT_KTS), 5 (UNIT_METERS_PER_SECOND), 6 (UNIT_FEET_PER_SECOND), 7 (UNIT_KMH), 8 (UNIT_MPH), 9 (UNIT_METERS),
- 10 (UNIT_FEET), 11 (UNIT_CELSIUS), 12 (UNIT_FAHRENHEIT), 13 (UNIT_PERCENT), 14 (UNIT_MAH), 15 (UNIT_WATTS),
- 16 (UNIT_MILLIWATTS), 17 (UNIT_DB), 18 (UNIT_RPMS), 19 (UNIT_G), 20 (UNIT_DEGREE), 21 (UNIT_RADIANS),
- 22 (UNIT_MILLILITERS), 23 (UNIT_FLOZ), 24 (UNIT_HOURS), 25 (UNIT_MINUTES), 26 (UNIT_SECONDS), 27 (UNIT_CELLS),
- 28 (UNIT_DATETIME), 29 (UNIT_GPS), 30 (UNIT_BITFIELD), 31 (UNIT_TEXT)
+@param unit unit of the sensor.(https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/appendix/units.html)
 
 @param precision the precision of the sensor
  * `0 or not present` no decimal precision.
