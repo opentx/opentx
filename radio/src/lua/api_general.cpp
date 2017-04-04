@@ -478,6 +478,7 @@ static int luaCrossfireTelemetryPush(lua_State * L)
 Return detailed information about field (source)
 
 The list of valid sources is available:
+
 | OpenTX Version | Radio |
 |----------------|-------|
 | 2.0 | [all](http://downloads-20.open-tx.org/firmware/lua_fields.txt) |
@@ -490,7 +491,7 @@ The list of valid sources is available:
  * `id`   (number) field identifier
  * `name` (string) field name
  * `desc` (string) field description
- * 'unit' (number) unit identifier (https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/appendix/units.html)
+ * 'unit' (number) unit identifier [Full list](../appendix/units.html)
 
 @retval nil the requested field was not found
 
@@ -673,7 +674,7 @@ Play a numerical value (text to speech)
 
 @param value (number) number to play. Value is interpreted as integer.
 
-@param unit (number) unit identifier ((https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/appendix/units.html))
+@param unit (number) unit identifier [Full list]((../appendix/units.html))
 
 @param attributes (unsigned number) possible values:
  * `0 or not present` plays integral part of the number (for a number 123 it plays 123)
@@ -983,7 +984,7 @@ static int luaDefaultStick(lua_State * L)
 
 @param value fed to the sensor
 
-@param unit unit of the sensor.(https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/appendix/units.html)
+@param unit unit of the sensor [Full list](../appendix/units.html)
 
 @param precision the precision of the sensor
  * `0 or not present` no decimal precision.
