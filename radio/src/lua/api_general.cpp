@@ -584,7 +584,7 @@ Return an integer representing the unit used
 
 @Return an unsigned integer representing the unit used or nil if no valid sensor was found
 
-| 2.2 Unit  | Sound        |
+| Index  | Unit            |
 | --- | ---                |
 | 0   | (no unit played)   |
 | 1   | Volts              |
@@ -641,7 +641,6 @@ static int luaGetUnit(lua_State * L)
   }
   return 1;
 }
-
 
 /*luadoc
 @function getRAS()
