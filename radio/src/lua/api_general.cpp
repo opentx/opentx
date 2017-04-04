@@ -578,6 +578,72 @@ static int luaGetValue(lua_State * L)
 }
 
 /*luadoc
+@function getUnit(telemetry source)
+
+Return an integer representing the unit used
+
+@Return an unsigned integer representing the unit used or nil if no valid sensor was found
+
+| 2.2 Unit  | Sound        |
+| --- | ---                |
+| 0   | (no unit played)   |
+| 1   | Volts              |
+| 2   | Amps               |
+| 3   | Milliamps          |
+| 4   | Knots              |
+| 5   | Meters per Second  |
+| 6   | Feet per Second    |
+| 7   | Kilometers per Hour|
+| 8   | Miles per Hour     |
+| 9   | Meters             |
+| 10  | Feet               |
+| 11  | Degrees Celsius    |
+| 12  | Degrees Fahrenheit |
+| 13  | Percent            |
+| 14  | Milliamp Hours     |
+| 15  | Watts              |
+| 16  | Milliwatts         |
+| 17  | DB                 |
+| 18  | RPM                |
+| 19  | Gee                |
+| 20  | Degrees            |
+| 21  | Radians            |
+| 22  | Milliliters        |
+| 23  | Fluid Ounces       |
+| 24  | Hours              |
+| 25  | Minutes            |
+| 26  | Seconds            |
+
+@status current Introduced in 2.2.0
+*/
+static int luaGetUnit(lua_State * L)
+{
+  int src = 0;
+  if (lua_isnumber(L, 1)) {
+    src = luaL_checkinteger(L, 1);
+  }
+  else {
+    // convert from field name to its id
+    const char *name = luaL_checkstring(L, 1);
+    LuaField field;
+    bool found = luaFindFieldByName(name, field);
+    if (found) {
+      src = field.id;
+    }
+  }
+  if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
+    div_t qr = div(src-MIXSRC_FIRST_TELEM, 3);
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[qr.quot];
+    lua_pushunsigned(L, telemetrySensor.unit);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+
+/*luadoc
 @function getRAS()
 
 Return the RAS value or nil if no valid hardware found
@@ -1116,7 +1182,7 @@ static int luaGetRSSI(lua_State * L)
 /*luadoc
 @function loadScript(file [, mode], [,env])
 
-Load a Lua script file. This is similar to Lua's own [loadfile()](https://www.lua.org/manual/5.2/manual.html#pdf-loadfile) 
+Load a Lua script file. This is similar to Lua's own [loadfile()](https://www.lua.org/manual/5.2/manual.html#pdf-loadfile)
 API method,  but it uses OpenTx's optional pre-compilation feature to save memory and time during load.
 
 Return values are same as from Lua API loadfile() method: If the script was loaded w/out errors
@@ -1128,20 +1194,20 @@ then the loaded script (or "chunk") is returned as a function. Otherwise, return
 
 @param mode (string) (optional) Controls whether to force loading the text (.lua) or pre-compiled binary (.luac)
   version of the script. By default OTx will load the newest version and compile a new binary if necessary (overwriting any
-  existing .luac version of the same script, and stripping some debug info like line numbers).  
+  existing .luac version of the same script, and stripping some debug info like line numbers).
   You can use `mode` to control the loading behavior more specifically. Possible values are:
    * `b` only binary.
    * `t` only text.
    * `T` (default on simulator) prefer text but load binary if that is the only version available.
    * `bt` (default on radio) either binary or text, whichever is newer (binary preferred when timestamps are equal).
-   * Add `x` to avoid automatic compilation of source file to .luac version.  
+   * Add `x` to avoid automatic compilation of source file to .luac version.
        Eg: "tx", "bx", or "btx".
-   * Add `c` to force compilation of source file to .luac version (even if existing version is newer than source file).  
+   * Add `c` to force compilation of source file to .luac version (even if existing version is newer than source file).
        Eg: "tc" or "btc" (forces "t", overrides "x").
-   * Add `d` to keep extra debug info in the compiled binary.  
+   * Add `d` to keep extra debug info in the compiled binary.
        Eg: "td", "btd", or "tcd" (no effect with just "b" or with "x").
 
-@notice 
+@notice
   Note that you will get an error if you specify `mode` as "b" or "t" and that specific version of the file does not exist (eg. no .luac file when "b" is used).
   Also note that `mode` is NOT passed on to Lua's loader function, so unlike with loadfile() the actual file content is not checked (as if no mode or "bt" were passed to loadfile()).
 
@@ -1198,6 +1264,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
+  { "getUnit", luaGetUnit },
   { "getRAS", luaGetRAS },
   { "getFieldInfo", luaGetFieldInfo },
   { "getFlightMode", luaGetFlightMode },
