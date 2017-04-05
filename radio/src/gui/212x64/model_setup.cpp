@@ -120,8 +120,9 @@ void onBindMenu(const char * result)
     g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off = true;
     g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 = true;
   }
-  else
+  else {
     return;
+  }
 
   moduleFlag[INTERNAL_MODULE] = MODULE_BIND;
 }
@@ -915,7 +916,7 @@ void menuModelSetup(event_t event)
               if(s_editMode>0) {
                 if (l_posHorz == 1) {
                   if (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16 && s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
-                    if(!popupMenuNoItems && event==EVT_KEY_BREAK(KEY_ENTER)) {
+                    if(event==EVT_KEY_BREAK(KEY_ENTER)) {
                       POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
                       POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_OFF);
                       POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
