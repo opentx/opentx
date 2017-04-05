@@ -348,6 +348,15 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
     else if (fontindex == SMLSIZE_INDEX) {
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y+1, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT-5, TEXT_INVERTED_BGCOLOR);
     }
+    else if (fontindex == MIDSIZE_INDEX) {
+      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y+1, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT+4, TEXT_INVERTED_BGCOLOR);
+    }
+    else if (fontindex == DBLSIZE_INDEX) {
+      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y+1, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT+13, TEXT_INVERTED_BGCOLOR);
+    }
+    else if (fontindex == XXLSIZE_INDEX) {
+      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y+1, width+2*INVERT_HORZ_MARGIN-2, INVERT_LINE_HEIGHT+52, TEXT_INVERTED_BGCOLOR);
+    }
     else {
       drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
     }
