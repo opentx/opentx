@@ -508,8 +508,7 @@ static int luaGetFieldInfo(lua_State * L)
     lua_pushtablestring(L, "name", what);
     lua_pushtablestring(L, "desc", field.desc);
     if (field.id >= MIXSRC_FIRST_TELEM && field.id <= MIXSRC_LAST_TELEM) {
-      div_t qr = div(field.id-MIXSRC_FIRST_TELEM, 3);
-      TelemetrySensor & telemetrySensor = g_model.telemetrySensors[qr.quot];
+      TelemetrySensor & telemetrySensor = g_model.telemetrySensors[(int)((field.id-MIXSRC_FIRST_TELEM)/3)];
       lua_pushtableinteger(L, "unit", telemetrySensor.unit);
     }
     else {
