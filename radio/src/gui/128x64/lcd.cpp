@@ -786,10 +786,10 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
-#if defined(PCBX7)
+#if defined(CPUARM)
   char str[LEN_TIMER_STRING];
   getTimerString(str, tme, (att & TIMEHOUR) != 0);
-  lcdDrawText(x, y, str, att); 
+  lcdDrawText(x, y, str, att);
 #else
   div_t qr;
   if (IS_RIGHT_ALIGNED(att)) {
@@ -808,32 +808,10 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   }
 
   qr = div((int)tme, 60);
-
-#if defined(CPUARM)
-  char separator = ':';
-  if (tme >= 3600) {
-    qr = div(qr.quot, 60);
-    separator = CHR_HOUR;
-  }
-#else
-#define separator ':'
-#endif
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
-#if defined(CPUARM)
-  if (att & MIDSIZE) {
-    lcdLastRightPos--;
-  }
-  if (separator == CHR_HOUR)
-    att &= ~DBLSIZE;
-#endif
-#if defined(CPUARM) && defined(RTCLOCK)
-  if (att & TIMEBLINK)
-    lcdDrawChar(lcdLastRightPos, y, separator, BLINK);
-  else
-#endif
-  lcdDrawChar(lcdLastRightPos, y, separator, att&att2);
+  lcdDrawChar(lcdLastRightPos, y, ':', att&att2);
   lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0|LEFT) & (~RIGHT), 2);
-#endif // PCBX7
+#endif // CPUARM
 }
 
 // TODO to be optimized with drawValueWithUnit
