@@ -786,6 +786,11 @@ void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2)
 {
+#if defined(PCBX7)
+  char str[LEN_TIMER_STRING];
+  getTimerString(str, tme, (att & TIMEHOUR) != 0);
+  lcdDrawText(x, y, str, att); 
+#else
   div_t qr;
   if (IS_RIGHT_ALIGNED(att)) {
     att -= RIGHT;
@@ -828,6 +833,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #endif
   lcdDrawChar(lcdLastRightPos, y, separator, att&att2);
   lcdDrawNumber(lcdNextPos, y, qr.rem, (att2|LEADING0|LEFT) & (~RIGHT), 2);
+#endif // PCBX7
 }
 
 // TODO to be optimized with drawValueWithUnit
