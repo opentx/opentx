@@ -71,6 +71,36 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
 #endif
 
 #if defined(PCBX7)
+
+void onAdjustGvarSourceLongEnterPress(const char * result)
+{
+  CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
+
+  if (result == STR_CONSTANT) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_CONSTANT;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else if (result == STR_MIXSOURCE) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_SOURCE;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else if (result == STR_GLOBALVAR) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_GVAR;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else if (result == STR_INCDEC) {
+    CFN_GVAR_MODE(cfn) = FUNC_ADJUST_GVAR_INCDEC;
+    CFN_PARAM(cfn) = 0;
+    storageDirty(EE_MODEL);
+  }
+  else {
+    onSourceLongEnterPress(result);
+  }
+}
+
 void onCustomFunctionsMenu(const char * result)
 {
   int sub = menuVerticalPosition;
@@ -399,8 +429,17 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                 drawStringWithIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
                 break;
               default: // FUNC_ADJUST_GVAR_INC
+#if defined(PCBX7)
+                val_min = -100; val_max = +100;
+                if (val_displayed < 0)
+                  lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "-= ", attr);
+                else
+                  lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "+= ", attr);
+                drawGVarValue(lcdNextPos, y, CFN_GVAR_INDEX(cfn), abs(val_displayed), attr|LEFT);
+#else
                 val_max = 1;
                 lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, PSTR("\003-=1+=1"), val_displayed, attr);
+#endif
                 break;
             }
 
@@ -419,9 +458,26 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (attr) {
             REPEAT_LAST_CURSOR_MOVE();
           }
-
+#if defined(PCBX7)
+          if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
+            CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
+            if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
+              killEvents(event);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_CONSTANT)
+                POPUP_MENU_ADD_ITEM(STR_CONSTANT);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_SOURCE)
+                POPUP_MENU_ADD_ITEM(STR_MIXSOURCE);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_GVAR)
+                POPUP_MENU_ADD_ITEM(STR_GLOBALVAR);
+              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_INCDEC)
+                POPUP_MENU_ADD_ITEM(STR_INCDEC);
+              POPUP_MENU_START(onAdjustGvarSourceLongEnterPress);
+              s_editMode = EDIT_MODIFY_FIELD;
+            }
+#else
           if (active) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
+#endif
           }
           break;
         }
