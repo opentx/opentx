@@ -68,6 +68,8 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY)
     addTab(new TelemetryPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Telemetry"));
 
+  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+
   connect(setupPanel, &SetupPanel::extendedLimitsToggled, chnPanel, &Channels::refreshExtendedLimits);
   connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
   connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);

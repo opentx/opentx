@@ -20,16 +20,6 @@
 
 #include "opentx.h"
 
-bool isThrottleOutput(uint8_t ch)
-{
-  for (uint8_t i=0; i<MAX_MIXERS; i++) {
-    MixData *mix = mixAddress(i);
-    if (mix->destCh==ch && mix->srcRaw==MIXSRC_Thr)
-      return true;
-  }
-  return false;
-}
-
 enum MenuModelOutputsItems {
   ITEM_OUTPUTS_OFFSET,
   ITEM_OUTPUTS_MIN,
@@ -156,17 +146,10 @@ void menuModelLimitsOne(event_t event)
 
       case ITEM_OUTPUTONE_DIR:
       {
-        uint8_t revert = ld->revert;
         lcdDrawTextAlignedLeft(y, TR_LIMITS_HEADERS_DIRECTION);
-        lcdDrawTextAtIndex(LIMITS_ONE_2ND_COLUMN, y, STR_MMMINV, revert, attr);
+        lcdDrawTextAtIndex(LIMITS_ONE_2ND_COLUMN, y, STR_MMMINV, ld->revert, attr);
         if (active) {
-          uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
-          if (checkIncDec_Ret && isThrottleOutput(k)) {
-            POPUP_CONFIRMATION(STR_INVERT_THR);
-          }
-          else {
-            ld->revert = revert_new;
-          }
+          CHECK_INCDEC_MODELVAR_ZERO(event, ld->revert, 1);
         }
         break;
       }

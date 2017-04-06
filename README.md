@@ -1,4 +1,4 @@
-##OpenTX 2.2 Branch
+## OpenTX 2.2 Branch
 
 [![Build Status](https://travis-ci.org/opentx/opentx.svg?branch=next)](https://travis-ci.org/opentx/opentx)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/11787/badge.svg)](https://scan.coverity.com/projects/opentx-opentx)
