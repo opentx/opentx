@@ -699,6 +699,8 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return QObject::tr("L%1").arg(index);
 
       case SWITCH_TYPE_MULTIPOS_POT:
+        if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))
+          return QObject::tr("???");
         qr = div(index - 1, getCurrentFirmware()->getCapability(MultiposPotsPositions));
         if (generalSettings && qr.quot < (int)DIM(generalSettings->potConfig))
           swName = QString(generalSettings->potName[qr.quot]);
