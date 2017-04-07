@@ -689,7 +689,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
             swName = QString(generalSettings->switchName[qr.quot]);
           if (swName.isEmpty())
             swName = getSwitchInfo(board, qr.quot).name;
-          return swName + directionIndicators.at(qr.rem < directionIndicators.size() ? qr.rem : 1);
+          return swName + directionIndicators.at(qr.rem > -1 && qr.rem < directionIndicators.size() ? qr.rem : 1);
         }
         else {
           return CHECK_IN_ARRAY(switches9X, index - 1);
