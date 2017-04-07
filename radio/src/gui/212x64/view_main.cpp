@@ -470,7 +470,7 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_BREAK(KEY_PAGE):
-      storageDirty(EE_GENERAL);
+      storageDirty(EE_MODEL);
       g_model.view += 1;
       if (g_model.view >= VIEW_COUNT) {
         g_model.view = 0;
