@@ -797,8 +797,8 @@ enum MixSources {
 #endif
 
 #if defined(PCBHORUS)
-  MIXSRC_MOUSE1,
-  MIXSRC_MOUSE2,
+  MIXSRC_MOUSE1,                        LUA_EXPORT("jsx", "Joystick X")
+  MIXSRC_MOUSE2,                        LUA_EXPORT("jsy", "Joystick Y")
 #endif
 
 #if defined(PCBSKY9X)
