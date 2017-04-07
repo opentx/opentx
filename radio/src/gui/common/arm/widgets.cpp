@@ -126,7 +126,7 @@ void drawSourceCustomValue(coord_t x, coord_t y, source_t source, int32_t value,
     drawSensorCustomValue(x, y, source, value, flags);
   }
   else if (source >= MIXSRC_FIRST_TIMER || source == MIXSRC_TX_TIME) {
-    if (value < 0) flags |= INVERS;
+    if (value < 0) flags |= BLINK|INVERS;
     drawTimer(x, y, value, flags);
   }
   else if (source == MIXSRC_TX_VOLTAGE) {
