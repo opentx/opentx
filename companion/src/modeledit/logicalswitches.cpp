@@ -244,20 +244,11 @@ void LogicalSwitchesPanel::edited()
         updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.1);
         break;
       case LS_FAMILY_EDGE:
-        cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
         if (sender() == cswitchOffset[i]) {
           model->logicalSw[i].val2 = TimToVal(cswitchOffset[i]->value());
-          updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
         }
         else {
           model->logicalSw[i].val3 = TimToVal(cswitchOffset2[i]->value()) - model->logicalSw[i].val2;
-        }
-        updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
-        if (model->logicalSw[i].val3 == 0) {
-          cswitchOffset2[i]->setSuffix("(infinite)");
-        }
-        else {
-          cswitchOffset2[i]->setSuffix("");
         }
         break;
       default:
@@ -343,9 +334,9 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
       populateSwitchCB(cswitchSource1[i], RawSwitch(model->logicalSw[i].val1), generalSettings, LogicalSwitchesContext);
       updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
       updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
-      cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
+      cswitchOffset2[i]->setSpecialValueText(QString(" <<(%1)").arg(tr("instant")));
       if (model->logicalSw[i].val3 == 0) {
-        cswitchOffset2[i]->setSuffix(tr("(infinite)"));
+        cswitchOffset2[i]->setSuffix(QString(" --(%1)").arg(tr("infinite")));
       }
       else {
         cswitchOffset2[i]->setSuffix("");
