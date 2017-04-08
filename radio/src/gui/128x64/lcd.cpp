@@ -815,7 +815,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #endif
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(CPUARM)
-  if (att & MIDSIZE) {
+  if (FONTSIZE(att) == MIDSIZE) {
     lcdLastRightPos--;
   }
   if (separator == CHR_HOUR)
