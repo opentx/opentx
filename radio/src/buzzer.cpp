@@ -40,11 +40,17 @@ static const pm_uint8_t beepTab[] PROGMEM = {
 void beep(uint8_t val)
 {
 #if defined(HAPTIC) && !defined(AUDIO)
-  haptic.event(val==0 ? AU_KEYPAD_UP : (val==4 ? AU_ERROR : AU_TIMER_LT10+beepAgain));
+  // completely untested
+  if (val == 0)
+    haptic.play(5, 0, PLAY_NOW);
+  else
+    haptic.event(AU_ERROR);
 #endif
 
 #if !defined(AUDIO)
-  if (g_eeGeneral.alarmsFlash && val>1) flashCounter = FLASH_DURATION;
+  if (g_eeGeneral.alarmsFlash && val>1) {
+    flashCounter = FLASH_DURATION;
+  }
 #endif
 
   if (g_eeGeneral.beepMode>0 || (g_eeGeneral.beepMode==0 && val!=0) || (g_eeGeneral.beepMode==-1 && val>=3)) {

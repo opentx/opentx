@@ -444,7 +444,7 @@ void menuViewTelemetryNMEA1(event_t event)
 
 
     title ('1');
-    lcd_puts        (   2*FW,   1*FH, PSTR("UTC-Time      Sat"));
+    lcdDrawText        (   2*FW,   1*FH, PSTR("UTC-Time      Sat"));
 
     if (rbuf[0][0]) {								// show always if data have been received
 	  lcdDrawChar   (  19*FW,   1*FH, sbuf[2], 0);				// satellites in view
@@ -459,12 +459,12 @@ void menuViewTelemetryNMEA1(event_t event)
 
     if ((show_timer == 1) && rbuf[0][0])  {					// show the Timer when data have been received
 
-        lcd_puts    (   2*FW,   4*FH, PSTR("Timer"));			// display "Timer"
+        lcdDrawText    (   2*FW,   4*FH, PSTR("Timer"));			// display "Timer"
         drawTimer   (   5*FW,   5*FH, (gpstime-gpstimer), DBLSIZE, DBLSIZE);	// display difference as mm:ss
     }
     else
     {
-        lcd_puts      ( 2*FW,   4*FH, PSTR("Date"));			// show the UTC Date	
+        lcdDrawText      ( 2*FW,   4*FH, PSTR("Date"));			// show the UTC Date	
 
         if (rbuf[1][0])	{
             lcdDrawSizedText( 2*FW,   5*FH, &rbuf[1][0], 2, APSIZE);		// year
@@ -513,12 +513,12 @@ void menuViewTelemetryNMEA2(event_t event)
     case EVT_KEY_LONG(KEY_LEFT):
 	ignore_break = 1;
         beep_on=0;
-        AUDIO_MENUS(); // short blip
+        AUDIO_KEY_PRESS();
         break;
     case EVT_KEY_LONG(KEY_RIGHT):
 	  ignore_break = 1;
         beep_on=1;
-        AUDIO_MENUS(); 	// short blip
+        AUDIO_KEY_PRESS();
         break;
 
 //Altitude setting
@@ -546,35 +546,35 @@ void menuViewTelemetryNMEA2(event_t event)
 	  if (save_alt==0)			// wenn noch keine Home H�he gesetzt war, wird sie es jetzt, weil sonst
 							// das Umschalten keine Wirkung zeigt
 	      save_alt = home_alt = abs_alt;			// absolute altitude
-        AUDIO_MENUS();				// short blip for non negative lift
+        AUDIO_KEY_PRESS();
         break;
 
     case EVT_KEY_LONG(KEY_MENU):
 	ignore_break = 1;
         save_alt = home_alt = abs_alt;	// Home altitude auf aktuelle absolute H�he setzen
-        AUDIO_MENUS(); 	// short blip for non negative lift
+        AUDIO_KEY_PRESS();
         break;
 
     case EVT_KEY_LONG(KEY_EXIT):		// Max Altitude auf 0 zur�cksetzen
 	max_alt=0;
-        AUDIO_MENUS(); 						// short blip for non negative lift
+        AUDIO_KEY_PRESS();
         break;
 
     }
     title ('2');
     
-    lcd_puts         (   1*FW,   1*FH, PSTR("Altitude Sat   Max"));
+    lcdDrawText      (   1*FW,   1*FH, PSTR("Altitude Sat   Max"));
 
 
-    lcd_puts         (   16*FW,   3*FH, PSTR("Home"));
-    lcd_puts         (   2*FW,   4*FH, PSTR("Lift") );
+    lcdDrawText      (   16*FW,   3*FH, PSTR("Home"));
+    lcdDrawText      (   2*FW,   4*FH, PSTR("Lift") );
 
-    lcd_puts         (   16*FW,   5*FH, PSTR("Beep") );
+    lcdDrawText      (   16*FW,   5*FH, PSTR("Beep") );
     if (beep_on==1)
-        lcd_puts         (   18*FW,   6*FH, PSTR("ON") );
+        lcdDrawText      (   18*FW,   6*FH, PSTR("ON") );
     
     else	
-        lcd_puts         (   17*FW,   6*FH, PSTR("OFF") );
+        lcdDrawText      (   17*FW,   6*FH, PSTR("OFF") );
 
 
     lcdDrawNumber(  20*FW,   4*FH, home_alt, PREC1, 6);		// display home_alt, small characters 
@@ -609,7 +609,7 @@ void menuViewTelemetryNMEA2(event_t event)
         prev_alt = rel_alt;
 
         if ((lift_alt >= 0) && (sbuf[1]>0x30) && beep_on)			// GGA record must have Fix> 0	
-            AUDIO_MENUS(); 						// short blip for non negative lift
+            AUDIO_KEY_PRESS(); 						// short blip for non negative lift
 
     }
 
@@ -631,7 +631,7 @@ void menuViewTelemetryNMEA2(event_t event)
 
       	  lcdDrawNumber(  10*FW,   5*FH, lift_alt, DBLSIZE|PREC1, 6);	// lift
 	        lcdDrawChar   (  11*FW,   6*FH, sbuf[0], 0);				// dimension [m/S]
-      	  lcd_puts    (  12*FW,   6*FH, PSTR("/S") );
+      	  lcdDrawText    (  12*FW,   6*FH, PSTR("/S") );
 		}
     }
     else {
@@ -665,7 +665,7 @@ void menuViewTelemetryNMEA3(event_t event)
     initval (LONG_BUF(1), PACK_RMC, COG);
     initval (SHORT_BUF(2), PACK_GGA, SAT);			// -> sbuf[2]
     title ('3');
-    lcd_puts        (   0*FW,   1*FH, PSTR("GrndSpeed[knt]  Sat"));
+    lcdDrawText        (   0*FW,   1*FH, PSTR("GrndSpeed[knt]  Sat"));
     if (rbuf[0][0])				// if first position is 00, buffer is empty, taken as false 
     {							// any other value is true
         uint8_t i = 0;
@@ -685,7 +685,7 @@ void menuViewTelemetryNMEA3(event_t event)
 
     lcdDrawChar   (  19*FW,   1*FH, sbuf[2], 0);			// satellites in view
 
-    lcd_puts        (   1*FW,   4*FH, PSTR("Course over ground") );
+    lcdDrawText        (   1*FW,   4*FH, PSTR("Course over ground") );
     lcdDrawText       (   2*FW,   5*FH, VALSTR(1), APSIZE);		// course over ground
 }
 
@@ -719,7 +719,7 @@ void menuViewTelemetryNMEA4(event_t event)
     initval (SHORT_BUF(2), PACK_GGA, SAT);			// -> sbuf[2]
     // title of the screen
     title ('4');
-    lcd_puts        (   3*FW,   1*FH, PSTR("Latitude     Sat"));    // line 1 column 3
+    lcdDrawText        (   3*FW,   1*FH, PSTR("Latitude     Sat"));    // line 1 column 3
     // first buffer into line 2 column 2
     if (rbuf[0][0])
     {
@@ -731,7 +731,7 @@ void menuViewTelemetryNMEA4(event_t event)
     }
     else
         lcdDrawText   (   2*FW,   2*FH, val_unknown, APSIZE);
-    lcd_puts        (   3*FW,   4*FH, PSTR("Longitude"));   // line 4 column 5
+    lcdDrawText        (   3*FW,   4*FH, PSTR("Longitude"));   // line 4 column 5
     // second buffer into line 5 column 2
     if (rbuf[0][0])
     {
