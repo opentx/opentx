@@ -844,6 +844,7 @@
 #define TR_RECEIVER            INDENT "Receiver"
 #else
   #define TR_RECEIVER_NUM             "RxNum"
+  #define TR_RECEIVER                 "RxNum"
 #endif
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY             "Telemetry"
