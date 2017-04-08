@@ -925,8 +925,14 @@ void menuModelSetup(event_t event)
                       POPUP_MENU_START(onBindMenu);
                       continue;
                     }
-                    if (moduleFlag[INTERNAL_MODULE] == MODULE_BIND)
+                    if (moduleFlag[INTERNAL_MODULE] == MODULE_BIND) {
                       newFlag = MODULE_BIND;
+                    }
+                    else {
+                      if (!popupMenuNoItems) {
+                        s_editMode=0;  // this is when popup is exited before a choice is made
+                      }
+                    }
                   }
                   else {
                     newFlag = MODULE_BIND;
