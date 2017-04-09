@@ -130,6 +130,7 @@ void MdiChild::changeEvent(QEvent * event)
 QAction * MdiChild::addAct(Actions actId, const QString & icon, const char * slot, const QKeySequence & shortcut, QObject * slotObj)
 {
   QAction * newAction = new QAction(this);
+  newAction->setMenuRole(QAction::NoRole);
   if (!icon.isEmpty())
     newAction->setIcon(CompanionIcon(icon));
   if (!shortcut.isEmpty())

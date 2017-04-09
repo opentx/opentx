@@ -794,7 +794,7 @@ Mode 4:
           </size>
          </property>
          <property name="maximum">
-          <number>15</number>
+          <number>50</number>
          </property>
          <property name="value">
           <number>10</number>

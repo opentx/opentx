@@ -72,14 +72,13 @@
 MainWindow::MainWindow():
   downloadDialog_forWait(NULL),
   checkForUpdatesState(0),
-  fileMenu(NULL),
-  editMenu(NULL),
-  settingsMenu(NULL),
-  burnMenu(NULL),
-  helpMenu(NULL),
-  windowsMenu(NULL),
   windowsListActions(new QActionGroup(this))
 {
+  // setUnifiedTitleAndToolBarOnMac(true);
+  this->setWindowIcon(QIcon(":/icon.png"));
+  QNetworkProxyFactory::setUseSystemConfiguration(true);
+  setAcceptDrops(true);
+
   mdiArea = new QMdiArea(this);
   mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -88,30 +87,14 @@ MainWindow::MainWindow():
   windowMapper = new QSignalMapper(this);
   connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
 
-  fileToolBar = addToolBar(tr("File"));
-  fileToolBar->setObjectName("File");
-  editToolBar = addToolBar(tr("Edit"));
-  editToolBar->setObjectName("Edit");
-  burnToolBar = new QToolBar(tr("Write"));
-  addToolBar( Qt::LeftToolBarArea, burnToolBar );
-  burnToolBar->setObjectName("Write");
-  helpToolBar = addToolBar(tr("Help"));
-  helpToolBar->setObjectName("Help");
-
   createActions();
   createMenus();
-  createStatusBar();
-  updateToolBars();
-  updateMenus();
-  setIconThemeSize(g.iconSize());
+  createToolBars();
+  retranslateUi();
 
+  setIconThemeSize(g.iconSize());
   restoreState(g.mainWinState());
   restoreGeometry(g.mainWinGeo());
-
-  // setUnifiedTitleAndToolBarOnMac(true);
-  this->setWindowIcon(QIcon(":/icon.png"));
-  QNetworkProxyFactory::setUseSystemConfiguration(true);
-  setAcceptDrops(true);
 
   // give time to the splash to disappear and main window to open before starting updates
   int updateDelay = 1000;
@@ -158,6 +141,14 @@ MainWindow::MainWindow():
   }
   if (printing) {
     QTimer::singleShot(0, this, SLOT(autoClose()));
+  }
+}
+
+MainWindow::~MainWindow()
+{
+  if (windowsListActions) {
+    delete windowsListActions;
+    windowsListActions = NULL;
   }
 }
 
@@ -544,25 +535,11 @@ void MainWindow::changeEvent(QEvent * e)
   QMainWindow::changeEvent(e);
   switch (e->type()) {
     case QEvent::LanguageChange:
-      retranslateUi();
+      retranslateUi(true);
       break;
     default:
       break;
   }
-}
-
-void MainWindow::updateUi()
-{
-  createActions();
-  createMenus();
-  updateToolBars();
-  updateMenus();
-}
-
-void MainWindow::retranslateUi()
-{
-  updateUi();
-  QMessageBox::information(this, tr("Companion"), tr("Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete."));
 }
 
 void MainWindow::setLanguage(const QString & langString)
@@ -622,6 +599,15 @@ void MainWindow::onIconSizeChanged(QAction * act)
   int id = act->property("sizeId").toInt(&ok);
   if (ok && id >= 0 && id < 4)
     setIconThemeSize(id);
+}
+
+void MainWindow::setTabbedWindows(bool on)
+{
+  mdiArea->setViewMode(on ? QMdiArea::TabbedView : QMdiArea::SubWindowView);
+  if (actTileWindows)
+    actTileWindows->setDisabled(on);
+  if (actCascadeWindows)
+    actCascadeWindows->setDisabled(on);
 }
 
 void MainWindow::newFile()
@@ -938,11 +924,8 @@ void MainWindow::updateMenus()
 
   writeEepromAct->setEnabled(hasMdiChild);
   readEepromAct->setEnabled(true);
-  writeBackupToRadioAct->setEnabled(true);
-  readBackupToFileAct->setEnabled(true);
-  for (int i=0; i<MAX_RECENT; ++i) {
-    recentFileActs[i]->setEnabled(true);
-  }
+  writeBUToRadioAct->setEnabled(true);
+  readBUToFileAct->setEnabled(true);
 
   foreach (QAction * act, fileWindowActions) {
     if (!act)
@@ -1002,27 +985,23 @@ MdiChild * MainWindow::createMdiChild()
   return child;
 }
 
-QAction * MainWindow::addAct(const QString & icon, const QString & sName, const QString & lName, const QKeySequence & shortcut, const char *slot, QObject *slotObj)
+QAction * MainWindow::addAct(const QString & icon, const char *slot, const QKeySequence & shortcut, QObject *slotObj, const char * signal)
 {
   QAction * newAction = new QAction( this );
+  newAction->setMenuRole(QAction::NoRole);
   if (!icon.isEmpty())
     newAction->setIcon(CompanionIcon(icon));
-  if (!sName.isEmpty())
-    newAction->setText(sName);
-  if (!lName.isEmpty())
-    newAction->setStatusTip(lName);
-  newAction->setShortcut(shortcut);
-  if (slotObj == NULL)
-    slotObj = this;
-  connect(newAction, SIGNAL(triggered()), slotObj, slot);
-  actionsList.append(newAction);
+  if (!shortcut.isEmpty())
+    newAction->setShortcut(shortcut);
+  if (slot) {
+    if (!slotObj)
+      slotObj = this;
+    if (!signal)
+      connect(newAction, SIGNAL(triggered()), slotObj, slot);
+    else
+      connect(newAction, signal, slotObj, slot);
+  }
   return newAction;
-}
-
-
-QAction * MainWindow::addAct(const QString & icon, const QString & sName, const QString & lName, const char *slot)
-{
-  return addAct(icon, sName, lName, QKeySequence::UnknownKey, slot);
 }
 
 QAction * MainWindow::addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName, const char * propName, const QVariant & propValue, const QVariant & dfltValue)
@@ -1038,66 +1017,288 @@ QAction * MainWindow::addActToGroup(QActionGroup * aGroup, const QString & sName
   return act;
 }
 
+void MainWindow::trAct(QAction * act, const QString & text, const QString & descript)
+{
+  if (!text.isEmpty())
+    act->setText(text);
+  if (!descript.isEmpty())
+    act->setStatusTip(descript);
+}
+
+void MainWindow::retranslateUi(bool showMsg)
+{
+  trAct(newAct,    tr("New"),        tr("Create a new Models and Settings file"));
+  trAct(openAct,   tr("Open..."),    tr("Open Models and Settings file"));
+  trAct(saveAct,   tr("Save"),       tr("Save Models and Settings file"));
+  trAct(saveAsAct, tr("Save As..."), tr("Save Models and Settings file"));
+  trAct(exitAct,   tr("Exit"),       tr("Exit the application"));
+  trAct(aboutAct,  tr("About..."),   tr("Show the application's About box"));
+
+  trAct(recentFilesAct,     tr("Recent Files"),               tr("List of recently used files"));
+  trAct(profilesMenuAct,    tr("Radio Profiles"),             tr("Create or Select Radio Profiles"));
+  trAct(logsAct,            tr("View Log File..."),           tr("Open and view log file"));
+  trAct(appPrefsAct,        tr("Settings..."),                tr("Edit Settings"));
+  trAct(fwPrefsAct,         tr("Download..."),                tr("Download firmware and voice files"));
+  trAct(checkForUpdatesAct, tr("Check for Updates..."),       tr("Check OpenTX and Companion updates"));
+  trAct(changelogAct,       tr("Companion Changes..."),       tr("Show Companion change log"));
+  trAct(fwchangelogAct,     tr("Firmware Changes..."),        tr("Show firmware change log"));
+  trAct(compareAct,         tr("Compare Models..."),          tr("Compare models"));
+  trAct(editSplashAct,      tr("Edit Radio Splash Image..."), tr("Edit the splash image of your Radio"));
+  trAct(burnListAct,        tr("List programmers..."),        tr("List available programmers"));
+  trAct(burnFusesAct,       tr("Fuses..."),                   tr("Show fuses dialog"));
+  trAct(readFlashAct,       tr("Read Firmware from Radio"),   tr("Read firmware from Radio"));
+  trAct(writeFlashAct,      tr("Write Firmware to Radio"),    tr("Write firmware to Radio"));
+  trAct(sdsyncAct,          tr("Synchronize SD"),             tr("SD card synchronization"));
+
+  trAct(openDocURLAct,      tr("Manuals and other Documents"),         tr("Open the OpenTX document page in a web browser"));
+  trAct(writeEepromAct,     tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"));
+  trAct(readEepromAct,      tr("Read Models and Settings From Radio"), tr("Read Models and Settings from Radio"));
+  trAct(burnConfigAct,      tr("Configure Communications..."),         tr("Configure software for communicating with the Radio"));
+  trAct(writeBUToRadioAct,  tr("Write Backup to Radio"),               tr("Write Backup from file to Radio"));
+  trAct(readBUToFileAct,    tr("Backup Radio to File"),                tr("Save a complete backup file of all settings and model data in the Radio"));
+  trAct(contributorsAct,    tr("Contributors..."),                     tr("A tribute to those who have contributed to OpenTX and Companion"));
+
+  trAct(createProfileAct,   tr("Add Radio Profile"),               tr("Create a new Radio Settings Profile"));
+  trAct(copyProfileAct,     tr("Copy Current Radio Profile"),      tr("Duplicate current Radio Settings Profile"));
+  trAct(deleteProfileAct,   tr("Delete Current Radio Profile..."), tr("Delete the current Radio Settings Profile"));
+
+  trAct(actTabbedWindows,   tr("Tabbed Windows"),    tr("Use tabs to arrange open windows."));
+  trAct(actTileWindows,     tr("Tile Windows"),      tr("Arrange open windows across all the available space."));
+  trAct(actCascadeWindows,  tr("Cascade Windows"),   tr("Arrange all open windows in a stack."));
+  trAct(actCloseAllWindows, tr("Close All Windows"), tr("Closes all open files (prompts to save if necessary."));
+
+  editMenu->setTitle(tr("Edit"));
+  fileMenu->setTitle(tr("File"));
+  settingsMenu->setTitle(tr("Settings"));
+  themeMenu->setTitle(tr("Set Icon Theme"));
+  iconThemeSizeMenu->setTitle(tr("Set Icon Size"));
+  burnMenu->setTitle(tr("Read/Write"));
+  windowsMenu->setTitle(tr("Windows"));
+  helpMenu->setTitle(tr("Help"));
+
+  fileToolBar->setWindowTitle(tr("File"));
+  editToolBar->setWindowTitle(tr("Edit"));
+  burnToolBar->setWindowTitle(tr("Write"));
+  helpToolBar->setWindowTitle(tr("Help"));
+
+  updateMenus();
+  showReadyStatus();
+
+  if (showMsg)
+    QMessageBox::information(this, tr("Companion"), tr("Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete."));
+}
+
 void MainWindow::createActions()
 {
-  foreach (QAction * act, actionsList) {
-    if (act)
-      act->deleteLater();
-  }
-  actionsList.clear();
-  fileWindowActions.clear();
+  newAct =             addAct("new.png",    SLOT(newFile()),         QKeySequence::New);
+  openAct =            addAct("open.png",   SLOT(openFile()),        QKeySequence::Open);
+  saveAct =            addAct("save.png",   SLOT(save()),            QKeySequence::Save);
+  saveAsAct =          addAct("saveas.png", SLOT(saveAs()),          QKeySequence::SaveAs);
+  exitAct =            addAct("exit.png",   SLOT(closeAllWindows()), QKeySequence::Quit, qApp);
 
-  for (int i = 0; i < MAX_RECENT; ++i) {
-    recentFileActs[i] = new QAction(this);
+  aboutAct =           addAct("information.png",    SLOT(about()));
+  logsAct =            addAct("logs.png",           SLOT(logFile()));
+  appPrefsAct =        addAct("apppreferences.png", SLOT(appPrefs()));
+  fwPrefsAct =         addAct("fwpreferences.png",  SLOT(fwPrefs()));
+  checkForUpdatesAct = addAct("update.png",         SLOT(doUpdates()));
+  changelogAct =       addAct("changelog.png",      SLOT(changelog()));
+  fwchangelogAct =     addAct("changelog.png",      SLOT(fwchangelog()));
+  compareAct =         addAct("compare.png",        SLOT(compare()));
+  editSplashAct =      addAct("paintbrush.png",     SLOT(customizeSplash()));
+  burnListAct =        addAct("list.png",           SLOT(burnList()));
+  burnFusesAct =       addAct("fuses.png",          SLOT(burnFuses()));
+  readFlashAct =       addAct("read_flash.png",     SLOT(readFlash()));
+  writeFlashAct =      addAct("write_flash.png",    SLOT(writeFlash()));
+  sdsyncAct =          addAct("sdsync.png",         SLOT(sdsync()));
+
+  openDocURLAct =      addAct("",                      SLOT(openDocURL()));
+  writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
+  readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
+  burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
+  writeBUToRadioAct =  addAct("write_eeprom_file.png", SLOT(writeBackup()));
+  readBUToFileAct =    addAct("read_eeprom_file.png",  SLOT(readBackup()));
+  contributorsAct =    addAct("contributors.png",      SLOT(contributors()));
+
+  createProfileAct =   addAct("new.png",   SLOT(createProfile()));
+  copyProfileAct   =   addAct("copy.png",  SLOT(copyProfile()));
+  deleteProfileAct =   addAct("clear.png", SLOT(deleteCurrentProfile()));
+
+  actTabbedWindows =   addAct("", SLOT(setTabbedWindows(bool)), 0, this, SIGNAL(triggered(bool)));
+  actTileWindows =     addAct("", SLOT(tileSubWindows()),       0, mdiArea);
+  actCascadeWindows =  addAct("", SLOT(cascadeSubWindows()),    0, mdiArea);
+  actCloseAllWindows = addAct("", SLOT(closeAllSubWindows()),   0, mdiArea);
+
+  // these two get assigned menus in createMenus()
+  recentFilesAct =     addAct("recentdocument.png");
+  profilesMenuAct =    addAct("profiles.png");
+
+  exitAct->setMenuRole(QAction::QuitRole);
+  aboutAct->setMenuRole(QAction::AboutRole);
+  appPrefsAct->setMenuRole(QAction::PreferencesRole);
+  contributorsAct->setMenuRole(QAction::ApplicationSpecificRole);
+  openDocURLAct->setMenuRole(QAction::ApplicationSpecificRole);
+  checkForUpdatesAct->setMenuRole(QAction::ApplicationSpecificRole);
+  changelogAct->setMenuRole(QAction::ApplicationSpecificRole);
+  fwchangelogAct->setMenuRole(QAction::ApplicationSpecificRole);
+
+  actTabbedWindows->setCheckable(true);
+  compareAct->setEnabled(false);
+}
+
+void MainWindow::createMenus()
+{
+  fileMenu = menuBar()->addMenu("");
+  fileMenu->addAction(newAct);
+  fileMenu->addAction(openAct);
+  fileMenu->addAction(saveAct);
+  fileMenu->addAction(saveAsAct);
+  fileMenu->addAction(recentFilesAct);
+  fileMenu->addSeparator();
+  fileMenu->addAction(logsAct);
+  fileMenu->addAction(fwPrefsAct);
+  fileMenu->addAction(compareAct);
+  fileMenu->addAction(sdsyncAct);
+  fileMenu->addSeparator();
+  fileMenu->addAction(exitAct);
+
+  editMenu = menuBar()->addMenu("");
+
+  settingsMenu = menuBar()->addMenu("");
+  settingsMenu->addMenu(createLanguageMenu(settingsMenu));
+
+  themeMenu = settingsMenu->addMenu("");
+  QActionGroup * themeGroup = new QActionGroup(themeMenu);
+  addActToGroup(themeGroup, tr("Classical"),  tr("The classic companion9x icon theme"),  "themeId", 0, g.theme());
+  addActToGroup(themeGroup, tr("Yerico"),     tr("Yellow round honey sweet icon theme"), "themeId", 1, g.theme());
+  addActToGroup(themeGroup, tr("Monochrome"), tr("A monochrome black icon theme"),       "themeId", 3, g.theme());
+  addActToGroup(themeGroup, tr("MonoBlue"),   tr("A monochrome blue icon theme"),        "themeId", 4, g.theme());
+  addActToGroup(themeGroup, tr("MonoWhite"),  tr("A monochrome white icon theme"),       "themeId", 2, g.theme());
+  connect(themeGroup, &QActionGroup::triggered, this, &MainWindow::onThemeChanged);
+  themeMenu->addActions(themeGroup->actions());
+
+  iconThemeSizeMenu = settingsMenu->addMenu("");
+  QActionGroup * szGroup = new QActionGroup(iconThemeSizeMenu);
+  addActToGroup(szGroup, tr("Small"),  tr("Use small toolbar icons"),       "sizeId", 0, g.iconSize());
+  addActToGroup(szGroup, tr("Normal"), tr("Use normal size toolbar icons"), "sizeId", 1, g.iconSize());
+  addActToGroup(szGroup, tr("Big"),    tr("Use big toolbar icons"),         "sizeId", 2, g.iconSize());
+  addActToGroup(szGroup, tr("Huge"),   tr("Use huge toolbar icons"),        "sizeId", 3, g.iconSize());
+  connect(szGroup, &QActionGroup::triggered, this, &MainWindow::onIconSizeChanged);
+  iconThemeSizeMenu->addActions(szGroup->actions());
+
+  settingsMenu->addSeparator();
+  settingsMenu->addAction(appPrefsAct);
+  settingsMenu->addAction(profilesMenuAct);
+  settingsMenu->addAction(editSplashAct);
+  settingsMenu->addAction(burnConfigAct);
+
+  burnMenu = menuBar()->addMenu("");
+  burnMenu->addAction(writeEepromAct);
+  burnMenu->addAction(readEepromAct);
+  burnMenu->addSeparator();
+  burnMenu->addAction(writeBUToRadioAct);
+  burnMenu->addAction(readBUToFileAct);
+  burnMenu->addSeparator();
+  burnMenu->addAction(writeFlashAct);
+  burnMenu->addAction(readFlashAct);
+  burnMenu->addSeparator();
+  burnMenu->addSeparator();
+  if (!IS_ARM(getCurrentBoard())) {
+    burnMenu->addAction(burnFusesAct);
+    burnMenu->addAction(burnListAct);
+  }
+
+  windowsMenu = menuBar()->addMenu("");
+  windowsMenu->addAction(actTabbedWindows);
+  windowsMenu->addAction(actTileWindows);
+  windowsMenu->addAction(actCascadeWindows);
+  windowsMenu->addAction(actCloseAllWindows);
+  windowsMenu->addSeparator();
+
+  helpMenu = menuBar()->addMenu("");
+  helpMenu->addSeparator();
+  helpMenu->addAction(checkForUpdatesAct);
+  helpMenu->addSeparator();
+  helpMenu->addAction(aboutAct);
+  helpMenu->addAction(openDocURLAct);
+  helpMenu->addSeparator();
+  helpMenu->addAction(changelogAct);
+  helpMenu->addAction(fwchangelogAct);
+  helpMenu->addSeparator();
+  helpMenu->addAction(contributorsAct);
+
+  recentFilesMenu = new QMenu(this);
+  for ( int i = 0; i < g.historySize(); ++i) {
+    recentFileActs.append(recentFilesMenu->addAction(""));
     recentFileActs[i]->setVisible(false);
     connect(recentFileActs[i], SIGNAL(triggered()), this, SLOT(openRecentFile()));
-    actionsList.append(recentFileActs[i]);
   }
-  updateRecentFileActions();
+  recentFilesAct->setMenu(recentFilesMenu);
 
-  QActionGroup *profilesAlignmentGroup = new QActionGroup(this);
-  for (int i=0; i<MAX_PROFILES; i++) {
-    profileActs[i] = new QAction(profilesAlignmentGroup);
+  profilesMenu = new QMenu(this);
+  QActionGroup *profilesGroup = new QActionGroup(this);
+  for (int i=0; i < MAX_PROFILES; i++) {
+    profileActs.append(profilesMenu->addAction(""));
     profileActs[i]->setVisible(false);
     profileActs[i]->setCheckable(true);
     connect(profileActs[i], SIGNAL(triggered()), this, SLOT(loadProfile()));
-    actionsList.append(profileActs[i]);
+    profilesGroup->addAction(profileActs[i]);
   }
-  updateProfilesActions();
+  profilesMenu->addSeparator();
+  profilesMenu->addAction(createProfileAct);
+  profilesMenu->addAction(copyProfileAct);
+  profilesMenu->addAction(deleteProfileAct);
+  profilesMenuAct->setMenu(profilesMenu);
+}
 
-  newAct =             addAct("new.png",    tr("New"),                    tr("Create a new Models and Settings file"), QKeySequence::New,    SLOT(newFile()));
-  openAct =            addAct("open.png",   tr("Open..."),                tr("Open Models and Settings file"),         QKeySequence::Open,   SLOT(openFile()));
-  saveAct =            addAct("save.png",   tr("Save"),                   tr("Save Models and Settings file"),         QKeySequence::Save,   SLOT(save()));
-  saveAsAct =          addAct("saveas.png", tr("Save As..."),             tr("Save Models and Settings file"),         QKeySequence::SaveAs, SLOT(saveAs()));
-  exitAct =            addAct("exit.png",   tr("Exit"),                   tr("Exit the application"),                  QKeySequence::Quit,   SLOT(closeAllWindows()), qApp);
-  aboutAct =           addAct("information.png",   tr("About..."),                tr("Show the application's About box"),   SLOT(about()));
+void MainWindow::createToolBars()
+{
+  fileToolBar = addToolBar("");
+  fileToolBar->setObjectName("File");
+  fileToolBar->addAction(newAct);
+  fileToolBar->addAction(openAct);
+  fileToolBar->addAction(recentFilesAct);
+  fileToolBar->addAction(saveAct);
+  fileToolBar->addSeparator();
+  fileToolBar->addAction(logsAct);
+  fileToolBar->addAction(fwPrefsAct);
+  fileToolBar->addSeparator();
+  fileToolBar->addAction(appPrefsAct);
+  fileToolBar->addAction(profilesMenuAct);
+  fileToolBar->addAction(editSplashAct);
+  fileToolBar->addAction(editSplashAct);
+  fileToolBar->addSeparator();
+  fileToolBar->addAction(compareAct);
+  fileToolBar->addAction(sdsyncAct);
 
-  logsAct =            addAct("logs.png",          tr("View Log File..."),        tr("Open and view log file"),             SLOT(logFile()));
-  appPrefsAct =        addAct("apppreferences.png",tr("Settings..."),             tr("Edit Settings"),                      SLOT(appPrefs()));
-  fwPrefsAct =         addAct("fwpreferences.png", tr("Download..."),             tr("Download firmware and voice files"),  SLOT(fwPrefs()));
-  checkForUpdatesAct = addAct("update.png",        tr("Check for Updates..."),    tr("Check OpenTX and Companion updates"), SLOT(doUpdates()));
-  changelogAct =       addAct("changelog.png",     tr("Companion Changes..."),    tr("Show Companion change log"),          SLOT(changelog()));
-  fwchangelogAct =     addAct("changelog.png",     tr("Firmware Changes..."),     tr("Show firmware change log"),           SLOT(fwchangelog()));
-  compareAct =         addAct("compare.png",       tr("Compare Models..."),       tr("Compare models"),                     SLOT(compare()));
-  editSplashAct =      addAct("paintbrush.png",    tr("Edit Radio Splash Image..."), tr("Edit the splash image of your Radio"),   SLOT(customizeSplash()));
-  burnListAct =        addAct("list.png",          tr("List programmers..."),     tr("List available programmers"),         SLOT(burnList()));
-  burnFusesAct =       addAct("fuses.png",         tr("Fuses..."),                tr("Show fuses dialog"),                  SLOT(burnFuses()));
-  readFlashAct =       addAct("read_flash.png",    tr("Read Firmware from Radio"),tr("Read firmware from Radio"),           SLOT(readFlash()));
-  writeFlashAct =      addAct("write_flash.png",   tr("Write Firmware to Radio"), tr("Write firmware to Radio"),            SLOT(writeFlash()));
-  openDocURLAct =      addAct("",                  tr("Manuals and other Documents"),      tr("Open the OpenTX document page in a web browser"), SLOT(openDocURL()));
-  writeEepromAct =     addAct("write_eeprom.png",  tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"),       SLOT(writeEeprom()));
-  readEepromAct =      addAct("read_eeprom.png",   tr("Read Models and Settings From Radio"), tr("Read Models and Settings from Radio"),      SLOT(readEeprom()));
-  burnConfigAct =      addAct("configure.png",     tr("Configure Communications..."), tr("Configure software for communicating with the Radio"), SLOT(burnConfig()));
-  writeBackupToRadioAct = addAct("write_eeprom_file.png", tr("Write Backup to Radio"), tr("Write Backup from file to Radio"), SLOT(writeBackup()));
-  readBackupToFileAct = addAct("read_eeprom_file.png", tr("Backup Radio to File"), tr("Save a complete backup file of all settings and model data in the Radio"), SLOT(readBackup()));
-  contributorsAct =    addAct("contributors.png",  tr("Contributors..."), tr("A tribute to those who have contributed to OpenTX and Companion"), SLOT(contributors()));
-  sdsyncAct =          addAct("sdsync.png",        tr("Synchronize SD"),          tr("SD card synchronization"),            SLOT(sdsync()));
+  // workaround for default split button appearance of action with menu  :-/
+  QToolButton * btn;
+  if ((btn = qobject_cast<QToolButton *>(fileToolBar->widgetForAction(recentFilesAct))))
+    btn->setPopupMode(QToolButton::InstantPopup);
+  if ((btn = qobject_cast<QToolButton *>(fileToolBar->widgetForAction(profilesMenuAct))))
+    btn->setPopupMode(QToolButton::InstantPopup);
 
-  createProfileAct =   addAct("new.png",           tr("Add Radio Profile"),            tr("Create a new Radio Settings Profile"),       SLOT(createProfile()));
-  copyProfileAct =     addAct("copy.png",          tr("Copy Current Radio Profile"),   tr("Duplicate current Radio Settings Profile"),  SLOT(copyProfile()));
-  deleteProfileAct =   addAct("clear.png",         tr("Delete Current Radio Profile"), tr("Delete the current Radio Settings Profile"), SLOT(deleteCurrentProfile()));
+  // gets populated later
+  editToolBar = addToolBar("");
+  editToolBar->setObjectName("Edit");
 
-  compareAct->setEnabled(false);
+  burnToolBar = new QToolBar(this);
+  addToolBar( Qt::LeftToolBarArea, burnToolBar );
+  burnToolBar->setObjectName("Write");
+  burnToolBar->addAction(writeEepromAct);
+  burnToolBar->addAction(readEepromAct);
+  burnToolBar->addSeparator();
+  burnToolBar->addAction(writeBUToRadioAct);
+  burnToolBar->addAction(readBUToFileAct);
+  burnToolBar->addSeparator();
+  burnToolBar->addAction(writeFlashAct);
+  burnToolBar->addAction(readFlashAct);
+  burnToolBar->addSeparator();
+  burnToolBar->addAction(burnConfigAct);
+
+  helpToolBar = addToolBar("");
+  helpToolBar->setObjectName("Help");
+  helpToolBar->addAction(checkForUpdatesAct);
+  helpToolBar->addAction(aboutAct);
 }
 
 QMenu * MainWindow::createLanguageMenu(QWidget * parent)
@@ -1120,208 +1321,7 @@ QMenu * MainWindow::createLanguageMenu(QWidget * parent)
   return menu;
 }
 
-void MainWindow::createMenus()
-{
-  menuBar()->clear();
-
-  if (fileMenu) {
-    fileMenu->deleteLater();
-  }
-  fileMenu = menuBar()->addMenu(tr("File"));
-  fileMenu->addAction(newAct);
-  fileMenu->addAction(openAct);
-  fileMenu->addAction(saveAct);
-  fileMenu->addAction(saveAsAct);
-
-  QMenu *recentFileMenu = new QMenu(tr("Recent Files"), fileMenu);
-  recentFileMenu->setIcon(CompanionIcon("recentdocument.png"));
-  for (int i=0; i<MAX_RECENT; ++i) {
-    recentFileMenu->addAction(recentFileActs[i]);
-  }
-
-  fileMenu->addMenu(recentFileMenu);
-  fileMenu->addSeparator();
-  fileMenu->addAction(logsAct);
-  fileMenu->addAction(fwPrefsAct);
-  fileMenu->addAction(compareAct);
-  fileMenu->addAction(sdsyncAct);
-  fileMenu->addSeparator();
-  fileMenu->addAction(exitAct);
-
-  if (editMenu) {
-    editMenu->deleteLater();
-  }
-  editMenu = menuBar()->addMenu(tr("Edit"));
-
-  if (settingsMenu) {
-    settingsMenu->deleteLater();
-  }
-  settingsMenu = menuBar()->addMenu(tr("Settings"));
-
-  QMenu *themeMenu = new QMenu(tr("Set Icon Theme"), settingsMenu);
-  QActionGroup * themeGroup = new QActionGroup(themeMenu);
-  addActToGroup(themeGroup, tr("Classical"),  tr("The classic companion9x icon theme"),  "themeId", 0, g.theme());
-  addActToGroup(themeGroup, tr("Yerico"),     tr("Yellow round honey sweet icon theme"), "themeId", 1, g.theme());
-  addActToGroup(themeGroup, tr("Monochrome"), tr("A monochrome black icon theme"),       "themeId", 3, g.theme());
-  addActToGroup(themeGroup, tr("MonoBlue"),   tr("A monochrome blue icon theme"),        "themeId", 4, g.theme());
-  addActToGroup(themeGroup, tr("MonoWhite"),  tr("A monochrome white icon theme"),       "themeId", 2, g.theme());
-  connect(themeGroup, &QActionGroup::triggered, this, &MainWindow::onThemeChanged);
-  themeMenu->addActions(themeGroup->actions());
-
-  QMenu *iconThemeSizeMenu = new QMenu(tr("Set Icon Size"), settingsMenu);
-  QActionGroup * szGroup = new QActionGroup(iconThemeSizeMenu);
-  addActToGroup(szGroup, tr("Small"),  tr("Use small toolbar icons"),       "sizeId", 0, g.iconSize());
-  addActToGroup(szGroup, tr("Normal"), tr("Use normal size toolbar icons"), "sizeId", 1, g.iconSize());
-  addActToGroup(szGroup, tr("Big"),    tr("Use big toolbar icons"),         "sizeId", 2, g.iconSize());
-  addActToGroup(szGroup, tr("Huge"),   tr("Use huge toolbar icons"),        "sizeId", 3, g.iconSize());
-  connect(szGroup, &QActionGroup::triggered, this, &MainWindow::onIconSizeChanged);
-  iconThemeSizeMenu->addActions(szGroup->actions());
-
-  settingsMenu->addMenu(createLanguageMenu(settingsMenu));
-  settingsMenu->addMenu(themeMenu);
-  settingsMenu->addMenu(iconThemeSizeMenu);
-  settingsMenu->addSeparator();
-  settingsMenu->addAction(appPrefsAct);
-  settingsMenu->addMenu(createProfilesMenu());
-  settingsMenu->addAction(editSplashAct);
-  settingsMenu->addAction(burnConfigAct);
-
-  if (burnMenu) {
-    burnMenu->deleteLater();
-  }
-  burnMenu = menuBar()->addMenu(tr("Read/Write"));
-  burnMenu->addAction(writeEepromAct);
-  burnMenu->addAction(readEepromAct);
-  burnMenu->addSeparator();
-  burnMenu->addAction(writeBackupToRadioAct);
-  burnMenu->addAction(readBackupToFileAct);
-  burnMenu->addSeparator();
-  burnMenu->addAction(writeFlashAct);
-  burnMenu->addAction(readFlashAct);
-  burnMenu->addSeparator();
-  burnMenu->addSeparator();
-  if (!IS_ARM(getCurrentBoard())) {
-    burnMenu->addAction(burnFusesAct);
-    burnMenu->addAction(burnListAct);
-  }
-
-  if (windowsMenu) {
-    windowsMenu->deleteLater();
-    foreach (QAction * act, windowsListActions->actions()) {
-      windowsListActions->removeAction(act);
-      act->deleteLater();
-    }
-  }
-  windowsMenu = menuBar()->addMenu(tr("Windows"));
-  QAction * actTabbedWindows = new QAction(tr("Tabbed Windows"), this);
-  actTabbedWindows->setCheckable(true);
-  windowsMenu->addAction(actTabbedWindows);
-  QAction * actTile = windowsMenu->addAction(tr("Tile Windows"), mdiArea, SLOT(tileSubWindows()));
-  QAction * actCascd = windowsMenu->addAction(tr("Cascade Windows"), mdiArea, SLOT(cascadeSubWindows()));
-  connect(actTabbedWindows, &QAction::toggled, [this, actTile, actCascd](bool on) {
-    mdiArea->setViewMode(on ? QMdiArea::TabbedView : QMdiArea::SubWindowView);
-    actTile->setDisabled(on);
-    actCascd->setDisabled(on);
-  });
-  windowsMenu->addAction(tr("Close All Windows"), mdiArea, SLOT(closeAllSubWindows()));
-  windowsMenu->addSeparator();
-  updateWindowsActions();
-
-  if (helpMenu) {
-    helpMenu->deleteLater();
-  }
-  helpMenu = menuBar()->addMenu(tr("Help"));
-  helpMenu->addSeparator();
-  helpMenu->addAction(checkForUpdatesAct);
-  helpMenu->addSeparator();
-  helpMenu->addAction(aboutAct);
-  helpMenu->addAction(openDocURLAct);
-  helpMenu->addSeparator();
-  helpMenu->addAction(changelogAct);
-  helpMenu->addAction(fwchangelogAct);
-  helpMenu->addSeparator();
-  helpMenu->addAction(contributorsAct);
-
-}
-
-QMenu *MainWindow::createRecentFileMenu()
-{
-  QMenu *recentFileMenu = new QMenu(this);
-  for ( int i = 0; i < MAX_RECENT; ++i) {
-    recentFileMenu->addAction(recentFileActs[i]);
-  }
-  return recentFileMenu;
-}
-
-QMenu *MainWindow::createProfilesMenu()
-{
-  QMenu *profilesMenu=new QMenu(tr("Radio Profile"), this);
-  for (int i = 0; i < MAX_PROFILES; ++i) {
-    profilesMenu->addAction(profileActs[i]);
-  }
-  profilesMenu->addSeparator();
-
-  profilesMenu->addAction(createProfileAct);
-  profilesMenu->addAction(copyProfileAct);
-  profilesMenu->addAction(deleteProfileAct);
-  profilesMenu->setIcon(CompanionIcon("profiles.png"));
-  return profilesMenu;
-}
-
-void MainWindow::updateToolBars()
-{
-  fileToolBar->clear();
-  fileToolBar->addAction(newAct);
-  fileToolBar->addAction(openAct);
-
-  QToolButton * recentToolButton = new QToolButton;
-  recentToolButton->setPopupMode(QToolButton::InstantPopup);
-  recentToolButton->setFocusPolicy(Qt::NoFocus);
-  recentToolButton->setMenu(createRecentFileMenu());
-  recentToolButton->setIcon(CompanionIcon("recentdocument.png"));
-  recentToolButton->setToolTip(tr("Recent Models+Settings"));
-  recentToolButton->setStatusTip(tr("Show recent Models+Settings documents"));
-
-  fileToolBar->addWidget(recentToolButton);
-  fileToolBar->addAction(saveAct);
-  fileToolBar->addSeparator();
-  fileToolBar->addAction(logsAct);
-  fileToolBar->addAction(fwPrefsAct);
-  fileToolBar->addSeparator();
-  fileToolBar->addAction(appPrefsAct);
-
-  QToolButton * profileButton = new QToolButton;
-  profileButton->setPopupMode(QToolButton::InstantPopup);
-  profileButton->setFocusPolicy(Qt::NoFocus);
-  profileButton->setMenu(createProfilesMenu());
-  profileButton->setIcon(CompanionIcon("profiles.png"));
-  profileButton->setToolTip(tr("Radio Profile"));
-  profileButton->setStatusTip(tr("Show the list of radio profiles"));
-
-  fileToolBar->addWidget(profileButton);
-  fileToolBar->addAction(editSplashAct);
-  fileToolBar->addSeparator();
-  fileToolBar->addAction(compareAct);
-  fileToolBar->addAction(sdsyncAct);
-
-  burnToolBar->clear();
-  burnToolBar->addAction(writeEepromAct);
-  burnToolBar->addAction(readEepromAct);
-  burnToolBar->addSeparator();
-  burnToolBar->addAction(writeBackupToRadioAct);
-  burnToolBar->addAction(readBackupToFileAct);
-  burnToolBar->addSeparator();
-  burnToolBar->addAction(writeFlashAct);
-  burnToolBar->addAction(readFlashAct);
-  burnToolBar->addSeparator();
-  burnToolBar->addAction(burnConfigAct);
-
-  helpToolBar->clear();
-  helpToolBar->addAction(checkForUpdatesAct);
-  helpToolBar->addAction(aboutAct);
-}
-
-void MainWindow::createStatusBar()
+void MainWindow::showReadyStatus()
 {
   statusBar()->showMessage(tr("Ready"));
 }
@@ -1354,15 +1354,15 @@ void MainWindow::setActiveSubWindow(QWidget *window)
 void MainWindow::updateRecentFileActions()
 {
   //  Hide all document slots
-  for (int i=0 ; i<g.historySize(); i++) {
+  for (int i=0 ; i < qMin(recentFileActs.size(), g.historySize()); i++) {
     recentFileActs[i]->setVisible(false);
   }
 
   // Fill slots with content and unhide them
   QStringList files = g.recentFiles();
-  int numRecentFiles = qMin(files.size(), g.historySize());
+  int numRecentFiles = qMin(recentFileActs.size(), qMin(files.size(), g.historySize()));
 
-  for (int i=0; i<numRecentFiles; i++) {
+  for (int i=0; i < numRecentFiles; i++) {
     QString text = strippedName(files[i]);
     if (!text.trimmed().isEmpty()) {
       recentFileActs[i]->setText(text);
@@ -1374,7 +1374,7 @@ void MainWindow::updateRecentFileActions()
 
 void MainWindow::updateProfilesActions()
 {
-  for (int i=0; i<MAX_PROFILES; i++) {
+  for (int i=0; i < qMin(profileActs.size(), MAX_PROFILES); i++) {
     if (g.profile[i].existsOnDisk()) {
       QString text = tr("%2").arg(g.profile[i].name());
       profileActs[i]->setText(text);
@@ -1391,9 +1391,12 @@ void MainWindow::updateProfilesActions()
 
 void MainWindow::updateWindowsActions()
 {
+  if (!windowsListActions)
+    return;
   foreach (QAction * act, windowsListActions->actions()) {
     windowsListActions->removeAction(act);
-    windowsMenu->removeAction(act);
+    if (windowsMenu->actions().contains(act))
+      windowsMenu->removeAction(act);
     delete act;
   }
   foreach (QMdiSubWindow * win, mdiArea->subWindowList()) {
