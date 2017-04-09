@@ -1021,6 +1021,8 @@ class ModelData {
     int       category;
     char      name[15+1];
     char      filename[16+1];
+    int       modelIndex;      // Companion only, temporary index position managed by data model.
+
     TimerData timers[CPN_MAX_TIMERS];
     bool      noGlobalFunctions;
     bool      thrTrim;            // Enable Throttle Trim

@@ -70,6 +70,7 @@ class MainWindow : public QMainWindow
 
   private slots:
     void openDocURL();
+    void updateUi();
     void retranslateUi();
 
     void setLanguage(const QString & langString);
@@ -94,13 +95,10 @@ class MainWindow : public QMainWindow
     void openFile();
     void save();
     void saveAs();
-    void cut();
     void openRecentFile();
     void loadProfileId(const unsigned pid);
     void loadProfile();
     void logFile();
-    void copy();
-    void paste();
     void writeEeprom();
     void readEeprom();
     void writeFlash(QString fileToFlash="");
@@ -110,7 +108,6 @@ class MainWindow : public QMainWindow
     void burnConfig();
     void burnList();
     void burnFuses();
-    void simulate();
     void contributors();
     void sdsync();
     void changelog();
@@ -118,8 +115,6 @@ class MainWindow : public QMainWindow
     void customizeSplash();
     void about();
     void compare();
-    void print();
-    void loadBackup();
     void appPrefs();
     void fwPrefs();
     void updateMenus();
@@ -135,7 +130,6 @@ class MainWindow : public QMainWindow
     void openFile(const QString & fileName, bool updateLastUsedDir = false);
 
   private:
-    QAction * addAct(const QString &, const QString &, const QString &, enum QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
     QAction * addAct(const QString &, const QString &, const QString &, const QKeySequence &, const char *, QObject *slotObj=NULL);
     QAction * addAct(const QString &, const QString &, const QString &, const char *);
     QAction * addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName,
@@ -147,10 +141,11 @@ class MainWindow : public QMainWindow
 
     void createActions();
     void createMenus();
-    void createToolBars();
+    void updateToolBars();
     void createStatusBar();
     void updateRecentFileActions();
     void updateProfilesActions();
+    void updateWindowsActions();
 
     int newProfile(bool loadProfile = true);
     QString strippedName(const QString & fullFileName);
@@ -173,12 +168,15 @@ class MainWindow : public QMainWindow
     QNetworkAccessManager *networkManager;
 
     QVector<QAction *> actionsList;
+    QList<QAction *> fileWindowActions;
 
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *settingsMenu;
     QMenu *burnMenu;
     QMenu *helpMenu;
+    QMenu * windowsMenu;
+    QActionGroup * windowsListActions;
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
     QToolBar *burnToolBar;
@@ -197,9 +195,6 @@ class MainWindow : public QMainWindow
     QAction *fwchangelogAct;
     QAction *compareAct;
     QAction *editSplashAct;
-    QAction *cutAct;
-    QAction *copyAct;
-    QAction *pasteAct;
     QAction *writeEepromAct;
     QAction *readEepromAct;
     QAction *burnConfigAct;
@@ -209,11 +204,7 @@ class MainWindow : public QMainWindow
     QAction *readFlashAct;
     QAction *writeBackupToRadioAct;
     QAction *readBackupToFileAct;
-    QAction *simulateAct;
-    QAction *separatorAct;
     QAction *aboutAct;
-    QAction *printAct;
-    QAction *loadbackupAct;
     QAction *logsAct;
     QAction *recentFileActs[MAX_RECENT];
     QAction *profileActs[MAX_PROFILES];

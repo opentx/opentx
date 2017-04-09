@@ -22,17 +22,15 @@
 #define _MODELSLIST_H_
 
 #include "eeprominterface.h"
-#include <QtWidgets>
-
-struct CurrentSelection
-{
-  QTreeWidgetItem * current_item;
-  bool selected[CPN_MAX_MODELS+1];
-};
+#include <QAbstractItemModel>
+#include <QMimeData>
+#include <QUuid>
 
 class TreeItem
 {
   public:
+    enum TreeItemFlags { MarkedForCut = 0x01 };
+
     explicit TreeItem(const QVector<QVariant> & itemData);
     explicit TreeItem(TreeItem * parent, int categoryIndex, int modelIndex);
     ~TreeItem();
@@ -42,14 +40,26 @@ class TreeItem
     int columnCount() const;
     QVariant data(int column) const;
     TreeItem * appendChild(int categoryIndex, int modelIndex);
-    TreeItem * parent();
+    TreeItem * insertChild(const int row, int categoryIndex, int modelIndex);
     bool removeChildren(int position, int count);
+    bool insertChildren(int row, int count);
 
     int childNumber() const;
     bool setData(int column, const QVariant &value);
 
+    TreeItem * parent() { return parentItem; }
+    void setParent(TreeItem * p) { parentItem = p; }
     int getModelIndex() const { return modelIndex; }
+    void setModelIndex(int value) { modelIndex = value; }
     int getCategoryIndex() const { return categoryIndex; }
+    void setCategoryIndex(int value) { categoryIndex = value; }
+
+    quint16 getFlags() const { return flags; }
+    void setFlags(const quint16 & value) { flags = value; }
+    void setFlag(const quint16 & flag, const bool on = true);
+
+    bool isCategory() const;
+    bool isModel() const;
 
   private:
     QList<TreeItem*> childItems;
@@ -57,6 +67,7 @@ class TreeItem
     TreeItem * parentItem;
     int categoryIndex;
     int modelIndex;
+    quint16 flags;
 };
 
 
@@ -65,47 +76,81 @@ class TreeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+    struct MimeHeaderData {
+      QUuid instanceId;
+      quint16 dataVersion;
+    };
+
     TreeModel(RadioData * radioData, QObject *parent = 0);
     virtual ~TreeModel();
 
-    QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
-    QVariant headerData(int section, Qt::Orientation orientation,
-                        int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    virtual QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    virtual bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) Q_DECL_OVERRIDE;
 
-    QModelIndex index(int row, int column,
-                      const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
+    virtual QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    virtual QModelIndex parent(const QModelIndex &index) const Q_DECL_OVERRIDE;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    virtual bool removeRows(int position, int rows, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+    //virtual bool insertRows(int row, int count, const QModelIndex & parent) Q_DECL_OVERRIDE;
 
-    Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
-    bool setData(const QModelIndex &index, const QVariant &value,
-                 int role = Qt::EditRole) Q_DECL_OVERRIDE;
+    virtual QStringList mimeTypes() const Q_DECL_OVERRIDE;
+    virtual Qt::DropActions supportedDropActions() const Q_DECL_OVERRIDE;
+    virtual Qt::DropActions supportedDragActions() const Q_DECL_OVERRIDE;
+    virtual QMimeData * mimeData(const QModelIndexList & indexes) const Q_DECL_OVERRIDE;
+    virtual bool canDropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) const Q_DECL_OVERRIDE;
+    virtual bool dropMimeData(const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent) Q_DECL_OVERRIDE;
 
-    bool removeRows(int position, int rows,
-                    const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+    void encodeModelsData(const QModelIndexList & indexes, QByteArray * data) const;
+    void encodeGeneralData(QByteArray * data) const;
+    void encodeHeaderData(QByteArray * data) const;
+    QMimeData * getModelsMimeData(const QModelIndexList & indexes, QMimeData * mimeData = NULL) const;
+    QMimeData * getGeneralMimeData(QMimeData * mimeData = NULL) const;
+    QMimeData * getHeaderMimeData(QMimeData * mimeData = NULL) const;
+    QUuid getMimeDataSourceId(const QMimeData * mimeData) const;
+    bool hasSupportedMimeData(const QMimeData * mimeData) const;
+    bool hasModelsMimeData(const QMimeData * mimeData) const;
+    bool hasGenralMimeData(const QMimeData * mimeData) const;
+    bool hasHeaderMimeData(const QMimeData * mimeData) const;
+    bool hasOwnMimeData(const QMimeData * mimeData) const;
 
+    static bool decodeHeaderData(const QMimeData * mimeData, MimeHeaderData * header);
+    static bool decodeMimeData(const QMimeData * mimeData, QVector<ModelData> * models = NULL, GeneralSettings * gs = NULL, bool * hasGenSet = NULL);
+    static int countModelsInMimeData(const QMimeData * mimeData);
+
+    QModelIndex getIndexForModel(const int modelIndex, QModelIndex parent = QModelIndex());
+    QModelIndex getIndexForCategory(const int categoryIndex);
+    int getAvailableEEpromSize();
+    int getModelIndex(const QModelIndex & index) const;
+    int getCategoryIndex(const QModelIndex & index) const;
+    int rowNumber(const QModelIndex & index = QModelIndex()) const;
+    bool isCategoryType(const QModelIndex & index) const;
+    bool isModelType(const QModelIndex & index) const;
+
+  public slots:
+    void markItemForCut(const QModelIndex & index, bool on = true);
+    void markItemsForCut(const QModelIndexList & indexes, bool on = true);
     void refresh();
 
-    int getAvailableEEpromSize() { return availableEEpromSize; }
+  signals:
+    void modelsDropped(const QMimeData * mimeData, const QModelIndex toRowIdx, const bool insert, const bool move);
+    void modelsRemoved(const QVector<int> modelIndices);
+    void refreshRequested();
 
-    int getModelIndex(const QModelIndex & index) const {
-      return getItem(index)->getModelIndex();
-    }
+  private slots:
+    //void onRowsAboutToBeRemoved(const QModelIndex & parent, int first, int last);
+    void onRowsRemoved(const QModelIndex & parent, int first, int last);
 
-    int getCategoryIndex(const QModelIndex & index) const {
-      return getItem(index)->getCategoryIndex();
-    }
-
-    int rowNumber(const QModelIndex & index = QModelIndex()) const {
-      return getItem(index)->childNumber();
-    }
   private:
     TreeItem * getItem(const QModelIndex & index) const;
+
     TreeItem * rootItem;
     RadioData * radioData;
     int availableEEpromSize;
+    MimeHeaderData mimeHeaderData;
 };
 
 #endif // _MODELSLIST_H_
