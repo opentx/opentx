@@ -295,6 +295,11 @@ ModelSelectionPage::ModelSelectionPage(WizardDialog *dlg, QString image, QString
   l->addWidget(helicopterRB);
 }
 
+void ModelSelectionPage::initializePage()
+{
+  nameLineEdit->setText(wizDlg->mix.name);
+}
+
 bool ModelSelectionPage::validatePage()
 {
   //Filter and insert model name in mix data
