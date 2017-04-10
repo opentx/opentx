@@ -349,7 +349,7 @@
 #define LEN_FUNCSOUNDS                 TR("\004", "\006")
 #define TR_FUNCSOUNDS                  TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
 
-#define LEN_VTELEMCHNS                 TR("\004", "\005")
+#define LEN_VTELEMCHNS                 "\004"
 
 #define LENGTH_UNIT_IMP                "ft\0"
 #define SPEED_UNIT_IMP                 "mph"
