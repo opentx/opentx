@@ -27,7 +27,9 @@ sys.path.append(lib_path)
 
 def generate(str, filename):
 
-    command = "pico2wave -l=" + voice + " -w=" + filename + " \"" + str + "\""
+    command = "pico2wave -l=" + voice + " -w=output.wav \"" + str + "\""
+    os.system(command.encode('utf-8'))
+    command = "sox output.wav " + filename + " reverse silence 1 0.1 0.1% reverse"
     os.system(command.encode('utf-8'))
 
 ################################################################
@@ -64,7 +66,7 @@ if __name__ == "__main__":
 
         directory = "es"
         voice = "es-ES"
- 
+
     else:
         print("which language?")
         exit()
@@ -89,7 +91,7 @@ if __name__ == "__main__":
                         l += u"SOUNDS/%s;" % directory
                     l += f + u";" + s + u"\n"
                     csvFile.write(l.encode("utf-8"))
-            
+
     if "files" in sys.argv:
               path = "/tmp/SOUNDS/" + directory + "/SYSTEM/"
               if not os.path.exists(path):
@@ -101,5 +103,4 @@ if __name__ == "__main__":
               os.chdir("..")
               for s, f in sounds:
                 if s and f:
-                    generate(s, f)                  
-
+                    generate(s, f)
