@@ -20,42 +20,46 @@
 
 #include "comparedialog.h"
 #include "ui_comparedialog.h"
+#include "appdata.h"
 #include "helpers.h"
+#include "modelslist.h"
 #include <QPrinter>
 #include <QPrintDialog>
 
-class DragDropHeader {
-  public:
-    DragDropHeader():
-      general_settings(false),
-      models_count(0)
-    {
-    }
-    bool general_settings;
-    uint8_t models_count;
-    uint8_t models[CPN_MAX_MODELS];
-};
+//class DragDropHeader {
+//  public:
+//    DragDropHeader():
+//      general_settings(false),
+//      models_count(0)
+//    {
+//    }
+//    bool general_settings;
+//    uint8_t models_count;
+//    uint8_t models[CPN_MAX_MODELS];
+//};
 
 CompareDialog::CompareDialog(QWidget * parent, Firmware * firmware):
-  QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-  multimodelprinter(firmware),
-  model1Valid(false),
-  model2Valid(false),
+  QDialog(parent, Qt::Window),
+  multimodelprinter(new MultiModelPrinter(firmware)),
   ui(new Ui::CompareDialog)
 {
   ui->setupUi(this);
-
   setWindowIcon(CompanionIcon("compare.png"));
   setAcceptDrops(true);
+  if (!g.compareWinGeo().isEmpty()) {
+    restoreGeometry(g.compareWinGeo());
+  }
+}
 
-  //setDragDropOverwriteMode(true);
-  //setDropIndicatorShown(true);
-  // TODO scroll to top ... ui->textEdit->scrollToAnchor("1");
+CompareDialog::~CompareDialog()
+{
+  delete multimodelprinter;
+  delete ui;
 }
 
 void CompareDialog::dragMoveEvent(QDragMoveEvent * event)
 {
-  if (event->mimeData()->hasFormat("application/x-companion")) {   
+  if (event->mimeData()->hasFormat("application/x-companion-modeldata")) {
     event->acceptProposedAction();
   }
   else {
@@ -65,8 +69,7 @@ void CompareDialog::dragMoveEvent(QDragMoveEvent * event)
 
 void CompareDialog::dragEnterEvent(QDragEnterEvent * event)
 {
-  // accept just text/uri-list mime format
-  if (event->mimeData()->hasFormat("application/x-companion")) {   
+  if (event->mimeData()->hasFormat("application/x-companion-modeldata")) {
     event->acceptProposedAction();
   }
   else {
@@ -79,55 +82,85 @@ void CompareDialog::dragLeaveEvent(QDragLeaveEvent * event)
   event->accept();
 }
 
-bool CompareDialog::handleDroppedModel(const QMimeData * mimeData, ModelData & model, QLabel * label)
+bool CompareDialog::handleMimeData(const QMimeData * mimeData)
 {
-  if (mimeData->hasFormat("application/x-companion")) {
-    QByteArray gmData = mimeData->data("application/x-companion");
-    DragDropHeader * header = (DragDropHeader *)gmData.data();
-    if (!header->general_settings) {
-      char * gData = gmData.data() + sizeof(DragDropHeader);
-      if (gData[0] == 'M') {
-        ModelData * modeltemp = (ModelData *)(gData + 1);
-        if (modeltemp->used) {
-          memcpy(&model, modeltemp, sizeof(ModelData));
-          QString name(model.name);
-          if (!name.isEmpty())
-            label->setText(name);
-          else
-            label->setText(tr("No name"));
-          return true;
-        }
-      }
-    }
+  QVector<ModelData> mList;
+  GeneralSettings gs;
+  if (!TreeModel::decodeMimeData(mimeData, &mList, &gs) || mList.isEmpty())
+    return false;
+  for (int i=0; i < mList.size(); ++i) {
+    GMData data;
+    data.model = mList[i];
+    data.gs = gs;
+    modelsList.append(data);
   }
-  return false;
+  return true;
+}
+
+void CompareDialog::closeEvent(QCloseEvent * event)
+{
+  g.compareWinGeo(saveGeometry());
 }
 
 void CompareDialog::dropEvent(QDropEvent *event)
 {
-  QLabel * child = qobject_cast<QLabel*>(childAt(event->pos()));
-  if (!child) return;
-  if (child->objectName().contains("label_1")) {   
-    model1Valid = handleDroppedModel(event->mimeData(), model1, ui->label_1);
-  }
-  else if (child->objectName().contains("label_2")) {
-    model2Valid = handleDroppedModel(event->mimeData(), model2, ui->label_2);
-  }
-  event->accept();
-  if (model1Valid && model2Valid) {
-    multimodelprinter.setModel(0, model1);
-    multimodelprinter.setModel(1, model2);
-    ui->textEdit->setHtml(multimodelprinter.print(ui->textEdit->document()));
+  if (handleMimeData(event->mimeData())) {
+    event->accept();
+    compare();
   }
 }
 
-void CompareDialog::closeEvent(QCloseEvent *event) 
+void CompareDialog::compare()
 {
+  QLayoutItem *child;
+  while ((child = ui->layout_modelNames->takeAt(0))) {
+    if (child->widget())
+      delete child->widget();
+    delete child;
+  }
+
+  multimodelprinter->clearModels();
+  ui->textEdit->clear();
+
+  for (int i=0; i < modelsList.size(); ++i) {
+    multimodelprinter->setModel(i, &modelsList[i].model, &modelsList[i].gs);
+    QString name(modelsList.at(i).model.name);
+    if (name.isEmpty())
+      name = tr("Unnamed Model %1").arg(i+1);
+
+    QWidget * hdr = new QWidget(this);
+    hdr->setLayout(new QHBoxLayout());
+    hdr->layout()->setContentsMargins(0, 0, 0, 0);
+    hdr->layout()->setSpacing(2);
+    QToolButton * btn = new QToolButton(hdr);
+    btn->setIcon(CompanionIcon("clear.png"));
+    btn->setProperty("index", i);
+    btn->setFixedSize(18, 18);
+    btn->setToolTip(tr("Click to remove this model."));
+    hdr->layout()->addWidget(btn);
+    QLabel * lbl = new QLabel(name, this);
+    lbl->setStyleSheet("font-weight: bold;");
+    hdr->layout()->addWidget(lbl);
+    connect(btn, &QToolButton::clicked, this, &CompareDialog::removeModelBtnClicked);
+
+    ui->layout_modelNames->addWidget(hdr);
+  }
+  if (modelsList.size())
+    ui->textEdit->setHtml(multimodelprinter->print(ui->textEdit->document()));
 }
 
-CompareDialog::~CompareDialog()
+void CompareDialog::removeModel(int idx)
 {
-  delete ui;
+  if (idx < modelsList.size()) {
+    modelsList.remove(idx);
+    compare();
+  }
+}
+
+void CompareDialog::removeModelBtnClicked()
+{
+  if (sender() && sender()->property("index").isValid())
+    removeModel(sender()->property("index").toInt());
 }
 
 void CompareDialog::on_printButton_clicked()

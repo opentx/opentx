@@ -1502,6 +1502,7 @@ RadioData::RadioData()
 void ModelData::clear()
 {
   memset(this, 0, sizeof(ModelData));
+  modelIndex = -1;  // an invalid index, this is managed by the TreeView data model
   moduleData[0].channelsCount = 8;
   moduleData[1].channelsStart = 0;
   moduleData[1].channelsCount = 8;

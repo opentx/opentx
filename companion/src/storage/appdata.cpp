@@ -434,6 +434,9 @@ QStringList AppData::simuDbgFilters() { return _simuDbgFilters;  }
 QByteArray AppData::mainWinGeo()   { return _mainWinGeo;      }
 QByteArray AppData::mainWinState() { return _mainWinState;    }
 QByteArray AppData::modelEditGeo() { return _modelEditGeo;    }
+QByteArray AppData::mdiWinGeo()    { return _mdiWinGeo;       }
+QByteArray AppData::mdiWinState()  { return _mdiWinState;     }
+QByteArray AppData::compareWinGeo(){ return _compareWinGeo;   }
 
 QString AppData::armMcu()          { return _armMcu;          }
 QString AppData::avrArguments()    { return _avrArguments;    }
@@ -464,8 +467,10 @@ bool AppData::snapToClpbrd()       { return _snapToClpbrd;    }
 bool AppData::autoCheckApp()       { return _autoCheckApp;    }
 bool AppData::autoCheckFw()        { return _autoCheckFw;     }
 bool AppData::simuSW()             { return _simuSW;          }
-bool AppData::useWizard()          { return _useWizard;       }
+bool AppData::tabbedMdi()          { return _tabbedMdi;       }
+bool AppData::removeModelSlots()   { return _remvModelSlots;  }
 
+int AppData::newModelAction()      { return _newModelAction;  }
 int AppData::backLight()           { return _backLight;       }
 int AppData::embedSplashes()       { return _embedSplashes;   }
 int AppData::fwServerFails()       { return _fwServerFails;   }
@@ -486,6 +491,9 @@ void AppData::simuDbgFilters  (const QStringList x) { store(x, _simuDbgFilters, 
 void AppData::mainWinGeo      (const QByteArray  x) { store(x, _mainWinGeo,      "mainWindowGeometry"      );}
 void AppData::mainWinState    (const QByteArray  x) { store(x, _mainWinState,    "mainWindowState"         );}
 void AppData::modelEditGeo    (const QByteArray  x) { store(x, _modelEditGeo,    "modelEditGeometry"       );}
+void AppData::mdiWinGeo       (const QByteArray  x) { store(x, _mdiWinGeo,       "mdiWinGeo"               );}
+void AppData::mdiWinState     (const QByteArray  x) { store(x, _mdiWinState,     "mdiWinState"             );}
+void AppData::compareWinGeo   (const QByteArray  x) { store(x, _compareWinGeo,   "compareWinGeo"           );}
 
 void AppData::armMcu          (const QString     x) { store(x, _armMcu,          "arm_mcu"                 );}
 void AppData::avrArguments    (const QString     x) { store(x, _avrArguments,    "avr_arguments"           );}
@@ -516,8 +524,10 @@ void AppData::snapToClpbrd    (const bool        x) { store(x, _snapToClpbrd,   
 void AppData::autoCheckApp    (const bool        x) { store(x, _autoCheckApp,    "startup_check_companion" );}
 void AppData::autoCheckFw     (const bool        x) { store(x, _autoCheckFw,     "startup_check_fw"        );}
 void AppData::simuSW          (const bool        x) { store(x, _simuSW,          "simuSW"                  );}
-void AppData::useWizard       (const bool        x) { store(x, _useWizard,       "useWizard"               );}
+void AppData::tabbedMdi       (const bool        x) { store(x, _tabbedMdi,       "tabbedMdi"               );}
+void AppData::removeModelSlots(const bool        x) { store(x, _remvModelSlots,  "removeModelSlots"        );}
 
+void AppData::newModelAction  (const int         x) { store(x, _newModelAction,  "newModelAction"          );}
 void AppData::backLight       (const int         x) { store(x, _backLight,       "backLight"               );}
 void AppData::embedSplashes   (const int         x) { store(x, _embedSplashes,   "embedded_splashes"       );}
 void AppData::fwServerFails   (const int         x) { store(x, _fwServerFails,   "fwserver"                );}
@@ -569,6 +579,9 @@ void AppData::init()
     getset( _mainWinGeo,      "mainWindowGeometry"      ,"" );
     getset( _mainWinState,    "mainWindowState"         ,"" );
     getset( _modelEditGeo,    "modelEditGeometry"       ,"" );
+    getset( _mdiWinGeo,       "mdiWinGeo"               ,"" );
+    getset( _mdiWinState,     "mdiWinState"             ,"" );
+    getset( _compareWinGeo,   "compareWinGeo"           ,"" );
 
     getset( _armMcu,          "arm_mcu"                 ,"at91sam3s4-9x" );
     getset( _avrArguments,    "avr_arguments"           ,"" );
@@ -607,8 +620,10 @@ void AppData::init()
     getset( _autoCheckApp,    "startup_check_companion" ,true  );
     getset( _autoCheckFw,     "startup_check_fw"        ,true  );
     getset( _simuSW,          "simuSW"                  ,false );
-    getset( _useWizard,       "useWizard"               ,true  );
+    getset( _tabbedMdi,       "tabbedMdi"               ,false );
+    getset( _remvModelSlots,  "removeModelSlots"        ,true  );
 
+    getset( _newModelAction,  "newModelAction"          ,1  );
     getset( _backLight,       "backLight"               ,0  );
     getset( _embedSplashes,   "embedded_splashes"       ,0  );
     getset( _fwServerFails,   "fwserver"                ,0  );
@@ -636,7 +651,7 @@ QMap<int, QString> AppData::getActiveProfiles()
 
 bool AppData::importSettings(QSettings & toSettings)
 {
-  QSettings * fromSettings;
+  QSettings * fromSettings = NULL;
 
   QSettings settings21("OpenTX", "Companion 2.1");
   QSettings settings20("OpenTX", "Companion 2.0");
@@ -651,8 +666,6 @@ bool AppData::importSettings(QSettings & toSettings)
     fromSettings = &settings16;
   else if (settings9x.contains("default_mode"))
     fromSettings = &settings9x;
-  else
-    return false;
 
   // do not copy these settings
   QStringList excludeKeys = QStringList() << "compilation-server";
@@ -664,17 +677,19 @@ bool AppData::importSettings(QSettings & toSettings)
 #endif
 
   // import settings
-  foreach (const QString & key, fromSettings->allKeys()) {
-    if (fromSettings->value(key).isValid() && !excludeKeys.contains(key)) {
-      toSettings.setValue(key, fromSettings->value(key));
+  if (fromSettings) {
+    foreach (const QString & key, fromSettings->allKeys()) {
+      if (fromSettings->value(key).isValid() && !excludeKeys.contains(key)) {
+        toSettings.setValue(key, fromSettings->value(key));
+      }
     }
   }
 
   // Additional adjustments for companion9x settings
-  if (fromSettings->applicationName() == "companion9x") {
+  if (fromSettings && fromSettings->applicationName() == "companion9x") {
     // Store old values in new locations
     autoCheckApp(toSettings.value("startup_check_companion9x", true).toBool());
-    useWizard(toSettings.value("wizardEnable", true).toBool());
+    toSettings.setValue("useWizard", toSettings.value("wizardEnable", true));
 
     // Convert and store the firmware type
     QString fwType  = toSettings.value("firmware", "").toString();
@@ -717,5 +732,14 @@ bool AppData::importSettings(QSettings & toSettings)
     id( 0 );
   }
 
-  return true;
+  // convert old settings to new
+
+  if (toSettings.contains("useWizard")) {
+    if (!toSettings.contains("newModelAction")) {
+      newModelAction(toSettings.value("useWizard").toBool() ? 1 : 2);
+    }
+    toSettings.remove("useWizard");
+  }
+
+  return fromSettings ? true : false;
 }

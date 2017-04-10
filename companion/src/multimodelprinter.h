@@ -34,8 +34,9 @@ class MultiModelPrinter: public QObject
     MultiModelPrinter(Firmware * firmware);
     virtual ~MultiModelPrinter();
 
-    void setModel(int idx, const ModelData & model, const GeneralSettings & generalSettings);
-    void setModel(int idx, const ModelData & model);
+    void setModel(int idx, const ModelData * model, const GeneralSettings * generalSettings);
+    void setModel(int idx, const ModelData * model);
+    void clearModels();
     QString print(QTextDocument * document);
 
   protected:

@@ -23,9 +23,14 @@
 
 #include "eeprominterface.h"
 #include "modelslist.h"
-#include <QtGui>
 
-class MainWindow;
+#include <QActionGroup>
+#include <QtGui>
+#include <QMessageBox>
+#include <QProxyStyle>
+#include <QWidget>
+
+class QToolBar;
 
 namespace Ui {
 class MdiChild;
@@ -33,93 +38,198 @@ class MdiChild;
 
 class MdiChild : public QWidget
 {
-    // friend class ModelsListWidget;
-
-    Q_OBJECT
+  Q_OBJECT
 
   public:
-    MdiChild(MainWindow * parent);
+    enum Actions {
+      ACT_GEN_EDT,  // radio general settings
+      ACT_GEN_CPY,
+      ACT_GEN_PST,
+      ACT_GEN_SIM,
+      ACT_ITM_EDT,  // edit model/rename category
+      ACT_ITM_DEL,  // delete model or cat
+      ACT_CAT_ADD,  // category actions...
+      //ACT_CAT_EDT,  // not sure these are needed...
+      //ACT_CAT_DEL,  // the ACT_ITM_* actions do the same thing
+      ACT_CAT_SEP,  // convenience separator shown/hidden with category actions
+      ACT_MDL_ADD,  // model actions...
+      ACT_MDL_CPY,
+      ACT_MDL_CUT,
+      ACT_MDL_PST,
+      ACT_MDL_DUP,
+      ACT_MDL_INS,
+      ACT_MDL_MOV,
+      ACT_MDL_RTR,  // ResToRe backup
+      ACT_MDL_WIZ,
+      ACT_MDL_DFT,  // set as DeFaulT
+      ACT_MDL_PRT,  // print
+      ACT_MDL_SIM,
+      ACT_ENUM_END
+    };
+
+    MdiChild(QWidget *parent = Q_NULLPTR, QWidget * parentWin = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
     ~MdiChild();
 
+    QString currentFile() const;
+    QString userFriendlyCurrentFile() const;
+    QVector<int> getSelectedCategories() const;
+    QVector<int> getSelectedModels() const;
+    QList<QAction *> getGeneralActions();
+    QList<QAction *> getEditActions(bool incCatNew = true);
+    QList<QAction *> getModelActions();
+    //QList<QAction *> getCategoryActions();
+    QAction * getAction(const Actions type);
+
+  public slots:
     void newFile();
     bool loadFile(const QString & fileName, bool resetCurrentFile=true);
     bool save();
     bool saveAs(bool isNew=false);
     bool saveFile(const QString & fileName, bool setCurrent=true);
-    bool hasModelSelected();
-    bool hasPasteData() const;
-    QString userFriendlyCurrentFile() const;
-    QString currentFile() const { return curFile; }
-    int getCurrentModel() const;
-    int getCurrentCategory() const;
-    void refresh(bool expand=false);
-    void keyPressEvent(QKeyEvent * event);
-
-  signals:
-    void copyAvailable(bool val);
-
-  protected:
-    void convertStorage(Board::Type from, Board::Type to);
-    void forceNewFilename(const QString & suffix, const QString & ext);
-    void closeEvent(QCloseEvent * event);
-
-  protected slots:
-    void documentWasModified();
-    void on_simulateButton_clicked();
-    void onModelMoveToCategory();
-    void on_radioSettings_clicked();
-    void setDefault();
+    void writeEeprom();
+    void print(int model=-1, const QString & filename="");
     void onFirmwareChanged();
 
-  public slots:
+  signals:
+    void modified();
+    void newStatusMessage(const QString & msg, const int duration);
+
+  protected:
+    virtual void changeEvent(QEvent * event);
+    virtual void closeEvent(QCloseEvent * event);
+    virtual void resizeEvent(QResizeEvent * event);
+    virtual QSize sizeHint() const;
+
+  private slots:
+    void setupNavigation();
+    void updateNavigation();
+    void updateTitle();
+    void setModified();
+    void retranslateUi();
     void showModelsListContextMenu(const QPoint & pos);
-    void checkAndInitModel(int row);
-    void generalEdit();
-    void categoryAdd();
-    void categoryRename();
-    void categoryDelete();
-    void modelAdd();
-    void modelEdit();
-    void modelDuplicate();
-    void modelChangeCategory(int toCategoryId);
-    void wizardEdit();
-    void openModelEditWindow();
-    bool loadBackup();
-    void confirmDelete();
-    void deleteSelectedModels();
+    void showContextMenu(const QPoint & pos);
+    void adjustToolbarLayout();
+
+    void initModelsList();
+    void refresh();
+    void onItemActivated(const QModelIndex index);
+    void onItemSelected(const QModelIndex &);
+    void onCurrentItemChanged(const QModelIndex &, const QModelIndex &);
     void onDataChanged(const QModelIndex & index);
 
-    void cut();
+    void generalEdit();
+    void copyGeneralSettings();
+    void pasteGeneralSettings();
+
     void copy();
+    void cut();
     void paste();
-    void writeEeprom();
+    void insert();
+    void edit();
+    void confirmDelete();
+    void categoryAdd();
+    void modelAdd();
+    void modelEdit();
+    void wizardEdit();
+    void modelDuplicate();
+    void onModelMoveToCategory();
+
+    void openModelWizard(int row = -1);
+    void openModelEditWindow(int row = -1);
+
+    void setDefault();
     void modelSimulate();
     void radioSimulate();
-    void print(int model=-1, const QString & filename="");
-    void setModified();
-    void updateTitle();
-    void onItemSelected(QModelIndex);
-    bool isModel(QModelIndex);
-    bool isCategory(QModelIndex);
+    bool loadBackup();
+
+    void pasteModelData(const QMimeData * mimeData, const QModelIndex row, bool insert = false, bool move = false);
+    void pasteGeneralData(const QMimeData * mimeData);
 
   private:
+    QAction *addAct(Actions actId, const QString & icon, const char * slot = 0, const QKeySequence & shortcut = 0, QObject * slotObj = NULL);
+
+    QModelIndex getCurrentIndex() const;
+    int getCurrentModel() const;
+    int countSelectedModels() const;
+    bool hasSelectedModel();
+    bool setSelectedModel(const int modelIndex);
+    int getCurrentCategory() const;
+    int countSelectedCats() const;
+    bool hasSelectedCat();
+
+    bool deleteCategory(int categoryIndex = -1, QString * error = NULL);
+    void deleteSelectedCats();
+
+    void checkAndInitModel(int row);
+    void findNewDefaultModel(const unsigned startAt = 0);
+    bool insertModelRows(int atModelIdx, int count);
+    int modelAppend(const ModelData model);
+    int newModel(int modelIndex = -1, int categoryIndex = -1);
+    unsigned deleteModels(const QVector<int> modelIndices);
+    bool deleteModel(const int modelIndex);
+    void deleteSelectedModels();
+    void moveModelsToCategory(const QVector<int> models, const int toCategoryId);
+    void moveSelectedModelsToCat(const int toCategoryId);
+
+    void clearCutList();
+    void removeModelFromCutList(const int modelIndex);
+    bool hasClipboardData(const quint8 type = 0) const;
+
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
-    void doCopy(QByteArray * gmData);
-    void doPaste(QByteArray * gmData, QModelIndex row);
-    void initModelsList();
+    void forceNewFilename(const QString & suffix, const QString & ext);
+    void convertStorage(Board::Type from, Board::Type to);
+    void showWarning(const QString & msg);
+    int askQuestion(const QString & msg, int button0 = QMessageBox::Yes, int button1 = QMessageBox::No | QMessageBox::Default, int button2 = 0);
 
-    MainWindow * parent;
     Ui::MdiChild * ui;
     TreeModel * modelsListModel;
+    QWidget * parentWindow;
 
     QString curFile;
+    QVector<int> cutModels;
+    QVector<QAction *> action;
+    QToolBar * radioToolbar;
+    QToolBar * categoriesToolbar;
+    QToolBar * modelsToolbar;
 
     Firmware * firmware;
     RadioData radioData;
 
+    int lastSelectedModel;
     bool isUntitled;
     bool fileChanged;
+    bool showCatToolbar;
+    const quint16 stateDataVersion;
+};
+
+// This will draw the drop indicator across all columns of a model View (vs. in just one column), and lets us make the indicator more obvious.
+class ItemViewProxyStyle: public QProxyStyle
+{
+  public:
+    ItemViewProxyStyle(QStyle * style = 0) : QProxyStyle(style) {}
+
+    void drawPrimitive(PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0) const
+    {
+      if (element == QStyle::PE_IndicatorItemViewItemDrop && !option->rect.isNull()) {
+        painter->save();
+        // set a wider stroke
+        QPen pen(painter->pen());
+        pen.setWidthF(2.5f);
+        painter->setPen(pen);
+        // adjust the rectangle size of the indicator to encompass the whole row
+        QStyleOption opt(*option);
+        opt.rect.setLeft(0);
+        if (widget)
+          opt.rect.setRight(widget->width());
+        // call default handler and exit
+        QProxyStyle::drawPrimitive(element, &opt, painter, widget);
+        painter->restore();
+      }
+      else {
+        QProxyStyle::drawPrimitive(element, option, painter, widget);
+      }
+    }
 };
 
 #endif // _MDICHILD_H_

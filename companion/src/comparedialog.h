@@ -35,27 +35,32 @@ class CompareDialog : public QDialog
   public:
     CompareDialog(QWidget *parent, Firmware * firmware);
     ~CompareDialog();
-    
+
   protected:
-    MultiModelPrinter multimodelprinter;
-    ModelData model1;
-    ModelData model2;
-    bool model1Valid;
-    bool model2Valid;
+    struct GMData {
+        ModelData model;
+        GeneralSettings gs;
+    };
+
+    MultiModelPrinter * multimodelprinter;
+    QVector<GMData> modelsList;
+    QMap<int, GMData> modelsMap;
     Ui::CompareDialog * ui;
-    
+
   protected slots:
+    void removeModelBtnClicked();
     void on_printButton_clicked();
     void on_printFileButton_clicked();
-    
+
   protected:
-    void closeEvent(QCloseEvent * event);
-    bool handleDroppedModel(const QMimeData * mimeData, ModelData & model, QLabel * label);
-    void dropEvent(QDropEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void printDiff();
+    virtual void closeEvent(QCloseEvent * event);
+    virtual void dragMoveEvent(QDragMoveEvent *event);
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dragLeaveEvent(QDragLeaveEvent *event);
+    virtual void dropEvent(QDropEvent *event);
+    bool handleMimeData(const QMimeData * mimeData);
+    void compare();
+    void removeModel(int idx);
 };
 
 #endif // _COMPAREDIALOG_H_
