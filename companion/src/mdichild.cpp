@@ -142,6 +142,7 @@ void MdiChild::closeEvent(QCloseEvent *event)
 
 void MdiChild::resizeEvent(QResizeEvent * event)
 {
+  QWidget::resizeEvent(event);
   adjustToolbarLayout();
 }
 
@@ -302,7 +303,6 @@ void MdiChild::updateNavigation()
   const QString modelsAddTxt = tr("%n Model(s)", "As in \"Paste 3 Models\" or \"Insert 1 Model.\"", numOnClipbrd);
   const QString catsRemvTxt = tr("%n Category(ies)", "As in \"Delete 3 Categories\" or \"Delete 1 Category.\"", catsSelected);
   static const QString noSelection = tr("Nothing selected");
-  static const QString emptyRemv = tr("empty model slot");
   static const QString sp = " ";
   static const QString ns;
 
@@ -312,8 +312,8 @@ void MdiChild::updateNavigation()
 
   action[ACT_ITM_EDT]->setEnabled(singleModelSelected || catsSelected == 1);
   action[ACT_ITM_EDT]->setText((hasCatSelected ? tr("Rename Category") : modelsSelected ? tr("Edit Model") : noSelection));
-  action[ACT_ITM_DEL]->setEnabled(hasModelSlotSelcted || catsSelected);
-  action[ACT_ITM_DEL]->setText((action[ACT_ITM_DEL]->isEnabled() ? tr("Delete") % " " % (hasCatSelected ? catsRemvTxt : (modelsSelected ? modelsRemvTxt : emptyRemv)) : noSelection));
+  action[ACT_ITM_DEL]->setEnabled(modelsSelected || catsSelected);
+  action[ACT_ITM_DEL]->setText((action[ACT_ITM_DEL]->isEnabled() ? tr("Delete") % " " % (hasCatSelected ? catsRemvTxt : modelsRemvTxt) : noSelection));
 
   action[ACT_CAT_ADD]->setVisible(hasCats);
   action[ACT_CAT_SEP]->setVisible(hasCats);
