@@ -90,6 +90,9 @@ class MdiChild : public QWidget
     void writeEeprom();
     void print(int model=-1, const QString & filename="");
 
+  signals:
+    void modified();
+
   protected:
     virtual void changeEvent(QEvent * event);
     virtual void closeEvent(QCloseEvent * event);
@@ -111,7 +114,6 @@ class MdiChild : public QWidget
     void onCurrentItemChanged(const QModelIndex &, const QModelIndex &);
     void onDataChanged(const QModelIndex & index);
     void onFirmwareChanged();
-    void documentWasModified();
 
     void generalEdit();
     void copyGeneralSettings();

@@ -83,18 +83,19 @@ MainWindow::MainWindow():
   mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   setCentralWidget(mdiArea);
-  connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateMenus()));
-  windowMapper = new QSignalMapper(this);
-  connect(windowMapper, SIGNAL(mapped(QWidget*)), this, SLOT(setActiveSubWindow(QWidget*)));
+  connect(mdiArea, &QMdiArea::subWindowActivated, this, &MainWindow::updateMenus);
 
   createActions();
   createMenus();
   createToolBars();
   retranslateUi();
+  updateMenus();
 
   setIconThemeSize(g.iconSize());
-  restoreState(g.mainWinState());
   restoreGeometry(g.mainWinGeo());
+  restoreState(g.mainWinState());
+
+  connect(windowsListActions, &QActionGroup::triggered, this, &MainWindow::onChangeWindowAction);
 
   // give time to the splash to disappear and main window to open before starting updates
   int updateDelay = 1000;
@@ -120,7 +121,8 @@ MainWindow::MainWindow():
       printfilename = strl[count];
     }
   }
-  if (strl.count()>1) str = strl[1];
+  if (strl.count() > 1)
+    str = strl[1];
   if (!str.isEmpty()) {
     int fileType = getStorageType(str);
 
@@ -915,14 +917,14 @@ void MainWindow::about()
 
 void MainWindow::updateMenus()
 {
-  bool hasMdiChild = (activeMdiChild() != 0);
+  QMdiSubWindow * activeChild = mdiArea->activeSubWindow();
 
   newAct->setEnabled(true);
   openAct->setEnabled(true);
-  saveAct->setEnabled(hasMdiChild);
-  saveAsAct->setEnabled(hasMdiChild);
+  saveAct->setEnabled(activeChild);
+  saveAsAct->setEnabled(activeChild);
 
-  writeEepromAct->setEnabled(hasMdiChild);
+  writeEepromAct->setEnabled(activeChild);
   readEepromAct->setEnabled(true);
   writeBUToRadioAct->setEnabled(true);
   readBUToFileAct->setEnabled(true);
@@ -939,7 +941,7 @@ void MainWindow::updateMenus()
     }
   }
   fileWindowActions.clear();
-  if (hasMdiChild) {
+  if (activeChild) {
     editMenu->clear();
     editMenu->addActions(activeMdiChild()->getEditActions());
     editMenu->addSeparator();
@@ -968,10 +970,17 @@ void MainWindow::updateMenus()
     editMenu->setDisabled(true);
   }
 
+  foreach (QAction * act, windowsListActions->actions()) {
+    if (act->property("window_ptr").canConvert<QMdiSubWindow *>() &&
+        act->property("window_ptr").value<QMdiSubWindow *>() == activeChild) {
+      act->setChecked(true);
+      break;
+    }
+  }
+
   compareAct->setEnabled(activeMdiChild());
   updateRecentFileActions();
   updateProfilesActions();
-  updateWindowsActions();
   setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(VERSION).arg(getCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
 }
 
@@ -980,8 +989,11 @@ MdiChild * MainWindow::createMdiChild()
   MdiChild * child = new MdiChild(this);
   QMdiSubWindow * win = mdiArea->addSubWindow(child);
   win->setWindowIcon(child->windowIcon());
-  connect(child, &MdiChild::windowTitleChanged, this, &MainWindow::updateWindowsActions);
-  connect(win, &QMdiSubWindow::destroyed, this, &MainWindow::updateWindowsActions);
+  connect(child, &MdiChild::windowTitleChanged, this, &MainWindow::onSubwindowTitleChanged);
+  connect(child, &MdiChild::modified, this, &MainWindow::onSubwindowModified);
+  connect(win, &QMdiSubWindow::destroyed, this, &MainWindow::updateWindowActions);
+
+  updateWindowActions();
   return child;
 }
 
@@ -1007,6 +1019,7 @@ QAction * MainWindow::addAct(const QString & icon, const char *slot, const QKeyS
 QAction * MainWindow::addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName, const char * propName, const QVariant & propValue, const QVariant & dfltValue)
 {
   QAction * act = aGroup->addAction(sName);
+  act->setMenuRole(QAction::NoRole);
   act->setStatusTip(lName);
   act->setCheckable(true);
   if (propName) {
@@ -1073,7 +1086,7 @@ void MainWindow::retranslateUi(bool showMsg)
   themeMenu->setTitle(tr("Set Icon Theme"));
   iconThemeSizeMenu->setTitle(tr("Set Icon Size"));
   burnMenu->setTitle(tr("Read/Write"));
-  windowsMenu->setTitle(tr("Windows"));
+  windowMenu->setTitle(tr("Window"));
   helpMenu->setTitle(tr("Help"));
 
   fileToolBar->setWindowTitle(tr("File"));
@@ -1081,7 +1094,6 @@ void MainWindow::retranslateUi(bool showMsg)
   burnToolBar->setWindowTitle(tr("Write"));
   helpToolBar->setWindowTitle(tr("Help"));
 
-  updateMenus();
   showReadyStatus();
 
   if (showMsg)
@@ -1207,12 +1219,12 @@ void MainWindow::createMenus()
     burnMenu->addAction(burnListAct);
   }
 
-  windowsMenu = menuBar()->addMenu("");
-  windowsMenu->addAction(actTabbedWindows);
-  windowsMenu->addAction(actTileWindows);
-  windowsMenu->addAction(actCascadeWindows);
-  windowsMenu->addAction(actCloseAllWindows);
-  windowsMenu->addSeparator();
+  windowMenu = menuBar()->addMenu("");
+  windowMenu->addAction(actTabbedWindows);
+  windowMenu->addAction(actTileWindows);
+  windowMenu->addAction(actCascadeWindows);
+  windowMenu->addAction(actCloseAllWindows);
+  windowMenu->addSeparator();
 
   helpMenu = menuBar()->addMenu("");
   helpMenu->addSeparator();
@@ -1345,12 +1357,6 @@ QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
   return 0;
 }
 
-void MainWindow::setActiveSubWindow(QWidget *window)
-{
-  if (!window) return;
-  mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
-}
-
 void MainWindow::updateRecentFileActions()
 {
   //  Hide all document slots
@@ -1389,33 +1395,71 @@ void MainWindow::updateProfilesActions()
   }
 }
 
-void MainWindow::updateWindowsActions()
+void MainWindow::updateWindowActions()
 {
   if (!windowsListActions)
     return;
+
   foreach (QAction * act, windowsListActions->actions()) {
     windowsListActions->removeAction(act);
-    if (windowsMenu->actions().contains(act))
-      windowsMenu->removeAction(act);
+    if (windowMenu->actions().contains(act))
+      windowMenu->removeAction(act);
     delete act;
   }
   foreach (QMdiSubWindow * win, mdiArea->subWindowList()) {
-    MdiChild * child = qobject_cast<MdiChild *>(win->widget());
-    if (!child)
-      continue;
-    QString ttl = child->userFriendlyCurrentFile();
-    if (child->isWindowModified())
-      ttl.prepend("* ");
-    QAction * winAct = windowsListActions->addAction(ttl);
-    winAct->setCheckable(true);
-    winAct->setChecked(child == activeMdiChild());
-    connect(winAct, &QAction::triggered, [this, win]() {
-      if (win)
-        mdiArea->setActiveSubWindow(win);
-    });
-    windowsListActions->addAction(winAct);
+    QAction * act = addActToGroup(windowsListActions, "", "", "window_ptr", qVariantFromValue(win));
+    act->setChecked(win == mdiArea->activeSubWindow());
+    updateWindowActionTitle(win, act);
   }
-  windowsMenu->addActions(windowsListActions->actions());
+  windowMenu->addActions(windowsListActions->actions());
+}
+
+void MainWindow::updateWindowActionTitle(const QMdiSubWindow * win, QAction * act)
+{
+  MdiChild * child = qobject_cast<MdiChild *>(win->widget());
+  if (!child)
+    return;
+
+  if (!act) {
+    foreach (QAction * a, windowsListActions->actions()) {
+      if (a->property("window_ptr").canConvert<QMdiSubWindow *>() &&
+          a->property("window_ptr").value<QMdiSubWindow *>() == win) {
+        act = a;
+        break;
+      }
+    }
+  }
+  if (!act)
+    return;
+
+  QString ttl = child->userFriendlyCurrentFile();
+  if (child->isWindowModified())
+    ttl.prepend("* ");
+  act->setText(ttl);
+}
+
+void MainWindow::onSubwindowTitleChanged()
+{
+  QMdiSubWindow * win = NULL;
+  if ((win = qobject_cast<QMdiSubWindow *>(sender()->parent())))
+    updateWindowActionTitle(win);
+}
+
+void MainWindow::onSubwindowModified()
+{
+  onSubwindowTitleChanged();
+}
+
+void MainWindow::onChangeWindowAction(QAction * act)
+{
+  if (!act->isChecked())
+    return;
+
+  QMdiSubWindow * win = NULL;
+  if (act->property("window_ptr").canConvert<QMdiSubWindow *>())
+    win = act->property("window_ptr").value<QMdiSubWindow *>();
+  if (win)
+    mdiArea->setActiveSubWindow(win);
 }
 
 int MainWindow::newProfile(bool loadProfile)

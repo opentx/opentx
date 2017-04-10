@@ -520,8 +520,8 @@ void MdiChild::onDataChanged(const QModelIndex & index)
     return;
   }
   strcpy(radioData.categories[categoryIndex].name, modelsListModel->data(index, 0).toString().left(sizeof(CategoryData::name)-1).toStdString().c_str());
-  fileChanged = true;
-  documentWasModified();
+
+  setModified();
 }
 
 /*
@@ -612,7 +612,7 @@ QVector<int> MdiChild::getSelectedModels() const
 
 void MdiChild::updateTitle()
 {
-  QString title = userFriendlyCurrentFile() + "[*]";  // + " (" + firmware->getName() + QString(")");
+  QString title =  "[*]" + userFriendlyCurrentFile();  // + " (" + firmware->getName() + QString(")");
   int availableEEpromSize = modelsListModel->getAvailableEEpromSize();
   if (availableEEpromSize >= 0) {
     title += QString(" - %1 ").arg(availableEEpromSize) + tr("free bytes");
@@ -623,13 +623,9 @@ void MdiChild::updateTitle()
 void MdiChild::setModified()
 {
   fileChanged = true;
-  documentWasModified();
   refresh();
-}
-
-void MdiChild::documentWasModified()
-{
-  setWindowModified(fileChanged);
+  setWindowModified(true);
+  emit modified();
 }
 
 void MdiChild::onFirmwareChanged()
@@ -639,6 +635,7 @@ void MdiChild::onFirmwareChanged()
   //qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
   if (previous->getBoard() != firmware->getBoard()) {
     convertStorage(previous->getBoard(), firmware->getBoard());
+    setModified();
   }
 }
 
@@ -1162,6 +1159,7 @@ void MdiChild::openModelWizard(int row)
     radioData.models[row] = wizard->mix;
     radioData.fixModelFilenames();
     setModified();
+    setSelectedModel(row);
   }
 }
 
@@ -1247,13 +1245,16 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
     // TODO ShowEepromWarnings(this, tr("Warning"), warning);
   }
 
-  refresh();
   if (resetCurrentFile) {
     setCurrentFile(filename);
   }
 
   if (!storage.isBoardCompatible(getCurrentBoard())) {
     convertStorage(storage.getBoard(), getCurrentBoard());
+    setModified();
+  }
+  else {
+    refresh();
   }
 
   return true;
@@ -1369,7 +1370,6 @@ void MdiChild::convertStorage(Board::Type from, Board::Type to)
   initModelsList();
   fileChanged = true;
   isUntitled = true;
-  documentWasModified();
 }
 
 void MdiChild::showWarning(const QString & msg)

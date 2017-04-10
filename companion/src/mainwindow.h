@@ -78,6 +78,11 @@ class MainWindow : public QMainWindow
     void setIconThemeSize(int index);
     void onIconSizeChanged(QAction * act);
     void setTabbedWindows(bool on);
+    void onChangeWindowAction(QAction * act);
+    void updateWindowActions();
+    void updateWindowActionTitle(const QMdiSubWindow * win, QAction * act = NULL);
+    void onSubwindowTitleChanged();
+    void onSubwindowModified();
 
     void checkForUpdates();
     void checkForFirmwareUpdate();
@@ -121,7 +126,6 @@ class MainWindow : public QMainWindow
     void copyProfile();
     void deleteProfile(const int pid);
     void deleteCurrentProfile();
-    void setActiveSubWindow(QWidget *window);
     void autoClose();
 
     void closeUpdatesWaitDialog();
@@ -142,7 +146,6 @@ class MainWindow : public QMainWindow
     void showReadyStatus();
     void updateRecentFileActions();
     void updateProfilesActions();
-    void updateWindowsActions();
 
     int newProfile(bool loadProfile = true);
     QString strippedName(const QString & fullFileName);
@@ -164,7 +167,6 @@ class MainWindow : public QMainWindow
 
     QNetworkAccessManager *networkManager;
 
-    QVector<QAction *> actionsList;
     QVector<QAction *> recentFileActs;
     QVector<QAction *> profileActs;
     QList<QAction *> fileWindowActions;
@@ -174,7 +176,7 @@ class MainWindow : public QMainWindow
     QMenu *settingsMenu;
     QMenu *burnMenu;
     QMenu *helpMenu;
-    QMenu *windowsMenu;
+    QMenu *windowMenu;
     QMenu *iconThemeSizeMenu;
     QMenu *themeMenu;
     QMenu *recentFilesMenu;
