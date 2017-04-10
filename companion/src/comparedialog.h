@@ -53,14 +53,14 @@ class CompareDialog : public QDialog
     void on_printFileButton_clicked();
 
   protected:
-    void compare();
+    virtual void closeEvent(QCloseEvent * event);
+    virtual void dragMoveEvent(QDragMoveEvent *event);
+    virtual void dragEnterEvent(QDragEnterEvent *event);
+    virtual void dragLeaveEvent(QDragLeaveEvent *event);
+    virtual void dropEvent(QDropEvent *event);
     bool handleMimeData(const QMimeData * mimeData);
+    void compare();
     void removeModel(int idx);
-    void dropEvent(QDropEvent *event);
-    void dragMoveEvent(QDragMoveEvent *event);
-    void dragEnterEvent(QDragEnterEvent *event);
-    void dragLeaveEvent(QDragLeaveEvent *event);
-    void printDiff();
 };
 
 #endif // _COMPAREDIALOG_H_

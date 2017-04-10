@@ -53,7 +53,7 @@ class MainWindow : public QMainWindow
    ~MainWindow();
 
   signals:
-    void FirmwareChanged();
+    void firmwareChanged();
 
   protected:
     QString getCompanionUpdateBaseUrl();

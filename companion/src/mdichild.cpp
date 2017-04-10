@@ -20,7 +20,6 @@
 
 #include "mdichild.h"
 #include "ui_mdichild.h"
-#include "mainwindow.h"
 #include "modeledit/modeledit.h"
 #include "generaledit/generaledit.h"
 #include "burnconfigdialog.h"
@@ -35,11 +34,11 @@
 
 #include <algorithm>
 
-MdiChild::MdiChild(MainWindow * parent):
-  QWidget(),
-  parent(parent),
+MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
+  QWidget(parent, f),
   ui(new Ui::MdiChild),
   modelsListModel(NULL),
+  parentWindow(parentWin),
   radioToolbar(NULL),
   categoriesToolbar(NULL),
   modelsToolbar(NULL),
@@ -47,11 +46,15 @@ MdiChild::MdiChild(MainWindow * parent):
   lastSelectedModel(-1),
   isUntitled(true),
   fileChanged(false),
-  removeModelSlotsWhenDeleting(true || firmware->getCapability(Models) == 0)  // TODO: make option
+  showCatToolbar(true),
+  stateDataVersion(1)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("open.png"));
   setAttribute(Qt::WA_DeleteOnClose);
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  if (parentWindow)
+    parentWindow->setWindowIcon(windowIcon());
 
   setupNavigation();
   initModelsList();
@@ -70,14 +73,37 @@ MdiChild::MdiChild(MainWindow * parent):
 
   retranslateUi();
 
-  connect(parent, &MainWindow::FirmwareChanged, this, &MdiChild::onFirmwareChanged);
+  connect(this, &MdiChild::customContextMenuRequested, this, &MdiChild::showContextMenu);
   connect(ui->modelsList, &QTreeView::activated, this, &MdiChild::onItemActivated);
   connect(ui->modelsList, &QTreeView::customContextMenuRequested, this, &MdiChild::showModelsListContextMenu);
   connect(ui->modelsList, &QTreeView::pressed, this, &MdiChild::onItemSelected);
   connect(ui->modelsList->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &MdiChild::onCurrentItemChanged);
 
   if (!(isMaximized() || isMinimized())) {
-    adjustSize();
+    QByteArray geo = g.mdiWinGeo();
+    if (geo.isEmpty())
+      adjustSize();
+    else if (geo.size() < 10 && geo == "maximized") {
+      if (!parentWindow)  // otherwise we let the MdiArea manage the window maximizing
+        setWindowState(windowState() ^ Qt::WindowMaximized);
+    }
+    else if (parentWindow)
+      parentWindow->restoreGeometry(geo);
+    else
+      restoreGeometry(geo);
+  }
+  if (!g.mdiWinState().isEmpty()) {
+    QByteArray state = g.mdiWinState();
+    QDataStream stream(&state, QIODevice::ReadOnly);
+    quint16 ver;
+    stream >> ver;
+    if (ver <= stateDataVersion) {
+      bool visMdl, visGen;
+      stream >> showCatToolbar >> visMdl >> visGen;
+      categoriesToolbar->setVisible(showCatToolbar);
+      modelsToolbar->setVisible(visMdl);
+      radioToolbar->setVisible(visGen);
+    }
   }
 }
 
@@ -88,31 +114,49 @@ MdiChild::~MdiChild()
 
 void MdiChild::closeEvent(QCloseEvent *event)
 {
-  if (maybeSave()) {
-    event->accept();
-  }
-  else {
+  if (!maybeSave()) {
     event->ignore();
+    return;
   }
+  if (!isMinimized()) {
+    QByteArray geo;
+    if (isMaximized())
+      geo.append("maximized");
+    else if (parentWindow)
+      geo = parentWindow->saveGeometry();
+    else
+      geo = saveGeometry();
+    g.mdiWinGeo(geo);
+  }
+
+  QByteArray state;
+  QDataStream stream(&state, QIODevice::WriteOnly);
+  stream << stateDataVersion
+        << (firmware->getCapability(Capability::HasModelCategories) ? categoriesToolbar->isVisible() : showCatToolbar)
+        << modelsToolbar->isVisible()
+        << radioToolbar->isVisible();
+  g.mdiWinState(state);
+
+  event->accept();
 }
 
 void MdiChild::resizeEvent(QResizeEvent * event)
 {
-  if (event->size().width() > ui->topToolbarLayout->sizeHint().width() + ui->botToolbarLayout->sizeHint().width() + 30) {
-    ui->botToolbarLayout->removeWidget(modelsToolbar);
-    ui->topToolbarLayout->insertWidget(1, modelsToolbar);
-  }
-  else {
-    ui->topToolbarLayout->removeWidget(modelsToolbar);
-    ui->botToolbarLayout->insertWidget(0, modelsToolbar);
-  }
+  adjustToolbarLayout();
 }
 
 QSize MdiChild::sizeHint() const
 {
-  // use toolbar as a gauge for width, and take all the height availabe.  TODO: save/restore window state
+  QWidget * p;
+  if (parentWindow)
+    p = parentWindow->parentWidget();
+  else
+    p = parentWidget();
+  if (!p)
+    return QWidget::sizeHint();
+  // use toolbar as a gauge for width, and take all the height availabe.
   int w = qMax(ui->topToolbarLayout->sizeHint().width(), ui->botToolbarLayout->sizeHint().width());
-  return QSize(w + 30, parent->height());
+  return QSize(w + 30, qMin(p->height(), 1000));
 }
 
 void MdiChild::changeEvent(QEvent * event)
@@ -240,6 +284,9 @@ void MdiChild::setupNavigation()
   }
   ui->botToolbarLayout->addWidget(modelsToolbar);
 
+  connect(categoriesToolbar, &QToolBar::visibilityChanged, this, &MdiChild::adjustToolbarLayout);
+  connect(radioToolbar, &QToolBar::visibilityChanged, this, &MdiChild::adjustToolbarLayout);
+  connect(modelsToolbar, &QToolBar::visibilityChanged, this, &MdiChild::adjustToolbarLayout);
 }
 
 void MdiChild::updateNavigation()
@@ -259,7 +306,7 @@ void MdiChild::updateNavigation()
   static const QString sp = " ";
   static const QString ns;
 
-  categoriesToolbar->setVisible(hasCats);
+  categoriesToolbar->setVisible(hasCats && showCatToolbar);
 
   action[ACT_GEN_PST]->setEnabled(hasClipboardData(1));
 
@@ -341,9 +388,9 @@ void MdiChild::retranslateUi()
 
   action[ACT_MDL_MOV]->setText(tr("Move to Category"));
 
-  categoriesToolbar->setWindowTitle(tr("Category"));
-  radioToolbar->setWindowTitle(tr("Radio"));
-  modelsToolbar->setWindowTitle(tr("Model"));
+  categoriesToolbar->setWindowTitle(tr("Show Category Actions Toolbar"));
+  radioToolbar->setWindowTitle(tr("Show Radio Actions Toolbar"));
+  modelsToolbar->setWindowTitle(tr("Show Model Actions Toolbar"));
 }
 
 QList<QAction *> MdiChild::getGeneralActions()
@@ -438,6 +485,29 @@ void MdiChild::showModelsListContextMenu(const QPoint & pos)
 
   if (!contextMenu.isEmpty())
     contextMenu.exec(ui->modelsList->mapToGlobal(pos));
+}
+
+void MdiChild::showContextMenu(const QPoint & pos)
+{
+  QMenu contextMenu;
+  if (firmware->getCapability(Capability::HasModelCategories))
+    contextMenu.addAction(categoriesToolbar->toggleViewAction());
+  contextMenu.addAction(modelsToolbar->toggleViewAction());
+  contextMenu.addAction(radioToolbar->toggleViewAction());
+  if (!contextMenu.isEmpty())
+    contextMenu.exec(mapToGlobal(pos));
+}
+
+void MdiChild::adjustToolbarLayout()
+{
+  if (size().width() > ui->topToolbarLayout->sizeHint().width() + ui->botToolbarLayout->sizeHint().width() + 30) {
+    ui->botToolbarLayout->removeWidget(modelsToolbar);
+    ui->topToolbarLayout->insertWidget(1, modelsToolbar);
+  }
+  else {
+    ui->topToolbarLayout->removeWidget(modelsToolbar);
+    ui->botToolbarLayout->insertWidget(0, modelsToolbar);
+  }
 }
 
 /*
@@ -818,9 +888,9 @@ int MdiChild::newModel(int modelIndex, int categoryIndex)
   setModified();
   setSelectedModel(modelIndex);
 
-  if (g.useWizard())
+  if (g.newModelAction() == 1)
     openModelWizard(modelIndex);
-  else  // TODO: make option
+  else if (g.newModelAction() == 2)
     openModelEditWindow(modelIndex);
 
   return modelIndex;
@@ -841,7 +911,7 @@ unsigned MdiChild::deleteModels(const QVector<int> modelIndices)
     idx = radioData.models.at(i).modelIndex;
     if (idx > -1 && modelIndices.contains(idx)) {
       radioData.models[i].clear();
-      if (removeModelSlotsWhenDeleting) {
+      if (g.removeModelSlots() || firmware->getCapability(Models) == 0) {
         radioData.models.erase(radioData.models.begin() + i);
         // append padding rows at the end if needed
         if (firmware->getCapability(Models) > 0)
@@ -1395,7 +1465,7 @@ void MdiChild::writeEeprom()  // write to Tx
       return;
     }
     if (saveFile(radioPath, false)) {
-      parent->statusBar()->showMessage(tr("Models and Settings written"), 2000);
+      emit newStatusMessage(tr("Models and Settings written"), 2000);
     }
     else {
       qDebug() << "MdiChild::writeEeprom(): saveFile error";

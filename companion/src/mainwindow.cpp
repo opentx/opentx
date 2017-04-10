@@ -82,8 +82,12 @@ MainWindow::MainWindow():
   mdiArea = new QMdiArea(this);
   mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-  setCentralWidget(mdiArea);
+  mdiArea->setTabsClosable(true);
+  mdiArea->setTabsMovable(true);
+  mdiArea->setDocumentMode(true);
   connect(mdiArea, &QMdiArea::subWindowActivated, this, &MainWindow::updateMenus);
+
+  setCentralWidget(mdiArea);
 
   createActions();
   createMenus();
@@ -94,6 +98,7 @@ MainWindow::MainWindow():
   setIconThemeSize(g.iconSize());
   restoreGeometry(g.mainWinGeo());
   restoreState(g.mainWinState());
+  setTabbedWindows(g.tabbedMdi());
 
   connect(windowsListActions, &QActionGroup::triggered, this, &MainWindow::onChangeWindowAction);
 
@@ -523,6 +528,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
   g.mainWinGeo(saveGeometry());
   g.mainWinState(saveState());
+  g.tabbedMdi(actTabbedWindows->isChecked());
   mdiArea->closeAllSubWindows();
   if (mdiArea->currentSubWindow()) {
     event->ignore();
@@ -610,6 +616,9 @@ void MainWindow::setTabbedWindows(bool on)
     actTileWindows->setDisabled(on);
   if (actCascadeWindows)
     actCascadeWindows->setDisabled(on);
+
+  if (actTabbedWindows->isChecked() != on)
+    actTabbedWindows->setChecked(on);
 }
 
 void MainWindow::newFile()
@@ -691,7 +700,7 @@ void MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables -
   // Set the new profile number
   g.id(pid);
   Firmware::setCurrentVariant(Firmware::getFirmwareForId(g.profile[pid].fwType()));
-  emit FirmwareChanged();
+  emit firmwareChanged();
   updateMenus();
 }
 
@@ -992,11 +1001,18 @@ void MainWindow::updateMenus()
 
 MdiChild * MainWindow::createMdiChild()
 {
-  MdiChild * child = new MdiChild(this);
-  QMdiSubWindow * win = mdiArea->addSubWindow(child);
-  win->setWindowIcon(child->windowIcon());
+  QMdiSubWindow * win = new QMdiSubWindow();
+  MdiChild * child = new MdiChild(this, win);
+  win->setAttribute(Qt::WA_DeleteOnClose);
+  win->setWidget(child);
+  mdiArea->addSubWindow(win);
+  if (g.mdiWinGeo().size() < 10 && g.mdiWinGeo() == "maximized")
+    win->showMaximized();
+
+  connect(this, &MainWindow::firmwareChanged, child, &MdiChild::onFirmwareChanged);
   connect(child, &MdiChild::windowTitleChanged, this, &MainWindow::onSubwindowTitleChanged);
   connect(child, &MdiChild::modified, this, &MainWindow::onSubwindowModified);
+  connect(child, &MdiChild::newStatusMessage, statusBar(), &QStatusBar::showMessage);
   connect(win, &QMdiSubWindow::destroyed, this, &MainWindow::updateWindowActions);
 
   updateWindowActions();
@@ -1111,24 +1127,24 @@ void MainWindow::retranslateUi(bool showMsg)
 
 void MainWindow::createActions()
 {
-  newAct =             addAct("new.png",    SLOT(newFile()),         QKeySequence::New);
-  openAct =            addAct("open.png",   SLOT(openFile()),        QKeySequence::Open);
-  saveAct =            addAct("save.png",   SLOT(save()),            QKeySequence::Save);
-  saveAsAct =          addAct("saveas.png", SLOT(saveAs()),          QKeySequence::SaveAs);
-  closeAct =           addAct("clear.png",  SLOT(closeFile())        /*, QKeySequence::Close*/);
-  exitAct =            addAct("exit.png",   SLOT(closeAllWindows()), QKeySequence::Quit, qApp);
+  newAct =             addAct("new.png",    SLOT(newFile()),                  QKeySequence::New);
+  openAct =            addAct("open.png",   SLOT(openFile()),                 QKeySequence::Open);
+  saveAct =            addAct("save.png",   SLOT(save()),                     QKeySequence::Save);
+  saveAsAct =          addAct("saveas.png", SLOT(saveAs()),                   tr("Ctrl+Shift+S"));       // Windows doesn't have "native" save-as key, Lin/OSX both use this one anyway
+  closeAct =           addAct("clear.png",  SLOT(closeFile())             /*, QKeySequence::Close*/);    // setting/showing this shortcut interferes with the system one (Ctrl+W/Ctrl-F4)
+  exitAct =            addAct("exit.png",   SLOT(closeAllWindows()),          QKeySequence::Quit, qApp);
 
-  logsAct =            addAct("logs.png",           SLOT(logFile()));
-  appPrefsAct =        addAct("apppreferences.png", SLOT(appPrefs()));
-  fwPrefsAct =         addAct("fwpreferences.png",  SLOT(fwPrefs()));
-  checkForUpdatesAct = addAct("update.png",         SLOT(doUpdates()));
-  compareAct =         addAct("compare.png",        SLOT(compare()));
-  editSplashAct =      addAct("paintbrush.png",     SLOT(customizeSplash()));
-  burnListAct =        addAct("list.png",           SLOT(burnList()));
-  burnFusesAct =       addAct("fuses.png",          SLOT(burnFuses()));
-  readFlashAct =       addAct("read_flash.png",     SLOT(readFlash()));
-  writeFlashAct =      addAct("write_flash.png",    SLOT(writeFlash()));
+  logsAct =            addAct("logs.png",           SLOT(logFile()),          tr("Ctrl+Alt+L"));
+  appPrefsAct =        addAct("apppreferences.png", SLOT(appPrefs()),         QKeySequence::Preferences);
+  fwPrefsAct =         addAct("fwpreferences.png",  SLOT(fwPrefs()),          tr("Ctrl+Alt+D"));
+  compareAct =         addAct("compare.png",        SLOT(compare()),          tr("Ctrl+Alt+R"));
   sdsyncAct =          addAct("sdsync.png",         SLOT(sdsync()));
+
+  editSplashAct =      addAct("paintbrush.png",        SLOT(customizeSplash()));
+  burnListAct =        addAct("list.png",              SLOT(burnList()));
+  burnFusesAct =       addAct("fuses.png",             SLOT(burnFuses()));
+  readFlashAct =       addAct("read_flash.png",        SLOT(readFlash()));
+  writeFlashAct =      addAct("write_flash.png",       SLOT(writeFlash()));
   writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
   burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
@@ -1144,6 +1160,7 @@ void MainWindow::createActions()
   actCascadeWindows =  addAct("", SLOT(cascadeSubWindows()),    0, mdiArea);
   actCloseAllWindows = addAct("", SLOT(closeAllSubWindows()),   0, mdiArea);
 
+  checkForUpdatesAct = addAct("update.png",         SLOT(doUpdates()));
   aboutAct =           addAct("information.png",    SLOT(about()));
   openDocURLAct =      addAct("changelog.png",      SLOT(openDocURL()));
   changelogAct =       addAct("changelog.png",      SLOT(changelog()));

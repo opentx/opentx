@@ -30,7 +30,6 @@
 #include <QProxyStyle>
 #include <QWidget>
 
-class MainWindow;
 class QToolBar;
 
 namespace Ui {
@@ -68,7 +67,7 @@ class MdiChild : public QWidget
       ACT_ENUM_END
     };
 
-    MdiChild(MainWindow * parent);
+    MdiChild(QWidget *parent = Q_NULLPTR, QWidget * parentWin = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
     ~MdiChild();
 
     QString currentFile() const;
@@ -89,9 +88,11 @@ class MdiChild : public QWidget
     bool saveFile(const QString & fileName, bool setCurrent=true);
     void writeEeprom();
     void print(int model=-1, const QString & filename="");
+    void onFirmwareChanged();
 
   signals:
     void modified();
+    void newStatusMessage(const QString & msg, const int duration);
 
   protected:
     virtual void changeEvent(QEvent * event);
@@ -106,6 +107,8 @@ class MdiChild : public QWidget
     void setModified();
     void retranslateUi();
     void showModelsListContextMenu(const QPoint & pos);
+    void showContextMenu(const QPoint & pos);
+    void adjustToolbarLayout();
 
     void initModelsList();
     void refresh();
@@ -113,7 +116,6 @@ class MdiChild : public QWidget
     void onItemSelected(const QModelIndex &);
     void onCurrentItemChanged(const QModelIndex &, const QModelIndex &);
     void onDataChanged(const QModelIndex & index);
-    void onFirmwareChanged();
 
     void generalEdit();
     void copyGeneralSettings();
@@ -180,9 +182,9 @@ class MdiChild : public QWidget
     void showWarning(const QString & msg);
     int askQuestion(const QString & msg, int button0 = QMessageBox::Yes, int button1 = QMessageBox::No | QMessageBox::Default, int button2 = 0);
 
-    MainWindow * parent;
     Ui::MdiChild * ui;
     TreeModel * modelsListModel;
+    QWidget * parentWindow;
 
     QString curFile;
     QVector<int> cutModels;
@@ -197,7 +199,8 @@ class MdiChild : public QWidget
     int lastSelectedModel;
     bool isUntitled;
     bool fileChanged;
-    bool removeModelSlotsWhenDeleting;
+    bool showCatToolbar;
+    const quint16 stateDataVersion;
 };
 
 // This will draw the drop indicator across all columns of a model View (vs. in just one column), and lets us make the indicator more obvious.

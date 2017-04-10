@@ -20,6 +20,7 @@
 
 #include "comparedialog.h"
 #include "ui_comparedialog.h"
+#include "appdata.h"
 #include "helpers.h"
 #include "modelslist.h"
 #include <QPrinter>
@@ -45,6 +46,9 @@ CompareDialog::CompareDialog(QWidget * parent, Firmware * firmware):
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("compare.png"));
   setAcceptDrops(true);
+  if (!g.compareWinGeo().isEmpty()) {
+    restoreGeometry(g.compareWinGeo());
+  }
 }
 
 CompareDialog::~CompareDialog()
@@ -91,6 +95,11 @@ bool CompareDialog::handleMimeData(const QMimeData * mimeData)
     modelsList.append(data);
   }
   return true;
+}
+
+void CompareDialog::closeEvent(QCloseEvent * event)
+{
+  g.compareWinGeo(saveGeometry());
 }
 
 void CompareDialog::dropEvent(QDropEvent *event)
