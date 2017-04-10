@@ -99,6 +99,7 @@ class MainWindow : public QMainWindow
     void openFile();
     void save();
     void saveAs();
+    void closeFile();
     void openRecentFile();
     void loadProfileId(const unsigned pid);
     void loadProfile();
@@ -134,8 +135,8 @@ class MainWindow : public QMainWindow
 
   private:
     QAction * addAct(const QString & icon, const char * slot = NULL, const QKeySequence & shortcut = 0, QObject * slotObj = NULL, const char * signal = NULL);
-    QAction * addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName,
-                            const char * propName = 0, const QVariant & propValue = QVariant(), const QVariant & dfltValue = QVariant());
+    QAction * addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName, const char * propName = 0,
+                            const QVariant & propValue = QVariant(), const QVariant & dfltValue = QVariant(), const QKeySequence & shortcut = 0);
     void trAct(QAction * act, const QString & text, const QString & descript);
 
     QMenu * createLanguageMenu(QWidget * parent = Q_NULLPTR);
@@ -190,6 +191,7 @@ class MainWindow : public QMainWindow
     QAction *openAct;
     QAction *saveAct;
     QAction *saveAsAct;
+    QAction *closeAct;
     QAction *recentFilesAct;
     QAction *exitAct;
     QAction *appPrefsAct;

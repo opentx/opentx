@@ -668,6 +668,12 @@ void MainWindow::saveAs()
   }
 }
 
+void MainWindow::closeFile()
+{
+  if (mdiArea->activeSubWindow())
+    mdiArea->activeSubWindow()->close();
+}
+
 void MainWindow::openRecentFile()
 {
   QAction *action = qobject_cast<QAction *>(sender());
@@ -923,7 +929,8 @@ void MainWindow::updateMenus()
   openAct->setEnabled(true);
   saveAct->setEnabled(activeChild);
   saveAsAct->setEnabled(activeChild);
-
+  closeAct->setEnabled(activeChild);
+  compareAct->setEnabled(activeChild);
   writeEepromAct->setEnabled(activeChild);
   readEepromAct->setEnabled(true);
   writeBUToRadioAct->setEnabled(true);
@@ -936,9 +943,9 @@ void MainWindow::updateMenus()
       fileMenu->removeAction(act);
     if (fileToolBar && fileToolBar->actions().contains(act)) {
       fileToolBar->removeAction(act);
-      if (act->isSeparator() && act->parent() == this)
-        delete act;
     }
+    if (act->isSeparator() && act->parent() == this)
+      delete act;
   }
   fileWindowActions.clear();
   if (activeChild) {
@@ -978,7 +985,6 @@ void MainWindow::updateMenus()
     }
   }
 
-  compareAct->setEnabled(activeMdiChild());
   updateRecentFileActions();
   updateProfilesActions();
   setWindowTitle(tr("OpenTX Companion %1 - Radio: %2 - Profile: %3").arg(VERSION).arg(getCurrentFirmware()->getName()).arg(g.profile[g.id()].name()));
@@ -1016,12 +1022,14 @@ QAction * MainWindow::addAct(const QString & icon, const char *slot, const QKeyS
   return newAction;
 }
 
-QAction * MainWindow::addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName, const char * propName, const QVariant & propValue, const QVariant & dfltValue)
+QAction * MainWindow::addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName, const char * propName, const QVariant & propValue, const QVariant & dfltValue, const QKeySequence & shortcut)
 {
   QAction * act = aGroup->addAction(sName);
   act->setMenuRole(QAction::NoRole);
   act->setStatusTip(lName);
   act->setCheckable(true);
+  if (!shortcut.isEmpty())
+    act->setShortcut(shortcut);
   if (propName) {
     act->setProperty(propName, propValue);
     if (propValue == dfltValue)
@@ -1044,6 +1052,7 @@ void MainWindow::retranslateUi(bool showMsg)
   trAct(openAct,   tr("Open..."),    tr("Open Models and Settings file"));
   trAct(saveAct,   tr("Save"),       tr("Save Models and Settings file"));
   trAct(saveAsAct, tr("Save As..."), tr("Save Models and Settings file"));
+  trAct(closeAct,  tr("Close"),      tr("Close Models and Settings file"));
   trAct(exitAct,   tr("Exit"),       tr("Exit the application"));
   trAct(aboutAct,  tr("About..."),   tr("Show the application's About box"));
 
@@ -1106,15 +1115,13 @@ void MainWindow::createActions()
   openAct =            addAct("open.png",   SLOT(openFile()),        QKeySequence::Open);
   saveAct =            addAct("save.png",   SLOT(save()),            QKeySequence::Save);
   saveAsAct =          addAct("saveas.png", SLOT(saveAs()),          QKeySequence::SaveAs);
+  closeAct =           addAct("clear.png",  SLOT(closeFile())        /*, QKeySequence::Close*/);
   exitAct =            addAct("exit.png",   SLOT(closeAllWindows()), QKeySequence::Quit, qApp);
 
-  aboutAct =           addAct("information.png",    SLOT(about()));
   logsAct =            addAct("logs.png",           SLOT(logFile()));
   appPrefsAct =        addAct("apppreferences.png", SLOT(appPrefs()));
   fwPrefsAct =         addAct("fwpreferences.png",  SLOT(fwPrefs()));
   checkForUpdatesAct = addAct("update.png",         SLOT(doUpdates()));
-  changelogAct =       addAct("changelog.png",      SLOT(changelog()));
-  fwchangelogAct =     addAct("changelog.png",      SLOT(fwchangelog()));
   compareAct =         addAct("compare.png",        SLOT(compare()));
   editSplashAct =      addAct("paintbrush.png",     SLOT(customizeSplash()));
   burnListAct =        addAct("list.png",           SLOT(burnList()));
@@ -1122,14 +1129,11 @@ void MainWindow::createActions()
   readFlashAct =       addAct("read_flash.png",     SLOT(readFlash()));
   writeFlashAct =      addAct("write_flash.png",    SLOT(writeFlash()));
   sdsyncAct =          addAct("sdsync.png",         SLOT(sdsync()));
-
-  openDocURLAct =      addAct("",                      SLOT(openDocURL()));
   writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
   burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
   writeBUToRadioAct =  addAct("write_eeprom_file.png", SLOT(writeBackup()));
   readBUToFileAct =    addAct("read_eeprom_file.png",  SLOT(readBackup()));
-  contributorsAct =    addAct("contributors.png",      SLOT(contributors()));
 
   createProfileAct =   addAct("new.png",   SLOT(createProfile()));
   copyProfileAct   =   addAct("copy.png",  SLOT(copyProfile()));
@@ -1139,6 +1143,12 @@ void MainWindow::createActions()
   actTileWindows =     addAct("", SLOT(tileSubWindows()),       0, mdiArea);
   actCascadeWindows =  addAct("", SLOT(cascadeSubWindows()),    0, mdiArea);
   actCloseAllWindows = addAct("", SLOT(closeAllSubWindows()),   0, mdiArea);
+
+  aboutAct =           addAct("information.png",    SLOT(about()));
+  openDocURLAct =      addAct("changelog.png",      SLOT(openDocURL()));
+  changelogAct =       addAct("changelog.png",      SLOT(changelog()));
+  fwchangelogAct =     addAct("changelog.png",      SLOT(fwchangelog()));
+  contributorsAct =    addAct("contributors.png",   SLOT(contributors()));
 
   // these two get assigned menus in createMenus()
   recentFilesAct =     addAct("recentdocument.png");
@@ -1164,6 +1174,7 @@ void MainWindow::createMenus()
   fileMenu->addAction(openAct);
   fileMenu->addAction(saveAct);
   fileMenu->addAction(saveAsAct);
+  fileMenu->addAction(closeAct);
   fileMenu->addAction(recentFilesAct);
   fileMenu->addSeparator();
   fileMenu->addAction(logsAct);
@@ -1270,6 +1281,7 @@ void MainWindow::createToolBars()
   fileToolBar->addAction(openAct);
   fileToolBar->addAction(recentFilesAct);
   fileToolBar->addAction(saveAct);
+  fileToolBar->addAction(closeAct);
   fileToolBar->addSeparator();
   fileToolBar->addAction(logsAct);
   fileToolBar->addAction(fwPrefsAct);
@@ -1406,8 +1418,12 @@ void MainWindow::updateWindowActions()
       windowMenu->removeAction(act);
     delete act;
   }
+  int count = 0;
   foreach (QMdiSubWindow * win, mdiArea->subWindowList()) {
-    QAction * act = addActToGroup(windowsListActions, "", "", "window_ptr", qVariantFromValue(win));
+    QString scut;
+    if (++count < 10)
+      scut = tr("Alt+%1").arg(count);
+    QAction * act = addActToGroup(windowsListActions, "", "", "window_ptr", qVariantFromValue(win), QVariant(), scut);
     act->setChecked(win == mdiArea->activeSubWindow());
     updateWindowActionTitle(win, act);
   }
