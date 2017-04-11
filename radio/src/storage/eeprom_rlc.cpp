@@ -137,9 +137,8 @@ void eepromCheck()
 #if defined(CPUARM)
     blocksCount = 0;
 #endif
-    blkid_t *startP = (i==MAXFILES ? &eeFs.freeList : &eeFs.files[i].startBlk);
+    blkid_t blk = (i==MAXFILES ? eeFs.freeList : eeFs.files[i].startBlk);
     blkid_t lastBlk = 0;
-    blk = *startP;
     while (blk) {
       if (blk < FIRSTBLK || // bad blk index
           blk >= BLOCKS  || // bad blk indexchan
@@ -149,7 +148,6 @@ void eepromCheck()
           EeFsSetLink(lastBlk, 0);
         }
         else {
-          *startP = 0; // interrupt chain at startpos
           EeFsFlush();
         }
         blk = 0; // abort
