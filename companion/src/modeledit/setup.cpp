@@ -1161,7 +1161,7 @@ void SetupPanel::updateStartupSwitches()
     int index = slider->property("index").toInt();
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-      value = (switchStates >> 2*index) & 0x03;
+      value = (switchStates >> (2*index)) & 0x03;
       if (generalSettings.switchConfig[index] != Board::SWITCH_3POS && value == 2) {
         value = 1;
       }
@@ -1187,7 +1187,7 @@ void SetupPanel::startupSwitchEdited(int value)
 
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       shift = index * 2;
-      mask = 0x03ul << shift;
+      mask = 0x03ull << shift;
     }
     else {
       if (index == 0) {
