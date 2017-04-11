@@ -177,7 +177,7 @@ QVariant TreeModel::data(const QModelIndex & index, int role) const
     return item->data(index.column());
   }
 
-  if (role == Qt::FontRole && item->getModelIndex() == (int)radioData->generalSettings.currModelIndex) {
+  if (role == Qt::FontRole && item->isModel() && item->getModelIndex() == (int)radioData->generalSettings.currModelIndex) {
     QFont font;
     font.setBold(true);
     return font;

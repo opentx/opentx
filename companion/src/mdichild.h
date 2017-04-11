@@ -170,6 +170,7 @@ class MdiChild : public QWidget
     void deleteSelectedModels();
     void moveModelsToCategory(const QVector<int> models, const int toCategoryId);
     void moveSelectedModelsToCat(const int toCategoryId);
+    unsigned countUsedModels(const int categoryId = -1);
 
     void clearCutList();
     void removeModelFromCutList(const int modelIndex);

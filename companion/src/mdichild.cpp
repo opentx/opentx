@@ -742,24 +742,21 @@ bool MdiChild::deleteCategory(int categoryIndex, QString * error)
       *error = tr("Cannot delete the last category.");
     return false;
   }
-
-  QVector<int> modelsToMove;
-  for (unsigned i=0; i < radioData.models.size(); i++) {
-    ModelData & model = radioData.models[i];
-    if (model.used && model.category == categoryIndex) {
-      if (error)
-        *error = tr("This category is not empty!");
-      return false;
-    }
-    else if (model.used && model.category > categoryIndex) {
-      modelsToMove.append(i);
-    }
+  if (countUsedModels(categoryIndex)) {
+    if (error)
+      *error = tr("This category is not empty!");
+    return false;
   }
 
   radioData.categories.erase(radioData.categories.begin() + categoryIndex);
-  foreach (const int i, modelsToMove) {
-    --radioData.models[i].category;
+
+  for (unsigned i=0; i < radioData.models.size(); ++i) {
+    ModelData & model = radioData.models.at(i);
+    if (model.used && model.category > categoryIndex) {
+      --radioData.models[i].category;
+    }
   }
+
   return true;
 }
 
@@ -865,14 +862,13 @@ int MdiChild::newModel(int modelIndex, int categoryIndex)
   if (modelIndex < 0)
     modelIndex = modelAppend(ModelData());
 
-  if (modelIndex < 0) {
+  if (modelIndex < 0 || modelIndex >= (int)radioData.models.size()) {
     showWarning(tr("Cannot add model, could not find an available model slot."));
-    return modelIndex;
+    return -1;
   }
 
   if (categoryIndex < 0)
     categoryIndex = modelsListModel->getCategoryIndex(getCurrentIndex());
-  //qDebug() << modelIndex << categoryIndex;
 
   bool isNewModel = radioData.models[modelIndex].isEmpty();
   checkAndInitModel(modelIndex);
@@ -882,13 +878,14 @@ int MdiChild::newModel(int modelIndex, int categoryIndex)
     strcpy(radioData.models[modelIndex].name, qPrintable(tr("New model")));  // TODO: Why not just use existing default model name?
   }
   // Only set the default model if we just added the first one.
-  if (modelIndex == 0) {
+  if (countUsedModels() == 1) {
     radioData.setCurrentModel(modelIndex);
   }
   setModified();
   setSelectedModel(modelIndex);
+  //qDebug() << modelIndex << categoryIndex << isNewModel;
 
-  if (g.newModelAction() == 1)
+  if (isNewModel && g.newModelAction() == 1)
     openModelWizard(modelIndex);
   else if (g.newModelAction() == 2)
     openModelEditWindow(modelIndex);
@@ -969,6 +966,17 @@ void MdiChild::moveModelsToCategory(const QVector<int> models, const int toCateg
 void MdiChild::moveSelectedModelsToCat(const int toCategoryId)
 {
   moveModelsToCategory(getSelectedModels(), toCategoryId);
+}
+
+unsigned MdiChild::countUsedModels(const int categoryId)
+{
+  unsigned count = 0;
+  for (unsigned i=0; i < radioData.models.size(); ++i) {
+    ModelData & model = radioData.models.at(i);
+    if (!model.isEmpty() && (categoryId < 0 || model.category == categoryId))
+      ++count;
+  }
+  return count;
 }
 
 void MdiChild::pasteModelData(const QMimeData * mimeData, const QModelIndex row, bool insert, bool move)
@@ -1343,23 +1351,15 @@ bool MdiChild::save()
 bool MdiChild::saveAs(bool isNew)
 {
   QString fileName;
-  if (IS_SKY9X(getCurrentBoard())) {
-    curFile.replace(".eepe", ".bin");
-    QFileInfo fi(curFile);
+  curFile.replace(QRegExp("\\.(eepe|bin|hex)$"), ".otx");
+  QFileInfo fi(curFile);
 #ifdef __APPLE__
-    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
+  QString filter;
 #else
-    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(BIN_FILES_FILTER));
+  QString filter(OTX_FILES_FILTER);
 #endif
-  }
-  else {
-    QFileInfo fi(curFile);
-#ifdef __APPLE__
-    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName());
-#else
-    fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), tr(OTX_FILES_FILTER));
-#endif
-  }
+
+  fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), filter);
   if (fileName.isEmpty())
     return false;
   g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
