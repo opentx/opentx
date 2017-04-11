@@ -118,13 +118,11 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   connect(this, &SimulatorWidget::simulatorInit, simulator, &SimulatorInterface::init);
   connect(this, &SimulatorWidget::simulatorStart, simulator, &SimulatorInterface::start);
   connect(this, &SimulatorWidget::simulatorStop, simulator, &SimulatorInterface::stop);
-  //connect(this, &SimulatorWidget::simulatorSetData, simulator, &SimulatorInterface::setRadioData);
   connect(this, &SimulatorWidget::inputValueChange, simulator, &SimulatorInterface::setInputValue);
   connect(this, &SimulatorWidget::simulatorSdPathChange, simulator, &SimulatorInterface::setSdPath);
   connect(this, &SimulatorWidget::simulatorVolumeGainChange, simulator, &SimulatorInterface::setVolumeGain);
 
   connect(simulator, &SimulatorInterface::started, this, &SimulatorWidget::onSimulatorStarted);
-  connect(simulator, &SimulatorInterface::stopped, this, &SimulatorWidget::onSimulatorStopped);
   connect(simulator, &SimulatorInterface::heartbeat, this, &SimulatorWidget::onSimulatorHeartbeat);
   connect(simulator, &SimulatorInterface::runtimeError, this, &SimulatorWidget::onSimulatorError);
   connect(simulator, &SimulatorInterface::phaseChanged, this, &SimulatorWidget::onPhaseChanged);
@@ -467,10 +465,11 @@ void SimulatorWidget::stop()
   while (simulator->isRunning()) {
     if (tmout.hasExpired(2000)) {
       onSimulatorError("Timeout while trying to stop simulation!");
-      onSimulatorStopped();
-      return;
+      break;
     }
+    QApplication::processEvents();
   }
+  onSimulatorStopped();
 }
 
 void SimulatorWidget::onSimulatorStarted()
