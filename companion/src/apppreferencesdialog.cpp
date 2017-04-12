@@ -383,7 +383,6 @@ void AppPreferencesDialog::showVoice(bool show)
 {
   ui->voiceLabel->setVisible(show);
   ui->voiceCombo->setVisible(show);
-  QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
 void AppPreferencesDialog::baseFirmwareChanged()
@@ -533,11 +532,11 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
   }
 
   updateLock = false;
-  QTimer::singleShot(0, this, SLOT(shrink()));
+  QTimer::singleShot(50, this, SLOT(shrink()));
 }
 
 void AppPreferencesDialog::shrink()
 {
-  resize(0,0);
+  adjustSize();
 }
 
