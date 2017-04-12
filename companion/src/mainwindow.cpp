@@ -805,7 +805,7 @@ void MainWindow::readEeprom()
 
   if (readEepromFromRadio(tempFile)) {
     MdiChild * child = createMdiChild();
-    child->newFile();
+    child->newFile(false);
     child->loadFile(tempFile, false);
     child->show();
     qunlink(tempFile);
