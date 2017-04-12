@@ -121,13 +121,10 @@ MultiModelPrinter::MultiModelPrinter(Firmware * firmware):
 
 MultiModelPrinter::~MultiModelPrinter()
 {
-  for(int i=0; i < modelPrinterMap.size(); i++) {
-    if (modelPrinterMap.value(i).second)
-      delete modelPrinterMap.value(i).second;
-  }
+  clearModels();
 }
 
-void MultiModelPrinter::setModel(int idx, const ModelData & model, const GeneralSettings & generalSettings)
+void MultiModelPrinter::setModel(int idx, const ModelData * model, const GeneralSettings * generalSettings)
 {
   if (modelPrinterMap.contains(idx) && modelPrinterMap.value(idx).second) {
     // free existing model printer
@@ -135,13 +132,22 @@ void MultiModelPrinter::setModel(int idx, const ModelData & model, const General
     modelPrinterMap[idx].second = NULL;
   }
 
-  QPair<const ModelData *, ModelPrinter *> pair(&model, new ModelPrinter(firmware, generalSettings, model));
+  QPair<const ModelData *, ModelPrinter *> pair(model, new ModelPrinter(firmware, *generalSettings, *model));
   modelPrinterMap.insert(idx, pair);  // QMap.insert will replace any existing key
 }
 
-void MultiModelPrinter::setModel(int idx, const ModelData & model)
+void MultiModelPrinter::setModel(int idx, const ModelData * model)
 {
-  setModel(idx, model, defaultSettings);
+  setModel(idx, model, &defaultSettings);
+}
+
+void MultiModelPrinter::clearModels()
+{
+  for(int i=0; i < modelPrinterMap.size(); i++) {
+    if (modelPrinterMap.value(i).second)
+      delete modelPrinterMap.value(i).second;
+  }
+  modelPrinterMap.clear();
 }
 
 QString MultiModelPrinter::print(QTextDocument * document)

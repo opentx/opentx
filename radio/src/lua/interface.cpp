@@ -204,7 +204,7 @@ void luaDoGc(lua_State * L, bool full)
       else {
         lua_gc(L, LUA_GCSTEP, 10);
       }
-#if defined(SIMU) || defined(DEBUG)
+#if defined(DEBUG)
       if (L == lsScripts) {
         static uint32_t lastgcSctipts = 0;
         uint32_t gc = luaGetMemUsed(L);

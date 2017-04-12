@@ -211,6 +211,7 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
     i = modn12x3[4 * getStickMode() + idx];
   uint8_t phase = getTrimFlightMode(getFlightMode(), i);
 
+#ifdef CPUARM
   if (!setTrimValue(phase, i, value)) {
     QTimer *timer = new QTimer(this);
     timer->setSingleShot(true);
@@ -221,6 +222,9 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
     });
     timer->start(350);
   }
+#else
+  setTrimValue(phase, i, value);
+#endif
 }
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
@@ -301,11 +305,11 @@ void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
   ppmInputValidityTimer = ms;
 }
 
-void OpenTxSimulator::sendTelemetry(uint8_t * data, unsigned int len)
+void OpenTxSimulator::sendTelemetry(const QByteArray data)
 {
-  Q_UNUSED(len)
 #if defined(TELEMETRY_FRSKY_SPORT)
-  sportProcessTelemetryPacket(data);
+  //OTXS_DBG << data;
+  sportProcessTelemetryPacket((uint8_t *)data.constData());
 #else
   Q_UNUSED(data)
 #endif
@@ -405,7 +409,7 @@ void OpenTxSimulator::removeTracebackDevice(QIODevice * device)
 }
 
 
-/*** Protected classes ***/
+/*** Protected functions ***/
 
 void OpenTxSimulator::run()
 {

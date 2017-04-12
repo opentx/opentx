@@ -6,35 +6,37 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>468</width>
-    <height>414</height>
+    <width>545</width>
+    <height>575</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string/>
-  </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+   <property name="spacing">
+    <number>5</number>
+   </property>
    <item>
-    <widget class="QPushButton" name="radioSettings">
-     <property name="text">
-      <string>Radio settings</string>
+    <layout class="QHBoxLayout" name="topToolbarLayout">
+     <property name="spacing">
+      <number>2</number>
      </property>
-    </widget>
+    </layout>
    </item>
    <item>
-    <widget class="QTreeView" name="modelsList"/>
+    <layout class="QHBoxLayout" name="botToolbarLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
+    </layout>
    </item>
    <item>
-    <widget class="QPushButton" name="simulateButton">
-     <property name="text">
-      <string>Simulate Tx</string>
+    <widget class="QTreeView" name="modelsList">
+     <property name="uniformRowHeights">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="companion.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

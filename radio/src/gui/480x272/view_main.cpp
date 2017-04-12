@@ -180,7 +180,7 @@ bool menuMainView(event_t event)
 #elif defined(PCBX10)
     case EVT_KEY_BREAK(KEY_PGDN):
 #endif
-      storageDirty(EE_GENERAL);
+      storageDirty(EE_MODEL);
       g_model.view = circularIncDec(g_model.view, +1, 0, getMainViewsCount()-1);
       break;
 
@@ -189,7 +189,7 @@ bool menuMainView(event_t event)
     case EVT_KEY_LONG(KEY_PGDN):
 #endif
       killEvents(event);
-      storageDirty(EE_GENERAL);
+      storageDirty(EE_MODEL);
       g_model.view = circularIncDec(g_model.view, -1, 0, getMainViewsCount()-1);
       break;
 

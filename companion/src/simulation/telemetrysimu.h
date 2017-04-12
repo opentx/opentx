@@ -48,7 +48,7 @@ class TelemetrySimulator : public QWidget
 
   signals:
 
-    void telemetryDataChanged(uint8_t * data, unsigned int len);
+    void telemetryDataChanged(const QByteArray data);
 
   protected slots:
 

@@ -563,7 +563,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
     }
 
-    fswtchFunc[i]->setVisible(widgetsMask);
+    fswtchFunc[i]->setVisible(cfn.swtch.toValue());
     fswtchParam[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_NUMERIC_PARAM);
     fswtchParamTime[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_TIME_PARAM);
     fswtchParamGV[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_TOOGLE);
@@ -701,7 +701,7 @@ void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
 void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
 {
   QStringList qs;
-  b->clear();
+  b->setModel(new QStandardItemModel(b));  // clear combo box but not any shared item model
   if (function==FuncPlaySound) {
     CustomFunctionData::populatePlaySoundParams(qs);
     b->addItems(qs);

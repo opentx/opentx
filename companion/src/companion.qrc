@@ -620,6 +620,7 @@
     <file>themes/monoblue/16/contributors.png</file>
     <file>themes/monoblue/16/stop.png</file>
     <file>themes/monoblue/16/write_eeprom.png</file>
+    <file>themes/monoblue/16/sdsync.png</file>
     <file>themes/monoblue/24/paintbrush.png</file>
     <file>themes/monoblue/24/open.png</file>
     <file>themes/monoblue/24/edit.png</file>
@@ -663,6 +664,7 @@
     <file>themes/monoblue/24/contributors.png</file>
     <file>themes/monoblue/24/stop.png</file>
     <file>themes/monoblue/24/write_eeprom.png</file>
+    <file>themes/monoblue/24/sdsync.png</file>
     <file>themes/monoblue/32/paintbrush.png</file>
     <file>themes/monoblue/32/open.png</file>
     <file>themes/monoblue/32/edit.png</file>
@@ -706,6 +708,7 @@
     <file>themes/monoblue/32/contributors.png</file>
     <file>themes/monoblue/32/stop.png</file>
     <file>themes/monoblue/32/write_eeprom.png</file>
+    <file>themes/monoblue/32/sdsync.png</file>
     <file>themes/monoblue/48/paintbrush.png</file>
     <file>themes/monoblue/48/open.png</file>
     <file>themes/monoblue/48/edit.png</file>
@@ -749,6 +752,7 @@
     <file>themes/monoblue/48/contributors.png</file>
     <file>themes/monoblue/48/stop.png</file>
     <file>themes/monoblue/48/write_eeprom.png</file>
+    <file>themes/monoblue/48/sdsync.png</file>
     <file>themes/monowhite/16/paintbrush.png</file>
     <file>themes/monowhite/16/open.png</file>
     <file>themes/monowhite/16/edit.png</file>
@@ -792,6 +796,7 @@
     <file>themes/monowhite/16/contributors.png</file>
     <file>themes/monowhite/16/stop.png</file>
     <file>themes/monowhite/16/write_eeprom.png</file>
+    <file>themes/monowhite/16/sdsync.png</file>
     <file>themes/monowhite/24/paintbrush.png</file>
     <file>themes/monowhite/24/open.png</file>
     <file>themes/monowhite/24/edit.png</file>
@@ -835,6 +840,7 @@
     <file>themes/monowhite/24/contributors.png</file>
     <file>themes/monowhite/24/stop.png</file>
     <file>themes/monowhite/24/write_eeprom.png</file>
+    <file>themes/monowhite/24/sdsync.png</file>
     <file>themes/monowhite/32/paintbrush.png</file>
     <file>themes/monowhite/32/open.png</file>
     <file>themes/monowhite/32/edit.png</file>
@@ -878,6 +884,7 @@
     <file>themes/monowhite/32/contributors.png</file>
     <file>themes/monowhite/32/stop.png</file>
     <file>themes/monowhite/32/write_eeprom.png</file>
+    <file>themes/monowhite/32/sdsync.png</file>
     <file>themes/monowhite/48/paintbrush.png</file>
     <file>themes/monowhite/48/open.png</file>
     <file>themes/monowhite/48/edit.png</file>
@@ -921,6 +928,7 @@
     <file>themes/monowhite/48/contributors.png</file>
     <file>themes/monowhite/48/stop.png</file>
     <file>themes/monowhite/48/write_eeprom.png</file>
+    <file>themes/monowhite/48/sdsync.png</file>
     <file>themes/yerico/16/paintbrush.png</file>
     <file>themes/yerico/16/open.png</file>
     <file>themes/yerico/16/edit.png</file>

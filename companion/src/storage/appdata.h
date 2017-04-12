@@ -255,6 +255,9 @@ class AppData: protected CompStoreObj
     QByteArray _mainWinGeo;
     QByteArray _mainWinState;
     QByteArray _modelEditGeo;
+    QByteArray _mdiWinGeo;
+    QByteArray _mdiWinState;
+    QByteArray _compareWinGeo;
 
     QString _armMcu;
     QString _avrArguments;
@@ -285,8 +288,10 @@ class AppData: protected CompStoreObj
     bool _autoCheckApp;
     bool _autoCheckFw;
     bool _simuSW;
-    bool _useWizard;
+    bool _tabbedMdi;
+    bool _remvModelSlots;
 
+    int _newModelAction;  // 0=no action; 1=model wizard; 2=model edit
     int _backLight;
     int _embedSplashes;
     int _fwServerFails;
@@ -309,6 +314,9 @@ class AppData: protected CompStoreObj
     QByteArray mainWinGeo();
     QByteArray mainWinState();
     QByteArray modelEditGeo();
+    QByteArray mdiWinGeo();
+    QByteArray mdiWinState();
+    QByteArray compareWinGeo();
 
     QString armMcu();
     QString avrArguments();
@@ -340,8 +348,10 @@ class AppData: protected CompStoreObj
     bool autoCheckApp();
     bool autoCheckFw();
     bool simuSW();
-    bool useWizard();
+    bool tabbedMdi();
+    bool removeModelSlots();
 
+    int newModelAction();
     int backLight();
     int embedSplashes();
     int fwServerFails();
@@ -362,6 +372,9 @@ class AppData: protected CompStoreObj
     void mainWinGeo      (const QByteArray);
     void mainWinState    (const QByteArray);
     void modelEditGeo    (const QByteArray);
+    void mdiWinGeo       (const QByteArray);
+    void mdiWinState     (const QByteArray);
+    void compareWinGeo   (const QByteArray);
 
     void armMcu          (const QString);
     void avrArguments    (const QString);
@@ -393,8 +406,10 @@ class AppData: protected CompStoreObj
     void autoCheckApp    (const bool);
     void autoCheckFw     (const bool);
     void simuSW          (const bool);
-    void useWizard       (const bool);
+    void tabbedMdi       (const bool);
+    void removeModelSlots(const bool);
 
+    void newModelAction  (const int);
     void backLight       (const int);
     void embedSplashes   (const int);
     void fwServerFails   (const int);

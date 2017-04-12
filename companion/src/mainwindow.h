@@ -27,8 +27,6 @@
 #include "eeprominterface.h"
 
 #define SPLASH_TIME 5
-#define MAX_RECENT 15
-#define MAX_PROFILES 15
 
 class MdiChild;
 QT_BEGIN_NAMESPACE
@@ -52,9 +50,10 @@ class MainWindow : public QMainWindow
 
   public:
     MainWindow();
+   ~MainWindow();
 
   signals:
-    void FirmwareChanged();
+    void firmwareChanged();
 
   protected:
     QString getCompanionUpdateBaseUrl();
@@ -70,7 +69,7 @@ class MainWindow : public QMainWindow
 
   private slots:
     void openDocURL();
-    void retranslateUi();
+    void retranslateUi(bool showMsg = false);
 
     void setLanguage(const QString & langString);
     void onLanguageChanged(QAction * act);
@@ -78,6 +77,12 @@ class MainWindow : public QMainWindow
     void onThemeChanged(QAction * act);
     void setIconThemeSize(int index);
     void onIconSizeChanged(QAction * act);
+    void setTabbedWindows(bool on);
+    void onChangeWindowAction(QAction * act);
+    void updateWindowActions();
+    void updateWindowActionTitle(const QMdiSubWindow * win, QAction * act = NULL);
+    void onSubwindowTitleChanged();
+    void onSubwindowModified();
 
     void checkForUpdates();
     void checkForFirmwareUpdate();
@@ -94,13 +99,11 @@ class MainWindow : public QMainWindow
     void openFile();
     void save();
     void saveAs();
-    void cut();
+    void closeFile();
     void openRecentFile();
     void loadProfileId(const unsigned pid);
     void loadProfile();
     void logFile();
-    void copy();
-    void paste();
     void writeEeprom();
     void readEeprom();
     void writeFlash(QString fileToFlash="");
@@ -110,7 +113,6 @@ class MainWindow : public QMainWindow
     void burnConfig();
     void burnList();
     void burnFuses();
-    void simulate();
     void contributors();
     void sdsync();
     void changelog();
@@ -118,8 +120,6 @@ class MainWindow : public QMainWindow
     void customizeSplash();
     void about();
     void compare();
-    void print();
-    void loadBackup();
     void appPrefs();
     void fwPrefs();
     void updateMenus();
@@ -127,7 +127,6 @@ class MainWindow : public QMainWindow
     void copyProfile();
     void deleteProfile(const int pid);
     void deleteCurrentProfile();
-    void setActiveSubWindow(QWidget *window);
     void autoClose();
 
     void closeUpdatesWaitDialog();
@@ -135,20 +134,17 @@ class MainWindow : public QMainWindow
     void openFile(const QString & fileName, bool updateLastUsedDir = false);
 
   private:
-    QAction * addAct(const QString &, const QString &, const QString &, enum QKeySequence::StandardKey, const char *, QObject *slotObj=NULL);
-    QAction * addAct(const QString &, const QString &, const QString &, const QKeySequence &, const char *, QObject *slotObj=NULL);
-    QAction * addAct(const QString &, const QString &, const QString &, const char *);
-    QAction * addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName,
-                            const char * propName = 0, const QVariant & propValue = QVariant(), const QVariant & dfltValue = QVariant());
+    QAction * addAct(const QString & icon, const char * slot = NULL, const QKeySequence & shortcut = 0, QObject * slotObj = NULL, const char * signal = NULL);
+    QAction * addActToGroup(QActionGroup * aGroup, const QString & sName, const QString & lName, const char * propName = 0,
+                            const QVariant & propValue = QVariant(), const QVariant & dfltValue = QVariant(), const QKeySequence & shortcut = 0);
+    void trAct(QAction * act, const QString & text, const QString & descript);
 
     QMenu * createLanguageMenu(QWidget * parent = Q_NULLPTR);
-    QMenu * createRecentFileMenu();
-    QMenu * createProfilesMenu();
 
     void createActions();
     void createMenus();
     void createToolBars();
-    void createStatusBar();
+    void showReadyStatus();
     void updateRecentFileActions();
     void updateProfilesActions();
 
@@ -172,13 +168,21 @@ class MainWindow : public QMainWindow
 
     QNetworkAccessManager *networkManager;
 
-    QVector<QAction *> actionsList;
+    QVector<QAction *> recentFileActs;
+    QVector<QAction *> profileActs;
+    QList<QAction *> fileWindowActions;
 
     QMenu *fileMenu;
     QMenu *editMenu;
     QMenu *settingsMenu;
     QMenu *burnMenu;
     QMenu *helpMenu;
+    QMenu *windowMenu;
+    QMenu *iconThemeSizeMenu;
+    QMenu *themeMenu;
+    QMenu *recentFilesMenu;
+    QMenu *profilesMenu;
+    QActionGroup * windowsListActions;
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
     QToolBar *burnToolBar;
@@ -187,6 +191,8 @@ class MainWindow : public QMainWindow
     QAction *openAct;
     QAction *saveAct;
     QAction *saveAsAct;
+    QAction *closeAct;
+    QAction *recentFilesAct;
     QAction *exitAct;
     QAction *appPrefsAct;
     QAction *fwPrefsAct;
@@ -197,9 +203,6 @@ class MainWindow : public QMainWindow
     QAction *fwchangelogAct;
     QAction *compareAct;
     QAction *editSplashAct;
-    QAction *cutAct;
-    QAction *copyAct;
-    QAction *pasteAct;
     QAction *writeEepromAct;
     QAction *readEepromAct;
     QAction *burnConfigAct;
@@ -207,20 +210,19 @@ class MainWindow : public QMainWindow
     QAction *burnFusesAct;
     QAction *writeFlashAct;
     QAction *readFlashAct;
-    QAction *writeBackupToRadioAct;
-    QAction *readBackupToFileAct;
-    QAction *simulateAct;
-    QAction *separatorAct;
+    QAction *writeBUToRadioAct;
+    QAction *readBUToFileAct;
     QAction *aboutAct;
-    QAction *printAct;
-    QAction *loadbackupAct;
     QAction *logsAct;
-    QAction *recentFileActs[MAX_RECENT];
-    QAction *profileActs[MAX_PROFILES];
+    QAction *profilesMenuAct;
     QAction *createProfileAct;
     QAction *copyProfileAct;
     QAction *deleteProfileAct;
     QAction *openDocURLAct;
+    QAction *actTabbedWindows;
+    QAction *actTileWindows;
+    QAction *actCascadeWindows;
+    QAction *actCloseAllWindows;
 };
 
 #endif // _MAINWINDOW_H_

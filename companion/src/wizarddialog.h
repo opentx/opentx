@@ -73,6 +73,7 @@ private:
   QRadioButton *planeRB;
   QRadioButton *multirotorRB;
   QRadioButton *helicopterRB;
+  void initializePage();
   bool validatePage();
   int nextId() const;
 };

@@ -689,7 +689,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
             swName = QString(generalSettings->switchName[qr.quot]);
           if (swName.isEmpty())
             swName = getSwitchInfo(board, qr.quot).name;
-          return swName + directionIndicators.at(qr.rem < directionIndicators.size() ? qr.rem : 1);
+          return swName + directionIndicators.at(qr.rem > -1 && qr.rem < directionIndicators.size() ? qr.rem : 1);
         }
         else {
           return CHECK_IN_ARRAY(switches9X, index - 1);
@@ -699,6 +699,8 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return QObject::tr("L%1").arg(index);
 
       case SWITCH_TYPE_MULTIPOS_POT:
+        if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))
+          return QObject::tr("???");
         qr = div(index - 1, getCurrentFirmware()->getCapability(MultiposPotsPositions));
         if (generalSettings && qr.quot < (int)DIM(generalSettings->potConfig))
           swName = QString(generalSettings->potName[qr.quot]);
@@ -1500,6 +1502,7 @@ RadioData::RadioData()
 void ModelData::clear()
 {
   memset(this, 0, sizeof(ModelData));
+  modelIndex = -1;  // an invalid index, this is managed by the TreeView data model
   moduleData[0].channelsCount = 8;
   moduleData[1].channelsStart = 0;
   moduleData[1].channelsCount = 8;

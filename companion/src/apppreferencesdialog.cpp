@@ -67,7 +67,8 @@ void AppPreferencesDialog::writeValues()
   g.autoCheckFw(ui->autoCheckFirmware->isChecked());
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
-  g.useWizard(ui->modelWizard_CB->isChecked());
+  g.removeModelSlots(ui->opt_removeBlankSlots->isChecked());
+  g.newModelAction(ui->opt_newMdl_useWizard->isChecked() ? 1 : ui->opt_newMdl_useEditor->isChecked() ? 2 : 0);
   g.historySize(ui->historySize->value());
   g.backLight(ui->backLightColor->currentIndex());
   g.profile[g.id()].volumeGain(round(ui->volumeGain->value() * 10.0));
@@ -149,7 +150,10 @@ void AppPreferencesDialog::initSettings()
   }
 
   ui->simuSW->setChecked(g.simuSW());
-  ui->modelWizard_CB->setChecked(g.useWizard());
+  ui->opt_removeBlankSlots->setChecked(g.removeModelSlots());
+  ui->opt_newMdl_useNone->setChecked(g.newModelAction() == 0);
+  ui->opt_newMdl_useWizard->setChecked(g.newModelAction() == 1);
+  ui->opt_newMdl_useEditor->setChecked(g.newModelAction() == 2);
   ui->libraryPath->setText(g.libDir());
   ui->ge_lineedit->setText(g.gePath());
 
@@ -379,7 +383,6 @@ void AppPreferencesDialog::showVoice(bool show)
 {
   ui->voiceLabel->setVisible(show);
   ui->voiceCombo->setVisible(show);
-  QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
 void AppPreferencesDialog::baseFirmwareChanged()
@@ -529,11 +532,11 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
   }
 
   updateLock = false;
-  QTimer::singleShot(0, this, SLOT(shrink()));
+  QTimer::singleShot(50, this, SLOT(shrink()));
 }
 
 void AppPreferencesDialog::shrink()
 {
-  resize(0,0);
+  adjustSize();
 }
 
