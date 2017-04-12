@@ -141,7 +141,7 @@ class SimulatorInterface : public QObject
     virtual void setInputValue(int type, uint8_t index, int16_t value) = 0;
     virtual void rotaryEncoderEvent(int steps) = 0;
     virtual void setTrainerTimeout(uint16_t ms) = 0;
-    virtual void sendTelemetry(uint8_t * data, unsigned int len) = 0;
+    virtual void sendTelemetry(const QByteArray data) = 0;
     virtual void setLuaStateReloadPermanentScripts() = 0;
     virtual void addTracebackDevice(QIODevice * device) = 0;
     virtual void removeTracebackDevice(QIODevice * device) = 0;

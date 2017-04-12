@@ -65,7 +65,7 @@ class DLLEXPORT OpenTxSimulator : public SimulatorInterface
     virtual void setInputValue(int type, uint8_t index, int16_t value);
     virtual void rotaryEncoderEvent(int steps);
     virtual void setTrainerTimeout(uint16_t ms);
-    virtual void sendTelemetry(uint8_t * data, unsigned int len);
+    virtual void sendTelemetry(const QByteArray data);
     virtual void setLuaStateReloadPermanentScripts();
     virtual void addTracebackDevice(QIODevice * device);
     virtual void removeTracebackDevice(QIODevice * device);

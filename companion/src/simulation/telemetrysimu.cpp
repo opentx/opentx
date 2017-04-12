@@ -227,7 +227,6 @@ void setSportPacketCrc(uint8_t * packet)
     crc &= 0x00ff;
   }
   packet[FRSKY_SPORT_PACKET_SIZE-1] = 0xFF - (crc & 0x00ff);
-  //TRACE("crc set: %x", packet[FRSKY_SPORT_PACKET_SIZE-1]);
 }
 
 uint8_t getBit(uint8_t position, uint8_t value)
@@ -257,14 +256,12 @@ void TelemetrySimulator::generateTelemetryFrame()
 {
   static int item = 0;
   bool ok = true;
-  uint8_t buffer[FRSKY_SPORT_PACKET_SIZE];
+  uint8_t buffer[FRSKY_SPORT_PACKET_SIZE] = {0};
   static FlvssEmulator *flvss = new FlvssEmulator();
   static GPSEmulator *gps = new GPSEmulator();
 
   if (!m_simuStarted)
     return;
-
-  memset(buffer, 0, sizeof(buffer));
 
   switch (item++) {
     case 0:
@@ -431,10 +428,14 @@ void TelemetrySimulator::generateTelemetryFrame()
       return;
   }
 
-  if (ok && (buffer[2] || buffer[3]))
-    emit telemetryDataChanged(buffer, FRSKY_SPORT_PACKET_SIZE);
-  else
+  if (ok && (buffer[2] || buffer[3])) {
+    QByteArray ba((char *)buffer, FRSKY_SPORT_PACKET_SIZE);
+    emit telemetryDataChanged(ba);
+    //qDebug("%02X %02X %02X %02X %02X %02X %02X %02X %02X", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7], buffer[8]);
+  }
+  else {
     generateTelemetryFrame();
+  }
 }
 
 uint32_t TelemetrySimulator::FlvssEmulator::encodeCellPair(uint8_t cellNum, uint8_t firstCellNo, double cell1, double cell2)

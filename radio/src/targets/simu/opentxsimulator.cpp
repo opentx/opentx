@@ -305,11 +305,11 @@ void OpenTxSimulator::setTrainerTimeout(uint16_t ms)
   ppmInputValidityTimer = ms;
 }
 
-void OpenTxSimulator::sendTelemetry(uint8_t * data, unsigned int len)
+void OpenTxSimulator::sendTelemetry(const QByteArray data)
 {
-  Q_UNUSED(len)
 #if defined(TELEMETRY_FRSKY_SPORT)
-  sportProcessTelemetryPacket(data);
+  //OTXS_DBG << data;
+  sportProcessTelemetryPacket((uint8_t *)data.constData());
 #else
   Q_UNUSED(data)
 #endif
