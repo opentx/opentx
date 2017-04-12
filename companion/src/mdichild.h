@@ -178,7 +178,7 @@ class MdiChild : public QWidget
 
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
-    void forceNewFilename(const QString & suffix, const QString & ext);
+    void forceNewFilename(const QString & suffix = "", const QString & ext = "otx");
     void convertStorage(Board::Type from, Board::Type to);
     void showWarning(const QString & msg);
     int askQuestion(const QString & msg, int button0 = QMessageBox::Yes, int button1 = QMessageBox::No | QMessageBox::Default, int button2 = 0);
@@ -199,7 +199,6 @@ class MdiChild : public QWidget
 
     int lastSelectedModel;
     bool isUntitled;
-    bool fileChanged;
     bool showCatToolbar;
     const quint16 stateDataVersion;
 };

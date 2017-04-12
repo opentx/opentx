@@ -45,7 +45,6 @@ MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
   firmware(getCurrentFirmware()),
   lastSelectedModel(-1),
   isUntitled(true),
-  fileChanged(false),
   showCatToolbar(true),
   stateDataVersion(1)
 {
@@ -566,6 +565,7 @@ void MdiChild::onItemActivated(const QModelIndex index)
       openModelEditWindow(mIdx);
   }
   else if (modelsListModel->isCategoryType(index)) {
+    ui->modelsList->setCurrentIndex(index);
     ui->modelsList->edit(index);
   }
 }
@@ -591,6 +591,7 @@ void MdiChild::onDataChanged(const QModelIndex & index)
   }
   strcpy(radioData.categories[categoryIndex].name, modelsListModel->data(index, 0).toString().left(sizeof(CategoryData::name)-1).toStdString().c_str());
 
+  ui->modelsList->setCurrentIndex(QModelIndex());  // must do this otherwise leaves QTreeView in limbo after TreeModel::refresh() (Qt undoc/bug?)
   setModified();
 }
 
@@ -692,7 +693,6 @@ void MdiChild::updateTitle()
 
 void MdiChild::setModified()
 {
-  fileChanged = true;
   refresh();
   setWindowModified(true);
   emit modified();
@@ -875,6 +875,7 @@ int MdiChild::newModel(int modelIndex, int categoryIndex)
   if (isNewModel && firmware->getCapability(Capability::HasModelCategories) && categoryIndex > -1) {
     radioData.models[modelIndex].category = categoryIndex;
     strcpy(radioData.models[modelIndex].filename, radioData.getNextModelFilename().toStdString().c_str());
+    /*: Translators: do NOT use accents here, this is a default model name. */
     strcpy(radioData.models[modelIndex].name, qPrintable(tr("New model")));  // TODO: Why not just use existing default model name?
   }
   // Only set the default model if we just added the first one.
@@ -1350,8 +1351,7 @@ bool MdiChild::save()
 
 bool MdiChild::saveAs(bool isNew)
 {
-  QString fileName;
-  curFile.replace(QRegExp("\\.(eepe|bin|hex)$"), ".otx");
+  forceNewFilename();
   QFileInfo fi(curFile);
 #ifdef __APPLE__
   QString filter;
@@ -1359,7 +1359,7 @@ bool MdiChild::saveAs(bool isNew)
   QString filter(OTX_FILES_FILTER);
 #endif
 
-  fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), filter);
+  QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), g.eepromDir() + "/" +fi.fileName(), filter);
   if (fileName.isEmpty())
     return false;
   g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
@@ -1387,7 +1387,7 @@ bool MdiChild::saveFile(const QString & filename, bool setCurrent)
 
 bool MdiChild::maybeSave()
 {
-  if (fileChanged) {
+  if (isWindowModified()) {
     int ret = askQuestion(tr("%1 has been modified.\nDo you want to save your changes?").arg(userFriendlyCurrentFile()),
         QMessageBox::Save, QMessageBox::Discard, QMessageBox::Cancel | QMessageBox::Default);
 
@@ -1413,7 +1413,6 @@ void MdiChild::setCurrentFile(const QString & fileName)
 {
   curFile = QFileInfo(fileName).canonicalFilePath();
   isUntitled = false;
-  fileChanged = false;
   setWindowModified(false);
   updateTitle();
   int MaxRecentFiles = g.historySize();
@@ -1427,18 +1426,15 @@ void MdiChild::setCurrentFile(const QString & fileName)
 
 void MdiChild::forceNewFilename(const QString & suffix, const QString & ext)
 {
-  QFileInfo info(curFile);
-  curFile = info.path() + "/" + info.baseName() + suffix + ext;
+  curFile.replace(QRegExp("\\.(eepe|bin|hex|otx)$"), suffix + "." + ext);
 }
-
 
 void MdiChild::convertStorage(Board::Type from, Board::Type to)
 {
   showWarning(tr("Models and settings will be automatically converted.\nIf that is not what you intended, please close the file\nand choose the correct radio type/profile before reopening it."));
   radioData.convert(from, to);
-  forceNewFilename("_converted", ".otx");
+  forceNewFilename("_converted");
   initModelsList();
-  fileChanged = true;
   isUntitled = true;
 }
 

@@ -192,7 +192,7 @@ QVariant TreeModel::data(const QModelIndex & index, int role) const
 
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
-  Qt::ItemFlags f = QAbstractItemModel::flags(index);
+  Qt::ItemFlags f = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
 
   if (index.isValid()) {
     if (getItem(index)->isCategory())
@@ -202,6 +202,7 @@ Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
   }
   f |= Qt::ItemIsDropEnabled;
 
+  //qDebug() << f;
   return f;
 }
 
@@ -691,10 +692,13 @@ void TreeModel::refresh()
 
     if (!model.isEmpty() && current) {
       QString modelName;
-      if (strlen(model.name) > 0)
+      if (strlen(model.name) > 0) {
         modelName = model.name;
-      else
-        modelName = QString().sprintf("Model%02d", i+1);
+      }
+      else {
+        /*: Translators: do NOT use accents here, this is a default model name. */
+        modelName = tr("Model %1").arg(uint(i+1), 2, 10, QChar('0'));
+      }
       current->setData(currentColumn++, modelName);
       if (hasEepromSizeData) {
         int size = eepromInterface->getSize(model);
