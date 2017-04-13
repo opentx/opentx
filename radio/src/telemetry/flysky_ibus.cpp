@@ -58,7 +58,7 @@ const FlySkySensor flySkySensors[] = {
   // RPM
   {0x02,            ZSTR_RPM,               UNIT_RAW,                    0},
   // External voltage
-  {0x03,            ZSTR_A3,                UNIT_VOLTS,                  1},
+  {0x03,            ZSTR_A3,                UNIT_VOLTS,                  2},
   // RX SNR
   {FS_ID_SNR,       ZSTR_RX_SNR,            UNIT_DB,                     0},
   // RX Noise
@@ -66,7 +66,7 @@ const FlySkySensor flySkySensors[] = {
   // RX RSSI (0xfc)
   {FS_ID_RSSI,      ZSTR_RSSI,              UNIT_DB,                     0},
   // RX error rate
-  {0xfe,            ZSTR_RX_QUALITY,        UNIT_RAW,                    1},
+  {0xfe,            ZSTR_RX_QUALITY,        UNIT_RAW,                    0},
   // 0xff is an unused sensor slot
   // Pseudo sensor for TRSSI
   {TX_RSSI_ID,      ZSTR_TX_RSSI,           UNIT_RAW,                    0},
@@ -102,7 +102,7 @@ static void processFlySkySensor(const uint8_t *packet)
         value = -value;
       else if (id == FS_ID_TEMP)
         // Temperature sensors have 40 degree offset
-        value -= 40;
+        value -= 400;
       setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, sensor->unit, sensor->precision);
       return;
     }
