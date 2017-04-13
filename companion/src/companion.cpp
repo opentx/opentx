@@ -50,14 +50,16 @@ class MyProxyStyle : public QProxyStyle
 
 int main(int argc, char *argv[])
 {
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+  /* From doc: This attribute must be set before Q(Gui)Application is constructed. */
+  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
   QApplication app(argc, argv);
   app.setApplicationName(APP_COMPANION);
   app.setOrganizationName(COMPANY);
   app.setOrganizationDomain(COMPANY_DOMAIN);
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-  app.setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
 
   Q_INIT_RESOURCE(companion);
 
