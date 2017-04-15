@@ -171,6 +171,16 @@ void GeneralSettings::convert(Board::Type before, Board::Type after)
   }
 }
 
+
+/*
+ * RadioData
+*/
+
+RadioData::RadioData()
+{
+  models.resize(getCurrentFirmware()->getCapability(Models));
+}
+
 void RadioData::setCurrentModel(unsigned int index)
 {
   generalSettings.currModelIndex = index;
