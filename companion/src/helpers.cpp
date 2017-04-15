@@ -456,21 +456,22 @@ void Helpers::addRawSwitchItems(QStandardItemModel * itemModel, const RawSwitchT
 QStandardItemModel * Helpers::getRawSwitchItemModel(const GeneralSettings * const generalSettings, SwitchContext context)
 {
   QStandardItemModel * itemModel = new QStandardItemModel();
-  Board::Type board = getCurrentBoard();
+  Boards board = Boards(getCurrentBoard());
+  Board::Type btype = board.getBoardType();
   Firmware * fw = getCurrentFirmware();
 
   // Descending switch direction: NOT (!) switches
 
-  if (context != MixesContext && context != GlobalFunctionsContext && IS_ARM(board)) {
+  if (context != MixesContext && context != GlobalFunctionsContext && IS_ARM(btype)) {
     addRawSwitchItems(itemModel, SWITCH_TYPE_FLIGHT_MODE, -fw->getCapability(FlightModes), generalSettings);
   }
   if (context != GlobalFunctionsContext) {
     addRawSwitchItems(itemModel, SWITCH_TYPE_VIRTUAL, -fw->getCapability(LogicalSwitches), generalSettings);
   }
   addRawSwitchItems(itemModel, SWITCH_TYPE_ROTARY_ENCODER, -fw->getCapability(RotaryEncoders), generalSettings);
-  addRawSwitchItems(itemModel, SWITCH_TYPE_TRIM, -getBoardCapability(board, Board::NumTrimSwitches), generalSettings);
+  addRawSwitchItems(itemModel, SWITCH_TYPE_TRIM, -board.getCapability(Board::NumTrimSwitches), generalSettings);
   addRawSwitchItems(itemModel, SWITCH_TYPE_MULTIPOS_POT, -(fw->getCapability(MultiposPots) * fw->getCapability(MultiposPotsPositions)), generalSettings);
-  addRawSwitchItems(itemModel, SWITCH_TYPE_SWITCH, -fw->getCapability(SwitchesPositions), generalSettings);
+  addRawSwitchItems(itemModel, SWITCH_TYPE_SWITCH, -board.getCapability(Board::SwitchPositions), generalSettings);
 
   // Ascending switch direction (including zero)
 
@@ -481,14 +482,14 @@ QStandardItemModel * Helpers::getRawSwitchItemModel(const GeneralSettings * cons
     addRawSwitchItems(itemModel, SWITCH_TYPE_NONE, 1);
   }
 
-  addRawSwitchItems(itemModel, SWITCH_TYPE_SWITCH, fw->getCapability(SwitchesPositions), generalSettings);
+  addRawSwitchItems(itemModel, SWITCH_TYPE_SWITCH, board.getCapability(Board::SwitchPositions), generalSettings);
   addRawSwitchItems(itemModel, SWITCH_TYPE_MULTIPOS_POT, fw->getCapability(MultiposPots) * fw->getCapability(MultiposPotsPositions), generalSettings);
-  addRawSwitchItems(itemModel, SWITCH_TYPE_TRIM, getBoardCapability(board, Board::NumTrimSwitches), generalSettings);
+  addRawSwitchItems(itemModel, SWITCH_TYPE_TRIM, board.getCapability(Board::NumTrimSwitches), generalSettings);
   addRawSwitchItems(itemModel, SWITCH_TYPE_ROTARY_ENCODER, fw->getCapability(RotaryEncoders), generalSettings);
   if (context != GlobalFunctionsContext) {
     addRawSwitchItems(itemModel, SWITCH_TYPE_VIRTUAL, fw->getCapability(LogicalSwitches), generalSettings);
   }
-  if (context != MixesContext && context != GlobalFunctionsContext && IS_ARM(board)) {
+  if (context != MixesContext && context != GlobalFunctionsContext && IS_ARM(btype)) {
     addRawSwitchItems(itemModel, SWITCH_TYPE_FLIGHT_MODE, fw->getCapability(FlightModes), generalSettings);
   }
   if (context == SpecialFunctionsContext || context == GlobalFunctionsContext) {
@@ -530,7 +531,7 @@ void Helpers::addRawSourceItems(QStandardItemModel * itemModel, const RawSourceT
 QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const model, unsigned int flags)
 {
   QStandardItemModel * itemModel = new QStandardItemModel();
-  Board::Type board = getCurrentBoard();
+  Boards board = Boards(getCurrentBoard());
   Firmware * fw = getCurrentFirmware();
 
   if (flags & POPULATE_NONE) {
@@ -548,13 +549,13 @@ QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * cons
   }
 
   if (flags & POPULATE_SOURCES) {
-    int totalSources = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders) + getBoardCapability(board, Board::MouseAnalogs);
+    int totalSources = CPN_MAX_STICKS + board.getCapability(Board::Pots) + board.getCapability(Board::Sliders) +  board.getCapability(Board::MouseAnalogs);
     addRawSourceItems(itemModel, SOURCE_TYPE_STICK, totalSources, generalSettings, model);
     addRawSourceItems(itemModel, SOURCE_TYPE_ROTARY_ENCODER, fw->getCapability(RotaryEncoders), generalSettings, model);
   }
 
   if (flags & POPULATE_TRIMS) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_TRIM, getBoardCapability(board, Board::NumTrims), generalSettings, model);
+    addRawSourceItems(itemModel, SOURCE_TYPE_TRIM, board.getCapability(Board::NumTrims), generalSettings, model);
   }
 
   if (flags & POPULATE_SOURCES) {
@@ -562,7 +563,7 @@ QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * cons
   }
 
   if (flags & POPULATE_SWITCHES) {
-    addRawSourceItems(itemModel, SOURCE_TYPE_SWITCH, getBoardCapability(board, Board::Switches), generalSettings, model);
+    addRawSourceItems(itemModel, SOURCE_TYPE_SWITCH, board.getCapability(Board::Switches), generalSettings, model);
     addRawSourceItems(itemModel, SOURCE_TYPE_CUSTOM_SWITCH, fw->getCapability(LogicalSwitches), generalSettings, model);
   }
 
@@ -573,7 +574,7 @@ QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * cons
   }
 
   if (flags & POPULATE_TELEMETRY) {
-    if (IS_ARM(board)) {
+    if (IS_ARM(board.getBoardType())) {
       addRawSourceItems(itemModel, SOURCE_TYPE_SPECIAL, 5, generalSettings, model);
 
       if (model) {
@@ -593,7 +594,7 @@ QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * cons
         exclude << TELEMETRY_SOURCE_TX_TIME;
       if (!fw->getCapability(SportTelemetry))
         exclude << TELEMETRY_SOURCE_SWR;
-      if (!IS_ARM(board))
+      if (!IS_ARM(board.getBoardType()))
         exclude << TELEMETRY_SOURCE_TIMER3;
       int count = ((flags & POPULATE_TELEMETRYEXT) ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT);
       addRawSourceItems(itemModel, SOURCE_TYPE_TELEMETRY, count, generalSettings, model, 0, exclude);

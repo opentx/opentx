@@ -211,6 +211,11 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 8;
       else
         return 7;
+    case SwitchPositions:
+      if (IS_HORUS_OR_TARANIS(board))
+        return getCapability(board, Switches) * 3;
+      else
+        return 9;
     case NumTrims:
       if (IS_HORUS(board))
         return 6;

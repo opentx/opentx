@@ -52,7 +52,6 @@ enum Capability {
   VoicesMaxLength,
   MultiLangVoice,
   ModelImage,
-  SwitchesPositions,
   CustomFunctions,
   SafetyChannelCustomFunction,
   LogicalSwitches,

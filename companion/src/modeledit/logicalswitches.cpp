@@ -468,7 +468,7 @@ void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b, const RawSwitch & v
     b->addItem(item.toString(), item.toValue());
     if (item == value) b->setCurrentIndex(b->count()-1);
 
-    for (int i=1; i<=firmware->getCapability(SwitchesPositions); i++) {
+    for (int i=1; i <= Boards::getCapability(firmware->getBoard(), Board::SwitchPositions); i++) {
       item = RawSwitch(SWITCH_TYPE_SWITCH, i);
       b->addItem(item.toString(), item.toValue());
       if (item == value) b->setCurrentIndex(b->count()-1);
