@@ -60,42 +60,42 @@
 <context>
     <name>AppPreferencesDialog</name>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="26"/>
+        <location filename="../apppreferencesdialog.ui" line="20"/>
         <source>Edit Settings</source>
         <translation>Éditer les réglages</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="46"/>
+        <location filename="../apppreferencesdialog.ui" line="55"/>
         <source>Radio Profile</source>
         <translation>Profil de radio</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="476"/>
+        <location filename="../apppreferencesdialog.ui" line="529"/>
         <source>Default Channel Order</source>
         <translation>Ordre des voies par défaut</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="294"/>
+        <location filename="../apppreferencesdialog.ui" line="333"/>
         <source>Build Options</source>
         <translation>Options de compilation</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="230"/>
+        <location filename="../apppreferencesdialog.ui" line="263"/>
         <source>Menu Language</source>
         <translation>Langue des menus</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="409"/>
+        <location filename="../apppreferencesdialog.ui" line="462"/>
         <source>Default Stick Mode</source>
         <translation>Mode par défaut</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="116"/>
+        <location filename="../apppreferencesdialog.ui" line="125"/>
         <source>Select Image</source>
         <translation>Sélectionner une image</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="422"/>
+        <location filename="../apppreferencesdialog.ui" line="475"/>
         <source>Mode selection:
 
 Mode 1:
@@ -136,410 +136,410 @@ Manche Droit:  Profondeur, Direction
 </translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="447"/>
+        <location filename="../apppreferencesdialog.ui" line="500"/>
         <source>Mode 1 (RUD ELE THR AIL)</source>
         <translation>Mode 1 (DIR PROF GAZ AIL)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="452"/>
+        <location filename="../apppreferencesdialog.ui" line="505"/>
         <source>Mode 2 (RUD THR ELE AIL)</source>
         <translation>Mode 2 (DIR GAZ PROF AIL)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="457"/>
+        <location filename="../apppreferencesdialog.ui" line="510"/>
         <source>Mode 3 (AIL ELE THR RUD)</source>
         <translation>Mode 3 (AIL PROF GAZ DIR)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="462"/>
+        <location filename="../apppreferencesdialog.ui" line="515"/>
         <source>Mode 4 (AIL THR ELE RUD)</source>
         <translation>Mode 4 (AIL GAZ PROF DIR)</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="99"/>
+        <location filename="../apppreferencesdialog.ui" line="108"/>
         <source>Splash Screen</source>
         <translation>Ecran d&apos;accueil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="59"/>
-        <location filename="../apppreferencesdialog.ui" line="356"/>
+        <location filename="../apppreferencesdialog.ui" line="68"/>
+        <location filename="../apppreferencesdialog.ui" line="391"/>
         <source>The profile specific folder,  if set, will override general Backup folder</source>
         <translation>Dossier de sauvegarde spécifique au profil courant, si défini remplace le réglage de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="359"/>
+        <location filename="../apppreferencesdialog.ui" line="394"/>
         <source>Backup folder</source>
         <translation>Dossier de sauvegarde</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="366"/>
+        <location filename="../apppreferencesdialog.ui" line="401"/>
         <source>If set it will override the application general setting</source>
         <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="376"/>
+        <location filename="../apppreferencesdialog.ui" line="417"/>
         <source>if set, will override general backup enable</source>
         <translation>Si défini, remplace le réglage de l&apos;application pour ce profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="504"/>
+        <location filename="../apppreferencesdialog.ui" line="545"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Channel order&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Defines the order of the default mixes created on a new model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Ordre des voies&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Détermine l&apos;ordre des mixages par défaut sur un nouveau modèle.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="511"/>
+        <location filename="../apppreferencesdialog.ui" line="552"/>
         <source>R E T A</source>
         <translation>D P G A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="516"/>
+        <location filename="../apppreferencesdialog.ui" line="557"/>
         <source>R E A T</source>
         <translation>D P A G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="521"/>
+        <location filename="../apppreferencesdialog.ui" line="562"/>
         <source>R T E A</source>
         <translation>D G P A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="526"/>
+        <location filename="../apppreferencesdialog.ui" line="567"/>
         <source>R T A E</source>
         <translation>D G A P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="531"/>
+        <location filename="../apppreferencesdialog.ui" line="572"/>
         <source>R A E T</source>
         <translation>D A P G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="536"/>
+        <location filename="../apppreferencesdialog.ui" line="577"/>
         <source>R A T E</source>
         <translation>D A G P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="541"/>
+        <location filename="../apppreferencesdialog.ui" line="582"/>
         <source>E R T A</source>
         <translation>P D G A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="546"/>
+        <location filename="../apppreferencesdialog.ui" line="587"/>
         <source>E R A T</source>
         <translation>P D A G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="551"/>
+        <location filename="../apppreferencesdialog.ui" line="592"/>
         <source>E T R A</source>
         <translation>P G D A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="556"/>
+        <location filename="../apppreferencesdialog.ui" line="597"/>
         <source>E T A R</source>
         <translation>P G A D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="561"/>
+        <location filename="../apppreferencesdialog.ui" line="602"/>
         <source>E A R T</source>
         <translation>P A D G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="566"/>
+        <location filename="../apppreferencesdialog.ui" line="607"/>
         <source>E A T R</source>
         <translation>P A G D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="571"/>
+        <location filename="../apppreferencesdialog.ui" line="612"/>
         <source>T R E A</source>
         <translation>G D P A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="576"/>
+        <location filename="../apppreferencesdialog.ui" line="617"/>
         <source>T R A E</source>
         <translation>G D A P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="581"/>
+        <location filename="../apppreferencesdialog.ui" line="622"/>
         <source>T E R A</source>
         <translation>G P D A</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="586"/>
+        <location filename="../apppreferencesdialog.ui" line="627"/>
         <source>T E A R</source>
         <translation>G P A D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="591"/>
+        <location filename="../apppreferencesdialog.ui" line="632"/>
         <source>T A R E</source>
         <translation>G A D P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="596"/>
+        <location filename="../apppreferencesdialog.ui" line="637"/>
         <source>T A E R</source>
         <translation>G A P D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="601"/>
+        <location filename="../apppreferencesdialog.ui" line="642"/>
         <source>A R E T</source>
         <translation>A D P G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="606"/>
+        <location filename="../apppreferencesdialog.ui" line="647"/>
         <source>A R T E</source>
         <translation>A D G P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="611"/>
+        <location filename="../apppreferencesdialog.ui" line="652"/>
         <source>A E R T</source>
         <translation>A P D G</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="616"/>
+        <location filename="../apppreferencesdialog.ui" line="657"/>
         <source>A E T R</source>
         <translation>A P G D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="621"/>
+        <location filename="../apppreferencesdialog.ui" line="662"/>
         <source>A T R E</source>
         <translation>A G D P</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="626"/>
+        <location filename="../apppreferencesdialog.ui" line="667"/>
         <source>A T E R</source>
         <translation>A G P D</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="52"/>
-        <location filename="../apppreferencesdialog.ui" line="62"/>
-        <location filename="../apppreferencesdialog.ui" line="804"/>
-        <location filename="../apppreferencesdialog.ui" line="911"/>
-        <location filename="../apppreferencesdialog.ui" line="1068"/>
+        <location filename="../apppreferencesdialog.ui" line="61"/>
+        <location filename="../apppreferencesdialog.ui" line="71"/>
+        <location filename="../apppreferencesdialog.ui" line="918"/>
+        <location filename="../apppreferencesdialog.ui" line="1049"/>
+        <location filename="../apppreferencesdialog.ui" line="1230"/>
         <source>Select Folder</source>
         <translation>Sélectionner dossier</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="904"/>
+        <location filename="../apppreferencesdialog.ui" line="1036"/>
         <source>Select Executable</source>
         <translation>Sélectionner exécutable</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="717"/>
+        <location filename="../apppreferencesdialog.ui" line="825"/>
         <source>Use OpenTX firmware nightly builds</source>
         <translation>Utlilser les nightly builds du firmware</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="881"/>
+        <location filename="../apppreferencesdialog.ui" line="1007"/>
         <source>Use Companion nightly builds</source>
         <translation>Utlilser les nightly builds de Companion</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1136"/>
+        <location filename="../apppreferencesdialog.ui" line="1310"/>
         <source>Simulator Volume Gain</source>
         <translation>Gain de volume du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="183"/>
+        <location filename="../apppreferencesdialog.ui" line="204"/>
         <source>Profile Name</source>
         <translation>Nom du profil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="160"/>
+        <location filename="../apppreferencesdialog.ui" line="169"/>
         <source>Clear Image</source>
         <translation>Effacer l&apos;image</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="634"/>
+        <location filename="../apppreferencesdialog.ui" line="681"/>
         <source>Append version number to FW file name</source>
         <translation>Ajouter le numéro de version au nom du fichier téléchargé</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="641"/>
+        <location filename="../apppreferencesdialog.ui" line="694"/>
         <source>Offer to write FW to Tx after download</source>
         <translation>Proposer de transférer le firmware à la radio après téléchargement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="213"/>
+        <location filename="../apppreferencesdialog.ui" line="240"/>
         <source>Radio Type</source>
         <translation>Type de radio</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="320"/>
+        <location filename="../apppreferencesdialog.ui" line="726"/>
         <source>Other Settings</source>
         <translation>Autres réglages</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="386"/>
+        <location filename="../apppreferencesdialog.ui" line="433"/>
         <source>General Settings</source>
         <translation>Paramètres généraux</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="333"/>
+        <location filename="../apppreferencesdialog.ui" line="362"/>
         <source>SD Structure path</source>
         <translation>Chemin de la structure de la carte SD</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="284"/>
+        <location filename="../apppreferencesdialog.ui" line="317"/>
         <source>Set voice language.
 May be different from firmware language</source>
         <translation>Langue des voix.
 Peut être différente de la langue du firmware</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="268"/>
+        <location filename="../apppreferencesdialog.ui" line="301"/>
         <source>Voice Language</source>
         <translation>Langue des voix</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="662"/>
+        <location filename="../apppreferencesdialog.ui" line="764"/>
         <source>Application Settings</source>
         <translation>Réglages de l&apos;application</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="685"/>
+        <location filename="../apppreferencesdialog.ui" line="793"/>
         <source>Show splash screen when Companion starts</source>
         <translation>Afficher l&apos;écran d&apos;accueil au lancement de Companion</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="675"/>
+        <location filename="../apppreferencesdialog.ui" line="783"/>
         <source>Automatic check for Companion updates</source>
         <translation>Vérifier la présence de mises à jour de Companion automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="379"/>
-        <location filename="../apppreferencesdialog.ui" line="844"/>
+        <location filename="../apppreferencesdialog.ui" line="420"/>
+        <location filename="../apppreferencesdialog.ui" line="970"/>
         <source>Enable automatic backup before writing firmware</source>
         <translation>Sauvegarder les réglages et modèles automatiquement lors des transferts</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="794"/>
+        <location filename="../apppreferencesdialog.ui" line="902"/>
         <source>Automatic check for OpenTX firmware updates</source>
         <translation>Vérifier la présence de mises à jour de firmware automatiquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="817"/>
+        <location filename="../apppreferencesdialog.ui" line="931"/>
         <source>Splash Screen Library</source>
         <translation>Bibliothèque d&apos;écrans d&apos;accueil</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="773"/>
+        <location filename="../apppreferencesdialog.ui" line="881"/>
         <source>Files to keep</source>
         <translation>Fichiers à conserver</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="824"/>
+        <location filename="../apppreferencesdialog.ui" line="944"/>
         <source>Google Earth Executable</source>
         <translation>Exécutable Google Earth</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="747"/>
+        <location filename="../apppreferencesdialog.ui" line="855"/>
         <source>Only show user splash images</source>
         <translation>Ne montrer que les images de l&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="752"/>
+        <location filename="../apppreferencesdialog.ui" line="860"/>
         <source>Show user and companion splash images</source>
         <translation>Montrer les images de Companion et de l&apos;utilisateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="874"/>
+        <location filename="../apppreferencesdialog.ui" line="1000"/>
         <source>User Splash Screens</source>
         <translation>Ecrans d&apos;accueil personnalisés</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="668"/>
+        <location filename="../apppreferencesdialog.ui" line="776"/>
         <source>Automatic Backup Folder</source>
         <translation>Dossier de sauvegardes automatiques</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="976"/>
+        <location filename="../apppreferencesdialog.ui" line="1114"/>
         <source>Simulator Settings</source>
         <translation>Paramètres du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1097"/>
+        <location filename="../apppreferencesdialog.ui" line="1259"/>
         <source>Simulator BackLight</source>
         <translation>Rétroéclairage du simulateur</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1061"/>
+        <location filename="../apppreferencesdialog.ui" line="1223"/>
         <source>Enable</source>
         <translation>Actif</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="924"/>
+        <location filename="../apppreferencesdialog.ui" line="1062"/>
         <source>Action on New Model</source>
         <translation>Action par défaut &quot;Ajout Modèle&quot;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="933"/>
+        <location filename="../apppreferencesdialog.ui" line="1081"/>
         <source>Use model wizard</source>
         <translation>Assistant</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="943"/>
+        <location filename="../apppreferencesdialog.ui" line="1091"/>
         <source>Open model editor</source>
         <translation>Éditer modèle</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="953"/>
+        <location filename="../apppreferencesdialog.ui" line="1101"/>
         <source>Just create the model</source>
         <translation>Créer modèle</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="965"/>
+        <location filename="../apppreferencesdialog.ui" line="1069"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This option  maintains the behaviour from older OpenTx versions where empty model slots are preserved when a model is deleted or moved. &lt;/p&gt;&lt;p&gt;When this option is de-selected, the other models may be re-arranged to fill the gap left by the removed  model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;b&gt;&lt;u&gt;/!\&lt;/u&gt; Uniquement pour les radios sans catégories &lt;u&gt;/!\&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Cette option maintient le comportement des anciennes versions d’OpenTx où les emplacements des modèles vides sont conservés lorsqu&apos;un modèle est supprimé ou déplacé.&lt;/p&gt;&lt;p&gt;Lorsque cette option est désélectionnée, les autres modèles peuvent être réarrangés pour combler l&apos;écart laissé par le modèle supprimé.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="968"/>
+        <location filename="../apppreferencesdialog.ui" line="1072"/>
         <source>Remove empty model slots when deleting models (only applies for radios w/out categories)</source>
         <translation>Supprimer les emplacements vides lors de la suppression de modèles</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1006"/>
+        <location filename="../apppreferencesdialog.ui" line="1150"/>
         <source>Blue</source>
         <translation>Bleu</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1011"/>
+        <location filename="../apppreferencesdialog.ui" line="1155"/>
         <source>Green</source>
         <translation>Vert</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1016"/>
+        <location filename="../apppreferencesdialog.ui" line="1160"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1021"/>
+        <location filename="../apppreferencesdialog.ui" line="1165"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1026"/>
+        <location filename="../apppreferencesdialog.ui" line="1170"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1084"/>
+        <location filename="../apppreferencesdialog.ui" line="1246"/>
         <source>Joystick</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="992"/>
+        <location filename="../apppreferencesdialog.ui" line="1136"/>
         <source>Calibrate</source>
         <translation>Calibrer</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1034"/>
+        <location filename="../apppreferencesdialog.ui" line="1184"/>
         <source>Simulator capture folder</source>
         <translation>Dossier des captures d&apos;écran</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1054"/>
+        <location filename="../apppreferencesdialog.ui" line="1210"/>
         <source>Only capture to clipboard</source>
         <translation>Capturer dans le presse-papiers uniquement</translation>
     </message>
     <message>
-        <location filename="../apppreferencesdialog.ui" line="1129"/>
+        <location filename="../apppreferencesdialog.ui" line="1297"/>
         <source>Remember simulator switch values</source>
         <translation>Mémoriser les positions des inters du simulateur</translation>
     </message>
@@ -4747,76 +4747,73 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
 <context>
     <name>MdiChild</name>
     <message>
-        <location filename="../mdichild.cpp" line="1309"/>
-        <location filename="../mdichild.cpp" line="1464"/>
-        <location filename="../mdichild.cpp" line="1478"/>
-        <location filename="../mdichild.cpp" line="1494"/>
-        <location filename="../mdichild.cpp" line="1502"/>
-        <location filename="../mdichild.cpp" line="1513"/>
-        <location filename="../mdichild.cpp" line="1524"/>
+        <location filename="../mdichild.cpp" line="1317"/>
+        <location filename="../mdichild.cpp" line="1459"/>
+        <location filename="../mdichild.cpp" line="1473"/>
+        <location filename="../mdichild.cpp" line="1489"/>
+        <location filename="../mdichild.cpp" line="1497"/>
+        <location filename="../mdichild.cpp" line="1508"/>
+        <location filename="../mdichild.cpp" line="1519"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1494"/>
+        <location filename="../mdichild.cpp" line="1489"/>
         <source>Unable to find file %1!</source>
         <translation>Fichier %1 introuvable !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1350"/>
-        <location filename="../mdichild.cpp" line="1352"/>
-        <location filename="../mdichild.cpp" line="1358"/>
-        <location filename="../mdichild.cpp" line="1360"/>
+        <location filename="../mdichild.cpp" line="1361"/>
         <source>Save As</source>
         <translation>Enregister Sous</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="200"/>
+        <location filename="../mdichild.cpp" line="199"/>
         <source>Alt+Shift+E</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="201"/>
+        <location filename="../mdichild.cpp" line="200"/>
         <source>Ctrl+Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="202"/>
+        <location filename="../mdichild.cpp" line="201"/>
         <source>Ctrl+Alt+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="203"/>
+        <location filename="../mdichild.cpp" line="202"/>
         <source>Alt+Shift+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="208"/>
+        <location filename="../mdichild.cpp" line="207"/>
         <source>Alt+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="214"/>
+        <location filename="../mdichild.cpp" line="213"/>
         <source>Alt+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="215"/>
+        <location filename="../mdichild.cpp" line="214"/>
         <source>Alt+R</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="216"/>
+        <location filename="../mdichild.cpp" line="215"/>
         <source>Alt+W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="218"/>
+        <location filename="../mdichild.cpp" line="217"/>
         <source>Alt+U</source>
         <translation></translation>
     </message>
     <message numerus="yes">
-        <location filename="../mdichild.cpp" line="302"/>
+        <location filename="../mdichild.cpp" line="301"/>
         <source>%n Model(s)</source>
         <comment>As in &quot;Copy 3 Models&quot; or &quot;Cut 1 Model&quot; or &quot;Delete 3 Models&quot; action).</comment>
         <translation>
@@ -4825,7 +4822,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../mdichild.cpp" line="303"/>
+        <location filename="../mdichild.cpp" line="302"/>
         <source>%n Model(s)</source>
         <comment>As in &quot;Paste 3 Models&quot; or &quot;Insert 1 Model.&quot;</comment>
         <translation>
@@ -4834,7 +4831,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../mdichild.cpp" line="304"/>
+        <location filename="../mdichild.cpp" line="303"/>
         <source>%n Category(ies)</source>
         <comment>As in &quot;Delete 3 Categories&quot; or &quot;Delete 1 Category.&quot;</comment>
         <translation>
@@ -4843,237 +4840,238 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
         </translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="305"/>
+        <location filename="../mdichild.cpp" line="304"/>
         <source>Nothing selected</source>
         <translation>Rien n&apos;a été sélectionné</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="314"/>
+        <location filename="../mdichild.cpp" line="313"/>
         <source>Rename Category</source>
         <translation>Renommer la catégorie</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="314"/>
+        <location filename="../mdichild.cpp" line="313"/>
         <source>Edit Model</source>
         <translation>Éditer le modèle</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="327"/>
+        <location filename="../mdichild.cpp" line="326"/>
         <source>Cut</source>
         <translation>Couper</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="329"/>
+        <location filename="../mdichild.cpp" line="328"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="331"/>
+        <location filename="../mdichild.cpp" line="330"/>
         <source>Paste</source>
         <translation>Coller</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="333"/>
+        <location filename="../mdichild.cpp" line="332"/>
         <source>Insert</source>
         <translation>Insérer</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="371"/>
+        <location filename="../mdichild.cpp" line="370"/>
         <source>Edit Radio Settings</source>
         <translation>Éditer les réglages radio</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="372"/>
+        <location filename="../mdichild.cpp" line="371"/>
         <source>Copy Radio Settings</source>
         <translation>Copier les réglages radio</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="373"/>
+        <location filename="../mdichild.cpp" line="372"/>
         <source>Paste Radio Settings</source>
         <translation>Coller les réglages radio</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="374"/>
+        <location filename="../mdichild.cpp" line="373"/>
         <source>Simulate Radio</source>
         <translation>Simuler la radio</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="376"/>
+        <location filename="../mdichild.cpp" line="375"/>
         <source>Add Category</source>
         <translation>Ajouter catégorie</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="377"/>
+        <location filename="../mdichild.cpp" line="376"/>
         <source>Category</source>
         <translation>Catégorie</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="380"/>
+        <location filename="../mdichild.cpp" line="379"/>
         <source>Add Model</source>
         <translation>Ajouter modèle</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="381"/>
+        <location filename="../mdichild.cpp" line="380"/>
         <source>Model</source>
         <translation>Modèle</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="382"/>
+        <location filename="../mdichild.cpp" line="381"/>
         <source>Restore from Backup</source>
         <translation>Restaurer depuis une sauvegarde</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="383"/>
+        <location filename="../mdichild.cpp" line="382"/>
         <source>Model Wizard</source>
         <translation>Assistant de configuration du modèle</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="384"/>
+        <location filename="../mdichild.cpp" line="383"/>
         <source>Set as Default</source>
         <translation>Définir par défaut</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="385"/>
+        <location filename="../mdichild.cpp" line="384"/>
         <source>Print Model</source>
         <translation>Imprimer modèle</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="386"/>
+        <location filename="../mdichild.cpp" line="385"/>
         <source>Simulate Model</source>
         <translation>Simuler modèle</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="387"/>
+        <location filename="../mdichild.cpp" line="386"/>
         <source>Duplicate Model</source>
         <translation>Dupliquer modèle</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="391"/>
+        <location filename="../mdichild.cpp" line="390"/>
         <source>Show Category Actions Toolbar</source>
         <translation>Afficher la barre d&apos;outils &quot;Catégorie&quot;</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="392"/>
+        <location filename="../mdichild.cpp" line="391"/>
         <source>Show Radio Actions Toolbar</source>
         <translation>Afficher la barre d&apos;outils &quot;Radio&quot;</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="393"/>
+        <location filename="../mdichild.cpp" line="392"/>
         <source>Show Model Actions Toolbar</source>
         <translation>Afficher la barre d&apos;outils &quot;Modèle&quot;</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="737"/>
+        <location filename="../mdichild.cpp" line="736"/>
         <source>Category index out of range.</source>
         <translation>Index de catégorie hors limite.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="742"/>
+        <location filename="../mdichild.cpp" line="741"/>
         <source>Cannot delete the last category.</source>
         <translation>Impossible d&apos;effacer la dernière catégorie.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="751"/>
+        <location filename="../mdichild.cpp" line="746"/>
         <source>This category is not empty!</source>
         <translation>Catégorie non vide !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="827"/>
+        <location filename="../mdichild.cpp" line="823"/>
         <source>Cannot insert model, last model in list would be deleted.</source>
         <translation>Impossible d&apos;insérer le modèle, le dernier modèle dans la liste serait supprimé.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="869"/>
+        <location filename="../mdichild.cpp" line="865"/>
         <source>Cannot add model, could not find an available model slot.</source>
         <translation>Impossible d&apos;ajouter un modèle, aucun emplacement libre n’est disponible.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="882"/>
+        <location filename="../mdichild.cpp" line="878"/>
         <source>New model</source>
+        <extracomment>Translators: do NOT use accents here, this is a default model name.</extracomment>
         <translation>Nouveau modele</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1004"/>
+        <location filename="../mdichild.cpp" line="1012"/>
         <source>Cannot paste model, out of available model slots.</source>
         <translation>Impossible de coller le modèle, aucun emplacement libre n’est disponible.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1016"/>
+        <location filename="../mdichild.cpp" line="1024"/>
         <source>You are replacing an existing model, are you sure?</source>
         <translation>Vous allez écraser un modèle existant, êtes-vous sûr ?</translation>
     </message>
     <message numerus="yes">
-        <location filename="../mdichild.cpp" line="1159"/>
+        <location filename="../mdichild.cpp" line="1167"/>
         <source>Delete %n selected model(s)?</source>
         <translation>
-            <numerusform>Supprimer le modèle sélectionné %n ?</numerusform>
-            <numerusform>Supprimer les modèles sélectionnés %n ?</numerusform>
+            <numerusform>Supprimer le modèle sélectionné ?</numerusform>
+            <numerusform>Supprimer les %n modèles sélectionnés ?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../mdichild.cpp" line="1164"/>
+        <location filename="../mdichild.cpp" line="1172"/>
         <source>Delete %n selected category(ies)?</source>
         <translation>
-            <numerusform>Supprimer la catégorie sélectionnée %n ?</numerusform>
-            <numerusform>Supprimer les catégories sélectionnées %n ?</numerusform>
+            <numerusform>Supprimer la catégorie sélectionnée ?</numerusform>
+            <numerusform>Supprimer les %n catégories sélectionnées ?</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1195"/>
+        <location filename="../mdichild.cpp" line="1203"/>
         <source>Cannot duplicate model, could not find an available model slot.</source>
         <translation>Impossible de dupliquer le modèle, aucun emplacement libre n’est disponible.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1464"/>
+        <location filename="../mdichild.cpp" line="1459"/>
         <source>Unable to find Horus radio SD card!</source>
         <translation>Impossible de trouver la carte SD de la Horus !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1468"/>
+        <location filename="../mdichild.cpp" line="1463"/>
         <source>Models and Settings written</source>
         <translation>Modèle et réglages écrit</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1478"/>
+        <location filename="../mdichild.cpp" line="1473"/>
         <source>Cannot write temporary file!</source>
         <translation>Ecriture de fichier temporaire impossible !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1248"/>
+        <location filename="../mdichild.cpp" line="1256"/>
         <source>Editing model %1: </source>
         <translation>Édition du modèle %1 : </translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1514"/>
+        <location filename="../mdichild.cpp" line="1509"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Fichier %1 corrompu:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1503"/>
+        <location filename="../mdichild.cpp" line="1498"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Erreur à l&apos;ouverture du fichier %1:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="316"/>
+        <location filename="../mdichild.cpp" line="315"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="389"/>
+        <location filename="../mdichild.cpp" line="388"/>
         <source>Move to Category</source>
         <translation>Déplacer dans la catégorie</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="220"/>
+        <location filename="../mdichild.cpp" line="219"/>
         <source>Alt+S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1437"/>
+        <location filename="../mdichild.cpp" line="1433"/>
         <source>Models and settings will be automatically converted.
 If that is not what you intended, please close the file
 and choose the correct radio type/profile before reopening it.</source>
@@ -5082,7 +5080,7 @@ Si ce n&apos;est pas ce que vous voulez, fermer le fichier
 et choisissez  la bonne radio avant de l&apos;ouvrir.à nouveau.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1061"/>
+        <location filename="../mdichild.cpp" line="1069"/>
         <source>Do you want to overwrite radio general settings?</source>
         <translation>Voulez-vous vraiment écraser les paramètres généraux ?</translation>
     </message>
@@ -5092,33 +5090,33 @@ et choisissez  la bonne radio avant de l&apos;ouvrir.à nouveau.</translation>
         <translation>octets libres</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="719"/>
+        <location filename="../mdichild.cpp" line="718"/>
         <source>New category</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
         <translation>Nouvelle categorie</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1453"/>
+        <location filename="../mdichild.cpp" line="1448"/>
         <source>Companion</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1488"/>
+        <location filename="../mdichild.cpp" line="1483"/>
         <source>Open backup Models and Settings file</source>
         <translation>Ouvrir la sauvegarde de réglages et modèles</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1528"/>
+        <location filename="../mdichild.cpp" line="1523"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1524"/>
+        <location filename="../mdichild.cpp" line="1519"/>
         <source>Invalid binary backup File %1</source>
         <translation>Fichier de sauvegarde %1 invalide</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="1391"/>
+        <location filename="../mdichild.cpp" line="1390"/>
         <source>%1 has been modified.
 Do you want to save your changes?</source>
         <translation>%1 a été modifié.
@@ -7345,7 +7343,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="760"/>
-        <location filename="../simulator.cpp" line="218"/>
+        <location filename="../simulator.cpp" line="220"/>
         <source>Uknown error during Simulator startup.</source>
         <translation>Erreur inconnue pendant le démarrage du simulateur.</translation>
     </message>
@@ -8790,7 +8788,7 @@ L&apos;équipe OpenTX.</translation>
         <translation>Amp. Positive</translation>
     </message>
     <message>
-        <location filename="../modelslist.cpp" line="680"/>
+        <location filename="../modelslist.cpp" line="681"/>
         <location filename="../radiodata.cpp" line="238"/>
         <source>Models</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
@@ -8832,44 +8830,44 @@ L&apos;équipe OpenTX.</translation>
         <translation>Radio disponibles:</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="104"/>
+        <location filename="../simulator.cpp" line="106"/>
         <source>WARNING: couldn&apos;t initialize SDL:
 %1</source>
         <translation>ATTENTION: erreur initialisation SDL:
 %1</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="118"/>
+        <location filename="../simulator.cpp" line="120"/>
         <source>ERROR: No simulator libraries available.</source>
         <translation>ERREUR: pas de simulateur disponible.</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="122"/>
+        <location filename="../simulator.cpp" line="124"/>
         <source>Radio profile ID or Name to use for simulator.</source>
         <translation>Nom du profil radio pour le simulateur.</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="124"/>
+        <location filename="../simulator.cpp" line="126"/>
         <source>Radio type to simulate (usually defined in profile).</source>
         <translation>Type de radio à simuler (souvent défini dans le profil).</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="126"/>
+        <location filename="../simulator.cpp" line="128"/>
         <source>show this help text</source>
         <translation>afficher ce texte d&apos;aide</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="131"/>
+        <location filename="../simulator.cpp" line="133"/>
         <source>Usage: simulator [OPTION]... [EEPROM.BIN FILE OR DATA FOLDER] </source>
         <translation>Utilisation: simulator [OPTION]... [EEPROM.BIN FICHIER OUT REPERTOIRE DE DONNER] </translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="132"/>
+        <location filename="../simulator.cpp" line="134"/>
         <source>Options:</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="196"/>
+        <location filename="../simulator.cpp" line="198"/>
         <source>ERROR: Couldn&apos;t start simulator, missing radio/profile/data file/folder.
   Profile ID: [%1]; Radio ID: [%2];
 Data File: [%3]</source>
@@ -8878,7 +8876,7 @@ Data File: [%3]</source>
 Fichier de Données: [%3]</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="202"/>
+        <location filename="../simulator.cpp" line="204"/>
         <source>ERROR: Radio profile or simulator firmware not found.
 Profile ID: [%1]; Radio ID: [%2]</source>
         <translation>ERREUR: Profil radio ou firmware du simulateur non trouvé
@@ -10075,67 +10073,67 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
         <translation>Simulateur Radio (%1)</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="247"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="245"/>
         <source>Could not determine startup data source.</source>
         <translation>Impossible de déterminer les données source.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="252"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="250"/>
         <source>Could not load data, possibly wrong format.</source>
         <translation>Impossible de charger les données, mauvais format.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="253"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="251"/>
         <source>Data Load Error</source>
         <translation>Erreur de lecture des données</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="308"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="306"/>
         <source>Invalid startup data provided. Plese specify a proper file/path.</source>
         <translation>Données de démarrage fournies non valides. Veuillez spécifier un fichier/chemin approprié.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="309"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="307"/>
         <source>Simulator Startup Error</source>
         <translation>Erreur de démarrage du simulateur</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="369"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="367"/>
         <source>Error saving data: could open file for writing: &apos;%1&apos;</source>
         <translation>Erreur de sauvegarde des données: impossible d&apos;écrire le fichier &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="375"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="373"/>
         <source>Error saving data: could not get data from simulator interface.</source>
         <translation>Erreur de sauvegarde des données: impossible de récupérer les données depuis l&apos;interface de simulation.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="400"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="398"/>
         <source>An unexpected error occurred while attempting to save radio data to file &apos;%1&apos;.</source>
         <translation>Une erreur inattendue s&apos;est produite lors de l&apos;enregistrement des données radio dans le fichier &apos;%1&apos;.</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="401"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="399"/>
         <source>Data Save Error</source>
         <translation>Erreur de sauvegarde des données</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="651"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="650"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="651"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="650"/>
         <source>Cannot open joystick, joystick disabled</source>
         <translation>Impossible d&apos;accéder au Joystick, Joystick désactivé</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="749"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="748"/>
         <source>Radio firmware error: %1</source>
         <translation>Erreur firmware radio: %1</translation>
     </message>
     <message>
-        <location filename="../simulation/simulatorwidget.cpp" line="754"/>
+        <location filename="../simulation/simulatorwidget.cpp" line="753"/>
         <source> - Flight Mode %1 (#%2)</source>
         <translation> - Phase de Vol %1 (#%2)</translation>
     </message>
@@ -11315,17 +11313,17 @@ hh:mm:ss</translation>
         <translation>Transmet les valeurs non vides au simulateur.</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="726"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="727"/>
         <source>Log File</source>
         <translation>Fichier de Log</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="726"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="727"/>
         <source>LOG Files (*.csv)</source>
         <translation>Fichier LOG (*.csv)</translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.cpp" line="730"/>
+        <location filename="../simulation/telemetrysimu.cpp" line="731"/>
         <source>ERROR - invalid file</source>
         <translation>ERREUR - fichier non valide</translation>
     </message>
@@ -11763,6 +11761,12 @@ Extra long : bips extra longs.</translation>
         <location filename="../modelslist.cpp" line="147"/>
         <source>Size</source>
         <translation>Taille</translation>
+    </message>
+    <message>
+        <location filename="../modelslist.cpp" line="700"/>
+        <source>Model %1</source>
+        <extracomment>Translators: do NOT use accents here, this is a default model name.</extracomment>
+        <translation>Modele %1</translation>
     </message>
 </context>
 <context>
