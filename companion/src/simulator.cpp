@@ -155,7 +155,7 @@ CommandLineParseResult cliOptions(SimulatorOptions * simOptions, int * profileId
   }
 
   if (cliOptions.isSet(optVer)) {
-    showMessage(APP_SIMULATOR " v" VERSION, QMessageBox::Information);
+    showMessage(APP_SIMULATOR " v" VERSION " " __DATE__, QMessageBox::Information);
     return CommandLineExitOk;
   }
 
