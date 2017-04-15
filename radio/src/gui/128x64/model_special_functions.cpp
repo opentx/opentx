@@ -459,7 +459,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             REPEAT_LAST_CURSOR_MOVE();
           }
 #if defined(PCBX7)
-          if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
+          if (menuHorizontalPosition>0 && active && event==EVT_KEY_LONG(KEY_ENTER)) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
             if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
               killEvents(event);
