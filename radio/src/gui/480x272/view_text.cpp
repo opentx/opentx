@@ -51,7 +51,7 @@ void readTextFile(int & lines_count)
           escape = 1;
           continue;
         }
-        else if (c!='\\' && escape>0 && escape<3) {
+        else if (c!='\\' && escape>0 && escape<4) {
           escape_chars[escape-1] = c;
           if (escape == 2 && !strncmp(escape_chars, "up", 2)) {
             c = '\300';
@@ -59,6 +59,13 @@ void readTextFile(int & lines_count)
           }
           else if (escape == 2 && !strncmp(escape_chars, "dn", 2)) {
             c = '\301';
+            escape = 0;
+          }
+          else if (escape == 3) {
+            int val = atoi(escape_chars);
+            if (val >= 200 && val < 225) {
+              c = '\200' + val-200;
+            }
             escape = 0;
           }
           else {
