@@ -163,21 +163,25 @@ void disable_ppm(uint32_t port)
 // TD is on PA17, peripheral A
 void init_ssc(uint8_t baudrateDiv1000)
 {
-  Ssc * sscptr;
+  Ssc *sscptr;
 
   PMC->PMC_PCER0 |= 0x00400000L;        // Enable peripheral clock to SSC
 
   configure_pins(PIO_PA17, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_A | PIN_PORTA);
 
   sscptr = SSC;
-  sscptr->SSC_THR = 0xFF;		            // Make the output high.
+  sscptr->SSC_THR = 0xFF;                    // Make the output high.
   sscptr->SSC_TFMR = 0x00000027;        //  0000 0000 0000 0000 0000 0000 1010 0111 (8 bit data, lsb)
-  sscptr->SSC_CMR = Master_frequency / (1000*baudrateDiv1000*2);
+  sscptr->SSC_CMR = Master_frequency / (1000 * baudrateDiv1000 * 2);
   sscptr->SSC_TCMR = 0;
   sscptr->SSC_CR = SSC_CR_TXEN;
 
 #if defined(REVX)
-  PIOA->PIO_MDER = PIO_PA17;						// Open Drain O/p in A17
+  if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
+    PIOA->PIO_MDDR = PIO_PA17;                 // Push Pull O/p in A17
+  } else {
+    PIOA->PIO_MDER = PIO_PA17;						// Open Drain O/p in A17
+  }
 #else
   PIOA->PIO_MDDR = PIO_PA17;						// Push Pull O/p in A17
 #endif
