@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -123,17 +123,7 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 0: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break
-  #define ADD_3POS_CASE(x, i) \
-    case SW_S ## x ## 0: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 1: \
-      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break; \
-    case SW_S ## x ## 2: \
-      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
-      break
+      break;
 #else
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 0: \
@@ -141,7 +131,8 @@ void readKeysAndTrims()
       break; \
     case SW_S ## x ## 2: \
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
-      break
+      break;
+#endif
   #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
@@ -158,7 +149,6 @@ void readKeysAndTrims()
         xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
-#endif
 
 uint8_t keyState(uint8_t index)
 {
@@ -169,7 +159,7 @@ uint8_t keyState(uint8_t index)
 uint32_t switchState(uint8_t index)
 {
   uint32_t xxx = 0;
-  
+
   switch (index) {
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
@@ -248,7 +238,7 @@ void keysInit()
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
   GPIO_Init(GPIOG, &GPIO_InitStructure);
 #endif
-  
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   rotencPosition = ROTARY_ENCODER_POSITION();
 #endif
