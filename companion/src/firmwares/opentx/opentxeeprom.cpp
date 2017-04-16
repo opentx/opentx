@@ -243,9 +243,12 @@ class SourcesConversionTable: public ConversionTable {
         for (int i=0; i<32; i++) {
           addConversion(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, i), val++);
         }
-        for (int i=0; i<MAX_SCRIPTS(board); i++) {
-          for (int j=0; j<6; j++) {
-            addConversion(RawSource(SOURCE_TYPE_LUA_OUTPUT, i*16+j), val++);
+      }
+
+      if (IS_STM32(board) && version >= 216) {
+        for (int i = 0; i < MAX_SCRIPTS(board); i++) {
+          for (int j = 0; j < 6; j++) {
+            addConversion(RawSource(SOURCE_TYPE_LUA_OUTPUT, i * 16 + j), val++);
           }
         }
       }
