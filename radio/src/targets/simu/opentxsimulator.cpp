@@ -285,8 +285,8 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
   else if (steps < 0)
     key = KEY_PLUS;
   else
-   // Should not happen but Clang complains that key is unset otherwise
-   return;
+    // Should not happen but Clang complains that key is unset otherwise
+    return;
 
   setKey(key, 1);
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
