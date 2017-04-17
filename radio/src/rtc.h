@@ -39,7 +39,7 @@ struct gtm
   int8_t tm_hour;                  /* Hours.       [0-23] */
   int8_t tm_mday;                  /* Day.         [1-31] */
   int8_t tm_mon;                   /* Month.       [0-11] */
-  uint8_t tm_year;                  /* Year - 1900. Limited to the year 2155. */
+  uint8_t tm_year;                 /* Year - 1900. Limited to the year 2155. */
   int8_t tm_wday;                  /* Day of week. [0-6] */
   int16_t tm_yday;                 /* Day of year. [0-365] Needed internally for calculations */
 };
