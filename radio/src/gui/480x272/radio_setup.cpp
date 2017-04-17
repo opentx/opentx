@@ -137,7 +137,7 @@ bool menuRadioSetup(event_t event)
           switch (j) {
             case 0:
               lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, t.tm_year+TM_YEAR_BASE, flags|rowattr);
-              if (rowattr && s_editMode>0) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
+              if (rowattr && s_editMode>0) t.tm_year = checkIncDec(event, t.tm_year, 112, 127, 0);
               lcdDrawText(lcdNextPos+3, y, "-", flags);
               break;
             case 1:
