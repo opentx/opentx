@@ -7343,7 +7343,6 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="760"/>
-        <location filename="../simulator.cpp" line="220"/>
         <source>Uknown error during Simulator startup.</source>
         <translation>Erreur inconnue pendant le démarrage du simulateur.</translation>
     </message>
@@ -8568,59 +8567,59 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>Le simulateur n&apos;est pas encore disponible pour ce firmware</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="423"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="426"/>
         <source>Switch</source>
         <translation>Inter</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="424"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="427"/>
         <source>Switch </source>
         <translation>L&apos;inter </translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="424"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="427"/>
         <source> cannot be exported on this board!</source>
         <translation> n&apos;est pas supporté sur cette carte !</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="587"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="590"/>
         <source>Source %1 cannot be exported on this board!</source>
         <translation>La source %1 n&apos;est pas supportée sur cette plateforme !</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1566"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1569"/>
         <source>OpenTX only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1573"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="1576"/>
         <source>OpenTx only accepts %1 points in all curves</source>
         <translation>OpenTX n&apos;accepte que %1 points au maximum entre toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2151"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2155"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2391"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2399"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2406"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2410"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2154"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2158"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2394"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2402"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2409"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="2413"/>
         <source>OpenTX on this board doesn&apos;t accept this function</source>
         <translation>OpenTX ne supporte pas cette fonction sur cette carte</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3132"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3135"/>
         <source>OpenTX doesn&apos;t accept this telemetry protocol</source>
         <translation>OpenTX ne supporte pas ce protocole de télémesure</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3266"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3278"/>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3285"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3269"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3281"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3288"/>
         <source>OpenTX doesn&apos;t accept this radio protocol</source>
         <translation>OpenTX ne supporte pas ce protocole radio</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3145"/>
+        <location filename="../firmwares/opentx/opentxeeprom.cpp" line="3148"/>
         <source>OpenTX doesn&apos;t allow this number of channels</source>
         <translation>OpenTX ne supporte pas ce nombre de voies</translation>
     </message>
@@ -8810,79 +8809,6 @@ L&apos;équipe OpenTX.</translation>
         <translation>Slelectionnez le répertoire image carte SD</translation>
     </message>
     <message>
-        <location filename="../simulator.cpp" line="58"/>
-        <source>Available profiles:</source>
-        <translation>Profils disponibles:</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="62"/>
-        <source>ID: </source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="62"/>
-        <source> Name: </source>
-        <translation>Nom:</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="65"/>
-        <source>Available radios:</source>
-        <translation>Radio disponibles:</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="106"/>
-        <source>WARNING: couldn&apos;t initialize SDL:
-%1</source>
-        <translation>ATTENTION: erreur initialisation SDL:
-%1</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="120"/>
-        <source>ERROR: No simulator libraries available.</source>
-        <translation>ERREUR: pas de simulateur disponible.</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="124"/>
-        <source>Radio profile ID or Name to use for simulator.</source>
-        <translation>Nom du profil radio pour le simulateur.</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="126"/>
-        <source>Radio type to simulate (usually defined in profile).</source>
-        <translation>Type de radio à simuler (souvent défini dans le profil).</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="128"/>
-        <source>show this help text</source>
-        <translation>afficher ce texte d&apos;aide</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="133"/>
-        <source>Usage: simulator [OPTION]... [EEPROM.BIN FILE OR DATA FOLDER] </source>
-        <translation>Utilisation: simulator [OPTION]... [EEPROM.BIN FICHIER OUT REPERTOIRE DE DONNER] </translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="134"/>
-        <source>Options:</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="198"/>
-        <source>ERROR: Couldn&apos;t start simulator, missing radio/profile/data file/folder.
-  Profile ID: [%1]; Radio ID: [%2];
-Data File: [%3]</source>
-        <translation>ERREUR : Impossible de démarer le simulateur, radio/profile/fichier de données/répertoire manquant.
-  Profil ID: [%1]; Radio ID: [%2];
-Fichier de Données: [%3]</translation>
-    </message>
-    <message>
-        <location filename="../simulator.cpp" line="204"/>
-        <source>ERROR: Radio profile or simulator firmware not found.
-Profile ID: [%1]; Radio ID: [%2]</source>
-        <translation>ERREUR: Profil radio ou firmware du simulateur non trouvé
-Profil ID: [%1]; Radio ID: [%2]</translation>
-    </message>
-    <message>
         <location filename="../storage/bineeprom.cpp" line="42"/>
         <source>Error reading %1: %2</source>
         <translation>Erreur de lecture %1: %2</translation>
@@ -8995,170 +8921,6 @@ Profil ID: [%1]; Radio ID: [%2]</translation>
         <location filename="../eepromimportexport.h" line="720"/>
         <source>Conversion error on field %1</source>
         <translation>Erreur de conversion du champ %1</translation>
-    </message>
-</context>
-<context>
-    <name>QxtCommandOptions</name>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="101"/>
-        <source>sets the application GUI style</source>
-        <translation>Définir le thème graphique de l&apos;application</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="102"/>
-        <source>sets the application stylesheet</source>
-        <translation>Définir le style des feuilles de l&apos;application</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="103"/>
-        <source>restores the application from an earlier session</source>
-        <translation>restaure l&apos;application depuis la dernière session</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="104"/>
-        <source>displays debugging information about widgets</source>
-        <translation>affiche les infos de débogage sur les widgets</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="105"/>
-        <source>use right-to-left layout</source>
-        <translation>utilise la disposition de droite-à-gauche</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="107"/>
-        <source>never grab the mouse or keyboard</source>
-        <translation>ne jamais utiliser la souris ou le clavier</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="110"/>
-        <source>grab the mouse/keyboard even in a debugger</source>
-        <translation>utiliser la souris ou le clavier même en mode débogage</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="111"/>
-        <source>run in synchronous mode for debugging</source>
-        <translation>exécuter en mode synchrone pour le débogage</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="114"/>
-        <source>use Direct3D by default</source>
-        <translation>utiliser Direct3D par défaut</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="117"/>
-        <source>sets the X11 display</source>
-        <translation>sélectionner l&apos;affichage X11</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="118"/>
-        <source>sets the geometry of the first window</source>
-        <translation>définir la taille de la 1ère fenêtre</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="120"/>
-        <source>sets the default font</source>
-        <translation>définir la police par défaut</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="122"/>
-        <source>sets the default background color</source>
-        <translation>définir la couleur par défaut de l&apos;arrière plan</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="124"/>
-        <source>sets the default foreground color</source>
-        <translation>définir la couleur par défaut du premier plan</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="126"/>
-        <source>sets the default button color</source>
-        <translation>définir la couleur par défaut des boutons</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="127"/>
-        <source>sets the application name</source>
-        <translation>définir le nom de l&apos;application</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="128"/>
-        <source>sets the application title</source>
-        <translation>définir le titre de l&apos;application</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="129"/>
-        <source>sets the X11 visual type</source>
-        <translation>définir le visuel de l&apos;affichage X11</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="130"/>
-        <source>limit the number of colors on an 8-bit display</source>
-        <translation>limiter le nombre de couleur sur un écran 8-bit</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="131"/>
-        <source>use a private color map</source>
-        <translation>utiliser un code couleur personnel</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="132"/>
-        <source>sets the input method server</source>
-        <translation>définir la méthode d&apos;entrée du serveur</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="133"/>
-        <source>disable the X Input Method</source>
-        <translation>désactiver la méthode d&apos;entrée X</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="134"/>
-        <source>sets the style used by the input method</source>
-        <translation>définir le style utilisé pour la méthode d&apos;entrée</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="238"/>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="252"/>
-        <source>option &quot;%1&quot; not found</source>
-        <translation>option &quot;%1&quot; introuvable</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="387"/>
-        <source>Short options cannot have optional parameters</source>
-        <translation>Les options courtes ne peuvent pas avoir de paramètres optionnels</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="399"/>
-        <source>positional() called before parse()</source>
-        <translation>positional() appelé avant parse()</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="413"/>
-        <source>unrecognized() called before parse()</source>
-        <translation>unrecognized() appelé avant parse()</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="426"/>
-        <source>count() called before parse()</source>
-        <translation>count() appelé avant parse()</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="446"/>
-        <source>value() called before parse()</source>
-        <translation>value() appelé avant parse()</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="461"/>
-        <source>parameters() called before parse()</source>
-        <translation>parameters() appelé avant parse()</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="752"/>
-        <source>unrecognized parameters: </source>
-        <translation>paramètres inconnus:</translation>
-    </message>
-    <message>
-        <location filename="../thirdparty/qxtcommandoptions/qxtcommandoptions.cpp" line="755"/>
-        <source>%1 requires a parameter</source>
-        <translation>%1 nécessite un paramètre</translation>
     </message>
 </context>
 <context>
@@ -9708,6 +9470,129 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../simulation/simulateduiwidget9X.cpp" line="46"/>
         <source>|</source>
         <translation></translation>
+    </message>
+</context>
+<context>
+    <name>SimulatorMain</name>
+    <message>
+        <location filename="../simulator.cpp" line="71"/>
+        <source>Available profiles:</source>
+        <translation>Profils disponibles:</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="75"/>
+        <source>ID: </source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="75"/>
+        <source>Name: </source>
+        <translation>Nom: </translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="78"/>
+        <source>Available radios:</source>
+        <translation>Radio disponibles:</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="113"/>
+        <source>Radio profile ID or Name to use for simulator.</source>
+        <translation>ID ou nom du profil radio pour le simulateur.</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="114"/>
+        <source>profile</source>
+        <translation>profil</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="117"/>
+        <source>Radio type to simulate (usually defined in profile).</source>
+        <translation>Type de radio à simuler (souvent défini dans le profil).</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="118"/>
+        <source>radio</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="121"/>
+        <source>Directory containing the SD card image to use. The default is configured in the chosen Radio Profile.</source>
+        <translation>Répertoire contenant l&apos;image de la carte SD. La valeur par défaut est configurée dans le profil radio sélectionné.</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="122"/>
+        <source>path</source>
+        <translation>chemin</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="125"/>
+        <source>Data source type to use (applicable to Horus only). One of:</source>
+        <translation>Type de source de données à utiliser (applicable uniquement à la Horus). Un des:</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="126"/>
+        <source>type</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="128"/>
+        <source>data-source</source>
+        <translation>source-données</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="129"/>
+        <source>Radio data (.bin/.eeprom/.otx) image file to use OR data folder path (for Horus-style radios).
+NOTE: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
+        <translation>Fichier de données utilisé (.bin/.eeprom/.otx) OU chemin du répertoire de données (pour les radios de type Horus).
+NOTE: toutes les données EEPROM existantes non compatible avec le type de radio sélectionné peuvent être écrasées !</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="131"/>
+        <source>[data-source]</source>
+        <translation>[source-données]</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="169"/>
+        <source>Error: Profile ID %1 was not found.</source>
+        <translation>Erreur: ID Profil %1 non trouvé.</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="217"/>
+        <source>Unrecognized startup data source type: %1</source>
+        <translation>Type de données source non reconnue au démarrage: %1</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="265"/>
+        <source>WARNING: couldn&apos;t initialize SDL:
+%1</source>
+        <translation>ATTENTION: erreur initialisation SDL:
+%1</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="274"/>
+        <source>ERROR: No simulator libraries available.</source>
+        <translation>ERREUR: pas de simulateur disponible.</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="314"/>
+        <source>ERROR: Couldn&apos;t start simulator, missing radio/profile/data file/folder.
+  Profile ID: [%1]; Radio ID: [%2];
+Data File: [%3]</source>
+        <translation>ERREUR : Impossible de démarer le simulateur, radio/profile/fichier de données/répertoire manquant.
+  Profil ID: [%1]; Radio ID: [%2];
+Fichier de Données: [%3]</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="320"/>
+        <source>ERROR: Radio profile or simulator firmware not found.
+Profile ID: [%1]; Radio ID: [%2]</source>
+        <translation>ERREUR: Profil radio ou firmware du simulateur non trouvé
+Profil ID: [%1]; Radio ID: [%2]</translation>
+    </message>
+    <message>
+        <location filename="../simulator.cpp" line="338"/>
+        <source>Uknown error during Simulator startup.</source>
+        <translation>Erreur inconnue pendant le démarrage du simulateur.</translation>
     </message>
 </context>
 <context>
