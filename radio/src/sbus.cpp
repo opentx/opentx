@@ -49,7 +49,6 @@
 
 #define SBUS_CH_CENTER        0x3E0
 
-Fifo<32> sbusFifo;
 uint8_t SbusFrame[SBUS_MAX_FRAME_SIZE];
 uint16_t SbusTimer ;
 uint8_t SbusIndex = 0 ;
@@ -92,7 +91,7 @@ void processSbusInput()
 {
   uint8_t rxchar;
   uint32_t active = 0;
-  while (sbusFifo.pop(rxchar)) {
+  while (serial_get_sbus_char(&rxchar)) {
     active = 1;
     SbusFrame[SbusIndex++] = rxchar;
     if (SbusIndex > SBUS_MAX_FRAME_SIZE-1) {
