@@ -22,6 +22,8 @@
 
 DMAFifo<32> heartbeatFifo __DMA (HEARTBEAT_DMA_Stream);
 
+struct t_XjtHeartbeatCapture xjtHeartbeatCapture;
+
 void trainerSendNextFrame();
 
 void init_trainer_ppm()
@@ -159,10 +161,8 @@ extern "C" void TRAINER_TIMER_IRQHandler()
   }
 }
 
-void init_cppm_on_heartbeat_capture(void)
+static void init_timer_on_heartbeat_capture(void)
 {
-  EXTERNAL_MODULE_ON();
-
   GPIO_PinAFConfig(HEARTBEAT_GPIO, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF_CAPTURE);
 
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -181,9 +181,35 @@ void init_cppm_on_heartbeat_capture(void)
   TRAINER_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   TRAINER_TIMER->DIER |= TIM_DIER_CC2IE;
   TRAINER_TIMER->CR1 = TIM_CR1_CEN;
+}
+
+void init_cppm_on_heartbeat_capture(void)
+{
+  EXTERNAL_MODULE_ON();
+
+  init_timer_on_heartbeat_capture();
 
   NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
+}
+
+void start_heartbeat_capture()
+{
+#if defined(TRAINER_MODULE_HEARTBEAT)
+  init_timer_on_heartbeat_capture();
+
+  NVIC_SetPriority( TRAINER_TIMER_IRQn, 0); // Highest priority interrupt
+  NVIC_EnableIRQ( TRAINER_TIMER_IRQn);
+#endif
+  xjtHeartbeatCapture.valid = 1;
+}
+
+
+void stop_heartbeat_capture()
+{
+#if defined(TRAINER_MODULE_HEARTBEAT)
+  stop_cppm_on_heartbeat_capture();
+#endif
 }
 
 void stop_cppm_on_heartbeat_capture()

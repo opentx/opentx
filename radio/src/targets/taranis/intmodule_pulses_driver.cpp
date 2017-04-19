@@ -169,6 +169,8 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
+  // We caputure the time when we actually start to set up pulses since this time is least jittery
+  xjtHeartbeatCapture.pulsesTime = TIMER_2MHz_TIMER->CNT;
   setupPulses(INTERNAL_MODULE);
   intmoduleSendNextFrame();
 }

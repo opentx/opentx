@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "pulses_arm.h"
 
 #define PXX_SEND_BIND                      0x01
 #define PXX_SEND_FAILSAFE                  (1 << 4)
@@ -183,6 +184,16 @@ void pxxInitPcmArray(uint8_t port)
   modulePulsesData[port].pxx.pcmValue = 0;
 #else
   modulePulsesData[port].pxx.rest = PXX_PERIOD_HALF_US;
+
+  if (xjtHeartbeatCapture.valid) {
+    // Try to use a delay of 4,352 ms as Mike has tested for erksy9x (0x2200)
+    if ((xjtHeartbeatCapture.pulsesTime - xjtHeartbeatCapture.heartBeatTime) > 0x2200) {
+      modulePulsesData[port].pxx.rest -= 20;
+    } else
+    {
+      modulePulsesData[port].pxx.rest += 20;
+    }
+  }
 #endif
 
   modulePulsesData[port].pxx.pcmOnesCount = 0;

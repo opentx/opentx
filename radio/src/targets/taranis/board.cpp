@@ -323,6 +323,12 @@ void checkTrainerSettings()
 #endif
     }
 
+    // Heartbeat pin not used as trainer
+    if (currentTrainerMode != TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
+        && currentTrainerMode != TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
+      stop_heartbeat_capture();
+    }
+
     currentTrainerMode = requiredTrainerMode;
     switch (requiredTrainerMode) {
       case TRAINER_MODE_SLAVE:
@@ -346,6 +352,11 @@ void checkTrainerSettings()
         // master is default
         init_trainer_capture();
         break;
+    }
+    // Heartbeat pin not used as trainer
+    if (requiredTrainerMode != TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
+        && requiredTrainerMode != TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
+      start_heartbeat_capture();
     }
   }
 }

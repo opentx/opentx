@@ -267,4 +267,15 @@ enum R9MLBTPowerValues {
 #define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200))
 #define BIND_CH9TO16_ALLOWED(idx)    (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
 #endif
+void stop_heartbeat_capture();
+void start_heartbeat_capture();
+
+struct t_XjtHeartbeatCapture
+{
+  uint16_t heartBeatTime;
+  uint16_t pulsesTime;
+  uint16_t valid;
+};
+
+extern struct t_XjtHeartbeatCapture xjtHeartbeatCapture;
 #endif // _PULSES_ARM_H_
