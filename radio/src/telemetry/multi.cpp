@@ -147,7 +147,11 @@ void MultiModuleStatus::getStatusString(char *statusText)
 {
   if (get_tmr10ms()  - lastUpdate > 200) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(TARANIS_INTERNAL_PPM)
+  if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF) && (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE))
+#else
     if (g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF)
+#endif
       strcpy(statusText, STR_DISABLE_INTERNAL);
     else
 #endif
