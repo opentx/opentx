@@ -80,7 +80,7 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\015"
-#define TR_UART3MODES          "AUS\0         ""S-Port Mirror""Telemetrie\0  ""SBUS Schüler\0""Debug\0"
+#define TR_UART3MODES          "AUS\0         ""SPort Mirror\0""Telemetrie\0  ""SBUS-Lehrer In\0""Debug\0"
 
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Kein\0 ""Taster""2POS\0 ""3POS\0"
