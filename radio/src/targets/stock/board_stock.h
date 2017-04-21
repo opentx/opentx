@@ -175,7 +175,7 @@ bool checkSlaveMode();
 #define OUT_E_BUZZER  3
 #define INP_E_ElevDR  2
 
-#if defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)
+#if (defined(JETI) || defined(FRSKY) || defined(ARDUPILOT) || defined(NMEA) || defined(MAVLINK)) && !defined(SIMU)
 #define INP_C_ThrCt   6
 #define INP_C_AileDR  7
 #else

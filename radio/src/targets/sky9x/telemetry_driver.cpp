@@ -179,13 +179,13 @@ uint32_t telemetryTransmitPending()
   return x ;
 }
 
+#if !defined(SIMU)
 void telemetryPortInit(uint32_t baudrate)
 {
-#if !defined(SIMU)
   UART2_Configure(baudrate, Master_frequency);
   startPdcUsartReceive();
-#endif
 }
+#endif
 
 void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size)
 {
