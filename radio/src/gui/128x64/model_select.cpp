@@ -292,7 +292,7 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(PCBX7)
+#if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif
