@@ -575,7 +575,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         }
         break;
 #endif
-        
+
       case EVT_KEY_LONG(KEY_PAGE):
         if (curr > 0)
           cc = curr - 1;
@@ -637,7 +637,12 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      if (s_editMode > 0) {
+      if (menuCalibrationState) {
+        reusableBuffer.calib.state = 0;
+        popMenu();
+        break;
+      }
+      else if (s_editMode > 0) {
         s_editMode = 0;
         AUDIO_KEY_PRESS();
         break;
@@ -833,7 +838,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
 
   if (menuTab) {
     uint8_t attr = 0;
-    
+
     if (l_posVert==0 && !menuCalibrationState) {
       attr = INVERS;
 
@@ -1007,7 +1012,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       INC(l_posHorz, 0, maxcol);
       break;
 #endif
-  
+
 #if !defined(PCBX7)
     case EVT_KEY_REPT(KEY_DOWN):
       if (!IS_ROTARY_RIGHT(event) && l_posVert==maxrow) break;
