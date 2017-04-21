@@ -396,7 +396,7 @@ const char * sportUpdatePowerOn(ModuleIndex module)
 
   sportWaitState(SPORT_IDLE, 500); // Clear the fifo
 
-  telemetryPortInit(FRSKY_SPORT_BAUDRATE);
+  telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_8N1);
 
 #if defined(PCBTARANIS)
   if (module == INTERNAL_MODULE)

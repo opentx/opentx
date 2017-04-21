@@ -42,6 +42,7 @@
 <ul>
 <li>Fixed USB driver changed interrupt grouping which affected interrupt priorities (fix suggested by Michael Blandford), this should fix the SBUS Trainer issue <a href=https://github.com/opentx/opentx/issues/2999>#2999</a> (<a href=https://github.com/opentx/opentx/issues/3178>#3178</a>)</li>
 <li>ADC Jitter Filter improvements, option added in Hardware settings to turn it on/off (<a href=https://github.com/opentx/opentx/issues/3432>#3432</a>)</li>
+<li>Added multimodule support</li>
 </ul>
 
 [9XR-PRO]

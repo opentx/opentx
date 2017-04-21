@@ -104,13 +104,54 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerikk""Japani\0""Euroopp")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF"
+#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT"
 
 #define LEN_XJT_PROTOCOLS      "\004"
 #define TR_XJT_PROTOCOLS       "OFF\0""D16\0""D8\0 ""LR12"
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
+
+#define LEN_MULTI_PROTOCOLS    "\006"
+#define TR_MULTI_PROTOCOLS     "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM2\0 ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 ""Custom"
+
+#define LEN_SUBTYPE_FLYSKY     "\004"
+#define TR_SUBTYPE_FLYSKY      "Std\0""V9x9""V6x6""V912"
+
+#define LEN_SUBTYPE_FRSKY      "\007"
+#define TR_SUBTYPE_FRSKY       "D16\0   ""D8\0    ""D16 8ch""V8\0    "
+
+#define LEN_SUBTYPE_HISKY      "\005"
+#define TR_SUBTYPE_HISKY       "HiSky""HK310"
+
+// SUBTYPE FOR DSMX use TR_DSM_PROTOCOLS with offset +1
+
+#define LEN_SUBTYPE_YD717      "\007"
+#define TR_SUBTYPE_YD717       "YD717\0 ""SKYWLKR""SYMAX2\0""XINXUN\0""NIHUI\0  "
+
+#define LEN_SUBTYPE_SYMAX      "\003"
+#define TR_SUBTYPE_SYMAX       "Std""5c\0"
+
+#define LEN_SUBTYPE_CX10       "\007"
+#define TR_SUBTYPE_CX10        "Green\0 ""Blue\0  ""DM007\0 ""Q282\0  ""JC3015a""JC3015b""MK33041""Q242\0  "
+
+#define LEN_SUBTYPE_CG023      "\005"
+#define TR_SUBTYPE_CG023       "CG023""YD829""H3 3d"
+
+#define LEN_SUBTYPE_KN         "\006"
+#define TR_SUBTYPE_KN          "WLtoys""FeiLun"
+
+#define LEN_SUBTYPE_MT99       "\004"
+#define TR_SUBTYPE_MT99        "MT99""H7\0 ""YZ\0 ""LS\0 "
+
+#define LEN_SUBTYPE_MJXQ       "\005"
+#define TR_SUBTYPE_MJXQ        "WLH08""X600\0""X800\0""H26D\0""E010\0"
+
+#define LEN_SUBTYPE_HONTAI     "\007"
+#define TR_SUBTYPE_HONTAI      "Std\0   ""JJRC X1""X5C1cln"
+
+#define LEN_OPTIONS_DSM        "\011"
+#define TR_OPTIONS_DSM         "4ch 22ms\0""5ch 22ms\0""6ch 22ms\0""7ch 22ms\0""4ch 11ms\0""5ch 11ms\0""6ch 11ms\0""7ch 11ms\0""8ch 22ms\0""9ch 22ms\0""10ch 22ms""11ch 22ms""12ch 22ms"
 
 #define LEN_VTRIMINC           TR("\006", "\013")
 #define TR_VTRIMINC            TR("Expo\0 ""EriHie""Hieno\0""Keski\0""Karkea", "Exponential""Eri Hieno\0 ""Hieno\0     ""Keski\0     ""Karkea\0    ")
@@ -741,6 +782,12 @@
 #define TR_MENUSTAT            "STATS"
 #define TR_MENUDEBUG           "DEBUG"
 #define TR_RXNUM               TR("RxNum", INDENT"Receiver No.")
+#define TR_MULTI_RFTUNE        INDENT "RF Freq. fine tune"
+#define TR_MULTI_VIDFREQ       INDENT "Video frequency"
+#define TR_MULTI_DSMFRAME      INDENT "DSM frame format"
+#define TR_MULTI_OPTION        INDENT "Option value"
+#define TR_MULTI_AUTOBIND      INDENT "Autobind"
+#define TR_MULTI_LOWPOWER      INDENT "Low power mode"
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT"Limit"
 #define TR_MINRSSI             "Min Rssi"
@@ -1075,11 +1122,15 @@
 #define ZSTR_ACCX              "AccX"
 #define ZSTR_ACCY              "AccY"
 #define ZSTR_ACCZ              "AccZ"
+#define ZSTR_GYROX             "GYRX"
+#define ZSTR_GYROY             "GYRY"
+#define ZSTR_GYROZ             "GYRZ"
 #define ZSTR_CURR              "Curr"
 #define ZSTR_VFAS              "VFAS"
 #define ZSTR_ASPD              "ASpd"
 #define ZSTR_GSPD              "GSpd"
 #define ZSTR_HDG               "Hdg"
+#define ZSTR_SATELLITES        "Sats"
 #define ZSTR_CELLS             "Cels"
 #define ZSTR_GPSALT            "GAlt"
 #define ZSTR_GPSDATETIME       "Date"
@@ -1098,3 +1149,28 @@
 #define ZSTR_RX2_LOSTFRAME     "Rx2L"
 #define ZSTR_RX2_CONN_LOST     "Rx2C"
 #define ZSTR_RX2_NO_SIGNAL     "Rx2S"
+#define ZSTR_BATT1_TEMP        "RB1T"
+#define ZSTR_BATT2_TEMP        "RB2T"
+#define ZSTR_RB_STATE          "RBS"
+#define ZSTR_CHANS_STATE       "RBCS"
+#define ZSTR_RX_RSSI1          "1RSS"
+#define ZSTR_RX_RSSI2          "2RSS"
+#define ZSTR_RX_QUALITY        "RQly"
+#define ZSTR_RX_SNR            "RSNR"
+#define ZSTR_ANTENNA           "ANT"
+#define ZSTR_RF_MODE           "RFMD"
+#define ZSTR_TX_POWER          "TPWR"
+#define ZSTR_TX_RSSI           "TRSS"
+#define ZSTR_TX_QUALITY        "TQly"
+#define ZSTR_TX_SNR            "TSNR"
+#define ZSTR_PITCH             "Ptch"
+#define ZSTR_ROLL              "Roll"
+#define ZSTR_YAW               "Yaw"
+#define ZSTR_FLIGHT_MODE       "FM"
+#define ZSTR_THROTTLE          "Thr"
+#define ZSTR_QOS_A             "FdeA"
+#define ZSTR_QOS_B             "FdeB"
+#define ZSTR_QOS_L             "FdeL"
+#define ZSTR_QOS_R             "FdeR"
+#define ZSTR_QOS_F             "FLss"
+#define ZSTR_QOS_H             "Hold"

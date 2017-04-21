@@ -419,18 +419,46 @@ enum BeeperMode {
 #define FAILSAFE_CHANNEL_HOLD    2000
 #define FAILSAFE_CHANNEL_NOPULSE 2001
 
+#define MM_RF_CUSTOM_SELECTED 0xff
 PACK(typedef struct {
   uint8_t type:4;
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode:7;
+  uint8_t failsafeMode:4;
+  uint8_t subType:3;
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[NUM_CHNOUT];
-  int8_t  ppmDelay:6;
-  uint8_t ppmPulsePol:1;
-  uint8_t ppmOutputType:1;     // false = open drain, true = push pull
-  int8_t  ppmFrameLength;
+  union {
+    struct {
+      int8_t  ppmDelay:6;
+      uint8_t ppmPulsePol:1;
+      uint8_t ppmOutputType:1;     // false = open drain, true = push pull
+      int8_t  ppmFrameLength;
+    };
+    struct {
+      uint8_t rfProtocolExtra:2;
+      uint8_t spare:3;
+      uint8_t customProto:1;
+      uint8_t autoBindMode:1;
+      uint8_t lowPowerMode:1;
+      int8_t optionValue;
+    } multi;
+  };
+  // Helper functions to set both of the rfProto protocol at the same time
+  inline uint8_t getMultiProtocol(bool returnCustom)
+  {
+    if (returnCustom && multi.customProto)
+      return MM_RF_CUSTOM_SELECTED;
+    return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
+  }
+
+  inline void setMultiProtocol(uint8_t proto)
+  {
+    rfProtocol = (uint8_t) (proto & 0x0f);
+    multi.rfProtocolExtra = (proto & 0x30) >> 4;
+  }
+    
 }) ModuleData;
 
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppmFrameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
@@ -2027,11 +2055,14 @@ enum Protocols {
   PROTO_CROSSFIRE,
 #endif
 #if defined(IRPROTOS)
-  // we will need 4 bytes for proto :(
+  // we will need 4 bits for proto :(
   PROTO_SILV,
   PROTO_TRAC09,
   PROTO_PICZ,
   PROTO_SWIFT,
+#endif
+#if defined(MULTIMODULE)
+  PROTO_MULTIMODULE,
 #endif
   PROTO_MAX,
   PROTO_NONE
@@ -2044,6 +2075,49 @@ enum RFProtocols {
   RF_PROTO_LR12,
   RF_PROTO_LAST = RF_PROTO_LR12
 };
+
+enum MultiModuleRFProtocols {
+  MM_RF_PROTO_CUSTOM = -1,
+  MM_RF_PROTO_FIRST = MM_RF_PROTO_CUSTOM,
+  MM_RF_PROTO_FLYSKY=0,
+  MM_RF_PROTO_HUBSAN,
+  MM_RF_PROTO_FRSKY,
+  MM_RF_PROTO_HISKY,
+  MM_RF_PROTO_V2X2,
+  MM_RF_PROTO_DSM2,
+  MM_RF_PROTO_DEVO,
+  MM_RF_PROTO_YD717,
+  MM_RF_PROTO_KN,
+  MM_RF_PROTO_SYMAX,
+  MM_RF_PROTO_SLT,
+  MM_RF_PROTO_CX10,
+  MM_RF_PROTO_CG023,
+  MM_RF_PROTO_BAYANG,
+  MM_RF_PROTO_ESky,
+  MM_RF_PROTO_MT99XX,
+  MM_RF_PROTO_MJXQ,
+  MM_RF_PROTO_SHENQI,
+  MM_RF_PROTO_FY326,
+  MM_RF_PROTO_SFHSS,
+  MM_RF_PROTO_J6PRO,
+  MM_RF_PROTO_FQ777,
+  MM_RF_PROTO_ASSAN,
+  MM_RF_PROTO_HONTAI,
+  MM_RF_PROTO_OLRS,
+  MM_RF_PROTO_LAST= MM_RF_PROTO_OLRS
+};
+
+#define MM_RF_DSM2_SUBTYPE_DSM2_22       0
+#define MM_RF_DSM2_SUBTYPE_DSM2_11       1
+#define MM_RF_DSM2_SUBTYPE_DSMX_22       2
+#define MM_RF_DSM2_SUBTYPE_DSMX_11       3
+#define MM_RF_DSM2_SUBTYPE_AUTO          4
+
+
+#define MM_RF_FRSKY_SUBTYPE_D16         0
+#define MM_RF_FRSKY_SUBTYPE_D8          1
+#define MM_RF_FRSKY_SUBTYPE_D16_8CH     2
+#define MM_RF_FRSKY_SUBTYPE_V8          3
 
 #define HAS_RF_PROTOCOL_FAILSAFE(rf)   ((rf) == RF_PROTO_X16)
 #define HAS_RF_PROTOCOL_MODELINDEX(rf) (((rf) == RF_PROTO_X16) || ((rf) == RF_PROTO_LR12))
@@ -2063,6 +2137,9 @@ enum ModuleTypes {
 #endif
 #if defined(CROSSFIRE)
   MODULE_TYPE_CROSSFIRE,
+#endif
+#if defined(MULTIMODULE)
+  MODULE_TYPE_MULTIMODULE,
 #endif
   MODULE_TYPE_COUNT
 };
@@ -2130,7 +2207,8 @@ enum TelemetryType
   PROTOCOL_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
   PROTOCOL_FRSKY_D,
   PROTOCOL_FRSKY_D_SECONDARY,
-  PROTOCOL_PULSES_CROSSFIRE
+  PROTOCOL_PULSES_CROSSFIRE,
+  PROTOCOL_SPEKTRUM
 };
 
 enum DisplayTrims

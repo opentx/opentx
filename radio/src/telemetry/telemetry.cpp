@@ -1,5 +1,9 @@
 #include "../opentx.h"
 
+#if defined(MULTIMODULE)
+  #include "telemetry/spektrum.h"
+#endif
+
 TelemetryItem telemetryItems[MAX_SENSORS];
 uint8_t allowNewSensors;
 
@@ -512,6 +516,11 @@ void setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, u
         frskyDSetDefault(index, id);
         break;
 #endif
+#if defined(MULTIMODULE)
+      case TELEM_PROTO_SPEKTRUM:
+        spektrumSetDefault(index, id, subId, instance);
+        break;
+#endif        
       default:
         return;
     }
@@ -586,6 +595,11 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
       value = 32 + (value*18) / 10;
     }
   }
+  else if (unit == UNIT_FAHRENHEIT) {
+    if (destUnit == UNIT_CELSIUS) {
+      value = (value - 32) * 10/18;
+    }
+  }  
   else {
     const UnitConversionRule * p = unitConversionTable;
     while (p->divisor) {
