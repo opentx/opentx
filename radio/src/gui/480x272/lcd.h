@@ -44,6 +44,7 @@
 #define LEFT                           0x00 /* align left */
 #define CENTERED                       0x04 /* align center */
 #define RIGHT                          0x08 /* align right */
+#define SHADOWED                       0x80 /* black copy at +1 +1 */
 
 /* drawNumber flags */
 #define LEADING0                       0x10

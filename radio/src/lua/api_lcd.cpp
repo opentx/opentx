@@ -205,8 +205,9 @@ See the [Appendix](../appendix/fonts.md) for available characters in each font s
  * `SMLSIZE` small font
  * `INVERS` inverted display
  * `BLINK` blinking text
+ * `SHADOWED` Horus only, apply a shadow effect
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, `SHADOWED` introduced in 2.2.0
 */
 static int luaLcdDrawText(lua_State *L)
 {
@@ -215,6 +216,7 @@ static int luaLcdDrawText(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * s = luaL_checkstring(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
+  if ((att&SHADOWED) && !(att&INVERS)) lcdDrawText(x+1, y+1, s, att&0xFFFF);
   lcdDrawText(x, y, s, att);
   return 0;
 }
