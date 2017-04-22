@@ -797,7 +797,7 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
   }
   else {
     drawGPSCoord(x, y, telemetryItem.gps.latitude, "NS", att, false);
-    drawGPSCoord(lcdNextPos+FWNUM, y, telemetryItem.gps.longitude, "EW", att, false);
+    drawGPSCoord(lcdLastRightPos+2*FWNUM, y, telemetryItem.gps.longitude, "EW", att, false);
   }
 }
 
