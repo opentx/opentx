@@ -873,7 +873,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     }
   }
 #endif
-  else if (idx < MIXSRC_LAST_POT) {
+  else if (idx <= MIXSRC_LAST_POT) {
     idx = idx - MIXSRC_Rud;
     if (ZEXIST(g_eeGeneral.anaNames[idx])) {
       if (idx < MIXSRC_FIRST_POT-MIXSRC_Rud )
