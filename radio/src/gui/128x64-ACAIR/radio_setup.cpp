@@ -26,6 +26,7 @@
 enum MenuRadioSetupItems {
   ITEM_SETUP_SWITCH_SA,
   ITEM_SETUP_SWITCH_SB,
+  ITEM_SETUP_SWITCH_SC,
   ITEM_SETUP_BATT_RANGE,
   ITEM_SETUP_BATTERY_WARNING,
   ITEM_SETUP_CONTRAST,
@@ -39,6 +40,7 @@ void menuRadioSetup(event_t event)
 {
   MENU(STR_MENURADIOSETUP, menuTabModel, MENU_RADIO_SETUP, HEADER_LINE+ITEM_SETUP_MAX, {
     HEADER_LINE_COLUMNS
+    0,
     0,
     0,
     1,
@@ -61,7 +63,9 @@ void menuRadioSetup(event_t event)
 
     switch (k) {
       case ITEM_SETUP_SWITCH_SA:
-      case ITEM_SETUP_SWITCH_SB: {
+      case ITEM_SETUP_SWITCH_SB:
+      case ITEM_SETUP_SWITCH_SC:
+      {
         int index = k - ITEM_SETUP_SWITCH_SA;
         int config = SWITCH_CONFIG(index);
         lcdDrawTextAtIndex(0, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH - MIXSRC_Rud + index + 1,

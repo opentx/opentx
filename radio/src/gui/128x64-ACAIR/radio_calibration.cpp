@@ -57,6 +57,7 @@ void menuCommonCalib(event_t event)
 
   switch (event) {
     case EVT_ENTRY:
+    case EVT_KEY_BREAK(KEY_EXIT):
 #if defined(PCBACAIR)
       ENABLE_FACTORY_MODE();
       ENABLE_KEYS();
@@ -128,13 +129,11 @@ void menuCommonCalib(event_t event)
 void menuRadioCalibration(event_t event)
 {
   check_simple(event, MENU_RADIO_CALIBRATION, menuTabModel, DIM(menuTabModel), 0);
-
+  TITLE(STR_MENUCALIBRATION);
+  menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {
     menuCalibrationState = CALIB_START;
   }
-
-  TITLE(STR_MENUCALIBRATION);
-  menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
 void menuFirstCalib(event_t event)

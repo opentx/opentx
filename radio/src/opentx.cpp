@@ -259,18 +259,21 @@ void generalDefault()
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
-  
-#if defined(PCBX7)
+
+#if defined(PCBACAIR)
+  g_eeGeneral.switchConfig = 0x0000002b;
+#elif defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 
-#if defined(PCBX9E)
-  // NI-MH 9.6V
-  g_eeGeneral.vBatWarn = 87;
-  g_eeGeneral.vBatMin = -5;
-  g_eeGeneral.vBatMax = -5;
+#if defined(PCBACAIR)
+  g_eeGeneral.switchConfig = 0x0000002b;
+#elif defined(PCBX9E)
+  g_eeGeneral.vBatWarn = 65;
+  g_eeGeneral.vBatMin = -30;
+  g_eeGeneral.vBatMax = -30;
 #elif defined(PCBTARANIS)
   // NI-MH 7.2V
   g_eeGeneral.vBatWarn = 65;
@@ -292,6 +295,10 @@ void generalDefault()
 
 #if defined(PCBFLAMENCO)
   g_eeGeneral.inactivityTimer = 50;
+#elif defined(PCBACAIR)
+  g_eeGeneral.backlightMode = e_backlight_mode_all;
+  g_eeGeneral.lightAutoOff = 2;
+  g_eeGeneral.inactivityTimer = 5;
 #elif !defined(CPUM64)
   g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
@@ -383,7 +390,7 @@ inline void applyDefaultTemplate()
 void applyDefaultTemplate()
 {
   g_model.extendedLimits = true;
-  g_model.switchWarningEnable = 0b11;
+  g_model.switchWarningEnable = 0;
   memcpy(g_model.header.name, "\001\003\000\001\367\356", 6);
 
   g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_CUSTOM;
@@ -402,6 +409,8 @@ void applyDefaultTemplate()
   }
 
   // 3 dual rates for Rud and Thr
+  const uint8_t RUD_WEIGHT[] = {40, 20, 10};
+  const uint8_t THR_WEIGHT[] = {80, 40, 20};
   for (int i=0; i<3; i++) {
     // Rud
     ExpoData * expo = expoAddress(i);
@@ -409,17 +418,17 @@ void applyDefaultTemplate()
     expo->srcRaw = MIXSRC_Rud;
     expo->swtch = SWSRC_SA0 + i;
     expo->curve.type = CURVE_REF_EXPO;
-    expo->curve.value = 40;
-    expo->weight = 100 - i * 20;
-    expo->mode = 3;
+    expo->curve.value = 0;
+    expo->weight = RUD_WEIGHT[i];
+    expo->mode = 3; // TODO constant
     // Thr
     expo = expoAddress(3 + i);
     expo->chn = 1;
     expo->srcRaw = MIXSRC_Thr;
     expo->swtch = SWSRC_SA0 + i;
     expo->curve.type = CURVE_REF_EXPO;
-    expo->curve.value = 20;
-    expo->weight = 100 - i * 20;
+    expo->curve.value = 0;
+    expo->weight = THR_WEIGHT[i];
     expo->mode = 3; // TODO constant
   }
 
@@ -445,17 +454,31 @@ void applyDefaultTemplate()
   ++mix;
   mix->destCh = 2;
   mix->weight = 100;
-  mix->srcRaw = MIXSRC_SB;
+  mix->srcRaw = MIXSRC_NONE;
   ++mix;
   mix->destCh = 3;
   mix->weight = 100;
+  mix->srcRaw = MIXSRC_NONE;
+  ++mix;
+  mix->destCh = 4;
+  mix->weight = 100;
   mix->srcRaw = MIXSRC_SC;
-  for (int i=4; i<8; i++) {
-    ++mix;
-    mix->destCh = i;
-    mix->weight = 100;
-    mix->srcRaw = MIXSRC_NONE;
-  }
+  ++mix;
+  mix->destCh = 5;
+  mix->weight = 100;
+  mix->srcRaw = MIXSRC_SB;
+  ++mix;
+  mix->destCh = 6;
+  mix->weight = 100;
+  mix->srcRaw = MIXSRC_NONE;
+
+  // The outputs
+  LimitData * ch2 = limitAddress(1);
+  ch2->revert = 1;
+  LimitData * ch5 = limitAddress(4);
+  ch5->offset = +100; // 10.0%
+  LimitData * ch6 = limitAddress(5);
+  ch6->min = +100; // 0%
 
   storageDirty(EE_MODEL);
 }

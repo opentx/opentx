@@ -810,9 +810,13 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       if (mode==e_perout_mode_normal && pass==0) swOn[i].activeMix = 0;
 #endif
 
-      MixData *md = mixAddress(i);
+      MixData * md = mixAddress(i);
 
+#if defined(PCBACAIR)
+      if (md->srcRaw == 0) continue;
+#else
       if (md->srcRaw == 0) break;
+#endif
 
       mixsrc_t stickIndex = md->srcRaw - MIXSRC_FIRST_STICK;
 

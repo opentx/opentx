@@ -20,16 +20,6 @@
 
 #include "opentx.h"
 
-bool isThrottleOutput(uint8_t ch)
-{
-  for (uint8_t i=0; i<MAX_MIXERS; i++) {
-    MixData *mix = mixAddress(i);
-    if (mix->destCh==ch && mix->srcRaw==MIXSRC_Thr)
-      return true;
-  }
-  return false;
-}
-
 enum MenuModelOutputsItems {
   ITEM_OUTPUTS_OFFSET,
   ITEM_OUTPUTS_MIN,
@@ -43,9 +33,9 @@ enum MenuModelOutputsItems {
 #define LIMITS_OFFSET_POS         11*FW
 #define LIMITS_MIN_POS            15*FW
 #define LIMITS_MAX_POS            18*FW
-#define LIMITS_REVERT_POS         19*FW
+#define LIMITS_REVERT_POS         19*FW-1
 
-#define LIMITS_MIN_MAX_OFFSET     100
+#define LIMITS_MIN_MAX_OFFSET     1000
 #define CONVERT_US_MIN_MAX(x)     ((int16_t(x)*128)/25)
 #define MIN_MAX_ATTR              attr
 
@@ -100,14 +90,14 @@ void menuModelLimits(event_t event)
           break;
 
         case ITEM_OUTPUTS_MIN:
-          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT);
+          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT|PREC1);
           if (active) {
             ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL);
           }
           break;
 
         case ITEM_OUTPUTS_MAX:
-          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT);
+          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT|PREC1);
           if (active) {
             ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL);
           }
@@ -122,13 +112,7 @@ void menuModelLimits(event_t event)
           lcdDrawTextAtIndex(LIMITS_REVERT_POS, y, STR_MMMINV, revert, attr);
 #endif
           if (active) {
-            uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
-            if (checkIncDec_Ret && isThrottleOutput(k)) {
-              POPUP_CONFIRMATION(STR_INVERT_THR);
-            }
-            else {
-              ld->revert = revert_new;
-            }
+            ld->revert = checkIncDecModel(event, revert, 0, 1);
           }
           break;
         }

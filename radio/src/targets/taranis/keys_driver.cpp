@@ -145,6 +145,7 @@ void readKeysAndTrims()
 
   in = readKeys();
   if (FACTORY_MODE_ENABLED()) {
+    TRACE("FACTORY 0x%x", in);
     if (in == ((1 << KEY_MENU) | (1 << KEY_ENTER))) {
       ENABLE_KEYS();
     }
@@ -201,6 +202,7 @@ void readKeysAndTrims()
       xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
       break;
 #endif
+#if !defined(PCBACAIR)
   #define ADD_3POS_CASE(x, i) \
     case SW_S ## x ## 0: \
       xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
@@ -217,6 +219,7 @@ void readKeysAndTrims()
         xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
       } \
       break
+#endif
 
 uint8_t keyState(uint8_t index)
 {

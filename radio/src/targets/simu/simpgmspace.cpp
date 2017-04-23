@@ -145,7 +145,7 @@ void simuInit()
     simuSetSwitch(i, 0);
     simuSetKey(i, false);  // a little dirty, but setting keys that don't exist is perfectly OK here
   }
-  for (int i=0; i < (NUM_STICKS+NUM_AUX_TRIMS)*2; i++)
+  for (int i=0; i < NUM_TRIMS*2; i++)
     simuSetTrim(i, false);
 
 #if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION)
