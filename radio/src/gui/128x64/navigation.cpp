@@ -575,7 +575,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         }
         break;
 #endif
-        
+
       case EVT_KEY_LONG(KEY_PAGE):
         if (curr > 0)
           cc = curr - 1;
@@ -833,7 +833,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
 
   if (menuTab) {
     uint8_t attr = 0;
-    
+
     if (l_posVert==0 && !menuCalibrationState) {
       attr = INVERS;
 
@@ -1007,7 +1007,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       INC(l_posHorz, 0, maxcol);
       break;
 #endif
-  
+
 #if !defined(PCBX7)
     case EVT_KEY_REPT(KEY_DOWN):
       if (!IS_ROTARY_RIGHT(event) && l_posVert==maxrow) break;

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -49,6 +49,7 @@ void menuCommonCalib(event_t event)
   switch (event)
   {
     case EVT_ENTRY:
+    case EVT_KEY_BREAK(KEY_EXIT):
       reusableBuffer.calib.state = CALIB_START;
       break;
 
@@ -111,13 +112,11 @@ void menuCommonCalib(event_t event)
 void menuRadioCalibration(event_t event)
 {
   check_simple(event, MENU_RADIO_CALIBRATION, menuTabGeneral, DIM(menuTabGeneral), 0);
-
+  TITLE(STR_MENUCALIBRATION);
+  menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {
     menuCalibrationState = CALIB_START;
   }
-
-  TITLE(STR_MENUCALIBRATION);
-  menuCommonCalib(READ_ONLY() ? 0 : event);
 }
 
 void menuFirstCalib(event_t event)
