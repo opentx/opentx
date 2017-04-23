@@ -66,7 +66,7 @@ void menuModelCurvesAll(event_t event)
       break;
   }
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (uint8_t i=0; i<2; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i + menuVerticalOffset;
     LcdFlags attr = (sub == k ? INVERS : 0);
@@ -82,7 +82,7 @@ void menuModelCurvesAll(event_t event)
     else
 #endif
     {
-      drawStringWithIndex(0, y, STR_CV, k+1, attr);
+      drawStringWithIndex(0, y, STR_CH, k+1, attr);
 #if defined(CPUARM)
       CurveData & crv = g_model.curves[k];
       editName(4*FW, y, crv.name, sizeof(crv.name), 0, 0);
@@ -99,7 +99,7 @@ void menuModelCurvesAll(event_t event)
 #if !defined(CPUARM) || LCD_W >= 212
     drawCurve(23);
 #else
-    drawCurve(10);
+    drawCurve(23);
 #endif
   }
 }

@@ -342,6 +342,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
 #endif
   }
 #endif
+#if NUM_POTS > 0
   else if (idx <= MIXSRC_LAST_POT) {
     idx -= MIXSRC_Rud;
     if (ZEXIST(g_eeGeneral.anaNames[idx])) {
@@ -352,8 +353,9 @@ char * getSourceString(char * dest, mixsrc_t idx)
       getStringAtIndex(dest, STR_VSRCRAW, idx + 1);
     }
   }
+#endif
   else if (idx <= MIXSRC_LAST_TRIM) {
-    idx -= MIXSRC_Rud;
+    idx -= INPUTSRC_FIRST;
     getStringAtIndex(dest, STR_VSRCRAW, idx + 1);
   }
   else if (idx <= MIXSRC_LAST_SWITCH) {
@@ -363,7 +365,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
       dest[LEN_SWITCH_NAME] = '\0';
     }
     else {
-      getStringAtIndex(dest, STR_VSRCRAW, idx + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1);
+      getStringAtIndex(dest, STR_VSRCRAW, idx + MIXSRC_FIRST_SWITCH - INPUTSRC_FIRST + 1);
     }
   }
   else if (idx <= MIXSRC_LAST_LOGICAL_SWITCH) {
@@ -379,7 +381,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
     strAppendStringWithIndex(dest, STR_GV, idx - MIXSRC_GVAR1 + 1);
   }
   else if (idx < MIXSRC_FIRST_TELEM) {
-    getStringAtIndex(dest, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS);
+    getStringAtIndex(dest, STR_VSRCRAW, idx-INPUTSRC_FIRST+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS);
   }
   else {
     idx -= MIXSRC_FIRST_TELEM;

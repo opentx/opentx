@@ -24,6 +24,10 @@
 uint32_t rotencPosition;
 #endif
 
+#if defined(PCBACAIR)
+uint8_t factory_mode = 0;
+#endif
+
 uint32_t readKeys()
 {
   uint32_t result = 0;
@@ -37,11 +41,16 @@ uint32_t readKeys()
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
 
-#if !defined(PCBX9E) && !defined(PCBX7)
+#if !defined(PCBX9E) // TODO && !defined(PCBX7)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
     result |= 1 << KEY_MINUS;
+#endif
+
+#if defined(PCBACAIR)
+  if (~KEYS_GPIO_REG_BIND & KEYS_GPIO_PIN_BIND)
+    result |= 1 << KEY_BIND;
 #endif
 
   // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
@@ -53,6 +62,32 @@ uint32_t readTrims()
 {
   uint32_t result = 0;
 
+#if defined(PCBACAIR)
+  if (~TRIMS_GPIO_REG_HLD & TRIMS_GPIO_PIN_HLD)
+    result |= 0x01;
+  if (~TRIMS_GPIO_REG_HLU & TRIMS_GPIO_PIN_HLU)
+    result |= 0x02;
+  if (~TRIMS_GPIO_REG_HMD & TRIMS_GPIO_PIN_HMD)
+    result |= 0x04;
+  if (~TRIMS_GPIO_REG_HMU & TRIMS_GPIO_PIN_HMU)
+    result |= 0x08;
+  if (~TRIMS_GPIO_REG_HHD & TRIMS_GPIO_PIN_HHD)
+    result |= 0x10;
+  if (~TRIMS_GPIO_REG_HHU & TRIMS_GPIO_PIN_HHU)
+    result |= 0x20;
+  if (~TRIMS_GPIO_REG_VLD & TRIMS_GPIO_PIN_VLD)
+    result |= 0x40;
+  if (~TRIMS_GPIO_REG_VLU & TRIMS_GPIO_PIN_VLU)
+    result |= 0x80;
+  if (~TRIMS_GPIO_REG_VMD & TRIMS_GPIO_PIN_VMD)
+    result |= 0x100;
+  if (~TRIMS_GPIO_REG_VMU & TRIMS_GPIO_PIN_VMU)
+    result |= 0x200;
+  if (~TRIMS_GPIO_REG_VHD & TRIMS_GPIO_PIN_VHD)
+    result |= 0x400;
+  if (~TRIMS_GPIO_REG_VHU & TRIMS_GPIO_PIN_VHU)
+    result |= 0x800;
+#else
   if (~TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
     result |= 0x01;
   if (~TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR)
@@ -69,13 +104,14 @@ uint32_t readTrims()
     result |= 0x40;
   if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
     result |= 0x80;
+#endif
 
   // TRACE("readTrims(): result=0x%02x", result);
 
   return result;
 }
 
-uint8_t trimDown(uint8_t idx)
+uint32_t trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }
@@ -105,18 +141,50 @@ void checkRotaryEncoder()
 void readKeysAndTrims()
 {
   uint8_t index = 0;
-  uint32_t in = readKeys();
-  for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
-    keys[index++].input(in & i);
+  uint32_t in;
+
+  in = readKeys();
+  if (FACTORY_MODE_ENABLED()) {
+    if (in == ((1 << KEY_MENU) | (1 << KEY_ENTER))) {
+      ENABLE_KEYS();
+    }
+    else if (in == ((1 << KEY_PAGE) | (1 << KEY_EXIT))) {
+      DISABLE_KEYS();
+    }
+    if (KEYS_ENABLED()) {
+      for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
+        keys[index++].input(in & i);
+      }
+    }
   }
 
-  in = readTrims();
-  for (uint8_t i = 1; i != uint8_t(1 << 8); i <<= 1) {
-    keys[index++].input(in & i);
+#if defined(BIND_KEY)
+  if (!KEYS_ENABLED()) {
+    keys[KEY_BIND].input(in & (1 << KEY_BIND));
+  }
+#endif
+
+  if (TRIMS_ENABLED()) {
+    index = TRM_BASE;
+    in = readTrims();
+    for (uint32_t i = 1; i != (1 << (2*NUM_TRIMS)); i <<= 1) {
+      keys[index++].input(in & i);
+    }
   }
 }
 
-#if defined(PCBX9E)
+#if defined(PCBACAIR)
+  #define ADD_3POS_CASE(x, i) \
+    case SW_S ## x ## 0: \
+      xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+      break; \
+    case SW_S ## x ## 1: \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+      break; \
+    case SW_S ## x ## 2: \
+      xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+      break;
+#elif defined(PCBX9E)
   #define ADD_2POS_CASE(x) \
     case SW_S ## x ## 2: \
       xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
@@ -164,8 +232,11 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
+#if !defined(PCBACAIR)
     ADD_3POS_CASE(D, 3);
-#if defined(PCBX7)
+#endif
+#if defined(PCBACAIR)
+#elif defined(PCBX7)
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
 #else
@@ -241,5 +312,11 @@ void keysInit()
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   rotencPosition = ROTARY_ENCODER_POSITION();
+#endif
+
+#if defined(PCBACAIR)
+  if (readKeys() == ((1 << KEY_MENU) | (1 << KEY_ENTER))) {
+    ENABLE_FACTORY_MODE();
+  }
 #endif
 }

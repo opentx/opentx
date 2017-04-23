@@ -65,45 +65,49 @@ elseif(PCB STREQUAL X7)
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
-  set(HAPTIC YES)
+  # set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x7)
   set(FLAVOUR x7)
-  add_definitions(-DPCBX7 -DSOFTWARE_VOLUME)
+  add_definitions(-DPCBX7 -DPCBACAIR -DSOFTWARE_VOLUME)
   add_definitions(-DEEPROM_VARIANT=0x4000)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     bluetooth_driver.cpp
     )
-  set(GUI_DIR 128x64)
+  set(GUI_DIR 128x64-ACAIR)
   set(BITMAPS_TARGET 9x_bitmaps)
   set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
 
 set(HSE_VALUE 12000000)
-set(SDCARD YES)
+# set(SDCARD YES)
+set(RTCLOCK YES)
 set(EEPROM EEPROM_RLC)
+# set(EEPROM NO)
+
 set(TARGET_DIR taranis)
-set(PPM_LIMITS_SYMETRICAL YES)
+# set(PPM_LIMITS_SYMETRICAL YES)
 
 if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Taranis")
 endif()
 
 add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
-add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
+add_definitions(-DRTCLOCK)
+# add_definitions(-DAUDIO -DVOICE)
 
 set(GUI_SRC ${GUI_SRC}
-  model_input_edit.cpp
-  model_mix_edit.cpp
-  model_display.cpp
-  radio_diagkeys.cpp
-  radio_diaganas.cpp
-  radio_hardware.cpp
-  view_channels.cpp
-  view_telemetry.cpp
-  view_about.cpp
-  ../screenshot.cpp
+  # model_input_edit.cpp
+  # model_mix_edit.cpp
+  # model_display.cpp
+  # radio_diagkeys.cpp
+  # radio_diaganas.cpp
+  # radio_hardware.cpp
+  # view_channels.cpp
+  # view_telemetry.cpp
+  # view_about.cpp
+  # ../screenshot.cpp
   )
 
 if(PCB STREQUAL X7)
@@ -115,14 +119,14 @@ set(TARGET_SRC
   board.cpp
   ${LED_DRIVER}
   backlight_driver.cpp
-  extmodule_driver.cpp
-  ../common/arm/stm32/audio_dac_driver.cpp
+  # extmodule_driver.cpp
+  # ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp
   )
 
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}
-  loadboot.cpp
+  # loadboot.cpp
   )
 
 set(FIRMWARE_TARGET_SRC

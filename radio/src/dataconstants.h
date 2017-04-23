@@ -21,7 +21,11 @@
 #ifndef _DATACONSTANTS_H_
 #define _DATACONSTANTS_H_
 
-#define NUM_STICKS                     4
+#if defined(PCBACAIR)
+  #define NUM_STICKS                   2
+#else
+  #define NUM_STICKS                   4
+#endif
 
 #if defined(EXPORT)
   #define LUA_EXPORT(...)              LEXP(__VA_ARGS__)
@@ -168,7 +172,7 @@ enum CurveType {
   #define LEN_INPUT_NAME               3
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            6
-  #define MAX_CURVES                   16
+  #define MAX_CURVES                   2
   #define MAX_CURVE_POINTS             512
 #elif defined(PCBTARANIS)
   #define LEN_MODEL_NAME               12
@@ -216,15 +220,19 @@ enum CurveType {
 #endif
 
 #if defined(PCBX10)
-  #define NUM_AUX_TRIMS                2
+  #define NUM_TRIMS                    6
   #define NUM_MOUSE_ANALOGS            2
   #define NUM_DUMMY_ANAS               2
 #elif defined(PCBHORUS)
-  #define NUM_AUX_TRIMS                2
+  #define NUM_TRIMS                    6
   #define NUM_MOUSE_ANALOGS            2
   #define NUM_DUMMY_ANAS               0
+#elif defined(PCBACAIR)
+  #define NUM_TRIMS                    6
+  #define NUM_MOUSE_ANALOGS            0
+  #define NUM_DUMMY_ANAS               0
 #else
-  #define NUM_AUX_TRIMS                0
+  #define NUM_TRIMS                    4
   #define NUM_MOUSE_ANALOGS            0
   #define NUM_DUMMY_ANAS               0
 #endif
@@ -265,20 +273,18 @@ enum BeeperMode {
 };
 
 #if defined(PCBFLAMENCO)
-  enum ModuleIndex {
-    EXTERNAL_MODULE,
-    TRAINER_MODULE,
-  };
+  #define EXTERNAL_MODULE              0
+  #define TRAINER_MODULE               1
   enum TrainerMode {
     TRAINER_MODE_MASTER,
     TRAINER_MODE_SLAVE
   };
+#elif defined(PCBACAIR)
+  #define INTERNAL_MODULE              0
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
-  enum ModuleIndex {
-    INTERNAL_MODULE,
-    EXTERNAL_MODULE,
-    TRAINER_MODULE
-  };
+  #define INTERNAL_MODULE              0
+  #define EXTERNAL_MODULE              1
+  #define TRAINER_MODULE               2
   enum TrainerMode {
     TRAINER_MODE_MASTER_TRAINER_JACK,
     TRAINER_MODE_SLAVE,
@@ -289,11 +295,9 @@ enum BeeperMode {
     TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
   };
 #elif defined(PCBSKY9X)
-  enum ModuleIndex {
-    EXTERNAL_MODULE,
-    EXTRA_MODULE,
-    TRAINER_MODULE
-  };
+  #define EXTERNAL_MODULE              0
+  #define EXTRA_MODULE                 1
+  #define TRAINER_MODULE               2
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
@@ -749,12 +753,19 @@ enum MixSources {
 #endif
 
   MIXSRC_FIRST_STICK,
+
+#if NUM_STICKS >= 4
   MIXSRC_Rud = MIXSRC_FIRST_STICK,      LUA_EXPORT("rud", "Rudder")
   MIXSRC_Ele,                           LUA_EXPORT("ele", "Elevator")
   MIXSRC_Thr,                           LUA_EXPORT("thr", "Throttle")
   MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
+#else
+  MIXSRC_Rud = MIXSRC_FIRST_STICK,      LUA_EXPORT("rud", "Rudder")
+  MIXSRC_Thr,                           LUA_EXPORT("thr", "Throttle")
+#endif
 
   MIXSRC_FIRST_POT,
+
 #if defined(PCBHORUS)
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
   MIXSRC_6POS,                          LUA_EXPORT("6pos", "Multipos Switch")
@@ -781,11 +792,11 @@ enum MixSources {
   MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider (X9E only)")
   MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider (X9E only)")
   MIXSRC_LAST_POT = MIXSRC_SLIDER4,
-#elif defined(PCBX7)
+#elif defined(PCBX7) && !defined(PCBACAIR)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_LAST_POT = MIXSRC_POT2,
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) && !defined(PCBACAIR)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_POT3,                          LUA_EXPORT("s3", "Potentiometer 3")
@@ -793,11 +804,13 @@ enum MixSources {
   MIXSRC_SLIDER1 = MIXSRC_FIRST_SLIDER, LUA_EXPORT("ls", "Left slider")
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   MIXSRC_LAST_POT = MIXSRC_SLIDER2,
-#else
+#elif NUM_POTS > 0
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
     MIXSRC_P3,
     MIXSRC_LAST_POT = MIXSRC_P3,
+#else
+  MIXSRC_LAST_POT = MIXSRC_FIRST_POT-1,
 #endif
 
 #if defined(PCBHORUS)
@@ -842,25 +855,33 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBFLAMENCO)
+#if defined(PCBACAIR)
+  MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
+  MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
+  MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
+  MIXSRC_LAST_SWITCH = MIXSRC_SC,
+#elif defined(PCBFLAMENCO)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
   MIXSRC_LAST_SWITCH = MIXSRC_SF,
+#elif defined(PCBX7)
+  MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
+  MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
+  MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
+  MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
+  MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
+  MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-#if !defined(PCBX7)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
-#endif
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
-#if !defined(PCBX7)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
-#endif
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
@@ -947,6 +968,7 @@ enum MixSources {
 
 #define MIXSRC_FIRST   (MIXSRC_NONE+1)
 #define MIXSRC_LAST    MIXSRC_LAST_CH
+
 #define INPUTSRC_FIRST MIXSRC_Rud
 #define INPUTSRC_LAST  MIXSRC_LAST_TELEM
 

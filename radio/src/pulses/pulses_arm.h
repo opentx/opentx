@@ -157,10 +157,11 @@ inline void startPulses()
 {
   s_pulses_paused = false;
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(INTERNAL_MODULE)
   setupPulses(INTERNAL_MODULE);
-  setupPulses(EXTERNAL_MODULE);
-#else
+#endif
+
+#if defined(EXTERNAL_MODULE)
   setupPulses(EXTERNAL_MODULE);
 #endif
 

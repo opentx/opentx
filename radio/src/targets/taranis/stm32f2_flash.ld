@@ -50,11 +50,6 @@ SECTIONS
       
     CREATE_OBJECT_SYMBOLS
 
-    KEEP(*(.isr_boot_vector)) /* Startup code */
-    *(.bootrodata)
-    *(.bootrodata.*)
-      
-    . = 32768;           /* Set the start of the main program */
     _stext = .;          /* Provide the name for the start of this section */
 	 . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */

@@ -168,7 +168,7 @@ void sportWritePacket(uint8_t * packet)
   sportSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
 }
 
-const char * sportUpdatePowerOn(ModuleIndex module)
+const char * sportUpdatePowerOn(uint8_t module)
 {
   uint8_t packet[8];
 
@@ -232,6 +232,7 @@ const char * sportUpdateReqVersion()
   return "Version request failed";
 }
 
+#if defined(SDCARD)
 const char * sportUpdateUploadFile(const char *filename)
 {
   FIL file;
@@ -342,10 +343,11 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
   resumePulses();
 }
 #endif
+#endif
 
 void sportProcessPacket(uint8_t * packet)
 {
-#if defined(STM32)
+#if defined(STM32) && defined(SDCARD)
   if (sportUpdateState != SPORT_IDLE) {
     sportProcessUpdatePacket(packet);	// Uses different chksum
     return;

@@ -37,19 +37,24 @@ void menuCommonCalib(event_t event)
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
+#if NUM_POTS > 0
     if (i >= POT1 && i <= POT_LAST) {
       if (IS_POT_WITHOUT_DETENT(i)) {
         reusableBuffer.calib.midVals[i] = (reusableBuffer.calib.hiVals[i] + reusableBuffer.calib.loVals[i]) / 2;
       }
     }
+#endif
   }
 
   menuCalibrationState = reusableBuffer.calib.state; // make sure we don't scroll while calibrating
 
-  switch (event)
-  {
+  switch (event) {
     case EVT_ENTRY:
     case EVT_KEY_BREAK(KEY_EXIT):
+#if defined(PCBACAIR)
+      ENABLE_FACTORY_MODE();
+      ENABLE_KEYS();
+#endif
       reusableBuffer.calib.state = CALIB_START;
       break;
 

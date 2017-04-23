@@ -114,8 +114,11 @@ void runFatalErrorScreen(const char * message);
 void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 
 // model_setup Defines that are used in all uis in the same way
+#if defined(EXTERNAL_MODULE)
 #define EXTERNAL_MODULE_CHANNELS_ROWS   IF_EXTERNAL_MODULE_ON((IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_CROSSFIRE(EXTERNAL_MODULE) || (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) != MM_RF_PROTO_DSM2)) ? (uint8_t)0 : (uint8_t)1)
-
+#else
+#define EXTERNAL_MODULE_CHANNELS_ROWS
+#endif
 
 #if defined(MULTIMODULE)
 #define MULTIMODULE_STATUS_ROW          IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? TITLE_ROW : HIDDEN_ROW,

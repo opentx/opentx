@@ -201,7 +201,7 @@ void LCD_Init_LTDC(void)
   /* Configure total height */
   LTDC_InitStruct.LTDC_TotalHeigh = LCD_H + VBP + VFP;
 
-// init ltdc
+  // init ltdc
   LTDC_Init(&LTDC_InitStruct);
 
 #if 0

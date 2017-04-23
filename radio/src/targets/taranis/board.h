@@ -109,7 +109,11 @@ extern "C" {
 
 extern uint16_t sessionTimer;
 
+#if defined(PCBACAIR)
+#define SLAVE_MODE()                   false
+#else
 #define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#endif
 
 #if defined(PCBX9E)
 #define TRAINER_CONNECTED()            (true)
@@ -218,7 +222,27 @@ enum EnumKeys
   KEY_PLUS,
   KEY_MINUS,
 
+#if defined(PCBACAIR)
+  KEY_BIND,
+#endif
+
   TRM_BASE,
+
+#if defined(PCBACAIR)
+  TRM_VL_DWN = TRM_BASE,  // Vertical Low
+  TRM_VL_UP,
+  TRM_HM_DWN, // Horizontal Middle
+  TRM_HM_UP,
+  TRM_HL_DWN, // Horizontal Low
+  TRM_HL_UP,
+  TRM_HH_DWN, // Horizontal High
+  TRM_HH_UP,
+  TRM_VM_DWN, // Vertical Middle
+  TRM_VM_UP,
+  TRM_VH_DWN, // Vertical High
+  TRM_VH_UP,
+  TRM_LAST = TRM_VH_UP,
+#else
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
   TRM_LV_DWN,
@@ -228,9 +252,31 @@ enum EnumKeys
   TRM_RH_DWN,
   TRM_RH_UP,
   TRM_LAST = TRM_RH_UP,
+#endif
 
   NUM_KEYS
 };
+
+#if defined(PCBACAIR)
+#define BIND_KEY
+extern uint8_t factory_mode;
+#define ENABLE_FACTORY_MODE()          factory_mode |= 1
+#define DISABLE_FACTORY_MODE()         factory_mode &= (~1)
+#define ENABLE_KEYS()                  factory_mode |= 2
+#define DISABLE_KEYS()                 factory_mode &= (~2)
+#if defined(SIMU)
+#define FACTORY_MODE_ENABLED()         (true)
+#define KEYS_ENABLED()                 (true)
+#define TRIMS_ENABLED()                (false)
+#else
+#define FACTORY_MODE_ENABLED()         (factory_mode & 1)
+#define KEYS_ENABLED()                 (factory_mode & 2)
+#define TRIMS_ENABLED()                (!(factory_mode & 2))
+#endif
+#else
+#define KEYS_ENABLED()                 true
+#define TRIMS_ENABLED()                true
+#endif
 
 #if defined(PCBX9E) && !defined(SIMU)
   #define KEY_UP                       KEY_MINUS
@@ -320,7 +366,9 @@ enum EnumSwitchesPositions
   SW_SR2,
 #endif
 };
-#if defined(PCBX7)
+#if defined(PCBACAIR)
+  #define NUM_SWITCHES                 3
+#elif defined(PCBX7)
   #define NUM_SWITCHES                 6
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                 18 // yes, it's a lot!
@@ -335,7 +383,7 @@ uint32_t readTrims(void);
 #define TRIMS_PRESSED()            (readTrims())
 #define KEYS_PRESSED()             (readKeys())
 
-#if defined(PCBX9E) || defined(PCBX7)
+#if 0 // defined(PCBX9E) || defined(PCBX7)
 // Rotary Encoder driver
 #define ROTARY_ENCODER_NAVIGATION
 void checkRotaryEncoder(void);
@@ -357,6 +405,17 @@ void watchdogInit(unsigned int duration);
 #define WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()   (RCC->CSR & (RCC_CSR_WDGRSTF | RCC_CSR_WWDGRSTF | RCC_CSR_SFTRSTF))
 
 // ADC driver
+#if defined(PCBACAIR)
+#define NUM_POTS                       0
+#define NUM_XPOTS                      0
+#define NUM_SLIDERS                    0
+enum Analogs {
+  STICK1,
+  STICK2,
+  TX_VOLTAGE,
+  NUM_ANALOGS
+};
+#else
 enum Analogs {
   STICK1,
   STICK2,
@@ -384,10 +443,10 @@ enum Analogs {
   TX_VOLTAGE,
   NUM_ANALOGS
 };
-
 #define NUM_POTS                       (POT_LAST-POT_FIRST+1)
 #define NUM_XPOTS                      NUM_POTS
 #define NUM_SLIDERS                    (TX_VOLTAGE-POT_LAST-1)
+#endif
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
@@ -401,19 +460,25 @@ enum CalibratedAnalogs {
   NUM_CALIBRATED_ANALOGS
 };
 
-#if defined(PCBX9D)
-  #define IS_POT(x)                    ((x)>=POT_FIRST && (x)<=POT2) // POT3 is only defined in software
+#if NUM_POTS > 0
+  #if defined(PCBX9D)
+    #define IS_POT(x)                    ((x)>=POT_FIRST && (x)<=POT2) // POT3 is only defined in software
+  #else
+    #define IS_POT(x)                    ((x)>=POT_FIRST && (x)<=POT_LAST)
+  #endif
+  #define IS_SLIDER(x)                   ((x)>POT_LAST && (x)<TX_VOLTAGE)
 #else
-  #define IS_POT(x)                    ((x)>=POT_FIRST && (x)<=POT_LAST)
+  #define IS_POT(x)                      false
+  #define IS_SLIDER(x)                   false
 #endif
-#define IS_SLIDER(x)                   ((x)>POT_LAST && (x)<TX_VOLTAGE)
+
 void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUM_ANALOGS];
 uint16_t getAnalogValue(uint8_t index);
 uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
-#if defined(PCBX7)
+#if defined(PCBX7) && !defined(PCBACAIR)
   #define BATT_SCALE    123
 #else
   #define BATT_SCALE    150
@@ -480,6 +545,7 @@ void usbSerialPutc(uint8_t c);
 
 void i2cInit(void);
 void eepromReadBlock(uint8_t * buffer, size_t address, size_t size);
+void eepromWriteBlock(uint8_t * buffer, size_t address, size_t size);
 void eepromStartWrite(uint8_t * buffer, size_t address, size_t size);
 uint8_t eepromIsTransferComplete();
 

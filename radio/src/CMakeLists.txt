@@ -164,20 +164,20 @@ if(${EEPROM} STREQUAL SDCARD)
 elseif(${EEPROM} STREQUAL EEPROM_RLC)
   set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp)
   add_definitions(-DEEPROM -DEEPROM_RLC)
-else()
+elseif(${EEPROM} STREQUAL EEPROM_RAW)
   set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_raw.cpp)
   add_definitions(-DEEPROM -DEEPROM_RAW)
 endif()
 
 if(ARCH STREQUAL ARM AND NOT PCB STREQUAL X12S AND NOT PCB STREQUAL X10 AND NOT PCB STREQUAL FLAMENCO)
-  set(SRC ${SRC} storage/eeprom_conversions.cpp)
+  # set(SRC ${SRC} storage/eeprom_conversions.cpp)
 endif()
 
 add_definitions(-DFLAVOUR="${FLAVOUR}")
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/128x64)
 
 add_subdirectory(lua)
 include(gui/CMakeLists.txt)
@@ -274,10 +274,17 @@ if(SIMU_AUDIO)
   add_definitions(-DSIMU_AUDIO)
 endif()
 
+if(RTCLOCK)
+  set(SRC
+    ${SRC}
+    rtc.cpp
+    )
+endif()
+
 if(SDCARD)
   add_definitions(-DSDCARD)
   include_directories(${FATFS_DIR} ${FATFS_DIR}/option)
-  set(SRC ${SRC} sdcard.cpp rtc.cpp logs.cpp)
+  set(SRC ${SRC} sdcard.cpp logs.cpp)
   set(FIRMWARE_SRC ${FIRMWARE_SRC} ${FATFS_SRC})
 endif()
 
@@ -347,24 +354,37 @@ set(SRC
   trainer_input.cpp
   )
 
+set(SRC
+  ${SRC}
+  keys.cpp
+  )
+
+foreach(FILE ${GUI_ELSE_SRC})
+  set(SRC ${SRC} gui/${GUI_DIR}/${FILE})
+endforeach()
+
+if(ARCH STREQUAL ARM)
+  set(SRC
+    ${SRC}
+    gui/gui_common_arm.cpp
+    )
+endif()
+
+set(SRC
+  ${SRC}
+  maths.cpp
+  translations.cpp
+  )
+
 if(GUI)
   add_definitions(-DGUI)
   set(SRC
     ${SRC}
-    keys.cpp
-    maths.cpp
-    translations.cpp
     gui/gui_common.cpp
     )
   foreach(FILE ${GUI_SRC})
     set(SRC ${SRC} gui/${GUI_DIR}/${FILE})
   endforeach()
-  if(ARCH STREQUAL ARM)
-    set(SRC
-      ${SRC}
-      gui/gui_common_arm.cpp
-      )
-  endif()
 endif()
 
 foreach(FILE ${TARGET_SRC})
@@ -464,9 +484,9 @@ if(NOT MSVC)
     endif()
 
     if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7)
-      add_subdirectory(targets/${TARGET_DIR}/bootloader)
-      include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
-      set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
+      # add_subdirectory(targets/${TARGET_DIR}/bootloader)
+      # include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
+      # set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
     elseif(OPENRC_BOOTLOADER)
       # We fetch Mike's bootloader as it is not included inside OpenTX
       message(STATUS "Downloading Mike's bootloader: https://github.com/MikeBland/OpenRcBootloader/releases/download/V1.9/${OPENRC_BOOTLOADER}")

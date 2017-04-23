@@ -129,6 +129,17 @@ int getChannelsUsed()
   return result;
 }
 
+#if defined(PCBACAIR)
+bool isSourceAvailable(int source)
+{
+  if (source == MIXSRC_NONE)
+    return true;
+  else if (source >= MIXSRC_SA && source <= MIXSRC_SC)
+    return true;
+  else
+    return false;
+}
+#else
 bool isSourceAvailable(int source)
 {
   if (source < 0)
@@ -148,9 +159,11 @@ bool isSourceAvailable(int source)
     return false;
 #endif
 
+#if NUM_POTS > 0
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
+#endif
 
 #if defined(PCBSKY9X) && defined(REVX)
   if (source == MIXSRC_REa) {
@@ -199,6 +212,7 @@ bool isSourceAvailable(int source)
 
   return true;
 }
+#endif
 
 bool isSourceAvailableInGlobalFunctions(int source)
 {
@@ -224,9 +238,11 @@ bool isSourceAvailableInCustomSwitches(int source)
 
 bool isInputSourceAvailable(int source)
 {
+#if NUM_POTS > 0
   if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
+#endif
 
   if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
     return true;
@@ -360,6 +376,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   return true;
 }
 
+#if !defined(PCBACAIR)
 bool isSwitchAvailableInLogicalSwitches(int swtch)
 {
   return isSwitchAvailable(swtch, LogicalSwitchesContext);
@@ -372,6 +389,7 @@ bool isSwitchAvailableInCustomFunctions(int swtch)
   else
     return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
 }
+#endif
 
 bool isSwitchAvailableInMixes(int swtch)
 {
@@ -411,6 +429,7 @@ bool isThrottleSourceAvailable(int source)
     return true;
 }
 
+#if !defined(PCBACAIR)
 bool isLogicalSwitchFunctionAvailable(int function)
 {
   return function != LS_FUNC_RANGE;
@@ -482,7 +501,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
     return true;
   }
 }
-
+#endif
 
 bool isModuleAvailable(int module)
 {
@@ -557,7 +576,7 @@ bool isTrainerModeAvailable(int mode)
 {
   return true;
 }
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) && defined(TRAINER_MODULE)
 bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
@@ -567,6 +586,7 @@ bool isTrainerModeAvailable(int mode)
 }
 #endif
 
+#if defined(SDCARD)
 bool modelHasNotes()
 {
   char filename[sizeof(MODELS_PATH)+1+sizeof(g_model.header.name)+sizeof(TEXT_EXT)] = MODELS_PATH "/";
@@ -586,6 +606,7 @@ bool modelHasNotes()
 
   return false;
 }
+#endif
 
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 {

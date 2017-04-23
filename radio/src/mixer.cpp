@@ -27,9 +27,9 @@
   int16_t rawAnas[NUM_INPUTS] = {0};
 #endif
 
-int16_t  anas [NUM_INPUTS] = {0};
-int16_t  trims[NUM_STICKS+NUM_AUX_TRIMS] = {0};
-int32_t  chans[MAX_OUTPUT_CHANNELS] = {0};
+int16_t anas [NUM_INPUTS] = {0};
+int16_t trimsxx[NUM_TRIMS] = {0};
+int32_t chans[MAX_OUTPUT_CHANNELS] = {0};
 BeepANACenter bpanaCenter = 0;
 
 int24_t act   [MAX_MIXERS] = {0};
@@ -222,8 +222,8 @@ void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         //========== TRIMS ================
         if (ed->carryTrim < TRIM_ON)
           virtualInputsTrims[cur_chn] = -ed->carryTrim - 1;
-        else if (ed->carryTrim == TRIM_ON && ed->srcRaw >= MIXSRC_Rud && ed->srcRaw <= MIXSRC_Ail)
-          virtualInputsTrims[cur_chn] = ed->srcRaw - MIXSRC_Rud;
+        else if (ed->carryTrim == TRIM_ON && ed->srcRaw >= INPUTSRC_FIRST && ed->srcRaw < INPUTSRC_FIRST+NUM_STICKS)
+          virtualInputsTrims[cur_chn] = ed->srcRaw - INPUTSRC_FIRST;
         else
           virtualInputsTrims[cur_chn] = -1;
 #endif
@@ -281,6 +281,22 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   // thanks to gbirkus, he motivated this change, which greatly reduces overruns
   // unfortunately the constants and 32bit compares generates about 50 bytes codes; didn't find a way to get it down.
   value = limit(int32_t(-RESXl*256), value, int32_t(RESXl*256));  // saves 2 bytes compared to other solutions up to now
+
+#if defined(PCBACAIR)
+  if (channel < NUM_STICKS) {
+    int trimIndex = (3 * channel);
+    int trimMin = trimsxx[trimIndex + 1];
+    if (value >= 0) {
+      int trimMax = trimsxx[trimIndex + 2];
+      value += 256 * (trimMin + ((trimMax - trimMin) * value / (RESXl * 256)));
+    }
+    else {
+      int trimMax = trimsxx[trimIndex];
+      value += 256 * (trimMin + ((trimMin - trimMax) * value / (RESXl * 256)));
+    }
+    g_model.moduleData[INTERNAL_MODULE].failsafeChannels[channel] = (lim->revert ? -trimsxx[trimIndex + 1] : trimsxx[trimIndex + 1]);
+  }
+#endif
 
 #if defined(PPM_LIMITS_SYMETRICAL)
   if (value) {
@@ -352,7 +368,7 @@ getvalue_t getValue(mixsrc_t i)
 
 #if defined(LUA_INPUTS)
   else if (i <= MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
-    return calibratedAnalogs[i-MIXSRC_Rud];
+    return calibratedAnalogs[i-INPUTSRC_FIRST];
   }
 #else
   else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
@@ -656,7 +672,10 @@ int getStickTrimValue(int stick, int stickValue)
   if (stick < 0)
     return 0;
 
-  int trim = trims[stick];
+#if defined(PCBACAIR)
+  return 0;
+#else
+  int trim = trimsxx[stick];
   if (stick == THR_STICK) {
     if (g_model.thrTrim) {
       int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
@@ -667,12 +686,13 @@ int getStickTrimValue(int stick, int stickValue)
     }
   }
   return trim;
+#endif
 }
 
 int getSourceTrimValue(int source, int stickValue=0)
 {
-  if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
-    return getStickTrimValue(source - MIXSRC_Rud, stickValue);
+  if (source >= MIXSRC_FIRST_STICK && source < MIXSRC_FIRST_STICK+NUM_STICKS)
+    return getStickTrimValue(source - MIXSRC_FIRST_STICK, stickValue);
   else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
     return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], stickValue);
   else
@@ -794,7 +814,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
       if (md->srcRaw == 0) break;
 
-      mixsrc_t stickIndex = md->srcRaw - MIXSRC_Rud;
+      mixsrc_t stickIndex = md->srcRaw - MIXSRC_FIRST_STICK;
 
       if (!(dirtyChannels & ((bitfield_channels_t)1 << md->destCh))) continue;
 
@@ -850,7 +870,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         else
 #endif
         {
-          mixsrc_t srcRaw = MIXSRC_Rud + stickIndex;
+          mixsrc_t srcRaw = MIXSRC_FIRST_STICK + stickIndex;
           v = getValue(srcRaw);
           srcRaw -= MIXSRC_CH1;
           if (srcRaw<=MIXSRC_LAST_CH-MIXSRC_CH1 && md->destCh != srcRaw) {

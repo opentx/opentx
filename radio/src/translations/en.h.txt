@@ -444,16 +444,20 @@
 #define LEN_VSWITCHES                  "\003"
 #define LEN_VSRCRAW                    "\004"
 
-#if defined(CPUARM)
+#if defined(CPUARM) && NUM_STICKS >= 4
 #define TR_STICKS_VSRCRAW              "\307Rud""\307Ele""\307Thr""\307Ail"
+#elif defined(CPUARM)
+#define TR_STICKS_VSRCRAW              "\307Rud""\307Thr"
 #else
 #define TR_STICKS_VSRCRAW              "Rud\0""Ele\0""Thr\0""Ail\0"
 #endif
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_VSRCRAW             "\313Rud""\313Ele""\313Thr""\313Ail""\313T5\0""\313T6\0"
-#elif defined(CPUARM)
+#elif defined(CPUARM) && NUM_STICKS >= 4
   #define TR_TRIMS_VSRCRAW             "\313Rud""\313Ele""\313Thr""\313Ail"
+#elif defined(CPUARM)
+  #define TR_TRIMS_VSRCRAW             "\313Rud""\313Thr"
 #else
   #define TR_TRIMS_VSRCRAW             "TrmR""TrmE""TrmT""TrmA"
 #endif
@@ -470,6 +474,9 @@
 #elif defined(PCBX9E)
   #define TR_POTS_VSRCRAW              "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
+#elif defined(PCBACAIR)
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0"
 #elif defined(PCBX7)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SF\0""\312SH\0"
@@ -702,8 +709,8 @@
 #define TR_HAPTICSTRENGTH              INDENT "Strength"
 #define TR_CONTRAST                    "Contrast"
 #define TR_ALARMS_LABEL                "Alarms"
-#define TR_BATTERY_RANGE               TR("Battery range", "Battery meter range")
-#define TR_BATTERYWARNING              INDENT "Battery low"
+#define TR_BATTERY_RANGE               TR("Batt. range", "Battery meter range")
+#define TR_BATTERYWARNING              INDENT "Batt. low"
 #define TR_INACTIVITYALARM             INDENT "Inactivity"
 #define TR_MEMORYWARNING               INDENT "Memory low"
 #define TR_ALARMWARNING                INDENT "Sound off"
@@ -750,8 +757,8 @@
   #define TR_MENUWHENDONE              TR_ENTER " WHEN DONE"
 #else
   #define TR_MENUTOSTART               CENTER "\010" TR_ENTER " TO START"
-  #define TR_SETMIDPOINT               TR(CENTER "\004SET STICKS MIDPOINT", CENTER "\004CENTER STICKS/SLIDERS")
-  #define TR_MOVESTICKSPOTS            CENTER "\006MOVE STICKS/POTS"
+  #define TR_SETMIDPOINT               TR(CENTER "\004SET STICK MIDPOINT", CENTER "\004CENTER STICKS/SLIDERS")
+  #define TR_MOVESTICKSPOTS            CENTER "\014MOVE STICK"
   #define TR_MENUWHENDONE              CENTER "\006" TR_ENTER " WHEN DONE"
 #endif
 #define TR_RXBATT                      "Rx Batt:"

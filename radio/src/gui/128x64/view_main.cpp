@@ -256,10 +256,12 @@ void onMainViewMenu(const char *result)
     timerReset(2);
   }
 #endif
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(SDCARD)
   else if (result == STR_VIEW_NOTES) {
     pushModelNotes();
   }
+#endif
+#if defined(CPUARM)
   else if (result == STR_RESET_SUBMENU) {
     POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
     POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
@@ -332,7 +334,7 @@ void menuMainView(event_t event)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(SDCARD)
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }

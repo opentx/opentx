@@ -78,7 +78,7 @@ if(MULTIMODULE)
   set(SRC ${SRC} pulses/multi_arm.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/multi.cpp)
 endif()
 add_definitions(-DCPUARM -DVIRTUAL_INPUTS)
-add_definitions(-DTELEMETRY_FRSKY -DTELEMETRY_FRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2)
+add_definitions(-DTELEMETRY_FRSKY -DTELEMETRY_FRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX) #  -DDSM2)
 add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE -DGAUGES)
 add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
 include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
@@ -90,7 +90,7 @@ set(SRC
   ${SRC}
   main_arm.cpp
   tasks_arm.cpp
-  audio_arm.cpp
+  # audio_arm.cpp
   io/frsky_sport.cpp
   telemetry/telemetry.cpp
   telemetry/telemetry_holders.cpp
@@ -99,17 +99,17 @@ set(SRC
   telemetry/frsky_d_arm.cpp
   telemetry/frsky_sport.cpp
   crc16.cpp
-  vario.cpp
+  # vario.cpp
   )
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
-  diskio.cpp
+  # diskio.cpp
 )
 set(TARGET_SRC
   ${TARGET_SRC}
   pulses_driver.cpp
   keys_driver.cpp
-  trainer_driver.cpp
+  # trainer_driver.cpp
   telemetry_driver.cpp
   )
 set(FIRMWARE_SRC
@@ -131,5 +131,5 @@ set(PULSES_SRC
   pulses_arm.cpp
   ppm_arm.cpp
   pxx_arm.cpp
-  dsm2_arm.cpp
+  # dsm2_arm.cpp
   )

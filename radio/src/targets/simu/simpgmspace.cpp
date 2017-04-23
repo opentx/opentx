@@ -247,6 +247,7 @@ void simuSetTrim(uint8_t trim, bool state)
 {
   // TRACE_SIMPGMSPACE("trim=%d state=%d", trim, state);
 
+#if !defined(PCBACAIR)
   switch (trim) {
     TRIM_CASE(0, TRIMS_GPIO_REG_LHL, TRIMS_GPIO_PIN_LHL)
     TRIM_CASE(1, TRIMS_GPIO_REG_LHR, TRIMS_GPIO_PIN_LHR)
@@ -263,6 +264,7 @@ void simuSetTrim(uint8_t trim, bool state)
     TRIM_CASE(11, TRIMS_GPIO_REG_RSU, TRIMS_GPIO_PIN_RSU)
 #endif
   }
+#endif
 }
 
 // TODO use a better numbering to allow google tests to work on Taranis
@@ -412,7 +414,7 @@ void StopSimu()
   pthread_join(main_thread_pid, NULL);
 }
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(AUDIO)
 struct SimulatorAudio {
   int volumeGain;
   int currentVolume;
@@ -427,7 +429,7 @@ void audioConsumeCurrentBuffer()
 {
 }
 
-#if defined(MASTER_VOLUME)
+#if defined(AUDIO) && defined(MASTER_VOLUME)
 void setScaledVolume(uint8_t volume)
 {
   simuAudio.currentVolume = 127 * volume * simuAudio.volumeGain / VOLUME_LEVEL_MAX / 10;
@@ -444,7 +446,7 @@ int32_t getVolume()
 }
 #endif
 
-#if defined(SIMU_AUDIO) && defined(CPUARM)
+#if defined(SIMU_AUDIO) && defined(CPUARM) && defined(AUDIO)
 void copyBuffer(uint8_t * dest, const uint16_t * buff, unsigned int samples)
 {
   for(unsigned int i=0; i<samples; i++) {

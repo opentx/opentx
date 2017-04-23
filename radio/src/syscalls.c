@@ -99,7 +99,7 @@ extern int _write(int file, char *ptr, int len)
 
 extern void _exit(int status)
 {
-  TRACE("_exit(%d)", status);
+  // TRACE("_exit(%d)", status);
   for (;;);
 }
 

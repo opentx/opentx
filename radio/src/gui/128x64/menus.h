@@ -33,7 +33,7 @@ typedef uint8_t horzpos_t;
 #define IS_LINE_SELECTED(sub, k)       (false)
 #endif
 
-#if defined(SDCARD)
+#if defined(CPUARM) || defined(SDCARD)
 typedef uint16_t vertpos_t;
 #else
 typedef uint8_t vertpos_t;
@@ -77,7 +77,9 @@ enum MenuRadioIndexes
   MENU_RADIO_SETUP,
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
   CASE_CPUARM(MENU_RADIO_SPECIAL_FUNCTIONS)
+#if defined(TRAINER_MODULE)
   MENU_RADIO_TRAINER,
+#endif
   MENU_RADIO_VERSION,
   MENU_RADIO_SWITCHES_TEST,
   MENU_RADIO_ANALOGS_TEST,
@@ -100,7 +102,9 @@ static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
   CASE_CPUARM(menuRadioSpecialFunctions)
+#if defined(TRAINER_MODULE)
   menuRadioTrainer,
+#endif
   menuRadioVersion,
   menuRadioDiagKeys,
   menuRadioDiagAnalogs,

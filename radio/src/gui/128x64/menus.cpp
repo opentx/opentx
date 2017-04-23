@@ -63,7 +63,7 @@ void pushMenu(MenuHandlerFunc newMenu)
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(SDCARD)
 void menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {

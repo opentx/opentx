@@ -23,6 +23,8 @@
 #include "opentx.h"
 #include "timers.h"
 
+// #define EEPROM_REMOVED
+
 uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
 EeFs      eeFs;
@@ -183,6 +185,10 @@ void eepromCheck()
 
 void storageFormat()
 {
+#if defined(EEPROM_REMOVED)
+  return;
+#endif
+
   ENABLE_SYNC_WRITE(true);
 
 #if defined(SIMU)
@@ -211,6 +217,10 @@ void storageFormat()
 
 bool eepromOpen()
 {
+#if defined(EEPROM_REMOVED)
+  return false;
+#endif
+
   eepromReadBlock((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
 #ifdef SIMU
@@ -839,9 +849,14 @@ bool eeLoadGeneral()
   }
   else if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
+    // TODO add this option to CMakeLists.txt
+#if defined(EEPROM_CONVERSIONS)
     if (!eeConvert()) {
       return false;
     }
+#else
+    return false;
+#endif
   }
   return true;
 #else
@@ -866,6 +881,10 @@ bool eeModelExists(uint8_t id)
 
 void storageCheck(bool immediately)
 {
+#if defined(EEPROM_REMOVED)
+  return;
+#endif
+
   if (immediately) {
     eeFlush();
   }

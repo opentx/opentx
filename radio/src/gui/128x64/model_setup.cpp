@@ -58,14 +58,14 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_BEEP_CENTER,
   CASE_CPUARM(ITEM_MODEL_USE_GLOBAL_FUNCTIONS)
-#if defined(PCBX7)
+#if defined(CPUARM) && defined(INTERNAL_MODULE)
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_MODE,
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_INTERNAL_MODULE_BIND,
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
 #endif
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EXTERNAL_MODULE)
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
 #if defined(MULTIMODULE)
@@ -207,6 +207,7 @@ void menuModelSetup(event_t event)
   INTERNAL_MODULE_CHANNELS_ROWS,
   IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
   IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
+#if defined(EXTERNAL_MODULE)
   LABEL(ExternalModule),
   EXTERNAL_MODULE_MODE_ROWS,
   MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
@@ -217,7 +218,9 @@ void menuModelSetup(event_t event)
   FAILSAFE_ROWS(EXTERNAL_MODULE),
   MULTIMODULE_MODULE_ROWS
   EXTRA_MODULE_ROWS
-  TRAINER_MODULE_ROWS });
+  TRAINER_MODULE_ROWS
+#endif
+  });
 #elif defined(CPUARM)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
   LABEL(ExternalModule),
@@ -685,7 +688,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EXTERNAL_MODULE)
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
         lcdDrawTextAlignedLeft(y, TR_EXTERNALRF);
         break;
@@ -783,7 +786,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBX7) && defined(TRAINER_MODULE)
       case ITEM_MODEL_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
         break;
@@ -795,15 +798,19 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBX7)
+#if defined(INTERNAL_MODULE)
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
+#endif
+#if defined(TRAINER_MODULE)
       case ITEM_MODEL_TRAINER_CHANNELS:
 #endif
-#if defined(PCBSKY9X)
+#if defined(EXTERNAL_MODULE)
+      case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
+#endif
+#if defined(EXTRA_MODULE)
       case ITEM_MODEL_EXTRA_MODULE_CHANNELS:
 #endif
 #if defined(CPUARM)
-      case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -838,8 +845,10 @@ void menuModelSetup(event_t event)
 #if defined(PCBSKY9X)
       case ITEM_MODEL_EXTRA_MODULE_BIND:
 #endif
-#if defined(CPUARM)
+#if defined(EXTERNAL_MODULE)
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
+#endif
+#if defined(CPUARM)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -957,11 +966,13 @@ void menuModelSetup(event_t event)
       }
 #endif
 
-#if defined(PCBX7)
+#if defined(INTERNAL_MODULE)
       case ITEM_MODEL_INTERNAL_MODULE_FAILSAFE:
 #endif
-#if defined(CPUARM)
+#if defined(EXTERNAL_MODULE)
       case ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE:
+#endif
+#if defined(CPUARM)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];

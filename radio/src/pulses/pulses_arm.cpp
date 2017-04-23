@@ -34,10 +34,10 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 
 uint8_t getRequiredProtocol(uint8_t port)
 {
-  uint8_t required_protocol;
+  uint8_t required_protocol = PROTO_PXX;
 
   switch (port) {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(INTERNAL_MODULE)
     case INTERNAL_MODULE:
 #if defined(TARANIS_INTERNAL_PPM)
       switch (g_model.moduleData[INTERNAL_MODULE].type) {
@@ -57,6 +57,7 @@ uint8_t getRequiredProtocol(uint8_t port)
       break;
 #endif
 
+#if defined(EXTERNAL_MODULE)
     default:
       port = EXTERNAL_MODULE; // ensure it's external module only
       switch (g_model.moduleData[EXTERNAL_MODULE].type) {
@@ -100,6 +101,7 @@ uint8_t getRequiredProtocol(uint8_t port)
           break;
       }
       break;
+#endif
   }
 
   if (s_pulses_paused) {

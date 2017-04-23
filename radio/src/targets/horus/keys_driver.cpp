@@ -81,7 +81,7 @@ uint32_t readTrims()
   return result;
 }
 
-uint16_t trimDown(uint16_t idx)
+uint32_t trimDown(uint8_t idx)
 {
   return readTrims() & (1 << idx);
 }

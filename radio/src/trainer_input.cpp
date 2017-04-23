@@ -18,15 +18,13 @@
  * GNU General Public License for more details.
  */
 
-#include "trainer_input.h"
+#include "opentx.h"
 
 int16_t ppmInput[MAX_TRAINER_CHANNELS];
 uint8_t ppmInputValidityTimer;
 
 
 #if defined(CPUARM)
-#include "audio_arm.h"
-
 void checkTrainerSignalWarning()
 {
   enum PpmInValidState_t {

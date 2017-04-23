@@ -93,7 +93,7 @@ void postModelLoad(bool alarms)
   frskySendAlarms();
 #endif
 
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(CPUARM) && defined(SDCARD) && defined(AUDIO)
   referenceModelAudioFiles();
 #endif
 
@@ -121,7 +121,7 @@ void storageFlushCurrentModel()
   }
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && NUM_POTS > 0
   if (g_model.potsWarnMode == POTS_WARN_AUTO) {
     for (int i=0; i<NUM_POTS+NUM_SLIDERS; i++) {
       if (!(g_model.potsWarnEnabled & (1 << i))) {

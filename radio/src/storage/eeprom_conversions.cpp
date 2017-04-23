@@ -1023,10 +1023,12 @@ void ConvertModel_216_to_217(ModelData & model)
     newModel.moduleData[i].ppm.pulsePol = oldModel.moduleData[i].ppmPulsePol;
   }
 
-#if defined(PCBTARANIS)
+#if defined(INTERNAL_MODULE)
   newModel.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
 #endif
+#if defined(EXTERNAL_MODULE)
   newModel.moduleData[EXTERNAL_MODULE].type = oldModel.externalModule;
+#endif
 
 #if defined(PCBTARANIS)
   newModel.trainerMode = oldModel.trainerMode;

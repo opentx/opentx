@@ -7,7 +7,7 @@ option(LUA_COMPILER "Pre-compile and save Lua scripts" OFF)
 
 set(ARCH ARM)
 set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.2.0/Libraries)
-add_definitions(-DSTM32 -DLUA_INPUTS -DVARIO -DSBUS -DCROSSFIRE)
+add_definitions(-DSTM32 -DLUA_INPUTS) #  -DVARIO -DSBUS -DCROSSFIRE)
 include_directories(${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32)
 include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc)
@@ -94,10 +94,10 @@ endforeach()
 set(SRC
   ${SRC}
   sbus.cpp
-  telemetry/crossfire.cpp
-  io/bootloader_flash.cpp
+  # telemetry/crossfire.cpp
+  # io/bootloader_flash.cpp
   )
 set(PULSES_SRC
   ${PULSES_SRC}
-  crossfire.cpp
+  # crossfire.cpp
   )

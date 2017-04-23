@@ -210,7 +210,7 @@ PLAY_FUNCTION(playValue, source_t idx)
 }
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(AUDIO) && defined(SDCARD)
 void playCustomFunctionFile(const CustomFunctionData *sd, uint8_t id)
 {
   if (sd->play.name[0] != '\0') {
@@ -224,7 +224,7 @@ void playCustomFunctionFile(const CustomFunctionData *sd, uint8_t id)
 }
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(AUDIO)
 bool isRepeatDelayElapsed(const CustomFunctionData * functions, CustomFunctionsContext & functionsContext, uint8_t index)
 {
   const CustomFunctionData * cfn = &functions[index];
@@ -261,7 +261,7 @@ void evalFunctions()
   MASK_FUNC_TYPE newActiveFunctions  = 0;
   MASK_CFN_TYPE  newActiveSwitches = 0;
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(AUDIO)
   uint8_t playFirstIndex = (functions == g_model.customFn ? 1 : 1+MAX_SPECIAL_FUNCTIONS);
   #define PLAY_INDEX   (i+playFirstIndex)
 #else
@@ -279,7 +279,7 @@ void evalFunctions()
 #endif
 
 #if defined(GVARS)
-  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
+  for (uint8_t i=0; i<NUM_TRIMS; i++) {
     trimGvar[i] = -1;
   }
 #endif

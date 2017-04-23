@@ -131,7 +131,7 @@ void mixerTask(void * pdata)
       return;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && defined(TRAINER_MODULE)
     processSbusInput();
 #endif
 
@@ -282,11 +282,13 @@ void tasksStart()
 
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack.stack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
   menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack.stack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
-#if !defined(SIMU)
+
+#if defined(AUDIO) && !defined(SIMU)
   // TODO move the SIMU audio in this task
   audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack.stack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
-#endif
   audioMutex = CoCreateMutex();
+#endif
+
   mixerMutex = CoCreateMutex();
 
   CoStartOS();

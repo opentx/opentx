@@ -1,39 +1,43 @@
-set(GUI_SRC
-  ${GUI_SRC}
+set(GUI_ELSE_SRC
+  ${GUI_ELSE_SRC}
   lcd.cpp
-  splash.cpp
   fonts.cpp
-  navigation.cpp
-  popups.cpp
   widgets.cpp
   menus.cpp
-  menu_model.cpp
-  model_select.cpp
-  model_setup.cpp
-  model_logical_switches.cpp
-  model_special_functions.cpp
-  model_telemetry.cpp
-  menu_radio.cpp
-  radio_setup.cpp
-  radio_trainer.cpp
-  radio_version.cpp
-  radio_calibration.cpp
+  navigation.cpp
+  splash.cpp
+  popups.cpp
   view_main.cpp
-  view_statistics.cpp
+  radio_calibration.cpp
   )
 
-if(GUI_DIR STREQUAL 128x64)
-  if (ARCH STREQUAL ARM)
-    set(GUI_SRC
-      ${GUI_SRC}
-      model_outputs_arm.cpp
-      )
-  else()
-    set(GUI_SRC
-      ${GUI_SRC}
-      model_outputs_avr.cpp
-      )
-  endif()
+if(NOT ${PCB} STREQUAL X7)
+set(GUI_SRC
+  ${GUI_SRC}
+  model_select.cpp
+  radio_trainer.cpp
+  )
+endif()
+
+set(GUI_SRC
+  ${GUI_SRC}
+  menu_model.cpp
+  # model_setup.cpp
+  # model_logical_switches.cpp
+  # model_special_functions.cpp
+  # model_telemetry.cpp
+  # menu_radio.cpp
+  radio_setup.cpp
+  # radio_version.cpp
+  # view_statistics.cpp
+  )
+
+if(GUI_DIR STREQUAL 128x64-ACAIR)
+  set(GUI_SRC
+    ${GUI_SRC}
+    model_outputs.cpp
+    model_controls.cpp
+    )
 else()
   set(GUI_SRC
     ${GUI_SRC}
@@ -49,7 +53,7 @@ set(SRC
 
 include_directories(gui gui/${GUI_DIR})
 
-if(GUI_DIR STREQUAL 128x64 OR GUI_DIR STREQUAL 212x64)
+if(GUI_DIR STREQUAL 128x64-ACAIR OR GUI_DIR STREQUAL 212x64)
   include(gui/common/stdlcd/CMakeLists.txt)
 endif()
 

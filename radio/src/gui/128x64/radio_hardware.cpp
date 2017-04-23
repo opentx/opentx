@@ -99,30 +99,57 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_LABEL_STICKS,
   ITEM_RADIO_HARDWARE_STICK1,
   ITEM_RADIO_HARDWARE_STICK2,
+#if NUM_STICKS > 2
   ITEM_RADIO_HARDWARE_STICK3,
   ITEM_RADIO_HARDWARE_STICK4,
+#endif
+#if NUM_POTS > 0
   ITEM_RADIO_HARDWARE_LABEL_POTS,
   ITEM_RADIO_HARDWARE_POT1,
   ITEM_RADIO_HARDWARE_POT2,
+#endif
   ITEM_RADIO_HARDWARE_LABEL_SWITCHES,
   ITEM_RADIO_HARDWARE_SA,
   ITEM_RADIO_HARDWARE_SB,
   ITEM_RADIO_HARDWARE_SC,
+#if NUM_SWITCHES > 3
   ITEM_RADIO_HARDWARE_SD,
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SH,
+#endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_MAX
 };
 
-#define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#if NUM_STICKS > 2
+#define STICKS_ROWS                    0, 0, 0, 0,
+#else
+#define STICKS_ROWS                    0, 0,
+#endif
+
+#if NUM_POTS > 0
+#define POTS_ROWS                      LABEL(Pots), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1,
+#else
+#define POTS_ROWS
+#endif
+
+#if NUM_SWITCHES > 3
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#else
+#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#endif
+
+#if defined(PCBACAIR)
+#define SWITCH_TYPE_MAX(sw)            SWITCH_3POS
+#else
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#endif
+
 #define HW_SETTINGS_COLUMN             30
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0 });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), STICKS_ROWS POTS_ROWS LABEL(Switches), SWITCHES_ROWS, 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -142,11 +169,14 @@ void menuRadioHardware(event_t event)
         break;
       case ITEM_RADIO_HARDWARE_STICK1:
       case ITEM_RADIO_HARDWARE_STICK2:
+#if NUM_STICKS > 2
       case ITEM_RADIO_HARDWARE_STICK3:
       case ITEM_RADIO_HARDWARE_STICK4:
+#endif
         editStickHardwareSettings(HW_SETTINGS_COLUMN, y, k - ITEM_RADIO_HARDWARE_STICK1, event, attr);
         break;
 
+#if NUM_POTS > 0
       case ITEM_RADIO_HARDWARE_LABEL_POTS:
         lcdDrawTextAlignedLeft(y, STR_POTS);
         break;
@@ -167,6 +197,7 @@ void menuRadioHardware(event_t event)
         g_eeGeneral.potsConfig |= (potType << shift);
         break;
       }
+#endif
 
       case ITEM_RADIO_HARDWARE_LABEL_SWITCHES:
         lcdDrawTextAlignedLeft(y, STR_SWITCHES);
@@ -174,9 +205,11 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_SA:
       case ITEM_RADIO_HARDWARE_SB:
       case ITEM_RADIO_HARDWARE_SC:
+#if NUM_SWITCHES > 3
       case ITEM_RADIO_HARDWARE_SD:
       case ITEM_RADIO_HARDWARE_SF:
       case ITEM_RADIO_HARDWARE_SH:
+#endif
       {
         int index = k-ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);

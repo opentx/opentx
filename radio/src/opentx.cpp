@@ -23,7 +23,7 @@
 RadioData  g_eeGeneral;
 ModelData  g_model;
 
-#if defined(SDCARD)
+#if defined(CPUARM) || defined(SDCARD)
 Clipboard clipboard;
 #endif
 
@@ -57,10 +57,17 @@ const pm_uint8_t bchout_ar[] PROGMEM = {
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
     0xC6, 0xC9, 0xD2, 0xD8, 0xE1, 0xE4 };
 
+#if NUM_STICKS >= 4
 uint8_t channel_order(uint8_t x)
 {
   return ( ((pgm_read_byte(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
 }
+#else
+uint8_t channel_order(uint8_t x)
+{
+  return x;
+}
+#endif
 
 /*
 mode1 rud ele thr ail
@@ -171,7 +178,7 @@ void per10ms()
     backlightFade(); // increment or decrement brightness until target brightness is reached
 #endif
 
-#if !defined(AUDIO)
+#if defined(BUZZER) && !defined(AUDIO)
   if (mixWarning & 1) if(((g_tmr10ms&0xFF)==  0)) AUDIO_MIX_WARNING(1);
   if (mixWarning & 2) if(((g_tmr10ms&0xFF)== 64) || ((g_tmr10ms&0xFF)== 72)) AUDIO_MIX_WARNING(2);
   if (mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING(3);
@@ -311,7 +318,7 @@ void generalDefault()
   memcpy(g_eeGeneral.bluetoothName, defaultName, sizeof(defaultName));
 #endif
 
-#if !defined(EEPROM)
+#if defined(SDCARD) && !defined(EEPROM)
   strcpy(g_eeGeneral.currModelFilename, DEFAULT_MODEL_FILENAME);
 #endif
 
@@ -326,8 +333,8 @@ void generalDefault()
 uint16_t evalChkSum()
 {
   uint16_t sum = 0;
-  const int16_t *calibValues = (const int16_t *) &g_eeGeneral.calib[0];
-  for (int i=0; i<12; i++)
+  const int16_t * calibValues = (const int16_t *) &g_eeGeneral.calib[0];
+  for (int i=0; i<3*NUM_STICKS; i++)
     sum += calibValues[i];
   return sum;
 }
@@ -344,8 +351,8 @@ void defaultInputs()
 
   for (int i=0; i<NUM_STICKS; i++) {
     uint8_t stick_index = channel_order(i+1);
-    ExpoData *expo = expoAddress(i);
-    expo->srcRaw = MIXSRC_Rud - 1 + stick_index;
+    ExpoData * expo = expoAddress(i);
+    expo->srcRaw = INPUTSRC_FIRST - 1 + stick_index;
     expo->curve.type = CURVE_REF_EXPO;
     expo->chn = i;
     expo->weight = 100;
@@ -371,6 +378,86 @@ void defaultInputs()
 inline void applyDefaultTemplate()
 {
   applyTemplate(TMPL_SIMPLE_4CH); // calls storageDirty internally
+}
+#elif defined(PCBACAIR)
+void applyDefaultTemplate()
+{
+  g_model.extendedLimits = true;
+  g_model.switchWarningEnable = 0b11;
+  memcpy(g_model.header.name, "\001\003\000\001\367\356", 6);
+
+  g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_CUSTOM;
+  for (int i=2; i<7; i++) {
+    g_model.moduleData[INTERNAL_MODULE].failsafeChannels[i] = FAILSAFE_CHANNEL_HOLD;
+  }
+
+  for (int i=0; i<NUM_STICKS; i++) {
+    g_model.limitData[i].curve = i + 1;
+    for (int p=0; p<5; p++) {
+      g_model.points[5 * i + p] = -100 + p * 50;
+    }
+    for (int c = 0; c < 3; c++) {
+      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[2 + 4 * (i+1) + c]);
+    }
+  }
+
+  // 3 dual rates for Rud and Thr
+  for (int i=0; i<3; i++) {
+    // Rud
+    ExpoData * expo = expoAddress(i);
+    expo->chn = 0;
+    expo->srcRaw = MIXSRC_Rud;
+    expo->swtch = SWSRC_SA0 + i;
+    expo->curve.type = CURVE_REF_EXPO;
+    expo->curve.value = 40;
+    expo->weight = 100 - i * 20;
+    expo->mode = 3;
+    // Thr
+    expo = expoAddress(3 + i);
+    expo->chn = 1;
+    expo->srcRaw = MIXSRC_Thr;
+    expo->swtch = SWSRC_SA0 + i;
+    expo->curve.type = CURVE_REF_EXPO;
+    expo->curve.value = 20;
+    expo->weight = 100 - i * 20;
+    expo->mode = 3; // TODO constant
+  }
+
+  // Delta mixes
+  MixData * mix = mixAddress(0);
+  mix->destCh = 0;
+  mix->weight = 100;
+  mix->srcRaw = MIXSRC_FIRST_INPUT+1;
+  ++mix;
+  mix->destCh = 0;
+  mix->weight = -100;
+  mix->srcRaw = MIXSRC_FIRST_INPUT;
+  ++mix;
+  mix->destCh = 1;
+  mix->weight = 100;
+  mix->srcRaw = MIXSRC_FIRST_INPUT+1;
+  ++mix;
+  mix->destCh = 1;
+  mix->weight = 100;
+  mix->srcRaw = MIXSRC_FIRST_INPUT;
+
+  // The switches
+  ++mix;
+  mix->destCh = 2;
+  mix->weight = 100;
+  mix->srcRaw = MIXSRC_SB;
+  ++mix;
+  mix->destCh = 3;
+  mix->weight = 100;
+  mix->srcRaw = MIXSRC_SC;
+  for (int i=4; i<8; i++) {
+    ++mix;
+    mix->destCh = i;
+    mix->weight = 100;
+    mix->srcRaw = MIXSRC_NONE;
+  }
+
+  storageDirty(EE_MODEL);
 }
 #else
 void applyDefaultTemplate()
@@ -428,7 +515,8 @@ void modelDefault(uint8_t id)
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
-  g_model.moduleData[INTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+  // g_model.moduleData[INTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+  g_model.moduleData[INTERNAL_MODULE].channelsCount = -1;
 #elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
@@ -521,7 +609,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   if (result == 0) {
     for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
       if (abs(calibratedAnalogs[i] - sourcesStates[i]) > 512) {
-        result = MIXSRC_Rud+i;
+        result = INPUTSRC_FIRST+i;
         break;
       }
     }
@@ -835,6 +923,13 @@ void checkBacklight()
 {
   static uint8_t tmr10ms ;
 
+#if defined(PCBACAIR)
+  if (!KEYS_ENABLED()) {
+    BACKLIGHT_DISABLE();
+    return;
+  }
+#endif
+
 #if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
   rotencPoll();
 #endif
@@ -1058,7 +1153,7 @@ void checkAll()
   checkSDVersion();
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(SDCARD)
   if (g_model.displayChecklist && modelHasNotes()) {
     pushModelNotes();
   }
@@ -1107,6 +1202,12 @@ void checkLowEEPROM()
 }
 #endif
 
+#if defined(PCBACAIR)
+#define IS_THROTTLE_LOW(v)             (abs(calibratedAnalogs[thrchn]) <= THRCHK_DEADBAND && abs(calibratedAnalogs[RUD_STICK]) <= THRCHK_DEADBAND)
+#else
+#define IS_THROTTLE_LOW()              (calibratedAnalogs[thrchn] <= THRCHK_DEADBAND-1024)
+#endif
+
 void checkTHR()
 {
   uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS+NUM_SLIDERS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
@@ -1138,8 +1239,7 @@ void checkTHR()
 
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
-  int16_t v = calibratedAnalogs[thrchn];
-  if (v <= THRCHK_DEADBAND-1024) {
+  if (IS_THROTTLE_LOW()) {
     return; // prevent warning if throttle input OK
   }
 
@@ -1156,8 +1256,6 @@ void checkTHR()
     GET_ADC_IF_MIXER_NOT_RUNNING();
 
     evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
-
-    v = calibratedAnalogs[thrchn];
 
 #if defined(PWR_BUTTON_PRESS)
     uint32_t pwr_check = pwrCheck();
@@ -1177,7 +1275,7 @@ void checkTHR()
     }
 #endif
 
-    if (keyDown() || v <= THRCHK_DEADBAND-1024) {
+    if (keyDown() || IS_THROTTLE_LOW()) {
       break;
     }
 
@@ -1186,10 +1284,10 @@ void checkTHR()
     wdt_reset();
 
     SIMU_SLEEP(1);
+
 #if defined(CPUARM)
     CoTickDelay(10);
 #endif
-
   }
 #endif
 
@@ -1219,13 +1317,22 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
   bool refresh = false;
 #endif
 
-  while(1) {
+  while (1) {
     SIMU_SLEEP(1);
 #if defined(CPUARM)
     CoTickDelay(10);
 #endif
 
-    if (keyDown()) break; // wait for key release
+#if defined(KEYS)
+    if (keyDown()) {
+      break; // wait for key release
+    }
+#else
+    static tmr10ms_t start = get_tmr10ms();
+    if (get_tmr10ms() - start > 200) {
+      break;
+    }
+#endif
 
     doLoopCommonActions();
 
@@ -1254,7 +1361,7 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
 }
 
 #if defined(GVARS)
-int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS] = { -1, -1, -1, -1 };
+int8_t trimGvar[NUM_TRIMS] = { -1, -1, -1, -1 };
 #endif
 
 #if defined(CPUARM)
@@ -1594,7 +1701,7 @@ uint16_t s_sum_samples_thr_10s;
 void evalTrims()
 {
   uint8_t phase = mixerCurrentFlightMode;
-  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
+  for (uint8_t i=0; i<NUM_TRIMS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
 #if !defined(CPUARM)
@@ -1607,7 +1714,7 @@ void evalTrims()
       trim = 0;
     }
 
-    trims[i] = trim*2;
+    trimsxx[i] = trim*2;
   }
 }
 
@@ -2261,7 +2368,7 @@ void instantTrim()
       for (int e=0; e<MAX_EXPOS; e++) {
         ExpoData * ed = expoAddress(e);
         if (!EXPO_VALID(ed)) break; // end of list
-        if (ed->srcRaw-MIXSRC_Rud == stick) {
+        if (ed->srcRaw-INPUTSRC_FIRST == stick) {
           delta = anas[ed->chn] - anas_0[ed->chn];
           break;
         }
@@ -2270,7 +2377,7 @@ void instantTrim()
       int16_t delta = anas[stick];
 #endif
       if (abs(delta) >= INSTANT_TRIM_MARGIN) {
-        int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[stick]) / 2, TRIM_EXTENDED_MAX);
+        int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trimsxx[stick]) / 2, TRIM_EXTENDED_MAX);
         setTrimValue(trim_phase, stick, trim);
       }
     }
@@ -2354,7 +2461,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   }
 
   // reset all trims, except throttle (if throttle trim)
-  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
+  for (uint8_t i=0; i<NUM_TRIMS; i++) {
     if (i!=THR_STICK || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
       for (uint8_t phase=0; phase<MAX_FLIGHT_MODES; phase++) {
@@ -2430,10 +2537,10 @@ void opentxInit(OPENTX_INIT_ARGS)
 
   TRACE("opentxInit");
 
-#if defined(GUI)
+#if 1 //defined(GUI)
   menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/
-    menuHandlers[1] = menuModelSelect;
+    // menuHandlers[1] = menuModelSelect;
   #endif
 #endif
 
@@ -2517,9 +2624,12 @@ void opentxInit(OPENTX_INIT_ARGS)
   #endif
 #endif
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(AUDIO)
   referenceSystemAudioFiles();
   audioQueue.start();
+#endif
+
+#if defined(CPUARM)
   BACKLIGHT_ENABLE();
 #endif
 
@@ -2547,7 +2657,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 
 #if defined(CPUARM) || defined(CPUM2560)
-	// TODO Horus does not need this
+  // TODO Horus does not need this
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
@@ -2652,7 +2762,7 @@ int main()
   }
 #endif
 
-#if !defined(EEPROM)
+#if defined(SDCARD) && !defined(EEPROM)
   if (!SD_CARD_PRESENT() && !UNEXPECTED_SHUTDOWN()) {
     runFatalErrorScreen(STR_NO_SDCARD);
   }

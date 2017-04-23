@@ -97,7 +97,7 @@ void storageReadRadioSettings()
     eeLoadModelHeaders();
   }
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(AUDIO) && defined(SDCARD)
   for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
@@ -121,6 +121,11 @@ void storageReadAll()
 void storageEraseAll(bool warn)
 {
   TRACE("storageEraseAll");
+
+#if defined(PCBACAIR)
+  ENABLE_FACTORY_MODE();
+  ENABLE_KEYS();
+#endif
 
   generalDefault();
   modelDefault(0);

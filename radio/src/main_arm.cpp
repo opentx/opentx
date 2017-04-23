@@ -119,9 +119,31 @@ void checkBattery()
   }
 }
 
+void updateLed()
+{
+  static uint8_t ledCounter = 0;
+
+  if (moduleFlag[INTERNAL_MODULE] & MODULE_BIND) {
+    ledBlue();
+  }
+  else if (g_eeGeneral.inactivityTimer && inactivity.counter > g_eeGeneral.inactivityTimer*60) {
+    ledRed();
+  }
+  else if (IS_TXBATT_WARNING()) {
+    if (++ledCounter & 1)
+      ledRed();
+    else
+      ledOff();
+  }
+  else {
+    ledGreen();
+  }
+}
+
 void periodicTick_1s()
 {
   checkBattery();
+  updateLed();
 }
 
 void periodicTick_10s()
@@ -366,14 +388,27 @@ void guiMain(event_t evt)
 void perMain()
 {
   DEBUG_TIMER_START(debugTimerPerMain1);
+
 #if defined(PCBSKY9X) && !defined(REVA)
   calcConsumption();
 #endif
+
+#if defined(AUDIO)
   checkSpeakerVolume();
+#endif
+
   checkEeprom();
+
+#if defined(SDCARD)
   logsWrite();
+#endif
+
   handleUsbConnection();
+
+#if defined(TRAINER_MODULE)
   checkTrainerSettings();
+#endif
+
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
@@ -388,13 +423,21 @@ void perMain()
     // on keypress turn the light on
     backlightOn();
   }
-  doLoopCommonActions();
+
 #if defined(NAVIGATION_STICKS)
   uint8_t sticks_evt = getSticksNavigationEvent();
   if (sticks_evt) {
     evt = sticks_evt;
   }
 #endif
+
+#if defined(BIND_KEY)
+  if (evt == EVT_KEY_LONG(KEY_BIND)) {
+    moduleFlag[INTERNAL_MODULE] ^= MODULE_BIND;
+  }
+#endif
+
+  doLoopCommonActions();
 
 #if defined(RAMBACKUP)
   if (unexpectedShutdown) {
@@ -414,7 +457,7 @@ void perMain()
   sdcard_present_before = sdcard_present_now;
 #endif
 
-#if !defined(EEPROM)
+#if defined(SDCARD) && !defined(EEPROM)
   // In case the SD card is removed during the session
   if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
     drawFatalErrorScreen(STR_NO_SDCARD);
@@ -438,7 +481,7 @@ void perMain()
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && defined(SDCARD)
   if (mainRequestFlags & (1 << REQUEST_SCREENSHOT)) {
     writeScreenshot();
     mainRequestFlags &= ~(1 << REQUEST_SCREENSHOT);

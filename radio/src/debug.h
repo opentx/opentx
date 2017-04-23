@@ -51,6 +51,7 @@ extern "C" {
   #define debugPrintf(...) do { if (serial2TracesEnabled()) serialPrintf(__VA_ARGS__); } while(0)
 #else
   #define debugPrintf(...)
+  // #define debugPrintf(f_, ...) do { lcdDrawText(0, 0, f_); lcdRefresh(); } while(0)
 #endif
 
 #if defined(__cplusplus)

@@ -73,7 +73,9 @@ void interrupt5ms()
 {
   static uint32_t pre_scale ;       // Used to get 10 Hz counter
 
+#if defined(AUDIO)
   AUDIO_HEARTBEAT();
+#endif
 
 #if defined(HAPTIC)
   HAPTIC_HEARTBEAT();
@@ -163,7 +165,9 @@ void boardInit()
   adcInit();
   delaysInit();
   lcdInit(); // delaysInit() must be called before
+#if defined(AUDIO)
   audioInit();
+#endif
   init2MhzTimer();
   init5msTimer();
   __enable_irq();
@@ -264,6 +268,7 @@ void boardOff()
   pwrOff();
 }
 
+#if defined(TRAINER_MODULE)
 uint8_t currentTrainerMode = 0xff;
 
 void checkTrainerSettings()
@@ -315,6 +320,7 @@ void checkTrainerSettings()
     }
   }
 }
+#endif
 
 uint16_t getBatteryVoltage()
 {

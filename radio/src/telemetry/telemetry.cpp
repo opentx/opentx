@@ -178,7 +178,7 @@ void telemetryWakeup()
       audioEvent(AU_SENSOR_LOST);
     }
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(INTERNAL_MODULE) && defined(EXTERNAL_MODULE)
     if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) && FRSKY_BAD_ANTENNA()) {
       AUDIO_SWR_RED();
       POPUP_WARNING(STR_WARNING);

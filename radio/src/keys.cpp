@@ -184,7 +184,12 @@ void killEvents(event_t event)
   }
 }
 
-#if defined(CPUARM)
+#if !defined(KEYS)
+bool clearKeyEvents()
+{
+  return true;
+}
+#elif defined(CPUARM)
 bool clearKeyEvents()
 {
 #if defined(PCBSKY9X)

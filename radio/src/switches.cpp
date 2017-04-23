@@ -248,6 +248,7 @@ void getSwitchesPosition(bool startup)
 
   switchesPos = newPos;
 
+#if NUM_POTS > 0
   for (int i=0; i<NUM_XPOTS; i++) {
     if (IS_POT_MULTIPOS(POT1+i)) {
       StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1+i];
@@ -272,6 +273,7 @@ void getSwitchesPosition(bool startup)
       }
     }
   }
+#endif
 }
 
 
@@ -281,7 +283,7 @@ getvalue_t getValueForLogicalSwitch(mixsrc_t i)
   if (i>=MIXSRC_FIRST_INPUT && i<=MIXSRC_LAST_INPUT) {
     int8_t trimIdx = virtualInputsTrims[i-MIXSRC_FIRST_INPUT];
     if (trimIdx >= 0) {
-      int16_t trim = trims[trimIdx];
+      int16_t trim = trimsxx[trimIdx];
       if (trimIdx == THR_STICK && g_model.throttleReversed)
         result -= trim;
       else
@@ -719,7 +721,7 @@ swsrc_t getMovedSwitch()
   return result;
 }
 
-#if defined(GUI)
+#if 1
 void checkSwitches()
 {
 #if defined(MODULE_ALWAYS_SEND_PULSES)
@@ -783,6 +785,7 @@ void checkSwitches()
         }
       }
     }
+#if NUM_POTS > 0
     if (g_model.potsWarnMode) {
       evalFlightModeMixes(e_perout_mode_normal, 0);
       bad_pots = 0;
@@ -796,6 +799,7 @@ void checkSwitches()
         }
       }
     }
+#endif
 #else
     for (int i=0; i<NUM_SWITCHES-1; i++) {
       if (!(g_model.switchWarningEnable & (1<<i))) {
@@ -865,6 +869,7 @@ void checkSwitches()
 #endif
       }
 
+#if NUM_POTS > 0
       if (g_model.potsWarnMode) {
         if (y == 4*FH+3) {
           y = 6*FH-2;
@@ -905,6 +910,8 @@ void checkSwitches()
         }
       }
       last_bad_pots = bad_pots;
+#endif
+
 #else
     if (last_bad_switches != switches_states) {
       RAISE_ALERT(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP, last_bad_switches == 0xff ? AU_SWITCH_ALERT : AU_NONE);

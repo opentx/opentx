@@ -43,19 +43,23 @@ void init_pxx(uint32_t port)
 {
   if (port == INTERNAL_MODULE)
     intmodulePxxStart();
+#if defined(EXTERNAL_MODULE)
   else
     extmodulePxxStart();
+#endif
 }
 
 void disable_pxx(uint32_t port)
 {
   if (port == INTERNAL_MODULE)
     intmoduleStop();
+#if defined(EXTERNAL_MODULE)
   else
     extmoduleStop();
+#endif
 }
 
-#if defined(DSM2)
+#if defined(EXTERNAL_MODULE) && defined(DSM2)
 void init_dsm2(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
@@ -71,7 +75,7 @@ void disable_dsm2(uint32_t port)
 }
 #endif
 
-#if defined(MULTIMODULE)
+#if defined(EXTERNAL_MODULE) && defined(MULTIMODULE)
 void init_multimodule(uint32_t port)
 {
   init_dsm2(port);
@@ -86,9 +90,11 @@ void disable_multimodule(uint32_t port)
 
 void init_ppm(uint32_t port)
 {
+#if defined(EXTERNAL_MODULE)
   if (port == EXTERNAL_MODULE) {
     extmodulePpmStart();
   }
+#endif
 #if defined(TARANIS_INTERNAL_PPM)
   else if (port == INTERNAL_MODULE) {
     intmodulePpmStart();
@@ -98,9 +104,11 @@ void init_ppm(uint32_t port)
 
 void disable_ppm(uint32_t port)
 {
+#if defined(EXTERNAL_MODULE)
   if (port == EXTERNAL_MODULE) {
     extmoduleStop();
   }
+#endif
 #if defined(TARANIS_INTERNAL_PPM)
   else if (port == INTERNAL_MODULE) {
     intmoduleStop();
@@ -112,18 +120,23 @@ void init_no_pulses(uint32_t port)
 {
   if (port == INTERNAL_MODULE)
     intmoduleNoneStart();
+#if defined(EXTERNAL_MODULE)
   else
     extmoduleNoneStart();
+#endif
 }
 
 void disable_no_pulses(uint32_t port)
 {
   if (port == INTERNAL_MODULE)
     intmoduleStop();
-  else
+#if defined(EXTERNAL_MODULE)
+   else
     extmoduleStop();
+#endif
 }
 
+#if defined(EXTERNAL_MODULE) && defined(CROSSFIRE)
 void init_crossfire(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
@@ -137,6 +150,7 @@ void disable_crossfire(uint32_t port)
     extmoduleStop();
   }
 }
+#endif
 
 void intmoduleStop()
 {

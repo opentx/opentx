@@ -21,6 +21,8 @@
 #ifndef _OPENTX_H_
 #define _OPENTX_H_
 
+// #define KEYS
+
 #include <inttypes.h>
 #include <string.h>
 #include <stddef.h>
@@ -385,7 +387,15 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MODULE_MULTIMODULE(idx)        (false)
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBACAIR)
+  #define IS_MODULE_XJT(idx)                (idx==INTERNAL_MODULE)
+  #define IS_MODULE_PPM(idx)                false
+  #define IS_MODULE_DSM2(idx)               false
+  #define IS_MODULE_CROSSFIRE(idx)          false
+  #define MAX_INTERNAL_MODULE_CHANNELS()    (maxChannelsXJT[1+g_model.moduleData[INTERNAL_MODULE].rfProtocol])
+  #define MAX_CHANNELS(idx)                 (idx==INTERNAL_MODULE ? MAX_INTERNAL_MODULE_CHANNELS() : 0)
+  #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   #if defined(TARANIS_INTERNAL_PPM)
     #define IS_MODULE_PPM(idx)              (idx==TRAINER_MODULE || (idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_PPM)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
     #define IS_MODULE_XJT(idx)              (((idx==INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type==MODULE_TYPE_XJT)|| (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)) && (g_model.moduleData[idx].rfProtocol != RF_PROTO_OFF))
@@ -482,11 +492,18 @@ extern const pm_uint8_t modn12x3[];
 
 //convert from mode 1 to mode stickMode
 //NOTICE!  =>  0..3 -> 0..3
+
+#if NUM_STICKS >= 4
 #define RUD_STICK 0
 #define ELE_STICK 1
 #define THR_STICK 2
 #define AIL_STICK 3
 #define CONVERT_MODE(x)  (((x)<=AIL_STICK) ? pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + (x)) : (x) )
+#else
+#define RUD_STICK 0
+#define THR_STICK 1
+#define CONVERT_MODE(x)  (x)
+#endif
 
 extern uint8_t channel_order(uint8_t x);
 
@@ -533,7 +550,8 @@ extern uint8_t channel_order(uint8_t x);
 
 #define HEART_TIMER_10MS               1
 #define HEART_TIMER_PULSES             2 // when multiple modules this is the first one
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+
+#if defined(INTERNAL_MODULE) && defined(EXTERNAL_MODULE)
 #define HEART_WDT_CHECK                (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
 #else
 #define HEART_WDT_CHECK                (HEART_TIMER_10MS + HEART_TIMER_PULSES)
@@ -581,8 +599,8 @@ div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
 
-#if defined(PCBHORUS)
-  uint16_t trimDown(uint16_t idx); // TODO why?
+#if NUM_TRIMS > 4
+  uint32_t trimDown(uint8_t idx);
 #else
   uint8_t trimDown(uint8_t idx);
 #endif
@@ -719,7 +737,7 @@ swsrc_t getMovedSwitch();
 #endif
 
 #if defined(GVARS)
-  extern int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS];
+  extern int8_t trimGvar[NUM_TRIMS];
   #define TRIM_REUSED(idx) trimGvar[idx] >= 0
 #else
   #define TRIM_REUSED(idx) 0
@@ -1085,7 +1103,7 @@ LogicalSwitchData * lswAddress(uint8_t idx);
 #endif
 
 extern int16_t anas [NUM_INPUTS];
-extern int16_t trims[NUM_STICKS+NUM_AUX_TRIMS];
+extern int16_t trimsxx[NUM_TRIMS];
 extern BeepANACenter bpanaCenter;
 
 extern uint8_t s_mixer_first_run_done;
@@ -1300,9 +1318,47 @@ enum AUDIO_SOUNDS {
 #else
 #include "audio_avr.h"
 #endif
+#else
+#define audioEvent(...)
+#define AUDIO_SWR_RED(...)
+#define AUDIO_RSSI_RED(...)
+#define AUDIO_RSSI_ORANGE(...)
+#define AUDIO_TELEMETRY_BACK(...)
+#define AUDIO_TELEMETRY_LOST(...)
+#define AUDIO_POT_MIDDLE(...)
+#define AUDIO_TX_BATTERY_LOW(...)
+#define AUDIO_FLUSH(...)
+#define AUDIO_PLAY(...)
+#define AUDIO_TRIM_MIDDLE(...)
+#define AUDIO_TRIM_MIN(...)
+#define AUDIO_TRIM_MAX(...)
+#define AUDIO_TRIM_PRESS(...)
+#define PLAY_MODEL_NAME(...)
+#define PLAY_SWITCH_MOVED(...)
+#define START_SILENCE_PERIOD(...)
+#define AUDIO_INACTIVITY(...)
+#define AUDIO_BYE(...)
+#define AUDIO_WARNING1(...)
+#define AUDIO_WARNING2(...)
+#define IS_PLAYING(...) false
+#define PLAY_PHASE_ON(...)
+#define PLAY_PHASE_OFF(...)
+#define PLAY_LOGICAL_SWITCH_ON(...)
+#define PLAY_LOGICAL_SWITCH_OFF(...)
+#define AUDIO_ERROR_MESSAGE(...)
+#define AUDIO_TIMER_ELAPSED(...)
+#define AUDIO_TIMER_COUNTDOWN(...)
+#define AUDIO_TIMER_MINUTE(...)
+#define AUDIO_TRAINER_LOST(...)
+#define AUDIO_TRAINER_BACK(...)
+#define AUDIO_KEY_PRESS(...)
+#define AUDIO_KEY_ERROR(...)
+#define AUDIO_ERROR(...)
 #endif
 
+#if defined(BUZZER)
 #include "buzzer.h"
+#endif
 
 #if defined(PCBSTD) && defined(VOICE)
 #include "targets/9x/voice.h"
@@ -1355,8 +1411,8 @@ void opentxInit();
 void opentxResume();
 
 #if defined(PCBHORUS) || defined(PCBX7)
-  #define LED_ERROR_BEGIN()            ledRed()
-  #define LED_ERROR_END()              ledBlue()
+  #define LED_ERROR_BEGIN()            ledBlue()
+  #define LED_ERROR_END()              ledRed()
 #else
   #define LED_ERROR_BEGIN()
   #define LED_ERROR_END()
@@ -1637,7 +1693,7 @@ void usbPluggedIn();
 
 #include "lua/lua_api.h"
 
-#if defined(SDCARD)
+#if defined(CPUARM) || defined(SDCARD)
 enum ClipboardType {
   CLIPBOARD_TYPE_NONE,
   CLIPBOARD_TYPE_CUSTOM_SWITCH,

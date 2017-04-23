@@ -142,17 +142,19 @@ extern uint8_t telemetryProtocol;
 #if defined(CPUARM)
 inline uint8_t modelTelemetryProtocol()
 {
-#if defined(CROSSFIRE)
+#if defined(EXTERNAL_MODULE) && defined(CROSSFIRE)
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
     return PROTOCOL_PULSES_CROSSFIRE;
   }
 #endif
-     
+
+#if defined(EXTERNAL_MODULE)
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
   }
-  
-#if defined(MULTIMODULE)
+#endif
+
+#if defined(EXTERNAL_MODULE) && defined(MULTIMODULE)
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_MULTIMODULE;
   }

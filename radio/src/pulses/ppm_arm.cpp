@@ -64,7 +64,9 @@ void setupPulsesPPMModule(uint8_t port)
   setupPulsesPPM<pulse_duration_t>(port, &modulePulsesData[port].ppm);
 }
 
+#if defined(TRAINER_MODULE)
 void setupPulsesPPMTrainer()
 {
   setupPulsesPPM<trainer_pulse_duration_t>(TRAINER_MODULE, &trainerPulsesData.ppm);
 }
+#endif
