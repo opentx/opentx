@@ -43,7 +43,8 @@ enum MenuModelOutputsItems {
   #define SET_MIN_MAX(x, val)     x = ((val)*250)/128
   #define MIN_MAX_DISPLAY(x)      CONVERT_US_MIN_MAX(x)
 #else
-  #define MIN_MAX_DISPLAY(x)      ((int8_t)(x))
+  #define SET_MIN_MAX(x, val)     x = (val)
+  #define MIN_MAX_DISPLAY(x)      (x)
 #endif
 
 void menuModelLimits(event_t event)
@@ -83,23 +84,19 @@ void menuModelLimits(event_t event)
           if (active) {
             ld->offset = checkIncDec(event, ld->offset, -1000, 1000, EE_MODEL|NO_INCDEC_MARKS);
           }
-          else if (attr && event==EVT_KEY_LONG(KEY_MENU)) {
-            copySticksToOffset(k);
-            s_editMode = 0;
-          }
           break;
 
         case ITEM_OUTPUTS_MIN:
-          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT|PREC1);
+          lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, MIN_MAX_ATTR|RIGHT);
           if (active) {
-            ld->min = LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->min-LIMITS_MIN_MAX_OFFSET, -limit, 0, EE_MODEL);
+            ld->min = LIMITS_MIN_MAX_OFFSET + 10 * checkIncDec(event, (ld->min-LIMITS_MIN_MAX_OFFSET) / 10, -limit/10, 0, EE_MODEL);
           }
           break;
 
         case ITEM_OUTPUTS_MAX:
-          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET), MIN_MAX_ATTR|RIGHT|PREC1);
+          lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, MIN_MAX_ATTR|RIGHT);
           if (active) {
-            ld->max = -LIMITS_MIN_MAX_OFFSET + checkIncDec(event, ld->max+LIMITS_MIN_MAX_OFFSET, 0, +limit, EE_MODEL);
+            ld->max = -LIMITS_MIN_MAX_OFFSET + 10 * checkIncDec(event, (ld->max+LIMITS_MIN_MAX_OFFSET) / 10, 0, +limit/10, EE_MODEL);
           }
           break;
 

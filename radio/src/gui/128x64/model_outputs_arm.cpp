@@ -74,8 +74,8 @@ enum MenuModelOutputsItems {
   #define SET_MIN_MAX(x, val)     x = ((val)*250)/128
   #define MIN_MAX_DISPLAY(x)      CONVERT_US_MIN_MAX(x)
 #else
-  #define MIN_MAX_DISPLAY(x)      (x)
   #define SET_MIN_MAX(x, val)     x = (val)
+  #define MIN_MAX_DISPLAY(x)      (x)
 #endif
 
 enum MenuModelOutputsOneItems {

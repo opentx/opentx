@@ -269,7 +269,9 @@ void generalDefault()
 #endif
 
 #if defined(PCBACAIR)
-  g_eeGeneral.switchConfig = 0x0000002b;
+  g_eeGeneral.vBatWarn = 65;
+  g_eeGeneral.vBatMin = -30;
+  g_eeGeneral.vBatMax = -30;
 #elif defined(PCBX9E)
   g_eeGeneral.vBatWarn = 65;
   g_eeGeneral.vBatMin = -30;
@@ -390,7 +392,7 @@ inline void applyDefaultTemplate()
 void applyDefaultTemplate()
 {
   g_model.extendedLimits = true;
-  g_model.switchWarningEnable = 0;
+  g_model.switchWarningEnable = 0xff;
   memcpy(g_model.header.name, "\001\003\000\001\367\356", 6);
 
   g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_CUSTOM;
@@ -466,7 +468,8 @@ void applyDefaultTemplate()
   ++mix;
   mix->destCh = 5;
   mix->weight = 100;
-  mix->srcRaw = MIXSRC_SB;
+  mix->srcRaw = MIXSRC_MAX;
+  mix->swtch = SWSRC_SB2;
   ++mix;
   mix->destCh = 6;
   mix->weight = 100;
@@ -478,7 +481,7 @@ void applyDefaultTemplate()
   LimitData * ch5 = limitAddress(4);
   ch5->offset = +100; // 10.0%
   LimitData * ch6 = limitAddress(5);
-  ch6->min = +100; // 0%
+  ch6->min = +1000; // 0.0%
 
   storageDirty(EE_MODEL);
 }

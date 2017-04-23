@@ -132,7 +132,7 @@ int getChannelsUsed()
 #if defined(PCBACAIR)
 bool isSourceAvailable(int source)
 {
-  if (source == MIXSRC_NONE)
+  if (source == MIXSRC_NONE || source == MIXSRC_MAX)
     return true;
   else if (source >= MIXSRC_SA && source <= MIXSRC_SC)
     return true;

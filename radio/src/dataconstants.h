@@ -805,6 +805,7 @@ enum MixSources {
   MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
   MIXSRC_LAST_POT = MIXSRC_SLIDER2,
 #elif NUM_POTS > 0
+    tooto
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
     MIXSRC_P3,
@@ -841,6 +842,15 @@ enum MixSources {
   MIXSRC_CYC3,                       LUA_EXPORT("cyc3", "Cyclic 3")
 
   MIXSRC_FIRST_TRIM,
+#if defined(PCBACAIR)
+  MIXSRC_TrimRudMin = MIXSRC_FIRST_TRIM,
+  MIXSRC_TrimRudMid,
+  MIXSRC_TrimRudMax,
+  MIXSRC_TrimThrMin,
+  MIXSRC_TrimThrMid,
+  MIXSRC_TrimThrMax,
+  MIXSRC_LAST_TRIM = MIXSRC_TrimThrMax,
+#else
   MIXSRC_TrimRud = MIXSRC_FIRST_TRIM,  LUA_EXPORT("trim-rud", "Rudder trim")
   MIXSRC_TrimEle,                      LUA_EXPORT("trim-ele", "Elevator trim")
   MIXSRC_TrimThr,                      LUA_EXPORT("trim-thr", "Throttle trim")
@@ -851,6 +861,7 @@ enum MixSources {
   MIXSRC_LAST_TRIM = MIXSRC_TrimT6,
 #else
   MIXSRC_LAST_TRIM = MIXSRC_TrimAil,
+#endif
 #endif
 
   MIXSRC_FIRST_SWITCH,
