@@ -633,14 +633,10 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
 
     case EVT_KEY_LONG(KEY_EXIT):
       s_editMode = 0; // TODO needed? we call ENTRY_UP after which does the same
-      reusableBuffer.calib.state = 0;
       popMenu();
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      if (menuCalibrationState) // only exit calib menu on long exit press, not short one
-        break;
-
       if (s_editMode > 0) {
         s_editMode = 0;
         AUDIO_KEY_PRESS();
