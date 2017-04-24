@@ -599,9 +599,8 @@ void CustomFunctionsPanel::fswPaste()
     CustomFunctionData *fsw = &functions[selectedFunction];
     memcpy(fsw, fswData.constData(), sizeof(CustomFunctionData));
     lock = true;
-    fswtchSwtch[selectedFunction]->setModel(rawSwitchItemModel);
     fswtchSwtch[selectedFunction]->setCurrentIndex(fswtchSwtch[selectedFunction]->findData(functions[selectedFunction].swtch.toValue()));
-    populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
+    fswtchFunc[selectedFunction]->setCurrentIndex(fswtchFunc[selectedFunction]->findData(functions[selectedFunction].func));
     populateGVmodeCB(fswtchGVmode[selectedFunction], functions[selectedFunction].adjustMode);
     populateFuncParamCB(fswtchParamT[selectedFunction], functions[selectedFunction].func, functions[selectedFunction].param, functions[selectedFunction].adjustMode);
     refreshCustomFunction(selectedFunction);
@@ -615,9 +614,8 @@ void CustomFunctionsPanel::fswDelete()
   functions[selectedFunction].clear();
   // TODO update switch and func
   lock = true;
-  fswtchSwtch[selectedFunction]->setModel(rawSwitchItemModel);
   fswtchSwtch[selectedFunction]->setCurrentIndex(fswtchSwtch[selectedFunction]->findData(functions[selectedFunction].swtch.toValue()));
-  populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
+  fswtchFunc[selectedFunction]->setCurrentIndex(fswtchFunc[selectedFunction]->findData(functions[selectedFunction].func));
   refreshCustomFunction(selectedFunction);
   lock = false;
   emit modified();
