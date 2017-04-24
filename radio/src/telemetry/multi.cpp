@@ -39,6 +39,7 @@ enum MultiBufferState : uint8_t {
   ReceivingMultiProtocol,
   ReceivingMultiStatus,
   SpektrumTelemetryFallback,
+  FrskyTelemetryFallback,
   FrskyTelemetryFallbackFirstByte,
   FrskyTelemetryFallbackNextBytes,
   FlyskyTelemetryFallback
@@ -51,7 +52,7 @@ MultiBufferState guessProtocol()
   else if (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
     return FlyskyTelemetryFallback;
   else
-    return FrskyTelemetryFallbackFirstByte;
+    return FrskyTelemetryFallback;
 }
 
 static void processMultiStatusPacket(const uint8_t *data)
@@ -215,17 +216,25 @@ void processMultiTelemetryData(const uint8_t data)
     case NoProtocolDetected:
       if (data == 'M') {
         multiTelemetryBufferState = MultiFirstByteReceived;
-      } else if (data == 0x55 || data == 0x7e) {
+      } else if (data == 0xAA || data == 0x7e) {
         multiTelemetryBufferState = guessProtocol();
-        if (multiTelemetryBufferState == FrskyTelemetryFallbackFirstByte)
-          processFrskyTelemetryData(data);
+
+        // Process the first byte by the protocol
+        processMultiTelemetryData(data);
       } else {
         TRACE("[MP] invalid start byte 0x%02X", data);
       }
       break;
 
+    case FrskyTelemetryFallback:
+      multiTelemetryBufferState = FrskyTelemetryFallbackFirstByte;
+      processFrskyTelemetryData(data);
+      break;
+
     case FrskyTelemetryFallbackFirstByte:
+      processFrskyTelemetryData(data);
       multiTelemetryBufferState = FrskyTelemetryFallbackNextBytes;
+      break;
 
     case FrskyTelemetryFallbackNextBytes:
       processFrskyTelemetryData(data);
