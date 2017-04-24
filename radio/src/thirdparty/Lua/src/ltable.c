@@ -306,7 +306,7 @@ void luaH_resize (lua_State *L, Table *t, int nasize, int nhsize) {
   int i;
   int oldasize = t->sizearray;
   int oldhsize = t->lsizenode;
-  TRACE("luaH_resize %d(%d) %d(%d)", nasize, oldasize, nhsize, oldhsize);
+  TRACE_LUA_INTERNALS_WITH_LINEINFO(L, "luaH_resize table %p %d(%d) %d(%d)", t, nasize, oldasize, nhsize, twoto(oldhsize));
   Node *nold = t->node;  /* save old hash ... */
   if (nasize > oldasize)  /* array part must grow? */
     setarrayvector(L, t, nasize);
