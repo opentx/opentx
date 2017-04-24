@@ -718,7 +718,7 @@
 #define TR_BLONBRIGHTNESS      TR3(INDENT"Jas Zap.", INDENT"Jas Zap.", INDENT"Jas zapnutého LCD")
 #define TR_BLOFFBRIGHTNESS     TR3(INDENT"Jas Vyp.", INDENT"Jas Vyp.", INDENT"Jas vypnutého LCD")
 #define TR_BLCOLOR             INDENT "Barva"
-#define TR_SPLASHSCREEN        TR("úvodníLogo", "Zobrazit úvodní logo")
+#define TR_SPLASHSCREEN        TR("úvodní logo", "Zobrazit úvodní logo")
 #define TR_THROTTLEWARNING     TR("* Plyn", INDENT "Kontrola plynu")
 #define TR_SWITCHWARNING       TR("* Spínače", INDENT "Polohy spínačů")
 #define TR_POTWARNINGSTATE     TR("* Pot&Slid.", INDENT "Kontrola Pot&Slid.")
@@ -731,7 +731,7 @@
 #define TR_STICKS              "Páky"
 #define TR_POTS                "Potenciometry"
 #define TR_SWITCHES            "Spínače"
-#define TR_SWITCHES_DELAY      TR3("Přechod středu přepínače", "Přechod středu přepínače", "Přechod poloh přepínače")
+#define TR_SWITCHES_DELAY      TR3("Filtr přepínače", "Filtr přepínače", "Filtr poloh přepínače")
 #define TR_SLAVE               "Podřízený"
 #define TR_MODESRC             " Mód\006% Zdroj"
 #define TR_MULTIPLIER          "Násobič"
@@ -1058,8 +1058,8 @@
 #define TR_EEBACKUP            "Záloha EEPROM"
 #define TR_FACTORYRESET        "Factory reset"
 #else
-#define TR_EEBACKUP            "\010[dlouze ENTER] zálohuje EEPROM"
-#define TR_FACTORYRESET        "\012[dlouze MENU]: Factory reset"
+#define TR_EEBACKUP            TR("[dlouze ENTER]: Záloha", "\010[dlouze ENTER] zálohuje EEPROM")
+#define TR_FACTORYRESET        TR("[dlouze MENU]: Fact.reset", "\012[dlouze MENU]: Factory reset")
 #endif
 #define TR_CONFIRMRESET        "Smazat modely a nastavení?"
 #define TR_TO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
