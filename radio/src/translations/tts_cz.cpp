@@ -110,7 +110,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       if (qr.quot == 0)
         PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
       else
-        CZ_PUSH_UNIT_PROMPT(qr.quot, CZ_PROMPT_CELA);
+        CZ_PUSH_UNIT_PROMPT(CZ_PROMPT_CELA, qr.quot);
       PLAY_NUMBER(qr.rem, 0, ZENSKY);
       if (unit) {
         CZ_PUSH_UNIT_PROMPT(unit, 3);
