@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>customizeSplashDialog</class>
- <widget class="QDialog" name="customizeSplashDialog">
+ <class>CustomizeSplashDialog</class>
+ <widget class="QDialog" name="CustomizeSplashDialog">
   <property name="enabled">
    <bool>true</bool>
   </property>

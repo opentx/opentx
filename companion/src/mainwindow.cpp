@@ -780,7 +780,7 @@ void MainWindow::fwchangelog()
 
 void MainWindow::customizeSplash()
 {
-  customizeSplashDialog * dialog = new customizeSplashDialog(this);
+  CustomizeSplashDialog * dialog = new CustomizeSplashDialog(this);
   dialog->exec();
   dialog->deleteLater();
 }
@@ -944,6 +944,7 @@ void MainWindow::updateMenus()
   readEepromAct->setEnabled(true);
   writeBUToRadioAct->setEnabled(true);
   readBUToFileAct->setEnabled(true);
+  editSplashAct->setDisabled(IS_HORUS(getCurrentBoard()));
 
   foreach (QAction * act, fileWindowActions) {
     if (!act)

@@ -26,7 +26,7 @@
 
 namespace Ui
 {
-  class customizeSplashDialog;
+  class CustomizeSplashDialog;
 }
 
 const int WIDTH_TARANIS = 212;
@@ -63,15 +63,15 @@ private:
   LCDFormat *format;
 };
 
-class customizeSplashDialog : public QDialog
+class CustomizeSplashDialog : public QDialog
 {
   Q_OBJECT
   Side left;
   Side right;
 
 public:
-  explicit customizeSplashDialog(QWidget *parent = 0);
-  ~customizeSplashDialog();
+  explicit CustomizeSplashDialog(QWidget *parent = 0);
+  ~CustomizeSplashDialog();
 
 private slots:
   void on_leftLoadFwButton_clicked();
@@ -99,7 +99,7 @@ private:
   void saveButton_clicked( Side );
   void invertButton_clicked( Side );
 
-  Ui::customizeSplashDialog *ui;
+  Ui::CustomizeSplashDialog *ui;
   enum sideEnum { LEFT, RIGHT };
 };
 
