@@ -10,6 +10,7 @@
 <a href="http://3drobotics.com">3D Robotics</a>
 <a href="http://rcstudio.cz">RC Studio (monthly)</a>
 <a href="http://www.craftandtheoryllc.com">Craft & Theory (monthly)</a>
+<a href="http://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
 
 Mario Sette
 Felice Baratto
@@ -1175,3 +1176,5 @@ John Alsbrooks
 Jürgen Deininger
 Bruce Jones
 Meinhard Schöll
+Rolf Lemb
+Casey Layton
