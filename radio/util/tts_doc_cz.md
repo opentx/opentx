@@ -1,8 +1,13 @@
 The purpose of this document is to document the principle of TTS for CZ languages to non CZ speaker, with a strict focus on OpenTX TTS
 
-Plural units forms
+## Large 'multiparts' numbers
+This is for numbers requiring assembly of basic number blocks, like 110 in english : `ONE` `HUNDRED` `TEN`
+
+## Plural units forms
+
 4 forms of plural exist in otx cz tts, bellow is the exemple for volts
-(u"volt", u"volt0"), (u"volty", u"volt1"), (u"voltů", u"volt2"),(u"voltu", u"volt3")
+
+`(u"volt", u"volt0"), (u"volty", u"volt1"), (u"voltů", u"volt2"),(u"voltu", u"volt3")`
 
 ## Interger numbers with unit
 X UNIT
