@@ -24,9 +24,9 @@
 
 enum CzechPrompts {
   CZ_PROMPT_NUMBERS_BASE = 0,
-  CZ_PROMPT_NULA = CZ_PROMPT_NUMBERS_BASE+0,    //0-99
-  CZ_PROMPT_STO = CZ_PROMPT_NUMBERS_BASE+100,   //100,200 .. 900
-  CZ_PROMPT_TISIC = CZ_PROMPT_NUMBERS_BASE+109, //1000
+  CZ_PROMPT_NULA = CZ_PROMPT_NUMBERS_BASE+0,    // 0-99
+  CZ_PROMPT_STO = CZ_PROMPT_NUMBERS_BASE+100,   // 100,200 .. 900
+  CZ_PROMPT_TISIC = CZ_PROMPT_NUMBERS_BASE+109, // 1000
   CZ_PROMPT_TISICE = CZ_PROMPT_NUMBERS_BASE+110,
   CZ_PROMPT_JEDEN = CZ_PROMPT_NUMBERS_BASE+111,
   CZ_PROMPT_JEDNO = CZ_PROMPT_NUMBERS_BASE+112,
@@ -36,8 +36,7 @@ enum CzechPrompts {
   CZ_PROMPT_CELYCH = CZ_PROMPT_NUMBERS_BASE+116,
   CZ_PROMPT_MINUS = CZ_PROMPT_NUMBERS_BASE+117,
 
-  CZ_PROMPT_UNITS_BASE = 118, //(jeden)volt,(dva)volty,(pet)voltu,(desetina)voltu
-
+  CZ_PROMPT_UNITS_BASE = 118, // (jeden)volt,(dva)volty,(pet)voltu,(desetina)voltu
 };
 
 #if defined(VOICE)
@@ -48,9 +47,9 @@ enum CzechPrompts {
   #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
 #endif
 
-#define MUZSKY 0x80
-#define ZENSKY 0x81
-#define STREDNI 0x82
+#define MUZSKY     0x80
+#define ZENSKY     0x81
+#define STREDNI    0x82
 
 I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 {
@@ -74,7 +73,6 @@ I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 
 I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
-
   if (number < 0) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_MINUS);
     number = -number;
@@ -106,24 +104,25 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     // we assume that we are PREC1
 #endif
     div_t qr = div((int)number, 10);   
-      if (qr.rem) {
-        PLAY_NUMBER(qr.quot, 0, ZENSKY);
-        if (qr.quot < 2)
-          PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
-        else if (qr.quot > 1 && qr.quot < 5)
-          PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+1);
-        else
-          PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+2);
-        PLAY_NUMBER(qr.rem, 0, ZENSKY);
-#if defined(CPUARM)
-        PUSH_UNIT_PROMPT(unit, 3);
-#else
-        PUSH_NUMBER_PROMPT(CZ_PROMPT_UNITS_BASE+((unit-1)*4)+3);
-#endif
-        return;
-      }
+    if (qr.rem) {
+      PLAY_NUMBER(qr.quot, 0, ZENSKY);
+      if (qr.quot < 2)
+        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
+      else if (qr.quot > 1 && qr.quot < 5)
+        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+1);
       else
-        number = qr.quot;
+        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+2);
+      PLAY_NUMBER(qr.rem, 0, ZENSKY);
+#if defined(CPUARM)
+      PUSH_UNIT_PROMPT(unit, 3);
+#else
+      PUSH_NUMBER_PROMPT(CZ_PROMPT_UNITS_BASE+((unit-1)*4)+3);
+#endif
+      return;
+    }
+    else {
+      number = qr.quot;
+    }
   }
 
   int16_t tmp = number;
