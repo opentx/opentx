@@ -74,6 +74,7 @@ I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
 
 I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
+
   if (number < 0) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_MINUS);
     number = -number;
@@ -104,22 +105,29 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #else
     // we assume that we are PREC1
 #endif
-    div_t qr = div((int)number, 10);
-    if (qr.rem) {
-      PLAY_NUMBER(qr.quot, 0, ZENSKY);
-      if (qr.quot == 0)
-        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
-      else
-        CZ_PUSH_UNIT_PROMPT(CZ_PROMPT_CELA, qr.quot);
-      PLAY_NUMBER(qr.rem, 0, ZENSKY);
-      if (unit) {
-        CZ_PUSH_UNIT_PROMPT(unit, 3);
+    div_t qr = div((int)number, 10);   
+      if (qr.rem) {
+        PLAY_NUMBER(qr.quot, 0, ZENSKY);
+        if (qr.quot == 0)
+          PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
+        else {
+          if (number == 1)
+            PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
+          else if (number > 1 && number < 5)
+            PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+1);
+          else
+            PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+2);
+        }
+        PLAY_NUMBER(qr.rem, 0, ZENSKY);
+#if defined(CPUARM)
+        PUSH_UNIT_PROMPT(unit, 3);
+#else
+        PUSH_NUMBER_PROMPT(CZ_PROMPT_UNITS_BASE+((unit-1)*4)+3);
+#endif
+        return;
       }
-      return;
-    }
-    else {
-      number = qr.quot;
-    }
+      else
+        number = qr.quot;
   }
 
   int16_t tmp = number;
