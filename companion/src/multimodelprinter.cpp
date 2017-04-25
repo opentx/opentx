@@ -494,7 +494,7 @@ QString MultiModelPrinter::printLogicalSwitches()
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     bool lsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
-      if (!modelPrinterMap.value(k).second->printLogicalSwitchLine(i).isEmpty()) {
+      if (!modelPrinterMap.value(k).first->logicalSw[i].isEmpty()) {
         lsEmpty = false;
         break;
       }

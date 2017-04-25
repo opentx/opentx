@@ -470,7 +470,9 @@ class LogicalSwitchData { // Logical Switches data
     unsigned int delay;
     unsigned int duration;
     int andsw;
+
     void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
+    bool isEmpty() const;
     CSFunctionFamily getFunctionFamily() const;
     unsigned int getRangeFlags() const;
     QString funcToString() const;

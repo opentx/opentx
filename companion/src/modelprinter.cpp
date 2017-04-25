@@ -494,7 +494,7 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
   const QString sw1Name = RawSwitch(ls.val1).toString(getCurrentBoard(), &generalSettings);
   const QString sw2Name = RawSwitch(ls.val2).toString(getCurrentBoard(), &generalSettings);
 
-  if (!ls.func)
+  if (ls.isEmpty())
     return result;
 
   if (ls.andsw!=0) {

@@ -777,6 +777,11 @@ QString CurveReference::toString(const ModelData * model, bool verbose) const
   return ret;
 }
 
+bool LogicalSwitchData::isEmpty() const
+{
+  return (func == 0);
+}
+
 CSFunctionFamily LogicalSwitchData::getFunctionFamily() const
 {
   if (func == LS_FN_EDGE)
