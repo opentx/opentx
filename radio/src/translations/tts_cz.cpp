@@ -108,16 +108,12 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     div_t qr = div((int)number, 10);   
       if (qr.rem) {
         PLAY_NUMBER(qr.quot, 0, ZENSKY);
-        if (qr.quot == 0)
+        if (qr.quot < 2)
           PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
-        else {
-          if (number == 1)
-            PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
-          else if (number > 1 && number < 5)
-            PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+1);
-          else
-            PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+2);
-        }
+        else if (qr.quot > 1 && number < 5)
+          PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+1);
+        else
+          PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+2);
         PLAY_NUMBER(qr.rem, 0, ZENSKY);
 #if defined(CPUARM)
         PUSH_UNIT_PROMPT(unit, 3);
