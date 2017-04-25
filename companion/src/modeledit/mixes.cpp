@@ -140,7 +140,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
   QString str;
   bool newChannel = false;
   if (dest < 0) {
-    str = modelPrinter.printMixerName(-dest);
+    str = modelPrinter.printChannelName(abs(dest)-1);
     //highlight channel if needed
     if (-dest == (int)highlightedSource) {
       str = "<b>" + str + "</b>";
@@ -150,7 +150,7 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
   else {
     MixData & mix = model->mixData[dest];
     //mix->destCh from 1 to 32
-    str = modelPrinter.printMixerName(mix.destCh);
+    str = modelPrinter.printChannelName(mix.destCh-1);
 
     if ((dest == 0) || (model->mixData[dest-1].destCh != mix.destCh)) {
       newChannel = true;

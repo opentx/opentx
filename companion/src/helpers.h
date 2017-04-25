@@ -146,9 +146,8 @@ namespace Helpers
   QStandardItemModel * getRawSourceItemModel(const GeneralSettings * const generalSettings = NULL, const ModelData * const model = NULL, unsigned int flags = 0);
 
   void populateGvarUseCB(QComboBox *b, unsigned int phase);
-  void populateGvSourceCB(QComboBox *b, int value);
-  void populatePhasesCB(QComboBox *b, int value);
   void populateGVCB(QComboBox & b, int value, const ModelData & model);
+  QString getAdjustmentString(int16_t val, const ModelData * model = NULL, bool sign = false);
 
   void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
   void getFileComboBoxValue(QComboBox * b, char * dest, int length);

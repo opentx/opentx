@@ -225,7 +225,7 @@ void CurveGroup::update()
           lastType = curve.type;
           curveValueCB->clear();
           for (int i=0; i<=6/*TODO constant*/; i++) {
-            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_FUNC, i).toString());
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_FUNC, i).toString(&model, false));
           }
         }
         curveValueCB->setCurrentIndex(curve.value);
@@ -237,7 +237,7 @@ void CurveGroup::update()
           lastType = curve.type;
           curveValueCB->clear();
           for (int i= ((flags & HIDE_NEGATIVE_CURVES) ? 0 : -numcurves); i<=numcurves; i++) {
-            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString(), i);
+            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString(&model, false), i);
             if (i == curve.value) {
               curveValueCB->setCurrentIndex(curveValueCB->count() - 1);
             }
@@ -324,38 +324,43 @@ void CurveGroup::valuesChanged()
 
 void Helpers::populateGVCB(QComboBox & b, int value, const ModelData & model)
 {
-  bool selected = false;
+  int count = getCurrentFirmware()->getCapability(Gvars);
 
   b.clear();
 
-  int count = getCurrentFirmware()->getCapability(Gvars);
   for (int i=-count; i<=-1; i++) {
     int16_t gval = (int16_t)(-10000+i);
-    if (strlen(model.gvars_names[-i-1]) > 0)
-      b.addItem(QObject::tr("-GV%1 (%2)").arg(-i).arg(model.gvars_names[-i-1]), gval);
-    else
-      b.addItem(QObject::tr("-GV%1").arg(-i), gval);
-    if (value == gval) {
-      b.setCurrentIndex(b.count()-1);
-      selected = true;
-    }
+    b.addItem("-" + RawSource(SOURCE_TYPE_GVAR, abs(i)-1).toString(&model), gval);
   }
 
   for (int i=1; i<=count; i++) {
     int16_t gval = (int16_t)(10000+i);
-    if (strlen(model.gvars_names[i-1]) > 0)
-      b.addItem(QObject::tr("GV%1 (%2)").arg(i).arg(model.gvars_names[i-1]), gval);
-    else
-      b.addItem(QObject::tr("GV%1").arg(i), gval);
-    if (value == gval) {
-      b.setCurrentIndex(b.count()-1);
-      selected = true;
-    }
+    b.addItem(RawSource(SOURCE_TYPE_GVAR, i-1).toString(&model), gval);
   }
 
-  if (!selected) {
+  b.setCurrentIndex(b.findData(value));
+  if (b.currentIndex() == -1)
     b.setCurrentIndex(count);
+}
+
+// Returns Diff/Expo/Weight/Offset adjustment value as either a percentage or a global variable name.
+QString Helpers::getAdjustmentString(int16_t val, const ModelData * model, bool sign)
+{
+  QString ret;
+  if (val >= -10000 && val <= 10000) {
+    ret = "%1%";
+    if (sign && val > 0)
+      ret.prepend("+");
+    ret = ret.arg(val);
   }
+  else {
+    ret = RawSource(SOURCE_TYPE_GVAR, abs(val) - 10001).toString(model);
+    if (val < 0)
+      ret.prepend("-");
+    else if (sign)
+      ret.prepend("+");
+  }
+  return ret;
 }
 
 void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
@@ -366,29 +371,6 @@ void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
       b->addItem(QObject::tr("Flight mode %1 value").arg(i));
     }
   }
-}
-
-void Helpers::populateGvSourceCB(QComboBox * b, int value)
-{
-  QString strings[] = { QObject::tr("---"), QObject::tr("Rud Trim"), QObject::tr("Ele Trim"), QObject::tr("Thr Trim"), QObject::tr("Ail Trim"), QObject::tr("Rot Enc"), QObject::tr("Rud"), QObject::tr("Ele"), QObject::tr("Thr"), QObject::tr("Ail"), QObject::tr("P1"), QObject::tr("P2"), QObject::tr("P3")};
-  b->clear();
-  for (int i=0; i<= 12; i++) {
-    b->addItem(strings[i]);
-  }
-  b->setCurrentIndex(value);
-}
-
-void Helpers::populatePhasesCB(QComboBox * b, int value)
-{
-  for (int i=-getCurrentFirmware()->getCapability(FlightModes); i<=getCurrentFirmware()->getCapability(FlightModes); i++) {
-    if (i < 0)
-      b->addItem(QObject::tr("!Flight mode %1").arg(-i-1), i);
-    else if (i > 0)
-      b->addItem(QObject::tr("Flight mode %1").arg(i-1), i);
-    else
-      b->addItem(QObject::tr("----"), 0);
-  }
-  b->setCurrentIndex(value + getCurrentFirmware()->getCapability(FlightModes));
 }
 
 void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)

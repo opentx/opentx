@@ -134,27 +134,6 @@ int TimToVal(float value)
   return (temp-129);
 }
 
-QString getSignedStr(int value)
-{
-  return value > 0 ? QString("+%1").arg(value) : QString("%1").arg(value);
-}
-
-QString getGVarString(int16_t val, bool sign)
-{
-  if (val >= -10000 && val <= 10000) {
-    if (sign)
-      return QString("%1%").arg(getSignedStr(val));
-    else
-      return QString("%1%").arg(val);
-  }
-  else {
-    if (val<0)
-      return QObject::tr("-GV%1").arg(-val-10000);
-    else
-      return QObject::tr("GV%1").arg(val-10000);
-  }
-}
-
 void SensorData::updateUnit()
 {
   if (type == TELEM_TYPE_CALCULATED) {
@@ -539,8 +518,8 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
       result = QObject::tr("[I%1]").arg(index+1);
-      if (model)
-        result += QString(model->inputNames[index]);
+      if (model && model->inputNames[index][0])
+          result.append(":" + QString(model->inputNames[index]).trimmed());
       return result;
 
     case SOURCE_TYPE_LUA_OUTPUT:
@@ -583,7 +562,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return QObject::tr("TR%1").arg(index+1);
 
     case SOURCE_TYPE_CH:
-      return QObject::tr("CH%1").arg(index+1);
+      result = QObject::tr("CH%1").arg(index+1, 2, 10, QChar('0'));
+      if (getCurrentFirmware()->getCapability(ChannelsName) && model && model->limitData[index].name[0])
+        result.append(":" + QString(model->limitData[index].name).trimmed());
+      return result;
 
     case SOURCE_TYPE_SPECIAL:
       return CHECK_IN_ARRAY(special, index);
@@ -601,7 +583,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       }
 
     case SOURCE_TYPE_GVAR:
-      return QObject::tr("GV%1").arg(index+1);
+      result = QObject::tr("GV%1").arg(index+1);
+      if (getCurrentFirmware()->getCapability(GvarsName) && model && model->gvars_names[index][0])
+        result.append(":" + QString(model->gvars_names[index]).trimmed());
+      return result;
 
     default:
       return QObject::tr("----");
@@ -753,23 +738,43 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
  * CurveReference
  */
 
-QString CurveReference::toString() const
+QString CurveReference::toString(const ModelData * model, bool verbose) const
 {
   if (value == 0) {
     return "----";
   }
-  else {
-    switch(type) {
-      case CURVE_REF_DIFF:
-        return QObject::tr("Diff(%1)").arg(getGVarString(value));
-      case CURVE_REF_EXPO:
-        return QObject::tr("Expo(%1)").arg(getGVarString(value));
-      case CURVE_REF_FUNC:
-        return QObject::tr("Function(%1)").arg(QString("x>0" "x<0" "|x|" "f>0" "f<0" "|f|").mid(3*(value-1), 3));
-      default:
-        return QString(value > 0 ? QObject::tr("Curve(%1)") : QObject::tr("!Curve(%1)")).arg(abs(value));
-    }
+
+  QString ret;
+  unsigned idx = abs(value) - 1;
+
+  switch(type) {
+    case CURVE_REF_DIFF:
+      ret = QObject::tr("Diff(%1)").arg(Helpers::getAdjustmentString(value, model));
+      break;
+
+    case CURVE_REF_EXPO:
+      ret = QObject::tr("Expo(%1)").arg(Helpers::getAdjustmentString(value, model));
+      break;
+
+    case CURVE_REF_FUNC:
+      ret = QString("x>0" "x<0" "|x|" "f>0" "f<0" "|f|").mid(3*(value-1), 3);
+      if (verbose)
+        ret = QObject::tr("Function(%1)").arg(ret);
+      break;
+
+    default:
+      if (model)
+        ret = model->curves[idx].nameToString(idx);
+      else
+        ret = CurveData().nameToString(idx);
+      if (verbose)
+        ret = QObject::tr("Curve(%1)").arg(ret);
+      if (value < 0)
+        ret.prepend(CPN_STR_SW_INDICATOR_REV);
+      break;
   }
+
+  return ret;
 }
 
 CSFunctionFamily LogicalSwitchData::getFunctionFamily() const
@@ -856,10 +861,15 @@ void CustomFunctionData::clear()
   }
 }
 
-QString CustomFunctionData::funcToString() const
+bool CustomFunctionData::isEmpty() const
+{
+  return (swtch.type == SWITCH_TYPE_NONE);
+}
+
+QString CustomFunctionData::funcToString(const ModelData * model) const
 {
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
-    return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString());
+    return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
   else if (func == FuncTrainer)
     return QObject::tr("Trainer");
   else if (func == FuncTrainerRUD)
@@ -903,7 +913,7 @@ QString CustomFunctionData::funcToString() const
   else if (func == FuncBackgroundMusicPause)
     return QObject::tr("Background Music Pause");
   else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
-    return QObject::tr("Adjust GV%1").arg(func-FuncAdjustGV1+1);
+    return QObject::tr("Adjust %1").arg(RawSource(SOURCE_TYPE_GVAR, func-FuncAdjustGV1).toString(model));
   else if (func == FuncSetFailsafeInternalModule)
     return QObject::tr("SetFailsafe Int. Module");
   else if (func == FuncSetFailsafeExternalModule)
@@ -1076,6 +1086,14 @@ bool CurveData::isEmpty() const
     }
   }
   return true;
+}
+
+QString CurveData::nameToString(const int idx) const
+{
+  QString ret = QCoreApplication::translate("CurveData", "CV%1").arg(idx+1, 2, 10, QChar('0'));
+  if (name[0])
+    ret.append(":" + QString(name).trimmed());
+  return ret;
 }
 
 QString LimitData::minToString() const
