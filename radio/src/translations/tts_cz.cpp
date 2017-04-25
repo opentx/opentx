@@ -42,32 +42,32 @@ enum CzechPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define CZ_PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((p), (u), id)
+  #define CZ_PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((u), (p), id)
 #else
-  #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((u), (p))
 #endif
 
 #define MUZSKY     0x80
 #define ZENSKY     0x81
 #define STREDNI    0x82
 
-I18N_PLAY_FUNCTION(cz, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(cz, pushUnitPrompt, uint8_t unit, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
-    PUSH_UNIT_PROMPT(unitprompt, 0);
+    PUSH_UNIT_PROMPT(unit, 0);
   else if (number > 1 && number < 5)
-    PUSH_UNIT_PROMPT(unitprompt, 1);
+    PUSH_UNIT_PROMPT(unit, 1);
   else
-    PUSH_UNIT_PROMPT(unitprompt, 2);
+    PUSH_UNIT_PROMPT(unit, 2);
 #else
-  unitprompt = CZ_PROMPT_UNITS_BASE+((unitprompt-1)*4);
+  unitprompt = CZ_PROMPT_UNITS_BASE+((unit-1)*4);
   if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
+    PUSH_NUMBER_PROMPT(unit);
   else if (number > 1 && number < 5)
-    PUSH_NUMBER_PROMPT(unitprompt+1);
+    PUSH_NUMBER_PROMPT(unit+1);
   else
-    PUSH_NUMBER_PROMPT(unitprompt+2);
+    PUSH_NUMBER_PROMPT(unit+2);
 #endif
 }
 
@@ -213,7 +213,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    CZ_PUSH_UNIT_PROMPT(tmp, unit);
+    CZ_PUSH_UNIT_PROMPT(unit, tmp);
   }
 }
 
