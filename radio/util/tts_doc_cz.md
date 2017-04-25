@@ -16,8 +16,12 @@ If x = 1, form0 is used.
 For x more than one but less than 5, form1 is used.
 For x = 5 or more, form2 is used.
 
+x = 1 "one" have 3 forms depending on the unit F/M/N
+x = 2 "two" have 2 forms depending on the unit F/M/N
 
 ## decimal numbers with unit
 X.Y UNIT
+In this case unit is form3. X and Y is allways FEM because is not based on the unit but on the "tenth of unit" or "hundredth of unit" (both "tenth"/"hundredth" are FEM) 
+"point" has three forms depending on X 1/2-4/5+ (u"celá", u"celé", u"celých")
 
 Note : opentx audio only deals with PREC1 numbers, so Y can only be integer 1 to 9
