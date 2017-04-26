@@ -51,12 +51,12 @@ enum EnglishPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define EN_PUSH_UNIT_PROMPT(p, u) en_pushUnitPrompt((p), (u), id)
+  #define EN_PUSH_UNIT_PROMPT(u, p) en_pushUnitPrompt((u), (p), id)
 #else
-  #define EN_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define EN_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
-I18N_PLAY_FUNCTION(en, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(en, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -133,9 +133,9 @@ I18N_PLAY_FUNCTION(en, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 0) {
     PUSH_NUMBER_PROMPT(EN_PROMPT_ZERO + number);
   }
-  
+
   if (unit) {
-    EN_PUSH_UNIT_PROMPT(tmp, unit);
+    EN_PUSH_UNIT_PROMPT(unit, tmp);
   }
 }
 

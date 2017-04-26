@@ -63,12 +63,12 @@ enum ItalianPrompts {
 
 #if defined(VOICE)
 #if defined(CPUARM)
-  #define IT_PUSH_UNIT_PROMPT(p, u) it_pushUnitPrompt((p), (u), id)
+  #define IT_PUSH_UNIT_PROMPT(u, p) it_pushUnitPrompt((u), (p), id)
 #else
-  #define IT_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define IT_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
-I18N_PLAY_FUNCTION(it, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(it, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -173,7 +173,7 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     }
   }
   if (unit) {
-    IT_PUSH_UNIT_PROMPT(orignumber, unit);
+    IT_PUSH_UNIT_PROMPT(unit, orignumber);
   }
 }
 
