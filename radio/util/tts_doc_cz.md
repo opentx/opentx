@@ -9,19 +9,76 @@ This is for numbers requiring assembly of basic number blocks, like 110 in engli
 
 `(u"volt", u"volt0"), (u"volty", u"volt1"), (u"voltů", u"volt2"),(u"voltu", u"volt3")`
 
+In this document, we will use unit0 to unit3 to describe those 4 variations
+
 ## Interger numbers with unit
-X UNIT
 
-If x = 1, unit0 is used.
-For x more than one but less than 5, unit1 is used.
-For x = 5 or more and 0, unit2 is used.
+The number takes a from like X UNIT
 
-x = 1 "one" have 3 forms depending on the unit F/M/N
-x = 2 "two" have 2 forms depending on the unit F/M/N
+#### "one ..."
+The number "one" has 3 gender depending on the unit F/M/N
+The forms are "jedna","jeden", "jedno"
+
+See unit table bellow to find out wich gender of one should be used
+
+unit0 is used with the 3 gender of one.
+
+#### "two ..."
+The number "two" has 3 gender depending on the unit
+The forms are  "dva","dvě"
+
+See unit table bellow to find out wich gender of two should be used
+
+unit1 is used with the 2 gender of two.
+
+### "tree to five"
+
+unit1 is used
+
+### "five and more"
+
+unit2 is used
+
 
 ## decimal numbers with unit
 X.Y UNIT
-In this case unit is unit3. X and Y is allways FEM because is not based on the unit but on the "tenth of unit" or "hundredth of unit" (both "tenth"/"hundredth" are FEM) 
-"point" has three forms depending on X 0,1/2-4/5+ (u"celá", u"celé", u"celých")
+In this case unit is unit3. X and Y is allways FEM.
+
+"point" has three forms depending on the value of X :  
+0 and 1 : "celá"  
+2, 3 , 4 : "celé"  
+5 :"celých"  
 
 Note : opentx audio only deals with PREC1 numbers, so Y can only be integer 1 to 9
+
+# Unit table
+
+| Index  | Unit            | Defined as             | One     | Two   | Gender
+| --- | ---                |---                     |---      |---    |---
+| 0   | Raw unit (no unit) | UNIT_RAW               | jedna   | dvě   | Female
+| 1   | Volts              | UNIT_VOLTS             | jeden   | dva   | Male
+| 2   | Amps               | UNIT_AMPS              | jeden   | dva   | Male
+| 3   | Milliamps          | UNIT_MILLIAMPS         | jeden   | dva   | Male
+| 4   | Knots              | UNIT_KTS               | jeden   | dva   | Male
+| 5   | Meters per Second  | UNIT_METERS_PER_SECOND | jeden   | dva   | Male
+| 6   | Feet per Second    | UNIT_FEET_PER_SECOND   | jedna   | dvě   | Female
+| 7   | Kilometers per Hour| UNIT_KMH               | jeden   | dva   | Male
+| 8   | Miles per Hour     | UNIT_MPH               | jedna   | dvě   | Female
+| 9   | Meters             | UNIT_METERS            | jeden   | dva   | Male
+| 10  | Feet               | UNIT_FEET              | jedna   | dvě   | Female
+| 11  | Degrees Celsius    | UNIT_CELSIUS           | jeden   | dva   | Male
+| 12  | Degrees Fahrenheit | UNIT_FAHRENHEIT        | jeden   | dva   | Male
+| 13  | Percent            | UNIT_PERCENT           | jedno   | dvě   | Neutral
+| 14  | Milliamp per Hour  | UNIT_MAH               | jedna   | dvě   | Female
+| 15  | Watts              | UNIT_WATTS             | jeden   | dva   | Male
+| 16  | Milliwatts         | UNIT_MILLIWATTS        | jeden   | dva   | Male
+| 17  | dB                 | UNIT_DB                | jeden   | dva   | Male
+| 18  | RPM                | UNIT_RPMS              | jedna   | dvě   | Female
+| 19  | G                  | UNIT_G                 | jedno   | dvě   | Neutral
+| 20  | Degrees            | UNIT_DEGREE            | jeden   | dva   | Male
+| 21  | Radians            | UNIT_RADIANS           | jedna   | dvě   | Female
+| 22  | Milliliters        | UNIT_MILLILITERS       | jedna   | dvě   | Female
+| 23  | Fluid Ounces       | UNIT_FLOZ              | jedna   | dvě   | Female
+| 24  | Hours              | UNIT_HOURS             | jedna   | dvě   | Female
+| 25  | Minutes            | UNIT_MINUTES           | jedna   | dvě   | Female
+| 26  | Seconds            | UNIT_SECONDS           | jedna   | dvě   | Female
