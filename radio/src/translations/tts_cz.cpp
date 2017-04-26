@@ -47,9 +47,9 @@ enum CzechPrompts {
   #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((u), (p))
 #endif
 
-#define MUZSKY     0x80
-#define ZENSKY     0x81
-#define STREDNI    0x82
+#define MALE     0x80
+#define FEMALE     0x81
+#define NEUTRAL    0x82
 
 I18N_PLAY_FUNCTION(cz, pushUnitPrompt, uint8_t unit, int16_t number)
 {
@@ -103,16 +103,19 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #else
     // we assume that we are PREC1
 #endif
-    div_t qr = div((int)number, 10);   
+    div_t qr = div((int)number, 10);
     if (qr.rem) {
-      PLAY_NUMBER(qr.quot, 0, ZENSKY);
-      if (qr.quot < 2)
+      PLAY_NUMBER(qr.quot, 0, FEMALE);
+      if (qr.quot < 2) {
         PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA);
-      else if (qr.quot > 1 && qr.quot < 5)
-        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+1);
-      else
-        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELA+2);
-      PLAY_NUMBER(qr.rem, 0, ZENSKY);
+      }
+      else if (qr.quot > 1 && qr.quot < 5) {
+        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELE);
+      }
+      else {
+        PUSH_NUMBER_PROMPT(CZ_PROMPT_CELYCH);
+      };
+      PLAY_NUMBER(qr.rem, 0, FEMALE);
 #if defined(CPUARM)
       PUSH_UNIT_PROMPT(unit, 3);
 #else
@@ -126,7 +129,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   int16_t tmp = number;
-#if defined(CPUARM) 
+#if defined(CPUARM)
   switch(unit) {
     case 0:
       break;
@@ -141,14 +144,14 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     case 24:
     case 25:
     case 26:
-      att = ZENSKY;
+      att = FEMALE;
       break;
     case 13:
     case 19:
-      att = STREDNI;
+      att = NEUTRAL;
       break;
     default:
-      att = MUZSKY;
+      att = MALE;
       break;
   }
 #else
@@ -163,35 +166,35 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     case 16:
     case 17:
     case 18:
-      att = ZENSKY;
+      att = FEMALE;
       break;
     case 8:
     case 19:
-      att = STREDNI;
+      att = NEUTRAL;
       break;
     default:
-      att = MUZSKY;
+      att = MALE;
       break;
   }
 #endif
 
-  if ((number == 1) && (att == MUZSKY)) {
+  if ((number == 1) && (att == MALE)) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_JEDEN);
     number = -1;
   }
-  
-  if ((number == 1) && (att == STREDNI)) {
+
+  if ((number == 1) && (att == NEUTRAL)) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_JEDNO);
     number = -1;
   }
-  
-  if ((number == 2) && ((att == ZENSKY) || (att == STREDNI))) {
+
+  if ((number == 2) && ((att == FEMALE) || (att == NEUTRAL))) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_DVE);
     number = -1;
   }
-  
+
   if (number >= 1000) {
-    if (number >= 2000) 
+    if (number >= 2000)
       PLAY_NUMBER(number / 1000, 0, 0);
     if (number >= 2000 && number < 5000)
       PUSH_NUMBER_PROMPT(CZ_PROMPT_TISICE);
@@ -207,7 +210,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     if (number == 0)
       number = -1;
   }
-  
+
   if (number >= 0) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_NULA+number);
   }
@@ -227,17 +230,17 @@ I18N_PLAY_FUNCTION(cz, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    PLAY_NUMBER(tmp, UNIT_HOURS, ZENSKY);
+    PLAY_NUMBER(tmp, UNIT_HOURS, FEMALE);
   }
 
   tmp = seconds / 60;
   seconds %= 60;
   if (tmp > 0) {
-    PLAY_NUMBER(tmp, UNIT_MINUTES, ZENSKY);
+    PLAY_NUMBER(tmp, UNIT_MINUTES, FEMALE);
   }
 
   if (seconds > 0) {
-    PLAY_NUMBER(seconds, UNIT_SECONDS, ZENSKY);
+    PLAY_NUMBER(seconds, UNIT_SECONDS, FEMALE);
   }
 }
 
