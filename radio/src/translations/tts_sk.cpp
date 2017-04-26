@@ -67,7 +67,7 @@ enum SlovakPrompts {
 #define ZENSKY 0x81
 #define STREDNI 0x82
 
-I18N_PLAY_FUNCTION(sk, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(sk, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -126,7 +126,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       if (qr.quot == 0)
         PUSH_NUMBER_PROMPT(SK_PROMPT_CELA);
       else
-        SK_PUSH_UNIT_PROMPT(qr.quot, SK_PROMPT_CELA);
+        SK_PUSH_UNIT_PROMPT(SK_PROMPT_CELA, qr.quot);
       PLAY_NUMBER(qr.rem, 0, ZENSKY);
       PUSH_NUMBER_PROMPT(SK_PROMPT_UNITS_BASE+((unit-1)*4)+3);
       return;
@@ -224,7 +224,7 @@ I18N_PLAY_FUNCTION(sk, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    SK_PUSH_UNIT_PROMPT(tmp, unit);
+    SK_PUSH_UNIT_PROMPT(unit, tmp);
   }
 }
 

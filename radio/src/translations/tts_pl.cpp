@@ -77,7 +77,7 @@ enum PolishPrompts {
 #define ZENSKI 0x81
 #define NIJAKI 0x82
 
-I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(pl, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -152,7 +152,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       if (qr.quot == 0)
         PUSH_NUMBER_PROMPT(PL_PROMPT_CALA);
       else
-        PL_PUSH_UNIT_PROMPT(qr.quot, PL_PROMPT_CALA);
+        PL_PUSH_UNIT_PROMPT(PL_PROMPT_CALA, qr.quot);
       PLAY_NUMBER(qr.rem, 0, ZENSKI);
       PUSH_NUMBER_PROMPT(PL_PROMPT_UNITS_BASE+((unit-1)*4)+3);
       return;
@@ -243,7 +243,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    PL_PUSH_UNIT_PROMPT(tmp, unit);
+    PL_PUSH_UNIT_PROMPT(unit, tmp);
   }
 }
 
