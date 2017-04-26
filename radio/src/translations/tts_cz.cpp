@@ -42,9 +42,9 @@ enum CzechPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define CZ_PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((p), (u), id)
+  #define CZ_PUSH_UNIT_PROMPT(u, p) cz_pushUnitPrompt((u), (p), id)
 #else
-  #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define CZ_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
 #define MALE     0x80
