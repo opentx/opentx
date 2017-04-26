@@ -29,12 +29,12 @@ sys.path.append(lib_path)
 def generate(str, filename):
     if 1:
         output = "output.wav"
-        command = 'pico2wave -l=%s -w=%s ""' % (voice, output, str)
+        command = 'pico2wave -l=%s -w=%s "%s"' % (voice, output, str)
     else:
         output = "output.mp3"
         command = 'gtts-cli -l %s -o %s "%s"' % (voice[:2], output, str)
     os.system(command.encode('utf-8'))
-    command = "sox %s %s reverse silence 1 0.1 0.1% reverse" % (output, filename)
+    command = "sox %s -r 32000 %s reverse silence 1 0.1 0.1%% reverse" % (output, filename)
     os.system(command.encode('utf-8'))
 
 ################################################################
