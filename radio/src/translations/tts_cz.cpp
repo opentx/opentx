@@ -42,9 +42,9 @@ enum CzechPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define CZ_PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((u), (p), id)
+  #define CZ_PUSH_UNIT_PROMPT(p, u) cz_pushUnitPrompt((p), (u), id)
 #else
-  #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((u), (p))
+  #define CZ_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
 #endif
 
 #define MALE     0x80
@@ -54,6 +54,7 @@ enum CzechPrompts {
 I18N_PLAY_FUNCTION(cz, pushUnitPrompt, uint8_t unit, int16_t number)
 {
 #if defined(CPUARM)
+  TRACE("CZSAY unit:%d number:%d", unit, number);
   if (number == 1)
     PUSH_UNIT_PROMPT(unit, 0);
   else if (number > 1 && number < 5)
@@ -129,54 +130,30 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   int16_t tmp = number;
-#if defined(CPUARM)
   switch(unit) {
-    case 0:
+    case UNIT_RAW:
       break;
-    case 6:
-    case 8:
-    case 10:
-    case 14:
-    case 18:
-    case 21:
-    case 22:
-    case 23:
-    case 24:
-    case 25:
-    case 26:
+    case UNIT_FEET_PER_SECOND:
+    case UNIT_MPH:
+    case UNIT_FEET:
+    case UNIT_MAH:
+    case UNIT_RPMS:
+    case UNIT_RADIANS:
+    case UNIT_MILLILITERS:
+    case UNIT_FLOZ:
+    case UNIT_HOURS:
+    case UNIT_MINUTES:
+    case UNIT_SECONDS:
       att = FEMALE;
       break;
-    case 13:
-    case 19:
+    case UNIT_PERCENT:
+    case UNIT_G:
       att = NEUTRAL;
       break;
     default:
       att = MALE;
       break;
   }
-#else
-  switch(unit) {
-    case 0:
-      break;
-    case 4:
-    case 10:
-    case 13:
-    case 14:
-    case 15:
-    case 16:
-    case 17:
-    case 18:
-      att = FEMALE;
-      break;
-    case 8:
-    case 19:
-      att = NEUTRAL;
-      break;
-    default:
-      att = MALE;
-      break;
-  }
-#endif
 
   if ((number == 1) && (att == MALE)) {
     PUSH_NUMBER_PROMPT(CZ_PROMPT_JEDEN);
