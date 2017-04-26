@@ -1595,7 +1595,7 @@ class CurvesField: public TransformedField {
 
       for (int i=0; i<maxCurves; i++) {
         CurveData * curve = &curves[i];
-        if (!IS_STM32(board) || version < 216) {
+        if (!IS_ARM(board) || (!IS_STM32(board) && version < 218) || version < 216) {
           int * next = &_points[5*(i+1) + _curves[i]];
           int size = next - cur;
           if (size % 2 == 0) {

@@ -702,7 +702,7 @@ void MdiChild::onFirmwareChanged()
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
   //qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
-  if (previous->getBoard() != firmware->getBoard()) {
+  if (StorageFormat::getFourCC(previous->getBoard()) != StorageFormat::getFourCC(firmware->getBoard())) {
     convertStorage(previous->getBoard(), firmware->getBoard());
     setModified();
   }

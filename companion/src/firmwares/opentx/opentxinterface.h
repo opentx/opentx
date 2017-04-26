@@ -72,8 +72,6 @@ class OpenTxEepromInterface : public EEPROMInterface
     
     uint8_t getLastDataVersion(Board::Type board);
     
-    uint32_t getFourCC();
-    
     RleFile * efile;
     
     OpenTxFirmware * firmware;
