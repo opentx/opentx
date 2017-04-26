@@ -569,7 +569,7 @@ typedef struct Node {
 typedef struct Table {
   CommonHeader;
   lu_byte flags;  /* 1<<p means tagmethod(p) is not present */
-  lu_byte lsizenode;  /* size of `node' array */
+  lu_byte lsizenode;  /* log2 of size of `node' array */
   struct Table *metatable;
   TValue *array;  /* array part */
   Node *node;
@@ -588,7 +588,7 @@ typedef struct Table {
 
 
 #define twoto(x)	(1<<(x))
-#define sizenode(t)	((t)->lsizenode)
+#define sizenode(t)	(twoto((t)->lsizenode))
 
 
 /*
