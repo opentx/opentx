@@ -138,8 +138,6 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     case UNIT_FEET:
     case UNIT_MAH:
     case UNIT_RPMS:
-    case UNIT_RADIANS:
-    case UNIT_MILLILITERS:
     case UNIT_FLOZ:
     case UNIT_HOURS:
     case UNIT_MINUTES:
