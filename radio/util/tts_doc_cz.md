@@ -76,8 +76,8 @@ Note : opentx audio only deals with PREC1 numbers, so Y can only be integer 1 to
 | 18  | RPM                | UNIT_RPMS              | jedna   | dvě   | Female
 | 19  | G                  | UNIT_G                 | jedno   | dvě   | Neutral
 | 20  | Degrees            | UNIT_DEGREE            | jeden   | dva   | Male
-| 21  | Radians            | UNIT_RADIANS           | jedna   | dvě   | Female
-| 22  | Milliliters        | UNIT_MILLILITERS       | jedna   | dvě   | Female
+| 21  | Radians            | UNIT_RADIANS           | jeden   | dva   | Male
+| 22  | Milliliters        | UNIT_MILLILITERS       | jeden   | dva   | Male
 | 23  | Fluid Ounces       | UNIT_FLOZ              | jedna   | dvě   | Female
 | 24  | Hours              | UNIT_HOURS             | jedna   | dvě   | Female
 | 25  | Minutes            | UNIT_MINUTES           | jedna   | dvě   | Female
