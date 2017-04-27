@@ -5002,7 +5002,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mdichild.cpp" line="370"/>
         <source>Edit Radio Settings</source>
-        <translation>Éditer les réglages radio</translation>
+        <translation>Éditer réglages radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="371"/>
@@ -5017,7 +5017,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mdichild.cpp" line="373"/>
         <source>Simulate Radio</source>
-        <translation>Simuler la radio</translation>
+        <translation>Simuler radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="375"/>
@@ -5113,7 +5113,8 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
         <location filename="../mdichild.cpp" line="878"/>
         <source>New model</source>
         <extracomment>Translators: do NOT use accents here, this is a default model name.</extracomment>
-        <translation>Nouveau modele</translation>
+        <translatorcomment>No accent, but no more than 15 characters!!</translatorcomment>
+        <translation>Nve modele</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1012"/>
@@ -5218,7 +5219,8 @@ et choisissez  la bonne radio avant de l&apos;ouvrir.à nouveau.</translation>
         <location filename="../mdichild.cpp" line="718"/>
         <source>New category</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
-        <translation>Nouvelle categorie</translation>
+        <translatorcomment>No accent, but no more than 15 characters!!</translatorcomment>
+        <translation>Nlle categorie</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1448"/>
