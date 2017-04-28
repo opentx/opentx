@@ -56,6 +56,12 @@
 #define LEN_SPECIAL_CHARS 0
 #endif
 
+#if (LCD_W == 212)
+#define LCDW_128_480_LINEBREAK        ""
+#else
+#define LCDW_128_480_LINEBREAK        "\036"
+#endif
+
 #define PSIZE(x) ( sizeof(x) - 1 )
 #define EOFS(x)  ( OFS_##x + sizeof(TR_##x) )
 
