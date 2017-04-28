@@ -528,7 +528,7 @@ Timestamp</string>
              </font>
             </property>
             <property name="text">
-             <string>SWR</string>
+             <string>RAS</string>
             </property>
            </widget>
           </item>

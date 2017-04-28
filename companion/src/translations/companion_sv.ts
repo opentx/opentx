@@ -9622,7 +9622,7 @@ m2560 för v4.1-kort</translation>
     </message>
 </context>
 <context>
-    <name>customizeSplashDialog</name>
+    <name>CustomizeSplashDialog</name>
     <message>
         <source>Transmitter Splash Screen Editor</source>
         <translation>Startbildsredigerare</translation>

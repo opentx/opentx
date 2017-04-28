@@ -780,7 +780,7 @@ void MainWindow::fwchangelog()
 
 void MainWindow::customizeSplash()
 {
-  customizeSplashDialog * dialog = new customizeSplashDialog(this);
+  CustomizeSplashDialog * dialog = new CustomizeSplashDialog(this);
   dialog->exec();
   dialog->deleteLater();
 }
@@ -805,7 +805,7 @@ void MainWindow::readEeprom()
 
   if (readEepromFromRadio(tempFile)) {
     MdiChild * child = createMdiChild();
-    child->newFile();
+    child->newFile(false);
     child->loadFile(tempFile, false);
     child->show();
     qunlink(tempFile);
@@ -944,6 +944,7 @@ void MainWindow::updateMenus()
   readEepromAct->setEnabled(true);
   writeBUToRadioAct->setEnabled(true);
   readBUToFileAct->setEnabled(true);
+  editSplashAct->setDisabled(IS_HORUS(getCurrentBoard()));
 
   foreach (QAction * act, fileWindowActions) {
     if (!act)

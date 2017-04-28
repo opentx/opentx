@@ -12595,7 +12595,7 @@ v4.1版电路板应为m2560</translation>
     </message>
 </context>
 <context>
-    <name>customizeSplashDialog</name>
+    <name>CustomizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
         <source>Transmitter Splash Screen Editor</source>

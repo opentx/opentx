@@ -12332,7 +12332,7 @@ m2560 joka on v4.1 lähettimessä</translation>
     </message>
 </context>
 <context>
-    <name>customizeSplashDialog</name>
+    <name>CustomizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
         <source>Transmitter Splash Screen Editor</source>

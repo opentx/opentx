@@ -563,7 +563,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
     }
 
-    fswtchFunc[i]->setVisible(widgetsMask);
+    fswtchFunc[i]->setVisible(cfn.swtch.toValue());
     fswtchParam[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_NUMERIC_PARAM);
     fswtchParamTime[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_TIME_PARAM);
     fswtchParamGV[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_TOOGLE);
@@ -599,9 +599,8 @@ void CustomFunctionsPanel::fswPaste()
     CustomFunctionData *fsw = &functions[selectedFunction];
     memcpy(fsw, fswData.constData(), sizeof(CustomFunctionData));
     lock = true;
-    fswtchSwtch[selectedFunction]->setModel(rawSwitchItemModel);
     fswtchSwtch[selectedFunction]->setCurrentIndex(fswtchSwtch[selectedFunction]->findData(functions[selectedFunction].swtch.toValue()));
-    populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
+    fswtchFunc[selectedFunction]->setCurrentIndex(fswtchFunc[selectedFunction]->findData(functions[selectedFunction].func));
     populateGVmodeCB(fswtchGVmode[selectedFunction], functions[selectedFunction].adjustMode);
     populateFuncParamCB(fswtchParamT[selectedFunction], functions[selectedFunction].func, functions[selectedFunction].param, functions[selectedFunction].adjustMode);
     refreshCustomFunction(selectedFunction);
@@ -615,9 +614,8 @@ void CustomFunctionsPanel::fswDelete()
   functions[selectedFunction].clear();
   // TODO update switch and func
   lock = true;
-  fswtchSwtch[selectedFunction]->setModel(rawSwitchItemModel);
   fswtchSwtch[selectedFunction]->setCurrentIndex(fswtchSwtch[selectedFunction]->findData(functions[selectedFunction].swtch.toValue()));
-  populateFuncCB(fswtchFunc[selectedFunction], functions[selectedFunction].func);
+  fswtchFunc[selectedFunction]->setCurrentIndex(fswtchFunc[selectedFunction]->findData(functions[selectedFunction].func));
   refreshCustomFunction(selectedFunction);
   lock = false;
   emit modified();
@@ -701,7 +699,7 @@ void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
 void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
 {
   QStringList qs;
-  b->clear();
+  b->setModel(new QStandardItemModel(b));  // clear combo box but not any shared item model
   if (function==FuncPlaySound) {
     CustomFunctionData::populatePlaySoundParams(qs);
     b->addItems(qs);

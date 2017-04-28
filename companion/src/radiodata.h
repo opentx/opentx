@@ -231,6 +231,7 @@ class RawSource {
     }
 
     bool isTimeBased() const;
+    bool isStick(int * potsIndex = NULL) const;
     bool isPot(int * potsIndex = NULL) const;
     bool isSlider(int * sliderIndex = NULL) const;
 

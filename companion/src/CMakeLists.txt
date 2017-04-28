@@ -104,7 +104,6 @@ include_directories(
   ${COMPANION_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/shared
   ${SIMU_SRC_DIRECTORY}
-  ${COMPANION_SRC_DIRECTORY}/thirdparty/qxtcommandoptions
   ${COMPANION_SRC_DIRECTORY}/thirdparty/qcustomplot
   ${COMPANION_SRC_DIRECTORY}/thirdparty/miniz
   ${COMPANION_SRC_DIRECTORY}/storage
@@ -207,7 +206,6 @@ add_subdirectory(generaledit)
 add_subdirectory(simulation)
 add_subdirectory(storage)
 add_subdirectory(thirdparty/qcustomplot)
-add_subdirectory(thirdparty/qxtcommandoptions)
 
 ############# Companion ###############
 
@@ -315,7 +313,7 @@ PrintTargetReport("${COMPANION_NAME}")
 set(simu_SRCS simulator.cpp )
 
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation ${CPN_COMMON_LIB} storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation ${CPN_COMMON_LIB} storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Install ####################
 

@@ -552,8 +552,8 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
           result = QString(generalSettings->potName[genAryIdx]);
         else if (isSlider(&genAryIdx))
           result = QString(generalSettings->sliderName[genAryIdx]);
-        else
-          result = QString(generalSettings->stickName[index]);
+        else if (isStick(&genAryIdx))
+          result = QString(generalSettings->stickName[genAryIdx]);
       }
       if (result.isEmpty())
         result = getCurrentFirmware()->getAnalogInputName(index);;
@@ -606,6 +606,16 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     default:
       return QObject::tr("----");
   }
+}
+
+bool RawSource::isStick(int * stickIndex) const
+{
+  if (type == SOURCE_TYPE_STICK && index < getBoardCapability(getCurrentBoard(), Board::Sticks)) {
+    if (stickIndex)
+      *stickIndex = index;
+    return true;
+  }
+  return false;
 }
 
 bool RawSource::isPot(int * potsIndex) const

@@ -12264,7 +12264,7 @@ Please only use this if you know what you are doing.  There are no error checks 
     </message>
 </context>
 <context>
-    <name>customizeSplashDialog</name>
+    <name>CustomizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
         <source>Transmitter Splash Screen Editor</source>

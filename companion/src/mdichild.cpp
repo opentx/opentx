@@ -565,7 +565,6 @@ void MdiChild::onItemActivated(const QModelIndex index)
       openModelEditWindow(mIdx);
   }
   else if (modelsListModel->isCategoryType(index)) {
-    ui->modelsList->setCurrentIndex(index);
     ui->modelsList->edit(index);
   }
 }
@@ -591,8 +590,8 @@ void MdiChild::onDataChanged(const QModelIndex & index)
   }
   strcpy(radioData.categories[categoryIndex].name, modelsListModel->data(index, 0).toString().left(sizeof(CategoryData::name)-1).toStdString().c_str());
 
-  ui->modelsList->setCurrentIndex(QModelIndex());  // must do this otherwise leaves QTreeView in limbo after TreeModel::refresh() (Qt undoc/bug?)
-  setModified();
+  setWindowModified(true);
+  emit modified();
 }
 
 /*
@@ -703,7 +702,7 @@ void MdiChild::onFirmwareChanged()
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
   //qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
-  if (previous->getBoard() != firmware->getBoard()) {
+  if (StorageFormat::getFourCC(previous->getBoard()) != StorageFormat::getFourCC(firmware->getBoard())) {
     convertStorage(previous->getBoard(), firmware->getBoard());
     setModified();
   }
@@ -1299,14 +1298,14 @@ void MdiChild::modelSimulate()
   startSimulation(this, radioData, getCurrentModel());
 }
 
-void MdiChild::newFile()
+void MdiChild::newFile(bool createDefaults)
 {
   static int sequenceNumber = 1;
   isUntitled = true;
   curFile = QString("document%1.otx").arg(sequenceNumber++);
   updateTitle();
 
-  if (firmware->getCapability(Capability::HasModelCategories)) {
+  if (createDefaults && firmware->getCapability(Capability::HasModelCategories)) {
     categoryAdd();
   }
 }

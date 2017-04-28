@@ -65,6 +65,11 @@ void menuRadioDiagAnalogs(event_t event)
 #if defined(PCBX7)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, getBatteryVoltage(), (menuVerticalPosition==HEADER_LINE ? INVERS | (s_editMode > 0 ? BLINK : 0) : 0) | PREC2 | LEFT);
+    // SWR
+  if(IS_MODULE_XJT(EXTERNAL_MODULE)) {
+    lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2, "RAS");
+    lcdDrawNumber(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2, telemetryData.swr.value, LEFT);
+  }
 #elif defined(PCBSKY9X)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+4*FH, STR_BATT_CALIB);
   static int32_t adcBatt;

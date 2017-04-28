@@ -51,12 +51,12 @@ enum HungarianPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define HU_PUSH_UNIT_PROMPT(p, u) hu_pushUnitPrompt((p), (u), id)
+  #define HU_PUSH_UNIT_PROMPT(u, p) hu_pushUnitPrompt((u), (p), id)
 #else
-  #define HU_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define HU_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
-I18N_PLAY_FUNCTION(hu, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(hu, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -133,9 +133,9 @@ I18N_PLAY_FUNCTION(hu, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 0) {
     PUSH_NUMBER_PROMPT(HU_PROMPT_ZERO + number);
   }
-  
+
   if (unit) {
-    HU_PUSH_UNIT_PROMPT(tmp, unit);
+    HU_PUSH_UNIT_PROMPT(unit, tmp);
   }
 }
 

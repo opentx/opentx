@@ -12354,7 +12354,7 @@ m2560 per le schede v4.1</translation>
     </message>
 </context>
 <context>
-    <name>customizeSplashDialog</name>
+    <name>CustomizeSplashDialog</name>
     <message>
         <location filename="../customizesplashdialog.ui" line="23"/>
         <source>Transmitter Splash Screen Editor</source>

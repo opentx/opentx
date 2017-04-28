@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QUrl>
+#include <companion/src/storage/storage.h>
 
 using namespace Board;
 
@@ -95,30 +96,6 @@ const char * OpenTxEepromInterface::getName()
   }
 }
 
-uint32_t OpenTxEepromInterface::getFourCC()
-{
-  switch (board) {
-    case BOARD_X12S:
-    case BOARD_X10:
-      return 0x3478746F;
-    case BOARD_TARANIS_X7:
-      return 0x3678746F;
-    case BOARD_TARANIS_X9E:
-      return 0x3578746F;
-    case BOARD_TARANIS_X9D:
-    case BOARD_TARANIS_X9DP:
-      return 0x3378746F;
-    case BOARD_SKY9X:
-    case BOARD_AR9X:
-      return 0x3278746F;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
-      return 0x3178746F;
-    default:
-      return 0;
-  }
-}
-
 bool OpenTxEepromInterface::loadRadioSettingsFromRLE(GeneralSettings & settings, RleFile * rleFile, uint8_t version)
 {
   QByteArray data(sizeof(settings), 0); // GeneralSettings should be always bigger than the EEPROM struct
@@ -163,7 +140,7 @@ bool OpenTxEepromInterface::saveToByteArray(const T & src, QByteArray & data, ui
   // manager.Dump();
   manager.Export(raw);
   data.resize(8);
-  *((uint32_t*)&data.data()[0]) = getFourCC();
+  *((uint32_t*)&data.data()[0]) = StorageFormat::getFourCC(board);
   data[4] = version;
   data[5] = 'M';
   *((uint16_t*)&data.data()[6]) = raw.size();
@@ -186,12 +163,12 @@ template <class T, class M>
 bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 {
   uint32_t fourcc = *((uint32_t*)&data.data()[0]);
-  if (getFourCC() != fourcc) {
+  if (StorageFormat::getFourCC(board) != fourcc) {
     if (IS_HORUS(board) && fourcc == 0x3178396F) {
-      qDebug() << QString().sprintf("%s: Deprecated fourcc used %x vs %x", getName(), fourcc, getFourCC());
+      qDebug() << QString().sprintf("%s: Deprecated fourcc used %x vs %x", getName(), fourcc, StorageFormat::getFourCC(board));
     }
     else {
-      qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, getFourCC());
+      qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, StorageFormat::getFourCC(board));
       return false;
     }
   }

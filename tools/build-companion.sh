@@ -65,9 +65,6 @@ make -j${JOBS} libsimulator
 cmake ${COMMON_OPTIONS} -DPCB=X9E ${SRCDIR}
 make -j${JOBS} libsimulator
 
-cmake ${COMMON_OPTIONS} -DPCB=X10 ${SRCDIR}
-make -j${JOBS} libsimulator
-
 cmake ${COMMON_OPTIONS} -DPCB=X12S ${SRCDIR}
 make -j${JOBS} libsimulator
 

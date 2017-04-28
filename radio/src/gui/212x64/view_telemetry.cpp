@@ -127,7 +127,8 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           }
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {
-          // we don't display GPS name, no space for it
+          // we don't display GPS name, no space for it, but we shift x by some pixel to allow it to fit on max coord
+          x -=2;
         }
         else {
           drawSource(pos[j], 1+FH+2*FH*i, field, 0);

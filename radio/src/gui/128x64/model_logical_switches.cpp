@@ -217,6 +217,13 @@ void menuModelLogicalSwitchOne(event_t event)
 
       case LS_FIELD_DELAY:
         lcdDrawTextAlignedLeft(y, STR_DELAY);
+        if (cstate == LS_FAMILY_EDGE) {
+          lcdDrawText(CSWONE_2ND_COLUMN, y, STR_NA);
+          if (attr) {
+            REPEAT_LAST_CURSOR_MOVE();
+          }
+          break;
+        }
         if (cs->delay > 0)
           lcdDrawNumber(CSWONE_2ND_COLUMN, y, cs->delay, attr|PREC1|LEFT);
         else

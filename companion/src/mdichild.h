@@ -81,7 +81,7 @@ class MdiChild : public QWidget
     QAction * getAction(const Actions type);
 
   public slots:
-    void newFile();
+    void newFile(bool createDefaults = true);
     bool loadFile(const QString & fileName, bool resetCurrentFile=true);
     bool save();
     bool saveAs(bool isNew=false);

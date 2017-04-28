@@ -19,6 +19,7 @@
  */
 
 #include <QApplication>
+#include <QCommandLineParser>
 #include <QMessageBox>
 #include <QString>
 #include <QTextStream>
@@ -36,7 +37,6 @@
 #include "simulatormainwindow.h"
 #include "simulatorstartupdialog.h"
 #include "storage.h"
-#include "qxtcommandoptions.h"
 #include "translations.h"
 #include "version.h"
 
@@ -44,40 +44,203 @@ using namespace Simulator;
 
 int finish(int exitCode);
 
-void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessageBox::NoIcon)
+void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessageBox::NoIcon, bool useConsole = false)
 {
+  if (useConsole) {
+    if (icon < QMessageBox::Warning)
+      QTextStream(stdout) << message << endl;
+    else
+      QTextStream(stderr) << message << endl;
+
+    return;
+  }
+  // use GUI
   QMessageBox msgBox;
-  msgBox.setText(message);
+  QString escMsg(message);
+  escMsg.replace("<", "&lt;");
+  msgBox.setText("<html><body><pre>" + escMsg + "</pre></body></html>");
   msgBox.setIcon(icon);
   msgBox.exec();
 }
 
-void sharedHelpText(QTextStream &stream)
+const QString sharedHelpText()
 {
+  QString ret;
+  QTextStream stream(&ret);
   // list all available profiles
-  stream << endl << QObject::tr("Available profiles:") << endl;
+  stream << endl << QApplication::translate("SimulatorMain", "Available profiles:") << endl;
   QMapIterator<int, QString> pi(g.getActiveProfiles());
   while (pi.hasNext()) {
     pi.next();
-    stream << "\t" << QObject::tr("ID: ") << pi.key() << QObject::tr(" Name: ") << pi.value() << endl;
+    stream << "\t" << QApplication::translate("SimulatorMain", "ID: ") << pi.key() << "; " << QApplication::translate("SimulatorMain", "Name: ") << pi.value() << endl;
   }
   // list all available radios
-  stream << endl << QObject::tr("Available radios:") << endl;
+  stream << endl << QApplication::translate("SimulatorMain", "Available radios:") << endl;
   foreach(QString name, SimulatorLoader::getAvailableSimulators()) {
     stream << "\t" << name << endl;
   }
+  return ret;
+}
+
+void showHelp(QCommandLineParser & parser, const QString & addMsg = QString(), int exitCode = 0) {
+  QString msg = "\n";
+  if (!addMsg.isEmpty())
+    msg.append(addMsg).append("\n\n");
+  msg.append(parser.helpText());
+  msg.append(sharedHelpText());
+  // display
+  showMessage(msg, (exitCode ? QMessageBox::Warning : QMessageBox::Information));
+}
+
+enum CommandLineParseResult
+{
+  CommandLineNone,
+  CommandLineFound,
+  CommandLineExitOk,
+  CommandLineExitErr
+};
+
+CommandLineParseResult cliOptions(SimulatorOptions * simOptions, int * profileId)
+{
+  QCommandLineParser cliOptions;
+  bool cliOptsFound = false;
+  int pId = *profileId;
+
+  const QCommandLineOption optHelp = cliOptions.addHelpOption();
+  const QCommandLineOption optVer = cliOptions.addVersionOption();
+
+  const QCommandLineOption optProfi(QStringList() << "profile" << "p",
+                                    QApplication::translate("SimulatorMain", "Radio profile ID or Name to use for simulator."),
+                                    QApplication::translate("SimulatorMain", "profile"));
+
+  const QCommandLineOption optRadio(QStringList() << "radio" << "r",
+                                    QApplication::translate("SimulatorMain", "Radio type to simulate (usually defined in profile)."),
+                                    QApplication::translate("SimulatorMain", "radio"));
+
+  const QCommandLineOption optSdDir(QStringList() << "sd-path" << "s",
+                                    QApplication::translate("SimulatorMain", "Directory containing the SD card image to use. The default is configured in the chosen Radio Profile."),
+                                    QApplication::translate("SimulatorMain", "path"));
+
+  const QCommandLineOption optStart(QStringList() << "start-with" << "w",
+                                    QApplication::translate("SimulatorMain", "Data source type to use (applicable to Horus only). One of:") + " (file|folder|sd)",
+                                    QApplication::translate("SimulatorMain", "type"));
+
+  cliOptions.addPositionalArgument(QApplication::translate("SimulatorMain", "data-source"),
+                                   QApplication::translate("SimulatorMain", "Radio data (.bin/.eeprom/.otx) image file to use OR data folder path (for Horus-style radios).\n"
+                                         "NOTE: any existing EEPROM data incompatible with the selected radio type may be overwritten!"),
+                                   QApplication::translate("SimulatorMain", "[data-source]"));
+
+  cliOptions.addOption(optProfi);
+  cliOptions.addOption(optRadio);
+  cliOptions.addOption(optSdDir);
+  cliOptions.addOption(optStart);
+
+  QStringList args = QCoreApplication::arguments();
+#ifdef Q_OS_WIN
+  // For backwards compat. with QxtCommandOptions, convert Windows-style CLI switches (/opt) since QCommandLineParser doesn't support them
+  for (int i=0; i < args.size(); ++i) {
+    args[i].replace(QRegExp("^/([^\\s]{2,10})$"), "--\\1");  // long opts
+    args[i].replace(QRegExp("^/([^\\s]){1}$"), "-\\1");      // short opts
+  }
+#endif
+
+  if (!cliOptions.parse(args)) {
+    showHelp(cliOptions, cliOptions.errorText());
+    return CommandLineExitErr;
+  }
+
+  if (cliOptions.isSet(optHelp)) {
+    showHelp(cliOptions);
+    return CommandLineExitOk;
+  }
+
+  if (cliOptions.isSet(optVer)) {
+    showMessage(APP_SIMULATOR " v" VERSION " " __DATE__, QMessageBox::Information);
+    return CommandLineExitOk;
+  }
+
+  if (cliOptions.isSet(optProfi)) {
+    bool chk;
+    pId = cliOptions.value(optProfi).toInt(&chk);
+    if (!chk)
+      pId = g.getActiveProfiles().key(cliOptions.value(optProfi), -1);
+
+    if (!g.getActiveProfiles().contains(pId)) {
+      showHelp(cliOptions, QApplication::translate("SimulatorMain", "Error: Profile ID %1 was not found.").arg(pId));
+      return CommandLineExitErr;
+    }
+
+    *simOptions = g.profile[pId].simulatorOptions();
+    cliOptsFound = true;
+  }
+
+  if (cliOptions.isSet(optRadio)) {
+    simOptions->firmwareId = cliOptions.value(optRadio);
+    cliOptsFound = true;
+  }
+
+  if (cliOptsFound || (simOptions->dataFile.isEmpty() && !simOptions->firmwareId.isEmpty())) {
+    // this constructs a new default radio data file name in the user-configured eeprom directory
+    simOptions->dataFile = SimulatorStartupDialog::radioEepromFileName(simOptions->firmwareId, g.eepromDir());
+  }
+
+  if (cliOptions.isSet(optSdDir)) {
+    simOptions->sdPath = cliOptions.value(optSdDir);
+    cliOptsFound = true;
+  }
+
+  if (cliOptions.positionalArguments().size()) {
+    QString datasrc = cliOptions.positionalArguments().at(0);
+    if (datasrc.contains(QRegExp(".*\\.[\\w]{2,6}$"))) {
+      simOptions->dataFile = datasrc;
+      simOptions->startupDataType = SimulatorOptions::START_WITH_FILE;
+    }
+    else {
+      simOptions->dataFolder = datasrc;
+      simOptions->startupDataType = SimulatorOptions::START_WITH_FOLDER;
+    }
+    cliOptsFound = true;
+  }
+
+  if (cliOptions.isSet(optStart)) {
+    QString stTyp = cliOptions.value(optStart);
+    if (stTyp == "file") {
+      simOptions->startupDataType = SimulatorOptions::START_WITH_FILE;
+    }
+    else  if (stTyp == "folder") {
+      simOptions->startupDataType = SimulatorOptions::START_WITH_FOLDER;
+    }
+    else  if (stTyp == "sd") {
+      simOptions->startupDataType = SimulatorOptions::START_WITH_SDPATH;
+    }
+    else {
+      showHelp(cliOptions, QApplication::translate("SimulatorMain", "Unrecognized startup data source type: %1").arg(stTyp));
+      return CommandLineExitErr;
+    }
+
+    cliOptsFound = true;
+  }
+
+  *profileId = pId;
+  if (cliOptsFound)
+    return CommandLineFound;
+  else
+    return CommandLineNone;
 }
 
 int main(int argc, char *argv[])
 {
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+  /* From doc: This attribute must be set before Q(Gui)Application is constructed. */
+  QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
   QApplication app(argc, argv);
   app.setApplicationName(APP_SIMULATOR);
+  app.setApplicationVersion(VERSION);
   app.setOrganizationName(COMPANY);
   app.setOrganizationDomain(COMPANY_DOMAIN);
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
-  app.setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
 
   Q_INIT_RESOURCE(companion);
 
@@ -86,9 +249,7 @@ int main(int argc, char *argv[])
 
   CustomDebug::setFilterRules();
 
-  g.init();
-
-  QString resultMsg;
+  g.init();  // init settings before installing translations
 
   Translations::installTranslators();
 
@@ -101,41 +262,21 @@ int main(int argc, char *argv[])
     sdlFlags |= SDL_INIT_AUDIO;
   #endif
   if (SDL_Init(sdlFlags) < 0) {
-    showMessage(QObject::tr("WARNING: couldn't initialize SDL:\n%1").arg(SDL_GetError()), QMessageBox::Warning);
+    showMessage(QApplication::translate("SimulatorMain", "WARNING: couldn't initialize SDL:\n%1").arg(SDL_GetError()), QMessageBox::Warning);
   }
 #endif
-
-  QxtCommandOptions cliOptions;
-  bool cliOptsFound = false;
-  int profileId = (g.simuLastProfId() > -1 ? g.simuLastProfId() : g.id());
-  SimulatorOptions simOptions = g.profile[profileId].simulatorOptions();
 
   registerStorageFactories();
   registerOpenTxFirmwares();
   SimulatorLoader::registerSimulators();
 
   if (!SimulatorLoader::getAvailableSimulators().size()) {
-    showMessage(QObject::tr("ERROR: No simulator libraries available."), QMessageBox::Critical);
+    showMessage(QApplication::translate("SimulatorMain", "ERROR: No simulator libraries available."), QMessageBox::Critical);
     return finish(3);
   }
 
-  cliOptions.add("profile", QObject::tr("Radio profile ID or Name to use for simulator."), QxtCommandOptions::ValueRequired);
-  cliOptions.alias("profile", "p");
-  cliOptions.add("radio", QObject::tr("Radio type to simulate (usually defined in profile)."), QxtCommandOptions::ValueRequired);
-  cliOptions.alias("radio", "r");
-  cliOptions.add("help", QObject::tr("show this help text"));
-  cliOptions.alias("help", "h");
-  cliOptions.parse(QCoreApplication::arguments());
-  if (cliOptions.count("help") || cliOptions.showUnrecognizedWarning()) {
-    QTextStream stream(&resultMsg);
-    stream << QObject::tr("Usage: simulator [OPTION]... [EEPROM.BIN FILE OR DATA FOLDER] ") << endl << endl;
-    stream << QObject::tr("Options:") << endl;
-    cliOptions.showUsage(false, stream);
-    sharedHelpText(stream);
-    // display
-    showMessage(resultMsg, QMessageBox::Information);
-    return finish(1);
-  }
+  int profileId = (g.simuLastProfId() > -1 ? g.simuLastProfId() : g.id());
+  SimulatorOptions simOptions = g.profile[profileId].simulatorOptions();
 
   // TODO : defaults should be set in Profile::init()
   if (simOptions.firmwareId.isEmpty())
@@ -145,44 +286,18 @@ int main(int argc, char *argv[])
   if (simOptions.sdPath.isEmpty())
     simOptions.sdPath = g.profile[profileId].sdPath();
 
-  if (cliOptions.count("profile") == 1) {
-    bool chk;
-    int pid = cliOptions.value("profile").toInt(&chk);
-    if (chk)
-      profileId = pid;
-    else
-      profileId = g.getActiveProfiles().key(cliOptions.value("profile").toString(), -1);
+  // Handle startup options
 
-    if (!g.getActiveProfiles().contains(profileId)) {
-      fprintf(stderr, "Error: Profile ID %d was not found.", profileId);
-      return finish(1);
-    }
+  // check for command-line options
+  CommandLineParseResult cliResult = cliOptions(&simOptions, &profileId);
 
-    simOptions = g.profile[profileId].simulatorOptions();
-    cliOptsFound = true;
-  }
+  if (cliResult == CommandLineExitOk)
+    return finish(0);
+  if (cliResult == CommandLineExitErr)
+    return finish(1);
 
-  if (cliOptions.count("radio") == 1) {
-    simOptions.firmwareId = cliOptions.value("radio").toString();
-    cliOptsFound = true;
-  }
-
-  if (cliOptsFound || (simOptions.dataFile.isEmpty() && !simOptions.firmwareId.isEmpty()))
-    simOptions.dataFile = SimulatorStartupDialog::radioEepromFileName(simOptions.firmwareId, g.eepromDir());
-
-  if (!cliOptions.positional().isEmpty()) {
-    if (QString(cliOptions.positional().at(0)).contains(QRegExp(".*\\.[\\w]{2,6}$"))) {
-      simOptions.dataFile = cliOptions.positional()[0];
-      simOptions.startupDataType = SimulatorOptions::START_WITH_FILE;
-    }
-    else {
-      simOptions.dataFolder = cliOptions.positional()[0];
-      simOptions.startupDataType = SimulatorOptions::START_WITH_FOLDER;
-    }
-    cliOptsFound = true;
-  }
-
-  if (!cliOptsFound || profileId == -1 || simOptions.firmwareId.isEmpty() || (simOptions.dataFile.isEmpty() && simOptions.dataFolder.isEmpty())) {
+  // Present GUI startup options dialog if necessary
+  if (cliResult == CommandLineNone || profileId == -1 || simOptions.firmwareId.isEmpty() || (simOptions.dataFile.isEmpty() && simOptions.dataFolder.isEmpty())) {
     SimulatorStartupDialog * dlg = new SimulatorStartupDialog(&simOptions, &profileId);
     int ret = dlg->exec();
     delete dlg;
@@ -190,32 +305,37 @@ int main(int argc, char *argv[])
       return finish(0);
     }
   }
-  qDebug() << "profileId=" << profileId << simOptions;
+  qDebug() << "Starting with options: profileId=" << profileId << simOptions;
 
+  // Validate startup options
+
+  QString resultMsg;
   if (profileId < 0 || simOptions.firmwareId.isEmpty() || (simOptions.dataFile.isEmpty() && simOptions.dataFolder.isEmpty())) {
-    resultMsg = QObject::tr("ERROR: Couldn't start simulator, missing radio/profile/data file/folder.\n  Profile ID: [%1]; Radio ID: [%2];\nData File: [%3]");
+    resultMsg = QApplication::translate("SimulatorMain", "ERROR: Couldn't start simulator, missing radio/profile/data file/folder.\n  Profile ID: [%1]; Radio ID: [%2];\nData File: [%3]");
     showMessage(resultMsg.arg(profileId).arg(simOptions.firmwareId, simOptions.dataFile), QMessageBox::Critical);
     return finish(1);
   }
   if (!g.getActiveProfiles().contains(profileId) || !SimulatorLoader::getAvailableSimulators().contains(simOptions.firmwareId)) {
     QTextStream stream(&resultMsg);
-    stream << QObject::tr("ERROR: Radio profile or simulator firmware not found.\nProfile ID: [%1]; Radio ID: [%2]")
-                    .arg(profileId).arg(simOptions.firmwareId);
-    sharedHelpText(stream);
+    stream << QApplication::translate("SimulatorMain", "ERROR: Radio profile or simulator firmware not found.\nProfile ID: [%1]; Radio ID: [%2]").arg(profileId).arg(simOptions.firmwareId);
+    stream << sharedHelpText();
     showMessage(resultMsg, QMessageBox::Critical);
-    return finish(2);
+    return finish(1);
   }
 
-  Firmware::setCurrentVariant(Firmware::getFirmwareForId(simOptions.firmwareId));
+  // All checks passed, save profile ID and start simulator
 
   g.sessionId(profileId);
   g.simuLastProfId(profileId);
+
+  // Set global firmware environment
+  Firmware::setCurrentVariant(Firmware::getFirmwareForId(simOptions.firmwareId));
 
   int result = 0;
   SimulatorMainWindow * mainWindow = new SimulatorMainWindow(NULL, simOptions.firmwareId, SIMULATOR_FLAGS_STANDALONE);
   if ((result = mainWindow->getExitStatus(&resultMsg))) {
     if (resultMsg.isEmpty())
-      resultMsg = QObject::tr("Uknown error during Simulator startup.");
+      resultMsg = QApplication::translate("SimulatorMain", "Uknown error during Simulator startup.");
     showMessage(resultMsg, QMessageBox::Critical);
   }
   else if (mainWindow->setOptions(simOptions, true)) {

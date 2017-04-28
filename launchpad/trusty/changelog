@@ -1,3 +1,15 @@
+opentx-companion22 (2.2.0~N370~trusty) trusty; urgency=low
+
+  * New release 2.2.0~N370 RC17
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Thu, 27 Apr 2017 10:59:16 +0200
+
+opentx-companion22 (2.2.0~N369~trusty) trusty; urgency=low
+
+  * New release 2.2.0~N369 RC16
+
+ -- projectkk2glider <projectkk2glider@gmail.com>  Sat, 15 Apr 2017 09:58:45 +0200
+
 opentx-companion22 (2.2.0~N366.1~trusty) trusty; urgency=low
 
   * New release 2.2.0~N366 RC14
