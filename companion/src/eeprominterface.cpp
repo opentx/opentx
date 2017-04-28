@@ -473,17 +473,6 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   return result;
 }
 
-QString RotaryEncoderString(int index)
-{
-  static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
-  return CHECK_IN_ARRAY(rotary, index);
-}
-
-
-/*
- * RawSource
- */
-
 QString RawSource::toString(const ModelData * model, const GeneralSettings * const generalSettings) const
 {
   static const QString trims[] = {
@@ -508,6 +497,8 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     QObject::tr("Cell-"), QObject::tr("Cells-"), QObject::tr("Vfas-"), QObject::tr("Curr+"), QObject::tr("Powr+"),
     QObject::tr("ACC"), QObject::tr("GPS Time"),
   };
+
+  static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
 
   if (index<0) {
     return QObject::tr("----");
@@ -541,7 +532,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     case SOURCE_TYPE_TRIM:
       return CHECK_IN_ARRAY(trims, index);
     case SOURCE_TYPE_ROTARY_ENCODER:
-      return RotaryEncoderString(index);
+      return CHECK_IN_ARRAY(rotary, index);
     case SOURCE_TYPE_MAX:
       return QObject::tr("MAX");
 
@@ -553,7 +544,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return result;
 
     case SOURCE_TYPE_CUSTOM_SWITCH:
-      return QObject::tr("L%1").arg(index+1);
+      return QObject::tr("LSw%1").arg(index+1, 2, 10, QChar('0'));
 
     case SOURCE_TYPE_CYC:
       return QObject::tr("CYC%1").arg(index+1);
@@ -691,7 +682,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         }
 
       case SWITCH_TYPE_VIRTUAL:
-        return QObject::tr("L%1").arg(index);
+        return QObject::tr("LSw%1").arg(index, 2, 10, QChar('0'));
 
       case SWITCH_TYPE_MULTIPOS_POT:
         if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))

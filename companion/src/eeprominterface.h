@@ -30,8 +30,6 @@
 #include <iostream>
 #include <QDebug>
 
-QString RotaryEncoderString(int index);
-
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
   {1, 3, 2, 4},
