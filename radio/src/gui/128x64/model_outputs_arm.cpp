@@ -35,8 +35,10 @@ enum MenuModelOutputsItems {
 
 #if defined(PPM_UNIT_US)
   #define LIMITS_MIN_POS          12*FW+1
+  #define PREC_THRESHOLD          804
 #else
   #define LIMITS_MIN_POS          12*FW-2
+  #define PREC_THRESHOLD          0
 #endif
 
 #define LIMITS_OFFSET_POS         8*FW-1
@@ -280,7 +282,7 @@ void menuModelLimits(event_t event)
             break;
           }
 #endif
-          if (ld->min <= 0) {
+          if (ld->min <= PREC_THRESHOLD) {
             lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {
@@ -295,7 +297,7 @@ void menuModelLimits(event_t event)
             break;
           }
 #endif
-          if (ld->max >= 0) {
+          if (ld->max >= -PREC_THRESHOLD) {
             lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {
