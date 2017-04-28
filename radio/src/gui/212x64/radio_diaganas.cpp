@@ -42,6 +42,8 @@ void menuRadioDiagAnalogs(event_t event)
   }
 
   // SWR
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH, "RAS");
-  lcdDrawNumber(10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.swr.value, RIGHT);
+  if((IS_MODULE_XJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (IS_MODULE_XJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
+    lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH, "RAS");
+    lcdDrawNumber(10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.swr.value, RIGHT);
+  }
 }
