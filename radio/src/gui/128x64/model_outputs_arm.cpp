@@ -282,7 +282,6 @@ void menuModelLimits(event_t event)
             break;
           }
 #endif
-          //TRACE("LDMIN :%d",ld->min);
           if (ld->min <= PREC_THRESHOLD) {
             lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
