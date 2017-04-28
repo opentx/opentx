@@ -21,7 +21,7 @@
 #include "hardware.h"
 #include "ui_hardware.h"
 
-void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos = true)
+void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos)
 {
   Board::Type board = getCurrentBoard();
   if (IS_STM32(board) && index < getBoardCapability(board, Board::Switches)) {
@@ -92,7 +92,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   ui(new Ui::Hardware)
 {
   ui->setupUi(this);
-  
+
   Board::Type board = firmware->getBoard();
 
   if (IS_STM32(board)) {
@@ -163,7 +163,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->bluetoothEnable->hide();
     ui->bluetoothName->hide();
   }
-  
+
   if (IS_HORUS_OR_TARANIS(board)) {
     ui->filterEnable->setChecked(!generalSettings.jitterFilter);
   }
