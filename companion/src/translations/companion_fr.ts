@@ -4733,7 +4733,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1079"/>
         <source>Edit Settings</source>
-        <translation>Éditier les réglages</translation>
+        <translation>Éditer les réglages</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1080"/>
@@ -4783,12 +4783,12 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="1085"/>
         <source>Edit Radio Splash Image...</source>
-        <translation>Éditier l&apos;écran d&apos;accueil de la radio...</translation>
+        <translation>Éditer l&apos;écran d&apos;accueil de la radio...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1085"/>
         <source>Edit the splash image of your Radio</source>
-        <translation>Éditier l&apos;écran d&apos;accueil de la radio</translation>
+        <translation>Éditer l&apos;écran d&apos;accueil de la radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1086"/>
@@ -11030,11 +11030,6 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
         <translation></translation>
     </message>
     <message>
-        <location filename="../simulation/telemetrysimu.ui" line="531"/>
-        <source>SWR</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../simulation/telemetrysimu.ui" line="57"/>
         <source>Simulate</source>
         <translation>Simuler</translation>
@@ -11206,6 +11201,11 @@ Horodatage</translation>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1026"/>
         <source>Tmp1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../simulation/telemetrysimu.ui" line="531"/>
+        <source>RAS</source>
         <translation></translation>
     </message>
     <message>
