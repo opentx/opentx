@@ -250,7 +250,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
     radioData.models.resize(firmware->getCapability(Models));
   }
   for (int i = 0; i < firmware->getCapability(Models); i++) {
-    if (!loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
+    if (i < (int)radioData.models.size() && !loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
       std::cout << " ko\n";
       errors.set(UNKNOWN_ERROR);
       if (getCurrentFirmware()->getCapability(Models) == 0) {
