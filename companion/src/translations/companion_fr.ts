@@ -806,7 +806,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="1089"/>
         <source>CV%1</source>
-        <translation type="unfinished">CB%1</translation>
+        <translation>CB%1</translation>
     </message>
 </context>
 <context>
@@ -7072,7 +7072,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="912"/>
         <source>Adjust %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajuster %1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="1040"/>
@@ -7571,7 +7571,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../eeprominterface.cpp" line="547"/>
         <location filename="../eeprominterface.cpp" line="685"/>
         <source>LSw%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="642"/>
