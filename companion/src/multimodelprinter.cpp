@@ -351,7 +351,6 @@ QString MultiModelPrinter::printLimits()
   columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>" \
                  "<tr>" \
                  " <td><b>" + tr("Channel") + "</b></td>" \
-                 " <td><b>" + (firmware->getCapability(ChannelsName) > 0 ? tr("Name") : "") + "</b></td>" \
                  " <td><b>" + tr("Offset") + "</b></td>" \
                  " <td><b>" + tr("Min") + "</b></td>" \
                  " <td><b>" + tr("Max") + "</b></td>" \
@@ -365,8 +364,6 @@ QString MultiModelPrinter::printLimits()
       continue;
     columns.append("<tr><td><b>");
     COMPARE(modelPrinter->printChannelName(i));
-    columns.append("</b></td><td>");
-    COMPARE(modelPrinter->printOutputName(i));
     columns.append("</td><td>");
     COMPARE(model->limitData[i].offsetToString());
     columns.append("</td><td>");
@@ -441,7 +438,7 @@ QString MultiModelPrinter::printMixers()
     }
     if (count > 0) {
       columns.append("<tr><td width='20%'><b>");
-      COMPARE(modelPrinter->printMixerName(i+1));
+      COMPARE(modelPrinter->printChannelName(i));
       columns.append("</b></td><td>");
       for (int j=0; j<count; j++) {
         if (j > 0)
@@ -471,7 +468,9 @@ QString MultiModelPrinter::printCurves(QTextDocument * document)
     }
     if (!curveEmpty) {
       count++;
-      columns.append("<tr><td width='20%'><b>" + tr("CV%1").arg(i+1) + "</b></td><td>");
+      columns.append("<tr><td width='20%'><b>");
+      COMPARE(modelPrinter->printCurveName(i));
+      columns.append("</b></td><td>");
       COMPARE(modelPrinter->printCurve(i));
       for (int k=0; k < modelPrinterMap.size(); k++)
         columns.append(k, QString("<br/><img src='%1' border='0' />").arg(modelPrinterMap.value(k).second->createCurveImage(i, document)));
@@ -495,7 +494,7 @@ QString MultiModelPrinter::printLogicalSwitches()
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     bool lsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
-      if (!modelPrinterMap.value(k).second->printLogicalSwitchLine(i).isEmpty()) {
+      if (!modelPrinterMap.value(k).first->logicalSw[i].isEmpty()) {
         lsEmpty = false;
         break;
       }
@@ -524,7 +523,7 @@ QString MultiModelPrinter::printCustomFunctions()
   for (int i=0; i < firmware->getCapability(CustomFunctions); i++) {
     bool sfEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
-      if (modelPrinterMap.value(k).first->customFn[i].swtch.type != SWITCH_TYPE_NONE) {
+      if (!modelPrinterMap.value(k).first->customFn[i].isEmpty()) {
         sfEmpty = false;
         break;
       }

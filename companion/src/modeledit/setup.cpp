@@ -1104,7 +1104,7 @@ void SetupPanel::populateThrottleSourceCB()
     ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), i);
   }
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
-    ui->throttleSource->addItem(ModelPrinter::printChannelName(i));
+    ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings));
   }
   ui->throttleSource->setCurrentIndex(model->thrTraceSrc);
   lock = false;

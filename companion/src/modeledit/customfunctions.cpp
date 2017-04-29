@@ -337,6 +337,7 @@ void CustomFunctionsPanel::playMusic()
 #define CUSTOM_FUNCTION_REPEAT         (1<<7)
 #define CUSTOM_FUNCTION_PLAY           (1<<8)
 #define CUSTOM_FUNCTION_BL_COLOR       (1<<9)
+#define CUSTOM_FUNCTION_SHOW_FUNC      (1<<10)
 
 void CustomFunctionsPanel::customFunctionEdited()
 {
@@ -357,7 +358,7 @@ void CustomFunctionsPanel::functionEdited()
     RawSwitch swtch = functions[index].swtch;
     functions[index].clear();
     functions[index].swtch = swtch;
-    functions[index].func = (AssignFunc)fswtchFunc[index]->itemData(fswtchFunc[index]->currentIndex()).toInt();
+    functions[index].func = (AssignFunc)fswtchFunc[index]->currentData().toInt();
     refreshCustomFunction(index);
     emit modified();
     lock = false;
@@ -382,7 +383,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       cfn.adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
 
-    if (cfn.swtch.toValue()) {
+    if (!cfn.isEmpty()) {
+      widgetsMask |= CUSTOM_FUNCTION_SHOW_FUNC;
 
       if (func>=FuncOverrideCH1 && func<=FuncOverrideCH32) {
         if (model) {
@@ -395,7 +397,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             cfn.param = fswtchParam[i]->value();
           }
           fswtchParam[i]->setValue(cfn.param);
-          widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_ENABLE;
+          widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM | CUSTOM_FUNCTION_ENABLE;
         }
       }
       else if (func==FuncLogs) {
@@ -456,7 +458,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         if (modified)
           cfn.param = fswtchParamT[i]->currentData().toInt();
         populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_ENABLE;
+        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
       }
       else if (func==FuncPlaySound || func==FuncPlayHaptic || func==FuncPlayValue || func==FuncPlayPrompt || func==FuncPlayBoth || func==FuncBackgroundMusic) {
         if (func != FuncBackgroundMusic) {
@@ -467,7 +469,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           if (modified)
             cfn.param = fswtchParamT[i]->currentData().toInt();
           populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-          widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM + CUSTOM_FUNCTION_REPEAT;
+          widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_REPEAT;
         }
         else if (func==FuncPlayPrompt || func==FuncPlayBoth) {
           if (firmware->getCapability(VoicesAsNumbers)) {
@@ -475,10 +477,10 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             fswtchParam[i]->setSingleStep(1);
             fswtchParam[i]->setMinimum(0);
             if (func==FuncPlayPrompt) {
-              widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT + CUSTOM_FUNCTION_GV_TOOGLE;
+              widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM | CUSTOM_FUNCTION_REPEAT | CUSTOM_FUNCTION_GV_TOOGLE;
             }
             else {
-              widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM + CUSTOM_FUNCTION_REPEAT;
+              widgetsMask |= CUSTOM_FUNCTION_NUMERIC_PARAM | CUSTOM_FUNCTION_REPEAT;
               fswtchParamGV[i]->setChecked(false);
             }
             fswtchParam[i]->setMaximum(func==FuncPlayBoth ? 254 : 255);
@@ -563,7 +565,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
     }
 
-    fswtchFunc[i]->setVisible(cfn.swtch.toValue());
+    fswtchFunc[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_SHOW_FUNC);
     fswtchParam[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_NUMERIC_PARAM);
     fswtchParamTime[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_TIME_PARAM);
     fswtchParamGV[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_TOOGLE);
@@ -678,7 +680,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
       // b->model()->setData(index, v, Qt::UserRole - 1);
     }
     else {
-      b->addItem(CustomFunctionData(AssignFunc(i)).funcToString(), i);
+      b->addItem(CustomFunctionData(AssignFunc(i)).funcToString(model), i);
       if (i == value) {
         b->setCurrentIndex(b->count()-1);
       }

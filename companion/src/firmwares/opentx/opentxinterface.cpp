@@ -489,11 +489,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return 0;
     case PermTimers:
       return (IS_2560(board) || IS_ARM(board));
-    case SwitchesPositions:
-      if (IS_HORUS_OR_TARANIS(board))
-        return getBoardCapability(board, Board::Switches) * 3;
-      else
-        return 9;
     case CustomFunctions:
       if (IS_ARM(board))
         return 64;

@@ -316,7 +316,7 @@ class CurveReference {
     CurveRefType type;
     int value;
 
-    QString toString() const;
+    QString toString(const ModelData * model = NULL, bool verbose = true) const;
 };
 
 enum InputMode {
@@ -361,6 +361,8 @@ class CurveData {
     CurveData();
     void clear(int count);
     bool isEmpty() const;
+    QString nameToString(const int idx) const;
+
     CurveType type;
     bool smooth;
     int  count;
@@ -468,7 +470,9 @@ class LogicalSwitchData { // Logical Switches data
     unsigned int delay;
     unsigned int duration;
     int andsw;
+
     void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
+    bool isEmpty() const;
     CSFunctionFamily getFunctionFamily() const;
     unsigned int getRangeFlags() const;
     QString funcToString() const;
@@ -531,8 +535,10 @@ class CustomFunctionData { // Function Switches data
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
     int repeatParam;
+
     void clear();
-    QString funcToString() const;
+    bool isEmpty() const;
+    QString funcToString(const ModelData * model = NULL) const;
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;
     QString enabledToString() const;

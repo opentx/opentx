@@ -156,7 +156,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       curveCB->setProperty("index", i);
       int numcurves = firmware->getCapability(NumCurves);
       for (int j=-numcurves; j<=numcurves; j++) {
-        curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(), j);
+        curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(&model, false), j);
       }
       curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
       connect(curveCB, SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));

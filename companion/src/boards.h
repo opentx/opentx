@@ -111,6 +111,7 @@ namespace Board {
     Sliders,
     MouseAnalogs,
     Switches,
+    SwitchPositions,
     FactoryInstalledSwitches,
     NumTrims,
     NumTrimSwitches

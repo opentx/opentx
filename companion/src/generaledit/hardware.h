@@ -56,7 +56,7 @@ class HardwarePanel : public GeneralPanel
   protected:
     void setupPotType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type);
     void setupSliderType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type);
-    void setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos);
+    void setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos = true);
 
   private:
     Ui::Hardware *ui;

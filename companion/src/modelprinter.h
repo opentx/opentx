@@ -75,13 +75,11 @@ class ModelPrinter: public QObject
     QString printInputName(int idx);
     QString printInputLine(int idx);
     QString printInputLine(const ExpoData & ed);
-    QString printMixerName(int curDest);
-    QString printMixerLine(int idx, bool showMultiplex, int highlightedSource = 0);
     QString printMixerLine(const MixData & md, bool showMultiplex, int highlightedSource = 0);
     QString printLogicalSwitchLine(int idx);
     QString printCustomFunctionLine(int idx);
-    static QString printChannelName(int idx);
-    QString printOutputName(int idx);
+    QString printChannelName(int idx);
+    QString printCurveName(int idx);
     QString printCurve(int idx);
     QString createCurveImage(int idx, QTextDocument * document);
 

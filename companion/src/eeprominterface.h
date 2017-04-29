@@ -30,8 +30,6 @@
 #include <iostream>
 #include <QDebug>
 
-QString RotaryEncoderString(int index);
-
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
   {1, 3, 2, 4},
@@ -52,7 +50,6 @@ enum Capability {
   VoicesMaxLength,
   MultiLangVoice,
   ModelImage,
-  SwitchesPositions,
   CustomFunctions,
   SafetyChannelCustomFunction,
   LogicalSwitches,
@@ -186,9 +183,6 @@ void getEEPROMString(char *dst, const char *src, int size);
 
 float ValToTim(int value);
 int TimToVal(float value);
-
-QString getSignedStr(int value);
-QString getGVarString(int16_t val, bool sign=false);
 
 inline int applyStickMode(int stick, unsigned int mode)
 {
