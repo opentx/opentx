@@ -31,6 +31,7 @@
 lua_State *lsWidgets = NULL;
 extern int custom_lua_atpanic(lua_State *L);
 
+#define LUA_WIDGET_FILENAME                "/main.lua"
 #define LUA_FULLPATH_MAXLEN                (LEN_FILE_PATH_MAX + LEN_SCRIPT_FILENAME + LEN_FILE_EXTENSION_MAX)  // max length (example: /SCRIPTS/THEMES/mytheme.lua)
 
 void exec(int function, int nresults=0)
@@ -496,9 +497,10 @@ void luaLoadFiles(const char * directory, void (*callback)())
       res = f_readdir(&dir, &fno);                   /* Read a directory item */
       if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
       uint8_t len = strlen(fno.fname);
-      if (len > 0 && fno.fname[0]!='.' && (fno.fattrib & AM_DIR)) {
+      if (len > 0 && (unsigned int)(len + pathlen + sizeof(LUA_WIDGET_FILENAME)) <= sizeof(path) &&
+          fno.fname[0]!='.' && (fno.fattrib & AM_DIR)) {
         strcpy(&path[pathlen], fno.fname);
-        strcat(&path[pathlen], "/main.lua");
+        strcat(&path[pathlen], LUA_WIDGET_FILENAME);
         if (isFileAvailable(path)) {
           luaLoadFile(path, callback);
         }
