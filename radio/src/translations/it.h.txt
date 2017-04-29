@@ -1224,7 +1224,7 @@
 #define TR_DISCOVER_SENSORS    INDENT "Cerca nuovi sensori"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Ferma ricerca.."
 #define TR_DELETE_ALL_SENSORS  INDENT "Elimina tutti i sensori"
-#define TR_CONFIRMDELETE       "Confermi eliminazione?"
+#define TR_CONFIRMDELETE       "Confermi " LCDW_128_480_LINEBREAK "eliminazione ?"
 #define TR_SELECT_WIDGET       "Select widget"
 #define TR_REMOVE_WIDGET       "Remove widget"
 #define TR_WIDGET_SETTINGS     "Widget settings"

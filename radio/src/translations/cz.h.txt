@@ -40,8 +40,6 @@
  *  \0               -ends current string
  */
 
-
-
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON              "\003"
 #define TR_OFFON               "VYP""ZAP"
@@ -1227,7 +1225,7 @@
 #define TR_DISCOVER_SENSORS    INDENT "Detekovat nové senzory"
 #define TR_STOP_DISCOVER_SENSORS INDENT "Zastavit autodetekci"
 #define TR_DELETE_ALL_SENSORS  INDENT "Odebrat všechny senzory"
-#define TR_CONFIRMDELETE       "Opravdu odstranit vše?"
+#define TR_CONFIRMDELETE       "Opravdu " LCDW_128_480_LINEBREAK "odstranit vše ?"
 #define TR_SELECT_WIDGET       "Zvolit widget"
 #define TR_REMOVE_WIDGET       "Odstranit widget"
 #define TR_WIDGET_SETTINGS     "Nastavení widgetu"
