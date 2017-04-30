@@ -6,6 +6,7 @@ Franck Aguerre (jivarofad)
 Romolo Manfredini (romoloman)
 Martin Hotař (mhotar)
 Maxim (Max) Paperno (mpaperno)
+Arne Schwabe (schwabe)
 
 Rob Thomson
 Bryan J. Rentoul (gruvin)
