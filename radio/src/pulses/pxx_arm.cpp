@@ -134,7 +134,7 @@ void pxxPutPcmTail(uint8_t port)
 #else
 void pxxPutPcmPart(uint8_t port, uint8_t value)
 {
-  pulse_duration_t duration = value ? 48 : 32;
+  pulse_duration_t duration = value ? 47 : 31;
   *modulePulsesData[port].pxx.ptr++ = duration;
   modulePulsesData[port].pxx.rest -= duration + 1;
 }
