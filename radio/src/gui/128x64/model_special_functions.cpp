@@ -366,8 +366,10 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
             drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
-            INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-            INCDEC_ENABLE_CHECK(isSourceAvailable);
+            if (active) {
+              INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+              INCDEC_ENABLE_CHECK(isSourceAvailable);
+            }
           }
 #elif defined(VOICE)
           else if (func == FUNC_PLAY_TRACK) {
@@ -421,8 +423,10 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
                 drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
-                INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
-                INCDEC_ENABLE_CHECK(isSourceAvailable);
+                if (active) {
+                  INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+                  INCDEC_ENABLE_CHECK(isSourceAvailable);
+                }
                 break;
               case FUNC_ADJUST_GVAR_GVAR:
                 val_max = MAX_GVARS-1;
