@@ -93,7 +93,7 @@ elseif(TELEMETRY STREQUAL MAVLINK)
                               WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
       if(NOT ${GIT_SUBMODULE_RESULT} EQUAL 0)
           message(FATAL_ERROR "Error: Cannot clone submodule at ${THIRDPARTY_DIR}/GCS_MAVLink/include_v1.0
-If you downloaded this project as a ZIP file, please instead run 
+If you downloaded this project as a ZIP file, please instead run
 'git clone --recursive https://github.com/opentx/opentx.git'")
       endif()
   endif()
@@ -106,7 +106,6 @@ If you downloaded this project as a ZIP file, please instead run
   math(EXPR EEPROM_VARIANT ${EEPROM_VARIANT}+${MAVLINK_VARIANT})
 elseif(TELEMETRY STREQUAL TELEMETREZ)
   add_definitions(-DTELEMETRY_TELEMETREZ)
-  set(SRC ${SRC} telemetry/jeti.cpp)
 elseif(TELEMETRY STREQUAL FRSKY_SPORT)
   add_definitions(-DTELEMETRY_FRSKY_SPORT)
   set(SRC ${SRC} crc16.cpp telemetry/frsky_sport.cpp)
