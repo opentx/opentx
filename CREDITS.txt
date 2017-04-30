@@ -5,6 +5,7 @@ Damjan Adamic (projectkk2glider)
 Franck Aguerre (jivarofad)
 Romolo Manfredini (romoloman)
 Martin Hotař (mhotar)
+Maxim (Max) Paperno (mpaperno)
 
 Rob Thomson
 Bryan J. Rentoul (gruvin)
