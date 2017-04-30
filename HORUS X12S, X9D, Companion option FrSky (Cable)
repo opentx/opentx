@@ -1,0 +1,7 @@
+*Just found an issue in OpenTX 2.2.0N363 for HORUS X12S / X9D and companion 2.2
+On the Telemetry screen in HORUS X12S and companion the option FrSky D (Cable) is missing !
+
+X9D+ and X9E are working properly.
+
+This option is necessary for HORUS X12S and the MPX M-Link/FrSky telemetry converter to get the telemetry data into the HORUS X12S.
+*
