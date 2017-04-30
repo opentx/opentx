@@ -267,7 +267,7 @@ QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo
   swtch->setMinimumWidth(swtch->fontMetrics().width("99") + 10);
   font.setBold(false);
   swtch->setFont(font);
-  swtch->setText(QString("%1").arg(RawSwitch(SWITCH_TYPE_VIRTUAL, switchNo+1).toString().remove("L"), 2, QLatin1Char('0')));
+  swtch->setText(QString("%1").arg(switchNo+1, 2, 10, QChar('0')));
   swtch->setAlignment(Qt::AlignCenter);
   m_logicSwitchMap.insert(switchNo, swtch);
   return swtch;
