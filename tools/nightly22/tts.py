@@ -73,6 +73,11 @@ if __name__ == "__main__":
         directory = "es"
         voice = "es-ES"
 
+    elif "cz" in sys.argv:
+        from tts_es import systemSounds, sounds
+
+        directory = "cz"
+        voice = "cs-CZ"
     else:
         print("which language?")
         exit()
