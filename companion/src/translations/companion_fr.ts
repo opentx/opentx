@@ -3804,7 +3804,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="51"/>
         <source>L%1</source>
-        <translation></translation>
+        <translation>IL%1</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="257"/>
@@ -6450,7 +6450,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="504"/>
         <source>L%1</source>
-        <translation></translation>
+        <translation>IL%1</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="511"/>
@@ -7571,7 +7571,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../eeprominterface.cpp" line="547"/>
         <location filename="../eeprominterface.cpp" line="685"/>
         <source>LSw%1</source>
-        <translation></translation>
+        <translation>IL%1</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="642"/>
