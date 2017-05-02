@@ -19,3 +19,4 @@ Karl Szmutny
 Michal Hlavinka
 Pat Mackenzie
 Michael Byrne
+Sebastien Charpentier (LapinFou)
