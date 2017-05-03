@@ -509,8 +509,9 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
       result = QObject::tr("[I%1]").arg(index+1, 2, 10, QChar('0'));
-      if (model && model->inputNames[index][0])
-          result.append(":" + QString(model->inputNames[index]).trimmed());
+      result.append(QString(model->inputNames[index]).trimmed());
+      //if (model && model->inputNames[index][0])
+      //  result.append(":" + QString(model->inputNames[index]).trimmed());
       return result;
 
     case SOURCE_TYPE_LUA_OUTPUT:
