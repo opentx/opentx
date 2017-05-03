@@ -102,7 +102,7 @@ void FlashEEpromDialog::updateUI()
 
 void FlashEEpromDialog::on_eepromLoad_clicked()
 {
-  QString filename = QFileDialog::getOpenFileName(this, tr("Choose Radio Backup file"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+  QString filename = QFileDialog::getOpenFileName(this, tr("Choose Radio Backup file"), g.eepromDir(), EXTERNAL_EEPROM_FILES_FILTER);
   if (!filename.isEmpty()) {
     eepromFilename = filename;
     updateUI();
