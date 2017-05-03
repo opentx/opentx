@@ -49,9 +49,9 @@ SimulatedUIWidgetX9::SimulatedUIWidgetX9(SimulatorInterface *simulator, QWidget 
   addRadioWidget(ui->leftbuttons->addArea(btn, "Taranis/x9l3.png", act));
 
   m_scrollUpAction = new RadioUiAction(4, QList<int>() << Qt::Key_Plus << Qt::Key_Equal << Qt::Key_Left,
-                                      SIMU_STR_HLP_KEY_LFT % " " % SIMU_STR_HLP_KEY_PLS % " " % SIMU_STR_HLP_MOUSE_UP, SIMU_STR_HLP_ACT_PLS);
+                                      SIMU_STR_HLP_KEY_LFT % "|" % SIMU_STR_HLP_KEY_PLS % "|" % SIMU_STR_HLP_MOUSE_UP, SIMU_STR_HLP_ACT_PLS);
   m_scrollDnAction = new RadioUiAction(5, QList<int>() << Qt::Key_Minus << Qt::Key_Right,
-                                      SIMU_STR_HLP_KEY_RGT % " " % SIMU_STR_HLP_KEY_MIN % " " % SIMU_STR_HLP_MOUSE_DN, SIMU_STR_HLP_ACT_MIN);
+                                      SIMU_STR_HLP_KEY_RGT % "|" % SIMU_STR_HLP_KEY_MIN % "|" % SIMU_STR_HLP_MOUSE_DN, SIMU_STR_HLP_ACT_MIN);
 
   // right side
   btn.moveTopLeft(QPoint(58, btop));
