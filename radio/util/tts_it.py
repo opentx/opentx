@@ -37,9 +37,9 @@ for i, (s, f) in enumerate([(u"volt", "volt0"),
                             (u"radian", "rad0"), ("radians", "rad1"),
                             (u"millilitro", "m10"), ("millilitri", "m11"),
                             (u"oncia", "founce0"), ("once", "founce1"),
-                            (u"hour", "hour0"), ("hours", "hour1"),
-                            (u"minute", "minute0"), ("minutes", "minute1"),
-                            (u"second", "second0"), ("seconds", "second1"),
+                            (u"ora", "hour0"), ("ore", "hour1"),
+                            (u"minuto", "minute0"), ("minuti", "minute1"),
+                            (u"secondo", "second0"), ("secondi", "second1"),
                             ]):
     systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 113 + i)))
 for s, f, a in [(u"radio inattiva controllare", "inactiv", 486),
