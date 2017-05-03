@@ -41,7 +41,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     cb_fp[i] = tmp[i];
   }
 
-  setWindowTitle(tr("Edit %1").arg(modelPrinter.printInputName(ed->chn)));
+  RawSourceType srcType = (firmware->getCapability(VirtualInputs) ? SOURCE_TYPE_VIRTUAL_INPUT : SOURCE_TYPE_STICK);
+  setWindowTitle(tr("Edit %1").arg(RawSource(srcType, ed->chn).toString(&model, &generalSettings)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
   if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {

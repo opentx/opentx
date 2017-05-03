@@ -153,26 +153,26 @@ bool InputsPanel::AddInputLine(int dest)
 QString InputsPanel::getInputText(int dest, bool * new_ch)
 {
   QString str;
-  if (new_ch) *new_ch = 0;
+
+  if (new_ch)
+    *new_ch = false;
+
   if (dest < 0) {
     str = modelPrinter.printInputName(-dest-1);
-    if (new_ch) *new_ch = 1;
+    if (new_ch)
+      *new_ch = true;
   }
   else {
     ExpoData & input = model->expoData[dest];
+    int nameChars = (firmware->getCapability(VirtualInputs) ? 10 : 4);
 
     if ((dest == 0) || (model->expoData[dest-1].chn != input.chn)) {
-      if (new_ch) *new_ch = 1;
-      if (firmware->getCapability(VirtualInputs))
-        str += QString("%1").arg(modelPrinter.printInputName(input.chn), -10, ' ');
-      else
-        str = modelPrinter.printInputName(input.chn);
+      if (new_ch)
+        *new_ch = true;
+      str = QString("%1").arg(modelPrinter.printInputName(input.chn), -nameChars, QChar(' '));
     }
     else {
-      if (firmware->getCapability(VirtualInputs))
-        str = "          ";
-      else
-        str = "   ";
+      str = QString(nameChars, QChar(' '));
     }
     str.replace(" ", "&nbsp;");
     str += modelPrinter.printInputLine(input);

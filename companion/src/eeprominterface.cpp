@@ -508,7 +508,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   int genAryIdx = 0;
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
-      result = QObject::tr("[I%1]").arg(index+1);
+      result = QObject::tr("[I%1]").arg(index+1, 2, 10, QChar('0'));
       if (model && model->inputNames[index][0])
           result.append(":" + QString(model->inputNames[index]).trimmed());
       return result;
@@ -550,7 +550,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return QObject::tr("CYC%1").arg(index+1);
 
     case SOURCE_TYPE_PPM:
-      return QObject::tr("TR%1").arg(index+1);
+      return QObject::tr("TR%1").arg(index+1, 2, 10, QChar('0'));
 
     case SOURCE_TYPE_CH:
       result = QObject::tr("CH%1").arg(index+1, 2, 10, QChar('0'));
@@ -564,7 +564,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     case SOURCE_TYPE_TELEMETRY:
       if (IS_ARM(getCurrentBoard())) {
         div_t qr = div(index, 3);
-        result = model ? QString(model->sensorData[qr.quot].label) : QString("[T%1]").arg(qr.quot+1);
+        result = model ? QString(model->sensorData[qr.quot].label) : QString("[T%1]").arg(qr.quot+1, 2, 10, QChar('0'));
         if (qr.rem)
           result += (qr.rem == 1 ? "-" : "+");
         return result;
@@ -574,7 +574,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       }
 
     case SOURCE_TYPE_GVAR:
-      result = QObject::tr("GV%1").arg(index+1);
+      result = QObject::tr("GV%1").arg(index+1, 2, 10, QChar('0'));
       if (getCurrentFirmware()->getCapability(GvarsName) && model && model->gvars_names[index][0])
         result.append(":" + QString(model->gvars_names[index]).trimmed());
       return result;
