@@ -480,7 +480,7 @@ void ModulePanel::update()
     ui->optionValue->setMinimum(pdef.getOptionMin());
     ui->optionValue->setMaximum(pdef.getOptionMax());
     ui->optionValue->setValue(module.multi.optionValue);
-    ui->label_option->setText(pdef.optionsstr);
+    ui->label_option->setText(qApp->translate("Multiprotocols", qPrintable(pdef.optionsstr)));
   }
   ui->multiSubType->setCurrentIndex(module.subType);
 
@@ -576,8 +576,8 @@ void ModulePanel::on_channelsCount_editingFinished()
 
 void ModulePanel::on_channelsStart_editingFinished()
 {
-  if (!lock && module.channelsStart != ui->channelsStart->value() - 1) {
-    module.channelsStart = ui->channelsStart->value() - 1;
+  if (!lock && module.channelsStart != (unsigned)ui->channelsStart->value() - 1) {
+    module.channelsStart = (unsigned)ui->channelsStart->value() - 1;
     update();
     emit channelsRangeChanged();
     emit modified();
@@ -595,8 +595,8 @@ void ModulePanel::on_ppmDelay_editingFinished()
 
 void ModulePanel::on_rxNumber_editingFinished()
 {
-  if (module.modelId != ui->rxNumber->value()) {
-    module.modelId = ui->rxNumber->value();
+  if (module.modelId != (unsigned)ui->rxNumber->value()) {
+    module.modelId = (unsigned)ui->rxNumber->value();
     emit modified();
   }
 }
