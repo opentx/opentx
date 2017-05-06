@@ -22,6 +22,7 @@
 #include "modelprinter.h"
 #include "multiprotocols.h"
 
+#include <QApplication>
 #include <QPainter>
 #include <QFile>
 #include <QUrl>
