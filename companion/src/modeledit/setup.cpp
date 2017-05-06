@@ -51,7 +51,6 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   // Mode
   ui->mode->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::TimersContext));
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
-  //Helpers::populateSwitchCB(ui->mode, timer.mode, generalSettings, Helpers::TimersContext);
 
   if (!firmware->getCapability(PermTimers)) {
     ui->persistent->hide();
@@ -121,8 +120,11 @@ QWidget * TimerPanel::getLastFocus()
 
 void TimerPanel::on_value_editingFinished()
 {
-  timer.val = ui->value->time().hour()*3600 + ui->value->time().minute()*60 + ui->value->time().second();
-  emit modified();
+  unsigned val = ui->value->time().hour()*3600 + ui->value->time().minute()*60 + ui->value->time().second();
+  if (timer.val != val) {
+    timer.val = val;
+    emit modified();
+  }
 }
 
 void TimerPanel::on_mode_currentIndexChanged(int index)
@@ -141,9 +143,11 @@ void TimerPanel::on_minuteBeep_toggled(bool checked)
 
 void TimerPanel::on_name_editingFinished()
 {
-  int length = ui->name->maxLength();
-  strncpy(timer.name, ui->name->text().toLatin1(), length);
-  emit modified();
+  if (QString(timer.name) != ui->name->text()) {
+    int length = ui->name->maxLength();
+    strncpy(timer.name, ui->name->text().toLatin1(), length);
+    emit modified();
+  }
 }
 
 /******************************************************************************/
@@ -234,15 +238,15 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
 
   disableMouseScrolling();
 
+  update();
+
+  connect(ui->protocol, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onProtocolChanged);
+  connect(ui->multiProtocol, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onMultiProtocolChanged);
   connect(this, &ModulePanel::channelsRangeChanged, this, &ModulePanel::setupFailsafes);
   connect(ui->btnGrpValueType, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &ModulePanel::onFailsafesDisplayValueTypeChanged);
 
   lock = false;
 
-  // a change will not register if only one item was added
-  if (ui->protocol->count() == 1) {
-    on_protocol_currentIndexChanged(ui->protocol->currentIndex());
-  }
 }
 
 ModulePanel::~ModulePanel()
@@ -533,7 +537,7 @@ void ModulePanel::on_trainerMode_currentIndexChanged(int index)
   }
 }
 
-void ModulePanel::on_protocol_currentIndexChanged(int index)
+void ModulePanel::onProtocolChanged(int index)
 {
   if (!lock) {
     module.protocol = ui->protocol->itemData(index).toInt();
@@ -562,7 +566,7 @@ void ModulePanel::on_ppmOutputType_currentIndexChanged(int index)
 
 void ModulePanel::on_channelsCount_editingFinished()
 {
-  if (!lock) {
+  if (!lock && module.channelsCount != ui->channelsCount->value()) {
     module.channelsCount = ui->channelsCount->value();
     update();
     emit channelsRangeChanged();
@@ -572,7 +576,7 @@ void ModulePanel::on_channelsCount_editingFinished()
 
 void ModulePanel::on_channelsStart_editingFinished()
 {
-  if (!lock) {
+  if (!lock && module.channelsStart != ui->channelsStart->value() - 1) {
     module.channelsStart = ui->channelsStart->value() - 1;
     update();
     emit channelsRangeChanged();
@@ -582,7 +586,7 @@ void ModulePanel::on_channelsStart_editingFinished()
 
 void ModulePanel::on_ppmDelay_editingFinished()
 {
-  if (!lock) {
+  if (!lock && module.ppm.delay != ui->ppmDelay->value()) {
     // TODO only accept valid values
     module.ppm.delay = ui->ppmDelay->value();
     emit modified();
@@ -591,14 +595,19 @@ void ModulePanel::on_ppmDelay_editingFinished()
 
 void ModulePanel::on_rxNumber_editingFinished()
 {
-  module.modelId = ui->rxNumber->value();
-  emit modified();
+  if (module.modelId != ui->rxNumber->value()) {
+    module.modelId = ui->rxNumber->value();
+    emit modified();
+  }
 }
 
 void ModulePanel::on_ppmFrameLength_editingFinished()
 {
-  module.ppm.frameLength = (ui->ppmFrameLength->value()-22.5) / 0.5;
-  emit modified();
+  int val = (ui->ppmFrameLength->value()-22.5) / 0.5;
+  if (module.ppm.frameLength != val) {
+    module.ppm.frameLength = val;
+    emit modified();
+  }
 }
 
 void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
@@ -610,7 +619,7 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
   }
 }
 
-void ModulePanel::on_multiProtocol_currentIndexChanged(int index)
+void ModulePanel::onMultiProtocolChanged(int index)
 {
   if (!lock) {
     lock=true;
@@ -627,8 +636,10 @@ void ModulePanel::on_multiProtocol_currentIndexChanged(int index)
 
 void ModulePanel::on_optionValue_editingFinished()
 {
-  module.multi.optionValue = ui->optionValue->value();
-  emit modified();
+  if (module.multi.optionValue != ui->optionValue->value()) {
+    module.multi.optionValue = ui->optionValue->value();
+    emit modified();
+  }
 }
 
 void ModulePanel::on_multiSubType_currentIndexChanged(int index)
@@ -855,7 +866,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     if (i<firmware->getCapability(Timers)) {
       timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus);
       ui->gridLayout->addWidget(timers[i], 1+i, 1);
-      connect(timers[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+      connect(timers[i], &TimerPanel::modified, this, &SetupPanel::modified);
       prevFocus = timers[i]->getLastFocus();
     }
     else {
@@ -987,14 +998,14 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   for (int i=0; i<firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
-    connect(modules[i], SIGNAL(modified()), this, SLOT(onChildModified()));
+    connect(modules[i], &ModulePanel::modified, this, &SetupPanel::modified);
     connect(this, &SetupPanel::extendedLimitsToggled, modules[i], &ModulePanel::onExtendedLimitsToggled);
   }
 
   if (firmware->getCapability(ModelTrainerEnable)) {
     modules[CPN_MAX_MODULES] = new ModulePanel(this, model, model.moduleData[CPN_MAX_MODULES], generalSettings, firmware, -1);
     ui->modulesLayout->addWidget(modules[CPN_MAX_MODULES]);
-    connect(modules[CPN_MAX_MODULES], SIGNAL(modified()), this, SLOT(onChildModified()));
+    connect(modules[CPN_MAX_MODULES], &ModulePanel::modified, this, &SetupPanel::modified);
   }
 
   disableMouseScrolling();
@@ -1048,9 +1059,11 @@ void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 
 void SetupPanel::on_name_editingFinished()
 {
-  int length = ui->name->maxLength();
-  strncpy(model->name, ui->name->text().toLatin1(), length);
-  emit modified();
+  if (QString(model->name) != ui->name->text()) {
+    int length = ui->name->maxLength();
+    strncpy(model->name, ui->name->text().toLatin1(), length);
+    emit modified();
+  }
 }
 
 void SetupPanel::on_image_currentIndexChanged(int index)
@@ -1292,9 +1305,4 @@ void SetupPanel::onBeepCenterToggled(bool checked)
       model->beepANACenter &= ~mask;
     emit modified();
   }
-}
-
-void SetupPanel::onChildModified()
-{
-  emit modified();
 }
