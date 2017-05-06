@@ -657,9 +657,7 @@ void MainWindow::openFile(const QString & fileName, bool updateLastUsedDir)
 
 void MainWindow::openFile()
 {
-  QString fileFilter;
-  fileFilter = tr(EEPROM_FILES_FILTER);
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), fileFilter);
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open Models and Settings file"), g.eepromDir(), EEPROM_FILES_FILTER);
   openFile(fileName);
 }
 
@@ -861,7 +859,7 @@ void MainWindow::readBackup()
     return;
     // TODO implementation
   }
-  QString fileName = QFileDialog::getSaveFileName(this, tr("Save Radio Backup to File"), g.eepromDir(), tr(EXTERNAL_EEPROM_FILES_FILTER));
+  QString fileName = QFileDialog::getSaveFileName(this, tr("Save Radio Backup to File"), g.eepromDir(), EXTERNAL_EEPROM_FILES_FILTER);
   if (!fileName.isEmpty()) {
     if (!readEepromFromRadio(fileName))
       return;
@@ -870,7 +868,7 @@ void MainWindow::readBackup()
 
 void MainWindow::readFlash()
 {
-  QString fileName = QFileDialog::getSaveFileName(this,tr("Read Radio Firmware to File"), g.flashDir(),tr(FLASH_FILES_FILTER));
+  QString fileName = QFileDialog::getSaveFileName(this,tr("Read Radio Firmware to File"), g.flashDir(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
     readFirmwareFromRadio(fileName);
   }
