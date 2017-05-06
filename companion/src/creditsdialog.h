@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _CONTRIBUTORSDIALOG_H_
-#define _CONTRIBUTORSDIALOG_H_
+#ifndef _CREDITSDIALOG_H_
+#define _CREDITSDIALOG_H_
 
 #include <QDialog>
 
@@ -27,17 +27,36 @@ namespace Ui {
   class HtmlDialog;
 }
 
-class ContributorsDialog : public QDialog
+class CreditsDialog : public QDialog
 {
   Q_OBJECT
 
+  class CreditsSection
+  {
+    public:
+      CreditsSection(const QString & title):
+        title(title)
+      {
+      }
+
+      void addName(const QString & name)
+      {
+        names.push_back(name);
+      }
+
+      QString title;
+      QStringList names;
+  };
+
   public:
-    explicit ContributorsDialog(QWidget * parent = 0);
-    ~ContributorsDialog();
+    explicit CreditsDialog(QWidget * parent = 0);
+    ~CreditsDialog();
 
   private:
     Ui::HtmlDialog * ui;
+    QList<CreditsSection> readCredits();
+    QString sectionTitle(const QString & title);
     QString formatTable(const QString & title, const QStringList & names, int colums);
 };
 
-#endif // _CONTRIBUTORSDIALOG_H_
+#endif // _CREDITSDIALOG_H_

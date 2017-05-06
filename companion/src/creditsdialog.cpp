@@ -18,12 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#include "contributorsdialog.h"
+#include "creditsdialog.h"
 #include "ui_htmldialog.h"
 #include "helpers.h"
 #include <QFile>
 
-ContributorsDialog::ContributorsDialog(QWidget * parent):
+CreditsDialog::CreditsDialog(QWidget * parent):
   QDialog(parent),
   ui(new Ui::HtmlDialog)
 {
@@ -42,42 +42,8 @@ ContributorsDialog::ContributorsDialog(QWidget * parent):
                 "</head>"
                 "<body class=\"normal\">";
 
-  QFile credits(":/CREDITS.txt");
-  if (credits.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    QStringList names;
-    while (!credits.atEnd()) {
-      QByteArray line = credits.readLine();
-      if (line.trimmed() == "")
-        break;
-      names.append(line.trimmed());
-    }
-    str.append(formatTable(tr("Main Developers"), names, 3));
-
-    names.clear();
-    while (!credits.atEnd()) {
-      QByteArray line = credits.readLine();
-      names.append(line.trimmed());
-    }
-    str.append(formatTable(tr("Other contributors"), names, 3));
-  }
-
-  QFile donations(":/DONATIONS.txt");
-  if (donations.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    QStringList names;
-    while (!donations.atEnd()) {
-      QByteArray line = donations.readLine();
-      if (line.trimmed() == "")
-        break;
-      names.append(line.trimmed());
-    }
-    str.append(formatTable(tr("Companies and projects who have donated to OpenTX"), names, 3));
-
-    names.clear();
-    while (!donations.atEnd()) {
-      QByteArray line = donations.readLine();
-      names.append(line);
-    }
-    str.append(formatTable(tr("People who have donated to OpenTX"), names, 6));
+  foreach(CreditsSection section, readCredits()) {
+    str.append(formatTable(sectionTitle(section.title), section.names, 3));
   }
 
   str.append("<table><tr><td class=\"normal\">&nbsp;</td></tr>" \
@@ -87,9 +53,9 @@ ContributorsDialog::ContributorsDialog(QWidget * parent):
 #if 0
   QFile blacklist(":/BLACKLIST.txt");
   if (blacklist.open(QIODevice::ReadOnly | QIODevice::Text)) {
-	QStringList names;
-	names << blacklist.readAll();
-	str.append(formatTable(tr("OpenTX Blacklist"), names, 1));
+    QStringList names;
+    names << blacklist.readAll();
+    str.append(formatTable(tr("OpenTX Blacklist"), names, 1));
   }
 #endif
 
@@ -99,12 +65,45 @@ ContributorsDialog::ContributorsDialog(QWidget * parent):
   ui->textEditor->setOpenExternalLinks(true);
 }
 
-ContributorsDialog::~ContributorsDialog()
+CreditsDialog::~CreditsDialog()
 {
   delete ui;
 }
 
-QString ContributorsDialog::formatTable(const QString & title, const QStringList & names, int columns)
+QList<CreditsDialog::CreditsSection> CreditsDialog::readCredits()
+{
+  QFile credits(":/CREDITS.txt");
+  QList<CreditsSection> result;
+  if (credits.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    while (!credits.atEnd()) {
+      QByteArray line = credits.readLine().trimmed();
+      if (line.size() >= 2) {
+        if (line.startsWith("[") && line.endsWith("]")) {
+          result.push_back(CreditsSection(line.mid(1, line.size() - 2)));
+        } else {
+          result.back().addName(line);
+        }
+      }
+    }
+  }
+  return result;
+}
+
+QString CreditsDialog::sectionTitle(const QString & title)
+{
+  if (title == "Main developers")
+    return tr("Main developers");
+  else if (title == "Translators")
+    return tr("Translators");
+  else if (title == "Companies and projects who have donated to OpenTX")
+    return tr("Companies and projects who have donated to OpenTX");
+  else if (title == "People who have donated to OpenTX")
+    return tr("People who have donated to OpenTX");
+  else
+    return tr("Other contributors");
+}
+
+QString CreditsDialog::formatTable(const QString & title, const QStringList & names, int columns)
 {
   const float cwidth = 100.0 / columns;
   QString str = "<table width=\"100%\" border=0 cellspacing=0 cellpadding=2>" \

@@ -30,7 +30,7 @@
 #include "downloaddialog.h"
 #include "printdialog.h"
 #include "version.h"
-#include "contributorsdialog.h"
+#include "creditsdialog.h"
 #include "releasenotesdialog.h"
 #include "releasenotesfirmwaredialog.h"
 #include "customizesplashdialog.h"
@@ -732,7 +732,7 @@ void MainWindow::fwPrefs()
 
 void MainWindow::contributors()
 {
-  ContributorsDialog * dialog = new ContributorsDialog(this);
+  CreditsDialog * dialog = new CreditsDialog(this);
   dialog->exec();
   dialog->deleteLater();
 }
