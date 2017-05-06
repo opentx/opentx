@@ -6,14 +6,23 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>359</width>
-    <height>1594</height>
+    <width>470</width>
+    <height>1095</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0">
+  <layout class="QGridLayout" name="gridLayout_2">
+   <property name="spacing">
+    <number>6</number>
+   </property>
    <item row="29" column="0">
     <widget class="QLabel" name="sqLabel">
      <property name="text">
@@ -122,19 +131,6 @@
     <widget class="QLabel" name="label_33">
      <property name="text">
       <string>PPM 2</string>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0" colspan="5">
-    <widget class="Line" name="potsTypeSeparator_2">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>10</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -730,32 +726,6 @@
      </property>
     </widget>
    </item>
-   <item row="31" column="0" colspan="4">
-    <widget class="Line" name="potsTypeSeparator_3">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>10</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="38" column="0" colspan="4">
-    <widget class="Line" name="potsTypeSeparator_4">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>10</height>
-      </size>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
    <item row="25" column="0">
     <widget class="QLabel" name="smLabel">
      <property name="text">
@@ -1075,6 +1045,12 @@
    </item>
    <item row="32" column="0">
     <widget class="QLabel" name="bluetoothLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="text">
       <string>Bluetooth</string>
      </property>
@@ -1090,24 +1066,6 @@
      </property>
     </widget>
    </item>
-   <item row="32" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QCheckBox" name="bluetoothEnable">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="AutoLineEdit" name="bluetoothName">
-       <property name="maxLength">
-        <number>10</number>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item row="33" column="1">
     <widget class="QCheckBox" name="filterEnable">
      <property name="text">
@@ -1122,18 +1080,115 @@
      </property>
     </widget>
    </item>
+   <item row="32" column="1">
+    <widget class="QWidget" name="bluetoothWidget" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>6</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QCheckBox" name="bluetoothEnable">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>5</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="btNameLabel">
+        <property name="text">
+         <string>Device Name:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="AutoLineEdit" name="bluetoothName">
+        <property name="maxLength">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="31" column="0" colspan="3">
+    <widget class="Line" name="potsTypeSeparator_2">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="38" column="0" colspan="3">
+    <widget class="Line" name="ppmSeparator">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="0" colspan="3">
+    <widget class="Line" name="potsTypeSeparator_1">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>10</height>
+      </size>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>AutoLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>autolineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>AutoComboBox</class>
    <extends>QComboBox</extends>
    <header>autocombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>autolineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
