@@ -71,7 +71,7 @@ class ModulePanel : public ModelPanel
   private slots:
     void setupFailsafes();
     void on_trainerMode_currentIndexChanged(int index);
-    void on_protocol_currentIndexChanged(int index);
+    void onProtocolChanged(int index);
     void on_ppmDelay_editingFinished();
     void on_channelsCount_editingFinished();
     void on_channelsStart_editingFinished();
@@ -81,7 +81,7 @@ class ModulePanel : public ModelPanel
     void on_antennaMode_currentIndexChanged(int index);
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);
-    void on_multiProtocol_currentIndexChanged(int index);
+    void onMultiProtocolChanged(int index);
     void on_multiSubType_currentIndexChanged(int index);
     void on_autoBind_stateChanged(int state);
     void on_lowPower_stateChanged(int state);
@@ -140,7 +140,6 @@ class SetupPanel : public ModelPanel
     void startupSwitchToggled(bool checked);
     void potWarningToggled(bool checked);
     void on_potWarningMode_currentIndexChanged(int index);
-    void onChildModified();
 
   private:
     Ui::Setup *ui;

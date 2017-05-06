@@ -1480,7 +1480,7 @@ void MdiChild::writeEeprom()  // write to Tx
 
 bool MdiChild::loadBackup()
 {
-  QString fileName = QFileDialog::getOpenFileName(this, tr("Open backup Models and Settings file"), g.eepromDir(), tr(EEPROM_FILES_FILTER));
+  QString fileName = QFileDialog::getOpenFileName(this, tr("Open backup Models and Settings file"), g.eepromDir(), EEPROM_FILES_FILTER);
   if (fileName.isEmpty())
     return false;
   QFile file(fileName);
