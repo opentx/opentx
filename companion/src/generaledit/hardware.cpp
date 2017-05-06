@@ -215,7 +215,7 @@ void HardwarePanel::on_PPM2_editingFinished()
 
 void HardwarePanel::on_PPM3_editingFinished()
 {
-  if (generalSettings.trainer.calib[2] = ui->PPM3->value()) {
+  if (generalSettings.trainer.calib[2] != ui->PPM3->value()) {
     generalSettings.trainer.calib[2] = ui->PPM3->value();
     emit modified();
   }
