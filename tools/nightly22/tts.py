@@ -27,15 +27,18 @@ lib_path = os.path.abspath(os.path.join(SOURCE_DIRECTORY, '..', '..', 'radio', '
 sys.path.append(lib_path)
 
 def generate(str, filename):
-    if 1:
+    if 0:
         output = "output.wav"
         command = 'pico2wave -l=%s -w=%s "%s"' % (voice, output, str)
+        os.system(command.encode('utf-8'))
+        command = "sox %s -r 32000 %s reverse silence 1 0.1 0.1%% reverse" % (output, filename)
+        os.system(command.encode('utf-8'))
     else:
         output = "output.mp3"
         command = 'gtts-cli -l %s -o %s "%s"' % (voice[:2], output, str)
-    os.system(command.encode('utf-8'))
-    command = "sox %s -r 32000 %s reverse silence 1 0.1 0.1%% reverse" % (output, filename)
-    os.system(command.encode('utf-8'))
+        os.system(command.encode('utf-8'))
+        command = "sox %s -r 32000 %s" % (output, filename)
+        os.system(command.encode('utf-8'))
 
 ################################################################
 
@@ -70,6 +73,18 @@ if __name__ == "__main__":
         directory = "es"
         voice = "es-ES"
 
+    elif "cz" in sys.argv:
+        from tts_cz import systemSounds, sounds
+
+        directory = "cz"
+        voice = "cs-CZ"
+
+    elif "pt" in sys.argv:
+        from tts_pt import systemSounds, sounds
+
+        directory = "pt"
+        voice = "pt-PT"
+        
     else:
         print("which language?")
         exit()
