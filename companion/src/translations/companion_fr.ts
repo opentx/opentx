@@ -669,12 +669,12 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../constants.h" line="52"/>
         <source>files</source>
-        <translation type="unfinished">fichiers</translation>
+        <translation>fichiers</translation>
     </message>
     <message>
         <location filename="../constants.h" line="53"/>
         <source>Radio and Models settings</source>
-        <translation type="unfinished">Réglages Radio et Modèles</translation>
+        <translation>Réglages Radio et Modèles</translation>
     </message>
 </context>
 <context>
@@ -763,47 +763,47 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../creditsdialog.cpp" line="32"/>
         <source>OpenTX Contributors</source>
-        <translation type="unfinished">Contributeurs d&apos;OpenTX</translation>
+        <translation>Contributeurs d&apos;OpenTX</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="50"/>
         <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="unfinished">Les honneurs vont à Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</translation>
+        <translation>Les honneurs vont à Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="58"/>
         <source>OpenTX Blacklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste noire d&apos;OpenTX</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="95"/>
         <source>Main developers</source>
-        <translation type="unfinished"></translation>
+        <translation>Principaux développeurs</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="97"/>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>Traducteurs</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="99"/>
         <source>Companies and projects who have donated to OpenTX</source>
-        <translation type="unfinished">Entreprises et projets qui ont fait un don à OpenTX</translation>
+        <translation>Entreprises et projets qui ont fait un don à OpenTX</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="101"/>
         <source>People who have donated to OpenTX</source>
-        <translation type="unfinished">Personnes qui ont fait un don à OpenTX</translation>
+        <translation>Personnes qui ont fait un don à OpenTX</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="103"/>
         <source>Other contributors</source>
-        <translation type="unfinished">Autres contributeurs</translation>
+        <translation>Autres contributeurs</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="122"/>
         <source>monthly</source>
-        <translation type="unfinished">don mensuel</translation>
+        <translation>don mensuel</translation>
     </message>
 </context>
 <context>
@@ -3513,7 +3513,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="1127"/>
         <source>Device Name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nom de l&apos;appareil:</translation>
     </message>
 </context>
 <context>
