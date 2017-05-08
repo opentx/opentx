@@ -23,6 +23,10 @@
 
 #include <QWidget>
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 5, 0))
+  #define QtInfoMsg    QtMsgType(4)
+#endif
+
 namespace Ui {
   class ProgressWidget;
 }
@@ -35,7 +39,9 @@ class ProgressWidget : public QWidget
     explicit ProgressWidget(QWidget *parent);
     ~ProgressWidget();
     void lock(bool lock);
-    void addText(const QString &text);
+    void addText(const QString &text, const bool richText = false);
+    void addHtml(const QString &text);
+    void addMessage(const QString & text, const int & type = QtInfoMsg);
     QString getText();
     void setInfo(const QString &text);
     void setMaximum(int value);

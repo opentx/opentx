@@ -19,133 +19,256 @@
  */
 
 #include "process_sync.h"
-#include "progresswidget.h"
-#include <QDirIterator>
+
+#include <QApplication>
+#include <QCryptographicHash>
 #include <QDateTime>
-#include <QMessageBox>
-#include <QTextStream>
+#include <QMutexLocker>
+#include <QDirIterator>
 #include <QDebug>
-#include <QEventLoop>
-#include <QTimer>
 
-SyncProcess::SyncProcess(const QString & folder1, const QString & folder2, ProgressWidget * progress):
-  folder1(folder1),
-  folder2(folder2),
-  progress(progress),
-  index(0),
-  count(0),
-  closed(false)
+#if (QT_VERSION < QT_VERSION_CHECK(5, 5, 0))
+#define QtInfoMsg    QtMsgType(4)
+#endif
+
+#define PRINT_INFO(str)       emit progressMessage((str), QtInfoMsg)
+#define PRINT_CREATE(str)     emit progressMessage((str), QtInfoMsg)
+#define PRINT_REPLACE(str)    emit progressMessage((str), QtWarningMsg)
+#define PRINT_DELETE(str)     emit progressMessage((str), QtCriticalMsg)
+#define PRINT_ERROR(str)      emit progressMessage((str), QtFatalMsg)
+//#define PRINT_SKIP(str)     emit progressMessage((str), QtDebugMsg)  // mostly useless noise (maybe make an option later)
+#define PRINT_SKIP(str)
+#define PRINT_SEP()           PRINT_INFO(QString(80, '='))
+
+#define SYNC_MAX_ERRORS         50  // give up after this many errors per destination
+
+SyncProcess::SyncProcess(const QString & folderA, const QString & folderB, const int & syncDirection, const int & compareType, const qint64 & maxFileSize, const bool dryRun):
+  folder1(folderA),
+  folder2(folderB),
+  direction((SyncDirection)syncDirection),
+  ctype((SyncCompareType)compareType),
+  maxFileSize(qMax<qint64>(0, maxFileSize)),
+  dryRun(dryRun),
+  stopping(false)
 {
-  connect(progress, SIGNAL(stopped()),this, SLOT(onClosed()));
+  if (direction == SYNC_B2A_A2B) {
+    folder1 = folderB;
+    folder2 = folderA;
+    direction = SYNC_A2B_B2A;
+  }
+
+  if (ctype == OVERWR_ALWAYS && direction == SYNC_A2B_B2A)
+    ctype = OVERWR_IF_DIFF;
+
+  dirFilters = QDir::Filters(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
+
+  reportTemplate = tr("New: <b>%1</b>; Updated: <b>%2</b>; Skipped: <b>%3</b>; Errors: <font color=%5><b>%4</b></font>;");
+  if (dryRun)
+    testRunStr = tr("[TEST RUN] ");
 }
 
-void SyncProcess::onClosed()
+void SyncProcess::stop()
 {
-  closed = true;
+  QMutexLocker locker(&stopReqMutex);
+  stopping = true;
 }
 
-bool SyncProcess::run()
+bool SyncProcess::isStopRequsted()
 {
-  if (!QFile::exists(folder1)) {
-    QMessageBox::warning(NULL, QObject::tr("Synchronization error"), QObject::tr("The directory '%1' doesn't exist!").arg(folder1));
-    return true;
+  QMutexLocker locker(&stopReqMutex);
+  return stopping;
+}
+
+void SyncProcess::run()
+{
+  count = index = created = updated = skipped = errored = 0;
+
+  emit started();
+  emit progressStep(index);
+  emit statusMessage(tr("Gathering file information..."));
+
+  if (direction == SYNC_A2B_B2A || direction == SYNC_A2B)
+    count += getFilesCount(folder1);
+
+  if (isStopRequsted()) {
+    finish();
+    return;
   }
 
-  if (!QFile::exists(folder2)) {
-    QMessageBox::warning(NULL, QObject::tr("Synchronization error"), QObject::tr("The directory '%1' doesn't exist!").arg(folder2));
-    return true;
+  if (direction == SYNC_A2B_B2A || direction == SYNC_B2A)
+    count += getFilesCount(folder2);
+
+  if (isStopRequsted()) {
+    finish();
+    return;
   }
 
-  count = getFilesCount(folder1) + getFilesCount(folder2);
-  progress->setMaximum(count);
+  emit fileCountChanged(count);
 
-  QStringList errors = updateDir(folder1, folder2) + updateDir(folder2, folder1);
-  if (errors.count() > 0) {
-    QMessageBox::warning(NULL, QObject::tr("Synchronization error"), errors.join("\n"));
+  if (!count) {
+    QString nf = tr("Synchronization failed, nothing found to copy.");
+    emit statusMessage(nf);
+    PRINT_ERROR(nf);
+    emit finished();
+    return;
   }
 
-  // don't close the window unless the user wanted
-  return closed;
+  if (direction == SYNC_A2B_B2A || direction == SYNC_A2B)
+    updateDir(folder1, folder2);
+
+  if (isStopRequsted()) {
+    finish();
+    return;
+  }
+
+  if (direction == SYNC_A2B_B2A || direction == SYNC_B2A)
+    updateDir(folder2, folder1);
+
+  finish();
+}
+
+void SyncProcess::finish()
+{
+  QString endStr = testRunStr % tr("Synchronization finished. ") % reportTemplate;
+  emit statusMessage(endStr.arg(created).arg(updated).arg(skipped).arg(errored).arg(errored ? "red" : "black"));
+  emit finished();
 }
 
 int SyncProcess::getFilesCount(const QString & directory)
 {
+  if (!QFile::exists(directory))
+    return 0;
+
   int result = 0;
-  QDirIterator it(directory, QDirIterator::Subdirectories);
-  while (it.hasNext()) {
+  QDirIterator it(directory, dirFilters, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+  while (it.hasNext() && !isStopRequsted()) {
     it.next();
     result++;
+    QApplication::processEvents();
   }
   return result;
 }
 
-QStringList SyncProcess::updateDir(const QString & source, const QString & destination)
+void SyncProcess::updateDir(const QString & source, const QString & destination)
 {
-  QDirIterator it(source, QDirIterator::Subdirectories);
-  while (!closed && it.hasNext()) {
-    QEventLoop loop;
-    QTimer::singleShot(10, &loop, SLOT(quit()));
-    loop.exec();
-    index++;
-    progress->setInfo(tr("%1/%2 files").arg(index).arg(count));
-    progress->setValue(index);
-    QString result = updateEntry(it.next(), source, destination);
-    if (!result.isEmpty()) {
-      errors << result;
+  int counts[4] = { created, updated, skipped, errored };
+  QString statusStr =  testRunStr % tr("Synchronizing %1 -&gt; %2: %3").arg(source, destination, "<b>%1</b>|<b>%2</b> (%3)");
+
+  PRINT_INFO(testRunStr % tr("Starting synchronization: %1 -&gt; %2<br>").arg(source, destination));
+
+  QDirIterator it(source, dirFilters, QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
+  while (it.hasNext() && !isStopRequsted()) {
+    it.next();
+    ++index;
+    emit statusMessage(statusStr.arg(index).arg(count).arg(reportTemplate.arg(created).arg(updated).arg(skipped).arg(errored).arg(errored ? "red" : "black")));
+    emit progressStep(index);
+    if (maxFileSize && it.fileInfo().isFile() && it.fileInfo().size() > maxFileSize) {
+      PRINT_SKIP(tr("Skipping large file: %1 (%2KB)").arg(it.fileName()).arg(int(it.fileInfo().size() / 1024)));
+      ++skipped;
     }
+    else {
+      updateEntry(it.filePath(), source, destination);
+      if (errored - counts[3] > SYNC_MAX_ERRORS) {
+        PRINT_ERROR(tr("<br><b>Too many errors, giving up.<b>"));
+        break;
+      }
+    }
+    QApplication::processEvents();
   }
-  return errors;
+
+  QString endStr = "<br>" % testRunStr % tr("Finished synchronizing %1 -&gt; %2 :<br>&nbsp;&nbsp;&nbsp;&nbsp; %3").arg(source, destination, reportTemplate);
+  PRINT_INFO(endStr.arg(created-counts[0]).arg(updated-counts[1]).arg(skipped-counts[2]).arg(errored-counts[3]).arg(errored-counts[3] ? "red" : "black"));
+  PRINT_SEP();
 }
 
-QString SyncProcess::updateEntry(const QString & path, const QDir & source, const QDir & destination)
+bool SyncProcess::updateEntry(const QString & entry, const QDir & source, const QDir & destination)
 {
-  QFileInfo sourceInfo(path);
-  QString relativePath = source.relativeFilePath(path);
-  QString destinationPath = destination.absoluteFilePath(relativePath);
-  QFileInfo destinationInfo(destinationPath);
+  QString srcPath = source.toNativeSeparators(source.absoluteFilePath(entry));
+  QString relPath = source.relativeFilePath(entry);
+  QString destPath = destination.toNativeSeparators(destination.absoluteFilePath(relPath));
+  QFileInfo sourceInfo(srcPath);
+  QFileInfo destInfo(destPath);
+
   if (sourceInfo.isDir()) {
-    if (!destinationInfo.exists()) {
-      progress->addText(tr("Create directory %1\n").arg(destinationPath));
-      if (!destination.mkdir(relativePath)) {
-        return QObject::tr("Create '%1' failed").arg(destinationPath);
+    if (!destInfo.exists()) {
+      PRINT_CREATE(tr("Creating directory: %1").arg(destPath));
+      if (!dryRun && !destination.mkpath(destPath)) {
+        PRINT_ERROR(tr("Could not create directory: %1").arg(destPath));
+        ++errored;
+        return false;
       }
+      ++created;
     }
+    else {
+      PRINT_SKIP(tr("Destination directory exists: %1").arg(destPath));
+      ++skipped;
+    }
+    return true;
   }
-  else {
-    if (!destinationInfo.exists()) {
-      // qDebug() << "Copy" << path << "to" << destinationPath;
-      progress->addText(tr("Copy %1 to %2").arg(path).arg(destinationPath) + "\n");
-      if (!QFile::copy(path, destinationPath)) {
-        return QObject::tr("Copy '%1' to '%2' failed").arg(path).arg(destinationPath);
-      }
+
+  QFile sourceFile(srcPath);
+  QFile destinationFile(destPath);
+  bool destExists = destInfo.exists();
+  bool checkDate = (ctype == OVERWR_NEWER_IF_DIFF || ctype == OVERWR_NEWER_ALWAYS);
+  bool checkContent = (ctype == OVERWR_NEWER_IF_DIFF || ctype == OVERWR_IF_DIFF);
+  bool existed = false;
+
+  if (destExists && checkDate) {
+    if (sourceInfo.lastModified() <= destInfo.lastModified()) {
+      PRINT_SKIP(tr("Skipping older file: %1").arg(srcPath));
+      ++skipped;
+      return true;
     }
-    else if (sourceInfo.lastModified() > destinationInfo.lastModified()) {
-      // retrieve source contents
-      QFile sourceFile(path);
-      if (!sourceFile.open(QFile::ReadOnly)) {
-        return QObject::tr("Open '%1' failed").arg(path);
-      }
-      QString sourceContents = sourceFile.readAll();
-      sourceFile.close();
-      // try to retrieve destination contents
-      QFile destinationFile(destinationPath);
-      if (destinationFile.open(QFile::ReadOnly)) {
-        QString destinationContents = destinationFile.readAll();
-        destinationFile.close();
-        if (sourceContents == destinationContents) {
-          // qDebug() << "Skip" << path;
-          return QString();
-        }
-      }
-      if (!destinationFile.open(QFile::WriteOnly)) {
-        return QObject::tr("Write '%1' failed").arg(destinationPath);
-      }
-      progress->addText(tr("Write %1").arg(destinationPath) + "\n");
-      // qDebug() << "Write" << destinationPath;
-      QTextStream destinationStream(&destinationFile);
-      destinationStream << sourceContents;
-      destinationFile.close();
-    }
+    checkDate = false;
   }
-  return QString();
+
+  if (destExists && checkContent) {
+    if (!sourceFile.open(QFile::ReadOnly)) {
+      PRINT_ERROR(tr("Could not open source file '%1': %2").arg(srcPath, sourceFile.errorString()));
+      ++errored;
+      return false;
+    }
+    if (!destinationFile.open(QFile::ReadOnly)) {
+      PRINT_ERROR(tr("Could not open destination file '%1': %2").arg(destPath, destinationFile.errorString()));
+      ++errored;
+      return false;
+    }
+
+    bool skip =  QCryptographicHash::hash(sourceFile.readAll(), QCryptographicHash::Md5) == QCryptographicHash::hash(destinationFile.readAll(), QCryptographicHash::Md5);
+    sourceFile.close();
+    destinationFile.close();
+    if (skip) {
+      PRINT_SKIP(tr("Skipping identical file: %1").arg(srcPath));
+      ++skipped;
+      return true;
+    }
+    checkContent = false;
+  }
+
+  if (!destExists || (!checkDate && !checkContent)) {
+    if (destInfo.exists()) {
+      existed = true;
+      PRINT_REPLACE(tr("Replacing destination file: %1").arg(destPath));
+      if (!dryRun && !destinationFile.remove()) {
+        PRINT_ERROR(tr("Could not delete destination file '%1': %2").arg(destPath, destinationFile.errorString()));
+        ++errored;
+        return false;
+      }
+    }
+    else {
+      PRINT_CREATE(tr("Creating destination file: %1").arg(destPath));
+    }
+    if (!dryRun && !sourceFile.copy(destPath)) {
+      PRINT_ERROR(tr("Copy failed: '%1' to '%2': %3").arg(srcPath, destPath, sourceFile.errorString()));
+      ++errored;
+      return false;
+    }
+
+    if (existed)
+      ++updated;
+    else
+      ++created;
+  }
+
+  return true;
 }

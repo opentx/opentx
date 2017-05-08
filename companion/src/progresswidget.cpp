@@ -34,14 +34,15 @@ ui(new Ui::ProgressWidget)
   ui->checkBox->hide();
   ui->textEdit->hide();
 
+  QFont newFont(ui->textEdit->font());
+  newFont.setFamily("Courier");
 #ifdef __APPLE__
-  QFont newFont("Courier", 13);
-  ui->textEdit->setFont(newFont);
+  newFont.setPointSize(13);
   ui->textEdit->setAttribute(Qt::WA_MacNormalSize);
 #elif defined WIN32 || !defined __GNUC__
-  QFont newFont("Courier", 9);
-  ui->textEdit->setFont(newFont);
+  newFont.setPointSize(9);
 #endif
+  ui->textEdit->setFont(newFont);
 }
 
 ProgressWidget::~ProgressWidget()
@@ -81,14 +82,10 @@ void ProgressWidget::setValue(int value)
   ui->progressBar->setValue(value);
 }
 
-void ProgressWidget::addText(const QString &text)
+void ProgressWidget::addText(const QString &text, const bool richText)
 {
   ui->checkBox->setVisible(true);
-
-  if (g.outputDisplayDetails()) {
-    ui->checkBox->setChecked(true);
-    ui->textEdit->setVisible(true);
-  }
+  ui->checkBox->setChecked(g.outputDisplayDetails());
 
   QTextCursor cursor(ui->textEdit->textCursor());
 
@@ -96,11 +93,49 @@ void ProgressWidget::addText(const QString &text)
   bool atEnd = (ui->textEdit->verticalScrollBar()->value() == ui->textEdit->verticalScrollBar()->maximum());
 
   cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor, 1);
-  cursor.insertText(text);
+  if (richText)
+    cursor.insertHtml(text);
+  else
+    cursor.insertText(text);
 
   if (atEnd) {
     ui->textEdit->verticalScrollBar()->triggerAction(QAbstractSlider::SliderToMaximum);
   }
+}
+
+void ProgressWidget::addHtml(const QString & text)
+{
+  addText(text, true);
+}
+
+void ProgressWidget::addMessage(const QString & text, const int & type)
+{
+  QString color;
+  switch (type) {
+    case QtDebugMsg:
+      color = "dimgrey";  // not important messages, may be filtered out
+      break;
+    case QtWarningMsg:    // use warning level as emphasis
+      color = "darkblue";
+      break;
+    case QtCriticalMsg:   // use critical as a warning
+      color = "#ff7900";
+      break;
+    case QtFatalMsg:      // fatal for hard errors
+      color = "red";
+      break;
+    case QtInfoMsg:       // default plain text
+    default:
+      break;
+  }
+  if (color.isEmpty()) {
+    if (text.contains(QRegExp("<[^>]+>")))  // detect html (rouhgly)
+      addHtml(text % "<br>");
+    else
+      addText(text % "\n", false);
+  }
+  else
+    addHtml(QString("<font color=%1>").arg(color) % text % "</font><br>");
 }
 
 QString ProgressWidget::getText()

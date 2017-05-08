@@ -22,34 +22,72 @@
 #define _PROCESS_SYNC_H_
 
 #include <QObject>
+#include <QDir>
+#include <QMutex>
 #include <QString>
-#include <QStringList>
-
-class QDir;
-class ProgressWidget;
 
 class SyncProcess : public QObject
 {
     Q_OBJECT
 
   public:
-    SyncProcess(const QString & folder1, const QString & folder2, ProgressWidget * progress);
-    bool run();
+    enum SyncDirection {
+      SYNC_A2B_B2A,
+      SYNC_B2A_A2B,
+      SYNC_A2B,
+      SYNC_B2A
+    };
 
-  protected slots:
-    void onClosed();
+    enum SyncCompareType {
+      OVERWR_NEWER_IF_DIFF,
+      OVERWR_NEWER_ALWAYS,
+      OVERWR_IF_DIFF,
+      OVERWR_ALWAYS
+    };
+
+    SyncProcess(const QString & folderA,
+                const QString & folderB,
+                const int & syncDirection = SYNC_A2B_B2A,
+                const int & compareType = OVERWR_NEWER_IF_DIFF,
+                const qint64 & maxFileSize = 5*1024*1024,
+                const bool dryRun = false);
+
+  public slots:
+    void run();
+    void stop();
+
+  signals:
+    void started();
+    void finished();
+    void fileCountChanged(int count);
+    void progressStep(int step);
+    void progressMessage(const QString & text, const int & type);
+    void statusMessage(const QString & text);
 
   protected:
+    bool isStopRequsted();
+    void finish();
     int getFilesCount(const QString & directory);
-    QStringList updateDir(const QString & source, const QString & destination);
-    QString updateEntry(const QString & path, const QDir & source, const QDir & destination);
+    void updateDir(const QString & source, const QString & destination);
+    bool updateEntry(const QString & entry, const QDir & source, const QDir & destination);
+
     QString folder1;
     QString folder2;
-    ProgressWidget * progress;
-    QStringList errors;
+    SyncDirection direction;
+    SyncCompareType ctype;
+    qint64 maxFileSize;  // Bytes
+    QDir::Filters dirFilters;
+    QMutex stopReqMutex;
+    QString reportTemplate;
+    QString testRunStr;
     int index;
     int count;
-    bool closed;
+    int created;
+    int updated;
+    int skipped;
+    int errored;
+    bool dryRun;
+    bool stopping;
 };
 
 #endif // _PROCESS_SYNC_H_

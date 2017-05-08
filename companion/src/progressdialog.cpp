@@ -32,6 +32,7 @@ locked(false)
   ui->setupUi(this);
   setWindowTitle(title);
   setWindowIcon(icon);
+  setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
   if (forceOpen) {
     ui->outputProgress->forceOpen();
   }
@@ -53,6 +54,7 @@ void ProgressDialog::on_closeButton_clicked()
 {
   if (!locked) {
     ui->outputProgress->stop();
+    emit rejected();
     close();
   }
 }
@@ -76,4 +78,14 @@ void ProgressDialog::shrink()
 bool ProgressDialog::isEmpty() const
 {
   return ui->outputProgress->isEmpty();
+}
+
+void ProgressDialog::setProcessStarted()
+{
+  ui->closeButton->setText(tr("Cancel"));
+}
+
+void ProgressDialog::setProcessStopped()
+{
+  ui->closeButton->setText(tr("Close"));
 }
