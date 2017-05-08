@@ -764,16 +764,16 @@ void ModulePanel::updateFailsafe(int channel)
   const int failsafeValue = module.failsafeChannels[channel];
   const ChannelFailsafeWidgetsGroup & grp = failsafeGroupsMap.value(channel);
   const bool valDisable = (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE);
-  const int cbIdx = (failsafeValue == FAILSAFE_CHANNEL_HOLD ? 1 : failsafeValue == FAILSAFE_CHANNEL_NOPULSE ? 2 : 0);
 
   if (grp.combo)
-    grp.combo->setCurrentIndex(cbIdx);
+    grp.combo->setCurrentIndex(grp.combo->findData(valDisable ? failsafeValue : 0));
   if (grp.sbPercent)
     grp.sbPercent->setDisabled(valDisable);
   if (grp.sbUsec)
     grp.sbUsec->setDisabled(valDisable);
 
-  setChannelFailsafeValue(channel, (valDisable ? 0 : failsafeValue), (FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC));
+  if (!valDisable)
+    setChannelFailsafeValue(channel, failsafeValue, (FAILSAFE_DISPLAY_PERCENT | FAILSAFE_DISPLAY_USEC));
 }
 
 /******************************************************************************/
