@@ -93,7 +93,7 @@ uint8_t getStringInfo(const char *s)
 
 uint8_t getFontHeight(LcdFlags flags)
 {
-  static const uint8_t heightTable[16] = { 12, 10, 11, 14, 32, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 };
+  static const uint8_t heightTable[16] = { 9, 13, 16, 24, 32, 64, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12 };
   return heightTable[FONTINDEX(flags)];
 }
 

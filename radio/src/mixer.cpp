@@ -46,8 +46,107 @@ int16_t channelOutputs[MAX_OUTPUT_CHANNELS] = {0};
 int16_t ex_chans[MAX_OUTPUT_CHANNELS] = {0}; // Outputs (before LIMITS) of the last perMain;
 
 #if defined(HELI)
-  int16_t cyc_anas[3] = {0};
+int16_t cyc_anas[3] = {0};
 #endif
+
+// #define EXTENDED_EXPO
+// increases range of expo curve but costs about 82 bytes flash
+
+// expo-funktion:
+// ---------------
+// kmplot
+// f(x,k)=exp(ln(x)*k/10) ;P[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
+// f(x,k)=x*x*x*k/10 + x*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
+// f(x,k)=x*x*k/10 + x*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
+// f(x,k)=1+(x-1)*(x-1)*(x-1)*k/10 + (x-1)*(1-k/10) ;P[0,1,2,3,4,5,6,7,8,9,10]
+// don't know what this above should be, just confusing in my opinion,
+
+// here is the real explanation
+// actually the real formula is
+/*
+ f(x) = exp( ln(x) * 10^k)
+ if it is 10^k or e^k or 2^k etc. just defines the max distortion of the expo curve; I think 10 is useful
+ this gives values from 0 to 1 for x and output; k must be between -1 and +1
+ we do not like to calculate with floating point. Therefore we rescale for x from 0 to 1024 and for k from -100 to +100
+ f(x) = 1024 * ( e^( ln(x/1024) * 10^(k/100) ) )
+ This would be really hard to be calculated by such a microcontroller
+ Therefore Thomas Husterer compared a few usual function something like x^3, x^4*something, which look similar
+ Actually the formula
+ f(x) = k*x^3+x*(1-k)
+ gives a similar form and should have even advantages compared to a original exp curve.
+ This function again expect x from 0 to 1 and k only from 0 to 1
+ Therefore rescaling is needed like before:
+ f(x) = 1024* ((k/100)*(x/1024)^3 + (x/1024)*(100-k)/100)
+ some mathematical tricks
+ f(x) = (k*x*x*x/(1024*1024) + x*(100-k)) / 100
+ for better rounding results we add the 50
+ f(x) = (k*x*x*x/(1024*1024) + x*(100-k) + 50) / 100
+
+ because we now understand the formula, we can optimize it further
+ --> calc100to256(k) --> eliminates /100 by replacing with /256 which is just a simple shift right 8
+ k is now between 0 and 256
+ f(x) = (k*x*x*x/(1024*1024) + x*(256-k) + 128) / 256
+ */
+
+// input parameters;
+//  x 0 to 1024;
+//  k 0 to 100;
+// output between 0 and 1024
+unsigned int expou(unsigned int x, unsigned int k)
+{
+#if defined(EXTENDED_EXPO)
+  bool extended;
+  if (k>80) {
+    extended=true;
+  }
+  else {
+    k += (k>>2);  // use bigger values before extend, because the effect is anyway very very low
+    extended=false;
+  }
+#endif
+
+  k = calc100to256(k);
+
+  uint32_t value = (uint32_t) x*x;
+  value *= (uint32_t)k;
+  value >>= 8;
+  value *= (uint32_t)x;
+
+#if defined(EXTENDED_EXPO)
+  if (extended) {  // for higher values do more multiplications to get a stronger expo curve
+    value >>= 16;
+    value *= (uint32_t)x;
+    value >>= 4;
+    value *= (uint32_t)x;
+  }
+#endif
+
+  value >>= 12;
+  value += (uint32_t)(256-k)*x+128;
+
+  return value>>8;
+}
+
+int expo(int x, int k)
+{
+  if (k == 0) {
+    return x;
+  }
+
+  int y;
+  bool neg = (x < 0);
+
+  if (neg) {
+    x = -x;
+  }
+  if (k < 0) {
+    y = RESXu - expou(RESXu-x, -k);
+  }
+  else {
+    y = expou(x, k);
+  }
+  return neg ? -y : y;
+}
 
 void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
 {
@@ -167,7 +266,6 @@ int16_t applyLimits(uint8_t channel, int32_t value)
       value = 256 * applyCustomCurve(-value/256, -lim->curve-1);
   }
 #endif
-
 
   int16_t ofs   = LIMIT_OFS_RESX(lim);
   int16_t lim_p = LIMIT_MAX_RESX(lim);
@@ -428,10 +526,10 @@ void evalInputs(uint8_t mode)
     uint8_t ch = (i < NUM_STICKS ? CONVERT_MODE(i) : i);
     int16_t v = anaIn(i);
 
-#if !defined(SIMU)
     if (IS_POT_MULTIPOS(i)) {
       v -= RESX;
     }
+#if !defined(SIMU)
     else {
       CalibData * calib = &g_eeGeneral.calib[i];
       v -= calib->mid;
@@ -442,7 +540,7 @@ void evalInputs(uint8_t mode)
     if (v < -RESX) v = -RESX;
     if (v >  RESX) v =  RESX;
 
-#if defined(PCBTARANIS) && !defined(PCBX7)
+#if defined(PCBTARANIS) && !defined(PCBX7) && !defined(SIMU)
     // TODO why not in the driver?
     if (i==POT1 || i==SLIDER1) {
       v = -v;
@@ -1060,7 +1158,9 @@ void evalMixes(uint8_t tick10ms)
   if (flightModeTransitionTime && get_tmr10ms() > flightModeTransitionTime+SWITCHES_DELAY()) {
     flightModeTransitionTime = 0;
     if (fm != flightModeTransitionLast) {
-      if (flightModeTransitionLast != 255) PLAY_PHASE_OFF(flightModeTransitionLast);
+      if (flightModeTransitionLast != 255) {
+        PLAY_PHASE_OFF(flightModeTransitionLast);
+      }
       PLAY_PHASE_ON(fm);
       flightModeTransitionLast = fm;
     }

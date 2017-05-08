@@ -24,11 +24,14 @@
 #include "helpers.h"
 #include "storage.h"
 
+#include <QFile>
+
 #define FW_MARK     "FW"
 #define VERS_MARK   "VERS"
 #define DATE_MARK   "DATE"
 #define TIME_MARK   "TIME"
 #define EEPR_MARK   "EEPR"
+#define FSIZE_MAX   Boards::getFlashSize(Board::BOARD_UNKNOWN)
 
 FirmwareInterface::FirmwareInterface(const QString & filename):
   flash(FSIZE_MAX, 0),

@@ -63,12 +63,12 @@ enum ItalianPrompts {
 
 #if defined(VOICE)
 #if defined(CPUARM)
-  #define IT_PUSH_UNIT_PROMPT(p, u) it_pushUnitPrompt((p), (u), id)
+  #define IT_PUSH_UNIT_PROMPT(u, p) it_pushUnitPrompt((u), (p), id)
 #else
-  #define IT_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define IT_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
-I18N_PLAY_FUNCTION(it, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(it, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -173,69 +173,38 @@ I18N_PLAY_FUNCTION(it, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     }
   }
   if (unit) {
-    IT_PUSH_UNIT_PROMPT(orignumber, unit);
+    IT_PUSH_UNIT_PROMPT(unit, orignumber);
   }
 }
 
 I18N_PLAY_FUNCTION(it, playDuration, int seconds PLAY_DURATION_ATT)
 {
+  if (seconds == 0) {
+    PLAY_NUMBER(seconds, 0, 0);
+    return;
+  }
+
   if (seconds < 0) {
     PUSH_NUMBER_PROMPT(IT_PROMPT_MENO);
     seconds = -seconds;
   }
 
-  uint8_t ore = 0;
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
+  if (tmp > 0 || IS_PLAY_TIME()) {
+    PLAY_NUMBER(tmp, UNIT_HOURS, 0);
+  }
+
+  tmp = seconds / 60;
+  seconds %= 60;
   if (tmp > 0) {
-    ore=tmp;
-    if (tmp > 1 || IS_PLAY_TIME()) {
-#if defined(CPUARM)
-      PLAY_NUMBER(tmp, UNIT_HOURS, 0);
-#else
-      PLAY_NUMBER(tmp, 0, 0);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_ORE);
-    } else {
-      PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_ORA);
-#endif
-    }
-  }
-  if (seconds>0) {
-    tmp = seconds / 60;
-    seconds %= 60;
-    if (tmp>0 && seconds==0 && ore>0) {
+    PLAY_NUMBER(tmp, UNIT_MINUTES, 0);
+    if (seconds > 0)
       PUSH_NUMBER_PROMPT(IT_PROMPT_E);
-    }
-    if (tmp > 0) {
-      if (tmp != 1) {
-#if defined(CPUARM)
-      PLAY_NUMBER(tmp, UNIT_MINUTES, 0);
-#else
-        PLAY_NUMBER(tmp, 0, 0);
-        PUSH_NUMBER_PROMPT(IT_PROMPT_MINUTI);
-      } else {
-        PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
-        PUSH_NUMBER_PROMPT(IT_PROMPT_MINUTO);
-#endif
-      }
-    }
-    if ((tmp>0 || ore>0) && seconds>0) {
-      PUSH_NUMBER_PROMPT(IT_PROMPT_E);
-    }
   }
-  if (seconds != 0 || (ore==0 && tmp==0)) {
-    if (seconds != 1) {
-#if defined(CPUARM)
-      PLAY_NUMBER(tmp, UNIT_SECONDS, 0);
-#else
-      PLAY_NUMBER(seconds, 0, 0);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_SECONDI);
-    } else {
-      PUSH_NUMBER_PROMPT(IT_PROMPT_UN);
-      PUSH_NUMBER_PROMPT(IT_PROMPT_SECONDO);
-#endif
-    }
+
+  if (seconds > 0) {
+    PLAY_NUMBER(seconds, UNIT_SECONDS, 0);
   }
 }
 

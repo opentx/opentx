@@ -352,7 +352,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
 
   if (IS_TARANIS(firmware->getBoard())) {
     QSet<QString> scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS/TELEMETRY", QStringList() << "*.lua", 8);
-    populateFileComboBox(ui->scriptName, scriptsSet, screen.body.script.filename);
+    Helpers::populateFileComboBox(ui->scriptName, scriptsSet, screen.body.script.filename);
     connect(ui->scriptName, SIGNAL(currentIndexChanged(int)), this, SLOT(scriptNameEdited()));
     connect(ui->scriptName, SIGNAL(editTextChanged ( const QString)), this, SLOT(scriptNameEdited()));
   }
@@ -362,12 +362,15 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
 
 void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox * b, RawSource & source, bool last)
 {
+  int flags = POPULATE_NONE | POPULATE_TELEMETRY;
   if (IS_ARM(firmware->getBoard())) {
-    populateSourceCB(b, source, generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0));
+    flags |= POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0);
   }
-  else {
-    populateSourceCB(b, source, generalSettings, model, POPULATE_NONE | POPULATE_TELEMETRY | (last ? POPULATE_TELEMETRYEXT : 0));
+  else if (last) {
+    flags |= POPULATE_TELEMETRYEXT;
   }
+  b->setModel(Helpers::getRawSourceItemModel(&generalSettings, model, flags));
+  b->setCurrentIndex(b->findData(source.toValue()));
 }
 
 TelemetryCustomScreen::~TelemetryCustomScreen()
@@ -454,7 +457,7 @@ void TelemetryCustomScreen::scriptNameEdited()
 {
   if (!lock) {
     lock = true;
-    getFileComboBoxValue(ui->scriptName, screen.body.script.filename, 8);
+    Helpers::getFileComboBoxValue(ui->scriptName, screen.body.script.filename, 8);
     emit modified();
     lock = false;
   }
@@ -758,7 +761,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     connect(analogs[1], SIGNAL(modified()), this, SLOT(onModified()));
   }
 
-  if (IS_TARANIS(firmware->getBoard())) {
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     ui->voltsSource->setField(model.frsky.voltsSource, this);
     ui->altitudeSource->setField(model.frsky.altitudeSource, this);
     ui->varioSource->setField(model.frsky.varioSource, this);

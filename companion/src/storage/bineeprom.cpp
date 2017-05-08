@@ -50,7 +50,7 @@ bool BinEepromFormat::write(const RadioData & radioData)
 {
   bool result;
   EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
-  int size = getEEpromSize(eepromInterface->getBoard());
+  int size = Boards::getEEpromSize(eepromInterface->getBoard());
   if (size == 0) {
     return false;
   }

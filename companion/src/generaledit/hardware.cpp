@@ -21,7 +21,7 @@
 #include "hardware.h"
 #include "ui_hardware.h"
 
-void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos = true)
+void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos)
 {
   Board::Type board = getCurrentBoard();
   if (IS_STM32(board) && index < getBoardCapability(board, Board::Switches)) {
@@ -92,7 +92,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   ui(new Ui::Hardware)
 {
   ui->setupUi(this);
-  
+
   Board::Type board = firmware->getBoard();
 
   if (IS_STM32(board)) {
@@ -110,6 +110,8 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->thrName->hide();
     ui->ailLabel->hide();
     ui->ailName->hide();
+    ui->potsTypeSeparator_1->hide();
+    ui->potsTypeSeparator_2->hide();
   }
 
   setupPotType(0, ui->pot1Label, ui->pot1Name, ui->pot1Type);
@@ -141,10 +143,11 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupSwitchType(16, ui->sqLabel, ui->sqName, ui->sqType);
   setupSwitchType(17, ui->srLabel, ui->srName, ui->srType);
 
-  if (IS_HORUS_OR_TARANIS(board) && !IS_TARANIS_X7(board)) {
+  if (IS_TARANIS(board) && !IS_TARANIS_X7(board)) {
     ui->serialPortMode->setCurrentIndex(generalSettings.hw_uartMode);
   }
   else {
+    ui->serialPortMode->setCurrentIndex(0);
     ui->serialPortMode->hide();
     ui->serialPortLabel->hide();
   }
@@ -160,10 +163,9 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   }
   else {
     ui->bluetoothLabel->hide();
-    ui->bluetoothEnable->hide();
-    ui->bluetoothName->hide();
+    ui->bluetoothWidget->hide();
   }
-  
+
   if (IS_HORUS_OR_TARANIS(board)) {
     ui->filterEnable->setChecked(!generalSettings.jitterFilter);
   }
@@ -188,39 +190,52 @@ void HardwarePanel::on_filterEnable_stateChanged()
 
 void HardwarePanel::on_PPM_MultiplierDSB_editingFinished()
 {
-  generalSettings.PPM_Multiplier = (int)(ui->PPM_MultiplierDSB->value()*10)-10;
-  emit modified();
+  int val = (int)(ui->PPM_MultiplierDSB->value()*10)-10;
+  if (generalSettings.PPM_Multiplier != val) {
+    generalSettings.PPM_Multiplier = val;
+    emit modified();
+  }
 }
 
 void HardwarePanel::on_PPM1_editingFinished()
 {
-  generalSettings.trainer.calib[0] = ui->PPM1->value();
-  emit modified();
+  if (generalSettings.trainer.calib[0] != ui->PPM1->value()) {
+    generalSettings.trainer.calib[0] = ui->PPM1->value();
+    emit modified();
+  }
 }
 
 void HardwarePanel::on_PPM2_editingFinished()
 {
-  generalSettings.trainer.calib[1] = ui->PPM2->value();
-  emit modified();
+  if (generalSettings.trainer.calib[1] != ui->PPM2->value()) {
+    generalSettings.trainer.calib[1] = ui->PPM2->value();
+    emit modified();
+  }
 }
 
 void HardwarePanel::on_PPM3_editingFinished()
 {
-  generalSettings.trainer.calib[2] = ui->PPM3->value();
-  emit modified();
+  if (generalSettings.trainer.calib[2] != ui->PPM3->value()) {
+    generalSettings.trainer.calib[2] = ui->PPM3->value();
+    emit modified();
+  }
 }
 
 void HardwarePanel::on_PPM4_editingFinished()
 {
-  generalSettings.trainer.calib[3] = ui->PPM4->value();
-  emit modified();
+  if (generalSettings.trainer.calib[3] != ui->PPM4->value()) {
+    generalSettings.trainer.calib[3] = ui->PPM4->value();
+    emit modified();
+  }
 }
 
 
-void HardwarePanel::on_txCurrentHardware_editingFinished()
+void HardwarePanel::on_txCurrentCalibration_editingFinished()
 {
-  generalSettings.txCurrentCalibration = ui->txCurrentCalibration->value();
-  emit modified();
+  if (generalSettings.txCurrentCalibration != ui->txCurrentCalibration->value()) {
+    generalSettings.txCurrentCalibration = ui->txCurrentCalibration->value();
+    emit modified();
+  }
 }
 
 void HardwarePanel::on_bluetoothEnable_stateChanged(int)
@@ -241,10 +256,12 @@ void HardwarePanel::setValues()
   ui->PPM_MultiplierDSB->setValue((qreal)(generalSettings.PPM_Multiplier+10)/10);
 }
 
-void HardwarePanel::on_txVoltageHardware_editingFinished()
+void HardwarePanel::on_txVoltageCalibration_editingFinished()
 {
-  generalSettings.txVoltageCalibration = ui->txVoltageCalibration->value()*10;
-  emit modified();
+  if (generalSettings.txVoltageCalibration != ui->txVoltageCalibration->value()*10) {
+    generalSettings.txVoltageCalibration = ui->txVoltageCalibration->value()*10;
+    emit modified();
+  }
 }
 
 void HardwarePanel::on_serialPortMode_currentIndexChanged(int index)

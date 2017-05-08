@@ -134,7 +134,7 @@ void pxxPutPcmTail(uint8_t port)
 #else
 void pxxPutPcmPart(uint8_t port, uint8_t value)
 {
-  pulse_duration_t duration = value ? 48 : 32;
+  pulse_duration_t duration = value ? 47 : 31;
   *modulePulsesData[port].pxx.ptr++ = duration;
   modulePulsesData[port].pxx.rest -= duration + 1;
 }
@@ -372,7 +372,18 @@ void setupPulsesPXX(uint8_t port)
       pulseValueLow = pulseValue;
     }
   }
-
+#if defined(BINDING_OPTIONS)
+/* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
+uint8_t extra_flags = XJT_INTERNAL_ANTENNA;
+  if (port == INTERNAL_MODULE) {
+#if defined(PCBHORUS)
+  extra_flags = g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna;
+#endif
+  extra_flags |= g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off << 1;
+  extra_flags |= g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 << 2;
+}
+putPcmByte(port, extra_flags);
+#else //BINDING_OPTIONS
   /* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
 #if defined(PCBHORUS)
   uint8_t antenna = XJT_INTERNAL_ANTENNA;
@@ -382,6 +393,7 @@ void setupPulsesPXX(uint8_t port)
   putPcmByte(port, antenna);
 #else
   putPcmByte(port, 0);
+#endif
 #endif
 
   /* CRC */

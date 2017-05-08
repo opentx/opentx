@@ -74,22 +74,25 @@ class CustomFunctionsPanel : public GenericPanel
     void populateFuncCB(QComboBox *b, unsigned int value);
     void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
+    QStandardItemModel * rawSwitchItemModel;
+    QStandardItemModel * rawSrcInputsItemModel;
+    QStandardItemModel * rawSrcAllItemModel;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
     int mediaPlayerCurrent;
-    QComboBox * fswtchSwtch[CPN_MAX_CUSTOM_FUNCTIONS];
-    QComboBox * fswtchFunc[CPN_MAX_CUSTOM_FUNCTIONS];
-    QCheckBox * fswtchParamGV[CPN_MAX_CUSTOM_FUNCTIONS];
-    QDoubleSpinBox * fswtchParam[CPN_MAX_CUSTOM_FUNCTIONS];
-    QTimeEdit * fswtchParamTime[CPN_MAX_CUSTOM_FUNCTIONS];
-    QPushButton * playBT[CPN_MAX_CUSTOM_FUNCTIONS];
-    QComboBox * fswtchParamT[CPN_MAX_CUSTOM_FUNCTIONS];
-    QComboBox * fswtchParamArmT[CPN_MAX_CUSTOM_FUNCTIONS];
-    QCheckBox * fswtchEnable[CPN_MAX_CUSTOM_FUNCTIONS];
-    RepeatComboBox * fswtchRepeat[CPN_MAX_CUSTOM_FUNCTIONS];
-    QComboBox * fswtchGVmode[CPN_MAX_CUSTOM_FUNCTIONS];
-    QSlider * fswtchBLcolor[CPN_MAX_CUSTOM_FUNCTIONS];
+    QComboBox * fswtchSwtch[CPN_MAX_SPECIAL_FUNCTIONS];
+    QComboBox * fswtchFunc[CPN_MAX_SPECIAL_FUNCTIONS];
+    QCheckBox * fswtchParamGV[CPN_MAX_SPECIAL_FUNCTIONS];
+    QDoubleSpinBox * fswtchParam[CPN_MAX_SPECIAL_FUNCTIONS];
+    QTimeEdit * fswtchParamTime[CPN_MAX_SPECIAL_FUNCTIONS];
+    QPushButton * playBT[CPN_MAX_SPECIAL_FUNCTIONS];
+    QComboBox * fswtchParamT[CPN_MAX_SPECIAL_FUNCTIONS];
+    QComboBox * fswtchParamArmT[CPN_MAX_SPECIAL_FUNCTIONS];
+    QCheckBox * fswtchEnable[CPN_MAX_SPECIAL_FUNCTIONS];
+    RepeatComboBox * fswtchRepeat[CPN_MAX_SPECIAL_FUNCTIONS];
+    QComboBox * fswtchGVmode[CPN_MAX_SPECIAL_FUNCTIONS];
+    QSlider * fswtchBLcolor[CPN_MAX_SPECIAL_FUNCTIONS];
     QMediaPlayer * mediaPlayer;
 
     int selectedFunction;

@@ -305,6 +305,7 @@ int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t eve
 #if defined(GVARS) && defined(CPUARM)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
 void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
+void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags=0);
 #elif defined(GVARS)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
 #else
@@ -430,6 +431,8 @@ void deleteMix(uint8_t idx);
 
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, uint8_t offset=0);
+
+void onSourceLongEnterPress(const char *result);
 
 uint8_t switchToMix(uint8_t source);
 

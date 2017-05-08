@@ -52,12 +52,12 @@ enum SwedishPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define SE_PUSH_UNIT_PROMPT(p, u) se_pushUnitPrompt((p), (u), id)
+  #define SE_PUSH_UNIT_PROMPT(u, p) se_pushUnitPrompt((u), (p), id)
 #else
-  #define SE_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define SE_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
-I18N_PLAY_FUNCTION(se, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(se, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -115,9 +115,9 @@ I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       number = qr.quot;
     }
   }
-  
+
   int16_t tmpNumber = number;
-  
+
   if (number >= 1000) {
     PLAY_NUMBER(number / 1000, 0, 0);
     PUSH_NUMBER_PROMPT(SE_PROMPT_THOUSAND);
@@ -134,9 +134,9 @@ I18N_PLAY_FUNCTION(se, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 0) {
     PUSH_NUMBER_PROMPT(SE_PROMPT_ZERO + number);
   }
-  
+
   if (unit) {
-    SE_PUSH_UNIT_PROMPT(tmpNumber, unit);
+    SE_PUSH_UNIT_PROMPT(unit, tmpNumber);
   }
 }
 

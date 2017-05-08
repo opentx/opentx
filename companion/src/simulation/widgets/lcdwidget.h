@@ -26,9 +26,14 @@
 #include <QPainter>
 #include <QClipboard>
 #include <QDir>
+#include <QElapsedTimer>
+#include <QMutex>
+#include <QMutexLocker>
 
 #include "appdata.h"
 #include "appdebugmessagehandler.h"
+
+#define LCD_WIDGET_REFRESH_PERIOD    16  // [ms] 16 = 62.5fps
 
 class LcdWidget : public QWidget
 {
@@ -39,7 +44,7 @@ class LcdWidget : public QWidget
     LcdWidget(QWidget * parent = 0):
       QWidget(parent),
       lcdBuf(NULL),
-      previousBuf(NULL),
+      localBuf(NULL),
       lightEnable(false),
       bgDefaultColor(QColor(198, 208, 199))
     {
@@ -47,8 +52,8 @@ class LcdWidget : public QWidget
 
     ~LcdWidget()
     {
-      if (previousBuf) {
-        free(previousBuf);
+      if (localBuf) {
+        free(localBuf);
       }
     }
 
@@ -62,8 +67,9 @@ class LcdWidget : public QWidget
         lcdSize = (width * height) * ((depth+7) / 8);
       else
         lcdSize = (width * ((height+7)/8)) * depth;
-      previousBuf = (unsigned char *)malloc(lcdSize);
-      memset(previousBuf, 0, lcdSize);
+
+      localBuf = (unsigned char *)malloc(lcdSize);
+      memset(localBuf, 0, lcdSize);
     }
 
     void setBgDefaultColor(const QColor & color)
@@ -102,10 +108,12 @@ class LcdWidget : public QWidget
 
     void onLcdChanged(bool light)
     {
-      if (light != lightEnable || memcmp(previousBuf, lcdBuf, lcdSize)) {
-        lightEnable = light;
-        memcpy(previousBuf, lcdBuf, lcdSize);
+      QMutexLocker locker(&lcdMtx);
+      lightEnable = light;
+      memcpy(localBuf, lcdBuf, lcdSize);
+      if (!redrawTimer.isValid() || redrawTimer.hasExpired(LCD_WIDGET_REFRESH_PERIOD)) {
         update();
+        redrawTimer.start();
       }
     }
 
@@ -117,24 +125,26 @@ class LcdWidget : public QWidget
     int lcdSize;
 
     unsigned char *lcdBuf;
-    unsigned char *previousBuf;
+    unsigned char *localBuf;
 
     bool lightEnable;
     QColor bgColor;
     QColor bgDefaultColor;
+    QMutex lcdMtx;
+    QElapsedTimer redrawTimer;
 
     inline void doPaint(QPainter & p)
     {
       QRgb rgb;
       uint16_t z;
 
-      if (!lcdBuf)
+      if (!localBuf)
         return;
 
       if (lcdDepth == 16) {
         for (int x = 0; x < lcdWidth; x++) {
           for (int y = 0; y < lcdHeight; y++) {
-            z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
+            z = ((uint16_t *)localBuf)[y * lcdWidth + x];
             rgb = qRgb(255 * ((z & 0xF800) >> 11) / 0x1F,
                        255 * ((z & 0x07E0) >> 5)  / 0x3F,
                        255 *  (z & 0x001F)        / 0x1F);
@@ -147,7 +157,7 @@ class LcdWidget : public QWidget
       if (lcdDepth == 12) {
         for (int x = 0; x < lcdWidth; x++) {
           for (int y = 0; y < lcdHeight; y++) {
-            z = ((uint16_t *)lcdBuf)[y * lcdWidth + x];
+            z = ((uint16_t *)localBuf)[y * lcdWidth + x];
             rgb = qRgb(255 * ((z & 0xF00) >> 8) / 0x0F,
                        255 * ((z & 0x0F0) >> 4) / 0x0F,
                        255 *  (z & 0x00F)       / 0x0F);
@@ -181,12 +191,12 @@ class LcdWidget : public QWidget
         mask = (1 << (y % 8));
         for (int x = 0; x < lcdWidth; x++, idx++) {
           if (lcdDepth == 1) {
-            if (lcdBuf[idx] & mask)
+            if (localBuf[idx] & mask)
               p.drawRect(2 * x, 2 * y, 1, 1);
             continue;
           }
           // lcdDepth == 4
-          z = (y & 1) ? (lcdBuf[idx] >> 4) : (lcdBuf[idx] & 0x0F);
+          z = (y & 1) ? (localBuf[idx] >> 4) : (localBuf[idx] & 0x0F);
           if (!z)
             continue;
           if (z != previousDepth) {

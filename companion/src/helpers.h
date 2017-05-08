@@ -22,7 +22,6 @@
 #define _HELPERS_H_
 
 #include "eeprominterface.h"
-#include "modeledit/modeledit.h"
 #include <QCheckBox>
 #include <QSpinBox>
 #include <QTableWidget>
@@ -30,6 +29,7 @@
 #include <QDebug>
 #include <QTime>
 #include <QElapsedTimer>
+#include <QStandardItemModel>
 
 extern const QColor colors[CPN_MAX_CURVES];
 
@@ -52,11 +52,6 @@ extern const QColor colors[CPN_MAX_CURVES];
 
 #define TRIM_MODE_NONE  0x1F  // 0b11111
 
-void populateGvSourceCB(QComboBox *b, int value);
-void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
-void getFileComboBoxValue(QComboBox * b, char * dest, int length);
-void populateRotEncCB(QComboBox *b, int value, int renumber);
-
 QString getTheme();
 
 class CompanionIcon: public QIcon {
@@ -69,7 +64,10 @@ class GVarGroup: public QObject {
   Q_OBJECT
 
   public:
-    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true, ModelPanel * panel=NULL);
+    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
+
+  signals:
+    void valueChanged();
 
   protected slots:
     void gvarCBChanged(int);
@@ -84,7 +82,6 @@ class GVarGroup: public QObject {
     int & weight;
     double step;
     bool lock;
-    ModelPanel * panel;
 };
 
 #define HIDE_DIFF             0x01
@@ -116,19 +113,6 @@ class CurveGroup : public QObject {
     int lastType;
 };
 
-enum SwitchContext
-{
-  LogicalSwitchesContext,
-  SpecialFunctionsContext,
-  GlobalFunctionsContext,
-  TimersContext,
-  MixesContext
-};
-
-void populateSwitchCB(QComboBox *b, const RawSwitch & value, const GeneralSettings & generalSettings, SwitchContext context);
-
-void populatePhasesCB(QComboBox *b, int value);
-void populateGvarUseCB(QComboBox *b, unsigned int phase);
 
 #define POPULATE_NONE           (1<<0)
 #define POPULATE_SOURCES        (1<<1)
@@ -143,8 +127,34 @@ void populateGvarUseCB(QComboBox *b, unsigned int phase);
 #define GVARS_VARIANT           0x0001
 #define FRSKY_VARIANT           0x0002
 
-void populateGVCB(QComboBox & b, int value, const ModelData & model);
-void populateSourceCB(QComboBox *b, const RawSource &source, const GeneralSettings generalSettings, const ModelData * model, unsigned int flags);
+namespace Helpers
+{
+  enum SwitchContext
+  {
+    LogicalSwitchesContext,
+    SpecialFunctionsContext,
+    GlobalFunctionsContext,
+    TimersContext,
+    MixesContext
+  };
+
+  void addRawSwitchItems(QStandardItemModel * itemModel, const RawSwitchType & type, int count, const GeneralSettings * const generalSettings = NULL);
+  QStandardItemModel * getRawSwitchItemModel(const GeneralSettings * const generalSettings = NULL, SwitchContext context = LogicalSwitchesContext);
+
+  void addRawSourceItems(QStandardItemModel * itemModel, const RawSourceType & type, int count, const GeneralSettings * const generalSettings = NULL,
+                         const ModelData * const model = NULL, const int start = 0, const QList<int> exclude = QList<int>());
+  QStandardItemModel * getRawSourceItemModel(const GeneralSettings * const generalSettings = NULL, const ModelData * const model = NULL, unsigned int flags = 0);
+
+  void populateGvarUseCB(QComboBox *b, unsigned int phase);
+  void populateGVCB(QComboBox & b, int value, const ModelData & model);
+  QString getAdjustmentString(int16_t val, const ModelData * model = NULL, bool sign = false);
+
+  void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
+  void getFileComboBoxValue(QComboBox * b, char * dest, int length);
+}  // namespace Helpers
+
+// TODO : move to Helpers namespace
+
 QString image2qstring(QImage image);
 int findmult(float value, float base);
 
@@ -157,38 +167,18 @@ QString getFrSkySrc(int index);
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 
-template <class T>
-QVector<T> findWidgets(QObject * object, const QString & name)
-{
-  QVector<T> result;
-  QRegExp rx(name.arg("([0-9]+)"));
-  QList<T> children = object->findChildren<T>();
-  foreach(T child, children) {
-    int pos = rx.indexIn(child->objectName());
-    if (pos >= 0) {
-      QStringList list = rx.capturedTexts();
-      int index = list[1].toInt();
-      if (result.size() <= index) {
-        result.resize(index+1);
-      }
-      result[index] = child;
-    }
-  }
-  return result;
-}
-
 // Format a pixmap to fit on the current firmware
 QPixmap makePixMap(const QImage & image);
 
 int version2index(const QString & version);
-QString index2version(int index);
+const QString index2version(int index);
 
 class QTimeS : public QTime
 {
   public:
-    QTimeS(int s) { int h = s/3600; s %= 3600; int m = s/60; s %=60; setHMS(h, m, s); };
-    QTimeS(const QTime & q) : QTime(q) {};
-    int seconds() const { return hour()*3600 + minute()*60 + second(); };
+    QTimeS(int s) { int h = s/3600; s %= 3600; int m = s/60; s %=60; setHMS(h, m, s); }
+    QTimeS(const QTime & q) : QTime(q) {}
+    int seconds() const { return hour()*3600 + minute()*60 + second(); }
 };
 
 bool qunlink(const QString & fileName);
@@ -205,7 +195,7 @@ bool caseInsensitiveLessThan(const QString &s1, const QString &s2);
 class GpsCoord
 {
 public:
-  GpsCoord(): latitude(0), longitude(0) {};
+  GpsCoord(): latitude(0), longitude(0) {}
   double latitude;    // Precede South latitudes and West longitudes with a minus sign. Latitudes range from -90 to 90.
   double longitude;   // Longitudes range from -180 to 180.
 };
@@ -213,7 +203,7 @@ public:
 class GpsGlitchFilter
 {
 public:
-  GpsGlitchFilter() : lastValid(false), glitchCount(0) {};
+  GpsGlitchFilter() : lastValid(false), glitchCount(0) {}
   bool isGlitch(GpsCoord coord);
 
 private:
@@ -226,7 +216,7 @@ private:
 class GpsLatLonFilter
 {
 public:
-  GpsLatLonFilter() {};
+  GpsLatLonFilter() {}
   bool isValid(GpsCoord coord);
 
 private:
@@ -249,13 +239,13 @@ public:
 
   void resizeColumnsToContents();
   void setColumnWidth(int col, int width);
-  void pushRowsUp(int row); 
+  void pushRowsUp(int row);
 
 private:
 #if defined(TABLE_LAYOUT)
-  QTableWidget * tableWidget; 
+  QTableWidget * tableWidget;
 #else
-  QGridLayout * gridWidget; 
+  QGridLayout * gridWidget;
 #endif
 };
 
@@ -267,7 +257,7 @@ public:
     name(name), total(0) {
     timer.start();
   };
-  ~Stopwatch() {};
+  ~Stopwatch() {}
 
   void restart() {
     total = 0;

@@ -3,7 +3,6 @@
     <file>images/customize.png</file>
     <file>icon.png</file>
     <file>../../CREDITS.txt</file>
-    <file>../../DONATIONS.txt</file>
     <file>../releasenotes.txt</file>
     <file>images/screenshot.png</file>
     <file>images/splash.png</file>
@@ -12,26 +11,42 @@
     <file>images/track.png</file>
     <file>images/track0.png</file>
     <file>images/taranison.png</file>
+    <file>images/simulator/icons/svg/arrow_click.svg</file>
     <file>images/simulator/icons/svg/camera.svg</file>
     <file>images/simulator/icons/svg/camera-active.svg</file>
     <file>images/simulator/icons/svg/console.svg</file>
+    <file>images/simulator/icons/svg/console-active.svg</file>
     <file>images/simulator/icons/svg/eraser.svg</file>
     <file>images/simulator/icons/svg/eraser-active.svg</file>
+    <file>images/simulator/icons/svg/fixed_x.svg</file>
+    <file>images/simulator/icons/svg/fixed_x-on.svg</file>
+    <file>images/simulator/icons/svg/fixed_y.svg</file>
+    <file>images/simulator/icons/svg/fixed_y-on.svg</file>
+    <file>images/simulator/icons/svg/folder_open.svg</file>
+    <file>images/simulator/icons/svg/hold_x.svg</file>
+    <file>images/simulator/icons/svg/hold_x-on.svg</file>
+    <file>images/simulator/icons/svg/hold_y.svg</file>
+    <file>images/simulator/icons/svg/hold_y-on.svg</file>
     <file>images/simulator/icons/svg/info.svg</file>
     <file>images/simulator/icons/svg/info-active.svg</file>
     <file>images/simulator/icons/svg/joystick_settings.svg</file>
     <file>images/simulator/icons/svg/joystick_settings-active.svg</file>
+    <file>images/simulator/icons/svg/line_horiz.svg</file>
+    <file>images/simulator/icons/svg/mouse.svg</file>
     <file>images/simulator/icons/svg/toggle_lock.svg</file>
     <file>images/simulator/icons/svg/toggle_lock-on.svg</file>
     <file>images/simulator/icons/svg/radio_outputs.svg</file>
+    <file>images/simulator/icons/svg/radio_outputs-active.svg</file>
     <file>images/simulator/icons/svg/reload_script.svg</file>
     <file>images/simulator/icons/svg/reload_script-active.svg</file>
     <file>images/simulator/icons/svg/restart.svg</file>
     <file>images/simulator/icons/svg/restart-active.svg</file>
     <file>images/simulator/icons/svg/telemetry.svg</file>
+    <file>images/simulator/icons/svg/telemetry-active.svg</file>
     <file>images/simulator/icons/svg/trainer.svg</file>
+    <file>images/simulator/icons/svg/trainer-active.svg</file>
     <file>images/simulator/icons/svg/word_wrap.svg</file>
-    <file>images/simulator/icons/svg/word_wrap-active.svg</file>
+    <file>images/simulator/icons/svg/word_wrap-on.svg</file>
     <file>images/simulator/Horus/middle.png</file>
     <file>images/simulator/Horus/left.png</file>
     <file>images/simulator/Horus/right.png</file>
@@ -604,6 +619,7 @@
     <file>themes/monoblue/16/contributors.png</file>
     <file>themes/monoblue/16/stop.png</file>
     <file>themes/monoblue/16/write_eeprom.png</file>
+    <file>themes/monoblue/16/sdsync.png</file>
     <file>themes/monoblue/24/paintbrush.png</file>
     <file>themes/monoblue/24/open.png</file>
     <file>themes/monoblue/24/edit.png</file>
@@ -647,6 +663,7 @@
     <file>themes/monoblue/24/contributors.png</file>
     <file>themes/monoblue/24/stop.png</file>
     <file>themes/monoblue/24/write_eeprom.png</file>
+    <file>themes/monoblue/24/sdsync.png</file>
     <file>themes/monoblue/32/paintbrush.png</file>
     <file>themes/monoblue/32/open.png</file>
     <file>themes/monoblue/32/edit.png</file>
@@ -690,6 +707,7 @@
     <file>themes/monoblue/32/contributors.png</file>
     <file>themes/monoblue/32/stop.png</file>
     <file>themes/monoblue/32/write_eeprom.png</file>
+    <file>themes/monoblue/32/sdsync.png</file>
     <file>themes/monoblue/48/paintbrush.png</file>
     <file>themes/monoblue/48/open.png</file>
     <file>themes/monoblue/48/edit.png</file>
@@ -733,6 +751,7 @@
     <file>themes/monoblue/48/contributors.png</file>
     <file>themes/monoblue/48/stop.png</file>
     <file>themes/monoblue/48/write_eeprom.png</file>
+    <file>themes/monoblue/48/sdsync.png</file>
     <file>themes/monowhite/16/paintbrush.png</file>
     <file>themes/monowhite/16/open.png</file>
     <file>themes/monowhite/16/edit.png</file>
@@ -776,6 +795,7 @@
     <file>themes/monowhite/16/contributors.png</file>
     <file>themes/monowhite/16/stop.png</file>
     <file>themes/monowhite/16/write_eeprom.png</file>
+    <file>themes/monowhite/16/sdsync.png</file>
     <file>themes/monowhite/24/paintbrush.png</file>
     <file>themes/monowhite/24/open.png</file>
     <file>themes/monowhite/24/edit.png</file>
@@ -819,6 +839,7 @@
     <file>themes/monowhite/24/contributors.png</file>
     <file>themes/monowhite/24/stop.png</file>
     <file>themes/monowhite/24/write_eeprom.png</file>
+    <file>themes/monowhite/24/sdsync.png</file>
     <file>themes/monowhite/32/paintbrush.png</file>
     <file>themes/monowhite/32/open.png</file>
     <file>themes/monowhite/32/edit.png</file>
@@ -862,6 +883,7 @@
     <file>themes/monowhite/32/contributors.png</file>
     <file>themes/monowhite/32/stop.png</file>
     <file>themes/monowhite/32/write_eeprom.png</file>
+    <file>themes/monowhite/32/sdsync.png</file>
     <file>themes/monowhite/48/paintbrush.png</file>
     <file>themes/monowhite/48/open.png</file>
     <file>themes/monowhite/48/edit.png</file>
@@ -905,6 +927,7 @@
     <file>themes/monowhite/48/contributors.png</file>
     <file>themes/monowhite/48/stop.png</file>
     <file>themes/monowhite/48/write_eeprom.png</file>
+    <file>themes/monowhite/48/sdsync.png</file>
     <file>themes/yerico/16/paintbrush.png</file>
     <file>themes/yerico/16/open.png</file>
     <file>themes/yerico/16/edit.png</file>

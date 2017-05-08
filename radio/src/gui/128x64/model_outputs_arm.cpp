@@ -20,16 +20,6 @@
 
 #include "opentx.h"
 
-bool isThrottleOutput(uint8_t ch)
-{
-  for (uint8_t i=0; i<MAX_MIXERS; i++) {
-    MixData *mix = mixAddress(i);
-    if (mix->destCh==ch && mix->srcRaw==MIXSRC_Thr)
-      return true;
-  }
-  return false;
-}
-
 enum MenuModelOutputsItems {
   ITEM_OUTPUTS_OFFSET,
   ITEM_OUTPUTS_MIN,
@@ -45,8 +35,10 @@ enum MenuModelOutputsItems {
 
 #if defined(PPM_UNIT_US)
   #define LIMITS_MIN_POS          12*FW+1
+  #define PREC_THRESHOLD          804
 #else
   #define LIMITS_MIN_POS          12*FW-2
+  #define PREC_THRESHOLD          0
 #endif
 
 #define LIMITS_OFFSET_POS         8*FW-1
@@ -156,17 +148,10 @@ void menuModelLimitsOne(event_t event)
 
       case ITEM_OUTPUTONE_DIR:
       {
-        uint8_t revert = ld->revert;
         lcdDrawTextAlignedLeft(y, TR_LIMITS_HEADERS_DIRECTION);
-        lcdDrawTextAtIndex(LIMITS_ONE_2ND_COLUMN, y, STR_MMMINV, revert, attr);
+        lcdDrawTextAtIndex(LIMITS_ONE_2ND_COLUMN, y, STR_MMMINV, ld->revert, attr);
         if (active) {
-          uint8_t revert_new = checkIncDecModel(event, revert, 0, 1);
-          if (checkIncDec_Ret && isThrottleOutput(k)) {
-            POPUP_CONFIRMATION(STR_INVERT_THR);
-          }
-          else {
-            ld->revert = revert_new;
-          }
+          CHECK_INCDEC_MODELVAR_ZERO(event, ld->revert, 1);
         }
         break;
       }
@@ -197,7 +182,7 @@ void menuModelLimitsOne(event_t event)
 
 void onLimitsMenu(const char *result)
 {
-  s_currIdx = menuVerticalPosition;
+  s_currIdx = menuVerticalPosition - HEADER_LINE;
 
   if (result == STR_RESET) {
     LimitData *ld = limitAddress(s_currIdx);
@@ -207,6 +192,7 @@ void onLimitsMenu(const char *result)
     ld->ppmCenter = 0;
     ld->revert = false;
     ld->curve = 0;
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_COPY_STICKS_TO_OFS) {
     copySticksToOffset(s_currIdx);
@@ -229,13 +215,6 @@ void menuModelLimits(event_t event)
   }
 
   SIMPLE_MENU(STR_MENULIMITS, menuTabModel, MENU_MODEL_OUTPUTS, HEADER_LINE+MAX_OUTPUT_CHANNELS+1);
-
-  if (warningResult) {
-    warningResult = 0;
-    LimitData * ld = limitAddress(sub);
-    ld->revert = !ld->revert;
-    storageDirty(EE_MODEL);
-  }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
@@ -303,7 +282,7 @@ void menuModelLimits(event_t event)
             break;
           }
 #endif
-          if (ld->min <= 0) {
+          if (ld->min <= PREC_THRESHOLD) {
             lcdDrawNumber(LIMITS_MIN_POS, y, MIN_MAX_DISPLAY(ld->min-LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {
@@ -318,7 +297,7 @@ void menuModelLimits(event_t event)
             break;
           }
 #endif
-          if (ld->max >= 0) {
+          if (ld->max >= -PREC_THRESHOLD) {
             lcdDrawNumber(LIMITS_MAX_POS, y, MIN_MAX_DISPLAY(ld->max+LIMITS_MIN_MAX_OFFSET)/10, RIGHT);
           }
           else {

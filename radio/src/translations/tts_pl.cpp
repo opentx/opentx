@@ -68,16 +68,16 @@ enum PolishPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define PL_PUSH_UNIT_PROMPT(p, u) pl_pushUnitPrompt((p), (u), id)
+  #define PL_PUSH_UNIT_PROMPT(u, p) pl_pushUnitPrompt((u), (p), id)
 #else
-  #define PL_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define PL_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
 #define MESKI 0x80
 #define ZENSKI 0x81
 #define NIJAKI 0x82
 
-I18N_PLAY_FUNCTION(pl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(pl, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -146,13 +146,13 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #else
     // we assume that we are PREC1
 #endif
-    div_t qr = div((int)number, 10);   
+    div_t qr = div((int)number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, ZENSKI);
       if (qr.quot == 0)
         PUSH_NUMBER_PROMPT(PL_PROMPT_CALA);
       else
-        PL_PUSH_UNIT_PROMPT(qr.quot, PL_PROMPT_CALA);
+        PL_PUSH_UNIT_PROMPT(PL_PROMPT_CALA, qr.quot);
       PLAY_NUMBER(qr.rem, 0, ZENSKI);
       PUSH_NUMBER_PROMPT(PL_PROMPT_UNITS_BASE+((unit-1)*4)+3);
       return;
@@ -163,7 +163,7 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   int16_t tmp = number;
-  
+
   switch(unit) {
     case 0:
       break;
@@ -197,26 +197,26 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     PUSH_NUMBER_PROMPT(PL_PROMPT_JEDNA);
     number = -1;
   }
-  
+
   if ((number == 1) && (att == NIJAKI)) {
     PUSH_NUMBER_PROMPT(PL_PROMPT_JEDNO);
     number = -1;
   }
-  
+
   if ((number == 2) && (att == ZENSKI)) {
     PUSH_NUMBER_PROMPT(PL_PROMPT_DWIE);
     number = -1;
   }
-  
+
   if (number >= 1000) {
-    if (number >= 2000) 
+    if (number >= 2000)
       PLAY_NUMBER(number / 1000, 0, 0);
 
     if (number >= 2000 && number < 5000)
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIACE);
     else if (number >= 5000)
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIECY);
-    else 
+    else
       PUSH_NUMBER_PROMPT(PL_PROMPT_TYSIAC);
 
     number %= 1000;
@@ -229,21 +229,21 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     if (number == 0)
       number = -1;
   }
-  
+
   if (number >= 0) {
     int test_2 =0;
     test_2 =number % 10;
     int ten=0;
     ten=(number - (number % 10))/10;
     if (att == ZENSKI && test_2==2 && ten >= 2 ) {
-      
+
       PUSH_NUMBER_PROMPT(PL_PROMPT_DZIESIATKI_ZENSKIE+ten);
-    }else 
+    }else
        PUSH_NUMBER_PROMPT(PL_PROMPT_ZERO+number);
   }
 
   if (unit) {
-    PL_PUSH_UNIT_PROMPT(tmp, unit);
+    PL_PUSH_UNIT_PROMPT(unit, tmp);
   }
 }
 

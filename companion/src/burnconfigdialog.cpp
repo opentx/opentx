@@ -125,6 +125,11 @@ void burnConfigDialog::getSettings()
       sambaLoc = "/usr/local/bin/sam-ba";
     if ( dfuLoc.isEmpty())
       dfuLoc = QFileInfo(QApplication::applicationDirPath() + "/../Resources/dfu-util").absoluteFilePath();
+#elif defined __FreeBSD__
+    if (avrLoc.isEmpty())
+      avrLoc = "/usr/local/bin/avrdude";
+    if (dfuLoc.isEmpty())
+      dfuLoc = "/usr/local/bin/dfu-util";
 #else
     if ( avrLoc.isEmpty())
       avrLoc = "/usr/bin/avrdude";

@@ -19,8 +19,6 @@
  */
 
 #include <QApplication>
-#include <QTranslator>
-#include <QDir>
 #include <QSplashScreen>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
@@ -28,10 +26,12 @@
 #endif
 
 #include "appdebugmessagehandler.h"
+#include "customdebug.h"
 #include "mainwindow.h"
 #include "version.h"
 #include "appdata.h"
 #include "storage.h"
+#include "translations.h"
 
 #ifdef __APPLE__
 #include <QProxyStyle>
@@ -50,9 +50,8 @@ class MyProxyStyle : public QProxyStyle
 
 int main(int argc, char *argv[])
 {
-  Q_INIT_RESOURCE(companion);
-
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+  /* From doc: This attribute must be set before Q(Gui)Application is constructed. */
   QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
 
@@ -62,8 +61,12 @@ int main(int argc, char *argv[])
   app.setOrganizationDomain(COMPANY_DOMAIN);
   app.setAttribute(Qt::AA_DontShowIconsInMenus, false);
 
+  Q_INIT_RESOURCE(companion);
+
   if (AppDebugMessageHandler::instance())
     AppDebugMessageHandler::instance()->installAppMessageHandler();
+
+  CustomDebug::setFilterRules();
 
   g.init();
 
@@ -78,12 +81,7 @@ int main(int argc, char *argv[])
   app.setStyle(new MyProxyStyle);
 #endif
 
-  QTranslator companionTranslator;
-  companionTranslator.load(":/companion_" + g.locale());
-  QTranslator qtTranslator;
-  qtTranslator.load((QString)"qt_" + g.locale().left(2), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
-  app.installTranslator(&companionTranslator);
-  app.installTranslator(&qtTranslator);
+  Translations::installTranslators();
 
   // QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
@@ -102,10 +100,10 @@ int main(int argc, char *argv[])
 
   registerStorageFactories();
   registerOpenTxFirmwares();
-  registerSimulators();
+  SimulatorLoader::registerSimulators();
 
   if (g.profile[g.id()].fwType().isEmpty()){
-    g.profile[g.id()].fwType(default_firmware_variant->getId());
+    g.profile[g.id()].fwType(Firmware::getDefaultVariant()->getId());
     g.profile[g.id()].fwName("");
   }
 
@@ -115,7 +113,7 @@ int main(int argc, char *argv[])
   QPixmap pixmap = QPixmap(splashScreen);
   QSplashScreen *splash = new QSplashScreen(pixmap);
 
-  current_firmware_variant = getFirmware(g.profile[g.id()].fwType());
+  Firmware::setCurrentVariant(Firmware::getFirmwareForId(g.profile[g.id()].fwType()));
 
   MainWindow *mainWin = new MainWindow();
   if (g.showSplash()) {
@@ -132,9 +130,9 @@ int main(int argc, char *argv[])
   delete splash;
   delete mainWin;
 
-  unregisterSimulators();
+  SimulatorLoader::unregisterSimulators();
   unregisterOpenTxFirmwares();
-  unregisterEEpromInterfaces();
+  unregisterStorageFactories();
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   SDL_Quit();

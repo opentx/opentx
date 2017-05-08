@@ -64,7 +64,8 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   tableLayout->addLayout(row, col, horizontalLayout);
-  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars, panel);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars);
+  QObject::connect(gvarGroup, &GVarGroup::valueChanged, panel, &ModelPanel::modified);
 }
 
 LimitsGroup::~LimitsGroup()
@@ -155,7 +156,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
       curveCB->setProperty("index", i);
       int numcurves = firmware->getCapability(NumCurves);
       for (int j=-numcurves; j<=numcurves; j++) {
-        curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(), j);
+        curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(&model, false), j);
       }
       curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
       connect(curveCB, SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
@@ -227,7 +228,7 @@ void Channels::refreshExtendedLimits()
     group->updateMinMax(10*channelMax);
   }
 
-  emit modified(); 
+  emit modified();
 }
 
 void Channels::invEdited()

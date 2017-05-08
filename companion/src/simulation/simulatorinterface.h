@@ -23,108 +23,170 @@
 
 #include "boards.h"
 #include "constants.h"
+
+#include <algorithm>
 #include <inttypes.h>
+
+#include <QObject>
 #include <QString>
 #include <QByteArray>
+#include <QDir>
+#include <QLibrary>
 #include <QMap>
-#include <algorithm>
 
-struct TxInputs
-{
-    int  sticks[CPN_MAX_STICKS]; /* lh lv rv rh */
-    int  pots[CPN_MAX_POTS];
-    int  switches[CPN_MAX_SWITCHES];
-    bool keys[CPN_MAX_KEYS];
-    bool rotenc;
-    bool trims[(CPN_MAX_STICKS + CPN_MAX_AUX_TRIMS) * 2];
-};
+#define SIMULATOR_INTERFACE_HEARTBEAT_PERIOD    1000  // ms
 
-class TxOutputs
+class SimulatorInterface : public QObject
 {
+  Q_OBJECT
+
   public:
-    TxOutputs() { memset(this, 0, sizeof(TxOutputs)); }
-    int chans[CPN_MAX_CHNOUT];
-    bool vsw[CPN_MAX_CSW];
-    int gvars[CPN_MAX_FLIGHT_MODES][CPN_MAX_GVARS];
-    unsigned int beep;
-    // uint8_t phase;
-};
 
-struct Trims
-{
-  int values[CPN_MAX_STICKS]; /* lh lv rv rh */
-  bool extended;
-};
+    enum InputSourceType {
+      INPUT_SRC_NONE = 0,
+      INPUT_SRC_ANALOG,     // any analog source, index into g_anas[]
+      INPUT_SRC_STICK,      // Board::StickAxes, g_anas[index]
+      INPUT_SRC_KNOB,       // g_anas[index + StickAxes]
+      INPUT_SRC_SLIDER,     // g_anas[index + StickAxes + num_pots]
+      INPUT_SRC_TXVIN,      // g_anas[Analogs::TX_VOLTAGE]
+      INPUT_SRC_SWITCH,     // Named 2/3-pos switches
+      INPUT_SRC_TRIM_SW,    // Board::TrimSwitches
+      INPUT_SRC_TRIM,       // Board::TrimAxes
+      INPUT_SRC_KEY,        // UI key/pushbutton
+      INPUT_SRC_ROTENC,     // Rotary encoder (TODO)
+      INPUT_SRC_TRAINER,    // Virtual trainer input
+      INPUT_SRC_ENUM_COUNT
+    };
 
-class SimulatorInterface
-{
-  public:
+    enum OutputSourceType {
+      OUTPUT_SRC_NONE = 0,
+      OUTPUT_SRC_CHAN_OUT,
+      OUTPUT_SRC_CHAN_MIX,
+      OUTPUT_SRC_TRIM_VALUE,
+      OUTPUT_SRC_TRIM_RANGE,
+      OUTPUT_SRC_VIRTUAL_SW,
+      OUTPUT_SRC_PHASE,
+      OUTPUT_SRC_GVAR,
+      OUTPUT_SRC_ENUM_COUNT
+    };
+
+    // only for data not available from Boards or Firmware, eg. compile-time options
+    enum Capability {
+      CAP_LUA,                // LUA
+      CAP_ROTARY_ENC,         // ROTARY_ENCODERS
+      CAP_ROTARY_ENC_NAV,     // ROTARY_ENCODER_NAVIGATION
+      CAP_TELEM_FRSKY_SPORT,  // TELEMETRY_FRSKY_SPORT
+      CAP_ENUM_COUNT
+    };
+
+    // This allows automatic en/decoding of flight mode + gvar value to/from any int32
+    struct gVarMode_t {
+      int16_t value;
+      uint8_t mode;
+
+      gVarMode_t(int i = 0) {
+        set(i);
+      }
+      void set(int i) {
+        mode = (i >> 16) & 0xFF;
+        value = (i & 0xFFFF);
+      }
+      operator int() {
+        return ((mode << 16) | (value & 0xFFFF));
+      }
+      gVarMode_t & operator =(const int i) {
+        set(i);
+        return *this;
+      }
+    };
+
+    struct TxOutputs {
+      TxOutputs() { clear(); }
+      void clear() { memset(this, 0, sizeof(TxOutputs)); }
+
+      int16_t chans[CPN_MAX_CHNOUT];       // final channel outputs
+      int16_t ex_chans[CPN_MAX_CHNOUT];    // raw mix outputs
+      int16_t gvars[CPN_MAX_FLIGHT_MODES][CPN_MAX_GVARS];
+      int trims[CPN_MAX_TRIMS];            // Board::TrimAxes enum
+      bool vsw[CPN_MAX_LOGICAL_SWITCHES];  // virtual/logic switches
+      int8_t phase;
+      qint16 trimRange;                  // TRIM_MAX or TRIM_EXTENDED_MAX
+      // bool beep;
+    };
 
     virtual ~SimulatorInterface() {}
 
-    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") { }
-
-    virtual void setVolumeGain(int value) { }
-
-    virtual void start(QByteArray & eeprom, bool tests=true) = 0;
-
-    virtual void start(const char * filename, bool tests=true) = 0;
-
-    virtual void stop() = 0;
-
-    virtual void readEepromData(QByteArray & dest) = 0;
-
-    virtual bool timer10ms() = 0;
-
+    virtual QString name() = 0;
+    virtual bool isRunning() = 0;
+    virtual void readRadioData(QByteArray & dest) = 0;
     virtual uint8_t * getLcd() = 0;
-
-    virtual bool lcdChanged(bool &lightEnable) = 0;
-
-    virtual void setValues(TxInputs &inputs) = 0;
-
-    virtual void getValues(TxOutputs &outputs) = 0;
-
-    virtual void setTrim(unsigned int idx, int value) = 0;
-
-    virtual void getTrims(Trims &trims) = 0;
-
-    virtual unsigned int getPhase() = 0;
-
-    virtual const char * getPhaseName(unsigned int phase) = 0;
-
-    virtual void wheelEvent(int steps) { }
-
-    virtual const char * getError() = 0;
-
-    virtual void sendTelemetry(uint8_t * data, unsigned int len) = 0;
-
     virtual uint8_t getSensorInstance(uint16_t id, uint8_t defaultValue = 0) = 0;
-
     virtual uint16_t getSensorRatio(uint16_t id) = 0;
+    virtual const int getCapability(Capability cap) = 0;
 
+  public slots:
+
+    virtual void init() = 0;
+    virtual void start(const char * filename = NULL, bool tests = true) = 0;
+    virtual void stop() = 0;
+    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "") = 0;
+    virtual void setVolumeGain(const int value) = 0;
+    virtual void setRadioData(const QByteArray & data) = 0;
+    virtual void setAnalogValue(uint8_t index, int16_t value) = 0;
+    virtual void setKey(uint8_t key, bool state) = 0;
+    virtual void setSwitch(uint8_t swtch, int8_t state) = 0;
+    virtual void setTrim(unsigned int idx, int value) = 0;
+    virtual void setTrimSwitch(uint8_t trim, bool state) = 0;
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value) = 0;
-
-    virtual void installTraceHook(void (*callback)(const char *)) = 0;
-
+    virtual void setInputValue(int type, uint8_t index, int16_t value) = 0;
+    virtual void rotaryEncoderEvent(int steps) = 0;
+    virtual void setTrainerTimeout(uint16_t ms) = 0;
+    virtual void sendTelemetry(const QByteArray data) = 0;
     virtual void setLuaStateReloadPermanentScripts() = 0;
+    virtual void addTracebackDevice(QIODevice * device) = 0;
+    virtual void removeTracebackDevice(QIODevice * device) = 0;
+
+  signals:
+
+    void started();
+    void stopped();
+    void heartbeat(qint32 loops, qint64 timestamp);
+    void runtimeError(const QString & error);
+    void lcdChange(bool backlightEnable);
+    void phaseChanged(qint8 phase, const QString & name);
+    void channelOutValueChange(quint8 index, qint32 value);
+    void channelMixValueChange(quint8 index, qint32 value);
+    void virtualSwValueChange(quint8 index, qint32 value);
+    void trimValueChange(quint8 index, qint32 value);
+    void trimRangeChange(quint8 index, qint32 min, qint16 max);
+    void gVarValueChange(quint8 index, qint32 value);
+    void outputValueChange(int type, quint8 index, qint32 value);
 };
 
 class SimulatorFactory {
 
   public:
-
     virtual ~SimulatorFactory() { }
-
     virtual QString name() = 0;
-
     virtual Board::Type type() = 0;
-
     virtual SimulatorInterface *create() = 0;
 };
 
-void registerSimulators();
-void unregisterSimulators();
-SimulatorFactory *getSimulatorFactory(const QString &name);
-extern QMap<QString, SimulatorFactory *> registered_simulators;
+class SimulatorLoader
+{
+  public:
+    static void registerSimulators();
+    static void unregisterSimulators();
+    static QStringList getAvailableSimulators();
+    static QString findSimulatorByFirmwareName(const QString & name);
+    static SimulatorInterface * loadSimulator(const QString & name);
+    static bool unloadSimulator(const QString & name);
+
+  protected:
+    typedef SimulatorFactory * (*RegisterSimulator)();
+
+    static int registerSimulators(const QDir & dir);
+    static QMap<QString, QLibrary *> registeredSimulators;
+};
 
 #endif // _SIMULATORINTERFACE_H_

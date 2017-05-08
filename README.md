@@ -1,4 +1,4 @@
-﻿##OpenTX 2.2 Branch
+## OpenTX 2.2 Branch
 
 [![Build Status](https://travis-ci.org/opentx/opentx.svg?branch=next)](https://travis-ci.org/opentx/opentx)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/11787/badge.svg)](https://scan.coverity.com/projects/opentx-opentx)
@@ -7,4 +7,11 @@
 
 The ongoing development on 2.2.x is done in this branch.
 
-Refer to the opentx.wiki for information about setting up the tool chains for building OpenTX and OpenTX Companion as well as other development related issues.
+Refer to the [OpenTX wiki](https://github.com/opentx/opentx/wiki) for information about setting up the tool chains for building OpenTX and OpenTX Companion as well as other development related issues.
+
+Useful links:
+ * OpenTX Blog http://blog.open-tx.org/
+ * OpenTX Main Site http://www.open-tx.org/
+ * OpenTx University http://open-txu.org/
+ * OpenTX User Manual https://www.gitbook.com/book/opentx/opentx-taranis-manual/details
+ * OpenTX Lua Reference Guide https://www.gitbook.com/book/opentx/opentx-lua-reference-guide/details

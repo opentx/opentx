@@ -20,6 +20,7 @@
 
 #include "simulateduiwidget.h"
 #include "ui_simulateduiwidget9X.h"
+#include "eeprominterface.h"
 
 SimulatedUIWidget9X::SimulatedUIWidget9X(SimulatorInterface * simulator, QWidget * parent):
   SimulatedUIWidget(simulator, parent),
@@ -30,39 +31,49 @@ SimulatedUIWidget9X::SimulatedUIWidget9X(SimulatorInterface * simulator, QWidget
 
   ui->setupUi(this);
 
+  bool hasRotEnc = getCurrentFirmware()->getCapability(Capability::RotaryEncoders);
+
   // add actions in order of appearance on the help menu
 
   int x = 68, y = 91, oR = 63;
 
   polygon << QPoint(x, y) << polyArc(x, y, oR, -45, 45);
-  act = addRadioUiAction(3, QList<int>() << Qt::Key_Up << Qt::Key_PageUp, tr("UP/PG-UP"), tr("[ UP ]"));
-  ui->leftbuttons->addArea(polygon, "9X/9xcursup.png", act);
+  act = new RadioUiAction(3, QList<int>() << Qt::Key_Up << Qt::Key_PageUp, SIMU_STR_HLP_KEYS_GO_UP % (hasRotEnc ? QString("") :  "|" % SIMU_STR_HLP_MOUSE_UP), SIMU_STR_HLP_ACT_UP);
+  addRadioWidget(ui->leftbuttons->addArea(polygon, "9X/9xcursup.png", act));
 
   polygon.clear();
   polygon << QPoint(x, y) << polyArc(x, y, oR, 135, 225);
-  act = addRadioUiAction(2, QList<int>() << Qt::Key_Down << Qt::Key_PageDown, tr("DN/PG-DN"), tr("[ DN ]"));
-  ui->leftbuttons->addArea(polygon, "9X/9xcursdown.png", act);
+  act = new RadioUiAction(2, QList<int>() << Qt::Key_Down << Qt::Key_PageDown, SIMU_STR_HLP_KEYS_GO_DN % (hasRotEnc ? QString("") :  "|" % SIMU_STR_HLP_MOUSE_DN), SIMU_STR_HLP_ACT_DN);
+  addRadioWidget(ui->leftbuttons->addArea(polygon, "9X/9xcursdown.png", act));
 
   polygon.clear();
   polygon << QPoint(x, y) << polyArc(x, y, oR, 45, 135);
-  act = addRadioUiAction(4, QList<int>() << Qt::Key_Right << Qt::Key_Plus << Qt::Key_Equal, tr("RIGHT/+"), tr("[ + ]"));
-  ui->leftbuttons->addArea(polygon, "9X/9xcursmin.png", act);
+  act = new RadioUiAction(4, QList<int>() << Qt::Key_Right << Qt::Key_Minus, SIMU_STR_HLP_KEY_RGT % "|" % SIMU_STR_HLP_KEY_MIN, SIMU_STR_HLP_ACT_MIN);
+  addRadioWidget(ui->leftbuttons->addArea(polygon, "9X/9xcursmin.png", act));
 
   polygon.clear();
   polygon << QPoint(x, y) << polyArc(x, y, oR, 225, 315);
-  act = addRadioUiAction(5, QList<int>() << Qt::Key_Left << Qt::Key_Minus, tr("LEFT/-"), tr("[ - ]"));
-  ui->leftbuttons->addArea(polygon, "9X/9xcursplus.png", act);
+  act = new RadioUiAction(5, QList<int>() << Qt::Key_Left << Qt::Key_Plus << Qt::Key_Equal, SIMU_STR_HLP_KEY_LFT % "|" % SIMU_STR_HLP_KEY_PLS, SIMU_STR_HLP_ACT_PLS);
+  addRadioWidget(ui->leftbuttons->addArea(polygon, "9X/9xcursplus.png", act));
 
-  act = addRadioUiAction(0, QList<int>() << Qt::Key_Enter << Qt::Key_Return, tr("ENTER/MOUSE-MID"), tr("[ MENU ]"));
-  m_rotEncClickAction = act;
-  ui->rightbuttons->addArea(25, 60, 71, 81, "9X/9xmenumenu.png", act);
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEY_ENTER, SIMU_STR_HLP_ACT_MENU);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(16, 54, 60, 34), "9X/9xmenumenu.png", act));
 
-  act = addRadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, tr("DEL/BKSP/ESC"), tr("[ EXIT ]"));
-  ui->rightbuttons->addArea(25, 117, 71, 139, "9X/9xmenuexit.png", act);
+  if (!hasRotEnc) {
+    m_mouseMidClickAction = act;
+    m_mouseMidClickAction->setText(act->getText() % "|" % SIMU_STR_HLP_MOUSE_MID);
+  }
 
-  ui->leftbuttons->addArea(-1, 148, 39, 182, "9X/9xcursphoto.png", m_screenshotAction);
+  act = new RadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(16, 114, 60, 34), "9X/9xmenuexit.png", act));
 
-  m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),   tr("[ UP ]/[ DN ] or Rotary Sel.")));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(6, 149, 30, 30), "9X/9xcursphoto.png", m_screenshotAction));
+
+  if (hasRotEnc) {
+    addRadioAction(new RadioUiAction(-1, 0, SIMU_STR_HLP_MOUSE_SCRL, SIMU_STR_HLP_ROTENC % "|" % SIMU_STR_HLP_ROTENC_LR));
+    m_mouseMidClickAction = new RadioUiAction(14, Qt::Key_Insert, SIMU_STR_HLP_KEY_INS % "|" % SIMU_STR_HLP_MOUSE_MID,  SIMU_STR_HLP_ACT_ROT_DN);
+    addRadioWidget(ui->leftbuttons->addArea(QRect(0, 0, 0, 0), "9X/9xcurs.png", m_mouseMidClickAction));
+  }
 
   m_backlightColors << QColor(159,165,247);
   m_backlightColors << QColor(166,247,159);

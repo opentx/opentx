@@ -84,17 +84,13 @@ QStringList getDfuArgs(const QString & cmd, const QString & filename)
 {
   QStringList args;
   burnConfigDialog bcd;
-  QString memory = "0x08000000";
-  if (cmd == "-U") {
-    memory.append(QString(":%1").arg(getCurrentFirmware()->getFlashSize()));
-  }
   args << bcd.getDFUArgs();
-  if (!filename.endsWith(".dfu")) {
-    args << "--dfuse-address" << memory;
-  }
-  args << "-d" << "0483:df11";
-  QString fullcmd = cmd + filename;
-  args << "" << fullcmd;
+  if (!filename.endsWith(".dfu"))
+    args << "--dfuse-address" << "0x08000000";
+  if (cmd == "-U")
+    args.last().append(":" % QString::number(Boards::getFlashSize(getCurrentBoard())));
+  args << "--device" << "0483:df11";
+  args << "" << cmd % filename;
   return args;
 }
 
@@ -467,7 +463,7 @@ QString findMassstoragePath(const QString & filename, bool onlyPath)
 #if !defined __APPLE__
       QString fstype = entry->me_type;
       // qDebug() << eepromfile;
-      
+
       if (fstype.contains("fat") && QFile::exists(eepromfile)) {
 #else
       if (QFile::exists(eepromfile)) {

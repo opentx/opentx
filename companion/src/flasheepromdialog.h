@@ -21,11 +21,8 @@
 #ifndef _FLASHEEPROMDIALOG_H_
 #define _FLASHEEPROMDIALOG_H_
 
+#include <constants.h>
 #include <QtWidgets>
-
-#define HEX_FILES_FILTER               "HEX files (*.hex);;"
-#define BIN_FILES_FILTER               "BIN files (*.bin);;"
-#define EXTERNAL_EEPROM_FILES_FILTER   "EEPROM files (*.bin *.hex);;" BIN_FILES_FILTER HEX_FILES_FILTER
 
 namespace Ui
 {

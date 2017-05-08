@@ -28,6 +28,8 @@
 
 #define RADIO_WIDGET_STATE_VERSION    1
 
+class RadioUiAction;
+
 class RadioWidget : public QWidget
 {
   Q_OBJECT
@@ -41,8 +43,13 @@ class RadioWidget : public QWidget
       RADIO_WIDGET_SWITCH,
       RADIO_WIDGET_KNOB,
       RADIO_WIDGET_FADER,
-      RADIO_WIDGET_STICK   // actually one axis of a stick
+      RADIO_WIDGET_TRIM,    // trim axis, usually 2 buttons & slider
+      RADIO_WIDGET_STICK,   // actually one axis of a stick
+      RADIO_WIDGET_KEY,     // UI key/pushbutton
+      RADIO_WIDGET_ENUM_COUNT
     };
+
+    enum RadioTrimWidgetButtonStates { RADIO_TRIM_BTN_ON = 1024, RADIO_TRIM_BTN_OFF = -1024 };
 
     struct RadioWidgetState {
       public:
@@ -64,50 +71,58 @@ class RadioWidget : public QWidget
         quint8 _version = RADIO_WIDGET_STATE_VERSION;  // structure definition version
     };
 
-    explicit RadioWidget(QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
-    explicit RadioWidget(const QString &labelText, int value = 0, QWidget *parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
-
-    void setIndex(int index);
-    void setInvertValue(bool invertValue);
-    void setValue(int value);
-    void setFlags(quint16 flags);
-    void setShowLabel(bool show);
-    void setLabelText(const QString &labelText, bool showLabel = true);
-    void setStateData(const QByteArray & data);
-    void changeVisibility(bool visible);
-
+    explicit RadioWidget(QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit RadioWidget(RadioUiAction * action = NULL, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
+    explicit RadioWidget(const QString & labelText, int value = 0, QWidget * parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
 
     virtual int getValue() const;
-    int getIndex() const;
-    int getType()  const;
-    QByteArray getStateData() const;
-    RadioWidgetState getState() const;
+    virtual int getIndex() const;
+    virtual int getType()  const;
+    virtual QByteArray getStateData() const;
+    virtual RadioWidgetState getState() const;
+    virtual RadioUiAction * getAction() const;
+
+  public slots:
+
+    virtual void setIndex(const int & index);
+    virtual void setType(const RadioWidgetType & type);
+    virtual void setValue(const int & value);
+    virtual void setValueQual(const RadioWidgetType & type, const int & index, const int & value);
+    virtual void setFlags(const quint16 & flags);
+    virtual void setShowLabel(const bool show);
+    virtual void setLabelText(const QString & labelText, bool showLabel = true);
+    virtual void setStateData(const RadioWidgetState & state);
+    virtual void changeVisibility(bool visible);
+    virtual void setAction(RadioUiAction * action);
+
+  signals:
+
+    void valueChange(const RadioWidgetType type, const int index, int value);
+    void valueChanged(const int value);
+    void flagsChanged(const quint16 flags);
 
   protected:
 
-    void init();
+    void addLayout();
     void addLabel();
-    void setWidget(QWidget * widget = NULL);
-
-    int m_value;
-    int m_index;
-    quint16 m_flags;
-    bool m_invertValue;
-    bool m_showLabel;
-    QString m_labelText;
-    RadioWidgetType m_type;
-
-  private:
+    void setWidget(QWidget * widget = NULL, Qt::Alignment align = Qt::AlignHCenter);
+    virtual void onActionToggled(int index, bool active);
 
     QGridLayout * m_gridLayout;
     QWidget * m_controlWidget;
     QLabel * m_nameLabel;
+    RadioUiAction * m_action;
 
-  signals:
-
-    void valueChanged(int m_value);
-    void flagsChanged(quint16 flags);
+    int m_value;
+    int m_index;
+    quint16 m_flags;
+    bool m_valueReset;
+    bool m_showLabel;
+    QString m_labelText;
+    RadioWidgetType m_type;
 
 };
+
+Q_DECLARE_METATYPE(RadioWidget::RadioWidgetState)
 
 #endif // _RADIOWIDGET_H_

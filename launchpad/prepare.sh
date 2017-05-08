@@ -35,7 +35,7 @@ sed -i "s/__VERSION_SUFFIX__/${suffix}/g" ../debian/rules
 # remove old package and prepare new one
 cd ..
 rm -f  ../opentx-companion22_*${distro}*
-debuild -S -sa -I -Ijenkins -Ilaunchpad -Idoc -I*.luac
+debuild -S -sa -I -Ijenkins -Ilaunchpad -Idoc -Ibuild -I*.luac
 
 echo "Use this command to upload to launchpad:"
 echo "  dput ppa:opentx-test/ppa opentx-companion22_<version>.changes"

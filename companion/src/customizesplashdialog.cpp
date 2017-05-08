@@ -150,11 +150,9 @@ bool Side::saveImage()
   return true;
 }
 
-//*** customizeSplashDialog Class ***
-
-customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
+CustomizeSplashDialog::CustomizeSplashDialog(QWidget *parent) :
   QDialog(parent),
-  ui(new Ui::customizeSplashDialog)
+  ui(new Ui::CustomizeSplashDialog)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("paintbrush.png"));
@@ -185,22 +183,22 @@ customizeSplashDialog::customizeSplashDialog(QWidget *parent) :
   resize(0,0);
 }
 
-customizeSplashDialog::~customizeSplashDialog()
+CustomizeSplashDialog::~CustomizeSplashDialog()
 {
   delete ui;
 }
 
-void customizeSplashDialog::on_copyRightToLeftButton_clicked() {
+void CustomizeSplashDialog::on_copyRightToLeftButton_clicked() {
   left.copyImage(right);
 }
-void customizeSplashDialog::on_copyLeftToRightButton_clicked() {
+void CustomizeSplashDialog::on_copyLeftToRightButton_clicked() {
 right.copyImage(left);
 }
 
 
-void customizeSplashDialog::on_leftLoadFwButton_clicked() {loadFirmware(left);}
-void customizeSplashDialog::on_rightLoadFwButton_clicked() {loadFirmware(right);}
-void customizeSplashDialog::loadFirmware(Side side)
+void CustomizeSplashDialog::on_leftLoadFwButton_clicked() {loadFirmware(left);}
+void CustomizeSplashDialog::on_rightLoadFwButton_clicked() {loadFirmware(right);}
+void CustomizeSplashDialog::loadFirmware(Side side)
 {
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
@@ -212,9 +210,9 @@ void customizeSplashDialog::loadFirmware(Side side)
   side.markSourceButton();
 }
 
-void customizeSplashDialog::on_leftLoadPictButton_clicked() {loadPicture(left);}
-void customizeSplashDialog::on_rightLoadPictButton_clicked() {loadPicture(right);}
-void customizeSplashDialog::loadPicture(Side side)
+void CustomizeSplashDialog::on_leftLoadPictButton_clicked() {loadPicture(left);}
+void CustomizeSplashDialog::on_rightLoadPictButton_clicked() {loadPicture(right);}
+void CustomizeSplashDialog::loadPicture(Side side)
 {
   QString supportedImageFormats;
   for (int formatIndex = 0; formatIndex < QImageReader::supportedImageFormats().count(); formatIndex++) {
@@ -232,9 +230,9 @@ void customizeSplashDialog::loadPicture(Side side)
   side.markSourceButton();
 }
 
-void customizeSplashDialog::on_leftLoadProfileButton_clicked() {loadProfile(left);}
-void customizeSplashDialog::on_rightLoadProfileButton_clicked() {loadProfile(right);}
-void customizeSplashDialog::loadProfile(Side side)
+void CustomizeSplashDialog::on_leftLoadProfileButton_clicked() {loadProfile(left);}
+void CustomizeSplashDialog::on_rightLoadProfileButton_clicked() {loadProfile(right);}
+void CustomizeSplashDialog::loadProfile(Side side)
 {
   QString fileName=g.profile[g.id()].splashFile();
 
@@ -245,9 +243,9 @@ void customizeSplashDialog::loadProfile(Side side)
   side.markSourceButton();
 }
 
-void customizeSplashDialog::on_leftLibraryButton_clicked(){libraryButton_clicked(left);}
-void customizeSplashDialog::on_rightLibraryButton_clicked(){libraryButton_clicked(right);}
-void customizeSplashDialog::libraryButton_clicked( Side side )
+void CustomizeSplashDialog::on_leftLibraryButton_clicked(){libraryButton_clicked(left);}
+void CustomizeSplashDialog::on_rightLibraryButton_clicked(){libraryButton_clicked(right);}
+void CustomizeSplashDialog::libraryButton_clicked( Side side )
 {
   QString fileName;
   SplashLibraryDialog *ld = new SplashLibraryDialog(this,&fileName);
@@ -258,9 +256,9 @@ void customizeSplashDialog::libraryButton_clicked( Side side )
   }
 }
 
-void customizeSplashDialog::on_leftSaveButton_clicked(){saveButton_clicked(left);}
-void customizeSplashDialog::on_rightSaveButton_clicked(){saveButton_clicked(right);}
-void customizeSplashDialog::saveButton_clicked( Side side )
+void CustomizeSplashDialog::on_leftSaveButton_clicked(){saveButton_clicked(left);}
+void CustomizeSplashDialog::on_rightSaveButton_clicked(){saveButton_clicked(right);}
+void CustomizeSplashDialog::saveButton_clicked( Side side )
 {
   if (side.saveImage()){
     QMessageBox::information(this, tr("File Saved"), tr("The image was saved to the file %1").arg(*side.saveToFileName));
@@ -272,9 +270,9 @@ void customizeSplashDialog::saveButton_clicked( Side side )
     QMessageBox::critical(this, tr("File Save Error"), tr("Failed to write image to %1").arg(*side.saveToFileName));
 }
 
-void customizeSplashDialog::on_leftInvertButton_clicked(){invertButton_clicked(left);}
-void customizeSplashDialog::on_rightInvertButton_clicked(){invertButton_clicked(right);}
-void customizeSplashDialog::invertButton_clicked(Side side)
+void CustomizeSplashDialog::on_leftInvertButton_clicked(){invertButton_clicked(left);}
+void CustomizeSplashDialog::on_rightInvertButton_clicked(){invertButton_clicked(right);}
+void CustomizeSplashDialog::invertButton_clicked(Side side)
 {
   QImage image = side.imageLabel->pixmap()->toImage();
   image.invertPixels();

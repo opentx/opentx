@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -39,7 +39,7 @@ struct gtm
   int8_t tm_hour;                  /* Hours.       [0-23] */
   int8_t tm_mday;                  /* Day.         [1-31] */
   int8_t tm_mon;                   /* Month.       [0-11] */
-  int8_t tm_year;                  /* Year - 1900. Limited to the year 2115. Oh no! :P */
+  uint8_t tm_year;                 /* Year - 1900. Limited to the year 2155. */
   int8_t tm_wday;                  /* Day of week. [0-6] */
   int16_t tm_yday;                 /* Day of year. [0-365] Needed internally for calculations */
 };

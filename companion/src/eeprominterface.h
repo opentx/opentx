@@ -21,6 +21,7 @@
 #ifndef _EEPROMINTERFACE_H_
 #define _EEPROMINTERFACE_H_
 
+#include "macros.h"
 #include "radiodata.h"
 #include "../../radio/src/definitions.h"
 #include "simulatorinterface.h"
@@ -28,8 +29,6 @@
 #include <QList>
 #include <iostream>
 #include <QDebug>
-
-QString RotaryEncoderString(int index);
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
@@ -51,7 +50,6 @@ enum Capability {
   VoicesMaxLength,
   MultiLangVoice,
   ModelImage,
-  SwitchesPositions,
   CustomFunctions,
   SafetyChannelCustomFunction,
   LogicalSwitches,
@@ -62,7 +60,8 @@ enum Capability {
   Outputs,
   ChannelsName,
   ExtraInputs,
-  ExtendedTrims,
+  TrimsRange,
+  ExtendedTrimsRange,
   NumCurves,
   NumCurvePoints,
   OffsetWeight,
@@ -185,9 +184,6 @@ void getEEPROMString(char *dst, const char *src, int size);
 float ValToTim(int value);
 int TimToVal(float value);
 
-QString getSignedStr(int value);
-QString getGVarString(int16_t val, bool sign=false);
-
 inline int applyStickMode(int stick, unsigned int mode)
 {
   if (mode == 0 || mode > 4) {
@@ -195,14 +191,8 @@ inline int applyStickMode(int stick, unsigned int mode)
     return stick;
   }
 
-  const unsigned int stickModes[]= {
-      1, 2, 3, 4,
-      1, 3, 2, 4,
-      4, 2, 3, 1,
-      4, 3, 2, 1 };
-
   if (stick >= 1 && stick <= 4)
-    return stickModes[(mode-1)*4 + stick - 1];
+    return modn12x3[mode-1][stick-1];
   else
     return stick;
 }
@@ -329,10 +319,40 @@ class Firmware {
 
     const int getFlashSize();
 
+    static Firmware * getFirmwareForId(const QString & id);
+
+    static QVector<Firmware *> getRegisteredFirmwares()
+    {
+      return registeredFirmwares;
+    }
+    static void addRegisteredFirmware(Firmware * fw)
+    {
+      registeredFirmwares.append(fw);
+    }
+
+    static Firmware * getDefaultVariant()
+    {
+      return defaultVariant;
+    }
+    static void setDefaultVariant(Firmware * value)
+    {
+      defaultVariant = value;
+    }
+
+    static Firmware * getCurrentVariant()
+    {
+      return currentVariant;
+    }
+    static void setCurrentVariant(Firmware * value)
+    {
+      currentVariant = value;
+    }
+
   public:
     QList<const char *> languages;
     QList<const char *> ttslanguages;
     QList< QList<Option> > opts;
+
 
   protected:
     QString id;
@@ -342,32 +362,28 @@ class Firmware {
     Firmware * base;
     EEPROMInterface * eepromInterface;
 
+    static QVector<Firmware *> registeredFirmwares;
+    static Firmware * defaultVariant;
+    static Firmware * currentVariant;
+
   private:
     Firmware();
 
 };
 
-extern QList<Firmware *> firmwares;
-extern Firmware * default_firmware_variant;
-extern Firmware * current_firmware_variant;
-
-Firmware * getFirmware(const QString & id);
-
 inline Firmware * getCurrentFirmware()
 {
-  return current_firmware_variant;
+  return Firmware::getCurrentVariant();
 }
-
-SimulatorInterface * getCurrentSimulator();
 
 inline EEPROMInterface * getCurrentEEpromInterface()
 {
-  return getCurrentFirmware()->getEEpromInterface();
+  return Firmware::getCurrentVariant()->getEEpromInterface();
 }
 
 inline Board::Type getCurrentBoard()
 {
-  return getCurrentFirmware()->getBoard();
+  return Firmware::getCurrentVariant()->getBoard();
 }
 
 inline int divRoundClosest(const int n, const int d)
@@ -375,7 +391,12 @@ inline int divRoundClosest(const int n, const int d)
   return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
 }
 
-#define CHECK_IN_ARRAY(T, index) ((unsigned int)index < (unsigned int)(sizeof(T)/sizeof(T[0])) ? T[(unsigned int)index] : "???")
+inline int calcRESXto100(int x)
+{
+  return divRoundClosest(x*100, 1024);
+}
+
+#define CHECK_IN_ARRAY(T, index) ((unsigned int)index < DIM(T) ? T[(unsigned int)index] : "???")
 
 extern QList<EEPROMInterface *> eepromInterfaces;
 

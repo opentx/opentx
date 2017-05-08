@@ -21,6 +21,8 @@
 #ifndef _CONSTANTS_H_
 #define _CONSTANTS_H_
 
+#include <QCoreApplication>
+
 #define CPN_MAX_MODELS                 60
 #define CPN_MAX_TIMERS                 3
 #define CPN_MAX_FLIGHT_MODES           9
@@ -30,34 +32,40 @@
 #define CPN_MAX_CURVES                 32
 #define CPN_MAX_POINTS                 17
 #define CPN_MAX_GVARS                  9
-#define CPN_MAX_ENCODERS               2
+#define CPN_MAX_ENCODERS               2  // rotary encoders
 #define CPN_MAX_CHNOUT                 32 // number of real output channels
-#define CPN_MAX_CSW                    64 // number of custom switches
-#define CPN_MAX_CUSTOM_FUNCTIONS       64 // number of functions assigned to switches
+#define CPN_MAX_LOGICAL_SWITCHES       64 // number of custom switches
+#define CPN_MAX_SPECIAL_FUNCTIONS      64 // number of functions assigned to switches
 #define CPN_MAX_MODULES                2
-#define CPN_MAX_STICKS                 4
-#define CPN_MAX_AUX_TRIMS              2
-#define CPN_MAX_POTS                   8
+#define CPN_MAX_STICKS                 Board::STICK_AXIS_COUNT
+#define CPN_MAX_TRIMS                  Board::TRIM_AXIS_COUNT
+#define CPN_MAX_TRIM_SW                Board::TRIM_SW_COUNT
+#define CPN_MAX_KNOBS                  4
+#define CPN_MAX_SLIDERS                4
+#define CPN_MAX_POTS                   (CPN_MAX_KNOBS + CPN_MAX_SLIDERS)
 #define CPN_MAX_CYC                    3
 #define CPN_MAX_SWITCHES               32
 #define CPN_MAX_KEYS                   32
 #define CPN_MAX_MOUSE_ANALOGS          2
+#define CPN_MAX_ANALOGS                (CPN_MAX_STICKS + CPN_MAX_POTS + CPN_MAX_MOUSE_ANALOGS)
 
-#define HEX_FILES_FILTER              "HEX files (*.hex);;"
-#define BIN_FILES_FILTER              "BIN files (*.bin);;"
-#define DFU_FILES_FILTER              "DFU files (*.dfu);;"
-#define EEPE_FILES_FILTER             "EEPE files (*.eepe);;"
-#define OTX_FILES_FILTER              "OpenTX files (*.otx);;"
-#define EEPROM_FILES_FILTER           "Radio and Models settings files (*.otx *.eepe *.bin *.hex);;" OTX_FILES_FILTER EEPE_FILES_FILTER BIN_FILES_FILTER HEX_FILES_FILTER
-#define FLASH_FILES_FILTER            "FLASH files (*.bin *.hex *.dfu);;" BIN_FILES_FILTER HEX_FILES_FILTER DFU_FILES_FILTER
-#define EXTERNAL_EEPROM_FILES_FILTER  "EEPROM files (*.bin *.hex);;" BIN_FILES_FILTER HEX_FILES_FILTER
-#define ER9X_EEPROM_FILE_TYPE         "ER9X_EEPROM_FILE"
-#define EEPE_EEPROM_FILE_HEADER       "EEPE EEPROM FILE"
-#define EEPE_MODEL_FILE_HEADER        "EEPE MODEL FILE"
+#define CPN_STR_FILES                  QCoreApplication::translate("Companion", "files")
+#define CPN_STR_RAD_MOD_SETTINGS       QCoreApplication::translate("Companion", "Radio and Models settings")
+#define HEX_FILES_FILTER               "HEX " % CPN_STR_FILES % " (*.hex);;"
+#define BIN_FILES_FILTER               "BIN " % CPN_STR_FILES % " (*.bin);;"
+#define DFU_FILES_FILTER               "DFU " % CPN_STR_FILES % " (*.dfu);;"
+#define EEPE_FILES_FILTER              "EEPE " % CPN_STR_FILES % " (*.eepe);;"
+#define OTX_FILES_FILTER               "OpenTX " % CPN_STR_FILES % " (*.otx);;"
+#define EEPROM_FILES_FILTER            CPN_STR_RAD_MOD_SETTINGS % " " % CPN_STR_FILES % " (*.otx *.eepe *.bin *.hex);;" % OTX_FILES_FILTER % EEPE_FILES_FILTER % BIN_FILES_FILTER % HEX_FILES_FILTER
+#define FLASH_FILES_FILTER             "FLASH " % CPN_STR_FILES % " (*.bin *.hex *.dfu);;" % BIN_FILES_FILTER % HEX_FILES_FILTER % DFU_FILES_FILTER
+#define EXTERNAL_EEPROM_FILES_FILTER   "EEPROM " % CPN_STR_FILES % " (*.bin *.hex);;" % BIN_FILES_FILTER % HEX_FILES_FILTER
+#define ER9X_EEPROM_FILE_TYPE          "ER9X_EEPROM_FILE"
+#define EEPE_EEPROM_FILE_HEADER        "EEPE EEPROM FILE"
+#define EEPE_MODEL_FILE_HEADER         "EEPE MODEL FILE"
 
-const char * const ARROW_LEFT  = "\xE2\x86\x90";
-const char * const ARROW_UP    = "\xE2\x86\x91";
-const char * const ARROW_RIGHT = "\xE2\x86\x92";
-const char * const ARROW_DOWN  = "\xE2\x86\x93";
+#define CPN_STR_SW_INDICATOR_UP        QCoreApplication::translate("RawSwitch", "\xE2\x86\x91")  // Switch up position indicator: Up arrow, or similar.
+#define CPN_STR_SW_INDICATOR_DN        QCoreApplication::translate("RawSwitch", "\xE2\x86\x93")  // Switch down position indicator: Down arrow, or similar.
+#define CPN_STR_SW_INDICATOR_NEUT      QCoreApplication::translate("RawSwitch", "-")             // Switch neutral (middle) position indicator.
+#define CPN_STR_SW_INDICATOR_REV       QCoreApplication::translate("RawSwitch", "!")             // Switch reversed logic (NOT) indicator.
 
 #endif // _CONSTANTS_H_

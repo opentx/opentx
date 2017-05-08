@@ -307,7 +307,7 @@ void menuMainView(event_t event)
     case EVT_KEY_BREAK(KEY_MENU):
       if (view_base == VIEW_TIMER2) {
         Timer2_running = !Timer2_running;
-        AUDIO_KEYPAD_UP();
+        AUDIO_KEY_PRESS();
       }
     break;
     */

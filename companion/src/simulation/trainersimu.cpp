@@ -24,32 +24,40 @@
 #include "helpers.h"
 #include "virtualjoystickwidget.h"
 
+#define TRAINERSIMU_HEARTBEAT_PERIOD    500  // [ms]
+
 TrainerSimulator::TrainerSimulator(QWidget * parent, SimulatorInterface * simulator):
   QWidget(parent),
   ui(new Ui::TrainerSimulator),
-  simulator(simulator)
+  simulator(simulator),
+  m_simuStarted(false)
 {
   ui->setupUi(this);
 
   vJoyLeft = new VirtualJoystickWidget(this, 'L', false);
   vJoyLeft->setStickColor(Qt::cyan);
+  vJoyLeft->setStickScale(512);
   ui->leftStickLayout->addWidget(vJoyLeft);
 
   vJoyRight = new VirtualJoystickWidget(this, 'R', false);
   vJoyRight->setStickColor(Qt::cyan);
+  vJoyRight->setStickScale(512);
   ui->rightStickLayout->addWidget(vJoyRight);
 
-  timer = new QTimer(this);
-  timer->setInterval(10);
-  connect(timer, SIGNAL(timeout()), this, SLOT(onTimerEvent()));
+  connect(vJoyLeft, &VirtualJoystickWidget::valueChange, this, &TrainerSimulator::onRadioWidgetValueChange);
+  connect(vJoyRight, &VirtualJoystickWidget::valueChange, this, &TrainerSimulator::onRadioWidgetValueChange);
+
+  connect(this, &TrainerSimulator::trainerHeartbeat, simulator, &SimulatorInterface::setTrainerTimeout);
+  connect(this, &TrainerSimulator::trainerChannelChange, simulator, &SimulatorInterface::setTrainerInput);
+  connect(simulator, &SimulatorInterface::started, this, &TrainerSimulator::onSimulatorStarted);
+  connect(simulator, &SimulatorInterface::stopped, this, &TrainerSimulator::onSimulatorStopped);
+
+  timer.setInterval(TRAINERSIMU_HEARTBEAT_PERIOD - 10);
+  connect(&timer, &QTimer::timeout, this, &TrainerSimulator::emitHeartbeat);
 }
 
 TrainerSimulator::~TrainerSimulator()
 {
-  if (timer) {
-    timer->stop();
-    delete timer;
-  }
   if (vJoyLeft)
     delete vJoyLeft;
   if (vJoyRight)
@@ -60,42 +68,44 @@ TrainerSimulator::~TrainerSimulator()
 
 void TrainerSimulator::showEvent(QShowEvent *event)
 {
-  timer->start();
-  event->accept();
+  start();
 }
 
-void TrainerSimulator::closeEvent(QCloseEvent *event)
+void TrainerSimulator::hideEvent(QHideEvent *event)
 {
-  timer->stop();
-  event->accept();
+  stop();
 }
 
-void TrainerSimulator::centerSticks()
+void TrainerSimulator::start()
 {
-  if (vJoyLeft)
-    vJoyLeft->centerStick();
-
-  if (vJoyRight)
-    vJoyRight->centerStick();
+  timer.start();
 }
 
-void TrainerSimulator::onTimerEvent()
+void TrainerSimulator::stop()
 {
-  centerSticks();
-  setTrainerInputs();
+  timer.stop();
 }
 
-void TrainerSimulator::setTrainerInputs()
+void TrainerSimulator::onSimulatorStarted()
 {
-  if (!simulator)
-    return;
+  m_simuStarted = true;
+}
 
-  if (vJoyLeft) {
-    simulator->setTrainerInput(0, int( 512 * vJoyLeft->getStickX()));  // LEFT HORZ
-    simulator->setTrainerInput(1, int(-512 * vJoyLeft->getStickY()));  // LEFT VERT
-  }
-  if (vJoyRight) {
-    simulator->setTrainerInput(2, int(-512 * vJoyRight->getStickY()));  // RGHT VERT
-    simulator->setTrainerInput(3, int( 512 * vJoyRight->getStickX()));  // RGHT HORZ
+void TrainerSimulator::onSimulatorStopped()
+{
+  m_simuStarted = false;
+  stop();
+}
+
+void TrainerSimulator::emitHeartbeat()
+{
+  emit trainerHeartbeat(TRAINERSIMU_HEARTBEAT_PERIOD);
+}
+
+void TrainerSimulator::onRadioWidgetValueChange(RadioWidget::RadioWidgetType type, int index, int value)
+{
+  if (type == RadioWidget::RADIO_WIDGET_STICK && m_simuStarted && timer.isActive()) {
+    emit trainerChannelChange(index, value);
+    emitHeartbeat();
   }
 }

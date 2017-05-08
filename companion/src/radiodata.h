@@ -69,20 +69,6 @@ enum FailsafeModes {
   FAILSAFE_LAST = FAILSAFE_RECEIVER
 };
 
-#define TRIM_LH_L  0
-#define TRIM_LH_R  1
-#define TRIM_LV_DN 2
-#define TRIM_LV_UP 3
-#define TRIM_RV_DN 4
-#define TRIM_RV_UP 5
-#define TRIM_RH_L  6
-#define TRIM_RH_R  7
-#define TRIM_T5_DN 8
-#define TRIM_T5_UP 9
-#define TRIM_T6_DN 10
-#define TRIM_T6_UP 11
-#define TRIM_NONE  12
-
 #define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
 #define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,]*"
 
@@ -225,14 +211,14 @@ class RawSource {
     {
     }
 
-    void convert(Board::Type before, Board::Type after);
+    RawSource convert(Board::Type before, Board::Type after);
 
     inline const int toValue() const
     {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    QString toString(const ModelData * model = NULL) const;
+    QString toString(const ModelData * model = NULL, const GeneralSettings * const generalSettings = NULL) const;
 
     RawSourceRange getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags=0) const;
 
@@ -245,8 +231,9 @@ class RawSource {
     }
 
     bool isTimeBased() const;
-    bool isPot() const;
-    bool isSlider() const;
+    bool isStick(int * potsIndex = NULL) const;
+    bool isPot(int * potsIndex = NULL) const;
+    bool isSlider(int * sliderIndex = NULL) const;
 
     RawSourceType type;
     int index;
@@ -291,7 +278,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString(Board::Type board = Board::BOARD_UNKNOWN) const;
+    QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL) const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -300,6 +287,8 @@ class RawSwitch {
     bool operator!= ( const RawSwitch& other) {
       return (this->type != other.type) || (this->index != other.index);
     }
+
+    RawSwitch convert(Board::Type before, Board::Type after);
 
     RawSwitchType type;
     int index;
@@ -327,7 +316,7 @@ class CurveReference {
     CurveRefType type;
     int value;
 
-    QString toString() const;
+    QString toString(const ModelData * model = NULL, bool verbose = true) const;
 };
 
 enum InputMode {
@@ -352,6 +341,7 @@ class ExpoData {
     int carryTrim;
     char name[10+1];
     void clear() { memset(this, 0, sizeof(ExpoData)); }
+    void convert(Board::Type before, Board::Type after);
 };
 
 class CurvePoint {
@@ -371,6 +361,8 @@ class CurveData {
     CurveData();
     void clear(int count);
     bool isEmpty() const;
+    QString nameToString(const int idx) const;
+
     CurveType type;
     bool smooth;
     int  count;
@@ -478,10 +470,13 @@ class LogicalSwitchData { // Logical Switches data
     unsigned int delay;
     unsigned int duration;
     int andsw;
+
     void clear() { memset(this, 0, sizeof(LogicalSwitchData)); }
+    bool isEmpty() const;
     CSFunctionFamily getFunctionFamily() const;
     unsigned int getRangeFlags() const;
     QString funcToString() const;
+    void convert(Board::Type before, Board::Type after);
 };
 
 enum AssignFunc {
@@ -540,8 +535,10 @@ class CustomFunctionData { // Function Switches data
     unsigned int enabled; // TODO perhaps not any more the right name
     unsigned int adjustMode;
     int repeatParam;
+
     void clear();
-    QString funcToString() const;
+    bool isEmpty() const;
+    QString funcToString(const ModelData * model = NULL) const;
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;
     QString enabledToString() const;
@@ -550,14 +547,16 @@ class CustomFunctionData { // Function Switches data
     static void populatePlaySoundParams(QStringList & qs);
     static void populateHapticParams(QStringList & qs);
 
+    void convert(Board::Type before, Board::Type after);
+
 };
 
 class FlightModeData {
   public:
     FlightModeData() { clear(0); }
-    int trimMode[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
-    int trimRef[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
-    int trim[CPN_MAX_STICKS+CPN_MAX_AUX_TRIMS];
+    int trimMode[CPN_MAX_TRIMS];
+    int trimRef[CPN_MAX_TRIMS];
+    int trim[CPN_MAX_TRIMS];
     RawSwitch swtch;
     char name[10+1];
     unsigned int fadeIn;
@@ -565,6 +564,7 @@ class FlightModeData {
     int rotaryEncoders[CPN_MAX_ENCODERS];
     int gvars[CPN_MAX_GVARS];
     void clear(const int phase);
+    void convert(Board::Type before, Board::Type after);
 };
 
 class SwashRingData { // Swash Ring data
@@ -799,8 +799,9 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_Q2X2,
   MM_RF_PROTO_WK_2X01,
   MM_RF_PROTO_Q303,
-  MM_RF_PROTO_GW08,
-  MM_RF_PROTO_LAST=MM_RF_PROTO_GW08
+  MM_RF_PROTO_GW008,
+  MM_RF_PROTO_DM002,
+  MM_RF_PROTO_LAST=MM_RF_PROTO_DM002
 };
 
 enum TrainerProtocol {
@@ -1010,9 +1011,9 @@ class ModelData {
     ModelData();
     ModelData(const ModelData & src);
     ModelData & operator = (const ModelData & src);
-    
+
     void convert(Board::Type before, Board::Type after);
-    
+
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
 
@@ -1027,6 +1028,8 @@ class ModelData {
     int       category;
     char      name[15+1];
     char      filename[16+1];
+    int       modelIndex;      // Companion only, temporary index position managed by data model.
+
     TimerData timers[CPN_MAX_TIMERS];
     bool      noGlobalFunctions;
     bool      thrTrim;            // Enable Throttle Trim
@@ -1047,8 +1050,8 @@ class ModelData {
     ExpoData  expoData[CPN_MAX_EXPOS];
 
     CurveData curves[CPN_MAX_CURVES];
-    LogicalSwitchData  logicalSw[CPN_MAX_CSW];
-    CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
+    LogicalSwitchData  logicalSw[CPN_MAX_LOGICAL_SWITCHES];
+    CustomFunctionData customFn[CPN_MAX_SPECIAL_FUNCTIONS];
     SwashRingData swashRingData;
     unsigned int thrTraceSrc;
     uint64_t switchWarningStates;
@@ -1141,9 +1144,9 @@ class GeneralSettings {
 
     unsigned int version;
     unsigned int variant;
-    int   calibMid[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
-    int   calibSpanNeg[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
-    int   calibSpanPos[CPN_MAX_STICKS+CPN_MAX_POTS+CPN_MAX_MOUSE_ANALOGS];
+    int   calibMid[CPN_MAX_ANALOGS];
+    int   calibSpanNeg[CPN_MAX_ANALOGS];
+    int   calibSpanPos[CPN_MAX_ANALOGS];
     unsigned int  currModelIndex;
     char currModelFilename[16+1];
     unsigned int   contrast;
@@ -1214,14 +1217,14 @@ class GeneralSettings {
     unsigned int switchUnlockStates;
     unsigned int hw_uartMode;
     unsigned int backlightColor;
-    CustomFunctionData customFn[CPN_MAX_CUSTOM_FUNCTIONS];
-    char switchName[18][3+1];
+    CustomFunctionData customFn[CPN_MAX_SPECIAL_FUNCTIONS];
+    char switchName[CPN_MAX_SWITCHES][3+1];
     unsigned int switchConfig[CPN_MAX_SWITCHES];
-    char stickName[4][3+1];
-    char potName[4][3+1];
-    unsigned int potConfig[4];
-    char sliderName[4][3+1];
-    unsigned int sliderConfig[4];
+    char stickName[CPN_MAX_STICKS][3+1];
+    char potName[CPN_MAX_KNOBS][3+1];
+    unsigned int potConfig[CPN_MAX_KNOBS];
+    char sliderName[CPN_MAX_SLIDERS][3+1];
+    unsigned int sliderConfig[CPN_MAX_SLIDERS];
 
     char themeName[8+1];
     typedef uint8_t ThemeOptionData[8+1];
@@ -1248,7 +1251,7 @@ class RadioData {
     GeneralSettings generalSettings;
     std::vector<CategoryData> categories;
     std::vector<ModelData> models;
-    
+
     void convert(Board::Type before, Board::Type after);
 
     void setCurrentModel(unsigned int index);

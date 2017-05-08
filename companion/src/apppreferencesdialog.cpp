@@ -67,7 +67,8 @@ void AppPreferencesDialog::writeValues()
   g.autoCheckFw(ui->autoCheckFirmware->isChecked());
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
-  g.useWizard(ui->modelWizard_CB->isChecked());
+  g.removeModelSlots(ui->opt_removeBlankSlots->isChecked());
+  g.newModelAction(ui->opt_newMdl_useWizard->isChecked() ? 1 : ui->opt_newMdl_useEditor->isChecked() ? 2 : 0);
   g.historySize(ui->historySize->value());
   g.backLight(ui->backLightColor->currentIndex());
   g.profile[g.id()].volumeGain(round(ui->volumeGain->value() * 10.0));
@@ -77,7 +78,7 @@ void AppPreferencesDialog::writeValues()
   g.enableBackup(ui->backupEnable->isChecked());
 
   if (ui->joystickChkB ->isChecked() && ui->joystickCB->isEnabled()) {
-    g.jsSupport(ui->joystickChkB ->isChecked());  
+    g.jsSupport(ui->joystickChkB ->isChecked());
     g.jsCtrl(ui->joystickCB ->currentIndex());
   }
   else {
@@ -100,12 +101,13 @@ void AppPreferencesDialog::writeValues()
     g.profile[g.id()].name(ui->profileNameLE->text());
 
   // If a new fw type has been choosen, several things need to reset
-  current_firmware_variant = getFirmwareVariant();
-  QString id = current_firmware_variant->getId();
+  Firmware::setCurrentVariant(getFirmwareVariant());
+  QString id = Firmware::getCurrentVariant()->getId();
   if (g.profile[g.id()].fwType() != id) {
     g.profile[g.id()].fwName("");
     g.profile[g.id()].initFwVariables();
     g.profile[g.id()].fwType(id);
+    emit firmwareProfileChanged(g.id());
   }
 }
 
@@ -148,7 +150,10 @@ void AppPreferencesDialog::initSettings()
   }
 
   ui->simuSW->setChecked(g.simuSW());
-  ui->modelWizard_CB->setChecked(g.useWizard());
+  ui->opt_removeBlankSlots->setChecked(g.removeModelSlots());
+  ui->opt_newMdl_useNone->setChecked(g.newModelAction() == 0);
+  ui->opt_newMdl_useWizard->setChecked(g.newModelAction() == 1);
+  ui->opt_newMdl_useEditor->setChecked(g.newModelAction() == 2);
   ui->libraryPath->setText(g.libDir());
   ui->ge_lineedit->setText(g.gePath());
 
@@ -193,7 +198,7 @@ void AppPreferencesDialog::initSettings()
     ui->joystickCB->setDisabled(true);
     ui->joystickcalButton->setDisabled(true);
   }
-#endif  
+#endif
   //  Profile Tab Inits
   ui->channelorderCB->setCurrentIndex(g.profile[g.id()].channelOrder());
   ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
@@ -213,7 +218,6 @@ void AppPreferencesDialog::initSettings()
   }
 
   ui->profileNameLE->setText(g.profile[g.id()].name());
-  ui->SplashFileName->setText(g.profile[g.id()].splashFile());
 
   QString hwSettings;
   if (g.profile[g.id()].stickPotCalib() == "" ) {
@@ -228,31 +232,14 @@ void AppPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
-  Firmware * current_firmware = getCurrentFirmware();
-  
-  if (!IS_HORUS(current_firmware->getBoard())) {
-    displayImage(g.profile[g.id()].splashFile());
-  }
-  // TODO: Remove once splash replacement supported on Horus
-  // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
-  else {
-    ui->imageLabel->hide();
-    ui->splashLabel->hide();
-    ui->SplashFileName->hide();
-    ui->SplashSelect->hide();
-    ui->SplashSelect->setEnabled(false);
-    ui->clearImageButton->hide();
-    ui->clearImageButton->setEnabled(false);
-    ui->splashSeparator->hide();
-  }
-
-  foreach(Firmware * firmware, firmwares) {
+  QString currType = QStringList(g.profile[g.id()].fwType().split('-').mid(0, 2)).join('-');
+  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
-    if (current_firmware->getFirmwareBase() == firmware) {
+    if (currType == firmware->getId()) {
       ui->downloadVerCB->setCurrentIndex(ui->downloadVerCB->count() - 1);
     }
   }
-  
+
   baseFirmwareChanged();
 }
 
@@ -306,7 +293,7 @@ void AppPreferencesDialog::on_ge_pathButton_clicked()
     ui->ge_lineedit->setText(fileName);
   }
 }
- 
+
 #if defined(JOYSTICKS)
 void AppPreferencesDialog::on_joystickChkB_clicked() {
   if (ui->joystickChkB->isChecked()) {
@@ -350,27 +337,18 @@ void AppPreferencesDialog::on_sdPathButton_clicked()
   }
 }
 
-void AppPreferencesDialog::on_removeProfileButton_clicked()
-{
-  if ( g.id() == 0 ) {
-     QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
-  }
-  else {
-    g.profile[g.id()].remove();
-    g.id( 0 );
-    initSettings();
-  }
-}
-
 bool AppPreferencesDialog::displayImage(const QString & fileName)
 {
   // Start by clearing the label
   ui->imageLabel->clear();
 
-  QImage image(fileName);
-  if (image.isNull()) 
+  if (fileName.isEmpty())
     return false;
-  
+
+  QImage image(fileName);
+  if (image.isNull())
+    return false;
+
   ui->imageLabel->setPixmap(makePixMap(image));
   ui->imageLabel->setFixedSize(getCurrentFirmware()->getCapability(LcdWidth), getCurrentFirmware()->getCapability(LcdHeight));
   return true;
@@ -388,7 +366,7 @@ void AppPreferencesDialog::on_SplashSelect_clicked()
 
   if (!fileName.isEmpty()){
     g.imagesDir(QFileInfo(fileName).dir().absolutePath());
-   
+
     displayImage(fileName);
     ui->SplashFileName->setText(fileName);
   }
@@ -405,14 +383,13 @@ void AppPreferencesDialog::showVoice(bool show)
 {
   ui->voiceLabel->setVisible(show);
   ui->voiceCombo->setVisible(show);
-  QTimer::singleShot(0, this, SLOT(shrink()));
 }
 
 void AppPreferencesDialog::baseFirmwareChanged()
 {
-  QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
+  QString selected_firmware = ui->downloadVerCB->currentData().toString();
 
-  foreach(Firmware * firmware, firmwares) {
+  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
     if (firmware->getId() == selected_firmware) {
       populateFirmwareOptions(firmware);
       break;
@@ -422,31 +399,31 @@ void AppPreferencesDialog::baseFirmwareChanged()
 
 Firmware * AppPreferencesDialog::getFirmwareVariant()
 {
-  QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
+  QString selected_firmware = ui->downloadVerCB->currentData().toString();
 
-  foreach(Firmware * firmware, firmwares) {
+  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
     QString id = firmware->getId();
     if (id == selected_firmware) {
       foreach(QCheckBox *cb, optionsCheckBoxes) {
         if (cb->isChecked()) {
-          id += QString("-") + cb->text();
+          id += "-" + cb->text();
         }
       }
 
       if (voice && voice->isChecked()) {
-        id += QString("-tts") + ui->voiceCombo->currentText();
+        id += "-tts" + ui->voiceCombo->currentText();
       }
 
       if (ui->langCombo->count()) {
-        id += QString("-") + ui->langCombo->currentText();
+        id += "-" + ui->langCombo->currentText();
       }
 
-      return getFirmware(id);
+      return Firmware::getFirmwareForId(id);
     }
   }
 
   // Should never occur...
-  return default_firmware_variant;
+  return Firmware::getDefaultVariant();
 }
 
 void AppPreferencesDialog::firmwareOptionChanged(bool state)
@@ -457,8 +434,8 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
   }
   Firmware * firmware=NULL;
   if (cb && state) {
-    QVariant selected_firmware = ui->downloadVerCB->itemData(ui->downloadVerCB->currentIndex());
-    foreach(firmware, firmwares) {
+    QVariant selected_firmware = ui->downloadVerCB->currentData();
+    foreach(firmware, Firmware::getRegisteredFirmwares()) {
       if (firmware->getId() == selected_firmware) {
         foreach(QList<Option> opts, firmware->opts) {
           foreach(Option opt, opts) {
@@ -478,7 +455,7 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
         }
       }
     }
-  } 
+  }
 }
 
 void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
@@ -487,7 +464,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 
   updateLock = true;
 
-  QString id = current_firmware_variant->getId();
+  QString id = Firmware::getCurrentVariant()->getId();
   ui->langCombo->clear();
   foreach(const char *lang, parent->languages) {
     ui->langCombo->addItem(lang);
@@ -542,12 +519,24 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 
   showVoice(voice && voice->isChecked());
 
+  // TODO: Remove once splash replacement supported on Horus
+  // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
+  if (IS_HORUS(parent->getBoard())) {
+    ui->widget_splashImage->hide();
+    ui->SplashFileName->setText("");
+  }
+  else {
+    ui->widget_splashImage->show();
+    ui->SplashFileName->setText(g.profile[g.id()].splashFile());
+    displayImage(g.profile[g.id()].splashFile());
+  }
+
   updateLock = false;
-  QTimer::singleShot(0, this, SLOT(shrink()));
+  QTimer::singleShot(50, this, SLOT(shrink()));
 }
 
 void AppPreferencesDialog::shrink()
 {
-  resize(0,0);
+  adjustSize();
 }
 

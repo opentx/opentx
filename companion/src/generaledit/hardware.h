@@ -40,14 +40,14 @@ class HardwarePanel : public GeneralPanel
     virtual ~HardwarePanel();
 
   private slots:
-    void on_txVoltageHardware_editingFinished();
     void on_PPM1_editingFinished();
     void on_PPM2_editingFinished();
     void on_PPM3_editingFinished();
     void on_PPM4_editingFinished();
     void on_PPM_MultiplierDSB_editingFinished();
 
-    void on_txCurrentHardware_editingFinished();
+    void on_txCurrentCalibration_editingFinished();
+    void on_txVoltageCalibration_editingFinished();
     void on_bluetoothEnable_stateChanged(int);
     void on_filterEnable_stateChanged();
 
@@ -56,7 +56,7 @@ class HardwarePanel : public GeneralPanel
   protected:
     void setupPotType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type);
     void setupSliderType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type);
-    void setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos);
+    void setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos = true);
 
   private:
     Ui::Hardware *ui;

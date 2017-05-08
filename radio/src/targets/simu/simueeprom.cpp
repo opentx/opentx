@@ -28,7 +28,7 @@ uint8_t * eeprom_buffer_data;
 volatile int32_t eeprom_buffer_size;
 bool eeprom_read_operation;
 
-bool eeprom_thread_running = true;
+bool eeprom_thread_running = false;
 
 #if defined(EEPROM_SIZE)
 uint8_t eeprom[EEPROM_SIZE];
@@ -41,7 +41,7 @@ sem_t * eeprom_write_sem;
 void eepromReadBlock (uint8_t * buffer, size_t address, size_t size)
 {
   assert(size);
-  
+
   if (fp) {
     // TRACE("EEPROM read (pos=%d, size=%d)", pointer_eeprom, size);
     if (fseek(fp, address, SEEK_SET) < 0)
@@ -154,6 +154,7 @@ void StartEepromThread(const char * filename)
     if (!fp)
       perror("error in fopen");
   }
+
 #ifdef __APPLE__
   eeprom_write_sem = sem_open("eepromsem", O_CREAT, S_IRUSR | S_IWUSR, 0);
 #else
@@ -161,8 +162,10 @@ void StartEepromThread(const char * filename)
   sem_init(eeprom_write_sem, 0, 0);
 #endif
 
-  eeprom_thread_running = true;
-  pthread_create(&eeprom_thread_pid, NULL, &eeprom_thread_function, NULL);
+  if (!pthread_create(&eeprom_thread_pid, NULL, &eeprom_thread_function, NULL))
+    eeprom_thread_running = true;
+  else
+    perror("Could not create eeprom thread.");
 }
 
 void StopEepromThread()
@@ -178,5 +181,6 @@ void StopEepromThread()
   free(eeprom_write_sem);
 #endif
 
-  if (fp) fclose(fp);
+  if (fp)
+    fclose(fp);
 }

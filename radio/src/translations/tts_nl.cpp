@@ -38,12 +38,12 @@ enum DutchPrompts {
 #if defined(VOICE)
 
 #if defined(CPUARM)
-  #define NL_PUSH_UNIT_PROMPT(p, u) nl_pushUnitPrompt((p), (u), id)
+  #define NL_PUSH_UNIT_PROMPT(u, p) nl_pushUnitPrompt((u), (p), id)
 #else
-  #define NL_PUSH_UNIT_PROMPT(p, u) pushUnitPrompt((p), (u))
+  #define NL_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
-I18N_PLAY_FUNCTION(nl, pushUnitPrompt, int16_t number, uint8_t unitprompt)
+I18N_PLAY_FUNCTION(nl, pushUnitPrompt,  uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -121,9 +121,9 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 0) {
     PUSH_NUMBER_PROMPT(NL_PROMPT_ZERO + number);
   }
-  
+
   if (unit) {
-    NL_PUSH_UNIT_PROMPT(tmp, unit);
+    NL_PUSH_UNIT_PROMPT(unit, tmp);
   }
 }
 

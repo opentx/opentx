@@ -64,6 +64,12 @@ void registerStorageFactories()
   registerStorageFactory(new SdcardStorageFactory());
 }
 
+void unregisterStorageFactories()
+{
+  foreach (StorageFactory * factory, registeredStorageFactories)
+    delete factory;
+}
+
 bool Storage::load(RadioData & radioData)
 {
   QFile file(filename);
@@ -71,30 +77,37 @@ bool Storage::load(RadioData & radioData)
     setError(QObject::tr("Unable to find file %1!").arg(filename));
     return false;
   }
-  
+
+  bool ret = false;
   foreach(StorageFactory * factory, registeredStorageFactories) {
     StorageFormat * format = factory->instance(filename);
     if (format->load(radioData)) {
       board = format->getBoard();
       setWarning(format->warning());
-      return true;
+      ret = true;
+      break;
     }
     else {
       setError(format->error());
     }
+    delete format;
   }
 
-  return false;
+  return ret;
 }
 
 bool Storage::write(const RadioData & radioData)
 {
+  bool ret = false;
   foreach(StorageFactory * factory, registeredStorageFactories) {
     if (factory->probe(filename)) {
-      return factory->instance(filename)->write(radioData);
+      StorageFormat * format = factory->instance(filename);
+      ret = format->write(radioData);
+      delete format;
+      break;
     }
   }
-  return false;
+  return ret;
 }
 
 bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEprom, const QString & firmwareFilename)
@@ -102,26 +115,26 @@ bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEpr
   FirmwareInterface firmware(firmwareFilename);
   if (!firmware.isValid())
     return false;
-  
+
   uint8_t version = firmware.getEEpromVersion();
   unsigned int variant = firmware.getEEpromVariant();
-  
+
   QSharedPointer<RadioData> radioData = QSharedPointer<RadioData>(new RadioData());
   Storage storage(sourceEEprom);
   if (!storage.load(*radioData))
     return false;
-  
-  QByteArray eeprom(EESIZE_MAX, 0);
+
+  QByteArray eeprom(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
   int size = getCurrentEEpromInterface()->save((uint8_t *)eeprom.data(), *radioData, version, variant);
   if (size == 0) {
     return false;
   }
-  
+
   QFile destinationFile(destinationEEprom);
   if (!destinationFile.open(QIODevice::WriteOnly)) {
     return false;
   }
-  
+
   int result = destinationFile.write(eeprom.constData(), size);
   destinationFile.close();
   return (result == size);
@@ -131,7 +144,7 @@ bool convertEEprom(const QString & sourceEEprom, const QString & destinationEEpr
 unsigned long LoadBackup(RadioData & radioData, uint8_t * eeprom, int size, int index)
 {
   std::bitset<NUM_ERRORS> errors;
-    
+
     foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
       std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadBackup(radioData, eeprom, size, index));
       if (result.test(ALL_OK)) {
@@ -141,7 +154,7 @@ unsigned long LoadBackup(RadioData & radioData, uint8_t * eeprom, int size, int 
         errors |= result;
       }
     }
-  
+
   if (errors.none()) {
     errors.set(UNKNOWN_ERROR);
   }
@@ -152,7 +165,7 @@ unsigned long LoadBackup(RadioData & radioData, uint8_t * eeprom, int size, int 
 unsigned long LoadEepromXml(RadioData & radioData, QDomDocument & doc)
 {
   std::bitset<NUM_ERRORS> errors;
-    
+
     foreach(EEPROMInterface *eepromInterface, eepromInterfaces) {
       std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->loadxml(radioData, doc));
       if (result.test(ALL_OK)) {
@@ -162,7 +175,7 @@ unsigned long LoadEepromXml(RadioData & radioData, QDomDocument & doc)
         errors |= result;
       }
     }
-  
+
   if (errors.none()) {
     errors.set(UNKNOWN_ERROR);
   }

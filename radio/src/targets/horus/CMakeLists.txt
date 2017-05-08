@@ -118,7 +118,7 @@ set(FIRMWARE_TARGET_SRC
   backlight_driver.cpp
   pwr_driver.cpp
   sdram_driver.c
-  startup_stm32f40_41xxx.s
+  startup_stm32f42_43xxx.s
   )
 if(PCB STREQUAL X12S)
   set(FIRMWARE_TARGET_SRC

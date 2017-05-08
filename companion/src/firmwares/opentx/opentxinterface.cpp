@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QTime>
 #include <QUrl>
+#include <companion/src/storage/storage.h>
 
 using namespace Board;
 
@@ -95,30 +96,6 @@ const char * OpenTxEepromInterface::getName()
   }
 }
 
-uint32_t OpenTxEepromInterface::getFourCC()
-{
-  switch (board) {
-    case BOARD_X12S:
-    case BOARD_X10:
-      return 0x3478746F;
-    case BOARD_TARANIS_X7:
-      return 0x3678746F;
-    case BOARD_TARANIS_X9E:
-      return 0x3578746F;
-    case BOARD_TARANIS_X9D:
-    case BOARD_TARANIS_X9DP:
-      return 0x3378746F;
-    case BOARD_SKY9X:
-    case BOARD_AR9X:
-      return 0x3278746F;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
-      return 0x3178746F;
-    default:
-      return 0;
-  }
-}
-
 bool OpenTxEepromInterface::loadRadioSettingsFromRLE(GeneralSettings & settings, RleFile * rleFile, uint8_t version)
 {
   QByteArray data(sizeof(settings), 0); // GeneralSettings should be always bigger than the EEPROM struct
@@ -163,7 +140,7 @@ bool OpenTxEepromInterface::saveToByteArray(const T & src, QByteArray & data, ui
   // manager.Dump();
   manager.Export(raw);
   data.resize(8);
-  *((uint32_t*)&data.data()[0]) = getFourCC();
+  *((uint32_t*)&data.data()[0]) = StorageFormat::getFourCC(board);
   data[4] = version;
   data[5] = 'M';
   *((uint16_t*)&data.data()[6]) = raw.size();
@@ -186,12 +163,12 @@ template <class T, class M>
 bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 {
   uint32_t fourcc = *((uint32_t*)&data.data()[0]);
-  if (getFourCC() != fourcc) {
+  if (StorageFormat::getFourCC(board) != fourcc) {
     if (IS_HORUS(board) && fourcc == 0x3178396F) {
-      qDebug() << QString().sprintf("%s: Deprecated fourcc used %x vs %x", getName(), fourcc, getFourCC());
+      qDebug() << QString().sprintf("%s: Deprecated fourcc used %x vs %x", getName(), fourcc, StorageFormat::getFourCC(board));
     }
     else {
-      qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, getFourCC());
+      qDebug() << QString().sprintf("%s: Wrong fourcc %x vs %x", getName(), fourcc, StorageFormat::getFourCC(board));
       return false;
     }
   }
@@ -207,7 +184,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
 
   std::bitset<NUM_ERRORS> errors;
 
-  if (size != getEEpromSize(board)) {
+  if (size != Boards::getEEpromSize(board)) {
     if (size == 4096) {
       int notnull = false;
       for (int i = 2048; i < 4096; i++) {
@@ -227,7 +204,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       }
     }
     else {
-      std::cout << " wrong size (" << size << "/" << getEEpromSize(board) << ")\n";
+      std::cout << " wrong size (" << size << "/" << Boards::getEEpromSize(board) << ")\n";
       errors.set(WRONG_SIZE);
       return errors.to_ulong();
     }
@@ -254,6 +231,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
     errors.set(HAS_WARNINGS);
+    ShowEepromWarnings(NULL, QObject::tr("Warning"), errors.to_ulong());
   }
   else if (version_error == NOT_OPENTX) {
     std::cout << " not open9x\n";
@@ -272,7 +250,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
     radioData.models.resize(firmware->getCapability(Models));
   }
   for (int i = 0; i < firmware->getCapability(Models); i++) {
-    if (!loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
+    if (i < (int)radioData.models.size() && !loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
       std::cout << " ko\n";
       errors.set(UNKNOWN_ERROR);
       if (getCurrentFirmware()->getCapability(Models) == 0) {
@@ -281,7 +259,6 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       return errors.to_ulong();
     }
   }
-
   std::cout << " ok\n";
   errors.set(ALL_OK);
   return errors.to_ulong();
@@ -330,7 +307,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     version = getLastDataVersion(board);
   }
 
-  int size = getEEpromSize(board);
+  int size = Boards::getEEpromSize(board);
 
   efile->EeFsCreate(eeprom, size, board, version);
 
@@ -379,8 +356,8 @@ int OpenTxEepromInterface::getSize(const ModelData &model)
   if (model.isEmpty())
     return 0;
 
-  QByteArray tmp(EESIZE_MAX, 0);
-  efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255/*version max*/);
+  QByteArray tmp(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
+  efile->EeFsCreate((uint8_t *) tmp.data(), Boards::getEEpromSize(Board::BOARD_UNKNOWN), board, 255/*version max*/);
 
   OpenTxModelData open9xModel((ModelData &) model, board, 255/*version max*/, getCurrentFirmware()->getVariantNumber());
 
@@ -398,8 +375,8 @@ int OpenTxEepromInterface::getSize(const GeneralSettings &settings)
   if (IS_SKY9X(board))
     return 0;
 
-  QByteArray tmp(EESIZE_MAX, 0);
-  efile->EeFsCreate((uint8_t *) tmp.data(), EESIZE_MAX, board, 255);
+  QByteArray tmp(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
+  efile->EeFsCreate((uint8_t *) tmp.data(), Boards::getEEpromSize(Board::BOARD_UNKNOWN), board, 255);
 
   OpenTxGeneralData open9xGeneral((GeneralSettings &) settings, board, 255, getCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();
@@ -512,11 +489,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return 0;
     case PermTimers:
       return (IS_2560(board) || IS_ARM(board));
-    case SwitchesPositions:
-      if (IS_HORUS_OR_TARANIS(board))
-        return getBoardCapability(board, Board::Switches) * 3;
-      else
-        return 9;
     case CustomFunctions:
       if (IS_ARM(board))
         return 64;
@@ -570,7 +542,9 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return (IS_ARM(board) ? 1 : 0);
     case ExtraInputs:
       return 1;
-    case ExtendedTrims:
+    case TrimsRange:
+      return 125;
+    case ExtendedTrimsRange:
       return 500;
     case Simulation:
       return 1;
@@ -727,7 +701,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
 
 QString OpenTxFirmware::getAnalogInputName(unsigned int index)
 {
-  if (index < 4) {
+  if ((int)index < getBoardCapability(board, Board::Sticks)) {
     const QString sticks[] = {
       QObject::tr("Rud"),
       QObject::tr("Ele"),
@@ -737,7 +711,7 @@ QString OpenTxFirmware::getAnalogInputName(unsigned int index)
     return sticks[index];
   }
 
-  index -= 4;
+  index -= getBoardCapability(board, Board::Sticks);
 
   if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
     const QString pots[] = {
@@ -1152,6 +1126,7 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
   firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
   firmware->addOption("luac", QObject::tr("Enable Lua compiler"));
+  firmware->addOption("bindopt", QObject::tr("Enable bindings options"));
   Option usb_options[] = {{"massstorage", QObject::tr("Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)")},
                           {"cli",         QObject::tr("Instead of Joystick emulation, USB connection is Command Line Interface")},
                           {NULL}};
@@ -1196,7 +1171,7 @@ void registerOpenTxFirmware(OpenTxFirmware * firmware)
   firmware->setEEpromInterface(eepromInterface);
   opentxEEpromInterfaces.push_back(eepromInterface);
   eepromInterfaces.push_back(eepromInterface);
-  firmwares.push_back(firmware);
+  Firmware::addRegisteredFirmware(firmware);
 }
 
 void registerOpenTxFirmwares()
@@ -1505,15 +1480,16 @@ void registerOpenTxFirmwares()
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
-  default_firmware_variant = getFirmware("opentx-x9d+");
-  current_firmware_variant = default_firmware_variant;
+  Firmware::setDefaultVariant(Firmware::getFirmwareForId("opentx-x9d+"));
+  Firmware::setCurrentVariant(Firmware::getDefaultVariant());
 }
 
 void unregisterOpenTxFirmwares()
 {
-  foreach (Firmware * f, firmwares) {
+  foreach (Firmware * f, Firmware::getRegisteredFirmwares()) {
     delete f;
   }
+  unregisterEEpromInterfaces();
 }
 
 template <class T, class M>

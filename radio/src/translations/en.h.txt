@@ -111,7 +111,7 @@
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"
 
 #define LEN_MULTI_PROTOCOLS            "\006"
-#define TR_MULTI_PROTOCOLS             "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 ""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 ""GW008\0"
+#define TR_MULTI_PROTOCOLS             "FlySky""Hubsan""FrSky\0""Hisky\0""V2x2\0 ""DSM\0  ""Devo\0 ""YD717\0""KN\0   ""SymaX\0""SLT\0  ""CX10\0 ""CG023\0""Bayang""ESky\0 ""MT99XX""MJXQ\0 ""Shenqi""FY326\0""SFHSS\0""J6 PRO""FQ777\0""Assan\0""Hontai""OLRS\0 ""FS 2A\0""Q2x2\0 ""Walk.\0""Q303\0 ""GW008\0""DM002\0"
 
 #define TR_MULTI_CUSTOM                "Custom"
 
@@ -349,7 +349,7 @@
 #define LEN_FUNCSOUNDS                 TR("\004", "\006")
 #define TR_FUNCSOUNDS                  TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
 
-#define LEN_VTELEMCHNS                 TR("\004", "\005")
+#define LEN_VTELEMCHNS                 "\004"
 
 #define LENGTH_UNIT_IMP                "ft\0"
 #define SPEED_UNIT_IMP                 "mph"
@@ -853,6 +853,10 @@
 #define TR_MODULE_NO_INPUT             TR("No input", "No serial input")
 #define TR_MODULE_NO_TELEMETRY         TR3("No telemetry", "No MULTI_TELEMETRY", "No MULTI_TELEMETRY detected")
 #define TR_MODULE_BINDING              TR("Bind...","Binding")
+#define TR_BINDING_MODE1               "Ch1-8 Telem ON"
+#define TR_BINDING_MODE2               "Ch1-8 Telem OFF"
+#define TR_BINDING_MODE3               "Ch9-16 Telem ON"
+#define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS               TR(INDENT "Status", INDENT "Module Status")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Servo rate", INDENT "Servo update rate")
@@ -1227,7 +1231,7 @@
 #define TR_DISCOVER_SENSORS            INDENT "Discover new sensors"
 #define TR_STOP_DISCOVER_SENSORS       INDENT "Stop discovery"
 #define TR_DELETE_ALL_SENSORS          INDENT "Delete all sensors"
-#define TR_CONFIRMDELETE               "Really delete all?"
+#define TR_CONFIRMDELETE               "Really " LCDW_128_480_LINEBREAK "delete all ?"
 #define TR_SELECT_WIDGET               "Select widget"
 #define TR_REMOVE_WIDGET               "Remove widget"
 #define TR_WIDGET_SETTINGS             "Widget settings"

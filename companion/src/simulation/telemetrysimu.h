@@ -46,12 +46,18 @@ class TelemetrySimulator : public QWidget
     explicit TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator);
     virtual ~TelemetrySimulator();
 
+  signals:
+
+    void telemetryDataChanged(const QByteArray data);
+
   protected slots:
 
-    virtual void closeEvent(QCloseEvent *event);
+    virtual void hideEvent(QHideEvent *event);
     virtual void showEvent(QShowEvent *event);
+    void onSimulatorStarted();
+    void onSimulatorStopped();
+    void setupDataFields();
     void onSimulateToggled(bool isChecked);
-    void onTimerEvent();
     void onLogTimerEvent();
     void onLoadLogFile();
     void onPlay();
@@ -61,14 +67,17 @@ class TelemetrySimulator : public QWidget
     void onStop();
     void onPositionIndicatorChanged(int value);
     void onReplayRateChanged(int value);
+    void generateTelemetryFrame();
 
   protected:
 
     Ui::TelemetrySimulator * ui;
-    QTimer * timer;
-    QTimer * logTimer;
+    QTimer timer;
+    QTimer logTimer;
     SimulatorInterface *simulator;
-    void generateTelemetryFrame();
+    bool m_simuStarted;
+    bool m_telemEnable;
+    bool m_logReplayEnable;
 
   // protected classes follow
 
@@ -81,7 +90,7 @@ class TelemetrySimulator : public QWidget
         void play();
         void stop();
         void rewind();
-        void stepForward(bool focusOnStop);
+        void stepForward(bool focusOnStop = false);
         void stepBack();
         void updatePositionLabel(int32_t percentage);
         void setUiDataValues();

@@ -25,7 +25,7 @@
 
 #include <QDockWidget>
 #include <QMainWindow>
-#include <QPointer>
+#include <QThread>
 
 class DebugOutput;
 class RadioData;
@@ -48,13 +48,14 @@ class SimulatorMainWindow : public QMainWindow
     Q_OBJECT
 
   public:
-    explicit SimulatorMainWindow(QWidget * parent, SimulatorInterface * simulator, quint8 flags=0, Qt::WindowFlags wflags = Qt::WindowFlags());
+    explicit SimulatorMainWindow(QWidget * parent, const QString & firmwareId = "", quint8 flags=0, Qt::WindowFlags wflags = Qt::WindowFlags());
     ~SimulatorMainWindow();
 
+    int getExitStatus(QString * msg = Q_NULLPTR);
     bool setRadioData(RadioData * radioData);
     bool useTempDataPath(bool deleteOnClose = true);
     bool setOptions(SimulatorOptions & options, bool withSave = true);
-    QMenu * createPopupMenu();
+    virtual QMenu * createPopupMenu();
 
   public slots:
     virtual void show();
@@ -65,6 +66,10 @@ class SimulatorMainWindow : public QMainWindow
     void showRadioFixedHeight(bool fixed);
     void showRadioDocked(bool dock);
 
+  signals:
+    void simulatorStart();
+    void simulatorRestart();
+
   protected slots:
     virtual void closeEvent(QCloseEvent *);
     virtual void changeEvent(QEvent *e);
@@ -73,7 +78,6 @@ class SimulatorMainWindow : public QMainWindow
     void toggleMenuBar(bool show);
     void setRadioSizePolicy(int fixType);
     void toggleRadioDocked(bool dock);
-    void luaReload(bool);
     void openJoystickDialog(bool);
     void showHelp(bool show);
 
@@ -94,7 +98,11 @@ class SimulatorMainWindow : public QMainWindow
     QDockWidget * m_trainerDockWidget;
     QDockWidget * m_outputsDockWidget;
 
+    QThread simuThread;
     QVector<keymapHelp_t> m_keymapHelp;
+    QString m_simulatorId;
+    QString m_exitStatusMsg;
+    int m_exitStatusCode;
     int m_radioProfileId;
     int m_radioSizeConstraint;
     bool m_firstShow;

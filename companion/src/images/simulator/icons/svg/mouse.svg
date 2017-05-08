@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="64" height="64" id="svg3007" inkscape:version="0.48.4 r9939" sodipodi:docname="mouse.svg">
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="640" inkscape:window-height="480" id="namedview8" showgrid="false" inkscape:zoom="3.6875" inkscape:cx="32" inkscape:cy="32" inkscape:current-layer="layer1" />
+  <defs id="defs3009" />
+  <metadata id="metadata3012">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g id="layer1">
+    <path d="m 32.627622,1.1648443 c -12.462898,0 -22.562142,8.7258932 -22.562142,19.4940177 v 22.27888 c 0,10.768123 10.099244,19.494018 22.562142,19.494018 12.462898,0 22.562144,-8.725895 22.562144,-19.494018 V 20.658862 C 55.189766,9.8907375 45.09052,1.1648443 32.627622,1.1648443 z M 49.817827,42.937742 c 0,8.168921 -7.735593,14.852585 -17.190205,14.852585 -9.454612,0 -17.190204,-6.683664 -17.190204,-14.852585 v -22.27888 c 0,-8.168921 7.735592,-14.8525846 17.190204,-14.8525846 9.454612,0 17.190205,6.6836636 17.190205,14.8525846 v 22.27888 z" id="path4" />
+    <path d="m 32.627622,9.2529782 c -3.116845,0 -5.565794,2.1994928 -5.565794,4.9988458 v 14.596624 c 0,2.799353 2.448949,4.998843 5.565794,4.998843 3.116843,0 5.565795,-2.19949 5.565795,-4.998843 V 14.251824 c 0,-2.599399 -2.448952,-4.9988458 -5.565795,-4.9988458 z" id="path6" inkscape:connector-curvature="0" />
+  </g>
+</svg>

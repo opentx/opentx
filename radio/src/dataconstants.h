@@ -297,7 +297,11 @@ enum BeeperMode {
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(TARANIS_INTERNAL_PPM)
+   #define IS_INTERNAL_MODULE_ENABLED() (!(g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF &&  g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) && (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE))
+#else
   #define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF)
+#endif
 #elif defined(PCBSKY9X)
   #define IS_INTERNAL_MODULE_ENABLED() (false)
 #endif
@@ -797,8 +801,8 @@ enum MixSources {
 #endif
 
 #if defined(PCBHORUS)
-  MIXSRC_MOUSE1,
-  MIXSRC_MOUSE2,
+  MIXSRC_MOUSE1,                        LUA_EXPORT("jsx", "Joystick X")
+  MIXSRC_MOUSE2,                        LUA_EXPORT("jsy", "Joystick Y")
 #endif
 
 #if defined(PCBSKY9X)

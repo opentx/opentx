@@ -23,6 +23,7 @@
 
 #include <QtGui>
 #include <QSlider>
+#include <QToolTip>
 
 class SliderWidget : public QSlider
 {
@@ -33,19 +34,34 @@ class SliderWidget : public QSlider
     explicit SliderWidget(QWidget * parent = 0):
       QSlider(parent)
     {
-      setToolTip(tr("Right-double-click to reset to center."));
+      m_toolTip = tr("<p>Value (input): <b>%1</b></p>") % tr("Right-double-click to reset to center.");
     }
 
-   protected:
+  protected:
 
-     void mousePressEvent(QMouseEvent * event)
-     {
-       if (event->button() == Qt::RightButton && event->type() == QEvent::MouseButtonDblClick) {
-         setValue(0);
-         event->accept();
-       }
-       QSlider::mousePressEvent(event);
-     }
+    bool event(QEvent *event)
+    {
+      if (event->type() == QEvent::ToolTip) {
+        QHelpEvent * helpEvent = static_cast<QHelpEvent *>(event);
+        if (helpEvent) {
+          QToolTip::showText(helpEvent->globalPos(), m_toolTip.arg(this->value()));
+          return true;
+        }
+      }
+      return QWidget::event(event);
+    }
+
+    void mousePressEvent(QMouseEvent * event)
+    {
+      if (event->button() == Qt::RightButton && event->type() == QEvent::MouseButtonDblClick) {
+        setValue(0);
+        emit sliderMoved(0);
+        event->accept();
+      }
+      QSlider::mousePressEvent(event);
+    }
+
+    QString m_toolTip;
 };
 
 #endif // _SLIDERWIDGET_H_

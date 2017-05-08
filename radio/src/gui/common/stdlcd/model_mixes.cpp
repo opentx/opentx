@@ -231,7 +231,7 @@ void displayMixInfos(coord_t y, MixData * md)
 void displayMixLine(coord_t y, MixData * md, bool active)
 {
   if(active && md->name[0]) {
-    lcdDrawSizedText(FW*sizeof(TR_MIXER), 0, md->name, sizeof(md->name), ZCHAR);
+    lcdDrawSizedText(FW*sizeof(TR_MIXER)+FW/2, 0, md->name, sizeof(md->name), ZCHAR);
     if (!md->flightModes || ((md->curve.value || md->swtch) && ((get_tmr10ms() / 200) & 1)))
       displayMixInfos(y, md);
     else
@@ -441,7 +441,13 @@ void menuModelMixAll(event_t event)
 
           drawSource(MIX_LINE_SRC_POS, y, md->srcRaw, 0);
 
-          gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
+          if (mixCnt == 0 && md->mltpx == 1) {
+            lcdDrawText(MIX_LINE_WEIGHT_POS, y, "MULT!", RIGHT | attr | (isMixActive(i) ? BOLD : 0));
+          }
+          else {
+            gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), 0);
+          }
+
 #if LCD_W >= 212
           displayMixLine(y, md);
 #else

@@ -38,8 +38,7 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   QDialog(parent),
   ui(new Ui::ModelEdit),
   modelId(modelId),
-  model(radioData.models[modelId]),
-  generalSettings(radioData.generalSettings),
+  radioData(radioData),
   firmware(firmware)
 {
   Stopwatch s1("ModelEdit");
@@ -49,27 +48,32 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
-  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware);
+  SetupPanel * setupPanel = new SetupPanel(this, radioData.models[modelId], radioData.generalSettings, firmware);
   addTab(setupPanel, tr("Setup"));
   if (firmware->getCapability(Heli))
-    addTab(new HeliPanel(this, model, generalSettings, firmware), tr("Heli"));
-  addTab(new FlightModesPanel(this, model, generalSettings, firmware), tr("Flight Modes"));
-  addTab(new InputsPanel(this, model, generalSettings, firmware), tr("Inputs"));
+    addTab(new HeliPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Heli"));
+  addTab(new FlightModesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Flight Modes"));
+  addTab(new InputsPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Inputs"));
   s1.report("inputs");
-  addTab(new MixesPanel(this, model, generalSettings, firmware), tr("Mixes"));
+  addTab(new MixesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Mixes"));
   s1.report("Mixes");
-  Channels * chnPanel = new Channels(this, model, generalSettings, firmware);
+  Channels * chnPanel = new Channels(this, radioData.models[modelId], radioData.generalSettings, firmware);
   addTab(chnPanel, tr("Outputs"));
   s1.report("Outputs");
-  addTab(new Curves(this, model, generalSettings, firmware), tr("Curves"));
-  addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware), tr("Logical Switches"));
+  addTab(new Curves(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Curves"));
+  addTab(new LogicalSwitchesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Logical Switches"));
   s1.report("LS");
-  addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware), tr("Special Functions"));
+  addTab(new CustomFunctionsPanel(this, &radioData.models[modelId], radioData.generalSettings, firmware), tr("Special Functions"));
   s1.report("CF");
   if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY)
-    addTab(new TelemetryPanel(this, model, generalSettings, firmware), tr("Telemetry"));
+    addTab(new TelemetryPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Telemetry"));
 
-  connect(setupPanel, SIGNAL(extendedLimitsToggled()), chnPanel, SLOT(refreshExtendedLimits()));
+  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+
+  connect(setupPanel, &SetupPanel::extendedLimitsToggled, chnPanel, &Channels::refreshExtendedLimits);
+  connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
+  connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);
+
   s1.report("end");
   gStopwatch.report("ModelEdit end constructor");
 }
@@ -92,37 +96,16 @@ void ModelEdit::addTab(GenericPanel *panel, QString text)
   VerticalScrollArea * area = new VerticalScrollArea(widget, panel);
   baseLayout->addWidget(area);
   ui->tabWidget->addTab(widget, text);
-  connect(panel, SIGNAL(modified()), this, SLOT(onTabModified()));
+  connect(panel, &GenericPanel::modified, this, &ModelEdit::modified);
 }
 
-void ModelEdit::onTabModified()
+void ModelEdit::onTabIndexChanged(int index)
 {
-  emit modified();
-}
-
-void ModelEdit::on_tabWidget_currentChanged(int index)
-{
-  panels[index]->update();
-}
-
-void ModelEdit::on_pushButton_clicked()
-{
-  launchSimulation();
+  if (index < panels.size())
+    panels.at(index)->update();
 }
 
 void ModelEdit::launchSimulation()
 {
-  RadioData * simuData = new RadioData();
-  simuData->generalSettings = generalSettings;
-  CategoryData category("Models");
-  simuData->categories.push_back(category);
-  if (simuData->models.size() == 0) {
-    simuData->models.push_back(model);
-  }
-  else {
-    simuData->models[0] = model;
-  }
-  simuData->models[0].category = 0;
-  startSimulation(this, *simuData, 0);
-  delete simuData;
+  startSimulation(this, radioData, modelId);
 }

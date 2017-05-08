@@ -35,28 +35,27 @@ SimulatedUIWidgetX9E::SimulatedUIWidgetX9E(SimulatorInterface *simulator, QWidge
   QPoint ctr(70, 100);
 
   polygon << polyArc(ctr.x(), ctr.y(), 60, -90, 0) << ctr;
-  act = addRadioUiAction(0, QList<int>() << Qt::Key_PageUp, tr("PG-UP"), tr("[ MENU ]"));
-  ui->leftbuttons->addArea(polygon, "X9E/left_menu.png", act);
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_Up << Qt::Key_PageUp, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_MENU);
+  addRadioWidget(ui->leftbuttons->addArea(polygon, "X9E/left_menu.png", act));
 
   polygon.clear();
   polygon << polyArc(ctr.x(), ctr.y(), 45, 0, 180);
-  act = addRadioUiAction(3, QList<int>() << Qt::Key_PageDown, tr("PG-DN"), tr("[ PAGE ]"));
-  ui->leftbuttons->addArea(polygon, "X9E/left_page.png", act);
+  act = new RadioUiAction(3, QList<int>() << Qt::Key_Down << Qt::Key_PageDown, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_PAGE);
+  addRadioWidget(ui->leftbuttons->addArea(polygon, "X9E/left_page.png", act));
 
   polygon.clear();
   polygon << polyArc(ctr.x(), ctr.y(), 60, 180, 270) << ctr;
-  act = addRadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, tr("DEL/BKSP/ESC"), tr("[ EXIT ]"));
-  ui->leftbuttons->addArea(polygon, "X9E/left_exit.png", act);
+  act = new RadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
+  addRadioWidget(ui->leftbuttons->addArea(polygon, "X9E/left_exit.png", act));
 
-  m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("Rotary Selector")));
-  m_scrollUpAction = addRadioUiAction(-1, QList<int>() << Qt::Key_Minus << Qt::Key_Equal << Qt::Key_Up, tr("-/UP"), tr("Rotary UP"));
-  m_scrollDnAction = addRadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Down, tr("+/DN"), tr("Rotary DOWN"));
+  m_scrollUpAction = addRadioAction(new RadioUiAction(-1, QList<int>() << Qt::Key_Minus << Qt::Key_Left, SIMU_STR_HLP_KEYS_GO_LFT, SIMU_STR_HLP_ACT_ROT_LFT));
+  m_scrollDnAction = addRadioAction(new RadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Equal << Qt::Key_Right, SIMU_STR_HLP_KEYS_GO_RGT, SIMU_STR_HLP_ACT_ROT_RGT));
   connectScrollActions();
 
-  act = addRadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, tr("ENTER/MOUSE-MID"), tr("Selector Press"));
-  ui->rightbuttons->addArea(polyArc(90, 100, 50), "X9E/right_enter.png", act);
+  m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
+  addRadioWidget(ui->rightbuttons->addArea(polyArc(90, 100, 50), "X9E/right_enter.png", m_mouseMidClickAction));
 
-  ui->leftbuttons->addArea(10, 170, 40, 200, "X9E/left_scrnshot.png", m_screenshotAction);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 170, 30, 30), "X9E/left_scrnshot.png", m_screenshotAction));
 
   m_backlightColors << QColor(47, 123, 227);  // Taranis Blue
   m_backlightColors << QColor(166,247,159);

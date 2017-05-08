@@ -97,20 +97,50 @@ void simuFatfsSetPaths(const char * sdPath, const char * settingsPath)
   if (settingsPath) {
     simuSettingsDirectory = removeTrailingPathDelimiter(fixPathDelimiters(settingsPath));
   }
-  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSdDirectory: \"\"", simuSdDirectory.c_str());
-  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSettingsDirectory: \"\"", simuSettingsDirectory.c_str());
+  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSdDirectory: \"%s\"", simuSdDirectory.c_str());
+  TRACE_SIMPGMSPACE("simuFatfsSetPaths(): simuSettingsDirectory: \"%s\"", simuSettingsDirectory.c_str());
 }
 
-bool startsWith(const char *path, const char * start)
+bool startsWith(const std::string & str, const std::string & prefix)
 {
-  return strncasecmp(path, start, strlen(start)) == 0;
+  return str.length() >= prefix.length() &&
+         str.compare(0, prefix.length(), prefix) == 0;
+}
+
+bool endsWith(const std::string & str, const std::string & suffix)
+{
+  return str.length() >= suffix.length() &&
+         str.compare(str.length() - suffix.length(), suffix.length(), suffix) == 0;
+}
+
+bool redirectToSettingsDirectory(const std::string & path)
+{
+  /*
+    Decide if we use special simuSettingsDirectory path or normal path
+
+    We use special path for:
+      * radio settings and models list in /RADIO directory
+      * model (*.bin) files in /MODELS directory
+  */
+  if (!simuSettingsDirectory.empty()) {
+#if defined(COLORLCD)
+    if (path == RADIO_MODELSLIST_PATH || path == RADIO_SETTINGS_PATH) {
+      return true;
+    }
+#endif
+    if (startsWith(path, "/MODELS") && endsWith(path, MODELS_EXT)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 std::string convertToSimuPath(const char * path)
 {
   std::string result;
   if (isPathDelimiter(path[0])) {
-    if (!simuSettingsDirectory.empty() && (startsWith(path, "/MODELS") || startsWith(path, "/RADIO"))) {
+    if (redirectToSettingsDirectory(path)) {
+      // TRACE("REDIRECT ********************************************");
       result = simuSettingsDirectory + std::string(path);
     }
     else {
@@ -127,7 +157,7 @@ std::string convertToSimuPath(const char * path)
 std::string convertFromSimuPath(const char * path)
 {
   std::string result;
-  if (startsWith(path, simuSdDirectory.c_str())) {
+  if (startsWith(path, simuSdDirectory)) {
     result = std::string(path).substr(simuSdDirectory.length(), std::string::npos);
     if (result.empty()) {
       result = "/";

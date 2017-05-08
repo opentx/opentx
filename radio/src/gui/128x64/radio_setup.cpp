@@ -538,7 +538,7 @@ void menuRadioSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_SWITCHES_DELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT);
         lcdDrawText(lcdLastRightPos, y, STR_MS, attr);
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, +15);
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, 100-15);
         break;
 #endif
 
@@ -572,7 +572,7 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_STICK_MODE:
         lcdDrawChar(2*FW, y, '1'+reusableBuffer.generalSettings.stickMode, attr);
         for (uint8_t i=0; i<NUM_STICKS; i++) {
-          drawSource(5*FW+i*(4*FW+2), y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i), 0);
+          drawSource((5*FW-3)+i*(4*FW+2), y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i), 0);
         }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, reusableBuffer.generalSettings.stickMode, 0, 3);

@@ -21,6 +21,10 @@
 #ifndef _MACROS_H_
 #define _MACROS_H_
 
-#define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
+#include <iterator>
+
+// #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
+// new way for c++11
+#define DIM(arr__)   ((size_t)(std::end((arr__)) - std::begin((arr__))))
 
 #endif // _MACROS_H_

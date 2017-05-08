@@ -19,68 +19,84 @@
 
 #include "simulatorinterface.h"
 
+#include <QMutex>
+#include <QObject>
+#include <QTimer>
+
 #if defined __GNUC__
   #define DLLEXPORT
 #else
   #define DLLEXPORT __declspec(dllexport)
 #endif
 
-class DLLEXPORT OpenTxSimulator : public SimulatorInterface {
-
-  private:
-    int volumeGain;
-    QString simuSdDirectory;
-    QString simuSettingsDirectory;
+class DLLEXPORT OpenTxSimulator : public SimulatorInterface
+{
+  Q_OBJECT
 
   public:
 
     OpenTxSimulator();
+    virtual ~OpenTxSimulator();
 
-    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "");
-
-    virtual void setVolumeGain(int value);
-
-    virtual void start(QByteArray & eeprom, bool tests=true);
-
-    virtual void start(const char * filename, bool tests=true);
-
-    virtual void stop();
-
-    virtual void readEepromData(QByteArray & dest);
-
-    virtual bool timer10ms();
-
+    virtual QString name();
+    virtual bool isRunning();
+    virtual void readRadioData(QByteArray & dest);
     virtual uint8_t * getLcd();
-
-    virtual bool lcdChanged(bool & lightEnable);
-
-    virtual void setValues(TxInputs &inputs);
-
-    virtual void getValues(TxOutputs &outputs);
-
-    virtual void setTrim(unsigned int idx, int value);
-
-    virtual void getTrims(Trims & trims);
-
-    virtual unsigned int getPhase();
-
-    virtual const char * getPhaseName(unsigned int phase);
-
-    virtual void wheelEvent(int steps);
-
-    virtual const char * getError();
-
-    virtual void sendTelemetry(uint8_t * data, unsigned int len);
-
     virtual uint8_t getSensorInstance(uint16_t id, uint8_t defaultValue = 0);
-
     virtual uint16_t getSensorRatio(uint16_t id);
+    virtual const int getCapability(Capability cap);
 
+    static QVector<QIODevice *> tracebackDevices;
+
+  public slots:
+
+    virtual void init();
+    virtual void start(const char * filename = NULL, bool tests = true);
+    virtual void stop();
+    virtual void setSdPath(const QString & sdPath = "", const QString & settingsPath = "");
+    virtual void setVolumeGain(const int value);
+    virtual void setRadioData(const QByteArray & data);
+    virtual void setAnalogValue(uint8_t index, int16_t value);
+    virtual void setKey(uint8_t key, bool state);
+    virtual void setSwitch(uint8_t swtch, int8_t state);
+    virtual void setTrim(unsigned int idx, int value);
+    virtual void setTrimSwitch(uint8_t trim, bool state);
     virtual void setTrainerInput(unsigned int inputNumber, int16_t value);
-
-    virtual void installTraceHook(void (*callback)(const char *));
-
+    virtual void setInputValue(int type, uint8_t index, int16_t value);
+    virtual void rotaryEncoderEvent(int steps);
+    virtual void setTrainerTimeout(uint16_t ms);
+    virtual void sendTelemetry(const QByteArray data);
     virtual void setLuaStateReloadPermanentScripts();
+    virtual void addTracebackDevice(QIODevice * device);
+    virtual void removeTracebackDevice(QIODevice * device);
+
+  protected slots:
+    void run();
+
+  protected:
+
+    bool isStopRequested();
+    void setStopRequested(bool stop);
+    bool checkLcdChanged();
+    void checkOutputsChanged();
+    uint8_t getStickMode();
+    const char * getPhaseName(unsigned int phase);
+    const QString getCurrentPhaseName();
+    const char * getError();
+    const int voltageToAdc(const int volts);
+
+    QString simuSdDirectory;
+    QString simuSettingsDirectory;
+    QTimer * m_timer10ms;
+    QMutex m_mtxStopReq;
+    QMutex m_mtxSimuMain;
+    QMutex m_mtxRadioData;
+    QMutex m_mtxSettings;
+    QMutex m_mtxTbDevices;
+    int volumeGain;
+    bool m_resetOutputsData;
+    bool m_stopRequested;
+
 };
 
 #endif // _OPENTX_SIMULATOR_H_

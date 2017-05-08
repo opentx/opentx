@@ -815,7 +815,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #endif
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(CPUARM)
-  if (att & MIDSIZE) {
+  if (FONTSIZE(att) == MIDSIZE) {
     lcdLastRightPos--;
   }
   if (separator == CHR_HOUR)
@@ -873,7 +873,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     }
   }
 #endif
-  else if (idx < MIXSRC_LAST_POT) {
+  else if (idx <= MIXSRC_LAST_POT) {
     idx = idx - MIXSRC_Rud;
     if (ZEXIST(g_eeGeneral.anaNames[idx])) {
       if (idx < MIXSRC_FIRST_POT-MIXSRC_Rud )

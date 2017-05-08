@@ -48,22 +48,25 @@ class Node : public QGraphicsObject
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void setBallSize(int size);
     void stepToCenter(qreal step=10);
-    int  getBallSize() {return ballSize;}
+    int  getBallSize() { return ballSize; }
     qreal getX();
     qreal getY();
     void setX(qreal newX);
     void setY(qreal newX);
 
-    void setCenteringX(bool val) {centerX = val;}
-    void setCenteringY(bool val) {centerY = val;}
-    void setFixedX(bool val) {fixedX = val;}
-    void setFixedY(bool val) {fixedY = val;}
-    bool getFixedX() {return fixedX;}
-    bool getFixedY() {return fixedY;}
-    void setMinX(int val) {minX = val;};
-    void setMaxX(int val) {maxX = val;};
+    void setCenteringX(bool val) { centerX = val; }
+    void setCenteringY(bool val) { centerY = val; }
+    void setFixedX(bool val) { fixedX = val; }
+    void setFixedY(bool val) { fixedY = val; }
+    bool getFixedX() { return fixedX; }
+    bool getFixedY() { return fixedY; }
+    void setMinX(int val) { minX = val; }
+    void setMaxX(int val) { maxX = val; }
+    void setPressed(bool pressed) { bPressed = pressed; }
+    bool isPressed() const { return bPressed; }
+
     void setColor(const QColor & color);
-    
+
   signals:
     void moved(int x, int y);
     void focus();
@@ -73,7 +76,7 @@ class Node : public QGraphicsObject
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    
+
   private:
     bool bPressed;
     bool centerX;

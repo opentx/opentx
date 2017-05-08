@@ -1,6 +1,6 @@
 set(SIMULATOR_INSTALL_PREFIX "" CACHE STRING "Alternative simulator library search path")
 
-if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+if(${CMAKE_SYSTEM_NAME} MATCHES "(Linux|FreeBSD)")
   set(C9X_NAME_SUFFIX ${VERSION_MAJOR}${VERSION_MINOR})
   set(COMPANION_NAME "companion${C9X_NAME_SUFFIX}")
   set(SIMULATOR_NAME "simulator${C9X_NAME_SUFFIX}")
@@ -11,10 +11,10 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   endif()
   message(STATUS "Simulators library search path: " ${SIMULATOR_LIB_PATH})
   set(SIMULATOR_LIB_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib/companion${C9X_NAME_SUFFIX})
-else(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+else()
   set(COMPANION_NAME "companion")
   set(SIMULATOR_NAME "simulator")
-endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+endif()
 
 # This the name that the user will see in the generated DMG and what the application
 # will be called under /Applications. We include the version string to make installing
@@ -100,14 +100,103 @@ use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 include_directories(
   ${CMAKE_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}
   ${COMPANION_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/shared
   ${SIMU_SRC_DIRECTORY}
-  ${COMPANION_SRC_DIRECTORY}/thirdparty/qxtcommandoptions
   ${COMPANION_SRC_DIRECTORY}/thirdparty/qcustomplot
   ${COMPANION_SRC_DIRECTORY}/thirdparty/miniz
   ${COMPANION_SRC_DIRECTORY}/storage
 )
+
+############# Do macro replacements on input files #############
+configure_file(${COMPANION_SRC_DIRECTORY}/version.h.in ${CMAKE_BINARY_DIR}/version.h @ONLY)
+configure_file(${COMPANION_SRC_DIRECTORY}/companion.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop @ONLY)
+configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
+
+############# Translations ###############
+
+### Generate .qm files and assemble resource (qrc) file.
+
+# available Companion translations (src/translations/*.ts)
+set(LANGUAGES cs de en es fi fr it pl sv zh_CN)
+foreach(language ${LANGUAGES})
+  list(APPEND companion_TS translations/companion_${language}.ts)
+endforeach(language)
+# .ts -> .qm
+qt5_add_translation(companion_QM ${companion_TS})
+
+# add Qt translations if found
+if(QT_TRANSLATIONS_DIR)
+  # Some languages have all translations in one qt_*.qm file and others break them up into modules, in which case we need qt_base_*.qm
+  file(GLOB qtbase_QM "${QT_TRANSLATIONS_DIR}/qtbase_*.qm")
+  file(GLOB qt_QM "${QT_TRANSLATIONS_DIR}/qt_??.qm")  # don't want to match "qt_help_*.qm"
+  list(APPEND qt_QM "${QT_TRANSLATIONS_DIR}/qt_zh_CN.qm" "${QT_TRANSLATIONS_DIR}/qt_zh_TW.qm")  # exceptions not matched by the GLOB
+else()
+  message(STATUS "QT_TRANSLATIONS_DIR not found, unable to package pre-built Qt translations with application.")
+endif()
+
+set(TRANSLATIONS_QRC "${CMAKE_CURRENT_BINARY_DIR}/translations.qrc")
+
+# Dynamically create translations.qrc file (XML) from all collected translation files.
+foreach(qm_file ${companion_QM} ${qt_QM} ${qtbase_QM})
+  get_filename_component(qm_file_name ${qm_file} NAME)
+  # Add file with full path and file name (w/out path) as alias to be used in actual code
+  set(TRANSLATION_FILES_LIST "${TRANSLATION_FILES_LIST}    <file alias=\"${qm_file_name}\">${qm_file}</file>\n")
+endforeach()
+configure_file(${COMPANION_SRC_DIRECTORY}/translations.qrc.in ${TRANSLATIONS_QRC} @ONLY)
+
+### Add optional "translations" target for updating .ts files
+if(QT_LUPDATE_EXECUTABLE)
+  add_custom_target(translations
+    WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
+    COMMAND ${QT_LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
+    )
+else()
+  message(STATUS "Qt lupdate not found, 'translations' target will not be availabe.")
+endif()
+
+############# Common lib ###############
+
+set(common_SRCS
+  appdebugmessagehandler.cpp
+  boards.cpp
+  customdebug.cpp
+  eeprominterface.cpp
+  helpers.cpp
+  radiodata.cpp
+  translations.cpp
+  firmwares/er9x/er9xeeprom.cpp
+  firmwares/er9x/er9xinterface.cpp
+  firmwares/ersky9x/ersky9xeeprom.cpp
+  firmwares/ersky9x/ersky9xinterface.cpp
+  firmwares/opentx/opentxeeprom.cpp
+  firmwares/opentx/opentxinterface.cpp
+  modeledit/node.cpp  # used in simulator
+  modeledit/edge.cpp  # used by node
+  )
+
+set(common_MOC_HDRS
+  appdebugmessagehandler.h
+  helpers.h
+  modeledit/node.h
+  )
+
+set(common_RESOURCES
+  companion.qrc
+  ${TRANSLATIONS_QRC}
+  )
+
+qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
+qt5_add_resources(common_RCC ${common_RESOURCES})
+#add_custom_target(gen_qrc DEPENDS ${common_RCC} ${companion_QM})
+
+add_library(common ${common_SRCS} ${common_RCC})
+qt5_use_modules(common Core Xml Widgets)
+target_link_libraries(common PRIVATE simulation)
+#add_dependencies(common gen_qrc)
+
+set(CPN_COMMON_LIB common)
 
 ############# Supporting libraries ###############
 
@@ -117,36 +206,10 @@ add_subdirectory(generaledit)
 add_subdirectory(simulation)
 add_subdirectory(storage)
 add_subdirectory(thirdparty/qcustomplot)
-add_subdirectory(thirdparty/qxtcommandoptions)
-
-############# Common lib ###############
-
-set(common_SRCS
-  appdebugmessagehandler.cpp
-  boards.cpp
-  eeprominterface.cpp
-  radiodata.cpp
-  firmwares/er9x/er9xeeprom.cpp
-  firmwares/er9x/er9xinterface.cpp
-  firmwares/ersky9x/ersky9xeeprom.cpp
-  firmwares/ersky9x/ersky9xinterface.cpp
-  firmwares/opentx/opentxeeprom.cpp
-  firmwares/opentx/opentxinterface.cpp
-  )
-
-set(common_MOC_HDRS
-  appdebugmessagehandler.h
-  )
-
-qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
-
-add_library(common ${common_SRCS})
-qt5_use_modules(common Core Xml Widgets)
 
 ############# Companion ###############
 
 set(companion_SRCS
-  helpers.cpp
   helpers_html.cpp
   mdichild.cpp
   modelslist.cpp
@@ -155,7 +218,7 @@ set(companion_SRCS
   burnconfigdialog.cpp
   multimodelprinter.cpp
   comparedialog.cpp
-  contributorsdialog.cpp
+  creditsdialog.cpp
   releasenotesdialog.cpp
   releasenotesfirmwaredialog.cpp
   customizesplashdialog.cpp
@@ -189,7 +252,7 @@ set(companion_MOC_HDRS
   printdialog.h
   fusesdialog.h
   logsdialog.h
-  contributorsdialog.h
+  creditsdialog.h
   releasenotesdialog.h
   releasenotesfirmwaredialog.h
   customizesplashdialog.h
@@ -206,7 +269,6 @@ set(companion_MOC_HDRS
   mdichild.h
   mainwindow.h
   radionotfound.h
-  helpers.h
   wizarddialog.h
   modelprinter.h
   multimodelprinter.h
@@ -233,80 +295,25 @@ set(companion_UIS
   radionotfound.ui
   )
 
-set(companion_RESOURCES
-  companion.qrc
-  ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc
-  )
-
-configure_file(${COMPANION_SRC_DIRECTORY}/version.h.in ${CMAKE_BINARY_DIR}/version.h @ONLY)
-configure_file(${COMPANION_SRC_DIRECTORY}/translations.qrc.in ${CMAKE_CURRENT_BINARY_DIR}/translations.qrc @ONLY)
-configure_file(${COMPANION_SRC_DIRECTORY}/companion.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/companion.desktop @ONLY)
-configure_file(${COMPANION_SRC_DIRECTORY}/simulator.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/simulator.desktop @ONLY)
-
 if(WIN32)
-  list(APPEND companion_SRCS icon.rc)
+  set(icon_RC icon.rc)
 endif()
-
-include_directories(${CMAKE_BINARY_DIR})
-include_directories(${CMAKE_SOURCE_DIR})
-
-set(LANGUAGES pl de fr es it sv cs fi zh)
-foreach(language ${LANGUAGES})
-  list(APPEND companion_TS translations/companion_${language}.ts)
-endforeach(language)
 
 qt5_wrap_ui(companion_SRCS ${companion_UIS})
 qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
-qt5_add_translation(companion_QM ${companion_TS})
-qt5_add_resources(companion_RCC ${companion_RESOURCES})
-add_custom_target(gen_qrc DEPENDS ${companion_RCC})
 
-add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${companion_RCC} ${companion_QM})
-
-add_dependencies(${COMPANION_NAME} gen_qrc)
+add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${icon_RC})
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
-
-target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation common qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation ${CPN_COMMON_LIB} qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 PrintTargetReport("${COMPANION_NAME}")
 
 ############# Standalone simulator ###############
 
-set(simu_SRCS
-  modeledit/node.cpp
-  modeledit/edge.cpp
-  helpers.cpp
-  simulator.cpp
-  )
+set(simu_SRCS simulator.cpp )
 
-set(simu_MOC_HDRS
-  modeledit/node.h
-  helpers.h
-  )
-
-qt5_wrap_cpp(simu_SRCS ${simu_MOC_HDRS} )
-
-if(WIN32)
-  list(APPEND simu_SRCS icon.rc)
-endif()
-
-add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${companion_RCC})
-add_dependencies(${SIMULATOR_NAME} gen_qrc)
-
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation common shared storage qxtcommandoptions ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
-
-############# Translations ####################
-
-find_package(Lupdate)
-if(LUPDATE_FOUND)
-  message(STATUS "Qt lupdate: " ${LUPDATE_EXECUTABLE})
-  add_custom_target(translations
-    WORKING_DIRECTORY ${COMPANION_SRC_DIRECTORY}
-    COMMAND ${LUPDATE_EXECUTABLE} ${CMAKE_SOURCE_DIR} -no-obsolete -ts ${companion_TS}
-    )
-else()
-  message(STATUS "Qt lupdate not found, 'translations' target will not be availabe.")
-endif()
+add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation ${CPN_COMMON_LIB} storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Install ####################
 
@@ -348,8 +355,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 elseif(WIN32)
 
-  get_target_property(QtCore_LOCATION Qt5::Core LOCATION)
-  get_filename_component(QT_DLL_DIR ${QtCore_LOCATION} PATH)
+  set(QT_DLL_DIR ${QT_LIB_DIR})
   set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia Qt5Svg)
   set(INSTALL_TEMP_ICUDLL_FILES icudt54.dll icuin54.dll icuuc54.dll)
   if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -428,7 +434,7 @@ if(WIN32)
 
   set(SYSDIR "$ENV{windir}/system32")
   configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${COMPANION_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/companion.nsi @ONLY)
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/simulator.nsi @ONLY)
+  #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/simulator.nsi @ONLY)
 
   find_program(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
@@ -441,16 +447,16 @@ if(WIN32)
     DEPENDS companion simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion/companion.nsi
     COMMENT "Companion Windows NSIS Installer")
 
-  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/simulator-install.exe
-    COMMAND "${NSIS_EXE}" ARGS ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-    DEPENDS simulator ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-    COMMENT "Simulator Windows NSIS Installer")
+#  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/simulator-install.exe
+#    COMMAND "${NSIS_EXE}" ARGS ${PROJECT_BINARY_DIR}/companion/simulator.nsi
+#    DEPENDS simulator ${PROJECT_BINARY_DIR}/companion/simulator.nsi
+#    COMMENT "Simulator Windows NSIS Installer")
 
   add_custom_target(installer
     DEPENDS ${PROJECT_BINARY_DIR}/companion/companion-windows.exe
-    DEPENDS ${PROJECT_BINARY_DIR}/companion/simulator-windows.exe
+#    DEPENDS ${PROJECT_BINARY_DIR}/companion/simulator-windows.exe
     SOURCES ${PROJECT_BINARY_DIR}/companion/companion.nsi
-    SOURCES ${PROJECT_BINARY_DIR}/companion/simulator.nsi
+#    SOURCES ${PROJECT_BINARY_DIR}/companion/simulator.nsi
     )
 endif()
 
@@ -520,11 +526,6 @@ IF(APPLE)
   install(PROGRAMS ${DFU_UTIL_ABSOLUTE_PATH} ${AVRDUDE_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
   set(bundle_tools_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util;\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/avrdude")
 
-  # These needs to be relative to CMAKE_INSTALL_PREFIX
-  get_target_property(QT_LIBRARY_DIR Qt5::Core LOCATION)
-  get_filename_component(QT_LIBRARY_DIR ${QT_LIBRARY_DIR} PATH)
-  get_filename_component(QT_LIBRARY_DIR "${QT_LIBRARY_DIR}/.." ABSOLUTE)
-
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
   # technically a hack (that is already is in the Bundle library ...)
@@ -532,7 +533,7 @@ IF(APPLE)
    include(BundleUtilities)
    file(GLOB bundle_simulator_libs \"\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/libopentx-*${CMAKE_SHARED_LIBRARY_SUFFIX}\")
    set(BU_CHMOD_BUNDLE_ITEMS on)
-   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_tools_path}\"   \"${QT_LIBRARY_DIR}\")
+   fixup_bundle(\"${APPS}\"   \"\${bundle_simulator_libs};${bundle_qt_libs};${bundle_tools_path}\"   \"${QT_LIB_DIR}\")
    file(RENAME \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app\" \"\${CMAKE_INSTALL_PREFIX}/${COMPANION_OSX_APP_BUNDLE_NAME}.app\")
    " COMPONENT Runtime)
 endif()

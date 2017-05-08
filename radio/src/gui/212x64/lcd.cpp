@@ -607,7 +607,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
     }
   }
 
-  else if (idx < MIXSRC_LAST_POT) {
+  else if (idx <= MIXSRC_LAST_POT) {
     idx = idx-MIXSRC_Rud;
     if (ZEXIST(g_eeGeneral.anaNames[idx])) {
       if (idx < MIXSRC_FIRST_POT-MIXSRC_Rud )
@@ -797,7 +797,7 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
   }
   else {
     drawGPSCoord(x, y, telemetryItem.gps.latitude, "NS", att, false);
-    drawGPSCoord(lcdNextPos+FWNUM, y, telemetryItem.gps.longitude, "EW", att, false);
+    drawGPSCoord(lcdLastRightPos+2*FWNUM, y, telemetryItem.gps.longitude, "EW", att, false);
   }
 }
 

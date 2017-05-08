@@ -28,16 +28,16 @@ void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att)
         lcdDrawText(x, y, "D", att);
         GVAR_MENU_ITEM(lcdNextPos, y, curve.value, -100, 100, LEFT|att, 0, 0);
         break;
-      
+
       case CURVE_REF_EXPO:
         lcdDrawText(x, y, "E", att);
         GVAR_MENU_ITEM(lcdNextPos, y, curve.value, -100, 100, LEFT|att, 0, 0);
         break;
-      
+
       case CURVE_REF_FUNC:
         lcdDrawTextAtIndex(x, y, STR_VCURVEFUNC, curve.value, att);
         break;
-      
+
       case CURVE_REF_CUSTOM:
         drawCurveName(x, y, curve.value, att);
         break;
@@ -51,10 +51,10 @@ void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, 
     // Lua luaLcdDrawChannel() can call us with a bad value
     return;
   }
-  
+
   TelemetryItem & telemetryItem = telemetryItems[sensor];
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[sensor];
-  
+
   if (telemetrySensor.unit == UNIT_DATETIME) {
     drawDate(x, y, telemetryItem, flags);
   }
@@ -126,6 +126,7 @@ void drawSourceCustomValue(coord_t x, coord_t y, source_t source, int32_t value,
     drawSensorCustomValue(x, y, source, value, flags);
   }
   else if (source >= MIXSRC_FIRST_TIMER || source == MIXSRC_TX_TIME) {
+    if (value < 0) flags |= BLINK|INVERS;
     drawTimer(x, y, value, flags);
   }
   else if (source == MIXSRC_TX_VOLTAGE) {

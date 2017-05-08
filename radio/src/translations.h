@@ -92,6 +92,12 @@
 #define TR_VTRAINERMODES       TR_VTRAINER_MASTER_JACK TR_VTRAINER_SLAVE_JACK TR_VTRAINER_MASTER_CPPM_MODULE TR_VTRAINER_MASTER_BATTERY
 #endif
 
+#if (LCD_W == 212)
+ #define LCDW_128_480_LINEBREAK        ""
+#else
+ #define LCDW_128_480_LINEBREAK        "\036"
+#endif
+
 // The non-0-terminated-strings
 
 extern const pm_char STR_OPEN9X[];
@@ -874,6 +880,10 @@ extern const pm_char STR_BLCOLOR[];
 #if defined(CPUARM)
   extern const pm_char STR_TRAINER[];
   extern const pm_char STR_MODULE_BIND[];
+  extern const pm_char STR_BINDING_1_8_TELEM_ON[];
+  extern const pm_char STR_BINDING_1_8_TELEM_OFF[];
+  extern const pm_char STR_BINDING_9_16_TELEM_ON[];
+  extern const pm_char STR_BINDING_9_16_TELEM_OFF[];
   extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_ANTENNASELECTION[];
   extern const pm_char STR_ANTENNACONFIRM1[];

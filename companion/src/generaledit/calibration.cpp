@@ -41,10 +41,10 @@ CalibrationPanel::CalibrationPanel(QWidget * parent, GeneralSettings & generalSe
   tableWidget->setFrameStyle(QFrame::NoFrame | QFrame::Plain);
   tableWidget->setStyleSheet("QTableWidget {background-color: transparent;}");
   QStringList headerLabels;
-  headerLabels << QObject::tr("Negative span") << QObject::tr("Mid value") << QObject::tr("Positive span"); 
+  headerLabels << QObject::tr("Negative span") << QObject::tr("Mid value") << QObject::tr("Positive span");
   tableWidget->setHorizontalHeaderLabels(headerLabels);
 
-  int rows = CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders);
+  int rows = CPN_MAX_STICKS + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders) + getBoardCapability(getCurrentBoard(), Board::MouseAnalogs);
   tableWidget->setRowCount(rows);
 
   for(int i = 0; i < rows; ++i) {
@@ -80,7 +80,7 @@ void CalibrationPanel::onCellChanged(int value)
     emit modified();
   }
 }
-    
+
 int CalibrationPanel::getCalibrationValue(int row, int column)
 {
   switch(column) {

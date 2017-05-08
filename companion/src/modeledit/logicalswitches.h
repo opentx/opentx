@@ -48,21 +48,23 @@ class LogicalSwitchesPanel : public ModelPanel
     void cswCut();
 
   private:
-    QComboBox * csw[CPN_MAX_CSW];
-    QDoubleSpinBox  * cswitchValue[CPN_MAX_CSW];
-    QDoubleSpinBox  * cswitchOffset[CPN_MAX_CSW];
-    QDoubleSpinBox  * cswitchOffset2[CPN_MAX_CSW];
-    QTimeEdit  * cswitchTOffset[CPN_MAX_CSW];
-    QComboBox * cswitchAnd[CPN_MAX_CSW];
-    QDoubleSpinBox  * cswitchDuration[CPN_MAX_CSW];
-    QDoubleSpinBox  * cswitchDelay[CPN_MAX_CSW];
-    QComboBox * cswitchSource1[CPN_MAX_CSW];
-    QComboBox * cswitchSource2[CPN_MAX_CSW];
+    QComboBox * csw[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox  * cswitchValue[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox  * cswitchOffset[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox  * cswitchOffset2[CPN_MAX_LOGICAL_SWITCHES];
+    QTimeEdit  * cswitchTOffset[CPN_MAX_LOGICAL_SWITCHES];
+    QComboBox * cswitchAnd[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox  * cswitchDuration[CPN_MAX_LOGICAL_SWITCHES];
+    QDoubleSpinBox  * cswitchDelay[CPN_MAX_LOGICAL_SWITCHES];
+    QComboBox * cswitchSource1[CPN_MAX_LOGICAL_SWITCHES];
+    QComboBox * cswitchSource2[CPN_MAX_LOGICAL_SWITCHES];
+    QStandardItemModel * rawSwitchItemModel;
+    QStandardItemModel * rawSourceItemModel;
     void setSwitchWidgetVisibility(int i);
     int selectedSwitch;
 
     void populateCSWCB(QComboBox *b, int value);
-    void populateAndSwitchCB(QComboBox *b, const RawSwitch & value);
+    void populateAndSwitchCB(QComboBox *b, const RawSwitch & value, const int idx);
     void updateLine(int index);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);
 

@@ -21,90 +21,123 @@
 #ifndef VIRTUALJOYSTICKWIDGET_H
 #define VIRTUALJOYSTICKWIDGET_H
 
+#include "radiowidget.h"
+
 #include <QWidget>
 #include <QResizeEvent>
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QGraphicsView>
 #include <QGraphicsScene>
-#include <QPushButton>
+#include <QToolButton>
+#include <QTimer>
 #include <QLabel>
 
+class CustomGraphicsScene;
 class Node;
-class SliderWidget;
+class RadioTrimWidget;
 
 class VirtualJoystickWidget : public QWidget
 {
   Q_OBJECT
 
   public:
-    enum TrimAxes {
-      TRIM_AXIS_L_X = 0,
-      TRIM_AXIS_L_Y,
-      TRIM_AXIS_R_Y,
-      TRIM_AXIS_R_X,
-    };
-
     enum ConstraintTypes {
-      HOLD_X = 0,
-      HOLD_Y,
-      FIX_X,
-      FIX_Y
+      HOLD_X = 0x01,
+      HOLD_Y = 0x02,
+      FIX_X  = 0x04,
+      FIX_Y  = 0x08
     };
 
     explicit VirtualJoystickWidget(QWidget * parent = NULL, QChar side = 'L', bool showTrims = true, bool showBtns = true, bool showValues = true, QSize size = QSize(125, 125));
 
-    void setStickX(qreal x);
-    void setStickY(qreal y);
-    void setStickPos(QPointF xy);
-    void centerStick();
     qreal getStickX();
     qreal getStickY();
     QPointF getStickPos();
-
-    void setTrimValue(int which, int value);
-    void setTrimRange(int which, int min, int max);
     int getTrimValue(int which);
-
-    void setStickConstraint(int which, bool active);
-    void setStickColor(const QColor & color);
-
     virtual QSize sizeHint() const;
     virtual void resizeEvent(QResizeEvent *event);
 
+    int getStickScale() const;
+    void setStickScale(int stickScale);
+
+  public slots:
+    void setStickX(qreal x);
+    void setStickY(qreal y);
+    void setStickPos(QPointF xy);
+    void setStickAxisValue(int index, int value);
+    void centerStick();
+    void setTrimsRange(int min, int max);
+    void setTrimsRange(int rng);
+    void setTrimRange(int index, int min, int max);
+    void setTrimValue(int index, int value);
+    void setWidgetValue(const RadioWidget::RadioWidgetType type, const int index, const int value);
+
+    void setStickIndices(int xIdx = -1, int yIdx = -1);
+    void setStickConstraint(quint8 index, bool active);
+    void setStickColor(const QColor & color);
+    void loadDefaultsForMode(const unsigned mode);
+
   signals:
-    void trimButtonPressed(int which);
-    void trimButtonReleased();
-    void trimSliderMoved(int which, int value);
+    void valueChange(const RadioWidget::RadioWidgetType type, const int index, int value);
 
   protected slots:
-    void onTrimPressed();
-    void onSliderChange(int value);
+    void onNodeXChanged();
+    void onNodeYChanged();
     void onButtonChange(bool checked);
     void updateNodeValueLabels();
+    void onGsMouseEvent(QGraphicsSceneMouseEvent * event);
 
   protected:
     void setSize(const QSize & size, const QSize &);
-    QWidget * createTrimWidget(QChar type);
-    QPushButton * createButtonWidget(int type);
+    RadioTrimWidget * createTrimWidget(QChar type);
+    QToolButton * createButtonWidget(int type);
     QLayout * createNodeValueLayout(QChar type, QLabel *& valLabel);
+    int getStickIndex(QChar type);
     int getTrimSliderType(QChar type);
     int getTrimButtonType(QChar type, int pos);
-    SliderWidget * getTrimSlider(int which);
+    RadioTrimWidget * getTrimWidget(int which);
 
     QChar stickSide;
     QSize prefSize;
     QGridLayout * layout;
     QGraphicsView * gv;
-    QGraphicsScene * scene;
+    CustomGraphicsScene * scene;
     Node * node;
-    SliderWidget * hTrimSlider, * vTrimSlider;
-    QPushButton * btnHoldX, * btnHoldY;
-    QPushButton * btnFixX, * btnFixY;
+    RadioTrimWidget * hTrimWidget;
+    RadioTrimWidget * vTrimWidget;
+    QToolButton * btnHoldX, * btnHoldY;
+    QToolButton * btnFixX, * btnFixY;
     QLabel * nodeLabelX, * nodeLabelY;
     QSize extraSize;
+    QTimer centerStickTimer;
     float ar;  // aspect ratio
+    int m_xIndex;
+    int m_yIndex;
+    int m_stickScale;
+    bool m_stickPressed;
+};
 
+
+/*
+ * Custom GraphicsScene for mouse handling
+*/
+class CustomGraphicsScene : public QGraphicsScene
+{
+  Q_OBJECT
+
+  public:
+    CustomGraphicsScene(QObject *parent = Q_NULLPTR) :
+      QGraphicsScene(parent)
+    {}
+
+  signals:
+    void mouseEvent(QGraphicsSceneMouseEvent * event);
+
+  protected:
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent * event);
 };
 
 #endif // VIRTUALJOYSTICKWIDGET_H

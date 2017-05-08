@@ -53,7 +53,8 @@ class joystickDialog : public QDialog
     bool started;
 
   private slots:
-    void loadJoysticks(int stick = -1);
+    void populateSourceCombo(QComboBox * cb);
+    bool loadJoysticks(int stick = -1);
     void joystickOpen(int stick);
     void joystickSetEnabled(bool enable);
     void onjoystickAxisValueChanged(int axis, int value);

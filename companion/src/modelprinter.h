@@ -53,14 +53,14 @@ class ModelPrinter: public QObject
   public:
     ModelPrinter(Firmware * firmware, const GeneralSettings & generalSettings, const ModelData & model);
     virtual ~ModelPrinter();
-  
+
     QString printEEpromSize();
     QString printTrimIncrementMode();
     QString printThrottleTrimMode();
     static QString printModuleProtocol(unsigned int protocol);
     static QString printMultiRfProtocol(int rfProtocol, bool custom);
     static QString printMultiSubType(int rfProtocol, bool custom, unsigned int subType);
-    QString printFlightModeSwitch(int index);
+    QString printFlightModeSwitch(const RawSwitch & swtch);
     QString printFlightModeName(int index);
     QString printFlightModes(unsigned int flightModes);
     QString printModule(int idx);
@@ -75,13 +75,11 @@ class ModelPrinter: public QObject
     QString printInputName(int idx);
     QString printInputLine(int idx);
     QString printInputLine(const ExpoData & ed);
-    QString printMixerName(int curDest);
-    QString printMixerLine(int idx, bool showMultiplex, int highlightedSource = 0);
     QString printMixerLine(const MixData & md, bool showMultiplex, int highlightedSource = 0);
     QString printLogicalSwitchLine(int idx);
     QString printCustomFunctionLine(int idx);
-    static QString printChannelName(int idx);
-    QString printOutputName(int idx);
+    QString printChannelName(int idx);
+    QString printCurveName(int idx);
     QString printCurve(int idx);
     QString createCurveImage(int idx, QTextDocument * document);
 

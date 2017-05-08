@@ -23,10 +23,19 @@
 #include "multiprotocols.h"
 #include "radiodata.h"
 
-#define tr QObject::tr
+#define STR_MULTI_SUBTYPE                    QT_TRANSLATE_NOOP("Multiprotocols", "Subtype")
+#define STR_MULTI_VIDFREQ                    QT_TRANSLATE_NOOP("Multiprotocols", "Video TX frequency")
+#define STR_MULTI_RFTUNE                     QT_TRANSLATE_NOOP("Multiprotocols", "CC2500 frequency fine tune")
+#define STR_MULTI_TELEMETRY                  QT_TRANSLATE_NOOP("Multiprotocols", "Telemetry")
+#define STR_MULTI_RFPOWER                    QT_TRANSLATE_NOOP("Multiprotocols", "Radio output power")
+#define STR_MULTI_SERVOFREQ                  QT_TRANSLATE_NOOP("Multiprotocols", "Servo output frequency")
+#define STR_MULTI_OPTION                     QT_TRANSLATE_NOOP("Multiprotocols", "Option value")
+#define STR_MULTI_DEFAULT                    QT_TRANSLATE_NOOP("Multiprotocols", "DEFAULT")
 
-static const QStringList STR_SUBTYPE_CUSTOM  ({tr("Subtype 0"), tr("Subtype 1"), tr("Subtype 2"), tr("Subtype 3"),
-                                                tr("Subtype 4"), tr("Subtype 5"), tr("Subtype 6"), tr("Subtype 7")});
+static const QStringList STR_SUBTYPE_CUSTOM  ({
+                                                STR_MULTI_SUBTYPE " 0", STR_MULTI_SUBTYPE " 1", STR_MULTI_SUBTYPE " 2", STR_MULTI_SUBTYPE " 3",
+                                                STR_MULTI_SUBTYPE " 4", STR_MULTI_SUBTYPE " 5", STR_MULTI_SUBTYPE " 6", STR_MULTI_SUBTYPE " 7"
+                                              });
 static const QStringList STR_SUBTYPE_FLYSKY  {"Standard", "V9x9", "V6x6", "V912", "CX20"};
 static const QStringList STR_SUBTYPE_FRSKY   {"D16", "D8", "D16 8ch", "V8", "D16 EU-LBT", "D16 EU-LBT 8ch"};
 static const QStringList STR_SUBTYPE_HISKY   {"HiSky", "HK310"};
@@ -36,7 +45,7 @@ static const QStringList STR_SUBTYPE_YD717   {"YD717", "Skywalker", "Syma X2", "
 static const QStringList STR_SUBTYPE_SYMAX   {"Standard", "Syma X5C"};
 static const QStringList STR_SUBTYPE_SLT     {"SLT", "Vista"};
 static const QStringList STR_SUBTYPE_CX10    {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041", "Q242"};
-static const QStringList STR_SUBTYPE_CG023   {"CG023", "YD829", "H3 3D"};
+static const QStringList STR_SUBTYPE_CG023   {"CG023", "YD829", "H8 3D"};
 static const QStringList STR_SUBTYPE_BAYANG  {"Bayang", "H8S3D"};
 static const QStringList STR_SUBTYPE_KN      {"WLtoys", "FeiLun"};
 static const QStringList STR_SUBTYPE_MT99    {"MT99", "H7", "YZ", "LS", "FY805"};
@@ -47,14 +56,7 @@ static const QStringList STR_SUBTYPE_AFHDS2A {"PWM and IBUS", "PPM and IBUS", "P
 static const QStringList STR_SUBTYPE_Q2X2    {"Q222", "Q242", "Q282"};
 static const QStringList STR_SUBTYPE_WK2x01  {"WK2801", "WK2401", "W6_5_1", "W6_6_1", "W6_HEL", "W6_HEL_I"};
 static const QStringList STR_SUBTYPE_Q303    {"Q303", "CX35", "CX10D", "CX10WD"};
-static const QStringList NO_SUBTYPE          {tr("DEFAULT")};
-
-static const QString STR_MULTI_VIDFREQ =      tr("Video TX frequency");
-static const QString STR_MULTI_RFTUNE =     tr("C2500 frequency fine tune");
-static const QString STR_MULTI_TELEMETRY = tr("Telemetry");
-static const QString STR_MULTI_RFPOWER = tr("Radio output power");
-static const QString STR_MULTI_SERVOFREQ = tr("Servo output frequency");
-static const QString STR_MULTI_OPTION= tr("Option value");
+static const QStringList NO_SUBTYPE          {STR_MULTI_DEFAULT};
 
 
 // Table is designed to be shared with gui_common_arm.cpp
@@ -83,7 +85,6 @@ const Multiprotocols multiProtocols {
   { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     2,  nullptr             },
   { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
   { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
-  { MM_RF_PROTO_GW08,       NO_SUBTYPE,           0,   nullptr             },
   { MM_RF_CUSTOM_SELECTED,  STR_SUBTYPE_CUSTOM,   7,  STR_MULTI_OPTION    },
 
   //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()

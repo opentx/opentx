@@ -26,40 +26,46 @@ SimulatedUIWidgetX9::SimulatedUIWidgetX9(SimulatorInterface *simulator, QWidget 
   ui(new Ui::SimulatedUIWidgetX9)
 {
   RadioUiAction * act;
-  QPolygon polygon;
 
   ui->setupUi(this);
 
   // add actions in order of appearance on the help menu
 
-  act = addRadioUiAction(0, QList<int>() << Qt::Key_PageUp, tr("PG-UP"), tr("[ MENU ]"));
-  polygon.setPoints(6, 20, 59, 27, 50, 45, 52, 56, 59, 50, 71, 26, 72);
-  ui->leftbuttons->addArea(polygon, "Taranis/x9l1.png", act);
+  // button placement, size, spacing
+  const int btop = 45, vsp = 17;
+  QRect btn(16, btop, 46, 31);
 
-  act = addRadioUiAction(3, QList<int>() << Qt::Key_PageDown, tr("PG-DN"), tr("[ PAGE ]"));
-  polygon.setPoints(6, 23, 107, 30, 99, 46, 100, 55, 106, 47, 117, 28, 117);
-  ui->leftbuttons->addArea(polygon, "Taranis/x9l2.png", act);
+  // left side
 
-  act = addRadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, tr("DEL/BKSP/ESC"), tr("[ EXIT ]"));
-  polygon.setPoints(6, 24, 154, 32, 144, 46, 146, 57, 156, 46, 167, 29, 166);
-  ui->leftbuttons->addArea(polygon, "Taranis/x9l3.png", act);
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_Up << Qt::Key_PageUp, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_MENU);
+  addRadioWidget(ui->leftbuttons->addArea(btn, "Taranis/x9l1.png", act));
+  btn.moveTop(btn.top() + btn.height() + vsp);
 
-  m_scrollUpAction = addRadioUiAction(4, QList<int>() << Qt::Key_Plus << Qt::Key_Equal << Qt::Key_Up, tr("+/UP"), tr("[ + ]"));
-  m_scrollDnAction = addRadioUiAction(5, QList<int>() << Qt::Key_Minus << Qt::Key_Down, tr("-/DN"), tr("[ - ]"));
+  act = new RadioUiAction(3, QList<int>() << Qt::Key_Down << Qt::Key_PageDown, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_PAGE);
+  addRadioWidget(ui->leftbuttons->addArea(btn, "Taranis/x9l2.png", act));
+  btn.moveTop(btn.top() + btn.height() + vsp);
 
-  polygon.setPoints(6, 64, 60, 71, 50, 90, 50, 100, 60, 90, 73, 72, 73);
-  ui->rightbuttons->addArea(polygon, "Taranis/x9r1.png", m_scrollUpAction);
+  act = new RadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
+  addRadioWidget(ui->leftbuttons->addArea(btn, "Taranis/x9l3.png", act));
 
-  polygon.setPoints(6, 63, 109, 73, 100, 88, 100, 98, 109, 88, 119, 72, 119);
-  ui->rightbuttons->addArea(polygon, "Taranis/x9r2.png", m_scrollDnAction);
+  m_scrollUpAction = new RadioUiAction(4, QList<int>() << Qt::Key_Plus << Qt::Key_Equal << Qt::Key_Left,
+                                      SIMU_STR_HLP_KEY_LFT % "|" % SIMU_STR_HLP_KEY_PLS % "|" % SIMU_STR_HLP_MOUSE_UP, SIMU_STR_HLP_ACT_PLS);
+  m_scrollDnAction = new RadioUiAction(5, QList<int>() << Qt::Key_Minus << Qt::Key_Right,
+                                      SIMU_STR_HLP_KEY_RGT % "|" % SIMU_STR_HLP_KEY_MIN % "|" % SIMU_STR_HLP_MOUSE_DN, SIMU_STR_HLP_ACT_MIN);
 
-  act = addRadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, tr("ENTER/MOUSE-MID"), tr("[ ENT ]"));
-  polygon.setPoints(6, 63, 155, 72, 146, 90, 146, 98, 155, 88, 166, 72, 166);
-  ui->rightbuttons->addArea(polygon, "Taranis/x9r3.png", act);
+  // right side
+  btn.moveTopLeft(QPoint(58, btop));
 
-  ui->leftbuttons->addArea(90, 177, 118, 197, "Taranis/x9l4.png", m_screenshotAction);
+  addRadioWidget(ui->rightbuttons->addArea(btn, "Taranis/x9r1.png", m_scrollUpAction));
+  btn.moveTop(btn.top() + btn.height() + vsp);
 
-  m_keymapHelp.append(keymapHelp_t(tr("WHEEL/PAD SCRL"),  tr("[ + ]/[ - ]")));
+  addRadioWidget(ui->rightbuttons->addArea(btn, "Taranis/x9r2.png", m_scrollDnAction));
+  btn.moveTop(btn.top() + btn.height() + vsp);
+
+  m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ENT);
+  addRadioWidget(ui->rightbuttons->addArea(btn, "Taranis/x9r3.png", m_mouseMidClickAction));
+
+  addRadioWidget(ui->leftbuttons->addArea(QRect(89, 177, 30, 20), "Taranis/x9l4.png", m_screenshotAction));
 
   m_backlightColors << QColor(47, 123, 227);  // Taranis Blue
   m_backlightColors << QColor(166,247,159);
