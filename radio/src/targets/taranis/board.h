@@ -271,7 +271,7 @@ extern uint8_t factory_mode;
 #else
 #define FACTORY_MODE_ENABLED()         (factory_mode & 1)
 #define KEYS_ENABLED()                 (factory_mode & 2)
-#define TRIMS_ENABLED()                (!(factory_mode & 2))
+#define TRIMS_ENABLED()                (!KEYS_ENABLED())
 #endif
 #else
 #define KEYS_ENABLED()                 true

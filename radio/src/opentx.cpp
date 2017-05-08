@@ -947,14 +947,7 @@ bool inputsMoved()
 
 void checkBacklight()
 {
-  static uint8_t tmr10ms ;
-
-#if defined(PCBACAIR)
-  if (!KEYS_ENABLED()) {
-    BACKLIGHT_DISABLE();
-    return;
-  }
-#endif
+  static uint8_t tmr10ms;
 
 #if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
   rotencPoll();
@@ -969,6 +962,13 @@ void checkBacklight()
         backlightOn();
       }
     }
+
+#if defined(PCBACAIR)
+    if (!KEYS_ENABLED()) {
+      BACKLIGHT_DISABLE();
+      return;
+    }
+#endif
 
     bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNCTION_BACKLIGHT));
     if (flashCounter) backlightOn = !backlightOn;
