@@ -439,7 +439,7 @@ bool isAssignableFunctionAvailable(int function)
     case FUNC_HAPTIC:
 #endif
     case FUNC_RESERVE4:
-#if !defined(DANGEROUS_MODULE_FUNCTIONS)
+#if !defined(DANGEROUS_MODULE_FUNCTIONS) && !defined(MULTIMODULE)
     case FUNC_RANGECHECK:
     case FUNC_BIND:
 #endif
