@@ -4686,7 +4686,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="846"/>
         <source>Skip files larger than this size. Enter zero for unlimited.</source>
-        <translation>Sautez tous les fichiers plus grands que cette taille. Entrez 0 pour illimité.</translation>
+        <translation>Ignorer tous les fichiers plus grands que cette taille. Entrez 0 pour illimité.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="851"/>
