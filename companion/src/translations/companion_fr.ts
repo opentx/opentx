@@ -11,7 +11,7 @@
     <message>
         <location filename="../wizarddialog.cpp" line="438"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Oui, contrôlés par une seule voie</translation>
+        <translation>Oui, contrôlés par une 1 voie</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="439"/>
@@ -4596,142 +4596,142 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="809"/>
         <source>No local SD structure path configured!</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun chemin de configuré pour la structure SD en local !</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="811"/>
         <source>No Radio or SD card detected!</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de Radio ou carte SD de détecté !</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="814"/>
         <source> :: Options</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="819"/>
         <source>Local Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire Local:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="822"/>
         <source>Radio Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>Répertoire Radio:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="825"/>
         <source>Sync. Direction:</source>
-        <translation type="unfinished"></translation>
+        <translation>Direction de la synchro.:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="827"/>
         <source>%1%2 Both directions, to radio folder first</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2 Dans les deux sens, répertoire Radio d&apos;abord</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="828"/>
         <source>%1%2 Both directions, to local folder first</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2 Dans les deux sens, répertoire Local d&apos;abord</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="829"/>
         <source> %1  Only from local folder to radio folder</source>
-        <translation type="unfinished"></translation>
+        <translation> %1  Seulement du répertoire Local vers le répertoire Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="830"/>
         <source> %1  Only from radio folder to local folder</source>
-        <translation type="unfinished"></translation>
+        <translation> %1  Seulement du répertoire Radio vers le répertoire Local</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="833"/>
         <source>Existing Files:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers existants:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="835"/>
         <source>How to handle overwriting files which already exist in the destination folder.</source>
-        <translation type="unfinished"></translation>
+        <translation>Comment gérer l&apos;écrasement des fichiers qui existent déjà dans le dossier de destination.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="836"/>
         <source>Copy only if newer and different (compare contents)</source>
-        <translation type="unfinished"></translation>
+        <translation>Copiez seulement si &quot;plus récent et différent&quot; (comparez le contenu)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="837"/>
         <source>Copy only if newer (do not compare contents)</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier uniquement si &quot;plus récent&quot; (ne pas comparer le contenu)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="838"/>
         <source>Copy only if different (ignore file time stamps)</source>
-        <translation type="unfinished"></translation>
+        <translation>Copier uniquement si &quot;différent&quot; (ignorer les horodatages des fichiers)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="839"/>
         <source>Always copy (force overwite existing files)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toujours copier (écraser tous les fichiers existants)</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="841"/>
         <source>Max. File Size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille max fichier:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="845"/>
         <source>Any size</source>
-        <translation type="unfinished"></translation>
+        <translation>Toutes tailles</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="846"/>
         <source>Skip files larger than this size. Enter zero for unlimited.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sautez tous les fichiers plus grands que cette taille. Entrez 0 pour illimité.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="851"/>
         <source>Test-run only</source>
-        <translation type="unfinished"></translation>
+        <translation>Essai</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="852"/>
         <source>Run as normal but do not actually copy anything. Useful for verifying results before real sync.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécutez normalement, mais ne rien copier. Utile pour vérifier les résultats avant la synchronisation réelle.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="910"/>
         <source> MB</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="922"/>
         <source> KB</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="947"/>
         <source>Source and destination folders are the same!</source>
-        <translation type="unfinished"></translation>
+        <translation>Les dossiers &quot;source&quot; et &quot;destination&quot; sont les mêmes !</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="949"/>
         <source>Source folder not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier source introuvable: %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="951"/>
         <source>Destination folder not found: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier de destination introuvable: %1</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="954"/>
         <source> :: Error</source>
-        <translation type="unfinished"></translation>
+        <translation> :: Erreur</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="959"/>
         <source> :: Progress</source>
-        <translation type="unfinished"></translation>
+        <translation> :: Progression</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1331"/>
@@ -6791,7 +6791,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../progressdialog.cpp" line="85"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
 </context>
 <context>
@@ -10233,107 +10233,107 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../process_sync.cpp" line="65"/>
         <source>New: &lt;b&gt;%1&lt;/b&gt;; Updated: &lt;b&gt;%2&lt;/b&gt;; Skipped: &lt;b&gt;%3&lt;/b&gt;; Errors: &lt;font color=%5&gt;&lt;b&gt;%4&lt;/b&gt;&lt;/font&gt;;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau: &lt;b&gt;%1&lt;/b&gt;; Actualisé: &lt;b&gt;%2&lt;/b&gt;; Ignoré: &lt;b&gt;%3&lt;/b&gt;; Erreur: &lt;font color=%5&gt;&lt;b&gt;%4&lt;/b&gt;&lt;/font&gt;;</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="67"/>
         <source>[TEST RUN] </source>
-        <translation type="unfinished"></translation>
+        <translation>[ESSAI]</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="88"/>
         <source>Gathering file information...</source>
-        <translation type="unfinished"></translation>
+        <translation>Collecte d&apos;informations sur les fichiers...</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="109"/>
         <source>Synchronization failed, nothing found to copy.</source>
-        <translation type="unfinished"></translation>
+        <translation>La synchronisation a échoué, rien trouvé à copier.</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="132"/>
         <source>Synchronization finished. </source>
-        <translation type="unfinished"></translation>
+        <translation>La synchronisation est terminée. </translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="155"/>
         <source>Synchronizing %1 -&amp;gt; %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisation %1 -&amp;gt; %2: %3</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="157"/>
         <source>Starting synchronization: %1 -&amp;gt; %2&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrage de la synchronisation: %1 -&amp;gt; %2&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="166"/>
         <source>Skipping large file: %1 (%2KB)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer gros fichier: %1 (%2KB)</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="172"/>
         <source>&lt;br&gt;&lt;b&gt;Too many errors, giving up.&lt;b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;b&gt;Trop d&apos;erreurs, abandon.&lt;b&gt;</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="179"/>
         <source>Finished synchronizing %1 -&amp;gt; %2 :&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Synchronisation terminée %1 -&amp;gt; %2 :&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; %3</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="194"/>
         <source>Creating directory: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Création répertoire: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="196"/>
         <source>Could not create directory: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer le répertoire: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="203"/>
         <source>Destination directory exists: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Le répertoire de destination existe: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="218"/>
         <source>Skipping older file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer ancien fichier: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="227"/>
         <source>Could not open source file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier source &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="232"/>
         <source>Could not open destination file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier de destination &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="241"/>
         <source>Skipping identical file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer fichier identique: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="251"/>
         <source>Replacing destination file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Remplacement du fichier de destination: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="253"/>
         <source>Could not delete destination file &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de supprimer le fichier de destination &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="259"/>
         <source>Creating destination file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Création fichier de destination: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="262"/>
         <source>Copy failed: &apos;%1&apos; to &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec copie: &apos;%1&apos; vers &apos;%2&apos;: %3</translation>
     </message>
 </context>
 <context>
