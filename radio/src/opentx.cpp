@@ -457,6 +457,14 @@ void modelDefault(uint8_t id)
   }
 #endif
 
+#if defined(FLIGHT_MODES) && defined(ROTARY_ENCODERS)
+  for (int p=1; p<MAX_FLIGHT_MODES; p++) {
+    for (int i=0; i<ROTARY_ENCODERS; i++) {
+      g_model.flightModeData[p].rotaryEncoders[i] = ROTARY_ENCODER_MAX+1;
+    }
+  }
+#endif
+
 #if defined(MAVLINK)
   g_model.mavlink.rc_rssi_scale = 15;
   g_model.mavlink.pc_rssi_en = 1;
