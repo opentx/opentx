@@ -4601,7 +4601,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="811"/>
         <source>No Radio or SD card detected!</source>
-        <translation>Pas de Radio ou carte SD de détecté !</translation>
+        <translation>Pas de Radio ou carte SD de détectée !</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="814"/>
