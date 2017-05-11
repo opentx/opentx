@@ -611,6 +611,7 @@ bool menuScreenSetup(int index, event_t event)
             }
             memset(&g_model.screenData[MAX_CUSTOM_SCREENS-1], 0, sizeof(CustomScreenData));
             customScreens[MAX_CUSTOM_SCREENS-1] = NULL;
+            loadCustomScreens();
             killEvents(KEY_ENTER);
             chainMenu(menuTabScreensSetup[index > 0 ? index : 1]);
             return false;
