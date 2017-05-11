@@ -328,20 +328,8 @@ QString ModelPrinter::printRotaryEncoder(int flightModeIndex, int reIndex)
 
 QString ModelPrinter::printInputName(int idx)
 {
-  QString result;
-  if (firmware->getCapability(VirtualInputs)) {
-    if (strlen(model.inputNames[idx]) > 0) {
-      result = tr("[I%1]").arg(idx+1);
-      result += QString(model.inputNames[idx]);
-    }
-    else {
-      result = tr("Input%1").arg(idx+1, 2, 10, QChar('0'));
-    }
-  }
-  else {
-    result = RawSource(SOURCE_TYPE_STICK, idx).toString(&model, &generalSettings);
-  }
-  return result.toHtmlEscaped();
+  RawSourceType srcType = (firmware->getCapability(VirtualInputs) ? SOURCE_TYPE_VIRTUAL_INPUT : SOURCE_TYPE_STICK);
+  return RawSource(srcType, idx).toString(&model, &generalSettings).toHtmlEscaped();
 }
 
 QString ModelPrinter::printInputLine(int idx)
