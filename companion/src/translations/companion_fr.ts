@@ -1531,27 +1531,27 @@ Si vide, la ligne est toujours active.</translation>
         <translation>Les 2</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="44"/>
+        <location filename="../modeledit/expodialog.cpp" line="45"/>
         <source>Edit %1</source>
         <translation>Éditer %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="76"/>
+        <location filename="../modeledit/expodialog.cpp" line="77"/>
         <source>Click to access popup menu</source>
         <translation>Cliquez pour accéder au menu contextuel</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="214"/>
+        <location filename="../modeledit/expodialog.cpp" line="215"/>
         <source>Clear All</source>
         <translation>Effacer Tout</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="215"/>
+        <location filename="../modeledit/expodialog.cpp" line="216"/>
         <source>Set All</source>
         <translation>Définir Tout</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="216"/>
+        <location filename="../modeledit/expodialog.cpp" line="217"/>
         <source>Invert All</source>
         <translation>Inverser Tout</translation>
     </message>
@@ -5601,8 +5601,8 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="43"/>
-        <source>DEST -&gt; CH%1</source>
-        <translation>DEST -&gt; VOIE%1</translation>
+        <source>DEST -&gt; %1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="90"/>
@@ -6007,7 +6007,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="289"/>
         <location filename="../modelprinter.cpp" line="311"/>
         <location filename="../modelprinter.cpp" line="325"/>
-        <location filename="../modelprinter.cpp" line="464"/>
+        <location filename="../modelprinter.cpp" line="452"/>
         <source>FM%1</source>
         <translation>PV%1</translation>
     </message>
@@ -6022,119 +6022,109 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>PV%1+%2</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="334"/>
-        <source>[I%1]</source>
-        <translation>[E%1]</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="338"/>
-        <source>Input%1</source>
-        <translation>Entrée%1</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="366"/>
+        <location filename="../modelprinter.cpp" line="354"/>
         <source>Weight</source>
         <translation>Ratio</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="375"/>
+        <location filename="../modelprinter.cpp" line="363"/>
         <source>Switch</source>
         <translation>Inter</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="380"/>
-        <location filename="../modelprinter.cpp" line="428"/>
+        <location filename="../modelprinter.cpp" line="368"/>
+        <location filename="../modelprinter.cpp" line="416"/>
         <source>NoTrim</source>
         <translation>Pas de trim</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="418"/>
+        <location filename="../modelprinter.cpp" line="406"/>
         <source>Weight(%1)</source>
         <translation>Ratio(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="425"/>
+        <location filename="../modelprinter.cpp" line="413"/>
         <source>Switch(%1)</source>
         <translation>Inter(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="433"/>
+        <location filename="../modelprinter.cpp" line="421"/>
         <source>No DR/Expo</source>
         <translation>Pas d&apos;expo/DR</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="386"/>
-        <location filename="../modelprinter.cpp" line="435"/>
+        <location filename="../modelprinter.cpp" line="374"/>
+        <location filename="../modelprinter.cpp" line="423"/>
         <source>Offset(%1)</source>
         <translation>Décalage(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="442"/>
+        <location filename="../modelprinter.cpp" line="430"/>
         <source>Delay(u%1:d%2)</source>
         <translation>Délai(h%1:b%2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="444"/>
+        <location filename="../modelprinter.cpp" line="432"/>
         <source>Slow(u%1:d%2)</source>
         <translation>Ralenti(h%1:b%2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="446"/>
+        <location filename="../modelprinter.cpp" line="434"/>
         <source>Warn(%1)</source>
         <translation>Alerte(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="473"/>
+        <location filename="../modelprinter.cpp" line="461"/>
         <source>Disabled in all flight modes</source>
         <translation>Désactivé pour toutes les phases de vol</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="483"/>
+        <location filename="../modelprinter.cpp" line="471"/>
         <source>Flight modes(%1)</source>
         <translation>Phases de vol(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="485"/>
+        <location filename="../modelprinter.cpp" line="473"/>
         <source>Flight mode(%1)</source>
         <translation>Phase de vol(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="506"/>
+        <location filename="../modelprinter.cpp" line="494"/>
         <source>Edge(%1, [%2:%3])</source>
         <translation>Flanc(%1, [%2:%3])</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="506"/>
+        <location filename="../modelprinter.cpp" line="494"/>
         <source>instant</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="509"/>
+        <location filename="../modelprinter.cpp" line="497"/>
         <source>Sticky(%1, %2)</source>
         <translation>Bistable(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="512"/>
+        <location filename="../modelprinter.cpp" line="500"/>
         <source>Timer(%1, %2)</source>
         <translation>Chrono(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="605"/>
+        <location filename="../modelprinter.cpp" line="593"/>
         <source>Duration(%1s)</source>
         <translation>Durée(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="607"/>
+        <location filename="../modelprinter.cpp" line="595"/>
         <source>Delay(%1s)</source>
         <translation>Délai(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="639"/>
+        <location filename="../modelprinter.cpp" line="627"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="639"/>
+        <location filename="../modelprinter.cpp" line="627"/>
         <source>Standard</source>
         <translation></translation>
     </message>
