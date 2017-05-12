@@ -318,7 +318,7 @@ void memswap(void * a, void * b, uint8_t size);
   #define pwrOffPressed()              (!pwrPressed())
 #endif
 
-#define PWR_PRESS_SHUTDOWN_DELAY       300 // 3s
+#define PWR_PRESS_SHUTDOWN_DELAY       150 // 1,5s
 
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)           g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)
