@@ -22,9 +22,9 @@
 #define _MIXERSLISTWIDGET_H_
 
 #include <QtWidgets>
-
-#define MIX_ROW_HEIGHT_INCREASE     8               //how much space is added above mixer row (for new channel), if 0 space adding is disabled
-const int  GroupHeaderRole = (Qt::UserRole+2);      //defines new user role for list items. If value is > 0, then space is added before that item
+#include <QProxyStyle>
+#include <QStyleOption>
+#include <QStyledItemDelegate>
 
 class MixersListWidget : public QListWidget
 {
@@ -40,13 +40,15 @@ class MixersListWidget : public QListWidget
     void keyWasPressed(QKeyEvent *event);
 
   public slots:
+    void addItem(QListWidgetItem *item, const unsigned & rowId, bool topLevel = false, bool hasSib = false);
     bool dropMimeData(int index, const QMimeData *data, Qt::DropAction action);
+    void zoomView();
 
   protected:
     virtual QStringList mimeTypes() const;
 
   private:
-    QPoint dragStartPosition;
+    QString itemMimeFmt;
     bool expo;
 
 };
@@ -60,14 +62,25 @@ class MixersDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    inline MixersDelegate(QObject *parent) : QStyledItemDelegate(parent) {};
+    inline MixersDelegate(QObject *parent) : QStyledItemDelegate(parent) {}
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
 
   private:
-    void SetupDocument(QTextDocument & doc, const QStyleOptionViewItem & options) const;
+    void SetupDocument(QTextDocument & doc, const QStyleOptionViewItem & options, const QModelIndex & index) const;
 
+};
+
+/**
+  @brief Provides custom painting of items on a per-element basis, eg. to change style of drop indicator
+*/
+class MixerItemViewProxyStyle: public QProxyStyle
+{
+  public:
+    explicit MixerItemViewProxyStyle(QStyle * style = 0) : QProxyStyle(style) {}
+
+    void drawPrimitive(PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0) const;
 };
 
 #endif // _MIXERSLISTWIDGET_H_
