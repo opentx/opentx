@@ -313,9 +313,9 @@ end
 local function init()
   current, edit, refreshState, refreshIndex = 1, false, 0, 0
   pages = {
-    runConfigPage,
-    runSettingsPage,
-  --  runCalibrationPage
+  --  runConfigPage,
+  --  runSettingsPage,
+    runCalibrationPage
   }
 end
 
