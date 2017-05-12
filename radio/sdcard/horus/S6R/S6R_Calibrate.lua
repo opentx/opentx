@@ -16,13 +16,16 @@ local fields = {}
 local modifications = {}
 local wingBitmaps = {}
 local mountBitmaps = {}
+local calibBitmaps = {}
 
 local configFields = {
   {"Wing type:", COMBO, 0x80, nil, { "Normal", "Delta", "VTail" } },
   {"Mounting type:", COMBO, 0x81, nil, { "Horz", "Horz rev.", "Vert", "Vert rev." } },
 }
+local calibrationPositions = { "up", "down", "left", "right", "forward", "back" }
 local wingBitmapsFile = {"img/plane_b.png", "img/delta_b.png", "img/planev_b.png"}
 local mountBitmapsFile = {"img/up.png", "img/down.png", "img/vert.png", "img/vert-r.png"}
+local calibBitmapsFile = {"img/up.png", "img/down.png", "img/left.png", "img/right.png", "img/forward.png", "img/back.png"}
 
 local settingsFields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
@@ -266,12 +269,53 @@ local function runSettingsPage(event)
   return runFieldsPage(event)
 end
 
+local function runCalibrationPage(event)
+  fields = calibrationFields
+  if refreshIndex == #fields then
+    refreshIndex = 0
+  end
+  lcd.clear()
+  drawScreenTitle("S6R", page, #pages)
+  if(calibrationStep < 6) then
+    local position = calibrationPositions[1 + calibrationStep]
+    lcd.drawText(100, 50, "Place the S6R in the following position", TEXT_COLOR)
+    if calibBitmaps[calibrationStep + 1] == nil then
+      calibBitmaps[calibrationStep + 1] = Bitmap.open(calibBitmapsFile[calibrationStep + 1])
+    end
+    lcd.drawBitmap(calibBitmaps[calibrationStep + 1], 200, 70)
+    for index = 1, 3, 1 do
+      local field = fields[index]
+      lcd.drawText(70, 80+20*index, field[1]..":", TEXT_COLOR)
+      lcd.drawNumber(90, 80+20*index, field[4]/10, LEFT+PREC2)
+    end
+
+    local attr = calibrationState == 0 and INVERS or 0
+    lcd.drawText(160, 220, "Press [Enter] when ready", attr)
+  else
+    lcd.drawText(160, 50, "Calibration completed", 0)
+    lcd.drawBitmap(Bitmap.open("img/done.bmp"),200, 100)
+    lcd.drawText(160, 220, "Press [RTN] when ready", attr)
+  end
+  if calibrationStep > 6 and (event == EVT_ENTER_BREAK or event == EVT_EXIT_BREAK) then
+    return 2
+  elseif event == EVT_ENTER_BREAK then
+    calibrationState = 1
+  elseif event == EVT_EXIT_BREAK then
+    if calibrationStep > 0 then
+      calibrationStep = 0
+    end
+  end
+  return 0
+
+end
+
 -- Init
 local function init()
   current, edit, refreshState, refreshIndex = 1, false, 0, 0
   pages = {
-    runConfigPage,
-    runSettingsPage,
+  --  runConfigPage,
+  --  runSettingsPage,
+    runCalibrationPage
   }
 end
 
