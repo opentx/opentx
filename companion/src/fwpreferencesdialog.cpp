@@ -34,12 +34,6 @@ FirmwarePreferencesDialog::FirmwarePreferencesDialog(QWidget *parent) :
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("fwpreferences.png"));
   initSettings();
-
-  foreach(const char *lang, getCurrentFirmware()->getFirmwareBase()->ttslanguages) {
-    ui->voiceCombo->addItem(lang);
-    if (Firmware::getCurrentVariant()->getId().contains(QString("-tts%1").arg(lang)))
-      ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
-  }
 }
 
 FirmwarePreferencesDialog::~FirmwarePreferencesDialog()
@@ -70,13 +64,13 @@ void FirmwarePreferencesDialog::on_fw_dnld_clicked()
   initSettings();
 }
 
-void FirmwarePreferencesDialog::on_voice_dnld_clicked()
+void FirmwarePreferencesDialog::on_sd_dnld_clicked()
 {
-  QString url = "http://voices-21.open-tx.org/";
+  QString url = "http://downloads.open-tx.org/2.2/sdcard/";
   QString fwType = g.profile[g.id()].fwType();
   QStringList list = fwType.split("-");
   QString firmware = QString("%1-%2").arg(list[0]).arg(list[1]);
-  url.append(QString("%1/%2/").arg(firmware).arg(ui->voiceCombo->currentText().toLower()));
+  url.append(QString("%1/").arg(firmware));
   QDesktopServices::openUrl(url);
 }
 
