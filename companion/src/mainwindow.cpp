@@ -59,6 +59,7 @@
 #ifdef __APPLE__
   #define COMPANION_STAMP                 "companion-macosx.stamp"
   #define COMPANION_INSTALLER             ""  // no automatated updates for MacOsx
+  #define COMPANION_INSTALLER             "macosx/opentx-companion-%1.dmg"
 #elif WIN32
   #define COMPANION_STAMP                 "companion-windows.stamp"
   #define COMPANION_INSTALLER             "windows/companion-windows-%1.exe"
@@ -294,14 +295,20 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
   int c9xver = version2index(c9xversion);
 
   if (c9xver < vnum) {
-#if defined WIN32 || !defined __GNUC__ // || defined __APPLE__  // OSX should only notify of updates since no update packages are available.
+#if defined WIN32 || !defined __GNUC__ || defined __APPLE__
     int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
                                                         "Would you like to download it?").arg(version) ,
                                     QMessageBox::Yes | QMessageBox::No);
 
     if (ret == QMessageBox::Yes) {
       QDir dir(g.updatesDir());
-      QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), tr("Executable (*.exe)"));
+      QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)),
+#if defined(__APPLE__)
+                                                      tr("Diskimage (*.dmg)")
+#else
+                                                      tr("Executable (*.exe)")
+#endif
+      );
       if (!fileName.isEmpty()) {
         g.updatesDir(QFileInfo(fileName).dir().absolutePath());
         downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
@@ -325,7 +332,12 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
 void MainWindow::updateDownloaded()
 {
-  int ret = QMessageBox::question(this, "Companion", tr("Would you like to launch the installer?") ,
+  int ret = QMessageBox::question(this, "Companion",
+#if __APPLE__
+                                  tr("Would you like open the disk image to install the new version?"),
+#else
+                                  tr("Would you like to launch the installer?") ,
+#endif
                                    QMessageBox::Yes | QMessageBox::No);
   if (ret == QMessageBox::Yes) {
     if (QDesktopServices::openUrl(QUrl::fromLocalFile(installer_fileName)))
