@@ -58,14 +58,19 @@
 
 #ifdef __APPLE__
   #define COMPANION_STAMP                 "companion-macosx.stamp"
-  #define COMPANION_INSTALLER             ""  // no automatated updates for MacOsx
   #define COMPANION_INSTALLER             "macosx/opentx-companion-%1.dmg"
+  #define COMPANION_FILEMASK              tr("Diskimage (*.dmg)")
+  #define COMPANION_INSTALL_QUESTION      tr("Would you like to open the disk image to install the new version?")
 #elif WIN32
   #define COMPANION_STAMP                 "companion-windows.stamp"
   #define COMPANION_INSTALLER             "windows/companion-windows-%1.exe"
+  #define COMPANION_FILEMASK              tr("Executable (*.exe)")
+  #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
 #else
-#define COMPANION_STAMP                   "companion-linux.stamp"
-#define COMPANION_INSTALLER               ""   // no automatated updates for linux
+  #define COMPANION_STAMP                 "companion-linux.stamp"
+  #define COMPANION_INSTALLER             ""   // no automatated updates for linux
+  #define COMPANION_FILEMASK              "*.*"
+  #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
 #endif
 
 #define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightlies/companion"
@@ -302,13 +307,8 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
     if (ret == QMessageBox::Yes) {
       QDir dir(g.updatesDir());
-      QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)),
-#if defined(__APPLE__)
-                                                      tr("Diskimage (*.dmg)")
-#else
-                                                      tr("Executable (*.exe)")
-#endif
-      );
+      QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), COMPANION_FILEMASK);
+
       if (!fileName.isEmpty()) {
         g.updatesDir(QFileInfo(fileName).dir().absolutePath());
         downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
@@ -332,13 +332,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
 void MainWindow::updateDownloaded()
 {
-  int ret = QMessageBox::question(this, "Companion",
-#if __APPLE__
-                                  tr("Would you like open the disk image to install the new version?"),
-#else
-                                  tr("Would you like to launch the installer?") ,
-#endif
-                                   QMessageBox::Yes | QMessageBox::No);
+  int ret = QMessageBox::question(this, "Companion", COMPANION_INSTALL_QUESTION, QMessageBox::Yes | QMessageBox::No);
   if (ret == QMessageBox::Yes) {
     if (QDesktopServices::openUrl(QUrl::fromLocalFile(installer_fileName)))
       QApplication::exit();
