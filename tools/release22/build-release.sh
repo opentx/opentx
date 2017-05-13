@@ -25,7 +25,7 @@ docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
 docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
 docker exec companion rm -rf build
 if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb ]; then
-  docker exec companion /opentx/code/tools/build-companion.sh /opentx/code /opentx/binaries/
+  docker exec companion /opentx/code/tools/build-companion-release.sh /opentx/code /opentx/binaries/
   cp -f binaries/*.deb ${output}/companion/linux/companion22_${version}_amd64.deb
   cp -f binaries/radio/src/lua/lua_fields_*.txt ${output}/firmware
 fi
