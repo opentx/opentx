@@ -1531,27 +1531,27 @@ Si vide, la ligne est toujours active.</translation>
         <translation>Les 2</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="44"/>
+        <location filename="../modeledit/expodialog.cpp" line="45"/>
         <source>Edit %1</source>
         <translation>Éditer %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="76"/>
+        <location filename="../modeledit/expodialog.cpp" line="77"/>
         <source>Click to access popup menu</source>
         <translation>Cliquez pour accéder au menu contextuel</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="214"/>
+        <location filename="../modeledit/expodialog.cpp" line="215"/>
         <source>Clear All</source>
         <translation>Effacer Tout</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="215"/>
+        <location filename="../modeledit/expodialog.cpp" line="216"/>
         <source>Set All</source>
         <translation>Définir Tout</translation>
     </message>
     <message>
-        <location filename="../modeledit/expodialog.cpp" line="216"/>
+        <location filename="../modeledit/expodialog.cpp" line="217"/>
         <source>Invert All</source>
         <translation>Inverser Tout</translation>
     </message>
@@ -2010,7 +2010,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../process_flash.cpp" line="259"/>
         <source>ie: OpenTX for M128 / 9X board or OpenTX for 9XR board with M128 chip</source>
-        <translation>ex:. OpenTX pour carte d&apos;origine 9x avec m128 ou OpenTX pour 9XR avec m128</translation>
+        <translation>ex: OpenTX pour carte d&apos;origine 9x avec m128 ou OpenTX pour 9XR avec m128</translation>
     </message>
     <message>
         <location filename="../process_flash.cpp" line="270"/>
@@ -3207,11 +3207,11 @@ p, li { white-space: pre-wrap; }
 4 - Extra loud.</source>
         <translation>Volume des bips
 
-Mode silencieux : tous bips désactivés.
-Touches silencieuses : bips normaux mais touches de navigation silencieuses.
-Normal : durée des bips par défaut.
-Long : bips plus longs.
-Extra long : bips extra longs.</translation>
+Mode silencieux: tous bips désactivés.
+Touches silencieuses: bips normaux mais touches de navigation silencieuses.
+Normal: durée des bips par défaut.
+Long: bips plus longs.
+Extra long: bips extra longs.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2243"/>
@@ -3319,11 +3319,11 @@ Are you sure ?</source>
 4 - Extra loud.</source>
         <translation>Volume des bips
 
-Mode silencieux : tous bips désactivés.
-Touches silencieuses : bips normaux mais touches de navigation silencieuses.
-Normal : durée des bips par défaut.
-Long : bips plus longs.
-Extra long : bips extra longs.</translation>
+Mode silencieux: tous bips désactivés.
+Touches silencieuses: bips normaux mais touches de navigation silencieuses.
+Normal: durée des bips par défaut.
+Long: bips plus longs.
+Extra long: bips extra longs.</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="186"/>
@@ -3995,7 +3995,7 @@ Les colonnes contenant l&apos;altitude &quot;GAlt&quot; et la vitesse &quot;GSpd
     <message>
         <location filename="../logsdialog.cpp" line="499"/>
         <source>Climb rate: %1 m/s</source>
-        <translation>Taux monté : %1 m/s</translation>
+        <translation>Taux monté: %1 m/s</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="571"/>
@@ -5323,7 +5323,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mdichild.cpp" line="1256"/>
         <source>Editing model %1: </source>
-        <translation>Édition du modèle %1 : </translation>
+        <translation>Édition du modèle %1: </translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1509"/>
@@ -5601,8 +5601,8 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="43"/>
-        <source>DEST -&gt; CH%1</source>
-        <translation>DEST -&gt; VOIE%1</translation>
+        <source>DEST -&gt; %1</source>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="90"/>
@@ -6007,7 +6007,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="289"/>
         <location filename="../modelprinter.cpp" line="311"/>
         <location filename="../modelprinter.cpp" line="325"/>
-        <location filename="../modelprinter.cpp" line="464"/>
+        <location filename="../modelprinter.cpp" line="452"/>
         <source>FM%1</source>
         <translation>PV%1</translation>
     </message>
@@ -6022,119 +6022,109 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>PV%1+%2</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="334"/>
-        <source>[I%1]</source>
-        <translation>[E%1]</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="338"/>
-        <source>Input%1</source>
-        <translation>Entrée%1</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="366"/>
+        <location filename="../modelprinter.cpp" line="354"/>
         <source>Weight</source>
         <translation>Ratio</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="375"/>
+        <location filename="../modelprinter.cpp" line="363"/>
         <source>Switch</source>
         <translation>Inter</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="380"/>
-        <location filename="../modelprinter.cpp" line="428"/>
+        <location filename="../modelprinter.cpp" line="368"/>
+        <location filename="../modelprinter.cpp" line="416"/>
         <source>NoTrim</source>
         <translation>Pas de trim</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="418"/>
+        <location filename="../modelprinter.cpp" line="406"/>
         <source>Weight(%1)</source>
         <translation>Ratio(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="425"/>
+        <location filename="../modelprinter.cpp" line="413"/>
         <source>Switch(%1)</source>
         <translation>Inter(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="433"/>
+        <location filename="../modelprinter.cpp" line="421"/>
         <source>No DR/Expo</source>
         <translation>Pas d&apos;expo/DR</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="386"/>
-        <location filename="../modelprinter.cpp" line="435"/>
+        <location filename="../modelprinter.cpp" line="374"/>
+        <location filename="../modelprinter.cpp" line="423"/>
         <source>Offset(%1)</source>
         <translation>Décalage(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="442"/>
+        <location filename="../modelprinter.cpp" line="430"/>
         <source>Delay(u%1:d%2)</source>
         <translation>Délai(h%1:b%2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="444"/>
+        <location filename="../modelprinter.cpp" line="432"/>
         <source>Slow(u%1:d%2)</source>
         <translation>Ralenti(h%1:b%2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="446"/>
+        <location filename="../modelprinter.cpp" line="434"/>
         <source>Warn(%1)</source>
         <translation>Alerte(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="473"/>
+        <location filename="../modelprinter.cpp" line="461"/>
         <source>Disabled in all flight modes</source>
         <translation>Désactivé pour toutes les phases de vol</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="483"/>
+        <location filename="../modelprinter.cpp" line="471"/>
         <source>Flight modes(%1)</source>
         <translation>Phases de vol(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="485"/>
+        <location filename="../modelprinter.cpp" line="473"/>
         <source>Flight mode(%1)</source>
         <translation>Phase de vol(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="506"/>
+        <location filename="../modelprinter.cpp" line="494"/>
         <source>Edge(%1, [%2:%3])</source>
         <translation>Flanc(%1, [%2:%3])</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="506"/>
+        <location filename="../modelprinter.cpp" line="494"/>
         <source>instant</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="509"/>
+        <location filename="../modelprinter.cpp" line="497"/>
         <source>Sticky(%1, %2)</source>
         <translation>Bistable(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="512"/>
+        <location filename="../modelprinter.cpp" line="500"/>
         <source>Timer(%1, %2)</source>
         <translation>Chrono(%1, %2)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="605"/>
+        <location filename="../modelprinter.cpp" line="593"/>
         <source>Duration(%1s)</source>
         <translation>Durée(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="607"/>
+        <location filename="../modelprinter.cpp" line="595"/>
         <source>Delay(%1s)</source>
         <translation>Délai(%1s)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="639"/>
+        <location filename="../modelprinter.cpp" line="627"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="639"/>
+        <location filename="../modelprinter.cpp" line="627"/>
         <source>Standard</source>
         <translation></translation>
     </message>
@@ -9728,7 +9718,7 @@ NOTE: toutes les données EEPROM existantes non compatible avec le type de radio
         <source>ERROR: Couldn&apos;t start simulator, missing radio/profile/data file/folder.
   Profile ID: [%1]; Radio ID: [%2];
 Data File: [%3]</source>
-        <translation>ERREUR : Impossible de démarer le simulateur, radio/profile/fichier de données/répertoire manquant.
+        <translation>ERREUR: Impossible de démarer le simulateur, radio/profile/fichier de données/répertoire manquant.
   Profil ID: [%1]; Radio ID: [%2];
 Fichier de Données: [%3]</translation>
     </message>
@@ -11778,11 +11768,11 @@ hh:mm:ss</translation>
 4 - Extra loud.</source>
         <translation>Volume des bips
 
-Mode silencieux : tous bips désactivés.
-Touches silencieuses : bips normaux mais touches de navigation silencieuses.
-Normal : durée des bips par défaut.
-Long : bips plus longs.
-Extra long : bips extra longs.</translation>
+Mode silencieux: tous bips désactivés.
+Touches silencieuses: bips normaux mais touches de navigation silencieuses.
+Normal: durée des bips par défaut.
+Long: bips plus longs.
+Extra long: bips extra longs.</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.ui" line="89"/>
@@ -12156,7 +12146,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="78"/>
         <source>Select the receiver channel that is connected to your ESC or throttle servo.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3</source>
-        <translation>Sélectionnez la voie du récepteur auquel le contrôleur/servo de gaz est connecté.&lt;br&gt;&lt;br&gt;Gaz - Spektrum : VOIE1, Futaba : VOIE3</translation>
+        <translation>Sélectionnez la voie du récepteur auquel le contrôleur/servo de gaz est connecté.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: VOIE1, Futaba: VOIE3</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="82"/>
@@ -12166,7 +12156,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="87"/>
         <source>Models use one or two channels to control the ailerons.&lt;br&gt;A so called Y-cable can be used to connect a single receiver channel to two separate aileron servos. If your servos are connected by a Y-cable you should select the single-servo option.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: CH2, Futaba: CH1</source>
-        <translation>On utilise en général soit 1, soit 2 voies pour contrôler les ailerons. Un câble en Y peut être utilisé pour connecter 2 servos à une seule voie, auquel cas il convient de choisir l&apos;option &quot;une seule voie&quot;.&lt;br&gt;&lt;br&gt;Aileron - Spektrum : VOIE2, Futaba : VOIE1</translation>
+        <translation>On utilise en général soit 1, soit 2 voies pour contrôler les ailerons. Un câble en Y peut être utilisé pour connecter 2 servos à une seule voie, auquel cas il convient de choisir l&apos;option &quot;une seule voie&quot;.&lt;br&gt;&lt;br&gt;Aileron - Spektrum: VOIE2, Futaba: VOIE1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="93"/>
@@ -12186,7 +12176,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="105"/>
         <source>Select the receiver channel that is connected to your rudder.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4</source>
-        <translation>Sélectionnez la voie du récepteur auquel le servo de dérive est connecté.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : VOIE4, Futaba : VOIE4</translation>
+        <translation>Sélectionnez la voie du récepteur auquel le servo de dérive est connecté.&lt;br&gt;&lt;br&gt;Dérive - Spektrum: VOIE4, Futaba: VOIE4</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="109"/>
@@ -12197,12 +12187,12 @@ Extra long : bips extra longs.</translation>
         <location filename="../wizarddialog.cpp" line="112"/>
         <location filename="../wizarddialog.cpp" line="117"/>
         <source>Select the Rudder and Elevator channels.&lt;br&gt;&lt;br&gt;Rudder - Spektrum: CH4, Futaba: CH4&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Sélectionnez les voies du récepteur auquel les servos de profondeur et dérive sont connectés.&lt;br&gt;&lt;br&gt;Dérive - Spektrum : VOIE4, Futaba : VOIE4&lt;br&gt;Profondeur - Spektrum : VOIE3, Futaba : VOIE2</translation>
+        <translation>Sélectionnez les voies du récepteur auquel les servos de profondeur et dérive sont connectés.&lt;br&gt;&lt;br&gt;Dérive - Spektrum: VOIE4, Futaba: VOIE4&lt;br&gt;Profondeur - Spektrum: VOIE3, Futaba: VOIE2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="122"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation>Sélectionnez la voie du récepteur auquel le servo de profondeur est connecté.&lt;br&gt;&lt;br&gt;Profondeur - Spektrum : VOIE3, Futaba : VOIE2</translation>
+        <translation>Sélectionnez la voie du récepteur auquel le servo de profondeur est connecté.&lt;br&gt;&lt;br&gt;Profondeur - Spektrum: VOIE3, Futaba: VOIE2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
@@ -12218,7 +12208,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../wizarddialog.cpp" line="141"/>
         <source>Select the control channels for your multirotor.&lt;br&gt;&lt;br&gt;Throttle - Spektrum: CH1, Futaba: CH3&lt;br&gt;Yaw - Spektrum: CH4, Futaba: CH4&lt;br&gt;Pitch - Spektrum: CH3, Futaba: CH2&lt;br&gt;Roll - Spektrum: CH2, Futaba: CH1</source>
-        <translation>Sélectionnez les voies de votre multirotor.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: VOIE1, Futaba: VOIE3&lt;br&gt;Lacet - Spektrum: VOIE4, Futaba : VOIE4&lt;br&gt;Tangage - Spektrum : VOIE3, Futaba: VOIE2&lt;br&gt;Roulis - Spektrum : VOIE2, Futaba: VOIE1</translation>
+        <translation>Sélectionnez les voies de votre multirotor.&lt;br&gt;&lt;br&gt;Gaz - Spektrum: VOIE1, Futaba: VOIE3&lt;br&gt;Lacet - Spektrum: VOIE4, Futaba: VOIE4&lt;br&gt;Tangage - Spektrum: VOIE3, Futaba: VOIE2&lt;br&gt;Roulis - Spektrum: VOIE2, Futaba: VOIE1</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="154"/>
@@ -12491,7 +12481,7 @@ m2560 for v4.1 boards</source>
     <message>
         <location filename="../downloaddialog.cpp" line="45"/>
         <source>Unable to save the file %1: %2.</source>
-        <translation>Impossible d&apos;enregistrer le fichier %1 : %2.</translation>
+        <translation>Impossible d&apos;enregistrer le fichier %1: %2.</translation>
     </message>
     <message>
         <location filename="../downloaddialog.cpp" line="71"/>
