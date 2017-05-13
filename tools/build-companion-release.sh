@@ -38,7 +38,19 @@ rm -rf build
 mkdir build
 cd build
 
+cmake ${COMMON_OPTIONS} -DPCB=AR9X ${SRCDIR}
+make -j${JOBS} libsimulator
+
 cmake ${COMMON_OPTIONS} -DPCB=9X ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${COMMON_OPTIONS} -DPCB=9X128 ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${COMMON_OPTIONS} -DPCB=9XR128 ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${COMMON_OPTIONS} -DPCB=9XR ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X ${SRCDIR}
