@@ -50,10 +50,9 @@ fi
 
 # Update stamps
 cp -f  $workdir/binaries/stamp-opentx.txt ${output}/firmware
-rm -f ${output}/companion/windows/companion-windows.stamp
-echo "#define VERSION  "'"2.2.0"' >> ${output}/companion/windows/companion-windows.stamp
-cp -f ${output}/companion/windows/companion-windows.stamp ${output}/companion/linux/companion-windows.stamp
-cp -f ${output}/companion/windows/companion-windows.stamp ${output}/companion/linux/companion-macosx.stamp
+echo "#define VERSION  "'"2.2.0"' > ${output}/companion/companion-windows.stamp
+cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-macosx.stamp
+
 
 # Clean binaries It will be hosting built on demand firmware
 rm -rf $workdir/binaries/*
