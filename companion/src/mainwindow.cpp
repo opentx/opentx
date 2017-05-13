@@ -294,13 +294,12 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
   if (version.isNull())
     return onUpdatesError();
 
-  int vnum = version2index(version);
+  int webVersion = version2index(version);
 
-  QString c9xversion = QString(VERSION);
-  int c9xver = version2index(c9xversion);
+  int ownVersion = version2index(VERSION);
 
-  if (c9xver < vnum) {
-#if defined WIN32 || !defined __GNUC__ || defined __APPLE__
+  if (ownVersion < webVersion) {
+#if defined WIN32 || defined __APPLE__
     int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
                                                         "Would you like to download it?").arg(version) ,
                                     QMessageBox::Yes | QMessageBox::No);
