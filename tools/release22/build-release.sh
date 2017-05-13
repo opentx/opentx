@@ -52,6 +52,7 @@ fi
 cp -f  $workdir/binaries/stamp-opentx.txt ${output}/firmware
 echo "#define VERSION  "'"2.2.0"' > ${output}/companion/companion-windows.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-macosx.stamp
+cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-linux.stamp
 
 
 # Clean binaries It will be hosting built on demand firmware

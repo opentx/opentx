@@ -33,6 +33,8 @@ else
   python3 -B ${workdir}/code/tools/release22/tts.py es csv files
   python3 -B ${workdir}/code/tools/release22/tts.py it csv files
   python3 -B ${workdir}/code/tools/release22/tts.py de csv files
+  python3 -B ${workdir}/code/tools/nightly22/tts.py cz csv files
+  python3 -B ${workdir}/code/tools/nightly22/tts.py pt csv files
 
   # Create sdcards.zips for supported platforms
   mv /tmp/SOUNDS ${workdir}/sdcard/horus/

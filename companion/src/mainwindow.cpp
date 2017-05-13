@@ -58,17 +58,16 @@
 
 #ifdef __APPLE__
   #define COMPANION_STAMP                 "companion-macosx.stamp"
-  #define COMPANION_INSTALLER             "companion-macosx-%1.dmg"
-#else
+  #define COMPANION_INSTALLER             ""  // no automatated updates for MacOsx
+#elif WIN32
   #define COMPANION_STAMP                 "companion-windows.stamp"
-  #define COMPANION_INSTALLER             "companion-windows-%1.exe"
+  #define COMPANION_INSTALLER             "windows/companion-windows-%1.exe"
+#else
+#define COMPANION_STAMP                   "companion-linux.stamp"
+#define COMPANION_INSTALLER               ""   // no automatated updates for linux
 #endif
 
-#ifdef WIN32
-  #define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/companion/windows"
-#else
-  #define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/companion/linux"
-#endif
+#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightlies/companion"
 
 MainWindow::MainWindow():
   downloadDialog_forWait(NULL),
