@@ -5,7 +5,7 @@ set -e
 branch=next
 docker=nightly22
 workdir=/home/opentx/nightly22
-output=/var/www/html/2.2/nightly
+output=/var/www/html/2.2/nightlies
 version=2.2.0
 
 # Incrementnightly index
