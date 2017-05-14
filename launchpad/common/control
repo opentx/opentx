@@ -16,6 +16,6 @@ Homepage: http://www.open-tx.org/
 
 Package: opentx-companion22
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, libqt5multimedia5-plugins
 Description: OpenTX Companion
  Models and settings editor for the OpenTX open source firmware
