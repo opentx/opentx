@@ -2,7 +2,7 @@
 
 set -e
 
-branch=master
+branch=2.2
 workdir=/home/opentx/release22
 output=/var/www/html/2.2
 
