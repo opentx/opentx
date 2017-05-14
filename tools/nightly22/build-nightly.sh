@@ -2,7 +2,7 @@
 
 set -e
 
-branch=next
+branch=2.2
 docker=nightly22
 workdir=/home/opentx/nightly22
 output=/var/www/html/2.2/nightlies
