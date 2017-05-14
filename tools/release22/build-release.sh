@@ -26,8 +26,9 @@ docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code &&
 docker exec companion rm -rf build
 if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb ]; then
   docker exec companion /opentx/code/tools/build-companion-release.sh /opentx/code /opentx/binaries/
+  docker exec companion sh -c "cp /build/radio/src/lua/*.txt /opentx/binaries"
   cp -f binaries/*.deb ${output}/companion/linux/companion22_${version}_amd64.deb
-  cp -f binaries/radio/src/lua/lua_fields_*.txt ${output}/firmware
+  cp -f binaries/lua_fields_*.txt ${output}/firmware
 fi
 docker stop companion
 docker rm companion
@@ -35,9 +36,9 @@ docker rm companion
 # Request companion compilation on Windows
 if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
   cd ${output}/companion/windows
-  wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch
+  wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=${branch}
   wget -O companion-windows-${version}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}.exe
-  chmod -f g+w companion-windows-${version.exe
+  chmod -f g+w companion-windows-${version}.exe
 fi
 
 # Request companion compilation on Mac OS X
