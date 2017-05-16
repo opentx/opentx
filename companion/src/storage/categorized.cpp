@@ -89,6 +89,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
         radioData.models.resize(modelIndex + 1);
       }
       if (!loadModelFromByteArray(radioData.models[modelIndex], modelBuffer)) {
+        setError(QObject::tr("Error loading models"));
         return false;
       }
       strncpy(radioData.models[modelIndex].filename, qPrintable(fileName), sizeof(radioData.models[modelIndex].filename));
