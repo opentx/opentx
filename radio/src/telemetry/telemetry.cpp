@@ -374,31 +374,6 @@ void telemetryReset()
   telemetryData.hub.current = 55;
   telemetryData.hub.maxCurrent = 65;
 #endif
-
-/*Add some default sensor values to the simulator*/
-#if defined(CPUARM) && defined(SIMU)
-  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
-    switch (sensor.id)
-    {
-      case RSSI_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 0, sensor.instance , 75, UNIT_RAW, 0);
-        break;
-      case ADC1_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC1_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
-        break;
-      case ADC2_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC2_ID, 0, sensor.instance, 245, UNIT_RAW, 0);
-        break;
-      case SWR_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, 0, sensor.instance, 30, UNIT_RAW, 0);
-        break;
-      case BATT_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, BATT_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
-        break;
-    }
-  }
-#endif
 }
 
 #if defined(CPUARM)
