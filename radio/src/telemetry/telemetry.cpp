@@ -320,19 +320,12 @@ void telemetryReset()
   telemetryData.hub.gpsFix = -1;
 #endif
 
-#if defined(SIMU)
-
-#if defined(CPUARM)
-  telemetryData.swr.value = 30;
-  telemetryData.rssi.value = 75;
-#else
+#if defined(SIMU) && !defined(CPUARM)
   telemetryData.rssi[0].value = 75;
   telemetryData.rssi[1].value = 75;
   telemetryData.analog[TELEM_ANA_A1].set(120, UNIT_VOLTS);
   telemetryData.analog[TELEM_ANA_A2].set(240, UNIT_VOLTS);
-#endif
 
-#if !defined(CPUARM)
   telemetryData.hub.fuelLevel = 75;
   telemetryData.hub.rpm = 12000;
   telemetryData.hub.vfas = 100;
@@ -380,32 +373,6 @@ void telemetryReset()
 
   telemetryData.hub.current = 55;
   telemetryData.hub.maxCurrent = 65;
-#endif
-#endif
-
-/*Add some default sensor values to the simulator*/
-#if defined(CPUARM) && defined(SIMU)
-  for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
-    const TelemetrySensor & sensor = g_model.telemetrySensors[i];
-    switch (sensor.id)
-    {
-      case RSSI_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, RSSI_ID, 0, sensor.instance , 75, UNIT_RAW, 0);
-        break;
-      case ADC1_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC1_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
-        break;
-      case ADC2_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, ADC2_ID, 0, sensor.instance, 245, UNIT_RAW, 0);
-        break;
-      case SWR_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, SWR_ID, 0, sensor.instance, 30, UNIT_RAW, 0);
-        break;
-      case BATT_ID:
-        setTelemetryValue(TELEM_PROTO_FRSKY_SPORT, BATT_ID, 0, sensor.instance, 100, UNIT_RAW, 0);
-        break;
-    }
-  }
 #endif
 }
 
