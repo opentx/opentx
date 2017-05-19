@@ -491,6 +491,8 @@ void TelemetrySensor::init(const char * label, uint8_t unit, uint8_t prec)
     prec = 1;
   }
   this->prec = prec;
+  // Log sensors by default
+  this->logs = true;
 }
 
 void TelemetrySensor::init(uint16_t id)
