@@ -1599,12 +1599,12 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="93"/>
         <source>Download firmware</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger firmware</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="107"/>
         <source>Download SD contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Télécharger carte SD</translation>
     </message>
     <message>
         <location filename="../fwpreferencesdialog.ui" line="121"/>
@@ -5580,7 +5580,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="43"/>
         <source>DEST -&gt; %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.cpp" line="90"/>
@@ -8985,7 +8985,7 @@ L&apos;équipe OpenTX.</translation>
     <message>
         <location filename="../storage/categorized.cpp" line="92"/>
         <source>Error loading models</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur chargement modèles</translation>
     </message>
     <message>
         <location filename="../storage/eepe.cpp" line="31"/>
