@@ -34,7 +34,6 @@
 #define sleep(x) Sleep(x*1000)
 #else
 #include <unistd.h>
-#include "mountlist.h"
 #endif
 
 FlashProcess::FlashProcess(const QString &cmd, const QStringList &args, ProgressWidget *progress):
@@ -240,7 +239,7 @@ void FlashProcess::onReadyReadStandardError()
 void FlashProcess::errorWizard()
 {
   QString output = progress->getText();
-  
+
   if (output.contains("avrdude: Expected signature for")) { // wrong signature
     int pos = output.indexOf("avrdude: Device signature = ");
     bool fwexist = false;

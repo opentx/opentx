@@ -25,14 +25,9 @@
 #include "radionotfound.h"
 #include "burnconfigdialog.h"
 #include "helpers.h"
-#include "mountlist.h"
 #include "process_copy.h"
 #include "storage.h"
 #include "progresswidget.h"
-
-#if defined WIN32 || !defined __GNUC__
-  #include <windows.h>
-#endif
 
 QString getRadioInterfaceCmd()
 {
@@ -401,7 +396,9 @@ bool writeEeprom(const QString & filename, ProgressWidget * progress)
   return false;
 }
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
 #if defined WIN32 || !defined __GNUC__
+#include <windows.h>
 bool isRemovableMedia(const QString & vol)
 {
   char szDosDeviceName[MAX_PATH];
@@ -415,61 +412,69 @@ bool isRemovableMedia(const QString & vol)
   }
   return true;
 }
-#endif
+#else
+  #include "mountlist.h"
+#endif  // defined WIN32 || !defined __GNUC__
+#endif  // (QT_VERSION < QT_VERSION_CHECK(5, 4, 0))
 
 QString findMassstoragePath(const QString & filename, bool onlyPath)
 {
   QString temppath;
-  QStringList drives;
   QString eepromfile;
-  QString fsname;
+  bool found = false;
+  QRegularExpression fstypeRe("^(v?fat|msdos)", QRegularExpression::CaseInsensitiveOption);  // Linux: "vfat"; macOS: "msdos"; Win: "FAT32"
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
+  foreach(const QStorageInfo & si, QStorageInfo::mountedVolumes()) {
+    //qDebug() << si.rootPath() << si.name() << si.device() << si.displayName() << si.fileSystemType() << si.isReady();
+    if (!si.isReady() || !QString(si.fileSystemType()).contains(fstypeRe))
+      continue;
+    temppath = si.rootPath();
+    eepromfile = temppath % "/" % filename;
+    qDebug() << "Searching for" << eepromfile;
+    if (QFile::exists(eepromfile)) {
+      found = true;
+      break;
+    }
+  }
+#elif defined WIN32 || !defined __GNUC__
   static QStringList blacklist;
-
-#if defined WIN32 || !defined __GNUC__
-  foreach(QFileInfo drive, QDir::drives()) {
+  foreach(const QFileInfo & drive, QDir::drives()) {
+    temppath = drive.absolutePath();
+    if (blacklist.contains(temppath))
+      continue;
+    if (!isRemovableMedia(temppath)) {
+      blacklist.append(temppath);
+      continue;
+    }
     WCHAR szVolumeName[256] ;
     WCHAR szFileSystemName[256];
     DWORD dwSerialNumber = 0;
     DWORD dwMaxFileNameLength=256;
     DWORD dwFileSystemFlags=0;
-    if (!blacklist.contains(drive.absolutePath())) {
-      if (!isRemovableMedia( drive.absolutePath() )) {
-        blacklist.append(drive.absolutePath());
-      } else {
-        bool ret = GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256);
-        if (ret) {
-          QString vName = QString::fromUtf16 ( (const ushort *) szVolumeName) ;
-          temppath = drive.absolutePath();
-          eepromfile = temppath;
-          eepromfile.append("/" + filename);
-          if (QFile::exists(eepromfile)) {
-            return onlyPath ? temppath : eepromfile;
-          }
-        }
-      }
+    if (!GetVolumeInformationW( (WCHAR *) drive.absolutePath().utf16(),szVolumeName,256,&dwSerialNumber,&dwMaxFileNameLength,&dwFileSystemFlags,szFileSystemName,256))
+      continue;
+    eepromfile = temppath % "/" % filename;
+    qDebug() << "Searching for" << eepromfile;
+    if (QFile::exists(eepromfile)) {
+      found = true;
+      break;
     }
   }
 #else
+  const static QStringList blacklist = QStringList() << "/" << "/net" << "/proc" << "/run";
+  QStringList drives;
   struct mount_entry *entry;
   struct mount_entry *firstEntry;
   firstEntry = entry = read_file_system_list(true);
   while (entry != NULL) {
-    if (!drives.contains(entry->me_devname)) {
+    temppath = entry->me_mountdir;
+    if (!drives.contains(entry->me_devname) && !blacklist.contains(temppath) && QString(entry->me_type).contains(fstypeRe)) {
       drives.append(entry->me_devname);
-      temppath = entry->me_mountdir;
-      eepromfile = temppath;
-      eepromfile.append("/" + filename);
+      eepromfile = temppath % "/" % filename;
       qDebug() << "Searching for" << eepromfile;
-#if !defined __APPLE__
-      QString fstype = entry->me_type;
-      // qDebug() << eepromfile;
-
-      if (fstype.contains("fat") && QFile::exists(eepromfile)) {
-#else
       if (QFile::exists(eepromfile)) {
-#endif
-        free_file_system_list(firstEntry);
-        return onlyPath ? temppath : eepromfile;
+        found = true;
+        break;
       }
     }
     entry = entry->me_next;
@@ -477,5 +482,8 @@ QString findMassstoragePath(const QString & filename, bool onlyPath)
   free_file_system_list(firstEntry);
 #endif
 
-  return QString();
+  if (found)
+    return onlyPath ? temppath : eepromfile;
+  else
+    return QString();
 }
