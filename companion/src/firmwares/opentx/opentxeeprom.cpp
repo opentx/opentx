@@ -1207,7 +1207,7 @@ class MixField: public TransformedField {
 
       if (mix.srcRaw.type != SOURCE_TYPE_NONE) {
         mix.destCh = _destCh + 1;
-        if (!IS_STM32(board) || version < 216) {
+        if (!IS_ARM(board) || (!IS_STM32(board) && version < 218) || version < 216) {
           if (!_curveMode)
             mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarToC9x(_curveParam));
           else if (_curveParam > 6)
@@ -1410,7 +1410,7 @@ class InputField: public TransformedField {
         expo.offset = smallGvarToC9x(_offset);
       }
 
-      if (!IS_STM32(board) || version < 216) {
+      if (!IS_ARM(board) || (!IS_STM32(board) && version < 218) || version < 216) {
         if (!_curveMode)
           expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarToC9x(_curveParam));
         else if (_curveParam > 6)
