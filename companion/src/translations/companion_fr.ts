@@ -4585,7 +4585,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="203"/>
         <source>Show this message again at next startup?</source>
-        <translation>Afficher ce message lors du prochain démarrage?</translation>
+        <translation>Afficher ce message lors du prochain démarrage ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="348"/>
