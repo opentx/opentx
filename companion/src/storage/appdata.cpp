@@ -557,9 +557,15 @@ void AppData::init()
 {
     qRegisterMetaTypeStreamOperators<SimulatorOptions>("SimulatorOptions");
 
+    firstUse = false;
+    upgradeFromVersion = "";
+
     QSettings settings(COMPANY, PRODUCT);
-    if (!settings.contains("settings_version"))
-      importSettings(settings);
+    if (!settings.contains("settings_version")) {
+      if (!importSettings(settings))
+        firstUse = true;
+    }
+    convertSettings(settings);
 
     // Initialize the profiles
     for (int i=0; i<MAX_PROFILES; i++)
@@ -649,23 +655,69 @@ QMap<int, QString> AppData::getActiveProfiles()
   return active;
 }
 
+void AppData::convertSettings(QSettings & settings)
+{
+  // convert old settings to new
+  if (settings.contains("useWizard")) {
+    if (!settings.contains("newModelAction")) {
+      newModelAction(settings.value("useWizard").toBool() ? 1 : 2);
+    }
+    settings.remove("useWizard");
+  }
+  if (settings.contains("warningId") && settings.value("warningId").toInt() == 7) {
+    // meaning of warningId changed during v2.2 development but value of "7" indicates old setting, removing it will restore defaults
+    settings.remove("warningId");
+  }
+}
+
 bool AppData::importSettings(QSettings & toSettings)
 {
   QSettings * fromSettings = NULL;
 
   QSettings settings21("OpenTX", "Companion 2.1");
-  QSettings settings20("OpenTX", "Companion 2.0");
-  QSettings settings16("OpenTX", "OpenTX Companion");
-  QSettings settings9x("companion9x", "companion9x");
-
-  if (settings21.contains("settings_version"))
+  if (settings21.contains("settings_version")) {
     fromSettings = &settings21;
-  else if (settings20.contains("settings_version"))
-    fromSettings = &settings20;
-  else if (settings16.contains("settings_version"))
-    fromSettings = &settings16;
-  else if (settings9x.contains("default_mode"))
-    fromSettings = &settings9x;
+    upgradeFromVersion = "2.1";
+  }
+  else {
+    settings21.clear();
+  }
+
+  if (!fromSettings) {
+    QSettings settings20("OpenTX", "Companion 2.0");
+    if (settings20.contains("settings_version")) {
+      fromSettings = &settings20;
+      upgradeFromVersion = "2.0";
+    }
+    else {
+      settings20.clear();
+    }
+  }
+
+  if (!fromSettings) {
+    QSettings settings16("OpenTX", "OpenTX Companion");
+    if (settings16.contains("settings_version")) {
+      fromSettings = &settings16;
+      upgradeFromVersion = "1.x";
+    }
+    else {
+      settings16.clear();
+    }
+  }
+
+  if (!fromSettings) {
+    QSettings settings9x("companion9x", "companion9x");
+    if (settings9x.contains("default_mode")) {
+      fromSettings = &settings9x;
+      upgradeFromVersion = "Companion9X";
+    }
+    else {
+      settings9x.clear();
+    }
+  }
+
+  if (!fromSettings)
+    return false;
 
   // do not copy these settings
   QStringList excludeKeys = QStringList() << "compilation-server";
@@ -677,16 +729,14 @@ bool AppData::importSettings(QSettings & toSettings)
 #endif
 
   // import settings
-  if (fromSettings) {
-    foreach (const QString & key, fromSettings->allKeys()) {
-      if (fromSettings->value(key).isValid() && !excludeKeys.contains(key)) {
-        toSettings.setValue(key, fromSettings->value(key));
-      }
+  foreach (const QString & key, fromSettings->allKeys()) {
+    if (fromSettings->value(key).isValid() && !excludeKeys.contains(key)) {
+      toSettings.setValue(key, fromSettings->value(key));
     }
   }
 
   // Additional adjustments for companion9x settings
-  if (fromSettings && fromSettings->applicationName() == "companion9x") {
+  if (fromSettings->applicationName() == "companion9x") {
     // Store old values in new locations
     autoCheckApp(toSettings.value("startup_check_companion9x", true).toBool());
     toSettings.setValue("useWizard", toSettings.value("wizardEnable", true));
@@ -726,20 +776,12 @@ bool AppData::importSettings(QSettings & toSettings)
     toSettings.remove("sdPath");
     toSettings.remove("SplashFileName");
     toSettings.remove("startup_check_companion9x");
+    toSettings.remove("warningId");
     toSettings.remove("wizardEnable");
 
     // Select the new default profile as current profile
     id( 0 );
   }
 
-  // convert old settings to new
-
-  if (toSettings.contains("useWizard")) {
-    if (!toSettings.contains("newModelAction")) {
-      newModelAction(toSettings.value("useWizard").toBool() ? 1 : 2);
-    }
-    toSettings.remove("useWizard");
-  }
-
-  return fromSettings ? true : false;
+  return true;
 }

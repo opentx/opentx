@@ -429,10 +429,15 @@ class AppData: protected CompStoreObj
     void init();
 
     QMap<int, QString> getActiveProfiles();
+    inline bool isFirstUse() const { return firstUse; }
+    inline QString previousVersion() const { return upgradeFromVersion; }
 
   protected:
+    void convertSettings(QSettings & settings);
     bool importSettings(QSettings & toSettings);
 
+    bool firstUse;
+    QString upgradeFromVersion;
 };
 
 extern AppData g;
