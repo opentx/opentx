@@ -26,7 +26,7 @@
   "<p>As the first step, please configure the initial Radio Profile by selecting your Radio Type, Menu Language, and Build Options.</p>" \
   "<p>You may also want to take this time to review the other available options in the displayed Settings dialog.</p>" \
   "<p>After saving your settings, we recommend you download the latest firmware for your radio by using the <i>File -&gt; Download</i> menu option.</p>" \
-  "<p>Please visit <a href='http://www.open-tx.org'>open-tx.org</a> for latest news, updates and documentation. Thank you for choosing OpenTx!</p>" \
+  "<p>Please visit <a href='http://www.open-tx.org'>open-tx.org</a> for latest news, updates and documentation. Thank you for choosing OpenTX!</p>" \
   "- The OpenTX Team.")
 
 #define CPN_STR_MSG_UPGRADED  QCoreApplication::translate("Companion", \
