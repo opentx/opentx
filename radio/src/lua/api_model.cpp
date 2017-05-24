@@ -850,13 +850,13 @@ static int luaModelGetCurve(lua_State *L)
 }
 
 /*luadoc
-@function model.setCurve(curve)
+@function model.setCurve(curve, params)
 
 Set Curve parameters
 
 @param curve (unsigned number) curve number (use 0 for Curve1)
 
-@param value see model.getCurve for table format
+@param params see model.getCurve return format for table format
 
 @retval  0 - Everything okay
          1 - Wrong number of points
