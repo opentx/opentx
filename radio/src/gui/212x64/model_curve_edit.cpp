@@ -91,11 +91,12 @@ void menuModelCurveOne(event_t event)
       for (int i = 1; i < 4 + crv.points; i++) {
         points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5 + crv.points, i)), s_curveChan));
       }
-      moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3 + crv.points : -3 - crv.points);
-      if (newType == CURVE_TYPE_CUSTOM) {
-        resetCustomCurveX(points, 5 + crv.points);
+      if (moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3 + crv.points : -3 - crv.points)) {
+        if (newType == CURVE_TYPE_CUSTOM) {
+          resetCustomCurveX(points, 5 + crv.points);
+        }
+        crv.type = newType;
       }
-      crv.type = newType;
     }
   }
 
@@ -109,16 +110,17 @@ void menuModelCurveOne(event_t event)
     if (checkIncDec_Ret) {
       int8_t newPoints[MAX_POINTS_PER_CURVE];
       newPoints[0] = points[0];
-      newPoints[4+count] = points[4+crv.points];
-      for (int i=1; i<4+count; i++)
-        newPoints[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5+count, i)), s_curveChan));
-      moveCurve(s_curveChan, checkIncDec_Ret*(crv.type==CURVE_TYPE_CUSTOM?2:1));
-      for (int i=0; i<5+count; i++) {
-        points[i] = newPoints[i];
-        if (crv.type == CURVE_TYPE_CUSTOM && i!=0 && i!=4+count)
-          points[5+count+i-1] = getCurveX(5+count, i);
+      newPoints[4 + count] = points[4 + crv.points];
+      for (int i = 1; i < 4 + count; i++)
+        newPoints[i] = calcRESXto100(applyCustomCurve(calc100toRESX(getCurveX(5 + count, i)), s_curveChan));
+      if (moveCurve(s_curveChan, checkIncDec_Ret * (crv.type == CURVE_TYPE_CUSTOM ? 2 : 1))) {
+        for (int i = 0; i < 5 + count; i++) {
+          points[i] = newPoints[i];
+          if (crv.type == CURVE_TYPE_CUSTOM && i != 0 && i != 4 + count)
+            points[5 + count + i - 1] = getCurveX(5 + count, i);
+        }
+        crv.points = count;
       }
-      crv.points = count;
     }
   }
 
