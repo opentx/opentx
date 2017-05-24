@@ -858,6 +858,8 @@ Set Curve parameters
 
 @param params see model.getCurve return format for table format
 
+The first and last x value must 0 and 100 and x values must be monotonically increasing
+
 @retval  0 - Everything okay
          1 - Wrong number of points
          2 - Invalid Curve number
@@ -871,7 +873,30 @@ Set Curve parameters
 
 @status current Introduced in 2.2.1
 
- The first and last x value must 0 and 100 and x values must be monotonically increasing
+Example setting a 4 point custom curve:
+```lua
+ local function setCurves()
+  xpoints = {}
+  xpoints[0] = 0
+  xpoints[1] = 34
+  xpoints[2] = 77
+  xpoints[4] = 100
+
+  ypoints = {}
+  ypoints[0] = -70
+  ypoints[1] = 20
+  ypoints[2] = -89
+  ypoints[3] = -100
+
+  params = {}
+  params["x"] = xpoints
+  params["y"] = ypoints
+  params["points"] = 4
+  params["smooth"] = 1
+  params["type"] = 1
+  val =  model.setCurve(2, params)
+ ```
+
 */
 static int luaModelSetCurve(lua_State *L)
 {
