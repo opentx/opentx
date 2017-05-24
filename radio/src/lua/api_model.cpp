@@ -858,7 +858,8 @@ Set Curve parameters
 
 @param value see model.getCurve for table format
 
-@retval  1 - Wrong number of points
+@retval  0 - Everything okay
+         1 - Wrong number of points
          2 - Invalid Curve number
          3 - Cuve does not fit anymore
          4 - point of out of index
@@ -876,8 +877,8 @@ static int luaModelSetCurve(lua_State *L)
     lua_pushinteger(L, 2);
     return 1;
   }
-  uint8_t xPoints[17];
-  uint8_t yPoints[17];
+  int8_t xPoints[17];
+  int8_t yPoints[17];
 
   CurveData &destCurveData = g_model.curves[curveIdx];
   CurveData newCurveData;
@@ -923,9 +924,9 @@ static int luaModelSetCurve(lua_State *L)
     return 1;
   }
 
-  if (newCurveData.type == CURVE_TYPE_STANDARD) {
+  if (newCurveData.type == CURVE_TYPE_CUSTOM) {
     // Check first and last point
-    if (xPoints[0] != 0 || xPoints[newCurveData.points + 5] != 100) {
+    if (xPoints[0] != 0 || xPoints[newCurveData.points + 4] != 100) {
       lua_pushinteger(L, 5);
       return 1;
     }
@@ -955,11 +956,12 @@ static int luaModelSetCurve(lua_State *L)
   else
     newCurveMemSize = 8 + 2 * newCurveData.points;
 
-  int shift = newCurveMemSize + oldCurveMemSize;
+  int shift = newCurveMemSize - oldCurveMemSize;
 
-  // Also check if new curve size would fit
+  // Also checks if new curve size would fit
   if (!moveCurve(curveIdx, shift)) {
     lua_pushinteger(L, 3);
+    TRACE("curve shift is  %d", shift);
     return 1;
   }
 
@@ -978,7 +980,8 @@ static int luaModelSetCurve(lua_State *L)
   }
   storageDirty(EE_MODEL);
 
-  return 0;
+  lua_pushinteger(L, 0);
+  return 1;
 }
 
 /*luadoc
