@@ -43,7 +43,7 @@ void loadCurves()
         break;
     }
     // Older version did not check if we exceeded the array
-    int8_t * maxend = g_model.points[MAX_CURVE_POINTS- (2*(MAX_CURVES-i-1)];
+    int8_t * maxend = &g_model.points[MAX_CURVE_POINTS - 2*(MAX_CURVES-i-1)];
     if (tmp > maxend) {
       tmp = maxend;
       g_model.curves[i].type=CURVE_TYPE_STANDARD;
@@ -65,7 +65,7 @@ int8_t * curveAddress(uint8_t idx)
   return idx==0 ? g_model.points : curveEnd[idx-1];
 }
 
-bool moveCurve(uint8_t index, int8_t shift) // TODO bool?
+bool moveCurve(uint8_t index, int8_t shift)
 {
   if (curveEnd[MAX_CURVES-1] + shift > g_model.points + sizeof(g_model.points)) {
     AUDIO_WARNING2();
