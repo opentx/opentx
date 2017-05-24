@@ -850,6 +850,138 @@ static int luaModelGetCurve(lua_State *L)
 }
 
 /*luadoc
+@function model.setCurve(curve)
+
+Set Curve parameters
+
+@param curve (unsigned number) curve number (use 0 for Curve1)
+
+@param value see model.getCurve for table format
+
+@retval  1 - Wrong number of points
+         2 - Invalid Curve number
+         3 - Cuve does not fit anymore
+         4 - point of out of index
+         5 - x value not monotonically increasing
+
+@status current Introduced in 2.2.1
+
+ The first and last x value must 0 and 100 and x values must be monotonically increasing
+*/
+static int luaModelSetCurve(lua_State *L)
+{
+  unsigned int curveIdx = luaL_checkunsigned(L, 1);
+
+  if (curveIdx >= MAX_CURVES) {
+    lua_pushinteger(L, 2);
+    return 1;
+  }
+  uint8_t xPoints[17];
+  uint8_t yPoints[17];
+
+  CurveData &destCurveData = g_model.curves[curveIdx];
+  CurveData newCurveData;
+  memclear(&newCurveData, sizeof(CurveData));
+
+  luaL_checktype(L, -1, LUA_TTABLE);
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    luaL_checktype(L, -2, LUA_TSTRING); // key is string
+    const char *key = luaL_checkstring(L, -2);
+    if (!strcmp(key, "name")) {
+      const char *name = luaL_checkstring(L, -1);
+      str2zchar(newCurveData.name, name, sizeof(newCurveData.name));
+    }
+    else if (!strcmp(key, "type")) {
+      newCurveData.type = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "smooth")) {
+      newCurveData.smooth = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "points")) {
+      newCurveData.points = luaL_checkinteger(L, -1) - 5;
+    }
+    else if (!strcmp(key, "x") || !strcmp(key, "y")) {
+      luaL_checktype(L, -1, LUA_TTABLE);
+      bool isX = !strcmp(key, "x");
+
+      for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+        int idx = luaL_checkinteger(L, -2);
+        if (idx < 0 || idx > MAX_POINTS_PER_CURVE) {
+          lua_pushinteger(L, 4);
+          return 1;
+        }
+        if (isX)
+          xPoints[idx] = luaL_checkinteger(L, -1);
+        else
+          yPoints[idx] = luaL_checkinteger(L, -1);
+      }
+    }
+  }
+
+  if (newCurveData.points + 5 < MIN_POINTS_PER_CURVE || newCurveData.points + 5 > MAX_POINTS_PER_CURVE) {
+    lua_pushinteger(L, 1);
+    return 1;
+  }
+
+  if (newCurveData.type == CURVE_TYPE_STANDARD) {
+    // Check first and last point
+    if (xPoints[0] != 0 || xPoints[newCurveData.points + 5] != 100) {
+      lua_pushinteger(L, 5);
+      return 1;
+    }
+
+    // Check that x values are increasing
+    for (int i = 1; i < newCurveData.points + 5; i++) {
+      if (xPoints[i - 1] > xPoints[i]) {
+        lua_pushinteger(L, 5);
+        return 1;
+      }
+    }
+  }
+
+  // Calculate size of curve we replace
+  int oldCurveMemSize;
+  if (destCurveData.type == CURVE_TYPE_STANDARD) {
+    oldCurveMemSize = 5 + destCurveData.points;
+  }
+  else {
+    oldCurveMemSize = 8 + 2 * destCurveData.points;
+  }
+
+  // Calculate own size
+  int newCurveMemSize;
+  if (newCurveData.type == CURVE_TYPE_STANDARD)
+    newCurveMemSize = 5 + newCurveData.points;
+  else
+    newCurveMemSize = 8 + 2 * newCurveData.points;
+
+  int shift = newCurveMemSize + oldCurveMemSize;
+
+  // Also check if new curve size would fit
+  if (!moveCurve(curveIdx, shift)) {
+    lua_pushinteger(L, 3);
+    return 1;
+  }
+
+  // Curve fits into mem, fill new curve
+  destCurveData = newCurveData;
+
+  int8_t *point = curveAddress(curveIdx);
+  for (int i = 0; i < destCurveData.points + 5; i++) {
+    *point++ = yPoints[i];
+  }
+
+  if (destCurveData.type == CURVE_TYPE_CUSTOM) {
+    for (int i = 1; i < destCurveData.points + 4; i++) {
+      *point++ = yPoints[i];
+    }
+  }
+  storageDirty(EE_MODEL);
+
+  return 0;
+}
+
+/*luadoc
 @function model.getCustomFunction(function)
 
 Get Custom Function parameters
@@ -1132,6 +1264,7 @@ const luaL_Reg modelLib[] = {
   { "getCustomFunction", luaModelGetCustomFunction },
   { "setCustomFunction", luaModelSetCustomFunction },
   { "getCurve", luaModelGetCurve },
+  { "setCurve", luaModelSetCurve },
   { "getOutput", luaModelGetOutput },
   { "setOutput", luaModelSetOutput },
   { "getGlobalVariable", luaModelGetGlobalVariable },

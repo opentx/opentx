@@ -168,7 +168,7 @@ enum CurveType {
   #define LEN_INPUT_NAME               3
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            6
-  #define MAX_CURVES                   16
+  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
   #define MAX_CURVE_POINTS             512
 #elif defined(PCBTARANIS)
   #define LEN_MODEL_NAME               12
