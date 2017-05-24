@@ -805,6 +805,9 @@ Get Curve parameters
    * `key` is point number (zero based)
    * `value` is x value
 
+ Note that functions returns the tables starting with index contrary to LUA's
+ usual index starting with 1
+
 @status current Introduced in 2.0.12
 */
 static int luaModelGetCurve(lua_State *L)
@@ -856,7 +859,8 @@ Set Curve parameters
 
 @param curve (unsigned number) curve number (use 0 for Curve1)
 
-@param params see model.getCurve return format for table format
+@param params see model.getCurve return format for table format. setCurve uses standard
+ lua array indexing and array start at index 1
 
 The first and last x value must 0 and 100 and x values must be monotonically increasing
 
@@ -869,29 +873,14 @@ The first and last x value must 0 and 100 and x values must be monotonically inc
          6 - y value not in range [-100;100]
          7 - extra values for y are set
          8 - extra values for x are set
-         9 - missing y values
 
 @status current Introduced in 2.2.1
 
 Example setting a 4 point custom curve:
 ```lua
- local function setCurves()
-  xpoints = {}
-  xpoints[0] = 0
-  xpoints[1] = 34
-  xpoints[2] = 77
-  xpoints[4] = 100
-
-  ypoints = {}
-  ypoints[0] = -70
-  ypoints[1] = 20
-  ypoints[2] = -89
-  ypoints[3] = -100
-
   params = {}
-  params["x"] = xpoints
-  params["y"] = ypoints
-  params["points"] = 4
+  params["x"] =  {0, 34, 77, 100}
+  params["y"] = {-70, 20, -89, -100}
   params["smooth"] = 1
   params["type"] = 1
   val =  model.setCurve(2, params)
@@ -932,11 +921,8 @@ static int luaModelSetCurve(lua_State *L)
     else if (!strcmp(key, "smooth")) {
       newCurveData.smooth = luaL_checkinteger(L, -1);
     }
-    else if (!strcmp(key, "points")) {
-      newCurveData.points = luaL_checkinteger(L, -1) - 5;
-    }
     else if (!strcmp(key, "x") || !strcmp(key, "y")) {
-      luaL_checktype(L, -1, LUA_TTABLE);
+      luaL_checktype(L, -1, LUA_TTABLE)-1;
       bool isX = !strcmp(key, "x");
 
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -957,8 +943,14 @@ static int luaModelSetCurve(lua_State *L)
       }
     }
   }
+  // Check how many points are set
+  uint8_t numPoints != -127;
+  do {
+    numPoints++;
+  } while (yPoints[numPoints] && numPoints < MAX_POINTS_PER_CURVE);
+  newCurveData.points = numPoints - 5;
 
-  if (newCurveData.points + 5 < MIN_POINTS_PER_CURVE || newCurveData.points + 5 > MAX_POINTS_PER_CURVE) {
+  if (numPoints < MIN_POINTS_PER_CURVE || numPoints > MAX_POINTS_PER_CURVE) {
     lua_pushinteger(L, 1);
     return 1;
   }
@@ -966,7 +958,7 @@ static int luaModelSetCurve(lua_State *L)
   if (newCurveData.type == CURVE_TYPE_CUSTOM) {
 
     // The rest of the points are checked by the monotic condition
-    for (unsigned int i=newCurveData.points + 5; i < sizeof(xPoints);i++)
+    for (unsigned int i=numPoints; i < sizeof(xPoints);i++)
     {
       if (xPoints[i] != -127)
       {
@@ -982,7 +974,7 @@ static int luaModelSetCurve(lua_State *L)
     }
 
     // Check that x values are increasing
-    for (int i = 1; i < newCurveData.points + 5; i++) {
+    for (int i = 1; i < numPoints; i++) {
       if (xPoints[i - 1] > xPoints[i]) {
         lua_pushinteger(L, 5);
         return 1;
@@ -999,16 +991,6 @@ static int luaModelSetCurve(lua_State *L)
       return 1;
     }
   }
-  // Check that ypoints have the right number of points set
-  for (unsigned int i= 5 + newCurveData.points; i <  sizeof(yPoints);i++)
-  {
-    if (yPoints[i] != -127)
-    {
-      lua_pushinteger(L, 9);
-      return 1;
-    }
-  }
-
 
   // Calculate size of curve we replace
   int oldCurveMemSize;
