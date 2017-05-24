@@ -864,6 +864,10 @@ Set Curve parameters
          3 - Cuve does not fit anymore
          4 - point of out of index
          5 - x value not monotonically increasing
+         6 - y value not in range [-100;100]
+         7 - extra values for y are set
+         8 - extra values for x are set
+         9 - missing y values
 
 @status current Introduced in 2.2.1
 
@@ -877,8 +881,13 @@ static int luaModelSetCurve(lua_State *L)
     lua_pushinteger(L, 2);
     return 1;
   }
-  int8_t xPoints[17];
-  int8_t yPoints[17];
+  int8_t xPoints[MAX_POINTS_PER_CURVE];
+  int8_t yPoints[MAX_POINTS_PER_CURVE];
+
+  // Init to invalid values
+  memset(xPoints, -127, sizeof(xPoints));
+  memset(yPoints, -127, sizeof(yPoints));
+
 
   CurveData &destCurveData = g_model.curves[curveIdx];
   CurveData newCurveData;
@@ -911,10 +920,15 @@ static int luaModelSetCurve(lua_State *L)
           lua_pushinteger(L, 4);
           return 1;
         }
+        int8_t val = luaL_checkinteger(L, -1);
+        if (val < -100 || val > 100) {
+          lua_pushinteger(L, 6);
+          return 1;
+        }
         if (isX)
-          xPoints[idx] = luaL_checkinteger(L, -1);
+          xPoints[idx] = val;
         else
-          yPoints[idx] = luaL_checkinteger(L, -1);
+          yPoints[idx] = val;
       }
     }
   }
@@ -925,6 +939,17 @@ static int luaModelSetCurve(lua_State *L)
   }
 
   if (newCurveData.type == CURVE_TYPE_CUSTOM) {
+
+    // The rest of the points are checked by the monotic condition
+    for (int i=newCurveData.points + 5; i < sizeof(xPoints);i++)
+    {
+      if (xPoints[i] != -127)
+      {
+        lua_pushinteger(L, 8);
+        return 1;
+      }
+    }
+
     // Check first and last point
     if (xPoints[0] != 0 || xPoints[newCurveData.points + 4] != 100) {
       lua_pushinteger(L, 5);
@@ -939,6 +964,26 @@ static int luaModelSetCurve(lua_State *L)
       }
     }
   }
+
+  // Check that ypoints have the right number of points set
+  for (int i=0; i <  5 + newCurveData.points;i++)
+  {
+    if (yPoints[i] == -127)
+    {
+      lua_pushinteger(L, 7);
+      return 1;
+    }
+  }
+  // Check that ypoints have the right number of points set
+  for (int i= 5 + newCurveData.points; i <  sizeof(yPoints);i++)
+  {
+    if (yPoints[i] != -127)
+    {
+      lua_pushinteger(L, 9);
+      return 1;
+    }
+  }
+
 
   // Calculate size of curve we replace
   int oldCurveMemSize;
