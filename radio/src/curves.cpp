@@ -26,6 +26,7 @@ uint8_t s_curveChan;
 int8_t * curveEnd[MAX_CURVES];
 void loadCurves()
 {
+  bool showWarning= false;
   int8_t * tmp = g_model.points;
   for (int i=0; i<MAX_CURVES; i++) {
     switch (g_model.curves[i].type) {
@@ -41,7 +42,21 @@ void loadCurves()
         tmp += 5+g_model.curves[i].points;
         break;
     }
+    // Older version did not check if we exceeded the array
+    int8_t * maxend = g_model.points[MAX_CURVE_POINTS- (2*(MAX_CURVES-i-1)];
+    if (tmp > maxend) {
+      tmp = maxend;
+      g_model.curves[i].type=CURVE_TYPE_STANDARD;
+      g_model.curves[i].points=-3;
+      showWarning=true;
+    }
     curveEnd[i] = tmp;
+
+  }
+  if (showWarning) {
+    POPUP_WARNING("Invalid curve data repaired");
+    const char * w = "check your curves, logic switches";
+    SET_WARNING_INFO(w, strlen(w), 0);
   }
 }
 
