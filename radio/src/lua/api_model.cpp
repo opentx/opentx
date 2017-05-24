@@ -966,7 +966,7 @@ static int luaModelSetCurve(lua_State *L)
   if (newCurveData.type == CURVE_TYPE_CUSTOM) {
 
     // The rest of the points are checked by the monotic condition
-    for (int i=newCurveData.points + 5; i < sizeof(xPoints);i++)
+    for (unsigned int i=newCurveData.points + 5; i < sizeof(xPoints);i++)
     {
       if (xPoints[i] != -127)
       {
@@ -1000,7 +1000,7 @@ static int luaModelSetCurve(lua_State *L)
     }
   }
   // Check that ypoints have the right number of points set
-  for (int i= 5 + newCurveData.points; i <  sizeof(yPoints);i++)
+  for (unsigned int i= 5 + newCurveData.points; i <  sizeof(yPoints);i++)
   {
     if (yPoints[i] != -127)
     {
