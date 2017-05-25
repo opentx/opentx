@@ -1219,3 +1219,5 @@ Marco Giuseppe Colturi
 Martin van Estrik
 Vakhrushev Andrey
 Jörgen Norman
+Chen Zhongzhong
+Eddie Ehlin
