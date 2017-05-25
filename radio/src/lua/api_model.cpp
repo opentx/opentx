@@ -926,11 +926,11 @@ static int luaModelSetCurve(lua_State *L)
       newCurveData.smooth = luaL_checkinteger(L, -1);
     }
     else if (!strcmp(key, "x") || !strcmp(key, "y")) {
-      luaL_checktype(L, -1, LUA_TTABLE)-1;
+      luaL_checktype(L, -1, LUA_TTABLE);
       bool isX = !strcmp(key, "x");
 
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        int idx = luaL_checkinteger(L, -2);
+        int idx = luaL_checkinteger(L, -2)-1;
         if (idx < 0 || idx > MAX_POINTS_PER_CURVE) {
           lua_pushinteger(L, 4);
           return 1;
@@ -948,10 +948,10 @@ static int luaModelSetCurve(lua_State *L)
     }
   }
   // Check how many points are set
-  uint8_t numPoints != -127;
+  uint8_t numPoints=0;
   do {
     numPoints++;
-  } while (yPoints[numPoints] && numPoints < MAX_POINTS_PER_CURVE);
+  } while (yPoints[numPoints]!=-127 && numPoints < MAX_POINTS_PER_CURVE);
   newCurveData.points = numPoints - 5;
 
   if (numPoints < MIN_POINTS_PER_CURVE || numPoints > MAX_POINTS_PER_CURVE) {
