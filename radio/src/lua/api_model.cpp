@@ -887,7 +887,7 @@ Example setting a 4-point custom curve:
  ```
 setting a 6-point standard smoothed curve
  ```lua
- val = model.setCurve(3, {["smooth"]=1, "y"={-100, -50, 0, 50, 100, 110}})
+ val = model.setCurve(3, {smooth=1, y={-100, -50, 0, 50, 100, 80}})
  ```
 
 */
