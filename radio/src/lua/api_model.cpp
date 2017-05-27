@@ -805,7 +805,7 @@ Get Curve parameters
    * `key` is point number (zero based)
    * `value` is x value
 
- Note that functions returns the tables starting with index contrary to LUA's
+ Note that functions returns the tables starting with index 0 contrary to LUA's
  usual index starting with 1
 
 @status current Introduced in 2.0.12
