@@ -8,7 +8,6 @@ Romolo Manfredini (romoloman)
 Martin Hotař (mhotar)
 Maxim (Max) Paperno (mpaperno)
 Arne Schwabe (schwabe)
-3djc
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
