@@ -367,7 +367,7 @@ PACK(struct FlightModeData {
 PACK(struct CurveData {
   uint8_t type:1;
   uint8_t smooth:1;
-  int8_t  points:6; // TODO conversion (?!)  (describes number of points - 5)
+  int8_t  points:6;   // describes number of points - 5
   NOBACKUP(char name[LEN_CURVE_NAME]);
 });
 #else

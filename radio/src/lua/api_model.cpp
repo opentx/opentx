@@ -874,7 +874,7 @@ The first and last x value must 0 and 100 and x values must be monotonically inc
          7 - extra values for y are set
          8 - extra values for x are set
 
-@status current Introduced in 2.2.1
+@status current Introduced in 2.2.0
 
 Example setting a 4-point custom curve:
 ```lua
