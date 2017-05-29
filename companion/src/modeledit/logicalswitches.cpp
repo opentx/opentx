@@ -48,7 +48,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     // The label
     QLabel * label = new QLabel(this);
     label->setProperty("index", i);
-    label->setText(tr("L%1").arg(i+1));
+    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, i+1).toString());
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
