@@ -682,7 +682,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         }
 
       case SWITCH_TYPE_VIRTUAL:
-        return QObject::tr("LS%1").arg(index, 2, 10, QChar('0'));
+        return QObject::tr("L%1").arg(index, 2, 10, QChar('0'));
 
       case SWITCH_TYPE_MULTIPOS_POT:
         if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))
