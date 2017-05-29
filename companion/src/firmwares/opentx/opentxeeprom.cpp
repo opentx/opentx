@@ -884,7 +884,7 @@ class FlightModeField: public TransformedField {
     virtual void beforeExport()
     {
       for (int i=0; i<CPN_MAX_STICKS+MAX_AUX_TRIMS(board); i++) {
-        if (IS_HORUS_OR_TARANIS(board) && version >= 216) {
+        if ((IS_HORUS_OR_TARANIS(board) && version >= 216) || (IS_ARM(board) && version >= 218)) {
           if (phase.trimMode[i] < 0)
             trimMode[i] = TRIM_MODE_NONE;
           else
@@ -912,7 +912,7 @@ class FlightModeField: public TransformedField {
     virtual void afterImport()
     {
       for (int i=0; i<CPN_MAX_STICKS+MAX_AUX_TRIMS(board); i++) {
-        if (IS_HORUS_OR_TARANIS(board) && version >= 216) {
+        if ((IS_HORUS_OR_TARANIS(board) && version >= 216) || (IS_ARM(board) && version >= 218)) {
           if (trimMode[i] == TRIM_MODE_NONE) {
             phase.trimMode[i] = -1;
           }
