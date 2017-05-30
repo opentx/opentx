@@ -2,28 +2,6 @@
 
 Major release! Please see <a href=http://www.open-tx.org/2017/05/30/opentx-2.2.0>this page</a> for details.
 
-[All]
-<ul>
-<li>Special Function RESET now executes only once on the switch change (<a href=https://github.com/opentx/opentx/issues/3858>#3858</a>)</li>
-</ul>
-
-[Taranis]
-<ul>
-<li>Fixed: Radio was reset 20s after USB connection in MASSSTORAGE mode (<a href=https://github.com/opentx/opentx/issues/3840>#3840</a>)</li>
-<li>Added detailed failure messages to the TX module firmware update function</li>
-</ul>
-
-[9XR-PRO]
-<ul>
-<li>DSM protocol fixed (<a href=https://github.com/opentx/opentx/issues/3628>#3628</a>)</li>
-</ul>
-
-[Lua]
-<ul>
-<li>Number conversion from floating point to integer now gives the same result on the radio and Companion simulator (<a href=https://github.com/opentx/opentx/issues/3826>#3826</a>)</li>
-</ul>
-
-
 <h2>Version 2.1.9 / 2016-09-14</h2>
 
 [All]
