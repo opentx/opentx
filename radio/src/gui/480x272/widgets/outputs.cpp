@@ -23,6 +23,7 @@
 #define RECT_BORDER                    1
 #define RECT_WIDTH                     (w - RECT_BORDER * 2)
 #define ROW_HEIGHT                     17
+#define EXT_LIMIT_SCALE                (g_model.extendedLimits ? (100+LIMIT_EXT_PERCENT) : 200)
 
 class OutputsWidget: public Widget
 {
@@ -48,12 +49,12 @@ class OutputsWidget: public Widget
           lcdDrawSolidFilledRect(x + RECT_BORDER, y + RECT_BORDER + (curChan - firstChan) * row_height, RECT_WIDTH , row_height - RECT_BORDER, CUSTOM_COLOR);
         }
         if (chanVal > 0) {
-          lcdDrawSolidFilledRect(x + RECT_BORDER + RECT_WIDTH / 2,  y + RECT_BORDER + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, 200), row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
+          lcdDrawSolidFilledRect(x + RECT_BORDER + RECT_WIDTH / 2,  y + RECT_BORDER + (curChan -firstChan) * row_height, divRoundClosest(RECT_WIDTH * chanVal, EXT_LIMIT_SCALE), row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         }
         else if (chanVal < 0) {
           uint16_t startpoint = x + RECT_BORDER;
           uint16_t endpoint = startpoint + RECT_WIDTH / 2;
-          uint16_t size = divRoundClosest(- RECT_WIDTH * chanVal, 200);
+          uint16_t size = divRoundClosest(- RECT_WIDTH * chanVal, EXT_LIMIT_SCALE);
           lcdDrawSolidFilledRect(endpoint - size,  y + RECT_BORDER + (curChan - firstChan) * row_height, size, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
         }
         lcd->drawSolidVerticalLine(x + RECT_BORDER + RECT_WIDTH / 2, y + RECT_BORDER + (curChan - firstChan) * row_height, row_height - RECT_BORDER, MAINVIEW_GRAPHICS_COLOR);
@@ -63,7 +64,7 @@ class OutputsWidget: public Widget
           strAppendSigned(chanString, curChan, 2);
           lcdDrawText(x + 2, y + (curChan - firstChan) * row_height + 1, chanString, SMLSIZE | TEXT_COLOR | LEFT);
           lcdDrawSizedText(x + 25, y + (curChan - firstChan) * row_height + 1, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), SMLSIZE | TEXT_COLOR | LEFT | ZCHAR);
-      } 
+      }
         else {
           strAppend(chanString, "CH");
           strAppendSigned(&chanString[2], curChan, 2);
