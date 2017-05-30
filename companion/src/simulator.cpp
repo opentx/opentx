@@ -19,6 +19,7 @@
  */
 
 #include <QApplication>
+#include <QDateTime>
 #include <QCommandLineParser>
 #include <QMessageBox>
 #include <QString>

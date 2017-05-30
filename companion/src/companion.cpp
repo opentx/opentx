@@ -19,6 +19,7 @@
  */
 
 #include <QApplication>
+#include <QDateTime>
 #include <QDir>
 #include <QFile>
 #include <QSplashScreen>
