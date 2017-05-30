@@ -294,7 +294,8 @@ char * getSwitchString(char * dest, swsrc_t idx)
 #endif
 
   else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
-    strAppendUnsigned(strAppend(s, "L"), abs(idx-SWSRC_FIRST_LOGICAL_SWITCH+1), 2);
+    *s++ = 'L';
+    strAppendUnsigned(s, idx-SWSRC_FIRST_LOGICAL_SWITCH+1, 2);
   }
   else if (idx <= SWSRC_ONE) {
     getStringAtIndex(s, STR_VSWITCHES, IDX_ON_IN_STR_VSWITCHES + idx - SWSRC_ON);
