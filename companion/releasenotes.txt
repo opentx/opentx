@@ -1,5 +1,74 @@
+<h2>Version 2.2.0 / 2017-05-30</h2>
+
+Major release! Please see <a href=http://www.open-tx.org/2017/05/30/opentx-2.2.0>this page</a> for details.
+
+<h2>Version 2.1.9 / 2016-09-14</h2>
+
+<ul>
+<li>SD sync fixes (<a href=https://github.com/opentx/opentx/issues/3351>#3351</a>)</li>
+<li>Fixed: Telemetry mode "FrSky D (cable)" choice was missing for Taranis (<a href=https://github.com/opentx/opentx/issues/3372>#3372</a>)</li>
+<li>Show persistent option only for calculated sensors (<a href=https://github.com/opentx/opentx/issues/3454>#3454</a>)</li>
+<li>Fixed Flight mode clear command (<a href=https://github.com/opentx/opentx/issues/3214>#3214</a>)</li>
+<li>Fixed a problem with Rotary encoders linked to flight mode (could freeze Companion) (<a href=https://github.com/opentx/opentx/issues/3459>#3459</a>, <a href=https://github.com/opentx/opentx/issues/3470>#3470</a>)</li>
+<li>Telemetry simulator improvements: added fuel quantity sensor, increased RPM range (<a href=https://github.com/opentx/opentx/issues/3505>#3505</a>, <a href=https://github.com/opentx/opentx/issues/3506>#3506</a>)</li>
+<li>Implemented minimal support for the DYI Multimodule (<a href=https://github.com/opentx/opentx/issues/3526>#3526</a>)</li>
+<li>Fixed: GVar combo-box not being refreshed when GV check-box (re-)selected (<a href=https://github.com/opentx/opentx/issues/3518>#3518</a>)</li>
+<li>Fixed: Heli inversion not correctly shown/saved from Companion on Radios without virtual inputs (<a href=https://github.com/opentx/opentx/issues/3510>#3510</a>)</li>
+<li>Implemented print functions for the Heli setup screen (<a href=https://github.com/opentx/opentx/issues/3554>#3554</a>)</li>
+<li>Fixed: Flight modes linked trims display value (<a href=https://github.com/opentx/opentx/issues/3547>#3547</a>, <a href=https://github.com/opentx/opentx/issues/3568>#3568</a>)</li>
+<li>Fixed: New model global variables and rotary encoders initialisation (<a href=https://github.com/opentx/opentx/issues/3473>#3473</a>)</li>
+<li>Fixed: Prevent circular linked global variables and rotary encoders (<a href=https://github.com/opentx/opentx/issues/3472>#3472</a>)</li>
+<li>Fixed wrong log replay speed issue in Telemetry simulator (<a href=https://github.com/opentx/opentx/issues/3708>#3708</a>)</li>
+<li>Various texts and translations corrections</li>
+</ul>
+
+
+<h2>Version 2.1.8 / 2016-04-14</h2>
+
+<ul>
+<li>Telemetry Simulator sensor instance number fixed (<a href=https://github.com/opentx/opentx/issues/3207>#3207</a>)</li>
+<li>Fixed: Throttle Source combo-box was populated multiple times (<a href=https://github.com/opentx/opentx/issues/3222>#3222</a>)</li>
+<li>RTC option tool-tip corrected (<a href=https://github.com/opentx/opentx/issues/3225>#3225</a>)</li>
+<li>Fixed: Companion was looking for custom scripts at the wrong place (<a href=https://github.com/opentx/opentx/issues/3237>#3237</a>)</li>
+<li>Offset displayed in inputs screen (<a href=https://github.com/opentx/opentx/issues/3248>#3248</a>)</li>
+<li>Import/export handling was broken for Average formula telemetry sensors (<a href=https://github.com/opentx/opentx/issues/3262>#3262</a>)</li>
+<li>Fixed: Hardware Setup control types and names were not stored in profile (<a href=https://github.com/opentx/opentx/issues/3260>#3260</a>)</li>
+<li>Fixed voice language list (<a href=https://github.com/opentx/opentx/issues/3338>#3338</a>)</li>
+<li>Fixed data overflow in Special Functions Override Channel (<a href=https://github.com/opentx/opentx/issues/3347>#3347</a>)</li>
+<li>Fixed: Sync dialog new line problem (only present for some UI languages) (<a href=https://github.com/opentx/opentx/issues/3350>#3350</a>)</li>
+<li>Removed a few legacy timer limitations, fix non-working limit (<a href=https://github.com/opentx/opentx/issues/3301>#3301</a>)</li>
+<li>Default AVR fuse settings changed to disable JTAG interface (<a href=https://github.com/opentx/opentx/issues/3379>#3379</a>)</li>
+<li>Channel range fix (Start, Channels) in Model Settings, Setup page, int/ext module settings</li>
+<li>Use friendly GVAR names in dialogs (if available)  (<a href=https://github.com/opentx/opentx/issues/3353>#3353</a>)</li>
+<li>Various texts and translations corrections</li>
+</ul>
+
+
+<h2>Version 2.1.7 / 2016-01-04</h2>
+
+<ul>
+<li>Lua 'execute' failed in non-root directory (in Simulator) (<a href=https://github.com/opentx/opentx/issues/3024>#3024</a>)</li>
+<!-- this is disabled until the speed problem is fixed <li>Header line always visible in Outputs, Logical Switches and Special Functions (<a href=https://github.com/opentx/opentx/issues/2861>#2861</a>)</li> -->
+<li>LR12 changes: removed option for remote failsafe configuration, added in EU firmware variant</li>
+<li>Added Clear option to the flight mode context menu (right click on the Name label) (<a href=https://github.com/opentx/opentx/issues/3026>#3026</a>)</li>
+<li>New features for Telemetry Simulator: log replay, user friendly sensor values (<a href=https://github.com/opentx/opentx/issues/3124>#3124</a>)</li>
+<li>Added F7 key to reload LUA permanent scripts in radio simulator (<a href=https://github.com/opentx/opentx/issues/3141>#3141</a>)</li>
+<li>AR9X firmware flashing fall-back was wrong</li>
+<li>Command line options support added to standalone simulator (try "./simulator21 --help" on Linux and "simulator.exe /help" on Windows for usage) (<a href=https://github.com/opentx/opentx/issues/3160>#3160</a>)</li>
+<li>Various rounding problem fixed: Telemetry sensor Ratio parameter (<a href=https://github.com/opentx/opentx/issues/3117>#3117</a>),
+  Outputs Sub-trim, Min and Max values (<a href=https://github.com/opentx/opentx/issues/3156>#3156</a>)</li>
+<li>Fixed: telemetry sensors Ratio and Offset value increment/decrement step (<a href=https://github.com/opentx/opentx/issues/3121>#3121</a>)</li>
+<li>Hardware/Calibration tab split int two tabs (<a href=https://github.com/opentx/opentx/issues/2974>#2974</a>)</li>
+<li>Fixed Fahrenheit temperature conversion error (if PREC was not 0) (<a href=https://github.com/opentx/opentx/issues/3146>#3146</a>)</li>
+<li>Application Setting 'Enable automatic backup before writing firmware' was not saved (<a href=https://github.com/opentx/opentx/issues/3040>#3040</a>)</li>
+<li>Fixed RPM package problem on Fedora (<a href=https://github.com/opentx/opentx/issues/3130>#3130</a>)</li>
+<li>Fixed conversion errors when loading 2.0.x EEPE (<a href=https://github.com/opentx/opentx/issues/3177>#3177</a>)</li>
+<li>Various texts and translations corrections</li>
+</ul>
+
+
 <h2>Version 2.1.6 / 2015-11-11</h2>
-[Taranis]
+
 <ul>
 <li>Telemetry custom screen changes didn't emit modified signal (<a href=https://github.com/opentx/opentx/issues/3029>#3029</a>)</li>
 <li>Hide D8/LR12 when eu firmware option is selected</li>

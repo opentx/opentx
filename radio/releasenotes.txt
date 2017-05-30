@@ -1,3 +1,156 @@
+<h2>Version 2.2.0 / 2017-05-30</h2>
+
+Major release! Please see <a href=http://www.open-tx.org/2017/05/30/opentx-2.2.0>this page</a> for details.
+
+[All]
+<ul>
+<li>Special Function RESET now executes only once on the switch change (<a href=https://github.com/opentx/opentx/issues/3858>#3858</a>)</li>
+</ul>
+
+[Taranis]
+<ul>
+<li>Fixed: Radio was reset 20s after USB connection in MASSSTORAGE mode (<a href=https://github.com/opentx/opentx/issues/3840>#3840</a>)</li>
+<li>Added detailed failure messages to the TX module firmware update function</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>DSM protocol fixed (<a href=https://github.com/opentx/opentx/issues/3628>#3628</a>)</li>
+</ul>
+
+[Lua]
+<ul>
+<li>Number conversion from floating point to integer now gives the same result on the radio and Companion simulator (<a href=https://github.com/opentx/opentx/issues/3826>#3826</a>)</li>
+</ul>
+
+
+<h2>Version 2.1.9 / 2016-09-14</h2>
+
+[All]
+<ul>
+<li>Fixed: calculated sensors had persistent value set to zero at every shutdown when persistent option was not active (<a href=https://github.com/opentx/opentx/issues/3454>#3454</a>)</li>
+<li>Show persistent option only for calculated sensors (<a href=https://github.com/opentx/opentx/issues/3454>#3454</a>)</li>
+<li>Fixed: sensors with active filter had invalid negative values (<a href=https://github.com/opentx/opentx/issues/3463>#3463</a>)</li>
+<li>Enabled DSM protocols on several raios (<a href=https://github.com/opentx/opentx/issues/3471>#3471</a>)</li>
+<li>Better representation of negative mixer weight in offset bar widget (<a href=https://github.com/opentx/opentx/issues/3476>#3476</a>)</li>
+<li>Fixed several bugs in curve preset function (<a href=https://github.com/opentx/opentx/issues/3451>#3451</a>)</li>
+<li>Fixed flight modes rotary encoders initialization when creating new model (only for radios with rotary encoders) (<a href=https://github.com/opentx/opentx/issues/3473>#3473</a>)</li>
+<li>Fixed: show value of persistent sensor after power on, before the telemetry is received (<a href=https://github.com/opentx/opentx/issues/3595>#3595</a>)</li>
+<li>Fixed: LSs weren't selectable as input source (<a href=https://github.com/opentx/opentx/issues/3632>#3632>/a>)</li>
+</ul>
+
+
+[Taranis]
+<ul>
+<li>Fixed USB driver changed interrupt grouping which affected interrupt priorities (fix suggested by Michael Blandford), this should fix the SBUS Trainer issue <a href=https://github.com/opentx/opentx/issues/2999>#2999</a> (<a href=https://github.com/opentx/opentx/issues/3178>#3178</a>)</li>
+<li>ADC Jitter Filter improvements, option added in Hardware settings to turn it on/off (<a href=https://github.com/opentx/opentx/issues/3432>#3432</a>)</li>
+</ul>
+
+[9XR-PRO]
+<ul>
+<li>Fixed: Trainer inputs >TR4 not working (<a href=https://github.com/opentx/opentx/issues/3203>#3203</a>)</li>
+<li>External module output type setting was not visible</li>
+</ul>
+
+[Lua]
+<ul>
+<li>Fixed playTone() crash when called with abnormal parameter values (<a href=https://github.com/opentx/opentx/issues/3462>#3462</a>)</li>
+<li>Return proper values for `Cels-` and `Cels+` (<a href=https://github.com/opentx/opentx/issues/2826>#2826</a>)</li>
+<li>Fixed lcd.drawNumber() display when INVERS flag was used (<a href=https://github.com/opentx/opentx/issues/3569>#3569</a>)</li>
+</ul>
+
+<h2>Version 2.1.8 / 2016-04-14</h2>
+
+Notice: EDGE Logical Switch operation has changed. Users should check their setups, if they use EDGE with AND switch. 
+This bug was introduced in version 2.1.2 and has been fixed in 2.1.8. (<a href=https://github.com/opentx/opentx/issues/2939>#2939</a>)
+
+[Taranis]
+<ul>
+<li>Improvements of Statistics screen (<a href=https://github.com/opentx/opentx/issues/3206>#3206</a>)</li>
+<li>Flight Modes screen layout fix (<a href=https://github.com/opentx/opentx/issues/3307>#3307</a>)</li>
+<li>Fixed: left slider was affecting the value of the right slider on X9E (<a href=https://github.com/opentx/opentx/issues/2639>#2639</a>)</li>
+<li>USB Joystick now supports 24 buttons (CH9-32) (<a href=https://github.com/opentx/opentx/issues/3268>#3268</a>)</li>
+<li>Main view adjustments for 3-char switch names (<a href=https://github.com/opentx/opentx/issues/3278>#3278</a>)</li>
+</ul>
+
+[ARM (Taranis, Sky9x, 9XR-PRO, AR9X)]
+<ul>
+<li>Channel jitter reduced (<a href=https://github.com/opentx/opentx/issues/3233>#3233</a>)</li>
+<li>Fixed: EDGE Logical switch internal state was being reset by the AND switch, that affected its function (it looked like AND was applied before the EDGE processing, not after like it is done for other logical switch types) (<a href=https://github.com/opentx/opentx/issues/2939>#2939</a>)</li>
+</ul>
+
+[Lua]
+<ul>
+<li>Some Lua fields were not available to scripts (<a href=https://github.com/opentx/opentx/issues/3223>#3223</a>)</li>
+<li>Fixed: only first 32 input lines (out of 64) were accessible in Lua (<a href=https://github.com/opentx/opentx/issues/3285>#3285</a>)</li>
+<li>playDuration() second parameter is now really optional (<a href=https://github.com/opentx/opentx/issues/3329>#3329</a>)</li>
+<li>Fixed Lua io.open() problem for non-existing files (<a href=https://github.com/opentx/opentx/issues/3342>#3342</a>)</li>
+</ul>
+
+[Mega2560]
+<ul>
+<li>Fixed: First PPM pulse in the frame was longer (<a href=https://github.com/opentx/opentx/issues/2981>#2981</a>)</li>
+</ul>
+
+[All]
+<ul>
+<li>Various texts and translations corrections (se, it, pl, de)</li>
+<li>Text to speech fixes (hu, sp)</li>
+<li>Various small bug-fixes</li>
+<li>PowerBox telemetry sensor names changed</li>
+<li>Removed a few legacy timer limitations, fix non-working limit (<a href=https://github.com/opentx/opentx/issues/3301>#3301</a>)</li>
+<li>Removed the "RF signal low" alert before "Telemetry lost" when powering off the receiver (<a href=https://github.com/opentx/opentx/issues/2616>#2616</a>)</li>
+</ul>
+
+
+<h2>Version 2.1.7 / 2016-01-04</h2>
+
+Notice: Lua model wizard was fixed (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>) 
+and needs to be installed on the radio SD card. Download from http://lua-21.open-tx.org/wizard.zip
+
+[Taranis]
+<ul>
+<li>Added Crossfire (inverted serial) protocol on S.PORT pin in the module bay (<a href=https://github.com/opentx/opentx/issues/2894>#2894</a>)</li>
+<li>Added telemetry unit conversions from km/h (<a href=https://github.com/opentx/opentx/issues/3059>#3059</a>)</li>
+<li>LR12 changes: removed option for remote failsafe configuration, added in EU firmware variant, enabled range check in EU mode</li>
+<li>Added support for language-specific chars in model notes</li>
+</ul>
+
+[Lua]
+<ul>
+<li>Enhanced luaGetVersion(): return the radio type (<a href=https://github.com/opentx/opentx/issues/2947>#2947</a>), returns version as numbers (<a href=https://github.com/opentx/opentx/issues/3095>#3095</a>)</li>
+<li>Allow usage of PLUS, MINUS, MENU and ENT(short) and EXIT(short) keys in telemetry scripts (<a href=https://github.com/opentx/opentx/issues/2469>#2469</a>)</li>
+<li>Lua string library added (<a href=https://github.com/opentx/opentx/issues/3095>#3095</a>)</li>
+<li>Fixed: Close any Lua open files when radio powers off (<a href=https://github.com/opentx/opentx/issues/3062>#3062</a>)</li>
+<li>getValue() now also returns pilot position (<a href=https://github.com/opentx/opentx/issues/2921>#2921</a>)</li>
+<li>Added additional Taranis X9E fields</li>
+<li>Lua getFlightMode() function added (<a href=https://github.com/opentx/opentx/issues/3127>#3127</a>, <a href=https://github.com/opentx/opentx/issues/2921>#2921</a>)</li>
+<li>Fixed: Inputs were not exported as Lua fields</li>
+<li>Fixed: some wizard lines were not visible anymore (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>)</li>
+<li>Lua PREC1 and PREC2 formatting parameters now functioning same as in 2.0 (<a href=https://github.com/opentx/opentx/issues/3150>#3150</a>)</li>
+</ul>
+
+[Sky9x / 9XR-PRO / AR9X]
+<ul>
+<li>Added support for FrSky D with inverted signal for 9XR pro (<a href=https://github.com/opentx/opentx/issues/3139>#3139</a>)</li>
+</ul>
+
+[ARM]
+<ul>
+<li>Fixed: Wrong telemetry unit and precision was used for V2 in logical switches (Taranis not affected) (<a href=https://github.com/opentx/opentx/issues/3071>#3071</a>)</li>
+<li>Received value unit for Air speed sensor set to knots (all FrSky sensors send speed in knots) (<a href=https://github.com/opentx/opentx/issues/3043>#3043</a>)</li>
+<li>Added support for FrSky Powerbox sensor (<a href=https://github.com/opentx/opentx/issues/2970>#2970</a>)</li>
+<li>Fixed Special Function - Adjust GVAR: increment/decrement could cause GVAR value to overflow the allowed range (&pm;1024) (<a href=https://github.com/opentx/opentx/issues/2917>#2917</a>)</li>
+<li>Bad Value for GVAR When Adjusting GVx to Another GVx in Special Functions (<a href=https://github.com/opentx/opentx/issues/3103>#3103</a>)</li>
+</ul>
+
+[All]
+<ul>
+<li>Various texts and translations corrections</li>
+<li>Various small bug-fixes</li>
+</ul>
+
+
 <h2>Version 2.1.6 / 2015-11-11</h2>
 [Taranis]
 <ul>
