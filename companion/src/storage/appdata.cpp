@@ -460,16 +460,6 @@ QString AppData::libDir()          { return _libDir;          }
 QString AppData::snapshotDir()     { return _snapshotDir;     }
 QString AppData::updatesDir()      { return _updatesDir;      }
 
-bool AppData::jsSupport()          { return _jsSupport;       }
-bool AppData::maximized()          { return _maximized;       }
-bool AppData::showSplash()         { return _showSplash;      }
-bool AppData::snapToClpbrd()       { return _snapToClpbrd;    }
-bool AppData::autoCheckApp()       { return _autoCheckApp;    }
-bool AppData::autoCheckFw()        { return _autoCheckFw;     }
-bool AppData::simuSW()             { return _simuSW;          }
-bool AppData::tabbedMdi()          { return _tabbedMdi;       }
-bool AppData::removeModelSlots()   { return _remvModelSlots;  }
-
 int AppData::newModelAction()      { return _newModelAction;  }
 int AppData::backLight()           { return _backLight;       }
 int AppData::embedSplashes()       { return _embedSplashes;   }
@@ -516,16 +506,6 @@ void AppData::logDir          (const QString     x) { store(x, _logDir,         
 void AppData::libDir          (const QString     x) { store(x, _libDir,          "libraryPath"             );}
 void AppData::snapshotDir     (const QString     x) { store(x, _snapshotDir,     "snapshotpath"            );}
 void AppData::updatesDir      (const QString     x) { store(x, _updatesDir,      "lastUpdatesDir"          );}
-
-void AppData::maximized       (const bool        x) { store(x, _maximized,       "maximized"               );}
-void AppData::jsSupport       (const bool        x) { store(x, _jsSupport,       "js_support"              );}
-void AppData::showSplash      (const bool        x) { store(x, _showSplash,      "show_splash"             );}
-void AppData::snapToClpbrd    (const bool        x) { store(x, _snapToClpbrd,    "snapshot_to_clipboard"   );}
-void AppData::autoCheckApp    (const bool        x) { store(x, _autoCheckApp,    "startup_check_companion" );}
-void AppData::autoCheckFw     (const bool        x) { store(x, _autoCheckFw,     "startup_check_fw"        );}
-void AppData::simuSW          (const bool        x) { store(x, _simuSW,          "simuSW"                  );}
-void AppData::tabbedMdi       (const bool        x) { store(x, _tabbedMdi,       "tabbedMdi"               );}
-void AppData::removeModelSlots(const bool        x) { store(x, _remvModelSlots,  "removeModelSlots"        );}
 
 void AppData::newModelAction  (const int         x) { store(x, _newModelAction,  "newModelAction"          );}
 void AppData::backLight       (const int         x) { store(x, _backLight,       "backLight"               );}
@@ -610,24 +590,26 @@ void AppData::init()
     getset( _libDir,          "libraryPath"             ,"" );
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
+    appLogsDir_init();
 
-    getset( _enableBackup,    "enableBackup"            ,false );
-    getset( _backupOnFlash,   "backupOnFlash"           ,true  );
-
-    getset( _outputDisplayDetails,       "outputDisplayDetails"       ,false );
-    getset( _checkHardwareCompatibility, "checkHardwareCompatibility" ,true  );
-    getset( _useCompanionNightlyBuilds,  "useCompanionNightlyBuilds"  ,false );
-    getset( _useFirmwareNightlyBuilds,   "useFirmwareNightlyBuilds"   ,false );
-
-    getset( _jsSupport,       "js_support"              ,false );
-    getset( _maximized,       "maximized"               ,false );
-    getset( _showSplash,      "show_splash"             ,true  );
-    getset( _snapToClpbrd,    "snapshot_to_clipboard"   ,false );
-    getset( _autoCheckApp,    "startup_check_companion" ,true  );
-    getset( _autoCheckFw,     "startup_check_fw"        ,true  );
-    getset( _simuSW,          "simuSW"                  ,false );
-    getset( _tabbedMdi,       "tabbedMdi"               ,false );
-    getset( _remvModelSlots,  "removeModelSlots"        ,true  );
+    // booleans
+    enableBackup_init();
+    backupOnFlash_init();
+    outputDisplayDetails_init();
+    checkHardwareCompatibility_init();
+    useCompanionNightlyBuilds_init();
+    useFirmwareNightlyBuilds_init();
+    removeModelSlots_init();
+    maximized_init();
+    simuSW_init();
+    tabbedMdi_init();
+    appDebugLog_init();
+    fwTraceLog_init();
+    jsSupport_init();
+    showSplash_init();
+    snapToClpbrd_init();
+    autoCheckApp_init();
+    autoCheckFw_init();
 
     getset( _newModelAction,  "newModelAction"          ,1  );
     getset( _backLight,       "backLight"               ,0  );

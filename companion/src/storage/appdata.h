@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QString>
 #include <QSettings>
+#include <QStandardPaths>
 
 #include "simulator.h"
 
@@ -226,21 +227,37 @@ class Profile: protected CompStoreObj
     QString groupId();
 };
 
-#define BOOL_PROPERTY(name, dflt)                                   \
+
+#define PROPERTY4(type, name, key, dflt)                            \
     public:                                                         \
-      inline bool name() { return _ ## name; }                      \
-      void name(const bool val) { store(val, _ ## name, # name); }  \
+      inline type name() { return _ ## name; }                      \
+      void name(const type val) { store(val, _ ## name, # key); }   \
     private:                                                        \
-      bool _ ## name;
+      void name ## _init() { getset(_ ## name, # key, dflt); }      \
+      type _ ## name;
+
+#define PROPERTY(type, name, dflt)    PROPERTY4(type, name, name, dflt)
 
 class AppData: protected CompStoreObj
 {
-  BOOL_PROPERTY(enableBackup,               false)
-  BOOL_PROPERTY(backupOnFlash,              true)
-  BOOL_PROPERTY(outputDisplayDetails,       false)
-  BOOL_PROPERTY(checkHardwareCompatibility, true)
-  BOOL_PROPERTY(useCompanionNightlyBuilds,  false)
-  BOOL_PROPERTY(useFirmwareNightlyBuilds,   false)
+  PROPERTY(bool, enableBackup,               false)
+  PROPERTY(bool, backupOnFlash,              true)
+  PROPERTY(bool, outputDisplayDetails,       false)
+  PROPERTY(bool, checkHardwareCompatibility, true)
+  PROPERTY(bool, useCompanionNightlyBuilds,  false)
+  PROPERTY(bool, useFirmwareNightlyBuilds,   false)
+  PROPERTY(bool, removeModelSlots,           true)
+  PROPERTY(bool, maximized,   false)
+  PROPERTY(bool, simuSW,      false)
+  PROPERTY(bool, tabbedMdi,   false)
+  PROPERTY(bool, appDebugLog, false)
+  PROPERTY(bool, fwTraceLog,  false)
+
+  PROPERTY4(bool, jsSupport,       js_support              ,false)
+  PROPERTY4(bool, showSplash,      show_splash             ,true)
+  PROPERTY4(bool, snapToClpbrd,    snapshot_to_clipboard   ,false)
+  PROPERTY4(bool, autoCheckApp,    startup_check_companion ,true)
+  PROPERTY4(bool, autoCheckFw,     startup_check_fw        ,true)
 
   // All the global variables
   public:
@@ -280,16 +297,7 @@ class AppData: protected CompStoreObj
     QString _libDir;
     QString _snapshotDir;
     QString _updatesDir;
-
-    bool _maximized;
-    bool _jsSupport;
-    bool _showSplash;
-    bool _snapToClpbrd;
-    bool _autoCheckApp;
-    bool _autoCheckFw;
-    bool _simuSW;
-    bool _tabbedMdi;
-    bool _remvModelSlots;
+    PROPERTY(QString, appLogsDir,  QString(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) % "/" COMPANY "/DebugLogs"))
 
     int _newModelAction;  // 0=no action; 1=model wizard; 2=model edit
     int _backLight;
@@ -341,16 +349,6 @@ class AppData: protected CompStoreObj
     QString snapshotDir();
     QString updatesDir();
 
-    bool jsSupport();
-    bool maximized();
-    bool showSplash();
-    bool snapToClpbrd();
-    bool autoCheckApp();
-    bool autoCheckFw();
-    bool simuSW();
-    bool tabbedMdi();
-    bool removeModelSlots();
-
     int newModelAction();
     int backLight();
     int embedSplashes();
@@ -398,16 +396,6 @@ class AppData: protected CompStoreObj
     void libDir          (const QString);
     void snapshotDir     (const QString);
     void updatesDir      (const QString);
-
-    void maximized       (const bool);
-    void jsSupport       (const bool);
-    void showSplash      (const bool);
-    void snapToClpbrd    (const bool);
-    void autoCheckApp    (const bool);
-    void autoCheckFw     (const bool);
-    void simuSW          (const bool);
-    void tabbedMdi       (const bool);
-    void removeModelSlots(const bool);
 
     void newModelAction  (const int);
     void backLight       (const int);
