@@ -72,7 +72,6 @@ class DebugOutput : public QWidget
     void restoreState();
     void processBytesReceived();
     void onDataBufferOverflow(const qint64 len);
-    void onAppDebugMessage(quint8 level, const QString & msg);
     void onFilterStateChanged();
     void onFilterTextChanged(const QString &);
     void onFilterToggled(bool enable);

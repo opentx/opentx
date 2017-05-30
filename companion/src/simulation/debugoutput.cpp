@@ -94,8 +94,11 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
   connect(ui->actionToggleFilter, &QAction::toggled, this, &DebugOutput::onFilterToggled);
   connect(ui->filterText, &QComboBox::currentTextChanged, this, &DebugOutput::onFilterTextChanged);
 
-  if (AppDebugMessageHandler::instance())
-    connect(AppDebugMessageHandler::instance(), &AppDebugMessageHandler::messageOutput, this, &DebugOutput::onAppDebugMessage);
+  if (AppDebugMessageHandler::instance()) {
+    // send application Info/Warning/Error events to our data collector
+    m_dataBufferDevice->setProperty("level", 1);
+    AppDebugMessageHandler::instance()->addOutputDevice(m_dataBufferDevice);
+  }
 
   // send firmware TRACE events to our data collector
   m_simulator->addTracebackDevice(m_dataBufferDevice);
@@ -103,10 +106,9 @@ DebugOutput::DebugOutput(QWidget * parent, SimulatorInterface *simulator):
 
 DebugOutput::~DebugOutput()
 {
-  if (AppDebugMessageHandler::instance())
-    disconnect(AppDebugMessageHandler::instance(), 0, this, 0);
-
   if (m_dataBufferDevice) {
+    if (AppDebugMessageHandler::instance())
+      AppDebugMessageHandler::instance()->removeOutputDevice(m_dataBufferDevice);
     m_simulator->removeTracebackDevice(m_dataBufferDevice);
     disconnect(m_dataBufferDevice, 0, this, 0);
     disconnect(this, 0, m_dataBufferDevice, 0);
@@ -198,13 +200,6 @@ void DebugOutput::onDataBufferOverflow(const qint64 len)
   else if (!reportTimer.isValid() || reportTimer.elapsed() > 1000 * 30) {
     qWarning("Data buffer overflow by %lld bytes!", len);
     reportTimer.start();
-  }
-}
-
-void DebugOutput::onAppDebugMessage(quint8 level, const QString & msg)
-{
-  if (level > 0 && m_dataBufferDevice) {
-    m_dataBufferDevice->write(qPrintable(msg % "\n"));
   }
 }
 
