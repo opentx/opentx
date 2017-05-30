@@ -340,6 +340,7 @@ void menuRadioSdManager(event_t _event)
         res = sdReadDir(&dir, &fno, firstTime);
         if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
         if (strlen(fno.fname) > SD_SCREEN_FILE_LENGTH) continue;
+        if (fno.fname[0] == '.') continue;             /* Ignore hidden files under UNIX */
 
         reusableBuffer.sdmanager.count++;
 
