@@ -199,11 +199,11 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
             newServosState = data & 0xffff;
           }
           if (newServosState != 0 && servosState == 0) {
-            audioEvent(AU_SERVO_KO);
+            AUDIO_SERVO_KO();
           }
           uint16_t newRboxState = data >> 16;
           if ((newRboxState & 0x07) && (rboxState & 0x07) == 0) {
-            audioEvent(AU_RX_OVERLOAD);
+            AUDIO_RX_OVERLOAD();
           }
           servosState = newServosState;
           rboxState = newRboxState;

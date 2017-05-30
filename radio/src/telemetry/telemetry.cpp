@@ -175,7 +175,7 @@ void telemetryWakeup()
       }
     }
     if (sensor_lost && TELEMETRY_STREAMING()) {
-      audioEvent(AU_SENSOR_LOST);
+      AUDIO_SENSOR_LOST();
     }
 
 #if defined(INTERNAL_MODULE) && defined(EXTERNAL_MODULE)

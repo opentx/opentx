@@ -563,6 +563,9 @@ void audioTimerCountdown(uint8_t timer, int value);
 #define AUDIO_TELEMETRY_BACK()   audioEvent(AU_TELEMETRY_BACK)
 #define AUDIO_TRAINER_LOST()     audioEvent(AU_TRAINER_LOST)
 #define AUDIO_TRAINER_BACK()     audioEvent(AU_TRAINER_BACK)
+#define AUDIO_SERVO_KO()         audioEvent(AU_SERVO_KO)
+#define AUDIO_RX_OVERLOAD()      audioEvent(AU_RX_OVERLOAD)
+#define AUDIO_SENSOR_LOST()      audioEvent(AU_SENSOR_LOST)
 
 #define AUDIO_HEARTBEAT()
 

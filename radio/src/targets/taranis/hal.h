@@ -832,6 +832,15 @@
   #define HAPTIC_GPIO_PIN               GPIO_Pin_12
 #endif
 
+// Buzzer
+#define BUZZER_RCC_AHB1Periph         RCC_AHB1Periph_GPIOB
+#define BUZZER_RCC_APB2Periph         RCC_APB2Periph_TIM10
+#define BUZZER_GPIO_PinSource         GPIO_PinSource8
+#define BUZZER_GPIO                   GPIOB
+#define BUZZER_GPIO_PIN               GPIO_Pin_8  // PB.08
+#define BUZZER_GPIO_AF                GPIO_AF_TIM10
+#define BUZZER_TIMER                  TIM10
+
 // Top LCD on X9E
 #if defined(PCBX9E)
   #define TOPLCD_RCC_AHB1Periph         RCC_AHB1Periph_GPIOG

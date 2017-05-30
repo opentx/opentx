@@ -56,7 +56,7 @@ inline void beep(uint8_t) { }
 
 #if defined(BUZZER)
   #if defined(VOICE)
-    #define AUDIO_HELLO()           PUSH_SYSTEM_PROMPT(AUDIO_HELLO)
+    #define AUDIO_HELLO()          PUSH_SYSTEM_PROMPT(AUDIO_HELLO)
     #define AUDIO_BYE()
     #define AUDIO_TX_BATTERY_LOW() PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW)
     #define AUDIO_INACTIVITY()     PUSH_SYSTEM_PROMPT(AU_INACTIVITY)
@@ -66,8 +66,8 @@ inline void beep(uint8_t) { }
     #define AUDIO_TIMER_30()       PUSH_SYSTEM_PROMPT(AU_TIMER_30)
     #define AUDIO_TIMER_20()       PUSH_SYSTEM_PROMPT(AU_TIMER_20)
   #else
-    #define AUDIO_HELLO()
-    #define AUDIO_BYE()
+    #define AUDIO_HELLO()          beep(2)
+    #define AUDIO_BYE()            beep(2)
     #define AUDIO_TX_BATTERY_LOW() beep(4)
     #define AUDIO_INACTIVITY()     beep(3)
     #define AUDIO_ERROR_MESSAGE(e) beep(4)
@@ -77,13 +77,23 @@ inline void beep(uint8_t) { }
     #define AUDIO_TIMER_20()       { beepAgain=1; beep(2); }
   #endif
 
+  #define AUDIO_RSSI_ORANGE()
+  #define AUDIO_RSSI_RED()
+  #define AUDIO_SENSOR_LOST()
+  #define AUDIO_TELEMETRY_BACK(...)
+  #define AUDIO_TELEMETRY_LOST(...)
+  #define AUDIO_TRAINER_BACK(...)
+  #define AUDIO_TRAINER_LOST(...)
+  #define AUDIO_SERVO_KO(...)
+  #define AUDIO_RX_OVERLOAD(...)
+
   #define AUDIO_KEY_PRESS()        beep(0)
   #define AUDIO_KEY_ERROR()        beep(2)
   #define AUDIO_WARNING2()         beep(2)
   #define AUDIO_WARNING1()         beep(3)
   #define AUDIO_ERROR()            beep(4)
   #define AUDIO_MIX_WARNING(x)     beep(1)
-  #define AUDIO_POT_MIDDLE()       beep(2)
+  #define AUDIO_POT_MIDDLE(...)    beep(2)
   #define AUDIO_TIMER_COUNTDOWN(idx, val)  beep(2)
   #define AUDIO_TIMER_ELAPSED(idx) beep(3)
   #define AUDIO_VARIO_UP()         _beep(1)

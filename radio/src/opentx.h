@@ -1318,6 +1318,8 @@ enum AUDIO_SOUNDS {
 #else
 #include "audio_avr.h"
 #endif
+#elif defined(BUZZER)
+#include "buzzer.h"
 #else
 #define audioEvent(...)
 #define AUDIO_SWR_RED(...)
@@ -1354,10 +1356,6 @@ enum AUDIO_SOUNDS {
 #define AUDIO_KEY_PRESS(...)
 #define AUDIO_KEY_ERROR(...)
 #define AUDIO_ERROR(...)
-#endif
-
-#if defined(BUZZER)
-#include "buzzer.h"
 #endif
 
 #if defined(PCBSTD) && defined(VOICE)

@@ -95,7 +95,9 @@ endif()
 
 add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
 add_definitions(-DRTCLOCK)
+add_definitions(-DBUZZER)
 # add_definitions(-DAUDIO -DVOICE)
+
 
 set(GUI_SRC ${GUI_SRC}
   # model_input_edit.cpp
@@ -114,11 +116,17 @@ if(PCB STREQUAL X7)
   set(LED_DRIVER led_driver.cpp)
 endif()
 
+set(SRC
+  ${SRC}
+  buzzer.cpp
+  )
+
 set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
   ${LED_DRIVER}
   backlight_driver.cpp
+  buzzer_driver.cpp
   # extmodule_driver.cpp
   # ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp

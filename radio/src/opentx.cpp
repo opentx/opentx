@@ -2066,7 +2066,7 @@ void opentxClose(uint8_t shutdown)
   storageDirty(EE_GENERAL);
   storageCheck(true);
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(AUDIO)
   while (IS_PLAYING(ID_PLAY_BYE)) {
     CoTickDelay(10);
   }

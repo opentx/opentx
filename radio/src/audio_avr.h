@@ -117,7 +117,7 @@ void audioTimerCountdown(uint8_t timer, int value);
 #define AUDIO_WARNING1()         AUDIO_BUZZER(audioDefevent(AU_WARNING1), beep(3))
 #define AUDIO_WARNING2()         AUDIO_BUZZER(audioDefevent(AU_WARNING2), beep(2))
 #define AUDIO_ERROR()            AUDIO_BUZZER(audioDefevent(AU_ERROR), beep(4))
-#define AUDIO_HELLO()             VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AUDIO_HELLO),,)
+#define AUDIO_HELLO()            VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AUDIO_HELLO),,)
 #define AUDIO_BYE()
 #define AUDIO_TX_BATTERY_LOW()   VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW), audioDefevent(AU_TX_BATTERY_LOW), beep(4))
 #define AUDIO_INACTIVITY()       VOICE_AUDIO_BUZZER(PUSH_SYSTEM_PROMPT(AU_INACTIVITY), audioDefevent(AU_INACTIVITY), beep(3))

@@ -592,6 +592,12 @@ void audioConsumeCurrentBuffer();
 #define audioDisableIrq()       __disable_irq()
 #define audioEnableIrq()        __enable_irq()
 
+// Buzzer driver
+void buzzerInit(void);
+void buzzerSound(uint8_t duration);
+void buzzerHeartbeat();
+#define BUZZER_HEARTBEAT()             buzzerHeartbeat()
+
 // Haptic driver
 void hapticInit(void);
 void hapticOff(void);
