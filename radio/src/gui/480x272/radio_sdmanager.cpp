@@ -142,6 +142,11 @@ void onSdManagerMenu(const char * result)
     luaExec(lfn);
   }
 #endif
+  else if (result == STR_CALCULATE_SHA1)
+  {
+    getSelectionFullPath(lfn);
+    calculateSha1File(lfn);
+  }
 }
 
 bool menuRadioSdManager(event_t _event)
@@ -233,6 +238,7 @@ bool menuRadioSdManager(event_t _event)
           else if (isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
           }
+          POPUP_MENU_ADD_ITEM(STR_CALCULATE_SHA1);
         }
         if (!READ_ONLY()) {
           if (IS_FILE(line))

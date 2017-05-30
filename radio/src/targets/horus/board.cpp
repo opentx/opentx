@@ -145,7 +145,10 @@ void boardInit()
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
                          EXTMODULE_RCC_APB2Periph |
-                         BL_RCC_APB2Periph,
+                         BL_RCC_APB2Periph |
+                         ENABLE);
+
+  RCC_AHB2PeriphClockCmd(RCC_AHB2Periph_HASH,
                          ENABLE);
 
   pwrInit();

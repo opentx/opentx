@@ -96,6 +96,7 @@ set(SRC
   sbus.cpp
   telemetry/crossfire.cpp
   io/bootloader_flash.cpp
+  io/filehash.cpp
   )
 set(PULSES_SRC
   ${PULSES_SRC}

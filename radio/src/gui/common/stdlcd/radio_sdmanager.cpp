@@ -154,6 +154,13 @@ void onSdManagerMenu(const char * result)
     sportFlashDevice(EXTERNAL_MODULE, lfn);
   }
 #endif
+#if defined(STM32)
+  else if (result == STR_CALCULATE_SHA1)
+  {
+    getSelectionFullPath(lfn);
+    calculateSha1File(lfn);
+  }
+#endif
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     getSelectionFullPath(lfn);
@@ -290,6 +297,7 @@ void menuRadioSdManager(event_t _event)
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
           }
+          POPUP_MENU_ADD_ITEM(STR_CALCULATE_SHA1);
 #endif
         }
 #endif

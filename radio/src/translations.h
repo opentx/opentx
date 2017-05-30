@@ -781,6 +781,8 @@ extern const pm_char STR_FLASH_EXTERNAL_DEVICE[];
 extern const pm_char STR_FLASH_INTERNAL_MODULE[];
 extern const pm_char STR_FIRMWARE_UPDATE_ERROR[];
 extern const pm_char STR_WRITING[];
+extern const pm_char STR_CALCULATING[];
+extern const pm_char STR_CALCULATE_SHA1[];
 extern const pm_char STR_CONFIRM_FORMAT[];
 extern const pm_char STR_EEBACKUP[];
 extern const pm_char STR_FACTORYRESET[];
