@@ -95,7 +95,7 @@ uint32_t firmwareWritten = 0;
 uint32_t eepromAddress = 0;
 uint32_t eepromWritten = 0;
 
-TCHAR backupFilename[60];
+TCHAR backupFilename[_MAX_LFN+1];
 
 uint32_t Master_frequency;
 volatile uint8_t Tenms;
@@ -229,7 +229,7 @@ const char *getBinaryPath()
 
 FRESULT openBinaryFile(uint32_t index)
 {
-  TCHAR filename[60];
+  TCHAR filename[_MAX_LFN+1];
   FRESULT fr;
   memset(Block_buffer, 0, sizeof(Block_buffer));
   strAppend(strAppend(strAppend(filename, getBinaryPath()), "/"), Filenames[index]);
@@ -641,4 +641,3 @@ int main()
 
   return 0;
 }
-
