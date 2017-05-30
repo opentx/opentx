@@ -544,7 +544,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return result;
 
     case SOURCE_TYPE_CUSTOM_SWITCH:
-      return QObject::tr("LSw%1").arg(index+1, 2, 10, QChar('0'));
+      return RawSwitch(SWITCH_TYPE_VIRTUAL, index+1).toString();
 
     case SOURCE_TYPE_CYC:
       return QObject::tr("CYC%1").arg(index+1);
@@ -682,7 +682,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         }
 
       case SWITCH_TYPE_VIRTUAL:
-        return QObject::tr("LSw%1").arg(index, 2, 10, QChar('0'));
+        return QObject::tr("L%1").arg(index, 2, 10, QChar('0'));
 
       case SWITCH_TYPE_MULTIPOS_POT:
         if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))
