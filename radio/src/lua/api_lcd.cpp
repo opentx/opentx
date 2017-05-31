@@ -248,7 +248,7 @@ static int luaLcdDrawTimer(lua_State *L)
   int seconds = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
 #if defined(COLORLCD)
-  if (att&SHADOWED) drawTimer(x+1, y+1, seconds, att&0xFFFF|LEFT);
+  if (att&SHADOWED) drawTimer(x+1, y+1, seconds, (att&0xFFFF)|LEFT);
   drawTimer(x, y, seconds, att|LEFT);
 #else
   drawTimer(x, y, seconds, att|LEFT, att);
