@@ -39,6 +39,8 @@ def generate(str, filename):
         os.system(command.encode('utf-8'))
         command = "sox %s -r 32000 %s" % (output, filename)
         os.system(command.encode('utf-8'))
+        command = "rm -f output.mp3"
+        os.system(command.encode('utf-8'))
 
 ################################################################
 
