@@ -440,7 +440,14 @@
 
 #define LEN2_VTEMPLATES        15
 #define LEN_VTEMPLATES         "\017"
-#define TR_VTEMPLATES          "Suppr Mixages\0 ""4 Voies simple\0""Coupure Gaz\0   ""Empennage V\0   ""Elevon\\Delta\0  ""eCCPM\0         ""Conf. Hélico\0  ""Test Servo\0    "
+#define TR_TEMPLATE_CLEAR_MIXES        "Suppr Mixages\0 "
+#define TR_TEMPLATE_SIMPLE_4CH         "4 Voies simple\0"
+#define TR_TEMPLATE_STICKY_TCUT        "Coupure Gaz\0   "
+#define TR_TEMPLATE_VTAIL              "Empennage V\0   "
+#define TR_TEMPLATE_DELTA              "Elevon\\Delta"
+#define TR_TEMPLATE_ECCPM              "eCCPM       "
+#define TR_TEMPLATE_HELI               "Conf. Hélico\0  "
+#define TR_TEMPLATE_SERVO_TEST         "Test Servo\0    "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"

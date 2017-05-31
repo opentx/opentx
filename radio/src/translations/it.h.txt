@@ -438,9 +438,16 @@
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
 
-#define LEN2_VTEMPLATES        13
-#define LEN_VTEMPLATES         "\015"
-#define TR_VTEMPLATES          "Canc. Mixer\0 ""Semplice 4CH\0""Sticky-T-Cut\0""Coda-V      \0""Elevoni\0     ""Delta\0       ""eCCPM\0       ""Setup Heli\0  ""Test Servo\0  "
+#define LEN2_VTEMPLATES        12
+#define LEN_VTEMPLATES         "\014"
+#define TR_TEMPLATE_CLEAR_MIXES        "Canc. Mixer "
+#define TR_TEMPLATE_SIMPLE_4CH         "Semplice 4CH"
+#define TR_TEMPLATE_STICKY_TCUT        "Coda-V      "
+#define TR_TEMPLATE_VTAIL              "V-Tail      "
+#define TR_TEMPLATE_DELTA              "Elevon\\Delta"
+#define TR_TEMPLATE_ECCPM              "eCCPM       "
+#define TR_TEMPLATE_HELI               "Heli Setup  "
+#define TR_TEMPLATE_SERVO_TEST         "Test Servo  "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"

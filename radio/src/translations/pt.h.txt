@@ -430,7 +430,14 @@
 
 #define LEN2_VTEMPLATES  13
 #define LEN_VTEMPLATES   "\015"
-#define TR_VTEMPLATES    "Tirar Mixagem""4CH Simples\0 ""Anular Motor\0""V-Tail\0      ""Elevon\\Zagi\0 ""eCCPM\0       ""Mixagem Heli\0""Testar Servos"
+#define TR_TEMPLATE_CLEAR_MIXES        "Tirar Mixagem"
+#define TR_TEMPLATE_SIMPLE_4CH         "4CH Simples\0 "
+#define TR_TEMPLATE_STICKY_TCUT        "Anular Motor\0"
+#define TR_TEMPLATE_VTAIL              "V-Tail\0      "
+#define TR_TEMPLATE_DELTA              "Elevon\\Zagi\0 "
+#define TR_TEMPLATE_ECCPM              "eCCPM\0       "
+#define TR_TEMPLATE_HELI               "Mixagem Heli\0"
+#define TR_TEMPLATE_SERVO_TEST         "Testar Servos"
 
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"

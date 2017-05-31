@@ -102,6 +102,7 @@ void clearCurves()
   memclear(g_model.curves, sizeof(g_model.curves) + sizeof(g_model.points)); // clear all curves
 }
 
+#if defined(CURVES)
 void setCurve(uint8_t c, const pm_int8_t ar[])
 {
   int8_t * cv = curveAddress(c);
@@ -109,6 +110,7 @@ void setCurve(uint8_t c, const pm_int8_t ar[])
     cv[i] = pgm_read_byte(&ar[i]);
   }
 }
+#endif
 
 void setLogicalSwitch(uint8_t idx, uint8_t func, int8_t v1, int8_t v2)
 {
@@ -140,7 +142,9 @@ void applyTemplate(uint8_t idx)
     switch (idx) {
       case TMPL_CLEAR_MIXES:
       case TMPL_SIMPLE_4CH:
+#if defined(HELI) && defined(CURVES)
       case TMPL_HELI_SETUP:
+#endif
         clearMixes();
         break;
     }
@@ -195,6 +199,7 @@ void applyTemplate(uint8_t idx)
         md=setDest(5, MIXSRC_Thr);             md->weight= 55;
         break;
 
+#if defined(HELI) && defined(CURVES)
       // Heli Setup
       case TMPL_HELI_SETUP:
         clearCurves();
@@ -242,6 +247,7 @@ void applyTemplate(uint8_t idx)
         setCurve(4, heli_ar5);
         setCurve(5, heli_ar5);
         break;
+#endif
 
       // Servo Test
       case TMPL_SERVO_TEST:
