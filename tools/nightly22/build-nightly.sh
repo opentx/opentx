@@ -6,7 +6,7 @@ branch=2.2
 docker=nightly22
 workdir=/home/opentx/nightly22
 output=/var/www/html/2.2/nightlies
-version=2.2.0
+version=2.2.1
 
 # Incrementnightly index
 index=`cat index.txt`
@@ -55,7 +55,7 @@ fi
 
 # Update stamps
 cp -f  ${workdir}/binaries/stamp-opentx.txt ${output}/firmware
-echo "#define VERSION  "'"2.2.0'$suffix'"' > ${output}/companion/companion-windows.stamp
+echo "#define VERSION  \"${version}${suffix}\"" > ${output}/companion/companion-windows.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-linux.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-macosx.stamp
 
