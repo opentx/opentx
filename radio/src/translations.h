@@ -896,6 +896,8 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_RESET_SUBMENU[];
   extern const pm_char STR_LOWALARM[];
   extern const pm_char STR_CRITICALALARM[];
+extern const pm_char STR_RSSIALARM_WARN[];
+extern const pm_char STR_NO_RSSIALARM[];
 extern const pm_char STR_DISABLE_ALARM[];
   extern const pm_char STR_TELEMETRY_TYPE[];
   extern const pm_char STR_TELEMETRY_SENSORS[];

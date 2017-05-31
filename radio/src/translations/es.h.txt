@@ -1003,6 +1003,8 @@
 #define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Alarma baja"
 #define TR_CRITICALALARM       INDENT "Alarma Critica"
+#define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")
+#define TR_NO_RSSIALARM                "Audio alarms disabled"
 #define TR_DISABLE_ALARM               INDENT "Disable telemetry alarms"
 #define TR_ENABLE_POPUP        "Enable Popup"
 #define TR_DISABLE_POPUP       "Disable Popup"

@@ -1023,6 +1023,8 @@
 #define TR_ANTENNACONFIRM2     "Ujisti se že je anténa připojena!"
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
+#define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")
+#define TR_NO_RSSIALARM                "Audio alarms disabled"
 #define TR_DISABLE_ALARM               INDENT "Disable telemetry alarms"
 #define TR_ENABLE_POPUP        "Povolit vyskakovací okno"
 #define TR_DISABLE_POPUP       "Zakázat vyskakovací okno"
