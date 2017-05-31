@@ -174,7 +174,7 @@ void telemetryWakeup()
         }
       }
     }
-    if (sensor_lost && TELEMETRY_STREAMING()) {
+    if (sensor_lost && TELEMETRY_STREAMING() &&  !g_model.rssiAlarms.disabled) {
       audioEvent(AU_SENSOR_LOST);
     }
 
@@ -188,13 +188,13 @@ void telemetryWakeup()
     }
 #endif
 
-    if (!g_model.frsky.rssiAlarms[0].disabled) {
+    if (!g_model.rssiAlarms.disabled) {
       if (TELEMETRY_STREAMING()) {
-        if (getRssiAlarmValue(1) && TELEMETRY_RSSI() < getRssiAlarmValue(1)) {
+        if (TELEMETRY_RSSI() < g_model.rssiAlarms.getCriticalRssi() ) {
           AUDIO_RSSI_RED();
           SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
         }
-        else if (getRssiAlarmValue(0) && TELEMETRY_RSSI() < getRssiAlarmValue(0)) {
+        else if (TELEMETRY_RSSI() < g_model.rssiAlarms.getWarningRssi() ) {
           AUDIO_RSSI_ORANGE();
           SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
         }
@@ -441,10 +441,12 @@ void telemetryInit()
 }
 #endif
 
+#if !defined(CPUARM)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 {
   return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
+#endif
 
 #if defined(LOG_TELEMETRY) && !defined(SIMU)
 extern FIL g_telemetryFile;

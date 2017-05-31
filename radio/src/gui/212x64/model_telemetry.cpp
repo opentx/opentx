@@ -25,7 +25,7 @@ enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_RSSI_LABEL,
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
-  ITEM_TELEMETRY_DISALBE_ARLAMS,
+  ITEM_TELEMETRY_DISABLE_ALARMS,
   ITEM_TELEMETRY_SENSORS_LABEL,
   ITEM_TELEMETRY_SENSOR1,
   ITEM_TELEMETRY_SENSOR2,
@@ -527,16 +527,19 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {
-        uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
-        lcdDrawTextAlignedLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        lcdDrawNumber(TELEM_COL2, y, getRssiAlarmValue(alarm), LEFT|attr, 3);
+        bool warning = (k==ITEM_TELEMETRY_RSSI_ALARM1);
+        lcdDrawTextAlignedLeft(y, (warning ? STR_LOWALARM : STR_CRITICALALARM));
+        lcdDrawNumber(TELEM_COL2, y, warning? g_model.rssiAlarms.getWarningRssi() : g_model.rssiAlarms.getCriticalRssi(), LEFT|attr, 3);
         if (attr && s_editMode>0) {
-          CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
+          if (warning)
+            CHECK_INCDEC_MODELVAR(event, g_model.rssiAlarms.warning, -30, 30);
+          else
+            CHECK_INCDEC_MODELVAR(event, g_model.rssiAlarms.critical, -30, 30);
         }
         break;
       }
-      case ITEM_TELEMETRY_DISALBE_ARLAMS:
-        g_model.frsky.rssiAlarms[0].disabled = editCheckBox(g_model.frsky.rssiAlarms[0].disabled, TELEM_COL3, y, STR_DISABLE_ALARM, attr, event);
+      case ITEM_TELEMETRY_DISABLE_ALARMS:
+        g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, TELEM_COL3, y, STR_DISABLE_ALARM, attr, event);
         break;
 
 #if defined(VARIO)

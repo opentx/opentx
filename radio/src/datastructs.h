@@ -468,13 +468,7 @@ PACK(struct ScriptData {
 /*
  * Frsky Telemetry structure
  */
-#if defined(CPUARM)
-PACK(struct FrSkyRSSIAlarm {
-       int8_t disabled:1;
-       int8_t spare:1;
-       int8_t value:6;
-     });
-#else
+#if !defined(CPUARM)
 PACK(struct FrSkyRSSIAlarm {
   int8_t level:2;
   int8_t value:6;
@@ -522,7 +516,6 @@ PACK(struct FrSkyTelemetryData {
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
-  FrSkyRSSIAlarm rssiAlarms[2];
 });
 #elif defined(CPUARM)
 PACK(struct FrSkyChannelData {
@@ -548,8 +541,17 @@ PACK(struct FrSkyTelemetryData {
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
-  FrSkyRSSIAlarm rssiAlarms[2];
 });
+
+PACK(struct RssiAlarmData {
+  int8_t disabled:1;
+  int8_t spare:1;
+  int8_t warning:6;
+  int8_t spare2:2;
+  int8_t critical:6;
+  inline int8_t getWarningRssi() {return 45 + warning;}
+  inline int8_t getCriticalRssi() {return 42 + critical;}
+ });
 #else
 PACK(struct FrSkyChannelData {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
@@ -766,7 +768,7 @@ typedef uint8_t swarnenable_t;
 #if defined(TELEMETRY_MAVLINK)
   #define TELEMETRY_DATA MavlinkTelemetryData mavlink;
 #elif defined(TELEMETRY_FRSKY) || !defined(PCBSTD)
-  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky);
+  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
 #else
   #define TELEMETRY_DATA
 #endif
@@ -1108,7 +1110,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 6);
   CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 106);
+  CHKSIZE(FrSkyTelemetryData, 104);
   CHKSIZE(ModelHeader, 24);
   CHKSIZE(CurveData, 4);
 #if defined(PCBX9E)
@@ -1206,7 +1208,11 @@ static inline void check_struct()
   CHKSIZE(GVarData, 7);
 #endif
 
+#if defined(CPUARM)
+  CHKSIZE(RssiAlarmData, 2);
+#else
   CHKSIZE(FrSkyRSSIAlarm, 1);
+#endif
   CHKSIZE(TrainerData, 16);
 
 #undef CHKSIZE

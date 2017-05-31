@@ -1039,7 +1039,7 @@ void checkFailsafe()
 #if defined(CPUARM)
 void checkRSSIAlaramsDisabled()
 {
-  if (g_model.frsky.rssiAlarms[0].disabled)
+  if (g_model.rssiAlarms.disabled)
     ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
 }
 #endif

@@ -1528,7 +1528,9 @@ inline int div_and_round(int num, int den)
 }
 
 #if defined(TELEMETRY_FRSKY)
+#if !defined(CPUARM)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
+#endif
 
 extern const pm_uint8_t bchunit_ar[];
 

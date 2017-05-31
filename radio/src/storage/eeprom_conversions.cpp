@@ -450,7 +450,7 @@ PACK(typedef struct {
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
-  FrSkyRSSIAlarm rssiAlarms[2];
+  uint8_t rssiAlarms[2];
   uint16_t mAhPersistent:1;
   uint16_t storedMah:15;
   int8_t   fasOffset;
@@ -613,6 +613,7 @@ PACK(typedef struct {
   GVarData gvars[MAX_GVARS];
 
   FrSkyTelemetryData frsky;
+  RssiAlarmData rssiAlarms;
 
   MODELDATA_EXTRA_217
 
@@ -1007,7 +1008,7 @@ void ConvertModel_216_to_217(ModelData & model)
   newModel.switchWarningEnable = oldModel.switchWarningEnable;
   memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
 
-  memcpy(&newModel.frsky.rssiAlarms, &oldModel.frsky.rssiAlarms, sizeof(newModel.frsky.rssiAlarms));
+  memcpy(&newModel.rssiAlarms, &oldModel.frsky.rssiAlarms, sizeof(newModel.rssiAlarms));
 
   for (int i=0; i<NUM_MODULES+1; i++) {
     newModel.moduleData[i].type = 0;
