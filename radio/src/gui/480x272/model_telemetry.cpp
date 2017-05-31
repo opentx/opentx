@@ -25,6 +25,7 @@ enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_RSSI_LABEL,
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
+  ITEM_TELEMETRY_DISALBE_ARLAMS,
   ITEM_TELEMETRY_SENSORS_LABEL,
   ITEM_TELEMETRY_SENSOR1,
   ITEM_TELEMETRY_SENSOR2,
@@ -87,7 +88,7 @@ enum MenuModelTelemetryFrskyItems {
 #else
   #define VARIO_ROWS
 #endif
-#define RSSI_ROWS                     LABEL(RSSI), 0, 0,
+#define RSSI_ROWS                     LABEL(RSSI), 0, 0, 0,
 #define VARIO_RANGE_ROWS              3
 #define TELEMETRY_TYPE_ROWS           (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
 
@@ -541,7 +542,10 @@ bool menuModelTelemetryFrsky(event_t event)
         }
         break;
       }
-
+      case ITEM_TELEMETRY_DISALBE_ARLAMS:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DISABLE_ALARM);
+        g_model.frsky.rssiAlarms[0].disabled = editCheckBox(g_model.frsky.rssiAlarms[0].disabled, TELEM_COL3, y, attr, event);
+        break;
 #if defined(VARIO)
       case ITEM_TELEMETRY_VARIO_LABEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_VARIO);

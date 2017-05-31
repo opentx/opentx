@@ -41,6 +41,7 @@ enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
 #if defined(CPUARM)
+  ITEM_TELEMETRY_DISALBE_ARLAMS,
   ITEM_TELEMETRY_SENSORS_LABEL,
   ITEM_TELEMETRY_SENSOR1,
   ITEM_TELEMETRY_SENSOR2,
@@ -150,7 +151,7 @@ enum MenuModelTelemetryFrskyItems {
 #endif
 
 #if defined(CPUARM)
-  #define RSSI_ROWS                      LABEL(RSSI), 0, 0,
+  #define RSSI_ROWS                      LABEL(RSSI), 0, 0, 1,
 #else
   #define RSSI_ROWS                      LABEL(RSSI), 1, 1,
 #endif
@@ -726,7 +727,11 @@ void menuModelTelemetryFrsky(event_t event)
 #endif // CPUARM
         break;
       }
-
+#if defined(CPUARM)
+      case ITEM_TELEMETRY_DISALBE_ARLAMS:
+        g_model.frsky.rssiAlarms[0].disabled = editCheckBox(g_model.frsky.rssiAlarms[0].disabled, TELEM_COL2, y, STR_DISABLE_ALARM, attr, event);
+        break;
+#endif
 #if !defined(CPUARM)
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
       case ITEM_TELEMETRY_USR_LABEL:

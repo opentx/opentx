@@ -468,11 +468,18 @@ PACK(struct ScriptData {
 /*
  * Frsky Telemetry structure
  */
-
+#if defined(CPUARM)
+PACK(struct FrSkyRSSIAlarm {
+       int8_t disabled:1;
+       int8_t spare:1;
+       int8_t value:6;
+     });
+#else
 PACK(struct FrSkyRSSIAlarm {
   int8_t level:2;
   int8_t value:6;
 });
+#endif
 
 #if defined(CPUARM)
 typedef int16_t ls_telemetry_value_t;

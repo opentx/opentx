@@ -999,6 +999,7 @@
 #define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
+#define TR_DISABLE_ALARM               INDENT "Disable telemetry alarms"
 #define TR_ENABLE_POPUP        "Enable Popup"
 #define TR_DISABLE_POPUP       "Disable Popup"
 #define TR_POPUP               "Popup"

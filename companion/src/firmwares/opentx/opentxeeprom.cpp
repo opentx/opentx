@@ -2850,7 +2850,8 @@ class FrskyField: public StructField {
         Append(new SignedField<8>(this, frsky.varioMin));
         Append(new SignedField<8>(this, frsky.varioMax));
         for (int i=0; i<2; i++) {
-          Append(new ConversionField< UnsignedField<2> >(this, frsky.rssiAlarms[i].level, &rssiConversionTable[i], "RSSI"));
+          Append(new BoolField<1>(this, frsky.rssiAlarms[i].disabled));
+          Append(new SpareBitsField<1>(this));
           Append(new ConversionField< SignedField<6> >(this, frsky.rssiAlarms[i].value, -45+i*3));
         }
         if (version == 216) {

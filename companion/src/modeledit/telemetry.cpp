@@ -829,16 +829,18 @@ void TelemetryPanel::setup()
       }
       ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
       ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
+      ui->disableTelemetryAlarms->setField(model->frsky.rssiAlarms[0].disabled);
     }
     else {
       ui->telemetryProtocolLabel->hide();
       ui->telemetryProtocol->hide();
       ui->ignoreSensorIds->hide();
+      ui->disableTelemetryAlarms->hide();
     }
 
     ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);
     ui->rssiAlarm2SB->setValue(model->frsky.rssiAlarms[1].value);
-    if (!IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+    if (!IS_ARM(firmware->getBoard())) {
       ui->rssiAlarm1CB->setCurrentIndex(model->frsky.rssiAlarms[0].level);
       ui->rssiAlarm2CB->setCurrentIndex(model->frsky.rssiAlarms[1].level);
     }

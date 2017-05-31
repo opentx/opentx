@@ -596,7 +596,8 @@ class FrSkyRSSIAlarm {
     FrSkyRSSIAlarm() { clear(0, 50); }
     unsigned int level;
     int value;
-    void clear(unsigned int level, int value) { this->level = level; this->value = value;}
+    bool disabled;
+    void clear(unsigned int level, int value) { this->level = level; this->value = value; this->disabled=false;}
 };
 
 class FrSkyChannelData {
