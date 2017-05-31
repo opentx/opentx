@@ -50,13 +50,14 @@ mkdir -p ../debian/
 cp common/* ../debian/
 cp ${distro}/* ../debian/
 
-echo "Editing rules to set version suffix to \"${suffix}\""
-sed -i "s/__VERSION_SUFFIX__/${suffix}/g" ../debian/rules
 
 if [ ${nightly_build} -gt 0 ] ; then
+  echo "Editing rules to set version suffix to \"${suffix}\""
+  sed -i "s/__VERSION_SUFFIX__/${suffix}/g" ../debian/rules
   echo "Setting nightly build flag"
   sed -i "s/DALLOW_NIGHTLY_BUILDS=YES/DALLOW_NIGHTLY_BUILDS=YES/g" ../debian/rules
 else
+  sed -i "s/__VERSION_SUFFIX__//g" ../debian/rules
   sed -i "s/DALLOW_NIGHTLY_BUILDS=YES/DALLOW_NIGHTLY_BUILDS=NO/g" ../debian/rules
 fi
 

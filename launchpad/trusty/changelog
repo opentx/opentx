@@ -1,72 +1,11 @@
-opentx-companion22 (2.2.0~N371~trusty) trusty; urgency=low
+opentx-companion22 (2.2.0~ppa02~trusty) trusty; urgency=low
 
-  * New release 2.2.0~N371 RC18
+  * New release 2.2.0~ppa02
 
- -- projectkk2glider <projectkk2glider@gmail.com>  Sat, 29 Apr 2017 18:57:42 +0200
+ -- projectkk2glider <projectkk2glider@gmail.com>  Wed, 31 May 2017 22:37:49 +0200
 
-opentx-companion22 (2.2.0~N370~trusty) trusty; urgency=low
+opentx-companion22 (2.2.0~ppa01~trusty) trusty; urgency=low
 
-  * New release 2.2.0~N370 RC17
+  * OpenTX version 2.2.0
 
- -- projectkk2glider <projectkk2glider@gmail.com>  Thu, 27 Apr 2017 10:59:16 +0200
-
-opentx-companion22 (2.2.0~N369~trusty) trusty; urgency=low
-
-  * New release 2.2.0~N369 RC16
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Sat, 15 Apr 2017 09:58:45 +0200
-
-opentx-companion22 (2.2.0~N366.1~trusty) trusty; urgency=low
-
-  * New release 2.2.0~N366 RC14
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Thu, 23 Mar 2017 19:02:56 +0100
-
-opentx-companion22 (2.2.0~N365~trusty) trusty; urgency=low
-
-  * New release 2.2.0~N365 RC13
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Sun, 19 Mar 2017 20:09:34 +0100
-
-opentx-companion22 (2.2.0~N364~trusty) trusty; urgency=low
-
-  * New release 2.2.0~N364 RC12
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Mon, 13 Mar 2017 17:29:15 +0100
-
-opentx-companion22 (2.2.0~N363~trusty) trusty; urgency=low
-
-  * New release 2.2.0~N363 RC11
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Sun, 05 Mar 2017 09:55:02 +0100
-
-opentx-companion22 (2.2.0~N362~trusty) trusty; urgency=low
-
-  * New release 2.2.0~N362 RC10
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Sun, 29 Jan 2017 10:51:59 +0100
-
-opentx-companion22 (2.2.0~N361.2~trusty) trusty; urgency=low
-
-  * Added Taranis X7 simulator
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Sat, 28 Jan 2017 17:57:36 +0100
-
-opentx-companion22 (2.2.0~N361.1~trusty) trusty; urgency=low
-
-  * Debian package fixes
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Thu, 26 Jan 2017 20:25:25 +0100
-
-opentx-companion22 (2.2.0~N361~update1~trusty) trusty; urgency=low
-
-  * Enabled Companion and Firmware nightly builds (ALLOW_NIGHTLY_BUILDS=YES)
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Thu, 26 Jan 2017 18:46:52 +0100
-
-opentx-companion22 (2.2.0~N361~trusty) trusty; urgency=low
-
-  * New release 2.2.0~N361
-
- -- projectkk2glider <projectkk2glider@gmail.com>  Wed, 25 Jan 2017 20:37:30 +0100
-
+ -- projectkk2glider <projectkk2glider@gmail.com>  Wed, 31 May 2017 21:50:39 +0200
