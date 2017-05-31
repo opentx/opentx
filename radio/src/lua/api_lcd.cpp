@@ -207,7 +207,7 @@ See the [Appendix](../appendix/fonts.md) for available characters in each font s
  * `BLINK` blinking text
  * `SHADOWED` Horus only, apply a shadow effect
 
-@status current Introduced in 2.0.0, `SHADOWED` introduced in 2.2.0
+@status current Introduced in 2.0.0, `SHADOWED` introduced in 2.2.1
 */
 static int luaLcdDrawText(lua_State *L)
 {
@@ -216,7 +216,7 @@ static int luaLcdDrawText(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * s = luaL_checkstring(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  #if defined(PCBHORUS)
+  #if defined(COLORLCD)
   if ((att&SHADOWED) && !(att&INVERS)) lcdDrawText(x+1, y+1, s, att&0xFFFF);
   #endif
   lcdDrawText(x, y, s, att);
@@ -236,8 +236,9 @@ Display a value formatted as time at (x,y)
  * `0 or not specified` normal representation (minutes and seconds)
  * `TIMEHOUR` display hours
  * other general LCD flag also apply
+ * `SHADOWED` Horus only, apply a shadow effect
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0,  `SHADOWED` introduced in 2.2.1
 */
 static int luaLcdDrawTimer(lua_State *L)
 {
@@ -247,6 +248,7 @@ static int luaLcdDrawTimer(lua_State *L)
   int seconds = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
 #if defined(COLORLCD)
+  if (att&SHADOWED) drawTimer(x+1, y+1, seconds, att&0xFFFF|LEFT);
   drawTimer(x, y, seconds, att|LEFT);
 #else
   drawTimer(x, y, seconds, att|LEFT, att);
@@ -270,7 +272,7 @@ Display a number at (x,y)
  * other general LCD flag also apply
  * `SHADOWED` Horus only, apply a shadow effect
 
-@status current Introduced in 2.0.0,  `SHADOWED` introduced in 2.2.0
+@status current Introduced in 2.0.0,  `SHADOWED` introduced in 2.2.1
 */
 static int luaLcdDrawNumber(lua_State *L)
 {
@@ -279,7 +281,7 @@ static int luaLcdDrawNumber(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   int val = luaL_checkinteger(L, 3);
   unsigned int att = luaL_optunsigned(L, 4, 0);
-  #if defined(PCBHORUS)
+  #if defined(COLORLCD)
   if ((att&SHADOWED) && !(att&INVERS)) lcdDrawNumber(x, y, val, att&0xFFFF);
   #endif
   lcdDrawNumber(x, y, val, att);
