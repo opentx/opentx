@@ -431,8 +431,8 @@
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
 
-#define LEN2_VTEMPLATES        13
-#define LEN_VTEMPLATES         "\015"
+#define LEN2_VTEMPLATES        12
+#define LEN_VTEMPLATES         "\014"
 #define TR_TEMPLATE_CLEAR_MIXES        "Clear Mixes "
 #define TR_TEMPLATE_SIMPLE_4CH         "Simple 4-CH "
 #define TR_TEMPLATE_STICKY_TCUT        "Sticky-T-Cut"

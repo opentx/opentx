@@ -431,12 +431,12 @@
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
 
-#define LEN2_VTEMPLATES        13
-#define LEN_VTEMPLATES         "\015"
-#define TR_TEMPLATE_CLEAR_MIXES        "Elim Mezcla\0\0"
-#define TR_TEMPLATE_SIMPLE_4CH         "Simple 4-CH \0"
-#define TR_TEMPLATE_STICKY_TCUT        "Anular Motor\0"
-#define TR_TEMPLATE_VTAIL              "Cola en V   \0"
+#define LEN2_VTEMPLATES        12
+#define LEN_VTEMPLATES         "\014"
+#define TR_TEMPLATE_CLEAR_MIXES        "Elim Mezcla\0"
+#define TR_TEMPLATE_SIMPLE_4CH         "Simple 4-CH "
+#define TR_TEMPLATE_STICKY_TCUT        "Anular Motor"
+#define TR_TEMPLATE_VTAIL              "Cola en V   "
 #define TR_TEMPLATE_DELTA              "Elevon\\Delta"
 #define TR_TEMPLATE_ECCPM              "eCCPM       "
 #define TR_TEMPLATE_HELI               "Heli Setup  "

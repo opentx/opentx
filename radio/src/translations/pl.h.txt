@@ -451,8 +451,6 @@
 #define TR_TEMPLATE_HELI               "Ustaw Heli  \0"
 #define TR_TEMPLATE_SERVO_TEST         "Test serwa  \0"
 
-#define TR_VTEMPLATES          "Elevon-Delta\0""eCCPM       \0"
-
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
 

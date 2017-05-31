@@ -404,8 +404,8 @@
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "DMS\0""NMEA"
 
-#define LEN2_VTEMPLATES        13
-#define LEN_VTEMPLATES         "\015"
+#define LEN2_VTEMPLATES        12
+#define LEN_VTEMPLATES         "\014"
 #define TR_TEMPLATE_CLEAR_MIXES        "Smazat mixy "
 #define TR_TEMPLATE_SIMPLE_4CH         "Zákl. 4kanál"
 #define TR_TEMPLATE_STICKY_TCUT        "Sticky-T-Cut"
