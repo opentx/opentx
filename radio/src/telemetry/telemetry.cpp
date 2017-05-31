@@ -154,7 +154,7 @@ void telemetryWakeup()
   
 #define FRSKY_BAD_ANTENNA()            (IS_SWR_VALUE_VALID() && telemetryData.swr.value > 0x33)
 
-#if !defined(CPUARM)
+#if defined(CPUARM)
   static tmr10ms_t alarmsCheckTime = 0;
   #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
