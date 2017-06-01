@@ -519,7 +519,7 @@ union FrSkyScreenData {
 #endif
 
 #if defined(COLORLCD)
-PACK(struct FrSkyTelemetryData {
+PACK(struct FrSkyTelemetryData {  // TODO EEPROM change, rename to VarioData
   uint8_t varioSource:7;
   uint8_t varioCenterSilent:1;
   int8_t  varioCenterMax;
@@ -528,17 +528,6 @@ PACK(struct FrSkyTelemetryData {
   int8_t  varioMax;
 });
 #elif defined(CPUARM)
-PACK(struct FrSkyChannelData {
-  uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
-  int16_t   offset:12;
-  uint16_t  type:4;             // channel unit (0=volts, ...)
-  uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
-  uint8_t   alarms_level:4;
-  uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
-  uint8_t   spare:2;
-  uint8_t   multiplier;         // 0=no multiplier, 1=*2 multiplier
-});
-
 // TODO remove this also on Taranis
 PACK(struct FrSkyTelemetryData {
   uint8_t voltsSource;
@@ -765,10 +754,12 @@ typedef uint8_t swarnenable_t;
   #define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
+#if defined(CPUARM)
+  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
+#elif defined(TELEMETRY_MAVLINK)
   #define TELEMETRY_DATA MavlinkTelemetryData mavlink;
 #elif defined(TELEMETRY_FRSKY) || !defined(PCBSTD)
-  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
+  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky);
 #else
   #define TELEMETRY_DATA
 #endif
@@ -1193,9 +1184,6 @@ static inline void check_struct()
 
 #if defined(CPUARM)
   CHKSIZE(LogicalSwitchData, 9);
-#if !defined(COLORLCD)
-  CHKSIZE(FrSkyChannelData, 7);
-#endif
   CHKSIZE(TelemetrySensor, 13);
   CHKSIZE(ModuleData,70);
 #else

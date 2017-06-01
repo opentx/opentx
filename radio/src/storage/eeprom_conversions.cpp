@@ -436,8 +436,14 @@ typedef union {
   FrSkyLineData_v216 lines[4];
 } FrSkyScreenData_v216;
 
+
+PACK(struct FrSkyChannelData_v216 {
+  uint8_t unused[7];
+});
+
+
 PACK(typedef struct {
-  FrSkyChannelData channels[4];
+  FrSkyChannelData_v216 channels[4];
   uint8_t usrProto; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
   uint8_t voltsSource:7;
   uint8_t altitudeDisplayed:1;
