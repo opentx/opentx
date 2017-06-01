@@ -286,7 +286,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
     }
     else if (c >= 0x20) {
       if ( ( c == 46) && ((FONTSIZE(flags) == TINSIZE))) { // '.' handling
-        if (flags & INVERS) {
+        if (((flags & BLINK) && BLINK_ON_PHASE) || ((!(flags & BLINK) && (flags & INVERS)))) {
           lcdDrawSolidVerticalLine(x, y-1, 5);
           lcdDrawPoint(x, y + 5);
         }
