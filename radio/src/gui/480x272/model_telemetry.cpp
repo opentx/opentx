@@ -548,7 +548,7 @@ bool menuModelTelemetryFrsky(event_t event)
       }
       case ITEM_TELEMETRY_DISABLE_ALARMS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_DISABLE_ALARM);
-        g_model.frsky.rssiAlarms[0].disabled = editCheckBox(g_model.rssiAlarms.disabled, TELEM_COL3, y, attr, event);
+        g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, TELEM_COL3, y, attr, event);
         break;
 #if defined(VARIO)
       case ITEM_TELEMETRY_VARIO_LABEL:

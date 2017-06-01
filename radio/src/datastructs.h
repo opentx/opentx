@@ -468,7 +468,17 @@ PACK(struct ScriptData {
 /*
  * Frsky Telemetry structure
  */
-#if !defined(CPUARM)
+#if defined(CPUARM)
+PACK(struct RssiAlarmData {
+  int8_t disabled:1;
+  int8_t spare:1;
+  int8_t warning:6;
+  int8_t spare2:2;
+  int8_t critical:6;
+  inline int8_t getWarningRssi() {return 45 + warning;}
+  inline int8_t getCriticalRssi() {return 42 + critical;}
+ });
+#else
 PACK(struct FrSkyRSSIAlarm {
   int8_t level:2;
   int8_t value:6;
@@ -542,16 +552,6 @@ PACK(struct FrSkyTelemetryData {
   int8_t  varioMin;
   int8_t  varioMax;
 });
-
-PACK(struct RssiAlarmData {
-  int8_t disabled:1;
-  int8_t spare:1;
-  int8_t warning:6;
-  int8_t spare2:2;
-  int8_t critical:6;
-  inline int8_t getWarningRssi() {return 45 + warning;}
-  inline int8_t getCriticalRssi() {return 42 + critical;}
- });
 #else
 PACK(struct FrSkyChannelData {
   uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
@@ -1091,7 +1091,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 4);
   CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 106);
+  CHKSIZE(FrSkyTelemetryData, 104);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
 
@@ -1132,7 +1132,7 @@ static inline void check_struct()
   CHKSIZE(TimerData, 16);
   CHKSIZE(SwashRingData, 8);
 
-  CHKSIZE(FrSkyTelemetryData, 7);
+  CHKSIZE(FrSkyTelemetryData, 5);
   CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
   CHKSIZE(RadioData, 847);
@@ -1149,7 +1149,7 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 5);
   CHKSIZE(FrSkyLineData, 2);
-  CHKSIZE(FrSkyTelemetryData, 90);
+  CHKSIZE(FrSkyTelemetryData, 88);
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
   CHKSIZE(RadioData, 727);
