@@ -829,7 +829,7 @@ void TelemetryPanel::setup()
       }
       ui->telemetryProtocol->setCurrentIndex(model->telemetryProtocol);
       ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
-      ui->disableTelemetryAlarms->setField(model->frsky.rssiAlarms[0].disabled);
+      ui->disableTelemetryAlarms->setField(model->rssiAlarms.disabled);
     }
     else {
       ui->telemetryProtocolLabel->hide();
@@ -838,17 +838,17 @@ void TelemetryPanel::setup()
       ui->disableTelemetryAlarms->hide();
     }
 
-    ui->rssiAlarm1SB->setValue(model->frsky.rssiAlarms[0].value);
-    ui->rssiAlarm2SB->setValue(model->frsky.rssiAlarms[1].value);
+    ui->rssiAlarmWarningSB->setValue(model->rssiAlarms.warning);
+    ui->rssiAlarmCriticalSB->setValue(model->rssiAlarms.critical);
     if (!IS_ARM(firmware->getBoard())) {
-      ui->rssiAlarm1CB->setCurrentIndex(model->frsky.rssiAlarms[0].level);
-      ui->rssiAlarm2CB->setCurrentIndex(model->frsky.rssiAlarms[1].level);
+      ui->rssiAlarmWarningCB->setCurrentIndex(model->rssiAlarms.level[0]);
+      ui->rssiAlarmCriticalCB->setCurrentIndex(model->rssiAlarms.level[1]);
     }
     else {
-      ui->rssiAlarm1CB->hide();
-      ui->rssiAlarm2CB->hide();
-      ui->rssiAlarm1Label->setText(tr("Low Alarm"));
-      ui->rssiAlarm2Label->setText(tr("Critical Alarm"));
+      ui->rssiAlarmWarningCB->hide();
+      ui->rssiAlarmCriticalCB->hide();
+      ui->rssiAlarmWarningLabel->setText(tr("Low Alarm"));
+      ui->rssiAlarmCriticalLabel->setText(tr("Critical Alarm"));
     }
 
     /*if (IS_ARM(firmware->getBoard())) {
@@ -1003,27 +1003,27 @@ void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
   }
 }
 
-void TelemetryPanel::on_rssiAlarm1CB_currentIndexChanged(int index)
+void TelemetryPanel::on_rssiAlarmWarningCB_currentIndexChanged(int index)
 {
-  model->frsky.rssiAlarms[0].level = index;
+  model->rssiAlarms.level[0] = index;
   emit modified();
 }
 
-void TelemetryPanel::on_rssiAlarm2CB_currentIndexChanged(int index)
+void TelemetryPanel::on_rssiAlarmCriticalCB_currentIndexChanged(int index)
 {
-  model->frsky.rssiAlarms[1].level = index;
+  model->rssiAlarms.level[1] = index;
   emit modified();
 }
 
-void TelemetryPanel::on_rssiAlarm1SB_editingFinished()
+void TelemetryPanel::on_rssiAlarmWarningSB_editingFinished()
 {
-  model->frsky.rssiAlarms[0].value = ui->rssiAlarm1SB->value();
+  model->rssiAlarms.warning= ui->rssiAlarmWarningSB->value();
   emit modified();
 }
 
-void TelemetryPanel::on_rssiAlarm2SB_editingFinished()
+void TelemetryPanel::on_rssiAlarmCriticalSB_editingFinished()
 {
-  model->frsky.rssiAlarms[1].value = ui->rssiAlarm2SB->value();
+  model->rssiAlarms.critical = ui->rssiAlarmCriticalSB->value();
   emit modified();
 }
 

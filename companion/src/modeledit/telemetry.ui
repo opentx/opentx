@@ -75,7 +75,7 @@
        <number>4</number>
       </property>
       <item row="2" column="1">
-       <widget class="QComboBox" name="rssiAlarm1CB">
+       <widget class="QComboBox" name="rssiAlarmWarningCB">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -105,7 +105,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QLabel" name="rssiAlarm1Label">
+       <widget class="QLabel" name="rssiAlarmWarningLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -127,7 +127,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="rssiAlarm2CB">
+       <widget class="QComboBox" name="rssiAlarmCriticalCB">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -157,7 +157,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QLabel" name="rssiAlarm2Label">
+       <widget class="QLabel" name="rssiAlarmCriticalLabel">
         <property name="sizePolicy">
          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -176,7 +176,7 @@
        </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QSpinBox" name="rssiAlarm2SB">
+       <widget class="QSpinBox" name="rssiAlarmCriticalSB">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -204,7 +204,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QSpinBox" name="rssiAlarm1SB">
+       <widget class="QSpinBox" name="rssiAlarmWarningSB">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -1031,10 +1031,10 @@
  </customwidgets>
  <tabstops>
   <tabstop>telemetryProtocol</tabstop>
-  <tabstop>rssiAlarm1CB</tabstop>
-  <tabstop>rssiAlarm1SB</tabstop>
-  <tabstop>rssiAlarm2CB</tabstop>
-  <tabstop>rssiAlarm2SB</tabstop>
+  <tabstop>rssiAlarmWarningCB</tabstop>
+  <tabstop>rssiAlarmWarningSB</tabstop>
+  <tabstop>rssiAlarmCriticalCB</tabstop>
+  <tabstop>rssiAlarmCriticalSB</tabstop>
   <tabstop>varioSource</tabstop>
   <tabstop>varioLimitMin_DSB</tabstop>
   <tabstop>varioLimitCenterMin_DSB</tabstop>
