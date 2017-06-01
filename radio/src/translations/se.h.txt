@@ -436,9 +436,16 @@
 #define LEN_GPSFORMAT          "\004"
 #define TR_GPSFORMAT           "HMS NMEA"
 
-#define LEN2_VTEMPLATES        13
-#define LEN_VTEMPLATES         "\015"
-#define TR_VTEMPLATES          "Nolla Mixar\0\0""Enkel 4kanal\0""Gasklippning\0""V-Stjärt    \0""Deltavinge  \0""eCCPM       \0""Helikopter  \0""Servotest   \0"
+#define LEN2_VTEMPLATES        12
+#define LEN_VTEMPLATES         "\014"
+#define TR_TEMPLATE_CLEAR_MIXES        "Nolla Mixar\0"
+#define TR_TEMPLATE_SIMPLE_4CH         "Enkel 4kanal"
+#define TR_TEMPLATE_STICKY_TCUT        "Gasklippning"
+#define TR_TEMPLATE_VTAIL              "V-Stjärt    "
+#define TR_TEMPLATE_DELTA              "Deltavinge  "
+#define TR_TEMPLATE_ECCPM              "eCCPM       "
+#define TR_TEMPLATE_HELI               "Helikopter  "
+#define TR_TEMPLATE_SERVO_TEST         "Servotest   "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0 "

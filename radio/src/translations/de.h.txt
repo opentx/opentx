@@ -445,7 +445,14 @@
 
 #define LEN2_VTEMPLATES        15  // max String Länge für Menü (original=13)
 #define LEN_VTEMPLATES         "\017"  // max String Länge 15+cr+lf
-#define TR_VTEMPLATES          "Misch. Lösch.\0 ""Einfach. 4-CH\0 ""Fixe Gassperre\0""V-Leitwerk\0    ""Delta Mischer\0 ""eCCPM\0         ""Hubschrauber\0  ""Servo Tester\0  "
+#define TR_TEMPLATE_CLEAR_MIXES        "Misch. Lösch.\0 "
+#define TR_TEMPLATE_SIMPLE_4CH         "Einfach. 4-CH\0 "
+#define TR_TEMPLATE_STICKY_TCUT        "Fixe Gassperre\0"
+#define TR_TEMPLATE_VTAIL              "V-Leitwerk\0    "
+#define TR_TEMPLATE_DELTA              "Delta Mischer\0 "
+#define TR_TEMPLATE_ECCPM              "eCCPM\0         "
+#define TR_TEMPLATE_HELI               "Hubschrauber\0  "
+#define TR_TEMPLATE_SERVO_TEST         "Servo Tester\0  "
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "--- ""120 ""120X""140 ""90\0"

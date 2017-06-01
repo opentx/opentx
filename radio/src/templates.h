@@ -66,7 +66,9 @@ enum Templates {
   TMPL_V_TAIL,
   TMPL_ELEVON_DELTA,
   TMPL_ECCPM,
+#if defined(HELI) && defined(CURVES)
   TMPL_HELI_SETUP,
+#endif
   TMPL_SERVO_TEST,
   TMPL_COUNT
 };

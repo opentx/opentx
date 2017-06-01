@@ -442,7 +442,14 @@
 
 #define LEN2_VTEMPLATES        13
 #define LEN_VTEMPLATES         "\015" /*13 decimal*/
-#define TR_VTEMPLATES          "Usuń Miksy ""Prosty. 4kn\0 ""Przełą-T-Cut\0""V-Tail      \0""Elevon-Delta\0""eCCPM       \0""Ustaw Heli  \0""Test serwa  \0"
+#define TR_TEMPLATE_CLEAR_MIXES        "Usuń Miksy   "
+#define TR_TEMPLATE_SIMPLE_4CH         "Prosty. 4kn\0 "
+#define TR_TEMPLATE_STICKY_TCUT        "Przełą-T-Cut\0"
+#define TR_TEMPLATE_VTAIL              "V-Tail       "
+#define TR_TEMPLATE_DELTA              "Elevon\\Delta "
+#define TR_TEMPLATE_ECCPM              "eCCPM        "
+#define TR_TEMPLATE_HELI               "Ustaw Heli  \0"
+#define TR_TEMPLATE_SERVO_TEST         "Test serwa  \0"
 
 #define LEN_VSWASHTYPE         "\004"
 #define TR_VSWASHTYPE          "---\0""120\0""120X""140\0""90\0"
