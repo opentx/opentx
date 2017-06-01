@@ -701,8 +701,6 @@ Draw a combo box
 
 @param idx (integer) index of entry to highlight
 
-@param page (number) page number
-
 @param flags (unsigned number) drawing flags, the flags can not be combined:
  * `BLINK` combo box is expanded
  * `INVERS` combo box collapsed, text inversed
