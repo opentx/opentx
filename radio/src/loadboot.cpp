@@ -77,20 +77,15 @@ void _bootStart()
   //
   // If we were to turn it on here indiscriminately, then the radio can go into the 
   // power on/off loop after being powered off by the user. (issue #2790)
-  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+//  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     GPIOD->BSRRL = 1;                                  // set PWR_ON_GPIO_PIN pin to 1
     GPIOD->MODER = (GPIOD->MODER & 0xFFFFFFFC) | 1;    // General purpose output mode
-  }
+//  }
 
   // TRIMS_GPIO_PIN_LHR is on PG0 on X9E and on PE3 on Taranis
   // TRIMS_GPIO_PIN_RHL is on PC1 on all versions
   // turn on pull-ups on trim keys 
-  GPIOC->PUPDR = 0x00000004;
-#if defined(PCBX9E)
-  GPIOG->PUPDR = 0x00000001;
-#else
-  GPIOE->PUPDR = 0x00000040;
-#endif
+  GPIOD->PUPDR = 0x00000050;
 
   // wait for inputs to stabilize
   for (uint32_t i = 0; i < 50000; i += 1) {
@@ -102,14 +97,14 @@ void _bootStart()
   // then we must have a power button pressed. If not then we are in power on/off loop
   // and to terminate it, just wait here without turning on PWR pin. The power supply will
   // eventually exhaust and the radio will turn off.
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+/*  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     // wait here until the power key is pressed
     while (GPIOD->IDR & PWR_SWITCH_GPIO_PIN) {
       bwdt_reset();
     }
   }
-
-  if (!(TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR) && !(TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)) {
+*/
+  if (!(KEYS_GPIO_REG_PAGE & KEYS_GPIO_PIN_PAGE) && !(KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)) {
     // Bootloader needed
     const uint8_t *src;
     uint8_t *dest;

@@ -437,7 +437,7 @@ uint32_t pwrPressedDuration(void);
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()          false
 #else
-#define UNEXPECTED_SHUTDOWN()          (WAS_RESET_BY_WATCHDOG() || g_eeGeneral.unexpectedShutdown)
+#define UNEXPECTED_SHUTDOWN()          false //(WAS_RESET_BY_WATCHDOG() || g_eeGeneral.unexpectedShutdown)
 #endif
 
 // Backlight driver
