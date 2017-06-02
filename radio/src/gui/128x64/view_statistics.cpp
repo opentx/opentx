@@ -46,7 +46,7 @@ void menuStatisticsView(event_t event)
       break;
   }
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   // Session and Total timers
   lcdDrawText(STATS_1ST_COLUMN, FH*1+1, "SES", BOLD);
   drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer, 0, 0);
