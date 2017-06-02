@@ -1238,6 +1238,7 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
 #if defined(COLORLCD)
+  { "SHADOWED", SHADOWED },
   { "COLOR", ZoneOption::Color },
   { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "TEXT_COLOR", TEXT_COLOR },
