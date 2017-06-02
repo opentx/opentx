@@ -72,7 +72,7 @@ enum menuRadioSetupItems {
   CASE_PXX(ITEM_SETUP_COUNTRYCODE)
   ITEM_SETUP_LANGUAGE,
   ITEM_SETUP_IMPERIAL,
-  // IF_FAI_CHOICE(ITEM_SETUP_FAI)
+  IF_FAI_CHOICE(ITEM_SETUP_FAI)
   // CASE_MAVLINK(ITEM_MAVLINK_BAUD)
   ITEM_SETUP_SWITCHES_DELAY,
   ITEM_SETUP_RX_CHANNEL_ORD,
@@ -428,15 +428,18 @@ bool menuRadioSetup(event_t event)
         g_eeGeneral.imperial = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
         break;
 
-#if 0
+#if defined(FAI_CHOICE)
       case ITEM_SETUP_FAI:
         lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
-        g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
-        if (attr && checkIncDec_Ret) {
-          if (g_eeGeneral.fai)
-            POPUP_WARNING(PSTR("FAI\001mode blocked!"));
-          else
-            POPUP_CONFIRMATION(PSTR("FAI mode?"));
+        if (g_eeGeneral.fai) {
+          lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, PSTR("Locked in FAI Mode"));
+        }
+        else {
+          g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+          if (attr && checkIncDec_Ret) {
+              g_eeGeneral.fai = false;
+              POPUP_CONFIRMATION(PSTR("FAI mode?"));
+          }
         }
         break;
 #endif
