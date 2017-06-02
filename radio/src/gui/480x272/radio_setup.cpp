@@ -433,6 +433,9 @@ bool menuRadioSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
         if (g_eeGeneral.fai) {
           lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, PSTR("Locked in FAI Mode"));
+          if(attr){
+            putEvent(event);
+          }
         }
         else {
           g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
