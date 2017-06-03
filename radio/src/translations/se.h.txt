@@ -572,7 +572,7 @@
 #define TR_VTRAINER_MASTER_BATTERY     "Lärare/Batteri\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Ej givet""Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
+#define TR_VFAILSAFE           "Ej givet\0""Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
 
 #if defined(TELEMETRY_MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
