@@ -95,22 +95,26 @@ bool menuRadioSetup(event_t event)
 #endif
 
 #if defined(FAI_CHOICE)
+  #define FAI_CHOICE_ROW  (g_eeGeneral.fai ? (uint8_t)-1 : (uint8_t)0),
+
   if (warningResult) {
     warningResult = 0;
     g_eeGeneral.fai = true;
     storageDirty(EE_GENERAL);
   }
+#else
+  #define FAI_CHOICE_ROW
 #endif
 
   MENU(STR_MENURADIOSETUP, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SETUP, ITEM_SETUP_MAX, {
-    2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, 1|NAVIGATION_LINE_BY_LINE,
+    2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, 1|NAVIGATION_LINE_BY_LINE, // Date Time Bat range
     LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0,
     CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
     LABEL(ALARMS), 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
-    CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
+    CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - Chan order - Mode (1 to 4)
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -433,9 +437,6 @@ bool menuRadioSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
         if (g_eeGeneral.fai) {
           lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, PSTR("Locked in FAI Mode"));
-          if(attr){
-            putEvent(event);
-          }
         }
         else {
           g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
