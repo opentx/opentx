@@ -175,12 +175,32 @@ void menuRadioSdManager(event_t _event)
     audioQueue.stopSD();
 #endif
     BYTE work[_MAX_SS];
-    if (f_mkfs(0, FM_FAT32, 0, work, sizeof(work)) == FR_OK) {
-      f_chdir("/");
-      REFRESH_FILES();
-    }
-    else {
-      POPUP_WARNING(STR_SDCARD_ERROR);
+    FRESULT res = f_mkfs("", FM_FAT32, 0, work, sizeof(work));
+    switch(res) {
+      case FR_OK :
+        f_chdir("/");
+        REFRESH_FILES();
+        break;
+      case FR_DISK_ERR:
+        POPUP_WARNING("Format error");
+        break;
+      case FR_NOT_READY:
+        POPUP_WARNING("SDCard not ready");
+        break;
+      case FR_WRITE_PROTECTED:
+        POPUP_WARNING("SDCard write protected");
+        break;
+      case FR_INVALID_PARAMETER:
+        POPUP_WARNING("Format param invalid");
+        break;
+      case FR_INVALID_DRIVE:
+        POPUP_WARNING("Invalid drive");
+        break;
+      case FR_MKFS_ABORTED:
+        POPUP_WARNING("Format aborted");
+        break;
+      default:
+        POPUP_WARNING(STR_SDCARD_ERROR);
     }
   }
 
@@ -190,7 +210,7 @@ void menuRadioSdManager(event_t _event)
 
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, HEADER_LINE + reusableBuffer.sdmanager.count);
-  
+
   switch (_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
@@ -199,11 +219,11 @@ void menuRadioSdManager(event_t _event)
       lastPos = -1;
 #endif
       break;
-    
+
     case EVT_ENTRY_UP:
       menuVerticalOffset = reusableBuffer.sdmanager.offset;
       break;
-      
+
 #if defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY() && s_editMode == 0) {
