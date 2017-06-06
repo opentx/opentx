@@ -401,11 +401,9 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
   if (modelId != 0) {
     for (uint8_t i=0; i<MAX_MODELS; i++) {
       if (i != index) {
-        for (uint8_t j=0; j<NUM_MODULES; j++) {
-          if (modelId == modelHeaders[i].modelId[j]) {
-            POPUP_WARNING(STR_MODELIDUSED);
-            return;
-          }
+        if (modelId == modelHeaders[i].modelId[module]) {
+          POPUP_WARNING(STR_MODELIDUSED);
+          return;
         }
       }
     }
