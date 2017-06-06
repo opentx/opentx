@@ -1066,8 +1066,6 @@ static inline void check_struct()
 #endif
 
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
-  /* Sky9x does not have virtualinputs */
-
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
 #if defined(PCBX7)
