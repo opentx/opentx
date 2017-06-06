@@ -572,7 +572,7 @@ QString MultiModelPrinter::printTelemetry()
     columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>");
     for (int i=0; i<2; i++) {
       columns.append("<tr><td><b>" + QString(i==0 ? tr("RSSI Alarms") : "") + "</b></td><td>");
-      if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
+      if (IS_ARM(getCurrentBoard())) {
         COMPARE(i==0 ? tr("Low Alarm") : tr("Critical Alarm"));
       }
       else {
