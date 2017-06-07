@@ -27,9 +27,10 @@
 enum GermanPrompts {
   DE_PROMPT_NUMBERS_BASE = 0,
   DE_PROMPT_NULL = DE_PROMPT_NUMBERS_BASE+0,
-  DE_PROMPT_HUNDERT = DE_PROMPT_NUMBERS_BASE+100,
-  DE_PROMPT_TAUSEND = DE_PROMPT_NUMBERS_BASE+101,
-  DE_PROMPT_COMMA = 102,
+  DE_PROMPT_EIN = DE_PROMPT_NUMBERS_BASE+100,
+  DE_PROMPT_HUNDERT = DE_PROMPT_NUMBERS_BASE+101,
+  DE_PROMPT_TAUSEND = DE_PROMPT_NUMBERS_BASE+102,
+  DE_PROMPT_COMMA = 103,
   DE_PROMPT_UND,
   DE_PROMPT_MINUS,
   DE_PROMPT_UHR,
@@ -38,7 +39,7 @@ enum GermanPrompts {
   DE_PROMPT_SECUNDE,
   DE_PROMPT_SECUNDEN,
 
-  DE_PROMPT_UNITS_BASE = 110,
+  DE_PROMPT_UNITS_BASE = 111,
   DE_PROMPT_VOLTS = DE_PROMPT_UNITS_BASE+UNIT_VOLTS,
   DE_PROMPT_AMPS = DE_PROMPT_UNITS_BASE+UNIT_AMPS,
   DE_PROMPT_METERS_PER_SECOND = DE_PROMPT_UNITS_BASE+UNIT_METERS_PER_SECOND,
@@ -142,26 +143,46 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     return;
   }
 
-  if (number >= 1000) {
-    if (number >= 1100) {
-      PLAY_NUMBER(number / 1000, 0, 0);
-      PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-    } else {
-      PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
-    }
-    number %= 1000;
-    if (number == 0)
-      number = -1;
-  }
-  if (number >= 100) {
-    if (number >= 200)
-      PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number/100);
-    PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);
-    number %= 100;
-    if (number == 0)
-      number = -1;
-  }
-  PUSH_NUMBER_PROMPT(DE_PROMPT_NULL+number);
+  if (number >= 2000) {
+		PLAY_NUMBER(number / 1000, 0, 0);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
+		number %= 1000;
+		if (number == 0)
+			number = -1;
+	}
+
+	if ((number >= 1000) && (number <= 1999)) {
+		PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_TAUSEND);
+		number %= 1000;
+		if (number == 0)
+			number = -1;
+	}
+
+	if ((number >= 200) && (number <= 999)) {
+		PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 100);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);		
+		number %= 100;
+		if (number == 0)
+			number = -1;		
+	}
+
+	if ((number >= 100) && (number <= 199)) {
+		PUSH_NUMBER_PROMPT(DE_PROMPT_EIN);
+		PUSH_NUMBER_PROMPT(DE_PROMPT_HUNDERT);
+		number %= 100;
+		if (number == 0)
+			number = -1;		
+	}
+	
+	if (number > 0){
+		PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number / 1);
+		number %= 1;
+		if (number == 0)
+			number = -1;
+	}
+
+	PUSH_NUMBER_PROMPT(DE_PROMPT_NULL + number);
 
   if (unit) {
     PUSH_NUMBER_PROMPT(DE_PROMPT_UNITS_BASE+unit-1);
