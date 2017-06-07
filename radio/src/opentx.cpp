@@ -2431,7 +2431,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   TRACE("opentxInit");
 
 #if defined(GUI)
-  menuHandlers[0] = menuMainView;
+  menuHandlers[0] = menuViewTelemetryFrsky;
   #if MENUS_LOCK != 2/*no menus*/
     menuHandlers[1] = menuModelSelect;
   #endif
