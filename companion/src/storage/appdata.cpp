@@ -683,37 +683,37 @@ bool AppData::importSettings(QSettings & toSettings)
     settings21.clear();
   }
 
-  if (!fromSettings) {
-    QSettings settings20("OpenTX", "Companion 2.0");
-    if (settings20.contains("settings_version")) {
+  QSettings settings20("OpenTX", "Companion 2.0");
+  if (settings20.contains("settings_version")) {
+    if (!fromSettings) {
       fromSettings = &settings20;
       upgradeFromVersion = "2.0";
     }
-    else {
-      settings20.clear();
-    }
+  }
+  else {
+    settings20.clear();
   }
 
-  if (!fromSettings) {
-    QSettings settings16("OpenTX", "OpenTX Companion");
-    if (settings16.contains("settings_version")) {
+  QSettings settings16("OpenTX", "OpenTX Companion");
+  if (settings16.contains("settings_version")) {
+    if (!fromSettings) {
       fromSettings = &settings16;
       upgradeFromVersion = "1.x";
     }
-    else {
-      settings16.clear();
-    }
+  }
+  else {
+    settings16.clear();
   }
 
-  if (!fromSettings) {
-    QSettings settings9x("companion9x", "companion9x");
-    if (settings9x.contains("default_mode")) {
+  QSettings settings9x("companion9x", "companion9x");
+  if (settings9x.contains("default_mode")) {
+    if (!fromSettings) {
       fromSettings = &settings9x;
       upgradeFromVersion = "Companion9X";
     }
-    else {
-      settings9x.clear();
-    }
+  }
+  else {
+    settings9x.clear();
   }
 
   if (!fromSettings)
