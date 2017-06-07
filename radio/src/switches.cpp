@@ -824,7 +824,7 @@ void checkSwitches()
     // first - display warning
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
-      drawAlertBox(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP);
+      drawAlertBox(STR_SWITCHWARN, NULL, "");
       if (last_bad_switches == 0xff || last_bad_pots == 0xff) {
         AUDIO_ERROR_MESSAGE(AU_SWITCH_ALERT);
       }
@@ -934,7 +934,7 @@ void checkSwitches()
       last_bad_switches = 0xff;
     }
 #else
-    if (pwrCheck()==e_power_off || keyDown()) break;
+    if (pwrCheck()==e_power_off) break;
 
     doLoopCommonActions();
 
