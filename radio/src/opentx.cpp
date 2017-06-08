@@ -397,25 +397,57 @@ void applyDefaultTemplate()
 #if defined(CPUARM) && defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
+  memset(reusableBuffer.msgbuf.msg, 0, sizeof(reusableBuffer.msgbuf.msg));
+
   uint8_t modelId = g_model.header.modelId[module];
+  unsigned int numConflicts = 0;
+  unsigned int extra = 0;
+
   if (modelId != 0) {
-    for (uint8_t i=0; i<MAX_MODELS; i++) {
+    for (uint8_t i = 0; i < MAX_MODELS; i++) {
       if (i != index) {
         if (modelId == modelHeaders[i].modelId[module]) {
-          POPUP_WARNING(STR_MODELIDUSED);
+          numConflicts++;
+          char *name = reusableBuffer.msgbuf.msg;
+          int namelen;
+
+          if (modelHeaders[i].name[0] == 0)
+            namelen = strlen(STR_MODEL);
+          else
+            namelen = zlen(modelHeaders[i].name, LEN_MODEL_NAME);
+
+          if (numConflicts > 1) {
+            // Does not fit anymore
+            if (strlen(name) + namelen + 2 > WARNING_LINE_LEN) {
+              extra++;
+              continue;
+            }
+            strcat(name, ", ");
+          }
+
           if (modelHeaders[i].name[0] == 0) {
-            char * name = reusableBuffer.modelsel.mainname;
             name = strcpy(name, STR_MODEL);
-            strAppendUnsigned(name+strlen(name),i, 2);
+            strAppendUnsigned(name + strlen(name), i, 2);
             SET_WARNING_INFO(name, sizeof(name), 0);
           }
           else {
-            SET_WARNING_INFO(modelHeaders[i].name, sizeof(modelHeaders[i].name), ZCHAR);
+            zchar2str(name + strlen(name), modelHeaders[i].name, LEN_MODEL_NAME);
           }
-          return;
         }
       }
     }
+  }
+  if (numConflicts>0) {
+    char *name = reusableBuffer.msgbuf.msg;
+
+    if (extra > 0) {
+      strcat(name, " (+");
+      strAppendUnsigned(name + strlen(name), extra);
+      strcat(name, ")");
+    }
+
+    POPUP_WARNING(STR_MODELIDUSED);
+    SET_WARNING_INFO(reusableBuffer.msgbuf.msg, sizeof(reusableBuffer.msgbuf.msg), 0);
   }
 }
 #endif
