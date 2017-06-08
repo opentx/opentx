@@ -428,7 +428,7 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
   }
   if (additionalOnes) {
     name = strAppend(name,"(+");
-    name = strAppendUnsigned(name+strlen(name),additionalOnes);
+    name = strAppendUnsigned(name, additionalOnes);
     name = strAppend(name,")");
   }
   if (reusableBuffer.msgbuf.msg[0] != 0) {
