@@ -252,7 +252,7 @@ void generalDefault()
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
-  
+
 #if defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
@@ -401,11 +401,18 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
   if (modelId != 0) {
     for (uint8_t i=0; i<MAX_MODELS; i++) {
       if (i != index) {
-        for (uint8_t j=0; j<NUM_MODULES; j++) {
-          if (modelId == modelHeaders[i].modelId[j]) {
-            POPUP_WARNING(STR_MODELIDUSED);
-            return;
+        if (modelId == modelHeaders[i].modelId[module]) {
+          POPUP_WARNING(STR_MODELIDUSED);
+          if (modelHeaders[i].name[0] == 0) {
+            char * name = reusableBuffer.modelsel.mainname;
+            name = strcpy(name, STR_MODEL);
+            strAppendUnsigned(name+strlen(name),i, 2);
+            SET_WARNING_INFO(name, sizeof(name), 0);
           }
+          else {
+            SET_WARNING_INFO(modelHeaders[i].name, sizeof(modelHeaders[i].name), ZCHAR);
+          }
+          return;
         }
       }
     }
@@ -973,7 +980,7 @@ void doSplash()
         drawSecondSplash();
       }
 #endif
-            
+
 #if defined(PCBSKY9X)
       if (curTime < get_tmr10ms()) {
         curTime += 10;

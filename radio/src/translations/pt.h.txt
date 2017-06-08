@@ -989,7 +989,7 @@
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Trainer"
 #define TR_ANTENNAPROBLEM      CENTER "TX Antenna problem!"
-#define TR_MODELIDUSED         TR("ID already used","Model ID already used")
+#define TR_MODELIDUSED         TR("ID used in :","Receiver ID used in :")
 #define TR_MODULE              INDENT "Module"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
 #define TR_TELEMETRY_SENSORS   "Sensors"
