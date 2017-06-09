@@ -1229,5 +1229,8 @@ Anindya Mukerjee
 Fabrice Debonnet
 Darko Perković
 Leonard MacKey
-
+James A Davey
+Matthias Häusel
+Thierry Laligand
+Pascal Gelis
 
