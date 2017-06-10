@@ -109,20 +109,17 @@ bool MixesPanel::AddMixerLine(int dest)
   QString str = getMixerText(dest, &new_ch);
   QListWidgetItem *itm = new QListWidgetItem(str);
   QByteArray qba(1, (quint8)dest);
+  unsigned destId = abs(dest);
+  bool hasSibs = false;
   if (dest >= 0) {
     //add mix data
     MixData * md = &model->mixData[dest];
     qba.append((const char*)md, sizeof(MixData));
+    destId = md->destCh;
+    hasSibs = (dest < CPN_MAX_MIXERS && model->mixData[dest+1].destCh == md->destCh);
   }
   itm->setData(Qt::UserRole, qba);
-#if MIX_ROW_HEIGHT_INCREASE > 0
-  // TODO why?
-  if (new_ch && mixersListWidget->count() == 0) {
-    // increase size of this row
-    itm->setData(GroupHeaderRole, 1);
-  }
-#endif
-  mixersListWidget->addItem(itm);
+  mixersListWidget->addItem(itm, destId, new_ch, hasSibs);
   return new_ch;
 }
 
@@ -140,11 +137,11 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
   QString str;
   bool newChannel = false;
   if (dest < 0) {
-    str = modelPrinter.printChannelName(abs(dest)-1);
+    dest = abs(dest);
+    str = modelPrinter.printChannelName(dest-1);
     //highlight channel if needed
-    if (-dest == (int)highlightedSource) {
+    if (dest == (int)highlightedSource)
       str = "<b>" + str + "</b>";
-    }
     newChannel = true;
   }
   else {
@@ -155,9 +152,8 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
     if ((dest == 0) || (model->mixData[dest-1].destCh != mix.destCh)) {
       newChannel = true;
       //highlight channel if needed
-      if (mix.destCh == highlightedSource) {
+      if (mix.destCh == highlightedSource)
         str = "<b>" + str + "</b>";
-      }
     }
     else {
       str.fill(' ');
@@ -165,7 +161,8 @@ QString MixesPanel::getMixerText(int dest, bool * new_ch)
 
     str += modelPrinter.printMixerLine(mix, !newChannel, highlightedSource);
   }
-  if (new_ch) *new_ch = newChannel;
+  if (new_ch)
+    *new_ch = newChannel;
   return str.replace(" ", "&nbsp;");
 }
 
@@ -446,21 +443,27 @@ void MixesPanel::mixerlistWidget_customContextMenuRequested(QPoint pos)
   contextMenu.addSeparator();
   contextMenu.addAction(CompanionIcon("moveup.png"),    tr("Move Up"), this,           SLOT(moveMixUp()),       tr("Ctrl+Up"));
   contextMenu.addAction(CompanionIcon("movedown.png"),  tr("Move Down"), this,         SLOT(moveMixDown()),     tr("Ctrl+Down"));
+  contextMenu.addSeparator();
+  contextMenu.addActions(mixersListWidget->actions());
 
   contextMenu.exec(globalPos);
 }
 
 void MixesPanel::mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction action)
 {
-  int idx= mixersListWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
+  int idx = mixersListWidget->item(index)->data(Qt::UserRole).toByteArray().at(0);
   //qDebug() << "MixesPanel::mimeMixerDropped()" << index << data;
-  if (action==Qt::CopyAction) {
-      pasteMixerMimeData(data, idx);
+  if (action == Qt::CopyAction) {
+    pasteMixerMimeData(data, idx);
   }
-  else if (action==Qt::MoveAction) {
-      QList<int> list = createMixListFromSelected();
-      mixersDeleteList(list);
-      pasteMixerMimeData(data, idx);
+  else if (action == Qt::MoveAction) {
+    QList<int> list = createMixListFromSelected();
+    mixersDeleteList(createMixListFromSelected());
+    foreach (const int del, list) {
+      if (del < idx)
+        --idx;
+    }
+    pasteMixerMimeData(data, idx);
   }
 }
 

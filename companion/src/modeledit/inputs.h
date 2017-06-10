@@ -54,7 +54,6 @@ class InputsPanel : public ModelPanel
   private:
     bool expoInserted;
     MixersListWidget *ExposlistWidget;
-    bool firstLine;
     int inputsCount;
     ModelPrinter modelPrinter;
 
