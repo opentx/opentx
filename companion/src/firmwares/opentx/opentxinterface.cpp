@@ -107,7 +107,7 @@ bool OpenTxEepromInterface::loadRadioSettingsFromRLE(GeneralSettings & settings,
     return checkVariant(settings.version, settings.variant);
   }
   else {
-    std::cout << " error when loading general settings";
+    qWarning() << " error when loading general settings";
     return false;
   }
 }
@@ -180,7 +180,9 @@ bool OpenTxEepromInterface::loadFromByteArray(T & dest, const QByteArray & data)
 
 unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * eeprom, int size)
 {
-  std::cout << "trying " << getName() << " import...";
+  QDebug dbg = qDebug();
+  dbg.setAutoInsertSpaces(false);
+  dbg << "trying " << getName() << " import...";
 
   std::bitset<NUM_ERRORS> errors;
 
@@ -193,7 +195,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
         }
       }
       if (notnull) {
-        std::cout << " wrong size (" << size << ")\n";
+        dbg << " wrong size (" << size << ")";
         errors.set(WRONG_SIZE);
         return errors.to_ulong();
       }
@@ -204,14 +206,14 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       }
     }
     else {
-      std::cout << " wrong size (" << size << "/" << Boards::getEEpromSize(board) << ")\n";
+      dbg << " wrong size (" << size << "/" << Boards::getEEpromSize(board) << ")";
       errors.set(WRONG_SIZE);
       return errors.to_ulong();
     }
   }
 
   if (!efile->EeFsOpen((uint8_t *) eeprom, size, board)) {
-    std::cout << " wrong file system\n";
+    dbg << " wrong file system";
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();
   }
@@ -220,12 +222,12 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
 
   uint8_t version;
   if (efile->readRlc2(&version, 1) != 1) {
-    std::cout << " no\n";
+    dbg << " no";
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
   }
 
-  std::cout << " version " << (unsigned int) version;
+  dbg << " version " << (unsigned int) version;
 
   EepromLoadErrors version_error = checkVersion(version);
   if (version_error == OLD_VERSION) {
@@ -234,24 +236,24 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
     ShowEepromWarnings(NULL, QObject::tr("Warning"), errors.to_ulong());
   }
   else if (version_error == NOT_OPENTX) {
-    std::cout << " not open9x\n";
+    dbg << " not open9x";
     errors.set(version_error);
     return errors.to_ulong();
   }
 
   if (!loadRadioSettingsFromRLE(radioData.generalSettings, efile, version)) {
-    std::cout << " ko\n";
+    dbg << " ko";
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
   }
 
-  std::cout << " variant " << radioData.generalSettings.variant;
+  dbg << " variant " << radioData.generalSettings.variant;
   if (getCurrentFirmware()->getCapability(Models) == 0) {
     radioData.models.resize(firmware->getCapability(Models));
   }
   for (int i = 0; i < firmware->getCapability(Models); i++) {
     if (i < (int)radioData.models.size() && !loadModelFromRLE(radioData.models[i], efile, i, version, radioData.generalSettings.variant)) {
-      std::cout << " ko\n";
+      dbg << " ko";
       errors.set(UNKNOWN_ERROR);
       if (getCurrentFirmware()->getCapability(Models) == 0) {
         radioData.models.resize(i);
@@ -259,7 +261,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
       return errors.to_ulong();
     }
   }
-  std::cout << " ok\n";
+  dbg << " ok";
   errors.set(ALL_OK);
   return errors.to_ulong();
 }
@@ -939,29 +941,29 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
         efile->openRd(i);
         int sz = efile->readRlc2(tmp, sizeof(tmp));
         if (sz == 849) {
-          std::cout << " warning: M128 variant not set (but model size seems ok)";
+          qWarning() << " warning: M128 variant not set (but model size seems ok)";
           return true;
         }
       }
     }
-    std::cout << " wrong variant (" << variant << ")";
+    qWarning() << " wrong variant (" << variant << ")";
     return false;
   }
   else if (IS_TARANIS_X9E(board)) {
     if (variant != TARANIS_X9E_VARIANT) {
-      std::cout << " wrong variant (" << variant << ")";
+      qWarning() << " wrong variant (" << variant << ")";
       return false;
     }
   }
   else if (IS_TARANIS_X7(board)) {
     if (variant != TARANIS_X7_VARIANT) {
-      std::cout << " wrong variant (" << variant << ")";
+      qWarning() << " wrong variant (" << variant << ")";
       return false;
     }
   }
   else if (IS_TARANIS(board)) {
     if (variant != 0) {
-      std::cout << " wrong variant (" << variant << ")";
+      qWarning() << " wrong variant (" << variant << ")";
       return false;
     }
   }
@@ -994,10 +996,12 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
 {
   std::bitset<NUM_ERRORS> errors;
 
-  std::cout << "trying " << getName() << " backup import...";
+  QDebug dbg = qDebug();
+  dbg.setAutoInsertSpaces(false);
+  dbg << "trying " << getName() << " backup import...";
 
   if (esize < 8 || memcmp(eeprom, "o9x", 3) != 0) {
-    std::cout << " no\n";
+    dbg << " no\n";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
   }
@@ -1014,13 +1018,13 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
       backupBoard = BOARD_GRUVIN9X;
       break;
     default:
-      std::cout << " unknown board\n";
+      dbg << " unknown board";
       errors.set(UNKNOWN_BOARD);
       return errors.to_ulong();
   }
 
   if (backupBoard != board) {
-    std::cout << " not right board\n";
+    dbg << " not right board";
     errors.set(WRONG_BOARD);
     return errors.to_ulong();
   }
@@ -1030,7 +1034,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
   uint16_t size = ((uint16_t) eeprom[7] << 8) + eeprom[6];
   uint16_t variant = ((uint16_t) eeprom[9] << 8) + eeprom[8];
 
-  std::cout << " version " << (unsigned int) version << " ";
+  dbg << " version " << (unsigned int) version << " ";
 
   EepromLoadErrors version_error = checkVersion(version);
   if (version_error == OLD_VERSION) {
@@ -1038,31 +1042,31 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
     errors.set(HAS_WARNINGS);
   }
   else if (version_error == NOT_OPENTX) {
-    std::cout << " not open9x\n";
+    dbg << " not open9x";
     errors.set(version_error);
     return errors.to_ulong();
   }
 
   if (size > esize - 8) {
-    std::cout << " wrong size\n";
+    dbg << " wrong size";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
   }
 
   if (bcktype == 'M') {
     if (!loadModelFromBackup(radioData.models[index], &eeprom[8], size, version, variant)) {
-      std::cout << " ko\n";
+      dbg << " ko";
       errors.set(UNKNOWN_ERROR);
       return errors.to_ulong();
     }
   }
   else {
-    std::cout << " backup type not supported\n";
+    dbg << " backup type not supported";
     errors.set(BACKUP_NOT_SUPPORTED);
     return errors.to_ulong();
   }
 
-  std::cout << " ok\n";
+  dbg << " ok";
   errors.set(ALL_OK);
   return errors.to_ulong();
 }

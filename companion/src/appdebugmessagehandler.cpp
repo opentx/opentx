@@ -20,6 +20,8 @@
 
 #include "appdebugmessagehandler.h"
 
+#include <QFileDevice>
+
 AppDebugMessageHandler::AppDebugMessageHandler(QObject * parent) :
   QObject(parent),
   m_appDebugOutputLevel(APP_DBG_HANDLER_DEFAULT_LEVEL),
@@ -53,6 +55,25 @@ void AppDebugMessageHandler::setShowSourcePath(bool showSourcePath)
 void AppDebugMessageHandler::setShowFunctionDeclarations(bool showFunctionDeclarations)
 {
   m_showFunctionDeclarations = showFunctionDeclarations;
+}
+
+void AppDebugMessageHandler::addOutputDevice(QIODevice * device)
+{
+  if (device && !m_outputDevices.contains(device))
+    m_outputDevices.append(device);
+}
+
+void AppDebugMessageHandler::removeOutputDevice(QIODevice * device)
+{
+  if (device) {
+    // no QVector::removeAll() in Qt < 5.4
+    int i = 0;
+    foreach (QIODevice * d, m_outputDevices) {
+      if (d == device)
+        m_outputDevices.remove(i);
+      ++i;
+    }
+  }
 }
 
 void AppDebugMessageHandler::installAppMessageHandler()
@@ -98,7 +119,7 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
 
   qSetMessagePattern(msgPattern);
 
-  if (!m_defaultHandler || receivers(SIGNAL(messageOutput(quint8, const QString &)))) {
+  if (!m_defaultHandler || m_outputDevices.size() || receivers(SIGNAL(messageOutput(quint8, const QString &)))) {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 4, 0))
     msgPattern = qFormatLogMessage(type, context, msg);
 #else
@@ -112,6 +133,14 @@ void AppDebugMessageHandler::messageHandler(QtMsgType type, const QMessageLogCon
 #endif
 
     emit messageOutput(lvl, msgPattern);
+
+    foreach (QIODevice * d, m_outputDevices) {
+      if (d && d->isWritable() && (!d->property("level").isValid() || d->property("level").toInt() <= lvl)) {
+        d->write(qPrintable(msgPattern % "\n"));
+        if (QFileDevice * fd = qobject_cast<QFileDevice *>(d))
+          fd->flush();
+      }
+    }
   }
 
   // if (QThread::currentThread() == qApp->thread())  // gui thread
