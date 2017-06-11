@@ -713,7 +713,7 @@ void menuModelTelemetryFrsky(event_t event)
             CHECK_INCDEC_MODELVAR(event, g_model.rssiAlarms.critical, -30, 30);
      }
 #else // CPUARM
-        int alarm = (k-ITEM_TELEMETRY_RSSI_ALARM1);
+        uint8_t alarm = (k-ITEM_TELEMETRY_RSSI_ALARM1);
         lcdDrawTextAlignedLeft(y, STR_ALARM);
         lcdDrawTextAtIndex(TELEM_COL2, y, STR_VALARM, ((2+alarm+g_model.frsky.rssiAlarms[alarm].level)%4), menuHorizontalPosition<=0 ? attr : 0);
         lcdDrawChar(TELEM_COL2+4*FW, y, '<');
