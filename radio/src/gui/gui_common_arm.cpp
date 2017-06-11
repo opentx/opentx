@@ -355,7 +355,7 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
 
   if (swtch >= SWSRC_FIRST_SENSOR && swtch <= SWSRC_LAST_SENSOR) {
     if (context == GeneralCustomFunctionsContext)
-     return false;
+      return false;
     else
       return isTelemetryFieldAvailable(swtch - SWSRC_FIRST_SENSOR);
   }
