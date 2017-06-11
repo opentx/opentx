@@ -733,7 +733,7 @@ void menuModelTelemetryFrsky(event_t event)
       }
 #if defined(CPUARM)
       case ITEM_TELEMETRY_DISABLE_ALARMS:
-        g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, TELEM_COL2, y, STR_DISABLE_ALARM, attr, event);
+        g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, LCD_W - 10, y, STR_DISABLE_ALARM, attr, event);
         break;
 #endif
 #if !defined(CPUARM)
