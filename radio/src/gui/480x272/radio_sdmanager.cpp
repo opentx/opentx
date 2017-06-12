@@ -151,33 +151,9 @@ bool menuRadioSdManager(event_t _event)
     showMessageBox(STR_FORMATTING);
     logsClose();
     audioQueue.stopSD();
-    BYTE work[_MAX_SS];
-    FRESULT res = f_mkfs("", FM_FAT32, 0, work, sizeof(work));
-    switch(res) {
-      case FR_OK :
-        f_chdir("/");
-        REFRESH_FILES();
-        break;
-      case FR_DISK_ERR:
-        POPUP_WARNING("Format error");
-        break;
-      case FR_NOT_READY:
-        POPUP_WARNING("SDCard not ready");
-        break;
-      case FR_WRITE_PROTECTED:
-        POPUP_WARNING("SDCard write protected");
-        break;
-      case FR_INVALID_PARAMETER:
-        POPUP_WARNING("Format param invalid");
-        break;
-      case FR_INVALID_DRIVE:
-        POPUP_WARNING("Invalid drive");
-        break;
-      case FR_MKFS_ABORTED:
-        POPUP_WARNING("Format aborted");
-        break;
-      default:
-        POPUP_WARNING(STR_SDCARD_ERROR);
+    if(sdCardFormat()) {
+      f_chdir("/");
+      REFRESH_FILES();
     }
   }
 

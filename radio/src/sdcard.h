@@ -96,6 +96,7 @@ void logsInit();
 void logsClose();
 void logsWrite();
 
+bool sdCardFormat();
 uint32_t sdGetNoSectors();
 uint32_t sdGetSize();
 uint32_t sdGetFreeSectors();
