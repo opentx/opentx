@@ -1020,7 +1020,7 @@
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer port"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"
-#define TR_MODELIDUSED                 TR("ID used in:","Receiver ID used in:")
+#define TR_MODELIDUSED                 TR("ID used in :","Receiver ID used in :")
 #define TR_MODULE                      INDENT "Module"
 #define TR_TELEMETRY_TYPE              TR("Type", "Telemetry type")
 #define TR_TELEMETRY_SENSORS           "Sensors"

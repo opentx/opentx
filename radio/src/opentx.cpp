@@ -407,7 +407,7 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
     for (uint8_t i = 0; i < MAX_MODELS; i++) {
       if (i != index) {
         if (modelId == modelHeaders[i].modelId[module]) {
-          if ((WARNING_LINE_LEN - 3 - (name - reusableBuffer.msgbuf.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-1 for the ",")
+          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.msgbuf.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
             if (reusableBuffer.msgbuf.msg[0] != 0) {
               name = strAppend(name, ", ");
             }
