@@ -43,7 +43,7 @@ void displayRssiLine()
     lcdDrawText(lcdLastLeftPos,STATUS_BAR_Y, "RSSI : ", RIGHT | SMLSIZE);
     lcdDrawRect(65, 57, 38, 7);
     uint8_t v = 4*rssi/11;
-    lcdDrawFilledRect(66+36-v, 58, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcdDrawFilledRect(66+36-v, 58, v, 5, (rssi < g_model.rssiAlarms.getWarningRssi()) ? DOTTED : SOLID);
 #else
     rssi = min((uint8_t)99, telemetryData.rssi[1].value);
     lcdDrawTextAlignedLeft(STATUS_BAR_Y, STR_TX); lcdDrawNumber(4*FW+1, STATUS_BAR_Y, rssi, LEADING0, 2);

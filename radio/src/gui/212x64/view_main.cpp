@@ -299,7 +299,7 @@ void displayTopBar()
 
   /* The inside of the RSSI gauge */
   if (TELEMETRY_RSSI() > 0) {
-    displayTopBarGauge(batt_icon_x+5*FW, TELEMETRY_RSSI() / 10, TELEMETRY_RSSI() < getRssiAlarmValue(0));
+    displayTopBarGauge(batt_icon_x+5*FW, TELEMETRY_RSSI() / 10, TELEMETRY_RSSI() < g_model.rssiAlarms.getWarningRssi());
   }
 }
 

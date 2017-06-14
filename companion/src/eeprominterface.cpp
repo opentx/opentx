@@ -1392,8 +1392,6 @@ void FrSkyData::clear()
   mAhPersistent = 0;
   storedMah = 0;
   fasOffset = 0;
-  rssiAlarms[0].clear(2, 45);
-  rssiAlarms[1].clear(3, 42);
   for (int i=0; i<4; i++)
     screens[i].clear();
   varioSource = 2/*VARIO*/;
@@ -1560,6 +1558,7 @@ void ModelData::clear()
     timers[i].clear();
   swashRingData.clear();
   frsky.clear();
+  rssiAlarms.clear();
   for (int i=0; i<CPN_MAX_SENSORS; i++)
     sensorData[i].clear();
 

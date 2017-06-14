@@ -2777,7 +2777,7 @@ class TelemetryCurrentSourceConversionTable: public ConversionTable
 
 class FrskyField: public StructField {
   public:
-    FrskyField(DataField * parent, FrSkyData & frsky, Board::Type board, unsigned int version, unsigned int variant):
+    FrskyField(DataField * parent, FrSkyData & frsky, RSSIAlarmData & rssiAlarms, Board::Type board, unsigned int version, unsigned int variant):
       StructField(parent, "FrSky"),
       telemetryVarioSourceConversionTable(board, version),
       screenTypesConversionTable(board, version),
@@ -2849,10 +2849,12 @@ class FrskyField: public StructField {
         Append(new SignedField<8>(this, frsky.varioCenterMin));
         Append(new SignedField<8>(this, frsky.varioMin));
         Append(new SignedField<8>(this, frsky.varioMax));
-        for (int i=0; i<2; i++) {
-          Append(new ConversionField< UnsignedField<2> >(this, frsky.rssiAlarms[i].level, &rssiConversionTable[i], "RSSI"));
-          Append(new ConversionField< SignedField<6> >(this, frsky.rssiAlarms[i].value, -45+i*3));
-        }
+        Append(new BoolField<1>(this, rssiAlarms.disabled));
+        Append(new SpareBitsField<1>(this));
+        Append(new ConversionField<SignedField<6> >(this, rssiAlarms.warning, -45));
+        Append(new SpareBitsField<2>(this));
+        Append(new ConversionField<SignedField<6> >(this, rssiAlarms.critical, -42));
+
         if (version == 216) {
           Append(new BoolField<1>(this, frsky.mAhPersistent));
           Append(new UnsignedField<15>(this, frsky.storedMah));
@@ -2881,8 +2883,8 @@ class FrskyField: public StructField {
         Append(new SignedField<4>(this, frsky.varioMin, "Vario Min"));
         Append(new SignedField<4>(this, frsky.varioMax));
         for (int i=0; i<2; i++) {
-          Append(new ConversionField< UnsignedField<2> >(this, frsky.rssiAlarms[i].level, &rssiConversionTable[i], "RSSI level"));
-          Append(new ConversionField< SignedField<6> >(this, frsky.rssiAlarms[i].value, -45+i*3, 0, 0, 100, "RSSI value"));
+          Append(new ConversionField< UnsignedField<2> >(this, rssiAlarms.level[i], &rssiConversionTable[i], "RSSI level"));
+          Append(new ConversionField< SignedField<6> >(this, i ==0 ? rssiAlarms.warning : rssiAlarms.critical, -45+i*3, 0, 0, 100, "RSSI value"));
         }
         for (int i=0; i<2; i++) {
           Append(new FrskyScreenField(this, frsky.screens[i], board, version, variant));
@@ -3246,7 +3248,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   if ((board != BOARD_STOCK && (board != BOARD_M128 || version < 215)) || (variant & FRSKY_VARIANT)) {
-    internalField.Append(new FrskyField(this, modelData.frsky, board, version, variant));
+    internalField.Append(new FrskyField(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
   }
   else if ((board == BOARD_STOCK || board == BOARD_M128) && (variant & MAVLINK_VARIANT)) {
     internalField.Append(new MavlinkField(this, modelData.mavlink, board, version));

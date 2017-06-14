@@ -1036,6 +1036,13 @@ void checkFailsafe()
 #else
 #define checkFailsafe()
 #endif
+#if defined(CPUARM)
+void checkRSSIAlaramsDisabled()
+{
+  if (g_model.rssiAlarms.disabled)
+    ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
+}
+#endif
 
 #if defined(GUI)
 void checkAll()
@@ -1052,6 +1059,9 @@ void checkAll()
   }
   checkSwitches();
   checkFailsafe();
+#endif
+#if defined(CPUARM)
+  checkRSSIAlaramsDisabled();
 #endif
 
 #if defined(SDCARD) && defined(CPUARM)
