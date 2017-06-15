@@ -188,14 +188,17 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7)
+#if (defined(PCBX9E) || defined(PCBX7)) && !defined(PWR_UP_PRESS_SKIP)
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcdClear();
 #if defined(PCBX9E)
     lcdDrawBitmap(76, 2, bmp_lock, 0, 60);
+#else
+    lcdDrawFilledRect(LCD_W / 2 - 18, LCD_H / 2 - 3, 6, 6, SOLID, 0);
+#endif
     lcdRefresh();
     lcdRefreshWait();
-#endif
+
     tmr10ms_t start = get_tmr10ms();
     tmr10ms_t duration = 0;
     uint8_t pwr_on = 0;
@@ -207,8 +210,10 @@ void boardInit()
 #if defined(PCBX9E)
         lcdDrawBitmap(76, 2, bmp_startup, index*60, 60);
 #else
-        for(uint8_t i= 1; i < (index+1); i++) {
-          lcdDrawFilledRect(LCD_W / 2 - 28 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
+        for(uint8_t i= 0; i < 4; i++) {
+          if (index >= i) {
+            lcdDrawFilledRect(LCD_W / 2 - 18 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
+          }
         }
 #endif
       }
