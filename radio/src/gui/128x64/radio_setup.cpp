@@ -467,6 +467,7 @@ void menuRadioSetup(event_t event)
 #if defined(SPLASH) && !defined(FSPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
+#if defined(CPUARM)
         lcdDrawTextAlignedLeft(y, STR_SPLASHSCREEN);
         if (SPLASH_NEEDED()) {
           lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, SPLASH_TIMEOUT/100, attr|LEFT);
@@ -477,6 +478,11 @@ void menuRadioSetup(event_t event)
         }
         if (attr) g_eeGeneral.splashMode = -checkIncDecGen(event, -g_eeGeneral.splashMode, -3, 4);
         break;
+#else
+        uint8_t b = 1-g_eeGeneral.splashMode;
+        g_eeGeneral.splashMode = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
+        break;
+#endif
       }
 #endif
 

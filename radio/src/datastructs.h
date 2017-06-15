@@ -880,7 +880,7 @@ PACK(struct TrainerData {
   #define SPLASH_MODE uint8_t splashSpares:3
 #elif defined(FSPLASH)
   #define SPLASH_MODE uint8_t splashMode:3
-#elif defined(PCBTARANIS)
+#elif defined(CPUARM)
   #define SPLASH_MODE int8_t splashMode:3
 #else
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
