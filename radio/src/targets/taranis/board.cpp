@@ -101,7 +101,7 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 #endif
 
 #if (defined(PCBX9E) || defined(PCBX7)) && !defined(SIMU)
-#define PWR_PRESS_DURATION_MIN       200 // 2s
+#define PWR_PRESS_DURATION_MIN       100 // 2s
 #define PWR_PRESS_DURATION_MAX       500 // 5s
 #endif
 #if (defined(PCBX9E) && !defined(SIMU))
@@ -188,7 +188,7 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if (defined(PCBX9E) || defined(PCBX7)) && !defined(PWRUP_HOLD_SKIP)
+#if defined(PCBX9E) || defined(PCBX7)
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcdClear();
 #if defined(PCBX9E)

@@ -1568,7 +1568,7 @@ void drawShutdownAnimation(uint32_t index)
   lcdClear();
   int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
   for (int i=1; i<=4; i++) {
-    if (quarter >= i) {
+    if ((5 -quarter) >= i) {
       lcdDrawFilledRect(LCD_W / 2 - 28 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
     }
   }
