@@ -101,7 +101,7 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 #endif
 
 #if (defined(PCBX9E) || defined(PCBX7)) && !defined(SIMU)
-#define PWR_PRESS_DURATION_MIN       100 // 2s
+#define PWR_PRESS_DURATION_MIN       100 // 1s
 #define PWR_PRESS_DURATION_MAX       500 // 5s
 #endif
 #if (defined(PCBX9E) && !defined(SIMU))
