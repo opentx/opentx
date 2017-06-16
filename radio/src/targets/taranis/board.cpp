@@ -244,7 +244,6 @@ void boardInit()
   toplcdInit();
 #endif
 #else
-
   backlightInit();
 #endif
 
