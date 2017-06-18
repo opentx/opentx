@@ -37,7 +37,7 @@ def generate(str, filename):
         output = "output.mp3"
         command = 'gtts-cli -l %s -o %s "%s"' % (voice[:2], output, str)
         os.system(command.encode('utf-8'))
-        command = "sox %s -r 32000 %s" % (output, filename)
+        command = "sox %s -r 32000 %s tempo 1.2" % (output, filename)
         os.system(command.encode('utf-8'))
         command = "rm -f output.mp3"
         os.system(command.encode('utf-8'))
