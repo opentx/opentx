@@ -324,7 +324,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="774"/>
         <source>Use Companion nightly builds</source>
-        <translation>Utlilser les &quot;nightly builds&quot; de Companion</translation>
+        <translation>Utiliser les &quot;nightly builds&quot; de Companion</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1423"/>
@@ -482,7 +482,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="784"/>
         <source>Use firmware nightly builds</source>
-        <translation>Utlilser les firmwares &quot;nightly builds&quot;</translation>
+        <translation>Utiliser les firmwares &quot;nightly builds&quot;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="843"/>
