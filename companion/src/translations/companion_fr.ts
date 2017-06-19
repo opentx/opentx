@@ -4911,7 +4911,7 @@ et choisissez  la bonne radio avant de l&apos;ouvrir.à nouveau.</translation>
         <location filename="../mdichild.cpp" line="419"/>
         <source>New category</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Nlle categorie</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="448"/>
@@ -5347,7 +5347,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modeledit/modeledit.cpp" line="118"/>
         <source>Models</source>
         <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
-        <translation type="unfinished">Modeles</translation>
+        <translation>Modeles</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="53"/>
