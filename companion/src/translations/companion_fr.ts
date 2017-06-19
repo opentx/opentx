@@ -4689,68 +4689,68 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
 <context>
     <name>MdiChild</name>
     <message>
-        <location filename="../mdichild.cpp" line="606"/>
-        <location filename="../mdichild.cpp" line="743"/>
-        <location filename="../mdichild.cpp" line="757"/>
-        <location filename="../mdichild.cpp" line="816"/>
-        <location filename="../mdichild.cpp" line="824"/>
-        <location filename="../mdichild.cpp" line="835"/>
-        <location filename="../mdichild.cpp" line="846"/>
+        <location filename="../mdichild.cpp" line="607"/>
+        <location filename="../mdichild.cpp" line="744"/>
+        <location filename="../mdichild.cpp" line="758"/>
+        <location filename="../mdichild.cpp" line="817"/>
+        <location filename="../mdichild.cpp" line="825"/>
+        <location filename="../mdichild.cpp" line="836"/>
+        <location filename="../mdichild.cpp" line="847"/>
         <source>Error</source>
         <translation>Erreur</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="816"/>
+        <location filename="../mdichild.cpp" line="817"/>
         <source>Unable to find file %1!</source>
         <translation>Fichier %1 introuvable !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="644"/>
-        <location filename="../mdichild.cpp" line="646"/>
-        <location filename="../mdichild.cpp" line="652"/>
-        <location filename="../mdichild.cpp" line="654"/>
+        <location filename="../mdichild.cpp" line="645"/>
+        <location filename="../mdichild.cpp" line="647"/>
+        <location filename="../mdichild.cpp" line="653"/>
+        <location filename="../mdichild.cpp" line="655"/>
         <source>Save As</source>
         <translation>Enregister Sous</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="448"/>
+        <location filename="../mdichild.cpp" line="449"/>
         <source>This category is not empty!</source>
         <translation>Catégorie non vide !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="493"/>
+        <location filename="../mdichild.cpp" line="494"/>
         <source>New model</source>
         <translation>Nouveau modele</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="743"/>
+        <location filename="../mdichild.cpp" line="744"/>
         <source>Unable to find Horus radio SD card!</source>
         <translation>Impossible de trouver la carte SD de la Horus !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="747"/>
+        <location filename="../mdichild.cpp" line="748"/>
         <source>Models and Settings written</source>
         <translation>Modèle et réglages écrit</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="757"/>
+        <location filename="../mdichild.cpp" line="758"/>
         <source>Cannot write temporary file!</source>
         <translation>Ecriture de fichier temporaire impossible !</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="513"/>
+        <location filename="../mdichild.cpp" line="514"/>
         <source>Editing model %1: </source>
         <translation>Édition du modèle %1 : </translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="836"/>
+        <location filename="../mdichild.cpp" line="837"/>
         <source>Error reading file %1:
 %2.</source>
         <translation>Fichier %1 corrompu:
 %2.</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="825"/>
+        <location filename="../mdichild.cpp" line="826"/>
         <source>Error opening file %1:
 %2.</source>
         <translation>Erreur à l&apos;ouverture du fichier %1:
@@ -4908,28 +4908,34 @@ et choisissez  la bonne radio avant de l&apos;ouvrir.à nouveau.</translation>
         <translation>octets libres</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="447"/>
-        <location filename="../mdichild.cpp" line="706"/>
+        <location filename="../mdichild.cpp" line="419"/>
+        <source>New category</source>
+        <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mdichild.cpp" line="448"/>
+        <location filename="../mdichild.cpp" line="707"/>
         <source>Companion</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="810"/>
+        <location filename="../mdichild.cpp" line="811"/>
         <source>Open backup Models and Settings file</source>
         <translation>Ouvrir la sauvegarde de réglages et modèles</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="850"/>
+        <location filename="../mdichild.cpp" line="851"/>
         <source>Warning</source>
         <translation>Avertissement</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="846"/>
+        <location filename="../mdichild.cpp" line="847"/>
         <source>Invalid binary backup File %1</source>
         <translation>Fichier de sauvegarde %1 invalide</translation>
     </message>
     <message>
-        <location filename="../mdichild.cpp" line="707"/>
+        <location filename="../mdichild.cpp" line="708"/>
         <source>%1 has been modified.
 Do you want to save your changes?</source>
         <translation>%1 a été modifié.
@@ -5336,6 +5342,12 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modeledit/modeledit.cpp" line="65"/>
         <source>Logical Switches</source>
         <translation>Inters logiques</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/modeledit.cpp" line="118"/>
+        <source>Models</source>
+        <extracomment>Translators do NOT use accent for this, this is the default category name on Horus.</extracomment>
+        <translation type="unfinished">Modeles</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="53"/>
@@ -8587,12 +8599,12 @@ L&apos;équipe OpenTX.</translation>
         <translation>Impossible de trouver la carte SD Horus !</translation>
     </message>
     <message>
-        <location filename="../radiodata.h" line="838"/>
+        <location filename="../radiodata.h" line="839"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../radiodata.h" line="838"/>
+        <location filename="../radiodata.h" line="839"/>
         <source>Negative</source>
         <translation>Négative</translation>
     </message>
