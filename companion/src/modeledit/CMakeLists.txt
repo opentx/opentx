@@ -12,6 +12,7 @@ set(modeledit_NAMES
   telemetry
   expodialog
   mixerdialog
+  checklistdialog
 )
 
 set(modeledit_SRCS

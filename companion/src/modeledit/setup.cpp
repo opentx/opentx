@@ -26,6 +26,7 @@
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
+#include "checklistdialog.h"
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -891,6 +892,8 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
+    ui->editText->hide();
+    connect(ui->editText, SIGNAL(clicked()), this, SLOT(on_editText_clicked()));
   }
 
   if (!firmware->getCapability(GlobalFunctions)) {
@@ -1134,6 +1137,7 @@ void SetupPanel::update()
   ui->extendedLimits->setChecked(model->extendedLimits);
   ui->extendedTrims->setChecked(model->extendedTrims);
   ui->displayText->setChecked(model->displayChecklist);
+  ui->editText->setEnabled(model->displayChecklist);
   ui->gfEnabled->setChecked(!model->noGlobalFunctions);
 
   updateBeepCenter();
@@ -1279,6 +1283,7 @@ void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 void SetupPanel::on_displayText_toggled(bool checked)
 {
   model->displayChecklist = checked;
+  ui->editText->setEnabled(checked);
   emit modified();
 }
 
@@ -1305,4 +1310,10 @@ void SetupPanel::onBeepCenterToggled(bool checked)
       model->beepANACenter &= ~mask;
     emit modified();
   }
+}
+
+void SetupPanel::on_editText_clicked()
+{
+  ChecklistDialog *g = new ChecklistDialog(this, ui->name->text());
+  g->exec();
 }
