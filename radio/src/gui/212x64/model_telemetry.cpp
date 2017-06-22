@@ -74,7 +74,7 @@ enum MenuModelTelemetryFrskyItems {
 
 #define TELEM_COL1                    (1*FW)
 #define TELEM_COL2                    (16*FW)
-#define TELEM_COL3                    (28*FW+2)
+#define TELEM_COL3                    (30*FW+2)
 
 #define IF_FAS_OFFSET(x)              x,
 #define IS_RANGE_DEFINED(k)           (g_model.frsky.channels[k].ratio > 0)

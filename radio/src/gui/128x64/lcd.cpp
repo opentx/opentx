@@ -1129,7 +1129,7 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   lcdDrawSizedText(lcdLastRightPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
-void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   if (att & DBLSIZE) {
     x -= 42;
