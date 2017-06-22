@@ -893,7 +893,6 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
     ui->editText->hide();
-    connect(ui->editText, SIGNAL(clicked()), this, SLOT(on_editText_clicked()));
   }
 
   if (!firmware->getCapability(GlobalFunctions)) {
