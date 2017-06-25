@@ -750,12 +750,12 @@ void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFla
 void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
 #if defined(CPUM64)
-  for (scoord_t i=y; i<y+h; i++) {
+  for (scoord_t i=y; i<(scoord_t)(y+h); i++) {
     lcdDrawHorizontalLine(x, i, w, pat, att);
     pat = (pat >> 1) + ((pat & 1) << 7);
   }
 #else
-  for (scoord_t i=y; i<y+h; i++) {
+  for (scoord_t i=y; i<(scoord_t)(y+h); i++) {    // cast to scoord_t needed otherwise (y+h) is promoted to int (see #5055)
     if ((att&ROUND) && (i==y || i==y+h-1))
       lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
     else
@@ -1516,7 +1516,7 @@ void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
   q += idx*w*hb;                                                              \
   for (uint8_t yb = 0; yb < hb; yb++) {                                       \
     uint8_t *p = &displayBuf[(y / 8 + yb) * LCD_W + x];                       \
-    for (coord_t i=0; i<w; i++){                                              \
+    for (uint8_t i=0; i<w; i++){                                              \
       uint8_t b = READ_BYTE(q);                                               \
       q++;                                                                    \
       ASSERT_IN_DISPLAY(p);                                                   \
@@ -1554,9 +1554,12 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
   }
 }
 
-void lcdInvertLine(int8_t y)
+void lcdInvertLine(int8_t line)
 {
-  uint8_t *p  = &displayBuf[y * LCD_W];
+  if (line < 0) return;
+  if (line >= LCD_LINES) return;
+
+  uint8_t *p  = &displayBuf[line * LCD_W];
   for (coord_t x=0; x<LCD_W; x++) {
     ASSERT_IN_DISPLAY(p);
     *p++ ^= 0xff;
