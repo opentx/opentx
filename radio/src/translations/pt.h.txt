@@ -578,9 +578,17 @@
 #define TR_VANTENNATYPES        "Internal""Ext+Int\0"
 
 // ZERO TERMINATED STRINGS
-#define INDENT                 "\001"
-#define LEN_INDENT             1
-#define INDENT_WIDTH           (FW/2)
+#if defined(COLORLCD)
+  #define INDENT                       "   "
+  #define LEN_INDENT                   3
+  #define INDENT_WIDTH                 12
+  #define BREAKSPACE                   "\036"
+#else
+  #define INDENT                       "\001"
+  #define LEN_INDENT                   1
+  #define INDENT_WIDTH                 (FW/2)
+  #define BREAKSPACE                   " "
+#endif
 
 #if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
