@@ -312,7 +312,7 @@ void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lc
   // TODO
   if (att & DBLSIZE) {
     x -= 42;
-    att = FONTSIZE_MASK(att);
+    att &= ~FONTSIZE_MASK;
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);

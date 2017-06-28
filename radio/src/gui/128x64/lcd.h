@@ -94,8 +94,8 @@
 #define NO_UNIT                        0x40
 
 #if defined(CPUARM)
-  #define FONTSIZE(x)                  ((x) & 0x0700)
-  #define FONTSIZE_MASK(x)             ((x) & ~0x0F00) 
+  #define FONTSIZE_MASK                0x0700
+  #define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
   #define TINSIZE                      0x0100
   #define SMLSIZE                      0x0200
   #define MIDSIZE                      0x0300
