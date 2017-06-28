@@ -140,6 +140,7 @@ class SetupPanel : public ModelPanel
     void startupSwitchToggled(bool checked);
     void potWarningToggled(bool checked);
     void on_potWarningMode_currentIndexChanged(int index);
+    void on_editText_clicked();
 
   private:
     Ui::Setup *ui;
