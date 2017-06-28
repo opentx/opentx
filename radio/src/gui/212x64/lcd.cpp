@@ -758,7 +758,7 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
 
 void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
-  att &= ~0x0F00; // TODO constant, remove DBLSIZE
+  att = FONTSIZE_MASK(att);
   lcdDrawNumber(x, y+1, telemetryItem.datetime.sec, att|LEADING0, 2);
   lcdDrawText(lcdNextPos, y+1, ":", att);
   lcdDrawNumber(lcdNextPos, y+1, telemetryItem.datetime.min, att|LEADING0, 2);
@@ -776,7 +776,7 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
 {
   if (att & DBLSIZE) {
     x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
-    att &= ~0x0F00; // TODO constant
+    att = FONTSIZE_MASK(att);
     drawGPSCoord(x, y, telemetryItem.gps.latitude, "NS", att, true);
     drawGPSCoord(x, y+FH, telemetryItem.gps.longitude, "EW", att, true);
   }

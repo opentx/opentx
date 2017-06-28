@@ -64,6 +64,7 @@
 #define NO_UNIT                        0x40
 
 #define FONTSIZE(x)                    ((x) & 0x0700)
+#define FONTSIZE_MASK(x)               ((x) & ~0x0F00)
 #define TINSIZE                        0x0100
 #define SMLSIZE                        0x0200
 #define MIDSIZE                        0x0300
