@@ -37,12 +37,14 @@ public:
 private slots:
   void import();
   void update();
+  void changed();
 
 private:
   Ui::ChecklistDialog *ui;
   QString mModelChecklist;
   QString mChecklistFolder;
-  QString readFile(const QString filepath, const bool exists);
+  QString readFile(const QString & filepath, const bool exists);
+  bool mDirty;
 };
 
 #endif // _CHECKLISTDIALOG_H_

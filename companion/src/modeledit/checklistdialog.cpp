@@ -31,7 +31,8 @@ extern AppData g;
 
 ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
   QDialog(parent),
-  ui(new Ui::ChecklistDialog)
+  ui(new Ui::ChecklistDialog),
+  mDirty(false)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("edit.png"));
@@ -41,6 +42,7 @@ ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
   ui->file->setText("File: " + mModelChecklist);
   ui->pteCheck->setPlainText(readFile(mModelChecklist,QFile::exists(mModelChecklist)));
 
+  connect(ui->pteCheck, SIGNAL(textChanged()), this, SLOT(changed()));
   connect(ui->pbImport, SIGNAL(clicked()), this, SLOT(import()));
   connect(ui->pbCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(ui->pbOK, SIGNAL(clicked()), this, SLOT(update()));
@@ -51,56 +53,64 @@ ChecklistDialog::~ChecklistDialog()
   delete ui;
 }
 
+void ChecklistDialog::changed()
+{
+  mDirty = true;
+}
+
 void ChecklistDialog::import()
 {
   QString filename = QFileDialog::getOpenFileName(this, tr("Open Checklist"), mChecklistFolder, tr("Checklist Files (*.txt)"));
   if (!filename.isNull())
     ui->pteCheck->setPlainText(readFile(filename,true));
+  mDirty = true;
 }
 
 void ChecklistDialog::update()
 {
-  QFile file(mModelChecklist);
-  if (!file.open(QFile::WriteOnly | QFile::Text)) {
-    QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot open file for writing %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
-  }
-  else {
-    QTextStream out(&file);
-    if (out.status()==QTextStream::Ok) {
-      out << ui->pteCheck->toPlainText();
-      if (!(out.status()==QTextStream::Ok)) {
-        QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write to file %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
-        if (!file.flush()) {
-          QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write file %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
+  if (mDirty) {
+    QFile file(mModelChecklist);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+      QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot open file for writing %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
+    }
+    else {
+      QTextStream out(&file);
+      if (out.status()==QTextStream::Ok) {
+        out << ui->pteCheck->toPlainText();
+        if (!(out.status()==QTextStream::Ok)) {
+          QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write to file %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
+          if (!file.flush()) {
+            QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write file %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
+          }
         }
       }
     }
+    file.close();
   }
-  file.close();
   emit accept();
 }
 
-QString ChecklistDialog::readFile(const QString filepath, const bool exists)
+QString ChecklistDialog::readFile(const QString & filepath, const bool exists)
 {
   QString data = "";
-  if (filepath.isNull()) return data;
-
-  QFile file(filepath);
-  if (!file.open(QFile::ReadOnly | QFile::Text)) {
-    if (exists) {
-      QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot open file %1:\n%2.").arg(QDir::toNativeSeparators(filepath), file.errorString()));
-    }
-  }
-  else {
-    QTextStream in(&file);
-    if (in.status()==QTextStream::Ok) {
-      data = in.readAll();
-      if (!(in.status()==QTextStream::Ok)) {
-        QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot read file %1:\n%2.").arg(QDir::toNativeSeparators(filepath), file.errorString()));
-        data = "";
+  if (!filepath.isNull()) {
+    QFile file(filepath);
+    if (!file.open(QFile::ReadOnly | QFile::Text)) {
+      if (exists) {
+        QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot open file %1:\n%2.").arg(QDir::toNativeSeparators(filepath), file.errorString()));
       }
     }
+    else {
+      QTextStream in(&file);
+      if (in.status()==QTextStream::Ok) {
+        data = in.readAll();
+        if (!(in.status()==QTextStream::Ok)) {
+          QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot read file %1:\n%2.").arg(QDir::toNativeSeparators(filepath), file.errorString()));
+          data = "";
+        }
+      }
+    }
+    file.close();
   }
-  file.close();
   return data;
 }
