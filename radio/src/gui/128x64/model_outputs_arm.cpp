@@ -183,7 +183,6 @@ void menuModelLimitsOne(event_t event)
 void onLimitsMenu(const char *result)
 {
   s_currIdx = menuVerticalPosition - HEADER_LINE;
-
   if (result == STR_RESET) {
     LimitData *ld = limitAddress(s_currIdx);
     ld->min = 0;
@@ -221,7 +220,7 @@ void menuModelLimits(event_t event)
     uint8_t k = i+menuVerticalOffset;
     LcdFlags attr = (sub==MAX_OUTPUT_CHANNELS) ? INVERS : 0;
 
-    if (sub==k && event==EVT_KEY_FIRST(KEY_ENTER) && !READ_ONLY()) {
+    if (sub==k && event==EVT_KEY_FIRST(KEY_ENTER) && !READ_ONLY() && (k != MAX_OUTPUT_CHANNELS) ) {
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_EDIT);
       POPUP_MENU_ADD_ITEM(STR_RESET);
