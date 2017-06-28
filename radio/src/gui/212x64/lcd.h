@@ -63,7 +63,8 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-#define FONTSIZE(x)                    ((x) & 0x0700)
+#define FONTSIZE_MASK                  0x0700
+#define FONTSIZE(x)                    ((x) & FONTSIZE_MASK)
 #define TINSIZE                        0x0100
 #define SMLSIZE                        0x0200
 #define MIDSIZE                        0x0300
