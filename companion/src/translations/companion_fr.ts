@@ -711,6 +711,89 @@ Peut être différente de la langue du firmware</translation>
     </message>
 </context>
 <context>
+    <name>ChecklistDialog</name>
+    <message>
+        <location filename="../modeledit/checklistdialog.ui" line="14"/>
+        <source>Edit Checklist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.ui" line="88"/>
+        <source>&amp;Import...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.ui" line="101"/>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.ui" line="114"/>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.ui" line="129"/>
+        <source>Please note, the maximum width displayable is radio model limited. Also, renaming the model will break the link to this checklist file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.ui" line="139"/>
+        <source>File: unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="63"/>
+        <source>Open Checklist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="63"/>
+        <source>Checklist Files (*.txt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="74"/>
+        <location filename="../modeledit/checklistdialog.cpp" line="81"/>
+        <location filename="../modeledit/checklistdialog.cpp" line="83"/>
+        <location filename="../modeledit/checklistdialog.cpp" line="100"/>
+        <location filename="../modeledit/checklistdialog.cpp" line="108"/>
+        <source>Model Checklist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="74"/>
+        <source>Cannot open file for writing %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="81"/>
+        <source>Cannot write to file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="83"/>
+        <source>Cannot write file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="100"/>
+        <source>Cannot open file %1:
+%2.</source>
+        <translation type="unfinished">Lecture fichier impossible %1:
+%2.</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/checklistdialog.cpp" line="108"/>
+        <source>Cannot read file %1:
+%2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Companion</name>
     <message>
         <location filename="../constants.h" line="52"/>
@@ -6413,43 +6496,43 @@ Mixage actif par défaut si non-renseigné.</translation>
 <context>
     <name>ModulePanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="183"/>
+        <location filename="../modeledit/setup.cpp" line="184"/>
         <source>Trainer Port</source>
         <translation>Port écolage</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="204"/>
+        <location filename="../modeledit/setup.cpp" line="205"/>
         <source>Internal Radio System</source>
         <translation>Module HF interne</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="206"/>
+        <location filename="../modeledit/setup.cpp" line="207"/>
         <source>External Radio Module</source>
         <translation>Module HF externe</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="210"/>
-        <location filename="../modeledit/setup.cpp" line="216"/>
+        <location filename="../modeledit/setup.cpp" line="211"/>
+        <location filename="../modeledit/setup.cpp" line="217"/>
         <source>Radio System</source>
         <translation>Module HF</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="212"/>
+        <location filename="../modeledit/setup.cpp" line="213"/>
         <source>Extra Radio System</source>
         <translation>Module HF supplémentaire</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="307"/>
+        <location filename="../modeledit/setup.cpp" line="308"/>
         <source>Value</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="308"/>
+        <location filename="../modeledit/setup.cpp" line="309"/>
         <source>Hold</source>
         <translation>Maintien</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="309"/>
+        <location filename="../modeledit/setup.cpp" line="310"/>
         <source>No Pulse</source>
         <translation>Pas d&apos;impulsion</translation>
     </message>
@@ -7635,7 +7718,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1115"/>
+        <location filename="../modeledit/setup.cpp" line="1117"/>
         <source>THR</source>
         <translation>GAZ</translation>
     </message>
@@ -9298,47 +9381,47 @@ E</translation>
         <translation>Image du modèle</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="445"/>
+        <location filename="../modeledit/setup.ui" line="428"/>
         <source>Exponential</source>
         <translation>Exponentiel</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="408"/>
+        <location filename="../modeledit/setup.ui" line="387"/>
         <source>Throttle Trim Idle Only</source>
         <translation>Trim ralenti uniquement</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="588"/>
+        <location filename="../modeledit/setup.ui" line="601"/>
         <source>Timer 3</source>
         <translation>Chrono 3</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="450"/>
+        <location filename="../modeledit/setup.ui" line="433"/>
         <source>Extra Fine</source>
         <translation>Extra fin</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="455"/>
+        <location filename="../modeledit/setup.ui" line="438"/>
         <source>Fine</source>
         <translation>Fin</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="460"/>
+        <location filename="../modeledit/setup.ui" line="443"/>
         <source>Medium</source>
         <translation>Moyen</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="465"/>
+        <location filename="../modeledit/setup.ui" line="448"/>
         <source>Coarse</source>
         <translation>Grossier</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="362"/>
+        <location filename="../modeledit/setup.ui" line="352"/>
         <source>Display Checklist</source>
         <translation>Afficher la checklist</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="572"/>
+        <location filename="../modeledit/setup.ui" line="585"/>
         <source>Timer 2</source>
         <translation>Chrono 2</translation>
     </message>
@@ -9348,37 +9431,42 @@ E</translation>
         <translation>Chrono 1</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="480"/>
+        <location filename="../modeledit/setup.ui" line="366"/>
         <source>Never</source>
         <translation>Jamais</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="485"/>
+        <location filename="../modeledit/setup.ui" line="371"/>
         <source>On change</source>
         <translation>Au changement</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="490"/>
+        <location filename="../modeledit/setup.ui" line="376"/>
         <source>Always</source>
         <translation>Toujours</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="498"/>
+        <location filename="../modeledit/setup.ui" line="394"/>
         <source>Global Functions</source>
         <translation>Fonctions globales</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="515"/>
+        <location filename="../modeledit/setup.ui" line="478"/>
+        <source>Edit Checklist...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/setup.ui" line="528"/>
         <source>Throttle Source</source>
         <translation>Source des gaz</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="531"/>
+        <location filename="../modeledit/setup.ui" line="544"/>
         <source>Trim Step</source>
         <translation>Pas des trims</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="547"/>
+        <location filename="../modeledit/setup.ui" line="560"/>
         <source>Trims Display</source>
         <translation>Affichage des trims</translation>
     </message>
@@ -9418,22 +9506,22 @@ E</translation>
         <translation>Modèle</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="372"/>
+        <location filename="../modeledit/setup.ui" line="498"/>
         <source>Extended Limits</source>
         <translation>Débattements étendus</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="352"/>
+        <location filename="../modeledit/setup.ui" line="488"/>
         <source>Extended Trims</source>
         <translation>Trims étendus</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="418"/>
+        <location filename="../modeledit/setup.ui" line="404"/>
         <source>Throttle Warning</source>
         <translation>Alerte gaz</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="379"/>
+        <location filename="../modeledit/setup.ui" line="456"/>
         <source>Reverse throttle operation.
 If this is checked the throttle will be reversed.  Idle will be forward, trim will also be reversed and the throttle warning will be reversed as well.
 
@@ -9444,7 +9532,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
 </translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.ui" line="388"/>
+        <location filename="../modeledit/setup.ui" line="465"/>
         <source>Reverse Throttle</source>
         <translation>Gaz inversés</translation>
     </message>
@@ -9452,7 +9540,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
 <context>
     <name>SetupPanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="883"/>
+        <location filename="../modeledit/setup.cpp" line="884"/>
         <source>Timer %1</source>
         <translation>Chrono %1</translation>
     </message>
@@ -11746,37 +11834,37 @@ hh:mm:ss</translation>
 <context>
     <name>TimerPanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="61"/>
+        <location filename="../modeledit/setup.cpp" line="62"/>
         <source>Silent</source>
         <translation>Aucun</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="62"/>
+        <location filename="../modeledit/setup.cpp" line="63"/>
         <source>Beeps</source>
         <translation>Bips</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="64"/>
+        <location filename="../modeledit/setup.cpp" line="65"/>
         <source>Voice</source>
         <translation>Voix</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="65"/>
+        <location filename="../modeledit/setup.cpp" line="66"/>
         <source>Haptic</source>
         <translation>Vibreur</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="71"/>
+        <location filename="../modeledit/setup.cpp" line="72"/>
         <source>Not persistent</source>
         <translation>Non persistant</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="72"/>
+        <location filename="../modeledit/setup.cpp" line="73"/>
         <source>Persistent (flight)</source>
         <translation>Persistant (vol)</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="73"/>
+        <location filename="../modeledit/setup.cpp" line="74"/>
         <source>Persistent (manual reset)</source>
         <translation>Persistant (RAZ manuelle)</translation>
     </message>
