@@ -715,42 +715,42 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="14"/>
         <source>Edit Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer Checklist</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="88"/>
         <source>&amp;Import...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Importer...</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="101"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="114"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="129"/>
         <source>Please note, the maximum width displayable is radio model limited. Also, renaming the model will break the link to this checklist file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez noter que la largeur maximale affichable est limitée suivant le modèle de radio. Notez aussi que renommer le modèle va casser le lien vers ce fichier &quot;Checklist&quot;.</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.ui" line="139"/>
         <source>File: unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier: inconnu</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="63"/>
         <source>Open Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Ouvrir Checklist</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="63"/>
         <source>Checklist Files (*.txt)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier Checklist (*.txt)</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="74"/>
@@ -759,38 +759,42 @@ Peut être différente de la langue du firmware</translation>
         <location filename="../modeledit/checklistdialog.cpp" line="100"/>
         <location filename="../modeledit/checklistdialog.cpp" line="108"/>
         <source>Model Checklist</source>
-        <translation type="unfinished"></translation>
+        <translation>Modèle Checklist</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="74"/>
         <source>Cannot open file for writing %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier en écriture %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="81"/>
         <source>Cannot write to file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire dans le fichier %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="83"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire le fichier %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="100"/>
         <source>Cannot open file %1:
 %2.</source>
-        <translation type="unfinished">Lecture fichier impossible %1:
+        <translation>Impossible d&apos;ouvrir le fichier %1:
 %2.</translation>
     </message>
     <message>
         <location filename="../modeledit/checklistdialog.cpp" line="108"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire le fichier %1:
+%2.</translation>
     </message>
 </context>
 <context>
@@ -9453,7 +9457,7 @@ E</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="478"/>
         <source>Edit Checklist...</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer Checklist...</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="528"/>
