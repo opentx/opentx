@@ -578,6 +578,9 @@ void evalFunctions()
               mainRequestFlags |= (1 << REQUEST_SCREENSHOT);
             }
             break;
+          case FUNC_CROSSTRIMS:
+            newActiveFunctions |= (1 << FUNC_CROSSTRIMS);
+            break;
 #endif
 
 #if defined(DEBUG)

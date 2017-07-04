@@ -53,22 +53,41 @@ uint32_t readTrims()
 {
   uint32_t result = 0;
 
-  if (~TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
-    result |= 0x01;
-  if (~TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR)
-    result |= 0x02;
-  if (~TRIMS_GPIO_REG_LVD & TRIMS_GPIO_PIN_LVD)
-    result |= 0x04;
-  if (~TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
-    result |= 0x08;
-  if (~TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
-    result |= 0x10;
-  if (~TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
-    result |= 0x20;
-  if (~TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)
-    result |= 0x40;
-  if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
-    result |= 0x80;
+  if (isFunctionActive(FUNC_CROSSTRIMS)){
+    if (~TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
+      result |= 0x40;
+    if (~TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR)
+      result |= 0x80;
+    if (~TRIMS_GPIO_REG_LVD & TRIMS_GPIO_PIN_LVD)
+      result |= 0x10;
+    if (~TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
+      result |= 0x20;
+    if (~TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
+      result |= 0x04;
+    if (~TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
+      result |= 0x08;
+    if (~TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)
+      result |= 0x01;
+    if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
+      result |= 0x02;
+  } else {
+    if (~TRIMS_GPIO_REG_LHL & TRIMS_GPIO_PIN_LHL)
+      result |= 0x01;
+    if (~TRIMS_GPIO_REG_LHR & TRIMS_GPIO_PIN_LHR)
+      result |= 0x02;
+    if (~TRIMS_GPIO_REG_LVD & TRIMS_GPIO_PIN_LVD)
+      result |= 0x04;
+    if (~TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
+      result |= 0x08;
+    if (~TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
+      result |= 0x10;
+    if (~TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
+      result |= 0x20;
+    if (~TRIMS_GPIO_REG_RHL & TRIMS_GPIO_PIN_RHL)
+      result |= 0x40;
+    if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
+      result |= 0x80;
+  }
 
   // TRACE("readTrims(): result=0x%02x", result);
 

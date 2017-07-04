@@ -997,6 +997,7 @@ enum Functions {
   FUNC_BACKLIGHT,
 #if defined(PCBTARANIS)
   FUNC_SCREENSHOT,
+  FUNC_CROSSTRIMS,
 #endif
 #if defined(DEBUG)
   FUNC_TEST, // should remain the last before MAX as not added in Companion
