@@ -833,7 +833,7 @@ static int luaModelGetCurve(lua_State *L)
       lua_pushstring(L, "x");
       lua_newtable(L);
       lua_pushinteger(L, 0);
-      lua_pushinteger(L, 0);
+      lua_pushinteger(L, -100);
       lua_settable(L, -3);
       for (int i=0; i < curveData.points + 3; i++) {
         lua_pushinteger(L, i+1);
