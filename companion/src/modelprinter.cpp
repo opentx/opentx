@@ -21,12 +21,12 @@
 #include "helpers.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
+#include "appdata.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QFile>
 #include <QUrl>
-#include "multiprotocols.h"
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
 {
@@ -465,7 +465,7 @@ QString ModelPrinter::printFlightModes(unsigned int flightModes)
       for (int i=0; i<numFlightModes; i++) {
         if (!(flightModes & (1<<i))) {
           const RawSwitch swtch = model.flightModeData[i].swtch;
-          if ((i==0) || (swtch.toValue())) {
+          if ((i==0) || g.displayAllFMs() || (swtch.toValue())) {
             list << printFlightModeName(i);
           }
         }

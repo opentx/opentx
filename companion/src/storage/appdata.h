@@ -247,11 +247,12 @@ class AppData: protected CompStoreObj
   PROPERTY(bool, useCompanionNightlyBuilds,  false)
   PROPERTY(bool, useFirmwareNightlyBuilds,   false)
   PROPERTY(bool, removeModelSlots,           true)
-  PROPERTY(bool, maximized,   false)
-  PROPERTY(bool, simuSW,      false)
-  PROPERTY(bool, tabbedMdi,   false)
-  PROPERTY(bool, appDebugLog, false)
-  PROPERTY(bool, fwTraceLog,  false)
+  PROPERTY(bool, displayAllFMs,              true)
+  PROPERTY(bool, maximized,                  false)
+  PROPERTY(bool, simuSW,                     false)
+  PROPERTY(bool, tabbedMdi,                  false)
+  PROPERTY(bool, appDebugLog,                false)
+  PROPERTY(bool, fwTraceLog,                 false)
 
   PROPERTY4(bool, jsSupport,       js_support              ,false)
   PROPERTY4(bool, showSplash,      show_splash             ,true)
@@ -398,6 +399,7 @@ class AppData: protected CompStoreObj
     void updatesDir      (const QString);
 
     void newModelAction  (const int);
+    void displayAllFMs   (const int);
     void backLight       (const int);
     void embedSplashes   (const int);
     void fwServerFails   (const int);

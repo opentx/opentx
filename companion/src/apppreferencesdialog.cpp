@@ -71,6 +71,7 @@ void AppPreferencesDialog::writeValues()
   g.simuSW(ui->simuSW->isChecked());
   g.removeModelSlots(ui->opt_removeBlankSlots->isChecked());
   g.newModelAction(ui->opt_newMdl_useWizard->isChecked() ? 1 : ui->opt_newMdl_useEditor->isChecked() ? 2 : 0);
+  g.displayAllFMs(ui->opt_displayAllFMs->isChecked());
   g.historySize(ui->historySize->value());
   g.backLight(ui->backLightColor->currentIndex());
   g.profile[g.id()].volumeGain(round(ui->volumeGain->value() * 10.0));
@@ -160,6 +161,7 @@ void AppPreferencesDialog::initSettings()
   ui->opt_newMdl_useNone->setChecked(g.newModelAction() == 0);
   ui->opt_newMdl_useWizard->setChecked(g.newModelAction() == 1);
   ui->opt_newMdl_useEditor->setChecked(g.newModelAction() == 2);
+  ui->opt_displayAllFMs->setChecked(g.displayAllFMs());
   ui->libraryPath->setText(g.libDir());
   ui->ge_lineedit->setText(g.gePath());
 
