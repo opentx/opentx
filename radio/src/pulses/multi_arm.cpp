@@ -34,8 +34,25 @@
 #define MULTI_CHANS           16
 #define MULTI_CHAN_BITS       11
 
+static void setupMultimoduleConfigPules()
+{
+
+  // Old multi firmware will mark config messsages as invalid frame and throw them away
+  sendByteMulti('M');
+  sendByteMulti('P');
+  sendByteMulti(0x7);         // Module Configuration
+  sendByteMulti(0x1);         // 1 byte data
+  uint8_t config = 0x1 | 0x2; // inversion + mult_telemetry
+#if !defined(PPM_PIN_SERIAL)
+  config |= 0x04;             //input synchronsisation
+#endif
+
+  sendByteMulti(config);
+}
+
 void setupPulsesMultimodule(uint8_t port)
 {
+  static int counter=0;
 #if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
@@ -45,6 +62,14 @@ void setupPulsesMultimodule(uint8_t port)
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
+
+  // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
+  if (counter++  % 1000== 0) {
+    setupMultimoduleConfigPules();
+    putDsm2Flush();
+    return;
+  }
+
 
   // byte 1+2, protocol information
 
