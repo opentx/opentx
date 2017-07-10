@@ -465,7 +465,7 @@ QString ModelPrinter::printFlightModes(unsigned int flightModes)
       for (int i=0; i<numFlightModes; i++) {
         if (!(flightModes & (1<<i))) {
           const RawSwitch swtch = model.flightModeData[i].swtch;
-          if ((i==0) || g.displayAllFMs() || (swtch.toValue())) {
+          if ((i==0) || (g.displayAllFMs()) || (swtch.toValue())) {
             list << printFlightModeName(i);
           }
         }
