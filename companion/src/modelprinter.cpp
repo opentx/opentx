@@ -472,8 +472,10 @@ QString ModelPrinter::printFlightModes(unsigned int flightModes)
       }
       if (list.size() > 1)
         return tr("Flight modes(%1)").arg(list.join(", "));
-      else
+      else if (list.size() == 1)
         return tr("Flight mode(%1)").arg(list.join(", "));
+      else
+        return tr("Inactive in all flight modes");
     }
   }
   else return "";
