@@ -34,20 +34,65 @@
 #define MULTI_CHANS           16
 #define MULTI_CHAN_BITS       11
 
-static void setupMultimoduleConfigPules()
+void sendFrameProtocolHeader(uint8_t port);
+
+void sendChannels(uint8_t port);
+
+static void sendSetupFrame()
 {
 
   // Old multi firmware will mark config messsages as invalid frame and throw them away
-  sendByteMulti('M');
-  sendByteMulti('P');
-  sendByteMulti(0x7);         // Module Configuration
-  sendByteMulti(0x1);         // 1 byte data
+  sendByteSbus('M');
+  sendByteSbus('P');
+  sendByteSbus(0x80);         // Module Configuration
+  sendByteSbus(1);         // 1 byte data
   uint8_t config = 0x1 | 0x2; // inversion + mult_telemetry
 #if !defined(PPM_PIN_SERIAL)
   config |= 0x04;             //input synchronsisation
 #endif
 
-  sendByteMulti(config);
+  sendByteSbus(config);
+}
+
+static void sendFailFailsafeHeader(uint8_t port)
+{
+
+  // Old multi firmware will mark config messsages as invalid frame and throw them away
+  sendByteSbus('M');
+  sendByteSbus('P');
+  sendByteSbus(0x81);         // Failsafe Data
+  sendByteSbus(23);         // 22 byte channe + 1 byte mode
+  sendByteSbus(g_model.moduleData->failsafeMode);
+}
+
+static void sendFailsafeChannels(uint8_t port)
+{
+  uint32_t bits = 0;
+  uint8_t bitsavailable = 0;
+
+  for (int i = 0; i < MULTI_CHANS; i++) {
+    int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[i];
+    int pulseValue;
+    if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
+      pulseValue = 0;
+    }
+    else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+      pulseValue = 2048;
+    }
+    else {
+      failsafeValue += 2 * PPM_CH_CENTER(g_model.moduleData[port].channelsStart + i) - 2 * PPM_CENTER;
+      pulseValue = limit(1, (failsafeValue * 800 / 1000) + 1024, 2047);
+    }
+
+    bits |= pulseValue << bitsavailable;
+    bitsavailable += MULTI_CHAN_BITS;
+    while (bitsavailable >= 8) {
+      sendByteSbus((uint8_t) (bits & 0xff));
+      bits >>= 8;
+      bitsavailable -= 8;
+    }
+
+  }
 }
 
 void setupPulsesMultimodule(uint8_t port)
@@ -65,13 +110,48 @@ void setupPulsesMultimodule(uint8_t port)
 
   // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
   if (counter++  % 1000== 0) {
-    setupMultimoduleConfigPules();
-    putDsm2Flush();
-    return;
+    sendSetupFrame();
+  } else if (counter++ % 1000 == 500) {
+    sendFailFailsafeHeader(port);
+    sendFailsafeChannels(port);
+  } else {
+    // Normal Frame
+    sendFrameProtocolHeader(port);
+    sendChannels(port);
   }
 
+  putDsm2Flush();
+}
 
-  // byte 1+2, protocol information
+
+void sendChannels(uint8_t port)
+{
+  uint32_t bits = 0;
+  uint8_t bitsavailable = 0;
+
+  // byte 4-25, channels 0..2047
+  // Range for pulses (channelsOutputs) is [-1024:+1024] for [-100%;100%]
+  // Multi uses [204;1843] as [-100%;100%]
+  for (int i = 0; i < MULTI_CHANS; i++) {
+    int channel = g_model.moduleData[port].channelsStart + i;
+    int value = channelOutputs[channel] + 2 * PPM_CH_CENTER(channel) - 2 * PPM_CENTER;
+
+    // Scale to 80%
+    value = value * 800 / 1000 + 1024;
+    value = limit(0, value, 2047);
+
+    bits |= value << bitsavailable;
+    bitsavailable += MULTI_CHAN_BITS;
+    while (bitsavailable >= 8) {
+      sendByteSbus((uint8_t) (bits & 0xff));
+      bits >>= 8;
+      bitsavailable -= 8;
+    }
+  }
+}
+
+void sendFrameProtocolHeader(uint8_t port)
+{// byte 1+2, protocol information
 
   // Our enumeration starts at 0
   int type = g_model.moduleData[port].getMultiProtocol(false) + 1;
@@ -159,27 +239,4 @@ void setupPulsesMultimodule(uint8_t port)
 
   // byte 3
   sendByteSbus((uint8_t) optionValue);
-
-  uint32_t bits = 0;
-  uint8_t bitsavailable = 0;
-
-  // byte 4-25, channels 0..2047
-  // Range for pulses (channelsOutputs) is [-1024:+1024] for [-100%;100%]
-  // Multi uses [204;1843] as [-100%;100%]
-  for (int i = 0; i < MULTI_CHANS; i++) {
-    int channel = g_model.moduleData[port].channelsStart + i;
-    int value = channelOutputs[channel] + 2 * PPM_CH_CENTER(channel) - 2 * PPM_CENTER;
-
-    // Scale to 80%
-    value = value * 800 / 1000 + 1024;
-    bits |= limit(0, value, 2047) << bitsavailable;
-    bitsavailable += MULTI_CHAN_BITS;
-    while (bitsavailable >= 8) {
-      sendByteSbus((uint8_t) (bits & 0xff));
-      bits >>= 8;
-      bitsavailable -= 8;
-    }
-  }
-
-  putDsm2Flush();
 }

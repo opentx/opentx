@@ -84,7 +84,7 @@ static void processMultiSyncPacket(const uint8_t *data)
 
   multiSyncStatus.calcAdjustedRefreshRate(data[0] << 8 | data[1], data[2] << 8 | data[3]);
 
-  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d", modulePulsesData[EXTERNAL_MODULE].dsm2.rest,
+  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n", modulePulsesData[EXTERNAL_MODULE].dsm2.rest,
         multiSyncStatus.inputLag, oldlag-multiSyncStatus.inputLag, multiSyncStatus.target, multiSyncStatus.interval, multiSyncStatus.refreshRate, multiSyncStatus.adjustedRefreshRate/50,
         multiSyncStatus.getAdjustedRefreshRate());
 }
@@ -137,6 +137,9 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
         processMultiSyncPacket(data);
       else
         TRACE("[MP] Received input sync len %d < 6", len);
+      break;
+    case ConfigCommand:
+      // Just an ack to our command, ignore for now
       break;
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);
@@ -219,7 +222,7 @@ static uint8_t counter;
 
 uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate() {
   if (!isValid() || refreshRate == 0)
-    return 9000;
+    return 18000;
 
 
   counter = (uint8_t) (counter + 1 % 10);

@@ -1042,7 +1042,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        if (IS_MODULE_PXX(moduleIdx)) {
+        if (IS_MODULE_XJT(moduleIdx) || IS_MODULE_MULTIMODULE(moduleIdx)) {
           ModuleData & moduleData = g_model.moduleData[moduleIdx];
           lcdDrawTextAlignedLeft(y, STR_FAILSAFE);
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition==0 ? attr : 0);
@@ -1065,7 +1065,7 @@ void menuModelSetup(event_t event)
               }
             }
             else {
-              lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W-MODEL_SETUP_2ND_COLUMN-MENUS_SCROLLBAR_WIDTH, 8);
+              lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W - MODEL_SETUP_2ND_COLUMN - MENUS_SCROLLBAR_WIDTH, 8);
             }
           }
         }
@@ -1075,6 +1075,8 @@ void menuModelSetup(event_t event)
      case ITEM_MODEL_EXTERNAL_MODULE_OPTIONS: {
        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 #if defined(MULTIMODULE)
+     case ITEM_MODEL_EXTERNAL_MODULE_OPTIONS: {
+       uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
        if (IS_MODULE_MULTIMODULE(moduleIdx)) {
          int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
