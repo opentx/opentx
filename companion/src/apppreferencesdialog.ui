@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>534</height>
+    <width>869</width>
+    <height>619</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -859,7 +859,7 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="20" column="0">
+         <item row="21" column="0">
           <widget class="QLabel" name="ge_label">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -872,7 +872,7 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="12" column="0">
+         <item row="13" column="0">
           <widget class="QLabel" name="label_17">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -885,7 +885,7 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="10" column="0" rowspan="2" colspan="2">
+         <item row="11" column="0" rowspan="2" colspan="2">
           <widget class="Line" name="line_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -905,6 +905,13 @@ Mode 4:
            </property>
           </widget>
          </item>
+         <item row="4" column="0" rowspan="2" colspan="2">
+          <widget class="Line" name="line">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
          <item row="6" column="1">
           <widget class="QCheckBox" name="showSplash">
            <property name="text">
@@ -915,7 +922,7 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="12" column="1">
+         <item row="13" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_8">
            <item>
             <widget class="QLineEdit" name="backupPath">
@@ -939,7 +946,7 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="17" column="1">
+         <item row="18" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_7">
            <item>
             <widget class="QLineEdit" name="libraryPath">
@@ -966,7 +973,7 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="23" column="0">
+         <item row="24" column="0">
           <widget class="QLabel" name="lbl_appLogsDir">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -976,13 +983,6 @@ Mode 4:
            </property>
            <property name="text">
             <string>Output Logs Folder</string>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" rowspan="2" colspan="2">
-          <widget class="Line" name="line">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -1030,7 +1030,7 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="13" column="1">
+         <item row="14" column="1">
           <widget class="QCheckBox" name="backupEnable">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1043,7 +1043,7 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="22" column="0">
+         <item row="23" column="0">
           <widget class="QLabel" name="label_12">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -1056,14 +1056,21 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="18" column="0" rowspan="2" colspan="2">
+         <item row="15" column="0" rowspan="2" colspan="2">
+          <widget class="Line" name="line_5">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="19" column="0" rowspan="2" colspan="2">
           <widget class="Line" name="line_7">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
            </property>
           </widget>
          </item>
-         <item row="16" column="1">
+         <item row="17" column="1">
           <widget class="QComboBox" name="splashincludeCB">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -1083,14 +1090,7 @@ Mode 4:
            </item>
           </widget>
          </item>
-         <item row="14" column="0" rowspan="2" colspan="2">
-          <widget class="Line" name="line_5">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-         <item row="20" column="1">
+         <item row="21" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_9">
            <item>
             <widget class="QLineEdit" name="ge_lineedit">
@@ -1114,7 +1114,7 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="23" column="1">
+         <item row="24" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QLineEdit" name="appLogsDir">
@@ -1135,7 +1135,7 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="22" column="1">
+         <item row="23" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
             <widget class="QCheckBox" name="opt_appDebugLog">
@@ -1159,7 +1159,7 @@ Mode 4:
            </item>
           </layout>
          </item>
-         <item row="16" column="0">
+         <item row="17" column="0">
           <widget class="QLabel" name="label_10">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -1172,7 +1172,14 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="17" column="0">
+         <item row="22" column="0" colspan="2">
+          <widget class="Line" name="line_4">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="18" column="0">
           <widget class="QLabel" name="label_9">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -1198,10 +1205,20 @@ Mode 4:
            </property>
           </widget>
          </item>
-         <item row="21" column="0" colspan="2">
-          <widget class="Line" name="line_4">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+         <item row="10" column="0">
+          <widget class="QLabel" name="label_18">
+           <property name="text">
+            <string>Display</string>
+           </property>
+          </widget>
+         </item>
+         <item row="10" column="1">
+          <widget class="QCheckBox" name="opt_displayAllFMs">
+           <property name="text">
+            <string>All flight modes in inputs and mixes lists</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
            </property>
           </widget>
          </item>

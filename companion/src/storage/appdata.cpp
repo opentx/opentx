@@ -600,6 +600,7 @@ void AppData::init()
     useCompanionNightlyBuilds_init();
     useFirmwareNightlyBuilds_init();
     removeModelSlots_init();
+    displayAllFMs_init();
     maximized_init();
     simuSW_init();
     tabbedMdi_init();
