@@ -41,9 +41,9 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   ui->rpm->setSpecialValueText(" ");
   ui->fuel->setSpecialValueText(" ");
 
-  ui->rxbt_ratio->setEnabled(false);
-  ui->A1_ratio->setEnabled(false);
-  ui->A2_ratio->setEnabled(false);
+  ui->rxbt_ratio->setEnabled(true);
+  ui->A1_ratio->setEnabled(true);
+  ui->A2_ratio->setEnabled(true);
 
 
   timer.setInterval(10);
