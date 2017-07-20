@@ -257,7 +257,8 @@ ModulePanel::~ModulePanel()
 
 bool ModulePanel::moduleHasFailsafes()
 {
-  return ((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 && firmware->getCapability(HasFailsafe));;
+  return (((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 || (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M)
+         && firmware->getCapability(HasFailsafe));;
 }
 
 void ModulePanel::setupFailsafes()
@@ -365,8 +366,9 @@ void ModulePanel::update()
       case PULSES_PXX_XJT_D8:
       case PULSES_PXX_XJT_LR12:
       case PULSES_PXX_DJT:
+      case PULSES_PXX_R9M:
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
-        if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12)
+        if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 || protocol==PULSES_PXX_R9M)
           mask |= MASK_RX_NUMBER;
         if (IS_HORUS(firmware->getBoard()) && moduleIdx==0)
           mask |= MASK_ANTENNA;

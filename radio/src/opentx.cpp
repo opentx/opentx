@@ -1024,7 +1024,7 @@ void checkSDVersion()
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
-    if (IS_MODULE_XJT(i)) {
+    if (IS_MODULE_PXX(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
       if (HAS_RF_PROTOCOL_FAILSAFE(moduleData.rfProtocol) && moduleData.failsafeMode == FAILSAFE_NOT_SET) {
         ALERT(STR_FAILSAFEWARN, STR_NO_FAILSAFE, AU_ERROR);
