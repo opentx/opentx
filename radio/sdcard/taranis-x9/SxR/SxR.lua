@@ -20,6 +20,7 @@ local configFields = {
 
 local settingsFields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
+  {"Quick Mode:", COMBO, 0xAA, nil, { "Disable", "Enable" } },
   {"CH5 mode:", COMBO, 0xA8, nil, { "AIL2", "AUX1" } },
   {"CH6 mode:", COMBO, 0xA9, nil, { "ELE2", "AUX2" } },
   {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
@@ -134,7 +135,7 @@ local function refreshNext()
       local field = fields[refreshIndex + 1]
       if telemetryRead(field[3]) == true then
         refreshState = 1
-        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
+        telemetryPopTimeout = getTime() + 120 -- normal delay is 500ms
       end
     end
   elseif refreshState == 1 then
@@ -165,6 +166,8 @@ local function refreshNext()
         refreshState = 0
       end
     elseif getTime() > telemetryPopTimeout then
+      fields[refreshIndex + 1][4] = nil
+      refreshIndex = refreshIndex + 1
       refreshState = 0
     end
   end
