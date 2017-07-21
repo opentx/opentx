@@ -129,18 +129,18 @@ uint16_t isqrt32(uint32_t n)
 
 #if defined(FRSKY_HUB) && !defined(CPUARM)
 // convert latitude and longitude to 1/10^6 degrees
-void extractLatitudeLongitude(uint32_t & latitude, uint32_t & longitude)
+void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
 {
   div_t qr = div(telemetryData.hub.gpsLatitude_bp, 100);
-  latitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + telemetryData.hub.gpsLatitude_ap) * 5) / 3;
+  *latitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + telemetryData.hub.gpsLatitude_ap) * 5) / 3;
 
   qr = div(telemetryData.hub.gpsLongitude_bp, 100);
-  longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + telemetryData.hub.gpsLongitude_ap) * 5) / 3;
+  *longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + telemetryData.hub.gpsLongitude_ap) * 5) / 3;
 }
 
 void getGpsPilotPosition()
 {
-  extractLatitudeLongitude(telemetryData.hub.pilotLatitude, telemetryData.hub.pilotLongitude);
+  extractLatitudeLongitude(&telemetryData.hub.pilotLatitude, &telemetryData.hub.pilotLongitude);
   // distFromEarthAxis = cos(lat) * EARTH_RADIUS
   // 1 - x2/2 + x4/24
   uint32_t lat = telemetryData.hub.pilotLatitude / 10000;
@@ -154,7 +154,7 @@ void getGpsDistance()
 {
   uint32_t lat, lng;
 
-  extractLatitudeLongitude(lat, lng);
+  extractLatitudeLongitude(&lat, &lng);
 
   // printf("lat=%d (%d), long=%d (%d)\n", lat, abs(lat - telemetryData.hub.pilotLatitude), lng, abs(lng - telemetryData.hub.pilotLongitude));
 
