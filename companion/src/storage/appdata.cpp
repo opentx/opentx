@@ -700,6 +700,16 @@ bool AppData::importSettings(QSettings & toSettings)
 
   if (!fromSettings)
     return false;
+    
+  QMessageBox msgBox;
+  msgBox.setText("We have found existing settings for Companion version: " + upgradeFromVersion + ".\nDo you want to import them?");
+  msgBox.setIcon(QMessageBox::Information);
+  msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+  msgBox.setDefaultButton(QMessageBox::Yes);
+  int ret = msgBox.exec();
+
+  if (ret == QMessageBox::No)
+  	return false;
 
   // do not copy these settings
   QStringList excludeKeys = QStringList() << "compilation-server";

@@ -30,6 +30,7 @@
 #include <QString>
 #include <QSettings>
 #include <QStandardPaths>
+#include <QMessageBox>
 
 #include "simulator.h"
 
