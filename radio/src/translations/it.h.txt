@@ -716,6 +716,7 @@
 #define TR_INACTIVITYALARM     INDENT"Inattivita'"
 #define TR_MEMORYWARNING       INDENT"Avviso memoria"
 #define TR_ALARMWARNING        INDENT"Spegni suono"
+#define TR_RSSISHUTDOWNALARM           TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
 #define TR_RENAVIG             "Navig EncRot "
 #define TR_THROTTLE_LABEL      "Motore"
 #define TR_THROTTLEREVERSE     TR("Mot inv.", INDENT "Motore Inverso")

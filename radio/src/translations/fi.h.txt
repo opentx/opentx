@@ -697,6 +697,7 @@
 #define TR_INACTIVITYALARM     INDENT"Inactivity"
 #define TR_MEMORYWARNING       INDENT"Memory Low"
 #define TR_ALARMWARNING        INDENT"Sound Off"
+#define TR_RSSISHUTDOWNALARM           TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("T-Reverse", INDENT "Throttle reverse")

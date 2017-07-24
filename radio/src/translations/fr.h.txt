@@ -718,6 +718,7 @@
 #define TR_INACTIVITYALARM     INDENT "Inactivité"
 #define TR_MEMORYWARNING       INDENT "Mémoire pleine"
 #define TR_ALARMWARNING        TR(INDENT "Silence", INDENT "Sons désactivés")
+#define TR_RSSISHUTDOWNALARM           TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
 #define TR_RENAVIG             "Navig EncRot"
 #define TR_THROTTLE_LABEL      "Gaz"
 #define TR_THROTTLEREVERSE     TR("Inv. gaz", INDENT "Inversion gaz")

@@ -1572,6 +1572,11 @@ void drawShutdownAnimation(uint32_t index)
       lcdDrawFilledRect(LCD_W / 2 - 28 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
     }
   }
+  if (TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm) {
+    lcdDrawText(15, 5, "MODEL STILL", DBLSIZE|BLINK);
+    lcdDrawText(20, 40, "POWERED", DBLSIZE|BLINK);
+    if(quarter < 1) audioEvent(AU_ERROR);
+  }
   lcdRefresh();
 }
 #endif

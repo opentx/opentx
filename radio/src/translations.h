@@ -467,6 +467,7 @@ extern const pm_char STR_BATTERYWARNING[];
 extern const pm_char STR_INACTIVITYALARM[];
 extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
+extern const pm_char STR_RSSISHUTDOWNALARM[];
 extern const pm_char STR_RENAVIG[];
 extern const pm_char STR_THROTTLEREVERSE[];
 extern const pm_char STR_TIMER_NAME[];

@@ -252,7 +252,7 @@ void generalDefault()
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
-  
+
 #if defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
@@ -973,7 +973,7 @@ void doSplash()
         drawSecondSplash();
       }
 #endif
-            
+
 #if defined(PCBSKY9X)
       if (curTime < get_tmr10ms()) {
         curTime += 10;
@@ -2772,6 +2772,23 @@ uint32_t pwrCheck()
           }
         }
 #else
+        while ((TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm)) {
+          lcdRefreshWait();
+          lcdClear();
+          POPUP_CONFIRMATION("Confirm Shutdown");
+          event_t evt = getEvent(false);
+          DISPLAY_WARNING(evt);
+          lcdRefresh();
+          if (warningResult == true) {
+            pwr_check_state = PWR_CHECK_OFF;
+            return e_power_off;
+          }
+          else if (!warningText) {
+            // shutdown has been cancelled
+            pwr_check_state = PWR_CHECK_PAUSED;
+            return e_power_on;
+          }
+        }
         haptic.play(15, 3, PLAY_NOW);
         pwr_check_state = PWR_CHECK_OFF;
         return e_power_off;
