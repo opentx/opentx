@@ -705,7 +705,7 @@ bool AppData::importSettings(QSettings & toSettings)
   QStringList excludeKeys = QStringList() << "compilation-server";
 #ifdef WIN32
   // locations of tools which come with Companion distros
-  excludeKeys << "avrdude_location" << "avrdudeLocation" << "dfu_location";
+  excludeKeys << "avrdude_location" << "avrdudeLocation" << "dfu_location" << "samba_location" << "sambaLocation";
   // install-specific keys;  "." is the "default" key which may contain install path
   excludeKeys << "Start Menu Folder" << ".";
 #endif
