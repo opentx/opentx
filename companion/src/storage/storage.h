@@ -82,6 +82,7 @@ class StorageFormat
           return 0x3378746F;
         case Board::BOARD_SKY9X:
         case Board::BOARD_AR9X:
+        case Board::BOARD_9XRPRO:
           return 0x3278746F;
         case Board::BOARD_MEGA2560:
         case Board::BOARD_GRUVIN9X:
