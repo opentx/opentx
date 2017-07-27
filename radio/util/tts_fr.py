@@ -67,6 +67,7 @@ for s, f, a in [("Trim centré", "midtrim", 495),
                 ("Sonde de télémétrie perdue", "sensorko", NO_ALTERNATE),
                 ("Servo en surcharge", "servoko", NO_ALTERNATE),
                 ("Surcharge réception", "rxko", NO_ALTERNATE),
+                ("Récepteur encore sous tension", "modelpwr", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, (s, f) in enumerate([("altitude", "altitude"),
