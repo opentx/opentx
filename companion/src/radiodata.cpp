@@ -76,7 +76,7 @@ RawSwitch RawSwitch::convert(Board::Type before, Board::Type after)
       if (type == SWITCH_TYPE_SWITCH && index >= 18) {
         index -= 6;
       }
-      else if (type == SWITCH_TYPE_SWITCH && index >= 12) {
+      else if (type == SWITCH_TYPE_SWITCH && index >= 15) {
         index -= 3;
       }
     }
