@@ -180,6 +180,7 @@ const char * const audioFilenames[] = {
   "sensorko",
   "servoko",
   "rxko",
+  "modelpwr",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",

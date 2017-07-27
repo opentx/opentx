@@ -2729,6 +2729,8 @@ uint32_t pwrPressedDuration()
 
 uint32_t pwrCheck()
 {
+  const char * message = NULL;
+
   enum PwrCheckState {
     PWR_CHECK_ON,
     PWR_CHECK_OFF,
@@ -2741,11 +2743,17 @@ uint32_t pwrCheck()
     return e_power_off;
   }
   else if (pwrPressed()) {
+    if (TELEMETRY_STREAMING()) {
+      message = STR_MODEL_STILL_POWERED;
+    }
     if (pwr_check_state == PWR_CHECK_PAUSED) {
       // nothing
     }
     else if (pwr_press_time == 0) {
       pwr_press_time = get_tmr10ms();
+      if (message && g_eeGeneral.rssiPoweroffAlarm) {
+        audioEvent(AU_MODEL_STILL_POWERED);
+      }
     }
     else {
       inactivity.counter = 0;
@@ -2795,7 +2803,7 @@ uint32_t pwrCheck()
 #endif
       }
       else {
-        drawShutdownAnimation(pwrPressedDuration());
+        drawShutdownAnimation(pwrPressedDuration(), message);
         return e_power_press;
       }
     }
@@ -2811,16 +2819,19 @@ uint32_t pwrCheck()
 uint32_t pwrCheck()
 {
 #if defined(SOFT_PWR_CTRL)
-  if (pwrPressed())
+  if (pwrPressed()) {
     return e_power_on;
+  }
 #endif
 
-  if (usbPlugged())
+  if (usbPlugged()) {
     return e_power_usb;
+  }
 
 #if defined(TRAINER_PWR)
-  if (TRAINER_CONNECTED())
+  if (TRAINER_CONNECTED()) {
     return e_power_trainer;
+  }
 #endif
 
   return e_power_off;

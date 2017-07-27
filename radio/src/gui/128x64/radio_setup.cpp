@@ -387,6 +387,7 @@ void menuRadioSetup(event_t event)
         g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
         break;
       }
+
 #if defined(CPUARM)
       case ITEM_SETUP_RSSI_POWEROFF_ALARM:
       {
@@ -394,6 +395,7 @@ void menuRadioSetup(event_t event)
         break;
       }
 #endif
+
 #if defined(TX_CAPACITY_MEASUREMENT)
       case ITEM_SETUP_CAPACITY_WARNING:
         lcdDrawTextAlignedLeft(y, STR_CAPAWARNING);

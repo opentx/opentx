@@ -1563,19 +1563,17 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
 }
 
 #if defined(PWR_PRESS_BUTTON)
-void drawShutdownAnimation(uint32_t index)
+void drawShutdownAnimation(uint32_t index, const char * message)
 {
   lcdClear();
   int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
   for (int i=1; i<=4; i++) {
-    if ((4 -quarter) >= i) {
+    if (4 - quarter >= i) {
       lcdDrawFilledRect(LCD_W / 2 - 28 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
     }
   }
-  if (TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm) {
-    lcdDrawText(15, 5, "MODEL STILL", DBLSIZE|BLINK);
-    lcdDrawText(20, 40, "POWERED", DBLSIZE|BLINK);
-    if(quarter < 1) audioEvent(AU_ERROR);
+  if (message) {
+    lcdDrawText(0, LCD_H-2*FH, message);
   }
   lcdRefresh();
 }

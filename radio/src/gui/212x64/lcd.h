@@ -171,7 +171,7 @@ inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
 void lcdInvertLine(int8_t line);
 #define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
 
-void drawShutdownAnimation(uint32_t index);
+void drawShutdownAnimation(uint32_t index, const char * message);
 void drawSleepBitmap();
 void drawTelemetryTopBar();
 
