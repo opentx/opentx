@@ -47,7 +47,7 @@ void drawShutdownAnimation(uint32_t index, const char * message)
   lcdClear();
   lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, bmp_shutdown, (3 - index) * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
   if (message) {
-    lcdDrawText(0, LCD_H-2*FH, message);
+    lcdDrawText(0, LCD_H-2*FH, message, BLINK);
   }
   lcdRefresh();
 }
