@@ -1944,7 +1944,7 @@ void opentxClose(uint8_t shutdown)
   storageCheck(true);
 
 #if defined(CPUARM)
-  while (IS_PLAYING(ID_PLAY_BYE)) {
+  while (IS_PLAYING(ID_PLAY_PROMPT_BASE + AU_BYE)) {
     CoTickDelay(10);
   }
   CoTickDelay(50);

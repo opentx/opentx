@@ -425,6 +425,17 @@ class AudioFragmentFifo
       return false;
     }
 
+    bool removeId(uint8_t id)
+    {
+      uint8_t i = ridx;
+      while (i != widx) {
+        AudioFragment & fragment = fragments[i];
+        if (fragment.id == id) fragment.clear();
+        i = nextIdx(i);
+      }
+      return false;
+    }
+
     bool empty() const
     {
       return ridx == widx;
@@ -502,8 +513,10 @@ extern uint8_t currentSpeakerVolume;
 extern AudioQueue audioQueue;
 
 enum {
-  ID_PLAY_FROM_SD_MANAGER = 254,
-  ID_PLAY_BYE = 255
+  // IDs for special functions [0:64]
+  // IDs for global functions [64:128]
+  ID_PLAY_PROMPT_BASE = 128,
+  ID_PLAY_FROM_SD_MANAGER = 255,
 };
 
 void codecsInit();
@@ -536,7 +549,7 @@ void audioTimerCountdown(uint8_t timer, int value);
 #define AUDIO_KEY_ERROR()        audioKeyError()
 
 #define AUDIO_HELLO()            audioPlay(AUDIO_HELLO)
-#define AUDIO_BYE()              audioPlay(AU_BYE, ID_PLAY_BYE)
+#define AUDIO_BYE()              audioPlay(AU_BYE, ID_PLAY_PROMPT_BASE + AU_BYE)
 #define AUDIO_WARNING1()         AUDIO_BUZZER(audioEvent(AU_WARNING1), beep(3))
 #define AUDIO_WARNING2()         AUDIO_BUZZER(audioEvent(AU_WARNING2), beep(2))
 #define AUDIO_TX_BATTERY_LOW()   AUDIO_BUZZER(audioEvent(AU_TX_BATTERY_LOW), beep(4))
