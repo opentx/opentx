@@ -2836,7 +2836,7 @@ uint32_t pwrCheck()
   while ((TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm)) {
     lcdRefreshWait();
     lcdClear();
-    POPUP_CONFIRMATION("Confirm Shutdown");
+    POPUP_ASTERIX("Confirm Shutdown");
     event_t evt = getEvent(false);
     DISPLAY_WARNING(evt);
     lcdRefresh();
