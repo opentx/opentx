@@ -2833,7 +2833,18 @@ uint32_t pwrCheck()
     return e_power_trainer;
   }
 #endif
-
+  while ((TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm)) {
+    lcdRefreshWait();
+    lcdClear();
+    POPUP_CONFIRMATION("Confirm Shutdown");
+    event_t evt = getEvent(false);
+    DISPLAY_WARNING(evt);
+    lcdRefresh();
+    if (warningResult == true) {
+      return e_power_off;
+    }
+    return e_power_on;
+  }
   return e_power_off;
 }
 #endif
