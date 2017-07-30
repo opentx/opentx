@@ -211,9 +211,7 @@ void TelemetrySimulator::setupDataFields()
   SET_INSTANCE(accy_inst,     ACCY_FIRST_ID,          0);
   SET_INSTANCE(accz_inst,     ACCZ_FIRST_ID,          0);
 
-  ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
-  ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
-  ui->A2_ratio->setValue(simulator->getSensorRatio(ADC2_ID) / 10.0);
+  refreshSensorRatios();
 }
 
 void setSportPacketCrc(uint8_t * packet)
@@ -252,6 +250,13 @@ bool generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_
   return true;
 }
 
+void TelemetrySimulator::refreshSensorRatios()
+{
+  ui->rxbt_ratio->setValue(simulator->getSensorRatio(BATT_ID) / 10.0);
+  ui->A1_ratio->setValue(simulator->getSensorRatio(ADC1_ID) / 10.0);
+  ui->A2_ratio->setValue(simulator->getSensorRatio(ADC2_ID) / 10.0);
+}
+
 void TelemetrySimulator::generateTelemetryFrame()
 {
   static int item = 0;
@@ -268,6 +273,7 @@ void TelemetrySimulator::generateTelemetryFrame()
 #if defined(XJT_VERSION_ID)
       generateSportPacket(buffer, 1, DATA_FRAME, XJT_VERSION_ID, 11);
 #endif
+      refreshSensorRatios();    // placed here in order to call this less often
     break;
 
     case 1:
