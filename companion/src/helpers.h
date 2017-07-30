@@ -129,18 +129,6 @@ class CurveGroup : public QObject {
 
 namespace Helpers
 {
-  enum SwitchContext
-  {
-    LogicalSwitchesContext,
-    SpecialFunctionsContext,
-    GlobalFunctionsContext,
-    TimersContext,
-    MixesContext
-  };
-
-  void addRawSwitchItems(QStandardItemModel * itemModel, const RawSwitchType & type, int count, const GeneralSettings * const generalSettings = NULL);
-  QStandardItemModel * getRawSwitchItemModel(const GeneralSettings * const generalSettings = NULL, SwitchContext context = LogicalSwitchesContext);
-
   void addRawSourceItems(QStandardItemModel * itemModel, const RawSourceType & type, int count, const GeneralSettings * const generalSettings = NULL,
                          const ModelData * const model = NULL, const int start = 0, const QList<int> exclude = QList<int>());
   QStandardItemModel * getRawSourceItemModel(const GeneralSettings * const generalSettings = NULL, const ModelData * const model = NULL, unsigned int flags = 0);

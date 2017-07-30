@@ -622,7 +622,7 @@ bool RawSource::isSlider(int * sliderIndex) const
  * RawSwitch
  */
 
-QString RawSwitch::toString(Board::Type board, const GeneralSettings * const generalSettings) const
+QString RawSwitch::toString(Board::Type board, const GeneralSettings * const generalSettings, const ModelData * const modelData) const
 {
   if (board == Board::BOARD_UNKNOWN) {
     board = getCurrentBoard();
@@ -662,7 +662,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
       << CPN_STR_SW_INDICATOR_DN;
 
   if (index < 0) {
-    return CPN_STR_SW_INDICATOR_REV % RawSwitch(type, -index).toString(board, generalSettings);
+    return CPN_STR_SW_INDICATOR_REV % RawSwitch(type, -index).toString(board, generalSettings, modelData);
   }
   else {
     QString swName;
@@ -717,6 +717,15 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
 
       case SWITCH_TYPE_TIMER_MODE:
         return CHECK_IN_ARRAY(timerModes, index);
+
+      case SWITCH_TYPE_SENSOR:
+        if (modelData && index <= CPN_MAX_SENSORS && strlen(modelData->sensorData[index-1].label) > 0)
+          return QObject::tr("Sensor%1 (%2)").arg(index).arg(modelData->sensorData[index-1].label);
+        else
+          return QObject::tr("Sensor%1").arg(index);
+
+      case SWITCH_TYPE_TELEMETRY:
+        return QObject::tr("Telemetry");
 
       default:
         return QObject::tr("???");
@@ -1743,6 +1752,24 @@ int ModelData::getChannelsMax(bool forceExtendedLimits) const
     return IS_HORUS_OR_TARANIS(getCurrentBoard()) ? 150 : 125;
   else
     return 100;
+}
+
+bool ModelData::isAvailable(const RawSwitch & swtch) const
+{
+  unsigned index = abs(swtch.index) - 1;
+
+  if (swtch.type == SWITCH_TYPE_VIRTUAL) {
+    return logicalSw[index].func != LS_FN_OFF;
+  }
+  else if (swtch.type == SWITCH_TYPE_FLIGHT_MODE) {
+    return index == 0 || flightModeData[index].swtch.type != SWITCH_TYPE_NONE;
+  }
+  else if (swtch.type == SWITCH_TYPE_SENSOR) {
+    return strlen(sensorData[index].label) > 0;
+  }
+  else {
+    return true;
+  }
 }
 
 QList<EEPROMInterface *> eepromInterfaces;

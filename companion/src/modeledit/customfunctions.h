@@ -21,9 +21,11 @@
 #ifndef _CUSTOMFUNCTIONS_H_
 #define _CUSTOMFUNCTIONS_H_
 
+#include <QMediaPlayer>
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include <QMediaPlayer>
+
+class RawSwitchFilterItemModel;
 
 class RepeatComboBox: public QComboBox
 {
@@ -74,7 +76,7 @@ class CustomFunctionsPanel : public GenericPanel
     void populateFuncCB(QComboBox *b, unsigned int value);
     void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
-    QStandardItemModel * rawSwitchItemModel;
+    RawSwitchFilterItemModel * rawSwitchItemModel;
     QStandardItemModel * rawSrcInputsItemModel;
     QStandardItemModel * rawSrcAllItemModel;
 
