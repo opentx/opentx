@@ -2838,7 +2838,6 @@ uint32_t pwrCheck()
     if (TELEMETRY_STREAMING()) {
       RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
       while (TELEMETRY_STREAMING()) {
-        SIMU_SLEEP(1);
 #if defined(CPUARM)
         CoTickDelay(10);
 #endif
