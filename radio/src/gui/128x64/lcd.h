@@ -261,7 +261,7 @@ void lcd_imgfar(coord_t x, coord_t y, const uint_farptr_t img, uint8_t idx, LcdF
 #endif
 
 void lcdClear(void);
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)

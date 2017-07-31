@@ -1510,7 +1510,7 @@ void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
 LCD_IMG_FUNCTION(lcd_imgfar, uint_farptr_t, pgm_read_byte_far)
 #endif
 
-LCD_IMG_FUNCTION(lcd_img, const pm_uchar *, pgm_read_byte)
+LCD_IMG_FUNCTION(lcdDraw1bitBitmap, const pm_uchar *, pgm_read_byte)
 
 #endif
 

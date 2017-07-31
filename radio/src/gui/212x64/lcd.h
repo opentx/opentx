@@ -180,7 +180,7 @@ void drawTelemetryTopBar();
   lcdDrawSolidVerticalLine(xx  ,yy-ll,ll);  \
   lcdDrawSolidVerticalLine(xx+1,yy-ll,ll)
 
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
 void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
 #define LCD_ICON(x, y, icon) lcdDrawBitmap(x, y, icons, icon)
