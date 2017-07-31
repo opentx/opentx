@@ -717,7 +717,8 @@
 #define TR_MEMORYWARNING       INDENT"Avviso memoria"
 #define TR_ALARMWARNING        INDENT"Spegni suono"
 #define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
-#define TR_MODEL_STILL_POWERED CENTER "\005" "Model still powered"
+#define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Navig EncRot "
 #define TR_THROTTLE_LABEL      "Motore"
 #define TR_THROTTLEREVERSE     TR("Mot inv.", INDENT "Motore Inverso")

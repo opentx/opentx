@@ -732,7 +732,8 @@
 #define TR_MEMORYWARNING       INDENT "Speicher voll"
 #define TR_ALARMWARNING        TR(INDENT "Alle Töne aus?", INDENT "Alle Töne ganz aus?")
 #define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
-#define TR_MODEL_STILL_POWERED CENTER "\005" "Model still powered"
+#define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Drehgeb. Navig."
 #define TR_THROTTLE_LABEL      "----Gas-Kontrolle----"
 #define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis

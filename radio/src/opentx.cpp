@@ -2833,18 +2833,25 @@ uint32_t pwrCheck()
     return e_power_trainer;
   }
 #endif
-  while ((TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm)) {
-    lcdRefreshWait();
-    lcdClear();
-    POPUP_CONFIRMATION("Confirm Shutdown");
-    event_t evt = getEvent(false);
-    DISPLAY_WARNING(evt);
-    lcdRefresh();
-    if (warningResult == true) {
-      return e_power_off;
+
+  if (g_eeGeneral.rssiPoweroffAlarm) {
+    if (TELEMETRY_STREAMING()) {
+      RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
+      while (TELEMETRY_STREAMING()) {
+        SIMU_SLEEP(1);
+#if defined(CPUARM)
+        CoTickDelay(10);
+#endif
+        if (pwrPressed()) {
+          return e_power_on;
+        }
+        else if (readKeys() == (1 << KEY_ENTER)) {
+          return e_power_off;
+        }
+      }
     }
-    return e_power_on;
   }
+
   return e_power_off;
 }
 #endif

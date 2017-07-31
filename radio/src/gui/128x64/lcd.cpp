@@ -1573,7 +1573,7 @@ void drawShutdownAnimation(uint32_t index, const char * message)
     }
   }
   if (message) {
-    lcdDrawText(0, LCD_H-2*FH, message);
+    lcdDrawText((LCD_W - getTextWidth(message)) / 2, LCD_H-2*FH, message);
   }
   lcdRefresh();
 }
