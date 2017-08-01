@@ -68,6 +68,7 @@ for s, f, a in [("trim center", "midtrim", 495),
                 ("sensor lost", "sensorko", NO_ALTERNATE),
                 ("servo overload", "servoko", NO_ALTERNATE),
                 ("power overload", "rxko", NO_ALTERNATE),
+                ("receiver still connected", "modelpwr", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, (s, f) in enumerate([("gear!, up!", "gearup"),

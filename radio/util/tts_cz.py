@@ -78,6 +78,7 @@ for s, f, a in [("střed trimu", "midtrim", 495),
                 ("senzor ztracen", "sensorko", NO_ALTERNATE),
                 ("servo přetíženo", "servoko", NO_ALTERNATE),
                 ("r f přebuzeno", "rxko", NO_ALTERNATE),
+                ("receiver still connected", "modelpwr", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, (s, f) in enumerate([("podvozek je zasunut", "podvo0"),

@@ -171,7 +171,7 @@ inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
 void lcdInvertLine(int8_t line);
 #define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
 
-void drawShutdownAnimation(uint32_t index);
+void drawShutdownAnimation(uint32_t index, const char * message);
 void drawSleepBitmap();
 void drawTelemetryTopBar();
 
@@ -205,5 +205,9 @@ inline display_t getPixel(unsigned int x, unsigned int y)
   display_t * p = &displayBuf[y / 2 * LCD_W + x];
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
 }
+
+#if defined(CPUARM)
+uint8_t getTextWidth(const char * s, uint8_t len=0, LcdFlags flags=0);
+#endif
 
 #endif // _LCD_H_

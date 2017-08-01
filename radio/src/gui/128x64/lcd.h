@@ -282,6 +282,10 @@ inline display_t getPixel(uint8_t x, uint8_t y)
 
 const char * writeScreenshot();
 
-void drawShutdownAnimation(uint32_t index);
+void drawShutdownAnimation(uint32_t index, const char * message);
+
+#if defined(CPUARM)
+uint8_t getTextWidth(const char * s, uint8_t len=0, LcdFlags flags=0);
+#endif
 
 #endif // _LCD_H_
