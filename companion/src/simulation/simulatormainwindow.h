@@ -24,6 +24,7 @@
 #include "simulator.h"
 
 #include <QDockWidget>
+#include <QFile>
 #include <QMainWindow>
 #include <QThread>
 
@@ -99,6 +100,7 @@ class SimulatorMainWindow : public QMainWindow
     QDockWidget * m_outputsDockWidget;
 
     QThread simuThread;
+    QFile m_simuLogFile;
     QVector<keymapHelp_t> m_keymapHelp;
     QString m_simulatorId;
     QString m_exitStatusMsg;

@@ -41,6 +41,7 @@ enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
 #if defined(CPUARM)
+  ITEM_TELEMETRY_DISABLE_ALARMS,
   ITEM_TELEMETRY_SENSORS_LABEL,
   ITEM_TELEMETRY_SENSOR1,
   ITEM_TELEMETRY_SENSOR2,
@@ -91,11 +92,12 @@ enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_FAS_OFFSET,
 #endif
 #endif
-  CASE_VARIO(ITEM_TELEMETRY_VARIO_LABEL)
 #if defined(VARIO)
+  ITEM_TELEMETRY_VARIO_LABEL,
   ITEM_TELEMETRY_VARIO_SOURCE,
+  ITEM_TELEMETRY_VARIO_RANGE,
+  ITEM_TELEMETRY_VARIO_CENTER,
 #endif
-  CASE_VARIO(ITEM_TELEMETRY_VARIO_RANGE)
 #if !defined(CPUARM)
   // TODO check the cost of moving them to a new screen on the 9X
   ITEM_TELEMETRY_SCREEN_LABEL1,
@@ -150,7 +152,7 @@ enum MenuModelTelemetryFrskyItems {
 #endif
 
 #if defined(CPUARM)
-  #define RSSI_ROWS                      LABEL(RSSI), 0, 0,
+  #define RSSI_ROWS                      LABEL(RSSI), 0, 0, 1,
 #else
   #define RSSI_ROWS                      LABEL(RSSI), 1, 1,
 #endif
@@ -162,9 +164,11 @@ enum MenuModelTelemetryFrskyItems {
 #endif
 
 #if defined(PCBSTD)
-  #define VARIO_RANGE_ROWS             1
+  #define VARIO_ROWS             1,
+#elif defined(CPUARM)
+  #define VARIO_ROWS             LABEL(Vario), 0, 1, 2,
 #else
-  #define VARIO_RANGE_ROWS             (NAVIGATION_LINE_BY_LINE | 3)
+  #define VARIO_ROWS             LABEL(Vario), 0, 1, 1,
 #endif
 
 
@@ -480,7 +484,7 @@ void menuModelTelemetryFrsky(event_t event)
   }
 #endif
 
-  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS CASE_VARIO(LABEL(Vario)) CASE_VARIO(0) CASE_VARIO(VARIO_RANGE_ROWS) TELEMETRY_SCREENS_ROWS });
+  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS VARIO_ROWS TELEMETRY_SCREENS_ROWS });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
 
@@ -701,14 +705,18 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {
-        uint8_t alarm = k-ITEM_TELEMETRY_RSSI_ALARM1;
 #if defined(CPUARM)
-        lcdDrawTextAlignedLeft(y, (alarm==0 ? STR_LOWALARM : STR_CRITICALALARM));
-        lcdDrawNumber(LCD_W, y, getRssiAlarmValue(alarm), RIGHT | attr, 3);
+        bool warning = (k==ITEM_TELEMETRY_RSSI_ALARM1);
+        lcdDrawTextAlignedLeft(y, (warning ? STR_LOWALARM : STR_CRITICALALARM));
+        lcdDrawNumber(LCD_W, y, warning? g_model.rssiAlarms.getWarningRssi() : g_model.rssiAlarms.getCriticalRssi(), RIGHT | attr, 3);
         if (attr && s_editMode>0) {
-          CHECK_INCDEC_MODELVAR(event, g_model.frsky.rssiAlarms[alarm].value, -30, 30);
-        }
+          if (warning)
+            CHECK_INCDEC_MODELVAR(event, g_model.rssiAlarms.warning, -30, 30);
+          else
+            CHECK_INCDEC_MODELVAR(event, g_model.rssiAlarms.critical, -30, 30);
+     }
 #else // CPUARM
+        uint8_t alarm = (k-ITEM_TELEMETRY_RSSI_ALARM1);
         lcdDrawTextAlignedLeft(y, STR_ALARM);
         lcdDrawTextAtIndex(TELEM_COL2, y, STR_VALARM, ((2+alarm+g_model.frsky.rssiAlarms[alarm].level)%4), menuHorizontalPosition<=0 ? attr : 0);
         lcdDrawChar(TELEM_COL2+4*FW, y, '<');
@@ -726,7 +734,11 @@ void menuModelTelemetryFrsky(event_t event)
 #endif // CPUARM
         break;
       }
-
+#if defined(CPUARM)
+      case ITEM_TELEMETRY_DISABLE_ALARMS:
+        g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, LCD_W - 10, y, STR_DISABLE_ALARM, attr, event);
+        break;
+#endif
 #if !defined(CPUARM)
 #if defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
       case ITEM_TELEMETRY_USR_LABEL:
@@ -787,9 +799,10 @@ void menuModelTelemetryFrsky(event_t event)
 #endif
         break;
 
-      case ITEM_TELEMETRY_VARIO_RANGE:
-        lcdDrawTextAlignedLeft(y, STR_LIMIT);
 #if defined(PCBSTD)
+      case ITEM_TELEMETRY_VARIO_RANGE:
+        lcdDrawTextAlignedLeft(y, STR_RANGE);
+
         lcdDrawNumber(TELEM_COL2, y, 5+g_model.frsky.varioCenterMax, (menuHorizontalPosition==0 ? attr : 0)|PREC1|LEFT);
         lcdDrawNumber(TELEM_COL2+8*FW, y, 10+g_model.frsky.varioMax, (menuHorizontalPosition==1 ? attr : 0));
         if (attr && (s_editMode>0 || p1valdiff)) {
@@ -802,32 +815,51 @@ void menuModelTelemetryFrsky(event_t event)
               break;
           }
         }
+        break;
 #else
+      case ITEM_TELEMETRY_VARIO_RANGE:
+        lcdDrawTextAlignedLeft(y, STR_RANGE);
         if (attr && CURSOR_ON_LINE()) {
           lcdDrawSolidFilledRect(TELEM_COL2-1, y-1, LCD_W-TELEM_COL2+1, FH+1);
         }
         lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|LEFT);
-        lcdDrawNumber(TELEM_COL2+4*FW-2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1|LEFT);
-        lcdDrawNumber(TELEM_COL2+8*FW-1, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0)|PREC1|LEFT);
-        lcdDrawNumber(TELEM_COL2+12*FW-4, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==3) ? attr : 0)|LEFT);
+        lcdDrawNumber(TELEM_COL2+4*FW, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|LEFT);
         if (attr && (s_editMode>0 || p1valdiff)) {
           switch (menuHorizontalPosition) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -16, 5+min<int8_t>(10, g_model.frsky.varioCenterMax+5));
-              break;
-            case 2:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, -5+max<int8_t>(-10, g_model.frsky.varioCenterMin-5), +15);
-              break;
-            case 3:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMax, -7, 7);
               break;
           }
         }
-#endif
         break;
+
+      case ITEM_TELEMETRY_VARIO_CENTER:
+        lcdDrawTextAlignedLeft(y, STR_CENTER);
+        lcdDrawNumber(TELEM_COL2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|PREC1|LEFT);
+        lcdDrawNumber(TELEM_COL2+4*FW, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1|LEFT);
+#if defined(CPUARM)
+        lcdDrawTextAtIndex(TELEM_COL2+8*FW, y, STR_VVARIOCENTER, g_model.frsky.varioCenterSilent, (menuHorizontalPosition==2 ? attr : 0));
+#endif
+        if (attr && (s_editMode>0 || p1valdiff)) {
+          switch (menuHorizontalPosition) {
+            case 0:
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -16, 5+min<int8_t>(10, g_model.frsky.varioCenterMax+5));
+              break;
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, -5+max<int8_t>(-10, g_model.frsky.varioCenterMin-5), +15);
+              break;
+#if defined(CPUARM)
+            case 2:
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.varioCenterSilent, 1);
+              break;
+#endif
+          }
+        }
+        break;
+#endif
 #endif
 
 #if !defined(CPUARM)

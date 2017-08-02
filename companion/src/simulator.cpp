@@ -19,6 +19,7 @@
  */
 
 #include <QApplication>
+#include <QDateTime>
 #include <QCommandLineParser>
 #include <QMessageBox>
 #include <QString>
@@ -42,6 +43,7 @@
 
 using namespace Simulator;
 
+QFile simuDbgLog;
 int finish(int exitCode);
 
 void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessageBox::NoIcon, bool useConsole = false)
@@ -56,10 +58,9 @@ void showMessage(const QString & message, enum QMessageBox::Icon icon = QMessage
   }
   // use GUI
   QMessageBox msgBox;
-  QString escMsg(message);
-  escMsg.replace("<", "&lt;");
-  msgBox.setText("<html><body><pre>" + escMsg + "</pre></body></html>");
+  msgBox.setText("<html><body><pre>" + message.toHtmlEscaped() + "</pre></body></html>");
   msgBox.setIcon(icon);
+  msgBox.setWindowTitle(QApplication::translate("SimulatorMain", "OpenTx Simulator"));
   msgBox.exec();
 }
 
@@ -251,6 +252,14 @@ int main(int argc, char *argv[])
 
   g.init();  // init settings before installing translations
 
+  if (AppDebugMessageHandler::instance() && g.appDebugLog() && !g.appLogsDir().isEmpty() && QDir().mkpath(g.appLogsDir())) {
+    QString fn = g.appLogsDir() % "/SimulatorDebug_" % QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss") % ".log";
+    simuDbgLog.setFileName(fn);
+    if (simuDbgLog.open(QIODevice::WriteOnly | QIODevice::Text)) {
+      AppDebugMessageHandler::instance()->addOutputDevice(&simuDbgLog);
+    }
+  }
+
   Translations::installTranslators();
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
@@ -365,5 +374,9 @@ int finish(int exitCode)
 #endif
 
   qDebug() << "SIMULATOR EXIT" << exitCode;
+  if (simuDbgLog.isOpen()) {
+    AppDebugMessageHandler::instance()->removeOutputDevice(&simuDbgLog);
+    simuDbgLog.close();
+  }
   return exitCode;
 }

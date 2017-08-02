@@ -33,6 +33,7 @@
 #endif
 
 #include <QDebug>
+#include <QDir>
 #include <QLabel>
 #include <QMessageBox>
 
@@ -67,6 +68,14 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
     m_exitStatusMsg = tr("ERROR: Failed to create simulator interface, possibly missing or bad library.");
     m_exitStatusCode = -1;
     return;
+  }
+
+  if (g.fwTraceLog() && !g.appLogsDir().isEmpty() && QDir().mkpath(g.appLogsDir())) {
+    // send firmware TRACE events to log file
+    QString fn = g.appLogsDir() % "/FirmwareDebug_" % QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss") % ".log";
+    m_simuLogFile.setFileName(fn);
+    if (m_simuLogFile.open(QIODevice::WriteOnly | QIODevice::Text))
+      m_simulator->addTracebackDevice(&m_simuLogFile);
   }
 
   m_simulator->moveToThread(&simuThread);
@@ -140,8 +149,6 @@ SimulatorMainWindow::SimulatorMainWindow(QWidget *parent, const QString & firmwa
     connect(ui->actionScreenshot, &QAction::triggered, m_simulatorWidget, &SimulatorWidget::captureScreenshot);
     connect(m_simulatorWidget, &SimulatorWidget::windowTitleChanged, this, &SimulatorMainWindow::setWindowTitle);
   }
-
-
 }
 
 SimulatorMainWindow::~SimulatorMainWindow()
@@ -164,6 +171,10 @@ SimulatorMainWindow::~SimulatorMainWindow()
   if (m_simulator) {
     simuThread.quit();
     simuThread.wait();
+    if (m_simuLogFile.isOpen()) {
+      m_simulator->removeTracebackDevice(&m_simuLogFile);
+      m_simuLogFile.close();
+    }
     delete m_simulator;
   }
   SimulatorLoader::unloadSimulator(m_simulatorId);

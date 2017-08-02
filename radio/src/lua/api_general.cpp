@@ -1085,8 +1085,8 @@ Get RSSI value as well as low and critical RSSI alarm levels (in dB)
 static int luaGetRSSI(lua_State * L)
 {
   lua_pushunsigned(L, min((uint8_t)99, TELEMETRY_RSSI()));
-  lua_pushunsigned(L, getRssiAlarmValue(0));
-  lua_pushunsigned(L, getRssiAlarmValue(1));
+  lua_pushunsigned(L, g_model.rssiAlarms.getWarningRssi());
+  lua_pushunsigned(L, g_model.rssiAlarms.getCriticalRssi());
   return 3;
 }
 
@@ -1238,6 +1238,7 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
 #if defined(COLORLCD)
+  { "SHADOWED", SHADOWED },
   { "COLOR", ZoneOption::Color },
   { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "TEXT_COLOR", TEXT_COLOR },

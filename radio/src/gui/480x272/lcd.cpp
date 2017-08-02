@@ -307,12 +307,12 @@ void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
   }
 }
 
-void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   // TODO
   if (att & DBLSIZE) {
     x -= 42;
-    att &= ~0x0F00; // TODO constant
+    att &= ~FONTSIZE_MASK;
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdNextPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);

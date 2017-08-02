@@ -32,7 +32,7 @@ const char * writeFile(const char * filename, const uint8_t * data, uint16_t siz
   TRACE("writeFile(%s)", filename);
   
   FIL file;
-  char buf[8];
+  unsigned char buf[8];
   UINT written;
 
   FRESULT result = f_open(&file, filename, FA_CREATE_ALWAYS | FA_WRITE);

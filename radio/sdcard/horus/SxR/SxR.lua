@@ -26,6 +26,7 @@ local mountBitmapsFile = {"img/up.png", "img/down.png", "img/vert.png", "img/ver
 
 local settingsFields = {
   {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
+  {"Quick Mode:", COMBO, 0xAA, nil, { "Disable", "Enable" } },
   {"CH5 mode:", COMBO, 0xA8, nil, { "AIL2", "AUX1" } },
   {"CH6 mode:", COMBO, 0xA9, nil, { "ELE2", "AUX2" } },
   {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
@@ -151,7 +152,7 @@ local function refreshNext()
       if telemetryWrite(0x9D, calibrationStep) == true then
         refreshState = 1
         calibrationState = 2
-        telemetryPopTimeout = getTime() + 80 -- normal delay is 500ms
+        telemetryPopTimeout = getTime() + 120 -- normal delay is 500ms
       end
     elseif #modifications > 0 then
       telemetryWrite(modifications[1][1], modifications[1][2])
@@ -199,6 +200,8 @@ local function refreshNext()
         end
       end
     elseif getTime() > telemetryPopTimeout then
+      fields[refreshIndex + 1][4] = nil
+      refreshIndex = refreshIndex + 1
       refreshState = 0
       calibrationState = 0
     end

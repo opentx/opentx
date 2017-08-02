@@ -591,12 +591,20 @@ class FrSkyAlarmData {
     void clear() { memset(this, 0, sizeof(FrSkyAlarmData)); }
 };
 
-class FrSkyRSSIAlarm {
+class RSSIAlarmData {
   public:
-    FrSkyRSSIAlarm() { clear(0, 50); }
-    unsigned int level;
-    int value;
-    void clear(unsigned int level, int value) { this->level = level; this->value = value;}
+    RSSIAlarmData() { clear(); }
+    unsigned int level[2];  // AVR Only
+    int warning;
+    int critical;
+    bool disabled;
+    void clear() {
+      this->level[0] = 2;
+      this->level[1] = 3;
+      this->warning = 42;
+      this->critical = 45;
+      this->disabled = false;
+    }
 };
 
 class FrSkyChannelData {
@@ -703,7 +711,6 @@ class FrSkyData {
     unsigned int altitudeSource;
     unsigned int currentSource;
     FrSkyScreenData screens[4];
-    FrSkyRSSIAlarm rssiAlarms[2];
     unsigned int varioSource;
     bool varioCenterSilent;
     int varioMin;
@@ -1066,6 +1073,7 @@ class ModelData {
     MavlinkData mavlink;
     unsigned int telemetryProtocol;
     FrSkyData frsky;
+    RSSIAlarmData rssiAlarms;
 
     char bitmap[10+1];
 

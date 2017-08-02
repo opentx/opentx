@@ -138,10 +138,10 @@ class TelemetryPanel : public ModelPanel
     void onModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_bladesCount_editingFinished();
-    void on_rssiAlarm1CB_currentIndexChanged(int index);
-    void on_rssiAlarm2CB_currentIndexChanged(int index);
-    void on_rssiAlarm1SB_editingFinished();
-    void on_rssiAlarm2SB_editingFinished();
+    void on_rssiAlarmWarningCB_currentIndexChanged(int index);
+    void on_rssiAlarmCriticalCB_currentIndexChanged(int index);
+    void on_rssiAlarmWarningSB_editingFinished();
+    void on_rssiAlarmCriticalSB_editingFinished();
     void on_varioLimitMin_DSB_editingFinished();
     void on_varioLimitMax_DSB_editingFinished();
     void on_varioLimitCenterMin_DSB_editingFinished();

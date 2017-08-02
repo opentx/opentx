@@ -20,6 +20,11 @@
 
 #include "opentx.h"
 
+#define STATS_1ST_COLUMN               1
+#define STATS_2ND_COLUMN               7*FW+FW/2
+#define STATS_3RD_COLUMN               14*FW+FW/2
+#define STATS_LABEL_WIDTH              3*FW
+
 void menuStatisticsView(event_t event)
 {
   TITLE(STR_MENUSTAT);
@@ -41,8 +46,30 @@ void menuStatisticsView(event_t event)
       break;
   }
 
+#if defined(CPUARM)
+  // Session and Total timers
+  lcdDrawText(STATS_1ST_COLUMN, FH*1+1, "SES", BOLD);
+  drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*1+1, sessionTimer, 0, 0);
+  lcdDrawText(STATS_1ST_COLUMN, FH*2+1, "TOT", BOLD);
+  drawTimer(STATS_1ST_COLUMN + STATS_LABEL_WIDTH, FH*2+1, g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR, 0);
+
+  // Throttle special timers
+  lcdDrawText(STATS_2ND_COLUMN, FH*0+1, "THR", BOLD);
+  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*0+1, s_timeCumThr, 0, 0);
+  lcdDrawText(STATS_2ND_COLUMN, FH*1+1, "TH%", BOLD);
+  drawTimer(STATS_2ND_COLUMN + STATS_LABEL_WIDTH, FH*1+1, s_timeCum16ThrP/16, 0, 0);
+
+  // Timers
+  for (int i=0; i<TIMERS; i++) {
+    drawStringWithIndex(STATS_3RD_COLUMN, FH*i+1, "TM", i+1, BOLD);
+    if (timersStates[i].val > 3600)
+      drawTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, TIMEHOUR, 0);
+    else
+      drawTimer(STATS_3RD_COLUMN + STATS_LABEL_WIDTH, FH*i+1, timersStates[i].val, 0, 0);
+  }
+#else
   lcdDrawText(  1*FW, FH*0, STR_TOTTM1TM2THRTHP);
-  
+
   drawTimer(    5*FW+5*FWNUM+1, FH*1, timersStates[0].val, RIGHT, 0);
   drawTimer(   12*FW+5*FWNUM+1, FH*1, timersStates[1].val, RIGHT, 0);
 
@@ -50,6 +77,7 @@ void menuStatisticsView(event_t event)
   drawTimer(   12*FW+5*FWNUM+1, FH*2, s_timeCum16ThrP/16, RIGHT, 0);
 
   drawTimer(   12*FW+5*FWNUM+1, FH*0, sessionTimer, RIGHT, 0);
+#endif
 
 #if defined(THRTRACE)
   const coord_t x = 5;
@@ -98,7 +126,7 @@ void menuStatisticsDebug(event_t event)
       killEvents(event);
       break;
 #endif
-      
+
     case EVT_KEY_FIRST(KEY_ENTER):
 #if !defined(CPUARM)
       g_tmr1Latency_min = 0xff;

@@ -1061,6 +1061,13 @@ void checkFailsafe()
 #else
 #define checkFailsafe()
 #endif
+#if defined(CPUARM)
+void checkRSSIAlaramsDisabled()
+{
+  if (g_model.rssiAlarms.disabled)
+    ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
+}
+#endif
 
 #if defined(GUI)
 void checkAll()
@@ -1077,6 +1084,9 @@ void checkAll()
   }
   checkSwitches();
   checkFailsafe();
+#endif
+#if defined(CPUARM)
+  checkRSSIAlaramsDisabled();
 #endif
 
 #if defined(SDCARD) && defined(CPUARM)
@@ -2498,7 +2508,18 @@ void opentxInit(OPENTX_INIT_ARGS)
     // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
     // but we only remember the pointer to in in constructor.
     // The storageReadAll() needs topbar object, so it must be created here
+#if __clang__
+// clang does not like this at all, turn into a warning so that -Werror does not stop here
+// taking address of packed member 'topbarData' of class or structure 'ModelData' may result in an unaligned pointer value [-Werror,-Waddress-of-packed-member]
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Waddress-of-packed-member"
+#endif
     topbar = new Topbar(&g_model.topbarData);
+#if __clang__
+// Restore warnings
+#pragma clang diagnostic pop
+#endif
+
     // lua widget state must also be prepared before the call to storageReadAll()
     LUA_INIT_THEMES_AND_WIDGETS();
   }
@@ -2744,6 +2765,8 @@ uint32_t pwrPressedDuration()
 
 uint32_t pwrCheck()
 {
+  const char * message = NULL;
+
   enum PwrCheckState {
     PWR_CHECK_ON,
     PWR_CHECK_OFF,
@@ -2756,11 +2779,17 @@ uint32_t pwrCheck()
     return e_power_off;
   }
   else if (pwrPressed()) {
+    if (TELEMETRY_STREAMING()) {
+      message = STR_MODEL_STILL_POWERED;
+    }
     if (pwr_check_state == PWR_CHECK_PAUSED) {
       // nothing
     }
     else if (pwr_press_time == 0) {
       pwr_press_time = get_tmr10ms();
+      if (message && g_eeGeneral.rssiPoweroffAlarm) {
+        audioEvent(AU_MODEL_STILL_POWERED);
+      }
     }
     else {
       inactivity.counter = 0;
@@ -2787,13 +2816,30 @@ uint32_t pwrCheck()
           }
         }
 #else
+        while ((TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm)) {
+          lcdRefreshWait();
+          lcdClear();
+          POPUP_CONFIRMATION("Confirm Shutdown");
+          event_t evt = getEvent(false);
+          DISPLAY_WARNING(evt);
+          lcdRefresh();
+          if (warningResult == true) {
+            pwr_check_state = PWR_CHECK_OFF;
+            return e_power_off;
+          }
+          else if (!warningText) {
+            // shutdown has been cancelled
+            pwr_check_state = PWR_CHECK_PAUSED;
+            return e_power_on;
+          }
+        }
         haptic.play(15, 3, PLAY_NOW);
         pwr_check_state = PWR_CHECK_OFF;
         return e_power_off;
 #endif
       }
       else {
-        drawShutdownAnimation(pwrPressedDuration());
+        drawShutdownAnimation(pwrPressedDuration(), message);
         return e_power_press;
       }
     }
@@ -2809,17 +2855,37 @@ uint32_t pwrCheck()
 uint32_t pwrCheck()
 {
 #if defined(SOFT_PWR_CTRL)
-  if (pwrPressed())
+  if (pwrPressed()) {
     return e_power_on;
+  }
 #endif
 
-  if (usbPlugged())
+  if (usbPlugged()) {
     return e_power_usb;
+  }
 
 #if defined(TRAINER_PWR)
-  if (TRAINER_CONNECTED())
+  if (TRAINER_CONNECTED()) {
     return e_power_trainer;
+  }
 #endif
+
+  if (g_eeGeneral.rssiPoweroffAlarm) {
+    if (TELEMETRY_STREAMING()) {
+      RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
+      while (TELEMETRY_STREAMING()) {
+#if defined(CPUARM)
+        CoTickDelay(10);
+#endif
+        if (pwrPressed()) {
+          return e_power_on;
+        }
+        else if (readKeys() == (1 << KEY_ENTER)) {
+          return e_power_off;
+        }
+      }
+    }
+  }
 
   return e_power_off;
 }

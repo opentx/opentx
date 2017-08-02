@@ -180,6 +180,7 @@ const char * const audioFilenames[] = {
   "sensorko",
   "servoko",
   "rxko",
+  "modelpwr",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",
@@ -200,6 +201,10 @@ const char * const audioFilenames[] = {
   "midpot2",
   "midslid1",
   "midslid2",
+#if defined(PCBX9E)
+  "midslid3",
+  "midslid4",
+#endif
 #else
   "midpot1",
   "midpot2",
@@ -1096,6 +1101,10 @@ void audioEvent(unsigned int index)
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
       case AU_SLIDER1_MIDDLE:
       case AU_SLIDER2_MIDDLE:
+#if defined(PCBX9E)
+      case AU_SLIDER3_MIDDLE:
+      case AU_SLIDER4_MIDDLE:
+#endif
 #else
       case AU_POT3_MIDDLE:
 #endif

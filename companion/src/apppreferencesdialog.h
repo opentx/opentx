@@ -62,6 +62,7 @@ class AppPreferencesDialog : public QDialog
     void shrink();
     void baseFirmwareChanged();
     void firmwareOptionChanged(bool state);
+    void toggleAppLogSettings();
 
     void writeValues();
     void on_libraryPathButton_clicked();
@@ -74,6 +75,7 @@ class AppPreferencesDialog : public QDialog
     void on_sdPathButton_clicked();
     void on_SplashSelect_clicked();
     void on_clearImageButton_clicked();
+    void on_btn_appLogsDir_clicked();
 
 #if defined(JOYSTICKS)
     void on_joystickChkB_clicked();

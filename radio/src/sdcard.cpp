@@ -22,6 +22,37 @@
 #include "opentx.h"
 #include "diskio.h"
 
+bool sdCardFormat()
+{
+  BYTE work[_MAX_SS];
+  FRESULT res = f_mkfs("", FM_FAT32, 0, work, sizeof(work));
+  switch(res) {
+    case FR_OK :
+      return true;
+    case FR_DISK_ERR:
+      POPUP_WARNING("Format error");
+      return false;
+    case FR_NOT_READY:
+      POPUP_WARNING("SDCard not ready");
+      return false;
+    case FR_WRITE_PROTECTED:
+      POPUP_WARNING("SDCard write protected");
+      return false;
+    case FR_INVALID_PARAMETER:
+      POPUP_WARNING("Format param invalid");
+      return false;
+    case FR_INVALID_DRIVE:
+      POPUP_WARNING("Invalid drive");
+      return false;
+    case FR_MKFS_ABORTED:
+      POPUP_WARNING("Format aborted");
+      return false;
+    default:
+      POPUP_WARNING(STR_SDCARD_ERROR);
+      return false;
+  }
+}
+
 const char * sdCheckAndCreateDirectory(const char * path)
 {
   DIR archiveFolder;
@@ -472,7 +503,7 @@ uint32_t sdGetNoSectors()
 
 uint32_t sdGetSize()
 {
-  return (sdGetNoSectors() * BLOCK_SIZE) / 1000000;
+  return (sdGetNoSectors() / 1000000) * BLOCK_SIZE;
 }
 
 uint32_t sdGetFreeSectors()

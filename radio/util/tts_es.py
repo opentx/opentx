@@ -74,6 +74,9 @@ for s, f, a in [("me tienes abandonada", "inactiv", 486),
                 ("Problemas con la antena del transmisor", "swr_red", NO_ALTERNATE),
                 ("Sin telemetría", "telemko", NO_ALTERNATE),
                 ("Telemetría disponible", "telemok", NO_ALTERNATE),
+                ("servo overload", "servoko", NO_ALTERNATE),
+                ("power overload", "rxko", NO_ALTERNATE),
+                ("receiver still connected", "modelpwr", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, s in enumerate(["cronómetro", "cronómetro", "transmisión", "recepción", "A1", "A2", "altitud", "motor",

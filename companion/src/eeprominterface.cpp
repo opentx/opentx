@@ -1392,8 +1392,6 @@ void FrSkyData::clear()
   mAhPersistent = 0;
   storedMah = 0;
   fasOffset = 0;
-  rssiAlarms[0].clear(2, 45);
-  rssiAlarms[1].clear(3, 42);
   for (int i=0; i<4; i++)
     screens[i].clear();
   varioSource = 2/*VARIO*/;
@@ -1560,6 +1558,7 @@ void ModelData::clear()
     timers[i].clear();
   swashRingData.clear();
   frsky.clear();
+  rssiAlarms.clear();
   for (int i=0; i<CPN_MAX_SENSORS; i++)
     sensorData[i].clear();
 
@@ -1797,7 +1796,7 @@ void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long err
   std::bitset<NUM_ERRORS> errors((unsigned long long)errorsFound);
   QStringList warningsList;
   if (errors.test(WARNING_WRONG_FIRMWARE)) { warningsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your radio probably uses a wrong firmware,\n eeprom size is 4096 but only the first 2048 are used"); }
-  if (errors.test(OLD_VERSION)) { warningsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your eeprom is from an old version of OpenTX, upgrading!\n You should 'save as' to keep the old file as a backup."); }
+  if (errors.test(OLD_VERSION)) { warningsList << QT_TRANSLATE_NOOP("EepromInterface", "- Your eeprom is from an old version of OpenTX, upgrading!\n To keep your original file as a backup, please choose File -> Save As specifying a different name."); }
 
   QMessageBox msgBox(parent);
   msgBox.setWindowTitle(title);

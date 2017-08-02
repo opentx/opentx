@@ -572,7 +572,7 @@
 #define TR_VTRAINER_MASTER_BATTERY     "Lärare/Batteri\0"
 
 #define LEN_VFAILSAFE          "\011"
-#define TR_VFAILSAFE           "Ej givet""Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
+#define TR_VFAILSAFE           "Ej givet\0""Lås Servo""Anpassat\0""Pulsfritt""Mottagare"
 
 #if defined(TELEMETRY_MAVLINK)
   #define LEN_MAVLINK_BAUDS    "\006"
@@ -729,6 +729,9 @@
 #define TR_INACTIVITYALARM     INDENT"Inaktivitet"
 #define TR_MEMORYWARNING       INDENT"Lite Minne"
 #define TR_ALARMWARNING        INDENT"Ljud Av"
+#define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
+#define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "RotEnk Navig"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Inv.Gas", INDENT "Inverterad Gas")
@@ -1049,6 +1052,9 @@
 #define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Låg-alarm"
 #define TR_CRITICALALARM       INDENT "Kritiskt alarm"
+#define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")
+#define TR_NO_RSSIALARM                TR(INDENT "Alarms disabled", INDENT "Telemetry alarms disabled")
+#define TR_DISABLE_ALARM               TR(INDENT "Disable alarms", INDENT "Disable telemetry alarms")
 #define TR_ENABLE_POPUP        "Slå på Dialog"
 #define TR_DISABLE_POPUP       "Slå av Dialog"
 #define TR_POPUP               "Popup"

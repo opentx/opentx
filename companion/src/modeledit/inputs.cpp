@@ -75,27 +75,24 @@ void InputsPanel::update()
   // i -> mixer number
   QByteArray qba;
   ExposlistWidget->clear();
-  firstLine = true;
   int curDest = -1;
 
   for (int i=0; i<CPN_MAX_EXPOS; i++) {
     ExpoData *md = &model->expoData[i];
 
-    if (md->mode==0) break;
+    if (!md->mode)
+      break;
 
-    QString str;
-
-    while (curDest<(int)md->chn-1) {
+    while (curDest < (int)md->chn-1) {
       curDest++;
       AddInputLine(-curDest-1);
     }
     if (AddInputLine(i)) {
       curDest++;
     }
-
   }
 
-  while (curDest<inputsCount-1) {
+  while (curDest < inputsCount-1) {
     curDest++;
     AddInputLine(-curDest-1);
   }
@@ -122,20 +119,17 @@ bool InputsPanel::AddInputLine(int dest)
   QString str = getInputText(dest, &new_ch);
   QListWidgetItem *itm = new QListWidgetItem(str);
   QByteArray qba(1, (quint8)dest);
+  unsigned destId = abs(dest);
+  bool hasSibs = false;
   if (dest >= 0) {
     //add input data
     ExpoData *md = &model->expoData[dest];
     qba.append((const char*)md, sizeof(ExpoData));
+    destId = md->chn + 1;
+    hasSibs = (dest < CPN_MAX_EXPOS && model->expoData[dest+1].chn == md->chn);
   }
   itm->setData(Qt::UserRole, qba);
-#if MIX_ROW_HEIGHT_INCREASE > 0
-  if (new_ch && !firstLine) {
-    //increase size of this row
-    itm->setData(GroupHeaderRole, 1);
-  }
-#endif
-  ExposlistWidget->addItem(itm);
-  firstLine = false;
+  ExposlistWidget->addItem(itm, destId, new_ch, hasSibs);
   //qDebug() << "InputsPanel::AddInputLine(): dest" << dest << "text" << str;
   return new_ch;
 }
@@ -300,13 +294,17 @@ void InputsPanel::exposCopy()
 
 void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropAction action)
 {
-    int idx = ExposlistWidget->item(index > 0 ? index-1 : 0)->data(Qt::UserRole).toByteArray().at(0);
+  int idx = ExposlistWidget->item(index)->data(Qt::UserRole).toByteArray().at(0);
   if (action==Qt::CopyAction) {
     pasteExpoMimeData(data, idx);
   }
   else if (action==Qt::MoveAction) {
     QList<int> list = createExpoListFromSelected();
     exposDeleteList(list);
+    foreach (const int del, list) {
+      if (del < idx)
+        --idx;
+    }
     pasteExpoMimeData(data, idx);
   }
 }
@@ -416,6 +414,8 @@ void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
     contextMenu.addSeparator();
     contextMenu.addAction(CompanionIcon("moveup.png"), tr("Move Up"),this,SLOT(moveExpoUp()),tr("Ctrl+Up"));
     contextMenu.addAction(CompanionIcon("movedown.png"), tr("Move Down"),this,SLOT(moveExpoDown()),tr("Ctrl+Down"));
+    contextMenu.addSeparator();
+    contextMenu.addActions(ExposlistWidget->actions());
 
     contextMenu.exec(globalPos);
 }

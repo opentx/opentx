@@ -22,7 +22,7 @@
 
 #include "opentx.h"
 
-#define RADIO_SETUP_2ND_COLUMN         220
+#define RADIO_SETUP_2ND_COLUMN         235
 
 int8_t editSlider(coord_t x, coord_t y, event_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
 {
@@ -59,6 +59,7 @@ enum menuRadioSetupItems {
   ITEM_SETUP_INACTIVITY_ALARM,
   // ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
+  ITEM_SETUP_RSSI_POWEROFF_ALARM,
   ITEM_SETUP_BACKLIGHT_LABEL,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
@@ -72,7 +73,7 @@ enum menuRadioSetupItems {
   CASE_PXX(ITEM_SETUP_COUNTRYCODE)
   ITEM_SETUP_LANGUAGE,
   ITEM_SETUP_IMPERIAL,
-  // IF_FAI_CHOICE(ITEM_SETUP_FAI)
+  IF_FAI_CHOICE(ITEM_SETUP_FAI)
   // CASE_MAVLINK(ITEM_MAVLINK_BAUD)
   ITEM_SETUP_SWITCHES_DELAY,
   ITEM_SETUP_RX_CHANNEL_ORD,
@@ -95,22 +96,26 @@ bool menuRadioSetup(event_t event)
 #endif
 
 #if defined(FAI_CHOICE)
+  #define FAI_CHOICE_ROW  (g_eeGeneral.fai ? (uint8_t)-1 : (uint8_t)0),
+
   if (warningResult) {
     warningResult = 0;
     g_eeGeneral.fai = true;
     storageDirty(EE_GENERAL);
   }
+#else
+  #define FAI_CHOICE_ROW
 #endif
 
   MENU(STR_MENURADIOSETUP, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SETUP, ITEM_SETUP_MAX, {
-    2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, 1|NAVIGATION_LINE_BY_LINE,
+    2|NAVIGATION_LINE_BY_LINE, 2|NAVIGATION_LINE_BY_LINE, 1|NAVIGATION_LINE_BY_LINE, // Date Time Bat range
     LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0,
     CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
-    LABEL(ALARMS), 0, 0, 0,
+    LABEL(ALARMS), 0, 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
-    CASE_PXX(0) 0, 0, 0, 0, 0, 0, 1/*to force edit mode*/ });
+    CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - Chan order - Mode (1 to 4)
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -344,6 +349,13 @@ bool menuRadioSetup(event_t event)
         break;
       }
 
+      case ITEM_SETUP_RSSI_POWEROFF_ALARM:
+      {
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RSSISHUTDOWNALARM);
+        g_eeGeneral.rssiPoweroffAlarm = editCheckBox(g_eeGeneral.rssiPoweroffAlarm, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        break;
+      }
+
       case ITEM_SETUP_INACTIVITY_ALARM:
         lcdDrawText(MENUS_MARGIN_LEFT,  y,STR_INACTIVITYALARM);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.inactivityTimer, attr|LEFT, 0, NULL, "m");
@@ -428,15 +440,18 @@ bool menuRadioSetup(event_t event)
         g_eeGeneral.imperial = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
         break;
 
-#if 0
+#if defined(FAI_CHOICE)
       case ITEM_SETUP_FAI:
         lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
-        g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
-        if (attr && checkIncDec_Ret) {
-          if (g_eeGeneral.fai)
-            POPUP_WARNING(PSTR("FAI\001mode blocked!"));
-          else
-            POPUP_CONFIRMATION(PSTR("FAI mode?"));
+        if (g_eeGeneral.fai) {
+          lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, PSTR("Locked in FAI Mode"));
+        }
+        else {
+          g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+          if (attr && checkIncDec_Ret) {
+              g_eeGeneral.fai = false;
+              POPUP_CONFIRMATION(PSTR("FAI mode?"));
+          }
         }
         break;
 #endif

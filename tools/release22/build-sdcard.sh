@@ -27,6 +27,10 @@ else
   mkdir -p ${workdir}/sdcard/horus/IMAGES
   cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
+  # Get images for Taranis x9
+  mkdir -p ${workdir}/sdcard/taranis-x9/IMAGES
+  cp /home/opentx/x9-bitmaps/* ${workdir}/sdcard/taranis-x9/IMAGES/
+
   # Request sound pack generation
   python3 -B ${workdir}/code/tools/release22/tts.py en csv files
   python3 -B ${workdir}/code/tools/release22/tts.py fr csv files

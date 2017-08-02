@@ -174,13 +174,9 @@ void menuRadioSdManager(event_t _event)
 #if defined(CPUARM)
     audioQueue.stopSD();
 #endif
-    BYTE work[_MAX_SS];
-    if (f_mkfs(0, FM_FAT32, 0, work, sizeof(work)) == FR_OK) {
+    if(sdCardFormat()) {
       f_chdir("/");
       REFRESH_FILES();
-    }
-    else {
-      POPUP_WARNING(STR_SDCARD_ERROR);
     }
   }
 
@@ -190,7 +186,7 @@ void menuRadioSdManager(event_t _event)
 
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, HEADER_LINE + reusableBuffer.sdmanager.count);
-  
+
   switch (_event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
@@ -199,11 +195,11 @@ void menuRadioSdManager(event_t _event)
       lastPos = -1;
 #endif
       break;
-    
+
     case EVT_ENTRY_UP:
       menuVerticalOffset = reusableBuffer.sdmanager.offset;
       break;
-      
+
 #if defined(PCBTARANIS)
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY() && s_editMode == 0) {
@@ -340,6 +336,7 @@ void menuRadioSdManager(event_t _event)
         res = sdReadDir(&dir, &fno, firstTime);
         if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
         if (strlen(fno.fname) > SD_SCREEN_FILE_LENGTH) continue;
+        if (fno.fname[0] == '.' && fno.fname[1] != '.') continue;             /* Ignore hidden files under UNIX, but not .. */
 
         reusableBuffer.sdmanager.count++;
 
