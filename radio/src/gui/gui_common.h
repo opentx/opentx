@@ -149,7 +149,6 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #define MAX_RX_NUM(x)                  (IS_MODULE_DSM2(x) ? 20 : IS_MODULE_MULTIMODULE(x) ? MULTI_MAX_RX_NUM(x) : 63)
 
 #define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
-#define IF_TRAINER_ON(x)               (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)(x) : HIDDEN_ROW)
 
 #define FAILSAFE_ROWS(x)               (IS_MODULE_XJT(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol) ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : MULTIMODULE_FAILSAFEROWS(x))
 

@@ -119,6 +119,9 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VFORMULAS)
     ISTR(VPREC)
     ISTR(VCELLINDEX)
+#if defined(BLUETOOTH)
+    ISTR(BLUETOOTH_MODES)
+#endif
     ISTR(VANTENNATYPES)
 #endif
 #if defined(TELEMETRY_MAVLINK)
@@ -717,6 +720,10 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
 
 #if defined(PCBTARANIS) || defined(DSM2)
   const pm_char STR_MODULE_RANGE[] PROGMEM = TR_MODULE_RANGE;
+#endif
+
+#if defined(BLUETOOTH)
+  const pm_char STR_BLUETOOTH[] PROGMEM = TR_BLUETOOTH;
 #endif
 
 #if defined(TELEMETRY_MAVLINK)

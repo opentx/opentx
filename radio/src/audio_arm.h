@@ -147,7 +147,6 @@ struct Tone {
   {};
 };
 
-
 struct AudioFragment {
   uint8_t type;
   uint8_t id;
@@ -510,6 +509,7 @@ void codecsInit();
 void audioEvent(unsigned int index);
 void audioPlay(unsigned int index, uint8_t id=0);
 void audioStart();
+void audioTask(void * pdata);
 
 #if defined(AUDIO) && defined(BUZZER)
   #define AUDIO_BUZZER(a, b)  do { a; b; } while(0)

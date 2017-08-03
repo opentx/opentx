@@ -88,8 +88,8 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
-  ITEM_MODEL_TRAINER_CHANNELS,
-  ITEM_MODEL_TRAINER_SETTINGS,
+  ITEM_MODEL_TRAINER_LINE1,
+  ITEM_MODEL_TRAINER_LINE2,
   ITEM_MODEL_SETUP_MAX
 };
 
@@ -240,9 +240,16 @@ int getSwitchWarningsCount()
 #define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
 #define IF_EXTERNAL_MODULE_XJT(x)         (IS_MODULE_XJT(EXTERNAL_MODULE) ? (uint8_t)x : HIDDEN_ROW)
 #define INTERNAL_MODULE_CHANNELS_ROWS     IF_INTERNAL_MODULE_ON(1)
-#define TRAINER_CHANNELS_ROWS()           IF_TRAINER_ON(1)
-#define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : TRAINER_CHANNELS_ROWS()))
+#define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
+#if defined(BLUETOOTH)
+  #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothFriend[0] == 0 || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
+  #define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
+  #define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
+#else
+  #define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : HIDDEN_ROW)
+  #define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
+#endif
 
 #define TIMER_ROWS(x)                     2|NAVIGATION_LINE_BY_LINE, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
 
@@ -285,7 +292,7 @@ void menuModelSetup(event_t event)
     EXTERNAL_MODULE_CHANNELS_ROWS,
     (IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
     FAILSAFE_ROWS(EXTERNAL_MODULE), MULTIMODULE_MODULE_ROWS
-    LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+    LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS});
 #else
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
     LABEL(Throttle), 0, 0, 0,
@@ -301,7 +308,7 @@ void menuModelSetup(event_t event)
     EXTERNAL_MODULE_CHANNELS_ROWS,
     (IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
     FAILSAFE_ROWS(EXTERNAL_MODULE), MULTIMODULE_MODULE_ROWS
-    LABEL(Trainer), 0, TRAINER_CHANNELS_ROWS(), IF_TRAINER_ON(2)});
+    LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS});
 #endif
   MENU_CHECK(STR_MENUSETUP, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX);
 
@@ -709,7 +716,15 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_TRAINER_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, attr);
-        if (attr) g_model.trainerMode = checkIncDec(event, g_model.trainerMode, 0, HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, EE_MODEL, isTrainerModeAvailable);
+        if (attr) {
+          g_model.trainerMode = checkIncDec(event, g_model.trainerMode, 0, TRAINER_MODE_MAX(), EE_MODEL, isTrainerModeAvailable);
+        }
+#if defined(BLUETOOTH)
+        if (attr && checkIncDec_Ret) {
+          bluetoothState = BLUETOOTH_STATE_OFF;
+          bluetoothFriend[0] = 0;
+        }
+#endif
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
@@ -802,13 +817,56 @@ void menuModelSetup(event_t event)
         }
         break;
 
-      case ITEM_MODEL_TRAINER_LABEL:
-        lcdDrawTextAlignedLeft(y, STR_TRAINER);
-        break;
+    case ITEM_MODEL_TRAINER_LABEL:
+      lcdDrawTextAlignedLeft(y, STR_TRAINER);
+      break;
 
+#if defined(BLUETOOTH)
+    case ITEM_MODEL_TRAINER_LINE1:
+      if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
+        if (attr) {
+          s_editMode = 0;
+        }
+        if (bluetoothFriend[0]) {
+          lcdDrawText(INDENT_WIDTH, y+1, bluetoothFriend, TINSIZE);
+          if (bluetoothState != BLUETOOTH_STATE_CONNECTED) {
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), menuHorizontalPosition == 0 ? attr : 0);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW, y, BUTTON("Clear"), menuHorizontalPosition == 1 ? attr : 0);
+          }
+          else {
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Clear"), attr);
+          }
+          if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+            if (bluetoothState == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
+              bluetoothState = BLUETOOTH_STATE_OFF;
+              bluetoothFriend[0] = 0;
+            }
+            else {
+              bluetoothState = BLUETOOTH_STATE_BIND_REQUESTED;
+            }
+          }
+        }
+        else {
+          lcdDrawText(INDENT_WIDTH, y, "---");
+          if (bluetoothState < BLUETOOTH_STATE_IDLE)
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Init"), attr);
+          else
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Discover"), attr);
+          if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+            if (bluetoothState < BLUETOOTH_STATE_IDLE)
+              bluetoothState = BLUETOOTH_STATE_OFF;
+            else
+              bluetoothState = BLUETOOTH_STATE_DISCOVER_REQUESTED;
+          }
+        }
+        break;
+      }
+      // no break
+#else
+      case ITEM_MODEL_TRAINER_LINE1:
+#endif
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
-      case ITEM_MODEL_TRAINER_CHANNELS:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -832,11 +890,11 @@ void menuModelSetup(event_t event)
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(MAX_CHANNELS(moduleIdx), 32-8-moduleData.channelsStart));
 #if defined(TARANIS_INTERNAL_PPM)
-                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_INTERNAL_MODULE_CHANNELS && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
+                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_INTERNAL_MODULE_CHANNELS && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_LINE1)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }
 #else
-                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_CHANNELS)) {
+                if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_LINE1)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }
 #endif
@@ -849,7 +907,7 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_BIND:
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
-      case ITEM_MODEL_TRAINER_SETTINGS:
+      case ITEM_MODEL_TRAINER_LINE2:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];

@@ -146,9 +146,9 @@ void sportUpdatePowerOff()
 void boardInit()
 {
 #if !defined(SIMU)
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | PCBREV_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph, ENABLE);
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph, ENABLE);
-  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | PCBREV_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph | BT_RCC_APB1Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph | BT_RCC_APB2Periph, ENABLE);
 
 #if !defined(PCBX9E)
   // some X9E boards need that the pwrInit() is moved a little bit later
@@ -180,7 +180,7 @@ void boardInit()
   hapticInit();
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7)
+#if defined(BLUETOOTH)
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
@@ -298,7 +298,7 @@ void checkTrainerSettings()
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
         stop_sbus_on_heartbeat_capture() ;
         break;
-#if defined(SERIAL2)
+#if !defined(PCBX7) && !defined(PCBX9E)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         serial2Stop();
 #endif
@@ -315,7 +315,7 @@ void checkTrainerSettings()
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
          init_sbus_on_heartbeat_capture() ;
          break;
-#if defined(SERIAL2)
+#if !defined(PCBX7) && !defined(PCBX9E)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
           serial2SbusInit();

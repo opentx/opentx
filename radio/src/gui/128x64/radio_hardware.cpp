@@ -83,7 +83,7 @@ void menuRadioHardware(event_t event)
 
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BT_BAUDRATE:
-        g_eeGeneral.btBaudrate = editChoice(HW_SETTINGS_COLUMN, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.btBaudrate, 0, 2, attr, event);
+        g_eeGeneral.bluetoothBaudrate = editChoice(HW_SETTINGS_COLUMN, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.bluetoothBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }
@@ -111,18 +111,28 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SD,
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SH,
+#if defined(BLUETOOTH)
+  ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
+  ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
+#endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_MAX
 };
 
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#if defined(BLUETOOTH)
+#define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0),
+#else
+#define BLUETOOTH_ROWS
+#endif
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
-#define HW_SETTINGS_COLUMN             30
+#define HW_SETTINGS_COLUMN1            30
+#define HW_SETTINGS_COLUMN2            (30 + 5*FW)
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0 });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -144,12 +154,13 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_STICK2:
       case ITEM_RADIO_HARDWARE_STICK3:
       case ITEM_RADIO_HARDWARE_STICK4:
-        editStickHardwareSettings(HW_SETTINGS_COLUMN, y, k - ITEM_RADIO_HARDWARE_STICK1, event, attr);
+        editStickHardwareSettings(HW_SETTINGS_COLUMN1, y, k - ITEM_RADIO_HARDWARE_STICK1, event, attr);
         break;
 
       case ITEM_RADIO_HARDWARE_LABEL_POTS:
         lcdDrawTextAlignedLeft(y, STR_POTS);
         break;
+
       case ITEM_RADIO_HARDWARE_POT1:
       case ITEM_RADIO_HARDWARE_POT2:
       {
@@ -158,11 +169,11 @@ void menuRadioHardware(event_t event)
         uint8_t mask = (0x03 << shift);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+idx]) || (attr && s_editMode > 0 && menuHorizontalPosition == 0))
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
+          editName(HW_SETTINGS_COLUMN1, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
-          lcdDrawMMM(HW_SETTINGS_COLUMN, y, menuHorizontalPosition==0 ? attr : 0);
+          lcdDrawMMM(HW_SETTINGS_COLUMN1, y, menuHorizontalPosition==0 ? attr : 0);
         uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
-        potType = editChoice(HW_SETTINGS_COLUMN+5*FW, y, "", STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
+        potType = editChoice(HW_SETTINGS_COLUMN2, y, "", STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
         g_eeGeneral.potsConfig |= (potType << shift);
         break;
@@ -171,6 +182,7 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_LABEL_SWITCHES:
         lcdDrawTextAlignedLeft(y, STR_SWITCHES);
         break;
+
       case ITEM_RADIO_HARDWARE_SA:
       case ITEM_RADIO_HARDWARE_SB:
       case ITEM_RADIO_HARDWARE_SC:
@@ -182,10 +194,10 @@ void menuRadioHardware(event_t event)
         int config = SWITCH_CONFIG(index);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && s_editMode > 0 && menuHorizontalPosition == 0))
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, menuHorizontalPosition == 0 ? attr : 0);
+          editName(HW_SETTINGS_COLUMN1, y, g_eeGeneral.switchNames[index], LEN_SWITCH_NAME, event, menuHorizontalPosition == 0 ? attr : 0);
         else
-          lcdDrawMMM(HW_SETTINGS_COLUMN, y, menuHorizontalPosition == 0 ? attr : 0);
-        config = editChoice(HW_SETTINGS_COLUMN+5*FW, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
+          lcdDrawMMM(HW_SETTINGS_COLUMN1, y, menuHorizontalPosition == 0 ? attr : 0);
+        config = editChoice(HW_SETTINGS_COLUMN2, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
           swconfig_t mask = (swconfig_t)0x03 << (2*index);
           g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((swconfig_t(config) & 0x03) << (2*index));
@@ -193,10 +205,25 @@ void menuRadioHardware(event_t event)
         break;
       }
 
+#if defined(BLUETOOTH)
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
+        lcdDrawTextAlignedLeft(y, STR_BLUETOOTH);
+        lcdDrawTextAtIndex(HW_SETTINGS_COLUMN2, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, attr);
+        if (attr) {
+          g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER);
+        }
+        break;
+
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
+        lcdDrawText(INDENT_WIDTH, y, STR_NAME);
+        editName(HW_SETTINGS_COLUMN2, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
+        break;
+#endif
+
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:
       {
         uint8_t b = 1-g_eeGeneral.jitterFilter;
-        g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+5*FW, y, STR_JITTER_FILTER, attr, event);
+        g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN2, y, STR_JITTER_FILTER, attr, event);
         break;
       }
     }

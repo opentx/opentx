@@ -39,16 +39,20 @@
   #define KEYS_GPIO_REG_RIGHT           GPIOC->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_4  // PC.04
 #elif defined(PCBX10)
-  #define KEYS_GPIO_REG_PGDN            GPIOI->IDR
-  #define KEYS_GPIO_PIN_PGDN            GPIO_Pin_11 // PI.11
-  #define KEYS_GPIO_REG_LEFT            GPIOI->IDR
-  #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_7  // PI.07
+  #define KEYS_GPIO_REG_PGUP            GPIOH->IDR
+  #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_14 // PH.14
+  #define KEYS_GPIO_REG_PGDN            GPIOH->IDR
+  #define KEYS_GPIO_PIN_PGDN            GPIO_Pin_15 // PH.15
   #define KEYS_GPIO_REG_ENTER           GPIOI->IDR
-  #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PI.08
+  #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_11 // PI.11
+  #define KEYS_GPIO_REG_PUSH            GPIOI->IDR
+  #define KEYS_GPIO_PIN_PUSH            GPIO_Pin_8  // PI.08
   #define KEYS_GPIO_REG_UP              GPIOI->IDR
   #define KEYS_GPIO_PIN_UP              GPIO_Pin_4  // PI.04
   #define KEYS_GPIO_REG_DOWN            GPIOI->IDR
   #define KEYS_GPIO_PIN_DOWN            GPIO_Pin_6  // PI.06
+  #define KEYS_GPIO_REG_LEFT            GPIOI->IDR
+  #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_7  // PI.07
   #define KEYS_GPIO_REG_RIGHT           GPIOI->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_5  // PI.05
 #endif
@@ -471,13 +475,13 @@
   #define HAPTIC_GPIO_AF                GPIO_AF_TIM9
   #define HAPTIC_GPIO_PinSource         GPIO_PinSource2
 #elif defined(PCBX10)
-  #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOB
-  #define HAPTIC_RCC_APB2Periph         RCC_APB2ENR_TIM8EN
-  #define HAPTIC_GPIO                   GPIOB
-  #define HAPTIC_GPIO_PIN               GPIO_Pin_0  // PB.00
-  #define HAPTIC_GPIO_TIMER             TIM8
-  #define HAPTIC_GPIO_AF                GPIO_AF_TIM8
-  #define HAPTIC_GPIO_PinSource         GPIO_PinSource0
+  #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOE
+  #define HAPTIC_RCC_APB2Periph         RCC_APB2ENR_TIM9EN
+  #define HAPTIC_GPIO                   GPIOE
+  #define HAPTIC_GPIO_PIN               GPIO_Pin_6  // PE.06
+  #define HAPTIC_GPIO_TIMER             TIM9
+  #define HAPTIC_GPIO_AF                GPIO_AF_TIM9
+  #define HAPTIC_GPIO_PinSource         GPIO_PinSource6
 #endif
 
 // Internal Module
@@ -498,6 +502,13 @@
 #define INTMODULE_DMA_STREAM_IRQHandler DMA2_Stream7_IRQHandler
 #define INTMODULE_DMA_FLAG_TC           DMA_IT_TCIF7
 #define INTMODULE_DMA_CHANNEL           DMA_Channel_4
+#if defined(PCBX12S)
+  #define INTMODULE_BOOT_GPIO           GPIOI
+  #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PC.02
+#elif defined(PCBX10)
+  #define INTMODULE_BOOT_GPIO           GPIOI
+  #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PI.09
+#endif
 #if PCBREV >= 13
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
@@ -553,6 +564,11 @@
   #define EXTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
 #endif
 
+// Heartbeat (not used)
+#define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define HEARTBEAT_GPIO                  GPIOD
+#define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
+
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)
 #define TRAINER_RCC_APB1Periph          RCC_APB1Periph_TIM3
@@ -586,14 +602,17 @@
 #define TIMER_2MHz_TIMER                TIM7
 
 // Bluetooth
+#define BT_RCC_APB2Periph               RCC_APB2Periph_USART6
+#define BT_USART                        USART6
+#define BT_GPIO_AF                      GPIO_AF_USART6
+#define BT_USART_IRQn                   USART6_IRQn
+#define BT_GPIO_TXRX                    GPIOG
+#define BT_TX_GPIO_PIN                  GPIO_Pin_14 // PG.14
+#define BT_RX_GPIO_PIN                  GPIO_Pin_9  // PG.09
+#define BT_TX_GPIO_PinSource            GPIO_PinSource14
+#define BT_RX_GPIO_PinSource            GPIO_PinSource9
+#define BT_USART_IRQHandler             USART6_IRQHandler
 #if defined(PCBX12S)
-  #define BT_RCC_APB2Periph             RCC_APB2Periph_USART6
-  #define BT_USART                      USART6
-  #define BT_GPIO_AF                    GPIO_AF_USART6
-  #define BT_USART_IRQn                 USART6_IRQn
-  #define BT_GPIO_TXRX                  GPIOG
-  #define BT_TX_GPIO_PIN                GPIO_Pin_14 // PG.14
-  #define BT_RX_GPIO_PIN                GPIO_Pin_9  // PG.09
   #if PCBREV >= 13
     #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOG)
     #define BT_EN_GPIO                  GPIOI
@@ -607,21 +626,28 @@
   #define BT_BRTS_GPIO_PIN              GPIO_Pin_10 // PG.10
   #define BT_BCTS_GPIO                  GPIOG
   #define BT_BCTS_GPIO_PIN              GPIO_Pin_11 // PG.11
-  #define BT_TX_GPIO_PinSource          GPIO_PinSource14
-  #define BT_RX_GPIO_PinSource          GPIO_PinSource9
+#elif defined(PCBX10)
+  #define BT_RCC_AHB1Periph             RCC_AHB1Periph_GPIOG
+  #define BT_EN_GPIO                    GPIOG
+  #define BT_EN_GPIO_PIN                GPIO_Pin_10 // PG.10
 #endif
 
 // GPS
-#define GPS_RCC_AHB1Periph              RCC_AHB1Periph_GPIOA
-#define GPS_RCC_APB1Periph              RCC_APB1Periph_UART4
-#define GPS_USART                       UART4
-#define GPS_GPIO_AF                     GPIO_AF_UART4
-#define GPS_USART_IRQn                  UART4_IRQn
-#define GPS_USART_IRQHandler            UART4_IRQHandler
-#define GPS_UART_GPIO                   GPIOA
-#define GPS_TX_GPIO_PIN                 GPIO_Pin_0 // PA.00
-#define GPS_RX_GPIO_PIN                 GPIO_Pin_1 // PA.01
-#define GPS_TX_GPIO_PinSource           GPIO_PinSource0
-#define GPS_RX_GPIO_PinSource           GPIO_PinSource1
+#if defined(PCBX12S)
+  #define GPS_RCC_AHB1Periph            RCC_AHB1Periph_GPIOA
+  #define GPS_RCC_APB1Periph            RCC_APB1Periph_UART4
+  #define GPS_USART                     UART4
+  #define GPS_GPIO_AF                   GPIO_AF_UART4
+  #define GPS_USART_IRQn                UART4_IRQn
+  #define GPS_USART_IRQHandler          UART4_IRQHandler
+  #define GPS_UART_GPIO                 GPIOA
+  #define GPS_TX_GPIO_PIN               GPIO_Pin_0 // PA.00
+  #define GPS_RX_GPIO_PIN               GPIO_Pin_1 // PA.01
+  #define GPS_TX_GPIO_PinSource         GPIO_PinSource0
+  #define GPS_RX_GPIO_PinSource         GPIO_PinSource1
+#else
+  #define GPS_RCC_AHB1Periph            0
+  #define GPS_RCC_APB1Periph            0
+#endif
 
 #endif // _HAL_H_

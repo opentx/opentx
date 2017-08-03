@@ -790,7 +790,9 @@
   #define BT_USART                     USART6
   #define BT_GPIO_AF                   GPIO_AF_USART6
   #define BT_USART_IRQn                USART6_IRQn
-  #define BT_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOB)
+  #define BT_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOG)
+  #define BT_RCC_APB1Periph            0
+  #define BT_RCC_APB2Periph            RCC_APB2Periph_USART6
   #define BT_GPIO_TXRX                 GPIOG
   #define BT_TX_GPIO_PIN               GPIO_Pin_14 // PG.14
   #define BT_RX_GPIO_PIN               GPIO_Pin_9  // PG.09
@@ -802,9 +804,11 @@
   #define BT_BCTS_GPIO_PIN             GPIO_Pin_6  // PG.06
   #define BT_TX_GPIO_PinSource         GPIO_PinSource14
   #define BT_RX_GPIO_PinSource         GPIO_PinSource9
+  #define BT_USART_IRQHandler          USART6_IRQHandler
 #elif defined(PCBX7)
   #define BT_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_DMA1)
   #define BT_RCC_APB1Periph            RCC_APB1Periph_USART3
+  #define BT_RCC_APB2Periph            0
   #define BT_EN_GPIO                   GPIOE
   #define BT_EN_GPIO_PIN               GPIO_Pin_12 // PE.12
   #define BT_GPIO_TXRX                 GPIOB
@@ -818,6 +822,10 @@
   #define BT_USART_IRQn                USART3_IRQn
   #define BT_DMA_Stream_RX             DMA1_Stream1
   #define BT_DMA_Channel_RX            DMA_Channel_4
+#else
+  #define BT_RCC_AHB1Periph            0
+  #define BT_RCC_APB1Periph            0
+  #define BT_RCC_APB2Periph            0
 #endif
 
 // 5ms Interrupt

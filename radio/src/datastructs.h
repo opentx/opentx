@@ -890,7 +890,8 @@ PACK(struct TrainerData {
   #define EXTRA_GENERAL_FIELDS_ARM \
     NOBACKUP(uint8_t  backlightBright); \
     NOBACKUP(uint32_t globalTimer); \
-    NOBACKUP(uint8_t  btBaudrate); \
+    NOBACKUP(uint8_t  bluetoothBaudrate:4); \
+    NOBACKUP(uint8_t  bluetoothMode:4); \
     NOBACKUP(uint8_t  countryCode); \
     NOBACKUP(uint8_t  imperial:1); \
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
@@ -917,7 +918,7 @@ PACK(struct TrainerData {
     NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
     NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
-    NOBACKUP(uint8_t bluetoothEnable:1); \
+    NOBACKUP(uint8_t spare:1); \
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #elif defined(PCBFLAMENCO)
@@ -932,7 +933,7 @@ PACK(struct TrainerData {
 #elif defined(PCBTARANIS)
   #if defined(PCBX9E) || defined(PCBX7)
     #define BLUETOOTH_FIELDS \
-      uint8_t bluetoothEnable; \
+      uint8_t spare; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
   #else
     #define BLUETOOTH_FIELDS

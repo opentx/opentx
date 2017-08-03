@@ -564,7 +564,8 @@
 #define TR_VTRAINER_SLAVE_JACK         "Elève/Jack\0       "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Maître/SBUS Module"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Maître/CPPM Module"
-#define TR_VTRAINER_MASTER_BATTERY     "Maître/Batterie\0"
+#define TR_VTRAINER_MASTER_BATTERY     "Maître/Batterie\0  "
+#define TR_VTRAINER_BLUETOOTH          TR("Maître/BT\0        ""Elève/BT\0", "Maître/Bluetooth\0 ""Elève/Bluetooth\0  ")
 
 #define LEN_VFAILSAFE                  "\011"
 #define TR_VFAILSAFE                   TR("Pas déf.\0""Maintien\0""Prédéf.\0 ""Pas d'imp""Récepteur", "Pas déf.\0""Maintien\0""Prédéfini""Pas d'imp""Récepteur")
@@ -915,7 +916,7 @@
 #define TR_WRONG_PCBREV                "PCB incorrect détecté"
 #define TR_EMERGENCY_MODE              "MODE SECOURS"
 #define TR_PCBREV_ERROR                "Erreur PCB"
-#define TR_NO_FAILSAFE                 "Failsafe pas déf."
+#define TR_NO_FAILSAFE                 TR3("Failsafe pas déf.", "Failsafe pas déf.", "Failsafe pas défini")
 #define TR_KEYSTUCK                    "Touche bloquée"
 #define TR_INVERT_THR                  "Inverser gaz?"
 #define TR_SPEAKER_VOLUME              INDENT "Volume"
@@ -957,7 +958,10 @@
 #define TR_FORMATTING                  "Formatage..."
 #define TR_TEMP_CALIB                  "Calib. temp"
 #define TR_TIME                        "Heure"
+#define TR_BLUETOOTH                   "Bluetooth"
 #define TR_BAUDRATE                    "Baudrate BT"
+#define LEN_BLUETOOTH_MODES            "\012"
+#define TR_BLUETOOTH_MODES             "---\0      ""Télémétrie""Ecolage\0"
 #define TR_SD_INFO_TITLE               "INFO SD"
 #define TR_SD_TYPE                     "Type:"
 #define TR_SD_SPEED                    "Vitesse:"
