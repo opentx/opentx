@@ -39,4 +39,5 @@ extern volatile uint8_t bluetoothState;
 extern char bluetoothFriend[LEN_BLUETOOTH_FRIEND+1];
 
 void bluetoothWriteString(const char * command);
+void bluetoothForwardTelemetry(uint8_t data);
 void bluetoothWakeup();

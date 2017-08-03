@@ -51,6 +51,12 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
   }
 #endif
 
+#if defined(BLUETOOTH)
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY) {
+    bluetoothForwardTelemetry(data);
+  }
+#endif
+
   switch (dataState) {
     case STATE_DATA_START:
       if (data == START_STOP) {
