@@ -3673,7 +3673,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new UnsignedField<1>(this, generalData.imperial));
       if (version >= 218) {
         internalField.Append(new BoolField<1>(this, generalData.jitterFilter));
-        internalField.Append(new SpareBitsField<6>(this));
+        internalField.Append(new BoolField<1>(this, generalData.disableRssiPoweroffAlarm));
+        internalField.Append(new SpareBitsField<5>(this));
       }
       else {
         internalField.Append(new SpareBitsField<7>(this));

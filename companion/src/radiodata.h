@@ -1168,11 +1168,10 @@ class GeneralSettings {
     unsigned int   view;    // main screen view // TODO enum
     bool      disableThrottleWarning;
     bool      fai;
-    int       switchWarning; // -1=down, 0=off, 1=up
     bool      disableMemoryWarning;
     BeeperMode beeperMode;
     bool      disableAlarmWarning;
-    bool      enableTelemetryAlarm;
+    bool      disableRssiPoweroffAlarm;
     BeeperMode hapticMode;
     unsigned int   stickMode; // TODO enum
     int       timezone;

@@ -197,7 +197,7 @@ ui(new Ui::GeneralSetup)
   }
 
   int reCount = firmware->getCapability(RotaryEncoders);
-  if (reCount==0) {
+  if (reCount == 0) {
     ui->re_label->hide();
     ui->re_CB->hide();
   }
@@ -210,8 +210,15 @@ ui(new Ui::GeneralSetup)
   ui->backlightautoSB->setValue(generalSettings.backlightDelay*5);
   ui->inactimerSB->setValue(generalSettings.inactivityTimer);
 
-  ui->memwarnChkB->setChecked(!generalSettings.disableMemoryWarning);   //Default is zero=checked
-  ui->alarmwarnChkB->setChecked(!generalSettings.disableAlarmWarning);//Default is zero=checked
+  ui->memwarnChkB->setChecked(!generalSettings.disableMemoryWarning); // Default is zero=checked
+  ui->alarmwarnChkB->setChecked(!generalSettings.disableAlarmWarning); // Default is zero=checked
+
+  if (IS_ARM(firmware->getBoard())) {
+    ui->rssiPowerOffWarnChkB->setChecked(!generalSettings.disableRssiPoweroffAlarm); // Default is zero=checked
+  }
+  else {
+    ui->rssiPowerOffWarnChkB->hide();
+  }
 
   if (IS_HORUS(firmware->getBoard())) {
     ui->splashScreenChkB->hide();
@@ -607,15 +614,21 @@ void GeneralSetupPanel::on_inactimerSB_editingFinished()
   emit modified();
 }
 
-void GeneralSetupPanel::on_memwarnChkB_stateChanged(int )
+void GeneralSetupPanel::on_memwarnChkB_stateChanged(int)
 {
   generalSettings.disableMemoryWarning = ui->memwarnChkB->isChecked() ? 0 : 1;
   emit modified();
 }
 
-void GeneralSetupPanel::on_alarmwarnChkB_stateChanged(int )
+void GeneralSetupPanel::on_alarmwarnChkB_stateChanged(int)
 {
   generalSettings.disableAlarmWarning = ui->alarmwarnChkB->isChecked() ? 0 : 1;
+  emit modified();
+}
+
+void GeneralSetupPanel::on_rssiPowerOffWarnChkB_stateChanged(int)
+{
+  generalSettings.disableRssiPoweroffAlarm = ui->rssiPowerOffWarnChkB->isChecked() ? 0 : 1;
   emit modified();
 }
 

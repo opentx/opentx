@@ -331,20 +331,10 @@ bool menuRadioSetup(event_t event)
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
         break;
 
-#if 0
-      case ITEM_SETUP_MEMORY_WARNING:
-      {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MEMORYWARNING);
-        uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
-        break;
-      }
-#endif
-
       case ITEM_SETUP_ALARM_WARNING:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARMWARNING);
-        uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
+        uint8_t b = 1 - g_eeGeneral.disableAlarmWarning;
         g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
@@ -352,7 +342,8 @@ bool menuRadioSetup(event_t event)
       case ITEM_SETUP_RSSI_POWEROFF_ALARM:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RSSISHUTDOWNALARM);
-        g_eeGeneral.rssiPoweroffAlarm = editCheckBox(g_eeGeneral.rssiPoweroffAlarm, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        uint8_t b = 1 - g_eeGeneral.disableRssiPoweroffAlarm;
+        g_eeGeneral.disableRssiPoweroffAlarm = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
 
