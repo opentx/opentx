@@ -37,6 +37,8 @@
 #define LCD_LINES                      (LCD_H/FH)
 #define LCD_COLS                       (LCD_W/FW)
 
+#define BITMAP_BUFFER_SIZE(w, h)       (2 + (w) * (((h)+7)/8)*4)
+
 /* lcdDrawText flags */
 #define BLINK                          0x01
 #define INVERS                         0x02
