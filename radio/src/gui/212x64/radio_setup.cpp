@@ -332,7 +332,7 @@ void menuRadioSetup(event_t event)
 
       case ITEM_SETUP_MEMORY_WARNING:
       {
-        uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
+        uint8_t b = 1 - g_eeGeneral.disableMemoryWarning;
         g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
         break;
       }
@@ -347,7 +347,7 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_RSSI_POWEROFF_ALARM:
       {
         uint8_t b = 1 - g_eeGeneral.disableRssiPoweroffAlarm;
-        g_eeGeneral.disableRssiPoweroffAlarm = editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
+        g_eeGeneral.disableRssiPoweroffAlarm = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
         break;
       }
 
