@@ -105,6 +105,18 @@ burnConfigDialog::~burnConfigDialog()
     delete ui;
 }
 
+QStringList burnConfigDialog::getAvrdudeArgs()
+{
+    QStringList args = avrArgs;
+    if (!avrPort.isEmpty())
+      args << "-P" << avrPort;
+
+#if defined(__APPLE__)
+    args << "-C" << QFileInfo(QApplication::applicationDirPath() + "/../Resources/avrdude.conf").absoluteFilePath();
+#endif
+    return args;
+}
+
 void burnConfigDialog::getSettings()
 {
     avrLoc   = g.avrdudeLocation();
