@@ -488,7 +488,7 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_STICK_MODE_LABELS:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_MODE));
         for (uint8_t i=0; i<4; i++) {
-          lcd_img((6+4*i)*FW, y, sticks, i, 0);
+          lcdDraw1bitBitmap((6+4*i)*FW, y, sticks, i, 0);
         }
         break;
 
