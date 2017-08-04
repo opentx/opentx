@@ -706,6 +706,9 @@
 #define TR_INACTIVITYALARM     TR(INDENT "Inactiviteit", INDENT "Inactiviteit na") //9XR-Pro
 #define TR_MEMORYWARNING       INDENT "Geheugen laag"
 #define TR_ALARMWARNING        TR(INDENT "Al Geluid uit?", INDENT "Al het geluid uit?")
+#define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
+#define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Stappenschakelaar"
 #define TR_THROTTLE_LABEL      "----Gas-------------"
 #define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")

@@ -243,7 +243,7 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
 uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
-  while (len--) {
+  for (int i=0; len==0 || i<len; ++i) {
     unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
     if (!c) {
       break;

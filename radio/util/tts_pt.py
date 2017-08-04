@@ -72,6 +72,9 @@ for s, f, a in [("atenção, o rádio foi esquecido ligado, por favor desligue-o
                 ("recepção de sinal muito baixa", "rssi_org", NO_ALTERNATE),
                 ("recepção de sinal crítica", "rssi_red", NO_ALTERNATE),
                 ("Problema com a antena do transmissor", "swr_red", NO_ALTERNATE),
+                ("servo overload", "servoko", NO_ALTERNATE),
+                ("power overload", "rxko", NO_ALTERNATE),
+                ("receiver still connected", "modelpwr", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, s in enumerate(["cronómetro", "cronómetro", "transmissão", "recepção", "A1", "A2", "altitude", "motor",

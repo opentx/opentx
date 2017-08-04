@@ -40,12 +40,15 @@ const pm_uchar SHUTDOWN_BITMAP[] PROGMEM = {
 
 #define SHUTDOWN_BITMAP_WIDTH          60
 #define SHUTDOWN_BITMAP_HEIGHT         60
-void drawShutdownAnimation(uint32_t index)
+void drawShutdownAnimation(uint32_t index, const char * message)
 {
   index /= (PWR_PRESS_SHUTDOWN_DELAY / 4);
   lcdRefreshWait();
   lcdClear();
   lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, SHUTDOWN_BITMAP, (3 - index) * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
+  if (message) {
+    lcdDrawText((LCD_W - getTextWidth(message)) / 2, LCD_H-2*FH, message);
+  }
   lcdRefresh();
 }
 #endif
