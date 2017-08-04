@@ -383,7 +383,7 @@ void menuRadioSetup(event_t event)
 
       case ITEM_SETUP_ALARM_WARNING:
       {
-        uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
+        uint8_t b = 1 - g_eeGeneral.disableAlarmWarning;
         g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
         break;
       }
@@ -391,7 +391,8 @@ void menuRadioSetup(event_t event)
 #if defined(CPUARM)
       case ITEM_SETUP_RSSI_POWEROFF_ALARM:
       {
-        g_eeGeneral.rssiPoweroffAlarm = editCheckBox(g_eeGeneral.rssiPoweroffAlarm, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
+        uint8_t b = 1 - g_eeGeneral.disableRssiPoweroffAlarm;
+        g_eeGeneral.disableRssiPoweroffAlarm = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
         break;
       }
 #endif
