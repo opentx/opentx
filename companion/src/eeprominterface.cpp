@@ -720,9 +720,9 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
 
       case SWITCH_TYPE_SENSOR:
         if (modelData && index <= CPN_MAX_SENSORS && strlen(modelData->sensorData[index-1].label) > 0)
-          return QObject::tr("Sensor%1 (%2)").arg(index).arg(modelData->sensorData[index-1].label);
+          return QObject::tr("Tele%1:%2").arg(index).arg(modelData->sensorData[index-1].label);
         else
-          return QObject::tr("Sensor%1").arg(index);
+          return QObject::tr("Tele%1").arg(index);
 
       case SWITCH_TYPE_TELEMETRY:
         return QObject::tr("Telemetry");
