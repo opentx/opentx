@@ -975,7 +975,13 @@
 #define TR_FORMATTING          "Formatierung..."
 #define TR_TEMP_CALIB          "Temp.  abgl."
 #define TR_TIME                "Uhrzeit:"
+
+#define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "BT Baudrate"
+#define LEN_BLUETOOTH_MODES    "\011"
+#define TR_BLUETOOTH_MODES     "---\0     ""Telemetry""Trainer\0"
+
+
 #define TR_SD_INFO_TITLE       "SD-INFO"
 #define TR_SD_TYPE             "Typ:"
 #define TR_SD_SPEED            "Geschw:"
