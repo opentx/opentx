@@ -209,7 +209,7 @@ class WavContext {
     inline void clear() { fragment.clear(); };
 
     int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
-    bool hasId(uint8_t id) const { return fragment.id == id; };
+    bool hasPromptId(uint8_t id) const { return fragment.id == id; };
 
     void setFragment(const char * filename, uint8_t repeat, uint8_t id)
     {
@@ -262,7 +262,7 @@ class MixedContext {
     bool isEmpty() const { return fragment.type == FRAGMENT_EMPTY; };
     bool isTone() const { return fragment.type == FRAGMENT_TONE; };
     bool isFile() const { return fragment.type == FRAGMENT_FILE; };
-    bool hasId(uint8_t id) const { return fragment.id == id; };
+    bool hasPromptId(uint8_t id) const { return fragment.id == id; };
 
     int mixBuffer(AudioBuffer *buffer, int toneVolume, int wavVolume, unsigned int fade)
     {
@@ -414,7 +414,7 @@ class AudioFragmentFifo
   public:
     AudioFragmentFifo() : ridx(0), widx(0), fragments() {};
 
-    bool hasId(uint8_t id)
+    bool hasPromptId(uint8_t id)
     {
       uint8_t i = ridx;
       while (i != widx) {
@@ -425,7 +425,7 @@ class AudioFragmentFifo
       return false;
     }
 
-    bool removeId(uint8_t id)
+    bool removePromptById(uint8_t id)
     {
       uint8_t i = ridx;
       while (i != widx) {

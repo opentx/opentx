@@ -824,9 +824,9 @@ void AudioQueue::pause(uint16_t len)
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
-  return normalContext.hasId(id) ||
-         (isFunctionActive(FUNCTION_BACKGND_MUSIC) && backgroundContext.hasId(id)) ||
-         fragmentsFifo.hasId(id);
+  return normalContext.hasPromptId(id) ||
+         (isFunctionActive(FUNCTION_BACKGND_MUSIC) && backgroundContext.hasPromptId(id)) ||
+         fragmentsFifo.hasPromptId(id);
 }
 
 void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
@@ -909,7 +909,7 @@ void AudioQueue::stopPlay(uint8_t id)
   return;
 #endif
 
-  fragmentsFifo.removeId(id);
+  fragmentsFifo.removePromptById(id);
   backgroundContext.stop(id);
 }
 
