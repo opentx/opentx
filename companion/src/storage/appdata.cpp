@@ -755,7 +755,7 @@ bool AppData::importSettings(QString fromVersion)
       toSettings.setValue(key, fromSettings.value(key));
     }
   }
-
+/*
   // Additional adjustments for companion9x settings
   if (fromSettings.applicationName() == "companion9x") {
     // Store old values in new locations
@@ -803,6 +803,6 @@ bool AppData::importSettings(QString fromVersion)
     // Select the new default profile as current profile
     id( 0 );
   }
-
+*/
   return true;
 }
