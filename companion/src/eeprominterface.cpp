@@ -114,6 +114,23 @@ void getEEPROMZString(char *dst, const char *src, int size)
   }
 }
 
+QString getElementName(const QString & prefix, unsigned int index, const char * name = NULL, bool padding = false)
+{
+  QString result = prefix;
+  if (padding)
+    result += QString("%1").arg(index, 2, 10, QChar('0'));
+  else
+    result += QString("%1").arg(index);
+  if (name) {
+    QString trimmed = QString(name).trimmed();
+    if (trimmed.length() > 0) {
+      result += ":" + QString(name).trimmed();
+    }
+  }
+  return result;
+}
+
+
 float ValToTim(int value)
 {
    return ((value < -109 ? 129+value : (value < 7 ? (113+value)*5 : (53+value)*10))/10.0);
@@ -508,10 +525,12 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   int genAryIdx = 0;
   switch (type) {
     case SOURCE_TYPE_VIRTUAL_INPUT:
-      result = QObject::tr("[I%1]").arg(index+1, 2, 10, QChar('0'));
-      if (model && model->inputNames[index][0])
-        result.append(/*":" + */QString(model->inputNames[index]).trimmed());
-      return result;
+    {
+      const char * name = NULL;
+      if (model)
+        name = model->inputNames[index];
+      return getElementName(QCoreApplication::translate("Input", "I"), index + 1, name);
+    }
 
     case SOURCE_TYPE_LUA_OUTPUT:
       return QObject::tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
@@ -550,13 +569,15 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return QObject::tr("CYC%1").arg(index+1);
 
     case SOURCE_TYPE_PPM:
-      return QObject::tr("TR%1").arg(index+1, 2, 10, QChar('0'));
+      return getElementName(QCoreApplication::translate("Trainer", "TR"), index + 1);
 
     case SOURCE_TYPE_CH:
-      result = QObject::tr("CH%1").arg(index+1, 2, 10, QChar('0'));
-      if (getCurrentFirmware()->getCapability(ChannelsName) && model && model->limitData[index].name[0])
-        result.append(":" + QString(model->limitData[index].name).trimmed());
-      return result;
+    {
+      const char * name = NULL;
+      if (getCurrentFirmware()->getCapability(ChannelsName) && model)
+        name = model->limitData[index].name;
+      return getElementName(QCoreApplication::translate("Channel", "CH"), index + 1, name);
+    }
 
     case SOURCE_TYPE_SPECIAL:
       return CHECK_IN_ARRAY(special, index);
@@ -564,7 +585,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     case SOURCE_TYPE_TELEMETRY:
       if (IS_ARM(getCurrentBoard())) {
         div_t qr = div(index, 3);
-        result = model ? QString(model->sensorData[qr.quot].label) : QString("[T%1]").arg(qr.quot+1, 2, 10, QChar('0'));
+        result = getElementName(QCoreApplication::translate("Telemetry", "TELE"), qr.quot+1, model ? model->sensorData[qr.quot].label : NULL);
         if (qr.rem)
           result += (qr.rem == 1 ? "-" : "+");
         return result;
@@ -574,10 +595,12 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       }
 
     case SOURCE_TYPE_GVAR:
-      result = QObject::tr("GV%1").arg(index+1, 2, 10, QChar('0'));
-      if (getCurrentFirmware()->getCapability(GvarsName) && model && model->gvars_names[index][0])
-        result.append(":" + QString(model->gvars_names[index]).trimmed());
-      return result;
+    {
+      const char * name = NULL;
+      if (getCurrentFirmware()->getCapability(GvarsName) && model)
+        name = model->gvars_names[index];
+      return getElementName(QCoreApplication::translate("Global Variable", "GV"), index + 1, name);
+    }
 
     default:
       return QObject::tr("----");
@@ -622,7 +645,7 @@ bool RawSource::isSlider(int * sliderIndex) const
  * RawSwitch
  */
 
-QString RawSwitch::toString(Board::Type board, const GeneralSettings * const generalSettings) const
+QString RawSwitch::toString(Board::Type board, const GeneralSettings * const generalSettings, const ModelData * const modelData) const
 {
   if (board == Board::BOARD_UNKNOWN) {
     board = getCurrentBoard();
@@ -632,10 +655,6 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
     QString("THR"), QString("RUD"), QString("ELE"),
     QString("ID0"), QString("ID1"), QString("ID2"),
     QString("AIL"), QString("GEA"), QString("TRN")
-  };
-
-  static const QString flightModes[] = {
-    QObject::tr("FM0"), QObject::tr("FM1"), QObject::tr("FM2"), QObject::tr("FM3"), QObject::tr("FM4"), QObject::tr("FM5"), QObject::tr("FM6"), QObject::tr("FM7"), QObject::tr("FM8")
   };
 
   static const QString trimsSwitches[] = {
@@ -662,7 +681,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
       << CPN_STR_SW_INDICATOR_DN;
 
   if (index < 0) {
-    return CPN_STR_SW_INDICATOR_REV % RawSwitch(type, -index).toString(board, generalSettings);
+    return CPN_STR_SW_INDICATOR_REV % RawSwitch(type, -index).toString(board, generalSettings, modelData);
   }
   else {
     QString swName;
@@ -682,7 +701,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         }
 
       case SWITCH_TYPE_VIRTUAL:
-        return QObject::tr("L%1").arg(index, 2, 10, QChar('0'));
+        return getElementName(QCoreApplication::translate("Logic Switch", "L"), index, NULL, true);
 
       case SWITCH_TYPE_MULTIPOS_POT:
         if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))
@@ -710,13 +729,19 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return QObject::tr("One");
 
       case SWITCH_TYPE_FLIGHT_MODE:
-        return CHECK_IN_ARRAY(flightModes, index-1);
+        return getElementName(QCoreApplication::translate("Flight mode", "FM"), index - 1, modelData ? modelData->flightModeData[index-1].name : NULL);
 
       case SWITCH_TYPE_NONE:
         return QObject::tr("----");
 
       case SWITCH_TYPE_TIMER_MODE:
         return CHECK_IN_ARRAY(timerModes, index);
+
+      case SWITCH_TYPE_SENSOR:
+        return getElementName(QCoreApplication::translate("Telemetry", "TELE"), index, modelData ? modelData->sensorData[index-1].label : NULL);
+
+      case SWITCH_TYPE_TELEMETRY:
+        return QObject::tr("Telemetry");
 
       default:
         return QObject::tr("???");
@@ -1086,10 +1111,7 @@ bool CurveData::isEmpty() const
 
 QString CurveData::nameToString(const int idx) const
 {
-  QString ret = QCoreApplication::translate("CurveData", "CV%1").arg(idx+1, 2, 10, QChar('0'));
-  if (name[0])
-    ret.append(":" + QString(name).trimmed());
-  return ret;
+  return getElementName(QCoreApplication::translate("Curve", "CV"), idx + 1, name);
 }
 
 QString LimitData::minToString() const
@@ -1743,6 +1765,24 @@ int ModelData::getChannelsMax(bool forceExtendedLimits) const
     return IS_HORUS_OR_TARANIS(getCurrentBoard()) ? 150 : 125;
   else
     return 100;
+}
+
+bool ModelData::isAvailable(const RawSwitch & swtch) const
+{
+  unsigned index = abs(swtch.index) - 1;
+
+  if (swtch.type == SWITCH_TYPE_VIRTUAL) {
+    return logicalSw[index].func != LS_FN_OFF;
+  }
+  else if (swtch.type == SWITCH_TYPE_FLIGHT_MODE) {
+    return index == 0 || flightModeData[index].swtch.type != SWITCH_TYPE_NONE;
+  }
+  else if (swtch.type == SWITCH_TYPE_SENSOR) {
+    return strlen(sensorData[index].label) > 0;
+  }
+  else {
+    return true;
+  }
 }
 
 QList<EEPROMInterface *> eepromInterfaces;

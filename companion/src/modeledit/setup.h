@@ -24,6 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+class RawSwitchFilterItemModel;
+
 namespace Ui {
   class Setup;
   class Timer;
@@ -49,7 +51,8 @@ class TimerPanel : public ModelPanel
 
   private:
     TimerData & timer;
-    Ui::Timer *ui;
+    Ui::Timer * ui;
+    RawSwitchFilterItemModel * rawSwitchItemModel;
 };
 
 class ModulePanel : public ModelPanel

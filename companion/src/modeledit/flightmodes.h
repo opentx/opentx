@@ -24,6 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+class RawSwitchFilterItemModel;
+
 namespace Ui {
   class FlightMode;
 }
@@ -74,6 +76,7 @@ class FlightModePanel : public ModelPanel
     QVector<QComboBox *> trimsUse;
     QVector<QSpinBox *> trimsValue;
     QVector<QSlider *> trimsSlider;
+    RawSwitchFilterItemModel * rawSwitchItemModel;
 
     void trimUpdate(unsigned int trim);
 

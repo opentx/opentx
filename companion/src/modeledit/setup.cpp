@@ -22,6 +22,7 @@
 #include "ui_setup.h"
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
+#include "switchitemmodel.h"
 #include "helpers.h"
 #include "appdata.h"
 #include "modelprinter.h"
@@ -50,7 +51,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
 
   // Mode
-  ui->mode->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::TimersContext));
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, TimersContext);
+  ui->mode->setModel(rawSwitchItemModel);
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
 
   if (!firmware->getCapability(PermTimers)) {
@@ -91,6 +93,8 @@ TimerPanel::~TimerPanel()
 
 void TimerPanel::update()
 {
+  rawSwitchItemModel->update();
+
   int hour = timer.val / 3600;
   int min = (timer.val - (hour * 3600)) / 60;
   int sec = (timer.val - (hour * 3600)) % 60;
