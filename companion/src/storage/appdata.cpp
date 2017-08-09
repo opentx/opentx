@@ -538,12 +538,10 @@ void AppData::init()
     qRegisterMetaTypeStreamOperators<SimulatorOptions>("SimulatorOptions");
 
     firstUse = false;
-    upgradeFromVersion = "";
 
     QSettings settings(COMPANY, PRODUCT);
     if (!settings.contains("settings_version")) {
-      if (!importSettings(settings))
-        firstUse = true;
+      firstUse = true;
     }
     convertSettings(settings);
 
@@ -652,14 +650,24 @@ void AppData::convertSettings(QSettings & settings)
   }
 }
 
-bool AppData::importSettings(QSettings & toSettings)
+bool AppData::hasCurrentSettings()
+{
+  QSettings settings(COMPANY, PRODUCT);
+  if (!settings.contains("settings_version")) {
+    return false;
+  }
+  return true;
+}
+
+bool AppData::findPreviousVersionSettings(QString * version)
 {
   QSettings * fromSettings = NULL;
+  *version = "";
 
   QSettings settings21("OpenTX", "Companion 2.1");
   if (settings21.contains("settings_version")) {
     fromSettings = &settings21;
-    upgradeFromVersion = "2.1";
+    *version = "2.1";
   }
   else {
     settings21.clear();
@@ -669,7 +677,7 @@ bool AppData::importSettings(QSettings & toSettings)
   if (settings20.contains("settings_version")) {
     if (!fromSettings) {
       fromSettings = &settings20;
-      upgradeFromVersion = "2.0";
+      *version = "2.0";
     }
   }
   else {
@@ -680,7 +688,7 @@ bool AppData::importSettings(QSettings & toSettings)
   if (settings16.contains("settings_version")) {
     if (!fromSettings) {
       fromSettings = &settings16;
-      upgradeFromVersion = "1.x";
+      *version = "1.x";
     }
   }
   else {
@@ -691,7 +699,7 @@ bool AppData::importSettings(QSettings & toSettings)
   if (settings9x.contains("default_mode")) {
     if (!fromSettings) {
       fromSettings = &settings9x;
-      upgradeFromVersion = "Companion9X";
+      *version = "Companion9X";
     }
   }
   else {
@@ -700,16 +708,37 @@ bool AppData::importSettings(QSettings & toSettings)
 
   if (!fromSettings)
     return false;
-    
-  QMessageBox msgBox;
-  msgBox.setText("We have found existing settings for Companion version: " + upgradeFromVersion + ".\nDo you want to import them?");
-  msgBox.setIcon(QMessageBox::Information);
-  msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-  msgBox.setDefaultButton(QMessageBox::Yes);
-  int ret = msgBox.exec();
 
-  if (ret == QMessageBox::No)
-  	return false;
+  return true;  
+}
+
+bool AppData::importSettings(QString fromVersion)
+{
+  QSettings toSettings(COMPANY, PRODUCT);
+
+  QString fromCompany;
+  QString fromProduct;
+
+  if (fromVersion == "2.1") {
+    fromCompany = "OpenTX";
+    fromProduct = "Companion 2.1";
+  }
+  else if (fromVersion == "2.0") {
+    fromCompany = "OpenTX";
+    fromProduct = "Companion 2.1";
+  }
+  else if (fromVersion == "1.x") {
+    fromCompany = "OpenTX";
+    fromProduct = "OpenTX Companion";
+    }
+  else if (fromVersion == "Companion9X") {
+    fromCompany = "companion9x";
+    fromProduct = "companion9x";
+  }
+  else
+    return false;
+
+  QSettings fromSettings(fromCompany, fromProduct);
 
   // do not copy these settings
   QStringList excludeKeys = QStringList() << "compilation-server";
@@ -721,14 +750,14 @@ bool AppData::importSettings(QSettings & toSettings)
 #endif
 
   // import settings
-  foreach (const QString & key, fromSettings->allKeys()) {
-    if (fromSettings->value(key).isValid() && !excludeKeys.contains(key)) {
-      toSettings.setValue(key, fromSettings->value(key));
+  foreach (const QString & key, fromSettings.allKeys()) {
+    if (fromSettings.value(key).isValid() && !excludeKeys.contains(key)) {
+      toSettings.setValue(key, fromSettings.value(key));
     }
   }
 
   // Additional adjustments for companion9x settings
-  if (fromSettings->applicationName() == "companion9x") {
+  if (fromSettings.applicationName() == "companion9x") {
     // Store old values in new locations
     autoCheckApp(toSettings.value("startup_check_companion9x", true).toBool());
     toSettings.setValue("useWizard", toSettings.value("wizardEnable", true));

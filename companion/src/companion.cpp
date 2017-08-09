@@ -71,6 +71,20 @@ int main(int argc, char *argv[])
 
   CustomDebug::setFilterRules();
 
+  if (!g.hasCurrentSettings()) {
+    QString previousVersion;
+    if (g.findPreviousVersionSettings(&previousVersion)) {
+       QMessageBox msgBox;
+       msgBox.setText("We have found existing settings for Companion version: " + previousVersion + ".\nDo you want to import them?");
+       msgBox.setIcon(QMessageBox::Information);
+       msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+       msgBox.setDefaultButton(QMessageBox::Yes);
+       int ret = msgBox.exec();
+
+       if (ret == QMessageBox::Yes)
+  	     g.importSettings(previousVersion);
+    }
+  }
   g.init();
 
   QStringList strl = QApplication::arguments();
