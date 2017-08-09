@@ -251,7 +251,7 @@ void bluetoothWakeup()
       char * line = bluetoothReadline();
       if (bluetoothState == BLUETOOTH_STATE_OFF && IS_BLUETOOTH_TRAINER()) {
         char command[32];
-        char * cur = strAppend(command, "AT+NAME");
+        char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
         if (len > 0) {
           for (int i = 0; i < len; i++) {
@@ -267,7 +267,11 @@ void bluetoothWakeup()
         }
         strAppend(cur, "\r\n");
         bluetoothWriteString(command);
+#if defined(PCBX9E)
+        bluetoothState = BLUETOOTH_STATE_CONNECTED;
+#else
         bluetoothState = BLUETOOTH_STATE_NAME_SENT;
+#endif
       }
       else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && !strncmp(line, "OK+", 3)) {
         bluetoothWriteString("AT+TXPW3\r\n");
@@ -291,6 +295,7 @@ void bluetoothWakeup()
         bluetoothState = BLUETOOTH_STATE_DISCOVER_START;
       }
       else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strncmp(line, "OK+DISC:", 8)) {
+        TRACE("STOP");
         strcpy(bluetoothFriend, &line[8]); // TODO quick & dirty
       }
       else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
