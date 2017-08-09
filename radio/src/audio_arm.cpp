@@ -909,8 +909,12 @@ void AudioQueue::stopPlay(uint8_t id)
   return;
 #endif
 
+  CoEnterMutexSection(audioMutex);
+
   fragmentsFifo.removePromptById(id);
   backgroundContext.stop(id);
+
+  CoLeaveMutexSection(audioMutex);
 }
 
 void AudioQueue::stopSD()
