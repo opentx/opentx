@@ -22,10 +22,12 @@
 #include "ui_setup.h"
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
+#include "switchitemmodel.h"
 #include "helpers.h"
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
+#include "checklistdialog.h"
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -49,7 +51,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
 
   // Mode
-  ui->mode->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::TimersContext));
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, TimersContext);
+  ui->mode->setModel(rawSwitchItemModel);
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
 
   if (!firmware->getCapability(PermTimers)) {
@@ -90,6 +93,8 @@ TimerPanel::~TimerPanel()
 
 void TimerPanel::update()
 {
+  rawSwitchItemModel->update();
+
   int hour = timer.val / 3600;
   int min = (timer.val - (hour * 3600)) / 60;
   int sec = (timer.val - (hour * 3600)) % 60;
@@ -891,6 +896,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
+    ui->editText->hide();
   }
 
   if (!firmware->getCapability(GlobalFunctions)) {
@@ -1134,6 +1140,7 @@ void SetupPanel::update()
   ui->extendedLimits->setChecked(model->extendedLimits);
   ui->extendedTrims->setChecked(model->extendedTrims);
   ui->displayText->setChecked(model->displayChecklist);
+  ui->editText->setEnabled(model->displayChecklist);
   ui->gfEnabled->setChecked(!model->noGlobalFunctions);
 
   updateBeepCenter();
@@ -1279,6 +1286,7 @@ void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 void SetupPanel::on_displayText_toggled(bool checked)
 {
   model->displayChecklist = checked;
+  ui->editText->setEnabled(checked);
   emit modified();
 }
 
@@ -1305,4 +1313,10 @@ void SetupPanel::onBeepCenterToggled(bool checked)
       model->beepANACenter &= ~mask;
     emit modified();
   }
+}
+
+void SetupPanel::on_editText_clicked()
+{
+  ChecklistDialog *g = new ChecklistDialog(this, ui->name->text());
+  g->exec();
 }

@@ -151,13 +151,9 @@ bool menuRadioSdManager(event_t _event)
     showMessageBox(STR_FORMATTING);
     logsClose();
     audioQueue.stopSD();
-    BYTE work[_MAX_SS];
-    if (f_mkfs(0, FM_FAT32, 0, work, sizeof(work)) == FR_OK) {
+    if(sdCardFormat()) {
       f_chdir("/");
       REFRESH_FILES();
-    }
-    else {
-      POPUP_WARNING(STR_SDCARD_ERROR);
     }
   }
 

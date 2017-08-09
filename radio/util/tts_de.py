@@ -74,6 +74,9 @@ for s, f, a in [("Inaktivitätsalarm", "inactiv", 486),
                 ("Telemetrie wiederhergestellt", "telemok", NO_ALTERNATE),
                 ("Schülersignal verloren", "trainko", NO_ALTERNATE),
                 ("Schülersignal wiederhergestellt", "trainok", NO_ALTERNATE),
+                ("servo overload", "servoko", NO_ALTERNATE),
+                ("power overload", "rxko", NO_ALTERNATE),
+                ("Empfänger noch verbunden", "modelpwr", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, s in enumerate(["Uhr", "Uhr", "Sender", "Empfang", "A1", "A2", "Hoehe", "Motor",

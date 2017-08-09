@@ -731,6 +731,9 @@
 #define TR_INACTIVITYALARM     TR(INDENT "Inaktivität", INDENT "Inaktivität nach") //9XR-Pro
 #define TR_MEMORYWARNING       INDENT "Speicher voll"
 #define TR_ALARMWARNING        TR(INDENT "Alle Töne aus?", INDENT "Alle Töne ganz aus?")
+#define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
+#define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Drehgeb. Navig."
 #define TR_THROTTLE_LABEL      "----Gas-Kontrolle----"
 #define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
@@ -1051,6 +1054,9 @@
 #define TR_ANTENNACONFIRM2     "Ist eine externe Antenne installiert?"
 #define TR_LOWALARM            INDENT "Vor-Alarm bei"
 #define TR_CRITICALALARM       INDENT "Kritisch-Alarm"
+#define TR_RSSIALARM_WARN             "Telemetry"
+#define TR_NO_RSSIALARM                "Audiowarnungen ausgeschaltet"
+#define TR_DISABLE_ALARM               INDENT "Audiowarnungen ausschalten"
 #define TR_ENABLE_POPUP        "Freigabe Popup-Fenster"
 #define TR_DISABLE_POPUP       "Sperren  Popup-Fenster"
 #define TR_POPUP               "Popup"

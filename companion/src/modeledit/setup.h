@@ -24,6 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+class RawSwitchFilterItemModel;
+
 namespace Ui {
   class Setup;
   class Timer;
@@ -49,7 +51,8 @@ class TimerPanel : public ModelPanel
 
   private:
     TimerData & timer;
-    Ui::Timer *ui;
+    Ui::Timer * ui;
+    RawSwitchFilterItemModel * rawSwitchItemModel;
 };
 
 class ModulePanel : public ModelPanel
@@ -140,6 +143,7 @@ class SetupPanel : public ModelPanel
     void startupSwitchToggled(bool checked);
     void potWarningToggled(bool checked);
     void on_potWarningMode_currentIndexChanged(int index);
+    void on_editText_clicked();
 
   private:
     Ui::Setup *ui;

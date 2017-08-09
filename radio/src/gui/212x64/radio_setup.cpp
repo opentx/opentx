@@ -70,6 +70,7 @@ enum MenuRadioSetupItems {
   ITEM_SETUP_INACTIVITY_ALARM,
   ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
+  ITEM_SETUP_RSSI_POWEROFF_ALARM,
   ITEM_SETUP_BACKLIGHT_LABEL,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
@@ -115,7 +116,7 @@ void menuRadioSetup(event_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, ITEM_SETUP_MAX, { 2, 2, 0, 1, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, 0, CASE_PCBX9E_PCBX9DP(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, IF_FAI_CHOICE(0) CASE_MAVLINK(0) 0, 0, LABEL(TX_MODE), 0, 1/*to force edit mode*/ });
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, ITEM_SETUP_MAX, { 2, 2, 0, 1, LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0, CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, 0, 0, 0, 0,IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, 0, CASE_PCBX9E_PCBX9DP(0) CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0) CASE_PXX(0) 0, 0, IF_FAI_CHOICE(0) CASE_MAVLINK(0) 0, 0, LABEL(TX_MODE), 0, 1/*to force edit mode*/ });
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -331,15 +332,22 @@ void menuRadioSetup(event_t event)
 
       case ITEM_SETUP_MEMORY_WARNING:
       {
-        uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
+        uint8_t b = 1 - g_eeGeneral.disableMemoryWarning;
         g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
         break;
       }
 
       case ITEM_SETUP_ALARM_WARNING:
       {
-        uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
+        uint8_t b = 1 - g_eeGeneral.disableAlarmWarning;
         g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
+        break;
+      }
+
+      case ITEM_SETUP_RSSI_POWEROFF_ALARM:
+      {
+        uint8_t b = 1 - g_eeGeneral.disableRssiPoweroffAlarm;
+        g_eeGeneral.disableRssiPoweroffAlarm = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
         break;
       }
 
@@ -481,7 +489,7 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_STICK_MODE_LABELS:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_MODE));
         for (uint8_t i=0; i<4; i++) {
-          lcd_img((6+4*i)*FW, y, sticks, i, 0);
+          lcdDraw1bitBitmap((6+4*i)*FW, y, sticks, i, 0);
         }
         break;
 

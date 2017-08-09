@@ -1231,6 +1231,7 @@ enum AUDIO_SOUNDS {
   AU_SENSOR_LOST,
   AU_SERVO_KO,
   AU_RX_OVERLOAD,
+  AU_MODEL_STILL_POWERED,
 #endif
 #if defined(PCBSKY9X)
   AU_TX_MAH_HIGH,
@@ -1256,6 +1257,10 @@ enum AUDIO_SOUNDS {
   AU_POT2_MIDDLE,
   AU_SLIDER1_MIDDLE,
   AU_SLIDER2_MIDDLE,
+#if defined(PCBX9E)
+  AU_SLIDER3_MIDDLE,
+  AU_SLIDER4_MIDDLE,
+#endif
 #elif defined(CPUARM)
   AU_POT1_MIDDLE,
   AU_POT2_MIDDLE,
@@ -1528,7 +1533,9 @@ inline int div_and_round(int num, int den)
 }
 
 #if defined(TELEMETRY_FRSKY)
+#if !defined(CPUARM)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
+#endif
 
 extern const pm_uint8_t bchunit_ar[];
 

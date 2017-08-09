@@ -67,6 +67,7 @@ class TelemetrySimulator : public QWidget
     void onStop();
     void onPositionIndicatorChanged(int value);
     void onReplayRateChanged(int value);
+    void refreshSensorRatios();
     void generateTelemetryFrame();
 
   protected:

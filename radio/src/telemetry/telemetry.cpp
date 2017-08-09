@@ -174,7 +174,7 @@ void telemetryWakeup()
         }
       }
     }
-    if (sensor_lost && TELEMETRY_STREAMING()) {
+    if (sensor_lost && TELEMETRY_STREAMING() &&  !g_model.rssiAlarms.disabled) {
       audioEvent(AU_SENSOR_LOST);
     }
 
@@ -188,27 +188,29 @@ void telemetryWakeup()
     }
 #endif
 
-    if (TELEMETRY_STREAMING()) {
-      if (getRssiAlarmValue(1) && TELEMETRY_RSSI() < getRssiAlarmValue(1)) {
-        AUDIO_RSSI_RED();
-        SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+    if (!g_model.rssiAlarms.disabled) {
+      if (TELEMETRY_STREAMING()) {
+        if (TELEMETRY_RSSI() < g_model.rssiAlarms.getCriticalRssi() ) {
+          AUDIO_RSSI_RED();
+          SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+        }
+        else if (TELEMETRY_RSSI() < g_model.rssiAlarms.getWarningRssi() ) {
+          AUDIO_RSSI_ORANGE();
+          SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
+        }
       }
-      else if (getRssiAlarmValue(0) && TELEMETRY_RSSI() < getRssiAlarmValue(0)) {
-        AUDIO_RSSI_ORANGE();
-        SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
-      }
-    }
-  }
 
-  if (TELEMETRY_STREAMING()) {
-    if (telemetryState == TELEMETRY_KO) {
-      AUDIO_TELEMETRY_BACK();
+      if (TELEMETRY_STREAMING()) {
+        if (telemetryState == TELEMETRY_KO) {
+          AUDIO_TELEMETRY_BACK();
+        }
+        telemetryState = TELEMETRY_OK;
+      }
+      else if (telemetryState == TELEMETRY_OK) {
+        telemetryState = TELEMETRY_KO;
+        AUDIO_TELEMETRY_LOST();
+      }
     }
-    telemetryState = TELEMETRY_OK;
-  }
-  else if (telemetryState == TELEMETRY_OK) {
-    telemetryState = TELEMETRY_KO;
-    AUDIO_TELEMETRY_LOST();
   }
 #endif
 }
@@ -439,10 +441,12 @@ void telemetryInit()
 }
 #endif
 
+#if !defined(CPUARM)
 NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 {
   return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
 }
+#endif
 
 #if defined(LOG_TELEMETRY) && !defined(SIMU)
 extern FIL g_telemetryFile;

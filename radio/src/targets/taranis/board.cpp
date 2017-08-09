@@ -100,10 +100,11 @@ extern "C" void INTERRUPT_5MS_IRQHandler()
 }
 #endif
 
-#if defined(PCBX9E) && !defined(SIMU)
-#define PWR_PRESS_DURATION_MIN       200 // 2s
+#if (defined(PCBX9E) || defined(PCBX7)) && !defined(SIMU)
+#define PWR_PRESS_DURATION_MIN       100 // 1s
 #define PWR_PRESS_DURATION_MAX       500 // 5s
-
+#endif
+#if (defined(PCBX9E) && !defined(SIMU))
 const pm_uchar bmp_startup[] PROGMEM = {
   #include "startup.lbm"
 };
@@ -187,10 +188,14 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if defined(PCBX9E)
+#if defined(PCBX9E) || defined(PCBX7)
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcdClear();
+#if defined(PCBX9E)
     lcdDrawBitmap(76, 2, bmp_lock, 0, 60);
+#else
+    lcdDrawFilledRect(LCD_W / 2 - 18, LCD_H / 2 - 3, 6, 6, SOLID, 0);
+#endif
     lcdRefresh();
     lcdRefreshWait();
 
@@ -202,7 +207,15 @@ void boardInit()
       if (duration < PWR_PRESS_DURATION_MIN) {
         unsigned index = duration / (PWR_PRESS_DURATION_MIN / 4);
         lcdClear();
+#if defined(PCBX9E)
         lcdDrawBitmap(76, 2, bmp_startup, index*60, 60);
+#else
+        for(uint8_t i= 0; i < 4; i++) {
+          if (index >= i) {
+            lcdDrawFilledRect(LCD_W / 2 - 18 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
+          }
+        }
+#endif
       }
       else if (duration >= PWR_PRESS_DURATION_MAX) {
         drawSleepBitmap();
@@ -227,7 +240,9 @@ void boardInit()
     pwrInit();
     backlightInit();
   }
+#if defined(PCBX9E)
   toplcdInit();
+#endif
 #else
   backlightInit();
 #endif

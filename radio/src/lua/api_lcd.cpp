@@ -531,7 +531,7 @@ static int luaLcdDrawBitmap(lua_State *L)
   }
   return 0;
 }
-#elif LCD_DEPTH > 1
+#else
 /*luadoc
 @function lcd.drawPixmap(x, y, name)
 
@@ -873,18 +873,12 @@ const luaL_Reg lcdLib[] = {
   { "drawBitmap", luaLcdDrawBitmap },
   { "setColor", luaLcdSetColor },
   { "RGB", luaRGB },
-#elif LCD_DEPTH > 1
+#else
   { "getLastPos", luaLcdGetLastPos },
   { "getLastRightPos", luaLcdGetLastPos },
   { "getLastLeftPos", luaLcdGetLeftPos },
   { "drawPixmap", luaLcdDrawPixmap },
   { "drawScreenTitle", luaLcdDrawScreenTitle },
-  { "drawCombobox", luaLcdDrawCombobox },
-#else
-  { "drawScreenTitle", luaLcdDrawScreenTitle },
-  { "getLastPos", luaLcdGetLastPos },
-  { "getLastRightPos", luaLcdGetLastPos },
-  { "getLastLeftPos", luaLcdGetLeftPos },
   { "drawCombobox", luaLcdDrawCombobox },
 #endif
   { NULL, NULL }  /* sentinel */

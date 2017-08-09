@@ -180,6 +180,7 @@ const char * const audioFilenames[] = {
   "sensorko",
   "servoko",
   "rxko",
+  "modelpwr",
 #if defined(PCBSKY9X)
   "highmah",
   "hightemp",
@@ -200,6 +201,10 @@ const char * const audioFilenames[] = {
   "midpot2",
   "midslid1",
   "midslid2",
+#if defined(PCBX9E)
+  "midslid3",
+  "midslid4",
+#endif
 #else
   "midpot1",
   "midpot2",
@@ -820,9 +825,9 @@ void AudioQueue::pause(uint16_t len)
 
 bool AudioQueue::isPlaying(uint8_t id)
 {
-  return normalContext.hasId(id) ||
-         (isFunctionActive(FUNCTION_BACKGND_MUSIC) && backgroundContext.hasId(id)) ||
-         fragmentsFifo.hasId(id);
+  return normalContext.hasPromptId(id) ||
+         (isFunctionActive(FUNCTION_BACKGND_MUSIC) && backgroundContext.hasPromptId(id)) ||
+         fragmentsFifo.hasPromptId(id);
 }
 
 void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t flags, int8_t freqIncr)
@@ -858,7 +863,7 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
 }
 
 #if defined(SDCARD)
-void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
+void AudioQueue::playFile(const char * filename, uint8_t flags, uint8_t id)
 {
 #if defined(SIMU)
   TRACE("playFile(\"%s\", flags=%x, id=%d)", filename, flags, id);
@@ -870,7 +875,6 @@ void AudioQueue::playFile(const char *filename, uint8_t flags, uint8_t id)
   return;
   #endif
 #endif
-
 
   if (!sdMounted())
     return;
@@ -906,8 +910,12 @@ void AudioQueue::stopPlay(uint8_t id)
   return;
 #endif
 
-  // For the moment it's only needed to stop the background music
+  CoEnterMutexSection(audioMutex);
+
+  fragmentsFifo.removePromptById(id);
   backgroundContext.stop(id);
+
+  CoLeaveMutexSection(audioMutex);
 }
 
 void AudioQueue::stopSD()
@@ -1047,7 +1055,8 @@ void audioEvent(unsigned int index)
 #if defined(SDCARD)
     char filename[AUDIO_FILENAME_MAXLEN + 1];
     if (index < AU_SPECIAL_SOUND_FIRST && isAudioFileReferenced(index, filename)) {
-      audioQueue.playFile(filename);
+      audioQueue.stopPlay(ID_PLAY_PROMPT_BASE + index);
+      audioQueue.playFile(filename, 0, ID_PLAY_PROMPT_BASE + index);
       return;
     }
 #endif
@@ -1096,6 +1105,10 @@ void audioEvent(unsigned int index)
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
       case AU_SLIDER1_MIDDLE:
       case AU_SLIDER2_MIDDLE:
+#if defined(PCBX9E)
+      case AU_SLIDER3_MIDDLE:
+      case AU_SLIDER4_MIDDLE:
+#endif
 #else
       case AU_POT3_MIDDLE:
 #endif
@@ -1197,7 +1210,7 @@ void pushUnit(uint8_t unit, uint8_t idx, uint8_t id)
 {
   if (unit < DIM(unitsFilenames)) {
     char path[AUDIO_FILENAME_MAXLEN+1];
-    char *tmp = strAppendSystemAudioPath(path);
+    char * tmp = strAppendSystemAudioPath(path);
     tmp = strAppendStringWithIndex(tmp, unitsFilenames[unit], idx);
     strcpy(tmp, SOUNDS_EXT);
     audioQueue.playFile(path, 0, id);

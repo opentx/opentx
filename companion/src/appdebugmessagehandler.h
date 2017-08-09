@@ -26,6 +26,7 @@
 
 #include <QApplication>
 #include <QDebug>
+#include <QIODevice>
 #include <QMessageLogContext>
 #include <QObject>
 #include <QRegularExpression>
@@ -94,7 +95,7 @@
   #else
     #define qInfo      qDebug
   #endif
-  #define QtInfoMsg    4
+  #define QtInfoMsg    QtMsgType(4)
 #endif
 
 class AppDebugMessageHandler : public QObject
@@ -110,6 +111,8 @@ class AppDebugMessageHandler : public QObject
     void setAppDebugOutputLevel(const quint8 & appDebugOutputLevel);
     void setShowSourcePath(bool showSourcePath);
     void setShowFunctionDeclarations(bool showFunctionDeclarations);
+    void addOutputDevice(QIODevice * device);
+    void removeOutputDevice(QIODevice * device);
 
     void installAppMessageHandler();
     void messageHandler(QtMsgType type, const QMessageLogContext & context, const QString & msg);
@@ -123,6 +126,7 @@ class AppDebugMessageHandler : public QObject
     QRegularExpression m_srcPathFilter;
     QRegularExpression m_functionFilter;
     quint8 m_appDebugOutputLevel;
+    QVector<QIODevice *> m_outputDevices;
     bool m_showSourcePath;
     bool m_showFunctionDeclarations;
 

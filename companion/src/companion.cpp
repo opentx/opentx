@@ -19,6 +19,9 @@
  */
 
 #include <QApplication>
+#include <QDateTime>
+#include <QDir>
+#include <QFile>
 #include <QSplashScreen>
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   #include <SDL.h>
@@ -77,13 +80,20 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
+  QFile dbgLog;
+  if (AppDebugMessageHandler::instance() && g.appDebugLog() && !g.appLogsDir().isEmpty() && QDir().mkpath(g.appLogsDir())) {
+    QString fn = g.appLogsDir() % "/CompanionDebug_" % QDateTime::currentDateTime().toString("yy-MM-dd_HH-mm-ss") % ".log";
+    dbgLog.setFileName(fn);
+    if (dbgLog.open(QIODevice::WriteOnly | QIODevice::Text)) {
+      AppDebugMessageHandler::instance()->addOutputDevice(&dbgLog);
+    }
+  }
+
 #ifdef __APPLE__
   app.setStyle(new MyProxyStyle);
 #endif
 
   Translations::installTranslators();
-
-  // QTextCodec::setCodecForCStrings(QTextCodec::codecForName("UTF-8"));
 
 #if defined(JOYSTICKS) || defined(SIMU_AUDIO)
   uint32_t sdlFlags = 0;
@@ -139,5 +149,11 @@ int main(int argc, char *argv[])
 #endif
 
   qDebug() << "COMPANION EXIT" << result;
+
+  if (dbgLog.isOpen()) {
+    AppDebugMessageHandler::instance()->removeOutputDevice(&dbgLog);
+    dbgLog.close();
+  }
+
   return result;
 }

@@ -20,6 +20,7 @@
 
 #include "flightmodes.h"
 #include "ui_flightmode.h"
+#include "switchitemmodel.h"
 #include "helpers.h"
 
 FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware):
@@ -28,7 +29,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   phaseIdx(phaseIdx),
   phase(model.flightModeData[phaseIdx]),
   reCount(firmware->getCapability(RotaryEncoders)),
-  gvCount(firmware->getCapability(Gvars))
+  gvCount(firmware->getCapability(Gvars)),
+  rawSwitchItemModel(NULL)
 {
   ui->setupUi(this);
 
@@ -50,7 +52,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
   // Phase switch
   if (phaseIdx > 0) {
-    ui->swtch->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::MixesContext));
+    rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, MixesContext);
+    ui->swtch->setModel(rawSwitchItemModel);
     ui->swtch->setCurrentIndex(ui->swtch->findData(phase.swtch.toValue()));
     connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
   }
@@ -228,6 +231,10 @@ FlightModePanel::~FlightModePanel()
 
 void FlightModePanel::update()
 {
+  if (rawSwitchItemModel) {
+    rawSwitchItemModel->update();
+  }
+
   ui->name->setText(phase.name);
 
   int scale = firmware->getCapability(SlowScale);
@@ -524,7 +531,7 @@ FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralS
   QGridLayout * gridLayout = new QGridLayout(this);
   tabWidget = new QTabWidget(this);
   for (int i=0; i<modesCount; i++) {
-    FlightModePanel *tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware);
+    FlightModePanel * tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware);
     tab->setProperty("index", i);
     panels << tab;
     connect(tab, SIGNAL(modified()), this, SLOT(onPhaseModified()));

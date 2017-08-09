@@ -12,9 +12,11 @@ set(modeledit_NAMES
   telemetry
   expodialog
   mixerdialog
+  checklistdialog
 )
 
 set(modeledit_SRCS
+  switchitemmodel.cpp
   flightmodes.cpp
   inputs.cpp
   mixes.cpp

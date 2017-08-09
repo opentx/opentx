@@ -99,7 +99,7 @@ bool isTelemetryFieldComparisonAvailable(int index)
 {
   if (!isTelemetryFieldAvailable(index))
     return false;
-    
+
   TelemetrySensor & sensor = g_model.telemetrySensors[index];
   if (sensor.unit >= UNIT_DATETIME)
     return false;
@@ -354,7 +354,10 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   }
 
   if (swtch >= SWSRC_FIRST_SENSOR && swtch <= SWSRC_LAST_SENSOR) {
-    return isTelemetryFieldAvailable(swtch - SWSRC_FIRST_SENSOR);
+    if (context == GeneralCustomFunctionsContext)
+      return false;
+    else
+      return isTelemetryFieldAvailable(swtch - SWSRC_FIRST_SENSOR);
   }
 
   return true;

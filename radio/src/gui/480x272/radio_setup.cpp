@@ -22,7 +22,7 @@
 
 #include "opentx.h"
 
-#define RADIO_SETUP_2ND_COLUMN         220
+#define RADIO_SETUP_2ND_COLUMN         235
 
 int8_t editSlider(coord_t x, coord_t y, event_t event, int8_t value, int8_t min, int8_t max, LcdFlags attr)
 {
@@ -59,6 +59,7 @@ enum menuRadioSetupItems {
   ITEM_SETUP_INACTIVITY_ALARM,
   // ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
+  ITEM_SETUP_RSSI_POWEROFF_ALARM,
   ITEM_SETUP_BACKLIGHT_LABEL,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
@@ -111,7 +112,7 @@ bool menuRadioSetup(event_t event)
     LABEL(SOUND), 0, 0, 0, 0, 0, 0, 0,
     CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
-    LABEL(ALARMS), 0, 0, 0,
+    LABEL(ALARMS), 0, 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
     CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - Chan order - Mode (1 to 4)
@@ -330,21 +331,19 @@ bool menuRadioSetup(event_t event)
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
         break;
 
-#if 0
-      case ITEM_SETUP_MEMORY_WARNING:
-      {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MEMORYWARNING);
-        uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
-        g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
-        break;
-      }
-#endif
-
       case ITEM_SETUP_ALARM_WARNING:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARMWARNING);
-        uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
+        uint8_t b = 1 - g_eeGeneral.disableAlarmWarning;
         g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        break;
+      }
+
+      case ITEM_SETUP_RSSI_POWEROFF_ALARM:
+      {
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RSSISHUTDOWNALARM);
+        uint8_t b = 1 - g_eeGeneral.disableRssiPoweroffAlarm;
+        g_eeGeneral.disableRssiPoweroffAlarm = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
 

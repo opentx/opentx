@@ -20,140 +20,256 @@
 
 #include "mixerslistwidget.h"
 
+#define GRP_IS_PARENT      0x01
+#define GRP_HAS_SIBLING    0x02
+#define GRP_HAS_DATA       0x04
+
+#define GroupIdRole        (Qt::UserRole+1)  // destination Input/Channel, for alternate row colors
+#define GroupHeaderRole    (Qt::UserRole+2)  // bitfield of row metadata (see addItem())
+
+static QFont defaultFont;
+static bool fontInit = false;
+
 MixersListWidget::MixersListWidget(QWidget * parent, bool expo) :
-    QListWidget(parent),
-    expo(expo)
+  QListWidget(parent),
+  expo(expo)
 {
-    setFont(QFont("Courier New",12));
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    setSelectionMode(QAbstractItemView::SingleSelection);
-    setDragEnabled(true);
-    setAcceptDrops(true);
-    setDropIndicatorShown(true);
-    setItemDelegate(new MixersDelegate(parent));     //set custom paint handler
+  if (!fontInit) {
+    fontInit = true;
+    defaultFont = font();
+    defaultFont.setFamily("Courier");
+    defaultFont.setStyleHint(QFont::TypeWriter);
+    defaultFont.setPointSize(defaultFont.pointSize() + 3);
+  }
+
+  setFont(defaultFont);
+  setContextMenuPolicy(Qt::CustomContextMenu);
+  setSelectionMode(QAbstractItemView::SingleSelection);
+  setSelectionBehavior(QAbstractItemView::SelectRows);
+  setDragEnabled(true);
+  setAcceptDrops(true);
+  setDragDropMode(QAbstractItemView::DragDrop);
+  setDropIndicatorShown(true);
+  setItemDelegate(new MixersDelegate(this));        // set custom paint handler
+  setStyle(new MixerItemViewProxyStyle(style()));   // custom element style painter
+
+  itemMimeFmt = (expo ? "application/x-companion-expo-item" : "application/x-companion-mix-item");
+
+  QAction * zin = new QAction(tr("Increase font size"), this);
+  zin->setShortcut(QKeySequence::ZoomIn);
+  zin->setData(1);
+  addAction(zin);
+  QAction * zout = new QAction(tr("Decrease font size"), this);
+  zout->setShortcut(QKeySequence::ZoomOut);
+  zout->setData(-1);
+  addAction(zout);
+  QAction * zrst = new QAction(tr("Default font size"), this);
+  zrst->setShortcut(tr("Ctrl+0"));
+  zrst->setData(0);
+  addAction(zrst);
+  connect(zin, &QAction::triggered, this, &MixersListWidget::zoomView);
+  connect(zout, &QAction::triggered, this, &MixersListWidget::zoomView);
+  connect(zrst, &QAction::triggered, this, &MixersListWidget::zoomView);
 }
 
 void MixersListWidget::keyPressEvent(QKeyEvent *event)
 {
-    emit keyWasPressed(event);
+  emit keyWasPressed(event);
 }
 
+void MixersListWidget::addItem(QListWidgetItem * item, const unsigned & rowId, bool topLevel, bool hasSib)
+{
+  Qt::ItemFlags f = item->flags();
+  f |= Qt::ItemIsDropEnabled;
+
+  quint8 hdrRole = 0;
+  if (topLevel)
+    hdrRole |= GRP_IS_PARENT;
+  if (hasSib)
+    hdrRole |= GRP_HAS_SIBLING;
+  if (item->data(Qt::UserRole).toByteArray().at(0) > -1)
+    hdrRole |= GRP_HAS_DATA;
+  else
+    f &= ~Qt::ItemIsDragEnabled;  // prevent drag of empty items
+
+  item->setData(GroupIdRole, rowId);
+  item->setData(GroupHeaderRole, hdrRole);
+  item->setFlags(f);
+
+  QListWidget::addItem(item);
+  //qDebug() << rowId << topLevel << hasSib << item->data(GroupHeaderRole).toUInt();
+}
 
 /**
     @brief Override to give us different mime type for mixers and inputs
 */
 QStringList MixersListWidget::mimeTypes () const
 {
-    QStringList types;
-    if (expo) types << "application/x-companion-expo-item";
-    else types << "application/x-companion-mix-item";
-    return types;
+  return QStringList() << itemMimeFmt;
 }
 
 void MixersListWidget::dropEvent(QDropEvent * event)
 {
-    QList<int> list;
-    foreach(QListWidgetItem *item, selectedItems()) {
-      int idx= item->data(Qt::UserRole).toByteArray().at(0);
-      if(idx >= 0) list << idx;
+  if (event->proposedAction() == Qt::IgnoreAction)
+    return;
+
+  if (event->mimeData() && event->mimeData()->hasFormat(itemMimeFmt)) {
+    if (event->source() != this) {
+      // force a copy action if dragging from another window
+      event->setDropAction(Qt::CopyAction);
+      event->accept();
     }
-    if (list.count()<1) return;
-    event->acceptProposedAction();
-    dropMimeData(indexAt(event->pos()).row(),event->mimeData(),event->dropAction());
+    else {
+      event->acceptProposedAction();
+    }
+    dropMimeData(indexAt(event->pos()).row(), event->mimeData(), event->dropAction());
+  }
 }
 
 bool MixersListWidget::dropMimeData(int index, const QMimeData * data, Qt::DropAction action )
 {
-    // qDebug() << "MixersListWidget::dropMimeData() index:" << index << "formats" << data->formats();
-    QByteArray dropData = data->data(expo ? "application/x-companion-expo-item" : "application/x-companion-mix-item");
-    if (dropData.isNull() ) return false;
-    QDataStream stream(&dropData, QIODevice::ReadOnly);
-    QByteArray qba;
+  // qDebug() << "index:" << index << action << "formats" << data->formats();
+  QByteArray dropData = data->data(itemMimeFmt);
+  if (dropData.isEmpty() )
+    return false;
 
-    while (!stream.atEnd()) {
-        int r,c;
-        QMap<int, QVariant> v;
-        stream >> r >> c >> v;
-        QList<QVariant> lsVars;
-        lsVars = v.values();
-        qba.append(lsVars.at(1).toByteArray().mid(1));
-        // qDebug() << "MixersListWidget::dropMimeData() added" << lsVars.count() << "items, data:" << lsVars;
-    }
+  QDataStream stream(&dropData, QIODevice::ReadOnly);
+  QByteArray qba;
 
-    if(qba.length()>0) {
-        QMimeData *mimeData = new QMimeData;
-        mimeData->setData(expo ? "application/x-companion-expo" : "application/x-companion-mix", qba);
-        emit mimeDropped(index, mimeData, action);
-        delete mimeData;      //is this correct? is mimeData freed elswere??
-    }
+  while (!stream.atEnd()) {
+    int r,c;
+    QMap<int, QVariant> v;
+    stream >> r >> c >> v;
+    qba.append(v.values().at(1).toByteArray().mid(1));
+  }
 
-    return true;
+  if(qba.size()) {
+    QMimeData mimeData;
+    mimeData.setData(QString(itemMimeFmt).remove("-item"), qba);
+    emit mimeDropped(index, &mimeData, action);
+  }
+
+  return true;
 }
+
+void MixersListWidget::zoomView()
+{
+  static int origSz = QFontInfo(font()).pixelSize();
+  int fsz = origSz;
+  int step = qobject_cast<QAction *>(sender())->data().toInt();
+  if (step)
+    fsz = QFontInfo(font()).pixelSize() + step;
+  if (fsz < 8)
+    return;
+
+  QFont fnt(font());
+  fnt.setPixelSize(fsz);
+  setFont(fnt);
+  defaultFont = fnt;
+}
+
+
+/*
+ * MixersDelegate
+*/
 
 /**
     @brief Paints our HTML formated list item text
 */
 void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QStyleOptionViewItem options = option;
-    initStyleOption(&options, index);
+  QStyleOptionViewItem options = option;
+  initStyleOption(&options, index);
 
-    painter->save();
+  QTextDocument doc;
+  SetupDocument(doc, options, index);
+  options.text.clear();
 
-    //setup html document
-    QTextDocument doc;
-    SetupDocument(doc, options);
+  QAbstractTextDocumentLayout::PaintContext ctx;
+  if (options.widget)
+    ctx.palette = options.widget->palette();
 
-    options.text = "";
-    options.widget->style()->drawControl(QStyle::CE_ItemViewItem, &options, painter);
+  QBrush brush = ((index.data(GroupIdRole).toUInt() % 2) ? ctx.palette.base() : ctx.palette.alternateBase());
+  options.backgroundBrush = brush;
 
-    if ( index.model()->data(index, GroupHeaderRole).toInt() > 0 ) {
-        //paint with added space
-        painter->translate(options.rect.left(), options.rect.top() + MIX_ROW_HEIGHT_INCREASE);
-        QRect clip(0, 0, options.rect.width(), options.rect.height() - MIX_ROW_HEIGHT_INCREASE);
-        doc.drawContents(painter, clip);
-    }
-    else {
-        painter->translate(options.rect.left(), options.rect.top());
-        QRect clip(0, 0, options.rect.width(), options.rect.height());
-        doc.drawContents(painter, clip);
-    }
-    painter->restore();
+  if (!(index.model()->data(index, GroupHeaderRole).toUInt() & GRP_HAS_DATA)) {
+    // lighter text for empty lines
+    ctx.palette.setBrush(QPalette::Text, ctx.palette.mid());
+  }
+#ifndef Q_OS_WIN
+  // Linux and OS X show a solid dark blue color on selected items
+  else if ((options.state & QStyle::State_Selected)) {
+    ctx.palette.setBrush(QPalette::Text, ctx.palette.highlightedText());
+  }
+#endif
+
+  QStyle * style = (options.widget ? options.widget->style() : QApplication::style());
+  style->drawControl(QStyle::CE_ItemViewItem, &options, painter, options.widget);
+
+  QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &options);
+  QRectF clipRect = textRect.translated(-textRect.topLeft());
+  ctx.clip = clipRect;
+  painter->save();
+  painter->translate(textRect.topLeft());
+  painter->setClipRect(clipRect);
+  doc.documentLayout()->draw(painter, ctx);
+  painter->restore();
 }
 
 
 /**
     @brief Returns needed size for our HTML formated list item text
 */
-QSize MixersDelegate::sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const
+QSize MixersDelegate::sizeHint (const QStyleOptionViewItem & option, const QModelIndex & index) const
 {
-    QStyleOptionViewItem options = option;
-    initStyleOption(&options, index);
+  QStyleOptionViewItem options = option;
+  initStyleOption(&options, index);
 
-    //setup html document
-    QTextDocument doc;
-    SetupDocument(doc, options);
-
-    //qDebug() << "MixersDelegate::sizeHint() UserRole-> " << index.model()->data(index, Qt::UserRole + 2);
-    int height = doc.size().height();
-    if ( index.model()->data(index, Qt::UserRole + 2).toInt() > 0 ) {
-        //qDebug() << "MixersDelegate::sizeHint() detected channel head";
-        height = doc.size().height() + MIX_ROW_HEIGHT_INCREASE;
-    }
-    //qDebug() << "MixersDelegate::sizeHint() options.rect " << options.rect;
-    //qDebug() << "MixersDelegate::sizeHint() result " << QSize(doc.idealWidth(), height) << options.rect.width();
-    return QSize(doc.idealWidth(), height);
+  QTextDocument doc;
+  SetupDocument(doc, options, index);
+  return QSize(doc.idealWidth(), doc.size().height());
 }
 
-void MixersDelegate::SetupDocument(QTextDocument & doc, const QStyleOptionViewItem & options) const
+void MixersDelegate::SetupDocument(QTextDocument & doc, const QStyleOptionViewItem & options, const QModelIndex & index) const
 {
-    //setup html document
-    doc.setHtml(options.text);
-    doc.setDefaultFont(options.font);
+  //setup html document
+  quint8 hdrRole = index.model()->data(index, GroupHeaderRole).toUInt();
 
-    //minimize margins (default margins look ugly)
-    QTextFrame *tf = doc.rootFrame();
-    QTextFrameFormat tff = tf->frameFormat();
-    tff.setMargin(0);
-    tf->setFrameFormat(tff);
+  doc.setDefaultFont(options.font);
+  doc.setHtml(options.text);
+
+  // adjust margins to visually group items per input/channel
+  QTextFrame *tf = doc.rootFrame();
+  QTextFrameFormat tff = tf->frameFormat();
+
+  if (!(hdrRole & GRP_HAS_DATA)) {
+    tff.setTopMargin(0.75f);
+    tff.setBottomMargin(0.75f);
+  }
+  else {
+    if (!(hdrRole & GRP_IS_PARENT))
+      tff.setTopMargin(0.5f);
+    if (hdrRole & GRP_HAS_SIBLING)
+      tff.setBottomMargin(0.5f);
+  }
+  tf->setFrameFormat(tff);
+}
+
+
+/*
+ * MixerItemViewProxyStyle
+*/
+
+void MixerItemViewProxyStyle::drawPrimitive(QStyle::PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget) const
+{
+  painter->save();
+  if (element == QStyle::PE_IndicatorItemViewItemDrop) {
+    painter->setRenderHint(QPainter::HighQualityAntialiasing, true);
+    // set a wider stroke for the drop indicator
+    QPen pen(painter->pen());
+    pen.setWidthF(2.25f);
+    painter->setPen(pen);
+  }
+  QProxyStyle::drawPrimitive(element, option, painter, widget);
+  painter->restore();
 }

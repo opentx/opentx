@@ -293,7 +293,7 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
 uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
-  while (len--) {
+  for (int i=0; len==0 || i<len; ++i) {
     unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
     if (!c) {
       break;
@@ -1129,11 +1129,11 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   lcdDrawSizedText(lcdLastRightPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
-void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   if (att & DBLSIZE) {
     x -= 42;
-    att &= ~0x0F00; // TODO constant
+    att &= ~FONTSIZE_MASK;
     lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdLastRightPos-1, y, '-', att);
     lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
@@ -1487,6 +1487,25 @@ void lcdDrawChar(coord_t x, uint8_t y, const unsigned char c, LcdFlags flags)
 }
 #endif
 
+#if defined(CPUARM)
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const uint8_t * img, uint8_t idx, LcdFlags att)
+{
+  const uint8_t * q = img;
+  uint8_t w = *q++;
+  uint8_t hb = ((*q++) + 7) / 8;
+  bool inv = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
+  q += idx*w*hb;
+  for (uint8_t yb = 0; yb < hb; yb++) {
+    uint8_t *p = &displayBuf[(y / 8 + yb) * LCD_W + x];
+    for (coord_t i=0; i<w; i++){
+      uint8_t b = *q++;
+      if (p < DISPLAY_END) {
+        *p++ = inv ? ~b : b;
+      }
+    }
+  }
+}
+#else
 #define LCD_IMG_FUNCTION(NAME, TYPE, READ_BYTE)                               \
 void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
 {                                                                             \
@@ -1496,7 +1515,7 @@ void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
   bool inv = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);  \
   q += idx*w*hb;                                                              \
   for (uint8_t yb = 0; yb < hb; yb++) {                                       \
-    uint8_t *p = &displayBuf[ (y / 8 + yb) * LCD_W + x ];                     \
+    uint8_t *p = &displayBuf[(y / 8 + yb) * LCD_W + x];                       \
     for (coord_t i=0; i<w; i++){                                              \
       uint8_t b = READ_BYTE(q);                                               \
       q++;                                                                    \
@@ -1510,7 +1529,8 @@ void NAME(coord_t x, coord_t y, TYPE img, uint8_t idx, LcdFlags att)          \
 LCD_IMG_FUNCTION(lcd_imgfar, uint_farptr_t, pgm_read_byte_far)
 #endif
 
-LCD_IMG_FUNCTION(lcd_img, const pm_uchar *, pgm_read_byte)
+LCD_IMG_FUNCTION(lcdDraw1bitBitmap, const pm_uchar *, pgm_read_byte)
+#endif
 
 #endif
 
@@ -1563,14 +1583,17 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
 }
 
 #if defined(PWR_PRESS_BUTTON)
-void drawShutdownAnimation(uint32_t index)
+void drawShutdownAnimation(uint32_t index, const char * message)
 {
   lcdClear();
   int quarter = index / (PWR_PRESS_SHUTDOWN_DELAY / 5);
   for (int i=1; i<=4; i++) {
-    if (quarter >= i) {
+    if (4 - quarter >= i) {
       lcdDrawFilledRect(LCD_W / 2 - 28 + 10 * i, LCD_H / 2 - 3, 6, 6, SOLID, 0);
     }
+  }
+  if (message) {
+    lcdDrawText((LCD_W - getTextWidth(message)) / 2, LCD_H-2*FH, message);
   }
   lcdRefresh();
 }

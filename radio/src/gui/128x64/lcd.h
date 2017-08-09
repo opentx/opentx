@@ -44,6 +44,8 @@
 #define LCD_LINES                      (LCD_H/FH)
 #define LCD_COLS                       (LCD_W/FW)
 
+#define BITMAP_BUFFER_SIZE(w, h)       (2 + (w) * (((h)+7)/8))
+
 /* lcd common flags */
 #define BLINK                          0x01
 
@@ -94,7 +96,8 @@
 #define NO_UNIT                        0x40
 
 #if defined(CPUARM)
-  #define FONTSIZE(x)                  ((x) & 0x0700)
+  #define FONTSIZE_MASK                0x0700
+  #define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
   #define TINSIZE                      0x0100
   #define SMLSIZE                      0x0200
   #define MIDSIZE                      0x0300
@@ -260,7 +263,13 @@ void lcd_imgfar(coord_t x, coord_t y, const uint_farptr_t img, uint8_t idx, LcdF
 #endif
 
 void lcdClear(void);
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
+inline void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bitmap)
+{
+  lcdDraw1bitBitmap(x, y, bitmap, 0);
+}
+
+uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint8_t width, uint8_t height);
 
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)
@@ -281,6 +290,10 @@ inline display_t getPixel(uint8_t x, uint8_t y)
 
 const char * writeScreenshot();
 
-void drawShutdownAnimation(uint32_t index);
+void drawShutdownAnimation(uint32_t index, const char * message);
+
+#if defined(CPUARM)
+uint8_t getTextWidth(const char * s, uint8_t len=0, LcdFlags flags=0);
+#endif
 
 #endif // _LCD_H_

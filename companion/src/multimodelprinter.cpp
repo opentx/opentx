@@ -576,10 +576,15 @@ QString MultiModelPrinter::printTelemetry()
         COMPARE(i==0 ? tr("Low Alarm") : tr("Critical Alarm"));
       }
       else {
-        COMPARE(getFrSkyAlarmType(model->frsky.rssiAlarms[i].level));
+        COMPARE(getFrSkyAlarmType(model->rssiAlarms.level[i]));
       }
       columns.append("</td><td>&lt;</td><td>");
-      COMPARE(QString::number(model->frsky.rssiAlarms[i].value, 10));
+      if (i == 0) {
+        COMPARE(QString::number(model->rssiAlarms.warning, 10));
+      }
+      else {
+        COMPARE(QString::number(model->rssiAlarms.critical, 10));
+      }
       columns.append("</td></tr>");
     }
     columns.append("</table><br/>");

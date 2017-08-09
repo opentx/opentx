@@ -833,7 +833,7 @@ static int luaModelGetCurve(lua_State *L)
       lua_pushstring(L, "x");
       lua_newtable(L);
       lua_pushinteger(L, 0);
-      lua_pushinteger(L, 0);
+      lua_pushinteger(L, -100);
       lua_settable(L, -3);
       for (int i=0; i < curveData.points + 3; i++) {
         lua_pushinteger(L, i+1);
@@ -961,7 +961,7 @@ static int luaModelSetCurve(lua_State *L)
 
   if (newCurveData.type == CURVE_TYPE_CUSTOM) {
 
-    // The rest of the points are checked by the monotic condition
+    // The rest of the points are checked by the monotonic condition
     for (unsigned int i=numPoints; i < sizeof(xPoints);i++)
     {
       if (xPoints[i] != -127)
@@ -1031,7 +1031,7 @@ static int luaModelSetCurve(lua_State *L)
 
   if (destCurveData.type == CURVE_TYPE_CUSTOM) {
     for (int i = 1; i < destCurveData.points + 4; i++) {
-      *point++ = yPoints[i];
+      *point++ = xPoints[i];
     }
   }
   storageDirty(EE_MODEL);

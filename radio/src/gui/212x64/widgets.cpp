@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-const pm_uchar bmp_sleep[] PROGMEM = {
+const pm_uchar SLEEP_BITMAP[] PROGMEM = {
   #include "../../bitmaps/212x64/sleep.lbm"
 };
 
@@ -29,23 +29,26 @@ const pm_uchar bmp_sleep[] PROGMEM = {
 void drawSleepBitmap()
 {
   lcdClear();
-  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, bmp_sleep, 0, SLEEP_BITMAP_WIDTH);
+  lcdDrawBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, SLEEP_BITMAP, 0, SLEEP_BITMAP_WIDTH);
   lcdRefresh();
 }
 
 #if defined(PWR_BUTTON_PRESS)
-const pm_uchar bmp_shutdown[] PROGMEM = {
+const pm_uchar SHUTDOWN_BITMAP[] PROGMEM = {
   #include "../../bitmaps/212x64/shutdown.lbm"
 };
 
 #define SHUTDOWN_BITMAP_WIDTH          60
 #define SHUTDOWN_BITMAP_HEIGHT         60
-void drawShutdownAnimation(uint32_t index)
+void drawShutdownAnimation(uint32_t index, const char * message)
 {
   index /= (PWR_PRESS_SHUTDOWN_DELAY / 4);
   lcdRefreshWait();
   lcdClear();
-  lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, bmp_shutdown, index * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
+  lcdDrawBitmap((LCD_W-SHUTDOWN_BITMAP_WIDTH)/2, (LCD_H-SHUTDOWN_BITMAP_HEIGHT)/2, SHUTDOWN_BITMAP, (3 - index) * SHUTDOWN_BITMAP_WIDTH, SHUTDOWN_BITMAP_WIDTH);
+  if (message) {
+    lcdDrawText((LCD_W - getTextWidth(message)) / 2, LCD_H-2*FH, message);
+  }
   lcdRefresh();
 }
 #endif

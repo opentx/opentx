@@ -40,7 +40,6 @@
 #define LAYOUTS_PATH        ROOT_PATH "LAYOUTS"
 #define WIDGETS_PATH        ROOT_PATH "WIDGETS"
 #define WIZARD_NAME         "wizard.lua"
-#define TEMPLATES_PATH      SCRIPTS_PATH "/TEMPLATES"
 #define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
 #define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH "/FUNCTIONS"
 #define SCRIPTS_TELEM_PATH  SCRIPTS_PATH "/TELEMETRY"
@@ -96,6 +95,7 @@ void logsInit();
 void logsClose();
 void logsWrite();
 
+bool sdCardFormat();
 uint32_t sdGetNoSectors();
 uint32_t sdGetSize();
 uint32_t sdGetFreeSectors();

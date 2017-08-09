@@ -37,6 +37,8 @@
 #define LCD_LINES                      (LCD_H/FH)
 #define LCD_COLS                       (LCD_W/FW)
 
+#define BITMAP_BUFFER_SIZE(w, h)       (2 + (w) * (((h)+7)/8)*4)
+
 /* lcdDrawText flags */
 #define BLINK                          0x01
 #define INVERS                         0x02
@@ -63,7 +65,8 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-#define FONTSIZE(x)                    ((x) & 0x0700)
+#define FONTSIZE_MASK                  0x0700
+#define FONTSIZE(x)                    ((x) & FONTSIZE_MASK)
 #define TINSIZE                        0x0100
 #define SMLSIZE                        0x0200
 #define MIDSIZE                        0x0300
@@ -170,7 +173,7 @@ inline void lcdDrawSquare(coord_t x, coord_t y, coord_t w, LcdFlags att=0)
 void lcdInvertLine(int8_t line);
 #define lcdInvertLastLine() lcdInvertLine(LCD_LINES-1)
 
-void drawShutdownAnimation(uint32_t index);
+void drawShutdownAnimation(uint32_t index, const char * message);
 void drawSleepBitmap();
 void drawTelemetryTopBar();
 
@@ -179,7 +182,7 @@ void drawTelemetryTopBar();
   lcdDrawSolidVerticalLine(xx  ,yy-ll,ll);  \
   lcdDrawSolidVerticalLine(xx+1,yy-ll,ll)
 
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
 
 void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, coord_t width=0);
 #define LCD_ICON(x, y, icon) lcdDrawBitmap(x, y, icons, icon)
@@ -204,5 +207,9 @@ inline display_t getPixel(unsigned int x, unsigned int y)
   display_t * p = &displayBuf[y / 2 * LCD_W + x];
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
 }
+
+#if defined(CPUARM)
+uint8_t getTextWidth(const char * s, uint8_t len=0, LcdFlags flags=0);
+#endif
 
 #endif // _LCD_H_

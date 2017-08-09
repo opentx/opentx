@@ -34,7 +34,6 @@
 #define MENU_HEADER_HEIGHT             FH
 #define MENU_INIT_VPOS                 0
 
-#define BITMAP_BUFFER_SIZE(w, h)       (2 + (w) * (((h)+7)/8)*4)
 #define MODEL_BITMAP_WIDTH             64
 #define MODEL_BITMAP_HEIGHT            32
 #define MODEL_BITMAP_SIZE              BITMAP_BUFFER_SIZE(MODEL_BITMAP_WIDTH, MODEL_BITMAP_HEIGHT)

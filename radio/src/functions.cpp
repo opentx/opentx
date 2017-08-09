@@ -211,7 +211,7 @@ PLAY_FUNCTION(playValue, source_t idx)
 #endif
 
 #if defined(CPUARM)
-void playCustomFunctionFile(const CustomFunctionData *sd, uint8_t id)
+void playCustomFunctionFile(const CustomFunctionData * sd, uint8_t id)
 {
   if (sd->play.name[0] != '\0') {
     char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
@@ -330,46 +330,46 @@ void evalFunctions()
             break;
 
           case FUNC_RESET:
-            if (!(functionsContext.activeSwitches & switch_mask)) {
-              switch (CFN_PARAM(cfn)) {
-                case FUNC_RESET_TIMER1:
-                case FUNC_RESET_TIMER2:
+            switch (CFN_PARAM(cfn)) {
+              case FUNC_RESET_TIMER1:
+              case FUNC_RESET_TIMER2:
 #if defined(CPUARM)
-                case FUNC_RESET_TIMER3:
+              case FUNC_RESET_TIMER3:
 #endif
-                  timerReset(CFN_PARAM(cfn));
-                  break;
-                case FUNC_RESET_FLIGHT:
+                timerReset(CFN_PARAM(cfn));
+                break;
+              case FUNC_RESET_FLIGHT:
+              	if (!(functionsContext.activeSwitches & switch_mask)) {
 #if defined(CPUARM)
                   mainRequestFlags |= (1 << REQUEST_FLIGHT_RESET);     // on systems with threads flightReset() must not be called from the mixers thread!
 #else
                   flightReset();
 #endif // defined(CPUARM)
-                  break;
+                }
+                break;
 #if defined(TELEMETRY_FRSKY)
-                case FUNC_RESET_TELEMETRY:
-                  telemetryReset();
-                  break;
+              case FUNC_RESET_TELEMETRY:
+                telemetryReset();
+                break;
 #endif
                   
 #if ROTARY_ENCODERS > 0
-                case FUNC_RESET_ROTENC1:
+              case FUNC_RESET_ROTENC1:
 #if ROTARY_ENCODERS > 1
-                case FUNC_RESET_ROTENC2:
+              case FUNC_RESET_ROTENC2:
 #endif
-                  rotencValue[CFN_PARAM(cfn)-FUNC_RESET_ROTENC1] = 0;
-                  break;
-#endif
-              }
-#if defined(CPUARM)
-              if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
-                uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
-                if (item < MAX_TELEMETRY_SENSORS) {
-                  telemetryItems[item].clear();
-                }
-              }
+                rotencValue[CFN_PARAM(cfn)-FUNC_RESET_ROTENC1] = 0;
+                break;
 #endif
             }
+#if defined(CPUARM)
+            if (CFN_PARAM(cfn)>=FUNC_RESET_PARAM_FIRST_TELEM) {
+              uint8_t item = CFN_PARAM(cfn)-FUNC_RESET_PARAM_FIRST_TELEM;
+              if (item < MAX_TELEMETRY_SENSORS) {
+                telemetryItems[item].clear();
+              }
+            }
+#endif
             break;
 
 #if defined(CPUARM)

@@ -243,7 +243,7 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
 uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
-  while (len--) {
+  for (int i=0; len==0 || i<len; ++i) {
     unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
     if (!c) {
       break;
@@ -756,42 +756,27 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   lcdDrawSizedText(lcdLastRightPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
-void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
-  if (att & DBLSIZE) {
-    x -= 42;
-    att &= ~0x0F00; // TODO constant
-    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
-    y += FH;
-    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
-  }
-  else {
-    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.year-2000, att|LEFT);
-    lcdDrawNumber(lcdNextPos+FW+1, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
-  }
+  att &= ~FONTSIZE_MASK;
+  lcdDrawNumber(x, y+1, telemetryItem.datetime.sec, att|LEADING0, 2);
+  lcdDrawText(lcdNextPos, y+1, ":", att);
+  lcdDrawNumber(lcdNextPos, y+1, telemetryItem.datetime.min, att|LEADING0, 2);
+  lcdDrawText(lcdNextPos, y+1, ":", att);
+  lcdDrawNumber(lcdNextPos, y+1, telemetryItem.datetime.hour, att|LEADING0, 2);
+
+  lcdDrawNumber(x, y+9, telemetryItem.datetime.year, att, 4);
+  lcdDrawText(lcdNextPos, y+9, "-", att);
+  lcdDrawNumber(lcdNextPos+1, y+9, telemetryItem.datetime.month, att|LEADING0, 2);
+  lcdDrawText(lcdNextPos+1, y+9, "-", att);
+  lcdDrawNumber(lcdNextPos+1, y+9, telemetryItem.datetime.day, att|LEADING0,2);
 }
 
 void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   if (att & DBLSIZE) {
     x -= (g_eeGeneral.gpsFormat == 0 ? 54 : 51);
-    att &= ~0x0F00; // TODO constant
+    att &= ~FONTSIZE_MASK;
     drawGPSCoord(x, y, telemetryItem.gps.latitude, "NS", att, true);
     drawGPSCoord(x, y+FH, telemetryItem.gps.longitude, "EW", att, true);
   }
@@ -896,7 +881,7 @@ void lcdInvertLine(int8_t line)
 }
 
 #if !defined(BOOT)
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);

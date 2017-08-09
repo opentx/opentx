@@ -116,7 +116,9 @@ inline void applyStickModeToModel(Ersky9xModelData_v11 & model, unsigned int mod
 #if 0
 unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 {
-  std::cout << "trying ersky9x xml import... ";
+  QDebug dbg = qDebug();
+  dbg.setAutoInsertSpaces(false);
+  dbg << "trying ersky9x xml import... ";
 
   std::bitset<NUM_ERRORS> errors;
 
@@ -128,25 +130,25 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
   }
   else {
     radioData.generalSettings=ersky9xGeneral;
-    std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
+    dbg << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
   }
   for(int i=0; i<getCapability(Models); i++) {
     if (ersky9xGeneral.myVers == 10) {
       if (!loadModelDataXML<Ersky9xModelData_v10>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
-        std::cout << "ko\n";
+        dbg << "ko";
         errors.set(UNKNOWN_ERROR);
         return errors.to_ulong();
       }
     }
     else {
       if (!loadModelDataXML<Ersky9xModelData_v11>(&doc, &radioData.models[i], i, radioData.generalSettings.stickMode+1)) {
-        std::cout << "ko\n";
+        dbg << "ko";
         errors.set(UNKNOWN_ERROR);
         return errors.to_ulong();
       }
     }
   }
-  std::cout << "ok\n";
+  dbg << "ok";
   errors.set(ALL_OK);
   return errors.to_ulong();
 }
@@ -154,18 +156,20 @@ unsigned long Ersky9xInterface::loadxml(RadioData &radioData, QDomDocument &doc)
 
 unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom, int size)
 {
-  std::cout << "trying ersky9x import... ";
+  QDebug dbg = qDebug();
+  dbg.setAutoInsertSpaces(false);
+  dbg << "trying ersky9x import... ";
 
   std::bitset<NUM_ERRORS> errors;
 
   if (size != Boards::getEEpromSize(Board::BOARD_SKY9X)) {
-    std::cout << "wrong size\n";
+    dbg << "wrong size";
     errors.set(WRONG_SIZE);
     return errors.to_ulong();
   }
 
   if (!efile->EeFsOpen((uint8_t *)eeprom, size, Board::BOARD_SKY9X)) {
-    std::cout << "wrong file system\n";
+    dbg << "wrong file system";
     errors.set(WRONG_FILE_SYSTEM);
     return errors.to_ulong();
   }
@@ -174,12 +178,12 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
   Ersky9xGeneral ersky9xGeneral;
 
   if (efile->readRlc2((uint8_t*)&ersky9xGeneral, 1) != 1) {
-    std::cout << "no\n";
+    dbg << "no";
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
   }
 
-  std::cout << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
+  dbg << "version " << (unsigned int)ersky9xGeneral.myVers << " ";
 
   switch(ersky9xGeneral.myVers) {
     case 10:
@@ -187,13 +191,13 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
     case 11:
       break;
     default:
-      std::cout << "not ersky9x\n";
+      dbg << "not ersky9x";
       errors.set(NOT_ERSKY9X);
       return errors.to_ulong();
   }
   efile->openRd(FILE_GENERAL);
   if (!efile->readRlc2((uint8_t*)&ersky9xGeneral, sizeof(Ersky9xGeneral))) {
-    std::cout << "ko\n";
+    dbg << "ko";
     errors.set(UNKNOWN_ERROR);
     return errors.to_ulong();
   }
@@ -225,7 +229,7 @@ unsigned long Ersky9xInterface::load(RadioData &radioData, const uint8_t *eeprom
     }
   }
 
-  std::cout << "ok\n";
+  dbg << "ok";
   errors.set(ALL_OK);
   return errors.to_ulong();
 }

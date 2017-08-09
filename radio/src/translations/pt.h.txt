@@ -578,9 +578,17 @@
 #define TR_VANTENNATYPES        "Internal""Ext+Int\0"
 
 // ZERO TERMINATED STRINGS
-#define INDENT                 "\001"
-#define LEN_INDENT             1
-#define INDENT_WIDTH           (FW/2)
+#if defined(COLORLCD)
+  #define INDENT                       "   "
+  #define LEN_INDENT                   3
+  #define INDENT_WIDTH                 12
+  #define BREAKSPACE                   "\036"
+#else
+  #define INDENT                       "\001"
+  #define LEN_INDENT                   1
+  #define INDENT_WIDTH                 (FW/2)
+  #define BREAKSPACE                   " "
+#endif
 
 #if defined(PCBTARANIS)
   #define TR_ENTER             "[ENTER]"
@@ -694,6 +702,9 @@
 #define TR_INACTIVITYALARM     INDENT"Inactividade"
 #define TR_MEMORYWARNING       INDENT"Memoria Baixa"
 #define TR_ALARMWARNING        INDENT"Som Off"
+#define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
+#define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "RotEnc Navig"
 #define TR_THROTTLE_LABEL      "Throttle"
 #define TR_THROTTLEREVERSE     TR("Inverte Acel.", INDENT "Inverte Acel.")
@@ -1003,6 +1014,9 @@
 #define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Low Alarm"
 #define TR_CRITICALALARM       INDENT "Critical Alarm"
+#define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")
+#define TR_NO_RSSIALARM                TR(INDENT "Alarms disabled", INDENT "Telemetry alarms disabled")
+#define TR_DISABLE_ALARM               TR(INDENT "Disable alarms", INDENT "Disable telemetry alarms")
 #define TR_ENABLE_POPUP        "Enable Popup"
 #define TR_DISABLE_POPUP       "Disable Popup"
 #define TR_POPUP               "Popup"

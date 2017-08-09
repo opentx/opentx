@@ -143,8 +143,10 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     palette.setBrush(QPalette::Active, QPalette::ButtonText, QBrush(Qt::white));
 #ifdef __APPLE__
     edit->setStyleSheet(QString("color: %1;").arg(colors[i].name()));
-#else
+#elif defined WIN32 || !defined __GNUC__
     edit->setStyleSheet(QString("background-color: %1; color: white;").arg(colors[i].name()));
+#else
+    edit->setStyleSheet(QString("background-color: %1; color: white; padding: 2px 3px; border-style: outset; border-width: 1px; border-radius: 2px; border-color: inherit;").arg(colors[i].name()));
 #endif
     edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i+1));

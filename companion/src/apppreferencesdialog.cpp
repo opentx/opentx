@@ -41,6 +41,8 @@ AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
 
   initSettings();
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
+  connect(ui->opt_appDebugLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
+  connect(ui->opt_fwTraceLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
   connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
 
 #if !defined(JOYSTICKS)
@@ -76,6 +78,10 @@ void AppPreferencesDialog::writeValues()
   g.gePath(ui->ge_lineedit->text());
   g.embedSplashes(ui->splashincludeCB->currentIndex());
   g.enableBackup(ui->backupEnable->isChecked());
+
+  g.appDebugLog(ui->opt_appDebugLog->isChecked());
+  g.fwTraceLog(ui->opt_fwTraceLog->isChecked());
+  g.appLogsDir(ui->appLogsDir->text());
 
   if (ui->joystickChkB ->isChecked() && ui->joystickCB->isEnabled()) {
     g.jsSupport(ui->joystickChkB ->isChecked());
@@ -168,9 +174,14 @@ void AppPreferencesDialog::initSettings()
     }
   }
   else {
-      ui->backupEnable->setDisabled(true);
+    ui->backupEnable->setDisabled(true);
   }
   ui->splashincludeCB->setCurrentIndex(g.embedSplashes());
+
+  ui->opt_appDebugLog->setChecked(g.appDebugLog());
+  ui->opt_fwTraceLog->setChecked(g.fwTraceLog());
+  ui->appLogsDir->setText(g.appLogsDir());
+  toggleAppLogSettings();
 
 #if defined(JOYSTICKS)
   ui->joystickChkB->setChecked(g.jsSupport());
@@ -283,6 +294,15 @@ void AppPreferencesDialog::on_ProfilebackupPathButton_clicked()
   if (!fileName.isEmpty()) {
     ui->profilebackupPath->setText(fileName);
     ui->pbackupEnable->setEnabled(true);
+  }
+}
+
+
+void AppPreferencesDialog::on_btn_appLogsDir_clicked()
+{
+  QString fileName = QFileDialog::getExistingDirectory(this, tr("Select a folder for application logs"), ui->appLogsDir->text());
+  if (!fileName.isEmpty()) {
+    ui->appLogsDir->setText(fileName);
   }
 }
 
@@ -458,6 +478,14 @@ void AppPreferencesDialog::firmwareOptionChanged(bool state)
   }
 }
 
+void AppPreferencesDialog::toggleAppLogSettings()
+{
+  bool vis = (ui->opt_appDebugLog->isChecked() || ui->opt_fwTraceLog->isChecked());
+  ui->appLogsDir->setVisible(vis);
+  ui->lbl_appLogsDir->setVisible(vis);
+  ui->btn_appLogsDir->setVisible(vis);
+}
+
 void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 {
   const Firmware * parent = firmware->getFirmwareBase();
@@ -539,4 +567,3 @@ void AppPreferencesDialog::shrink()
 {
   adjustSize();
 }
-

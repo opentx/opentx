@@ -86,7 +86,8 @@ enum FontSizeIndex {
 #define DBLSIZE                        (DBLSIZE_INDEX << 8)
 #define XXLSIZE                        (XXLSIZE_INDEX << 8)
 #define BOLD                           (STDSIZE_BOLD_INDEX << 8)
-#define FONTSIZE(flags)                ((flags) & 0x0f00)
+#define FONTSIZE_MASK                  0x0f00
+#define FONTSIZE(flags)                ((flags) & FONTSIZE_MASK)
 #define FONTINDEX(flags)               (FONTSIZE(flags) >> 8)
 
 #define TIMEBLINK                      0x1000
