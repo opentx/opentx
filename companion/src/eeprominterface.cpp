@@ -729,7 +729,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return QObject::tr("One");
 
       case SWITCH_TYPE_FLIGHT_MODE:
-        return getElementName(QCoreApplication::translate("Flight mode", "FM"), index - 1, modelData->flightModeData[index-1].name);
+        return getElementName(QCoreApplication::translate("Flight mode", "FM"), index - 1, modelData ? modelData->flightModeData[index-1].name : NULL);
 
       case SWITCH_TYPE_NONE:
         return QObject::tr("----");
@@ -738,7 +738,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return CHECK_IN_ARRAY(timerModes, index);
 
       case SWITCH_TYPE_SENSOR:
-        return getElementName(QCoreApplication::translate("Telemetry", "TELE"), index, modelData->sensorData[index-1].label);
+        return getElementName(QCoreApplication::translate("Telemetry", "TELE"), index, modelData ? modelData->sensorData[index-1].label : NULL);
 
       case SWITCH_TYPE_TELEMETRY:
         return QObject::tr("Telemetry");
