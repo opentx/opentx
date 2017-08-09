@@ -211,7 +211,7 @@ PLAY_FUNCTION(playValue, source_t idx)
 #endif
 
 #if defined(CPUARM)
-void playCustomFunctionFile(const CustomFunctionData *sd, uint8_t id)
+void playCustomFunctionFile(const CustomFunctionData * sd, uint8_t id)
 {
   if (sd->play.name[0] != '\0') {
     char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";

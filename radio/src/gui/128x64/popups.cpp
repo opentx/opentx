@@ -60,7 +60,7 @@ const pm_uchar ASTERISK_BITMAP[] PROGMEM = {
 void drawAlertBox(const pm_char * title, const pm_char * text, const char * action)
 {
   lcdClear();
-  lcd_img(2, 0, ASTERISK_BITMAP, 0, 0);
+  lcdDraw1bitBitmap(2, 0, ASTERISK_BITMAP, 0, 0);
 
 #define MESSAGE_LCD_OFFSET   6*FW
 

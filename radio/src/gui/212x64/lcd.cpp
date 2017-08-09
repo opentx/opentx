@@ -243,7 +243,7 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
 uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
-  while (len--) {
+  for (int i=0; len==0 || i<len; ++i) {
     unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
     if (!c) {
       break;
@@ -881,7 +881,7 @@ void lcdInvertLine(int8_t line)
 }
 
 #if !defined(BOOT)
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);

@@ -515,7 +515,7 @@ bool menuModelMixAll(event_t event)
   }
 
   char str[6];
-  sprintf(str, "%d/%d", getMixesCount(), MAX_MIXERS);
+  strAppendUnsigned(strAppend(strAppendUnsigned(str, getMixesCount()), "/"), MAX_MIXERS, 2);
   lcdDrawText(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+1, str, HEADER_COLOR);
 
   sub = menuVerticalPosition;

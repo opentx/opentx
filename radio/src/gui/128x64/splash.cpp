@@ -54,7 +54,7 @@ void drawSplash()
 #if defined(PCBMEGA2560) && !defined(SIMU)
   lcd_imgfar(0, 0, (GET_FAR_ADDRESS(splashdata)+4), 0, 0); // use progmem "far" for splash working with all other options enabled
 #else
-  lcd_img(0, 0, splash_lbm, 0, 0);  
+  lcdDraw1bitBitmap(0, 0, splash_lbm, 0, 0);
 #endif
   
 #if MENUS_LOCK == 1
@@ -79,7 +79,7 @@ const pm_uchar * const splash2_lbm = splashdata2+4;
 void drawSecondSplash()
 {
   lcdClear();
-  lcd_img(0, 0, splash2_lbm, 0, 0);
+  lcdDraw1bitBitmap(0, 0, splash2_lbm, 0, 0);
   lcdRefresh();
 }
 #endif

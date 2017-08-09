@@ -48,7 +48,16 @@ extern void SERIAL_send_uart_bytes(const uint8_t * buf, uint16_t len);
 #define MAVLINK_END_UART_SEND(chan,len) SERIAL_end_uart_send()
 #define MAVLINK_SEND_UART_BYTES(chan,buf,len) SERIAL_send_uart_bytes(buf,len)
 
+#if __clang__
+// clang does not like packed member access at all. Since mavlink is a 3rd party library, ignore the errors
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Waddress-of-packed-member"
+#endif
 #include "GCS_MAVLink/include_v1.0/ardupilotmega/mavlink.h"
+#if __clang__
+// Restore warnings about packed member access
+#pragma clang diagnostic pop
+#endif
 
 //#define MAVLINK_PARAMS
 //#define DUMP_RX_TX

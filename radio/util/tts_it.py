@@ -70,6 +70,9 @@ for s, f, a in [("radio inattiva controllare", "inactiv", 486),
                 ("Problema all'antenna della radio", "swr_red", NO_ALTERNATE),
                 ("Telemetria assente", "telemko", NO_ALTERNATE),
                 ("Telemetria disponibile", "telemok", NO_ALTERNATE),
+                ("servo overload", "servoko", NO_ALTERNATE),
+                ("power overload", "rxko", NO_ALTERNATE),
+                ("receiver still connected", "modelpwr", NO_ALTERNATE),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, s in enumerate(["timer", "", "tensione", "tensione", "trasmissione", "ricezione", "altitudine", "motore",

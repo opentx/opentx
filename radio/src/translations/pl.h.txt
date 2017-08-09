@@ -718,6 +718,9 @@
 #define TR_INACTIVITYALARM     INDENT"Alarm bezczynności"
 #define TR_MEMORYWARNING       INDENT"Pełna pamięć"
 #define TR_ALARMWARNING        INDENT"Wyłącz dźwięk"
+#define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi Shutdown", INDENT "Check Rssi on Shutdown")
+#define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Gaz    "
 #define TR_THROTTLEREVERSE     TR("OdwrGaz", INDENT "OdwrGaz")

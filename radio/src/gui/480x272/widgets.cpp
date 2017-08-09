@@ -376,7 +376,7 @@ void drawSleepBitmap()
 }
 
 #define SHUTDOWN_CIRCLE_DIAMETER       150
-void drawShutdownAnimation(uint32_t index)
+void drawShutdownAnimation(uint32_t index, const char * message)
 {
   static uint32_t last_index = 0xffffffff;
   static const BitmapBuffer * shutdown = BitmapBuffer::load(getThemePath("shutdown.bmp"));

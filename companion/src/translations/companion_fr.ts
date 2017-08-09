@@ -1539,9 +1539,9 @@ Vérifier la sélection (M64/M128)</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="1799"/>
         <source>- Your eeprom is from an old version of OpenTX, upgrading!
- You should &apos;save as&apos; to keep the old file as a backup.</source>
-        <translation>- Le fichier qui vient d&apos;être ouvert provient d&apos;une ancienne verison d&apos;OpenTX et a été converti.
-Il est recommandé d&apos;&quot;Enregistrer Sous&quot; au plus vite pour ne pas risquer d&apos;écraser votre ancien fichier.</translation>
+ To keep your original file as a backup, please choose File -&gt; Save As specifying a different name.</source>
+        <translation>- Votre eeprom provient d&apos;une ancienne version d&apos;OpenTX, mettez à niveau!
+ Pour conserver une sauvegarde de votre fichier d&apos;origine, choisissez &quot;Fichier → Enregistrer sous&quot; en spécifiant un autre nom.</translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="1804"/>

@@ -258,9 +258,17 @@ void drawProgressBar(const char * label, int num, int den)
 }
 
 #if defined(CPUARM) || defined(CPUM2560)
+const pm_uchar SLEEP_BITMAP[] PROGMEM = {
+#include "sleep.lbm"
+};
+
+#define SLEEP_BITMAP_WIDTH             60
+#define SLEEP_BITMAP_HEIGHT            60
+
 void drawSleepBitmap()
 {
   lcdClear();
-  showMessageBox(STR_SHUTDOWN);
+  lcdDraw1bitBitmap((LCD_W-SLEEP_BITMAP_WIDTH)/2, (LCD_H-SLEEP_BITMAP_HEIGHT)/2, SLEEP_BITMAP, 0);
+  lcdRefresh();
 }
 #endif

@@ -493,7 +493,7 @@ bool menuModelExposAll(event_t event)
   }
 
   char str[6];
-  sprintf(str, "%d/%d", getExposCount(), MAX_EXPOS);
+  strAppendUnsigned(strAppend(strAppendUnsigned(str, getExposCount()), "/"), MAX_EXPOS, 2);
   lcdDrawText(MENU_TITLE_NEXT_POS, MENU_TITLE_TOP+2, str, HEADER_COLOR);
 
   sub = menuVerticalPosition;

@@ -42,7 +42,7 @@ public:
     QString getAVRDUDE() {return avrLoc;}
     QString getSAMBA() {return sambaLoc;}
     QString getDFU() {return dfuLoc;}
-    QStringList getAvrdudeArgs() { QStringList args = avrArgs; if (!avrPort.isEmpty()) args << "-P" << avrPort; return args; }
+    QStringList getAvrdudeArgs();
     QStringList getDFUArgs() {return dfuArgs;}
     QString getProgrammer() {return avrProgrammer;}
     QString getMCU() {return avrMCU;}
