@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     QString previousVersion;
     if (g.findPreviousVersionSettings(&previousVersion)) {
        QMessageBox msgBox;
-       msgBox.setText("We have found existing settings for Companion version: " + previousVersion + ".\nDo you want to import them?");
+       msgBox.setText(QObject::tr("We have found existing settings for Companion version: %1.\nDo you want to import them?").arg(previousVersion));
        msgBox.setIcon(QMessageBox::Information);
        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
        msgBox.setDefaultButton(QMessageBox::Yes);
