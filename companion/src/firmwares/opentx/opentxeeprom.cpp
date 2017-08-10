@@ -1385,7 +1385,7 @@ class InputField: public TransformedField {
         _offset = smallGvarImport(expo.offset);
       }
 
-      if ((!IS_ARM(board) && version >= 218) || (!IS_TARANIS(board) && version == 217) || version < 216) {
+      if (!IS_ARM(board) || (!IS_TARANIS(board) && version < 217) || version < 216) {
         if (expo.curve.type==CurveReference::CURVE_REF_FUNC && expo.curve.value) {
           _curveMode = true;
           _curveParam = expo.curve.value;
@@ -1418,7 +1418,7 @@ class InputField: public TransformedField {
         expo.offset = smallGvarExport(_offset);
       }
 
-      if ((!IS_ARM(board) && version >= 218) || (!IS_TARANIS(board) && version == 217) || version < 216) {
+      if (!IS_ARM(board) || (!IS_TARANIS(board) && version < 218) || version < 216) {
         if (!_curveMode)
           expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarExport(_curveParam));
         else if (_curveParam > 6)
