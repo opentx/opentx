@@ -538,12 +538,10 @@ void AppData::init()
     qRegisterMetaTypeStreamOperators<SimulatorOptions>("SimulatorOptions");
 
     firstUse = false;
-    upgradeFromVersion = "";
 
     QSettings settings(COMPANY, PRODUCT);
     if (!settings.contains("settings_version")) {
-      if (!importSettings(settings))
-        firstUse = true;
+      firstUse = true;
     }
     convertSettings(settings);
 
@@ -652,14 +650,24 @@ void AppData::convertSettings(QSettings & settings)
   }
 }
 
-bool AppData::importSettings(QSettings & toSettings)
+bool AppData::hasCurrentSettings()
+{
+  QSettings settings(COMPANY, PRODUCT);
+  if (!settings.contains("settings_version")) {
+    return false;
+  }
+  return true;
+}
+
+bool AppData::findPreviousVersionSettings(QString * version)
 {
   QSettings * fromSettings = NULL;
+  *version = "";
 
   QSettings settings21("OpenTX", "Companion 2.1");
   if (settings21.contains("settings_version")) {
     fromSettings = &settings21;
-    upgradeFromVersion = "2.1";
+    *version = "2.1";
   }
   else {
     settings21.clear();
@@ -669,7 +677,7 @@ bool AppData::importSettings(QSettings & toSettings)
   if (settings20.contains("settings_version")) {
     if (!fromSettings) {
       fromSettings = &settings20;
-      upgradeFromVersion = "2.0";
+      *version = "2.0";
     }
   }
   else {
@@ -680,26 +688,46 @@ bool AppData::importSettings(QSettings & toSettings)
   if (settings16.contains("settings_version")) {
     if (!fromSettings) {
       fromSettings = &settings16;
-      upgradeFromVersion = "1.x";
+      *version = "1.x";
     }
   }
   else {
     settings16.clear();
   }
 
-  QSettings settings9x("companion9x", "companion9x");
-  if (settings9x.contains("default_mode")) {
-    if (!fromSettings) {
-      fromSettings = &settings9x;
-      upgradeFromVersion = "Companion9X";
-    }
-  }
-  else {
-    settings9x.clear();
-  }
-
   if (!fromSettings)
     return false;
+
+  return true;  
+}
+
+bool AppData::importSettings(QString fromVersion)
+{
+  QSettings toSettings(COMPANY, PRODUCT);
+
+  QString fromCompany;
+  QString fromProduct;
+  
+  upgradeFromVersion = "";
+
+  if (fromVersion == "2.1") {
+    fromCompany = "OpenTX";
+    fromProduct = "Companion 2.1";
+  }
+  else if (fromVersion == "2.0") {
+    fromCompany = "OpenTX";
+    fromProduct = "Companion 2.0";
+  }
+  else if (fromVersion == "1.x") {
+    fromCompany = "OpenTX";
+    fromProduct = "OpenTX Companion";
+  }
+  else
+    return false;
+    
+  upgradeFromVersion = fromVersion;
+
+  QSettings fromSettings(fromCompany, fromProduct);
 
   // do not copy these settings
   QStringList excludeKeys = QStringList() << "compilation-server";
@@ -711,58 +739,10 @@ bool AppData::importSettings(QSettings & toSettings)
 #endif
 
   // import settings
-  foreach (const QString & key, fromSettings->allKeys()) {
-    if (fromSettings->value(key).isValid() && !excludeKeys.contains(key)) {
-      toSettings.setValue(key, fromSettings->value(key));
+  foreach (const QString & key, fromSettings.allKeys()) {
+    if (fromSettings.value(key).isValid() && !excludeKeys.contains(key)) {
+      toSettings.setValue(key, fromSettings.value(key));
     }
-  }
-
-  // Additional adjustments for companion9x settings
-  if (fromSettings->applicationName() == "companion9x") {
-    // Store old values in new locations
-    autoCheckApp(toSettings.value("startup_check_companion9x", true).toBool());
-    toSettings.setValue("useWizard", toSettings.value("wizardEnable", true));
-
-    // Convert and store the firmware type
-    QString fwType  = toSettings.value("firmware", "").toString();
-    fwType.replace("open9x", "opentx");
-    fwType.replace("x9da", "x9d");
-
-    profile[0].init( 0 );
-    profile[0].fwType( fwType );
-    // Move the Companion9x profile settings to profile0, the new default profile
-    profile[0].name( toSettings.value(          "Name",                  "My Radio").toString());
-    profile[0].sdPath( toSettings.value(        "sdPath",                ""    ).toString());
-    profile[0].splashFile( toSettings.value(    "SplashFileName",        ""    ).toString());
-    profile[0].burnFirmware( toSettings.value(  "burnFirmware",          false ).toBool());
-    profile[0].renameFwFiles( toSettings.value( "rename_firmware_files", false ).toBool());
-    profile[0].channelOrder( toSettings.value(  "default_channel_order", "0"   ).toInt());
-    profile[0].defaultMode( toSettings.value(   "default_mode",          "1"   ).toInt());
-
-    // Ensure that the default profile has a name
-    if ( profile[0].name().isEmpty() )
-      profile[0].name("My Radio");
-
-    // Delete obsolete settings fields from companion9x
-    toSettings.remove("ActiveProfile");
-    toSettings.remove("burnFirmware");
-    toSettings.remove("custom_id");
-    toSettings.remove("default_channel_order");
-    toSettings.remove("default_mode");
-    toSettings.remove("firmware");
-    toSettings.remove("lastFw");
-    toSettings.remove("modelEditTab");
-    toSettings.remove("Name");
-    toSettings.remove("patchImage");
-    toSettings.remove("rename_firmware_files");
-    toSettings.remove("sdPath");
-    toSettings.remove("SplashFileName");
-    toSettings.remove("startup_check_companion9x");
-    toSettings.remove("warningId");
-    toSettings.remove("wizardEnable");
-
-    // Select the new default profile as current profile
-    id( 0 );
   }
 
   return true;
