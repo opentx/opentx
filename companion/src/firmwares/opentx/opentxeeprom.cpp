@@ -3671,7 +3671,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       if (version < 218) internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
       internalField.Append(new UnsignedField<32>(this, generalData.globalTimer));
       if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureCalib)); // TODO
-      internalField.Append(new UnsignedField<8>(this, generalData.btBaudrate)); // TODO
+      internalField.Append(new UnsignedField<8>(this, generalData.bluetoothBaudrate)); // TODO
       if (version < 218) internalField.Append(new BoolField<8>(this, generalData.optrexDisplay)); //TODO
       if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.sticksGain)); // TODO
     }

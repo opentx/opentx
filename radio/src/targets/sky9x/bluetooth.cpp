@@ -28,7 +28,7 @@ void btSetBaudrate(uint32_t index)
 
 void btInit()
 {
-  btSetBaudrate(g_eeGeneral.btBaudrate);
+  btSetBaudrate(g_eeGeneral.bluetoothBaudrate);
 }
 
 OS_FlagID btFlag;
@@ -207,7 +207,7 @@ Or maybe just AT and get OK back
 
 uint32_t btStatus;
 
-void btTask(void* pdata)
+void bluetoothTask(void * pdata)
 {
   uint8_t byte;
 
@@ -218,7 +218,7 @@ void btTask(void* pdata)
   // Already initialised to g_eeGeneral.bt_baudrate
   // 0 : 115200, 1 : 9600, 2 : 19200
 
-  uint32_t x = g_eeGeneral.btBaudrate;
+  uint32_t x = g_eeGeneral.bluetoothBaudrate;
 
   btStatus = btPollDevice() ;              // Do we get a response?
 
@@ -236,8 +236,8 @@ void btTask(void* pdata)
 
   if (btStatus) {
     btStatus = x + 1 ;
-    if ( x != g_eeGeneral.btBaudrate ) {
-      x = g_eeGeneral.btBaudrate ;
+    if ( x != g_eeGeneral.bluetoothBaudrate ) {
+      x = g_eeGeneral.bluetoothBaudrate ;
       // Need to change Bt Baudrate
       btChangeBaudrate( x ) ;
       btStatus += (x+1) * 10 ;

@@ -71,11 +71,6 @@ extern TaskStack<MIXER_STACK_SIZE> mixerStack;
 extern OS_TID audioTaskId;
 extern TaskStack<AUDIO_STACK_SIZE> audioStack;
 
-#if defined(BLUETOOTH)
-extern OS_TID btTaskId;
-extern TaskStack<BLUETOOTH_STACK_SIZE> bluetoothStack;
-#endif
-
 void tasksStart();
 
 #endif // _TASKS_ARM_H_

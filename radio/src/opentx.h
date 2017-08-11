@@ -194,6 +194,12 @@
   #define CASE_PCBX9E(x)
 #endif
 
+#if defined(BLUETOOTH)
+  #define CASE_BLUETOOTH(x) x,
+#else
+  #define CASE_BLUETOOTH(x)
+#endif
+
 #if defined(PCBSKY9X) && !defined(AR9X) && !defined(REVA)
   #define TX_CAPACITY_MEASUREMENT
   #define CASE_CAPACITY(x) x,
@@ -217,6 +223,16 @@
 #endif
 
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
+
+#if defined(BLUETOOTH)
+#if defined(X9E)
+  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
+#else
+  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
+#endif
+#else
+  #define IS_BLUETOOTH_TRAINER()       false
+#endif
 
 #if defined(CPUARM)
   #define MASTER_VOLUME
@@ -329,12 +345,12 @@ void memswap(void * a, void * b, uint8_t size);
   #define IF_ROTARY_ENCODERS(x)
 #endif
 
-#define PPM_CENTER 1500
+#define PPM_CENTER                     1500
 
 #if defined(PPM_CENTER_ADJUSTABLE)
-  #define PPM_CH_CENTER(ch) (PPM_CENTER+limitAddress(ch)->ppmCenter)
+  #define PPM_CH_CENTER(ch)            (PPM_CENTER + limitAddress(ch)->ppmCenter)
 #else
-  #define PPM_CH_CENTER(ch) (PPM_CENTER)
+  #define PPM_CH_CENTER(ch)            (PPM_CENTER)
 #endif
 
 #if defined(CPUARM)
@@ -342,7 +358,7 @@ void memswap(void * a, void * b, uint8_t size);
   #include "io/io_arm.h"
   // This doesn't need protection on this processor
   extern volatile tmr10ms_t g_tmr10ms;
-  #define get_tmr10ms() g_tmr10ms
+  #define get_tmr10ms()                g_tmr10ms
 #else
   extern volatile tmr10ms_t g_tmr10ms;
   extern inline uint16_t get_tmr10ms()
@@ -1696,6 +1712,10 @@ extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
 
 #if defined(INTERNAL_GPS)
   #include "gps.h"
+#endif
+
+#if defined(BLUETOOTH)
+#include "bluetooth.h"
 #endif
 
 #endif // _OPENTX_H_

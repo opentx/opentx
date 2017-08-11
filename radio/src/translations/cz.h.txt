@@ -551,7 +551,8 @@
 #define TR_VTRAINER_SLAVE_JACK         "Žák/Jack\0         "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Učitel/SBUS Modul\0"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Učitel/CPPM Modul\0"
-#define TR_VTRAINER_MASTER_BATTERY     "Učitel/Bat. slot\0"
+#define TR_VTRAINER_MASTER_BATTERY     "Učitel/Bat. slot\0 "
+#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
 
 #define LEN_VFAILSAFE          "\012"
 #define TR_VFAILSAFE           "Nenastaven""Držet\0    ""Vlastní\0  ""Bez pulzů\0""Přijímač\0"
@@ -955,7 +956,12 @@
 #define TR_FORMATTING          "Formátovaní.."
 #define TR_TEMP_CALIB          " +=\006Teplota"
 #define TR_TIME                "Čas"
+
+#define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "BT Baudrate"
+#define LEN_BLUETOOTH_MODES    "\011"
+#define TR_BLUETOOTH_MODES     "---\0     ""Telemetry""Trainer\0"
+
 #define TR_SD_INFO_TITLE       "SD INFO"
 #define TR_SD_TYPE             "Typ:"
 #define TR_SD_SPEED            "Rychlost:"

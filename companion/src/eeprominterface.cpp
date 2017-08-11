@@ -1234,7 +1234,7 @@ GeneralSettings::GeneralSettings()
     speakerVolume = 12;
   }
 
-  if (IS_TARANIS_X9E(board)) {
+  if (IS_HORUS(board) || IS_TARANIS_X9E(board) || IS_TARANIS_X7(board)) {
     strcpy(bluetoothName, "Taranis");
   }
 

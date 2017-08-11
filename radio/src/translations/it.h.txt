@@ -559,6 +559,7 @@
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Master/Modulo SBUS"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Master/Modulo CPPM"
 #define TR_VTRAINER_MASTER_BATTERY     "Master/Batteria\0  "
+#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
 
 #define LEN_VFAILSAFE          "\013"
 #define TR_VFAILSAFE           "Non settato""Mantieni\0  ""Personali\0 ""No impulsi\0""Ricevente\0 "
@@ -960,7 +961,12 @@
 #define TR_FORMATTING          "Formattazione."
 #define TR_TEMP_CALIB          "Temp. Calib"
 #define TR_TIME                "Ora"
+
+#define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "BT Baudrate"
+#define LEN_BLUETOOTH_MODES    "\011"
+#define TR_BLUETOOTH_MODES     "---\0     ""Telemetry""Trainer\0"
+
 #define TR_SD_INFO_TITLE       "SD INFO"
 #define TR_SD_TYPE             "Tipo:"
 #define TR_SD_SPEED            "Veloc.:"

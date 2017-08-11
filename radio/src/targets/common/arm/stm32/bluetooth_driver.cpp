@@ -23,14 +23,6 @@
 Fifo<uint8_t, 64> btTxFifo;
 Fifo<uint8_t, 64> btRxFifo;
 
-enum BluetoothState
-{
-  BLUETOOTH_INIT,
-  BLUETOOTH_WAIT_TTM,
-  BLUETOOTH_WAIT_BAUDRATE_CHANGE,
-  BLUETOOTH_OK,
-};
-
 enum BluetoothWriteState
 {
   BLUETOOTH_WRITE_IDLE,
@@ -39,7 +31,6 @@ enum BluetoothWriteState
   BLUETOOTH_WRITE_DONE
 };
 
-volatile uint8_t bluetoothState = BLUETOOTH_INIT;
 volatile uint8_t bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 
 void bluetoothInit(uint32_t baudrate)
@@ -49,9 +40,6 @@ void bluetoothInit(uint32_t baudrate)
 
   USART_DeInit(BT_USART);
 
-  RCC_AHB1PeriphClockCmd(BT_RCC_AHB1Periph, ENABLE);
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_USART6, ENABLE);
-  
   GPIO_InitStructure.GPIO_Pin = BT_EN_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -106,7 +94,7 @@ void bluetoothDone()
   GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth
 }
 
-extern "C" void USART6_IRQHandler(void)
+extern "C" void BT_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_BLUETOOTH);
   if (USART_GetITStatus(BT_USART, USART_IT_RXNE) != RESET) {
@@ -125,21 +113,6 @@ extern "C" void USART6_IRQHandler(void)
       USART_ITConfig(BT_USART, USART_IT_TXE, DISABLE);
       bluetoothWriteState = BLUETOOTH_WRITE_DONE;
     }
-  }
-}
-
-void bluetoothWrite(const void * buffer, int len)
-{
-  uint8_t * data = (uint8_t *)buffer;
-  for (int i=0; i<len; ++i) {
-    btTxFifo.push(data[i]);
-  }
-}
-
-void bluetoothWriteString(const char * str)
-{
-  while (*str != 0) {
-    btTxFifo.push(*str++);
   }
 }
 
@@ -163,87 +136,4 @@ void bluetoothWriteWakeup(void)
     GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
 #endif
   }
-}
-
-void bluetoothWakeup(void)
-{
-  if (!g_eeGeneral.bluetoothEnable) {
-    if (bluetoothState != BLUETOOTH_INIT) {
-      bluetoothDone();
-      bluetoothState = BLUETOOTH_INIT;
-    }
-  }
-  else {
-    if (bluetoothState != BLUETOOTH_OK) {
-      static tmr10ms_t waitEnd = 0;
-
-      if (bluetoothState == BLUETOOTH_INIT) {
-        bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
-        const char btMessage[] = "TTM:REN-";
-        bluetoothWriteString(btMessage);
-        uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
-        for (int i=0; i<len; i++) {
-          btTxFifo.push(idx2char(g_eeGeneral.bluetoothName[i]));
-        }
-        bluetoothState = BLUETOOTH_WAIT_TTM;
-        waitEnd = get_tmr10ms() + 25; // 250ms
-      }
-      else if (bluetoothState == BLUETOOTH_WAIT_TTM) {
-        if (get_tmr10ms() > waitEnd) {
-          char ttm[] = "TTM:REN";
-          int index = 0;
-          uint8_t c;
-          bool found = false;
-          while (btRxFifo.pop(c)) {
-            if (c == ttm[index]) {
-              index++;
-              if (index == sizeof(ttm)-1) {
-                found = true;
-                break;
-              }
-            }
-            else {
-              index = 0;
-            }
-          }
-          if (found) {
-            bluetoothState = BLUETOOTH_OK;
-          }
-          else {
-            bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
-            const char btMessage[] = "TTM:BPS-115200";
-            bluetoothWriteString(btMessage);
-            bluetoothState = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
-            waitEnd = get_tmr10ms() + 250; // 2.5s
-          }
-        }
-      }
-      else if (bluetoothState == BLUETOOTH_WAIT_BAUDRATE_CHANGE) {
-        if (get_tmr10ms() > waitEnd) {
-          bluetoothState = BLUETOOTH_INIT;
-        }
-      }
-    }
-
-    bluetoothWriteWakeup();
-  }
-}
-
-uint8_t bluetoothReady()
-{
-  return (bluetoothState == BLUETOOTH_OK);
-}
-
-int bluetoothRead(void * buffer, int len)
-{
-  int result = 0;
-  uint8_t * data = (uint8_t *)buffer;
-  while (result < len) {
-    uint8_t byte;
-    if (!btRxFifo.pop(byte)) {
-      break;
-    }
-    data[result++] = byte;
-  }
-  return result;
 }

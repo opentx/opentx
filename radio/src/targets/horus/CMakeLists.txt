@@ -1,5 +1,4 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
-option(BLUETOOTH_CLI_PASSTHROUGH "Enable direct communicaton with Bluetooth module from CLI" NO)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 
@@ -103,14 +102,19 @@ if(INTERNAL_GPS)
   add_definitions(-DINTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
+
 set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
+
 set(GVAR_SCREEN model_gvars.cpp)
+
 set(TARGET_SRC
   ${TARGET_SRC}
   board.cpp
   led_driver.cpp
   extmodule_driver.cpp
+  ../common/arm/stm32/bluetooth_driver.cpp
   )
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   sdio_sd.c
@@ -120,17 +124,14 @@ set(FIRMWARE_TARGET_SRC
   sdram_driver.c
   startup_stm32f42_43xxx.s
   )
-if(PCB STREQUAL X12S)
-  set(FIRMWARE_TARGET_SRC
-    ${FIRMWARE_TARGET_SRC}
-    bluetooth_driver.cpp
-    )
-  add_definitions(-DBLUETOOTH)
-endif()
-if(BLUETOOTH_CLI_PASSTHROUGH)
-  add_definitions(-DBLUETOOTH_CLI_PASSTHROUGH)
-  message("Horus: Bluetooth pass-trough enabled")
-endif()
+
+add_definitions(-DBLUETOOTH)
+
+set(SRC
+  ${SRC}
+  bluetooth.cpp
+  )
+
 set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fmc.c

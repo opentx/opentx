@@ -576,7 +576,8 @@
 #define TR_VTRAINER_SLAVE_JACK         "Schüler/Buchse\0   "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Lehrer/SBUS Modul\0"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Lehrer/CPPM Modul\0"
-#define TR_VTRAINER_MASTER_BATTERY     "Lehrer/Batterie\0"
+#define TR_VTRAINER_MASTER_BATTERY     "Lehrer/Batterie\0  "
+#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
 
 #define LEN_VFAILSAFE          "\015" // "\013" original
 #define TR_VFAILSAFE           "Kein Failsafe""Halte Pos.\0  ""Kanäle\0      ""Kein Signal\0 ""Empfänger\0   "
@@ -976,7 +977,13 @@
 #define TR_FORMATTING          "Formatierung..."
 #define TR_TEMP_CALIB          "Temp.  abgl."
 #define TR_TIME                "Uhrzeit:"
+
+#define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "BT Baudrate"
+#define LEN_BLUETOOTH_MODES    "\011"
+#define TR_BLUETOOTH_MODES     "---\0     ""Telemetry""Trainer\0"
+
+
 #define TR_SD_INFO_TITLE       "SD-INFO"
 #define TR_SD_TYPE             "Typ:"
 #define TR_SD_SPEED            "Geschw:"

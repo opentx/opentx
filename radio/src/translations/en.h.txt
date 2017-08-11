@@ -559,7 +559,8 @@
 #define TR_VTRAINER_SLAVE_JACK         "Slave/Jack\0       "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Master/SBUS Module"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Master/CPPM Module"
-#define TR_VTRAINER_MASTER_BATTERY     "Master/Battery\0"
+#define TR_VTRAINER_MASTER_BATTERY     "Master/Battery\0   "
+#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
 
 #define LEN_VFAILSAFE                  "\011"
 #define TR_VFAILSAFE                   "Not set\0 ""Hold\0    ""Custom\0  ""No pulses""Receiver\0"
@@ -959,7 +960,12 @@
 #define TR_FORMATTING                  "Formatting..."
 #define TR_TEMP_CALIB                  "Temp. Calib"
 #define TR_TIME                        "Time"
+
+#define TR_BLUETOOTH                   "Bluetooth"
 #define TR_BAUDRATE                    "BT Baudrate"
+#define LEN_BLUETOOTH_MODES            "\011"
+#define TR_BLUETOOTH_MODES             "---\0     ""Telemetry""Trainer\0"
+
 #define TR_SD_INFO_TITLE               "SD INFO"
 #define TR_SD_TYPE                     "Type:"
 #define TR_SD_SPEED                    "Speed:"
@@ -1022,7 +1028,7 @@
 #define TR_MODULE_RANGE                BUTTON(TR("Rng", "Range"))
 #define TR_RESET_BTN                   BUTTON("Reset")
 #define TR_SET                         BUTTON("Set")
-#define TR_TRAINER                     "Trainer port"
+#define TR_TRAINER                     "Trainer"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"
 #define TR_MODELIDUSED                 TR("ID already used", "Model ID already used")
 #define TR_MODULE                      INDENT "Module"

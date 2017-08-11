@@ -455,10 +455,6 @@ void perMain()
   toplcdRefreshEnd();
 #endif
 
-#if defined(BLUETOOTH) && !defined(SIMU)
-  bluetoothWakeup();
-#endif
-
 #if defined(INTERNAL_GPS)
   gpsWakeup();
 #endif
