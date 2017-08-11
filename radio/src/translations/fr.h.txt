@@ -95,7 +95,7 @@
 #define TR_COUNTRYCODES                TR("US""JP""EU", "USA\0  ""Japon\0""Europe")
 
 #define LEN_TARANIS_PROTOCOLS          "\004"
-#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT"
+#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -849,6 +849,7 @@
   #define TR_RECEIVER_NUM              "Récepteur"
   #define TR_RECEIVER                  "Récepteur"
 #endif
+<<<<<<< HEAD
 #define TR_MULTI_RFTUNE                TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
 #define TR_MULTI_TELEMETRY                     "Telemetry"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
@@ -862,6 +863,22 @@
 #define TR_MODULE_NO_INPUT             TR("Pas de sign.", "Aucun signal série")
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_BINDING              "Bind..."
+=======
+#define TR_MULTI_RFTUNE        TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
+#define TR_MULTI_TELEMETRY             "Telemetry"
+#define TR_MULTI_VIDFREQ       TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
+#define TR_MULTI_RFPOWER       TR(INDENT "Puiss. RF", INDENT "Puissance RF")
+#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option perso")
+#define TR_MULTI_AUTOBIND      TR(INDENT "Bind auto", INDENT "Bind automatique")
+#define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodét.", INDENT "Autodétection")
+#define TR_MULTI_LOWPOWER      TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
+#define TR_SPORT_OUT                   INDENT "S.port out"
+#define TR_DISABLE_INTERNAL    TR("Désact intRF", "Désact. RF interne")
+#define TR_MODULE_NO_SERIAL_MODE  TR("Mode série?", "Pas en mode série")
+#define TR_MODULE_NO_INPUT     TR("Pas de sign.", "Aucun signal série")
+#define TR_MODULE_NO_TELEMETRY TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
+#define TR_MODULE_BINDING      "Bind..."
+>>>>>>> Implement R9M protocol according to PXX spec 1.7
 #define TR_BINDING_MODE1               "Ch1-8 Telem ON"
 #define TR_BINDING_MODE2               "Ch1-8 Telem OFF"
 #define TR_BINDING_MODE3               "Ch9-16 Telem ON"

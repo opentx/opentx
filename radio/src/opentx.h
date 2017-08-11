@@ -373,8 +373,8 @@ void memswap(void * a, void * b, uint8_t size);
 #include "pulses/pulses.h"
 
 #if defined(CPUARM)
-// Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4 }; // relative to 8!
+// Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi, r9m)
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8}; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
   #define MAX_TRAINER_CHANNELS_M8()    (MAX_TRAINER_CHANNELS-8)
 #endif
@@ -428,6 +428,9 @@ void memswap(void * a, void * b, uint8_t size);
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8())
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
 #endif
+#define IS_MODULE_R9M(idx)                (g_model.moduleData[idx].type==MODULE_TYPE_R9M)
+#define IS_MODULE_PXX(idx)                (IS_MODULE_XJT(idx) || IS_MODULE_R9M(idx))
+
 
 #if defined(MULTIMODULE)
 #define IS_MULTIMODULE_DSM(idx)             (IS_MODULE_MULTIMODULE(idx) && g_model.moduleData[idx].getMultiProtocol(true) == MM_RF_PROTO_DSM2)

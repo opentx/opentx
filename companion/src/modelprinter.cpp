@@ -119,7 +119,8 @@ QString ModelPrinter::printModuleProtocol(unsigned int protocol)
     "PPM16", "PPMsim",
     "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
     "Crossfire",
-    "DIY Multiprotocol Module"
+    "DIY Multiprotocol Module",
+    "FrSky R9M Module"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);

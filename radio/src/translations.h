@@ -611,6 +611,7 @@ extern const pm_char STR_RECEIVER[];
 extern const pm_char STR_SYNCMENU[];
 extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
+extern const pm_char STR_SPORT_OUT[];
 extern const pm_char STR_FAILSAFE[];
 extern const pm_char STR_FAILSAFESET[];
 extern const pm_char STR_HOLD[];

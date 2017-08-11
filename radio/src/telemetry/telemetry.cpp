@@ -179,7 +179,7 @@ void telemetryWakeup()
     }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-    if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) && FRSKY_BAD_ANTENNA()) {
+    if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || IS_MODULE_PXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
       AUDIO_SWR_RED();
       POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;

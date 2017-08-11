@@ -105,6 +105,7 @@ class ProtocolsConversionTable: public ConversionTable
       else if (IS_ARM(board)) {
         val++;
         addConversion(PULSES_MULTIMODULE, val++);
+        addConversion(PULSES_PXX_R9M, val++);
       }
     }
 };
