@@ -66,7 +66,7 @@ void menuRadioDiagAnalogs(event_t event)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, getBatteryVoltage(), (menuVerticalPosition==HEADER_LINE ? INVERS | (s_editMode > 0 ? BLINK : 0) : 0) | PREC2 | LEFT);
     // SWR
-  if(IS_MODULE_XJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
+  if(IS_MODULE_PXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
     lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2, "RAS");
     lcdDrawNumber(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2, telemetryData.swr.value, LEFT);
   }

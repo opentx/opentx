@@ -1024,7 +1024,7 @@ void checkSDVersion()
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
-    if (IS_MODULE_XJT(i)) {
+    if (IS_MODULE_PXX(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
       if (HAS_RF_PROTOCOL_FAILSAFE(moduleData.rfProtocol) && moduleData.failsafeMode == FAILSAFE_NOT_SET) {
         ALERT(STR_FAILSAFEWARN, STR_NO_FAILSAFE, AU_ERROR);
@@ -1945,7 +1945,7 @@ void opentxClose(uint8_t shutdown)
   storageCheck(true);
 
 #if defined(CPUARM)
-  while (IS_PLAYING(ID_PLAY_BYE)) {
+  while (IS_PLAYING(ID_PLAY_PROMPT_BASE + AU_BYE)) {
     CoTickDelay(10);
   }
   CoTickDelay(50);
@@ -2763,7 +2763,7 @@ uint32_t pwrCheck()
     }
     else if (pwr_press_time == 0) {
       pwr_press_time = get_tmr10ms();
-      if (message && g_eeGeneral.rssiPoweroffAlarm) {
+      if (message && !g_eeGeneral.disableRssiPoweroffAlarm) {
         audioEvent(AU_MODEL_STILL_POWERED);
       }
     }
@@ -2792,7 +2792,7 @@ uint32_t pwrCheck()
           }
         }
 #else
-        while ((TELEMETRY_STREAMING() && g_eeGeneral.rssiPoweroffAlarm)) {
+        while ((TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm)) {
           lcdRefreshWait();
           lcdClear();
           POPUP_CONFIRMATION("Confirm Shutdown");
@@ -2846,7 +2846,7 @@ uint32_t pwrCheck()
   }
 #endif
 
-  if (g_eeGeneral.rssiPoweroffAlarm) {
+  if (!g_eeGeneral.disableRssiPoweroffAlarm) {
     if (TELEMETRY_STREAMING()) {
       RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
       while (TELEMETRY_STREAMING()) {

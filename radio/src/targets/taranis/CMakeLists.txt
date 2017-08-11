@@ -24,7 +24,6 @@ if(PCB STREQUAL X9E)
     add_definitions(-DHORUS_STICKS)
   endif()
   set(GUI_DIR 212x64)
-  set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(BITMAPS_TARGET taranis_bitmaps)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
@@ -38,7 +37,6 @@ elseif(PCB STREQUAL X9D+)
   add_definitions(-DPCBX9DP -DPCBX9)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 212x64)
-  set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(BITMAPS_TARGET taranis_bitmaps)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
@@ -53,7 +51,6 @@ elseif(PCB STREQUAL X9D)
   add_definitions(-DPCBX9D -DPCBX9)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 212x64)
-  set(GUI_SRC ${GUI_SRC} bmp.cpp)
   set(BITMAPS_TARGET taranis_bitmaps)
   set(LCD_DRIVER lcd_driver_aspi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
@@ -114,6 +111,7 @@ set(GUI_SRC ${GUI_SRC}
   view_channels.cpp
   view_telemetry.cpp
   view_about.cpp
+  bmp.cpp
   ../screenshot.cpp
   )
 

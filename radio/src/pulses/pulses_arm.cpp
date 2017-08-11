@@ -64,6 +64,7 @@ uint8_t getRequiredProtocol(uint8_t port)
           required_protocol = PROTO_PPM;
           break;
         case MODULE_TYPE_XJT:
+        case MODULE_TYPE_R9M:
           required_protocol = PROTO_PXX;
           break;
 #if defined(MULTIMODULE)

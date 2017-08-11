@@ -77,13 +77,13 @@
     !define MUI_FINISHPAGE_NOAUTOCLOSE
     !define MUI_FINISHPAGE_RUN
     !define MUI_FINISHPAGE_RUN_CHECKED
-    !define MUI_FINISHPAGE_RUN_TEXT "Launch OpenTX Companion @VERSION_FAMILY@"
     !define MUI_FINISHPAGE_RUN_FUNCTION "LaunchLink"
   #  !define MUI_FINISHPAGE_SHOWREADME_NOTCHECKED
   #  !define MUI_FINISHPAGE_SHOWREADME $INSTDIR\readme.txt
   !insertmacro MUI_PAGE_FINISH
 
   !insertmacro MUI_UNPAGE_CONFIRM
+  !insertmacro MUI_UNPAGE_COMPONENTS
   !insertmacro MUI_UNPAGE_INSTFILES
 
 ;--------------------------------
@@ -95,7 +95,7 @@
 ;--------------------------------
 ;Installer Sections
 
-Section "OpenTX Companion" SecDummy
+Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
 
   Delete "$INSTDIR\opentx-*-simulator.dll"
   Delete "$INSTDIR\lang\*.*"
@@ -189,7 +189,9 @@ SectionEnd
 ;--------------------------------
 ;Uninstaller Section
 
-Section "Uninstall"
+Section "un.OpenTX Companion @VERSION_FAMILY@"
+
+  SectionIn RO  ; Not deselectable
 
   ;ADD YOUR OWN FILES HERE...
 
@@ -243,9 +245,11 @@ Section "Uninstall"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall Companion @VERSION_FAMILY@.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
-  DeleteRegKey /ifempty HKCU "Software\OpenTX Companion @VERSION_FAMILY@"
   DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\OpenTX Companion @VERSION_FAMILY@"
+SectionEnd
 
+Section /o "un.Settings"
+  DeleteRegKey HKCU "Software\OpenTX\Companion @VERSION_FAMILY@"
 SectionEnd
 
 Function LaunchLink

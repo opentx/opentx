@@ -19,6 +19,7 @@
  */
 
 #include "customfunctions.h"
+#include "switchitemmodel.h"
 #include "helpers.h"
 #include "appdata.h"
 
@@ -73,8 +74,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  rawSwitchItemModel = Helpers::getRawSwitchItemModel(&generalSettings, model ? Helpers::SpecialFunctionsContext : Helpers::GlobalFunctionsContext);
-  rawSwitchItemModel->setParent(this);
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? SpecialFunctionsContext : GlobalFunctionsContext);
   rawSrcInputsItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
   rawSrcInputsItemModel->setParent(this);
   rawSrcAllItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRY|POPULATE_TELEMETRYEXT|POPULATE_SCRIPT_OUTPUTS);
@@ -584,6 +584,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
 void CustomFunctionsPanel::update()
 {
+  rawSwitchItemModel->update();
+
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
   for (int i=0; i<num_fsw; i++) {

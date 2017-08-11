@@ -25,6 +25,7 @@ set(COMPANION_OSX_APP_BUNDLE_NAME "OpenTX Companion ${VERSION_MAJOR}.${VERSION_M
 # the binary (default homebrew path)
 set(DFU_UTIL_PATH "/usr/local/bin/dfu-util")
 set(AVRDUDE_PATH "/usr/local/bin/avrdude")
+set(AVRDUDE_CONF "/usr/local/etc/avrdude.conf")
 
 option(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default
 if(ALLOW_NIGHTLY_BUILDS)
@@ -524,8 +525,12 @@ IF(APPLE)
   # Copy dfu-util and avrdude, resolve symlink first
   get_filename_component(DFU_UTIL_ABSOLUTE_PATH ${DFU_UTIL_PATH} REALPATH)
   get_filename_component(AVRDUDE_ABSOLUTE_PATH ${AVRDUDE_PATH} REALPATH)
+  get_filename_component(AVRDUDECONF_ABSOLUTE_PATH ${AVRDUDE_CONF} REALPATH)
   install(PROGRAMS ${DFU_UTIL_ABSOLUTE_PATH} ${AVRDUDE_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
+  install(FILES ${AVRDUDECONF_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
+  
   set(bundle_tools_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util;\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/avrdude")
+  
 
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is

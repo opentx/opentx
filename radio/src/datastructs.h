@@ -674,11 +674,12 @@ PACK(struct ModuleData {
       int8_t optionValue;
     } multi);
     NOBACKUP(struct {
-      uint8_t spare:4;
+      uint8_t power:2;                   // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
+      uint8_t spare:2;
       uint8_t receiver_telem_off:1;     // false = receiver telem enabled
       uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
       uint8_t external_antenna:1; // false = internal antenna, true = external antenna
-      uint8_t spare2:1;
+      uint8_t sport_out:1;
       uint8_t spare3;
     } pxx);
   };
@@ -895,7 +896,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t  countryCode); \
     NOBACKUP(uint8_t  imperial:1); \
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
-    NOBACKUP(uint8_t  rssiPoweroffAlarm:1); \
+    NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1); \
     NOBACKUP(uint8_t  spareExtraArm:5); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
@@ -1068,8 +1069,6 @@ static inline void check_struct()
 #endif
 
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
-  /* Sky9x does not have virtualinputs */
-
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
 #if defined(PCBX7)

@@ -20,10 +20,11 @@
 
 #include "mixerdialog.h"
 #include "ui_mixerdialog.h"
-#include "eeprominterface.h"
+#include "radiodata.h"
+#include "switchitemmodel.h"
 #include "helpers.h"
 
-MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware) :
+MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, GeneralSettings & generalSettings, Firmware * firmware) :
   QDialog(parent),
   ui(new Ui::MixerDialog),
   model(model),
@@ -103,7 +104,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, G
     }
   }
 
-  ui->switchesCB->setModel(Helpers::getRawSwitchItemModel(&generalSettings, Helpers::MixesContext));
+  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, MixesContext));
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(md->swtch.toValue()));
   ui->warningCB->setCurrentIndex(md->mixWarn);
   ui->mltpxCB->setCurrentIndex(md->mltpx);

@@ -881,7 +881,7 @@ void lcdInvertLine(int8_t line)
 }
 
 #if !defined(BOOT)
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);

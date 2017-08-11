@@ -561,7 +561,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case ChannelsName:
       return (IS_ARM(board) ? (HAS_LARGE_LCD(board) ? 6 : 4) : 0);
     case HasCvNames:
-      return (IS_HORUS_OR_TARANIS(board) ? 1 : 0);
+      return (IS_ARM(board) ? 1 : 0);
     case Telemetry:
       if (IS_2560(board) || IS_ARM(board) || id.contains("frsky") || id.contains("telemetrez"))
         return TM_HASTELEMETRY | TM_HASOFFSET | TM_HASWSHH;
@@ -800,6 +800,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
+          case PULSES_PXX_R9M:
             //case PULSES_PXX_DJT:     // Unavailable for now
           case PULSES_LP45:
           case PULSES_DSM2:
@@ -832,6 +833,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
+          case PULSES_PXX_R9M:
           case PULSES_LP45:
           case PULSES_DSM2:
           case PULSES_DSMX:

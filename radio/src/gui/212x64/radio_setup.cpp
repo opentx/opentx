@@ -332,21 +332,22 @@ void menuRadioSetup(event_t event)
 
       case ITEM_SETUP_MEMORY_WARNING:
       {
-        uint8_t b = 1-g_eeGeneral.disableMemoryWarning;
+        uint8_t b = 1 - g_eeGeneral.disableMemoryWarning;
         g_eeGeneral.disableMemoryWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_MEMORYWARNING, attr, event);
         break;
       }
 
       case ITEM_SETUP_ALARM_WARNING:
       {
-        uint8_t b = 1-g_eeGeneral.disableAlarmWarning;
+        uint8_t b = 1 - g_eeGeneral.disableAlarmWarning;
         g_eeGeneral.disableAlarmWarning = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_ALARMWARNING, attr, event);
         break;
       }
 
       case ITEM_SETUP_RSSI_POWEROFF_ALARM:
       {
-        g_eeGeneral.rssiPoweroffAlarm = editCheckBox(g_eeGeneral.rssiPoweroffAlarm, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
+        uint8_t b = 1 - g_eeGeneral.disableRssiPoweroffAlarm;
+        g_eeGeneral.disableRssiPoweroffAlarm = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
         break;
       }
 
@@ -488,7 +489,7 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_STICK_MODE_LABELS:
         lcdDrawTextAlignedLeft(y, NO_INDENT(STR_MODE));
         for (uint8_t i=0; i<4; i++) {
-          lcd_img((6+4*i)*FW, y, sticks, i, 0);
+          lcdDraw1bitBitmap((6+4*i)*FW, y, sticks, i, 0);
         }
         break;
 
