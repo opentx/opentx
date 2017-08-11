@@ -561,7 +561,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case ChannelsName:
       return (IS_ARM(board) ? (HAS_LARGE_LCD(board) ? 6 : 4) : 0);
     case HasCvNames:
-      return (IS_HORUS_OR_TARANIS(board) ? 1 : 0);
+      return (IS_ARM(board) ? 1 : 0);
     case Telemetry:
       if (IS_2560(board) || IS_ARM(board) || id.contains("frsky") || id.contains("telemetrez"))
         return TM_HASTELEMETRY | TM_HASOFFSET | TM_HASWSHH;

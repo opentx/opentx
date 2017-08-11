@@ -626,7 +626,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
 };
 
 
-int smallGvarToEEPROM(int gvar)
+int smallGvarImport(int gvar)
 {
   if (gvar < -10000) {
     gvar = 128 + gvar + 10000;
@@ -637,7 +637,7 @@ int smallGvarToEEPROM(int gvar)
   return gvar;
 }
 
-int smallGvarToC9x(int gvar)
+int smallGvarExport(int gvar)
 {
   if (gvar > 110) {
     gvar = gvar - 128 - 10000;
@@ -764,7 +764,7 @@ class CurveReferenceField: public TransformedField {
     {
       if (curve.value != 0) {
         _curve_type = (unsigned int)curve.type;
-        _curve_value = smallGvarToEEPROM(curve.value);
+        _curve_value = smallGvarImport(curve.value);
       }
       else {
         _curve_type = 0;
@@ -775,7 +775,7 @@ class CurveReferenceField: public TransformedField {
     virtual void afterImport()
     {
       curve.type = (CurveReference::CurveRefType)_curve_type;
-      curve.value = smallGvarToC9x(_curve_value);
+      curve.value = smallGvarExport(_curve_value);
       qCDebug(eepromImport) << QString("imported CurveReference(%1)").arg(curve.toString());
     }
 
@@ -1006,7 +1006,7 @@ class MixField: public TransformedField {
         else
           internalField.Append(new ZCharField<6>(this, mix.name));
       }
-      else if (IS_TARANIS(board) && version >= 217) {
+      else if (IS_TARANIS(board) && version == 217) {
         internalField.Append(new UnsignedField<8>(this, _destCh));
         internalField.Append(new UnsignedField<9>(this, mix.flightModes));
         internalField.Append(new UnsignedField<2>(this, (unsigned int &)mix.mltpx));
@@ -1023,7 +1023,7 @@ class MixField: public TransformedField {
         internalField.Append(new UnsignedField<8>(this, mix.speedDown));
         internalField.Append(new ZCharField<8>(this, mix.name));
       }
-      else if (IS_ARM(board) && version >= 217) {
+      else if (IS_ARM(board) && version == 217) {
         internalField.Append(new UnsignedField<5>(this, _destCh));
         internalField.Append(new UnsignedField<3>(this, mix.mixWarn));
         internalField.Append(new UnsignedField<9>(this, mix.flightModes));
@@ -1182,7 +1182,7 @@ class MixField: public TransformedField {
         }
         else if (mix.curve.type == CurveReference::CURVE_REF_DIFF) {
           _curveMode = 0;
-          _curveParam = smallGvarToEEPROM(mix.curve.value);
+          _curveParam = smallGvarImport(mix.curve.value);
         }
       }
       else {
@@ -1219,7 +1219,7 @@ class MixField: public TransformedField {
         mix.destCh = _destCh + 1;
         if (!IS_ARM(board) || (!IS_STM32(board) && version < 218) || version < 216) {
           if (!_curveMode)
-            mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarToC9x(_curveParam));
+            mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarExport(_curveParam));
           else if (_curveParam > 6)
             mix.curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, _curveParam-6);
           else if (_curveParam < 0)
@@ -1379,13 +1379,13 @@ class InputField: public TransformedField {
 
     virtual void beforeExport()
     {
-      _weight = smallGvarToEEPROM(expo.weight);
+      _weight = smallGvarImport(expo.weight);
 
-      if (IS_HORUS_OR_TARANIS(board) && version >= 216) {
-        _offset = smallGvarToEEPROM(expo.offset);
+      if ((IS_HORUS_OR_TARANIS(board) && version >= 216) || (IS_ARM(board) && version >= 218)) {
+        _offset = smallGvarImport(expo.offset);
       }
 
-      if (!IS_TARANIS(board) || version < 216) {
+      if (!IS_ARM(board) || (!IS_TARANIS(board) && version < 218) || version < 216) {
         if (expo.curve.type==CurveReference::CURVE_REF_FUNC && expo.curve.value) {
           _curveMode = true;
           _curveParam = expo.curve.value;
@@ -1396,33 +1396,31 @@ class InputField: public TransformedField {
         }
         else {
           _curveMode = false;
-          _curveParam = smallGvarToEEPROM(expo.curve.value);
+          _curveParam = smallGvarImport(expo.curve.value);
         }
       }
     }
 
     virtual void afterImport()
     {
-      if (IS_STM32(board)) {
-        if (version < 216) {
-          if (expo.mode) {
-            expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
-          }
+      if (IS_STM32(board) && version < 216) {
+        if (expo.mode) {
+          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
         }
       }
       else if (expo.mode) {
         expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
       }
 
-      expo.weight = smallGvarToC9x(_weight);
+      expo.weight = smallGvarExport(_weight);
 
-      if (IS_STM32(board) && version >= 216) {
-        expo.offset = smallGvarToC9x(_offset);
+      if ((IS_STM32(board) && version >= 216) || (IS_ARM(board) && version >= 218)) {
+        expo.offset = smallGvarExport(_offset);
       }
 
-      if (!IS_ARM(board) || (!IS_STM32(board) && version < 218) || version < 216) {
+      if (!IS_ARM(board) || (!IS_TARANIS(board) && version < 218) || version < 216) {
         if (!_curveMode)
-          expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarToC9x(_curveParam));
+          expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarExport(_curveParam));
         else if (_curveParam > 6)
           expo.curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, _curveParam-6);
         else
