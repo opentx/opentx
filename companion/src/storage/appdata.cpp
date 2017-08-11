@@ -707,6 +707,8 @@ bool AppData::importSettings(QString fromVersion)
 
   QString fromCompany;
   QString fromProduct;
+  
+  upgradeFromVersion = "";
 
   if (fromVersion == "2.1") {
     fromCompany = "OpenTX";
@@ -722,6 +724,8 @@ bool AppData::importSettings(QString fromVersion)
   }
   else
     return false;
+    
+  upgradeFromVersion = fromVersion;
 
   QSettings fromSettings(fromCompany, fromProduct);
 
