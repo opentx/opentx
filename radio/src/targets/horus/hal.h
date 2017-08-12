@@ -39,14 +39,14 @@
   #define KEYS_GPIO_REG_RIGHT           GPIOC->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_4  // PC.04
 #elif defined(PCBX10)
-  #define KEYS_GPIO_REG_PGUP            GPIOH->IDR
-  #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_14 // PH.14
-  #define KEYS_GPIO_REG_PGDN            GPIOH->IDR
-  #define KEYS_GPIO_PIN_PGDN            GPIO_Pin_15 // PH.15
+  // #define KEYS_GPIO_REG_UNUSED          GPIOH->IDR
+  // #define KEYS_GPIO_PIN_UNUSED          GPIO_Pin_14 // PH.14
+  // #define KEYS_GPIO_REG_UNUSED          GPIOH->IDR
+  // #define KEYS_GPIO_PIN_UNUSED          GPIO_Pin_15 // PH.15
   #define KEYS_GPIO_REG_ENTER           GPIOI->IDR
-  #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_11 // PI.11
-  #define KEYS_GPIO_REG_PUSH            GPIOI->IDR
-  #define KEYS_GPIO_PIN_PUSH            GPIO_Pin_8  // PI.08
+  #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PI.08
+  #define KEYS_GPIO_REG_PGDN            GPIOI->IDR
+  #define KEYS_GPIO_PIN_PGDN            GPIO_Pin_11 // PI.11
   #define KEYS_GPIO_REG_UP              GPIOI->IDR
   #define KEYS_GPIO_PIN_UP              GPIO_Pin_4  // PI.04
   #define KEYS_GPIO_REG_DOWN            GPIOI->IDR
@@ -169,8 +169,8 @@
   #define KEYS_GPIOD_PINS               (SWITCHES_GPIO_PIN_C_H | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_RHR | TRIMS_GPIO_PIN_LSD)
   #define KEYS_GPIOE_PINS               (SWITCHES_GPIO_PIN_E_L)
   #define KEYS_GPIOG_PINS               (SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_LVD)
-  #define KEYS_GPIOH_PINS               (SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_E_H | SWITCHES_GPIO_PIN_F | ROTARY_ENCODER_GPIO_PIN_A | ROTARY_ENCODER_GPIO_PIN_B | SWITCHES_GPIO_PIN_GMBR | SWITCHES_GPIO_PIN_GMBL)
-  #define KEYS_GPIOI_PINS               (KEYS_GPIO_PIN_RIGHT | KEYS_GPIO_PIN_UP | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_PGDN | KEYS_GPIO_PIN_LEFT | KEYS_GPIO_PIN_DOWN | SWITCHES_GPIO_PIN_A_L)
+  #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12) // | GPIO_Pin_14 | GPIO_Pin_15)
+  #define KEYS_GPIOI_PINS               (GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_15)
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LSU)
 #endif
 
@@ -260,9 +260,9 @@
 #elif defined(PCBX10)
   #define LED_RCC_AHB1Periph            RCC_AHB1Periph_GPIOE
   #define LED_GPIO                      GPIOE
-  #define LED_RED_GPIO_PIN              GPIO_Pin_5
+  #define LED_RED_GPIO_PIN              GPIO_Pin_2
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_4
-  #define LED_BLUE_GPIO_PIN             GPIO_Pin_6
+  #define LED_BLUE_GPIO_PIN             GPIO_Pin_5
   #define LED_GPIO_PIN                  (LED_RED_GPIO_PIN | LED_GREEN_GPIO_PIN | LED_BLUE_GPIO_PIN)
 #endif
 
@@ -474,6 +474,9 @@
   #define HAPTIC_GPIO_TIMER             TIM9
   #define HAPTIC_GPIO_AF                GPIO_AF_TIM9
   #define HAPTIC_GPIO_PinSource         GPIO_PinSource2
+  #define HAPTIC_TIMER_OUTPUT_ENABLE    TIM_CCER_CC1E
+  #define HAPTIC_TIMER_MODE             TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2
+  #define HAPTIC_TIMER_COMPARE_VALUE    HAPTIC_GPIO_TIMER->CCR1
 #elif defined(PCBX10)
   #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOE
   #define HAPTIC_RCC_APB2Periph         RCC_APB2ENR_TIM9EN
@@ -482,6 +485,9 @@
   #define HAPTIC_GPIO_TIMER             TIM9
   #define HAPTIC_GPIO_AF                GPIO_AF_TIM9
   #define HAPTIC_GPIO_PinSource         GPIO_PinSource6
+  #define HAPTIC_TIMER_OUTPUT_ENABLE    TIM_CCER_CC2E
+  #define HAPTIC_TIMER_MODE             TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2
+  #define HAPTIC_TIMER_COMPARE_VALUE    HAPTIC_GPIO_TIMER->CCR2
 #endif
 
 // Internal Module
