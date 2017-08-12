@@ -549,6 +549,7 @@ void serial2Stop(void);
 
 // BT driver
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
+#define BLUETOOTH_FACTORY_BAUDRATE     9600
 void bluetoothInit(uint32_t baudrate);
 void bluetoothWriteWakeup(void);
 void bluetoothDone(void);

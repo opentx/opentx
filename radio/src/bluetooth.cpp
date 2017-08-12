@@ -64,6 +64,7 @@ char * bluetoothReadline()
 
   while (1) {
     if (!btRxFifo.pop(byte)) {
+      TRACE("NO RESPONSE FROM BT MODULE");
       return NULL;
     }
     TRACE_NOCRLF("%02X ", byte);
@@ -218,6 +219,65 @@ void bluetoothReceiveTrainer()
   }
 }
 
+#if defined(PCBX9E) && defined(DEBUG)
+void bluetoothWakeup(void)
+{
+  if (!g_eeGeneral.bluetoothMode) {
+    if (bluetoothState != BLUETOOTH_INIT) {
+      bluetoothDone();
+      bluetoothState = BLUETOOTH_INIT;
+    }
+  }
+  else {
+    static tmr10ms_t waitEnd = 0;
+    if (bluetoothState != BLUETOOTH_STATE_IDLE) {
+
+      if (bluetoothState == BLUETOOTH_INIT) {
+        bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+        char command[32];
+        char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
+        uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
+        if (len > 0) {
+          for (int i = 0; i < len; i++) {
+            *cur++ = idx2char(g_eeGeneral.bluetoothName[i]);
+          }
+        }
+        else {
+          cur = strAppend(cur, "Taranis-X9E");
+        }
+        strAppend(cur, "\r\n");
+        bluetoothWriteString(command);
+        bluetoothState = BLUETOOTH_WAIT_TTM;
+        waitEnd = get_tmr10ms() + 25; // 250ms
+      }
+      else if (bluetoothState == BLUETOOTH_WAIT_TTM) {
+        if (get_tmr10ms() > waitEnd) {
+            char * line = bluetoothReadline();
+            if (strncmp(line, "OK+", 3)) {
+            bluetoothState = BLUETOOTH_STATE_IDLE;
+            }
+            else {
+              bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+              const char btMessage[] = "TTM:BPS-115200";
+              bluetoothWriteString(btMessage);
+              bluetoothState = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
+              waitEnd = get_tmr10ms() + 250; // 2.5s
+            }
+          }
+        }
+      else if (bluetoothState == BLUETOOTH_WAIT_BAUDRATE_CHANGE) {
+        if (get_tmr10ms() > waitEnd) {
+          bluetoothState = BLUETOOTH_INIT;
+        }
+      }
+    } else if (IS_BLUETOOTH_TRAINER()){
+      bluetoothState = BLUETOOTH_STATE_CONNECTED;
+      bluetoothWriteWakeup();
+      bluetoothSendTrainer();
+    }
+  }
+}
+#else //PCBX9E
 void bluetoothWakeup()
 {
   tmr10ms_t now = get_tmr10ms();
@@ -267,11 +327,7 @@ void bluetoothWakeup()
         }
         strAppend(cur, "\r\n");
         bluetoothWriteString(command);
-#if defined(PCBX9E)
-        bluetoothState = BLUETOOTH_STATE_CONNECTED;
-#else
         bluetoothState = BLUETOOTH_STATE_NAME_SENT;
-#endif
       }
       else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && !strncmp(line, "OK+", 3)) {
         bluetoothWriteString("AT+TXPW3\r\n");
@@ -317,3 +373,4 @@ void bluetoothWakeup()
     }
   }
 }
+#endif

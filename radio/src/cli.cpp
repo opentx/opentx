@@ -1205,11 +1205,14 @@ int cliBlueTooth(const char ** argv)
     char command[32];
     strAppend(strAppend(command, argv[1]), "\r\n");
     bluetoothWriteString(command);
+    char * line = bluetoothReadline();
+    serialPrint("<BT %s", line);
   }
   else if (toInt(argv, 1, &baudrate) > 0) {
     if (baudrate > 0) {
       bluetoothInit(baudrate);
-      serialPrint("BT baudrate set to %d", baudrate);
+      char * line = bluetoothReadline();
+      serialPrint("<BT %s", line);
     }
     else {
       bluetoothDone();

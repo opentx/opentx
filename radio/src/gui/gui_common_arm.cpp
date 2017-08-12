@@ -565,7 +565,11 @@ bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
+#if defined(DEBUG)
   else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+#else
+  else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+#endif
     return false;
   else
     return true;
