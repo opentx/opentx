@@ -120,7 +120,7 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   LimitData * ld = limitAddress(channel);
   int usValue = PPM_CH_CENTER(channel) + channelOutputs[channel] / 2;
-  const uint16_t limPos = ld ? posOnBar(calcRESXto100(ld->offset)) : 0;
+  uint16_t limPos = ld ? posOnBar(calcRESXto100((ld && ld->revert) ? -ld->offset : ld->offset)) : 0;
   uint16_t valPos;
 
   strAppendSigned(&chanString[2], channel + 1, 2);
