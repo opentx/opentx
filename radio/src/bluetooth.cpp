@@ -64,7 +64,9 @@ char * bluetoothReadline()
 
   while (1) {
     if (!btRxFifo.pop(byte)) {
+#if defined(PCBX9E)      // X9E BT module can get unresponsive
       TRACE("NO RESPONSE FROM BT MODULE");
+#endif
       return NULL;
     }
     TRACE_NOCRLF("%02X ", byte);
