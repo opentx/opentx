@@ -672,33 +672,33 @@ const pm_char STR_SUBTYPE_BAYANG[] PROGMEM =     "\006""Bayang""H8S3D";
 const pm_char STR_SUBTYPE_FY326[] PROGMEM =      "\005""FY326""FY319";
 
 const mm_protocol_definition multi_protocols[] = {
-  { MM_RF_PROTO_FLYSKY,     STR_SUBTYPE_FLYSKY,   4,  nullptr             },
-  { MM_RF_PROTO_HUBSAN,     NO_SUBTYPE,           0,  STR_MULTI_VIDFREQ   },
-  { MM_RF_PROTO_FRSKY,      STR_SUBTYPE_FRSKY,    5,  STR_MULTI_RFTUNE    },
-  { MM_RF_PROTO_HISKY,      STR_SUBTYPE_HISKY,    1,  nullptr             },
-  { MM_RF_PROTO_V2X2,       STR_SUBTYPE_V2X2,     1,  nullptr             },
-  { MM_RF_PROTO_DSM2,       STR_SUBTYPE_DSM,      3,  nullptr             },
-  { MM_RF_PROTO_YD717,      STR_SUBTYPE_YD717,    4,  nullptr             },
-  { MM_RF_PROTO_KN,         STR_SUBTYPE_KN,       1,  nullptr             },
-  { MM_RF_PROTO_SYMAX,      STR_SUBTYPE_SYMAX,    1,  nullptr             },
-  { MM_RF_PROTO_SLT,        STR_SUBTYPE_SLT,      1,  nullptr             },
-  { MM_RF_PROTO_CX10,       STR_SUBTYPE_CX10,     7,  nullptr             },
-  { MM_RF_PROTO_CG023,      STR_SUBTYPE_CG023,    2,  nullptr             },
-  { MM_RF_PROTO_BAYANG,     STR_SUBTYPE_BAYANG,   1,  STR_MULTI_TELEMETRY },
-  { MM_RF_PROTO_MT99XX,     STR_SUBTYPE_MT99,     4,  nullptr             },
-  { MM_RF_PROTO_MJXQ,       STR_SUBTYPE_MJXQ,     5,  nullptr             },
-  { MM_RF_PROTO_FY326,      STR_SUBTYPE_FY326,    1,  nullptr             },
-  { MM_RF_PROTO_SFHSS,      NO_SUBTYPE,           0,  STR_MULTI_RFTUNE    },
-  { MM_RF_PROTO_HONTAI,     STR_SUBTYPE_HONTAI,   2,  nullptr             },
-  { MM_RF_PROTO_OLRS,       NO_SUBTYPE,           0,  STR_MULTI_RFPOWER   },
-  { MM_RF_PROTO_FS_AFHDS2A, STR_SUBTYPE_AFHDS2A,  3,  STR_MULTI_SERVOFREQ },
-  { MM_RF_PROTO_Q2X2,       STR_SUBTYPE_Q2X2,     2,  nullptr             },
-  { MM_RF_PROTO_WK_2X01,    STR_SUBTYPE_WK2x01,   5,  nullptr             },
-  { MM_RF_PROTO_Q303,       STR_SUBTYPE_Q303,     3,  nullptr             },
-  { MM_RF_CUSTOM_SELECTED,  NO_SUBTYPE,           7,  STR_MULTI_OPTION    },
-
-  //Sential and default for protocols not listed above (MM_RF_CUSTOM is 0xff()
-  { 0xfe,                   NO_SUBTYPE,           0,  nullptr             }
+  { MM_RF_PROTO_FLYSKY,     4,  STR_SUBTYPE_FLYSKY,   nullptr             },
+  { MM_RF_PROTO_HUBSAN,     0,  NO_SUBTYPE,           STR_MULTI_VIDFREQ   },
+  { MM_RF_PROTO_FRSKY,      5,  STR_SUBTYPE_FRSKY,    STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_HISKY,      1,  STR_SUBTYPE_HISKY,    nullptr             },
+  { MM_RF_PROTO_V2X2,       1,  STR_SUBTYPE_V2X2,     nullptr             },
+  { MM_RF_PROTO_DSM2,       3,  STR_SUBTYPE_DSM,      nullptr             },
+  { MM_RF_PROTO_YD717,      4,  STR_SUBTYPE_YD717,    nullptr             },
+  { MM_RF_PROTO_KN,         1,  STR_SUBTYPE_KN,       nullptr             },
+  { MM_RF_PROTO_SYMAX,      1,  STR_SUBTYPE_SYMAX,    nullptr             },
+  { MM_RF_PROTO_SLT,        1,  STR_SUBTYPE_SLT,      nullptr             },
+  { MM_RF_PROTO_CX10,       7,  STR_SUBTYPE_CX10,     nullptr             },
+  { MM_RF_PROTO_CG023,      2,  STR_SUBTYPE_CG023,    nullptr             },
+  { MM_RF_PROTO_BAYANG,     1,  STR_SUBTYPE_BAYANG,   STR_MULTI_TELEMETRY },
+  { MM_RF_PROTO_MT99XX,     4,  STR_SUBTYPE_MT99,     nullptr             },
+  { MM_RF_PROTO_MJXQ,       5,  STR_SUBTYPE_MJXQ,     nullptr             },
+  { MM_RF_PROTO_FY326,      1,  STR_SUBTYPE_FY326,    nullptr             },
+  { MM_RF_PROTO_SFHSS,      0,  NO_SUBTYPE,           STR_MULTI_RFTUNE    },
+  { MM_RF_PROTO_HONTAI,     2,  STR_SUBTYPE_HONTAI,   nullptr             },
+  { MM_RF_PROTO_OLRS,       0,  NO_SUBTYPE,           STR_MULTI_RFPOWER   },
+  { MM_RF_PROTO_FS_AFHDS2A, 3,  STR_SUBTYPE_AFHDS2A,  STR_MULTI_SERVOFREQ },
+  { MM_RF_PROTO_Q2X2,       2,  STR_SUBTYPE_Q2X2,     nullptr             },
+  { MM_RF_PROTO_WK_2X01,    5,  STR_SUBTYPE_WK2x01,   nullptr             },
+  { MM_RF_PROTO_Q303,       3,  STR_SUBTYPE_Q303,     nullptr             },
+  { MM_RF_CUSTOM_SELECTED,  7,  NO_SUBTYPE,           STR_MULTI_OPTION    },
+                                
+  // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
+  { 0xfe,                   0,  NO_SUBTYPE,           nullptr             }
 };
 
 #undef NO_SUBTYPE
