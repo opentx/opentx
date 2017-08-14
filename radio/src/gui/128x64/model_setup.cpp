@@ -1079,7 +1079,13 @@ void menuModelSetup(event_t event)
         }
 #endif
         if (IS_MODULE_R9M(moduleIdx)) {
-          g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_SPORT_OUT, attr, event);
+          if (IS_TELEMETRY_INTERNAL_MODULE) {
+            lcdDrawTextAlignedLeft(y, STR_SPORT_OUT);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
+          }
+          else {
+            g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_SPORT_OUT, attr, event);
+          }
         }
         break;
       }

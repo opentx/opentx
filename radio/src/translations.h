@@ -604,7 +604,6 @@ extern const pm_char STR_MULTI_TELEMETRY[];
 extern const pm_char STR_MULTI_AUTOBIND[];
 extern const pm_char STR_MULTI_DSM_AUTODTECT[];
 extern const pm_char STR_MULTI_LOWPOWER[];
-extern const pm_char STR_DISABLE_INTERNAL[];
 extern const pm_char STR_MODULE_NO_SERIAL_MODE[];
 extern const pm_char STR_MODULE_NO_INPUT[];
 extern const pm_char STR_MODULE_NO_TELEMETRY[];
@@ -633,6 +632,7 @@ extern const pm_char STR_NONE[];
 extern const pm_char STR_MENUSENSOR[];
 extern const pm_char STR_SENSOR[];
 extern const pm_char STR_COUNTRYCODE[];
+extern const pm_char STR_DISABLE_INTERNAL[];
 #endif
 
 #if defined(TELEMETRY_FRSKY)
