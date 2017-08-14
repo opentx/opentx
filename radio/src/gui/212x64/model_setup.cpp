@@ -231,11 +231,10 @@ int getSwitchWarningsCount()
   return count;
 }
 
+#define IF_INTERNAL_MODULE_ON(x)        (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
 #if defined(TARANIS_INTERNAL_PPM)
-  #define IF_INTERNAL_MODULE_ON(x)        (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
   #define INTERNAL_MODULE_MODE_ROWS       (IS_MODULE_XJT(INTERNAL_MODULE) ? (uint8_t)1 : (uint8_t)0) // Module type + RF protocols
 #else
-  #define IF_INTERNAL_MODULE_ON(x)        (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
   #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
 #endif
 #define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
@@ -704,11 +703,14 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
         if (attr) {
-          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_OFF, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, -1, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+
           if (checkIncDec_Ret) {
             g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
             g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
             g_model.moduleData[INTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+            if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
+              g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
         }
         break;

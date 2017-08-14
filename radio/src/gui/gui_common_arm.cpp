@@ -490,7 +490,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 bool isModuleAvailable(int module)
 {
 #if defined(CROSSFIRE) && !defined(PCBFLAMENCO)
-  if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF) {
+  if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
 #else

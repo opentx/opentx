@@ -491,7 +491,7 @@ enum Protocols {
   PROTO_NONE
 };
 
-enum RFProtocols {
+enum XJTRFProtocols {
   RF_PROTO_OFF = -1,
   RF_PROTO_X16,
   RF_PROTO_D8,

@@ -209,7 +209,7 @@ int getSwitchWarningsCount()
   return count;
 }
 
-#define IF_INTERNAL_MODULE_ON(x)          (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
+#define IF_INTERNAL_MODULE_ON(x)          (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
 #define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
 
 #define INTERNAL_MODULE_MODE_ROWS         (uint8_t)0
@@ -624,7 +624,10 @@ bool menuModelSetup(event_t event)
             g_model.moduleData[0].type = MODULE_TYPE_XJT;
             g_model.moduleData[0].channelsStart = 0;
             g_model.moduleData[0].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+            if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
+              g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
+
         }
         break;
 

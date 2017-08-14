@@ -56,12 +56,6 @@ lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
 }
 #endif
 
-#if defined(STM32)
-#define IS_TELEMETRY_INTERNAL_MODULE (g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF)
-#else
-#define IS_TELEMETRY_INTERNAL_MODULE (false)
-#endif
-
 void processTelemetryData(uint8_t data)
 {
 #if defined(CROSSFIRE)
@@ -179,7 +173,7 @@ void telemetryWakeup()
     }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-    if ((g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF || IS_MODULE_PXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
+    if ((g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE || IS_MODULE_PXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
       AUDIO_SWR_RED();
       POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;
