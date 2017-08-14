@@ -985,8 +985,9 @@ bool menuModelSetup(event_t event)
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
           }
           else {
-            g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_SPORT_OUT, attr, event);
+            g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, attr, event);
           }
+        }
       }
       break;
     case  ITEM_MODEL_EXTERNAL_MODULE_POWER: {
