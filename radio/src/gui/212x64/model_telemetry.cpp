@@ -88,7 +88,7 @@ enum MenuModelTelemetryFrskyItems {
 #endif
 #define RSSI_ROWS                     LABEL(RSSI), 0, 0, 0,
 #define VARIO_RANGE_ROWS              3
-#define TELEMETRY_TYPE_ROWS           (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_NONE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
+#define TELEMETRY_TYPE_ROWS           (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW,
 
 enum SensorFields {
   SENSOR_FIELD_NAME,

@@ -313,6 +313,8 @@ enum BeeperMode {
 #elif defined(PCBSKY9X)
   #define IS_INTERNAL_MODULE_ENABLED() (false)
 #endif
+#define IS_EXTERNAL_MODULE_ENABLED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+
 
 enum UartModes {
 #if defined(CLI) || defined(DEBUG)

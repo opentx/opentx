@@ -563,7 +563,7 @@ bool isTrainerModeAvailable(int mode)
 #elif defined(PCBX9E)
 bool isTrainerModeAvailable(int mode)
 {
-  if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
   else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
@@ -573,7 +573,7 @@ bool isTrainerModeAvailable(int mode)
 #elif defined(PCBX9)
 bool isTrainerModeAvailable(int mode)
 {
-  if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
   else
     return true;

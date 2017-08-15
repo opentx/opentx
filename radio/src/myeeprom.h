@@ -578,8 +578,6 @@ enum AntennaTypes {
   XJT_EXTERNAL_ANTENNA
 };
 
-#define IS_EXTERNAL_MODULE_PRESENT()   (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
-
 enum FailsafeModes {
   FAILSAFE_NOT_SET,
   FAILSAFE_HOLD,
