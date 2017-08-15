@@ -382,7 +382,7 @@ char * getSourceString(char * dest, mixsrc_t idx)
   else if (idx < MIXSRC_FIRST_TIMER) {
     getStringAtIndex(dest, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS);
   }
-  else if (idx < MIXSRC_FIRST_TELEM) {
+  else if (idx <= MIXSRC_LAST_TIMER) {
     if(ZEXIST(g_model.timers[idx-MIXSRC_FIRST_TIMER].name)) {
       zchar2str(dest,g_model.timers[idx-MIXSRC_FIRST_TIMER].name, LEN_TIMER_NAME);
       dest[LEN_TIMER_NAME] = '\0';
