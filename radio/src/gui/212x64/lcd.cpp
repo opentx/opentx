@@ -646,8 +646,16 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_GVAR) {
     drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
   }
-  else if (idx < MIXSRC_FIRST_TELEM) {
+  else if (idx < MIXSRC_FIRST_TIMER) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS, att);
+  }
+  else if (idx < MIXSRC_FIRST_TELEM) {
+    if(ZEXIST(g_model.timers[idx-MIXSRC_FIRST_TIMER].name)) {
+      lcdDrawSizedText(x, y, g_model.timers[idx-MIXSRC_FIRST_TIMER].name, LEN_TIMER_NAME, ZCHAR|att);
+    }
+    else {
+      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS, att);
+    }
   }
   else {
     idx -= MIXSRC_FIRST_TELEM;
