@@ -128,14 +128,15 @@ void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 #define MULTIMODULE_HASOPTIONS(x)       (getMultiProtocolDefinition(x)->optionsstr != nullptr)
 #define MULTIMODULE_OPTIONS_ROW         (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) && MULTIMODULE_HASOPTIONS(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true))) ? (uint8_t) 0: HIDDEN_ROW
 #define MULTI_MAX_RX_NUM(x)             (g_model.moduleData[x].getMultiProtocol(true) == MM_RF_PROTO_OLRS ? 4 : 15)
-// only packed to save flash
-PACK(
-  struct mm_protocol_definition {
-    uint8_t protocol;
-    const pm_char *subTypeString;
-    uint8_t maxSubtype;
-    const char *optionsstr;
-  } );
+
+// When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
+// Keep the order of the fields that the so that the size stays small
+struct mm_protocol_definition {
+  uint8_t protocol;
+  uint8_t maxSubtype;
+  const pm_char *subTypeString;
+  const char *optionsstr;
+};
 
 const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #else

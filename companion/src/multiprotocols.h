@@ -34,8 +34,8 @@ class Multiprotocols
 
     struct radio_mm_definition {
       int protocol;
-      QStringList protocols;
       unsigned int maxSubtype;
+      QStringList protocols;
       QString optionsstr;
     };
 
