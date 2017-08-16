@@ -3433,8 +3433,18 @@ void OpenTxModelData::beforeExport()
   // qDebug() << QString("before export model") << modelData.name;
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) {
-      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
+    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
+      modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
+      if (! (modelData.moduleData[module].protocol == PULSES_PXX_R9M)) {
+        subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
+      }
+      int pxxByte = (modelData.moduleData[module].pxx.power & 0x03)
+                    | modelData.moduleData[module].pxx.receiver_telem_off << 4
+                    | modelData.moduleData[module].pxx.receiver_channel_9_16 << 5;
+      modelData.moduleData[module].ppm.delay = 300 + 50 * pxxByte;
+      modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].pxx.external_antenna;
+      modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].pxx.sport_out;
+
     }
     else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX) {
       subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
@@ -3508,6 +3518,17 @@ void OpenTxModelData::afterImport()
       modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
       modelData.moduleData[module].multi.lowPowerMode = modelData.moduleData[module].ppm.outputType;
       modelData.moduleData[module].multi.autoBindMode = modelData.moduleData[module].ppm.pulsePol;
+    }
+
+    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
+        modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
+      // Do the same for pxx
+      unsigned int pxxByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
+      modelData.moduleData[module].pxx.power = pxxByte & 0x03;
+      modelData.moduleData[module].pxx.receiver_telem_off = static_cast<bool>(pxxByte & (1 << 4));
+      modelData.moduleData[module].pxx.receiver_channel_9_16 = static_cast<bool>(pxxByte & (1 << 5));
+      modelData.moduleData[module].pxx.external_antenna = modelData.moduleData[module].ppm.outputType;
+      modelData.moduleData[module].pxx.sport_out = modelData.moduleData[module].ppm.pulsePol;
     }
   }
 

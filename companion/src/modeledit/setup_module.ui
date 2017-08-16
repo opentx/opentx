@@ -667,6 +667,64 @@
           </item>
          </widget>
         </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_sportOut">
+          <property name="text">
+           <string>S.port output</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="1">
+         <widget class="QComboBox" name="sportOut">
+          <property name="currentText">
+           <string>Disable</string>
+          </property>
+          <property name="sizeAdjustPolicy">
+           <enum>QComboBox::AdjustToContents</enum>
+          </property>
+          <item>
+           <property name="text">
+            <string>Disable</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Enable</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="5" column="0">
+         <widget class="QLabel" name="label_r9mPower">
+          <property name="text">
+           <string>RF Output Power</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QComboBox" name="r9mPower">
+          <item>
+           <property name="text">
+            <string>10 mW</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>100 mW</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>500 mW</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1000 mW</string>
+           </property>
+          </item>
+         </widget>
+        </item>
        </layout>
       </item>
       <item row="1" column="0" colspan="3">
