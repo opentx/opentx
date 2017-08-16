@@ -209,8 +209,8 @@ int getSwitchWarningsCount()
   return count;
 }
 
-#define IF_INTERNAL_MODULE_ON(x)          (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? HIDDEN_ROW : (uint8_t)(x))
-#define IF_EXTERNAL_MODULE_ON(x)          (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE ? HIDDEN_ROW : (uint8_t)(x))
+#define IF_INTERNAL_MODULE_ON(x)          (IS_INTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
+#define IF_EXTERNAL_MODULE_ON(x)          (IS_EXTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
 
 #define INTERNAL_MODULE_MODE_ROWS         (uint8_t)0
 #define INTERNAL_MODULE_CHANNELS_ROWS     IF_INTERNAL_MODULE_ON(1)
@@ -624,7 +624,10 @@ bool menuModelSetup(event_t event)
             g_model.moduleData[0].type = MODULE_TYPE_XJT;
             g_model.moduleData[0].channelsStart = 0;
             g_model.moduleData[0].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+            if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
+              g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
+
         }
         break;
 
@@ -978,8 +981,13 @@ bool menuModelSetup(event_t event)
 #endif
         if (IS_MODULE_R9M(moduleIdx)) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SPORT_OUT);
-          g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+          if (IS_TELEMETRY_INTERNAL_MODULE) {
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
           }
+          else {
+            g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+          }
+        }
       }
       break;
     case  ITEM_MODEL_EXTERNAL_MODULE_POWER: {

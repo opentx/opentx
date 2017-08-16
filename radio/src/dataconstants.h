@@ -309,14 +309,12 @@ enum BeeperMode {
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-#if defined(TARANIS_INTERNAL_PPM)
-   #define IS_INTERNAL_MODULE_ENABLED() (!(g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF &&  g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) && (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE))
-#else
-  #define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF)
-#endif
+#define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE)
 #elif defined(PCBSKY9X)
   #define IS_INTERNAL_MODULE_ENABLED() (false)
 #endif
+#define IS_EXTERNAL_MODULE_ENABLED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+
 
 enum UartModes {
 #if defined(CLI) || defined(DEBUG)

@@ -193,7 +193,7 @@ void stop_cppm_on_heartbeat_capture()
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;                             // Stop counter
   NVIC_DisableIRQ(TRAINER_TIMER_IRQn);                            // Stop Interrupt
 
-  if (!IS_EXTERNAL_MODULE_PRESENT()) {
+  if (!IS_EXTERNAL_MODULE_ENABLED()) {
     EXTERNAL_MODULE_OFF();
   }
 }
@@ -255,7 +255,7 @@ void stop_sbus_on_heartbeat_capture()
   DMA_DeInit(HEARTBEAT_DMA_Stream);
   NVIC_DisableIRQ(HEARTBEAT_USART_IRQn);
 
-  if (!IS_EXTERNAL_MODULE_PRESENT()) {
+  if (!IS_EXTERNAL_MODULE_ENABLED()) {
     EXTERNAL_MODULE_OFF();
   }
 }

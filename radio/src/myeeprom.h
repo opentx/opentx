@@ -491,7 +491,7 @@ enum Protocols {
   PROTO_NONE
 };
 
-enum RFProtocols {
+enum XJTRFProtocols {
   RF_PROTO_OFF = -1,
   RF_PROTO_X16,
   RF_PROTO_D8,
@@ -577,8 +577,6 @@ enum AntennaTypes {
   XJT_INTERNAL_ANTENNA,
   XJT_EXTERNAL_ANTENNA
 };
-
-#define IS_EXTERNAL_MODULE_PRESENT()   (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
 
 enum FailsafeModes {
   FAILSAFE_NOT_SET,

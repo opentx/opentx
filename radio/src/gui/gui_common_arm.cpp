@@ -490,7 +490,7 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 bool isModuleAvailable(int module)
 {
 #if defined(CROSSFIRE) && !defined(PCBFLAMENCO)
-  if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF) {
+  if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
 #else
@@ -563,7 +563,7 @@ bool isTrainerModeAvailable(int mode)
 #elif defined(PCBX9E)
 bool isTrainerModeAvailable(int mode)
 {
-  if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
 #if defined(DEBUG)
   else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
@@ -577,7 +577,7 @@ bool isTrainerModeAvailable(int mode)
 #elif defined(PCBX9)
 bool isTrainerModeAvailable(int mode)
 {
-  if (IS_EXTERNAL_MODULE_PRESENT() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
   else
     return true;
