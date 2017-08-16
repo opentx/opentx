@@ -30,11 +30,6 @@ TaskStack<MIXER_STACK_SIZE> mixerStack;
 OS_TID audioTaskId;
 TaskStack<AUDIO_STACK_SIZE> audioStack;
 
-#if defined(BLUETOOTH)
-OS_TID btTaskId;
-TaskStack<BLUETOOTH_STACK_SIZE> bluetoothStack;
-#endif
-
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 
@@ -185,6 +180,10 @@ void mixerTask(void * pdata)
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
 #endif
 
+#if defined(BLUETOOTH)
+      bluetoothWakeup();
+#endif
+
       if (heartbeat == HEART_WDT_CHECK) {
         wdt_reset();
         heartbeat = 0;
@@ -266,8 +265,6 @@ void menusTask(void * pdata)
   boardOff(); // Only turn power off if necessary
 }
 
-extern void audioTask(void* pdata);
-
 void tasksStart()
 {
   CoInitOS();
@@ -276,16 +273,14 @@ void tasksStart()
   cliStart();
 #endif
 
-#if defined(BLUETOOTH) && defined(PCBSKY9X)
-  btTaskId = CoCreateTask(btTask, NULL, 15, &bluetoothStack.stack[BLUETOOTH_STACK_SIZE-1], BLUETOOTH_STACK_SIZE);
-#endif
-
   mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack.stack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
   menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack.stack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
+
 #if !defined(SIMU)
   // TODO move the SIMU audio in this task
   audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack.stack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
 #endif
+
   audioMutex = CoCreateMutex();
   mixerMutex = CoCreateMutex();
 

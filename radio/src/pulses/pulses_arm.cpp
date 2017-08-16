@@ -39,11 +39,12 @@ uint8_t getRequiredProtocol(uint8_t port)
   switch (port) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     case INTERNAL_MODULE:
-#if defined(TARANIS_INTERNAL_PPM)
       switch (g_model.moduleData[INTERNAL_MODULE].type) {
+#if defined(TARANIS_INTERNAL_PPM)
         case MODULE_TYPE_PPM:
           required_protocol = PROTO_PPM;
           break;
+#endif
         case MODULE_TYPE_XJT:
           required_protocol = PROTO_PXX;
           break;
@@ -51,9 +52,6 @@ uint8_t getRequiredProtocol(uint8_t port)
           required_protocol = PROTO_NONE;
           break;
       }
-#else
-      required_protocol = g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF ? PROTO_NONE : PROTO_PXX;
-#endif
       break;
 #endif
 
@@ -64,6 +62,7 @@ uint8_t getRequiredProtocol(uint8_t port)
           required_protocol = PROTO_PPM;
           break;
         case MODULE_TYPE_XJT:
+        case MODULE_TYPE_R9M:
           required_protocol = PROTO_PXX;
           break;
 #if defined(MULTIMODULE)

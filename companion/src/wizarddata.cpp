@@ -61,7 +61,7 @@ void WizMix::maxMixSwitch(char *name, MixData &mix, int channel, int sw, int wei
 void WizMix::addMix(ModelData &model, Input input, int weight, int channel, int & mixIndex)
 {
   if (input != NO_INPUT)  {
-    bool isHorusOrTaranis = IS_HORUS_OR_TARANIS(getCurrentBoard());
+    bool isHorusOrTaranis = IS_ARM(getCurrentBoard());
     if (input >= RUDDER_INPUT && input <= AILERONS_INPUT) {
       MixData & mix = model.mixData[mixIndex++];
       mix.destCh = channel+1;
@@ -119,7 +119,7 @@ WizMix::operator ModelData()
   // Add the Throttle Cut option
   if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
     model.customFn[switchIndex].swtch.type = SWITCH_TYPE_SWITCH;
-    model.customFn[switchIndex].swtch.index = IS_HORUS_OR_TARANIS(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
+    model.customFn[switchIndex].swtch.index = IS_ARM(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
     model.customFn[switchIndex].enabled = 1;
     model.customFn[switchIndex].func = (AssignFunc)throttleChannel;
     model.customFn[switchIndex].param = -100;

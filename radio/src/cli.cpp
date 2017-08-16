@@ -858,11 +858,6 @@ void printTaskSwitchLog()
     else if (audioTaskId == n) {
       serialPrint("%d: audio", n);
     }
-#if defined(BLUETOOTH)
-    else if (btTaskId == n) {
-      serialPrint("%d: BT", n);
-    }
-#endif
   }
   serialCrlf();
 
@@ -1181,7 +1176,7 @@ int cliShowJitter(const char ** argv)
 int cliGps(const char ** argv)
 {
   int baudrate = 0;
-  
+
   if (argv[1][0] == '$') {
     // send command to GPS
     gpsSendFrame(argv[1]);
@@ -1206,28 +1201,18 @@ int cliGps(const char ** argv)
 int cliBlueTooth(const char ** argv)
 {
   int baudrate = 0;
-  if (argv[1][0] == '$') {
-    // send command to GPS
-    bluetoothWriteString(argv[1] + 1);
-    bluetoothWriteString("\r\n");
-    serialPrint("bt sent: %s", argv[1] + 1);
-    CoTickDelay(100); // 200ms
-    char buff[100];
-    int len = bluetoothRead(buff, 100);
-    buff[len] = 0;
-    serialPrint("bt read: %s", buff);
-
-  }
-  else if (!strcmp(argv[1], "read")) {
-    char buff[100];
-    int len = bluetoothRead(buff, 100);
-    buff[len] = 0;
-    serialPrint("bt read: %s", buff);
+  if (!strncmp(argv[1], "AT", 2) || !strncmp(argv[1], "TTM", 3)) {
+    char command[32];
+    strAppend(strAppend(command, argv[1]), "\r\n");
+    bluetoothWriteString(command);
+    char * line = bluetoothReadline();
+    serialPrint("<BT %s", line);
   }
   else if (toInt(argv, 1, &baudrate) > 0) {
     if (baudrate > 0) {
       bluetoothInit(baudrate);
-      serialPrint("BT baudrate set to %d", baudrate);
+      char * line = bluetoothReadline();
+      serialPrint("<BT %s", line);
     }
     else {
       bluetoothDone();
@@ -1239,7 +1224,7 @@ int cliBlueTooth(const char ** argv)
   }
   return 0;
 }
-#endif  // #if defined(PCBX9E) || defined(PCBHORUS)
+#endif
 
 const CliCommand cliCommands[] = {
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
@@ -1270,7 +1255,7 @@ const CliCommand cliCommands[] = {
   { "gps", cliGps, "<baudrate>|$<command>|trace" },
 #endif
 #if defined(BLUETOOTH)
-  { "bt", cliBlueTooth, "<baudrate>|$<command>|read" },
+  { "bt", cliBlueTooth, "<baudrate>|<command>" },
 #endif
   { NULL, NULL, NULL }  /* sentinel */
 };

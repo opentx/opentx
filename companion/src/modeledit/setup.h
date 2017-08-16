@@ -24,6 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+class RawSwitchFilterItemModel;
+
 namespace Ui {
   class Setup;
   class Timer;
@@ -49,7 +51,8 @@ class TimerPanel : public ModelPanel
 
   private:
     TimerData & timer;
-    Ui::Timer *ui;
+    Ui::Timer * ui;
+    RawSwitchFilterItemModel * rawSwitchItemModel;
 };
 
 class ModulePanel : public ModelPanel
@@ -85,6 +88,8 @@ class ModulePanel : public ModelPanel
     void on_multiSubType_currentIndexChanged(int index);
     void on_autoBind_stateChanged(int state);
     void on_lowPower_stateChanged(int state);
+    void on_sportOut_currentIndexChanged(int index);
+    void on_r9mPower_currentIndexChanged(int index);
     void setChannelFailsafeValue(const int channel, const int value, quint8 updtSb = 0);
     void onFailsafeComboIndexChanged(int index);
     void onFailsafeUsecChanged(int value);

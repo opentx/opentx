@@ -36,18 +36,6 @@ extern uint8_t TrotCount;
 extern uint8_t TezRotary;
 #endif
 
-// Receive buffer state machine state enum
-enum FrSkyDataState {
-  STATE_DATA_IDLE,
-  STATE_DATA_START,
-  STATE_DATA_IN_FRAME,
-  STATE_DATA_XOR,
-#if defined(TELEMETREZ)
-  STATE_DATA_PRIVATE_LEN,
-  STATE_DATA_PRIVATE_VALUE
-#endif
-};
-
 NOINLINE void processFrskyTelemetryData(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
@@ -63,16 +51,9 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
   }
 #endif
 
-#if defined(PCBX9E) && !defined(SIMU) && !defined(BLUETOOTH_CLI_PASSTHROUGH)
-  #define BLUETOOTH_BUFFER_LENGTH     20
-  static uint8_t bluetoothBuffer[BLUETOOTH_BUFFER_LENGTH];
-  static uint8_t bluetoothIndex = 0;
-  bluetoothBuffer[bluetoothIndex++] = data;
-  if (bluetoothIndex == BLUETOOTH_BUFFER_LENGTH) {
-    if (bluetoothReady()) {
-      bluetoothWrite(bluetoothBuffer, BLUETOOTH_BUFFER_LENGTH);
-    }
-    bluetoothIndex = 0;
+#if defined(BLUETOOTH)
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY) {
+    bluetoothForwardTelemetry(data);
   }
 #endif
 

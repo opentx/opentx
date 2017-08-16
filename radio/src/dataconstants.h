@@ -287,6 +287,10 @@ enum BeeperMode {
     TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
 #endif
     TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
+#if defined(BLUETOOTH)
+    TRAINER_MODE_MASTER_BLUETOOTH,
+    TRAINER_MODE_SLAVE_BLUETOOTH,
+#endif
   };
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
@@ -296,15 +300,21 @@ enum BeeperMode {
   };
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-#if defined(TARANIS_INTERNAL_PPM)
-   #define IS_INTERNAL_MODULE_ENABLED() (!(g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF &&  g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) && (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE))
+#if defined(BLUETOOTH)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
+#elif defined(PCBX7)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #else
-  #define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].rfProtocol != RF_PROTO_OFF)
+  #define TRAINER_MODE_MAX()             HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #endif
+
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+#define IS_INTERNAL_MODULE_ENABLED() (g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE)
 #elif defined(PCBSKY9X)
   #define IS_INTERNAL_MODULE_ENABLED() (false)
 #endif
+#define IS_EXTERNAL_MODULE_ENABLED() (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+
 
 enum UartModes {
 #if defined(CLI) || defined(DEBUG)
@@ -1052,6 +1062,12 @@ enum AdjustGvarFunctionParam {
   FUNC_ADJUST_GVAR_SOURCE,
   FUNC_ADJUST_GVAR_GVAR,
   FUNC_ADJUST_GVAR_INCDEC,
+};
+
+enum BluetoothModes {
+  BLUETOOTH_OFF,
+  BLUETOOTH_TELEMETRY,
+  BLUETOOTH_TRAINER,
 };
 
 #endif // _DATACONSTANTS_H_

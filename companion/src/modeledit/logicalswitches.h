@@ -22,7 +22,9 @@
 #define _LOGICALSWITCHES_H_
 
 #include "modeledit.h"
-#include "eeprominterface.h"
+#include "radiodata.h"
+
+class RawSwitchFilterItemModel;
 
 class LogicalSwitchesPanel : public ModelPanel
 {
@@ -58,7 +60,7 @@ class LogicalSwitchesPanel : public ModelPanel
     QDoubleSpinBox  * cswitchDelay[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cswitchSource1[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cswitchSource2[CPN_MAX_LOGICAL_SWITCHES];
-    QStandardItemModel * rawSwitchItemModel;
+    RawSwitchFilterItemModel * rawSwitchItemModel;
     QStandardItemModel * rawSourceItemModel;
     void setSwitchWidgetVisibility(int i);
     int selectedSwitch;

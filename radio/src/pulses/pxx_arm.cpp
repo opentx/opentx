@@ -372,29 +372,27 @@ void setupPulsesPXX(uint8_t port)
       pulseValueLow = pulseValue;
     }
   }
-#if defined(BINDING_OPTIONS)
+
+  uint8_t extra_flags = 0;
+
 /* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
-uint8_t extra_flags = XJT_INTERNAL_ANTENNA;
-  if (port == INTERNAL_MODULE) {
 #if defined(PCBHORUS)
-  extra_flags = g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna;
-#endif
-  extra_flags |= g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off << 1;
-  extra_flags |= g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 << 2;
-}
-putPcmByte(port, extra_flags);
-#else //BINDING_OPTIONS
-  /* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
-#if defined(PCBHORUS)
-  uint8_t antenna = XJT_INTERNAL_ANTENNA;
   if (port == INTERNAL_MODULE) {
-    antenna = g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna;
+    extra_flags |= g_model.moduleData[port].pxx.external_antenna;
   }
-  putPcmByte(port, antenna);
-#else
-  putPcmByte(port, 0);
 #endif
+#if defined(BINDING_OPTIONS)
+  extra_flags |= g_model.moduleData[port].pxx.receiver_telem_off << 1;
+  extra_flags |= g_model.moduleData[port].pxx.receiver_channel_9_16 << 2;
 #endif
+  if (IS_MODULE_R9M(port)) {
+    extra_flags |= g_model.moduleData[port].pxx.power << 3;
+    // Disable s.port if internal module is active
+    if (IS_TELEMETRY_INTERNAL_MODULE || !g_model.moduleData[port].pxx.sport_out)
+      extra_flags |=  (1<< 5);
+  }
+
+  putPcmByte(port, extra_flags);
 
   /* CRC */
   putPcmCrc(port);

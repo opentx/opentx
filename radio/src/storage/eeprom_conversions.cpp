@@ -752,7 +752,7 @@ PACK(typedef struct {
   uint16_t mAhUsed;
   uint32_t globalTimer;
   int8_t   temperatureCalib;
-  uint8_t  btBaudrate;
+  uint8_t  bluetoothBaudrate;
   uint8_t  optrexDisplay;
   uint8_t  sticksGain;
   uint8_t  rotarySteps;
@@ -823,7 +823,7 @@ void ConvertRadioData_217_to_218(RadioData & settings)
   settings.vBatMax = settings_v217.vBatMax;
   settings.backlightBright = settings_v217.backlightBright;
   settings.globalTimer = settings_v217.globalTimer;
-  settings.btBaudrate = settings_v217.btBaudrate;
+  settings.bluetoothBaudrate = settings_v217.bluetoothBaudrate;
   settings.countryCode = settings_v217.countryCode;
   settings.imperial = settings_v217.imperial;
   settings.ttsLanguage[0] = settings_v217.ttsLanguage[0];
@@ -849,7 +849,6 @@ void ConvertRadioData_217_to_218(RadioData & settings)
 #endif
 
 #if defined(PCBX9E)
-  settings.bluetoothEnable = settings_v217.bluetoothEnable;
   memcpy(settings.bluetoothName, settings_v217.bluetoothName, sizeof(settings.bluetoothName));
 #endif
 

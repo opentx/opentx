@@ -87,7 +87,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   uint8_t lines = (height+7)/8;
   assert(lines <= 5);
 
-  for (int8_t i=0; i<width+2; i++) {
+  for (int8_t i=0; i<(int8_t)(width+2); i++) {
     if (x<LCD_W) {
       uint8_t b[5] = { 0 };
       if (i==0) {
@@ -120,7 +120,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
         }
       }
 
-      for (int8_t j=-1; j<=height; j++) {
+      for (int8_t j=-1; j<=(int8_t)(height); j++) {
         bool plot;
         if (j < 0 || ((j == height) && !(FONTSIZE(flags) == SMLSIZE))) {
           plot = false;
@@ -484,7 +484,7 @@ void lcdDrawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFla
 #if !defined(BOOT)
 void lcdDrawFilledRect(coord_t x, scoord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
-  for (scoord_t i=y; i<y+h; i++) {
+  for (scoord_t i=y; i<(scoord_t)(y+h); i++) {
     if ((att&ROUND) && (i==y || i==y+h-1))
       lcdDrawHorizontalLine(x+1, i, w-2, pat, att);
     else
@@ -646,8 +646,16 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   else if (idx <= MIXSRC_LAST_GVAR) {
     drawStringWithIndex(x, y, STR_GV, idx-MIXSRC_GVAR1+1, att);
   }
-  else if (idx < MIXSRC_FIRST_TELEM) {
+  else if (idx < MIXSRC_FIRST_TIMER) {
     lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS, att);
+  }
+  else if (idx <= MIXSRC_LAST_TIMER) {
+    if(ZEXIST(g_model.timers[idx-MIXSRC_FIRST_TIMER].name)) {
+      lcdDrawSizedText(x, y, g_model.timers[idx-MIXSRC_FIRST_TIMER].name, LEN_TIMER_NAME, ZCHAR|att);
+    }
+    else {
+      lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx-MIXSRC_Rud+1-MAX_LOGICAL_SWITCHES-MAX_TRAINER_CHANNELS-MAX_OUTPUT_CHANNELS-MAX_GVARS, att);
+    }
   }
   else {
     idx -= MIXSRC_FIRST_TELEM;
@@ -873,6 +881,9 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
 
 void lcdInvertLine(int8_t line)
 {
+  if (line < 0) return;
+  if (line >= LCD_LINES) return;
+
   uint8_t *p  = &displayBuf[line * 4 * LCD_W];
   for (coord_t x=0; x<LCD_W*4; x++) {
     ASSERT_IN_DISPLAY(p);
@@ -881,7 +892,7 @@ void lcdInvertLine(int8_t line)
 }
 
 #if !defined(BOOT)
-void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
 {
   const pm_uchar *q = img;
   uint8_t w    = pgm_read_byte(q++);
@@ -889,7 +900,7 @@ void lcd_img(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags a
   bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
   q += idx*w*hb;
   for (uint8_t yb = 0; yb < hb; yb++) {
-    for (coord_t i=0; i<w; i++) {
+    for (uint8_t i=0; i<w; i++) {
       uint8_t b = pgm_read_byte(q++);
       uint8_t val = inv ? ~b : b;
       for (int k=0; k<8; k++) {

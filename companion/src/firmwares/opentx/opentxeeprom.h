@@ -101,10 +101,12 @@ class ProtocolsConversionTable: public ConversionTable
       if (IS_HORUS_OR_TARANIS(board)) {
         addConversion(PULSES_CROSSFIRE, val++);
         addConversion(PULSES_MULTIMODULE, val++);
+        addConversion(PULSES_PXX_R9M, val++);
       }
       else if (IS_ARM(board)) {
         val++;
         addConversion(PULSES_MULTIMODULE, val++);
+        addConversion(PULSES_PXX_R9M, val++);
       }
     }
 };

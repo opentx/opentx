@@ -250,7 +250,9 @@ enum RawSwitchType {
   SWITCH_TYPE_OFF,
   SWITCH_TYPE_ONE,
   SWITCH_TYPE_FLIGHT_MODE,
-  SWITCH_TYPE_TIMER_MODE
+  SWITCH_TYPE_TIMER_MODE,
+  SWITCH_TYPE_TELEMETRY,
+  SWITCH_TYPE_SENSOR,
 };
 
 class RawSwitch {
@@ -278,7 +280,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL) const;
+    QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL, const ModelData * const modelData = NULL) const;
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -772,6 +774,7 @@ enum PulsesProtocol {
   PULSES_PXX_DJT,
   PULSES_CROSSFIRE,
   PULSES_MULTIMODULE,
+  PULSES_PXX_R9M,
   PULSES_PROTOCOL_LAST
 };
 
@@ -847,6 +850,13 @@ class ModuleData {
       int optionValue;
     } multi;
 
+    struct {
+      int power;                   // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
+      bool receiver_telem_off;     // false = receiver telem enabled
+      bool receiver_channel_9_16;  // false = pwm out 1-8, true 9-16
+      bool external_antenna;       // false = internal antenna, true = external antenna
+      bool sport_out;
+    } pxx;
 
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
@@ -1110,6 +1120,8 @@ class ModelData {
 
     int getChannelsMax(bool forceExtendedLimits=false) const;
 
+    bool isAvailable(const RawSwitch & swtch) const;
+
   protected:
     void removeGlobalVar(int & var);
 };
@@ -1168,11 +1180,10 @@ class GeneralSettings {
     unsigned int   view;    // main screen view // TODO enum
     bool      disableThrottleWarning;
     bool      fai;
-    int       switchWarning; // -1=down, 0=off, 1=up
     bool      disableMemoryWarning;
     BeeperMode beeperMode;
     bool      disableAlarmWarning;
-    bool      enableTelemetryAlarm;
+    bool      disableRssiPoweroffAlarm;
     BeeperMode hapticMode;
     unsigned int   stickMode; // TODO enum
     int       timezone;
@@ -1207,7 +1218,7 @@ class GeneralSettings {
     unsigned int globalTimer;
     bool bluetoothEnable;
     char bluetoothName[10+1];
-    unsigned int btBaudrate;
+    unsigned int bluetoothBaudrate;
     unsigned int sticksGain;
     unsigned int rotarySteps;
     unsigned int countryCode;

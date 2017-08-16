@@ -19,6 +19,7 @@
  */
 
 #include "logicalswitches.h"
+#include "switchitemmodel.h"
 #include "helpers.h"
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
@@ -28,8 +29,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   Stopwatch s1("LogicalSwitchesPanel");
 
   int channelsMax = model.getChannelsMax(true);
-  rawSwitchItemModel = Helpers::getRawSwitchItemModel(&generalSettings, Helpers::LogicalSwitchesContext);
-  rawSwitchItemModel->setParent(this);
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, LogicalSwitchesContext);
   int srcFlags =  POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0);
   rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, &model, srcFlags);
   rawSourceItemModel->setParent(this);

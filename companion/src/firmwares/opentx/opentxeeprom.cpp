@@ -133,6 +133,7 @@ class SwitchesConversionTable: public ConversionTable {
 
       addConversion(RawSwitch(SWITCH_TYPE_OFF), -val+offset);
       addConversion(RawSwitch(SWITCH_TYPE_ON), val++);
+
       if (version >= 216) {
         addConversion(RawSwitch(SWITCH_TYPE_ONE, -1), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_ONE, 1), val++);
@@ -141,6 +142,15 @@ class SwitchesConversionTable: public ConversionTable {
             addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, -i), -val+offset);
             addConversion(RawSwitch(SWITCH_TYPE_FLIGHT_MODE, i), val++);
           }
+        }
+      }
+
+      if (IS_ARM(board) && version >= 218) {
+        addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, -1), -val+offset);
+        addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), val++);
+        for (int i=1; i<=CPN_MAX_SENSORS; i++) {
+          addConversion(RawSwitch(SWITCH_TYPE_SENSOR, -i), -val+offset);
+          addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
       }
 
@@ -616,7 +626,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
 };
 
 
-int smallGvarToEEPROM(int gvar)
+int smallGvarImport(int gvar)
 {
   if (gvar < -10000) {
     gvar = 128 + gvar + 10000;
@@ -627,7 +637,7 @@ int smallGvarToEEPROM(int gvar)
   return gvar;
 }
 
-int smallGvarToC9x(int gvar)
+int smallGvarExport(int gvar)
 {
   if (gvar > 110) {
     gvar = gvar - 128 - 10000;
@@ -754,7 +764,7 @@ class CurveReferenceField: public TransformedField {
     {
       if (curve.value != 0) {
         _curve_type = (unsigned int)curve.type;
-        _curve_value = smallGvarToEEPROM(curve.value);
+        _curve_value = smallGvarImport(curve.value);
       }
       else {
         _curve_type = 0;
@@ -765,7 +775,7 @@ class CurveReferenceField: public TransformedField {
     virtual void afterImport()
     {
       curve.type = (CurveReference::CurveRefType)_curve_type;
-      curve.value = smallGvarToC9x(_curve_value);
+      curve.value = smallGvarExport(_curve_value);
       qCDebug(eepromImport) << QString("imported CurveReference(%1)").arg(curve.toString());
     }
 
@@ -996,7 +1006,7 @@ class MixField: public TransformedField {
         else
           internalField.Append(new ZCharField<6>(this, mix.name));
       }
-      else if (IS_TARANIS(board) && version >= 217) {
+      else if (IS_TARANIS(board) && version == 217) {
         internalField.Append(new UnsignedField<8>(this, _destCh));
         internalField.Append(new UnsignedField<9>(this, mix.flightModes));
         internalField.Append(new UnsignedField<2>(this, (unsigned int &)mix.mltpx));
@@ -1013,7 +1023,7 @@ class MixField: public TransformedField {
         internalField.Append(new UnsignedField<8>(this, mix.speedDown));
         internalField.Append(new ZCharField<8>(this, mix.name));
       }
-      else if (IS_ARM(board) && version >= 217) {
+      else if (IS_ARM(board) && version == 217) {
         internalField.Append(new UnsignedField<5>(this, _destCh));
         internalField.Append(new UnsignedField<3>(this, mix.mixWarn));
         internalField.Append(new UnsignedField<9>(this, mix.flightModes));
@@ -1172,7 +1182,7 @@ class MixField: public TransformedField {
         }
         else if (mix.curve.type == CurveReference::CURVE_REF_DIFF) {
           _curveMode = 0;
-          _curveParam = smallGvarToEEPROM(mix.curve.value);
+          _curveParam = smallGvarImport(mix.curve.value);
         }
       }
       else {
@@ -1209,7 +1219,7 @@ class MixField: public TransformedField {
         mix.destCh = _destCh + 1;
         if (!IS_ARM(board) || (!IS_STM32(board) && version < 218) || version < 216) {
           if (!_curveMode)
-            mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarToC9x(_curveParam));
+            mix.curve = CurveReference(CurveReference::CURVE_REF_DIFF, smallGvarExport(_curveParam));
           else if (_curveParam > 6)
             mix.curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, _curveParam-6);
           else if (_curveParam < 0)
@@ -1369,13 +1379,13 @@ class InputField: public TransformedField {
 
     virtual void beforeExport()
     {
-      _weight = smallGvarToEEPROM(expo.weight);
+      _weight = smallGvarImport(expo.weight);
 
-      if (IS_HORUS_OR_TARANIS(board) && version >= 216) {
-        _offset = smallGvarToEEPROM(expo.offset);
+      if ((IS_HORUS_OR_TARANIS(board) && version >= 216) || (IS_ARM(board) && version >= 218)) {
+        _offset = smallGvarImport(expo.offset);
       }
 
-      if (!IS_TARANIS(board) || version < 216) {
+      if (!IS_ARM(board) || (!IS_TARANIS(board) && version < 218) || version < 216) {
         if (expo.curve.type==CurveReference::CURVE_REF_FUNC && expo.curve.value) {
           _curveMode = true;
           _curveParam = expo.curve.value;
@@ -1386,33 +1396,31 @@ class InputField: public TransformedField {
         }
         else {
           _curveMode = false;
-          _curveParam = smallGvarToEEPROM(expo.curve.value);
+          _curveParam = smallGvarImport(expo.curve.value);
         }
       }
     }
 
     virtual void afterImport()
     {
-      if (IS_STM32(board)) {
-        if (version < 216) {
-          if (expo.mode) {
-            expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
-          }
+      if (IS_STM32(board) && version < 216) {
+        if (expo.mode) {
+          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
         }
       }
       else if (expo.mode) {
         expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
       }
 
-      expo.weight = smallGvarToC9x(_weight);
+      expo.weight = smallGvarExport(_weight);
 
-      if (IS_STM32(board) && version >= 216) {
-        expo.offset = smallGvarToC9x(_offset);
+      if ((IS_STM32(board) && version >= 216) || (IS_ARM(board) && version >= 218)) {
+        expo.offset = smallGvarExport(_offset);
       }
 
-      if (!IS_ARM(board) || (!IS_STM32(board) && version < 218) || version < 216) {
+      if (!IS_ARM(board) || (!IS_TARANIS(board) && version < 218) || version < 216) {
         if (!_curveMode)
-          expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarToC9x(_curveParam));
+          expo.curve = CurveReference(CurveReference::CURVE_REF_EXPO, smallGvarExport(_curveParam));
         else if (_curveParam > 6)
           expo.curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, _curveParam-6);
         else
@@ -3425,8 +3433,18 @@ void OpenTxModelData::beforeExport()
   // qDebug() << QString("before export model") << modelData.name;
 
   for (int module=0; module<3; module++) {
-    if (modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) {
-      subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
+    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
+      modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
+      if (! (modelData.moduleData[module].protocol == PULSES_PXX_R9M)) {
+        subprotocols[module] = modelData.moduleData[module].protocol - PULSES_PXX_XJT_X16;
+      }
+      int pxxByte = (modelData.moduleData[module].pxx.power & 0x03)
+                    | modelData.moduleData[module].pxx.receiver_telem_off << 4
+                    | modelData.moduleData[module].pxx.receiver_channel_9_16 << 5;
+      modelData.moduleData[module].ppm.delay = 300 + 50 * pxxByte;
+      modelData.moduleData[module].ppm.pulsePol = modelData.moduleData[module].pxx.external_antenna;
+      modelData.moduleData[module].ppm.outputType = modelData.moduleData[module].pxx.sport_out;
+
     }
     else if (modelData.moduleData[module].protocol >= PULSES_LP45 && modelData.moduleData[module].protocol <= PULSES_DSMX) {
       subprotocols[module] = modelData.moduleData[module].protocol - PULSES_LP45;
@@ -3500,6 +3518,17 @@ void OpenTxModelData::afterImport()
       modelData.moduleData[module].multi.optionValue = modelData.moduleData[module].ppm.frameLength;
       modelData.moduleData[module].multi.lowPowerMode = modelData.moduleData[module].ppm.outputType;
       modelData.moduleData[module].multi.autoBindMode = modelData.moduleData[module].ppm.pulsePol;
+    }
+
+    if ((modelData.moduleData[module].protocol >= PULSES_PXX_XJT_X16 && modelData.moduleData[module].protocol <= PULSES_PXX_XJT_LR12) ||
+        modelData.moduleData[module].protocol == PULSES_PXX_R9M) {
+      // Do the same for pxx
+      unsigned int pxxByte = (unsigned  int)((modelData.moduleData[module].ppm.delay - 300) / 50);
+      modelData.moduleData[module].pxx.power = pxxByte & 0x03;
+      modelData.moduleData[module].pxx.receiver_telem_off = static_cast<bool>(pxxByte & (1 << 4));
+      modelData.moduleData[module].pxx.receiver_channel_9_16 = static_cast<bool>(pxxByte & (1 << 5));
+      modelData.moduleData[module].pxx.external_antenna = modelData.moduleData[module].ppm.outputType;
+      modelData.moduleData[module].pxx.sport_out = modelData.moduleData[module].ppm.pulsePol;
     }
   }
 
@@ -3663,7 +3692,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       if (version < 218) internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
       internalField.Append(new UnsignedField<32>(this, generalData.globalTimer));
       if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureCalib)); // TODO
-      internalField.Append(new UnsignedField<8>(this, generalData.btBaudrate)); // TODO
+      internalField.Append(new UnsignedField<8>(this, generalData.bluetoothBaudrate)); // TODO
       if (version < 218) internalField.Append(new BoolField<8>(this, generalData.optrexDisplay)); //TODO
       if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.sticksGain)); // TODO
     }
@@ -3673,7 +3702,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new UnsignedField<1>(this, generalData.imperial));
       if (version >= 218) {
         internalField.Append(new BoolField<1>(this, generalData.jitterFilter));
-        internalField.Append(new SpareBitsField<6>(this));
+        internalField.Append(new BoolField<1>(this, generalData.disableRssiPoweroffAlarm));
+        internalField.Append(new SpareBitsField<5>(this));
       }
       else {
         internalField.Append(new SpareBitsField<7>(this));

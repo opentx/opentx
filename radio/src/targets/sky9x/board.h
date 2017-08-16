@@ -369,7 +369,7 @@ void hapticOn(uint32_t pwmPercent);
 // BlueTooth driver
 #if defined(BLUETOOTH)
 void btInit();
-void btTask(void* pdata);
+void bluetoothTask(void * pdata);
 void btPushByte(uint8_t data);
 #endif
 

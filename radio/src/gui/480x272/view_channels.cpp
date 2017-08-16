@@ -120,7 +120,7 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
   int16_t chanVal = calcRESXto100(channelOutputs[channel]);
   LimitData * ld = limitAddress(channel);
   int usValue = PPM_CH_CENTER(channel) + channelOutputs[channel] / 2;
-  const uint16_t limPos = ld ? posOnBar(calcRESXto100(ld->offset)) : 0;
+  const uint16_t limPos = ld ? posOnBar(calcRESXto100((ld && ld->revert) ? -ld->offset : ld->offset)) : 0;
   uint16_t valPos;
 
   strAppendSigned(&chanString[2], channel + 1, 2);
@@ -131,11 +131,6 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
 
   lcdDrawSolidFilledRect(x, y + Y_OUTBAR, w, h, BARGRAPH_BGCOLOR);
   lcd->drawSolidVerticalLine(x + limPos, y + Y_OUTBAR, h, MAINVIEW_GRAPHICS_COLOR);
-
-  if (chanVal > 0)
-    lcdDrawNumber(x - 10 + w / 2, y + h, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
-  else
-    lcdDrawNumber(x + 10 + w / 2, y + h, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
 
   chanVal = limit<int16_t>(-VIEW_CHANNELS_LIMIT_PCT, chanVal, VIEW_CHANNELS_LIMIT_PCT);
   valPos = posOnBar(chanVal);
@@ -161,6 +156,10 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
     lcd->drawBitmap(x - X_OFFSET + 7, y + 7, chanMonLockedBitmap);
 #endif
   lcd->drawSolidVerticalLine(x + w / 2, y + Y_OUTBAR, h, TEXT_COLOR);
+  if (chanVal > calcRESXto100((ld && ld->revert) ? -ld->offset : ld->offset))
+    lcdDrawNumber(x + limPos, y + h, chanVal, SMLSIZE | TEXT_COLOR | RIGHT, 0, NULL, "%");
+  else
+    lcdDrawNumber(x + limPos, y + h, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
 }
 
 coord_t drawChannelsMonitorLegend(coord_t x, const pm_char * s, int color)

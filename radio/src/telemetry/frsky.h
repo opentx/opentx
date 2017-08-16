@@ -24,6 +24,18 @@
 #include "../definitions.h"
 #include "telemetry_holders.h"
 
+// Receive buffer state machine state enum
+enum FrSkyDataState {
+  STATE_DATA_IDLE,
+  STATE_DATA_START,
+  STATE_DATA_IN_FRAME,
+  STATE_DATA_XOR,
+#if defined(TELEMETREZ)
+  STATE_DATA_PRIVATE_LEN,
+  STATE_DATA_PRIVATE_VALUE
+#endif
+};
+
 #define FRSKY_SPORT_BAUDRATE      57600
 #define FRSKY_D_BAUDRATE          9600
 

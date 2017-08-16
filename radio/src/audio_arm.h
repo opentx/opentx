@@ -147,7 +147,6 @@ struct Tone {
   {};
 };
 
-
 struct AudioFragment {
   uint8_t type;
   uint8_t id;
@@ -209,7 +208,7 @@ class WavContext {
     inline void clear() { fragment.clear(); };
 
     int mixBuffer(AudioBuffer *buffer, int volume, unsigned int fade);
-    bool hasId(uint8_t id) const { return fragment.id == id; };
+    bool hasPromptId(uint8_t id) const { return fragment.id == id; };
 
     void setFragment(const char * filename, uint8_t repeat, uint8_t id)
     {
@@ -262,7 +261,7 @@ class MixedContext {
     bool isEmpty() const { return fragment.type == FRAGMENT_EMPTY; };
     bool isTone() const { return fragment.type == FRAGMENT_TONE; };
     bool isFile() const { return fragment.type == FRAGMENT_FILE; };
-    bool hasId(uint8_t id) const { return fragment.id == id; };
+    bool hasPromptId(uint8_t id) const { return fragment.id == id; };
 
     int mixBuffer(AudioBuffer *buffer, int toneVolume, int wavVolume, unsigned int fade)
     {
@@ -414,12 +413,23 @@ class AudioFragmentFifo
   public:
     AudioFragmentFifo() : ridx(0), widx(0), fragments() {};
 
-    bool hasId(uint8_t id)
+    bool hasPromptId(uint8_t id)
     {
       uint8_t i = ridx;
       while (i != widx) {
         AudioFragment & fragment = fragments[i];
         if (fragment.id == id) return true;
+        i = nextIdx(i);
+      }
+      return false;
+    }
+
+    bool removePromptById(uint8_t id)
+    {
+      uint8_t i = ridx;
+      while (i != widx) {
+        AudioFragment & fragment = fragments[i];
+        if (fragment.id == id) fragment.clear();
         i = nextIdx(i);
       }
       return false;
@@ -502,14 +512,17 @@ extern uint8_t currentSpeakerVolume;
 extern AudioQueue audioQueue;
 
 enum {
-  ID_PLAY_FROM_SD_MANAGER = 254,
-  ID_PLAY_BYE = 255
+  // IDs for special functions [0:64]
+  // IDs for global functions [64:128]
+  ID_PLAY_PROMPT_BASE = 128,
+  ID_PLAY_FROM_SD_MANAGER = 255,
 };
 
 void codecsInit();
 void audioEvent(unsigned int index);
 void audioPlay(unsigned int index, uint8_t id=0);
 void audioStart();
+void audioTask(void * pdata);
 
 #if defined(AUDIO) && defined(BUZZER)
   #define AUDIO_BUZZER(a, b)  do { a; b; } while(0)
@@ -536,7 +549,7 @@ void audioTimerCountdown(uint8_t timer, int value);
 #define AUDIO_KEY_ERROR()        audioKeyError()
 
 #define AUDIO_HELLO()            audioPlay(AUDIO_HELLO)
-#define AUDIO_BYE()              audioPlay(AU_BYE, ID_PLAY_BYE)
+#define AUDIO_BYE()              audioPlay(AU_BYE, ID_PLAY_PROMPT_BASE + AU_BYE)
 #define AUDIO_WARNING1()         AUDIO_BUZZER(audioEvent(AU_WARNING1), beep(3))
 #define AUDIO_WARNING2()         AUDIO_BUZZER(audioEvent(AU_WARNING2), beep(2))
 #define AUDIO_TX_BATTERY_LOW()   AUDIO_BUZZER(audioEvent(AU_TX_BATTERY_LOW), beep(4))

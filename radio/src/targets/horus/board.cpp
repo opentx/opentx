@@ -119,6 +119,7 @@ void boardInit()
                          SERIAL_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
+                         BT_RCC_AHB1Periph |
                          AUDIO_RCC_AHB1Periph |
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
@@ -145,6 +146,7 @@ void boardInit()
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
                          EXTMODULE_RCC_APB2Periph |
+                         BT_RCC_APB2Periph |
                          BL_RCC_APB2Periph,
                          ENABLE);
 
@@ -180,10 +182,10 @@ void boardInit()
   hapticInit();
 
 #if defined(BLUETOOTH)
-  bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
-#if defined(PCBX12S)
+#if defined(INTERNAL_GPS)
   gpsInit(GPS_USART_BAUDRATE);
 #endif
 
