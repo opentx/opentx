@@ -11,7 +11,6 @@
     <message>
         <location filename="../wizarddialog.cpp" line="438"/>
         <source>Yes, controlled by a single channel</source>
-        <translation>Oui, contrôlés par une 1 voie</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="439"/>
@@ -657,7 +656,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="579"/>
         <source>CH</source>
-        <translation type="unfinished"></translation>
+        <translation>VOIE</translation>
     </message>
 </context>
 <context>
@@ -962,7 +961,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="1114"/>
         <source>CV</source>
-        <translation type="unfinished"></translation>
+        <translation>CB</translation>
     </message>
 </context>
 <context>
@@ -2218,7 +2217,7 @@ Veuillez utiliser Zadig pour installer le pilote.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="732"/>
         <source>FM</source>
-        <translation type="unfinished"></translation>
+        <translation>PV</translation>
     </message>
 </context>
 <context>
@@ -3059,7 +3058,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2314"/>
         <source>RSSI Poweroff Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver avertissement RSSI</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1484"/>
@@ -3317,7 +3316,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1465"/>
         <source>Low EEPROM Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Avertissement EEPROM faible</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2036"/>
@@ -3387,7 +3386,7 @@ Are you sure ?</source>
     <message>
         <location filename="../eeprominterface.cpp" line="602"/>
         <source>GV</source>
-        <translation type="unfinished">VG</translation>
+        <translation>VG</translation>
     </message>
 </context>
 <context>
@@ -3823,7 +3822,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="532"/>
         <source>I</source>
-        <translation type="unfinished"></translation>
+        <translation>E</translation>
     </message>
 </context>
 <context>
@@ -3953,7 +3952,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="704"/>
         <source>L</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -6443,43 +6442,43 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="673"/>
         <source>S.port output</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortie S.Port</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="680"/>
         <location filename="../modeledit/setup_module.ui" line="687"/>
         <source>Disable</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactivé</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="692"/>
         <source>Enable</source>
-        <translation type="unfinished">Actif</translation>
+        <translation>Activé</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="700"/>
         <source>RF Output Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Puissance RF</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="708"/>
         <source>10 mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="713"/>
         <source>100 mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="718"/>
         <source>500 mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="723"/>
         <source>1000 mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="779"/>
@@ -9228,7 +9227,8 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../companion.cpp" line="78"/>
         <source>We have found existing settings for Companion version: %1.
 Do you want to import them?</source>
-        <translation type="unfinished"></translation>
+        <translation>Nous avons trouvé des paramètres existants pour Companion version: %1.
+Voulez-vous les importer ?</translation>
     </message>
 </context>
 <context>
@@ -10726,7 +10726,7 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
         <location filename="../eeprominterface.cpp" line="588"/>
         <location filename="../eeprominterface.cpp" line="741"/>
         <source>TELE</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -12028,7 +12028,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="572"/>
         <source>TR</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
