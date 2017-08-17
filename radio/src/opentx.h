@@ -1396,7 +1396,9 @@ union ReusableBuffer
   // 275 bytes
   struct
   {
+#if !defined(CPUARM)
     char listnames[NUM_BODY_LINES][LEN_MODEL_NAME];
+#endif
 #if defined(EEPROM_RLC) && LCD_W < 212
     uint16_t eepromfree;
 #endif
@@ -1407,6 +1409,10 @@ union ReusableBuffer
     char mainname[LEN_MODEL_NAME];
 #endif
   } modelsel;
+
+  struct {
+    char msg[64];
+  } msgbuf;
 
   // 103 bytes
   struct

@@ -1043,7 +1043,7 @@
 #define TR_SET                         BUTTON("Déf")
 #define TR_TRAINER                     "Ecolage"
 #define TR_ANTENNAPROBLEM              CENTER "Antenne radio défectueuse!"
-#define TR_MODELIDUSED                 TR("ID déjà affecté", "No de modèle déjà utilisé")
+#define TR_MODELIDUSED                 TR("ID affecté à :", "No de récepteur utilisé par :")
 #define TR_MODULE                      INDENT "Type de module"
 #define TR_TELEMETRY_TYPE              TR("Type tél.", "Type télémesure")
 #define TR_TELEMETRY_SENSORS           "Capteurs"

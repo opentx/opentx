@@ -398,17 +398,44 @@ void applyDefaultTemplate()
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
   uint8_t modelId = g_model.header.modelId[module];
+  uint8_t additionalOnes = 0;
+  char * name = reusableBuffer.msgbuf.msg;
+
+  memset(reusableBuffer.msgbuf.msg, 0, sizeof(reusableBuffer.msgbuf.msg));
+
   if (modelId != 0) {
-    for (uint8_t i=0; i<MAX_MODELS; i++) {
+    for (uint8_t i = 0; i < MAX_MODELS; i++) {
       if (i != index) {
-        for (uint8_t j=0; j<NUM_MODULES; j++) {
-          if (modelId == modelHeaders[i].modelId[j]) {
-            POPUP_WARNING(STR_MODELIDUSED);
-            return;
+        if (modelId == modelHeaders[i].modelId[module]) {
+          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.msgbuf.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
+            if (reusableBuffer.msgbuf.msg[0] != 0) {
+              name = strAppend(name, ", ");
+            }
+            if (modelHeaders[i].name[0] == 0) {
+              name = strAppend(name, STR_MODEL);
+              name = strAppendUnsigned(name+strlen(name),i, 2);
+            }
+            else {
+              name += zchar2str(name, modelHeaders[i].name, LEN_MODEL_NAME);
+            }
+          }
+          else {
+            additionalOnes++;
           }
         }
       }
     }
+  }
+
+  if (additionalOnes) {
+    name = strAppend(name, " (+");
+    name = strAppendUnsigned(name, additionalOnes);
+    name = strAppend(name, ")");
+  }
+
+  if (reusableBuffer.msgbuf.msg[0] != 0) {
+    POPUP_WARNING(STR_MODELIDUSED);
+    SET_WARNING_INFO(reusableBuffer.msgbuf.msg, sizeof(reusableBuffer.msgbuf.msg), 0);
   }
 }
 #endif
