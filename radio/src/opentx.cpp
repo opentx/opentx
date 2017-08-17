@@ -399,7 +399,7 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
 {
   uint8_t modelId = g_model.header.modelId[module];
   uint8_t additionalOnes = 0;
-  char *name = reusableBuffer.msgbuf.msg;
+  char * name = reusableBuffer.msgbuf.msg;
 
   memset(reusableBuffer.msgbuf.msg, 0, sizeof(reusableBuffer.msgbuf.msg));
 
@@ -426,11 +426,13 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
       }
     }
   }
+
   if (additionalOnes) {
-    name = strAppend(name," (+");
+    name = strAppend(name, " (+");
     name = strAppendUnsigned(name, additionalOnes);
-    name = strAppend(name,")");
+    name = strAppend(name, ")");
   }
+
   if (reusableBuffer.msgbuf.msg[0] != 0) {
     POPUP_WARNING(STR_MODELIDUSED);
     SET_WARNING_INFO(reusableBuffer.msgbuf.msg, sizeof(reusableBuffer.msgbuf.msg), 0);
