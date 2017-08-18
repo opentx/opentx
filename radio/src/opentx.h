@@ -1412,7 +1412,7 @@ union ReusableBuffer
 
   struct {
     char msg[64];
-  } msgbuf;
+  } msgbuf; // used in modelsel and modelsetup (only in a warning message)
 
   // 103 bytes
   struct
