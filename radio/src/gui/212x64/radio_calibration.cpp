@@ -154,7 +154,7 @@ void menuCommonCalib(event_t event)
       lcdDrawText(LCD_W-LCD_W/5+2*FW, LCD_H/2 -FH, "\302", DBLSIZE|BLINK);
 #if !defined(SIMU)
       for (uint8_t i=0; i<4; i++) {
-        ana_direction[i] = (int8_t);
+        ana_direction[i] = (int8_t) 1;
         axis[i] = anaIn(i) - reusableBuffer.calib.midVals[i];
         course += abs(axis[i]);
       }
