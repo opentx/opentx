@@ -1238,11 +1238,10 @@ void registerOpenTxFirmwares()
 
 
   /* FrSky X10 board */
-/* Disabled for now
   firmware = new OpenTxFirmware("opentx-x10", QObject::tr("FrSky X10"), BOARD_X10);
   addOpenTxFrskyOptions(firmware);
   registerOpenTxFirmware(firmware);
-*/
+
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", QObject::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
   firmware->addOption("heli", QObject::tr("Enable HELI menu and cyclic mix support"));
