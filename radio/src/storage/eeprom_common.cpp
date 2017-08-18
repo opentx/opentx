@@ -24,6 +24,8 @@
 #include "opentx.h"
 #include "timers.h"
 
+extern int8_t ana_direction[NUM_ANALOGS];
+
 void eeLoadModel(uint8_t index)
 {
   if (index < MAX_MODELS) {
@@ -102,6 +104,11 @@ void storageReadRadioSettings()
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
       currentLanguagePack = languagePacks[i];
+    }
+  }
+  for (uint8_t i=0; i<4;i++) {
+    if ((g_eeGeneral.invertStickAxis & ( 1 << (i+1) )) >> (i+1)) {
+      ana_direction[i] = -ana_direction[i];
     }
   }
 #endif

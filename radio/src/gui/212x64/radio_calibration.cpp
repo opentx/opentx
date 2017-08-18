@@ -20,18 +20,18 @@
 
 #include "opentx.h"
 
+extern int8_t ana_direction[NUM_ANALOGS];
+
 #define XPOT_DELTA    10
 #define XPOT_DELAY    10 /* cycles */
 #define BAR_SPACING   12
 #define BAR_HEIGHT    22
 
-extern int8_t ana_direction[NUM_ANALOGS];
-
 enum CalibrationState {
   CALIB_START = 0,
+  CALIB_DETECT_DIRECTION,
   CALIB_SET_MIDPOINT,
   CALIB_MOVE_STICKS,
-  CALIB_DETECT_DIRECTION,
   CALIB_STORE,
   CALIB_FINISHED
 };
@@ -114,6 +114,36 @@ void menuCommonCalib(event_t event)
         lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUTOSTART);
       }
       break;
+      case CALIB_DETECT_DIRECTION:
+        // LEARN STICK DIRECTION (HALL STICKS,..)
+        STICK_SCROLL_DISABLE();
+        lcdDrawText(LCD_W/2 - (FW*strlen("MOVE STICKS AS SHOWN")/2) + FW, MENU_HEADER_HEIGHT+FH, "MOVE STICK AS SHOWN", INVERS);
+        lcdDrawText(LCD_W/5 - 4*FW, LCD_H/2+FH, "\304", DBLSIZE|BLINK);
+        lcdDrawText(LCD_W-LCD_W/5+2*FW, LCD_H/2 -FH, "\302", DBLSIZE|BLINK);
+  #if !defined(SIMU)
+        for (uint8_t i=0; i<4; i++) {
+          axis[i] = anaIn(i) - 1024;
+          course += abs(axis[i]);
+        }
+        if(course > 3000) {  // both sticks are near corners
+          g_eeGeneral.invertStickAxis=0;
+          for (uint8_t i=0; i<4; i++) {
+            if(i < 2) {
+              ana_direction[i] = (axis[i] < -500) ? ana_direction[i] : -ana_direction[i];
+            }
+            else {
+              ana_direction[i] = (axis[i] > 500) ? ana_direction[i] : -ana_direction[i];
+            }
+            if ( ana_direction[i] == -1) {
+              g_eeGeneral.invertStickAxis |= 1 << i;
+            }
+          }
+          TRACE("INVERTS : %d", g_eeGeneral.invertStickAxis);
+          storageDirty(EE_GENERAL);
+          reusableBuffer.calib.state++;
+        }
+  #endif
+        break;
 
     case CALIB_SET_MIDPOINT:
       // SET MIDPOINT
@@ -144,35 +174,6 @@ void menuCommonCalib(event_t event)
           g_eeGeneral.calib[i].spanPos = v - v/STICK_TOLERANCE;
         }
       }
-      break;
-
-    case CALIB_DETECT_DIRECTION:
-      // LEARN STICK DIRECTION (HALL STICKS,..)
-      STICK_SCROLL_DISABLE();
-      lcdDrawText(LCD_W/2 - (FW*strlen("MOVE STICKS AS SHOWN")/2) + FW, MENU_HEADER_HEIGHT+FH, "MOVE STICK AS SHOWN", INVERS);
-      lcdDrawText(LCD_W/5 - 4*FW, LCD_H/2+FH, "\304", DBLSIZE|BLINK);
-      lcdDrawText(LCD_W-LCD_W/5+2*FW, LCD_H/2 -FH, "\302", DBLSIZE|BLINK);
-#if !defined(SIMU)
-      for (uint8_t i=0; i<4; i++) {
-        ana_direction[i] = (int8_t) 1;
-        axis[i] = anaIn(i) - reusableBuffer.calib.midVals[i];
-        course += abs(axis[i]);
-      }
-      if(course > 3000) {  // both sticks are near corners
-
-        ana_direction[0] = (axis[0] < -500) ? (int8_t)1 : (int8_t)-1;
-        ana_direction[1] = (axis[1] < -500) ? (int8_t)1 : (int8_t)-1;
-        ana_direction[2] = (axis[2] > 500) ? (int8_t)1 : (int8_t)-1;
-        ana_direction[3] = (axis[3] > 500) ? (int8_t)1 : (int8_t)-1;
-        g_eeGeneral.invertStickAxis = 0;
-        for (uint8_t i=0; i<4; i++) {
-          if (ana_direction[i] == (int8_t)-1) {
-            g_eeGeneral.invertStickAxis |= 1 << i;
-          }
-        }
-        reusableBuffer.calib.state++;
-      }
-#endif
       break;
 
     case CALIB_STORE:
