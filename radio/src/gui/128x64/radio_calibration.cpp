@@ -20,12 +20,15 @@
 
 #include "opentx.h"
 
+extern int8_t ana_direction[NUM_ANALOGS];
+
 #define XPOT_DELTA 10
 #define XPOT_DELAY 10 /* cycles */
 
 enum CalibrationState {
   CALIB_START = 0,
   CALIB_SET_MIDPOINT,
+  CALIB_DETECT_DIRECTION,
   CALIB_MOVE_STICKS,
   CALIB_STORE,
   CALIB_FINISHED
@@ -58,6 +61,8 @@ void menuCommonCalib(event_t event)
       break;
   }
 
+  int16_t axis[4];
+  int course = 0;
   switch (reusableBuffer.calib.state) {
     case CALIB_START:
       // START CALIBRATION
@@ -75,6 +80,31 @@ void menuCommonCalib(event_t event)
         reusableBuffer.calib.loVals[i] = 15000;
         reusableBuffer.calib.hiVals[i] = -15000;
         reusableBuffer.calib.midVals[i] = anaIn(i);
+      }
+      break;
+
+    case CALIB_DETECT_DIRECTION:
+      // LEARN STICK DIRECTION (HALL STICKS,..)
+      STICK_SCROLL_DISABLE();
+      lcdDrawText(LCD_W/2 - (FW*strlen("MOVE STICKS AS SHOWN")/2) + FW/2, MENU_HEADER_HEIGHT+FH, "MOVE STICK AS SHOWN", INVERS);
+      lcdDrawText(LCD_W/5 - FW, LCD_H/2+FH, "\304", DBLSIZE|BLINK);
+      lcdDrawText(LCD_W-LCD_W/5, LCD_H/2, "\302", DBLSIZE|BLINK);
+
+      for (uint8_t i=0; i<NUM_STICKS; i++) {
+        axis[i] = anaIn(i) - reusableBuffer.calib.midVals[i];
+        course += abs(axis[i]);
+        if(course > 3000) {  // both sticks are near corners
+#if !defined(SIMU)
+          ana_direction[0] = (axis[0] < -500) ? (int8_t)1 : (int8_t)-1;
+          TRACE("Setting stick 0 to %d", ana_direction[0]);
+          ana_direction[1] = (axis[1] < -500) ? (int8_t)1 : (int8_t)-1;
+          TRACE("Setting stick 0 to %d", ana_direction[0]);
+          ana_direction[2] = (axis[2] > 500) ? (int8_t)1 : (int8_t)-1;
+          TRACE("Setting stick 0 to %d", ana_direction[0]);
+          ana_direction[3] = (axis[3] > 500) ? (int8_t)1 : (int8_t)-1;
+          TRACE("Setting stick 0 to %d", ana_direction[0]);
+#endif
+        }
       }
       break;
 
