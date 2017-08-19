@@ -50,9 +50,6 @@ void drawPotsBars()
 
 void menuCommonCalib(event_t event)
 {
-  int16_t axis[4];
-  int course = 0;
-
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) { // get low and high vals for sticks and trims
     int16_t vt = anaIn(i);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
@@ -120,25 +117,20 @@ void menuCommonCalib(event_t event)
         lcdDrawText(LCD_W/2 - (FW*strlen("MOVE STICKS AS SHOWN")/2) + FW, MENU_HEADER_HEIGHT+FH, "MOVE STICK AS SHOWN", INVERS);
         lcdDrawText(LCD_W/5 - 4*FW, LCD_H/2+FH, "\304", DBLSIZE|BLINK);
         lcdDrawText(LCD_W-LCD_W/5+2*FW, LCD_H/2 -FH, "\302", DBLSIZE|BLINK);
-  #if !defined(SIMU)
-        for (uint8_t i=0; i<4; i++) {
+        for (uint8_t i=0, count=0; i<4; i++) {
+          int16_t axis[4];
           axis[i] = anaIn(i) - 1024;
-          course += abs(axis[i]);
-        }
-        if(course > 3000) {  // both sticks are near corners
-          for (uint8_t i=0; i<4; i++) {
-            if(i < 2) {
-              ana_direction[i] = (axis[i] < -500) ? ana_direction[i] : -ana_direction[i];
-            }
-            else {
-              ana_direction[i] = (axis[i] > 500) ? ana_direction[i] : -ana_direction[i];
-            }
-            g_eeGeneral.calib[i].invertedAxis = (ana_direction[i] == -1);
-          }
-          storageDirty(EE_GENERAL);
-          reusableBuffer.calib.state++;
-        }
+          if(abs(axis[i]) > 500) count++;
+  #if !defined(SIMU)
+          if (i<2) ana_direction[i] = (axis[i] < -500) ? ana_direction[i] : -ana_direction[i];
+          else ana_direction[i] = (axis[i] > 500) ? ana_direction[i] : -ana_direction[i];
+          g_eeGeneral.calib[i].invertedAxis = (ana_direction[i] == -1);
   #endif
+          if(count > 3) {  // both sticks are near corners
+            storageDirty(EE_GENERAL);
+            reusableBuffer.calib.state++;
+          }
+        }
         break;
 
     case CALIB_SET_MIDPOINT:
