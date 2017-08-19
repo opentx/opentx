@@ -107,9 +107,9 @@ void storageReadRadioSettings()
     }
   }
   for (uint8_t i=0; i<4;i++) {
-    if ((g_eeGeneral.invertStickAxis & ( 1 << (i+1) )) >> (i+1)) {
-      ana_direction[i] = -ana_direction[i];
-    }
+#if !defined(SIMU)
+    ana_direction[i] = (g_eeGeneral.calib[i].invertedAxis) ? -1 : 1;
+#endif
   }
 #endif
 }

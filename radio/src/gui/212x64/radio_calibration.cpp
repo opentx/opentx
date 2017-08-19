@@ -126,7 +126,6 @@ void menuCommonCalib(event_t event)
           course += abs(axis[i]);
         }
         if(course > 3000) {  // both sticks are near corners
-          g_eeGeneral.invertStickAxis=0;
           for (uint8_t i=0; i<4; i++) {
             if(i < 2) {
               ana_direction[i] = (axis[i] < -500) ? ana_direction[i] : -ana_direction[i];
@@ -134,11 +133,8 @@ void menuCommonCalib(event_t event)
             else {
               ana_direction[i] = (axis[i] > 500) ? ana_direction[i] : -ana_direction[i];
             }
-            if ( ana_direction[i] == -1) {
-              g_eeGeneral.invertStickAxis |= 1 << i;
-            }
+            g_eeGeneral.calib[i].invertedAxis = (ana_direction[i] == -1);
           }
-          TRACE("INVERTS : %d", g_eeGeneral.invertStickAxis);
           storageDirty(EE_GENERAL);
           reusableBuffer.calib.state++;
         }

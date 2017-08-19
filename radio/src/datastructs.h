@@ -861,7 +861,8 @@ PACK(struct StepsCalibData {
 #endif
 
 PACK(struct CalibData {
-  int16_t mid;
+  int16_t mid:15;
+  int16_t invertedAxis:1;
   int16_t spanNeg;
   int16_t spanPos;
 });
@@ -897,8 +898,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t  imperial:1); \
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
     NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1); \
-    NOBACKUP(uint8_t  invertStickAxis:4); \
-    NOBACKUP(uint8_t  spareExtraArm:1); \
+    NOBACKUP(uint8_t  spareExtraArm:5); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
     NOBACKUP(int8_t   wavVolume:4); \
