@@ -1414,12 +1414,12 @@ union ReusableBuffer
     char msg[64];
   } msgbuf;
 
-  // 103 bytes
   struct
   {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
+    int16_t axisDirection[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     uint8_t state;
 #if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
     struct {

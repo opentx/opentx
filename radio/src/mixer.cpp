@@ -533,7 +533,10 @@ void evalInputs(uint8_t mode)
     else {
       CalibData * calib = &g_eeGeneral.calib[i];
       v -= calib->mid;
-      v = v * (int32_t) RESX / (max((int16_t) 100, (v > 0 ? calib->spanPos : calib->spanNeg)));
+      int16_t d = v > 0 ? calib->spanPos : calib->spanNeg;
+      if (abs(d) < 100)
+        d = 100;
+      v = v * (int32_t) RESX / d;
     }
 #endif
 

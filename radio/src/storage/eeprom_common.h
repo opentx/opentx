@@ -40,4 +40,5 @@ void selectModel(uint8_t sub);
 
 void storageReadRadioSettings();
 void storageReadCurrentModel();
+void convertRadioCalibData();
 

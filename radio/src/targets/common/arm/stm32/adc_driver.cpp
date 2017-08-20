@@ -20,29 +20,13 @@
 
 #include "opentx.h"
 
-#if defined(SIMU)
-  // not needed
-#elif defined(PCBX10)
-  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, -1, 1,1};
-#elif defined(PCBX9E)
- int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1};
- uint8_t ana_mapping[NUM_ANALOGS] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
-                                             10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
-                                             11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
-                                             9 /*TX_VOLTAGE*/ };
-#elif defined(PCBX9DP)
-  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  1,1,-1,  1,1,  1};
-#elif defined(PCBX7)
-  int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
-#elif defined(REV4a)
-  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
-#else
-  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
-#endif
-
 #if defined(PCBX9E)
   #define NUM_ANALOGS_ADC      10
   #define NUM_ANALOGS_ADC_EXT  (NUM_ANALOGS - 10)
+  uint8_t ana_mapping[NUM_ANALOGS] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
+                                             10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
+                                             11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
+                                             9 /*TX_VOLTAGE*/ };
 #else
   #define NUM_ANALOGS_ADC      NUM_ANALOGS
 #endif
@@ -196,9 +180,6 @@ uint16_t getAnalogValue(uint8_t index)
 #if defined(PCBX9E)
   index = ana_mapping[index];
 #endif
-  if (ana_direction[index] < 0)
-    return 4095 - adcValues[index];
-  else
-    return adcValues[index];
+  return adcValues[index];
 }
 #endif // #if !defined(SIMU)

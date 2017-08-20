@@ -1222,6 +1222,47 @@ void ConvertModel_217_to_218(ModelData & model)
 #endif
 }
 
+
+void convertRadioCalibData()
+{
+#if defined(PCBX10)
+  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, -1, 1,1};
+#elif defined(PCBX9E)
+  int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1};
+#elif defined(PCBX9DP)
+  int8_t ana_direction[NUM_ANALOGS] = {1, -1, 1, -1, 1, 1, -1, 1, 1, 1};
+#elif defined(PCBX7)
+  int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
+#elif defined(REV4a)
+  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
+#else
+  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
+#endif
+  // Do not do calib conversion on wrong checksum
+  if (g_eeGeneral.chkSum != evalChkSum())
+    return;
+
+  if (!g_eeGeneral.calibDataConverted)
+  {
+    for (int i = 0; i < NUM_ANALOGS; i++) {
+      if (ana_direction[i] < 0 && !IS_POT_MULTIPOS(i)) {
+#if defined(PCBTARANIS) && !defined(PCBX7) && !defined(SIMU)
+        if (i!=POT1 && i!=SLIDER1)
+#endif
+        g_eeGeneral.calib[i].mid = (int16_t) (2047 - g_eeGeneral.calib[i].mid);
+
+        int16_t spanPos = g_eeGeneral.calib[i].spanPos;
+        g_eeGeneral.calib[i].spanPos = -g_eeGeneral.calib[i].spanNeg;
+        g_eeGeneral.calib[i].spanNeg = -spanPos;
+      }
+
+    }
+    g_eeGeneral.calibDataConverted = 1;
+    // Write correct checksum
+    g_eeGeneral.chkSum = evalChkSum();
+  }
+}
+
 void ConvertModel(int id, int version)
 {
   eeLoadModelData(id);

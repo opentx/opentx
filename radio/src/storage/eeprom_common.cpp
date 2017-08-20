@@ -24,8 +24,6 @@
 #include "opentx.h"
 #include "timers.h"
 
-extern int8_t ana_direction[NUM_ANALOGS];
-
 void eeLoadModel(uint8_t index)
 {
   if (index < MAX_MODELS) {
@@ -106,13 +104,9 @@ void storageReadRadioSettings()
       currentLanguagePack = languagePacks[i];
     }
   }
-  for (uint8_t i=0; i<4;i++) {
-#if !defined(SIMU)
-    if (g_eeGeneral.calib[i].invertedAxis) {
-      ana_direction[i] = - ana_direction[i];
-    }
 #endif
-  }
+#if defined(CPUARM)
+  convertRadioCalibData();
 #endif
 }
 
