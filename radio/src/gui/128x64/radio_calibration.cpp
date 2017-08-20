@@ -76,13 +76,19 @@ void menuCommonCalib(event_t event)
       lcdDrawText(LCD_W/5 - FW, LCD_H/2+FH, "\304", DBLSIZE|BLINK);
       lcdDrawText(LCD_W-LCD_W/5, LCD_H/2, "\302", DBLSIZE|BLINK);
       for (uint8_t i=0, count=0; i<4; i++) {
-        int16_t axis[4];
-        axis[i] = anaIn(i) - 1024;
-        if(abs(axis[i]) > 500) count++;
 #if !defined(SIMU)
-        if (i<2) ana_direction[i] = (axis[i] < -500) ? ana_direction[i] : -ana_direction[i];
-        else ana_direction[i] = (axis[i] > 500) ? ana_direction[i] : -ana_direction[i];
-        g_eeGeneral.calib[i].invertedAxis = (ana_direction[i] == -1);
+        if (i<2) {
+          if (axis[i] > 500) {
+            ana_direction[i] = -ana_direction[i];
+            g_eeGeneral.calib[i].invertedAxis = (g_eeGeneral.calib[i].invertedAxis) ? 0 : 1;
+          }
+        }
+        else {
+          if (axis[i] < -500) {
+            ana_direction[i] = -ana_direction[i];
+            g_eeGeneral.calib[i].invertedAxis = (g_eeGeneral.calib[i].invertedAxis) ? 0 : 1;
+          }
+        }
 #endif
         if(count > 3) {  // both sticks are near corners
           storageDirty(EE_GENERAL);
