@@ -1244,7 +1244,7 @@ void convertRadioCalibData()
 
   if (!g_eeGeneral.calibDataConverted)
   {
-    for (int i = 0; i < NUM_ANALOGS; i++) {
+    for (int i = 0; i < NUM_CALIBDATA; i++) {
       if (ana_direction[i] < 0 && !IS_POT_MULTIPOS(i)) {
 #if defined(PCBTARANIS) && !defined(PCBX7) && !defined(SIMU)
         if (i!=POT1 && i!=SLIDER1)
