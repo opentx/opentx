@@ -27,10 +27,9 @@ extern int8_t ana_direction[NUM_ANALOGS];
 
 enum CalibrationState {
   CALIB_START = 0,
-#if defined(STM32)
-  CALIB_DETECT_DIRECTION,
-#endif
   CALIB_SET_MIDPOINT,
+  CALIB_SET_MINIMUM,
+  CALIB_DETECT_DIRECTION,
   CALIB_MOVE_STICKS,
   CALIB_STORE,
   CALIB_FINISHED
@@ -71,7 +70,6 @@ void menuCommonCalib(event_t event)
       }
       break;
 
-#if defined(STM32)
     case CALIB_DETECT_DIRECTION:
       // LEARN STICK DIRECTION (HALL STICKS,..)
       STICK_SCROLL_DISABLE();
@@ -80,29 +78,44 @@ void menuCommonCalib(event_t event)
       lcdDrawText(LCD_W-LCD_W/5, LCD_H/2, "\302", DBLSIZE|BLINK);
       for (uint8_t i=0, count=0; i<4; i++) {
         int16_t axis[4];
-        axis[i] = anaIn(i) - 1024;
-        if(abs(axis[i]) > 500) count++;
-#if !defined(SIMU)
-        if (i<2) {
+        axis[i] = anaIn(i) - reusableBuffer.calib.midVals[i];
+        if (abs(axis[i]) > 500) count++;
+
+
+        if (i < 2) {
           if (axis[i] > 500) {
-            ana_direction[i] = -ana_direction[i];
-            g_eeGeneral.calib[i].invertedAxis = (g_eeGeneral.calib[i].invertedAxis) ? 0 : 1;
+            reusableBuffer.calib.axisDirection[i] = -1;
+          }
+          else {
+            reusableBuffer.calib.axisDirection[i] = 1;
           }
         }
         else {
-          if (axis[i] < -500) {
-            ana_direction[i] = -ana_direction[i];
-            g_eeGeneral.calib[i].invertedAxis = (g_eeGeneral.calib[i].invertedAxis) ? 0 : 1;
+          if (axis[i] > 500) {
+            reusableBuffer.calib.axisDirection[i] = 1;
+          }
+          else {
+            reusableBuffer.calib.axisDirection[i] = -1;
           }
         }
-#endif
+
         if(count > 3) {  // both sticks are near corners
-          storageDirty(EE_GENERAL);
           reusableBuffer.calib.state++;
         }
       }
       break;
 
+    case CALIB_SET_MINIMUM:
+      // Tell user to set pots to minimum,
+      lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, "Put all pots/slider to minimum position", INVERS);
+      lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+        if (anaIn(i) - reusableBuffer.calib.midVals[i] > 0)
+          reusableBuffer.calib.axisDirection[i] = -1;
+        else
+          reusableBuffer.calib.axisDirection[i] = 1;
+      }
+      break;
     case CALIB_SET_MIDPOINT:
       // SET MIDPOINT
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_SETMIDPOINT, INVERS);
@@ -114,7 +127,6 @@ void menuCommonCalib(event_t event)
         reusableBuffer.calib.midVals[i] = anaIn(i);
       }
       break;
-#endif
 
     case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS

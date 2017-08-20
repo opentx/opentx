@@ -22,11 +22,6 @@
 
 uint16_t adcValues[NUM_ANALOGS];
 
-#if defined(FRSKY_STICKS)
-const char ana_direction[NUM_ANALOGS] = {1, 1, 0, 1 ,0 ,1 ,0, 0, 0};
-#endif
-
-
 // Settings for mode register ADC_MR
 // USEQ off - silicon problem, doesn't work
 // TRANSFER = 3
@@ -101,16 +96,6 @@ void adcSingleRead()
   if (get_tmr10ms() >= 100 && temperature > maxTemperature) {
     maxTemperature = temperature;
   }
-
-  // adc direction correct
-#if defined(FRSKY_STICKS)
-  uint32_t i ;
-  for (i=0; i<NUM_ANALOGS; i++) {
-    if (ana_direction[i]) {
-      adcValues[i] = 4096-adcValues[i];
-    }
-  }  
-#endif
 }
 
 void adcRead()

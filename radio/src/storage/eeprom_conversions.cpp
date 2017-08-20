@@ -1222,9 +1222,9 @@ void ConvertModel_217_to_218(ModelData & model)
 #endif
 }
 
-
 void convertRadioCalibData()
 {
+#if defined(PCBHORUS) || defined(PCBTARANIS)
 #if defined(PCBX10)
   int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, -1, 1,1};
 #elif defined(PCBX9E)
@@ -1233,8 +1233,6 @@ void convertRadioCalibData()
   int8_t ana_direction[NUM_ANALOGS] = {1, -1, 1, -1, 1, 1, -1, 1, 1, 1};
 #elif defined(PCBX7)
   int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
-#elif defined(REV4a)
-  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
 #else
   int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
 #endif
@@ -1261,6 +1259,7 @@ void convertRadioCalibData()
     // Write correct checksum
     g_eeGeneral.chkSum = evalChkSum();
   }
+#endif
 }
 
 void ConvertModel(int id, int version)
