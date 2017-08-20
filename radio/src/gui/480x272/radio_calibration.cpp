@@ -30,6 +30,8 @@
 enum CalibrationState {
   CALIB_START = 0,
   CALIB_SET_MIDPOINT,
+  CALIB_SET_MIMIMUM,
+  CALIB_DETECT_DIRECTION,
   CALIB_MOVE_STICKS,
   CALIB_STORE,
   CALIB_FINISHED
@@ -159,6 +161,50 @@ bool menuCommonCalib(event_t event)
       }
       break;
 
+    case CALIB_SET_MINIMUM:
+      // Tell user to set pots to minimum,
+      lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
+      lcdDrawText(50, 3+FH, "Put all pots/slider to minimum position", MENU_TITLE_COLOR);
+      for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
+        if (anaIn(i) - reusableBuffer.calib.midVals[i] > 0)
+          reusableBuffer.calib.axisDirection[i] = -1;
+        else
+          reusableBuffer.calib.axisDirection[i] = 1;
+      }
+
+    case CALIB_DETECT_DIRECTION:
+      lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
+      lcdDrawText(50, 3+FH, "Put left to bottom left and right stick to upper right corner", MENU_TITLE_COLOR);
+
+      for (uint8_t i=0, count=0; i<4; i++) {
+        int16_t axis[4];
+        axis[i] = anaIn(i) - reusableBuffer.calib.midVals[i];
+        if (abs(axis[i]) > 500) count++;
+
+
+        if (i < 2) {
+          if (axis[i] > 500) {
+            reusableBuffer.calib.axisDirection[i] = -1;
+          }
+          else {
+            reusableBuffer.calib.axisDirection[i] = 1;
+          }
+        }
+        else {
+          if (axis[i] > 500) {
+            reusableBuffer.calib.axisDirection[i] = 1;
+          }
+          else {
+            reusableBuffer.calib.axisDirection[i] = -1;
+          }
+        }
+
+        if(count > 3) {  // both sticks are near corners
+          reusableBuffer.calib.state++;
+        }
+      }
+      break;
+
     case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS
       lcdDrawText(50, 3, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
@@ -199,6 +245,7 @@ bool menuCommonCalib(event_t event)
 
     case CALIB_STORE:
       g_eeGeneral.chkSum = evalChkSum();
+      g_eeGeneral.calibDataConverted = 1;
       storageDirty(EE_GENERAL);
       menuCalibrationState = CALIB_FINISHED;
       break;

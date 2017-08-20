@@ -248,13 +248,8 @@ void adcRead()
 }
 
 #if !defined(SIMU)
-const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
-
 uint16_t getAnalogValue(uint8_t index)
 {
-  if (ana_direction[index] < 0)
-    return 4095 - adcValues[index];
-  else
-    return adcValues[index];
+  return adcValues[index];
 }
 #endif // #if !defined(SIMU)

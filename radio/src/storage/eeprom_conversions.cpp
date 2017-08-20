@@ -1226,15 +1226,17 @@ void convertRadioCalibData()
 {
 #if defined(PCBHORUS) || defined(PCBTARANIS)
 #if defined(PCBX10)
-  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, -1, 1,1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, -1, 1,1};
 #elif defined(PCBX9E)
-  int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1};
 #elif defined(PCBX9DP)
-  int8_t ana_direction[NUM_ANALOGS] = {1, -1, 1, -1, 1, 1, -1, 1, 1, 1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1, -1, 1, -1, 1, 1, -1, 1, 1, 1};
 #elif defined(PCBX7)
-  int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
+#elif defined(PCBHORUS)
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,  -1,-1,  -1,1, 0,0,0};
 #else
-  int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
 #endif
   // Do not do calib conversion on wrong checksum
   if (g_eeGeneral.chkSum != evalChkSum())
