@@ -4,7 +4,6 @@ option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
 
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
-  set(STICKS "STANDARD" CACHE STRING "Sticks type (STANDARD/HORUS)")
   set(CPU_TYPE STM32F4)
   set(CPU_TYPE_FULL STM32F407xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
@@ -20,9 +19,6 @@ if(PCB STREQUAL X9E)
     startup_stm32f40_41xxx.s
     )
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
-  if(STICKS STREQUAL HORUS)
-    add_definitions(-DHORUS_STICKS)
-  endif()
   set(GUI_DIR 212x64)
   set(BITMAPS_TARGET taranis_bitmaps)
   set(LCD_DRIVER lcd_driver_spi.cpp)

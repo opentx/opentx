@@ -27,7 +27,9 @@ extern int8_t ana_direction[NUM_ANALOGS];
 
 enum CalibrationState {
   CALIB_START = 0,
+#if defined(CPUARM)
   CALIB_DETECT_DIRECTION,
+#endif  
   CALIB_SET_MIDPOINT,
   CALIB_MOVE_STICKS,
   CALIB_STORE,
@@ -69,6 +71,7 @@ void menuCommonCalib(event_t event)
       }
       break;
 
+#if defined(CPUARM)
     case CALIB_DETECT_DIRECTION:
       // LEARN STICK DIRECTION (HALL STICKS,..)
       STICK_SCROLL_DISABLE();
@@ -111,6 +114,7 @@ void menuCommonCalib(event_t event)
         reusableBuffer.calib.midVals[i] = anaIn(i);
       }
       break;
+#endif
 
     case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS
