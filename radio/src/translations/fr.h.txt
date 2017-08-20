@@ -850,36 +850,20 @@
   #define TR_RECEIVER_NUM              "Récepteur"
   #define TR_RECEIVER                  "Récepteur"
 #endif
-<<<<<<< HEAD
 #define TR_MULTI_RFTUNE                TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
-#define TR_MULTI_TELEMETRY                     "Telemetry"
+#define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
 #define TR_MULTI_RFPOWER               TR(INDENT "Puiss. RF", INDENT "Puissance RF")
 #define TR_MULTI_OPTION                TR(INDENT "Option", INDENT "Option perso")
 #define TR_MULTI_AUTOBIND              TR(INDENT "Bind auto", INDENT "Bind automatique")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodét.", INDENT "Autodétection")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
+#define TR_SPORT_OUT                   INDENT "Telemetry"
 #define TR_DISABLE_INTERNAL            TR("Désact intRF", "Désact. RF interne")
-#define TR_MODULE_NO_SERIAL_MOD        E  TR("Mode série?", "Pas en mode série")
+#define TR_MODULE_NO_SERIAL_MODE       TR("Mode série?", "Pas en mode série")
 #define TR_MODULE_NO_INPUT             TR("Pas de sign.", "Aucun signal série")
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_BINDING              "Bind..."
-=======
-#define TR_MULTI_RFTUNE        TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
-#define TR_MULTI_TELEMETRY             "Telemetry"
-#define TR_MULTI_VIDFREQ       TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
-#define TR_MULTI_RFPOWER       TR(INDENT "Puiss. RF", INDENT "Puissance RF")
-#define TR_MULTI_OPTION        TR(INDENT "Option", INDENT "Option perso")
-#define TR_MULTI_AUTOBIND      TR(INDENT "Bind auto", INDENT "Bind automatique")
-#define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodét.", INDENT "Autodétection")
-#define TR_MULTI_LOWPOWER      TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
-#define TR_SPORT_OUT                   INDENT "Telemetry"
-#define TR_DISABLE_INTERNAL    TR("Désact intRF", "Désact. RF interne")
-#define TR_MODULE_NO_SERIAL_MODE  TR("Mode série?", "Pas en mode série")
-#define TR_MODULE_NO_INPUT     TR("Pas de sign.", "Aucun signal série")
-#define TR_MODULE_NO_TELEMETRY TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
-#define TR_MODULE_BINDING      "Bind..."
->>>>>>> Implement R9M protocol according to PXX spec 1.7
 #define TR_BINDING_MODE1               "Ch1-8 Telem ON"
 #define TR_BINDING_MODE2               "Ch1-8 Telem OFF"
 #define TR_BINDING_MODE3               "Ch9-16 Telem ON"
