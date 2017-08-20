@@ -76,6 +76,9 @@ void menuCommonCalib(event_t event)
       lcdDrawText(LCD_W/5 - FW, LCD_H/2+FH, "\304", DBLSIZE|BLINK);
       lcdDrawText(LCD_W-LCD_W/5, LCD_H/2, "\302", DBLSIZE|BLINK);
       for (uint8_t i=0, count=0; i<4; i++) {
+        int16_t axis[4];
+        axis[i] = anaIn(i) - 1024;
+        if(abs(axis[i]) > 500) count++;
 #if !defined(SIMU)
         if (i<2) {
           if (axis[i] > 500) {
