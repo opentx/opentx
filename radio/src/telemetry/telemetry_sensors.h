@@ -36,46 +36,50 @@ class TelemetryItem
       uint32_t distFromEarthAxis;
     };
 
-    union {
-      int32_t valueMin;         // min store
-      int32_t pilotLongitude;
-    };
+    union {                    // This union allows to use text sensors to also use the space of valueMin and valueMax
+      struct {
+        union {
+          int32_t valueMin;         // min store
+          int32_t pilotLongitude;
+        };
 
-    union {
-      int32_t valueMax;         // max store
-      int32_t pilotLatitude;
-    };
+        union {
+          int32_t valueMax;         // max store
+          int32_t pilotLatitude;
+        };
+      };
 
-    uint8_t lastReceived;       // for detection of sensor loss
-
-    union {
-      struct {
-        int32_t  offsetAuto;
-        int32_t  filterValues[TELEMETRY_AVERAGE_COUNT];
-      } std;
-      struct {
-        uint16_t prescale;
-      } consumption;
-      struct {
-        uint8_t   count;
-        CellValue values[6];
-      } cells;
-      struct {
-        uint16_t year;          // full year (4 digits)
-        uint8_t  month;
-        uint8_t  day;
-        uint8_t  hour;
-        uint8_t  min;
-        uint8_t  sec;
-      } datetime;
-      struct {
-        int32_t latitude;
-        int32_t longitude;
-        // pilot longitude is stored in min
-        // pilot latitude is stored in max
-        // distFromEarthAxis is stored in value
-      } gps;
+      union  {
+        struct {
+          int32_t offsetAuto;
+          int32_t filterValues[TELEMETRY_AVERAGE_COUNT];
+        } std;
+        struct {
+          uint16_t prescale;
+        } consumption;
+        struct {
+          uint8_t count;
+          CellValue values[6];
+        } cells;
+        struct {
+          uint16_t year;          // full year (4 digits)
+          uint8_t month;
+          uint8_t day;
+          uint8_t hour;
+          uint8_t min;
+          uint8_t sec;
+        } datetime;
+        struct {
+          int32_t latitude;
+          int32_t longitude;
+          // pilot longitude is stored in min
+          // pilot latitude is stored in max
+          // distFromEarthAxis is stored in value
+        } gps;
+      };
       char text[16];
+
+      uint8_t lastReceived;       // for detection of sensor loss
     };
 
     static uint8_t now()
