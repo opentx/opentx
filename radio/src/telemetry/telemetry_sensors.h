@@ -36,8 +36,6 @@ class TelemetryItem
       uint32_t distFromEarthAxis;
     };
 
-    uint8_t lastReceived;       // for detection of sensor loss
-
     union {                    // This union allows to use text sensors to also use the space of valueMin and valueMax
       struct {
         union {
@@ -80,6 +78,8 @@ class TelemetryItem
         } gps;
       };
       char text[16];
+
+      uint8_t lastReceived;       // for detection of sensor loss
     };
 
     static uint8_t now()
