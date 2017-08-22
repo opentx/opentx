@@ -41,6 +41,7 @@ option(TRACE_SIMPGMSPACE "Turn on traces in simpgmspace.cpp" ON)
 option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(BINDING_OPTIONS "Allow advanced frsky bindings" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
+option(FONT "Use SQT5 instead of standard font" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -334,6 +335,10 @@ endif()
 
 if(FRSKY_STICKS)
   add_definitions(-DFRSKY_STICKS)
+endif()
+
+if(FONT)
+  add_definitions(-DFONT=SQT5)
 endif()
 
 if(EEPROM_VARIANT_NEEDED)
