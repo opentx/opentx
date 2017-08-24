@@ -200,7 +200,7 @@ void bluetoothSendTrainer()
 void bluetoothForwardTelemetry(uint8_t data)
 {
   bluetoothBuffer[bluetoothBufferIndex++] = data;
-  if (bluetoothBufferIndex == BLUETOOTH_LINE_LENGTH || (data == START_STOP && bluetoothBufferIndex > 2*FRSKY_SPORT_PACKET_SIZE)) {
+  if (data == START_STOP && bluetoothBufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
     bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
     bluetoothBufferIndex = 0;
   }
@@ -287,7 +287,7 @@ void bluetoothWakeup()
   if (now < bluetoothWakeupTime)
     return;
 
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_OFF || !IS_BLUETOOTH_TRAINER()) {
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_OFF) {
     if (bluetoothState != BLUETOOTH_STATE_OFF) {
       bluetoothDone();
       bluetoothState = BLUETOOTH_STATE_OFF;
@@ -297,21 +297,31 @@ void bluetoothWakeup()
   else {
     bluetoothWakeupTime = now + 2;
     bluetoothWriteWakeup();
-    if (bluetoothState == BLUETOOTH_STATE_CONNECTED) {
-      if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
+    if (bluetoothState == BLUETOOTH_STATE_OFF) {
+      bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+      bluetoothWakeupTime = now + 50;
+      bluetoothState = BLUETOOTH_STATE_INIT;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_CONNECTED) {
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
         bluetoothReceiveTrainer();
       }
       else {
-        bluetoothSendTrainer();
+        if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH) {
+          bluetoothSendTrainer();
+        }
         char * line = bluetoothReadline();
         if (!strcmp(line, "ERROR")) {
-          bluetoothState = BLUETOOTH_STATE_IDLE;
+          TRACE("BT Reset...");
+          bluetoothDone();
+          bluetoothState = BLUETOOTH_STATE_OFF;
+          bluetoothWakeupTime = now + 500;
         }
       }
     }
     else {
       char * line = bluetoothReadline();
-      if (bluetoothState == BLUETOOTH_STATE_OFF && IS_BLUETOOTH_TRAINER()) {
+      if (bluetoothState == BLUETOOTH_STATE_INIT) {
         char command[32];
         char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
@@ -353,7 +363,6 @@ void bluetoothWakeup()
         bluetoothState = BLUETOOTH_STATE_DISCOVER_START;
       }
       else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strncmp(line, "OK+DISC:", 8)) {
-        TRACE("STOP");
         strcpy(bluetoothFriend, &line[8]); // TODO quick & dirty
       }
       else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {

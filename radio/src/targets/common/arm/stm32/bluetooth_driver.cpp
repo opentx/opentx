@@ -86,6 +86,9 @@ void bluetoothInit(uint32_t baudrate)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
+  btRxFifo.clear();
+  btTxFifo.clear();
+
   GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // open bluetooth
 }
 
