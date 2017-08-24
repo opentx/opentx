@@ -1255,3 +1255,4 @@ Olivier Petri
 Alfredo Mac Donald
 Erich Strebel
 Robert Goillandeau
+Joel Lopez
