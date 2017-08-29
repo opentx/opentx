@@ -103,8 +103,6 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       pilotLatitude = newVal;
       distFromEarthAxis = getDistFromEarthAxis(newVal);
     }
-
-
     gps.latitude = newVal;
     lastReceived = now();
     return;
