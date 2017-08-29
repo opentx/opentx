@@ -279,7 +279,7 @@ void bluetoothWakeup(void)
     }
   }
 }
-#else //PCBX9E
+#else // PCBX9E
 void bluetoothWakeup()
 {
   tmr10ms_t now = get_tmr10ms();
@@ -322,6 +322,10 @@ void bluetoothWakeup()
     else {
       char * line = bluetoothReadline();
       if (bluetoothState == BLUETOOTH_STATE_INIT) {
+        bluetoothWriteString("AT+BAUD4\r\n");
+        bluetoothState = BLUETOOTH_STATE_BAUDRATE_SENT;
+      }
+      else if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_SENT && !strncmp(line, "OK+", 3)) {
         char command[32];
         char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
@@ -341,7 +345,7 @@ void bluetoothWakeup()
         bluetoothWriteString(command);
         bluetoothState = BLUETOOTH_STATE_NAME_SENT;
       }
-      else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && !strncmp(line, "OK+", 3)) {
+      else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && (!strncmp(line, "OK+", 3) || !strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
         bluetoothWriteString("AT+TXPW3\r\n");
         bluetoothState = BLUETOOTH_STATE_POWER_SENT;
       }
