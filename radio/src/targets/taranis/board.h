@@ -549,9 +549,14 @@ void serial2Stop(void);
 
 // BT driver
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
+#if defined(PCBX9E)
 #define BLUETOOTH_FACTORY_BAUDRATE     9600
+#else
+#define BLUETOOTH_FACTORY_BAUDRATE     57600
+#endif
 void bluetoothInit(uint32_t baudrate);
 void bluetoothWriteWakeup(void);
+uint8_t bluetoothIsWriting(void);
 void bluetoothDone(void);
 
 // LED driver

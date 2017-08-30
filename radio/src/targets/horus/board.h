@@ -526,9 +526,11 @@ void serial2Stop(void);
 int sbusGetByte(uint8_t * byte);
 
 // BT driver
+#define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
 void bluetoothInit(uint32_t baudrate);
 void bluetoothWriteWakeup(void);
+uint8_t bluetoothIsWriting(void);
 void bluetoothDone(void);
 
 extern uint8_t currentTrainerMode;

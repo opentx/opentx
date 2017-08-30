@@ -88,6 +88,7 @@ void bluetoothInit(uint32_t baudrate)
 
   btRxFifo.clear();
   btTxFifo.clear();
+  bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 
   GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // open bluetooth
 }
@@ -139,4 +140,9 @@ void bluetoothWriteWakeup(void)
     GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
 #endif
   }
+}
+
+uint8_t bluetoothIsWriting(void)
+{
+  return bluetoothWriteState != BLUETOOTH_WRITE_IDLE;
 }

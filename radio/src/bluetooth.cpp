@@ -44,10 +44,13 @@ tmr10ms_t bluetoothWakeupTime = 0;
 
 void bluetoothWrite(const uint8_t * data, uint8_t length)
 {
+  TRACE_NOCRLF("BT>");
   for (int i=0; i<length; i++) {
-    TRACE_NOCRLF("%02X ", data[i]);
+    TRACE_NOCRLF(" %02X", data[i]);
     btTxFifo.push(data[i]);
   }
+  TRACE_NOCRLF("\r\n");
+  bluetoothWriteWakeup();
 }
 
 void bluetoothWriteString(const char * str)
@@ -56,9 +59,10 @@ void bluetoothWriteString(const char * str)
   while (*str != 0) {
     btTxFifo.push(*str++);
   }
+  bluetoothWriteWakeup();
 }
 
-char * bluetoothReadline()
+char * bluetoothReadline(bool error_reset)
 {
   uint8_t byte;
 
@@ -71,12 +75,26 @@ char * bluetoothReadline()
     }
     TRACE_NOCRLF("%02X ", byte);
     if (byte == '\n') {
-      bluetoothBuffer[bluetoothBufferIndex] = '\0';
-      bluetoothBufferIndex = 0;
-      TRACE("BT< %s", bluetoothBuffer);
-      return (char *)bluetoothBuffer;
+      if (bluetoothBufferIndex > 2 && bluetoothBuffer[bluetoothBufferIndex-1] == '\r') {
+        bluetoothBuffer[bluetoothBufferIndex-1] = '\0';
+        bluetoothBufferIndex = 0;
+        TRACE("BT< %s", bluetoothBuffer);
+        if (error_reset && !strcmp((char *)bluetoothBuffer, "ERROR")) {
+          TRACE("BT Reset...");
+          bluetoothDone();
+          bluetoothState = BLUETOOTH_STATE_OFF;
+          bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
+          return NULL;
+        }
+        else {
+          return (char *)bluetoothBuffer;
+        }
+      }
+      else {
+        bluetoothBufferIndex = 0;
+      }
     }
-    else if (byte != '\r') {
+    else {
       bluetoothBuffer[bluetoothBufferIndex++] = byte;
       bluetoothBufferIndex &= (BLUETOOTH_LINE_LENGTH-1);
     }
@@ -96,6 +114,22 @@ void bluetoothProcessTrainerFrame(const uint8_t * bluetoothBuffer)
   ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
 }
 
+void bluetoothAppendTrainerByte(uint8_t data)
+{
+  if (bluetoothBufferIndex < BLUETOOTH_LINE_LENGTH) {
+    bluetoothBuffer[bluetoothBufferIndex++] = data;
+    // we check for "DisConnected", but the first byte could be altered (if received in state STATE_DATA_XOR)
+    if (data == '\n') {
+      if (!strncmp((char *)&bluetoothBuffer[bluetoothBufferIndex-13], "isConnected", 11)) {
+        TRACE("BT< DisConnected");
+        bluetoothState = BLUETOOTH_STATE_DISCONNECTED;
+        bluetoothBufferIndex = 0;
+        bluetoothWakeupTime += 200; // 1s
+      }
+    }
+  }
+}
+
 void bluetoothProcessTrainerByte(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
@@ -107,13 +141,7 @@ void bluetoothProcessTrainerByte(uint8_t data)
         bluetoothBufferIndex = 0;
       }
       else {
-        if (bluetoothBufferIndex < BLUETOOTH_PACKET_SIZE) {
-          bluetoothBuffer[bluetoothBufferIndex++] = data;
-        }
-        if (data == '\n' && !strncmp((char *)bluetoothBuffer, "DisConnected", 12)) {
-          bluetoothState = BLUETOOTH_STATE_IDLE;
-          bluetoothBufferIndex = 0;
-        }
+        bluetoothAppendTrainerByte(data);
       }
       break;
 
@@ -125,15 +153,13 @@ void bluetoothProcessTrainerByte(uint8_t data)
         dataState = STATE_DATA_IN_FRAME ;
         bluetoothBufferIndex = 0;
       }
-      else if (bluetoothBufferIndex < BLUETOOTH_PACKET_SIZE) {
-        bluetoothBuffer[bluetoothBufferIndex++] = data;
+      else {
+        bluetoothAppendTrainerByte(data);
       }
       break;
 
     case STATE_DATA_XOR:
-      if (telemetryRxBufferCount < BLUETOOTH_PACKET_SIZE) {
-        bluetoothBuffer[bluetoothBufferIndex++] = data ^ STUFF_MASK;
-      }
+      bluetoothAppendTrainerByte(data ^ STUFF_MASK);
       dataState = STATE_DATA_IN_FRAME;
       break;
 
@@ -141,6 +167,9 @@ void bluetoothProcessTrainerByte(uint8_t data)
       if (data == START_STOP) {
         bluetoothBufferIndex = 0;
         dataState = STATE_DATA_START;
+      }
+      else {
+        bluetoothAppendTrainerByte(data);
       }
       break;
   }
@@ -272,7 +301,8 @@ void bluetoothWakeup(void)
           bluetoothState = BLUETOOTH_INIT;
         }
       }
-    } else if (IS_BLUETOOTH_TRAINER()){
+    }
+    else if (IS_BLUETOOTH_TRAINER()){
       bluetoothState = BLUETOOTH_STATE_CONNECTED;
       bluetoothWriteWakeup();
       bluetoothSendTrainer();
@@ -287,104 +317,115 @@ void bluetoothWakeup()
   if (now < bluetoothWakeupTime)
     return;
 
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_OFF) {
+  bluetoothWakeupTime = now + 5; /* 50ms default */
+
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_OFF || (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && !IS_BLUETOOTH_TRAINER())) {
     if (bluetoothState != BLUETOOTH_STATE_OFF) {
       bluetoothDone();
       bluetoothState = BLUETOOTH_STATE_OFF;
     }
-    bluetoothWakeupTime = now + 10;
+    bluetoothWakeupTime = now + 10; /* 100ms */
   }
-  else {
-    bluetoothWakeupTime = now + 2;
+  else if (bluetoothState == BLUETOOTH_STATE_OFF) {
+    bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+    bluetoothState = BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT;
+  }
+
+  if (bluetoothState != BLUETOOTH_STATE_OFF) {
     bluetoothWriteWakeup();
-    if (bluetoothState == BLUETOOTH_STATE_OFF) {
-      bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
-      bluetoothWakeupTime = now + 50;
-      bluetoothState = BLUETOOTH_STATE_INIT;
+    if (bluetoothIsWriting()) {
+      return;
     }
-    else if (bluetoothState == BLUETOOTH_STATE_CONNECTED) {
-      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
-        bluetoothReceiveTrainer();
-      }
-      else {
-        if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH) {
-          bluetoothSendTrainer();
-        }
-        char * line = bluetoothReadline();
-        if (!strcmp(line, "ERROR")) {
-          TRACE("BT Reset...");
-          bluetoothDone();
-          bluetoothState = BLUETOOTH_STATE_OFF;
-          bluetoothWakeupTime = now + 500;
-        }
-      }
+  }
+
+  if (bluetoothState == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
+    bluetoothWriteString("AT+BAUD4\r\n");
+    bluetoothState = BLUETOOTH_STATE_BAUDRATE_SENT;
+  }
+  else if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_SENT) {
+    bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+    bluetoothState = BLUETOOTH_STATE_BAUDRATE_INIT;
+    bluetoothReadline(false);
+  }
+  else if (bluetoothState == BLUETOOTH_STATE_CONNECTED) {
+    if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
+      bluetoothReceiveTrainer();
     }
     else {
-      char * line = bluetoothReadline();
-      if (bluetoothState == BLUETOOTH_STATE_INIT) {
-        bluetoothWriteString("AT+BAUD4\r\n");
-        bluetoothState = BLUETOOTH_STATE_BAUDRATE_SENT;
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH) {
+        bluetoothSendTrainer();
+        bluetoothWakeupTime = now + 2; /* 20ms */
       }
-      else if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_SENT && !strncmp(line, "OK+", 3)) {
-        char command[32];
-        char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
-        uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
-        if (len > 0) {
-          for (int i = 0; i < len; i++) {
-            *cur++ = idx2char(g_eeGeneral.bluetoothName[i]);
-          }
+      bluetoothReadline(); // to deal with "ERROR"
+    }
+  }
+  else {
+    char * line = bluetoothReadline();
+    if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_INIT) {
+      char command[32];
+      char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
+      uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
+      if (len > 0) {
+        for (int i = 0; i < len; i++) {
+          *cur++ = idx2char(g_eeGeneral.bluetoothName[i]);
         }
-        else {
+      }
+      else {
 #if defined(PCBHORUS)
-          cur = strAppend(cur, "Horus");
+        cur = strAppend(cur, "Horus");
 #else
-          cur = strAppend(cur, "Taranis");
+        cur = strAppend(cur, "Taranis");
 #endif
-        }
-        strAppend(cur, "\r\n");
-        bluetoothWriteString(command);
-        bluetoothState = BLUETOOTH_STATE_NAME_SENT;
       }
-      else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && (!strncmp(line, "OK+", 3) || !strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-        bluetoothWriteString("AT+TXPW3\r\n");
-        bluetoothState = BLUETOOTH_STATE_POWER_SENT;
+      strAppend(cur, "\r\n");
+      bluetoothWriteString(command);
+      bluetoothState = BLUETOOTH_STATE_NAME_SENT;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && (!strncmp(line, "OK+", 3) || !strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
+      bluetoothWriteString("AT+TXPW3\r\n");
+      bluetoothState = BLUETOOTH_STATE_POWER_SENT;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_POWER_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
+      if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH)
+        bluetoothWriteString("AT+ROLE1\r\n");
+      else
+        bluetoothWriteString("AT+ROLE0\r\n");
+      bluetoothState = BLUETOOTH_STATE_ROLE_SENT;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_ROLE_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
+      bluetoothState = BLUETOOTH_STATE_IDLE;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_REQUESTED) {
+      bluetoothWriteString("AT+DISC?\r\n");
+      bluetoothState = BLUETOOTH_STATE_DISCOVER_SENT;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_SENT && !strcmp(line, "OK+DISCS")) {
+      bluetoothState = BLUETOOTH_STATE_DISCOVER_START;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strncmp(line, "OK+DISC:", 8)) {
+      strcpy(bluetoothFriend, &line[8]); // TODO quick & dirty
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
+      bluetoothState = BLUETOOTH_STATE_DISCOVER_END;
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_BIND_REQUESTED) {
+      char command[32];
+      strAppend(strAppend(strAppend(command, "AT+CON"), bluetoothFriend), "\r\n");
+      bluetoothWriteString(command);
+      bluetoothState = BLUETOOTH_STATE_CONNECT_SENT;
+    }
+    else if ((bluetoothState == BLUETOOTH_STATE_IDLE || bluetoothState == BLUETOOTH_STATE_DISCONNECTED || bluetoothState == BLUETOOTH_STATE_CONNECT_SENT) && !strncmp(line, "Connected:", 10)) {
+      strcpy(bluetoothFriend, &line[10]); // TODO quick & dirty
+      bluetoothState = BLUETOOTH_STATE_CONNECTED;
+      if (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH) {
+        bluetoothWakeupTime += 500; // it seems a 5s delay is needed before sending the 1st frame
       }
-      else if (bluetoothState == BLUETOOTH_STATE_POWER_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-        if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH)
-          bluetoothWriteString("AT+ROLE1\r\n");
-        else
-          bluetoothWriteString("AT+ROLE0\r\n");
-        bluetoothState = BLUETOOTH_STATE_ROLE_SENT;
-      }
-      else if (bluetoothState == BLUETOOTH_STATE_ROLE_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-        bluetoothState = BLUETOOTH_STATE_IDLE;
-      }
-      else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_REQUESTED) {
-        bluetoothWriteString("AT+DISC?\r\n");
-        bluetoothState = BLUETOOTH_STATE_DISCOVER_SENT;
-      }
-      else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_SENT && !strcmp(line, "OK+DISCS")) {
-        bluetoothState = BLUETOOTH_STATE_DISCOVER_START;
-      }
-      else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strncmp(line, "OK+DISC:", 8)) {
-        strcpy(bluetoothFriend, &line[8]); // TODO quick & dirty
-      }
-      else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
-        bluetoothState = BLUETOOTH_STATE_DISCOVER_END;
-      }
-      else if (bluetoothState == BLUETOOTH_STATE_BIND_REQUESTED) {
-        char command[32];
-        strAppend(strAppend(strAppend(command, "AT+CON"), bluetoothFriend), "\r\n");
-        bluetoothWriteString(command);
-        bluetoothState = BLUETOOTH_STATE_BIND_SENT;
-      }
-      else if ((bluetoothState == BLUETOOTH_STATE_IDLE || bluetoothState == BLUETOOTH_STATE_BIND_SENT) && !strncmp(line, "Connected:", 10)) {
-        strcpy(bluetoothFriend, &line[10]); // TODO quick & dirty
-        bluetoothState = BLUETOOTH_STATE_CONNECTED;
-        if (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH) {
-          bluetoothWakeupTime += 500; // it seems a 5s delay is needed before sending the 1st frame
-        }
-      }
+    }
+    else if (bluetoothState == BLUETOOTH_STATE_DISCONNECTED && !line) {
+      char command[32];
+      strAppend(strAppend(strAppend(command, "AT+CON"), bluetoothFriend), "\r\n");
+      bluetoothWriteString(command);
+      bluetoothWakeupTime = now + 200; /* 2s */
     }
   }
 }
