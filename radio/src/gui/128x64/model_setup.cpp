@@ -95,8 +95,11 @@ enum MenuModelSetupItems {
 #if defined(PCBX7)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
-  ITEM_MODEL_TRAINER_LINE1,
-  ITEM_MODEL_TRAINER_LINE2,
+#if defined(BLUETOOTH)
+  ITEM_MODEL_TRAINER_BLUETOOTH,
+#endif
+  ITEM_MODEL_TRAINER_CHANNELS,
+  ITEM_MODEL_TRAINER_PARAMS,
 #endif
   ITEM_MODEL_SETUP_MAX
 };
@@ -153,13 +156,15 @@ enum MenuModelSetupItems {
 
 #if defined(PCBX7)
 #if defined(BLUETOOTH)
-  #define TRAINER_LINE1_BLUETOOTH_M_ROWS ((bluetoothFriend[0] == 0 || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_LINE1_ROWS             (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
+  #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothFriend[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
+  #define TRAINER_BLUETOOTH_S_ROW        (bluetoothFriend[0] == '\0' ? HIDDEN_ROW : LABEL())
+  #define TRAINER_BLUETOOTH_ROW          (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW)),
 #else
-  #define TRAINER_LINE1_ROWS             (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : HIDDEN_ROW)
+  #define TRAINER_BLUETOOTH_ROW
 #endif
-  #define TRAINER_LINE2_ROWS             (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
-  #define TRAINER_ROWS                   LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS
+#define TRAINER_CHANNELS_ROW             ((g_model.trainerMode == TRAINER_MODE_SLAVE || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH) ? (uint8_t)1 : HIDDEN_ROW)
+#define TRAINER_PARAMS_ROW               ((g_model.trainerMode == TRAINER_MODE_SLAVE || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH) ? (uint8_t)2 : HIDDEN_ROW)
+#define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
 #else
   #define TRAINER_ROWS
 #endif
@@ -810,9 +815,8 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBX7)
-      case ITEM_MODEL_TRAINER_LINE1:
-#if defined(BLUETOOTH)
+#if defined(PCBX7) && defined(BLUETOOTH)
+      case ITEM_MODEL_TRAINER_BLUETOOTH:
         if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
           if (attr) {
             s_editMode = 0;
@@ -849,11 +853,19 @@ void menuModelSetup(event_t event)
                 bluetoothState = BLUETOOTH_STATE_DISCOVER_REQUESTED;
             }
           }
-          break;
         }
-        // no break
+        else {
+          if (bluetoothFriend[0])
+            lcdDrawText(INDENT_WIDTH, y+1, bluetoothFriend, TINSIZE);
+          else
+            lcdDrawText(INDENT_WIDTH, y, "---");
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, bluetoothState == BLUETOOTH_STATE_CONNECTED ? "Connected" : "!Connected");
+        }
+        break;
 #endif
 
+#if defined(PCBX7)
+      case ITEM_MODEL_TRAINER_CHANNELS:
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
 #endif
 #if defined(PCBSKY9X)
@@ -889,7 +901,7 @@ void menuModelSetup(event_t event)
 #endif
 
 #if defined(PCBX7)
-      case ITEM_MODEL_TRAINER_LINE2:
+      case ITEM_MODEL_TRAINER_PARAMS:
       case ITEM_MODEL_INTERNAL_MODULE_BIND:
 #endif
 #if defined(PCBSKY9X)
