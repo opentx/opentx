@@ -35,6 +35,7 @@ Layout * currentScreen;
 WidgetsContainerInterface * currentContainer;
 Widget * currentWidget;
 uint8_t currentZone;
+bool widgetNeedsSettings;
 
 #define SCREENS_SETUP_2ND_COLUMN        200
 
@@ -68,7 +69,7 @@ uint8_t getZoneOptionColumns(const ZoneOption * option)
   }
 }
 
-uint8_t editColorPart(coord_t x, coord_t y, event_t event, uint8_t part, uint8_t value, LcdFlags attr, uint32_t i_flags) 
+uint8_t editColorPart(coord_t x, coord_t y, event_t event, uint8_t part, uint8_t value, LcdFlags attr, uint32_t i_flags)
 {
   const char * STR_COLOR_PARTS = "\002" "R:" "G:" "B:";
   uint8_t PART_BITS[] = { 5, 6, 5 };
@@ -76,9 +77,9 @@ uint8_t editColorPart(coord_t x, coord_t y, event_t event, uint8_t part, uint8_t
   lcdDrawNumber(x + 20, y, value << (8-PART_BITS[part]), LEFT|TEXT_COLOR|((attr && (menuHorizontalPosition < 0 || menuHorizontalPosition == part)) ? attr : TEXT_COLOR));
   if (attr && menuHorizontalPosition == part) {
     value = checkIncDec(event, value, 0, (1 << PART_BITS[part])-1, i_flags);
-  }   
+  }
   return value;
-}   
+}
 
 bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * value, LcdFlags attr, uint32_t i_flags, event_t event)
 {
@@ -267,6 +268,7 @@ bool menuWidgetChoice(event_t event)
         if (previousWidget)
           delete previousWidget;
         currentContainer->createWidget(currentZone, *iterator);
+        widgetNeedsSettings = currentContainer->getWidget(currentZone)->getFactory()->getOptions();
         storageDirty(EE_MODEL);
       }
       popMenu();
@@ -377,6 +379,13 @@ bool menuWidgetsSetup(event_t event)
       }
     }
     else {
+      if (widgetNeedsSettings) {
+        currentWidget = currentContainer->getWidget(menuVerticalPosition);
+        if (currentWidget) {
+          widgetNeedsSettings = false;
+          onZoneMenu(STR_WIDGET_SETTINGS);
+        }
+      }
       lcdDrawRect(zone.x-padding, zone.y-padding, zone.w+2*padding, zone.h+2*padding, thickness, 0x3F, color);
     }
   }
