@@ -268,12 +268,7 @@ bool menuWidgetChoice(event_t event)
         if (previousWidget)
           delete previousWidget;
         currentContainer->createWidget(currentZone, *iterator);
-        if (currentContainer->getWidget(currentZone)->getFactory()->getOptions()) {
-          widgetNeedsSettings = true;
-        }
-        else {
-          widgetNeedsSettings = false;
-        }
+        widgetNeedsSettings = currentContainer->getWidget(currentZone)->getFactory()->getOptions();
         storageDirty(EE_MODEL);
       }
       popMenu();
