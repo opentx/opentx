@@ -85,8 +85,8 @@ local function selectField(step)
     field = getField(newLineIndex)
   until newLineIndex == lineIndex or (field and field.type ~= 11 and field.name)
   lineIndex = newLineIndex
-  if lineIndex > 11 + pageOffset then -- NOTE: increased from 7 to 11 to allow 11 lines in Horus display
-    pageOffset = lineIndex - 11 -- NOTE: increased from 7 to 11 to allow 11 lines in Horus display
+  if lineIndex > 11 + pageOffset then 	-- NOTE: increased from 7 to 11 to allow 11 lines in Horus display
+    pageOffset = lineIndex - 11 		-- NOTE: increased from 7 to 11 to allow 11 lines in Horus display
   elseif lineIndex <= pageOffset then
     pageOffset = lineIndex - 1
   end
@@ -174,9 +174,9 @@ local function fieldSignedSave(field, size)
 end
 
 local function fieldIntDisplay(field, y, attr)
-  lcd.drawNumber(140, y, field.value, LEFT + attr)
-  --lcd.drawText(lcd.getLastPos(), y, field.unit, attr) -- NOTE: getLastPos not available in Horus
-  lcd.drawText(200, y, field.unit, attr) -- Note: above replaced with hard coded x coordinates, needs to be fixed
+  -- lcd.drawNumber(140, y, field.value, LEFT + attr)    -- NOTE: original code getLastPos not available in Horus
+  -- lcd.drawText(lcd.getLastPos(), y, field.unit, attr) -- NOTE: original code getLastPos not available in Horus
+  lcd.drawText(140, y, field.value .. field.unit, attr)  -- NOTE: Concenated fields instead of get lastPos
 end
 
 -- UINT8
@@ -239,9 +239,9 @@ local function fieldFloatDisplay(field, y, attr)
   else
     attrnum = LEFT + attr
   end
-  lcd.drawNumber(140, y, field.value, attrnum)
-  --lcd.drawText(lcd.getLastPos(), y, field.unit, attr) -- NOTE: getLastPos not available in Horus
-  lcd.drawText(200, y, field.unit, attr) -- Note: above replaced with hard coded x coordinates, needs to be fixed
+  -- lcd.drawNumber(140, y, field.value, attrnum)			-- NOTE: original code getLastPos not available in Horus
+  -- lcd.drawText(lcd.getLastPos(), y, field.unit, attr)    -- NOTE: original code getLastPos not available in Horus
+  lcd.drawText(140, y, field.value .. field.unit, attr) 	-- NOTE: Concenated fields instead of get lastPos
 end
 
 local function fieldFloatSave(field)
@@ -267,9 +267,9 @@ local function fieldTextSelectionSave(field)
 end
 
 local function fieldTextSelectionDisplay(field, y, attr)
-  lcd.drawText(140, y, field.values[field.value+1], attr)
-  --lcd.drawText(lcd.getLastPos(), y, field.unit, attr) -- NOTE: getLastPos not available in Horus
-  lcd.drawText(200, y, field.unit, attr) -- Note: above replaced with hard coded x coordinates, needs to be fixed
+  -- lcd.drawText(140, y, field.values[field.value+1], attr)			-- NOTE: original code getLastPos not available in Horus
+  -- lcd.drawText(lcd.getLastPos(), y, field.unit, attr) 				-- NOTE: original code getLastPos not available in Horus
+  lcd.drawText(140, y, field.values[field.value+1] .. field.unit, attr) -- NOTE: Concenated fields instead of get lastPos
 end
 
 -- STRING
@@ -291,8 +291,10 @@ end
 
 local function fieldStringDisplay(field, y, attr)
   if edit == true and attr then
-    lcd.drawText(140, y, field.value, FIXEDWIDTH)
-    lcd.drawText(134+6*charIndex, y, string.sub(field.value, charIndex, charIndex), FIXEDWIDTH + attr)
+    -- lcd.drawText(140, y, field.value, FIXEDWIDTH)	-- NOTE: FIXEDWIDTH unknown....
+    -- lcd.drawText(134+6*charIndex, y, string.sub(field.value, charIndex, charIndex), FIXEDWIDTH + attr)	-- NOTE: FIXEDWIDTH unknown....
+	lcd.drawText(140, y, field.value, attr)
+    lcd.drawText(134+6*charIndex, y, string.sub(field.value, charIndex, charIndex), attr)
   else
     lcd.drawText(140, y, field.value, attr)
   end
@@ -452,37 +454,20 @@ local function runDevicePage(event)
   end
   
   lcd.clear()
-  
-  -- Note: Updated for Horus
   lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
   lcd.drawText(1, 5,deviceName, MENU_TITLE_COLOR)
   
-  for y = 1, 22 do -- Note: next page method did not work in Horus, trying to implement single page with 2 columns instead, 11 lines of text per column
-    --local field = getField(pageOffset+y) -- Note: next page method did not work in Horus, trying to implement single page with 2 columns instead, 11 lines of text per column
-	local field = getField(y)
+  for y = 1, 11 do
+    local field = getField(pageOffset+y)
     if not field then
       break
     elseif field.name == nil then
-      lcd.drawText(5, y*22+10, "...")
+      lcd.drawText(1, y*22+10, "...")
     else
-      --local attr = lineIndex == (pageOffset+y) and ((edit == true and BLINK or 0) + INVERS) or 0 -- Note: next page method did not work in Horus, trying to implement single page with 2 columns instead
-	  local attr = lineIndex == (y) and ((edit == true and BLINK or 0) + INVERS) or 0
-      
-	  -- Note: next page method did not work in Horus, trying to implement single page with 2 columns instead, 11 lines of text per column
-	  if y < 12 then
-			lcd.drawText(5, y*22+10, field.name)
-		elseif y < 23 then
-			lcd.drawText(240, (y-11)*22+10, field.name)
-		end	
-      
-	  -- Note: next page method did not work in Horus, trying to implement single page with 2 columns instead, 11 lines of text per column
-	  if functions[field.type+1] then
-		if y < 12 then
-			functions[field.type+1].display(field, y*22+10, attr)
-		elseif y < 23 then
-			functions[field.type+1].display(field+240, (y-11)*22+10, attr)
-		end	
-	  
+      local attr = lineIndex == (pageOffset+y) and ((edit == true and BLINK or 0) + INVERS) or 0
+      lcd.drawText(1, y*22+10, field.name)
+      if functions[field.type+1] then
+        functions[field.type+1].display(field, y*22+10, attr)
       end
     end
   end
