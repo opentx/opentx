@@ -386,7 +386,7 @@ void bluetoothWakeup()
       bluetoothState = BLUETOOTH_STATE_POWER_SENT;
     }
     else if (bluetoothState == BLUETOOTH_STATE_POWER_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-      if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH)
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH)
         bluetoothWriteString("AT+ROLE1\r\n");
       else
         bluetoothWriteString("AT+ROLE0\r\n");
