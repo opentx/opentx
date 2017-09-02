@@ -22,6 +22,7 @@
 #define _BOARD_H_
 
 #include "stddef.h"
+#include "stdbool.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -453,14 +454,22 @@ uint8_t isBacklightEnabled(void);
   #define BACKLIGHT_ENABLE()           backlightEnable(g_eeGeneral.backlightBright)
 #endif
 
+enum usbMode {
+  USB_JOYSTICK_MODE,
+  USB_SERIAL_MODE,
+  USB_MASS_STORAGE_MODE,
+};
+
 // USB driver
 int usbPlugged();
 void usbInit();
 void usbStart();
 void usbStop();
-uint8_t usbStarted();
+bool usbStarted();
+int getSelectedUsbMode();
+
 void usbSerialPutc(uint8_t c);
-#if defined(USB_JOYSTICK) && !defined(SIMU)
+#if !defined(SIMU)
   void usbJoystickUpdate();
 #endif
 #define USB_NAME                       "FrSky Taranis"

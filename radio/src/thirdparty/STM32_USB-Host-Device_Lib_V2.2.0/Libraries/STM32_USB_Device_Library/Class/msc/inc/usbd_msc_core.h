@@ -61,7 +61,7 @@
   * @{
   */ 
 
-extern const USBD_Class_cb_TypeDef  USBD_MSC_cb;    // modified my OpenTX
+extern const USBD_Class_cb_TypeDef  USBD_MSC_cb;    // modified by OpenTX
 /**
   * @}
   */ 

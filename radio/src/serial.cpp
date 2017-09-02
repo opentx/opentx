@@ -27,11 +27,10 @@
 
 void serialPutc(char c)
 {
-#if defined(USB_SERIAL)
-  usbSerialPutc(c);
-#elif defined(SERIAL2)
-  serial2Putc(c);
-#endif
+  if (getSelectedUsbMode() == USB_SERIAL_MODE)
+    usbSerialPutc(c);
+  else
+    serial2Putc(c);
 }
 
 void serialPrintf(const char * format, ...)

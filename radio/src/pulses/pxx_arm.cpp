@@ -389,7 +389,7 @@ void setupPulsesPXX(uint8_t port)
     extra_flags |= g_model.moduleData[port].pxx.power << 3;
     // Disable s.port if internal module is active
     if (IS_TELEMETRY_INTERNAL_MODULE || !g_model.moduleData[port].pxx.sport_out)
-      extra_flags |=  (1<< 5);
+      ; //extra_flags |=  (1<< 5);
   }
 
   putPcmByte(port, extra_flags);

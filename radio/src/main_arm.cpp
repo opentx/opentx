@@ -29,15 +29,16 @@ void handleUsbConnection()
 #if defined(STM32) && !defined(SIMU)
   if (!usbStarted() && usbPlugged()) {
     usbStart();
-#if defined(USB_MASS_STORAGE)
-    opentxClose(false);
-    usbPluggedIn();
-#endif
+    if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
+      opentxClose(false);
+      usbPluggedIn();
+    }
   }
   if (usbStarted() && !usbPlugged()) {
     usbStop();
-#if defined(USB_MASS_STORAGE) && !defined(EEPROM)
-    opentxResume();
+#if !defined(EEPROM)
+    if (getSelectedUsbMode() == USB_MASS_STORAGE)
+      opentxResume();
 #endif
   }
 #endif // defined(STM32) && !defined(SIMU)
@@ -423,7 +424,7 @@ void perMain()
 #endif
     
 #if defined(USB_MASS_STORAGE)
-  if (usbPlugged()) {
+  if (usbPlugged() && getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
     // disable access to menus
     lcdClear();
     menuMainView(0);

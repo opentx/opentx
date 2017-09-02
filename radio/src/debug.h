@@ -41,11 +41,9 @@ extern "C" {
 #elif defined(SEMIHOSTING)
   #include <stdio.h>
   #define debugPrintf(...) printf(__VA_ARGS__)
-#elif defined(DEBUG) && defined(CLI) && defined(USB_SERIAL)
-  #define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
 #elif defined(DEBUG) && defined(CLI)
-  uint8_t serial2TracesEnabled();
-  #define debugPrintf(...) do { if (serial2TracesEnabled() && cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
+   uint8_t serial2TracesEnabled();
+  #define debugPrintf(...) do { if (cliTracesEnabled) serialPrintf(__VA_ARGS__); if (serial2TracesEnabled() && cliTracesEnabled) serialPrintf(__VA_ARGS__); } while(0)
 #elif defined(DEBUG) && defined(CPUARM) && !defined(PCBX7)
   uint8_t serial2TracesEnabled();
   #define debugPrintf(...) do { if (serial2TracesEnabled()) serialPrintf(__VA_ARGS__); } while(0)

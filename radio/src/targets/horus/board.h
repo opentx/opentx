@@ -452,9 +452,9 @@ int usbPlugged();
 void usbInit();
 void usbStart();
 void usbStop();
-uint8_t usbStarted();
+bool usbStarted();
 void usbSerialPutc(uint8_t c);
-#if defined(USB_JOYSTICK) && !defined(SIMU)
+#if !defined(SIMU)
 void usbJoystickUpdate();
 #endif
 #if defined(PCBX12S)

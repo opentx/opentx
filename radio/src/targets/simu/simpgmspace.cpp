@@ -645,6 +645,7 @@ uint32_t pwrPressed()
 #if defined(STM32)
 void pwrInit() { }
 int usbPlugged() { return false; }
+int getSelectedUsbMode() { return USB_JOYSTICK_MODE; }
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
