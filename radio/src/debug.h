@@ -348,8 +348,12 @@ private:
   uint32_t _start_loprec;
 
   void evalStats() {
-    if (min > last) min = last;
-    if (max < last) max = last;
+    if (min > last) { 
+        min = last;
+    }
+    if (max < last) {
+        max = last;
+    }
     //todo avg
   }
 
