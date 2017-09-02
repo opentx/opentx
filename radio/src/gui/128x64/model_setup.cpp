@@ -130,7 +130,7 @@ enum MenuModelSetupItems {
   #define IF_INTERNAL_MODULE_ON(x)       (IS_INTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW )
   #define IF_EXTERNAL_MODULE_ON(x)       (IS_EXTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW)
   #define INTERNAL_MODULE_CHANNELS_ROWS  IF_INTERNAL_MODULE_ON(1)
-  #define EXTERNAL_MODULE_BIND_ROWS()    (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_PXX(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW
+  #define EXTERNAL_MODULE_BIND_ROWS()    (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_PXX(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : IS_MODULE_CROSSFIRE(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW
 
 #if defined(PCBSKY9X) && defined(REVX)
   #define OUTPUT_TYPE_ROWS()             (IS_MODULE_PPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW) ,
@@ -921,6 +921,23 @@ void menuModelSetup(event_t event)
             }
           }
         }
+        else if (IS_MODULE_CROSSFIRE(moduleIdx)) {
+          lcdDrawTextAlignedLeft(y, INDENT "Baudrate");
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, CROSSFIRE_BAUDRATES[g_eeGeneral.mavbaud], attr|LEFT);
+          if (attr) {
+            g_eeGeneral.mavbaud = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.mavbaud, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
+            if (checkIncDec_Ret) {
+              pauseMixerCalculations();
+              pausePulses();
+              EXTERNAL_MODULE_OFF();
+              CoTickDelay(10); // 20ms so that the pulses interrupt will reinit the frame rate
+              telemetryProtocol = 255; // force telemetry port + module reinitialization
+              EXTERNAL_MODULE_ON();
+              resumePulses();
+              resumeMixerCalculations();
+            }
+          }
+        }
         else {
           horzpos_t l_posHorz = menuHorizontalPosition;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
@@ -1002,7 +1019,6 @@ void menuModelSetup(event_t event)
               multiBindStatus = MULTI_BIND_INITIATED;
             }
 #endif
-
           }
         }
         break;
