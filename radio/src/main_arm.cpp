@@ -24,21 +24,37 @@ uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t mainRequestFlags = 0;
 
+
+static uint32_t lastUsbMenuRunTime;
+
+
 void handleUsbConnection()
 {
 #if defined(STM32) && !defined(SIMU)
-  if (!usbStarted() && usbPlugged()) {
+  if (!usbStarted() && usbPlugged() && !(getSelectedUsbMode() == USB_UNSELECTED_MODE)) {
     usbStart();
     if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
       opentxClose(false);
       usbPluggedIn();
     }
   }
+  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
+    // Fire this event every 2s so it gets display in main menu, better idea?
+    uint32_t now = CoGetOSTime();
+    if (now - lastUsbMenuRunTime > 1000) {
+      putEvent(EVT_USB_SELECT);
+      lastUsbMenuRunTime = now;
+    }
+
+  }
   if (usbStarted() && !usbPlugged()) {
     usbStop();
 #if !defined(EEPROM)
     if (getSelectedUsbMode() == USB_MASS_STORAGE)
       opentxResume();
+#endif
+#if !defined(BOOT)
+    setSelectedUsbMode(USB_UNSELECTED_MODE);
 #endif
   }
 #endif // defined(STM32) && !defined(SIMU)

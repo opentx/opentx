@@ -455,6 +455,7 @@ uint8_t isBacklightEnabled(void);
 #endif
 
 enum usbMode {
+  USB_UNSELECTED_MODE,
   USB_JOYSTICK_MODE,
   USB_SERIAL_MODE,
   USB_MASS_STORAGE_MODE,
@@ -467,6 +468,7 @@ void usbStart();
 void usbStop();
 bool usbStarted();
 int getSelectedUsbMode();
+void setSelectedUsbMode(int mode);
 
 void usbSerialPutc(uint8_t c);
 #if !defined(SIMU)

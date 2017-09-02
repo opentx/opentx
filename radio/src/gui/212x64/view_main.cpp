@@ -378,6 +378,15 @@ void onMainViewMenu(const char *result)
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
   }
+  else if (result == STR_USB_MASS_STORAGE) {
+    setSelectedUsbMode(USB_MASS_STORAGE_MODE);
+  }
+  else if (result == STR_USB_Joystick) {
+    setSelectedUsbMode(USB_JOYSTICK_MODE);
+  }
+  else if (result == STR_USB_SERIAL) {
+    setSelectedUsbMode(USB_SERIAL_MODE);
+  }
 }
 
 void displaySwitch(coord_t x, coord_t y, int width, unsigned int index)
@@ -447,11 +456,19 @@ void menuMainView(event_t event)
       LOAD_MODEL_BITMAP();
       break;
 
-    case EVT_KEY_LONG(KEY_ENTER):
+    case EVT_USB_SELECT:
       killEvents(event);
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
+      POPUP_MENU_ADD_ITEM(STR_USB_Joystick);
+      POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
+      POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
+      POPUP_MENU_START(onMainViewMenu);
+      break;
+
+    case EVT_KEY_LONG(KEY_ENTER):
+      killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
       POPUP_MENU_ADD_ITEM(STR_STATISTICS);
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);

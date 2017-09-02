@@ -35,7 +35,7 @@ static bool usbDriverStarted = false;
 #if defined(BOOT)
 static usbMode selectedUsbMode = USB_MASS_STORAGE_MODE;
 #else
-static usbMode selectedUsbMode = USB_SERIAL_MODE;
+static usbMode selectedUsbMode = USB_UNSELECTED_MODE;
 #endif
 
 int getSelectedUsbMode()
@@ -43,6 +43,10 @@ int getSelectedUsbMode()
   return selectedUsbMode;
 }
 
+void setSelectedUsbMode(int mode)
+{
+  selectedUsbMode = usbMode (mode);
+}
 
 int usbPlugged()
 {
