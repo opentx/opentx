@@ -1031,7 +1031,7 @@
 #define TR_RESET_TELEMETRY     "Nollställ Telemetri"
 #define TR_STATISTICS          "Statistik"
 #define TR_ABOUT_US            "Om Oss"
-#define TR_USB_Joystick                "USB Joystick (HID)"
+#define TR_USB_JOYSTICK                "USB Joystick (HID)"
 #define TR_USB_MASS_STORAGE            "USB mass storage"
 #define TR_USB_SERIAL                  "USB Serial (Debug)"
 #define TR_SETUP_SCREENS         "Setup screens"

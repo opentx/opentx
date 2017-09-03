@@ -381,7 +381,7 @@ void onMainViewMenu(const char *result)
   else if (result == STR_USB_MASS_STORAGE) {
     setSelectedUsbMode(USB_MASS_STORAGE_MODE);
   }
-  else if (result == STR_USB_Joystick) {
+  else if (result == STR_USB_JOYSTICK) {
     setSelectedUsbMode(USB_JOYSTICK_MODE);
   }
   else if (result == STR_USB_SERIAL) {
@@ -461,7 +461,7 @@ void menuMainView(event_t event)
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
-      POPUP_MENU_ADD_ITEM(STR_USB_Joystick);
+      POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
       POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
       POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
       POPUP_MENU_START(onMainViewMenu);

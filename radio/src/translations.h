@@ -703,7 +703,7 @@ extern const pm_char STR_PERSISTENT_MAH[];
   extern const pm_char STR_RESET_TELEMETRY[];
   extern const pm_char STR_STATISTICS[];
   extern const pm_char STR_ABOUT_US[];
-extern const pm_char STR_USB_Joystick[];
+extern const pm_char STR_USB_JOYSTICK[];
 extern const pm_char STR_USB_MASS_STORAGE[];
 extern const pm_char STR_USB_SERIAL[];
   extern const pm_char STR_SETUP_SCREENS[];
