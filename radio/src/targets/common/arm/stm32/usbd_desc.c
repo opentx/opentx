@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -28,29 +28,33 @@
 #include "usbd_core.h"
 #include "usbd_req.h"
 #include "usb_regs.h"
+#if defined(PCBTARANIS)
 #include "../../../taranis/board.h"
+#elif defined(PCBHORUS)
+#include "../../../horus/board.h"
+#endif
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{
   */
 
 
-/** @defgroup USBD_DESC 
+/** @defgroup USBD_DESC
   * @brief USBD descriptors module
   * @{
-  */ 
+  */
 
 /** @defgroup USBD_DESC_Private_TypesDefinitions
   * @{
-  */ 
+  */
 /**
   * @}
-  */ 
+  */
 
 
 /** @defgroup USBD_DESC_Private_Defines
   * @{
-  */ 
+  */
 
 #define USBD_VID                            0x0483
 
@@ -85,7 +89,7 @@
 const USBD_DEVICE USR_desc =
 {
   USBD_USR_DeviceDescriptor,
-  USBD_USR_LangIDStrDescriptor, 
+  USBD_USR_LangIDStrDescriptor,
   USBD_USR_ManufacturerStrDescriptor,
   USBD_USR_ProductStrDescriptor,
   USBD_USR_SerialStrDescriptor,
@@ -112,16 +116,16 @@ __ALIGN_BEGIN const uint8_t USBD_DeviceQualifierDesc[USB_LEN_DEV_QUALIFIER_DESC]
 /* USB Standard Device Descriptor */
 __ALIGN_BEGIN const  uint8_t USBD_LangIDDesc[USB_SIZ_STRING_LANGID] __ALIGN_END =
 {
-     USB_SIZ_STRING_LANGID,         
-     USB_DESC_TYPE_STRING,       
+     USB_SIZ_STRING_LANGID,
+     USB_DESC_TYPE_STRING,
      LOBYTE(USBD_LANGID_STRING),
-     HIBYTE(USBD_LANGID_STRING), 
+     HIBYTE(USBD_LANGID_STRING),
 };
 
 __ALIGN_BEGIN uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ] __ALIGN_END ;	// modified by OpenTX
 
 /*
-* @brief  USBD_USR_DeviceDescriptor 
+* @brief  USBD_USR_DeviceDescriptor
 *         return the device descriptor
 * @param  speed : current device speed
 * @param  length : pointer to data length variable
@@ -172,7 +176,7 @@ uint8_t *  USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
 }
 
 /**
-* @brief  USBD_USR_LangIDStrDescriptor 
+* @brief  USBD_USR_LangIDStrDescriptor
 *         return the LangID string descriptor
 * @param  speed : current device speed
 * @param  length : pointer to data length variable
@@ -180,14 +184,14 @@ uint8_t *  USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
 */
 uint8_t *  USBD_USR_LangIDStrDescriptor( uint8_t speed , uint16_t *length)
 {
-  *length =  sizeof(USBD_LangIDDesc);  
+  *length =  sizeof(USBD_LangIDDesc);
   memcpy(USBD_StrDesc, USBD_LangIDDesc, *length);
   return USBD_StrDesc;
 }
 
 
 /**
-* @brief  USBD_USR_ProductStrDescriptor 
+* @brief  USBD_USR_ProductStrDescriptor
 *         return the product string descriptor
 * @param  speed : current device speed
 * @param  length : pointer to data length variable
@@ -211,7 +215,7 @@ uint8_t *  USBD_USR_ProductStrDescriptor( uint8_t speed , uint16_t *length)
 }
 
 /**
-* @brief  USBD_USR_ManufacturerStrDescriptor 
+* @brief  USBD_USR_ManufacturerStrDescriptor
 *         return the manufacturer string descriptor
 * @param  speed : current device speed
 * @param  length : pointer to data length variable
@@ -224,7 +228,7 @@ uint8_t *  USBD_USR_ManufacturerStrDescriptor( uint8_t speed , uint16_t *length)
 }
 
 /**
-* @brief  USBD_USR_SerialStrDescriptor 
+* @brief  USBD_USR_SerialStrDescriptor
 *         return the serial number string descriptor
 * @param  speed : current device speed
 * @param  length : pointer to data length variable
@@ -237,7 +241,7 @@ uint8_t *  USBD_USR_SerialStrDescriptor( uint8_t speed , uint16_t *length)
 }
 
 /**
-* @brief  USBD_USR_ConfigStrDescriptor 
+* @brief  USBD_USR_ConfigStrDescriptor
 *         return the configuration string descriptor
 * @param  speed : current device speed
 * @param  length : pointer to data length variable
@@ -261,7 +265,7 @@ uint8_t *  USBD_USR_ConfigStrDescriptor( uint8_t speed , uint16_t *length)
 
 
 /**
-* @brief  USBD_USR_InterfaceStrDescriptor 
+* @brief  USBD_USR_InterfaceStrDescriptor
 *         return the interface string descriptor
 * @param  speed : current device speed
 * @param  length : pointer to data length variable
@@ -284,4 +288,3 @@ uint8_t *  USBD_USR_InterfaceStrDescriptor( uint8_t speed , uint16_t *length)
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-

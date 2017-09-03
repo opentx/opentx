@@ -22,6 +22,7 @@
 #define _BOARD_HORUS_H_
 
 #include "stddef.h"
+#include "stdbool.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -218,7 +219,7 @@ enum EnumKeys
   KEY_RIGHT = KEY_TELEM,
   KEY_RADIO,
   KEY_LEFT = KEY_RADIO,
-  
+
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
@@ -233,7 +234,7 @@ enum EnumKeys
   TRM_RS_DWN,
   TRM_RS_UP,
   TRM_LAST = TRM_RS_UP,
-  
+
   NUM_KEYS
 };
 
@@ -448,11 +449,21 @@ void backlightEnable(uint8_t dutyCycle);
 #define isBacklightEnabled()  true
 
 // USB driver
+
+enum usbMode {
+  USB_UNSELECTED_MODE,
+  USB_JOYSTICK_MODE,
+  USB_SERIAL_MODE,
+  USB_MASS_STORAGE_MODE,
+};
+
 int usbPlugged();
 void usbInit();
 void usbStart();
 void usbStop();
 bool usbStarted();
+int getSelectedUsbMode();
+void setSelectedUsbMode(int);
 void usbSerialPutc(uint8_t c);
 #if !defined(SIMU)
 void usbJoystickUpdate();

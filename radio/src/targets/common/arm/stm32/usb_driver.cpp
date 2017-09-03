@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -29,7 +29,11 @@ extern "C" {
 
 #include "opentx.h"
 #include "debug.h"
+#if defined(PCBTARANIS)
 #include "../../../taranis/board.h"
+#elif defined(PCBHORUS)
+#include "../../../horus/board.h"
+#endif
 
 static bool usbDriverStarted = false;
 #if defined(BOOT)
