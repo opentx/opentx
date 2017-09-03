@@ -215,7 +215,7 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VFAILSAFE         (OFS_USBMODES + sizeof(TR_USBMODES))
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
 #else
-  #define OFS_VFAILSAFE         (OFS_USBMODES)
+  #define OFS_VFAILSAFE         (OFS_COUNTRYCODES)
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE)
 #endif
 #if defined(CPUARM)

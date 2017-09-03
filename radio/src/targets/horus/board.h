@@ -64,6 +64,8 @@ extern "C" {
 #endif
 
 
+#include "usb_driver.h"
+
 #if !defined(SIMU)
 #include "usbd_cdc_core.h"
 #include "usbd_msc_core.h"
@@ -73,6 +75,7 @@ extern "C" {
 #include "usb_conf.h"
 #include "usbd_conf.h"
 #endif
+
 
 #include "hal.h"
 
@@ -448,23 +451,6 @@ void backlightEnable(uint8_t dutyCycle);
 #define BACKLIGHT_DISABLE()   backlightEnable(unexpectedShutdown ? 100 : g_eeGeneral.blOffBright)
 #define isBacklightEnabled()  true
 
-// USB driver
-
-enum usbMode {
-  USB_UNSELECTED_MODE,
-  USB_JOYSTICK_MODE,
-  USB_SERIAL_MODE,
-  USB_MASS_STORAGE_MODE,
-};
-
-int usbPlugged();
-void usbInit();
-void usbStart();
-void usbStop();
-bool usbStarted();
-int getSelectedUsbMode();
-void setSelectedUsbMode(int);
-void usbSerialPutc(uint8_t c);
 #if !defined(SIMU)
 void usbJoystickUpdate();
 #endif

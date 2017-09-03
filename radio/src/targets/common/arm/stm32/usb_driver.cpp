@@ -29,11 +29,6 @@ extern "C" {
 
 #include "opentx.h"
 #include "debug.h"
-#if defined(PCBTARANIS)
-#include "../../../taranis/board.h"
-#elif defined(PCBHORUS)
-#include "../../../horus/board.h"
-#endif
 
 static bool usbDriverStarted = false;
 #if defined(BOOT)

@@ -72,6 +72,7 @@ extern "C" {
 #pragma clang diagnostic pop
 #endif
 
+#include "usb_driver.h"
 #if !defined(SIMU)
   #include "usbd_cdc_core.h"
   #include "usbd_msc_core.h"
@@ -454,23 +455,6 @@ uint8_t isBacklightEnabled(void);
   #define BACKLIGHT_ENABLE()           backlightEnable(g_eeGeneral.backlightBright)
 #endif
 
-enum usbMode {
-  USB_UNSELECTED_MODE,
-  USB_JOYSTICK_MODE,
-  USB_SERIAL_MODE,
-  USB_MASS_STORAGE_MODE,
-};
-
-// USB driver
-int usbPlugged();
-void usbInit();
-void usbStart();
-void usbStop();
-bool usbStarted();
-int getSelectedUsbMode();
-void setSelectedUsbMode(int mode);
-
-void usbSerialPutc(uint8_t c);
 #if !defined(SIMU)
   void usbJoystickUpdate();
 #endif

@@ -57,6 +57,8 @@
 #define APP_RX_DATA_SIZE             512 // USB serial port output buffer. TODO: tune this buffer size /* Total size of IN buffer: APP_RX_DATA_SIZE*8/MAX_BAUDARATE*1000 should be > CDC_IN_FRAME_INTERVAL */
 #define APP_FOPS                     VCP_fops
 
+
+
 #endif // _USBD_CONF_H_
 
 

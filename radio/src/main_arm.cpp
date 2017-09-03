@@ -24,6 +24,7 @@ uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t mainRequestFlags = 0;
 
+#if defined(STM32)
 void onUSBConnectMenu(const char *result)
 {
   if (result == STR_USB_MASS_STORAGE) {
@@ -36,6 +37,7 @@ void onUSBConnectMenu(const char *result)
     setSelectedUsbMode(USB_SERIAL_MODE);
   }
 }
+#endif
 
 void handleUsbConnection()
 {
