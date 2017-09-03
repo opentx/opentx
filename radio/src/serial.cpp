@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -28,9 +28,11 @@
 void serialPutc(char c)
 {
   if (getSelectedUsbMode() == USB_SERIAL_MODE)
+#if defined(USB_SERIAL)
     usbSerialPutc(c);
-  else
+#elif defined(SERIAL2)    
     serial2Putc(c);
+#endif
 }
 
 void serialPrintf(const char * format, ...)

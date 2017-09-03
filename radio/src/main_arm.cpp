@@ -23,10 +23,23 @@
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t mainRequestFlags = 0;
+bool static menuDisplayed = false;
 
-
-static uint32_t lastUsbMenuRunTime;
-
+void onUSBConnectMenu(const char *result)
+{
+  if (result == STR_USB_MASS_STORAGE) {
+    setSelectedUsbMode(USB_MASS_STORAGE_MODE);
+    menuDisplayed = false;
+  }
+  else if (result == STR_USB_JOYSTICK) {
+    setSelectedUsbMode(USB_JOYSTICK_MODE);
+    menuDisplayed = false;
+  }
+  else if (result == STR_USB_SERIAL) {
+    setSelectedUsbMode(USB_SERIAL_MODE);
+    menuDisplayed = false;
+  }
+}
 
 void handleUsbConnection()
 {
@@ -38,14 +51,12 @@ void handleUsbConnection()
       usbPluggedIn();
     }
   }
-  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    // Fire this event every 2s so it gets display in main menu, better idea?
-    uint32_t now = CoGetOSTime();
-    if (now - lastUsbMenuRunTime > 1000) {
-      putEvent(EVT_USB_SELECT);
-      lastUsbMenuRunTime = now;
-    }
-
+  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE && !menuDisplayed) {
+    POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
+    POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
+    POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
+    POPUP_MENU_START(onUSBConnectMenu);
+    menuDisplayed = true;
   }
   if (usbStarted() && !usbPlugged()) {
     usbStop();
@@ -419,7 +430,7 @@ void perMain()
     return;
   }
 #endif
-  
+
 #if defined(PCBHORUS)
   // TODO if it is OK on HORUS it could be ported to all other boards
   // But in this case it's needed to define sdMount for all boards, because sdInit also initializes the SD mutex
@@ -438,7 +449,7 @@ void perMain()
     return;
   }
 #endif
-    
+
 #if defined(USB_MASS_STORAGE)
   if (usbPlugged() && getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
     // disable access to menus
@@ -476,4 +487,3 @@ void perMain()
   gpsWakeup();
 #endif
 }
-
