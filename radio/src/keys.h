@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -40,7 +40,6 @@
 #define EVT_ENTRY                      0xbf
 #define EVT_ENTRY_UP                   0xbe
 #endif
-#define EVT_USB_SELECT                 0xbd
 
 // normal order of events is: FIRST, LONG, REPEAT, REPEAT, ..., BREAK
 #define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)  // fired when key is pressed
