@@ -94,6 +94,9 @@
 #define LEN_COUNTRYCODES               TR("\002", "\006")
 #define TR_COUNTRYCODES                TR("US""JP""EU", "USA\0  ""Japon\0""Europe")
 
+#define LEN_USBMODES                    TR("\006", "\010")
+#define TR_USBMODES                     TR("Ask\0  ""Joyst\0""SDCard""Debug\0", "Ask\0    ""Joystick""Storage\0""Debug\0  ")
+
 #define LEN_TARANIS_PROTOCOLS          "\004"
 #define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
 
@@ -996,6 +999,7 @@
 #define TR_MENUSENSOR                  "CAPTEUR"
 #define TR_SENSOR                      "SENSOR"
 #define TR_COUNTRYCODE                 TR("Zone géo.", "Zone géographique")
+#define TR_USBMODE                     "USB Mode"
 #define TR_VOICELANG                   TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITSSYSTEM                 "Unités"
 #define TR_EDIT                        "Editer"

@@ -102,6 +102,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
 #endif
 #if defined(PXX) || defined(CPUARM)
     ISTR(COUNTRYCODES)
+    ISTR(USBMODES)
     ISTR(VFAILSAFE)
 #endif
 #if defined(CPUARM)
@@ -385,6 +386,7 @@ const pm_char STR_INTERNALRF[] PROGMEM = TR_INTERNALRF;
 const pm_char STR_EXTERNALRF[] PROGMEM = TR_EXTERNALRF;
 const pm_char STR_SPORT_OUT[] PROGMEM = TR_SPORT_OUT;
 const pm_char STR_COUNTRYCODE[] PROGMEM = TR_COUNTRYCODE;
+const pm_char STR_USBMODE[] PROGMEM = TR_USBMODE;
 const pm_char STR_FAILSAFE[] PROGMEM = TR_FAILSAFE;
 const pm_char STR_FAILSAFESET[] PROGMEM = TR_FAILSAFESET;
 const pm_char STR_HOLD[] PROGMEM = TR_HOLD;

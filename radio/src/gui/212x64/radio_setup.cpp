@@ -88,6 +88,7 @@ enum MenuRadioSetupItems {
   IF_FAI_CHOICE(ITEM_SETUP_FAI)
   CASE_MAVLINK(ITEM_MAVLINK_BAUD)
   ITEM_SETUP_SWITCHES_DELAY,
+  ITEM_SETUP_USB_MODE,
   ITEM_SETUP_RX_CHANNEL_ORD,
   ITEM_SETUP_STICK_MODE_LABELS,
   ITEM_SETUP_STICK_MODE,
@@ -476,6 +477,10 @@ void menuRadioSetup(event_t event)
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT);
         lcdDrawText(lcdLastRightPos, y, STR_MS, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, 100-15);
+        break;
+
+      case ITEM_SETUP_USB_MODE:
+        g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODE, STR_USBMODES, g_eeGeneral.USBMode, 0, 3, attr, event);
         break;
 
       case ITEM_SETUP_RX_CHANNEL_ORD:

@@ -207,14 +207,15 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VBEEPCOUNTDOWN    (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
   #define OFS_VVARIOCENTER      (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
   #define OFS_COUNTRYCODES      (OFS_VVARIOCENTER + sizeof(TR_VVARIOCENTER))
+  #define OFS_USBMODES          (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
 #else
   #define OFS_COUNTRYCODES      (OFS_VLCD)
 #endif
 #if defined(PXX) || defined(CPUARM)
-  #define OFS_VFAILSAFE         (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
+  #define OFS_VFAILSAFE         (OFS_USBMODES + sizeof(TR_USBMODES))
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
 #else
-  #define OFS_VFAILSAFE         (OFS_COUNTRYCODES)
+  #define OFS_VFAILSAFE         (OFS_USBMODES)
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE)
 #endif
 #if defined(CPUARM)
@@ -340,6 +341,7 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(PXX) || defined(CPUARM)
   #define STR_COUNTRYCODES      (STR_OPEN9X + OFS_COUNTRYCODES)
+  #define STR_USBMODES          (STR_OPEN9X + OFS_USBMODES)
   #define STR_VFAILSAFE         (STR_OPEN9X + OFS_VFAILSAFE)
 #endif
 
@@ -632,6 +634,7 @@ extern const pm_char STR_NONE[];
 extern const pm_char STR_MENUSENSOR[];
 extern const pm_char STR_SENSOR[];
 extern const pm_char STR_COUNTRYCODE[];
+extern const pm_char STR_USBMODE[];
 extern const pm_char STR_DISABLE_INTERNAL[];
 #endif
 
