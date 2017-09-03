@@ -23,7 +23,6 @@
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t mainRequestFlags = 0;
-bool static USBConnectMenuDisplayed = false;
 
 void onUSBConnectMenu(const char *result)
 {
@@ -48,7 +47,7 @@ void handleUsbConnection()
       usbPluggedIn();
     }
   }
-  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE && !(popupMenuNoItems > 0)) {
+  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE && (popupMenuNoItems == 0)) {
     POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
     POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
     POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
@@ -56,7 +55,6 @@ void handleUsbConnection()
   }
   if (usbStarted() && !usbPlugged()) {
     usbStop();
-    USBConnectMenuDisplayed = false;
 #if !defined(EEPROM)
     if (getSelectedUsbMode() == USB_MASS_STORAGE)
       opentxResume();
