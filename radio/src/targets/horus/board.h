@@ -63,7 +63,6 @@ extern "C" {
 #pragma clang diagnostic pop
 #endif
 
-
 #include "usb_driver.h"
 
 #if !defined(SIMU)
@@ -75,7 +74,6 @@ extern "C" {
 #include "usb_conf.h"
 #include "usbd_conf.h"
 #endif
-
 
 #include "hal.h"
 

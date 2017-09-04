@@ -83,9 +83,6 @@
 #define USBD_CDC_CONFIGURATION_FS_STRING    "VSP Config"
 #define USBD_CDC_INTERFACE_FS_STRING        "VSP Interface"
 
-
-
-
 const USBD_DEVICE USR_desc =
 {
   USBD_USR_DeviceDescriptor,

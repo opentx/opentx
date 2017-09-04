@@ -1991,7 +1991,6 @@ void opentxResume()
 
   menuHandlers[0] = menuMainView;
 
-
   sdMount();
 
   storageReadAll();

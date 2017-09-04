@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -27,7 +27,7 @@
 
 #define USBD_CFG_MAX_NUM           1
 #define USBD_ITF_MAX_NUM           1
-#define USB_MAX_STR_DESC_SIZ       64 
+#define USB_MAX_STR_DESC_SIZ       64
 
 #define USBD_SELF_POWERED
 
@@ -57,10 +57,7 @@
 #define APP_RX_DATA_SIZE             512 // USB serial port output buffer. TODO: tune this buffer size /* Total size of IN buffer: APP_RX_DATA_SIZE*8/MAX_BAUDARATE*1000 should be > CDC_IN_FRAME_INTERVAL */
 #define APP_FOPS                     VCP_fops
 
-
-
 #endif // _USBD_CONF_H_
 
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
-
