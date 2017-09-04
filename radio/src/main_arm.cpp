@@ -68,10 +68,9 @@ void handleUsbConnection()
   }
   if (usbStarted() && !usbPlugged()) {
     usbStop();
-#if !defined(EEPROM)
-    if (getSelectedUsbMode() == USB_MASS_STORAGE)
+    if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
       opentxResume();
-#endif
+    }
 #if !defined(BOOT)
     setSelectedUsbMode(USB_UNSELECTED_MODE);
 #endif
