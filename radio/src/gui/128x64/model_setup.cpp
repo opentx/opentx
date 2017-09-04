@@ -156,8 +156,8 @@ enum MenuModelSetupItems {
 
 #if defined(PCBX7)
 #if defined(BLUETOOTH)
-  #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothFriend[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_BLUETOOTH_S_ROW        (bluetoothFriend[0] == '\0' ? HIDDEN_ROW : LABEL())
+  #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
+  #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
   #define TRAINER_BLUETOOTH_ROW          (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW)),
 #else
   #define TRAINER_BLUETOOTH_ROW
@@ -808,7 +808,7 @@ void menuModelSetup(event_t event)
 #if defined(BLUETOOTH)
           if (checkIncDec_Ret) {
             bluetoothState = BLUETOOTH_STATE_OFF;
-            bluetoothFriend[0] = 0;
+            bluetoothDistantAddr[0] = 0;
           }
 #endif
         }
@@ -821,8 +821,8 @@ void menuModelSetup(event_t event)
           if (attr) {
             s_editMode = 0;
           }
-          if (bluetoothFriend[0]) {
-            lcdDrawText(INDENT_WIDTH, y+1, bluetoothFriend, TINSIZE);
+          if (bluetoothDistantAddr[0]) {
+            lcdDrawText(INDENT_WIDTH, y+1, bluetoothDistantAddr, TINSIZE);
             if (bluetoothState != BLUETOOTH_STATE_CONNECTED) {
               lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), menuHorizontalPosition == 0 ? attr : 0);
               lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW, y, BUTTON("Clear"), menuHorizontalPosition == 1 ? attr : 0);
@@ -833,7 +833,7 @@ void menuModelSetup(event_t event)
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
               if (bluetoothState == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
                 bluetoothState = BLUETOOTH_STATE_OFF;
-                bluetoothFriend[0] = 0;
+                bluetoothDistantAddr[0] = 0;
               }
               else {
                 bluetoothState = BLUETOOTH_STATE_BIND_REQUESTED;
@@ -855,8 +855,8 @@ void menuModelSetup(event_t event)
           }
         }
         else {
-          if (bluetoothFriend[0])
-            lcdDrawText(INDENT_WIDTH, y+1, bluetoothFriend, TINSIZE);
+          if (bluetoothDistantAddr[0])
+            lcdDrawText(INDENT_WIDTH, y+1, bluetoothDistantAddr, TINSIZE);
           else
             lcdDrawText(INDENT_WIDTH, y, "---");
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, bluetoothState == BLUETOOTH_STATE_CONNECTED ? "Connected" : "!Connected");

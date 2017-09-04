@@ -42,10 +42,11 @@ enum BluetoothStates {
     BLUETOOTH_STATE_DISCONNECTED,
 };
 
-#define LEN_BLUETOOTH_FRIEND           16
+#define LEN_BLUETOOTH_ADDR             16
 
 extern volatile uint8_t bluetoothState;
-extern char bluetoothFriend[LEN_BLUETOOTH_FRIEND+1];
+extern char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
+extern char bluetoothDistantAddr[LEN_BLUETOOTH_ADDR+1];
 
 char * bluetoothReadline(bool error_reset=true);
 void bluetoothWriteString(const char * command);
