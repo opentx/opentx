@@ -1991,9 +1991,7 @@ void opentxResume()
 
   menuHandlers[0] = menuMainView;
 
-#if defined(PCBHORUS)
   sdMount();
-#endif
   storageReadAll();
 #if defined(PCBHORUS)
   loadTheme();

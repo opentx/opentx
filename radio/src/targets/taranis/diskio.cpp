@@ -993,13 +993,18 @@ void sdInit(void)
 void sdInit(void)
 {
   TRACE("sdInit");
-  
+
   ioMutex = CoCreateMutex();
-  if (ioMutex >= CFG_MAX_MUTEX ) {
+  if (ioMutex >= CFG_MAX_MUTEX) {
     //sd error
     return;
   }
+  sdMount();
+}
 
+void sdMount()
+{
+  TRACE("sdMount");
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
