@@ -113,6 +113,8 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SH,
 #if defined(BLUETOOTH)
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
+  ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR,
+  ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
@@ -122,7 +124,7 @@ enum MenuRadioHardwareItems {
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #if defined(BLUETOOTH)
-#define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0),
+#define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #else
 #define BLUETOOTH_ROWS
 #endif
@@ -212,6 +214,16 @@ void menuRadioHardware(event_t event)
         if (attr) {
           g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER);
         }
+        break;
+
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR:
+        lcdDrawTextAlignedLeft(y, INDENT "Local addr");
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, bluetoothLocalAddr[0] == '\0' ? "---" : bluetoothLocalAddr);
+        break;
+
+      case ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR:
+        lcdDrawTextAlignedLeft(y, INDENT "Dist addr");
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, bluetoothDistantAddr[0] == '\0' ? "---" : bluetoothDistantAddr);
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
