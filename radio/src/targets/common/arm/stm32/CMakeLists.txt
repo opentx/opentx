@@ -36,32 +36,32 @@ set(FIRMWARE_TARGET_SRC
   ../common/arm/stm32/usbd_usr.cpp
   ../common/arm/stm32/usb_driver.cpp
   )
-  add_definitions(-DUSB_SERIAL)
-  set(FIRMWARE_TARGET_SRC
-    ${FIRMWARE_TARGET_SRC}
-    ../common/arm/stm32/usbd_cdc.cpp
-    )
-  set(STM32USB_SRC
-    ${STM32USB_SRC}
-    STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
-    )
-  add_definitions(-DUSB_MASS_STORAGE)
-  set(STM32USB_SRC
-    ${STM32USB_SRC}
-    STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
-    STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
-    STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
-    STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
-    )
-  set(FIRMWARE_TARGET_SRC
-    ${FIRMWARE_TARGET_SRC}
-    ../common/arm/stm32/usbd_storage_msd.cpp
-    )
-  add_definitions(-DUSB_JOYSTICK)
-  set(FIRMWARE_TARGET_SRC
-    ${FIRMWARE_TARGET_SRC}
-    ../common/arm/stm32/usbd_hid_joystick.c
-    )
+add_definitions(-DUSB_SERIAL)
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  ../common/arm/stm32/usbd_cdc.cpp
+  )
+set(STM32USB_SRC
+  ${STM32USB_SRC}
+  STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+  )
+add_definitions(-DUSB_MASS_STORAGE)
+set(STM32USB_SRC
+  ${STM32USB_SRC}
+  STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
+  STM32_USB_Device_Library/Class/msc/src/usbd_msc_scsi.c
+  STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
+  STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
+  )
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  ../common/arm/stm32/usbd_storage_msd.cpp
+  )
+add_definitions(-DUSB_JOYSTICK)
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  ../common/arm/stm32/usbd_hid_joystick.c
+  )
 if(GVARS)
   set(GUI_SRC
     ${GUI_SRC}
