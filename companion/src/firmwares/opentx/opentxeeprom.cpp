@@ -3703,7 +3703,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       if (version >= 218) {
         internalField.Append(new BoolField<1>(this, generalData.jitterFilter));
         internalField.Append(new BoolField<1>(this, generalData.disableRssiPoweroffAlarm));
-        internalField.Append(new SpareBitsField<5>(this));
+        internalField.Append(new UnsignedField<2>(this, generalData.usbMode));
+        internalField.Append(new SpareBitsField<3>(this));
       }
       else {
         internalField.Append(new SpareBitsField<7>(this));
