@@ -59,6 +59,7 @@ class GeneralSetupPanel : public GeneralPanel
     void on_hapticmodeCB_currentIndexChanged(int index);
     void on_hapticLengthCB_currentIndexChanged(int index);
     void on_backlightswCB_currentIndexChanged(int index);
+    void on_usbModeCB_currentIndexChanged(int index);
     void on_backlightColor_SL_valueChanged();
     void on_mavbaud_CB_currentIndexChanged(int index);
     void on_voiceLang_CB_currentIndexChanged(int index);
