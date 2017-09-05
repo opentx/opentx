@@ -438,13 +438,14 @@ void perMain()
   }
 #endif
 
-
+#if defined(STM32)
   static bool sdcard_present_before = SD_CARD_PRESENT();
   bool sdcard_present_now = SD_CARD_PRESENT();
   if (sdcard_present_now && !sdcard_present_before) {
     sdMount();
   }
   sdcard_present_before = sdcard_present_now;
+#endif
 
 #if !defined(EEPROM)
   // In case the SD card is removed during the session

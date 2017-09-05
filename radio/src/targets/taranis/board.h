@@ -159,6 +159,7 @@ uint32_t sdGetSpeed(void);
 #define sdInit()
 #define sdMount()
 #define sdDone()
+#define SD_CARD_PRESENT()             true
 #else
 void sdInit(void);
 void sdMount(void);
