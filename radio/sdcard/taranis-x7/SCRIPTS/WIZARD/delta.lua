@@ -124,10 +124,7 @@ end
 -- Engine Menu
 local engineModeItems = {"No", "Yes"}
 local function drawEngineMenu()
-  lcd.clear()
-  lcd.drawText(1, 0, "Got an engine?", 0)
-  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, engineModeItems, engineMode, getFieldFlags(0)) 
+  lcd.clear() 
   if engineMode == 0 then
     -- No engine
     fieldsMax = 0
@@ -138,6 +135,9 @@ local function drawEngineMenu()
     lcd.drawSource(25, 40, MIXSRC_CH1+thrCH1, getFieldFlags(1))
     fieldsMax = 1
   end
+  lcd.drawText(1, 0, "Got an engine?", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W, engineModeItems, engineMode, getFieldFlags(0))
 end
 
 local function engineMenu(event)
@@ -191,9 +191,6 @@ local rudderModeItems = {"No", "Yes"}
 
 local function drawRudderMenu()
   lcd.clear()
-  lcd.drawText(1, 0, "Got a rudder?", 0)
-  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, rudderModeItems, rudderMode, getFieldFlags(0)) 
   if rudderMode == 0 then
     -- No rudder
     fieldsMax = 0
@@ -204,6 +201,9 @@ local function drawRudderMenu()
     lcd.drawSource(25, 40, MIXSRC_CH1+rudCH1, getFieldFlags(1))
     fieldsMax = 1
   end
+  lcd.drawText(1, 0, "Got a rudder?", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W, rudderModeItems, rudderMode, getFieldFlags(0)) 
 end
 
 local function rudderMenu(event)

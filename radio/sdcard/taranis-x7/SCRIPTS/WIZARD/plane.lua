@@ -135,9 +135,6 @@ end
 local engineModeItems = {"No", "Yes"}
 local function drawEngineMenu()
   lcd.clear()
-  lcd.drawText(1, 0, "Got an engine?", 0)
-  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, engineModeItems, engineMode, getFieldFlags(0)) 
   if engineMode == 1 then
     -- 1 channel
     lcd.drawText(5, 30, "Assign channel", 0);
@@ -148,6 +145,9 @@ local function drawEngineMenu()
     -- No engine
     fieldsMax = 0
   end
+  lcd.drawText(1, 0, "Got an engine?", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W, engineModeItems, engineMode, getFieldFlags(0)) 
 end
 
 local function engineMenu(event)
@@ -169,9 +169,6 @@ end
 local aileronsModeItems = {"No", "Yes", "Yes, 2 channels"}
 local function drawAileronsMenu()
   lcd.clear()
-  lcd.drawText(1, 0, "Got ailerons?", 0)
-  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, aileronsModeItems, aileronsMode, getFieldFlags(0)) 
   if aileronsMode == 2 then
     -- 2 channels
     lcd.drawText(5, 30, "Assign channels", 0);
@@ -191,6 +188,9 @@ local function drawAileronsMenu()
     -- No ailerons
     fieldsMax = 0
   end
+  lcd.drawText(1, 0, "Got ailerons?", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W, aileronsModeItems, aileronsMode, getFieldFlags(0)) 
 end
 
 local function aileronsMenu(event)
@@ -214,9 +214,6 @@ end
 local flapsModeItems = {"No", "Yes", "Yes, 2 channels"}
 local function drawFlapsMenu()
   lcd.clear()
-  lcd.drawText(1, 0, "Got flaps?", 0)
-  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, flapsModeItems, flapsMode, getFieldFlags(0)) 
   if flapsMode == 0 then
     -- no flaps
     fieldsMax = 0
@@ -236,6 +233,9 @@ local function drawFlapsMenu()
     lcd.drawSource(60, 50, MIXSRC_CH1+flapsCH2, getFieldFlags(2))
     fieldsMax = 2
   end
+  lcd.drawText(1, 0, "Got flaps?", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W, flapsModeItems, flapsMode, getFieldFlags(0)) 
 end
 
 local function flapsMenu(event)
@@ -259,9 +259,6 @@ end
 local brakesModeItems = {"No", "Yes", "Yes, 2 channels"}
 local function drawBrakesMenu()
   lcd.clear()
-  lcd.drawText(1, 0, "Got air brakes?", 0)
-  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, brakesModeItems, brakesMode, getFieldFlags(0)) 
   if brakesMode == 0 then
     -- no brakes
     fieldsMax = 0
@@ -281,6 +278,9 @@ local function drawBrakesMenu()
     lcd.drawSource(60, 50, MIXSRC_CH1+brakesCH2, getFieldFlags(2))
     fieldsMax = 2
   end
+  lcd.drawText(1, 0, "Got air brakes?", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W, brakesModeItems, brakesMode, getFieldFlags(0)) 
 end
 
 local function brakesMenu(event)
@@ -304,9 +304,6 @@ end
 local tailModeItems = {"Ele(1ch), no Ruder", "Ele(1ch) + Ruder", "Ele(2ch) + Ruder", "V-Tail"}
 local function drawTailMenu()
   lcd.clear()
-  lcd.drawText(1, 0, "Tail config", 0)
-  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, tailModeItems, tailMode, getFieldFlags(0)) 
   if tailMode == 0 then
     -- Elevator(1ch), no rudder...
     lcd.drawText(5, 30, "Assign channel", 0);
@@ -343,6 +340,9 @@ local function drawTailMenu()
     lcd.drawSource(60, 50, MIXSRC_CH1+eleCH2, getFieldFlags(2))
     fieldsMax = 2
   end
+  lcd.drawText(1, 0, "Tail config", 0)
+  lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
+  lcd.drawCombobox(0, 8, LCD_W, tailModeItems, tailMode, getFieldFlags(0)) 
 end
 
 local function tailMenu(event)
