@@ -33,14 +33,13 @@ end
 local function drawModelChoiceMenu()
   lcd.clear()
   lcd.drawScreenTitle("Select model type", 0, 0)
-  lcd.drawText(110, 0, "v1.0", 0);
     lcd.drawText( 20, 20, "Plane")
     lcd.drawText( 78, 20, "Heli")
     lcd.drawText( 20, 40, "Delta")
     lcd.drawText( 78, 40, "Multi")
   modelTypeSurround(modelType)
 
-  lcd.drawText(6, LCD_H-8, "ModWizX7 - Niklas Voigt", 0);
+  lcd.drawText(6, LCD_H-8, "ModWizX7 - v1.0", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
   fieldsMax = 0
 end
