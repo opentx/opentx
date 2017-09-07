@@ -1,0 +1,74 @@
+-- Navigation variables
+local dirty = true
+
+-- Model types
+local modelType = 0
+local MODELTYPE_PLANE = 0
+--local MODELTYPE_HELI = 3
+local MODELTYPE_DELTA = 1
+local MODELTYPE_QUAD = 2
+
+-- Common functions
+local function fieldIncDec(event, value, max)
+  if event == EVT_PLUS_BREAK or event == EVT_ROT_LEFT or event == EVT_PLUS_REPT then
+    value = (value + max)
+    dirty = true
+  elseif event == EVT_MINUS_BREAK or event == EVT_ROT_RIGHT or event == EVT_MINUS_REPT then
+    value = (value + max + 2)
+    dirty = true
+  end
+  value = (value % (max+1))
+  return value
+end
+
+-- Model Type Menu
+local function modelTypeSurround(index)
+  lcd.drawRectangle(5+40*index, 12, 40, 20)
+  lcd.drawText(11+40*index, 8, "Setup")
+end
+
+local function drawModelChoiceMenu()
+  lcd.clear()
+  lcd.drawScreenTitle("", 0, 0)
+  -- lcd.drawText(58, 13, "Select model type", 0)
+  lcd.drawText( 11, 17, "Plane")
+  --lcd.drawText( 11, 45, "Heli")
+  lcd.drawText(50, 17, "Delta")
+  lcd.drawText(88, 17, "Quadro")
+  modelTypeSurround(modelType)
+end
+
+local function modelTypeMenu(event)
+  if dirty == true then
+    drawModelChoiceMenu()
+    dirty = false
+  end
+  if event == EVT_ENTER_BREAK then
+    if modelType == MODELTYPE_PLANE then
+      return "plane.lua"
+    elseif modelType == MODELTYPE_HELI then
+    elseif modelType == MODELTYPE_DELTA then
+      return "delta.lua"
+    elseif modelType == MODELTYPE_QUAD then
+      return "multi.lua"
+    end
+    dirty = true
+  else
+    modelType = fieldIncDec(event, modelType, 2)
+  end
+  return 0
+end
+
+-- Main
+local function run(event)
+  if event == nil then
+    error("Cannot be run as a model script!")
+  end
+
+  if event == EVT_EXIT_BREAK then
+    return 2
+  end
+  return modelTypeMenu(event)
+end
+
+return { run=run }
