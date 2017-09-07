@@ -4,9 +4,9 @@ local dirty = true
 -- Model types
 local modelType = 0
 local MODELTYPE_PLANE = 0
-local MODELTYPE_HELI = 1
-local MODELTYPE_DELTA = 2
-local MODELTYPE_QUAD = 3
+-- local MODELTYPE_HELI = 1  -- change order for implementing Heli
+local MODELTYPE_DELTA = 1
+local MODELTYPE_QUAD = 2
 
 -- Common functions
 local function fieldIncDec(event, value, max)
@@ -34,13 +34,10 @@ local function drawModelChoiceMenu()
   lcd.clear()
   lcd.drawScreenTitle("Select model type", 0, 0)
     lcd.drawText( 20, 20, "Plane")
-    lcd.drawText( 78, 20, "Heli")
-    lcd.drawText( 20, 40, "Delta")
-    lcd.drawText( 78, 40, "Multi")
+    lcd.drawText( 78, 20, "Delta")
+    lcd.drawText( 20, 40, "Multi")
+    -- lcd.drawText( 78, 40, "Heli")
   modelTypeSurround(modelType)
-
-  lcd.drawText(6, LCD_H-8, "ModWizX7 - v1.0", 0);
-  lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
   fieldsMax = 0
 end
 
@@ -52,7 +49,7 @@ local function modelTypeMenu(event)
   if event == EVT_ENTER_BREAK then
     if modelType == MODELTYPE_PLANE then
       return "plane.lua"
-    elseif modelType == MODELTYPE_HELI then
+    -- elseif modelType == MODELTYPE_HELI then
     elseif modelType == MODELTYPE_DELTA then
       return "delta.lua"
     elseif modelType == MODELTYPE_QUAD then
@@ -60,7 +57,7 @@ local function modelTypeMenu(event)
     end
     dirty = true
   else
-    modelType = fieldIncDec(event, modelType, 3)
+    modelType = fieldIncDec(event, modelType, 2) -- 3 for implementing Heli
   end
   return 0
 end
