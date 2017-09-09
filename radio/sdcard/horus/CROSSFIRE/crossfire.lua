@@ -1,3 +1,19 @@
+---- #########################################################################
+---- #                                                                       #
+---- # Copyright (C) OpenTX                                                  #
+-----#                                                                       #
+---- # License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html               #
+---- #                                                                       #
+---- # This program is free software; you can redistribute it and/or modify  #
+---- # it under the terms of the GNU General Public License version 2 as     #
+---- # published by the Free Software Foundation.                            #
+---- #                                                                       #
+---- # This program is distributed in the hope that it will be useful        #
+---- # but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+---- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+---- # GNU General Public License for more details.                          #
+---- #                                                                       #
+---- #########################################################################
 local devices = { }
 local lineIndex = 1
 local pageOffset = 0
@@ -82,8 +98,8 @@ local function run(event)
   lcd.clear()
   lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
   lcd.drawText(1, 5,"CROSSFIRE SETUP", MENU_TITLE_COLOR)
-  
-  
+
+
   if #devices == 0 then
     lcd.drawText(NoCross[1],NoCross[2],NoCross[3],NoCross[4])
   else
