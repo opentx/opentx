@@ -554,9 +554,10 @@ void menuModelSetup(event_t event)
         int current = 0;
         for (int i=0; i<NUM_SWITCHES-1; i++) {
           if (SWITCH_WARNING_ALLOWED(i)) {
+            div_t qr = div(current, 8);
             uint8_t swactive = !(g_model.switchWarningEnable & (1<<i));
             c = "\300-\301"[states & 0x03];
-            lcdDrawChar(MODEL_SETUP_2ND_COLUMN+(2*FW*i), y, (i < 4 ? 'A'+i : 'B'+i), line && (menuHorizontalPosition-1==current) ? INVERS : 0);
+            lcdDrawChar(MODEL_SETUP_2ND_COLUMN+qr.rem*(2*FW), y, (i < 4 ? 'A'+i : 'B'+i), line && (menuHorizontalPosition-1==current) ? INVERS : 0);
             if (swactive) lcdDrawChar(lcdNextPos, y, c);
             ++current;
           }
