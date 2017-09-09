@@ -1008,7 +1008,8 @@ PACK(struct RadioData {
   NOBACKUP(int8_t timezone:5);
   NOBACKUP(uint8_t adjustRTC:1);
   NOBACKUP(uint8_t inactivityTimer);
-  NOBACKUP(uint8_t mavbaud:3);
+  AVR_FIELD(uint8_t maxbaud:3)
+  ARM_FIELD(uint8_t telemetryBaudrate:3)
   SPLASH_MODE; /* 3bits */
   NOBACKUP(int8_t hapticMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   AVR_FIELD(uint8_t blOffBright:4)

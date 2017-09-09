@@ -50,8 +50,8 @@ const uint8_t CROSSFIRE_FRAME_PERIODS[] = {
   4,
   16,
 };
-#define CROSSFIRE_BAUDRATE             CROSSFIRE_BAUDRATES[g_eeGeneral.mavbaud]
-#define CROSSFIRE_FRAME_PERIOD         CROSSFIRE_FRAME_PERIODS[g_eeGeneral.mavbaud]
+#define CROSSFIRE_BAUDRATE             CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
+#define CROSSFIRE_FRAME_PERIOD         CROSSFIRE_FRAME_PERIODS[g_eeGeneral.telemetryBaudrate]
 #else
 #define CROSSFIRE_BAUDRATE             400000
 #define CROSSFIRE_FRAME_PERIOD         4 // 4ms

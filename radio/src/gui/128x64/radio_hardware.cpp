@@ -207,10 +207,10 @@ void menuRadioHardware(event_t event)
       }
 
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
-        lcdDrawTextAlignedLeft(y, "Max bauds");
-        lcdDrawNumber(HW_SETTINGS_COLUMN2, y, CROSSFIRE_BAUDRATES[g_eeGeneral.mavbaud], attr|LEFT);
+        lcdDrawTextAlignedLeft(y, STR_MAXBAUDRATE);
+        lcdDrawNumber(HW_SETTINGS_COLUMN2, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
         if (attr) {
-          g_eeGeneral.mavbaud = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.mavbaud, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
+          g_eeGeneral.telemetryBaudrate = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.telemetryBaudrate, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
           if (checkIncDec_Ret) {
             pauseMixerCalculations();
             pausePulses();
