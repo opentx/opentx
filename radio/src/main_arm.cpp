@@ -56,14 +56,8 @@ void handleUsbConnection()
       POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
       POPUP_MENU_START(onUSBConnectMenu);
     }
-    if (g_eeGeneral.USBMode == 1) {
-      setSelectedUsbMode(USB_JOYSTICK_MODE);
-    }
-    else if (g_eeGeneral.USBMode == 2) {
-      setSelectedUsbMode(USB_MASS_STORAGE_MODE);
-    }
-    else if (g_eeGeneral.USBMode == 3) {
-      setSelectedUsbMode(USB_SERIAL_MODE);
+    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE) {
+      setSelectedUsbMode(g_eeGeneral.USBMode);
     }
   }
   if (usbStarted() && !usbPlugged()) {

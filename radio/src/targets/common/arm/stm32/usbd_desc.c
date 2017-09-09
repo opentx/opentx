@@ -28,11 +28,9 @@
 #include "usbd_core.h"
 #include "usbd_req.h"
 #include "usb_regs.h"
-#if defined(PCBTARANIS)
-#include "../../../taranis/board.h"
-#elif defined(PCBHORUS)
-#include "../../../horus/board.h"
-#endif
+
+
+#include "usb_driver.h"
 
 /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
   * @{

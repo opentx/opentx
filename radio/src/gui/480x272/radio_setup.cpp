@@ -463,7 +463,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_USB_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_USBMODE);
-        g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODES, g_eeGeneral.USBMode, 0, 3, attr, event);
+        g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODES, g_eeGeneral.USBMode, USB_UNSELECTED_MODE, USB_MAX_MODE, attr, event);
         break;
 
       case ITEM_SETUP_RX_CHANNEL_ORD:

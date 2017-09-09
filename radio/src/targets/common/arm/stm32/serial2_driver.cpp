@@ -158,15 +158,15 @@ extern "C" void SERIAL_USART_IRQHandler(void)
     // Receive
     uint32_t status = SERIAL_USART->SR;
     while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-    uint8_t data = SERIAL_USART->DR;
-    if (!(status & USART_FLAG_ERRORS)) {
-      switch (serial2Mode) {
-        case UART_MODE_DEBUG:
-          cliRxFifo.push(data);
-          break;
+      uint8_t data = SERIAL_USART->DR;
+      if (!(status & USART_FLAG_ERRORS)) {
+        switch (serial2Mode) {
+          case UART_MODE_DEBUG:
+            cliRxFifo.push(data);
+            break;
+        }
       }
-    }
-    status = SERIAL_USART->SR;
+      status = SERIAL_USART->SR;
     }
   }
 #endif

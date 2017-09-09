@@ -566,7 +566,7 @@ void menuRadioSetup(event_t event)
         break;
 
       case ITEM_SETUP_USB_MODE:
-        g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODE, STR_USBMODES, g_eeGeneral.USBMode, 0, 3, attr, event);
+        g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODE, STR_USBMODES, g_eeGeneral.USBMode, USB_UNSELECTED_MODE, USB_MAX_MODE, attr, event);
         break;
 #endif
 
