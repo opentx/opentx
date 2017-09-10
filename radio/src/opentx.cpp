@@ -1911,6 +1911,10 @@ void opentxStart(OPENTX_START_ARGS)
   }
 #endif
 
+#if defined(NIGHTLY_BUILD_WARNING)
+  ALERT("NIGHTLY", "Version not safe to fly", AU_ERROR);
+#endif
+
 #if defined(GUI)
   if (calibration_needed) {
     chainMenu(menuFirstCalib);
