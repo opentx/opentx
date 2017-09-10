@@ -17,7 +17,8 @@
 local options = {
   { "Option1", SOURCE, 1 },
   { "Option2", VALUE, 1000 },
-  { "Option3", COLOR, RED }
+  { "Option3", COLOR, RED },
+  { "Shadow", BOOL, 0 }
 }
 
 local function create(zone, options)
@@ -36,7 +37,11 @@ end
 
 function refresh(pie)
   pie.counter = pie.counter + 1
-  lcd.drawNumber(pie.zone.x, pie.zone.y, pie.counter, LEFT + DBLSIZE + TEXT_COLOR);
+  if pie.options.Shadow == 1 then
+    lcd.drawNumber(pie.zone.x, pie.zone.y, pie.counter, LEFT + DBLSIZE + TEXT_COLOR);
+  else
+    lcd.drawNumber(pie.zone.x, pie.zone.y, pie.counter, LEFT + DBLSIZE + TEXT_COLOR + SHADOWED);
+  end
 end
 
 return { name="Counter", options=options, create=create, update=update, refresh=refresh, background=background }
