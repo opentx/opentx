@@ -111,6 +111,7 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SD,
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SH,
+  ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
 #if defined(BLUETOOTH)
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR,
@@ -134,7 +135,7 @@ enum MenuRadioHardwareItems {
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0, BLUETOOTH_ROWS 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -206,6 +207,24 @@ void menuRadioHardware(event_t event)
         }
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
+        lcdDrawTextAlignedLeft(y, STR_MAXBAUDRATE);
+        lcdDrawNumber(HW_SETTINGS_COLUMN2, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
+        if (attr) {
+          g_eeGeneral.telemetryBaudrate = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.telemetryBaudrate, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
+          if (checkIncDec_Ret) {
+            pauseMixerCalculations();
+            pausePulses();
+            EXTERNAL_MODULE_OFF();
+            CoTickDelay(10); // 20ms so that the pulses interrupt will reinit the frame rate
+            telemetryProtocol = 255; // force telemetry port + module reinitialization
+            EXTERNAL_MODULE_ON();
+            resumePulses();
+            resumeMixerCalculations();
+          }
+        }
+        break;
 
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:

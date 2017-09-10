@@ -778,6 +778,7 @@ extern const pm_char STR_HARDWARE[];
 extern const pm_char STR_FORMATTING[];
 extern const pm_char STR_TEMP_CALIB[];
 extern const pm_char STR_TIME[];
+extern const pm_char STR_MAXBAUDRATE[];
 extern const pm_char STR_BAUDRATE[];
 extern const pm_char STR_SD_INFO_TITLE[];
 extern const pm_char STR_SD_TYPE[];

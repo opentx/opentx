@@ -956,6 +956,7 @@
 #define TR_FORMATTING          "Formátovaní.."
 #define TR_TEMP_CALIB          " +=\006Teplota"
 #define TR_TIME                "Čas"
+#define TR_MAXBAUDRATE         "Max bauds"
 
 #define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "BT Baudrate"

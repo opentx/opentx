@@ -726,7 +726,7 @@ PACK(typedef struct {
   int8_t    timezone:5;
   uint8_t   adjustRTC:1;
   uint8_t   inactivityTimer;
-  uint8_t   mavbaud:3;
+  uint8_t   telemetryBaudrate:3;
   int8_t    splashMode:3;
   int8_t    hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   int8_t    switchesDelay;

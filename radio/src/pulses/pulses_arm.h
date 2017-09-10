@@ -101,8 +101,6 @@ PACK(struct Dsm2TimerPulsesData {
 });
 #endif
 
-#define CROSSFIRE_BAUDRATE             400000
-#define CROSSFIRE_FRAME_PERIOD         4 // 4ms
 #define CROSSFIRE_FRAME_MAXLEN         64
 #define CROSSFIRE_CHANNELS_COUNT       16
 PACK(struct CrossfirePulsesData {
