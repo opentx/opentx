@@ -14,6 +14,8 @@ set_property(CACHE SPLASH PROPERTY STRINGS DEFAULT OFF FRSKY)
 set(PPM_UNIT "PERCENT_PREC1" CACHE STRING "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)")
 set_property(CACHE PPM_UNIT PROPERTY STRINGS US PERCENT_PREC1 PERCENT_PREC0)
 set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
+set(FONT "STD" CACHE STRING "Choose font : STD or SQT5")
+set_property(CACHE FONT PROPERTY STRINGS SQT5)
 
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -335,6 +337,10 @@ endif()
 
 if(FRSKY_STICKS)
   add_definitions(-DFRSKY_STICKS)
+endif()
+
+if(NOT FONT STREQUAL "")
+  add_definitions(-DFONT=${DEFAULT_MODE})
 endif()
 
 if(EEPROM_VARIANT_NEEDED)
