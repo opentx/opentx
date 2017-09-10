@@ -50,7 +50,7 @@ void handleUsbConnection()
     }
   }
   if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    if((g_eeGeneral.USBMode == 0) && (popupMenuNoItems == 0)) {
+    if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuNoItems == 0)) {
       POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
       POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
       POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
