@@ -42,6 +42,7 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(BINDING_OPTIONS "Allow advanced frsky bindings" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
+option(ALLOW_NIGHTLY_BUILDS "Allow nightly builds download / update") # Disabled by default
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -341,6 +342,10 @@ if(EEPROM_VARIANT_NEEDED)
   add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})
 endif()
 
+if(ALLOW_NIGHTLY_BUILDS)
+  add_definitions(-DALLOW_NIGHTLY_BUILDS)
+endif(ALLOW_NIGHTLY_BUILDS)
+
 set(SRC
   ${SRC}
   opentx.cpp
@@ -480,7 +485,7 @@ if(NOT MSVC)
       set(SRC ${SRC} bin_allocator.cpp)
     endif()
 
-    
+
     if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X7S)
       add_subdirectory(targets/${TARGET_DIR}/bootloader)
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
