@@ -91,13 +91,6 @@ void menuStatisticsView(event_t event)
 #define MENU_DEBUG_Y_USB      (5*FH)
 #define MENU_DEBUG_Y_RTOS     (6*FH)
 
-#if defined(USB_SERIAL)
-  extern uint16_t usbWraps;
-  extern uint16_t charsWritten;
-  extern "C" volatile uint32_t APP_Rx_ptr_in;
-  extern "C" volatile uint32_t APP_Rx_ptr_out;
-#endif
-
 void menuStatisticsDebug(event_t event)
 {
   TITLE(STR_MENUDEBUG);
