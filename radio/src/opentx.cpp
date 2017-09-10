@@ -1911,7 +1911,7 @@ void opentxStart(OPENTX_START_ARGS)
   }
 #endif
 
-#if defined(ALLOW_NIGHTLY_BUILDS)
+#if defined(NIGHTLY_BUILD_WARNING)
   ALERT("NIGHTLY", "Version not safe to fly", AU_ERROR);
 #endif
 
