@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -31,6 +31,21 @@ extern "C" {
 #include "debug.h"
 
 static bool usbDriverStarted = false;
+#if defined(BOOT)
+static usbMode selectedUsbMode = USB_MASS_STORAGE_MODE;
+#else
+static usbMode selectedUsbMode = USB_UNSELECTED_MODE;
+#endif
+
+int getSelectedUsbMode()
+{
+  return selectedUsbMode;
+}
+
+void setSelectedUsbMode(int mode)
+{
+  selectedUsbMode = usbMode (mode);
+}
 
 int usbPlugged()
 {
@@ -70,16 +85,23 @@ void usbInit()
 
 void usbStart()
 {
-#if defined(USB_JOYSTICK)
-  // initialize USB as HID device
-  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
-#elif defined(USB_SERIAL)
-  // initialize USB as CDC device (virtual serial port)
-  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_CDC_cb, &USR_cb);
-#elif defined(USB_MASS_STORAGE)
-  // initialize USB as MSC device
-  USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
+  switch (getSelectedUsbMode()) {
+#if !defined(BOOT)
+    case USB_JOYSTICK_MODE:
+      // initialize USB as HID device
+      USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_HID_cb, &USR_cb);
+      break;
+    case USB_SERIAL_MODE:
+      // initialize USB as CDC device (virtual serial port)
+      USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_CDC_cb, &USR_cb);
+      break;
 #endif
+    default:
+    case USB_MASS_STORAGE_MODE:
+      // initialize USB as MSC device
+      USBD_Init(&USB_OTG_dev, USB_OTG_FS_CORE_ID, &USR_desc, &USBD_MSC_cb, &USR_cb);
+      break;
+  }
   usbDriverStarted = true;
 }
 
@@ -89,7 +111,7 @@ void usbStop()
   USBD_DeInit(&USB_OTG_dev);
 }
 
-uint8_t usbStarted()
+bool usbStarted()
 {
   return usbDriverStarted;
 }

@@ -18,40 +18,34 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
-#include "serial.h"
-#include <stdarg.h>
-#include <stdio.h>
+#ifndef OPENTX_USB_DRIVER_H
+#define OPENTX_USB_DRIVER_H
 
-#define PRINTF_BUFFER_SIZE    128
+// USB driver
+enum usbMode {
+  USB_UNSELECTED_MODE,
+  USB_JOYSTICK_MODE,
+  USB_SERIAL_MODE,
+  USB_MASS_STORAGE_MODE,
+  USB_MAX_MODE=USB_MASS_STORAGE_MODE
+};
 
-void serialPutc(char c) {
-  if (getSelectedUsbMode() == USB_SERIAL_MODE)
-    usbSerialPutc(c);
-#if defined(SERIAL2)
-  if (serial2TracesEnabled())
-    serial2Putc(c);
+int usbPlugged();
+void usbInit();
+void usbStart();
+void usbStop();
+bool usbStarted();
+int getSelectedUsbMode();
+void setSelectedUsbMode(int mode);
+
+void usbSerialPutc(uint8_t c);
+
+// Used in view_statistics.cpp
+#if defined(USB_SERIAL)
+  extern uint16_t usbWraps;
+  extern uint16_t charsWritten;
+  extern volatile uint32_t APP_Rx_ptr_in;
+  extern volatile uint32_t APP_Rx_ptr_out;
 #endif
-}
 
-void serialPrintf(const char * format, ...)
-{
-  va_list arglist;
-  char tmp[PRINTF_BUFFER_SIZE+1];
-
-  va_start(arglist, format);
-  vsnprintf(tmp, PRINTF_BUFFER_SIZE, format, arglist);
-  tmp[PRINTF_BUFFER_SIZE] = '\0';
-  va_end(arglist);
-
-  const char *t = tmp;
-  while (*t) {
-    serialPutc(*t++);
-  }
-}
-
-void serialCrlf()
-{
-  serialPutc('\r');
-  serialPutc('\n');
-}
+#endif

@@ -50,6 +50,12 @@
   #define IF_CPUARM(x)
 #endif
 
+#if defined(STM32)
+  #define CASE_STM32(x)     x,
+#else
+  #define CASE_STM32(x)
+#endif
+
 #if defined(VARIO) && defined(CPUARM)
   #define CASE_VARIO_CPUARM(x) x,
 #else

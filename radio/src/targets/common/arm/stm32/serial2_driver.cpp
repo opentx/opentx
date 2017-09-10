@@ -91,7 +91,7 @@ void serial2Init(unsigned int mode, unsigned int protocol)
     case UART_MODE_TELEMETRY_MIRROR:
       uart3Setup(FRSKY_SPORT_BAUDRATE, false);
       break;
-#if !defined(USB_SERIAL) && (defined(DEBUG) || defined(CLI))
+#if defined(DEBUG) || defined(CLI)
     case UART_MODE_DEBUG:
       uart3Setup(DEBUG_BAUDRATE, false);
       break;
@@ -153,19 +153,21 @@ extern "C" void SERIAL_USART_IRQHandler(void)
     }
   }
 
-#if !defined(USB_SERIAL) && defined(CLI)
-  // Receive
-  uint32_t status = SERIAL_USART->SR;
-  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
-    uint8_t data = SERIAL_USART->DR;
-    if (!(status & USART_FLAG_ERRORS)) {
-      switch (serial2Mode) {
-        case UART_MODE_DEBUG:
-          cliRxFifo.push(data);
-          break;
+#if defined(CLI)
+  if (!(getSelectedUsbMode() == USB_SERIAL_MODE)) {
+    // Receive
+    uint32_t status = SERIAL_USART->SR;
+    while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+      uint8_t data = SERIAL_USART->DR;
+      if (!(status & USART_FLAG_ERRORS)) {
+        switch (serial2Mode) {
+          case UART_MODE_DEBUG:
+            cliRxFifo.push(data);
+            break;
+        }
       }
+      status = SERIAL_USART->SR;
     }
-    status = SERIAL_USART->SR;
   }
 #endif
 }

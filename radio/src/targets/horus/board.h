@@ -22,6 +22,7 @@
 #define _BOARD_HORUS_H_
 
 #include "stddef.h"
+#include "stdbool.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -62,6 +63,7 @@ extern "C" {
 #pragma clang diagnostic pop
 #endif
 
+#include "usb_driver.h"
 
 #if !defined(SIMU)
 #include "usbd_cdc_core.h"
@@ -218,7 +220,7 @@ enum EnumKeys
   KEY_RIGHT = KEY_TELEM,
   KEY_RADIO,
   KEY_LEFT = KEY_RADIO,
-  
+
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
@@ -233,7 +235,7 @@ enum EnumKeys
   TRM_RS_DWN,
   TRM_RS_UP,
   TRM_LAST = TRM_RS_UP,
-  
+
   NUM_KEYS
 };
 
@@ -447,14 +449,7 @@ void backlightEnable(uint8_t dutyCycle);
 #define BACKLIGHT_DISABLE()   backlightEnable(unexpectedShutdown ? 100 : g_eeGeneral.blOffBright)
 #define isBacklightEnabled()  true
 
-// USB driver
-int usbPlugged();
-void usbInit();
-void usbStart();
-void usbStop();
-uint8_t usbStarted();
-void usbSerialPutc(uint8_t c);
-#if defined(USB_JOYSTICK) && !defined(SIMU)
+#if !defined(SIMU)
 void usbJoystickUpdate();
 #endif
 #if defined(PCBX12S)

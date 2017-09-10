@@ -1184,6 +1184,7 @@ class GeneralSettings {
     BeeperMode beeperMode;
     bool      disableAlarmWarning;
     bool      disableRssiPoweroffAlarm;
+    unsigned int       usbMode;
     BeeperMode hapticMode;
     unsigned int   stickMode; // TODO enum
     int       timezone;

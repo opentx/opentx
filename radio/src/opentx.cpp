@@ -1996,9 +1996,7 @@ void opentxResume()
   menuHandlers[0] = menuMainView;
 
   sdMount();
-
   storageReadAll();
-
 #if defined(PCBHORUS)
   loadTheme();
   loadFontCache();

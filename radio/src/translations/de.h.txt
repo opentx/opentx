@@ -98,6 +98,9 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
+#define LEN_USBMODES           TR("\006", "\010")
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Debug\0", "Ask\0    ""Joystick""Storage\0""Debug\0  ")
+
 #define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF""MULT""R9M\0"
 
@@ -1018,6 +1021,7 @@
 #define TR_MENUSENSOR          "SENSOR"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Landescode"
+#define TR_USBMODE             "USB Mode"
 #define TR_VOICELANG           "Sprach-Ansage"
 #define TR_UNITSSYSTEM         "Einheiten"
 #define TR_EDIT                "Zeile Editieren"
@@ -1035,6 +1039,9 @@
 #define TR_RESET_TELEMETRY     "Reset Telemetrie"
 #define TR_STATISTICS          "Statistik Timer Gas"
 #define TR_ABOUT_US            "Die Programmierer"
+#define TR_USB_JOYSTICK                "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE            "USB mass storage"
+#define TR_USB_SERIAL                  "USB Serial (Debug)"
 #define TR_SETUP_SCREENS       "Setup Hautbildschirme"
 #define TR_MONITOR_SCREENS     "Monitore Mischer Kanal Logik"
 #define TR_AND_SWITCH          "UND Schalt" //UND mit weiterem Schaltern
