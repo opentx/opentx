@@ -96,7 +96,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
 
 #define LEN_USBMODES           TR("\006", "\010")
-#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Debug\0", "Ask\0    ""Joystick""Storage\0""Debug\0  ")
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
@@ -1025,10 +1025,10 @@
 #define TR_RESET_TELEMETRY     "Wyczyść telemetrię"
 #define TR_STATISTICS          "Statystyki"
 #define TR_ABOUT_US            "O nas"
-#define TR_USB_JOYSTICK                "USB Joystick (HID)"
-#define TR_USB_MASS_STORAGE            "USB mass storage"
-#define TR_USB_SERIAL                  "USB Serial (Debug)"
-#define TR_SETUP_SCREENS         "Setup screens"
+#define TR_USB_JOYSTICK        "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE    "USB Mass Storage (SD)"
+#define TR_USB_SERIAL          "USB Serial (Debug)"
+#define TR_SETUP_SCREENS       "Setup screens"
 #define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "Przełącznik AND"
 #define TR_SF                  "FS"

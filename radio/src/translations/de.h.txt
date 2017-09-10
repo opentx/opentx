@@ -99,7 +99,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_USBMODES           TR("\006", "\010")
-#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Debug\0", "Ask\0    ""Joystick""Storage\0""Debug\0  ")
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
 
 #define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF""MULT""R9M\0"
@@ -1039,9 +1039,9 @@
 #define TR_RESET_TELEMETRY     "Reset Telemetrie"
 #define TR_STATISTICS          "Statistik Timer Gas"
 #define TR_ABOUT_US            "Die Programmierer"
-#define TR_USB_JOYSTICK                "USB Joystick (HID)"
-#define TR_USB_MASS_STORAGE            "USB mass storage"
-#define TR_USB_SERIAL                  "USB Serial (Debug)"
+#define TR_USB_JOYSTICK        "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE    "USB Mass Storage (SD)"
+#define TR_USB_SERIAL          "USB Serial (Debug)"
 #define TR_SETUP_SCREENS       "Setup Hautbildschirme"
 #define TR_MONITOR_SCREENS     "Monitore Mischer Kanal Logik"
 #define TR_AND_SWITCH          "UND Schalt" //UND mit weiterem Schaltern
@@ -1070,9 +1070,9 @@
 #define TR_ANTENNACONFIRM2     "Ist eine externe Antenne installiert?"
 #define TR_LOWALARM            INDENT "Vor-Alarm bei"
 #define TR_CRITICALALARM       INDENT "Kritisch-Alarm"
-#define TR_RSSIALARM_WARN             "Telemetry"
-#define TR_NO_RSSIALARM                "Audiowarnungen ausgeschaltet"
-#define TR_DISABLE_ALARM               INDENT "Audiowarnungen ausschalten"
+#define TR_RSSIALARM_WARN      "Telemetry"
+#define TR_NO_RSSIALARM        "Audiowarnungen ausgeschaltet"
+#define TR_DISABLE_ALARM       INDENT "Audiowarnungen ausschalten"
 #define TR_ENABLE_POPUP        "Freigabe Popup-Fenster"
 #define TR_DISABLE_POPUP       "Sperren  Popup-Fenster"
 #define TR_POPUP               "Popup"
