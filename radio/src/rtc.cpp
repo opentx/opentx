@@ -473,7 +473,7 @@ uint8_t rtcAdjust(uint16_t year, uint8_t mon, uint8_t day, uint8_t hour, uint8_t
     gtime_t newTime = gmktime(&t) + g_eeGeneral.timezone * 3600;
     gtime_t diff = (g_rtcTime > newTime) ? (g_rtcTime - newTime) : (newTime - g_rtcTime);
 
-#if defined(DEBUG)
+#if defined(DEBUG) && defined (PCBTARANIS)
     struct gtm utm;
     rtcGetTime(&utm);
     gtime_t rtcTime = gmktime(&utm);
