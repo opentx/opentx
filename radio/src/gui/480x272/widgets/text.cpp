@@ -39,6 +39,7 @@ const ZoneOption TextWidget::options[] = {
   { "Text", ZoneOption::String, OPTION_VALUE_STRING(TEXT_WIDGET_DEFAULT_LABEL) },
   { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
   { "Size", ZoneOption::TextSize, OPTION_VALUE_UNSIGNED(0) },
+  { "Shadow", ZoneOption::Bool, OPTION_VALUE_BOOL(false)  },
   { NULL, ZoneOption::Bool }
 };
 
@@ -46,6 +47,9 @@ void TextWidget::refresh()
 {
   lcdSetColor(persistentData->options[1].unsignedValue);
   LcdFlags fontsize = FONTSIZE(persistentData->options[2].unsignedValue << 8);
+  if(persistentData->options[3].boolValue) {
+    lcdDrawSizedText(zone.x+1, zone.y+1, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|BLACK);
+  }
   lcdDrawSizedText(zone.x, zone.y, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|CUSTOM_COLOR);
 }
 

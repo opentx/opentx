@@ -36,6 +36,7 @@ class ValueWidget: public Widget
 const ZoneOption ValueWidget::options[] = {
   { "Source", ZoneOption::Source, OPTION_VALUE_UNSIGNED(MIXSRC_Rud) },
   { "Color", ZoneOption::Color, OPTION_VALUE_UNSIGNED(WHITE) },
+  { "Shadow", ZoneOption::Bool, OPTION_VALUE_BOOL(false)  },
   { NULL, ZoneOption::Bool }
 };
 
@@ -45,12 +46,12 @@ void ValueWidget::refresh()
 
   mixsrc_t field = persistentData->options[0].unsignedValue;
   lcdSetColor(persistentData->options[1].unsignedValue);
-  
+
   int x = zone.x;
   int y = zone.y;
-  
+
   // TRACE("w=%d, h=%d", zone.w, zone.h);
-  
+
   // lcdDrawFilledRect(zone.x, zone.y, zone.w, zone.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
 
   int xValue, yValue, xLabel, yLabel;
@@ -111,11 +112,13 @@ void ValueWidget::refresh()
     }
   }
 
-  drawSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
+  if(persistentData->options[2].boolValue) {
+    drawSource(xLabel + 1, yLabel + 1, field, attrLabel|BLACK);
+    drawSourceValue(xValue + 1, yValue + 1, field, attrValue|BLACK);
+  }
   drawSource(xLabel, yLabel, field, attrLabel|CUSTOM_COLOR);
-  drawSourceValue(xValue + 1, yValue + 1, field, attrValue|BLACK);
   drawSourceValue(xValue, yValue, field, attrValue|CUSTOM_COLOR);
-  
+
 }
 
 BaseWidgetFactory<ValueWidget> ValueWidget("Value", ValueWidget::options);
