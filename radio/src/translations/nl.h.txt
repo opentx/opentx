@@ -696,14 +696,14 @@
 #define TR_BLADES              "Bladen"
 
 #define TR_SCREEN              "Scherm\001"
-#define TR_SOUND_LABEL         "----Geluid-------"
+#define TR_SOUND_LABEL         "Geluid-"
 #define TR_LENGTH              INDENT "Duur"
 #define TR_BEEP_LENGTH         INDENT "Piep-Lengte"
 #define TR_SPKRPITCH           INDENT "Piep-Freq. +/-"
-#define TR_HAPTIC_LABEL        "----Haptic-------" //9XR-Pro
+#define TR_HAPTIC_LABEL        "Haptic"
 #define TR_HAPTICSTRENGTH      INDENT "Sterkte"
 #define TR_CONTRAST            "LCD-Kontrast"
-#define TR_ALARMS_LABEL        "----Alarm---"
+#define TR_ALARMS_LABEL        "Alarm"
 #define TR_BATTERY_RANGE       TR("Accu Bereik", "Accu Spngs-Bereik") // Symbol Akku Ladezustand
 
 #define TR_BATTERYWARNING      INDENT "Accu laag"
@@ -714,13 +714,13 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Stappenschakelaar"
-#define TR_THROTTLE_LABEL      "----Gas-------------"
+#define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")
 #define TR_TIMER_NAME          INDENT "Naam"
 #define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
 #define TR_PERSISTENT          TR(INDENT "Vasth.", INDENT "Vasthouden")
-#define TR_BACKLIGHT_LABEL     "----LCD-Verlichting--"
+#define TR_BACKLIGHT_LABEL     "LCD-Verlichting"
 #define TR_BLDELAY             INDENT "Duur"
 #define TR_BLONBRIGHTNESS      INDENT "Aan-Helderheid"
 #define TR_BLOFFBRIGHTNESS     INDENT "Uit-Helderheid"
@@ -733,7 +733,7 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot Warn.", INDENT "Pot Posities")
 #define TR_TIMEZONE            TR("Tijdzone", "GPS-Tijdzone +/-Std")
 #define TR_ADJUST_RTC          TR("Klok instellen", INDENT "Klok middels GPS instellen")
-#define TR_GPS                 "----GPS--------------"
+#define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("Kan.Volgorde", "Kanaalvolgorde")
 #define TR_STICKS              "Sticks"
 #define TR_POTS                "Pots"
@@ -877,7 +877,7 @@
 #define TR_LATITUDE            "Latitude"
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            TR("GPS-coord.", "GPS-coordinaten format")
-#define TR_VARIO               TR("----Vario--------", "----Variometer----") //9XR-Pro
+#define TR_VARIO               "Variometer"
 #define TR_PITCH_AT_ZERO       INDENT "Laagste Toon"
 #define TR_PITCH_AT_MAX        INDENT "Hoogste Toon"
 #define TR_REPEAT_AT_ZERO      INDENT "Herhalen bij 0"
@@ -1037,7 +1037,7 @@
 #define TR_MODELIDUSED         TR("ID al gebruikt", "Model-ID al gebruikt")
 #define TR_MODULE              INDENT "Module-Type"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetrietype")
-#define TR_TELEMETRY_SENSORS   "----Sensoren----"
+#define TR_TELEMETRY_SENSORS   "Sensoren"
 #define TR_VALUE               "Waarde"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Eenheid"
@@ -1224,7 +1224,7 @@
 #define TR_WAV_VOLUME          "Wav-Volume"
 #define TR_BG_VOLUME           "Achtergr-Volume"
 
-#define TR_TOP_BAR             "-------Info------"
+#define TR_TOP_BAR             "Info"
 #define TR_ALTITUDE            INDENT "Hoogte"
 #define TR_SCALE               "Schaal"
 #define TR_VIEW_CHANNELS       "Toon Kanalen"
