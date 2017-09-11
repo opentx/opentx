@@ -476,10 +476,12 @@ void menuMainView(event_t event)
     // Trims sliders
     displayTrims(mode);
 
+#if defined(TELEMETRY_FRSKY)
     // RSSI gauge
     if (TELEMETRY_RSSI() > 0) {
       drawRSSIGauge();
     }
+#endif
   }
 
   if (view_base < VIEW_INPUTS) {
