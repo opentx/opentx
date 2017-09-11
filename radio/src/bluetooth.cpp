@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(PCBX7) || defined(PCBHORUS)
+#if defined(PCBX7) || defined(PCBHORUS) || defined(USEHORUSBT)
 #define BLUETOOTH_COMMAND_NAME         "AT+NAME"
 #define BLUETOOTH_ANSWER_NAME          "OK+"
 #define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"
@@ -255,7 +255,7 @@ void bluetoothReceiveTrainer()
   }
 }
 
-#if defined(PCBX9E) && defined(DEBUG)
+#if defined(PCBX9E) && defined(DEBUG) && !defined(USEHORUSBT)
 void bluetoothWakeup(void)
 {
   if (!g_eeGeneral.bluetoothMode) {
