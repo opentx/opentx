@@ -102,7 +102,7 @@ void luaHook(lua_State * L, lua_Debug *ar)
     if (instructionsPercent > 100) {
       // From now on, as soon as a line is executed, error
       // keep erroring until you're script reaches the top
-      // lua_sethook(L, luaHook, LUA_MASKLINE, 0);
+      lua_sethook(L, luaHook, LUA_MASKLINE, 0);
       luaL_error(L, "CPU limit");
     }
   }

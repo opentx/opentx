@@ -53,4 +53,3 @@ while True:
                 x += 1
 
 inp.close()
-sys.exit(0)
