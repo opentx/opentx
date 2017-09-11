@@ -47,8 +47,26 @@
 #define TRIM_LH_POS   (TRIM_LH_X-4*FW)
 #define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
 #define TRIM_RH_POS   (TRIM_RH_X-4*FW)
+#if defined(TELEMETRY_FRSKY)
+#define RSSSI_X       (37)
+#define RSSSI_Y       (16)
+#define RSSI_MAX      105
+#endif
 
 #define TRIM_LEN      23
+
+#if defined(TELEMETRY_FRSKY)
+void drawRSSIGauge()
+{
+  uint8_t bar = (RSSI_MAX - g_model.rssiAlarms.getWarningRssi()) / 4;
+
+  for(uint8_t i=0; i<4;  i++) {
+    if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar*i) {
+      lcdDrawFilledRect(RSSSI_X, RSSSI_Y + ((3-i)* 4), 2*(i+1), 3, SOLID, 0);
+    }
+  }
+}
+#endif
 
 void drawPotsBars()
 {
@@ -457,6 +475,11 @@ void menuMainView(event_t event)
 
     // Trims sliders
     displayTrims(mode);
+
+    // RSSI gauge
+    if (TELEMETRY_RSSI() > 0) {
+      drawRSSIGauge();
+    }
   }
 
   if (view_base < VIEW_INPUTS) {
