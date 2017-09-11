@@ -1240,6 +1240,7 @@ const luaR_value_entry opentxConstants[] = {
 #if defined(COLORLCD)
   { "SHADOWED", SHADOWED },
   { "COLOR", ZoneOption::Color },
+  { "BOOL", ZoneOption::Bool },
   { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "TEXT_COLOR", TEXT_COLOR },
   { "TEXT_BGCOLOR", TEXT_BGCOLOR },
