@@ -33,7 +33,7 @@
 #define PHASE_X       (6*FW-1)
 #define PHASE_Y       (2*FH)
 #define PHASE_FLAGS   0
-#define VBATT_X       (6*FW)
+#define VBATT_X       (6*FW-1)
 #define VBATT_Y       (2*FH)
 #define VBATTUNIT_X   (VBATT_X-1)
 #define VBATTUNIT_Y   (3*FH)
@@ -48,8 +48,8 @@
 #define TRIM_RH_NEG   (TRIM_RH_X+1*FW)
 #define TRIM_RH_POS   (TRIM_RH_X-4*FW)
 #if defined(TELEMETRY_FRSKY) && defined(CPUARM)
-#define RSSSI_X       (37)
-#define RSSSI_Y       (16)
+#define RSSSI_X       (30)
+#define RSSSI_Y       (31)
 #define RSSI_MAX      105
 #endif
 
@@ -60,9 +60,9 @@ void drawRSSIGauge()
 {
   uint8_t bar = (RSSI_MAX - g_model.rssiAlarms.getWarningRssi()) / 4;
 
-  for(uint8_t i=0; i<4;  i++) {
-    if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar*i) {
-      lcdDrawFilledRect(RSSSI_X, RSSSI_Y + ((3-i)* 4), 2*(i+1), 3, SOLID, 0);
+  for(uint8_t i=1; i<5;  i++) {
+    if((TELEMETRY_RSSI() - g_model.rssiAlarms.getWarningRssi()) > bar*(i-1)) {
+      lcdDrawFilledRect(RSSSI_X + i*4, RSSSI_Y - 2*i, 3, 2*i, SOLID, 0);
     }
   }
 }
@@ -471,7 +471,7 @@ void menuMainView(event_t event)
     displayVoltageOrAlarm();
 
     // Timer 1
-    drawTimerWithMode(120, 2*FH, 0);
+    drawTimerWithMode(122, 2*FH, 0);
 
     // Trims sliders
     displayTrims(mode);
