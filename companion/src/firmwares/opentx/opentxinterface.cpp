@@ -31,7 +31,7 @@
 using namespace Board;
 
 #define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-22.open-tx.org/firmware"
-#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/firmware"
+#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-22.open-tx.org/nightlies/firmware"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2

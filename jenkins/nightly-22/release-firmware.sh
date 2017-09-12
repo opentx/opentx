@@ -27,7 +27,7 @@ tar czf ./opentx.tgz opentx/radio/src opentx/radio/util
 cd opentx/radio/src
 make lua/lua_exports_taranis.inc lua/lua_exports_taranis_x9e.inc lua/lua_exports_horus.inc lua/lua_exports_flamenco.inc
 
-DESTDIR=/var/www/html/downloads-${version}/nightly/firmware
+DESTDIR=/var/www/html/downloads-${version}/nightlies/firmware
 
 # copy the stamp and the release-notes to the http server
 cd $DIR
@@ -43,4 +43,3 @@ rm -f ${DESTDIR}/binaries/opentx*.bin
 # clean the sources
 cd opentx/radio/src
 make clean
-
