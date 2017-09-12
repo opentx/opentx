@@ -1912,7 +1912,7 @@ void opentxStart(OPENTX_START_ARGS)
 #endif
 
 #if defined(NIGHTLY_BUILD_WARNING)
-  ALERT("NIGHTLY", "Version not safe to fly", AU_ERROR);
+  ALERT(STR_NIGHTLY_WARNING, TR_NIGHTLY_NOTSAFE, AU_ERROR);
 #endif
 
 #if defined(GUI)

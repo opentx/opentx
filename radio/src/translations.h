@@ -738,6 +738,8 @@ extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
 extern const pm_char STR_FAILSAFEWARN[];
+extern const pm_char STR_NIGHTLY_WARNING[];
+extern const pm_char STR_NIGHTLY_NOTSAFE[];
 extern const pm_char STR_WRONG_SDCARDVERSION[];
 extern const pm_char STR_WRONG_PCBREV[];
 extern const pm_char STR_EMERGENCY_MODE[];
