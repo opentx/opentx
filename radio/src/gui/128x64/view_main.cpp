@@ -30,7 +30,7 @@
 #endif
 #define MODELNAME_X   (2*FW-2)
 #define MODELNAME_Y   (0)
-#define PHASE_X       (6*FW-1)
+#define PHASE_X       (6*FW-2)
 #define PHASE_Y       (2*FH)
 #define PHASE_FLAGS   0
 #define VBATT_X       (6*FW-1)
