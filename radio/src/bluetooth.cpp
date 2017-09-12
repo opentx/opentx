@@ -69,7 +69,7 @@ char * bluetoothReadline(bool error_reset)
 
   while (1) {
     if (!btRxFifo.pop(byte)) {
-#if defined(PCBX9E)      // X9E BT module can get unresponsive
+#if defined(PCBX9E) && !defined(USEHORUSBT)     // X9E BT module can get unresponsive
       TRACE("NO RESPONSE FROM BT MODULE");
 #endif
       return NULL;
