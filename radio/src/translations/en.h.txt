@@ -888,7 +888,7 @@
 #define TR_POWEROFF                    "\027Power OFF..."
 #define TR_SHUTDOWN                    "SHUTTING DOWN"
 #define TR_SAVEMODEL                   "Saving model settings"
-#define TR_BATT_CALIB                  "Battery calib"
+#define TR_BATT_CALIB                  TR("Battery calib", "Battery calibration")
 #define TR_CURRENT_CALIB               "Current calib"
 #define TR_VOLTAGE                     TR(INDENT "Voltage", INDENT "Voltage source")
 #define TR_CURRENT                     TR(INDENT "Current", INDENT "Current source")
@@ -1226,7 +1226,7 @@
 
 #define TR_BEEP_VOLUME                 "Beep volume"
 #define TR_WAV_VOLUME                  "Wav volume"
-#define TR_BG_VOLUME                   "Bg volume"
+#define TR_BG_VOLUME                   TR("Bg volume", "Background Volume")
 
 #define TR_TOP_BAR                     "Top bar"
 #define TR_ALTITUDE                    INDENT "Altitude"
