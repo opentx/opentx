@@ -1018,7 +1018,7 @@
 #define TR_STATISTICS          "Statistieken"
 #define TR_ABOUT_US            "De Programmeurs"
 #define TR_USB_JOYSTICK        "USB Joystick (HID)"
-#define TR_USB_MASS_STORAGE    "USB Mass Storage (SD)"
+#define TR_USB_MASS_STORAGE    "USB Storage (SD)"
 #define TR_USB_SERIAL          "USB Serial (Debug)"
 #define TR_SETUP_SCREENS       "Setup screens"
 #define TR_MONITOR_SCREENS     "Monitors"
