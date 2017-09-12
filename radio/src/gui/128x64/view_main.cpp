@@ -471,7 +471,7 @@ void menuMainView(event_t event)
     displayVoltageOrAlarm();
 
     // Timer 1
-    drawTimerWithMode(122, 2*FH, 0);
+    drawTimerWithMode(125, 2*FH, 0);
 
     // Trims sliders
     displayTrims(mode);
