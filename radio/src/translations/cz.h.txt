@@ -913,6 +913,8 @@
 #define TR_ALARMSWARN          "ALARMU"
 #define TR_SWITCHWARN          "POZICE"
 #define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
+#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION "Očekávaná ver.: "
 #define TR_WRONG_PCBREV        "Jiná verze PCB/firmware"
 #define TR_EMERGENCY_MODE      "NOUZOVÝ REŽIM"
