@@ -81,10 +81,14 @@ char * bluetoothReadline(bool error_reset)
         bluetoothBufferIndex = 0;
         TRACE("BT< %s", bluetoothBuffer);
         if (error_reset && !strcmp((char *)bluetoothBuffer, "ERROR")) {
+#if defined(PCBX9E)
+          TRACE("BT error...");
+#elif
           TRACE("BT Reset...");
           bluetoothDone();
           bluetoothState = BLUETOOTH_STATE_OFF;
           bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
+#endif          
           return NULL;
         }
         else {
