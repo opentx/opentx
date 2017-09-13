@@ -197,7 +197,7 @@ def build_firmware(path):
         suffix = os.environ["OPENTX_VERSION_SUFFIX"]
         cmd.append('-DVERSION_SUFFIX="%s"' % suffix)
         if suffix.startswith("N"):
-            cmd.append('-DNIGHTLY_BUILD_WARNING')
+            cmd.append('-DNIGHTLY_BUILD_WARNING=YES')
     cmd.append(srcdir)
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
