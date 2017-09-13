@@ -83,12 +83,12 @@ char * bluetoothReadline(bool error_reset)
         if (error_reset && !strcmp((char *)bluetoothBuffer, "ERROR")) {
 #if defined(PCBX9E)
           TRACE("BT error...");
-#elif
+#else
           TRACE("BT Reset...");
           bluetoothDone();
           bluetoothState = BLUETOOTH_STATE_OFF;
           bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
-#endif          
+#endif
           return NULL;
         }
         else {
@@ -350,11 +350,13 @@ void bluetoothWakeup()
   if (bluetoothState == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
     bluetoothWriteString("AT+BAUD4\r\n");
     bluetoothState = BLUETOOTH_STATE_BAUDRATE_SENT;
+    bluetoothWakeupTime = now + 10; /* 100ms */
   }
   else if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_SENT) {
     bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
     bluetoothState = BLUETOOTH_STATE_BAUDRATE_INIT;
     bluetoothReadline(false);
+    bluetoothWakeupTime = now + 10; /* 100ms */
   }
   else if (bluetoothState == BLUETOOTH_STATE_CONNECTED) {
     if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
