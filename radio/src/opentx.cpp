@@ -2828,7 +2828,7 @@ uint32_t pwrCheck()
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
-          if (warningResult == true) {
+          if (warningResult) {
             pwr_check_state = PWR_CHECK_OFF;
             return e_power_off;
           }
