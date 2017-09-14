@@ -77,7 +77,7 @@ enum menuRadioHwItems {
   #define SWITCHES_ROWS  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #endif
 
-#if defined(BLUETOOTH) && defined(DEBUG)
+#if defined(BLUETOOTH) && (defined(DEBUG) || defined(USEHORUSBT))
   #define BLUETOOTH_ROWS 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0),
 #else
   #define BLUETOOTH_ROWS
@@ -198,7 +198,7 @@ void menuRadioHardware(event_t event)
         break;
       }
 
-#if defined(BLUETOOTH) && defined(DEBUG)
+#if defined(BLUETOOTH) && (defined(DEBUG) || defined(USEHORUSBT))
         case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
           lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH);
           lcdDrawTextAtIndex(HW_SETTINGS_COLUMN, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, attr);
