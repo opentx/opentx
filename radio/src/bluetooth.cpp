@@ -81,7 +81,7 @@ char * bluetoothReadline(bool error_reset)
         bluetoothBufferIndex = 0;
         TRACE("BT< %s", bluetoothBuffer);
         if (error_reset && !strcmp((char *)bluetoothBuffer, "ERROR")) {
-#if defined(PCBX9E)
+#if defined(PCBX9E)                           // X9E enter BT reset loop if following code is implemented
           TRACE("BT error...");
 #else
           TRACE("BT Reset...");
@@ -259,7 +259,7 @@ void bluetoothReceiveTrainer()
   }
 }
 
-#if defined(PCBX9E) && defined(DEBUG) && !defined(USEHORUSBT)
+#if defined(PCBX9E) && !defined(USEHORUSBT)
 void bluetoothWakeup(void)
 {
   if (!g_eeGeneral.bluetoothMode) {
