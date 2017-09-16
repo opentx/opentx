@@ -565,8 +565,8 @@ bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
-#if defined(DEBUG)
-  else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+#if defined(USEHORUSBT)
+  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
 #else
   else if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
 #endif
@@ -704,7 +704,7 @@ const mm_protocol_definition multi_protocols[] = {
   { MM_RF_PROTO_WK_2X01,    5,  STR_SUBTYPE_WK2x01,   nullptr             },
   { MM_RF_PROTO_Q303,       3,  STR_SUBTYPE_Q303,     nullptr             },
   { MM_RF_CUSTOM_SELECTED,  7,  NO_SUBTYPE,           STR_MULTI_OPTION    },
-                                
+
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
   { 0xfe,                   0,  NO_SUBTYPE,           nullptr             }
 };

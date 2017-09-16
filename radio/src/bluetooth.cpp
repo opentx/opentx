@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(PCBX7) || defined(PCBHORUS)
+#if defined(PCBX7) || defined(PCBHORUS) || defined(USEHORUSBT)
 #define BLUETOOTH_COMMAND_NAME         "AT+NAME"
 #define BLUETOOTH_ANSWER_NAME          "OK+"
 #define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"
@@ -69,7 +69,7 @@ char * bluetoothReadline(bool error_reset)
 
   while (1) {
     if (!btRxFifo.pop(byte)) {
-#if defined(PCBX9E)      // X9E BT module can get unresponsive
+#if defined(PCBX9E) && !defined(USEHORUSBT)     // X9E BT module can get unresponsive
       TRACE("NO RESPONSE FROM BT MODULE");
 #endif
       return NULL;
@@ -81,10 +81,14 @@ char * bluetoothReadline(bool error_reset)
         bluetoothBufferIndex = 0;
         TRACE("BT< %s", bluetoothBuffer);
         if (error_reset && !strcmp((char *)bluetoothBuffer, "ERROR")) {
+#if defined(PCBX9E)                           // X9E enter BT reset loop if following code is implemented
+          TRACE("BT error...");
+#else
           TRACE("BT Reset...");
           bluetoothDone();
           bluetoothState = BLUETOOTH_STATE_OFF;
           bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
+#endif
           return NULL;
         }
         else {
@@ -255,7 +259,7 @@ void bluetoothReceiveTrainer()
   }
 }
 
-#if defined(PCBX9E) && defined(DEBUG)
+#if defined(PCBX9E) && !defined(USEHORUSBT)
 void bluetoothWakeup(void)
 {
   if (!g_eeGeneral.bluetoothMode) {
@@ -346,11 +350,13 @@ void bluetoothWakeup()
   if (bluetoothState == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
     bluetoothWriteString("AT+BAUD4\r\n");
     bluetoothState = BLUETOOTH_STATE_BAUDRATE_SENT;
+    bluetoothWakeupTime = now + 10; /* 100ms */
   }
   else if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_SENT) {
     bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
     bluetoothState = BLUETOOTH_STATE_BAUDRATE_INIT;
     bluetoothReadline(false);
+    bluetoothWakeupTime = now + 10; /* 100ms */
   }
   else if (bluetoothState == BLUETOOTH_STATE_CONNECTED) {
     if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
