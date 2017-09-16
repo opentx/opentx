@@ -404,10 +404,11 @@ void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 // Second UART driver
+#define SERIAL2
+#define serial2Init(...)
 void serial2TelemetryInit(unsigned int protocol);
-#if defined(__cplusplus)
-bool telemetrySecondPortReceive(uint8_t & data);
-#endif
+void serial2Putc(const unsigned char c);
+bool telemetrySecondPortReceive(unsigned char & data);
 
 extern const uint8_t BootCode[];
 

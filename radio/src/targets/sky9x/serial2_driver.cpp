@@ -37,12 +37,12 @@ Fifo<uint8_t, 512> serial2RxFifo;
  * This function is synchronous (i.e. uses polling).
  * c  Character to send.
  */
-void serial2Putc(const char c)
+void serial2Putc(const unsigned char c)
 {
   Uart *pUart = SECOND_SERIAL_UART;
 
   /* Wait for the transmitter to be ready */
-  while ( (pUart->UART_SR & UART_SR_TXEMPTY) == 0 ) ;
+  while ( (pUart->UART_SR & UART_SR_TXRDY) == 0 ) ;
 
   /* Send character */
   pUart->UART_THR = c;
@@ -99,8 +99,12 @@ void SECOND_UART_Stop()
 
 extern "C" void UART0_IRQHandler()
 {
-  serial2RxFifo.push(SECOND_SERIAL_UART->UART_RHR);
+  if ( SECOND_SERIAL_UART->UART_SR & UART_SR_RXRDY )
+  {
+    serial2RxFifo.push(SECOND_SERIAL_UART->UART_RHR);
+  }
 }
+
 #else
 #define SECOND_UART_Configure(...)
 #endif
@@ -109,11 +113,14 @@ extern "C" void UART0_IRQHandler()
 void serial2TelemetryInit(unsigned int /*protocol*/)
 {
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
-  // startPdcUsartReceive();
 }
 
-bool telemetrySecondPortReceive(uint8_t & data)
+bool telemetrySecondPortReceive(unsigned char & data)
 {
   return serial2RxFifo.pop(data);
 }
+#endif
+
+#if defined(DEBUG)
+void serialPrintf(const char*, ... ) {}
 #endif
