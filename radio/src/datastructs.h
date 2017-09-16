@@ -954,6 +954,7 @@ PACK(struct TrainerData {
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
+    NOBACKUP(uint8_t  serial2Mode:4); \
     int8_t   txCurrentCalibration; \
     int8_t   temperatureWarn; \
     uint8_t  mAhWarn; \
@@ -1146,7 +1147,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 88);
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
-  CHKSIZE(RadioData, 727);
+  CHKSIZE(RadioData, 728);
   CHKSIZE(ModelData, 5188);
 #else
   // Common for all variants
