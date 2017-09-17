@@ -221,7 +221,7 @@
   #define ADC_CHANNEL_POT1              ADC_Channel_10  // ADC3_IN10
   #define ADC_CHANNEL_POT2              ADC_Channel_11  // ADC3_IN11
   #define ADC_CHANNEL_POT3              ADC_Channel_12  // ADC3_IN12
-  #define ADC_CHANNEL_SLIDER1           ADC_Channel_4   // ADC3_IN13
+  #define ADC_CHANNEL_SLIDER1           ADC_Channel_4   // ADC3_IN4
   #define ADC_CHANNEL_SLIDER2           ADC_Channel_13  // ADC3_IN13
   #define ADC_CHANNEL_BATT              ADC_Channel_5   // ADC3_IN5
   #define ADC_CHANNEL_EXT1              ADC_Channel_6   // ADC3_IN6

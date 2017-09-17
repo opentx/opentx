@@ -67,18 +67,14 @@ void backlightInit()
 
 void backlightEnable(uint8_t dutyCycle)
 {
-  if (dutyCycle < 5) {
-    dutyCycle = 5;
-  }
-  
 #if defined(PCBX12S)
   if (IS_HORUS_PROD()) {
     BL_TIMER->CCR4 = dutyCycle;
   }
   else {
-    BL_TIMER->CCR1 = (100 - dutyCycle);
+    BL_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX - dutyCycle;
   }
 #elif defined(PCBX10)
-  BL_TIMER->CCR3 = (100 - dutyCycle);
+  BL_TIMER->CCR3 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #endif
 }

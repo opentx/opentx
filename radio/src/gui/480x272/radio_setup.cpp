@@ -376,18 +376,12 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BRIGHTNESS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLONBRIGHTNESS);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
-        if (attr) {
-          uint8_t b = 100 - g_eeGeneral.backlightBright;
-          CHECK_INCDEC_GENVAR(event, b, 5, 100);
-          g_eeGeneral.backlightBright = 100 - b;
-        }
+        g_eeGeneral.backlightBright = BACKLIGHT_LEVEL_MAX - editSlider(RADIO_SETUP_2ND_COLUMN, y, event, BACKLIGHT_LEVEL_MAX - g_eeGeneral.backlightBright, BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX, attr);
         break;
 
       case ITEM_SETUP_DIM_LEVEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLOFFBRIGHTNESS);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.blOffBright, attr|LEFT) ;
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.blOffBright, 5, 100);
+        g_eeGeneral.blOffBright = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.blOffBright, BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX, attr);
         break;
 
       case ITEM_SETUP_LABEL_GPS:
