@@ -405,6 +405,7 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 // Second UART driver
 void serial2TelemetryInit(unsigned int protocol);
+void serial2Putc(const unsigned char c);
 #if defined(__cplusplus)
 bool telemetrySecondPortReceive(uint8_t & data);
 #endif
