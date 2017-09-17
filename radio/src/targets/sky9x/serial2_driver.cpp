@@ -115,7 +115,7 @@ void serial2TelemetryInit(unsigned int /*protocol*/)
   SECOND_UART_Configure(FRSKY_D_BAUDRATE, Master_frequency);
 }
 
-bool telemetrySecondPortReceive(unsigned char & data)
+bool telemetrySecondPortReceive(uint8_t & data)
 {
   return serial2RxFifo.pop(data);
 }
