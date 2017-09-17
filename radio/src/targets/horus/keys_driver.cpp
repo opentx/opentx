@@ -129,7 +129,7 @@ void readKeysAndTrims()
   case SW_S ## x ## 2: \
     xxx = ~SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
     break
-#define ADD_NEG_2POS_CASE(x) \
+#define ADD_INV_2POS_CASE(x) \
   case SW_S ## x ## 2: \
     xxx = SWITCHES_GPIO_REG_ ## x  & SWITCHES_GPIO_PIN_ ## x ; \
     break; \
@@ -152,6 +152,22 @@ void readKeysAndTrims()
       xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
     } \
     break
+#define ADD_INV_3POS_CASE(x, i) \
+  case SW_S ## x ## 2: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_3POS(i)) { \
+      xxx = xxx && (~SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break; \
+  case SW_S ## x ## 1: \
+    xxx = (SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H) && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    break; \
+  case SW_S ## x ## 0: \
+    xxx = (~SWITCHES_GPIO_REG_ ## x ## _H & SWITCHES_GPIO_PIN_ ## x ## _H); \
+    if (IS_3POS(i)) { \
+      xxx = xxx && (SWITCHES_GPIO_REG_ ## x ## _L & SWITCHES_GPIO_PIN_ ## x ## _L); \
+    } \
+    break
 
 #if !defined(BOOT)
 uint8_t keyState(uint8_t index)
@@ -164,14 +180,25 @@ uint32_t switchState(uint8_t index)
   uint32_t xxx = 0;
 
   switch (index) {
+#if defined(PBX12S)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
     ADD_3POS_CASE(D, 3);
     ADD_3POS_CASE(E, 4);
-    ADD_NEG_2POS_CASE(F);
+    ADD_INV_2POS_CASE(F);
     ADD_3POS_CASE(G, 6);
     ADD_2POS_CASE(H);
+#else
+    ADD_3POS_CASE(A, 0);
+    ADD_INV_3POS_CASE(B, 1);
+    ADD_3POS_CASE(C, 2);
+    ADD_INV_3POS_CASE(D, 3);
+    ADD_INV_3POS_CASE(E, 4);
+    ADD_2POS_CASE(F);
+    ADD_3POS_CASE(G, 6);
+    ADD_2POS_CASE(H);
+#endif
     default:
       break;
   }
