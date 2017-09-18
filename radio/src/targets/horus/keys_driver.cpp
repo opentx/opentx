@@ -180,7 +180,7 @@ uint32_t switchState(uint8_t index)
   uint32_t xxx = 0;
 
   switch (index) {
-#if defined(PBX12S)
+#if defined(PCBX12S)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
