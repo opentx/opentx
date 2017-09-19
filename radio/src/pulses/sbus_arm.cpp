@@ -102,6 +102,9 @@ void sendByteSbus(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
 
 inline int  getChannelValue(uint8_t port, int channel) {
   int ch = g_model.moduleData[port].channelsStart+channel;
+  // We will ignore 17 and 18th if that brings us over the limit
+  if (ch > 31)
+    return 0;
   return channelOutputs[ch] + 2*PPM_CH_CENTER(ch) - 2*PPM_CENTER;
 }
 
