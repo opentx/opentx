@@ -98,7 +98,7 @@
 #define TR_USBMODES                    TR("Popup\0""Joyst\0""SDCard""Série\0", "Demander""Joystick""Stockage""Série\0  ")
 
 #define LEN_TARANIS_PROTOCOLS          "\004"
-#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
+#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -657,6 +657,8 @@
 #define TR_PROTO                       TR(INDENT "Proto.", INDENT "Protocole")
 #if defined(CPUARM)
   #define TR_PPMFRAME                  INDENT "Trame PPM"
+#define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #else
   #define TR_PPMFRAME                  "Trame PPM"
 #endif

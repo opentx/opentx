@@ -244,8 +244,7 @@ void disable_dsm2(uint32_t port)
   }
 }
 
-#if defined(MULTIMODULE)
-void init_multimodule(uint32_t port)
+void init_sbusOut(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     init_main_ppm(3500 * 2, 0);
@@ -256,11 +255,10 @@ void init_multimodule(uint32_t port)
   }
 }
 
-void disable_multimodule(uint32_t port)
+void disable_sbusOut(uint32_t port)
 {
   disable_dsm2(port);
 }
-#endif
 
 #if !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
@@ -321,6 +319,9 @@ extern "C" void PWM_IRQHandler(void)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
+#endif
+      case PROTO_SBUS:
+        // Todo: how to do inverted polarity on this platform?
         // Alternate periods of 5.5mS and 3.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
         if (period == 3500 * 2) {
@@ -341,7 +342,6 @@ extern "C" void PWM_IRQHandler(void)
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN;        // Start transfers
         }
         break;
-#endif
 
       default:
         pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++;

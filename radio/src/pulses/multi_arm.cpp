@@ -26,75 +26,9 @@
 
 
 
-/* The protocol is heavily inspired by the DSM2 protocol, so reuse some the definitions where they are identical */
-
 #define MULTI_SEND_BIND                     (1 << 7)
 #define MULTI_SEND_RANGECHECK               (1 << 5)
 #define MULTI_SEND_AUTOBIND                 (1 << 6)
-
-
-#define BITLEN_MULTI          (10*2) //100000 Baud => 10uS per bit
-
-#if defined(PPM_PIN_SERIAL)
-static void sendByteMulti(uint8_t b)
-{
-  uint8_t parity = 1;
-
-  putDsm2SerialBit(0);           // Start bit
-  for (uint8_t i=0; i<8; i++) {  // 8 data Bits
-    putDsm2SerialBit(b & 1);
-    parity = parity ^ (b & 1);
-    b >>= 1;
-  }
-  putDsm2SerialBit(!parity);     // Even Parity bit
-
-  putDsm2SerialBit(1);           // Stop bit
-  putDsm2SerialBit(1);           // Stop bit
-}
-#else
-static void _send_level(uint8_t v)
-{
-    /* Copied over from DSM, this looks doubious and in my logic analyzer
-       output the low->high is about 2 ns late */
-  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
-    v += 2;
-  else
-    v -= 2;
-
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v - 1;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index+=1;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest -=v;
-}
-
-static void sendByteMulti(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
-{
-  bool    lev = 0;
-  uint8_t parity = 1;
-
-  uint8_t len = BITLEN_MULTI; //max val: 10*20 < 256
-  for (uint8_t i=0; i<=9; i++) { //8Bits + 1Parity + Stop=1
-    bool nlev = b & 1; //lsb first
-    parity = parity ^ (uint8_t)nlev;
-    if (lev == nlev) {
-      len += BITLEN_MULTI;
-    }
-    else {
-      _send_level(len);
-      len  = BITLEN_MULTI;
-      lev  = nlev;
-    }
-    b = (b>>1) | 0x80; //shift in ones for stop bit and parity
-    if (i==7)
-        b = b ^ parity; // lowest bit is one from previous line
-  }
-  _send_level(len+ BITLEN_MULTI); // enlarge the last bit to be two stop bits long
-}
-#endif
-
-// This is the data stream to send, prepare after 19.5 mS
-// Send after 22.5 mS
-
-//static uint8_t *Dsm2_pulsePtr = pulses2MHz.pbyte ;
 
 
 #define MULTI_CHANS           16
@@ -180,9 +114,9 @@ void setupPulsesMultimodule(uint8_t port)
 
   // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
   if (type <= 31)
-    sendByteMulti(0x55);
+    sendByteSbus(0x55);
   else
-    sendByteMulti(0x54);
+    sendByteSbus(0x54);
 
 
   // protocol byte
@@ -190,16 +124,16 @@ void setupPulsesMultimodule(uint8_t port)
   if(g_model.moduleData[port].getMultiProtocol(true) != MM_RF_PROTO_DSM2)
     protoByte |= (g_model.moduleData[port].multi.autoBindMode << 6);
 
-  sendByteMulti(protoByte);
+  sendByteSbus(protoByte);
 
   // byte 2, subtype, powermode, model id
-  sendByteMulti((uint8_t) ((g_model.header.modelId[port] & 0x0f)
+  sendByteSbus((uint8_t) ((g_model.header.modelId[port] & 0x0f)
                            | ((subtype & 0x7) << 4)
                            | (g_model.moduleData[port].multi.lowPowerMode << 7))
                 );
 
   // byte 3
-  sendByteMulti((uint8_t) optionValue);
+  sendByteSbus((uint8_t) optionValue);
 
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
@@ -216,7 +150,7 @@ void setupPulsesMultimodule(uint8_t port)
     bits |= limit(0, value, 2047) << bitsavailable;
     bitsavailable += MULTI_CHAN_BITS;
     while (bitsavailable >= 8) {
-      sendByteMulti((uint8_t) (bits & 0xff));
+      sendByteSbus((uint8_t) (bits & 0xff));
       bits >>= 8;
       bitsavailable -= 8;
     }

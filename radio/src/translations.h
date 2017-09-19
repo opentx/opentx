@@ -410,6 +410,10 @@ extern const pm_char STR_USE_GLOBAL_FUNCS[];
 #endif
 extern const pm_char STR_PROTO[];
 extern const pm_char STR_PPMFRAME[];
+#if defined(CPUARM)
+extern const pm_char STR_REFRESHRATE[];
+extern const pm_char SSTR_WARN_BATTVOLTAGE[];
+#endif
 extern const pm_char STR_MS[];
 extern const pm_char STR_SWITCH[];
 extern const pm_char STR_TRIMS[];

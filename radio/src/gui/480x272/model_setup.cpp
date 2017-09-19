@@ -262,7 +262,7 @@ bool menuModelSetup(event_t event)
          EXTERNAL_MODULE_MODE_ROWS,
          MULTIMODULE_STATUS_ROW
          EXTERNAL_MODULE_CHANNELS_ROWS,
-         (IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
+         ((IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) || IS_MODULE_SBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
          FAILSAFE_ROWS(EXTERNAL_MODULE), EXTERNAL_MODULE_OPTION_ROW, MULTIMODULE_MODULE_ROWS EXTERNAL_MODULE_POWER_ROW,
          LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS });
 
@@ -688,6 +688,8 @@ bool menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(EXTERNAL_MODULE);
+                if (IS_MODULE_SBUS(EXTERNAL_MODULE))
+                  g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
               }
               break;
             case 1:
@@ -845,6 +847,22 @@ bool menuModelSetup(event_t event)
             }
           }
         }
+        else if (IS_MODULE_SBUS(moduleIdx)) {
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_REFRESHRATE);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT, 0, NULL, STR_MS);
+          lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, moduleData.sbus.noninverted ? "not inverted" : "normal", (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+
+          if (attr && s_editMode>0) {
+            switch (menuHorizontalPosition) {
+              case 0:
+                CHECK_INCDEC_MODELVAR(event, moduleData.ppm.frameLength, -33, 35);
+                break;
+              case 1:
+                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.sbus.noninverted, 1);
+                break;
+            }
+          }
+        }
         else {
           int l_posHorz = menuHorizontalPosition;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
@@ -987,6 +1005,10 @@ bool menuModelSetup(event_t event)
           else {
             g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, attr, event);
           }
+        }
+        else if (IS_MODULE_SBUS(moduleIdx)) {
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WARN_BATTVOLTAGE);
+          drawValueWithUnit(MODEL_SETUP_4TH_COLUMN, y, getBatteryVoltage(), UNIT_VOLTS, attr|PREC2|LEFT);
         }
       }
       break;

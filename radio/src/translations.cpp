@@ -161,6 +161,10 @@ const pm_char STR_USE_GLOBAL_FUNCS[] PROGMEM = TR_USE_GLOBAL_FUNCS;
 #endif
 const pm_char STR_PROTO[] PROGMEM = TR_PROTO;
 const pm_char STR_PPMFRAME[] PROGMEM = TR_PPMFRAME;
+#if defined(CPUARM)
+const pm_char STR_REFRESHRATE[] PROGMEM = TR_REFRESHRATE;
+const pm_char SSTR_WARN_BATTVOLTAGE[] PROGMEM = STR_WARN_BATTVOLTAGE;
+#endif
 const pm_char STR_MS[] PROGMEM = TR_MS;
 const pm_char STR_SWITCH[] PROGMEM = TR_SWITCH;
 const pm_char STR_TRIMS[] PROGMEM = TR_TRIMS;

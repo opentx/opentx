@@ -398,8 +398,8 @@ void memswap(void * a, void * b, uint8_t size);
 #include "pulses/pulses.h"
 
 #if defined(CPUARM)
-// Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi, r9m)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8}; // relative to 8!
+// Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi, r9m, sbus)
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8, 8}; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
   #define MAX_TRAINER_CHANNELS_M8()    (MAX_TRAINER_CHANNELS-8)
 #endif
@@ -419,6 +419,7 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MODULE_XJT(idx)                (g_model.moduleData[idx].type==MODULE_TYPE_XJT)
   #if defined(DSM2)
     #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
+    #define IS_MODULE_SBUS(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_SBUS)
   #else
     #define IS_MODULE_DSM2(idx)             (false)
   #endif

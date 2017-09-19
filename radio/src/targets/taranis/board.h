@@ -194,11 +194,8 @@ void init_dsm2( uint32_t module_index );
 void disable_dsm2( uint32_t module_index );
 void init_crossfire( uint32_t module_index );
 void disable_crossfire( uint32_t module_index );
-
-#if defined(MULTIMODULE)
-void init_multimodule(uint32_t module_index);
-void disable_multimodule(uint32_t module_index);
-#endif
+void init_sbusOut(uint32_t module_index);
+void disable_sbusOut(uint32_t module_index);
 
 // Trainer driver
 void init_trainer_ppm(void);

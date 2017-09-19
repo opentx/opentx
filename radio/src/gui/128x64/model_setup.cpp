@@ -133,7 +133,7 @@ enum MenuModelSetupItems {
   #define IF_INTERNAL_MODULE_ON(x)       (IS_INTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW )
   #define IF_EXTERNAL_MODULE_ON(x)       (IS_EXTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW)
   #define INTERNAL_MODULE_CHANNELS_ROWS  IF_INTERNAL_MODULE_ON(1)
-  #define EXTERNAL_MODULE_BIND_ROWS()    (IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_PXX(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW
+  #define EXTERNAL_MODULE_BIND_ROWS()    ((IS_MODULE_XJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) || IS_MODULE_SBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_PXX(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW
 
 #if defined(PCBSKY9X) && defined(REVX)
   #define OUTPUT_TYPE_ROWS()             (IS_MODULE_PPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW) ,
@@ -727,6 +727,8 @@ void menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(EXTERNAL_MODULE);
+                if (IS_MODULE_SBUS(EXTERNAL_MODULE))
+                  g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
               }
               break;
             case 1:
@@ -934,6 +936,23 @@ void menuModelSetup(event_t event)
             }
           }
         }
+        else if (IS_MODULE_SBUS(moduleIdx)) {
+          lcdDrawTextAlignedLeft(y, STR_REFRESHRATE);
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
+          lcdDrawText(lcdLastRightPos, y, STR_MS);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW+2, y, moduleData.sbus.noninverted ? "no inv" : "normal", (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+
+          if (attr && s_editMode>0) {
+            switch (menuHorizontalPosition) {
+              case 0:
+                CHECK_INCDEC_MODELVAR(event, moduleData.ppm.frameLength, -33, 35);
+                break;
+              case 1:
+                CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.sbus.noninverted, 1);
+                break;
+            }
+          }
+        }
         else {
           horzpos_t l_posHorz = menuHorizontalPosition;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
@@ -1099,6 +1118,10 @@ void menuModelSetup(event_t event)
           else {
             g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_SPORT_OUT, attr, event);
           }
+        }
+        else if (IS_MODULE_SBUS(moduleIdx)) {
+          lcdDrawTextAlignedLeft(y, STR_WARN_BATTVOLTAGE);
+          putsVolts(lcdLastRightPos, y, getBatteryVoltage(), attr | PREC2 | LEFT);
         }
         break;
       }

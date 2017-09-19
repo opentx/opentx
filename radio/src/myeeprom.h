@@ -48,6 +48,7 @@
 #endif
 
 #define GET_PPM_POLARITY(idx)             g_model.moduleData[idx].ppm.pulsePol
+#define GET_SBUS_POLARITY(idx)             g_model.moduleData[idx].sbus.noninverted
 #define GET_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
@@ -473,7 +474,7 @@ enum Protocols {
   PROTO_DSM2_DSM2,
   PROTO_DSM2_DSMX,
 #endif
-#if defined(CROSSFIRE) || defined(MULTIMODULE)
+#if defined(CPUARM)
   PROTO_CROSSFIRE,
 #endif
 #if defined(IRPROTOS)
@@ -484,8 +485,9 @@ enum Protocols {
   PROTO_PICZ,
   PROTO_SWIFT,
 #endif
-#if defined(MULTIMODULE)
+#if defined(CPUARM)
   PROTO_MULTIMODULE,
+  PROTO_SBUS,
 #endif
   PROTO_MAX,
   PROTO_NONE
@@ -570,6 +572,7 @@ enum ModuleTypes {
   MODULE_TYPE_CROSSFIRE,
   MODULE_TYPE_MULTIMODULE,
   MODULE_TYPE_R9M,
+  MODULE_TYPE_SBUS,
   MODULE_TYPE_COUNT
 };
 
