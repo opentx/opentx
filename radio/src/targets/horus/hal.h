@@ -515,7 +515,7 @@
   #define INTMODULE_BOOT_GPIO           GPIOI
   #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PI.09
 #endif
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #define INTMODULE_TIMER               TIM2
