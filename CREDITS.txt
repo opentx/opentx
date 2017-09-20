@@ -39,6 +39,7 @@ Michael Byrne
 <a href="http://rcstudio.cz">RC Studio (monthly)</a>
 <a href="http://www.craftandtheoryllc.com">Craft & Theory (monthly)</a>
 <a href="http://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
+<a href="http://www.team-blacksheep.com">Team BlackSheep</a>
 
 [People who have donated to OpenTX]
 Mario Sette
@@ -1261,3 +1262,4 @@ Ferenc Kunkli
 Josh Kraker  
 Roger Bergevin
 Geoff Sim
+Arthur Reynolds
