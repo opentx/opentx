@@ -140,8 +140,8 @@ bool menuModelCurveOne(event_t event)
       newPoints[0] = points[0];
       newPoints[4+count] = points[4+crv.points];
       for (int i=1; i<4+count; i++)
-        newPoints[i] = calcRESXto100(applyCustomCurve(calc100toRESX(-100 + (i*200) / (4+count)), s_curveChan));
-      if (moveCurve(s_curveChan, checkIncDec_Ret*(crv.type==CURVE_TYPE_CUSTOM?2:1))) {
+        newPoints[i] = calcRESXto100(applyCustomCurve(-RESX + (i * 2 * RESX) / (4 + count), s_curveChan));
+      if (moveCurve(s_curveChan, checkIncDec_Ret*(crv.type==CURVE_TYPE_CUSTOM ? 2 :1))) {
         for (int i = 0; i < 5 + count; i++) {
           points[i] = newPoints[i];
           if (crv.type == CURVE_TYPE_CUSTOM && i != 0 && i != 4 + count)

@@ -534,7 +534,7 @@
 // External Module
 #define EXTMODULE_PWR_GPIO              GPIOB
 #define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3  // PB.03
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB1Periph      0
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM1
