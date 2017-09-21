@@ -27,7 +27,7 @@
   #define MODULES_INIT(...)            __VA_ARGS__
 #endif
 
-#if defined(PCBHORUS) && PCBREV < 13
+#if defined(PCBX12S) && PCBREV < 13
   #define pulse_duration_t             uint32_t
   #define trainer_pulse_duration_t     uint16_t
 #else
