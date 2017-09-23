@@ -1403,12 +1403,7 @@ class InputField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_STM32(board) && version < 216) {
-        if (expo.mode) {
-          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
-        }
-      }
-      else if (expo.mode) {
+      if ((IS_STM32(board) && version < 216 )|| (!IS_STM32(board) && expo.mode)) {
         expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
       }
 
