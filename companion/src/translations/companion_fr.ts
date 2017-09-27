@@ -3018,27 +3018,27 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2356"/>
         <source>USB Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode USB</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2364"/>
         <source>Ask on Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Demander à la connexion</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2369"/>
         <source>Joystick (HID)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2374"/>
         <source>USB Mass Storage</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2379"/>
         <source>USB Serial (CDC)</source>
-        <translation type="unfinished"></translation>
+        <translation>USB série (CDC)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2159"/>
@@ -8454,7 +8454,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
         <source>FrSky X10</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
