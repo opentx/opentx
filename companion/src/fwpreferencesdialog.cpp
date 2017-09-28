@@ -27,8 +27,8 @@
 #include <QDesktopServices>
 #include <QtGui>
 
-#define OPENTX_SDCARD_DOWNLOADS  "http://downloads.open-tx.org/2.2/sdcard/"
-#define OPENTX_NIGHT_SDCARD_DOWNLOADS  "http://downloads.open-tx.org/2.2/nightlies/sdcard/"
+#define OPENTX_SDCARD_DOWNLOADS  "https://downloads.open-tx.org/2.2/sdcard/"
+#define OPENTX_NIGHT_SDCARD_DOWNLOADS  "https://downloads.open-tx.org/2.2/nightlies/sdcard/"
 
 FirmwarePreferencesDialog::FirmwarePreferencesDialog(QWidget *parent) :
   QDialog(parent),
@@ -78,5 +78,3 @@ void FirmwarePreferencesDialog::on_sd_dnld_clicked()
   }
   QDesktopServices::openUrl(url);
 }
-
-
