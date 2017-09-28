@@ -74,7 +74,7 @@
   #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
 #endif
 
-#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightlies/companion"
+#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "https://downloads-22.open-tx.org/nightlies/companion"
 
 MainWindow::MainWindow():
   downloadDialog_forWait(NULL),
