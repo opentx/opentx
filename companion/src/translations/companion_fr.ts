@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.0" language="fr_FR">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -3033,12 +3033,12 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2374"/>
         <source>USB Mass Storage</source>
-        <translation></translation>
+        <translation>Stockage USB (SD)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2379"/>
         <source>USB Serial (CDC)</source>
-        <translation>USB série (CDC)</translation>
+        <translation>Port série USB (Debug)</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2159"/>
