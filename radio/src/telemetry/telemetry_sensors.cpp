@@ -85,7 +85,7 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
       datetime.min = (uint8_t) ((data & 0x00ff0000) >> 16);
       datetime.sec = (uint8_t) ((data & 0x0000ff00) >> 8);
 #if defined(RTCLOCK)
-      if (g_eeGeneral.adjustRTC) {
+      if (g_eeGeneral.adjustRTC && gpsData.fix) {
         rtcAdjust(datetime.year, datetime.month, datetime.day, datetime.hour, datetime.min, datetime.sec);
       }
 #endif
