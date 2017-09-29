@@ -129,6 +129,7 @@ void boardInit()
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(INTERRUPT_1MS_RCC_APB1Periph |
+                         ADC_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          SERIAL_RCC_APB1Periph |
