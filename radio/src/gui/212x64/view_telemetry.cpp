@@ -144,7 +144,12 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           }
         }
 
-        drawSourceValue(x, y, field, att);
+        if(isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME)) {
+          drawTelemScreenDate(x, y, field, att);
+        }
+        else {
+          drawSourceValue(x, y, field, att);
+        }
       }
     }
   }

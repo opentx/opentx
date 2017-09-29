@@ -56,7 +56,7 @@ void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, 
   TelemetrySensor & telemetrySensor = g_model.telemetrySensors[sensor];
 
   if (telemetrySensor.unit == UNIT_DATETIME) {
-    drawTelemScreenDate(x, y, telemetryItem, flags);
+    drawDate(x, y, telemetryItem, flags);
   }
   else if (telemetrySensor.unit == UNIT_GPS) {
     drawGPSSensorValue(x, y, telemetryItem, flags);
