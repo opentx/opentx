@@ -356,7 +356,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           }
         }
         if(isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME))
-          drawSourceValue(pos[j+1]-36, 6+FH+2*FH*i, field, SMLSIZE|NO_UNIT);
+          drawTelemScreenDate(pos[j+1]-36, 6+FH+2*FH*i, field, SMLSIZE|NO_UNIT);
         else
           drawSourceValue(pos[j+1]-2, (i==3 ? 1+FH+2*FH*i:FH+2*FH*i), field, att);
       }
