@@ -98,15 +98,11 @@ class ProtocolsConversionTable: public ConversionTable
         addConversion(PULSES_DSM2, val++);
         addConversion(PULSES_DSMX, val++);
       }
-      if (IS_HORUS_OR_TARANIS(board)) {
+      if (IS_ARM(board)) {
         addConversion(PULSES_CROSSFIRE, val++);
         addConversion(PULSES_MULTIMODULE, val++);
         addConversion(PULSES_PXX_R9M, val++);
-      }
-      else if (IS_ARM(board)) {
-        val++;
-        addConversion(PULSES_MULTIMODULE, val++);
-        addConversion(PULSES_PXX_R9M, val++);
+        addConversion(PULSES_SBUS, val++);
       }
     }
 };

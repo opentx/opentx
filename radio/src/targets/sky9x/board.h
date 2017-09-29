@@ -260,10 +260,8 @@ void disable_pxx(uint32_t port);
 void init_dsm2(uint32_t port);
 void disable_dsm2(uint32_t port);
 
-#if defined(MULTIMODULE)
-void init_multimodule(uint32_t module_index);
-void disable_multimodule(uint32_t module_index);
-#endif
+void init_sbusOut(uint32_t module_index);
+void disable_sbusOut(uint32_t module_index);
 
 // SD driver
 #if defined(SIMU)

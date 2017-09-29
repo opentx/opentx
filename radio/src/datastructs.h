@@ -682,6 +682,12 @@ PACK(struct ModuleData {
       uint8_t sport_out:1;
       uint8_t spare3;
     } pxx);
+    NOBACKUP(struct {
+      uint8_t spare:6;
+      uint8_t noninverted:1;
+      uint8_t spare2:1;
+      int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
+    } sbus);
   };
 
   // Helper functions to set both of the rfProto protocol at the same time

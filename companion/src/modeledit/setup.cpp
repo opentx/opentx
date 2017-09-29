@@ -171,6 +171,7 @@ void TimerPanel::on_name_editingFinished()
 #define MASK_ANTENNA        256
 #define MASK_MULTIOPTION    512
 #define MASK_R9M            1024
+#define MASK_SBUSPPM_FIELDS 2048
 
 quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
 
@@ -391,10 +392,14 @@ void ModulePanel::update()
         module.channelsCount = 16;
         break;
       case PULSES_PPM:
-        mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
+        mask |= MASK_PPM_FIELDS | MASK_SBUSPPM_FIELDS| MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
         if (IS_9XRPRO(firmware->getBoard())) {
           mask |= MASK_OPEN_DRAIN;
         }
+        break;
+      case PULSES_SBUS:
+        module.channelsCount = 16;
+        mask |=  MASK_SBUSPPM_FIELDS| MASK_CHANNELS_RANGE;
         break;
       case PULSES_MULTIMODULE:
         mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE;
@@ -441,8 +446,8 @@ void ModulePanel::update()
   ui->channelsCount->setSingleStep(firmware->getCapability(HasPPMStart) ? 1 : 2);
 
   // PPM settings fields
-  ui->label_ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmPolarity->setVisible(mask & MASK_PPM_FIELDS);
+  ui->label_ppmPolarity->setVisible(mask & MASK_SBUSPPM_FIELDS);
+  ui->ppmPolarity->setVisible(mask & MASK_SBUSPPM_FIELDS);
   ui->ppmPolarity->setCurrentIndex(module.ppm.pulsePol);
   ui->label_ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
   ui->ppmOutputType->setVisible(mask & MASK_OPEN_DRAIN);
@@ -450,8 +455,8 @@ void ModulePanel::update()
   ui->label_ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmDelay->setVisible(mask & MASK_PPM_FIELDS);
   ui->ppmDelay->setValue(module.ppm.delay);
-  ui->label_ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
-  ui->ppmFrameLength->setVisible(mask & MASK_PPM_FIELDS);
+  ui->label_ppmFrameLength->setVisible(mask & MASK_SBUSPPM_FIELDS);
+  ui->ppmFrameLength->setVisible(mask & MASK_SBUSPPM_FIELDS);
   ui->ppmFrameLength->setMinimum(module.channelsCount*(model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);

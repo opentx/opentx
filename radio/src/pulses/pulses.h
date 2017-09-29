@@ -77,6 +77,12 @@ enum ModuleFlag
   #define IS_MULTIMODULE_PROTOCOL(protocol)  (0)
 #endif
 
+#if defined(CPUARM)
+  #define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTO_SBUS)
+#else
+  #define IS_SBUS_PROTOCOL(protocol)         (0)
+#endif
+
 
 #if defined(CPUARM)
   #include "pulses_arm.h"

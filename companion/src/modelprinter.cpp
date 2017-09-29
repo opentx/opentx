@@ -120,7 +120,8 @@ QString ModelPrinter::printModuleProtocol(unsigned int protocol)
     "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
     "Crossfire",
     "DIY Multiprotocol Module",
-    "FrSky R9M Module"
+    "FrSky R9M Module",
+    "SBUS output at VBat"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);
