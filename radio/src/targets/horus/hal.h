@@ -213,6 +213,11 @@
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_7      // PF.07
   #define ADC_GPIO_PIN_EXT1             GPIO_Pin_8      // PF.08
   #define ADC_GPIO_PIN_EXT2             GPIO_Pin_9      // PF.09
+  #define PWM_TIMER                     TIM5
+  #define PWM_GPIO                      GPIOA
+  #define PWM_GPIO_AF                   GPIO_AF_TIM5
+  #define PWM_IRQHandler                TIM5_IRQHandler
+  #define PWM_IRQn                      TIM5_IRQn
   #define PWM_GPIOA_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
   #define ADC_GPIOA_PINS                (ANALOGS_PWM_ENABLED() ? 0 : (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3))
   #define ADC_GPIOC_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)

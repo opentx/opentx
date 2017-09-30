@@ -32,104 +32,97 @@ volatile uint8_t  timer_capture_indexes[4];
 void pwmInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
-  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-  NVIC_InitTypeDef NVIC_InitStructure;
-  TIM_ICInitTypeDef TIM5_ICInitStructure;
-
   GPIO_InitStructure.GPIO_Pin = PWM_GPIOA_PINS;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(GPIOA, &GPIO_InitStructure);
+  GPIO_Init(PWM_GPIO, &GPIO_InitStructure);
 
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource0, GPIO_AF_TIM5);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource1, GPIO_AF_TIM5);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource2, GPIO_AF_TIM5);
-  GPIO_PinAFConfig(GPIOA, GPIO_PinSource3, GPIO_AF_TIM5);
+  GPIO_PinAFConfig(PWM_GPIO, GPIO_PinSource0, PWM_GPIO_AF);
+  GPIO_PinAFConfig(PWM_GPIO, GPIO_PinSource1, PWM_GPIO_AF);
+  GPIO_PinAFConfig(PWM_GPIO, GPIO_PinSource2, PWM_GPIO_AF);
+  GPIO_PinAFConfig(PWM_GPIO, GPIO_PinSource3, PWM_GPIO_AF);
 
-  TIM_TimeBaseStructure.TIM_Period = 0xffff;
-  TIM_TimeBaseStructure.TIM_Prescaler = 80;
-  TIM_TimeBaseStructure.TIM_ClockDivision = TIM_CKD_DIV1;
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(TIM5, &TIM_TimeBaseStructure);
+  PWM_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop timer
+  PWM_TIMER->PSC = 80;
+  PWM_TIMER->ARR = 0xffff;
+  PWM_TIMER->CCMR1 = TIM_CCMR1_CC1S_0 | TIM_CCMR1_CC2S_0;
+  PWM_TIMER->CCMR2 = TIM_CCMR2_CC3S_0 | TIM_CCMR2_CC4S_0;
+  PWM_TIMER->CCER = TIM_CCER_CC1E | TIM_CCER_CC2E | TIM_CCER_CC3E | TIM_CCER_CC4E;
+  PWM_TIMER->DIER |= TIM_IT_CC1|TIM_IT_CC2|TIM_IT_CC3|TIM_IT_CC4;
+  PWM_TIMER->CR1 = TIM_CR1_CEN; // Start timer
 
-  TIM5_ICInitStructure.TIM_ICPolarity = TIM_ICPolarity_Rising;
-  TIM5_ICInitStructure.TIM_ICSelection = TIM_ICSelection_DirectTI;
-  TIM5_ICInitStructure.TIM_ICPrescaler = TIM_ICPSC_DIV1;
-  TIM5_ICInitStructure.TIM_ICFilter = 0x00;
-
-  TIM5_ICInitStructure.TIM_Channel = TIM_Channel_1;
-  TIM_ICInit(TIM5, &TIM5_ICInitStructure);
-
-  TIM5_ICInitStructure.TIM_Channel = TIM_Channel_2;
-  TIM_ICInit(TIM5, &TIM5_ICInitStructure);
-
-  TIM5_ICInitStructure.TIM_Channel = TIM_Channel_3;
-  TIM_ICInit(TIM5, &TIM5_ICInitStructure);
-
-  TIM5_ICInitStructure.TIM_Channel = TIM_Channel_4;
-  TIM_ICInit(TIM5, &TIM5_ICInitStructure);
-
-  NVIC_InitStructure.NVIC_IRQChannel = TIM5_IRQn;
-  NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 10;
-  NVIC_InitStructure.NVIC_IRQChannelSubPriority = 0;
-  NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-  NVIC_Init(&NVIC_InitStructure);
-
-  TIM_Cmd(TIM5, ENABLE);
-
-  TIM_ITConfig(TIM5, TIM_IT_CC1|TIM_IT_CC2|TIM_IT_CC3|TIM_IT_CC4, ENABLE);
+  NVIC_EnableIRQ(PWM_IRQn);
+  NVIC_SetPriority(PWM_IRQn, 10);
 }
 
-inline uint32_t TIM_GetCaptureN(uint8_t n)
+inline uint32_t TIM_GetCapture(uint8_t n)
 {
   switch (n) {
     case 0:
-      return TIM_GetCapture1(TIM5);
+      return PWM_TIMER->CCR1;
     case 1:
-      return TIM_GetCapture2(TIM5);
+      return PWM_TIMER->CCR2;
     case 2:
-      return TIM_GetCapture3(TIM5);
+      return PWM_TIMER->CCR3;
     case 3:
-      return TIM_GetCapture4(TIM5);
+      return PWM_TIMER->CCR4;
     default:
       return 0;
   }
 }
 
-inline void TIM_OCPolarityConfig(uint8_t n, uint16_t TIM_OCPolarity)
+inline void TIM_SetPolarityRising(uint8_t n)
 {
   switch (n) {
     case 0:
-      TIM_OC1PolarityConfig(TIM5, TIM_OCPolarity);
+      PWM_TIMER->CCER &= ~TIM_CCER_CC1P;
       break;
     case 1:
-      TIM_OC2PolarityConfig(TIM5, TIM_OCPolarity);
+      PWM_TIMER->CCER &= ~TIM_CCER_CC2P;
       break;
     case 2:
-      TIM_OC3PolarityConfig(TIM5, TIM_OCPolarity);
+      PWM_TIMER->CCER &= ~TIM_CCER_CC3P;
       break;
     case 3:
-      TIM_OC4PolarityConfig(TIM5, TIM_OCPolarity);
+      PWM_TIMER->CCER &= ~TIM_CCER_CC4P;
       break;
   }
 }
 
-inline void TIM_ClearITPendingBitN(uint8_t n)
+inline void TIM_SetPolarityFalling(uint8_t n)
 {
   switch (n) {
     case 0:
-      TIM_ClearITPendingBit(TIM5, TIM_IT_CC1);
+      PWM_TIMER->CCER |= TIM_CCER_CC1P;
       break;
     case 1:
-      TIM_ClearITPendingBit(TIM5, TIM_IT_CC2);
+      PWM_TIMER->CCER |= TIM_CCER_CC2P;
       break;
     case 2:
-      TIM_ClearITPendingBit(TIM5, TIM_IT_CC3);
+      PWM_TIMER->CCER |= TIM_CCER_CC3P;
       break;
     case 3:
-      TIM_ClearITPendingBit(TIM5, TIM_IT_CC4);
+      PWM_TIMER->CCER |= TIM_CCER_CC4P;
+      break;
+  }
+}
+
+inline void TIM_ClearITPendingBit(uint8_t n)
+{
+  switch (n) {
+    case 0:
+      PWM_TIMER->SR = ~TIM_IT_CC1;
+      break;
+    case 1:
+      PWM_TIMER->SR = ~TIM_IT_CC2;
+      break;
+    case 2:
+      PWM_TIMER->SR = ~TIM_IT_CC3;
+      break;
+    case 3:
+      PWM_TIMER->SR = ~TIM_IT_CC4;
       break;
   }
 }
@@ -142,11 +135,11 @@ inline uint32_t diff_with_16bits_overflow(uint32_t a, uint32_t b)
     return b + 0xffff - a;
 }
 
-extern "C" void TIM5_IRQHandler(void)
+extern "C" void PWM_IRQHandler(void)
 {
   for (int i=0; i<4; i++) {
-    if (TIM_GetITStatus(TIM5, TIM_IT_CC1<<i) != RESET) {
-      uint32_t capture = TIM_GetCaptureN(i);
+    if (PWM_TIMER->SR & (TIM_DIER_CC1IE << i)) {
+      uint32_t capture = TIM_GetCapture(i);
       if (timer_capture_states[i] != 0) {
         uint32_t value = diff_with_16bits_overflow(timer_capture_rising_time[i], capture);
         if (value < 10000) {
@@ -154,15 +147,15 @@ extern "C" void TIM5_IRQHandler(void)
           timer_capture_values[i][timer_capture_indexes[i]++] = value;
           timer_capture_indexes[i] %= TIMESAMPLE_COUNT;
         }
-        TIM_OCPolarityConfig(i, TIM_ICPolarity_Rising);
+        TIM_SetPolarityRising(i);
         timer_capture_states[i] = 0;
       }
       else {
         timer_capture_rising_time[i] = capture;
-        TIM_OCPolarityConfig(i, TIM_ICPolarity_Falling);
+        TIM_SetPolarityFalling(i);
         timer_capture_states[i] = 0x80;
       }
-      TIM_ClearITPendingBitN(i);
+      TIM_ClearITPendingBit(i);
     }
   }
 }
