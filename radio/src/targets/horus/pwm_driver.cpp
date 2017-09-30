@@ -180,10 +180,10 @@ void pwmRead(uint16_t * values)
     tmp[i] = (mycount - mymax - mymin) >> 2;
   }
 
-  values[0] = tmp[2];
-  values[1] = tmp[3];
-  values[2] = tmp[1];
-  values[3] = tmp[0];
+  values[0] = tmp[0];
+  values[1] = tmp[1];
+  values[2] = tmp[3];
+  values[3] = tmp[2];
 }
 
 void pwmCheck()
