@@ -1168,7 +1168,7 @@ void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags att)
   lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0, 2);
 
   lcdDrawNumber(x-29, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-  lcdDrawChar(lcdNextPos, y, '/', att);
+  lcdDrawChar(lcdNextPos, y, '-', att);
   lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
 }
 
