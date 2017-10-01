@@ -1147,11 +1147,11 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
      lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0, 2);
   }
   else {
-    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(x, y, telemetryItem.datetime.year, att|LEADING0|LEFT, 4);
     lcdDrawChar(lcdLastRightPos, y, '-', att);
     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
     lcdDrawChar(lcdLastRightPos, y, '-', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.year, att|LEADING0|LEFT, 4);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
   }
 }
 
@@ -1167,9 +1167,9 @@ void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags att)
   lcdDrawText(lcdNextPos, y, ":", att);
   lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0, 2);
 
-  lcdDrawNumber(x-29, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
+  lcdDrawNumber(x-29, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
   lcdDrawChar(lcdNextPos, y, '-', att);
-  lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
+  lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
 }
 
 void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)

@@ -526,7 +526,7 @@ void menuModelTelemetryFrsky(event_t event)
       lcdDrawChar(lcdLastRightPos, y, ':', attr);
       lcdDrawSizedText(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
-        lcdDrawChar(16*FW, y, '*');
+        lcdDrawChar(17*FW, y, '*');
       }
       TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isAvailable()) {
