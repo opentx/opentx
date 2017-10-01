@@ -2593,6 +2593,10 @@ void opentxInit(OPENTX_INIT_ARGS)
     backlightOn();
   }
 
+#if NUM_PWMANALOGS > 0
+  pwmCheck();
+#endif
+
   if (!unexpectedShutdown) {
     opentxStart();
   }

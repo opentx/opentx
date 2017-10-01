@@ -44,11 +44,16 @@
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,0,   -1,1,  1};
 #endif
 
-#if defined(PCBX9E)
-  #define NUM_ANALOGS_ADC      10
-  #define NUM_ANALOGS_ADC_EXT  (NUM_ANALOGS - 10)
+#if NUM_PWMANALOGS > 0
+  #define FIRST_ANALOG_ADC             (ANALOGS_PWM_ENABLED() ? NUM_PWMANALOGS : 0)
+  #define NUM_ANALOGS_ADC              (ANALOGS_PWM_ENABLED() ? (NUM_ANALOGS - NUM_PWMANALOGS) : NUM_ANALOGS)
+#elif defined(PCBX9E)
+  #define FIRST_ANALOG_ADC             0
+  #define NUM_ANALOGS_ADC              10
+  #define NUM_ANALOGS_ADC_EXT          (NUM_ANALOGS - 10)
 #else
-  #define NUM_ANALOGS_ADC      NUM_ANALOGS
+  #define FIRST_ANALOG_ADC             0
+  #define NUM_ANALOGS_ADC              NUM_ANALOGS
 #endif
 
 uint16_t adcValues[NUM_ANALOGS] __DMA;
@@ -86,8 +91,14 @@ void adcInit()
   ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC-1) << 20; // bits 23:20 = number of conversions
 
 #if defined(PCBX10)
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_CHANNEL_EXT1<<20) + (ADC_CHANNEL_EXT2<<25); // conversions 7 and more
-  ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
+  if (ANALOGS_PWM_ENABLED()) {
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_EXT1<<0) + (ADC_CHANNEL_EXT2<<5); // conversions 7 and more
+    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_POT2<<5) + (ADC_CHANNEL_POT3<<10) + (ADC_CHANNEL_SLIDER1<<15) + (ADC_CHANNEL_SLIDER2<<20) + (ADC_CHANNEL_BATT<<25); // conversions 1 to 6
+  }
+  else {
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_CHANNEL_EXT1<<20) + (ADC_CHANNEL_EXT2<<25); // conversions 7 and more
+    ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
+  }
 #elif defined(PCBX9E)
   ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
@@ -106,7 +117,7 @@ void adcInit()
 
   ADC_DMA_Stream->CR = DMA_SxCR_PL | ADC_DMA_SxCR_CHSEL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   ADC_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC_MAIN->DR);
-  ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues);
+  ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[FIRST_ANALOG_ADC]);
   ADC_DMA_Stream->NDTR = NUM_ANALOGS_ADC;
   ADC_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 
@@ -124,6 +135,12 @@ void adcInit()
   ADC_EXT_DMA_Stream->M0AR = CONVERT_PTR_UINT(adcValues + NUM_ANALOGS_ADC);
   ADC_EXT_DMA_Stream->NDTR = NUM_ANALOGS_ADC_EXT;
   ADC_EXT_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
+#endif
+
+#if NUM_PWMANALOGS > 0
+  if (ANALOGS_PWM_ENABLED()) {
+    pwmInit();
+  }
 #endif
 }
 
@@ -167,7 +184,7 @@ void adcRead()
 
   for (int i=0; i<4; i++) {
     adcSingleRead();
-    for (uint8_t x=0; x<NUM_ANALOGS; x++) {
+    for (uint8_t x=FIRST_ANALOG_ADC; x<NUM_ANALOGS; x++) {
       uint16_t val = adcValues[x];
 #if defined(JITTER_MEASURE)
       if (JITTER_MEASURE_ACTIVE()) {
@@ -178,9 +195,15 @@ void adcRead()
     }
   }
 
-  for (uint8_t x=0; x<NUM_ANALOGS; x++) {
+  for (uint8_t x=FIRST_ANALOG_ADC; x<NUM_ANALOGS; x++) {
     adcValues[x] = temp[x] >> 2;
   }
+
+#if NUM_PWMANALOGS > 0
+  if (ANALOGS_PWM_ENABLED()) {
+    pwmRead(adcValues);
+  }
+#endif
 }
 
 // TODO
