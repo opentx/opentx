@@ -154,7 +154,9 @@ void menuStatisticsDebug(event_t event)
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
+#if defined(KEY_PAGE)
     case EVT_KEY_FIRST(KEY_PAGE):
+#endif
       chainMenu(menuStatisticsView);
       break;
 
