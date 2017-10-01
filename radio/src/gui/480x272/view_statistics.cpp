@@ -148,11 +148,13 @@ bool menuStatsDebug(event_t event)
   lcdDrawText(lcdNextPos+20, MENU_CONTENT_TOP+line*FH+1, "[B]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(lcdNextPos+5, MENU_CONTENT_TOP+line*FH, luaExtraMemoryUsage, LEFT);
   ++line;
-
 #endif
 
-  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Tlm RX Errs");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, telemetryErrors, LEFT);
+  ++line;
 
+  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
   return true;
 }
 
