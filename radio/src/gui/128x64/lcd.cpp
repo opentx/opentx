@@ -1137,30 +1137,39 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   lcdDrawSizedText(lcdLastRightPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
-void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
-  if (att & DBLSIZE) {
-    x -= 42;
-    att &= ~FONTSIZE_MASK;
-    lcdDrawNumber(x, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.month, att|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos-1, y, '-', att);
-    lcdDrawNumber(lcdNextPos-1, y, telemetryItem.datetime.year-2000, att|LEFT);
-    y += FH;
-    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+  if (BLINK_ON_PHASE) {
+     lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0, 2);
+     lcdDrawText(lcdNextPos, y, ":", att);
+     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0, 2);
+     lcdDrawText(lcdNextPos, y, ":", att);
+     lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0, 2);
   }
   else {
-    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0|LEFT, 2);
-    lcdDrawChar(lcdLastRightPos, y, ':', att);
-    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0|LEFT, 2);
+    lcdDrawNumber(x, y, telemetryItem.datetime.year, att|LEADING0|LEFT, 4);
+    lcdDrawChar(lcdLastRightPos, y, '-', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
+    lcdDrawChar(lcdLastRightPos, y, '-', att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
   }
+}
+
+void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags att)
+{
+  y+=3;
+  sensor = (sensor-MIXSRC_FIRST_TELEM) / 3;
+	TelemetryItem & telemetryItem = telemetryItems[sensor];
+
+  lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0, 2);
+  lcdDrawText(lcdNextPos, y, ":", att);
+  lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0, 2);
+  lcdDrawText(lcdNextPos, y, ":", att);
+  lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0, 2);
+
+  lcdDrawNumber(x-29, y, telemetryItem.datetime.month, att|LEADING0|LEFT, 2);
+  lcdDrawChar(lcdNextPos, y, '-', att);
+  lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.day, att|LEADING0|LEFT, 2);
 }
 
 void drawGPSPosition(coord_t x, coord_t y, int32_t longitude, int32_t latitude, LcdFlags flags)

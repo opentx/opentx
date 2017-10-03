@@ -307,7 +307,8 @@ void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
   }
 }
 
-void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+
+void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
   // TODO
   if (att & DBLSIZE) {
