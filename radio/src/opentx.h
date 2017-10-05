@@ -1500,12 +1500,6 @@ union ReusableBuffer
   } sdmanager;
 #endif
 
-#if defined(STM32)
-  struct
-  {
-    char id[27];
-  } version;
-#endif
   struct
   {
     uint8_t stickMode;

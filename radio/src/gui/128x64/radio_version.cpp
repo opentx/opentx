@@ -32,8 +32,9 @@ void menuRadioVersion(event_t event)
 #endif
   
 #if defined(STM32)
+  char id[27];
   if (event == EVT_ENTRY) {
-    getCPUUniqueID(reusableBuffer.version.id);
+    getCPUUniqueID(id);
   }
 #endif
   
