@@ -60,16 +60,16 @@ if(WIN32)
   set(WIN_EXTRA_LIBS_PATH "C:/Programs" CACHE PATH
     "Base path to extra libs/headers on Windows (SDL & pthreads folders should be in here).")
   list(APPEND CMAKE_PREFIX_PATH "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/SDL")  # hints for FindSDL
-  
-  # Python check
-  find_package("PythonInterp")
-  if(PYTHONINTERP_FOUND)
-    message(STATUS "Python found, version: ${PYTHON_VERSION_STRING}")
-    get_filename_component(PYTHON_DIRECTORY ${PYTHON_EXECUTABLE} DIRECTORY)
-  else()
-    message(WARNING "Python not found! Most firmware and simu flavors not buildable.")
-    set(LUA NO)
-  endif()
+endif()
+
+# Python check
+find_package("PythonInterp")
+if(PYTHONINTERP_FOUND)
+  message(STATUS "Python found, version: ${PYTHON_VERSION_STRING}")
+  get_filename_component(PYTHON_DIRECTORY ${PYTHON_EXECUTABLE} DIRECTORY)
+else()
+  message(WARNING "Python not found! Most firmware and simu flavors not buildable.")
+  set(LUA NO)
 endif()
 
 find_package(Qt5Core)
