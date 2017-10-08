@@ -53,15 +53,6 @@ set(FIRMWARE_C_FLAGS_DEBUG "-g" CACHE STRING "Additional flags for firmware targ
 set(FIRMWARE_CXX_FLAGS "" CACHE STRING "Additional flags for firmware target c++ compiler (note: all CMAKE_CXX_FLAGS[_*] are ignored for firmware/bootloader).")
 set(FIRMWARE_CXX_FLAGS_DEBUG "-g" CACHE STRING "Additional flags for firmware target (Debug config) c++ compiler (note: CMAKE_CXX_FLAGS_DEBUG is ignored for firmware/bootloader).")
 
-# Python check
-find_package("PythonInterp")
-if(PYTHONINTERP_FOUND)
-  message(STATUS "Python found, version: ${PYTHON_VERSION_STRING}")
-else()
-  message(WARNING "Python not found! Most firmware and simu flavors not buildable.")
-  set(LUA NO)
-endif()
-
 set(THIRDPARTY_DIR thirdparty)
 set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
 set(COOS_DIR ${THIRDPARTY_DIR}/CoOS)
