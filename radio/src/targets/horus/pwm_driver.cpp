@@ -191,6 +191,8 @@ void pwmCheck()
   // I have ~1860 interrupts with only one stick
   if (pwm_interrupt_count < 1000) {
     analogs_pwm_disabled = true;
+#if !defined(SIMU)
     adcInit();
+#endif
   }
 }
