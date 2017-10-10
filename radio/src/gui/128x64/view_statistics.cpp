@@ -31,10 +31,22 @@ void menuStatisticsView(event_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
-#if defined(KEY_PAGE)
-    case EVT_KEY_FIRST(KEY_PAGE):
+#if defined(PCBX7)
+    case EVT_KEY_BREAK(KEY_PAGE):
 #endif
       chainMenu(menuStatisticsDebug);
+      break;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+#if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+#endif
+#if defined(PCBX7)
+      chainMenu(menuStatisticsDebug2);
+#else
+      chainMenu(menuStatisticsDebug);
+#endif
       break;
 
 #if defined(CPUARM)
@@ -142,27 +154,18 @@ void menuStatisticsDebug(event_t event)
       maxMixerDuration  = 0;
       break;
 
-#if defined(DEBUG_TRACE_BUFFER) && !defined(STM32)
-    case EVT_KEY_FIRST(KEY_UP):
-#if defined(KEY_PAGE)
-    case EVT_KEY_FIRST(KEY_PAGE):
-#endif
-      chainMenu(menuTraceBuffer);
-      return;
-#endif
 #if defined(STM32)
     case EVT_KEY_FIRST(KEY_UP):
-#if defined(KEY_PAGE)
-    case EVT_KEY_FIRST(KEY_PAGE):
-#endif
+    case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuStatisticsDebug2);
       return;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(KEY_PAGE)
-    case EVT_KEY_FIRST(KEY_PAGE):
+#if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
 #endif
+      killEvents(event);
       chainMenu(menuStatisticsView);
       break;
 
@@ -280,20 +283,19 @@ void menuStatisticsDebug2(event_t event)
       telemetryErrors  = 0;
       break;
 
-#if defined(DEBUG_TRACE_BUFFER)
     case EVT_KEY_FIRST(KEY_UP):
-#if defined(KEY_PAGE)
-    case EVT_KEY_FIRST(KEY_PAGE):
-#endif
-      chainMenu(menuTraceBuffer);
-      return;
-#endif
-
-    case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(KEY_PAGE)
-    case EVT_KEY_FIRST(KEY_PAGE):
+#if defined(PCBX7)
+    case EVT_KEY_BREAK(KEY_PAGE):
 #endif
       chainMenu(menuStatisticsView);
+      return;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+#if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
+#endif
+      killEvents(event);
+      chainMenu(menuStatisticsDebug);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
