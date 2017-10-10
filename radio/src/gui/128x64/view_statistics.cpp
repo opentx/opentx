@@ -31,8 +31,10 @@ void menuStatisticsView(event_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
+#if defined(KEY_PAGE)
     case EVT_KEY_FIRST(KEY_PAGE):
-      pushMenu(menuStatisticsDebug);
+#endif
+      chainMenu(menuStatisticsDebug);
       break;
 
 #if defined(CPUARM)
@@ -43,7 +45,7 @@ void menuStatisticsView(event_t event)
       break;
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
-      pushMenu(menuMainView);
+      chainMenu(menuMainView);
       break;
   }
 
@@ -142,14 +144,18 @@ void menuStatisticsDebug(event_t event)
 
 #if defined(DEBUG_TRACE_BUFFER) && !defined(STM32)
     case EVT_KEY_FIRST(KEY_UP):
+#if defined(KEY_PAGE)
     case EVT_KEY_FIRST(KEY_PAGE):
-      pushMenu(menuTraceBuffer);
+#endif
+      chainMenu(menuTraceBuffer);
       return;
 #endif
 #if defined(STM32)
     case EVT_KEY_FIRST(KEY_UP):
+#if defined(KEY_PAGE)
     case EVT_KEY_FIRST(KEY_PAGE):
-      pushMenu(menuStatisticsDebug2);
+#endif
+      chainMenu(menuStatisticsDebug2);
       return;
 #endif
 
@@ -276,18 +282,22 @@ void menuStatisticsDebug2(event_t event)
 
 #if defined(DEBUG_TRACE_BUFFER)
     case EVT_KEY_FIRST(KEY_UP):
+#if defined(KEY_PAGE)
     case EVT_KEY_FIRST(KEY_PAGE):
-      pushMenu(menuTraceBuffer);
+#endif
+      chainMenu(menuTraceBuffer);
       return;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
+#if defined(KEY_PAGE)
     case EVT_KEY_FIRST(KEY_PAGE):
-      pushMenu(menuStatisticsView);
+#endif
+      chainMenu(menuStatisticsView);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      pushMenu(menuMainView);
+      chainMenu(menuMainView);
       break;
   }
 
