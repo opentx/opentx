@@ -31,7 +31,7 @@ void menuStatisticsView(event_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_PAGE):
       chainMenu(menuStatisticsDebug);
       break;
 
@@ -101,7 +101,7 @@ void menuStatisticsView(event_t event)
   #define MENU_DEBUG_COL1_OFS          (11*FW-3)
   #define MENU_DEBUG_COL2_OFS          (17*FW)
   #define MENU_DEBUG_Y_CURRENT         (1*FH)
-  #define MENU_DEBUG_ROW1              (1*FH)
+  #define MENU_DEBUG_ROW1              (1*FH+1)
   #define MENU_DEBUG_Y_MAH             (2*FH)
   #define MENU_DEBUG_Y_CPU_TEMP        (3*FH)
   #define MENU_DEBUG_Y_COPROC          (4*FH)
@@ -142,13 +142,13 @@ void menuStatisticsDebug(event_t event)
 
 #if defined(DEBUG_TRACE_BUFFER) && !defined(STM32)
     case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_PAGE):
       pushMenu(menuTraceBuffer);
       return;
 #endif
 #if defined(STM32)
     case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_PAGE):
       pushMenu(menuStatisticsDebug2);
       return;
 #endif
@@ -276,14 +276,14 @@ void menuStatisticsDebug2(event_t event)
 
 #if defined(DEBUG_TRACE_BUFFER)
     case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_PAGE):
       pushMenu(menuTraceBuffer);
       return;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_FIRST(KEY_PAGE):
-      chainMenu(menuStatisticsDebug);
+      chainMenu(menuStatisticsView);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
