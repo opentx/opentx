@@ -32,7 +32,7 @@ void menuStatisticsView(event_t event)
   switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_FIRST(KEY_PAGE):
-      chainMenu(menuStatisticsDebug);
+      pushMenu(menuStatisticsDebug);
       break;
 
 #if defined(CPUARM)
@@ -43,7 +43,7 @@ void menuStatisticsView(event_t event)
       break;
 #endif
     case EVT_KEY_FIRST(KEY_EXIT):
-      chainMenu(menuMainView);
+      pushMenu(menuMainView);
       break;
   }
 
@@ -283,11 +283,11 @@ void menuStatisticsDebug2(event_t event)
 
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_FIRST(KEY_PAGE):
-      chainMenu(menuStatisticsView);
+      pushMenu(menuStatisticsView);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      chainMenu(menuMainView);
+      pushMenu(menuMainView);
       break;
   }
 
