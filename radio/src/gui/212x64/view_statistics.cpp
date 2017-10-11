@@ -32,8 +32,18 @@ void menuStatisticsView(event_t event)
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuStatisticsDebug);
+      break;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+#if defined(DEBUG_TRACE_BUFFER)
+      chainMenu(menuTraceBuffer);
+#else
+      chainMenu(menuStatisticsDebug2);
+#endif
       break;
 
     case EVT_KEY_LONG(KEY_MENU):
@@ -122,10 +132,13 @@ void menuStatisticsDebug(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
       chainMenu(menuStatisticsView);
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuStatisticsDebug2);
       break;
 
@@ -192,12 +205,19 @@ void menuStatisticsDebug2(event_t event)
   {
 
 
-#if defined(DEBUG_TRACE_BUFFER)
+
     case EVT_KEY_FIRST(KEY_UP):
-      pushMenu(menuTraceBuffer);
-      return;
+    case EVT_KEY_BREAK(KEY_PAGE):
+#if defined(DEBUG_TRACE_BUFFER)
+      chainMenu(menuTraceBuffer);
+#else
+      chainMenu(menuStatisticsView);
 #endif
+      return;
+
     case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
       chainMenu(menuStatisticsDebug);
       break;
 
@@ -229,6 +249,17 @@ void menuTraceBuffer(event_t event)
       dumpTraceBuffer();
       killEvents(event);
       break;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+      chainMenu(menuStatisticsDebug2);
+      break;
+
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_BREAK(KEY_PAGE):
+      chainMenu(menuStatisticsView);
+      return;
   }
 
   SIMPLE_SUBMENU("Trace Buffer", TRACE_BUFFER_LEN);
