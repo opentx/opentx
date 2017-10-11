@@ -46,7 +46,8 @@ void menuStatisticsView(event_t event)
 #endif
       break;
 
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_MENU):      // historical
+    case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
       sessionTimer = 0;

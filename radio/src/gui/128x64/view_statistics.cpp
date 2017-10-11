@@ -50,7 +50,10 @@ void menuStatisticsView(event_t event)
       break;
 
 #if defined(CPUARM)
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_MENU):      // historical
+#if !defined(PCBSKY9X)
+    case EVT_KEY_LONG(KEY_ENTER):
+#endif
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
