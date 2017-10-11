@@ -38,11 +38,9 @@ void menuStatisticsView(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(PCBX7)
+#if defined(STM32)
     case EVT_KEY_LONG(KEY_PAGE):
       killEvents(event);
-#endif
-#if defined(PCBX7)
       chainMenu(menuStatisticsDebug2);
 #else
       chainMenu(menuStatisticsDebug);
@@ -157,8 +155,9 @@ void menuStatisticsDebug(event_t event)
       maxMixerDuration  = 0;
       break;
 
-#if defined(STM32)
+
     case EVT_KEY_FIRST(KEY_UP):
+#if defined(STM32)
     case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuStatisticsDebug2);
       return;
