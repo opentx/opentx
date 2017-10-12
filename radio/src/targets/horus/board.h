@@ -36,6 +36,7 @@ extern "C" {
 #endif
 
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
@@ -65,6 +66,7 @@ extern "C" {
 
 #include "usb_driver.h"
 
+
 #if !defined(SIMU)
 #include "usbd_cdc_core.h"
 #include "usbd_msc_core.h"
@@ -76,6 +78,7 @@ extern "C" {
 #endif
 
 #include "hal.h"
+#include "board_common.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
@@ -133,10 +136,6 @@ void delay_ms(uint32_t ms);
 #else
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
-
-// CPU Unique ID
-#define LEN_CPU_UID                    (3*8+2)
-void getCPUUniqueID(char * s);
 
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
@@ -364,6 +363,9 @@ enum Analogs {
   TX_VOLTAGE,
   MOUSE1,
   MOUSE2,
+  TX_TEMPERATURE,
+  TX_INTREF,
+  TX_VBAT,
   NUM_ANALOGS
 };
 

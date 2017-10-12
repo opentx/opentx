@@ -798,6 +798,7 @@
 #define TR_FP                          "PV"
 #define TR_MIX                         "MIX"
 #define TR_EEPROMLOWMEM                "EEPROM pleine!"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT                       "\014ALERTE"
 #define TR_PRESSANYKEYTOSKIP           "Touche pour ignorer"
 #define TR_THROTTLENOTIDLE             "Gaz pas à zéro"

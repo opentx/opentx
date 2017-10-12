@@ -796,6 +796,7 @@
 #define TR_FP                  "FV"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM quasi piena!"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "\016ALERT"
 #define TR_PRESSANYKEYTOSKIP   "\010Premi un tasto"
 #define TR_THROTTLENOTIDLE     TR("Motore non in posiz.","Motore non in posizione")

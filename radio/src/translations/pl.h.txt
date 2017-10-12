@@ -798,6 +798,7 @@
 #define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Niska pamięć EEPROM"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "\006UWAGA"
 #define TR_PRESSANYKEYTOSKIP   "Wciśnij guzik->ignoruj"
 #define TR_THROTTLENOTIDLE     "Gaz nie na zerze"

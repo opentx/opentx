@@ -791,6 +791,7 @@
 #define TR_FP                  "FM"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM weinig geheugen"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "ALARM"
 #define TR_PRESSANYKEYTOSKIP   "Druk een toets.."
 #define TR_THROTTLENOTIDLE     "Gas niet Dicht!"

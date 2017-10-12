@@ -777,6 +777,7 @@
 #define TR_FP                  "FM"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM mem.baja"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "\016ALERTA"
 #define TR_PRESSANYKEYTOSKIP   "Pulsar tecla omitir"
 #define TR_THROTTLENOTIDLE     "Aceler. Activado"

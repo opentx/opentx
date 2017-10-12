@@ -551,6 +551,9 @@ extern const pm_char STR_FP[];
 extern const pm_char STR_MIX[];
 #endif
 extern const pm_char STR_EEPROMLOWMEM[];
+#if defined(STM32)
+extern const pm_char STR_WARN_RTCBATTERY_LOW[];
+#endif
 extern const pm_char STR_ALERT[];
 extern const pm_char STR_PRESSANYKEYTOSKIP[];
 extern const pm_char STR_THROTTLENOTIDLE[];

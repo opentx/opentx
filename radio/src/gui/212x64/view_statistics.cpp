@@ -97,6 +97,13 @@ void menuStatisticsView(event_t event)
 }
 
 #define MENU_DEBUG_COL1_OFS   (11*FW-2)
+#define MENU_DEBUG_COL2_OFS   (18*FW-2)
+#define MENU_DEBUG_COL3_OFS   (23*FW-2)
+#define MENU_DEBUG_COL4_OFS   (29*FW-2)
+#define MENU_DEBUG_COL5_OFS   (34*FW-2)
+
+
+
 #define MENU_DEBUG_ROW1       (2*FH-3)
 #define MENU_DEBUG_ROW2       (3*FH-2)
 #define MENU_DEBUG_ROW3       (4*FH-1)
@@ -200,15 +207,14 @@ void menuStatisticsDebug(event_t event)
 
 void menuStatisticsDebug2(event_t event)
 {
+  enableVBatBridge();
   TITLE(STR_MENUDEBUG);
 
   switch(event)
   {
-
-
-
     case EVT_KEY_FIRST(KEY_UP):
     case EVT_KEY_BREAK(KEY_PAGE):
+      disableVBatBridge();
 #if defined(DEBUG_TRACE_BUFFER)
       chainMenu(menuTraceBuffer);
 #else
@@ -218,12 +224,14 @@ void menuStatisticsDebug2(event_t event)
 
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_LONG(KEY_PAGE):
+      disableVBatBridge();
       killEvents(event);
       chainMenu(menuStatisticsDebug);
       break;
 
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      disableVBatBridge();
       chainMenu(menuMainView);
       break;
 
@@ -236,6 +244,19 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, "Tlm RX Err");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
 
+  // temperature value
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, STR_CPU_TEMP);
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, getTemperature(), UNIT_CELSIUS, RIGHT|PREC1);
+
+  lcdDrawText(MENU_DEBUG_COL2_OFS, MENU_DEBUG_ROW2, "VDDA", RIGHT);
+  putsVolts(MENU_DEBUG_COL3_OFS, MENU_DEBUG_ROW2, (uint16_t) (121 *  2048 /anaIn(TX_INTREF)), RIGHT|PREC2);
+
+  lcdDrawText(MENU_DEBUG_COL4_OFS, MENU_DEBUG_ROW2, "Vtmp", RIGHT);
+  putsVolts(MENU_DEBUG_COL5_OFS, MENU_DEBUG_ROW2, (uint16_t) (12100 *  2048 /anaIn(TX_INTREF)  * anaIn(TX_TEMPERATURE) / 204800), RIGHT|PREC2);
+
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Vbat");
+
+  putsVolts(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW3, getRTCBatteryVoltage(), RIGHT|PREC2);
 
   lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();

@@ -113,6 +113,11 @@ void OpenTxSimulator::init()
 
   QMutexLocker lckr(&m_mtxSimuMain);
   memset(g_anas, 0, sizeof(g_anas));
+#if defined(STM32)
+  g_anas[TX_INTREF] = 826; // 3V VDD
+  g_anas[TX_VBAT] = 800;   // 2,34V
+  g_anas[TX_TEMPERATURE] = 520;
+#endif
   simuInit();
 }
 

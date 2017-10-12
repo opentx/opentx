@@ -19,25 +19,26 @@
  */
 
 #include "opentx.h"
+#include "usb_conf.h"
 
 #if defined(SIMU)
   // not needed
 #elif defined(PCBX10)
-  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, 1, 1,1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1, -1, 1, 1,1, 1, 1, 1};
 #elif defined(PCBX9E)
 #if defined(HORUS_STICKS)
-  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,1,1,  -1, 1, 1, 1};
 #else
-  const int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,1,-1,-1,  -1,-1,-1,1, -1,1,1,1,  -1, 1, 1, 1};
 #endif
   const uint8_t ana_mapping[NUM_ANALOGS] = { 0 /*STICK1*/, 1 /*STICK2*/, 2 /*STICK3*/, 3 /*STICK4*/,
-                                             10 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
-                                             11 /*SLIDER1*/, 12 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
-                                             9 /*TX_VOLTAGE*/ };
+                                             13 /*POT1*/, 4 /*POT2*/, 5 /*POT3*/, 6 /*POT4*/,
+                                             14 /*SLIDER1*/, 15 /*SLIDER2*/, 7 /*SLIDER3*/, 8 /*SLIDER4*/,
+                                             9 /*TX_VOLTAGE*/, 10 /*TX_TEMP*/, 11 /*ADC_INTREF*/, 12 /*TX_VBAT*/ };
 #elif defined(PCBX9DP)
-  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1,  -1,1,  1, 1, 1, 1, 1};
 #elif defined(PCBX7)
-  const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
+  const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1, 1, 1 , 1};
 #elif defined(REV4a)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,0,  -1,1,  1};
 #else
@@ -48,9 +49,9 @@
   #define FIRST_ANALOG_ADC             (ANALOGS_PWM_ENABLED() ? NUM_PWMANALOGS : 0)
   #define NUM_ANALOGS_ADC              (ANALOGS_PWM_ENABLED() ? (NUM_ANALOGS - NUM_PWMANALOGS) : NUM_ANALOGS)
 #elif defined(PCBX9E)
-  #define FIRST_ANALOG_ADC             0
-  #define NUM_ANALOGS_ADC              10
-  #define NUM_ANALOGS_ADC_EXT          (NUM_ANALOGS - 10)
+  #define FIRST_ANALOG_ADC             0        
+  #define NUM_ANALOGS_ADC      13
+  #define NUM_ANALOGS_ADC_EXT  (NUM_ANALOGS - 13)
 #else
   #define FIRST_ANALOG_ADC             0
   #define NUM_ANALOGS_ADC              NUM_ANALOGS
@@ -88,32 +89,35 @@ void adcInit()
 
   ADC_MAIN->CR1 = ADC_CR1_SCAN;
   ADC_MAIN->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC-1) << 20; // bits 23:20 = number of conversions
+  ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC-1) << 20; // bits 23:20 = number of conversions, NUM_ANALOGS_ADC
 
 #if defined(PCBX10)
   if (ANALOGS_PWM_ENABLED()) {
-    ADC_MAIN->SQR2 = (ADC_CHANNEL_EXT1<<0) + (ADC_CHANNEL_EXT2<<5); // conversions 7 and more
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_EXT1<<0) + (ADC_CHANNEL_EXT2<<5) + (ADC_Channel_TempSensor<<10) + (ADC_Channel_Vrefint<<15) + (ADC_Channel_Vbat<<20);      ; // conversions 7 and more
     ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_POT2<<5) + (ADC_CHANNEL_POT3<<10) + (ADC_CHANNEL_SLIDER1<<15) + (ADC_CHANNEL_SLIDER2<<20) + (ADC_CHANNEL_BATT<<25); // conversions 1 to 6
   }
   else {
+    ADC_MAIN->SQR1 |= (ADC_Channel_TempSensor << 0) + (ADC_Channel_Vrefint << 5) + (ADC_Channel_Vbat<< 10);
     ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_CHANNEL_EXT1<<20) + (ADC_CHANNEL_EXT2<<25); // conversions 7 and more
     ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
   }
 #elif defined(PCBX9E)
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
+  ADC_MAIN->SQR1 |= (ADC_Channel_Vbat<<0);
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_Channel_TempSensor << 20) + (ADC_Channel_Vrefint << 25); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
 #elif defined(PCBX7)
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0); // conversions 7 and more
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0) + (ADC_Channel_TempSensor << 5) + (ADC_Channel_Vrefint << 10) + (ADC_Channel_Vbat<< 15); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
 #else
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
+  ADC_MAIN->SQR1 |= (ADC_Channel_Vbat<<0);
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_Channel_TempSensor << 20) + (ADC_Channel_Vrefint << 25); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
 #endif
 
   ADC_MAIN->SMPR1 = ADC_SAMPTIME + (ADC_SAMPTIME<<3) + (ADC_SAMPTIME<<6) + (ADC_SAMPTIME<<9) + (ADC_SAMPTIME<<12) + (ADC_SAMPTIME<<15) + (ADC_SAMPTIME<<18) + (ADC_SAMPTIME<<21) + (ADC_SAMPTIME<<24);
   ADC_MAIN->SMPR2 = ADC_SAMPTIME + (ADC_SAMPTIME<<3) + (ADC_SAMPTIME<<6) + (ADC_SAMPTIME<<9) + (ADC_SAMPTIME<<12) + (ADC_SAMPTIME<<15) + (ADC_SAMPTIME<<18) + (ADC_SAMPTIME<<21) + (ADC_SAMPTIME<<24) + (ADC_SAMPTIME<<27);
 
-  ADC->CCR = 0;
+  ADC->CCR = ADC_CCR_VBATE | ADC_CCR_TSVREFE; // Enable temperature + vbat sensor
 
   ADC_DMA_Stream->CR = DMA_SxCR_PL | ADC_DMA_SxCR_CHSEL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   ADC_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC_MAIN->DR);
@@ -229,3 +233,22 @@ uint16_t getAnalogValue(uint8_t index)
     return adcValues[index];
 }
 #endif // #if !defined(SIMU)
+
+// Returns temperature in 10*C
+uint16_t getTemperature()
+{
+
+  // VDD IN 1/10 mV
+  int vdd =  2048 * 12100/ anaIn(TX_INTREF);
+  int vtemp = vdd * anaIn(TX_TEMPERATURE) / 2048;
+
+  // From Doc ID 15818 Rev 7 for STM32F2:
+  // 25 C = 0.76V,  2.5 mV/C
+
+  return (vtemp - 7600) * 10 / 25 + 250;
+}
+
+uint16_t getRTCBatteryVoltage()
+{
+  return (uint16_t )(12100 *  2048 /anaIn(TX_INTREF)  * anaIn(TX_VBAT) / 204800 * 2);
+}

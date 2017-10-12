@@ -809,6 +809,7 @@
 #define TR_FP                  "FL"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Minnesbrist"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "\016OBS"
 #define TR_PRESSANYKEYTOSKIP   "Tryck ned en knapp"
 #define TR_THROTTLENOTIDLE     "Gasen är påslagen!"

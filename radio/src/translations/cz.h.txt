@@ -791,6 +791,7 @@
 #define TR_FP                  "LR"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Dochází EEPROM"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "\006   POZOR"
 #define TR_PRESSANYKEYTOSKIP   TR("\003Klávesa >>> přeskočit", "Klávesa >>> přeskočit")
 #define TR_THROTTLENOTIDLE     TR("\003Páka plynu je pohnutá", "Páka plynu není na nule")

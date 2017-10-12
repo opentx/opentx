@@ -57,6 +57,8 @@ const pm_uint8_t bchout_ar[] PROGMEM = {
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
     0xC6, 0xC9, 0xD2, 0xD8, 0xE1, 0xE4 };
 
+static void checkRTCBattery();
+
 uint8_t channel_order(uint8_t x)
 {
   return ( ((pgm_read_byte(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
@@ -857,6 +859,15 @@ bool inputsMoved()
     return false;
   }
 }
+#if defined(STM32)
+static void checkRTCBattery()
+{
+  if (getRTCBatteryVoltage() < 200)
+    ALERT(STR_WARNING, STR_WARN_RTCBATTERY_LOW, AU_ERROR);
+
+  disableVBatBridge();
+}
+#endif
 
 void checkBacklight()
 {
@@ -1118,6 +1129,9 @@ void checkAll()
 #else    // #if defined(CPUARM)
   clearKeyEvents();
 #endif   // #if defined(CPUARM)
+#if defined(STM32)
+  checkRTCBattery();
+#endif
 
   START_SILENCE_PERIOD();
 }

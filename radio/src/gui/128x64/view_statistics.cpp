@@ -115,6 +115,7 @@ void menuStatisticsView(event_t event)
 #if defined(CPUARM)
   #define MENU_DEBUG_COL1_OFS          (11*FW-3)
   #define MENU_DEBUG_COL2_OFS          (17*FW)
+  #define MENU_DEBUG_COL3_OFS          (20*FW)
   #define MENU_DEBUG_Y_CURRENT         (1*FH)
   #define MENU_DEBUG_ROW1              (1*FH+1)
   #define MENU_DEBUG_ROW2              (2*FH+1)
@@ -124,8 +125,14 @@ void menuStatisticsView(event_t event)
   #define MENU_DEBUG_Y_MIXMAX          (5*FH)
   #define MENU_DEBUG_Y_RTOS            (6*FH)
   #define MENU_DEBUG_Y_USB             (2*FH)
-  #define MENU_DEBUG_Y_LUA             (3*FH)
+  #define MENU_DEBUG_Y_LUA             (1*FH)
   #define MENU_DEBUG_Y_FREE_RAM        (4*FH)
+
+  #define MENU_DEBUG_ROW1              (1*FH)
+  #define MENU_DEBUG_ROW2              (2*FH)
+  #define MENU_DEBUG_ROW3              (3*FH)
+  #define MENU_DEBUG_ROW4              (4*FH)
+  #define MENU_DEBUG_ROW5              (5*FH)
 #else
   #define MENU_DEBUG_COL1_OFS          (14*FW)
 #endif
@@ -203,6 +210,14 @@ void menuStatisticsDebug(event_t event)
   drawValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CPU_TEMP, getTemperature(), UNIT_TEMPERATURE, LEFT);
   lcdDrawChar(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CPU_TEMP, '>');
   drawValueWithUnit(MENU_DEBUG_COL2_OFS+FW+1, MENU_DEBUG_Y_CPU_TEMP, maxTemperature+g_eeGeneral.temperatureCalib, UNIT_TEMPERATURE, LEFT);
+#elif defined(STM32)
+  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_CPU_TEMP, STR_CPU_TEMP);
+  int temp =  getTemperature();
+  drawValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_CPU_TEMP, temp, UNIT_TEMPERATURE, LEFT|PREC1);
+
+  lcdDrawText(MENU_DEBUG_COL2_OFS, MENU_DEBUG_Y_CPU_TEMP, "Vdda", RIGHT);
+  putsVolts(MENU_DEBUG_COL3_OFS, MENU_DEBUG_Y_CPU_TEMP, (uint16_t) (121 *  2048 /anaIn(TX_INTREF)), RIGHT|PREC2);
+
 #endif
 
 #if defined(COPROCESSOR)
@@ -279,6 +294,7 @@ void menuStatisticsDebug(event_t event)
 #if defined(STM32)
 void menuStatisticsDebug2(event_t event)
 {
+  enableVBatBridge();
   TITLE(STR_MENUDEBUG);
 
   switch (event) {
@@ -291,6 +307,7 @@ void menuStatisticsDebug2(event_t event)
     case EVT_KEY_BREAK(KEY_PAGE):
 #endif
       chainMenu(menuStatisticsView);
+      disableVBatBridge();
       return;
 
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -298,16 +315,21 @@ void menuStatisticsDebug2(event_t event)
     case EVT_KEY_LONG(KEY_PAGE):
 #endif
       killEvents(event);
+      disableVBatBridge();
       chainMenu(menuStatisticsDebug);
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      disableVBatBridge();
       chainMenu(menuMainView);
       break;
   }
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, "Tlm RX Err");
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, LEFT);
+
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Vbat");
+  putsVolts(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW3, getRTCBatteryVoltage(), LEFT|PREC2);
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "BT status");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, btChipPresent, RIGHT);

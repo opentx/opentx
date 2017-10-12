@@ -84,6 +84,8 @@ extern "C" {
 #endif
 
 #include "hal.h"
+#include "board_common.h"
+
 
 #if defined(__cplusplus) && !defined(SIMU)
 }
@@ -382,6 +384,9 @@ enum Analogs {
   SLIDER2,
 #endif
   TX_VOLTAGE,
+  TX_TEMPERATURE,
+  TX_INTREF,
+  TX_VBAT,
   NUM_ANALOGS
 };
 
@@ -411,7 +416,7 @@ void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUM_ANALOGS];
 uint16_t getAnalogValue(uint8_t index);
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
+
 
 #if defined(PCBX7)
   #define BATT_SCALE    123

@@ -813,6 +813,7 @@
 #define TR_FP                  "FP"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM voll"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "WARNUNG"
 #define TR_PRESSANYKEYTOSKIP	 TR("Taste drücken",CENTER"Taste drücken")
 #define TR_THROTTLENOTIDLE     "Gas nicht Null!"

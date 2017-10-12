@@ -773,6 +773,7 @@
 #define TR_FP                  "FM"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "FINSKA low mem"
+#define TR_WARN_RTCBATTERY_LOW        "RTC Battery low"
 #define TR_ALERT               "\016ALERT"
 #define TR_PRESSANYKEYTOSKIP   "Press any key to skip"
 #define TR_THROTTLENOTIDLE     "Throttle not idle"
