@@ -93,6 +93,23 @@ bool menuStatsGraph(event_t event)
   return true;
 }
 
+bool menuStatsDebug2(event_t event)
+{
+
+  MENU("Debug2", STATS_ICONS, menuTabStats, e_StatsDebug2, 0, { 0 });
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, STR_CPU_TEMP);
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, getTemperature() , PREC2|LEFT, 0, NULL, "C");
+
+  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+FH, "VDDA", RIGHT);
+  lcdDrawNumber(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+FH, (uint16_t) (121 *  2048 /anaIn(TX_INTREF)) , PREC2|LEFT, 0, NULL, "V");
+
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "RTC Battery");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, getRTCBatteryVoltage() , PREC2|LEFT, 0, NULL, "V");
+  return true;
+}
+
 bool menuStatsDebug(event_t event)
 {
   switch(event)
