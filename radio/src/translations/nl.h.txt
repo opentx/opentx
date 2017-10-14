@@ -427,6 +427,9 @@
 #define TR_TEMPLATE_HELI               "Heli Setup  "
 #define TR_TEMPLATE_SERVO_TEST         "Servo Test  "
 
+#define LEN_VSWASHTYPE                 "\004"
+#define TR_VSWASHTYPE                  "---\0""120\0""120X""140\0""90\0"
+
 #if defined(PCBHORUS)
 #define LEN_VKEYS              "\006"
 #define TR_VKEYS               "Menu\0 ""Exit\0 ""Enter\0""Up\0   ""Down\0 ""Right\0""Left"
