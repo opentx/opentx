@@ -7393,7 +7393,7 @@ Toto se hodí pokud je potřeba ušetřit místo v paměti FLASH pro jiné funkc
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1127"/>
-        <source>Support for Lua model scripts</source>
+        <source>Enable Lua custom scripts screen</source>
         <translation>Podpora pro Lua skripty.
 -miniaplikace spustitelné z SD karty</translation>
     </message>

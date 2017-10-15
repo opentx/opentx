@@ -7677,7 +7677,7 @@ Determina come il valore viene aggiunto alla miscelazione.
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
-        <source>Support for Lua model scripts</source>
+        <source>Enable Lua custom scripts screen</source>
         <translation>Supporto degli script LUA</translation>
     </message>
     <message>

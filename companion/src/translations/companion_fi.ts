@@ -8134,7 +8134,7 @@ Jos tyhjä mikserin katsotaan olevan &quot;ON&quot; kokoajan.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
-        <source>Support for Lua model scripts</source>
+        <source>Enable Lua custom scripts screen</source>
         <translation>Tuki LUA mallien skripteille</translation>
     </message>
     <message>

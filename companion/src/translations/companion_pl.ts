@@ -7432,7 +7432,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
-        <source>Support for Lua model scripts</source>
+        <source>Enable Lua custom scripts screen</source>
         <translation>Wsparcie dla skryptów LUA</translation>
     </message>
     <message>

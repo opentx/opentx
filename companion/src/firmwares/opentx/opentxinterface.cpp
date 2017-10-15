@@ -1132,7 +1132,7 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   addOpenTxArmOptions(firmware);
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
-  firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
+  firmware->addOption("lua", QObject::tr("Enable Lua custom scripts screen"));
   firmware->addOption("luac", QObject::tr("Enable Lua compiler"));
   firmware->addOption("bindopt", QObject::tr("Enable bindings options"));
 }

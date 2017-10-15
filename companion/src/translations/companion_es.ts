@@ -8119,7 +8119,7 @@ Esto determina como los valores de mezcla son añadidos.
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
-        <source>Support for Lua model scripts</source>
+        <source>Enable Lua custom scripts screen</source>
         <translation>Soporte para los modelos de scripts Lua</translation>
     </message>
     <message>
