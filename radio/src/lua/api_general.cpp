@@ -824,6 +824,7 @@ static int luaGrey(lua_State * L)
 Returns (some of) the general radio settings
 
 @retval table with elements:
+ * `battWarn` (number) radio battery range - warning value
  * `battMin` (number) radio battery range - minimum value
  * `battMax` (number) radio battery range - maximum value
  * `imperial` (number) set to a value different from 0 if the radio is set to the
@@ -838,6 +839,7 @@ Returns (some of) the general radio settings
 static int luaGetGeneralSettings(lua_State * L)
 {
   lua_newtable(L);
+  lua_pushtablenumber(L, "battWarn", (g_eeGeneral.vBatWarn) * 0.1f);
   lua_pushtablenumber(L, "battMin", (90+g_eeGeneral.vBatMin) * 0.1f);
   lua_pushtablenumber(L, "battMax", (120+g_eeGeneral.vBatMax) * 0.1f);
   lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
