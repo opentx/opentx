@@ -666,7 +666,7 @@ Volkov Victor
 Bryan Anderson
 Daniel Garber
 Pavel Stein
-Ravi Gupta
+RCdiy
 Patrick Tuxbury
 Mark Deverell
 John Capell
@@ -844,7 +844,6 @@ Luke Mole
 NorthSide
 Hannes Mössler
 James Kaufman
-Ravi Gupta
 Lexington S Morley
 Ralph Segar
 Frédéric Devillard
@@ -1274,3 +1273,4 @@ Randy Melton
 Paul Pridday
 Jörgen Norman
 Peter Glassey
+Carlos Vicente
