@@ -1073,9 +1073,7 @@ void menuModelSetup(event_t event)
       }
       break;
      case ITEM_MODEL_EXTERNAL_MODULE_OPTIONS: {
-       uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 #if defined(MULTIMODULE)
-     case ITEM_MODEL_EXTERNAL_MODULE_OPTIONS: {
        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
        if (IS_MODULE_MULTIMODULE(moduleIdx)) {
          int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
