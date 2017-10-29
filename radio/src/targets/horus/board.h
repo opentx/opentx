@@ -504,8 +504,15 @@ uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
 // Sport update driver
+#if defined(PCBX10)
+void sportUpdatePowerOn(void);
+void sportUpdatePowerOff(void);
+#define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
+#define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
+#else
 #define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
 #define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()
+#endif
 
 // Haptic driver
 void hapticInit(void);
