@@ -216,7 +216,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       if (!data || h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
       if (w<0) { x+=w; w=-w; }
-      DMAFillRect(data, width, height, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+      DMAFillRect(data, width, height, (x>0)?x:0, (y>0)?y:0, w, h, lcdColorTable[COLOR_IDX(flags)]);
     }
 
     void drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);
