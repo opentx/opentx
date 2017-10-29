@@ -358,6 +358,7 @@ bool check_submenu_simple(event_t event, uint8_t maxrow);
 
 #define MENU_WITH_OPTIONS(title, icons, tab, tabCount, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
+  CHKARRAYSIZE_MENU(mstate_tab, lines_count); \
   if (event == EVT_ENTRY || event == EVT_ENTRY_UP) TRACE("Menu %s displayed ...", title); \
   if (!check(event, menu, tab, tabCount, mstate_tab, DIM(mstate_tab)-1, lines_count)) return false; \
   drawMenuTemplate(title, 0, icons, OPTION_MENU_TITLE_BAR);

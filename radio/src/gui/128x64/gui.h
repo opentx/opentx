@@ -230,51 +230,30 @@ void title(const pm_char * s);
   #define MENU_TAB(...) static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__
 #endif
 
-#if defined(PCBX7)
 #define MENU_CHECK(tab, menu, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
-#else
-#define MENU_CHECK(tab, menu, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
-#endif
+  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count) - HEADER_LINE);  CHKARRAYSIZE_MENU(mstate_tab, lines_count)
 
 #define MENU(title, tab, menu, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
-#if defined(PCBX7)
+
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), lines_count);
+  check_simple(event, menu, tab, DIM(tab), (lines_count)-HEADER_LINE);
 #define SUBMENU_NOTITLE(lines_count, ...) { \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  }
-#define SUBMENU(title, lines_count, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  TITLE(title)
-#define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, lines_count);
-#else
-#define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), (lines_count)-1);
-#define SUBMENU_NOTITLE(lines_count, ...) { \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE); \
   }
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-HEADER_LINE); \
   TITLE(title)
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, (lines_count)-1);
+  check_submenu_simple(event, (lines_count)-HEADER_LINE);
 
-
-
-#endif
 
 #define SIMPLE_MENU(title, tab, menu, lines_count) \
   SIMPLE_MENU_NOTITLE(tab, menu, lines_count); \

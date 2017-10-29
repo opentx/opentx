@@ -116,7 +116,7 @@ bool menuRadioSetup(event_t event)
     LABEL(ALARMS), 0, 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
-    CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - USB mode - Chan order - Mode (1 to 4)
+    CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 0}); // Country code - Voice Language - Units - Fai choice - Play delay - USB mode - Chan order - Mode (1 to 4)
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;

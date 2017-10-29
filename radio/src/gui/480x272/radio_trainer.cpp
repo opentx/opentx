@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#define MENU_NOARRAYCHECK
 #include "opentx.h"
 
 #define TRAINER_COLUMN_WIDTH   60

@@ -189,7 +189,7 @@ void title(const pm_char * s);
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
 #define MENU_CHECK(title, tab, menu, lines_count) \
-  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
+  check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count); CHKARRAYSIZE_MENU(mstate_tab, lines_count)
 
 #define MENU_CHECK_FLAGS(title, tab, menu, flags, lines_count) \
   check(title, event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count, flags)

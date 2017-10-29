@@ -19,6 +19,7 @@
  */
 
 #define LANGUAGE_PACKS_DEFINITION
+#define MENU_NOARRAYCHECK
 
 #include "opentx.h"
 

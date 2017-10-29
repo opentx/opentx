@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#define MENU_NOARRAYCHECK
 #include "opentx.h"
 
 #define TRAINER_CALIB_POS 12
@@ -25,7 +26,7 @@
 void menuRadioTrainer(event_t event)
 {
   uint8_t y;
-  bool slave = SLAVE_MODE();
+  const bool slave = SLAVE_MODE();
 
   MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? 0 : 6), { NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, 0, 0 });
 

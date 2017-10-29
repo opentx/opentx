@@ -1063,15 +1063,33 @@ PACK(struct RadioData {
    defines also trigger the struct size changes */
 
 template <typename ToCheck, size_t expectedSize, size_t realSize = sizeof(ToCheck)>
-void check_size() {
+inline void check_size() {
   static_assert(expectedSize == realSize, "struct size changed");
 }
 
-static inline void check_struct()
-{
+template <size_t expectedSize, size_t realSize>
+inline void check_arraysize() {
+  static_assert(expectedSize == realSize, "array size mismatch");
+}
+
+template <size_t expectedSize, size_t realSize>
+inline void check_arraysize_menu() {
+  static_assert(realSize == 1 || realSize == 2 || expectedSize == realSize, "menu array size mismatch");
+}
+
+
 #define CHKSIZE(x, y) check_size<struct x, y>()
 #define CHKTYPE(x, y) check_size<x, y>()
+#define CHKARRAYSIZE(x, y) check_arraysize<y, sizeof(x)/sizeof(x[0])>()
+// Also true if array is only size 1 since that is used in logical switches and some other places
+#if defined(MENU_NOARRAYCHECK)
+#define CHKARRAYSIZE_MENU(x, y)
+#else
+#define CHKARRAYSIZE_MENU(x, y) check_arraysize_menu<y, sizeof(x)/sizeof(x[0])>()
+#endif
 
+static inline void check_struct()
+{
 #if defined(CPUARM)
   CHKSIZE(CurveRef, 2);
 #endif
@@ -1194,7 +1212,7 @@ static inline void check_struct()
 #if defined(CPUARM)
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
-  CHKSIZE(ModuleData,70);
+  CHKSIZE(ModuleData, 70);
 #else
   CHKSIZE(LogicalSwitchData, 3);
   CHKSIZE(FrSkyChannelData, 6);
@@ -1212,7 +1230,5 @@ static inline void check_struct()
 #endif
   CHKSIZE(TrainerData, 16);
 
-#undef CHKSIZE
-#undef CHKSIZEUNION
 }
 #endif /* BACKUP */

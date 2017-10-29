@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#define MENU_NOARRAYCHECK
 #include "opentx.h"
 
 void menuRadioTrainer(event_t event)
