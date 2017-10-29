@@ -32,11 +32,22 @@ void menuStatisticsView(event_t event)
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_FIRST(KEY_MENU):
+    case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuStatisticsDebug);
       break;
 
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+#if defined(DEBUG_TRACE_BUFFER)
+      chainMenu(menuTraceBuffer);
+#else
+      chainMenu(menuStatisticsDebug2);
+#endif
+      break;
+
+    case EVT_KEY_LONG(KEY_MENU):      // historical
+    case EVT_KEY_LONG(KEY_ENTER):
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
@@ -86,11 +97,11 @@ void menuStatisticsView(event_t event)
 }
 
 #define MENU_DEBUG_COL1_OFS   (11*FW-2)
-#define MENU_DEBUG_Y_MIXMAX   (2*FH-3)
-#define MENU_DEBUG_Y_LUA      (3*FH-2)
-#define MENU_DEBUG_Y_FREE_RAM (4*FH-1)
-#define MENU_DEBUG_Y_USB      (5*FH)
-#define MENU_DEBUG_Y_RTOS     (6*FH)
+#define MENU_DEBUG_ROW1       (2*FH-3)
+#define MENU_DEBUG_ROW2       (3*FH-2)
+#define MENU_DEBUG_ROW3       (4*FH-1)
+#define MENU_DEBUG_ROW4       (5*FH)
+#define MENU_DEBUG_ROW5       (6*FH)
 
 void menuStatisticsDebug(event_t event)
 {
@@ -121,15 +132,17 @@ void menuStatisticsDebug(event_t event)
       maxMixerDuration  = 0;
       break;
 
-#if defined(DEBUG_TRACE_BUFFER)
-    case EVT_KEY_FIRST(KEY_UP):
-      pushMenu(menuTraceBuffer);
-      return;
-#endif
-
     case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
       chainMenu(menuStatisticsView);
       break;
+
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_BREAK(KEY_PAGE):
+      chainMenu(menuStatisticsDebug2);
+      break;
+
     case EVT_KEY_FIRST(KEY_EXIT):
       chainMenu(menuMainView);
       break;
@@ -144,47 +157,89 @@ void menuStatisticsDebug(event_t event)
 #endif
   }
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_FREE_RAM, "Free Mem");
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_FREE_RAM, availableMemory(), LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_FREE_RAM, "b");
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Free Mem");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW3, availableMemory(), LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW3, "b");
 
 #if defined(LUA)
-  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_LUA, "Lua scripts");
-  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_LUA+1, "[Duration]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_LUA, 10*maxLuaDuration, LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_LUA+1, "[Interval]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_LUA, 10*maxLuaInterval, LEFT);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "Lua scripts");
+  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2+1, "[Duration]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW2, 10*maxLuaDuration, LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW2+1, "[Interval]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW2, 10*maxLuaInterval, LEFT);
 #endif
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_MIXMAX, "ms");
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, STR_TMIXMAXMS);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW1, "ms");
 
 #if !defined(SIMU) && defined(USB_SERIAL)
-  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_USB, "Usb");
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_USB, charsWritten, LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_USB, " ");
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_in, LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_USB, " ");
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_USB, APP_Rx_ptr_out, LEFT);
-  lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_USB, " ");
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_USB, usbWraps, LEFT);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW4, "Usb");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW4, charsWritten, LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, " ");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW4, APP_Rx_ptr_in, LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, " ");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW4, APP_Rx_ptr_out, LEFT);
+  lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, " ");
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW4, usbWraps, LEFT);
 #endif
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);
-  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_RTOS+1, "[M]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, menusStack.available(), LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_RTOS+1, "[X]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, mixerStack.available(), LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_RTOS+1, "[A]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, audioStack.available(), LEFT);
-  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_Y_RTOS+1, "[I]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_Y_RTOS, stackAvailable(), LEFT);
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW5, STR_FREESTACKMINB);
+  lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW5+1, "[M]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, menusStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW5+1, "[X]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, mixerStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW5+1, "[A]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, audioStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos+2, MENU_DEBUG_ROW5+1, "[I]", SMLSIZE);
+  lcdDrawNumber(lcdLastRightPos, MENU_DEBUG_ROW5, stackAvailable(), LEFT);
 
   lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();
 }
 
+void menuStatisticsDebug2(event_t event)
+{
+  TITLE(STR_MENUDEBUG);
+
+  switch(event)
+  {
+
+
+
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_BREAK(KEY_PAGE):
+#if defined(DEBUG_TRACE_BUFFER)
+      chainMenu(menuTraceBuffer);
+#else
+      chainMenu(menuStatisticsView);
+#endif
+      return;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+      chainMenu(menuStatisticsDebug);
+      break;
+
+
+    case EVT_KEY_FIRST(KEY_EXIT):
+      chainMenu(menuMainView);
+      break;
+
+    case EVT_KEY_LONG(KEY_ENTER):
+      telemetryErrors = 0;
+      break;
+  }
+
+  // UART statistics
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, "Tlm RX Err");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
+
+
+  lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
+  lcdInvertLastLine();
+}
 
 #if defined(DEBUG_TRACE_BUFFER)
 void menuTraceBuffer(event_t event)
@@ -195,6 +250,17 @@ void menuTraceBuffer(event_t event)
       dumpTraceBuffer();
       killEvents(event);
       break;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+      chainMenu(menuStatisticsDebug2);
+      break;
+
+    case EVT_KEY_FIRST(KEY_UP):
+    case EVT_KEY_BREAK(KEY_PAGE):
+      chainMenu(menuStatisticsView);
+      return;
   }
 
   SIMPLE_SUBMENU("Trace Buffer", TRACE_BUFFER_LEN);

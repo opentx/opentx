@@ -31,12 +31,27 @@ void menuStatisticsView(event_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
-    case EVT_KEY_FIRST(KEY_MENU):
+#if defined(PCBX7)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#endif
       chainMenu(menuStatisticsDebug);
       break;
 
+    case EVT_KEY_FIRST(KEY_DOWN):
+#if defined(STM32)
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+      chainMenu(menuStatisticsDebug2);
+#else
+      chainMenu(menuStatisticsDebug);
+#endif
+      break;
+
 #if defined(CPUARM)
-    case EVT_KEY_LONG(KEY_MENU):
+    case EVT_KEY_LONG(KEY_MENU):      // historical
+#if !defined(PCBSKY9X)
+    case EVT_KEY_LONG(KEY_ENTER):
+#endif
       g_eeGeneral.globalTimer = 0;
       storageDirty(EE_GENERAL);
       sessionTimer = 0;
@@ -101,6 +116,7 @@ void menuStatisticsView(event_t event)
   #define MENU_DEBUG_COL1_OFS          (11*FW-3)
   #define MENU_DEBUG_COL2_OFS          (17*FW)
   #define MENU_DEBUG_Y_CURRENT         (1*FH)
+  #define MENU_DEBUG_ROW1              (1*FH+1)
   #define MENU_DEBUG_Y_MAH             (2*FH)
   #define MENU_DEBUG_Y_CPU_TEMP        (3*FH)
   #define MENU_DEBUG_Y_COPROC          (4*FH)
@@ -139,13 +155,19 @@ void menuStatisticsDebug(event_t event)
       maxMixerDuration  = 0;
       break;
 
-#if defined(DEBUG_TRACE_BUFFER)
+
     case EVT_KEY_FIRST(KEY_UP):
-      pushMenu(menuTraceBuffer);
+#if defined(STM32)
+    case EVT_KEY_BREAK(KEY_PAGE):
+      chainMenu(menuStatisticsDebug2);
       return;
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
+#if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
+#endif
+      killEvents(event);
       chainMenu(menuStatisticsView);
       break;
 
@@ -252,3 +274,41 @@ void menuStatisticsDebug(event_t event)
   lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();
 }
+
+#if defined(STM32)
+void menuStatisticsDebug2(event_t event)
+{
+  TITLE(STR_MENUDEBUG);
+
+  switch (event) {
+    case EVT_KEY_FIRST(KEY_ENTER):
+      telemetryErrors  = 0;
+      break;
+
+    case EVT_KEY_FIRST(KEY_UP):
+#if defined(PCBX7)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#endif
+      chainMenu(menuStatisticsView);
+      return;
+
+    case EVT_KEY_FIRST(KEY_DOWN):
+#if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
+#endif
+      killEvents(event);
+      chainMenu(menuStatisticsDebug);
+      break;
+
+    case EVT_KEY_FIRST(KEY_EXIT):
+      chainMenu(menuMainView);
+      break;
+  }
+
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, "Tlm RX Err");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
+
+  lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
+  lcdInvertLastLine();
+}
+#endif
