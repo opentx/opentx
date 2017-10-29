@@ -98,6 +98,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 {
   // Custom Screen with numbers
   const coord_t pos[] = {0, 71, 143, 214};
+  bool isTimer = 0;
   uint8_t fields_count = 0;
   lcdDrawSolidVerticalLine(69, 8, 48);
   lcdDrawSolidVerticalLine(141, 8, 48);
@@ -120,6 +121,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
           drawStringWithIndex(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
+          isTimer = 1;
           if (timersStates[field-MIXSRC_FIRST_TIMER].val > 3600) {
             att += TIMEHOUR - DBLSIZE;
             x -= 3*FW;
@@ -144,7 +146,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
           }
         }
 
-        if(isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME)) {
+        if(isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME) && !isTimer) {
           drawTelemScreenDate(x, y, field, att);
         }
         else {
