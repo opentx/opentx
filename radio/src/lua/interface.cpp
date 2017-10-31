@@ -75,7 +75,7 @@ void luaHook(lua_State * L, lua_Debug *ar)
 
 void luaSetInstructionsLimit(lua_State * L, int count)
 {
-  instructionsPercent=0;
+  instructionsPercent = 0;
   lua_sethook(L, luaHook, LUA_MASKCOUNT, count);
 }
 
