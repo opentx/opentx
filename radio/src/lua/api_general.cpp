@@ -1174,13 +1174,13 @@ static int luaLoadScript(lua_State * L)
 /*luadoc
 @function getUsage()
 
-Get the percent of already used Lua instructions in current script execution cycle.
+Get percent of already used Lua instructions in current script execution cycle.
 
 @retval usage (number) a value from 0 to 100 (percent)
 
 @status current Introduced in 2.2.0
 */
-static int getUsage(lua_State * L)
+static int luaGetUsage(lua_State * L)
 {
   lua_pushinteger(L, instructionsPercent);
   return 1;

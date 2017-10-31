@@ -44,7 +44,7 @@ ScriptInternalData standaloneScript;
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
 bool luaLcdAllowed;
-int instructionsPercent = 0;
+uint8_t instructionsPercent = 0;
 char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 struct our_longjmp * global_lj = 0;
 #if defined(COLORLCD)
