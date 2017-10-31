@@ -56,13 +56,13 @@ Return OpenTX version
 
 @retval multiple (available since 2.1.7) returns 5 values:
  * (string) OpenTX version (ie "2.1.5")
- * (string) radio version: `x9e`, `x9d+` or `x9d`.
+ * (string) radio type: `x12s`, `x10`, `x9e`, `x9d+`, `x9d` or `x7`.
 If running in simulator the "-simu" is added
  * (number) major version (ie 2 if version 2.1.5)
  * (number) minor version (ie 1 if version 2.1.5)
  * (number) revision number (ie 5 if version 2.1.5)
 
-@status current Introduced in 2.0.0, expanded in 2.1.7
+@status current Introduced in 2.0.0, expanded in 2.1.7, radio type strings changed in 2.2.0
 
 ### Example
 
