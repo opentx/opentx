@@ -5528,7 +5528,7 @@ p, li { white-space: pre-wrap; }
         <translation>Vibratormodul är installerad</translation>
     </message>
     <message>
-        <source>Enable Lua custom scripts screen</source>
+        <source>Support for Lua model scripts</source>
         <translation>Stöd för att använda LUA-kod i modeller</translation>
     </message>
     <message>
