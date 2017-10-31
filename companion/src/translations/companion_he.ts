@@ -7867,7 +7867,7 @@ This determines how mixer values are added.
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1140"/>
-        <source>Enable Lua custom scripts screen</source>
+        <source>Support for Lua model scripts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
