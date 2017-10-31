@@ -7862,7 +7862,7 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1155"/>
-        <source>Enable Lua custom scripts screen</source>
+        <source>Support for Lua model scripts</source>
         <translation>支持Lua模型脚本</translation>
     </message>
     <message>
