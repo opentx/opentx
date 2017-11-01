@@ -318,7 +318,6 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 {
   // Custom Screen with numbers
   uint8_t fields_count = 0;
-  bool isTimer = 0;
   lcdDrawSolidVerticalLine(63, 8, 48);
   for (uint8_t i=0; i<4; i++) {
     for (uint8_t j=0; j<NUM_LINE_ITEMS; j++) {
@@ -338,7 +337,6 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
         if (field >= MIXSRC_FIRST_TIMER && field <= MIXSRC_LAST_TIMER && i!=3) {
           // there is not enough space on LCD for displaying "Tmr1" or "Tmr2" and still see the - sign, we write "T1" or "T2" instead
           drawStringWithIndex(pos[j], 1+FH+2*FH*i, "T", field-MIXSRC_FIRST_TIMER+1, 0);
-          isTimer = 1;
         }
         else if (field >= MIXSRC_FIRST_TELEM && isGPSSensor(1+(field-MIXSRC_FIRST_TELEM)/3) && telemetryItems[(field-MIXSRC_FIRST_TELEM)/3].isAvailable()) {
           // we don't display GPS name, no space for it
@@ -357,7 +355,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
             att |= INVERS|BLINK;
           }
         }
-        if(isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME) && !isTimer) {
+        if(isSensorUnit(1+(field-MIXSRC_FIRST_TELEM)/3, UNIT_DATETIME) && field >= MIXSRC_FIRST_TELEM) {
           drawTelemScreenDate(pos[j+1]-36, 6+FH+2*FH*i, field, SMLSIZE|NO_UNIT);
         }
         else {
