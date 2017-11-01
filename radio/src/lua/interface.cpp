@@ -65,12 +65,27 @@ int custom_lua_atpanic(lua_State * L)
 void luaHook(lua_State * L, lua_Debug *ar)
 {
   instructionsPercent++;
+#if defined(DEBUG)
+  // Disable Lua script instructions limit in DEBUG mode,
+  // just report max value reached
+  static uint16_t max = 0;
+  if (instructionsPercent > 100) {
+    if (max + 10 < instructionsPercent) {
+      max = instructionsPercent;
+      TRACE("LUA instructionsPercent %u%%", (uint32_t)max);
+    }
+  }
+  else if (instructionsPercent < 10) {
+    max = 0;
+  }
+#else
   if (instructionsPercent > 100) {
     // From now on, as soon as a line is executed, error
     // keep erroring until you're script reaches the top
     lua_sethook(L, luaHook, LUA_MASKLINE, 0);
     luaL_error(L, "CPU limit");
   }
+#endif
 }
 
 void luaSetInstructionsLimit(lua_State * L, int count)
