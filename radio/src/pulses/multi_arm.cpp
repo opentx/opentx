@@ -46,7 +46,7 @@ static void sendSetupFrame()
   sendByteSbus('P');
   sendByteSbus(0x80);         // Module Configuration
   sendByteSbus(1);         // 1 byte data
-  uint8_t config = 0x1 | 0x2; // inversion + mult_telemetry
+  uint8_t config = 0x1 | 0x2; // inversion + multi_telemetry
 #if !defined(PPM_PIN_SERIAL)
   config |= 0x04;             //input synchronsisation
 #endif
@@ -61,7 +61,7 @@ static void sendFailFailsafeHeader(uint8_t port)
   sendByteSbus('M');
   sendByteSbus('P');
   sendByteSbus(0x81);         // Failsafe Data
-  sendByteSbus(23);         // 22 byte channe + 1 byte mode
+  sendByteSbus(23);         // 22 byte channel + 1 byte mode
   sendByteSbus(g_model.moduleData->failsafeMode);
 }
 
@@ -109,9 +109,10 @@ void setupPulsesMultimodule(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
   // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
-  if (counter++  % 1000== 0) {
+  counter++;
+  if (counter  % 1000== 500) {
     sendSetupFrame();
-  } else if (counter++ % 1000 == 500) {
+  } else if (counter % 1000 == 0) {
     sendFailFailsafeHeader(port);
     sendFailsafeChannels(port);
   } else {

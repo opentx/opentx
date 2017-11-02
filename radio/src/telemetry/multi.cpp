@@ -188,7 +188,6 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
   // Caluclate how many samples went into the reported input Lag (*10)
   int numsamples = interval * 10000 / targetRefreshRate;
 
-
   // Convert lagDifference to ps
   lagDifference=lagDifference*1000;
 
@@ -201,11 +200,11 @@ void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uin
   // Caculate the time in ps each frame is to slow (positive), fast(negative)
   int perframeps = lagDifference*10/ numsamples;
 
-  if (perframeps > 4000)
-    perframeps = 4000;
+  if (perframeps > 20000)
+    perframeps = 20000;
 
-  if (perframeps < -4000)
-    perframeps = -4000;
+  if (perframeps < -20000)
+    perframeps = -20000;
 
   adjustedRefreshRate =(adjustedRefreshRate + perframeps);
 

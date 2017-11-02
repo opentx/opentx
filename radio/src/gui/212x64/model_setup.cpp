@@ -1073,15 +1073,16 @@ void menuModelSetup(event_t event)
       }
       break;
      case ITEM_MODEL_EXTERNAL_MODULE_OPTIONS: {
-#if defined(MULTIMODULE)
        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+#if defined(MULTIMODULE)
+
        if (IS_MODULE_MULTIMODULE(moduleIdx)) {
          int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
 
          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true);
          const mm_protocol_definition *pdef = getMultiProtocolDefinition(multi_proto);
          if (pdef->optionsstr)
-           lcdDrawTextAlignedLeft(y, pdef->optionsstr);
+           lcdDrawText(INDENT_WIDTH, y, pdef->optionsstr);
 
          if (multi_proto == MM_RF_PROTO_FS_AFHDS2A)
            optionValue = 50 + 5 * optionValue;
