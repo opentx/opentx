@@ -46,7 +46,7 @@ static const QStringList STR_SUBTYPE_SYMAX   {"Standard", "Syma X5C"};
 static const QStringList STR_SUBTYPE_SLT     {"SLT", "Vista"};
 static const QStringList STR_SUBTYPE_CX10    {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041", "Q242"};
 static const QStringList STR_SUBTYPE_CG023   {"CG023", "YD829", "H8 3D"};
-static const QStringList STR_SUBTYPE_BAYANG  {"Bayang", "H8S3D"};
+static const QStringList STR_SUBTYPE_BAYANG  {"Bayang", "H8S3D", "X16 AH"};
 static const QStringList STR_SUBTYPE_KN      {"WLtoys", "FeiLun"};
 static const QStringList STR_SUBTYPE_MT99    {"MT99", "H7", "YZ", "LS", "FY805"};
 static const QStringList STR_SUBTYPE_MJXQ    {"WLH08", "X600", "X800", "H26D", "E010", "H26WH"};
@@ -74,7 +74,7 @@ const Multiprotocols multiProtocols {
   {MM_RF_PROTO_SLT,        1, false,      STR_SUBTYPE_SLT,     nullptr},
   {MM_RF_PROTO_CX10,       7, false,      STR_SUBTYPE_CX10,    nullptr},
   {MM_RF_PROTO_CG023,      2, false,      STR_SUBTYPE_CG023,   nullptr},
-  {MM_RF_PROTO_BAYANG,     1, false,      STR_SUBTYPE_BAYANG,  STR_MULTI_TELEMETRY},
+  {MM_RF_PROTO_BAYANG,     2, false,      STR_SUBTYPE_BAYANG,  STR_MULTI_TELEMETRY},
   {MM_RF_PROTO_MT99XX,     4, false,      STR_SUBTYPE_MT99,    nullptr},
   {MM_RF_PROTO_MJXQ,       5, false,      STR_SUBTYPE_MJXQ,    nullptr},
   {MM_RF_PROTO_FY326,      1, false,      STR_SUBTYPE_FY326,   nullptr},

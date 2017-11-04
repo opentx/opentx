@@ -675,7 +675,7 @@ const pm_char STR_SUBTYPE_WK2x01[] PROGMEM =     "\006""WK2801""WK2401""W6_5_1""
 
 const pm_char STR_SUBTYPE_V2X2[] PROGMEM =       "\006""V2x2\0 ""JXD506";
 
-const pm_char STR_SUBTYPE_BAYANG[] PROGMEM =     "\006""Bayang""H8S3D";
+const pm_char STR_SUBTYPE_BAYANG[] PROGMEM =     "\006""Bayang""H8S3D\0""X16 AH\0";
 
 const pm_char STR_SUBTYPE_FY326[] PROGMEM =      "\005""FY326""FY319";
 
@@ -693,7 +693,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_PROTO_SLT,        1, false,      STR_SUBTYPE_SLT,     nullptr},
   {MM_RF_PROTO_CX10,       7, false,      STR_SUBTYPE_CX10,    nullptr},
   {MM_RF_PROTO_CG023,      2, false,      STR_SUBTYPE_CG023,   nullptr},
-  {MM_RF_PROTO_BAYANG,     1, false,      STR_SUBTYPE_BAYANG,  STR_MULTI_TELEMETRY},
+  {MM_RF_PROTO_BAYANG,     2, false,      STR_SUBTYPE_BAYANG,  STR_MULTI_TELEMETRY},
   {MM_RF_PROTO_MT99XX,     4, false,      STR_SUBTYPE_MT99,    nullptr},
   {MM_RF_PROTO_MJXQ,       5, false,      STR_SUBTYPE_MJXQ,    nullptr},
   {MM_RF_PROTO_FY326,      1, false,      STR_SUBTYPE_FY326,   nullptr},
