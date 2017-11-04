@@ -192,13 +192,13 @@ bool menuRadioHardware(event_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_JITTER_FILTER);
         uint8_t b = 1-g_eeGeneral.jitterFilter;
-        g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN, y, attr, event);
+        g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
 
       case ITEM_RADIO_HARDWARE_BAT_CAL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);
-        lcdDrawNumber(HW_SETTINGS_COLUMN, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
+        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
         break;
     }
