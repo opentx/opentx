@@ -200,6 +200,12 @@
   #define CASE_PCBX9E(x)
 #endif
 
+#if defined(PCBX10)
+  #define CASE_PCBX10(x) x,
+#else
+  #define CASE_PCBX10(x)
+#endif
+
 #if defined(BLUETOOTH) && !(defined(PCBX9E) && !defined(USEHORUSBT))
   #define CASE_BLUETOOTH(x) x,
 #else
