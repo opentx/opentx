@@ -683,6 +683,7 @@ void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO
 void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
 void USART_ClearITPendingBit(USART_TypeDef*, unsigned short) { }
+uint16_t USART_ReceiveData(USART_TypeDef*) { return 0; }
 void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
 void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
 // void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }
