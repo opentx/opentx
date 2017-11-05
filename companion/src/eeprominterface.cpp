@@ -598,7 +598,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     {
       const char * name = NULL;
       if (getCurrentFirmware()->getCapability(GvarsName) && model)
-        name = model->gvars_names[index];
+        name = model->gvarData[index].name;
       return getElementName(QCoreApplication::translate("Global Variable", "GV"), index + 1, name);
     }
 
@@ -1564,6 +1564,9 @@ void ModelData::clear()
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].clear(i);
   }
+  for (int i=0; i<CPN_MAX_GVARS; i++) {
+    gvarData[i].clear();
+  }
   clearInputs();
   clearMixes();
   for (int i=0; i<CPN_MAX_CHNOUT; i++)
@@ -1697,8 +1700,8 @@ bool ModelData::isGVarLinked(int phaseIdx, int gvarIdx)
 int ModelData::getGVarFieldValue(int phaseIdx, int gvarIdx)
 {
   int idx = flightModeData[phaseIdx].gvars[gvarIdx];
-  for (int i=0; idx>1024 && i<CPN_MAX_FLIGHT_MODES; i++) {
-    int nextPhase = idx - 1025;
+  for (int i=0; idx>GVAR_MAX_VALUE && i<CPN_MAX_FLIGHT_MODES; i++) {
+    int nextPhase = idx - GVAR_MAX_VALUE - 1;
     if (nextPhase >= phaseIdx) nextPhase += 1;
     phaseIdx = nextPhase;
     idx = flightModeData[phaseIdx].gvars[gvarIdx];
@@ -1918,4 +1921,73 @@ void FlightModeData::clear(const int phase)
       rotaryEncoders[idx] = 1025;
     }
   }
+}
+
+QString GVarData::unitToString()
+{
+  switch (unit) {
+    case GVAR_UNIT_NUMBER:
+      return QObject::tr("");
+    case GVAR_UNIT_PERCENT:
+      return QObject::tr("%");
+    default:
+      return QObject::tr("?");  //  highlight unknown value
+  }
+}
+
+QString GVarData::precToString()
+{
+  switch (prec) {
+    case GVAR_PREC_MUL10:
+      return QObject::tr("0._");
+    case GVAR_PREC_MUL1:
+      return QObject::tr("0.0");
+    default:
+      return QObject::tr("?.?");  //  highlight unknown value
+  }
+}
+
+int GVarData::multiplierSet()
+{
+  return (prec == 0 ? 1 : 10);
+}
+
+float GVarData::multiplierGet()
+{
+  return (prec == 0 ? 1 : 0.1);
+}
+
+void GVarData::setMin(float val)
+{
+  min = (val * multiplierSet()) - GVAR_MIN_VALUE;
+}
+
+void GVarData::setMax(float val)
+{
+  max = GVAR_MAX_VALUE - (val * multiplierSet());
+}
+
+int GVarData::getMin()
+{
+  return GVAR_MIN_VALUE + min;
+}
+
+int GVarData::getMax()
+{
+  return GVAR_MAX_VALUE - max;
+}
+
+float GVarData::getMinPrec()
+{
+  return getMin() * multiplierGet();
+}
+
+float GVarData::getMaxPrec()
+{
+  return getMax() * multiplierGet();
+}
+
+float ModelData::getGVarFieldValuePrec(int phaseIdx, int gvarIdx)
+{
+  return getGVarFieldValue(phaseIdx, gvarIdx) * gvarData[gvarIdx].multiplierGet();
 }

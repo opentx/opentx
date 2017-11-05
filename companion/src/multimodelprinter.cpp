@@ -311,7 +311,7 @@ QString MultiModelPrinter::printFlightModes()
     if (firmware->getCapability(GvarsFlightModes)) {
       for (int i=0; i<gvars; i++) {
         columns.append("<td><b>" + tr("GV%1").arg(i+1) + "</b><br/>");
-        COMPARE(model->gvars_names[i]);
+        COMPARE(model->gvarData[i].name);
         columns.append("</td>");
       }
     }

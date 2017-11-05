@@ -3226,18 +3226,18 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   if (board != BOARD_STOCK && (board != BOARD_M128 || version < 215)) {
     for (int i=0; i<MAX_GVARS(board, version); i++) {
       if (version >= 218) {
-        internalField.Append(new ZCharField<3>(this, modelData.gvars_names[i], "GVar name"));
-        internalField.Append(new SpareBitsField<12>(this)); // TODO min
-        internalField.Append(new SpareBitsField<12>(this)); // TODO max
-        internalField.Append(new BoolField<1>(this, modelData.gvars_popups[i]));
-        internalField.Append(new SpareBitsField<1>(this));
-        internalField.Append(new SpareBitsField<2>(this));
+        internalField.Append(new ZCharField<3>(this, modelData.gvarData[i].name, "GVar name"));
+        internalField.Append(new SignedField<12>(this, modelData.gvarData[i].min));
+        internalField.Append(new SignedField<12>(this, modelData.gvarData[i].max));
+        internalField.Append(new BoolField<1>(this, modelData.gvarData[i].popup));
+        internalField.Append(new UnsignedField<1>(this, modelData.gvarData[i].prec));
+        internalField.Append(new UnsignedField<2>(this, modelData.gvarData[i].unit));
         internalField.Append(new SpareBitsField<4>(this));
       }
       else {
-        internalField.Append(new ZCharField<6>(this, modelData.gvars_names[i], "GVar name"));
+        internalField.Append(new ZCharField<6>(this, modelData.gvarData[i].name, "GVar name"));
         if (version >= 216) {
-          internalField.Append(new BoolField<1>(this, modelData.gvars_popups[i]));
+          internalField.Append(new BoolField<1>(this, modelData.gvarData[i].popup));
           internalField.Append(new SpareBitsField<7>(this));
         }
       }
