@@ -170,7 +170,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       gvLayout->addWidget(sourceLabel, 0, headerCol++, 1, 1);
     }
 
-    if (IS_TARANIS(board) && phaseIdx == 0) {
+    if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
       QLabel *valueLabel = new QLabel(ui->gvGB);
       valueLabel->setText(tr("Value"));
       gvLayout->addWidget(valueLabel, 0, headerCol++, 1, 1);
@@ -228,7 +228,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       connect(gvValues[i], SIGNAL(editingFinished()), this, SLOT(phaseGVValue_editingFinished()));
       gvLayout->addWidget(gvValues[i], i+1, col++, 1, 1);
 
-      if (IS_TARANIS(board) && phaseIdx == 0) {
+      if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
         // GVar unit
         gvUnit[i] = new QComboBox(ui->gvGB);
         gvUnit[i]->setProperty("index", i);
@@ -500,6 +500,13 @@ void FlightModePanel::phaseGVMin_editingFinished()
         phase.gvars[gvar] = model->gvarData[gvar].getMin();
       }
     }
+    for (int x=1; x>firmware->getCapability(FlightModes); x++) {
+      if (!model->isGVarLinked(x, gvar)) {
+        if (model->flightModeData[x].gvars[gvar] < model->gvarData[gvar].getMin()) {
+          model->flightModeData[x].gvars[gvar] = model->gvarData[gvar].getMin();
+        }
+      }
+    }
     emit modified();
     updateGVar(gvar);
   }
@@ -514,6 +521,13 @@ void FlightModePanel::phaseGVMax_editingFinished()
     if (!model->isGVarLinked(phaseIdx, gvar)) {
       if (model->getGVarFieldValuePrec(phaseIdx, gvar) > spinBox->value()) {
         phase.gvars[gvar] = model->gvarData[gvar].getMax();
+      }
+    }
+    for (int x=1; x>firmware->getCapability(FlightModes); x++) {
+      if (!model->isGVarLinked(x, gvar)) {
+        if (model->flightModeData[x].gvars[gvar] > model->gvarData[gvar].getMax()) {
+          model->flightModeData[x].gvars[gvar] = model->gvarData[gvar].getMax();
+        }
       }
     }
     emit modified();
