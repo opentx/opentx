@@ -1050,16 +1050,16 @@ class GVarData {
     unsigned int unit;     // 0 _    1 %
 
     void clear() {memset(this, 0, sizeof(GVarData)); }
-    QString unitToString();
-    QString precToString();
+    QString unitToString() const;
+    QString precToString() const;
     int multiplierSet();
-    float multiplierGet();
+    float multiplierGet() const;
     void setMin(float val);
     void setMax(float val);
-    int getMin();
-    int getMax();
-    float getMinPrec();
-    float getMaxPrec();
+    int getMin() const;
+    int getMax() const;
+    float getMinPrec() const;
+    float getMaxPrec() const;
 };
 
 class ModelData {

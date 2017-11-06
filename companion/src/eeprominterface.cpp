@@ -1923,7 +1923,7 @@ void FlightModeData::clear(const int phase)
   }
 }
 
-QString GVarData::unitToString()
+QString GVarData::unitToString() const
 {
   switch (unit) {
     case GVAR_UNIT_NUMBER:
@@ -1935,7 +1935,7 @@ QString GVarData::unitToString()
   }
 }
 
-QString GVarData::precToString()
+QString GVarData::precToString() const
 {
   switch (prec) {
     case GVAR_PREC_MUL10:
@@ -1952,7 +1952,7 @@ int GVarData::multiplierSet()
   return (prec == 0 ? 1 : 10);
 }
 
-float GVarData::multiplierGet()
+float GVarData::multiplierGet() const
 {
   return (prec == 0 ? 1 : 0.1);
 }
@@ -1967,22 +1967,22 @@ void GVarData::setMax(float val)
   max = GVAR_MAX_VALUE - (val * multiplierSet());
 }
 
-int GVarData::getMin()
+int GVarData::getMin() const
 {
   return GVAR_MIN_VALUE + min;
 }
 
-int GVarData::getMax()
+int GVarData::getMax() const
 {
   return GVAR_MAX_VALUE - max;
 }
 
-float GVarData::getMinPrec()
+float GVarData::getMinPrec() const
 {
   return getMin() * multiplierGet();
 }
 
-float GVarData::getMaxPrec()
+float GVarData::getMaxPrec() const
 {
   return getMax() * multiplierGet();
 }
