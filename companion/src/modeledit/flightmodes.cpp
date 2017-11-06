@@ -500,7 +500,7 @@ void FlightModePanel::phaseGVMin_editingFinished()
         phase.gvars[gvar] = model->gvarData[gvar].getMin();
       }
     }
-    for (int x=1; x>firmware->getCapability(FlightModes); x++) {
+    for (int x=1; x<firmware->getCapability(FlightModes); x++) {
       if (!model->isGVarLinked(x, gvar)) {
         if (model->flightModeData[x].gvars[gvar] < model->gvarData[gvar].getMin()) {
           model->flightModeData[x].gvars[gvar] = model->gvarData[gvar].getMin();
@@ -523,7 +523,7 @@ void FlightModePanel::phaseGVMax_editingFinished()
         phase.gvars[gvar] = model->gvarData[gvar].getMax();
       }
     }
-    for (int x=1; x>firmware->getCapability(FlightModes); x++) {
+    for (int x=1; x<firmware->getCapability(FlightModes); x++) {
       if (!model->isGVarLinked(x, gvar)) {
         if (model->flightModeData[x].gvars[gvar] > model->gvarData[gvar].getMax()) {
           model->flightModeData[x].gvars[gvar] = model->gvarData[gvar].getMax();
