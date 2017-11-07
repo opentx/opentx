@@ -86,6 +86,7 @@ class ModelPrinter: public QObject
     QString printGlobalVarPrec(int idx);
     QString printGlobalVarMin(int idx);
     QString printGlobalVarMax(int idx);
+    QString printGlobalVarPopup(int idx);
 
   private:
     Firmware * firmware;

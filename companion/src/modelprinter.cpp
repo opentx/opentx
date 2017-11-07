@@ -707,3 +707,8 @@ QString ModelPrinter::printGlobalVarMax(int idx)
   return QString::number(model.gvarData[idx].getMaxPrec());
 }
 
+QString ModelPrinter::printGlobalVarPopup(int idx)
+{
+  return (model.gvarData[idx].popup ? "Y" : "N" );
+}
+

@@ -307,7 +307,7 @@ QString MultiModelPrinter::printFlightModes()
   if ((gvars && firmware->getCapability(GvarsFlightModes)) || firmware->getCapability(RotaryEncoders)) {
     MultiColumns columns(modelPrinterMap.size());
     columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
-    columns.append("<tr><td><b>" + tr("Global Variables") + "</b></td>");
+    columns.append("<tr><td><b>" + tr("Global variables") + "</b></td>");
     if (firmware->getCapability(GvarsFlightModes)) {
       for (int i=0; i<gvars; i++) {
         columns.append("<td><b>" + tr("GV%1").arg(i+1) + "</b></td>");
@@ -351,6 +351,13 @@ QString MultiModelPrinter::printFlightModes()
       for (int i=0; i<gvars; i++) {
         columns.append("<td>");
         COMPARE(modelPrinter->printGlobalVarMax(i));
+        columns.append("</td>");
+      }
+      columns.append("</tr>");
+      columns.append("<tr><td><b>Popup</b></td>");
+      for (int i=0; i<gvars; i++) {
+        columns.append("<td>");
+        COMPARE(modelPrinter->printGlobalVarPopup(i));
         columns.append("</td>");
       }
       columns.append("</tr>");

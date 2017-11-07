@@ -63,6 +63,8 @@ class FlightModePanel : public ModelPanel
     void phaseREUse_currentIndexChanged(int index);
     void name_customContextMenuRequested(const QPoint & pos);
     void fmClear();
+    void gvLabel_customContextMenuRequested(const QPoint & pos);
+    void gvClear();
 
   private:
     Ui::FlightMode *ui;
@@ -70,6 +72,7 @@ class FlightModePanel : public ModelPanel
     FlightModeData & phase;
     int reCount;
     int gvCount;
+    int gvIdx;
     QVector<QLabel *> trimsLabel;
     QLineEdit * gvNames[CPN_MAX_GVARS];
     QDoubleSpinBox * gvValues[CPN_MAX_GVARS];

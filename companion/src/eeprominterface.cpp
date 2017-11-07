@@ -1788,6 +1788,11 @@ bool ModelData::isAvailable(const RawSwitch & swtch) const
   }
 }
 
+float ModelData::getGVarFieldValuePrec(int phaseIdx, int gvarIdx)
+{
+  return getGVarFieldValue(phaseIdx, gvarIdx) * gvarData[gvarIdx].multiplierGet();
+}
+
 QList<EEPROMInterface *> eepromInterfaces;
 
 void unregisterEEpromInterfaces()
@@ -1985,9 +1990,4 @@ float GVarData::getMinPrec() const
 float GVarData::getMaxPrec() const
 {
   return getMax() * multiplierGet();
-}
-
-float ModelData::getGVarFieldValuePrec(int phaseIdx, int gvarIdx)
-{
-  return getGVarFieldValue(phaseIdx, gvarIdx) * gvarData[gvarIdx].multiplierGet();
 }
