@@ -38,7 +38,9 @@ ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
   setWindowIcon(CompanionIcon("edit.png"));
 
   mChecklistFolder = g.profile[g.id()].sdPath() + "/MODELS/";
-  mModelChecklist = mChecklistFolder + modelName + ".txt";
+  QString name = modelName;
+  name.replace(" ", "_");
+  mModelChecklist = mChecklistFolder + name + ".txt";
   ui->file->setText("File: " + mModelChecklist);
   ui->pteCheck->setPlainText(readFile(mModelChecklist,QFile::exists(mModelChecklist)));
 
