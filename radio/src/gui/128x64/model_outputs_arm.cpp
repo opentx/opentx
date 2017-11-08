@@ -195,9 +195,11 @@ void onLimitsMenu(const char *result)
   }
   else if (result == STR_COPY_STICKS_TO_OFS) {
     copySticksToOffset(s_currIdx);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_COPY_TRIMS_TO_OFS) {
     copyTrimsToOffset(s_currIdx);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_EDIT) {
     pushMenu(menuModelLimitsOne);
