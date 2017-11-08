@@ -73,24 +73,25 @@ bool menuModelGVars(event_t event)
 
         default:
         {
-          FlightModeData * fm = &g_model.flightModeData[j-1];
+          uint16_t flightMode = j-1;
+          FlightModeData * fm = &g_model.flightModeData[flightMode];
           int16_t & v = fm->gvars[i];
           int16_t vmin, vmax;
           if (v > GVAR_MAX) {
             uint8_t p = v - GVAR_MAX - 1;
-            if (p >= j-1) p++;
-            drawFlightMode(x, y, p+1, attr | RIGHT | ((j-1 == curfm) ? BOLD : 0));
+            if (p >= flightMode) p++;
+            drawFlightMode(x, y, p+1, attr | RIGHT | ((flightMode == curfm) ? BOLD : 0));
             vmin = GVAR_MAX+1; vmax = GVAR_MAX+MAX_FLIGHT_MODES-1;
           }
           else {
             if (abs(v) >= 1000)
               lcdDrawNumber(x, y+1, v, TINSIZE|attr|RIGHT);
             else
-              lcdDrawNumber(x, y, v, attr | RIGHT | ((j-1 == curfm) ? BOLD : 0));
+              lcdDrawNumber(x, y, v, attr | RIGHT | ((flightMode == curfm) ? BOLD : 0));
             vmin = -GVAR_MAX; vmax = GVAR_MAX;
           }
           if (attr) {
-            if (event == EVT_KEY_LONG(KEY_ENTER)) {
+            if (event == EVT_KEY_LONG(KEY_ENTER) && flightMode > 0) {
               v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
               storageDirty(EE_MODEL);
             }

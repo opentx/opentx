@@ -39,7 +39,7 @@ void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t fl
   }
 
   if (flags & INVERS) {
-    if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    if (event == EVT_KEY_LONG(KEY_ENTER) && flightMode > 0) {
       v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
       storageDirty(EE_MODEL);
     }
