@@ -3682,17 +3682,18 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new UnsignedField<8>(this, generalData.backlightBright));
     if (version < 218) internalField.Append(new SignedField<8>(this, generalData.txCurrentCalibration));
     if (version >= 213) {
-      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureWarn)); // TODO
+      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureWarn));
       if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.mAhWarn));
       if (version < 218) internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
       internalField.Append(new UnsignedField<32>(this, generalData.globalTimer));
-      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureCalib)); // TODO
-      internalField.Append(new UnsignedField<8>(this, generalData.bluetoothBaudrate)); // TODO
-      if (version < 218) internalField.Append(new BoolField<8>(this, generalData.optrexDisplay)); //TODO
-      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.sticksGain)); // TODO
+      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureCalib));
+      internalField.Append(new UnsignedField<4>(this, generalData.bluetoothBaudrate));
+      internalField.Append(new UnsignedField<4>(this, generalData.bluetoothMode));
+      if (version < 218) internalField.Append(new BoolField<8>(this, generalData.optrexDisplay));
+      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.sticksGain));
     }
     if (version >= 214) {
-      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps)); // TODO
+      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps));
       internalField.Append(new UnsignedField<8>(this, generalData.countryCode));
       internalField.Append(new UnsignedField<1>(this, generalData.imperial));
       if (version >= 218) {
@@ -3769,6 +3770,16 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         internalField.Append(new UnsignedField<8>(this, generalData.backlightColor));
       }
     }
+    else if (IS_SKY9X(board) && version >= 218) {
+      internalField.Append(new SignedField<8>(this, generalData.txCurrentCalibration));
+      internalField.Append(new SignedField<8>(this, generalData.temperatureWarn));
+      internalField.Append(new UnsignedField<8>(this, generalData.mAhWarn));
+      internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
+      internalField.Append(new SignedField<8>(this, generalData.temperatureCalib));
+      internalField.Append(new BoolField<8>(this, generalData.optrexDisplay));
+      internalField.Append(new UnsignedField<8>(this, generalData.sticksGain));
+      internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps));
+    }
 
     if (IS_TARANIS_X9E(board))
       internalField.Append(new SpareBitsField<64>(this)); // switchUnlockStates
@@ -3818,7 +3829,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
 
     if (IS_HORUS(board)) {
-      internalField.Append(new BoolField<1>(this, generalData.bluetoothEnable));
+      internalField.Append(new SpareBitsField<1>(this));
       internalField.Append(new UnsignedField<7>(this, generalData.backlightOffBright));
       internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
     }

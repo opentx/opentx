@@ -1221,6 +1221,7 @@ class GeneralSettings {
     bool bluetoothEnable;
     char bluetoothName[10+1];
     unsigned int bluetoothBaudrate;
+    unsigned int bluetoothMode;
     unsigned int sticksGain;
     unsigned int rotarySteps;
     unsigned int countryCode;
