@@ -121,6 +121,6 @@ bool telemetrySecondPortReceive(uint8_t & data)
 }
 #endif
 
-#if defined(DEBUG)
+#if defined(DEBUG) && !defined(SIMU)
 void serialPrintf(const char*, ... ) {}
 #endif
