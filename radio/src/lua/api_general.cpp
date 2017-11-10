@@ -1171,6 +1171,21 @@ static int luaLoadScript(lua_State * L)
   }
 }
 
+/*luadoc
+@function getUsage()
+
+Get percent of already used Lua instructions in current script execution cycle.
+
+@retval usage (number) a value from 0 to 100 (percent)
+
+@status current Introduced in 2.2.1
+*/
+static int luaGetUsage(lua_State * L)
+{
+  lua_pushinteger(L, instructionsPercent);
+  return 1;
+}
+
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
@@ -1193,6 +1208,7 @@ const luaL_Reg opentxLib[] = {
   { "getRSSI", luaGetRSSI },
   { "killEvents", luaKillEvents },
   { "loadScript", luaLoadScript },
+  { "getUsage", luaGetUsage },
 #if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
