@@ -165,6 +165,9 @@ ui(new Ui::GeneralSetup)
     ui->displayTypeCB->setDisabled(true);
     ui->displayTypeCB->hide();
   }
+  else {
+    ui->displayTypeCB->setCurrentIndex(generalSettings.optrexDisplay);
+  }
 
   if (!firmware->getCapability(HasVolume)) {
     ui->volume_SB->hide();
