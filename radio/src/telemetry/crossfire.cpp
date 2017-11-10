@@ -153,7 +153,6 @@ void processCrossfireTelemetryFrame()
       break;
 
     case LINK_ID:
-      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
       for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value)) {
           if (i == TX_POWER_INDEX) {
@@ -163,6 +162,7 @@ void processCrossfireTelemetryFrame()
           processCrossfireTelemetryValue(i, value);
           if (i == RX_QUALITY_INDEX) {
             telemetryData.rssi.set(value);
+            telemetryStreaming = TELEMETRY_TIMEOUT10ms;
           }
         }
       }
