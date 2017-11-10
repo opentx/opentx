@@ -1171,7 +1171,6 @@ void SetupPanel::update()
   ui->extendedLimits->setChecked(model->extendedLimits);
   ui->extendedTrims->setChecked(model->extendedTrims);
   ui->displayText->setChecked(model->displayChecklist);
-  ui->editText->setEnabled(model->displayChecklist);
   ui->gfEnabled->setChecked(!model->noGlobalFunctions);
 
   updateBeepCenter();
@@ -1317,7 +1316,6 @@ void SetupPanel::on_potWarningMode_currentIndexChanged(int index)
 void SetupPanel::on_displayText_toggled(bool checked)
 {
   model->displayChecklist = checked;
-  ui->editText->setEnabled(checked);
   emit modified();
 }
 
