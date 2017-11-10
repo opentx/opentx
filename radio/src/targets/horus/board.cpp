@@ -80,6 +80,7 @@ void interrupt1ms()
   if (pre_scale == 10) {
     pre_scale = 0;
     DEBUG_TIMER_START(debugTimerPer10ms);
+    DEBUG_TIMER_SAMPLE(debugTimerPer10msPeriod);
     per10ms();
     DEBUG_TIMER_STOP(debugTimerPer10ms);
   }

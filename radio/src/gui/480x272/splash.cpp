@@ -29,7 +29,7 @@ void drawSplash()
 
 #if MENUS_LOCK == 1
   if (readonly == false) {
-    lcdDrawSolidFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID, ROUND);
+    lcdDrawSolidFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID|ROUND);
     lcdDrawText((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 , 53, STR_UNLOCKED);
   }
 #endif
