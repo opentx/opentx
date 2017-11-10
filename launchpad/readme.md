@@ -96,7 +96,13 @@ Last step it to upload the new release to the Launchpad server and wait for it t
  * name of the PPA `ppa:opentx-test/ppa` (your public key must be associated with that PPA)
  * name of the release file `<dsfsfggg>.changes`
 
-Example:
+Upload to nightly PPA:
 ```
 dput ppa:opentx-test/ppa ../../opentx-companion22_2.2.0~N363~trusty_source.changes
 ```
+
+Upload to release PPA:
+```
+dput ppa:opentx-test/rel ../../opentx-companion22_2.2.0~N363~trusty_source.changes
+```
+
