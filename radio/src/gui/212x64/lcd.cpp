@@ -764,8 +764,30 @@ void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, L
   lcdDrawSizedText(lcdLastRightPos+1, y, direction + (value>=0 ? 0 : 1), 1);
 }
 
-void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
+void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
 {
+  att &= ~FONTSIZE_MASK;
+  if (BLINK_ON_PHASE) {
+    lcdDrawNumber(x, y, telemetryItem.datetime.hour, att|LEADING0, 2);
+    lcdDrawText(lcdNextPos, y, ":", att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.min, att|LEADING0, 2);
+    lcdDrawText(lcdNextPos, y, ":", att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.sec, att|LEADING0, 2);
+  }
+  else {
+    lcdDrawNumber(x, y, telemetryItem.datetime.year, att|LEADING0, 4);
+    lcdDrawText(lcdNextPos, y, "-", att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.month, att|LEADING0, 2);
+    lcdDrawText(lcdNextPos, y, "-", att);
+    lcdDrawNumber(lcdNextPos, y, telemetryItem.datetime.day, att|LEADING0,2);
+  }
+}
+
+void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags att)
+{
+  sensor = (sensor-MIXSRC_FIRST_TELEM) / 3;
+	TelemetryItem & telemetryItem = telemetryItems[sensor];
+
   att &= ~FONTSIZE_MASK;
   lcdDrawNumber(x, y+1, telemetryItem.datetime.sec, att|LEADING0, 2);
   lcdDrawText(lcdNextPos, y+1, ":", att);
@@ -773,11 +795,11 @@ void drawTelemScreenDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lc
   lcdDrawText(lcdNextPos, y+1, ":", att);
   lcdDrawNumber(lcdNextPos, y+1, telemetryItem.datetime.hour, att|LEADING0, 2);
 
-  lcdDrawNumber(x, y+9, telemetryItem.datetime.year, att, 4);
+  lcdDrawNumber(x, y+9, telemetryItem.datetime.day, att|LEADING0, 2);
   lcdDrawText(lcdNextPos, y+9, "-", att);
-  lcdDrawNumber(lcdNextPos+1, y+9, telemetryItem.datetime.month, att|LEADING0, 2);
-  lcdDrawText(lcdNextPos+1, y+9, "-", att);
-  lcdDrawNumber(lcdNextPos+1, y+9, telemetryItem.datetime.day, att|LEADING0,2);
+  lcdDrawNumber(lcdNextPos, y+9, telemetryItem.datetime.month, att|LEADING0, 2);
+  lcdDrawText(lcdNextPos, y+9, "-", att);
+  lcdDrawNumber(lcdNextPos, y+9, telemetryItem.datetime.year, att|LEADING0,4);
 }
 
 void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)

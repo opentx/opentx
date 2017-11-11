@@ -94,8 +94,11 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "America""Japan\0 ""Europa\0")
 
+#define LEN_USBMODES           TR("\006", "\010")
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
+
 #define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
+#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -652,6 +655,8 @@
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocollo")
 #if defined(CPUARM)
   #define TR_PPMFRAME          INDENT "PPM frame"
+#define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #else
   #define TR_PPMFRAME          "PPM frame"
 #endif
@@ -872,6 +877,7 @@
 #define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
 #define TR_MULTI_SERVOFREQ     TR(INDENT "Servo rate", INDENT "Servo update rate")
 #define TR_SYNCMENU            "[Sync]"
 #define TR_LIMIT               INDENT "Limiti"
@@ -915,6 +921,8 @@
 #define TR_ALARMSWARN          "ALLARMI"
 #define TR_SWITCHWARN          "CONTROLLI"
 #define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
+#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
 #define TR_WRONG_PCBREV        "Wrong PCB detected"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
@@ -961,6 +969,7 @@
 #define TR_FORMATTING          "Formattazione."
 #define TR_TEMP_CALIB          "Temp. Calib"
 #define TR_TIME                "Ora"
+#define TR_MAXBAUDRATE         "Max bauds"
 
 #define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "BT Baudrate"
@@ -1000,6 +1009,7 @@
 #define TR_MENUSENSOR          "SENSOR"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         TR("Codice Paese","Standard 2.4Ghz")
+#define TR_USBMODE             "USB Mode"
 #define TR_VOICELANG           "Lingua Voce"
 #define TR_UNITSSYSTEM         "Unità"
 #define TR_EDIT                "Modifica"
@@ -1017,7 +1027,10 @@
 #define TR_RESET_TELEMETRY     "Azzera Telemetria"
 #define TR_STATISTICS          "Statistiche"
 #define TR_ABOUT_US            "Info su"
-#define TR_SETUP_SCREENS         "Setup screens"
+#define TR_USB_JOYSTICK        "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE    "USB Storage (SD)"
+#define TR_USB_SERIAL          "USB Serial (Debug)"
+#define TR_SETUP_SCREENS       "Setup screens"
 #define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "Inter. AND"
 #define TR_SF                  "CF"
@@ -1045,9 +1058,9 @@
 #define TR_ANTENNACONFIRM2     "Make sure antenna is installed!"
 #define TR_LOWALARM            INDENT "Allarme Basso"
 #define TR_CRITICALALARM       INDENT "Allarme Critico"
-#define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")
-#define TR_NO_RSSIALARM                TR(INDENT "Alarms disabled", INDENT "Telemetry alarms disabled")
-#define TR_DISABLE_ALARM               TR(INDENT "Disable alarms", INDENT "Disable telemetry alarms")
+#define TR_RSSIALARM_WARN      TR("RSSI","TELEMETRY RSSI")
+#define TR_NO_RSSIALARM        TR(INDENT "Alarms disabled", INDENT "Telemetry alarms disabled")
+#define TR_DISABLE_ALARM       TR(INDENT "Disable alarms", INDENT "Disable telemetry alarms")
 #define TR_ENABLE_POPUP        "Abilita Popup"
 #define TR_DISABLE_POPUP       "Disabilita Popup"
 #define TR_POPUP               "Popup"

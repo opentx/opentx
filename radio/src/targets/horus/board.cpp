@@ -80,6 +80,7 @@ void interrupt1ms()
   if (pre_scale == 10) {
     pre_scale = 0;
     DEBUG_TIMER_START(debugTimerPer10ms);
+    DEBUG_TIMER_SAMPLE(debugTimerPer10msPeriod);
     per10ms();
     DEBUG_TIMER_STOP(debugTimerPer10ms);
   }
@@ -98,6 +99,29 @@ extern "C" void INTERRUPT_1MS_IRQHandler()
 
 #if defined(SEMIHOSTING)
 extern "C" void initialise_monitor_handles();
+#endif
+
+#if defined(PCBX10)
+void sportUpdateInit()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = SPORT_UPDATE_PWR_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(SPORT_UPDATE_PWR_GPIO, &GPIO_InitStructure);
+}
+
+void sportUpdatePowerOn()
+{
+  GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+}
+
+void sportUpdatePowerOff()
+{
+  GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
+}
 #endif
 
 void boardInit()
@@ -125,10 +149,12 @@ void boardInit()
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph |
+                         SPORT_UPDATE_RCC_AHB1Periph |
                          BL_RCC_AHB1Periph,
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(INTERRUPT_1MS_RCC_APB1Periph |
+                         ADC_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          SERIAL_RCC_APB1Periph |
@@ -195,6 +221,7 @@ void boardInit()
 
 #if defined(PCBX10)
   ledInit();
+  sportUpdateInit();
 #endif
 
   ledBlue();

@@ -55,7 +55,7 @@ void backlightInit()
   }
 #elif defined(PCBX10)
   BL_TIMER->ARR = 100;
-  BL_TIMER->PSC = BL_TIMER_FREQ / 10000 - 1; // 1kHz
+  BL_TIMER->PSC = BL_TIMER_FREQ / 1000000 - 1; // 10kHz (same as FrOS)
   BL_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3PE; // PWM mode 1
   BL_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3NE;
   BL_TIMER->CCR3 = 100;
@@ -67,18 +67,14 @@ void backlightInit()
 
 void backlightEnable(uint8_t dutyCycle)
 {
-  if (dutyCycle < 5) {
-    dutyCycle = 5;
-  }
-  
 #if defined(PCBX12S)
   if (IS_HORUS_PROD()) {
     BL_TIMER->CCR4 = dutyCycle;
   }
   else {
-    BL_TIMER->CCR1 = (100 - dutyCycle);
+    BL_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX - dutyCycle;
   }
 #elif defined(PCBX10)
-  BL_TIMER->CCR3 = (100 - dutyCycle);
+  BL_TIMER->CCR3 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #endif
 }

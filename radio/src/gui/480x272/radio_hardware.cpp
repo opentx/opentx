@@ -46,6 +46,7 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SG,
   ITEM_RADIO_HARDWARE_SH,
+  CASE_PCBX10(ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE)
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #if defined(SERIAL2) && defined(DEBUG)
@@ -68,7 +69,7 @@ enum MenuRadioHardwareItems {
 
 bool menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS, 0, 0, 0 });
+  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, CASE_PCBX10(0) BLUETOOTH_ROWS, 0, 0, 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -168,6 +169,26 @@ bool menuRadioHardware(event_t event)
         break;
       }
 
+#if defined (PCBX10)
+      case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAXBAUDRATE);
+        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
+        if (attr) {
+          g_eeGeneral.telemetryBaudrate = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.telemetryBaudrate, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
+          if (checkIncDec_Ret) {
+            pauseMixerCalculations();
+            pausePulses();
+            EXTERNAL_MODULE_OFF();
+            CoTickDelay(10); // 20ms so that the pulses interrupt will reinit the frame rate
+            telemetryProtocol = 255; // force telemetry port + module reinitialization
+            EXTERNAL_MODULE_ON();
+            resumePulses();
+            resumeMixerCalculations();
+          }
+        }
+        break;
+#endif
+
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH);
         g_eeGeneral.bluetoothMode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER, attr, event);
@@ -192,13 +213,13 @@ bool menuRadioHardware(event_t event)
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_JITTER_FILTER);
         uint8_t b = 1-g_eeGeneral.jitterFilter;
-        g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN, y, attr, event);
+        g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN+50, y, attr, event);
         break;
       }
 
       case ITEM_RADIO_HARDWARE_BAT_CAL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATT_CALIB);
-        lcdDrawNumber(HW_SETTINGS_COLUMN, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
+        lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, getBatteryVoltage(), attr|LEFT|PREC2, 0, NULL, "V");
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
         break;
     }

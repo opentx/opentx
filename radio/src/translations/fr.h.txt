@@ -94,8 +94,11 @@
 #define LEN_COUNTRYCODES               TR("\002", "\006")
 #define TR_COUNTRYCODES                TR("US""JP""EU", "USA\0  ""Japon\0""Europe")
 
+#define LEN_USBMODES                   TR("\006", "\010")
+#define TR_USBMODES                    TR("Popup\0""Joyst\0""SDCard""Série\0", "Demander""Joystick""Stockage""Série\0  ")
+
 #define LEN_TARANIS_PROTOCOLS          "\004"
-#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
+#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -654,6 +657,8 @@
 #define TR_PROTO                       TR(INDENT "Proto.", INDENT "Protocole")
 #if defined(CPUARM)
   #define TR_PPMFRAME                  INDENT "Trame PPM"
+#define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #else
   #define TR_PPMFRAME                  "Trame PPM"
 #endif
@@ -870,6 +875,7 @@
 #define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Sél. invalide", "Protocole invalide")
 #define TR_MODULE_STATUS               TR(INDENT "Etat", INDENT "Etat module")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Fréq.servo", INDENT "Fréquence servos")
 #define TR_SYNCMENU                    "Sync [MENU]"
 #define TR_LIMIT                       INDENT "Limite"
@@ -913,6 +919,8 @@
 #define TR_ALARMSWARN                  "SON"
 #define TR_SWITCHWARN                  TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN                "FAILSAFE"
+#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
+#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION         "Version requise: "
 #define TR_WRONG_PCBREV                "PCB incorrect détecté"
 #define TR_EMERGENCY_MODE              "MODE SECOURS"
@@ -959,6 +967,7 @@
 #define TR_FORMATTING                  "Formatage..."
 #define TR_TEMP_CALIB                  "Calib. temp"
 #define TR_TIME                        "Heure"
+#define TR_MAXBAUDRATE                 "Max bauds"
 #define TR_BLUETOOTH                   "Bluetooth"
 #define TR_BAUDRATE                    "Baudrate BT"
 #define LEN_BLUETOOTH_MODES            "\012"
@@ -996,6 +1005,7 @@
 #define TR_MENUSENSOR                  "CAPTEUR"
 #define TR_SENSOR                      "SENSOR"
 #define TR_COUNTRYCODE                 TR("Zone géo.", "Zone géographique")
+#define TR_USBMODE                     "USB Mode"
 #define TR_VOICELANG                   TR("Langue voix", "Langue annonces vocales")
 #define TR_UNITSSYSTEM                 "Unités"
 #define TR_EDIT                        "Editer"
@@ -1013,6 +1023,9 @@
 #define TR_RESET_TELEMETRY             TR("Réinit. Télém.", "Réinit. Télémesure")
 #define TR_STATISTICS                  "Statistiques"
 #define TR_ABOUT_US                    "A propos"
+#define TR_USB_JOYSTICK                "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE            "Stockage USB (SD)"
+#define TR_USB_SERIAL                  "Port série (Debug)"
 #define TR_SETUP_SCREENS               "Configuration écrans"
 #define TR_MONITOR_SCREENS             "Moniteurs"
 #define TR_AND_SWITCH                  "ET suppl."

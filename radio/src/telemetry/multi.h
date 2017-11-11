@@ -86,6 +86,30 @@ Type 0x06 Flysky AFHDS2 telemetry data
 
 void processMultiTelemetryData(uint8_t data);
 
+// This should be put into the Module definition if other modules gain this functionality
+struct MultiModuleSyncStatus {
+  uint32_t adjustedRefreshRate;    // in ps
+  tmr10ms_t lastUpdate;
+  uint16_t refreshRate;
+  uint16_t inputLag;
+  uint8_t interval;
+  uint8_t target;
+
+  inline bool isValid() {return (get_tmr10ms()  - lastUpdate < 100);}
+  void getRefreshString(char* refreshText);
+  uint16_t getAdjustedRefreshRate();
+  void calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag);
+
+  MultiModuleSyncStatus() {
+    // Initialise to a valid value
+    adjustedRefreshRate=9000 * 1000;
+  }
+
+};
+
+extern MultiModuleSyncStatus multiSyncStatus;
+
+
 struct MultiModuleStatus {
 
   uint8_t major;
@@ -98,10 +122,10 @@ struct MultiModuleStatus {
 
   void getStatusString(char* statusText);
 
-  inline bool isBinding() { return flags & 0x08; }
-  inline bool protocolValid() { return flags & 0x04; }
-  inline bool serialMode() { return flags & 0x02; }
-  inline bool inputDetected() { return flags & 0x01; }
+  inline bool isBinding() { return (bool) (flags & 0x08); }
+  inline bool protocolValid() { return (bool) (flags & 0x04); }
+  inline bool serialMode() { return (bool) (flags & 0x02); }
+  inline bool inputDetected() { return (bool) (flags & 0x01); }
 };
 
 extern MultiModuleStatus multiModuleStatus;

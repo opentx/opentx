@@ -212,8 +212,7 @@ void simuSetKey(uint8_t key, bool state)
     KEY_CASE(KEY_MODEL, KEYS_GPIO_REG_UP, KEYS_GPIO_PIN_UP)
     KEY_CASE(KEY_EXIT, KEYS_GPIO_REG_DOWN, KEYS_GPIO_PIN_DOWN)
 #elif defined(PCBX10)
-    // KEY_CASE(KEY_PGUP, KEYS_GPIO_REG_MENU, KEYS_GPIO_PIN_MENU)
-    // KEY_CASE(KEY_PGDN, KEYS_GPIO_REG_EXIT, KEYS_GPIO_PIN_EXIT)
+    KEY_CASE(KEY_PGDN, KEYS_GPIO_REG_PGDN, KEYS_GPIO_PIN_PGDN)
     KEY_CASE(KEY_ENTER, KEYS_GPIO_REG_ENTER, KEYS_GPIO_PIN_ENTER)
     KEY_CASE(KEY_TELEM, KEYS_GPIO_REG_RIGHT, KEYS_GPIO_PIN_RIGHT)
     KEY_CASE(KEY_RADIO, KEYS_GPIO_REG_LEFT, KEYS_GPIO_PIN_LEFT)
@@ -645,6 +644,8 @@ uint32_t pwrPressed()
 #if defined(STM32)
 void pwrInit() { }
 int usbPlugged() { return false; }
+int getSelectedUsbMode() { return USB_JOYSTICK_MODE; }
+void setSelectedUsbMode(int mode) {}
 void USART_DeInit(USART_TypeDef* ) { }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
@@ -681,6 +682,8 @@ FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { ret
 void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
 void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
+void USART_ClearITPendingBit(USART_TypeDef*, unsigned short) { }
+uint16_t USART_ReceiveData(USART_TypeDef*) { return 0; }
 void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
 void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
 // void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }

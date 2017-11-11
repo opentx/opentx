@@ -2,11 +2,11 @@ project(OpenTX)
 
 set(VERSION_MAJOR "2")
 set(VERSION_MINOR "2")
-set(VERSION_REVISION "0")
+set(VERSION_REVISION "1")
 set(VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
 set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
-set(SDCARD_REVISION "0010")
+set(SDCARD_REVISION "0011")
 set(SDCARD_VERSION  ${VERSION_MAJOR}.${VERSION_MINOR}V${SDCARD_REVISION})
 
 cmake_minimum_required(VERSION 2.8)
@@ -60,6 +60,16 @@ if(WIN32)
   set(WIN_EXTRA_LIBS_PATH "C:/Programs" CACHE PATH
     "Base path to extra libs/headers on Windows (SDL & pthreads folders should be in here).")
   list(APPEND CMAKE_PREFIX_PATH "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/SDL")  # hints for FindSDL
+endif()
+
+# Python check
+find_package("PythonInterp")
+if(PYTHONINTERP_FOUND)
+  message(STATUS "Python found, version: ${PYTHON_VERSION_STRING}")
+  get_filename_component(PYTHON_DIRECTORY ${PYTHON_EXECUTABLE} DIRECTORY)
+else()
+  message(WARNING "Python not found! Most firmware and simu flavors not buildable.")
+  set(LUA NO)
 endif()
 
 find_package(Qt5Core)

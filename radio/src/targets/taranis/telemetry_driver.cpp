@@ -114,6 +114,7 @@ void sportSendBuffer(uint8_t * buffer, uint32_t count)
   DMA_Cmd(TELEMETRY_DMA_Stream_TX, ENABLE);
   USART_DMACmd(TELEMETRY_USART, USART_DMAReq_Tx, ENABLE);
   DMA_ITConfig(TELEMETRY_DMA_Stream_TX, DMA_IT_TC, ENABLE);
+  USART_ClearITPendingBit(TELEMETRY_USART, USART_IT_TC);
 
   // enable interrupt and set it's priority
   NVIC_EnableIRQ(TELEMETRY_DMA_TX_Stream_IRQ) ;

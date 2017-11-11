@@ -682,6 +682,12 @@ PACK(struct ModuleData {
       uint8_t sport_out:1;
       uint8_t spare3;
     } pxx);
+    NOBACKUP(struct {
+      uint8_t spare:6;
+      uint8_t noninverted:1;
+      uint8_t spare2:1;
+      int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
+    } sbus);
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -897,7 +903,8 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t  imperial:1); \
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
     NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1); \
-    NOBACKUP(uint8_t  spareExtraArm:5); \
+    NOBACKUP(uint8_t  USBMode:2); \
+    NOBACKUP(uint8_t  spareExtraArm:3); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
     NOBACKUP(int8_t   wavVolume:4); \
@@ -1008,7 +1015,8 @@ PACK(struct RadioData {
   NOBACKUP(int8_t timezone:5);
   NOBACKUP(uint8_t adjustRTC:1);
   NOBACKUP(uint8_t inactivityTimer);
-  NOBACKUP(uint8_t mavbaud:3);
+  AVR_FIELD(uint8_t mavbaud:3)
+  ARM_FIELD(uint8_t telemetryBaudrate:3)
   SPLASH_MODE; /* 3bits */
   NOBACKUP(int8_t hapticMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   AVR_FIELD(uint8_t blOffBright:4)

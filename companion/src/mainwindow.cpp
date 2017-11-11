@@ -54,7 +54,7 @@
 #include <QDesktopServices>
 
 #define OPENTX_DOWNLOADS_PAGE_URL         "http://www.open-tx.org/downloads"
-#define OPENTX_COMPANION_DOWNLOADS        "http://downloads-22.open-tx.org/companion"
+#define OPENTX_COMPANION_DOWNLOADS        "https://downloads-22.open-tx.org/companion"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
 #ifdef __APPLE__
@@ -74,7 +74,7 @@
   #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
 #endif
 
-#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "http://downloads-22.open-tx.org/nightlies/companion"
+#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "https://downloads-22.open-tx.org/nightlies/companion"
 
 MainWindow::MainWindow():
   downloadDialog_forWait(NULL),

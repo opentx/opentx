@@ -91,7 +91,7 @@ void extmodulePpmStart()
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop timer
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   EXTMODULE_TIMER->ARR = 45000;
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
   EXTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2; // PWM mode 1
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE;
   EXTMODULE_TIMER->EGR = 1; // Reloads register values now
@@ -133,7 +133,7 @@ void extmodulePxxStart()
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   EXTMODULE_TIMER->ARR = 18000;
   
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
   EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3NE;
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR3 = 18;
@@ -180,7 +180,7 @@ void extmoduleDsm2Start()
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   EXTMODULE_TIMER->ARR = 44000; // 22mS
   
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
   EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3P;
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR3 = 0;
@@ -240,7 +240,7 @@ void extmoduleCrossfireStart()
 void extmoduleSendNextFrame()
 {
   if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
     EXTMODULE_TIMER->CCR3 = GET_PPM_DELAY(EXTERNAL_MODULE)*2;
     EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_PPM_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC3P : 0);
     EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].ppm.ptr - 1) - 4000; // 2mS in advance
@@ -261,7 +261,7 @@ void extmoduleSendNextFrame()
   else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PXX) {
     EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].pxx.ptr - 1) - 4000; // 2mS in advance
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
     EXTMODULE_DMA_STREAM->CR |= EXTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
 #else
     EXTMODULE_DMA_STREAM->CR |= EXTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_1 | DMA_SxCR_MSIZE_1 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
@@ -271,13 +271,17 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->NDTR = modulePulsesData[EXTERNAL_MODULE].pxx.ptr - modulePulsesData[EXTERNAL_MODULE].pxx.pulses;
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
-  else if (IS_DSM2_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_MULTIMODULE_PROTOCOL(s_current_protocol[EXTERNAL_MODULE])) {
+  else if (IS_DSM2_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_MULTIMODULE_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE])) {
     EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) - 4000; // 2mS in advance
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
     EXTMODULE_DMA_STREAM->CR |= EXTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
+    if (IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]))
+      EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC3P : 0); // reverse polarity for Sbus if needed
 #else
     EXTMODULE_DMA_STREAM->CR |= EXTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_1 | DMA_SxCR_MSIZE_1 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
+    if (IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]))
+      EXTMODULE_TIMER->CCER = TIM_CCER_CC1E | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC1P : 0); // reverse polarity for Sbus if needed
 #endif
     EXTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
     EXTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].dsm2.pulses);

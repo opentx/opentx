@@ -464,7 +464,11 @@ const FATDirEntry_t g_DIRroot[16] =
     {
         { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
         { 'B', 'I', 'N'},
-        0x20,           // Archive
+#if defined(BOOT)
+        0x20,          // Archive
+#else
+        0x21,          // Readonly+Archive
+#endif
         0x00,
         0x3E,
         0xA301,
@@ -739,6 +743,9 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
     }
   }
   else if (sector < 3 + (EEPROM_SIZE/BLOCK_SIZE) + (FLASHSIZE/BLOCK_SIZE)) {
+#if !defined(BOOT) // Don't allow overwrite of running firmware
+  return -1;
+#else
     // firmware
     uint32_t address;
     address = sector - 3 - (EEPROM_SIZE/BLOCK_SIZE);
@@ -765,6 +772,7 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
         operation = FATWRITE_NONE;
       }
     }
+#endif
   }
   return 0 ;
 }

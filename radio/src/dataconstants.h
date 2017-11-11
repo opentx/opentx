@@ -519,8 +519,6 @@ enum TelemetryScreenType {
 #define MAX_TELEMETRY_SCREENS 4
 #define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.frsky.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
-#define MIN_BLADES -1   // 1 blade
-#define MAX_BLADES 126  // 128 blades
 #else
 #define MAX_FRSKY_A_CHANNELS 2
 #define MAX_TELEMETRY_SCREENS 2

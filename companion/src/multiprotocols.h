@@ -35,12 +35,14 @@ class Multiprotocols
     struct radio_mm_definition {
       int protocol;
       unsigned int maxSubtype;
+      bool hasFailsafe;
       QStringList protocols;
       QString optionsstr;
     };
 
     struct MultiProtocolDefinition {
       const int protocol;
+      const bool hasFailsafe;
       const QStringList subTypeStrings;
       const QString optionsstr;
 
@@ -55,6 +57,7 @@ class Multiprotocols
 
       MultiProtocolDefinition(const radio_mm_definition &rd) :
         protocol(rd.protocol),
+        hasFailsafe(rd.hasFailsafe),
         subTypeStrings(rd.protocols),
         optionsstr(rd.optionsstr)
       {

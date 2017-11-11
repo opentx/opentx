@@ -14,7 +14,7 @@ cd ${DIR}
 # retrieve release after the repo update
 source ./version.sh
 
-DESTDIR=/var/www/html/downloads-${version}/nightly/companion
+DESTDIR=/var/www/html/downloads-${version}/nightlies/companion
 
 # clean radio source
 cd opentx/radio/src
@@ -37,5 +37,4 @@ chmod -Rf g+w windows/companion-windows-${release}${OPENTX_VERSION_SUFFIX}.exe
 
 # update windows stamp
 cp $DIR/companion-build/version.h ./companion-windows.stamp
-chmod -Rf g+w ./companion-windows.stamp 
-
+chmod -Rf g+w ./companion-windows.stamp

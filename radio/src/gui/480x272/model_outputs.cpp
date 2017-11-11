@@ -76,9 +76,11 @@ void onLimitsMenu(const char *result)
   }
   else if (result == STR_COPY_STICKS_TO_OFS) {
     copySticksToOffset(ch);
+    storageDirty(EE_MODEL);
   }
   else if (result == STR_COPY_TRIMS_TO_OFS) {
     copyTrimsToOffset(ch);
+    storageDirty(EE_MODEL);
   }
 }
 

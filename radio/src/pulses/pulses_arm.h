@@ -27,7 +27,7 @@
   #define MODULES_INIT(...)            __VA_ARGS__
 #endif
 
-#if defined(PCBHORUS) && PCBREV < 13
+#if defined(PCBX12S) && PCBREV < 13
   #define pulse_duration_t             uint32_t
   #define trainer_pulse_duration_t     uint16_t
 #else
@@ -79,6 +79,7 @@ PACK(struct PxxUartPulsesData {
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
 /* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
 /* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enough */
+/* sbus is 1 byte header, 22 channel bytes (11bit * 16ch) + 1 byte flags */
 PACK(struct PxxTimerPulsesData {
   pulse_duration_t pulses[200];
   pulse_duration_t * ptr;
@@ -87,11 +88,7 @@ PACK(struct PxxTimerPulsesData {
   uint32_t pcmOnesCount;
 });
 
-#if defined(MULTIMODULE)
 #define MAX_PULSES_TRANSITIONS 300
-#else
-#define MAX_PULSES_TRANSITIONS 200
-#endif
 
 PACK(struct Dsm2TimerPulsesData {
   pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
@@ -101,8 +98,6 @@ PACK(struct Dsm2TimerPulsesData {
 });
 #endif
 
-#define CROSSFIRE_BAUDRATE             400000
-#define CROSSFIRE_FRAME_PERIOD         4 // 4ms
 #define CROSSFIRE_FRAME_MAXLEN         64
 #define CROSSFIRE_CHANNELS_COUNT       16
 PACK(struct CrossfirePulsesData {
@@ -130,6 +125,7 @@ union ModulePulsesData {
  * sizeof(ModulePulsesData). __ALIGNED is required for sizeof(ModulePulsesData) to be a multiple of the alignment.
  */
 
+/* TODO: internal pulsedata only needs 200 bytes vs 300 bytes for external, both use 300 byte since we have a common struct */
 extern ModulePulsesData modulePulsesData[NUM_MODULES];
 
 union TrainerPulsesData {
@@ -142,12 +138,14 @@ extern const uint16_t CRCTable[];
 void setupPulses(uint8_t port);
 void setupPulsesDSM2(uint8_t port);
 void setupPulsesMultimodule(uint8_t port);
+void setupPulsesSbus(uint8_t port);
 void setupPulsesPXX(uint8_t port);
 void setupPulsesPPMModule(uint8_t port);
 void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
+void sendByteSbus(uint8_t byte);
 
 #if defined(HUBSAN)
 void Hubsan_Init();

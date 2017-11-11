@@ -409,7 +409,7 @@ char * strAppendUnsigned(char * dest, uint32_t value, uint8_t digits, uint8_t ra
   if (digits == 0) {
     unsigned int tmp = value;
     digits = 1;
-    while (tmp >= 10) {
+    while (tmp >= radix) {
       ++digits;
       tmp /= radix;
     }

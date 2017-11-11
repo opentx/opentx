@@ -177,6 +177,7 @@
 // ADC
 #if defined(PCBX12S)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            (RCC_APB2Periph_SPI4 | RCC_APB2Periph_ADC3)
   #define ADC_SPI                       SPI4
   #define ADC_GPIO_AF                   GPIO_AF_SPI4
@@ -198,6 +199,7 @@
   #define ADC_SAMPTIME                  3
 #elif defined(PCBX10)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            (RCC_APB1Periph_TIM5)
   #define ADC_RCC_APB2Periph            (RCC_APB2Periph_ADC3)
   #define ADC_GPIO_PIN_STICK_LH         GPIO_Pin_0      // PA.00
   #define ADC_GPIO_PIN_STICK_LV         GPIO_Pin_1      // PA.01
@@ -211,7 +213,13 @@
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_7      // PF.07
   #define ADC_GPIO_PIN_EXT1             GPIO_Pin_8      // PF.08
   #define ADC_GPIO_PIN_EXT2             GPIO_Pin_9      // PF.09
-  #define ADC_GPIOA_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
+  #define PWM_TIMER                     TIM5
+  #define PWM_GPIO                      GPIOA
+  #define PWM_GPIO_AF                   GPIO_AF_TIM5
+  #define PWM_IRQHandler                TIM5_IRQHandler
+  #define PWM_IRQn                      TIM5_IRQn
+  #define PWM_GPIOA_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
+  #define ADC_GPIOA_PINS                (ANALOGS_PWM_ENABLED() ? 0 : (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3))
   #define ADC_GPIOC_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
   #define ADC_GPIOF_PINS                (GPIO_Pin_6 | GPIO_Pin_7) // | GPIO_Pin_8 | GPIO_Pin_9)
   #define ADC_CHANNEL_STICK_LH          ADC_Channel_0   // ADC3_IN0
@@ -221,7 +229,7 @@
   #define ADC_CHANNEL_POT1              ADC_Channel_10  // ADC3_IN10
   #define ADC_CHANNEL_POT2              ADC_Channel_11  // ADC3_IN11
   #define ADC_CHANNEL_POT3              ADC_Channel_12  // ADC3_IN12
-  #define ADC_CHANNEL_SLIDER1           ADC_Channel_4   // ADC3_IN13
+  #define ADC_CHANNEL_SLIDER1           ADC_Channel_4   // ADC3_IN4
   #define ADC_CHANNEL_SLIDER2           ADC_Channel_13  // ADC3_IN13
   #define ADC_CHANNEL_BATT              ADC_Channel_5   // ADC3_IN5
   #define ADC_CHANNEL_EXT1              ADC_Channel_6   // ADC3_IN6
@@ -242,9 +250,11 @@
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 
 #if defined(PCBX10)
-  #define SPORT_PWR_RCC_AHB1Periph      RCC_AHB1Periph_GPIOH
-  #define SPORT_PWR_GPIO                GPIOH
-  #define SPORT_PWR_GPIO_PIN            GPIO_Pin_13  // PH.13
+  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
+  #define SPORT_UPDATE_PWR_GPIO         GPIOH
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_13  // PH.13
+#else
+  #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 
 // PCBREV
@@ -515,7 +525,7 @@
   #define INTMODULE_BOOT_GPIO           GPIOI
   #define INTMODULE_BOOT_GPIO_PIN       GPIO_PIN_9  // PI.09
 #endif
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #define INTMODULE_TIMER               TIM2
@@ -534,7 +544,7 @@
 // External Module
 #define EXTMODULE_PWR_GPIO              GPIOB
 #define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3  // PB.03
-#if PCBREV >= 13
+#if defined(PCBX10) || PCBREV >= 13
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB1Periph      0
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM1

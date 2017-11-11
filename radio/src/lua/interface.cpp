@@ -44,7 +44,7 @@ ScriptInternalData standaloneScript;
 uint16_t maxLuaInterval = 0;
 uint16_t maxLuaDuration = 0;
 bool luaLcdAllowed;
-int instructionsPercent = 0;
+uint8_t instructionsPercent = 0;
 char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 struct our_longjmp * global_lj = 0;
 #if defined(COLORLCD)
@@ -99,12 +99,27 @@ void luaHook(lua_State * L, lua_Debug *ar)
 {
   if (ar->event == LUA_HOOKCOUNT) {
     instructionsPercent++;
+#if defined(DEBUG)
+  // Disable Lua script instructions limit in DEBUG mode,
+  // just report max value reached
+  static uint16_t max = 0;
+  if (instructionsPercent > 100) {
+    if (max + 10 < instructionsPercent) {
+      max = instructionsPercent;
+      TRACE("LUA instructionsPercent %u%%", (uint32_t)max);
+    }
+  }
+  else if (instructionsPercent < 10) {
+    max = 0;
+  }
+#else    
     if (instructionsPercent > 100) {
       // From now on, as soon as a line is executed, error
       // keep erroring until you're script reaches the top
       lua_sethook(L, luaHook, LUA_MASKLINE, 0);
       luaL_error(L, "CPU limit");
     }
+#endif
   }
 #if defined(LUA_ALLOCATOR_TRACER)
   else if (ar->event == LUA_HOOKLINE) {
@@ -123,7 +138,7 @@ void luaHook(lua_State * L, lua_Debug *ar)
 
 void luaSetInstructionsLimit(lua_State * L, int count)
 {
-  instructionsPercent=0;
+  instructionsPercent = 0;
 #if defined(LUA_ALLOCATOR_TRACER)
   lua_sethook(L, luaHook, LUA_MASKCOUNT|LUA_MASKLINE, count);
 #else

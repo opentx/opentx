@@ -98,8 +98,11 @@
 #define LEN_COUNTRYCODES               TR("\002", "\007")
 #define TR_COUNTRYCODES                TR("US""JP""EU", "America""Japan\0 ""Europe\0")
 
+#define LEN_USBMODES                   TR("\006", "\010")
+#define TR_USBMODES                    TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
+
 #define LEN_TARANIS_PROTOCOLS          "\004"
-#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
+#define TR_TARANIS_PROTOCOLS           "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -650,6 +653,8 @@
 #define TR_PROTO                       TR(INDENT "Proto", INDENT "Protocol")
 #if defined(CPUARM)
   #define TR_PPMFRAME                  INDENT "PPM frame"
+  #define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
+  #define STR_WARN_BATTVOLTAGE         TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #else
   #define TR_PPMFRAME                  "PPM frame"
 #endif
@@ -871,6 +876,7 @@
 #define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS               TR(INDENT "Status", INDENT "Module Status")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
 #define TR_MULTI_SERVOFREQ             TR(INDENT "Servo rate", INDENT "Servo update rate")
 #define TR_SYNCMENU                    "[Sync]"
 #define TR_LIMIT                       INDENT "Limit"
@@ -885,7 +891,7 @@
 #define TR_POWEROFF                    "\027Power OFF..."
 #define TR_SHUTDOWN                    "SHUTTING DOWN"
 #define TR_SAVEMODEL                   "Saving model settings"
-#define TR_BATT_CALIB                  "Battery calib"
+#define TR_BATT_CALIB                  TR("Battery calib", "Battery calibration")
 #define TR_CURRENT_CALIB               "Current calib"
 #define TR_VOLTAGE                     TR(INDENT "Voltage", INDENT "Voltage source")
 #define TR_CURRENT                     TR(INDENT "Current", INDENT "Current source")
@@ -914,6 +920,8 @@
 #define TR_ALARMSWARN                  "ALARMS"
 #define TR_SWITCHWARN                  TR("SWITCH", "CONTROL")
 #define TR_FAILSAFEWARN                "FAILSAFE"
+#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
+#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION         TR("Expected ver: ","Expected version: ")
 #define TR_WRONG_PCBREV                "Wrong PCB detected"
 #define TR_EMERGENCY_MODE              "EMERGENCY MODE"
@@ -960,6 +968,7 @@
 #define TR_FORMATTING                  "Formatting..."
 #define TR_TEMP_CALIB                  "Temp. Calib"
 #define TR_TIME                        "Time"
+#define TR_MAXBAUDRATE                 "Max bauds"
 
 #define TR_BLUETOOTH                   "Bluetooth"
 #define TR_BAUDRATE                    "BT Baudrate"
@@ -999,6 +1008,7 @@
 #define TR_MENUSENSOR                  "SENSOR"
 #define TR_SENSOR                      "SENSOR"
 #define TR_COUNTRYCODE                 "Country code"
+#define TR_USBMODE                     "USB Mode"
 #define TR_VOICELANG                   "Voice language"
 #define TR_UNITSSYSTEM                 "Units"
 #define TR_EDIT                        "Edit"
@@ -1016,6 +1026,9 @@
 #define TR_RESET_TELEMETRY             "Reset telemetry"
 #define TR_STATISTICS                  "Statistics"
 #define TR_ABOUT_US                    "About"
+#define TR_USB_JOYSTICK                "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE            "USB Storage (SD)"
+#define TR_USB_SERIAL                  "USB Serial (Debug)"
 #define TR_SETUP_SCREENS               "Setup screens"
 #define TR_MONITOR_SCREENS             "Monitors"
 #define TR_AND_SWITCH                  "AND switch"
@@ -1218,7 +1231,7 @@
 
 #define TR_BEEP_VOLUME                 "Beep volume"
 #define TR_WAV_VOLUME                  "Wav volume"
-#define TR_BG_VOLUME                   "Bg volume"
+#define TR_BG_VOLUME                   TR("Bg volume", "Background Volume")
 
 #define TR_TOP_BAR                     "Top bar"
 #define TR_ALTITUDE                    INDENT "Altitude"

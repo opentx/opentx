@@ -1,3 +1,19 @@
+---- #########################################################################
+---- #                                                                       #
+---- # Copyright (C) OpenTX                                                  #
+-----#                                                                       #
+---- # License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html               #
+---- #                                                                       #
+---- # This program is free software; you can redistribute it and/or modify  #
+---- # it under the terms of the GNU General Public License version 2 as     #
+---- # published by the Free Software Foundation.                            #
+---- #                                                                       #
+---- # This program is distributed in the hope that it will be useful        #
+---- # but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+---- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+---- # GNU General Public License for more details.                          #
+---- #                                                                       #
+---- #########################################################################
 local deviceId = 0
 local deviceName = ""
 local lineIndex = 0
@@ -452,11 +468,11 @@ local function runDevicePage(event)
       selectField(-1)
     end
   end
-  
+
   lcd.clear()
   lcd.drawFilledRectangle(0, 0, LCD_W, 30, TITLE_BGCOLOR)
   lcd.drawText(1, 5,deviceName, MENU_TITLE_COLOR)
-  
+
   for y = 1, 11 do
     local field = getField(pageOffset+y)
     if not field then

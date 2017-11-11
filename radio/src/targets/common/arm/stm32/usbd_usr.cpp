@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -35,9 +35,9 @@ const USBD_Usr_cb_TypeDef USR_cb =
   USBD_USR_DeviceConfigured,
   USBD_USR_DeviceSuspended,
   USBD_USR_DeviceResumed,
-  
+
   USBD_USR_DeviceConnected,
-  USBD_USR_DeviceDisconnected,    
+  USBD_USR_DeviceDisconnected,
 };
 }
 
@@ -69,10 +69,10 @@ void USBD_USR_DeviceReset (uint8_t speed)
 */
 void USBD_USR_DeviceConfigured (void)
 {
- 
+
 }
 /**
-* @brief  Displays the message on LCD on device suspend event 
+* @brief  Displays the message on LCD on device suspend event
 * @param  None
 * @retval None
 */
@@ -112,9 +112,10 @@ void USBD_USR_DeviceConnected (void)
 */
 void USBD_USR_DeviceDisconnected (void)
 {
-#if !defined(BOOT) && defined(USB_MASS_STORAGE) && defined(EEPROM)
+#if !defined(BOOT) && defined(EEPROM)
   // TODO is it really needed if we didn't write the EEPROM?
-  NVIC_SystemReset();
+//  if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE)
+//    NVIC_SystemReset();
 #endif
 }
 

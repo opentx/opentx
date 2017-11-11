@@ -171,10 +171,7 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
 
 void menuStatisticsView(event_t event);
 void menuStatisticsDebug(event_t event);
+void menuStatisticsDebug2(event_t event);
 void menuAboutView(event_t event);
-
-#if defined(DEBUG_TRACE_BUFFER)
-void menuTraceBuffer(event_t event);
-#endif
 
 #endif // _MENUS_H_

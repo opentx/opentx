@@ -65,6 +65,9 @@ uint8_t getRequiredProtocol(uint8_t port)
         case MODULE_TYPE_R9M:
           required_protocol = PROTO_PXX;
           break;
+        case MODULE_TYPE_SBUS:
+          required_protocol = PROTO_SBUS;
+          break;
 #if defined(MULTIMODULE)
         case MODULE_TYPE_MULTIMODULE:
           required_protocol = PROTO_MULTIMODULE;
@@ -145,9 +148,10 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
-        disable_multimodule(port);
-        break;
 #endif
+      case PROTO_SBUS:
+        disable_sbusOut(port);
+        break;
 
       case PROTO_PPM:
         disable_ppm(port);
@@ -165,6 +169,10 @@ void setupPulses(uint8_t port)
     case PROTO_PXX:
       setupPulsesPXX(port);
       scheduleNextMixerCalculation(port, 9);
+      break;
+    case PROTO_SBUS:
+      setupPulsesSbus(port);
+      scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].sbus.refreshRate)/2);
       break;
 
 #if defined(DSM2)
@@ -240,9 +248,11 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
     case PROTO_MULTIMODULE:
-        init_multimodule(port);
-        break;
 #endif
+    case PROTO_SBUS:
+        init_sbusOut(port);
+        break;
+
 
       case PROTO_PPM:
         init_ppm(port);

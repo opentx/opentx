@@ -207,11 +207,12 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VBEEPCOUNTDOWN    (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
   #define OFS_VVARIOCENTER      (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
   #define OFS_COUNTRYCODES      (OFS_VVARIOCENTER + sizeof(TR_VVARIOCENTER))
+  #define OFS_USBMODES          (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
 #else
   #define OFS_COUNTRYCODES      (OFS_VLCD)
 #endif
 #if defined(PXX) || defined(CPUARM)
-  #define OFS_VFAILSAFE         (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
+  #define OFS_VFAILSAFE         (OFS_USBMODES + sizeof(TR_USBMODES))
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
 #else
   #define OFS_VFAILSAFE         (OFS_COUNTRYCODES)
@@ -340,6 +341,7 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(PXX) || defined(CPUARM)
   #define STR_COUNTRYCODES      (STR_OPEN9X + OFS_COUNTRYCODES)
+  #define STR_USBMODES          (STR_OPEN9X + OFS_USBMODES)
   #define STR_VFAILSAFE         (STR_OPEN9X + OFS_VFAILSAFE)
 #endif
 
@@ -408,6 +410,10 @@ extern const pm_char STR_USE_GLOBAL_FUNCS[];
 #endif
 extern const pm_char STR_PROTO[];
 extern const pm_char STR_PPMFRAME[];
+#if defined(CPUARM)
+extern const pm_char STR_REFRESHRATE[];
+extern const pm_char SSTR_WARN_BATTVOLTAGE[];
+#endif
 extern const pm_char STR_MS[];
 extern const pm_char STR_SWITCH[];
 extern const pm_char STR_TRIMS[];
@@ -610,6 +616,7 @@ extern const pm_char STR_MODULE_NO_TELEMETRY[];
 extern const pm_char STR_MODULE_BINDING[];
 extern const pm_char STR_PROTOCOL_INVALID[];
 extern const pm_char STR_MODULE_STATUS[];
+extern const pm_char STR_MODULE_SYNC[];
 extern const pm_char STR_MULTI_SERVOFREQ[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];
@@ -632,6 +639,7 @@ extern const pm_char STR_NONE[];
 extern const pm_char STR_MENUSENSOR[];
 extern const pm_char STR_SENSOR[];
 extern const pm_char STR_COUNTRYCODE[];
+extern const pm_char STR_USBMODE[];
 extern const pm_char STR_DISABLE_INTERNAL[];
 #endif
 
@@ -703,6 +711,9 @@ extern const pm_char STR_PERSISTENT_MAH[];
   extern const pm_char STR_RESET_TELEMETRY[];
   extern const pm_char STR_STATISTICS[];
   extern const pm_char STR_ABOUT_US[];
+  extern const pm_char STR_USB_JOYSTICK[];
+  extern const pm_char STR_USB_MASS_STORAGE[];
+  extern const pm_char STR_USB_SERIAL[];
   extern const pm_char STR_SETUP_SCREENS[];
   extern const pm_char STR_MONITOR_SCREENS[];
 #endif
@@ -732,6 +743,8 @@ extern const pm_char STR_THROTTLEWARN[];
 extern const pm_char STR_ALARMSWARN[];
 extern const pm_char STR_SWITCHWARN[];
 extern const pm_char STR_FAILSAFEWARN[];
+extern const pm_char STR_NIGHTLY_WARNING[];
+extern const pm_char STR_NIGHTLY_NOTSAFE[];
 extern const pm_char STR_WRONG_SDCARDVERSION[];
 extern const pm_char STR_WRONG_PCBREV[];
 extern const pm_char STR_EMERGENCY_MODE[];
@@ -778,6 +791,7 @@ extern const pm_char STR_HARDWARE[];
 extern const pm_char STR_FORMATTING[];
 extern const pm_char STR_TEMP_CALIB[];
 extern const pm_char STR_TIME[];
+extern const pm_char STR_MAXBAUDRATE[];
 extern const pm_char STR_BAUDRATE[];
 extern const pm_char STR_SD_INFO_TITLE[];
 extern const pm_char STR_SD_TYPE[];

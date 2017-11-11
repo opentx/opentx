@@ -436,7 +436,7 @@ __ALIGN_BEGIN const uint8_t usbd_cdc_OtherCfgDesc[USB_CDC_CONFIG_DESC_SIZ]  __AL
 uint8_t  usbd_cdc_Init (void  *pdev, 
                                uint8_t cfgidx)
 {
-  uint8_t *pbuf;
+  //uint8_t *pbuf;
 
   APP_Rx_ptr_in  = 0; // modified by OpenTX
   APP_Rx_ptr_out = 0; // modified by OpenTX
@@ -462,10 +462,11 @@ uint8_t  usbd_cdc_Init (void  *pdev,
               CDC_CMD_EP,
               CDC_CMD_PACKET_SZE,
               USB_OTG_EP_INT);
-  
-  pbuf = (uint8_t *)USBD_DeviceDesc;
+
+  /* schwabe: We don't provide direct to this, but our usb descriptor has always the same values (02 and 00) */
+  /*pbuf = (uint8_t *)USBD_DeviceDesc;
   pbuf[4] = DEVICE_CLASS_CDC;
-  pbuf[5] = DEVICE_SUBCLASS_CDC;
+  pbuf[5] = DEVICE_SUBCLASS_CDC; */
   
   /* Initialize the Interface physical components */
   APP_FOPS.pIf_Init();

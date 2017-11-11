@@ -39,6 +39,7 @@ Michael Byrne
 <a href="http://rcstudio.cz">RC Studio (monthly)</a>
 <a href="http://www.craftandtheoryllc.com">Craft & Theory (monthly)</a>
 <a href="http://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
+<a href="http://www.team-blacksheep.com">Team BlackSheep</a>
 
 [People who have donated to OpenTX]
 Mario Sette
@@ -665,7 +666,7 @@ Volkov Victor
 Bryan Anderson
 Daniel Garber
 Pavel Stein
-Ravi Gupta
+RCdiy
 Patrick Tuxbury
 Mark Deverell
 John Capell
@@ -843,7 +844,6 @@ Luke Mole
 NorthSide
 Hannes Mössler
 James Kaufman
-Ravi Gupta
 Lexington S Morley
 Ralph Segar
 Frédéric Devillard
@@ -978,7 +978,6 @@ Ulf Reinhardt
 Wolfgang Renisch
 Trevor Hinze
 Mohammad Zargari
-Dr. Willutzki
 Jean Pierre Bernard
 Patrick Castellan
 Udo Tödter
@@ -1257,3 +1256,28 @@ Erich Strebel
 Robert Goillandeau
 Joel Lopez
 Morten Myklebust
+Ferenc Kunkli
+Josh Kraker  
+Roger Bergevin
+Geoff Sim
+Arthur Reynolds
+David Dalley
+Colin Macdonald
+Charles Wilson
+Walter Daser
+CG Tech Inc
+Alexander Röhlich
+Peter Goodrich
+Randy Melton
+Paul Pridday
+Jörgen Norman
+Peter Glassey
+Carlos Vicente
+Nael Bishtawi
+Paul Dr. Willutzki
+Heart of NM LLC
+Ulf Hedlund
+Meinolph Kaufmann
+Bill Keenan
+Ralf Kosel
+Lukas Hucik

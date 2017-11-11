@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -25,12 +25,12 @@
 
 #define PRINTF_BUFFER_SIZE    128
 
-void serialPutc(char c)
-{
-#if defined(USB_SERIAL)
-  usbSerialPutc(c);
-#elif defined(SERIAL2)
-  serial2Putc(c);
+void serialPutc(char c) {
+  if (getSelectedUsbMode() == USB_SERIAL_MODE)
+    usbSerialPutc(c);
+#if defined(SERIAL2)
+  if (serial2TracesEnabled())
+    serial2Putc(c);
 #endif
 }
 

@@ -14,6 +14,8 @@ set_property(CACHE SPLASH PROPERTY STRINGS DEFAULT OFF FRSKY)
 set(PPM_UNIT "PERCENT_PREC1" CACHE STRING "PPM display unit (US/PERCENT_PREC1/PERCENT_PREC0)")
 set_property(CACHE PPM_UNIT PROPERTY STRINGS US PERCENT_PREC1 PERCENT_PREC0)
 set(DEFAULT_MODE "" CACHE STRING "Default sticks mode")
+set(FONT "STD" CACHE STRING "Choose font : STD or SQT5")
+set_property(CACHE FONT PROPERTY STRINGS SQT5)
 
 option(HELI "Heli menu" ON)
 option(FLIGHT_MODES "Flight Modes" ON)
@@ -42,21 +44,14 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(BINDING_OPTIONS "Allow advanced frsky bindings" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
+option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
+option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
 set(FIRMWARE_C_FLAGS_DEBUG "-g" CACHE STRING "Additional flags for firmware target (Debug config) c compiler (note: CMAKE_C_FLAGS_DEBUG is ignored for firmware/bootloader).")
 set(FIRMWARE_CXX_FLAGS "" CACHE STRING "Additional flags for firmware target c++ compiler (note: all CMAKE_CXX_FLAGS[_*] are ignored for firmware/bootloader).")
 set(FIRMWARE_CXX_FLAGS_DEBUG "-g" CACHE STRING "Additional flags for firmware target (Debug config) c++ compiler (note: CMAKE_CXX_FLAGS_DEBUG is ignored for firmware/bootloader).")
-
-# Python check
-find_package("PythonInterp")
-if(PYTHONINTERP_FOUND)
-  message(STATUS "Python found, version: ${PYTHON_VERSION_STRING}")
-else()
-  message(WARNING "Python not found! Most firmware and simu flavors not buildable.")
-  set(LUA NO)
-endif()
 
 set(THIRDPARTY_DIR thirdparty)
 set(LUA_DIR ${THIRDPARTY_DIR}/Lua/src)
@@ -340,9 +335,21 @@ if(FRSKY_STICKS)
   add_definitions(-DFRSKY_STICKS)
 endif()
 
+if(NOT FONT STREQUAL "")
+  add_definitions(-DFONT=${DEFAULT_MODE})
+endif()
+
 if(EEPROM_VARIANT_NEEDED)
   add_definitions(-DEEPROM_VARIANT=${EEPROM_VARIANT})
 endif()
+
+if(NIGHTLY_BUILD_WARNING)
+  add_definitions(-DNIGHTLY_BUILD_WARNING)
+endif(NIGHTLY_BUILD_WARNING)
+
+if(USEHORUSBT)
+  add_definitions(-DUSEHORUSBT)
+endif(USEHORUSBT)
 
 set(SRC
   ${SRC}
@@ -483,7 +490,7 @@ if(NOT MSVC)
       set(SRC ${SRC} bin_allocator.cpp)
     endif()
 
-    
+
     if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X7S)
       add_subdirectory(targets/${TARGET_DIR}/bootloader)
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)

@@ -41,7 +41,7 @@ void doPaint_480x272(QPainter & p)
   uint16_t previousColor = 0xFF;
   for (int y=0; y<LCD_H; y++) {
     for (int x=0; x<LCD_W; x++) {
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(SIMU)
       uint16_t color = simuLcdBuf[(LCD_W-1-x)+LCD_W*(LCD_H-1-y)];  // color in RGB565
 #else
       uint16_t color = simuLcdBuf[x+LCD_W*y];  // color in RGB565

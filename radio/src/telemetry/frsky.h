@@ -155,6 +155,7 @@ enum FrSkyDataState {
 #define DIY_LAST_ID               0x52ff
 #define DIY_STREAM_FIRST_ID       0x5000
 #define DIY_STREAM_LAST_ID        0x50ff
+#define FACT_TEST_ID              0xf000
 #define RSSI_ID                   0xf101
 #define ADC1_ID                   0xf102
 #define ADC2_ID                   0xf103
@@ -294,7 +295,7 @@ PACK(struct FrskyTelemetryData {
   #define IS_SWR_VALUE_VALID()         (true)
 #endif
 
-#define IS_HIDDEN_TELEMETRY_VALUE(id) ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == SWR_ID))
+#define IS_HIDDEN_TELEMETRY_VALUE(id) ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == SWR_ID) || (id == FACT_TEST_ID))
 
 enum AlarmLevel {
   alarm_off = 0,

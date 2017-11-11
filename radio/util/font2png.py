@@ -2,7 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
-from PyQt4 import Qt, QtCore, QtGui
+try:
+    from PyQt5 import Qt, QtGui, QtCore
+except:
+    from PyQt4 import Qt, QtGui, QtCore
+
 import glob
 
 app = Qt.QApplication(sys.argv)

@@ -99,8 +99,11 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
+#define LEN_USBMODES           TR("\006", "\010")
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
+
 #define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   "UIT\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
+#define TR_TARANIS_PROTOCOLS   "UIT\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -424,6 +427,9 @@
 #define TR_TEMPLATE_HELI               "Heli Setup  "
 #define TR_TEMPLATE_SERVO_TEST         "Servo Test  "
 
+#define LEN_VSWASHTYPE                 "\004"
+#define TR_VSWASHTYPE                  "---\0""120\0""120X""140\0""90\0"
+
 #if defined(PCBHORUS)
 #define LEN_VKEYS              "\006"
 #define TR_VKEYS               "Menu\0 ""Exit\0 ""Enter\0""Up\0   ""Down\0 ""Right\0""Left"
@@ -640,6 +646,8 @@
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
 #if defined(CPUARM)
   #define TR_PPMFRAME          INDENT "PPM frame"
+#define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #else
   #define TR_PPMFRAME          "PPM frame"
 #endif
@@ -693,14 +701,14 @@
 #define TR_BLADES              "Bladen"
 
 #define TR_SCREEN              "Scherm\001"
-#define TR_SOUND_LABEL         "----Geluid-------"
+#define TR_SOUND_LABEL         "Geluid-"
 #define TR_LENGTH              INDENT "Duur"
 #define TR_BEEP_LENGTH         INDENT "Piep-Lengte"
 #define TR_SPKRPITCH           INDENT "Piep-Freq. +/-"
-#define TR_HAPTIC_LABEL        "----Haptic-------" //9XR-Pro
+#define TR_HAPTIC_LABEL        "Haptic"
 #define TR_HAPTICSTRENGTH      INDENT "Sterkte"
 #define TR_CONTRAST            "LCD-Kontrast"
-#define TR_ALARMS_LABEL        "----Alarm---"
+#define TR_ALARMS_LABEL        "Alarm"
 #define TR_BATTERY_RANGE       TR("Accu Bereik", "Accu Spngs-Bereik") // Symbol Akku Ladezustand
 
 #define TR_BATTERYWARNING      INDENT "Accu laag"
@@ -711,13 +719,13 @@
 #define TR_MODEL_STILL_POWERED "Model still powered"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Stappenschakelaar"
-#define TR_THROTTLE_LABEL      "----Gas-------------"
+#define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")
 #define TR_TIMER_NAME          INDENT "Naam"
 #define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
 #define TR_PERSISTENT          TR(INDENT "Vasth.", INDENT "Vasthouden")
-#define TR_BACKLIGHT_LABEL     "----LCD-Verlichting--"
+#define TR_BACKLIGHT_LABEL     "LCD-Verlichting"
 #define TR_BLDELAY             INDENT "Duur"
 #define TR_BLONBRIGHTNESS      INDENT "Aan-Helderheid"
 #define TR_BLOFFBRIGHTNESS     INDENT "Uit-Helderheid"
@@ -730,7 +738,7 @@
 #define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Pot Warn.", INDENT "Pot Posities")
 #define TR_TIMEZONE            TR("Tijdzone", "GPS-Tijdzone +/-Std")
 #define TR_ADJUST_RTC          TR("Klok instellen", INDENT "Klok middels GPS instellen")
-#define TR_GPS                 "----GPS--------------"
+#define TR_GPS                 "GPS"
 #define TR_RXCHANNELORD        TR("Kan.Volgorde", "Kanaalvolgorde")
 #define TR_STICKS              "Sticks"
 #define TR_POTS                "Pots"
@@ -867,6 +875,7 @@
 #define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
 #define TR_MULTI_SERVOFREQ     TR(INDENT "Servo rate", INDENT "Servo update rate")
 #define TR_SYNCMENU            "Sync [MENU]"
 #define TR_LIMIT               INDENT "Grenzen"
@@ -874,7 +883,7 @@
 #define TR_LATITUDE            "Latitude"
 #define TR_LONGITUDE           "Longitude"
 #define TR_GPSCOORD            TR("GPS-coord.", "GPS-coordinaten format")
-#define TR_VARIO               TR("----Vario--------", "----Variometer----") //9XR-Pro
+#define TR_VARIO               "Variometer"
 #define TR_PITCH_AT_ZERO       INDENT "Laagste Toon"
 #define TR_PITCH_AT_MAX        INDENT "Hoogste Toon"
 #define TR_REPEAT_AT_ZERO      INDENT "Herhalen bij 0"
@@ -910,6 +919,8 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          "SCHAKELAAR"
 #define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
+#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION TR("Verwachte ver: ","Verwachte versie: ")
 #define TR_WRONG_PCBREV        "Verkeerde PCB gedetecteerd"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
@@ -956,6 +967,7 @@
 #define TR_FORMATTING          "Formatteren..."
 #define TR_TEMP_CALIB          "Temp.  Calib."
 #define TR_TIME                "Tijd:"
+#define TR_MAXBAUDRATE         "Max bauds"
 
 #define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "BT Baudrate"
@@ -995,6 +1007,7 @@
 #define TR_MENUSENSOR          "SENSOR"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Landcode"
+#define TR_USBMODE             "USB Mode"
 #define TR_VOICELANG           "Taal"
 #define TR_UNITSSYSTEM         "Eenheden"
 #define TR_EDIT                "Wijzigen"
@@ -1012,7 +1025,10 @@
 #define TR_RESET_TELEMETRY     "Reset Telemetrie"
 #define TR_STATISTICS          "Statistieken"
 #define TR_ABOUT_US            "De Programmeurs"
-#define TR_SETUP_SCREENS         "Setup screens"
+#define TR_USB_JOYSTICK        "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE    "USB Storage (SD)"
+#define TR_USB_SERIAL          "USB Serial (Debug)"
+#define TR_SETUP_SCREENS       "Setup screens"
 #define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "AND Switch"
 #define TR_SF                  "SF"
@@ -1029,7 +1045,7 @@
 #define TR_MODELIDUSED         TR("ID al gebruikt", "Model-ID al gebruikt")
 #define TR_MODULE              INDENT "Module-Type"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetrietype")
-#define TR_TELEMETRY_SENSORS   "----Sensoren----"
+#define TR_TELEMETRY_SENSORS   "Sensoren"
 #define TR_VALUE               "Waarde"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Eenheid"
@@ -1216,7 +1232,7 @@
 #define TR_WAV_VOLUME          "Wav-Volume"
 #define TR_BG_VOLUME           "Achtergr-Volume"
 
-#define TR_TOP_BAR             "-------Info------"
+#define TR_TOP_BAR             "Info"
 #define TR_ALTITUDE            INDENT "Hoogte"
 #define TR_SCALE               "Schaal"
 #define TR_VIEW_CHANNELS       "Toon Kanalen"

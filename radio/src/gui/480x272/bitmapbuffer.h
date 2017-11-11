@@ -24,7 +24,7 @@
 #include <inttypes.h>
 #include "colors.h"
 
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(SIMU)
   #define MOVE_PIXEL_RIGHT(p, count)   p -= count
 #else
   #define MOVE_PIXEL_RIGHT(p, count)   p += count
@@ -86,7 +86,7 @@ class BitmapBufferBase
 
     inline const display_t * getPixelPtr(coord_t x, coord_t y) const
     {
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(SIMU)
       x = width - x - 1;
       y = height - y - 1;
 #endif
@@ -165,7 +165,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline const display_t * getPixelPtr(coord_t x, coord_t y) const
     {
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(SIMU)
       x = width - x - 1;
       y = height - y - 1;
 #endif
@@ -174,7 +174,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline display_t * getPixelPtr(coord_t x, coord_t y)
     {
-#if defined(PCBX10)
+#if defined(PCBX10) && !defined(SIMU)
       x = width - x - 1;
       y = height - y - 1;
 #endif
@@ -216,7 +216,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
       if (!data || h==0 || w==0) return;
       if (h<0) { y+=h; h=-h; }
       if (w<0) { x+=w; w=-w; }
-      DMAFillRect(data, width, height, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+      DMAFillRect(data, width, height, (x>0)?x:0, (y>0)?y:0, w, h, lcdColorTable[COLOR_IDX(flags)]);
     }
 
     void drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att);

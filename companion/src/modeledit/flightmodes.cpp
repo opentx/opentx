@@ -22,6 +22,7 @@
 #include "ui_flightmode.h"
 #include "switchitemmodel.h"
 #include "helpers.h"
+#include "customdebug.h"
 
 FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -156,26 +157,53 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   // GVars
   if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes) || phaseIdx == 0) ) {
     QGridLayout *gvLayout = new QGridLayout(ui->gvGB);
-    
+
     // Column headers
     int headerCol = 1;
     QLabel *nameLabel = new QLabel(ui->gvGB);
     nameLabel->setText(tr("Name"));
     gvLayout->addWidget(nameLabel, 0, headerCol++, 1, 1);
+
     if (phaseIdx > 0) {
       QLabel *sourceLabel = new QLabel(ui->gvGB);
       sourceLabel->setText(tr("Value source"));
       gvLayout->addWidget(sourceLabel, 0, headerCol++, 1, 1);
     }
-    QLabel *valueLabel = new QLabel(ui->gvGB);
-    valueLabel->setText(tr("Value"));
-    gvLayout->addWidget(valueLabel, 0, headerCol++, 1, 1);
-    
+
+    if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
+      QLabel *valueLabel = new QLabel(ui->gvGB);
+      valueLabel->setText(tr("Value"));
+      gvLayout->addWidget(valueLabel, 0, headerCol++, 1, 1);
+
+      QLabel *unitLabel = new QLabel(ui->gvGB);
+      unitLabel->setText(tr("Unit"));
+      gvLayout->addWidget(unitLabel, 0, headerCol++, 1, 1);
+
+      QLabel *precLabel = new QLabel(ui->gvGB);
+      precLabel->setText(tr("Prec"));
+      gvLayout->addWidget(precLabel, 0, headerCol++, 1, 1);
+
+      QLabel *minLabel = new QLabel(ui->gvGB);
+      minLabel->setText(tr("Min"));
+      gvLayout->addWidget(minLabel, 0, headerCol++, 1, 1);
+
+      QLabel *maxLabel = new QLabel(ui->gvGB);
+      maxLabel->setText(tr("Max"));
+      gvLayout->addWidget(maxLabel, 0, headerCol++, 1, 1);
+
+      QLabel *popupLabel = new QLabel(ui->gvGB);
+      popupLabel->setText(tr("Popup enabled"));
+      gvLayout->addWidget(popupLabel, 0, headerCol++, 1, 1);
+    }
+
     for (int i=0; i<gvCount; i++) {
       int col = 0;
       // GVar label
       QLabel *label = new QLabel(ui->gvGB);
       label->setText(tr("GVAR%1").arg(i+1));
+      label->setProperty("index", i);
+      label->setContextMenuPolicy(Qt::CustomContextMenu);
+      connect(label, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(gvLabel_customContextMenuRequested(const QPoint &)));
       gvLayout->addWidget(label, i+1, col++, 1, 1);
       // GVar name
       int nameLen = firmware->getCapability(GvarsName);
@@ -191,25 +219,49 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
         gvUse[i] = new QComboBox(ui->gvGB);
         gvUse[i]->setProperty("index", i);
         Helpers::populateGvarUseCB(gvUse[i], phaseIdx);
-        if (phase.gvars[i] > 1024) {
-          gvUse[i]->setCurrentIndex(phase.gvars[i] - 1024);
+        if (phase.gvars[i] > GVAR_MAX_VALUE) {
+          gvUse[i]->setCurrentIndex(phase.gvars[i] - GVAR_MAX_VALUE);
         }
         connect(gvUse[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseGVUse_currentIndexChanged(int)));
         gvLayout->addWidget(gvUse[i], i+1, col++, 1, 1);
       }
       // GVar value
-      gvValues[i] = new QSpinBox(ui->gvGB);
+      gvValues[i] = new QDoubleSpinBox(ui->gvGB);
       gvValues[i]->setProperty("index", i);
       connect(gvValues[i], SIGNAL(editingFinished()), this, SLOT(phaseGVValue_editingFinished()));
-      gvValues[i]->setMinimum(-1024);
-      gvValues[i]->setMaximum(1024);
       gvLayout->addWidget(gvValues[i], i+1, col++, 1, 1);
 
-      // Popups
-      if (IS_TARANIS(board) && phaseIdx == 0) {
+      if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
+        // GVar unit
+        gvUnit[i] = new QComboBox(ui->gvGB);
+        gvUnit[i]->setProperty("index", i);
+        populateGvarUnitCB(gvUnit[i]);
+        connect(gvUnit[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseGVUnit_currentIndexChanged(int)));
+        gvLayout->addWidget(gvUnit[i], i+1, col++, 1, 1);
+
+        // GVar precision
+        gvPrec[i] = new QComboBox(ui->gvGB);
+        gvPrec[i]->setProperty("index", i);
+        populateGvarPrecCB(gvPrec[i]);
+        connect(gvPrec[i], SIGNAL(currentIndexChanged(int)), this, SLOT(phaseGVPrec_currentIndexChanged(int)));
+        gvLayout->addWidget(gvPrec[i], i+1, col++, 1, 1);
+
+        // GVar min
+        gvMin[i] = new QDoubleSpinBox(ui->gvGB);
+        gvMin[i]->setProperty("index", i);
+        connect(gvMin[i], SIGNAL(editingFinished()), this, SLOT(phaseGVMin_editingFinished()));
+        gvLayout->addWidget(gvMin[i], i+1, col++, 1, 1);
+
+        // GVar max
+        gvMax[i] = new QDoubleSpinBox(ui->gvGB);
+        gvMax[i]->setProperty("index", i);
+        connect(gvMax[i], SIGNAL(editingFinished()), this, SLOT(phaseGVMax_editingFinished()));
+        gvLayout->addWidget(gvMax[i], i+1, col++, 1, 1);
+
+        // Popups
         gvPopups[i] = new QCheckBox(ui->gvGB);
         gvPopups[i]->setProperty("index", i);
-        gvPopups[i]->setText(tr("Popup enabled"));
+        //gvPopups[i]->setText(tr("Popup enabled"));
         connect(gvPopups[i], SIGNAL(toggled(bool)), this, SLOT(phaseGVPopupToggled(bool)));
         gvLayout->addWidget(gvPopups[i], i+1, col++, 1, 1);
       }
@@ -254,17 +306,8 @@ void FlightModePanel::update()
     trimUpdate(i);
   }
 
-  if (ui->gvGB->isVisible()) {
-    for (int i=0; i<gvCount; i++) {
-      if (firmware->getCapability(GvarsName) > 0) {
-        gvNames[i]->setText(model->gvars_names[i]);
-      }
-      gvValues[i]->setDisabled(model->isGVarLinked(phaseIdx, i));
-      gvValues[i]->setValue(model->getGVarFieldValue(phaseIdx, i));
-      if (IS_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
-        gvPopups[i]->setChecked(model->gvars_popups[i]);
-      }
-    }
+  for (int i=0; i<gvCount; i++) {
+    updateGVar(i);
   }
 
   for (int i=0; i<reCount; i++) {
@@ -280,6 +323,49 @@ void FlightModePanel::update()
     }
     reValues[i]->setValue(phasere->rotaryEncoders[i]);
   }
+}
+void FlightModePanel::updateGVar(int index)
+{
+  lock = true;
+  if (firmware->getCapability(GvarsName) > 0) {
+    gvNames[index]->setText(model->gvarData[index].name);
+  }
+  gvValues[index]->setDisabled(model->isGVarLinked(phaseIdx, index));
+  setGVSB(gvValues[index], model->gvarData[index].getMin(), model->gvarData[index].getMax(), model->getGVarFieldValue(phaseIdx, index));
+  if (IS_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
+    gvUnit[index]->setCurrentIndex(model->gvarData[index].unit);
+    gvPrec[index]->setCurrentIndex(model->gvarData[index].prec);
+    setGVSB(gvMin[index], GVAR_MIN_VALUE, model->gvarData[index].getMax(), model->gvarData[index].getMin());
+    setGVSB(gvMax[index], model->gvarData[index].getMin(), GVAR_MAX_VALUE, model->gvarData[index].getMax());
+    gvPopups[index]->setChecked(model->gvarData[index].popup);
+  }
+  lock = false;
+}
+
+void FlightModePanel::setGVSB(QDoubleSpinBox * sb, int min, int max, int val)
+{
+  int idx = sb->property("index").toInt();
+  float mul = model->gvarData[idx].multiplierGet();
+  sb->setDecimals(model->gvarData[idx].prec);
+  sb->setSingleStep(mul);
+  sb->setSuffix(model->gvarData[idx].unitToString());
+  sb->setMinimum(min * mul);
+  sb->setMaximum(max * mul);
+  sb->setValue(val * mul);
+}
+
+void FlightModePanel::populateGvarUnitCB(QComboBox * cb)
+{
+  cb->clear();
+  cb->addItem(QObject::tr(""));
+  cb->addItem(QObject::tr("%"));
+}
+
+void FlightModePanel::populateGvarPrecCB(QComboBox * cb)
+{
+  cb->clear();
+  cb->addItem(QObject::tr("0._"));
+  cb->addItem(QObject::tr("0.0"));
 }
 
 void FlightModePanel::phaseName_editingFinished()
@@ -348,9 +434,9 @@ void FlightModePanel::trimUpdate(unsigned int trim)
 void FlightModePanel::phaseGVValue_editingFinished()
 {
   if (!lock) {
-    QSpinBox *spinBox = qobject_cast<QSpinBox*>(sender());
+    QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
     int gvar = spinBox->property("index").toInt();
-    phase.gvars[gvar] = spinBox->value();
+    phase.gvars[gvar] = spinBox->value() * model->gvarData[gvar].multiplierSet();
     emit modified();
   }
 }
@@ -360,8 +446,8 @@ void FlightModePanel::GVName_editingFinished()
   if (!lock) {
     QLineEdit *lineedit = qobject_cast<QLineEdit*>(sender());
     int gvar = lineedit->property("index").toInt();
-    memset(&model->gvars_names[gvar], 0, sizeof(model->gvars_names[gvar]));
-    strcpy(model->gvars_names[gvar], lineedit->text().toLatin1());
+    memset(&model->gvarData[gvar].name, 0, sizeof(model->gvarData[gvar].name));
+    strcpy(model->gvarData[gvar].name, lineedit->text().toLatin1());
     emit modified();
   }
 }
@@ -376,28 +462,98 @@ void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
       phase.gvars[gvar] = 0;
     }
     else {
-      phase.gvars[gvar] = 1024 + index;
+      phase.gvars[gvar] = GVAR_MAX_VALUE + index;
     }
-    update();
+    updateGVar(gvar);
     emit modified();
     lock = false;
   }
 }
 
+void FlightModePanel::phaseGVUnit_currentIndexChanged(int index)
+{
+  if (!lock) {
+    QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
+    int gvar = comboBox->property("index").toInt();
+    model->gvarData[gvar].unit = index;
+    emit modified();
+    updateGVar(gvar);
+  }
+}
+
+void FlightModePanel::phaseGVPrec_currentIndexChanged(int index)
+{
+  if (!lock) {
+    QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
+    int gvar = comboBox->property("index").toInt();
+    model->gvarData[gvar].prec = index;
+    emit modified();
+    updateGVar(gvar);
+  }
+}
+
+void FlightModePanel::phaseGVMin_editingFinished()
+{
+  if (!lock) {
+    QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
+    int gvar = spinBox->property("index").toInt();
+    model->gvarData[gvar].setMin(spinBox->value());
+    if (!model->isGVarLinked(phaseIdx, gvar)) {
+      if (model->getGVarFieldValuePrec(phaseIdx, gvar) < spinBox->value()) {
+        phase.gvars[gvar] = model->gvarData[gvar].getMin();
+      }
+    }
+    for (int x=1; x<firmware->getCapability(FlightModes); x++) {
+      if (!model->isGVarLinked(x, gvar)) {
+        if (model->flightModeData[x].gvars[gvar] < model->gvarData[gvar].getMin()) {
+          model->flightModeData[x].gvars[gvar] = model->gvarData[gvar].getMin();
+        }
+      }
+    }
+    emit modified();
+    updateGVar(gvar);
+  }
+}
+
+void FlightModePanel::phaseGVMax_editingFinished()
+{
+  if (!lock) {
+    QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
+    int gvar = spinBox->property("index").toInt();
+    model->gvarData[gvar].setMax(spinBox->value());
+    if (!model->isGVarLinked(phaseIdx, gvar)) {
+      if (model->getGVarFieldValuePrec(phaseIdx, gvar) > spinBox->value()) {
+        phase.gvars[gvar] = model->gvarData[gvar].getMax();
+      }
+    }
+    for (int x=1; x<firmware->getCapability(FlightModes); x++) {
+      if (!model->isGVarLinked(x, gvar)) {
+        if (model->flightModeData[x].gvars[gvar] > model->gvarData[gvar].getMax()) {
+          model->flightModeData[x].gvars[gvar] = model->gvarData[gvar].getMax();
+        }
+      }
+    }
+    emit modified();
+    updateGVar(gvar);
+  }
+}
+
 void FlightModePanel::phaseGVPopupToggled(bool checked)
 {
-  QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
-  int gvar = cb->property("index").toInt();
-  model->gvars_popups[gvar] = checked;
-  emit modified();
+  if (!lock) {
+    QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
+    int gvar = cb->property("index").toInt();
+    model->gvarData[gvar].popup = checked;
+    emit modified();
+  }
 }
 
 void FlightModePanel::phaseREValue_editingFinished()
 {
   if (!lock) {
     QSpinBox *spinBox = qobject_cast<QSpinBox*>(sender());
-    int gvar = spinBox->property("index").toInt();
-    phase.rotaryEncoders[gvar] = spinBox->value();
+    int re = spinBox->property("index").toInt();
+    phase.rotaryEncoders[re] = spinBox->value();
     emit modified();
   }
 }
@@ -481,11 +637,11 @@ void FlightModePanel::phaseTrimSlider_valueChanged()
 
 void FlightModePanel::name_customContextMenuRequested(const QPoint & pos)
 {
-    QLabel *label = (QLabel *)sender();
-    QPoint globalPos = label->mapToGlobal(pos);
-    QMenu contextMenu;
-    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Clear"),this,SLOT(fmClear()),tr("Clear"));
-    contextMenu.exec(globalPos);
+  QLabel *label = (QLabel *)sender();
+  QPoint globalPos = label->mapToGlobal(pos);
+  QMenu contextMenu;
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("&Clear"),this,SLOT(fmClear()),tr("Clear"));
+  contextMenu.exec(globalPos);
 }
 
 void FlightModePanel::fmClear()
@@ -496,8 +652,7 @@ void FlightModePanel::fmClear()
     if (phaseIdx == 0) {
       if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
         for (int i=0; i < gvCount; ++i) {
-          memset(&model->gvars_names[i], 0, sizeof(model->gvars_names[i]));
-          model->gvars_popups[i] = 0;
+          model->gvarData[i].clear();
         }
       }
     }
@@ -508,11 +663,11 @@ void FlightModePanel::fmClear()
       pswtch->setCurrentIndex(pswtch->findText(item.toString()));
       if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes))) {
         for (int i=0; i<gvCount; i++) {
-          gvUse[i]->setCurrentIndex((phase.gvars[i] > 1024 ? (phase.gvars[i] - 1024) : 0));
+          gvUse[i]->setCurrentIndex((phase.gvars[i] > GVAR_MAX_VALUE ? (phase.gvars[i] - GVAR_MAX_VALUE) : 0));
         }
       }
       for (int i=0; i<reCount; i++) {
-        reUse[i]->setCurrentIndex((phase.rotaryEncoders[i] > 1024 ? (phase.rotaryEncoders[i] - 1024) : 0));
+        reUse[i]->setCurrentIndex((phase.rotaryEncoders[i] > GVAR_MAX_VALUE ? (phase.rotaryEncoders[i] - GVAR_MAX_VALUE) : 0));
       }
       lock = false;
     }
@@ -520,6 +675,36 @@ void FlightModePanel::fmClear()
     emit modified();
     emit nameModified();
   }
+}
+
+void FlightModePanel::gvLabel_customContextMenuRequested(const QPoint & pos)
+{
+  QLabel *label = (QLabel *)sender();
+  gvIdx = label->property("index").toInt();
+  QPoint globalPos = label->mapToGlobal(pos);
+  QMenu contextMenu;
+  contextMenu.addAction(CompanionIcon("clear.png"), tr("&Clear"),this,SLOT(gvClear()),tr("Clear"));
+  contextMenu.exec(globalPos);
+}
+
+void FlightModePanel::gvClear()
+{
+  if (phaseIdx == 0) {
+    if (IS_HORUS_OR_TARANIS(getCurrentBoard())) {
+      model->gvarData[gvIdx].clear();
+      phase.gvars[gvIdx] = 0;
+    }
+  }
+  else {
+    lock = true;
+    if (gvCount > 0 && (firmware->getCapability(GvarsFlightModes))) {
+      phase.gvars[gvIdx] = GVAR_MAX_VALUE + 1;
+      gvUse[gvIdx]->setCurrentIndex(1);
+    }
+    lock = false;
+  }
+  update();
+  emit modified();
 }
 
 /**********************************************************/

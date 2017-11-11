@@ -27,8 +27,8 @@ ui(new Ui::GeneralSetup)
 {
   ui->setupUi(this);
 
-  QLabel * pmsl[] = {ui->ro_label,ui->ro1_label,ui->ro2_label,ui->ro3_label,ui->ro4_label,ui->ro5_label,ui->ro6_label,ui->ro7_label,ui->ro8_label, NULL};
-  QSlider * tpmsld[] = {ui->chkSA, ui->chkSB, ui->chkSC, ui->chkSD, ui->chkSE, ui->chkSF, ui->chkSG, ui->chkSH, NULL};
+  QLabel *pmsl[] = {ui->ro_label, ui->ro1_label, ui->ro2_label, ui->ro3_label, ui->ro4_label, ui->ro5_label, ui->ro6_label, ui->ro7_label, ui->ro8_label, NULL};
+  QSlider *tpmsld[] = {ui->chkSA, ui->chkSB, ui->chkSC, ui->chkSD, ui->chkSE, ui->chkSF, ui->chkSG, ui->chkSH, NULL};
 
   if (IS_TARANIS(firmware->getBoard())) {
     ui->contrastSB->setMinimum(0);
@@ -44,27 +44,27 @@ ui(new Ui::GeneralSetup)
       switchstate >>= 2;
       ui->chkSE->setValue(switchstate & 0x3);
       switchstate >>= 2;
-      ui->chkSF->setValue((switchstate & 0x3)/2);
+      ui->chkSF->setValue((switchstate & 0x3) / 2);
       switchstate >>= 2;
       ui->chkSG->setValue(switchstate & 0x3);
       switchstate >>= 2;
       ui->chkSH->setValue(switchstate & 0x3);
     }
     else {
-      for (int i=0; pmsl[i]; i++) {
+      for (int i = 0; pmsl[i]; i++) {
         pmsl[i]->hide();
       }
-      for (int i=0; tpmsld[i]; i++) {
+      for (int i = 0; tpmsld[i]; i++) {
         tpmsld[i]->hide();
       }
       this->layout()->removeItem(ui->TaranisReadOnlyUnlock);
     }
   }
   else {
-    for (int i=0; pmsl[i]; i++) {
+    for (int i = 0; pmsl[i]; i++) {
       pmsl[i]->hide();
     }
-    for (int i=0; tpmsld[i]; i++) {
+    for (int i = 0; tpmsld[i]; i++) {
       tpmsld[i]->hide();
     }
     this->layout()->removeItem(ui->TaranisReadOnlyUnlock);
@@ -112,10 +112,10 @@ ui(new Ui::GeneralSetup)
     ui->varioVolume_SL->setValue(generalSettings.varioVolume);
     ui->bgVolume_SL->setValue(generalSettings.backgroundVolume);
     ui->wavVolume_SL->setValue(generalSettings.wavVolume);
-    ui->varioP0_SB->setValue(700+(generalSettings.varioPitch*10));
+    ui->varioP0_SB->setValue(700 + (generalSettings.varioPitch * 10));
     updateVarioPitchRange();
-    ui->varioPMax_SB->setValue(700+(generalSettings.varioPitch*10)+1000+(generalSettings.varioRange*10));
-    ui->varioR0_SB->setValue(500+(generalSettings.varioRepeat*10));
+    ui->varioPMax_SB->setValue(700 + (generalSettings.varioPitch * 10) + 1000 + (generalSettings.varioRange * 10));
+    ui->varioR0_SB->setValue(500 + (generalSettings.varioRepeat * 10));
   }
 
   if (!firmware->getCapability(HasFAIMode)) {
@@ -152,10 +152,21 @@ ui(new Ui::GeneralSetup)
     ui->adjustRTC->hide();
   }
 
+  if (IS_STM32(firmware->getBoard())){
+    ui->usbModeCB->setCurrentIndex(generalSettings.usbMode);
+  }
+  else {
+    ui->usbModeLabel->hide();
+    ui->usbModeCB->hide();
+  }
+
   if (!firmware->getCapability(OptrexDisplay)) {
     ui->label_displayType->hide();
     ui->displayTypeCB->setDisabled(true);
     ui->displayTypeCB->hide();
+  }
+  else {
+    ui->displayTypeCB->setCurrentIndex(generalSettings.optrexDisplay);
   }
 
   if (!firmware->getCapability(HasVolume)) {
@@ -328,6 +339,14 @@ void GeneralSetupPanel::on_backlightswCB_currentIndexChanged(int index)
 {
   if (!lock) {
     generalSettings.backlightMode = ui->backlightswCB->currentIndex();
+    emit modified();
+  }
+}
+
+void GeneralSetupPanel::on_usbModeCB_currentIndexChanged(int index)
+{
+  if (!lock) {
+    generalSettings.usbMode = ui->usbModeCB->currentIndex();
     emit modified();
   }
 }

@@ -30,8 +30,8 @@
 
 using namespace Board;
 
-#define OPENTX_FIRMWARE_DOWNLOADS        "http://downloads-22.open-tx.org/firmware"
-#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "http://downloads-22.open-tx.org/nightly/firmware"
+#define OPENTX_FIRMWARE_DOWNLOADS        "https://downloads-22.open-tx.org/firmware"
+#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "https://downloads-22.open-tx.org/nightlies/firmware"
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -806,6 +806,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_DSM2:
           case PULSES_DSMX:
           case PULSES_CROSSFIRE:
+          case PULSES_SBUS:
             return 1;
           case PULSES_MULTIMODULE:
             return id.contains("multimodule") ? 1 : 0;
@@ -837,6 +838,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_LP45:
           case PULSES_DSM2:
           case PULSES_DSMX:
+          case PULSES_SBUS:
             return 1;
           case PULSES_MULTIMODULE:
             return id.contains("multimodule") ? 1 : 0;
@@ -1130,13 +1132,9 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   addOpenTxArmOptions(firmware);
   firmware->addOption("noheli", QObject::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
-  firmware->addOption("lua", QObject::tr("Support for Lua model scripts"));
+  firmware->addOption("lua", QObject::tr("Enable Lua custom scripts screen"));
   firmware->addOption("luac", QObject::tr("Enable Lua compiler"));
   firmware->addOption("bindopt", QObject::tr("Enable bindings options"));
-  Option usb_options[] = {{"massstorage", QObject::tr("Instead of Joystick emulation, USB connection is Mass Storage (as in the Bootloader)")},
-                          {"cli",         QObject::tr("Instead of Joystick emulation, USB connection is Command Line Interface")},
-                          {NULL}};
-  firmware->addOptions(usb_options);
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)

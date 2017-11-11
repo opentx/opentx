@@ -19,12 +19,15 @@
  */
 
 enum BluetoothStates {
-#if defined(PCBX9E) && defined(DEBUG)
+#if defined(PCBX9E) && !defined(USEHORUSBT)
     BLUETOOTH_INIT,
     BLUETOOTH_WAIT_TTM,
     BLUETOOTH_WAIT_BAUDRATE_CHANGE,
 #endif
     BLUETOOTH_STATE_OFF,
+    BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT,
+    BLUETOOTH_STATE_BAUDRATE_SENT,
+    BLUETOOTH_STATE_BAUDRATE_INIT,
     BLUETOOTH_STATE_NAME_SENT,
     BLUETOOTH_STATE_POWER_SENT,
     BLUETOOTH_STATE_ROLE_SENT,
@@ -34,16 +37,18 @@ enum BluetoothStates {
     BLUETOOTH_STATE_DISCOVER_START,
     BLUETOOTH_STATE_DISCOVER_END,
     BLUETOOTH_STATE_BIND_REQUESTED,
-    BLUETOOTH_STATE_BIND_SENT,
-    BLUETOOTH_STATE_CONNECTED
+    BLUETOOTH_STATE_CONNECT_SENT,
+    BLUETOOTH_STATE_CONNECTED,
+    BLUETOOTH_STATE_DISCONNECTED,
 };
 
-#define LEN_BLUETOOTH_FRIEND           16
+#define LEN_BLUETOOTH_ADDR             16
 
 extern volatile uint8_t bluetoothState;
-extern char bluetoothFriend[LEN_BLUETOOTH_FRIEND+1];
+extern char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
+extern char bluetoothDistantAddr[LEN_BLUETOOTH_ADDR+1];
 
-char * bluetoothReadline();
+char * bluetoothReadline(bool error_reset=true);
 void bluetoothWriteString(const char * command);
 void bluetoothForwardTelemetry(uint8_t data);
 void bluetoothWakeup();

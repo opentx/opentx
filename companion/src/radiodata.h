@@ -775,6 +775,7 @@ enum PulsesProtocol {
   PULSES_CROSSFIRE,
   PULSES_MULTIMODULE,
   PULSES_PXX_R9M,
+  PULSES_SBUS,
   PULSES_PROTOCOL_LAST
 };
 
@@ -1023,6 +1024,44 @@ typedef char CustomScreenData[610+1];
 typedef char TopbarData[216+1];
 #endif
 
+#define GVAR_NAME_LEN       3
+#define GVAR_MAX_VALUE      1024
+#define GVAR_MIN_VALUE      -GVAR_MAX_VALUE
+
+class GVarData {
+  public:
+    GVarData() { clear(); }
+
+    enum {
+      GVAR_UNIT_NUMBER,
+      GVAR_UNIT_PERCENT
+    };
+
+    enum {
+      GVAR_PREC_MUL10,
+      GVAR_PREC_MUL1
+    };
+
+    char name[GVAR_NAME_LEN+1];
+    int min;
+    int max;
+    bool popup;
+    unsigned int prec;     // 0 0._  1 0.0
+    unsigned int unit;     // 0 _    1 %
+
+    void clear() {memset(this, 0, sizeof(GVarData)); }
+    QString unitToString() const;
+    QString precToString() const;
+    int multiplierSet();
+    float multiplierGet() const;
+    void setMin(float val);
+    void setMax(float val);
+    int getMin() const;
+    int getMax() const;
+    float getMinPrec() const;
+    float getMaxPrec() const;
+};
+
 class ModelData {
   public:
     ModelData();
@@ -1077,9 +1116,7 @@ class ModelData {
     bool potsWarningEnabled[CPN_MAX_POTS];
     int          potPosition[CPN_MAX_POTS];
     bool         displayChecklist;
-    // TODO structure
-    char     gvars_names[CPN_MAX_GVARS][6+1];
-    bool     gvars_popups[CPN_MAX_GVARS];
+    GVarData gvarData[CPN_MAX_GVARS];
     MavlinkData mavlink;
     unsigned int telemetryProtocol;
     FrSkyData frsky;
@@ -1112,6 +1149,7 @@ class ModelData {
 
     bool isGVarLinked(int phaseIdx, int gvarIdx);
     int getGVarFieldValue(int phaseIdx, int gvarIdx);
+    float getGVarFieldValuePrec(int phaseIdx, int gvarIdx);
 
     ModelData removeGlobalVars();
 
@@ -1184,6 +1222,7 @@ class GeneralSettings {
     BeeperMode beeperMode;
     bool      disableAlarmWarning;
     bool      disableRssiPoweroffAlarm;
+    unsigned int       usbMode;
     BeeperMode hapticMode;
     unsigned int   stickMode; // TODO enum
     int       timezone;
@@ -1219,6 +1258,7 @@ class GeneralSettings {
     bool bluetoothEnable;
     char bluetoothName[10+1];
     unsigned int bluetoothBaudrate;
+    unsigned int bluetoothMode;
     unsigned int sticksGain;
     unsigned int rotarySteps;
     unsigned int countryCode;

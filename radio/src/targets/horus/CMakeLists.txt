@@ -29,6 +29,7 @@ if (PCB STREQUAL X10)
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
     ../common/arm/stm32/adc_driver.cpp
+    pwm_driver.cpp
     )
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x10_bitmaps)
   set(LUA_EXPORT lua_export_x10)

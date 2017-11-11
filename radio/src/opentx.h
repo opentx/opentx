@@ -50,6 +50,12 @@
   #define IF_CPUARM(x)
 #endif
 
+#if defined(STM32)
+  #define CASE_STM32(x)     x,
+#else
+  #define CASE_STM32(x)
+#endif
+
 #if defined(VARIO) && defined(CPUARM)
   #define CASE_VARIO_CPUARM(x) x,
 #else
@@ -146,7 +152,7 @@
   #define CASE_SDCARD(x)
 #endif
 
-#if defined(BLUETOOTH) && !(defined(PCBX9E) && !defined(DEBUG))
+#if defined(BLUETOOTH) && !(defined(PCBX9E) && !defined(USEHORUSBT))
   #define CASE_BLUETOOTH(x) x,
 #else
   #define CASE_BLUETOOTH(x)
@@ -194,7 +200,13 @@
   #define CASE_PCBX9E(x)
 #endif
 
-#if defined(BLUETOOTH) && (!defined(PCBX9E) || defined(DEBUG))
+#if defined(PCBX10)
+  #define CASE_PCBX10(x) x,
+#else
+  #define CASE_PCBX10(x)
+#endif
+
+#if defined(BLUETOOTH) && !(defined(PCBX9E) && !defined(USEHORUSBT))
   #define CASE_BLUETOOTH(x) x,
 #else
   #define CASE_BLUETOOTH(x)
@@ -225,13 +237,16 @@
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
 
 #if defined(BLUETOOTH)
-#if defined(X9E)
+#if defined(X9E) && !defined(USEHORUSBT)
   #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
+  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
 #else
   #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
+  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
 #endif
 #else
   #define IS_BLUETOOTH_TRAINER()       false
+  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
 #endif
 
 #if defined(CPUARM)
@@ -389,11 +404,13 @@ void memswap(void * a, void * b, uint8_t size);
 #include "pulses/pulses.h"
 
 #if defined(CPUARM)
-// Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi, r9m)
-  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8}; // relative to 8!
+// Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi, r9m, sbus)
+  static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8, 8}; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
   #define MAX_TRAINER_CHANNELS_M8()    (MAX_TRAINER_CHANNELS-8)
 #endif
+
+
 
 #if defined(MULTIMODULE)
   #define IS_MODULE_MULTIMODULE(idx)        (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_MULTIMODULE)
@@ -408,11 +425,7 @@ void memswap(void * a, void * b, uint8_t size);
     #define IS_MODULE_PPM(idx)              (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #endif
   #define IS_MODULE_XJT(idx)                (g_model.moduleData[idx].type==MODULE_TYPE_XJT)
-  #if defined(DSM2)
-    #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
-  #else
-    #define IS_MODULE_DSM2(idx)             (false)
-  #endif
+
   #if defined(CROSSFIRE)
     #define IS_MODULE_CROSSFIRE(idx)        (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_CROSSFIRE)
   #else
@@ -429,7 +442,6 @@ void memswap(void * a, void * b, uint8_t size);
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || idx==EXTRA_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)
-  #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[0].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
   #define MAX_EXTRA_MODULE_CHANNELS()       (8) // Only PPM (16ch PPM)
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : (idx==EXTRA_MODULE ? MAX_EXTRA_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8()))
@@ -438,13 +450,19 @@ void memswap(void * a, void * b, uint8_t size);
 #else
   #define IS_MODULE_PPM(idx)                (idx==TRAINER_MODULE || (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_PPM))
   #define IS_MODULE_XJT(idx)                (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_XJT)
-  #define IS_MODULE_DSM2(idx)               (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
   #define MAX_EXTERNAL_MODULE_CHANNELS()    ((g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT) ? maxChannelsXJT[1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol] : maxChannelsModules[g_model.moduleData[EXTERNAL_MODULE].type])
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8())
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
 #endif
 #define IS_MODULE_R9M(idx)                (g_model.moduleData[idx].type==MODULE_TYPE_R9M)
 #define IS_MODULE_PXX(idx)                (IS_MODULE_XJT(idx) || IS_MODULE_R9M(idx))
+
+#if defined(DSM2)
+  #define IS_MODULE_DSM2(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_DSM2)
+  #define IS_MODULE_SBUS(idx)             (idx==EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type==MODULE_TYPE_SBUS)
+#else
+  #define IS_MODULE_DSM2(idx)             (false)
+#endif
 
 
 #if defined(MULTIMODULE)

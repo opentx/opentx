@@ -24,20 +24,51 @@ uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
 uint8_t mainRequestFlags = 0;
 
+#if defined(STM32)
+void onUSBConnectMenu(const char *result)
+{
+  if (result == STR_USB_MASS_STORAGE) {
+    setSelectedUsbMode(USB_MASS_STORAGE_MODE);
+  }
+  else if (result == STR_USB_JOYSTICK) {
+    setSelectedUsbMode(USB_JOYSTICK_MODE);
+  }
+  else if (result == STR_USB_SERIAL) {
+    setSelectedUsbMode(USB_SERIAL_MODE);
+  }
+}
+#endif
+
 void handleUsbConnection()
 {
 #if defined(STM32) && !defined(SIMU)
-  if (!usbStarted() && usbPlugged()) {
+  if (!usbStarted() && usbPlugged() && !(getSelectedUsbMode() == USB_UNSELECTED_MODE)) {
     usbStart();
-#if defined(USB_MASS_STORAGE)
-    opentxClose(false);
-    usbPluggedIn();
+    if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
+      opentxClose(false);
+      usbPluggedIn();
+    }
+  }
+  if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
+    if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuNoItems == 0)) {
+      POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
+      POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
+#if defined(DEBUG)
+      POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
 #endif
+      POPUP_MENU_START(onUSBConnectMenu);
+    }
+    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE) {
+      setSelectedUsbMode(g_eeGeneral.USBMode);
+    }
   }
   if (usbStarted() && !usbPlugged()) {
     usbStop();
-#if defined(USB_MASS_STORAGE) && !defined(EEPROM)
-    opentxResume();
+    if (getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
+      opentxResume();
+    }
+#if !defined(BOOT)
+    setSelectedUsbMode(USB_UNSELECTED_MODE);
 #endif
   }
 #endif // defined(STM32) && !defined(SIMU)
@@ -402,12 +433,10 @@ void perMain()
     return;
   }
 #endif
-  
-#if defined(PCBHORUS)
-  // TODO if it is OK on HORUS it could be ported to all other boards
-  // But in this case it's needed to define sdMount for all boards, because sdInit also initializes the SD mutex
-  static uint32_t sdcard_present_before = SD_CARD_PRESENT();
-  uint32_t sdcard_present_now = SD_CARD_PRESENT();
+
+#if defined(STM32)
+  static bool sdcard_present_before = SD_CARD_PRESENT();
+  bool sdcard_present_now = SD_CARD_PRESENT();
   if (sdcard_present_now && !sdcard_present_before) {
     sdMount();
   }
@@ -421,9 +450,9 @@ void perMain()
     return;
   }
 #endif
-    
+
 #if defined(USB_MASS_STORAGE)
-  if (usbPlugged()) {
+  if (usbPlugged() && getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
     // disable access to menus
     lcdClear();
     menuMainView(0);
@@ -459,4 +488,3 @@ void perMain()
   gpsWakeup();
 #endif
 }
-

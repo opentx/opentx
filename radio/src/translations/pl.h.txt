@@ -95,8 +95,11 @@
 #define LEN_COUNTRYCODES       TR("\002", "\007")
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Ameryka""Japonia""Europa\0")
 
+#define LEN_USBMODES           TR("\006", "\010")
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
+
 #define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0"
+#define TR_TARANIS_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -654,6 +657,8 @@
 #define TR_PROTO               TR(INDENT "Proto", INDENT "Protokół")
 #if defined(CPUARM)
   #define TR_PPMFRAME          INDENT "Ramka PPM"
+#define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #else
   #define TR_PPMFRAME          INDENT "Ramka PPM"
 #endif
@@ -874,6 +879,7 @@
 #define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
+#define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
 #define TR_MULTI_SERVOFREQ     TR(INDENT "Servo rate", INDENT "Servo update rate")
 #define TR_SYNCMENU            "[Synch]"
 #define TR_LIMIT               INDENT "Limit"
@@ -917,6 +923,8 @@
 #define TR_ALARMSWARN          "ALARM"
 #define TR_SWITCHWARN          TR("Przełą","Kontrola")
 #define TR_FAILSAFEWARN        "FAILSAFE"
+#define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
+#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
 #define TR_WRONG_SDCARDVERSION TR("Expected ver: ","Expected version: ")
 #define TR_WRONG_PCBREV        "Wrong PCB detected"
 #define TR_EMERGENCY_MODE      "EMERGENCY MODE"
@@ -963,6 +971,7 @@
 #define TR_FORMATTING          "Formatowanie.."
 #define TR_TEMP_CALIB          "Temp. kalibracji"
 #define TR_TIME                "Czas"
+#define TR_MAXBAUDRATE         "Max bauds"
 
 #define TR_BLUETOOTH           "Bluetooth"
 #define TR_BAUDRATE            "Prędkość BT"
@@ -1003,6 +1012,7 @@
 #define TR_MENUSENSOR          "CZUJNIK"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Kod regionu"
+#define TR_USBMODE             "USB Mode"
 #define TR_VOICELANG           "Język głosu"
 #define TR_UNITSSYSTEM         "Jednostki"
 #define TR_EDIT                "Edytuj"
@@ -1020,7 +1030,10 @@
 #define TR_RESET_TELEMETRY     "Wyczyść telemetrię"
 #define TR_STATISTICS          "Statystyki"
 #define TR_ABOUT_US            "O nas"
-#define TR_SETUP_SCREENS         "Setup screens"
+#define TR_USB_JOYSTICK        "USB Joystick (HID)"
+#define TR_USB_MASS_STORAGE    "USB Storage (SD)"
+#define TR_USB_SERIAL          "USB Serial (Debug)"
+#define TR_SETUP_SCREENS       "Setup screens"
 #define TR_MONITOR_SCREENS     "Monitors"
 #define TR_AND_SWITCH          "Przełącznik AND"
 #define TR_SF                  "FS"

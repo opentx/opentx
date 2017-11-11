@@ -41,4 +41,21 @@ void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
 bool isCrossfireOutputBufferAvailable();
 
+#if defined(PCBX7) || defined(PCBX10)
+const uint32_t CROSSFIRE_BAUDRATES[] = {
+  400000,
+  115200,
+};
+const uint8_t CROSSFIRE_FRAME_PERIODS[] = {
+  4,
+  16,
+};
+#define CROSSFIRE_BAUDRATE             CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
+#define CROSSFIRE_FRAME_PERIOD         CROSSFIRE_FRAME_PERIODS[g_eeGeneral.telemetryBaudrate]
+#else
+#define CROSSFIRE_BAUDRATE             400000
+#define CROSSFIRE_FRAME_PERIOD         4 // 4ms
+#endif
+
+
 #endif // _CROSSFIRE_H_

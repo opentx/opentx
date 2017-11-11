@@ -76,6 +76,7 @@ enum menuRadioSetupItems {
   IF_FAI_CHOICE(ITEM_SETUP_FAI)
   // CASE_MAVLINK(ITEM_MAVLINK_BAUD)
   ITEM_SETUP_SWITCHES_DELAY,
+  ITEM_SETUP_USB_MODE,
   ITEM_SETUP_RX_CHANNEL_ORD,
   ITEM_SETUP_STICK_MODE,
   ITEM_SETUP_MAX
@@ -115,7 +116,7 @@ bool menuRadioSetup(event_t event)
     LABEL(ALARMS), 0, 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
-    CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - Chan order - Mode (1 to 4)
+    CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - USB mode - Chan order - Mode (1 to 4)
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -375,18 +376,12 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BRIGHTNESS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLONBRIGHTNESS);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
-        if (attr) {
-          uint8_t b = 100 - g_eeGeneral.backlightBright;
-          CHECK_INCDEC_GENVAR(event, b, 5, 100);
-          g_eeGeneral.backlightBright = 100 - b;
-        }
+        g_eeGeneral.backlightBright = BACKLIGHT_LEVEL_MAX - editSlider(RADIO_SETUP_2ND_COLUMN, y, event, BACKLIGHT_LEVEL_MAX - g_eeGeneral.backlightBright, BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX, attr);
         break;
 
       case ITEM_SETUP_DIM_LEVEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLOFFBRIGHTNESS);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.blOffBright, attr|LEFT) ;
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.blOffBright, 5, 100);
+        g_eeGeneral.blOffBright = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.blOffBright, BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX, attr);
         break;
 
       case ITEM_SETUP_LABEL_GPS:
@@ -458,6 +453,11 @@ bool menuRadioSetup(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCHES_DELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT, 0, NULL, STR_MS);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, 100-15);
+        break;
+
+      case ITEM_SETUP_USB_MODE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_USBMODE);
+        g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODES, g_eeGeneral.USBMode, USB_UNSELECTED_MODE, USB_MAX_MODE, attr, event);
         break;
 
       case ITEM_SETUP_RX_CHANNEL_ORD:

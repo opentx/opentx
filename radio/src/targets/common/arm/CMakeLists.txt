@@ -132,4 +132,5 @@ set(PULSES_SRC
   ppm_arm.cpp
   pxx_arm.cpp
   dsm2_arm.cpp
+  sbus_arm.cpp
   )

@@ -1911,6 +1911,10 @@ void opentxStart(OPENTX_START_ARGS)
   }
 #endif
 
+#if defined(NIGHTLY_BUILD_WARNING)
+  ALERT(STR_NIGHTLY_WARNING, TR_NIGHTLY_NOTSAFE, AU_ERROR);
+#endif
+
 #if defined(GUI)
   if (calibration_needed) {
     chainMenu(menuFirstCalib);
@@ -1992,9 +1996,7 @@ void opentxResume()
   menuHandlers[0] = menuMainView;
 
   sdMount();
-
   storageReadAll();
-
 #if defined(PCBHORUS)
   loadTheme();
   loadFontCache();
@@ -2591,6 +2593,10 @@ void opentxInit(OPENTX_INIT_ARGS)
     backlightOn();
   }
 
+#if NUM_PWMANALOGS > 0
+  pwmCheck();
+#endif
+
   if (!unexpectedShutdown) {
     opentxStart();
   }
@@ -2826,7 +2832,7 @@ uint32_t pwrCheck()
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
-          if (warningResult == true) {
+          if (warningResult) {
             pwr_check_state = PWR_CHECK_OFF;
             return e_power_off;
           }

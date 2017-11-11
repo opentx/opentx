@@ -1403,12 +1403,7 @@ class InputField: public TransformedField {
 
     virtual void afterImport()
     {
-      if (IS_STM32(board) && version < 216) {
-        if (expo.mode) {
-          expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
-        }
-      }
-      else if (expo.mode) {
+      if ((IS_STM32(board) && version < 216 )|| (!IS_STM32(board) && expo.mode)) {
         expo.srcRaw = RawSource(SOURCE_TYPE_STICK, expo.chn);
       }
 
@@ -3231,18 +3226,18 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   if (board != BOARD_STOCK && (board != BOARD_M128 || version < 215)) {
     for (int i=0; i<MAX_GVARS(board, version); i++) {
       if (version >= 218) {
-        internalField.Append(new ZCharField<3>(this, modelData.gvars_names[i], "GVar name"));
-        internalField.Append(new SpareBitsField<12>(this)); // TODO min
-        internalField.Append(new SpareBitsField<12>(this)); // TODO max
-        internalField.Append(new BoolField<1>(this, modelData.gvars_popups[i]));
-        internalField.Append(new SpareBitsField<1>(this));
-        internalField.Append(new SpareBitsField<2>(this));
+        internalField.Append(new ZCharField<3>(this, modelData.gvarData[i].name, "GVar name"));
+        internalField.Append(new SignedField<12>(this, modelData.gvarData[i].min));
+        internalField.Append(new SignedField<12>(this, modelData.gvarData[i].max));
+        internalField.Append(new BoolField<1>(this, modelData.gvarData[i].popup));
+        internalField.Append(new UnsignedField<1>(this, modelData.gvarData[i].prec));
+        internalField.Append(new UnsignedField<2>(this, modelData.gvarData[i].unit));
         internalField.Append(new SpareBitsField<4>(this));
       }
       else {
-        internalField.Append(new ZCharField<6>(this, modelData.gvars_names[i], "GVar name"));
+        internalField.Append(new ZCharField<6>(this, modelData.gvarData[i].name, "GVar name"));
         if (version >= 216) {
-          internalField.Append(new BoolField<1>(this, modelData.gvars_popups[i]));
+          internalField.Append(new BoolField<1>(this, modelData.gvarData[i].popup));
           internalField.Append(new SpareBitsField<7>(this));
         }
       }
@@ -3687,23 +3682,25 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new UnsignedField<8>(this, generalData.backlightBright));
     if (version < 218) internalField.Append(new SignedField<8>(this, generalData.txCurrentCalibration));
     if (version >= 213) {
-      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureWarn)); // TODO
+      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureWarn));
       if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.mAhWarn));
       if (version < 218) internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
       internalField.Append(new UnsignedField<32>(this, generalData.globalTimer));
-      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureCalib)); // TODO
-      internalField.Append(new UnsignedField<8>(this, generalData.bluetoothBaudrate)); // TODO
-      if (version < 218) internalField.Append(new BoolField<8>(this, generalData.optrexDisplay)); //TODO
-      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.sticksGain)); // TODO
+      if (version < 218) internalField.Append(new SignedField<8>(this, generalData.temperatureCalib));
+      internalField.Append(new UnsignedField<4>(this, generalData.bluetoothBaudrate));
+      internalField.Append(new UnsignedField<4>(this, generalData.bluetoothMode));
+      if (version < 218) internalField.Append(new BoolField<8>(this, generalData.optrexDisplay));
+      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.sticksGain));
     }
     if (version >= 214) {
-      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps)); // TODO
+      if (version < 218) internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps));
       internalField.Append(new UnsignedField<8>(this, generalData.countryCode));
       internalField.Append(new UnsignedField<1>(this, generalData.imperial));
       if (version >= 218) {
         internalField.Append(new BoolField<1>(this, generalData.jitterFilter));
         internalField.Append(new BoolField<1>(this, generalData.disableRssiPoweroffAlarm));
-        internalField.Append(new SpareBitsField<5>(this));
+        internalField.Append(new UnsignedField<2>(this, generalData.usbMode));
+        internalField.Append(new SpareBitsField<3>(this));
       }
       else {
         internalField.Append(new SpareBitsField<7>(this));
@@ -3773,6 +3770,16 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
         internalField.Append(new UnsignedField<8>(this, generalData.backlightColor));
       }
     }
+    else if (IS_SKY9X(board) && version >= 218) {
+      internalField.Append(new SignedField<8>(this, generalData.txCurrentCalibration));
+      internalField.Append(new SignedField<8>(this, generalData.temperatureWarn));
+      internalField.Append(new UnsignedField<8>(this, generalData.mAhWarn));
+      internalField.Append(new UnsignedField<16>(this, generalData.mAhUsed));
+      internalField.Append(new SignedField<8>(this, generalData.temperatureCalib));
+      internalField.Append(new BoolField<8>(this, generalData.optrexDisplay));
+      internalField.Append(new UnsignedField<8>(this, generalData.sticksGain));
+      internalField.Append(new UnsignedField<8>(this, generalData.rotarySteps));
+    }
 
     if (IS_TARANIS_X9E(board))
       internalField.Append(new SpareBitsField<64>(this)); // switchUnlockStates
@@ -3822,7 +3829,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
 
     if (IS_HORUS(board)) {
-      internalField.Append(new BoolField<1>(this, generalData.bluetoothEnable));
+      internalField.Append(new SpareBitsField<1>(this));
       internalField.Append(new UnsignedField<7>(this, generalData.backlightOffBright));
       internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
     }
