@@ -51,6 +51,39 @@ struct our_longjmp * global_lj = 0;
 uint32_t luaExtraMemoryUsage = 0;
 #endif
 
+#if defined(LUA_ALLOCATOR_TRACER)
+
+LuaMemTracer lsScriptsTrace;
+
+#if defined(PCBHORUS)
+  extern LuaMemTracer lsWidgetsTrace;
+  #define GET_TRACER(L)    (L == lsScripts) ? &lsScriptsTrace : &lsWidgetsTrace
+#else
+  #define GET_TRACER(L)    &lsScriptsTrace
+#endif
+
+void *tracer_alloc(void * ud, void * ptr, size_t osize, size_t nsize)
+{
+  LuaMemTracer * tracer = (LuaMemTracer *)ud;
+  if (ptr) {
+    if (osize < nsize) {
+      // TRACE("Lua alloc %u", nsize - osize);
+      tracer->alloc += nsize - osize;
+    }
+    else {
+      // TRACE("Lua free %u", osize - nsize);
+      tracer->free += osize - nsize;
+    }
+  }
+  else {
+    // TRACE("Lua alloc %u (type %s)", nsize, osize < LUA_TOTALTAGS ? lua_typename(0, osize) : "unk");
+    tracer->alloc += nsize;
+  }
+  return l_alloc(ud, ptr, osize, nsize);
+}
+
+#endif // #if defined(LUA_ALLOCATOR_TRACER)
+
 /* custom panic handler */
 int custom_lua_atpanic(lua_State * L)
 {
@@ -64,7 +97,8 @@ int custom_lua_atpanic(lua_State * L)
 
 void luaHook(lua_State * L, lua_Debug *ar)
 {
-  instructionsPercent++;
+  if (ar->event == LUA_HOOKCOUNT) {
+    instructionsPercent++;
 #if defined(DEBUG)
   // Disable Lua script instructions limit in DEBUG mode,
   // just report max value reached
@@ -78,20 +112,38 @@ void luaHook(lua_State * L, lua_Debug *ar)
   else if (instructionsPercent < 10) {
     max = 0;
   }
-#else
-  if (instructionsPercent > 100) {
-    // From now on, as soon as a line is executed, error
-    // keep erroring until you're script reaches the top
-    lua_sethook(L, luaHook, LUA_MASKLINE, 0);
-    luaL_error(L, "CPU limit");
-  }
+#else    
+    if (instructionsPercent > 100) {
+      // From now on, as soon as a line is executed, error
+      // keep erroring until you're script reaches the top
+      lua_sethook(L, luaHook, LUA_MASKLINE, 0);
+      luaL_error(L, "CPU limit");
+    }
 #endif
+  }
+#if defined(LUA_ALLOCATOR_TRACER)
+  else if (ar->event == LUA_HOOKLINE) {
+    lua_getinfo(L, "nSl", ar);
+    LuaMemTracer * tracer = GET_TRACER(L);
+    if (tracer->alloc || tracer->free) {
+      TRACE("LT: [+%u,-%u] %s:%d", tracer->alloc, tracer->free, tracer->script, tracer->lineno);
+    }
+    tracer->script = ar->source;
+    tracer->lineno = ar->currentline;
+    tracer->alloc = 0;
+    tracer->free = 0;
+  }
+#endif // #if defined(LUA_ALLOCATOR_TRACER)
 }
 
 void luaSetInstructionsLimit(lua_State * L, int count)
 {
   instructionsPercent = 0;
+#if defined(LUA_ALLOCATOR_TRACER)
+  lua_sethook(L, luaHook, LUA_MASKCOUNT|LUA_MASKLINE, count);
+#else
   lua_sethook(L, luaHook, LUA_MASKCOUNT, count);
+#endif
 }
 
 int luaGetInputs(lua_State * L, ScriptInputsOutputs & sid)
@@ -189,6 +241,14 @@ void luaClose(lua_State ** L)
     PROTECT_LUA() {
       TRACE("luaClose %p", *L);
       lua_close(*L);  // this should not panic, but we make sure anyway
+#if defined(LUA_ALLOCATOR_TRACER)
+      LuaMemTracer * tracer = GET_TRACER(*L);
+      if (tracer->alloc || tracer->free) {
+        TRACE("LT: [+%u,-%u] luaClose(%s)", tracer->alloc, tracer->free, (*L == lsScripts) ? "scipts" : "widgets");
+      }
+      tracer->alloc = 0;
+      tracer->free = 0;
+#endif // #if defined(LUA_ALLOCATOR_TRACER)
     }
     else {
       // we can only disable Lua for the rest of the session
@@ -1017,12 +1077,20 @@ void luaInit()
   if (luaState != INTERPRETER_PANIC) {
 #if defined(USE_BIN_ALLOCATOR)
     lsScripts = lua_newstate(bin_l_alloc, NULL);   //we use our own allocator!
+#elif defined(LUA_ALLOCATOR_TRACER)
+    memset(&lsScriptsTrace, 0 , sizeof(lsScriptsTrace));
+    lsScriptsTrace.script = "lua_newstate(scripts)";
+    lsScripts = lua_newstate(tracer_alloc, &lsScriptsTrace);   //we use tracer allocator
 #else
     lsScripts = lua_newstate(l_alloc, NULL);   //we use Lua default allocator
 #endif
     if (lsScripts) {
       // install our panic handler
       lua_atpanic(lsScripts, &custom_lua_atpanic);
+
+#if defined(LUA_ALLOCATOR_TRACER)
+      lua_sethook(lsScripts, luaHook, LUA_MASKLINE, 0);
+#endif
 
       // protect libs and constants registration
       PROTECT_LUA() {

@@ -168,10 +168,24 @@ void luaRegisterLibraries(lua_State * L);
 void registerBitmapClass(lua_State * L);
 void luaSetInstructionsLimit(lua_State* L, int count);
 int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode);
+
+struct LuaMemTracer {
+  const char * script;
+  int lineno;
+  uint32_t alloc;
+  uint32_t free;
+};
+
+void * tracer_alloc(void * ud, void * ptr, size_t osize, size_t nsize);
+void luaHook(lua_State * L, lua_Debug *ar);
+
+
 #else  // defined(LUA)
+
 #define luaInit()
 #define LUA_INIT_THEMES_AND_WIDGETS()
 #define LUA_LOAD_MODEL_SCRIPTS()
+
 #endif // defined(LUA)
 
 #endif // _LUA_API_H_
