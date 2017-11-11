@@ -138,7 +138,7 @@ local function init()
 end
 
 -- Engine Menu
-local engineModeItems = {"No", "Yes..."}
+local engineModeItems = {"No", "Yes"}
 local function drawEngineMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got an engine?", 0)
@@ -206,7 +206,7 @@ local function elevonsMenu(event)
 end
 
 -- Rudder menu
-local rudderModeItems = {"No", "Yes..."}
+local rudderModeItems = {"No", "Yes"}
 
 local function drawRudderMenu()
   lcd.clear()
@@ -308,10 +308,10 @@ local function applySettings()
   if engineMode == 1 then
     addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   end
-  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev1-E", 50)
-  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "Elev1-A", 50, 1)
-  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev2-E", 50)
-  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "Elev2-A", -50, 1)
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevL-E", 50)
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "ElevL-A", 50, 1)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevR-E", 50)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "ElevR-A", -50, 1)
   if rudderMode == 1 then
     addMix(rudCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
   end
@@ -319,6 +319,7 @@ end
 
 local function drawNextLine(x, y, label, channel)
   lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+48, y, ":", 0);
   lcd.drawSource(x+52, y, MIXSRC_CH1+channel, 0)
   y = y + 8
   if y > 50 then
@@ -335,17 +336,16 @@ local function drawConfirmationMenu()
   lcd.drawText(48, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
   if engineMode == 1 then
-    x, y = drawNextLine(x, y, "Throttle:", thrCH1)
+    x, y = drawNextLine(x, y, "Throttle", thrCH1)
   end
-  x, y = drawNextLine(x, y, "Elevons:", elevCH1)
-  x, y = drawNextLine(x, y, "Elevons:", elevCH2)
+  x, y = drawNextLine(x, y, "Elev L", elevCH1)
+  x, y = drawNextLine(x, y, "Elev R", elevCH2)
   if rudderMode == 1 then
     drawNextLine(x, y, "Rudder:", rudCH1)
   end
-  lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
+  lcd.drawText(48, LCD_H-8, "Long [ENT] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
-  lcd.drawPixmap(LCD_W-18, 0, "confirm-tick.bmp")
-  lcd.drawPixmap(0, LCD_H-17, "confirm-plane.bmp")
+  lcd.drawPixmap(LCD_W-18, LCD_H-17, "confirm-tick.bmp")
   fieldsMax = 0
 end
 

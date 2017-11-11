@@ -27,7 +27,6 @@ local dirty = true
 local edit = false
 local field = 0
 local fieldsMax = 0
-local comboBoxMode = 0 -- Scrap variable
 
 -- Model settings
 local thrCH1 = 0
@@ -140,11 +139,9 @@ local function drawThrottleMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter throttle channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-thr.bmp")
-  lcd.drawText(20, LCD_H-16, "Assign Throttle", 0);
-  lcd.drawText(20, LCD_H-8, "Channel", 0);
+  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+thrCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -164,11 +161,9 @@ local function drawRollMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter roll channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-roll.bmp")
-  lcd.drawText(20, LCD_H-16, "Assign Roll", 0);
-  lcd.drawText(20, LCD_H-8, "Channel", 0);
+  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+rollCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -188,11 +183,9 @@ local function drawPitchMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter pitch channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-pitch.bmp")
-  lcd.drawText(20, LCD_H-16, "Assign Pitch", 0);
-  lcd.drawText(20, LCD_H-8, "Channel", 0);
+  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+pitchCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -212,11 +205,9 @@ local function drawYawMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select multicopter yaw channel", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W/2, {"..."}, comboBoxMode, getFieldFlags(1))
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawPixmap(120, 8, "multi-yaw.bmp")
-  lcd.drawText(20, LCD_H-16, "Assign Yaw", 0);
-  lcd.drawText(20, LCD_H-8, "Channel", 0);
+  lcd.drawText(25, LCD_H-16, "Assign channel", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(113, LCD_H-8, MIXSRC_CH1+yawCH1, getFieldFlags(0))
   fieldsMax = 0
@@ -234,6 +225,7 @@ end
 -- Confirmation Menu
 local function drawNextLine(x, y, label, channel)
   lcd.drawText(x, y, label, 0);
+  lcd.drawText(x+48, y, ":", 0);
   lcd.drawSource(x+52, y, MIXSRC_CH1+channel, 0)
   y = y + 8
   if y > 50 then
@@ -249,14 +241,13 @@ local function drawConfirmationMenu()
   lcd.clear()
   lcd.drawText(48, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
-  x, y = drawNextLine(x, y, "Throttle:", thrCH1)
-  x, y = drawNextLine(x, y, "Roll:", rollCH1)
-  x, y = drawNextLine(x, y, "Pitch:", pitchCH1)
-  x, y = drawNextLine(x, y, "Yaw:", yawCH1)
-  lcd.drawText(48, LCD_H-8, "[Enter Long] to confirm", 0);
+  x, y = drawNextLine(x, y, "Throttle", thrCH1)
+  x, y = drawNextLine(x, y, "Roll", rollCH1)
+  x, y = drawNextLine(x, y, "Pitch", pitchCH1)
+  x, y = drawNextLine(x, y, "Yaw", yawCH1)
+  lcd.drawText(48, LCD_H-8, "Long [ENT] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
-  lcd.drawPixmap(LCD_W-18, 0, "confirm-tick.bmp")
-  lcd.drawPixmap(0, LCD_H-17, "confirm-plane.bmp")
+  lcd.drawPixmap(LCD_W-18, LCD_H-17, "confirm-tick.bmp")
   fieldsMax = 0
 end
 

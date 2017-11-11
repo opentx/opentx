@@ -20,7 +20,6 @@ local dirty = true
 -- Model types
 local modelType = 0
 local MODELTYPE_PLANE = 0
---local MODELTYPE_HELI = 1
 local MODELTYPE_DELTA = 1
 local MODELTYPE_QUAD = 2
 
@@ -39,18 +38,16 @@ end
 
 -- Model Type Menu
 local function modelTypeSurround(index)
-  lcd.drawRectangle(12+47*index, 13, 48, 48)
-  lcd.drawPixmap(17+47*index, 8, "mark.bmp")
+  lcd.drawRectangle(17+65*index, 14, 48, 48)
+  lcd.drawPixmap(22+65*index, 9, "mark.bmp")
 end
 
 local function drawModelChoiceMenu()
   lcd.clear()
-  lcd.drawScreenTitle("", 0, 0)
-  -- lcd.drawText(58, 13, "Select model type", 0)
-  lcd.drawPixmap( 16, 17, "plane.bmp")
-  --lcd.drawPixmap( 63, 17, "heli.bmp")
-  lcd.drawPixmap(63, 17, "delta.bmp")
-  lcd.drawPixmap(110, 17, "quadri.bmp")
+  lcd.drawScreenTitle("Select model type", 0, 0)
+  lcd.drawPixmap(21, 18, "plane.bmp")
+  lcd.drawPixmap(86, 18, "delta.bmp")
+  lcd.drawPixmap(151, 18, "quadri.bmp")
   modelTypeSurround(modelType)
 end
 
@@ -62,7 +59,6 @@ local function modelTypeMenu(event)
   if event == EVT_ENTER_BREAK then
     if modelType == MODELTYPE_PLANE then
       return "plane.lua"
-    elseif modelType == MODELTYPE_HELI then
     elseif modelType == MODELTYPE_DELTA then
       return "delta.lua"
     elseif modelType == MODELTYPE_QUAD then
