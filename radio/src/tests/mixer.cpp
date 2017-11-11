@@ -709,7 +709,7 @@ TEST_F(MixerTest, SlowOnSwitchSource)
   g_model.mixData[0].destCh = 0;
   g_model.mixData[0].mltpx = MLTPX_ADD;
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  g_model.mixData[0].srcRaw = MIXSRC_SA;
+  g_model.mixData[0].srcRaw = MIXSRC_SB;
 #else
   g_model.mixData[0].srcRaw = MIXSRC_THR;
 #endif
@@ -717,16 +717,16 @@ TEST_F(MixerTest, SlowOnSwitchSource)
   g_model.mixData[0].speedUp = SLOW_STEP*5;
   g_model.mixData[0].speedDown = SLOW_STEP*5;
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  g_eeGeneral.switchConfig = 0x03;
+  g_eeGeneral.switchConfig = 0x0C;
 #endif
 
   s_mixer_first_run_done = true;
 
-  simuSetSwitch(0, -1);
+  simuSetSwitch(1, -1);
   CHECK_SLOW_MOVEMENT(0, -1, 250);
   EXPECT_EQ(chans[0], -CHANNEL_MAX);
 
-  simuSetSwitch(0, 1);
+  simuSetSwitch(1, 1);
   CHECK_SLOW_MOVEMENT(0, +1, 500);
 }
 
@@ -750,7 +750,7 @@ TEST_F(MixerTest, DelayOnSwitch)
   g_model.mixData[0].srcRaw = MIXSRC_MAX;
   g_model.mixData[0].weight = 100;
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  g_model.mixData[0].swtch = SWSRC_SA2;
+  g_model.mixData[0].swtch = SWSRC_SB2;
 #else
   g_model.mixData[0].swtch = SWSRC_THR;
 #endif
@@ -760,13 +760,13 @@ TEST_F(MixerTest, DelayOnSwitch)
   evalFlightModeMixes(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], 0);
 
-  simuSetSwitch(0, 1);
+  simuSetSwitch(1, 1);
   CHECK_DELAY(0, 500);
 
   evalFlightModeMixes(e_perout_mode_normal, 1);
   EXPECT_EQ(chans[0], CHANNEL_MAX);
 
-  simuSetSwitch(0, 0);
+  simuSetSwitch(1, 0);
   CHECK_DELAY(0, 500);
 
   evalFlightModeMixes(e_perout_mode_normal, 1);
