@@ -35,7 +35,7 @@ local configFields = {
 }
 
 local settingsFields = {
-  {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
+  {"SxR functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
   {"Quick Mode:", COMBO, 0xAA, nil, { "Disable", "Enable" } },
   {"CH5 mode:", COMBO, 0xA8, nil, { "AIL2", "AUX1" } },
   {"CH6 mode:", COMBO, 0xA9, nil, { "ELE2", "AUX2" } },

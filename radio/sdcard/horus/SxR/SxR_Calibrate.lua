@@ -44,7 +44,7 @@ local mountBitmapsFile = {"img/up.png", "img/down.png", "img/vert.png", "img/ver
 local calibBitmapsFile = {"img/up.png", "img/down.png", "img/left.png", "img/right.png", "img/forward.png", "img/back.png"}
 
 local settingsFields = {
-  {"S6R functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
+  {"SxR functions:", COMBO, 0x9C, nil, { "Disable", "Enable" } },
   {"CH5 mode:", COMBO, 0xA8, nil, { "AIL2", "AUX1" } },
   {"CH6 mode:", COMBO, 0xA9, nil, { "ELE2", "AUX2" } },
   {"AIL direction:", COMBO, 0x82, nil, { "Normal", "Invers" }, { 255, 0 } },
@@ -124,7 +124,7 @@ end
 -- Redraw the current page
 local function redrawFieldsPage(event)
   lcd.clear()
-  drawScreenTitle("S6R", page, #pages)
+  drawScreenTitle("SxR", page, #pages)
 
   if refreshIndex < #fields then
     drawProgressBar()
@@ -291,10 +291,10 @@ local function runCalibrationPage(event)
     refreshIndex = 0
   end
   lcd.clear()
-  drawScreenTitle("S6R", page, #pages)
+  drawScreenTitle("SxR", page, #pages)
   if(calibrationStep < 6) then
     local position = calibrationPositions[1 + calibrationStep]
-    lcd.drawText(100, 50, "Place the S6R in the following position", TEXT_COLOR)
+    lcd.drawText(100, 50, "Place the SxR in the following position", TEXT_COLOR)
     if calibBitmaps[calibrationStep + 1] == nil then
       calibBitmaps[calibrationStep + 1] = Bitmap.open(calibBitmapsFile[calibrationStep + 1])
     end

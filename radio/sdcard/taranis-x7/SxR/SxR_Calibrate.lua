@@ -56,9 +56,9 @@ end
 -- Draw initial warning page
 local function runWarningPage(event)
   lcd.clear()
-  lcd.drawScreenTitle("S6R Calibration", page, #pages)
+  lcd.drawScreenTitle("SxR Calibration", page, #pages)
   lcd.drawText(0, 10, "You only need to calibrate", SMLSIZE)
-  lcd.drawText(0, 20, "once. You will need the S6R,", SMLSIZE)
+  lcd.drawText(0, 20, "once. You will need the SxR,", SMLSIZE)
   lcd.drawText(0, 30, "power, and a level surface.", SMLSIZE)
   lcd.drawText(0, 40, "Press [Enter] when ready", SMLSIZE)
   lcd.drawText(0, 50, "Press [Exit] to cancel", SMLSIZE)
@@ -74,7 +74,7 @@ end
 -- Redraw the current page
 local function redrawFieldsPage()
   lcd.clear()
-  lcd.drawScreenTitle("S6R Calibration", page, #pages)
+  lcd.drawScreenTitle("SxR Calibration", page, #pages)
 
   if refreshIndex < #fields then
     drawProgressBar()
@@ -219,7 +219,7 @@ local function drawCalibrationOrientation(x, y, step)
                             {"Label facing you", "Pins Right", 0, 1000, 0, 0, -1000, 0},
                             {"Label facing you", "Pins Left", 0, -1000 , 0, 0, 1000, 0} }
 
-    lcd.drawText(0, 9, "Place the S6R as follows:", 0)
+    lcd.drawText(0, 9, "Place the SxR as follows:", 0)
     lcd.drawText(x-9, y, orientation[step][1])
     lcd.drawText(x-9, y+10, orientation[step][2])
     local positionStatus = 0
@@ -248,7 +248,7 @@ local function runCalibrationPage(event)
     refreshIndex = 0
   end
   lcd.clear()
-  lcd.drawScreenTitle("S6R Calibration", page, #pages)
+  lcd.drawScreenTitle("SxR Calibration", page, #pages)
   if(calibrationStep < 6) then
     drawCalibrationOrientation(10, 24, 1 + calibrationStep)
 

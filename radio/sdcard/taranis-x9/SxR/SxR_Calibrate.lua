@@ -54,9 +54,9 @@ end
 -- Draw initial warning page
 local function runWarningPage(event)
   lcd.clear()
-  lcd.drawScreenTitle("S6R", page, #pages)
-  lcd.drawText(0, 10, "Warning: this will start S6R calibration", SMLSIZE)
-  lcd.drawText(0, 20, "This need to be run only once. You need a S6R,", SMLSIZE)
+  lcd.drawScreenTitle("SxR", page, #pages)
+  lcd.drawText(0, 10, "Warning: this will start SxR calibration", SMLSIZE)
+  lcd.drawText(0, 20, "This need to be run only once. You need a SxR,", SMLSIZE)
   lcd.drawText(0, 30, "power supply and a flat level surface (desk,...)", SMLSIZE)
   lcd.drawText(0, 40, "Press [Enter] when ready", SMLSIZE)
   lcd.drawText(0, 50, "Press [Exit] when cancel", SMLSIZE)
@@ -72,7 +72,7 @@ end
 -- Redraw the current page
 local function redrawFieldsPage()
   lcd.clear()
-  lcd.drawScreenTitle("S6R", page, #pages)
+  lcd.drawScreenTitle("SxR", page, #pages)
 
   if refreshIndex < #fields then
     drawProgressBar()
@@ -217,9 +217,9 @@ local function runCalibrationPage(event)
     refreshIndex = 0
   end
   lcd.clear()
-  lcd.drawScreenTitle("S6R", page, #pages)
+  lcd.drawScreenTitle("SxR", page, #pages)
   if(calibrationStep < 6) then
-    lcd.drawText(0, 9, "Turn the S6R as shown", 0)
+    lcd.drawText(0, 9, "Turn the SxR as shown", 0)
     lcd.drawPixmap(10, 19, calibrationPositionsBitmaps[1 + calibrationStep])
     for index = 1, 3, 1 do
       local field = fields[index]
