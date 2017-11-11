@@ -19,8 +19,10 @@
  */
 #include "opentx.h"
 #include "telemetry.h"
+#include "multi.h"
 
 MultiModuleStatus multiModuleStatus;
+MultiModuleSyncStatus multiSyncStatus;
 uint8_t multiBindStatus = MULTI_NORMAL_OPERATION;
 
 
@@ -31,6 +33,8 @@ enum MultiPacketTypes : uint8_t {
   SpektrumTelemetry,
   DSMBindPacket,
   FlyskyIBusTelemetry,
+  ConfigCommand,
+  InputSync,
 };
 
 enum MultiBufferState : uint8_t {
@@ -68,9 +72,23 @@ static void processMultiStatusPacket(const uint8_t *data)
   multiModuleStatus.lastUpdate = get_tmr10ms();
 
   if (wasBinding && !multiModuleStatus.isBinding() && multiBindStatus == MULTI_BIND_INITIATED)
-      multiBindStatus = MULTI_BIND_FINISHED;
-
+    multiBindStatus = MULTI_BIND_FINISHED;
 }
+
+static void processMultiSyncPacket(const uint8_t *data)
+{
+  multiSyncStatus.lastUpdate = get_tmr10ms();
+  multiSyncStatus.interval = data[4];
+  multiSyncStatus.target = data[5];
+  auto oldlag = multiSyncStatus.inputLag;
+
+  multiSyncStatus.calcAdjustedRefreshRate(data[0] << 8 | data[1], data[2] << 8 | data[3]);
+
+  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n", modulePulsesData[EXTERNAL_MODULE].dsm2.rest,
+        multiSyncStatus.inputLag, oldlag-multiSyncStatus.inputLag, multiSyncStatus.target, multiSyncStatus.interval, multiSyncStatus.refreshRate, multiSyncStatus.adjustedRefreshRate/50,
+        multiSyncStatus.getAdjustedRefreshRate());
+}
+
 
 static void processMultiTelemetryPaket(const uint8_t *packet)
 {
@@ -112,7 +130,16 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       if (len >= 4)
         sportProcessTelemetryPacket(data);
       else
-        TRACE("[MP] Received sm telemetry len %d < 4", len);
+        TRACE("[MP] Received sport telemetry len %d < 4", len);
+      break;
+    case InputSync:
+      if (len >= 6)
+        processMultiSyncPacket(data);
+      else
+        TRACE("[MP] Received input sync len %d < 6", len);
+      break;
+    case ConfigCommand:
+      // Just an ack to our command, ignore for now
       break;
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);
@@ -122,31 +149,126 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
 
 // sprintf does not work AVR ARM
 // use a small helper function
-static void appendInt(char* buf, uint32_t val)
+static void appendInt(char *buf, uint32_t val)
 {
-  while(*buf)
+  while (*buf)
     buf++;
 
-  int len=1;
-  int32_t tmp = val / 10;
-  while (tmp) {
-    len++;
-    tmp /= 10;
+  strAppendUnsigned(buf, val);
+}
+
+#define MIN_REFRESH_RATE      7000
+
+void MultiModuleSyncStatus::calcAdjustedRefreshRate(uint16_t newRefreshRate, uint16_t newInputLag)
+{
+  // Check how far off we are from our target, positive means we are too slow, negative we are too fast
+  int lagDifference = newInputLag - inputLag;
+
+  // The refresh rate that we target
+  // Below is least common multiple of MIN_REFRESH_RATE and requested rate
+  uint16_t targetRefreshRate = (uint16_t) (newRefreshRate * ((MIN_REFRESH_RATE / (newRefreshRate - 1)) + 1));
+
+  // Overflow, reverse sample
+  if (lagDifference < -targetRefreshRate/2)
+    lagDifference= -lagDifference;
+
+
+  // Reset adjusted refresh if rate has changed
+  if (newRefreshRate != refreshRate) {
+    refreshRate = newRefreshRate;
+    adjustedRefreshRate = targetRefreshRate;
+    if (adjustedRefreshRate >= 30000)
+      adjustedRefreshRate /= 2;
+
+    // Our refresh rate in ps
+    adjustedRefreshRate*=1000;
+    return;
   }
 
-  buf[len]='\0';
-  for (uint8_t i=1;i<=len; i++) {
-    div_t qr = div(val, 10);
-    char c = qr.rem + '0';
-    buf[len - i] = c;
-    val = qr.quot;
-  }
+  // Caluclate how many samples went into the reported input Lag (*10)
+  int numsamples = interval * 10000 / targetRefreshRate;
+
+  // Convert lagDifference to ps
+  lagDifference=lagDifference*1000;
+
+  // Calculate the time we intentionally were late/early
+  if (inputLag > target*10 +30)
+   lagDifference += numsamples*500;
+  else if (inputLag < target*10 - 30)
+    lagDifference -= numsamples*500;
+
+  // Caculate the time in ps each frame is to slow (positive), fast(negative)
+  int perframeps = lagDifference*10/ numsamples;
+
+  if (perframeps > 20000)
+    perframeps = 20000;
+
+  if (perframeps < -20000)
+    perframeps = -20000;
+
+  adjustedRefreshRate =(adjustedRefreshRate + perframeps);
+
+  // Safeguards
+  if (adjustedRefreshRate < 6*1000*1000)
+    adjustedRefreshRate = 6*1000*1000;
+  if (adjustedRefreshRate > 30*1000*1000)
+    adjustedRefreshRate = 30*1000*1000;
+
+  inputLag = newInputLag;
+}
+
+static uint8_t counter;
+
+uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate() {
+  if (!isValid() || refreshRate == 0)
+    return 18000;
+
+
+  counter = (uint8_t) (counter + 1 % 10);
+  uint16_t rate = (uint16_t) ((adjustedRefreshRate + counter * 50) / 500);
+  // Check how far off we are from our target, positive means we are too slow, negative we are too fast
+ if (inputLag > target*10 +30)
+     return (uint16_t) (rate - 1);
+  else if (inputLag < target*10 - 30)
+    return (uint16_t) (rate + 1);
+  else
+    return rate;
 }
 
 
+static void prependSpaces(char * buf, int val)
+{
+  while (*buf)
+    buf++;
+
+  int k=10000;
+  while(val/k==0 && k > 0)
+  {
+    *buf=' ';
+    buf++;
+    k/= 10;
+  }
+  *buf='\0';
+}
+
+void MultiModuleSyncStatus::getRefreshString(char *statusText)
+{
+  if (!isValid()) {
+    return;
+  }
+
+  strcpy(statusText, "L ");
+  prependSpaces(statusText, inputLag);
+  appendInt(statusText, inputLag);
+  strcat(statusText, "ns R ");
+  prependSpaces(statusText, adjustedRefreshRate/1000);
+  appendInt(statusText, (uint32_t) (adjustedRefreshRate / 1000));
+  strcat(statusText, "ns");
+}
+
 void MultiModuleStatus::getStatusString(char *statusText)
 {
-  if (get_tmr10ms()  - lastUpdate > 200) {
+  if (get_tmr10ms() - lastUpdate > 200) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if (IS_INTERNAL_MODULE_ENABLED())
       strcpy(statusText, STR_DISABLE_INTERNAL);
@@ -158,10 +280,12 @@ void MultiModuleStatus::getStatusString(char *statusText)
   if (!protocolValid()) {
     strcpy(statusText, STR_PROTOCOL_INVALID);
     return;
-  } else if (!serialMode()) {
+  }
+  else if (!serialMode()) {
     strcpy(statusText, STR_MODULE_NO_SERIAL_MODE);
     return;
-  } else if (!inputDetected()) {
+  }
+  else if (!inputDetected()) {
     strcpy(statusText, STR_MODULE_NO_INPUT);
     return;
   }
@@ -187,7 +311,8 @@ static void processMultiTelemetryByte(const uint8_t data)
 {
   if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
     telemetryRxBuffer[telemetryRxBufferCount++] = data;
-  } else {
+  }
+  else {
     TRACE("[MP] array size %d error", telemetryRxBufferCount);
     multiTelemetryBufferState = NoProtocolDetected;
   }
@@ -216,12 +341,14 @@ void processMultiTelemetryData(const uint8_t data)
     case NoProtocolDetected:
       if (data == 'M') {
         multiTelemetryBufferState = MultiFirstByteReceived;
-      } else if (data == 0xAA || data == 0x7e) {
+      }
+      else if (data == 0xAA || data == 0x7e) {
         multiTelemetryBufferState = guessProtocol();
 
         // Process the first byte by the protocol
         processMultiTelemetryData(data);
-      } else {
+      }
+      else {
         TRACE("[MP] invalid start byte 0x%02X", data);
       }
       break;
@@ -262,12 +389,14 @@ void processMultiTelemetryData(const uint8_t data)
       telemetryRxBufferCount = 0;
       if (data == 'P') {
         multiTelemetryBufferState = ReceivingMultiProtocol;
-      } else if (data >= 5 && data <= 10) {
+      }
+      else if (data >= 5 && data <= 10) {
         // Protocol indented for er9x/ersky9, accept only 5-10 as packet length to have
         // a bit of validation
         multiTelemetryBufferState = ReceivingMultiStatus;
 
-      } else {
+      }
+      else {
         TRACE("[MP] invalid second byte 0x%02X", data);
         multiTelemetryBufferState = NoProtocolDetected;
       }
@@ -280,9 +409,9 @@ void processMultiTelemetryData(const uint8_t data)
     case ReceivingMultiStatus:
       // Ignore multi status
       telemetryRxBuffer[telemetryRxBufferCount++] = data;
-      if (telemetryRxBufferCount>5) {
+      if (telemetryRxBufferCount > 5) {
         processMultiStatusPacket(telemetryRxBuffer);
-        telemetryRxBufferCount=0;
+        telemetryRxBufferCount = 0;
         multiTelemetryBufferState = NoProtocolDetected;
       }
   }

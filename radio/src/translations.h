@@ -616,6 +616,7 @@ extern const pm_char STR_MODULE_NO_TELEMETRY[];
 extern const pm_char STR_MODULE_BINDING[];
 extern const pm_char STR_PROTOCOL_INVALID[];
 extern const pm_char STR_MODULE_STATUS[];
+extern const pm_char STR_MODULE_SYNC[];
 extern const pm_char STR_MULTI_SERVOFREQ[];
 #if LCD_W < 212
 extern const pm_char STR_SUBTYPE[];

@@ -46,7 +46,7 @@ static const QStringList STR_SUBTYPE_SYMAX   {"Standard", "Syma X5C"};
 static const QStringList STR_SUBTYPE_SLT     {"SLT", "Vista"};
 static const QStringList STR_SUBTYPE_CX10    {"Green", "Blue", "DM007", "-", "JC3015a", "JC3015b", "MK33041", "Q242"};
 static const QStringList STR_SUBTYPE_CG023   {"CG023", "YD829", "H8 3D"};
-static const QStringList STR_SUBTYPE_BAYANG  {"Bayang", "H8S3D"};
+static const QStringList STR_SUBTYPE_BAYANG  {"Bayang", "H8S3D", "X16 AH"};
 static const QStringList STR_SUBTYPE_KN      {"WLtoys", "FeiLun"};
 static const QStringList STR_SUBTYPE_MT99    {"MT99", "H7", "YZ", "LS", "FY805"};
 static const QStringList STR_SUBTYPE_MJXQ    {"WLH08", "X600", "X800", "H26D", "E010", "H26WH"};
@@ -62,33 +62,33 @@ static const QStringList NO_SUBTYPE          {STR_MULTI_DEFAULT};
 // Table is designed to be shared with gui_common_arm.cpp
 
 const Multiprotocols multiProtocols {
-  { MM_RF_PROTO_FLYSKY,     4,  STR_SUBTYPE_FLYSKY,   nullptr             },
-  { MM_RF_PROTO_HUBSAN,     0,  NO_SUBTYPE,           STR_MULTI_VIDFREQ   },
-  { MM_RF_PROTO_FRSKY,      5,  STR_SUBTYPE_FRSKY,    STR_MULTI_RFTUNE    },
-  { MM_RF_PROTO_HISKY,      1,  STR_SUBTYPE_HISKY,    nullptr             },
-  { MM_RF_PROTO_V2X2,       1,  STR_SUBTYPE_V2X2,     nullptr             },
-  { MM_RF_PROTO_DSM2,       3,  STR_SUBTYPE_DSM,      nullptr             },
-  { MM_RF_PROTO_YD717,      4,  STR_SUBTYPE_YD717,    nullptr             },
-  { MM_RF_PROTO_KN,         1,  STR_SUBTYPE_KN,       nullptr             },
-  { MM_RF_PROTO_SYMAX,      1,  STR_SUBTYPE_SYMAX,    nullptr             },
-  { MM_RF_PROTO_SLT,        1,  STR_SUBTYPE_SLT,      nullptr             },
-  { MM_RF_PROTO_CX10,       7,  STR_SUBTYPE_CX10,     nullptr             },
-  { MM_RF_PROTO_CG023,      2,  STR_SUBTYPE_CG023,    nullptr             },
-  { MM_RF_PROTO_BAYANG,     1,  STR_SUBTYPE_BAYANG,   STR_MULTI_TELEMETRY },
-  { MM_RF_PROTO_MT99XX,     4,  STR_SUBTYPE_MT99,     nullptr             },
-  { MM_RF_PROTO_MJXQ,       5,  STR_SUBTYPE_MJXQ,     nullptr             },
-  { MM_RF_PROTO_FY326,      1,  STR_SUBTYPE_FY326,    nullptr             },
-  { MM_RF_PROTO_SFHSS,      0,  NO_SUBTYPE,           STR_MULTI_RFTUNE    },
-  { MM_RF_PROTO_HONTAI,     2,  STR_SUBTYPE_HONTAI,   nullptr             },
-  { MM_RF_PROTO_OLRS,       0,  NO_SUBTYPE,           STR_MULTI_RFPOWER   },
-  { MM_RF_PROTO_FS_AFHDS2A, 3,  STR_SUBTYPE_AFHDS2A,  STR_MULTI_SERVOFREQ },
-  { MM_RF_PROTO_Q2X2,       2,  STR_SUBTYPE_Q2X2,     nullptr             },
-  { MM_RF_PROTO_WK_2X01,    5,  STR_SUBTYPE_WK2x01,   nullptr             },
-  { MM_RF_PROTO_Q303,       3,  STR_SUBTYPE_Q303,     nullptr             },
-  { MM_RF_CUSTOM_SELECTED,  7,  STR_SUBTYPE_CUSTOM,   STR_MULTI_OPTION    },
+  {MM_RF_PROTO_FLYSKY,     4, false,      STR_SUBTYPE_FLYSKY,  nullptr},
+  {MM_RF_PROTO_HUBSAN,     0, false,      NO_SUBTYPE,          STR_MULTI_VIDFREQ},
+  {MM_RF_PROTO_FRSKY,      5, false,      STR_SUBTYPE_FRSKY,   STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_HISKY,      1, false,      STR_SUBTYPE_HISKY,   nullptr},
+  {MM_RF_PROTO_V2X2,       1, false,      STR_SUBTYPE_V2X2,    nullptr},
+  {MM_RF_PROTO_DSM2,       3, false,      STR_SUBTYPE_DSM,     nullptr},
+  {MM_RF_PROTO_YD717,      4, false,      STR_SUBTYPE_YD717,   nullptr},
+  {MM_RF_PROTO_KN,         1, false,      STR_SUBTYPE_KN,      nullptr},
+  {MM_RF_PROTO_SYMAX,      1, false,      STR_SUBTYPE_SYMAX,   nullptr},
+  {MM_RF_PROTO_SLT,        1, false,      STR_SUBTYPE_SLT,     nullptr},
+  {MM_RF_PROTO_CX10,       7, false,      STR_SUBTYPE_CX10,    nullptr},
+  {MM_RF_PROTO_CG023,      2, false,      STR_SUBTYPE_CG023,   nullptr},
+  {MM_RF_PROTO_BAYANG,     2, false,      STR_SUBTYPE_BAYANG,  STR_MULTI_TELEMETRY},
+  {MM_RF_PROTO_MT99XX,     4, false,      STR_SUBTYPE_MT99,    nullptr},
+  {MM_RF_PROTO_MJXQ,       5, false,      STR_SUBTYPE_MJXQ,    nullptr},
+  {MM_RF_PROTO_FY326,      1, false,      STR_SUBTYPE_FY326,   nullptr},
+  {MM_RF_PROTO_SFHSS,      0, false,      NO_SUBTYPE,          STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_HONTAI,     2, false,      STR_SUBTYPE_HONTAI,  nullptr},
+  {MM_RF_PROTO_OLRS,       0, false,      NO_SUBTYPE,          STR_MULTI_RFPOWER},
+  {MM_RF_PROTO_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A, STR_MULTI_SERVOFREQ},
+  {MM_RF_PROTO_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,    nullptr},
+  {MM_RF_PROTO_WK_2X01,    5, false,      STR_SUBTYPE_WK2x01,  nullptr},
+  {MM_RF_PROTO_Q303,       3, false,      STR_SUBTYPE_Q303,    nullptr},
+  {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,          STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
-  { 0xfe,                   0,  NO_SUBTYPE,           nullptr             }
+  { 0xfe,                  0, false,      NO_SUBTYPE,           nullptr}
 };
 
 int Multiprotocols::MultiProtocolDefinition::getOptionMin() const {
