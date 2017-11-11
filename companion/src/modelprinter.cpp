@@ -305,7 +305,8 @@ QString ModelPrinter::printGlobalVar(int flightModeIndex, int gvarIndex)
   const FlightModeData & fm = model.flightModeData[flightModeIndex];
 
   if (fm.gvars[gvarIndex] <= 1024) {
-    return QString("%1").arg(fm.gvars[gvarIndex]);
+    //double val = fm.gvars[gvarIndex] * model.gvarData[gvarIndex].multiplierGet();
+    return QString("%1").arg(fm.gvars[gvarIndex] * model.gvarData[gvarIndex].multiplierGet());
   }
   else {
     int num = fm.gvars[gvarIndex] - 1025;
@@ -685,3 +686,29 @@ QString ModelPrinter::createCurveImage(int idx, QTextDocument * document)
   // qDebug() << "ModelPrinter::createCurveImage()" << idx << filename;
   return filename;
 }
+
+QString ModelPrinter::printGlobalVarUnit(int idx)
+{
+  return model.gvarData[idx].unitToString().toHtmlEscaped();
+}
+
+QString ModelPrinter::printGlobalVarPrec(int idx)
+{
+  return model.gvarData[idx].precToString().toHtmlEscaped();
+}
+
+QString ModelPrinter::printGlobalVarMin(int idx)
+{
+  return QString::number(model.gvarData[idx].getMinPrec());
+}
+
+QString ModelPrinter::printGlobalVarMax(int idx)
+{
+  return QString::number(model.gvarData[idx].getMaxPrec());
+}
+
+QString ModelPrinter::printGlobalVarPopup(int idx)
+{
+  return (model.gvarData[idx].popup ? "Y" : "N" );
+}
+

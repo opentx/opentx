@@ -307,18 +307,64 @@ QString MultiModelPrinter::printFlightModes()
   if ((gvars && firmware->getCapability(GvarsFlightModes)) || firmware->getCapability(RotaryEncoders)) {
     MultiColumns columns(modelPrinterMap.size());
     columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
-    columns.append("<tr><td><b>" + tr("Flight mode") + "</b></td>");
+    columns.append("<tr><td><b>" + tr("Global variables") + "</b></td>");
     if (firmware->getCapability(GvarsFlightModes)) {
       for (int i=0; i<gvars; i++) {
-        columns.append("<td><b>" + tr("GV%1").arg(i+1) + "</b><br/>");
-        COMPARE(model->gvars_names[i]);
-        columns.append("</td>");
+        columns.append("<td><b>" + tr("GV%1").arg(i+1) + "</b></td>");
       }
     }
     for (int i=0; i<firmware->getCapability(RotaryEncoders); i++) {
       columns.append("<td><b>" + tr("RE%1").arg(i+1) + "</b></td>");
     }
     columns.append("</tr>");
+
+    if (firmware->getCapability(GvarsFlightModes)) {
+      columns.append("<tr><td><b>Name</b></td>");
+      for (int i=0; i<gvars; i++) {
+        columns.append("<td>");
+        COMPARE(model->gvarData[i].name);
+        columns.append("</td>");
+      }
+      columns.append("</tr>");
+      columns.append("<tr><td><b>Unit</b></td>");
+      for (int i=0; i<gvars; i++) {
+        columns.append("<td>");
+        COMPARE(modelPrinter->printGlobalVarUnit(i));
+        columns.append("</td>");
+      }
+      columns.append("</tr>");
+      columns.append("<tr><td><b>Prec</b></td>");
+      for (int i=0; i<gvars; i++) {
+        columns.append("<td>");
+        COMPARE(modelPrinter->printGlobalVarPrec(i));
+        columns.append("</td>");
+      }
+      columns.append("</tr>");
+      columns.append("<tr><td><b>Min</b></td>");
+      for (int i=0; i<gvars; i++) {
+        columns.append("<td>");
+        COMPARE(modelPrinter->printGlobalVarMin(i));
+        columns.append("</td>");
+      }
+      columns.append("</tr>");
+      columns.append("<tr><td><b>Max</b></td>");
+      for (int i=0; i<gvars; i++) {
+        columns.append("<td>");
+        COMPARE(modelPrinter->printGlobalVarMax(i));
+        columns.append("</td>");
+      }
+      columns.append("</tr>");
+      columns.append("<tr><td><b>Popup</b></td>");
+      for (int i=0; i<gvars; i++) {
+        columns.append("<td>");
+        COMPARE(modelPrinter->printGlobalVarPopup(i));
+        columns.append("</td>");
+      }
+      columns.append("</tr>");
+    }
+
+    columns.append("<tr><td><b>" + tr("Flight mode") + "</b></td></tr>");
+
     for (int i=0; i<firmware->getCapability(FlightModes); i++) {
       columns.append("<tr><td><b>" + tr("FM%1").arg(i) + "</b>&nbsp;");
       COMPARE(model->flightModeData[i].name);

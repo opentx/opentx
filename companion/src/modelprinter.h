@@ -82,6 +82,11 @@ class ModelPrinter: public QObject
     QString printCurveName(int idx);
     QString printCurve(int idx);
     QString createCurveImage(int idx, QTextDocument * document);
+    QString printGlobalVarUnit(int idx);
+    QString printGlobalVarPrec(int idx);
+    QString printGlobalVarMin(int idx);
+    QString printGlobalVarMax(int idx);
+    QString printGlobalVarPopup(int idx);
 
   private:
     Firmware * firmware;

@@ -55,10 +55,16 @@ class FlightModePanel : public ModelPanel
     void phaseGVValue_editingFinished();
     void phaseGVUse_currentIndexChanged(int index);
     void phaseGVPopupToggled(bool checked);
+    void phaseGVUnit_currentIndexChanged(int index);
+    void phaseGVPrec_currentIndexChanged(int index);
+    void phaseGVMin_editingFinished();
+    void phaseGVMax_editingFinished();
     void phaseREValue_editingFinished();
     void phaseREUse_currentIndexChanged(int index);
     void name_customContextMenuRequested(const QPoint & pos);
     void fmClear();
+    void gvLabel_customContextMenuRequested(const QPoint & pos);
+    void gvClear();
 
   private:
     Ui::FlightMode *ui;
@@ -66,11 +72,16 @@ class FlightModePanel : public ModelPanel
     FlightModeData & phase;
     int reCount;
     int gvCount;
+    int gvIdx;
     QVector<QLabel *> trimsLabel;
     QLineEdit * gvNames[CPN_MAX_GVARS];
-    QSpinBox * gvValues[CPN_MAX_GVARS];
+    QDoubleSpinBox * gvValues[CPN_MAX_GVARS];
     QCheckBox * gvPopups[CPN_MAX_GVARS];
     QComboBox * gvUse[CPN_MAX_GVARS];
+    QComboBox * gvUnit[CPN_MAX_GVARS];
+    QComboBox * gvPrec[CPN_MAX_GVARS];
+    QDoubleSpinBox * gvMin[CPN_MAX_GVARS];
+    QDoubleSpinBox * gvMax[CPN_MAX_GVARS];
     QSpinBox * reValues[CPN_MAX_ENCODERS];
     QComboBox * reUse[CPN_MAX_ENCODERS];
     QVector<QComboBox *> trimsUse;
@@ -79,7 +90,10 @@ class FlightModePanel : public ModelPanel
     RawSwitchFilterItemModel * rawSwitchItemModel;
 
     void trimUpdate(unsigned int trim);
-
+    void updateGVar(int index);
+    void setGVSB(QDoubleSpinBox * spinBox, int min, int max, int val);
+    void populateGvarUnitCB(QComboBox * cb);
+    void populateGvarPrecCB(QComboBox * cb);
 };
 
 class FlightModesPanel : public ModelPanel
