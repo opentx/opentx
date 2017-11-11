@@ -89,8 +89,7 @@ bool menuStatsGraph(event_t event)
     prev_yv = yv;
   }
 
-  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
-
+  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+1, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
 }
 
@@ -152,9 +151,8 @@ bool menuStatsDebug(event_t event)
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Tlm RX Errs");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, telemetryErrors, LEFT);
-  ++line;
 
-  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+2, STR_MENUTORESET, CENTERED);
+  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+1, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
 }
 
@@ -180,12 +178,11 @@ bool menuStatsAnalogs(event_t event)
   }
 
   // SWR
-  if((IS_MODULE_XJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (IS_MODULE_PXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
+  if ((IS_MODULE_XJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (IS_MODULE_PXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+7*FH, "RAS");
     lcdDrawNumber(MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.swr.value);
     lcdDrawText(MENUS_MARGIN_LEFT + LCD_W/2, MENU_CONTENT_TOP+7*FH, "XJTVER");
     lcdDrawNumber(LCD_W/2 + MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.xjtVersion);
-
   }
 
   return true;
