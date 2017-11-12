@@ -878,8 +878,7 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
 	  lat = lonLat[0].toDouble();
 	  lon = lonLat[1].toDouble();
   }
-  else
-  {
+  else {
 	  lon = convertDegMin(lonLat[0]);
 	  lat = convertDegMin(lonLat[1]);
   }
