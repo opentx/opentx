@@ -49,6 +49,9 @@ inline void SYSTEM_RESET()
 #endif
   generalDefault();
   g_eeGeneral.templateSetup = 0;
+  for (int i=0; i<NUM_SWITCHES; i++) {
+    simuSetSwitch(i, -1);
+  }
 }
 
 inline void MODEL_RESET()

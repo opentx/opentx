@@ -151,10 +151,10 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, unsigned index)
   }
   else {
     const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS,   "3POS"},
       {SWITCH_2POS,   "THR"},
       {SWITCH_2POS,   "RUD"},
       {SWITCH_2POS,   "ELE"},
-      {SWITCH_3POS,   "3POS"},
       {SWITCH_2POS,   "AIL"},
       {SWITCH_2POS,   "GEA"},
       {SWITCH_TOGGLE, "TRN"}
