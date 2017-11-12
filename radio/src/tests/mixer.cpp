@@ -473,7 +473,7 @@ TEST_F(MixerTest, Cascaded3Channels)
   g_model.mixData[2].destCh = 2;
   g_model.mixData[2].srcRaw = MIXSRC_THR;
   g_model.mixData[2].weight = 100;
-  simuSetSwitch(0, 1);
+  simuSetSwitch(1, 1);
   evalFlightModeMixes(e_perout_mode_normal, 0);
   EXPECT_EQ(chans[0], CHANNEL_MAX);
   EXPECT_EQ(chans[1], CHANNEL_MAX);
