@@ -1922,6 +1922,7 @@ void opentxStart(OPENTX_START_ARGS)
   else {
     checkAlarm();
     checkAll();
+    PLAY_MODEL_NAME();
   }
 #endif
 }
