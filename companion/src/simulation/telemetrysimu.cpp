@@ -868,8 +868,19 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
   if (lonLat.count() < 2) {
     return ""; // invalid format
   }
-  double lon = convertDegMin(lonLat[0]);
-  double lat = convertDegMin(lonLat[1]);
+  double lon, lat;
+  // crossfire GPS sensor logs cords in decimal format with a precision of 6 places
+  // if this format is met there is no need to call convertDegMin
+  QRegularExpression crossfireCoordinateFormatRegex("^([-+]?\\d{1,2}[.]\\d{6})$");
+  QRegularExpressionMatch latFormatMatch = crossfireCoordinateFormatRegex.match(lonLat[0]);
+  QRegularExpressionMatch lonFormatMatch = crossfireCoordinateFormatRegex.match(lonLat[1]);
+  if(lonFormatMatch.hasMatch() && latFormatMatch.hasMatch()){
+	  lat = lonLat[0].toDouble();
+	  lon = lonLat[1].toDouble();
+  }else{
+	  lon = convertDegMin(lonLat[0]);
+	  lat = convertDegMin(lonLat[1]);
+  }
   return QString::number(lat) + ", " + QString::number(lon);
 }
 

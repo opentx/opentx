@@ -27,6 +27,7 @@
 #include <QDateTime>
 #include <QtCore/qmath.h>
 #include <QFileDialog>
+#include <QRegularExpression>
 
 #include "simulatorinterface.h"
 
