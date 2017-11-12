@@ -108,8 +108,8 @@ TEST(getSwitch, recursiveSW)
   g_model.logicalSw[0] = { SWSRC_RUD, -SWSRC_SW2, LS_FUNC_OR };
   g_model.logicalSw[1] = { SWSRC_ELE, -SWSRC_SW1, LS_FUNC_OR };
 
-  simuSetSwitch(1, 0);  // RUD 0
-  simuSetSwitch(2, 0);  // ELE 0
+  simuSetSwitch(2, 0);  // RUD 0
+  simuSetSwitch(3, 0);  // ELE 0
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), true);
@@ -119,7 +119,7 @@ TEST(getSwitch, recursiveSW)
   EXPECT_EQ(getSwitch(SWSRC_SW1), false);
   EXPECT_EQ(getSwitch(SWSRC_SW2), true);
 
-  simuSetSwitch(1, 1);  // RUD 1
+  simuSetSwitch(2, 1);  // RUD 1
   LS_RECURSIVE_EVALUATION_RESET();
   evalLogicalSwitches();
   EXPECT_EQ(getSwitch(SWSRC_SW1), true);
