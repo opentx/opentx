@@ -874,13 +874,13 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
   QRegularExpression crossfireCoordinateFormatRegex("^([-+]?\\d{1,2}[.]\\d{6})$");
   QRegularExpressionMatch latFormatMatch = crossfireCoordinateFormatRegex.match(lonLat[0]);
   QRegularExpressionMatch lonFormatMatch = crossfireCoordinateFormatRegex.match(lonLat[1]);
-  if (lonFormatMatch.hasMatch() && latFormatMatch.hasMatch()){
-	  lat = lonLat[0].toDouble();
-	  lon = lonLat[1].toDouble();
+  if (lonFormatMatch.hasMatch() && latFormatMatch.hasMatch()) {
+    lat = lonLat[0].toDouble();
+    lon = lonLat[1].toDouble();
   }
   else {
-	  lon = convertDegMin(lonLat[0]);
-	  lat = convertDegMin(lonLat[1]);
+    lon = convertDegMin(lonLat[0]);
+    lat = convertDegMin(lonLat[1]);
   }
   return QString::number(lat) + ", " + QString::number(lon);
 }
