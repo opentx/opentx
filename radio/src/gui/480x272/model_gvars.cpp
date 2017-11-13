@@ -161,10 +161,10 @@ bool menuModelGVars(event_t event)
         attr |= BOLD;
       coord_t x = GVARS_FM_COLUMN(j);
       coord_t yval = y;
-      if (v <= GVAR_MAX && (g_model.gvars[i].prec > 0 || abs(v) >= 100)) {
-        attr |= TINSIZE;
-        ++yval;
-      }
+      if (v <= GVAR_MAX && (g_model.gvars[i].prec > 0 || abs(v) >= 100 || g_model.gvars[i].unit > 0)) {
+        attr |= SMLSIZE;
+        yval += 2;
+      }        
       editGVarValue(x, yval, event, i, j, attr);
     }
   }
