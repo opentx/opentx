@@ -55,7 +55,6 @@ enum GVarFields {
   GVAR_FIELD_PREC,
   GVAR_FIELD_MIN,
   GVAR_FIELD_MAX,
-  GVAR_FIELD_POPUP,
   GVAR_FIELD_FM0,
   GVAR_FIELD_LAST = GVAR_FIELD_FM0 + MAX_FLIGHT_MODES
 };
@@ -99,11 +98,6 @@ bool menuModelGVarOne(event_t event)
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAX);
         drawGVarValue(MIXES_2ND_COLUMN, y, s_currIdx, GVAR_MAX-gvar->max, LEFT|attr);
         if (attr) gvar->max = GVAR_MAX - checkIncDec(event, GVAR_MAX-gvar->max, GVAR_MIN+gvar->min, GVAR_MAX, EE_MODEL);
-        break;
-
-      case GVAR_FIELD_POPUP:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_POPUP);
-        gvar->popup = editCheckBox(gvar->popup, MIXES_2ND_COLUMN, y, attr, event);
         break;
 
       default:
@@ -167,7 +161,7 @@ bool menuModelGVars(event_t event)
         attr |= BOLD;
       coord_t x = GVARS_FM_COLUMN(j);
       coord_t yval = y;
-      if (v <= GVAR_MAX && g_model.gvars[i].prec > 0 || abs(v) >= 100) {
+      if (v <= GVAR_MAX && (g_model.gvars[i].prec > 0 || abs(v) >= 100)) {
         attr |= TINSIZE;
         ++yval;
       }
