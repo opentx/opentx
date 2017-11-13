@@ -80,7 +80,9 @@ static void processMultiSyncPacket(const uint8_t *data)
   multiSyncStatus.lastUpdate = get_tmr10ms();
   multiSyncStatus.interval = data[4];
   multiSyncStatus.target = data[5];
+#if !defined(PPM_PIN_SERIAL)
   auto oldlag = multiSyncStatus.inputLag;
+#endif
 
   multiSyncStatus.calcAdjustedRefreshRate(data[0] << 8 | data[1], data[2] << 8 | data[3]);
 
