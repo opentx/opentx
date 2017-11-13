@@ -585,6 +585,12 @@ PACK(typedef struct {
 }) ModelData_v216;
 
 PACK(typedef struct {
+  char    name[6];
+  uint8_t popup:1;
+  uint8_t spare:7;
+}) GVarData_v217;
+
+PACK(typedef struct {
   ModelHeader header;
   TimerData_v217 timers[MAX_TIMERS];
   ARM_FIELD(uint8_t   telemetryProtocol:3)
@@ -616,7 +622,7 @@ PACK(typedef struct {
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 
-  GVarData gvars[MAX_GVARS];
+  GVarData_v217 gvars[MAX_GVARS];
 
   FrSkyTelemetryData frsky;
   RssiAlarmData rssiAlarms;
@@ -1185,7 +1191,10 @@ void ConvertModel_217_to_218(ModelData & model)
   newModel.thrTraceSrc = oldModel.thrTraceSrc;
   newModel.switchWarningState = oldModel.switchWarningState;
   newModel.switchWarningEnable = oldModel.switchWarningEnable;
-  memcpy(newModel.gvars, oldModel.gvars, sizeof(newModel.gvars));
+  for (int i=0; i<MAX_GVARS; i++) {
+    memcpy(newModel.gvars[i].name, oldModel.gvars[i].name, sizeof(newModel.gvars[i].name));
+    newModel.gvars[i].popup = oldModel.gvars[i].popup;
+  }
   newModel.frsky = oldModel.frsky;
   for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
     if (((oldModel.frsky.screensType >> (2*i)) & 0x03) == TELEMETRY_SCREEN_TYPE_VALUES) {
