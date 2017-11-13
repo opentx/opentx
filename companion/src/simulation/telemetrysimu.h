@@ -96,6 +96,7 @@ class TelemetrySimulator : public QWidget
         void updatePositionLabel(int32_t percentage);
         void setUiDataValues();
         double logFrequency; // in seconds
+        bool logFileGpsCordsInDecimalFormat;
 
       private:
         enum CONVERT_TYPE {
@@ -149,6 +150,7 @@ class TelemetrySimulator : public QWidget
         double convertDegMin(QString input);
         QDateTime parseTransmittterTimestamp(QString row);
         void calcLogFrequency();
+        void checkGpsFormat();
 
         QMap<QString, CONVERT_TYPE> colToFuncMap; // contains all 'known' column headings and how they are to be processed
         Ui::TelemetrySimulator * ui;

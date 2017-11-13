@@ -23,6 +23,7 @@
 #include "ui_telemetrysimu.h"
 #include "simulatorinterface.h"
 #include "radio/src/telemetry/frsky.h"
+#include <QRegularExpression>
 
 TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator):
   QWidget(parent),
@@ -627,6 +628,7 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
 {
   TelemetrySimulator::LogPlaybackController::ui = ui;
   stepping = false;
+  logFileGpsCordsInDecimalFormat = false;
   // initialize the map - TODO: how should this be localized?
   colToFuncMap.clear();
   colToFuncMap.insert("RxBt(V)", RXBT_V);
@@ -690,6 +692,31 @@ QDateTime TelemetrySimulator::LogPlaybackController::parseTransmittterTimestamp(
     format = "M/d/yyyy hh:mm:ss.z";
   }
   return QDateTime::fromString(datePart + " " + timePart, format);
+}
+
+void TelemetrySimulator::LogPlaybackController::checkGpsFormat()
+{
+  // sample the first record to check if cords are in decimal format
+  logFileGpsCordsInDecimalFormat = false;
+  if(csvRecords.count() > 1) {
+    QStringList keys = csvRecords[0].split(',');
+    if(keys.contains("GPS")) {
+      int gpsColIndex = keys.indexOf("GPS");
+      QStringList firstRowVlues = csvRecords[1].split(',');
+      QString gpsSample = firstRowVlues[gpsColIndex];
+      QStringList cords = gpsSample.simplified().split(' ');
+      if (cords.count() == 2) {
+        // frsky and TBS crossfire GPS sensor logs cords in decimal format with a precision of 6 places
+        // if this format is met there is no need to call convertDegMin later on when processing the file
+        QRegularExpression decimalCoordinateFormatRegex("^[-+]?\\d{1,2}[.]\\d{6}$");
+        QRegularExpressionMatch latFormatMatch = decimalCoordinateFormatRegex.match(cords[0]);
+        QRegularExpressionMatch lonFormatMatch = decimalCoordinateFormatRegex.match(cords[1]);
+        if (lonFormatMatch.hasMatch() && latFormatMatch.hasMatch()) {
+          logFileGpsCordsInDecimalFormat = true;
+        }
+      }
+    }
+  }
 }
 
 void TelemetrySimulator::LogPlaybackController::calcLogFrequency()
@@ -760,6 +787,7 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
     supportedCols.clear();
     recordIndex = 1;
     calcLogFrequency();
+    checkGpsFormat();
   }
   ui->logFileLabel->setText(QFileInfo(logFileNameAndPath).fileName());
   // iterate through all known mappings and add those that are used
@@ -868,8 +896,15 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
   if (lonLat.count() < 2) {
     return ""; // invalid format
   }
-  double lon = convertDegMin(lonLat[0]);
-  double lat = convertDegMin(lonLat[1]);
+  double lon, lat;
+  if (logFileGpsCordsInDecimalFormat) {
+    lat = lonLat[0].toDouble();
+    lon = lonLat[1].toDouble();
+  }
+  else {
+    lon = convertDegMin(lonLat[0]);
+    lat = convertDegMin(lonLat[1]);
+  }
   return QString::number(lat) + ", " + QString::number(lon);
 }
 
