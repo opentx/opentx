@@ -126,7 +126,7 @@ void onGVARSMenu(const char * result)
   }
 }
 
-#define GVARS_FM_COLUMN(p)             (150 + (p)*41)
+#define GVARS_FM_COLUMN(p)             (127 + (p)*44)
 #define GVAR_MAX_COLUMNS               (NAVIGATION_LINE_BY_LINE|(MAX_FLIGHT_MODES-1))
 
 bool menuModelGVars(event_t event)
@@ -149,8 +149,8 @@ bool menuModelGVars(event_t event)
       lcdDrawText(MENUS_MARGIN_LEFT+25, y, "!");
     }
 
-    drawStringWithIndex(MENUS_MARGIN_LEFT, y, STR_GV, i+1, ((sub==i && menuHorizontalPosition<0) ? INVERS : 0));
-    lcdDrawSizedText(MENUS_MARGIN_LEFT+50, y, g_model.gvars[i].name, LEN_GVAR_NAME, ZCHAR);
+    drawStringWithIndex(MENUS_MARGIN_LEFT-3, y, STR_GV, i+1, ((sub==i && menuHorizontalPosition<0) ? INVERS : 0));
+    lcdDrawSizedText(MENUS_MARGIN_LEFT+35, y, g_model.gvars[i].name, LEN_GVAR_NAME, ZCHAR);
 
     for (int j=0; j<MAX_FLIGHT_MODES; j++) {
       FlightModeData * fm = &g_model.flightModeData[j];
@@ -161,11 +161,15 @@ bool menuModelGVars(event_t event)
         attr |= BOLD;
       coord_t x = GVARS_FM_COLUMN(j);
       coord_t yval = y;
-      if (v <= GVAR_MAX && (g_model.gvars[i].prec > 0 || abs(v) >= 100 || g_model.gvars[i].unit > 0)) {
+      if (v <= GVAR_MAX && (g_model.gvars[i].prec > 0 || abs(v) >= 1000 || ( abs(v) >= 100 && g_model.gvars[i].unit > 0))) {
         attr |= SMLSIZE;
         yval += 2;
-      }        
-      editGVarValue(x, yval, event, i, j, attr);
+      }
+      if (v <= GVAR_MAX && g_model.gvars[i].unit > 0) {
+        x -= 9;
+        lcdDrawText(GVARS_FM_COLUMN(j) - 9, y+5, "%", TINSIZE);
+      }
+      editGVarValue(x, yval, event, i, j, attr | NO_UNIT);
     }
   }
 
