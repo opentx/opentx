@@ -174,7 +174,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
     drawStringWithIndex(0, y, functions == g_model.customFn ? STR_SF : STR_GF, k+1, (sub==k && menuHorizontalPosition<0) ? INVERS : 0);
 
-    CustomFunctionData *cfn = &functions[k];
+    CustomFunctionData * cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
@@ -344,10 +344,14 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (func == FUNC_ADJUST_GVAR) {
             switch (CFN_GVAR_MODE(cfn)) {
               case FUNC_ADJUST_GVAR_CONSTANT:
+              {
+                uint8_t gvar_index = CFN_GVAR_INDEX(cfn);
                 val_displayed = (int16_t)CFN_PARAM(cfn);
-                val_min = CFN_GVAR_CST_MIN; val_max = CFN_GVAR_CST_MAX;
-                lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+                val_min = max<int16_t>(CFN_GVAR_CST_MIN, MODEL_GVAR_MIN(gvar_index));
+                val_max = min<int16_t>(CFN_GVAR_CST_MAX, MODEL_GVAR_MAX(gvar_index));
+                drawGVarValue(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, gvar_index, val_displayed, attr|LEFT);
                 break;
+              }
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
                 drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
