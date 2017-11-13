@@ -340,10 +340,14 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (func == FUNC_ADJUST_GVAR) {
             switch (CFN_GVAR_MODE(cfn)) {
               case FUNC_ADJUST_GVAR_CONSTANT:
-                val_displayed = (int16_t)CFN_PARAM(cfn);
-                val_min = -CFN_GVAR_CST_MAX; val_max = +CFN_GVAR_CST_MAX;
-                lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+              {
+                uint8_t gvar_index = CFN_GVAR_INDEX(cfn);
+                val_displayed = (int16_t) CFN_PARAM(cfn);
+                val_min = max<int16_t>(CFN_GVAR_CST_MIN, MODEL_GVAR_MIN(gvar_index));
+                val_max = min<int16_t>(CFN_GVAR_CST_MAX, MODEL_GVAR_MAX(gvar_index));
+                drawGVarValue(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, gvar_index, val_displayed, attr|LEFT);
                 break;
+              }
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
                 drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
@@ -362,7 +366,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                   lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "-= ", attr);
                 else
                   lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "+= ", attr);
-                lcdDrawNumber(lcdNextPos, y, abs(val_displayed), attr|LEFT);
+                drawGVarValue(lcdNextPos, y, CFN_GVAR_INDEX(cfn), abs(val_displayed), attr|LEFT);
                 break;
             }
           }

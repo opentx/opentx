@@ -153,7 +153,7 @@ enum MixFields {
   MIX_FIELD_OFFSET,
   MIX_FIELD_TRIM,
   CASE_CURVES(MIX_FIELD_CURVE)
-  CASE_FLIGHT_MODES(MIX_FIELD_FLIGHT_PHASE)
+  CASE_FLIGHT_MODES(MIX_FIELD_FLIGHT_MODE)
   MIX_FIELD_SWITCH,
   // MIX_FIELD_WARNING,
   MIX_FIELD_MLTPX,
@@ -235,7 +235,7 @@ bool menuModelMixOne(event_t event)
         break;
 #endif
 #if defined(FLIGHT_MODES)
-      case MIX_FIELD_FLIGHT_PHASE:
+      case MIX_FIELD_FLIGHT_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FLMODE);
         md2->flightModes = editFlightModes(MIXES_2ND_COLUMN, y, event, md2->flightModes, attr);
         break;

@@ -20,12 +20,14 @@
 
 #include "opentx.h"
 
-void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix)
+void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix, const char * suffix)
 {
   char s[64];
   char * tmp = (prefix ? strAppend(s, prefix) : s);
   tmp = strAppend(tmp, str);
   tmp = strAppendUnsigned(tmp, abs(idx));
+  if (suffix)
+    strAppend(tmp, suffix);
   lcdDrawText(x, y, s, flags);
 }
 

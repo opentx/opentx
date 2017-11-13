@@ -59,6 +59,8 @@ void drawHorizontalSlider(coord_t x, coord_t y, int len, int val, int min, int m
 void drawSlider(coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options);
 #define drawStatusLine(...)
 
+void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags);
+
 #if defined(GVARS)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
 #else

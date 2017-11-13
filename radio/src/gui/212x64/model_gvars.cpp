@@ -114,7 +114,7 @@ void menuModelGVarOne(event_t event)
   }
 }
 
-void onGVARSMenu(const char *result)
+void onGVARSMenu(const char * result)
 {
   int sub = menuVerticalPosition;
 
