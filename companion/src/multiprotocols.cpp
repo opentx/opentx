@@ -85,7 +85,7 @@ const Multiprotocols multiProtocols {
   {MM_RF_PROTO_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,    nullptr},
   {MM_RF_PROTO_WK_2X01,    5, false,      STR_SUBTYPE_WK2x01,  nullptr},
   {MM_RF_PROTO_Q303,       3, false,      STR_SUBTYPE_Q303,    nullptr},
-  {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,          STR_MULTI_OPTION},
+  {MM_RF_CUSTOM_SELECTED,  7, true,       STR_SUBTYPE_CUSTOM,  STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
   { 0xfe,                  0, false,      NO_SUBTYPE,           nullptr}
