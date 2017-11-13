@@ -2269,22 +2269,22 @@ Veuillez utiliser Zadig pour installer le pilote.</translation>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="179"/>
         <source>Unit</source>
-        <translation type="unfinished">Unité</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="183"/>
         <source>Prec</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="187"/>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="191"/>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="203"/>
@@ -6802,7 +6802,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="310"/>
         <source>Global variables</source>
-        <translation type="unfinished">Variables globales</translation>
+        <translation>Variables globales</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="313"/>
@@ -7391,24 +7391,24 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../eeprominterface.cpp" line="1939"/>
         <source>?</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="1947"/>
         <location filename="../modeledit/flightmodes.cpp" line="367"/>
         <source>0._</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="1949"/>
         <location filename="../modeledit/flightmodes.cpp" line="368"/>
         <source>0.0</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../eeprominterface.cpp" line="1951"/>
         <source>?.?</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../boards.cpp" line="235"/>
@@ -8455,7 +8455,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1135"/>
         <source>Enable Lua custom scripts screen</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer l&apos;écran des scripts Lua personnalisés</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1137"/>
