@@ -40,7 +40,7 @@ ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
   mChecklistFolder = g.profile[g.id()].sdPath() + "/MODELS/";
   QString name = modelName;
   name.replace(" ", "_");
-  mModelChecklist = mChecklistFolder + name + ".txt";
+  mModelChecklist = QDir::toNativeSeparators(mChecklistFolder + name + ".txt");
   ui->file->setText("File: " + mModelChecklist);
   ui->pteCheck->setPlainText(readFile(mModelChecklist,QFile::exists(mModelChecklist)));
 
@@ -73,16 +73,16 @@ void ChecklistDialog::update()
   if (mDirty) {
     QFile file(mModelChecklist);
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
-      QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot open file for writing %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
+      QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot open file for writing %1:\n%2.").arg(mModelChecklist, file.errorString()));
     }
     else {
       QTextStream out(&file);
       if (out.status()==QTextStream::Ok) {
         out << ui->pteCheck->toPlainText();
         if (!(out.status()==QTextStream::Ok)) {
-          QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write to file %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
+          QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write to file %1:\n%2.").arg(mModelChecklist, file.errorString()));
           if (!file.flush()) {
-            QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write file %1:\n%2.").arg(QDir::toNativeSeparators(mModelChecklist), file.errorString()));
+            QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write file %1:\n%2.").arg(mModelChecklist, file.errorString()));
           }
         }
       }
