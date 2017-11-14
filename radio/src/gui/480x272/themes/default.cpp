@@ -46,7 +46,8 @@ class DefaultTheme: public Theme
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
-      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(130, 1, 5);
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] =
+          RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
       lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
       lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
@@ -263,11 +264,18 @@ class DefaultTheme: public Theme
     virtual void update() const
     {
       uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
+      uint32_t bg_color = g_eeGeneral.themeData.options[0].unsignedValue;
+
+      lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
+      lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = bg_color;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
       lcdColorTable[CURVE_COLOR_INDEX] = color;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
+      lcdColorTable[MENU_TITLE_COLOR_INDEX] = bg_color;
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] =
+          RGB(GET_RED(color)>>1, GET_GREEN(color)>>1, GET_BLUE(color)>>1);
       lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = color;
       #define DARKER(x)     ((x * 70) / 100)
