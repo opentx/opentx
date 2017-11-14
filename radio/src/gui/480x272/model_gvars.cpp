@@ -163,7 +163,7 @@ bool menuModelGVars(event_t event)
       coord_t yval = y;
       if (v <= GVAR_MAX && (g_model.gvars[i].prec > 0 || abs(v) >= 1000 || ( abs(v) >= 100 && g_model.gvars[i].unit > 0))) {
         attr |= SMLSIZE;
-        yval += 2;
+        yval += 3;
       }
       if (v <= GVAR_MAX && g_model.gvars[i].unit > 0) {
         x -= 9;
