@@ -267,13 +267,11 @@ class DefaultTheme: public Theme
       uint32_t bg_color = g_eeGeneral.themeData.options[0].unsignedValue;
 
       lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
-      lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = bg_color;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
       lcdColorTable[CURVE_COLOR_INDEX] = color;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
-      lcdColorTable[MENU_TITLE_COLOR_INDEX] = bg_color;
       lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] =
           RGB(GET_RED(color)>>1, GET_GREEN(color)>>1, GET_BLUE(color)>>1);
       lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
