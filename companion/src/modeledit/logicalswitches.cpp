@@ -510,6 +510,7 @@ void LogicalSwitchesPanel::cswPaste()
     LogicalSwitchData *csw = &model->logicalSw[selectedSwitch];
     memcpy(csw, cswData.constData(), sizeof(LogicalSwitchData));
     emit modified();
+    rawSwitchItemModel->update();
     updateLine(selectedSwitch);
   }
 }
