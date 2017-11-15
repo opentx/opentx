@@ -50,7 +50,7 @@ enum MenuModelDisplayItems {
 #else
   #define DISPLAY_COL2                (8*FW)
 #endif
-#define DISPLAY_COL3                  (18*FW+2)
+#define DISPLAY_COL3                  (17*FW+2)
 
 #if defined(LUA)
   #define SCREEN_TYPE_ROWS            1
@@ -105,7 +105,7 @@ void menuModelDisplay(event_t event)
   MENU(STR_MENU_DISPLAY, menuTabModel, MENU_MODEL_DISPLAY, HEADER_LINE + ITEM_DISPLAY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_SCREEN_ROWS(0), TELEMETRY_SCREEN_ROWS(1), TELEMETRY_SCREEN_ROWS(2), TELEMETRY_SCREEN_ROWS(3) });
 
   int8_t sub = menuVerticalPosition - HEADER_LINE;
-  
+
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     int k = i + menuVerticalOffset;
