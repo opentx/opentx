@@ -89,7 +89,7 @@ bool menuStatsGraph(event_t event)
     prev_yv = yv;
   }
 
-  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+1, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
+  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
 }
 
@@ -152,7 +152,7 @@ bool menuStatsDebug(event_t event)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Tlm RX Errs");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, telemetryErrors, LEFT);
 
-  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP+1, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
+  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
 }
 
