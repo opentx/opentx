@@ -7,6 +7,7 @@ set(simulation_SRCS
   simulateduiwidgetX7.cpp
   simulateduiwidgetX9.cpp
   simulateduiwidgetX9E.cpp
+  simulateduiwidgetX10.cpp
   simulateduiwidgetX12.cpp
   simulatorinterface.cpp
   simulatormainwindow.cpp
@@ -25,6 +26,7 @@ set(simulation_UIS
   simulateduiwidgetX7.ui
   simulateduiwidgetX9.ui
   simulateduiwidgetX9E.ui
+  simulateduiwidgetX10.ui
   simulateduiwidgetX12.ui
   simulatormainwindow.ui
   simulatorstartupdialog.ui
