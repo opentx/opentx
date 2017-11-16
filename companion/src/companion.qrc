@@ -47,21 +47,32 @@
     <file>images/simulator/icons/svg/trainer-active.svg</file>
     <file>images/simulator/icons/svg/word_wrap.svg</file>
     <file>images/simulator/icons/svg/word_wrap-on.svg</file>
-    <file>images/simulator/Horus/middle.png</file>
-    <file>images/simulator/Horus/left.png</file>
-    <file>images/simulator/Horus/right.png</file>
-    <file>images/simulator/Horus/top.png</file>
-    <file>images/simulator/Horus/bottom.png</file>
-    <file>images/simulator/Horus/led.png</file>
-    <file>images/simulator/Horus/border-right.png</file>
-    <file>images/simulator/Horus/left_btn1.png</file>
-    <file>images/simulator/Horus/left_btn2.png</file>
-    <file>images/simulator/Horus/left_scrnsht.png</file>
-    <file>images/simulator/Horus/right_btnU.png</file>
-    <file>images/simulator/Horus/right_btnL.png</file>
-    <file>images/simulator/Horus/right_btnD.png</file>
-    <file>images/simulator/Horus/right_btnR.png</file>
-    <file>images/simulator/Horus/right_ent.png</file>    
+    <file>images/simulator/X12/middle.png</file>
+    <file>images/simulator/X12/left.png</file>
+    <file>images/simulator/X12/right.png</file>
+    <file>images/simulator/X12/top.png</file>
+    <file>images/simulator/X12/bottom.png</file>
+    <file>images/simulator/X12/led.png</file>
+    <file>images/simulator/X12/border-right.png</file>
+    <file>images/simulator/X12/left_btn1.png</file>
+    <file>images/simulator/X12/left_btn2.png</file>
+    <file>images/simulator/X12/left_scrnsht.png</file>
+    <file>images/simulator/X12/right_btnU.png</file>
+    <file>images/simulator/X12/right_btnL.png</file>
+    <file>images/simulator/X12/right_btnD.png</file>
+    <file>images/simulator/X12/right_btnR.png</file>
+    <file>images/simulator/X12/right_ent.png</file>
+    <file>images/simulator/X10/left.png</file>
+    <file>images/simulator/X10/right.png</file>
+    <file>images/simulator/X10/top.png</file>
+    <file>images/simulator/X10/bottom.png</file>
+    <file>images/simulator/X10/left_mdl.png</file>
+    <file>images/simulator/X10/left_page.png</file>
+    <file>images/simulator/X10/left_scrnsht.png</file>
+    <file>images/simulator/X10/left_rtn.png</file>
+    <file>images/simulator/X10/left_sys.png</file>
+    <file>images/simulator/X10/left_tele.png</file>
+    <file>images/simulator/X10/right_ent.png</file>    
     <file>images/simulator/9X/9xdb.png</file>
     <file>images/simulator/9X/9xdl.png</file>
     <file>images/simulator/9X/9xdr.png</file>
