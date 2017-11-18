@@ -6,6 +6,7 @@
 # on 2.2 release: cmake -DPCB=9X -DTELEMETRY=FRSKY -DAUDIO=YES -DVOICE=YES -DHELI=YES -DTEMPLATES=YES ~/git/opentx
 #   => 64828 (program) + 3236 (data)
 
+from __future__ import print_function
 import os
 import sys
 import subprocess
@@ -26,7 +27,7 @@ while 1:
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode != 0:
-        print "HEAD~%d git reset failed" % index
+        print("HEAD~%d git reset failed" % index)
         continue
 
     os.chdir(buildir)
@@ -34,14 +35,14 @@ while 1:
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode != 0:
-        print "HEAD~%d cmake failed" % index
+        print("HEAD~%d cmake failed" % index)
         continue
 
     cmd = ["make", "-j4", "firmware"]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode != 0:
-        print "HEAD~%d make firmware failed" % index
+        print("HEAD~%d make firmware failed" % index)
         continue
 
     if os.path.isfile("firmware.bin"):
@@ -50,11 +51,11 @@ while 1:
         oldsize = int(subprocess.check_output('avr-size -A firmware.hex | grep Total | cut -f2- -d " "', shell=True))
     if size:
         if size > oldsize:
-            print "HEAD~%d %d: increase by %d bytes" % (index-1, size, size-oldsize)
+            print("HEAD~%d %d: increase by %d bytes" % (index-1, size, size-oldsize))
         elif size < oldsize:
-            print "HEAD~%d %d: decrease by %d bytes" % (index-1, size, oldsize-size)
+            print("HEAD~%d %d: decrease by %d bytes" % (index-1, size, oldsize-size))
         else:
-            print "HEAD~%d %d" % (index-1, size)
+            print("HEAD~%d %d" % (index-1, size))
     size = oldsize
 
 
