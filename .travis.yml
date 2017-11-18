@@ -76,8 +76,12 @@ install:
 addons:
   sonarcloud:
     organization: "opentx-github"
-    token:
-      secure: jW8uw9vALx9V58eI02bXhNvHQKYmfut1AcT+BThyYTOx+xB8/t74OFXDge/Xm6hDPriw7bPau6J4VTVC+RVsdEj1loYAPn3mX2yVveKhmWyRjzTVmW56IRnt+nAzom45Tf8ty+GfpLV8nKflfdNrX9+tw9rhtWnGsMqrO8+XyY8=
 
 script:
-  - ./tools/commit-tests.sh
+  - build-wrapper-linux-x86-64 --out-dir bw-output ./tools/commit-tests.sh
+  - sonar-scanner
+
+cache:
+    directories:
+          - '$HOME/.sonar/cache'
+
