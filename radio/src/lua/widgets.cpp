@@ -234,14 +234,17 @@ void luaLoadThemeCallback()
   }
 
   if (name) {
-    ZoneOption * options = createOptionsArray(themeOptions, MAX_THEME_OPTIONS);
-    if (options || (themeOptions == 0)) {
-      LuaTheme * theme = new LuaTheme(name, options);
-      theme->loadFunction = loadFunction;
-      theme->drawBackgroundFunction = drawBackgroundFunction;
-      theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
-      TRACE("Loaded Lua theme %s", name);
+    ZoneOption * options = NULL;
+    if (themeOptions) {
+      options = createOptionsArray(themeOptions, MAX_THEME_OPTIONS);
+      if (!options)
+        return;
     }
+    LuaTheme * theme = new LuaTheme(name, options);
+    theme->loadFunction = loadFunction;
+    theme->drawBackgroundFunction = drawBackgroundFunction;
+    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
+    TRACE("Loaded Lua theme %s", name);
   }
 }
 
