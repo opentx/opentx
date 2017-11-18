@@ -76,6 +76,12 @@ install:
 addons:
   sonarcloud:
     organization: "opentx-github"
+    token:
+        secure: "BuQrGRijNpL2V/IQNcOxvjChj8PScfCdiv403EE73Nqb4+sB8YL92Fnzrnw9bC8wF7BVSDJVpYF0gbdaTzuCmaeZfM8NJK0TOJAbH6+B8bhIrU/V1SBuVjHQnndV/wysieruKnK/KxYJZqItgSlnPo+PmiFxtXJNlas0Kstb2O4="
+    github_token:
+        secure: "bXAkxtUtUT0qJpMaZsgffNO7f/Lhw3o+nvgnXdALQrIKKiv0n/VWLsTYOeKOsGgzu84+pyDaJ3nimIbCyfO4Rzr/2xv1rUng5Grhh7kyPePuq7uG4q7gYoykY9EmJ8T06kSaqM+sOGEpuRItFI3RItLiEbYIJF4d9UCjEnovnC0="
+    branches:
+      - 2.2
 
 script:
   - build-wrapper-linux-x86-64 --out-dir bw-output ./tools/commit-tests.sh
