@@ -100,6 +100,8 @@ LogsDialog::LogsDialog(QWidget *parent) :
     ui->mapsButton->hide();
   }
 
+  ui->SaveSession_PB->setEnabled(false);
+
   // connect slot that ties some axis selections together (especially opposite axes):
   connect(ui->customPlot, SIGNAL(selectionChangedByUser()), this, SLOT(selectionChanged()));
   // connect slots that takes care that when an axis is selected, only that direction can be dragged and zoomed:
@@ -116,6 +118,7 @@ LogsDialog::LogsDialog(QWidget *parent) :
   connect(ui->FieldsTW, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->logTable, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->Reset_PB, SIGNAL(clicked()), this, SLOT(plotLogs()));
+  connect(ui->SaveSession_PB, SIGNAL(clicked()), this, SLOT(on_saveSession_BT_clicked()));
 }
 
 LogsDialog::~LogsDialog()
@@ -610,6 +613,48 @@ void LogsDialog::on_fileOpen_BT_clicked()
   }
 }
 
+void LogsDialog::on_saveSession_BT_clicked()
+{
+  int index = ui->sessions_CB->currentIndex();
+  // ignore index 0 is its all sessions combined
+  if(index > 0) {
+    int n = csvlog.count();
+    QList<QStringList> sessionCsvLog;
+    // add CSV headers from first row of source file
+    sessionCsvLog.push_back(csvlog[0]);
+    // find session breaks
+    int currentSession = 0;
+    QDateTime lastvalue;
+    for (int i = 1; i < n; i++) {
+      QDateTime tmp = getRecordTimeStamp(i);
+      if (!lastvalue.isValid() || lastvalue.secsTo(tmp) > 60) {
+        currentSession++;
+      }
+      lastvalue = tmp;
+      if(currentSession == index) {
+        // add records to filtered list
+        sessionCsvLog.push_back(csvlog[i]);
+      }
+      else if (currentSession > index) {
+        break;
+      }
+    }
+    // save the filtered records to a new file
+    QString newFilename = logFilename;
+    newFilename.append(QString("-Session%1.csv").arg(index));
+    QString filename = QFileDialog::getSaveFileName(this, "Save log", newFilename, "CSV files (.csv);", 0, 0); // getting the filename (full path)
+    QFile data(filename);
+    if(data.open(QFile::WriteOnly |QFile::Truncate)) {
+      QTextStream output(&data);
+      int numRecords = sessionCsvLog.count();
+      for(int i = 0; i < numRecords; i++){
+        output << sessionCsvLog[i].join(",") << '\n';
+      }
+    }
+    sessionCsvLog.clear();
+  }
+}
+
 bool LogsDialog::cvsFileParse()
 {
   QFile file(ui->FileName_LE->text());
@@ -697,6 +742,7 @@ QString LogsDialog::generateDuration(const QDateTime & start, const QDateTime & 
 void LogsDialog::setFlightSessions()
 {
   ui->sessions_CB->clear();
+  ui->SaveSession_PB->setEnabled(false);
 
   int n = csvlog.count();
   // qDebug() << "records" << n;
@@ -756,6 +802,11 @@ void LogsDialog::on_sessions_CB_currentIndexChanged(int index)
 
     QItemSelection selection(topLeft, bottomRight);
     ui->logTable->selectionModel()->select(selection, QItemSelectionModel::Select);
+
+    ui->SaveSession_PB->setEnabled(true);
+  }
+  else {
+    ui->SaveSession_PB->setEnabled(false);
   }
 
   plotLock = false;

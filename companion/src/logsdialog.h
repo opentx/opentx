@@ -78,6 +78,7 @@ private slots:
   void removeAllGraphs();
   void plotLogs();
   void on_fileOpen_BT_clicked();
+  void on_saveSession_BT_clicked();
   void on_sessions_CB_currentIndexChanged(int index);
   void on_mapsButton_clicked();
   void yAxisChangeRanges(QCPRange range);
