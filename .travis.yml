@@ -77,7 +77,7 @@ addons:
   sonarcloud:
     organization: "opentx-github"
     branches:
-      - 2.2
+      - "2.2"
 
 script:
   - build-wrapper-linux-x86-64 --out-dir bw-output ./tools/commit-tests.sh
