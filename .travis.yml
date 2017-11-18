@@ -76,8 +76,6 @@ install:
 addons:
   sonarcloud:
     organization: "opentx-github"
-    token:
-      secure: "BuQrGRijNpL2V/IQNcOxvjChj8PScfCdiv403EE73Nqb4+sB8YL92Fnzrnw9bC8wF7BVSDJVpYF0gbdaTzuCmaeZfM8NJK0TOJAbH6+B8bhIrU/V1SBuVjHQnndV/wysieruKnK/KxYJZqItgSlnPo+PmiFxtXJNlas0Kstb2O4="
     branches:
       - 2.2
 
