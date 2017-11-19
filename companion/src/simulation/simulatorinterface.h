@@ -83,16 +83,20 @@ class SimulatorInterface : public QObject
     struct gVarMode_t {
       int16_t value;
       uint8_t mode;
+      uint8_t prec:2;
+      uint8_t unit:2;
 
       gVarMode_t(int i = 0) {
         set(i);
       }
       void set(int i) {
+        unit = (i >> 26) & 0x3;
+        prec = (i >> 24) & 0x3;
         mode = (i >> 16) & 0xFF;
         value = (i & 0xFFFF);
       }
       operator int() {
-        return ((mode << 16) | (value & 0xFFFF));
+        return (((unit & 0x3) << 26) | ((prec & 0x3) << 24) | ((mode & 0xFF) << 16) | (value & 0xFFFF));
       }
       gVarMode_t & operator =(const int i) {
         set(i);
@@ -106,7 +110,7 @@ class SimulatorInterface : public QObject
 
       int16_t chans[CPN_MAX_CHNOUT];       // final channel outputs
       int16_t ex_chans[CPN_MAX_CHNOUT];    // raw mix outputs
-      int16_t gvars[CPN_MAX_FLIGHT_MODES][CPN_MAX_GVARS];
+      qint32 gvars[CPN_MAX_FLIGHT_MODES][CPN_MAX_GVARS];
       int trims[CPN_MAX_TRIMS];            // Board::TrimAxes enum
       bool vsw[CPN_MAX_LOGICAL_SWITCHES];  // virtual/logic switches
       int8_t phase;

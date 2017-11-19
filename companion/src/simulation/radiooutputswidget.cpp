@@ -305,13 +305,15 @@ void RadioOutputsWidget::onGVarValueChange(quint8 index, qint32 value)
 
   QHash<int, QLabel *> fmMap = m_globalVarsMap.value(index);
   SimulatorInterface::gVarMode_t gv(value);
+  QLabel * lbl;
 
-  if (fmMap.contains(gv.mode)) {
-    QLabel * lbl = fmMap.value(gv.mode);
-    if (lbl)
-      lbl->setText(QString::number(gv.value));
+  if (fmMap.contains(gv.mode) && (lbl = fmMap.value(gv.mode))) {
+    GVarData gvar;
+    gvar.prec = gv.prec;
+    gvar.unit = gv.unit;
+    lbl->setText(QString::number(gv.value * gvar.multiplierGet(), 'f', gv.prec) + gvar.unitToString());
   }
-  //qDebug() << index << value << gv.mode << gv.value;
+  //qDebug() << index << value << gv.mode << gv.value << gv.prec << gv.unit;
 }
 
 void RadioOutputsWidget::onPhaseChanged(qint32 phase, const QString &)
