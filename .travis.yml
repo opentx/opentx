@@ -79,7 +79,7 @@ addons:
     token:
       secure: "BuQrGRijNpL2V/IQNcOxvjChj8PScfCdiv403EE73Nqb4+sB8YL92Fnzrnw9bC8wF7BVSDJVpYF0gbdaTzuCmaeZfM8NJK0TOJAbH6+B8bhIrU/V1SBuVjHQnndV/wysieruKnK/KxYJZqItgSlnPo+PmiFxtXJNlas0Kstb2O4="
     github_token:
-      secure: "bXAkxtUtUT0qJpMaZsgffNO7f/Lhw3o+nvgnXdALQrIKKiv0n/VWLsTYOeKOsGgzu84+pyDaJ3nimIbCyfO4Rzr/2xv1rUng5Grhh7kyPePuq7uG4q7gYoykY9EmJ8T06kSaqM+sOGEpuRItFI3RItLiEbYIJF4d9UCjEnovnC0="
+      secure: "Qkmp4VrQJtKgZ/pz65SNnCDiF4slgFfQS/3whyLXLcDbFb1Hv1oj7Hqz9EVDUSO2eEhgQGaOKkRc0CfAAOBwW6OvhE0xh7P1CJEjzOp6+3gI/LyZUNsqa+awVRZTsfm1YZaOPaPWJ7cI0uz3/OoSUeIecs4PDWPrQMGRlsrq7Q8="
     branches:
       - "2.2"
 
