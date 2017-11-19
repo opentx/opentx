@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
 import os
 import sys
 import subprocess
@@ -205,7 +206,7 @@ def build_firmware(path):
         file(outpath, "a").write("\n".join(cmd) + output + error)
     else:
         file(errpath, "w").write(output + error)
-        print filename
+        print(filename)
         exit(COMPILATION_ERROR)
 
     # Launch make
@@ -216,7 +217,7 @@ def build_firmware(path):
         file(outpath, "a").write(output + error)
     else:
         file(errpath, "w").write(output + error)
-        print filename
+        print(filename)
         exit(COMPILATION_ERROR)
 
     if what == "firmware":
@@ -233,11 +234,11 @@ def build_firmware(path):
     shutil.move(target, path)
 
 if os.path.isfile(errpath):
-    print filename
+    print(filename)
     exit(COMPILATION_ERROR)
 
 if os.path.isfile(path):
-    print filename
+    print(filename)
     exit(0)
 
 lockpath = path + ".lock"
@@ -247,8 +248,8 @@ try:
         if not os.path.isfile(path):
             build_firmware(path)
 except filelock.Timeout:
-    print filename
+    print(filename)
     exit(COMPILATION_ERROR)
 
-print filename
+print(filename)
 exit(0)

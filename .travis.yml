@@ -73,5 +73,21 @@ install:
     fi
   - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
 
+addons:
+  sonarcloud:
+    organization: "opentx-github"
+    token:
+      secure: "BuQrGRijNpL2V/IQNcOxvjChj8PScfCdiv403EE73Nqb4+sB8YL92Fnzrnw9bC8wF7BVSDJVpYF0gbdaTzuCmaeZfM8NJK0TOJAbH6+B8bhIrU/V1SBuVjHQnndV/wysieruKnK/KxYJZqItgSlnPo+PmiFxtXJNlas0Kstb2O4="
+    github_token:
+      secure: "Qkmp4VrQJtKgZ/pz65SNnCDiF4slgFfQS/3whyLXLcDbFb1Hv1oj7Hqz9EVDUSO2eEhgQGaOKkRc0CfAAOBwW6OvhE0xh7P1CJEjzOp6+3gI/LyZUNsqa+awVRZTsfm1YZaOPaPWJ7cI0uz3/OoSUeIecs4PDWPrQMGRlsrq7Q8="
+    branches:
+      - "2.2"
+
 script:
-  - ./tools/commit-tests.sh
+  - build-wrapper-linux-x86-64 --out-dir bw_output ./tools/commit-tests.sh
+  - sonar-scanner
+
+cache:
+  directories:
+    - '$HOME/.sonar/cache'
+
