@@ -54,7 +54,7 @@ SimulatedUIWidgetX10::SimulatedUIWidgetX10(SimulatorInterface *simulator, QWidge
   act = new RadioUiAction(4, QList<int>() << Qt::Key_Down << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace,
                          SIMU_STR_HLP_KEY_DN % "<br>" % SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_RTN);
   addRadioWidget(ui->leftbuttons->addArea(polygon, "X10/left_rtn.png", act));
-  
+
   act = new RadioUiAction(1, QList<int>() << Qt::Key_PageDown, SIMU_STR_HLP_KEY_PGDN, SIMU_STR_HLP_ACT_PGDN);
   addRadioWidget(ui->leftbuttons->addArea(polyArc(x, y, iR), "X10/left_page.png", act));
 
@@ -63,7 +63,7 @@ SimulatedUIWidgetX10::SimulatedUIWidgetX10(SimulatorInterface *simulator, QWidge
   connectScrollActions();
 
   m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
-  addRadioWidget(ui->rightbuttons->addArea(polyArc(x, y, iR), "X10/right_ent.png", m_mouseMidClickAction));
+  addRadioWidget(ui->rightbuttons->addArea(polyArc(98, y, iR), "X10/right_ent.png", m_mouseMidClickAction));
 
   addRadioWidget(ui->leftbuttons->addArea(QRect(10, 252, 30, 30), "X10/left_scrnsht.png", m_screenshotAction));
 
