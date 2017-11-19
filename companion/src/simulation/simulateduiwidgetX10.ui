@@ -126,13 +126,13 @@
      <property name="minimumSize">
       <size>
        <width>480</width>
-       <height>9</height>
+       <height>10</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>480</width>
-       <height>9</height>
+       <height>10</height>
       </size>
      </property>
      <property name="font">
@@ -156,13 +156,13 @@
      <property name="minimumSize">
       <size>
        <width>480</width>
-       <height>11</height>
+       <height>10</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
        <width>480</width>
-       <height>11</height>
+       <height>10</height>
       </size>
      </property>
      <property name="font">
