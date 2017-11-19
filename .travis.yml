@@ -84,7 +84,7 @@ addons:
       - "2.2"
 
 script:
-  - build-wrapper-linux-x86-64 --out-dir bw-output ./tools/commit-tests.sh
+  - build-wrapper-linux-x86-64 --out-dir bw_output ./tools/commit-tests.sh
   - sonar-scanner
 
 cache:
