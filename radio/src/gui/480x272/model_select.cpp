@@ -219,9 +219,8 @@ bool menuModelWizard(event_t event)
 }
 #endif
 
-void onModelSelectMenu(const char * result)
+void selectModel()
 {
-  if (result == STR_SELECT_MODEL) {
     // we store the latest changes if any
     storageFlushCurrentModel();
     storageCheck(true);
@@ -232,6 +231,12 @@ void onModelSelectMenu(const char * result)
     storageCheck(true);
     chainMenu(menuMainView);
     postModelLoad(true);
+}
+
+void onModelSelectMenu(const char * result)
+{
+  if (result == STR_SELECT_MODEL) {
+      selectModel();
   }
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
@@ -355,8 +360,31 @@ bool menuModelSelect(event_t event)
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
+    case EVT_KEY_LONG(KEY_ENTER):
       if (selectMode == MODE_MOVE_MODEL)
         selectMode = MODE_SELECT_MODEL;
+      else if (selectMode == MODE_SELECT_MODEL) {
+        killEvents(event);
+        if (currentModel && currentModel != modelslist.getCurrentModel()) {
+          POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
+        }
+        POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
+        if (currentModel) {
+          POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
+          POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
+        }
+        // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
+        if (currentModel && currentModel != modelslist.getCurrentModel()) {
+          POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
+        }
+        // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
+        POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
+        POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
+        if (cats.size() > 1) {
+          POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
+        }
+        POPUP_MENU_START(onModelSelectMenu);
+      }
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
@@ -412,32 +440,6 @@ bool menuModelSelect(event_t event)
         setCurrentModel(currentCategory->size()-1);
       }
       break;
-
-    case EVT_KEY_LONG(KEY_ENTER):
-      if (selectMode == MODE_SELECT_MODEL) {
-        killEvents(event);
-        if (currentModel && currentModel != modelslist.getCurrentModel()) {
-          POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
-        }
-        POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
-        if (currentModel) {
-          POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
-          POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
-        }
-        // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-        if (currentModel && currentModel != modelslist.getCurrentModel()) {
-          POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
-        }
-        // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
-        POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
-        POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
-        if (cats.size() > 1) {
-          POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
-        }
-        POPUP_MENU_START(onModelSelectMenu);
-      }
-      break;
-
   }
 
   lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
