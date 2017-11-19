@@ -219,7 +219,7 @@ void menuModelSelect(event_t event)
         s_copyMode = 0;
         event = EVT_ENTRY_UP;
       }
-      else if (event == EVT_KEY_LONG(KEY_ENTER) || IS_ROTARY_BREAK(event)) {
+      else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
         s_copyMode = 0;
         killEvents(event);
 #if defined(NAVIGATION_MENUS)
@@ -253,6 +253,7 @@ void menuModelSelect(event_t event)
 #endif
       }
       else if (eeModelExists(sub)) {
+        killEvents(event);
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
         s_copyTgtOfs = 0;
         s_copySrcRow = -1;

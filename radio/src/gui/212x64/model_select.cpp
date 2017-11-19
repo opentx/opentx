@@ -162,7 +162,7 @@ void menuModelSelect(event_t event)
           s_copyMode = 0;
           event = EVT_ENTRY_UP;
         }
-        else if (event == EVT_KEY_LONG(KEY_ENTER)) {
+        else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
           s_copyMode = 0;
           killEvents(event);
           if (g_eeGeneral.currModel != sub) {
@@ -186,6 +186,7 @@ void menuModelSelect(event_t event)
           POPUP_MENU_START(onModelSelectMenu);
         }
         else if (eeModelExists(sub)) {
+          killEvents(event);
           s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
           s_copyTgtOfs = 0;
           s_copySrcRow = -1;
