@@ -526,14 +526,15 @@ void OpenTxSimulator::checkOutputsChanged()
 
 #if defined(GVAR_VALUE) && defined(GVARS)
   gVarMode_t gvar;
-  for (uint8_t fm=0; fm < MAX_FLIGHT_MODES; fm++) {
-    gvar.mode = fm;
-    for (uint8_t gv=0; gv < MAX_GVARS; gv++) {
-      tmpVal = GVAR_VALUE(gv, getGVarFlightMode(fm, gv));
+  for (uint8_t gv=0; gv < MAX_GVARS; gv++) {
+    gvar.prec = g_model.gvars[gv].prec;
+    gvar.unit = g_model.gvars[gv].unit;
+    for (uint8_t fm=0; fm < MAX_FLIGHT_MODES; fm++) {
+      gvar.mode = fm;
+      gvar.value = (int16_t)GVAR_VALUE(gv, getGVarFlightMode(fm, gv));
+      tmpVal = gvar;
       if (lastOutputs.gvars[fm][gv] != tmpVal || m_resetOutputsData) {
         lastOutputs.gvars[fm][gv] = tmpVal;
-        gvar.value = (int16_t)tmpVal;
-        tmpVal = gvar;
         emit gVarValueChange(gv, tmpVal);
         emit outputValueChange(OUTPUT_SRC_GVAR, gv, tmpVal);
       }
