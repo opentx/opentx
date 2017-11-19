@@ -124,7 +124,9 @@ enum MenuRadioHardwareItems {
 
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
-#if defined(BLUETOOTH)
+#if defined(PCBX7)
+#define BLUETOOTH_ROWS                 uint8_t(btChipPresent ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
+#elif defined(BLUETOOTH)
 #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #else
 #define BLUETOOTH_ROWS
@@ -230,6 +232,9 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawTextAlignedLeft(y, STR_BLUETOOTH);
         lcdDrawTextAtIndex(HW_SETTINGS_COLUMN2, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, attr);
+        if ((g_eeGeneral.bluetoothMode != BLUETOOTH_OFF) && !btChipPresent) {
+          g_eeGeneral.bluetoothMode = BLUETOOTH_OFF;
+        }
         if (attr) {
           g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER);
         }

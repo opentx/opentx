@@ -55,19 +55,14 @@ elseif(PCB STREQUAL X9D)
   set(LCD_DRIVER lcd_driver_aspi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
-elseif(PCB STREQUAL X7 OR PCB STREQUAL X7S)
+elseif(PCB STREQUAL X7)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x7)
-  if(PCB STREQUAL X7S)
-    add_definitions(-DPCBX7S)
-    set(FLAVOUR x7s)
-  else()
-    set(FLAVOUR x7)
-  endif()
+  set(FLAVOUR x7)
   add_definitions(-DPCBX7 -DSOFTWARE_VOLUME)
   add_definitions(-DEEPROM_VARIANT=0x4000)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
@@ -76,7 +71,7 @@ elseif(PCB STREQUAL X7 OR PCB STREQUAL X7S)
   set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
 
-if(PCB STREQUAL X9E OR PCB STREQUAL X7S)
+if(PCB STREQUAL X9E OR PCB STREQUAL X7)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -115,7 +110,7 @@ set(GUI_SRC ${GUI_SRC}
   ../screenshot.cpp
   )
 
-if(PCB STREQUAL X7 OR PCB STREQUAL X7S)
+if(PCB STREQUAL X7)
   set(LED_DRIVER led_driver.cpp)
 endif()
 
