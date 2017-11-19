@@ -133,16 +133,7 @@ fi
 if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X7
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES ${SRCDIR}
-  make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
-  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
-fi
-
-if [[ " X7S ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on X7S
-  rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X7S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} simu
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}

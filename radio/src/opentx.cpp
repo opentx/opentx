@@ -2655,6 +2655,10 @@ int main()
 
   boardInit();
 
+#if defined(PCBX7)
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
+#endif
+
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
   // TODO remove this
   lcdInit();
