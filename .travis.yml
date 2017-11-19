@@ -88,6 +88,6 @@ script:
   - sonar-scanner
 
 cache:
-    directories:
-          - '$HOME/.sonar/cache'
+  directories:
+    - '$HOME/.sonar/cache'
 
