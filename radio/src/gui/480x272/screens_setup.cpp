@@ -517,7 +517,7 @@ bool menuScreensTheme(event_t event)
           ZoneOptionValue * value = theme->getOptionValue(index);
           bool ret = editZoneOption(y, option, value, attr, EE_GENERAL, event);
           if (option->type == ZoneOption::Color) {
-            if (event == EVT_KEY_FIRST(KEY_EXIT)) {
+            if (attr && event == EVT_KEY_FIRST(KEY_EXIT)) {
               theme->update();
             }
           }
