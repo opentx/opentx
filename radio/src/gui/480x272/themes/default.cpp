@@ -264,7 +264,7 @@ class DefaultTheme: public Theme
     virtual void update() const
     {
       uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
-      uint32_t bg_color = g_eeGeneral.themeData.options[0].unsignedValue;
+      uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
 
       lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
