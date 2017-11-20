@@ -421,7 +421,7 @@ uint32_t pwrPressedDuration(void);
 #if defined(SIMU) || defined(NO_UNEXPECTED_SHUTDOWN)
   #define UNEXPECTED_SHUTDOWN()                 (false)
 #else
-  #define UNEXPECTED_SHUTDOWN()                 (powerupReason == DIRTY_SHUTDOWN)
+  #define UNEXPECTED_SHUTDOWN()                 ((powerupReason == DIRTY_SHUTDOWN) || WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
 #endif
 
 // Led driver
