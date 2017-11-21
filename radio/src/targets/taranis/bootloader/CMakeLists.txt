@@ -61,8 +61,8 @@ set(BOOTLOADER_SRC
   boot.cpp
   )
 
-remove_definitions(-DUSB_JOYSTICK -DUSB_SERIAL -DLUA -DDEBUG)
-add_definitions(-DBOOT -DUSB_MASS_STORAGE)
+remove_definitions(-DLUA -DDEBUG)
+add_definitions(-DBOOT)
 
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/taranis/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 
