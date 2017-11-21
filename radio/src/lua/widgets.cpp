@@ -242,7 +242,7 @@ void luaLoadThemeCallback()
     LuaTheme * theme = new LuaTheme(name, options);
     theme->loadFunction = loadFunction;
     theme->drawBackgroundFunction = drawBackgroundFunction;
-    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;   //NOSONAR
+    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;   // NOSONAR
     TRACE("Loaded Lua theme %s", name);
   }
 }
@@ -448,7 +448,7 @@ void luaLoadWidgetCallback()
       LuaWidgetFactory * factory = new LuaWidgetFactory(name, options, createFunction);
       factory->updateFunction = updateFunction;
       factory->refreshFunction = refreshFunction;
-      factory->backgroundFunction = backgroundFunction;   //NOSONAR
+      factory->backgroundFunction = backgroundFunction;   // NOSONAR
       TRACE("Loaded Lua widget %s", name);
     }
   }
