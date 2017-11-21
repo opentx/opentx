@@ -62,7 +62,7 @@ cd build
 if [[ " 9X AVR9X ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on 9X stock with FrSky telemetry
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DGVARS=YES -DTELEMETRY=FRSKY${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DGVARS=YES -DTELEMETRY=FRSKY ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} simu
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
