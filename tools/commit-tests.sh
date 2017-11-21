@@ -64,7 +64,7 @@ if [[ " 9X AVR9X ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=9X -DHELI=YES -DTEMPLATES=YES -DGVARS=YES -DTELEMETRY=FRSKY ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 
   # OpenTX on 9X stock with Ardupilot telemetry
@@ -83,14 +83,14 @@ if [[ " MEGA2560 AVR9X ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTEMPLATES=YES -DGVARS=YES -DHELI=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 
   # OpenTX on Mega2560 with Mavlink telemetry
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=MEGA2560 -DTELEMETRY=MAVLINK -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -99,7 +99,7 @@ if [[ " GRUVIN9X AVR9X ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=GRUVIN9X -DHELI=YES -DTEMPLATES=YES -DAUDIO=YES -DVOICE=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -108,7 +108,7 @@ if [[ " SKY9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=SKY9X -DHELI=YES DLUA=YES -DMULTIMODULE=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DGAUGES=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -117,7 +117,7 @@ if [[ " AR9X ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=AR9X -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -126,7 +126,7 @@ if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=9XRPRO -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -135,7 +135,7 @@ if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -144,7 +144,7 @@ if [[ " X9D X9 ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X9D -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -153,7 +153,7 @@ if [[ " X9D+ X9 ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X9D+ -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -162,7 +162,7 @@ if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X9E -DHELI=YES -DLUA=YES -DGVARS=YES -DPPM_UNIT=PERCENT_PREC1 ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -171,7 +171,7 @@ if [[ " X10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -180,7 +180,7 @@ if [[ " X12Sr10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X12S -DPCBREV=10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
@@ -189,7 +189,7 @@ if [[ " X12S HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
-  make -j${CORES} simu
+  make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
