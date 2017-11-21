@@ -26,27 +26,21 @@
   #include "targets/taranis/board.h"
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(STM32)
 void bwdt_reset()
 {
   IWDG->KR = 0xAAAA; // reload
 }
-#endif
 
-#if defined(PCBTARANIS)
 // TODO needed?
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart(void);
-#endif
 
-#if defined(PCBTARANIS)
 __attribute__ ((section(".isr_boot_vector"), used))
 const uint32_t BootVectors[] = {
   (uint32_t) &_estack,
   (uint32_t) (void (*)(void)) ((unsigned long) &_bootStart) };
-#endif
 
-#if defined(PCBTARANIS)
 __attribute__ ((section(".bootrodata.*"), used))
 #elif defined(PCBSKY9X)
 __attribute__ ((section(".bootrodata"), used))
@@ -56,7 +50,7 @@ const uint8_t BootCode[] = {
 #include "bootloader.lbm"
 };
 
-#if defined(PCBTARANIS)
+#if defined(STM32)
 __attribute__ ((section(".bootrodata"), used))
 void _bootStart()
 {

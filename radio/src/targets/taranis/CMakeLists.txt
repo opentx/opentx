@@ -134,7 +134,6 @@ set(FIRMWARE_TARGET_SRC
   ${LCD_DRIVER}
   i2c_driver.cpp
   pwr_driver.cpp
-  flash_driver.cpp
   )
 
 if(LCD_DUAL_BUFFER)

@@ -487,8 +487,8 @@ if(NOT MSVC)
 
 
     if(PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7)
-      add_subdirectory(targets/${TARGET_DIR}/bootloader)
-      include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/${TARGET_DIR}/bootloader)
+      add_subdirectory(targets/common/arm/stm32/bootloader)
+      include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/common/arm/stm32/bootloader)
       set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)
     elseif(OPENRC_BOOTLOADER)
       # We fetch Mike's bootloader as it is not included inside OpenTX
