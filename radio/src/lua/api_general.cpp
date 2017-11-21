@@ -48,6 +48,23 @@
 #define FIND_FIELD_DESC  0x01
 
 /*luadoc
+@function luaGetUID()
+
+Return radio UID
+
+@retval string radio UID (e.g., "12345678 55AA55AA 87654321")
+
+@status current Introduced in 2.2.1
+*/
+static int luaGetUID(lua_State * L)
+{
+  char str[LEN_CPU_UID+1];
+  getCPUUniqueID(str);
+  lua_pushstring(L, str);
+  return 1;
+}
+
+/*luadoc
 @function getVersion()
 
 Return OpenTX version
@@ -1189,6 +1206,7 @@ static int luaGetUsage(lua_State * L)
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
+  { "getUID", luaGetUID },
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
