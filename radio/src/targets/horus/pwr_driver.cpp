@@ -70,7 +70,16 @@ void pwrInit()
 
 void pwrOn()
 {
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+
   GPIO_SetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
+
   shutdownRequest = NO_SHUTDOWN_REQUEST;
   shutdownReason = DIRTY_SHUTDOWN;
 }
@@ -131,20 +140,16 @@ void pwrResetHandler()
   // powerupReason is there to cater for that, and is what is used in the firmware to decide whether we have to enter emergency mode.
   // This variable needs to be in a RAM section that is not initialized or zeroed, since once we exit this pwrResetHandler() function the
   // C runtime would otherwise overwrite it during program init.
+  // Only for X12, X10 power circuit causes inability to shut down on some samples.
 
-  if (shutdownRequest != SHUTDOWN_REQUEST) {
-    GPIO_InitTypeDef GPIO_InitStructure;
-    GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-    GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
-
+#if defined(PCBX12S)
+  if (shutdownRequest != SHUTDOWN_REQUEST || WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     if (shutdownReason == DIRTY_SHUTDOWN) {
       powerupReason = DIRTY_SHUTDOWN;
     }
-
+#else
+   if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+#endif
     pwrOn();
   }
 }
