@@ -527,8 +527,10 @@ void OpenTxSimulator::checkOutputsChanged()
 #if defined(GVAR_VALUE) && defined(GVARS)
   gVarMode_t gvar;
   for (uint8_t gv=0; gv < MAX_GVARS; gv++) {
+#if !defined(PCBSTD)
     gvar.prec = g_model.gvars[gv].prec;
     gvar.unit = g_model.gvars[gv].unit;
+#endif
     for (uint8_t fm=0; fm < MAX_FLIGHT_MODES; fm++) {
       gvar.mode = fm;
       gvar.value = (int16_t)GVAR_VALUE(gv, getGVarFlightMode(fm, gv));
