@@ -1680,7 +1680,7 @@ FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
   extern const pm_uchar logo_taranis[];
 #endif
 
-#if defined(USB_MASS_STORAGE)
+#if defined(STM32)
 void usbPluggedIn();
 #endif
 

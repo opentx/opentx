@@ -173,7 +173,7 @@ void menuStatisticsDebug(event_t event)
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
   lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW1, "ms");
 
-#if !defined(SIMU) && defined(USB_SERIAL)
+#if !defined(SIMU) && defined(DEBUG)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW4, "Usb");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW4, charsWritten, LEFT);
   lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, " ");

@@ -451,7 +451,7 @@ void perMain()
   }
 #endif
 
-#if defined(USB_MASS_STORAGE)
+#if defined(STM32)
   if (usbPlugged() && getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
     // disable access to menus
     lcdClear();

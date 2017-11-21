@@ -170,8 +170,10 @@ void mixerTask(void * pdata)
       CoLeaveMutexSection(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
 
-#if defined(USB_JOYSTICK) && !defined(SIMU)
-      usbJoystickUpdate();
+#if defined(STM32) && !defined(SIMU)
+      if (getSelectedUsbMode() == USB_JOYSTICK_MODE) {
+        usbJoystickUpdate();
+      }
 #endif
 
 #if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)

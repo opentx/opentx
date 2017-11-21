@@ -116,7 +116,6 @@ bool usbStarted()
   return usbDriverStarted;
 }
 
-#if defined(USB_JOYSTICK)
 /*
   Prepare and send new USB data packet
 
@@ -158,4 +157,3 @@ void usbJoystickUpdate()
   }
 }
 
-#endif // #defined(USB_JOYSTICK)
