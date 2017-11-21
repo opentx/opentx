@@ -116,6 +116,7 @@ bool usbStarted()
   return usbDriverStarted;
 }
 
+#if !defined(BOOT)
 /*
   Prepare and send new USB data packet
 
@@ -156,4 +157,4 @@ void usbJoystickUpdate()
     USBD_HID_SendReport(&USB_OTG_dev, HID_Buffer, HID_IN_PACKET);
   }
 }
-
+#endif
