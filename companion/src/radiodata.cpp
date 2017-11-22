@@ -31,11 +31,18 @@ RawSource RawSource::convert(Board::Type before, Board::Type after)
   }
 
   if (IS_HORUS(after)) {
-    if (IS_TARANIS_X9D(before) || IS_TARANIS_X7(before)) {
+    if (IS_TARANIS_X9D(before)) {
       if (type == SOURCE_TYPE_STICK && index >= 7) {
         // LS and RS on Horus are after sliders L1 and L2
         index += 2;
       }
+    }
+  }
+
+  // No S3, LS and RS on X7 board
+  if (IS_TARANIS_X7(after)) {
+    if (type == SOURCE_TYPE_STICK && index >= 6) {
+      index = 5;
     }
   }
 
