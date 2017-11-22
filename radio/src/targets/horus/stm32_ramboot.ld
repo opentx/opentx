@@ -48,17 +48,10 @@ SECTIONS
   /* The program code and other data goes into FLASH */
   .text :
   {
-    FILL(0xFFFF)
-      
-    CREATE_OBJECT_SYMBOLS
-  
-    KEEP(*(.bootloader)) /* Bootloader code */
-
-    . = 0x20000;         /* Set the start of the main program */
-    _stext = .;          /* Provide the name for the start of this section */
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
-    KEEP(*(.fwversiondata))
+    KEEP(*(.bootversiondata))
+    . = ALIGN(4);      /* Align the start of the text part */
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */

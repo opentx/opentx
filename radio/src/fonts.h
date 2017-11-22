@@ -23,8 +23,13 @@
 
 #if defined(COLORLCD)
 
+#if !defined(BOOT)
 extern const uint16_t * const fontspecsTable[16];
 extern const uint8_t * const fontsTable[16];
+#else
+extern const uint16_t * const fontspecsTable[1];
+extern const uint8_t * const fontsTable[1];
+#endif
 
 #if defined(PCBHORUS)
 extern BitmapBuffer * fontCache[2];

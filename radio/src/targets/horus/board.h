@@ -82,7 +82,7 @@ extern "C" {
 #endif
 
 #define FLASHSIZE                      0x200000
-#define BOOTLOADER_SIZE                0x8000
+#define BOOTLOADER_SIZE                0x20000
 #define FIRMWARE_ADDRESS               0x08000000
 
 #define MB                             *1024*1024
@@ -160,6 +160,7 @@ uint32_t sdMounted(void);
 #define sdDone()
 #define SD_CARD_PRESENT()              true
 #endif
+
 #if defined(DISK_CACHE)
 #include "diskio.h"
 DRESULT __disk_read(BYTE drv, BYTE * buff, DWORD sector, UINT count);

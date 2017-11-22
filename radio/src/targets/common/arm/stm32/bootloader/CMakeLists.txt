@@ -6,10 +6,15 @@ if(PCB STREQUAL X12S OR PCB STREQUAL X10)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../f4/system_stm32f4xx.c
-    ../../../../../${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
+    ../../../../../targets/${TARGET_DIR}/startup_stm32f42_43xxx.s
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_fmc.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_ltdc.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/misc.c
     )
 elseif(PCB STREQUAL X9E)
@@ -57,8 +62,9 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/${LCD_DRIVER}
   ../../../../../targets/${TARGET_DIR}/backlight_driver.cpp
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
-  ../../../../../targets/${TARGET_DIR}/i2c_driver.cpp
   ../../../../../targets/${TARGET_DIR}/diskio.cpp
+  ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
+  ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
   ../usbd_storage_msd.cpp
   ../delays.cpp
@@ -66,18 +72,43 @@ set(BOOTLOADER_SRC
   ../usb_bsp.c
   ../usb_driver.cpp
   ../flash_driver.cpp
-  ../../../../../targets/${TARGET_DIR}/pwr_driver.cpp
   init.c
   boot.cpp
   )
 
-remove_definitions(-DLUA -DDEBUG)
+if(NOT (PCB STREQUAL X10 OR PCB STREQUAL X12S))
+  set(BOOTLOADER_SRC
+    ${BOOTLOADER_SRC}
+    ../../../../../targets/${TARGET_DIR}/i2c_driver.cpp
+    )
+else()
+  set(BOOTLOADER_SRC
+    ${BOOTLOADER_SRC}
+    ../../../../../targets/${TARGET_DIR}/sdram_driver.c
+    ../../../../../targets/${TARGET_DIR}/sdio_sd.c
+    ../../../../../targets/${TARGET_DIR}/haptic_driver.cpp
+    ../../../../../gui/${GUI_DIR}/bitmapbuffer.cpp
+    ../../../../../syscalls.c
+    )
+
+  if(DEBUG)
+    set(BOOTLOADER_SRC
+      ${BOOTLOADER_SRC}
+      ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
+      ../../../../../serial.cpp
+      ../serial2_driver.cpp
+      )
+  endif()
+endif()
+
+remove_definitions(-DDISK_CACHE)
+remove_definitions(-DLUA)
 add_definitions(-DBOOT)
 
-set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/taranis/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
+set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 
 add_executable(bootloader ${BOOTLOADER_SRC})
-add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)
+add_dependencies(bootloader ${FONTS_TARGET} firmware_translations)
 
 add_custom_command(
   TARGET bootloader POST_BUILD

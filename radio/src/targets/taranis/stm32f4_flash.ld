@@ -51,14 +51,11 @@ SECTIONS
       
     CREATE_OBJECT_SYMBOLS
 
-    KEEP(*(.isr_boot_vector)) /* Startup code */
-    KEEP(*(.bootversiondata))
-    *(.bootrodata)
-    *(.bootrodata.*)
+    KEEP(*(.bootloader)) /* Bootloader code */
       
-    . = 32768;           /* Set the start of the main program */
+    . = 0x8000;          /* Set the start of the main program */
     _stext = .;          /* Provide the name for the start of this section */
-	 . = ALIGN(4);
+    . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
     KEEP(*(.fwversiondata))
     *(.text)           /* .text sections (code) */
@@ -67,7 +64,7 @@ SECTIONS
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
     *(.glue_7)         /* glue arm to thumb code */
     *(.glue_7t)        /* glue thumb to arm code */
-	*(.eh_frame)
+    *(.eh_frame)
 
     KEEP (*(.init))
     KEEP (*(.fini))

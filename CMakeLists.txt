@@ -72,6 +72,9 @@ else()
   set(LUA NO)
 endif()
 
+option(DISABLE_COMPANION "Disable building companion and simulators" OFF)
+
+if(NOT DISABLE_COMPANION)
 find_package(Qt5Core)
 find_package(Qt5Widgets)
 find_package(Qt5Xml)
@@ -150,6 +153,7 @@ if(Qt5Core_FOUND OR FOX_FOUND)
     message(STATUS "SDL not found! Simulator audio, and joystick inputs, will not work.")
   endif()
 endif()
+endif()
 
 # Check for a file that is typically left from a OpenTX 2.1 build and abort if found
 if (EXISTS ${RADIO_SRC_DIRECTORY}/stamp.h OR EXISTS ${RADIO_SRC_DIRECTORY}/translations/en.h)
@@ -180,6 +184,6 @@ endif()
 
 add_subdirectory(${RADIO_SRC_DIRECTORY})
 
-if(Qt5Core_FOUND)
+if(Qt5Core_FOUND AND NOT DISABLE_COMPANION)
   add_subdirectory(${COMPANION_SRC_DIRECTORY})
 endif()

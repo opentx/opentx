@@ -21,6 +21,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "opentx.h"
+#include "strhelpers.h"
 
 #if defined(SIMU)
 display_t displayBuf[DISPLAY_BUFFER_SIZE];
@@ -97,6 +98,7 @@ uint8_t getFontHeight(LcdFlags flags)
   return heightTable[FONTINDEX(flags)];
 }
 
+#if !defined(BOOT)
 int getTextWidth(const char * s, int len, LcdFlags flags)
 {
   const uint16_t * specs = fontspecsTable[FONTINDEX(flags)];
@@ -115,6 +117,7 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   }
   return result;
 }
+#endif
 
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags)
 {
@@ -175,7 +178,6 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   lcdDrawText(x, y, s, flags);
 }
 
-#if !defined(BOOT)
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
 {
   int dx = x2-x1;      /* the horizontal distance of the line */
@@ -218,8 +220,8 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
     }
   }
 }
-#endif
 
+#if !defined(BOOT)
 void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
 {
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), flags);
@@ -388,6 +390,7 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
 {
   drawGPSPosition(x, y, telemetryItem.gps.longitude, telemetryItem.gps.latitude, flags);
 }
+#endif
 
 void lcdSetContrast()
 {

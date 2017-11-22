@@ -313,6 +313,14 @@ FATFS g_FATFS_Obj __DMA;    // initialized in boardInit()
 FIL g_telemetryFile = {};
 #endif
 
+#if defined(BOOT)
+void sdInit(void)
+{
+  if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
+    f_chdir("/");
+  }
+}
+#else
 void sdInit()
 {
   TRACE("sdInit");
@@ -359,6 +367,7 @@ void sdDone()
     f_mount(NULL, "", 0); // unmount SD
   }
 }
+#endif
 
 uint32_t sdMounted()
 {
