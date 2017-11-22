@@ -1221,7 +1221,7 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* FrSky X7 board */
-  firmware = new OpenTxFirmware("opentx-x7", QObject::tr("FrSky Taranis X7  / X7S"), BOARD_TARANIS_X7);
+  firmware = new OpenTxFirmware("opentx-x7", QObject::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
   // No mixersmon for now
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalppm", QObject::tr("Support for PPM internal module hack"));
