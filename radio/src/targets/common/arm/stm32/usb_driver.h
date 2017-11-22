@@ -45,7 +45,7 @@ void setSelectedUsbMode(int mode);
 void usbSerialPutc(uint8_t c);
 
 // Used in view_statistics.cpp
-#if defined(USB_SERIAL)
+#if defined(DEBUG) && !defined(BOOT)
   extern uint16_t usbWraps;
   extern uint16_t charsWritten;
   extern volatile uint32_t APP_Rx_ptr_in;

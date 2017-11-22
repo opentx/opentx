@@ -1989,7 +1989,7 @@ void opentxClose(uint8_t shutdown)
 }
 #endif
 
-#if defined(USB_MASS_STORAGE)
+#if defined(STM32)
 void opentxResume()
 {
   TRACE("opentxResume");
@@ -2465,10 +2465,6 @@ uint16_t stackAvailable()
 
 void opentxInit(OPENTX_INIT_ARGS)
 {
-#if defined(DEBUG) && defined(USB_SERIAL)
-  // CoTickDelay(5000); // 10s
-#endif
-
   TRACE("opentxInit");
 
 #if defined(GUI)
