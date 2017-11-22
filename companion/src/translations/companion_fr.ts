@@ -4073,7 +4073,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../logsdialog.ui" line="42"/>
         <source>Save session CSV</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder la session CSV</translation>
     </message>
     <message>
         <location filename="../logsdialog.ui" line="150"/>
@@ -8594,17 +8594,17 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1224"/>
         <source>FrSky Taranis X7  / X7S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1232"/>
         <source>FrSky Horus X10 / X10S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1237"/>
         <source>FrSky Horus X12S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1281"/>
