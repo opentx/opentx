@@ -129,6 +129,7 @@ RawSwitch RawSwitch::convert(Board::Type before, Board::Type after)
 
 void ExpoData::convert(Board::Type before, Board::Type after)
 {
+  srcRaw.convert(before, after);
   swtch.convert(before, after);
 }
 
