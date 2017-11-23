@@ -118,7 +118,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
             killEvents(event);
             break;
           }
-          [[fallthrough]];
+          // no break
 
         case EVT_KEY_LONG(KEY_LEFT):
         case EVT_KEY_LONG(KEY_RIGHT):
