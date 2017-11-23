@@ -113,7 +113,6 @@ ZoneOption * createOptionsArray(int reference, uint8_t maxOptions)
             }
             else if (option->type == ZoneOption::Source ||
                      option->type == ZoneOption::TextSize ||
-                     option->type == ZoneOption::Source ||
                      option->type == ZoneOption::Color) {
               luaL_checktype(lsWidgets, -1, LUA_TNUMBER); // value is number
               option->deflt.unsignedValue = lua_tounsigned(lsWidgets, -1);
@@ -243,7 +242,7 @@ void luaLoadThemeCallback()
     LuaTheme * theme = new LuaTheme(name, options);
     theme->loadFunction = loadFunction;
     theme->drawBackgroundFunction = drawBackgroundFunction;
-    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;
+    theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;   // NOSONAR
     TRACE("Loaded Lua theme %s", name);
   }
 }
@@ -449,7 +448,7 @@ void luaLoadWidgetCallback()
       LuaWidgetFactory * factory = new LuaWidgetFactory(name, options, createFunction);
       factory->updateFunction = updateFunction;
       factory->refreshFunction = refreshFunction;
-      factory->backgroundFunction = backgroundFunction;
+      factory->backgroundFunction = backgroundFunction;   // NOSONAR
       TRACE("Loaded Lua widget %s", name);
     }
   }
