@@ -76,6 +76,7 @@ void postModelLoad(bool alarms)
 #if defined(GUI)
     if (alarms) {
       checkAll();
+      PLAY_MODEL_NAME();
     }
 #endif
     resumePulses();
