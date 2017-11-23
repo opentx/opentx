@@ -160,9 +160,12 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
     // Column headers
     int headerCol = 1;
-    QLabel *nameLabel = new QLabel(ui->gvGB);
-    nameLabel->setText(tr("Name"));
-    gvLayout->addWidget(nameLabel, 0, headerCol++, 1, 1);
+
+    if (firmware->getCapability(GvarsName)) {
+      QLabel *nameLabel = new QLabel(ui->gvGB);
+      nameLabel->setText(tr("Name"));
+      gvLayout->addWidget(nameLabel, 0, headerCol++, 1, 1);
+    }
 
     if (phaseIdx > 0) {
       QLabel *sourceLabel = new QLabel(ui->gvGB);
@@ -170,11 +173,11 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       gvLayout->addWidget(sourceLabel, 0, headerCol++, 1, 1);
     }
 
-    if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
-      QLabel *valueLabel = new QLabel(ui->gvGB);
-      valueLabel->setText(tr("Value"));
-      gvLayout->addWidget(valueLabel, 0, headerCol++, 1, 1);
+    QLabel *valueLabel = new QLabel(ui->gvGB);
+    valueLabel->setText(tr("Value"));
+    gvLayout->addWidget(valueLabel, 0, headerCol++, 1, 1);
 
+    if (IS_HORUS_OR_TARANIS(board) && phaseIdx == 0) {
       QLabel *unitLabel = new QLabel(ui->gvGB);
       unitLabel->setText(tr("Unit"));
       gvLayout->addWidget(unitLabel, 0, headerCol++, 1, 1);
@@ -269,6 +272,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   }
   else {
     ui->gvGB->hide();
+    gvCount = 0;
   }
 
   disableMouseScrolling();
@@ -332,7 +336,7 @@ void FlightModePanel::updateGVar(int index)
   }
   gvValues[index]->setDisabled(model->isGVarLinked(phaseIdx, index));
   setGVSB(gvValues[index], model->gvarData[index].getMin(), model->gvarData[index].getMax(), model->getGVarFieldValue(phaseIdx, index));
-  if (IS_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
+  if (IS_HORUS_OR_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
     gvUnit[index]->setCurrentIndex(model->gvarData[index].unit);
     gvPrec[index]->setCurrentIndex(model->gvarData[index].prec);
     setGVSB(gvMin[index], GVAR_MIN_VALUE, model->gvarData[index].getMax(), model->gvarData[index].getMin());
