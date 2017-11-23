@@ -389,6 +389,7 @@ void InputsPanel::expoAdd()
       if (!gm_insertExpo(index))
         return;
       model->expoData[index].chn = model->expoData[index-1].chn;
+      expoInserted=true;
     }
     gm_openExpo(index);
 }
