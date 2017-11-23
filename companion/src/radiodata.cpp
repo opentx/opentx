@@ -39,13 +39,6 @@ RawSource RawSource::convert(Board::Type before, Board::Type after)
     }
   }
 
-  // No S3, LS and RS on X7 board
-  if (IS_TARANIS_X7(after)) {
-    if (type == SOURCE_TYPE_STICK && index >= 6) {
-      index = 5;
-    }
-  }
-
   // SWI to SWR don't exist on !X9E board
   if (!IS_TARANIS_X9E(after) && IS_TARANIS_X9E(before)) {
     if (type == SOURCE_TYPE_SWITCH && index >= 8) {
@@ -53,15 +46,33 @@ RawSource RawSource::convert(Board::Type before, Board::Type after)
     }
   }
 
-  // No SE and SG on X7 board
   if (IS_TARANIS_X7(after)) {
-    if (IS_TARANIS_X9(before) || IS_HORUS(before)) {
-      if (type == SOURCE_TYPE_SWITCH && index >= 6) {
-        index -= 2;
+    // No S3, LS and RS on X7 board
+    if (type == SOURCE_TYPE_STICK && index >= 6) {
+      index = 5;
+    }
+
+    // No SE and SG on X7 board
+    if ((IS_TARANIS_X9(before) || IS_HORUS(before)) && type == SOURCE_TYPE_SWITCH) {
+      if (index == 4 || index == 6) {
+        index = 3;  // SG and SE to SD
       }
-      else if (type == SOURCE_TYPE_SWITCH && index >= 4) {
-        index -= 1;
+      else if (index == 5) {
+        index = 4;  // SF to SF
       }
+      else if (index == 7) {
+        index = 5;  // SH to SH
+      }
+    }
+  }
+
+  // Compensate for SE and SG on X9/Horus board if converting from X7
+  if ((IS_TARANIS_X9(after) || IS_HORUS(after)) && IS_TARANIS_X7(before) && type == SOURCE_TYPE_SWITCH) {
+    if (index == 4) {
+      index = 5;  // SF to SF
+    }
+    else if (index == 5) {
+      index = 7;  // SH to SH
     }
   }
 
@@ -70,30 +81,55 @@ RawSource RawSource::convert(Board::Type before, Board::Type after)
 
 RawSwitch RawSwitch::convert(Board::Type before, Board::Type after)
 {
+  if (!index || type != SWITCH_TYPE_SWITCH) {
+    return *this;  // no changes
+  }
+
   // SWI to SWR don't exist on !X9E board
   if (!IS_TARANIS_X9E(after) && IS_TARANIS_X9E(before)) {
-    if (type == SWITCH_TYPE_SWITCH && index >= 24) {
+    if (abs(index) > 24) {
       index = index % 24;
     }
   }
 
+  int srcIdx = div(abs(index)-1, 3).quot;  // raw source index
+  int delta = 0;
+
   // No SE and SG on X7 board
-  if (IS_TARANIS_X7(after)) {
-    if (IS_TARANIS_X9(before) || IS_HORUS(before)) {
-      if (type == SWITCH_TYPE_SWITCH && index >= 18) {
-        index -= 6;
-      }
-      else if (type == SWITCH_TYPE_SWITCH && index >= 15) {
-        index -= 3;
-      }
+  if (IS_TARANIS_X7(after) && (IS_TARANIS_X9(before) || IS_HORUS(before))) {
+    if (srcIdx == 4 || srcIdx == 5) {
+      delta = 3;  // SE to SD & SF to SF
+    }
+    else if (srcIdx == 6) {
+      delta = 9;  // SG to SD
+    }
+    else if (srcIdx == 7) {
+      delta = 6;  // SH to SH
     }
   }
+
+  // Compensate for SE and SG on X9/Horus board if converting from X7
+  if ((IS_TARANIS_X9(after) || IS_HORUS(after)) && IS_TARANIS_X7(before)) {
+    if (srcIdx == 4) {
+      delta = -3;  // SF to SF
+    }
+    else if (srcIdx == 5) {
+      delta = -6;  // SH to SH
+    }
+  }
+
+  if (index < 0) {
+    delta = -delta;  // invert for !switch
+  }
+
+  index -= delta;
 
   return *this;
 }
 
 void ExpoData::convert(Board::Type before, Board::Type after)
 {
+  srcRaw.convert(before, after);
   swtch.convert(before, after);
 }
 
