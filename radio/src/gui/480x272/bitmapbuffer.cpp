@@ -436,7 +436,7 @@ void BitmapBuffer::drawBitmapPie(int x0, int y0, const uint16_t * img, int start
 
   for (int y=h2-1; y>=0; y--) {
     for (int x=w2-1; x>=0; x--) {
-      int slope = (x==0 ? (y<0 ? -99000 : 99000) : y*100/x);
+      int slope = (x==0 ? 99000 : y*100/x);
       if (slope >= slopes[0] && slope < slopes[1]) {
         *getPixelPtr(x0+w2+x, y0+h2-y) = q[(h2-y)*width + w2+x];
       }
