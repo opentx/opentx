@@ -393,7 +393,7 @@ endforeach()
 add_definitions(-DCORRECT_NEGATIVE_SHIFTS)
 
 if(NOT MSVC)
-  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits")
+  set(WARNING_FLAGS "${WARNING_FLAGS} -Wall -Wno-strict-aliasing -Wformat -Wreturn-type -Wunused -Wuninitialized -Wunknown-pragmas -Wno-switch -Wtype-limits -Wno-attributes")
   if(WARNINGS_AS_ERRORS)
     set(WARNING_FLAGS "${WARNING_FLAGS} -Werror")
   endif(WARNINGS_AS_ERRORS)
@@ -443,7 +443,7 @@ set(CMAKE_EXE_LINKER_FLAGS "")
 set(CMAKE_C_LINK_EXECUTABLE "<CMAKE_C_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 set(CMAKE_CXX_LINK_EXECUTABLE "<CMAKE_CXX_COMPILER> <FLAGS> <LINK_FLAGS> <OBJECTS>  -o <TARGET>")
 
-use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
+use_cxx17()  # ensure c++17 in CXX_FLAGS with CMake < 3.1
 
 find_program(BASH bash HINTS "c:/cygwin/bin/" "c:/msys/bin/" DOC "bash shell for firmware size report (eg. c:/cygwin/bin/bash.exe on Windows).")
 
