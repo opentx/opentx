@@ -625,8 +625,8 @@ class FrSkyChannelData {
 
 struct FrSkyBarData {
   RawSource source;
-  unsigned int barMin;           // minimum for bar display
-  unsigned int barMax;           // ditto for max display (would usually = ratio)
+  int barMin;           // minimum for bar display
+  int barMax;           // ditto for max display (would usually = ratio)
 };
 
 struct FrSkyLineData {
