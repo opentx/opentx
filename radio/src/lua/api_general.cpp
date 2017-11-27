@@ -138,7 +138,7 @@ static void luaPushDateTime(lua_State * L, uint32_t year, uint32_t mon, uint32_t
   lua_pushtableinteger(L, "min", min);
   lua_pushtableinteger(L, "sec", sec);
   lua_pushtableinteger(L, "hour12", hour12);
-  if(hour < 12) {
+  if (hour < 12) {
     lua_pushtablestring(L, "suffix", "am");
   }
   else {
