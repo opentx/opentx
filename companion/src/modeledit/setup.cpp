@@ -522,7 +522,12 @@ void ModulePanel::update()
     ui->label_option->setText(qApp->translate("Multiprotocols", qPrintable(pdef.optionsstr)));
   }
 
-  // Failsafes
+  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
+  ui->autoBind->setCheckState(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
+  ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
+  ui->lowPower->setCheckState(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
+
+
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
   ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
 

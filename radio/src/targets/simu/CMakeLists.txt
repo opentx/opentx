@@ -77,7 +77,7 @@ endif()
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WARNING_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WARNING_FLAGS}")
 
-use_cxx17()  # ensure c++17 in CXX_FLAGS with CMake < 3.1
+use_cxx14()  # ensure c++14 in CXX_FLAGS with CMake < 3.1
 
 if(FOX_FOUND)
   if(SIMU_DISKIO)
