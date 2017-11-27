@@ -675,16 +675,14 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
+        ((i==FuncSetTimer1 || i==FuncSetTimer2) && !IS_ARM(firmware->getBoard())) ||
         ((i==FuncSetTimer3) && firmware->getCapability(Timers) < 3) ||
-        ((i==FuncScreenshot) && IS_HORUS(firmware->getBoard())) ||
+        ((i==FuncScreenshot) && !IS_TARANIS(firmware->getBoard())) ||
         ((i>=FuncRangeCheckInternalModule && i<=FuncBindExternalModule) && (!model || !firmware->getCapability(DangerousFunctions))) ||
         ((i>=FuncAdjustGV1 && i<=FuncAdjustGVLast) && (!model || !firmware->getCapability(Gvars)))
         ) {
       // skipped
-      // b->addItem(CustomFunctionData(AssignFunc(i)).funcToString(), i);
-      // QModelIndex index = b->model()->index(i, 0);
-      // QVariant v(0);
-      // b->model()->setData(index, v, Qt::UserRole - 1);
+      continue;
     }
     else {
       b->addItem(CustomFunctionData(AssignFunc(i)).funcToString(model), i);
