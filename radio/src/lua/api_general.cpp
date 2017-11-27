@@ -125,7 +125,7 @@ static void luaPushDateTime(lua_State * L, uint32_t year, uint32_t mon, uint32_t
   uint32_t hour12 = hour;
 
   if (hour < 1) {
-    hour12 = hour;
+    hour12 = 12;
   }
   else if (hour > 12) {
     hour12 = hour - 12;
