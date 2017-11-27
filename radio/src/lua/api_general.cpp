@@ -220,7 +220,6 @@ void luaGetValueAndPush(lua_State* L, int src)
             luaPushCells(L, telemetrySensor, telemetryItems[qr.quot]);
             break;
           }
-          continue;
           // deliberate no break here to properly return `Cels-` and `Cels+`
         default:
           if (telemetrySensor.prec > 0)
