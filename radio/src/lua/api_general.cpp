@@ -790,6 +790,8 @@ static int luaPlayHaptic(lua_State * L)
   int pause = luaL_checkinteger(L, 2);
   int flags = luaL_optinteger(L, 3, 0);
   haptic.play(length, pause, flags);
+#else
+  UNUSED(L);
 #endif
   return 0;
 }
