@@ -87,6 +87,14 @@ class ModelPrinter: public QObject
     QString printGlobalVarMin(int idx);
     QString printGlobalVarMax(int idx);
     QString printGlobalVarPopup(int idx);
+    QString printOutputValueGVar(int val);
+    QString printOutputOffset(int idx);
+    QString printOutputMin(int idx);
+    QString printOutputMax(int idx);
+    QString printOutputRevert(int idx);
+    QString printOutputCurve(int idx);
+    QString printOutputPpmCenter(int idx);
+    QString printOutputSymetrical(int idx);
 
   private:
     Firmware * firmware;

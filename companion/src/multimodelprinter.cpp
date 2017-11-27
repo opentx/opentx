@@ -162,7 +162,7 @@ QString MultiModelPrinter::print(QTextDocument * document)
     str += printFlightModes();
   str += printInputs();
   str += printMixers();
-  str += printLimits();
+  str += printOutputs();
   str += printCurves(document);
   if (firmware->getCapability(Gvars) && !firmware->getCapability(GvarsFlightModes))
     str += printGvars();
@@ -390,18 +390,24 @@ QString MultiModelPrinter::printFlightModes()
   return str;
 }
 
-QString MultiModelPrinter::printLimits()
+QString MultiModelPrinter::printOutputs()
 {
-  QString str = printTitle(tr("Limits"));
+  QString str = printTitle(tr("Outputs"));
   MultiColumns columns(modelPrinterMap.size());
   columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>" \
                  "<tr>" \
-                 " <td><b>" + tr("Channel") + "</b></td>" \
-                 " <td><b>" + tr("Offset") + "</b></td>" \
-                 " <td><b>" + tr("Min") + "</b></td>" \
-                 " <td><b>" + tr("Max") + "</b></td>" \
-                 " <td><b>" + tr("Invert") + "</b></td>" \
-                 "</tr>");
+                 "<td><b>" + tr("Channel") + "</b></td>" \
+                 "<td><b>" + tr("Subtrim") + "</b></td>" \
+                 "<td><b>" + tr("Min") + "</b></td>" \
+                 "<td><b>" + tr("Max") + "</b></td>" \
+                 "<td><b>" + tr("Direct") + "</b></td>");
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard()))
+    columns.append(" <td><b>" + tr("Curve") + "</b></td>");
+  if (firmware->getCapability(PPMCenter))
+    columns.append(" <td><b>" + tr("PPM") + "</b></td>");
+  if (firmware->getCapability(SYMLimits))
+    columns.append(" <td><b>" + tr("Linear") + "</b></td>");
+  columns.append("</tr>");
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
     int count = 0;
     for (int k=0; k < modelPrinterMap.size(); k++)
@@ -411,15 +417,30 @@ QString MultiModelPrinter::printLimits()
     columns.append("<tr><td><b>");
     COMPARE(modelPrinter->printChannelName(i));
     columns.append("</td><td>");
-    COMPARE(model->limitData[i].offsetToString());
+    COMPARE(modelPrinter->printOutputOffset(i));
     columns.append("</td><td>");
-    COMPARE(model->limitData[i].minToString());
+    COMPARE(modelPrinter->printOutputMin(i));
     columns.append("</td><td>");
-    COMPARE(model->limitData[i].maxToString());
+    COMPARE(modelPrinter->printOutputMax(i));
     columns.append("</td><td>");
-    COMPARE(model->limitData[i].revertToString());
-    columns.append("</td></tr>");
-
+    COMPARE(modelPrinter->printOutputRevert(i));
+    columns.append("</td>");
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+      columns.append("<td>");
+      COMPARE(modelPrinter->printOutputCurve(i));
+      columns.append("</td>");
+    }
+    if (firmware->getCapability(PPMCenter)) {
+      columns.append("<td>");
+      COMPARE(modelPrinter->printOutputPpmCenter(i));
+      columns.append("</td>");
+    }
+    if (firmware->getCapability(SYMLimits)) {
+      columns.append("<td>");
+      COMPARE(modelPrinter->printOutputSymetrical(i));
+      columns.append("</td>");
+    }
+    columns.append("</tr>");
   }
   columns.append("</table>");
   str.append(columns.print());
