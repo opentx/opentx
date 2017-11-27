@@ -562,6 +562,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
   g.mainWinGeo(saveGeometry());
   g.mainWinState(saveState());
   g.tabbedMdi(actTabbedWindows->isChecked());
+  QApplication::closeAllWindows();
   mdiArea->closeAllSubWindows();
   if (mdiArea->currentSubWindow()) {
     event->ignore();
