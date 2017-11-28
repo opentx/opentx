@@ -146,7 +146,7 @@ void TimerEdit::setTimeRange(int minSeconds, int maxSeconds)
     if (maxSeconds >= 3600)
       digits = floorf(logf(round(maxSeconds / 3600)) / logf(10.0f)) + 1;
 
-    bool mod = (m_hourDigits != digits || signbit((float)m_minTime) != signbit((float)minSeconds));
+    bool mod = (m_hourDigits != digits || std::signbit((float)m_minTime) != std::signbit((float)minSeconds));
 
     m_minTime = minSeconds;
     m_maxTime = maxSeconds;
