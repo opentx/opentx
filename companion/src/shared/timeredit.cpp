@@ -19,6 +19,7 @@
  */
 
 #include "timeredit.h"
+#include <cmath>
 
 TimerEdit::TimerEdit(QWidget * parent) :
   QLineEdit(parent),
