@@ -59,7 +59,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     // The function
     csw[i] = new QComboBox(this);
     csw[i]->setProperty("index", i);
-    connect(csw[i], SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+    populateCSWCB(csw[i]);
+    connect(csw[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionChanged()));
     tableLayout->addWidget(i, 1, csw[i]);
 
     // V1
@@ -75,7 +76,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchValue[i]->setAccelerated(true);
     cswitchValue[i]->setDecimals(0);
     cswitchValue[i]->setProperty("index", i);
-    connect(cswitchValue[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
+    connect(cswitchValue[i], SIGNAL(valueChanged(double)), this, SLOT(offsetEdited()));
     v1Layout->addWidget(cswitchValue[i]);
     cswitchValue[i]->setVisible(false);
     tableLayout->addLayout(i, 2, v1Layout);
@@ -93,7 +94,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchOffset[i]->setMinimum(-channelsMax);
     cswitchOffset[i]->setAccelerated(true);
     cswitchOffset[i]->setDecimals(0);
-    connect(cswitchOffset[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
+    connect(cswitchOffset[i], SIGNAL(valueChanged(double)), this, SLOT(offsetEdited()));
     cswitchOffset[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset[i]);
     cswitchOffset2[i] = new QDoubleSpinBox(this);
@@ -102,12 +103,13 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchOffset2[i]->setMinimum(-channelsMax);
     cswitchOffset2[i]->setAccelerated(true);
     cswitchOffset2[i]->setDecimals(0);
-    connect(cswitchOffset2[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
+    cswitchOffset2[i]->setSpecialValueText(" " + tr("(instant)"));
+    connect(cswitchOffset2[i], SIGNAL(valueChanged(double)), this, SLOT(offsetEdited()));
     cswitchOffset2[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset2[i]);
     cswitchTOffset[i] = new TimerEdit(this);
     cswitchTOffset[i]->setProperty("index",i);
-    connect(cswitchTOffset[i],SIGNAL(editingFinished()),this,SLOT(edited()));
+    connect(cswitchTOffset[i],SIGNAL(editingFinished()),this,SLOT(offsetEdited()));
     v2Layout->addWidget(cswitchTOffset[i]);
     cswitchTOffset[i]->setVisible(false);
     tableLayout->addLayout(i, 3, v2Layout);
@@ -115,6 +117,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     // AND
     cswitchAnd[i] = new QComboBox(this);
     cswitchAnd[i]->setProperty("index", i);
+    populateAndSwitchCB(cswitchAnd[i]);
     connect(cswitchAnd[i], SIGNAL(currentIndexChanged(int)), this, SLOT(andEdited(int)));
     tableLayout->addWidget(i, 4, cswitchAnd[i]);
 
@@ -157,18 +160,45 @@ LogicalSwitchesPanel::~LogicalSwitchesPanel()
 {
 }
 
+void LogicalSwitchesPanel::functionChanged()
+{
+  int i = sender()->property("index").toInt();
+  unsigned newFunc = csw[i]->currentData().toUInt();
+
+  if (model->logicalSw[i].func == newFunc)
+    return;
+
+  CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
+  model->logicalSw[i].func = newFunc;
+  CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
+
+  if (oldFuncFamily != newFuncFamily) {
+    model->logicalSw[i].clear();
+    model->logicalSw[i].func = newFunc;
+    if (newFuncFamily == LS_FAMILY_TIMER) {
+      model->logicalSw[i].val1 = -119;
+      model->logicalSw[i].val2 = -119;
+    }
+    else if (newFuncFamily == LS_FAMILY_EDGE) {
+      model->logicalSw[i].val2 = -129;
+    }
+  }
+  updateLine(i);
+  emit modified();
+}
+
 void LogicalSwitchesPanel::v1Edited(int value)
 {
   if (!lock) {
     int i = sender()->property("index").toInt();
     model->logicalSw[i].val1 = cswitchSource1[i]->itemData(value).toInt();
     if (model->logicalSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
-      RawSource source = RawSource(model->logicalSw[i].val1);
-      RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[i].getRangeFlags());
-      model->logicalSw[i].val2 = (cswitchOffset[i]->value() - range.offset) / range.step;
-      setSwitchWidgetVisibility(i);
+      if (!offsetEditedAt(i))
+        updateLine(i);
     }
-    emit modified();
+    else {
+      emit modified();
+    }
   }
 }
 
@@ -208,70 +238,65 @@ void LogicalSwitchesPanel::delayEdited(double delay)
   }
 }
 
-void LogicalSwitchesPanel::edited()
+void LogicalSwitchesPanel::offsetEdited()
 {
-  if (!lock) {
-    lock = true;
-    int i = sender()->property("index").toInt();
-    CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
-    model->logicalSw[i].func = csw[i]->itemData(csw[i]->currentIndex()).toInt();
-    CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
+  offsetEditedAt(sender()->property("index").toInt());
+}
 
-    if (oldFuncFamily != newFuncFamily) {
-      model->logicalSw[i].clear();
-      model->logicalSw[i].func = csw[i]->currentData().toInt();
-      if (newFuncFamily == LS_FAMILY_TIMER) {
-        model->logicalSw[i].val1 = -119;
-        model->logicalSw[i].val2 = -119;
-      }
-      else if (newFuncFamily == LS_FAMILY_EDGE) {
-        model->logicalSw[i].val2 = -129;
-      }
-      setSwitchWidgetVisibility(i);
-    }
+bool LogicalSwitchesPanel::offsetEditedAt(int index)
+{
+  if (lock)
+    return false;
 
-    RawSource source;
+  lock = true;
+  bool mod = false;
+  int value;
 
-    switch (newFuncFamily)
+  switch (model->logicalSw[index].getFunctionFamily())
+  {
+    case LS_FAMILY_VOFS:
     {
-      case LS_FAMILY_VOFS:
-      {
-        source = RawSource(model->logicalSw[i].val1);
-        RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[i].getRangeFlags());
-        double value = source.isTimeBased() ? cswitchTOffset[index]->timeInSeconds() : cswitchOffset[i]->value();
-        model->logicalSw[i].val2 = round((value-range.offset)/range.step);
-        break;
-      }
-      case LS_FAMILY_TIMER:
-        model->logicalSw[i].val1 = TimToVal(cswitchValue[i]->value());
-        model->logicalSw[i].val2 = TimToVal(cswitchOffset[i]->value());
-        updateTimerParam(cswitchValue[i], model->logicalSw[i].val1, 0.1);
-        updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.1);
-        break;
-      case LS_FAMILY_EDGE:
-        cswitchOffset2[i]->setSpecialValueText(" " + tr("(instant)"));
-        if (sender() == cswitchOffset[i]) {
-          model->logicalSw[i].val2 = TimToVal(cswitchOffset[i]->value());
-          updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
-        }
-        else {
-          model->logicalSw[i].val3 = TimToVal(cswitchOffset2[i]->value()) - model->logicalSw[i].val2;
-        }
-        updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
-        if (model->logicalSw[i].val3 == 0) {
-          cswitchOffset2[i]->setSuffix(" " + tr("(infinite)"));
-        }
-        else {
-          cswitchOffset2[i]->setSuffix("");
-        }
-        break;
-      default:
-        break;
+      RawSource source = RawSource(model->logicalSw[index].val1);
+      RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[index].getRangeFlags());
+      double currVal = source.isTimeBased() ? cswitchTOffset[index]->timeInSeconds() : cswitchOffset[index]->value();
+      value = round((currVal - range.offset) / range.step);
+      mod = (mod || value != model->logicalSw[index].val2);
+      model->logicalSw[index].val2 = value;
+      break;
     }
-    emit modified();
-    lock = false;
-    updateLine(i);
+
+    case LS_FAMILY_TIMER:
+      value = TimToVal(cswitchValue[index]->value());
+      mod = (mod || value != model->logicalSw[index].val1);
+      model->logicalSw[index].val1 = value;
+      value = TimToVal(cswitchOffset[index]->value());
+      mod = (mod || value != model->logicalSw[index].val2);
+      model->logicalSw[index].val2 = value;
+      break;
+
+    case LS_FAMILY_EDGE:
+      if (sender() == cswitchOffset[index]) {
+        value = TimToVal(cswitchOffset[index]->value());
+        mod = (mod || value != model->logicalSw[index].val2);
+        model->logicalSw[index].val2 = value;
+      }
+      else {
+        value = TimToVal(cswitchOffset2[index]->value()) - model->logicalSw[index].val2;
+        mod = (mod || value != model->logicalSw[index].val3);
+        model->logicalSw[index].val3 = value;
+      }
+      break;
+
+    default:
+      break;
   }
+  lock = false;
+
+  if (mod) {
+    updateLine(index);
+    emit modified();
+  }
+  return mod;
 }
 
 void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum)
@@ -298,17 +323,22 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, doubl
 #define VALUE_TO_VISIBLE 0x20
 #define DELAY_ENABLED    0x40
 #define DURATION_ENABLED 0x80
+#define LINE_ENABLED     0x100
 
-void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
+void LogicalSwitchesPanel::updateLine(int i)
 {
   lock = true;
   unsigned int mask;
+
+  csw[i]->setCurrentIndex(csw[i]->findData(model->logicalSw[i].func));
+  cswitchAnd[i]->setCurrentIndex(cswitchAnd[i]->findData(RawSwitch(model->logicalSw[i].andsw).toValue()));
 
   if (!model->logicalSw[i].func) {
     mask = 0;
   }
   else {
-    mask = DELAY_ENABLED | DURATION_ENABLED;
+    mask = LINE_ENABLED | DELAY_ENABLED | DURATION_ENABLED;
+
     switch (model->logicalSw[i].getFunctionFamily())
     {
       case LS_FAMILY_VOFS:
@@ -342,6 +372,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
 
         break;
       }
+
       case LS_FAMILY_STICKY:  // no break
       case LS_FAMILY_VBOOL:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
@@ -350,6 +381,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchSource2[i]->setModel(rawSwitchItemModel);
         cswitchSource2[i]->setCurrentIndex(cswitchSource2[i]->findData(model->logicalSw[i].val2));
         break;
+
       case LS_FAMILY_EDGE:
         mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
         mask &= ~DELAY_ENABLED;
@@ -357,14 +389,9 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchSource1[i]->setCurrentIndex(cswitchSource1[i]->findData(model->logicalSw[i].val1));
         updateTimerParam(cswitchOffset[i], model->logicalSw[i].val2, 0.0);
         updateTimerParam(cswitchOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(cswitchOffset[i]->value())-1));
-        cswitchOffset2[i]->setSpecialValueText(tr("(instant)"));
-        if (model->logicalSw[i].val3 == 0) {
-          cswitchOffset2[i]->setSuffix(tr("(infinite)"));
-        }
-        else {
-          cswitchOffset2[i]->setSuffix("");
-        }
+        cswitchOffset2[i]->setSuffix((model->logicalSw[i].val3) ? "" : tr(" (infinite)"));
         break;
+
       case LS_FAMILY_VCOMP:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
         cswitchSource1[i]->setModel(rawSourceItemModel);
@@ -372,6 +399,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         cswitchSource2[i]->setModel(rawSourceItemModel);
         cswitchSource2[i]->setCurrentIndex(cswitchSource2[i]->findData(model->logicalSw[i].val2));
         break;
+
       case LS_FAMILY_TIMER:
         mask |= VALUE1_VISIBLE | VALUE2_VISIBLE;
         updateTimerParam(cswitchValue[i], model->logicalSw[i].val1, 0.1);
@@ -386,6 +414,7 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
   cswitchOffset[i]->setVisible(mask & VALUE2_VISIBLE);
   cswitchOffset2[i]->setVisible(mask & VALUE3_VISIBLE);
   cswitchTOffset[i]->setVisible(mask & VALUE_TO_VISIBLE);
+  cswitchAnd[i]->setVisible(mask & LINE_ENABLED);
   if (firmware->getCapability(LogicalSwitchesExt)) {
     cswitchDuration[i]->setVisible(mask & DURATION_ENABLED);
     cswitchDelay[i]->setVisible(mask & DELAY_ENABLED);
@@ -394,10 +423,12 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
     if (mask & DELAY_ENABLED)
       cswitchDelay[i]->setValue(model->logicalSw[i].delay/10.0);
   }
+
+  rawSwitchItemModel->update();
   lock = false;
 }
 
-void LogicalSwitchesPanel::populateCSWCB(QComboBox *b, int value)
+void LogicalSwitchesPanel::populateCSWCB(QComboBox *b)
 {
   int order[] = {
     LS_FN_OFF,
@@ -434,23 +465,14 @@ void LogicalSwitchesPanel::populateCSWCB(QComboBox *b, int value)
         continue;
     }
     b->addItem(LogicalSwitchData(func).funcToString(), func);
-    if (value == func) {
-      b->setCurrentIndex(b->count()-1);
-    }
   }
   b->setMaxVisibleItems(10);
 }
 
-void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b, const RawSwitch & value, const int idx)
+void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b)
 {
-  if (!model->logicalSw[idx].func) {
-    b->setVisible(false);
-    return;
-  }
-
   if (IS_ARM(firmware->getBoard())) {
     b->setModel(rawSwitchItemModel);
-    b->setCurrentIndex(b->findData(value.toValue()));
   }
   else {
     RawSwitch item;
@@ -459,32 +481,18 @@ void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b, const RawSwitch & v
 
     item = RawSwitch(SWITCH_TYPE_NONE);
     b->addItem(item.toString(), item.toValue());
-    if (item == value) b->setCurrentIndex(b->count()-1);
 
     for (int i=1; i <= Boards::getCapability(firmware->getBoard(), Board::SwitchPositions); i++) {
       item = RawSwitch(SWITCH_TYPE_SWITCH, i);
       b->addItem(item.toString(), item.toValue());
-      if (item == value) b->setCurrentIndex(b->count()-1);
     }
 
     for (int i=1; i<=6; i++) {
       item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
       b->addItem(item.toString(), item.toValue());
-      if (item == value) b->setCurrentIndex(b->count()-1);
     }
   }
   b->setVisible(true);
-}
-
-void LogicalSwitchesPanel::updateLine(int i)
-{
-  lock = true;
-  populateCSWCB(csw[i], model->logicalSw[i].func);
-  lock = true;
-  setSwitchWidgetVisibility(i);
-  lock = true;
-  populateAndSwitchCB(cswitchAnd[i], RawSwitch(model->logicalSw[i].andsw), i);
-  lock = false;
 }
 
 void LogicalSwitchesPanel::update()
@@ -503,7 +511,6 @@ void LogicalSwitchesPanel::cswPaste()
     LogicalSwitchData *csw = &model->logicalSw[selectedSwitch];
     memcpy(csw, cswData.constData(), sizeof(LogicalSwitchData));
     emit modified();
-    rawSwitchItemModel->update();
     updateLine(selectedSwitch);
   }
 }
