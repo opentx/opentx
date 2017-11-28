@@ -25,6 +25,7 @@
 #include "radiodata.h"
 
 class RawSwitchFilterItemModel;
+class TimerEdit;
 
 class LogicalSwitchesPanel : public ModelPanel
 {
@@ -54,7 +55,7 @@ class LogicalSwitchesPanel : public ModelPanel
     QDoubleSpinBox  * cswitchValue[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchOffset[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchOffset2[CPN_MAX_LOGICAL_SWITCHES];
-    QTimeEdit  * cswitchTOffset[CPN_MAX_LOGICAL_SWITCHES];
+    TimerEdit * cswitchTOffset[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cswitchAnd[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchDuration[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchDelay[CPN_MAX_LOGICAL_SWITCHES];

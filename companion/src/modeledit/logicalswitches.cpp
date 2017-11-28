@@ -21,6 +21,7 @@
 #include "logicalswitches.h"
 #include "switchitemmodel.h"
 #include "helpers.h"
+#include "timeredit.h"
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -104,9 +105,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     connect(cswitchOffset2[i], SIGNAL(valueChanged(double)), this, SLOT(edited()));
     cswitchOffset2[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset2[i]);
-    cswitchTOffset[i] = new QTimeEdit(this);
+    cswitchTOffset[i] = new TimerEdit(this);
     cswitchTOffset[i]->setProperty("index",i);
-    cswitchTOffset[i]->setAccelerated(true);
     connect(cswitchTOffset[i],SIGNAL(editingFinished()),this,SLOT(edited()));
     v2Layout->addWidget(cswitchTOffset[i]);
     cswitchTOffset[i]->setVisible(false);
@@ -238,13 +238,8 @@ void LogicalSwitchesPanel::edited()
       {
         source = RawSource(model->logicalSw[i].val1);
         RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[i].getRangeFlags());
-        double value = source.isTimeBased() ? QTimeS(cswitchTOffset[i]->time()).seconds() : cswitchOffset[i]->value();
-        model->logicalSw[i].val2 = round((value-range.offset)/range.step);;
-        value = model->logicalSw[i].val2*range.step + range.offset;
-        if (source.isTimeBased())
-          cswitchTOffset[i]->setTime(QTimeS(round(value)));
-        else
-          cswitchOffset[i]->setValue(value);
+        double value = source.isTimeBased() ? cswitchTOffset[index]->timeInSeconds() : cswitchOffset[i]->value();
+        model->logicalSw[i].val2 = round((value-range.offset)/range.step);
         break;
       }
       case LS_FAMILY_TIMER:
@@ -321,20 +316,16 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
         mask |= SOURCE1_VISIBLE;
         RawSource source = RawSource(model->logicalSw[i].val1);
         RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[i].getRangeFlags());
+        double value = range.step * model->logicalSw[i].val2 + range.offset;  /* TODO+source.getRawOffset(model)*/
         cswitchSource1[i]->setModel(rawSourceItemModel);
         cswitchSource1[i]->setCurrentIndex(cswitchSource1[i]->findData(source.toValue()));
-        cswitchOffset[i]->setDecimals(range.decimals);
-        cswitchOffset[i]->setSingleStep(range.step);
         if (source.isTimeBased()) {
           mask |= VALUE_TO_VISIBLE;
-          int maxTime = round(range.max);
-          int value = round(range.step*model->logicalSw[i].val2 + range.offset);
-          cswitchTOffset[i]->setMaximumTime(QTimeS(maxTime));
-          QString format = (maxTime>=3600) ? "hh:mm:ss" : "mm:ss";
-          if (!range.unit.isEmpty())
-            format += QString("' [%1]'").arg(range.unit);
-          cswitchTOffset[i]->setDisplayFormat(format);
-          cswitchTOffset[i]->setTime(QTimeS(value));
+          cswitchTOffset[i]->setTimeRange(range.min, range.max);
+          cswitchTOffset[i]->setSingleStep(range.step);
+          cswitchTOffset[i]->setPageStep(range.step * 60);
+          cswitchTOffset[i]->setShowSeconds(range.step != 60);
+          cswitchTOffset[i]->setTime((int)value);
         }
         else {
           mask |= VALUE2_VISIBLE;
@@ -342,9 +333,11 @@ void LogicalSwitchesPanel::setSwitchWidgetVisibility(int i)
             cswitchOffset[i]->setSuffix("");
           else
             cswitchOffset[i]->setSuffix(" " + range.unit);
+          cswitchOffset[i]->setDecimals(range.decimals);
           cswitchOffset[i]->setMinimum(range.min);
           cswitchOffset[i]->setMaximum(range.max);
-          cswitchOffset[i]->setValue(range.step*(model->logicalSw[i].val2/* TODO+source.getRawOffset(model)*/)+range.offset);
+          cswitchOffset[i]->setSingleStep(range.step);
+          cswitchOffset[i]->setValue(value);
         }
 
         break;

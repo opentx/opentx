@@ -25,6 +25,7 @@
 #include "eeprominterface.h"
 
 class AutoComboBox;
+class TimerEdit;
 
 namespace Ui {
   class TelemetryAnalog;
@@ -82,6 +83,7 @@ class TelemetryCustomScreen: public ModelPanel
     void barSourceChanged(int index);
     void barMinChanged(double value);
     void barMaxChanged(double value);
+    void barTimeChanged();
 
   protected:
     void populateTelemetrySourceCB(QComboBox * b, RawSource & source, bool last=false);
@@ -94,6 +96,8 @@ class TelemetryCustomScreen: public ModelPanel
     QComboBox * barsCB[4];
     QDoubleSpinBox * minSB[4];
     QDoubleSpinBox * maxSB[4];
+    TimerEdit * minTime[4];
+    TimerEdit * maxTime[4];
 };
 
 class TelemetrySensorPanel: public ModelPanel

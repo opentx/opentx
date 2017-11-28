@@ -3,6 +3,7 @@ include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 set(shared_SRCS
   genericpanel.cpp
   hexspinbox.cpp
+  timeredit.cpp
   verticalscrollarea.cpp
 )
 
@@ -14,8 +15,9 @@ set(shared_HDRS
   autolineedit.h
   genericpanel.h
   hexspinbox.h
+  timeredit.h
 )
- 
+
 qt5_wrap_cpp(shared_SRCS ${shared_HDRS})
 
 add_library(shared ${shared_SRCS})
