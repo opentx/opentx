@@ -25,15 +25,15 @@
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
+  rawSourceItemModel(NULL),
   selectedSwitch(0)
 {
   Stopwatch s1("LogicalSwitchesPanel");
 
   int channelsMax = model.getChannelsMax(true);
   rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, LogicalSwitchesContext);
-  int srcFlags =  POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0);
-  rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, &model, srcFlags);
-  rawSourceItemModel->setParent(this);
+
+  setDataModels();
 
   QStringList headerLabels;
   headerLabels << "#" << tr("Function") << tr("V1") << tr("V2") << tr("AND Switch");
@@ -76,7 +76,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchValue[i]->setAccelerated(true);
     cswitchValue[i]->setDecimals(0);
     cswitchValue[i]->setProperty("index", i);
-    connect(cswitchValue[i], SIGNAL(valueChanged(double)), this, SLOT(offsetEdited()));
+    connect(cswitchValue[i], SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
     v1Layout->addWidget(cswitchValue[i]);
     cswitchValue[i]->setVisible(false);
     tableLayout->addLayout(i, 2, v1Layout);
@@ -94,7 +94,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchOffset[i]->setMinimum(-channelsMax);
     cswitchOffset[i]->setAccelerated(true);
     cswitchOffset[i]->setDecimals(0);
-    connect(cswitchOffset[i], SIGNAL(valueChanged(double)), this, SLOT(offsetEdited()));
+    connect(cswitchOffset[i], SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
     cswitchOffset[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset[i]);
     cswitchOffset2[i] = new QDoubleSpinBox(this);
@@ -104,7 +104,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     cswitchOffset2[i]->setAccelerated(true);
     cswitchOffset2[i]->setDecimals(0);
     cswitchOffset2[i]->setSpecialValueText(" " + tr("(instant)"));
-    connect(cswitchOffset2[i], SIGNAL(valueChanged(double)), this, SLOT(offsetEdited()));
+    connect(cswitchOffset2[i], SIGNAL(editingFinished()), this, SLOT(offsetEdited()));
     cswitchOffset2[i]->setVisible(false);
     v2Layout->addWidget(cswitchOffset2[i]);
     cswitchTOffset[i] = new TimerEdit(this);
@@ -158,6 +158,16 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
 
 LogicalSwitchesPanel::~LogicalSwitchesPanel()
 {
+}
+
+void LogicalSwitchesPanel::setDataModels()
+{
+  if (rawSourceItemModel)
+    rawSourceItemModel->deleteLater();
+
+  int srcFlags =  POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | POPULATE_TELEMETRY | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0);
+  rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, srcFlags);
+  rawSourceItemModel->setParent(this);
 }
 
 void LogicalSwitchesPanel::functionChanged()
@@ -497,6 +507,7 @@ void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b)
 
 void LogicalSwitchesPanel::update()
 {
+  setDataModels();
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     updateLine(i);
   }

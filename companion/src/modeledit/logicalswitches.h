@@ -38,6 +38,7 @@ class LogicalSwitchesPanel : public ModelPanel
     virtual void update();
 
   private slots:
+    void setDataModels();
     void functionChanged();
     void v1Edited(int value);
     void v2Edited(int value);
