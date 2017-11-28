@@ -136,7 +136,12 @@ class DarkblueTheme: public Theme
 
       delete calibHorus;
 #if defined(PCBX10)
-      calibHorus = BitmapBuffer::load(getThemePath("X10.bmp"));
+      if(ANALOGS_PWM_ENABLED()) {
+        calibHorus = BitmapBuffer::load(getThemePath("X10S.bmp"));
+      }
+      else {
+        calibHorus = BitmapBuffer::load(getThemePath("X10.bmp"));
+      }
 #else
       calibHorus = BitmapBuffer::load(getThemePath("horus.bmp"));
 #endif
