@@ -135,7 +135,11 @@ class DarkblueTheme: public Theme
       calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
 
       delete calibHorus;
+#if defined(PCBX10)
+      calibHorus = BitmapBuffer::load(getThemePath("X10.bmp"));
+#else
       calibHorus = BitmapBuffer::load(getThemePath("horus.bmp"));
+#endif
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
