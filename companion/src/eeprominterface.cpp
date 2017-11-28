@@ -244,11 +244,6 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
 
   Firmware * firmware = Firmware::getCurrentVariant();
   int board = firmware->getBoard();
-  bool singleprec = (flags & RANGE_SINGLE_PRECISION);
-
-  if (!singleprec && !IS_ARM(board)) {
-    singleprec = true;
-  }
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
@@ -267,9 +262,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.unit = sensor.unitString();
       }
       else {
-        if (singleprec) {
-          result.offset = -DBL_MAX;
-        }
+        result.offset = -DBL_MAX;
 
         switch (index) {
           case TELEMETRY_SOURCE_TX_BATT:
@@ -279,20 +272,21 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             result.unit = QObject::tr("V");
             break;
           case TELEMETRY_SOURCE_TX_TIME:
-            result.step = 1;
-            result.max = 24*60 - 1;
+            result.step = 60;
+            result.max = 24 * 60 * result.step - 60;  // 23:59:00 with 1-minute resolution
+            result.unit = QObject::tr("s");
             break;
           case TELEMETRY_SOURCE_TIMER1:
           case TELEMETRY_SOURCE_TIMER2:
           case TELEMETRY_SOURCE_TIMER3:
-            result.step = singleprec ? 5 : 1;
-            result.max = singleprec ? 255*5 : 60*60;
+            result.step = 5;
+            result.max = 255 * result.step;
             result.unit = QObject::tr("s");
             break;
           case TELEMETRY_SOURCE_RSSI_TX:
           case TELEMETRY_SOURCE_RSSI_RX:
             result.max = 100;
-            if (singleprec) result.offset = 128;
+            result.offset = 128;
             break;
           case TELEMETRY_SOURCE_A1_MIN:
           case TELEMETRY_SOURCE_A2_MIN:
@@ -310,9 +304,9 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_ALT_MIN:
           case TELEMETRY_SOURCE_ALT_MAX:
           case TELEMETRY_SOURCE_GPS_ALT:
-            result.step = singleprec ? 8 : 1;
+            result.step = 8;
             result.min = -500;
-            result.max = singleprec ? 1540 : 3000;
+            result.max = 1540;
             if (firmware->getCapability(Imperial) || settings.imperial) {
               result.step = (result.step * 105) / 32;
               result.min = (result.min * 105) / 32;
@@ -332,15 +326,15 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             result.unit = QObject::trUtf8("°C");
             break;
           case TELEMETRY_SOURCE_HDG:
-            result.step = singleprec ? 2 : 1;
+            result.step = 2;
             result.max = 360;
-            if (singleprec) result.offset = 256;
+            result.offset = 256;
             result.unit = QObject::trUtf8("°");
             break;
           case TELEMETRY_SOURCE_RPM:
           case TELEMETRY_SOURCE_RPM_MAX:
-            result.step = singleprec ? 50 : 1;
-            result.max = singleprec ? 12750 : 30000;
+            result.step = 50;
+            result.max = 12750;
             break;
           case TELEMETRY_SOURCE_FUEL:
             result.max = 100;
@@ -349,8 +343,8 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_ASPEED:
           case TELEMETRY_SOURCE_ASPEED_MAX:
             result.decimals = 1;
-            result.step = singleprec ? 2.0 : 0.1;
-            result.max = singleprec ? (2*255) : 2000;
+            result.step = 2.0;
+            result.max = (2*255);
             if (firmware->getCapability(Imperial) || settings.imperial) {
               result.step *= 1.150779;
               result.max *= 1.150779;
@@ -364,8 +358,8 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             break;
           case TELEMETRY_SOURCE_SPEED:
           case TELEMETRY_SOURCE_SPEED_MAX:
-            result.step = singleprec ? 2 : 1;
-            result.max = singleprec ? (2*255) : 2000;
+            result.step = 2;
+            result.max = (2*255);
             if (firmware->getCapability(Imperial) || settings.imperial) {
               result.step *= 1.150779;
               result.max *= 1.150779;
@@ -379,8 +373,8 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             break;
           case TELEMETRY_SOURCE_VERTICAL_SPEED:
             result.step = 0.1;
-            result.min = singleprec ? -12.5 : -300.0;
-            result.max = singleprec ? 13.0 : 300.0;
+            result.min = -12.5;
+            result.max = 13.0;
             result.decimals = 1;
             result.unit = QObject::tr("m/s");
             break;
@@ -389,13 +383,13 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             break;
           case TELEMETRY_SOURCE_DIST:
           case TELEMETRY_SOURCE_DIST_MAX:
-            result.step = singleprec ? 8 : 1;
-            result.max = singleprec ? 2040 : 10000;
+            result.step = 8;
+            result.max = 2040;
             result.unit = QObject::tr("m");
             break;
           case TELEMETRY_SOURCE_CELL:
           case TELEMETRY_SOURCE_CELL_MIN:
-            result.step = singleprec ? 0.02 : 0.01;
+            result.step = 0.02;
             result.max = 5.1;
             result.decimals = 2;
             result.unit = QObject::tr("V");
@@ -405,26 +399,26 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_VFAS:
           case TELEMETRY_SOURCE_VFAS_MIN:
             result.step = 0.1;
-            result.max = singleprec ? 25.5 : 100.0;
+            result.max = 25.5;
             result.decimals = 1;
             result.unit = QObject::tr("V");
             break;
           case TELEMETRY_SOURCE_CURRENT:
           case TELEMETRY_SOURCE_CURRENT_MAX:
-            result.step = singleprec ? 0.5 : 0.1;
-            result.max = singleprec ? 127.5 : 200.0;
+            result.step = 0.5;
+            result.max = 127.5;
             result.decimals = 1;
             result.unit = QObject::tr("A");
             break;
           case TELEMETRY_SOURCE_CONSUMPTION:
-            result.step = singleprec ? 100 : 1;
-            result.max = singleprec ? 25500 : 30000;
+            result.step = 100;
+            result.max =  25500;
             result.unit = QObject::tr("mAh");
             break;
           case TELEMETRY_SOURCE_POWER:
           case TELEMETRY_SOURCE_POWER_MAX:
-            result.step = singleprec ? 5 : 1;
-            result.max = singleprec ? 1275 : 2000;
+            result.step = 5;
+            result.max = 1275;
             result.unit = QObject::tr("W");
             break;
           case TELEMETRY_SOURCE_ACCX:
@@ -432,8 +426,8 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_ACCZ:
             result.step = 0.01;
             result.decimals = 2;
-            result.max = singleprec ? 2.55 : 10.00;
-            result.min = singleprec ? 0 : -10.00;
+            result.max = 2.55;
+            result.min = 0;
             result.unit = QObject::tr("g");
             break;
           default:
@@ -441,19 +435,14 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             break;
         }
 
-        if (singleprec && result.offset==-DBL_MAX) {
+        if (result.offset == -DBL_MAX) {
           result.offset = result.max - (127*result.step);
         }
 
-        if (flags & (RANGE_DELTA_FUNCTION|RANGE_DELTA_ABS_FUNCTION)) {
-          if (singleprec) {
-            result.offset = 0;
-            result.min = result.step * -127;
-            result.max = result.step * 127;
-          }
-          else {
-            result.min = -result.max;
-          }
+        if (flags & (RANGE_DELTA_FUNCTION | RANGE_ABS_FUNCTION)) {
+          result.offset = 0;
+          result.min = result.step * -127;
+          result.max = result.step * 127;
         }
       }
       break;
@@ -471,14 +460,18 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.unit = QObject::tr("V");
       }
       else if (index == 1) {   //Time
-        result.step = 1;
-        result.max = 24*60 - 1;
-        result.unit = QObject::tr("h:m");
+        result.step = 60;
+        result.max = 24 * 60 * result.step - 60;  // 23:59:00 with 1-minute resolution
+        result.unit = QObject::tr("s");
       }
       else {      // Timers 1 - 3
-        result.step = singleprec ? 5 : 1;
-        result.max = singleprec ? 255*5 : 60*60;
-        result.unit = singleprec ? QObject::tr("m:s") : QObject::tr("h:m:s");
+        result.step = 1;
+        if (flags & RANGE_SHORT_TIMER)   // Limit for logic sw. comparison and telem bar display min/max values
+          result.max = 24 * 60 - 1;      // 00:23:59 TODO: verify reason for this limit in firmware
+        else
+          result.max = 9 * 60 * 60 - 1;  // 8:59:59 (to match firmware)
+        result.min = -result.max;
+        result.unit = QObject::tr("s");
       }
       break;
 
@@ -490,7 +483,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
       break;
   }
 
-  if (flags & RANGE_DELTA_ABS_FUNCTION) {
+  if (flags & RANGE_ABS_FUNCTION) {
     result.min = 0;
   }
 
@@ -936,12 +929,18 @@ CSFunctionFamily LogicalSwitchData::getFunctionFamily() const
 
 unsigned int LogicalSwitchData::getRangeFlags() const
 {
-  if (func == LS_FN_DPOS)
-    return RANGE_DELTA_FUNCTION;
-  else if (func == LS_FN_DAPOS)
-    return RANGE_DELTA_ABS_FUNCTION;
-  else
-    return 0;
+  int f = 0;
+
+  if (func == LS_FN_DPOS || func == LS_FN_DAPOS)
+    f |= RANGE_DELTA_FUNCTION;
+
+  if (func == LS_FN_DAPOS || func == LS_FN_APOS || func == LS_FN_ANEG)
+    f |= RANGE_ABS_FUNCTION;
+
+  if (getFunctionFamily() == LS_FAMILY_VOFS && RawSource(val1).isTimeBased(true))
+    f |= RANGE_SHORT_TIMER;
+
+  return f;
 }
 
 QString LogicalSwitchData::funcToString() const

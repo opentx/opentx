@@ -187,9 +187,9 @@ class RawSourceRange
     QString unit;
 };
 
-#define RANGE_SINGLE_PRECISION    1
+#define RANGE_SHORT_TIMER         1  // limit timers value to 23:59 for LS and telem. bars range
 #define RANGE_DELTA_FUNCTION      2
-#define RANGE_DELTA_ABS_FUNCTION  4
+#define RANGE_ABS_FUNCTION        4
 
 class RawSource {
   public:
