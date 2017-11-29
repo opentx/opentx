@@ -407,8 +407,8 @@ int main()
         // Remove opentx- from string
         const char* other_ver = getOtherVersion();
         if (strstr(other_ver, "opentx-"))
-          other_ver = strstr(other_ver, "opentx-");
-        lcdDrawText(30, 6*FH, getOtherVersion());
+          other_ver = other_ver+7;
+        lcdDrawText(20, 6*FH, other_ver);
 #endif
         lcdInvertLine(2+vpos);
         lcdDrawTextAlignedLeft(7*FH, STR_OR_PLUGIN_USB_CABLE);
