@@ -78,8 +78,8 @@ addons:
     organization: "opentx-github"
     token:
       secure: "BuQrGRijNpL2V/IQNcOxvjChj8PScfCdiv403EE73Nqb4+sB8YL92Fnzrnw9bC8wF7BVSDJVpYF0gbdaTzuCmaeZfM8NJK0TOJAbH6+B8bhIrU/V1SBuVjHQnndV/wysieruKnK/KxYJZqItgSlnPo+PmiFxtXJNlas0Kstb2O4="
-    github_token:
-      secure: "Qkmp4VrQJtKgZ/pz65SNnCDiF4slgFfQS/3whyLXLcDbFb1Hv1oj7Hqz9EVDUSO2eEhgQGaOKkRc0CfAAOBwW6OvhE0xh7P1CJEjzOp6+3gI/LyZUNsqa+awVRZTsfm1YZaOPaPWJ7cI0uz3/OoSUeIecs4PDWPrQMGRlsrq7Q8="
+    # github_token:
+    #   secure: "Qkmp4VrQJtKgZ/pz65SNnCDiF4slgFfQS/3whyLXLcDbFb1Hv1oj7Hqz9EVDUSO2eEhgQGaOKkRc0CfAAOBwW6OvhE0xh7P1CJEjzOp6+3gI/LyZUNsqa+awVRZTsfm1YZaOPaPWJ7cI0uz3/OoSUeIecs4PDWPrQMGRlsrq7Q8="
     branches:
       - "2.2"
 
