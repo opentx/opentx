@@ -497,7 +497,8 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
     FATWRITE_FIRMWARE
   };
 
-  static uint8_t operation = FATWRITE_NONE;
+  // Silence compiler warning that this is not used on X10
+  __attribute__((unused)) static uint8_t operation = FATWRITE_NONE;
 
   TRACE("FAT12 Write(sector=%d, count=%d)", sector, count);
 
