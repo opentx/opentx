@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>841</width>
+    <width>859</width>
     <height>673</height>
    </rect>
   </property>
@@ -785,7 +785,7 @@ Mode 4:
              </item>
              <item>
               <property name="text">
-               <string>Use firmware release candidates (testing)</string>
+               <string>Use firmware releases and release candidates (testing)</string>
               </property>
              </item>
              <item>
@@ -810,7 +810,7 @@ Mode 4:
              </item>
              <item>
               <property name="text">
-               <string>Use Companion release candidates (testing)</string>
+               <string>Use Companion release and release candidates (testing)</string>
               </property>
              </item>
              <item>
