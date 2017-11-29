@@ -25,7 +25,7 @@
 #include "appdata.h"
 
 const char * const OPENTX_SDCARD_DOWNLOAD_URL[] = {
-  "https://downloads.open-tx.org/2.2/sdcard/",
+  "https://downloads.open-tx.org/2.2/release/sdcard/",
   "https://downloads.open-tx.org/2.2/rc/sdcard/",
   "https://downloads.open-tx.org/2.2/nightlies/sdcard/"
 };
@@ -55,14 +55,14 @@ void FirmwarePreferencesDialog::initSettings()
 
 void FirmwarePreferencesDialog::on_checkFWUpdates_clicked()
 {
-  auto mw = (MainWindow *)this->parent();
+  MainWindow * mw = qobject_cast<MainWindow *>(this->parent());
   mw->checkForFirmwareUpdate();
   initSettings();
 }
 
 void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 {
-  auto * mw = (MainWindow *)this->parent();
+  MainWindow * mw = qobject_cast<MainWindow *>(this->parent());
   mw->dowloadLastFirmwareUpdate();
   initSettings();
 }

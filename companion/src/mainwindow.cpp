@@ -74,7 +74,7 @@
 #endif
 
 const char * const OPENTX_COMPANION_DOWNLOAD_URL[] = {
-  "https://downloads.open-tx.org/2.2/companion",
+  "https://downloads.open-tx.org/2.2/release/companion",
   "https://downloads.open-tx.org/2.2/rc/companion",
   "https://downloads.open-tx.org/2.2/nightlies/companion"
 };

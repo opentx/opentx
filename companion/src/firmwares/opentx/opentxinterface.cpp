@@ -31,7 +31,7 @@
 using namespace Board;
 
 const char * const OPENTX_FIRMWARE_DOWNLOAD_URL[] = {
-  "https://downloads.open-tx.org/2.2/firmware",
+  "https://downloads.open-tx.org/2.2/release/firmware",
   "https://downloads.open-tx.org/2.2/rc/firmware",
   "https://downloads.open-tx.org/2.2/nightlies/firmware"
 };

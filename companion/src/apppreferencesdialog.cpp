@@ -23,13 +23,10 @@
 #include "mainwindow.h"
 #include "appdata.h"
 #include "helpers.h"
-#include "firmwareinterface.h"
-#ifdef JOYSTICKS
+#if defined(JOYSTICKS)
 #include "joystick.h"
 #include "joystickdialog.h"
 #endif
-#include <QDesktopServices>
-#include <QtGui>
 
 AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
   QDialog(parent),
