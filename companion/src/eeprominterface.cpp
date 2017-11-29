@@ -447,10 +447,25 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
       }
       break;
 
-    case SOURCE_TYPE_GVAR:
-      result.max = 1024;
+    case SOURCE_TYPE_LUA_OUTPUT:
+      result.max = 30000;
       result.min = -result.max;
       break;
+
+    case SOURCE_TYPE_TRIM:
+      result.max = (model && model->extendedTrims ? firmware->getCapability(ExtendedTrimsRange) : firmware->getCapability(TrimsRange));
+      result.min = -result.max;
+      break;
+
+    case SOURCE_TYPE_GVAR: {
+      GVarData gv = model->gvarData[index];
+      result.step = gv.multiplierGet();
+      result.decimals = gv.prec;
+      result.max = gv.getMaxPrec();
+      result.min = gv.getMinPrec();
+      result.unit = gv.unitToString();
+      break;
+    }
 
     case SOURCE_TYPE_SPECIAL:
       if (index == 0)  {  //Batt
@@ -475,11 +490,14 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
       }
       break;
 
+    case SOURCE_TYPE_CH:
+      result.max = model->getChannelsMax(false);
+      result.min = -result.max;
+      break;
+
     default:
-      if (model) {
-        result.max = model->getChannelsMax(true);
-        result.min = -result.max;
-      }
+      result.max = 100;
+      result.min = -result.max;
       break;
   }
 
