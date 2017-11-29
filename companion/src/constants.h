@@ -68,4 +68,12 @@
 #define CPN_STR_SW_INDICATOR_NEUT      QCoreApplication::translate("RawSwitch", "-")             // Switch neutral (middle) position indicator.
 #define CPN_STR_SW_INDICATOR_REV       QCoreApplication::translate("RawSwitch", "!")             // Switch reversed logic (NOT) indicator.
 
+enum DownloadBranchType {
+  BRANCH_RELEASE_STABLE,
+  BRANCH_RC_TESTING,
+  BRANCH_NIGHTLY_UNSTABLE
+};
+
+Q_DECLARE_METATYPE(DownloadBranchType)
+
 #endif // _CONSTANTS_H_

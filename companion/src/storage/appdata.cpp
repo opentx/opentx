@@ -595,8 +595,6 @@ void AppData::init()
     backupOnFlash_init();
     outputDisplayDetails_init();
     checkHardwareCompatibility_init();
-    useCompanionNightlyBuilds_init();
-    useFirmwareNightlyBuilds_init();
     removeModelSlots_init();
     maximized_init();
     simuSW_init();
@@ -621,6 +619,8 @@ void AppData::init()
     getset( _theme,           "theme"                   ,1  );
     getset( _warningId,       "warningId"               ,0  );
     getset( _simuLastProfId,  "simuLastProfId"          ,-1 );
+    getset( _firmwareBranch,  "firmwareBranch"          , BRANCH_RELEASE_STABLE );
+    getset( _companionBranch, "companionBranch"         , BRANCH_RELEASE_STABLE );
 
     sessionId(id());
 }
