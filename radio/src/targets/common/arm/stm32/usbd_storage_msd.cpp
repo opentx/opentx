@@ -266,10 +266,51 @@ const char firmware_txt[] =
   "OpenTX Firmware"
 #endif
   " for " FLAVOUR "\r\n\r\n"
-  "VERSION    " "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")\r\n"
+#if defined(BOOT)
+  "BOOTVER    "
+#else
+  "FWVERSION  "
+#endif
+  "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")\r\n"
   "DATE       " DATE "\r\n"
   "TIME       " TIME "\r\n"
-  "req SD ver " REQUIRED_SDCARD_VERSION "\r\n";
+  "req SD ver " REQUIRED_SDCARD_VERSION "\r\n"
+#if !defined(BOOT)
+"BOOTVER    "
+#else
+"FWVERSION  "
+#endif
+  ;
+
+
+__attribute__ ((section(".fwversiondata"), used)) const char firmware_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+__attribute__ ((section(".bootversiondata"), used)) const char boot_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+
+
+/**
+ * Retrieves the version of the bootloader or firmware
+ * @return
+ */
+const static char* getOtherVersion()
+{
+#if defined(BOOT)
+  const char* startother = (char*)(FIRMWARE_ADDRESS+BOOTLOADER_SIZE);
+#else
+  const char* startother = (char*)(FIRMWARE_ADDRESS);
+#endif
+
+    const char* other_str = nullptr;
+    for (int i=0; i< 1024;i++) {
+      if (memcmp(startother+i, "opentx-", 7)==0) {
+        other_str = startother + i;
+        break;
+      }
+    }
+    if (other_str != nullptr)
+      return other_str;
+    else
+      return "no version found";
+}
 
 //------------------------------------------------------------------------------
 /**
@@ -385,11 +426,7 @@ const FATDirEntry_t g_DIRroot[] =
         0x00000000
     },
     {
-  #if defined(BOOT)
-      { 'B', 'O', 'O', 'T', 'L', 'O', 'A', 'D'},
-  #else
       { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
-  #endif
       { 'T', 'X', 'T'},
       0x21,          // Readonly+Archive
       0x00,
@@ -401,7 +438,7 @@ const FATDirEntry_t g_DIRroot[] =
       0xA302,
       0x3D55,
       0x0002,
-      sizeof(firmware_txt)
+      sizeof(firmware_txt) + strlen(getOtherVersion())
     },
     {
       { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
@@ -508,6 +545,7 @@ int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
     else if (sector == 4)
     {
       memcpy(buffer, firmware_txt, sizeof(firmware_txt));
+      memcpy(buffer + sizeof(firmware_txt), getOtherVersion(), strlen(getOtherVersion()));
     }
     else if (sector < RESERVED_SECTORS)
     {
