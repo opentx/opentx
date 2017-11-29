@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "opentx.h"
 #include "FatFs/diskio.h"
+#include "stamp.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -64,6 +65,8 @@ const unsigned char STORAGE_Inquirydata[] = { //36
   'R', 'a', 'd', 'i', 'o', ' ', ' ', ' ',
   '1', '.', '0' ,'0',                      /* Version      : 4 Bytes */
 };
+
+#define RESERVED_SECTORS (1 /*Boot*/ + 2 /*Fat table */ + 1 /*Root dir*/ + 8 /* one cluster for firmware.txt */)
 
 int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count);
 int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count );
@@ -137,9 +140,9 @@ int8_t STORAGE_GetCapacity (uint8_t lun, uint32_t *block_num, uint32_t *block_si
   if (lun == STORAGE_EEPROM_LUN) {
     *block_size = BLOCK_SIZE;
 #if defined(EEPROM)
-    *block_num  = 4 + EEPROM_SIZE/BLOCK_SIZE + FLASHSIZE/BLOCK_SIZE;
+    *block_num  = RESERVED_SECTORS + EEPROM_SIZE/BLOCK_SIZE + FLASHSIZE/BLOCK_SIZE;
 #else
-    *block_num  = 4 + FLASHSIZE/BLOCK_SIZE;
+    *block_num  = RESERVED_SECTORS + FLASHSIZE/BLOCK_SIZE;
 #endif
     return 0;
   }
@@ -254,14 +257,28 @@ int8_t STORAGE_GetMaxLun (void)
   return STORAGE_LUN_NBR - 1;
 }
 
+
+/* Firmware.txt */
+const char firmware_txt[] =
+#if defined(BOOT)
+  "OpenTX Bootloader"
+#else
+  "OpenTX Firmware"
+#endif
+  " for " FLAVOUR "\r\n\r\n"
+  "VERSION    " "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")\r\n"
+  "DATE       " DATE "\r\n"
+  "TIME       " TIME "\r\n"
+  "req SD ver " REQUIRED_SDCARD_VERSION "\r\n";
+
 //------------------------------------------------------------------------------
 /**
  * FAT12 boot sector partition.
  */
 #if defined(EEPROM)
-#define TOTALSECTORS  (4 + (EEPROM_SIZE/BLOCK_SIZE) +  (FLASHSIZE/BLOCK_SIZE))
+#define TOTALSECTORS  (RESERVED_SECTORS + (EEPROM_SIZE/BLOCK_SIZE) +  (FLASHSIZE/BLOCK_SIZE))
 #else
-#define TOTALSECTORS  (4 + (FLASHSIZE/BLOCK_SIZE))
+#define TOTALSECTORS  (RESERVED_SECTORS + (FLASHSIZE/BLOCK_SIZE))
 #endif
 const char g_FATboot[BLOCK_SIZE] =
 {
@@ -368,6 +385,25 @@ const FATDirEntry_t g_DIRroot[] =
         0x00000000
     },
     {
+  #if defined(BOOT)
+      { 'B', 'O', 'O', 'T', 'L', 'O', 'A', 'D'},
+  #else
+      { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
+  #endif
+      { 'T', 'X', 'T'},
+      0x21,          // Readonly+Archive
+      0x00,
+      0x3E,
+      0xA301,
+      0x3D55,
+      0x3D55,
+      0x0000,
+      0xA302,
+      0x3D55,
+      0x0002,
+      sizeof(firmware_txt)
+    },
+    {
       { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
       { 'B', 'I', 'N'},
 #if defined(BOOT)
@@ -383,7 +419,7 @@ const FATDirEntry_t g_DIRroot[] =
       0x0000,
       0xA302,
       0x3D55,
-      0x0002,
+      0x0003,
       FLASHSIZE
   },
 #if defined(EEPROM)
@@ -399,7 +435,7 @@ const FATDirEntry_t g_DIRroot[] =
         0x0000,
         0xA302,
         0x3D55,
-        0x0002 + (FLASHSIZE/BLOCK_SIZE)/8,
+        0x0003 + (FLASHSIZE/BLOCK_SIZE)/8,
         EEPROM_SIZE
     },
 #endif
@@ -446,6 +482,8 @@ int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
       pushCluster (buffer, sector, cluster, rest, (uint16_t) 0xFF8);
       pushCluster (buffer, sector, cluster, rest, (uint16_t) 0xFFF);
 
+      // Entry for firmware.txt, exactly one cluster
+      pushCluster (buffer, sector, cluster, rest, (uint16_t) 0xFFF);
 
       // Entry for firmware.bin
       for (int i=0;i<FLASHSIZE/BLOCK_SIZE/8 -1;i++)
@@ -467,17 +505,24 @@ int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
     else if (sector == 3) {
       memcpy(buffer, g_DIRroot, sizeof(g_DIRroot) ) ;
     }
-
-    else if (sector < 4 + (FLASHSIZE/BLOCK_SIZE )) {
+    else if (sector == 4)
+    {
+      memcpy(buffer, firmware_txt, sizeof(firmware_txt));
+    }
+    else if (sector < RESERVED_SECTORS)
+    {
+      // allocated to firmware.txt
+    }
+    else if (sector < RESERVED_SECTORS + (FLASHSIZE/BLOCK_SIZE )) {
       uint32_t address;
-      address = sector - 4;
+      address = sector - RESERVED_SECTORS;
       address *= BLOCK_SIZE;
       address += FIRMWARE_ADDRESS;
       memcpy(buffer, (uint8_t *)address, BLOCK_SIZE);
     }
 #if defined(EEPROM)
-    else if (sector < 4 + (EEPROM_SIZE/BLOCK_SIZE) + (FLASHSIZE/BLOCK_SIZE)) {
-      eepromReadBlock(buffer, (sector - 4 - (FLASHSIZE/BLOCK_SIZE))*BLOCK_SIZE, BLOCK_SIZE);
+    else if (sector < RESERVED_SECTORS + (EEPROM_SIZE/BLOCK_SIZE) + (FLASHSIZE/BLOCK_SIZE)) {
+      eepromReadBlock(buffer, (sector - RESERVED_SECTORS - (FLASHSIZE/BLOCK_SIZE))*BLOCK_SIZE, BLOCK_SIZE);
     }
 #endif
     buffer += BLOCK_SIZE ;
@@ -502,16 +547,16 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
 
   TRACE("FAT12 Write(sector=%d, count=%d)", sector, count);
 
-  if (sector < 4) {
+  if (sector < RESERVED_SECTORS) {
     // reserved, read-only
   }
-  else if (sector < 4 + (FLASHSIZE/BLOCK_SIZE)) {
+  else if (sector < RESERVED_SECTORS + (FLASHSIZE/BLOCK_SIZE)) {
 #if !defined(BOOT) // Don't allow overwrite of running firmware
     return -1;
 #else
     // firmware
     uint32_t address;
-    address = sector - 4;
+    address = sector - RESERVED_SECTORS;
     address *= BLOCK_SIZE;
     address += FIRMWARE_ADDRESS;
     while (count) {
@@ -530,7 +575,7 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
       }
       sector++;
       count--;
-      if (sector-4 >= (FLASHSIZE/BLOCK_SIZE)) {
+      if (sector-RESERVED_SECTORS >= (FLASHSIZE/BLOCK_SIZE)) {
         TRACE("FIRMWARE end written at sector %d", sector-1);
         operation = FATWRITE_NONE;
       }
@@ -538,7 +583,7 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
 #endif
   }
 #if defined(EEPROM)
-  else if (sector < 4 + (EEPROM_SIZE/BLOCK_SIZE) + (FLASHSIZE/BLOCK_SIZE)) {
+  else if (sector < RESERVED_SECTORS + (EEPROM_SIZE/BLOCK_SIZE) + (FLASHSIZE/BLOCK_SIZE)) {
     // eeprom
     while (count) {
       if (operation == FATWRITE_NONE && isEepromStart(buffer)) {
@@ -546,12 +591,12 @@ int32_t fat12Write(const uint8_t * buffer, uint16_t sector, uint16_t count)
         operation = FATWRITE_EEPROM;
       }
       if (operation == FATWRITE_EEPROM) {
-        eepromWriteBlock((uint8_t *)buffer, (sector-4-(FLASHSIZE/BLOCK_SIZE))*BLOCK_SIZE, BLOCK_SIZE);
+        eepromWriteBlock((uint8_t *)buffer, (sector-RESERVED_SECTORS-(FLASHSIZE/BLOCK_SIZE))*BLOCK_SIZE, BLOCK_SIZE);
       }
       buffer += BLOCK_SIZE;
       sector++;
       count--;
-      if (sector-4 >= (EEPROM_SIZE/BLOCK_SIZE)+(FLASHSIZE/BLOCK_SIZE)) {
+      if (sector-RESERVED_SECTORS >= (EEPROM_SIZE/BLOCK_SIZE)+(FLASHSIZE/BLOCK_SIZE)) {
         TRACE("EEPROM end written at sector %d", sector-1);
         operation = FATWRITE_NONE;
       }
