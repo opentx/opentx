@@ -6,7 +6,12 @@ branch=2.2
 docker=rc22
 workdir=/home/opentx/rc22
 output=/var/www/html/2.2
-version=2.2.0
+version=2.2.1
+
+# Incrementnightly index
+index=`cat index.txt`
+index=`expr $index + 1`
+suffix="RC$index"
 
 cd ${workdir}
 
@@ -51,7 +56,7 @@ fi
 
 # Update stamps
 cp -f  $workdir/binaries/stamp-opentx.txt ${output}/firmware
-echo "#define VERSION  "'"2.2.0"' > ${output}/companion/companion-windows.stamp
+echo "#define VERSION  \"${version}${suffix}\"" > ${output}/companion/companion-windows.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-macosx.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-linux.stamp
 
