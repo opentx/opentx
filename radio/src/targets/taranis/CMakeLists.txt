@@ -71,7 +71,7 @@ elseif(PCB STREQUAL X7)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(GUI_DIR 128x64)
   set(BITMAPS_TARGET 9x_bitmaps)
-  set(FONTS_TARGET 9x_fonts)
+  set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
 
