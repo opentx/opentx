@@ -428,7 +428,7 @@ class AppData: protected CompStoreObj
 
     inline DownloadBranchType boundedFirmwareBranch() {
 #if defined(ALLOW_NIGHTLY_BUILDS)
-      return qBound(BRANCH_RELEASE_STABLE, firmwareBranch(), BRANCH_NIGHTLY_UNSTABLE);
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(firmwareBranch()), BRANCH_NIGHTLY_UNSTABLE);
 #else
       return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(firmwareBranch()), BRANCH_RC_TESTING);
 #endif
@@ -436,7 +436,7 @@ class AppData: protected CompStoreObj
 
     inline DownloadBranchType boundedCompanionBranch() {
 #if defined(ALLOW_NIGHTLY_BUILDS)
-      return qBound(BRANCH_RELEASE_STABLE, companionBranch(), BRANCH_NIGHTLY_UNSTABLE);
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(companionBranch()), BRANCH_NIGHTLY_UNSTABLE);
 #else
       return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(companionBranch()), BRANCH_RC_TESTING);
 #endif
