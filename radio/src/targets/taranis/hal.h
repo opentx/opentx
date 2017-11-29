@@ -80,7 +80,6 @@
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_1  // PG.01
   #define TRIMS_GPIO_REG_LHR            GPIOG->IDR
   #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_0  // PG.00
-  #define TRIMS_GPIO_LHR_PUPDR          GPIOG->PUPDR
   #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_4  // PE.04
   #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
@@ -89,7 +88,6 @@
   #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_3  // PC.03
   #define TRIMS_GPIO_REG_RHL            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_1  // PC.01
-  #define TRIMS_GPIO_RHL_PUPDR          GPIOC->PUPDR
   #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
   #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
@@ -99,7 +97,6 @@
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_15 // PD.15
   #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
   #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_1  // PC.01
-  #define TRIMS_GPIO_LHR_PUPDR          GPIOC->PUPDR
   #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_6  // PE.06
   #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
@@ -108,7 +105,6 @@
   #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_3  // PC.03
   #define TRIMS_GPIO_REG_RHL            GPIOE->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_3  // PE.03
-  #define TRIMS_GPIO_RHL_PUPDR          GPIOE->PUPDR
   #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
   #define TRIMS_GPIO_REG_RHR            GPIOE->IDR
@@ -118,7 +114,6 @@
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PE.04
   #define TRIMS_GPIO_REG_LHR            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_3  // PE.03
-  #define TRIMS_GPIO_LHR_PUPDR          GPIOE->PUPDR
   #define TRIMS_GPIO_REG_LVD            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_6  // PE.06
   #define TRIMS_GPIO_REG_LVU            GPIOE->IDR
@@ -127,7 +122,6 @@
   #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_3  // PC.03
   #define TRIMS_GPIO_REG_RHL            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_1  // PC.01
-  #define TRIMS_GPIO_RHL_PUPDR          GPIOC->PUPDR
   #define TRIMS_GPIO_REG_RVU            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_2  // PC.02
   #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
