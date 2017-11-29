@@ -671,7 +671,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
   for (unsigned int i=0; i<FuncCount; i++) {
     if (((i>=FuncOverrideCH1 && i<=FuncOverrideCH32) && (!model || !firmware->getCapability(SafetyChannelCustomFunction))) ||
         ((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
-        ((i==FuncPlayScript && !IS_HORUS_OR_TARANIS(firmware->getBoard()))) ||
+        ((i==FuncPlayScript && (!model || !IS_HORUS_OR_TARANIS(firmware->getBoard())))) ||
         ((i==FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
         ((i==FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
         ((i==FuncLogs) && !firmware->getCapability(HasSDLogs)) ||

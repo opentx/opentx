@@ -421,9 +421,8 @@ bool isLogicalSwitchFunctionAvailable(int function)
 
 bool isAssignableFunctionAvailable(int function)
 {
-#if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
   bool modelFunctions = (menuHandlers[menuLevel] == menuModelSpecialFunctions);
-#endif
+  UNUSED(modelFunctions);  // may actually be used, this just silences possible warnings
 
   switch (function) {
     case FUNC_OVERRIDE_CHANNEL:
@@ -438,6 +437,12 @@ bool isAssignableFunctionAvailable(int function)
 #else
       return false;
 #endif
+    case FUNC_PLAY_SCRIPT:
+#if defined(LUA)
+      return modelFunctions;
+#else
+      return false;
+#endif
 #if !defined(HAPTIC)
     case FUNC_HAPTIC:
 #endif
@@ -445,9 +450,6 @@ bool isAssignableFunctionAvailable(int function)
 #if !defined(DANGEROUS_MODULE_FUNCTIONS)
     case FUNC_RANGECHECK:
     case FUNC_BIND:
-#endif
-#if !defined(LUA)
-    case FUNC_PLAY_SCRIPT:
 #endif
     case FUNC_RESERVE5:
       return false;
