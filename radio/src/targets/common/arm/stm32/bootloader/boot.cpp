@@ -325,6 +325,12 @@ int main()
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph, ENABLE);
 
   keysInit();
+
+  // wait for inputs to stabilize
+  for (uint32_t i = 0; i < 50000; i += 1) {
+    wdt_reset();
+  }
+  
   if ((readTrims() & 0x42) == 0) { // LHR & RHL trims not pressed
       // Start main application
       jumpTo(APP_START_ADDRESS);
@@ -360,6 +366,11 @@ int main()
   // init screen
   bootloaderInitScreen();
 
+#if defined(PWR_PRESS_BUTTON) or defined(PCBHORUS)
+  // wait until power button is released
+  while(pwrPressed());
+#endif
+  
   for (;;) {
     wdt_reset();
 
