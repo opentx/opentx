@@ -253,8 +253,8 @@ class AppData: protected CompStoreObj
   PROPERTY(bool, appDebugLog, false)
   PROPERTY(bool, fwTraceLog,  false)
 
-  PROPERTY(DownloadBranchType, firmwareBranch, BRANCH_RELEASE_STABLE);
-  PROPERTY(DownloadBranchType, companionBranch, BRANCH_RELEASE_STABLE);
+  PROPERTY(unsigned, firmwareBranch, BRANCH_RELEASE_STABLE);
+  PROPERTY(unsigned, companionBranch, BRANCH_RELEASE_STABLE);
 
   PROPERTY4(bool, jsSupport,       js_support              ,false)
   PROPERTY4(bool, showSplash,      show_splash             ,true)
@@ -430,7 +430,7 @@ class AppData: protected CompStoreObj
 #if defined(ALLOW_NIGHTLY_BUILDS)
       return qBound(BRANCH_RELEASE_STABLE, firmwareBranch(), BRANCH_NIGHTLY_UNSTABLE);
 #else
-      return qBound(BRANCH_RELEASE_STABLE, firmwareBranch(), BRANCH_RC_TESTING);
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(firmwareBranch()), BRANCH_RC_TESTING);
 #endif
     }
 
@@ -438,7 +438,7 @@ class AppData: protected CompStoreObj
 #if defined(ALLOW_NIGHTLY_BUILDS)
       return qBound(BRANCH_RELEASE_STABLE, companionBranch(), BRANCH_NIGHTLY_UNSTABLE);
 #else
-      return qBound(BRANCH_RELEASE_STABLE, companionBranch(), BRANCH_RC_TESTING);
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(companionBranch()), BRANCH_RC_TESTING);
 #endif
     }
 

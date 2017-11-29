@@ -589,9 +589,10 @@ void AppData::init()
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
 
+    getset( _firmwareBranch, "firmwareBranch", BRANCH_RELEASE_STABLE);
+    getset( _companionBranch, "companionBranch", BRANCH_RELEASE_STABLE);
+
     appLogsDir_init();
-    firmwareBranch_init();
-    companionBranch_init();
     enableBackup_init();
     backupOnFlash_init();
     outputDisplayDetails_init();
