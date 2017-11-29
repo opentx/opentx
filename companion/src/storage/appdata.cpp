@@ -588,9 +588,10 @@ void AppData::init()
     getset( _libDir,          "libraryPath"             ,"" );
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
-    appLogsDir_init();
 
-    // booleans
+    appLogsDir_init();
+    firmwareBranch_init();
+    companionBranch_init();
     enableBackup_init();
     backupOnFlash_init();
     outputDisplayDetails_init();
@@ -619,8 +620,6 @@ void AppData::init()
     getset( _theme,           "theme"                   ,1  );
     getset( _warningId,       "warningId"               ,0  );
     getset( _simuLastProfId,  "simuLastProfId"          ,-1 );
-    getset( _firmwareBranch,  "firmwareBranch"          , BRANCH_RELEASE_STABLE );
-    getset( _companionBranch, "companionBranch"         , BRANCH_RELEASE_STABLE );
 
     sessionId(id());
 }

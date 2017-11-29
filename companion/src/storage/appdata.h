@@ -246,14 +246,15 @@ class AppData: protected CompStoreObj
   PROPERTY(bool, backupOnFlash,              true)
   PROPERTY(bool, outputDisplayDetails,       false)
   PROPERTY(bool, checkHardwareCompatibility, true)
-  PROPERTY(DownloadBranchType, firmwareBranch, BRANCH_RELEASE_STABLE);
-  PROPERTY(DownloadBranchType, companionBranch, BRANCH_RELEASE_STABLE);
   PROPERTY(bool, removeModelSlots,           true)
   PROPERTY(bool, maximized,   false)
   PROPERTY(bool, simuSW,      false)
   PROPERTY(bool, tabbedMdi,   false)
   PROPERTY(bool, appDebugLog, false)
   PROPERTY(bool, fwTraceLog,  false)
+
+  PROPERTY(DownloadBranchType, firmwareBranch, BRANCH_RELEASE_STABLE);
+  PROPERTY(DownloadBranchType, companionBranch, BRANCH_RELEASE_STABLE);
 
   PROPERTY4(bool, jsSupport,       js_support              ,false)
   PROPERTY4(bool, showSplash,      show_splash             ,true)
