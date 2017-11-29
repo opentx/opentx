@@ -716,11 +716,13 @@ QString ModelPrinter::printOutputValueGVar(int val)
 {
   QString result = "";
   if (abs(val) > 10000) {
-    if (val < 0) result = "-";
+    if (val < 0)
+      result = "-";
     result.append(RawSource(SOURCE_TYPE_GVAR, abs(val)-10001).toString(&model));
   }
   else {
-    if (val >= 0) result = "+";
+    if (val >= 0)
+      result = "+";
     result.append(QString::number((qreal)val/10, 'f', 1) + "%");
   }
   return result;
