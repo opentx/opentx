@@ -61,7 +61,7 @@ const char* getOtherVersion()
 {
   return "no bootloader support";
 }
-#else
+#elif defined(STM32)
 const char* getOtherVersion()
 {
 #if defined(BOOT)
