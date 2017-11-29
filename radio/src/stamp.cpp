@@ -46,3 +46,40 @@
 #else
   const pm_char vers_stamp[] PROGMEM = "FW\037\033: " "opentx-" FLAVOUR "\036VERS\037\033: " VERSION "\036DATE\037\033: " DATE "\036TIME\037\033: " TIME "\036EEPR\037\033: " EEPROM_STR;
 #endif
+
+
+__attribute__ ((section(".fwversiondata"), used)) const char firmware_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+__attribute__ ((section(".bootversiondata"), used)) const char boot_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+
+
+/**
+ * Retrieves the version of the bootloader or firmware
+ * @return
+ */
+#if defined(HORUS)
+const char* getOtherVersion()
+{
+  return "no bootloader support";
+}
+#else
+const char* getOtherVersion()
+{
+#if defined(BOOT)
+  const char* startother = (char*)(FIRMWARE_ADDRESS+BOOTLOADER_SIZE);
+#else
+  const char* startother = (char*)(FIRMWARE_ADDRESS);
+#endif
+
+  const char* other_str = nullptr;
+  for (int i=0; i< 1024;i++) {
+    if (memcmp(startother+i, "opentx-", 7)==0) {
+      other_str = startother + i;
+      break;
+    }
+  }
+  if (other_str != nullptr)
+    return other_str;
+  else
+    return "no version found";
+}
+#endif

@@ -398,6 +398,8 @@ int main()
         lcdDrawTextAlignedLeft(2*FH, "\010Write Firmware");
         lcdDrawTextAlignedLeft(3*FH, "\010Restore EEPROM");
         lcdDrawTextAlignedLeft(4*FH, "\010Exit");
+        lcdDrawTextAlignedLeft(6*FH, "\001Curr FW:");
+        lcdDrawText(50, 6*FH, getOtherVersion());
         lcdInvertLine(2+vpos);
         lcdDrawTextAlignedLeft(7*FH, STR_OR_PLUGIN_USB_CABLE);
         if (event == EVT_KEY_FIRST(BOOT_KEY_DOWN)) {

@@ -282,36 +282,6 @@ const char firmware_txt[] =
 #endif
   ;
 
-
-__attribute__ ((section(".fwversiondata"), used)) const char firmware_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
-__attribute__ ((section(".bootversiondata"), used)) const char boot_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
-
-
-/**
- * Retrieves the version of the bootloader or firmware
- * @return
- */
-const static char* getOtherVersion()
-{
-#if defined(BOOT)
-  const char* startother = (char*)(FIRMWARE_ADDRESS+BOOTLOADER_SIZE);
-#else
-  const char* startother = (char*)(FIRMWARE_ADDRESS);
-#endif
-
-    const char* other_str = nullptr;
-    for (int i=0; i< 1024;i++) {
-      if (memcmp(startother+i, "opentx-", 7)==0) {
-        other_str = startother + i;
-        break;
-      }
-    }
-    if (other_str != nullptr)
-      return other_str;
-    else
-      return "no version found";
-}
-
 //------------------------------------------------------------------------------
 /**
  * FAT12 boot sector partition.
