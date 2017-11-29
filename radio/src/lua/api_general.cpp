@@ -122,13 +122,28 @@ static int luaGetTime(lua_State * L)
 static void luaPushDateTime(lua_State * L, uint32_t year, uint32_t mon, uint32_t day,
                             uint32_t hour, uint32_t min, uint32_t sec)
 {
-  lua_createtable(L, 0, 6);
+  uint32_t hour12 = hour;
+
+  if (hour == 0) {
+    hour12 = 12;
+  }
+  else if (hour > 12) {
+    hour12 = hour - 12;
+  }
+  lua_createtable(L, 0, 8);
   lua_pushtableinteger(L, "year", year);
   lua_pushtableinteger(L, "mon", mon);
   lua_pushtableinteger(L, "day", day);
   lua_pushtableinteger(L, "hour", hour);
   lua_pushtableinteger(L, "min", min);
   lua_pushtableinteger(L, "sec", sec);
+  lua_pushtableinteger(L, "hour12", hour12);
+  if (hour < 12) {
+    lua_pushtablestring(L, "suffix", "am");
+  }
+  else {
+    lua_pushtablestring(L, "suffix", "pm");
+  }
 }
 
 /*luadoc
@@ -141,8 +156,10 @@ Return current system date and time that is kept by the RTC unit
  * `mon` (number) month
  * `day` (number) day of month
  * `hour` (number) hours
+ * `hour12` (number) hours in US format
  * `min` (number) minutes
  * `sec` (number) seconds
+ * `suffix` (text) am or pm
 */
 static int luaGetDateTime(lua_State * L)
 {
@@ -773,6 +790,8 @@ static int luaPlayHaptic(lua_State * L)
   int pause = luaL_checkinteger(L, 2);
   int flags = luaL_optinteger(L, 3, 0);
   haptic.play(length, pause, flags);
+#else
+  UNUSED(L);
 #endif
   return 0;
 }
