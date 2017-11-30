@@ -659,23 +659,27 @@ void TelemetrySensorPanel::update()
     ui->formula->hide();
     isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
     ratioFieldsDisplayed = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
-    ui->offset->setMaximum((sensor.prec > 0 ? sensor.prec == 2 ? 30000 : 3000 : 300));
-    ui->offset->setMinimum((sensor.prec > 0 ? sensor.prec == 2 ? -30000 : -3000 : -300));
-
     if (sensor.unit == SensorData::UNIT_RPMS) {
-      ui->offset->setDecimals(0);
-      ui->offset->setSingleStep(1);
-      ui->ratio->setDecimals(0);
-      ui->ratio->setSingleStep(1);
-      ui->autoOffset->hide();
-      ui->ratio->setMinimum(1);
-      ui->offset->setMinimum(1);
+      if (ui->ratio->decimals()) {
+        ui->ratio->setMaximum(30000);
+        ui->ratio->setMinimum(1);
+        ui->ratio->setDecimals(0);
+        ui->ratio->setSingleStep(1);
+        ui->offset->setMaximum(30000);
+        ui->offset->setMinimum(1);
+        ui->offset->setDecimals(0);
+        ui->offset->setSingleStep(1);
+      }
     }
-    else {
-      ui->offset->setDecimals(sensor.prec);
-      ui->offset->setSingleStep(pow(0.1, (int)sensor.prec));
+    else if (ui->ratio->decimals() != 1) {
+      ui->ratio->setMaximum(3000);
+      ui->ratio->setMinimum(0);
       ui->ratio->setDecimals(1);
       ui->ratio->setSingleStep(0.1);
+      ui->offset->setMaximum(30000.0f / powf(10.0f, sensor.prec));
+      ui->offset->setMinimum(-ui->offset->maximum());
+      ui->offset->setDecimals(sensor.prec);
+      ui->offset->setSingleStep(pow(0.1, sensor.prec));
     }
   }
 
