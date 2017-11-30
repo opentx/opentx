@@ -119,9 +119,10 @@ bool menuModelLogicalSwitches(event_t event)
 
     // CSW params
     cstate = lswFamily(cs->func);
-    int v1_val=cs->v1, v1_min=0, v1_max=MIXSRC_LAST_TELEM;
-    int v2_min=0, v2_max=MIXSRC_LAST_TELEM;
-    int v3_min=-1, v3_max=100;
+    int v1_val = cs->v1;
+    int16_t v1_min = 0, v1_max = MIXSRC_LAST_TELEM;
+    int16_t v2_min = 0, v2_max = MIXSRC_LAST_TELEM;
+    int16_t v3_min =-1, v3_max = 100;
 
     if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
       drawSwitch(CSW_2ND_COLUMN, y, cs->v1, attr1);
@@ -172,9 +173,9 @@ bool menuModelLogicalSwitches(event_t event)
         INCDEC_SET_FLAG(EE_MODEL);
         INCDEC_ENABLE_CHECK(NULL);
       }
-      v2_max = getMaximumValue(v1_val);
-      v2_min = -v2_max;
-      drawSourceCustomValue(CSW_3RD_COLUMN, y, v1_val, v1_val <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT|attr2);
+      LcdFlags lf = attr2 | LEFT;
+      getMixSrcRange(v1_val, v2_min, v2_max, &lf);
+      drawSourceCustomValue(CSW_3RD_COLUMN, y, v1_val, (v1_val <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2), lf);
     }
 
     // CSW AND switch

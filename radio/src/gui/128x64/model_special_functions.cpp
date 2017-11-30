@@ -298,10 +298,12 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
-#if !defined(CPUARM)
+#if defined(CPUARM)
+            getMixSrcRange(MIXSRC_FIRST_CH, val_min, val_max);
+#else
             val_displayed = (int8_t)CFN_PARAM(cfn);
-#endif
             val_min = -LIMIT_EXT_PERCENT; val_max = +LIMIT_EXT_PERCENT;
+#endif
             lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif // OVERRIDE_CHANNEL_FUNCTION
@@ -311,7 +313,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
           }
           else if (func == FUNC_SET_TIMER) {
-            val_max = 539*60+59;
+            getMixSrcRange(MIXSRC_FIRST_TIMER, val_min, val_max);
             drawTimer(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT, attr);
           }
 #endif
@@ -400,7 +402,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
             INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
           }
-#endif
+#endif  // CPUARM
 #if defined(SDCARD)
           else if (func == FUNC_LOGS) {
             if (val_displayed) {
@@ -417,8 +419,13 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             switch (CFN_GVAR_MODE(cfn)) {
               case FUNC_ADJUST_GVAR_CONSTANT:
                 val_displayed = (int16_t)CFN_PARAM(cfn);
+#if defined(CPUARM)
+                getMixSrcRange(CFN_GVAR_INDEX(cfn) + MIXSRC_FIRST_GVAR, val_min, val_max);
+                drawGVarValue(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, CFN_GVAR_INDEX(cfn), val_displayed, attr|LEFT);
+#else
                 val_min = -CFN_GVAR_CST_MAX; val_max = +CFN_GVAR_CST_MAX;
                 lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
+#endif // CPUARM
                 break;
               case FUNC_ADJUST_GVAR_SOURCE:
                 val_max = MIXSRC_LAST_CH;
@@ -433,17 +440,14 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                 drawStringWithIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
                 break;
               default: // FUNC_ADJUST_GVAR_INC
-#if defined(PCBX7)
-                val_min = -100; val_max = +100;
-                if (val_displayed < 0)
-                  lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "-= ", attr);
-                else
-                  lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "+= ", attr);
+#if defined(CPUARM)
+                getMixSrcRange(CFN_GVAR_INDEX(cfn) + MIXSRC_FIRST_GVAR, val_min, val_max);
+                lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, (val_displayed < 0 ? "-= " : "+= "), attr);
                 drawGVarValue(lcdNextPos, y, CFN_GVAR_INDEX(cfn), abs(val_displayed), attr|LEFT);
 #else
                 val_max = 1;
                 lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, PSTR("\003-=1+=1"), val_displayed, attr);
-#endif // PCBX7
+#endif // CPUARM
                 break;
             }
 

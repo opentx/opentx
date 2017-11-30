@@ -193,18 +193,18 @@ void menuModelDisplay(event_t event)
 
         if (IS_BARS_SCREEN(screenIndex)) {
           FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
-          source_t barSource = bar.source;
-          drawSource(DISPLAY_COL1, y, barSource, menuHorizontalPosition==0 ? attr : 0);
-          int barMax = getMaximumValue(barSource);
-          int barMin = -barMax;
-          if (barSource) {
-            if (barSource <= MIXSRC_LAST_CH) {
-              drawSourceCustomValue(DISPLAY_COL2, y, barSource, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              drawSourceCustomValue(DISPLAY_COL3, y, barSource, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | LEFT);
+          drawSource(DISPLAY_COL1, y, bar.source, menuHorizontalPosition==0 ? attr : 0);
+          int16_t barMax, barMin;
+          LcdFlags lf = LEFT;
+          getMixSrcRange(bar.source, barMin, barMax, &lf);
+          if (bar.source) {
+            if (bar.source <= MIXSRC_LAST_CH) {
+              drawSourceCustomValue(DISPLAY_COL2, y, bar.source, calc100toRESX(bar.barMin), (menuHorizontalPosition==1 ? attr : 0) | lf);
+              drawSourceCustomValue(DISPLAY_COL3, y, bar.source, calc100toRESX(bar.barMax), (menuHorizontalPosition==2 ? attr : 0) | lf);
             }
             else {
-              drawSourceCustomValue(DISPLAY_COL2, y, barSource, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | LEFT);
-              drawSourceCustomValue(DISPLAY_COL3, y, barSource, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | LEFT);
+              drawSourceCustomValue(DISPLAY_COL2, y, bar.source, bar.barMin, (menuHorizontalPosition==1 ? attr : 0) | lf);
+              drawSourceCustomValue(DISPLAY_COL3, y, bar.source, bar.barMax, (menuHorizontalPosition==2 ? attr : 0) | lf);
             }
           }
           else if (attr) {
@@ -213,9 +213,9 @@ void menuModelDisplay(event_t event)
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
               case 0:
-                bar.source = checkIncDec(event, barSource, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
+                bar.source = checkIncDec(event, bar.source, 0, MIXSRC_LAST_TELEM, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable);
                 if (checkIncDec_Ret) {
-                  if (barSource <= MIXSRC_LAST_CH) {
+                  if (bar.source <= MIXSRC_LAST_CH) {
                     bar.barMin = -100;
                     bar.barMax = 100;
                   }
