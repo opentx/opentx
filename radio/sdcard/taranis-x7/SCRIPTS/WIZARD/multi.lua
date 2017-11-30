@@ -221,10 +221,10 @@ local function drawConfirmationMenu()
   lcd.clear()
   lcd.drawText(0, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
-  x, y = drawNextLine(x, y, "Throttle:", thrCH1)
-  x, y = drawNextLine(x, y, "Roll:", rollCH1)
-  x, y = drawNextLine(x, y, "Pitch:", pitchCH1)
-  x, y = drawNextLine(x, y, "Yaw:", yawCH1)
+  x, y = drawNextLine(x, y, "Throttle", thrCH1)
+  x, y = drawNextLine(x, y, "Roll", rollCH1)
+  x, y = drawNextLine(x, y, "Pitch", pitchCH1)
+  x, y = drawNextLine(x, y, "Yaw", yawCH1)
   lcd.drawText(0, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
   fieldsMax = 0
@@ -244,7 +244,7 @@ end
 local function applySettings()
   model.defaultInputs()
   model.deleteMixes()      
-  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Throttle")
+  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   addMix(rollCH1,  MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   addMix(yawCH1,   MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")
   addMix(pitchCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Pitch")

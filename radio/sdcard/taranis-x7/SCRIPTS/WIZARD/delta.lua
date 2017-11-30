@@ -284,10 +284,10 @@ local function applySettings()
   if engineMode == 1 then
     addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   end
-  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev1-E", 50)
-  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "Elev1-A", 50, 1)
-  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev2-E", 50)
-  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "Elev2-A", -50, 1)
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "D-EleL", 50)
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "D-AilL", 50, 1)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "D-EleR", 50)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "D-AilR", -50, 1)
   if rudderMode == 1 then
     addMix(rudCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
   end
@@ -311,10 +311,10 @@ local function drawConfirmationMenu()
   lcd.drawText(48, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
   if engineMode == 1 then
-    x, y = drawNextLine(x, y, "Throttle:", thrCH1)
+    x, y = drawNextLine(x, y, "Thr:", thrCH1)
   end
-  x, y = drawNextLine(x, y, "Elevons:", elevCH1)
-  x, y = drawNextLine(x, y, "Elevons:", elevCH2)
+  x, y = drawNextLine(x, y, "Ele L:", elevCH1)
+  x, y = drawNextLine(x, y, "Ele R:", elevCH2)
   if rudderMode == 1 then
     drawNextLine(x, y, "Rudder:", rudCH1)
   end

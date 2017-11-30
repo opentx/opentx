@@ -18,16 +18,16 @@ local engineMode = 1
 local thrCH1 = 0
 local aileronsMode = 1
 local ailCH1 = 0
-local ailCH2 = 4
+local ailCH2 = 5
 local flapsMode = 0
-local flapsCH1 = 5
-local flapsCH2 = 6
+local flapsCH1 = 6
+local flapsCH2 = 7
 local brakesMode = 0
 local brakesCH1 = 8
 local brakesCH2 = 9
 local tailMode = 1
 local eleCH1 = 0
-local eleCH2 = 7
+local eleCH2 = 4
 local rudCH1 = 0
 local servoPage = nil
 
@@ -301,7 +301,7 @@ local function brakesMenu(event)
 end
 
 -- Tail Menu
-local tailModeItems = {"Ele(1ch), no Ruder", "Ele(1ch) + Ruder", "Ele(2ch) + Ruder", "V-Tail"}
+local tailModeItems = {"Ele(1)", "Ele(1) + Ruder(1)", "Ele(2) + Ruder(1)", "V-Tail(2)"}
 local function drawTailMenu()
   lcd.clear()
   if tailMode == 0 then
@@ -322,8 +322,8 @@ local function drawTailMenu()
   elseif tailMode == 2 then
     -- Elevator(2ch) + rudder...
     lcd.drawText(5, 30, "Assign channels", 0);
-    lcd.drawText(25, 40, "Ele", 0);
-    lcd.drawText(60, 40, "Ele", 0);
+    lcd.drawText(25, 40, "EleL", 0);
+    lcd.drawText(60, 40, "EleR", 0);
     lcd.drawText(95, 40, "Rud", 0);
     lcd.drawText(5, 50, ">>>", 0);
     lcd.drawSource(25, 50, MIXSRC_CH1+eleCH1, getFieldFlags(1))
@@ -333,8 +333,8 @@ local function drawTailMenu()
   else
     -- V-Tail...
     lcd.drawText(5, 30, "Assign channels", 0);
-    lcd.drawText(25, 40, "Vta", 0);
-    lcd.drawText(60, 40, "Vta", 0);
+    lcd.drawText(25, 40, "VtaL", 0);
+    lcd.drawText(60, 40, "VtaR", 0);
     lcd.drawText(5, 50, ">>>", 0);
     lcd.drawSource(25, 50, MIXSRC_CH1+eleCH1, getFieldFlags(1))
     lcd.drawSource(60, 50, MIXSRC_CH1+eleCH2, getFieldFlags(2))
@@ -429,35 +429,37 @@ local function drawConfirmationMenu()
   lcd.drawText(0, 1, "Ready to go?", 0);
   lcd.drawFilledRectangle(0, 0, LCD_W, 9, 0)
   if engineMode == 1 then
-    x, y = drawNextLine(x, y, "Thro:", thrCH1)
+    x, y = drawNextLine(x, y, "Thr", thrCH1)
   end
-  if aileronsMode > 0 then
-    x, y = drawNextLine(x, y, "Aile:", ailCH1)
-    if aileronsMode == 2 then
-      x, y = drawNextLine(x, y, "Aile:", ailCH2)
-    end
+  if aileronsMode == 1 then
+    x, y = drawNextLine(x, y, "Ail", ailCH1)
+  elseif aileronsMode == 2 then
+    x, y = drawNextLine(x, y, "AilL", ailCH1)
+    x, y = drawNextLine(x, y, "AilR", ailCH2)
   end
-  if flapsMode > 0 then
-    x, y = drawNextLine(x, y, "Flap:", flapsCH1)
-    if flapsMode == 2 then
-      x, y = drawNextLine(x, y, "Flap:", flapsCH2)
-    end
+  if flapsMode == 1 then
+    x, y = drawNextLine(x, y, "Flap", flapsCH1)
+  elseif flapsMode == 2 then
+    x, y = drawNextLine(x, y, "FlpL", flapsCH1)
+    x, y = drawNextLine(x, y, "FlpR", flapsCH2)
   end
-  if brakesMode > 0 then
-    x, y = drawNextLine(x, y, "Brak:", brakesCH1)
-    if brakesMode == 2 then
-      x, y = drawNextLine(x, y, "Brak:", brakesCH2)
-    end
+  if brakesMode == 1 then
+    x, y = drawNextLine(x, y, "Brak", brakesCH1)
+  elseif brakesMode == 2 then
+    x, y = drawNextLine(x, y, "BrkL", brakesCH1)
+    x, y = drawNextLine(x, y, "BrkR", brakesCH2)
   end
   if tailMode == 3 then
-    x, y = drawNextLine(x, y, "V-Ta:", eleCH1)
-    x, y = drawNextLine(x, y, "V-Ta:", eleCH2)
+    x, y = drawNextLine(x, y, "VtaL", eleCH1)
+    x, y = drawNextLine(x, y, "VtaR", eleCH2)
   else
-    x, y = drawNextLine(x, y, "Elev:", eleCH1)
-    if tailMode == 2 then
-      x, y = drawNextLine(x, y, "Elev:", eleCH2)
+    x, y = drawNextLine(x, y, "Rud", rudCH1)
+    if tailMode == 1 then
+      x, y = drawNextLine(x, y, "Elev", eleCH1)
+    elseif tailMode == 2 then
+      x, y = drawNextLine(x, y, "EleL", eleCH1)
+      x, y = drawNextLine(x, y, "EleR", eleCH2)
     end
-    drawNextLine(x, y, "Rudd:", rudCH1)        
   end
   lcd.drawText(0, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
@@ -481,36 +483,38 @@ local function applySettings()
   if engineMode > 0 then
     addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   end
-  if aileronsMode > 0 then
-    addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "Aileron")
-    if aileronsMode == 2 then
-      addMix(ailCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "Aileron", -100)
-    end
+  if aileronsMode == 1 then
+    addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "Ail")
+  elseif aileronsMode == 2 then
+    addMix(ailCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL")
+    addMix(ailCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR", -100)
   end
-  if flapsMode > 0 then
+  if flapsMode == 1 then
     addMix(flapsCH1, MIXSRC_SA, "Flap")
-    if flapsMode == 2 then
-      addMix(flapsCH2, MIXSRC_SA, "Flap")
-    end
+  elseif flapsMode == 2 then
+    addMix(flapsCH1, MIXSRC_SA, "FlapL")
+    addMix(flapsCH2, MIXSRC_SA, "FlapR")
   end
-  if brakesMode > 0 then
-    addMix(brakesCH1, MIXSRC_SE, "Brake")
-    if brakesMode == 2 then
-      addMix(brakesCH2, MIXSRC_SE, "Brake")
-    end
+  if brakesMode == 1 then
+    addMix(brakesCH1, MIXSRC_SD, "Brake")
+  elseif brakesMode == 2 then
+    addMix(brakesCH1, MIXSRC_SD, "BrakeL")
+    addMix(brakesCH2, MIXSRC_SD, "BrakeR")
   end
   if tailMode == 3 then
-    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-Tail-E", 50)
-    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-Tail-R", 50, 1)
-    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-Tail-E", 50)
-    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-Tail-R", -50, 1)
+    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleL", 50)
+    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", 50, 1)
+    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleR", 50)
+    addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", -50, 1)
   else
-    addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elevator")
     if tailMode > 0 then
       addMix(rudCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
     end
-    if tailMode == 2 then
-      addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elevator")
+    if tailMode == 1 then
+      addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev")
+    elseif tailMode == 2 then
+      addMix(eleCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevG")
+      addMix(eleCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevD")
     end
   end
 end

@@ -4,7 +4,6 @@ local dirty = true
 -- Model types
 local modelType = 0
 local MODELTYPE_PLANE = 0
--- local MODELTYPE_HELI = 1  -- change order for implementing Heli
 local MODELTYPE_DELTA = 1
 local MODELTYPE_QUAD = 2
 
@@ -36,7 +35,6 @@ local function drawModelChoiceMenu()
     lcd.drawText( 20, 20, "Plane")
     lcd.drawText( 78, 20, "Delta")
     lcd.drawText( 20, 40, "Multi")
-    -- lcd.drawText( 78, 40, "Heli")
   modelTypeSurround(modelType)
   fieldsMax = 0
 end
@@ -49,7 +47,6 @@ local function modelTypeMenu(event)
   if event == EVT_ENTER_BREAK then
     if modelType == MODELTYPE_PLANE then
       return "plane.lua"
-    -- elseif modelType == MODELTYPE_HELI then
     elseif modelType == MODELTYPE_DELTA then
       return "delta.lua"
     elseif modelType == MODELTYPE_QUAD then
@@ -57,7 +54,7 @@ local function modelTypeMenu(event)
     end
     dirty = true
   else
-    modelType = fieldIncDec(event, modelType, 2) -- 3 for implementing Heli
+    modelType = fieldIncDec(event, modelType, 2)
   end
   return 0
 end
