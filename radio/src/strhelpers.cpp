@@ -179,6 +179,11 @@ char * getTimerString(char * dest, putstime_t tme, uint8_t hours)
     qr.quot = qr2.rem;
   }
 
+  if (!hours && qr.quot > 99) {
+    *s++ = '0' + (qr.quot / 100);
+    qr.quot = qr.quot % 100;
+  }
+
   *s++ = '0' + (qr.quot / 10);
   *s++ = '0' + (qr.quot % 10);
   *s++ = ':';
