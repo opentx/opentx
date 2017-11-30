@@ -430,7 +430,7 @@ void TelemetryCustomScreen::updateBar(int line)
   maxTime[line]->setVisible(false);
 
   if (source.type != SOURCE_TYPE_NONE) {
-    RawSourceRange range = source.getRange(model, generalSettings, RANGE_SHORT_TIMER);
+    RawSourceRange range = source.getRange(model, generalSettings);
     if (!IS_ARM(getCurrentBoard())) {
       int max = round((range.max - range.min) / range.step);
       if (int(255-screen.body.bars[line].barMax) > max) {

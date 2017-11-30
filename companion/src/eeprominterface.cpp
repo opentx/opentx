@@ -481,10 +481,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
       }
       else {      // Timers 1 - 3
         result.step = 1;
-        if (flags & RANGE_SHORT_TIMER)   // Limit for logic sw. comparison and telem bar display min/max values
-          result.max = 24 * 60 - 1;      // 00:23:59 TODO: verify reason for this limit in firmware
-        else
-          result.max = 9 * 60 * 60 - 1;  // 8:59:59 (to match firmware)
+        result.max = 9 * 60 * 60 - 1;  // 8:59:59 (to match firmware)
         result.min = -result.max;
         result.unit = QObject::tr("s");
       }
@@ -954,9 +951,6 @@ unsigned int LogicalSwitchData::getRangeFlags() const
 
   if (func == LS_FN_DAPOS || func == LS_FN_APOS || func == LS_FN_ANEG)
     f |= RANGE_ABS_FUNCTION;
-
-  if (getFunctionFamily() == LS_FAMILY_VOFS && RawSource(val1).isTimeBased(true))
-    f |= RANGE_SHORT_TIMER;
 
   return f;
 }

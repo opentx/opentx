@@ -450,7 +450,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       else if (func>=FuncSetTimer1 && func<=FuncSetTimer3) {
         if (modified)
           cfn.param = fswtchParamTime[i]->timeInSeconds();
-        RawSourceRange range = RawSource(SOURCE_TYPE_SPECIAL, func - FuncSetTimer1 + 2).getRange(model, generalSettings, RANGE_ABS_FUNCTION);
+        RawSourceRange range = RawSource(SOURCE_TYPE_SPECIAL, func - FuncSetTimer1 + 2).getRange(model, generalSettings);
         fswtchParamTime[i]->setTimeRange((int)range.min, (int)range.max);
         fswtchParamTime[i]->setTime(cfn.param);
         widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM | CUSTOM_FUNCTION_ENABLE;
