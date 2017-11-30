@@ -8,6 +8,7 @@ void bootloaderInitScreen()
   // init screen / colors: should go to target / gui specific place
   lcdColorTable[TEXT_COLOR_INDEX]            = BLACK;
   lcdColorTable[TEXT_BGCOLOR_INDEX]          = WHITE;
+  lcdColorTable[TEXT_INVERTED_COLOR_INDEX]   = RED;//WHITE;
   lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RED;
   
   backlightEnable(BACKLIGHT_LEVEL_MAX);
