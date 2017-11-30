@@ -588,15 +588,15 @@ void AppData::init()
     getset( _libDir,          "libraryPath"             ,"" );
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
-    appLogsDir_init();
 
-    // booleans
+    getset( _firmwareBranch, "firmwareBranch", BRANCH_RELEASE_STABLE);
+    getset( _companionBranch, "companionBranch", BRANCH_RELEASE_STABLE);
+
+    appLogsDir_init();
     enableBackup_init();
     backupOnFlash_init();
     outputDisplayDetails_init();
     checkHardwareCompatibility_init();
-    useCompanionNightlyBuilds_init();
-    useFirmwareNightlyBuilds_init();
     removeModelSlots_init();
     maximized_init();
     simuSW_init();

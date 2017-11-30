@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>534</height>
+    <width>859</width>
+    <height>673</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -45,7 +45,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="profileTab">
       <attribute name="title">
@@ -72,16 +72,7 @@
        <item row="6" column="0" colspan="4">
         <widget class="QWidget" name="widget_splashImage" native="true">
          <layout class="QGridLayout" name="gridLayout_5">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
+          <property name="margin">
            <number>0</number>
           </property>
           <property name="spacing">
@@ -733,23 +724,14 @@ Mode 4:
           </sizepolicy>
          </property>
          <layout class="QGridLayout" name="optionsLayout">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
-           <number>0</number>
-          </property>
           <property name="horizontalSpacing">
            <number>5</number>
           </property>
           <property name="verticalSpacing">
            <number>4</number>
+          </property>
+          <property name="margin">
+           <number>0</number>
           </property>
          </layout>
         </widget>
@@ -768,26 +750,6 @@ Mode 4:
          </property>
          <item row="7" column="1">
           <layout class="QGridLayout" name="gridLayout_6">
-           <item row="1" column="1">
-            <widget class="QCheckBox" name="useCompanionNightlyBuilds">
-             <property name="text">
-              <string>Use Companion nightly builds</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QCheckBox" name="useFirmwareNightlyBuilds">
-             <property name="text">
-              <string>Use firmware nightly builds</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
            <item row="0" column="0">
             <widget class="QCheckBox" name="autoCheckFirmware">
              <property name="text">
@@ -806,6 +768,56 @@ Mode 4:
              <property name="checked">
               <bool>true</bool>
              </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="firmwareBranch">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <item>
+              <property name="text">
+               <string>Use firmware releases (stable)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Use firmware releases and release candidates (testing)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Use firmware nightly builds (unstable)</string>
+              </property>
+             </item>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QComboBox" name="companionBranch">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <item>
+              <property name="text">
+               <string>Use Companion releases (stable)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Use Companion release and release candidates (testing)</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Use Companion nightly builds (unstable)</string>
+              </property>
+             </item>
             </widget>
            </item>
           </layout>
