@@ -70,30 +70,61 @@ void eraseSector(uint32_t sector)
 
 void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
 {
-  if ((uint32_t) address == 0x08000000) {
-    eraseSector(0);
+#define SECTOR_ADDRESS  (((uint32_t)address) &  0xFFFFF)
+#define FLASH_BANK     ((((uint32_t)address) & 0x100000) ? 12 : 0)
+
+  // test for possible flash sector boundary
+  if ((((uint32_t)address) & 0x3FFF) == 0) {
+
+      // test 16KB sectors
+      if (SECTOR_ADDRESS == 0x00000) {
+          eraseSector(0 + FLASH_BANK);
+      }
+      else if (SECTOR_ADDRESS == 0x04000) {
+          eraseSector(1 + FLASH_BANK);
+      }
+      else if (SECTOR_ADDRESS == 0x08000) {
+          eraseSector(2 + FLASH_BANK);
+      }
+      else if (SECTOR_ADDRESS == 0x0C000) {
+          eraseSector(3 + FLASH_BANK);
+      }
+      else if ((((uint32_t)address) & 0xFFFF) == 0) {
+
+          // test 64KB sector
+          if (SECTOR_ADDRESS == 0x10000) {
+              eraseSector(4 + FLASH_BANK);
+          }
+          else if ((((uint32_t)address) & 0x1FFFF) == 0) {
+
+              // test 128KB sectors
+              if (SECTOR_ADDRESS == 0x20000) {
+                  eraseSector(5 + FLASH_BANK);
+              }
+              else if (SECTOR_ADDRESS == 0x40000) {
+                  eraseSector(6 + FLASH_BANK);
+              }
+              else if (SECTOR_ADDRESS == 0x60000) {
+                  eraseSector(7 + FLASH_BANK);
+              }
+              else if (SECTOR_ADDRESS == 0x80000) {
+                  eraseSector(8 + FLASH_BANK);
+              }
+              else if (SECTOR_ADDRESS == 0xA0000) {
+                  eraseSector(9 + FLASH_BANK);
+              }
+              else if (SECTOR_ADDRESS == 0xC0000) {
+                  eraseSector(10 + FLASH_BANK);
+              }
+              else if (SECTOR_ADDRESS == 0xE0000) {
+                  eraseSector(11 + FLASH_BANK);
+              }
+          }
+      }
   }
-  else if ((uint32_t) address == 0x08004000) {
-    eraseSector(1);
-  }
-  else if ((uint32_t) address == 0x08008000) {
-    eraseSector(2);
-  }
-  else if ((uint32_t) address == 0x0800C000) {
-    eraseSector(3);
-  }
-  else if ((uint32_t) address == 0x08010000) {
-    eraseSector(4);
-  }
-  else if ((uint32_t) address == 0x08020000) {
-    eraseSector(5);
-  }
-  else if ((uint32_t) address == 0x08040000) {
-    eraseSector(6);
-  }
-  else if ((uint32_t) address == 0x08060000) {
-    eraseSector(7);
-  }
+
+#undef SECTOR_ADDRESS
+#undef FLASH_BANK
 
   for (uint32_t i=0; i<FLASH_PAGESIZE/4; i++) {
     /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
@@ -127,23 +158,29 @@ uint32_t isFirmwareStart(const uint8_t * buffer)
 {
   const uint32_t * block = (const uint32_t *)buffer;
 
-#if defined(PCBX9E)
+#if defined(STM32F4)
+  // Stack pointer in CCM or RAM
   if ((block[0] & 0xFFFC0000) != 0x10000000 && (block[0] & 0xFFFC0000) != 0x20000000) {
     return 0;
   }
+  // First ISR pointer in FLASH
   if ((block[1] & 0xFFF00000) != 0x08000000) {
     return 0;
   }
+  // Second ISR pointer in FLASH
   if ((block[2] & 0xFFF00000) != 0x08000000) {
     return 0;
   }
 #else
+  // Stack pointer in RAM
   if ((block[0] & 0xFFFC0000) != 0x20000000) {
     return 0;
   }
+  // First ISR pointer in FLASH
   if ((block[1] & 0xFFF00000) != 0x08000000) {
     return 0;
   }
+  // Second ISR pointer in FLASH
   if ((block[2] & 0xFFF00000) != 0x08000000) {
     return 0;
   }
