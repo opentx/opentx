@@ -5,7 +5,7 @@ set -e
 branch=2.2
 docker=rc22
 workdir=/home/opentx/rc22
-output=/var/www/html/2.2
+output=/var/www/html/2.2/rc
 version=2.2.1
 
 # Incrementnightly index
