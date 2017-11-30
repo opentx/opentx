@@ -386,32 +386,32 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="783"/>
         <source>Use firmware releases (stable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser firmware version officiel (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="788"/>
         <source>Use firmware releases and release candidates (testing)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser firmware officiel et version candidate (test)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="793"/>
         <source>Use firmware nightly builds (unstable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser firmware &quot;nightly builds&quot; (instable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="808"/>
         <source>Use Companion releases (stable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser Companion version officiel (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="813"/>
         <source>Use Companion release and release candidates (testing)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser Companion officiel et version candidate (test)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="818"/>
         <source>Use Companion nightly builds (unstable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser Companion &quot;nightly builds&quot; (instable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="923"/>
@@ -8480,7 +8480,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
         <source>FrSky Taranis X7 / X7S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1238"/>
