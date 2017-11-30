@@ -112,7 +112,7 @@ void luaHook(lua_State * L, lua_Debug *ar)
   else if (instructionsPercent < 10) {
     max = 0;
   }
-#else    
+#else
     if (instructionsPercent > 100) {
       // From now on, as soon as a line is executed, error
       // keep erroring until you're script reaches the top
@@ -631,14 +631,14 @@ bool luaLoadMixScript(uint8_t index)
   return true;
 }
 
-bool luaLoadFunctionScript(uint8_t index)
+bool luaLoadFunctionScript(uint8_t index, uint8_t ref)
 {
-  CustomFunctionData & fn = g_model.customFn[index];
+  CustomFunctionData & fn = (ref < SCRIPT_GFUNC_FIRST ? g_model.customFn[index] : g_eeGeneral.customFn[index]);
 
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
     if (luaScriptsCount < MAX_SCRIPTS) {
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
-      sid.reference = SCRIPT_FUNC_FIRST+index;
+      sid.reference = ref + index;
       sid.state = SCRIPT_NOFILE;
       char filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
       strncpy(filename+sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, sizeof(fn.play.name));
@@ -712,7 +712,7 @@ void luaLoadPermanentScripts()
 
   // Load custom function scripts
   for (int i=0; i<MAX_SPECIAL_FUNCTIONS; i++) {
-    if (!luaLoadFunctionScript(i)) {
+    if (!luaLoadFunctionScript(i, SCRIPT_FUNC_FIRST) || !luaLoadFunctionScript(i, SCRIPT_GFUNC_FIRST)) {
       return;
     }
   }
@@ -923,8 +923,8 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
         lua_pushinteger(lsScripts, sd.inputs[j].value + sio->inputs[j].def);
     }
   }
-  else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_FUNC_LAST)) {
-    CustomFunctionData & fn = g_model.customFn[sid.reference-SCRIPT_FUNC_FIRST];
+  else if ((scriptType & RUN_FUNC_SCRIPT) && (sid.reference >= SCRIPT_FUNC_FIRST && sid.reference <= SCRIPT_GFUNC_LAST)) {
+    CustomFunctionData & fn = (sid.reference < SCRIPT_GFUNC_FIRST ? g_model.customFn[sid.reference-SCRIPT_FUNC_FIRST] : g_eeGeneral.customFn[sid.reference-SCRIPT_GFUNC_FIRST]);
 #if defined(SIMU) || defined(DEBUG)
     filename = fn.play.name;
 #endif
