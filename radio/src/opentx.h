@@ -1038,12 +1038,14 @@ inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax,
     valMax = g_model.extendedLimits ? LIMIT_EXT_PERCENT : 100;
     valMin = -valMax;
   }
+#if defined(GVARS)
   else if (source >= MIXSRC_FIRST_GVAR && source <= MIXSRC_LAST_GVAR) {
     valMax = min<int>(CFN_GVAR_CST_MAX, MODEL_GVAR_MAX(source-MIXSRC_FIRST_GVAR));
     valMin = max<int>(CFN_GVAR_CST_MIN, MODEL_GVAR_MIN(source-MIXSRC_FIRST_GVAR));
     if (flags && g_model.gvars[source-MIXSRC_FIRST_GVAR].prec)
       *flags |= PREC1;
   }
+#endif
   else if (source == MIXSRC_TX_VOLTAGE) {
     valMax =  255;
     valMin = 0;
