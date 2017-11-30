@@ -98,18 +98,18 @@ uint8_t getFontHeight(LcdFlags flags)
   return heightTable[FONTINDEX(flags)];
 }
 
-#if !defined(BOOT)
 int getTextWidth(const char * s, int len, LcdFlags flags)
 {
   const uint16_t * specs = fontspecsTable[FONTINDEX(flags)];
 
   int result = 0;
   for (int i=0; len==0 || i<len; ++i) {
-    char c;
-    if (flags & ZCHAR)
-      c = idx2char(*s);
-    else
-      c = *s;
+
+#if !defined(BOOT)
+    char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+#else
+    char c = *s;
+#endif
     if (c == '\0')
       break;
     result += getCharWidth(c, specs);
@@ -117,7 +117,6 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   }
   return result;
 }
-#endif
 
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags)
 {

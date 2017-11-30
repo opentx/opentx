@@ -320,7 +320,6 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   const uint16_t * fontspecs = fontspecsTable[fontindex];
   BitmapBuffer * fontcache = NULL;
 
-#if !defined(BOOT)
   if (flags & RIGHT) {
     width = getTextWidth(s, len, flags);
     INCREMENT_POS(-width);
@@ -329,7 +328,6 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
     width = getTextWidth(s, len, flags);
     INCREMENT_POS(-width/2);
   }
-#endif
 
   coord_t & pos = (flags & VERTICAL) ? y : x;
 
