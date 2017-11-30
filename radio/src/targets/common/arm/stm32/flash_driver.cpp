@@ -73,55 +73,52 @@ void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
 #define SECTOR_ADDRESS  (((uint32_t)address) &  0xFFFFF)
 #define FLASH_BANK     ((((uint32_t)address) & 0x100000) ? 12 : 0)
 
-  // test for possible flash sector boundary
-  if ((((uint32_t)address) & 0x3FFF) == 0) {
+    // test for possible flash sector boundary
+    if ((((uint32_t)address) & 0x1FFFF) == 0) {
+        // test first 16KB sectors
+        if (SECTOR_ADDRESS == 0x00000) {
+            eraseSector(0 + FLASH_BANK);
+        }
+        // test 128KB sectors
+        else if (SECTOR_ADDRESS == 0x20000) {
+            eraseSector(5 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0x40000) {
+            eraseSector(6 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0x60000) {
+            eraseSector(7 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0x80000) {
+            eraseSector(8 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0xA0000) {
+            eraseSector(9 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0xC0000) {
+            eraseSector(10 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0xE0000) {
+            eraseSector(11 + FLASH_BANK);
+        }
+    }
+    // test 64KB sector
+    else if (SECTOR_ADDRESS == 0x10000) {
+        eraseSector(4 + FLASH_BANK);
+    }
+    else if ((((uint32_t)address) & 0x3FFF) == 0) {
 
-      // test 16KB sectors
-      if (SECTOR_ADDRESS == 0x00000) {
-          eraseSector(0 + FLASH_BANK);
-      }
-      else if (SECTOR_ADDRESS == 0x04000) {
-          eraseSector(1 + FLASH_BANK);
-      }
-      else if (SECTOR_ADDRESS == 0x08000) {
-          eraseSector(2 + FLASH_BANK);
-      }
-      else if (SECTOR_ADDRESS == 0x0C000) {
-          eraseSector(3 + FLASH_BANK);
-      }
-      else if ((((uint32_t)address) & 0xFFFF) == 0) {
-
-          // test 64KB sector
-          if (SECTOR_ADDRESS == 0x10000) {
-              eraseSector(4 + FLASH_BANK);
-          }
-          else if ((((uint32_t)address) & 0x1FFFF) == 0) {
-
-              // test 128KB sectors
-              if (SECTOR_ADDRESS == 0x20000) {
-                  eraseSector(5 + FLASH_BANK);
-              }
-              else if (SECTOR_ADDRESS == 0x40000) {
-                  eraseSector(6 + FLASH_BANK);
-              }
-              else if (SECTOR_ADDRESS == 0x60000) {
-                  eraseSector(7 + FLASH_BANK);
-              }
-              else if (SECTOR_ADDRESS == 0x80000) {
-                  eraseSector(8 + FLASH_BANK);
-              }
-              else if (SECTOR_ADDRESS == 0xA0000) {
-                  eraseSector(9 + FLASH_BANK);
-              }
-              else if (SECTOR_ADDRESS == 0xC0000) {
-                  eraseSector(10 + FLASH_BANK);
-              }
-              else if (SECTOR_ADDRESS == 0xE0000) {
-                  eraseSector(11 + FLASH_BANK);
-              }
-          }
-      }
-  }
+        // test other 16KB sectors
+        if (SECTOR_ADDRESS == 0x04000) {
+            eraseSector(1 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0x08000) {
+            eraseSector(2 + FLASH_BANK);
+        }
+        else if (SECTOR_ADDRESS == 0x0C000) {
+            eraseSector(3 + FLASH_BANK);
+        }
+    }
 
 #undef SECTOR_ADDRESS
 #undef FLASH_BANK
