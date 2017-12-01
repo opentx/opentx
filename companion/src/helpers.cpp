@@ -703,12 +703,11 @@ int version2index(const QString & version)
   QStringList parts;
   if (version.contains("RC")) {
     parts = version.split("RC");
-    result = parts[1].toInt() + 900; // RC
+    result = parts[1].toInt() + 900; // RC0 = 900; RC1=901,..
   }
-  else {
+  else if (version.contains("N")) {
     parts = version.split("N");
-    if (parts.size() > 1)
-      result = parts[1].toInt(); // nightly build
+    result = parts[1].toInt(); // nightly build up to 899
   }
   parts = parts[0].split('.');
   if (parts.size() > 2)
@@ -736,7 +735,7 @@ const QString index2version(int index)
       result += "N" + QString::number(nightly);
     }
     else if (nightly > 899 && nightly < 999) {
-      result += "RC" + QString::number(nightly-899);
+      result += "RC" + QString::number(nightly-900);
     }
   }
   else if (index >= 19900) {
