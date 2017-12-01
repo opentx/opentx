@@ -701,15 +701,18 @@ int version2index(const QString & version)
 {
   int result = 999;
   QStringList parts;
+  QString mainVersion = version;
   if (version.contains("RC")) {
     parts = version.split("RC");
     result = parts[1].toInt() + 900; // RC0 = 900; RC1=901,..
+    mainVersion = parts[0];
   }
   else if (version.contains("N")) {
     parts = version.split("N");
     result = parts[1].toInt(); // nightly build up to 899
+    mainVersion = parts[0];
   }
-  parts = parts[0].split('.');
+  parts = mainVersion.split('.');
   if (parts.size() > 2)
     result += 1000 * parts[2].toInt();
   if (parts.size() > 1)
