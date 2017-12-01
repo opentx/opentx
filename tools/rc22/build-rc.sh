@@ -66,3 +66,6 @@ cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-
 # Clean binaries It will be hosting built on demand firmware
 rm -rf $workdir/binaries/*
 rm -rf $workdir/binaries/.lock
+
+# RC is considered as valid ony if we get to that point
+echo $index > ${workdir}/index.txt
