@@ -244,7 +244,7 @@ void MainWindow::dowloadLastFirmwareUpdate()
 
 QString MainWindow::getCompanionUpdateBaseUrl()
 {
-  return OPENTX_COMPANION_DOWNLOAD_URL[g.boundedCompanionBranch()];
+  return OPENTX_COMPANION_DOWNLOAD_URL[g.boundedOpenTxBranch()];
 }
 
 void MainWindow::checkForUpdates()

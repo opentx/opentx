@@ -1080,7 +1080,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
 
 QString OpenTxFirmware::getFirmwareBaseUrl()
 {
-  return OPENTX_FIRMWARE_DOWNLOAD_URL[g.boundedFirmwareBranch()];
+  return OPENTX_FIRMWARE_DOWNLOAD_URL[g.boundedOpenTxBranch()];
 }
 
 QString OpenTxFirmware::getFirmwareUrl()
