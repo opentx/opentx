@@ -69,11 +69,11 @@ void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 
 void FirmwarePreferencesDialog::on_sd_dnld_clicked()
 {
-  QString url = OPENTX_SDCARD_DOWNLOAD_URL[g.boundedFirmwareBranch()];
+  QString url = OPENTX_SDCARD_DOWNLOAD_URL[g.boundedOpenTxBranch()];
   QString fwType = g.profile[g.id()].fwType();
   QStringList list = fwType.split("-");
   QString firmware = QString("%1-%2").arg(list[0]).arg(list[1]);
-  if (g.boundedFirmwareBranch() != BRANCH_NIGHTLY_UNSTABLE) {
+  if (g.boundedOpenTxBranch() != BRANCH_NIGHTLY_UNSTABLE) {
     url.append(QString("%1/").arg(firmware));
   }
   QDesktopServices::openUrl(url);

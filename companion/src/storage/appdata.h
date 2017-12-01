@@ -253,8 +253,7 @@ class AppData: protected CompStoreObj
   PROPERTY(bool, appDebugLog, false)
   PROPERTY(bool, fwTraceLog,  false)
 
-  PROPERTY(unsigned, firmwareBranch, BRANCH_RELEASE_STABLE);
-  PROPERTY(unsigned, companionBranch, BRANCH_RELEASE_STABLE);
+  PROPERTY(unsigned, OpenTxBranch, BRANCH_RELEASE_STABLE);
 
   PROPERTY4(bool, jsSupport,       js_support              ,false)
   PROPERTY4(bool, showSplash,      show_splash             ,true)
@@ -426,19 +425,11 @@ class AppData: protected CompStoreObj
     bool findPreviousVersionSettings(QString * version);
     bool importSettings(QString fromVersion);
 
-    inline DownloadBranchType boundedFirmwareBranch() {
+    inline DownloadBranchType boundedOpenTxBranch() {
 #if defined(ALLOW_NIGHTLY_BUILDS)
-      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(firmwareBranch()), BRANCH_NIGHTLY_UNSTABLE);
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(OpenTxBranch()), BRANCH_NIGHTLY_UNSTABLE);
 #else
-      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(firmwareBranch()), BRANCH_RC_TESTING);
-#endif
-    }
-
-    inline DownloadBranchType boundedCompanionBranch() {
-#if defined(ALLOW_NIGHTLY_BUILDS)
-      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(companionBranch()), BRANCH_NIGHTLY_UNSTABLE);
-#else
-      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(companionBranch()), BRANCH_RC_TESTING);
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(OpenTxBranch()), BRANCH_RC_TESTING);
 #endif
     }
 

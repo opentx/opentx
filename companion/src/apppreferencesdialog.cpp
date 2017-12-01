@@ -61,9 +61,8 @@ AppPreferencesDialog::~AppPreferencesDialog()
 void AppPreferencesDialog::writeValues()
 {
   g.autoCheckApp(ui->autoCheckCompanion->isChecked());
-  g.companionBranch(DownloadBranchType(ui->companionBranch->currentIndex()));
+  g.OpenTxBranch(DownloadBranchType(ui->OpenTxBranch->currentIndex()));
   g.autoCheckFw(ui->autoCheckFirmware->isChecked());
-  g.firmwareBranch(DownloadBranchType(ui->firmwareBranch->currentIndex()));
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
   g.removeModelSlots(ui->opt_removeBlankSlots->isChecked());
@@ -137,8 +136,7 @@ void AppPreferencesDialog::initSettings()
 #if !defined(ALLOW_NIGHTLY_BUILDS)
   // TODO should we gray out nightly builds here?
 #endif
-  ui->firmwareBranch->setCurrentIndex(g.firmwareBranch());
-  ui->companionBranch->setCurrentIndex(g.companionBranch());
+  ui->OpenTxBranch->setCurrentIndex(g.OpenTxBranch());
   ui->autoCheckCompanion->setChecked(g.autoCheckApp());
   ui->autoCheckFirmware->setChecked(g.autoCheckFw());
   ui->showSplash->setChecked(g.showSplash());

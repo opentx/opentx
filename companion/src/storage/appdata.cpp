@@ -589,9 +589,8 @@ void AppData::init()
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
 
-    getset( _firmwareBranch, "firmwareBranch", BRANCH_RELEASE_STABLE);
-    getset( _companionBranch, "companionBranch", BRANCH_RELEASE_STABLE);
-
+    getset( _OpenTxBranch, "OpenTxBranch", BRANCH_RELEASE_STABLE);
+    
     appLogsDir_init();
     enableBackup_init();
     backupOnFlash_init();
@@ -698,7 +697,7 @@ bool AppData::findPreviousVersionSettings(QString * version)
   if (!fromSettings)
     return false;
 
-  return true;  
+  return true;
 }
 
 bool AppData::importSettings(QString fromVersion)
@@ -707,7 +706,7 @@ bool AppData::importSettings(QString fromVersion)
 
   QString fromCompany;
   QString fromProduct;
-  
+
   upgradeFromVersion = "";
 
   if (fromVersion == "2.1") {
@@ -724,7 +723,7 @@ bool AppData::importSettings(QString fromVersion)
   }
   else
     return false;
-    
+
   upgradeFromVersion = fromVersion;
 
   QSettings fromSettings(fromCompany, fromProduct);
