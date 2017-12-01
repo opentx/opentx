@@ -17,7 +17,7 @@ cd ${workdir}
 
 # Create on-demand build environment
 cp code/radio/util/Dockerfile .
-docker build -t new-${docker} .
+docker build -t new-${docker} --build-arg OPENTX_VERSION_SUFFIX=${suffix} .
 set +e
 docker rmi -f ${docker}
 set -e
@@ -43,17 +43,17 @@ docker rm companion
 # Request companion compilation on Windows
 if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
   cd ${output}/companion/windows
-  wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=${branch}
-  wget -O companion-windows-${version}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}.exe
-  chmod -f g+w companion-windows-${version}.exe
+  wget -qO- http://winbox.open-tx.org/companion-builds/compile22.php?branch=$branch\&suffix=${suffix}
+  wget -O companion-windows-${version}${suffix}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}${suffix}.exe
+  chmod -Rf g+w companion-windows-${version}${suffix}.exe
 fi
 
 # Request companion compilation on Mac OS X
 if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ]; then
   cd ${output}/companion/macosx
-  wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}
-  wget -O opentx-companion-${version}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}.dmg
-  chmod -f g+w opentx-companion-${version}.dmg
+  wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
+  wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
+  chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
 fi
 
 # Update stamps
