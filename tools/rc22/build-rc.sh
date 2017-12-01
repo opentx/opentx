@@ -18,7 +18,9 @@ cd ${workdir}
 # Create on-demand build environment
 cp code/radio/util/Dockerfile .
 docker build -t new-${docker} .
-docker rmi -f ${docker} || true
+set +e
+docker rmi -f ${docker}
+set -e
 docker tag new-${docker} ${docker}
 docker rmi -f new-${docker}
 
