@@ -23,6 +23,9 @@ void bootloaderDrawScreen(BootloaderState st, int opt)
         lcdDrawText(0, 2*FH, "\010Write Firmware", opt == 0 ? SELECTED_COLOR : TEXT_COLOR);
         lcdDrawText(0, 3*FH, "\010Exit", opt == 1 ? SELECTED_COLOR : TEXT_COLOR);
 
+        lcdDrawText(0, 6*FH, "\001Curr FW:");
+        lcdDrawText(80, 6*FH, getOtherVersion());
+
         lcdDrawText(0, 7*FH, STR_OR_PLUGIN_USB_CABLE, TEXT_COLOR);
     }
     else if (st == ST_USB) {
