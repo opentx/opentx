@@ -71,7 +71,10 @@ void eraseSector(uint32_t sector)
 void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
 {
 #define SECTOR_ADDRESS  (((uint32_t)address) &  0xFFFFF)
-#define FLASH_BANK     ((((uint32_t)address) & 0x100000) ? 12 : 0)
+
+// Please note that there is an offset of 4 between
+// sector 11 and 12
+#define FLASH_BANK     ((((uint32_t)address) & 0x100000) ? 16 : 0)
 
     // test for possible flash sector boundary
     if ((((uint32_t)address) & 0x1FFFF) == 0) {
@@ -122,7 +125,7 @@ void flashWrite(uint32_t * address, uint32_t * buffer) // page size is 256 bytes
 
 #undef SECTOR_ADDRESS
 #undef FLASH_BANK
-
+    
   for (uint32_t i=0; i<FLASH_PAGESIZE/4; i++) {
     /* Device voltage range supposed to be [2.7V to 3.6V], the operation will
      be done by word */
