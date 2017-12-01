@@ -734,7 +734,7 @@ const QString index2version(int index)
     if (nightly > 0 && nightly < 900) {
       result += "N" + QString::number(nightly);
     }
-    else if (nightly > 899 && nightly < 999) {
+    else if (nightly >= 900 && nightly < 1000) {
       result += "RC" + QString::number(nightly-900);
     }
   }
