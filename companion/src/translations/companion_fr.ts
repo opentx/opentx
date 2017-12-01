@@ -477,17 +477,17 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="801"/>
         <source>Use releases (stable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser version officielle (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="806"/>
         <source>Use releases and release candidates (testing)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser version officielle et candidate (test)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="811"/>
         <source>Use nightly builds (unstable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser version &quot;nightly builds&quot; (unstable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="848"/>
@@ -6793,22 +6793,22 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="403"/>
         <source>Direct</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="405"/>
         <source>Curve</source>
-        <translation type="unfinished">Courbe</translation>
+        <translation>Courbe</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="407"/>
         <source>PPM</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="409"/>
         <source>Linear</source>
-        <translation type="unfinished">Linéaire</translation>
+        <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="621"/>
@@ -6823,12 +6823,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="395"/>
         <source>Outputs</source>
-        <translation type="unfinished">Sorties</translation>
+        <translation>Sorties</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="400"/>
         <source>Subtrim</source>
-        <translation type="unfinished">Subtrim</translation>
+        <translation>Subtrim</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="402"/>
