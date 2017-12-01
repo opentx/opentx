@@ -363,7 +363,9 @@ int main()
 
 #if defined(PWR_PRESS_BUTTON) or defined(PCBHORUS)
   // wait until power button is released
-  while(pwrPressed());
+  while(pwrPressed()) {
+      wdt_reset();
+  }
 #endif
   
   for (;;) {
