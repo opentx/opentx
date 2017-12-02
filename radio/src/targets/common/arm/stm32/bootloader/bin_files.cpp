@@ -115,6 +115,24 @@ FRESULT openBinFile(MemoryType mt, unsigned int index)
   return FR_INVALID_OBJECT;
 }
 
+void extractFirmwareVersion(VersionTag* tag)
+{
+    const char* vers = getOtherVersion((char*)Block_buffer);
+    if (!vers || (vers[0] == 'n' && vers[1] == 'o')) { // "no version found"
+        memcpy(tag->flavour, "unknown", sizeof("unknown"));
+        tag->version = "unknown";
+    }
+
+    // skip "opentx-"
+    vers += sizeof("opentx-") - 1;
+
+    char* fl = tag->flavour;
+    while(*vers != '-')
+        *(fl++) = *(vers++);
+
+    tag->version = ++vers;
+}
+
 FRESULT readBinFile()
 {
     BlockCount = 0;

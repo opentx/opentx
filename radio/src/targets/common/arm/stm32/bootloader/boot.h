@@ -26,7 +26,9 @@
 #define BOOTLOADER_TITLE               " OTX Bootloader - " VERSION
 #define DISPLAY_CHAR_WIDTH             (LCD_COLS+4)
 
-#if LCD_W >= 212
+#if LCD_W >= 480
+  #define STR_INVALID_FIRMWARE         "Not a valid firmware file"
+#elif LCD_W >= 212
   #define STR_OR_PLUGIN_USB_CABLE      INDENT "Or plug in a USB cable for mass storage"
   #define STR_HOLD_ENTER_TO_START      "\012Hold [ENT] to start writing"
   #define STR_INVALID_FIRMWARE         "\011Not a valid firmware file!        "
@@ -56,11 +58,23 @@ enum BootloaderState {
   ST_REBOOT,
 };
 
-// Declarations of functions that need to be implemented
-// by targets with a bootloader
+enum FlashCheckRes {
+    FC_UNCHECKED=0,
+    FC_OK,
+    FC_ERROR
+};
 
+// Declarations of functions that need to be implemented
+// for each target with a bootloader
+
+// On bootloader start after lcdInit()
 void bootloaderInitScreen();
-void bootloaderDrawScreen(BootloaderState st, int opt);
-void bootloaderDrawMessage(BootloaderState st, const char* str, uint8_t line, bool invert);
+
+// Depending on the state, up to two optional parameters are passed.
+// See boot.cpp/main for more details
+void bootloaderDrawScreen(BootloaderState st, int opt, const char* str = NULL);
+
+// Once for each file in a filename list on screen
+void bootloaderDrawFilename(const char* str, uint8_t line, bool selected);
 
 #endif

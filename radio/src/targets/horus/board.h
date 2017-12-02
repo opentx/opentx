@@ -447,7 +447,7 @@ void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t
 void lcdStoreBackupBuffer(void);
 int lcdRestoreBackupBuffer(void);
 void lcdSetContrast();
-#define lcdOff(...)
+#define lcdOff()              backlightEnable(0) /* just disable the backlight */
 #define lcdSetRefVolt(...)
 #define lcdRefreshWait(...)
 

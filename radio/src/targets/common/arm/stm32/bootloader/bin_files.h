@@ -68,6 +68,16 @@ unsigned int fetchBinFiles(unsigned int index);
 // Bootloader is skipped in firmware files
 FRESULT openBinFile(MemoryType mt, unsigned int index);
 
+struct VersionTag
+{
+    char        flavour[8];
+    const char* version;
+};
+
+// Can be called right after openBinFile() to extract the version information
+// from a firmware file
+void extractFirmwareVersion(VersionTag* tag);
+
 // Read the next BLOCK_LEN bytes into 'Block_buffer'
 // Check 'BlockCount' for # of bytes read
 FRESULT readBinFile();

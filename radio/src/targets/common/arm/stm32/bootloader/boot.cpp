@@ -63,12 +63,12 @@ uint32_t eepromAddress = 0;
 uint32_t eepromWritten = 0;
 #endif
 
-TCHAR backupFilename[_MAX_LFN+1];
+//TCHAR backupFilename[_MAX_LFN+1];
 
-uint32_t Master_frequency;
+//uint32_t Master_frequency;
 volatile uint8_t Tenms = 1;
 
-uint32_t Valid;
+FlashCheckRes Valid;
 
 MemoryType memoryType;
 uint32_t   unlocked = 0;
@@ -132,49 +132,41 @@ uint32_t isValidBufferStart(const uint8_t * buffer)
 #endif
 }
 
+FlashCheckRes checkFlashFile(unsigned int index, FlashCheckRes res)
+{
+    if (res != FC_UNCHECKED)
+        return res;
+
+    if (openBinFile(memoryType, index) != FR_OK)
+        return FC_ERROR;
+
+    if (closeBinFile() != FR_OK)
+        return FC_ERROR;
+
+    if (!isValidBufferStart(Block_buffer))
+        return FC_ERROR;
+
+    return FC_OK;
+}
+
 int menuFlashFile(uint32_t index, event_t event)
 {
-  FRESULT fr;
+  Valid = checkFlashFile(index, Valid);
 
-  if (Valid == 0) {
-    // Validate file here
-    if ((fr = openBinFile(memoryType, index))) {
-      Valid = 2; //ERROR
-    }
-    else {
-      if ((fr = closeBinFile())) {
-          Valid = 2; //EEROR
-      }
-      else {
-          Valid = 1; //GOOD
-      }
-      if (!isValidBufferStart(Block_buffer)) {
-          Valid = 2; //ERROR
-      }
-    }
-  }
+  if (Valid == FC_ERROR) {
 
-  if (Valid == 2) {
-    if (memoryType == MEM_FLASH)
-        bootloaderDrawMessage(ST_FLASH_CHECK, STR_INVALID_FIRMWARE, 2, false);
-    else
-        bootloaderDrawMessage(ST_FLASH_CHECK, STR_INVALID_EEPROM, 2, false);
-
-    if (event == EVT_KEY_BREAK(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_ENTER)) {
+    if (event == EVT_KEY_BREAK(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_ENTER))
       return 0;
-    }
+
     return -1;
   }
 
-  bootloaderDrawMessage(ST_FLASH_CHECK, STR_HOLD_ENTER_TO_START, 2, false);
-
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
-    fr = openBinFile(memoryType, index);
-    return (fr == FR_OK && isValidBufferStart(Block_buffer));
+
+    return (openBinFile(memoryType, index) == FR_OK) && isValidBufferStart(Block_buffer);
   }
-  else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+  else if (event == EVT_KEY_BREAK(KEY_EXIT))
     return 0;
-  }
 
   return -1;
 }
@@ -249,7 +241,7 @@ int main()
 #endif
 
   __enable_irq();
-  TRACE("\nHorus bootloader started :)");
+  TRACE("\nBootloader started :)");
 
   lcdInit();
   backlightInit();
@@ -351,14 +343,7 @@ int main()
               continue;
           }
           else {
-              bootloaderDrawScreen(state, 0);
-              if (fr == FR_NO_PATH) {
-                  bootloaderDrawMessage(state, "Directory is missing!", 0, false);
-                  bootloaderDrawMessage(state, getBinaryPath(memoryType), 1, false);
-              }
-              else {
-                  bootloaderDrawMessage(state, "Directory is empty!", 0, false);
-              }
+              bootloaderDrawScreen(state, fr);
 
               if (event == EVT_KEY_BREAK(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_ENTER)) {
                   vpos = 0;
@@ -401,13 +386,13 @@ int main()
         bootloaderDrawScreen(state, 0);
 
         for (uint32_t i=0; i<limit; i++) {
-            bootloaderDrawMessage(state, binFiles[i].name, i, (vpos == i));
+            bootloaderDrawFilename(binFiles[i].name, i, (vpos == i));
         }
 
         if (event == EVT_KEY_BREAK(KEY_ENTER)) {
             // Select file to flash
             state = ST_FLASH_CHECK;
-            Valid = 0;
+            Valid = FC_UNCHECKED;
             continue;
         }
         else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
@@ -418,7 +403,7 @@ int main()
       }
       else if (state == ST_FLASH_CHECK) {
 
-          bootloaderDrawScreen(state, Valid);
+          bootloaderDrawScreen(state, Valid, binFiles[vpos].name);
 
           int result = menuFlashFile(vpos, event);
           if (result == 0) {
@@ -493,7 +478,7 @@ int main()
           vpos = 0;
         }
 
-        bootloaderDrawScreen(state, 0);
+        bootloaderDrawScreen(state, 100);
       }
 
       if (event == EVT_KEY_LONG(KEY_EXIT)) {
@@ -525,6 +510,7 @@ int main()
 
     if (state == ST_REBOOT) {
         // Jump to proper application address
+        lcdClear();
         jumpTo(APP_START_ADDRESS);
     }
   }
