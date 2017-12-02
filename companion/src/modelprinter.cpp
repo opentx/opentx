@@ -712,3 +712,54 @@ QString ModelPrinter::printGlobalVarPopup(int idx)
   return (model.gvarData[idx].popup ? "Y" : "N" );
 }
 
+QString ModelPrinter::printOutputValueGVar(int val)
+{
+  QString result = "";
+  if (abs(val) > 10000) {
+    if (val < 0)
+      result = "-";
+    result.append(RawSource(SOURCE_TYPE_GVAR, abs(val)-10001).toString(&model));
+  }
+  else {
+    if (val >= 0)
+      result = "+";
+    result.append(QString::number((qreal)val/10, 'f', 1) + "%");
+  }
+  return result;
+}
+
+QString ModelPrinter::printOutputOffset(int idx)
+{
+  return printOutputValueGVar(model.limitData[idx].offset);
+}
+
+QString ModelPrinter::printOutputMin(int idx)
+{
+  return printOutputValueGVar(model.limitData[idx].min);
+}
+
+QString ModelPrinter::printOutputMax(int idx)
+{
+  return printOutputValueGVar(model.limitData[idx].max);
+}
+
+QString ModelPrinter::printOutputRevert(int idx)
+{
+  return model.limitData[idx].revertToString();
+}
+
+QString ModelPrinter::printOutputPpmCenter(int idx)
+{
+  return QString::number(model.limitData[idx].ppmCenter + 1500);
+}
+
+QString ModelPrinter::printOutputCurve(int idx)
+{
+  return CurveReference(CurveReference::CURVE_REF_CUSTOM, model.limitData[idx].curve.value).toString(&model, false);
+}
+
+QString ModelPrinter::printOutputSymetrical(int idx)
+{
+  return (model.limitData[idx].symetrical ? "Y": "N");
+}
+

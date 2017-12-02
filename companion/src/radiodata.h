@@ -603,8 +603,8 @@ class RSSIAlarmData {
     void clear() {
       this->level[0] = 2;
       this->level[1] = 3;
-      this->warning = 42;
-      this->critical = 45;
+      this->warning = 45;
+      this->critical = 42;
       this->disabled = false;
     }
 };
@@ -625,8 +625,8 @@ class FrSkyChannelData {
 
 struct FrSkyBarData {
   RawSource source;
-  unsigned int barMin;           // minimum for bar display
-  unsigned int barMax;           // ditto for max display (would usually = ratio)
+  int barMin;           // minimum for bar display
+  int barMax;           // ditto for max display (would usually = ratio)
 };
 
 struct FrSkyLineData {

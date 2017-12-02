@@ -700,10 +700,19 @@ QPixmap makePixMap(const QImage & image)
 int version2index(const QString & version)
 {
   int result = 999;
-  QStringList parts = version.split("N");
-  if (parts.size() > 1)
-    result = parts[1].toInt(); // nightly build
-  parts = parts[0].split('.');
+  QStringList parts;
+  QString mainVersion = version;
+  if (version.contains("RC")) {
+    parts = version.split("RC");
+    result = parts[1].toInt() + 900; // RC0 = 900; RC1=901,..
+    mainVersion = parts[0];
+  }
+  else if (version.contains("N")) {
+    parts = version.split("N");
+    result = parts[1].toInt(); // nightly build up to 899
+    mainVersion = parts[0];
+  }
+  parts = mainVersion.split('.');
   if (parts.size() > 2)
     result += 1000 * parts[2].toInt();
   if (parts.size() > 1)
@@ -725,8 +734,11 @@ const QString index2version(int index)
     int minor = index % 100;
     int major = index / 100;
     result = templt.arg(major).arg(minor).arg(revision);
-    if (nightly > 0 && nightly < 999) {
+    if (nightly > 0 && nightly < 900) {
       result += "N" + QString::number(nightly);
+    }
+    else if (nightly >= 900 && nightly < 1000) {
+      result += "RC" + QString::number(nightly-900);
     }
   }
   else if (index >= 19900) {

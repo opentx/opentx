@@ -25,12 +25,14 @@
 
 #ifndef _APPDATA_H_
 #define _APPDATA_H_
+
 #include <QByteArray>
 #include <QStringList>
 #include <QString>
 #include <QSettings>
 #include <QStandardPaths>
 
+#include "constants.h"
 #include "simulator.h"
 
 #define COMPANY            "OpenTX"
@@ -244,14 +246,14 @@ class AppData: protected CompStoreObj
   PROPERTY(bool, backupOnFlash,              true)
   PROPERTY(bool, outputDisplayDetails,       false)
   PROPERTY(bool, checkHardwareCompatibility, true)
-  PROPERTY(bool, useCompanionNightlyBuilds,  false)
-  PROPERTY(bool, useFirmwareNightlyBuilds,   false)
   PROPERTY(bool, removeModelSlots,           true)
   PROPERTY(bool, maximized,   false)
   PROPERTY(bool, simuSW,      false)
   PROPERTY(bool, tabbedMdi,   false)
   PROPERTY(bool, appDebugLog, false)
   PROPERTY(bool, fwTraceLog,  false)
+
+  PROPERTY(unsigned, OpenTxBranch, BRANCH_RELEASE_STABLE);
 
   PROPERTY4(bool, jsSupport,       js_support              ,false)
   PROPERTY4(bool, showSplash,      show_splash             ,true)
@@ -422,6 +424,14 @@ class AppData: protected CompStoreObj
     bool hasCurrentSettings();
     bool findPreviousVersionSettings(QString * version);
     bool importSettings(QString fromVersion);
+
+    inline DownloadBranchType boundedOpenTxBranch() {
+#if defined(ALLOW_NIGHTLY_BUILDS)
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(OpenTxBranch()), BRANCH_NIGHTLY_UNSTABLE);
+#else
+      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(OpenTxBranch()), BRANCH_RC_TESTING);
+#endif
+    }
 
   protected:
     void convertSettings(QSettings & settings);

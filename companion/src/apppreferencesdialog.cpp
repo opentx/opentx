@@ -23,13 +23,10 @@
 #include "mainwindow.h"
 #include "appdata.h"
 #include "helpers.h"
-#include "firmwareinterface.h"
-#ifdef JOYSTICKS
+#if defined(JOYSTICKS)
 #include "joystick.h"
 #include "joystickdialog.h"
 #endif
-#include <QDesktopServices>
-#include <QtGui>
 
 AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
   QDialog(parent),
@@ -63,9 +60,8 @@ AppPreferencesDialog::~AppPreferencesDialog()
 
 void AppPreferencesDialog::writeValues()
 {
-  g.useCompanionNightlyBuilds(ui->useCompanionNightlyBuilds->isChecked());
   g.autoCheckApp(ui->autoCheckCompanion->isChecked());
-  g.useFirmwareNightlyBuilds(ui->useFirmwareNightlyBuilds->isChecked());
+  g.OpenTxBranch(DownloadBranchType(ui->OpenTxBranch->currentIndex()));
   g.autoCheckFw(ui->autoCheckFirmware->isChecked());
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
@@ -137,13 +133,10 @@ void AppPreferencesDialog::initSettings()
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
-#if defined(ALLOW_NIGHTLY_BUILDS)
-  ui->useCompanionNightlyBuilds->setChecked(g.useCompanionNightlyBuilds());
-  ui->useFirmwareNightlyBuilds->setChecked(g.useFirmwareNightlyBuilds());
-#else
-  ui->useCompanionNightlyBuilds->hide();
-  ui->useFirmwareNightlyBuilds->hide();
+#if !defined(ALLOW_NIGHTLY_BUILDS)
+  // TODO should we gray out nightly builds here?
 #endif
+  ui->OpenTxBranch->setCurrentIndex(g.OpenTxBranch());
   ui->autoCheckCompanion->setChecked(g.autoCheckApp());
   ui->autoCheckFirmware->setChecked(g.autoCheckFw());
   ui->showSplash->setChecked(g.showSplash());

@@ -66,7 +66,7 @@ class MultiModelPrinter: public QObject
     QString printSetup();
     QString printHeliSetup();
     QString printFlightModes();
-    QString printLimits();
+    QString printOutputs();
     QString printInputs();
     QString printMixers();
     QString printCurves(QTextDocument * document);

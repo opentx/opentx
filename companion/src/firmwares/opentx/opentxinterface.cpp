@@ -30,8 +30,11 @@
 
 using namespace Board;
 
-#define OPENTX_FIRMWARE_DOWNLOADS        "https://downloads-22.open-tx.org/firmware"
-#define OPENTX_NIGHT_FIRMWARE_DOWNLOADS  "https://downloads-22.open-tx.org/nightlies/firmware"
+const char * const OPENTX_FIRMWARE_DOWNLOAD_URL[] = {
+  "https://downloads.open-tx.org/2.2/release/firmware",
+  "https://downloads.open-tx.org/2.2/rc/firmware",
+  "https://downloads.open-tx.org/2.2/nightlies/firmware"
+};
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -1077,11 +1080,7 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
 
 QString OpenTxFirmware::getFirmwareBaseUrl()
 {
-#if defined(ALLOW_NIGHTLY_BUILDS)
-  return (g.useFirmwareNightlyBuilds() ? OPENTX_NIGHT_FIRMWARE_DOWNLOADS : OPENTX_FIRMWARE_DOWNLOADS);
-#else
-  return OPENTX_FIRMWARE_DOWNLOADS;
-#endif
+  return OPENTX_FIRMWARE_DOWNLOAD_URL[g.boundedOpenTxBranch()];
 }
 
 QString OpenTxFirmware::getFirmwareUrl()

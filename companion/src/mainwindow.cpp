@@ -54,7 +54,6 @@
 #include <QDesktopServices>
 
 #define OPENTX_DOWNLOADS_PAGE_URL         "http://www.open-tx.org/downloads"
-#define OPENTX_COMPANION_DOWNLOADS        "https://downloads-22.open-tx.org/companion"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
 #ifdef __APPLE__
@@ -69,12 +68,16 @@
   #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
 #else
   #define COMPANION_STAMP                 "companion-linux.stamp"
-  #define COMPANION_INSTALLER             ""   // no automatated updates for linux
+  #define COMPANION_INSTALLER             "" // no automated updates for linux
   #define COMPANION_FILEMASK              "*.*"
   #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
 #endif
 
-#define OPENTX_NIGHT_COMPANION_DOWNLOADS  "https://downloads-22.open-tx.org/nightlies/companion"
+const char * const OPENTX_COMPANION_DOWNLOAD_URL[] = {
+  "https://downloads.open-tx.org/2.2/release/companion",
+  "https://downloads.open-tx.org/2.2/rc/companion",
+  "https://downloads.open-tx.org/2.2/nightlies/companion"
+};
 
 MainWindow::MainWindow():
   downloadDialog_forWait(NULL),
@@ -241,11 +244,7 @@ void MainWindow::dowloadLastFirmwareUpdate()
 
 QString MainWindow::getCompanionUpdateBaseUrl()
 {
-#if defined(ALLOW_NIGHTLY_BUILDS)
-  return g.useCompanionNightlyBuilds() ? OPENTX_NIGHT_COMPANION_DOWNLOADS : OPENTX_COMPANION_DOWNLOADS;
-#else
-  return OPENTX_COMPANION_DOWNLOADS;
-#endif
+  return OPENTX_COMPANION_DOWNLOAD_URL[g.boundedOpenTxBranch()];
 }
 
 void MainWindow::checkForUpdates()
@@ -562,6 +561,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
   g.mainWinGeo(saveGeometry());
   g.mainWinState(saveState());
   g.tabbedMdi(actTabbedWindows->isChecked());
+  QApplication::closeAllWindows();
   mdiArea->closeAllSubWindows();
   if (mdiArea->currentSubWindow()) {
     event->ignore();

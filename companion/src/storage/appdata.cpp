@@ -588,15 +588,14 @@ void AppData::init()
     getset( _libDir,          "libraryPath"             ,"" );
     getset( _snapshotDir,     "snapshotpath"            ,"" );
     getset( _updatesDir,      "lastUpdatesDir"          ,"" );
-    appLogsDir_init();
 
-    // booleans
+    getset( _OpenTxBranch, "OpenTxBranch", BRANCH_RELEASE_STABLE);
+    
+    appLogsDir_init();
     enableBackup_init();
     backupOnFlash_init();
     outputDisplayDetails_init();
     checkHardwareCompatibility_init();
-    useCompanionNightlyBuilds_init();
-    useFirmwareNightlyBuilds_init();
     removeModelSlots_init();
     maximized_init();
     simuSW_init();
@@ -698,7 +697,7 @@ bool AppData::findPreviousVersionSettings(QString * version)
   if (!fromSettings)
     return false;
 
-  return true;  
+  return true;
 }
 
 bool AppData::importSettings(QString fromVersion)
@@ -707,7 +706,7 @@ bool AppData::importSettings(QString fromVersion)
 
   QString fromCompany;
   QString fromProduct;
-  
+
   upgradeFromVersion = "";
 
   if (fromVersion == "2.1") {
@@ -724,7 +723,7 @@ bool AppData::importSettings(QString fromVersion)
   }
   else
     return false;
-    
+
   upgradeFromVersion = fromVersion;
 
   QSettings fromSettings(fromCompany, fromProduct);

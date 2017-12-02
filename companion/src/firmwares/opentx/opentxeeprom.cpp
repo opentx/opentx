@@ -2583,13 +2583,13 @@ class FrskyScreenField: public DataField {
             bars.Append(new SourceField<16>(this, screen.body.bars[i].source, board, version, variant));
           else
             bars.Append(new SourceField<8>(this, screen.body.bars[i].source, board, version, variant));
-          bars.Append(new UnsignedField<16>(this, screen.body.bars[i].barMin));
-          bars.Append(new UnsignedField<16>(this, screen.body.bars[i].barMax));
+          bars.Append(new SignedField<16>(this, screen.body.bars[i].barMin));
+          bars.Append(new SignedField<16>(this, screen.body.bars[i].barMax));
         }
         else {
           bars.Append(new TelemetrySourceField<8>(this, screen.body.bars[i].source, board, version));
-          bars.Append(new UnsignedField<8>(this, screen.body.bars[i].barMin));
-          bars.Append(new UnsignedField<8>(this, screen.body.bars[i].barMax));
+          bars.Append(new UnsignedField<8>(this, (unsigned &)screen.body.bars[i].barMin));
+          bars.Append(new UnsignedField<8>(this, (unsigned &)screen.body.bars[i].barMax));
         }
       }
 
