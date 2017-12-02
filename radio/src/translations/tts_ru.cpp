@@ -30,7 +30,6 @@ enum RusPrompts {
 
   RU_PROMPT_AND = RU_PROMPT_NUMBERS_BASE+110, // и
   RU_PROMPT_MINUS = RU_PROMPT_NUMBERS_BASE+111, // минус
-//  RU_PROMPT_POINT = RU_PROMPT_NUMBERS_BASE+112,
   RU_PROMPT_UNITS_BASE = RU_PROMPT_NUMBERS_BASE + 113,
   RU_PROMPT_POINT_BASE = RU_PROMPT_NUMBERS_BASE + 165, //.0 - .9
   RU_PROMPT_FEMALE_ONE = RU_PROMPT_NUMBERS_BASE + 180,
@@ -54,8 +53,6 @@ enum RusPrompts {
 
 I18N_PLAY_FUNCTION(ru, pushUnitPrompt,  uint8_t unitprompt, int16_t number)
 {
-    TRACE("************ RU unit:%d number:%d", unitprompt, number);
-
 #if defined(CPUARM)
     if (number < 0){ // if negative number, we have to use 2 units form (for example value = 1.3)
        PUSH_UNIT_PROMPT(unitprompt, 2);
@@ -90,8 +87,6 @@ I18N_PLAY_FUNCTION(ru, pushUnitPrompt,  uint8_t unitprompt, int16_t number)
 
 I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 {
-  TRACE("*************** unit:%d number:%d att:%d", unit, number, att);
-
   if (number < 0) {
     PUSH_NUMBER_PROMPT(RU_PROMPT_MINUS);
     number = -number;
@@ -123,7 +118,6 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     // we assume that we are PREC1
 #endif
     if (qr.rem) {
-      TRACE("*************** rem:%d", qr.rem);
       PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(RU_PROMPT_POINT_BASE + qr.rem);
       number = -1;
@@ -151,8 +145,6 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       PUSH_NUMBER_PROMPT(RU_PROMPT_THOUSAND2);
     else
       PUSH_NUMBER_PROMPT(RU_PROMPT_THOUSAND5);
-    //PUSH_NUMBER_PROMPT(RU_PROMPT_THOUSAND);
-
     number %= 1000;
     if (number == 0)
       number = -1;
@@ -179,7 +171,6 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
       }
       uint8_t lastDigit = number % 10;
       uint8_t ten=(number - (number % 10))/10;
-      TRACE("*************** lastDigit: %d ten: %d number: %d attr: %d", lastDigit, ten, number, attr);
       if (lastDigit == 1 && number != 11 && attr == FEMALE)
         PUSH_NUMBER_PROMPT(RU_PROMPT_FEMALE_ONE + ten);
       else if (lastDigit == 2 && number !=12 && attr == FEMALE)
@@ -189,7 +180,6 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    TRACE("*************** rem push:%d", qr.rem);
     if (mode > 0 && qr.rem) // number with decimal point
       RU_PUSH_UNIT_PROMPT(unit, -1); // force 2 units form, if float value
     else
