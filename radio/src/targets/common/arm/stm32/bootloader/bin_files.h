@@ -37,15 +37,42 @@ enum MemoryType {
 #define MAX_NAMES_ON_SCREEN   6
 #define MAX_BIN_FILES         (MAX_NAMES_ON_SCREEN+1)
 
+// Size of the block read when checking / writing BIN files
+#define BLOCK_LEN 4096
+
+// File info struct while browsing files on SD card
 struct BinFileInfo {
     TCHAR        name[_MAX_LFN + 1];
     unsigned int size;
 };
 
+// File info storage while browsing files on SD card
 extern BinFileInfo binFiles[MAX_BIN_FILES];
 
+// Block buffer used when checking / writing BIN files
+extern uint8_t Block_buffer[BLOCK_LEN];
+
+// Bytes read into the Block_buffer
+extern UINT    BlockCount;
+
+// Open directory for EEPROM / firmware files
 FRESULT openBinDir(MemoryType mt);
 
+// Fetch file names and sizes into binFiles,
+// starting at the provided index.
+// Only files ending with ".bin" (case-insensitive)
+// will be considered.
 unsigned int fetchBinFiles(unsigned int index);
+
+// Open file indexed in binFiles and read the first BLOCK_LEN bytes
+// Bootloader is skipped in firmware files
+FRESULT openBinFile(MemoryType mt, unsigned int index);
+
+// Read the next BLOCK_LEN bytes into 'Block_buffer'
+// Check 'BlockCount' for # of bytes read
+FRESULT readBinFile();
+
+// Close the previously opened file
+FRESULT closeBinFile();
 
 #endif

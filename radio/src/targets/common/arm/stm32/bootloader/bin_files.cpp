@@ -2,8 +2,15 @@
 #include "boot.h"
 #include "bin_files.h"
 
+// 'private'
+static DIR  dir;
+static FIL FlashFile;
+
+// 'public' variables
 BinFileInfo binFiles[MAX_BIN_FILES];
-static DIR dir;
+uint8_t     Block_buffer[BLOCK_LEN];
+UINT        BlockCount;
+
 
 FRESULT openBinDir(MemoryType mt)
 {
@@ -78,3 +85,43 @@ unsigned int fetchBinFiles(unsigned int index)
   return i;
 }
 
+FRESULT openBinFile(MemoryType mt, unsigned int index)
+{
+  TCHAR full_path[_MAX_LFN+1];
+  FRESULT fr;
+
+  // build full_path: [bin path]/[filename]
+  char* s = strAppend(full_path, getBinaryPath(mt));
+  s = strAppend(s, "/");
+  strAppend(s, binFiles[index].name);
+
+  BlockCount = 0;
+  
+  // open the file
+  if ((fr = f_open(&FlashFile, full_path, FA_READ)) != FR_OK)
+    return fr;
+
+  // skip bootloader in firmware
+  if (mt == MEM_FLASH &&
+      ((fr = f_lseek(&FlashFile, BOOTLOADER_SIZE)) != FR_OK))
+      return fr;
+
+  // ... and fetch BLOCK_LEN bytes
+  fr = f_read(&FlashFile, Block_buffer, BLOCK_LEN, &BlockCount);
+
+  if (BlockCount == BLOCK_LEN)
+      return fr;
+
+  return FR_INVALID_OBJECT;
+}
+
+FRESULT readBinFile()
+{
+    BlockCount = 0;
+    return f_read(&FlashFile, Block_buffer, sizeof(Block_buffer), &BlockCount);
+}
+
+FRESULT closeBinFile()
+{
+    return f_close(&FlashFile);
+}

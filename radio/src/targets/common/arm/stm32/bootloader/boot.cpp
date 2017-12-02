@@ -68,15 +68,10 @@ TCHAR backupFilename[_MAX_LFN+1];
 uint32_t Master_frequency;
 volatile uint8_t Tenms = 1;
 
-FIL FlashFile;
 uint32_t Valid;
 
-#define BLOCK_LEN 4096
-uint8_t Block_buffer[BLOCK_LEN];
-UINT BlockCount;
-
 MemoryType memoryType;
-uint32_t unlocked = 0;
+uint32_t   unlocked = 0;
 
 void interrupt10ms(void)
 {
@@ -125,29 +120,6 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
   interrupt10ms();
 }
 
-FRESULT openBinaryFile(uint32_t index)
-{
-  TCHAR filename[_MAX_LFN+1];
-  FRESULT fr;
-  memset(Block_buffer, 0, sizeof(Block_buffer));
-  strAppend(strAppend(strAppend(filename, getBinaryPath(memoryType)), "/"), binFiles[index].name);
-
-  if ((fr = f_open(&FlashFile, filename, FA_READ)) != FR_OK) {
-    return fr;
-  }
-  if (memoryType == MEM_FLASH) {
-    if ((fr = f_lseek(&FlashFile, BOOTLOADER_SIZE)) != FR_OK) {
-      return fr;
-    }
-  }
-  fr = f_read(&FlashFile, Block_buffer, BLOCK_LEN, &BlockCount);
-
-  if (BlockCount == BLOCK_LEN)
-    return fr;
-  else
-    return FR_INVALID_OBJECT;
-}
-
 uint32_t isValidBufferStart(const uint8_t * buffer)
 {
 #if defined(EEPROM)
@@ -166,18 +138,18 @@ int menuFlashFile(uint32_t index, event_t event)
 
   if (Valid == 0) {
     // Validate file here
-    if ((fr = openBinaryFile(index))) {
-      Valid = 2;
+    if ((fr = openBinFile(memoryType, index))) {
+      Valid = 2; //ERROR
     }
     else {
-      if ((fr = f_close(&FlashFile))) {
-        Valid = 2;
+      if ((fr = closeBinFile())) {
+          Valid = 2; //EEROR
       }
       else {
-        Valid = 1;
+          Valid = 1; //GOOD
       }
       if (!isValidBufferStart(Block_buffer)) {
-        Valid = 2;
+          Valid = 2; //ERROR
       }
     }
   }
@@ -197,7 +169,7 @@ int menuFlashFile(uint32_t index, event_t event)
   bootloaderDrawMessage(ST_FLASH_CHECK, STR_HOLD_ENTER_TO_START, 2, false);
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
-    fr = openBinaryFile(index);
+    fr = openBinFile(memoryType, index);
     return (fr == FR_OK && isValidBufferStart(Block_buffer));
   }
   else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
@@ -494,15 +466,17 @@ int main()
 
         bootloaderDrawScreen(state, progress);
 
-        fr = f_read(&FlashFile, Block_buffer, sizeof(Block_buffer), &BlockCount);
+        fr = readBinFile();
         if (BlockCount == 0) {
           state = ST_FLASH_DONE; // EOF
         }
-        if (firmwareWritten >= FLASHSIZE - BOOTLOADER_SIZE) {
+        else if ((memoryType == MEM_FLASH) &&
+                 (firmwareWritten >= FLASHSIZE - BOOTLOADER_SIZE)) {
           state = ST_FLASH_DONE; // Backstop
         }
 #if defined(EEPROM)
-        if (eepromWritten >= EEPROM_SIZE) {
+        else if ((memoryType == MEM_EEPROM) &&
+                 (eepromWritten >= EEPROM_SIZE)) {
           state = ST_FLASH_DONE; // Backstop
         }
 #endif
