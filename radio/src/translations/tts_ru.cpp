@@ -1,8 +1,8 @@
 /*
- * Authors (alphabetical order)
- * - Andre Bernet <bernet.andre@gmail.com>
- * - Bertrand Songis <bsongis@gmail.com>
- * - Jean-Pierre van Melis
+ * Author
+ * - Alexander Novikov (mr.pokryshkin@gmail.com)
+ *
+ * tts_ru is based on tts_de and tts_en
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
