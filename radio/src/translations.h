@@ -843,6 +843,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const LanguagePack skLanguagePack;
   extern const LanguagePack seLanguagePack;
   extern const LanguagePack huLanguagePack;
+  extern const LanguagePack ruLanguagePack;
   extern const LanguagePack * const languagePacks[];
   #if defined(LANGUAGE_PACKS_DEFINITION)
   const LanguagePack * const languagePacks[] = {
@@ -856,6 +857,7 @@ extern const pm_char STR_BLCOLOR[];
     &itLanguagePack,
     &plLanguagePack,
     &ptLanguagePack,
+    &ruLanguagePack,
     &seLanguagePack,
     &skLanguagePack,
     NULL
