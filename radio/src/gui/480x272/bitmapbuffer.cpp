@@ -313,7 +313,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 #define INCREMENT_POS(delta) \
   do { if (flags & VERTICAL) y -= delta; else x += delta; } while(0)
 
-  int width = 0;
+  int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
   uint32_t fontindex = FONTINDEX(flags);
   const pm_uchar * font = fontsTable[fontindex];
@@ -321,11 +321,9 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   BitmapBuffer * fontcache = NULL;
 
   if (flags & RIGHT) {
-    width = getTextWidth(s, len, flags);
     INCREMENT_POS(-width);
   }
   else if (flags & CENTERED) {
-    width = getTextWidth(s, len, flags);
     INCREMENT_POS(-width/2);
   }
 
