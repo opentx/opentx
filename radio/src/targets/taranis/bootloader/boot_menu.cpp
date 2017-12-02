@@ -36,11 +36,11 @@ void bootloaderDrawScreen(BootloaderState st, int opt)
     }
     else if (st == ST_FLASHING) {
         lcdDrawTextAlignedLeft(4*FH, CENTER "\015Writing...");
-        
+
         lcdDrawRect(3, 6*FH+4, (LCD_W-8), 7);
-        lcdDrawSolidHorizontalLine(5, 6*FH+6, opt, FORCE);
-        lcdDrawSolidHorizontalLine(5, 6*FH+7, opt, FORCE);
-        lcdDrawSolidHorizontalLine(5, 6*FH+8, opt, FORCE);
+        lcdDrawSolidHorizontalLine(5, 6*FH+6, (LCD_W-12) * opt / 100, FORCE);
+        lcdDrawSolidHorizontalLine(5, 6*FH+7, (LCD_W-12) * opt / 100, FORCE);
+        lcdDrawSolidHorizontalLine(5, 6*FH+8, (LCD_W-12) * opt / 100, FORCE);
     }
     else if (st == ST_FLASH_DONE) {
 
@@ -48,7 +48,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt)
     }
 }
 
-void bootloaderDrawMessage(const char* str, uint8_t line, bool invert)
+void bootloaderDrawMessage(BootloaderState st, const char* str, uint8_t line, bool invert)
 {
     lcdDrawText(INDENT_WIDTH, (line + 2) * FH, str, invert ? INVERS : 0);
 }

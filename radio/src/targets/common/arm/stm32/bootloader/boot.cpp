@@ -130,7 +130,7 @@ FRESULT openBinaryFile(uint32_t index)
   TCHAR filename[_MAX_LFN+1];
   FRESULT fr;
   memset(Block_buffer, 0, sizeof(Block_buffer));
-  strAppend(strAppend(strAppend(filename, getBinaryPath()), "/"), binFiles[index].name);
+  strAppend(strAppend(strAppend(filename, getBinaryPath(memoryType)), "/"), binFiles[index].name);
 
   if ((fr = f_open(&FlashFile, filename, FA_READ)) != FR_OK) {
     return fr;
@@ -262,8 +262,9 @@ int main()
   for (uint32_t i = 0; i < 50000; i += 1) {
     wdt_reset();
   }
-  
-  if ((readTrims() & 0x42) == 0) { // LHR & RHL trims not pressed
+
+  // LHR & RHL trims not pressed simultanously
+  if (readTrims() != 0x42) {
       // Start main application
       jumpTo(APP_START_ADDRESS);
   }
