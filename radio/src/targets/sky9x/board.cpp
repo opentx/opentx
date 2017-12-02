@@ -401,15 +401,6 @@ void i2cInit()
 
 void boardInit()
 {
-  // TODO this is not clean, completely unuseful, but prevents the bootloader from being optimized away...
-  uint8_t dummy[3];
-  memcpy(&dummy, BootCode, sizeof(dummy));
-  for (unsigned int i=0; i<sizeof(dummy); i++) {
-    if (dummy[i] == 0) {
-    __asm("nop");
-    }
-  }
-
   Pio *pioptr ;
 
   ResetReason = RSTC->RSTC_SR;
