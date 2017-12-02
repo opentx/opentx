@@ -75,6 +75,7 @@ set(BOOTLOADER_SRC
   ../flash_driver.cpp
   init.c
   boot.cpp
+  bin_files.cpp
   )
 
 if(NOT (PCB STREQUAL X10 OR PCB STREQUAL X12S))
@@ -109,7 +110,7 @@ add_definitions(-DBOOT)
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 
 add_executable(bootloader ${BOOTLOADER_SRC})
-add_dependencies(bootloader ${FONTS_TARGET} firmware_translations)
+add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)
 
 add_custom_command(
   TARGET bootloader POST_BUILD

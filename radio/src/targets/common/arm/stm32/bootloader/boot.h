@@ -56,16 +56,11 @@ enum BootloaderState {
   ST_REBOOT,
 };
 
-enum MemoryTypes {
-  MEM_FLASH,
-  MEM_EEPROM
-};
-
 // Declarations of functions that need to be implemented
 // by targets with a bootloader
 
 void bootloaderInitScreen();
 void bootloaderDrawScreen(BootloaderState st, int opt);
-void bootloaderDrawMessage(const char* str, uint8_t line, bool invert);
+void bootloaderDrawMessage(BootloaderState st, const char* str, uint8_t line, bool invert);
 
 #endif
