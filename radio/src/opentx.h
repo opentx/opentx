@@ -980,7 +980,12 @@ extern const char eeprom_stamp[];
 #else
 extern const char vers_stamp[];
 #endif
-const char* getOtherVersion();
+/**
+ * Tries to find opentx version in the first 1024 byte of either firmware/bootloader (the one not running) or the buffer
+ * @param buffer If non-null find the firmware version in the buffer instead
+ * @return The opentx version string starting with "opentx-" or "no version found" if the version string is not found
+ */
+const char* getOtherVersion(char* buffer);
 
 extern uint8_t g_vbat100mV;
 #if LCD_W > 128

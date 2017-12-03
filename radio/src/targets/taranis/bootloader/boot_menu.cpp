@@ -17,12 +17,12 @@ void bootloaderDrawScreen(BootloaderState st, int opt)
 
 #if LCD_W >= 212
         lcdDrawTextAlignedLeft(6*FH, "\001Curr FW:");
-        lcdDrawText(50, 6*FH, getOtherVersion());
+        lcdDrawText(50, 6*FH, getOtherVersion(nullptr));
 #else
         lcdDrawTextAlignedLeft(6*FH, "\001FW:");
 
         // Remove opentx- from string
-        const char* other_ver = getOtherVersion();
+        const char* other_ver = getOtherVersion(nullptr);
         if (strstr(other_ver, "opentx-"))
           other_ver = other_ver+7;
         lcdDrawText(20, 6*FH, other_ver);
