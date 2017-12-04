@@ -259,16 +259,22 @@ void generalDefault()
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 
-#if defined(PCBX9E)
+// vBatWarn is voltage in 100mV, vBatMin is in 100mV but with -9V offset, vBatMax has a -12V offset
+#if defined(PCBX9E) || defined(PCBX12S)
   // NI-MH 9.6V
   g_eeGeneral.vBatWarn = 87;
-  g_eeGeneral.vBatMin = -5;
-  g_eeGeneral.vBatMax = -5;
+  g_eeGeneral.vBatMin = -5;   //8,5V
+  g_eeGeneral.vBatMax = -5;   //11,5V
+#elif defined(PCBX10)
+  // Lipo 2V
+  g_eeGeneral.vBatWarn = 66;
+  g_eeGeneral.vBatMin = -28; // 6.2V
+  g_eeGeneral.vBatMax = -38;   // 8.2V
 #elif defined(PCBTARANIS)
-  // NI-MH 7.2V
+  // NI-MH 7.2V, X9D, X9D+ and X7
   g_eeGeneral.vBatWarn = 65;
-  g_eeGeneral.vBatMin = -30;
-  g_eeGeneral.vBatMax = -40;
+  g_eeGeneral.vBatMin = -30; //6V
+  g_eeGeneral.vBatMax = -40; //8V
 #else
   g_eeGeneral.vBatWarn = 90;
 #endif
