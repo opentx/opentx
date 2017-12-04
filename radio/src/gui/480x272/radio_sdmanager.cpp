@@ -128,6 +128,10 @@ void onSdManagerMenu(const char * result)
     memcpy(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
     storageDirty(EE_MODEL);
   }
+  else if (result == STR_ASSIGN_SPLASH) {
+    f_getcwd(lfn, _MAX_LFN);
+    sdCopyFile(line, lfn, SPLASH_FILE, BITMAPS_PATH);
+  }
   else if (result == STR_VIEW_TEXT) {
     getSelectionFullPath(lfn);
     pushMenuTextView(lfn);
@@ -218,6 +222,9 @@ bool menuRadioSdManager(event_t _event)
             f_getcwd(lfn, _MAX_LFN);
             if (!READ_ONLY() && unsigned(strlen(ext)+ext-line) <= sizeof(g_model.header.bitmap) && !strcmp(lfn, BITMAPS_PATH)) {
               POPUP_MENU_ADD_ITEM(STR_ASSIGN_BITMAP);
+            }
+            if (!strcmp(ext, PNG_EXT)) {
+              POPUP_MENU_ADD_ITEM(STR_ASSIGN_SPLASH);
             }
           }
           else if (!strcasecmp(ext, TEXT_EXT)) {

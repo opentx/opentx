@@ -779,6 +779,9 @@ extern const pm_char STR_SCRIPT_KILLED[];
 extern const pm_char STR_SCRIPT_ERROR[];
 extern const pm_char STR_PLAY_FILE[];
 extern const pm_char STR_ASSIGN_BITMAP[];
+#if defined(PCBHORUS)
+extern const pm_char STR_ASSIGN_SPLASH[];
+#endif
 extern const pm_char STR_EXECUTE_FILE[];
 extern const pm_char STR_DELETE_FILE[];
 extern const pm_char STR_COPY_FILE[];

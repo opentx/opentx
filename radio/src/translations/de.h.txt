@@ -976,6 +976,7 @@
 #define TR_COPY_FILE           "Kopieren"
 #define TR_RENAME_FILE         "Umbenennen"
 #define TR_ASSIGN_BITMAP       "Bitmap zuordnen"
+#define TR_ASSIGN_SPLASH       "Als Startbild"
 #define TR_EXECUTE_FILE        "Execute"
 #define TR_REMOVED             " gelöscht"
 #define TR_SD_INFO             "Information"

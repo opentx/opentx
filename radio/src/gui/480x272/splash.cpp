@@ -32,7 +32,7 @@ void drawSplash()
     if (loadImgFromSD && splashImg == NULL) {
         bool sd_mounted = sdMounted();
         if (!sd_mounted) sdInit();
-        splashImg = BitmapBuffer::load(BITMAPS_PATH "/splash.png");
+        splashImg = BitmapBuffer::load(BITMAPS_PATH "/" SPLASH_FILE);
         loadImgFromSD = false;
         if (!sd_mounted) sdDone();
     }
