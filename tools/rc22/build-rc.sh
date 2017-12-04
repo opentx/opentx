@@ -34,7 +34,7 @@ docker exec companion rm -rf build
 if [ ! -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb ]; then
   docker exec companion /opentx/code/tools/build-companion-release.sh /opentx/code /opentx/binaries/
   docker exec companion sh -c "cp /build/radio/src/lua/*.txt /opentx/binaries"
-  cp -f binaries/*.deb ${output}/companion/linux/companion22_${version}_amd64.deb
+  cp -f binaries/*.deb ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb
   cp -f binaries/lua_fields_*.txt ${output}/firmware
 fi
 docker stop companion

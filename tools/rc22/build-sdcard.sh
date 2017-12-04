@@ -52,8 +52,8 @@ else
   mkdir ${workdir}/sdcard/taranis-x7/SOUNDS
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis-x9/
   cp -r ${workdir}/sdcard/horus/SOUNDS ${workdir}/sdcard/taranis-x7/
-  cd ${workdir}/sdcard/horus && zip -r ${output}/x12/sdcard-horus-${sdcard_version}.zip *
-  cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/x9/sdcard-taranis-x9-${sdcard_version}.zip *
-  cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/x7/sdcard-taranis-x7-${sdcard_version}.zip *
+  cd ${workdir}/sdcard/horus && zip -r ${output}/opentx-x12s/sdcard-horus-${sdcard_version}.zip *
+  cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/opentx-x9d/sdcard-taranis-x9-${sdcard_version}.zip *
+  cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/opentx-x7/sdcard-taranis-x7-${sdcard_version}.zip *
   rm -Rf ${workdir}/sdcard
 fi
