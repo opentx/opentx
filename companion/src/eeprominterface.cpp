@@ -1178,7 +1178,6 @@ GeneralSettings::GeneralSettings()
   memset(this, 0, sizeof(GeneralSettings));
 
   contrast  = 25;
-  vBatWarn  = 90;
 
   for (int i=0; i < CPN_MAX_ANALOGS; ++i) {
     calibMid[i]     = 0x200;
@@ -1189,7 +1188,29 @@ GeneralSettings::GeneralSettings()
   Firmware * firmware = Firmware::getCurrentVariant();
   Board::Type board = firmware->getBoard();
 
-  for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
+  // vBatWarn is voltage in 100mV, vBatMin is in 100mV but with -9V offset, vBatMax has a -12V offset
+  vBatWarn  = 90;
+  if (IS_TARANIS_X9E(board) || IS_HORUS_X12S(board)) {
+    // NI-MH 9.6V
+    vBatWarn = 87;
+    vBatMin = -5;   //8,5V
+    vBatMax = -5;   //11,5V
+  }
+  else if (IS_HORUS_X10(board)) {
+    // Lipo 2V
+    vBatWarn = 66;
+    vBatMin = -28; // 6.2V
+    vBatMax = -38;   // 8.2V
+  }
+  else if (IS_TARANIS(board)) {
+    // NI-MH 7.2V, X9D, X9D+ and X7
+    vBatWarn = 65;
+    vBatMin = -30; //6V
+    vBatMax = -40; //8V
+  }
+
+
+    for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
     switchConfig[i] = Boards::getSwitchInfo(board, i).config;
   }
 
