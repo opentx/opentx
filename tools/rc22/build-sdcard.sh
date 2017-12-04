@@ -25,11 +25,17 @@ else
 
   # Get images for Horus
   mkdir -p ${workdir}/sdcard/horus/IMAGES
-  cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
+  /home/opentx/horus-bitmaps=/home/opentx/x9-bitmaps
+  if [ "$(ls -A $imgdir)" ]; then
+    cp /$imgdir/* ${workdir}/sdcard/horus/IMAGES/
+  fi
 
   # Get images for Taranis x9
   mkdir -p ${workdir}/sdcard/taranis-x9/IMAGES
-  cp /home/opentx/x9-bitmaps/* ${workdir}/sdcard/taranis-x9/IMAGES/
+  imgdir=/home/opentx/x9-bitmaps
+  if [ "$(ls -A $imgdir)" ]; then
+    cp $imgdir/* ${workdir}/sdcard/taranis-x9/IMAGES/
+  fi
 
   # Request sound pack generation
   python3 -B ${workdir}/code/tools/rc22/tts.py en csv files
