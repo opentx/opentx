@@ -83,6 +83,9 @@ if(NOT (PCB STREQUAL X10 OR PCB STREQUAL X12S))
     ${BOOTLOADER_SRC}
     ../../../../../targets/${TARGET_DIR}/i2c_driver.cpp
     )
+
+  remove_definitions(-DDEBUG)
+
 else()
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
