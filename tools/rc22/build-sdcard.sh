@@ -25,7 +25,7 @@ else
 
   # Get images for Horus
   mkdir -p ${workdir}/sdcard/horus/IMAGES
-  /home/opentx/horus-bitmaps=/home/opentx/x9-bitmaps
+  imgdir=/home/opentx/horus-bitmaps
   if [ "$(ls -A $imgdir)" ]; then
     cp /$imgdir/* ${workdir}/sdcard/horus/IMAGES/
   fi
