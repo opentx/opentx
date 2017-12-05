@@ -19,6 +19,7 @@ import os
 import sys
 import subprocess
 import zipfile
+from gtts import gTTS
 from tts_common import *
 board = "taranis"
 
@@ -34,9 +35,9 @@ def generate(str, filename):
         command = "sox %s -r 32000 %s reverse silence 1 0.1 0.1%% reverse" % (output, filename)
         os.system(command.encode('utf-8'))
     else:
-        output = "output.mp3"
-        command = 'gtts-cli -l %s -o %s "%s"' % (voice[:2], output, str)
-        os.system(command.encode('utf-8'))
+        output = u"output.mp3"
+        tts = gTTS(text=str, lang=voice[:2])
+        tts.save(output)
         command = "sox %s -r 32000 %s tempo 1.2" % (output, filename)
         os.system(command.encode('utf-8'))
         command = "rm -f output.mp3"
@@ -80,6 +81,12 @@ if __name__ == "__main__":
 
         directory = "cz"
         voice = "cs-CZ"
+
+    elif "ru" in sys.argv:
+        from tts_ru import systemSounds, sounds
+
+        directory = "ru"
+        voice = "ru-RU"
 
     elif "pt" in sys.argv:
         from tts_pt import systemSounds, sounds
