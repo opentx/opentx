@@ -454,7 +454,14 @@ void memswap(void * a, void * b, uint8_t size);
   #define MAX_CHANNELS(idx)                 (idx==EXTERNAL_MODULE ? MAX_EXTERNAL_MODULE_CHANNELS() : MAX_TRAINER_CHANNELS_M8())
   #define NUM_CHANNELS(idx)                 (8+g_model.moduleData[idx].channelsCount)
 #endif
-#define IS_MODULE_R9M(idx)                (g_model.moduleData[idx].type==MODULE_TYPE_R9M)
+#define IS_MODULE_R9M(idx)                (g_model.moduleData[idx].type == MODULE_TYPE_R9M)
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+#define IS_MODULE_R9M_FCC(idx)            false
+#define IS_MODULE_R9M_LBT(idx)            IS_MODULE_R9M(idx)
+#else
+#define IS_MODULE_R9M_FCC(idx)            IS_MODULE_R9M(idx)
+#define IS_MODULE_R9M_LBT(idx)            false
+#endif
 #define IS_MODULE_PXX(idx)                (IS_MODULE_XJT(idx) || IS_MODULE_R9M(idx))
 
 #if defined(DSM2)

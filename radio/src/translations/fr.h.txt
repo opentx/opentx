@@ -863,17 +863,21 @@
 #define TR_MULTI_AUTOBIND              TR(INDENT "Bind auto", INDENT "Bind automatique")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Autodét.", INDENT "Autodétection")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Basse puis.", INDENT "Mode basse puiss.")
-#define TR_SPORT_OUT                   INDENT "Telemetry"
+#define TR_MODULE_TELEMETRY            INDENT "Télémétrie module"
 #define TR_DISABLE_INTERNAL            TR("Désact intRF", "Désact. RF interne")
 #define TR_MODULE_NO_SERIAL_MODE       TR("Mode série?", "Pas en mode série")
 #define TR_MODULE_NO_INPUT             TR("Pas de sign.", "Aucun signal série")
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
 #define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Bind..."
-#define TR_BINDING_MODE1               "Ch1-8 Telem ON"
-#define TR_BINDING_MODE2               "Ch1-8 Telem OFF"
-#define TR_BINDING_MODE3               "Ch9-16 Telem ON"
-#define TR_BINDING_MODE4               "Ch9-16 Telem OFF"
+#define TR_BINDING_CH1_8_TELEM_ON               "Ch1-8 Télem ON"
+#define TR_BINDING_CH1_8_TELEM_OFF               "Ch1-8 Télem OFF"
+#define TR_BINDING_CH9_16_TELEM_ON               "Ch9-16 Télem ON"
+#define TR_BINDING_CH9_16_TELEM_OFF               "Ch9-16 Télem OFF"
+#define TR_BINDING_25MW_CH1_8_TELEM_OFF   "25mW Ch1-8 Télem OFF"
+#define TR_BINDING_25MW_CH1_8_TELEM_ON    "25mW Ch1-8 Télem ON"
+#define TR_BINDING_500MW_CH1_8_TELEM_OFF  "500mW Ch1-8 Télem OFF"
+#define TR_BINDING_500MW_CH9_16_TELEM_OFF "500mW Ch9-16 Télem OFF"
 #define TR_PROTOCOL_INVALID            TR("Sél. invalide", "Protocole invalide")
 #define TR_MODULE_STATUS               TR(INDENT "Etat", INDENT "Etat module")
 #define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")

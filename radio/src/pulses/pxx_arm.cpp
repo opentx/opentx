@@ -378,18 +378,19 @@ void setupPulsesPXX(uint8_t port)
 /* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
 #if defined(PCBHORUS)
   if (port == INTERNAL_MODULE) {
-    extra_flags |= g_model.moduleData[port].pxx.external_antenna;
+    extra_flags |= (g_model.moduleData[port].pxx.external_antenna << 0);
   }
 #endif
 #if defined(BINDING_OPTIONS)
-  extra_flags |= g_model.moduleData[port].pxx.receiver_telem_off << 1;
-  extra_flags |= g_model.moduleData[port].pxx.receiver_channel_9_16 << 2;
+  extra_flags |= (g_model.moduleData[port].pxx.receiver_telem_off << 1);
+  extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
 #endif
   if (IS_MODULE_R9M(port)) {
-    extra_flags |= g_model.moduleData[port].pxx.power << 3;
-    // Disable s.port if internal module is active
-    if (IS_TELEMETRY_INTERNAL_MODULE || !g_model.moduleData[port].pxx.sport_out)
-      extra_flags |=  (1<< 5);
+    extra_flags |= (max<uint8_t>(g_model.moduleData[port].pxx.power, R9M_POWER_MAX) << 3);
+    // Disable S.PORT if internal module is active
+    if (IS_TELEMETRY_INTERNAL_MODULE() || !g_model.moduleData[port].pxx.sport_out) {
+      extra_flags |= (1 << 5);
+    }
   }
 
   putPcmByte(port, extra_flags);

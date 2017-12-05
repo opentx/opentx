@@ -180,4 +180,28 @@ inline void SEND_FAILSAFE_1S()
   }
 }
 
+#define LEN_R9M_POWER_VALUES           "\006"
+
+#if defined(MODULE_D16_EU_ONLY_SUPPORT)
+#define TR_R9M_POWER_VALUES          "25 mW\0" "500 mW"
+enum R9MPowerValues {
+  R9M_POWER_25 = 0,
+  R9M_POWER_500,
+  R9M_POWER_MAX = R9M_POWER_500
+};
+#define BIND_TELEM_ALLOWED(idx)      (!IS_MODULE_R9M(idx) || g_model.moduleData[idx].pxx.power == R9M_POWER_25)
+#define BIND_CH9TO16_ALLOWED(idx)    (!IS_MODULE_R9M(idx) || g_model.moduleData[idx].pxx.power != R9M_POWER_25)
+#else
+#define TR_R9M_POWER_VALUES          "10 mW\0" "100 mW" "500 mW" "1 W\0"
+enum R9MPowerValues {
+  R9M_POWER_10 = 0,
+  R9M_POWER_100,
+  R9M_POWER_500,
+  R9M_POWER_1000,
+  R9M_POWER_MAX = R9M_POWER_1000
+};
+#define BIND_TELEM_ALLOWED(...)      true
+#define BIND_CH9TO16_ALLOWED(...)    true
+#endif
+
 #endif // _PULSES_ARM_H_

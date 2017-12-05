@@ -1110,12 +1110,12 @@ void menuModelSetup(event_t event)
         }
 #endif
         if (IS_MODULE_R9M(moduleIdx)) {
-          if (IS_TELEMETRY_INTERNAL_MODULE) {
-            lcdDrawTextAlignedLeft(y, STR_SPORT_OUT);
+          if (IS_TELEMETRY_INTERNAL_MODULE()) {
+            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
           }
           else {
-            g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_SPORT_OUT, attr, event);
+            g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEMETRY, attr, event);
           }
         }
         else if (IS_MODULE_SBUS(moduleIdx)) {
@@ -1133,9 +1133,9 @@ void menuModelSetup(event_t event)
 #endif
       if (IS_MODULE_R9M(moduleIdx)) {
         lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, getR9MPowerString(g_model.moduleData[moduleIdx].pxx.power), attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, attr);
         if (attr)
-          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, 3);
+          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_POWER_MAX);
       }
     }
     break;
