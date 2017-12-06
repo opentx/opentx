@@ -44,14 +44,5 @@ bool menuRadioVersion(event_t event)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 5*FH, "UID:");
   lcdDrawText(MENUS_MARGIN_LEFT + 64, MENU_CONTENT_TOP + 5*FH, reusableBuffer.version.id);
 
-#if 0
-  if (event == EVT_KEY_LONG(KEY_ENTER)) {
-    killEvents(event);
-    // POPUP_MENU_ADD_ITEM(STR_EEBACKUP);
-    POPUP_MENU_ADD_ITEM(STR_FACTORYRESET);
-    POPUP_MENU_START(onVersionMenu);
-  }
-#endif
-
   return true;
 }

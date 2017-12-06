@@ -19,6 +19,8 @@
  */
 
 #include "opentx.h"
+#include "otx_file.h"
+#include "modelslist.h"
 
 void getModelPath(char * path, const char * filename)
 {
@@ -256,3 +258,63 @@ void storageEraseAll(bool warn)
   storageDirty(EE_GENERAL|EE_MODEL);
   storageCheck(true);
 }
+
+void createRadioBackup()
+{
+    char otx_file[60];
+    char model_file[60];
+
+    //rco: is that really necessary?
+    g_eeGeneral.unexpectedShutdown = 0;
+    storageDirty(EE_GENERAL);
+    storageCheck(true);
+
+    // create the directory if needed...
+    const char * error = sdCheckAndCreateDirectory(BACKUPS_PATH);
+    if (error) {
+        POPUP_WARNING(error);
+        return;
+    }
+    
+    // prepare the filename...
+    char * tmp = strAppend(otx_file, BACKUPS_PATH "/backup");
+#if defined(RTCLOCK)
+    tmp = strAppendDate(tmp, true);
+#endif
+    strAppend(tmp, BACKUP_EXT);
+
+    if (!initOtxWriter(otx_file) ||
+        !addFile2Otx(RADIO_SETTINGS_PATH) ||
+        !addFile2Otx(RADIO_MODELSLIST_PATH)) {
+
+        closeOtxFile();
+        return;
+    }
+
+    bool result = addFile2Otx(RADIO_SETTINGS_PATH) && addFile2Otx(RADIO_MODELSLIST_PATH);
+    if (result) {
+        ModelsList models;
+        result = models.load();
+
+        if (result) {
+            for (std::list<ModelsCategory*>::iterator cat_it = models.categories.begin();
+                 cat_it != models.categories.end(); ++cat_it) {
+
+                for (std::list<ModelCell*>::iterator it = (*cat_it)->begin();
+                     it != (*cat_it)->end(); ++it) {
+
+                    tmp = strAppend(model_file, MODELS_PATH "/");
+                    strAppend(tmp, (*it)->modelFilename);
+
+                    result = result && addFile2Otx(model_file);
+                }
+            }
+        }
+    }
+
+    closeOtxFile();
+
+    if (!result)
+        sdDelete(otx_file);
+}
+

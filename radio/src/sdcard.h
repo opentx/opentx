@@ -34,6 +34,7 @@
 #define BITMAPS_PATH        ROOT_PATH "IMAGES"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARE"
 #define EEPROMS_PATH        ROOT_PATH "EEPROM"
+#define BACKUPS_PATH        ROOT_PATH "BACKUP"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
 #define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
 #define THEMES_PATH         ROOT_PATH "THEMES"
@@ -63,6 +64,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
+#define BACKUP_EXT          ".otx"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
@@ -151,5 +153,8 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
 
 bool isCwdAtRoot();
 FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime);
+
+/* delete file or directory */
+FRESULT sdDelete(const char* path);
 
 #endif // _SDCARD_H_

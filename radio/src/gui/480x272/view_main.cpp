@@ -117,6 +117,9 @@ void onMainViewMenu(const char *result)
   else if (result == STR_STATISTICS) {
     pushMenu(menuTabStats[0]);
   }
+  else if (result == STR_BACKUP) {
+    createRadioBackup();
+  }
   else if (result == STR_SETUP_SCREENS) {
     pushMenu(menuTabScreensSetup[1]);
   }
@@ -156,6 +159,7 @@ bool menuMainView(event_t event)
       POPUP_MENU_ADD_ITEM(STR_MONITOR_SCREENS);
       POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
       POPUP_MENU_ADD_ITEM(STR_STATISTICS);
+      POPUP_MENU_ADD_ITEM(STR_BACKUP);
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
       POPUP_MENU_START(onMainViewMenu);
       break;

@@ -488,6 +488,12 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 
   return sdCopyFile(srcPath, destPath);
 }
+
+FRESULT sdDelete(const char* path)
+{
+    return f_unlink(path);
+}
+
 #endif // defined(CPUARM) && defined(SDCARD)
 
 

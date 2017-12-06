@@ -157,6 +157,7 @@ set(SRC ${SRC} debug.cpp)
 
 if(${EEPROM} STREQUAL SDCARD)
   set(SRC ${SRC} storage/storage_common.cpp storage/sdcard_raw.cpp)
+  set(SRC ${SRC} storage/otx_file.cpp)
 elseif(${EEPROM} STREQUAL EEPROM_RLC)
   set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp)
   add_definitions(-DEEPROM -DEEPROM_RLC)

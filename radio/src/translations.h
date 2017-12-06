@@ -716,6 +716,7 @@ extern const pm_char STR_PERSISTENT_MAH[];
   extern const pm_char STR_RESET_TIMER3[];
   extern const pm_char STR_RESET_TELEMETRY[];
   extern const pm_char STR_STATISTICS[];
+  extern const pm_char STR_BACKUP[];
   extern const pm_char STR_ABOUT_US[];
   extern const pm_char STR_USB_JOYSTICK[];
   extern const pm_char STR_USB_MASS_STORAGE[];
