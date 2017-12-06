@@ -701,7 +701,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_PROTO_MT99XX,     4, false,      STR_SUBTYPE_MT99,    nullptr},
   {MM_RF_PROTO_MJXQ,       5, false,      STR_SUBTYPE_MJXQ,    nullptr},
   {MM_RF_PROTO_FY326,      1, false,      STR_SUBTYPE_FY326,   nullptr},
-  {MM_RF_PROTO_SFHSS,      0, false,      NO_SUBTYPE,          STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_SFHSS,      0, true,       NO_SUBTYPE,          STR_MULTI_RFTUNE},
   {MM_RF_PROTO_HONTAI,     2, false,      STR_SUBTYPE_HONTAI,  nullptr},
   {MM_RF_PROTO_OLRS,       0, false,      NO_SUBTYPE,          STR_MULTI_RFPOWER},
   {MM_RF_PROTO_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A, STR_MULTI_SERVOFREQ},
