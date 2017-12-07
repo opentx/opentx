@@ -868,6 +868,7 @@
 #define TR_MODULE_NO_SERIAL_MODE       TR("Mode série?", "Pas en mode série")
 #define TR_MODULE_NO_INPUT             TR("Pas de sign.", "Aucun signal série")
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
+#define TR_MODULE_WAITFORBIND          "Bind to load protocol"
 #define TR_MODULE_BINDING              "Bind..."
 #define TR_BINDING_MODE1               "Ch1-8 Telem ON"
 #define TR_BINDING_MODE2               "Ch1-8 Telem OFF"

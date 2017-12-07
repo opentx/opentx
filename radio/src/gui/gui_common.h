@@ -128,7 +128,7 @@ void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 #define MULTIMODULE_HAS_SUBTYPE(x)      (getMultiProtocolDefinition(x)->maxSubtype > 0)
 #define MULTIMODULE_HASOPTIONS(x)       (getMultiProtocolDefinition(x)->optionsstr != nullptr)
 #define MULTI_MAX_RX_NUM(x)             (g_model.moduleData[x].getMultiProtocol(true) == MM_RF_PROTO_OLRS ? 4 : 15)
-#define MULTIMODULE_HASFAILSAFE(x)      (IS_MODULE_MULTIMODULE(x) && getMultiProtocolDefinition(g_model.moduleData[x].getMultiProtocol(true))->failsafe)
+#define MULTIMODULE_HASFAILSAFE(x)      (IS_MODULE_MULTIMODULE(x) && multiModuleStatus.isValid() && multiModuleStatus.supportsFailsafe())
 #define MULTIMODULE_OPTIONS_ROW         (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) && MULTIMODULE_HASOPTIONS(g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true))) ? (uint8_t) 0: HIDDEN_ROW
 
 // When using packed, the pointer in here end up not being aligned, which clang and gcc complain about

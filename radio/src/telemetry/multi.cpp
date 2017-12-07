@@ -82,6 +82,7 @@ static void processMultiSyncPacket(const uint8_t *data)
   multiSyncStatus.target = data[5];
 #if !defined(PPM_PIN_SERIAL)
   auto oldlag = multiSyncStatus.inputLag;
+  (void) oldlag;
 #endif
 
   multiSyncStatus.calcAdjustedRefreshRate(data[0] << 8 | data[1], data[2] << 8 | data[3]);
@@ -272,7 +273,7 @@ void MultiModuleSyncStatus::getRefreshString(char *statusText)
 
 void MultiModuleStatus::getStatusString(char *statusText)
 {
-  if (get_tmr10ms() - lastUpdate > 200) {
+  if (!isValid()) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if (IS_INTERNAL_MODULE_ENABLED())
       strcpy(statusText, STR_DISABLE_INTERNAL);
@@ -293,6 +294,11 @@ void MultiModuleStatus::getStatusString(char *statusText)
     strcpy(statusText, STR_MODULE_NO_INPUT);
     return;
   }
+  else if(isWaitingforBind()) {
+    strcpy(statusText, STR_MODULE_WAITFORBIND);
+    return;
+  }
+
 
   strcpy(statusText, "V");
   appendInt(statusText, major);

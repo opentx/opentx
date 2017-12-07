@@ -122,6 +122,9 @@ struct MultiModuleStatus {
 
   void getStatusString(char* statusText);
 
+  inline bool isValid() { return (bool)(get_tmr10ms() - lastUpdate < 200); }
+  inline bool supportsFailsafe() { return (bool) (flags & 0x20); }
+  inline bool isWaitingforBind() { return (bool) (flags & 0x10); }
   inline bool isBinding() { return (bool) (flags & 0x08); }
   inline bool protocolValid() { return (bool) (flags & 0x04); }
   inline bool serialMode() { return (bool) (flags & 0x02); }
