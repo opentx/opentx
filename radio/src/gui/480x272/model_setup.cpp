@@ -103,7 +103,6 @@ void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
 
-#if defined(MODULE_D16_EU_ONLY_SUPPORT)
   if (result == STR_BINDING_25MW_CH1_8_TELEM_OFF) {
     g_model.moduleData[moduleIdx].pxx.power = R9M_POWER_25;
     g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
@@ -124,9 +123,7 @@ void onBindMenu(const char * result)
     g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
     g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = true;
   }
-  else
-#endif
-  if (result == STR_BINDING_1_8_TELEM_ON) {
+  else if (result == STR_BINDING_1_8_TELEM_ON) {
     g_model.moduleData[moduleIdx].pxx.receiver_telem_off = false;
     g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
   }
