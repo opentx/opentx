@@ -34,7 +34,7 @@
 #define MULTI_CHANS           16
 #define MULTI_CHAN_BITS       11
 
-void sendFrameProtocolHeader(uint8_t port);
+static void sendFrameProtocolHeader(uint8_t port, bool failsafe);
 
 void sendChannels(uint8_t port);
 
@@ -54,17 +54,6 @@ static void sendSetupFrame()
   sendByteSbus(config);
 }
 
-static void sendFailFailsafeHeader(uint8_t port)
-{
-
-  // Old multi firmware will mark config messsages as invalid frame and throw them away
-  sendByteSbus('M');
-  sendByteSbus('P');
-  sendByteSbus(0x81);         // Failsafe Data
-  sendByteSbus(23);         // 22 byte channel + 1 byte mode
-  sendByteSbus(g_model.moduleData->failsafeMode);
-}
-
 static void sendFailsafeChannels(uint8_t port)
 {
   uint32_t bits = 0;
@@ -73,11 +62,18 @@ static void sendFailsafeChannels(uint8_t port)
   for (int i = 0; i < MULTI_CHANS; i++) {
     int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[i];
     int pulseValue;
+    if (g_model.moduleData[port].failsafeMode == FAILSAFE_HOLD)
+      failsafeValue = FAILSAFE_CHANNEL_HOLD;
+
+    if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES)
+      failsafeValue = FAILSAFE_CHANNEL_NOPULSE;
+
+
     if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
       pulseValue = 0;
     }
     else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-      pulseValue = 2048;
+      pulseValue = 2047;
     }
     else {
       failsafeValue += 2 * PPM_CH_CENTER(g_model.moduleData[port].channelsStart + i) - 2 * PPM_CENTER;
@@ -112,12 +108,12 @@ void setupPulsesMultimodule(uint8_t port)
   counter++;
   if (counter  % 1000== 500) {
     sendSetupFrame();
-  } else if (counter % 1000 == 0) {
-    sendFailFailsafeHeader(port);
+  } else if (counter % 1000 == 0 && g_model.moduleData[port].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
+    sendFrameProtocolHeader(port, true);
     sendFailsafeChannels(port);
   } else {
     // Normal Frame
-    sendFrameProtocolHeader(port);
+    sendFrameProtocolHeader(port, false);
     sendChannels(port);
   }
 
@@ -151,7 +147,7 @@ void sendChannels(uint8_t port)
   }
 }
 
-void sendFrameProtocolHeader(uint8_t port)
+void sendFrameProtocolHeader(uint8_t port, bool failsafe)
 {// byte 1+2, protocol information
 
   // Our enumeration starts at 0
@@ -218,11 +214,15 @@ void sendFrameProtocolHeader(uint8_t port)
     type = g_model.moduleData[port].getMultiProtocol(false);
 
 
-  // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
+  uint8_t headerByte = 0x54;
+  if (failsafe)
+    headerByte = 0x56;
+
+    // header, byte 0,  0x55 for proto 0-31 0x54 for 32-63
   if (type <= 31)
-    sendByteSbus(0x55);
+    sendByteSbus(headerByte+1);
   else
-    sendByteSbus(0x54);
+    sendByteSbus(headerByte);
 
 
   // protocol byte

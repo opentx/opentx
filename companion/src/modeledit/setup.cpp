@@ -410,6 +410,8 @@ void ModulePanel::update()
           module.channelsCount = 16;
         if (multiProtocols.getProtocol(module.multi.rfProtocol).optionsstr != nullptr)
           mask |= MASK_MULTIOPTION;
+        if (multiProtocols.getProtocol(module.multi.rfProtocol).hasFailsafe)
+          mask |= MASK_FAILSAFES;
         break;
       case PULSES_OFF:
         break;
