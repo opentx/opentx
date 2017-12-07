@@ -544,12 +544,15 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case MaxVolume:
       return (IS_ARM(board) ? 23 : 7);
     case MaxContrast:
-      if (IS_TARANIS_X7(board)) return 30;
-      return 45;
+      if (IS_TARANIS_X7(board))
+        return 30;
+      else
+        return 45;
     case MinContrast:
-      if (IS_TARANIS_X7(board)) return 10;
-      if (IS_TARANIS(board)) return 0;
-      return 10;
+      if (IS_TARANIS_X9(board))
+        return 0;
+      else
+        return 10;
     case HasSoundMixer:
       return (IS_ARM(board) ? 1 : 0);
     case ExtraInputs:

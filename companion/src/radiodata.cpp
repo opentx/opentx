@@ -214,13 +214,13 @@ void GeneralSettings::convert(Board::Type before, Board::Type after)
   }
 
   if (IS_TARANIS(after)) {
-      unsigned int min_contrast = getCurrentFirmware()->getCapability(MinContrast);
-      unsigned int max_contrast = getCurrentFirmware()->getCapability(MaxContrast);
+    unsigned int min_contrast = getCurrentFirmware()->getCapability(MinContrast);
+    unsigned int max_contrast = getCurrentFirmware()->getCapability(MaxContrast);
 
-      if (contrast < min_contrast)
-          contrast = min_contrast;
-      else if (contrast > max_contrast)
-          contrast = max_contrast;
+    if (contrast < min_contrast)
+      contrast = min_contrast;
+    else if (contrast > max_contrast)
+      contrast = max_contrast;
   }
 }
 
