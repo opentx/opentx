@@ -69,6 +69,8 @@ enum Capability {
   SoundMod,
   SoundPitch,
   MaxVolume,
+  MaxContrast,
+  MinContrast,
   Haptic,
   HasBeeper,
   ModelTrainerEnable,
