@@ -3227,15 +3227,16 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     for (int i=0; i<MAX_GVARS(board, version); i++) {
       if (version >= 218) {
         internalField.Append(new ZCharField<3>(this, modelData.gvarData[i].name, "GVar name"));
-        internalField.Append(new SignedField<12>(this, modelData.gvarData[i].min));
-        internalField.Append(new SignedField<12>(this, modelData.gvarData[i].max));
+        internalField.Append(new UnsignedField<12>(this, (unsigned &)modelData.gvarData[i].min));
+        internalField.Append(new UnsignedField<12>(this, (unsigned &)modelData.gvarData[i].max));
         internalField.Append(new BoolField<1>(this, modelData.gvarData[i].popup));
         internalField.Append(new UnsignedField<1>(this, modelData.gvarData[i].prec));
         internalField.Append(new UnsignedField<2>(this, modelData.gvarData[i].unit));
         internalField.Append(new SpareBitsField<4>(this));
       }
       else {
-        internalField.Append(new ZCharField<6>(this, modelData.gvarData[i].name, "GVar name"));
+        internalField.Append(new ZCharField<3>(this, modelData.gvarData[i].name, "GVar name"));
+        internalField.Append(new SpareBitsField<3*8>(this));
         if (version >= 216) {
           internalField.Append(new BoolField<1>(this, modelData.gvarData[i].popup));
           internalField.Append(new SpareBitsField<7>(this));
