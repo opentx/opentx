@@ -244,7 +244,7 @@ int getSwitchWarningsCount()
 
 #define TIMER_ROWS(x)                     NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 
-#define EXTERNAL_MODULE_MODE_ROWS         (IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? MULTIMODULE_MODE_ROWS(EXTERNAL_MODULE) : (uint8_t)0
+#define EXTERNAL_MODULE_MODE_ROWS         (IS_MODULE_PXX(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) ? MULTIMODULE_MODE_ROWS(EXTERNAL_MODULE) : (uint8_t)0
 
 #if TIMERS == 1
   #define TIMERS_ROWS                     TIMER_ROWS(0)
@@ -693,6 +693,8 @@ bool menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
+        else if (IS_MODULE_R9M(EXTERNAL_MODULE))
+          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_R9M_MODES, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
           int multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
@@ -700,9 +702,9 @@ bool menuModelSetup(event_t event)
             lcdDrawText(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_CUSTOM, menuHorizontalPosition == 1 ? attr : 0);
             lcdDrawNumber(MODEL_SETUP_4TH_COLUMN, y, multi_rfProto, menuHorizontalPosition==2 ? attr : 0, 2);
             lcdDrawNumber(MODEL_SETUP_4TH_COLUMN + MODEL_SETUP_BIND_OFS, y, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==3 ? attr : 0, 2);
-          } else {
-            const mm_protocol_definition *pdef = getMultiProtocolDefinition(multi_rfProto);
-
+          }
+          else {
+            const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_rfProto);
             lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition == 1 ? attr : 0);
             if (pdef->subTypeString != nullptr)
               lcdDrawTextAtIndex(MODEL_SETUP_4TH_COLUMN, y, pdef->subTypeString, g_model.moduleData[EXTERNAL_MODULE].subType, menuHorizontalPosition==2 ? attr : 0);
@@ -724,6 +726,8 @@ bool menuModelSetup(event_t event)
             case 1:
               if (IS_MODULE_DSM2(EXTERNAL_MODULE))
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
+              else if (IS_MODULE_R9M(EXTERNAL_MODULE))
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LBT);
 #if defined(MULTIMODULE)
               else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
                 int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MM_RF_PROTO_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
@@ -1060,9 +1064,12 @@ bool menuModelSetup(event_t event)
       uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
       if (IS_MODULE_R9M(moduleIdx)) {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_RFPOWER);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
+        if (IS_MODULE_R9M_FCC(moduleIdx))
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
+        else
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
         if (attr)
-          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_POWER_MAX);
+          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, IS_MODULE_R9M_FCC(moduleIdx) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX);
       }
 #if defined(MULTIMODULE)
       else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
