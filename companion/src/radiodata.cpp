@@ -212,6 +212,16 @@ void GeneralSettings::convert(Board::Type before, Board::Type after)
       memcpy(switchName[5], switchName[7], sizeof(switchName[5]));
     }
   }
+
+  if (IS_TARANIS(after)) {
+      unsigned int min_contrast = getCurrentFirmware()->getCapability(MinContrast);
+      unsigned int max_contrast = getCurrentFirmware()->getCapability(MaxContrast);
+
+      if (contrast < min_contrast)
+          contrast = min_contrast;
+      else if (contrast > max_contrast)
+          contrast = max_contrast;
+  }
 }
 
 
