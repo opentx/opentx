@@ -1059,7 +1059,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE: {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData &moduleData = g_model.moduleData[moduleIdx];
-        if (IS_MODULE_PXX(moduleIdx)|| IS_MODULE_MULTIMODULE(moduleIdx)) {
+        if (IS_MODULE_PXX(moduleIdx) || IS_MODULE_MULTIMODULE(moduleIdx)) {
           lcdDrawTextAlignedLeft(y, STR_FAILSAFE);
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VFAILSAFE, moduleData.failsafeMode, menuHorizontalPosition == 0 ? attr : 0);
           if (moduleData.failsafeMode == FAILSAFE_CUSTOM)
