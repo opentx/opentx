@@ -178,6 +178,7 @@ enum MenuModelSetupItems {
   #define MODEL_SETUP_MAX_LINES          ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? HEADER_LINE+ITEM_MODEL_SETUP_MAX : HEADER_LINE+ITEM_MODEL_SETUP_MAX-1)
 #endif
 
+#if defined(PCBTARANIS)
 void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
@@ -224,6 +225,7 @@ void onBindMenu(const char * result)
 
   moduleFlag[moduleIdx] = MODULE_BIND;
 }
+#endif
 
 
 void menuModelSetup(event_t event)
@@ -1013,6 +1015,7 @@ void menuModelSetup(event_t event)
               s_editMode=0;
             }
 #endif
+#if defined(PCBTARANIS)
             if (attr && l_posHorz > 0) {
               if (s_editMode > 0) {
                 if (l_posHorz == 1) {
@@ -1020,11 +1023,8 @@ void menuModelSetup(event_t event)
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
                       uint8_t default_selection;
                       if (IS_MODULE_R9M_LBT(moduleIdx)) {
-                        if (IS_TELEMETRY_INTERNAL_MODULE())
-                          POPUP_MENU_ADD_ITEM(STR_DISABLE_INTERNAL);
-                        else
-                          POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_OFF);
+                        POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH1_8_TELEM_OFF);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH9_16_TELEM_OFF);
                         default_selection = 2;
@@ -1058,6 +1058,14 @@ void menuModelSetup(event_t event)
                 }
               }
             }
+#else
+            if (attr && l_posHorz>0 && s_editMode>0) {
+              if (l_posHorz == 1)
+                newFlag = MODULE_BIND;
+              else if (l_posHorz == 2)
+                newFlag = MODULE_RANGECHECK;
+            }
+#endif
             moduleFlag[moduleIdx] = newFlag;
 
 #if defined(MULTIMODULE)
