@@ -3522,8 +3522,8 @@ void OpenTxModelData::afterImport()
       modelData.moduleData[module].pxx.power = pxxByte & 0x03;
       modelData.moduleData[module].pxx.receiver_telem_off = static_cast<bool>(pxxByte & (1 << 4));
       modelData.moduleData[module].pxx.receiver_channel_9_16 = static_cast<bool>(pxxByte & (1 << 5));
-      modelData.moduleData[module].pxx.external_antenna = modelData.moduleData[module].ppm.outputType;
-      modelData.moduleData[module].pxx.sport_out = modelData.moduleData[module].ppm.pulsePol;
+      modelData.moduleData[module].pxx.sport_out = modelData.moduleData[module].ppm.outputType;
+      modelData.moduleData[module].pxx.external_antenna = modelData.moduleData[module].ppm.pulsePol;
     }
   }
 
