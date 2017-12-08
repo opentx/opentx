@@ -265,7 +265,7 @@ end
 local function applySettings()
   model.defaultInputs()
   model.deleteMixes()
-  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Throttle")
+  addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   addMix(rollCH1,  MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   addMix(yawCH1,   MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")
   addMix(pitchCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "Pitch")
