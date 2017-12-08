@@ -1158,21 +1158,22 @@ void menuModelSetup(event_t event)
        }
      }
      break;
-    case  ITEM_MODEL_EXTERNAL_MODULE_POWER: {
+
+    case  ITEM_MODEL_EXTERNAL_MODULE_POWER:
+    {
       uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-#if defined (MULTIMODULE)
-      if (IS_MODULE_MULTIMODULE(moduleIdx))
-        g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
-#endif
-      if (IS_MODULE_R9M(moduleIdx)) {
+      if (IS_MODULE_R9M_FCC(moduleIdx)) {
+        // Power selection is only available on R9M FCC
         lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
-        if (IS_MODULE_R9M_FCC(moduleIdx))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
-        else
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
         if (attr)
-          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, IS_MODULE_R9M_FCC(moduleIdx) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX);
+          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_FCC_POWER_MAX);
       }
+#if defined (MULTIMODULE)
+      else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
+        g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].multi.lowPowerMode, MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_LOWPOWER, attr, event);
+      }
+#endif
       break;
     }
 
