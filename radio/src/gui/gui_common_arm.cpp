@@ -738,18 +738,3 @@ void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, Lcd
   else
     lcdDrawMMM(x, y, flags);
 }
-
-const char* getR9MPowerString(int power)
-{
-  switch (power) {
-    case 0:
-      return " 10 mW";
-    case 1:
-      return "100 mW";
-    case 2:
-      return "500 mW";
-    case 3:
-    default:
-      return "  1 W";
-  }
-}

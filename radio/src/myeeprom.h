@@ -503,6 +503,12 @@ enum XJTRFProtocols {
   RF_PROTO_LAST = RF_PROTO_LR12
 };
 
+enum R9MSubTypes
+{
+  MODULE_SUBTYPE_R9M_FCC,
+  MODULE_SUBTYPE_R9M_LBT,
+};
+
 enum MultiModuleRFProtocols {
   MM_RF_PROTO_CUSTOM = -1,
   MM_RF_PROTO_FIRST = MM_RF_PROTO_CUSTOM,

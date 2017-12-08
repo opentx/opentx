@@ -172,6 +172,7 @@ void TimerPanel::on_name_editingFinished()
 #define MASK_MULTIOPTION    512
 #define MASK_R9M            1024
 #define MASK_SBUSPPM_FIELDS 2048
+#define MASK_SUBTYPES       4096
 
 quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
 
@@ -369,7 +370,7 @@ void ModulePanel::update()
     mask |= MASK_PROTOCOL;
     switch (protocol) {
       case PULSES_PXX_R9M:
-        mask |= MASK_R9M;
+        mask |= MASK_R9M | MASK_SUBTYPES;
       case PULSES_PXX_XJT_X16:
       case PULSES_PXX_XJT_D8:
       case PULSES_PXX_XJT_LR12:
@@ -402,7 +403,7 @@ void ModulePanel::update()
         mask |=  MASK_SBUSPPM_FIELDS| MASK_CHANNELS_RANGE;
         break;
       case PULSES_MULTIMODULE:
-        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE;
+        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER | MASK_MULTIMODULE | MASK_SUBTYPES;
         max_rx_num = 15;
         if (module.multi.rfProtocol == MM_RF_PROTO_DSM2)
           mask |= MASK_CHANNELS_COUNT;
@@ -468,37 +469,49 @@ void ModulePanel::update()
   ui->antennaMode->setVisible(mask & MASK_ANTENNA);
   ui->antennaMode->setCurrentIndex(module.pxx.external_antenna);
 
-  // R9M S.port output
+  // R9M options
   ui->sportOut->setVisible(mask & MASK_R9M);
-  ui->label_sportOut->setVisible(mask & MASK_R9M);
-  ui->sportOut->setCurrentIndex(module.pxx.sport_out);
+  ui->r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
+  ui->label_r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
+  if (mask & MASK_R9M) {
+    if (model->moduleData[0].protocol >= PULSES_PXX_XJT_X16 && model->moduleData[0].protocol <= PULSES_PXX_XJT_LR12) {
+      module.pxx.sport_out = false;
+      ui->sportOut->setDisabled(true);
+    }
+    else {
+      ui->sportOut->setEnabled(true);
+    }
+    ui->sportOut->setChecked(module.pxx.sport_out);
+    ui->r9mPower->setCurrentIndex(module.pxx.power);
+  }
 
-  ui->r9mPower->setVisible(mask & MASK_R9M);
-  ui->label_r9mPower->setVisible(mask & MASK_R9M);
-  ui->r9mPower->setCurrentIndex(module.pxx.power);
+  // module subtype
+  ui->label_multiSubType->setVisible(mask & MASK_SUBTYPES);
+  ui->multiSubType->setVisible(mask & MASK_SUBTYPES);
+  if (mask & MASK_SUBTYPES) {
+    unsigned numEntries = 2;  // R9M FCC/EU
+    if (mask & MASK_MULTIMODULE)
+      numEntries = (module.multi.customProto ? 8 : multiProtocols.getProtocol(module.multi.rfProtocol).numSubytes());
 
+    const QSignalBlocker blocker(ui->multiSubType);
+    ui->multiSubType->clear();
+    for (unsigned i=0; i < numEntries; i++)
+      ui->multiSubType->addItem(ModelPrinter::printModuleSubType(protocol, i, module.multi.rfProtocol, module.multi.customProto), i);
+    ui->multiSubType->setCurrentIndex(module.subType);
+  }
 
   // Multi settings fields
   ui->label_multiProtocol->setVisible(mask & MASK_MULTIMODULE);
   ui->multiProtocol->setVisible(mask & MASK_MULTIMODULE);
-  ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
-  ui->label_multiSubType->setVisible(mask & MASK_MULTIMODULE);
-  ui->multiSubType->setVisible(mask & MASK_MULTIMODULE);
   ui->label_option->setVisible(mask & MASK_MULTIOPTION);
   ui->optionValue->setVisible(mask & MASK_MULTIOPTION);
+  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
+  ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
 
   if (mask & MASK_MULTIMODULE) {
-    int numEntries = multiProtocols.getProtocol(module.multi.rfProtocol).numSubytes();
-    if (module.multi.customProto)
-      numEntries=8;
-    // Removes extra items
-    ui->multiSubType->setMaxCount(numEntries);
-    for (int i=0; i < numEntries; i++) {
-      if (i < ui->multiSubType->count())
-        ui->multiSubType->setItemText(i, ModelPrinter::printMultiSubType(module.multi.rfProtocol, module.multi.customProto, i));
-      else
-        ui->multiSubType->addItem(ModelPrinter::printMultiSubType(module.multi.rfProtocol, module.multi.customProto, i), (QVariant) i);
-    }
+    ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
+    ui->autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
+    ui->lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
   }
 
   if (mask & MASK_MULTIOPTION) {
@@ -508,14 +521,8 @@ void ModulePanel::update()
     ui->optionValue->setValue(module.multi.optionValue);
     ui->label_option->setText(qApp->translate("Multiprotocols", qPrintable(pdef.optionsstr)));
   }
-  ui->multiSubType->setCurrentIndex(module.subType);
 
-  ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
-  ui->autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
-  ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
-  ui->lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
-
-
+  // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
   ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
 
@@ -584,10 +591,12 @@ void ModulePanel::on_antennaMode_currentIndexChanged(int index)
   emit modified();
 }
 
-void ModulePanel::on_sportOut_currentIndexChanged(int index)
+void ModulePanel::on_sportOut_toggled(bool checked)
 {
-  module.pxx.sport_out = index;
-  emit modified();
+  if (module.pxx.sport_out != checked) {
+    module.pxx.sport_out = checked;
+    emit modified();
+  }
 }
 
 void ModulePanel::on_r9mPower_currentIndexChanged(int index)
