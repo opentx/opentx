@@ -6088,28 +6088,28 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="167"/>
         <source>10mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="167"/>
         <source>100mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="167"/>
         <location filename="../modelprinter.cpp" line="168"/>
         <source>500mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="167"/>
         <source>1W</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="168"/>
         <source>25mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="203"/>
@@ -6134,7 +6134,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="212"/>
         <source>Module Type: %1, Power: %2, Telemetry Enabled: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Type Module: %1, Puissance: %2, Télémétrie Activée: %3</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="222"/>
@@ -6295,12 +6295,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="51"/>
         <source>Y</source>
-        <translation type="unfinished"></translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="53"/>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="476"/>
@@ -6526,12 +6526,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="583"/>
         <source>Sub Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Sous-Type</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="717"/>
         <source>Module Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Télémétrie Module</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="772"/>
@@ -6588,7 +6588,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="730"/>
         <source>Failsafe Positions</source>
-        <translation>Positions</translation>
+        <translation>Positions Failsafe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="537"/>
@@ -6598,7 +6598,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="560"/>
         <source>Multi Radio Protocol</source>
-        <translation>Protocol Multi</translation>
+        <translation>Protocole Multi</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="161"/>
@@ -6628,7 +6628,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="275"/>
         <source>Low Power</source>
-        <translation>Puiss Réd</translation>
+        <translation>Puissance Réduite</translation>
     </message>
 </context>
 <context>
