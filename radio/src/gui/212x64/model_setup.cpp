@@ -105,7 +105,6 @@ enum MenuModelSetupItems {
 
 #define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 
-#if defined(BINDING_OPTIONS)
 void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
@@ -152,7 +151,6 @@ void onBindMenu(const char * result)
 
   moduleFlag[moduleIdx] = MODULE_BIND;
 }
-#endif
 
 void copySelection(char * dst, const char * src, uint8_t size)
 {
@@ -1020,7 +1018,6 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
             }
 #endif
-#if defined(BINDING_OPTIONS)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
@@ -1064,13 +1061,6 @@ void menuModelSetup(event_t event)
                 else if (l_posHorz == 2) {
                   newFlag = MODULE_RANGECHECK;
                 }
-#else
-            if (attr && l_posHorz>0 && s_editMode>0) {
-              if (l_posHorz == 1)
-                newFlag = MODULE_BIND;
-              else if (l_posHorz == 2) {
-                newFlag = MODULE_RANGECHECK;
-#endif
               }
             }
             moduleFlag[moduleIdx] = newFlag;
@@ -1162,7 +1152,7 @@ void menuModelSetup(event_t event)
          }
          else {
            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
-           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "Set at binding");
+           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BINDING_OPTION);
          }
        }
        else if (IS_MODULE_SBUS(moduleIdx)) {
