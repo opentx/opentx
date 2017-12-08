@@ -162,15 +162,16 @@ QString ModelPrinter::printMultiSubType(unsigned rfProtocol, bool custom, unsign
     return "???";
 }
 
-QString ModelPrinter::printR9MPowerValue(unsigned subType, unsigned val)
+QString ModelPrinter::printR9MPowerValue(unsigned subType, unsigned val, bool telem)
 {
-  static const QStringList strings = QStringList() \
-      << tr("10mW") << tr("100mW") << tr("500mW") << tr("1W") << tr("25mW") << tr("500mW");
+  static const QStringList strFTC = QStringList() << tr("10mW") << tr("100mW") << tr("500mW") << tr("1W");
+  static const QStringList strLBT = QStringList() << tr("25mW") << tr("500mW");
 
-  if (subType == 0)
-    return strings.at(val);
+
+  if (subType == 0 && (int)val < strFTC.size())
+    return strFTC.at(val);
   else if (subType == 1)
-    return strings.at(val + 4);
+    return (telem ? strLBT.at(0) : strLBT.at(1));
   else
     return "???";
 }
@@ -208,7 +209,7 @@ QString ModelPrinter::printModule(int idx) {
     if (module.protocol == PULSES_MULTIMODULE)
       result += " " + tr("radio Protocol %1, subType %2, option value %3").arg(printMultiRfProtocol(module.multi.rfProtocol, module.multi.customProto)).arg(printMultiSubType(module.multi.rfProtocol, module.multi.customProto, module.subType)).arg(module.multi.optionValue);
     else if (module.protocol == PULSES_PXX_R9M)
-      result += " " + tr("Module Type: %1, Power: %2, Telemetry Enabled: %3").arg(printModuleSubType(module.protocol, module.subType)).arg(printR9MPowerValue(module.subType, module.pxx.power)).arg(printBoolean(module.pxx.receiver_telem_off));
+      result += " " + tr("Module Type: %1, Power: %2, Telemetry Enabled: %3").arg(printModuleSubType(module.protocol, module.subType)).arg(printR9MPowerValue(module.subType, module.pxx.power, module.pxx.sport_out)).arg(printBoolean(module.pxx.sport_out));
     return result;
   }
 }

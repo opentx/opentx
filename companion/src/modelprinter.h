@@ -60,7 +60,7 @@ class ModelPrinter: public QObject
     QString printThrottleTrimMode();
     static QString printModuleProtocol(unsigned int protocol);
     static QString printMultiRfProtocol(int rfProtocol, bool custom);
-    static QString printR9MPowerValue(unsigned subType, unsigned val);
+    static QString printR9MPowerValue(unsigned subType, unsigned val, bool telem);
     static QString printMultiSubType(unsigned rfProtocol, bool custom, unsigned int subType);
     static QString printModuleSubType(unsigned protocol, unsigned subType, unsigned rfProtocol = 0, bool custom = false);
     QString printFlightModeSwitch(const RawSwitch & swtch);

@@ -474,7 +474,7 @@ void ModulePanel::update()
   ui->r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
   ui->label_r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
   if (mask & MASK_R9M) {
-    if (model->moduleData[0].protocol == PULSES_PXX_XJT_X16) {
+    if (model->moduleData[0].protocol >= PULSES_PXX_XJT_X16 && model->moduleData[0].protocol <= PULSES_PXX_XJT_LR12) {
       module.pxx.sport_out = false;
       ui->sportOut->setDisabled(true);
     }
