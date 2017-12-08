@@ -1414,11 +1414,11 @@ void MdiChild::setCurrentFile(const QString & fileName)
   isUntitled = false;
   setWindowModified(false);
   updateTitle();
-  int MaxRecentFiles = g.historySize();
+
   QStringList files = g.recentFiles();
-  files.removeAll(fileName);
-  files.prepend(fileName);
-  while (files.size() > MaxRecentFiles)
+  files.removeAll(curFile);
+  files.prepend(curFile);
+  while (files.size() > g.historySize())
     files.removeLast();
   g.recentFiles(files);
 }
