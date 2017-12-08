@@ -874,7 +874,7 @@
 #define TR_BINDING_25MW_CH1_8_TELEM_OFF   "25mW Ch1-8 Telem OFF"
 #define TR_BINDING_25MW_CH1_8_TELEM_ON    "25mW Ch1-8 Telem ON"
 #define TR_BINDING_500MW_CH1_8_TELEM_OFF  "500mW Ch1-8 Telem OFF"
-#define TR_BINDING_500MW_CH1_16_TELEM_OFF "500mW Ch1-16 Telem OFF"
+#define TR_BINDING_500MW_CH9_16_TELEM_OFF "500mW Ch9-16 Telem OFF"
 #define TR_PROTOCOL_INVALID    TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS       TR(INDENT "Status", INDENT "Module Status")
 #define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")

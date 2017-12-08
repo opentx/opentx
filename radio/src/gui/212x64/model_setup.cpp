@@ -110,12 +110,22 @@ void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
 
-  if (result == STR_BINDING_25MW_CH1_8_TELEM_ON) {
+  if (result == STR_BINDING_25MW_CH1_8_TELEM_OFF) {
+    g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_25;
+    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
+    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
+  }
+  else if (result == STR_BINDING_25MW_CH1_8_TELEM_ON) {
     g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_25;
     g_model.moduleData[moduleIdx].pxx.receiver_telem_off = false;
     g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
   }
-  else if (result == STR_BINDING_500MW_CH1_16_TELEM_OFF) {
+  else if (result == STR_BINDING_500MW_CH1_8_TELEM_OFF) {
+    g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_500;
+    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
+    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
+  }
+  else if (result == STR_BINDING_500MW_CH9_16_TELEM_OFF) {
     g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_500;
     g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
     g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = true;
@@ -1022,7 +1032,9 @@ void menuModelSetup(event_t event)
                           POPUP_MENU_ADD_ITEM(STR_DISABLE_INTERNAL);
                         else
                           POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_ON);
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH1_16_TELEM_OFF);
+                        POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_OFF);
+                        POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH1_8_TELEM_OFF);
+                        POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH9_16_TELEM_OFF);
                         default_selection = 1;
                       }
                       else {
