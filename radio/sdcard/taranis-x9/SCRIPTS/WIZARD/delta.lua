@@ -308,10 +308,10 @@ local function applySettings()
   if engineMode == 1 then
     addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   end
-  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevL-E", 50)
-  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "ElevL-A", 50, 1)
-  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevR-E", 50)
-  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "ElevR-A", -50, 1)
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(1), "D-EleL", 50)
+  addMix(elevCH1, MIXSRC_FIRST_INPUT+defaultChannel(3), "D-AilL", 50, 1)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(1), "D-EleR", 50)
+  addMix(elevCH2, MIXSRC_FIRST_INPUT+defaultChannel(3), "D-AilR", -50, 1)
   if rudderMode == 1 then
     addMix(rudCH1, MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
   end
