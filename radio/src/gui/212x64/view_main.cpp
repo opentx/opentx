@@ -433,6 +433,8 @@ int getSwitchCount()
 
 void menuMainView(event_t event)
 {
+  static bool secondPage = false;
+
   STICK_SCROLL_DISABLE();
 
   switch(event) {
@@ -491,6 +493,15 @@ void menuMainView(event_t event)
       }
 #endif
       break;
+
+    case EVT_KEY_FIRST(KEY_RIGHT):
+    case EVT_KEY_FIRST(KEY_LEFT):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    case EVT_ROTARY_LEFT:
+    case EVT_ROTARY_RIGHT:
+#endif
+      secondPage = !secondPage;
+      break;
   }
 
   // Flight Mode Name
@@ -548,11 +559,17 @@ void menuMainView(event_t event)
   }
   else {
     // Logical Switches
-    lcdDrawText(TRIM_RH_X - TRIM_LEN/2 + 5, 6*FH-1, "LS 1-32");
-    for (int sw=0; sw<32; ++sw) {
-      div_t qr = div(sw, 10);
-      uint8_t y = 13 + 11 * qr.quot;
-      uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
+    int sw = (secondPage && MAX_LOGICAL_SWITCHES > 32 ? 32 : 0);
+    const int end = sw + 32;
+    uint8_t y = 6*FH-1;
+    lcdDrawText(TRIM_RH_X - TRIM_LEN/2 + 1, y, "LS");
+    lcdDrawNumber(lcdLastRightPos + 1, y, sw + 1, LEFT|LEADING0, 2);
+    lcdDrawText(lcdLastRightPos, y, "-");
+    lcdDrawNumber(lcdLastRightPos, y, end, LEFT);
+    for ( ; sw < end; ++sw) {
+      const div_t qr = div(sw + 32 - end, 10);
+      const uint8_t x = TRIM_RH_X - TRIM_LEN + qr.rem*5 + (qr.rem >= 5 ? 3 : 0);
+      y = 13 + 11 * qr.quot;
       LogicalSwitchData * cs = lswAddress(sw);
       if (cs->func == LS_FUNC_NONE) {
         lcdDrawSolidHorizontalLine(x, y+6, 4);

@@ -40,6 +40,10 @@ void menuChannelsView(event_t event)
       break;
     case EVT_KEY_FIRST(KEY_RIGHT):
     case EVT_KEY_FIRST(KEY_LEFT):
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    case EVT_ROTARY_LEFT:
+    case EVT_ROTARY_RIGHT:
+#endif
       secondPage = !secondPage;
       break;
     case EVT_KEY_FIRST(KEY_ENTER):
