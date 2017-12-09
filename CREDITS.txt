@@ -1292,3 +1292,4 @@ Georges Pezet
 Robert Wilhelm
 Francis Herzog
 Bo Hjeresen
+Danny Koch
