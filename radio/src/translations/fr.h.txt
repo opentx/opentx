@@ -321,7 +321,7 @@
 #define LEN_VFSWRESET                  TR("\004", "\012")
 
 #if defined(TELEMETRY_FRSKY)
-  #define TR_FSW_RESET_TELEM           TR("Télm", "Télémesure")
+  #define TR_FSW_RESET_TELEM           TR("Télm", "Télémétrie")
 #else
   #define TR_FSW_RESET_TELEM
 #endif
@@ -813,8 +813,8 @@
 #define TR_MENUTRAINER                 "ECOLAGE"
 #define TR_MENUSPECIALFUNCS            "FONCTIONS GLOBALES"
 #define TR_MENUVERSION                 "VERSION"
-#define TR_MENU_RADIO_SWITCHES                    TR("INTERS", "TEST INTERRUPTEURS")
-#define TR_MENU_RADIO_ANALOGS                     TR("ANAS", "ENTREES ANALOGIQUES")
+#define TR_MENU_RADIO_SWITCHES         TR("INTERS", "TEST INTERRUPTEURS")
+#define TR_MENU_RADIO_ANALOGS          TR("ANAS", "ENTREES ANALOGIQUES")
 #define TR_MENUCALIBRATION             "CALIBRATION"
 #define TR_TRIMS2OFFSETS               "\005Trims => Subtrims"
 #define TR_MENUMODELSEL                "MODELES"
@@ -868,12 +868,12 @@
 #define TR_MODULE_NO_SERIAL_MODE       TR("Mode série?", "Pas en mode série")
 #define TR_MODULE_NO_INPUT             TR("Pas de sign.", "Aucun signal série")
 #define TR_MODULE_NO_TELEMETRY         TR3("Pas de télm.", "Télémétrie absente", "Télémétrie absente(act. MULTI_TELEMETRY)")
-#define TR_MODULE_WAITFORBIND          "Bind to load protocol"
+#define TR_MODULE_WAITFORBIND          "Binder d'abord"
 #define TR_MODULE_BINDING              "Bind..."
-#define TR_BINDING_CH1_8_TELEM_ON               "Ch1-8 Télem ON"
-#define TR_BINDING_CH1_8_TELEM_OFF               "Ch1-8 Télem OFF"
-#define TR_BINDING_CH9_16_TELEM_ON               "Ch9-16 Télem ON"
-#define TR_BINDING_CH9_16_TELEM_OFF               "Ch9-16 Télem OFF"
+#define TR_BINDING_CH1_8_TELEM_ON      "Ch1-8 Télem ON"
+#define TR_BINDING_CH1_8_TELEM_OFF     "Ch1-8 Télem OFF"
+#define TR_BINDING_CH9_16_TELEM_ON     "Ch9-16 Télem ON"
+#define TR_BINDING_CH9_16_TELEM_OFF    "Ch9-16 Télem OFF"
 #define TR_BINDING_25MW_CH1_8_TELEM_OFF   "25mW Ch1-8 Télem OFF"
 #define TR_BINDING_25MW_CH1_8_TELEM_ON    "25mW Ch1-8 Télem ON"
 #define TR_BINDING_500MW_CH1_8_TELEM_OFF  "500mW Ch1-8 Télem OFF"
@@ -926,7 +926,7 @@
 #define TR_SWITCHWARN                  TR("INTERS","CONTROLES")
 #define TR_FAILSAFEWARN                "FAILSAFE"
 #define TR_NIGHTLY_WARNING             TR("NIGHTLY", "NIGHTLY BUILD")
-#define TR_NIGHTLY_NOTSAFE             "Version not safe to fly"
+#define TR_NIGHTLY_NOTSAFE             "Version de test uniq."
 #define TR_WRONG_SDCARDVERSION         "Version requise: "
 #define TR_WRONG_PCBREV                "PCB incorrect détecté"
 #define TR_EMERGENCY_MODE              "MODE SECOURS"
@@ -1026,7 +1026,7 @@
 #define TR_RESET_TIMER1                TR("Réinit. Timer1", "Réinitialiser Timer1")
 #define TR_RESET_TIMER2                TR("Réinit. Timer2", "Réinitialiser Timer2")
 #define TR_RESET_TIMER3                TR("Réinit. Timer3", "Réinitialiser Timer3")
-#define TR_RESET_TELEMETRY             TR("Réinit. Télém.", "Réinit. Télémesure")
+#define TR_RESET_TELEMETRY             TR("Réinit. Télém.", "Réinit. Télémétrie")
 #define TR_STATISTICS                  "Statistiques"
 #define TR_ABOUT_US                    "A propos"
 #define TR_USB_JOYSTICK                "USB Joystick (HID)"
@@ -1048,7 +1048,7 @@
 #define TR_ANTENNAPROBLEM              CENTER "Antenne radio défectueuse!"
 #define TR_MODELIDUSED                 TR("ID affecté à :", "No de récepteur utilisé par :")
 #define TR_MODULE                      INDENT "Type de module"
-#define TR_TELEMETRY_TYPE              TR("Type tél.", "Type télémesure")
+#define TR_TELEMETRY_TYPE              TR("Type tél.", "Type télémétrie")
 #define TR_TELEMETRY_SENSORS           "Capteurs"
 #define TR_VALUE                       "Valeur"
 #define TR_TOPLCDTIMER                 "Timer LCD haut"
@@ -1061,8 +1061,8 @@
 #define TR_LOWALARM                    INDENT "Alarme basse"
 #define TR_CRITICALALARM               INDENT "Alarme critique"
 #define TR_RSSIALARM_WARN              TR("RSSI", "TELEMETRIE")
-#define TR_NO_RSSIALARM                TR(INDENT "Alarms disabled", "Alarme télémétrie désactivée")
-#define TR_DISABLE_ALARM               TR(INDENT "Disable alarms", INDENT "Désactiver alarme télémétrie")
+#define TR_NO_RSSIALARM                TR(INDENT "Alarmes désact.", "Alarme télémétrie désactivée")
+#define TR_DISABLE_ALARM               TR(INDENT "Désact. alarme", INDENT "Désactiver alarme télémétrie")
 #define TR_ENABLE_POPUP                "Activer popup"
 #define TR_DISABLE_POPUP               "Désactiver popup"
 #define TR_POPUP                       "Popup"
@@ -1151,16 +1151,16 @@
 #define TR_LSW_HEADERS_DURATION        "Durée min."
 #define TR_LSW_HEADERS_DELAY           "Délai"
 
-#define TR_GVAR_HEADERS_NAME           "Name"
-#define TR_GVAR_HEADERS_FM0            "Value on FM0"
-#define TR_GVAR_HEADERS_FM1            "Value on FM1"
-#define TR_GVAR_HEADERS_FM2            "Value on FM2"
-#define TR_GVAR_HEADERS_FM3            "Value on FM3"
-#define TR_GVAR_HEADERS_FM4            "Value on FM4"
-#define TR_GVAR_HEADERS_FM5            "Value on FM5"
-#define TR_GVAR_HEADERS_FM6            "Value on FM6"
-#define TR_GVAR_HEADERS_FM7            "Value on FM7"
-#define TR_GVAR_HEADERS_FM8            "Value on FM8"
+#define TR_GVAR_HEADERS_NAME           "Nom"
+#define TR_GVAR_HEADERS_FM0            "Valeur FM0"
+#define TR_GVAR_HEADERS_FM1            "Valeur FM1"
+#define TR_GVAR_HEADERS_FM2            "Valeur FM2"
+#define TR_GVAR_HEADERS_FM3            "Valeur FM3"
+#define TR_GVAR_HEADERS_FM4            "Valeur FM4"
+#define TR_GVAR_HEADERS_FM5            "Valeur FM5"
+#define TR_GVAR_HEADERS_FM6            "Valeur FM6"
+#define TR_GVAR_HEADERS_FM7            "Valeur FM7"
+#define TR_GVAR_HEADERS_FM8            "Valeur FM8"
 
 // Horus footer descriptions
 #define TR_LSW_DESCRIPTIONS            { "Type de comparaison ou fonction", "Première variable", "Seconde variable ou constante", "Seconde variable ou constante", "Condition supplémentaire pour activer la ligne", "Durée minimale d'activation de l'inter logique", "Durée min de la condition avant l'activation de l'inter" }
@@ -1285,7 +1285,7 @@
 #define TR_MENU_TRAINER                "\317Ecolage"
 #define TR_MENU_CHANNELS               "\320Canaux"
 #define TR_MENU_GVARS                  "\311Vars. glob."
-#define TR_MENU_TELEMETRY              "\321Télémesure"
+#define TR_MENU_TELEMETRY              "\321Télémétrie"
 #define TR_MENU_DISPLAY                "AFFICHAGE"
 #define TR_MENU_OTHER                  "Autres"
 #define TR_MENU_INVERT                 "Inverser"
