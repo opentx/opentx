@@ -178,7 +178,7 @@ enum MenuModelSetupItems {
   #define MODEL_SETUP_MAX_LINES          ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? HEADER_LINE+ITEM_MODEL_SETUP_MAX : HEADER_LINE+ITEM_MODEL_SETUP_MAX-1)
 #endif
 
-#if defined(BINDING_OPTIONS)
+#if defined(PCBTARANIS)
 void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
@@ -226,6 +226,7 @@ void onBindMenu(const char * result)
   moduleFlag[moduleIdx] = MODULE_BIND;
 }
 #endif
+
 
 void menuModelSetup(event_t event)
 {
@@ -1014,7 +1015,7 @@ void menuModelSetup(event_t event)
               s_editMode=0;
             }
 #endif
-#if defined(BINDING_OPTIONS)
+#if defined(PCBTARANIS)
             if (attr && l_posHorz > 0) {
               if (s_editMode > 0) {
                 if (l_posHorz == 1) {
@@ -1065,7 +1066,6 @@ void menuModelSetup(event_t event)
                 newFlag = MODULE_RANGECHECK;
             }
 #endif
-
             moduleFlag[moduleIdx] = newFlag;
 
 #if defined(MULTIMODULE)
@@ -1151,13 +1151,23 @@ void menuModelSetup(event_t event)
           }
         }
 #endif
-        if (IS_MODULE_R9M(moduleIdx)) {
+        if (IS_MODULE_R9M_FCC(moduleIdx)) {
           if (IS_TELEMETRY_INTERNAL_MODULE()) {
             lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
           }
           else {
             g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEMETRY, attr, event);
+          }
+        }
+        else if (IS_MODULE_R9M_LBT(moduleIdx)) {
+          if (IS_TELEMETRY_INTERNAL_MODULE()) {
+            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
+          }
+          else {
+            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BINDING_OPTION);
           }
         }
         else if (IS_MODULE_SBUS(moduleIdx)) {

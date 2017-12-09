@@ -41,7 +41,6 @@ option(FAS_PROTOTYPE "Support of old FAS prototypes (different resistors)" OFF)
 option(TEMPLATES "Model templates menu" OFF)
 option(TRACE_SIMPGMSPACE "Turn on traces in simpgmspace.cpp" ON)
 option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
-option(BINDING_OPTIONS "Allow advanced FrSky bindings" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
@@ -325,10 +324,6 @@ endif()
 
 if(TRACE_LUA_INTERNALS)
   add_definitions(-DTRACE_LUA_INTERNALS_ENABLED)
-endif()
-
-if(BINDING_OPTIONS)
-  add_definitions(-DBINDING_OPTIONS)
 endif()
 
 if(FRSKY_STICKS)

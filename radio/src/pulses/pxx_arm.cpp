@@ -381,10 +381,8 @@ void setupPulsesPXX(uint8_t port)
     extra_flags |= (g_model.moduleData[port].pxx.external_antenna << 0);
   }
 #endif
-#if defined(BINDING_OPTIONS)
   extra_flags |= (g_model.moduleData[port].pxx.receiver_telem_off << 1);
   extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
-#endif
   if (IS_MODULE_R9M(port)) {
     extra_flags |= (max(g_model.moduleData[port].pxx.power, IS_MODULE_R9M_FCC(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
     // Disable S.PORT if internal module is active

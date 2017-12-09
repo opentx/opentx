@@ -1143,7 +1143,6 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("nogvars", QObject::tr("Disable Global variables"));
   firmware->addOption("lua", QObject::tr("Enable Lua custom scripts screen"));
   firmware->addOption("luac", QObject::tr("Enable Lua compiler"));
-  firmware->addOption("bindopt", QObject::tr("Enable bindings options"));
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
