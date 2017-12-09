@@ -563,7 +563,7 @@ void menuMainView(event_t event)
     const int end = sw + 32;
     uint8_t y = 6*FH-1;
     lcdDrawText(TRIM_RH_X - TRIM_LEN/2 + 1, y, "LS");
-    lcdDrawNumber(lcdLastRightPos + 1, y, sw + 1, LEFT);
+    lcdDrawNumber(lcdLastRightPos + 1, y, sw + 1, LEFT|LEADING0, 2);
     lcdDrawText(lcdLastRightPos, y, "-");
     lcdDrawNumber(lcdLastRightPos, y, end, LEFT);
     for ( ; sw < end; ++sw) {
