@@ -373,8 +373,8 @@ void processMultiTelemetryData(const uint8_t data)
     case FrskyTelemetryFallbackFirstByte:
       if (data == 'M') {
         multiTelemetryBufferState = MultiStatusOrFrskyData;
-      } else
-      {
+      }
+      else {
         processFrskyTelemetryData(data);
         if (data != 0x7e)
           multiTelemetryBufferState = FrskyTelemetryFallbackNextBytes;
@@ -427,8 +427,8 @@ void processMultiTelemetryData(const uint8_t data)
       if (data >= 5 && data <= 10) {
         multiTelemetryBufferState = ReceivingMultiStatus;
         telemetryRxBufferCount = 0;
-      } else
-      {
+      }
+      else {
         multiTelemetryBufferState = FrskyTelemetryFallbackNextBytes;
         processMultiTelemetryData('M');
       }
