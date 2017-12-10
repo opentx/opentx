@@ -133,6 +133,7 @@ static size_t zipFileWrite(void *pOpaque, mz_uint64 file_ofs, const void *pBuf, 
         if (f_lseek(&otxFile, file_ofs) != FR_OK)
             return 0;
     }
+    TRACE("zipFileWrite(%lu,%p,%lu)",file_ofs,pBuf,n);
 
     unsigned int written = 0;
     if (f_write(&otxFile, pBuf, n, &written) != FR_OK)
@@ -167,7 +168,7 @@ bool addFile2Otx(const char* path)
     if (f_open(&tmpFile, path, FA_READ) != FR_OK)
         return false;
 
-    bool result = zipAddFile(&zipArchive, path, fno.fsize, &tmpFile);
+    bool result = true;//zipAddFile(&zipArchive, path, fno.fsize, &tmpFile);
     f_close(&tmpFile);
 
     return result;
@@ -175,7 +176,7 @@ bool addFile2Otx(const char* path)
 
 void closeOtxFile()
 {
-    mz_zip_writer_finalize_archive(&zipArchive);
+    //mz_zip_writer_finalize_archive(&zipArchive);
     mz_zip_writer_end(&zipArchive);
     f_close(&otxFile);
 }

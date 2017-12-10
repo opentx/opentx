@@ -283,38 +283,78 @@ void createRadioBackup()
 #endif
     strAppend(tmp, BACKUP_EXT);
 
-    if (!initOtxWriter(otx_file) ||
-        !addFile2Otx(RADIO_SETTINGS_PATH) ||
-        !addFile2Otx(RADIO_MODELSLIST_PATH)) {
-
-        closeOtxFile();
+    ModelsList models;
+    if (!models.load()) {
+        //TODO: show some error
+        POPUP_WARNING("Backup");
+        SET_WARNING_INFO("Could not load model list!", 0, 0);
         return;
     }
 
-    bool result = addFile2Otx(RADIO_SETTINGS_PATH) && addFile2Otx(RADIO_MODELSLIST_PATH);
-    if (result) {
-        ModelsList models;
-        result = models.load();
+    // total files = models + radio.bin + model list
+    int nb_files = models.modelsCount + 2;
+    
+    if (!initOtxWriter(otx_file)) {
+        closeOtxFile();
+        sdDelete(otx_file);
+        //TODO: show some error
+        POPUP_WARNING("Backup");
+        SET_WARNING_INFO("Backup failed!", 0, 0);
+        return;
+    }
 
-        if (result) {
-            for (std::list<ModelsCategory*>::iterator cat_it = models.categories.begin();
-                 cat_it != models.categories.end(); ++cat_it) {
+    drawProgressBar("Backup", 0, nb_files);
 
-                for (std::list<ModelCell*>::iterator it = (*cat_it)->begin();
-                     it != (*cat_it)->end(); ++it) {
+    std::list<ModelsCategory*>::iterator cat_it;
+    std::list<ModelCell*>::iterator      mod_it;
 
-                    tmp = strAppend(model_file, MODELS_PATH "/");
-                    strAppend(tmp, (*it)->modelFilename);
+    for(int i=0; i<nb_files; i++) {
 
-                    result = result && addFile2Otx(model_file);
-                }
-            }
+        bool result = false;
+        if (i == 0) {
+            result = addFile2Otx(RADIO_SETTINGS_PATH);
         }
+        else if (i == 1) {
+            result = addFile2Otx(RADIO_MODELSLIST_PATH);
+        }
+        else {
+
+            // jump over empty categories
+            // assume there is at least one model, otherwise, we wouldn't be here...
+#define GET_NEXT_MODEL() {                              \
+                while((*cat_it)->empty()) cat_it++;     \
+                mod_it = (*cat_it)->begin();            \
+            }
+            
+            if (i == 2) {
+                cat_it = models.categories.begin();
+                GET_NEXT_MODEL();
+            }
+            else if (mod_it == (*cat_it)->end()) {
+                cat_it++;
+                GET_NEXT_MODEL();
+            }
+
+            getModelPath(model_file, (*mod_it)->modelFilename);
+            result = addFile2Otx(model_file);
+        }
+
+        if (!result) {
+            closeOtxFile();
+            sdDelete(otx_file);
+            //TODO: display some error here...
+            POPUP_WARNING("Backup");
+            SET_WARNING_INFO("Error while writing OTX file", 0, 0);
+            return;
+        }
+
+        drawProgressBar("Backup", i+1, nb_files);
     }
 
     closeOtxFile();
-
-    if (!result)
-        sdDelete(otx_file);
+    POPUP_INFO("Backup");
+    SET_WARNING_INFO("Completed sucessfully", 0, 0);
+    
+    return;
 }
 
