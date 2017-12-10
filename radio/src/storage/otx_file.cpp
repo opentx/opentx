@@ -10,7 +10,7 @@ static FIL            otxFile;
 static mz_zip_archive zipArchive;
 static unsigned char  ioBuffer[OTX_IO_BUF_SIZE];
 
-typedef size_t (*read_fct)(void*, size_t, size_t, FILE*);
+//#define FORCE_COMPRESSED_OTX
 
 static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
                        unsigned long uncomp_size, FIL* srcFile)
@@ -22,8 +22,6 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
   if ((!pZip) || (!pZip->m_pState) || (pZip->m_zip_mode != MZ_ZIP_MODE_WRITING)
       || (!pArchive_name))
     return MZ_FALSE;
-
-  unsigned int level = MZ_DEFAULT_LEVEL;
 
   size_t archive_name_size = strlen(pArchive_name);
   if (!archive_name_size)
@@ -51,6 +49,30 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
   cur_archive_file_ofs += archive_name_size;
 
   unsigned long uncomp_remaining = uncomp_size;
+  unsigned long comp_size = 0;
+
+#if !defined(FORCE_COMPRESSED_OTX)
+
+  while (uncomp_remaining) {
+
+      mz_uint n = (mz_uint)MZ_MIN(OTX_IO_BUF_SIZE, uncomp_remaining);
+
+      unsigned int bytes_read = 0;
+      if ((f_read(srcFile, ioBuffer, n, &bytes_read) != FR_OK) ||
+          (bytes_read != n))
+          return false;
+
+      if (pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs, ioBuffer, n) != n)
+          return false;
+
+      uncomp_crc32 = (mz_uint32)mz_crc32(uncomp_crc32, (const mz_uint8 *)ioBuffer, n);
+      uncomp_remaining -= n;
+      cur_archive_file_ofs += n;
+  }
+  comp_size = uncomp_size;
+
+#else
+ 
   tdefl_compressor *pComp = (tdefl_compressor *)pZip->m_pAlloc(pZip->m_pAlloc_opaque, 1, sizeof(tdefl_compressor));
   if (!pComp) {
       return MZ_FALSE;
@@ -62,7 +84,8 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
   state.m_comp_size = 0;
 
   if (tdefl_init(pComp, mz_zip_writer_add_put_buf_callback, &state,
-                 tdefl_create_comp_flags_from_zip_params(level, -15, MZ_DEFAULT_STRATEGY))
+                 tdefl_create_comp_flags_from_zip_params(MZ_DEFAULT_LEVEL, -15,
+                                                         MZ_DEFAULT_STRATEGY))
       != TDEFL_STATUS_OKAY) {
 
       pZip->m_pFree(pZip->m_pAlloc_opaque, pComp);
@@ -101,30 +124,31 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
   if (!result)
       return MZ_FALSE;
 
-  unsigned long comp_size = state.m_comp_size;
+  comp_size = state.m_comp_size;
   cur_archive_file_ofs = state.m_cur_archive_file_ofs;
-
   method = MZ_DEFLATED;
+
+#endif
 
   if (!mz_zip_writer_create_local_dir_header(pZip, local_dir_header,
                                              (mz_uint16)archive_name_size, 0, uncomp_size,
                                              comp_size, uncomp_crc32, method, 0, 0, 0))
-      return MZ_FALSE;
+      return false;
 
   if (pZip->m_pWrite(pZip->m_pIO_opaque, local_dir_header_ofs,
                      local_dir_header, sizeof(local_dir_header)) != sizeof(local_dir_header))
-      return MZ_FALSE;
+      return false;
 
   if (!mz_zip_writer_add_to_central_dir(pZip, pArchive_name, (mz_uint16)archive_name_size,
                                         NULL, 0, 0, 0, uncomp_size,
                                         comp_size, uncomp_crc32, method, 0, 0,
                                         0, local_dir_header_ofs, ext_attributes))
-      return MZ_FALSE;
+      return false;
 
   pZip->m_total_files++;
   pZip->m_archive_size = cur_archive_file_ofs;
 
-  return MZ_TRUE;
+  return false;
 }
 
 static size_t zipFileWrite(void *pOpaque, mz_uint64 file_ofs, const void *pBuf, size_t n)
@@ -168,7 +192,7 @@ bool addFile2Otx(const char* path)
     if (f_open(&tmpFile, path, FA_READ) != FR_OK)
         return false;
 
-    bool result = true;//zipAddFile(&zipArchive, path, fno.fsize, &tmpFile);
+    bool result = zipAddFile(&zipArchive, path, fno.fsize, &tmpFile);
     f_close(&tmpFile);
 
     return result;
@@ -176,7 +200,7 @@ bool addFile2Otx(const char* path)
 
 void closeOtxFile()
 {
-    //mz_zip_writer_finalize_archive(&zipArchive);
+    mz_zip_writer_finalize_archive(&zipArchive);
     mz_zip_writer_end(&zipArchive);
     f_close(&otxFile);
 }
