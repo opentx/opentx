@@ -1240,13 +1240,13 @@ GeneralSettings::GeneralSettings()
     potConfig[2] = Board::POT_WITHOUT_DETENT;
   }
 
-  if (IS_HORUS(board) || IS_TARANIS_X9E(board)) {
+  if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board)) {
     sliderConfig[0] = Board::SLIDER_WITH_DETENT;
     sliderConfig[1] = Board::SLIDER_WITH_DETENT;
     sliderConfig[2] = Board::SLIDER_WITH_DETENT;
     sliderConfig[3] = Board::SLIDER_WITH_DETENT;
   }
-  else if (IS_TARANIS(board) && !IS_TARANIS_X7(board)) {
+  else if (IS_TARANIS_X9(board) || IS_HORUS_X10(board)) {
     sliderConfig[0] = Board::SLIDER_WITH_DETENT;
     sliderConfig[1] = Board::SLIDER_WITH_DETENT;
   }

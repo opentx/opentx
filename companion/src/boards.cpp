@@ -172,37 +172,29 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
   switch (capability) {
     case Sticks:
       return 4;
+
     case Pots:
-      if (IS_HORUS(board))
-        return 3;
-      else if (IS_TARANIS_X7(board))
+      if (IS_TARANIS_X7(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_TARANIS(board))
-        return 3;
       else
         return 3;
+
     case Sliders:
-      if (IS_HORUS(board))
+      if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board))
         return 4;
-      else if (IS_TARANIS_X7(board))
-        return 0;
-      else if (IS_TARANIS_X9E(board))
-        return 4;
-      else if (IS_TARANIS(board))
+      else if (IS_TARANIS_X9D(board) || IS_HORUS_X10(board))
         return 2;
       else
         return 0;
+
     case MouseAnalogs:
-      if (IS_HORUS(board))
+      if (IS_HORUS_X12S(board))
         return 2;
       else
         return 0;
-    case FactoryInstalledSwitches:
-      if (IS_TARANIS_X9E(board))
-        return 8;
-      // no break
+
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
@@ -212,16 +204,25 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 8;
       else
         return 7;
+
+    case FactoryInstalledSwitches:
+      if (IS_TARANIS_X9E(board))
+        return 8;
+      else
+        return getCapability(board, Switches);
+
     case SwitchPositions:
       if (IS_HORUS_OR_TARANIS(board))
         return getCapability(board, Switches) * 3;
       else
         return 9;
+
     case NumTrims:
       if (IS_HORUS(board))
         return 6;
       else
         return 4;
+
     case NumTrimSwitches:
       return getCapability(board, NumTrims) * 2;
   }

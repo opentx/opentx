@@ -759,7 +759,7 @@ QString OpenTxFirmware::getAnalogInputName(unsigned int index)
     };
     return CHECK_IN_ARRAY(pots, index);
   }
-  else if (IS_HORUS(board)) {
+  else if (IS_HORUS_X12S(board)) {
     const QString pots[] = {
       QObject::tr("S1"),
       QObject::tr("6P"),
@@ -770,6 +770,16 @@ QString OpenTxFirmware::getAnalogInputName(unsigned int index)
       QObject::tr("RS"),
       QObject::tr("JSx"),
       QObject::tr("JSy")
+    };
+    return CHECK_IN_ARRAY(pots, index);
+  }
+  else if (IS_HORUS_X10(board)) {
+    const QString pots[] = {
+      QObject::tr("S1"),
+      QObject::tr("6P"),
+      QObject::tr("S2"),
+      QObject::tr("LS"),
+      QObject::tr("RS")
     };
     return CHECK_IN_ARRAY(pots, index);
   }
