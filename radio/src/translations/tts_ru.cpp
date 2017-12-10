@@ -107,7 +107,7 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     unit++;
   }
 #endif
-  div_t qr = div(number, 10);
+  div_t qr = div((int)number, 10);
   int8_t mode = MODE(att);
   if (mode > 0 && att != RU_FEMALE_UNIT) {
 #if defined(CPUARM)
