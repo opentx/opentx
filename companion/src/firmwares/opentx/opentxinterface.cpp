@@ -337,7 +337,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   }
 
   for (int i = 0; i < getCurrentFirmware()->getCapability(Models); i++) {
-    if (!radioData.models[i].isEmpty()) {
+    if (i < (int)radioData.models.size() && !radioData.models[i].isEmpty()) {
       OpenTxModelData generator((ModelData &)radioData.models[i], board, version, variant);
       // generator.Dump();
       QByteArray data;
