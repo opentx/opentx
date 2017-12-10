@@ -307,4 +307,9 @@ void RadioData::convert(Board::Type before, Board::Type after)
   if (IS_HORUS(after)) {
     fixModelFilenames();
   }
+
+  // ensure proper number of model slots
+  if (getCurrentFirmware()->getCapability(Models) && getCurrentFirmware()->getCapability(Models) != (int)models.size()) {
+    models.resize(getCurrentFirmware()->getCapability(Models));
+  }
 }
