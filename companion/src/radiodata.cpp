@@ -168,6 +168,8 @@ void LogicalSwitchData::convert(Board::Type before, Board::Type after)
 void CustomFunctionData::convert(Board::Type before, Board::Type after)
 {
   swtch.convert(before, after);
+  if (func == FuncVolume || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1))
+    param = RawSource(param).convert(before, after).toValue();
 }
 
 void FlightModeData::convert(Board::Type before, Board::Type after)
@@ -202,6 +204,10 @@ void ModelData::convert(Board::Type before, Board::Type after)
 void GeneralSettings::convert(Board::Type before, Board::Type after)
 {
   // Here we can add explicit conversions when moving from one board to another
+
+  for (int i=0; i<CPN_MAX_SPECIAL_FUNCTIONS; i++) {
+    customFn[i].convert(before, after);
+  }
 
   // No SE and SG on X7 board
   if (IS_TARANIS_X7(after)) {
