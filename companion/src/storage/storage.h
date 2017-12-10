@@ -71,8 +71,9 @@ class StorageFormat
     {
       switch (board) {
         case Board::BOARD_X12S:
-        case Board::BOARD_X10:
           return 0x3478746F;
+        case Board::BOARD_X10:
+          return 0x3778746F;
         case Board::BOARD_TARANIS_X7:
           return 0x3678746F;
         case Board::BOARD_TARANIS_X9E:
