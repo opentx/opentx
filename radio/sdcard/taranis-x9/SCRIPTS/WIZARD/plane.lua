@@ -1,4 +1,3 @@
-
 ---- #########################################################################
 ---- #                                                                       #
 ---- # Copyright (C) OpenTX                                                  #
@@ -186,7 +185,7 @@ local function engineMenu(event)
 end
 
 -- Ailerons Menu
-local aileronsModeItems = {"No", "Yes", "Yes, 2 channels"}
+local aileronsModeItems = {"No", "Yes, 1 channel", "Yes, 2 channels"}
 local function drawAileronsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got ailerons?", 0)
@@ -233,7 +232,7 @@ local function aileronsMenu(event)
 end
 
 -- Flaps Menu
-local flapsModeItems = {"No", "Yes", "Yes, 2 channels"}
+local flapsModeItems = {"No", "Yes, 1 channel", "Yes, 2 channels"}
 local function drawFlapsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got flaps?", 0)
@@ -280,7 +279,7 @@ local function flapsMenu(event)
 end
 
 -- Airbrakes Menu
-local brakesModeItems = {"No", "Yes", "Yes, 2 channels"}
+local brakesModeItems = {"No", "Yes, 1 channel", "Yes, 2 channels"}
 local function drawBrakesMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Has your model got air brakes?", 0)
@@ -327,7 +326,7 @@ local function brakesMenu(event)
 end
 
 -- Tail Menu
-local tailModeItems = {"Ele(1ch)", "Ele(1ch) + Rudder(1ch)", "Ele(2ch) + Rudder(1ch)", "V-Tail(2ch)"}
+local tailModeItems = {"Ele(1ch)", "Ele(1ch) + Rud(1ch)", "Ele(2ch) + Rud(1ch)", "V-Tail(2ch)"}
 local function drawTailMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Which is the tail config on your model?", 0)
@@ -462,7 +461,7 @@ local function drawConfirmationMenu()
   end
   if flapsMode == 1 then
     x, y = drawNextLine(x, y, "Flaps", flapsCH1)
-  elsif flapsMode == 2 then
+  elseif flapsMode == 2 then
     x, y = drawNextLine(x, y, "Flap L", flapsCH1)
     x, y = drawNextLine(x, y, "Flap R", flapsCH2)
   end
