@@ -65,6 +65,7 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
   lcdRefresh();
   lcdSetContrast();
   clearKeyEvents();
+  backlightOn();
 }
 
 void showMessageBox(const char * title)
