@@ -4,18 +4,33 @@
 #define MINIZ_NO_STDIO
 #include "thirdparty/miniz/miniz.c"
 
+// use deflated files instead of 0-compression
+#define FORCE_COMPRESSED_OTX
+
 #define OTX_IO_BUF_SIZE (4*1024)
 
 static FIL            otxFile;
-static mz_zip_archive zipArchive;
-static unsigned char  ioBuffer[OTX_IO_BUF_SIZE];
 
-//#define FORCE_COMPRESSED_OTX
+// place all the bigger structs in SDRAM
+
+//#define OTX_MEM __SDRAM
+// #define OTX_MEM
+
+// static mz_zip_archive zipArchive OTX_MEM;
+// static unsigned char  ioBuffer[OTX_IO_BUF_SIZE] OTX_MEM;
+// static unsigned char  local_dir_header[MZ_ZIP_LOCAL_DIR_HEADER_SIZE] OTX_MEM;
+
+static mz_zip_archive* zipArchive = NULL;// OTX_MEM;
+static unsigned char*  ioBuffer = NULL; //[OTX_IO_BUF_SIZE] OTX_MEM;
+static unsigned char*  local_dir_header = NULL; //[MZ_ZIP_LOCAL_DIR_HEADER_SIZE] OTX_MEM;
+
+#if defined(FORCE_COMPRESSED_OTX)
+static tdefl_compressor* otxComp = NULL;
+#endif
 
 static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
                        unsigned long uncomp_size, FIL* srcFile)
 {
-  unsigned char local_dir_header[MZ_ZIP_LOCAL_DIR_HEADER_SIZE];
   unsigned int uncomp_crc32 = MZ_CRC32_INIT;
   unsigned short method = 0, ext_attributes = 0;
 
@@ -36,12 +51,12 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
   unsigned long local_dir_header_ofs = pZip->m_archive_size;
   unsigned long cur_archive_file_ofs = pZip->m_archive_size;
   
-  if (!mz_zip_writer_write_zeros(pZip, cur_archive_file_ofs, sizeof(local_dir_header)))
+  if (!mz_zip_writer_write_zeros(pZip, cur_archive_file_ofs, MZ_ZIP_LOCAL_DIR_HEADER_SIZE))
     return MZ_FALSE;
 
-  cur_archive_file_ofs += sizeof(local_dir_header);
+  cur_archive_file_ofs += MZ_ZIP_LOCAL_DIR_HEADER_SIZE;
 
-  MZ_CLEAR_OBJ(local_dir_header);
+  memset(local_dir_header, 0, MZ_ZIP_LOCAL_DIR_HEADER_SIZE);
   if (pZip->m_pWrite(pZip->m_pIO_opaque, cur_archive_file_ofs,
                      pArchive_name, archive_name_size) != archive_name_size)
     return MZ_FALSE;
@@ -72,11 +87,12 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
   comp_size = uncomp_size;
 
 #else
- 
-  tdefl_compressor *pComp = (tdefl_compressor *)pZip->m_pAlloc(pZip->m_pAlloc_opaque, 1, sizeof(tdefl_compressor));
-  if (!pComp) {
-      return MZ_FALSE;
-  }
+
+  tdefl_compressor* pComp = otxComp;
+  // tdefl_compressor *pComp = (tdefl_compressor *)pZip->m_pAlloc(pZip->m_pAlloc_opaque, 1, sizeof(tdefl_compressor));
+  // if (!pComp) {
+  //     return MZ_FALSE;
+  // }
 
   mz_zip_writer_add_state state;
   state.m_pZip = pZip;
@@ -88,7 +104,7 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
                                                          MZ_DEFAULT_STRATEGY))
       != TDEFL_STATUS_OKAY) {
 
-      pZip->m_pFree(pZip->m_pAlloc_opaque, pComp);
+      // pZip->m_pFree(pZip->m_pAlloc_opaque, pComp);
       return MZ_FALSE;
   }
 
@@ -119,7 +135,7 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
           break;
   }
 
-  pZip->m_pFree(pZip->m_pAlloc_opaque, pComp);
+  // pZip->m_pFree(pZip->m_pAlloc_opaque, pComp);
 
   if (!result)
       return MZ_FALSE;
@@ -136,7 +152,7 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
       return false;
 
   if (pZip->m_pWrite(pZip->m_pIO_opaque, local_dir_header_ofs,
-                     local_dir_header, sizeof(local_dir_header)) != sizeof(local_dir_header))
+                     local_dir_header, MZ_ZIP_LOCAL_DIR_HEADER_SIZE) != MZ_ZIP_LOCAL_DIR_HEADER_SIZE)
       return false;
 
   if (!mz_zip_writer_add_to_central_dir(pZip, pArchive_name, (mz_uint16)archive_name_size,
@@ -148,7 +164,7 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
   pZip->m_total_files++;
   pZip->m_archive_size = cur_archive_file_ofs;
 
-  return false;
+  return true;
 }
 
 static size_t zipFileWrite(void *pOpaque, mz_uint64 file_ofs, const void *pBuf, size_t n)
@@ -166,17 +182,50 @@ static size_t zipFileWrite(void *pOpaque, mz_uint64 file_ofs, const void *pBuf, 
     return written;
 }
 
+static bool alloc_otx_writer()
+{
+    zipArchive = (mz_zip_archive*)malloc(sizeof(mz_zip_archive));
+    ioBuffer = (unsigned char*)malloc(OTX_IO_BUF_SIZE);
+    local_dir_header = (unsigned char*)malloc(MZ_ZIP_LOCAL_DIR_HEADER_SIZE);
+
+#if defined(FORCE_COMPRESSED_OTX)
+    otxComp = (tdefl_compressor*)malloc(sizeof(tdefl_compressor));
+#endif
+
+    return ((zipArchive != NULL)
+            && (ioBuffer != NULL)
+            && (local_dir_header != NULL)
+#if defined(FORCE_COMPRESSED_OTX)
+            && (otxComp != NULL)
+#endif
+            );
+}
+
+static void free_otx_writer()
+{
+    free(zipArchive);
+    free(ioBuffer);
+    free(local_dir_header);
+#if defined(FORCE_COMPRESSED_OTX)
+    free(otxComp);
+#endif
+}
+
+
 bool initOtxWriter(const char* path)
 {
+    if (!alloc_otx_writer())
+        return false;
+    
     // Open and truncate file if necessary
     FRESULT fr = f_open(&otxFile, path, FA_WRITE | FA_CREATE_ALWAYS);
     if (fr != FR_OK)
         return false;
 
-    memset(&zipArchive, 0, sizeof(zipArchive));
-    zipArchive.m_pWrite = zipFileWrite;
+    memset(zipArchive, 0, sizeof(mz_zip_archive));
+    zipArchive->m_pWrite = zipFileWrite;
 
-    if (!mz_zip_writer_init(&zipArchive, 0))
+    if (!mz_zip_writer_init(zipArchive, 0))
         return false;
 
     return true;
@@ -192,7 +241,7 @@ bool addFile2Otx(const char* path)
     if (f_open(&tmpFile, path, FA_READ) != FR_OK)
         return false;
 
-    bool result = zipAddFile(&zipArchive, path, fno.fsize, &tmpFile);
+    bool result = zipAddFile(zipArchive, path, fno.fsize, &tmpFile);
     f_close(&tmpFile);
 
     return result;
@@ -200,7 +249,8 @@ bool addFile2Otx(const char* path)
 
 void closeOtxFile()
 {
-    mz_zip_writer_finalize_archive(&zipArchive);
-    mz_zip_writer_end(&zipArchive);
+    mz_zip_writer_finalize_archive(zipArchive);
+    mz_zip_writer_end(zipArchive);
     f_close(&otxFile);
+    free_otx_writer();
 }
