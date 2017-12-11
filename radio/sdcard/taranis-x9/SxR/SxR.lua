@@ -103,7 +103,7 @@ end
 -- Redraw the current page
 local function redrawFieldsPage()
   lcd.clear()
-  lcd.drawScreenTitle("S6R", page, #pages)
+  lcd.drawScreenTitle("SxR", page, #pages)
 
   if refreshIndex < #fields then
     drawProgressBar()

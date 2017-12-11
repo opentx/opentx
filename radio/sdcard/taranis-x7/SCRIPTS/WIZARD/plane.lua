@@ -182,7 +182,7 @@ local function engineMenu(event)
 end
 
 -- Ailerons Menu
-local aileronsModeItems = {"No", "Yes", "Yes, 2 channels"}
+local aileronsModeItems = {"No", "Yes, 1 channel", "Yes, 2 channels"}
 local function drawAileronsMenu()
   lcd.clear()
   if aileronsMode == 2 then
@@ -227,7 +227,7 @@ local function aileronsMenu(event)
 end
 
 -- Flaps Menu
-local flapsModeItems = {"No", "Yes", "Yes, 2 channels"}
+local flapsModeItems = {"No", "Yes, 1 channel", "Yes, 2 channels"}
 local function drawFlapsMenu()
   lcd.clear()
   if flapsMode == 0 then
@@ -272,7 +272,7 @@ local function flapsMenu(event)
 end
 
 -- Airbrakes Menu
-local brakesModeItems = {"No", "Yes", "Yes, 2 channels"}
+local brakesModeItems = {"No", "Yes, 1 channel", "Yes, 2 channels"}
 local function drawBrakesMenu()
   lcd.clear()
   if brakesMode == 0 then
