@@ -405,30 +405,16 @@ void Helpers::getFileComboBoxValue(QComboBox * b, char * dest, int length)
 }
 
 void Helpers::addRawSourceItems(QStandardItemModel * itemModel, const RawSourceType & type, int count, const GeneralSettings * const generalSettings,
-                                const ModelData * const model, const int start, const QList<int> exclude)
+                                const ModelData * const model, const int start)
 {
   for (int i = start; i < start + count; i++) {
-    if (exclude.contains(i))
-      continue;
-
     RawSource src = RawSource(type, i);
-    if (model) {
-      if (type == SOURCE_TYPE_VIRTUAL_INPUT && !model->isInputValid(i))
-        continue;
-    }
-    if (generalSettings) {
-      int genAryIdx = 0;
-      if (type == SOURCE_TYPE_STICK && ((src.isPot(&genAryIdx) && !generalSettings->isPotAvailable(genAryIdx)) || (src.isSlider(&genAryIdx) && !generalSettings->isSliderAvailable(genAryIdx))))
-        continue;
-    }
+    if (!src.isAvailable(model, generalSettings, getCurrentBoard()))
+      continue;
 
     QStandardItem * modelItem = new QStandardItem(src.toString(model, generalSettings));
     modelItem->setData(src.toValue(), Qt::UserRole);
     itemModel->appendRow(modelItem);
-
-    if (type == SOURCE_TYPE_SWITCH && generalSettings && IS_HORUS_OR_TARANIS(getCurrentBoard()) && !generalSettings->switchSourceAllowedTaranis(i)) {
-      modelItem->setData(0, Qt::UserRole - 1);  // trick to disable an item
-    }
   }
 }
 
@@ -478,31 +464,16 @@ QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * cons
   }
 
   if (flags & POPULATE_TELEMETRY) {
+    int count = 0;
     if (IS_ARM(board.getBoardType())) {
       addRawSourceItems(itemModel, SOURCE_TYPE_SPECIAL, 5, generalSettings, model);
-
-      if (model) {
-        QList<int> exclude;
-        for (int i=0; i < CPN_MAX_SENSORS * 3; ++i) {
-          //this conditon must be false if we populate Global Functions where model = 0
-          if (!model->sensorData[div(i, 3).quot].isAvailable())
-            exclude << i;
-        }
-        if (exclude.size() < CPN_MAX_SENSORS * 3)
-          addRawSourceItems(itemModel, SOURCE_TYPE_TELEMETRY, CPN_MAX_SENSORS * 3, generalSettings, model, 0, exclude);
-      }
+      count = CPN_MAX_SENSORS * 3;
     }
     else {
-      QList<int> exclude;
-      if (!fw->getCapability(RtcTime))
-        exclude << TELEMETRY_SOURCE_TX_TIME;
-      if (!fw->getCapability(SportTelemetry))
-        exclude << TELEMETRY_SOURCE_SWR;
-      if (!IS_ARM(board.getBoardType()))
-        exclude << TELEMETRY_SOURCE_TIMER3;
-      int count = ((flags & POPULATE_TELEMETRYEXT) ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT);
-      addRawSourceItems(itemModel, SOURCE_TYPE_TELEMETRY, count, generalSettings, model, 0, exclude);
+      count = ((flags & POPULATE_TELEMETRYEXT) ? TELEMETRY_SOURCES_STATUS_COUNT : TELEMETRY_SOURCES_COUNT);
     }
+    if (model && count)
+      addRawSourceItems(itemModel, SOURCE_TYPE_TELEMETRY, count, generalSettings, model);
   }
 
   if (flags & POPULATE_GVARS) {

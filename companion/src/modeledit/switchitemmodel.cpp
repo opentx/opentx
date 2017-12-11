@@ -73,15 +73,6 @@ void RawSwitchItemModel::add(const RawSwitchType & type, int count)
     rawIdxAdj = -1;
 
   for ( ; i < maxCount; ++i) {
-    if (generalSettings) {
-      if (type == SWITCH_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !generalSettings->switchPositionAllowedTaranis(abs(i)))
-        continue;
-      if (type == SWITCH_TYPE_MULTIPOS_POT) {
-        int pot = div(abs(i) - 1, board.getCapability(Board::MultiposPotsPositions)).quot;
-        if (!generalSettings->isPotAvailable(pot) || generalSettings->potConfig[pot] != Board::POT_MULTIPOS_SWITCH)
-          continue;
-      }
-    }
     RawSwitch rs(type, i + rawIdxAdj);
     QStandardItem * modelItem = new QStandardItem(rs.toString(board, generalSettings, modelData));
     modelItem->setData(rs.toValue(), Qt::UserRole);
@@ -131,7 +122,7 @@ bool RawSwitchFilterItemModel::filterAcceptsRow(int sourceRow, const QModelIndex
   if ((swtch.type == SWITCH_TYPE_ON || swtch.type == SWITCH_TYPE_ONE) && (context != SpecialFunctionsContext && context != GlobalFunctionsContext))
     return false;
 
-  if (!modelData->isAvailable(swtch))
+  if (!swtch.isAvailable(modelData, generalSettings, getCurrentBoard()))
     return false;
 
   return true;

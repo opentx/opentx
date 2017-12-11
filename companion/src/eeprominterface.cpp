@@ -220,13 +220,10 @@ QString SensorData::unitString() const
   }
 }
 
-bool RawSource::isTimeBased() const
-{
-  if (IS_ARM(getCurrentBoard()))
-    return (type == SOURCE_TYPE_SPECIAL && index > 0);
-  else
-    return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
-}
+
+/*
+ * RawSourceRange
+ */
 
 float RawSourceRange::getValue(int value)
 {
@@ -500,9 +497,11 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   return result;
 }
 
-QString RawSource::toString(const ModelData * model, const GeneralSettings * const generalSettings) const
+QString RawSource::toString(const ModelData * model, const GeneralSettings * const generalSettings, Board::Type board) const
 {
-  board = getCurrentBoard();
+  if (board == Board::BOARD_UNKNOWN) {
+    board = getCurrentBoard();
+  }
 
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA"), QObject::tr("Trm5"), QObject::tr("Trm6")
@@ -619,9 +618,12 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   }
 }
 
-bool RawSource::isStick(int * stickIndex) const
+bool RawSource::isStick(int * stickIndex, Board::Type board) const
 {
-  if (type == SOURCE_TYPE_STICK && index < getBoardCapability(getCurrentBoard(), Board::Sticks)) {
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  if (type == SOURCE_TYPE_STICK && index < Boards::getCapability(board, Board::Sticks)) {
     if (stickIndex)
       *stickIndex = index;
     return true;
@@ -629,29 +631,102 @@ bool RawSource::isStick(int * stickIndex) const
   return false;
 }
 
-bool RawSource::isPot(int * potsIndex) const
+bool RawSource::isPot(int * potsIndex, Board::Type board) const
 {
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
   if (type == SOURCE_TYPE_STICK &&
-          index >= getBoardCapability(getCurrentBoard(), Board::Sticks) &&
-          index < getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots)) {
+          index >= b.getCapability(Board::Sticks) &&
+          index < b.getCapability(Board::Sticks) + b.getCapability(Board::Pots)) {
     if (potsIndex)
-      *potsIndex = index - getBoardCapability(getCurrentBoard(), Board::Sticks);
+      *potsIndex = index - b.getCapability(Board::Sticks);
     return true;
   }
   return false;
 }
 
-bool RawSource::isSlider(int * sliderIndex) const
+bool RawSource::isSlider(int * sliderIndex, Board::Type board) const
 {
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
   if (type == SOURCE_TYPE_STICK &&
-          index >= getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots) &&
-          index < getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders)) {
+          index >= b.getCapability(Board::Sticks) + b.getCapability(Board::Pots) &&
+          index < b.getCapability(Board::Sticks) + b.getCapability(Board::Pots) + b.getCapability(Board::Sliders)) {
     if (sliderIndex)
-      *sliderIndex = index - getBoardCapability(getCurrentBoard(), Board::Sticks) - getBoardCapability(getCurrentBoard(), Board::Pots);
+      *sliderIndex = index - b.getCapability(Board::Sticks) - b.getCapability(Board::Pots);
     return true;
   }
   return false;
 }
+
+bool RawSource::isTimeBased(Board::Type board) const
+{
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  if (IS_ARM(board))
+    return (type == SOURCE_TYPE_SPECIAL && index > 0);
+  else
+    return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
+}
+
+bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board)
+{
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
+
+  if (type == SOURCE_TYPE_STICK && index >= b.getCapability(Board::MaxAnalogs))
+    return false;
+
+  if (type == SOURCE_TYPE_SWITCH && index >= b.getCapability(Board::Switches))
+    return false;
+
+  if (model) {
+    if (type == SOURCE_TYPE_VIRTUAL_INPUT && !model->isInputValid(index))
+      return false;
+
+    if (type == SOURCE_TYPE_CUSTOM_SWITCH && model->logicalSw[index].isEmpty())
+      return false;
+
+    if (type == SOURCE_TYPE_TELEMETRY) {
+      if (IS_ARM(board) && !model->sensorData[div(index, 3).quot].isAvailable()) {
+        return false;
+      }
+      else if (!IS_ARM(board)) {
+        Firmware * fw = getCurrentFirmware();
+        if (type == (int)TELEMETRY_SOURCE_TX_TIME && !fw->getCapability(RtcTime))
+          return false;
+
+        if (type == (int)TELEMETRY_SOURCE_SWR && !fw->getCapability(SportTelemetry))
+          return false;
+
+        if (type == (int)TELEMETRY_SOURCE_TIMER3 && fw->getCapability(Timers) < 3)
+          return false;
+      }
+    }
+  }
+
+  if (gs) {
+    int gsIdx = 0;
+    if (type == SOURCE_TYPE_STICK && ((isPot(&gsIdx) && !gs->isPotAvailable(gsIdx)) || (isSlider(&gsIdx) && !gs->isSliderAvailable(gsIdx))))
+      return false;
+
+    if (type == SOURCE_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !gs->switchSourceAllowedTaranis(index))
+      return false;
+  }
+
+  if (type == SOURCE_TYPE_TRIM && index >= b.getCapability(Board::NumTrims))
+    return false;
+
+  return true;
+}
+
 
 /*
  * RawSwitch
@@ -759,6 +834,36 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return QObject::tr("???");
     }
   }
+}
+
+bool RawSwitch::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board)
+{
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
+
+  if (type == SWITCH_TYPE_SWITCH && abs(index) > b.getCapability(Board::SwitchPositions))
+    return false;
+
+  if (type == SWITCH_TYPE_TRIM && abs(index) > b.getCapability(Board::NumTrimSwitches))
+    return false;
+
+  if (gs) {
+    if (type == SWITCH_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !gs->switchPositionAllowedTaranis(abs(index)))
+      return false;
+
+    if (type == SWITCH_TYPE_MULTIPOS_POT) {
+      int pot = div(abs(index) - 1, b.getCapability(Board::MultiposPotsPositions)).quot;
+      if (!gs->isPotAvailable(pot) || gs->potConfig[pot] != Board::POT_MULTIPOS_SWITCH)
+        return false;
+    }
+  }
+
+  if (model && !model->isAvailable(*this))
+    return false;
+
+  return true;
 }
 
 

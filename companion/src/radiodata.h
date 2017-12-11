@@ -211,16 +211,19 @@ class RawSource {
     {
     }
 
-    RawSource convert(Board::Type before, Board::Type after);
-
     inline const int toValue() const
     {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    QString toString(const ModelData * model = NULL, const GeneralSettings * const generalSettings = NULL) const;
-
+    RawSource convert(Board::Type before, Board::Type after);
+    QString toString(const ModelData * model = NULL, const GeneralSettings * const generalSettings = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
     RawSourceRange getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags=0) const;
+    bool isStick(int * potsIndex = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
+    bool isPot(int * potsIndex = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
+    bool isSlider(int * sliderIndex = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
+    bool isTimeBased(Board::Type board = Board::BOARD_UNKNOWN) const;
+    bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN);
 
     bool operator == ( const RawSource & other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -229,11 +232,6 @@ class RawSource {
     bool operator != ( const RawSource & other) {
       return (this->type != other.type) || (this->index != other.index);
     }
-
-    bool isTimeBased() const;
-    bool isStick(int * potsIndex = NULL) const;
-    bool isPot(int * potsIndex = NULL) const;
-    bool isSlider(int * sliderIndex = NULL) const;
 
     RawSourceType type;
     int index;
@@ -280,7 +278,9 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
+    RawSwitch convert(Board::Type before, Board::Type after);
     QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL, const ModelData * const modelData = NULL) const;
+    bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN);
 
     bool operator== ( const RawSwitch& other) {
       return (this->type == other.type) && (this->index == other.index);
@@ -290,7 +290,6 @@ class RawSwitch {
       return (this->type != other.type) || (this->index != other.index);
     }
 
-    RawSwitch convert(Board::Type before, Board::Type after);
 
     RawSwitchType type;
     int index;

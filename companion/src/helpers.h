@@ -130,7 +130,7 @@ class CurveGroup : public QObject {
 namespace Helpers
 {
   void addRawSourceItems(QStandardItemModel * itemModel, const RawSourceType & type, int count, const GeneralSettings * const generalSettings = NULL,
-                         const ModelData * const model = NULL, const int start = 0, const QList<int> exclude = QList<int>());
+                         const ModelData * const model = NULL, const int start = 0);
   QStandardItemModel * getRawSourceItemModel(const GeneralSettings * const generalSettings = NULL, const ModelData * const model = NULL, unsigned int flags = 0);
 
   void populateGvarUseCB(QComboBox *b, unsigned int phase);
