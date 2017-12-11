@@ -681,10 +681,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return (IS_STOCK(board) ? false : true);
     case HasMahPersistent:
       return (IS_ARM(board) ? true : false);
-    case MultiposPots:
-      return IS_HORUS_OR_TARANIS(board) ? 3 : 0;
-    case MultiposPotsPositions:
-      return IS_HORUS_OR_TARANIS(board) ? 6 : 0;
     case SimulatorVariant:
       if (board == BOARD_STOCK)
         return SIMU_STOCK_VARIANTS;
@@ -716,76 +712,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
 
 QString OpenTxFirmware::getAnalogInputName(unsigned int index)
 {
-  if ((int)index < getBoardCapability(board, Board::Sticks)) {
-    const QString sticks[] = {
-      QObject::tr("Rud"),
-      QObject::tr("Ele"),
-      QObject::tr("Thr"),
-      QObject::tr("Ail")
-    };
-    return sticks[index];
-  }
-
-  index -= getBoardCapability(board, Board::Sticks);
-
-  if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
-    const QString pots[] = {
-      QObject::tr("P1"),
-      QObject::tr("P2"),
-      QObject::tr("P3")
-    };
-    return CHECK_IN_ARRAY(pots, index);
-  }
-  else if (IS_TARANIS_X9E(board)) {
-    const QString pots[] = {
-      QObject::tr("F1"),
-      QObject::tr("F2"),
-      QObject::tr("F3"),
-      QObject::tr("F4"),
-      QObject::tr("S1"),
-      QObject::tr("S2"),
-      QObject::tr("LS"),
-      QObject::tr("RS")
-    };
-    return CHECK_IN_ARRAY(pots, index);
-  }
-  else if (IS_TARANIS(board)) {
-    const QString pots[] = {
-      QObject::tr("S1"),
-      QObject::tr("S2"),
-      QObject::tr("S3"),
-      QObject::tr("LS"),
-      QObject::tr("RS")
-    };
-    return CHECK_IN_ARRAY(pots, index);
-  }
-  else if (IS_HORUS_X12S(board)) {
-    const QString pots[] = {
-      QObject::tr("S1"),
-      QObject::tr("6P"),
-      QObject::tr("S2"),
-      QObject::tr("L1"),
-      QObject::tr("L2"),
-      QObject::tr("LS"),
-      QObject::tr("RS"),
-      QObject::tr("JSx"),
-      QObject::tr("JSy")
-    };
-    return CHECK_IN_ARRAY(pots, index);
-  }
-  else if (IS_HORUS_X10(board)) {
-    const QString pots[] = {
-      QObject::tr("S1"),
-      QObject::tr("6P"),
-      QObject::tr("S2"),
-      QObject::tr("LS"),
-      QObject::tr("RS")
-    };
-    return CHECK_IN_ARRAY(pots, index);
-  }
-  else {
-    return "???";
-  }
+  return Boards::getAnalogInputName(board, index);
 }
 
 QTime OpenTxFirmware::getMaxTimerStart()

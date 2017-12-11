@@ -110,6 +110,9 @@ namespace Board {
     Pots,
     Sliders,
     MouseAnalogs,
+    MaxAnalogs,
+    MultiposPots,
+    MultiposPotsPositions,
     Switches,
     SwitchPositions,
     FactoryInstalledSwitches,
@@ -151,12 +154,14 @@ class Boards
     const int getFlashSize() { return getFlashSize(m_boardType); }
     const Board::SwitchInfo getSwitchInfo(unsigned index) { return getSwitchInfo(m_boardType, index); }
     const int getCapability(Board::Capability capability) { return getCapability(m_boardType, capability); }
+    const QString getAnalogInputName(unsigned index) { return getAnalogInputName(m_boardType, index); }
 
     static const int getEEpromSize(Board::Type board);
     static const int getFlashSize(Board::Type board);
     static const Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
     static const int getCapability(Board::Type board, Board::Capability capability);
     static const QString getAxisName(int index);
+    static const QString getAnalogInputName(Board::Type board, unsigned index);
 
   protected:
 

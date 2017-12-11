@@ -38,14 +38,14 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   add(SWITCH_TYPE_VIRTUAL, -fw->getCapability(LogicalSwitches));
   add(SWITCH_TYPE_ROTARY_ENCODER, -fw->getCapability(RotaryEncoders));
   add(SWITCH_TYPE_TRIM, -board.getCapability(Board::NumTrimSwitches));
-  add(SWITCH_TYPE_MULTIPOS_POT, -(fw->getCapability(MultiposPots) * fw->getCapability(MultiposPotsPositions)));
+  add(SWITCH_TYPE_MULTIPOS_POT, -(board.getCapability(Board::MultiposPots) * board.getCapability(Board::MultiposPotsPositions)));
   add(SWITCH_TYPE_SWITCH, -board.getCapability(Board::SwitchPositions));
 
   // Ascending switch direction (including zero)
   add(SWITCH_TYPE_TIMER_MODE, 5);
   add(SWITCH_TYPE_NONE, 1);
   add(SWITCH_TYPE_SWITCH, board.getCapability(Board::SwitchPositions));
-  add(SWITCH_TYPE_MULTIPOS_POT, fw->getCapability(MultiposPots) * fw->getCapability(MultiposPotsPositions));
+  add(SWITCH_TYPE_MULTIPOS_POT, board.getCapability(Board::MultiposPots) * board.getCapability(Board::MultiposPotsPositions));
   add(SWITCH_TYPE_TRIM, board.getCapability(Board::NumTrimSwitches));
   add(SWITCH_TYPE_ROTARY_ENCODER, fw->getCapability(RotaryEncoders));
   add(SWITCH_TYPE_VIRTUAL, fw->getCapability(LogicalSwitches));
@@ -77,7 +77,7 @@ void RawSwitchItemModel::add(const RawSwitchType & type, int count)
       if (type == SWITCH_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !generalSettings->switchPositionAllowedTaranis(abs(i)))
         continue;
       if (type == SWITCH_TYPE_MULTIPOS_POT) {
-        int pot = div(abs(i) - 1, getCurrentFirmware()->getCapability(MultiposPotsPositions)).quot;
+        int pot = div(abs(i) - 1, board.getCapability(Board::MultiposPotsPositions)).quot;
         if (!generalSettings->isPotAvailable(pot) || generalSettings->potConfig[pot] != Board::POT_MULTIPOS_SWITCH)
           continue;
       }

@@ -195,6 +195,15 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 0;
 
+    case MaxAnalogs:
+      return getCapability(board, Board::Sticks) + getCapability(board, Board::Pots) + getCapability(board, Board::Sliders) +  getCapability(board, Board::MouseAnalogs);
+
+    case MultiposPots:
+      return IS_HORUS_OR_TARANIS(board) ? 3 : 0;
+
+    case MultiposPotsPositions:
+      return IS_HORUS_OR_TARANIS(board) ? 6 : 0;
+
     case Switches:
       if (IS_TARANIS_X9E(board))
         return 18;
@@ -244,6 +253,84 @@ const QString Boards::getAxisName(int index)
     return axes[index];
   else
     return QObject::tr("Unknown");
+}
+
+const QString Boards::getAnalogInputName(Board::Type board, unsigned index)
+{
+  if ((int)index < getBoardCapability(board, Board::Sticks)) {
+    const QString sticks[] = {
+      QObject::tr("Rud"),
+      QObject::tr("Ele"),
+      QObject::tr("Thr"),
+      QObject::tr("Ail")
+    };
+    return sticks[index];
+  }
+
+  index -= getCapability(board, Board::Sticks);
+
+  if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
+    const QString pots[] = {
+      "P1",
+      "P2",
+      "P3"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_TARANIS_X9E(board)) {
+    const QString pots[] = {
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "S1",
+      "S2",
+      "LS",
+      "RS"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_TARANIS(board)) {
+    const QString pots[] = {
+      "S1",
+      "S2",
+      "S3",
+      "LS",
+      "RS"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_HORUS_X12S(board)) {
+    const QString pots[] = {
+      "S1",
+      "6P",
+      "S2",
+      "L1",
+      "L2",
+      "LS",
+      "RS",
+      "JSx",
+      "JSy"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_HORUS_X10(board)) {
+    const QString pots[] = {
+      "S1",
+      "6P",
+      "S2",
+      "LS",
+      "RS"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+
+  return "???";
 }
 
 /* Currently unused

@@ -151,6 +151,11 @@ int TimToVal(float value)
   return (temp-129);
 }
 
+
+/*
+ * SensorData
+ */
+
 void SensorData::updateUnit()
 {
   if (type == TELEM_TYPE_CALCULATED) {
@@ -230,6 +235,11 @@ float RawSourceRange::getValue(int value)
   else
     return min + float(value) * step;
 }
+
+
+/*
+ * RawSource
+ */
 
 RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags) const
 {
@@ -492,6 +502,8 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
 
 QString RawSource::toString(const ModelData * model, const GeneralSettings * const generalSettings) const
 {
+  board = getCurrentBoard();
+
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA"), QObject::tr("Trm5"), QObject::tr("Trm6")
   };
@@ -545,7 +557,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
           result = QString(generalSettings->stickName[genAryIdx]);
       }
       if (result.isEmpty())
-        result = getCurrentFirmware()->getAnalogInputName(index);;
+        result = Boards::getAnalogInputName(board, index);
       return result;
 
     case SOURCE_TYPE_TRIM:
@@ -559,7 +571,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       if (generalSettings)
         result = QString(generalSettings->switchName[index]);
       if (result.isEmpty())
-        result = getSwitchInfo(getCurrentBoard(), index).name;
+        result = Boards::getSwitchInfo(board, index).name;
       return result;
 
     case SOURCE_TYPE_CUSTOM_SWITCH:
@@ -583,7 +595,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return CHECK_IN_ARRAY(special, index);
 
     case SOURCE_TYPE_TELEMETRY:
-      if (IS_ARM(getCurrentBoard())) {
+      if (IS_ARM(board)) {
         div_t qr = div(index, 3);
         result = getElementName(QCoreApplication::translate("Telemetry", "TELE"), qr.quot+1, model ? model->sensorData[qr.quot].label : NULL);
         if (qr.rem)
@@ -704,13 +716,13 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return getElementName(QCoreApplication::translate("Logic Switch", "L"), index, NULL, true);
 
       case SWITCH_TYPE_MULTIPOS_POT:
-        if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))
+        if (!Boards::getCapability(board, Board::MultiposPotsPositions))
           return QObject::tr("???");
-        qr = div(index - 1, getCurrentFirmware()->getCapability(MultiposPotsPositions));
+        qr = div(index - 1, Boards::getCapability(board, Board::MultiposPotsPositions));
         if (generalSettings && qr.quot < (int)DIM(generalSettings->potConfig))
           swName = QString(generalSettings->potName[qr.quot]);
         if (swName.isEmpty())
-          swName = getCurrentFirmware()->getAnalogInputName(qr.quot + getBoardCapability(board, Board::Sticks));;
+          swName = Boards::getAnalogInputName(board, qr.quot + Boards::getCapability(board, Board::Sticks));
         return swName + "_" + QString::number(qr.rem + 1);
 
       case SWITCH_TYPE_TRIM:
