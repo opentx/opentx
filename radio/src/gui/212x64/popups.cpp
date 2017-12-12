@@ -84,6 +84,7 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
   lcdSetContrast();
   clearKeyEvents();
   backlightOn();
+  checkBacklight();
 }
 
 void runPopupWarning(event_t event)

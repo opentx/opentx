@@ -93,6 +93,7 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
   lcdSetContrast();
   clearKeyEvents();
   backlightOn();
+  checkBacklight();
 }
 
 void runPopupWarning(event_t event)

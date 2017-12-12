@@ -2,8 +2,8 @@ option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
 
+set(PWR_BUTTON_DEFAULT "PRESS")
 if(PCB STREQUAL X9E)
-  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(STICKS "STANDARD" CACHE STRING "Sticks type (STANDARD/HORUS)")
   set(CPU_TYPE STM32F4)
   set(CPU_TYPE_FULL STM32F407xE)  # for size report
@@ -13,7 +13,6 @@ if(PCB STREQUAL X9E)
   set(FLAVOUR x9e)
   add_definitions(-DSTM32F40_41xxx -DPCBX9E -DPCBX9)
   add_definitions(-DEEPROM_VARIANT=0x8000)
-  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(FIRMWARE_TARGET_SRC
     ${FIRMWARE_TARGET_SRC}
     top_lcd_driver.cpp
@@ -34,6 +33,7 @@ elseif(PCB STREQUAL X9D+)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_x9d)
   set(FLAVOUR x9d+)
+  set (PWR_BUTTON_DEFAULT "SWITCH")
   add_definitions(-DPCBX9DP -DPCBX9)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 212x64)
@@ -56,7 +56,6 @@ elseif(PCB STREQUAL X9D)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL X7)
-  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
@@ -70,6 +69,9 @@ elseif(PCB STREQUAL X7)
   set(BITMAPS_TARGET 9x_bitmaps)
   set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
+
+set(PWR_BUTTON ${PWR_BUTTON_DEFAULT} CACHE STRING "Pwr button type (PRESS/SWITCH)")
+add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
 
 if(PCB STREQUAL X9E OR PCB STREQUAL X7)
   add_definitions(-DBLUETOOTH)
