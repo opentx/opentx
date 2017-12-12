@@ -2894,10 +2894,10 @@ uint32_t pwrCheck()
         CoTickDelay(10);
 #endif
         if (pwrPressed()) {
+          timeForcePowerOffPressed = 0;
           return e_power_on;
         }
         else if (readKeys() == (1 << KEY_ENTER)) {
-          timeForcePowerOffPressed = 0;
           return e_power_off;
         }
       }
