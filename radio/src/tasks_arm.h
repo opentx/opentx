@@ -73,4 +73,6 @@ extern TaskStack<AUDIO_STACK_SIZE> audioStack;
 
 void tasksStart();
 
+extern volatile uint16_t timeForcePowerOffPressed;
+
 #endif // _TASKS_ARM_H_
