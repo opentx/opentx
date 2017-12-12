@@ -2814,25 +2814,10 @@ uint32_t pwrCheck()
       }
       if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN_DELAY) {
 #if defined(SHUTDOWN_CONFIRMATION)
-        while (1) {
-          lcdRefreshWait();
-          lcdClear();
-          POPUP_CONFIRMATION("Confirm Shutdown");
-          event_t evt = getEvent(false);
-          DISPLAY_WARNING(evt);
-          lcdRefresh();
-          if (warningResult == true) {
-            pwr_check_state = PWR_CHECK_OFF;
-            return e_power_off;
-          }
-          else if (!warningText) {
-            // shutdown has been cancelled
-            pwr_check_state = PWR_CHECK_PAUSED;
-            return e_power_on;
-          }
-        }
+        while (1)
 #else
         while ((TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm)) {
+#endif
           lcdRefreshWait();
           lcdClear();
           POPUP_CONFIRMATION("Confirm Shutdown");
@@ -2852,7 +2837,6 @@ uint32_t pwrCheck()
         haptic.play(15, 3, PLAY_NOW);
         pwr_check_state = PWR_CHECK_OFF;
         return e_power_off;
-#endif
       }
       else {
         drawShutdownAnimation(pwrPressedDuration(), message);
@@ -2890,9 +2874,8 @@ uint32_t pwrCheck()
     if (TELEMETRY_STREAMING()) {
       RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
       while (TELEMETRY_STREAMING()) {
-#if defined(CPUARM)
+        resetForcePowerOffRequest();
         CoTickDelay(10);
-#endif
         if (pwrPressed()) {
           return e_power_on;
         }

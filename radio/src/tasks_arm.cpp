@@ -88,11 +88,6 @@ uint16_t stackAvailable()
 
 volatile uint16_t timeForcePowerOffPressed = 0;
 
-void resetForcePowerOffRequest()
-{
-  timeForcePowerOffPressed = 0;
-}
-
 bool isForcePowerOffRequested()
 {
   if (pwrOffPressed()) {
