@@ -135,27 +135,44 @@ void per10ms()
 #if defined(ROTARY_ENCODER_NAVIGATION)
   if (IS_ROTARY_ENCODER_NAVIGATION_ENABLE()) {
     static rotenc_t rePreviousValue;
+    static bool cw = false;
     rotenc_t reNewValue = (ROTARY_ENCODER_NAVIGATION_VALUE / ROTARY_ENCODER_GRANULARITY);
-    int8_t scrollRE = reNewValue - rePreviousValue;
+    rotenc_t scrollRE = reNewValue - rePreviousValue;
     if (scrollRE) {
+      static uint32_t lastEvent;
       rePreviousValue = reNewValue;
-      putEvent(scrollRE < 0 ? EVT_ROTARY_LEFT : EVT_ROTARY_RIGHT);
-    }
+
+      bool new_cw = (scrollRE < 0) ? false : true;
+      if ((g_tmr10ms - lastEvent >= 10) || (cw == new_cw)) { // 100ms
+
+        putEvent(new_cw ? EVT_ROTARY_RIGHT : EVT_ROTARY_LEFT);
+
+        if (new_cw) TRACE("+1");
+        else TRACE("-1");
+
 #if defined(CPUARM)
-    // rotary encoder navigation speed (acceleration) detection/calculation
-    if (scrollRE) {
-      static uint32_t lastTick = 0;
-      static uint32_t delay = 0;
-      delay = (((get_tmr10ms() - lastTick) << 3) + delay) >> 1;   // Modified moving average filter used for smoother change of speed
-      lastTick = get_tmr10ms();
-      if (delay < ROTENC_DELAY_HIGHSPEED)
-        rotencSpeed = ROTENC_HIGHSPEED;
-      else if (delay < ROTENC_DELAY_MIDSPEED)
-        rotencSpeed = ROTENC_MIDSPEED;
-      else
-        rotencSpeed = ROTENC_LOWSPEED;
-    }
+        // rotary encoder navigation speed (acceleration) detection/calculation
+        static uint32_t delay = 2*ROTENC_DELAY_MIDSPEED;
+
+        if (new_cw == cw) {
+          // Modified moving average filter used for smoother change of speed
+          delay = (((g_tmr10ms - lastEvent) << 3) + delay) >> 1;
+        }
+        else {
+          delay = 2*ROTENC_DELAY_MIDSPEED;
+        }
+
+        if (delay < ROTENC_DELAY_HIGHSPEED)
+          rotencSpeed = ROTENC_HIGHSPEED;
+        else if (delay < ROTENC_DELAY_MIDSPEED)
+          rotencSpeed = ROTENC_MIDSPEED;
+        else
+          rotencSpeed = ROTENC_LOWSPEED;
 #endif
+        cw = new_cw;
+        lastEvent = g_tmr10ms;
+      }
+    }
   }
 #endif
 
