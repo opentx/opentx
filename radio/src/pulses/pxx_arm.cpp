@@ -270,7 +270,7 @@ inline void putPcmTail(uint8_t port)
 #endif
 
 #define MAX_IERROR (0x3000)
-#define abs(x) (x>0?x:-x)
+#define ABS(x) (x>0?x:-x)
 
 void setupPulsesPXX(uint8_t port)
 {
@@ -314,7 +314,7 @@ void setupPulsesPXX(uint8_t port)
   int sendUpperChannels = 0;
   for (int i = 0; i < MAX_OUTPUT_CHANNELS; ++i)
   {
-    iError[port][i] += abs( (short)((channelOutputs[i]) -lastPPM[port][i]) );
+    iError[port][i] += ABS( (short)((channelOutputs[i]) -lastPPM[port][i]) );
     iError[port][i] =MAX_IERROR>iError[port][i]? iError[port][i]: MAX_IERROR;
   }
   if (pass[port]++ & 0x01) {
