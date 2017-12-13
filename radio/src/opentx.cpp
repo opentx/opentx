@@ -147,9 +147,6 @@ void per10ms()
 
         putEvent(new_cw ? EVT_ROTARY_RIGHT : EVT_ROTARY_LEFT);
 
-        if (new_cw) TRACE("+1");
-        else TRACE("-1");
-
 #if defined(CPUARM)
         // rotary encoder navigation speed (acceleration) detection/calculation
         static uint32_t delay = 2*ROTENC_DELAY_MIDSPEED;
