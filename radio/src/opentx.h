@@ -781,6 +781,8 @@ int getTrimValue(uint8_t phase, uint8_t idx);
   #define ROTARY_ENCODER_GRANULARITY (1)
 #elif defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
+#elif defined(PCBHORUS)
+  #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
 #endif
