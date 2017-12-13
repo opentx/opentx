@@ -309,7 +309,7 @@ void setupPulsesPXX(uint8_t port)
 
   /* PPM */
   static unsigned int iError[2][MAX_OUTPUT_CHANNELS];
-  static int lastPPM[2][MAX_OUTPUT_CHANNELS];
+  static int16_t lastPPM[2][MAX_OUTPUT_CHANNELS];
   static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
   int sendUpperChannels = 0;
   for (int i = 0; i < MAX_OUTPUT_CHANNELS; ++i)
