@@ -353,7 +353,7 @@ void setupPulsesPXX(uint8_t port)
       }
     }
     else {
-      if (g_model.moduleData[port].channelsCount) {
+      if (g_model.moduleData[port].channelsCount > 8) {
         int channel = g_model.moduleData[port].channelsStart + i;        
         iError[port][channel] += ABS( (short)((channelOutputs[channel]) - lastPPM[port][channel]));
         iError[port][channel] = MAX_IERROR>iError[port][channel]? iError[port][channel]: MAX_IERROR;
