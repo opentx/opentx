@@ -355,9 +355,9 @@ void setupPulsesPXX(uint8_t port)
     else {
       if (g_model.moduleData[port].channelsCount) {
         int channel = g_model.moduleData[port].channelsStart + i;        
-        iError[port][channel] += ABS( (short)((channelOutputs[channel]) -lastPPM[port][channel]));
+        iError[port][channel] += ABS( (short)((channelOutputs[channel]) - lastPPM[port][channel]));
         iError[port][channel] = MAX_IERROR>iError[port][channel]? iError[port][channel]: MAX_IERROR;
-        iError[port][channel+8] += ABS((short)((channelOutputs[channel+8]) -lastPPM[port][channel+8]));
+        iError[port][channel+8] += ABS((short)((channelOutputs[channel+8]) - lastPPM[port][channel+8]));
         iError[port][channel+8] = MAX_IERROR>iError[port][channel+8]? iError[port][channel+8]: MAX_IERROR;
     	if (i >= NUM_CHANNELS(port)) {
     	  pulseValue = 1024;
@@ -366,7 +366,7 @@ void setupPulsesPXX(uint8_t port)
         {
           lastPPM[port][channel] = channelOutputs[channel];
           iError[port][channel] = 0;
-          iError[port][channel+8] ++;
+          iError[port][channel+8]++;
           int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
           pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
         }
