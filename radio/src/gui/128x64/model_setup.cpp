@@ -1024,20 +1024,17 @@ void menuModelSetup(event_t event)
                       uint8_t default_selection;
                       if (IS_MODULE_R9M_LBT(moduleIdx)) {
                         POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_OFF);
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_ON);
+                        if (!IS_TELEMETRY_INTERNAL_MODULE())
+                          POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH1_8_TELEM_OFF);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH9_16_TELEM_OFF);
                         default_selection = 2;
                       }
                       else {
-                        if (IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE)
-                          POPUP_MENU_ADD_ITEM(STR_DISABLE_INTERNAL);
-                        else
+                        if (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE))
                           POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_OFF);
-                        if (IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE)
-                          POPUP_MENU_ADD_ITEM(STR_DISABLE_INTERNAL);
-                        else
+                        if (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE))
                           POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
                         default_selection = g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off + (g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 << 1);
