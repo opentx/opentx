@@ -582,8 +582,15 @@
 
 // Heartbeat (not used)
 #define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
+#define HEARTBEAT_RCC_APB1Periph        RCC_APB1Periph_TIM4
 #define HEARTBEAT_GPIO                  GPIOD
 #define HEARTBEAT_GPIO_PIN              GPIO_Pin_12 // PD.12
+#define HEARTBEAT_GPIO_PinSource        GPIO_PinSource12
+#define HEARTBEAT_GPIO_AF_CAPTURE       GPIO_AF_TIM4
+#define HEARTBEAT_TIMER                 TIM4
+#define HEARTBEAT_TIMER_IRQn            TIM4_IRQn
+#define HEARTBEAT_TIMER_IRQHandler      TIM4_IRQHandler
+
 
 // Trainer Port
 #define TRAINER_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)

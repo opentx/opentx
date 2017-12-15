@@ -152,3 +152,64 @@ extern "C" void TRAINER_TIMER_IRQHandler()
     trainerSendNextFrame();
   }
 }
+
+extern "C" void HEARTBEAT_TIMER_IRQHandler()
+{
+  uint16_t capture = 0;
+  bool doCapture = false;
+
+  // What mode? in or out?
+  if ((HEARTBEAT_TIMER->DIER & TIM_DIER_CC1IE) && (HEARTBEAT_TIMER->SR & TIM_SR_CC1IF)) {
+
+    // capture mode on trainer jack
+    capture = HEARTBEAT_TIMER->CCR1;
+    if (currentTrainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE) {
+      doCapture = true;
+
+      DEBUG_INTERRUPT(INT_TRAINER);
+
+    }
+  }
+
+  if (doCapture) {
+    captureTrainerPulses(capture);
+  }
+}
+
+void init_cppm_on_heartbeat_capture(void)
+{
+  EXTERNAL_MODULE_ON();
+
+  GPIO_PinAFConfig(HEARTBEAT_GPIO, HEARTBEAT_GPIO_PinSource, HEARTBEAT_GPIO_AF_CAPTURE);
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
+
+  HEARTBEAT_TIMER->ARR = 0xFFFF;
+  HEARTBEAT_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
+  HEARTBEAT_TIMER->CR2 = 0;
+  HEARTBEAT_TIMER->CCMR1 = TIM_CCMR1_IC1F_0 | TIM_CCMR1_IC1F_1 | TIM_CCMR1_CC1S_0;
+  HEARTBEAT_TIMER->CCER = TIM_CCER_CC1E;
+  HEARTBEAT_TIMER->SR &= ~TIM_SR_CC1IF; // Clear flag
+  HEARTBEAT_TIMER->DIER |= TIM_DIER_CC1IE;
+  HEARTBEAT_TIMER->CR1 = TIM_CR1_CEN;
+
+  NVIC_SetPriority(HEARTBEAT_TIMER_IRQn, 7);
+  NVIC_EnableIRQ(HEARTBEAT_TIMER_IRQn);
+}
+
+void stop_cppm_on_heartbeat_capture()
+{
+  HEARTBEAT_TIMER->DIER = 0;
+  HEARTBEAT_TIMER->CR1 &= ~TIM_CR1_CEN;  // Stop counter
+  NVIC_DisableIRQ(HEARTBEAT_TIMER_IRQn); // Stop Interrupt
+
+  if (!IS_EXTERNAL_MODULE_ENABLED()) {
+    EXTERNAL_MODULE_OFF();
+  }
+}
