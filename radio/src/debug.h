@@ -218,6 +218,7 @@ public:
 enum InterruptNames {
   INT_TICK,
   INT_1MS,
+  INT_AUDIO,
   INT_SER2,
   INT_TELEM_DMA,
   INT_TELEM_USART,
