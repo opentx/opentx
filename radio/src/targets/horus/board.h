@@ -207,6 +207,9 @@ void init_trainer_ppm(void);
 void stop_trainer_ppm(void);
 void init_trainer_capture(void);
 void stop_trainer_capture(void);
+void init_cppm_on_heartbeat_capture(void);
+void stop_cppm_on_heartbeat_capture(void);
+
 
 // Keys driver
 enum EnumKeys
