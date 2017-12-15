@@ -1004,6 +1004,11 @@ bool CustomFunctionData::isEmpty() const
   return (swtch.type == SWITCH_TYPE_NONE);
 }
 
+QString CustomFunctionData::toString(int index, bool globalContext) const
+{
+  return getElementName((globalContext ? QObject::tr("GF") : QObject::tr("SF")), index+1, 0, true);
+}
+
 QString CustomFunctionData::funcToString(const ModelData * model) const
 {
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
@@ -1326,46 +1331,13 @@ GeneralSettings::GeneralSettings()
     vBatMax = -40; //8V
   }
 
-
-    for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
-    switchConfig[i] = Boards::getSwitchInfo(board, i).config;
-  }
+  setDefaultControlTypes(board);
 
   backlightMode = 3; // keys and sticks
   // backlightBright = 0; // 0 = 100%
 
   if (IS_HORUS(board)) {
     backlightOffBright = 20;
-  }
-
-  if (IS_HORUS(board)) {
-    potConfig[0] = Board::POT_WITH_DETENT;
-    potConfig[1] = Board::POT_MULTIPOS_SWITCH;
-    potConfig[2] = Board::POT_WITH_DETENT;
-  }
-  else if (IS_TARANIS_X7(board)) {
-    potConfig[0] = Board::POT_WITHOUT_DETENT;
-    potConfig[1] = Board::POT_WITH_DETENT;
-  }
-  else if (IS_TARANIS(board)) {
-    potConfig[0] = Board::POT_WITH_DETENT;
-    potConfig[1] = Board::POT_WITH_DETENT;
-  }
-  else {
-    potConfig[0] = Board::POT_WITHOUT_DETENT;
-    potConfig[1] = Board::POT_WITHOUT_DETENT;
-    potConfig[2] = Board::POT_WITHOUT_DETENT;
-  }
-
-  if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board)) {
-    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[2] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[3] = Board::SLIDER_WITH_DETENT;
-  }
-  else if (IS_TARANIS_X9(board) || IS_HORUS_X10(board)) {
-    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
   }
 
   if (IS_ARM(board)) {
@@ -1480,6 +1452,44 @@ GeneralSettings::GeneralSettings()
   memcpy(&themeOptionValue[0], option1, sizeof(ThemeOptionData));
   ThemeOptionData option2 = { 0x03, 0xe1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0 };
   memcpy(&themeOptionValue[1], option2, sizeof(ThemeOptionData));
+}
+
+void GeneralSettings::setDefaultControlTypes(Board::Type board)
+{
+  for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
+    switchConfig[i] = Boards::getSwitchInfo(board, i).config;
+  }
+
+  // TODO: move to Boards, like with switches
+  if (IS_HORUS(board)) {
+    potConfig[0] = Board::POT_WITH_DETENT;
+    potConfig[1] = Board::POT_MULTIPOS_SWITCH;
+    potConfig[2] = Board::POT_WITH_DETENT;
+  }
+  else if (IS_TARANIS_X7(board)) {
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
+  }
+  else if (IS_TARANIS(board)) {
+    potConfig[0] = Board::POT_WITH_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
+  }
+  else {
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITHOUT_DETENT;
+    potConfig[2] = Board::POT_WITHOUT_DETENT;
+  }
+
+  if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board)) {
+    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[2] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[3] = Board::SLIDER_WITH_DETENT;
+  }
+  else if (IS_TARANIS_X9(board) || IS_HORUS_X10(board)) {
+    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
+  }
 }
 
 int GeneralSettings::getDefaultStick(unsigned int channel) const
@@ -2064,6 +2074,11 @@ void FlightModeData::clear(const int phase)
       rotaryEncoders[idx] = 1025;
     }
   }
+}
+
+QString FlightModeData::toString(int index) const
+{
+  return getElementName(QObject::tr("FM"), index, name, true);
 }
 
 QString GVarData::unitToString() const

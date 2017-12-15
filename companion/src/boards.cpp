@@ -181,6 +181,12 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 3;
 
+    case FactoryInstalledPots:
+      if (IS_TARANIS_X9(board))
+        return 2;
+      else
+        return getCapability(board, Pots);
+
     case Sliders:
       if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board))
         return 4;

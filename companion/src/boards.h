@@ -108,6 +108,7 @@ namespace Board {
   enum Capability {
     Sticks,
     Pots,
+    FactoryInstalledPots,
     Sliders,
     MouseAnalogs,
     MaxAnalogs,
@@ -184,6 +185,7 @@ class Boards
 #define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board))
+#define IS_TARANIS_NOT_X9E(board)      (IS_TARANIS(board) && !IS_TARANIS_X9E(board))
 #define IS_HORUS_X12S(board)           (board==Board::BOARD_X12S)
 #define IS_HORUS_X10(board)            (board==Board::BOARD_X10)
 #define IS_HORUS(board)                (IS_HORUS_X12S(board) || IS_HORUS_X10(board))

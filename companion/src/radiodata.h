@@ -251,6 +251,7 @@ enum RawSwitchType {
   SWITCH_TYPE_TIMER_MODE,
   SWITCH_TYPE_TELEMETRY,
   SWITCH_TYPE_SENSOR,
+  MAX_SWITCH_TYPE
 };
 
 class RawSwitch {
@@ -539,6 +540,7 @@ class CustomFunctionData { // Function Switches data
 
     void clear();
     bool isEmpty() const;
+    QString toString(int index, bool globalContext = false) const;
     QString funcToString(const ModelData * model = NULL) const;
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;
@@ -565,6 +567,7 @@ class FlightModeData {
     int rotaryEncoders[CPN_MAX_ENCODERS];
     int gvars[CPN_MAX_GVARS];
     void clear(const int phase);
+    QString toString(int index) const;
     void convert(Board::Type before, Board::Type after);
 };
 
@@ -1198,6 +1201,7 @@ class GeneralSettings {
     GeneralSettings();
     void convert(Board::Type before, Board::Type after);
 
+    void setDefaultControlTypes(Board::Type board);
     int getDefaultStick(unsigned int channel) const;
     RawSource getDefaultSource(unsigned int channel) const;
     int getDefaultChannel(unsigned int stick) const;
