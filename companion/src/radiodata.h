@@ -7,6 +7,9 @@
 #include <QComboBox>
 
 class Firmware;
+class ModelData;
+class GeneralSettings;
+class RadioDataConversionState;
 
 enum Switches {
   SWITCH_NONE,
@@ -79,9 +82,6 @@ enum HeliSwashTypes {
   HELI_SWASH_TYPE_140,
   HELI_SWASH_TYPE_90
 };
-
-class ModelData;
-class GeneralSettings;
 
 enum TelemetrySource {
   TELEMETRY_SOURCE_TX_BATT,
@@ -216,7 +216,7 @@ class RawSource {
       return index >= 0 ? (type * 65536 + index) : -(type * 65536 - index);
     }
 
-    RawSource convert(Board::Type before, Board::Type after);
+    RawSource convert(RadioDataConversionState & cstate);
     QString toString(const ModelData * model = NULL, const GeneralSettings * const generalSettings = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
     RawSourceRange getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags=0) const;
     bool isStick(int * potsIndex = NULL, Board::Type board = Board::BOARD_UNKNOWN) const;
@@ -279,7 +279,7 @@ class RawSwitch {
       return index >= 0 ? (type * 256 + index) : -(type * 256 - index);
     }
 
-    RawSwitch convert(Board::Type before, Board::Type after);
+    RawSwitch convert(RadioDataConversionState & cstate);
     QString toString(Board::Type board = Board::BOARD_UNKNOWN, const GeneralSettings * const generalSettings = NULL, const ModelData * const modelData = NULL) const;
     bool isAvailable(const ModelData * const model = NULL, const GeneralSettings * const gs = NULL, Board::Type board = Board::BOARD_UNKNOWN);
 
@@ -343,7 +343,7 @@ class ExpoData {
     int carryTrim;
     char name[10+1];
     void clear() { memset(this, 0, sizeof(ExpoData)); }
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 };
 
 class CurvePoint {
@@ -401,7 +401,7 @@ enum MltpxValue {
 class MixData {
   public:
     MixData() { clear(); }
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 
     unsigned int destCh;            //        1..CPN_MAX_CHNOUT
     RawSource srcRaw;
@@ -478,7 +478,7 @@ class LogicalSwitchData { // Logical Switches data
     CSFunctionFamily getFunctionFamily() const;
     unsigned int getRangeFlags() const;
     QString funcToString() const;
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 };
 
 enum AssignFunc {
@@ -550,7 +550,7 @@ class CustomFunctionData { // Function Switches data
     static void populatePlaySoundParams(QStringList & qs);
     static void populateHapticParams(QStringList & qs);
 
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 
 };
 
@@ -568,7 +568,7 @@ class FlightModeData {
     int gvars[CPN_MAX_GVARS];
     void clear(const int phase);
     QString toString(int index) const;
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 };
 
 class SwashRingData { // Swash Ring data
@@ -756,6 +756,7 @@ class TimerData {
     unsigned int persistent;
     int          pvalue;
     void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
+    void convert(RadioDataConversionState & cstate);
 };
 
 enum PulsesProtocol {
@@ -1073,7 +1074,7 @@ class ModelData {
     ModelData(const ModelData & src);
     ModelData & operator = (const ModelData & src);
 
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 
     ExpoData * insertInput(const int idx);
     void removeInput(const int idx);
@@ -1199,7 +1200,7 @@ class GeneralSettings {
     };
 
     GeneralSettings();
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 
     void setDefaultControlTypes(Board::Type board);
     int getDefaultStick(unsigned int channel) const;
@@ -1317,7 +1318,7 @@ class RadioData {
     std::vector<CategoryData> categories;
     std::vector<ModelData> models;
 
-    void convert(Board::Type before, Board::Type after);
+    void convert(RadioDataConversionState & cstate);
 
     void setCurrentModel(unsigned int index);
     void fixModelFilenames();

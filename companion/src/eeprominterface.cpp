@@ -529,12 +529,15 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
 
   if (index<0) {
-    return QObject::tr("----");
+    return QObject::tr("???");
   }
 
   QString result;
   int genAryIdx = 0;
   switch (type) {
+    case SOURCE_TYPE_NONE:
+      return QObject::tr("----");
+
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
       const char * name = NULL;
@@ -614,7 +617,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     }
 
     default:
-      return QObject::tr("----");
+      return QObject::tr("???");
   }
 }
 

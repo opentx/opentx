@@ -19,43 +19,70 @@
  */
 
 #include "radiodata.h"
+#include "radiodataconversionstate.h"
 #include "eeprominterface.h"
 
 // TODO here we will move a lot of functions from eeprominterface.cpp when no merge risk
 
-RawSource RawSource::convert(Board::Type before, Board::Type after)
+RawSource RawSource::convert(RadioDataConversionState & cstate)
 {
-  if (type == SOURCE_TYPE_STICK && index >= 4 + getBoardCapability(before, Board::Pots)) {
-    // 1st slider alignment
-    index += getBoardCapability(after, Board::Pots) - getBoardCapability(before, Board::Pots);
-  }
+  cstate.setItemType("SRC", 1);
+  RadioDataConversionState::EventType evt = RadioDataConversionState::EVT_NONE;
+  RadioDataConversionState::LogField oldData(index, toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType));
 
-  if (IS_HORUS(after)) {
-    if (IS_TARANIS_X9D(before)) {
-      if (type == SOURCE_TYPE_STICK && index >= 7) {
-        // LS and RS on Horus are after sliders L1 and L2
-        index += 2;
+  if (type == SOURCE_TYPE_STICK) {
+    if (cstate.toBoard.getCapability(Board::Sliders)) {
+      if (index >= cstate.fromBoard.getCapability(Board::Sticks) + cstate.fromBoard.getCapability(Board::Pots)) {
+        // 1st slider alignment
+        index += cstate.toBoard.getCapability(Board::Pots) - cstate.fromBoard.getCapability(Board::Pots);
+      }
+
+      if (isSlider(0, cstate.fromType)) {
+        // LS and RS sliders are after 2 aux sliders on X12 and X9E
+        if ((IS_HORUS_X12S(cstate.toType) || IS_TARANIS_X9E(cstate.toType)) && !IS_HORUS_X12S(cstate.fromType) && !IS_TARANIS_X9E(cstate.fromType)) {
+          if (index >= 7) {
+            index += 2;  // LS/RS to LS/RS
+          }
+        }
+        else if (!IS_TARANIS_X9E(cstate.toType) && !IS_HORUS_X12S(cstate.toType) && (IS_HORUS_X12S(cstate.fromType) || IS_TARANIS_X9E(cstate.fromType))) {
+          if (index >= 7 && index <= 8) {
+            index += 2;   // aux sliders to spare analogs (which may not exist, this is validated later)
+            evt = RadioDataConversionState::EVT_CVRT;
+          }
+          else if (index >= 9 && index <= 10) {
+            index -= 2;  // LS/RS to LS/RS
+          }
+        }
       }
     }
-  }
 
-  // SWI to SWR don't exist on !X9E board
-  if (!IS_TARANIS_X9E(after) && IS_TARANIS_X9E(before)) {
-    if (type == SOURCE_TYPE_SWITCH && index >= 8) {
-      index = index % 8;
+    if (IS_TARANIS(cstate.toType) && IS_HORUS(cstate.fromType)) {
+      if (index == 6)
+        index = 5;  // pot S2 to S2
+      else if (index == 5)
+        index = -1;  //  6P on Horus doesn't exist on Taranis
     }
-  }
-
-  if (IS_TARANIS_X7(after)) {
-    // No S3, LS and RS on X7 board
-    if (type == SOURCE_TYPE_STICK && index >= 6) {
-      index = 5;
+    else  if (IS_HORUS(cstate.toType) && IS_TARANIS(cstate.fromType) && index == 5)
+    {
+      index = 6;  // pot S2 to S2
     }
 
-    // No SE and SG on X7 board
-    if ((IS_TARANIS_X9(before) || IS_HORUS(before)) && type == SOURCE_TYPE_SWITCH) {
+  }  // SOURCE_TYPE_STICK
+
+  if (type == SOURCE_TYPE_SWITCH) {
+    // SWI to SWR don't exist on !X9E board
+    if (!IS_TARANIS_X9E(cstate.toType) && IS_TARANIS_X9E(cstate.fromType)) {
+      if (index >= 8) {
+        index = index % 8;
+        evt = RadioDataConversionState::EVT_CVRT;
+      }
+    }
+
+    if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+      // No SE and SG on X7 board
       if (index == 4 || index == 6) {
         index = 3;  // SG and SE to SD
+        evt = RadioDataConversionState::EVT_CVRT;
       }
       else if (index == 5) {
         index = 4;  // SF to SF
@@ -64,170 +91,269 @@ RawSource RawSource::convert(Board::Type before, Board::Type after)
         index = 5;  // SH to SH
       }
     }
-  }
+    // Compensate for SE and SG on X9/Horus board if converting from X7
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+      if (index == 4) {
+        index = 5;  // SF to SF
+      }
+      else if (index == 5) {
+        index = 7;  // SH to SH
+      }
+    }
+  }  // SOURCE_TYPE_SWITCH
 
-  // Compensate for SE and SG on X9/Horus board if converting from X7
-  if ((IS_TARANIS_X9(after) || IS_HORUS(after)) && IS_TARANIS_X7(before) && type == SOURCE_TYPE_SWITCH) {
-    if (index == 4) {
-      index = 5;  // SF to SF
-    }
-    else if (index == 5) {
-      index = 7;  // SH to SH
-    }
+  // final validation (we do not pass model to isAvailable() because we don't know what has or hasn't been converted)
+  if (!isAvailable(NULL, cstate.toGS(), cstate.toType)) {
+    cstate.setInvalid(oldData);
+    index = -1;  // TODO: better way to flag invalid sources?
+    type = MAX_SOURCE_TYPE;
+  }
+  else if (evt == RadioDataConversionState::EVT_CVRT) {
+    cstate.setConverted(oldData, RadioDataConversionState::LogField(index, toString(cstate.toModel(), cstate.toGS(), cstate.toType)));
+  }
+  else if (oldData.id != index) {
+    // provide info by default if anything changed
+    cstate.setMoved(oldData, RadioDataConversionState::LogField(index, toString(cstate.toModel(), cstate.toGS(), cstate.toType)));
   }
 
   return *this;
 }
 
-RawSwitch RawSwitch::convert(Board::Type before, Board::Type after)
+RawSwitch RawSwitch::convert(RadioDataConversionState & cstate)
 {
-  if (!index || type != SWITCH_TYPE_SWITCH) {
-    return *this;  // no changes
+  if (!index)
+    return *this;
+
+  cstate.setItemType("SW", 2);
+  RadioDataConversionState::EventType evt = RadioDataConversionState::EVT_NONE;
+  RadioDataConversionState::LogField oldData(index, toString(cstate.fromType, cstate.fromGS(), cstate.fromModel()));
+
+  if (type == SWITCH_TYPE_SWITCH) {
+    int srcIdx = div(abs(index)-1, 3).quot;  // raw source index
+    int delta = 0;
+
+    // SWI to SWR don't exist on !X9E board
+    if (!IS_TARANIS_X9E(cstate.toType) && IS_TARANIS_X9E(cstate.fromType)) {
+      if (srcIdx > 7) {
+        index %= 24;
+        evt = RadioDataConversionState::EVT_CVRT;
+      }
+    }
+
+    // No SE and SG on X7 board
+    if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+      if (srcIdx == 4 || srcIdx == 5) {
+        delta = 3;  // SE to SD & SF to SF
+        if (srcIdx == 4)
+          evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (srcIdx == 6) {
+        delta = 9;  // SG to SD
+        evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (srcIdx == 7) {
+        delta = 6;  // SH to SH
+      }
+    }
+    // Compensate for SE and SG on X9/Horus board if converting from X7
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+      if (srcIdx == 4) {
+        delta = -3;  // SF to SF
+      }
+      else if (srcIdx == 5) {
+        delta = -6;  // SH to SH
+      }
+    }
+
+    if (index < 0) {
+      delta = -delta;  // invert for !switch
+    }
+
+    index -= delta;
+
+  }  // SWITCH_TYPE_SWITCH
+
+  // final validation (we do not pass model to isAvailable() because we don't know what has or hasn't been converted)
+  if (!isAvailable(NULL, cstate.toGS(), cstate.toType)) {
+    cstate.setInvalid(oldData);
+    type = MAX_SWITCH_TYPE;  // TODO: better way to flag invalid switches?
   }
-
-  // SWI to SWR don't exist on !X9E board
-  if (!IS_TARANIS_X9E(after) && IS_TARANIS_X9E(before)) {
-    if (abs(index) > 24) {
-      index = index % 24;
-    }
+  else if (evt == RadioDataConversionState::EVT_CVRT) {
+    cstate.setConverted(oldData, RadioDataConversionState::LogField(index, toString(cstate.toType, cstate.toGS(), cstate.toModel())));
   }
-
-  int srcIdx = div(abs(index)-1, 3).quot;  // raw source index
-  int delta = 0;
-
-  // No SE and SG on X7 board
-  if (IS_TARANIS_X7(after) && (IS_TARANIS_X9(before) || IS_HORUS(before))) {
-    if (srcIdx == 4 || srcIdx == 5) {
-      delta = 3;  // SE to SD & SF to SF
-    }
-    else if (srcIdx == 6) {
-      delta = 9;  // SG to SD
-    }
-    else if (srcIdx == 7) {
-      delta = 6;  // SH to SH
-    }
+  else if (oldData.id != index) {
+    // provide info by default if anything changed
+    cstate.setMoved(oldData, RadioDataConversionState::LogField(index, toString(cstate.toType, cstate.toGS(), cstate.toModel())));
   }
-
-  // Compensate for SE and SG on X9/Horus board if converting from X7
-  if ((IS_TARANIS_X9(after) || IS_HORUS(after)) && IS_TARANIS_X7(before)) {
-    if (srcIdx == 4) {
-      delta = -3;  // SF to SF
-    }
-    else if (srcIdx == 5) {
-      delta = -6;  // SH to SH
-    }
-  }
-
-  if (index < 0) {
-    delta = -delta;  // invert for !switch
-  }
-
-  index -= delta;
 
   return *this;
 }
 
-void ExpoData::convert(Board::Type before, Board::Type after)
+void ExpoData::convert(RadioDataConversionState & cstate)
 {
-  srcRaw.convert(before, after);
-  swtch.convert(before, after);
+  cstate.setComponent(QObject::tr("INP"), 3);
+  cstate.setSubComp(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, chn).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % QObject::tr(" (@%1)").arg(cstate.subCompIdx));
+  srcRaw.convert(cstate);
+  swtch.convert(cstate);
 }
 
-void MixData::convert(Board::Type before, Board::Type after)
+void MixData::convert(RadioDataConversionState & cstate)
 {
-  srcRaw.convert(before, after);
-  swtch.convert(before, after);
+  cstate.setComponent(QObject::tr("MIX"), 4);
+  cstate.setSubComp(RawSource(SOURCE_TYPE_CH, destCh-1).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % QObject::tr(" (@%1)").arg(cstate.subCompIdx));
+  srcRaw.convert(cstate);
+  swtch.convert(cstate);
 }
 
-void LogicalSwitchData::convert(Board::Type before, Board::Type after)
+void LogicalSwitchData::convert(RadioDataConversionState & cstate)
 {
+  cstate.setComponent("LSW", 7);
+  cstate.setSubComp(RawSwitch(SWITCH_TYPE_VIRTUAL, cstate.subCompIdx + 1).toString(cstate.fromType, cstate.fromGS(), cstate.fromModel()));
   CSFunctionFamily family = getFunctionFamily();
   switch(family) {
     case LS_FAMILY_VOFS:
-      val1 = RawSource(val1).convert(before, after).toValue();
+      val1 = RawSource(val1).convert(cstate.withComponentField("V1")).toValue();
       break;
     case LS_FAMILY_STICKY:
     case LS_FAMILY_VBOOL:
-      val1 = RawSwitch(val1).convert(before, after).toValue();
-      val2 = RawSwitch(val2).convert(before, after).toValue();
+      val1 = RawSwitch(val1).convert(cstate.withComponentField("V1")).toValue();
+      val2 = RawSwitch(val2).convert(cstate.withComponentField("V2")).toValue();
       break;
     case LS_FAMILY_EDGE:
-      val1 = RawSwitch(val1).convert(before, after).toValue();
+      val1 = RawSwitch(val1).convert(cstate.withComponentField("V1")).toValue();
       break;
     case LS_FAMILY_VCOMP:
-      val1 = RawSource(val1).convert(before, after).toValue();
-      val2 = RawSource(val2).convert(before, after).toValue();
+      val1 = RawSource(val1).convert(cstate.withComponentField("V1")).toValue();
+      val2 = RawSource(val2).convert(cstate.withComponentField("V2")).toValue();
       break;
     default:
       break;
   }
 
-  andsw = RawSwitch(andsw).convert(before, after).toValue();
+  andsw = RawSwitch(andsw).convert(cstate.withComponentField("AND")).toValue();
 }
 
-void CustomFunctionData::convert(Board::Type before, Board::Type after)
+void CustomFunctionData::convert(RadioDataConversionState & cstate)
 {
-  swtch.convert(before, after);
-  if (func == FuncVolume || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1))
-    param = RawSource(param).convert(before, after).toValue();
+  cstate.setComponent("CFN", 8);
+  cstate.setSubComp(toString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
+  swtch.convert(cstate);
+  if (func == FuncVolume || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
+    param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();
+  }
 }
 
-void FlightModeData::convert(Board::Type before, Board::Type after)
+void FlightModeData::convert(RadioDataConversionState & cstate)
 {
-  swtch.convert(before, after);
+  cstate.setComponent("FMD", 2);
+  cstate.setSubComp(toString(cstate.subCompIdx));
+  swtch.convert(cstate);
 }
 
-void ModelData::convert(Board::Type before, Board::Type after)
+void TimerData::convert(RadioDataConversionState & cstate)
+{
+  cstate.setComponent("TMR", 1);
+  cstate.setSubComp(QObject::tr("Timer %1").arg(cstate.subCompIdx + 1));
+  mode.convert(cstate);
+}
+
+void ModelData::convert(RadioDataConversionState & cstate)
 {
   // Here we can add explicit conversions when moving from one board to another
+
+  QString origin = QString(name);
+  if (origin.isEmpty())
+    origin = QString::number(cstate.modelIdx+1);
+  cstate.setOrigin(QObject::tr("Model: ") % origin);
+
+  cstate.setComponent("SET", 0);
+  if (thrTraceSrc && (int)thrTraceSrc < cstate.fromBoard.getCapability(Board::Pots) + cstate.fromBoard.getCapability(Board::Sliders)) {
+    cstate.setSubComp(QObject::tr("Throttle Source"));
+    thrTraceSrc = RawSource(SOURCE_TYPE_STICK, (int)thrTraceSrc + 3).convert(cstate).index - 3;
+  }
+
+  for (int i=0; i<CPN_MAX_TIMERS; i++) {
+    timers[i].convert(cstate.withComponentIndex(i));
+  }
+
   for (int i=0; i<CPN_MAX_MIXERS; i++) {
-    mixData[i].convert(before, after);
+    mixData[i].convert(cstate.withComponentIndex(i));
   }
 
   for (int i=0; i<CPN_MAX_EXPOS; i++) {
-    expoData[i].convert(before, after);
+    expoData[i].convert(cstate.withComponentIndex(i));
   }
 
   for (int i=0; i<CPN_MAX_LOGICAL_SWITCHES; i++) {
-    logicalSw[i].convert(before, after);
+    logicalSw[i].convert(cstate.withComponentIndex(i));
   }
 
   for (int i=0; i<CPN_MAX_SPECIAL_FUNCTIONS; i++) {
-    customFn[i].convert(before, after);
+    customFn[i].convert(cstate.withComponentIndex(i));
   }
 
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
-    flightModeData[i].convert(before, after);
+    flightModeData[i].convert(cstate.withComponentIndex(i));
   }
 }
 
-void GeneralSettings::convert(Board::Type before, Board::Type after)
+void GeneralSettings::convert(RadioDataConversionState & cstate)
 {
   // Here we can add explicit conversions when moving from one board to another
 
-  for (int i=0; i<CPN_MAX_SPECIAL_FUNCTIONS; i++) {
-    customFn[i].convert(before, after);
-  }
+  cstate.setOrigin(QObject::tr("Radio Settings"));
 
-  // No SE and SG on X7 board
-  if (IS_TARANIS_X7(after)) {
-    if (IS_TARANIS_X9(before) || IS_HORUS(before)) {
-      switchConfig[4] = switchConfig[5];
-      memcpy(switchName[4], switchName[5], sizeof(switchName[4]));
-      switchConfig[5] = switchConfig[7];
-      memcpy(switchName[5], switchName[7], sizeof(switchName[5]));
+  setDefaultControlTypes(cstate.toType);  // start with default switches/pots/sliders
+
+  // Try to intelligently copy any custom control names
+
+  // SE and SG are skipped on X7 board
+  if (IS_TARANIS_X7(cstate.toType)) {
+    if (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType)) {
+      strncpy(switchName[4], switchName[5], sizeof(switchName[0]));
+      strncpy(switchName[5], switchName[7], sizeof(switchName[0]));
+    }
+  }
+  else if (IS_TARANIS_X7(cstate.fromType)) {
+    if (IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) {
+      strncpy(switchName[5], switchName[4], sizeof(switchName[0]));
+      strncpy(switchName[7], switchName[5], sizeof(switchName[0]));
     }
   }
 
-  if (IS_TARANIS(after)) {
-    unsigned int min_contrast = getCurrentFirmware()->getCapability(MinContrast);
-    unsigned int max_contrast = getCurrentFirmware()->getCapability(MaxContrast);
-
-    if (contrast < min_contrast)
-      contrast = min_contrast;
-    else if (contrast > max_contrast)
-      contrast = max_contrast;
+  // LS and RS sliders are after 2 aux sliders on X12 and X9E
+  if ((IS_HORUS_X12S(cstate.toType) || IS_TARANIS_X9E(cstate.toType)) && !IS_HORUS_X12S(cstate.fromType) && !IS_TARANIS_X9E(cstate.fromType)) {
+    strncpy(sliderName[0], sliderName[2], sizeof(sliderName[0]));
+    strncpy(sliderName[1], sliderName[3], sizeof(sliderName[0]));
   }
+  else if (!IS_TARANIS_X9E(cstate.toType) && !IS_HORUS_X12S(cstate.toType) && (IS_HORUS_X12S(cstate.fromType) || IS_TARANIS_X9E(cstate.fromType))) {
+    strncpy(sliderName[2], sliderName[0], sizeof(sliderName[0]));
+    strncpy(sliderName[3], sliderName[1], sizeof(sliderName[0]));
+  }
+
+  if (IS_HORUS(cstate.toType)) {
+    // 6P switch is only on Horus (by default)
+    if (cstate.fromBoard.getCapability(Board::FactoryInstalledPots) == 2) {
+      strncpy(potName[2], potName[1], sizeof(potName[0]));
+      potName[1][0] = '\0';
+    }
+  }
+
+  if (IS_TARANIS(cstate.toType)) {
+    // No S3 pot on Taranis boards by default
+    if (cstate.fromBoard.getCapability(Board::FactoryInstalledPots) > 2)
+      strncpy(potName[1], potName[2], sizeof(potName[0]));
+
+    contrast = qBound<int>(getCurrentFirmware()->getCapability(MinContrast), contrast, getCurrentFirmware()->getCapability(MaxContrast));
+  }
+
+  // TODO: Would be nice at this point to have GUI pause and ask the user to set up any custom hardware they have on the destination radio.
+
+  // Convert all global functions (do this after HW adjustments)
+  for (int i=0; i<CPN_MAX_SPECIAL_FUNCTIONS; i++) {
+    customFn[i].convert(cstate.withComponentIndex(i));
+  }
+
 }
 
 
@@ -297,12 +423,14 @@ QString RadioData::getNextModelFilename()
   return filename;
 }
 
-void RadioData::convert(Board::Type before, Board::Type after)
+void RadioData::convert(RadioDataConversionState & cstate)
 {
-  generalSettings.convert(before, after);
+  generalSettings.convert(cstate.withModelIndex(-1));
+
   for (unsigned i=0; i<models.size(); i++) {
-    models[i].convert(before, after);
+    models[i].convert(cstate.withModelIndex(i));
   }
+
   if (categories.size() == 0) {
     categories.push_back(CategoryData(qPrintable(QObject::tr("Models"))));
     for (unsigned i=0; i<models.size(); i++) {
@@ -310,7 +438,7 @@ void RadioData::convert(Board::Type before, Board::Type after)
     }
   }
 
-  if (IS_HORUS(after)) {
+  if (IS_HORUS(cstate.toType)) {
     fixModelFilenames();
   }
 

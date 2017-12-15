@@ -31,8 +31,10 @@
 #include "flashfirmwaredialog.h"
 #include "storage.h"
 #include "radiointerface.h"
+#include "radiodataconversionstate.h"
 
 #include <algorithm>
+#include <QTableView>
 
 MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
   QWidget(parent, f),
@@ -1431,10 +1433,39 @@ void MdiChild::forceNewFilename(const QString & suffix, const QString & ext)
 void MdiChild::convertStorage(Board::Type from, Board::Type to)
 {
   showWarning(tr("Models and settings will be automatically converted.\nIf that is not what you intended, please close the file\nand choose the correct radio type/profile before reopening it."));
-  radioData.convert(from, to);
+
+  RadioDataConversionState cstate(from, to, &radioData);
+  cstate.convert();
   forceNewFilename("_converted");
   initModelsList();
   isUntitled = true;
+
+  if (cstate.hasLogEntries(RadioDataConversionState::EVT_INF)) {
+    QDialog * msgBox = new QDialog(Q_NULLPTR, Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+
+    QTableView * tv = new QTableView(msgBox);
+    tv->setSortingEnabled(true);
+    tv->verticalHeader()->hide();
+    tv->setModel(cstate.getLogModel(RadioDataConversionState::EVT_INF, tv));
+    tv->resizeColumnsToContents();
+    tv->resizeRowsToContents();
+
+    QDialogButtonBox * btnBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
+
+    QVBoxLayout * lo = new QVBoxLayout(msgBox);
+    lo->addWidget(new QLabel(tr("<b>The conversion generated some important messages, please review them below.</b>")));
+    lo->addWidget(tv);
+    lo->addWidget(btnBox);
+
+    connect(btnBox, &QDialogButtonBox::accepted, msgBox, &QDialog::accept);
+    connect(btnBox, &QDialogButtonBox::rejected, msgBox, &QDialog::reject);
+
+    msgBox->setWindowTitle(tr("Companion :: Conversion Result for %1").arg(curFile));
+    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->show();  // modeless
+  }
+
+  return true;
 }
 
 void MdiChild::showWarning(const QString & msg)
