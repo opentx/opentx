@@ -166,6 +166,7 @@ set(common_SRCS
   eeprominterface.cpp
   helpers.cpp
   radiodata.cpp
+  radiodataconversionstate.cpp
   translations.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
@@ -528,9 +529,9 @@ IF(APPLE)
   get_filename_component(AVRDUDECONF_ABSOLUTE_PATH ${AVRDUDE_CONF} REALPATH)
   install(PROGRAMS ${DFU_UTIL_ABSOLUTE_PATH} ${AVRDUDE_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
   install(FILES ${AVRDUDECONF_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
-  
+
   set(bundle_tools_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util;\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/avrdude")
-  
+
 
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is
