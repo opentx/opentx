@@ -1298,3 +1298,5 @@ Thierry Malosse
 Johann Antretter
 Jan Kaiser
 Rachel Berkhahn
+Luca Massimiliano Comolli
+Mario Wesierski
