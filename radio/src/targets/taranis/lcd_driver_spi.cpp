@@ -85,17 +85,17 @@ void lcdHardwareInit()
   GPIO_PinAFConfig(LCD_SPI_GPIO, LCD_MOSI_GPIO_PinSource, LCD_GPIO_AF);
   GPIO_PinAFConfig(LCD_SPI_GPIO, LCD_CLK_GPIO_PinSource, LCD_GPIO_AF);
 
-  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  LCD_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   LCD_DMA->HIFCR = LCD_DMA_FLAGS; // Write ones to clear bits
-  LDC_DMA_Stream->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0;
-  LDC_DMA_Stream->PAR = (uint32_t)&LCD_SPI->DR;
+  LCD_DMA_Stream->CR =  DMA_SxCR_PL_0 | DMA_SxCR_MINC | DMA_SxCR_DIR_0;
+  LCD_DMA_Stream->PAR = (uint32_t)&LCD_SPI->DR;
 #if defined(PCBX7)
-  LDC_DMA_Stream->NDTR = LCD_W;
+  LCD_DMA_Stream->NDTR = LCD_W;
 #else
-  LDC_DMA_Stream->M0AR = (uint32_t)displayBuf;
-  LDC_DMA_Stream->NDTR = LCD_W*LCD_H/8*4;
+  LCD_DMA_Stream->M0AR = (uint32_t)displayBuf;
+  LCD_DMA_Stream->NDTR = LCD_W*LCD_H/8*4;
 #endif
-  LDC_DMA_Stream->FCR = 0x05; // DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
+  LCD_DMA_Stream->FCR = 0x05; // DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 
   NVIC_EnableIRQ(LCD_DMA_Stream_IRQn);
 }
@@ -187,10 +187,10 @@ void lcdRefresh(bool wait)
     LCD_A0_HIGH();
 
     lcd_busy = true;
-    LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+    LCD_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
     LCD_DMA->HIFCR = LCD_DMA_FLAGS; // Write ones to clear bits
-    LDC_DMA_Stream->M0AR = (uint32_t)p;
-    LDC_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA & TC interrupts
+    LCD_DMA_Stream->M0AR = (uint32_t)p;
+    LCD_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA & TC interrupts
     LCD_SPI->CR2 |= SPI_CR2_TXDMAEN;
   
     WAIT_FOR_DMA_END();
@@ -208,16 +208,16 @@ void lcdRefresh(bool wait)
   LCD_NCS_LOW();
   LCD_A0_HIGH();
 
-  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  LCD_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   LCD_DMA->HIFCR = LCD_DMA_FLAGS; // Write ones to clear bits
 
 #if defined(LCD_DUAL_BUFFER)
   // Switch LCD buffer
-  LDC_DMA_Stream->M0AR = (uint32_t)displayBuf;
+  LCD_DMA_Stream->M0AR = (uint32_t)displayBuf;
   displayBuf = (displayBuf == displayBuf1) ? displayBuf2 : displayBuf1;
 #endif
 
-  LDC_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA & TC interrupts
+  LCD_DMA_Stream->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA & TC interrupts
   LCD_SPI->CR2 |= SPI_CR2_TXDMAEN;
 #endif
 }
@@ -226,10 +226,10 @@ extern "C" void LCD_DMA_Stream_IRQHandler()
 {
   DEBUG_INTERRUPT(INT_LCD);
 
-  LDC_DMA_Stream->CR &= ~DMA_SxCR_TCIE; // Stop interrupt
+  LCD_DMA_Stream->CR &= ~DMA_SxCR_TCIE; // Stop interrupt
   LCD_DMA->HIFCR |= LCD_DMA_FLAG_INT; // Clear interrupt flag
   LCD_SPI->CR2 &= ~SPI_CR2_TXDMAEN;
-  LDC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
+  LCD_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 
   while (LCD_SPI->SR & SPI_SR_BSY) {
     /* Wait for SPI to finish sending data

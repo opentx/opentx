@@ -657,7 +657,7 @@
   #define LCD_RST_GPIO                  GPIOD
   #define LCD_RST_GPIO_PIN              GPIO_Pin_15 // PD.15
   #define LCD_DMA                       DMA1
-  #define LDC_DMA_Stream                DMA1_Stream7
+  #define LCD_DMA_Stream                DMA1_Stream7
   #define LCD_DMA_Stream_IRQn           DMA1_Stream7_IRQn
   #define LCD_DMA_Stream_IRQHandler     DMA1_Stream7_IRQHandler
   #define LCD_DMA_FLAGS                 (DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7)
@@ -678,7 +678,7 @@
   #define LCD_RST_GPIO                  GPIOD
   #define LCD_RST_GPIO_PIN              GPIO_Pin_12 // PD.12
   #define LCD_DMA                       DMA1
-  #define LDC_DMA_Stream                DMA1_Stream7
+  #define LCD_DMA_Stream                DMA1_Stream7
   #define LCD_DMA_Stream_IRQn           DMA1_Stream7_IRQn
   #define LCD_DMA_Stream_IRQHandler     DMA1_Stream7_IRQHandler
   #define LCD_DMA_FLAGS                 (DMA_HIFCR_CTCIF7 | DMA_HIFCR_CHTIF7 | DMA_HIFCR_CTEIF7 | DMA_HIFCR_CDMEIF7 | DMA_HIFCR_CFEIF7)
