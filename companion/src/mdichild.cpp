@@ -34,7 +34,7 @@
 #include "radiodataconversionstate.h"
 
 #include <algorithm>
-#include <QTableView>
+#include <ExportableTableView>
 
 MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
   QWidget(parent, f),
@@ -1473,7 +1473,7 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
   if (cstate.hasLogEntries(RadioDataConversionState::EVT_INF)) {
     QDialog * msgBox = new QDialog(Q_NULLPTR, Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
 
-    QTableView * tv = new QTableView(msgBox);
+    ExportableTableView * tv = new ExportableTableView(msgBox);
     tv->setSortingEnabled(true);
     tv->verticalHeader()->hide();
     tv->setModel(cstate.getLogModel(RadioDataConversionState::EVT_INF, tv));
