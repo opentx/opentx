@@ -86,7 +86,8 @@ void runPopupWarning(event_t event)
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      warningResult = true;
+      if (warningType != WARNING_TYPE_INFO)
+        warningResult = true;
       // no break
     case EVT_KEY_BREAK(KEY_EXIT):
       warningText = NULL;
