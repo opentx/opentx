@@ -22,7 +22,8 @@
 #include "switchitemmodel.h"
 #include "helpers.h"
 #include "appdata.h"
-#include "timeredit.h"
+
+#include <TimerEdit>
 
 RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   QComboBox(parent),

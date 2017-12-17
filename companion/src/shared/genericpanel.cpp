@@ -19,8 +19,8 @@
  */
 
 #include "genericpanel.h"
-#include "timeredit.h"
 
+#include <TimerEdit>
 #include <QComboBox>
 #include <QEvent>
 #include <QLabel>

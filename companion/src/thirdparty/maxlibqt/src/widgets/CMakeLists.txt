@@ -13,14 +13,14 @@ project(maxLibQtWidgets)
 set(SRCS
 	"${CMAKE_CURRENT_LIST_DIR}/ExportableTableView.cpp"
 #	"${CMAKE_CURRENT_LIST_DIR}/ScrollableMessageBox.cpp"
-#	"${CMAKE_CURRENT_LIST_DIR}/TimerEdit.cpp"
+	"${CMAKE_CURRENT_LIST_DIR}/TimerEdit.cpp"
 #	"${CMAKE_CURRENT_LIST_DIR}/TreeComboBox.cpp"
 )
 
 set(HDRS
 	"${CMAKE_CURRENT_LIST_DIR}/ExportableTableView.h"
 #	"${CMAKE_CURRENT_LIST_DIR}/ScrollableMessageBox.h"
-#	"${CMAKE_CURRENT_LIST_DIR}/TimerEdit.h"
+	"${CMAKE_CURRENT_LIST_DIR}/TimerEdit.h"
 #	"${CMAKE_CURRENT_LIST_DIR}/TreeComboBox.h"
 )
 

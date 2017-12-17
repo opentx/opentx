@@ -191,12 +191,9 @@ set(common_RESOURCES
 
 qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
 qt5_add_resources(common_RCC ${common_RESOURCES})
-#add_custom_target(gen_qrc DEPENDS ${common_RCC} ${companion_QM})
 
 add_library(common ${common_SRCS} ${common_RCC})
-qt5_use_modules(common Core Xml Widgets)
-target_link_libraries(common PRIVATE simulation)
-#add_dependencies(common gen_qrc)
+target_link_libraries(common simulation maxLibQtWidgets Qt5::Core Qt5::Xml Qt5::Widgets)
 
 set(CPN_COMMON_LIB common)
 
@@ -307,7 +304,7 @@ qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
 
 add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${icon_RC})
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
-target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation ${CPN_COMMON_LIB} maxLibQtWidgets qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit ${CPN_COMMON_LIB} qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 PrintTargetReport("${COMPANION_NAME}")
 
@@ -316,7 +313,7 @@ PrintTargetReport("${COMPANION_NAME}")
 set(simu_SRCS simulator.cpp )
 
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
-target_link_libraries(${SIMULATOR_NAME} PRIVATE simulation ${CPN_COMMON_LIB} storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB} storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 ############# Install ####################
 

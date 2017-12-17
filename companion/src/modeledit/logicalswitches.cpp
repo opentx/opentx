@@ -21,7 +21,8 @@
 #include "logicalswitches.h"
 #include "switchitemmodel.h"
 #include "helpers.h"
-#include "timeredit.h"
+
+#include <TimerEdit>
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),

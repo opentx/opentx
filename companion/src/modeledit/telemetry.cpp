@@ -25,7 +25,8 @@
 #include "ui_telemetry_sensor.h"
 #include "helpers.h"
 #include "appdata.h"
-#include "timeredit.h"
+
+#include <TimerEdit>
 
 TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
