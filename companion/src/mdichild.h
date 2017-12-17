@@ -86,6 +86,7 @@ class MdiChild : public QWidget
     bool save();
     bool saveAs(bool isNew=false);
     bool saveFile(const QString & fileName, bool setCurrent=true);
+    void closeFile(bool force = false);
     void writeEeprom();
     void print(int model=-1, const QString & filename="");
     void onFirmwareChanged();
@@ -179,9 +180,9 @@ class MdiChild : public QWidget
     bool maybeSave();
     void setCurrentFile(const QString & fileName);
     void forceNewFilename(const QString & suffix = "", const QString & ext = "otx");
-    void convertStorage(Board::Type from, Board::Type to);
+    bool convertStorage(Board::Type from, Board::Type to, bool newFile = false);
     void showWarning(const QString & msg);
-    int askQuestion(const QString & msg, int button0 = QMessageBox::Yes, int button1 = QMessageBox::No | QMessageBox::Default, int button2 = 0);
+    int askQuestion(const QString & msg, QMessageBox::StandardButtons buttons = (QMessageBox::Yes | QMessageBox::No), QMessageBox::StandardButton defaultButton = QMessageBox::No);
 
     Ui::MdiChild * ui;
     TreeModel * modelsListModel;
@@ -200,6 +201,7 @@ class MdiChild : public QWidget
     int lastSelectedModel;
     bool isUntitled;
     bool showCatToolbar;
+    bool forceCloseFlag;
     const quint16 stateDataVersion;
 };
 

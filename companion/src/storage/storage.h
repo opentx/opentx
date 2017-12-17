@@ -98,9 +98,14 @@ class StorageFormat
       return getFourCC(board);
     }
 
-    virtual bool isBoardCompatible(Board::Type board)
+    static bool isBoardCompatible(Board::Type board1, Board::Type board2)
     {
-      return getFourCC() == getFourCC(board);
+      return (getFourCC(board1) == getFourCC(board2));
+    }
+
+    virtual bool isBoardCompatible(Board::Type board2)
+    {
+      return isBoardCompatible(board, board2);
     }
 
   protected:
