@@ -5,24 +5,16 @@
 #include "thirdparty/miniz/miniz.c"
 
 // use deflated files instead of 0-compression
-#define FORCE_COMPRESSED_OTX
+//#define FORCE_COMPRESSED_OTX
 
 #define OTX_IO_BUF_SIZE (4*1024)
 
-static FIL            otxFile;
+static FIL                      otxFile;
+static mz_zip_archive_file_stat zipStat;
 
-// place all the bigger structs in SDRAM
-
-//#define OTX_MEM __SDRAM
-// #define OTX_MEM
-
-// static mz_zip_archive zipArchive OTX_MEM;
-// static unsigned char  ioBuffer[OTX_IO_BUF_SIZE] OTX_MEM;
-// static unsigned char  local_dir_header[MZ_ZIP_LOCAL_DIR_HEADER_SIZE] OTX_MEM;
-
-static mz_zip_archive* zipArchive = NULL;// OTX_MEM;
-static unsigned char*  ioBuffer = NULL; //[OTX_IO_BUF_SIZE] OTX_MEM;
-static unsigned char*  local_dir_header = NULL; //[MZ_ZIP_LOCAL_DIR_HEADER_SIZE] OTX_MEM;
+static mz_zip_archive* zipArchive = NULL;
+static unsigned char*  ioBuffer = NULL;
+static unsigned char*  local_dir_header = NULL;
 
 #if defined(FORCE_COMPRESSED_OTX)
 static tdefl_compressor* otxComp = NULL;
@@ -169,17 +161,19 @@ static bool zipAddFile(mz_zip_archive *pZip, const char *pArchive_name,
 
 static size_t zipFileWrite(void *pOpaque, mz_uint64 file_ofs, const void *pBuf, size_t n)
 {
-    if (file_ofs != otxFile.fptr) {
-        if (f_lseek(&otxFile, file_ofs) != FR_OK)
+    FIL* fptr = (FIL*)pOpaque;
+    if (file_ofs != fptr->fptr) {
+        if (f_lseek(fptr, file_ofs) != FR_OK)
             return 0;
     }
-    TRACE("zipFileWrite(%lu,%p,%lu)",file_ofs,pBuf,n);
+    TRACE("zipFileWrite(%u,%p,%u)",(unsigned int)file_ofs,pBuf,n);
 
     unsigned int written = 0;
-    if (f_write(&otxFile, pBuf, n, &written) != FR_OK)
+    if (f_write(fptr, pBuf, n, &written) != FR_OK)
         return 0;
-
     return written;
+
+    return n;
 }
 
 static bool alloc_otx_writer()
@@ -204,13 +198,19 @@ static bool alloc_otx_writer()
 static void free_otx_writer()
 {
     free(zipArchive);
+    zipArchive = NULL;
+
     free(ioBuffer);
+    ioBuffer = NULL;
+
     free(local_dir_header);
+    local_dir_header = NULL;
+
 #if defined(FORCE_COMPRESSED_OTX)
     free(otxComp);
+    otxComp = NULL;
 #endif
 }
-
 
 bool initOtxWriter(const char* path)
 {
@@ -224,6 +224,7 @@ bool initOtxWriter(const char* path)
 
     memset(zipArchive, 0, sizeof(mz_zip_archive));
     zipArchive->m_pWrite = zipFileWrite;
+    zipArchive->m_pIO_opaque = &otxFile;
 
     if (!mz_zip_writer_init(zipArchive, 0))
         return false;
@@ -247,10 +248,110 @@ bool addFile2Otx(const char* path)
     return result;
 }
 
-void closeOtxFile()
+void closeOtxWriter()
 {
     mz_zip_writer_finalize_archive(zipArchive);
     mz_zip_writer_end(zipArchive);
     f_close(&otxFile);
     free_otx_writer();
+}
+
+static bool alloc_otx_reader()
+{
+    zipArchive = (mz_zip_archive*)malloc(sizeof(mz_zip_archive));
+    //ioBuffer = (unsigned char*)malloc(OTX_IO_BUF_SIZE);
+
+    return ((zipArchive != NULL) /*&& (ioBuffer != NULL)*/);
+}
+
+static void free_otx_reader()
+{
+    free(zipArchive);
+    zipArchive = NULL;
+
+    //free(ioBuffer);
+    //ioBuffer = NULL;    
+}
+
+static size_t zipFileRead(void *pOpaque, mz_uint64 file_ofs, void *pBuf, size_t n)
+{
+    FIL* fptr = (FIL*)pOpaque;
+    if (file_ofs != fptr->fptr) {
+        if (f_lseek(fptr, file_ofs) != FR_OK)
+            return 0;
+    }
+    TRACE("zipFileRead(%u,%p,%u)",(unsigned int)file_ofs,pBuf,n);
+
+    unsigned int nread = 0;
+    if (f_read(fptr, pBuf, n, &nread) != FR_OK)
+        return 0;
+
+    return nread;
+}
+
+int initOtxReader(const char* path)
+{
+    FILINFO fno;
+    if (f_stat(path,&fno) != FR_OK)
+        return -1;
+
+    if (!alloc_otx_reader())
+        return -1;
+
+    FRESULT fr = f_open(&otxFile, path, FA_READ);
+    if (fr != FR_OK)
+        return -1;
+
+    memset(zipArchive, 0, sizeof(mz_zip_archive));
+    zipArchive->m_pRead = zipFileRead;
+    zipArchive->m_pIO_opaque = &otxFile;
+
+    // Checks the archive's central directory
+    if (!mz_zip_reader_init(zipArchive, fno.fsize, 0))
+        return -1;
+
+    return mz_zip_reader_get_num_files(zipArchive);
+}
+
+int locateFileInOtx(const char* path)
+{
+    if (!path || !(path[0]))
+        return -1;
+
+    // skip leading '/'
+    if (path[0] == '/') {
+        path++;
+    }
+
+    return mz_zip_reader_locate_file(zipArchive, path, NULL, 0);
+}
+
+bool extractFileFromOtx(unsigned int file_idx)
+{
+    char filename[60];
+    FIL  tmpFile;
+
+    // grab file name
+    if (!mz_zip_reader_file_stat(zipArchive, file_idx, &zipStat))
+        return false;
+
+    char* tmp = strAppend(filename, "/");
+    strAppend(tmp,zipStat.m_filename);
+
+    TRACE("extractFileFromOtx(%u): name='%s'", file_idx, filename);
+
+    FRESULT fr = f_open(&tmpFile, filename, FA_WRITE | FA_CREATE_ALWAYS);
+    if (fr != FR_OK)
+        return false;
+
+    bool result = mz_zip_reader_extract_to_callback(zipArchive, file_idx, zipFileWrite,
+                                                    &tmpFile, 0);
+    f_close(&tmpFile);
+    return result;
+}
+
+void closeOtxReader()
+{
+    mz_zip_reader_end(zipArchive);
+    free_otx_reader();
 }

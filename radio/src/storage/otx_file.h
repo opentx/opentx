@@ -3,6 +3,11 @@
 
 bool initOtxWriter(const char* path);
 bool addFile2Otx(const char* path);
-void closeOtxFile();
+void closeOtxWriter();
+
+int initOtxReader(const char* path);
+int locateFileInOtx(const char* path);
+bool extractFileFromOtx(unsigned int file_idx);
+void closeOtxReader();
 
 #endif

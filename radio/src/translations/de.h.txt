@@ -926,6 +926,7 @@
 #define TR_DUPLICATE_MODEL     "Kopiere Modell"
 #define TR_COPY_MODEL          "Kopiere Modell"
 #define TR_MOVE_MODEL          "Verschiebe Modell"
+#define TR_RESTORE_RADIO       TR("Radio wiederher.", "Radio wiederherstellen")
 #define TR_BACKUP_MODEL        "Modell auf SD-Karte"  //9XR-Pro
 #define TR_DELETE_MODEL        "Modell löschen" // TODO merged into DELETEMODEL?
 #define TR_RESTORE_MODEL       TR("Modell wiederher.", "Modell wiederherstellen")

@@ -916,6 +916,7 @@
 #define TR_DUPLICATE_MODEL             "Dupliquer modèle"
 #define TR_COPY_MODEL                  "Copier modèle"
 #define TR_MOVE_MODEL                  "Déplacer modèle"
+#define TR_RESTORE_RADIO               "Restaurer radio"
 #define TR_BACKUP_MODEL                "Archiver modèle"
 #define TR_DELETE_MODEL                "Supprimer modèle"
 #define TR_RESTORE_MODEL               "Restaurer modèle"

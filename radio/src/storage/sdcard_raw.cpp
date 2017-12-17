@@ -143,6 +143,7 @@ const char * loadRadioSettingsSettings()
   const char * error = loadFile(RADIO_SETTINGS_PATH, (uint8_t *)&g_eeGeneral, sizeof(g_eeGeneral));
   if (error) {
     TRACE("loadRadioSettingsSettings error=%s", error);
+    __builtin_trap();
   }
   // TODO this is temporary, we only have one model for now
   return error;
@@ -295,7 +296,7 @@ void createRadioBackup()
     int nb_files = models.modelsCount + 2;
     
     if (!initOtxWriter(otx_file)) {
-        closeOtxFile();
+        closeOtxWriter();
         sdDelete(otx_file);
         //TODO: show some error
         POPUP_WARNING("Backup");
@@ -335,12 +336,14 @@ void createRadioBackup()
                 GET_NEXT_MODEL();
             }
 
+            wdt_reset();
             getModelPath(model_file, (*mod_it)->modelFilename);
             result = addFile2Otx(model_file);
+            mod_it++;
         }
 
         if (!result) {
-            closeOtxFile();
+            closeOtxWriter();
             sdDelete(otx_file);
             //TODO: display some error here...
             POPUP_WARNING("Backup");
@@ -351,10 +354,56 @@ void createRadioBackup()
         drawProgressBar("Backup", i+1, nb_files);
     }
 
-    closeOtxFile();
+    closeOtxWriter();
     POPUP_INFO("Backup");
     SET_WARNING_INFO("Completed sucessfully", 0, 0);
     
     return;
 }
 
+void restoreRadioBackup(const char * filename)
+{
+    //TODO: ask for confirmation???
+
+    // stop everything while restoring...
+    pausePulses();
+    opentxClose(false);
+
+    // re-mount SD card (stopped by opentxClose())
+    sdMount();
+    
+    bool result = true;
+    int  nfiles = initOtxReader(filename);
+
+    wdt_reset();
+
+    if ((nfiles <= 0) ||
+        (locateFileInOtx(RADIO_SETTINGS_PATH) < 0) ||
+        (locateFileInOtx(RADIO_MODELSLIST_PATH) < 0)) {
+
+        result = false;
+    }
+    else {
+        for (unsigned int i=0; i < (unsigned)nfiles; i++) {
+            wdt_reset();
+            result = result && extractFileFromOtx(i);
+        }
+    }
+
+    closeOtxReader();
+    POPUP_WARNING("Restore");
+
+    if (!result) {
+        SET_WARNING_INFO("Restore failed!", 0, 0);
+    }
+    else {
+        SET_WARNING_INFO("Completed sucessfully", 0, 0);
+    }
+
+    // unmount SD card (opentxResume() will mount it again)
+    sdDone();
+
+    // and restart everything
+    opentxResume();
+    resumePulses();
+}

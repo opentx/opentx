@@ -136,6 +136,10 @@ void onSdManagerMenu(const char * result)
     getSelectionFullPath(lfn);
     sportFlashDevice(EXTERNAL_MODULE, lfn);
   }
+  else if (result == STR_RESTORE_RADIO) {
+    getSelectionFullPath(lfn);
+    restoreRadioBackup(lfn);
+  }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
     getSelectionFullPath(lfn);
@@ -228,6 +232,9 @@ bool menuRadioSdManager(event_t _event)
           }
           else if (isExtensionMatching(ext, SCRIPTS_EXT)) {
             POPUP_MENU_ADD_ITEM(STR_EXECUTE_FILE);
+          }
+          else if (!strcasecmp(ext, BACKUP_EXT)) {
+            POPUP_MENU_ADD_ITEM(STR_RESTORE_RADIO);
           }
         }
         if (!READ_ONLY()) {

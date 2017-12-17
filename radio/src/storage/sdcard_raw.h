@@ -38,5 +38,6 @@ PACK(struct RamBackup {
 extern RamBackup * ramBackup;
 
 void createRadioBackup();
+void restoreRadioBackup(const char * filename);
 
 #endif // _SDCARD_RAW_H_
