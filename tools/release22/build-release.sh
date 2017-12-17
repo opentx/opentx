@@ -6,7 +6,7 @@ branch=2.2
 docker=release22
 workdir=/home/opentx/release22
 output=/var/www/html/2.2
-version=2.2.0
+version=2.2.1
 
 cd ${workdir}
 
