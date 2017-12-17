@@ -1,3 +1,7 @@
+<h2>Version 2.2.1 / 2017-12-17</h2>
+
+Please see <a href=http://www.open-tx.org/2017/12/16/opentx-2.2.1>this page</a> for details.
+
 <h2>Version 2.2.0 / 2017-05-30</h2>
 
 Major release! Please see <a href=http://www.open-tx.org/2017/05/30/opentx-2.2.0>this page</a> for details.
@@ -39,7 +43,7 @@ Major release! Please see <a href=http://www.open-tx.org/2017/05/30/opentx-2.2.0
 
 <h2>Version 2.1.8 / 2016-04-14</h2>
 
-Notice: EDGE Logical Switch operation has changed. Users should check their setups, if they use EDGE with AND switch. 
+Notice: EDGE Logical Switch operation has changed. Users should check their setups, if they use EDGE with AND switch.
 This bug was introduced in version 2.1.2 and has been fixed in 2.1.8. (<a href=https://github.com/opentx/opentx/issues/2939>#2939</a>)
 
 [Taranis]
@@ -83,7 +87,7 @@ This bug was introduced in version 2.1.2 and has been fixed in 2.1.8. (<a href=h
 
 <h2>Version 2.1.7 / 2016-01-04</h2>
 
-Notice: Lua model wizard was fixed (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>) 
+Notice: Lua model wizard was fixed (<a href=https://github.com/opentx/opentx/issues/3061>#3061</a>)
 and needs to be installed on the radio SD card. Download from http://lua-21.open-tx.org/wizard.zip
 
 [Taranis]
@@ -154,7 +158,7 @@ Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrS
 <li>Fixed erroneous haptic feedback when using high powered UHF RF modules (<a href=https://github.com/opentx/opentx/issues/2722>#2722</a>)</li>
 <li>The trainer icon will be shown only if valid PPM is received</li>
 <li>Several Lua io library fixes (<a href=https://github.com/opentx/opentx/issues/3001>#3001</a>, <a href=https://github.com/opentx/opentx/issues/3003>#3003</a>)</li>
-<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8. 
+<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8.
   Users with such setups are advised to re-check their failsafe settings (<a href=https://github.com/opentx/opentx/issues/2975>#2975</a>)</li>
 </ul>
 
@@ -293,7 +297,7 @@ Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrS
 <li>Added support for 0.01V resolution to D series VFAS ID 0x39 (<a href=https://github.com/opentx/opentx/issues/2607>#2607</a>)</li>
 <li>Set a more reasonable default precision for telemetry values (<a href=https://github.com/opentx/opentx/issues/2631>#2631</a>)</li>
 <li>Fixed a problem when moving mixer lines on X9E (<a href=https://github.com/opentx/opentx/issues/2643>#2643</a>)</li>
-<li>Fixed X9E SD log header line (<a href=https://github.com/opentx/opentx/issues/2638>#2638</a>)</li> 
+<li>Fixed X9E SD log header line (<a href=https://github.com/opentx/opentx/issues/2638>#2638</a>)</li>
 </ul>
 
 [Boards with narrow LCD (9X, 9XR, etc)]
@@ -316,7 +320,7 @@ Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrS
 
 [ARM Boards]
 <ul>
-<li>New Telemetry system (<a href=https://github.com/opentx/opentx/issues/1634>#1634</a>)</li> 
+<li>New Telemetry system (<a href=https://github.com/opentx/opentx/issues/1634>#1634</a>)</li>
 <li>Added Dangerous Custom Functions (range check, bind)</li>
 <li>Better graphical trim representation (<a href=https://github.com/opentx/opentx/issues/1419>#1419</a>)</li>
 <li>Increased PPM-Center range</li>
@@ -378,11 +382,11 @@ Nothing new (only Companion fixes)
 <li>Gps positon display fixed: fractional seconds lacked leading zeros (<a href=https://github.com/opentx/opentx/issues/2144>#2144</a>)</li>
 <li>More memory available for Lua scripts (<a href=https://github.com/opentx/opentx/issues/2050>#2050</a>)</li>
 <li>Various texts and translations corrections</li>
-<li>Telemetry bars title fix (<a href=https://github.com/opentx/opentx/issues/2203>#2203</a>)</li> 
+<li>Telemetry bars title fix (<a href=https://github.com/opentx/opentx/issues/2203>#2203</a>)</li>
 </ul>
 
 [Bootloader]
-<li>Fixed USB access problem with SD cards larger than 4GB (<a href=https://github.com/opentx/opentx/issues/2154>#2154</a>)</li> 
+<li>Fixed USB access problem with SD cards larger than 4GB (<a href=https://github.com/opentx/opentx/issues/2154>#2154</a>)</li>
 
 
 <h2>Version 2.0.15 / 2015-01-13</h2>
@@ -703,7 +707,7 @@ Nothing new (only Companion fixes)
 <li>Altitude played without decimal when &gt;= 10m</li>
 <li>Check to avoid too long paths when playing SD files</li>
 </ul>
- 		
+
 [All]
 <ul>
 <li>Mixer bug when a MULTIPLY mix used with a slow</li>

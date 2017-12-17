@@ -1,3 +1,7 @@
+<h2>Version 2.2.1 / 2017-12-17</h2>
+
+Please see <a href=http://www.open-tx.org/2017/12/16/opentx-2.2.1>this page</a> for details.
+
 <h2>Version 2.2.0 / 2017-05-30</h2>
 
 Major release! Please see <a href=http://www.open-tx.org/2017/05/30/opentx-2.2.0>this page</a> for details.
@@ -91,10 +95,10 @@ Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrS
 <li>Fixed a problem with updates path on Windows (<a href=https://github.com/opentx/opentx/issues/2876>#2876</a>)</li>
 <li>Edge representation unified (changed from "no release" to "instant") (<a href=https://github.com/opentx/opentx/issues/2837>#2837</a>)</li>
 <li>Added channel names on failsafe sliders (<a href=https://github.com/opentx/opentx/issues/3021>#3021</a>)</li>
-<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8. 
+<li>Corrected failsafe mapping when using Custom failsafe mode, D16 protocol and channel range different from from 1-8.
   Users with such setups are advised to re-check their failsafe settings (<a href=https://github.com/opentx/opentx/issues/2975>#2975</a>)</li>
 <li>Various texts and translations corrections</li>
-<li>Various small bug-fixes: <a href=https://github.com/opentx/opentx/issues/2994>#2994</a>, 
+<li>Various small bug-fixes: <a href=https://github.com/opentx/opentx/issues/2994>#2994</a>,
                              <a href=https://github.com/opentx/opentx/issues/3016>#3016</a>,
                              <a href=https://github.com/opentx/opentx/issues/3012>#3012</a>
 </li>
@@ -112,8 +116,8 @@ Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrS
 
 <ul>
 <li>Fixed: Lua model scripts outputs not working in a simulator (<a href=https://github.com/opentx/opentx/issues/2684>#2684</a>)</li>
-<li>Fixed a problem of Companion 2.1 trying to install into 2.0 path. 
-    The effect will only be visible for the users that did not install any of the previous 2.1.x versions. 
+<li>Fixed a problem of Companion 2.1 trying to install into 2.0 path.
+    The effect will only be visible for the users that did not install any of the previous 2.1.x versions.
     (<a href=https://github.com/opentx/opentx/issues/2645>#2645</a>)</li>
 <li>Added missing SDL libraries to MAC package  (<a href=https://github.com/opentx/opentx/issues/2678>#2678</a>)</li>
 <li>Added used channels check/warning in Wizard (<a href=https://github.com/opentx/opentx/issues/2091>#2091</a>)</li>
@@ -194,7 +198,7 @@ Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrS
 <li>Added Battery meter range setting (<a href=https://github.com/opentx/opentx/issues/2195>#2195</a>)</li>
 <li>Improvements in Print and Compare dialogs (<a href=https://github.com/opentx/opentx/issues/2219>#2219</a>)</li>
 <li>Reset pots to the middle by right double clicking them in Simulator (<a href=https://github.com/opentx/opentx/issues/1939>#1939</a>)</li>
-<li>Minor fixes: <a href=https://github.com/opentx/opentx/issues/2153>#2153</a>, 
+<li>Minor fixes: <a href=https://github.com/opentx/opentx/issues/2153>#2153</a>,
                  <a href=https://github.com/opentx/opentx/issues/2138>#2138</a>,
                  <a href=https://github.com/opentx/opentx/issues/2090>#2090</a>,
                  <a href=https://github.com/opentx/opentx/issues/2122>#2122</a>
@@ -297,13 +301,13 @@ Notice: version 2.1.4 was skipped by the OpenTX team to avoid confusion with FrS
 <ul>
 <li>Sound should be ok on all platforms</li>
 <li>Min/Max reviewed in Logical switches (for the whole telemetry)</li>
-<li>Various bug fixes</li> 
+<li>Various bug fixes</li>
 </ul>
 
 <h2>Version 2.0.3</h2>
 <ul>
 <li>EEPROM import bug on AdjustGVAR function</li>
-<li>Timers correctly displayed in logical switches tab</li> 
+<li>Timers correctly displayed in logical switches tab</li>
 </ul>
 
 <h2>Version 2.0.2</h2>
