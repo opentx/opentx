@@ -1305,3 +1305,4 @@ Jean Desmet
 Alexis Pons
 Roger Bergevin
 Eddie Ehlin
+Bernard Avisse
