@@ -6,7 +6,7 @@ COMMON_OPTIONS = -DCMAKE_INSTALL_PREFIX=../debian/tmp/usr \
                  -DFIRMWARE_TARGET=NO \
                  -DGVARS=YES \
                  -DHELI=YES \
-                 -DALLOW_NIGHTLY_BUILDS=YES \
+                 -DALLOW_NIGHTLY_BUILDS=NO \
                  -DVERSION_SUFFIX=__VERSION_SUFFIX__
 
 STM32_OPTIONS = -DLUA=YES
