@@ -980,6 +980,7 @@ extern const char eeprom_stamp[];
 #else
 extern const char vers_stamp[];
 #endif
+const char* getOtherVersion();
 
 extern uint8_t g_vbat100mV;
 #if LCD_W > 128

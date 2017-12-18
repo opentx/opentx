@@ -81,7 +81,7 @@ extern "C" {
 }
 #endif
 
-#define FLASHSIZE                      0x80000
+#define FLASHSIZE                      0x200000
 #define BOOTLOADER_SIZE                0x8000
 #define FIRMWARE_ADDRESS               0x08000000
 

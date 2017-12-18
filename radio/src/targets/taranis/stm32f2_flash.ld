@@ -51,6 +51,7 @@ SECTIONS
     CREATE_OBJECT_SYMBOLS
 
     KEEP(*(.isr_boot_vector)) /* Startup code */
+    KEEP(*(.bootversiondata))
     *(.bootrodata)
     *(.bootrodata.*)
       
@@ -58,6 +59,7 @@ SECTIONS
     _stext = .;          /* Provide the name for the start of this section */
 	 . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
+    KEEP(*(.fwversiondata))
     *(.text)           /* .text sections (code) */
     *(.text*)          /* .text* sections (code) */
     *(.rodata)         /* .rodata sections (constants, strings, etc.) */

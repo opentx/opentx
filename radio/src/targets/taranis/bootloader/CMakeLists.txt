@@ -32,6 +32,7 @@ set(BOOTLOADER_SRC
   ../../../gui/${GUI_DIR}/fonts.cpp
   ../../../keys.cpp
   ../../../strhelpers.cpp
+  ../../../stamp.cpp
   ../../../${STM32USB_DIR}/STM32_USB_OTG_Driver/src/usb_core.c
   ../../../${STM32USB_DIR}/STM32_USB_OTG_Driver/src/usb_dcd.c
   ../../../${STM32USB_DIR}/STM32_USB_OTG_Driver/src/usb_dcd_int.c

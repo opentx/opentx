@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 
 from __future__ import division, print_function
 
@@ -46,12 +46,15 @@ def pushDisk(eeprom, flash):
     print("Disk with %dk EEPROM and %dk FLASH:" % (eeprom, flash))
     pushCluster(0xFF8)
     pushCluster(0xFFF)
-    pushFile(eeprom * 1024)
     pushFile(flash * 1024)
+    if eeprom > 0:
+        pushFile(eeprom * 1024)
     while byte < 512:
         push4bits(0)
     print()
 
 
+#pushDisk(32, 512)
 pushDisk(32, 512)
-pushDisk(64, 512)
+
+pushDisk(0, 2048)
