@@ -137,7 +137,7 @@
 #define CFN_GVAR_CST_MAX    125
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLAMENCO)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   enum SwitchConfig {
     SWITCH_NONE,
     SWITCH_TOGGLE,
@@ -604,11 +604,7 @@ enum FailsafeModes {
 enum ThrottleSources {
   THROTTLE_SOURCE_THR,
   THROTTLE_SOURCE_FIRST_POT,
-#if defined(PCBFLAMENCO)
-  THROTTLE_SOURCE_SD,
-  THROTTLE_SOURCE_LS,
-  THROTTLE_SOURCE_RS,
-#elif defined(PCBX9E)
+#if defined(PCBX9E)
   THROTTLE_SOURCE_F1 = THROTTLE_SOURCE_FIRST_POT,
   THROTTLE_SOURCE_F2,
   THROTTLE_SOURCE_F3,

@@ -22,11 +22,7 @@
 
 #define CS_LAST_VALUE_INIT -32768
 
-#if defined(PCBFLAMENCO)
-  #define SWITCH_WARNING_LIST_X        60
-  #define SWITCH_WARNING_LIST_Y        4*FH+3
-  #define SWITCH_WARNING_LIST_INTERVAL 20
-#elif defined(PCBHORUS)
+#if defined(PCBHORUS)
   #define SWITCH_WARNING_LIST_X        WARNING_LINE_X
   #define SWITCH_WARNING_LIST_Y        WARNING_LINE_Y+3*FH
   #define SWITCH_WARNING_LIST_INTERVAL 35
@@ -69,84 +65,6 @@ int16_t lsLastValue[MAX_LOGICAL_SWITCHES];
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
 volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
 
-#endif
-
-#if defined(PCBFLAMENCO)
-tmr10ms_t potsLastposStart[1];
-uint8_t   potsPos[1];
-tmr10ms_t switchesMidposStart[2];
-uint64_t  switchesPos = 0;
-div_t switchInfo(int switchPosition)
-{
-  const div_t infos[] = {
-      { 0, 0 }, { 0, 1 }, { 0, 2 },
-      { 1, 0 }, { 1, 1 },
-      { 2, 0 }, { 2, 1 }, { 2, 2 }, { 2, 3 }, { 2, 4 }, { 2, 5 },
-      { 4, 0 }, { 4, 1 },
-      { 5, 0 }, { 5, 1 }, { 5, 2 },
-  };
-  return infos[switchPosition-SWSRC_FIRST_SWITCH];
-}
-
-uint32_t check2PosSwitchPosition(uint8_t sw)
-{
-  uint32_t index = (switchState(sw) ? sw : sw + 1);
-  uint32_t result = ((uint32_t)1 << index);
-
-  if (!(switchesPos & result)) {
-    PLAY_SWITCH_MOVED(index);
-  }
-
-  return result;
-}
-
-uint32_t check3PosSwitchPosition(int idx, uint8_t sw, bool startup)
-{
-  uint32_t result;
-  uint32_t index;
-
-  if (switchState(sw)) {
-    index = sw;
-    result = (1 << index);
-    switchesMidposStart[idx] = 0;
-  }
-  else if (switchState(sw+2)) {
-    index = sw + 2;
-    result = (1 << index);
-    switchesMidposStart[idx] = 0;
-  }
-  else if (startup || (switchesPos & (1 << (sw + 1))) || g_eeGeneral.switchesDelay==SWITCHES_DELAY_NONE || (switchesMidposStart[idx] && (tmr10ms_t)(get_tmr10ms() - switchesMidposStart[idx]) > SWITCHES_DELAY())) {
-    index = sw + 1;
-    result = (1 << index);
-    switchesMidposStart[idx] = 0;
-  }
-  else {
-    index = sw + 1;
-    if (!switchesMidposStart[idx]) {
-      switchesMidposStart[idx] = get_tmr10ms();
-    }
-    result = (switchesPos & (0x7 << sw));
-  }
-
-  if (!(switchesPos & result)) {
-    PLAY_SWITCH_MOVED(index);
-  }
-
-  return result;
-}
-
-#define CHECK_2POS(sw)       newPos |= check2PosSwitchPosition(sw ## 0)
-#define CHECK_3POS(idx, sw)  newPos |= check3PosSwitchPosition(idx, sw ## 0, startup)
-
-void getSwitchesPosition(bool startup)
-{
-  uint64_t newPos = 0;
-  CHECK_3POS(0, SW_SA);
-  CHECK_2POS(SW_SB);
-  CHECK_2POS(SW_SE);
-  CHECK_3POS(1, SW_SF);
-  switchesPos = newPos;
-}
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
@@ -542,7 +460,7 @@ bool getSwitch(swsrc_t swtch)
     result = true;
   }
   else if (cs_idx <= SWSRC_LAST_SWITCH) {
-#if defined(PCBTARANIS) || defined(PCBHORUS) // TODO || defined(PCBFLAMENCO)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
     if (flags & GETSWITCH_MIDPOS_DELAY)
       result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
     else
@@ -658,28 +576,7 @@ swsrc_t getMovedSwitch()
   static tmr10ms_t s_move_last_time = 0;
   swsrc_t result = 0;
 
-#if defined(PCBFLAMENCO)
-#if 0
-  for (int i=0; i<NUM_SWITCHES; i++) {
-    swarnstate_t mask = ((swarnstate_t)0x07 << (i*3));
-    uint8_t prev = (switches_states & mask) >> (i*3);
-    uint8_t next = (1024+getValue(MIXSRC_SA+i)) / 1024;
-    if (prev != next) {
-      switches_states = (switches_states & (~mask)) | ((swarnstate_t)next << (i*3));
-      if (i == 0)
-        result = 1+next;
-      else if (i == 1)
-        result = 1+(3*1)+(next!=0);
-      else if (i == 3)
-        result = 12+(next!=0);
-      else if (i == 4)
-        result = 14+next;
-      else
-        result = 0;
-    }
-  }
-#endif
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   for (int i=0; i<NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
       swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
@@ -729,7 +626,7 @@ void checkSwitches()
 #endif
   swarnstate_t states = g_model.switchWarningState;
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
 #endif
 
@@ -738,7 +635,7 @@ void checkSwitches()
 
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
   #define GETADC_COUNT (MUX_MAX+1)
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   #define GETADC_COUNT 1
 #endif
 #ifdef GETADC_COUNT
@@ -822,7 +719,7 @@ void checkSwitches()
     LED_ERROR_BEGIN();
 
     // first - display warning
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
     if ((last_bad_switches != switches_states) || (last_bad_pots != bad_pots)) {
       drawAlertBox(STR_SWITCHWARN, NULL, STR_PRESSANYKEYTOSKIP);
       if (last_bad_switches == 0xff || last_bad_pots == 0xff) {

@@ -38,7 +38,7 @@ void hapticQueue::heartbeat()
 #else
   if (buzzTimeLeft > 0) {
     buzzTimeLeft--; // time gets counted down
-#if defined(PCBSKY9X) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBSKY9X) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBHORUS)
     // TODO define HAPTIC_PWM option
     hapticOn(HAPTIC_STRENGTH() * 20);
 #else

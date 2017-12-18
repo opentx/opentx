@@ -382,13 +382,7 @@ getvalue_t getValue(mixsrc_t i)
     return calc1000toRESX((int16_t)8 * getTrimValue(mixerCurrentFlightMode, i-MIXSRC_FIRST_TRIM));
   }
 
-#if defined(PCBFLAMENCO)
-  else if (i==MIXSRC_SA) return (switchState(SW_SA0) ? -1024 : (switchState(SW_SA1) ? 0 : 1024));
-  else if (i==MIXSRC_SB) return (switchState(SW_SB0) ? -1024 : 1024);
-  else if (i==MIXSRC_SC) return (switchState(SW_SC0) ? -1024 : (switchState(SW_SC1) ? 0 : 1024));
-  else if (i==MIXSRC_SE) return (switchState(SW_SE0) ? -1024 : 1024);
-  else if (i==MIXSRC_SF) return (switchState(SW_SF0) ? -1024 : (switchState(SW_SF1) ? 0 : 1024));
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   else if ((i >= MIXSRC_FIRST_SWITCH) && (i <= MIXSRC_LAST_SWITCH)) {
     mixsrc_t sw = i-MIXSRC_FIRST_SWITCH;
     if (SWITCH_EXISTS(sw)) {

@@ -250,11 +250,6 @@ void Open9xSim::updateKeysAndSwitches(bool start)
     KEY_Down,      KEY_DOWN,
     KEY_Right,     KEY_RIGHT,
     KEY_Left,      KEY_LEFT,
-#elif defined(PCBFLAMENCO)
-    KEY_Page_Up,   KEY_MENU,
-    KEY_Page_Down, KEY_PAGE,
-    KEY_Return,    KEY_ENTER,
-    KEY_BackSpace, KEY_EXIT,
 #elif defined(PCBTARANIS)
     KEY_Page_Up,   KEY_MENU,
     KEY_Page_Down, KEY_PAGE,
@@ -309,14 +304,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
   } \
   simuSetSwitch(swtch, state_##swtch-states);
 
-#if defined(PCBFLAMENCO)
-  SWITCH_KEY(A, 0, 3);
-  SWITCH_KEY(B, 1, 2);
-  // SWITCH_KEY(C, 2, 3);
-  // SWITCH_KEY(D, 3, 3);
-  SWITCH_KEY(E, 4, 2);
-  SWITCH_KEY(F, 5, 3);
-#elif defined(PCBX9E)
+#if defined(PCBX9E)
   SWITCH_KEY(A, 0, 3);
   SWITCH_KEY(B, 1, 3);
   SWITCH_KEY(C, 2, 3);
@@ -482,12 +470,6 @@ void Open9xSim::refreshDisplay()
             setPixel(x, y, color);
           }
     	}
-#elif defined(PCBFLAMENCO)
-        display_t z = simuLcdBuf[y * LCD_W + x];
-        if (1) {
-          FXColor color = FXRGB(255*((z&0xF00)>>8)/0x0f, 255*((z&0x0F0)>>4)/0x0f, 255*(z&0x00F)/0x0f);
-          setPixel(x, y, color);
-        }
 #elif LCD_W >= 212
         display_t * p = &simuLcdBuf[y / 2 * LCD_W + x];
         uint8_t z = (y & 1) ? (*p >> 4) : (*p & 0x0F);
@@ -586,7 +568,7 @@ uint16_t anaIn(uint8_t chan)
 #elif defined(PCBX9E)
   else if (chan == TX_VOLTAGE)
     return 1420;      //~10.6V
-#elif defined(PCBTARANIS) || defined(PCBFLAMENCO)
+#elif defined(PCBTARANIS)
   else if (chan == TX_VOLTAGE)
     return 1000;      //~7.4V
 #elif defined(PCBSKY9X)

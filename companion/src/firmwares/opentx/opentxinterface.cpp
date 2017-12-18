@@ -88,8 +88,6 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for 9XR-PRO";
     case BOARD_AR9X:
       return "OpenTX for ar9x board / 9X";
-    case BOARD_FLAMENCO:
-      return "OpenTX for Flamenco experimental";
     case BOARD_X12S:
       return "OpenTX for FrSky Horus";
     case BOARD_X10:

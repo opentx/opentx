@@ -25,7 +25,7 @@ tar czf ./opentx.tgz opentx/radio/src opentx/radio/util
 
 # make lua fields for all radio variants
 cd opentx/radio/src
-make lua/lua_exports_taranis.inc lua/lua_exports_taranis_x9e.inc lua/lua_exports_horus.inc lua/lua_exports_flamenco.inc
+make lua/lua_exports_taranis.inc lua/lua_exports_taranis_x9e.inc lua/lua_exports_horus.inc
 
 DESTDIR=/var/www/html/downloads-${version}/nightlies/firmware
 

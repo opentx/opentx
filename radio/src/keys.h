@@ -52,7 +52,7 @@
 #define IS_KEY_REPT(evt)               (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_REPT)
 #define IS_KEY_BREAK(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK)
 
-#if (defined(PCBHORUS) || defined(PCBFLAMENCO) || defined(PCBTARANIS)) && defined(ROTARY_ENCODER_NAVIGATION)
+#if (defined(PCBHORUS) || defined(PCBTARANIS)) && defined(ROTARY_ENCODER_NAVIGATION)
   typedef uint16_t event_t;
   #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)
