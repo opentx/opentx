@@ -46,18 +46,6 @@
   #define MAX_TRAINER_CHANNELS         16
   #define MAX_TELEMETRY_SENSORS        32
   #define MAX_CUSTOM_SCREENS           5
-#elif defined(PCBFLAMENCO)
-  #define MAX_MODELS                   60
-  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
-  #define MAX_FLIGHT_MODES             9
-  #define MAX_MIXERS                   64
-  #define MAX_EXPOS                    64
-  #define MAX_LOGICAL_SWITCHES         32
-  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
-  #define MAX_SCRIPTS                  7
-  #define MAX_INPUTS                   32
-  #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
 #elif defined(PCBTARANIS)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
@@ -148,17 +136,6 @@ enum CurveType {
   #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
-#elif defined(PCBFLAMENCO)
-  #define LEN_MODEL_NAME               12
-  #define LEN_TIMER_NAME               8
-  #define LEN_FLIGHT_MODE_NAME         10
-  #define LEN_EXPOMIX_NAME             6
-  #define LEN_CHANNEL_NAME             6
-  #define LEN_INPUT_NAME               4
-  #define LEN_CURVE_NAME               3
-  #define LEN_FUNCTION_NAME            8
-  #define MAX_CURVES                   32
-  #define MAX_CURVE_POINTS             512
 #elif defined(PCBSKY9X) || defined(PCBX7)
   #define LEN_MODEL_NAME               10
   #define LEN_TIMER_NAME               3
@@ -193,10 +170,6 @@ enum CurveType {
   #define NUM_MODULES                  2
 #else
   #define NUM_MODULES                  1
-#endif
-
-#if defined(PCBFLAMENCO)
-  #define NUM_SWITCHES                 5 // TODO in board.h
 #endif
 
 #define XPOTS_MULTIPOS_COUNT           6
@@ -264,16 +237,7 @@ enum BeeperMode {
   e_mode_all
 };
 
-#if defined(PCBFLAMENCO)
-  enum ModuleIndex {
-    EXTERNAL_MODULE,
-    TRAINER_MODULE,
-  };
-  enum TrainerMode {
-    TRAINER_MODE_MASTER,
-    TRAINER_MODE_SLAVE
-  };
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   enum ModuleIndex {
     INTERNAL_MODULE,
     EXTERNAL_MODULE,
@@ -565,25 +529,7 @@ enum SwitchSources {
 
   SWSRC_FIRST_SWITCH,
 
-#if defined(PCBFLAMENCO)
-  SWSRC_SA0 = SWSRC_FIRST_SWITCH,
-  SWSRC_SA1,
-  SWSRC_SA2,
-  SWSRC_SB0,
-  SWSRC_SB2,
-  SWSRC_SC0,
-  SWSRC_SC1,
-  SWSRC_SC2,
-  SWSRC_SC3,
-  SWSRC_SC4,
-  SWSRC_SC5,
-  SWSRC_SE0,
-  SWSRC_SE2,
-  SWSRC_SF0,
-  SWSRC_SF1,
-  SWSRC_SF2,
-  SWSRC_LAST_SWITCH = SWSRC_SF2,
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,
@@ -773,11 +719,6 @@ enum MixSources {
   MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
   MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
   MIXSRC_LAST_POT = MIXSRC_RS,
-#elif defined(PCBFLAMENCO)
-  MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("sd", "Potentiometer D")
-  MIXSRC_SLIDER1,                       LUA_EXPORT("ls", "Left slider")
-  MIXSRC_SLIDER2,                       LUA_EXPORT("rs", "Right slider")
-  MIXSRC_LAST_POT = MIXSRC_SLIDER2,
 #elif defined(PCBX9E)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
@@ -850,14 +791,7 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBFLAMENCO)
-  MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
-  MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
-  MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
-  MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
-  MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
-  MIXSRC_LAST_SWITCH = MIXSRC_SF,
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")

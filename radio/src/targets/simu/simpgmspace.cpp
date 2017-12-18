@@ -218,9 +218,6 @@ void simuSetKey(uint8_t key, bool state)
     KEY_CASE(KEY_RADIO, KEYS_GPIO_REG_LEFT, KEYS_GPIO_PIN_LEFT)
     KEY_CASE(KEY_MODEL, KEYS_GPIO_REG_UP, KEYS_GPIO_PIN_UP)
     KEY_CASE(KEY_EXIT, KEYS_GPIO_REG_DOWN, KEYS_GPIO_PIN_DOWN)
-#elif defined(PCBFLAMENCO)
-    KEY_CASE(KEY_ENTER, KEYS_GPIO_REG_ENTER, KEYS_GPIO_PIN_ENTER)
-    KEY_CASE(KEY_PAGE, KEYS_GPIO_REG_PAGE, KEYS_GPIO_PIN_PAGE)
 #elif defined(PCBTARANIS)
     KEY_CASE(KEY_ENTER, KEYS_GPIO_REG_ENTER, KEYS_GPIO_PIN_ENTER)
     KEY_CASE(KEY_PAGE, KEYS_GPIO_REG_PAGE, KEYS_GPIO_PIN_PAGE)
@@ -270,14 +267,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
   // TRACE_SIMPGMSPACE("simuSetSwitch(%d, %d)", swtch, state);
 
   switch (swtch) {
-#if defined(PCBFLAMENCO)
-    // SWITCH_3_CASE(0, SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
-    // SWITCH_CASE(1, SWITCHES_GPIO_REG_B, SWITCHES_GPIO_PIN_B)
-    // SWITCH_3_CASE(2, SWITCHES_GPIO_REG_C_L, SWITCHES_GPIO_REG_C_H, SWITCHES_GPIO_PIN_C_L, SWITCHES_GPIO_PIN_C_H)
-    // SWITCH_3_CASE(3, SWITCHES_GPIO_REG_D_L, SWITCHES_GPIO_REG_D_H, SWITCHES_GPIO_PIN_D_L, SWITCHES_GPIO_PIN_D_H)
-    // SWITCH_CASE(4, SWITCHES_GPIO_REG_E, SWITCHES_GPIO_PIN_E)
-    // SWITCH_3_CASE(5, SWITCHES_GPIO_REG_F_H, SWITCHES_GPIO_REG_F_L, SWITCHES_GPIO_PIN_F_H, SWITCHES_GPIO_PIN_F_L)
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
     SWITCH_3_CASE(0,  SWITCHES_GPIO_REG_A_L, SWITCHES_GPIO_REG_A_H, SWITCHES_GPIO_PIN_A_L, SWITCHES_GPIO_PIN_A_H)
 #if !defined(PCBX10)
     SWITCH_3_CASE(1,  SWITCHES_GPIO_REG_B_L, SWITCHES_GPIO_REG_B_H, SWITCHES_GPIO_PIN_B_L, SWITCHES_GPIO_PIN_B_H)
@@ -586,7 +576,7 @@ uint16_t stackAvailable()
 bool simuLcdRefresh = true;
 display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
 
-#if !defined(PCBFLAMENCO) && !defined(PCBHORUS)
+#if !defined(PCBHORUS)
 void lcdSetRefVolt(uint8_t val)
 {
 }
@@ -606,10 +596,6 @@ void lcdRefresh()
 {
   static bool lightEnabled = (bool)isBacklightEnabled();
 
-#if defined(PCBFLAMENCO)
-  TW8823_SendScreen();
-#endif
-
   if (bool(isBacklightEnabled()) != lightEnabled || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE)) {
     memcpy(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE);
     lightEnabled = (bool)isBacklightEnabled();
@@ -625,7 +611,6 @@ void telemetryPortInit()
 {
 }
 
-#if !defined(PCBFLAMENCO)
 display_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
 void lcdStoreBackupBuffer()
 {
@@ -637,7 +622,7 @@ int lcdRestoreBackupBuffer()
   memcpy(displayBuf, simuLcdBackupBuf, sizeof(displayBuf));
   return 1;
 }
-#endif
+
 
 #if defined(CPUARM)
 void pwrOff()
@@ -719,12 +704,6 @@ void lockFlash() { }
 void flashWrite(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
 uint32_t isBootloaderStart(const uint8_t * block) { return 1; }
 #endif // defined(PCBTARANIS)
-
-#if defined(PCBFLAMENCO)
-void i2cWriteTW8823(unsigned char, unsigned char) { }
-uint8_t i2cReadBQ24195(uint8_t) { return 0; }
-void i2cWriteBQ24195(uint8_t, uint8_t) { }
-#endif
 
 #if defined(PCBHORUS)
 void LCD_ControlLight(uint16_t dutyCycle) { }

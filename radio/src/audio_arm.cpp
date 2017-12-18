@@ -196,7 +196,7 @@ const char * const audioFilenames[] = {
   "midstck2",
   "midstck3",
   "midstck4",
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   "midpot1",
   "midpot2",
   "midslid1",
@@ -1102,7 +1102,7 @@ void audioEvent(unsigned int index)
       case AU_STICK4_MIDDLE:
       case AU_POT1_MIDDLE:
       case AU_POT2_MIDDLE:
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
       case AU_SLIDER1_MIDDLE:
       case AU_SLIDER2_MIDDLE:
 #if defined(PCBX9E)

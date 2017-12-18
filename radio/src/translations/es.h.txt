@@ -133,8 +133,6 @@
 
 #if defined(PCBHORUS)
   #define TR_RETA123           "RETA12345LR"
-#elif defined(PCBFLAMENCO)
-  #define TR_RETA123           "RETA123LR"
 #elif defined(PCBX9E)
   #define TR_RETA123           "RETA1234LRLR"
 #elif defined(PCBTARANIS) || defined(REVX)
@@ -468,9 +466,6 @@
 #if defined(PCBHORUS)
   #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0""\310JSx""\310JSy"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
-#elif defined(PCBFLAMENCO)
-  #define TR_POTS_VSRCRAW      "SD\0 ""LS\0 ""RS\0 "
-  #define TR_SW_VSRCRAW        "SA\0 ""SB\0 ""SC\0 ""SE\0 ""SF\0 "
 #elif defined(PCBX9E)
   #define TR_POTS_VSRCRAW      "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
@@ -515,9 +510,7 @@
 
 #define TR_ON_ONE_SWITCHES     "ON\0""One"
 
-#if defined(PCBFLAMENCO)
-  #define TR_VSWITCHES         "---" TR_PHYS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW "ON\0""One"
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #elif defined(PCBSKY9X)

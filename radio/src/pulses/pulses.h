@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -39,7 +39,7 @@ enum ModuleFlag
   #define IS_RANGECHECK_ENABLE()             (moduleFlag[0] == MODULE_RANGECHECK)
 #endif
 
-#if defined(DSM2) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO)
+#if defined(DSM2) && !defined(PCBTARANIS)
   #define DSM2_BIND_TIMEOUT      255         // 255*11ms
   extern uint8_t dsm2BindTimer;
 #endif

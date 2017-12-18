@@ -27,7 +27,7 @@ uint8_t logDelay;
 
 void writeHeader();
 
-#if defined(PCBTARANIS) || defined(PCBFLAMENCO) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   #define GET_2POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
 #else
   #define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
@@ -342,14 +342,7 @@ void logsWrite()
         f_printf(&g_oLogFile, "%d,", calibratedAnalogs[i]);
       }
 
-#if defined(PCBFLAMENCO)
-      f_printf(&g_oLogFile, "%d,%d,%d,%d,",
-          GET_3POS_STATE(SA),
-          GET_3POS_STATE(SB),
-          // GET_3POS_STATE(SC),
-          GET_2POS_STATE(SE),
-          GET_3POS_STATE(SF));
-#elif defined(PCBX7)
+#if defined(PCBX7)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,0x%08X%08X,",
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),

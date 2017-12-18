@@ -745,33 +745,6 @@ int cliReboot(const char ** argv)
   return 0;
 }
 
-#if defined(PCBFLAMENCO)
-int cliReadBQ24195(const char ** argv)
-{
-  int index = 0;
-  if (toInt(argv, 1, &index) > 0) {
-    serialPrint("BQ24195[%d] = 0x%02x", index, i2cReadBQ24195(index));
-  }
-  else {
-    serialPrint("%s: Invalid arguments \"%s\" \"%s\"", argv[0], argv[1]);
-  }
-  return 0;
-}
-
-int cliWriteBQ24195(const char ** argv)
-{
-  int index = 0;
-  int data = 0;
-  if (toInt(argv, 1, &index) > 0 && toInt(argv, 2, &data) > 0) {
-    i2cWriteBQ24195(index, data);
-  }
-  else {
-    serialPrint("%s: Invalid arguments \"%s\" \"%s\"", argv[0], argv[1], argv[2]);
-  }
-  return 0;
-}
-#endif
-
 const MemArea memAreas[] = {
   { "RCC", RCC, sizeof(RCC_TypeDef) },
   { "GPIOA", GPIOA, sizeof(GPIO_TypeDef) },
@@ -1007,42 +980,6 @@ int cliDisplay(const char ** argv)
     serialPrint("uid = %s", str);
   }
 #endif
-#if defined(PCBFLAMENCO)
-  else if (!strcmp(argv[1], "bq24195")) {
-    {
-      uint8_t reg = i2cReadBQ24195(0x00);
-      serialPrint(reg & 0x80 ? "HIZ enable" : "HIZ disable");
-    }
-    {
-      uint8_t reg = i2cReadBQ24195(0x08);
-      serialPrint(reg & 0x01 ? "VBatt < VSysMin" : "VBatt > VSysMin");
-      serialPrint(reg & 0x02 ? "Thermal sensor bad" : "Thermal sensor ok");
-      serialPrint(reg & 0x04 ? "Power ok" : "Power bad");
-      serialPrint(reg & 0x08 ? "Connected to charger" : "Not connected to charger");
-      static const char * const CHARGE_STATUS[] = { "Not Charging", "Precharge", "Fast Charging", "Charge done" };
-      serialPrint(CHARGE_STATUS[(reg & 0x30) >> 4]);
-      static const char * const INPUT_STATUS[] = { "Unknown input", "USB host input", "USB adapter port input", "OTG input" };
-      serialPrint(INPUT_STATUS[(reg & 0xC0) >> 6]);
-    }
-    {
-      uint8_t reg = i2cReadBQ24195(0x09);
-      if (reg & 0x80) serialPrint("Watchdog timer expiration");
-      uint8_t chargerFault = (reg & 0x30) >> 4;
-      if (chargerFault == 0x01)
-        serialPrint("Input fault");
-      else if (chargerFault == 0x02)
-        serialPrint("Thermal shutdown");
-      else if (chargerFault == 0x03)
-        serialPrint("Charge safety timer expiration");
-      if (reg & 0x08) serialPrint("Battery over voltage fault");
-      uint8_t ntcFault = (reg & 0x07);
-      if (ntcFault == 0x05)
-        serialPrint("NTC cold");
-      else if (ntcFault == 0x06)
-        serialPrint("NTC hot");
-    }
-  }
-#endif
   else if (!strcmp(argv[1], "tim")) {
     int timerNumber;
     if (toInt(argv, 2, &timerNumber) > 0) {
@@ -1241,10 +1178,6 @@ const CliCommand cliCommands[] = {
   { "meminfo", cliMemoryInfo, "" },
   { "test", cliTest, "new | std::exception | graphics | memspd" },
   { "trace", cliTrace, "on | off" },
-#if defined(PCBFLAMENCO)
-  { "read_bq24195", cliReadBQ24195, "<register>" },
-  { "write_bq24195", cliWriteBQ24195, "<register> <data>" },
-#endif
   { "help", cliHelp, "[<command>]" },
   { "debugvars", cliDebugVars, "" },
   { "repeat", cliRepeat, "<interval> <command>" },

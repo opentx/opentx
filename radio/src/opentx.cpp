@@ -234,11 +234,7 @@ void generalDefault()
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
-#if defined(PCBFLAMENCO)
-  g_eeGeneral.vBatWarn = 33;
-  g_eeGeneral.vBatMin = -60; // 0 is 9.0V
-  g_eeGeneral.vBatMax = -78; // 0 is 12.0V
-#elif defined(PCBHORUS)
+#if defined(PCBHORUS)
   #if PCBREV >= 13
     g_eeGeneral.potsConfig = 0x1B;  // S1 = pot, 6P = multipos, S2 = pot with detent
   #else
@@ -283,15 +279,11 @@ void generalDefault()
   g_eeGeneral.stickMode = DEFAULT_MODE-1;
 #endif
 
-#if defined(PCBFLAMENCO)
-  g_eeGeneral.templateSetup = 21; /* AETR */
-#elif defined(PCBTARANIS)
+#if defined(PCBTARANIS)
   g_eeGeneral.templateSetup = 17; /* TAER */
 #endif
 
-#if defined(PCBFLAMENCO)
-  g_eeGeneral.inactivityTimer = 50;
-#elif !defined(CPUM64)
+#if !defined(CPUM64)
   g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
   g_eeGeneral.inactivityTimer = 10;
@@ -895,23 +887,9 @@ void checkBacklight()
   }
 }
 
-#if defined(PCBFLAMENCO)
-void checkUsbChip()
-{
-  uint8_t reg = i2cReadBQ24195(0x00);
-  if (reg & 0x80) {
-    i2cWriteBQ24195(0x00, reg & 0x7F);
-  }
-}
-#endif
-
 void doLoopCommonActions()
 {
   checkBacklight();
-
-#if defined(PCBFLAMENCO)
-  checkUsbChip();
-#endif
 }
 
 void backlightOn()
@@ -2661,7 +2639,7 @@ int main()
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
 #endif
 
-#if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBFLAMENCO) && !defined(PCBHORUS)
+#if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBHORUS)
   // TODO remove this
   lcdInit();
 #endif
@@ -2726,10 +2704,6 @@ int main()
   opentxInit(mcusr);
 #if defined(CPUM2560)
   uint8_t shutdown_state = 0;
-#endif
-
-#if defined(PCBFLAMENCO)
-  // TODO not here it's an ARM board ... menuEntryTime = get_tmr10ms() - 200;
 #endif
 
   while (1) {
