@@ -1318,3 +1318,10 @@ Wes Warner
 Samuel Grob
 Wolfgang Kuhl
 Stuart Olson
+Michael Shellim
+Jay Watkins
+Juan Rodriguez
+John Bitzer
+Bryan Anderson
+Claudio Piccinini
+Patrick Breidenbach
