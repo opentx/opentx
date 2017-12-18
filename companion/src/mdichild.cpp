@@ -31,8 +31,10 @@
 #include "flashfirmwaredialog.h"
 #include "storage.h"
 #include "radiointerface.h"
+#include "radiodataconversionstate.h"
 
 #include <algorithm>
+#include <ExportableTableView>
 
 MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
   QWidget(parent, f),
@@ -46,6 +48,7 @@ MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
   lastSelectedModel(-1),
   isUntitled(true),
   showCatToolbar(true),
+  forceCloseFlag(false),
   stateDataVersion(1)
 {
   ui->setupUi(this);
@@ -113,7 +116,7 @@ MdiChild::~MdiChild()
 
 void MdiChild::closeEvent(QCloseEvent *event)
 {
-  if (!maybeSave()) {
+  if (!maybeSave() && !forceCloseFlag) {
     event->ignore();
     return;
   }
@@ -702,8 +705,11 @@ void MdiChild::onFirmwareChanged()
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
   //qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
-  if (StorageFormat::getFourCC(previous->getBoard()) != StorageFormat::getFourCC(firmware->getBoard())) {
-    convertStorage(previous->getBoard(), firmware->getBoard());
+  if (!Boards::isBoardCompatible(previous->getBoard(), firmware->getBoard())) {
+    if (!convertStorage(previous->getBoard(), firmware->getBoard())) {
+      closeFile(true);
+      return;
+    }
     setModified();
   }
 }
@@ -1327,8 +1333,9 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
     setCurrentFile(filename);
   }
 
-  if (!storage.isBoardCompatible(getCurrentBoard())) {
-    convertStorage(storage.getBoard(), getCurrentBoard());
+  if (!Boards::isBoardCompatible(storage.getBoard(), getCurrentBoard())) {
+    if (!convertStorage(storage.getBoard(), getCurrentBoard(), true))
+      return false;
     setModified();
   }
   else {
@@ -1362,10 +1369,8 @@ bool MdiChild::saveAs(bool isNew)
   if (fileName.isEmpty())
     return false;
   g.eepromDir( QFileInfo(fileName).dir().absolutePath() );
-  if (isNew)
-    return saveFile(fileName);
-  else
-    return saveFile(fileName, true);
+
+  return saveFile(fileName, true);
 }
 
 bool MdiChild::saveFile(const QString & filename, bool setCurrent)
@@ -1384,15 +1389,27 @@ bool MdiChild::saveFile(const QString & filename, bool setCurrent)
   return true;
 }
 
+void MdiChild::closeFile(bool force)
+{
+  forceCloseFlag = force;
+  if (parentWindow)
+    parentWindow->close();
+  else
+    this->close();
+}
+
 bool MdiChild::maybeSave()
 {
   if (isWindowModified()) {
     int ret = askQuestion(tr("%1 has been modified.\nDo you want to save your changes?").arg(userFriendlyCurrentFile()),
-        QMessageBox::Save, QMessageBox::Discard, QMessageBox::Cancel | QMessageBox::Default);
+                          (QMessageBox::Save | QMessageBox::Discard | (forceCloseFlag ? QMessageBox::NoButton : QMessageBox::Cancel)),
+                          (forceCloseFlag ? QMessageBox::Save : QMessageBox::Cancel));
 
     if (ret == QMessageBox::Save)
       return save();
-    else if (ret == QMessageBox::Cancel)
+    else if (ret == QMessageBox::Discard)
+      return true;
+    else
       return false;
   }
   return true;
@@ -1428,13 +1445,57 @@ void MdiChild::forceNewFilename(const QString & suffix, const QString & ext)
   curFile.replace(QRegExp("\\.(eepe|bin|hex|otx)$"), suffix + "." + ext);
 }
 
-void MdiChild::convertStorage(Board::Type from, Board::Type to)
+bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
 {
-  showWarning(tr("Models and settings will be automatically converted.\nIf that is not what you intended, please close the file\nand choose the correct radio type/profile before reopening it."));
-  radioData.convert(from, to);
+  QMessageBox::StandardButtons btns;
+  QMessageBox::StandardButton dfltBtn;
+  QString q = tr("<p><b>Current radio type is not compatible with file %1, models and settings need to be converted.</b></p>").arg(userFriendlyCurrentFile());
+  if (newFile) {
+    q.append(tr("Do you wish to continue with the conversion?"));
+    btns = (QMessageBox::Yes | QMessageBox::No);
+    dfltBtn = QMessageBox::Yes;
+  }
+  else{
+    q.append(tr("Choose <i>Apply</i> to convert the file, or <i>Close</i> to close it without conversion."));
+    btns = (QMessageBox::Apply | QMessageBox::Close);
+    dfltBtn = QMessageBox::Apply;
+  }
+  if (askQuestion(q, btns, dfltBtn) != dfltBtn)
+    return false;
+
+  RadioDataConversionState cstate(from, to, &radioData);
+  if (!cstate.convert())
+    return false;
   forceNewFilename("_converted");
   initModelsList();
   isUntitled = true;
+
+  if (cstate.hasLogEntries(RadioDataConversionState::EVT_INF)) {
+    QDialog * msgBox = new QDialog(Q_NULLPTR, Qt::Dialog | Qt::WindowTitleHint | Qt::WindowSystemMenuHint | Qt::WindowCloseButtonHint);
+
+    ExportableTableView * tv = new ExportableTableView(msgBox);
+    tv->setSortingEnabled(true);
+    tv->verticalHeader()->hide();
+    tv->setModel(cstate.getLogModel(RadioDataConversionState::EVT_INF, tv));
+    tv->resizeColumnsToContents();
+    tv->resizeRowsToContents();
+
+    QDialogButtonBox * btnBox = new QDialogButtonBox(QDialogButtonBox::Ok, this);
+
+    QVBoxLayout * lo = new QVBoxLayout(msgBox);
+    lo->addWidget(new QLabel(tr("<b>The conversion generated some important messages, please review them below.</b>")));
+    lo->addWidget(tv);
+    lo->addWidget(btnBox);
+
+    connect(btnBox, &QDialogButtonBox::accepted, msgBox, &QDialog::accept);
+    connect(btnBox, &QDialogButtonBox::rejected, msgBox, &QDialog::reject);
+
+    msgBox->setWindowTitle(tr("Companion :: Conversion Result for %1").arg(curFile));
+    msgBox->setAttribute(Qt::WA_DeleteOnClose);
+    msgBox->show();  // modeless
+  }
+
+  return true;
 }
 
 void MdiChild::showWarning(const QString & msg)
@@ -1443,9 +1504,9 @@ void MdiChild::showWarning(const QString & msg)
     QMessageBox::warning(this, "Companion", msg);
 }
 
-int MdiChild::askQuestion(const QString & msg, int button0, int button1, int button2)
+int MdiChild::askQuestion(const QString & msg, QMessageBox::StandardButtons buttons, QMessageBox::StandardButton defaultButton)
 {
-  return QMessageBox::question(this, tr("Companion"), msg, button0, button1, button2);
+  return QMessageBox::question(this, tr("Companion"), msg, buttons, defaultButton);
 }
 
 void MdiChild::writeEeprom()  // write to Tx

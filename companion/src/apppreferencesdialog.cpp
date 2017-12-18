@@ -23,6 +23,7 @@
 #include "mainwindow.h"
 #include "appdata.h"
 #include "helpers.h"
+#include "storage.h"
 #if defined(JOYSTICKS)
 #include "joystick.h"
 #include "joystickdialog.h"
@@ -30,17 +31,17 @@
 
 AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
   QDialog(parent),
+  updateLock(false),
+  mainWinHasDirtyChild(false),
   ui(new Ui::AppPreferencesDialog)
 {
   ui->setupUi(this);
-  updateLock=false;
   setWindowIcon(CompanionIcon("apppreferences.png"));
 
   initSettings();
   connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
   connect(ui->opt_appDebugLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
   connect(ui->opt_fwTraceLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
-  connect(this, SIGNAL(accepted()), this, SLOT(writeValues()));
 
 #if !defined(JOYSTICKS)
   ui->joystickCB->hide();
@@ -58,7 +59,12 @@ AppPreferencesDialog::~AppPreferencesDialog()
   delete ui;
 }
 
-void AppPreferencesDialog::writeValues()
+void AppPreferencesDialog::setMainWinHasDirtyChild(bool value)
+{
+  mainWinHasDirtyChild = value;
+}
+
+void AppPreferencesDialog::accept()
 {
   g.autoCheckApp(ui->autoCheckCompanion->isChecked());
   g.OpenTxBranch(DownloadBranchType(ui->OpenTxBranch->currentIndex()));
@@ -102,15 +108,42 @@ void AppPreferencesDialog::writeValues()
   else
     g.profile[g.id()].name(ui->profileNameLE->text());
 
+  bool fwchange = false;
+  Firmware * newFw = getFirmwareVariant();
   // If a new fw type has been choosen, several things need to reset
-  Firmware::setCurrentVariant(getFirmwareVariant());
-  QString id = Firmware::getCurrentVariant()->getId();
-  if (g.profile[g.id()].fwType() != id) {
+  if (Firmware::getCurrentVariant()->getId() != newFw->getId()) {
+    // check if we're going to be converting to a new radio type and there are unsaved files in the main window
+    if (mainWinHasDirtyChild && !Boards::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard())) {
+      QString q = tr("<p><b>You cannot switch Radio Type or change Build Options while there are unsaved file changes. What do you wish to do?</b></p> <ul>" \
+                     "<li><i>Save All</i> - Save any open file(s) before saving Settings.<li>" \
+                     "<li><i>Reset</i> - Revert to the previous Radio Type and Build Options before saving Settings.</li>" \
+                     "<li><i>Cancel</i> - Return to the Settings editor dialog.</li></ul>");
+      int resp = QMessageBox::question(this, windowTitle(), q, (QMessageBox::SaveAll | QMessageBox::Reset | QMessageBox::Cancel), QMessageBox::Cancel);
+      if (resp == QMessageBox::SaveAll) {
+        // signal main window to save files, need to do this before the fw actually changes
+        emit firmwareProfileAboutToChange();
+      }
+      else if (resp == QMessageBox::Reset) {
+        // bail out early before saving the radio type & firmware options
+        QDialog::accept();
+        return;
+      }
+      else {
+        // we do not accept the dialog close
+        return;
+      }
+    }
+    Firmware::setCurrentVariant(newFw);
     g.profile[g.id()].fwName("");
     g.profile[g.id()].initFwVariables();
-    g.profile[g.id()].fwType(id);
-    emit firmwareProfileChanged(g.id());
+    g.profile[g.id()].fwType(newFw->getId());
+    fwchange = true;
   }
+
+  QDialog::accept();
+
+  if (fwchange)
+    emit firmwareProfileChanged(g.id());  // important to do this after the accepted() signal
 }
 
 void AppPreferencesDialog::on_snapshotPathButton_clicked()

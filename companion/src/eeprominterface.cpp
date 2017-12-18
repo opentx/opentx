@@ -151,6 +151,11 @@ int TimToVal(float value)
   return (temp-129);
 }
 
+
+/*
+ * SensorData
+ */
+
 void SensorData::updateUnit()
 {
   if (type == TELEM_TYPE_CALCULATED) {
@@ -215,13 +220,10 @@ QString SensorData::unitString() const
   }
 }
 
-bool RawSource::isTimeBased() const
-{
-  if (IS_ARM(getCurrentBoard()))
-    return (type == SOURCE_TYPE_SPECIAL && index > 0);
-  else
-    return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
-}
+
+/*
+ * RawSourceRange
+ */
 
 float RawSourceRange::getValue(int value)
 {
@@ -230,6 +232,11 @@ float RawSourceRange::getValue(int value)
   else
     return min + float(value) * step;
 }
+
+
+/*
+ * RawSource
+ */
 
 RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSettings & settings, unsigned int flags) const
 {
@@ -490,8 +497,12 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   return result;
 }
 
-QString RawSource::toString(const ModelData * model, const GeneralSettings * const generalSettings) const
+QString RawSource::toString(const ModelData * model, const GeneralSettings * const generalSettings, Board::Type board) const
 {
+  if (board == Board::BOARD_UNKNOWN) {
+    board = getCurrentBoard();
+  }
+
   static const QString trims[] = {
     QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA"), QObject::tr("Trm5"), QObject::tr("Trm6")
   };
@@ -518,12 +529,15 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
 
   if (index<0) {
-    return QObject::tr("----");
+    return QObject::tr("???");
   }
 
   QString result;
   int genAryIdx = 0;
   switch (type) {
+    case SOURCE_TYPE_NONE:
+      return QObject::tr("----");
+
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
       const char * name = NULL;
@@ -545,7 +559,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
           result = QString(generalSettings->stickName[genAryIdx]);
       }
       if (result.isEmpty())
-        result = getCurrentFirmware()->getAnalogInputName(index);;
+        result = Boards::getAnalogInputName(board, index);
       return result;
 
     case SOURCE_TYPE_TRIM:
@@ -559,7 +573,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       if (generalSettings)
         result = QString(generalSettings->switchName[index]);
       if (result.isEmpty())
-        result = getSwitchInfo(getCurrentBoard(), index).name;
+        result = Boards::getSwitchInfo(board, index).name;
       return result;
 
     case SOURCE_TYPE_CUSTOM_SWITCH:
@@ -583,7 +597,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return CHECK_IN_ARRAY(special, index);
 
     case SOURCE_TYPE_TELEMETRY:
-      if (IS_ARM(getCurrentBoard())) {
+      if (IS_ARM(board)) {
         div_t qr = div(index, 3);
         result = getElementName(QCoreApplication::translate("Telemetry", "TELE"), qr.quot+1, model ? model->sensorData[qr.quot].label : NULL);
         if (qr.rem)
@@ -603,13 +617,16 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     }
 
     default:
-      return QObject::tr("----");
+      return QObject::tr("???");
   }
 }
 
-bool RawSource::isStick(int * stickIndex) const
+bool RawSource::isStick(int * stickIndex, Board::Type board) const
 {
-  if (type == SOURCE_TYPE_STICK && index < getBoardCapability(getCurrentBoard(), Board::Sticks)) {
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  if (type == SOURCE_TYPE_STICK && index < Boards::getCapability(board, Board::Sticks)) {
     if (stickIndex)
       *stickIndex = index;
     return true;
@@ -617,29 +634,102 @@ bool RawSource::isStick(int * stickIndex) const
   return false;
 }
 
-bool RawSource::isPot(int * potsIndex) const
+bool RawSource::isPot(int * potsIndex, Board::Type board) const
 {
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
   if (type == SOURCE_TYPE_STICK &&
-          index >= getBoardCapability(getCurrentBoard(), Board::Sticks) &&
-          index < getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots)) {
+          index >= b.getCapability(Board::Sticks) &&
+          index < b.getCapability(Board::Sticks) + b.getCapability(Board::Pots)) {
     if (potsIndex)
-      *potsIndex = index - getBoardCapability(getCurrentBoard(), Board::Sticks);
+      *potsIndex = index - b.getCapability(Board::Sticks);
     return true;
   }
   return false;
 }
 
-bool RawSource::isSlider(int * sliderIndex) const
+bool RawSource::isSlider(int * sliderIndex, Board::Type board) const
 {
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
   if (type == SOURCE_TYPE_STICK &&
-          index >= getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots) &&
-          index < getBoardCapability(getCurrentBoard(), Board::Sticks) + getBoardCapability(getCurrentBoard(), Board::Pots) + getBoardCapability(getCurrentBoard(), Board::Sliders)) {
+          index >= b.getCapability(Board::Sticks) + b.getCapability(Board::Pots) &&
+          index < b.getCapability(Board::Sticks) + b.getCapability(Board::Pots) + b.getCapability(Board::Sliders)) {
     if (sliderIndex)
-      *sliderIndex = index - getBoardCapability(getCurrentBoard(), Board::Sticks) - getBoardCapability(getCurrentBoard(), Board::Pots);
+      *sliderIndex = index - b.getCapability(Board::Sticks) - b.getCapability(Board::Pots);
     return true;
   }
   return false;
 }
+
+bool RawSource::isTimeBased(Board::Type board) const
+{
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  if (IS_ARM(board))
+    return (type == SOURCE_TYPE_SPECIAL && index > 0);
+  else
+    return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
+}
+
+bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board)
+{
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
+
+  if (type == SOURCE_TYPE_STICK && index >= b.getCapability(Board::MaxAnalogs))
+    return false;
+
+  if (type == SOURCE_TYPE_SWITCH && index >= b.getCapability(Board::Switches))
+    return false;
+
+  if (model) {
+    if (type == SOURCE_TYPE_VIRTUAL_INPUT && !model->isInputValid(index))
+      return false;
+
+    if (type == SOURCE_TYPE_CUSTOM_SWITCH && model->logicalSw[index].isEmpty())
+      return false;
+
+    if (type == SOURCE_TYPE_TELEMETRY) {
+      if (IS_ARM(board) && !model->sensorData[div(index, 3).quot].isAvailable()) {
+        return false;
+      }
+      else if (!IS_ARM(board)) {
+        Firmware * fw = getCurrentFirmware();
+        if (type == (int)TELEMETRY_SOURCE_TX_TIME && !fw->getCapability(RtcTime))
+          return false;
+
+        if (type == (int)TELEMETRY_SOURCE_SWR && !fw->getCapability(SportTelemetry))
+          return false;
+
+        if (type == (int)TELEMETRY_SOURCE_TIMER3 && fw->getCapability(Timers) < 3)
+          return false;
+      }
+    }
+  }
+
+  if (gs) {
+    int gsIdx = 0;
+    if (type == SOURCE_TYPE_STICK && ((isPot(&gsIdx) && !gs->isPotAvailable(gsIdx)) || (isSlider(&gsIdx) && !gs->isSliderAvailable(gsIdx))))
+      return false;
+
+    if (type == SOURCE_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !gs->switchSourceAllowedTaranis(index))
+      return false;
+  }
+
+  if (type == SOURCE_TYPE_TRIM && index >= b.getCapability(Board::NumTrims))
+    return false;
+
+  return true;
+}
+
 
 /*
  * RawSwitch
@@ -704,13 +794,13 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return getElementName(QCoreApplication::translate("Logic Switch", "L"), index, NULL, true);
 
       case SWITCH_TYPE_MULTIPOS_POT:
-        if (!getCurrentFirmware()->getCapability(MultiposPotsPositions))
+        if (!Boards::getCapability(board, Board::MultiposPotsPositions))
           return QObject::tr("???");
-        qr = div(index - 1, getCurrentFirmware()->getCapability(MultiposPotsPositions));
+        qr = div(index - 1, Boards::getCapability(board, Board::MultiposPotsPositions));
         if (generalSettings && qr.quot < (int)DIM(generalSettings->potConfig))
           swName = QString(generalSettings->potName[qr.quot]);
         if (swName.isEmpty())
-          swName = getCurrentFirmware()->getAnalogInputName(qr.quot + getBoardCapability(board, Board::Sticks));;
+          swName = Boards::getAnalogInputName(board, qr.quot + Boards::getCapability(board, Board::Sticks));
         return swName + "_" + QString::number(qr.rem + 1);
 
       case SWITCH_TYPE_TRIM:
@@ -747,6 +837,36 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return QObject::tr("???");
     }
   }
+}
+
+bool RawSwitch::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board)
+{
+  if (board == Board::BOARD_UNKNOWN)
+    board = getCurrentBoard();
+
+  Boards b(board);
+
+  if (type == SWITCH_TYPE_SWITCH && abs(index) > b.getCapability(Board::SwitchPositions))
+    return false;
+
+  if (type == SWITCH_TYPE_TRIM && abs(index) > b.getCapability(Board::NumTrimSwitches))
+    return false;
+
+  if (gs) {
+    if (type == SWITCH_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !gs->switchPositionAllowedTaranis(abs(index)))
+      return false;
+
+    if (type == SWITCH_TYPE_MULTIPOS_POT) {
+      int pot = div(abs(index) - 1, b.getCapability(Board::MultiposPotsPositions)).quot;
+      if (!gs->isPotAvailable(pot) || gs->potConfig[pot] != Board::POT_MULTIPOS_SWITCH)
+        return false;
+    }
+  }
+
+  if (model && !model->isAvailable(*this))
+    return false;
+
+  return true;
 }
 
 
@@ -885,6 +1005,11 @@ void CustomFunctionData::clear()
 bool CustomFunctionData::isEmpty() const
 {
   return (swtch.type == SWITCH_TYPE_NONE);
+}
+
+QString CustomFunctionData::toString(int index, bool globalContext) const
+{
+  return getElementName((globalContext ? QObject::tr("GF") : QObject::tr("SF")), index+1, 0, true);
 }
 
 QString CustomFunctionData::funcToString(const ModelData * model) const
@@ -1209,46 +1334,13 @@ GeneralSettings::GeneralSettings()
     vBatMax = -40; //8V
   }
 
-
-    for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
-    switchConfig[i] = Boards::getSwitchInfo(board, i).config;
-  }
+  setDefaultControlTypes(board);
 
   backlightMode = 3; // keys and sticks
   // backlightBright = 0; // 0 = 100%
 
   if (IS_HORUS(board)) {
     backlightOffBright = 20;
-  }
-
-  if (IS_HORUS(board)) {
-    potConfig[0] = Board::POT_WITH_DETENT;
-    potConfig[1] = Board::POT_MULTIPOS_SWITCH;
-    potConfig[2] = Board::POT_WITH_DETENT;
-  }
-  else if (IS_TARANIS_X7(board)) {
-    potConfig[0] = Board::POT_WITHOUT_DETENT;
-    potConfig[1] = Board::POT_WITH_DETENT;
-  }
-  else if (IS_TARANIS(board)) {
-    potConfig[0] = Board::POT_WITH_DETENT;
-    potConfig[1] = Board::POT_WITH_DETENT;
-  }
-  else {
-    potConfig[0] = Board::POT_WITHOUT_DETENT;
-    potConfig[1] = Board::POT_WITHOUT_DETENT;
-    potConfig[2] = Board::POT_WITHOUT_DETENT;
-  }
-
-  if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board)) {
-    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[2] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[3] = Board::SLIDER_WITH_DETENT;
-  }
-  else if (IS_TARANIS_X9(board) || IS_HORUS_X10(board)) {
-    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
-    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
   }
 
   if (IS_ARM(board)) {
@@ -1363,6 +1455,44 @@ GeneralSettings::GeneralSettings()
   memcpy(&themeOptionValue[0], option1, sizeof(ThemeOptionData));
   ThemeOptionData option2 = { 0x03, 0xe1, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0 };
   memcpy(&themeOptionValue[1], option2, sizeof(ThemeOptionData));
+}
+
+void GeneralSettings::setDefaultControlTypes(Board::Type board)
+{
+  for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
+    switchConfig[i] = Boards::getSwitchInfo(board, i).config;
+  }
+
+  // TODO: move to Boards, like with switches
+  if (IS_HORUS(board)) {
+    potConfig[0] = Board::POT_WITH_DETENT;
+    potConfig[1] = Board::POT_MULTIPOS_SWITCH;
+    potConfig[2] = Board::POT_WITH_DETENT;
+  }
+  else if (IS_TARANIS_X7(board)) {
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
+  }
+  else if (IS_TARANIS(board)) {
+    potConfig[0] = Board::POT_WITH_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
+  }
+  else {
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITHOUT_DETENT;
+    potConfig[2] = Board::POT_WITHOUT_DETENT;
+  }
+
+  if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board)) {
+    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[2] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[3] = Board::SLIDER_WITH_DETENT;
+  }
+  else if (IS_TARANIS_X9(board) || IS_HORUS_X10(board)) {
+    sliderConfig[0] = Board::SLIDER_WITH_DETENT;
+    sliderConfig[1] = Board::SLIDER_WITH_DETENT;
+  }
 }
 
 int GeneralSettings::getDefaultStick(unsigned int channel) const
@@ -1947,6 +2077,11 @@ void FlightModeData::clear(const int phase)
       rotaryEncoders[idx] = 1025;
     }
   }
+}
+
+QString FlightModeData::toString(int index) const
+{
+  return getElementName(QObject::tr("FM"), index, name, true);
 }
 
 QString GVarData::unitToString() const

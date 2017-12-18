@@ -107,8 +107,12 @@ namespace Board {
   enum Capability {
     Sticks,
     Pots,
+    FactoryInstalledPots,
     Sliders,
     MouseAnalogs,
+    MaxAnalogs,
+    MultiposPots,
+    MultiposPotsPositions,
     Switches,
     SwitchPositions,
     FactoryInstalledSwitches,
@@ -146,16 +150,22 @@ class Boards
     void setBoardType(const Board::Type & board);
     Board::Type getBoardType() const { return m_boardType; }
 
-    const int getEEpromSize() { return getEEpromSize(m_boardType); }
-    const int getFlashSize() { return getFlashSize(m_boardType); }
-    const Board::SwitchInfo getSwitchInfo(unsigned index) { return getSwitchInfo(m_boardType, index); }
-    const int getCapability(Board::Capability capability) { return getCapability(m_boardType, capability); }
+    const uint32_t getFourCC() const { return getFourCC(m_boardType); }
+    const int getEEpromSize() const { return getEEpromSize(m_boardType); }
+    const int getFlashSize() const { return getFlashSize(m_boardType); }
+    const Board::SwitchInfo getSwitchInfo(unsigned index) const { return getSwitchInfo(m_boardType, index); }
+    const int getCapability(Board::Capability capability) const { return getCapability(m_boardType, capability); }
+    const QString getAnalogInputName(unsigned index) const { return getAnalogInputName(m_boardType, index); }
+    const bool isBoardCompatible(Board::Type board2) const { return isBoardCompatible(m_boardType, board2); }
 
+    static uint32_t getFourCC(Board::Type board);
     static const int getEEpromSize(Board::Type board);
     static const int getFlashSize(Board::Type board);
     static const Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
     static const int getCapability(Board::Type board, Board::Capability capability);
     static const QString getAxisName(int index);
+    static const QString getAnalogInputName(Board::Type board, unsigned index);
+    static const bool isBoardCompatible(Board::Type board1, Board::Type board2);
 
   protected:
 
@@ -178,6 +188,7 @@ class Boards
 #define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board))
+#define IS_TARANIS_NOT_X9E(board)      (IS_TARANIS(board) && !IS_TARANIS_X9E(board))
 #define IS_HORUS_X12S(board)           (board==Board::BOARD_X12S)
 #define IS_HORUS_X10(board)            (board==Board::BOARD_X10)
 #define IS_HORUS(board)                (IS_HORUS_X12S(board) || IS_HORUS_X10(board))

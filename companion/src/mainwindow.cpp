@@ -163,6 +163,9 @@ MainWindow::MainWindow():
           child->close();
         }
       }
+      else {
+        child->closeFile(true);
+      }
     }
   }
   if (printing) {
@@ -685,6 +688,9 @@ void MainWindow::openFile(const QString & fileName, bool updateLastUsedDir)
       statusBar()->showMessage(tr("File loaded"), 2000);
       child->show();
     }
+    else {
+      child->closeFile(true);
+    }
   }
 }
 
@@ -708,6 +714,15 @@ void MainWindow::saveAs()
   }
 }
 
+void MainWindow::saveAll()
+{
+  foreach (QMdiSubWindow * window, mdiArea->subWindowList()) {
+    MdiChild * child;
+    if ((child = qobject_cast<MdiChild *>(window->widget())) && child->isWindowModified())
+      child->save();
+  }
+}
+
 void MainWindow::closeFile()
 {
   if (mdiArea->activeSubWindow())
@@ -723,16 +738,28 @@ void MainWindow::openRecentFile()
   }
 }
 
-void MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables - Also HW!
+bool MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables - Also HW!
 {
   if (pid >= MAX_PROFILES)
-    return;
+    return false;
+
+  Firmware * newFw = Firmware::getFirmwareForId(g.profile[pid].fwType());
+  // warn if we're switching between incompatible board types and any files have been modified
+  if (!Boards::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard()) && anyChildrenDirty()) {
+    if (QMessageBox::question(this, tr("Companion"),
+                              tr("There are unsaved file changes which you may lose when switching radio types.\n\nDo you wish to continue?"),
+                              (QMessageBox::Yes | QMessageBox::No), QMessageBox::No) != QMessageBox::Yes) {
+      updateProfilesActions();
+      return false;
+    }
+  }
 
   // Set the new profile number
   g.id(pid);
-  Firmware::setCurrentVariant(Firmware::getFirmwareForId(g.profile[pid].fwType()));
+  Firmware::setCurrentVariant(newFw);
   emit firmwareChanged();
   updateMenus();
+  return true;
 }
 
 void MainWindow::loadProfile()
@@ -749,6 +776,8 @@ void MainWindow::loadProfile()
 void MainWindow::appPrefs()
 {
   AppPreferencesDialog * dialog = new AppPreferencesDialog(this);
+  dialog->setMainWinHasDirtyChild(anyChildrenDirty());
+  connect(dialog, &AppPreferencesDialog::firmwareProfileAboutToChange, this, &MainWindow::saveAll);
   connect(dialog, &AppPreferencesDialog::firmwareProfileChanged, this, &MainWindow::loadProfileId);
   dialog->exec();
   dialog->deleteLater();
@@ -1275,6 +1304,7 @@ MdiChild * MainWindow::createMdiChild()
   connect(child, &MdiChild::windowTitleChanged, this, &MainWindow::onSubwindowTitleChanged);
   connect(child, &MdiChild::modified, this, &MainWindow::onSubwindowModified);
   connect(child, &MdiChild::newStatusMessage, statusBar(), &QStatusBar::showMessage);
+  connect(child, &MdiChild::destroyed, win, &QMdiSubWindow::close);
   connect(win, &QMdiSubWindow::destroyed, this, &MainWindow::updateWindowActions);
 
   updateWindowActions();
@@ -1648,6 +1678,16 @@ QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
   return 0;
 }
 
+bool MainWindow::anyChildrenDirty()
+{
+  foreach (QMdiSubWindow * window, mdiArea->subWindowList()) {
+    MdiChild * child;
+    if ((child = qobject_cast<MdiChild *>(window->widget())) && child->isWindowModified())
+      return true;
+  }
+  return false;
+}
+
 void MainWindow::updateRecentFileActions()
 {
   //  Hide all document slots
@@ -1769,9 +1809,8 @@ int MainWindow::newProfile(bool loadProfile)
   g.profile[i].name(tr("New Radio"));
 
   if (loadProfile) {
-    g.id(i);
-    loadProfileId(i);
-    appPrefs();
+    if (loadProfileId(i))
+      appPrefs();
   }
 
   return i;
@@ -1788,17 +1827,20 @@ void MainWindow::copyProfile()
 
   if (newId > -1) {
     g.profile[newId] = g.profile[g.id()];
-    g.id(newId);
     g.profile[newId].name(g.profile[newId].name() + tr(" - Copy"));
-    loadProfileId(newId);
-    appPrefs();
+    if (loadProfileId(newId))
+      appPrefs();
   }
 }
 
 void MainWindow::deleteProfile(const int pid)
 {
+  if (pid == g.id() && anyChildrenDirty()) {
+    QMessageBox::warning(this, tr("Companion :: Open files warning"), tr("Please save or close modified file(s) before deleting the active profile."));
+    return;
+  }
   if (pid == 0) {
-    QMessageBox::information(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
+    QMessageBox::warning(this, tr("Not possible to remove profile"), tr("The default profile can not be removed."));
     return;
   }
   int ret = QMessageBox::question(this,

@@ -166,6 +166,7 @@ set(common_SRCS
   eeprominterface.cpp
   helpers.cpp
   radiodata.cpp
+  radiodataconversionstate.cpp
   translations.cpp
   firmwares/er9x/er9xeeprom.cpp
   firmwares/er9x/er9xinterface.cpp
@@ -207,6 +208,7 @@ add_subdirectory(generaledit)
 add_subdirectory(simulation)
 add_subdirectory(storage)
 add_subdirectory(thirdparty/qcustomplot)
+add_subdirectory(thirdparty/maxlibqt/src/widgets)
 
 ############# Companion ###############
 
@@ -305,7 +307,7 @@ qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
 
 add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${icon_RC})
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
-target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation ${CPN_COMMON_LIB} qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit simulation ${CPN_COMMON_LIB} maxLibQtWidgets qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
 
 PrintTargetReport("${COMPANION_NAME}")
 
@@ -528,9 +530,9 @@ IF(APPLE)
   get_filename_component(AVRDUDECONF_ABSOLUTE_PATH ${AVRDUDE_CONF} REALPATH)
   install(PROGRAMS ${DFU_UTIL_ABSOLUTE_PATH} ${AVRDUDE_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
   install(FILES ${AVRDUDECONF_ABSOLUTE_PATH} DESTINATION ${companion_res_dir} COMPONENT Runtime)
-  
+
   set(bundle_tools_path "\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/dfu-util;\${CMAKE_INSTALL_PREFIX}/${companion_res_dir}/avrdude")
-  
+
 
   # Include depencies (adding frameworks, fixing the embbeded libraries)
   # I get write errors without setting BU_CHMOD_BUNDLE_ITEMS even though it is

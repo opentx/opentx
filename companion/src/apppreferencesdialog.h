@@ -38,14 +38,21 @@ class AppPreferencesDialog : public QDialog
   public:
     explicit AppPreferencesDialog(QWidget * parent = 0);
     ~AppPreferencesDialog();
+
     Joystick * joystick;
+
+  public slots:
+    void accept() Q_DECL_OVERRIDE;
+    void setMainWinHasDirtyChild(bool value);
 
   signals:
     void firmwareProfileChanged(int profId);
+    void firmwareProfileAboutToChange(bool saveFiles = true);
 
   private:
     QList<QCheckBox *> optionsCheckBoxes;
     bool updateLock;
+    bool mainWinHasDirtyChild;
     void showVoice(bool);
     void showVoice();
     void hideVoice();
@@ -64,7 +71,6 @@ class AppPreferencesDialog : public QDialog
     void firmwareOptionChanged(bool state);
     void toggleAppLogSettings();
 
-    void writeValues();
     void on_libraryPathButton_clicked();
     void on_snapshotPathButton_clicked();
     void on_snapshotClipboardCKB_clicked();

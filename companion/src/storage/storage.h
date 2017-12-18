@@ -67,42 +67,6 @@ class StorageFormat
       return board;
     }
 
-    static uint32_t getFourCC(Board::Type board)
-    {
-      switch (board) {
-        case Board::BOARD_X12S:
-          return 0x3478746F;
-        case Board::BOARD_X10:
-          return 0x3778746F;
-        case Board::BOARD_TARANIS_X7:
-          return 0x3678746F;
-        case Board::BOARD_TARANIS_X9E:
-          return 0x3578746F;
-        case Board::BOARD_TARANIS_X9D:
-        case Board::BOARD_TARANIS_X9DP:
-          return 0x3378746F;
-        case Board::BOARD_SKY9X:
-        case Board::BOARD_AR9X:
-        case Board::BOARD_9XRPRO:
-          return 0x3278746F;
-        case Board::BOARD_MEGA2560:
-        case Board::BOARD_GRUVIN9X:
-          return 0x3178746F;
-        default:
-          return 0;
-      }
-    }
-
-    uint32_t getFourCC()
-    {
-      return getFourCC(board);
-    }
-
-    virtual bool isBoardCompatible(Board::Type board)
-    {
-      return getFourCC() == getFourCC(board);
-    }
-
   protected:
     void setError(const QString & error)
     {

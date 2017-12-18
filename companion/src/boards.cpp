@@ -53,6 +53,32 @@ void Boards::setBoardType(const Type & board)
     m_boardType = BOARD_UNKNOWN;
 }
 
+uint32_t Boards::getFourCC(Type board)
+{
+  switch (board) {
+    case BOARD_X12S:
+      return 0x3478746F;
+    case BOARD_X10:
+      return 0x3778746F;
+    case BOARD_TARANIS_X7:
+      return 0x3678746F;
+    case BOARD_TARANIS_X9E:
+      return 0x3578746F;
+    case BOARD_TARANIS_X9D:
+    case BOARD_TARANIS_X9DP:
+      return 0x3378746F;
+    case BOARD_SKY9X:
+    case BOARD_AR9X:
+    case BOARD_9XRPRO:
+      return 0x3278746F;
+    case BOARD_MEGA2560:
+    case BOARD_GRUVIN9X:
+      return 0x3178746F;
+    default:
+      return 0;
+  }
+}
+
 const int Boards::getEEpromSize(Board::Type board)
 {
   switch (board) {
@@ -177,6 +203,12 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 3;
 
+    case FactoryInstalledPots:
+      if (IS_TARANIS_X9(board))
+        return 2;
+      else
+        return getCapability(board, Pots);
+
     case Sliders:
       if (IS_HORUS_X12S(board) || IS_TARANIS_X9E(board))
         return 4;
@@ -190,6 +222,15 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 2;
       else
         return 0;
+
+    case MaxAnalogs:
+      return getCapability(board, Board::Sticks) + getCapability(board, Board::Pots) + getCapability(board, Board::Sliders) +  getCapability(board, Board::MouseAnalogs);
+
+    case MultiposPots:
+      return IS_HORUS_OR_TARANIS(board) ? 3 : 0;
+
+    case MultiposPotsPositions:
+      return IS_HORUS_OR_TARANIS(board) ? 6 : 0;
 
     case Switches:
       if (IS_TARANIS_X9E(board))
@@ -240,6 +281,89 @@ const QString Boards::getAxisName(int index)
     return axes[index];
   else
     return QObject::tr("Unknown");
+}
+
+const QString Boards::getAnalogInputName(Board::Type board, unsigned index)
+{
+  if ((int)index < getBoardCapability(board, Board::Sticks)) {
+    const QString sticks[] = {
+      QObject::tr("Rud"),
+      QObject::tr("Ele"),
+      QObject::tr("Thr"),
+      QObject::tr("Ail")
+    };
+    return sticks[index];
+  }
+
+  index -= getCapability(board, Board::Sticks);
+
+  if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
+    const QString pots[] = {
+      "P1",
+      "P2",
+      "P3"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_TARANIS_X9E(board)) {
+    const QString pots[] = {
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "S1",
+      "S2",
+      "LS",
+      "RS"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_TARANIS(board)) {
+    const QString pots[] = {
+      "S1",
+      "S2",
+      "S3",
+      "LS",
+      "RS"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_HORUS_X12S(board)) {
+    const QString pots[] = {
+      "S1",
+      "6P",
+      "S2",
+      "L1",
+      "L2",
+      "LS",
+      "RS",
+      "JSx",
+      "JSy"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+  else if (IS_HORUS_X10(board)) {
+    const QString pots[] = {
+      "S1",
+      "6P",
+      "S2",
+      "LS",
+      "RS"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
+
+  return "???";
+}
+
+const bool Boards::isBoardCompatible(Type board1, Type board2)
+{
+  return (getFourCC(board1) == getFourCC(board2));
 }
 
 /* Currently unused
