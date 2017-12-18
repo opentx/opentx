@@ -1049,17 +1049,10 @@ void MainWindow::sdsync()
 
 void MainWindow::changelog()
 {
-  ReleaseNotesDialog * dialog = new ReleaseNotesDialog(this);
-  dialog->exec();
-  dialog->deleteLater();
-}
-
-void MainWindow::fwchangelog()
-{
   Firmware * firmware = getCurrentFirmware();
   QString url = firmware->getReleaseNotesUrl();
   if (url.isEmpty()) {
-    QMessageBox::information(this, tr("Firmware updates"), tr("Current firmware does not provide release notes informations."));
+    QMessageBox::information(this, tr("Release notes"), tr("Cannot retrieve release notes from the server."));
   }
   else {
     ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, url);
@@ -1370,8 +1363,7 @@ void MainWindow::retranslateUi(bool showMsg)
   trAct(appPrefsAct,        tr("Settings..."),                tr("Edit Settings"));
   trAct(fwPrefsAct,         tr("Download..."),                tr("Download firmware and voice files"));
   trAct(checkForUpdatesAct, tr("Check for Updates..."),       tr("Check OpenTX and Companion updates"));
-  trAct(changelogAct,       tr("Companion Changes..."),       tr("Show Companion change log"));
-  trAct(fwchangelogAct,     tr("Firmware Changes..."),        tr("Show firmware change log"));
+  trAct(changelogAct,       tr("Release notes..."),           tr("Show release notes"));
   trAct(compareAct,         tr("Compare Models..."),          tr("Compare models"));
   trAct(editSplashAct,      tr("Edit Radio Splash Image..."), tr("Edit the splash image of your Radio"));
   trAct(burnListAct,        tr("List programmers..."),        tr("List available programmers"));
@@ -1456,7 +1448,6 @@ void MainWindow::createActions()
   aboutAct =           addAct("information.png",    SLOT(about()));
   openDocURLAct =      addAct("changelog.png",      SLOT(openDocURL()));
   changelogAct =       addAct("changelog.png",      SLOT(changelog()));
-  fwchangelogAct =     addAct("changelog.png",      SLOT(fwchangelog()));
   contributorsAct =    addAct("contributors.png",   SLOT(contributors()));
 
   // these two get assigned menus in createMenus()
@@ -1470,7 +1461,6 @@ void MainWindow::createActions()
   openDocURLAct->setMenuRole(QAction::ApplicationSpecificRole);
   checkForUpdatesAct->setMenuRole(QAction::ApplicationSpecificRole);
   changelogAct->setMenuRole(QAction::ApplicationSpecificRole);
-  fwchangelogAct->setMenuRole(QAction::ApplicationSpecificRole);
 
   actTabbedWindows->setCheckable(true);
   compareAct->setEnabled(false);
@@ -1554,7 +1544,6 @@ void MainWindow::createMenus()
   helpMenu->addAction(openDocURLAct);
   helpMenu->addSeparator();
   helpMenu->addAction(changelogAct);
-  helpMenu->addAction(fwchangelogAct);
   helpMenu->addSeparator();
   helpMenu->addAction(contributorsAct);
 

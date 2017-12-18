@@ -118,7 +118,6 @@ class MainWindow : public QMainWindow
     void contributors();
     void sdsync();
     void changelog();
-    void fwchangelog();
     void customizeSplash();
     void about();
     void compare();
@@ -203,7 +202,6 @@ class MainWindow : public QMainWindow
     QAction *contributorsAct;
     QAction *sdsyncAct;
     QAction *changelogAct;
-    QAction *fwchangelogAct;
     QAction *compareAct;
     QAction *editSplashAct;
     QAction *writeEepromAct;
