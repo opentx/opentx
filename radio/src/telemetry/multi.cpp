@@ -35,6 +35,7 @@ enum MultiPacketTypes : uint8_t {
   FlyskyIBusTelemetry,
   ConfigCommand,
   InputSync,
+  FrskySportPolling
 };
 
 enum MultiBufferState : uint8_t {
@@ -146,6 +147,14 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       break;
     case ConfigCommand:
       // Just an ack to our command, ignore for now
+      break;
+    case FrskySportPolling:
+      #if defined(LUA)
+      if (len >= 1 && outputTelemetryBufferSize > 0 && data[0] == outputTelemetryBufferTrigger) {
+        TRACE("MP Sending sport data out.");
+        sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
+      }
+      #endif
       break;
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);

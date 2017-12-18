@@ -386,6 +386,10 @@ void telemetryInit(uint8_t protocol)
   else if (protocol == PROTOCOL_MULTIMODULE || protocol == PROTOCOL_FLYSKY_IBUS) {
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
+#if defined(LUA)
+    outputTelemetryBufferSize = 0;
+    outputTelemetryBufferTrigger = 0x7E;
+#endif
   }
   else if (protocol == PROTOCOL_SPEKTRUM) {
     // Spektrum's own small race RX (SPM4648) uses 125000 8N1, use the same since there is no real standard
