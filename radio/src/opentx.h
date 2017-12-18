@@ -205,6 +205,11 @@
 #else
   #define CASE_PCBX10(x)
 #endif
+#if defined(PCBHORUS)
+  #define CASE_PCBHORUS(x) x,
+#else
+  #define CASE_PCBHORUS(x)
+#endif
 
 #if defined(BLUETOOTH) && !(defined(PCBX9E) && !defined(USEHORUSBT))
   #define CASE_BLUETOOTH(x) x,
