@@ -53,6 +53,32 @@ void Boards::setBoardType(const Type & board)
     m_boardType = BOARD_UNKNOWN;
 }
 
+uint32_t Boards::getFourCC(Type board)
+{
+  switch (board) {
+    case BOARD_X12S:
+      return 0x3478746F;
+    case BOARD_X10:
+      return 0x3778746F;
+    case BOARD_TARANIS_X7:
+      return 0x3678746F;
+    case BOARD_TARANIS_X9E:
+      return 0x3578746F;
+    case BOARD_TARANIS_X9D:
+    case BOARD_TARANIS_X9DP:
+      return 0x3378746F;
+    case BOARD_SKY9X:
+    case BOARD_AR9X:
+    case BOARD_9XRPRO:
+      return 0x3278746F;
+    case BOARD_MEGA2560:
+    case BOARD_GRUVIN9X:
+      return 0x3178746F;
+    default:
+      return 0;
+  }
+}
+
 const int Boards::getEEpromSize(Board::Type board)
 {
   switch (board) {
@@ -337,6 +363,11 @@ const QString Boards::getAnalogInputName(Board::Type board, unsigned index)
   }
 
   return "???";
+}
+
+const bool Boards::isBoardCompatible(Type board1, Type board2)
+{
+  return (getFourCC(board1) == getFourCC(board2));
 }
 
 /* Currently unused

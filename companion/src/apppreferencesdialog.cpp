@@ -113,7 +113,7 @@ void AppPreferencesDialog::accept()
   // If a new fw type has been choosen, several things need to reset
   if (Firmware::getCurrentVariant()->getId() != newFw->getId()) {
     // check if we're going to be converting to a new radio type and there are unsaved files in the main window
-    if (mainWinHasDirtyChild && !StorageFormat::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard())) {
+    if (mainWinHasDirtyChild && !Boards::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard())) {
       QString q = tr("<p><b>You cannot switch Radio Type or change Build Options while there are unsaved file changes. What do you wish to do?</b></p> <ul>" \
                      "<li><i>Save All</i> - Save any open file(s) before saving Settings.<li>" \
                      "<li><i>Reset</i> - Revert to the previous Radio Type and Build Options before saving Settings.</li>" \

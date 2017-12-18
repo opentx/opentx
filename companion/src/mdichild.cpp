@@ -705,7 +705,7 @@ void MdiChild::onFirmwareChanged()
   Firmware * previous = firmware;
   firmware = getCurrentFirmware();
   //qDebug() << "onFirmwareChanged" << previous->getName() << "=>" << firmware->getName();
-  if (!StorageFormat::isBoardCompatible(previous->getBoard(), firmware->getBoard())) {
+  if (!Boards::isBoardCompatible(previous->getBoard(), firmware->getBoard())) {
     if (!convertStorage(previous->getBoard(), firmware->getBoard())) {
       closeFile(true);
       return;
@@ -1333,7 +1333,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
     setCurrentFile(filename);
   }
 
-  if (!storage.isBoardCompatible(getCurrentBoard())) {
+  if (!Boards::isBoardCompatible(storage.getBoard(), getCurrentBoard())) {
     if (!convertStorage(storage.getBoard(), getCurrentBoard(), true))
       return false;
     setModified();

@@ -745,7 +745,7 @@ bool MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables -
 
   Firmware * newFw = Firmware::getFirmwareForId(g.profile[pid].fwType());
   // warn if we're switching between incompatible board types and any files have been modified
-  if (!StorageFormat::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard()) && anyChildrenDirty()) {
+  if (!Boards::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard()) && anyChildrenDirty()) {
     if (QMessageBox::question(this, tr("Companion"),
                               tr("There are unsaved file changes which you may lose when switching radio types.\n\nDo you wish to continue?"),
                               (QMessageBox::Yes | QMessageBox::No), QMessageBox::No) != QMessageBox::Yes) {

@@ -151,18 +151,22 @@ class Boards
     void setBoardType(const Board::Type & board);
     Board::Type getBoardType() const { return m_boardType; }
 
-    const int getEEpromSize() { return getEEpromSize(m_boardType); }
-    const int getFlashSize() { return getFlashSize(m_boardType); }
-    const Board::SwitchInfo getSwitchInfo(unsigned index) { return getSwitchInfo(m_boardType, index); }
-    const int getCapability(Board::Capability capability) { return getCapability(m_boardType, capability); }
-    const QString getAnalogInputName(unsigned index) { return getAnalogInputName(m_boardType, index); }
+    const uint32_t getFourCC() const { return getFourCC(m_boardType); }
+    const int getEEpromSize() const { return getEEpromSize(m_boardType); }
+    const int getFlashSize() const { return getFlashSize(m_boardType); }
+    const Board::SwitchInfo getSwitchInfo(unsigned index) const { return getSwitchInfo(m_boardType, index); }
+    const int getCapability(Board::Capability capability) const { return getCapability(m_boardType, capability); }
+    const QString getAnalogInputName(unsigned index) const { return getAnalogInputName(m_boardType, index); }
+    const bool isBoardCompatible(Board::Type board2) const { return isBoardCompatible(m_boardType, board2); }
 
+    static uint32_t getFourCC(Board::Type board);
     static const int getEEpromSize(Board::Type board);
     static const int getFlashSize(Board::Type board);
     static const Board::SwitchInfo getSwitchInfo(Board::Type board, unsigned index);
     static const int getCapability(Board::Type board, Board::Capability capability);
     static const QString getAxisName(int index);
     static const QString getAnalogInputName(Board::Type board, unsigned index);
+    static const bool isBoardCompatible(Board::Type board1, Board::Type board2);
 
   protected:
 
