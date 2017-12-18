@@ -46,7 +46,8 @@ enum MultiBufferState : uint8_t {
   FrskyTelemetryFallback,
   FrskyTelemetryFallbackFirstByte,
   FrskyTelemetryFallbackNextBytes,
-  FlyskyTelemetryFallback
+  FlyskyTelemetryFallback,
+  MultiStatusOrFrskyData
 };
 
 MultiBufferState guessProtocol()
@@ -347,6 +348,7 @@ static void processMultiTelemetryByte(const uint8_t data)
 
 void processMultiTelemetryData(const uint8_t data)
 {
+  // debugPrintf("State: %d, byte received %02X, buflen: %d\r\n", multiTelemetryBufferState, data, telemetryRxBufferCount);
   switch (multiTelemetryBufferState) {
     case NoProtocolDetected:
       if (data == 'M') {
@@ -369,18 +371,22 @@ void processMultiTelemetryData(const uint8_t data)
       break;
 
     case FrskyTelemetryFallbackFirstByte:
-      processFrskyTelemetryData(data);
-      multiTelemetryBufferState = FrskyTelemetryFallbackNextBytes;
+      if (data == 'M') {
+        multiTelemetryBufferState = MultiStatusOrFrskyData;
+      }
+      else {
+        processFrskyTelemetryData(data);
+        if (data != 0x7e)
+          multiTelemetryBufferState = FrskyTelemetryFallbackNextBytes;
+      }
+
       break;
 
     case FrskyTelemetryFallbackNextBytes:
       processFrskyTelemetryData(data);
       if (data == 0x7e)
-        // might start a new packet
+        // end of packet or start of new packet
         multiTelemetryBufferState = FrskyTelemetryFallbackFirstByte;
-      else if (telemetryRxBufferCount == 0 && data != 0x7d)
-        // Should be in a frame (no bytestuff), but the Frsky parser has discarded the byte
-        multiTelemetryBufferState = NoProtocolDetected;
       break;
 
     case FlyskyTelemetryFallback:
@@ -404,7 +410,7 @@ void processMultiTelemetryData(const uint8_t data)
         // Protocol indented for er9x/ersky9, accept only 5-10 as packet length to have
         // a bit of validation
         multiTelemetryBufferState = ReceivingMultiStatus;
-
+        processMultiTelemetryData(data);
       }
       else {
         TRACE("[MP] invalid second byte 0x%02X", data);
@@ -416,14 +422,35 @@ void processMultiTelemetryData(const uint8_t data)
       processMultiTelemetryByte(data);
       break;
 
+    case MultiStatusOrFrskyData:
+      // Check len byte if it makes sense for multi
+      if (data >= 5 && data <= 10) {
+        multiTelemetryBufferState = ReceivingMultiStatus;
+        telemetryRxBufferCount = 0;
+      }
+      else {
+        multiTelemetryBufferState = FrskyTelemetryFallbackNextBytes;
+        processMultiTelemetryData('M');
+      }
+      processMultiTelemetryData(data);
+      break;
+
     case ReceivingMultiStatus:
-      // Ignore multi status
       telemetryRxBuffer[telemetryRxBufferCount++] = data;
-      if (telemetryRxBufferCount > 5) {
-        processMultiStatusPacket(telemetryRxBuffer);
+      if (telemetryRxBufferCount > 5 && telemetryRxBuffer[0] == telemetryRxBufferCount-1) {
+        processMultiStatusPacket(telemetryRxBuffer+1);
         telemetryRxBufferCount = 0;
         multiTelemetryBufferState = NoProtocolDetected;
       }
+      if (telemetryRxBufferCount > 10) {
+        // too long ignore
+        TRACE("Overlong multi status packet detected ignoring, wanted %d", telemetryRxBuffer[0]);
+        telemetryRxBufferCount =0;
+        multiTelemetryBufferState = NoProtocolDetected;
+      }
+
+
   }
 
 }
+
