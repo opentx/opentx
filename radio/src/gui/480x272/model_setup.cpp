@@ -806,9 +806,9 @@ bool menuModelSetup(event_t event)
           else {
             lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "---");
             if (bluetoothState < BLUETOOTH_STATE_IDLE)
-              drawButton(MODEL_SETUP_2ND_COLUMN, y, "Init", attr);
+              drawButton(MODEL_SETUP_2ND_COLUMN, y, STR_BLUETOOTH_INIT, attr);
             else
-              drawButton(MODEL_SETUP_2ND_COLUMN, y, "Discover", attr);
+              drawButton(MODEL_SETUP_2ND_COLUMN, y, STR_BLUETOOTH_DISC, attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
               if (bluetoothState < BLUETOOTH_STATE_IDLE)
                 bluetoothState = BLUETOOTH_STATE_OFF;
