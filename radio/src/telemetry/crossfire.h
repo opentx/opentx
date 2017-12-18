@@ -41,7 +41,7 @@ void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
 bool isCrossfireOutputBufferAvailable();
 
-#if defined(PCBX7) || defined(PCBX10)
+#if defined(PCBX7) || defined(PCBHORUS)
 const uint32_t CROSSFIRE_BAUDRATES[] = {
   400000,
   115200,

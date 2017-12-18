@@ -46,7 +46,7 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SG,
   ITEM_RADIO_HARDWARE_SH,
-  CASE_PCBX10(ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE)
+  ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #if defined(SERIAL2) && defined(DEBUG)
@@ -69,7 +69,7 @@ enum MenuRadioHardwareItems {
 
 bool menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, CASE_PCBX10(0) BLUETOOTH_ROWS, 0, 0, 0 });
+  MENU(STR_HARDWARE, RADIO_ICONS, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0, BLUETOOTH_ROWS, 0, 0, 0 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -169,7 +169,6 @@ bool menuRadioHardware(event_t event)
         break;
       }
 
-#if defined (PCBX10)
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAXBAUDRATE);
         lcdDrawNumber(HW_SETTINGS_COLUMN+50, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
@@ -187,7 +186,6 @@ bool menuRadioHardware(event_t event)
           }
         }
         break;
-#endif
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH);
