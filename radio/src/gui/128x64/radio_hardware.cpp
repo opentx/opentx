@@ -242,17 +242,17 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
-        lcdDrawTextAlignedLeft(y, INDENT "Pairing");
+        lcdDrawTextAlignedLeft(y, STR_BLUETOOTH_PIN_CODE);
         lcdDrawText(HW_SETTINGS_COLUMN2, y, "0000");
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR:
-        lcdDrawTextAlignedLeft(y, INDENT "Local addr");
+        lcdDrawTextAlignedLeft(y, STR_BLUETOOTH_LOCAL_ADDR);
         lcdDrawText(HW_SETTINGS_COLUMN2, y, bluetoothLocalAddr[0] == '\0' ? "---" : bluetoothLocalAddr);
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_DISTANT_ADDR:
-        lcdDrawTextAlignedLeft(y, INDENT "Dist addr");
+        lcdDrawTextAlignedLeft(y, STR_BLUETOOTH_DIST_ADDR);
         lcdDrawText(HW_SETTINGS_COLUMN2, y, bluetoothDistantAddr[0] == '\0' ? "---" : bluetoothDistantAddr);
         break;
 

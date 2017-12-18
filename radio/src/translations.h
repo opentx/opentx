@@ -370,6 +370,11 @@ extern const pm_char STR_OPEN9X[];
 
 #if defined(BLUETOOTH)
   extern const pm_char STR_BLUETOOTH[];
+extern const pm_char STR_BLUETOOTH_DISC[];
+extern const pm_char STR_BLUETOOTH_INIT[];
+extern const pm_char STR_BLUETOOTH_DIST_ADDR[];
+extern const pm_char STR_BLUETOOTH_LOCAL_ADDR[];
+  extern const pm_char STR_BLUETOOTH_PIN_CODE[];
   #define STR_BLUETOOTH_MODES   (STR_OPEN9X + OFS_BLUETOOTH_MODES)
 #endif
 
