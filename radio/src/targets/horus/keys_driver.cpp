@@ -20,7 +20,63 @@
 
 #include "opentx.h"
 
-uint32_t rotencPosition;
+/*
+ * Rotary encoder handling based on state table:
+ * Copyright (C) by Ben Buxton
+ * 
+ * This includes the state table definition bellow
+ * as well as the implementation of checkRotaryEncoder().
+ * 
+ * The below state table has, for each state (row), the new state
+ * to set based on the next encoder output. From left to right in,
+ * the table, the encoder outputs are 00, 01, 10, 11, and the value
+ * in that position is the new state to set.
+ */
+
+#define R_START 0x0
+#define DIR_CW  0x10
+#define DIR_CCW 0x20
+
+// Use the half-step state table (emits a code at 00 and 11)
+#define R_CCW_BEGIN 0x1
+#define R_CW_BEGIN 0x2
+#define R_START_M 0x3
+#define R_CW_BEGIN_M 0x4
+#define R_CCW_BEGIN_M 0x5
+const unsigned char rotenc_table[6][4] = {
+  // R_START (00)
+  {R_START_M,            R_CW_BEGIN,     R_CCW_BEGIN,  R_START},
+  // R_CCW_BEGIN
+  {R_START_M | DIR_CCW, R_START,        R_CCW_BEGIN,  R_START},
+  // R_CW_BEGIN
+  {R_START_M | DIR_CW,  R_CW_BEGIN,     R_START,      R_START},
+  // R_START_M (11)
+  {R_START_M,            R_CCW_BEGIN_M,  R_CW_BEGIN_M, R_START},
+  // R_CW_BEGIN_M
+  {R_START_M,            R_START_M,      R_CW_BEGIN_M, R_START | DIR_CW},
+  // R_CCW_BEGIN_M
+  {R_START_M,            R_CCW_BEGIN_M,  R_START_M,    R_START | DIR_CCW},
+};
+
+void checkRotaryEncoder()
+{
+  static uint8_t  state = 0;
+  uint32_t pins = ROTARY_ENCODER_POSITION();
+  
+  state = rotenc_table[state & 0x0F][pins];
+  if ((state & 0x30) && !keyState(KEY_ENTER)) {
+    if ((state & 0x30) == DIR_CW) {
+      --rotencValue[0];
+    }
+    else {
+      ++rotencValue[0];
+    }
+  }
+}
+
+/*
+ * End of the rotary encoder handler code
+ */
 
 uint32_t readKeys()
 {
@@ -89,20 +145,6 @@ uint16_t trimDown(uint16_t idx)
 uint8_t keyDown()
 {
   return readKeys();
-}
-
-void checkRotaryEncoder()
-{
-  uint32_t newpos = ROTARY_ENCODER_POSITION();
-  if (newpos != rotencPosition && !keyState(KEY_ENTER)) {
-    if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
-      --rotencValue[0];
-    }
-    else {
-      ++rotencValue[0];
-    }
-    rotencPosition = newpos;
-  }
 }
 
 /* TODO common to ARM */
@@ -239,6 +281,4 @@ void keysInit()
 
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOJ_PINS;
   GPIO_Init(GPIOJ, &GPIO_InitStructure);
-
-  rotencPosition = ROTARY_ENCODER_POSITION();
 }
