@@ -167,6 +167,25 @@ static int luaGetDateTime(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function getRtcTime()
+
+Return current RTC system date as unix timstamp (in seconds since 1. Jan 1970)
+
+Please note the RTC timestamp is kept internally as a 32bit integer, which will overflow
+in 2038.
+
+@retval number Number of seconds elapsed since 1. Jan 1970
+*/
+
+#if defined(RTCLOCK)
+static int luaGetRtcTime(lua_State * L)
+{
+  lua_pushunsigned(L, g_rtcTime);  
+  return 1;
+}
+#endif
+
 static void luaPushLatLon(lua_State* L, TelemetrySensor & telemetrySensor, TelemetryItem & telemetryItem)
 /* result is lua table containing members ["lat"] and ["lon"] as lua_Number (doubles) in decimal degrees */
 {
@@ -1206,6 +1225,9 @@ static int luaGetUsage(lua_State * L)
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
+#if defined(RTCLOCK)
+  { "getRtcTime", luaGetRtcTime },
+#endif
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
