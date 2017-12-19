@@ -19,13 +19,36 @@
  */
 
 #include "opentx.h"
-#include "bmp_splash.lbm"
 
 #if defined(SPLASH)
+
+#include "bmp_splash.lbm"
+
 void drawSplash()
 {
-  lcd->clear();
-  lcd->drawBitmap((LCD_W-BMP_SPLASH.getWidth())/2, (LCD_H-BMP_SPLASH.getHeight())/2, &BMP_SPLASH);
+    static bool     loadImgFromSD  = true;
+    static BitmapBuffer* splashImg = NULL;
+
+    if (loadImgFromSD && splashImg == NULL) {
+        bool sd_mounted = sdMounted();
+        if (!sd_mounted) sdInit();
+        splashImg = BitmapBuffer::load(BITMAPS_PATH "/" SPLASH_FILE);
+        loadImgFromSD = false;
+        if (!sd_mounted) sdDone();
+    }
+
+    lcd->clear();
+
+    if (splashImg) {
+        lcd->drawBitmap((LCD_W - splashImg->getWidth())/2,
+                        (LCD_H - splashImg->getHeight())/2,
+                        splashImg);
+    }
+    else {
+        lcd->drawBitmap((LCD_W - BMP_SPLASH.getWidth())/2,
+                        (LCD_H - BMP_SPLASH.getHeight())/2,
+                        &BMP_SPLASH);
+    }
 
 #if MENUS_LOCK == 1
   if (readonly == false) {

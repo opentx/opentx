@@ -49,6 +49,7 @@
 #if defined(COLORLCD)
 const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
 const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
+#define    SPLASH_FILE             "splash.png"
 #endif
 
 #define MODELS_EXT          ".bin"
