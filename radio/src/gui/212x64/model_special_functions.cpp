@@ -258,7 +258,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           }
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
           else if (func == FUNC_OVERRIDE_CHANNEL) {
-            val_min = -LIMIT_EXT_PERCENT; val_max = +LIMIT_EXT_PERCENT;
+            getMixSrcRange(MIXSRC_FIRST_CH, val_min, val_max);
             lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif
@@ -267,7 +267,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             lcdDrawTextAtIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "\004Int.Ext.", CFN_PARAM(cfn), attr);
           }
           else if (func == FUNC_SET_TIMER) {
-            val_max = 539*60+59; //8:59:59
+            getMixSrcRange(MIXSRC_FIRST_TIMER, val_min, val_max);
             drawTimer(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT|TIMEHOUR, attr);
           }
           else if (func == FUNC_PLAY_SOUND) {
@@ -345,11 +345,9 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             switch (CFN_GVAR_MODE(cfn)) {
               case FUNC_ADJUST_GVAR_CONSTANT:
               {
-                uint8_t gvar_index = CFN_GVAR_INDEX(cfn);
                 val_displayed = (int16_t)CFN_PARAM(cfn);
-                val_min = max<int16_t>(CFN_GVAR_CST_MIN, MODEL_GVAR_MIN(gvar_index));
-                val_max = min<int16_t>(CFN_GVAR_CST_MAX, MODEL_GVAR_MAX(gvar_index));
-                drawGVarValue(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, gvar_index, val_displayed, attr|LEFT);
+                getMixSrcRange(CFN_GVAR_INDEX(cfn) + MIXSRC_FIRST_GVAR, val_min, val_max);
+                drawGVarValue(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, CFN_GVAR_INDEX(cfn), val_displayed, attr|LEFT);
                 break;
               }
               case FUNC_ADJUST_GVAR_SOURCE:
@@ -365,12 +363,10 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                 drawStringWithIndex(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, STR_GV, val_displayed+1, attr);
                 break;
               default: // FUNC_ADJUST_GVAR_INC
-                val_min = -100; val_max = +100;
-                if (val_displayed < 0)
-                  lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "-= ", attr);
-                else
-                  lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, "+= ", attr);
+                getMixSrcRange(CFN_GVAR_INDEX(cfn) + MIXSRC_FIRST_GVAR, val_min, val_max);
+                lcdDrawText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, (val_displayed < 0 ? "-= " : "+= "), attr);
                 drawGVarValue(lcdNextPos, y, CFN_GVAR_INDEX(cfn), abs(val_displayed), attr|LEFT);
+                break;
             }
           }
 #endif

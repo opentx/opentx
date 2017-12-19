@@ -130,7 +130,7 @@ void menuModelLogicalSwitchOne(event_t event)
       {
         INCDEC_DECLARE_VARS(EE_MODEL);
         lcdDrawTextAlignedLeft(y, STR_V2);
-        int v2_min=0, v2_max=MIXSRC_LAST_TELEM;
+        int16_t v2_min = 0, v2_max = MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
           drawSwitch(CSWONE_2ND_COLUMN, y, cs->v2, attr);
           v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
@@ -180,13 +180,9 @@ void menuModelLogicalSwitchOne(event_t event)
           else
 #endif // TELEMETRY_FRSKY
           {
-            v2_max = getMaximumValue(v1_val); v2_min = -v2_max;
-            if (v1_val <= MIXSRC_LAST_CH) {
-              drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, calc100toRESX(cs->v2), LEFT|attr);
-            }
-            else {
-              drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, cs->v2, LEFT|attr);
-            }
+            LcdFlags lf = attr | LEFT;
+            getMixSrcRange(v1_val, v2_min, v2_max, &lf);
+            drawSourceCustomValue(CSWONE_2ND_COLUMN, y, v1_val, (v1_val <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2), lf);
           }
         }
 
@@ -322,13 +318,11 @@ void menuModelLogicalSwitches(event_t event)
         if (v1 >= MIXSRC_FIRST_TELEM) {
           drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, convertLswTelemValue(cs), LEFT);
         }
+        else if (v1 <= MIXSRC_LAST_CH) {
+          drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, calc100toRESX(cs->v2), LEFT);
+        }
         else {
-          if (v1 <= MIXSRC_LAST_CH) {
-            drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, calc100toRESX(cs->v2), LEFT);
-          }
-          else {
-            drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, cs->v2, LEFT);
-          }
+          drawSourceCustomValue(CSW_3RD_COLUMN, y, v1, cs->v2, LEFT | (v1 != MIXSRC_TX_TIME ? TIMEHOUR : 0));
         }
       }
 

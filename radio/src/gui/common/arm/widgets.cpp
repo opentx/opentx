@@ -143,6 +143,11 @@ void drawSourceCustomValue(coord_t x, coord_t y, source_t source, int32_t value,
     }
   }
 #endif
+#if defined(GVARS)
+  else if (source >= MIXSRC_FIRST_GVAR && source <= MIXSRC_LAST_GVAR) {
+    drawGVarValue(x, y, source - MIXSRC_FIRST_GVAR, value, flags);
+  }
+#endif
   else if (source < MIXSRC_FIRST_CH) {
     lcdDrawNumber(x, y, calcRESXto100(value), flags);
   }
