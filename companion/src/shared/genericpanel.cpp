@@ -19,6 +19,8 @@
  */
 
 #include "genericpanel.h"
+
+#include <TimerEdit>
 #include <QComboBox>
 #include <QEvent>
 #include <QLabel>
@@ -105,20 +107,23 @@ bool GenericPanel::eventFilter(QObject *object, QEvent * event)
   return QWidget::eventFilter(object, event);
 }
 
+void GenericPanel::setFocusFilter(QWidget * w)
+{
+  w->installEventFilter(this);
+  w->setFocusPolicy(Qt::StrongFocus);
+}
+
 void GenericPanel::disableMouseScrolling()
 {
-  Q_FOREACH(QComboBox * cb, findChildren<QComboBox*>()) {
-    cb->installEventFilter(this);
-    cb->setFocusPolicy(Qt::StrongFocus);
-  }
+  foreach(QWidget * cb, findChildren<QComboBox*>())
+    setFocusFilter(cb);
 
-  Q_FOREACH(QAbstractSpinBox * sb, findChildren<QAbstractSpinBox*>()) {
-    sb->installEventFilter(this);
-    sb->setFocusPolicy(Qt::StrongFocus);
-  }
+  foreach(QWidget * sb, findChildren<QAbstractSpinBox*>())
+    setFocusFilter(sb);
 
-  Q_FOREACH(QSlider * slider, findChildren<QSlider*>()) {
-    slider->installEventFilter(this);
-    slider->setFocusPolicy(Qt::StrongFocus);
-  }
+  foreach(QWidget * slider, findChildren<QSlider*>())
+    setFocusFilter(slider);
+
+  foreach(QWidget * te, findChildren<TimerEdit*>())
+    setFocusFilter(te);
 }

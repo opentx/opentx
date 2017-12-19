@@ -61,6 +61,7 @@ class GenericPanel : public QWidget
     void addVSpring(QGridLayout *, int col, int row);
     void addDoubleSpring(QGridLayout *, int col, int row);
     virtual bool eventFilter(QObject *obj, QEvent *event);
+    void setFocusFilter(QWidget * w);
     void disableMouseScrolling();
 };
 

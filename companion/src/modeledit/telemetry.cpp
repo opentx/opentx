@@ -26,6 +26,8 @@
 #include "helpers.h"
 #include "appdata.h"
 
+#include <TimerEdit>
+
 TelemetryAnalog::TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryAnalog),
@@ -324,6 +326,13 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
     connect(minSB[l], SIGNAL(valueChanged(double)), this, SLOT(barMinChanged(double)));
     ui->screenBarsLayout->addWidget(minSB[l], l, 1, 1, 1);
 
+    minTime[l] = new TimerEdit(this);
+    minTime[l]->setProperty("index", l);
+    minTime[l]->setProperty("type", "min");
+    connect(minTime[l], SIGNAL(editingFinished()), this, SLOT(barTimeChanged()));
+    ui->screenBarsLayout->addWidget(minTime[l], l, 1, 1, 1);
+    minTime[l]->hide();
+
     QLabel * label = new QLabel(this);
     label->setAutoFillBackground(false);
     label->setStyleSheet(QString::fromUtf8("Background:qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(0, 0, 128, 255), stop:0.339795 rgba(0, 0, 128, 255), stop:0.339799 rgba(255, 255, 255, 255), stop:0.662444 rgba(255, 255, 255, 255),)\n"""));
@@ -336,6 +345,13 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
     maxSB[l]->setProperty("index", l);
     connect(maxSB[l], SIGNAL(valueChanged(double)), this, SLOT(barMaxChanged(double)));
     ui->screenBarsLayout->addWidget(maxSB[l], l, 3, 1, 1);
+
+    maxTime[l] = new TimerEdit(this);
+    maxTime[l]->setProperty("index", l);
+    maxTime[l]->setProperty("type", "max");
+    connect(maxTime[l], SIGNAL(editingFinished()), this, SLOT(barTimeChanged()));
+    ui->screenBarsLayout->addWidget(maxTime[l], l, 3, 1, 1);
+    maxTime[l]->hide();
   }
 
   disableMouseScrolling();
@@ -410,30 +426,58 @@ void TelemetryCustomScreen::updateBar(int line)
   lock = true;
 
   RawSource source = screen.body.bars[line].source;
+
+  minTime[line]->setVisible(false);
+  maxTime[line]->setVisible(false);
+
   if (source.type != SOURCE_TYPE_NONE) {
-    RawSourceRange range = source.getRange(model, generalSettings, RANGE_SINGLE_PRECISION);
+    RawSourceRange range = source.getRange(model, generalSettings);
     if (!IS_ARM(getCurrentBoard())) {
       int max = round((range.max - range.min) / range.step);
       if (int(255-screen.body.bars[line].barMax) > max) {
         screen.body.bars[line].barMax = 255 - max;
       }
     }
-    minSB[line]->setEnabled(true);
-    minSB[line]->setDecimals(range.decimals);
-    minSB[line]->setMinimum(range.min);
-    minSB[line]->setMaximum(range.max);
-    minSB[line]->setSingleStep(range.step);
-    minSB[line]->setValue(range.getValue(screen.body.bars[line].barMin));
-    maxSB[line]->setEnabled(true);
-    maxSB[line]->setDecimals(range.decimals);
-    maxSB[line]->setMinimum(range.min);
-    maxSB[line]->setMaximum(range.max);
-    maxSB[line]->setSingleStep(range.step);
-    if (IS_ARM(getCurrentBoard())) {
-      maxSB[line]->setValue(range.getValue(screen.body.bars[line].barMax));
+    float minVal = range.getValue(screen.body.bars[line].barMin);
+    float maxVal = IS_ARM(getCurrentBoard()) ? screen.body.bars[line].barMax : 255 - screen.body.bars[line].barMax;
+    maxVal = range.getValue(maxVal);
+
+    if (source.isTimeBased()) {
+      minTime[line]->setVisible(true);
+      minTime[line]->setTimeRange(range.min, range.max);
+      minTime[line]->setSingleStep(range.step);
+      minTime[line]->setPageStep(range.step * 60);
+      minTime[line]->setShowSeconds(range.step != 60);
+      minTime[line]->setTime((int)minVal);
+
+      maxTime[line]->setVisible(true);
+      maxTime[line]->setTimeRange(range.min, range.max);
+      maxTime[line]->setSingleStep(range.step);
+      maxTime[line]->setPageStep(range.step * 60);
+      maxTime[line]->setShowSeconds(range.step != 60);
+      maxTime[line]->setTime((int)maxVal);
+
+      minSB[line]->setVisible(false);
+      maxSB[line]->setVisible(false);
     }
     else {
-      maxSB[line]->setValue(range.getValue(255 - screen.body.bars[line].barMax));
+      minSB[line]->setVisible(true);
+      minSB[line]->setEnabled(true);
+      minSB[line]->setDecimals(range.decimals);
+      minSB[line]->setMinimum(range.min);
+      minSB[line]->setMaximum(range.max);
+      minSB[line]->setSingleStep(range.step);
+      minSB[line]->setSuffix(" " + range.unit);
+      minSB[line]->setValue(minVal);
+
+      maxSB[line]->setVisible(true);
+      maxSB[line]->setEnabled(true);
+      maxSB[line]->setDecimals(range.decimals);
+      maxSB[line]->setMinimum(range.min);
+      maxSB[line]->setMaximum(range.max);
+      maxSB[line]->setSingleStep(range.step);
+      maxSB[line]->setSuffix(" " + range.unit);
+      maxSB[line]->setValue(maxVal);
     }
   }
   else {
@@ -507,6 +551,24 @@ void TelemetryCustomScreen::barMaxChanged(double value)
     else
       screen.body.bars[line].barMax = 255 - round((value-minSB[line]->minimum()) / maxSB[line]->singleStep());
     // TODO set max (minSB)
+    emit modified();
+  }
+}
+
+void TelemetryCustomScreen::barTimeChanged()
+{
+  if (!lock) {
+    int line = sender()->property("index").toInt();
+    int & valRef = (sender()->property("type").toString() == "min" ? screen.body.bars[line].barMin : screen.body.bars[line].barMax);
+    TimerEdit * te = qobject_cast<TimerEdit *>(sender());
+    if (!te)
+      return;
+
+    if (IS_ARM(getCurrentBoard()))
+      valRef = round(te->timeInSeconds() / te->singleStep());
+    else
+      valRef = round((te->timeInSeconds() - te->minimumTime()) / te->singleStep());
+
     emit modified();
   }
 }
@@ -598,23 +660,27 @@ void TelemetrySensorPanel::update()
     ui->formula->hide();
     isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
     ratioFieldsDisplayed = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
-    ui->offset->setMaximum((sensor.prec > 0 ? sensor.prec == 2 ? 30000 : 3000 : 300));
-    ui->offset->setMinimum((sensor.prec > 0 ? sensor.prec == 2 ? -30000 : -3000 : -300));
-
     if (sensor.unit == SensorData::UNIT_RPMS) {
-      ui->offset->setDecimals(0);
-      ui->offset->setSingleStep(1);
-      ui->ratio->setDecimals(0);
-      ui->ratio->setSingleStep(1);
-      ui->autoOffset->hide();
-      ui->ratio->setMinimum(1);
-      ui->offset->setMinimum(1);
+      if (ui->ratio->decimals()) {
+        ui->ratio->setMaximum(30000);
+        ui->ratio->setMinimum(1);
+        ui->ratio->setDecimals(0);
+        ui->ratio->setSingleStep(1);
+        ui->offset->setMaximum(30000);
+        ui->offset->setMinimum(1);
+        ui->offset->setDecimals(0);
+        ui->offset->setSingleStep(1);
+      }
     }
-    else {
-      ui->offset->setDecimals(sensor.prec);
-      ui->offset->setSingleStep(pow(0.1, (int)sensor.prec));
+    else if (ui->ratio->decimals() != 1) {
+      ui->ratio->setMaximum(3000);
+      ui->ratio->setMinimum(0);
       ui->ratio->setDecimals(1);
       ui->ratio->setSingleStep(0.1);
+      ui->offset->setMaximum(30000.0f / powf(10.0f, sensor.prec));
+      ui->offset->setMinimum(-ui->offset->maximum());
+      ui->offset->setDecimals(sensor.prec);
+      ui->offset->setSingleStep(pow(0.1, sensor.prec));
     }
   }
 

@@ -23,6 +23,8 @@
 #include "helpers.h"
 #include "appdata.h"
 
+#include <TimerEdit>
+
 RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   QComboBox(parent),
   repeatParam(repeatParam)
@@ -178,10 +180,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     connect(fswtchParam[i], SIGNAL(editingFinished()), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchParam[i]);
 
-    fswtchParamTime[i] = new QTimeEdit(this);
+    fswtchParamTime[i] = new TimerEdit(this);
     fswtchParamTime[i]->setProperty("index", i);
-    fswtchParamTime[i]->setAccelerated(true);
-    fswtchParamTime[i]->setDisplayFormat("hh:mm:ss");
     connect(fswtchParamTime[i], SIGNAL(editingFinished()), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchParamTime[i]);
 
@@ -450,10 +450,10 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       }
       else if (func>=FuncSetTimer1 && func<=FuncSetTimer3) {
         if (modified)
-          cfn.param = QTimeS(fswtchParamTime[i]->time()).seconds();
-        fswtchParamTime[i]->setMinimumTime(QTime(0, 0, 0));
-        fswtchParamTime[i]->setMaximumTime(firmware->getMaxTimerStart());
-        fswtchParamTime[i]->setTime(QTimeS(cfn.param));
+          cfn.param = fswtchParamTime[i]->timeInSeconds();
+        RawSourceRange range = RawSource(SOURCE_TYPE_SPECIAL, func - FuncSetTimer1 + 2).getRange(model, generalSettings);
+        fswtchParamTime[i]->setTimeRange((int)range.min, (int)range.max);
+        fswtchParamTime[i]->setTime(cfn.param);
         widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM | CUSTOM_FUNCTION_ENABLE;
       }
       else if (func>=FuncSetFailsafeInternalModule && func<=FuncBindExternalModule) {

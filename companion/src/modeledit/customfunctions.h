@@ -26,6 +26,7 @@
 #include "eeprominterface.h"
 
 class RawSwitchFilterItemModel;
+class TimerEdit;
 
 class RepeatComboBox: public QComboBox
 {
@@ -87,7 +88,7 @@ class CustomFunctionsPanel : public GenericPanel
     QComboBox * fswtchFunc[CPN_MAX_SPECIAL_FUNCTIONS];
     QCheckBox * fswtchParamGV[CPN_MAX_SPECIAL_FUNCTIONS];
     QDoubleSpinBox * fswtchParam[CPN_MAX_SPECIAL_FUNCTIONS];
-    QTimeEdit * fswtchParamTime[CPN_MAX_SPECIAL_FUNCTIONS];
+    TimerEdit * fswtchParamTime[CPN_MAX_SPECIAL_FUNCTIONS];
     QPushButton * playBT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamArmT[CPN_MAX_SPECIAL_FUNCTIONS];

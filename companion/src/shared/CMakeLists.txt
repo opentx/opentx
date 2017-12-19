@@ -15,8 +15,8 @@ set(shared_HDRS
   genericpanel.h
   hexspinbox.h
 )
- 
+
 qt5_wrap_cpp(shared_SRCS ${shared_HDRS})
 
 add_library(shared ${shared_SRCS})
-qt5_use_modules(shared Widgets)
+target_link_libraries(shared PRIVATE Qt5::Widgets ${CPN_COMMON_LIB})

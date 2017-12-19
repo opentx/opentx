@@ -187,9 +187,8 @@ class RawSourceRange
     QString unit;
 };
 
-#define RANGE_SINGLE_PRECISION    1
-#define RANGE_DELTA_FUNCTION      2
-#define RANGE_DELTA_ABS_FUNCTION  4
+#define RANGE_DELTA_FUNCTION      1
+#define RANGE_ABS_FUNCTION        2
 
 class RawSource {
   public:

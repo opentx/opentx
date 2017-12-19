@@ -25,6 +25,7 @@
 #include "radiodata.h"
 
 class RawSwitchFilterItemModel;
+class TimerEdit;
 
 class LogicalSwitchesPanel : public ModelPanel
 {
@@ -37,12 +38,16 @@ class LogicalSwitchesPanel : public ModelPanel
     virtual void update();
 
   private slots:
-    void edited();
+    void setDataModels();
+    void functionChanged();
     void v1Edited(int value);
     void v2Edited(int value);
     void andEdited(int value);
     void durationEdited(double duration);
     void delayEdited(double delay);
+    void offsetEdited();
+    bool offsetEditedAt(int index);
+    void updateLine(int index);
     void csw_customContextMenuRequested(QPoint pos);
     void cswDelete();
     void cswCopy();
@@ -54,7 +59,7 @@ class LogicalSwitchesPanel : public ModelPanel
     QDoubleSpinBox  * cswitchValue[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchOffset[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchOffset2[CPN_MAX_LOGICAL_SWITCHES];
-    QTimeEdit  * cswitchTOffset[CPN_MAX_LOGICAL_SWITCHES];
+    TimerEdit * cswitchTOffset[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cswitchAnd[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchDuration[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox  * cswitchDelay[CPN_MAX_LOGICAL_SWITCHES];
@@ -62,12 +67,10 @@ class LogicalSwitchesPanel : public ModelPanel
     QComboBox * cswitchSource2[CPN_MAX_LOGICAL_SWITCHES];
     RawSwitchFilterItemModel * rawSwitchItemModel;
     QStandardItemModel * rawSourceItemModel;
-    void setSwitchWidgetVisibility(int i);
     int selectedSwitch;
 
-    void populateCSWCB(QComboBox *b, int value);
-    void populateAndSwitchCB(QComboBox *b, const RawSwitch & value, const int idx);
-    void updateLine(int index);
+    void populateCSWCB(QComboBox *b);
+    void populateAndSwitchCB(QComboBox *b);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);
 
 };
