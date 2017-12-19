@@ -86,6 +86,8 @@ PACK(struct PxxTimerPulsesData {
   uint16_t rest;
   uint16_t pcmCrc;
   uint32_t pcmOnesCount;
+  uint16_t errorCount[MAX_OUTPUT_CHANNELS];
+  int16_t  lastPPM[MAX_OUTPUT_CHANNELS];  
 });
 
 #define MAX_PULSES_TRANSITIONS 300

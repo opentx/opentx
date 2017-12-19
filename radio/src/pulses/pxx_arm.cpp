@@ -270,10 +270,7 @@ inline void putPcmTail(uint8_t port)
 #endif
 
 #define MAX_IERROR (0x3000)
-#define ABS(x) (x>0?x:-x)
 
-uint16_t iError[NUM_MODULES][MAX_OUTPUT_CHANNELS];
-int16_t lastPPM[NUM_MODULES][MAX_OUTPUT_CHANNELS];
 void setupPulsesPXX(uint8_t port)
 {
   uint16_t pulseValue=0, pulseValueLow=0;
@@ -353,27 +350,27 @@ void setupPulsesPXX(uint8_t port)
       }
     }
     else {
-      if (g_model.moduleData[port].channelsCount > 8) {
+      if (g_model.moduleData[port].channelsCount >= 8) {
         int channel = g_model.moduleData[port].channelsStart + i;        
-        iError[port][channel] += ABS( (short)((channelOutputs[channel]) - lastPPM[port][channel]));
-        iError[port][channel] = MAX_IERROR>iError[port][channel]? iError[port][channel]: MAX_IERROR;
-        iError[port][channel+8] += ABS((short)((channelOutputs[channel+8]) - lastPPM[port][channel+8]));
-        iError[port][channel+8] = MAX_IERROR>iError[port][channel+8]? iError[port][channel+8]: MAX_IERROR;
-    	if (i >= NUM_CHANNELS(port)) {
-    	  pulseValue = 1024;
-    	}
-    	else if (iError[port][channel] >= iError[port][channel+8])
+        modulePulsesData[port].pxx.errorCount[channel] += abs((short)((channelOutputs[channel]) - modulePulsesData[port].pxx.lastPPM[channel]));
+        modulePulsesData[port].pxx.errorCount[channel] = MAX_IERROR>modulePulsesData[port].pxx.errorCount[channel]? modulePulsesData[port].pxx.errorCount[channel]: MAX_IERROR;
+        modulePulsesData[port].pxx.errorCount[channel+8] += abs((short)((channelOutputs[channel+8]) - modulePulsesData[port].pxx.lastPPM[channel+8]));
+        modulePulsesData[port].pxx.errorCount[channel+8] = MAX_IERROR>modulePulsesData[port].pxx.errorCount[channel+8]? modulePulsesData[port].pxx.errorCount[channel+8]: MAX_IERROR;
+    	  if (i >= NUM_CHANNELS(port)) {
+    	    pulseValue = 1024;
+    	  }
+    	  else if (modulePulsesData[port].pxx.errorCount[channel] >= modulePulsesData[port].pxx.errorCount[channel+8])
         {
-          lastPPM[port][channel] = channelOutputs[channel];
-          iError[port][channel] = 0;
-          iError[port][channel+8]++;
+          modulePulsesData[port].pxx.lastPPM[channel] = channelOutputs[channel];
+          modulePulsesData[port].pxx.errorCount[channel] = 0;
+          modulePulsesData[port].pxx.errorCount[channel+8]++;
           int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
           pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
         }
         else {
-          lastPPM[port][channel+8] = channelOutputs[channel+8];
-          iError[port][channel+8] = 0;
-          iError[port][channel]++;
+          modulePulsesData[port].pxx.lastPPM[channel+8] = channelOutputs[channel+8];
+          modulePulsesData[port].pxx.errorCount[channel+8] = 0;
+          modulePulsesData[port].pxx.errorCount[channel]++;
           int value = channelOutputs[channel+8] + 2*PPM_CH_CENTER(channel+8) - 2*PPM_CENTER;
           pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
         }
