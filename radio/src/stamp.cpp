@@ -49,23 +49,24 @@
  * Retrieves the version of the bootloader or firmware
  * @return
  */
-#if defined(HORUS)
-const char* getOtherVersion()
-{
-  return "no bootloader support";
-}
-#elif defined(STM32)
+#if defined(STM32)
 
 __attribute__ ((section(".fwversiondata"), used)) const char firmware_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
 __attribute__ ((section(".bootversiondata"), used)) const char boot_version[32] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
 
-const char* getOtherVersion()
+/**
+ * Tries to find opentx version in the first 1024 byte of either firmware/bootloader (the one not running) or the buffer
+ * @param buffer If non-null find the firmware version in the buffer instead
+ */
+const char* getOtherVersion(char* buffer)
 {
 #if defined(BOOT)
   const char* startother = (char*)(FIRMWARE_ADDRESS+BOOTLOADER_SIZE);
 #else
   const char* startother = (char*)(FIRMWARE_ADDRESS);
 #endif
+  if (buffer != nullptr)
+    startother=buffer;
 
   const char* other_str = nullptr;
   for (int i=0; i< 1024;i++) {

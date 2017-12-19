@@ -25,6 +25,7 @@ if(PCB STREQUAL X9E)
   endif()
   set(GUI_DIR 212x64)
   set(BITMAPS_TARGET taranis_bitmaps)
+  set(FONTS_TARGET taranis_fonts)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL X9D+)
@@ -38,6 +39,7 @@ elseif(PCB STREQUAL X9D+)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 212x64)
   set(BITMAPS_TARGET taranis_bitmaps)
+  set(FONTS_TARGET taranis_fonts)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
@@ -52,6 +54,7 @@ elseif(PCB STREQUAL X9D)
   add_definitions(-DEEPROM_VARIANT=0)
   set(GUI_DIR 212x64)
   set(BITMAPS_TARGET taranis_bitmaps)
+  set(FONTS_TARGET taranis_fonts)
   set(LCD_DRIVER lcd_driver_aspi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
@@ -68,6 +71,7 @@ elseif(PCB STREQUAL X7)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(GUI_DIR 128x64)
   set(BITMAPS_TARGET 9x_bitmaps)
+  set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
 
@@ -124,17 +128,12 @@ set(TARGET_SRC
   ../common/arm/stm32/adc_driver.cpp
   )
 
-set(FIRMWARE_SRC
-  ${FIRMWARE_SRC}
-  loadboot.cpp
-  )
-
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ${LCD_DRIVER}
   i2c_driver.cpp
   pwr_driver.cpp
-  flash_driver.cpp
+  ../common/arm/loadboot.cpp
   )
 
 if(LCD_DUAL_BUFFER)

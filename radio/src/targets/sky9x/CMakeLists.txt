@@ -67,6 +67,7 @@ set(GUI_SRC
 
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
+  ../common/arm/loadboot.cpp
   core_cm3.c
   board_lowlevel.c
   crt.c
@@ -107,11 +108,6 @@ set(TARGET_SRC
   massstorage.cpp
   serial2_driver.cpp
   audio_driver.cpp
-  )
-
-set(FIRMWARE_SRC
-  ${FIRMWARE_SRC}
-  loadboot.cpp
   )
 
 set(SRC

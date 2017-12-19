@@ -408,7 +408,7 @@ const FATDirEntry_t g_DIRroot[] =
       0xA302,
       0x3D55,
       0x0002,
-      sizeof(firmware_txt) + strlen(getOtherVersion())
+      sizeof(firmware_txt) + strlen(getOtherVersion(nullptr))
     },
     {
       { 'F', 'I', 'R', 'M', 'W', 'A', 'R', 'E'},
@@ -515,7 +515,7 @@ int32_t fat12Read(uint8_t * buffer, uint16_t sector, uint16_t count)
     else if (sector == 4)
     {
       memcpy(buffer, firmware_txt, sizeof(firmware_txt));
-      memcpy(buffer + sizeof(firmware_txt), getOtherVersion(), strlen(getOtherVersion()));
+      memcpy(buffer + sizeof(firmware_txt), getOtherVersion(nullptr), strlen(getOtherVersion(nullptr)));
     }
     else if (sector < RESERVED_SECTORS)
     {

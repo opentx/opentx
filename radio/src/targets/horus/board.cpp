@@ -42,7 +42,7 @@ void watchdogInit(unsigned int duration)
 // Start TIMER7 at 2000000Hz
 void init2MhzTimer()
 {
-  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1;       // 0.5 uS, 2 MHz
+  TIMER_2MHz_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5 uS, 2 MHz
   TIMER_2MHz_TIMER->ARR = 65535;
   TIMER_2MHz_TIMER->CR2 = 0;
   TIMER_2MHz_TIMER->CR1 = TIM_CR1_CEN;
@@ -51,15 +51,15 @@ void init2MhzTimer()
 // Starts TIMER at 1000Hz
 void init1msTimer()
 {
-  INTERRUPT_1MS_TIMER->ARR = 999;     // 1mS
-  INTERRUPT_1MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;  // 1uS from 30MHz
-  INTERRUPT_1MS_TIMER->CCER = 0;
-  INTERRUPT_1MS_TIMER->CCMR1 = 0;
-  INTERRUPT_1MS_TIMER->EGR = 0;
-  INTERRUPT_1MS_TIMER->CR1 = 5;
-  INTERRUPT_1MS_TIMER->DIER |= 1;
-  NVIC_EnableIRQ(INTERRUPT_1MS_IRQn);
-  NVIC_SetPriority(INTERRUPT_1MS_IRQn, 7);
+  INTERRUPT_xMS_TIMER->ARR = 999; // 1mS in uS
+  INTERRUPT_xMS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1;  // 1uS
+  INTERRUPT_xMS_TIMER->CCER = 0;
+  INTERRUPT_xMS_TIMER->CCMR1 = 0;
+  INTERRUPT_xMS_TIMER->EGR = 0;
+  INTERRUPT_xMS_TIMER->CR1 = 5;
+  INTERRUPT_xMS_TIMER->DIER |= 1;
+  NVIC_EnableIRQ(INTERRUPT_xMS_IRQn);
+  NVIC_SetPriority(INTERRUPT_xMS_IRQn, 7);
 }
 
 // TODO use the same than board_sky9x.cpp
@@ -90,9 +90,9 @@ void interrupt1ms()
   DEBUG_TIMER_STOP(debugTimerRotEnc);
 }
 
-extern "C" void INTERRUPT_1MS_IRQHandler()
+extern "C" void INTERRUPT_xMS_IRQHandler()
 {
-  INTERRUPT_1MS_TIMER->SR &= ~TIM_SR_UIF;
+  INTERRUPT_xMS_TIMER->SR &= ~TIM_SR_UIF;
   interrupt1ms();
   DEBUG_INTERRUPT(INT_1MS);
 }
@@ -135,10 +135,10 @@ void boardInit()
                          PCBREV_RCC_AHB1Periph |
                          LED_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph |
-                         BL_RCC_AHB1Periph |
+                         BACKLIGHT_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph |
                          AUDIO_RCC_AHB1Periph |
-                         KEYS_RCC_AHB1Periph_GPIO |
+                         KEYS_RCC_AHB1Periph |
                          ADC_RCC_AHB1Periph |
                          SERIAL_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
@@ -149,11 +149,10 @@ void boardInit()
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph |
-                         SPORT_UPDATE_RCC_AHB1Periph |
-                         BL_RCC_AHB1Periph,
+                         SPORT_UPDATE_RCC_AHB1Periph,
                          ENABLE);
 
-  RCC_APB1PeriphClockCmd(INTERRUPT_1MS_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(INTERRUPT_xMS_RCC_APB1Periph |
                          ADC_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
@@ -164,7 +163,7 @@ void boardInit()
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
-                         BL_RCC_APB1Periph,
+                         BACKLIGHT_RCC_APB1Periph,
                          ENABLE);
 
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
@@ -173,7 +172,7 @@ void boardInit()
                          INTMODULE_RCC_APB2Periph |
                          EXTMODULE_RCC_APB2Periph |
                          BT_RCC_APB2Periph |
-                         BL_RCC_APB2Periph,
+                         BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
 
   pwrInit();

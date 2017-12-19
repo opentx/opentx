@@ -211,12 +211,12 @@ void readKeysAndTrims()
     } \
     break
 
-#if !defined(BOOT)
 uint8_t keyState(uint8_t index)
 {
   return keys[index].state();
 }
 
+#if !defined(BOOT)
 uint32_t switchState(uint8_t index)
 {
   uint32_t xxx = 0;

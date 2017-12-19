@@ -1,10 +1,10 @@
 /*
 *****************************************************************************
 **
-**  File        : stm32_flashboot.ld
+**  File        : stm32f4_flash.ld
 **
-**  Abstract    : Linker script for STM32F205 Device with
-**                0.5MByte FLASH, 128KByte SRAM
+**  Abstract    : Linker script for STM32F439 Device with
+**                2MByte FLASH, 192KByte SRAM, 64KByte CCM
 **
 **                Set heap size, stack size and stack location according
 **                to application requirements.
@@ -20,7 +20,8 @@
 ENTRY(Reset_Handler)
 
 /* Highest address of the user mode stack */
-_estack = 0x20020000;    /* end of 128K SRAM */
+_estack = 0x20030000;    /* end of 192K RAM */
+_heap_end = 0xD0800000;  /* end of 8192K SDRAM */
 
 /* Generate a link error if heap and stack don't fit into RAM */
 _Min_Heap_Size = 0;      /* required amount of heap  */
@@ -32,9 +33,11 @@ _main_stack_start = _estack - _Main_Stack_Size;
 /* Specify the memory areas */
 MEMORY
 {
-  FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 512K
-  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 128K
+  FLASH (rx)      : ORIGIN = 0x08000000, LENGTH = 2048K
+  RAM (xrw)       : ORIGIN = 0x20000000, LENGTH = 192K
+  CCM (xrw)       : ORIGIN = 0x10000000, LENGTH = 64K
   MEMORY_B1 (rx)  : ORIGIN = 0x60000000, LENGTH = 0K
+  SDRAM(xrw)      : ORIGIN = 0xD0000000, LENGTH = 8192K
 }
 
 /* Define output sections */
@@ -47,6 +50,7 @@ SECTIONS
   {
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
+    KEEP(*(.version))
     KEEP(*(.bootversiondata))
     . = ALIGN(4);      /* Align the start of the text part */
     *(.text)           /* .text sections (code) */
@@ -55,7 +59,7 @@ SECTIONS
     *(.rodata*)        /* .rodata* sections (constants, strings, etc.) */
     *(.glue_7)         /* glue arm to thumb code */
     *(.glue_7t)        /* glue thumb to arm code */
-	*(.eh_frame)
+    *(.eh_frame)
 
     KEEP (*(.init))
     KEEP (*(.fini))
@@ -64,13 +68,13 @@ SECTIONS
     _etext = .;        /* define a global symbols at end of code */
   } >FLASH
 
-
-   .ARM.extab   : { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
+  .ARM.extab   :
+  { *(.ARM.extab* .gnu.linkonce.armextab.*) } >FLASH
     .ARM : {
     __exidx_start = .;
       *(.ARM.exidx*)
       __exidx_end = .;
-    } >FLASH
+  } >FLASH
 
   .preinit_array     :
   {
@@ -78,6 +82,7 @@ SECTIONS
     KEEP (*(.preinit_array*))
     PROVIDE_HIDDEN (__preinit_array_end = .);
   } >FLASH
+
   .init_array :
   {
     PROVIDE_HIDDEN (__init_array_start = .);
@@ -85,6 +90,7 @@ SECTIONS
     KEEP (*(.init_array*))
     PROVIDE_HIDDEN (__init_array_end = .);
   } >FLASH
+
   .fini_array :
   {
     PROVIDE_HIDDEN (__fini_array_start = .);
@@ -103,10 +109,9 @@ SECTIONS
     _sdata = .;        /* create a global symbol at data start */
     *(.data)           /* .data sections */
     *(.data*)          /* .data* sections */
-
     . = ALIGN(4);
     _edata = .;        /* define a global symbol at data end */
-  } >RAM
+  } >CCM
 
   /* Uninitialized data section */
   . = ALIGN(4);
@@ -114,18 +119,28 @@ SECTIONS
   {
     /* This is used by the startup in order to initialize the .bss secion */
     _sbss = .;         /* define a global symbol at bss start */
-    __bss_start__ = _sbss;
+    /* __bss_start__ = _sbss; */
     *(.bss)
     *(.bss*)
     *(COMMON)
-
     . = ALIGN(4);
     _ebss = .;         /* define a global symbol at bss end */
-    __bss_end__ = _ebss;
-  } >RAM
+  } >CCM
 
-  PROVIDE ( end = _ebss );
-  PROVIDE ( _end = _ebss );
+  /* Non-zeroed data section */
+  . = ALIGN(4);
+  .noinit (NOLOAD) :
+  {
+    *(.noinit)
+  } >CCM
+
+  /* collect all uninitialized .ccm sections */
+  .ram (NOLOAD) :
+  {
+    . = ALIGN(4);
+    _sram = .;
+    *(.ram)
+  } >RAM
 
   /* User_heap_stack section, used to check that there is enough RAM left */
   ._user_heap_stack :
@@ -145,7 +160,20 @@ SECTIONS
     *(.mb1rodata)      /* read-only data (constants) */
     *(.mb1rodata*)
   } >MEMORY_B1
+  
+  .sdram (NOLOAD) :
+  {
+    *(.sdram)
+    *(.sdram*)
+    *(.sdram_rodata)
+    *(.sdram_rodata*)
+    . = ALIGN(4);
+    _eram = .;
+  } >SDRAM
 
+  PROVIDE ( end = _eram );
+  PROVIDE ( _end = _eram );
+  
   /* Remove information from the standard libraries */
   /DISCARD/ :
   {

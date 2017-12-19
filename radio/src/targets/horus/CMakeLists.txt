@@ -31,7 +31,10 @@ if (PCB STREQUAL X10)
     ../common/arm/stm32/adc_driver.cpp
     pwm_driver.cpp
     )
-  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x10_bitmaps)
+
+  set(BITMAPS_TARGET x10_bitmaps)
+  set(FONTS_TARGET x10_fonts)
+  set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x10)
 elseif (PCB STREQUAL X12S)
   set(FLAVOUR x12s)
@@ -52,10 +55,15 @@ elseif (PCB STREQUAL X12S)
     adc_driver.cpp
     gps_driver.cpp
     )
-  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} x12s_bitmaps)
+
+  set(BITMAPS_TARGET x12s_bitmaps)
+  set(FONTS_TARGET x12s_fonts)
+  set(LCD_DRIVER lcd_driver.cpp)
   set(LUA_EXPORT lua_export_x12s)
   add_definitions(-DPCBREV=${PCBREV})
 endif()
+
+set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
 
 add_definitions(-DPCBHORUS -DSTM32F429_439xx -DSDRAM -DCOLORLCD -DPPM_PIN_UART -DPPM_PIN_TIMER)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
@@ -119,11 +127,12 @@ set(TARGET_SRC
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   sdio_sd.c
-  lcd_driver.cpp
+  ${LCD_DRIVER}
   backlight_driver.cpp
   pwr_driver.cpp
   sdram_driver.c
   startup_stm32f42_43xxx.s
+  ../common/arm/loadboot.cpp
   )
 
 add_definitions(-DBLUETOOTH)

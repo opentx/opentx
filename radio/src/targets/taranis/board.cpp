@@ -51,21 +51,21 @@ void init2MhzTimer()
 // Starts TIMER at 200Hz (5ms)
 void init5msTimer()
 {
-  INTERRUPT_5MS_TIMER->ARR = 4999 ;     // 5mS
-  INTERRUPT_5MS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ;                // 1uS from 30MHz
-  INTERRUPT_5MS_TIMER->CCER = 0 ;
-  INTERRUPT_5MS_TIMER->CCMR1 = 0 ;
-  INTERRUPT_5MS_TIMER->EGR = 0 ;
-  INTERRUPT_5MS_TIMER->CR1 = 5 ;
-  INTERRUPT_5MS_TIMER->DIER |= 1 ;
-  NVIC_EnableIRQ(INTERRUPT_5MS_IRQn) ;
-  NVIC_SetPriority(INTERRUPT_5MS_IRQn, 7);
+  INTERRUPT_xMS_TIMER->ARR = 4999 ; // 5mS in uS
+  INTERRUPT_xMS_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 1000000 - 1 ; // 1uS
+  INTERRUPT_xMS_TIMER->CCER = 0 ;
+  INTERRUPT_xMS_TIMER->CCMR1 = 0 ;
+  INTERRUPT_xMS_TIMER->EGR = 0 ;
+  INTERRUPT_xMS_TIMER->CR1 = 5 ;
+  INTERRUPT_xMS_TIMER->DIER |= 1 ;
+  NVIC_EnableIRQ(INTERRUPT_xMS_IRQn) ;
+  NVIC_SetPriority(INTERRUPT_xMS_IRQn, 7);
 }
 
 void stop5msTimer( void )
 {
-  INTERRUPT_5MS_TIMER->CR1 = 0 ;        // stop timer
-  NVIC_DisableIRQ(INTERRUPT_5MS_IRQn) ;
+  INTERRUPT_xMS_TIMER->CR1 = 0 ;        // stop timer
+  NVIC_DisableIRQ(INTERRUPT_xMS_IRQn) ;
 }
 
 // TODO use the same than board_sky9x.cpp
@@ -93,9 +93,9 @@ void interrupt5ms()
 }
 
 #if !defined(SIMU)
-extern "C" void INTERRUPT_5MS_IRQHandler()
+extern "C" void INTERRUPT_xMS_IRQHandler()
 {
-  INTERRUPT_5MS_TIMER->SR &= ~TIM_SR_UIF ;
+  INTERRUPT_xMS_TIMER->SR &= ~TIM_SR_UIF ;
   interrupt5ms() ;
   DEBUG_INTERRUPT(INT_5MS);
 }
@@ -147,9 +147,27 @@ void sportUpdatePowerOff()
 void boardInit()
 {
 #if !defined(SIMU)
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | PCBREV_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph | AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph | ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph | SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph | INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph | TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph | SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph | HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph | INTERRUPT_5MS_APB1Periph | TIMER_2MHz_APB1Periph | I2C_RCC_APB1Periph | SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph | TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph | BT_RCC_APB1Periph, ENABLE);
-  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph | HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph | EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph | BT_RCC_APB2Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | PCBREV_RCC_AHB1Periph |
+                         KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph |
+                         AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
+                         ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
+                         SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph |
+                         INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph |
+                         TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph |
+                         SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph |
+                         HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
+
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph |
+                         BACKLIGHT_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
+                         TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
+                         SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
+                         TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph |
+                         BT_RCC_APB1Periph, ENABLE);
+
+  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph |
+                         HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph |
+                         EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph |
+                         BT_RCC_APB2Periph, ENABLE);
 
 #if !defined(PCBX9E)
   // some X9E boards need that the pwrInit() is moved a little bit later

@@ -22,7 +22,7 @@
 #define _HAL_H_
 
 // Keys
-#define KEYS_RCC_AHB1Periph_GPIO        (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ)
+#define KEYS_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ)
 #if defined(PCBX12S)
   #define KEYS_GPIO_REG_PGUP            GPIOC->IDR
   #define KEYS_GPIO_PIN_PGUP            GPIO_Pin_13 // PC.13
@@ -246,8 +246,11 @@
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_GPIO                        GPIOJ
-#define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
+#define PWR_SWITCH_GPIO_REG             PWR_GPIO->IDR
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
+#define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
+#define PWR_ON_GPIO_MODER               GPIO_MODER_MODER1
+#define PWR_ON_GPIO_MODER_OUT           GPIO_MODER_MODER1_0
 
 #if defined(PCBX10)
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
@@ -327,6 +330,7 @@
 
 // LCD
 #define LCD_RCC_AHB1Periph              (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ | RCC_AHB1Periph_GPIOK | RCC_AHB1Periph_DMA2D)
+#define LCD_RCC_APB1Periph              0
 #define LCD_RCC_APB2Periph              RCC_APB2Periph_LTDC
 #if defined(PCBX12S)
   #define LCD_GPIO_NRST                 GPIOF
@@ -340,39 +344,40 @@
 
 // Backlight
 #if defined(PCBX12S)
-  #define BL_RCC_AHB1Periph             RCC_AHB1Periph_GPIOA
-  #define BL_GPIO                       GPIOA
+  #define BACKLIGHT_RCC_AHB1Periph             RCC_AHB1Periph_GPIOA
+  #define BACKLIGHT_GPIO                       GPIOA
   #if PCBREV >= 13
-    #define BL_TIMER                    TIM5
-    #define BL_GPIO_PIN                 GPIO_Pin_3  // PA.03
-    #define BL_GPIO_PinSource           GPIO_PinSource3
-    #define BL_RCC_APB1Periph           RCC_APB1Periph_TIM5
-    #define BL_RCC_APB2Periph           0
-    #define BL_GPIO_AF                  GPIO_AF_TIM5
-    #define BL_TIMER_FREQ               (PERI1_FREQUENCY * TIMER_MULT_APB1)
+    #define BACKLIGHT_TIMER                    TIM5
+    #define BACKLIGHT_GPIO_PIN                 GPIO_Pin_3  // PA.03
+    #define BACKLIGHT_GPIO_PinSource           GPIO_PinSource3
+    #define BACKLIGHT_RCC_APB1Periph           RCC_APB1Periph_TIM5
+    #define BACKLIGHT_RCC_APB2Periph           0
+    #define BACKLIGHT_GPIO_AF                  GPIO_AF_TIM5
+    #define BACKLIGHT_TIMER_FREQ               (PERI1_FREQUENCY * TIMER_MULT_APB1)
   #else
-    #define BL_TIMER                    TIM8
-    #define BL_GPIO_PIN                 GPIO_Pin_5  // PA.05
-    #define BL_GPIO_PinSource           GPIO_PinSource5
-    #define BL_RCC_APB1Periph           0
-    #define BL_RCC_APB2Periph           RCC_APB2Periph_TIM8
-    #define BL_GPIO_AF                  GPIO_AF_TIM8
-    #define BL_TIMER_FREQ               (PERI2_FREQUENCY * TIMER_MULT_APB2)
+    #define BACKLIGHT_TIMER                    TIM8
+    #define BACKLIGHT_GPIO_PIN                 GPIO_Pin_5  // PA.05
+    #define BACKLIGHT_GPIO_PinSource           GPIO_PinSource5
+    #define BACKLIGHT_RCC_APB1Periph           0
+    #define BACKLIGHT_RCC_APB2Periph           RCC_APB2Periph_TIM8
+    #define BACKLIGHT_GPIO_AF                  GPIO_AF_TIM8
+    #define BACKLIGHT_TIMER_FREQ               (PERI2_FREQUENCY * TIMER_MULT_APB2)
   #endif
 #elif defined(PCBX10)
-  #define BL_RCC_AHB1Periph             RCC_AHB1Periph_GPIOB
-  #define BL_GPIO                       GPIOB
-  #define BL_TIMER                      TIM8
-  #define BL_GPIO_PIN                   GPIO_Pin_1  // PB.01
-  #define BL_GPIO_PinSource             GPIO_PinSource1
-  #define BL_RCC_APB1Periph             0
-  #define BL_RCC_APB2Periph             RCC_APB2Periph_TIM8
-  #define BL_GPIO_AF                    GPIO_AF_TIM8
-  #define BL_TIMER_FREQ                 (PERI2_FREQUENCY * TIMER_MULT_APB2)
+  #define BACKLIGHT_RCC_AHB1Periph             RCC_AHB1Periph_GPIOB
+  #define BACKLIGHT_GPIO                       GPIOB
+  #define BACKLIGHT_TIMER                      TIM8
+  #define BACKLIGHT_GPIO_PIN                   GPIO_Pin_1  // PB.01
+  #define BACKLIGHT_GPIO_PinSource             GPIO_PinSource1
+  #define BACKLIGHT_RCC_APB1Periph             0
+  #define BACKLIGHT_RCC_APB2Periph             RCC_APB2Periph_TIM8
+  #define BACKLIGHT_GPIO_AF                    GPIO_AF_TIM8
+  #define BACKLIGHT_TIMER_FREQ                 (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #endif
 
 // SD
 #define SD_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
+#define SD_RCC_APB1Periph               0
 #define SD_PRESENT_GPIO                 GPIOC
 #define SD_PRESENT_GPIO_PIN             GPIO_Pin_5  // PC.05
 #define SD_SDIO_DMA_STREAM              DMA2_Stream3
@@ -607,11 +612,11 @@
 #define TRAINER_DMA_FLAG_TC             DMA_IT_TCIF2
 #define TRAINER_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
-// 1ms Interrupt
-#define INTERRUPT_1MS_RCC_APB1Periph    RCC_APB1Periph_TIM14
-#define INTERRUPT_1MS_TIMER             TIM14
-#define INTERRUPT_1MS_IRQn              TIM8_TRG_COM_TIM14_IRQn
-#define INTERRUPT_1MS_IRQHandler        TIM8_TRG_COM_TIM14_IRQHandler
+// Xms Interrupt
+#define INTERRUPT_xMS_RCC_APB1Periph    RCC_APB1Periph_TIM14
+#define INTERRUPT_xMS_TIMER             TIM14
+#define INTERRUPT_xMS_IRQn              TIM8_TRG_COM_TIM14_IRQn
+#define INTERRUPT_xMS_IRQHandler        TIM8_TRG_COM_TIM14_IRQHandler
 
 // 2MHz Timer
 #define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7

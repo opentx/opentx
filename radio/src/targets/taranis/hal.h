@@ -433,9 +433,14 @@
 #if defined(PCBX9E) || defined(PCBX7)
 #define PWR_PRESS_BUTTON
 #endif
+
 #define PWR_GPIO                        GPIOD
+#define PWR_SWITCH_GPIO_REG             PWR_GPIO->IDR
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_1  // PD.01
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_0  // PD.00
+#define PWR_ON_GPIO_MODER               GPIO_MODER_MODER0
+#define PWR_ON_GPIO_MODER_OUT           GPIO_MODER_MODER0_0
+
 #if defined(PCBX7)
 #define LED_GREEN_GPIO                  GPIOC
 #define LED_GREEN_GPIO_PIN              GPIO_Pin_4  // PC.04
@@ -697,6 +702,8 @@
   #define LCD_RST_GPIO                  GPIOD
   #define LCD_RST_GPIO_PIN              GPIO_Pin_12 // PD.12
 #endif
+#define LCD_RCC_APB2Periph              0
+
 
 // I2C Bus: EEPROM and CAT5137 digital pot for volume control
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
@@ -828,14 +835,14 @@
   #define BT_RCC_APB2Periph            0
 #endif
 
-// 5ms Interrupt
-#define INTERRUPT_5MS_APB1Periph        RCC_APB1Periph_TIM14
-#define INTERRUPT_5MS_TIMER             TIM14
-#define INTERRUPT_5MS_IRQn              TIM8_TRG_COM_TIM14_IRQn
-#define INTERRUPT_5MS_IRQHandler        TIM8_TRG_COM_TIM14_IRQHandler
+// Xms Interrupt
+#define INTERRUPT_xMS_RCC_APB1Periph    RCC_APB1Periph_TIM14
+#define INTERRUPT_xMS_TIMER             TIM14
+#define INTERRUPT_xMS_IRQn              TIM8_TRG_COM_TIM14_IRQn
+#define INTERRUPT_xMS_IRQHandler        TIM8_TRG_COM_TIM14_IRQHandler
 
 // 2MHz Timer
-#define TIMER_2MHz_APB1Periph           RCC_APB1Periph_TIM7
+#define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
 
 #endif // _HAL_H_

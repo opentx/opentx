@@ -21,6 +21,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "opentx.h"
+#include "strhelpers.h"
 
 #if defined(SIMU)
 display_t displayBuf[DISPLAY_BUFFER_SIZE];
@@ -103,11 +104,12 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
 
   int result = 0;
   for (int i=0; len==0 || i<len; ++i) {
-    char c;
-    if (flags & ZCHAR)
-      c = idx2char(*s);
-    else
-      c = *s;
+
+#if !defined(BOOT)
+    char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+#else
+    char c = *s;
+#endif
     if (c == '\0')
       break;
     result += getCharWidth(c, specs);
@@ -175,7 +177,6 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   lcdDrawText(x, y, s, flags);
 }
 
-#if !defined(BOOT)
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
 {
   int dx = x2-x1;      /* the horizontal distance of the line */
@@ -218,8 +219,8 @@ void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, Lc
     }
   }
 }
-#endif
 
+#if !defined(BOOT)
 void drawRtcTime(coord_t x, coord_t y, LcdFlags flags)
 {
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), flags);
@@ -388,6 +389,7 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
 {
   drawGPSPosition(x, y, telemetryItem.gps.longitude, telemetryItem.gps.latitude, flags);
 }
+#endif
 
 void lcdSetContrast()
 {

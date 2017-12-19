@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 
+#if !defined(BOOT)
 const uint16_t font_tinsize_specs[] = {
 #include "font_tinsize.specs"
 };
@@ -35,6 +36,7 @@ const uint16_t font_smlsize_specs[] = {
 const pm_uchar font_smlsize[] = {
 #include "font_smlsize.lbm"
 };
+#endif
 
 const uint16_t font_stdsize_specs[] = {
 #include "font_stdsize.specs"
@@ -44,6 +46,7 @@ const pm_uchar font_stdsize[] = {
 #include "font_stdsize.lbm"
 };
 
+#if !defined(BOOT)
 const uint16_t font_midsize_specs[] = {
 #include "font_midsize.specs"
 };
@@ -75,7 +78,9 @@ const uint16_t font_stdsizebold_specs[] = {
 const pm_uchar font_stdsizebold[] = {
 #include "font_stdsizebold.lbm"
 };
+#endif
 
+#if !defined(BOOT)
 const uint16_t * const fontspecsTable[16] = {
   font_stdsize_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs,
   font_stdsizebold_specs, font_tinsize_specs, font_smlsize_specs, font_midsize_specs, font_dblsize_specs, font_xxlsize_specs, font_stdsize_specs, font_stdsize_specs
@@ -85,6 +90,10 @@ const uint8_t * const fontsTable[16] = {
   font_stdsize, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize,
   font_stdsizebold, font_tinsize, font_smlsize, font_midsize, font_dblsize, font_xxlsize, font_stdsize, font_stdsize
 };
+#else
+const uint16_t * const fontspecsTable[1] = { font_stdsize_specs };
+const uint8_t * const fontsTable[1]      = { font_stdsize };
+#endif
 
 BitmapBuffer * fontCache[2] = { NULL, NULL };
 

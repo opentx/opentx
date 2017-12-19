@@ -87,8 +87,14 @@ enum FontSizeIndex {
 #define XXLSIZE                        (XXLSIZE_INDEX << 8)
 #define BOLD                           (STDSIZE_BOLD_INDEX << 8)
 #define FONTSIZE_MASK                  0x0f00
+
+#if !defined(BOOT)
 #define FONTSIZE(flags)                ((flags) & FONTSIZE_MASK)
 #define FONTINDEX(flags)               (FONTSIZE(flags) >> 8)
+#else
+#define FONTSIZE(flags)                STDSIZE
+#define FONTINDEX(flags)               STDSIZE_INDEX
+#endif
 
 #define TIMEBLINK                      0x1000
 #define TIMEHOUR                       0x2000
@@ -134,6 +140,13 @@ inline void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t le
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
 
+#if !defined(BOOT)
+
+#define putstime_t int32_t
+
+void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
+void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
+
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);
 void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags flags=0);
@@ -145,10 +158,7 @@ void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att
 #define putsChn(x, y, idx, att) drawSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
-#define putstime_t int32_t
-
-void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
-void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
+#endif // !BOOT
 
 #define SOLID   0xff
 #define DOTTED  0x55

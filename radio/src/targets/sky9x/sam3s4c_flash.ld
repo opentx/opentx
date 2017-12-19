@@ -71,15 +71,14 @@ SECTIONS
     */
    .text :
    {
-	  FILL(0xFFFF)
-      
-	  CREATE_OBJECT_SYMBOLS
+      FILL(0xFFFF)
 
-      *(.bootrodata)
-      *(.bootrodata.*)
+      CREATE_OBJECT_SYMBOLS
+
+      KEEP(*(.bootloader)) /* Bootloader code */
       
-      . = ALIGN(32768);       /* Align the start of the exidx part */
-		_stext = .;          /* Provide the name for the start of this section */
+      . = ALIGN(32768);    /* Align the start of the exidx part */
+      _stext = .;          /* Provide the name for the start of this section */
       
       KEEP(*(.vectors))
       
