@@ -937,7 +937,6 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_BINDING_25MW_CH1_8_TELEM_ON[];
   extern const pm_char STR_BINDING_500MW_CH1_8_TELEM_OFF[];
   extern const pm_char STR_BINDING_500MW_CH9_16_TELEM_OFF[];
-  extern const pm_char STR_BINDING_OPTION[];
   extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_ANTENNASELECTION[];
   extern const pm_char STR_ANTENNACONFIRM1[];

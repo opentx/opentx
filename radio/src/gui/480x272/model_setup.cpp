@@ -1037,7 +1037,7 @@ bool menuModelSetup(event_t event)
           }
         }
 #endif
-        if (IS_MODULE_R9M_FCC(moduleIdx)) {
+        if (IS_MODULE_R9M(moduleIdx)) {
           if (IS_TELEMETRY_INTERNAL_MODULE()) {
             lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_TELEMETRY);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
@@ -1045,16 +1045,6 @@ bool menuModelSetup(event_t event)
           else {
             lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_TELEMETRY);
             g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, attr, event);
-          }
-        }
-        else if (IS_MODULE_R9M_LBT(moduleIdx)) {
-          if (IS_TELEMETRY_INTERNAL_MODULE()) {
-            lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_TELEMETRY);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
-          }
-          else {
-            lcdDrawText(MENUS_MARGIN_LEFT,y, STR_MODULE_TELEMETRY);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BINDING_OPTION);
           }
         }
         else if (IS_MODULE_SBUS(moduleIdx)) {
