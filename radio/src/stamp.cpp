@@ -56,8 +56,8 @@ const char* getOtherVersion()
 }
 #elif defined(STM32)
 
-__attribute__ ((section(".fwversiondata"), used)) const char firmware_version[33] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
-__attribute__ ((section(".bootversiondata"), used)) const char boot_version[33] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+__attribute__ ((section(".fwversiondata"), used)) const char firmware_version[] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+__attribute__ ((section(".bootversiondata"), used)) const char boot_version[] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
 
 const char* getOtherVersion()
 {
