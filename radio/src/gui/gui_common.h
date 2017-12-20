@@ -157,9 +157,8 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #define IS_R9M_OR_XJTD16(x)            ((IS_MODULE_XJT(x) && g_model.moduleData[x].rfProtocol== RF_PROTO_X16) || IS_MODULE_R9M(x))
 
 #define FAILSAFE_ROWS(x)               ((IS_MODULE_XJT(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || IS_MODULE_R9M(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
-#define R9M_FCC_OPTION_ROW             (IS_TELEMETRY_INTERNAL_MODULE() ? TITLE_ROW : (uint8_t)-1)
-#define R9M_OPTION_ROW                 (IS_MODULE_R9M_FCC(EXTERNAL_MODULE) ? R9M_FCC_OPTION_ROW : TITLE_ROW)
-#define EXTERNAL_MODULE_OPTION_ROW     (IS_MODULE_R9M(EXTERNAL_MODULE) ? R9M_OPTION_ROW : (IS_MODULE_SBUS(EXTERNAL_MODULE) ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW))
+
+#define EXTERNAL_MODULE_OPTION_ROW     (IS_MODULE_R9M(EXTERNAL_MODULE) || IS_MODULE_SBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
 #define EXTERNAL_MODULE_POWER_ROW      (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) || IS_MODULE_R9M_FCC(EXTERNAL_MODULE)) ? (uint8_t) 0 : HIDDEN_ROW
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
