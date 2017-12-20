@@ -38,7 +38,7 @@ def generate(str, filename):
         output = u"output.mp3"
         tts = gTTS(text=str, lang=voice[:2])
         tts.save(output)
-        command = "sox %s -r 32000 %s tempo 1.2" % (output, filename)
+        command = "sox --norm %s -r 32000 %s tempo 1.2" % (output, filename)
         os.system(command.encode('utf-8'))
         command = "rm -f output.mp3"
         os.system(command.encode('utf-8'))
@@ -118,6 +118,22 @@ if __name__ == "__main__":
                         l += u"SOUNDS/%s;" % directory
                     l += f + u";" + s + u"\n"
                     csvFile.write(l.encode("utf-8"))
+
+    if "psv" in sys.argv:
+        path = "/tmp/SOUNDS/" + directory + "/"
+        if not os.path.exists(path):
+          os.makedirs(path)
+        os.chdir(path)
+        with open("%s-%s.psv" % (voice, board), "wb") as csvFile:
+            for s, f in systemSounds:
+                if s and f:
+                    l = u"SYSTEM|" + f.replace(".wav", "") + u"|" + s + u"\r\n"
+                    csvFile.write(l.encode("windows-1251"))
+            for s, f in sounds:
+                if s and f:
+                    l = u"|" + f.replace(".wav", "") + u"|" + s + u"\r\n"
+                    csvFile.write(l.encode("windows-1251"))
+
 
     if "files" in sys.argv:
               path = "/tmp/SOUNDS/" + directory + "/SYSTEM/"

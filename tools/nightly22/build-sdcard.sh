@@ -35,7 +35,7 @@ else
   python3 -B ${workdir}/code/tools/nightly22/tts.py de csv files
   python3 -B ${workdir}/code/tools/nightly22/tts.py cz csv files
   python3 -B ${workdir}/code/tools/nightly22/tts.py pt csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py ru csv files
+  python3 -B ${workdir}/code/tools/nightly22/tts.py ru csv psv files
 
   # Create sdcards.zips for supported platforms
   mv /tmp/SOUNDS ${workdir}/sdcard/horus/
