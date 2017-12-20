@@ -493,11 +493,12 @@ void ModulePanel::update()
     if (mask & MASK_MULTIMODULE)
       numEntries = (module.multi.customProto ? 8 : multiProtocols.getProtocol(module.multi.rfProtocol).numSubytes());
 
-    const QSignalBlocker blocker(ui->multiSubType);
+    bool blocker = ui->multiSubType->blockSignals(true);
     ui->multiSubType->clear();
     for (unsigned i=0; i < numEntries; i++)
       ui->multiSubType->addItem(ModelPrinter::printModuleSubType(protocol, i, module.multi.rfProtocol, module.multi.customProto), i);
     ui->multiSubType->setCurrentIndex(module.subType);
+    ui->multiSubType->blockSignals(blocker);
   }
 
   // Multi settings fields
