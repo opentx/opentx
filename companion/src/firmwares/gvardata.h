@@ -53,6 +53,7 @@ class GVarData {
     void clear() {memset(this, 0, sizeof(GVarData)); }
     QString unitToString() const;
     QString precToString() const;
+    QString nameToString(int index) const;
     int multiplierSet();
     float multiplierGet() const;
     void setMin(float val);

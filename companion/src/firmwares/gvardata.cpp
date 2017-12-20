@@ -20,6 +20,8 @@
 
 #include "gvardata.h"
 
+#include "radiodata.h"
+
 QString GVarData::unitToString() const
 {
   switch (unit) {
@@ -42,6 +44,11 @@ QString GVarData::precToString() const
     default:
       return tr("?.?");  //  highlight unknown value
   }
+}
+
+QString GVarData::nameToString(int index) const
+{
+  return RadioData::getElementName(tr("GV"), index + 1, name);
 }
 
 int GVarData::multiplierSet()

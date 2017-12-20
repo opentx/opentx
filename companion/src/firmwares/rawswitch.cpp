@@ -80,7 +80,10 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         }
 
       case SWITCH_TYPE_VIRTUAL:
-        return RadioData::getElementName(QCoreApplication::translate("Logic Switch", "L"), index, NULL, true);
+        if (modelData)
+          return modelData->logicalSw[index].nameToString(index);
+        else
+          return LogicalSwitchData().nameToString(index);
 
       case SWITCH_TYPE_MULTIPOS_POT:
         if (!Boards::getCapability(board, Board::MultiposPotsPositions))
@@ -108,7 +111,10 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return tr("One");
 
       case SWITCH_TYPE_FLIGHT_MODE:
-        return RadioData::getElementName(QCoreApplication::translate("Flight mode", "FM"), index - 1, modelData ? modelData->flightModeData[index-1].name : NULL);
+        if (modelData)
+          return modelData->flightModeData[index-1].nameToString(index - 1);
+        else
+          return FlightModeData().nameToString(index - 1);
 
       case SWITCH_TYPE_NONE:
         return tr("----");
@@ -117,7 +123,10 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return CHECK_IN_ARRAY(timerModes, index);
 
       case SWITCH_TYPE_SENSOR:
-        return RadioData::getElementName(QCoreApplication::translate("Telemetry", "TELE"), index, modelData ? modelData->sensorData[index-1].label : NULL);
+        if (modelData)
+          return modelData->sensorData[index-1].nameToString(index-1);
+        else
+          return SensorData().nameToString(index-1);
 
       case SWITCH_TYPE_TELEMETRY:
         return tr("Telemetry");

@@ -399,12 +399,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return RadioData::getElementName(tr("TR", "as in Trainer"), index + 1);
 
     case SOURCE_TYPE_CH:
-    {
-      const char * name = NULL;
-      if (getCurrentFirmware()->getCapability(ChannelsName) && model)
-        name = model->limitData[index].name;
-      return RadioData::getElementName(QCoreApplication::translate("Channel", "CH"), index + 1, name);
-    }
+      if (model)
+        return model->limitData[index].nameToString(index);
+      else
+        return LimitData().nameToString(index);
 
     case SOURCE_TYPE_SPECIAL:
       return CHECK_IN_ARRAY(special, index);
@@ -412,7 +410,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     case SOURCE_TYPE_TELEMETRY:
       if (IS_ARM(board)) {
         div_t qr = div(index, 3);
-        result = RadioData::getElementName(QCoreApplication::translate("Telemetry", "TELE"), qr.quot+1, model ? model->sensorData[qr.quot].label : NULL);
+        if (model)
+          result = model->sensorData[qr.quot].nameToString(qr.quot);
+        else
+          result = SensorData().nameToString(qr.quot);
         if (qr.rem)
           result += (qr.rem == 1 ? "-" : "+");
         return result;
@@ -422,12 +423,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       }
 
     case SOURCE_TYPE_GVAR:
-    {
-      const char * name = NULL;
-      if (getCurrentFirmware()->getCapability(GvarsName) && model)
-        name = model->gvarData[index].name;
-      return RadioData::getElementName(QCoreApplication::translate("Global Variable", "GV"), index + 1, name);
-    }
+      if (model)
+        return model->gvarData[index].nameToString(index);
+      else
+        return GVarData().nameToString(index);
 
     default:
       return tr("???");

@@ -20,6 +20,7 @@
 
 #include "logicalswitchdata.h"
 
+#include "radiodata.h"
 #include "radiodataconversionstate.h"
 #include "rawsource.h"
 #include "rawswitch.h"
@@ -106,6 +107,11 @@ QString LogicalSwitchData::funcToString() const
     default:
       return tr("Unknown");
   }
+}
+
+QString LogicalSwitchData::nameToString(int index) const
+{
+  return RadioData::getElementName(tr("L"), index + 1, NULL, true);
 }
 
 void LogicalSwitchData::convert(RadioDataConversionState & cstate)

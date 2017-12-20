@@ -94,7 +94,7 @@ class CustomFunctionData {
 
     void clear();
     bool isEmpty() const;
-    QString toString(int index, bool globalContext = false) const;
+    QString nameToString(int index, bool globalContext = false) const;
     QString funcToString(const ModelData * model = NULL) const;
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;

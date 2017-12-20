@@ -37,7 +37,7 @@ bool CustomFunctionData::isEmpty() const
   return (swtch.type == SWITCH_TYPE_NONE);
 }
 
-QString CustomFunctionData::toString(int index, bool globalContext) const
+QString CustomFunctionData::nameToString(int index, bool globalContext) const
 {
   return RadioData::getElementName((globalContext ? tr("GF") : tr("SF")), index+1, 0, true);
 }
@@ -246,7 +246,7 @@ QString CustomFunctionData::enabledToString() const
 void CustomFunctionData::convert(RadioDataConversionState & cstate)
 {
   cstate.setComponent(tr("CFN"), 8);
-  cstate.setSubComp(toString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
+  cstate.setSubComp(nameToString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
   swtch.convert(cstate);
   if (func == FuncVolume || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
     param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();

@@ -143,6 +143,7 @@ class SensorData {
     bool isAvailable() const { return strlen(label) > 0; }
     void updateUnit();
     QString unitString() const;
+    QString nameToString(int index) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
 };
 

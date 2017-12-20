@@ -20,6 +20,8 @@
 
 #include "sensordata.h"
 
+#include "radiodata.h"
+
 void SensorData::updateUnit()
 {
   if (type == TELEM_TYPE_CALCULATED) {
@@ -82,4 +84,9 @@ QString SensorData::unitString() const
     default:
       return "";
   }
+}
+
+QString SensorData::nameToString(int index) const
+{
+  return RadioData::getElementName(tr("TELE"), index + 1, label);
 }

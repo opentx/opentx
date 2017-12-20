@@ -109,6 +109,7 @@ class LimitData {
     QString maxToString() const;
     QString offsetToString() const;
     QString revertToString() const;
+    QString nameToString(int index) const;
     void clear();
 };
 
@@ -155,7 +156,7 @@ class FlightModeData {
     int rotaryEncoders[CPN_MAX_ENCODERS];
     int gvars[CPN_MAX_GVARS];
     void clear(const int phase);
-    QString toString(int index) const;
+    QString nameToString(int index) const;
     void convert(RadioDataConversionState & cstate);
 };
 

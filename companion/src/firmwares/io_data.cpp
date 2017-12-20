@@ -68,6 +68,11 @@ QString LimitData::revertToString() const
   return revert ? tr("INV") : tr("NOR");
 }
 
+QString LimitData::nameToString(int index) const
+{
+  return RadioData::getElementName(tr("CH"), index + 1, name);
+}
+
 QString LimitData::offsetToString() const
 {
   return QString::number((qreal)offset/10, 'f', 1);
@@ -129,7 +134,7 @@ void FlightModeData::clear(const int phase)
   }
 }
 
-QString FlightModeData::toString(int index) const
+QString FlightModeData::nameToString(int index) const
 {
   return RadioData::getElementName(tr("FM"), index, name);  // names are zero-based, FM0, FM1, etc
 }
@@ -137,6 +142,6 @@ QString FlightModeData::toString(int index) const
 void FlightModeData::convert(RadioDataConversionState & cstate)
 {
   cstate.setComponent("FMD", 2);
-  cstate.setSubComp(toString(cstate.subCompIdx));
+  cstate.setSubComp(nameToString(cstate.subCompIdx));
   swtch.convert(cstate);
 }

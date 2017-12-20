@@ -490,7 +490,7 @@ QString ModelPrinter::printFlightModeSwitch(const RawSwitch & swtch)
 
 QString ModelPrinter::printFlightModeName(int index)
 {
-  return model.flightModeData[index].toString(index);
+  return model.flightModeData[index].nameToString(index);
 }
 
 QString ModelPrinter::printFlightModes(unsigned int flightModes)
