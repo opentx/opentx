@@ -433,8 +433,8 @@ template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
     SwitchField(DataField * parent, RawSwitch & sw, Board::Type board, unsigned int version, unsigned long flags=0):
-      ConversionField< SignedField<N> >(parent, _switch, SwitchesConversionTable::getInstance(board, version, flags), tr("Switch").toLatin1(),
-          tr("Switch ").toLatin1() + sw.toString(board) + tr(" cannot be exported on this board!").toLatin1()),
+      ConversionField< SignedField<N> >(parent, _switch, SwitchesConversionTable::getInstance(board, version, flags), this->tr("Switch").toLatin1(),
+          this->tr("Switch ").toLatin1() + sw.toString(board) + this->tr(" cannot be exported on this board!").toLatin1()),
       sw(sw),
       _switch(0),
       board(board)
@@ -597,7 +597,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
   public:
     SourceField(DataField * parent, RawSource & source, Board::Type board, unsigned int version, unsigned int variant, unsigned long flags=0):
       ConversionField< UnsignedField<N> >(parent, _source, SourcesConversionTable::getInstance(board, version, variant, flags),
-            "Source", tr("Source %1 cannot be exported on this board!").arg(source.toString())),
+            this->tr("Source").toLatin1(), this->tr("Source %1 cannot be exported on this board!").arg(source.toString())),
       source(source),
       _source(0)
     {
