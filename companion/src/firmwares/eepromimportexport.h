@@ -383,7 +383,7 @@ class CharField: public DataField {
 };
 
 static const char specialCharsTab[] = "_-.,";
-static int8_t char2idx(char c)
+static inline int8_t char2idx(char c)
 {
   if (c==' ') return 0;
   if (c>='A' && c<='Z') return 1+c-'A';
@@ -397,7 +397,7 @@ static int8_t char2idx(char c)
 }
 
 #define ZCHAR_MAX 40
-static char idx2char(int8_t idx)
+static inline char idx2char(int8_t idx)
 {
   if (idx == 0) return ' ';
   if (idx < 0) {
