@@ -177,13 +177,20 @@ class EEPROMInterface
 
 };
 
-/* EEPROM string conversion functions */
-void setEEPROMString(char *dst, const char *src, int size);
-void getEEPROMString(char *dst, const char *src, int size);
+/* EEPROM string conversion function (used only by er9xeeprom and ersky9xeeprom) */
+inline void getEEPROMString(char *dst, const char *src, int size)
+{
+  memcpy(dst, src, size);
+  dst[size] = '\0';
+  for (int i=size-1; i>=0; i--) {
+    if (dst[i] == ' ')
+      dst[i] = '\0';
+    else
+      break;
+  }
+}
 
-float ValToTim(int value);
-int TimToVal(float value);
-
+// (used only by er9xeeprom and ersky9xeeprom)
 inline int applyStickMode(int stick, unsigned int mode)
 {
   if (mode == 0 || mode > 4) {
@@ -196,6 +203,9 @@ inline int applyStickMode(int stick, unsigned int mode)
   else
     return stick;
 }
+
+float ValToTim(int value);
+int TimToVal(float value);
 
 void registerEEpromInterfaces();
 void unregisterEEpromInterfaces();
