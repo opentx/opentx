@@ -156,24 +156,6 @@ typedef struct
 } SD_CID;
 
 /**
-  * @brief SD Card Status
-  */
-// typedef struct
-// {
-//   __IO uint8_t DAT_BUS_WIDTH;
-//   __IO uint8_t SECURED_MODE;
-//   __IO uint16_t SD_CARD_TYPE;
-//   __IO uint32_t SIZE_OF_PROTECTED_AREA;
-//   __IO uint8_t SPEED_CLASS;
-//   __IO uint8_t PERFORMANCE_MOVE;
-//   __IO uint8_t AU_SIZE;
-//   __IO uint16_t ERASE_SIZE;
-//   __IO uint8_t ERASE_TIMEOUT;
-//   __IO uint8_t ERASE_OFFSET;
-// } SD_CardStatus;
-
-
-/**
   * @brief SD Card information
   */
 typedef struct
@@ -197,16 +179,11 @@ SD_Error SD_Init(void);
 SDTransferState SD_GetStatus(void);
 uint8_t SD_Detect(void);
 SD_Error SD_PowerOFF(void);
-// SD_Error SD_GetCardStatus(SD_CardStatus *cardstatus);
 SD_Error SD_ReadBlock(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize);
 SD_Error SD_ReadMultiBlocks(uint8_t *readbuff, uint32_t ReadAddr, uint16_t BlockSize, uint32_t NumberOfBlocks);
-// SD_Error SD_ReadMultiBlocksFIXED(uint8_t *readbuff, uint32_t ReadAddr, uint32_t BlockSize, uint32_t NumberOfBlocks);
 SD_Error SD_WriteBlock(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSize);
 SD_Error SD_WriteMultiBlocks(uint8_t *writebuff, uint32_t WriteAddr, uint16_t BlockSize, uint32_t NumberOfBlocks);
-// SD_Error SD_WriteMultiBlocksFIXED(uint8_t *writebuff, uint32_t WriteAddr, uint32_t BlockSize, uint32_t NumberOfBlocks);
 SDTransferState SD_GetTransferState(void);
-// SD_Error SD_Erase(uint32_t startaddr, uint32_t endaddr);
-// SD_Error SD_SendSDStatus(uint32_t *psdstatus);
 SD_Error SD_WaitReadOperation(uint32_t timeout);
 SD_Error SD_WaitWriteOperation(uint32_t timeout);
 

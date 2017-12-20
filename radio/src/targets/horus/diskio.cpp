@@ -27,7 +27,7 @@
 #include "diskio.h"
 #include <string.h>
 #include "opentx.h"
-#include "sdio_sd.h"
+#include "targets/common/arm/stm32/sdio_sd.h"
 
 /*-----------------------------------------------------------------------*/
 /* Lock / unlock functions                                               */

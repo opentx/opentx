@@ -90,7 +90,7 @@ else()
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../targets/${TARGET_DIR}/sdram_driver.c
-    ../../../../../targets/${TARGET_DIR}/sdio_sd.c
+    ../../../../../targets/common/arm/stm32/sdio_sd.c
     ../../../../../targets/${TARGET_DIR}/haptic_driver.cpp
     ../../../../../gui/${GUI_DIR}/bitmapbuffer.cpp
     ../../../../../syscalls.c

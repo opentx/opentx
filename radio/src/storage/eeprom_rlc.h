@@ -23,7 +23,7 @@
 
 #include "definitions.h"
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
   #define blkid_t    uint16_t
   #define EEFS_VERS  5
   #define MAXFILES   62
