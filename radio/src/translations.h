@@ -643,6 +643,7 @@ extern const pm_char STR_SYNCMENU[];
 extern const pm_char STR_INTERNALRF[];
 extern const pm_char STR_EXTERNALRF[];
 extern const pm_char STR_MODULE_TELEMETRY[];
+extern const pm_char STR_MODULE_TELEM_ON[];
 extern const pm_char STR_FAILSAFE[];
 extern const pm_char STR_FAILSAFESET[];
 extern const pm_char STR_HOLD[];

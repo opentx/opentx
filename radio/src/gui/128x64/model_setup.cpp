@@ -1155,9 +1155,12 @@ void menuModelSetup(event_t event)
         }
 #endif
         if (IS_MODULE_R9M(moduleIdx)) {
+          lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
           if (IS_TELEMETRY_INTERNAL_MODULE()) {
-            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
+          }
+          else {
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEM_ON);
           }
         }
         else if (IS_MODULE_SBUS(moduleIdx)) {
