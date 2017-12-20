@@ -73,9 +73,24 @@ elseif(PCB STREQUAL X7)
   set(BITMAPS_TARGET 9x_bitmaps)
   set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
+elseif(PCB STREQUAL XLITE)
+  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+  set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
+  set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+  set(HAPTIC YES)
+  set(LUA_EXPORT lua_export_xlite)
+  set(FLAVOUR xlite)
+  add_definitions(-DPCBX7 -DPCBXLITE -DSOFTWARE_VOLUME)
+  add_definitions(-DEEPROM_VARIANT=0x4000)
+  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+  set(GUI_DIR 128x64)
+  set(BITMAPS_TARGET 9x_bitmaps)
+  set(FONTS_TARGET 9x_fonts_1bit)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
 
-if(PCB STREQUAL X9E OR PCB STREQUAL X7)
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -114,7 +129,7 @@ set(GUI_SRC ${GUI_SRC}
   ../screenshot.cpp
   )
 
-if(PCB STREQUAL X7)
+if(PCB STREQUAL X7 OR PCB STREQUAL XLITE)
   set(LED_DRIVER led_driver.cpp)
 endif()
 

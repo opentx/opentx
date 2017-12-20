@@ -31,7 +31,7 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
   
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
@@ -43,7 +43,7 @@ void pwrInit()
 
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-  GPIO_Init(PWR_GPIO, &GPIO_InitStructure);
+  GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
   
   GPIO_InitStructure.GPIO_Pin = TRAINER_DETECT_GPIO_PIN;
   GPIO_Init(TRAINER_DETECT_GPIO, &GPIO_InitStructure);
@@ -61,12 +61,12 @@ void pwrInit()
 
 void pwrOn()
 {
-  GPIO_SetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
+  GPIO_SetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 
 void pwrOff()
 {
-  GPIO_ResetBits(PWR_GPIO, PWR_ON_GPIO_PIN);
+  GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 
   // disable interrupts
   __disable_irq();
@@ -95,5 +95,5 @@ void pwrOff()
 
 uint32_t pwrPressed()
 {
-  return GPIO_ReadInputDataBit(PWR_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
+  return GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
 }
