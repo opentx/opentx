@@ -29,8 +29,8 @@
 
 void ExpoData::convert(RadioDataConversionState & cstate)
 {
-  cstate.setComponent(QObject::tr("INP"), 3);
-  cstate.setSubComp(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, chn).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % QObject::tr(" (@%1)").arg(cstate.subCompIdx));
+  cstate.setComponent(tr("INP"), 3);
+  cstate.setSubComp(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, chn).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % tr(" (@%1)").arg(cstate.subCompIdx));
   srcRaw.convert(cstate);
   swtch.convert(cstate);
 }
@@ -42,8 +42,8 @@ void ExpoData::convert(RadioDataConversionState & cstate)
 
 void MixData::convert(RadioDataConversionState & cstate)
 {
-  cstate.setComponent(QObject::tr("MIX"), 4);
-  cstate.setSubComp(RawSource(SOURCE_TYPE_CH, destCh-1).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % QObject::tr(" (@%1)").arg(cstate.subCompIdx));
+  cstate.setComponent(tr("MIX"), 4);
+  cstate.setSubComp(RawSource(SOURCE_TYPE_CH, destCh-1).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % tr(" (@%1)").arg(cstate.subCompIdx));
   srcRaw.convert(cstate);
   swtch.convert(cstate);
 }
@@ -65,7 +65,7 @@ QString LimitData::maxToString() const
 
 QString LimitData::revertToString() const
 {
-  return revert ? QObject::tr("INV") : QObject::tr("NOR");
+  return revert ? tr("INV") : tr("NOR");
 }
 
 QString LimitData::offsetToString() const
@@ -108,7 +108,7 @@ bool CurveData::isEmpty() const
 
 QString CurveData::nameToString(const int idx) const
 {
-  return RadioData::getElementName(QCoreApplication::translate("Curve", "CV"), idx + 1, name);
+  return RadioData::getElementName(tr("CV"), idx + 1, name);
 }
 
 
@@ -131,7 +131,7 @@ void FlightModeData::clear(const int phase)
 
 QString FlightModeData::toString(int index) const
 {
-  return RadioData::getElementName(QObject::tr("FM"), index, name, true);
+  return RadioData::getElementName(tr("FM"), index, name);  // names are zero-based, FM0, FM1, etc
 }
 
 void FlightModeData::convert(RadioDataConversionState & cstate)

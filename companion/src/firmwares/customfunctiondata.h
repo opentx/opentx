@@ -79,7 +79,9 @@ enum GVarAdjustModes
   FUNC_ADJUST_GVAR_INCDEC
 };
 
-class CustomFunctionData { // Function Switches data
+class CustomFunctionData {
+  Q_DECLARE_TR_FUNCTIONS(CustomFunctionData)
+
   public:
     CustomFunctionData(AssignFunc func=FuncOverrideCH1) { clear(); this->func = func; }
     RawSwitch    swtch;

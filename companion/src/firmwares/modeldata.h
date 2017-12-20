@@ -57,6 +57,8 @@ class RSSIAlarmData {
 #define TIMER_NAME_LEN 8
 
 class TimerData {
+  Q_DECLARE_TR_FUNCTIONS(TimerData)
+
   public:
     enum CountDownMode {
       COUNTDOWN_SILENT,
@@ -124,6 +126,8 @@ enum TrainerMode {
 };
 
 class ModelData {
+  Q_DECLARE_TR_FUNCTIONS(ModelData)
+
   public:
     ModelData();
     ModelData(const ModelData & src);

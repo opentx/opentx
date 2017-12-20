@@ -110,7 +110,7 @@ void RadioData::convert(RadioDataConversionState & cstate)
   }
 
   if (categories.size() == 0) {
-    categories.push_back(CategoryData(qPrintable(QObject::tr("Models"))));
+    categories.push_back(CategoryData(qPrintable(tr("Models"))));
     for (unsigned i=0; i<models.size(); i++) {
       models[i].category = 0;
     }

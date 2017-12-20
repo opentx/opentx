@@ -234,7 +234,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
     errors.set(HAS_WARNINGS);
-    ShowEepromWarnings(NULL, QObject::tr("Warning"), errors.to_ulong());
+    showEepromWarnings(NULL, tr("Warning"), errors.to_ulong());
   }
   else if (version_error == NOT_OPENTX) {
     dbg << " not open9x";
@@ -285,7 +285,7 @@ void OpenTxEepromInterface::showErrors(const QString & title, const QStringList 
 {
   QString msg;
   if (errors.empty()) {
-    msg = QObject::tr("Unknown error");
+    msg = tr("Unknown error");
   }
   else {
     int noErrorsToDisplay = std::min((int)errors.size(), 10);
@@ -293,12 +293,12 @@ void OpenTxEepromInterface::showErrors(const QString & title, const QStringList 
       msg += " -" + errors.at(n) + "\n";
     }
     if (noErrorsToDisplay < errors.size()) {
-      msg += QObject::tr(" ... plus %1 errors").arg(errors.size() - noErrorsToDisplay) + "\n" + msg;
+      msg += tr(" ... plus %1 errors").arg(errors.size() - noErrorsToDisplay) + "\n" + msg;
     }
   }
 
   QMessageBox::warning(NULL,
-                       QObject::tr("Error"),
+                       tr("Error"),
                        title + "\n" + msg);
 }
 
@@ -330,7 +330,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   generator.Export(data);
   int sz = efile->writeRlc2(FILE_GENERAL, FILE_TYP_GENERAL, (const uint8_t *)data.constData(), data.size());
   if (sz == 0 || generator.errors().count() > 0) {
-    showErrors(QObject::tr("Cannot write radio settings"), generator.errors());
+    showErrors(tr("Cannot write radio settings"), generator.errors());
     return 0;
   }
 
@@ -342,7 +342,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
       generator.Export(data);
       int sz = efile->writeRlc2(FILE_MODEL(i), FILE_TYP_MODEL, (const uint8_t *)data.constData(), data.size());
       if (sz == 0 || generator.errors().count() > 0) {
-        showErrors(QObject::tr("Cannot write model %1").arg(radioData.models[i].name), generator.errors());
+        showErrors(tr("Cannot write model %1").arg(radioData.models[i].name), generator.errors());
         return 0;
       }
     }

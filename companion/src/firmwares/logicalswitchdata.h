@@ -60,7 +60,9 @@ enum CSFunctionFamily {
   LS_FAMILY_EDGE,
 };
 
-class LogicalSwitchData { // Logical Switches data
+class LogicalSwitchData {
+  Q_DECLARE_TR_FUNCTIONS(LogicalSwitchData)
+
   public:
     LogicalSwitchData(unsigned int func=0)
     {

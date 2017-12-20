@@ -49,6 +49,8 @@ enum RawSwitchType {
 };
 
 class RawSwitch {
+  Q_DECLARE_TR_FUNCTIONS(RawSwitch)
+
   public:
     RawSwitch():
       type(SWITCH_TYPE_NONE),

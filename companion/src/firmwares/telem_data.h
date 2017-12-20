@@ -36,6 +36,8 @@ class FrSkyAlarmData {
 };
 
 class FrSkyChannelData {
+  Q_DECLARE_TR_FUNCTIONS(FrSkyChannelData)
+
   public:
     FrSkyChannelData() { clear(); }
     unsigned int ratio;                // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.

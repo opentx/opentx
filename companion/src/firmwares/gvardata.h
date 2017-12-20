@@ -28,6 +28,8 @@
 #define GVAR_MIN_VALUE      -GVAR_MAX_VALUE
 
 class GVarData {
+  Q_DECLARE_TR_FUNCTIONS(GVarData)
+
   public:
     GVarData() { clear(); }
 

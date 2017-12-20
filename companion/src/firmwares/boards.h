@@ -21,6 +21,7 @@
 #ifndef _BOARDS_H_
 #define _BOARDS_H_
 
+#include <QtCore>
 #include <QObject>
 #include <QString>
 
@@ -140,6 +141,8 @@ namespace Board {
 
 class Boards
 {
+  Q_DECLARE_TR_FUNCTIONS(Boards)
+
   public:
 
     Boards(Board::Type board)

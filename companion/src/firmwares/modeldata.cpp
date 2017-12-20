@@ -61,8 +61,8 @@ QString removeAccents(const QString & str)
 
 void TimerData::convert(RadioDataConversionState & cstate)
 {
-  cstate.setComponent("TMR", 1);
-  cstate.setSubComp(QObject::tr("Timer %1").arg(cstate.subCompIdx + 1));
+  cstate.setComponent(tr("TMR"), 1);
+  cstate.setSubComp(tr("Timer %1").arg(cstate.subCompIdx + 1));
   mode.convert(cstate);
 }
 
@@ -423,11 +423,11 @@ void ModelData::convert(RadioDataConversionState & cstate)
   QString origin = QString(name);
   if (origin.isEmpty())
     origin = QString::number(cstate.modelIdx+1);
-  cstate.setOrigin(QObject::tr("Model: ") % origin);
+  cstate.setOrigin(tr("Model: ") % origin);
 
   cstate.setComponent("SET", 0);
   if (thrTraceSrc && (int)thrTraceSrc < cstate.fromBoard.getCapability(Board::Pots) + cstate.fromBoard.getCapability(Board::Sliders)) {
-    cstate.setSubComp(QObject::tr("Throttle Source"));
+    cstate.setSubComp(tr("Throttle Source"));
     thrTraceSrc = RawSource(SOURCE_TYPE_STICK, (int)thrTraceSrc + 3).convert(cstate).index - 3;
   }
 
