@@ -1,16 +1,17 @@
 
 set(firmwares_SRCS
-  ../boards.cpp
-  ../eeprominterface.cpp
-  ../radiodata.cpp
-  ../radiodataconversionstate.cpp
+  boards.cpp
   curvereference.cpp
   customfunctiondata.cpp
+  eeprominterface.cpp
   generalsettings.cpp
   gvardata.cpp
   io_data.cpp
   logicalswitchdata.cpp
   modeldata.cpp
+  multiprotocols.cpp
+  radiodata.cpp
+  radiodataconversionstate.cpp
   rawsource.cpp
   rawswitch.cpp
   sensordata.cpp
@@ -26,6 +27,7 @@ set(firmwares_SRCS
 string(REPLACE ".cpp" ".h" firmwares_HDRS "${firmwares_SRCS}")
 
 list(APPEND firmwares_HDRS
+  eepromimportexport.h
   moduledata.h
   )
 

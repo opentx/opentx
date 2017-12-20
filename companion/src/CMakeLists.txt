@@ -244,7 +244,6 @@ set(companion_SRCS
   radionotfound.cpp
   wizarddata.cpp
   wizarddialog.cpp
-  multiprotocols.cpp
   )
 
 set(companion_MOC_HDRS
