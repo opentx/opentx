@@ -25,39 +25,39 @@
 
 QString CurveReference::toString(const ModelData * model, bool verbose) const
 {
-	if (value == 0) {
-		return "----";
-	}
+  if (value == 0) {
+    return "----";
+  }
 
-	QString ret;
-	unsigned idx = abs(value) - 1;
+  QString ret;
+  unsigned idx = abs(value) - 1;
 
-	switch(type) {
-		case CURVE_REF_DIFF:
-			ret = QObject::tr("Diff(%1)").arg(Helpers::getAdjustmentString(value, model));
-			break;
+  switch(type) {
+    case CURVE_REF_DIFF:
+      ret = QObject::tr("Diff(%1)").arg(Helpers::getAdjustmentString(value, model));
+      break;
 
-		case CURVE_REF_EXPO:
-			ret = QObject::tr("Expo(%1)").arg(Helpers::getAdjustmentString(value, model));
-			break;
+    case CURVE_REF_EXPO:
+      ret = QObject::tr("Expo(%1)").arg(Helpers::getAdjustmentString(value, model));
+      break;
 
-		case CURVE_REF_FUNC:
-			ret = QString("x>0" "x<0" "|x|" "f>0" "f<0" "|f|").mid(3*(value-1), 3);
-			if (verbose)
-				ret = QObject::tr("Function(%1)").arg(ret);
-			break;
+    case CURVE_REF_FUNC:
+      ret = QString("x>0" "x<0" "|x|" "f>0" "f<0" "|f|").mid(3*(value-1), 3);
+      if (verbose)
+        ret = QObject::tr("Function(%1)").arg(ret);
+      break;
 
-		default:
-			if (model)
-				ret = model->curves[idx].nameToString(idx);
-			else
-				ret = CurveData().nameToString(idx);
-			if (verbose)
-				ret = QObject::tr("Curve(%1)").arg(ret);
-			if (value < 0)
-				ret.prepend(CPN_STR_SW_INDICATOR_REV);
-			break;
-	}
+    default:
+      if (model)
+        ret = model->curves[idx].nameToString(idx);
+      else
+        ret = CurveData().nameToString(idx);
+      if (verbose)
+        ret = QObject::tr("Curve(%1)").arg(ret);
+      if (value < 0)
+        ret.prepend(CPN_STR_SW_INDICATOR_REV);
+      break;
+  }
 
-	return ret;
+  return ret;
 }
