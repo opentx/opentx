@@ -126,12 +126,12 @@ set(TARGET_SRC
 
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
-  sdio_sd.c
   ${LCD_DRIVER}
   backlight_driver.cpp
   pwr_driver.cpp
   sdram_driver.c
   startup_stm32f42_43xxx.s
+  ../common/arm/stm32/sdio_sd.c
   ../common/arm/loadboot.cpp
   )
 

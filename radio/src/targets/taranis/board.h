@@ -35,7 +35,7 @@ extern "C" {
 #pragma clang diagnostic ignored "-Wdeprecated-register"
 #endif
 
-#if defined(PCBX9E)
+#if defined(STM32F4)
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
@@ -95,7 +95,7 @@ extern "C" {
 
 #define LUA_MEM_MAX        (0)    // max allowed memory usage for complete Lua  (in bytes), 0 means unlimited
 
-#if defined(PCBX9E)
+#if defined(STM32F4)
   #define PERI1_FREQUENCY  42000000
   #define PERI2_FREQUENCY  84000000
 #else
