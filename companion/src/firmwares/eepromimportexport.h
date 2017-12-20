@@ -382,8 +382,33 @@ class CharField: public DataField {
     bool truncate;
 };
 
-int8_t char2idx(char c);
-char idx2char(int8_t idx);
+static const char specialCharsTab[] = "_-.,";
+static inline int8_t char2idx(char c)
+{
+  if (c==' ') return 0;
+  if (c>='A' && c<='Z') return 1+c-'A';
+  if (c>='a' && c<='z') return -1-c+'a';
+  if (c>='0' && c<='9') return 27+c-'0';
+  for (int8_t i=0;;i++) {
+    char cc = specialCharsTab[i];
+    if (cc==0) return 0;
+    if (cc==c) return 37+i;
+  }
+}
+
+#define ZCHAR_MAX 40
+static inline char idx2char(int8_t idx)
+{
+  if (idx == 0) return ' ';
+  if (idx < 0) {
+    if (idx > -27) return 'a' - idx - 1;
+    idx = -idx;
+  }
+  if (idx < 27) return 'A' + idx - 1;
+  if (idx < 37) return '0' + idx - 27;
+  if (idx <= ZCHAR_MAX) return specialCharsTab[idx-37];
+  return ' ';
+}
 
 template<int N>
 class ZCharField: public DataField {

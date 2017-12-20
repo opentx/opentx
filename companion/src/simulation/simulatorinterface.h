@@ -21,7 +21,7 @@
 #ifndef _SIMULATORINTERFACE_H_
 #define _SIMULATORINTERFACE_H_
 
-#include "boards.h"
+#include "firmwares/boards.h"
 #include "constants.h"
 
 #include <algorithm>

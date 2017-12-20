@@ -161,19 +161,9 @@ endif()
 
 set(common_SRCS
   appdebugmessagehandler.cpp
-  boards.cpp
   customdebug.cpp
-  eeprominterface.cpp
   helpers.cpp
-  radiodata.cpp
-  radiodataconversionstate.cpp
   translations.cpp
-  firmwares/er9x/er9xeeprom.cpp
-  firmwares/er9x/er9xinterface.cpp
-  firmwares/ersky9x/ersky9xeeprom.cpp
-  firmwares/ersky9x/ersky9xinterface.cpp
-  firmwares/opentx/opentxeeprom.cpp
-  firmwares/opentx/opentxinterface.cpp
   modeledit/node.cpp  # used in simulator
   modeledit/edge.cpp  # used by node
   )
@@ -193,12 +183,25 @@ qt5_wrap_cpp(common_SRCS ${common_MOC_HDRS})
 qt5_add_resources(common_RCC ${common_RESOURCES})
 
 add_library(common ${common_SRCS} ${common_RCC})
-target_link_libraries(common simulation maxLibQtWidgets Qt5::Core Qt5::Xml Qt5::Widgets)
+
+target_link_libraries(common
+  firmwares
+  storage
+  simulation
+  maxLibQtWidgets
+  Qt5::Core
+  Qt5::Xml
+  Qt5::Widgets
+  ${PTHREAD_LIBRARY}
+  ${SDL_LIBRARY}
+  ${WIN_LINK_LIBRARIES}
+  )
 
 set(CPN_COMMON_LIB common)
 
 ############# Supporting libraries ###############
 
+add_subdirectory(firmwares)
 add_subdirectory(shared)
 add_subdirectory(modeledit)
 add_subdirectory(generaledit)
@@ -241,7 +244,6 @@ set(companion_SRCS
   radionotfound.cpp
   wizarddata.cpp
   wizarddialog.cpp
-  multiprotocols.cpp
   )
 
 set(companion_MOC_HDRS
@@ -304,7 +306,7 @@ qt5_wrap_cpp(companion_SRCS ${companion_MOC_HDRS})
 
 add_executable(${COMPANION_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${companion_SRCS} ${icon_RC})
 qt5_use_modules(${COMPANION_NAME} Core Widgets Network)
-target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit ${CPN_COMMON_LIB} qcustomplot shared storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${COMPANION_NAME} PRIVATE generaledit modeledit qcustomplot shared ${CPN_COMMON_LIB})
 
 PrintTargetReport("${COMPANION_NAME}")
 
@@ -313,7 +315,7 @@ PrintTargetReport("${COMPANION_NAME}")
 set(simu_SRCS simulator.cpp )
 
 add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
-target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB} storage ${PTHREAD_LIBRARY} ${SDL_LIBRARY} ${WIN_LINK_LIBRARIES})
+target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 
 ############# Install ####################
 
