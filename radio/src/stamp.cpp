@@ -51,14 +51,8 @@
  */
 #if defined(STM32)
 
-#if defined(SIMU)
-  #define ATTRIBUTE_SECTION(s)
-#else
-  #define ATTRIBUTE_SECTION(s)  __attribute__ ((section(s), used))
-#endif
-
-ATTRIBUTE_SECTION(".fwversiondata") const char firmware_version[] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
-ATTRIBUTE_SECTION(".bootversiondata") const char boot_version[] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+__SECTION_USED(".fwversiondata")   const char firmware_version[] = "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
+__SECTION_USED(".bootversiondata") const char boot_version[] =     "opentx-" FLAVOUR "-" VERSION " (" GIT_STR ")";
 
 /**
  * Tries to find opentx version in the first 1024 byte of either firmware/bootloader (the one not running) or the buffer

@@ -23,8 +23,10 @@
 
 #if defined(SIMU)
   #define __ALIGNED
+  #define __SECTION_USED(s)
 #else
-  #define __ALIGNED __attribute__((aligned(32)))
+  #define __ALIGNED          __attribute__((aligned(32)))
+  #define __SECTION_USED(s)  __attribute__ ((section(s), used))
 #endif
 
 #if defined(SIMU)
@@ -36,14 +38,10 @@
 #endif
 
 #if defined(PCBHORUS) && !defined(SIMU)
-  #define __SDRAM __attribute__((section(".sdram"), aligned(32)))
+  #define __SDRAM   __attribute__((section(".sdram"), aligned(32)))
+  #define __NOINIT  __attribute__((section(".noinit")))
 #else
-  #define __SDRAM __DMA
-#endif
-
-#if defined(PCBHORUS) && !defined(SIMU)
-  #define __NOINIT __attribute__((section(".noinit")))
-#else
+  #define __SDRAM   __DMA
   #define __NOINIT
 #endif
 
@@ -54,29 +52,27 @@ typedef __int24 int24_t;
 #endif
 
 #if __GNUC__
-#define PACK( __Declaration__ )      __Declaration__ __attribute__((__packed__))
+  #define PACK( __Declaration__ )      __Declaration__ __attribute__((__packed__))
 #else
-#define PACK( __Declaration__ )      __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
+  #define PACK( __Declaration__ )      __pragma( pack(push, 1) ) __Declaration__ __pragma( pack(pop) )
 #endif
 
 #if defined(SIMU)
-#if !defined(FORCEINLINE)
-#define FORCEINLINE inline
-#endif
-#if !defined(NOINLINE)
-#define NOINLINE
-#endif
-#define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
-#define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
+  #if !defined(FORCEINLINE)
+    #define FORCEINLINE inline
+  #endif
+  #if !defined(NOINLINE)
+    #define NOINLINE
+  #endif
+  #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
+  #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
 #else
-#if !defined(_MSC_VER) || (_MSC_VER < 1200)
   #define FORCEINLINE inline __attribute__ ((always_inline))
-#endif
-#define NOINLINE __attribute__ ((noinline))
-#define SIMU_SLEEP(x)
-#define SIMU_SLEEP_NORET(x)
-#define CONVERT_PTR_UINT(x) ((uint32_t)(x))
-#define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
+  #define NOINLINE    __attribute__ ((noinline))
+  #define SIMU_SLEEP(x)
+  #define SIMU_SLEEP_NORET(x)
+  #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
+  #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
 #endif
 
 #endif // _DEFINITIONS_H_
