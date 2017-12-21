@@ -528,8 +528,8 @@ OPTIMIZE("O0") SD_Error SD_PowerON(void)
       errorstatus = CmdResp1Error(SD_CMD_APP_CMD);
 
       if (errorstatus != SD_OK) {
-        TRACE("SD_CMD_APP_CMD status=%d", errorstatus;
-        return errorstatus);
+        TRACE("SD_CMD_APP_CMD status=%d", errorstatus);
+        return errorstatus;
       }
       SDIO_CmdInitStructure.SDIO_Argument = SD_VOLTAGE_WINDOW_SD | SDType;
       SDIO_CmdInitStructure.SDIO_CmdIndex = SD_CMD_SD_APP_OP_COND;
@@ -1670,7 +1670,7 @@ OPTIMIZE("O0") static SD_Error CmdResp1Error(uint8_t cmd)
   if (response_r1 & SD_OCR_AKE_SEQ_ERROR) {
     return SD_AKE_SEQ_ERROR;
   }
-  
+
   return errorstatus;
 }
 
