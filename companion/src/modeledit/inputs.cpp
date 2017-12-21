@@ -177,7 +177,7 @@ QString InputsPanel::getInputText(int dest, bool * new_ch)
 bool InputsPanel::gm_insertExpo(int idx)
 {
   if (idx<0 || idx>=CPN_MAX_EXPOS || model->expoData[CPN_MAX_EXPOS-1].mode > 0) {
-    QMessageBox::information(this, "Companion", tr("Not enough available inputs!"));
+    QMessageBox::information(this, CPN_STR_APP_NAME, tr("Not enough available inputs!"));
     return false;
   }
 

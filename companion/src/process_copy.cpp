@@ -19,6 +19,7 @@
  */
 
 #include "process_copy.h"
+#include "constants.h"
 #include "progresswidget.h"
 #include <QEventLoop>
 #include <QFile>
@@ -67,7 +68,7 @@ void CopyProcess::onTimer()
           progress->setValue(i);
         }
         else {
-          QMessageBox::warning(NULL, tr("Error"), tr("Write error"));
+          QMessageBox::warning(NULL, CPN_STR_TTL_ERROR, tr("Write error"));
           result = false;
           break;
         }
@@ -75,12 +76,12 @@ void CopyProcess::onTimer()
       destinationFile.close();
     }
     else {
-      QMessageBox::warning(NULL, tr("Error"),tr("Cannot write %1 (reason: %2)").arg(destinationFile.fileName()).arg(sourceFile.errorString()));
+      QMessageBox::warning(NULL, CPN_STR_TTL_ERROR,tr("Cannot write %1 (reason: %2)").arg(destinationFile.fileName()).arg(sourceFile.errorString()));
       result = false;
     }
   }
   else {
-    QMessageBox::warning(NULL, tr("Error"),tr("Cannot open %1 (reason: %2)").arg(sourceFile.fileName()).arg(sourceFile.errorString()));
+    QMessageBox::warning(NULL, CPN_STR_TTL_ERROR,tr("Cannot open %1 (reason: %2)").arg(sourceFile.fileName()).arg(sourceFile.errorString()));
     result = false;
   }
 

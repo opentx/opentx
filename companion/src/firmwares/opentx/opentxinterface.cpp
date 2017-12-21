@@ -22,6 +22,7 @@
 #include "opentxeeprom.h"
 #include "rlefile.h"
 #include "appdata.h"
+#include "constants.h"
 #include <bitset>
 #include <QMessageBox>
 #include <QTime>
@@ -234,7 +235,7 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
     errors.set(HAS_WARNINGS);
-    showEepromWarnings(NULL, tr("Warning"), errors.to_ulong());
+    showEepromWarnings(NULL, CPN_STR_TTL_WARNING, errors.to_ulong());
   }
   else if (version_error == NOT_OPENTX) {
     dbg << " not open9x";
@@ -298,7 +299,7 @@ void OpenTxEepromInterface::showErrors(const QString & title, const QStringList 
   }
 
   QMessageBox::warning(NULL,
-                       tr("Error"),
+                       CPN_STR_TTL_ERROR,
                        title + "\n" + msg);
 }
 

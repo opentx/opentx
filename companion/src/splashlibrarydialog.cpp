@@ -113,13 +113,13 @@ void SplashLibraryDialog::getFileList()
           imageList.append(filename);
         }
         else {
-          QMessageBox::information(this, tr("Warning"), tr("Invalid image in library %1").arg(filename));
+          QMessageBox::warning(this, CPN_STR_TTL_WARNING, tr("Invalid image in library %1").arg(filename));
         }
       }
     }
   }
   if (imageList.size() == 0) {
-    QMessageBox::information(this, tr("Information"), tr("No valid image found in library, check your settings"));
+    QMessageBox::information(this, CPN_STR_TTL_INFO, tr("No valid image found in library, check your settings"));
     QTimer::singleShot(0, this, SLOT(dclose()));
   }
   else {

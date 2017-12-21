@@ -1320,13 +1320,13 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 {
   Storage storage(filename);
   if (!storage.load(radioData)) {
-    QMessageBox::critical(this, tr("Error"), storage.error());
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR, storage.error());
     return false;
   }
 
   QString warning = storage.warning();
   if (!warning.isEmpty()) {
-    // TODO EEPROMInterface::showEepromWarnings(this, tr("Warning"), warning);
+    // TODO EEPROMInterface::showEepromWarnings(this, CPN_STR_TTL_WARNING, warning);
   }
 
   if (resetCurrentFile) {
@@ -1501,12 +1501,12 @@ bool MdiChild::convertStorage(Board::Type from, Board::Type to, bool newFile)
 void MdiChild::showWarning(const QString & msg)
 {
   if (!msg.isEmpty())
-    QMessageBox::warning(this, "Companion", msg);
+    QMessageBox::warning(this, CPN_STR_APP_NAME, msg);
 }
 
 int MdiChild::askQuestion(const QString & msg, QMessageBox::StandardButtons buttons, QMessageBox::StandardButton defaultButton)
 {
-  return QMessageBox::question(this, tr("Companion"), msg, buttons, defaultButton);
+  return QMessageBox::question(this, CPN_STR_APP_NAME, msg, buttons, defaultButton);
 }
 
 void MdiChild::writeEeprom()  // write to Tx
@@ -1517,7 +1517,7 @@ void MdiChild::writeEeprom()  // write to Tx
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
       qDebug() << "MdiChild::writeEeprom(): Horus radio not found";
-      QMessageBox::critical(this, tr("Error"), tr("Unable to find Horus radio SD card!"));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find Horus radio SD card!"));
       return;
     }
     if (saveFile(radioPath, false)) {
@@ -1531,7 +1531,7 @@ void MdiChild::writeEeprom()  // write to Tx
     QString tempFile = generateProcessUniqueTempFileName("temp.bin");
     saveFile(tempFile, false);
     if (!QFileInfo(tempFile).exists()) {
-      QMessageBox::critical(this, tr("Error"), tr("Cannot write temporary file!"));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Cannot write temporary file!"));
       return;
     }
     FlashEEpromDialog * cd = new FlashEEpromDialog(this, tempFile);
@@ -1547,7 +1547,7 @@ bool MdiChild::loadBackup()
   QFile file(fileName);
 
   if (!file.exists()) {
-    QMessageBox::critical(this, tr("Error"), tr("Unable to find file %1!").arg(fileName));
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find file %1!").arg(fileName));
     return false;
   }
 
@@ -1555,7 +1555,7 @@ bool MdiChild::loadBackup()
 
   int eeprom_size = file.size();
   if (!file.open(QFile::ReadOnly)) {  //reading binary file   - TODO HEX support
-    QMessageBox::critical(this, tr("Error"),
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR,
                           tr("Error opening file %1:\n%2.")
                           .arg(fileName)
                           .arg(file.errorString()));
@@ -1566,7 +1566,7 @@ bool MdiChild::loadBackup()
   file.close();
 
   if (result != eeprom_size) {
-    QMessageBox::critical(this, tr("Error"),
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR,
                           tr("Error reading file %1:\n%2.")
                           .arg(fileName)
                           .arg(file.errorString()));
@@ -1577,11 +1577,11 @@ bool MdiChild::loadBackup()
 #if 0
   std::bitset<NUM_ERRORS> errorsEeprom((unsigned long long)LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
   if (!errorsEeprom.test(ALL_OK)) {
-    EEPROMInterface::showEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
+    EEPROMInterface::showEepromErrors(this, CPN_STR_TTL_ERROR, tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
     return false;
   }
   if (errorsEeprom.test(HAS_WARNINGS)) {
-    EEPROMInterface::showEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
+    EEPROMInterface::showEepromWarnings(this, CPN_STR_TTL_WARNING, errorsEeprom.to_ulong());
   }
 
   refresh(true);

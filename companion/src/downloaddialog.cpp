@@ -20,8 +20,10 @@
 
 #include "downloaddialog.h"
 #include "ui_downloaddialog.h"
-#include <QTime>
+#include "constants.h"
 #include "helpers.h"
+
+#include <QTime>
 
 downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt):
   QDialog(parent),
@@ -41,7 +43,7 @@ downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt):
 
     file = new QFile(tgt);
     if (!file->open(QIODevice::WriteOnly)) {
-      QMessageBox::critical(this, "Companion",
+      QMessageBox::critical(this, CPN_STR_APP_NAME,
           tr("Unable to save the file %1: %2.")
           .arg(tgt).arg(file->errorString()));
       QTimer::singleShot(0, this, SLOT(fileError()));
@@ -68,7 +70,7 @@ void downloadDialog::httpFinished()
     bool ok = true;
     if (reply->error()) {
         file->remove();
-        QMessageBox::information(this, tr("Companion"),
+        QMessageBox::information(this, CPN_STR_APP_NAME,
                                  tr("Download failed: %1.")
                                  .arg(reply->errorString()));
         ok = false;
@@ -111,7 +113,7 @@ void downloadDialog::closeEvent( QCloseEvent * event)
   // Delay closing 2 seconds to avoid unpleasant flashing download dialogs
   QTime closeTime= QTime::currentTime().addSecs(2);
   while( QTime::currentTime() < closeTime )
-    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);   
+    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 
   event->accept();
 }

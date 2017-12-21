@@ -202,7 +202,7 @@ void MainWindow::displayWarnings()
   }
 
   QMessageBox msgBox(this);
-  msgBox.setWindowTitle(tr("Companion"));
+  msgBox.setWindowTitle(CPN_STR_APP_NAME);
   msgBox.setIcon(QMessageBox::Information);
   msgBox.setStandardButtons(QMessageBox::Ok);
   msgBox.setInformativeText(infoTxt);
@@ -291,7 +291,7 @@ void MainWindow::onUpdatesError()
 {
   checkForUpdatesState = 0;
   closeUpdatesWaitDialog();
-  QMessageBox::warning(this, "Companion", tr("Unable to check for updates."));
+  QMessageBox::warning(this, CPN_STR_APP_NAME, tr("Unable to check for updates."));
 }
 
 void MainWindow::closeUpdatesWaitDialog()
@@ -330,7 +330,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
   if (ownVersion < webVersion) {
 #if defined WIN32 || defined __APPLE__
-    int ret = QMessageBox::question(this, "Companion", tr("A new version of Companion is available (version %1)<br>"
+    int ret = QMessageBox::question(this, CPN_STR_APP_NAME, tr("A new version of Companion is available (version %1)<br>"
                                                         "Would you like to download it?").arg(version) ,
                                     QMessageBox::Yes | QMessageBox::No);
 
@@ -352,7 +352,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
   }
   else {
     if (downloadDialog_forWait && checkForUpdatesState==0) {
-      QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+      QMessageBox::information(this, CPN_STR_APP_NAME, tr("No updates available at this time."));
     }
   }
 
@@ -361,7 +361,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
 void MainWindow::updateDownloaded()
 {
-  int ret = QMessageBox::question(this, "Companion", COMPANION_INSTALL_QUESTION, QMessageBox::Yes | QMessageBox::No);
+  int ret = QMessageBox::question(this, CPN_STR_APP_NAME, COMPANION_INSTALL_QUESTION, QMessageBox::Yes | QMessageBox::No);
   if (ret == QMessageBox::Yes) {
     if (QDesktopServices::openUrl(QUrl::fromLocalFile(installer_fileName)))
       QApplication::exit();
@@ -373,7 +373,7 @@ void MainWindow::firmwareDownloadAccepted()
   QString errormsg;
   QFile file(g.profile[g.id()].fwName());
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {  //reading HEX TEXT file
-    QMessageBox::critical(this, tr("Error"),
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR,
         tr("Error opening file %1:\n%2.")
         .arg(g.profile[g.id()].fwName())
         .arg(file.errorString()));
@@ -412,13 +412,13 @@ void MainWindow::firmwareDownloadAccepted()
     }
     file.close();
     file.remove();
-    QMessageBox::critical(this, tr("Error"), errormsg);
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR, errormsg);
     return;
   }
   file.close();
   g.fwRev.set(Firmware::getCurrentVariant()->getId(), version2index(firmwareVersionString));
   if (g.profile[g.id()].burnFirmware()) {
-    int ret = QMessageBox::question(this, "Companion", tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
+    int ret = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Do you want to write the firmware to the radio now ?"), QMessageBox::Yes | QMessageBox::No);
     if (ret == QMessageBox::Yes) {
       writeFlash(g.profile[g.id()].fwName());
     }
@@ -451,7 +451,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     QString currentVersionString = index2version(currentVersion);
 
     QMessageBox msgBox;
-    msgBox.setWindowTitle("Companion");
+    msgBox.setWindowTitle(CPN_STR_APP_NAME);
     QSpacerItem * horizontalSpacer = new QSpacerItem(500, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
     QGridLayout * layout = (QGridLayout*)msgBox.layout();
     layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
@@ -472,7 +472,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       if (msgBox.clickedButton() == rnButton) {
         ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
         dialog->exec();
-        int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
+        int ret2 = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Do you want to download release %1 now ?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
         if (ret2 == QMessageBox::Yes)
           download = true;
         else
@@ -501,7 +501,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       if( msgBox.clickedButton() == rnButton ) {
         ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
         dialog->exec();
-        int ret2 = QMessageBox::question(this, "Companion", tr("Do you want to download release %1 now ?").arg(fullVersionString),
+        int ret2 = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Do you want to download release %1 now ?").arg(fullVersionString),
               QMessageBox::Yes | QMessageBox::No);
         if (ret2 == QMessageBox::Yes) {
           download = true;
@@ -519,13 +519,13 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     }
     else {
       if (downloadDialog_forWait && checkForUpdatesState==0) {
-        QMessageBox::information(this, "Companion", tr("No updates available at this time."));
+        QMessageBox::information(this, CPN_STR_APP_NAME, tr("No updates available at this time."));
       }
     }
   }
 
   if (ignore) {
-    int res = QMessageBox::question(this, "Companion", tr("Ignore this release %1?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
+    int res = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Ignore this release %1?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
     if (res==QMessageBox::Yes)   {
       g.fwRev.set(Firmware::getCurrentVariant()->getId(), version);
     }
@@ -602,7 +602,7 @@ void MainWindow::onLanguageChanged(QAction * act)
 void  MainWindow::setTheme(int index)
 {
   g.theme(index);
-  QMessageBox::information(this, tr("Companion"), tr("The new theme will be loaded the next time you start Companion."));
+  QMessageBox::information(this, CPN_STR_APP_NAME, tr("The new theme will be loaded the next time you start Companion."));
 }
 
 void MainWindow::onThemeChanged(QAction * act)
@@ -746,7 +746,7 @@ bool MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables -
   Firmware * newFw = Firmware::getFirmwareForId(g.profile[pid].fwType());
   // warn if we're switching between incompatible board types and any files have been modified
   if (!Boards::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard()) && anyChildrenDirty()) {
-    if (QMessageBox::question(this, tr("Companion"),
+    if (QMessageBox::question(this, CPN_STR_APP_NAME,
                               tr("There are unsaved file changes which you may lose when switching radio types.\n\nDo you wish to continue?"),
                               (QMessageBox::Yes | QMessageBox::No), QMessageBox::No) != QMessageBox::Yes) {
       updateProfilesActions();
@@ -1123,7 +1123,7 @@ bool MainWindow::readEepromFromRadio(const QString & filename)
 void MainWindow::writeBackup()
 {
   if (IS_HORUS(getCurrentBoard())) {
-    QMessageBox::information(this, "Companion", tr("This function is not yet implemented"));
+    QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
   }
@@ -1140,7 +1140,7 @@ void MainWindow::writeFlash(QString fileToFlash)
 void MainWindow::readBackup()
 {
   if (IS_HORUS(getCurrentBoard())) {
-    QMessageBox::information(this, "Companion", tr("This function is not yet implemented"));
+    QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
   }
@@ -1406,7 +1406,7 @@ void MainWindow::retranslateUi(bool showMsg)
   showReadyStatus();
 
   if (showMsg)
-    QMessageBox::information(this, tr("Companion"), tr("Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete."));
+    QMessageBox::information(this, CPN_STR_APP_NAME, tr("Some text will not be translated until the next time you start Companion. Please note that some translations may not be complete."));
 }
 
 void MainWindow::createActions()

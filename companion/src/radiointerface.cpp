@@ -99,7 +99,8 @@ QStringList getSambaArgs(const QString & tcl)
   }
   QFile tclFile(tclFilename);
   if (!tclFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    QMessageBox::warning(NULL, QObject::tr("Error"), QObject::tr("Cannot write file %1:\n%2.").arg(tclFilename).arg(tclFile.errorString()));
+    QMessageBox::warning(NULL, CPN_STR_TTL_ERROR,
+                         QCoreApplication::translate("RadioInterface", "Cannot write file %1:\n%2.").arg(tclFilename).arg(tclFile.errorString()));
     return result;
   }
 
@@ -194,10 +195,12 @@ void resetAvrdudeFuses(bool eepromProtect, ProgressWidget * progress)
 
   burnConfigDialog bcd;
   QMessageBox::StandardButton ret = QMessageBox::No;
-  ret = QMessageBox::warning(NULL, QObject::tr("Companion"),
-                             QObject::tr("<b><u>WARNING!</u></b><br>This will reset the fuses of  %1 to the factory settings.<br>"
-                                 "Writing fuses can mess up your radio.<br>Do this only if you are sure they are wrong!<br>"
-                                 "Are you sure you want to continue?").arg(bcd.getMCU()),
+  ret = QMessageBox::warning(NULL, CPN_STR_APP_NAME,
+                             QCoreApplication::translate("RadioInterface",
+                                                         "<b><u>WARNING!</u></b>" \
+                                                         "<br>This will reset the fuses of  %1 to the factory settings.<br>"
+                                                         "Writing fuses can mess up your radio.<br>Do this only if you are sure they are wrong!<br>"
+                                                         "Are you sure you want to continue?").arg(bcd.getMCU()),
                              QMessageBox::Yes | QMessageBox::No);
   if (ret == QMessageBox::Yes) {
     QStringList args = bcd.getAvrdudeArgs();
@@ -257,7 +260,8 @@ bool readFirmware(const QString & filename, ProgressWidget * progress)
 
   QFile file(filename);
   if (file.exists() && !file.remove()) {
-    QMessageBox::warning(NULL, QObject::tr("Error"), QObject::tr("Could not delete temporary file: %1").arg(filename));
+    QMessageBox::warning(NULL, CPN_STR_TTL_ERROR,
+                         QCoreApplication::translate("RadioInterface", "Could not delete temporary file: %1").arg(filename));
     return false;
   }
 
@@ -305,9 +309,8 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
 
   QFile file(filename);
   if (file.exists() && !file.remove()) {
-    QMessageBox::warning(NULL,
-                         QObject::tr("Error"),
-                         QObject::tr("Could not delete temporary file: %1").arg(filename));
+    QMessageBox::warning(NULL, CPN_STR_TTL_ERROR,
+                         QCoreApplication::translate("RadioInterface", "Could not delete temporary file: %1").arg(filename));
     return false;
   }
 
@@ -315,18 +318,19 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     QString radioPath = findMassstoragePath("RADIO", true);
     qDebug() << "Searching for SD card, found" << radioPath;
     if (radioPath.isEmpty()) {
-      QMessageBox::critical(progress, QObject::tr("Error"), QObject::tr("Unable to find Horus radio SD card!"));
+      QMessageBox::critical(progress, CPN_STR_TTL_ERROR,
+                            QCoreApplication::translate("RadioInterface", "Unable to find Horus radio SD card!"));
       return false;
     }
     RadioData radioData;
     Storage inputStorage(radioPath);
     if (!inputStorage.load(radioData)) {
-      QMessageBox::critical(progress, QObject::tr("Error"), inputStorage.error());
+      QMessageBox::critical(progress, CPN_STR_TTL_ERROR, inputStorage.error());
       return false;
     }
     Storage outputStorage(filename);
     if (!outputStorage.write(radioData)) {
-      QMessageBox::critical(progress, QObject::tr("Error"), outputStorage.error());
+      QMessageBox::critical(progress, CPN_STR_TTL_ERROR, outputStorage.error());
       return false;
     }
   }

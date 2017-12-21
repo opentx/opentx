@@ -94,7 +94,7 @@ bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
     std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, (uint8_t *)eeprom.data(), eeprom.size()));
     if (result.test(ALL_OK)) {
       if (errors.test(HAS_WARNINGS)) {
-        // TODO ShowEepromWarnings(this, tr("Warning"), errors.to_ulong());
+        // TODO ShowEepromWarnings(this, CPN_STR_TTL_WARNING, errors.to_ulong());
       }
       board = eepromInterface->getBoard();
       return true;

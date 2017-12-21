@@ -429,7 +429,7 @@ void GeneralSetupPanel::setValues()
 void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
 {
   if (ui->faimode_CB->isChecked()) {
-    int ret = QMessageBox::question(this, "Companion",
+    int ret = QMessageBox::question(this, CPN_STR_APP_NAME,
      tr("If you enable FAI, you loose the vario, the play functions, the telemetry screen.\nThis function cannot be disabled by the radio.\nAre you sure ?") ,
      QMessageBox::Yes | QMessageBox::No);
     if (ret==QMessageBox::Yes) {

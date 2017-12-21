@@ -652,7 +652,7 @@ void FlightModePanel::name_customContextMenuRequested(const QPoint & pos)
 
 void FlightModePanel::fmClear()
 {
-  int res = QMessageBox::question(this, "Companion", tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
+  int res = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
     phase.clear(phaseIdx);
     if (phaseIdx == 0) {
