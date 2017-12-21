@@ -190,6 +190,10 @@ def build_firmware(path):
     srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
     outpath = path + ".out"
 
+    # cmake 3.7.2 cannot work from / so we need to go into a subdir
+    os.mkdir("/build")
+    os.chdir("/build")
+
     # Launch CMake
     cmd = ["cmake"]
     for opt, value in command_options.items():
