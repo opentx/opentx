@@ -22,41 +22,41 @@
 
 #if !defined(SIMU)
 
-#define VS_WRITE_COMMAND 	       0x02
-#define VS_READ_COMMAND 	       0x03
+#define VS_WRITE_COMMAND 	           0x02
+#define VS_READ_COMMAND 	           0x03
 
-#define SPI_MODE        	       0x00
-#define SPI_STATUS      	       0x01
-#define SPI_BASS        	       0x02
-#define SPI_CLOCKF      	       0x03
-#define SPI_DECODE_TIME 	       0x04
-#define SPI_AUDATA      	       0x05
-#define SPI_WRAM        	       0x06
-#define SPI_WRAMADDR    	       0x07
-#define SPI_HDAT0       	       0x08
-#define SPI_HDAT1       	       0x09
-#define SPI_AIADDR      	       0x0a
-#define SPI_VOL         	       0x0b
-#define SPI_AICTRL0     	       0x0c
-#define SPI_AICTRL1     	       0x0d
-#define SPI_AICTRL2     	       0x0e
-#define SPI_AICTRL3     	       0x0f
+#define SPI_MODE        	           0x00
+#define SPI_STATUS      	           0x01
+#define SPI_BASS        	           0x02
+#define SPI_CLOCKF      	           0x03
+#define SPI_DECODE_TIME 	           0x04
+#define SPI_AUDATA      	           0x05
+#define SPI_WRAM        	           0x06
+#define SPI_WRAMADDR    	           0x07
+#define SPI_HDAT0       	           0x08
+#define SPI_HDAT1       	           0x09
+#define SPI_AIADDR      	           0x0a
+#define SPI_VOL         	           0x0b
+#define SPI_AICTRL0     	           0x0c
+#define SPI_AICTRL1     	           0x0d
+#define SPI_AICTRL2     	           0x0e
+#define SPI_AICTRL3     	           0x0f
 
-#define SM_DIFF         	       0x01
-#define SM_LAYER12         	       0x02
-#define SM_RESET        	       0x04
-#define SM_CANCEL       	       0x08
-#define SM_EARSPEAKER_LO  	       0x10
-#define SM_TESTS        	       0x20
-#define SM_STREAM       	       0x40
-#define SM_EARSPEAKER_HI   	       0x80
-#define SM_DACT         	       0x100
-#define SM_SDIORD       	       0x200
-#define SM_SDISHARE     	       0x400
-#define SM_SDINEW       	       0x800
-#define SM_ADPCM        	       0x1000
-#define SM_LINE1         	       0x4000
-#define SM_CLK_RANGE     	       0x8000
+#define SM_DIFF         	           0x01
+#define SM_LAYER12         	           0x02
+#define SM_RESET        	           0x04
+#define SM_CANCEL       	           0x08
+#define SM_EARSPEAKER_LO  	           0x10
+#define SM_TESTS        	           0x20
+#define SM_STREAM       	           0x40
+#define SM_EARSPEAKER_HI   	           0x80
+#define SM_DACT         	           0x100
+#define SM_SDIORD       	           0x200
+#define SM_SDISHARE     	           0x400
+#define SM_SDINEW       	           0x800
+#define SM_ADPCM        	           0x1000
+#define SM_LINE1         	           0x4000
+#define SM_CLK_RANGE     	           0x8000
 
 #define SPI_SPEED_2                    0
 #define SPI_SPEED_4                    1
@@ -136,34 +136,34 @@ void audioSpiInit(void)
 
 void audioSpiSetSpeed(uint8_t speed)
 {
-  AUDIO_SPI->CR1 &= 0XFFC7; // Fsck=Fcpu/256
-  switch(speed) {
+  AUDIO_SPI->CR1 &= 0xFFC7; // Fsck=Fcpu/256
+  switch (speed) {
     case SPI_SPEED_2:
-      AUDIO_SPI->CR1 |= 0<<3; // Fsck=Fpclk/2=36Mhz
+      AUDIO_SPI->CR1 |= 0x00 << 3; // Fsck=Fpclk/2=36Mhz
       break;
     case SPI_SPEED_4:
-      AUDIO_SPI->CR1 |= 1<<3; // Fsck=Fpclk/4=18Mhz
+      AUDIO_SPI->CR1 |= 0x01 << 3; // Fsck=Fpclk/4=18Mhz
       break;
     case SPI_SPEED_8:
-      AUDIO_SPI->CR1 |= 2<<3; // Fsck=Fpclk/8=9Mhz
+      AUDIO_SPI->CR1 |= 0x02 << 3; // Fsck=Fpclk/8=9Mhz
       break;
     case SPI_SPEED_16:
-      AUDIO_SPI->CR1 |= 3<<3; // Fsck=Fpclk/16=4.5Mhz
+      AUDIO_SPI->CR1 |= 0x03 << 3; // Fsck=Fpclk/16=4.5Mhz
       break;
     case SPI_SPEED_32:
-      AUDIO_SPI->CR1 |= 4<<3; // Fsck=Fpclk/32=2.25Mhz
+      AUDIO_SPI->CR1 |= 0x04 << 3; // Fsck=Fpclk/32=2.25Mhz
       break;
     case SPI_SPEED_64:
-      AUDIO_SPI->CR1 |= 5<<3; // Fsck=Fpclk/16=1.125Mhz
+      AUDIO_SPI->CR1 |= 0x05 << 3; // Fsck=Fpclk/16=1.125Mhz
       break;
     case SPI_SPEED_128:
-      AUDIO_SPI->CR1 |= 6<<3; // Fsck=Fpclk/16=562.5Khz
+      AUDIO_SPI->CR1 |= 0x06 << 3; // Fsck=Fpclk/16=562.5Khz
       break;
     case SPI_SPEED_256:
-      AUDIO_SPI->CR1 |= 7<<3; // Fsck=Fpclk/16=281.25Khz
+      AUDIO_SPI->CR1 |= 0x07 << 3; // Fsck=Fpclk/16=281.25Khz
       break;
   }
-  AUDIO_SPI->CR1 |= 1<<6;
+  AUDIO_SPI->CR1 |= 0x01 << 6;
 }
 
 uint8_t audioSpiReadWriteByte(uint8_t value)

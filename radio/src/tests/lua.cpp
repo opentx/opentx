@@ -62,17 +62,17 @@ TEST(Lua, testPanicProtection)
   bool passed = false;
   PROTECT_LUA() {
     PROTECT_LUA() {
-      //simulate panic
+      // simulate panic
       longjmp(global_lj->b, 1);
     }
     else {
-      //we should come here
+      // we should come here
       passed = true;
     }
     UNPROTECT_LUA();
   }
   else {
-    // an not here
+    // and not here
     // TRACE("testLuaProtection: test 1 FAILED");
     FAIL() << "Failed test 1";
   }
@@ -85,15 +85,15 @@ TEST(Lua, testPanicProtection)
   PROTECT_LUA() {
     PROTECT_LUA() {
       int a = 5;
-      a = a; // avoids the warning
+      UNUSED(a);
     }
     else {
-      //we should not come here
+      // we should not come here
       // TRACE("testLuaProtection: test 2 FAILED");
       FAIL() << "Failed test 2";
     }
     UNPROTECT_LUA()
-    //simulate panic
+    // simulate panic
     longjmp(global_lj->b, 1);
   }
   else {

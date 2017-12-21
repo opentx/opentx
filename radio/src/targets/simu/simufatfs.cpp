@@ -371,8 +371,10 @@ TCHAR * f_gets (TCHAR* buff, int len, FIL* fil)
 
 FRESULT f_lseek (FIL* fil, DWORD offset)
 {
-  if (fil && fil->obj.fs) fseek((FILE*)fil->obj.fs, offset, SEEK_SET);
-  fil->fptr = offset;
+  if (fil && fil->obj.fs) {
+    fseek((FILE*)fil->obj.fs, offset, SEEK_SET);
+    fil->fptr = offset;
+  }
   return FR_OK;
 }
 
@@ -425,7 +427,9 @@ FRESULT f_opendir (DIR * rep, const TCHAR * name)
 FRESULT f_closedir (DIR * rep)
 {
   TRACE_SIMPGMSPACE("f_closedir(%p)", rep);
-  if (rep->obj.fs) simu::closedir((simu::DIR *)rep->obj.fs);
+  if (rep->obj.fs) {
+    simu::closedir((simu::DIR *)rep->obj.fs);
+  }
   return FR_OK;
 }
 
