@@ -270,27 +270,27 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
 const QString Boards::getAxisName(int index)
 {
   const QString axes[] = {
-    QObject::tr("Left Horizontal"),
-    QObject::tr("Left Vertical"),
-    QObject::tr("Right Vertical"),
-    QObject::tr("Right Horizontal"),
-    QObject::tr("Aux. 1"),
-    QObject::tr("Aux. 2"),
+    tr("Left Horizontal"),
+    tr("Left Vertical"),
+    tr("Right Vertical"),
+    tr("Right Horizontal"),
+    tr("Aux. 1"),
+    tr("Aux. 2"),
   };
   if (index < (int)DIM(axes))
     return axes[index];
   else
-    return QObject::tr("Unknown");
+    return tr("Unknown");
 }
 
 const QString Boards::getAnalogInputName(Board::Type board, unsigned index)
 {
   if ((int)index < getBoardCapability(board, Board::Sticks)) {
     const QString sticks[] = {
-      QObject::tr("Rud"),
-      QObject::tr("Ele"),
-      QObject::tr("Thr"),
-      QObject::tr("Ail")
+      tr("Rud"),
+      tr("Ele"),
+      tr("Thr"),
+      tr("Ail")
     };
     return sticks[index];
   }
@@ -398,7 +398,7 @@ const QString Boards::getBoardName(Board::Type board)
     case BOARD_X10:
       return "X10";
     default:
-      return QObject::tr("Unknown");
+      return tr("Unknown");
   }
 }
 */

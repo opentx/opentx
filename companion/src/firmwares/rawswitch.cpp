@@ -37,21 +37,21 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
   };
 
   static const QString trimsSwitches[] = {
-    QObject::tr("RudTrim Left"), QObject::tr("RudTrim Right"),
-    QObject::tr("EleTrim Down"), QObject::tr("EleTrim Up"),
-    QObject::tr("ThrTrim Down"), QObject::tr("ThrTrim Up"),
-    QObject::tr("AilTrim Left"), QObject::tr("AilTrim Right"),
-    QObject::tr("Trim 5 Down"), QObject::tr("Trim 5 Up"),
-    QObject::tr("Trim 6 Down"), QObject::tr("Trim 6 Up")
+    tr("RudTrim Left"), tr("RudTrim Right"),
+    tr("EleTrim Down"), tr("EleTrim Up"),
+    tr("ThrTrim Down"), tr("ThrTrim Up"),
+    tr("AilTrim Left"), tr("AilTrim Right"),
+    tr("Trim 5 Down"), tr("Trim 5 Up"),
+    tr("Trim 6 Down"), tr("Trim 6 Up")
   };
 
   static const QString rotaryEncoders[] = {
-    QObject::tr("REa"), QObject::tr("REb")
+    tr("REa"), tr("REb")
   };
 
   static const QString timerModes[] = {
-    QObject::tr("OFF"), QObject::tr("ON"),
-    QObject::tr("THs"), QObject::tr("TH%"), QObject::tr("THt")
+    tr("OFF"), tr("ON"),
+    tr("THs"), tr("TH%"), tr("THt")
   };
 
   const QStringList directionIndicators = QStringList()
@@ -80,11 +80,14 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         }
 
       case SWITCH_TYPE_VIRTUAL:
-        return RadioData::getElementName(QCoreApplication::translate("Logic Switch", "L"), index, NULL, true);
+        if (modelData)
+          return modelData->logicalSw[index].nameToString(index);
+        else
+          return LogicalSwitchData().nameToString(index);
 
       case SWITCH_TYPE_MULTIPOS_POT:
         if (!Boards::getCapability(board, Board::MultiposPotsPositions))
-          return QObject::tr("???");
+          return tr("???");
         qr = div(index - 1, Boards::getCapability(board, Board::MultiposPotsPositions));
         if (generalSettings && qr.quot < (int)DIM(generalSettings->potConfig))
           swName = QString(generalSettings->potName[qr.quot]);
@@ -99,31 +102,37 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return CHECK_IN_ARRAY(rotaryEncoders, index-1);
 
       case SWITCH_TYPE_ON:
-        return QObject::tr("ON");
+        return tr("ON");
 
       case SWITCH_TYPE_OFF:
-        return QObject::tr("OFF");
+        return tr("OFF");
 
       case SWITCH_TYPE_ONE:
-        return QObject::tr("One");
+        return tr("One");
 
       case SWITCH_TYPE_FLIGHT_MODE:
-        return RadioData::getElementName(QCoreApplication::translate("Flight mode", "FM"), index - 1, modelData ? modelData->flightModeData[index-1].name : NULL);
+        if (modelData)
+          return modelData->flightModeData[index-1].nameToString(index - 1);
+        else
+          return FlightModeData().nameToString(index - 1);
 
       case SWITCH_TYPE_NONE:
-        return QObject::tr("----");
+        return tr("----");
 
       case SWITCH_TYPE_TIMER_MODE:
         return CHECK_IN_ARRAY(timerModes, index);
 
       case SWITCH_TYPE_SENSOR:
-        return RadioData::getElementName(QCoreApplication::translate("Telemetry", "TELE"), index, modelData ? modelData->sensorData[index-1].label : NULL);
+        if (modelData)
+          return modelData->sensorData[index-1].nameToString(index-1);
+        else
+          return SensorData().nameToString(index-1);
 
       case SWITCH_TYPE_TELEMETRY:
-        return QObject::tr("Telemetry");
+        return tr("Telemetry");
 
       default:
-        return QObject::tr("???");
+        return tr("???");
     }
   }
 }
@@ -163,7 +172,7 @@ RawSwitch RawSwitch::convert(RadioDataConversionState & cstate)
   if (!index)
     return *this;
 
-  cstate.setItemType("SW", 2);
+  cstate.setItemType(tr("SW"), 2);
   RadioDataConversionState::EventType evt = RadioDataConversionState::EVT_NONE;
   RadioDataConversionState::LogField oldData(index, toString(cstate.fromType, cstate.fromGS(), cstate.fromModel()));
 

@@ -24,7 +24,9 @@
 #include <QtCore>
 
 #define CPN_MAX_SENSORS       32
+
 class SensorData {
+  Q_DECLARE_TR_FUNCTIONS(SensorData)
 
   public:
 
@@ -141,6 +143,7 @@ class SensorData {
     bool isAvailable() const { return strlen(label) > 0; }
     void updateUnit();
     QString unitString() const;
+    QString nameToString(int index) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
 };
 

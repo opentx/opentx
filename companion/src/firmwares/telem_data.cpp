@@ -41,7 +41,7 @@ RawSourceRange FrSkyChannelData::getRange() const
   result.step = ratio / 255;
   result.min = offset * result.step;
   result.max = ratio + result.min;
-  result.unit = QObject::tr("V");
+  result.unit = tr("V");
   return result;
 }
 

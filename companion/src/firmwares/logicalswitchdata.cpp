@@ -20,6 +20,7 @@
 
 #include "logicalswitchdata.h"
 
+#include "radiodata.h"
 #include "radiodataconversionstate.h"
 #include "rawsource.h"
 #include "rawswitch.h"
@@ -62,55 +63,60 @@ QString LogicalSwitchData::funcToString() const
 {
   switch (func) {
     case LS_FN_OFF:
-      return QObject::tr("---");
+      return tr("---");
     case LS_FN_VPOS:
-      return QObject::tr("a>x");
+      return tr("a>x");
     case LS_FN_VNEG:
-      return QObject::tr("a<x");
+      return tr("a<x");
     case LS_FN_APOS:
-      return QObject::tr("|a|>x");
+      return tr("|a|>x");
     case LS_FN_ANEG:
-      return QObject::tr("|a|<x");
+      return tr("|a|<x");
     case LS_FN_AND:
-      return QObject::tr("AND");
+      return tr("AND");
     case LS_FN_OR:
-      return QObject::tr("OR");
+      return tr("OR");
     case LS_FN_XOR:
-      return QObject::tr("XOR");
+      return tr("XOR");
     case LS_FN_EQUAL:
-      return QObject::tr("a=b");
+      return tr("a=b");
     case LS_FN_NEQUAL:
-      return QObject::tr("a!=b");
+      return tr("a!=b");
     case LS_FN_GREATER:
-      return QObject::tr("a>b");
+      return tr("a>b");
     case LS_FN_LESS:
-      return QObject::tr("a<b");
+      return tr("a<b");
     case LS_FN_EGREATER:
-      return QObject::tr("a>=b");
+      return tr("a>=b");
     case LS_FN_ELESS:
-      return QObject::tr("a<=b");
+      return tr("a<=b");
     case LS_FN_DPOS:
-      return QObject::tr("d>=x");
+      return tr("d>=x");
     case LS_FN_DAPOS:
-      return QObject::tr("|d|>=x");
+      return tr("|d|>=x");
     case LS_FN_VEQUAL:
-      return QObject::tr("a=x");
+      return tr("a=x");
     case LS_FN_VALMOSTEQUAL:
-      return QObject::tr("a~x");
+      return tr("a~x");
     case LS_FN_TIMER:
-      return QObject::tr("Timer");
+      return tr("Timer");
     case LS_FN_STICKY:
-      return QObject::tr("Sticky");
+      return tr("Sticky");
     case LS_FN_EDGE:
-      return QObject::tr("Edge");
+      return tr("Edge");
     default:
-      return QObject::tr("Unknown");
+      return tr("Unknown");
   }
+}
+
+QString LogicalSwitchData::nameToString(int index) const
+{
+  return RadioData::getElementName(tr("L"), index + 1, NULL, true);
 }
 
 void LogicalSwitchData::convert(RadioDataConversionState & cstate)
 {
-  cstate.setComponent("LSW", 7);
+  cstate.setComponent(tr("LSW"), 7);
   cstate.setSubComp(RawSwitch(SWITCH_TYPE_VIRTUAL, cstate.subCompIdx + 1).toString(cstate.fromType, cstate.fromGS(), cstate.fromModel()));
   CSFunctionFamily family = getFunctionFamily();
   switch(family) {

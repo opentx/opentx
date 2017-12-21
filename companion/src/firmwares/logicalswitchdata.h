@@ -60,7 +60,9 @@ enum CSFunctionFamily {
   LS_FAMILY_EDGE,
 };
 
-class LogicalSwitchData { // Logical Switches data
+class LogicalSwitchData {
+  Q_DECLARE_TR_FUNCTIONS(LogicalSwitchData)
+
   public:
     LogicalSwitchData(unsigned int func=0)
     {
@@ -80,6 +82,7 @@ class LogicalSwitchData { // Logical Switches data
     CSFunctionFamily getFunctionFamily() const;
     unsigned int getRangeFlags() const;
     QString funcToString() const;
+    QString nameToString(int index) const;
     void convert(RadioDataConversionState & cstate);
 };
 

@@ -26,6 +26,8 @@
 class ModelData;
 
 class CurveReference {
+  Q_DECLARE_TR_FUNCTIONS(CurveReference)
+
   public:
     enum CurveRefType {
       CURVE_REF_DIFF,

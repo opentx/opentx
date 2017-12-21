@@ -96,6 +96,8 @@ enum TrainerProtocol {
 };
 
 class ModuleData {
+  Q_DECLARE_TR_FUNCTIONS(ModuleData)
+
   public:
     ModuleData() { clear(); }
     unsigned int modelId;
@@ -133,7 +135,7 @@ class ModuleData {
 
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
-    QString polarityToString() const { return ppm.pulsePol ? QObject::tr("Positive") : QObject::tr("Negative"); } // TODO ModelPrinter
+    QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); } // TODO ModelPrinter
 };
 
 #endif // MODULEDATA_H

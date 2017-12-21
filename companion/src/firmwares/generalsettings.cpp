@@ -290,7 +290,7 @@ void GeneralSettings::convert(RadioDataConversionState & cstate)
 {
   // Here we can add explicit conversions when moving from one board to another
 
-  cstate.setOrigin(QObject::tr("Radio Settings"));
+  cstate.setOrigin(tr("Radio Settings"));
 
   setDefaultControlTypes(cstate.toType);  // start with default switches/pots/sliders
 

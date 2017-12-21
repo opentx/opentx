@@ -37,71 +37,71 @@ bool CustomFunctionData::isEmpty() const
   return (swtch.type == SWITCH_TYPE_NONE);
 }
 
-QString CustomFunctionData::toString(int index, bool globalContext) const
+QString CustomFunctionData::nameToString(int index, bool globalContext) const
 {
-  return RadioData::getElementName((globalContext ? QObject::tr("GF") : QObject::tr("SF")), index+1, 0, true);
+  return RadioData::getElementName((globalContext ? tr("GF") : tr("SF")), index+1, 0, true);
 }
 
 QString CustomFunctionData::funcToString(const ModelData * model) const
 {
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
-    return QObject::tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
+    return tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
   else if (func == FuncTrainer)
-    return QObject::tr("Trainer");
+    return tr("Trainer");
   else if (func == FuncTrainerRUD)
-    return QObject::tr("Trainer RUD");
+    return tr("Trainer RUD");
   else if (func == FuncTrainerELE)
-    return QObject::tr("Trainer ELE");
+    return tr("Trainer ELE");
   else if (func == FuncTrainerTHR)
-    return QObject::tr("Trainer THR");
+    return tr("Trainer THR");
   else if (func == FuncTrainerAIL)
-    return QObject::tr("Trainer AIL");
+    return tr("Trainer AIL");
   else if (func == FuncInstantTrim)
-    return QObject::tr("Instant Trim");
+    return tr("Instant Trim");
   else if (func == FuncPlaySound)
-    return QObject::tr("Play Sound");
+    return tr("Play Sound");
   else if (func == FuncPlayHaptic)
-    return QObject::tr("Haptic");
+    return tr("Haptic");
   else if (func == FuncReset)
-    return QObject::tr("Reset");
+    return tr("Reset");
   else if (func >= FuncSetTimer1 && func <= FuncSetTimer3)
-    return QObject::tr("Set Timer %1").arg(func-FuncSetTimer1+1);
+    return tr("Set Timer %1").arg(func-FuncSetTimer1+1);
   else if (func == FuncVario)
-    return QObject::tr("Vario");
+    return tr("Vario");
   else if (func == FuncPlayPrompt)
-    return QObject::tr("Play Track");
+    return tr("Play Track");
   else if (func == FuncPlayBoth)
-    return QObject::tr("Play Both");
+    return tr("Play Both");
   else if (func == FuncPlayValue)
-    return QObject::tr("Play Value");
+    return tr("Play Value");
   else if (func == FuncPlayScript)
-    return QObject::tr("Play Script");
+    return tr("Play Script");
   else if (func == FuncLogs)
-    return QObject::tr("SD Logs");
+    return tr("SD Logs");
   else if (func == FuncVolume)
-    return QObject::tr("Volume");
+    return tr("Volume");
   else if (func == FuncBacklight)
-    return QObject::tr("Backlight");
+    return tr("Backlight");
   else if (func == FuncScreenshot)
-    return QObject::tr("Screenshot");
+    return tr("Screenshot");
   else if (func == FuncBackgroundMusic)
-    return QObject::tr("Background Music");
+    return tr("Background Music");
   else if (func == FuncBackgroundMusicPause)
-    return QObject::tr("Background Music Pause");
+    return tr("Background Music Pause");
   else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
-    return QObject::tr("Adjust %1").arg(RawSource(SOURCE_TYPE_GVAR, func-FuncAdjustGV1).toString(model));
+    return tr("Adjust %1").arg(RawSource(SOURCE_TYPE_GVAR, func-FuncAdjustGV1).toString(model));
   else if (func == FuncSetFailsafeInternalModule)
-    return QObject::tr("SetFailsafe Int. Module");
+    return tr("SetFailsafe Int. Module");
   else if (func == FuncSetFailsafeExternalModule)
-    return QObject::tr("SetFailsafe Ext. Module");
+    return tr("SetFailsafe Ext. Module");
   else if (func == FuncRangeCheckInternalModule)
-    return QObject::tr("RangeCheck Int. Module");
+    return tr("RangeCheck Int. Module");
   else if (func == FuncRangeCheckExternalModule)
-    return QObject::tr("RangeCheck Ext. Module");
+    return tr("RangeCheck Ext. Module");
   else if (func == FuncBindInternalModule)
-    return QObject::tr("Bind Int. Module");
+    return tr("Bind Int. Module");
   else if (func == FuncBindExternalModule)
-    return QObject::tr("Bind Ext. Module");
+    return tr("Bind Ext. Module");
   else {
     return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
   }
@@ -113,20 +113,20 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
   Firmware * firmware = Firmware::getCurrentVariant();
   Board::Type board = firmware->getBoard();
 
-  b->addItem(QObject::tr("Timer1"), val++);
-  b->addItem(QObject::tr("Timer2"), val++);
+  b->addItem(tr("Timer1"), val++);
+  b->addItem(tr("Timer2"), val++);
   if (IS_ARM(board)) {
-    b->addItem( QObject::tr("Timer3"), val++);
+    b->addItem( tr("Timer3"), val++);
   }
-  b->addItem(QObject::tr("Flight"), val++);
-  b->addItem(QObject::tr("Telemetry"), val++);
+  b->addItem(tr("Flight"), val++);
+  b->addItem(tr("Telemetry"), val++);
   int reCount = firmware->getCapability(RotaryEncoders);
   if (reCount == 1) {
-    b->addItem(QObject::tr("Rotary Encoder"), val++);
+    b->addItem(tr("Rotary Encoder"), val++);
   }
   else if (reCount == 2) {
-    b->addItem(QObject::tr("REa"), val++);
-    b->addItem(QObject::tr("REb"), val++);
+    b->addItem(tr("REa"), val++);
+    b->addItem(tr("REb"), val++);
   }
   if ((int)value < b->count()) {
     b->setCurrentIndex(value);
@@ -162,21 +162,21 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     return QString("%1").arg(param);
   }
   else if (func==FuncLogs) {
-    return QString("%1").arg(param/10.0) + QObject::tr("s");
+    return QString("%1").arg(param/10.0) + tr("s");
   }
   else if (func==FuncPlaySound) {
     CustomFunctionData::populatePlaySoundParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
-      return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+      return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if (func==FuncPlayHaptic) {
     CustomFunctionData::populateHapticParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
-      return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+      return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if (func==FuncReset) {
     QComboBox cb;
@@ -185,7 +185,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     if (pos >= 0)
       return cb.itemText(pos);
     else
-      return QObject::tr("<font color=red><b>Inconsistent parameter</b></font>");
+      return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
     RawSource item(param);
@@ -202,13 +202,13 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   else if ((func>=FuncAdjustGV1) && (func<FuncCount)) {
     switch (adjustMode) {
       case FUNC_ADJUST_GVAR_CONSTANT:
-        return QObject::tr("Value ")+QString("%1").arg(param);
+        return tr("Value ")+QString("%1").arg(param);
       case FUNC_ADJUST_GVAR_SOURCE:
       case FUNC_ADJUST_GVAR_GVAR:
         return RawSource(param).toString();
       case FUNC_ADJUST_GVAR_INCDEC:
-        if (param==0) return QObject::tr("Decr:") + " -1";
-        else          return QObject::tr("Incr:") + " +1";
+        if (param==0) return tr("Decr:") + " -1";
+        else          return tr("Incr:") + " +1";
     }
   }
   return "";
@@ -217,14 +217,14 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
 QString CustomFunctionData::repeatToString() const
 {
   if (repeatParam == -1) {
-    return QObject::tr("played once, not during startup");
+    return tr("played once, not during startup");
   }
   else if (repeatParam == 0) {
     return "";
   }
   else {
     unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
-    return QObject::tr("repeat(%1s)").arg(step*repeatParam);
+    return tr("repeat(%1s)").arg(step*repeatParam);
   }
 }
 
@@ -237,7 +237,7 @@ QString CustomFunctionData::enabledToString() const
       (func==FuncVolume) ||
       (func <= FuncInstantTrim)) {
     if (!enabled) {
-      return QObject::tr("DISABLED");
+      return tr("DISABLED");
     }
   }
   return "";
@@ -245,8 +245,8 @@ QString CustomFunctionData::enabledToString() const
 
 void CustomFunctionData::convert(RadioDataConversionState & cstate)
 {
-  cstate.setComponent("CFN", 8);
-  cstate.setSubComp(toString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
+  cstate.setComponent(tr("CFN"), 8);
+  cstate.setSubComp(nameToString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
   swtch.convert(cstate);
   if (func == FuncVolume || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
     param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();

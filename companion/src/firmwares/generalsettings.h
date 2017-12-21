@@ -60,6 +60,8 @@ class TrainerData {
 };
 
 class GeneralSettings {
+  Q_DECLARE_TR_FUNCTIONS(GeneralSettings)
+
   public:
 
     enum BeeperMode {

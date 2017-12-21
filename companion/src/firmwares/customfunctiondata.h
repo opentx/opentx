@@ -79,7 +79,9 @@ enum GVarAdjustModes
   FUNC_ADJUST_GVAR_INCDEC
 };
 
-class CustomFunctionData { // Function Switches data
+class CustomFunctionData {
+  Q_DECLARE_TR_FUNCTIONS(CustomFunctionData)
+
   public:
     CustomFunctionData(AssignFunc func=FuncOverrideCH1) { clear(); this->func = func; }
     RawSwitch    swtch;
@@ -92,7 +94,7 @@ class CustomFunctionData { // Function Switches data
 
     void clear();
     bool isEmpty() const;
-    QString toString(int index, bool globalContext = false) const;
+    QString nameToString(int index, bool globalContext = false) const;
     QString funcToString(const ModelData * model = NULL) const;
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;

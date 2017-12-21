@@ -17,6 +17,8 @@ class CategoryData {
 };
 
 class RadioData {
+  Q_DECLARE_TR_FUNCTIONS(RadioData)
+
   public:
     RadioData();
 

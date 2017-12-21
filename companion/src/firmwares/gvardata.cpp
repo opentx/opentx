@@ -20,15 +20,17 @@
 
 #include "gvardata.h"
 
+#include "radiodata.h"
+
 QString GVarData::unitToString() const
 {
   switch (unit) {
     case GVAR_UNIT_NUMBER:
-      return QObject::tr("");
+      return tr("");
     case GVAR_UNIT_PERCENT:
-      return QObject::tr("%");
+      return tr("%");
     default:
-      return QObject::tr("?");  //  highlight unknown value
+      return tr("?");  //  highlight unknown value
   }
 }
 
@@ -36,12 +38,17 @@ QString GVarData::precToString() const
 {
   switch (prec) {
     case GVAR_PREC_MUL10:
-      return QObject::tr("0._");
+      return tr("0._");
     case GVAR_PREC_MUL1:
-      return QObject::tr("0.0");
+      return tr("0.0");
     default:
-      return QObject::tr("?.?");  //  highlight unknown value
+      return tr("?.?");  //  highlight unknown value
   }
+}
+
+QString GVarData::nameToString(int index) const
+{
+  return RadioData::getElementName(tr("GV"), index + 1, name);
 }
 
 int GVarData::multiplierSet()

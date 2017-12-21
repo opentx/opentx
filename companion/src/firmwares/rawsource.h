@@ -184,6 +184,8 @@ enum RawSourceType {
 
 class RawSourceRange
 {
+  Q_DECLARE_TR_FUNCTIONS(RawSourceRange)
+
   public:
     RawSourceRange():
       decimals(0),
@@ -208,6 +210,8 @@ class RawSourceRange
 #define RANGE_ABS_FUNCTION        2
 
 class RawSource {
+  Q_DECLARE_TR_FUNCTIONS(RawSource)
+
   public:
     RawSource():
       type(SOURCE_TYPE_NONE),

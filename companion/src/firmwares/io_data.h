@@ -38,6 +38,8 @@ enum InputMode {
 };
 
 class ExpoData {
+  Q_DECLARE_TR_FUNCTIONS(ExpoData)
+
   public:
     ExpoData() { clear(); }
     RawSource srcRaw;
@@ -64,6 +66,8 @@ enum MltpxValue {
 #define MIXDATA_NAME_LEN  10
 
 class MixData {
+  Q_DECLARE_TR_FUNCTIONS(MixData)
+
   public:
     MixData() { clear(); }
     void convert(RadioDataConversionState & cstate);
@@ -89,6 +93,8 @@ class MixData {
 };
 
 class LimitData {
+  Q_DECLARE_TR_FUNCTIONS(LimitData)
+
   public:
     LimitData() { clear(); }
     int   min;
@@ -103,6 +109,7 @@ class LimitData {
     QString maxToString() const;
     QString offsetToString() const;
     QString revertToString() const;
+    QString nameToString(int index) const;
     void clear();
 };
 
@@ -113,6 +120,8 @@ class CurvePoint {
 };
 
 class CurveData {
+  Q_DECLARE_TR_FUNCTIONS(CurveData)
+
   public:
     enum CurveType {
       CURVE_TYPE_STANDARD,
@@ -133,6 +142,8 @@ class CurveData {
 };
 
 class FlightModeData {
+  Q_DECLARE_TR_FUNCTIONS(FlightModeData)
+
   public:
     FlightModeData() { clear(0); }
     int trimMode[CPN_MAX_TRIMS];
@@ -145,11 +156,13 @@ class FlightModeData {
     int rotaryEncoders[CPN_MAX_ENCODERS];
     int gvars[CPN_MAX_GVARS];
     void clear(const int phase);
-    QString toString(int index) const;
+    QString nameToString(int index) const;
     void convert(RadioDataConversionState & cstate);
 };
 
-class SwashRingData { // Swash Ring data
+class SwashRingData {
+  Q_DECLARE_TR_FUNCTIONS(SwashRingData)
+
   public:
     SwashRingData() { clear(); }
     int elevatorWeight;

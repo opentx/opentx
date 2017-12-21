@@ -21,14 +21,18 @@
 #ifndef _EEPROMINTERFACE_H_
 #define _EEPROMINTERFACE_H_
 
+#include "boards.h"
 #include "macros.h"
 #include "radiodata.h"
 #include "../../radio/src/definitions.h"
 #include "simulatorinterface.h"
+
+#include <QtCore>
 #include <QStringList>
 #include <QList>
-#include <iostream>
 #include <QDebug>
+
+#include <iostream>
 
 const uint8_t modn12x3[4][4]= {
   {1, 2, 3, 4},
@@ -143,9 +147,10 @@ enum Capability {
   HasModelCategories
 };
 
-class SimulatorInterface;
 class EEPROMInterface
 {
+  Q_DECLARE_TR_FUNCTIONS(EEPROMInterface)
+
   public:
 
     EEPROMInterface(Board::Type board):
@@ -166,6 +171,9 @@ class EEPROMInterface
     virtual int getSize(const ModelData &) = 0;
 
     virtual int getSize(const GeneralSettings &) = 0;
+
+    //static void showEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
+    static void showEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
 
   protected:
 
@@ -234,17 +242,15 @@ enum EepromLoadErrors {
   NUM_ERRORS
 };
 
-void ShowEepromErrors(QWidget *parent, const QString &title, const QString &mainMessage, unsigned long errorsFound);
-void ShowEepromWarnings(QWidget *parent, const QString &title, unsigned long errorsFound);
-
-
 struct Option {
   const char * name;
   QString tooltip;
   uint32_t variant;
 };
 
-class Firmware {
+class Firmware
+{
+  Q_DECLARE_TR_FUNCTIONS(Firmware)
 
   public:
     Firmware(const QString & id, const QString & name, Board::Type board):

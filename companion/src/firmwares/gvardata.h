@@ -28,6 +28,8 @@
 #define GVAR_MIN_VALUE      -GVAR_MAX_VALUE
 
 class GVarData {
+  Q_DECLARE_TR_FUNCTIONS(GVarData)
+
   public:
     GVarData() { clear(); }
 
@@ -51,6 +53,7 @@ class GVarData {
     void clear() {memset(this, 0, sizeof(GVarData)); }
     QString unitToString() const;
     QString precToString() const;
+    QString nameToString(int index) const;
     int multiplierSet();
     float multiplierGet() const;
     void setMin(float val);

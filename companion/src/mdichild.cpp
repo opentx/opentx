@@ -1326,7 +1326,7 @@ bool MdiChild::loadFile(const QString & filename, bool resetCurrentFile)
 
   QString warning = storage.warning();
   if (!warning.isEmpty()) {
-    // TODO ShowEepromWarnings(this, tr("Warning"), warning);
+    // TODO EEPROMInterface::showEepromWarnings(this, tr("Warning"), warning);
   }
 
   if (resetCurrentFile) {
@@ -1577,11 +1577,11 @@ bool MdiChild::loadBackup()
 #if 0
   std::bitset<NUM_ERRORS> errorsEeprom((unsigned long long)LoadBackup(radioData, (uint8_t *)eeprom.data(), eeprom_size, index));
   if (!errorsEeprom.test(ALL_OK)) {
-    ShowEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
+    EEPROMInterface::showEepromErrors(this, tr("Error"), tr("Invalid binary backup File %1").arg(fileName), (errorsEeprom).to_ulong());
     return false;
   }
   if (errorsEeprom.test(HAS_WARNINGS)) {
-    ShowEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
+    EEPROMInterface::showEepromWarnings(this, tr("Warning"), errorsEeprom.to_ulong());
   }
 
   refresh(true);

@@ -22,9 +22,13 @@
 #define _EEPROMIMPORTEXPORT_H_
 
 #include "customdebug.h"
+
+#include <QtCore>
 #include <QBitArray>
 
 class DataField {
+  Q_DECLARE_TR_FUNCTIONS(DataField)
+
   public:
     DataField(DataField * parent, const char * name=""):
       parent(parent),
@@ -742,7 +746,7 @@ class ConversionField: public TransformedField {
 
       if (table) {
         if (!table->exportValue(_field, _field)) {
-          setError(error.isEmpty() ? QObject::tr("Conversion error on field %1").arg(name) : error);
+          setError(error.isEmpty() ? tr("Conversion error on field %1").arg(name) : error);
         }
         return;
       }

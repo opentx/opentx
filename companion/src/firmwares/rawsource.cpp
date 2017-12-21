@@ -74,19 +74,19 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             result.step = 0.1;
             result.decimals = 1;
             result.max = 25.5;
-            result.unit = QObject::tr("V");
+            result.unit = tr("V");
             break;
           case TELEMETRY_SOURCE_TX_TIME:
             result.step = 60;
             result.max = 24 * 60 * result.step - 60;  // 23:59:00 with 1-minute resolution
-            result.unit = QObject::tr("s");
+            result.unit = tr("s");
             break;
           case TELEMETRY_SOURCE_TIMER1:
           case TELEMETRY_SOURCE_TIMER2:
           case TELEMETRY_SOURCE_TIMER3:
             result.step = 5;
             result.max = 255 * result.step;
-            result.unit = QObject::tr("s");
+            result.unit = tr("s");
             break;
           case TELEMETRY_SOURCE_RSSI_TX:
           case TELEMETRY_SOURCE_RSSI_RX:
@@ -116,10 +116,10 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
               result.step = (result.step * 105) / 32;
               result.min = (result.min * 105) / 32;
               result.max = (result.max * 105) / 32;
-              result.unit = QObject::tr("ft");
+              result.unit = tr("ft");
             }
             else {
-              result.unit = QObject::tr("m");
+              result.unit = tr("m");
             }
             break;
           case TELEMETRY_SOURCE_T1:
@@ -128,13 +128,13 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_T2_MAX:
             result.min = -30;
             result.max = 225;
-            result.unit = QObject::trUtf8("°C");
+            result.unit = trUtf8("°C");
             break;
           case TELEMETRY_SOURCE_HDG:
             result.step = 2;
             result.max = 360;
             result.offset = 256;
-            result.unit = QObject::trUtf8("°");
+            result.unit = trUtf8("°");
             break;
           case TELEMETRY_SOURCE_RPM:
           case TELEMETRY_SOURCE_RPM_MAX:
@@ -143,7 +143,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             break;
           case TELEMETRY_SOURCE_FUEL:
             result.max = 100;
-            result.unit = QObject::tr("%");
+            result.unit = tr("%");
             break;
           case TELEMETRY_SOURCE_ASPEED:
           case TELEMETRY_SOURCE_ASPEED_MAX:
@@ -153,12 +153,12 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             if (firmware->getCapability(Imperial) || settings.imperial) {
               result.step *= 1.150779;
               result.max *= 1.150779;
-              result.unit = QObject::tr("mph");
+              result.unit = tr("mph");
             }
             else {
               result.step *= 1.852;
               result.max *= 1.852;
-              result.unit = QObject::tr("km/h");
+              result.unit = tr("km/h");
             }
             break;
           case TELEMETRY_SOURCE_SPEED:
@@ -168,12 +168,12 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             if (firmware->getCapability(Imperial) || settings.imperial) {
               result.step *= 1.150779;
               result.max *= 1.150779;
-              result.unit = QObject::tr("mph");
+              result.unit = tr("mph");
             }
             else {
               result.step *= 1.852;
               result.max *= 1.852;
-              result.unit = QObject::tr("km/h");
+              result.unit = tr("km/h");
             }
             break;
           case TELEMETRY_SOURCE_VERTICAL_SPEED:
@@ -181,7 +181,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             result.min = -12.5;
             result.max = 13.0;
             result.decimals = 1;
-            result.unit = QObject::tr("m/s");
+            result.unit = tr("m/s");
             break;
           case TELEMETRY_SOURCE_DTE:
             result.max = 30000;
@@ -190,14 +190,14 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
           case TELEMETRY_SOURCE_DIST_MAX:
             result.step = 8;
             result.max = 2040;
-            result.unit = QObject::tr("m");
+            result.unit = tr("m");
             break;
           case TELEMETRY_SOURCE_CELL:
           case TELEMETRY_SOURCE_CELL_MIN:
             result.step = 0.02;
             result.max = 5.1;
             result.decimals = 2;
-            result.unit = QObject::tr("V");
+            result.unit = tr("V");
             break;
           case TELEMETRY_SOURCE_CELLS_SUM:
           case TELEMETRY_SOURCE_CELLS_MIN:
@@ -206,25 +206,25 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             result.step = 0.1;
             result.max = 25.5;
             result.decimals = 1;
-            result.unit = QObject::tr("V");
+            result.unit = tr("V");
             break;
           case TELEMETRY_SOURCE_CURRENT:
           case TELEMETRY_SOURCE_CURRENT_MAX:
             result.step = 0.5;
             result.max = 127.5;
             result.decimals = 1;
-            result.unit = QObject::tr("A");
+            result.unit = tr("A");
             break;
           case TELEMETRY_SOURCE_CONSUMPTION:
             result.step = 100;
             result.max =  25500;
-            result.unit = QObject::tr("mAh");
+            result.unit = tr("mAh");
             break;
           case TELEMETRY_SOURCE_POWER:
           case TELEMETRY_SOURCE_POWER_MAX:
             result.step = 5;
             result.max = 1275;
-            result.unit = QObject::tr("W");
+            result.unit = tr("W");
             break;
           case TELEMETRY_SOURCE_ACCX:
           case TELEMETRY_SOURCE_ACCY:
@@ -233,7 +233,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
             result.decimals = 2;
             result.max = 2.55;
             result.min = 0;
-            result.unit = QObject::tr("g");
+            result.unit = tr("g");
             break;
           default:
             result.max = 125;
@@ -277,18 +277,18 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.step = 0.1;
         result.decimals = 1;
         result.max = 25.5;
-        result.unit = QObject::tr("V");
+        result.unit = tr("V");
       }
       else if (index == 1) {   //Time
         result.step = 60;
         result.max = 24 * 60 * result.step - 60;  // 23:59:00 with 1-minute resolution
-        result.unit = QObject::tr("s");
+        result.unit = tr("s");
       }
       else {      // Timers 1 - 3
         result.step = 1;
         result.max = 9 * 60 * 60 - 1;  // 8:59:59 (to match firmware)
         result.min = -result.max;
-        result.unit = QObject::tr("s");
+        result.unit = tr("s");
       }
       break;
 
@@ -317,50 +317,50 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   }
 
   static const QString trims[] = {
-    QObject::tr("TrmR"), QObject::tr("TrmE"), QObject::tr("TrmT"), QObject::tr("TrmA"), QObject::tr("Trm5"), QObject::tr("Trm6")
+    tr("TrmR"), tr("TrmE"), tr("TrmT"), tr("TrmA"), tr("Trm5"), tr("Trm6")
   };
 
   static const QString special[] = {
-    QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"), QObject::tr("Timer3"),
+    tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
   };
 
   static const QString telemetry[] = {
-    QObject::tr("Batt"), QObject::tr("Time"), QObject::tr("Timer1"), QObject::tr("Timer2"), QObject::tr("Timer3"),
-    QObject::tr("SWR"), QObject::tr("RSSI Tx"), QObject::tr("RSSI Rx"),
-    QObject::tr("A1"), QObject::tr("A2"), QObject::tr("A3"), QObject::tr("A4"),
-    QObject::tr("Alt"), QObject::tr("Rpm"), QObject::tr("Fuel"), QObject::tr("T1"), QObject::tr("T2"),
-    QObject::tr("Speed"), QObject::tr("Dist"), QObject::tr("GPS Alt"),
-    QObject::tr("Cell"), QObject::tr("Cells"), QObject::tr("Vfas"), QObject::tr("Curr"), QObject::tr("Cnsp"), QObject::tr("Powr"),
-    QObject::tr("AccX"), QObject::tr("AccY"), QObject::tr("AccZ"),
-    QObject::tr("Hdg "), QObject::tr("VSpd"), QObject::tr("AirSpeed"), QObject::tr("dTE"),
-    QObject::tr("A1-"),  QObject::tr("A2-"), QObject::tr("A3-"),  QObject::tr("A4-"),
-    QObject::tr("Alt-"), QObject::tr("Alt+"), QObject::tr("Rpm+"), QObject::tr("T1+"), QObject::tr("T2+"), QObject::tr("Speed+"), QObject::tr("Dist+"), QObject::tr("AirSpeed+"),
-    QObject::tr("Cell-"), QObject::tr("Cells-"), QObject::tr("Vfas-"), QObject::tr("Curr+"), QObject::tr("Powr+"),
-    QObject::tr("ACC"), QObject::tr("GPS Time"),
+    tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
+    tr("SWR"), tr("RSSI Tx"), tr("RSSI Rx"),
+    tr("A1"), tr("A2"), tr("A3"), tr("A4"),
+    tr("Alt"), tr("Rpm"), tr("Fuel"), tr("T1"), tr("T2"),
+    tr("Speed"), tr("Dist"), tr("GPS Alt"),
+    tr("Cell"), tr("Cells"), tr("Vfas"), tr("Curr"), tr("Cnsp"), tr("Powr"),
+    tr("AccX"), tr("AccY"), tr("AccZ"),
+    tr("Hdg "), tr("VSpd"), tr("AirSpeed"), tr("dTE"),
+    tr("A1-"),  tr("A2-"), tr("A3-"),  tr("A4-"),
+    tr("Alt-"), tr("Alt+"), tr("Rpm+"), tr("T1+"), tr("T2+"), tr("Speed+"), tr("Dist+"), tr("AirSpeed+"),
+    tr("Cell-"), tr("Cells-"), tr("Vfas-"), tr("Curr+"), tr("Powr+"),
+    tr("ACC"), tr("GPS Time"),
   };
 
-  static const QString rotary[]  = { QObject::tr("REa"), QObject::tr("REb") };
+  static const QString rotary[]  = { tr("REa"), tr("REb") };
 
   if (index<0) {
-    return QObject::tr("???");
+    return tr("???");
   }
 
   QString result;
   int genAryIdx = 0;
   switch (type) {
     case SOURCE_TYPE_NONE:
-      return QObject::tr("----");
+      return tr("----");
 
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
       const char * name = NULL;
       if (model)
         name = model->inputNames[index];
-      return RadioData::getElementName(QCoreApplication::translate("Input", "I"), index + 1, name);
+      return RadioData::getElementName(tr("I", "as in Input"), index + 1, name);
     }
 
     case SOURCE_TYPE_LUA_OUTPUT:
-      return QObject::tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
+      return tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
 
     case SOURCE_TYPE_STICK:
       if (generalSettings) {
@@ -380,7 +380,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     case SOURCE_TYPE_ROTARY_ENCODER:
       return CHECK_IN_ARRAY(rotary, index);
     case SOURCE_TYPE_MAX:
-      return QObject::tr("MAX");
+      return tr("MAX");
 
     case SOURCE_TYPE_SWITCH:
       if (generalSettings)
@@ -393,18 +393,16 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return RawSwitch(SWITCH_TYPE_VIRTUAL, index+1).toString();
 
     case SOURCE_TYPE_CYC:
-      return QObject::tr("CYC%1").arg(index+1);
+      return tr("CYC%1").arg(index+1);
 
     case SOURCE_TYPE_PPM:
-      return RadioData::getElementName(QCoreApplication::translate("Trainer", "TR"), index + 1);
+      return RadioData::getElementName(tr("TR", "as in Trainer"), index + 1);
 
     case SOURCE_TYPE_CH:
-    {
-      const char * name = NULL;
-      if (getCurrentFirmware()->getCapability(ChannelsName) && model)
-        name = model->limitData[index].name;
-      return RadioData::getElementName(QCoreApplication::translate("Channel", "CH"), index + 1, name);
-    }
+      if (model)
+        return model->limitData[index].nameToString(index);
+      else
+        return LimitData().nameToString(index);
 
     case SOURCE_TYPE_SPECIAL:
       return CHECK_IN_ARRAY(special, index);
@@ -412,7 +410,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     case SOURCE_TYPE_TELEMETRY:
       if (IS_ARM(board)) {
         div_t qr = div(index, 3);
-        result = RadioData::getElementName(QCoreApplication::translate("Telemetry", "TELE"), qr.quot+1, model ? model->sensorData[qr.quot].label : NULL);
+        if (model)
+          result = model->sensorData[qr.quot].nameToString(qr.quot);
+        else
+          result = SensorData().nameToString(qr.quot);
         if (qr.rem)
           result += (qr.rem == 1 ? "-" : "+");
         return result;
@@ -422,15 +423,13 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       }
 
     case SOURCE_TYPE_GVAR:
-    {
-      const char * name = NULL;
-      if (getCurrentFirmware()->getCapability(GvarsName) && model)
-        name = model->gvarData[index].name;
-      return RadioData::getElementName(QCoreApplication::translate("Global Variable", "GV"), index + 1, name);
-    }
+      if (model)
+        return model->gvarData[index].nameToString(index);
+      else
+        return GVarData().nameToString(index);
 
     default:
-      return QObject::tr("???");
+      return tr("???");
   }
 }
 
@@ -545,7 +544,7 @@ bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings
 
 RawSource RawSource::convert(RadioDataConversionState & cstate)
 {
-  cstate.setItemType("SRC", 1);
+  cstate.setItemType(tr("SRC"), 1);
   RadioDataConversionState::EventType evt = RadioDataConversionState::EVT_NONE;
   RadioDataConversionState::LogField oldData(index, toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType));
 
