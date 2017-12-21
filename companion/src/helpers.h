@@ -149,9 +149,6 @@ int findmult(float value, float base);
 /* FrSky helpers */
 QString getFrSkyAlarmType(int alarm);
 QString getFrSkyUnits(int units);
-QString getFrSkyProtocol(int protocol);
-QString getFrSkyMeasure(int units);
-QString getFrSkySrc(int index);
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 

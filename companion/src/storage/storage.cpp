@@ -74,7 +74,7 @@ bool Storage::load(RadioData & radioData)
 {
   QFile file(filename);
   if (!file.exists()) {
-    setError(QObject::tr("Unable to find file %1!").arg(filename));
+    setError(tr("Unable to find file %1!").arg(filename));
     return false;
   }
 

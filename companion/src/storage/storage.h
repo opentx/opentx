@@ -22,6 +22,8 @@
 #define _STORAGE_H_
 
 #include "radiodata.h"
+
+#include <QtCore>
 #include <QString>
 #include <QDebug>
 
@@ -41,6 +43,8 @@ StorageType getStorageType(const QString & filename);
 
 class StorageFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(StorageFormat)
+
   public:
     StorageFormat(const QString & filename, uint8_t version=0):
       filename(filename),
@@ -129,6 +133,8 @@ class DefaultStorageFactory : public StorageFactory
 
 class Storage : public StorageFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(Storage)
+
   public:
     Storage(const QString & filename):
       StorageFormat(filename)

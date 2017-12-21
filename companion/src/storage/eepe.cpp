@@ -28,7 +28,7 @@ bool EepeFormat::load(RadioData & radioData)
   QFile file(filename);
 
   if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-    setError(QObject::tr("Unable to open %1: %2").arg(filename).arg(file.errorString()));
+    setError(tr("Unable to open %1: %2").arg(filename).arg(file.errorString()));
     return false;
   }
 
@@ -44,7 +44,7 @@ bool EepeFormat::load(RadioData & radioData)
   QByteArray eeprom(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
   int eeprom_size = HexInterface(inputStream).load((uint8_t *)eeprom.data(), Boards::getEEpromSize(Board::BOARD_UNKNOWN));
   if (!eeprom_size) {
-    setError(QObject::tr("Invalid EEPROM file %1").arg(filename));
+    setError(tr("Invalid EEPROM file %1").arg(filename));
     return false;
   }
   eeprom.resize(eeprom_size);

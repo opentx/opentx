@@ -25,7 +25,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
 {
   QByteArray radioSettingsBuffer;
   if (!loadFile(radioSettingsBuffer, "RADIO/radio.bin")) {
-    setError(QObject::tr("Can't extract RADIO/radio.bin"));
+    setError(tr("Can't extract RADIO/radio.bin"));
     return false;
   }
 
@@ -38,7 +38,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
 
   QByteArray modelsListBuffer;
   if (!loadFile(modelsListBuffer, "RADIO/models.txt")) {
-    setError(QObject::tr("Can't extract RADIO/models.txt"));
+    setError(tr("Can't extract RADIO/models.txt"));
     return false;
   }
 
@@ -82,14 +82,14 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
       qDebug() << "Loading model from file" << fileName << "into slot" << modelIndex;
       QByteArray modelBuffer;
       if (!loadFile(modelBuffer, QString("MODELS/%1").arg(fileName))) {
-        setError(QObject::tr("Can't extract %1").arg(fileName));
+        setError(tr("Can't extract %1").arg(fileName));
         return false;
       }
       if ((int)radioData.models.size() <= modelIndex) {
         radioData.models.resize(modelIndex + 1);
       }
       if (!loadModelFromByteArray(radioData.models[modelIndex], modelBuffer)) {
-        setError(QObject::tr("Error loading models"));
+        setError(tr("Error loading models"));
         return false;
       }
       strncpy(radioData.models[modelIndex].filename, qPrintable(fileName), sizeof(radioData.models[modelIndex].filename));

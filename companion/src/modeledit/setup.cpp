@@ -1160,7 +1160,7 @@ void SetupPanel::populateThrottleSourceCB()
   Board::Type board = firmware->getBoard();
   lock = true;
   ui->throttleSource->clear();
-  ui->throttleSource->addItem(QObject::tr("THR"));
+  ui->throttleSource->addItem(tr("THR"));
   for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++) {
     ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), i);
   }
