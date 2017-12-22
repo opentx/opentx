@@ -470,18 +470,9 @@ void ModulePanel::update()
   ui->antennaMode->setCurrentIndex(module.pxx.external_antenna);
 
   // R9M options
-  ui->sportOut->setVisible(mask & MASK_R9M);
   ui->r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
   ui->label_r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
   if (mask & MASK_R9M) {
-    if (model->moduleData[0].protocol >= PULSES_PXX_XJT_X16 && model->moduleData[0].protocol <= PULSES_PXX_XJT_LR12) {
-      module.pxx.sport_out = false;
-      ui->sportOut->setDisabled(true);
-    }
-    else {
-      ui->sportOut->setEnabled(true);
-    }
-    ui->sportOut->setChecked(module.pxx.sport_out);
     ui->r9mPower->setCurrentIndex(module.pxx.power);
   }
 
@@ -589,14 +580,6 @@ void ModulePanel::on_antennaMode_currentIndexChanged(int index)
 {
   module.pxx.external_antenna = index;
   emit modified();
-}
-
-void ModulePanel::on_sportOut_toggled(bool checked)
-{
-  if (module.pxx.sport_out != checked) {
-    module.pxx.sport_out = checked;
-    emit modified();
-  }
 }
 
 void ModulePanel::on_r9mPower_currentIndexChanged(int index)
