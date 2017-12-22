@@ -523,6 +523,7 @@ void ModulePanel::update()
     ui->label_option->setText(qApp->translate("Multiprotocols", qPrintable(pdef.optionsstr)));
   }
 
+  // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
   ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
 
