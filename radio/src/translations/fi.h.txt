@@ -829,7 +829,7 @@
 #define TR_MULTI_AUTOBIND      TR(INDENT "Autobind",INDENT "Bind on powerup")
 #define TR_MULTI_DSM_AUTODTECT TR(INDENT "Autodetect", INDENT "Autodetect format")
 #define TR_MULTI_LOWPOWER      TR(INDENT "Low power", INDENT "Low power mode")
-#define TR_MODULE_TELEMETRY            TR(INDENT "Mod telem.", INDENT "Module telemetry")
+#define TR_MODULE_TELEMETRY            TR(INDENT "S.Port", INDENT "S.Port link")
 #define TR_MODULE_TELEM_ON             TR("ON", "Enabled")
 #define TR_DISABLE_INTERNAL         TR("Disable int. RF", "Disable internal RF")
 #define TR_MODULE_NO_SERIAL_MODE       TR("!serial mode", "Not in serial mode")
@@ -841,10 +841,10 @@
 #define TR_BINDING_CH1_8_TELEM_OFF               "Ch1-8 Telem OFF"
 #define TR_BINDING_CH9_16_TELEM_ON               "Ch9-16 Telem ON"
 #define TR_BINDING_CH9_16_TELEM_OFF               "Ch9-16 Telem OFF"
-#define TR_BINDING_25MW_CH1_8_TELEM_OFF   TR("25mW Ch1-8 Tel OFF", "25mW Ch1-8 Telem OFF")
-#define TR_BINDING_25MW_CH1_8_TELEM_ON    TR("25mW Ch1-8 Tel ON", "25mW Ch1-8 Telem ON")
-#define TR_BINDING_500MW_CH1_8_TELEM_OFF  TR("500mW Ch1-8 Tel OFF", "500mW Ch1-8 Telem OFF")
-#define TR_BINDING_500MW_CH9_16_TELEM_OFF TR("500mW Ch9-16 Tel OFF", "500mW Ch9-16 Telem OFF")
+#define TR_BINDING_25MW_CH1_8_TELEM_OFF   TR("25mW Ch1-8 Tel OFF", "25mW Ch1-8 Tel. OFF")
+#define TR_BINDING_25MW_CH1_8_TELEM_ON    TR("25mW Ch1-8 Tel ON", "25mW Ch1-8 Tel. ON")
+#define TR_BINDING_500MW_CH1_8_TELEM_OFF  TR("0.5W Ch1-8 Tel OFF", "500mW Ch1-8 Tel. OFF")
+#define TR_BINDING_500MW_CH9_16_TELEM_OFF TR("0.5W Ch9-16 Tel OFF", "500mW Ch9-16 Tel. OFF")
 #define TR_PROTOCOL_INVALID            TR("Prot. invalid", "Protocol invalid")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "Module Status")
 #define TR_MODULE_SYNC                 TR(INDENT "Sync", INDENT "Module Sync")
