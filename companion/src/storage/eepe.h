@@ -23,15 +23,19 @@
 
 #include "hexeeprom.h"
 
+#include <QtCore>
+
 class EepeFormat : public HexEepromFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(EepeFormat)
+
   public:
     EepeFormat(const QString & filename):
       HexEepromFormat(filename)
     {
     }
-    
-    virtual QString name() { return "eepe"; };
+
+    virtual QString name() { return "eepe"; }
     virtual bool load(RadioData & radioData);
 };
 

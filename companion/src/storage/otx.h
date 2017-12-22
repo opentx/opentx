@@ -23,26 +23,30 @@
 
 #include "categorized.h"
 
+#include <QtCore>
+
 #define MINIZ_HEADER_FILE_ONLY
 #include "miniz.c"
 #undef MINIZ_HEADER_FILE_ONLY
 
 class OtxFormat : public CategorizedStorageFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(OtxFormat)
+
   public:
     OtxFormat(const QString & filename):
       CategorizedStorageFormat(filename)
     {
     }
-    
-    virtual QString name() { return "otx"; };
+
+    virtual QString name() { return "otx"; }
     virtual bool load(RadioData & radioData);
     virtual bool write(const RadioData & radioData);
-  
+
   protected:
     virtual bool loadFile(QByteArray & fileData, const QString & fileName);
     virtual bool writeFile(const QByteArray & fileData, const QString & fileName);
-    
+
     mz_zip_archive zip_archive;
 };
 

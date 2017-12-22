@@ -433,8 +433,8 @@ template <int N>
 class SwitchField: public ConversionField< SignedField<N> > {
   public:
     SwitchField(DataField * parent, RawSwitch & sw, Board::Type board, unsigned int version, unsigned long flags=0):
-      ConversionField< SignedField<N> >(parent, _switch, SwitchesConversionTable::getInstance(board, version, flags), this->tr("Switch").toLatin1(),
-          this->tr("Switch ").toLatin1() + sw.toString(board) + this->tr(" cannot be exported on this board!").toLatin1()),
+      ConversionField< SignedField<N> >(parent, _switch, SwitchesConversionTable::getInstance(board, version, flags), DataField::tr("Switch").toLatin1(),
+          DataField::tr("Switch ").toLatin1() + sw.toString(board) + DataField::tr(" cannot be exported on this board!").toLatin1()),
       sw(sw),
       _switch(0),
       board(board)
@@ -597,7 +597,7 @@ class SourceField: public ConversionField< UnsignedField<N> > {
   public:
     SourceField(DataField * parent, RawSource & source, Board::Type board, unsigned int version, unsigned int variant, unsigned long flags=0):
       ConversionField< UnsignedField<N> >(parent, _source, SourcesConversionTable::getInstance(board, version, variant, flags),
-            this->tr("Source").toLatin1(), this->tr("Source %1 cannot be exported on this board!").arg(source.toString())),
+            DataField::tr("Source").toLatin1(), DataField::tr("Source %1 cannot be exported on this board!").arg(source.toString())),
       source(source),
       _source(0)
     {
@@ -1569,14 +1569,14 @@ class CurvesField: public TransformedField {
         if (IS_STM32(board) && version >= 216) {
           offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count);
           if (offset > maxPoints) {
-            setError(tr("OpenTX only accepts %1 points in all curves").arg(maxPoints));
+            setError(DataField::tr("OpenTX only accepts %1 points in all curves").arg(maxPoints));
             break;
           }
         }
         else {
           offset += (curve->type == CurveData::CURVE_TYPE_CUSTOM ? curve->count * 2 - 2 : curve->count) - 5;
           if (offset > maxPoints - 5 * maxCurves) {
-            setError(tr("OpenTx only accepts %1 points in all curves").arg(maxPoints));
+            setError(DataField::tr("OpenTx only accepts %1 points in all curves").arg(maxPoints));
             break;
           }
           _curves[i] = offset;
@@ -2154,11 +2154,11 @@ class ArmCustomFunctionField: public TransformedField {
 
       if (version >= 218) {
         internalField.Append(new SwitchField<9>(this, fn.swtch, board, version));
-        internalField.Append(new ConversionField< UnsignedField<7> >(this, _func, &functionsConversionTable, "Function", tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new ConversionField< UnsignedField<7> >(this, _func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
       }
       else {
         internalField.Append(new SwitchField<8>(this, fn.swtch, board, version));
-        internalField.Append(new ConversionField< UnsignedField<8> >(this, _func, &functionsConversionTable, "Function", tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new ConversionField< UnsignedField<8> >(this, _func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
       }
 
       if (IS_TARANIS(board) && version >= 216)
@@ -2394,7 +2394,7 @@ class AvrCustomFunctionField: public TransformedField {
     {
       if (version >= 217 && IS_2560(board)) {
         internalField.Append(new SwitchField<8>(this, fn.swtch, board, version));
-        internalField.Append(new ConversionField< UnsignedField<8> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new ConversionField< UnsignedField<8> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
         internalField.Append(new UnsignedField<2>(this, fn.adjustMode));
         internalField.Append(new UnsignedField<4>(this, _union_param));
         internalField.Append(new UnsignedField<1>(this, _active));
@@ -2402,18 +2402,18 @@ class AvrCustomFunctionField: public TransformedField {
       }
       else if (version >= 216) {
         internalField.Append(new SwitchField<6>(this, fn.swtch, board, version));
-        internalField.Append(new ConversionField< UnsignedField<4> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new ConversionField< UnsignedField<4> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
         internalField.Append(new UnsignedField<5>(this, _union_param));
         internalField.Append(new UnsignedField<1>(this, _active));
       }
       else if (version >= 213) {
         internalField.Append(new SwitchField<8>(this, fn.swtch, board, version));
         internalField.Append(new UnsignedField<3>(this, _union_param));
-        internalField.Append(new ConversionField< UnsignedField<5> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new ConversionField< UnsignedField<5> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
       }
       else {
         internalField.Append(new SwitchField<8>(this, fn.swtch, board, version));
-        internalField.Append(new ConversionField< UnsignedField<7> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", tr("OpenTX on this board doesn't accept this function")));
+        internalField.Append(new ConversionField< UnsignedField<7> >(this, (unsigned int &)fn.func, &functionsConversionTable, "Function", DataField::tr("OpenTX on this board doesn't accept this function")));
         internalField.Append(new BoolField<1>(this, (bool &)fn.enabled));
       }
       internalField.Append(new UnsignedField<8>(this, _param));
@@ -3137,7 +3137,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   if (IS_ARM(board))
     internalField.Append(new UnsignedField<3>(this, modelData.telemetryProtocol));
   else
-    internalField.Append(new ConversionField< UnsignedField<3> >(this, (unsigned int &)modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", tr("OpenTX doesn't accept this telemetry protocol")));
+    internalField.Append(new ConversionField< UnsignedField<3> >(this, (unsigned int &)modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this telemetry protocol")));
 
   internalField.Append(new BoolField<1>(this, modelData.thrTrim));
 
@@ -3150,7 +3150,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new SpareBitsField<4>(this));
   }
   else {
-    internalField.Append(new ConversionField< SignedField<4> >(this, modelData.moduleData[0].channelsCount, &channelsConversionTable, "Channels number", tr("OpenTX doesn't allow this number of channels")));
+    internalField.Append(new ConversionField< SignedField<4> >(this, modelData.moduleData[0].channelsCount, &channelsConversionTable, "Channels number", DataField::tr("OpenTX doesn't allow this number of channels")));
   }
 
   if (version >= 216)
@@ -3272,7 +3272,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
       internalField.Append(new UnsignedField<2>(this, modelData.potsWarningMode));
     }
     else {
-      internalField.Append(new ConversionField< SignedField<8> >(this, modelData.moduleData[1].protocol, &protocolsConversionTable, "Protocol", tr("OpenTX doesn't accept this radio protocol")));
+      internalField.Append(new ConversionField< SignedField<8> >(this, modelData.moduleData[1].protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
       internalField.Append(new UnsignedField<8>(this, modelData.trainerMode));
     }
   }
@@ -3284,14 +3284,14 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     }
     else if (version >= 216) {
       modulesCount = 3;
-      internalField.Append(new ConversionField< SignedField<8> >(this, modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", tr("OpenTX doesn't accept this radio protocol")));
+      internalField.Append(new ConversionField< SignedField<8> >(this, modelData.moduleData[0].protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
     }
   }
 
   if (IS_ARM(board) && version >= 215) {
     for (int module=0; module<modulesCount; module++) {
       if (version >= 217) {
-        internalField.Append(new ConversionField<SignedField<4> >(this, modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", tr("OpenTX doesn't accept this radio protocol")));
+        internalField.Append(new ConversionField<SignedField<4> >(this, modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
         internalField.Append(new SignedField<4>(this, subprotocols[module]));
       }
       else {

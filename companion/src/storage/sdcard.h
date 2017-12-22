@@ -23,17 +23,21 @@
 
 #include "categorized.h"
 
+#include <QtCore>
+
 class SdcardFormat : public CategorizedStorageFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(SdcardFormat)
+
   public:
     SdcardFormat(const QString & filename):
       CategorizedStorageFormat(filename)
     {
     }
-    
-    virtual QString name() { return "sdcard"; };
+
+    virtual QString name() { return "sdcard"; }
     virtual bool write(const RadioData & radioData);
-  
+
   protected:
     virtual bool loadFile(QByteArray & fileData, const QString & fileName);
     virtual bool writeFile(const QByteArray & fileData, const QString & fileName);
@@ -46,7 +50,7 @@ class SdcardStorageFactory : public DefaultStorageFactory<SdcardFormat>
       DefaultStorageFactory<SdcardFormat>("sdcard")
     {
     }
-    
+
     virtual bool probe(const QString & name);
 };
 

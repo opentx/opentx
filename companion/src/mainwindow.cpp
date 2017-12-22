@@ -59,18 +59,18 @@
 #ifdef __APPLE__
   #define COMPANION_STAMP                 "companion-macosx.stamp"
   #define COMPANION_INSTALLER             "macosx/opentx-companion-%1.dmg"
-  #define COMPANION_FILEMASK              tr("Diskimage (*.dmg)")
-  #define COMPANION_INSTALL_QUESTION      tr("Would you like to open the disk image to install the new version?")
+  #define COMPANION_FILEMASK              QT_TRANSLATE_NOOP("MainWindow", "Diskimage (*.dmg)")
+  #define COMPANION_INSTALL_QUESTION      QT_TRANSLATE_NOOP("MainWindow", "Would you like to open the disk image to install the new version?")
 #elif WIN32
   #define COMPANION_STAMP                 "companion-windows.stamp"
   #define COMPANION_INSTALLER             "windows/companion-windows-%1.exe"
-  #define COMPANION_FILEMASK              tr("Executable (*.exe)")
-  #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
+  #define COMPANION_FILEMASK              QT_TRANSLATE_NOOP("MainWindow", "Executable (*.exe)")
+  #define COMPANION_INSTALL_QUESTION      QT_TRANSLATE_NOOP("MainWindow", "Would you like to launch the installer?")
 #else
   #define COMPANION_STAMP                 "companion-linux.stamp"
   #define COMPANION_INSTALLER             "" // no automated updates for linux
   #define COMPANION_FILEMASK              "*.*"
-  #define COMPANION_INSTALL_QUESTION      tr("Would you like to launch the installer?")
+  #define COMPANION_INSTALL_QUESTION      QT_TRANSLATE_NOOP("MainWindow", "Would you like to launch the installer?")
 #endif
 
 const char * const OPENTX_COMPANION_DOWNLOAD_URL[] = {
@@ -336,7 +336,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
     if (ret == QMessageBox::Yes) {
       QDir dir(g.updatesDir());
-      QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), COMPANION_FILEMASK);
+      QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), dir.absoluteFilePath(QString(COMPANION_INSTALLER).arg(version)), tr(COMPANION_FILEMASK));
 
       if (!fileName.isEmpty()) {
         g.updatesDir(QFileInfo(fileName).dir().absolutePath());
@@ -361,7 +361,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
 void MainWindow::updateDownloaded()
 {
-  int ret = QMessageBox::question(this, CPN_STR_APP_NAME, COMPANION_INSTALL_QUESTION, QMessageBox::Yes | QMessageBox::No);
+  int ret = QMessageBox::question(this, CPN_STR_APP_NAME, tr(COMPANION_INSTALL_QUESTION), QMessageBox::Yes | QMessageBox::No);
   if (ret == QMessageBox::Yes) {
     if (QDesktopServices::openUrl(QUrl::fromLocalFile(installer_fileName)))
       QApplication::exit();

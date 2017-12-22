@@ -23,17 +23,21 @@
 
 #include "bineeprom.h"
 
+#include <QtCore>
+
 class HexEepromFormat : public BinEepromFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(HexEepromFormat)
+
   public:
     HexEepromFormat(const QString & filename):
       BinEepromFormat(filename)
     {
     }
-    
-    virtual QString name() { return "hex"; };
+
+    virtual QString name() { return "hex"; }
     virtual bool load(RadioData & radioData);
-    
+
   protected:
     virtual bool writeToFile(const uint8_t * eeprom, uint32_t size);
 };

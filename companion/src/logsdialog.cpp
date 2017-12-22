@@ -844,7 +844,7 @@ void LogsDialog::plotLogs()
   plots.max_x = 0;
 
   foreach (QTableWidgetItem *plot, ui->FieldsTW->selectedItems()) {
-    coords plotCoords;
+    coords_t plotCoords;
     int plotColumn = plot->row() + 2; // Date and Time first
 
     plotCoords.min_y = INVALID_MIN;
@@ -1113,7 +1113,7 @@ void LogsDialog::yAxisChangeRanges(QCPRange range)
 }
 
 
-void LogsDialog::addMaxAltitudeMarker(const coords & c, QCPGraph * graph) {
+void LogsDialog::addMaxAltitudeMarker(const coords_t & c, QCPGraph * graph) {
   // find max altitude
   int positionIndex = 0;
   double maxAlt = -100000;
@@ -1141,7 +1141,7 @@ void LogsDialog::addMaxAltitudeMarker(const coords & c, QCPGraph * graph) {
   tracerMaxAlt->updatePosition();
 }
 
-void LogsDialog::countNumberOfThrows(const coords & c, QCPGraph * graph)
+void LogsDialog::countNumberOfThrows(const coords_t & c, QCPGraph * graph)
 {
 #if 0
   // find all launches

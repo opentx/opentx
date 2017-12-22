@@ -23,11 +23,15 @@
 
 #include "eeprominterface.h"
 
+#include <QtCore>
+
 class RleFile;
 class OpenTxFirmware;
 
 class OpenTxEepromInterface : public EEPROMInterface
 {
+  Q_DECLARE_TR_FUNCTIONS(OpenTxEepromInterface)
+
   public:
 
     OpenTxEepromInterface(OpenTxFirmware * firmware);
@@ -35,17 +39,17 @@ class OpenTxEepromInterface : public EEPROMInterface
     virtual ~OpenTxEepromInterface();
 
     virtual unsigned long load(RadioData &, const uint8_t * eeprom, int size);
-    
+
     bool loadModelFromBackup(ModelData & model, const uint8_t * data, unsigned int size, uint8_t version, uint32_t variant);
-    
+
     virtual unsigned long loadBackup(RadioData &, const uint8_t * eeprom, int esize, int index);
-    
+
     virtual int save(uint8_t * eeprom, const RadioData & radioData, uint8_t version=0, uint32_t variant=0);
 
     virtual int getSize(const ModelData &);
 
     virtual int getSize(const GeneralSettings &);
-    
+
   protected:
 
     const char * getName();
@@ -53,33 +57,35 @@ class OpenTxEepromInterface : public EEPROMInterface
     EepromLoadErrors checkVersion(unsigned int version);
 
     bool checkVariant(unsigned int version, unsigned int variant);
-    
+
     template <class T, class M>
     bool loadFromByteArray(T & dest, const QByteArray & data, uint8_t version, uint32_t variant=0);
-    
+
   public:
     template <class T, class M>
     bool loadFromByteArray(T & dest, const QByteArray & data);
-    
+
     template <class T, class M>
     bool saveToByteArray(const T & src, QByteArray & data, uint8_t version=0);
 
     bool loadRadioSettingsFromRLE(GeneralSettings & settings, RleFile * rleFile, uint8_t version);
-    
+
     bool loadModelFromRLE(ModelData & model, RleFile * rleFile, unsigned int index, uint8_t version, uint32_t variant);
 
     void showErrors(const QString & title, const QStringList & errors);
-    
+
     uint8_t getLastDataVersion(Board::Type board);
-    
+
     RleFile * efile;
-    
+
     OpenTxFirmware * firmware;
 
 };
 
 class OpenTxFirmware: public Firmware
 {
+  Q_DECLARE_TR_FUNCTIONS(OpenTxFirmware)
+
   public:
     OpenTxFirmware(const QString & id, OpenTxFirmware * parent):
       Firmware(parent, id, parent->getName(), parent->getBoard())
@@ -124,9 +130,9 @@ class OpenTxFirmware: public Firmware
     virtual QString getFirmwareUrl();
 
     virtual int getCapability(Capability);
-    
+
     virtual QString getAnalogInputName(unsigned int index);
-    
+
     virtual QTime getMaxTimerStart();
 
     virtual int isAvailable(PulsesProtocol proto, int port=0);

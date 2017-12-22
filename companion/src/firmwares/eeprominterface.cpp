@@ -113,7 +113,7 @@ void EEPROMInterface::showEepromWarnings(QWidget *parent, const QString &title, 
   QMessageBox msgBox(parent);
   msgBox.setWindowTitle(title);
   msgBox.setIcon(QMessageBox::Warning);
-  msgBox.setText(QT_TRANSLATE_NOOP("EepromInterface", "Warnings!"));
+  msgBox.setText(tr("Warnings!"));
   msgBox.setInformativeText(warningsList.join("\n"));
   msgBox.setStandardButtons(QMessageBox::Ok);
   msgBox.exec();
