@@ -934,6 +934,7 @@
 #define TR_COPY_FILE           "Copiar"
 #define TR_RENAME_FILE         "Renombrar"
 #define TR_ASSIGN_BITMAP       "Asignar Imagen"
+#define TR_ASSIGN_SPLASH       "Splash screen"
 #define TR_EXECUTE_FILE        "Execute"
 #define TR_REMOVED             "Borrado"
 #define TR_SD_INFO             "Informacion"

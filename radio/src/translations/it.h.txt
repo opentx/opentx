@@ -959,6 +959,7 @@
 #define TR_COPY_FILE           "Copia"
 #define TR_RENAME_FILE         "Rinomomina"
 #define TR_ASSIGN_BITMAP       "Assegna Immagine"
+#define TR_ASSIGN_SPLASH       "Splash screen"
 #define TR_EXECUTE_FILE        "Esegui"
 #define TR_REMOVED             " rimosso"
 #define TR_SD_INFO             "Informazioni"

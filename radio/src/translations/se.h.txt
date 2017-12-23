@@ -969,6 +969,7 @@
 #define TR_COPY_FILE           "Kopia"
 #define TR_RENAME_FILE         "Byt namn"
 #define TR_ASSIGN_BITMAP       "Tilldela ikon"
+#define TR_ASSIGN_SPLASH       "Splash screen"
 #define TR_EXECUTE_FILE        "Utför"
 #define TR_REMOVED             " raderad"
 #define TR_SD_INFO             "Information"
