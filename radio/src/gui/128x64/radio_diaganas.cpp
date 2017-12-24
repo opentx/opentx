@@ -56,6 +56,20 @@ void menuRadioDiagAnalogs(event_t event)
 #endif
   }
 
+  // SWR
+#if defined(PCBX7)
+  if(IS_MODULE_XJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2;
+    coord_t x = 1;
+#else
+  if(IS_MODULE_XJT(EXTERNAL_MODULE)) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + ((NUM_STICKS+NUM_POTS+NUM_SLIDERS)/2)*FH;
+    uint8_t x = ((NUM_STICKS+NUM_POTS+NUM_SLIDERS) & 1) ? (LCD_W/2)+FW : 0;
+#endif
+    lcdDrawText(x, y, "RAS:");
+    lcdDrawNumber(x + 4*FW, y, telemetryData.swr.value, LEFT);
+  }
+
 #if !defined(CPUARM)
   // Display raw BandGap result (debug)
   lcdDrawText(64+5, MENU_HEADER_HEIGHT+1+3*FH, STR_BG);
@@ -65,11 +79,6 @@ void menuRadioDiagAnalogs(event_t event)
 #if defined(PCBX7)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, getBatteryVoltage(), (menuVerticalPosition==HEADER_LINE ? INVERS | (s_editMode > 0 ? BLINK : 0) : 0) | PREC2 | LEFT);
-    // SWR
-  if(IS_MODULE_PXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
-    lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2, "RAS");
-    lcdDrawNumber(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2, telemetryData.swr.value, LEFT);
-  }
 #elif defined(PCBSKY9X)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+4*FH, STR_BATT_CALIB);
   static int32_t adcBatt;
