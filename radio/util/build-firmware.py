@@ -214,7 +214,7 @@ def build_firmware(path):
         exit(COMPILATION_ERROR)
 
     # Launch make
-    cmd = ["make", what]
+    cmd = ["make", "-j2", what]
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode == 0:
