@@ -100,16 +100,16 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     QComboBox * cb = trimsUse[i];
     cb->setProperty("index", i);
     if (IS_HORUS_OR_TARANIS(board)) {
-      cb->addItem(QObject::tr("Trim disabled"), -1);
+      cb->addItem(tr("Trim disabled"), -1);
     }
     for (int m=0; m<modesCount; m++) {
       if (m == phaseIdx) {
-        cb->addItem(QObject::tr("Own Trim"), m*2);
+        cb->addItem(tr("Own Trim"), m*2);
       }
       else if (phaseIdx > 0) {
-        cb->addItem(QObject::tr("Use Trim from Flight mode %1").arg(m), m*2);
+        cb->addItem(tr("Use Trim from Flight mode %1").arg(m), m*2);
         if (IS_HORUS_OR_TARANIS(board)) {
-          cb->addItem(QObject::tr("Use Trim from Flight mode %1 + Own Trim as an offset").arg(m), m*2+1);
+          cb->addItem(tr("Use Trim from Flight mode %1 + Own Trim as an offset").arg(m), m*2+1);
         }
       }
     }
@@ -358,18 +358,20 @@ void FlightModePanel::setGVSB(QDoubleSpinBox * sb, int min, int max, int val)
   sb->setValue(val * mul);
 }
 
+// TODO: pull units from GVarData
 void FlightModePanel::populateGvarUnitCB(QComboBox * cb)
 {
   cb->clear();
-  cb->addItem(QObject::tr(""));
-  cb->addItem(QObject::tr("%"));
+  cb->addItem("");
+  cb->addItem("%");
 }
 
+// TODO: pull precision string from GVarData
 void FlightModePanel::populateGvarPrecCB(QComboBox * cb)
 {
   cb->clear();
-  cb->addItem(QObject::tr("0._"));
-  cb->addItem(QObject::tr("0.0"));
+  cb->addItem(tr("0._"));
+  cb->addItem(tr("0.0"));
 }
 
 void FlightModePanel::phaseName_editingFinished()
@@ -650,7 +652,7 @@ void FlightModePanel::name_customContextMenuRequested(const QPoint & pos)
 
 void FlightModePanel::fmClear()
 {
-  int res = QMessageBox::question(this, "Companion", tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
+  int res = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all current Flight Mode properties?"), QMessageBox::Yes | QMessageBox::No);
   if (res == QMessageBox::Yes) {
     phase.clear(phaseIdx);
     if (phaseIdx == 0) {

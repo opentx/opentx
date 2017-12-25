@@ -35,14 +35,14 @@ RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
   setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
 
   if (step == 1) {
-    addItem(QObject::tr("Played once, not during startup"), -1);
+    addItem(tr("Played once, not during startup"), -1);
     value++;
   }
 
-  addItem(QObject::tr("No repeat"), 0);
+  addItem(tr("No repeat"), 0);
 
   for (unsigned int i=step; i<=60; i+=step) {
-    addItem(QObject::tr("%1s").arg(i), i);
+    addItem(tr("%1s").arg(i), i);
   }
 
   setCurrentIndex(value);
@@ -306,7 +306,7 @@ void CustomFunctionsPanel::playMusic()
     }
     QFile file(track);
     if (!file.exists()) {
-      QMessageBox::critical(this, tr("Error"), tr("Unable to find sound file %1!").arg(track));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Unable to find sound file %1!").arg(track));
       return;
     }
 
@@ -696,10 +696,10 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
 void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
 {
   b->clear();
-  b->addItem(QObject::tr("Value"));
-  b->addItem(QObject::tr("Source"));
-  b->addItem(QObject::tr("GVAR"));
-  b->addItem(QObject::tr("Increment"));
+  b->addItem(tr("Value"));
+  b->addItem(tr("Source"));
+  b->addItem(tr("GVAR"));
+  b->addItem(tr("Increment"));
   b->setCurrentIndex(value);
 }
 

@@ -24,10 +24,14 @@
 #include "helpers.h"
 #include "modeledit.h"
 
+#include <QtCore>
+
 class GVarGroup;
 
 class LimitsGroup
 {
+  Q_DECLARE_TR_FUNCTIONS(LimitsGroup)
+
   public:
     LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel=NULL);
     ~LimitsGroup();
@@ -49,7 +53,7 @@ class Channels : public ModelPanel
   public:
     Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~Channels();
-    
+
   private:
     QVector<LimitsGroup *> limitsGroups;
 

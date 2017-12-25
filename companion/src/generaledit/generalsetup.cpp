@@ -182,7 +182,7 @@ ui(new Ui::GeneralSetup)
     ui->BLBright_SB->setDisabled(true);
     ui->label_BLBright->hide();
   }
-  
+
   if (!IS_HORUS(firmware->getBoard())) {
     ui->OFFBright_SB->hide();
     ui->OFFBright_SB->setDisabled(true);
@@ -311,7 +311,7 @@ GeneralSetupPanel::~GeneralSetupPanel()
 void GeneralSetupPanel::populateBacklightCB()
 {
   QComboBox * b = ui->backlightswCB;
-  QString strings[] = { QObject::tr("OFF"), QObject::tr("Keys"), QObject::tr("Sticks"), QObject::tr("Keys + Sticks"), QObject::tr("ON"), NULL };
+  QString strings[] = { tr("OFF"), tr("Keys"), tr("Sticks"), tr("Keys + Sticks"), tr("ON"), NULL };
 
   b->clear();
   for (int i=0; !strings[i].isNull(); i++) {
@@ -325,7 +325,7 @@ void GeneralSetupPanel::populateBacklightCB()
 void GeneralSetupPanel::populateVoiceLangCB()
 {
   QComboBox * b = ui->voiceLang_CB;
-  QString strings[] = { QObject::tr("English"), QObject::tr("Dutch"), QObject::tr("French"), QObject::tr("Italian"), QObject::tr("German"), QObject::tr("Czech"), QObject::tr("Slovak"), QObject::tr("Spanish"), QObject::tr("Polish"), QObject::tr("Portuguese"), QObject::tr("Swedish"), QObject::tr("Hungarian"), NULL};
+  QString strings[] = { tr("English"), tr("Dutch"), tr("French"), tr("Italian"), tr("German"), tr("Czech"), tr("Slovak"), tr("Spanish"), tr("Polish"), tr("Portuguese"), tr("Swedish"), tr("Hungarian"), NULL};
   QString langcode[] = { "en", "nl","fr", "it", "de", "cz", "sk", "es", "pl", "pt", "se", "hu", NULL};
 
   b->clear();
@@ -389,7 +389,7 @@ void GeneralSetupPanel::updateVarioPitchRange()
 
 void GeneralSetupPanel::populateRotEncCB(int reCount)
 {
-  QString strings[] = { QObject::tr("No"), QObject::tr("RotEnc A"), QObject::tr("Rot Enc B"), QObject::tr("Rot Enc C"), QObject::tr("Rot Enc D"), QObject::tr("Rot Enc E")};
+  QString strings[] = { tr("No"), tr("RotEnc A"), tr("Rot Enc B"), tr("Rot Enc C"), tr("Rot Enc D"), tr("Rot Enc E")};
   QComboBox * b = ui->re_CB;
 
   b->clear();
@@ -429,7 +429,7 @@ void GeneralSetupPanel::setValues()
 void GeneralSetupPanel::on_faimode_CB_stateChanged(int)
 {
   if (ui->faimode_CB->isChecked()) {
-    int ret = QMessageBox::question(this, "Companion",
+    int ret = QMessageBox::question(this, CPN_STR_APP_NAME,
      tr("If you enable FAI, you loose the vario, the play functions, the telemetry screen.\nThis function cannot be disabled by the radio.\nAre you sure ?") ,
      QMessageBox::Yes | QMessageBox::No);
     if (ret==QMessageBox::Yes) {

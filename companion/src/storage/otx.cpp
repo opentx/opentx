@@ -27,23 +27,23 @@
 bool OtxFormat::load(RadioData & radioData)
 {
   QFile file(filename);
-  
+
   if (!file.open(QFile::ReadOnly)) {
-    setError(QObject::tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
+    setError(tr("Error opening file %1:\n%2.").arg(filename).arg(file.errorString()));
     return false;
   }
-  
+
   QByteArray archiveContents = file.readAll();
-  
+
   qDebug() << "File" << filename << "read, size:" << archiveContents.size();
-  
+
   // open zip file
   memset(&zip_archive, 0, sizeof(zip_archive));
   if (!mz_zip_reader_init_mem(&zip_archive, archiveContents.data(), archiveContents.size(), 0)) {
-    qDebug() << QObject::tr("Error opening OTX archive %1").arg(filename);
+    qDebug() << tr("Error opening OTX archive %1").arg(filename);
     return false;
   }
-  
+
   bool result = CategorizedStorageFormat::load(radioData);
   mz_zip_reader_end(&zip_archive);
   return result;
@@ -52,13 +52,13 @@ bool OtxFormat::load(RadioData & radioData)
 bool OtxFormat::write(const RadioData & radioData)
 {
   qDebug() << "Saving to archive" << filename;
-  
+
   memset(&zip_archive, 0, sizeof(zip_archive));
   if (!mz_zip_writer_init_heap(&zip_archive, 0, MZ_ALLOCATION_SIZE)) {
-    setError(QObject::tr("Error initializing OTX archive writer"));
+    setError(tr("Error initializing OTX archive writer"));
     return false;
   }
-  
+
   bool result = CategorizedStorageFormat::write(radioData);
   if (result) {
     // finalize archive and get contents
@@ -71,21 +71,21 @@ bool OtxFormat::write(const RadioData & radioData)
       if (file.open(QIODevice::WriteOnly)) {
         qint64 len = file.write(archiveContents, archiveSize);
         if (len != (qint64)archiveSize) {
-          setError(QObject::tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
+          setError(tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
           result = false;
         }
       }
       else {
-        setError(QObject::tr("Error creating OTX file %1:\n%2.").arg(filename).arg(file.errorString()));
+        setError(tr("Error creating OTX file %1:\n%2.").arg(filename).arg(file.errorString()));
         result = false;
       }
     }
     else {
-      setError(QObject::tr("Error creating OTX archive"));
+      setError(tr("Error creating OTX archive"));
       result = false;
     }
   }
-  
+
   mz_zip_writer_end(&zip_archive);
   return result;
 }
@@ -108,9 +108,9 @@ bool OtxFormat::loadFile(QByteArray & filedata, const QString & filename)
 bool OtxFormat::writeFile(const QByteArray & filedata, const QString & filename)
 {
   if (!mz_zip_writer_add_mem(&zip_archive, filename.toStdString().c_str(), filedata.data(), filedata.size(), MZ_DEFAULT_LEVEL)) {
-    setError(QObject::tr("Error adding %1 to OTX archive").arg(filename));
+    setError(tr("Error adding %1 to OTX archive").arg(filename));
     return false;
   }
-  
+
   return true;
 }

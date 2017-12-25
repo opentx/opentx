@@ -746,7 +746,7 @@ class ConversionField: public TransformedField {
 
       if (table) {
         if (!table->exportValue(_field, _field)) {
-          setError(error.isEmpty() ? tr("Conversion error on field %1").arg(name) : error);
+          setError(error.isEmpty() ? DataField::tr("Conversion error on field %1").arg(name) : error);
         }
         return;
       }

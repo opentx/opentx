@@ -228,7 +228,7 @@ void SimulatorStartupDialog::onRadioTypeChanged(int index)
 void SimulatorStartupDialog::onDataFileSelect(bool)
 {
   QString filter = EEPROM_FILES_FILTER % tr("All files (*.*)");
-  QString file = QFileDialog::getSaveFileName(this, QObject::tr("Select a data file"), ui->dataFile->text(),
+  QString file = QFileDialog::getSaveFileName(this, tr("Select a data file"), ui->dataFile->text(),
                                               filter, NULL, QFileDialog::DontConfirmOverwrite);
   if (!file.isEmpty()) {
     ui->dataFile->setText(file);
@@ -238,7 +238,7 @@ void SimulatorStartupDialog::onDataFileSelect(bool)
 
 void SimulatorStartupDialog::onDataFolderSelect(bool)
 {
-  QString folder = QFileDialog::getExistingDirectory(this, QObject::tr("Select Data Directory"),
+  QString folder = QFileDialog::getExistingDirectory(this, tr("Select Data Directory"),
                                                      ui->dataFolder->text(), QFileDialog::DontUseNativeDialog);
   if (!folder.isEmpty()) {
     ui->dataFolder->setText(folder);
@@ -249,7 +249,7 @@ void SimulatorStartupDialog::onDataFolderSelect(bool)
 
 void SimulatorStartupDialog::onSdPathSelect(bool)
 {
-  QString folder = QFileDialog::getExistingDirectory(this, QObject::tr("Select SD Card Image Folder"),
+  QString folder = QFileDialog::getExistingDirectory(this, tr("Select SD Card Image Folder"),
                                                      ui->sdPath->text(), QFileDialog::DontUseNativeDialog);
   if (!folder.isEmpty()) {
     ui->sdPath->setText(folder);

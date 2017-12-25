@@ -118,7 +118,7 @@ int FlashEEpromDialog::getEEpromVersion(const QString & filename)
     result = radioData->generalSettings.version;
   }
   else {
-    QMessageBox::warning(this, tr("Error"), storage.error());
+    QMessageBox::warning(this, CPN_STR_TTL_ERROR, storage.error());
   }
   return result;
 }
@@ -163,7 +163,7 @@ bool FlashEEpromDialog::patchCalibration()
     return true;
   }
   else {
-    QMessageBox::critical(this, tr("Warning"), tr("Wrong radio calibration data in profile, Settings not patched"));
+    QMessageBox::critical(this, CPN_STR_TTL_WARNING, tr("Wrong radio calibration data in profile, Settings not patched"));
     return false;
   }
 }
@@ -208,7 +208,7 @@ bool FlashEEpromDialog::patchHardwareSettings()
     return true;
   }
   else {
-    QMessageBox::critical(this, tr("Warning"), tr("Wrong radio setting data in profile, Settings not patched"));
+    QMessageBox::critical(this, CPN_STR_TTL_WARNING, tr("Wrong radio setting data in profile, Settings not patched"));
     return false;
   }
 }
@@ -233,13 +233,13 @@ void FlashEEpromDialog::on_burnButton_clicked()
       return;
     }
     if (!file.open(QIODevice::WriteOnly)) {
-      QMessageBox::warning(this, tr("Error"), tr("Cannot write file %1:\n%2.").arg(filename).arg(file.errorString()));
+      QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr("Cannot write file %1:\n%2.").arg(filename).arg(file.errorString()));
       return;
     }
     QTextStream outputStream(&file);
     long result = file.write((char*)eeprom, eeprom_size);
     if (result != eeprom_size) {
-      QMessageBox::warning(this, tr("Error"), tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
+      QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
       return;
     }
   }
@@ -277,16 +277,16 @@ void FlashEEpromDialog::on_burnButton_clicked()
     if (convertEEprom(filename, compatEEprom, firmwareFilename)) {
       int compatVersion = getEEpromVersion(compatEEprom);
       if ((compatVersion / 100) != (eepromVersion / 100)) {
-        QMessageBox::warning(this, tr("Warning"), tr("The radio firmware belongs to another product family, check file and preferences!"));
+        QMessageBox::warning(this, CPN_STR_TTL_WARNING, tr("The radio firmware belongs to another product family, check file and preferences!"));
         return;
       }
       else if (compatVersion < eepromVersion) {
-        QMessageBox::warning(this, tr("Warning"), tr("The radio firmware is outdated, please upgrade!"));
+        QMessageBox::warning(this, CPN_STR_TTL_WARNING, tr("The radio firmware is outdated, please upgrade!"));
         return;
       }
       filename = compatEEprom;
     }
-    else if (QMessageBox::question(this, "Error", tr("Cannot check Models and Settings compatibility! Continue anyway?"), QMessageBox::Yes|QMessageBox::No) == QMessageBox::No) {
+    else if (QMessageBox::question(this, CPN_STR_TTL_ERROR, tr("Cannot check Models and Settings compatibility! Continue anyway?"), QMessageBox::Yes|QMessageBox::No) == QMessageBox::No) {
       return;
     }
     qunlink(firmwareFilename);

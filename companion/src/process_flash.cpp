@@ -66,7 +66,7 @@ FlashProcess::~FlashProcess()
 bool FlashProcess::run()
 {
   if (!QFile::exists(cmd)) {
-    QMessageBox::critical(NULL, "Companion", tr("Executable %1 not found").arg(cmd));
+    QMessageBox::critical(NULL, CPN_STR_APP_NAME, tr("Executable %1 not found").arg(cmd));
     return false;
   }
 

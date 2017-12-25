@@ -151,7 +151,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       }
       generalSettings.PPM_Multiplier=PPM_Multiplier;
     } else {
-      QMessageBox::critical(this, tr("Warning"), tr("Wrong data in profile, radio calibration was not retrieved"));
+      QMessageBox::critical(this, CPN_STR_TTL_WARNING, tr("Wrong data in profile, radio calibration was not retrieved"));
     }
     if (hwtypes.length()==numSwPots) {
       QString Byte;
@@ -193,7 +193,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
         }
       }
     } else {
-      QMessageBox::critical(this, tr("Warning"), tr("Wrong data in profile, Switch/pot config not retrieved"));
+      QMessageBox::critical(this, CPN_STR_TTL_WARNING, tr("Wrong data in profile, Switch/pot config not retrieved"));
     }
     if ((DisplaySet.length()==6) && (BeeperSet.length()==4) && (HapticSet.length()==6) && (SpeakerSet.length()==6)) {
       generalSettings.stickMode=GSStickMode;
@@ -234,7 +234,7 @@ void GeneralEdit::on_calretrieve_PB_clicked()
       }
     }
     else {
-      QMessageBox::critical(this, tr("Warning"), tr("Wrong data in profile, hw related parameters were not retrieved"));
+      QMessageBox::critical(this, CPN_STR_TTL_WARNING, tr("Wrong data in profile, hw related parameters were not retrieved"));
     }
   }
 
@@ -256,7 +256,7 @@ void GeneralEdit::on_calstore_PB_clicked()
     QString hwtypes=g.profile[profile_id].controlTypes();
     QString controlNames=g.profile[profile_id].controlNames();
     if (!(calib.isEmpty())) {
-      int ret = QMessageBox::question(this, "Companion",
+      int ret = QMessageBox::question(this, CPN_STR_APP_NAME,
                       tr("Do you want to store calibration in %1 profile<br>overwriting existing calibration?").arg(name) ,
                       QMessageBox::Yes | QMessageBox::No);
       if (ret == QMessageBox::No) {
@@ -311,6 +311,6 @@ void GeneralEdit::on_calstore_PB_clicked()
 
     QDateTime dateTime = QDateTime::currentDateTime();
     g.profile[profile_id].timeStamp(dateTime.toString("yyyy-MM-dd hh:mm"));
-    QMessageBox::information(this, "Companion", tr("Calibration and HW parameters saved."));
+    QMessageBox::information(this, CPN_STR_APP_NAME, tr("Calibration and HW parameters saved."));
   }
 }

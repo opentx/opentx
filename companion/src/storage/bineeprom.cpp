@@ -39,7 +39,7 @@ bool BinEepromFormat::load(RadioData & radioData)
   QByteArray eeprom(size, 0);
   int result = file.read((char *)eeprom.data(), size);
   if (result != size) {
-    setError(QObject::tr("Error reading %1: %2").arg(filename).arg(file.errorString()));
+    setError(tr("Error reading %1: %2").arg(filename).arg(file.errorString()));
     return false;
   }
 
@@ -61,7 +61,7 @@ bool BinEepromFormat::write(const RadioData & radioData)
   }
   else {
     // TODO here we could call setError(eepromInterface->errors())
-    setError(QObject::tr("Cannot save EEPROM"));
+    setError(tr("Cannot save EEPROM"));
     result = false;
   }
   free(eeprom);
@@ -72,14 +72,14 @@ bool BinEepromFormat::writeToFile(const uint8_t * eeprom, uint32_t size)
 {
   QFile file(filename);
   if (!file.open(QIODevice::WriteOnly)) {
-    setError(QObject::tr("Cannot open file %1:\n%2.").arg(filename).arg(file.errorString()));
+    setError(tr("Cannot open file %1:\n%2.").arg(filename).arg(file.errorString()));
     return false;
   }
 
   QTextStream outputStream(&file);
   qint64 len = file.write((char *)eeprom, size);
   if (len != qint64(size)) {
-    setError(QObject::tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
+    setError(tr("Error writing file %1:\n%2.").arg(filename).arg(file.errorString()));
     return false;
   }
 
@@ -94,7 +94,7 @@ bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
     std::bitset<NUM_ERRORS> result((unsigned long long)eepromInterface->load(radioData, (uint8_t *)eeprom.data(), eeprom.size()));
     if (result.test(ALL_OK)) {
       if (errors.test(HAS_WARNINGS)) {
-        // TODO ShowEepromWarnings(this, QObject::tr("Warning"), errors.to_ulong());
+        // TODO ShowEepromWarnings(this, CPN_STR_TTL_WARNING, errors.to_ulong());
       }
       board = eepromInterface->getBoard();
       return true;
@@ -104,6 +104,6 @@ bool BinEepromFormat::extract(RadioData & radioData, const QByteArray & eeprom)
     }
   }
 
-  setError(QObject::tr("Invalid binary EEPROM file %1").arg(filename));
+  setError(tr("Invalid binary EEPROM file %1").arg(filename));
   return false;
 }

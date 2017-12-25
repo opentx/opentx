@@ -147,7 +147,7 @@ void joystickDialog::joystickOpen(int stick)
     }
   }
   else {
-    QMessageBox::critical(this, tr("Error"), tr("Cannot open joystick."));
+    QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Cannot open joystick."));
   }
 }
 
@@ -255,7 +255,7 @@ void joystickDialog::on_okButton_clicked()
   }
 
   if (started && step < 4) {
-    int resp = QMessageBox::warning(this, tr("Warning"), tr("Calibration not complete, save anyway?"),
+    int resp = QMessageBox::warning(this, CPN_STR_TTL_WARNING, tr("Calibration not complete, save anyway?"),
                                     QDialogButtonBox::Ok | QMessageBox::Default, QDialogButtonBox::Cancel | QMessageBox::Escape, QMessageBox::NoButton);
     if (resp == QDialogButtonBox::Cancel)
       return;

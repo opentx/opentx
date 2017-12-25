@@ -22,39 +22,11 @@
 #define _LOGSDIALOG_H_
 
 #include <QtCore>
-#include <QtGui>
+#include <QDialog>
 #include "qcustomplot.h"
 
 #define INVALID_MIN 999999
 #define INVALID_MAX -999999
-
-enum yaxes_t {
-  firstLeft = 0,
-  firstRight,
-  secondLeft,
-  secondRight,
-  AXES_LIMIT // = 4
-};
-
-struct coords {
-  QVector<double> x, y;
-  double min_y;
-  double max_y;
-  yaxes_t yaxis;
-  QString name;
-};
-
-struct minMax {
-  double min;
-  double max;
-};
-
-struct plotsCollection {
-  QVarLengthArray<struct coords> coords;
-  double min_x;
-  double max_x;
-  bool tooManyRanges;
-};
 
 namespace Ui {
   class LogsDialog;
@@ -62,7 +34,35 @@ namespace Ui {
 
 class LogsDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
+
+  enum yaxes_t {
+    firstLeft = 0,
+    firstRight,
+    secondLeft,
+    secondRight,
+    AXES_LIMIT // = 4
+  };
+
+  struct coords_t {
+    QVector<double> x, y;
+    double min_y;
+    double max_y;
+    yaxes_t yaxis;
+    QString name;
+  };
+
+  struct minMax_t {
+    double min;
+    double max;
+  };
+
+  struct plotsCollection {
+    QVarLengthArray<coords_t> coords;
+    double min_x;
+    double max_x;
+    bool tooManyRanges;
+  };
 
 public:
   explicit LogsDialog(QWidget *parent = 0);
@@ -95,7 +95,7 @@ private:
   QPen pen;
 
   double yAxesRatios[AXES_LIMIT];
-  minMax yAxesRanges[AXES_LIMIT];
+  minMax_t yAxesRanges[AXES_LIMIT];
 
   QCPItemTracer * tracerMaxAlt;
   QCPItemTracer * cursorA;
@@ -109,8 +109,8 @@ private:
   QString generateDuration(const QDateTime & start, const QDateTime & end);
   void setFlightSessions();
 
-  void addMaxAltitudeMarker(const coords & c, QCPGraph * graph);
-  void countNumberOfThrows(const coords & c, QCPGraph * graph);
+  void addMaxAltitudeMarker(const coords_t & c, QCPGraph * graph);
+  void countNumberOfThrows(const coords_t & c, QCPGraph * graph);
   void addCursor(QCPItemTracer ** cursor, QCPGraph * graph, const QColor & color);
   void addCursorLine(QCPItemStraightLine ** line, QCPGraph * graph, const QColor & color);
   void placeCursor(double x, bool second);

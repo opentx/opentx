@@ -142,7 +142,7 @@ void FlashFirmwareDialog::on_firmwareLoad_clicked()
   if (!fileName.isEmpty()) {
     fwName = fileName;
     if (!fwName.isEmpty() && !fwName.endsWith(".dfu") && !FirmwareInterface(fwName).isValid()) {
-      QMessageBox::warning(this, tr("Warning"), tr("%1 may not be a valid firmware file").arg(fwName));
+      QMessageBox::warning(this, CPN_STR_TTL_WARNING, tr("%1 may not be a valid firmware file").arg(fwName));
     }
     updateUI();
   }
@@ -152,10 +152,10 @@ void FlashFirmwareDialog::on_useFirmwareSplash_clicked()
 {
   FirmwareInterface firmware(fwName);
   if (!firmware.isValid()) {
-    QMessageBox::warning(this, tr("Error"), tr( "The firmware file is not valid." ));
+    QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr( "The firmware file is not valid." ));
   }
   else if (!firmware.hasSplash()) {
-    QMessageBox::warning(this, tr("Error"), tr( "There is no start screen image in the firmware file." ));
+    QMessageBox::warning(this, CPN_STR_TTL_ERROR, tr( "There is no start screen image in the firmware file." ));
   }
   else {
     imageSource = FIRMWARE;
@@ -169,7 +169,7 @@ void FlashFirmwareDialog::on_useProfileSplash_clicked()
   if (!fileName.isEmpty()) {
     QImage image(fileName);
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("Profile image %1 is invalid.").arg(fileName));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Profile image %1 is invalid.").arg(fileName));
     }
     else {
       imageSource = PROFILE;
@@ -189,12 +189,12 @@ void FlashFirmwareDialog::on_useExternalSplash_clicked()
     g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
     QImage image(fileName);
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("Image could not be loaded from %1").arg(fileName));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Image could not be loaded from %1").arg(fileName));
     }
     else{
       imageSource = EXTERNAL;
       imageFile = fileName;
-    }  
+    }
   }
   updateUI();
 }
@@ -207,7 +207,7 @@ void FlashFirmwareDialog::on_useLibrarySplash_clicked()
   if (!fileName.isEmpty()) {
     QImage image(fileName);
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Error"), tr("The library image could not be loaded"));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("The library image could not be loaded"));
     }
     else {
       imageSource = LIBRARY;
@@ -234,7 +234,7 @@ void FlashFirmwareDialog::on_burnButton_clicked()
       image = pixmap->toImage().scaled(ui->splash->width(), ui->splash->height());
     }
     if (image.isNull()) {
-      QMessageBox::critical(this, tr("Warning"), tr("Splash image not found"));
+      QMessageBox::critical(this, CPN_STR_TTL_WARNING, tr("Splash image not found"));
       return;
     }
     // write the customized firmware
@@ -247,7 +247,7 @@ void FlashFirmwareDialog::on_burnButton_clicked()
     FirmwareInterface firmware(fwName);
     firmware.setSplash(image);
     if (firmware.save(tempFile) <= 0) {
-      QMessageBox::critical(this, tr("Warning"), tr("Cannot save customized firmware"));
+      QMessageBox::critical(this, CPN_STR_TTL_WARNING, tr("Cannot save customized firmware"));
       return;
     }
     startFlash(tempFile);
@@ -304,7 +304,7 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
     backupPath = g.profile[g.id()].pBackupDir();
     if (backupPath.isEmpty()) {
       backupPath=g.backupDir();
-    }     
+    }
     backupFilename = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
     result = readEeprom(backupFilename, progressDialog.progress());
     sleep(2);

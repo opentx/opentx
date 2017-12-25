@@ -74,7 +74,7 @@ bool Side::displayImage(QString fileName, Source pictSource)
     if (pictSource== PICT)
       *format = image.width()>WIDTH_9X ? LCDTARANIS : LCD9X;
     else if (pictSource == PROFILE)
-      *format = (g.profile[g.id()].fwType().contains("x9")) ? LCDTARANIS : LCD9X; 
+      *format = (g.profile[g.id()].fwType().contains("x9")) ? LCDTARANIS : LCD9X;
   }
 
   if (image.isNull()) {
@@ -88,17 +88,17 @@ bool Side::displayImage(QString fileName, Source pictSource)
 
   switch (pictSource) {
     case FW:
-      fileNameEdit->setText(QObject::tr("FW: %1").arg(fileName));
+      fileNameEdit->setText(CustomizeSplashDialog::tr("FW: %1").arg(fileName));
       *saveToFileName = fileName;
       *source = FW;
       break;
     case PICT:
-      fileNameEdit->setText(QObject::tr("Pict: %1").arg(fileName));
+      fileNameEdit->setText(CustomizeSplashDialog::tr("Pict: %1").arg(fileName));
       *saveToFileName = fileName;
       *source = PICT;
       break;
     case PROFILE:
-      fileNameEdit->setText(QObject::tr("Profile image"));
+      fileNameEdit->setText(CustomizeSplashDialog::tr("Profile image"));
       *saveToFileName = fileName;
       *source = PROFILE;
       break;
@@ -158,7 +158,7 @@ CustomizeSplashDialog::CustomizeSplashDialog(QWidget *parent) :
   setWindowIcon(CompanionIcon("paintbrush.png"));
   ui->leftLibraryButton->setIcon(CompanionIcon("library.png"));
   ui->rightLibraryButton->setIcon(CompanionIcon("library.png"));
-  
+
   left.imageLabel =  ui->leftImageLabel;
   right.imageLabel = ui->rightImageLabel;
   left.fileNameEdit =  ui->leftFileNameEdit;
@@ -169,7 +169,7 @@ CustomizeSplashDialog::CustomizeSplashDialog(QWidget *parent) :
   right.libraryButton = ui->rightLibraryButton;
   left.invertButton = ui->leftInvertButton;
   right.invertButton = ui->rightInvertButton;
-  
+
   left.loadFwButton =  ui->leftLoadFwButton;
   right.loadFwButton =  ui->rightLoadFwButton;
   left.loadPictButton =  ui->leftLoadPictButton;
@@ -203,7 +203,7 @@ void CustomizeSplashDialog::loadFirmware(Side side)
   QString fileName = QFileDialog::getOpenFileName(this, tr("Open Firmware File"), g.flashDir(), FLASH_FILES_FILTER);
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, FW ))
-      QMessageBox::critical(this, tr("Error"), tr("Can not load embedded image from firmware file %1.").arg(fileName));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Can not load embedded image from firmware file %1.").arg(fileName));
     else
     g.flashDir( QFileInfo(fileName).dir().absolutePath() );
   }
@@ -223,7 +223,7 @@ void CustomizeSplashDialog::loadPicture(Side side)
 
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, PICT ))
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load the image file %1.").arg(fileName));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Cannot load the image file %1.").arg(fileName));
     else
       g.imagesDir( QFileInfo(fileName).dir().absolutePath() );
   }
@@ -238,7 +238,7 @@ void CustomizeSplashDialog::loadProfile(Side side)
 
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, PROFILE ))
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load profile image %1.").arg(fileName));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Cannot load profile image %1.").arg(fileName));
   }
   side.markSourceButton();
 }
@@ -252,7 +252,7 @@ void CustomizeSplashDialog::libraryButton_clicked( Side side )
   ld->exec();
   if (!fileName.isEmpty()) {
     if (!side.displayImage( fileName, UNDEFINED ))
-      QMessageBox::critical(this, tr("Error"), tr("Cannot load the library image %1.").arg(fileName));
+      QMessageBox::critical(this, CPN_STR_TTL_ERROR, tr("Cannot load the library image %1.").arg(fileName));
   }
 }
 

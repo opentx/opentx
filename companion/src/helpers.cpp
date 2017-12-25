@@ -29,6 +29,7 @@
 #include "appdata.h"
 #include "macros.h"
 #include "helpers.h"
+#include "simulatorinterface.h"
 #include "simulatormainwindow.h"
 #include "storage/sdcard.h"
 
@@ -363,12 +364,13 @@ QString Helpers::getAdjustmentString(int16_t val, const ModelData * model, bool 
   return ret;
 }
 
+// TODO: Move lookup to GVarData class (w/out combobox)
 void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
 {
-  b->addItem(QObject::tr("Own value"));
+  b->addItem(QCoreApplication::translate("GVarData", "Own value"));
   for (int i=0; i<getCurrentFirmware()->getCapability(FlightModes); i++) {
     if (i != (int)phase) {
-      b->addItem(QObject::tr("Flight mode %1 value").arg(i));
+      b->addItem(QCoreApplication::translate("GVarData", "Flight mode %1 value").arg(i));
     }
   }
 }
@@ -516,58 +518,30 @@ int findmult(float value, float base)
   return mult;
 }
 
+// TODO: Move to FrSkyAlarmData
 QString getFrSkyAlarmType(int alarm)
 {
   switch (alarm) {
     case 1:
-      return QObject::tr("Yellow");
+      return QCoreApplication::translate("FrSkyAlarmData", "Yellow");
     case 2:
-      return QObject::tr("Orange");
+      return QCoreApplication::translate("FrSkyAlarmData", "Orange");
     case 3:
-      return QObject::tr("Red");
+      return QCoreApplication::translate("FrSkyAlarmData", "Red");
     default:
       return "----";
   }
 }
 
+// TODO: move to FrSkyChannelData
 QString getFrSkyUnits(int units)
 {
   switch(units) {
     case 1:
-      return QObject::tr("---");
+      return QCoreApplication::translate("FrSkyChannelData", "---");
     default:
-      return "V";
+      return QCoreApplication::translate("FrSkyChannelData", "V");
   }
-}
-
-QString getFrSkyProtocol(int protocol)
-{
-  switch(protocol) {
-    case 2:
-      if ((getCurrentFirmware()->getCapability(Telemetry) & TM_HASWSHH))
-        return QObject::tr("Winged Shadow How High");
-      else
-        return QObject::tr("Winged Shadow How High (not supported)");
-    case 1:
-      return QObject::tr("FrSky Sensor Hub");
-    default:
-      return QObject::tr("None");
-  }
-}
-
-QString getFrSkyMeasure(int units)
-{
-  switch(units) {
-    case 1:
-      return QObject::tr("Imperial");
-    default:
-      return QObject::tr("Metric");
-  }
-}
-
-QString getFrSkySrc(int index)
-{
-  return RawSource(SOURCE_TYPE_TELEMETRY, index-1).toString();
 }
 
 QString getTheme()
@@ -608,8 +582,8 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
   QString fwId = SimulatorLoader::findSimulatorByFirmwareName(getCurrentFirmware()->getId());
   if (fwId.isEmpty()) {
     QMessageBox::warning(NULL,
-                         QObject::tr("Warning"),
-                         QObject::tr("Simulator for this firmware is not yet available"));
+                         CPN_STR_TTL_WARNING,
+                         QCoreApplication::translate("Companion", "Simulator for this firmware is not yet available"));
     return;
   }
 
@@ -633,15 +607,15 @@ void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
   QString resultMsg;
   if (dialog->getExitStatus(&resultMsg)) {
     if (resultMsg.isEmpty())
-      resultMsg = QObject::tr("Uknown error during Simulator startup.");
-    QMessageBox::critical(NULL, QObject::tr("Simulator Error"), resultMsg);
+      resultMsg = QCoreApplication::translate("Companion", "Uknown error during Simulator startup.");
+    QMessageBox::critical(NULL, QCoreApplication::translate("Companion", "Simulator Error"), resultMsg);
     dialog->deleteLater();
   }
    else if (dialog->setRadioData(simuData)) {
     dialog->show();
   }
   else {
-    QMessageBox::critical(NULL, QObject::tr("Data Load Error"), QObject::tr("Error occurred while starting simulator."));
+    QMessageBox::critical(NULL, QCoreApplication::translate("Companion", "Data Load Error"), QCoreApplication::translate("Companion", "Error occurred while starting simulator."));
     dialog->deleteLater();
   }
 }

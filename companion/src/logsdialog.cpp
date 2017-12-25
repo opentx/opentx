@@ -336,7 +336,7 @@ void LogsDialog::exportToGoogleEarth()
   }
   QFile geFile(geFilename);
   if (!geFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
-    QMessageBox::warning(this, tr("Error"),
+    QMessageBox::warning(this, CPN_STR_TTL_ERROR,
         tr("Cannot write file %1:\n%2.")
         .arg(geFilename)
         .arg(geFile.errorString()));
@@ -354,7 +354,7 @@ void LogsDialog::exportToGoogleEarth()
   outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<Schema id=\"schema\">\n";
   outputStream << "\t\t\t<gx:SimpleArrayField name=\"GPSSpeed\" type=\"float\">\n\t\t\t\t<displayName>GPS Speed</displayName>\n\t\t\t</gx:SimpleArrayField>\n";
-  
+
   // declare additional fields
   for (int i=0; i<dataPoints.at(0).count()-2; i++) {
     if (ui->FieldsTW->item(i, 0) && ui->FieldsTW->item(i, 0)->isSelected() && !nondataCols.contains(i+2)) {
@@ -504,7 +504,7 @@ void LogsDialog::updateCursorsLabel()
   ui->labelCursors->setText(text);
 }
 
-QString LogsDialog::formatTimeDelta(double timeDelta) 
+QString LogsDialog::formatTimeDelta(double timeDelta)
 {
   if (abs(int(timeDelta)) < 10) {
     return QString("%1 s").arg(timeDelta, 1, 'f', 1);
@@ -698,7 +698,7 @@ bool LogsDialog::cvsFileParse()
 
   file.close();
   if (errors > 1) {
-    QMessageBox::warning(this, "Companion", tr("The selected logfile contains %1 invalid lines out of  %2 total lines").arg(errors).arg(lines));
+    QMessageBox::warning(this, CPN_STR_APP_NAME, tr("The selected logfile contains %1 invalid lines out of  %2 total lines").arg(errors).arg(lines));
   }
 
   int n = csvlog.count();
@@ -719,10 +719,10 @@ struct FlightSession {
   QDateTime end;
 };
 
-QDateTime LogsDialog::getRecordTimeStamp(int index) 
+QDateTime LogsDialog::getRecordTimeStamp(int index)
 {
   QString tstamp = csvlog.at(index).at(0) + " " + csvlog.at(index).at(1);
-  if (csvlog.at(index).at(1).contains(".")) 
+  if (csvlog.at(index).at(1).contains("."))
     return QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss.zzz");
   return QDateTime::fromString(tstamp, "yyyy-MM-dd HH:mm:ss");
 }
@@ -732,10 +732,10 @@ QString LogsDialog::generateDuration(const QDateTime & start, const QDateTime & 
   int secs = start.secsTo(end);
   QString durationString;
   if (secs >= 3600) {
-    durationString = QString("%1:").arg(secs/3600); 
+    durationString = QString("%1:").arg(secs/3600);
     secs %= 3600;
   }
-  durationString += QString("%1:%2").arg(secs/60, 2, 10, QChar('0')).arg(secs%60, 2, 10, QChar('0'));  
+  durationString += QString("%1:%2").arg(secs/60, 2, 10, QChar('0')).arg(secs%60, 2, 10, QChar('0'));
   return durationString;
 }
 
@@ -844,7 +844,7 @@ void LogsDialog::plotLogs()
   plots.max_x = 0;
 
   foreach (QTableWidgetItem *plot, ui->FieldsTW->selectedItems()) {
-    coords plotCoords;
+    coords_t plotCoords;
     int plotColumn = plot->row() + 2; // Date and Time first
 
     plotCoords.min_y = INVALID_MIN;
@@ -1113,7 +1113,7 @@ void LogsDialog::yAxisChangeRanges(QCPRange range)
 }
 
 
-void LogsDialog::addMaxAltitudeMarker(const coords & c, QCPGraph * graph) {
+void LogsDialog::addMaxAltitudeMarker(const coords_t & c, QCPGraph * graph) {
   // find max altitude
   int positionIndex = 0;
   double maxAlt = -100000;
@@ -1126,7 +1126,7 @@ void LogsDialog::addMaxAltitudeMarker(const coords & c, QCPGraph * graph) {
       // qDebug() << "max alt: " << maxAlt << "@" << result;
     }
   }
-  // qDebug() << "max alt: " << maxAlt << "@" << positionIndex; 
+  // qDebug() << "max alt: " << maxAlt << "@" << positionIndex;
 
   // add max altitude marker
   tracerMaxAlt = new QCPItemTracer(ui->customPlot);
@@ -1141,7 +1141,7 @@ void LogsDialog::addMaxAltitudeMarker(const coords & c, QCPGraph * graph) {
   tracerMaxAlt->updatePosition();
 }
 
-void LogsDialog::countNumberOfThrows(const coords & c, QCPGraph * graph)
+void LogsDialog::countNumberOfThrows(const coords_t & c, QCPGraph * graph)
 {
 #if 0
   // find all launches

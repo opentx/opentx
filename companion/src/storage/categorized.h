@@ -23,14 +23,18 @@
 
 #include "storage.h"
 
+#include <QtCore>
+
 class CategorizedStorageFormat : public StorageFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(CategorizedStorageFormat)
+
   public:
     CategorizedStorageFormat(const QString & filename):
       StorageFormat(filename)
     {
     }
-    
+
     virtual bool load(RadioData & radioData);
     virtual bool write(const RadioData & radioData);
 

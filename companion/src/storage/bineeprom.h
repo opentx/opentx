@@ -23,18 +23,22 @@
 
 #include "storage.h"
 
+#include <QtCore>
+
 class BinEepromFormat : public StorageFormat
 {
+  Q_DECLARE_TR_FUNCTIONS(BinEepromFormat)
+
   public:
     BinEepromFormat(const QString & filename):
       StorageFormat(filename)
     {
     }
-    
-    virtual QString name() { return "bin"; };
+
+    virtual QString name() { return "bin"; }
     virtual bool load(RadioData & radioData);
     virtual bool write(const RadioData & radioData);
-    
+
   protected:
     bool extract(RadioData & radioData, const QByteArray & eeprom);
     virtual bool writeToFile(const uint8_t * eeprom, uint32_t size);

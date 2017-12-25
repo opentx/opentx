@@ -56,7 +56,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   QHBoxLayout * horizontalLayout = new QHBoxLayout();
-  QCheckBox * gv = new QCheckBox(QObject::tr("GV"));
+  QCheckBox * gv = new QCheckBox(tr("GV"));
   gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
   QComboBox * cb = new QComboBox();

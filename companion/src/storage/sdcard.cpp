@@ -35,7 +35,7 @@ bool SdcardFormat::loadFile(QByteArray & filedata, const QString & filename)
   QString path = this->filename + "/" + filename;
   QFile file(path);
   if (!file.open(QFile::ReadOnly)) {
-    setError(QObject::tr("Error opening file %1:\n%2.").arg(path).arg(file.errorString()));
+    setError(tr("Error opening file %1:\n%2.").arg(path).arg(file.errorString()));
     return false;
   }
   filedata = file.readAll();
@@ -48,7 +48,7 @@ bool SdcardFormat::writeFile(const QByteArray & data, const QString & filename)
   QString path = this->filename + "/" + filename;
   QFile file(path);
   if (!file.open(QFile::WriteOnly)) {
-    setError(QObject::tr("Error opening file %1 in write mode:\n%2.").arg(path).arg(file.errorString()));
+    setError(tr("Error opening file %1 in write mode:\n%2.").arg(path).arg(file.errorString()));
     return false;
   }
   file.write(data.data(), data.size());

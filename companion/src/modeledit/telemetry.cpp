@@ -719,7 +719,7 @@ void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model
   if (negative) {
     for (int i=-CPN_MAX_SENSORS; i<0; ++i) {
       if (model->sensorData[-i-1].isAvailable())
-        cb->addItem(QObject::tr("-%1").arg(model->sensorData[-i-1].label), i);
+        cb->addItem(QString("-%1").arg(model->sensorData[-i-1].label), i);
     }
   }
   cb->addItem("---", 0);

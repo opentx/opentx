@@ -57,7 +57,7 @@ burnConfigDialog::burnConfigDialog(QWidget *parent) :
       ui->label_sb1->hide();
       ui->label_sb3->hide();
       ui->samba_location->hide();
-      ui->samba_port->hide();      
+      ui->samba_port->hide();
       ui->sb_browse->hide();
     }
     else if (IS_SKY9X(board)) {
@@ -181,7 +181,7 @@ void burnConfigDialog::getSettings()
       ui->pushButton_3->setEnabled(true);
     } else {
       ui->pushButton_3->setDisabled(true);
-    }    
+    }
 }
 
 void burnConfigDialog::putSettings()
@@ -358,7 +358,7 @@ void burnConfigDialog::on_advCtrChkB_toggled(bool checked)
     else {
       ui->label_av3->show();
       ui->avrdude_mcu->show();
-      QMessageBox::warning(this, tr("Companion"),
+      QMessageBox::warning(this, CPN_STR_APP_NAME,
         tr("<b><u>WARNING!</u></b><br>Normally CPU type is automatically selected according to the chosen firmware.<br>If you change the CPU type the resulting eeprom could be inconsistent."),
         QMessageBox::Ok);
     }
