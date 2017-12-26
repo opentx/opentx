@@ -108,6 +108,7 @@ class ModelPrinter: public QObject
     QString printPxxPower(int power);
     QString printFailsafe(int idx);
     QString printFailsafeMode(unsigned int fsmode);
+    QString printFailsafeValue(int val);
     QString printTimerCountdownBeep(unsigned int countdownBeep);
     QString printTimerPersistent(unsigned int persistent);
     QString printPPMFrameLength(int ppmFL);

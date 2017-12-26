@@ -242,6 +242,7 @@ QString ModelPrinter::printModuleSubType(unsigned protocol, unsigned subType, un
 QString ModelPrinter::printModule(int idx)
 {
   QStringList str;
+  QString result;
   ModuleData module = model.moduleData[(idx<0 ? CPN_MAX_MODULES : idx)];
   if (idx < 0) {
     str += tr("Mode") + QString("(%1)").arg(printTrainerMode());
@@ -253,6 +254,7 @@ QString ModelPrinter::printModule(int idx)
         str += tr("Polarity") + QString("(%1)").arg(module.polarityToString());
       }
     }
+    result = str.join(", ");
   }
   else {
     str += printModuleType(idx);
@@ -280,10 +282,13 @@ QString ModelPrinter::printModule(int idx)
           str += tr("Telemetry") + QString("(%1)").arg(printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
         }
       }
-      str += printFailsafe(idx);
     }
+    result = str.join(", ");
+    if (((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 || (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M)
+       && firmware->getCapability(HasFailsafe))
+      result.append(printFailsafe(idx));
   }
-  return str.join(", ");
+  return result;
 }
 
 QString ModelPrinter::printTrainerMode()
@@ -940,13 +945,27 @@ QString ModelPrinter::printPotsWarningMode()
 
 QString ModelPrinter::printFailsafe(int idx)
 {
-  QString str;
+  QStringList strl;
   ModuleData module = model.moduleData[idx];
-  str += tr("Failsafe Mode") + QString("(%1)").arg(printFailsafeMode(module.failsafeMode));
+  strl += "<br>" + tr("Failsafe Mode") + QString("(%1)").arg(printFailsafeMode(module.failsafeMode));
   if (module.failsafeMode == FAILSAFE_CUSTOM) {
-    str += tr("Failsafe settings");               // TODO: settings per channel and units % or us
+    for (int i=0; i<module.channelsCount; i++) {
+      strl += QString("%1(%2)").arg(printChannelName(module.channelsStart + i).trimmed()).arg(printFailsafeValue(module.failsafeChannels[i]));
+    }
   }
-  return str;
+  return strl.join(", ");
+}
+
+QString ModelPrinter::printFailsafeValue(int val)
+{
+  switch (val) {
+    case 2000:
+      return tr("Hold");
+    case 2001:
+      return tr("No Pulse");
+    default:
+      return QString("%1%").arg(QString::number(divRoundClosest(val * 1000, 1024) / 10.0));
+  }
 }
 
 QString ModelPrinter::printFailsafeMode(unsigned int fsmode)
