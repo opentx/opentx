@@ -21,6 +21,7 @@
 #include "helpers.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
+#include "boards.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -45,12 +46,9 @@ ModelPrinter::~ModelPrinter()
 {
 }
 
-QString ModelPrinter::printBoolean(bool val)
+QString formatTitle(const QString & name)
 {
-  if (val)
-    return tr("Y");
-  else
-    return tr("N");
+  return QString("<b>" + name + "</b>&nbsp;");
 }
 
 void debugHtml(const QString & html)
@@ -78,9 +76,60 @@ QString addFont(const QString & input, const QString & color, const QString & si
   return "<font " + sizeStr + " " + faceStr + " " + colorStr + ">" + input + "</font>";
 }
 
+#define MASK_TIMEVALUE_HRSMINS 1
+#define MASK_TIMEVALUE_ZEROHRS 2
+#define MASK_TIMEVALUE_PADSIGN 3
+
+QString ModelPrinter::printTimeValue(const int value, const unsigned int mask)
+{
+  QString result;
+  int sign = 1;
+  int val = value;
+  if (val < 0) {
+    val = -val;
+    sign = -1;
+  }
+  result = (sign < 0 ? QString("-") : ((mask && MASK_TIMEVALUE_PADSIGN) ? QString(" ") : QString("")));
+  if (mask && MASK_TIMEVALUE_HRSMINS) {
+    int hours = val / 3600;
+    if (hours > 0 || (mask && MASK_TIMEVALUE_ZEROHRS)) {
+      val -= hours * 3600;
+      result.append(QString("%1:").arg(hours, 2, 10, QLatin1Char('0')));
+    }
+  }
+  int minutes = val / 60;
+  int seconds = val % 60;
+  result.append(QString("%1:%2").arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+  return result;
+}
+
+#define BOOLEAN_ENABLEDISABLE 1
+#define BOOLEAN_TRUEFALSE 2
+#define BOOLEAN_YESNO 3
+#define BOOLEAN_YN 4
+#define BOOLEAN_ONOFF 5
+
+QString ModelPrinter::printBoolean(const bool val, const int typ)
+{
+  switch (typ) {
+    case BOOLEAN_ENABLEDISABLE:
+      return (val ? tr("Enable") : tr("Disable"));
+    case BOOLEAN_TRUEFALSE:
+      return (val ? tr("True") : tr("False"));
+    case BOOLEAN_YESNO:
+      return (val ? tr("Yes") : tr("No"));
+    case BOOLEAN_YN:
+      return (val ? tr("Y") : tr("N"));
+    case BOOLEAN_ONOFF:
+      return (val ? tr("ON") : tr("OFF"));
+    default:
+      return tr("???");
+  }
+}
+
 QString ModelPrinter::printEEpromSize()
 {
-  return tr("%1 bytes").arg(getCurrentEEpromInterface()->getSize(model));
+  return QString("%1 ").arg(getCurrentEEpromInterface()->getSize(model)) + tr("bytes");
 }
 
 QString ModelPrinter::printChannelName(int idx)
@@ -109,11 +158,6 @@ QString ModelPrinter::printTrimIncrementMode()
     default:
       return tr("Unknown");
   }
-}
-
-QString ModelPrinter::printThrottleTrimMode()
-{
-  return model.thrTrim ? tr("Enabled") : tr("Disabled");
 }
 
 QString ModelPrinter::printModuleProtocol(unsigned int protocol)
@@ -195,43 +239,74 @@ QString ModelPrinter::printModuleSubType(unsigned protocol, unsigned subType, un
   }
 }
 
-QString ModelPrinter::printModule(int idx) {
-  const ModuleData &module = model.moduleData[idx];
-  if (module.protocol == PULSES_OFF)
-    return printModuleProtocol(module.protocol);
-  else if (module.protocol == PULSES_PPM)
-    return tr("%1, Channels(%2-%3), PPM delay(%4usec), Pulse polarity(%5)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount).arg(module.ppm.delay).arg(module.polarityToString());
-  else {
-    QString result = tr("%1, Channels(%2-%3)").arg(printModuleProtocol(module.protocol)).arg(module.channelsStart+1).arg(module.channelsStart+module.channelsCount);
-    if (module.protocol != PULSES_PXX_XJT_D8) {
-      result += " " + tr("Receiver number(%1)").arg(module.modelId);
+QString ModelPrinter::printModule(int idx)
+{
+  QStringList str;
+  ModuleData module = model.moduleData[(idx<0 ? CPN_MAX_MODULES : idx)];
+  if (idx < 0) {
+    str += tr("Mode") + QString("(%1)").arg(printTrainerMode());
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+      if (model.trainerMode == TRAINER_SLAVE_JACK) {
+        str += tr("Channels") + QString("(%1-%2)").arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount);
+        str += tr("Frame length") + QString("(%1ms)").arg(printPPMFrameLength(module.ppm.frameLength));
+        str += tr("PPM delay") + QString("(%1us)").arg(module.ppm.delay);
+        str += tr("Polarity") + QString("(%1)").arg(module.polarityToString());
+      }
     }
-    if (module.protocol == PULSES_MULTIMODULE)
-      result += " " + tr("radio Protocol %1, subType %2, option value %3").arg(printMultiRfProtocol(module.multi.rfProtocol, module.multi.customProto)).arg(printMultiSubType(module.multi.rfProtocol, module.multi.customProto, module.subType)).arg(module.multi.optionValue);
-    else if (module.protocol == PULSES_PXX_R9M)
-      result += " " + tr("Module Type: %1, Power: %2, Telemetry Enabled: %3").arg(printModuleSubType(module.protocol, module.subType)).arg(printR9MPowerValue(module.subType, module.pxx.power, module.pxx.sport_out)).arg(printBoolean(module.pxx.sport_out));
-    return result;
   }
+  else {
+    str += printModuleType(idx);
+    str += tr("Protocol") + QString("(%1)").arg(printModuleProtocol(module.protocol));
+    if (module.protocol) {
+      str += tr("Channels") + QString("(%1-%2)").arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount);
+      if (module.protocol == PULSES_PPM || module.protocol == PULSES_SBUS) {
+        str += tr("Frame length") + QString("(%1ms)").arg(printPPMFrameLength(module.ppm.frameLength));
+        str += tr("Polarity") + QString("(%1)").arg(module.polarityToString());
+        if (module.protocol == PULSES_PPM)
+          str += tr("Delay") + QString("(%1us)").arg(module.ppm.delay);
+      }
+      else {
+        if (!(module.protocol == PULSES_PXX_XJT_D8 || module.protocol == PULSES_CROSSFIRE || module.protocol == PULSES_SBUS)) {
+          str += tr("Receiver") + QString("(%1)").arg(module.modelId);
+        }
+        if (module.protocol == PULSES_MULTIMODULE) {
+          str += tr("Radio protocol") + QString("(%1)").arg(printMultiRfProtocol(module.multi.rfProtocol, module.multi.customProto));
+          str += tr("Subtype") + QString("(%1)").arg(printMultiSubType(module.multi.rfProtocol, module.multi.customProto, module.subType));
+          str += tr("Option value") + QString("(%1)").arg(module.multi.optionValue);
+        }
+        if (module.protocol == PULSES_PXX_R9M) {
+          str += tr("Sub Type") + QString("(%1)").arg(printModuleSubType(module.protocol, module.subType));
+          str += tr("RF Output Power") + QString("(%1)").arg(printR9MPowerValue(module.subType, module.pxx.power, module.pxx.sport_out));
+          str += tr("Telemetry") + QString("(%1)").arg(printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
+        }
+      }
+      str += printFailsafe(idx);
+    }
+  }
+  return str.join(", ");
 }
 
 QString ModelPrinter::printTrainerMode()
 {
   QString result;
   switch (model.trainerMode) {
-    case 1:
-      result = tr("Slave/Jack"); // TODO + tr(": Channel start: %1, %2 Channels, %3usec Delay, Pulse polarity %4").arg(module.channelsStart+1).arg(module.channelsCount).arg(module.ppm.delay).arg(module.polarityToString());
+    case TRAINER_MASTER_JACK:
+      result = tr("Master/Jack");
       break;
-    case 2:
+    case TRAINER_SLAVE_JACK:
+      result = tr("Slave/Jack");
+      break;
+    case TRAINER_MASTER_SBUS_MODULE:
       result = tr("Master/SBUS Module");
       break;
-    case 3:
+    case TRAINER_MASTER_CPPM_MODULE:
       result = tr("Master/CPPM Module");
       break;
-    case 4:
+    case TRAINER_MASTER_SBUS_BATT_COMPARTMENT:
       result = tr("Master/SBUS in battery compartment");
       break;
     default:
-      result = tr("Master/Jack");
+      result = tr("????");
   }
   return result;
 }
@@ -253,7 +328,6 @@ QString ModelPrinter::printHeliSwashType ()
         return "???";
     }
 }
-
 
 QString ModelPrinter::printCenterBeep()
 {
@@ -290,7 +364,7 @@ QString ModelPrinter::printCenterBeep()
     if (model.beepANACenter & 0x40)
       strl << "P3";
   }
-  return strl.join(", ");
+  return (strl.isEmpty() ? tr("None") : strl.join(", "));
 }
 
 QString ModelPrinter::printTimer(int idx)
@@ -302,19 +376,15 @@ QString ModelPrinter::printTimer(const TimerData & timer)
 {
   QStringList result;
   if (firmware->getCapability(TimersName) && timer.name[0])
-    result += tr("Name(%1)").arg(timer.name);
-  result += QString("%1:%2").arg(timer.val/60, 2, 10, QChar('0')).arg(timer.val%60, 2, 10, QChar('0'));
+    result += tr("Name") + QString("(%1)").arg(timer.name);
+  result += printTimeValue(timer.val, MASK_TIMEVALUE_HRSMINS | MASK_TIMEVALUE_ZEROHRS);
   result += timer.mode.toString();
-  if (timer.persistent)
-    result += tr("Persistent");
+  if (timer.countdownBeep)
+    result += tr("Countdown") + QString("(%1)").arg(printTimerCountdownBeep(timer.countdownBeep));
   if (timer.minuteBeep)
-    result += tr("MinuteBeep");
-  if (timer.countdownBeep == TimerData::COUNTDOWN_BEEPS)
-    result += tr("CountDown(Beeps)");
-  else if (timer.countdownBeep == TimerData::COUNTDOWN_VOICE)
-    result += tr("CountDown(Voice)");
-  else if (timer.countdownBeep == TimerData::COUNTDOWN_HAPTIC)
-    result += tr("CountDown(Haptic)");
+    result += tr("Minute call");
+  if (timer.persistent)
+    result += tr("Persistent") + QString("(%1)").arg(printTimerPersistent(timer.persistent));
   return result.join(", ");
 }
 
@@ -323,7 +393,7 @@ QString ModelPrinter::printTrim(int flightModeIndex, int stickIndex)
   const FlightModeData & fm = model.flightModeData[flightModeIndex];
 
   if (fm.trimMode[stickIndex] == -1) {
-    return tr("Off");
+    return tr("OFF");
   }
   else {
     if (fm.trimRef[stickIndex] == flightModeIndex) {
@@ -348,7 +418,6 @@ QString ModelPrinter::printGlobalVar(int flightModeIndex, int gvarIndex)
   const FlightModeData & fm = model.flightModeData[flightModeIndex];
 
   if (fm.gvars[gvarIndex] <= 1024) {
-    //double val = fm.gvars[gvarIndex] * model.gvarData[gvarIndex].multiplierGet();
     return QString("%1").arg(fm.gvars[gvarIndex] * model.gvarData[gvarIndex].multiplierGet());
   }
   else {
@@ -447,16 +516,16 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   str += "&nbsp;" + source;
 
   if (mix.mltpx == MLTPX_MUL && !showMultiplex)
-    str += " " + QString("MULT!").toHtmlEscaped();
+    str += " " + tr("MULT!").toHtmlEscaped();
   else
-    str += " " + tr("Weight(%1)").arg(Helpers::getAdjustmentString(mix.weight, &model, true)).toHtmlEscaped();
+    str += " " + tr("Weight") + QString("(%1)").arg(Helpers::getAdjustmentString(mix.weight, &model, true)).toHtmlEscaped();
 
   QString flightModesStr = printFlightModes(mix.flightModes);
   if (!flightModesStr.isEmpty())
     str += " " + flightModesStr.toHtmlEscaped();
 
   if (mix.swtch.type != SWITCH_TYPE_NONE)
-    str += " " + tr("Switch(%1)").arg(mix.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
+    str += " " + tr("Switch") + QString("(%1)").arg(mix.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
 
   if (mix.carryTrim > 0)
     str += " " + tr("NoTrim").toHtmlEscaped();
@@ -466,18 +535,18 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   if (firmware->getCapability(HasNoExpo) && mix.noExpo)
     str += " " + tr("No DR/Expo").toHtmlEscaped();
   if (mix.sOffset)
-    str += " " + tr("Offset(%1)").arg(Helpers::getAdjustmentString(mix.sOffset, &model)).toHtmlEscaped();
+    str += " " + tr("Offset") + QString("(%1)").arg(Helpers::getAdjustmentString(mix.sOffset, &model)).toHtmlEscaped();
   if (mix.curve.value)
     str += " " + mix.curve.toString(&model).toHtmlEscaped();
   int scale = firmware->getCapability(SlowScale);
   if (scale == 0)
     scale = 1;
   if (mix.delayDown || mix.delayUp)
-    str += " " + tr("Delay(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale).toHtmlEscaped();
+    str += " " + tr("Delay") + QString("(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale).toHtmlEscaped();
   if (mix.speedDown || mix.speedUp)
-    str += " " + tr("Slow(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale).toHtmlEscaped();
+    str += " " + tr("Slow") + QString("(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale).toHtmlEscaped();
   if (mix.mixWarn)
-    str += " " + tr("Warn(%1)").arg(mix.mixWarn).toHtmlEscaped();
+    str += " " + tr("Warn") + QString("(%1)").arg(mix.mixWarn).toHtmlEscaped();
   if (firmware->getCapability(HasMixerNames) && mix.name[0])
     str += QString(" [%1]").arg(mix.name).toHtmlEscaped();
   return str;
@@ -507,13 +576,11 @@ QString ModelPrinter::printFlightModes(unsigned int flightModes)
           list << printFlightModeName(i);
         }
       }
-      if (list.size() > 1)
-        return tr("Flight modes(%1)").arg(list.join(", "));
-      else
-        return tr("Flight mode(%1)").arg(list.join(", "));
+      return (list.size() > 1 ? tr("Flight modes") : tr("Flight mode")) + QString("(%1)").arg(list.join(", "));
     }
   }
-  else return "";
+  else
+    return "";
 }
 
 QString ModelPrinter::printLogicalSwitchLine(int idx)
@@ -531,13 +598,13 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
   }
   switch (ls.getFunctionFamily()) {
     case LS_FAMILY_EDGE:
-      result += tr("Edge(%1, [%2:%3])").arg(sw1Name).arg(ValToTim(ls.val2)).arg(ls.val3<0 ? tr("instant") : QString("%1").arg(ValToTim(ls.val2+ls.val3)));
+      result += tr("Edge") + QString("(%1, [%2:%3])").arg(sw1Name).arg(ValToTim(ls.val2)).arg(ls.val3<0 ? tr("instant") : QString("%1").arg(ValToTim(ls.val2+ls.val3)));
       break;
     case LS_FAMILY_STICKY:
-      result += tr("Sticky(%1, %2)").arg(sw1Name).arg(sw2Name);
+      result += tr("Sticky") + QString("(%1, %2)").arg(sw1Name).arg(sw2Name);
       break;
     case LS_FAMILY_TIMER:
-      result += tr("Timer(%1, %2)").arg(ValToTim(ls.val1)).arg(ValToTim(ls.val2));
+      result += tr("Timer") + QString("(%1, %2)").arg(ValToTim(ls.val1)).arg(ValToTim(ls.val2));
       break;
     case LS_FAMILY_VOFS: {
       RawSource source = RawSource(ls.val1);
@@ -564,7 +631,7 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
       else if (ls.func == LS_FN_VALMOSTEQUAL)
         result += " ~ ";
       else
-        result += " missing";
+        result += tr(" missing");
       result += QString::number(range.step * (ls.val2 /*TODO+ source.getRawOffset(model)*/) + range.offset);
       break;
     }
@@ -630,9 +697,9 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
 
   if (firmware->getCapability(LogicalSwitchesExt)) {
     if (ls.duration)
-      result += " " + tr("Duration(%1s)").arg(ls.duration/10.0);
+      result += " " + tr("Duration") + QString("(%1s)").arg(ls.duration/10.0);
     if (ls.delay)
-      result += " " + tr("Delay(%1s)").arg(ls.delay/10.0);
+      result += " " + tr("Delay") + QString("(%1s)").arg(ls.delay/10.0);
   }
 
   return result;
@@ -746,7 +813,7 @@ QString ModelPrinter::printGlobalVarMax(int idx)
 
 QString ModelPrinter::printGlobalVarPopup(int idx)
 {
-  return printBoolean(model.gvarData[idx].popup);
+  return printBoolean(model.gvarData[idx].popup, BOOLEAN_YN);
 }
 
 QString ModelPrinter::printOutputValueGVar(int val)
@@ -797,6 +864,237 @@ QString ModelPrinter::printOutputCurve(int idx)
 
 QString ModelPrinter::printOutputSymetrical(int idx)
 {
-  return printBoolean(model.limitData[idx].symetrical);
+  return printBoolean(model.limitData[idx].symetrical, BOOLEAN_YN);
 }
 
+QString ModelPrinter::printSettingsOther()
+{
+  QStringList str;
+  if (model.extendedLimits)
+    str += tr("Extended Limits");
+  if (firmware->getCapability(HasDisplayText) && model.displayChecklist)
+    str += tr("Display Checklist");
+  if (firmware->getCapability(GlobalFunctions) && !model.noGlobalFunctions)
+    str += tr("Global Functions");
+  return str.join(", ");
+}
+
+QString ModelPrinter::printSwitchWarnings()
+{
+  QStringList str;
+  Boards board = firmware->getBoard();
+  uint64_t switchStates = model.switchWarningStates;
+  uint64_t value;
+
+  for (int idx=0; idx<board.getCapability(Board::Switches); idx++) {
+    Board::SwitchInfo switchInfo = Boards::getSwitchInfo(board.getBoardType(), idx);
+    switchInfo.config = Board::SwitchType(generalSettings.switchConfig[idx]);
+    if (switchInfo.config == Board::SWITCH_NOT_AVAILABLE || switchInfo.config == Board::SWITCH_TOGGLE) {
+      continue;
+    }
+    if (!(model.switchWarningEnable & (1 << idx))) {
+      if (IS_HORUS_OR_TARANIS(board.getBoardType())) {
+        value = (switchStates >> (2*idx)) & 0x03;
+      }
+      else {
+        value = (idx==0 ? switchStates & 0x3 : switchStates & 0x1);
+        switchStates >>= (idx==0 ? 2 : 1);
+      }
+      str += RawSwitch(SWITCH_TYPE_SWITCH, 1+idx*3+value).toString(board.getBoardType(), &generalSettings, &model);
+    }
+  }
+  return (str.isEmpty() ? tr("None") : str.join(", ")) ;
+}
+
+QString ModelPrinter::printPotWarnings()
+{
+  QStringList str;
+  int genAryIdx = 0;
+  Boards board = firmware->getBoard();
+  str += (model.potsWarningMode ? tr("Mode") + QString("(%1)").arg(printPotsWarningMode()) : tr("None"));
+  if (model.potsWarningMode) {
+    for (int i=0; i<board.getCapability(Board::Pots)+board.getCapability(Board::Sliders); i++) {
+      RawSource src(SOURCE_TYPE_STICK, CPN_MAX_STICKS + i);
+      if ((src.isPot(&genAryIdx) && generalSettings.isPotAvailable(genAryIdx)) || (src.isSlider(&genAryIdx) && generalSettings.isSliderAvailable(genAryIdx))) {
+        if (!model.potsWarningEnabled[i])
+          str += src.toString(&model, &generalSettings);
+      }
+    }
+  }
+  return str.join(", ");
+}
+
+QString ModelPrinter::printPotsWarningMode()
+{
+  switch (model.potsWarningMode) {
+    case 0:
+      return tr("OFF");
+    case 1:
+      return tr("Manual");
+    case 2:
+      return tr("Auto");
+    default:
+      return tr("????");
+  }
+}
+
+QString ModelPrinter::printFailsafe(int idx)
+{
+  QString str;
+  ModuleData module = model.moduleData[idx];
+  str += tr("Failsafe Mode") + QString("(%1)").arg(printFailsafeMode(module.failsafeMode));
+  if (module.failsafeMode == FAILSAFE_CUSTOM) {
+    str += tr("Failsafe settings");               // TODO: settings per channel and units % or us
+  }
+  return str;
+}
+
+QString ModelPrinter::printFailsafeMode(unsigned int fsmode)
+{
+  switch (fsmode) {
+    case FAILSAFE_NOT_SET:
+      return tr("Not set");
+    case FAILSAFE_HOLD:
+      return tr("Hold");
+    case FAILSAFE_CUSTOM:
+      return tr("Custom");
+    case FAILSAFE_NOPULSES:
+      return tr("No pulses");
+    case FAILSAFE_RECEIVER:
+      return tr("Receiver");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printTimerCountdownBeep(unsigned int countdownBeep)
+{
+  switch (countdownBeep) {
+    case TimerData::COUNTDOWN_SILENT:
+      return tr("Silent");
+    case TimerData::COUNTDOWN_BEEPS:
+      return tr("Beeps");
+    case TimerData::COUNTDOWN_VOICE:
+      return tr("Voice");
+    case TimerData::COUNTDOWN_HAPTIC:
+      return tr("Haptic");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printTimerPersistent(unsigned int persistent)
+{
+  switch (persistent) {
+    case 0:
+      return tr("OFF");
+    case 1:
+      return tr("Flight");
+    case 2:
+      return tr("Manual reset");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printSettingsTrim()
+{
+  QStringList str;
+  str += tr("Step") + QString("(%1)").arg(printTrimIncrementMode());
+  if (IS_ARM(firmware->getBoard()) && model.trimsDisplay)
+    str += tr("Display") + QString("(%1)").arg(printTrimsDisplayMode());
+  if (model.extendedTrims)
+    str += tr("Extended");
+  return str.join(", ");
+}
+
+QString ModelPrinter::printThrottleSource(int idx)
+{
+  Boards board = firmware->getBoard();
+  int chnstart = board.getCapability(Board::Pots)+board.getCapability(Board::Sliders);
+  if (idx == 0)
+    return "THR";
+  else if (idx < (chnstart+1))
+    return firmware->getAnalogInputName(idx+board.getCapability(Board::Sticks)-1);
+  else
+    return RawSource(SOURCE_TYPE_CH, idx-chnstart-1).toString(&model, &generalSettings);
+}
+
+QString ModelPrinter::printTrimsDisplayMode()
+{
+  switch (model.trimsDisplay) {
+    case 0:
+      return tr("Never");
+    case 1:
+      return tr("On Change");
+    case 2:
+      return tr("Always");
+    default:
+      return tr("Unknown");
+  }
+}
+
+QString ModelPrinter::printModuleType(int idx)
+{
+  if (idx < 0)
+    return tr("Trainer Port");
+  else if (firmware->getCapability(NumModules) > 1)
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard()))
+      if (idx == 0)
+        return tr("Internal Radio System");
+      else
+        return tr("External Radio Module");
+    else if (idx == 0)
+      return tr("Radio System");
+    else
+      return tr("Extra Radio System");
+  else
+    return tr("Radio System");
+}
+
+QString ModelPrinter::printPxxPower(int power)
+{
+  static const char *strings[] = {
+    "10mW", "100mW", "500mW", "3W"
+  };
+  return CHECK_IN_ARRAY(strings, power);
+}
+
+QString ModelPrinter::printThrottle()
+{
+  QStringList result;
+  result += tr("Source") + QString("(%1)").arg(printThrottleSource(model.thrTraceSrc));
+  if (model.thrTrim)
+    result += tr("Trim idle only");
+  if (!model.disableThrottleWarning)
+    result += tr("Warning");
+  if (model.throttleReversed)
+    result +=  tr("Reversed");
+  return result.join(", ");
+}
+
+QString ModelPrinter::printPPMFrameLength(int ppmFL)
+{
+  double result = (((double)ppmFL * 5) + 225) / 10;
+  return QString::number(result);
+}
+
+QString ModelPrinter::printTimerName(int idx)
+{
+  QString result;
+  result = tr("Tmr") + QString("%1").arg(idx+1);
+  if (firmware->getCapability(TimersName) && model.timers[idx].name[0])
+    result.append(":" + QString(model.timers[idx].name));
+
+  return result;
+}
+
+QString ModelPrinter::printTimerTimeValue(unsigned int val)
+{
+  return printTimeValue(val, MASK_TIMEVALUE_HRSMINS | MASK_TIMEVALUE_ZEROHRS);
+}
+
+QString ModelPrinter::printTimerMinuteBeep(bool mb)
+{
+  return printBoolean(mb, BOOLEAN_YESNO);
+}
