@@ -44,7 +44,7 @@ enum BluetoothStates {
 
 #define LEN_BLUETOOTH_ADDR             16
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBXLITE)
 extern uint8_t btChipPresent;
 #endif
 

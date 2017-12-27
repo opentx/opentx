@@ -136,18 +136,7 @@ enum CurveType {
   #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
-#elif defined(PCBSKY9X) || defined(PCBX7)
-  #define LEN_MODEL_NAME               10
-  #define LEN_TIMER_NAME               3
-  #define LEN_FLIGHT_MODE_NAME         6
-  #define LEN_EXPOMIX_NAME             6
-  #define LEN_CHANNEL_NAME             4
-  #define LEN_INPUT_NAME               3
-  #define LEN_CURVE_NAME               3
-  #define LEN_FUNCTION_NAME            6
-  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
-  #define MAX_CURVE_POINTS             512
-#elif defined(PCBTARANIS)
+#elif LCD_W == 212
   #define LEN_MODEL_NAME               12
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
@@ -158,6 +147,17 @@ enum CurveType {
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
+  #define MAX_CURVE_POINTS             512
+#elif defined(CPUARM)
+  #define LEN_MODEL_NAME               10
+  #define LEN_TIMER_NAME               3
+  #define LEN_FLIGHT_MODE_NAME         6
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             4
+  #define LEN_INPUT_NAME               3
+  #define LEN_CURVE_NAME               3
+  #define LEN_FUNCTION_NAME            6
+  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
   #define MAX_CURVE_POINTS             512
 #else
   #define LEN_MODEL_NAME               10
@@ -266,7 +266,7 @@ enum BeeperMode {
 
 #if defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #else
   #define TRAINER_MODE_MAX()             HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
@@ -542,7 +542,7 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBXLITE)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
@@ -550,7 +550,7 @@ enum SwitchSources {
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBXLITE)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
@@ -730,7 +730,7 @@ enum MixSources {
   MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider (X9E only)")
   MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider (X9E only)")
   MIXSRC_LAST_POT = MIXSRC_SLIDER4,
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBXLITE)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_LAST_POT = MIXSRC_POT2,
@@ -796,11 +796,11 @@ enum MixSources {
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBXLITE)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
 #endif
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBXLITE)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
 #endif
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
