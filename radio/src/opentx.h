@@ -1431,7 +1431,7 @@ void opentxClose(uint8_t shutdown=true);
 void opentxInit();
 void opentxResume();
 
-#if defined(PCBHORUS) || defined(PCBX7)
+#if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE)
   #define LED_ERROR_BEGIN()            ledRed()
   #define LED_ERROR_END()              ledBlue()
 #else

@@ -481,6 +481,7 @@
 #define I2C_SPEED                       400000
 
 // Haptic
+#define HAPTIC_PWM
 #if defined(PCBX12S)
   #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
   #define HAPTIC_RCC_APB2Periph         RCC_APB2ENR_TIM9EN
