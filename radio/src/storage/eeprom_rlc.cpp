@@ -213,7 +213,7 @@ bool eepromOpen()
 {
   eepromReadBlock((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
-#ifdef SIMU
+#if defined(SIMU)
   if (eeFs.version != EEFS_VERS) {
     TRACE("bad eeFs.version (%d instead of %d)", eeFs.version, EEFS_VERS);
   }

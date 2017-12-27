@@ -57,14 +57,14 @@ void menuRadioDiagAnalogs(event_t event)
   }
 
   // RAS
-#if defined(PCBX7)
-  if(IS_MODULE_XJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
+#if defined(PCBTARANIS)
+  if (IS_MODULE_XJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2;
     lcdDrawText(1, y, "RAS:");
     lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
   }
 #elif defined(CPUARM)
-  if(IS_MODULE_XJT(EXTERNAL_MODULE)) {
+  if (IS_MODULE_XJT(EXTERNAL_MODULE)) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + ((NUM_STICKS+NUM_POTS+NUM_SLIDERS)/2)*FH;
     uint8_t x = ((NUM_STICKS+NUM_POTS+NUM_SLIDERS) & 1) ? (LCD_W/2)+FW : 0;
 
@@ -79,7 +79,7 @@ void menuRadioDiagAnalogs(event_t event)
   lcdDrawNumber(64+5+6*FW-3, 1+4*FH, BandGap, RIGHT);
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, getBatteryVoltage(), (menuVerticalPosition==HEADER_LINE ? INVERS | (s_editMode > 0 ? BLINK : 0) : 0) | PREC2 | LEFT);
 #elif defined(PCBSKY9X)

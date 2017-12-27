@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #define BIGSIZE       DBLSIZE
-#if defined (PCBX7)
+#if defined (PCBTARANIS)
   #define LBOX_CENTERX  (LCD_W/4 + 14)
   #define RBOX_CENTERX  (3*LCD_W/4 - 13)
 #else
@@ -544,7 +544,7 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_EXISTS(i)) {
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;

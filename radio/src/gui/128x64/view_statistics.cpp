@@ -38,7 +38,7 @@ void menuStatisticsView(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(STM32)
+#if defined(PCBX7)
     case EVT_KEY_LONG(KEY_PAGE):
       killEvents(event);
       chainMenu(menuStatisticsDebug2);
@@ -158,7 +158,7 @@ void menuStatisticsDebug(event_t event)
 
 
     case EVT_KEY_FIRST(KEY_UP):
-#if defined(STM32)
+#if defined(PCBX7)
     case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuStatisticsDebug2);
       return;

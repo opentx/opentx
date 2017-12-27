@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 
-#define MODELSIZE_POS_X                170
 #define MODELSEL_W                     LCD_W
 
 #if defined(NAVIGATION_MENUS)
@@ -292,7 +291,7 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(PCBX7)
+#if defined(EVT_ROTARY_LEFT)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif
