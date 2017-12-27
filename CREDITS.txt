@@ -1340,3 +1340,5 @@ Marc Rivière
 Cyril Maquaire
 Nick Webb
 Kristjan Crnoja
+Gaines Smith
+Tomasz Łapucha
