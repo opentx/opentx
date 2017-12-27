@@ -90,6 +90,18 @@ elseif(PCB STREQUAL XLITE)
   set(LCD_DRIVER lcd_driver_spi.cpp)
 endif()
 
+if(PCB STREQUAL XLITE)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/intmodule_serial_driver.cpp
+    )
+else()
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    intmodule_pulses_driver.cpp
+    )
+endif()
+
 if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
@@ -112,7 +124,7 @@ if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Taranis")
 endif()
 
-add_definitions(-DPCBTARANIS -DPPM_PIN_TIMER)
+add_definitions(-DPCBTARANIS)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
 
 set(GUI_SRC ${GUI_SRC}

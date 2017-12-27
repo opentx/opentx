@@ -23,7 +23,7 @@
 
 #include "keys.h"
 
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
 typedef int8_t horzpos_t;
 #define NAVIGATION_LINE_BY_LINE        0x40
 #define IS_LINE_SELECTED(sub, k)       ((sub)==(k) && menuHorizontalPosition < 0)

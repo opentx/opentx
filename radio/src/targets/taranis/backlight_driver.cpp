@@ -136,7 +136,7 @@ void backlightDisable()
 
 uint8_t isBacklightEnabled()
 {
-  BACKLIGHT_COUNTER_REGISTER != 0;
+  return BACKLIGHT_COUNTER_REGISTER != 0;
 }
 #else
 void backlightInit()

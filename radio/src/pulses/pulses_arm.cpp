@@ -247,9 +247,9 @@ void setupPulses(uint8_t port)
 #endif
 
 #if defined(MULTIMODULE)
-    case PROTO_MULTIMODULE:
+      case PROTO_MULTIMODULE:
 #endif
-    case PROTO_SBUS:
+      case PROTO_SBUS:
         init_sbusOut(port);
         break;
 

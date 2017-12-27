@@ -27,21 +27,31 @@ uint32_t rotencPosition;
 uint32_t readKeys()
 {
   uint32_t result = 0;
-
   if (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
     result |= 1 << KEY_ENTER;
   if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 1 << KEY_MENU;
+#if defined(KEYS_GPIO_PIN_PAGE)
   if (~KEYS_GPIO_REG_PAGE & KEYS_GPIO_PIN_PAGE)
     result |= 1 << KEY_PAGE;
+#endif
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
-
-#if !defined(PCBX9E) && !defined(PCBX7)
+#if defined(KEYS_GPIO_PIN_PLUS)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
     result |= 1 << KEY_MINUS;
+#endif
+#if defined(KEYS_GPIO_PIN_LEFT)
+  if (~KEYS_GPIO_REG_LEFT & KEYS_GPIO_PIN_LEFT)
+    result |= 1 << KEY_LEFT;
+  if (~KEYS_GPIO_REG_RIGHT & KEYS_GPIO_PIN_RIGHT)
+    result |= 1 << KEY_RIGHT;
+  if (~KEYS_GPIO_REG_UP & KEYS_GPIO_PIN_UP)
+    result |= 1 << KEY_UP;
+  if (~KEYS_GPIO_REG_DOWN & KEYS_GPIO_PIN_DOWN)
+    result |= 1 << KEY_DOWN;
 #endif
 
   // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
@@ -61,6 +71,8 @@ uint32_t readTrims()
     result |= 0x04;
   if (~TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
     result |= 0x08;
+
+#if !defined(PCBXLITE)
   if (~TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
     result |= 0x10;
   if (~TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
@@ -69,6 +81,7 @@ uint32_t readTrims()
     result |= 0x40;
   if (~TRIMS_GPIO_REG_RHR & TRIMS_GPIO_PIN_RHR)
     result |= 0x80;
+#endif
 
   // TRACE("readTrims(): result=0x%02x", result);
 
@@ -163,9 +176,12 @@ uint32_t switchState(uint8_t index)
   switch (index) {
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
+#if !defined(PCBXLITE)
     ADD_3POS_CASE(C, 2);
     ADD_3POS_CASE(D, 3);
-#if defined(PCBX7)
+#endif
+#if defined(PCBXLITE)
+#elif defined(PCBX7)
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
 #else
