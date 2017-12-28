@@ -875,9 +875,7 @@ void getADC();
   #endif
 #endif
 
-#if defined(SBUS)
 #include "sbus.h"
-#endif
 
 void backlightOn();
 void checkBacklight();
