@@ -249,6 +249,7 @@
   #define SWITCHES_GPIO_PIN_E_L         GPIO_Pin_13 // PE.13
 #elif defined(PCBX7) || defined(PCBXLITE)
   // no SWE
+#else
   #define SWITCHES_GPIO_REG_E_H         GPIOB->IDR
   #define SWITCHES_GPIO_PIN_E_H         GPIO_Pin_3  // PB.03
   #define SWITCHES_GPIO_REG_E_L         GPIOB->IDR
