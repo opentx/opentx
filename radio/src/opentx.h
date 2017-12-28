@@ -319,7 +319,7 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_POT_AVAILABLE(x)          (IS_POT(x) && POT_CONFIG(x)!=POT_NONE)
   #define IS_POT_SLIDER_AVAILABLE(x)   (IS_POT_AVAILABLE(x) || IS_SLIDER_AVAILABLE(x))
   #define IS_MULTIPOS_CALIBRATED(cal)  (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBXLITE)
   #define IS_POT_MULTIPOS(x)           (false)
   #define IS_POT_WITHOUT_DETENT(x)     (false)
   #define IS_POT_SLIDER_AVAILABLE(x)   (true)

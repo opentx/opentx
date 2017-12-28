@@ -117,9 +117,9 @@ enum CurveType {
 };
 
 #if defined(CPUARM)
-#define MIN_POINTS_PER_CURVE           3
+  #define MIN_POINTS_PER_CURVE         3
 #else
-#define MIN_POINTS_PER_CURVE           3
+  #define MIN_POINTS_PER_CURVE         3
 #endif
 
 #define MAX_POINTS_PER_CURVE           17
