@@ -1184,7 +1184,7 @@ static inline void check_struct()
 
 #if defined(PCBXLITE)
   CHKSIZE(RadioData, 838);
-  CHKSIZE(ModelData, 5989);
+  CHKSIZE(ModelData, 6025);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 850);
   CHKSIZE(ModelData, 6025);
