@@ -99,6 +99,7 @@ else()
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
+    trainer_driver.cpp
     )
   add_definitions(-DSBUS)
   set(PULSES_SRC
