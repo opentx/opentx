@@ -326,10 +326,10 @@ void checkTrainerSettings()
         init_trainer_ppm();
         break;
       case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-         init_cppm_on_heartbeat_capture() ;
+         init_cppm_on_heartbeat_capture();
          break;
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-         init_sbus_on_heartbeat_capture() ;
+         init_sbus_on_heartbeat_capture();
          break;
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:

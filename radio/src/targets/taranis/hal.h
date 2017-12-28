@@ -696,7 +696,6 @@
   #define SERIAL_RCC_APB1Periph         0
 #else
   #define TRAINER_BATTERY_COMPARTMENT
-  #define TRAINER_MODULE_HEARTBEAT
   #define SERIAL_RCC_AHB1Periph         (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define SERIAL_RCC_APB1Periph         RCC_APB1Periph_USART3
   #define SERIAL_GPIO                   GPIOB
@@ -764,6 +763,7 @@
   #define HEARTBEAT_GPIO                GPIOD
   #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15 // PD.15
 #else
+  #define TRAINER_MODULE_HEARTBEAT
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
   #define HEARTBEAT_RCC_APB2Periph      RCC_APB2Periph_USART6
   #define HEARTBEAT_GPIO                GPIOC
