@@ -268,6 +268,7 @@
 #define PCBREV_GPIO_PIN                 GPIO_Pin_11  // PI.11
 
 // Led
+#define STATUS_LEDS
 #if defined(PCBX12S)
   #define LED_RCC_AHB1Periph            RCC_AHB1Periph_GPIOI
   #define LED_GPIO                      GPIOI

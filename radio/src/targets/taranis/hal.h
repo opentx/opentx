@@ -537,6 +537,7 @@
 #define PWR_ON_GPIO_MODER_OUT           GPIO_MODER_MODER0_0
 
 #if defined(PCBXLITE)
+  #define STATUS_LEDS
   #define LED_GREEN_GPIO                GPIOE
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_5  // PE.05
   #define LED_RED_GPIO                  GPIOE
@@ -544,6 +545,7 @@
   #define LED_BLUE_GPIO                 GPIOE
   #define LED_BLUE_GPIO_PIN             GPIO_Pin_6  // PE.06
 #elif defined(PCBX7)
+  #define STATUS_LEDS
   #define LED_GREEN_GPIO                GPIOC
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_4  // PC.04
   #define LED_RED_GPIO                  GPIOC
@@ -689,22 +691,24 @@
 
 // Serial Port
 #if defined(PCBX7) || defined(PCBXLITE)
-#define SERIAL_RCC_AHB1Periph           0
-#define SERIAL_RCC_APB1Periph           0
+  #define SERIAL_RCC_AHB1Periph         0
+  #define SERIAL_RCC_APB1Periph         0
 #else
-#define SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
-#define SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
-#define SERIAL_GPIO                     GPIOB
-#define SERIAL_GPIO_PIN_TX              GPIO_Pin_10 // PB.10
-#define SERIAL_GPIO_PIN_RX              GPIO_Pin_11 // PB.11
-#define SERIAL_GPIO_PinSource_TX        GPIO_PinSource10
-#define SERIAL_GPIO_PinSource_RX        GPIO_PinSource11
-#define SERIAL_GPIO_AF                  GPIO_AF_USART3
-#define SERIAL_USART                    USART3
-#define SERIAL_USART_IRQHandler         USART3_IRQHandler
-#define SERIAL_USART_IRQn               USART3_IRQn
-#define SERIAL_DMA_Stream_RX            DMA1_Stream1
-#define SERIAL_DMA_Channel_RX           DMA_Channel_4
+  #define TRAINER_BATTERY_COMPARTMENT
+  #define TRAINER_MODULE_HEARTBEAT
+  #define SERIAL_RCC_AHB1Periph         (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
+  #define SERIAL_RCC_APB1Periph         RCC_APB1Periph_USART3
+  #define SERIAL_GPIO                   GPIOB
+  #define SERIAL_GPIO_PIN_TX            GPIO_Pin_10 // PB.10
+  #define SERIAL_GPIO_PIN_RX            GPIO_Pin_11 // PB.11
+  #define SERIAL_GPIO_PinSource_TX      GPIO_PinSource10
+  #define SERIAL_GPIO_PinSource_RX      GPIO_PinSource11
+  #define SERIAL_GPIO_AF                GPIO_AF_USART3
+  #define SERIAL_USART                  USART3
+  #define SERIAL_USART_IRQHandler       USART3_IRQHandler
+  #define SERIAL_USART_IRQn             USART3_IRQn
+  #define SERIAL_DMA_Stream_RX          DMA1_Stream1
+  #define SERIAL_DMA_Channel_RX         DMA_Channel_4
 #endif
 
 // Telemetry
@@ -925,7 +929,6 @@
   #define LCD_RST_GPIO_PIN              GPIO_Pin_12 // PD.12
 #endif
 #define LCD_RCC_APB2Periph              0
-
 
 // I2C Bus: EEPROM and CAT5137 digital pot for volume control
 #define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
