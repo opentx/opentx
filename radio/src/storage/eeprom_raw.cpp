@@ -586,7 +586,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   eeLoadModelHeader(i_fileDst, &modelHeaders[i_fileDst]);
 
-#if defined(PCBSKY9X)
+#if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
     ConvertModel(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);

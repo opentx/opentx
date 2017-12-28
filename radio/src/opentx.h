@@ -289,7 +289,7 @@
 #include "debug.h"
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define SWSRC_THR                    SWSRC_SF2
+  #define SWSRC_THR                    SWSRC_SB2
   #define SWSRC_GEA                    SWSRC_SG2
   #define SWSRC_ID0                    SWSRC_SA0
   #define SWSRC_ID1                    SWSRC_SA1
