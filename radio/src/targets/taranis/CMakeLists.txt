@@ -104,7 +104,7 @@ else()
   add_definitions(-DSBUS)
   set(PULSES_SRC
     ${PULSES_SRC}
-    sbus.cpp
+    ../sbus.cpp
     )
 endif()
 

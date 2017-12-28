@@ -37,8 +37,6 @@ void extmoduleDsm2Start(void);
 #endif
 void extmoduleCrossfireStart(void);
 
-void intmoduleSendNextFrame();
-
 void init_pxx(uint32_t port)
 {
   if (port == INTERNAL_MODULE)
