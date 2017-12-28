@@ -58,7 +58,7 @@ uint32_t Peri1_frequency, Peri2_frequency;
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 RCC_TypeDef rcc;
-DMA_Stream_TypeDef dma1_stream2, dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6;
+DMA_Stream_TypeDef dma1_stream2, dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
 DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 SysTick_Type systick;
