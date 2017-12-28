@@ -329,7 +329,7 @@ typedef int16_t gvar_t;
 
 #if defined(CPUARM)
 PACK(struct FlightModeData {
-  trim_t trim[NUM_STICKS+NUM_AUX_TRIMS];
+  trim_t trim[NUM_TRIMS];
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
   int16_t swtch:9;       // swtch of phase[0] is not used
   int16_t spare:7;
@@ -1074,7 +1074,7 @@ static inline void check_struct()
   CHKSIZE(LimitData, 11);
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(CustomFunctionData, 11);
-  CHKSIZE(FlightModeData, 36);
+  CHKSIZE(FlightModeData, 28 + 2*NUM_TRIMS);
   CHKSIZE(TimerData, 11);
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 6);
@@ -1184,7 +1184,7 @@ static inline void check_struct()
 
 #if defined(PCBXLITE)
   CHKSIZE(RadioData, 838);
-  CHKSIZE(ModelData, 6025);
+  CHKSIZE(ModelData, 5989);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 850);
   CHKSIZE(ModelData, 6025);

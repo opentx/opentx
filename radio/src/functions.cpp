@@ -279,7 +279,7 @@ void evalFunctions()
 #endif
 
 #if defined(GVARS)
-  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
+  for (uint8_t i=0; i<NUM_TRIMS; i++) {
     trimGvar[i] = -1;
   }
 #endif

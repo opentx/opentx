@@ -189,15 +189,15 @@ enum CurveType {
 #endif
 
 #if defined(PCBX10)
-  #define NUM_AUX_TRIMS                2
+  #define NUM_TRIMS                    (NUM_SWITCHES + 2)
   #define NUM_MOUSE_ANALOGS            2
   #define NUM_DUMMY_ANAS               2
 #elif defined(PCBHORUS)
-  #define NUM_AUX_TRIMS                2
+  #define NUM_TRIMS                    (NUM_SWITCHES + 2)
   #define NUM_MOUSE_ANALOGS            2
   #define NUM_DUMMY_ANAS               0
 #else
-  #define NUM_AUX_TRIMS                0
+  #define NUM_TRIMS                    NUM_SWITCHES
   #define NUM_MOUSE_ANALOGS            0
   #define NUM_DUMMY_ANAS               0
 #endif
@@ -626,18 +626,17 @@ enum SwitchSources {
   SWSRC_TrimRudRight,
   SWSRC_TrimEleDown,
   SWSRC_TrimEleUp,
+#if NUM_TRIMS > 2
   SWSRC_TrimThrDown,
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
-#if defined(PCBHORUS)
+#endif
+#if NUM_TRIMS > 4
   SWSRC_TrimT5Down,
   SWSRC_TrimT5Up,
   SWSRC_TrimT6Down,
   SWSRC_TrimT6Up,
-  SWSRC_LAST_TRIM = SWSRC_TrimT6Up,
-#else
-  SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
 #endif
 
 #if defined(PCBSKY9X)
@@ -696,6 +695,8 @@ enum SwitchSources {
   SWSRC_INVERT = SWSRC_COUNT+1,
 #endif
 };
+
+#define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
 
 enum MixSources {
   MIXSRC_NONE,

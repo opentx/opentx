@@ -745,7 +745,7 @@ swsrc_t getMovedSwitch();
 #endif
 
 #if defined(GVARS)
-  extern int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS];
+  extern int8_t trimGvar[NUM_TRIMS];
   #define TRIM_REUSED(idx) trimGvar[idx] >= 0
 #else
   #define TRIM_REUSED(idx) 0
@@ -1155,7 +1155,7 @@ LogicalSwitchData * lswAddress(uint8_t idx);
 #endif
 
 extern int16_t anas [NUM_INPUTS];
-extern int16_t trims[NUM_STICKS+NUM_AUX_TRIMS];
+extern int16_t trims[NUM_TRIMS];
 extern BeepANACenter bpanaCenter;
 
 extern uint8_t s_mixer_first_run_done;

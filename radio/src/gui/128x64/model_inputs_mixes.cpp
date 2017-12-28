@@ -612,7 +612,7 @@ void displayMixInfos(coord_t y, MixData *md)
 }
 
 #if defined(CPUARM)
-void displayMixLine(coord_t y, MixData *md)
+void displayMixLine(coord_t y, MixData * md)
 {
   if (md->name[0]) {
     lcdDrawSizedText(EXPO_LINE_NAME_POS, y, md->name, sizeof(md->name), ZCHAR);

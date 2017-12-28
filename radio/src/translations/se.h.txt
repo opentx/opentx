@@ -507,6 +507,8 @@
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_SWITCHES    "\313Rv""\313Rh""\313Hn""\313Hu""\313Gn""\313Gu""\313Sv""\313Sh""\3135d""\3135u""\3136d""\3136u"
+#elif defined(PCBXLITE)
+  #define TR_TRIMS_SWITCHES            "tRl""tRr""tEd""tEu"
 #else
   #define TR_TRIMS_SWITCHES    TR("tRv""tRh""tHn""tHu""tGn""tGu""tSv""tSh", "\313Rv""\313Rh""\313Hn""\313Hu""\313Gn""\313Gu""\313Sv""\313Sh")
 #endif
