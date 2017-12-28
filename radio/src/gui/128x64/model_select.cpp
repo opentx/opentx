@@ -291,7 +291,7 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(EVT_ROTARY_LEFT)
+#if defined(PCBX7)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif
