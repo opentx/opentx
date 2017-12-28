@@ -252,6 +252,8 @@
 #define PWR_ON_GPIO_MODER               GPIO_MODER_MODER1
 #define PWR_ON_GPIO_MODER_OUT           GPIO_MODER_MODER1_0
 
+// S.Port update connector
+#define SPORT_MAX_BAUDRATE              250000 // < 400000
 #if defined(PCBX10)
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
   #define SPORT_UPDATE_PWR_GPIO         GPIOH

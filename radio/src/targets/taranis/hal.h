@@ -729,23 +729,26 @@
 
 // PCBREV
 #if defined(PCBX7)
-#define PCBREV_RCC_AHB1Periph           RCC_AHB1Periph_GPIOA
-#define PCBREV_GPIO                     GPIOA
-#define PCBREV_GPIO_PIN                 GPIO_Pin_14  // PA.14
+  #define PCBREV_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
+  #define PCBREV_GPIO                   GPIOA
+  #define PCBREV_GPIO_PIN               GPIO_Pin_14  // PA.14
 #else
-#define PCBREV_RCC_AHB1Periph           0
+  #define PCBREV_RCC_AHB1Periph         0
 #endif
 
-// SPORT update connector
+// S.Port update connector
 #if defined(PCBXLITE)
+  #define SPORT_MAX_BAUDRATE            250000 // not tested
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
   #define SPORT_UPDATE_PWR_GPIO         GPIOD
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_8  // PD.08
 #elif defined(PCBX7)
+  #define SPORT_MAX_BAUDRATE            250000 // < 400000
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOB
   #define SPORT_UPDATE_PWR_GPIO         GPIOB
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_2  // PB.02
 #else
+  #define SPORT_MAX_BAUDRATE            400000
   #define SPORT_UPDATE_RCC_AHB1Periph   0
 #endif
 

@@ -121,7 +121,7 @@ void mixerTask(void * pdata)
       return;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(SBUS)
     processSbusInput();
 #endif
 

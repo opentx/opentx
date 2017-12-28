@@ -100,6 +100,11 @@ else()
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
     )
+  add_definitions(-DSBUS)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    sbus.cpp
+    )
 endif()
 
 if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE)
