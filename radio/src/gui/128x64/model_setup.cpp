@@ -80,6 +80,7 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_EXTERNAL_MODULE_OPTIONS,
+  ITEM_MODEL_EXTERNAL_MODULE_BIND_OPTIONS,
 #if defined(MULTIMODULE)
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
 #endif
@@ -246,6 +247,7 @@ void menuModelSetup(event_t event)
   OUTPUT_TYPE_ROWS()
   FAILSAFE_ROWS(EXTERNAL_MODULE),
   EXTERNAL_MODULE_OPTION_ROW,
+  (IS_MODULE_R9M_LBT(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW),
   MULTIMODULE_MODULE_ROWS
   EXTERNAL_MODULE_POWER_ROW,
   EXTRA_MODULE_ROWS
@@ -261,6 +263,7 @@ void menuModelSetup(event_t event)
   OUTPUT_TYPE_ROWS()
   FAILSAFE_ROWS(EXTERNAL_MODULE),
   EXTERNAL_MODULE_OPTION_ROW,
+  (IS_MODULE_R9M_LBT(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW),
   MULTIMODULE_MODULE_ROWS
   EXTERNAL_MODULE_POWER_ROW,
   EXTRA_MODULE_ROWS
@@ -1154,23 +1157,13 @@ void menuModelSetup(event_t event)
           }
         }
 #endif
-        if (IS_MODULE_R9M_FCC(moduleIdx)) {
+        if (IS_MODULE_R9M(moduleIdx)) {
+          lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
           if (IS_TELEMETRY_INTERNAL_MODULE()) {
-            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
           }
           else {
-            g_model.moduleData[moduleIdx].pxx.sport_out = editCheckBox(g_model.moduleData[EXTERNAL_MODULE].pxx.sport_out, MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEMETRY, attr, event);
-          }
-        }
-        else if (IS_MODULE_R9M_LBT(moduleIdx)) {
-          if (IS_TELEMETRY_INTERNAL_MODULE()) {
-            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
-          }
-          else {
-            lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BINDING_OPTION);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEM_ON);
           }
         }
         else if (IS_MODULE_SBUS(moduleIdx)) {
@@ -1179,6 +1172,27 @@ void menuModelSetup(event_t event)
         }
         break;
       }
+
+      case ITEM_MODEL_EXTERNAL_MODULE_BIND_OPTIONS:
+      {
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+
+        lcdDrawTextAlignedLeft(y, INDENT "Mode:");
+        if (g_model.moduleData[moduleIdx].pxx.power == R9M_LBT_POWER_25) {
+          if(g_model.moduleData[moduleIdx].pxx.receiver_telem_off == true)
+            lcdDrawText(lcdLastRightPos+1, y, STR_BINDING_25MW_CH1_8_TELEM_OFF);
+          else
+            lcdDrawText(lcdLastRightPos+1, y, STR_BINDING_25MW_CH1_8_TELEM_ON);
+        }
+        else {
+          if(g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 == true)
+            lcdDrawText(lcdLastRightPos+1, y, STR_BINDING_500MW_CH9_16_TELEM_OFF);
+          else
+            lcdDrawText(lcdLastRightPos+1, y, STR_BINDING_500MW_CH1_8_TELEM_OFF);
+        }
+        if (attr) REPEAT_LAST_CURSOR_MOVE();
+      }
+
 
       case ITEM_MODEL_EXTERNAL_MODULE_POWER:
       {

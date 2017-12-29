@@ -597,7 +597,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
+        <item row="3" column="0">
          <widget class="QLabel" name="label_failsafeMode">
           <property name="maximumSize">
            <size>
@@ -613,7 +613,7 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="1">
+        <item row="3" column="1">
          <widget class="QComboBox" name="failsafeMode">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -651,7 +651,7 @@
           </item>
          </widget>
         </item>
-        <item row="5" column="0">
+        <item row="4" column="0">
          <widget class="QLabel" name="label_trainerMode">
           <property name="maximumSize">
            <size>
@@ -667,7 +667,7 @@
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="4" column="1">
          <widget class="QComboBox" name="trainerMode">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
@@ -703,19 +703,6 @@
             <string>Master/SBUS in battery compartment</string>
            </property>
           </item>
-         </widget>
-        </item>
-        <item row="3" column="1">
-         <widget class="QCheckBox" name="sportOut">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>Module Telemetry</string>
-          </property>
          </widget>
         </item>
        </layout>
