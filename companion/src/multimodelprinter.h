@@ -64,6 +64,7 @@ class MultiModelPrinter: public QObject
 
     QString printTitle(const QString & label);
     QString printSetup();
+    QString printModules();
     QString printHeliSetup();
     QString printFlightModes();
     QString printOutputs();
@@ -74,6 +75,7 @@ class MultiModelPrinter: public QObject
     QString printLogicalSwitches();
     QString printCustomFunctions();
     QString printTelemetry();
+    QString printTimers();
 };
 
 #endif // _MULTIMODELPRINTER_H_

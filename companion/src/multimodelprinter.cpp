@@ -155,21 +155,25 @@ QString MultiModelPrinter::print(QTextDocument * document)
   if (document) document->clear();
 
   QString str = "<table border='1' cellspacing='0' cellpadding='3' width='100%' style='font-family: monospace;'>";
-  str += printSetup();
+  str.append(printSetup());
+  if (firmware->getCapability(Timers)) {
+    str.append(printTimers());
+  }
+  str.append(printModules());
   if (firmware->getCapability(Heli))
-    str += printHeliSetup();
+    str.append(printHeliSetup());
   if (firmware->getCapability(FlightModes))
-    str += printFlightModes();
-  str += printInputs();
-  str += printMixers();
-  str += printOutputs();
+    str.append(printFlightModes());
+  str.append(printInputs());
+  str.append(printMixers());
+  str.append(printOutputs());
   str += printCurves(document);
   if (firmware->getCapability(Gvars) && !firmware->getCapability(GvarsFlightModes))
-    str += printGvars();
-  str += printLogicalSwitches();
-  str += printCustomFunctions();
-  str += printTelemetry();
-  str += "</table>";
+    str.append(printGvars());
+  str.append(printLogicalSwitches());
+  str.append(printCustomFunctions());
+  str.append(printTelemetry());
+  str.append("</table>");
   return str;
 }
 
@@ -180,37 +184,90 @@ QString MultiModelPrinter::printSetup()
   MultiColumns columns(modelPrinterMap.size());
   columns.appendTitle(tr("Name:"));
   COMPARE(model->name);
-  columns.append("<br/>");
-  columns.appendTitle(tr("EEprom Size:"));
+  columns.append(tr("  EEprom Size: "));
   COMPARE(modelPrinter->printEEpromSize());
+  if (firmware->getCapability(ModelImage)) {
+    columns.append(tr("  Model Image: "));
+    COMPARE(model->bitmap);
+  }
   columns.append("<br/>");
-  for (int i=0; i<firmware->getCapability(Timers); i++) {
-    columns.appendTitle(tr("Timer%1:").arg(i+1));
-    COMPARE(modelPrinter->printTimer(i));
-    columns.append("<br/>");
-  }
-  for (int i=0; i<firmware->getCapability(NumModules); i++) {
-    columns.appendTitle(firmware->getCapability(NumModules) > 1 ? tr("Module%1:").arg(i+1) : tr("Module:"));
-    COMPARE(modelPrinter->printModule(i));
-    columns.append("<br/>");
-  }
-  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-    columns.appendTitle(tr("Trainer port:"));
-    COMPARE(modelPrinter->printTrainerMode());
-    columns.append("<br/>");
-  }
-  columns.appendTitle(tr("Throttle Trim:"));
-  COMPARE(modelPrinter->printThrottleTrimMode());
+  columns.appendTitle(tr("Throttle:"));
+  COMPARE(modelPrinter->printThrottle());
   columns.append("<br/>");
-  columns.appendTitle(tr("Trim Increment:"));
-  COMPARE(modelPrinter->printTrimIncrementMode());
+  columns.appendTitle(tr("Trims:"));
+  COMPARE(modelPrinter->printSettingsTrim());
   columns.append("<br/>");
   columns.appendTitle(tr("Center Beep:"));
   COMPARE(modelPrinter->printCenterBeep());
+  columns.append("<br/>");
+  columns.appendTitle(tr("Switch Warnings:"));
+  COMPARE(modelPrinter->printSwitchWarnings());
+  columns.append("<br/>");
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+      columns.appendTitle(tr("Pot Warnings:"));
+      COMPARE(modelPrinter->printPotWarnings());
+      columns.append("<br/>");
+  }
+  columns.appendTitle(tr("Other:"));
+  COMPARE(modelPrinter->printSettingsOther());
   str.append(columns.print());
   return str;
 }
 
+QString MultiModelPrinter::printTimers()
+{
+  QString str;
+  MultiColumns columns(modelPrinterMap.size());
+  columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
+  columns.append("<tr>");
+  columns.append("<td><b>" + tr("Timers") + "</b></td>");
+  columns.append("<td><b>" + tr("Time") + "</b></td>");
+  columns.append("<td><b>" + tr("Switch") + "</b></td>");
+  columns.append("<td><b>" + tr("Countdown") + "</b></td>");
+  columns.append("<td><b>" + tr("Minute call") + "</b></td>");
+  columns.append("<td><b>" + tr("Persistence") + "</b></td>");
+  columns.append("</tr>");
+
+  for (int i=0; i<firmware->getCapability(Timers); i++) {
+    columns.append("<tr><td><b>");
+    COMPARE(modelPrinter->printTimerName(i));
+    columns.append("</b></td><td>");
+    COMPARE(modelPrinter->printTimerTimeValue(model->timers[i].val));
+    columns.append("</td><td>");
+    COMPARE(model->timers[i].mode.toString());
+    columns.append("</td><td>");
+    COMPARE(modelPrinter->printTimerCountdownBeep(model->timers[i].countdownBeep));
+    columns.append("</td><td>");
+    COMPARE(modelPrinter->printTimerMinuteBeep(model->timers[i].minuteBeep));
+    columns.append("</td><td>");
+    COMPARE(modelPrinter->printTimerPersistent(model->timers[i].persistent));
+    columns.append("</td></tr>");
+  }
+  columns.append("</table>");
+  str.append(columns.print());
+  return str;
+}
+
+QString MultiModelPrinter::printModules()
+{
+  QString str = printTitle(tr("Modules"));
+  MultiColumns columns(modelPrinterMap.size());
+  columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
+  for (int i=0; i<firmware->getCapability(NumModules); i++) {
+    columns.append("<tr><td>");
+    columns.appendTitle(tr("%1:").arg(i+1));
+    COMPARE(modelPrinter->printModule(i));
+    columns.append("</td></tr>");
+  }
+  if (firmware->getCapability(ModelTrainerEnable))
+    columns.append("<tr><td>");
+    columns.appendTitle(tr("Trainer port:"));
+    COMPARE(modelPrinter->printModule(-1));
+    columns.append("</td></tr>");
+  columns.append("</table>");
+  str.append(columns.print());
+  return str;
+}
 
 QString MultiModelPrinter::printHeliSetup()
 {
@@ -265,7 +322,6 @@ QString MultiModelPrinter::printHeliSetup()
 QString MultiModelPrinter::printFlightModes()
 {
   QString str = printTitle(tr("Flight modes"));
-
   // Trims
   {
     MultiColumns columns(modelPrinterMap.size());

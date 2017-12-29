@@ -28,10 +28,9 @@
 #include "eeprominterface.h"
 
 QString changeColor(const QString & input, const QString & to, const QString & from = "grey");
-
 QString addFont(const QString & input, const QString & color = "", const QString & size = "", const QString & face = "");
-
 void debugHtml(const QString & html);
+QString formatTitle(const QString & name);
 
 class CurveImage
 {
@@ -54,10 +53,10 @@ class ModelPrinter: public QObject
     ModelPrinter(Firmware * firmware, const GeneralSettings & generalSettings, const ModelData & model);
     virtual ~ModelPrinter();
 
-    QString printBoolean(bool val);
+    QString printBoolean(const bool val, const int typ);
     QString printEEpromSize();
     QString printTrimIncrementMode();
-    QString printThrottleTrimMode();
+    QString printThrottle();
     static QString printModuleProtocol(unsigned int protocol);
     static QString printMultiRfProtocol(int rfProtocol, bool custom);
     static QString printR9MPowerValue(unsigned subType, unsigned val, bool telem);
@@ -98,7 +97,25 @@ class ModelPrinter: public QObject
     QString printOutputCurve(int idx);
     QString printOutputPpmCenter(int idx);
     QString printOutputSymetrical(int idx);
-
+    QString printSettingsOther();
+    QString printModuleType(int idx);
+    QString printThrottleSource(int idx);
+    QString printTrimsDisplayMode();
+    QString printSettingsTrim();
+    QString printSwitchWarnings();
+    QString printPotWarnings();
+    QString printPotsWarningMode();
+    QString printPxxPower(int power);
+    QString printFailsafe(int idx);
+    QString printFailsafeMode(unsigned int fsmode);
+    QString printFailsafeValue(int val);
+    QString printTimerCountdownBeep(unsigned int countdownBeep);
+    QString printTimerPersistent(unsigned int persistent);
+    QString printPPMFrameLength(int ppmFL);
+    QString printTimerName(int idx);
+    QString printTimeValue(const int value, const unsigned int mask);
+    QString printTimerMinuteBeep(bool mb);
+    QString printTimerTimeValue(unsigned int val);
   private:
     Firmware * firmware;
     const GeneralSettings & generalSettings;
