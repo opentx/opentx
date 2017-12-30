@@ -2111,7 +2111,7 @@ Vérifier la sélection (M64/M128)</translation>
     <message>
         <location filename="../firmwares/io_data.cpp" line="32"/>
         <source>INP</source>
-        <translation type="unfinished"></translation>
+        <translation>ENT</translation>
     </message>
     <message>
         <location filename="../firmwares/io_data.cpp" line="33"/>
@@ -4750,7 +4750,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="328"/>
         <source>Russian</source>
-        <translation type="unfinished"></translation>
+        <translation>Russe</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.cpp" line="392"/>
@@ -7679,37 +7679,37 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="116"/>
         <source>Enable</source>
-        <translation type="unfinished">Actif</translation>
+        <translation>Actif</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="116"/>
         <source>Disable</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="118"/>
         <source>True</source>
-        <translation type="unfinished"></translation>
+        <translation>Vrai</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="118"/>
         <source>False</source>
-        <translation type="unfinished"></translation>
+        <translation>Faux</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="120"/>
         <source>Yes</source>
-        <translation type="unfinished">Oui</translation>
+        <translation>Oui</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="120"/>
         <source>No</source>
-        <translation type="unfinished">Non</translation>
+        <translation>Non</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="124"/>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="124"/>
@@ -7717,7 +7717,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="936"/>
         <location filename="../modelprinter.cpp" line="1009"/>
         <source>OFF</source>
-        <translation type="unfinished">Eteint</translation>
+        <translation>Eteint</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="126"/>
@@ -7725,95 +7725,95 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="1001"/>
         <location filename="../modelprinter.cpp" line="1015"/>
         <source>???</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="132"/>
         <source>bytes</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="248"/>
         <location filename="../modelprinter.cpp" line="919"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="251"/>
         <location filename="../modelprinter.cpp" line="263"/>
         <source>Channels</source>
-        <translation type="unfinished">Nb de voies</translation>
+        <translation>Nombre de voies</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="252"/>
         <location filename="../modelprinter.cpp" line="265"/>
         <source>Frame length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur de Trame PPM</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="253"/>
         <source>PPM delay</source>
-        <translation type="unfinished">Impulsion</translation>
+        <translation>Impulsion</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="254"/>
         <location filename="../modelprinter.cpp" line="266"/>
         <source>Polarity</source>
-        <translation type="unfinished">Polarité</translation>
+        <translation>Polarité</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="261"/>
         <source>Protocol</source>
-        <translation type="unfinished">Protocole</translation>
+        <translation>Protocole</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="268"/>
         <location filename="../modelprinter.cpp" line="550"/>
         <location filename="../modelprinter.cpp" line="707"/>
         <source>Delay</source>
-        <translation type="unfinished">Délai</translation>
+        <translation>Délai</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="272"/>
         <location filename="../modelprinter.cpp" line="983"/>
         <source>Receiver</source>
-        <translation type="unfinished">Récepteur</translation>
+        <translation>Récepteur</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="275"/>
         <source>Radio protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Protocole radio</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="276"/>
         <source>Subtype</source>
-        <translation type="unfinished">Sous-type</translation>
+        <translation>Sous-type</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="277"/>
         <source>Option value</source>
-        <translation type="unfinished">Valeur optionnelle</translation>
+        <translation>Valeur optionnelle</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="280"/>
         <source>Sub Type</source>
-        <translation type="unfinished">Sous-Type</translation>
+        <translation>Sous-Type</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="281"/>
         <source>RF Output Power</source>
-        <translation type="unfinished">Puissance RF</translation>
+        <translation>Puissance RF</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="282"/>
         <source>Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Télémétrie</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="314"/>
         <location filename="../modelprinter.cpp" line="942"/>
         <source>????</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="323"/>
@@ -7858,219 +7858,219 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="524"/>
         <source>MULT!</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="543"/>
         <source>Offset</source>
-        <translation type="unfinished">Décalage</translation>
+        <translation>Décalage</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="552"/>
         <source>Slow</source>
-        <translation type="unfinished">Ralenti</translation>
+        <translation>Ralenti</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="554"/>
         <source>Warn</source>
-        <translation type="unfinished"></translation>
+        <translation>Attn</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="584"/>
         <source>Flight modes</source>
-        <translation type="unfinished">Phases de vol</translation>
+        <translation>Phases de vol</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="584"/>
         <source>Flight mode</source>
-        <translation type="unfinished">Phase de vol</translation>
+        <translation>Phase de vol</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="606"/>
         <source>Edge</source>
-        <translation type="unfinished">Flanc</translation>
+        <translation>Flanc</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="609"/>
         <source>Sticky</source>
-        <translation type="unfinished">Bistable</translation>
+        <translation>Bistable</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="612"/>
         <source>Timer</source>
-        <translation type="unfinished">Chrono</translation>
+        <translation>Chrono</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="639"/>
         <source> missing</source>
-        <translation type="unfinished"></translation>
+        <translation> absent</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="705"/>
         <source>Duration</source>
-        <translation type="unfinished">Durée</translation>
+        <translation>Durée</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="879"/>
         <source>Extended Limits</source>
-        <translation type="unfinished">Débattements étendus</translation>
+        <translation>Débattements étendus</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="881"/>
         <source>Display Checklist</source>
-        <translation type="unfinished">Afficher la checklist</translation>
+        <translation>Afficher la checklist</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="883"/>
         <source>Global Functions</source>
-        <translation type="unfinished">Fonctions globales</translation>
+        <translation>Fonctions globales</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="938"/>
         <source>Manual</source>
-        <translation type="unfinished">Manuel</translation>
+        <translation>Manuel</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="940"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="950"/>
         <source>Failsafe Mode</source>
-        <translation type="unfinished">Mode Failsafe</translation>
+        <translation>Mode Failsafe</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="963"/>
         <location filename="../modelprinter.cpp" line="977"/>
         <source>Hold</source>
-        <translation type="unfinished">Maintien</translation>
+        <translation>Maintien</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="965"/>
         <source>No Pulse</source>
-        <translation type="unfinished">Pas d&apos;impulsion</translation>
+        <translation>Pas d&apos;impulsion</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="975"/>
         <source>Not set</source>
-        <translation type="unfinished">Non défini</translation>
+        <translation>Non défini</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="981"/>
         <source>No pulses</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas d&apos;impulsions</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="993"/>
         <source>Silent</source>
-        <translation type="unfinished">Aucun</translation>
+        <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="995"/>
         <source>Beeps</source>
-        <translation type="unfinished">Bips</translation>
+        <translation>Bips</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="997"/>
         <source>Voice</source>
-        <translation type="unfinished">Voix</translation>
+        <translation>Voix</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="999"/>
         <source>Haptic</source>
-        <translation type="unfinished">Vibreur</translation>
+        <translation>Vibreur</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1011"/>
         <source>Flight</source>
-        <translation type="unfinished">Vol</translation>
+        <translation>Vol</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1013"/>
         <source>Manual reset</source>
-        <translation type="unfinished"></translation>
+        <translation>RAZ manuelle</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1022"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1024"/>
         <source>Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1026"/>
         <source>Extended</source>
-        <translation type="unfinished"></translation>
+        <translation>Étendu</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1046"/>
         <source>Never</source>
-        <translation type="unfinished">Jamais</translation>
+        <translation>Jamais</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1048"/>
         <source>On Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Sur changement</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1050"/>
         <source>Always</source>
-        <translation type="unfinished">Toujours</translation>
+        <translation>Toujours</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1059"/>
         <source>Trainer Port</source>
-        <translation type="unfinished">Port écolage</translation>
+        <translation>Port écolage</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1063"/>
         <source>Internal Radio System</source>
-        <translation type="unfinished">Module HF interne</translation>
+        <translation>Module HF interne</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1065"/>
         <source>External Radio Module</source>
-        <translation type="unfinished">Module HF externe</translation>
+        <translation>Module HF externe</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1067"/>
         <location filename="../modelprinter.cpp" line="1071"/>
         <source>Radio System</source>
-        <translation type="unfinished">Module HF</translation>
+        <translation>Module HF</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1069"/>
         <source>Extra Radio System</source>
-        <translation type="unfinished">Module HF supplémentaire</translation>
+        <translation>Module HF supplémentaire</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1085"/>
         <source>Source</source>
-        <translation type="unfinished">Source</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1087"/>
         <source>Trim idle only</source>
-        <translation type="unfinished"></translation>
+        <translation>Trim ralenti uniquement</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1089"/>
         <source>Warning</source>
-        <translation type="unfinished">Avertissement</translation>
+        <translation>Avertissement</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1091"/>
         <source>Reversed</source>
-        <translation type="unfinished"></translation>
+        <translation>Inversé</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1104"/>
         <source>Tmr</source>
-        <translation type="unfinished"></translation>
+        <translation>Chrono</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="392"/>
@@ -8087,22 +8087,22 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="911"/>
         <location filename="../modelprinter.cpp" line="919"/>
         <source>None</source>
-        <translation type="unfinished">Aucun</translation>
+        <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="384"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="388"/>
         <source>Countdown</source>
-        <translation type="unfinished">Compte à rebours</translation>
+        <translation>Compte à rebours</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="390"/>
         <source>Minute call</source>
-        <translation type="unfinished"></translation>
+        <translation>Annonces minutes</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="409"/>
@@ -8167,7 +8167,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="606"/>
         <source>instant</source>
-        <translation></translation>
+        <translation>immédiat</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="739"/>
@@ -8640,72 +8640,72 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="187"/>
         <source>  EEprom Size: </source>
-        <translation type="unfinished"></translation>
+        <translation> Taille EEPROM: </translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="190"/>
         <source>  Model Image: </source>
-        <translation type="unfinished"></translation>
+        <translation>  Image du modèle: </translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="194"/>
         <source>Throttle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Gaz:</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="197"/>
         <source>Trims:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="203"/>
         <source>Switch Warnings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Positions des interrupteurs:</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="207"/>
         <source>Pot Warnings:</source>
-        <translation type="unfinished"></translation>
+        <translation>Positions des potentiomètres:</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="211"/>
         <source>Other:</source>
-        <translation type="unfinished"></translation>
+        <translation>Autre:</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="223"/>
         <source>Timers</source>
-        <translation type="unfinished"></translation>
+        <translation>Chronos</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="224"/>
         <source>Time</source>
-        <translation type="unfinished">Temps</translation>
+        <translation>Temps</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="226"/>
         <source>Countdown</source>
-        <translation type="unfinished">Compte à rebours</translation>
+        <translation>Compte à rebours</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="227"/>
         <source>Minute call</source>
-        <translation type="unfinished"></translation>
+        <translation>Annonces minutes</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="228"/>
         <source>Persistence</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistant</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="253"/>
         <source>Modules</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="258"/>
         <source>%1:</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="451"/>
@@ -9082,7 +9082,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/radiodataconversionstate.cpp" line="178"/>
         <source>Comp</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/radiodataconversionstate.cpp" line="178"/>
@@ -9117,7 +9117,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/radiodataconversionstate.cpp" line="192"/>
         <source>Seq</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
