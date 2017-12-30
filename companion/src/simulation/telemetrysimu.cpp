@@ -187,7 +187,7 @@ void TelemetrySimulator::setupDataFields()
 {
   SET_INSTANCE(rxbt_inst,     BATT_ID,                0);
   SET_INSTANCE(rssi_inst,     RSSI_ID,                24);
-  SET_INSTANCE(swr_inst,      SWR_ID,                 24);
+  SET_INSTANCE(swr_inst,      RAS_ID,                 24);
   SET_INSTANCE(a1_inst,       ADC1_ID,                0);
   SET_INSTANCE(a2_inst,       ADC2_ID,                0);
   SET_INSTANCE(a3_inst,       A3_FIRST_ID,            0);
@@ -290,7 +290,7 @@ void TelemetrySimulator::generateTelemetryFrame()
 
     case 3:
       if (ui->Swr->text().length())
-        generateSportPacket(buffer, ui->swr_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, SWR_ID, LIMIT<uint32_t>(0, ui->Swr->text().toInt(&ok, 0), 0xFFFF));
+        generateSportPacket(buffer, ui->swr_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RAS_ID, LIMIT<uint32_t>(0, ui->Swr->text().toInt(&ok, 0), 0xFFFF));
       break;
 
     case 4:
@@ -633,7 +633,7 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.clear();
   colToFuncMap.insert("RxBt(V)", RXBT_V);
   colToFuncMap.insert("RSSI(dB)", RSSI);
-  colToFuncMap.insert("SWR", SWR);
+  colToFuncMap.insert("RAS", RAS);
   colToFuncMap.insert("A1", A1);
   colToFuncMap.insert("A1(V)", A1);
   colToFuncMap.insert("A2", A2);
@@ -944,7 +944,7 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
       case RSSI:
         ui->Rssi->setValue(columnData[info.dataIndex].toDouble());
         break;
-      case SWR:
+      case RAS:
         ui->Swr->setValue(columnData[info.dataIndex].toDouble());
         break;
       case A1:

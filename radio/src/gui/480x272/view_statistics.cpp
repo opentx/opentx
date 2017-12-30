@@ -177,7 +177,7 @@ bool menuStatsAnalogs(event_t event)
 #endif
   }
 
-  // SWR
+  // RAS
   if ((IS_MODULE_XJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (IS_MODULE_PXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+7*FH, "RAS");
     lcdDrawNumber(MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.swr.value);

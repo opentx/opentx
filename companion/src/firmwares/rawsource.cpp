@@ -326,7 +326,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
 
   static const QString telemetry[] = {
     tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
-    tr("SWR"), tr("RSSI Tx"), tr("RSSI Rx"),
+    tr("RAS"), tr("RSSI Tx"), tr("RSSI Rx"),
     tr("A1"), tr("A2"), tr("A3"), tr("A4"),
     tr("Alt"), tr("Rpm"), tr("Fuel"), tr("T1"), tr("T2"),
     tr("Speed"), tr("Dist"), tr("GPS Alt"),
@@ -518,7 +518,7 @@ bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings
         if (type == (int)TELEMETRY_SOURCE_TX_TIME && !fw->getCapability(RtcTime))
           return false;
 
-        if (type == (int)TELEMETRY_SOURCE_SWR && !fw->getCapability(SportTelemetry))
+        if (type == (int)TELEMETRY_SOURCE_RAS && !fw->getCapability(SportTelemetry))
           return false;
 
         if (type == (int)TELEMETRY_SOURCE_TIMER3 && fw->getCapability(Timers) < 3)

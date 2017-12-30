@@ -348,11 +348,11 @@ class SourcesConversionTable: public ConversionTable {
 
           for (int i=0; i<TELEMETRY_SOURCE_ACC; i++) {
             if (version < 216) {
-              if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPEED || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
+              if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_RAS || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_ASPEED || i==TELEMETRY_SOURCE_DTE || i==TELEMETRY_SOURCE_CELL_MIN || i==TELEMETRY_SOURCE_CELLS_MIN || i==TELEMETRY_SOURCE_VFAS_MIN)
                 continue;
             }
             if (!IS_ARM(board)) {
-              if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_SWR || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_A3_MIN || i==TELEMETRY_SOURCE_A4_MIN)
+              if (i==TELEMETRY_SOURCE_TX_TIME || i==TELEMETRY_SOURCE_RAS || i==TELEMETRY_SOURCE_A3 || i==TELEMETRY_SOURCE_A4 || i==TELEMETRY_SOURCE_A3_MIN || i==TELEMETRY_SOURCE_A4_MIN)
                 continue;
             }
             addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
@@ -486,7 +486,7 @@ class TelemetrySourcesConversionTable: public ConversionTable {
       if (IS_ARM(board) && version >= 217)
         addConversion(1+TELEMETRY_SOURCE_TIMER3, val++);
       if (IS_ARM(board) && version >= 216)
-        addConversion(1+TELEMETRY_SOURCE_SWR, val++);
+        addConversion(1+TELEMETRY_SOURCE_RAS, val++);
       addConversion(1+TELEMETRY_SOURCE_RSSI_TX, val++);
       addConversion(1+TELEMETRY_SOURCE_RSSI_RX, val++);
       if (IS_ARM(board) && version >= 216)

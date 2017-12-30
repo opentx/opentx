@@ -1086,7 +1086,7 @@ void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
-  firmware->addOption("noswr", QCoreApplication::translate("Firmware", "Disable SWR (RAS)"));
+  firmware->addOption("noras", QCoreApplication::translate("Firmware", "Disable RAS (SWR)"));
 }
 
 void addOpenTxLcdOptions(OpenTxFirmware * firmware)
