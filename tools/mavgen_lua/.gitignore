@@ -1,0 +1,10 @@
+Makefile
+lua_test*
+*.wpr
+*.wpu
+tags
+*.lua
+*.o
+*.pyc
+mavlink2lua.*
+tags
