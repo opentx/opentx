@@ -80,7 +80,9 @@ uint8_t              MSC_BOT_Status;
 #endif /* USB_OTG_HS_INTERNAL_DMA_ENABLED */
 
 #include "definitions.h"
-uint8_t              MSC_BOT_Data[MSC_MEDIA_PACKET] __DMA;	// modified by OpenTX
+#if defined(BOOT)
+uint8_t  MSC_BOT_Data[MSC_MEDIA_PACKET] __DMA;	// modified by OpenTX
+#endif
 
 #ifdef USB_OTG_HS_INTERNAL_DMA_ENABLED
   #if defined ( __ICCARM__ ) /*!< IAR Compiler */

@@ -27,6 +27,7 @@
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 
+#include "usb_conf.h"
 #include "usbd_core.h"
 
 /* Define to prevent recursive inclusion -------------------------------------*/
@@ -111,7 +112,11 @@ MSC_BOT_CSW_TypeDef;
   * @{
   */
 
+#if defined(BOOT)
 extern uint8_t              MSC_BOT_Data[];
+#else
+extern uint8_t*              MSC_BOT_Data;
+#endif
 extern uint16_t             MSC_BOT_DataLen;
 extern uint8_t              MSC_BOT_State;
 extern uint8_t              MSC_BOT_BurstMode;

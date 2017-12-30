@@ -49,7 +49,12 @@ uint8_t heartbeat;
 safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
 #endif
 
-union ReusableBuffer reusableBuffer;
+// __DMA for the MSC_BOT_Data member
+union ReusableBuffer reusableBuffer __DMA;
+
+#if defined(STM32)
+uint8_t* MSC_BOT_Data = reusableBuffer.MSC_BOT_Data;
+#endif
 
 const pm_uint8_t bchout_ar[] PROGMEM = {
     0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
