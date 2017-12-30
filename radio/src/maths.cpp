@@ -138,6 +138,11 @@ void extractLatitudeLongitude(uint32_t * latitude, uint32_t * longitude)
   *longitude = ((uint32_t)(qr.quot) * 1000000) + (((uint32_t)(qr.rem) * 10000 + telemetryData.hub.gpsLongitude_ap) * 5) / 3;
 }
 
+#if __clang__
+// clang does not like packed member access at all. Since mavlink is a 3rd party library, ignore the errors
+#pragma clang diagnostic push
+#pragma clang diagnostic warning "-Waddress-of-packed-member"
+#endif
 void getGpsPilotPosition()
 {
   extractLatitudeLongitude(&telemetryData.hub.pilotLatitude, &telemetryData.hub.pilotLongitude);

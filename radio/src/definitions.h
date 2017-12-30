@@ -21,8 +21,11 @@
 #ifndef _DEFINITIONS_H_
 #define _DEFINITIONS_H_
 
-#if defined(SIMU)
-  #define __ALIGNED
+#if defined(SIMU) &&  __GNUC__
+  #define __ALIGNED           __attribute__((aligned(32)))
+  #define __SECTION_USED(s)   __attribute__((used))
+#elif defined(SIMU)
+  #define  __ALIGNED
   #define __SECTION_USED(s)
 #else
   #define __ALIGNED          __attribute__((aligned(32)))
