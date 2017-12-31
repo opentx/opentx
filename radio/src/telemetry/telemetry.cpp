@@ -105,6 +105,12 @@ void telemetryWakeup()
       LOG_TELEMETRY_WRITE_BYTE(data);
     } while (telemetryGetByte(&data));
   }
+  if (serial2Mode == UART_MODE_MAVLINK) {
+      uint8_t data2;
+      while (serial2RxFifo.pop(data2)) {;
+        processMavlinkTelemetryData(data2);
+      }
+  }
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
     uint8_t data;

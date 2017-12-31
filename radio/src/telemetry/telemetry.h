@@ -47,6 +47,8 @@
   #include "multi.h"
 #endif
 
+#include "mavlink_telemetry.h"
+
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
 
 #if defined(WS_HOW_HIGH)

@@ -81,6 +81,8 @@ add_definitions(-DCPUARM -DVIRTUAL_INPUTS)
 add_definitions(-DTELEMETRY_FRSKY -DTELEMETRY_FRSKY_SPORT -DFRSKY_HUB -DGPS -DPXX -DDSM2)
 add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE -DGAUGES)
 add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
+add_definitions(-DMAVLINK_SERIAL)
+
 include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
 foreach(LANGUAGE ${TTS_LANGUAGES})
   string(TOLOWER ${LANGUAGE} lang_lower)
@@ -95,6 +97,7 @@ set(SRC
   telemetry/telemetry.cpp
   telemetry/telemetry_holders.cpp
   telemetry/telemetry_sensors.cpp
+  telemetry/mavlink_telemetry.cpp
   telemetry/frsky.cpp
   telemetry/frsky_d_arm.cpp
   telemetry/frsky_sport.cpp
@@ -133,3 +136,4 @@ set(PULSES_SRC
   dsm2_arm.cpp
   sbus_arm.cpp
   )
+
