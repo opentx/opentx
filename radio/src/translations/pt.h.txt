@@ -71,7 +71,7 @@
 #define TR_TRNCHN        "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES   "\017"
-#define TR_UART3MODES    "OFF\0           ""S-Port Mirror\0 ""Telemetry\0     ""SBUS Trainer\0  ""Debug\0"
+#define TR_UART3MODES    "OFF\0           ""S-Port Mirror\0 ""Telemetry\0     ""SBUS Trainer\0  ""MAVLink\0       ""Debug\0"
 
 #define LEN_SWTYPES      "\006"
 #define TR_SWTYPES       "None\0 ""Toggle""2POS\0 ""3POS\0"

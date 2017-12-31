@@ -71,7 +71,7 @@
 #define TR_TRNCHN              "KN1KN2KN3KN4"
 
 #define LEN_UART3MODES         "\022"
-#define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Telemetri\0        ""SBUS Trainer\0     ""Debug\0"
+#define TR_UART3MODES          "Av\0               ""Spegling av S-Port""Telemetri\0        ""SBUS Trainer\0     ""MAVLink\0          ""Debug\0"
 
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Ingen\0""Flipp\0""2Pos\0 ""3Pos\0"

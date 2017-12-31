@@ -72,7 +72,7 @@
 
 
 #define LEN_UART3MODES         "\015"  /*13 decimal*/
-#define TR_UART3MODES          "Wyłącz\0      ""S-Port Kopia ""Telemetria\0  ""Trener SBUS\0 ""Debug\0        "
+#define TR_UART3MODES          "Wyłącz\0      ""S-Port Kopia ""Telemetria\0  ""Trener SBUS\0 ""MAVLink\0     ""Debug\0        "
 
 #define LEN_SWTYPES            "\006"
 #define TR_SWTYPES             "Brak\0 ""Chwil.""2POZ\0 ""3POZ\0"

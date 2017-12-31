@@ -69,7 +69,7 @@
 #define TR_TRNCHN              "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES         "\015"
-#define TR_UART3MODES          "VYP\0         ""S-Port Mirror""Telemetrie\0  ""SBUS Trenér\0 ""Debug\0"
+#define TR_UART3MODES          "VYP\0         ""S-Port Mirror""Telemetrie\0  ""SBUS Trenér\0 ""MAVLink\0     ""Debug\0"
 
 #define LEN_SWTYPES            "\013"
 #define TR_SWTYPES             "Žádný\0     ""Bez aretace""2-polohový\0""3-polohový\0"
