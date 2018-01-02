@@ -572,8 +572,13 @@
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Laagste""1e Cel\0""2e Cel\0""3e Cel\0""4e Cel\0""5e Cel\0""6e Cel\0""Hoogste""Delta\0 "
 
+#if defined(PCBX10)
 #define LEN_VANTENNATYPES      "\010"
-#define TR_VANTENNATYPES        "Internal""Ext+Int\0"
+#define TR_VANTENNATYPES       "Internal""External"
+#else
+#define LEN_VANTENNATYPES      "\010"
+#define TR_VANTENNATYPES       "Internal""Ext+Int\0"
+#endif
 
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
