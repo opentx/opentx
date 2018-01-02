@@ -252,6 +252,8 @@
 #define PWR_ON_GPIO_MODER               GPIO_MODER_MODER1
 #define PWR_ON_GPIO_MODER_OUT           GPIO_MODER_MODER1_0
 
+// S.Port update connector
+#define SPORT_MAX_BAUDRATE              250000 // < 400000
 #if defined(PCBX10)
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
   #define SPORT_UPDATE_PWR_GPIO         GPIOH
@@ -266,6 +268,7 @@
 #define PCBREV_GPIO_PIN                 GPIO_Pin_11  // PI.11
 
 // Led
+#define STATUS_LEDS
 #if defined(PCBX12S)
   #define LED_RCC_AHB1Periph            RCC_AHB1Periph_GPIOI
   #define LED_GPIO                      GPIOI
@@ -481,6 +484,7 @@
 #define I2C_SPEED                       400000
 
 // Haptic
+#define HAPTIC_PWM
 #if defined(PCBX12S)
   #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
   #define HAPTIC_RCC_APB2Periph         RCC_APB2ENR_TIM9EN
@@ -516,7 +520,7 @@
 #define INTMODULE_TX_GPIO_PinSource     GPIO_PinSource6
 #define INTMODULE_RX_GPIO_PinSource     GPIO_PinSource7
 #define INTMODULE_USART                 USART1
-#define INTMODULE_GPIO_AF               GPIO_AF_USART1
+#define INTMODULE_TX_GPIO_AF            GPIO_AF_USART1
 #define INTMODULE_USART_IRQn            USART1_IRQn
 #define INTMODULE_DMA_STREAM            DMA2_Stream7
 #define INTMODULE_DMA_STREAM_IRQ        DMA2_Stream7_IRQn
@@ -547,16 +551,17 @@
 #endif
 
 // External Module
+#define EXTMODULE_PULSES
 #define EXTMODULE_PWR_GPIO              GPIOB
 #define EXTMODULE_PWR_GPIO_PIN          GPIO_Pin_3  // PB.03
 #if defined(PCBX10) || PCBREV >= 13
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB1Periph      0
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM1
-  #define EXTMODULE_PPM_GPIO            GPIOA
-  #define EXTMODULE_PPM_GPIO_PIN        GPIO_Pin_10 // PA.10
-  #define EXTMODULE_PPM_GPIO_PinSource  GPIO_PinSource10
-  #define EXTMODULE_PPM_GPIO_AF         GPIO_AF_TIM1
+  #define EXTMODULE_TX_GPIO             GPIOA
+  #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_10 // PA.10
+  #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource10
+  #define EXTMODULE_TX_GPIO_AF          GPIO_AF_TIM1
   #define EXTMODULE_TIMER               TIM1
   #define EXTMODULE_TIMER_IRQn          TIM1_CC_IRQn
   #define EXTMODULE_TIMER_IRQHandler    TIM1_CC_IRQHandler
@@ -570,10 +575,10 @@
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define EXTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define EXTMODULE_RCC_APB2Periph      0
-  #define EXTMODULE_PPM_GPIO            GPIOA
-  #define EXTMODULE_PPM_GPIO_PIN        GPIO_Pin_15 // PA.15
-  #define EXTMODULE_PPM_GPIO_PinSource  GPIO_PinSource15
-  #define EXTMODULE_PPM_GPIO_AF         GPIO_AF_TIM2
+  #define EXTMODULE_TX_GPIO             GPIOA
+  #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_15 // PA.15
+  #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource15
+  #define EXTMODULE_TX_GPIO_AF          GPIO_AF_TIM2
   #define EXTMODULE_TIMER               TIM2
   #define EXTMODULE_TIMER_IRQn          TIM2_IRQn
   #define EXTMODULE_TIMER_IRQHandler    TIM2_IRQHandler

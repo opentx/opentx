@@ -64,7 +64,7 @@ PACK(struct Dsm2SerialPulsesData {
 });
 #endif
 
-#if defined(PPM_PIN_UART)
+#if defined(INTMODULE_USART)
 PACK(struct PxxUartPulsesData {
   uint8_t  pulses[64];
   uint8_t  * ptr;
@@ -74,7 +74,7 @@ PACK(struct PxxUartPulsesData {
 #endif
 
 #define MULTIMODULE_BAUDRATE 100000
-#if defined(PPM_PIN_TIMER)
+#if defined(INTMODULE_PULSES) || defined(EXTMODULE_PULSES)
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
 /* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
@@ -108,11 +108,12 @@ union ModulePulsesData {
 #if defined(PPM_PIN_SERIAL)
   PxxSerialPulsesData pxx;
   Dsm2SerialPulsesData dsm2;
-#else
+#endif
+#if defined(INTMODULE_PULSES) || defined(EXTMODULE_PULSES)
   PxxTimerPulsesData pxx;
   Dsm2TimerPulsesData dsm2;
 #endif
-#if defined(PPM_PIN_UART)
+#if defined(INTMODULE_USART)
   PxxUartPulsesData pxx_uart;
 #endif
   PpmPulsesData<pulse_duration_t> ppm;

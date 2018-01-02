@@ -28,7 +28,7 @@
 #endif
 
 int16_t  anas [NUM_INPUTS] = {0};
-int16_t  trims[NUM_STICKS+NUM_AUX_TRIMS] = {0};
+int16_t  trims[NUM_TRIMS] = {0};
 int32_t  chans[MAX_OUTPUT_CHANNELS] = {0};
 BeepANACenter bpanaCenter = 0;
 
@@ -533,13 +533,6 @@ void evalInputs(uint8_t mode)
 
     if (v < -RESX) v = -RESX;
     if (v >  RESX) v =  RESX;
-
-#if defined(PCBTARANIS) && !defined(PCBX7) && !defined(SIMU)
-    // TODO why not in the driver?
-    if (i==POT1 || i==SLIDER1) {
-      v = -v;
-    }
-#endif
 
     if (g_model.throttleReversed && ch==THR_STICK) {
       v = -v;

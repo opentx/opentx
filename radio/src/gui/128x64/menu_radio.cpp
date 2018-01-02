@@ -23,7 +23,7 @@
 #if defined(CPUARM)
 void menuRadioSpecialFunctions(event_t event)
 {
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
   const CustomFunctionData * cfn = &g_eeGeneral.customFn[menuVerticalPosition];
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     menuHorizontalPosition = 0;

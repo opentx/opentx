@@ -38,16 +38,16 @@ void extmoduleNoneStart()
 {
   EXTERNAL_MODULE_OFF();
 
-  GPIO_PinAFConfig(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PinSource, 0);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, 0);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
-  GPIO_SetBits(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PIN); // Set high
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
+  GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN); // Set high
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
@@ -66,15 +66,15 @@ void extmodulePpmStart()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PinSource, EXTMODULE_PPM_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
 
   // PPM generation principle:
   //
@@ -119,15 +119,15 @@ void extmodulePxxStart()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PinSource, EXTMODULE_PPM_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
@@ -166,15 +166,15 @@ void extmoduleDsm2Start()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PinSource, EXTMODULE_PPM_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
@@ -213,16 +213,16 @@ void extmoduleCrossfireStart()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PinSource, 0);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, 0);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_PPM_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_PPM_GPIO, &GPIO_InitStructure);
-  GPIO_SetBits(EXTMODULE_PPM_GPIO, EXTMODULE_PPM_GPIO_PIN); // Set high
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
+  GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN); // Set high
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)

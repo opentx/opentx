@@ -94,7 +94,7 @@ void menuRadioHardware(event_t event)
 }
 #endif // PCBSKY9X
 
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
 enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_LABEL_STICKS,
   ITEM_RADIO_HARDWARE_STICK1,
@@ -125,14 +125,18 @@ enum MenuRadioHardwareItems {
 
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
 #define BLUETOOTH_ROWS                 uint8_t(btChipPresent ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? -1 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #elif defined(BLUETOOTH)
 #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #else
 #define BLUETOOTH_ROWS
 #endif
+#if defined(PCBXLITE)
+#define SWITCH_TYPE_MAX(sw)            SWITCH_3POS
+#else
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#endif
 #define HW_SETTINGS_COLUMN1            30
 #define HW_SETTINGS_COLUMN2            (30 + 5*FW)
 

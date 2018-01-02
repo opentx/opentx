@@ -101,21 +101,21 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 }
 #endif
 
-#if (defined(PCBX9E) || defined(PCBX7)) && !defined(SIMU)
-#define PWR_PRESS_DURATION_MIN       100 // 1s
-#define PWR_PRESS_DURATION_MAX       500 // 5s
+#if defined(PWR_PRESS_BUTTON) && !defined(SIMU)
+  #define PWR_PRESS_DURATION_MIN        100 // 1s
+  #define PWR_PRESS_DURATION_MAX        500 // 5s
 #endif
+
 #if (defined(PCBX9E) && !defined(SIMU))
 const pm_uchar bmp_startup[] PROGMEM = {
   #include "startup.lbm"
 };
-
 const pm_uchar bmp_lock[] PROGMEM = {
   #include "lock.lbm"
 };
-#endif  // defined(PCBX9E) && !defined(SIMU)
+#endif
 
-#if defined(PCBX7)
+#if defined(SPORT_UPDATE_PWR_GPIO)
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -129,7 +129,7 @@ void sportUpdateInit()
 
 void sportUpdatePowerOn()
 {
-  if (IS_PCBREV_40())
+  if (HAS_SPORT_UPDATE_CONNECTOR())
     GPIO_SetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
   else
     EXTERNAL_MODULE_ON();
@@ -137,7 +137,7 @@ void sportUpdatePowerOn()
 
 void sportUpdatePowerOff()
 {
-  if (IS_PCBREV_40())
+  if (HAS_SPORT_UPDATE_CONNECTOR())
     GPIO_ResetBits(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
   else
     EXTERNAL_MODULE_OFF();
@@ -158,11 +158,11 @@ void boardInit()
                          HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
 
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph |
-                         BACKLIGHT_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
+                         BACKLIGHT_RCC_APB1Periph | HAPTIC_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
                          SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph |
-                         BT_RCC_APB1Periph, ENABLE);
+                         INTMODULE_RCC_APB1Periph | BT_RCC_APB1Periph, ENABLE);
 
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph |
@@ -174,7 +174,7 @@ void boardInit()
   pwrInit();
 #endif
 
-#if defined(PCBX7)
+#if defined(STATUS_LEDS)
   ledInit();
   ledGreen();
 #endif
@@ -190,7 +190,7 @@ void boardInit()
   i2cInit();
   usbInit();
 
-#if defined(DEBUG) && !defined(PCBX7)
+#if defined(DEBUG) && defined(SERIAL_GPIO)
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
   TRACE("\nTaranis board started :)");
 #endif
@@ -207,7 +207,7 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7)
+#if defined(PWR_PRESS_BUTTON)
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcdClear();
 #if defined(PCBX9E)
@@ -259,35 +259,32 @@ void boardInit()
     pwrInit();
     backlightInit();
   }
-#if defined(PCBX9E)
+#if defined(TOPLCD_GPIO)
   toplcdInit();
 #endif
-#else
+#else // defined(PWR_PRESS_BUTTON)
   backlightInit();
 #endif
 
-#if defined(PCBX7)
-  if (IS_PCBREV_40()) {
+  if (HAS_SPORT_UPDATE_CONNECTOR()) {
     sportUpdateInit();
   }
-#endif
-
 #endif // !defined(SIMU)
 }
 
 void boardOff()
 {
-#if defined(PCBX7)
+#if defined(STATUS_LEDS)
   ledOff();
 #endif
 
   BACKLIGHT_DISABLE();
 
-#if defined(PCBX9E)
+#if defined(TOPLCD_GPIO)
   toplcdOff();
 #endif
 
-#if defined(PCBX9E) || defined(PCBX7)
+#if defined(PWR_PRESS_BUTTON)
   while (pwrPressed()) {
     wdt_reset();
   }
@@ -317,7 +314,7 @@ void checkTrainerSettings()
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
         stop_sbus_on_heartbeat_capture() ;
         break;
-#if !defined(PCBX7) && !defined(PCBX9E)
+#if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         serial2Stop();
 #endif
@@ -329,12 +326,12 @@ void checkTrainerSettings()
         init_trainer_ppm();
         break;
       case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-         init_cppm_on_heartbeat_capture() ;
+         init_cppm_on_heartbeat_capture();
          break;
       case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-         init_sbus_on_heartbeat_capture() ;
+         init_sbus_on_heartbeat_capture();
          break;
-#if !defined(PCBX7) && !defined(PCBX9E)
+#if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
           serial2SbusInit();

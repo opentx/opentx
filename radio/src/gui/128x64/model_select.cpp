@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 
-#define MODELSIZE_POS_X                170
 #define MODELSEL_W                     LCD_W
 
 #if defined(NAVIGATION_MENUS)

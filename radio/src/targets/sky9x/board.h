@@ -361,6 +361,7 @@ extern int8_t Coproc_temp;
 extern int8_t Coproc_maxtemp;
 
 // Haptic driver
+#define HAPTIC_PWM
 void hapticOff(void);
 void hapticOn(uint32_t pwmPercent);
 

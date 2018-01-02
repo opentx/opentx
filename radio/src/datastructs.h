@@ -329,7 +329,7 @@ typedef int16_t gvar_t;
 
 #if defined(CPUARM)
 PACK(struct FlightModeData {
-  trim_t trim[NUM_STICKS+NUM_AUX_TRIMS];
+  trim_t trim[NUM_TRIMS];
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
   int16_t swtch:9;       // swtch of phase[0] is not used
   int16_t spare:7;
@@ -928,7 +928,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #elif defined(PCBTARANIS)
-  #if defined(PCBX9E) || defined(PCBX7)
+  #if defined(BLUETOOTH)
     #define BLUETOOTH_FIELDS \
       uint8_t spare; \
       char bluetoothName[LEN_BLUETOOTH_NAME];
@@ -1068,13 +1068,13 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBXLITE)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(CustomFunctionData, 11);
-  CHKSIZE(FlightModeData, 36);
+  CHKSIZE(FlightModeData, 28 + 2*NUM_TRIMS);
   CHKSIZE(TimerData, 11);
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 6);
@@ -1083,10 +1083,6 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 104);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
-
-  CHKSIZE(RadioData, 850);
-  CHKSIZE(ModelData, 6025);
-
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);
@@ -1102,14 +1098,6 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 104);
   CHKSIZE(ModelHeader, 24);
   CHKSIZE(CurveData, 4);
-#if defined(PCBX9E)
-  CHKSIZE(RadioData, 952);
-  CHKSIZE(ModelData, 6520);
-#else
-  CHKSIZE(RadioData, 872);
-  CHKSIZE(ModelData, 6507);
-#endif
-
 #elif defined(PCBHORUS)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
@@ -1118,12 +1106,9 @@ static inline void check_struct()
   CHKSIZE(FlightModeData, 44);
   CHKSIZE(TimerData, 16);
   CHKSIZE(SwashRingData, 8);
-
   CHKSIZE(FrSkyTelemetryData, 5);
   CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
-  CHKSIZE(RadioData, 847);
-  CHKSIZE(ModelData, 9380);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
 #elif defined(PCBSKY9X)
@@ -1139,8 +1124,6 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 88);
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
-  CHKSIZE(RadioData, 727);
-  CHKSIZE(ModelData, 5188);
 #else
   // Common for all variants
   CHKSIZE(LimitData, 5);
@@ -1198,6 +1181,26 @@ static inline void check_struct()
   CHKSIZE(FrSkyRSSIAlarm, 1);
 #endif
   CHKSIZE(TrainerData, 16);
+
+#if defined(PCBXLITE)
+  CHKSIZE(RadioData, 838);
+  CHKSIZE(ModelData, 6025);
+#elif defined(PCBX7)
+  CHKSIZE(RadioData, 850);
+  CHKSIZE(ModelData, 6025);
+#elif defined(PCBX9E)
+  CHKSIZE(RadioData, 952);
+  CHKSIZE(ModelData, 6520);
+#elif defined(PCBX9D)
+  CHKSIZE(RadioData, 872);
+  CHKSIZE(ModelData, 6507);
+#elif defined(PCBSKY9X)
+  CHKSIZE(RadioData, 727);
+  CHKSIZE(ModelData, 5188);
+#elif defined(PCBHORUS)
+  CHKSIZE(RadioData, 847);
+  CHKSIZE(ModelData, 9380);
+#endif
 
 #undef CHKSIZE
 #undef CHKSIZEUNION

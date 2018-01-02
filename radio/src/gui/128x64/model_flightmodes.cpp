@@ -55,28 +55,28 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
 }
 #endif
 
-enum MenuModelPhaseItems {
-  ITEM_MODEL_PHASE_NAME,
-  ITEM_MODEL_PHASE_SWITCH,
-  ITEM_MODEL_PHASE_TRIMS,
-  IF_ROTARY_ENCODERS(ITEM_MODEL_PHASE_ROTARY_ENCODERS)
-  ITEM_MODEL_PHASE_FADE_IN,
-  ITEM_MODEL_PHASE_FADE_OUT,
+enum MenuModelFlightModeItems {
+  ITEM_MODEL_FLIGHT_MODE_NAME,
+  ITEM_MODEL_FLIGHT_MODE_SWITCH,
+  ITEM_MODEL_FLIGHT_MODE_TRIMS,
+  IF_ROTARY_ENCODERS(ITEM_MODEL_FLIGHT_MODE_ROTARY_ENCODERS)
+  ITEM_MODEL_FLIGHT_MODE_FADE_IN,
+  ITEM_MODEL_FLIGHT_MODE_FADE_OUT,
 #if defined(GVARS) && !defined(PCBSTD)
-  ITEM_MODEL_PHASE_GVARS_LABEL,
-  ITEM_MODEL_PHASE_GV1,
-  ITEM_MODEL_PHASE_GV2,
-  ITEM_MODEL_PHASE_GV3,
-  ITEM_MODEL_PHASE_GV4,
-  ITEM_MODEL_PHASE_GV5,
+  ITEM_MODEL_FLIGHT_MODE_GVARS_LABEL,
+  ITEM_MODEL_FLIGHT_MODE_GV1,
+  ITEM_MODEL_FLIGHT_MODE_GV2,
+  ITEM_MODEL_FLIGHT_MODE_GV3,
+  ITEM_MODEL_FLIGHT_MODE_GV4,
+  ITEM_MODEL_FLIGHT_MODE_GV5,
 #if defined(CPUARM)
-  ITEM_MODEL_PHASE_GV6,
-  ITEM_MODEL_PHASE_GV7,
-  ITEM_MODEL_PHASE_GV8,
-  ITEM_MODEL_PHASE_GV9,
+  ITEM_MODEL_FLIGHT_MODE_GV6,
+  ITEM_MODEL_FLIGHT_MODE_GV7,
+  ITEM_MODEL_FLIGHT_MODE_GV8,
+  ITEM_MODEL_FLIGHT_MODE_GV9,
 #endif
 #endif
-  ITEM_MODEL_PHASE_MAX
+  ITEM_MODEL_FLIGHT_MODE_MAX
 };
 
 bool isTrimModeAvailable(int mode)
@@ -90,16 +90,16 @@ void menuModelFlightModeOne(event_t event)
   drawFlightMode(13*FW, 0, s_currIdx+1, (getFlightMode()==s_currIdx ? BOLD : 0));
 
 #if defined(GVARS) && !defined(GVARS_IN_CURVES_SCREEN)
-#if defined(PCBX7)
-  #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_TRIMS)
+#if defined(PCBTARANIS)
+  #define VERTICAL_SHIFT  (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_TRIMS)
   static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 3, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1, 1};
-#else // PCBX7
-  #define VERTICAL_SHIFT  (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH)
+#else
+  #define VERTICAL_SHIFT  (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_SWITCH)
   static const pm_uint8_t mstate_tab_fm1[] PROGMEM = {0, 0, 0, (uint8_t)-1, 1, 1, 1, 1, 1};
-#endif // PCBX7
+#endif
   static const pm_uint8_t mstate_tab_others[] PROGMEM = {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0, 0, (uint8_t)-1, 2, 2, 2, 2, 2};
 
-  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_PHASE_MAX - HEADER_LINE - (s_currIdx==0 ? (ITEM_MODEL_PHASE_FADE_IN-ITEM_MODEL_PHASE_SWITCH-1) : 0));
+  check(event, 0, NULL, 0, (s_currIdx == 0) ? mstate_tab_fm1 : mstate_tab_others, DIM(mstate_tab_others)-1, ITEM_MODEL_FLIGHT_MODE_MAX - HEADER_LINE - (s_currIdx==0 ? (ITEM_MODEL_FLIGHT_MODE_FADE_IN-ITEM_MODEL_FLIGHT_MODE_SWITCH-1) : 0));
 
   TITLE(STR_MENUFLIGHTMODE);
 
@@ -113,29 +113,29 @@ void menuModelFlightModeOne(event_t event)
   int8_t editMode = s_editMode;
 
 #if defined(GVARS) && !defined(PCBSTD)
-  if (s_currIdx == 0 && sub>=ITEM_MODEL_PHASE_SWITCH) sub += VERTICAL_SHIFT;
+  if (s_currIdx == 0 && sub>=ITEM_MODEL_FLIGHT_MODE_SWITCH) sub += VERTICAL_SHIFT;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     int8_t i = k + menuVerticalOffset;
 
-    if (s_currIdx == 0 && i>=ITEM_MODEL_PHASE_SWITCH) i += VERTICAL_SHIFT;
+    if (s_currIdx == 0 && i>=ITEM_MODEL_FLIGHT_MODE_SWITCH) i += VERTICAL_SHIFT;
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
 #else
-  for (uint8_t i=0, k=0, y=PHASE_ONE_FIRST_LINE; i<ITEM_MODEL_PHASE_MAX; i++, k++, y+=FH) {
-    if (s_currIdx == 0 && i==ITEM_MODEL_PHASE_SWITCH) i = ITEM_MODEL_PHASE_FADE_IN;
+  for (uint8_t i=0, k=0, y=PHASE_ONE_FIRST_LINE; i<ITEM_MODEL_FLIGHT_MODE_MAX; i++, k++, y+=FH) {
+    if (s_currIdx == 0 && i==ITEM_MODEL_FLIGHT_MODE_SWITCH) i = ITEM_MODEL_FLIGHT_MODE_FADE_IN;
     uint8_t attr = (sub==k ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
 #endif
     switch (i) {
-      case ITEM_MODEL_PHASE_NAME:
+      case ITEM_MODEL_FLIGHT_MODE_NAME:
         editSingleName(MIXES_2ND_COLUMN, y, STR_PHASENAME, fm->name, sizeof(fm->name), event, attr);
         break;
 
-      case ITEM_MODEL_PHASE_SWITCH:
+      case ITEM_MODEL_FLIGHT_MODE_SWITCH:
         fm->swtch = editSwitch(MIXES_2ND_COLUMN, y, fm->swtch, attr, event);
         break;
 
-      case ITEM_MODEL_PHASE_TRIMS:
+      case ITEM_MODEL_FLIGHT_MODE_TRIMS:
         lcdDrawTextAlignedLeft(y, STR_TRIMS);
 #if defined(CPUARM)
         for (uint8_t t = 0; t < NUM_STICKS; t++) {
@@ -164,7 +164,7 @@ void menuModelFlightModeOne(event_t event)
         break;
 
 #if ROTARY_ENCODERS > 0
-      case ITEM_MODEL_PHASE_ROTARY_ENCODERS:
+      case ITEM_MODEL_FLIGHT_MODE_ROTARY_ENCODERS:
         lcdDrawTextAlignedLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
@@ -181,22 +181,22 @@ void menuModelFlightModeOne(event_t event)
         break;
 #endif
 
-      case ITEM_MODEL_PHASE_FADE_IN:
+      case ITEM_MODEL_FLIGHT_MODE_FADE_IN:
         fm->fadeIn = EDIT_DELAY(0, y, event, attr, STR_FADEIN, fm->fadeIn);
         break;
 
-      case ITEM_MODEL_PHASE_FADE_OUT:
+      case ITEM_MODEL_FLIGHT_MODE_FADE_OUT:
         fm->fadeOut = EDIT_DELAY(0, y, event, attr, STR_FADEOUT, fm->fadeOut);
         break;
 
 #if defined(GVARS) && !defined(PCBSTD)
-      case ITEM_MODEL_PHASE_GVARS_LABEL:
+      case ITEM_MODEL_FLIGHT_MODE_GVARS_LABEL:
         lcdDrawTextAlignedLeft(y, STR_GLOBAL_VARS);
         break;
 
       default:
       {
-        uint8_t idx = i-ITEM_MODEL_PHASE_GV1;
+        uint8_t idx = i-ITEM_MODEL_FLIGHT_MODE_GV1;
         uint8_t posHorz = menuHorizontalPosition;
         if (attr && posHorz > 0 && s_currIdx==0) posHorz++;
 
@@ -247,7 +247,7 @@ void menuModelFlightModeOne(event_t event)
     #define TRIMS_OFS                  (-FW/2-4)
     #define ROTARY_ENC_OFS             (2)
   #endif
-#elif defined(PCBX7)
+#elif defined(PCBTARANIS)
   #define NAME_POS                     20
   #define SWITCH_POS                   59
   #define TRIMS_POS                    79
@@ -292,14 +292,14 @@ void menuModelFlightModesAll(event_t event)
     att = (i==sub ? INVERS : 0);
     FlightModeData * p = flightModeAddress(i);
     drawFlightMode(0, y, i+1, att|(getFlightMode()==i ? BOLD : 0));
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
     lcdDrawSizedText(NAME_POS, y, p->name, sizeof(p->name), ZCHAR);
 #else
     lcdDrawSizedText(4*FW+NAME_OFS, y, p->name, sizeof(p->name), ZCHAR);
 #endif
     if (i == 0) {
       for (uint8_t t=0; t<NUM_STICKS; t++) {
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
         drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);
 #else
         drawShortTrimMode((9+LEN_FLIGHT_MODE_NAME+t)*FW+TRIMS_OFS, y, i, t, 0);
@@ -307,7 +307,7 @@ void menuModelFlightModesAll(event_t event)
       }
     }
     else {
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
       drawSwitch(SWITCH_POS, y, p->swtch, 0);
       for (uint8_t t=0; t<NUM_STICKS; t++) {
         drawTrimMode(TRIMS_POS+t*FW*2, y, i, t, 0);

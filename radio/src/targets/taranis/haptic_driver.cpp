@@ -20,10 +20,11 @@
 
 #include "opentx.h"
 
-#if defined(PCBX9E) || defined(PCBX9DP)
+#if defined(HAPTIC_PWM)
+// TODO test Haptic on X7 (I added PWM support)
 void hapticOff(void)
 {
-  HAPTIC_TIMER->CCR1 = 0;
+  HAPTIC_COUNTER_REGISTER = 0;
 }
 
 void hapticOn(uint32_t pwmPercent)
@@ -31,7 +32,7 @@ void hapticOn(uint32_t pwmPercent)
   if (pwmPercent > 100) {
     pwmPercent = 100;
   }
-  HAPTIC_TIMER->CCR1 = pwmPercent;
+  HAPTIC_COUNTER_REGISTER = pwmPercent;
 }
 
 void hapticInit(void)
@@ -47,11 +48,10 @@ void hapticInit(void)
   GPIO_PinAFConfig(HAPTIC_GPIO, HAPTIC_GPIO_PinSource, HAPTIC_GPIO_AF);
 
   HAPTIC_TIMER->ARR = 100;
-  HAPTIC_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 10000 - 1;
-  HAPTIC_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2; // PWM
-  HAPTIC_TIMER->CCER = TIM_CCER_CC1E;
-
-  HAPTIC_TIMER->CCR1 = 0;
+  HAPTIC_TIMER->PSC = HAPTIC_TIMER_FREQ / 10000 - 1;
+  HAPTIC_TIMER->CCMR1 = HAPTIC_CCMR1; // PWM
+  HAPTIC_TIMER->CCER = HAPTIC_CCER;
+  HAPTIC_COUNTER_REGISTER = 0;
   HAPTIC_TIMER->EGR = 0;
   HAPTIC_TIMER->CR1 = TIM_CR1_CEN; // Counter enable
 }

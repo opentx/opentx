@@ -545,7 +545,6 @@ void serial2Putc(char c);
 void serial2SbusInit(void);
 void serial2Stop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
-int sbusGetByte(uint8_t * byte);
 
 // BT driver
 #define BLUETOOTH_FACTORY_BAUDRATE     57600

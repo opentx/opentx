@@ -256,14 +256,16 @@ void generalDefault()
   #endif
   g_eeGeneral.slidersConfig = 0x0f; // 4 sliders
   g_eeGeneral.blOffBright = 20;
-#elif defined(PCBX7)
+#elif defined(PCBX7) ||  defined(PCBXLITE)
   g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBXLITE)
+  g_eeGeneral.switchConfig = 0x0000000f; // 2x3POS
+#elif defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
@@ -1290,7 +1292,13 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
 }
 
 #if defined(GVARS)
-int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS] = { -1, -1, -1, -1 };
+#if NUM_TRIMS == 6
+  int8_t trimGvar[NUM_TRIMS] = { -1, -1, -1, -1, -1, -1 };
+#elif NUM_TRIMS == 4
+  int8_t trimGvar[NUM_TRIMS] = { -1, -1, -1, -1 };
+#elif NUM_TRIMS == 2
+  int8_t trimGvar[NUM_TRIMS] = { -1, -1 };
+#endif
 #endif
 
 #if defined(CPUARM)
@@ -1630,7 +1638,7 @@ uint16_t s_sum_samples_thr_10s;
 void evalTrims()
 {
   uint8_t phase = mixerCurrentFlightMode;
-  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
+  for (uint8_t i=0; i<NUM_TRIMS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
 #if !defined(CPUARM)
@@ -2393,18 +2401,18 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   }
 
   // reset all trims, except throttle (if throttle trim)
-  for (uint8_t i=0; i<NUM_STICKS+NUM_AUX_TRIMS; i++) {
-    if (i!=THR_STICK || !g_model.thrTrim) {
+  for (uint8_t i=0; i<NUM_TRIMS; i++) {
+    if (i != THR_STICK || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
-      for (uint8_t phase=0; phase<MAX_FLIGHT_MODES; phase++) {
+      for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
 #if defined(CPUARM)
-        trim_t trim = getRawTrimValue(phase, i);
-        if (trim.mode / 2 == phase)
-          setTrimValue(phase, i, trim.value - original_trim);
+        trim_t trim = getRawTrimValue(fm, i);
+        if (trim.mode / 2 == fm)
+          setTrimValue(fm, i, trim.value - original_trim);
 #else
-        trim_t trim = getRawTrimValue(phase, i);
+        trim_t trim = getRawTrimValue(fm, i);
         if (trim <= TRIM_EXTENDED_MAX)
-          setTrimValue(phase, i, trim - original_trim);
+          setTrimValue(fm, i, trim - original_trim);
 #endif
       }
     }

@@ -117,9 +117,9 @@ enum CurveType {
 };
 
 #if defined(CPUARM)
-#define MIN_POINTS_PER_CURVE           3
+  #define MIN_POINTS_PER_CURVE         3
 #else
-#define MIN_POINTS_PER_CURVE           3
+  #define MIN_POINTS_PER_CURVE         3
 #endif
 
 #define MAX_POINTS_PER_CURVE           17
@@ -136,18 +136,7 @@ enum CurveType {
   #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
-#elif defined(PCBSKY9X) || defined(PCBX7)
-  #define LEN_MODEL_NAME               10
-  #define LEN_TIMER_NAME               3
-  #define LEN_FLIGHT_MODE_NAME         6
-  #define LEN_EXPOMIX_NAME             6
-  #define LEN_CHANNEL_NAME             4
-  #define LEN_INPUT_NAME               3
-  #define LEN_CURVE_NAME               3
-  #define LEN_FUNCTION_NAME            6
-  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
-  #define MAX_CURVE_POINTS             512
-#elif defined(PCBTARANIS)
+#elif LCD_W == 212
   #define LEN_MODEL_NAME               12
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
@@ -158,6 +147,17 @@ enum CurveType {
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
+  #define MAX_CURVE_POINTS             512
+#elif defined(CPUARM)
+  #define LEN_MODEL_NAME               10
+  #define LEN_TIMER_NAME               3
+  #define LEN_FLIGHT_MODE_NAME         6
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             4
+  #define LEN_INPUT_NAME               3
+  #define LEN_CURVE_NAME               3
+  #define LEN_FUNCTION_NAME            6
+  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
   #define MAX_CURVE_POINTS             512
 #else
   #define LEN_MODEL_NAME               10
@@ -189,15 +189,15 @@ enum CurveType {
 #endif
 
 #if defined(PCBX10)
-  #define NUM_AUX_TRIMS                2
+  #define NUM_TRIMS                    (NUM_STICKS + 2)
   #define NUM_MOUSE_ANALOGS            2
   #define NUM_DUMMY_ANAS               2
 #elif defined(PCBHORUS)
-  #define NUM_AUX_TRIMS                2
+  #define NUM_TRIMS                    (NUM_STICKS + 2)
   #define NUM_MOUSE_ANALOGS            2
   #define NUM_DUMMY_ANAS               0
 #else
-  #define NUM_AUX_TRIMS                0
+  #define NUM_TRIMS                    NUM_STICKS
   #define NUM_MOUSE_ANALOGS            0
   #define NUM_DUMMY_ANAS               0
 #endif
@@ -266,7 +266,7 @@ enum BeeperMode {
 
 #if defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #else
   #define TRAINER_MODE_MAX()             HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
@@ -529,7 +529,15 @@ enum SwitchSources {
 
   SWSRC_FIRST_SWITCH,
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBXLITE)
+  SWSRC_SA0 = SWSRC_FIRST_SWITCH,
+  SWSRC_SA1,
+  SWSRC_SA2,
+  SWSRC_SB0,
+  SWSRC_SB1,
+  SWSRC_SB2,
+  SWSRC_LAST_SWITCH = SWSRC_SB2,
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,
@@ -542,7 +550,7 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBXLITE)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
@@ -550,7 +558,7 @@ enum SwitchSources {
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBXLITE)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
@@ -618,18 +626,17 @@ enum SwitchSources {
   SWSRC_TrimRudRight,
   SWSRC_TrimEleDown,
   SWSRC_TrimEleUp,
+#if NUM_TRIMS > 2
   SWSRC_TrimThrDown,
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
-#if defined(PCBHORUS)
+#endif
+#if NUM_TRIMS > 4
   SWSRC_TrimT5Down,
   SWSRC_TrimT5Up,
   SWSRC_TrimT6Down,
   SWSRC_TrimT6Up,
-  SWSRC_LAST_TRIM = SWSRC_TrimT6Up,
-#else
-  SWSRC_LAST_TRIM = SWSRC_TrimAilRight,
 #endif
 
 #if defined(PCBSKY9X)
@@ -689,6 +696,8 @@ enum SwitchSources {
 #endif
 };
 
+#define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
+
 enum MixSources {
   MIXSRC_NONE,
 
@@ -730,7 +739,7 @@ enum MixSources {
   MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider (X9E only)")
   MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider (X9E only)")
   MIXSRC_LAST_POT = MIXSRC_SLIDER4,
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBXLITE)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_LAST_POT = MIXSRC_POT2,
@@ -791,7 +800,11 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBXLITE)
+  MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
+  MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
+  MIXSRC_LAST_SWITCH = MIXSRC_SB,
+#elif defined(PCBTARANIS) || defined(PCBHORUS)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")

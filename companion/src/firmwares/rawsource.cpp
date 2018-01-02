@@ -320,6 +320,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     tr("TrmR"), tr("TrmE"), tr("TrmT"), tr("TrmA"), tr("Trm5"), tr("Trm6")
   };
 
+  static const QString trims2[] = {
+    tr("TrmH"), tr("TrmV")
+  };
+
   static const QString special[] = {
     tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
   };
@@ -376,9 +380,11 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return result;
 
     case SOURCE_TYPE_TRIM:
-      return CHECK_IN_ARRAY(trims, index);
+      return (Boards::getCapability(board, Board::NumTrims) == 2 ? CHECK_IN_ARRAY(trims2, index) : CHECK_IN_ARRAY(trims, index));
+
     case SOURCE_TYPE_ROTARY_ENCODER:
       return CHECK_IN_ARRAY(rotary, index);
+
     case SOURCE_TYPE_MAX:
       return tr("MAX");
 

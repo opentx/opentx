@@ -213,7 +213,7 @@ bool eepromOpen()
 {
   eepromReadBlock((uint8_t *)&eeFs, 0, sizeof(eeFs));
 
-#ifdef SIMU
+#if defined(SIMU)
   if (eeFs.version != EEFS_VERS) {
     TRACE("bad eeFs.version (%d instead of %d)", eeFs.version, EEFS_VERS);
   }
@@ -628,7 +628,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
   f_close(&g_oLogFile);
 
-#if defined(PCBTARANIS)
+#if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
     storageCheck(true);
     ConvertModel(i_fileDst, version);
@@ -837,7 +837,9 @@ bool eeLoadGeneral()
     TRACE("EEPROM variant %d instead of %d", g_eeGeneral.variant, EEPROM_VARIANT);
     return false;
   }
-  else if (g_eeGeneral.version != EEPROM_VER) {
+#endif
+#if defined(EEPROM_CONVERSIONS)
+  if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
     if (!eeConvert()) {
       return false;

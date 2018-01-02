@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include "boards.h"
 #include "helpers.h"
 #include "opentxeeprom.h"
 #include "customdebug.h"
@@ -32,18 +33,18 @@ using namespace Board;
 
 #define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board, version)              (IS_HORUS(board) ? 3 : (IS_TARANIS_X7(board) ? 2 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : (version >= 216 ? 3 : 2)) : 3)))
-#define MAX_SLIDERS(board)                    (IS_HORUS(board) ? 4 : (IS_TARANIS_X7(board) ? 0 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 4 : 2) : 0)))
-#define MAX_MOUSE_ANALOGS(board)              (IS_HORUS(board) ? 2 : 0)
-#define MAX_SWITCHES(board, version)          (IS_HORUS(board) ? 8 : (IS_TARANIS_X7(board) ? 6 : (IS_TARANIS(board) ? (IS_TARANIS_X9E(board) ? 18 : 8) : 7)))
-#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : 8)
-#define MAX_SWITCHES_POSITION(board, version) (IS_TARANIS_X7(board) ? 6*3 : (IS_TARANIS_X9E(board) ? 18*3 : (IS_HORUS_OR_TARANIS(board) ? 8*3 : 9)))
+#define MAX_POTS(board, version)              (IS_TARANIS_NOT_X9E(board) && version < 216 ? 2 : Boards::getCapability(board, Board::Pots))
+#define MAX_SLIDERS(board)                    (Boards::getCapability(board, Board::Sliders))
+#define MAX_MOUSE_ANALOGS(board)              (Boards::getCapability(board, Board::MouseAnalogs))
+#define MAX_SWITCHES(board, version)          (Boards::getCapability(board, Board::Switches))
+#define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : 8)  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
+#define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
 #define MAX_ROTARY_ENCODERS(board)            (IS_2560(board) ? 2 : (IS_SKY9X(board) ? 1 : 0))
 #define MAX_FLIGHT_MODES(board, version)      (IS_ARM(board) ? 9 :  (IS_DBLRAM(board, version) ? 6 :  5))
 #define MAX_TIMERS(board, version)            ((IS_ARM(board) && version >= 217) ? 3 : 2)
 #define MAX_MIXERS(board, version)            (IS_ARM(board) ? 64 : 32)
 #define MAX_CHANNELS(board, version)          (IS_ARM(board) ? 32 : 16)
-#define MAX_TRIMS(board)                      (IS_HORUS(board) ? 6 : 4)
+#define MAX_TRIMS(board)                      (Boards::getCapability(board, Board::NumTrims))
 #define MAX_EXPOS(board, version)             (IS_ARM(board) ? ((IS_HORUS_OR_TARANIS(board) && version >= 216) ? 64 : 32) : (IS_DBLRAM(board, version) ? 16 : 14))
 #define MAX_LOGICAL_SWITCHES(board, version)  (IS_ARM(board) ? (version >= 218 ? 64 : 32) : ((IS_DBLEEPROM(board, version) && version<217) ? 15 : 12))
 #define MAX_CUSTOM_FUNCTIONS(board, version)  (IS_ARM(board) ? (version >= 216 ? 64 : 32) : (IS_DBLEEPROM(board, version) ? 24 : 16))

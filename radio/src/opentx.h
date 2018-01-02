@@ -289,7 +289,7 @@
 #include "debug.h"
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define SWSRC_THR                    SWSRC_SF2
+  #define SWSRC_THR                    SWSRC_SB2
   #define SWSRC_GEA                    SWSRC_SG2
   #define SWSRC_ID0                    SWSRC_SA0
   #define SWSRC_ID1                    SWSRC_SA1
@@ -319,7 +319,7 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_POT_AVAILABLE(x)          (IS_POT(x) && POT_CONFIG(x)!=POT_NONE)
   #define IS_POT_SLIDER_AVAILABLE(x)   (IS_POT_AVAILABLE(x) || IS_SLIDER_AVAILABLE(x))
   #define IS_MULTIPOS_CALIBRATED(cal)  (cal->count>0 && cal->count<XPOTS_MULTIPOS_COUNT)
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBXLITE)
   #define IS_POT_MULTIPOS(x)           (false)
   #define IS_POT_WITHOUT_DETENT(x)     (false)
   #define IS_POT_SLIDER_AVAILABLE(x)   (true)
@@ -745,7 +745,7 @@ swsrc_t getMovedSwitch();
 #endif
 
 #if defined(GVARS)
-  extern int8_t trimGvar[NUM_STICKS+NUM_AUX_TRIMS];
+  extern int8_t trimGvar[NUM_TRIMS];
   #define TRIM_REUSED(idx) trimGvar[idx] >= 0
 #else
   #define TRIM_REUSED(idx) 0
@@ -875,9 +875,7 @@ void getADC();
   #endif
 #endif
 
-#if defined(SBUS)
 #include "sbus.h"
-#endif
 
 void backlightOn();
 void checkBacklight();
@@ -1157,7 +1155,7 @@ LogicalSwitchData * lswAddress(uint8_t idx);
 #endif
 
 extern int16_t anas [NUM_INPUTS];
-extern int16_t trims[NUM_STICKS+NUM_AUX_TRIMS];
+extern int16_t trims[NUM_TRIMS];
 extern BeepANACenter bpanaCenter;
 
 extern uint8_t s_mixer_first_run_done;
@@ -1431,7 +1429,7 @@ void opentxClose(uint8_t shutdown=true);
 void opentxInit();
 void opentxResume();
 
-#if defined(PCBHORUS) || defined(PCBX7)
+#if defined(STATUS_LEDS)
   #define LED_ERROR_BEGIN()            ledRed()
   #define LED_ERROR_END()              ledBlue()
 #else

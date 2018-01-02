@@ -342,7 +342,13 @@ void logsWrite()
         f_printf(&g_oLogFile, "%d,", calibratedAnalogs[i]);
       }
 
-#if defined(PCBX7)
+#if defined(PCBXLITE)
+      f_printf(&g_oLogFile, "%d,%d,0x%08X%08X,",
+          GET_3POS_STATE(SA),
+          GET_3POS_STATE(SB),
+          getLogicalSwitchesStates(32),
+          getLogicalSwitchesStates(0));
+#elif defined(PCBX7)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,0x%08X%08X,",
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),

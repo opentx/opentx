@@ -13,7 +13,10 @@ if(PCB STREQUAL 9XRPRO)
   add_definitions(-Dat91sam3s8 -DREVX)
   set(FLAVOUR 9xrpro)
   set(LINKER_SCRIPT targets/sky9x/sam3s8c_flash.ld)
-  set(TARGET_SRC ${TARGET_SRC} rtc_driver.cpp)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    rtc_driver.cpp
+    )
   set(OPENRC_BOOTLOADER bootflash8.lbm)
   set(CPU_TYPE_FULL ATSAM3S8C)  # for size report
 elseif(PCB STREQUAL AR9X)
@@ -21,7 +24,11 @@ elseif(PCB STREQUAL AR9X)
   set(FLAVOUR ar9x)
   include_directories(${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi)
   set(SRC ${SRC} ${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c)
-  set(TARGET_SRC ${TARGET_SRC} i2c_driver.cpp rtc_ds3231_driver.cpp)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    i2c_driver.cpp
+    rtc_ds3231_driver.cpp
+    )
   set(LINKER_SCRIPT targets/sky9x/sam3s8c_flash.ld)
   set(OPENRC_BOOTLOADER bootflash8.lbm)
   set(CPU_TYPE_FULL ATSAM3S8C)  # for size report
@@ -29,7 +36,12 @@ else()
   set(FLAVOUR sky9x)
   set(PCBREV "REVC" CACHE STRING "PCB Revision (REVA/REVB/REVC)")
   set_property(CACHE PCBREV PROPERTY STRINGS "REVA" "REVB" "REVC")
-  set(TARGET_SRC ${TARGET_SRC} coproc_driver.cpp rotenc_driver.cpp rtc_driver.cpp)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    coproc_driver.cpp
+    rotenc_driver.cpp
+    rtc_driver.cpp
+    )
   set(OPENRC_BOOTLOADER bootflash4.lbm)
   if(PCBREV STREQUAL REVA)
     add_definitions(-DDREVA)
@@ -108,6 +120,7 @@ set(TARGET_SRC
   massstorage.cpp
   serial2_driver.cpp
   audio_driver.cpp
+  trainer_driver.cpp
   )
 
 set(SRC

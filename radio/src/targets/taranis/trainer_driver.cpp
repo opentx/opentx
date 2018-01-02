@@ -92,7 +92,6 @@ void init_trainer_capture()
 void stop_trainer_capture()
 {
   NVIC_DisableIRQ(TRAINER_TIMER_IRQn); // Stop Interrupt
-
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop counter
   TRAINER_TIMER->DIER = 0; // Stop Interrupt
 }

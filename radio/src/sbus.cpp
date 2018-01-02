@@ -45,7 +45,7 @@ void processSbusFrame(uint8_t * sbus, int16_t * pulses, uint32_t size)
     return; // SBUS invalid frame or failsafe mode
   }
 
-  sbus++;   // skip start byte
+  sbus++; // skip start byte
 
   uint32_t inputbitsavailable = 0;
   uint32_t inputbits = 0;

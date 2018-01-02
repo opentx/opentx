@@ -143,7 +143,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupSwitchType(16, ui->sqLabel, ui->sqName, ui->sqType);
   setupSwitchType(17, ui->srLabel, ui->srName, ui->srType);
 
-  if (IS_TARANIS(board) && !IS_TARANIS_X7(board)) {
+  if (IS_TARANIS(board) && !IS_TARANIS_SMALL(board)) {
     ui->serialPortMode->setCurrentIndex(generalSettings.hw_uartMode);
   }
   else {

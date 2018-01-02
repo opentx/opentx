@@ -139,6 +139,15 @@ if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
+if [[ " XLITE ALL " =~ " ${FLAVOR} " ]] ; then
+  # OpenTX on X-Lite
+  rm -rf *
+  cmake ${COMMON_OPTIONS} -DPCB=XLITE -DHELI=YES -DGVARS=YES ${SRCDIR}
+  make -j${CORES} ${FIRMARE_TARGET}
+  make -j${CORES} libsimulator
+  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+fi
+
 if [[ " X9D X9 ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on X9D
   rm -rf *
