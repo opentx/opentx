@@ -1177,9 +1177,9 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite board */
-  firmware = new OpenTxFirmware("opentx-xlite", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
-  addOpenTxTaranisOptions(firmware);
-  registerOpenTxFirmware(firmware);
+  // firmware = new OpenTxFirmware("opentx-xlite", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
+  // addOpenTxTaranisOptions(firmware);
+  // registerOpenTxFirmware(firmware);
 
   /* FrSky X10 board */
   firmware = new OpenTxFirmware("opentx-x10", QCoreApplication::translate("Firmware", "FrSky Horus X10 / X10S"), BOARD_X10);
