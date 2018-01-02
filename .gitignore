@@ -2,6 +2,8 @@
 /.*project
 /.settings
 /.autotools
+/*.user
+/*.user.*
 /doc/
 build*/
 cmake-build-*/
