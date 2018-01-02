@@ -670,7 +670,7 @@ void checkTrainerSettings(void);
 #endif
 
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
-extern DMAFifo<32> serial2RxFifo;
+extern DMAFifo<TELEMETRY_FIFO_SIZE> serial2RxFifo;
 extern Fifo<uint8_t, 512> serial2TxFifo;
 
 #endif

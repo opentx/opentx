@@ -22,7 +22,7 @@
 
 uint8_t serial2Mode = 0;
 Fifo<uint8_t, 512> serial2TxFifo;
-DMAFifo<32> serial2RxFifo __DMA (SERIAL_DMA_Stream_RX);
+DMAFifo<TELEMETRY_FIFO_SIZE> serial2RxFifo __DMA (SERIAL_DMA_Stream_RX);
 
 void uart3Setup(unsigned int baudrate, bool dma)
 {
