@@ -147,12 +147,12 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
     }
     else if (id == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
-      if (!IS_SWR_VALUE_VALID()) {
+      if (!IS_RAS_VALUE_VALID()) {
         telemetryData.swr.set(0x00);
       }
     }
-    else if (id == SWR_ID) {
-      if (IS_SWR_VALUE_VALID())
+    else if (id == RAS_ID) {
+      if (IS_RAS_VALUE_VALID())
         telemetryData.swr.set(SPORT_DATA_U8(packet));
       else
         telemetryData.swr.set(0x00);
@@ -164,7 +164,7 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
         processHubPacket(id, HUB_DATA_U16(packet));
       }
       else if (!IS_HIDDEN_TELEMETRY_VALUE(id)) {
-        if (id == ADC1_ID || id == ADC2_ID || id == BATT_ID || id == SWR_ID) {
+        if (id == ADC1_ID || id == ADC2_ID || id == BATT_ID || id == RAS_ID) {
           data = SPORT_DATA_U8(packet);
         }
         if (id >= GPS_LONG_LATI_FIRST_ID && id <= GPS_LONG_LATI_LAST_ID) {

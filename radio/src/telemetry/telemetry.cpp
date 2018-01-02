@@ -146,7 +146,7 @@ void telemetryWakeup()
   }
 #endif
   
-#define FRSKY_BAD_ANTENNA()            (IS_SWR_VALUE_VALID() && telemetryData.swr.value > 0x33)
+#define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
 
 #if defined(CPUARM)
   static tmr10ms_t alarmsCheckTime = 0;
@@ -174,7 +174,7 @@ void telemetryWakeup()
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if ((IS_MODULE_PXX(INTERNAL_MODULE) || IS_MODULE_PXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
-      AUDIO_SWR_RED();
+      AUDIO_RAS_RED();
       POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;
       SET_WARNING_INFO(w, strlen(w), 0);

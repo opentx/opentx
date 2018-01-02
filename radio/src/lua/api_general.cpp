@@ -640,7 +640,7 @@ This is just a hardware pass/fail measure and does not represent the quality of 
 */
 static int luaGetRAS(lua_State * L)
 {
-  if (IS_SWR_VALUE_VALID()) {
+  if (IS_RAS_VALUE_VALID()) {
     lua_pushinteger(L, telemetryData.swr.value);
   }
   else {

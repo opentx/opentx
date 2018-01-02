@@ -162,7 +162,7 @@ enum FrSkyDataState {
 #define SP2UART_A_ID              0xfd00
 #define SP2UART_B_ID              0xfd01
 #define BATT_ID                   0xf104
-#define SWR_ID                    0xf105
+#define RAS_ID                    0xf105
 #define XJT_VERSION_ID            0xf106
 #define FUEL_QTY_FIRST_ID         0x0a10
 #define FUEL_QTY_LAST_ID          0x0a1f
@@ -287,15 +287,17 @@ PACK(struct FrskyTelemetryData {
 #endif
 #endif
 
-#if defined(PCBX10)
-  #define IS_SWR_VALUE_VALID()         (false)
+#if defined(NO_RAS)
+  #define IS_RAS_VALUE_VALID()            (false)
+#elif defined(PCBX10)
+  #define IS_RAS_VALUE_VALID()            (false)
 #elif defined(PCBX9DP) || defined(PCBX9E)
-  #define IS_SWR_VALUE_VALID()         (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
+  #define IS_RAS_VALUE_VALID()            (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
 #else
-  #define IS_SWR_VALUE_VALID()         (true)
+  #define IS_RAS_VALUE_VALID()            (true)
 #endif
 
-#define IS_HIDDEN_TELEMETRY_VALUE(id) ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == SWR_ID) || (id == FACT_TEST_ID))
+#define IS_HIDDEN_TELEMETRY_VALUE(id)     ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == RAS_ID) || (id == FACT_TEST_ID))
 
 enum AlarmLevel {
   alarm_off = 0,

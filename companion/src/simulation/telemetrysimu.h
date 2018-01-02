@@ -102,7 +102,7 @@ class TelemetrySimulator : public QWidget
         enum CONVERT_TYPE {
           RXBT_V,
           RSSI,
-          SWR,
+          RAS,
           A1,
           A2,
           A3,

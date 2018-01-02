@@ -53,9 +53,9 @@ def ParseBatt(packet, dataId, prim, appId, data, crc):
     print(" Batt: %d" % (data & 0xFF))
 
 
-def ParseSWR(packet, dataId, prim, appId, data, crc):
+def ParseRAS(packet, dataId, prim, appId, data, crc):
     print("packet: %s (%4d)" % (dump(packet), lineNumber), end=' ')
-    print(" SWR: %d" % (data & 0xFF))
+    print(" RAS: %d" % (data & 0xFF))
 
 
 def ParseVersion(packet, dataId, prim, appId, data, crc):
@@ -74,7 +74,7 @@ appIdParsers = (
     (0xf101, 0xf101, ParseRSSI),
     (0xf102, 0xf103, ParseAdc),
     (0xf104, 0xf104, ParseBatt),
-    (0xf105, 0xf105, ParseSWR),
+    (0xf105, 0xf105, ParseRAS),
     (0xf106, 0xf106, ParseVersion),
 )
 

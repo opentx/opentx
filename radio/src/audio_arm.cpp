@@ -1134,7 +1134,7 @@ void audioEvent(unsigned int index)
       case AU_RSSI_RED:
         audioQueue.playTone(BEEP_DEFAULT_FREQ + 1800, 800, 20, PLAY_REPEAT(1) | PLAY_NOW);
         break;
-      case AU_SWR_RED:
+      case AU_RAS_RED:
         audioQueue.playTone(450, 160, 40, PLAY_REPEAT(2), 1);
         break;
       case AU_SPECIAL_SOUND_BEEP1:
