@@ -562,6 +562,7 @@ void checkTrainerSettings(void);
 #include "dmafifo.h"
 extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
+extern Fifo<uint8_t, 512> serial2TxFifo;
 #endif
 
 
