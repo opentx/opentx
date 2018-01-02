@@ -105,10 +105,12 @@ void serial2Init(unsigned int mode, unsigned int protocol)
       uart3Setup(MAVLINK_BAUDRATE, true);
       break;
   }
+  TRACE("serial2Init(%d, %d)", mode, protocol);
 }
 
 void serial2Putc(char c)
 {
+  //TRACE("serial2Putc(%c)", c);
 #if !defined(SIMU)
   int n = 0;
   while (serial2TxFifo.isFull()) {
@@ -128,6 +130,8 @@ void serial2SbusInit()
 
 void serial2Stop()
 {
+  TRACE("serial2Stop()");
+
   DMA_DeInit(SERIAL_DMA_Stream_RX);
   USART_DeInit(SERIAL_USART);
 }
@@ -148,6 +152,7 @@ extern "C" void SERIAL_USART_IRQHandler(void)
   if (USART_GetITStatus(SERIAL_USART, USART_IT_TXE) != RESET) {
     uint8_t txchar;
     if (serial2TxFifo.pop(txchar)) {
+      //TRACE("send char %c", txchar);
       /* Write one byte to the transmit data register */
       USART_SendData(SERIAL_USART, txchar);
     }
