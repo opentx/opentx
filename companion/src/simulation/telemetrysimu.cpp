@@ -18,12 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#include <stdint.h>
 #include "telemetrysimu.h"
 #include "ui_telemetrysimu.h"
+#include "appdata.h"
 #include "simulatorinterface.h"
 #include "radio/src/telemetry/frsky.h"
+
 #include <QRegularExpression>
+#include <stdint.h>
 
 TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * simulator):
   QWidget(parent),
@@ -744,6 +746,12 @@ bool TelemetrySimulator::LogPlaybackController::isReady()
 
 void TelemetrySimulator::LogPlaybackController::loadLogFile()
 {
+  QString logFileNameAndPath = QFileDialog::getOpenFileName(NULL, tr("Log File"), g.logDir(), tr("LOG Files (*.csv)"));
+  if (logFileNameAndPath.isEmpty())
+    return;
+
+  g.logDir(logFileNameAndPath);
+
   // reset the playback ui
   ui->play->setEnabled(false);
   ui->rewind->setEnabled(false);
@@ -757,8 +765,6 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
   // clear existing data
   csvRecords.clear();
 
-  QString logFileNameAndPath = QFileDialog::getOpenFileName(NULL, tr("Log File"), ".", tr("LOG Files (*.csv)"));
-  QFileInfo fileInfo(logFileNameAndPath);
   QFile file(logFileNameAndPath);
   if (!file.open(QIODevice::ReadOnly)) {
     ui->logFileLabel->setText(tr("ERROR - invalid file"));
@@ -768,6 +774,7 @@ void TelemetrySimulator::LogPlaybackController::loadLogFile()
     QByteArray line = file.readLine();
     csvRecords.append(line.simplified());
   }
+  file.close();
   if (csvRecords.count() > 1) {
     columnNames.clear();
     QStringList keys = csvRecords[0].split(',');
