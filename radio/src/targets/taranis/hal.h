@@ -78,8 +78,8 @@
   #define ROTARY_ENCODER_POSITION()     (ENC_GPIO->IDR >> 12) & 0x03
 #elif defined(PCBX7)
   #define ENC_GPIO                      GPIOE
-  #define ENC_GPIO_PIN_A                GPIO_Pin_10 // PE.10
-  #define ENC_GPIO_PIN_B                GPIO_Pin_12 // PE.12
+  #define ENC_GPIO_PIN_A                GPIO_Pin_09 // PE.09
+  #define ENC_GPIO_PIN_B                GPIO_Pin_11 // PE.11
   #define ROTARY_ENCODER_POSITION()     (((ENC_GPIO->IDR >> 10) & 0x02) + ((ENC_GPIO->IDR >> 9) & 0x01))
 #endif
 
