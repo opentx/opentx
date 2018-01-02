@@ -60,6 +60,8 @@ uint32_t Boards::getFourCC(Type board)
       return 0x3478746F;
     case BOARD_X10:
       return 0x3778746F;
+    case BOARD_TARANIS_XLITE:
+      return 0x3978746F;
     case BOARD_TARANIS_X7:
       return 0x3678746F;
     case BOARD_TARANIS_X9E:
@@ -94,6 +96,7 @@ const int Boards::getEEpromSize(Board::Type board)
     case BOARD_9XRPRO:
     case BOARD_AR9X:
       return EESIZE_9XRPRO;
+    case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
@@ -120,10 +123,11 @@ const int Boards::getFlashSize(Type board)
     case BOARD_9XRPRO:
     case BOARD_AR9X:
       return FSIZE_9XRPRO;
+    case BOARD_TARANIS_XLITE:
+    case BOARD_TARANIS_X7:
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
-    case BOARD_TARANIS_X7:
     case BOARD_X12S:
     case BOARD_X10:
       return FSIZE_HORUS;
@@ -136,6 +140,14 @@ const int Boards::getFlashSize(Type board)
 
 const SwitchInfo Boards::getSwitchInfo(Board::Type board, unsigned index)
 {
+  if (IS_TARANIS_XLITE(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS,   "SA"},
+      {SWITCH_3POS,   "SB"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
   if (IS_TARANIS_X7(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
@@ -196,7 +208,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       return 4;
 
     case Pots:
-      if (IS_TARANIS_X7(board))
+      if (IS_TARANIS_SMALL(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -237,6 +249,8 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 18;
       else if (IS_TARANIS_X7(board))
         return 6;
+      else if (IS_TARANIS_XLITE(board))
+        return 2;
       else if (IS_HORUS_OR_TARANIS(board))
         return 8;
       else
@@ -257,6 +271,8 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
     case NumTrims:
       if (IS_HORUS(board))
         return 6;
+      else if (IS_TARANIS_XLITE(board))
+        return 2;
       else
         return 4;
 

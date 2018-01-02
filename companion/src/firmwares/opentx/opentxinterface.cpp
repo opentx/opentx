@@ -83,6 +83,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
+    case BOARD_TARANIS_XLITE:
+      return "OpenTX for FrSky Taranis X-Lite";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -324,6 +326,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_TARANIS_X7(board)) {
     variant |= TARANIS_X7_VARIANT;
   }
+  else if (IS_TARANIS_XLITE(board)) {
+    variant |= TARANIS_XLITE_VARIANT;
+  }
 
   OpenTxGeneralData generator((GeneralSettings &)radioData.generalSettings, board, version, variant);
   // generator.Dump();
@@ -534,7 +539,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case SoundPitch:
       return 1;
     case Haptic:
-      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9E(board) || IS_HORUS(board) || id.contains("haptic"));
+      return (IS_2560(board) || IS_SKY9X(board) || IS_TARANIS_PLUS(board) || IS_TARANIS_SMALL(board) || IS_TARANIS_X9E(board) || IS_HORUS(board) || id.contains("haptic"));
     case ModelTrainerEnable:
       if (IS_HORUS_OR_TARANIS(board))
         return 1;
@@ -543,7 +548,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case MaxVolume:
       return (IS_ARM(board) ? 23 : 7);
     case MaxContrast:
-      if (IS_TARANIS_X7(board))
+      if (IS_TARANIS_SMALL(board))
         return 30;
       else
         return 45;
@@ -631,7 +636,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdWidth:
       if (IS_HORUS(board))
         return 480;
-      else if (IS_TARANIS_X7(board))
+      else if (IS_TARANIS_SMALL(board))
         return 128;
       else if (IS_TARANIS(board))
         return 212;
@@ -645,7 +650,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdDepth:
       if (IS_HORUS(board))
         return 16;
-      else if (IS_TARANIS_X7(board))
+      else if (IS_TARANIS_SMALL(board))
         return 1;
       else if (IS_TARANIS(board))
         return 4;
@@ -689,6 +694,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return TARANIS_X9E_VARIANT;
       else if (IS_TARANIS_X7(board))
         return TARANIS_X7_VARIANT;
+      else if (IS_TARANIS_XLITE(board))
+        return TARANIS_XLITE_VARIANT;
       else
         return 0;
     case MavlinkTelemetry:
@@ -887,6 +894,7 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
 
 bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int variant)
 {
+  bool variantError = false;
   if (board == BOARD_M128 && !(variant & M128_VARIANT)) {
     if (version == 212) {
       uint8_t tmp[1000];
@@ -899,26 +907,24 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
         }
       }
     }
+    variantError = true;
+  }
+  else if (IS_TARANIS_X9E(board) && variant != TARANIS_X9E_VARIANT) {
+    variantError = true;
+  }
+  else if (IS_TARANIS_X7(board) && variant != TARANIS_X7_VARIANT) {
+    variantError = true;
+  }
+  else if (IS_TARANIS_XLITE(board) && variant != TARANIS_XLITE_VARIANT) {
+    variantError = true;
+  }
+  else if (IS_TARANIS(board) && variant != 0) {
+    variantError = true;
+  }
+
+  if (variantError) {
     qWarning() << " wrong variant (" << variant << ")";
     return false;
-  }
-  else if (IS_TARANIS_X9E(board)) {
-    if (variant != TARANIS_X9E_VARIANT) {
-      qWarning() << " wrong variant (" << variant << ")";
-      return false;
-    }
-  }
-  else if (IS_TARANIS_X7(board)) {
-    if (variant != TARANIS_X7_VARIANT) {
-      qWarning() << " wrong variant (" << variant << ")";
-      return false;
-    }
-  }
-  else if (IS_TARANIS(board)) {
-    if (variant != 0) {
-      qWarning() << " wrong variant (" << variant << ")";
-      return false;
-    }
   }
 
   return true;
@@ -1167,10 +1173,12 @@ void registerOpenTxFirmwares()
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", QCoreApplication::translate("Firmware", "FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
-  // No mixersmon for now
-  addOpenTxFrskyOptions(firmware);
-  firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
-  firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
+  addOpenTxTaranisOptions(firmware);
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky X-Lite board */
+  firmware = new OpenTxFirmware("opentx-xlite", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
+  addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X10 board */

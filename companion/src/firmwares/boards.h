@@ -45,6 +45,7 @@ namespace Board {
     BOARD_TARANIS_X9E,
     BOARD_X12S,
     BOARD_X10,
+    BOARD_TARANIS_XLITE,
     BOARD_ENUM_COUNT
   };
 
@@ -185,12 +186,14 @@ class Boards
 #define IS_2560(board)                 (board==Board::BOARD_GRUVIN9X || board==Board::BOARD_MEGA2560)
 #define IS_SKY9X(board)                (board==Board::BOARD_SKY9X || board==Board::BOARD_9XRPRO || board==Board::BOARD_AR9X)
 #define IS_9XRPRO(board)               (board==Board::BOARD_9XRPRO)
+#define IS_TARANIS_XLITE(board)        (board==Board::BOARD_TARANIS_XLITE)
 #define IS_TARANIS_X7(board)           (board==Board::BOARD_TARANIS_X7)
 #define IS_TARANIS_X9(board)           (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9D(board)          (board==Board::BOARD_TARANIS_X9D || board==Board::BOARD_TARANIS_X9DP)
 #define IS_TARANIS_PLUS(board)         (board==Board::BOARD_TARANIS_X9DP || board==Board::BOARD_TARANIS_X9E)
 #define IS_TARANIS_X9E(board)          (board==Board::BOARD_TARANIS_X9E)
-#define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board))
+#define IS_TARANIS(board)              (IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board))
+#define IS_TARANIS_SMALL(board)        (board==Board::BOARD_TARANIS_X7 || board==Board::BOARD_TARANIS_XLITE)
 #define IS_TARANIS_NOT_X9E(board)      (IS_TARANIS(board) && !IS_TARANIS_X9E(board))
 #define IS_HORUS_X12S(board)           (board==Board::BOARD_X12S)
 #define IS_HORUS_X10(board)            (board==Board::BOARD_X10)
@@ -198,6 +201,6 @@ class Boards
 #define IS_HORUS_OR_TARANIS(board)     (IS_HORUS(board) || IS_TARANIS(board))
 #define IS_STM32(board)                (IS_TARANIS(board) || IS_HORUS(board))
 #define IS_ARM(board)                  (IS_STM32(board) || IS_SKY9X(board))
-#define HAS_LARGE_LCD(board)           (IS_HORUS(board) || (IS_TARANIS(board) && !IS_TARANIS_X7(board)))
+#define HAS_LARGE_LCD(board)           (IS_HORUS(board) || IS_TARANIS_X9(board))
 
 #endif // _BOARDS_H_

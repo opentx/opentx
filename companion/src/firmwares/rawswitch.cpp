@@ -45,6 +45,11 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
     tr("Trim 6 Down"), tr("Trim 6 Up")
   };
 
+  static const QString trimsSwitches2[] = {
+    tr("TrmH Left"), tr("TrmH Right"),
+    tr("TrmV Down"), tr("TrmV Up")
+  };
+
   static const QString rotaryEncoders[] = {
     tr("REa"), tr("REb")
   };
@@ -96,7 +101,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         return swName + "_" + QString::number(qr.rem + 1);
 
       case SWITCH_TYPE_TRIM:
-        return CHECK_IN_ARRAY(trimsSwitches, index-1);
+        return (Boards::getCapability(board, Board::NumTrims) == 2 ? CHECK_IN_ARRAY(trimsSwitches2, index-1) : CHECK_IN_ARRAY(trimsSwitches, index-1));
 
       case SWITCH_TYPE_ROTARY_ENCODER:
         return CHECK_IN_ARRAY(rotaryEncoders, index-1);
