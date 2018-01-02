@@ -1343,3 +1343,5 @@ Kristjan Crnoja
 Gaines Smith
 Tomasz Łapucha
 Karl-Heinz Behn
+Geir Atle Storhaug
+Marco Lange
