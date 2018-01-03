@@ -501,12 +501,12 @@ void drawTelemetryTopBar()
   if (g_model.timers[0].mode) {
     att = (timersStates[0].val<0 ? BLINK : 0);
     drawTimer(22*FW, 0, timersStates[0].val, att, att);
-    drawSource(18*FW+2, 1, MIXSRC_TIMER1, SMLSIZE);
+    lcdDrawText(22*FW, 0, "T1:", RIGHT);
   }
   if (g_model.timers[1].mode) {
     att = (timersStates[1].val<0 ? BLINK : 0);
     drawTimer(31*FW, 0, timersStates[1].val, att, att);
-    drawSource(27*FW+2, 1, MIXSRC_TIMER2, SMLSIZE);
+    lcdDrawText(31*FW, 0, "T2:", RIGHT);
   }
   lcdInvertLine(0);
 }
