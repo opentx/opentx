@@ -2342,57 +2342,57 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1066"/>
         <source>Channel values displayed in us</source>
-        <translation type="unfinished">Positions de voies affichées en µs</translation>
+        <translation>Positions de voies affichées en µs</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1067"/>
         <source>No OverrideCH functions available</source>
-        <translation type="unfinished">Désactive la fonction spéciale &quot;Remplacer VOIEx&quot;</translation>
+        <translation>Désactive la fonction spéciale &quot;Remplacer VOIExx&quot;</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1068"/>
         <source>Possibility to enable FAI MODE (no telemetry) at field</source>
-        <translation type="unfinished">Possibilité d&apos;activer le mode FAI (télémétrie désactivée) sur le terrain</translation>
+        <translation>Possibilité d&apos;activer le mode FAI (télémétrie désactivée) sur le terrain</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1069"/>
         <source>FAI MODE (no telemetry) always enabled</source>
-        <translation type="unfinished">Mode FAI (télémétrie toujours désactivée)</translation>
+        <translation>Mode FAI (télémétrie toujours désactivée)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1076"/>
         <source>Support for the DIY-Multiprotocol-TX-Module</source>
-        <translation type="unfinished">Support du module &quot;Multiprotocol&quot;</translation>
+        <translation>Support du module &quot;Multiprotocol&quot;</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1077"/>
         <source>Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015</source>
-        <translation type="unfinished">Masque le protocole D8. Légalement obligatoire sur les radios Européennes importées après le 1er janvier 2015</translation>
+        <translation>Masque le protocole D8. Légalement obligatoire sur les radios Européennes importées après le 1er janvier 2015</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1084"/>
         <source>Disable HELI menu and cyclic mix support</source>
-        <translation type="unfinished">Supprimer le menu HELICO et les mixages cycliques</translation>
+        <translation>Supprimer le menu HELICO et les mixages cycliques</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1085"/>
         <source>Disable Global variables</source>
-        <translation type="unfinished">Supprimer le support des variables globales</translation>
+        <translation>Supprimer le support des variables globales</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1086"/>
         <source>Enable Lua custom scripts screen</source>
-        <translation type="unfinished">Activer l&apos;écran des scripts Lua personnalisés</translation>
+        <translation>Activer l&apos;écran des scripts Lua personnalisés</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1087"/>
         <source>Enable Lua compiler</source>
-        <translation type="unfinished">Active le compilateur Lua</translation>
+        <translation>Activer le compilateur Lua</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1093"/>
         <source>Support for PPM internal module hack</source>
-        <translation type="unfinished">Support du remplacement du module interne par un module PPM</translation>
+        <translation>Support du remplacement du module interne par un module PPM</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1094"/>
@@ -2406,87 +2406,87 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1403"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1434"/>
         <source>Use alternative SQT5 font</source>
-        <translation type="unfinished">Utiliser la police alternative SQT5</translation>
+        <translation>Utiliser la police alternative SQT5</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1095"/>
         <source>Disable RAS (SWR)</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactiver le RAS (SWR). Utile uniquement pour les X9D+ avec un RAS/SWR non fonctionnel</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1101"/>
         <source>ST7565P LCD or compatible</source>
-        <translation type="unfinished">ST7565P LCD ou compatible</translation>
+        <translation>ST7565P LCD ou compatible</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1102"/>
         <source>ST7565R LCD or compatible</source>
-        <translation type="unfinished">ST7565R LCD ou compatible</translation>
+        <translation>ST7565R LCD ou compatible</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1103"/>
         <source>ERC12864FSF LCD</source>
-        <translation type="unfinished">LCD ERC12864FSF</translation>
+        <translation>LCD ERC12864FSF</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1104"/>
         <source>ST7920 LCD</source>
-        <translation type="unfinished">LCD ST7920</translation>
+        <translation>LCD ST7920</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1105"/>
         <source>KS108 LCD</source>
-        <translation type="unfinished">LCD KS108</translation>
+        <translation>LCD KS108</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1114"/>
         <source>WTV20 voice module</source>
-        <translation type="unfinished">Module voix WTV20</translation>
+        <translation>Module voix WTV20</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1115"/>
         <source>JQ6500 voice module</source>
-        <translation type="unfinished">Module voix JQ6500</translation>
+        <translation>Module voix JQ6500</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1136"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1143"/>
         <source>Support for frsky telemetry mod</source>
-        <translation type="unfinished">Support de la télémétrie FrSky</translation>
+        <translation>Support de la télémétrie FrSky</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1137"/>
         <source>Support for telemetry easy board</source>
-        <translation type="unfinished">Support de la carte TelemetrEZ</translation>
+        <translation>Support de la carte TelemetrEZ</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1138"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1144"/>
         <source>Support for jeti telemetry mod</source>
-        <translation type="unfinished">Support de la télémétrie JETI</translation>
+        <translation>Support de la télémétrie JETI</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1139"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1145"/>
         <source>Support for receiving ardupilot data</source>
-        <translation type="unfinished">Support de la télémétrie ARDUPILOT</translation>
+        <translation>Support de la télémétrie ARDUPILOT</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1140"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1146"/>
         <source>Support for receiving NMEA data</source>
-        <translation type="unfinished">Support de la télémétrie NMEA</translation>
+        <translation>Support du protocole NMEA</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1141"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1147"/>
         <source>Support for MAVLINK devices</source>
-        <translation type="unfinished">Support du protocole MAVLINK</translation>
+        <translation>Support du protocole MAVLINK</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1149"/>
         <source>Rotary Encoder use in menus navigation</source>
-        <translation type="unfinished">Utiliser le sélecteur rotatif pour la navigation</translation>
+        <translation>Utiliser le sélecteur rotatif pour la navigation</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1150"/>
@@ -2497,7 +2497,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1368"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1394"/>
         <source>Pots use in menus navigation</source>
-        <translation type="unfinished">Support de la navigation dans les menus avec les POTS</translation>
+        <translation>Support de la navigation dans les menus avec les POTS</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1152"/>
@@ -2506,74 +2506,74 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1324"/>
         <source>Support for DSM2 modules</source>
-        <translation type="unfinished">Support du protocole DSM2</translation>
+        <translation>Support pour les modules DSM2</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1153"/>
         <source>Support for DSM2 modules using ppm instead of true serial</source>
-        <translation type="unfinished">Support pour les modules DSM2 par le signal PPM</translation>
+        <translation>Support pour les modules DSM2 avec un signal PPM au lieu d&apos;une connexion série</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1157"/>
         <source>FrSky Taranis X9D+</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1162"/>
         <source>FrSky Taranis X9D</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1163"/>
         <source>Haptic module installed</source>
-        <translation type="unfinished">Module vibreur installé</translation>
+        <translation>Module vibreur installé</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1168"/>
         <source>FrSky Taranis X9E</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1169"/>
         <source>Confirmation before radio shutdown</source>
-        <translation type="unfinished">Confirmation avant l&apos;arrêt de la radio</translation>
+        <translation>Confirmation avant l&apos;arrêt de la radio</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1170"/>
         <source>Horus gimbals installed (Hall sensors)</source>
-        <translation type="unfinished">Manches à effet HALL de Horus installés</translation>
+        <translation>Manches Horus à effet HALL installés</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1175"/>
         <source>FrSky Taranis X7 / X7S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1185"/>
         <source>FrSky Horus X10 / X10S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1190"/>
         <source>FrSky Horus X12S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1192"/>
         <source>Use ONLY with first DEV pcb version</source>
-        <translation type="unfinished">Exclusivement pour les Horus DEV</translation>
+        <translation>Exclusivement pour les Horus DEV</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
         <source>Turnigy 9XR-PRO</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1197"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1345"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1365"/>
         <source>Enable HELI menu and cyclic mix support</source>
-        <translation type="unfinished">Activer le menu hélico et les mixages CCPM</translation>
+        <translation>Activer le menu hélico et les mixages CCPM</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1198"/>
@@ -2586,7 +2586,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1385"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1416"/>
         <source>No flight modes</source>
-        <translation type="unfinished">Pas de phases de vol</translation>
+        <translation>Pas de phases de vol</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1199"/>
@@ -2599,7 +2599,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1392"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1424"/>
         <source>Global variables</source>
-        <translation type="unfinished">Variables globales</translation>
+        <translation>Variables globales</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
@@ -2612,7 +2612,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1395"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1426"/>
         <source>In model setup menus automatically set source by moving the control</source>
-        <translation type="unfinished">Sélectionner les sources des mixeurs en bougeant le contrôle désiré</translation>
+        <translation>Sélectionner les sources des mixeurs en bougeant le contrôle désiré</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1202"/>
@@ -2625,7 +2625,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1396"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1427"/>
         <source>In model setup menus automatically set switch by moving the control</source>
-        <translation type="unfinished">Sélectionner les interrupteurs en bougeant le contrôle désiré</translation>
+        <translation>Sélectionner les interrupteurs en bougeant le contrôle désiré</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1203"/>
@@ -2638,7 +2638,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1398"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1429"/>
         <source>No graphical check boxes and sliders</source>
-        <translation type="unfinished">Pas de cases à cocher et de curseurs graphiques</translation>
+        <translation>Pas de cases à cocher et de curseurs graphiques</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1204"/>
@@ -2651,7 +2651,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1399"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1430"/>
         <source>Battery graph</source>
-        <translation type="unfinished">Graphique de la batterie</translation>
+        <translation>Graphique de la batterie</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1205"/>
@@ -2664,19 +2664,19 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1400"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1431"/>
         <source>Don&apos;t use bold font for highlighting active items</source>
-        <translation type="unfinished">Ne pas mettre les lignes actives en gras</translation>
+        <translation>Ne pas mettre les lignes actives en gras</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1206"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1355"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1375"/>
         <source>Bluetooth interface</source>
-        <translation type="unfinished">Interface Bluetooth</translation>
+        <translation>Interface Bluetooth</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1213"/>
         <source>Turnigy 9XR with m128 chip</source>
-        <translation type="unfinished">Turnigy 9XR avec une puce m128</translation>
+        <translation>Turnigy 9XR avec une puce m128</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1215"/>
@@ -2686,7 +2686,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1383"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1414"/>
         <source>Enable heli menu and cyclic mix support</source>
-        <translation type="unfinished">Activer le menu hélico et les mixages CCPM</translation>
+        <translation>Activer le menu hélico et les mixages CCPM</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1216"/>
@@ -2696,7 +2696,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1384"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1415"/>
         <source>Enable TEMPLATES menu</source>
-        <translation type="unfinished">Inclure les gabarits</translation>
+        <translation>Inclure les gabarits</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1217"/>
@@ -2704,7 +2704,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1317"/>
         <source>No splash screen</source>
-        <translation type="unfinished">Pas d&apos;écran de démarrage</translation>
+        <translation>Pas d&apos;écran de démarrage</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1219"/>
@@ -2714,7 +2714,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1386"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1417"/>
         <source>Disable curves menus</source>
-        <translation type="unfinished">Désactiver le menu des courbes</translation>
+        <translation>Désactiver le menu des courbes</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1220"/>
@@ -2723,7 +2723,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1320"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1419"/>
         <source>Support for radio modified with regular speaker</source>
-        <translation type="unfinished">Haut-parleur au lieu du buzzer d&apos;origine</translation>
+        <translation>Haut-parleur au lieu du buzzer d&apos;origine</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1221"/>
@@ -2732,7 +2732,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1388"/>
         <source>Used if you have modified your radio with voice mode</source>
-        <translation type="unfinished">Support du module vocal</translation>
+        <translation>Support du module vocal</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1222"/>
@@ -2741,7 +2741,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1322"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1422"/>
         <source>Used if you have modified your radio with haptic mode</source>
-        <translation type="unfinished">Support du vibreur</translation>
+        <translation>Support du vibreur</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1225"/>
@@ -2751,7 +2751,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1391"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1423"/>
         <source>PPM center adjustment in limits</source>
-        <translation type="unfinished">Neutres PPM ajustables</translation>
+        <translation>Neutres PPM ajustables</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1227"/>
@@ -2761,7 +2761,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1393"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1425"/>
         <source>Symetrical Limits</source>
-        <translation type="unfinished">Limites symétriques</translation>
+        <translation>Limites symétriques</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1234"/>
@@ -2769,7 +2769,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1299"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1336"/>
         <source>Enable the throttle trace in Statistics</source>
-        <translation type="unfinished">Activer l&apos;historique du manche des gaz dans les statistiques</translation>
+        <translation>Activer l&apos;historique du manche des gaz dans les statistiques</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1235"/>
@@ -2778,7 +2778,7 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1401"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1432"/>
         <source>EEprom write Progress bar</source>
-        <translation type="unfinished">Barre de progression affichée lors des écritures EEPROM </translation>
+        <translation>Barre de progression affichée lors des écritures EEPROM </translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1236"/>
@@ -2788,53 +2788,53 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1402"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1433"/>
         <source>Imperial units</source>
-        <translation type="unfinished">Unités Impériales</translation>
+        <translation>Unités Impériales</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1242"/>
         <source>Turnigy 9XR</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1266"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1302"/>
         <source>No Winged Shadow How High support</source>
-        <translation type="unfinished">Supprimer le support du variomètre Winged Shadow How High</translation>
+        <translation>Supprimer le support du variomètre Winged Shadow How High</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1267"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
         <source>No vario support</source>
-        <translation type="unfinished">Supprimer la fonction variomètre audio</translation>
+        <translation>Supprimer la fonction variomètre</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1268"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
         <source>No GPS support</source>
-        <translation type="unfinished">Supprimer le support du GPS</translation>
+        <translation>Supprimer le support du GPS</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1269"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1305"/>
         <source>No gauges in the custom telemetry screen</source>
-        <translation type="unfinished">Supprimer l&apos;affichage des valeurs de télémesure par barres</translation>
+        <translation>Supprimer l&apos;affichage des valeurs de télémesure par barres</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1270"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1307"/>
         <source>Add support for reversing stick inputs (e.g. needed for FrSky gimbals)</source>
-        <translation type="unfinished">Ajouter le support de l&apos;inversion des manches (nécessaire pour l&apos;utilisation de manches FrSky)</translation>
+        <translation>Ajouter le support de l&apos;inversion des manches (nécessaire pour l&apos;utilisation de manches FrSky)</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1276"/>
         <source>9X with stock board</source>
-        <translation type="unfinished">9X avec carte mère d&apos;origine</translation>
+        <translation>9X avec carte mère d&apos;origine</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1292"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1329"/>
         <source>SmartieParts 2.2 Backlight support</source>
-        <translation type="unfinished">Support du rétroéclairage pour la carte SmartieParts 2.2</translation>
+        <translation>Support du rétroéclairage pour la carte SmartieParts 2.2</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1295"/>
@@ -2844,59 +2844,59 @@ Si vide, la ligne est toujours active.</translation>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1397"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1428"/>
         <source>Enable resetting values by pressing up and down at the same time</source>
-        <translation type="unfinished">Permet la remise à zéro des valeurs en pressant haut-bas en même temps, valeur min avec gauche/bas, valeur max avec haut/droite, inversion avec gauche/droite</translation>
+        <translation>Permet la remise à zéro des valeurs en pressant haut-bas en même temps, valeur min avec gauche/bas, valeur max avec haut/droite, inversion avec gauche/droite</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1300"/>
         <source>EEprom write progress bar</source>
-        <translation type="unfinished">Barre de progression pour l&apos;écriture de l&apos;EEPROM</translation>
+        <translation>Barre de progression pour l&apos;écriture de l&apos;EEPROM</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1306"/>
         <source>Allow compensating for offset errors in FrSky FAS current sensors</source>
-        <translation type="unfinished">Permettre la compensation d&apos;un décalage des capteurs de courant FASxx FrSky</translation>
+        <translation>Permettre la compensation d&apos;un décalage des capteurs de courant FASxx FrSky</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1313"/>
         <source>9X with stock board and m128 chip</source>
-        <translation type="unfinished">Carte 9x avec un chip m128</translation>
+        <translation>Carte 9x avec un chip m128</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1344"/>
         <source>9X with AR9X board</source>
-        <translation type="unfinished">9X avec carte AR9X</translation>
+        <translation>9X avec carte AR9X</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1364"/>
         <source>9X with Sky9x board</source>
-        <translation type="unfinished">9X avec carte Sky9x</translation>
+        <translation>9X avec carte Sky9x</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1382"/>
         <source>9X with Gruvin9x board</source>
-        <translation type="unfinished">9X avec carte Gruvin9x</translation>
+        <translation>9X avec carte Gruvin9x</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1387"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1418"/>
         <source>Support for SD memory card</source>
-        <translation type="unfinished">Support de la carte SD</translation>
+        <translation>Support de la carte SD</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1389"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1412"/>
         <source>Support of FrSky PXX protocol</source>
-        <translation type="unfinished">Support du protocole PXX FrSky</translation>
+        <translation>Support du protocole FrSky PXX</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1408"/>
         <source>DIY MEGA2560 radio</source>
-        <translation type="unfinished">Radio DIY à base de MEGA560</translation>
+        <translation>Radio DIY à base de MEGA2560</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1410"/>
         <source>Power management by soft-off circuitry</source>
-        <translation type="unfinished">Gestion software de l&apos;alimentation</translation>
+        <translation>Gestion software de l&apos;alimentation</translation>
     </message>
 </context>
 <context>
@@ -9366,12 +9366,12 @@ E</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
         <source>TrmH</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="324"/>
         <source>TrmV</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="328"/>
@@ -9416,7 +9416,7 @@ E</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="333"/>
         <source>RAS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="334"/>
@@ -9777,22 +9777,22 @@ E</translation>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Left</source>
-        <translation type="unfinished"></translation>
+        <translation>TrmH Gauche</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="49"/>
         <source>TrmH Right</source>
-        <translation type="unfinished"></translation>
+        <translation>TrmH Droite</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Down</source>
-        <translation type="unfinished"></translation>
+        <translation>TrmV Bas</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="50"/>
         <source>TrmV Up</source>
-        <translation type="unfinished"></translation>
+        <translation>TrmV Haut</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="54"/>
