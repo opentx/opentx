@@ -101,6 +101,9 @@ void serial2Init(unsigned int mode, unsigned int protocol)
         uart3Setup(FRSKY_D_BAUDRATE, true);
       }
       break;
+    case UART_MODE_MAVLINK:
+      uart3Setup(MAVLINK_BAUDRATE, true);
+      break;
   }
 }
 
