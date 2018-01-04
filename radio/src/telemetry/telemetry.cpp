@@ -105,12 +105,18 @@ void telemetryWakeup()
       LOG_TELEMETRY_WRITE_BYTE(data);
     } while (telemetryGetByte(&data));
   }
+  #if defined(SERIAL2)
   if (serial2Mode == UART_MODE_MAVLINK) {
       uint8_t data2;
+      bool recvInProgress = false;
       while (serial2RxFifo.pop(data2)) {;
-        processMavlinkTelemetryData(data2);
+        recvInProgress = processMavlinkTelemetryData(data2);
       }
+
+      // buffer should be empty now, message could be complete or not
+      wakeupMavlinkTelemetry(recvInProgress);
   }
+  #endif // SERIAL2
 #elif defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
     uint8_t data;

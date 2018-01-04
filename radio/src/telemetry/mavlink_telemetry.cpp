@@ -1,5 +1,8 @@
-#include "lua/mavlink2lua.h"
 #include "opentx.h"
+
+#undef G // kill Lua convenience macro that is colliding with a MAVLink convenience macro
+#include "lua/mavlink2lua.h"
+#include "lua/lua_api.h"
 
 #include <common/mavlink.h>
 #include <mavlink_types.h>
@@ -15,9 +18,9 @@ static mavlink_message_t msg;
 static mavlink_status_t status;
 static uint8_t send_buffer[MAVLINK_MAX_PACKET_LEN];
 
-bool heartbeat_due = false;
 
 uint8_t prepare_heartbeat(mavlink_channel_t chan) {
+	TRACE("prepare_heartbeat on %d", chan);
     mavlink_msg_heartbeat_pack(OUR_SYSTEM_ID, OUR_COMPONENT_ID, &msg, 
     		MAV_TYPE_GCS, 			// our type
     		MAV_AUTOPILOT_GENERIC, 	// type of supported autopilot
@@ -34,39 +37,63 @@ void handle_message(mavlink_channel_t chan, const mavlink_message_t& msg) {
 	TRACE("handle_message(%x)", msg.msgid);
 	ParseFuncPtr parseFunc = funcmap[msg.msgid];
 
-	if (parseFunc) {
+	if (lsScripts && parseFunc) {
 		TRACE("calling parseFunc %x with L=%x", parseFunc, lsScripts);
 		parseFunc(lsScripts, msg);
 		TRACE("done");
 	}
 	else {
-		TRACE("parseFunc was NULL");
+		TRACE("parseFunc or lsScripts was NULL");
 	}
 }
 
 
-void processMavlinkTelemetryData(uint8_t data)
+bool processMavlinkTelemetryData(uint8_t data)
 {
     bool newmsg = mavlink_parse_char(MAVLINK_CHANNEL, data, &msg, &status);
     if (newmsg) {
     	// we recevied a complete and valid message
         handle_message(MAVLINK_CHANNEL, msg);
-
-        if (serial2TxFifo.isEmpty()) {
-	        // after msg rcv is complete, this should be a good time to send
-	        if (false) {
-	            // handle outgoing messages perpared from Lua
-		    	// TODO
-	        }
-	        else if (heartbeat_due) {
-		        // or send heartbeat if due
-	        	uint8_t len = prepare_heartbeat(MAVLINK_CHANNEL);
-	        	for (uint8_t i=0; i<len; i++) {
-	    			serial2TxFifo.push(send_buffer[i]);
-	        	}
-	    	}
-	    }
     } 
+    return !newmsg;
 }
 
 
+void wakeupMavlinkTelemetry(bool recvInProgress) 
+{
+	static uint8_t loopCount10ms = 10;
+	static uint8_t loopCount100ms = 10;
+	static uint8_t loopCount1000ms = 10;
+	static bool mavlinkHeartbeatDue = false;
+
+	if (!recvInProgress) {
+		// send now
+
+	    if (mavlinkHeartbeatDue) {
+		    // send heartbeat
+			mavlinkHeartbeatDue = false;
+			uint8_t len = prepare_heartbeat(MAVLINK_CHANNEL);
+			bool success = serial2SendBuffer(send_buffer, len);
+			TRACE("hb sent: %d", success);
+		}
+	}
+
+
+	// prescale call frequency of 10ms
+    if (!loopCount10ms--) {
+    	// every 100ms
+    	loopCount10ms = 10;
+    	if (!loopCount100ms--) {
+    		// every 1 sec
+    		loopCount100ms = 10;
+	    	provide_MavlinkStatus(lsScripts, status);
+    		mavlinkHeartbeatDue = true;
+
+	    	if (!loopCount1000ms--) {
+	    		// every 10s
+	    		loopCount1000ms = 10;
+	    		TRACE("10s");
+			}
+    	}
+    }
+}
