@@ -70,6 +70,17 @@ crc8tab = [
     0xAD, 0x78, 0xD2, 0x07, 0x53, 0x86, 0x2C, 0xF9
 ]
 
+def getCrossfireValue(data=[], *args):
+    sign = data[-1]
+    if (sign & 0x80) == 0:
+        value = -1
+    else:
+        value = 0
+    for n in data:
+        value = value << 8
+        value = value + n
+    return value
+
 def crc8(buffer):
     crc = 0
     for c in buffer:
@@ -77,21 +88,27 @@ def crc8(buffer):
     return crc
 
 def ParseGPS(payload):
-    pass
+    lat = getCrossfireValue(payload[0:4]) / 1e7
+    long = getCrossfireValue(payload[4:8])/ 1e7
+    speed = getCrossfireValue(payload[8:10])
+    head = getCrossfireValue(payload[10:12])
+    alt = getCrossfireValue(payload[12:14]) - 1000
+    numsat = payload[14]
+    return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat, long, speed, head, alt, numsat)
 
 def ParseBattery(payload):
-    voltage = float((payload[0] << 8) + payload[1]) / 10
-    current = float((payload[2] << 8) + payload[3]) / 10
-    consumption = (payload[4] << 16) + (payload[5] << 8) + payload[6]
+    voltage = getCrossfireValue(payload[0:2]) / 10
+    current = getCrossfireValue(payload[2:4]) / 10
+    consumption = getCrossfireValue(payload[4:7])
     return "[Battery] %.1fV %.1fA %dmAh" % (voltage, current, consumption)
 
 def ParseLinkStatistics(payload):
     return "[Link Statistics] "
 
 def ParseAttitude(payload):
-    pitch = float((payload[0] << 8) + payload[1]) / 1000
-    roll = float((payload[2] << 8) + payload[3]) / 1000
-    yaw = float((payload[4] << 8) + payload[5]) / 1000
+    pitch = getCrossfireValue(payload[0:2])/ 1000
+    roll = getCrossfireValue(payload[2:4]) / 1000
+    yaw = getCrossfireValue(payload[4:6]) / 1000
     return "[Attitude] pitch=%.3f roll=%.3f yaw=%.3f" % (pitch, roll, yaw)
 
 def ParseFlightMode(payload):
