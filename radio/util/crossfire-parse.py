@@ -4,6 +4,7 @@
 # This program parses sport.log files
 
 from __future__ import division, print_function
+from bitstring import BitArray, BitStream
 
 import sys
 
@@ -71,23 +72,16 @@ crc8tab = [
 ]
 
 # logs data are BigEndian
-def getCrossfireValueUnsigned(data=[], *args):
-    value = 0
-    for n in data:
-        value = value << 8
-        value = value + n
-    return value
 
-def getCrossfireValueSigned(data=[], *args):
-    sign = data[-1]
-    if (sign & 0x80) == 0:
-        value = -1
-    else:
-        value = 0
+def getCrossfireValue(signed, data=[], *args):
+    hexstring = "0x"
     for n in data:
-        value = value << 8
-        value = value + n
-    return value
+        hexstring += hex(n)[2:]
+    value = BitArray(hex=hexstring)
+    if (signed is True):
+        return value.int
+    else:
+        return value.uint
 
 def crc8(buffer):
     crc = 0
@@ -96,27 +90,27 @@ def crc8(buffer):
     return crc
 
 def ParseGPS(payload):
-    lat = getCrossfireValueSigned(payload[0:4]) / 1e7
-    long = getCrossfireValueSigned(payload[4:8])/ 1e7
-    speed = getCrossfireValueUnsigned(payload[8:10]) / 100
-    head = getCrossfireValueUnsigned(payload[10:12]) / 100
-    alt = getCrossfireValueUnsigned(payload[12:14]) - 1000
+    lat = getCrossfireValue(True, payload[0:4]) / 1e7
+    long = getCrossfireValue(True, payload[4:8])/ 1e7
+    speed = getCrossfireValue(False, payload[8:10]) / 100
+    head = getCrossfireValue(False, payload[10:12]) / 100
+    alt = getCrossfireValue(False, payload[12:14]) - 1000
     numsat = payload[14]
     return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat, long, speed, head, alt, numsat)
 
 def ParseBattery(payload):
-    voltage = getCrossfireValueUnsigned(payload[0:2]) / 10
-    current = getCrossfireValueUnsigned(payload[2:4]) / 10
-    consumption = getCrossfireValueUnsigned(payload[4:7])
+    voltage = getCrossfireValue(False, payload[0:2]) / 10
+    current = getCrossfireValue(False, payload[2:4]) / 10
+    consumption = getCrossfireValue(False, payload[4:7])
     return "[Battery] %.1fV %.1fA %dmAh" % (voltage, current, consumption)
 
 def ParseLinkStatistics(payload):
     return "[Link Statistics] "
 
 def ParseAttitude(payload):
-    pitch = getCrossfireValueUnsigned(payload[0:2])/ 1000
-    roll = getCrossfireValueUnsigned(payload[2:4]) / 1000
-    yaw = getCrossfireValueUnsigned(payload[4:6]) / 1000
+    pitch = getCrossfireValue(False, payload[0:2])/ 1000
+    roll = getCrossfireValue(False, payload[2:4]) / 1000
+    yaw = getCrossfireValue(False, payload[4:6]) / 1000
     return "[Attitude] pitch=%.3f roll=%.3f yaw=%.3f" % (pitch, roll, yaw)
 
 def ParseFlightMode(payload):
