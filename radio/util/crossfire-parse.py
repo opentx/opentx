@@ -72,7 +72,6 @@ crc8tab = [
 ]
 
 # logs data are BigEndian
-
 def getCrossfireValue(signed, data=[], *args):
     hexstring = "0x"
     for n in data:
@@ -89,6 +88,8 @@ def crc8(buffer):
         crc = crc8tab[crc ^ c]
     return crc
 
+# note : python arrays slicing is a bit strange payload[x:y] means from 'x' included to 'y' NOT included
+#        therefore y - x gives the number of bytes sliced.
 def ParseGPS(payload):
     lat = getCrossfireValue(True, payload[0:4]) / 1e7
     long = getCrossfireValue(True, payload[4:8])/ 1e7
