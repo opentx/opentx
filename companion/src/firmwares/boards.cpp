@@ -101,6 +101,7 @@ const int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
+      return EESIZE_TARANIS;
     case BOARD_UNKNOWN:
       return EESIZE_MAX;
     default:
@@ -128,6 +129,7 @@ const int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
+      return FSIZE_TARANIS;
     case BOARD_X12S:
     case BOARD_X10:
       return FSIZE_HORUS;
