@@ -1203,7 +1203,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nographics", QCoreApplication::translate("Firmware", "No graphical check boxes and sliders"));
   firmware->addOption("battgraph", QCoreApplication::translate("Firmware", "Battery graph"));
   firmware->addOption("nobold", QCoreApplication::translate("Firmware", "Don't use bold font for highlighting active items"));
-  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
+//  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
   addOpenTxArmOptions(firmware);
   addOpenTxCommonOptions(firmware);
@@ -1352,7 +1352,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nographics", QCoreApplication::translate("Firmware", "No graphical check boxes and sliders"));
   firmware->addOption("battgraph", QCoreApplication::translate("Firmware", "Battery graph"));
   firmware->addOption("nobold", QCoreApplication::translate("Firmware", "Don't use bold font for highlighting active items"));
-  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
+//  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
 //  firmware->addOption("rtc", QCoreApplication::translate("Firmware", "Optional RTC added"));
 //  firmware->addOption("volume", QCoreApplication::translate("Firmware", "i2c volume control added"));
@@ -1372,7 +1372,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("nographics", QCoreApplication::translate("Firmware", "No graphical check boxes and sliders"));
   firmware->addOption("battgraph", QCoreApplication::translate("Firmware", "Battery graph"));
   firmware->addOption("nobold", QCoreApplication::translate("Firmware", "Don't use bold font for highlighting active items"));
-  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
+//  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
   addOpenTxArmOptions(firmware);
   addOpenTxCommonOptions(firmware);
