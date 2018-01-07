@@ -20,7 +20,7 @@
 
 #include "helpers_html.h"
 
-QString tdAlign(const QString &s, const QString &align, const QString &color, bool bold)
+QString tdAlign(const QString & s, const QString & align, const QString & color, bool bold)
 {
   QString str = s;
   if (bold) str = "<b>" + str + "</b>";
@@ -28,24 +28,50 @@ QString tdAlign(const QString &s, const QString &align, const QString &color, bo
   return "<td align=" + align + ">" + str + "</td>";
 }
 
-QString doTC(const QString &s, const QString &color, bool bold)
+QString doTC(const QString & s, const QString & color, bool bold)
 {
   return tdAlign(s, "center", color, bold);
 }
 
-QString doTR(const QString &s, const QString &color, bool bold)
+QString doTR(const QString & s, const QString & color, bool bold)
 {
   return tdAlign(s, "right", color, bold);
 }
 
-QString doTL(const QString &s, const QString &color, bool bold)
+QString doTL(const QString & s, const QString & color, bool bold)
 {
   return tdAlign(s, "left", color, bold);
 }
 
-QString fv(const QString &name, const QString &value, const QString &color)
+QString fv(const QString & name, const QString & value, const QString & color)
 {
-  return "<b>" + name + ": </b><font color=" +color + ">" + value + "</font><br>";
+  return "<b>" + name + ": </b><font color=" + color + ">" + value + "</font><br>";
 }
 
+QString doTableCell(const QString & s, const unsigned int width, const QString & align, const QString & color, bool bold)
+{
+  QString prfx = "<td";
+  if (width)
+    prfx.append(QString(" width=%1%").arg(QString(width)));
+  if (!align.isEmpty())
+    prfx.append(QString(" align=" + align));
+  prfx.append(">");
 
+  QString str = s;
+  if (bold)
+    str = "<b>" + str + "</b>";
+  if (!color.isEmpty())
+    str = "<font color=" + color + ">" + str + "</font>";
+
+  str =  prfx + str + "</td>";
+  return str;
+}
+
+QString doTableRow(const QStringList & strl, const unsigned int width, const QString & align, const QString & color, bool bold)
+{
+  QString str;
+  for (int i=0; i<strl.count(); i++) {
+    str.append(doTableCell(strl.at(i), width, align, color, bold));
+  }
+  return "<tr>" + str + "</tr>";
+}

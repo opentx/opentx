@@ -21,6 +21,7 @@
 #include "helpers.h"
 #include "helpers_html.h"
 #include "multimodelprinter.h"
+#include "appdata.h"
 #include <algorithm>
 
 MultiModelPrinter::MultiColumns::MultiColumns(int count):
@@ -99,6 +100,67 @@ bool MultiModelPrinter::MultiColumns::isEmpty()
   return true;
 }
 
+void MultiModelPrinter::MultiColumns::appendLineBreak()
+{
+  append("<br/>");
+}
+
+void MultiModelPrinter::MultiColumns::appendSectionTableStart()
+{
+  append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
+}
+
+void MultiModelPrinter::MultiColumns::appendTableEnd()
+{
+  append("</table>");
+}
+
+void MultiModelPrinter::MultiColumns::appendRowStart(const QString & title, const unsigned int titlewidth)
+{
+  append("<tr>");
+  if (!title.isEmpty())
+    appendLabelCell(QString(title), titlewidth);
+}
+
+void MultiModelPrinter::MultiColumns::appendRowEnd()
+{
+  append("</tr>");
+}
+
+void MultiModelPrinter::MultiColumns::appendCellStart(const unsigned int width)
+{
+  QString str = "<td";
+  if (width)
+    str.append(QString(" width=%1%").arg(QString::number(width)));
+  str.append(">");
+  append(str);
+}
+
+void MultiModelPrinter::MultiColumns::appendCellEnd()
+{
+  append("</td>");
+}
+
+void MultiModelPrinter::MultiColumns::appendLabelCell(const QString & str, const unsigned int width, const QString & align, const QString & color)
+{
+  append(doTableCell(str, width, align, color, true));
+}
+
+void MultiModelPrinter::MultiColumns::appendValueCell(const QString & str, const unsigned int width, const QString & align, const QString & color)
+{
+  append(doTableCell(str, width, align, color, false));
+}
+
+void MultiModelPrinter::MultiColumns::appendRow(const QStringList & strl, const unsigned int width, const QString & align, const QString & color)
+{
+  append(doTableRow(strl, width, align, color, false));
+}
+
+void MultiModelPrinter::MultiColumns::appendHeaderRow(const QStringList & strl, const unsigned int width, const QString & align, const QString & color)
+{
+  append(doTableRow(strl, width, align, color, true));
+}
+
 #define COMPARE(what) \
   columns.beginCompare(); \
   for (int cc=0; cc < modelPrinterMap.size(); cc++) { \
@@ -108,6 +170,15 @@ bool MultiModelPrinter::MultiColumns::isEmpty()
     columns.append(cc, (what)); \
   } \
   columns.endCompare();
+
+#define COMPARECELL(what) \
+  columns.appendCellStart(); \
+  COMPARE(what); \
+  columns.appendCellEnd();
+
+#define COMPARELABELVALUE(lbl, what) \
+  columns.appendTitle(lbl); \
+  COMPARE(what);
 
 QString MultiModelPrinter::printTitle(const QString & label)
 {
@@ -173,13 +244,14 @@ QString MultiModelPrinter::print(QTextDocument * document)
   str.append(printLogicalSwitches());
   str.append(printCustomFunctions());
   str.append(printTelemetry());
+  str.append(printSensors());
   str.append("</table>");
   return str;
 }
 
 QString MultiModelPrinter::printSetup()
 {
-  QString str = printTitle(tr("General Model Settings"));
+  QString str = printTitle(tr("General"));
 
   MultiColumns columns(modelPrinterMap.size());
   columns.appendTitle(tr("Name:"));
@@ -279,7 +351,7 @@ QString MultiModelPrinter::printHeliSetup()
   if (!heliEnabled)
     return "";
 
-  QString str = printTitle(tr("Helicopter Setup"));
+  QString str = printTitle(tr("Helicopter"));
   MultiColumns columns(modelPrinterMap.size());
   columns.appendTitle (tr("Swash Type:"));
   COMPARE(modelPrinter->printHeliSwashType());
@@ -668,51 +740,129 @@ QString MultiModelPrinter::printCustomFunctions()
 
 QString MultiModelPrinter::printTelemetry()
 {
-  QString str = printTitle(tr("Telemetry Settings"));
+  QString str = printTitle(tr("Telemetry"));
+  MultiColumns columns(modelPrinterMap.size());
+  columns.appendSectionTableStart();
 
   // Analogs on non ARM boards
   if (!IS_ARM(firmware->getBoard())) {
-    MultiColumns columns(modelPrinterMap.size());
-    columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>" \
-                   "<tr><td width='22%'><b>" + tr("Analogs") + "</b></td><td width='26%'><b>" + tr("Unit") + "</b></td><td width='26%'><b>" + tr("Scale") + "</b></td><td width='26%'><b>" + tr("Offset") + "</b></td></tr>");
+    columns.appendHeaderRow(QStringList() << tr("Analogs") << tr("Unit") << tr("Scale") << tr("Offset"));
     for (int i=0; i<2; i++) {
-      columns.append("<tr><td><b>"+tr("A%1").arg(i+1)+"</b></td><td>");
-      COMPARE(getFrSkyUnits(model->frsky.channels[i].type));
-      columns.append("</td><td>");
-      COMPARE(QString::number((model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ? 10.0 : 1)), 10, (model->frsky.channels[i].type==0 ? 1 : 0)));
-      columns.append("</td><td>");
-      COMPARE(QString::number((model->frsky.channels[i].offset*(model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ?10.0 : 1)))/255, 10, (model->frsky.channels[i].type==0 ? 1 : 0)));
-      columns.append("</td></tr>");
+      columns.appendRowStart();
+      columns.appendValueCell(QString("A%1").arg(i+1),20);
+      COMPARECELL(getFrSkyUnits(model->frsky.channels[i].type));
+      COMPARECELL(QString::number((model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ? 10.0 : 1)), 10, (model->frsky.channels[i].type==0 ? 1 : 0)));
+      COMPARECELL(QString::number((model->frsky.channels[i].offset*(model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ?10.0 : 1)))/255, 10, (model->frsky.channels[i].type==0 ? 1 : 0)));
+      columns.appendRowEnd();
     }
-    columns.append("</table><br/>");
-    str.append(columns.print());
-    // TODO I remove the analogs alarms for now
+  }
+  else {
+    // Protocol
+    columns.appendRowStart(tr("Protocol"),20);
+    COMPARECELL(modelPrinter->printTelemetryProtocol(model->telemetryProtocol));
+    columns.appendRowEnd();
   }
 
   // RSSI alarms
   {
-    MultiColumns columns(modelPrinterMap.size());
-    columns.append("<table border='0' cellspacing='0' cellpadding='1' width='100%'>");
-    for (int i=0; i<2; i++) {
-      columns.append("<tr><td><b>" + QString(i==0 ? tr("RSSI Alarms") : "") + "</b></td><td>");
-      if (IS_ARM(getCurrentBoard())) {
-        COMPARE(i==0 ? tr("Low Alarm") : tr("Critical Alarm"));
-      }
-      else {
-        COMPARE(getFrSkyAlarmType(model->rssiAlarms.level[i]));
-      }
-      columns.append("</td><td>&lt;</td><td>");
-      if (i == 0) {
-        COMPARE(QString::number(model->rssiAlarms.warning, 10));
-      }
-      else {
-        COMPARE(QString::number(model->rssiAlarms.critical, 10));
-      }
-      columns.append("</td></tr>");
-    }
-    columns.append("</table><br/>");
-    str.append(columns.print());
+    columns.appendRowStart(tr("RSSI Alarms"),20);
+    columns.appendCellStart(80);
+    COMPARE((IS_ARM(getCurrentBoard()) ? tr("Low") : getFrSkyAlarmType(model->rssiAlarms.level[0])));
+    columns.append(": ");
+    COMPARE(QString("&lt; %1").arg(QString::number(model->rssiAlarms.warning, 10)));
+    columns.append("; ");
+    COMPARE((IS_ARM(getCurrentBoard()) ? tr("Critical") : getFrSkyAlarmType(model->rssiAlarms.level[1])));
+    columns.append(": ");
+    COMPARE(QString("&lt; %1").arg(QString::number(model->rssiAlarms.critical, 10)));
+    columns.append("; ");
+    COMPARELABELVALUE("Telemetry audio:", modelPrinter->printRssiAlarmsDisabled(model->rssiAlarms.disabled));
+    columns.appendCellEnd();
+    columns.appendRowEnd();
   }
 
+  // Altimetry
+  if (firmware->getCapability(HasVario)) {
+    columns.appendRowStart(tr("Altimetry"),20);
+    columns.appendRowEnd();
+    columns.appendRowStart(tr("Vario Source"));
+    if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+      COMPARECELL(modelPrinter->printTelemetrySource(model->frsky.varioSource));
+    }
+    else {
+      COMPARECELL(modelPrinter->printVarioSource(model->frsky.varioSource));
+    }
+    columns.appendRowEnd();
+    columns.appendRowStart(tr("Vario limits"));
+    columns.appendCellStart(80);
+    if (firmware->getCapability(HasVarioSink)) {
+      COMPARELABELVALUE("Sink max:", QString::number(model->frsky.varioMin - 10));
+      columns.append("; ");
+      COMPARELABELVALUE("Sink min:", QString::number((float(model->frsky.varioCenterMin) / 10.0) - 0.5));
+      columns.append("; ");
+    }
+    COMPARELABELVALUE("Climb min:", QString::number((float(model->frsky.varioCenterMax) / 10.0) + 0.5));
+    columns.append("; ");
+    COMPARELABELVALUE("Climb max:", QString::number(model->frsky.varioMax + 10));
+    columns.append("; ");
+    COMPARELABELVALUE("Center silent:", modelPrinter->printVarioCenterSilent(model->frsky.varioCenterSilent));
+    columns.appendCellEnd();
+    columns.appendRowEnd();
+  }
+
+  // Top Bar
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+    columns.appendRowStart(tr("Top Bar"),20);
+    columns.appendRowEnd();
+    columns.appendRowStart(tr("Volts source"),20);
+    columns.appendCellStart(80);
+    COMPARE(modelPrinter->printTelemetrySource(model->frsky.voltsSource));
+    columns.append("; ");
+    COMPARELABELVALUE("Altitude source:", modelPrinter->printTelemetrySource(model->frsky.altitudeSource));
+    columns.appendCellEnd();
+    columns.appendRowEnd();
+  }
+
+  // Various
+  if (!IS_ARM(firmware->getBoard())) {
+    columns.appendRowStart(tr("Various"), 20);
+    columns.appendRowEnd();
+    if (!firmware->getCapability(NoTelemetryProtocol)) {
+      columns.appendRowStart();
+      columns.appendValueCell("", 20);
+      columns.appendCellStart(80);
+      COMPARELABELVALUE(tr("Serial protocol"), modelPrinter->printTelemetrySource(model->frsky.voltsSource));
+      columns.appendCellEnd();
+      columns.appendRowEnd();
+    }
+    columns.appendRowStart();
+    columns.appendValueCell("", 20);
+    columns.appendCellStart(80);
+    QString firmware_id = g.profile[g.id()].fwType();
+    if (firmware->getCapability(HasFasOffset) && firmware_id.contains("fasoffset")) {
+      COMPARELABELVALUE(tr("FAS offset:"), QString("%1 A").arg(model->frsky.fasOffset/10.0));
+      columns.append("; ");
+    }
+    if (firmware->getCapability(HasMahPersistent)) {
+      COMPARELABELVALUE(tr("mAh count:"), QString("%1 mAh").arg(model->frsky.storedMah));
+      columns.append("; ");
+      COMPARELABELVALUE(tr("Persistent mAh:"), modelPrinter->printMahPersistent(model->frsky.mAhPersistent));
+    }
+    columns.appendRowEnd();
+    columns.appendRowStart();
+    columns.appendValueCell("", 20);
+    columns.appendCellStart(80);
+    COMPARELABELVALUE(tr("Volts source:"), modelPrinter->printVoltsSource(model->frsky.voltsSource));
+    columns.append("; ");
+    COMPARELABELVALUE(tr("Current source:"), modelPrinter->printCurrentSource(model->frsky.currentSource));
+    columns.appendCellEnd();
+    columns.appendRowEnd();
+    columns.appendRowStart();
+    columns.appendValueCell("", 20);
+    columns.appendCellStart(80);
+    COMPARELABELVALUE(tr("Blades:"), model->frsky.blades);
+    columns.appendRowEnd();
+  }
+  columns.appendTableEnd();
+  str.append(columns.print());
   return str;
 }

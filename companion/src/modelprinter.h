@@ -116,6 +116,15 @@ class ModelPrinter: public QObject
     QString printTimeValue(const int value, const unsigned int mask);
     QString printTimerMinuteBeep(bool mb);
     QString printTimerTimeValue(unsigned int val);
+    QString printTelemetryProtocol(unsigned int val);
+    QString printLabelValue(const QString & str, const QString & val);
+    QString printRssiAlarmsDisabled(bool mb);
+    QString printTelemetrySource(unsigned int val);
+    QString printVarioSource(unsigned int val);
+    QString printVarioCenterSilent(bool mb);
+    QString printVoltsSource(unsigned int val);
+    QString printCurrentSource(unsigned int val);
+    QString printMahPersistent(bool mb);
   private:
     Firmware * firmware;
     const GeneralSettings & generalSettings;

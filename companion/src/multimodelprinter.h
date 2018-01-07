@@ -51,7 +51,19 @@ class MultiModelPrinter: public QObject
         void append(int idx, const QString & str);
         template <class T> void append(int idx, T val);
         void beginCompare();
-        void endCompare(const QString & color = "grey");
+        void endCompare(const QString & color = "black"); // was grey
+        void appendLineBreak();
+        void appendSectionTableStart();
+        void appendTableEnd();
+        void appendRowStart(const QString & title = "", const unsigned int titlewidth = 0);
+        void appendRowEnd();
+        void appendCellStart(const unsigned int width = 0);
+        void appendCellEnd();
+        void appendLabelCell(const QString & str, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendValueCell(const QString & str, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendHeaderRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+
       private:
         int count;
         QString * columns;

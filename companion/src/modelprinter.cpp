@@ -76,6 +76,10 @@ QString addFont(const QString & input, const QString & color, const QString & si
   return "<font " + sizeStr + " " + faceStr + " " + colorStr + ">" + input + "</font>";
 }
 
+QString ModelPrinter::printLabelValue(const QString & str, const QString & val) {
+  return QString("<b>%1:</b> %2").arg(str, val);
+}
+
 #define MASK_TIMEVALUE_HRSMINS 1
 #define MASK_TIMEVALUE_ZEROHRS 2
 #define MASK_TIMEVALUE_PADSIGN 3
@@ -1049,7 +1053,7 @@ QString ModelPrinter::printTrimsDisplayMode()
     case 2:
       return tr("Always");
     default:
-      return tr("Unknown");
+      return tr("???");
   }
 }
 
@@ -1114,6 +1118,105 @@ QString ModelPrinter::printTimerTimeValue(unsigned int val)
 }
 
 QString ModelPrinter::printTimerMinuteBeep(bool mb)
+{
+  return printBoolean(mb, BOOLEAN_YESNO);
+}
+
+QString ModelPrinter::printTelemetryProtocol(unsigned int val)
+{
+  switch (val) {
+    case 0:
+      return tr("FrSky S.PORT");
+    case 1:
+      return tr("FrSky D");
+    case 2:
+      return tr("FrSky D (cable)");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printRssiAlarmsDisabled(bool mb)
+{
+  return printBoolean(!mb, BOOLEAN_ENABLEDISABLE);
+}
+
+QString ModelPrinter::printTelemetrySource(unsigned int val)
+{
+  QStringList strings = QStringList() << "None";
+
+  for (int i=1; i<=CPN_MAX_SENSORS; ++i) {
+    strings << model.sensorData[i-1].label;
+  }
+
+  return strings.value(val);
+}
+
+QString ModelPrinter::printVarioSource(unsigned int val)
+{
+  switch (val) {
+    case TELEMETRY_VARIO_SOURCE_ALTI:
+      return tr("Alti");
+    case TELEMETRY_VARIO_SOURCE_ALTI_PLUS:
+      return tr("Alti+");
+    case TELEMETRY_VARIO_SOURCE_VSPEED:
+      return tr("VSpeed");
+    case TELEMETRY_VARIO_SOURCE_A1:
+      return tr("A1");
+    case TELEMETRY_VARIO_SOURCE_A2:
+      return tr("A2");
+    default:
+      return tr("???");
+  }
+
+}
+
+QString ModelPrinter::printVarioCenterSilent(bool mb)
+{
+  return printBoolean(mb, BOOLEAN_YESNO);
+}
+
+QString ModelPrinter::printVoltsSource(unsigned int val)
+{
+  switch (val) {
+    case TELEMETRY_VOLTS_SOURCE_A1:
+      return tr("A1");
+    case TELEMETRY_VOLTS_SOURCE_A2:
+      return tr("A2");
+    case TELEMETRY_VOLTS_SOURCE_A3:
+      return tr("A3");
+    case TELEMETRY_VOLTS_SOURCE_A4:
+      return tr("A4");
+    case TELEMETRY_VOLTS_SOURCE_FAS:
+      return tr("FAS");
+    case TELEMETRY_VOLTS_SOURCE_CELLS:
+      return tr("Cells");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printCurrentSource(unsigned int val)
+{
+  switch (val) {
+    case TELEMETRY_CURRENT_SOURCE_NONE:
+      return tr("None");
+    case TELEMETRY_CURRENT_SOURCE_A1:
+      return tr("A1");
+    case TELEMETRY_CURRENT_SOURCE_A2:
+      return tr("A2");
+    case TELEMETRY_CURRENT_SOURCE_A3:
+      return tr("A3");
+    case TELEMETRY_CURRENT_SOURCE_A4:
+      return tr("A4");
+    case TELEMETRY_CURRENT_SOURCE_FAS:
+      return tr("FAS");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printMahPersistent(bool mb)
 {
   return printBoolean(mb, BOOLEAN_YESNO);
 }
