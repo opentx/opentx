@@ -125,6 +125,7 @@ class ModelPrinter: public QObject
     QString printVoltsSource(unsigned int val);
     QString printCurrentSource(unsigned int val);
     QString printMahPersistent(bool mb);
+    QString printIgnoreSensorIds(bool mb);
   private:
     Firmware * firmware;
     const GeneralSettings & generalSettings;

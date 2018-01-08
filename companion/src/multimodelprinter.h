@@ -63,6 +63,8 @@ class MultiModelPrinter: public QObject
         void appendValueCell(const QString & str, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
         void appendRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
         void appendHeaderRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendFieldLabel(const QString & lbl = "");
+        void appendFieldSeparator(const bool sep = false);
 
       private:
         int count;
@@ -88,6 +90,8 @@ class MultiModelPrinter: public QObject
     QString printCustomFunctions();
     QString printTelemetry();
     QString printTimers();
+    QString printSensors();
+    QString printTelemetryScreens();
 };
 
 #endif // _MULTIMODELPRINTER_H_

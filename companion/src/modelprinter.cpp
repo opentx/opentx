@@ -1220,3 +1220,8 @@ QString ModelPrinter::printMahPersistent(bool mb)
 {
   return printBoolean(mb, BOOLEAN_YESNO);
 }
+
+QString ModelPrinter::printIgnoreSensorIds(bool mb)
+{
+  return printBoolean(mb, BOOLEAN_ENABLEDISABLE);
+}

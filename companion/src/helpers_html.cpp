@@ -52,7 +52,7 @@ QString doTableCell(const QString & s, const unsigned int width, const QString &
 {
   QString prfx = "<td";
   if (width)
-    prfx.append(QString(" width=%1%").arg(QString(width)));
+    prfx.append(QString(" width=%1%").arg(QString::number(width)));
   if (!align.isEmpty())
     prfx.append(QString(" align=" + align));
   prfx.append(">");
