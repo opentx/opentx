@@ -655,20 +655,25 @@ static int luaGetRAS(lua_State * L)
 Return the internal GPS position or nil if no valid hardware found
 
 @retval table representing the current radio position
- * tx-lat : internal GPS lattiude
- * tx-lon : internal GPS longitude
- * numsat : current number of sats locked in by the GPS sensor
+* `lat` (number) internal GPS latitude, positive is North
+* `lon` (number) internal GPS longitude, positive is East
+ * 'numsat' (number) current number of sats locked in by the GPS sensor
+ * 'fix' (boolean) fix status
 
 @status current Introduced in 2.2.2
 */
 static int luaGetTxGPS(lua_State * L)
 {
 #if defined(INTERNAL_GPS)
-  lua_createtable(L, 0, 3);
-  lua_pushtablenumber(L, "tx-lat", gpsData.latitude);
-  lua_pushtablenumber(L, "tx-lon", gpsData.longitude);
+  lua_createtable(L, 0, 4);
+  lua_pushtablenumber(L, "lat", gpsData.latitude * 0.000001);
+  lua_pushtablenumber(L, "lon", gpsData.longitude * 0.000001);
   lua_pushtablenumber(L, "numsat", gpsData.numSat);
-#else
+  if (gpsData.fix)
+    lua_pushtableboolean(L, "fix", true);
+  else
+    lua_pushtableboolean(L, "fix", false);
+  #else
     lua_pushnil(L);
 #endif
   return 1;
