@@ -181,7 +181,7 @@ in 2038.
 #if defined(RTCLOCK)
 static int luaGetRtcTime(lua_State * L)
 {
-  lua_pushunsigned(L, g_rtcTime);  
+  lua_pushunsigned(L, g_rtcTime);
   return 1;
 }
 #endif
@@ -646,6 +646,36 @@ static int luaGetRAS(lua_State * L)
   else {
     lua_pushnil(L);
   }
+  return 1;
+}
+
+/*luadoc
+@function getTxGPS()
+
+Return the internal GPS position or nil if no valid hardware found
+
+@retval table representing the current radio position
+ * `lat` (number) internal GPS latitude, positive is North
+ * `lon` (number) internal GPS longitude, positive is East
+ * 'numsat' (number) current number of sats locked in by the GPS sensor
+ * 'fix' (boolean) fix status
+
+@status current Introduced in 2.2.2
+*/
+static int luaGetTxGPS(lua_State * L)
+{
+#if defined(INTERNAL_GPS)
+  lua_createtable(L, 0, 4);
+  lua_pushtablenumber(L, "lat", gpsData.latitude * 0.000001);
+  lua_pushtablenumber(L, "lon", gpsData.longitude * 0.000001);
+  lua_pushtablenumber(L, "numsat", gpsData.numSat);
+  if (gpsData.fix)
+    lua_pushtableboolean(L, "fix", true);
+  else
+    lua_pushtableboolean(L, "fix", false);
+#else
+    lua_pushnil(L);
+#endif
   return 1;
 }
 
@@ -1232,6 +1262,7 @@ const luaL_Reg opentxLib[] = {
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
+  { "getTxGPS", luaGetTxGPS },
   { "getFieldInfo", luaGetFieldInfo },
   { "getFlightMode", luaGetFlightMode },
   { "playFile", luaPlayFile },
