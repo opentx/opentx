@@ -655,8 +655,8 @@ static int luaGetRAS(lua_State * L)
 Return the internal GPS position or nil if no valid hardware found
 
 @retval table representing the current radio position
-* `lat` (number) internal GPS latitude, positive is North
-* `lon` (number) internal GPS longitude, positive is East
+ * `lat` (number) internal GPS latitude, positive is North
+ * `lon` (number) internal GPS longitude, positive is East
  * 'numsat' (number) current number of sats locked in by the GPS sensor
  * 'fix' (boolean) fix status
 
@@ -673,7 +673,7 @@ static int luaGetTxGPS(lua_State * L)
     lua_pushtableboolean(L, "fix", true);
   else
     lua_pushtableboolean(L, "fix", false);
-  #else
+#else
     lua_pushnil(L);
 #endif
   return 1;
