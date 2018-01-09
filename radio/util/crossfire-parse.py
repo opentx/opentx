@@ -88,14 +88,14 @@ def crc8(buffer):
         crc = crc8tab[crc ^ c]
     return crc
 
-# note : python arrays slicing is a bit strange payload[x:y] means from 'x' included to 'y' NOT included
-#        therefore y - x gives the number of bytes sliced.
+# note : in python arrays slicing payload[x:y] means from 'x' included to 'y' not included,
+#        y - x gives the number of bytes sliced.
 def ParseGPS(payload):
-    lat = getCrossfireValue(True, payload[0:4]) / 1e7
+    lat = getCrossfireValue(True, payload[0:4]) / 1e7           #(degree / 10`000`000)
     long = getCrossfireValue(True, payload[4:8])/ 1e7
-    speed = getCrossfireValue(False, payload[8:10]) / 100
-    head = getCrossfireValue(False, payload[10:12]) / 100
-    alt = getCrossfireValue(False, payload[12:14]) - 1000
+    speed = getCrossfireValue(False, payload[8:10]) / 100       #(km/h / 100)
+    head = getCrossfireValue(False, payload[10:12]) / 100       #(degree / 100)
+    alt = getCrossfireValue(False, payload[12:14]) - 1000       #(meter - 1000m offset)
     numsat = payload[14]
     return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat, long, speed, head, alt, numsat)
 
