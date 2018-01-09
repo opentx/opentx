@@ -513,6 +513,12 @@ if(NOT MSVC)
       DEPENDS firmware
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       )
+
+    add_custom_target(flash-stlink
+      COMMAND ST-LINK_CLI -c SWD -P firmware.bin 0x8000000 -Rst -Q
+      DEPENDS firmware-size
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      )
   endif()
 
   PrintTargetReport("firmware")
