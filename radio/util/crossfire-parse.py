@@ -76,8 +76,6 @@ def crc8(buffer):
         crc = crc8tab[crc ^ c]
     return crc
 
-# note : in python arrays slicing payload[x:y] means from 'x' included to 'y' not included,
-#        y - x gives the number of bytes sliced.
 def ParseGPS(payload):
     lat, long, speed, head, alt, numsat = struct.unpack('>iiHHHB',bytes(bytearray(payload[0:15])))          # bytes(bytearray) casting is required for python 2.7.3 compatibility
     return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat / 1e7, long / 1e7, speed / 100, head / 100, alt - 1000, numsat)
