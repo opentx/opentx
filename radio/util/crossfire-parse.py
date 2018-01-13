@@ -79,13 +79,8 @@ def crc8(buffer):
 # note : in python arrays slicing payload[x:y] means from 'x' included to 'y' not included,
 #        y - x gives the number of bytes sliced.
 def ParseGPS(payload):
-    lat = struct.unpack('>i',bytes(bytearray(payload[0:4])))[0] / 1e7          #(degree / 10`000`000)
-    long = struct.unpack('>i',bytes(bytearray(payload[4:8])))[0] / 1e7         #(degree / 10`000`000)
-    speed = struct.unpack('>H',bytes(bytearray(payload[8:10])))[0] / 100       #(km/h / 100)
-    head = struct.unpack('>H',bytes(bytearray(payload[10:12])))[0] / 100       #(degree / 100)
-    alt = struct.unpack('>H',bytes(bytearray(payload[12:14])))[0] - 1000       #(meter - 1000m offset)
-    numsat = payload[14]
-    return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat, long, speed, head, alt, numsat)
+    lat, long, speed, head, alt, numsat = struct.unpack('>iiHHHB',bytes(bytearray(payload[0:15])))          # bytes(bytearray) casting is required for python 2.7.3 compatibility
+    return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat / 1e7, long / 1e7, speed / 100, head / 100, alt - 1000, numsat)
 
 def ParseBattery(payload):
     voltage = float((payload[0] << 8) + payload[1]) / 10
