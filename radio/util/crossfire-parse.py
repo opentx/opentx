@@ -77,7 +77,7 @@ def crc8(buffer):
     return crc
 
 def ParseGPS(payload):
-    lat, long, speed, head, alt, numsat = struct.unpack('>iiHHHB',bytes(bytearray(payload[0:15])))          # bytes(bytearray) casting is required for python 2.7.3 compatibility
+    lat, long, speed, head, alt, numsat = struct.unpack('>iiHHHB', bytes(bytearray(payload[0:15])))          # bytes(bytearray) casting is required for python 2.7.3 compatibility
     return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat / 1e7, long / 1e7, speed / 100, head / 100, alt - 1000, numsat)
 
 def ParseBattery(payload):
