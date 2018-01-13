@@ -79,8 +79,8 @@ def crc8(buffer):
 # note : in python arrays slicing payload[x:y] means from 'x' included to 'y' not included,
 #        y - x gives the number of bytes sliced.
 def ParseGPS(payload):
-    lat = struct.unpack('>i',bytes(bytearray(payload[0:4])))[0] / 1e7      #(degree / 10`000`000)
-    long = struct.unpack('>i',bytes(bytearray(payload[4:8])))[0] / 1e7
+    lat = struct.unpack('>i',bytes(bytearray(payload[0:4])))[0] / 1e7          #(degree / 10`000`000)
+    long = struct.unpack('>i',bytes(bytearray(payload[4:8])))[0] / 1e7         #(degree / 10`000`000)
     speed = struct.unpack('>H',bytes(bytearray(payload[8:10])))[0] / 100       #(km/h / 100)
     head = struct.unpack('>H',bytes(bytearray(payload[10:12])))[0] / 100       #(degree / 100)
     alt = struct.unpack('>H',bytes(bytearray(payload[12:14])))[0] - 1000       #(meter - 1000m offset)
