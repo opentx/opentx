@@ -76,8 +76,23 @@ QString addFont(const QString & input, const QString & color, const QString & si
   return "<font " + sizeStr + " " + faceStr + " " + colorStr + ">" + input + "</font>";
 }
 
-QString ModelPrinter::printLabelValue(const QString & str, const QString & val) {
-  return QString("<b>%1:</b> %2").arg(str, val);
+QString ModelPrinter::printLabelValue(const QString & lbl, const QString & val, const bool sep) {
+  return QString("<b>%1:</b> %2%3 ").arg(lbl, val, (sep ? ";" : ""));
+}
+
+QString ModelPrinter::printLabelValues(const QString & lbl, const QStringList & vals, const bool sep) {
+  QString str;
+  if (vals.count() > 1)
+    str.append("(");
+  for (int i=0;i<vals.count();i++) {
+    str.append(vals.at(i));
+    if (i<(vals.count()-1))
+      str.append(", ");
+  }
+  if (vals.count() > 1)
+    str.append(")");
+
+  return printLabelValue(lbl, str, sep);
 }
 
 #define MASK_TIMEVALUE_HRSMINS 1
@@ -1141,15 +1156,15 @@ QString ModelPrinter::printRssiAlarmsDisabled(bool mb)
   return printBoolean(!mb, BOOLEAN_ENABLEDISABLE);
 }
 
-QString ModelPrinter::printTelemetrySource(unsigned int val)
+QString ModelPrinter::printTelemetrySource(int val)
 {
-  QStringList strings = QStringList() << "None";
+  QStringList strings = QStringList() << tr("None");
 
   for (int i=1; i<=CPN_MAX_SENSORS; ++i) {
-    strings << model.sensorData[i-1].label;
+    strings << QString("%1").arg(model.sensorData[i-1].label);
   }
 
-  return strings.value(val);
+  return QString("%1%2").arg((val < 0 ? "-" : "")).arg(strings.value(abs(val)));
 }
 
 QString ModelPrinter::printVarioSource(unsigned int val)
@@ -1168,7 +1183,6 @@ QString ModelPrinter::printVarioSource(unsigned int val)
     default:
       return tr("???");
   }
-
 }
 
 QString ModelPrinter::printVarioCenterSilent(bool mb)
@@ -1224,4 +1238,136 @@ QString ModelPrinter::printMahPersistent(bool mb)
 QString ModelPrinter::printIgnoreSensorIds(bool mb)
 {
   return printBoolean(mb, BOOLEAN_ENABLEDISABLE);
+}
+
+QString ModelPrinter::printSensorType(unsigned int val)
+{
+  switch (val) {
+    case SensorData::TELEM_TYPE_CUSTOM:
+      return tr("Custom");
+    case SensorData::TELEM_TYPE_CALCULATED:
+      return tr("Calculated");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printSensorFormula(unsigned int val)
+{
+  switch (val) {
+    case SensorData::TELEM_FORMULA_ADD:
+      return tr("Add");
+    case SensorData::TELEM_FORMULA_AVERAGE:
+      return tr("Average");
+    case SensorData::TELEM_FORMULA_MIN:
+      return tr("Min");
+    case SensorData::TELEM_FORMULA_MAX:
+      return tr("Max");
+    case SensorData::TELEM_FORMULA_MULTIPLY:
+      return tr("Multiply");
+    case SensorData::TELEM_FORMULA_TOTALIZE:
+      return tr("Totalise");
+    case SensorData::TELEM_FORMULA_CELL:
+      return tr("Cell");
+    case SensorData::TELEM_FORMULA_CONSUMPTION:
+      return tr("Consumption");
+    case SensorData::TELEM_FORMULA_DIST:
+      return tr("Distance");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printSensorCells(unsigned int val)
+{
+  QStringList strings;
+
+  strings << tr("Lowest");
+  for (int i=1; i<=6; i++)
+    strings << tr("Cell %1").arg(i);
+  strings << tr("Highest") << tr("Delta");
+
+  return strings.value(val);
+}
+
+QString ModelPrinter::printSensorParams(unsigned int idx)
+{
+  QString str = "";
+  SensorData sensor = model.sensorData[idx];
+
+  if (!sensor.isAvailable())
+    return str;
+
+  bool isConfigurable = false;
+  bool gpsFieldsPrinted = false;
+  bool cellsFieldsPrinted = false;
+  bool consFieldsPrinted = false;
+  bool ratioFieldsPrinted = false;
+  bool totalizeFieldsPrinted = false;
+  bool sources12FieldsPrinted = false;
+  bool sources34FieldsPrinted = false;
+
+  if (sensor.type == SensorData::TELEM_TYPE_CALCULATED) {
+    isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
+    gpsFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_DIST);
+    cellsFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_CELL);
+    consFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION);
+    sources12FieldsPrinted = (sensor.formula <= SensorData::TELEM_FORMULA_MULTIPLY);
+    sources34FieldsPrinted = (sensor.formula < SensorData::TELEM_FORMULA_MULTIPLY);
+    totalizeFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE);
+
+    str.append(printLabelValue(tr("Formula"), printSensorFormula(sensor.formula)));
+  }
+  else {
+    isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
+    ratioFieldsPrinted = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
+
+    str.append(printLabelValue(tr("Id"), QString::number(sensor.id,16).toUpper()));
+    str.append(printLabelValue(tr("Instance"), QString::number(sensor.instance)));
+  }
+  if (cellsFieldsPrinted) {
+    str.append(printLabelValue(tr("Cells Sensor"), QString("%1 > %2").arg(printTelemetrySource(sensor.source), false).arg(printSensorCells(sensor.index))));
+  }
+  if (sources12FieldsPrinted) {
+    QStringList srcs;
+    for (int i=0;i<4;i++) {
+      if (i < 2 || sources34FieldsPrinted) {
+        srcs << printTelemetrySource(sensor.sources[i]);
+      }
+    }
+    str.append(printLabelValues(tr("Sources"), srcs));
+  }
+  if (consFieldsPrinted || totalizeFieldsPrinted)
+    str.append(printLabelValue(tr("Sensor"), printTelemetrySource(sensor.amps)));
+  if (gpsFieldsPrinted) {
+    str.append(printLabelValue(tr("GPS Sensor"), printTelemetrySource(sensor.gps)));
+    str.append(printLabelValue(tr("Alt. Sensor"), printTelemetrySource(sensor.alt)));
+  }
+  if ((sensor.type == SensorData::TELEM_TYPE_CALCULATED && (sensor.formula == SensorData::TELEM_FORMULA_DIST)) || isConfigurable) {
+    QString u = sensor.unitString();
+    u = u.trimmed() == "" ? "-" : u;
+    str.append(printLabelValue(tr("Unit"), u));
+  }
+  if (isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT)
+    str.append(printLabelValue(tr("Precision"), QString::number(sensor.prec)));
+  if (ratioFieldsPrinted) {
+    if (sensor.unit != SensorData::UNIT_RPMS) {
+      int prec = sensor.prec == 0 ? 1 : pow(10, sensor.prec);
+      str.append(printLabelValue(tr("Ratio"), QString::number((float)sensor.ratio / prec)));
+      str.append(printLabelValue(tr("Offset"), QString::number((float)sensor.offset / prec)));
+    }
+    else if (sensor.unit == SensorData::UNIT_RPMS) {
+      str.append(printLabelValue(tr("Blades"), QString::number(sensor.ratio)));
+      str.append(printLabelValue(tr("Multiplier"), QString::number(sensor.offset)));
+    }
+  }
+  if (sensor.unit != SensorData::UNIT_RPMS && isConfigurable)
+    str.append(printLabelValue(tr("Auto Offset"), printBoolean(sensor.autoOffset, BOOLEAN_YN)));
+  if (isConfigurable)
+    str.append(printLabelValue(tr("Filter"), printBoolean(sensor.filter, BOOLEAN_YN)));
+  if (sensor.type == SensorData::TELEM_TYPE_CALCULATED)
+    str.append(printLabelValue(tr("Persistence"), printBoolean(sensor.persistent, BOOLEAN_YN)));
+  str.append(printLabelValue(tr("Positive"), printBoolean(sensor.onlyPositive, BOOLEAN_YN)));
+  str.append(printLabelValue(tr("Logs"), printBoolean(sensor.logs, BOOLEAN_YN), false));
+  return str;
 }

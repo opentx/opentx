@@ -257,10 +257,13 @@ QString MultiModelPrinter::print(QTextDocument * document)
     str.append(printGvars());
   str.append(printLogicalSwitches());
   str.append(printCustomFunctions());
-  str.append(printTelemetry());
-  str.append(printSensors());
-  if (firmware->getCapability(TelemetryCustomScreens))
-    str.append(printTelemetryScreens());
+  if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY) {
+    str.append(printTelemetry());
+    str.append(printSensors());
+    if (firmware->getCapability(TelemetryCustomScreens)) {
+      str.append(printTelemetryScreens());
+    }
+  }
   str.append("</table>");
   return str;
 }
@@ -827,6 +830,12 @@ QString MultiModelPrinter::printTelemetry()
     columns.appendRowEnd();
   }
 
+  if (IS_ARM(firmware->getBoard())) {
+    columns.appendRowStart(tr("Multi sensors"), 0);
+    COMPARECELL("", modelPrinter->printIgnoreSensorIds(!model->frsky.ignoreSensorIds), 0);
+    columns.appendRowEnd();
+  }
+
   // Various
   if (!IS_ARM(firmware->getBoard())) {
     columns.appendHeaderRow(QStringList() << tr("Various"));
@@ -863,15 +872,33 @@ QString MultiModelPrinter::printTelemetry()
 
 QString MultiModelPrinter::printSensors()
 {
-  QString str = printTitle(tr("Telemetry Sensors"));
+  QString str;
   MultiColumns columns(modelPrinterMap.size());
+  int count = 0;
   columns.appendSectionTableStart();
-  columns.appendRowStart(tr("Multi sensors"), 20);
-  COMPARECELL("", modelPrinter->printIgnoreSensorIds(!model->frsky.ignoreSensorIds), 80);
-  columns.appendRowEnd();
-
+  columns.appendHeaderRow(QStringList() << tr("Name") << tr("Type") << tr("Parameters"));
+  for (int i=0; i<CPN_MAX_SENSORS; ++i) {
+    bool tsEmpty = true;
+    for (int k=0; k < modelPrinterMap.size(); k++) {
+      if (modelPrinterMap.value(k).first->sensorData[i].isAvailable()) {
+        tsEmpty = false;
+        break;
+      }
+    }
+    if (!tsEmpty) {
+      count++;
+      columns.appendRowStart();
+      COMPARECELL("", model->sensorData[i].nameToString(i), 15);
+      COMPARECELL("", modelPrinter->printSensorType(model->sensorData[i].type), 15);
+      COMPARECELL("", modelPrinter->printSensorParams(i), 70);
+      columns.appendRowEnd();
+    }
+  }
   columns.appendTableEnd();
-  str.append(columns.print());
+  if (count > 0) {
+    str.append(printTitle(tr("Telemetry Sensors")));
+    str.append(columns.print());
+  }
   return str;
 }
 
