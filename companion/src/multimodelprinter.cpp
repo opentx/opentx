@@ -872,8 +872,8 @@ QString MultiModelPrinter::printTelemetry()
 
 QString MultiModelPrinter::printSensors()
 {
-  QString str;
   MultiColumns columns(modelPrinterMap.size());
+  QString str;
   int count = 0;
   columns.appendSectionTableStart();
   columns.appendHeaderRow(QStringList() << tr("Name") << tr("Type") << tr("Parameters"));
@@ -889,7 +889,7 @@ QString MultiModelPrinter::printSensors()
       count++;
       columns.appendRowStart();
       COMPARECELL("", model->sensorData[i].nameToString(i), 15);
-      COMPARECELL("", modelPrinter->printSensorType(model->sensorData[i].type), 15);
+      COMPARECELL("", modelPrinter->printSensorTypeCond(i), 15);
       COMPARECELL("", modelPrinter->printSensorParams(i), 70);
       columns.appendRowEnd();
     }
@@ -904,16 +904,32 @@ QString MultiModelPrinter::printSensors()
 
 QString MultiModelPrinter::printTelemetryScreens()
 {
-  QString str = printTitle(tr("Telemetry Screens"));
   MultiColumns columns(modelPrinterMap.size());
-
-  for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++) {
-    columns.appendSectionTableStart();
-    columns.appendRowStart(QString("%1:").arg(i+1));
-    columns.appendRowEnd();
+  QString str;
+  int count = 0;
+  columns.appendSectionTableStart();
+  for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); ++i) {
+    bool tsEmpty = true;
+    for (int k=0; k < modelPrinterMap.size(); k++) {
+      if (!modelPrinterMap.value(k).first->frsky.screens[i].type == TELEMETRY_SCREEN_NONE) {
+        tsEmpty = false;
+        break;
+      }
+    }
+    if (!tsEmpty) {
+      count++;
+      columns.appendRowStart();
+      COMPARECELL(QString("%1").arg(i+1), modelPrinter->printTelemetryScreenType(model->frsky.screens[i].type), 20);
+      columns.appendRowEnd();
+      for (int l=0; l<4; l++) {
+        COMPARE(modelPrinter->printTelemetryScreen(i,l,80));
+      }
+    }
   }
-
   columns.appendTableEnd();
-  str.append(columns.print());
+  if (count > 0) {
+    str.append(printTitle(tr("Telemetry Screens")));
+    str.append(columns.print());
+  }
   return str;
 }

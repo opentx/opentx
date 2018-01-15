@@ -22,12 +22,13 @@
 #include "modelprinter.h"
 #include "multiprotocols.h"
 #include "boards.h"
+#include "helpers_html.h"
+#include "multiprotocols.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QFile>
 #include <QUrl>
-#include "multiprotocols.h"
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
 {
@@ -1290,6 +1291,14 @@ QString ModelPrinter::printSensorCells(unsigned int val)
   return strings.value(val);
 }
 
+QString ModelPrinter::printSensorTypeCond(unsigned int idx)
+{
+  if (!model.sensorData[idx].isAvailable())
+    return "";
+  else
+    return printSensorType(model.sensorData[idx].type);
+}
+
 QString ModelPrinter::printSensorParams(unsigned int idx)
 {
   QString str = "";
@@ -1370,4 +1379,56 @@ QString ModelPrinter::printSensorParams(unsigned int idx)
   str.append(printLabelValue(tr("Positive"), printBoolean(sensor.onlyPositive, BOOLEAN_YN)));
   str.append(printLabelValue(tr("Logs"), printBoolean(sensor.logs, BOOLEAN_YN), false));
   return str;
+}
+
+QString ModelPrinter::printTelemetryScreenType(unsigned int val)
+{
+  switch (val) {
+    case TelemetryScreenEnum::TELEMETRY_SCREEN_NONE:
+      return tr("None");
+    case TelemetryScreenEnum::TELEMETRY_SCREEN_NUMBERS:
+      return tr("Numbers");
+    case TelemetryScreenEnum::TELEMETRY_SCREEN_BARS:
+      return tr("Bars");
+    case TelemetryScreenEnum::TELEMETRY_SCREEN_SCRIPT:
+      return tr("Script");
+    default:
+      return tr("???");
+  }
+}
+
+QString ModelPrinter::printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width)
+{
+  QStringList strl;
+  strl << "";  // blank 1st column
+  FrSkyScreenData screen = model.frsky.screens[idx];
+  if (screen.type == TelemetryScreenEnum::TELEMETRY_SCREEN_NUMBERS) {
+    for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
+      RawSource source = screen.body.lines[line].source[c];
+      strl << source.toString(&model, &generalSettings);
+    }
+  }
+  else if (screen.type == TelemetryScreenEnum::TELEMETRY_SCREEN_BARS) {
+    RawSource source = screen.body.bars[line].source;
+    RawSourceRange range = source.getRange(&model, generalSettings);
+    strl << printLabelValue(tr("Source"), source.toString(&model, &generalSettings));
+    QString unit;
+    QString minstr;
+    QString maxstr;
+    if (source.isTimeBased()){
+      minstr = printTimeValue((float)screen.body.bars[line].barMin, MASK_TIMEVALUE_HRSMINS);
+      maxstr = printTimeValue((float)screen.body.bars[line].barMax, MASK_TIMEVALUE_HRSMINS);
+    }
+    else {
+      minstr = QString::number(range.getValue(screen.body.bars[line].barMin));
+      maxstr = QString::number(range.getValue(screen.body.bars[line].barMax));
+      unit = range.unit;
+    }
+    strl << printLabelValue(tr("Min"), QString("%1%2").arg(minstr).arg(unit));
+    strl << printLabelValue(tr("Max"), QString("%1%2").arg(maxstr).arg(unit));
+  }
+  else if (screen.type == TelemetryScreenEnum::TELEMETRY_SCREEN_SCRIPT && line == 0) {
+    strl << printLabelValue(tr("Filename"), QString("%1.lua").arg(screen.body.script.filename));
+  }
+  return doTableRow(strl, width / strl.count());
 }
