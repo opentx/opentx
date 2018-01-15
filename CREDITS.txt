@@ -1350,3 +1350,5 @@ Philip Michels
 Peter Helbling
 Guy Lamaison
 Michael Oeschger
+Alistair Sutherland
+Chris Hawley
