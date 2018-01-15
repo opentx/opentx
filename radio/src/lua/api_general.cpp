@@ -659,16 +659,22 @@ Return the internal GPS position or nil if no valid hardware found
  * `lon` (number) internal GPS longitude, positive is East
  * 'numsat' (number) current number of sats locked in by the GPS sensor
  * 'fix' (boolean) fix status
+ * 'alt' (number) internal GPS altitude in 0.1m
+ * 'speed' (number) internal GPSspeed in 0.1m/s
+ * 'heading'  (number) internal GPS ground course estimation in degrees * 10
 
 @status current Introduced in 2.2.2
 */
 static int luaGetTxGPS(lua_State * L)
 {
 #if defined(INTERNAL_GPS)
-  lua_createtable(L, 0, 4);
+  lua_createtable(L, 0, 7);
   lua_pushtablenumber(L, "lat", gpsData.latitude * 0.000001);
   lua_pushtablenumber(L, "lon", gpsData.longitude * 0.000001);
-  lua_pushtablenumber(L, "numsat", gpsData.numSat);
+  lua_pushtableinteger(L, "numsat", gpsData.numSat);
+  lua_pushtableinteger(L, "alt", gpsData.altitude);
+  lua_pushtableinteger(L, "speed", gpsData.speed);
+  lua_pushtableinteger(L, "heading", gpsData.groundCourse);
   if (gpsData.fix)
     lua_pushtableboolean(L, "fix", true);
   else
