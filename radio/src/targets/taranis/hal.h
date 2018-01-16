@@ -388,6 +388,7 @@
 #define ADC_SAMPTIME                    2   // sample time = 28 cycles
 #if defined(PCBX9E)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            (RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC3)
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
@@ -427,6 +428,7 @@
   #define ADC_EXT_SAMPTIME              3    // sample time = 56 cycles
 #elif defined(PCBX9DP)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
@@ -453,6 +455,7 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #elif defined(PCBXLITE)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            RCC_APB1Periph_TIM5
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
@@ -463,7 +466,7 @@
   #define PWM_GPIO_AF                   GPIO_AF_TIM5
   #define PWM_IRQHandler                TIM5_IRQHandler
   #define PWM_IRQn                      TIM5_IRQn
-#define ADC_CHANNEL_STICK_RV          ADC_Channel_0  // ADC1_IN0
+  #define ADC_CHANNEL_STICK_RV          ADC_Channel_0  // ADC1_IN0
   #define ADC_CHANNEL_STICK_RH          ADC_Channel_1  // ADC1_IN1
   #define ADC_CHANNEL_STICK_LV          ADC_Channel_2  // ADC1_IN2
   #define ADC_CHANNEL_STICK_LH          ADC_Channel_3  // ADC1_IN3
@@ -480,6 +483,7 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #elif defined(PCBX7)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
@@ -500,6 +504,7 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #else
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01

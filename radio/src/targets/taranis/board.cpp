@@ -157,7 +157,7 @@ void boardInit()
                          SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph |
                          HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
 
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph |
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | ADC_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph | HAPTIC_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
                          SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
