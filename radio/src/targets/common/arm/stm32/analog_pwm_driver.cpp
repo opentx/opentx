@@ -29,7 +29,7 @@ volatile uint32_t timer_capture_rising_time[4];
 volatile uint32_t timer_capture_values[4][TIMESAMPLE_COUNT];
 volatile uint8_t  timer_capture_indexes[4];
 
-void pwmInit()
+void analogPwmInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = PWM_GPIOA_PINS;
@@ -75,56 +75,17 @@ inline uint32_t TIM_GetCapture(uint8_t n)
 
 inline void TIM_SetPolarityRising(uint8_t n)
 {
-  switch (n) {
-    case 0:
-      PWM_TIMER->CCER &= ~TIM_CCER_CC1P;
-      break;
-    case 1:
-      PWM_TIMER->CCER &= ~TIM_CCER_CC2P;
-      break;
-    case 2:
-      PWM_TIMER->CCER &= ~TIM_CCER_CC3P;
-      break;
-    case 3:
-      PWM_TIMER->CCER &= ~TIM_CCER_CC4P;
-      break;
-  }
+  PWM_TIMER->CCER &= ~(TIM_CCER_CC1P << (n * 4));
 }
 
 inline void TIM_SetPolarityFalling(uint8_t n)
 {
-  switch (n) {
-    case 0:
-      PWM_TIMER->CCER |= TIM_CCER_CC1P;
-      break;
-    case 1:
-      PWM_TIMER->CCER |= TIM_CCER_CC2P;
-      break;
-    case 2:
-      PWM_TIMER->CCER |= TIM_CCER_CC3P;
-      break;
-    case 3:
-      PWM_TIMER->CCER |= TIM_CCER_CC4P;
-      break;
-  }
+  PWM_TIMER->CCER |= (TIM_CCER_CC1P << (n * 4));
 }
 
 inline void TIM_ClearITPendingBit(uint8_t n)
 {
-  switch (n) {
-    case 0:
-      PWM_TIMER->SR = ~TIM_IT_CC1;
-      break;
-    case 1:
-      PWM_TIMER->SR = ~TIM_IT_CC2;
-      break;
-    case 2:
-      PWM_TIMER->SR = ~TIM_IT_CC3;
-      break;
-    case 3:
-      PWM_TIMER->SR = ~TIM_IT_CC4;
-      break;
-  }
+  PWM_TIMER->SR = ~(TIM_IT_CC1 << n);
 }
 
 inline uint32_t diff_with_16bits_overflow(uint32_t a, uint32_t b)
@@ -160,7 +121,7 @@ extern "C" void PWM_IRQHandler(void)
   }
 }
 
-void pwmRead(uint16_t * values)
+void analogPwmRead(uint16_t * values)
 {
   uint32_t tmp[4];
 
@@ -186,7 +147,7 @@ void pwmRead(uint16_t * values)
   values[3] = tmp[2];
 }
 
-void pwmCheck()
+void analogPwmCheck()
 {
   // I have ~1860 interrupts with only one stick
   if (pwm_interrupt_count < 1000) {

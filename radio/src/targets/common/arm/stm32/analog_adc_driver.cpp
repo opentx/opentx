@@ -103,8 +103,14 @@ void adcInit()
   ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
 #elif defined(PCBXLITE)
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0); // conversions 7 and more
-  ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
+  if (ANALOGS_PWM_ENABLED()) {
+    ADC_MAIN->SQR2 = 0;
+    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_BATT<<0);
+  }
+  else {
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0); // conversions 7 and more
+    ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
+  }
 #elif defined(PCBX7)
   ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
@@ -142,7 +148,7 @@ void adcInit()
 
 #if NUM_PWMANALOGS > 0
   if (ANALOGS_PWM_ENABLED()) {
-    pwmInit();
+    analogPwmInit();
   }
 #endif
 }
@@ -204,7 +210,7 @@ void adcRead()
 
 #if NUM_PWMANALOGS > 0
   if (ANALOGS_PWM_ENABLED()) {
-    pwmRead(adcValues);
+    analogPwmRead(adcValues);
   }
 #endif
 }

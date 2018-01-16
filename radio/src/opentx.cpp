@@ -2597,7 +2597,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 
 #if NUM_PWMANALOGS > 0
-  pwmCheck();
+  analogPwmCheck();
 #endif
 
   if (!unexpectedShutdown) {

@@ -428,6 +428,16 @@ enum Analogs {
 #define NUM_XPOTS                       NUM_POTS
 #define NUM_SLIDERS                     (TX_VOLTAGE-POT_LAST-1)
 
+#if defined(PCBXLITE)
+  #define NUM_PWMANALOGS                4
+  extern uint8_t analogs_pwm_disabled;
+  #define ANALOGS_PWM_ENABLED()         (analogs_pwm_disabled == false)
+  void analogPwmInit(void);
+  void analogPwmRead(uint16_t * values);
+  void analogPwmCheck();
+  extern volatile uint32_t pwm_interrupt_count;
+#endif
+
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
   CALIBRATED_STICK2,
