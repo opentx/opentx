@@ -389,7 +389,7 @@ QString ModelPrinter::printCenterBeep()
     if (model.beepANACenter & 0x40)
       strl << "P3";
   }
-  return (strl.isEmpty() ? tr("None") : strl.join(", "));
+  return (strl.isEmpty() ? tr("None") : strl.join(" "));
 }
 
 QString ModelPrinter::printTimer(int idx)
@@ -895,13 +895,12 @@ QString ModelPrinter::printOutputSymetrical(int idx)
 QString ModelPrinter::printSettingsOther()
 {
   QStringList str;
-  if (model.extendedLimits)
-    str += tr("Extended Limits");
-  if (firmware->getCapability(HasDisplayText) && model.displayChecklist)
-    str += tr("Display Checklist");
-  if (firmware->getCapability(GlobalFunctions) && !model.noGlobalFunctions)
-    str += tr("Global Functions");
-  return str.join(", ");
+  str << printLabelValue(tr("Extended Limits"), printBoolean(model.extendedLimits, BOOLEAN_YESNO));
+  if (firmware->getCapability(HasDisplayText))
+    str << printLabelValue(tr("Display Checklist"), printBoolean(model.displayChecklist, BOOLEAN_YESNO));
+  if (firmware->getCapability(GlobalFunctions))
+    str << printLabelValue(tr("Global Functions"), printBoolean(!model.noGlobalFunctions, BOOLEAN_YESNO));
+  return str.join(" ");
 }
 
 QString ModelPrinter::printSwitchWarnings()
@@ -928,7 +927,7 @@ QString ModelPrinter::printSwitchWarnings()
       str += RawSwitch(SWITCH_TYPE_SWITCH, 1+idx*3+value).toString(board.getBoardType(), &generalSettings, &model);
     }
   }
-  return (str.isEmpty() ? tr("None") : str.join(", ")) ;
+  return (str.isEmpty() ? tr("None") : str.join(" ")) ;
 }
 
 QString ModelPrinter::printPotWarnings()
@@ -936,7 +935,6 @@ QString ModelPrinter::printPotWarnings()
   QStringList str;
   int genAryIdx = 0;
   Boards board = firmware->getBoard();
-  str += (model.potsWarningMode ? tr("Mode") + QString("(%1)").arg(printPotsWarningMode()) : tr("None"));
   if (model.potsWarningMode) {
     for (int i=0; i<board.getCapability(Board::Pots)+board.getCapability(Board::Sliders); i++) {
       RawSource src(SOURCE_TYPE_STICK, CPN_MAX_STICKS + i);
@@ -946,7 +944,8 @@ QString ModelPrinter::printPotWarnings()
       }
     }
   }
-  return str.join(", ");
+  str << printLabelValue(tr("Mode"), printPotsWarningMode());
+  return str.join(" ");
 }
 
 QString ModelPrinter::printPotsWarningMode()
@@ -1039,12 +1038,11 @@ QString ModelPrinter::printTimerPersistent(unsigned int persistent)
 QString ModelPrinter::printSettingsTrim()
 {
   QStringList str;
-  str += tr("Step") + QString("(%1)").arg(printTrimIncrementMode());
-  if (IS_ARM(firmware->getBoard()) && model.trimsDisplay)
-    str += tr("Display") + QString("(%1)").arg(printTrimsDisplayMode());
-  if (model.extendedTrims)
-    str += tr("Extended");
-  return str.join(", ");
+  str << printLabelValue(tr("Step"), printTrimIncrementMode());
+  if (IS_ARM(firmware->getBoard()))
+    str << printLabelValue(tr("Display"), printTrimsDisplayMode());
+  str << printLabelValue(tr("Extended"), printBoolean(model.extendedTrims, BOOLEAN_YESNO));
+  return str.join(" ");
 }
 
 QString ModelPrinter::printThrottleSource(int idx)
@@ -1102,14 +1100,11 @@ QString ModelPrinter::printPxxPower(int power)
 QString ModelPrinter::printThrottle()
 {
   QStringList result;
-  result += tr("Source") + QString("(%1)").arg(printThrottleSource(model.thrTraceSrc));
-  if (model.thrTrim)
-    result += tr("Trim idle only");
-  if (!model.disableThrottleWarning)
-    result += tr("Warning");
-  if (model.throttleReversed)
-    result +=  tr("Reversed");
-  return result.join(", ");
+  result << printLabelValue(tr("Source"), printThrottleSource(model.thrTraceSrc));
+  result << printLabelValue(tr("Trim idle only"), printBoolean(model.thrTrim, BOOLEAN_YESNO));
+  result << printLabelValue(tr("Warning"), printBoolean(!model.disableThrottleWarning, BOOLEAN_YESNO));
+  result << printLabelValue(tr("Reversed"), printBoolean(model.throttleReversed, BOOLEAN_YESNO));
+  return result.join(" ");
 }
 
 QString ModelPrinter::printPPMFrameLength(int ppmFL)

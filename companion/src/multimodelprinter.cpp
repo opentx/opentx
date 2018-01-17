@@ -189,6 +189,13 @@ void MultiModelPrinter::MultiColumns::appendFieldSeparator(const bool sep)
   COMPARE(what); \
   columns.appendCellEnd();
 
+#define ROWLABELCOMPARECELL(lbl, lblw, what, width) \
+  columns.appendRowStart(lbl, lblw); \
+  columns.appendCellStart(width); \
+  COMPARE(what); \
+  columns.appendCellEnd(); \
+  columns.appendRowEnd();
+
 #define COMPARESTRING(lbl, what, sep) \
   columns.appendFieldLabel(lbl); \
   COMPARE(what); \
@@ -273,34 +280,21 @@ QString MultiModelPrinter::printSetup()
   QString str = printTitle(tr("General"));
 
   MultiColumns columns(modelPrinterMap.size());
-  columns.appendTitle(tr("Name:"));
-  COMPARE(model->name);
-  columns.append(tr("  EEprom Size: "));
-  COMPARE(modelPrinter->printEEpromSize());
+  columns.appendSectionTableStart();
+  ROWLABELCOMPARECELL(tr("Name"), 25, model->name, 75);
+  ROWLABELCOMPARECELL(tr("EEprom Size"), 0, modelPrinter->printEEpromSize(), 0);
   if (firmware->getCapability(ModelImage)) {
-    columns.append(tr("  Model Image: "));
-    COMPARE(model->bitmap);
+    ROWLABELCOMPARECELL(tr("Model Image"), 0, model->bitmap, 0);
   }
-  columns.append("<br/>");
-  columns.appendTitle(tr("Throttle:"));
-  COMPARE(modelPrinter->printThrottle());
-  columns.append("<br/>");
-  columns.appendTitle(tr("Trims:"));
-  COMPARE(modelPrinter->printSettingsTrim());
-  columns.append("<br/>");
-  columns.appendTitle(tr("Center Beep:"));
-  COMPARE(modelPrinter->printCenterBeep());
-  columns.append("<br/>");
-  columns.appendTitle(tr("Switch Warnings:"));
-  COMPARE(modelPrinter->printSwitchWarnings());
-  columns.append("<br/>");
+  ROWLABELCOMPARECELL(tr("Throttle"), 0, modelPrinter->printThrottle(), 0);
+  ROWLABELCOMPARECELL(tr("Trims"), 0, modelPrinter->printSettingsTrim(), 0);
+  ROWLABELCOMPARECELL(tr("Center Beep"), 0, modelPrinter->printCenterBeep(), 0);
+  ROWLABELCOMPARECELL(tr("Switch Warnings"), 0, modelPrinter->printSwitchWarnings(), 0);
   if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-      columns.appendTitle(tr("Pot Warnings:"));
-      COMPARE(modelPrinter->printPotWarnings());
-      columns.append("<br/>");
+    ROWLABELCOMPARECELL(tr("Pot Warnings"), 0, modelPrinter->printPotWarnings(), 0);
   }
-  columns.appendTitle(tr("Other:"));
-  COMPARE(modelPrinter->printSettingsOther());
+  ROWLABELCOMPARECELL(tr("Other"), 0, modelPrinter->printSettingsOther(), 0);
+  columns.appendTableEnd();
   str.append(columns.print());
   return str;
 }
@@ -831,9 +825,7 @@ QString MultiModelPrinter::printTelemetry()
   }
 
   if (IS_ARM(firmware->getBoard())) {
-    columns.appendRowStart(tr("Multi sensors"), 0);
-    COMPARECELL("", modelPrinter->printIgnoreSensorIds(!model->frsky.ignoreSensorIds), 0);
-    columns.appendRowEnd();
+    ROWLABELCOMPARECELL("Multi sensors", 0, modelPrinter->printIgnoreSensorIds(!model->frsky.ignoreSensorIds), 0);
   }
 
   // Various
