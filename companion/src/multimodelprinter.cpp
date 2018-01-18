@@ -127,18 +127,22 @@ void MultiModelPrinter::MultiColumns::appendRowEnd()
   append("</tr>");
 }
 
-void MultiModelPrinter::MultiColumns::appendCellStart(const unsigned int width)
+void MultiModelPrinter::MultiColumns::appendCellStart(const unsigned int width, const bool bold)
 {
   QString str = "<td";
   if (width)
     str.append(QString(" width=%1%").arg(QString::number(width)));
   str.append(">");
+  str.append(bold ? "<b>" : "");
   append(str);
 }
 
-void MultiModelPrinter::MultiColumns::appendCellEnd()
+void MultiModelPrinter::MultiColumns::appendCellEnd(const bool bold)
 {
-  append("</td>");
+  QString str;
+  str.append(bold ? "</b>" : "");
+  str.append("</td>");
+  append(str);
 }
 
 void MultiModelPrinter::MultiColumns::appendLabelCell(const QString & str, const unsigned int width, const QString & align, const QString & color)
@@ -303,32 +307,22 @@ QString MultiModelPrinter::printTimers()
 {
   QString str;
   MultiColumns columns(modelPrinterMap.size());
-  columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
-  columns.append("<tr>");
-  columns.append("<td><b>" + tr("Timers") + "</b></td>");
-  columns.append("<td><b>" + tr("Time") + "</b></td>");
-  columns.append("<td><b>" + tr("Switch") + "</b></td>");
-  columns.append("<td><b>" + tr("Countdown") + "</b></td>");
-  columns.append("<td><b>" + tr("Minute call") + "</b></td>");
-  columns.append("<td><b>" + tr("Persistence") + "</b></td>");
-  columns.append("</tr>");
+  columns.appendSectionTableStart();
+  columns.appendHeaderRow(QStringList() << tr("Timers") << tr("Time") << tr("Switch") << tr("Countdown") << tr("Minute call") << tr("Persistence"));
 
   for (int i=0; i<firmware->getCapability(Timers); i++) {
-    columns.append("<tr><td><b>");
+    columns.appendRowStart();
+    columns.appendCellStart(0, true);
     COMPARE(modelPrinter->printTimerName(i));
-    columns.append("</b></td><td>");
-    COMPARE(modelPrinter->printTimerTimeValue(model->timers[i].val));
-    columns.append("</td><td>");
-    COMPARE(model->timers[i].mode.toString());
-    columns.append("</td><td>");
-    COMPARE(modelPrinter->printTimerCountdownBeep(model->timers[i].countdownBeep));
-    columns.append("</td><td>");
-    COMPARE(modelPrinter->printTimerMinuteBeep(model->timers[i].minuteBeep));
-    columns.append("</td><td>");
-    COMPARE(modelPrinter->printTimerPersistent(model->timers[i].persistent));
-    columns.append("</td></tr>");
+    columns.appendCellEnd(true);
+    COMPARECELL("", modelPrinter->printTimerTimeValue(model->timers[i].val), 0);
+    COMPARECELL("", model->timers[i].mode.toString(), 0);
+    COMPARECELL("", modelPrinter->printTimerCountdownBeep(model->timers[i].countdownBeep), 0);
+    COMPARECELL("", modelPrinter->printTimerMinuteBeep(model->timers[i].minuteBeep), 0);
+    COMPARECELL("", modelPrinter->printTimerPersistent(model->timers[i].persistent), 0);
+    columns.appendRowEnd();
   }
-  columns.append("</table>");
+  columns.appendTableEnd();
   str.append(columns.print());
   return str;
 }
@@ -337,19 +331,20 @@ QString MultiModelPrinter::printModules()
 {
   QString str = printTitle(tr("Modules"));
   MultiColumns columns(modelPrinterMap.size());
-  columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
+  columns.appendSectionTableStart();
   for (int i=0; i<firmware->getCapability(NumModules); i++) {
-    columns.append("<tr><td>");
-    columns.appendTitle(tr("%1:").arg(i+1));
-    COMPARE(modelPrinter->printModule(i));
-    columns.append("</td></tr>");
+    columns.appendRowStart();
+    columns.appendCellStart(0, true);
+    COMPARE(modelPrinter->printModuleType(i));
+    columns.appendCellEnd(true);
+    COMPARECELL("", modelPrinter->printModule(i), 0);
+    columns.appendRowEnd();
   }
   if (firmware->getCapability(ModelTrainerEnable))
-    columns.append("<tr><td>");
-    columns.appendTitle(tr("Trainer port:"));
-    COMPARE(modelPrinter->printModule(-1));
-    columns.append("</td></tr>");
-  columns.append("</table>");
+    columns.appendRowStart(tr("Trainer port"));
+    COMPARECELL("", modelPrinter->printModule(-1), 0);
+    columns.appendRowEnd();
+  columns.appendTableEnd();
   str.append(columns.print());
   return str;
 }
@@ -880,7 +875,9 @@ QString MultiModelPrinter::printSensors()
     if (!tsEmpty) {
       count++;
       columns.appendRowStart();
-      COMPARECELL("", model->sensorData[i].nameToString(i), 15);
+      columns.appendCellStart(15, true);
+      COMPARE(model->sensorData[i].nameToString(i));
+      columns.appendCellEnd(true);
       COMPARECELL("", modelPrinter->printSensorTypeCond(i), 15);
       COMPARECELL("", modelPrinter->printSensorParams(i), 70);
       columns.appendRowEnd();

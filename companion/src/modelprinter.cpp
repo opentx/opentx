@@ -265,48 +265,47 @@ QString ModelPrinter::printModule(int idx)
   QString result;
   ModuleData module = model.moduleData[(idx<0 ? CPN_MAX_MODULES : idx)];
   if (idx < 0) {
-    str += tr("Mode") + QString("(%1)").arg(printTrainerMode());
+    str << printLabelValue(tr("Mode"), printTrainerMode());
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       if (model.trainerMode == TRAINER_SLAVE_JACK) {
-        str += tr("Channels") + QString("(%1-%2)").arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount);
-        str += tr("Frame length") + QString("(%1ms)").arg(printPPMFrameLength(module.ppm.frameLength));
-        str += tr("PPM delay") + QString("(%1us)").arg(module.ppm.delay);
-        str += tr("Polarity") + QString("(%1)").arg(module.polarityToString());
+        str << printLabelValue(tr("Channels"), QString("%1-%2").arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount));
+        str << printLabelValue(tr("Frame length"), QString("%1ms").arg(printPPMFrameLength(module.ppm.frameLength)));
+        str << printLabelValue(tr("PPM delay"), QString("%1us").arg(module.ppm.delay));
+        str << printLabelValue(tr("Polarity"), module.polarityToString());
       }
     }
-    result = str.join(", ");
+    result = str.join(" ");
   }
   else {
-    str += printModuleType(idx);
-    str += tr("Protocol") + QString("(%1)").arg(printModuleProtocol(module.protocol));
+    str << printLabelValue(tr("Protocol"), printModuleProtocol(module.protocol));
     if (module.protocol) {
-      str += tr("Channels") + QString("(%1-%2)").arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount);
+      str << printLabelValue(tr("Channels"), QString("%1-%2").arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount));
       if (module.protocol == PULSES_PPM || module.protocol == PULSES_SBUS) {
-        str += tr("Frame length") + QString("(%1ms)").arg(printPPMFrameLength(module.ppm.frameLength));
-        str += tr("Polarity") + QString("(%1)").arg(module.polarityToString());
+        str << printLabelValue(tr("Frame length"), QString("%1ms").arg(printPPMFrameLength(module.ppm.frameLength)));
+        str << printLabelValue(tr("Polarity"), module.polarityToString());
         if (module.protocol == PULSES_PPM)
-          str += tr("Delay") + QString("(%1us)").arg(module.ppm.delay);
+          str << printLabelValue(tr("Delay"), QString("%1us").arg(module.ppm.delay));
       }
       else {
         if (!(module.protocol == PULSES_PXX_XJT_D8 || module.protocol == PULSES_CROSSFIRE || module.protocol == PULSES_SBUS)) {
-          str += tr("Receiver") + QString("(%1)").arg(module.modelId);
+          str << printLabelValue(tr("Receiver"), QString::number(module.modelId));
         }
         if (module.protocol == PULSES_MULTIMODULE) {
-          str += tr("Radio protocol") + QString("(%1)").arg(printMultiRfProtocol(module.multi.rfProtocol, module.multi.customProto));
-          str += tr("Subtype") + QString("(%1)").arg(printMultiSubType(module.multi.rfProtocol, module.multi.customProto, module.subType));
-          str += tr("Option value") + QString("(%1)").arg(module.multi.optionValue);
+          str << printLabelValue(tr("Radio protocol"), printMultiRfProtocol(module.multi.rfProtocol, module.multi.customProto));
+          str << printLabelValue(tr("Subtype"), printMultiSubType(module.multi.rfProtocol, module.multi.customProto, module.subType));
+          str << printLabelValue(tr("Option value"), QString::number(module.multi.optionValue));
         }
         if (module.protocol == PULSES_PXX_R9M) {
-          str += tr("Sub Type") + QString("(%1)").arg(printModuleSubType(module.protocol, module.subType));
-          str += tr("RF Output Power") + QString("(%1)").arg(printR9MPowerValue(module.subType, module.pxx.power, module.pxx.sport_out));
-          str += tr("Telemetry") + QString("(%1)").arg(printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
+          str << printLabelValue(tr("Sub Type"), printModuleSubType(module.protocol, module.subType));
+          str << printLabelValue(tr("RF Output Power"), printR9MPowerValue(module.subType, module.pxx.power, module.pxx.sport_out));
+          str << printLabelValue(tr("Telemetry"), printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
         }
       }
     }
-    result = str.join(", ");
+    result = str.join(" ");
     if (((PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_XJT_X16 || (PulsesProtocol)module.protocol == PulsesProtocol::PULSES_PXX_R9M)
        && firmware->getCapability(HasFailsafe))
-      result.append(printFailsafe(idx));
+      result.append("<br/>" + printFailsafe(idx));
   }
   return result;
 }
@@ -966,13 +965,14 @@ QString ModelPrinter::printFailsafe(int idx)
 {
   QStringList strl;
   ModuleData module = model.moduleData[idx];
-  strl += "<br>" + tr("Failsafe Mode") + QString("(%1)").arg(printFailsafeMode(module.failsafeMode));
+  strl << printLabelValue(tr("Failsafe Mode"), printFailsafeMode(module.failsafeMode));
   if (module.failsafeMode == FAILSAFE_CUSTOM) {
     for (int i=0; i<module.channelsCount; i++) {
-      strl += QString("%1(%2)").arg(printChannelName(module.channelsStart + i).trimmed()).arg(printFailsafeValue(module.failsafeChannels[i]));
+      //strl << QString("%1(%2)").arg(printChannelName(module.channelsStart + i).trimmed()).arg(printFailsafeValue(module.failsafeChannels[i]));
+      strl << printLabelValue(printChannelName(module.channelsStart + i).trimmed(), printFailsafeValue(module.failsafeChannels[i]));
     }
   }
-  return strl.join(", ");
+  return strl.join(" ");
 }
 
 QString ModelPrinter::printFailsafeValue(int val)
@@ -1395,18 +1395,28 @@ QString ModelPrinter::printTelemetryScreenType(unsigned int val)
 QString ModelPrinter::printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width)
 {
   QStringList strl;
-  strl << "";  // blank 1st column
+  QStringList hd;
   FrSkyScreenData screen = model.frsky.screens[idx];
+  hd << "";  // blank 1st column
+  strl << "";
   if (screen.type == TelemetryScreenEnum::TELEMETRY_SCREEN_NUMBERS) {
+    if (line == 0) {
+      for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
+        hd << tr("Source");
+      }
+    }
     for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
       RawSource source = screen.body.lines[line].source[c];
       strl << source.toString(&model, &generalSettings);
     }
   }
   else if (screen.type == TelemetryScreenEnum::TELEMETRY_SCREEN_BARS) {
+    if (line == 0) {
+      hd << tr("Source") << tr("Min") << tr("Max");
+    }
     RawSource source = screen.body.bars[line].source;
     RawSourceRange range = source.getRange(&model, generalSettings);
-    strl << printLabelValue(tr("Source"), source.toString(&model, &generalSettings));
+    strl << source.toString(&model, &generalSettings);
     QString unit;
     QString minstr;
     QString maxstr;
@@ -1419,11 +1429,12 @@ QString ModelPrinter::printTelemetryScreen(unsigned int idx, unsigned int line, 
       maxstr = QString::number(range.getValue(screen.body.bars[line].barMax));
       unit = range.unit;
     }
-    strl << printLabelValue(tr("Min"), QString("%1%2").arg(minstr).arg(unit));
-    strl << printLabelValue(tr("Max"), QString("%1%2").arg(maxstr).arg(unit));
+    strl << QString("%1%2").arg(minstr).arg(unit);
+    strl << QString("%1%2").arg(maxstr).arg(unit);
   }
   else if (screen.type == TelemetryScreenEnum::TELEMETRY_SCREEN_SCRIPT && line == 0) {
-    strl << printLabelValue(tr("Filename"), QString("%1.lua").arg(screen.body.script.filename));
+    hd << tr("Filename");
+    strl << QString("%1.lua").arg(screen.body.script.filename);
   }
-  return doTableRow(strl, width / strl.count());
+  return (hd.count() > 1 ? doTableRow(hd, width / hd.count(), "left", "", true) : "" ) + doTableRow(strl, width / strl.count());
 }
