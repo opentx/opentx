@@ -75,3 +75,8 @@ QString doTableRow(const QStringList & strl, const unsigned int width, const QSt
   }
   return "<tr>" + str + "</tr>";
 }
+
+QString doTableBlankRow()
+{
+  return "<tr></tr>";
+}

@@ -62,7 +62,8 @@ class MultiModelPrinter: public QObject
         void appendLabelCell(const QString & str, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
         void appendValueCell(const QString & str, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
         void appendRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
-        void appendHeaderRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendRowHeader(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendRowBlank();
         void appendFieldLabel(const QString & lbl = "");
         void appendFieldSeparator(const bool sep = false);
 
