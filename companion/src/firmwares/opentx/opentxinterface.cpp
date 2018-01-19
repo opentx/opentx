@@ -911,7 +911,7 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
   else if (IS_TARANIS_X9E(board)) {
     if (variant != TARANIS_X9E_VARIANT) {
-      variantError = true;;
+      variantError = true;
     }
   }
   else if (IS_TARANIS_X7(board)) {
