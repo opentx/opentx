@@ -88,7 +88,7 @@ class MultiModelPrinter: public QObject
     QString printCurves(QTextDocument * document);
     QString printGvars();
     QString printLogicalSwitches();
-    QString printCustomFunctions();
+    QString printSpecialFunctions();
     QString printTelemetry();
     QString printTimers();
     QString printSensors();
