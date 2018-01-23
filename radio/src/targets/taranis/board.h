@@ -581,6 +581,8 @@ void hapticOff(void);
 extern uint8_t serial2Mode;
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
+extern bool serial2SendBuffer(const uint8_t* buffer, const uint8_t count);
+
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
 void serial2SbusInit(void);
 void serial2Stop(void);

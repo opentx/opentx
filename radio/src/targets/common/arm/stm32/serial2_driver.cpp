@@ -103,6 +103,7 @@ void serial2Init(unsigned int mode, unsigned int protocol)
       break;
     case UART_MODE_MAVLINK:
       uart3Setup(MAVLINK_BAUDRATE, true);
+      serial2RxFifo.clear();
       break;
   }
   TRACE("serial2Init(%d, %d)", mode, protocol);
@@ -120,6 +121,24 @@ void serial2Putc(char c)
   serial2TxFifo.push(c);
   USART_ITConfig(SERIAL_USART, USART_IT_TXE, ENABLE);
 #endif
+}
+
+bool serial2SendBuffer(const uint8_t* buffer, const uint8_t count)
+{
+  //TRACE("serial2SendBuffer(*, %d)", count);
+#if !defined(SIMU)
+
+  if (!buffer || !serial2TxFifo.hasSpace(count)) {
+    TRACE("unable to send buffer (%x, %d)", buffer, count);
+    return false;
+  }
+
+  for (uint8_t i=0; i<count; i++) {
+    serial2TxFifo.push(buffer[i]);
+  }
+  USART_ITConfig(SERIAL_USART, USART_IT_TXE, ENABLE);
+#endif
+  return true;
 }
 
 void serial2SbusInit()
