@@ -69,7 +69,35 @@ void MultiModelPrinter::MultiColumns::endCompare(const QString & color)
       cellColor = "green";
     else if (i>0 && compareColumns[i]!=compareColumns[0])
       cellColor = "red";
-    columns[i].append(QString("<font color='%1'>%2</font>").arg(cellColor).arg(compareColumns[i]));
+    // font instructions must be applied at table cell level if they exist in the comparison string
+    if (compareColumns[i].indexOf(QString("<td")) > -1) {
+      QString t = compareColumns[i];
+      int p1 = 0;
+      int p2 = 0;
+      int p3 = 0;
+      while (t.indexOf(QString("<td"), p1) > -1) {
+        p1 = t.indexOf(QString("<td"), p1);
+        p2 = t.indexOf(QString(">"), p1 + 3);
+        p3 = t.indexOf(QString("</td>"), p2 + 1);
+        QString td = t.mid(p2 + 1, p3 - (p2 + 1));
+        // remove existing font instructions from current cell
+        if (td.contains(QString("<font "))) {
+          int p4 = t.indexOf(QString("<font "), p2 + 1);
+          int p5 = t.indexOf(QString("</font>"), p4) + 6;
+          if (p5 < p3)
+            t.remove(p4, p5 - p4 + 1);
+        }
+        t.insert(p2 + 1, QString("<font color='%1'>").arg(cellColor));
+        p3 = t.indexOf(QString("</td>"), p2);
+        t.insert(p3, QString("</font>"));
+        p1 = p3 + QString("</font></td>").size();
+      }
+      compareColumns[i] = t;
+      columns[i].append(QString("%1").arg(compareColumns[i]));
+    }
+    else {
+      columns[i].append(QString("<font color='%1'>%2</font>").arg(cellColor).arg(compareColumns[i]));
+    }
   }
   delete[] compareColumns;
   compareColumns = NULL;
@@ -131,7 +159,7 @@ void MultiModelPrinter::MultiColumns::appendCellStart(const unsigned int width, 
 {
   QString str = "<td";
   if (width)
-    str.append(QString(" width=%1%").arg(QString::number(width)));
+    str.append(QString(" width='%1%'").arg(QString::number(width)));
   str.append(">");
   str.append(bold ? "<b>" : "");
   append(str);
@@ -327,7 +355,7 @@ QString MultiModelPrinter::printTimers()
 
   for (int i=0; i<firmware->getCapability(Timers); i++) {
     columns.appendRowStart();
-    columns.appendCellStart(0, true);
+    columns.appendCellStart(20, true);
     COMPARE(modelPrinter->printTimerName(i));
     columns.appendCellEnd(true);
     COMPARECELL(modelPrinter->printTimerTimeValue(model->timers[i].val));
@@ -349,10 +377,10 @@ QString MultiModelPrinter::printModules()
   columns.appendSectionTableStart();
   for (int i=0; i<firmware->getCapability(NumModules); i++) {
     columns.appendRowStart();
-    columns.appendCellStart(20, true);
+    columns.appendCellStart(25, true);
     COMPARE(modelPrinter->printModuleType(i));
     columns.appendCellEnd(true);
-    COMPARECELLWIDTH(modelPrinter->printModule(i), 80);
+    COMPARECELLWIDTH(modelPrinter->printModule(i), 75);
     columns.appendRowEnd();
   }
   if (firmware->getCapability(ModelTrainerEnable))
@@ -484,8 +512,7 @@ QString MultiModelPrinter::printFlightModes()
       columns.appendRowEnd();
     }
 
-    columns.appendRowStart(tr("Flight mode"));
-    columns.appendRowEnd();
+    columns.appendRowHeader(QStringList() << tr("Flight mode"));
 
     for (int i=0; i<firmware->getCapability(FlightModes); i++) {
       columns.appendRowStart();
@@ -578,24 +605,28 @@ QString MultiModelPrinter::printInputs()
 {
   QString str = printTitle(tr("Inputs"));
   MultiColumns columns(modelPrinterMap.size());
-  columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
+  columns.appendSectionTableStart();
   for (int i=0; i<std::max(4, firmware->getCapability(VirtualInputs)); i++) {
     int count = 0;
     for (int k=0; k < modelPrinterMap.size(); k++) {
       count = std::max(count, modelPrinterMap.value(k).first->expos(i).size());
     }
     if (count > 0) {
-      columns.append("<tr><td width='20%'><b>");
+      columns.appendRowStart();
+      columns.appendCellStart(20, true);
       COMPARE(modelPrinter->printInputName(i));
-      columns.append("</b></td><td>");
+      columns.appendCellEnd(true);
+      columns.appendCellStart(80);
       for (int j=0; j<count; j++) {
         if (j > 0)
-          columns.append("<br/>");
+          columns.appendLineBreak();
         COMPARE(j<model->expos(i).size() ? modelPrinter->printInputLine(*model->expos(i)[j]) : "");
       }
-      columns.append("</td></tr>");
+      columns.appendCellEnd();
+      columns.appendRowEnd();
     }
   }
+  columns.appendTableEnd();
   str.append(columns.print());
   return str;
 }
@@ -604,24 +635,28 @@ QString MultiModelPrinter::printMixers()
 {
   QString str = printTitle(tr("Mixers"));
   MultiColumns columns(modelPrinterMap.size());
-  columns.append("<table cellspacing='0' cellpadding='1' width='100%' border='0' style='border-collapse:collapse'>");
+  columns.appendSectionTableStart();
   for (int i=0; i<firmware->getCapability(Outputs); i++) {
     int count = 0;
     for (int k=0; k < modelPrinterMap.size(); k++) {
       count = std::max(count, modelPrinterMap.value(k).first->mixes(i).size());
     }
     if (count > 0) {
-      columns.append("<tr><td width='20%'><b>");
+      columns.appendRowStart();
+      columns.appendCellStart(20, true);
       COMPARE(modelPrinter->printChannelName(i));
-      columns.append("</b></td><td>");
+      columns.appendCellEnd(true);
+      columns.appendCellStart(80);
       for (int j=0; j<count; j++) {
         if (j > 0)
-          columns.append("<br/>");
+          columns.appendLineBreak();
         COMPARE((j < model->mixes(i).size()) ? modelPrinter->printMixerLine(*model->mixes(i)[j], (j>0)) : "&nbsp;");
       }
-      columns.append("</td></tr>");
+      columns.appendCellEnd();
+      columns.appendRowEnd();
     }
   }
+  columns.appendTableEnd();
   str.append(columns.print());
   return str;
 }
@@ -668,8 +703,8 @@ QString MultiModelPrinter::printLogicalSwitches()
 {
   QString str;
   MultiColumns columns(modelPrinterMap.size());
-  int count = 0;
   columns.appendSectionTableStart();
+  int count = 0;
   for (int i=0; i<firmware->getCapability(LogicalSwitches); i++) {
     bool lsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {

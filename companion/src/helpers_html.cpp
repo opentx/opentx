@@ -24,8 +24,8 @@ QString tdAlign(const QString & s, const QString & align, const QString & color,
 {
   QString str = s;
   if (bold) str = "<b>" + str + "</b>";
-  if (!color.isEmpty()) str = "<font color=" + color + ">" + str + "</font>";
-  return "<td align=" + align + ">" + str + "</td>";
+  if (!color.isEmpty()) str = "<font color='" + color + "'>" + str + "</font>";
+  return "<td align='" + align + "'>" + str + "</td>";
 }
 
 QString doTC(const QString & s, const QString & color, bool bold)
@@ -45,23 +45,23 @@ QString doTL(const QString & s, const QString & color, bool bold)
 
 QString fv(const QString & name, const QString & value, const QString & color)
 {
-  return "<b>" + name + ": </b><font color=" + color + ">" + value + "</font><br>";
+  return "<b>" + name + ": </b><font color='" + color + "'>" + value + "</font><br>";
 }
 
 QString doTableCell(const QString & s, const unsigned int width, const QString & align, const QString & color, bool bold)
 {
   QString prfx = "<td";
   if (width)
-    prfx.append(QString(" width=%1%").arg(QString::number(width)));
+    prfx.append(QString(" width='%1%'").arg(QString::number(width)));
   if (!align.isEmpty())
-    prfx.append(QString(" align=" + align));
+    prfx.append(QString(" align='%1'").arg(align));
   prfx.append(">");
 
   QString str = s;
   if (bold)
     str = "<b>" + str + "</b>";
   if (!color.isEmpty())
-    str = "<font color=" + color + ">" + str + "</font>";
+    str = QString("<font color='%1'>%2</font>").arg(color).arg(str);
 
   str =  prfx + str + "</td>";
   return str;

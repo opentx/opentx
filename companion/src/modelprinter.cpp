@@ -607,6 +607,27 @@ QString ModelPrinter::printFlightModes(unsigned int flightModes)
     return "";
 }
 
+QString ModelPrinter::printInputFlightModes(unsigned int flightModes)
+{
+  int numFlightModes = firmware->getCapability(FlightModes);
+  if (numFlightModes && flightModes) {
+    if (flightModes == (unsigned int)(1<<numFlightModes) - 1) {
+      return tr("None");
+    }
+    else {
+      QStringList list;
+      for (int i=0; i<numFlightModes; i++) {
+        if (!(flightModes & (1<<i))) {
+          list << printFlightModeName(i);
+        }
+      }
+      return QString("%1").arg(list.join(" "));
+    }
+  }
+  else
+    return tr("All");
+}
+
 QString ModelPrinter::printLogicalSwitchLine(int idx)
 {
   QString result = "";

@@ -65,6 +65,7 @@ class ModelPrinter: public QObject
     QString printFlightModeSwitch(const RawSwitch & swtch);
     QString printFlightModeName(int index);
     QString printFlightModes(unsigned int flightModes);
+    QString printInputFlightModes(unsigned int flightModes);
     QString printModule(int idx);
     QString printTrainerMode();
     QString printCenterBeep();
