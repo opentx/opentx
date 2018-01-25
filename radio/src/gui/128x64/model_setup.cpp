@@ -1003,8 +1003,9 @@ void menuModelSetup(event_t event)
             lcdDrawTextAlignedLeft(y, STR_RECEIVER_NUM);
           }
           if (IS_MODULE_PXX(moduleIdx) || IS_MODULE_DSM2(moduleIdx) || IS_MODULE_MULTIMODULE(moduleIdx)) {
-            if (xOffsetBind) lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
-            if (attr && l_posHorz==0) {
+            if (xOffsetBind)
+              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
+            if (attr && l_posHorz == 0) {
               if (editMode>0 || p1valdiff) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
                 if (checkIncDec_Ret) {
@@ -1021,7 +1022,7 @@ void menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
             if (multiBindStatus == MULTI_BIND_FINISHED) {
               multiBindStatus = MULTI_NORMAL_OPERATION;
-              s_editMode=0;
+              s_editMode = 0;
             }
 #endif
 #if defined(PCBTARANIS)
@@ -1029,7 +1030,8 @@ void menuModelSetup(event_t event)
               if (s_editMode > 0) {
                 if (l_posHorz == 1) {
                   if (IS_MODULE_R9M(moduleIdx) || (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16)) {
-                    if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+                    if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+                      killEvents(event);
                       uint8_t default_selection;
                       if (IS_MODULE_R9M_LBT(moduleIdx)) {
                         POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_OFF);
