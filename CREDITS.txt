@@ -1357,3 +1357,5 @@ Thomas Hollatz
 Patrice Lafeuille
 Gary Jones
 Benoit Gruson
+Petr Kysela
+Sebastien Jehan
