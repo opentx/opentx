@@ -51,7 +51,22 @@ class MultiModelPrinter: public QObject
         void append(int idx, const QString & str);
         template <class T> void append(int idx, T val);
         void beginCompare();
-        void endCompare(const QString & color = "grey");
+        void endCompare(const QString & color = "black"); // was grey
+        void appendLineBreak();
+        void appendSectionTableStart();
+        void appendTableEnd();
+        void appendRowStart(const QString & title = "", const unsigned int titlewidth = 0);
+        void appendRowEnd();
+        void appendCellStart(const unsigned int width = 0, const bool bold = false);
+        void appendCellEnd(const bool bold = false);
+        void appendLabelCell(const QString & str, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendValueCell(const QString & str, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendRowHeader(const QStringList & strl, const unsigned int width = 0, const QString & align = "left", const QString & color = "");
+        void appendRowBlank();
+        void appendFieldLabel(const QString & lbl = "");
+        void appendFieldSeparator(const bool sep = false);
+
       private:
         int count;
         QString * columns;
@@ -73,9 +88,11 @@ class MultiModelPrinter: public QObject
     QString printCurves(QTextDocument * document);
     QString printGvars();
     QString printLogicalSwitches();
-    QString printCustomFunctions();
+    QString printSpecialFunctions();
     QString printTelemetry();
     QString printTimers();
+    QString printSensors();
+    QString printTelemetryScreens();
 };
 
 #endif // _MULTIMODELPRINTER_H_

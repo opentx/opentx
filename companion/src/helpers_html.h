@@ -22,10 +22,15 @@
 #define _HELPERS_HTML_H_
 
 #include <QString>
+#include <QStringList>
 
-QString doTC(const QString &s, const QString &color="", bool bold=false);
-QString doTR(const QString &s, const QString &color="", bool bold=false);
-QString doTL(const QString &s, const QString &color="", bool bold=false);
-QString fv(const QString &name, const QString &value, const QString &color="green");
+QString tdAlign(const QString & s, const QString & align, const QString & color, bool bold);
+QString doTC(const QString & s, const QString & color = "", bool bold = false);
+QString doTR(const QString & s, const QString & color = "", bool bold = false);
+QString doTL(const QString & s, const QString & color = "", bool bold = false);
+QString fv(const QString & name, const QString & value, const QString & color = "green");
+QString doTableCell(const QString & s, const unsigned int width = 0, const QString & align = "", const QString & color = "", bool bold = false);
+QString doTableRow(const QStringList & strl, const unsigned int width = 0, const QString & align = "", const QString & color = "", bool bold = false);
+QString doTableBlankRow();
 
 #endif // _HELPERS_HTML_H_

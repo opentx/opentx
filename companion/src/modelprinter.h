@@ -65,6 +65,7 @@ class ModelPrinter: public QObject
     QString printFlightModeSwitch(const RawSwitch & swtch);
     QString printFlightModeName(int index);
     QString printFlightModes(unsigned int flightModes);
+    QString printInputFlightModes(unsigned int flightModes);
     QString printModule(int idx);
     QString printTrainerMode();
     QString printCenterBeep();
@@ -116,6 +117,26 @@ class ModelPrinter: public QObject
     QString printTimeValue(const int value, const unsigned int mask);
     QString printTimerMinuteBeep(bool mb);
     QString printTimerTimeValue(unsigned int val);
+    QString printTelemetryProtocol(unsigned int val);
+    QString printLabelValue(const QString & lbl, const QString & val, const bool sep = false);
+    QString printLabelValues(const QString & lbl, const QStringList & vals, const bool sep = false);
+    QString printRssiAlarmsDisabled(bool mb);
+    QString printTelemetrySource(int val);
+    QString printVarioSource(unsigned int val);
+    QString printVarioCenterSilent(bool mb);
+    QString printVoltsSource(unsigned int val);
+    QString printCurrentSource(unsigned int val);
+    QString printMahPersistent(bool mb);
+    QString printIgnoreSensorIds(bool mb);
+    QString printSensorType(unsigned int val);
+    QString printSensorFormula(unsigned int val);
+    QString printSensorCells(unsigned int val);
+    QString printSensorTypeCond(unsigned int idx);
+    QString printSensorParams(unsigned int idx);
+    QString printSensorDetails(unsigned int idx);
+    QString printTelemetryScreenType(unsigned int val);
+    QString printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width);
+
   private:
     Firmware * firmware;
     const GeneralSettings & generalSettings;
