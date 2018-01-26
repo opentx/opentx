@@ -1359,3 +1359,4 @@ Gary Jones
 Benoit Gruson
 Petr Kysela
 Sebastien Jehan
+Jean Mathieu
