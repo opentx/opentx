@@ -1019,7 +1019,7 @@
 #define TR_FLASH_BOOTLOADER    "Skriv BootLoader"
 #define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
 #define TR_FLASH_INTERNAL_MODULE "Flash Internal Module"
-#define TR_FIRMWARE_UPDATE_ERROR "Firmware update error"
+#define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_WRITING             "\032Skriver..."
 #define TR_CONFIRM_FORMAT      "Formatera Minnet?"
 #define TR_INTERNALRF          "Intern Radio"

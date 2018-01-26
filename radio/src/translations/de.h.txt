@@ -1014,7 +1014,7 @@
 #define TR_FLASH_BOOTLOADER      TR("Flash Bootloader","Flash BootLoader selbst")      //
 #define TR_FLASH_EXTERNAL_DEVICE TR("Flash ext. Gerät","Flash externes Gerät")
 #define TR_FLASH_INTERNAL_MODULE TR("Flash int. XJT","Flash internes XJT-Modul")
-#define TR_FIRMWARE_UPDATE_ERROR TR("Firmw Update Error","Firmware update error")
+#define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_WRITING               "\032Writing..."        //
 #define TR_CONFIRM_FORMAT      "Formatieren bestätigen?"
 #define TR_INTERNALRF          "Internes HF-Modul"

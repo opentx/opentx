@@ -1012,7 +1012,7 @@
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_FLASH_EXTERNAL_DEVICE "Sflashuj Moduł Zewnętrzny"
 #define TR_FLASH_INTERNAL_MODULE "Sflashuj Moduł Wewnętrzny"
-#define TR_FIRMWARE_UPDATE_ERROR "Firmware update error"
+#define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_WRITING             "\032Zapis...  "
 #define TR_CONFIRM_FORMAT      "Zatwierdź Format?"
 #define TR_INTERNALRF          "Wewn.Moduł RF"
