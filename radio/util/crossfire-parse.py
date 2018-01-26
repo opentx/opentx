@@ -5,7 +5,7 @@
 
 from __future__ import division, print_function
 
-import sys
+import sys, struct
 
 lineNumber = 0
 crossfireDataBuff = []
@@ -77,7 +77,8 @@ def crc8(buffer):
     return crc
 
 def ParseGPS(payload):
-    pass
+    lat, long, speed, head, alt, numsat = struct.unpack('>iiHHHB', bytes(bytearray(payload)))          # bytes(bytearray) casting is required for python 2.7.3 compatibility
+    return "[GPS] lat:%f long:%f speed:%d heading:%d alt:%d numsat:%d" % (lat / 1e7, long / 1e7, speed / 100, head / 100, alt - 1000, numsat)
 
 def ParseBattery(payload):
     voltage = float((payload[0] << 8) + payload[1]) / 10
