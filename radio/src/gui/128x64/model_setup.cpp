@@ -1030,7 +1030,7 @@ void menuModelSetup(event_t event)
               if (s_editMode > 0) {
                 if (l_posHorz == 1) {
                   if (IS_MODULE_R9M(moduleIdx) || (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16)) {
-                    if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+                    if (EVT_KEY_MASK(event) == KEY_ENTER) {
                       killEvents(event);
                       uint8_t default_selection;
                       if (IS_MODULE_R9M_LBT(moduleIdx)) {
