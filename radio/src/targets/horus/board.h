@@ -400,9 +400,9 @@ uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 #if NUM_PWMANALOGS > 0
 extern uint8_t analogs_pwm_disabled;
 #define ANALOGS_PWM_ENABLED()          (analogs_pwm_disabled == false)
-void pwmInit(void);
-void pwmRead(uint16_t * values);
-void pwmCheck();
+void analogPwmInit(void);
+void analogPwmRead(uint16_t * values);
+void analogPwmCheck();
 extern volatile uint32_t pwm_interrupt_count;
 #endif
 

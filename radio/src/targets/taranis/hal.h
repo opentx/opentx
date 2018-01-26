@@ -388,6 +388,7 @@
 #define ADC_SAMPTIME                    2   // sample time = 28 cycles
 #if defined(PCBX9E)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            (RCC_APB2Periph_ADC1 | RCC_APB2Periph_ADC3)
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
@@ -406,10 +407,10 @@
   #define ADC_GPIO_PIN_SLIDER3          GPIO_Pin_6  // PA.06
   #define ADC_GPIO_PIN_SLIDER4          GPIO_Pin_1  // PB.01
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
-  #define ADC_GPIOA_PINS (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_SLIDER3)
-  #define ADC_GPIOB_PINS (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SLIDER4)
-  #define ADC_GPIOC_PINS (ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_POT4 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
-  #define ADC_GPIOF_PINS (ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2)
+  #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_SLIDER3)
+  #define ADC_GPIOB_PINS                (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SLIDER4)
+  #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_POT4 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2 | ADC_GPIO_PIN_BATT)
+  #define ADC_GPIOF_PINS                (ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SLIDER1 | ADC_GPIO_PIN_SLIDER2)
   #define ADC_CHANNEL_POT1              ADC_Channel_6  // ADC3_IN6
   #define ADC_CHANNEL_POT2              ADC_Channel_8  // ADC1_IN8
   #define ADC_CHANNEL_POT3              ADC_Channel_15 // ADC1_IN15
@@ -427,6 +428,7 @@
   #define ADC_EXT_SAMPTIME              3    // sample time = 56 cycles
 #elif defined(PCBX9DP)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
@@ -453,11 +455,17 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #elif defined(PCBXLITE)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            RCC_APB1Periph_TIM5
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
   #define ADC_GPIO_PIN_STICK_LV         GPIO_Pin_2  // PA.02
   #define ADC_GPIO_PIN_STICK_LH         GPIO_Pin_3  // PA.03
+  #define PWM_TIMER                     TIM5
+  #define PWM_GPIO                      GPIOA
+  #define PWM_GPIO_AF                   GPIO_AF_TIM5
+  #define PWM_IRQHandler                TIM5_IRQHandler
+  #define PWM_IRQn                      TIM5_IRQn
   #define ADC_CHANNEL_STICK_RV          ADC_Channel_0  // ADC1_IN0
   #define ADC_CHANNEL_STICK_RH          ADC_Channel_1  // ADC1_IN1
   #define ADC_CHANNEL_STICK_LV          ADC_Channel_2  // ADC1_IN2
@@ -465,7 +473,9 @@
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_1  // PC.01
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_2  // PC.02
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
-  #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT1)
+  #define STICKS_GPIOA_PINS             (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
+  #define PWM_GPIOA_PINS                STICKS_GPIOA_PINS
+  #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_POT1 | (ANALOGS_PWM_ENABLED() ? 0 : STICKS_GPIOA_PINS))
   #define ADC_GPIOB_PINS                ADC_GPIO_PIN_POT2
   #define ADC_GPIOC_PINS                ADC_GPIO_PIN_BATT
   #define ADC_CHANNEL_POT1              ADC_Channel_6
@@ -473,6 +483,7 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #elif defined(PCBX7)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
@@ -493,6 +504,7 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #else
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+  #define ADC_RCC_APB1Periph            0
   #define ADC_RCC_APB2Periph            RCC_APB2Periph_ADC1
   #define ADC_GPIO_PIN_STICK_RV         GPIO_Pin_0  // PA.00
   #define ADC_GPIO_PIN_STICK_RH         GPIO_Pin_1  // PA.01
