@@ -1101,7 +1101,7 @@ uint8_t   flightModeTransitionLast = 255;
 
 void evalMixes(uint8_t tick10ms)
 {
-  int32_t sum_chans512[MAX_OUTPUT_CHANNELS] = {0};
+  int32_t sum_chans512[MAX_OUTPUT_CHANNELS]; 
 #if defined(PCBMEGA2560) && defined(DEBUG) && !defined(VOICE)
   PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
 #endif
