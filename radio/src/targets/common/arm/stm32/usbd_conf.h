@@ -23,7 +23,7 @@
 #define _USBD_CONF_H_
 
 /* Includes ------------------------------------------------------------------*/
-#include "usb_conf.h"
+#include <inttypes.h>
 
 #define USBD_CFG_MAX_NUM           1
 #define USBD_ITF_MAX_NUM           1
@@ -37,7 +37,12 @@
 #define MSC_OUT_EP                   0x01
 #define MSC_MAX_PACKET               64
 
+// Save some RAM on smaller STM32 processors. Slightly lowers USB mass storage speed
+#if defined(STM32F2) && !defined(BOOT)
+#define MSC_MEDIA_PACKET             512
+#else
 #define MSC_MEDIA_PACKET             4096
+#endif
 
 #define HID_IN_EP                    0x81
 #define HID_OUT_EP                   0x01

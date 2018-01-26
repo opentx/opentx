@@ -22,6 +22,7 @@
 
 void menuRadioVersion(event_t event)
 {
+  char id[27];
   if (warningResult) {
     warningResult = 0;
     showMessageBox(STR_STORAGE_FORMAT);
@@ -30,14 +31,14 @@ void menuRadioVersion(event_t event)
   }
 
   if (event == EVT_ENTRY) {
-    getCPUUniqueID(reusableBuffer.version.id);
+    getCPUUniqueID(id);
   }
   
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, 1);
 
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1, vers_stamp);
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+4*FH+1, "UID\037\033:");
-  lcdDrawText(5*FW+3, MENU_HEADER_HEIGHT+4*FH+1, reusableBuffer.version.id);
+  lcdDrawText(5*FW+3, MENU_HEADER_HEIGHT+4*FH+1, id);
 
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);

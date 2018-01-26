@@ -38,14 +38,18 @@ set(FIRMWARE_TARGET_SRC
   ../common/arm/stm32/usb_driver.cpp
   ../common/arm/stm32/flash_driver.cpp
   )
-set(FIRMWARE_TARGET_SRC
-  ${FIRMWARE_TARGET_SRC}
-  ../common/arm/stm32/usbd_cdc.cpp
+
+if(DEBUG)
+  set(STM32USB_SRC
+    ${STM32USB_SRC}
+    STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
   )
-set(STM32USB_SRC
-  ${STM32USB_SRC}
-  STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    ../common/arm/stm32/usbd_cdc.cpp
   )
+  add_definitions(-DUSB_SERIAL)
+endif()
 set(STM32USB_SRC
   ${STM32USB_SRC}
   STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c

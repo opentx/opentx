@@ -27,6 +27,9 @@
 #include <stdlib.h>
 #include "definitions.h"
 #include "opentx_types.h"
+#if defined(STM32)
+#include "usbd_conf.h"
+#endif
 
 #if defined(SIMU)
   #define SWITCH_SIMU(a, b)  (a)
@@ -1495,16 +1498,15 @@ union ReusableBuffer
   } sdmanager;
 #endif
 
-#if defined(STM32)
-  struct
-  {
-    char id[27];
-  } version;
-#endif
   struct
   {
     uint8_t stickMode;
   } generalSettings;
+
+#if defined(STM32)
+  // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
+  uint8_t MSC_BOT_Data[MSC_MEDIA_PACKET];
+#endif
 };
 
 extern union ReusableBuffer reusableBuffer;

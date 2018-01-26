@@ -1089,7 +1089,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
   mixWarning = lv_mixWarning;
 }
 
-int32_t sum_chans512[MAX_OUTPUT_CHANNELS] = {0};
 
 
 #define MAX_ACT 0xffff
@@ -1102,6 +1101,7 @@ uint8_t   flightModeTransitionLast = 255;
 
 void evalMixes(uint8_t tick10ms)
 {
+  int32_t sum_chans512[MAX_OUTPUT_CHANNELS] = {0};
 #if defined(PCBMEGA2560) && defined(DEBUG) && !defined(VOICE)
   PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
 #endif
