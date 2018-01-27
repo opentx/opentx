@@ -1360,3 +1360,4 @@ Benoit Gruson
 Petr Kysela
 Sebastien Jehan
 Jean Mathieu
+Barry Andersen
