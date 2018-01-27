@@ -1078,7 +1078,7 @@ inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax,
 }
 #endif
 
-#if defined(GVARS)
+#if defined(CPUARM) && defined(GVARS)
 inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
 {
   int16_t rng = abs(valMax - valMin);
