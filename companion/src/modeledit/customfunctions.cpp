@@ -438,9 +438,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
             fswtchParam[i]->setSuffix(model->gvarData[gvidx].unitToString());
             if (cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
               double rng = abs(model->gvarData[gvidx].getMax() - model->gvarData[gvidx].getMin());
-              if (rng > GVAR_MAX_VALUE) {
-                rng = GVAR_MAX_VALUE;
-              }
+              rng = rng > GVAR_MAX_VALUE ? GVAR_MAX_VALUE : rng;
               rng *= model->gvarData[gvidx].multiplierGet();
               fswtchParam[i]->setMinimum(-rng);
               fswtchParam[i]->setMaximum(rng);
