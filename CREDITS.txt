@@ -1361,3 +1361,4 @@ Petr Kysela
 Sebastien Jehan
 Jean Mathieu
 Barry Andersen
+James Vincent
