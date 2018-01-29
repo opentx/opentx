@@ -145,7 +145,7 @@ uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint16_t width, ui
   switch (depth) {
     case 1:
       rowSize = ((w+31)/32)*4;
-      for (uint32_t i=0; i<h; i+=2) {
+      for (uint32_t i=0; i<h-1; i+=2) {
         result = f_read(&bmpFile, buf, rowSize*2, &read);
         if (result != FR_OK || read != rowSize*2) {
           f_close(&bmpFile);
@@ -157,6 +157,18 @@ uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint16_t width, ui
           if (!(buf[j/8] & (1<<(7-(j%8)))))
             *dst |= 0xF0;
           if (!(buf[rowSize+j/8] & (1<<(7-(j%8)))))
+            *dst |= 0x0F;
+        }
+      }
+      if(h % 2 != 0) {
+        result = f_read(&bmpFile, buf, rowSize, &read);
+        if (result != FR_OK || read != rowSize) {
+          f_close(&bmpFile);
+          return NULL;
+        }
+        for (uint32_t j=0; j<w; j++) {
+          uint8_t * dst = dest + j;
+          if (!(buf[j/8] & (1<<(7-(j%8)))))
             *dst |= 0x0F;
         }
       }
