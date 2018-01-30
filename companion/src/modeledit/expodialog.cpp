@@ -75,7 +75,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     }
   }
   else {
-    ui->label_phases->setToolTip(tr("Click to access popup menu"));
+    ui->label_phases->setToolTip(tr("Popup menu available"));
     ui->label_phases->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->label_phases, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(label_phases_customContextMenuRequested(const QPoint &)));
     int mask = 1;
