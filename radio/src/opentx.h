@@ -1076,9 +1076,7 @@ inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax,
     valMin = -valMax;
   }
 }
-#endif
-
-#if defined(CPUARM) && defined(GVARS)
+#if defined(GVAR_MAX)
 inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
 {
   int16_t rng = abs(valMax - valMin);
@@ -1086,6 +1084,7 @@ inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
   valMin = -rng;
   valMax = rng;
 }
+#endif
 #endif
 
 // Curves
