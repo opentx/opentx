@@ -20,8 +20,154 @@
 
 #include "opentx.h"
 
+uint16_t load1BitBMPHeader(const char * filename, uint16_t &w, uint16_t &h, uint16_t &depth, uint8_t palette[])
+{
+  FIL bmpFile;
+  UINT read;
+  uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
+  uint8_t * buf = &bmpBuf[0];
+
+  FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return 0;
+  }
+
+  if (f_size(&bmpFile) < 14) {
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  result = f_read(&bmpFile, buf, 14, &read);
+  if (result != FR_OK || read != 14) {
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  if (buf[0] != 'B' || buf[1] != 'M') {
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  uint16_t fsize  = *((uint32_t *)&buf[2]);
+  uint16_t hsize  = *((uint32_t *)&buf[10]); /* header size */
+
+  uint32_t len = limit((uint32_t)4, (uint32_t)(hsize-14), (uint32_t)32);
+  result = f_read(&bmpFile, buf, len, &read);
+  if (result != FR_OK || read != len) {
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  uint32_t ihsize = *((uint32_t *)&buf[0]); /* more header size */
+
+  /* invalid header size */
+  if (ihsize + 14 > hsize) {
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  /* sometimes file size is set to some headers size, set a real size in that case */
+  if (fsize == 14 || fsize == ihsize + 14) {
+    fsize = f_size(&bmpFile) - 2;
+  }
+
+  /* declared file size less than header size */
+  if (fsize <= hsize) {
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  switch (ihsize){
+    case  40: // windib
+    case  56: // windib v3
+    case  64: // OS/2 v2
+    case 108: // windib v4
+    case 124: // windib v5
+      w = *((uint16_t *)&buf[4]);
+      h = *((uint16_t *)&buf[8]);
+      buf += 12;
+      break;
+    case  12: // OS/2 v1
+      w = *((uint16_t *)&buf[4]);
+      h = *((uint16_t *)&buf[6]);
+      buf += 8;
+      break;
+    default:
+      f_close(&bmpFile);
+      return 0;
+  }
+
+  if (*((uint16_t *)&buf[0]) != 1) { /* planes */
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  depth = *((uint16_t *)&buf[2]);
+  if (depth == 4) {
+    if (f_lseek(&bmpFile, hsize-64) != FR_OK) {
+      f_close(&bmpFile);
+      return 0;
+    }
+    for (uint8_t i=0; i<16; i++) {
+      palette[i] = buf[4*i] >> 4;
+    }
+  }
+  return hsize;
+}
+
+uint8_t lcdLoadDraw1BitBitmap(const char * filename, uint8_t x, uint8_t y )
+{
+  uint16_t w, h, hsize, depth;
+  FIL bmpFile;
+  UINT read;
+  uint8_t palette[16];
+  uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
+  uint8_t * buf = &bmpBuf[0];
+
+  if(!(hsize =load1BitBMPHeader(filename, w, h, depth, palette)))
+    return 0;
+
+  FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return 0;
+  }
+
+  if (f_lseek(&bmpFile, hsize) != FR_OK) {
+    f_close(&bmpFile);
+    return 0;
+  }
+
+  uint8_t rowSize = (w + 7) / 8;
+  uint8_t padding;
+
+  if (((w % 32) == 0) || ((w % 32) > 24))
+   padding = 0;
+  else if ((w % 32) <= 8)
+   padding = 3;
+  else if ((w % 32) <= 16)
+   padding = 2;
+  else
+   padding = 1;
+
+  for (int8_t i=h-1; i>=0; i--) {
+    result = f_read(&bmpFile, buf, rowSize+padding, &read);
+    if (result != FR_OK || read != rowSize+padding) {
+      f_close(&bmpFile);
+      return 0;
+    }
+    for (uint8_t j=0; j<w; j++) {
+      if (!(buf[j/8] & (1<<(7-(j%8))))) {
+        lcdDrawPoint(x+j, y+i, 0);
+      }
+    }
+  }
+  f_close(&bmpFile);
+  return 1;
+}
+
 uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
 {
+  uint16_t w, h, hsize, depth;
   FIL bmpFile;
   UINT read;
   uint8_t palette[16];
@@ -32,105 +178,17 @@ uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint16_t width, ui
     return NULL;
   }
 
+  if(!(hsize =load1BitBMPHeader(filename, w, h, depth, palette)))
+    return 0;
+
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
-    return NULL;
+    return 0;
   }
 
-  if (f_size(&bmpFile) < 14) {
+  if (f_lseek(&bmpFile, hsize) != FR_OK) {
     f_close(&bmpFile);
-    return NULL;
-  }
-
-  result = f_read(&bmpFile, buf, 14, &read);
-  if (result != FR_OK || read != 14) {
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  if (buf[0] != 'B' || buf[1] != 'M') {
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  uint32_t fsize  = *((uint32_t *)&buf[2]);
-  uint32_t hsize  = *((uint32_t *)&buf[10]); /* header size */
-
-  uint32_t len = limit((uint32_t)4, (uint32_t)(hsize-14), (uint32_t)32);
-  result = f_read(&bmpFile, buf, len, &read);
-  if (result != FR_OK || read != len) {
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  uint32_t ihsize = *((uint32_t *)&buf[0]); /* more header size */
-
-  /* invalid header size */
-  if (ihsize + 14 > hsize) {
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  /* sometimes file size is set to some headers size, set a real size in that case */
-  if (fsize == 14 || fsize == ihsize + 14)
-    fsize = f_size(&bmpFile) - 2;
-
-  /* declared file size less than header size */
-  if (fsize <= hsize) {
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  uint32_t w, h;
-
-  switch (ihsize){
-    case  40: // windib
-    case  56: // windib v3
-    case  64: // OS/2 v2
-    case 108: // windib v4
-    case 124: // windib v5
-      w  = *((uint32_t *)&buf[4]);
-      h = *((uint32_t *)&buf[8]);
-      buf += 12;
-      break;
-    case  12: // OS/2 v1
-      w  = *((uint16_t *)&buf[4]);
-      h = *((uint16_t *)&buf[6]);
-      buf += 8;
-      break;
-    default:
-      f_close(&bmpFile);
-      return NULL;
-  }
-
-  if (*((uint16_t *)&buf[0]) != 1) { /* planes */
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  if (w > width || h > height) {
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  uint16_t depth = *((uint16_t *)&buf[2]);
-
-  buf = &bmpBuf[0];
-
-  if (depth == 4) {
-    if (f_lseek(&bmpFile, hsize-64) != FR_OK || f_read(&bmpFile, buf, 64, &read) != FR_OK || read != 64) {
-      f_close(&bmpFile);
-      return NULL;
-    }
-    for (uint8_t i=0; i<16; i++) {
-      palette[i] = buf[4*i] >> 4;
-    }
-  }
-  else {
-    if (f_lseek(&bmpFile, hsize) != FR_OK) {
-      f_close(&bmpFile);
-      return NULL;
-    }
+    return 0;
   }
 
   uint8_t * dest = bmp;
@@ -145,7 +203,7 @@ uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint16_t width, ui
   switch (depth) {
     case 1:
       rowSize = ((w+31)/32)*4;
-      for (uint32_t i=0; i<h-1; i+=2) {
+      for (uint16_t i=0; i<h-1; i+=2) {
         result = f_read(&bmpFile, buf, rowSize*2, &read);
         if (result != FR_OK || read != rowSize*2) {
           f_close(&bmpFile);

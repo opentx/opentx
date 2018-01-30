@@ -83,13 +83,13 @@ uint16_t load1BitBMPHeader(const char * filename, uint16_t &w, uint16_t &h)
     case  64: // OS/2 v2
     case 108: // windib v4
     case 124: // windib v5
-      w  = *((uint32_t *)&buf[4]);
-      h = *((uint32_t *)&buf[8]);
+      w = *((uint16_t *)&buf[4]);
+      h = *((uint16_t *)&buf[8]);
       buf += 12;
       break;
     case  12: // OS/2 v1
-      w  = *((uint32_t *)&buf[4]);
-      h = *((uint32_t *)&buf[6]);
+      w = *((uint16_t *)&buf[4]);
+      h = *((uint16_t *)&buf[6]);
       buf += 8;
       break;
     default:
