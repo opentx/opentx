@@ -552,10 +552,7 @@ static int luaLcdDrawPixmap(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * filename = luaL_checkstring(L, 3);
 
-  uint8_t bitmap[BITMAP_BUFFER_SIZE(LCD_W/2, LCD_H)]; // width max is LCD_W/2 pixels for saving stack and avoid a malloc here
-  if (lcdLoadBitmap(bitmap, filename, LCD_W/2, LCD_H)) {
-    lcdDrawBitmap(x, y, bitmap);
-  }
+  lcdLoadDraw1BitBitmap(filename, x, y);
 
   return 0;
 }
