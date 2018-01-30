@@ -552,7 +552,7 @@ static int luaLcdDrawPixmap(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * filename = luaL_checkstring(L, 3);
 
-  lcdLoadDraw1BitBitmap(filename, x, y);
+  lcdLoadDrawBitmap(filename, x, y);
 
   return 0;
 }

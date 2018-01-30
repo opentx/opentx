@@ -110,12 +110,13 @@ uint16_t load1BitBMPHeader(const char * filename, uint16_t &w, uint16_t &h, uint
     }
     for (uint8_t i=0; i<16; i++) {
       palette[i] = buf[4*i] >> 4;
+      TRACE("Pal[%u]:%u", i, palette[i]);
     }
   }
   return hsize;
 }
 
-uint8_t lcdLoadDraw1BitBitmap(const char * filename, uint8_t x, uint8_t y )
+uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
 {
   uint16_t w, h, hsize, depth;
   FIL bmpFile;

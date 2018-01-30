@@ -191,7 +191,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, 
 void lcdClear();
 
 uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
-uint8_t lcdLoadDraw1BitBitmap(const char * filename, uint8_t x, uint8_t y);
+uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y);
 const char * writeScreenshot();
 
 #if defined(BOOT)
