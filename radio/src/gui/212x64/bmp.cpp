@@ -104,7 +104,7 @@ uint16_t load1BitBMPHeader(const char * filename, uint16_t &w, uint16_t &h, uint
 
   depth = *((uint16_t *)&buf[2]);
   if (depth == 4) {
-    if (f_lseek(&bmpFile, hsize-64) != FR_OK) {
+    if (f_lseek(&bmpFile, hsize-64) != FR_OK || f_read(&bmpFile, buf, 64, &read) != FR_OK || read != 64) {
       f_close(&bmpFile);
       return 0;
     }
@@ -125,7 +125,7 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
   uint8_t * buf = &bmpBuf[0];
 
-  if(!(hsize =load1BitBMPHeader(filename, w, h, depth, palette)))
+  if(!(hsize =load1BitBMPHeader(filename, w, h, depth, &palette[0])))
     return 0;
 
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
@@ -138,32 +138,58 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
     return 0;
   }
 
-  uint8_t rowSize = (w + 7) / 8;
-  uint8_t padding;
+  uint32_t rowSize;
+  switch (depth) {
+    case 1:
+      rowSize = (w + 7) / 8;
+      uint8_t padding;
 
-  if (((w % 32) == 0) || ((w % 32) > 24))
-   padding = 0;
-  else if ((w % 32) <= 8)
-   padding = 3;
-  else if ((w % 32) <= 16)
-   padding = 2;
-  else
-   padding = 1;
+      if (((w % 32) == 0) || ((w % 32) > 24))
+       padding = 0;
+      else if ((w % 32) <= 8)
+       padding = 3;
+      else if ((w % 32) <= 16)
+       padding = 2;
+      else
+       padding = 1;
 
-  for (int8_t i=h-1; i>=0; i--) {
-    result = f_read(&bmpFile, buf, rowSize+padding, &read);
-    if (result != FR_OK || read != rowSize+padding) {
-      f_close(&bmpFile);
-      return 0;
-    }
-    for (uint8_t j=0; j<w; j++) {
-      if (!(buf[j/8] & (1<<(7-(j%8))))) {
-        lcdDrawPoint(x+j, y+i, 0);
+      for (int8_t i=h-1; i>=0; i--) {
+        result = f_read(&bmpFile, buf, rowSize+padding, &read);
+        if (result != FR_OK || read != rowSize+padding) {
+          f_close(&bmpFile);
+          return 0;
+        }
+        for (uint8_t j=0; j<w; j++) {
+          if (!(buf[j/8] & (1<<(7-(j%8))))) {
+            lcdDrawPoint(x+j, y+i, 0);
+          }
+        }
       }
+      break;
+
+    case 4:
+      rowSize = ((4*w+31)/32)*4;
+      for (int32_t i=h-1; i>=0; i--) {
+        result = f_read(&bmpFile, buf, rowSize, &read);
+        if (result != FR_OK || read != rowSize) {
+          f_close(&bmpFile);
+          return 0;
+        }
+        for (uint32_t j=0; j<w; j++) {
+          uint8_t index = (buf[j/2] >> ((j & 1) ? 0 : 4)) & 0x0F;
+          uint8_t val = palette[index] << ((i & 1) ? 4 : 0);
+          //TO DO : actually display the colored pixel !
+        }
+      }
+      break;
+
+      default:
+        f_close(&bmpFile);
+        return 0;
     }
-  }
-  f_close(&bmpFile);
-  return 1;
+
+    f_close(&bmpFile);
+    return 1;
 }
 
 uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint16_t width, uint16_t height)
