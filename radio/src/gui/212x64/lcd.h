@@ -209,6 +209,21 @@ inline display_t getPixel(unsigned int x, unsigned int y)
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
 }
 
+inline display_t writePixel(coord_t x, coord_t y, uint8_t color)
+{
+  if (x>=LCD_W || y>=LCD_H) {
+    return 0;
+  }
+
+  display_t * p = &displayBuf[y / 2 * LCD_W + x];
+  if (y & 1) {
+    *p = (*p & 0x0f) + ((color & 0x0f) << 4);
+  }
+  else {
+    *p = (*p & 0xf0) + ((color & 0x0f));
+  }
+}
+
 #if defined(CPUARM)
 uint8_t getTextWidth(const char * s, uint8_t len=0, LcdFlags flags=0);
 #endif

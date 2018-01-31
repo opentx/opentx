@@ -104,8 +104,9 @@ uint16_t load1BitBMPHeader(FIL * bitmapFile, uint16_t &w, uint16_t &h, uint16_t 
       return 0;
     }
     for (uint8_t i=0; i<16; i++) {
-      palette[i] = buf[4*i] >> 4;
-    }
+        palette[i] = buf[4*i] >> 4;
+        TRACE("Pal[%u]=%u",i, palette[i] );
+      }
   }
   return hsize;
 }
@@ -133,6 +134,7 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
   }
 
   uint32_t rowSize;
+  uint8_t b =0;
   switch (depth) {
     case 1:
       rowSize = (w + 7) / 8;
@@ -164,7 +166,6 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
     case 4:
       rowSize = ((4*w+31)/32)*4;
       for (int32_t i=h-1; i>=0; i--) {
-        uint8_t b =0;
         result = f_read(&bmpFile, buf, rowSize, &read);
         if (result != FR_OK || read != rowSize) {
           f_close(&bmpFile);
@@ -172,18 +173,9 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
         }
         for (uint32_t j=0; j<w; j++) {
           uint8_t index = (buf[j/2] >> ((j & 1) ? 0 : 4)) & 0x0F;
-          uint8_t val = palette[index] << (((y+i) & 1) ? 4 : 0);
-          b |= val ^ (((y+i) & 1) ? 0xF0 : 0x0F);
-          display_t * p = &displayBuf[(y+i) / 2 * LCD_W + x + j];
-          if ((y+i) & 1) {
-            *p = (*p & 0x0f) + ((b & 0x0f) << 4);
-            if ((p+LCD_W) < DISPLAY_END) {
-              *(p+LCD_W) = (*(p+LCD_W) & 0xf0) + ((b & 0xf0) >> 4);
-            }
-          }
-          else {
-            *p = b;
-          }
+          uint8_t val = palette[index];
+          TRACE("x:%u y:%u val:%u idx:%u", i,j, val, index);
+          writePixel(j+x, i+y, val);
         }
       }
       break;
