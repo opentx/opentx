@@ -105,7 +105,6 @@ uint16_t load1BitBMPHeader(FIL * bitmapFile, uint16_t &w, uint16_t &h, uint16_t 
     }
     for (uint8_t i=0; i<16; i++) {
         palette[i] = buf[4*i] >> 4;
-        TRACE("Pal[%u]=%u",i, palette[i] );
       }
   }
   return hsize;
@@ -174,7 +173,6 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
         for (uint32_t j=0; j<w; j++) {
           uint8_t index = (buf[j/2] >> ((j & 1) ? 0 : 4)) & 0x0F;
           uint8_t val = palette[index];
-          TRACE("x:%u y:%u val:%u idx:%u", i,j, val, index);
           writePixel(j+x, i+y, val);
         }
       }

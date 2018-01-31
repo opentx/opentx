@@ -217,10 +217,10 @@ inline display_t writePixel(coord_t x, coord_t y, uint8_t color)
 
   display_t * p = &displayBuf[y / 2 * LCD_W + x];
   if (y & 1) {
-    *p = (*p & 0x0f) + ((color & 0x0f) << 4);
+    *p = (*p & 0x0f) + ((0x0f - color) << 4);
   }
   else {
-    *p = (*p & 0xf0) + ((color & 0x0f));
+    *p = (*p & 0xf0) + (0x0f - color);
   }
 }
 
