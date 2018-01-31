@@ -269,7 +269,6 @@ inline void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bitmap)
   lcdDraw1bitBitmap(x, y, bitmap, 0);
 }
 
-uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint8_t width, uint8_t height);
 uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y);
 
 #if defined(BOOT)

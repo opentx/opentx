@@ -20,24 +20,19 @@
 
 #include "opentx.h"
 
-uint16_t load1BitBMPHeader(const char * filename, uint16_t &w, uint16_t &h)
+uint8_t load1BitBMPHeader(FIL * bitmapFile,  uint8_t &w, uint8_t &h)
 {
-  FIL bmpFile;
+  FIL bmpFile = *bitmapFile;
   UINT read;
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
   uint8_t * buf = &bmpBuf[0];
-
-  FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
-  if (result != FR_OK) {
-    return 0;
-  }
 
   if (f_size(&bmpFile) < 14) {
     f_close(&bmpFile);
     return 0;
   }
 
-  result = f_read(&bmpFile, buf, 14, &read);
+  FRESULT result = f_read(&bmpFile, buf, 14, &read);
   if (result != FR_OK || read != 14) {
     f_close(&bmpFile);
     return 0;
@@ -106,25 +101,24 @@ uint16_t load1BitBMPHeader(const char * filename, uint16_t &w, uint16_t &h)
     f_close(&bmpFile);
     return 0;
   }
-  f_close(&bmpFile);
   return hsize;
 }
 
 uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
 {
-  uint16_t w, h, hsize;
+  uint8_t w, h, hsize;
   FIL bmpFile;
   UINT read;
   uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
   uint8_t * buf = &bmpBuf[0];
 
-  if(!(hsize =load1BitBMPHeader(filename, w, h)))
-    return 0;
-
   FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     return 0;
   }
+
+  if(!(hsize =load1BitBMPHeader(&bmpFile, w, h)))
+    return 0;
 
   if (f_lseek(&bmpFile, hsize) != FR_OK) {
     f_close(&bmpFile);
@@ -157,64 +151,4 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
   }
   f_close(&bmpFile);
   return 1;
-}
-
-uint8_t * lcdLoadBitmap(uint8_t * bmp, const char * filename, uint8_t width, uint8_t height)
-{
-  uint16_t w, h, hsize;
-  FIL bmpFile;
-  UINT read;
-  uint8_t bmpBuf[LCD_W]; /* maximum with LCD_W */
-  uint8_t * buf = &bmpBuf[0];
-
-  if(!(hsize =load1BitBMPHeader(filename, w, h)))
-    return 0;
-
-  FRESULT result = f_open(&bmpFile, filename, FA_OPEN_EXISTING | FA_READ);
-  if (result != FR_OK) {
-    return 0;
-  }
-  buf = &bmpBuf[0];
-
-  if (f_lseek(&bmpFile, hsize) != FR_OK) {
-    f_close(&bmpFile);
-    return NULL;
-  }
-
-  uint8_t * dest = bmp;
-
-  *dest++ = w;
-  *dest++ = h;
-
-  memset(dest, 0, BITMAP_BUFFER_SIZE(w, h) - 2);
-
-  uint8_t rowSize = (w + 7) / 8;
-  uint8_t padding;
-
-  if (((w % 32) == 0) || ((w % 32) > 24))
-   padding = 0;
-  else if ((w % 32) <= 8)
-   padding = 3;
-  else if ((w % 32) <= 16)
-   padding = 2;
-  else
-   padding = 1;
-
-  for (int8_t i=h-1; i>=0; i--) {
-    result = f_read(&bmpFile, buf, rowSize+padding, &read);
-    if (result != FR_OK || read != rowSize+padding) {
-      f_close(&bmpFile);
-      return NULL;
-    }
-
-    for (uint8_t j=0; j<w; j++) {
-      if (!(buf[j/8] & (1<<(7-(j%8))))) {
-        uint8_t *dst = dest + i / 8 * w + j;
-        *dst |= (0x01 << (i & 0x07));
-      }
-    }
-  }
-
-  f_close(&bmpFile);
-  return bmp;
 }
