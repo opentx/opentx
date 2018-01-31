@@ -52,14 +52,14 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
     internalStep *= 10;
   }
 
-  spinbox->setSingleStep(displayStep*internalStep);
+  spinbox->setSingleStep(displayStep * internalStep);
   spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
-  QHBoxLayout * horizontalLayout = new QHBoxLayout();
-  QCheckBox * gv = new QCheckBox(tr("GV"));
+  QHBoxLayout *horizontalLayout = new QHBoxLayout();
+  QCheckBox *gv = new QCheckBox(tr("GV"));
   gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
-  QComboBox * cb = new QComboBox();
+  QComboBox *cb = new QComboBox();
   cb->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
@@ -76,13 +76,13 @@ LimitsGroup::~LimitsGroup()
 void LimitsGroup::updateMinMax(int max)
 {
   if (spinbox->maximum() == 0) {
-    spinbox->setMinimum(-max*displayStep);
+    spinbox->setMinimum(-max * displayStep);
     if (value < -max) {
       value = -max;
     }
   }
   if (spinbox->minimum() == 0) {
-    spinbox->setMaximum(max*displayStep);
+    spinbox->setMaximum(max * displayStep);
     if (value > max) {
       value = max;
     }
@@ -108,7 +108,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     headerLabels << tr("PPM Center");
   if (firmware->getCapability(SYMLimits))
     headerLabels << tr("Linear Subtrim");
-  TableLayout * tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
+  TableLayout *tableLayout = new TableLayout(this, firmware->getCapability(LogicalSwitches), headerLabels);
 
   s1.report("header");
 
@@ -119,74 +119,75 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     QLabel *label = new QLabel(this);
     label->setText(tr("CH%1").arg(i+1));
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+    label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setMouseTracking(true);
+    connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(chn_customContextMenuRequested(QPoint)));
     tableLayout->addWidget(i, col++, label);
 
     // Channel name
     if (channelNameMaxLen > 0) {
-      QLineEdit * name = new QLineEdit(this);
-      name->setProperty("index", i);
-      name->setMaxLength(channelNameMaxLen);
+      name[i] = new QLineEdit(this);
+      name[i]->setProperty("index", i);
+      name[i]->setMaxLength(channelNameMaxLen);
       QRegExp rx(CHAR_FOR_NAMES_REGEX);
-      name->setValidator(new QRegExpValidator(rx, this));
-      name->setText(model.limitData[i].name);
-      connect(name, SIGNAL(editingFinished()), this, SLOT(nameEdited()));
-      tableLayout->addWidget(i, col++, name);
+      name[i]->setValidator(new QRegExpValidator(rx, this));
+      connect(name[i], SIGNAL(editingFinished()), this, SLOT(nameEdited()));
+      tableLayout->addWidget(i, col++, name[i]);
     }
 
     // Channel offset
-    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, this);
+    chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, this);
 
     // Channel min
-    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax()*10, 0, -1000, this);
+    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax()*10, 0, -1000, this);
 
     // Channel max
-    limitsGroups << new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax()*10, 1000, this);
+    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax()*10, 1000, this);
 
     // Channel inversion
-    QComboBox * invCB = new QComboBox(this);
-    invCB->insertItems(0, QStringList() << tr("---") << tr("INV"));
-    invCB->setProperty("index", i);
-    invCB->setCurrentIndex((model.limitData[i].revert) ? 1 : 0);
-    connect(invCB, SIGNAL(currentIndexChanged(int)), this, SLOT(invEdited()));
-    tableLayout->addWidget(i, col++, invCB);
+    invCB[i] = new QComboBox(this);
+    invCB[i]->insertItems(0, QStringList() << tr("---") << tr("INV"));
+    invCB[i]->setProperty("index", i);
+    connect(invCB[i], SIGNAL(currentIndexChanged(int)), this, SLOT(invEdited()));
+    tableLayout->addWidget(i, col++, invCB[i]);
 
     // Curve
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-      QComboBox * curveCB = new QComboBox(this);
-      curveCB->setProperty("index", i);
+      curveCB[i] = new QComboBox(this);
+      curveCB[i]->setProperty("index", i);
       int numcurves = firmware->getCapability(NumCurves);
       for (int j=-numcurves; j<=numcurves; j++) {
-        curveCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(&model, false), j);
+        curveCB[i]->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(&model, false), j);
       }
-      curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
-      connect(curveCB, SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
-      tableLayout->addWidget(i, col++, curveCB);
+      curveCB[i]->setCurrentIndex(model.limitData[i].curve.value+numcurves);
+      connect(curveCB[i], SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
+      tableLayout->addWidget(i, col++, curveCB[i]);
     }
 
     // PPM center
     int ppmCenterMax = firmware->getCapability(PPMCenter);
     if (ppmCenterMax) {
-      QSpinBox * center = new QSpinBox(this);
-      center->setProperty("index", i);
-      center->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
-      center->setSuffix("us");
-      center->setMinimum(1500-ppmCenterMax);
-      center->setMaximum(1500+ppmCenterMax);
-      center->setValue(1500);
-      center->setValue(model.limitData[i].ppmCenter + 1500);
-      connect(center, SIGNAL(editingFinished()), this, SLOT(ppmcenterEdited()));
-      tableLayout->addWidget(i, col++, center);
+      centerSB[i] = new QSpinBox(this);
+      centerSB[i]->setProperty("index", i);
+      centerSB[i]->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
+      centerSB[i]->setSuffix("us");
+      centerSB[i]->setMinimum(1500 - ppmCenterMax);
+      centerSB[i]->setMaximum(1500 + ppmCenterMax);
+      centerSB[i]->setValue(1500);
+      connect(centerSB[i], SIGNAL(editingFinished()), this, SLOT(ppmcenterEdited()));
+      tableLayout->addWidget(i, col++, centerSB[i]);
     }
 
     // Symetrical limits
     if (firmware->getCapability(SYMLimits)) {
-      QCheckBox * symlimits = new QCheckBox(this);
-      symlimits->setProperty("index", i);
-      symlimits->setChecked(model.limitData[i].symetrical);
-      connect(symlimits, SIGNAL(toggled(bool)), this, SLOT(symlimitsEdited()));
-      tableLayout->addWidget(i, col++, symlimits);
+      symlimitsChk[i] = new QCheckBox(this);
+      symlimitsChk[i]->setProperty("index", i);
+      symlimitsChk[i]->setChecked(model.limitData[i].symetrical);
+      connect(symlimitsChk[i], SIGNAL(toggled(bool)), this, SLOT(symlimitsEdited()));
+      tableLayout->addWidget(i, col++, symlimitsChk[i]);
     }
   }
+  update();
   s1.report("add elements");
 
   disableMouseScrolling();
@@ -197,17 +198,21 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
 
 Channels::~Channels()
 {
-  foreach(LimitsGroup *group, limitsGroups) {
-    delete group;
+  for (int i=0 ; i<CPN_MAX_CHNOUT; i++)
+    delete[] chnOffset:
+    delete[] chnMin;
+    delete[] chnMax;
   }
 }
 
 void Channels::symlimitsEdited()
 {
-  QCheckBox * ckb = qobject_cast<QCheckBox*>(sender());
-  int index = ckb->property("index").toInt();
-  model->limitData[index].symetrical = (ckb->checkState() ? 1 : 0);
-  emit modified();
+  if (!lock) {
+    QCheckBox *ckb = qobject_cast<QCheckBox*>(sender());
+    int index = ckb->property("index").toInt();
+    model->limitData[index].symetrical = (ckb->checkState() ? 1 : 0);
+    emit modified();
+  }
 }
 
 void Channels::nameEdited()
@@ -220,38 +225,131 @@ void Channels::nameEdited()
   }
 }
 
+/*
 void Channels::refreshExtendedLimits()
 {
   int channelMax = model->getChannelsMax();
 
-  foreach(LimitsGroup *group, limitsGroups) {
-    group->updateMinMax(10*channelMax);
+  for (int i=0 ; i<CPN_MAX_CHNOUT; i++)
+    chnOffset[i]->updateMinMax(10 * channelMax);
+    chnMin[i]->updateMinMax(10 * channelMax);
+    chnMax[i]->updateMinMax(10 * channelMax);
   }
-
   emit modified();
 }
+*/
 
 void Channels::invEdited()
 {
-  QComboBox *cb = qobject_cast<QComboBox*>(sender());
-  int index = cb->property("index").toInt();
-  model->limitData[index].revert = cb->currentIndex();
-  emit modified();
+  if (!lock) {
+    QComboBox *cb = qobject_cast<QComboBox*>(sender());
+    int index = cb->property("index").toInt();
+    model->limitData[index].revert = cb->currentIndex();
+    emit modified();
+  }
 }
 
 void Channels::curveEdited()
 {
-  QComboBox *cb = qobject_cast<QComboBox*>(sender());
-  int index = cb->property("index").toInt();
-  model->limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
-  emit modified();
+  if (!lock) {
+    QComboBox *cb = qobject_cast<QComboBox*>(sender());
+    int index = cb->property("index").toInt();
+    model->limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
+    emit modified();
+  }
 }
 
 void Channels::ppmcenterEdited()
 {
-  QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
-  int index = sb->property("index").toInt();
-  model->limitData[index].ppmCenter = sb->value() - 1500;
-  emit modified();
+  if (!lock) {
+    QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
+    int index = sb->property("index").toInt();
+    model->limitData[index].ppmCenter = sb->value() - 1500;
+    emit modified();
+  }
 }
 
+void Channels::update()
+{
+  for (int i=0; i<firmware->getCapability(Outputs); i++) {
+    updateLine(i);
+  }
+}
+
+void Channels::updateLine(int i)
+{
+  lock = true;
+  if (channelNameMaxLen > 0) {
+    name->setText(model.limitData[i].name);
+  }
+  chnOffset[i]->value = model.limitData[i].offset;
+  chnMin[i]->value =  model.limitData[i].min;
+  chnMax[i]->value =  model.limitData[i].max;
+  invCB->setCurrentIndex((model.limitData[i].revert) ? 1 : 0);
+  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+    curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
+  }
+  int ppmCenterMax = firmware->getCapability(PPMCenter);
+  if (ppmCenterMax) {
+    centerSB->setValue(model.limitData[i].ppmCenter + 1500);
+  }
+  if (firmware->getCapability(SYMLimits)) {
+    symlimitsChk->setChecked(model.limitData[i].symetrical);
+  }
+  lock = false;
+}
+
+void Channels::chnPaste()
+{
+  const QClipboard *clipboard = QApplication::clipboard();
+  const QMimeData *mimeData = clipboard->mimeData();
+  if (mimeData->hasFormat("application/x-companion-chn")) {
+    QByteArray chnData = mimeData->data("application/x-companion-chn");
+    limitData *chn = &model->limitData[selectedChannel];
+    memcpy(chn, chnData.constData(), sizeof(limitData));
+    emit modified();
+    updateLine(selectedChannel);
+  }
+}
+
+void Channels::chmDelete()
+{
+  model->limitData[selectedChannel].clear();
+  emit modified();
+  updateLine(selectedChannel);
+}
+
+void Channels::chnCopy()
+{
+  QByteArray chnData;
+  chnData.append((char*)&model->limitData[selectedChannel],sizeof(limitData));
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData("application/x-companion-chn", chnData);
+  QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
+}
+
+void Channels::chnCut()
+{
+  chnCopy();
+  chnDelete();
+}
+
+void Channels::chn_customContextMenuRequested(QPoint pos)
+{
+    QLabel *label = (QLabel *)sender();
+    selectedChannel = label->property("index").toInt();
+
+    QPoint globalPos = label->mapToGlobal(pos);
+
+    const QClipboard *clipboard = QApplication::clipboard();
+    const QMimeData *mimeData = clipboard->mimeData();
+    bool hasData = mimeData->hasFormat("application/x-companion-chn");
+
+    QMenu contextMenu;
+    contextMenu.addAction(CompanionIcon("copy.png"), tr("&Copy"),this,SLOT(chnCopy()));
+    contextMenu.addAction(CompanionIcon("cut.png"), tr("&Cut"),this,SLOT(chnCut()));
+    contextMenu.addAction(CompanionIcon("paste.png"), tr("&Paste"),this,SLOT(chnPaste()))->setEnabled(hasData);
+    contextMenu.addAction(CompanionIcon("clear.png"), tr("&Delete"),this,SLOT(chnDelete()));
+
+    contextMenu.exec(globalPos);
+}

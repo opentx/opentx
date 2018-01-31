@@ -33,16 +33,16 @@ class LimitsGroup
   Q_DECLARE_TR_FUNCTIONS(LimitsGroup)
 
   public:
-    LimitsGroup(Firmware * firmware, TableLayout *tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel=NULL);
+    LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel=NULL);
     ~LimitsGroup();
 
     void updateMinMax(int max);
 
   protected:
-    Firmware * firmware;
-    QDoubleSpinBox * spinbox;
-    GVarGroup * gvarGroup;
-    int & value;
+    Firmware *firmware;
+    QDoubleSpinBox *spinbox;
+    GVarGroup *gvarGroup;
+    int &value;
     double displayStep;
 };
 
@@ -51,14 +51,11 @@ class Channels : public ModelPanel
     Q_OBJECT
 
   public:
-    Channels(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~Channels();
 
-  private:
-    QVector<LimitsGroup *> limitsGroups;
-
   public slots:
-    void refreshExtendedLimits();
+    //void refreshExtendedLimits();
 
   private slots:
     void symlimitsEdited();
@@ -66,7 +63,24 @@ class Channels : public ModelPanel
     void invEdited();
     void curveEdited();
     void ppmcenterEdited();
+    void update();
+    void updateLine(int index);
+    void chnDelete();
+    void chnCopy();
+    void chnPaste();
+    void chnCut();
+    void chn_customContextMenuRequested(QPoint pos);
 
+  private:
+    QLineEdit *name[CPN_MAX_CHNOUT];
+    LimitsGroup *chnOffset[CPN_MAX_CHNOUT];
+    LimitsGroup *chnMin[CPN_MAX_CHNOUT];
+    LimitsGroup *chnMax[CPN_MAX_CHNOUT];
+    QComboBox *invCB[CPN_MAX_CHNOUT];
+    QComboBox *curveCB[CPN_MAX_CHNOUT];
+    QSpinBox *centerSB[CPN_MAX_CHNOUT];
+    QCheckBox *symlimitsChk[CPN_MAX_CHNOUT];
+    int selectedChannel;
 };
 
 #endif // _CHANNELS_H_
