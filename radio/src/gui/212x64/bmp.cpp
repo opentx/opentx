@@ -133,7 +133,6 @@ uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y )
   }
 
   uint32_t rowSize;
-  uint8_t b =0;
   switch (depth) {
     case 1:
       rowSize = (w + 7) / 8;

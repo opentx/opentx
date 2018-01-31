@@ -209,10 +209,10 @@ inline display_t getPixel(unsigned int x, unsigned int y)
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
 }
 
-inline display_t writePixel(coord_t x, coord_t y, uint8_t color)
+inline void writePixel(coord_t x, coord_t y, uint8_t color)
 {
   if (x>=LCD_W || y>=LCD_H) {
-    return 0;
+    return;
   }
 
   display_t * p = &displayBuf[y / 2 * LCD_W + x];
