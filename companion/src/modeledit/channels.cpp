@@ -73,6 +73,11 @@ LimitsGroup::~LimitsGroup()
   delete gvarGroup;
 }
 
+void LimitsGroup::setValue(int val)
+{
+  gvarGroup->setWeight(val);
+}
+
 void LimitsGroup::updateMinMax(int max)
 {
   if (spinbox->maximum() == 0) {
@@ -139,10 +144,10 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, this);
 
     // Channel min
-    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax()*10, 0, -1000, this);
+    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax() * 10, 0, -1000, this);
 
     // Channel max
-    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax()*10, 1000, this);
+    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax() * 10, 1000, this);
 
     // Channel inversion
     invCB[i] = new QComboBox(this);
@@ -198,10 +203,15 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
 
 Channels::~Channels()
 {
-  for (int i=0 ; i<CPN_MAX_CHNOUT; i++)
-    delete[] chnOffset:
-    delete[] chnMin;
-    delete[] chnMax;
+  for (int i=0; i<CPN_MAX_CHNOUT;i++) {
+    delete name[i];
+    delete chnOffset[i];
+    delete chnMin[i];
+    delete chnMax[i];
+    delete invCB[i];
+    delete curveCB[i];
+    delete centerSB[i];
+    delete symlimitsChk[i];
   }
 }
 
@@ -225,19 +235,17 @@ void Channels::nameEdited()
   }
 }
 
-/*
 void Channels::refreshExtendedLimits()
 {
   int channelMax = model->getChannelsMax();
 
-  for (int i=0 ; i<CPN_MAX_CHNOUT; i++)
+  for (int i=0 ; i<CPN_MAX_CHNOUT; i++) {
     chnOffset[i]->updateMinMax(10 * channelMax);
     chnMin[i]->updateMinMax(10 * channelMax);
     chnMax[i]->updateMinMax(10 * channelMax);
   }
   emit modified();
 }
-*/
 
 void Channels::invEdited()
 {
@@ -279,22 +287,21 @@ void Channels::update()
 void Channels::updateLine(int i)
 {
   lock = true;
-  if (channelNameMaxLen > 0) {
-    name->setText(model.limitData[i].name);
+  if (firmware->getCapability(ChannelsName) > 0) {
+    name[i]->setText(model->limitData[i].name);
   }
-  chnOffset[i]->value = model.limitData[i].offset;
-  chnMin[i]->value =  model.limitData[i].min;
-  chnMax[i]->value =  model.limitData[i].max;
-  invCB->setCurrentIndex((model.limitData[i].revert) ? 1 : 0);
+  chnOffset[i]->setValue(model->limitData[i].offset);
+  chnMin[i]->setValue(model->limitData[i].min);
+  chnMax[i]->setValue(model->limitData[i].max);
+  invCB[i]->setCurrentIndex((model->limitData[i].revert) ? 1 : 0);
   if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-    curveCB->setCurrentIndex(model.limitData[i].curve.value+numcurves);
+    curveCB[i]->setCurrentIndex(model->limitData[i].curve.value + firmware->getCapability(NumCurves));
   }
-  int ppmCenterMax = firmware->getCapability(PPMCenter);
-  if (ppmCenterMax) {
-    centerSB->setValue(model.limitData[i].ppmCenter + 1500);
+  if (firmware->getCapability(PPMCenter)) {
+    centerSB[i]->setValue(model->limitData[i].ppmCenter + 1500);
   }
   if (firmware->getCapability(SYMLimits)) {
-    symlimitsChk->setChecked(model.limitData[i].symetrical);
+    symlimitsChk[i]->setChecked(model->limitData[i].symetrical);
   }
   lock = false;
 }
@@ -305,14 +312,14 @@ void Channels::chnPaste()
   const QMimeData *mimeData = clipboard->mimeData();
   if (mimeData->hasFormat("application/x-companion-chn")) {
     QByteArray chnData = mimeData->data("application/x-companion-chn");
-    limitData *chn = &model->limitData[selectedChannel];
-    memcpy(chn, chnData.constData(), sizeof(limitData));
+    LimitData *chn = &model->limitData[selectedChannel];
+    memcpy(chn, chnData.constData(), sizeof(LimitData));
     emit modified();
     updateLine(selectedChannel);
   }
 }
 
-void Channels::chmDelete()
+void Channels::chnDelete()
 {
   model->limitData[selectedChannel].clear();
   emit modified();
@@ -322,7 +329,7 @@ void Channels::chmDelete()
 void Channels::chnCopy()
 {
   QByteArray chnData;
-  chnData.append((char*)&model->limitData[selectedChannel],sizeof(limitData));
+  chnData.append((char*)&model->limitData[selectedChannel],sizeof(LimitData));
   QMimeData *mimeData = new QMimeData;
   mimeData->setData("application/x-companion-chn", chnData);
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);

@@ -36,6 +36,7 @@ class LimitsGroup
     LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel=NULL);
     ~LimitsGroup();
 
+    void setValue(int val);
     void updateMinMax(int max);
 
   protected:
@@ -55,7 +56,7 @@ class Channels : public ModelPanel
     ~Channels();
 
   public slots:
-    //void refreshExtendedLimits();
+    void refreshExtendedLimits();
 
   private slots:
     void symlimitsEdited();
