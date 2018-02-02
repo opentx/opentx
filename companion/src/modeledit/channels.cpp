@@ -123,6 +123,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     // Channel label
     QLabel *label = new QLabel(this);
     label->setText(tr("CH%1").arg(i+1));
+    label->setProperty("index", i);
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setMouseTracking(true);
@@ -203,6 +204,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
 
 Channels::~Channels()
 {
+  // compiler warning if delete[]
   for (int i=0; i<CPN_MAX_CHNOUT;i++) {
     delete name[i];
     delete chnOffset[i];
@@ -314,16 +316,16 @@ void Channels::chnPaste()
     QByteArray chnData = mimeData->data("application/x-companion-chn");
     LimitData *chn = &model->limitData[selectedChannel];
     memcpy(chn, chnData.constData(), sizeof(LimitData));
-    emit modified();
     updateLine(selectedChannel);
+    emit modified();
   }
 }
 
 void Channels::chnDelete()
 {
   model->limitData[selectedChannel].clear();
-  emit modified();
   updateLine(selectedChannel);
+  emit modified();
 }
 
 void Channels::chnCopy()

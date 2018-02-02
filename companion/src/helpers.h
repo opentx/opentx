@@ -82,10 +82,10 @@ class GVarGroup: public QObject {
     QDoubleSpinBox *dsb;
     QComboBox *weightCB;
     int & weight;
-    double step;
     int deflt;
     int mini;
     int maxi;
+    double step;
     bool lock;
 };
 

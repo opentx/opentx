@@ -146,6 +146,9 @@ void GVarGroup::setWeight(int val)
     tval = deflt;
     weightGV->setChecked(true);
     weightSB->hide();
+    weightCB->setCurrentIndex(weightCB->findData(val));
+    if (weightCB->currentIndex() == -1)
+      weightCB->setCurrentIndex(getCurrentFirmware()->getCapability(Gvars));
     weightCB->show();
   }
   else {
