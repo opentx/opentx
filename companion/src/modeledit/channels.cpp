@@ -126,6 +126,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     label->setProperty("index", i);
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     label->setContextMenuPolicy(Qt::CustomContextMenu);
+    label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(chn_customContextMenuRequested(QPoint)));
     tableLayout->addWidget(i, col++, label);
