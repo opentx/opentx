@@ -4343,7 +4343,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1174"/>
         <source>RSSI Poweroff Warning</source>
-        <translation>Désactiver avertissement RSSI</translation>
+        <translation>Vérifier RSSI sur arrêt radio</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2023"/>
