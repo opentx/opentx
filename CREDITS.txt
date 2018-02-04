@@ -1363,3 +1363,4 @@ Jean Mathieu
 Barry Andersen
 James Vincent
 Baker Hart
+Thomas Voth
