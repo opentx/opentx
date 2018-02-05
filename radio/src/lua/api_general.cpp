@@ -917,6 +917,7 @@ static int luaGetGeneralSettings(lua_State * L)
   lua_pushtablenumber(L, "battMax", (120+g_eeGeneral.vBatMax) * 0.1f);
   lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
   lua_pushtablestring(L, "language", TRANSLATIONS);
+  lua_pushtablestring(L, "voice", currentLanguagePack->id);
   lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer);
   return 1;
 }
