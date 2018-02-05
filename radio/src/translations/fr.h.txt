@@ -732,7 +732,7 @@
 #define TR_INACTIVITYALARM             INDENT "Inactivité"
 #define TR_MEMORYWARNING               INDENT "Mémoire pleine"
 #define TR_ALARMWARNING                TR(INDENT "Silence", INDENT "Sons désactivés")
-#define TR_RSSISHUTDOWNALARM           TR(INDENT "Rssi extinction", INDENT "Véfif Rssi à l'extinction")
+#define TR_RSSISHUTDOWNALARM           TR(INDENT "Rssi extinction", INDENT "Vérif Rssi à l'extinction")
 #define TR_MODEL_STILL_POWERED         "Modèle encore allumé"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Presser [Enter] pour confirmer"
 #define TR_RENAVIG                     "Navig EncRot"
