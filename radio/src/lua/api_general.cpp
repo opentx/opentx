@@ -903,9 +903,10 @@ Returns (some of) the general radio settings
  IMPERIAL units
  * `language` (string) radio language (used for menus)
  * `voice` (string) voice language (used for speech)
+ * `gtimer` (number) radio global timer in seconds (does not include current session)
 
 @status current Introduced in 2.0.6, `imperial` added in TODO,
-`language` and `voice` added in 2.2.0.
+`language` and `voice` added in 2.2.0, gtimer added in 2.2.2.
 
 */
 static int luaGetGeneralSettings(lua_State * L)
@@ -916,7 +917,7 @@ static int luaGetGeneralSettings(lua_State * L)
   lua_pushtablenumber(L, "battMax", (120+g_eeGeneral.vBatMax) * 0.1f);
   lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
   lua_pushtablestring(L, "language", TRANSLATIONS);
-  lua_pushtablestring(L, "voice", currentLanguagePack->id);
+  lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer);
   return 1;
 }
 
@@ -1258,6 +1259,20 @@ static int luaGetUsage(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function resetGlobalTimer()
+
+Resets the radio global timer to 0.
+
+@status current Introduced in 2.2.2
+*/
+static int luaResetGlobalTimer(lua_State * L)
+{
+  g_eeGeneral.globalTimer = 0;
+  storageDirty(EE_GENERAL);
+  return 0;
+}
+
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
@@ -1285,6 +1300,7 @@ const luaL_Reg opentxLib[] = {
   { "killEvents", luaKillEvents },
   { "loadScript", luaLoadScript },
   { "getUsage", luaGetUsage },
+  { "resetGlobalTimer", luaResetGlobalTimer },
 #if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
