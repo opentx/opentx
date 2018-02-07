@@ -19,100 +19,7 @@
  */
 
 #include "opentx.h"
-
-void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags)
-{
-  FlightModeData * fm = &g_model.flightModeData[flightMode];
-  gvar_t & v = fm->gvars[gvar];
-  int16_t vmin, vmax;
-  if (v > GVAR_MAX) {
-    uint8_t fm = v - GVAR_MAX - 1;
-    if (fm >= flightMode) fm++;
-    drawFlightMode(x, y, fm + 1, flags&(~LEFT));
-    vmin = GVAR_MAX + 1;
-    vmax = GVAR_MAX + MAX_FLIGHT_MODES - 1;
-  }
-  else {
-    drawGVarValue(x, y, gvar, v, flags);
-    vmin = GVAR_MIN + g_model.gvars[gvar].min;
-    vmax = GVAR_MAX - g_model.gvars[gvar].max;
-  }
-
-  if (flags & INVERS) {
-    if (event == EVT_KEY_LONG(KEY_ENTER) && flightMode > 0) {
-      v = (v > GVAR_MAX ? 0 : GVAR_MAX+1);
-      storageDirty(EE_MODEL);
-    }
-    else if (s_editMode > 0) {
-      v = checkIncDec(event, v, vmin, vmax, EE_MODEL);
-    }
-  }
-}
-
-enum GVarFields {
-  GVAR_FIELD_NAME,
-  GVAR_FIELD_UNIT,
-  GVAR_FIELD_PREC,
-  GVAR_FIELD_MIN,
-  GVAR_FIELD_MAX,
-  GVAR_FIELD_POPUP,
-  GVAR_FIELD_FM0,
-  GVAR_FIELD_LAST=GVAR_FIELD_FM0+MAX_FLIGHT_MODES
-};
-
-#define GVAR_2ND_COLUMN                (12*FW)
-
-void menuModelGVarOne(event_t event)
-{
-  GVarData * gvar = &g_model.gvars[s_currIdx];
-
-  drawStringWithIndex(PSIZE(TR_GVARS)*FW+FW, 0, STR_GV, s_currIdx+1, 0);
-  drawGVarValue(32*FW, 0, s_currIdx, getGVarValue(s_currIdx, getFlightMode()));
-  lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID);
-
-  SIMPLE_SUBMENU(STR_GVARS, GVAR_FIELD_LAST);
-
-  for (int i=0; i<NUM_BODY_LINES; i++) {
-    coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
-    int k = i + menuVerticalOffset;
-    LcdFlags attr = (menuVerticalPosition == k ? (s_editMode > 0 ? BLINK | INVERS : INVERS) : 0);
-
-    switch (k) {
-      case GVAR_FIELD_NAME:
-        editSingleName(GVAR_2ND_COLUMN, y, STR_NAME, gvar->name, LEN_GVAR_NAME, event, attr);
-        break;
-
-      case GVAR_FIELD_UNIT:
-        gvar->unit = editChoice(GVAR_2ND_COLUMN, y, STR_UNIT, "\001-%", gvar->unit, 0, 1, attr, event);
-        break;
-
-      case GVAR_FIELD_PREC:
-        gvar->prec = editChoice(GVAR_2ND_COLUMN, y, STR_PRECISION, STR_VPREC, gvar->prec, 0, 1, attr, event);
-        break;
-
-      case GVAR_FIELD_MIN:
-        lcdDrawText(0, y, STR_MIN);
-        drawGVarValue(GVAR_2ND_COLUMN, y, s_currIdx, GVAR_MIN+gvar->min, LEFT|attr);
-        if (attr) gvar->min = checkIncDec(event, GVAR_MIN+gvar->min, GVAR_MIN, GVAR_MAX-gvar->max, EE_MODEL) - GVAR_MIN;
-        break;
-
-      case GVAR_FIELD_MAX:
-        lcdDrawText(0, y, STR_MAX);
-        drawGVarValue(GVAR_2ND_COLUMN, y, s_currIdx, GVAR_MAX-gvar->max, LEFT|attr);
-        if (attr) gvar->max = GVAR_MAX - checkIncDec(event, GVAR_MAX-gvar->max, GVAR_MIN+gvar->min, GVAR_MAX, EE_MODEL);
-        break;
-
-      case GVAR_FIELD_POPUP:
-        ON_OFF_MENU_ITEM(gvar->popup, GVAR_2ND_COLUMN, y, STR_POPUP, attr, event);
-        break;
-
-      default:
-        drawStringWithIndex(0, y, STR_FP, k-GVAR_FIELD_FM0);
-        editGVarValue(GVAR_2ND_COLUMN, y, event, s_currIdx, k-GVAR_FIELD_FM0, LEFT|attr);
-        break;
-    }
-  }
-}
+extern void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags);
 
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
 {
@@ -296,23 +203,22 @@ void menuModelFlightModeOne(event_t event)
         if (attr && posHorz > 0 && s_currIdx==0) posHorz++;
 
         drawStringWithIndex(INDENT_WIDTH, y, STR_GV, idx+1, posHorz==0 ? attr : 0);
-        lcdDrawText(4*FW, y,g_model.gvars[idx].name);
+        lcdDrawSizedText(4*FW, y,g_model.gvars[idx].name, LEN_GVAR_NAME, ZCHAR);
 
         if (attr && editMode>0 && posHorz==0) {
           s_currIdx = sub - ITEM_MODEL_FLIGHT_MODE_GV1;
+          editMode = 0;
           pushMenu(menuModelGVarOne);
         }
-
-        //editName(4*FW, y, g_model.gvars[idx].name, LEN_GVAR_NAME, event, posHorz==0 ? attr : 0);
 
         int16_t v = fm->gvars[idx];
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
           if (p >= s_currIdx) p++;
-          drawFlightMode(10*FW, y, p+1, posHorz==1 ? attr : 0);
+          drawFlightMode(9*FW, y, p+1, posHorz==1 ? attr : 0);
         }
         else {
-          lcdDrawText(10*FW, y, STR_OWN, posHorz==1 ? attr : 0);
+          lcdDrawText(9*FW, y, STR_OWN, posHorz==1 ? attr : 0);
         }
         if (attr && s_currIdx>0 && posHorz==1 && (editMode>0 || p1valdiff)) {
           if (v < GVAR_MAX) v = GVAR_MAX;
@@ -322,13 +228,7 @@ void menuModelFlightModeOne(event_t event)
             fm->gvars[idx] = v;
           }
         }
-
-        uint8_t p = getGVarFlightMode(s_currIdx, idx);
-        lcdDrawNumber(18*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
-        if (attr && posHorz==2 && ((editMode>0) || p1valdiff)) {
-          GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -500, 500, EE_MODEL);
-        }
-
+        editGVarValue(17*FW, y, event, idx, getGVarFlightMode(s_currIdx, idx), posHorz==2 ? attr : 0);
         break;
       }
 #endif

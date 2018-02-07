@@ -148,6 +148,7 @@ void menuModelTelemetryFrsky(event_t event);
 void menuModelTelemetryMavlink(event_t event);
 void menuModelDisplay(event_t event);
 void menuModelTemplates(event_t event);
+void menuModelGVarOne(event_t event);
 
 static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   menuModelSelect,
