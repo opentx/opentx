@@ -106,7 +106,7 @@ void menuModelFlightModeOne(event_t event)
 
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #else
-  SUBMENU(STR_MENUFLIGHTMODE, 3 + (s_currIdx==0 ? 0 : 2 + (bool)NUM_ROTARY_ENCODERS), {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) NAVIGATION_LINE_BY_LINE|0/*, 0*/});
+  SUBMENU(STR_MENUFLIGHTMODE, 3 + (s_currIdx==0 ? 0 : 2 + (bool)NUM_ROTARY_ENCODERS), {0, 0, 3, IF_ROTARY_ENCODERS(NUM_ROTARY_ENCODERS-1) 0/*, 0*/});
   #define PHASE_ONE_FIRST_LINE (1+1*FH)
 #endif
 
