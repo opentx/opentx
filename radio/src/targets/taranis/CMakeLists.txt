@@ -89,6 +89,7 @@ elseif(PCB STREQUAL XLITE)
   set(BITMAPS_TARGET 9x_bitmaps)
   set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
+  set(GVAR_SCREEN model_gvars.cpp)
 endif()
 
 if(PCB STREQUAL XLITE)

@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-extern void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags);
 
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
 {
@@ -203,14 +202,16 @@ void menuModelFlightModeOne(event_t event)
         if (attr && posHorz > 0 && s_currIdx==0) posHorz++;
 
         drawStringWithIndex(INDENT_WIDTH, y, STR_GV, idx+1, posHorz==0 ? attr : 0);
+#if defined(CPUARM)
         lcdDrawSizedText(4*FW, y,g_model.gvars[idx].name, LEN_GVAR_NAME, ZCHAR);
-
         if (attr && editMode>0 && posHorz==0) {
           s_currIdx = sub - ITEM_MODEL_FLIGHT_MODE_GV1;
           editMode = 0;
           pushMenu(menuModelGVarOne);
         }
-
+#else
+        editName(4*FW, y, g_model.gvars[idx].name, LEN_GVAR_NAME, event, posHorz==0 ? attr : 0);
+#endif
         int16_t v = fm->gvars[idx];
         if (v > GVAR_MAX) {
           uint8_t p = v - GVAR_MAX - 1;
@@ -228,7 +229,15 @@ void menuModelFlightModeOne(event_t event)
             fm->gvars[idx] = v;
           }
         }
+#if defined(CPUARM)
         editGVarValue(17*FW, y, event, idx, getGVarFlightMode(s_currIdx, idx), posHorz==2 ? attr : 0);
+#else
+        uint8_t p = getGVarFlightMode(s_currIdx, idx);
+        lcdDrawNumber(18*FW, y, GVAR_VALUE(idx, p), posHorz==2 ? attr : 0);
+        if (attr && posHorz==2 && ((editMode>0) || p1valdiff)) {
+          GVAR_VALUE(idx, p) = checkIncDec(event, GVAR_VALUE(idx, p), -500, 500, EE_MODEL);
+        }
+#endif
         break;
       }
 #endif

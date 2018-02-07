@@ -70,6 +70,7 @@ set(GUI_SRC
   model_input_edit.cpp
   model_mix_edit.cpp
   model_display.cpp
+  model_gvars.cpp
   radio_diagkeys.cpp
   radio_diaganas.cpp
   radio_hardware.cpp
