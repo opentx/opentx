@@ -143,6 +143,7 @@ local function refreshNext()
         local field = fields[refreshIndex + 1]
         if fieldId == field[3] then
           local value = math.floor(value / 256)
+          value =  bit32.band(value, 0xffff)
           if field[3] >= 0x9E and field[3] <= 0xA0 then
             local b1 = value % 256
             local b2 = math.floor(value / 256)
