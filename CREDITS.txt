@@ -1366,3 +1366,4 @@ Baker Hart
 Thomas Voth
 Michael Kiefer
 Ronald Dalton
+Thierry Laligand
