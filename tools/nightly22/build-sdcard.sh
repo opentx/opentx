@@ -28,14 +28,14 @@ else
   cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
   # Request sound pack generation
-  python3 -B ${workdir}/code/tools/nightly22/tts.py en csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py fr csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py es csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py it csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py de csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py cz csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py pt csv files
-  python3 -B ${workdir}/code/tools/nightly22/tts.py ru csv psv files
+  ${workdir}/code/tools/nightly22/tts.py en csv files
+  ${workdir}/code/tools/nightly22/tts.py fr csv files
+  ${workdir}/code/tools/nightly22/tts.py es csv files
+  ${workdir}/code/tools/nightly22/tts.py it csv files
+  ${workdir}/code/tools/nightly22/tts.py de csv files
+  ${workdir}/code/tools/nightly22/tts.py cz csv files
+  ${workdir}/code/tools/nightly22/tts.py pt csv files
+  ${workdir}/code/tools/nightly22/tts.py ru csv psv files
 
   # Create sdcards.zips for supported platforms
   mv /tmp/SOUNDS ${workdir}/sdcard/horus/

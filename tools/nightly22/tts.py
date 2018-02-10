@@ -23,6 +23,9 @@ from gtts import gTTS
 from tts_common import *
 board = "taranis"
 
+reload(sys)
+sys.setdefaultencoding('utf8')
+
 SOURCE_DIRECTORY = os.path.dirname(os.path.realpath(__file__))
 lib_path = os.path.abspath(os.path.join(SOURCE_DIRECTORY, '..', '..', 'radio', 'util'))
 sys.path.append(lib_path)
