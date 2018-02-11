@@ -69,7 +69,9 @@ void TimerWidget::refresh()
     if (ZLEN(timerData.name) > 0) {
       lcdDrawSizedText(zone.x + 78, zone.y + 20, timerData.name, LEN_TIMER_NAME, ZCHAR | SMLSIZE | TEXT_COLOR);
     }
-    drawStringWithIndex(zone.x + 137, zone.y + 17, "TMR", index + 1, SMLSIZE | TEXT_COLOR);
+    else {
+      drawStringWithIndex(zone.x + 137, zone.y + 17, "TMR", index + 1, SMLSIZE | TEXT_COLOR);
+    }
   }
   else {
     if (timerState.val < 0 && timerState.val % 2) {
