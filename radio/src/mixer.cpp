@@ -644,7 +644,7 @@ int getStickTrimValue(int stick, int stickValue)
     return 0;
 
   int trim = trims[stick];
-  if (stick == THR_STICK) {
+  if (stick == virtualInputsTrims[THR_STICK]) {
     if (g_model.thrTrim) {
       int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
       trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-stickValue)) >> (RESX_SHIFT+1);
@@ -1101,7 +1101,7 @@ uint8_t   flightModeTransitionLast = 255;
 
 void evalMixes(uint8_t tick10ms)
 {
-  int32_t sum_chans512[MAX_OUTPUT_CHANNELS]; 
+  int32_t sum_chans512[MAX_OUTPUT_CHANNELS];
 #if defined(PCBMEGA2560) && defined(DEBUG) && !defined(VOICE)
   PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
 #endif
