@@ -546,7 +546,7 @@
 #define TR_VTRAINER_SLAVE_JACK         "Žák/Jack\0         "
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Učitel/SBUS Modul\0"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Učitel/CPPM Modul\0"
-#define TR_VTRAINER_MASTER_BATTERY     "Učitel/Bat. slot\0 "
+#define TR_VTRAINER_MASTER_BATTERY     "Učitel/Serial\0    "
 #define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
 
 #define LEN_VFAILSAFE          "\012"
