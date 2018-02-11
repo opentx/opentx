@@ -429,6 +429,30 @@ static int luaOpenBitmap(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function Bitmap.openMaskOnBackground(name)
+
+Uses a mask to generate a bitmap to load into memory, for use later with
+lcd.drawBitmap(). Masks should only be generated once, just like bitmaps, and
+each needed version stored for later use in memory.
+
+Mask loading can fail if:
+ * File is not found or contains invalid image
+ * System is low on memory
+ * Combined memory usage of all Lua script bitmaps exceeds certain value
+
+@param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
+
+@param foreground (unsigned number) a color flag for the foreground color
+
+@param background (unsigned number) a color flag for the background color
+
+@retval bitmap (object) a bitmap object that can be used with other bitmap functions
+
+@notice Only available on Horus
+
+@status current Introduced in 2.2.2
+*/
 static int luaOpenMaskOnBackground(lua_State * L)
 {
   const char * filename = luaL_checkstring(L, 1);
@@ -888,6 +912,15 @@ static int luaRGB(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function lcd.drawTopbarDatetime()
+
+Draws the status bar in the upper right corner of the screen.
+
+@notice Only available on Horus
+
+@status current Introduced in 2.2.2
+*/
 static int luaLcdDrawTopbarDatetime(lua_State *L) {
   if (!luaLcdAllowed) return 0;
   drawTopbarDatetime();
