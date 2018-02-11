@@ -34,17 +34,22 @@ extern int custom_lua_atpanic(lua_State *L);
 #define LUA_WIDGET_FILENAME                "/main.lua"
 #define LUA_FULLPATH_MAXLEN                (LEN_FILE_PATH_MAX + LEN_SCRIPT_FILENAME + LEN_FILE_EXTENSION_MAX)  // max length (example: /SCRIPTS/THEMES/mytheme.lua)
 
-void exec(int function, int nresults=0)
+void prep_exec(int function)
 {
   if (lsWidgets == 0) return;
 
   if (function) {
     luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
     lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, function);
-    if (lua_pcall(lsWidgets, 0, nresults, 0) != 0) {
-      TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
-      // TODO disable theme - revert back to default theme???
-    }
+  }
+}
+
+void exec(int nparameters=0, int nresults=0)
+{
+  if (lsWidgets == 0) return;
+  if (lua_pcall(lsWidgets, nparameters, nresults, 0) != 0) {
+    TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
+    // TODO disable theme - revert back to default theme???
   }
 }
 
@@ -175,47 +180,33 @@ class LuaTheme: public Theme
     virtual void load() const
     {
       luaLcdAllowed = true;
-      exec(loadFunction);
+      prep_exec(loadFunction);
+      exec();
     }
 
     virtual void drawBackground() const
     {
       luaLcdAllowed = true;
-      exec(drawBackgroundFunction);
+      prep_exec(drawBackgroundFunction);
+      exec();
     }
 
     virtual void drawTopbarBackground(uint8_t icon) const
     {
       luaLcdAllowed = true;
-      if (lsWidgets == 0) return;
-
-      if (drawTopbarBackgroundFunction) {
-        luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
-        lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, drawTopbarBackgroundFunction);
-        lua_pushnumber(lsWidgets, icon);
-        if (lua_pcall(lsWidgets, 1, 0, 0) != 0) {
-          TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
-          // TODO disable theme - revert back to default theme???
-        }
-      }
+      prep_exec(drawTopbarBackgroundFunction);
+      lua_pushnumber(lsWidgets, icon);
+      exec(1);
     }
 
     virtual void drawMenuIcon(uint8_t index, uint8_t position, bool selected) const
     {
       luaLcdAllowed = true;
-      if (lsWidgets == 0) return;
-
-      if (drawMenuIconFunction) {
-        luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
-        lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, drawMenuIconFunction);
-        lua_pushnumber(lsWidgets, index);
-        lua_pushnumber(lsWidgets, position);
-        lua_pushboolean(lsWidgets, selected);
-        if (lua_pcall(lsWidgets, 3, 0, 0) != 0) {
-          TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
-          // TODO disable theme - revert back to default theme???
-        }
-      }
+      prep_exec(drawMenuIconFunction);
+      lua_pushnumber(lsWidgets, index);
+      lua_pushnumber(lsWidgets, position);
+      lua_pushboolean(lsWidgets, selected);
+      exec(3);
     }
 
 #if 0
