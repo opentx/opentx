@@ -429,6 +429,39 @@ static int luaOpenBitmap(lua_State * L)
   return 1;
 }
 
+static int luaOpenMaskOnBackground(lua_State * L)
+{
+  const char * filename = luaL_checkstring(L, 1);
+  const LcdFlags foreground = luaL_checkunsigned(L, 2);
+  const LcdFlags background = luaL_checkunsigned(L, 3);
+
+  BitmapBuffer ** b = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
+
+  if (luaExtraMemoryUsage > LUA_MEM_EXTRA_MAX) {
+    // already allocated more than max allowed, fail
+    TRACE("luaOpenBitmapMask: Error, using too much memory %u/%u", luaExtraMemoryUsage, LUA_MEM_EXTRA_MAX);
+    *b = 0;
+  }
+  else {
+    *b = BitmapBuffer::loadMaskOnBackground(filename, foreground, background);
+    if (*b == NULL && G(L)->gcrunning) {
+      luaC_fullgc(L, 1);  /* try to free some memory... */
+      *b = BitmapBuffer::loadMaskOnBackground(filename, foreground, background);  /* try again */
+    }
+  }
+
+  if (*b) {
+    uint32_t size = (*b)->getDataSize();
+    luaExtraMemoryUsage += size;
+    TRACE("luaOpenBitmapMask: %p (%u)", *b, size);
+  }
+
+  luaL_getmetatable(L, LUA_BITMAPHANDLE);
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
 static BitmapBuffer * checkBitmap(lua_State * L, int index)
 {
   BitmapBuffer ** b = (BitmapBuffer **)luaL_checkudata(L, index, LUA_BITMAPHANDLE);
@@ -483,6 +516,7 @@ static int luaDestroyBitmap(lua_State * L)
 
 const luaL_Reg bitmapFuncs[] = {
   { "open", luaOpenBitmap },
+  { "openMaskOnBackground", luaOpenMaskOnBackground },
   { "getSize", luaGetBitmapSize },
   { "__gc", luaDestroyBitmap },
   { NULL, NULL }
@@ -853,6 +887,12 @@ static int luaRGB(lua_State *L)
   lua_pushinteger(L, RGB(r, g, b));
   return 1;
 }
+
+static int luaLcdDrawTopbarDatetime(lua_State *L) {
+  if (!luaLcdAllowed) return 0;
+  drawTopbarDatetime();
+  return 1;
+}
 #endif
 
 const luaL_Reg lcdLib[] = {
@@ -872,6 +912,7 @@ const luaL_Reg lcdLib[] = {
 #if defined(COLORLCD)
   { "drawBitmap", luaLcdDrawBitmap },
   { "setColor", luaLcdSetColor },
+  { "drawTopbarDatetime", luaLcdDrawTopbarDatetime },
   { "RGB", luaRGB },
 #else
   { "getLastPos", luaLcdGetLastPos },

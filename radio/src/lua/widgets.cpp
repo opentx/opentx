@@ -167,6 +167,7 @@ class LuaTheme: public Theme
       loadFunction(0),
       drawBackgroundFunction(0),
       drawTopbarBackgroundFunction(0),
+      drawMenuIconFunction(0),
       drawAlertBoxFunction(0)
     {
     }
@@ -179,12 +180,42 @@ class LuaTheme: public Theme
 
     virtual void drawBackground() const
     {
+      luaLcdAllowed = true;
       exec(drawBackgroundFunction);
     }
 
     virtual void drawTopbarBackground(uint8_t icon) const
     {
-      exec(drawTopbarBackgroundFunction);
+      luaLcdAllowed = true;
+      if (lsWidgets == 0) return;
+
+      if (drawTopbarBackgroundFunction) {
+        luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
+        lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, drawTopbarBackgroundFunction);
+        lua_pushnumber(lsWidgets, icon);
+        if (lua_pcall(lsWidgets, 1, 0, 0) != 0) {
+          TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
+          // TODO disable theme - revert back to default theme???
+        }
+      }
+    }
+
+    virtual void drawMenuIcon(uint8_t index, uint8_t position, bool selected) const
+    {
+      luaLcdAllowed = true;
+      if (lsWidgets == 0) return;
+
+      if (drawMenuIconFunction) {
+        luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
+        lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, drawMenuIconFunction);
+        lua_pushnumber(lsWidgets, index);
+        lua_pushnumber(lsWidgets, position);
+        lua_pushboolean(lsWidgets, selected);
+        if (lua_pcall(lsWidgets, 3, 0, 0) != 0) {
+          TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
+          // TODO disable theme - revert back to default theme???
+        }
+      }
     }
 
 #if 0
@@ -198,6 +229,7 @@ class LuaTheme: public Theme
     int loadFunction;
     int drawBackgroundFunction;
     int drawTopbarBackgroundFunction;
+    int drawMenuIconFunction;
     int drawAlertBoxFunction;
 };
 
@@ -205,7 +237,7 @@ void luaLoadThemeCallback()
 {
   TRACE("luaLoadThemeCallback()");
   const char * name=NULL;
-  int themeOptions=0, loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
+  int themeOptions=0, loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0, drawMenuIconFunction=0;
 
   luaL_checktype(lsWidgets, -1, LUA_TTABLE);
 
@@ -230,6 +262,10 @@ void luaLoadThemeCallback()
       drawTopbarBackgroundFunction = luaL_ref(lsWidgets, LUA_REGISTRYINDEX);
       lua_pushnil(lsWidgets);
     }
+    else if (!strcmp(key, "drawMenuIcon")) {
+      drawMenuIconFunction = luaL_ref(lsWidgets, LUA_REGISTRYINDEX);
+      lua_pushnil(lsWidgets);
+    }
   }
 
   if (name) {
@@ -243,6 +279,7 @@ void luaLoadThemeCallback()
     theme->loadFunction = loadFunction;
     theme->drawBackgroundFunction = drawBackgroundFunction;
     theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;   // NOSONAR
+    theme->drawMenuIconFunction = drawMenuIconFunction;
     TRACE("Loaded Lua theme %s", name);
   }
 }
