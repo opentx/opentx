@@ -486,6 +486,55 @@ static int luaOpenMaskOnBackground(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function Bitmap.loadMask(name)
+
+Loads a mask into memory.
+
+Mask loading can fail if:
+ * File is not found or contains invalid image
+ * System is low on memory
+ * Combined memory usage of all Lua script bitmaps exceeds certain value
+
+@param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
+
+@retval bitmap (object) a bitmap object representing the mask
+
+@notice Only available on Horus
+
+@status current Introduced in 2.2.2
+*/
+static int luaBitmapLoadMask(lua_State * L)
+{
+  const char * filename = luaL_checkstring(L, 1);
+
+  BitmapBuffer ** b = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
+
+  if (luaExtraMemoryUsage > LUA_MEM_EXTRA_MAX) {
+    // already allocated more than max allowed, fail
+    TRACE("luaOpenBitmap: Error, using too much memory %u/%u", luaExtraMemoryUsage, LUA_MEM_EXTRA_MAX);
+    *b = 0;
+  }
+  else {
+    *b = BitmapBuffer::loadMask(filename);
+    if (*b == NULL && G(L)->gcrunning) {
+      luaC_fullgc(L, 1);  /* try to free some memory... */
+      *b = BitmapBuffer::loadMask(filename);  /* try again */
+    }
+  }
+
+  if (*b) {
+    uint32_t size = (*b)->getDataSize();
+    luaExtraMemoryUsage += size;
+    TRACE("luaOpenBitmap: %p (%u)", *b, size);
+  }
+
+  luaL_getmetatable(L, LUA_BITMAPHANDLE);
+  lua_setmetatable(L, -2);
+
+  return 1;
+}
+
 static BitmapBuffer * checkBitmap(lua_State * L, int index)
 {
   BitmapBuffer ** b = (BitmapBuffer **)luaL_checkudata(L, index, LUA_BITMAPHANDLE);
@@ -538,10 +587,71 @@ static int luaDestroyBitmap(lua_State * L)
   return 0;
 }
 
+
+/*luadoc
+@function Bitmap.composite(name)
+
+Return width, height of a bitmap object
+
+@param base (pointer) point to a bitmap previously opened with Bitmap.open()
+
+@param addition (pointer) point to bitmap to composite on base.
+
+@param x (number) offset in x to apply. Defaults to 0.
+
+@param y (number) offset in y to apply. Defaults to 0.
+
+@retval returns composited bitmap
+
+@notice Only available on Horus
+
+@status current Introduced in 2.2.2
+*/
+static int luaBitmapComposite (lua_State * L) {
+  const BitmapBuffer * base = checkBitmap(L, 1);
+  const BitmapBuffer * add = checkBitmap(L, 2);
+  const unsigned x = luaL_optunsigned(L, 3, 0);
+  const unsigned y = luaL_optunsigned(L, 4, 0);
+
+  if(!base || !add) {
+    return 0;
+  }
+
+  BitmapBuffer ** b = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
+
+
+  if (luaExtraMemoryUsage > LUA_MEM_EXTRA_MAX) {
+    // already allocated more than max allowed, fail
+    TRACE("luaOpenBitmapMask: Error, using too much memory %u/%u", luaExtraMemoryUsage, LUA_MEM_EXTRA_MAX);
+    *b = 0;
+  }
+  else {
+    *b = new BitmapBuffer(BMP_RGB565, base->getWidth(), base->getHeight());
+    if (*b == NULL && G(L)->gcrunning) {
+      luaC_fullgc(L, 1);  /* try to free some memory... */
+      *b = new BitmapBuffer(BMP_RGB565, base->getWidth(), base->getHeight());  /* try again */
+    }
+    (*b)->drawBitmap(0, 0, base);
+    (*b)->drawBitmap(x, y, add);
+  }
+
+  if (*b) {
+    uint32_t size = (*b)->getDataSize();
+    luaExtraMemoryUsage += size;
+    TRACE("luaOpenBitmapMask: %p (%u)", *b, size);
+  }
+
+  luaL_getmetatable(L, LUA_BITMAPHANDLE);
+  lua_setmetatable(L, -2);
+  return 1;
+}
+
 const luaL_Reg bitmapFuncs[] = {
   { "open", luaOpenBitmap },
   { "openMaskOnBackground", luaOpenMaskOnBackground },
+  { "loadMask", luaBitmapLoadMask },
   { "getSize", luaGetBitmapSize },
+  { "composite", luaBitmapComposite },
   { "__gc", luaDestroyBitmap },
   { NULL, NULL }
 };
@@ -921,11 +1031,13 @@ Draws the status bar in the upper right corner of the screen.
 
 @status current Introduced in 2.2.2
 */
-static int luaLcdDrawTopbarDatetime(lua_State *L) {
+static int luaLcdDrawTopbarDatetime(lua_State *L)
+{
   if (!luaLcdAllowed) return 0;
   drawTopbarDatetime();
   return 1;
 }
+
 #endif
 
 const luaL_Reg lcdLib[] = {
