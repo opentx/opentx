@@ -37,7 +37,6 @@ extern int custom_lua_atpanic(lua_State *L);
 void prep_exec(int function)
 {
   if (lsWidgets == 0) return;
-
   if (function) {
     luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
     lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, function);
@@ -290,7 +289,8 @@ class LuaTheme: public Theme
     int drawAlertBoxFunction;
 
 private:
-    BitmapBuffer * getLuaBitmapBuffer (const char * name) const {
+    BitmapBuffer * getLuaBitmapBuffer (const char * name) const
+    {
         lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, themeBitmapsTable);
         lua_pushstring(lsWidgets, name);
         lua_gettable(lsWidgets, -2);
@@ -354,8 +354,6 @@ void luaLoadThemeCallback()
     theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;   // NOSONAR
     theme->drawMenuIconFunction = drawMenuIconFunction;
     theme->themeBitmapsTable = themeBitmapsTable;
-
-
 
     TRACE("Loaded Lua theme %s", name);
   }

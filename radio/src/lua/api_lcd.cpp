@@ -607,7 +607,8 @@ Return width, height of a bitmap object
 
 @status current Introduced in 2.2.2
 */
-static int luaBitmapComposite (lua_State * L) {
+static int luaBitmapComposite (lua_State * L)
+{
   const BitmapBuffer * base = checkBitmap(L, 1);
   const BitmapBuffer * add = checkBitmap(L, 2);
   const unsigned x = luaL_optunsigned(L, 3, 0);
@@ -618,7 +619,6 @@ static int luaBitmapComposite (lua_State * L) {
   }
 
   BitmapBuffer ** b = (BitmapBuffer **)lua_newuserdata(L, sizeof(BitmapBuffer *));
-
 
   if (luaExtraMemoryUsage > LUA_MEM_EXTRA_MAX) {
     // already allocated more than max allowed, fail
@@ -649,7 +649,7 @@ static int luaBitmapComposite (lua_State * L) {
 const luaL_Reg bitmapFuncs[] = {
   { "open", luaOpenBitmap },
   { "openMaskOnBackground", luaOpenMaskOnBackground },
-  { "loadMask", luaBitmapLoadMask },
+  { "openMask", luaBitmapLoadMask },
   { "getSize", luaGetBitmapSize },
   { "composite", luaBitmapComposite },
   { "__gc", luaDestroyBitmap },
