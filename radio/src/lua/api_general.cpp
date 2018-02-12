@@ -1466,8 +1466,13 @@ const luaR_value_entry opentxConstants[] = {
   {"MENUS_ICONS_COUNT", (double)MENUS_ICONS_COUNT },
   //Generally useful defines for themes
   {"MENU_ICONS_SPACING", MENU_ICONS_SPACING},
+#ifdef PCBX10
   {"PCBX10", PCBX10},
-#if (ANALOGS_PWM_ENABLED())
+#endif
+#ifdef PCBX12S
+  {"PCBX12S", PCBX12S},
+#endif
+#ifdef ANALOGS_PWM_ENABLED
   {"ANALOGS_PWM_ENABLED", (bool)true},
 #else
   {"ANALOGS_PWM_ENABLED", (bool)false},
