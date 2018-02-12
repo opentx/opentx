@@ -541,9 +541,9 @@ Draw a bitmap at (x,y)
 
 @param name (string) full path to the bitmap on SD card (i.e. “/IMAGES/test.bmp”)
 
-@notice Only available on Taranis X9 series. Maximum image size if 106 x 64 pixels (width x height).
+@notice Only available on Taranis X9, X7 series.
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0,  changed in 2.2.2
 */
 static int luaLcdDrawPixmap(lua_State *L)
 {
@@ -552,10 +552,7 @@ static int luaLcdDrawPixmap(lua_State *L)
   int y = luaL_checkinteger(L, 2);
   const char * filename = luaL_checkstring(L, 3);
 
-  uint8_t bitmap[BITMAP_BUFFER_SIZE(LCD_W/2, LCD_H)]; // width max is LCD_W/2 pixels for saving stack and avoid a malloc here
-  if (lcdLoadBitmap(bitmap, filename, LCD_W/2, LCD_H)) {
-    lcdDrawBitmap(x, y, bitmap);
-  }
+  lcdLoadDrawBitmap(filename, x, y);
 
   return 0;
 }

@@ -190,6 +190,7 @@ void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * img, coord_t offset=0, 
 void lcdClear();
 
 uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
+uint8_t lcdLoadDrawBitmap(const char * filename, uint8_t x, uint8_t y);
 const char * writeScreenshot();
 
 #if defined(BOOT)
@@ -206,6 +207,21 @@ inline display_t getPixel(unsigned int x, unsigned int y)
 
   display_t * p = &displayBuf[y / 2 * LCD_W + x];
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
+}
+
+inline void writePixel(coord_t x, coord_t y, uint8_t color)
+{
+  if (x>=LCD_W || y>=LCD_H) {
+    return;
+  }
+
+  display_t * p = &displayBuf[y / 2 * LCD_W + x];
+  if (y & 1) {
+    *p = (*p & 0x0f) + ((0x0f - color) << 4);
+  }
+  else {
+    *p = (*p & 0xf0) + (0x0f - color);
+  }
 }
 
 #if defined(CPUARM)
