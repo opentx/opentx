@@ -1361,6 +1361,9 @@ const luaR_value_entry opentxConstants[] = {
   { "HEADER_ICON_BGCOLOR", HEADER_ICON_BGCOLOR },
   { "HEADER_CURRENT_BGCOLOR", HEADER_CURRENT_BGCOLOR },
   { "OVERLAY_COLOR", OVERLAY_COLOR },
+  { "BARGRAPH1_COLOR", BARGRAPH1_COLOR },
+  { "BARGRAPH2_COLOR", BARGRAPH2_COLOR },
+  { "BARGRAPH_BGCOLOR", BARGRAPH_BGCOLOR },
   { "MENU_HEADER_HEIGHT", MENU_HEADER_HEIGHT },
   { "WHITE", (double)WHITE },
   { "GREY", (double)GREY },
@@ -1463,6 +1466,12 @@ const luaR_value_entry opentxConstants[] = {
   {"MENUS_ICONS_COUNT", (double)MENUS_ICONS_COUNT },
   //Generally useful defines for themes
   {"MENU_ICONS_SPACING", MENU_ICONS_SPACING},
+  {"PCBX10", PCBX10},
+#if (ANALOGS_PWM_ENABLED())
+  {"ANALOGS_PWM_ENABLED", (bool)true},
+#else
+  {"ANALOGS_PWM_ENABLED", (bool)false},
+#endif
 #endif
 
 #if defined(PCBHORUS)
