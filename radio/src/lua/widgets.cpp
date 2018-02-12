@@ -34,17 +34,21 @@ extern int custom_lua_atpanic(lua_State *L);
 #define LUA_WIDGET_FILENAME                "/main.lua"
 #define LUA_FULLPATH_MAXLEN                (LEN_FILE_PATH_MAX + LEN_SCRIPT_FILENAME + LEN_FILE_EXTENSION_MAX)  // max length (example: /SCRIPTS/THEMES/mytheme.lua)
 
-void exec(int function, int nresults=0)
+void prep_exec(int function)
 {
   if (lsWidgets == 0) return;
-
   if (function) {
     luaSetInstructionsLimit(lsWidgets, WIDGET_SCRIPTS_MAX_INSTRUCTIONS);
     lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, function);
-    if (lua_pcall(lsWidgets, 0, nresults, 0) != 0) {
-      TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
-      // TODO disable theme - revert back to default theme???
-    }
+  }
+}
+
+void exec(int nparameters=0, int nresults=0)
+{
+  if (lsWidgets == 0) return;
+  if (lua_pcall(lsWidgets, nparameters, nresults, 0) != 0) {
+    TRACE("Error in theme  %s", lua_tostring(lsWidgets, -1));
+    // TODO disable theme - revert back to default theme???
   }
 }
 
@@ -167,6 +171,7 @@ class LuaTheme: public Theme
       loadFunction(0),
       drawBackgroundFunction(0),
       drawTopbarBackgroundFunction(0),
+      drawMenuIconFunction(0),
       drawAlertBoxFunction(0)
     {
     }
@@ -174,17 +179,98 @@ class LuaTheme: public Theme
     virtual void load() const
     {
       luaLcdAllowed = true;
-      exec(loadFunction);
+      prep_exec(loadFunction);
+      exec();
+
+      // Get bitmaps from the themeBitmapsTable
+      //Calibration screen
+      delete calibStick;
+      calibStick = getLuaBitmapBuffer("calibStick");
+      delete calibStickBackground;
+      calibStickBackground = getLuaBitmapBuffer("calibStickBackground");
+      delete calibTrackpBackground;
+      calibTrackpBackground = getLuaBitmapBuffer("calibTrackpBackground");
+      delete calibHorus;
+      calibHorus = getLuaBitmapBuffer("calibHorus");
+      //Channel monitor screen
+      delete chanMonLockedBitmap;
+      chanMonLockedBitmap = getLuaBitmapBuffer("chanMonLockedBitmap");
+      delete chanMonInvertedBitmap;
+      chanMonInvertedBitmap = getLuaBitmapBuffer("chanMonInvertedBitmap");
+      //Model selection screen
+      delete modelselIconBitmap;
+      modelselIconBitmap = getLuaBitmapBuffer("modelselIconBitmap");
+      delete modelselSdFreeBitmap;
+      modelselSdFreeBitmap = getLuaBitmapBuffer("modelselSdFreeBitmap");
+      delete modelselModelQtyBitmap;
+      modelselModelQtyBitmap = getLuaBitmapBuffer("modelselModelQtyBitmap");
+      delete modelselModelNameBitmap;
+      modelselModelNameBitmap = getLuaBitmapBuffer("modelselModelNameBitmap");
+      delete modelselModelMoveBackground;
+      modelselModelMoveBackground = getLuaBitmapBuffer("modelselModelMoveBackground");
+      delete modelselModelMoveIcon;
+      modelselModelMoveIcon = getLuaBitmapBuffer("modelselModelMoveIcon");
+      delete modelselWizardBackground;
+      modelselWizardBackground = getLuaBitmapBuffer("modelselWizardBackground");
+      //Mixer setup screen
+      delete mixerSetupMixerBitmap;
+      mixerSetupMixerBitmap = getLuaBitmapBuffer("mixerSetupMixerBitmap");
+      delete mixerSetupToBitmap;
+      mixerSetupToBitmap = getLuaBitmapBuffer("mixerSetupToBitmap");
+      delete mixerSetupOutputBitmap;
+      mixerSetupOutputBitmap = getLuaBitmapBuffer("mixerSetupOutputBitmap");
+      delete mixerSetupAddBitmap;
+      mixerSetupAddBitmap = getLuaBitmapBuffer("mixerSetupAddBitmap");
+      delete mixerSetupMultiBitmap;
+      mixerSetupMultiBitmap = getLuaBitmapBuffer("mixerSetupMultiBitmap");
+      delete mixerSetupReplaceBitmap;
+      mixerSetupReplaceBitmap = getLuaBitmapBuffer("mixerSetupReplaceBitmap");
+      delete mixerSetupLabelBitmap;
+      mixerSetupLabelBitmap = getLuaBitmapBuffer("mixerSetupLabelBitmap");
+      delete mixerSetupCurveBitmap;
+      mixerSetupCurveBitmap = getLuaBitmapBuffer("mixerSetupCurveBitmap");
+      delete mixerSetupSwitchBitmap;
+      mixerSetupSwitchBitmap = getLuaBitmapBuffer("mixerSetupSwitchBitmap");
+      delete mixerSetupSlowBitmap;
+      mixerSetupSlowBitmap = getLuaBitmapBuffer("mixerSetupSlowBitmap");
+      delete mixerSetupDelayBitmap;
+      mixerSetupDelayBitmap = getLuaBitmapBuffer("mixerSetupDelayBitmap");
+      delete mixerSetupDelaySlowBitmap;
+      mixerSetupDelaySlowBitmap = getLuaBitmapBuffer("mixerSetupDelaySlowBitmap");
+      delete mixerSetupFlightmodeBitmap;
+      mixerSetupFlightmodeBitmap = getLuaBitmapBuffer("mixerSetupFlightmodeBitmap");
+      //Various other icons
+      delete asterisk;
+      asterisk = getLuaBitmapBuffer("asterisk");
+      delete question;
+      question = getLuaBitmapBuffer("question");
+      delete busy;
+      busy = getLuaBitmapBuffer("busy");
     }
 
     virtual void drawBackground() const
     {
-      exec(drawBackgroundFunction);
+      luaLcdAllowed = true;
+      prep_exec(drawBackgroundFunction);
+      exec();
     }
 
     virtual void drawTopbarBackground(uint8_t icon) const
     {
-      exec(drawTopbarBackgroundFunction);
+      luaLcdAllowed = true;
+      prep_exec(drawTopbarBackgroundFunction);
+      lua_pushnumber(lsWidgets, icon);
+      exec(1);
+    }
+
+    virtual void drawMenuIcon(uint8_t index, uint8_t position, bool selected) const
+    {
+      luaLcdAllowed = true;
+      prep_exec(drawMenuIconFunction);
+      lua_pushnumber(lsWidgets, index);
+      lua_pushnumber(lsWidgets, position);
+      lua_pushboolean(lsWidgets, selected);
+      exec(3);
     }
 
 #if 0
@@ -198,14 +284,29 @@ class LuaTheme: public Theme
     int loadFunction;
     int drawBackgroundFunction;
     int drawTopbarBackgroundFunction;
+    int drawMenuIconFunction;
+    int themeBitmapsTable;
     int drawAlertBoxFunction;
+
+private:
+    BitmapBuffer * getLuaBitmapBuffer (const char * name) const
+    {
+        lua_rawgeti(lsWidgets, LUA_REGISTRYINDEX, themeBitmapsTable);
+        lua_pushstring(lsWidgets, name);
+        lua_gettable(lsWidgets, -2);
+        if(lua_isnil(lsWidgets, -1) == 0) {
+            return *((BitmapBuffer **)luaL_checkudata(lsWidgets, -1, "BITMAP*"));
+        } else {
+            return NULL;
+        }
+    }
 };
 
 void luaLoadThemeCallback()
 {
   TRACE("luaLoadThemeCallback()");
   const char * name=NULL;
-  int themeOptions=0, loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0;
+  int themeOptions=0, loadFunction=0, drawBackgroundFunction=0, drawTopbarBackgroundFunction=0, drawMenuIconFunction=0, themeBitmapsTable=0;
 
   luaL_checktype(lsWidgets, -1, LUA_TTABLE);
 
@@ -230,6 +331,14 @@ void luaLoadThemeCallback()
       drawTopbarBackgroundFunction = luaL_ref(lsWidgets, LUA_REGISTRYINDEX);
       lua_pushnil(lsWidgets);
     }
+    else if (!strcmp(key, "drawMenuIcon")) {
+      drawMenuIconFunction = luaL_ref(lsWidgets, LUA_REGISTRYINDEX);
+      lua_pushnil(lsWidgets);
+    }
+    else if (!strcmp(key, "themeBitmaps")) {
+      themeBitmapsTable = luaL_ref(lsWidgets, LUA_REGISTRYINDEX);
+      lua_pushnil(lsWidgets);
+    }
   }
 
   if (name) {
@@ -243,6 +352,9 @@ void luaLoadThemeCallback()
     theme->loadFunction = loadFunction;
     theme->drawBackgroundFunction = drawBackgroundFunction;
     theme->drawTopbarBackgroundFunction = drawTopbarBackgroundFunction;   // NOSONAR
+    theme->drawMenuIconFunction = drawMenuIconFunction;
+    theme->themeBitmapsTable = themeBitmapsTable;
+
     TRACE("Loaded Lua theme %s", name);
   }
 }
