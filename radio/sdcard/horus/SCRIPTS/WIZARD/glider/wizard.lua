@@ -1,3 +1,19 @@
+---- #########################################################################
+---- #                                                                       #
+---- # Copyright (C) OpenTX                                                  #
+-----#                                                                       #
+---- # License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html               #
+---- #                                                                       #
+---- # This program is free software; you can redistribute it and/or modify  #
+---- # it under the terms of the GNU General Public License version 2 as     #
+---- # published by the Free Software Foundation.                            #
+---- #                                                                       #
+---- # This program is distributed in the hope that it will be useful        #
+---- # but WITHOUT ANY WARRANTY; without even the implied warranty of        #
+---- # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         #
+---- # GNU General Public License for more details.                          #
+---- #                                                                       #
+---- #########################################################################
 local VALUE = 0
 local COMBO = 1
 
@@ -369,7 +385,7 @@ local function runConfigSummary(event)
     drawNextLine("Elevator 2 chan :",TailFields[4][5])
   elseif (TailFields[1][5] == 3) then
     drawNextLine("V-Tail elevator :", TailFields[2][5])
-    drawNextLine("V-Tail rudder :", TailFields[2][5])
+    drawNextLine("V-Tail rudder :", TailFields[3][5])
   end
   local result = runFieldsPage(event)
   if(fields[1][5] == 1 and edit == false) then
@@ -406,15 +422,15 @@ local function createModel(event)
   if(AilFields[1][5] == 1) then
     addMix(AilFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Ail")
   elseif (AilFields[1][5] == 2) then
-    addMix(AilFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Ail1")
-    addMix(AilFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Ail2", -100)
+    addMix(AilFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "AilL")
+    addMix(AilFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "AilR", -100)
   end
   -- Flaps
   if(FlapsFields[1][5] == 1) then
     addMix(FlapsFields[2][5], MIXSRC_SA, "Flaps")
   elseif (FlapsFields[1][5] == 2) then
-    addMix(FlapsFields[2][5], MIXSRC_SA, "Flaps1")
-    addMix(FlapsFields[3][5], MIXSRC_SA, "Flaps2")
+    addMix(FlapsFields[2][5], MIXSRC_SA, "FlapsL")
+    addMix(FlapsFields[3][5], MIXSRC_SA, "FlapsR")
   end
   -- Tail
   if(TailFields[1][5] == 0) then
@@ -423,14 +439,14 @@ local function createModel(event)
     addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev")
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
   elseif (TailFields[1][5] == 2) then
-    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev1")
+    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevL")
     addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Rudder")
-    addMix(TailFields[4][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "Elev2")
+    addMix(TailFields[4][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "ElevR")
   elseif (TailFields[1][5] == 3) then
-    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "VTailE", 50)
-    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "VTailR", 50, 1)
-    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "VTailE", 50)
-    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "VTailR", -50, 1)
+    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleL", 50)
+    addMix(TailFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudL", 50, 1)
+    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "V-EleR", 50)
+    addMix(TailFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "V-RudR", -50, 1)
   end
   lcd.drawText(70, 90, "Model successfully created !", TEXT_COLOR)
   lcd.drawText(100, 130, "Press RTN to exit", TEXT_COLOR)
