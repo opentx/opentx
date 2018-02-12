@@ -385,7 +385,7 @@ local function runConfigSummary(event)
     drawNextLine("Elevator 2 chan :",TailFields[4][5])
   elseif (TailFields[1][5] == 3) then
     drawNextLine("V-Tail elevator :", TailFields[2][5])
-    drawNextLine("V-Tail rudder :", TailFields[2][5])
+    drawNextLine("V-Tail rudder :", TailFields[3][5])
   end
   local result = runFieldsPage(event)
   if(fields[1][5] == 1 and edit == false) then
