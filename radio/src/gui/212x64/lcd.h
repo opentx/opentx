@@ -208,8 +208,6 @@ inline display_t getPixel(unsigned int x, unsigned int y)
   return (y & 1) ? (*p >> 4) : (*p & 0x0F);
 }
 
-#if defined(CPUARM)
 uint8_t getTextWidth(const char * s, uint8_t len=0, LcdFlags flags=0);
-#endif
 
 #endif // _LCD_H_

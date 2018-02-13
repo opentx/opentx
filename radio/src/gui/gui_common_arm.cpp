@@ -526,7 +526,6 @@ bool isRfProtocolAvailable(int protocol)
   return true;
 }
 
-#if defined(CPUARM)
 bool isTelemetryProtocolAvailable(int protocol)
 {
 #if defined(PCBTARANIS)
@@ -553,7 +552,6 @@ bool isTelemetryProtocolAvailable(int protocol)
 
   return true;
 }
-#endif
 
 #if defined(PCBHORUS)
 bool isTrainerModeAvailable(int mode)
