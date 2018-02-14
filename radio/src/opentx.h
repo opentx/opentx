@@ -337,7 +337,7 @@ void memswap(void * a, void * b, uint8_t size);
 #if defined(VIRTUAL_INPUTS)
   #define IS_THROTTLE_TRIM(x)          (x == virtualInputsTrims[THR_STICK])
 #else
-  #define IS_THROTTLE_TRIM(x)          (x==THR_STICK)
+  #define IS_THROTTLE_TRIM(x)          (x == THR_STICK)
 #endif
 
 #if defined(PWR_BUTTON_PRESS)
