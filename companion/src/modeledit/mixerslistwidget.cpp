@@ -207,6 +207,11 @@ void MixersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
   style->drawControl(QStyle::CE_ItemViewItem, &options, painter, options.widget);
 
   QRect textRect = style->subElementRect(QStyle::SE_ItemViewItemText, &options);
+  #ifdef Q_OS_LINUX
+  // Workaround for buggy Linux native styles (https://github.com/opentx/opentx/issues/5633)
+  if (options.widget && textRect.width() < options.widget->geometry().width() * 0.75f)
+    textRect.setWidth(options.widget->geometry().width());
+  #endif
   QRectF clipRect = textRect.translated(-textRect.topLeft());
   ctx.clip = clipRect;
   painter->save();
