@@ -1369,35 +1369,53 @@ uint8_t checkTrim(event_t event)
       AUDIO_TRIM_MIDDLE();
       pauseEvents(event);
     }
-    else if (before>TRIM_MIN && after<=TRIM_MIN) {
-      beepTrim = true;
-      AUDIO_TRIM_MIN();
-      killEvents(event);
-    }
-    else if (before<TRIM_MAX && after>=TRIM_MAX) {
-      beepTrim = true;
-      AUDIO_TRIM_MAX();
-      killEvents(event);
-    }
-
-    if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
-      if (!g_model.extendedTrims || TRIM_REUSED(idx)) after = before;
-    }
-
-    if (after < TRIM_EXTENDED_MIN) {
-      after = TRIM_EXTENDED_MIN;
-    }
-    if (after > TRIM_EXTENDED_MAX) {
-      after = TRIM_EXTENDED_MAX;
-    }
 
 #if defined(GVARS)
     if (TRIM_REUSED(idx)) {
-      SET_GVAR_VALUE(trimGvar[idx], phase, after);
+      int8_t gvar = trimGvar[idx];
+      int16_t vmin = GVAR_MIN + g_model.gvars[gvar].min;
+      int16_t vmax = GVAR_MAX - g_model.gvars[gvar].max;
+
+      if (after < vmin) {
+        after = vmin;
+        beepTrim = true;
+        AUDIO_TRIM_MIN();
+        killEvents(event);
+      }
+      else if (after > vmax) {
+        after = vmax;
+        beepTrim = true;
+        AUDIO_TRIM_MAX();
+        killEvents(event);
+      }
+
+      SET_GVAR_VALUE(gvar, phase, after);
     }
     else
 #endif
     {
+      if (before>TRIM_MIN && after<=TRIM_MIN) {
+        beepTrim = true;
+        AUDIO_TRIM_MIN();
+        killEvents(event);
+      }
+      else if (before<TRIM_MAX && after>=TRIM_MAX) {
+        beepTrim = true;
+        AUDIO_TRIM_MAX();
+        killEvents(event);
+      }
+
+      if ((before<after && after>TRIM_MAX) || (before>after && after<TRIM_MIN)) {
+        if (!g_model.extendedTrims) after = before;
+      }
+
+      if (after < TRIM_EXTENDED_MIN) {
+        after = TRIM_EXTENDED_MIN;
+      }
+      else if (after > TRIM_EXTENDED_MAX) {
+        after = TRIM_EXTENDED_MAX;
+      }
+
 #if defined(CPUARM)
       if (!setTrimValue(phase, idx, after)) {
         // we don't play a beep, so we exit now the function
