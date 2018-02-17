@@ -1373,9 +1373,14 @@ uint8_t checkTrim(event_t event)
 #if defined(GVARS)
     if (TRIM_REUSED(idx)) {
       int8_t gvar = trimGvar[idx];
+#if defined(CPUARM)
+// TODO: This was necessary to make it compile for AVR9X target - maybe there is a better solution?
       int16_t vmin = GVAR_MIN + g_model.gvars[gvar].min;
       int16_t vmax = GVAR_MAX - g_model.gvars[gvar].max;
-
+#else
+      int16_t vmin = TRIM_MIN;
+      int16_t vmax = TRIM_MAX;
+#endif
       if (after < vmin) {
         after = vmin;
         beepTrim = true;
