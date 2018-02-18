@@ -266,7 +266,7 @@ int getSwitchWarningsCount()
 #define INTERNAL_MODULE_CHANNELS_ROWS     IF_INTERNAL_MODULE_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
+#if defined(BLUETOOTH)
   #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothDistantAddr[0] == 0 || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
   #define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
@@ -751,7 +751,7 @@ void menuModelSetup(event_t event)
           g_model.trainerMode = checkIncDec(event, g_model.trainerMode, 0, TRAINER_MODE_MAX(), EE_MODEL, isTrainerModeAvailable);
         }
         break;
-        
+
 #if defined(BLUETOOTH)
       case ITEM_MODEL_TRAINER_BLUETOOTH:
         if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
@@ -903,7 +903,7 @@ void menuModelSetup(event_t event)
       lcdDrawTextAlignedLeft(y, STR_TRAINER);
       break;
 
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
+#if defined(BLUETOOTH)
     case ITEM_MODEL_TRAINER_LINE1:
       if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
         if (attr) {
