@@ -544,7 +544,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
       lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
     }
     else {
-      lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT);
+      lcdDrawNumber(x, y, qr2.quot, att|LEFT);
     }
     lcdDrawChar(lcdNextPos, y, separator, att);
     qr.quot = qr2.rem;
