@@ -540,15 +540,15 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #define separator ':'
   if (att & TIMEHOUR) {
     div_t qr2 = div(qr.quot, 60);
-    lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
+    if (qr2.quot < 100) {
+      lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
+    }
+    else {
+      lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT);
+    }
     lcdDrawChar(lcdNextPos, y, separator, att);
     qr.quot = qr2.rem;
-    if (att & MIDSIZE)
-      x += 17;
-    else if (att & BOLD)
-      x += 15;
-    else
-      x += 13;
+    x = lcdNextPos;
   }
 
   lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);

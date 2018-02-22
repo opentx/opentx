@@ -813,7 +813,12 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
 #else
 #define separator ':'
 #endif
-  lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
+  if(qr.quot < 100) {
+    lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
+  }
+  else {
+    lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT);
+  }
 #if defined(CPUARM)
   if (FONTSIZE(att) == MIDSIZE) {
     lcdLastRightPos--;
