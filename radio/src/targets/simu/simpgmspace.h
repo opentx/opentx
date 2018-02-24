@@ -465,10 +465,14 @@ inline void delay_01us(int dummy) { }
   #define SIMU_USE_SDCARD
 #endif
 
-#define sdMountPoll()
-#define sdPoll10ms()
-#define sd_card_ready()  (true)
-#if !defined(SIMU_DISKIO)
+#if defined(SIMU_DISKIO)
+  uint32_t sdMounted();
+  #define sdPoll10ms()
+  void sdInit(void);
+  void sdDone(void);
+#else
+  #define sdPoll10ms()
+  uint32_t sdMounted(void);
   #define sdMounted()      (true)
 #endif
 
