@@ -232,6 +232,9 @@ void luaGetValueAndPush(lua_State* L, int src)
         case UNIT_DATETIME:
           luaPushTelemetryDateTime(L, telemetrySensor, telemetryItems[qr.quot]);
           break;
+        case UNIT_TEXT:
+          lua_pushstring(L, telemetryItems[qr.quot].text);
+          break;
         case UNIT_CELLS:
           if (qr.rem == 0) {
             luaPushCells(L, telemetrySensor, telemetryItems[qr.quot]);
