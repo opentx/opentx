@@ -183,6 +183,7 @@ class Boards
 
 #define IS_9X(board)                   (board==Board::BOARD_STOCK || board==Board::BOARD_M128)
 #define IS_STOCK(board)                (board==Board::BOARD_STOCK)
+#define IS_M128(board)                 (board==Board::BOARD_M128)
 #define IS_2560(board)                 (board==Board::BOARD_GRUVIN9X || board==Board::BOARD_MEGA2560)
 #define IS_SKY9X(board)                (board==Board::BOARD_SKY9X || board==Board::BOARD_9XRPRO || board==Board::BOARD_AR9X)
 #define IS_9XRPRO(board)               (board==Board::BOARD_9XRPRO)

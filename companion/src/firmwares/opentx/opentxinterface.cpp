@@ -880,9 +880,14 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
       // M128 revert because too much RAM used!
     case 216:
       // A lot of things (first github release)
+      if (IS_2560(board) || IS_M128(board)) {
+        return OLD_VERSION;
+      } 
     case 217:
       // 3 logical switches removed on M128 / gruvin9x boards
-      return OLD_VERSION;
+      if (IS_ARM(board)) {
+        return OLD_VERSION;
+      }
     case 218:
       break;
     default:
