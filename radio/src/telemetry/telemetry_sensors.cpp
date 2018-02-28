@@ -28,7 +28,7 @@ bool isFaiForbidden(source_t idx)
   TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
 
   switch (telemetryProtocol) {
-    
+
     case PROTOCOL_FRSKY_SPORT:
       if (sensor->id == RSSI_ID) {
         return false;
@@ -46,6 +46,19 @@ bool isFaiForbidden(source_t idx)
         return false;
       }
       break;
+
+    case TELEM_PROTO_CROSSFIRE:
+      if (sensor->id == RX_RSSI1_INDEX) {
+        return false;
+      }
+      else if (sensor->id == RX_RSSI2_INDEX) {
+        return false;
+      }
+      else if (sensor->id == BATT_VOLTAGE_INDEX) {
+        return false;
+      }
+      break;
+
   }
   return true;
 }
