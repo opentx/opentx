@@ -20,41 +20,6 @@
 
 #include "opentx.h"
 
-struct CrossfireSensor {
-  const uint8_t id;
-  const uint8_t subId;
-  const char * name;
-  const TelemetryUnit unit;
-  const uint8_t precision;
-};
-
-enum CrossfireSensorIndexes {
-  RX_RSSI1_INDEX,
-  RX_RSSI2_INDEX,
-  RX_QUALITY_INDEX,
-  RX_SNR_INDEX,
-  RX_ANTENNA_INDEX,
-  RF_MODE_INDEX,
-  TX_POWER_INDEX,
-  TX_RSSI_INDEX,
-  TX_QUALITY_INDEX,
-  TX_SNR_INDEX,
-  BATT_VOLTAGE_INDEX,
-  BATT_CURRENT_INDEX,
-  BATT_CAPACITY_INDEX,
-  GPS_LATITUDE_INDEX,
-  GPS_LONGITUDE_INDEX,
-  GPS_GROUND_SPEED_INDEX,
-  GPS_HEADING_INDEX,
-  GPS_ALTITUDE_INDEX,
-  GPS_SATELLITES_INDEX,
-  ATTITUDE_PITCH_INDEX,
-  ATTITUDE_ROLL_INDEX,
-  ATTITUDE_YAW_INDEX,
-  FLIGHT_MODE_INDEX,
-  UNKNOWN_INDEX,
-};
-
 const CrossfireSensor crossfireSensors[] = {
   {LINK_ID,        0, ZSTR_RX_RSSI1,    UNIT_DB,            0},
   {LINK_ID,        1, ZSTR_RX_RSSI2,    UNIT_DB,            0},

@@ -47,6 +47,7 @@ bool isFaiForbidden(source_t idx)
       }
       break;
 
+#if defined(CROSSFIRE)
     case TELEM_PROTO_CROSSFIRE:
       if (sensor->id == RX_RSSI1_INDEX) {
         return false;
@@ -58,7 +59,7 @@ bool isFaiForbidden(source_t idx)
         return false;
       }
       break;
-
+#endif
   }
   return true;
 }
