@@ -218,11 +218,6 @@ static void luaPushCells(lua_State* L, TelemetrySensor & telemetrySensor, Teleme
 
 void luaGetValueAndPush(lua_State* L, int src)
 {
-  if(IS_FAI_FORBIDDEN(src)) {
-    lua_pushinteger(L, 0);
-    return;
-  }
-  
   getvalue_t value = getValue(src); // ignored for GPS, DATETIME, and CELLS
 
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
