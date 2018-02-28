@@ -24,11 +24,14 @@ TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
 
 bool isFaiForbidden(source_t idx) {
-  TelemetrySensor * sensor = &g_model.telemetrySensors[idx-MIXSRC_FIRST_TELEM];
+  TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
   if (sensor->id == RSSI_ID) {
     return false;
   }
-  else {
+  else if (sensor->id == BATT_ID) {
+    return false;
+  }
+  else{
     return true;
   }
 }
