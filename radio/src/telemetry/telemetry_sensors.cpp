@@ -23,6 +23,16 @@
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
 
+bool isFaiForbidden(source_t idx) {
+  TelemetrySensor * sensor = &g_model.telemetrySensors[idx-MIXSRC_FIRST_TELEM];
+  if (sensor->id == RSSI_ID) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
 // TODO in maths
 uint32_t getDistFromEarthAxis(int32_t latitude)
 {

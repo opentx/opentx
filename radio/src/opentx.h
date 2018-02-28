@@ -231,7 +231,7 @@
   #define IF_FAI_CHOICE(x)
 #endif
 
-#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
+#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() &&  isFaiForbidden(idx))
 
 #if defined(BLUETOOTH)
 #if defined(X9E) && !defined(USEHORUSBT)

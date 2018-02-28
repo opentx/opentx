@@ -218,6 +218,11 @@ static void luaPushCells(lua_State* L, TelemetrySensor & telemetrySensor, Teleme
 
 void luaGetValueAndPush(lua_State* L, int src)
 {
+  if(IS_FAI_FORBIDDEN(src)) {
+    lua_pushinteger(L, 0);
+    return;
+  }
+  
   getvalue_t value = getValue(src); // ignored for GPS, DATETIME, and CELLS
 
   if (src >= MIXSRC_FIRST_TELEM && src <= MIXSRC_LAST_TELEM) {
@@ -587,6 +592,7 @@ or a name (string) of the source.
 @retval value current source value (number). Zero is returned for:
  * non-existing sources
  * for all telemetry source when the telemetry stream is not received
+ * far all non allowed sensors while FAI MODE is active
 
 @retval table GPS position is returned in a table:
  * `lat` (number) latitude, positive is North
