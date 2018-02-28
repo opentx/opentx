@@ -481,8 +481,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_LONG(KEY_PAGE):
-      if (!IS_FAI_ENABLED())
-        chainMenu(menuViewTelemetryFrsky);
+      chainMenu(menuViewTelemetryFrsky);
       killEvents(event);
       break;
 
