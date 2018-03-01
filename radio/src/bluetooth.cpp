@@ -75,7 +75,7 @@ char * bluetoothReadline(bool error_reset)
           TRACE("BT Reset...(%d)", bluetoothState);
           bluetoothDone();
           bluetoothState = BLUETOOTH_STATE_OFF;
-          bluetoothWakeupTime = get_tmr10ms() + 200; /* 1s */
+          bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
           return NULL;
         }
         else {
@@ -263,7 +263,12 @@ void bluetoothWakeup()
     bluetoothWakeupTime = now + 10; /* 100ms */
   }
   else if (bluetoothState == BLUETOOTH_STATE_OFF) {
+#if defined(PCBHORUS)
+    bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+    bluetoothState = BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT;
+#else
     bluetoothState = BLUETOOTH_STATE_BAUDRATE_SENT;
+#endif
   }
 
   if (bluetoothState != BLUETOOTH_STATE_OFF) {
