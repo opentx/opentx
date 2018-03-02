@@ -587,6 +587,7 @@ or a name (string) of the source.
 @retval value current source value (number). Zero is returned for:
  * non-existing sources
  * for all telemetry source when the telemetry stream is not received
+ * far all non allowed sensors while FAI MODE is active
 
 @retval table GPS position is returned in a table:
  * `lat` (number) latitude, positive is North

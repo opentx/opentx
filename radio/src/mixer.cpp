@@ -448,6 +448,9 @@ getvalue_t getValue(mixsrc_t i)
 
 #if defined(CPUARM)
   else if (i <= MIXSRC_LAST_TELEM) {
+    if(IS_FAI_FORBIDDEN(i)) {
+      return 0;
+    }
     i -= MIXSRC_FIRST_TELEM;
     div_t qr = div(i, 3);
     TelemetryItem & telemetryItem = telemetryItems[qr.quot];
