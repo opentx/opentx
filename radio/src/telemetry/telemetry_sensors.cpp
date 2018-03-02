@@ -25,6 +25,10 @@ uint8_t allowNewSensors;
 
 bool isFaiForbidden(source_t idx)
 {
+  if (idx < MIXSRC_FIRST_TELEM) {
+    return false;
+  }
+  
   TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
 
   switch (telemetryProtocol) {
@@ -48,7 +52,7 @@ bool isFaiForbidden(source_t idx)
       break;
 
 #if defined(CROSSFIRE)
-    case TELEM_PROTO_CROSSFIRE:
+    case PROTOCOL_PULSES_CROSSFIRE:
       if (sensor->id == RX_RSSI1_INDEX) {
         return false;
       }
