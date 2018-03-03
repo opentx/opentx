@@ -577,7 +577,7 @@
      <item row="15" column="1">
       <widget class="QCheckBox" name="faimode_CB">
        <property name="toolTip">
-        <string>If you enable FAI, you loose the vario, the play functions, the telemetry screen. This function cannot be disabled by the radio.</string>
+        <string>If you enable FAI, only RSSI and RxBt sensors will keep working. This function cannot be disabled by the radio.</string>
        </property>
        <property name="text">
         <string/>
