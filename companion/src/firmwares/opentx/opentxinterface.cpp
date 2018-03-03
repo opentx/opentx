@@ -882,7 +882,7 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
       // A lot of things (first github release)
       if (IS_2560(board) || IS_M128(board)) {
         return OLD_VERSION;
-      } 
+      }
     case 217:
       // 3 logical switches removed on M128 / gruvin9x boards
       if (IS_ARM(board)) {
@@ -1103,7 +1103,6 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
 {
   addOpenTxFrskyOptions(firmware);
-  firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
   firmware->addOption("noras", QCoreApplication::translate("Firmware", "Disable RAS (SWR)"));
 }
@@ -1168,12 +1167,14 @@ void registerOpenTxFirmwares()
 
   /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", QCoreApplication::translate("Firmware", "FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
+  firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky Taranis X9D board */
   firmware = new OpenTxFirmware("opentx-x9d", QCoreApplication::translate("Firmware", "FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", QCoreApplication::translate("Firmware", "Haptic module installed"));
+  firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
@@ -1181,6 +1182,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x9e", QCoreApplication::translate("Firmware", "FrSky Taranis X9E"), BOARD_TARANIS_X9E);
   firmware->addOption("shutdownconfirm", QCoreApplication::translate("Firmware", "Confirmation before radio shutdown"));
   firmware->addOption("horussticks", QCoreApplication::translate("Firmware", "Horus gimbals installed (Hall sensors)"));
+  firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
