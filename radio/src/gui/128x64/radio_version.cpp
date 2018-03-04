@@ -31,11 +31,6 @@ void menuRadioVersion(event_t event)
   }
 #endif
 
-#if defined(STM32)
-  char id[27];
-  getCPUUniqueID(id);
-#endif
-
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, 1);
 
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+FH, vers_stamp);
