@@ -298,23 +298,7 @@ void menuModelSetup(event_t event)
 {
   horzpos_t l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
-#if defined(TARANIS_INTERNAL_PPM)
-  MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
-    LABEL(Throttle), 0, 0, 0,
-    LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
-    LABEL(InternalModule),
-    INTERNAL_MODULE_MODE_ROWS,
-    INTERNAL_MODULE_CHANNELS_ROWS,
-    IF_INTERNAL_MODULE_ON(IS_MODULE_XJT(INTERNAL_MODULE) ? (HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1) : (IS_MODULE_PPM(INTERNAL_MODULE) ? (uint8_t)1 : HIDDEN_ROW)),
-    IF_INTERNAL_MODULE_ON((IS_MODULE_XJT(INTERNAL_MODULE)) ? FAILSAFE_ROWS(INTERNAL_MODULE) : HIDDEN_ROW),
-    LABEL(ExternalModule),
-    EXTERNAL_MODULE_MODE_ROWS,
-    MULTIMODULE_STATUS_ROWS
-    EXTERNAL_MODULE_CHANNELS_ROWS,
-    (IS_MODULE_XJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) ? (uint8_t)1 : (IS_MODULE_PPM(EXTERNAL_MODULE) || IS_MODULE_XJT(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
-    FAILSAFE_ROWS(EXTERNAL_MODULE), EXTERNAL_MODULE_OPTION_ROW, MULTIMODULE_MODULE_ROWS EXTERNAL_MODULE_POWER_ROW,
-    LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS});
-#else
+
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
     LABEL(Throttle), 0, 0, 0,
     LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
@@ -334,7 +318,7 @@ void menuModelSetup(event_t event)
     MULTIMODULE_MODULE_ROWS
     EXTERNAL_MODULE_POWER_ROW,
     LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS});
-#endif
+
   MENU_CHECK(STR_MENUSETUP, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX);
 
 #if (defined(DSM2) || defined(PXX))
@@ -708,7 +692,7 @@ void menuModelSetup(event_t event)
         if (attr && s_editMode>0) {
           switch (menuHorizontalPosition) {
             case 0:
-              g_model.moduleData[INTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_COUNT-2, EE_MODEL, isModuleAvailable);
+              g_model.moduleData[INTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_XJT, EE_MODEL, isModuleAvailable);
               if (checkIncDec_Ret) {
                  g_model.moduleData[INTERNAL_MODULE].rfProtocol = 0;
                  g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
