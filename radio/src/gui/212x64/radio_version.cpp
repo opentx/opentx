@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -30,10 +30,8 @@ void menuRadioVersion(event_t event)
     NVIC_SystemReset();
   }
 
-  if (event == EVT_ENTRY) {
-    getCPUUniqueID(id);
-  }
-  
+  getCPUUniqueID(id);
+
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, 1);
 
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1, vers_stamp);
