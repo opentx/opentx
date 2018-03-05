@@ -118,6 +118,7 @@ void readModelNotes() {
     menuTextView(event);
     event = getEvent();
     lcdRefresh();
+    wdt_reset();
   }
 
   LED_ERROR_END();
