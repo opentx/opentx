@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -101,6 +101,27 @@ void readTextFile(int & lines_count)
 #define EVT_KEY_NEXT_LINE              EVT_KEY_FIRST(KEY_DOWN)
 #define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)
 #endif
+
+void readModelNotes() {
+
+  LED_ERROR_BEGIN();
+
+  strcpy(s_text_file, MODELS_PATH "/");
+  char *buf = strcat_modelname(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+  strcpy(buf, TEXT_EXT);
+
+  clearKeyEvents();
+  event_t event = EVT_ENTRY;
+  while (event != EVT_KEY_BREAK(KEY_EXIT)) {
+    lcdRefreshWait();
+    lcdClear();
+    menuTextView(event);
+    event = getEvent();
+    lcdRefresh();
+  }
+
+  LED_ERROR_END();
+}
 
 void menuTextView(event_t event)
 {

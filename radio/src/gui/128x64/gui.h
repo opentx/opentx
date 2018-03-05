@@ -373,6 +373,7 @@ void drawStatusLine();
   void menuTextView(event_t event);
   void pushMenuTextView(const char *filename);
   void pushModelNotes();
+  void readModelNotes();
 #endif
 
 #define LABEL(...)                     (uint8_t)-1
