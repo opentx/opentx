@@ -1378,3 +1378,4 @@ Zhang Tianyu
 Josef de Beer
 Ewald Moehring 
 Kevin Karamitros
+Beat Zurflueh
