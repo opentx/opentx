@@ -89,8 +89,11 @@ extern "C" {
 /*---------------------------------------------------------------------------/
 / Locale and Namespace Configurations
 /---------------------------------------------------------------------------*/
-
+#if defined(TRANSLATIONS_RU)
+#define _CODE_PAGE  866
+#else
 #define _CODE_PAGE	437
+#endif
 /* This option specifies the OEM code page to be used on the target system.
 /  Incorrect setting of the code page can cause a file open failure.
 /
