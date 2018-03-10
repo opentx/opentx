@@ -4154,7 +4154,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="580"/>
         <source>If you enable FAI, only RSSI and RxBt sensors will keep working. This function cannot be disabled by the radio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si vous activez l&apos;option FAI, seuls les capteurs RSSI et BtRx vont fonctionner. Cette fonction ne peut pas être désactivée sur la radio.</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2179"/>
@@ -4785,7 +4785,9 @@ Extra long : bips extra longs.</translation>
         <source>If you enable FAI, only RSSI and RxBt sensors will keep working.
 This function cannot be disabled by the radio.
 Are you sure ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Si vous activez l&apos;option FAI, seuls les capteurs RSSI et BtRx vont fonctionner.
+Cette fonction ne peut pas être désactivée sur la radio.
+Êtes-vous sûr d&apos;activer cette option ?</translation>
     </message>
 </context>
 <context>
