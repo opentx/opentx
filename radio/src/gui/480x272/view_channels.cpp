@@ -187,5 +187,6 @@ bool menuChannelsMonitor(event_t event, uint8_t page)
     drawComboOutputBar(x, y, COLUMN_SIZE, BAR_HEIGHT, channel);
     drawSingleMixerBar(x, y + Y_MIXBAR + 1, COLUMN_SIZE, BAR_HEIGHT, channel);
   }
+  s_editMode = -1;
   return true;
 }

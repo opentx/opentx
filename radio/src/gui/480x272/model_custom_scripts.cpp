@@ -53,6 +53,7 @@ bool menuModelCustomScriptOne(event_t event)
 
   // drawStringWithIndex(lcdLastRightPos+FW, 0, "LUA", s_currIdx+1, 0);
 
+  if (event) TRACE("menuModelCustomScriptOne %0X %d", event, s_editMode);
   SUBMENU(STR_MENUCUSTOMSCRIPTS, ICON_MODEL_LUA_SCRIPTS, 3+scriptInputsOutputs[s_currIdx].inputsCount, { 0, 0, LABEL(inputs), 0/*repeated*/ });
 
   int8_t sub = menuVerticalPosition;
@@ -133,8 +134,10 @@ bool menuModelCustomScripts(event_t event)
 
   int8_t  sub = menuVerticalPosition;
 
+  if (event) TRACE("menuModelCustomScripts %0X %d", event, s_editMode);
   if (event == EVT_KEY_FIRST(KEY_ENTER) && sub >= 0) {
     s_currIdx = sub;
+    killEvents(KEY_ENTER);
     pushMenu(menuModelCustomScriptOne);
   }
 

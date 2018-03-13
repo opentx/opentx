@@ -185,6 +185,11 @@ bool menuRadioSdManager(event_t _event)
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
+      if (EDIT_SELECT_MENU == s_editMode) {
+        s_editMode = EDIT_SELECT_FIELD;
+        AUDIO_KEY_PRESS();
+        break;
+      }
       if (s_editMode > 0) {
         break;
       }

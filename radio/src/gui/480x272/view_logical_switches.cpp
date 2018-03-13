@@ -105,7 +105,7 @@ bool menuLogicalSwitchesMonitor(event_t event)
   if (lswAddress(menuHorizontalPosition)->func != LS_FUNC_NONE) {
     displayLogicalSwitchedDetails(X_FUNC, Y_FUNC, menuHorizontalPosition);
   }
-  s_editMode = 0;
+  s_editMode = -1;
   return true;
 }
 
