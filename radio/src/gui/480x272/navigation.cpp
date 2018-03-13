@@ -401,12 +401,10 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
 
     case EVT_ENTRY_UP:
       s_editMode = 0;
-      TRACE("EVT_ENTRY_UP %d", s_editMode);
       menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
 
     case EVT_ROTARY_BREAK:
-      TRACE("EVT_ROTARY_BREAK %d", s_editMode);
       if (EDIT_SELECT_MENU == s_editMode)
       {
         if (menuTabModel == menuTab && (curr == MENU_MODEL_INPUTS
@@ -438,7 +436,6 @@ skipout:
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-      TRACE("EVT_KEY_FIRST(KEY_EXIT) %d", s_editMode);
       if (s_editMode > 0) {
         s_editMode = 0;
         AUDIO_KEY_PRESS();
