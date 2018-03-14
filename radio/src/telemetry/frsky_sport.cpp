@@ -63,6 +63,11 @@ const FrSkySportSensor sportSensors[] = {
   { RBOX_CNSP_FIRST_ID, RBOX_CNSP_LAST_ID, 1, ZSTR_BATT2_CONSUMPTION, UNIT_MAH, 0 },
   { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 0, ZSTR_CHANS_STATE, UNIT_BITFIELD, 0 },
   { RBOX_STATE_FIRST_ID, RBOX_STATE_LAST_ID, 1, ZSTR_RB_STATE, UNIT_BITFIELD, 0 },
+  { ESC_POWER_FIRST_ID, ESC_POWER_LAST_ID, 0, ZSTR_ESC_VOLTAGE, UNIT_VOLTS, 2 },
+  { ESC_POWER_FIRST_ID, ESC_POWER_LAST_ID, 1, ZSTR_ESC_CURRENT, UNIT_AMPS, 2 },
+  { ESC_RPM_CONS_FIRST_ID, ESC_RPM_CONS_LAST_ID, 0, ZSTR_ESC_RPM, UNIT_RPMS, 0 },
+  { ESC_RPM_CONS_FIRST_ID, ESC_RPM_CONS_LAST_ID, 1, ZSTR_ESC_CONSUMPTION, UNIT_MAH, 0 },
+  { ESC_TEMPERATURE_FIRST_ID, ESC_TEMPERATURE_LAST_ID, 0, ZSTR_ESC_TEMP, UNIT_CELSIUS, 0 },
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
@@ -209,6 +214,11 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
           rboxState = newRboxState;
           sportProcessTelemetryPacket(id, 0, instance, servosState);
           sportProcessTelemetryPacket(id, 1, instance, rboxState);
+        }
+        else if (id >= ESC_POWER_FIRST_ID && id <= ESC_RPM_CONS_LAST_ID) {
+          // 2 sensors (POWER and RPM_CONS)
+          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
         else if (id >= DIY_STREAM_FIRST_ID && id <= DIY_STREAM_LAST_ID) {
 #if defined(LUA)
