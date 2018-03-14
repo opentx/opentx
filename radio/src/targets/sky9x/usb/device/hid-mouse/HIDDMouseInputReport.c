@@ -40,7 +40,7 @@
 
 #include "HIDDMouseInputReport.h"
 #include "HIDDMouseDriverDescriptors.h"
-#include <utility/assert.h>
+//#include <utility/assert.h>
 
 //------------------------------------------------------------------------------
 //         Exported functions

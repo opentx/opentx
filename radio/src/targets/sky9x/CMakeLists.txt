@@ -95,6 +95,9 @@ set(FIRMWARE_TARGET_SRC
   usb/device/massstorage/MSDLun.c
   usb/device/massstorage/MSDDriverDescriptors.c
   usb/device/massstorage/SBCMethods.c
+  usb/device/hid-mouse/HIDDMouseDriver.c
+  usb/device/hid-mouse/HIDDMouseDriverDescriptors.c
+  usb/device/hid-mouse/HIDDMouseInputReport.c
   usb/common/core/USBEndpointDescriptor.c
   usb/common/core/USBGenericRequest.c
   usb/common/core/USBFeatureRequest.c

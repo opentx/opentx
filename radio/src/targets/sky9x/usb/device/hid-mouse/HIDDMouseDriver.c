@@ -34,7 +34,6 @@
 #include "HIDDMouseDriver.h"
 #include "HIDDMouseDriverDescriptors.h"
 #include "HIDDMouseInputReport.h"
-#include <utility/trace.h>
 #include <usb/common/core/USBGetDescriptorRequest.h>
 #include <usb/common/hid/HIDGenericDescriptor.h>
 #include <usb/common/hid/HIDDescriptor.h>
@@ -43,6 +42,9 @@
 #include <usb/common/hid/HIDIdleRequest.h>
 #include <usb/device/core/USBD.h>
 #include <usb/device/core/USBDDriver.h>
+
+#define TRACE_INFO(...)       { }
+#define TRACE_WARNING(...)    { }
 
 //------------------------------------------------------------------------------
 //         Internal Defines
@@ -235,10 +237,10 @@ static void HIDDMouseDriver_SetReport(unsigned char type,
 /// Callback function when new request receivce from host
 /// \param request Pointer to the USBGenericRequest instance
 //------------------------------------------------------------------------------
-void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
-{
-    HIDDMouseDriver_RequestHandler(request);
-}
+//void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
+//{
+//    HIDDMouseDriver_RequestHandler(request);
+//}
 
 #endif
 
@@ -250,12 +252,12 @@ void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
 /// Callback function when configureation changed
 /// \param cfgnum New configuration number
 //------------------------------------------------------------------------------
-void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
-{
-    if (cfgnum > 0) {
+//void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
+//{
+//    if (cfgnum > 0) {
     
-    }
-}
+//    }
+//}
 
 //------------------------------------------------------------------------------
 //      Exported functions

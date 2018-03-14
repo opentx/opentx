@@ -102,6 +102,9 @@ typedef struct {
 //         Internal variables
 //------------------------------------------------------------------------------
 
+#define BOARD_USB_ENDPOINTS_MAXPACKETSIZE(i) (((i == 0)||(i == 3)||(i == 4)) ? 64 :\
+                                             (((i == 1) || (i == 2)) ? 512 : 1024))
+
 /// Device descriptor.
 static const USBDeviceDescriptor deviceDescriptor = {
 
