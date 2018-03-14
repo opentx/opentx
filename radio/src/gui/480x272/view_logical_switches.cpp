@@ -91,6 +91,7 @@ bool menuLogicalSwitchesMonitor(event_t event)
 {
   char lsString[] = "L64";
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(160, 160, 160);
+
   for (uint8_t i = 0; i < MAX_LOGICAL_SWITCHES; i++) {
     LcdFlags attr = (menuHorizontalPosition == i ? INVERS : 0) | LEFT;
     LogicalSwitchData * cs = lswAddress(i);
@@ -105,7 +106,18 @@ bool menuLogicalSwitchesMonitor(event_t event)
   if (lswAddress(menuHorizontalPosition)->func != LS_FUNC_NONE) {
     displayLogicalSwitchedDetails(X_FUNC, Y_FUNC, menuHorizontalPosition);
   }
-  s_editMode = -1;
+
+  switch(event) {
+    case EVT_ROTARY_BREAK:
+      if (EDIT_SELECT_MENU == s_editMode)
+        s_editMode = 0;
+      break;
+    case EVT_KEY_FIRST(KEY_EXIT):
+      if (EDIT_SELECT_MENU != s_editMode)
+        s_editMode = -1;
+      break;
+  }
+
   return true;
 }
 
