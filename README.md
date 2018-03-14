@@ -16,18 +16,20 @@ Useful links:
  * OpenTX Lua Reference Guide https://www.gitbook.com/book/opentx/opentx-lua-reference-guide/details
 
 For Ubuntu:
-apt-get install cmake git gdb gcc cmake gcc-avr avr-libc build-essential libfox-1.6-dev libsdl1.2-dev python-pyqt5 qt5-default qttools5-dev-tools qtmultimedia5-dev qttools5-dev libqt5svg5-dev python3-pyqt5.qtsvg python3-pyside.qtwebkit gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib libgtest-dev
+ * apt-get install cmake git gdb gcc cmake gcc-avr avr-libc build-essential libfox-1.6-dev libsdl1.2-dev python-pyqt5 qt5-default qttools5-dev-tools qtmultimedia5-dev qttools5-dev libqt5svg5-dev python3-pyqt5.qtsvg python3-pyside.qtwebkit gcc-arm-none-eabi libnewlib-arm-none-eabi libstdc++-arm-none-eabi-newlib libgtest-dev
 
 For Fedora:
-dnf install git gdb gcc qt qt-devel cmake patch xsd gcc-c++ SDL-devel phonon phonon-devel avr-gcc-c++ avr-gcc avr-binutils arm-none-eabi-binutils-cs arm-none-eabi-gcc-cs arm-none-eabi-gcc-cs-c++ arm-none-eabi-newlib.noarch avr-binutils avr-gcc avr-gcc-c++ avr-libc.noarch PyQt4 fox-devel qt5 qt5-qtmultimedia-devel qt5-devel.noarch qt5-qtsvg-devel qt5-qttools-devel dfu-util
+ * dnf install git gdb gcc qt qt-devel cmake patch xsd gcc-c++ SDL-devel phonon phonon-devel avr-gcc-c++ avr-gcc avr-binutils arm-none-eabi-binutils-cs arm-none-eabi-gcc-cs arm-none-eabi-gcc-cs-c++ arm-none-eabi-newlib.noarch avr-binutils avr-gcc avr-gcc-c++ avr-libc.noarch PyQt4 fox-devel qt5 qt5-qtmultimedia-devel qt5-devel.noarch qt5-qtsvg-devel qt5-qttools-devel dfu-util
 
-in workspace git clone horus ...
+git clone horus in workspace.
 
 mkdir x10 && cd x10
 
-for release
-cmake -DPCB=X10 -DGVARS=YES -DLUA=YES -DLUA_COMPILER=YES -DDEFAULT_MODE=2 -DMULTIMODULE=YES ../horus
-for debug
-cmake -DPCB=X10 -DGVARS=YES -DLUA=YES -DLUA_COMPILER=YES -DDEFAULT_MODE=2 -DMULTIMODULE=YES -DDEBUG=ON -DCMAKE_BUILD_TYPE=Debug ../horus
+For release:
+ * cmake -DPCB=X10 -DGVARS=YES -DLUA=YES -DLUA_COMPILER=YES -DDEFAULT_MODE=2 -DMULTIMODULE=YES ../horus
+
+For debug
+ * cmake -DPCB=X10 -DGVARS=YES -DLUA=YES -DLUA_COMPILER=YES -DDEFAULT_MODE=2 -DMULTIMODULE=YES -DDEBUG=ON -DCMAKE_BUILD_TYPE=Debug ../horus
+
 
 make help
