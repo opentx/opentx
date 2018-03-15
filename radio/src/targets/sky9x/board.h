@@ -263,6 +263,8 @@ void disable_dsm2(uint32_t port);
 void init_sbusOut(uint32_t module_index);
 void disable_sbusOut(uint32_t module_index);
 
+void usbJoystickUpdate();
+
 // SD driver
 #if defined(SIMU)
 #define sdInit()

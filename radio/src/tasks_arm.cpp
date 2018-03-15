@@ -171,6 +171,8 @@ void mixerTask(void * pdata)
       }
 #endif
 
+    usbJoystickUpdate();
+
 #if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();

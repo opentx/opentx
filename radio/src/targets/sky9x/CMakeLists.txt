@@ -107,6 +107,8 @@ set(FIRMWARE_TARGET_SRC
   usb/common/core/USBSetConfigurationRequest.c
   usb/common/core/USBConfigurationDescriptor.c
   usb/common/core/USBGenericDescriptor.c
+  usb/common/hid/HIDIdleRequest.c
+  usb/common/hid/HIDReportRequest.c
   MEDSdcard.c
   )
 
@@ -122,6 +124,7 @@ set(TARGET_SRC
   haptic_driver.cpp
   sdcard_driver.cpp
   massstorage.cpp
+  joystick.cpp
   serial2_driver.cpp
   audio_driver.cpp
   trainer_driver.cpp
