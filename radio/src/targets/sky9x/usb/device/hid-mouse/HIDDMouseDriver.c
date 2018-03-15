@@ -237,10 +237,10 @@ static void HIDDMouseDriver_SetReport(unsigned char type,
 /// Callback function when new request receivce from host
 /// \param request Pointer to the USBGenericRequest instance
 //------------------------------------------------------------------------------
-//void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
-//{
-//    HIDDMouseDriver_RequestHandler(request);
-//}
+void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
+{
+    HIDDMouseDriver_RequestHandler(request);
+}
 
 #endif
 
@@ -252,12 +252,12 @@ static void HIDDMouseDriver_SetReport(unsigned char type,
 /// Callback function when configureation changed
 /// \param cfgnum New configuration number
 //------------------------------------------------------------------------------
-//void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
-//{
-//    if (cfgnum > 0) {
+void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
+{
+    if (cfgnum > 0) {
     
-//    }
-//}
+    }
+}
 
 //------------------------------------------------------------------------------
 //      Exported functions
