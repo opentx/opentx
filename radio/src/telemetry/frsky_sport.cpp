@@ -69,11 +69,11 @@ const FrSkySportSensor sportSensors[] = {
   { ESC_RPM_CONS_FIRST_ID, ESC_RPM_CONS_LAST_ID, 0, ZSTR_ESC_RPM, UNIT_RPMS, 0 },
   { ESC_RPM_CONS_FIRST_ID, ESC_RPM_CONS_LAST_ID, 1, ZSTR_ESC_CONSUMPTION, UNIT_MAH, 0 },
   { ESC_TEMPERATURE_FIRST_ID, ESC_TEMPERATURE_LAST_ID, 0, ZSTR_ESC_TEMP, UNIT_CELSIUS, 0 },
-  { GASSUIT_TEMP_FIRST_ID, GASSUIT_TEMP_LAST_ID, 0, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
-  { GASSUIT_TEMP_FIRST_ID, GASSUIT_TEMP_LAST_ID, 1, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
-  { GASSUIT_SPEED_FIRST_ID, GASSUIT_SPEED_LAST_ID, 0, ZSTR_RPM, UNIT_RPMS, 0 },
-  { GASSUIT_FUEL_FIRST_ID, GASSUIT_FUEL_LAST_ID, 0, ZSTR_FUEL, UNIT_MILLILITERS, 0 }, //TODO this needs to be changed to ml/min, but need eeprom conversion
-  { GASSUIT_FUEL_FIRST_ID, GASSUIT_FUEL_LAST_ID, 1, ZSTR_FUEL, UNIT_MILLILITERS, 0 },
+  { GASSUIT_TEMP_FIRST_ID, GASSUIT_TEMP_LAST_ID, 0, ZSTR_GASSUIT_TEMP1, UNIT_CELSIUS, 0 },
+  { GASSUIT_TEMP_FIRST_ID, GASSUIT_TEMP_LAST_ID, 1, ZSTR_GASSUIT_TEMP2, UNIT_CELSIUS, 0 },
+  { GASSUIT_SPEED_FIRST_ID, GASSUIT_SPEED_LAST_ID, 0, ZSTR_GASSUIT_RPM, UNIT_RPMS, 0 },
+  { GASSUIT_FUEL_FIRST_ID, GASSUIT_FUEL_LAST_ID, 0, ZSTR_GASSUIT_FLOW, UNIT_MILLILITERS, 0 }, //TODO this needs to be changed to ml/min, but need eeprom conversion
+  { GASSUIT_FUEL_FIRST_ID, GASSUIT_FUEL_LAST_ID, 1, ZSTR_GASSUIT_CONS, UNIT_MILLILITERS, 0 },
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
@@ -229,13 +229,8 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
         else if (id >= ESC_TEMPERATURE_FIRST_ID && id <= ESC_TEMPERATURE_LAST_ID) {
           sportProcessTelemetryPacket(id, 0, instance, data & 0x00ff);
         }
-        else if (id >= GASSUIT_TEMP_FIRST_ID && id <= GASSUIT_TEMP_LAST_ID) {
+        else if (id >= GASSUIT_TEMP_FIRST_ID && id <= GASSUIT_FUEL_LAST_ID) {
           // 2 sensors
-          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
-        }
-        else if (id >= GASSUIT_FUEL_FIRST_ID && id <= GASSUIT_FUEL_LAST_ID) {
-          // 2 sensors (flow and consumed)
           sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
           sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
