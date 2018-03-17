@@ -75,6 +75,13 @@ void backlightEnable(uint8_t dutyCycle)
     BL_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX - dutyCycle;
   }
 #elif defined(PCBX10)
+#if (0 >= BACKLIGHT_LEVEL_MIN)
+#error BACKLIGHT_LEVEL_MIN MUST >= 0
+#endif
+  if (0 == dutyCycle)
+    BL_TIMER->BDTR &= ~TIM_BDTR_MOE;
+  else if (0 == (BL_TIMER->BDTR & TIM_BDTR_MOE))
+    BL_TIMER->BDTR |= TIM_BDTR_MOE;
   BL_TIMER->CCR3 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #endif
 }
