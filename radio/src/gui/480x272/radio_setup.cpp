@@ -381,7 +381,7 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_DIM_LEVEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLOFFBRIGHTNESS);
-        g_eeGeneral.blOffBright = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.blOffBright, BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX, attr);
+        g_eeGeneral.blOffBright = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, g_eeGeneral.blOffBright, BACKLIGHT_LEVEL_MIN - BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX, attr);
         break;
 
       case ITEM_SETUP_LABEL_GPS:
