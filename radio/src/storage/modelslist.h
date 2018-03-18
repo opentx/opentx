@@ -56,8 +56,7 @@ class ModelCell
       struct partialModels {
         ModelHeader header;
         TimerData timerdata[MAX_TIMERS];
-      };
-      struct partialModels partialModel;
+      } partialModel;
       const char * error = NULL;
 
       buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
