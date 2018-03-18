@@ -66,8 +66,8 @@ void pushMenu(MenuHandlerFunc newMenu)
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 
-void readModelNotes() {
-
+void readModelNotes()
+{
   LED_ERROR_BEGIN();
 
   strcpy(s_text_file, MODELS_PATH "/");

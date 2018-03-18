@@ -102,8 +102,8 @@ void readTextFile(int & lines_count)
 #define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)
 #endif
 
-void readModelNotes() {
-
+void readModelNotes()
+{
   LED_ERROR_BEGIN();
 
   strcpy(s_text_file, MODELS_PATH "/");
