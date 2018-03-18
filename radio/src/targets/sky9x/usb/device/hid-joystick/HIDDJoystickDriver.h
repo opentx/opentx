@@ -77,19 +77,7 @@ extern void HIDDJoystickDriver_Initialize();
 */
 extern void HIDDJoystickDriver_RequestHandler(const USBGenericRequest *request);
 
-extern unsigned char HIDDJoystickDriver_ChangeJoystickState(
-        unsigned char buttons1,
-        unsigned char buttons2,
-        unsigned char buttons3,
-        unsigned char X,
-        unsigned char Y,
-        unsigned char Z,
-        unsigned char Rx,
-        unsigned char Ry,
-        unsigned char Rz,
-        unsigned char S1,
-        unsigned char S2
-        );
+extern unsigned char HIDDJoystickDriver_ChangeJoystickState(const HIDDJoystickInputReport *report);
 
 #endif //#ifndef HIDDKEYBOARDDRIVER_H
 

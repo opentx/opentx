@@ -90,11 +90,19 @@
 #define HIDGenericDesktop_MULTIAXIS         0x08
 
 /// Axis Usage X direction ID.
-#define HIDGenericDesktop_X                 0x30
+#define HIDGenericDesktop_X_AXIS            0x30
 /// Axis Usage Y direction ID.
-#define HIDGenericDesktop_Y                 0x31
+#define HIDGenericDesktop_Y_AXIS            0x31
 /// Axis Usage Z direction ID.
-#define HIDGenericDesktop_Z                 0x32
+#define HIDGenericDesktop_Z_AXIS            0x32
+/// Rotation Usage X direction ID.
+#define HIDGenericDesktop_X_ROTATION        0x33
+/// Rotation Usage Y direction ID.
+#define HIDGenericDesktop_Y_ROTATION        0x34
+/// Rotation Usage Z direction ID.
+#define HIDGenericDesktop_Z_ROTATION        0x35
+/// Slider usage ID.
+#define HIDGenericDesktop_SLIDER            0x36
 //------------------------------------------------------------------------------
 
 #endif //#ifndef HIDGENERICDESKTOP_H

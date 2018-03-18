@@ -41,6 +41,7 @@
 #include <usb/common/hid/HIDIdleRequest.h>
 #include <usb/device/core/USBD.h>
 #include <usb/device/core/USBDDriver.h>
+#include <string.h>
 
 #define TRACE_INFO(...)       { }
 #define TRACE_WARNING(...)    { }
@@ -342,33 +343,11 @@ void HIDDJoystickDriver_RequestHandler(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 /// Update the Joystick state via input report
 /// to host
+/// \param report Pointer to a HIDDJoystickInputReport instance
 //------------------------------------------------------------------------------
-unsigned char HIDDJoystickDriver_ChangeJoystickState(
-        unsigned char buttons1,
-        unsigned char buttons2,
-        unsigned char buttons3,
-        unsigned char X,
-        unsigned char Y,
-        unsigned char Z,
-        unsigned char Rx,
-        unsigned char Ry,
-        unsigned char Rz,
-        unsigned char S1,
-        unsigned char S2
-        )
+unsigned char HIDDJoystickDriver_ChangeJoystickState(const HIDDJoystickInputReport *report)
 {
-
-    hiddJoystickDriver.inputReport.buttons1 = buttons1;
-    hiddJoystickDriver.inputReport.buttons2 = buttons2;
-    hiddJoystickDriver.inputReport.buttons3 = buttons3;
-    hiddJoystickDriver.inputReport.X = X;
-    hiddJoystickDriver.inputReport.Y = Y;
-    hiddJoystickDriver.inputReport.Z = Z;
-    hiddJoystickDriver.inputReport.Rx = Rx;
-    hiddJoystickDriver.inputReport.Ry = Ry;
-    hiddJoystickDriver.inputReport.Rz = Rz;
-    hiddJoystickDriver.inputReport.S1 = S1;
-    hiddJoystickDriver.inputReport.S2 = S2;
+    memcpy(&(hiddJoystickDriver.inputReport), report, sizeof(HIDDJoystickInputReport));
 
     // Send input report through the interrupt IN endpoint
     return USBD_Write(HIDDJoystickDriverDescriptors_INTERRUPTIN,
