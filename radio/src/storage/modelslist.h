@@ -67,8 +67,9 @@ class ModelCell
       if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
         memcpy(&partialModel.header, &g_model.header, sizeof(partialModel));
       }
-      else
+      else {
         error = readModel(modelFilename, (uint8_t *)&partialModel.header, sizeof(partialModel));
+      }
 
       buffer->clear(TEXT_BGCOLOR);
 
