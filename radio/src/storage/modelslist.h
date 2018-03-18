@@ -53,7 +53,11 @@ class ModelCell
 
     void load()
     {
-      ModelHeader header;
+      struct partialModels {
+        ModelHeader header;
+        TimerData timerdata[MAX_TIMERS];
+      };
+      struct partialModels partialModel;
       const char * error = NULL;
 
       buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
@@ -61,10 +65,12 @@ class ModelCell
         return;
       }
 
-      if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0)
-        header = g_model.header;
+      if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
+        partialModel.header = g_model.header;
+        memcpy(&partialModel.timerdata[0], &g_model.timers, sizeof(g_model.timers));
+      }
       else
-        error = readModel(modelFilename, (uint8_t *)&header, sizeof(header));
+        error = readModel(modelFilename, (uint8_t *)&partialModel.header, sizeof(partialModel.header)+sizeof(partialModel.timerdata));
 
       buffer->clear(TEXT_BGCOLOR);
 
@@ -73,7 +79,7 @@ class ModelCell
         buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
       }
       else {
-        zchar2str(modelName, header.name, LEN_MODEL_NAME);
+        zchar2str(modelName, partialModel.header.name, LEN_MODEL_NAME);
         if (modelName[0] == 0) {
           char * tmp;
           strncpy(modelName, modelFilename, LEN_MODEL_NAME);
@@ -84,11 +90,17 @@ class ModelCell
         char timer[LEN_TIMER_STRING];
         buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
         getTimerString(timer, 0);
+        for (uint8_t i = 0; i < MAX_TIMERS;i++) {
+          if(partialModel.timerdata[i].mode > 0 && partialModel.timerdata[i].persistent) {
+            getTimerString(timer, partialModel.timerdata[i].value);
+            break;
+          }
+        }
         buffer->drawText(101, 40, timer, TEXT_COLOR);
         for (int i=0; i<4; i++) {
           buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
         }
-        GET_FILENAME(filename, BITMAPS_PATH, header.bitmap, "");
+        GET_FILENAME(filename, BITMAPS_PATH, partialModel.header.bitmap, "");
         const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
         if (bitmap) {
           buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
