@@ -66,8 +66,7 @@ class ModelCell
       }
 
       if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
-        partialModel.header = g_model.header;
-        memcpy(&partialModel.timerdata[0], &g_model.timers, sizeof(g_model.timers));
+        memcpy(&partialModel.header, &g_model.header, sizeof(partialModel));
       }
       else
         error = readModel(modelFilename, (uint8_t *)&partialModel.header, sizeof(partialModel.header)+sizeof(partialModel.timerdata));
