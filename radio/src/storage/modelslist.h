@@ -69,7 +69,7 @@ class ModelCell
         memcpy(&partialModel.header, &g_model.header, sizeof(partialModel));
       }
       else
-        error = readModel(modelFilename, (uint8_t *)&partialModel.header, sizeof(partialModel.header)+sizeof(partialModel.timerdata));
+        error = readModel(modelFilename, (uint8_t *)&partialModel.header, sizeof(partialModel));
 
       buffer->clear(TEXT_BGCOLOR);
 
