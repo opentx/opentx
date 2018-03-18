@@ -187,6 +187,10 @@ void lcdSetContrast(void);
 // USB driver
 void usbMassStorage();
 
+#if !defined(SIMU)
+void usbJoystickUpdate();
+#endif
+
 #define PIN_ENABLE                     0x001
 #define PIN_PERIPHERAL                 0x000
 #define PIN_INPUT                      0x002
@@ -262,8 +266,6 @@ void disable_dsm2(uint32_t port);
 
 void init_sbusOut(uint32_t module_index);
 void disable_sbusOut(uint32_t module_index);
-
-void usbJoystickUpdate();
 
 // SD driver
 #if defined(SIMU)
