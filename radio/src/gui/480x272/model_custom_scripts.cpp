@@ -68,7 +68,7 @@ bool menuModelCustomScriptOne(event_t event)
         lcdDrawSizedText(SCRIPT_ONE_2ND_COLUMN_POS, y, sd.file, sizeof(sd.file), attr);
       else
         lcdDrawTextAtIndex(SCRIPT_ONE_2ND_COLUMN_POS, y, STR_VCSWFUNC, 0, attr);
-      if (attr) s_editMode = 0;
+      if (attr && -1 != s_editMode) s_editMode = 0;
       if (attr && event==EVT_KEY_FIRST(KEY_ENTER) && !READ_ONLY()) {
         killEvents(KEY_ENTER);
         if (sdListFiles(SCRIPTS_MIXES_PATH, SCRIPTS_EXT, sizeof(sd.file), sd.file, LIST_NONE_SD_FILE)) {
@@ -133,10 +133,27 @@ bool menuModelCustomScripts(event_t event)
 
   int8_t  sub = menuVerticalPosition;
 
+#if 0
   if (event == EVT_KEY_FIRST(KEY_ENTER) && sub >= 0) {
     s_currIdx = sub;
     pushMenu(menuModelCustomScriptOne);
   }
+#else
+  switch(event) {
+    case EVT_KEY_FIRST(KEY_ENTER):
+      if (-1 == s_editMode) {
+        s_editMode = 0;
+        killEvents(KEY_ENTER);
+        break;
+      }
+      if (sub >= 0) {
+        s_currIdx = sub;
+        killEvents(KEY_ENTER);
+        pushMenu(menuModelCustomScriptOne);
+        break;
+      }
+  }
+#endif
 
   for (int i=0, scriptIndex=0; i<MAX_SCRIPTS; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;

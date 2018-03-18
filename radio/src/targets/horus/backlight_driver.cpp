@@ -67,6 +67,13 @@ void backlightInit()
 
 void backlightEnable(uint8_t dutyCycle)
 {
+#if (0 >= BACKLIGHT_LEVEL_MIN)
+#error BACKLIGHT_LEVEL_MIN MUST >= 0
+#endif
+  if (0 == dutyCycle)
+    BL_TIMER->BDTR &= ~TIM_BDTR_MOE;
+  else if (0 == (BL_TIMER->BDTR & TIM_BDTR_MOE))
+    BL_TIMER->BDTR |= TIM_BDTR_MOE;
 #if defined(PCBX12S)
   if (IS_HORUS_PROD()) {
     BACKLIGHT_TIMER->CCR4 = dutyCycle;

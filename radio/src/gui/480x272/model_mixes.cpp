@@ -440,6 +440,11 @@ bool menuModelMixAll(event_t event)
       }
       break;
     case EVT_KEY_BREAK(KEY_ENTER):
+      if (-1 == s_editMode)
+      {
+        s_editMode = 0;
+        break;
+      }
       if ((!s_currCh || (s_copyMode && !s_copyTgtOfs)) && !READ_ONLY()) {
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
         s_copySrcIdx = s_currIdx;

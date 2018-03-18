@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+extern int8_t s_editMode;
+
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(WHITE) },
   { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
@@ -328,7 +330,8 @@ class DefaultTheme: public Theme
     {
       if (selected) {
         lcd->drawBitmap(58+position*MENU_ICONS_SPACING-10, 0, currentMenuBackground);
-        lcd->drawBitmap(50+position*MENU_ICONS_SPACING, 7, menuIconSelected[index], MENU_TITLE_COLOR);
+        lcd->drawSolidFilledRect(58+position*MENU_ICONS_SPACING-10, 0, currentMenuBackground->getWidth(), 5, HEADER_BGCOLOR);
+        lcd->drawBitmap(50+position*MENU_ICONS_SPACING, 7, (-1 == s_editMode) ? menuIconNormal[index] : menuIconSelected[index], MENU_TITLE_COLOR);
       }
       else {
         lcd->drawBitmap(50+position*MENU_ICONS_SPACING, 7, menuIconNormal[index], MENU_TITLE_COLOR);

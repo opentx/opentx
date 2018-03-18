@@ -459,7 +459,7 @@ void backlightInit(void);
 void backlightEnable(uint8_t dutyCycle);
 #endif
 #define BACKLIGHT_LEVEL_MAX   100
-#if defined(PCBX12S)
+#if defined(PCBX12S) || defined(PCBX10)
 #define BACKLIGHT_LEVEL_MIN   5
 #else
 #define BACKLIGHT_LEVEL_MIN   46
