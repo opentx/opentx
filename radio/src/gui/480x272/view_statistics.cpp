@@ -90,6 +90,7 @@ bool menuStatsGraph(event_t event)
   }
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
+  s_editMode = -1;
   return true;
 }
 
@@ -153,6 +154,7 @@ bool menuStatsDebug(event_t event)
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, telemetryErrors, LEFT);
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
+  s_editMode = -1;
   return true;
 }
 
@@ -185,6 +187,7 @@ bool menuStatsAnalogs(event_t event)
     lcdDrawNumber(LCD_W/2 + MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.xjtVersion);
   }
 
+  s_editMode = -1;
   return true;
 }
 

@@ -299,6 +299,10 @@ bool menuModelCurvesAll(event_t event)
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
+      if (s_editMode == -1) {
+        s_editMode = 0;
+        break;
+      }
       if (!READ_ONLY()) {
         pushMenu(menuModelCurveOne);
       }

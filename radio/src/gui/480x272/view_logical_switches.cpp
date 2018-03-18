@@ -105,7 +105,18 @@ bool menuLogicalSwitchesMonitor(event_t event)
   if (lswAddress(menuHorizontalPosition)->func != LS_FUNC_NONE) {
     displayLogicalSwitchedDetails(X_FUNC, Y_FUNC, menuHorizontalPosition);
   }
-  s_editMode = 0;
+
+  switch(event) {
+    case EVT_ROTARY_BREAK:
+      if (s_editMode == EDIT_SELECT_MENU)
+        s_editMode = 0;
+      break;
+    case EVT_KEY_FIRST(KEY_EXIT):
+      if (s_editMode != EDIT_SELECT_MENU)
+        s_editMode = -1;
+      break;
+  }
+
   return true;
 }
 

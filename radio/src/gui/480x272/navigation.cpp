@@ -352,6 +352,9 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   if (menuTab && !menuCalibrationState) {
     int cc = curr;
     switch (event) {
+      case EVT_ROTARY_RIGHT:
+        if (s_editMode != EDIT_SELECT_MENU)
+          break;
 #if defined(PCBX12S)
       case EVT_KEY_FIRST(KEY_PGDN):
 #elif defined(PCBX10)
@@ -361,6 +364,9 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
           cc = 0;
         break;
 
+      case EVT_ROTARY_LEFT:
+        if (s_editMode != EDIT_SELECT_MENU)
+          break;
       case EVT_KEY_FIRST(KEY_PGUP):
 #if defined(PCBX10)
       case EVT_KEY_LONG(KEY_PGDN):
@@ -382,7 +388,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
 
   switch (event) {
     case EVT_ENTRY:
-      s_editMode = EDIT_MODE_INIT;
+      s_editMode = (menuTab) ? EDIT_SELECT_MENU : EDIT_MODE_INIT;
       menuVerticalPosition = MENU_FIRST_LINE_EDIT;
       menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
       break;
@@ -393,6 +399,24 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       break;
 
     case EVT_ROTARY_BREAK:
+      if (s_editMode == EDIT_SELECT_MENU)
+      {
+        if (menuTabModel == menuTab && (curr == MENU_MODEL_INPUTS
+#if defined(CURVES)
+            || curr == MENU_MODEL_CURVES
+#endif
+#if defined(LUA_MODEL_SCRIPTS)
+            || curr == MENU_MODEL_CUSTOM_SCRIPTS
+#endif
+            || curr == MENU_MODEL_MIXES))
+          goto skipout;
+
+        s_editMode = EDIT_SELECT_FIELD;
+skipout:
+        AUDIO_KEY_PRESS();
+        break;
+      }
+
       if (s_editMode > 1) break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         menuHorizontalPosition = 0;
@@ -422,12 +446,18 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       else {
         uint8_t posVertInit = MENU_FIRST_LINE_EDIT;
         if (menuVerticalOffset != 0 || menuVerticalPosition != posVertInit) {
+          if (s_editMode != EDIT_SELECT_MENU)
+            s_editMode = EDIT_SELECT_MENU;
           menuVerticalOffset = 0;
           menuVerticalPosition = posVertInit;
           menuHorizontalPosition = POS_HORZ_INIT(menuVerticalPosition);
           AUDIO_KEY_PRESS();
         }
         else if (!menuCalibrationState) {
+          if (s_editMode != EDIT_SELECT_MENU) {
+            s_editMode = EDIT_SELECT_MENU;
+            break;
+          }
           popMenu();
         }
       }

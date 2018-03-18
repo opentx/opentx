@@ -52,5 +52,6 @@ bool menuRadioVersion(event_t event)
   }
 #endif
 
+  s_editMode = EDIT_SELECT_MENU;
   return true;
 }
