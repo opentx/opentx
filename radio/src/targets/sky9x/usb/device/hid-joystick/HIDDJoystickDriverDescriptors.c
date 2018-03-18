@@ -52,7 +52,6 @@
 #include <usb/common/hid/HIDDescriptor.h>
 #include <usb/common/hid/HIDReport.h>
 #include <usb/common/hid/HIDGenericDesktop.h>
-#include <usb/common/hid/HIDLeds.h>
 #include <usb/common/hid/HIDButton.h>
 #include <usb/device/core/USBDDriverDescriptors.h>
 
