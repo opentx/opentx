@@ -32,31 +32,16 @@
 
  !!!Purpose
  
- Class for manipulating HID Mouse input reports.
+ Class for manipulating HID Joystick input reports.
 
  !!!Usage
 
  -# Initialize a newly created input report with
-    HIDDMouseInputReport_Initialize
+    HIDDJoystickInputReport_Initialize
 */
 
-#ifndef HIDDKEYBOARDINPUTREPORT_H
-#define HIDDKEYBOARDINPUTREPORT_H
-
-//------------------------------------------------------------------------------
-//         Definitions
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-/// \page "HID Mouse Keys"
-
-/// Mouse Left Click Button
-#define HIDDMouseInputReport_LEFT_BUTTON        (1 << 0)
-/// Mouse Right Click Button
-#define HIDDMouseInputReport_RIGHT_BUTTON       (1 << 1)
-/// Mouse Middle Button
-#define HIDDMouseInputReport_MIDDLE_BUTTON      (1 << 2)
-//------------------------------------------------------------------------------
+#ifndef HIDDJOYSTICKINPUTREPORT_H
+#define HIDDJOYSTICKINPUTREPORT_H
 
 //------------------------------------------------------------------------------
 //         Types
@@ -68,16 +53,24 @@
 #endif                     // IAR
 
 //------------------------------------------------------------------------------
-/// HID input report structure used by the Mouse driver to notify the
+/// HID input report structure used by the Joystick driver to notify the
 /// host of pressed keys.
 //------------------------------------------------------------------------------
 typedef struct {
 
-    unsigned char bmButtons;        /// Bitmap state of three mouse buttons.
-    signed char bX;                 /// Pointer displacement along the X axis.
-    signed char bY;                 /// Pointer displacement along the Y axis.
+    unsigned char buttons1; // bit 0 - button 1, bit 1 - button 2, ..., mapped to channels 9-16, on if channel > 0
+    unsigned char buttons2; // mapped to channels 17-24, on if channel > 0
+    unsigned char buttons3; // mapped to channels 25-32, on if channel > 0
+    unsigned char X;        // analog value, mapped to channel 1
+    unsigned char Y;        // analog value, mapped to channel 2
+    unsigned char Z;        // analog value, mapped to channel 3
+    unsigned char Rx;       // analog value, mapped to channel 4
+    unsigned char Ry;       // analog value, mapped to channel 5
+    unsigned char Rz;       // analog value, mapped to channel 6
+    unsigned char S1;       // analog value, mapped to channel 7
+    unsigned char S2;       // analog value, mapped to channel 8
 
-} __attribute__ ((packed)) HIDDMouseInputReport; // GCC
+} __attribute__ ((packed)) HIDDJoystickInputReport; // GCC
 
 #ifdef __ICCARM__          // IAR
 #pragma pack()             // IAR
@@ -87,7 +80,7 @@ typedef struct {
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern void HIDDMouseInputReport_Initialize(HIDDMouseInputReport *report);
+extern void HIDDJoystickInputReport_Initialize(HIDDJoystickInputReport *report);
 
-#endif //#ifndef HIDDKEYBOARDINPUTREPORT_H
+#endif //#ifndef HIDDJOYSTICKINPUTREPORT_H
 

@@ -31,9 +31,8 @@
 //         Headers
 //------------------------------------------------------------------------------
 
-#include "HIDDMouseDriver.h"
-#include "HIDDMouseDriverDescriptors.h"
-#include "HIDDMouseInputReport.h"
+#include "HIDDJoystickDriver.h"
+#include "HIDDJoystickDriverDescriptors.h"
 #include <usb/common/core/USBGetDescriptorRequest.h>
 #include <usb/common/hid/HIDGenericDescriptor.h>
 #include <usb/common/hid/HIDDescriptor.h>
@@ -47,25 +46,7 @@
 #define TRACE_WARNING(...)    { }
 
 //------------------------------------------------------------------------------
-//         Internal Defines
-//------------------------------------------------------------------------------
-
-/// Tag bit (Always 1)
-#define HIDDMouse_TAG       (1 << 3)
-
-/// Xsign bit
-#define HIDDMouse_Xsign     (1 << 4)
-
-/// Ysign bit
-#define HIDDMouse_Ysign     (1 << 5)
-
-
-//------------------------------------------------------------------------------
-//         Internal types
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-/// Driver structure for an HID device implementing keyboard functionalities.
+/// Driver structure for an HID device implementing joystick functionalities.
 //------------------------------------------------------------------------------
 typedef struct {
 
@@ -76,16 +57,16 @@ typedef struct {
     /// 
     unsigned char inputProtocol;
     /// Input report instance.
-    HIDDMouseInputReport inputReport;
+    HIDDJoystickInputReport inputReport;
 
-} HIDDMouseDriver;
+} HIDDJoystickDriver;
 
 //------------------------------------------------------------------------------
 //         Internal variables
 //------------------------------------------------------------------------------
 
-/// Static instance of the HID mouse device driver.
-static HIDDMouseDriver hiddMouseDriver;
+/// Static instance of the HID joystick device driver.
+static HIDDJoystickDriver hiddJoystickDriver;
 
 //------------------------------------------------------------------------------
 //         Internal functions
@@ -97,9 +78,11 @@ static HIDDMouseDriver hiddMouseDriver;
 /// \param length Maximum number of bytes to send.
 /// \return 1 if the request has been handled by this function, otherwise 0.
 //------------------------------------------------------------------------------
-static unsigned char HIDDMouseDriver_GetDescriptor(unsigned char type,
+static unsigned char HIDDJoystickDriver_GetDescriptor(unsigned char type,
                                                       unsigned char length)
 {
+    extern int hiddReportDescriptorSize;
+
     const USBConfigurationDescriptor *pConfiguration;
     HIDDescriptor *hidDescriptor;
 
@@ -109,9 +92,9 @@ static unsigned char HIDDMouseDriver_GetDescriptor(unsigned char type,
             TRACE_INFO("Report ");
 
             // Adjust length and send report descriptor
-            if (length > HIDDMouseDriverDescriptors_REPORTSIZE) {
+            if (length > hiddReportDescriptorSize) {
 
-                length = HIDDMouseDriverDescriptors_REPORTSIZE;
+                length = hiddReportDescriptorSize;
             }
             USBD_Write(0, &hiddReportDescriptor, length, 0, 0);
             break;
@@ -123,12 +106,12 @@ static unsigned char HIDDMouseDriver_GetDescriptor(unsigned char type,
             if (USBD_IsHighSpeed()) {
 
                 pConfiguration =
-                    hiddMouseDriver.usbdDriver.pDescriptors->pHsConfiguration;
+                    hiddJoystickDriver.usbdDriver.pDescriptors->pHsConfiguration;
             }
             else {
 
                 pConfiguration =
-                    hiddMouseDriver.usbdDriver.pDescriptors->pFsConfiguration;
+                    hiddJoystickDriver.usbdDriver.pDescriptors->pFsConfiguration;
             }
 
             // Parse the device configuration to get the HID descriptor
@@ -153,22 +136,22 @@ static unsigned char HIDDMouseDriver_GetDescriptor(unsigned char type,
 //------------------------------------------------------------------------------
 /// Sends the current Idle rate of the input report to the host.
 //------------------------------------------------------------------------------
-static void HIDDMouseDriver_GetIdle()
+static void HIDDJoystickDriver_GetIdle()
 {
     TRACE_INFO("gIdle ");
 
-    USBD_Write(0, &(hiddMouseDriver.inputReportIdleRate), 1, 0, 0);
+    USBD_Write(0, &(hiddJoystickDriver.inputReportIdleRate), 1, 0, 0);
 }
 
 //------------------------------------------------------------------------------
 /// Retrieves the new idle rate of the input report from the USB host.
 /// \param idleRate New input report idle rate.
 //------------------------------------------------------------------------------
-static void HIDDMouseDriver_SetIdle(unsigned char idleRate)
+static void HIDDJoystickDriver_SetIdle(unsigned char idleRate)
 {
     TRACE_INFO("sIdle(%d) ", idleRate);
 
-    hiddMouseDriver.inputReportIdleRate = idleRate;
+    hiddJoystickDriver.inputReportIdleRate = idleRate;
     USBD_Write(0, 0, 0, 0, 0);
 }
 
@@ -177,8 +160,8 @@ static void HIDDMouseDriver_SetIdle(unsigned char idleRate)
 /// \param type Report type.
 /// \param length Maximum number of bytes to send.
 //------------------------------------------------------------------------------
-static void HIDDMouseDriver_GetReport(unsigned char type,
-                                      unsigned short length)
+static void HIDDJoystickDriver_GetReport(unsigned char type,
+                                         unsigned short length)
 {
     TRACE_INFO("gReport ");
 
@@ -189,12 +172,12 @@ static void HIDDMouseDriver_GetReport(unsigned char type,
             TRACE_INFO("In ");
 
             // Adjust size and send report
-            if (length > sizeof(HIDDMouseInputReport)) {
+            if (length > sizeof(HIDDJoystickInputReport)) {
 
-                length = sizeof(HIDDMouseInputReport);
+                length = sizeof(HIDDJoystickInputReport);
             }
             USBD_Write(0, // Endpoint #0
-                       &(hiddMouseDriver.inputReport),
+                       &(hiddJoystickDriver.inputReport),
                        length,
                        0, // No callback
                        0);
@@ -210,7 +193,7 @@ static void HIDDMouseDriver_GetReport(unsigned char type,
 /// \param type Report type.
 /// \param length Report length.
 //------------------------------------------------------------------------------
-static void HIDDMouseDriver_SetReport(unsigned char type,
+static void HIDDJoystickDriver_SetReport(unsigned char type,
                                          unsigned short length)
 {
     TRACE_INFO("sReport ");
@@ -239,7 +222,7 @@ static void HIDDMouseDriver_SetReport(unsigned char type,
 //------------------------------------------------------------------------------
 void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
 {
-    HIDDMouseDriver_RequestHandler(request);
+    HIDDJoystickDriver_RequestHandler(request);
 }
 
 #endif
@@ -264,14 +247,14 @@ void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/// Initializes the HID Mouse %device driver.
+/// Initializes the HID Joystick %device driver.
 //------------------------------------------------------------------------------
-void HIDDMouseDriver_Initialize()
+void HIDDJoystickDriver_Initialize()
 {
-    hiddMouseDriver.inputReportIdleRate = 0;
-    HIDDMouseInputReport_Initialize(&(hiddMouseDriver.inputReport));
-    USBDDriver_Initialize(&(hiddMouseDriver.usbdDriver),
-                          &hiddMouseDriverDescriptors,
+    hiddJoystickDriver.inputReportIdleRate = 0;
+    HIDDJoystickInputReport_Initialize(&(hiddJoystickDriver.inputReport));
+    USBDDriver_Initialize(&(hiddJoystickDriver.usbdDriver),
+                          &hiddJoystickDriverDescriptors,
                           0); // Multiple interface settings not supported
     USBD_Init();
 }
@@ -280,7 +263,7 @@ void HIDDMouseDriver_Initialize()
 /// Handles HID-specific SETUP request sent by the host.
 /// \param request Pointer to a USBGenericRequest instance
 //------------------------------------------------------------------------------
-void HIDDMouseDriver_RequestHandler(const USBGenericRequest *request)
+void HIDDJoystickDriver_RequestHandler(const USBGenericRequest *request)
 {
     TRACE_INFO("NewReq ");
 
@@ -293,17 +276,17 @@ void HIDDMouseDriver_RequestHandler(const USBGenericRequest *request)
             case USBGenericRequest_GETDESCRIPTOR:
                 // Check if this is a HID descriptor, otherwise forward it to
                 // the standard driver
-                if (!HIDDMouseDriver_GetDescriptor(
+                if (!HIDDJoystickDriver_GetDescriptor(
                         USBGetDescriptorRequest_GetDescriptorType(request),
                         USBGenericRequest_GetLength(request))) {
 
-                    USBDDriver_RequestHandler(&(hiddMouseDriver.usbdDriver),
+                    USBDDriver_RequestHandler(&(hiddJoystickDriver.usbdDriver),
                                               request);
                 }
                 break;
 
             default:
-                USBDDriver_RequestHandler(&(hiddMouseDriver.usbdDriver),
+                USBDDriver_RequestHandler(&(hiddJoystickDriver.usbdDriver),
                                               request);
         }
     }
@@ -314,37 +297,37 @@ void HIDDMouseDriver_RequestHandler(const USBGenericRequest *request)
         switch (USBGenericRequest_GetRequest(request)) {
 
             case HIDGenericRequest_GETIDLE:
-                HIDDMouseDriver_GetIdle();
+                HIDDJoystickDriver_GetIdle();
                 break;
 
             case HIDGenericRequest_SETIDLE:
-                HIDDMouseDriver_SetIdle(HIDIdleRequest_GetIdleRate(request));
+                HIDDJoystickDriver_SetIdle(HIDIdleRequest_GetIdleRate(request));
                 break;
 
             case HIDGenericRequest_GETREPORT:
-                HIDDMouseDriver_GetReport(
+                HIDDJoystickDriver_GetReport(
                     HIDReportRequest_GetReportType(request),
                     USBGenericRequest_GetLength(request));
                 break;
 
             case HIDGenericRequest_SETREPORT:
-                HIDDMouseDriver_SetReport(
+                HIDDJoystickDriver_SetReport(
                     HIDReportRequest_GetReportType(request),
                     USBGenericRequest_GetLength(request));
                 break;
 
             case HIDGenericRequest_GETPROTOCOL:
-                USBD_Write(0, &hiddMouseDriver.inputProtocol, 1, 0, 0);
+                USBD_Write(0, &hiddJoystickDriver.inputProtocol, 1, 0, 0);
                 break;
 
             case HIDGenericRequest_SETPROTOCOL:
-                hiddMouseDriver.inputProtocol = request->wValue;
+                hiddJoystickDriver.inputProtocol = request->wValue;
                 USBD_Write(0, 0, 0, 0, 0);
                 break;
 
             default:
                 TRACE_WARNING(
-                  "HIDDMouseDriver_RequestHandler: Unknown request 0x%02X\n\r",
+                  "HIDDJoystickDriver_RequestHandler: Unknown request 0x%02X\n\r",
                   USBGenericRequest_GetRequest(request));
                 USBD_Stall(0);
         }
@@ -357,38 +340,40 @@ void HIDDMouseDriver_RequestHandler(const USBGenericRequest *request)
 }
 
 //------------------------------------------------------------------------------
-/// Update the Mouse button status and location changes via input report
+/// Update the Joystick state via input report
 /// to host
-/// \param bmButtons Bit map of the button status
-/// \param deltaX Movment on X direction
-/// \param deltaY Movment on Y direction
 //------------------------------------------------------------------------------
-unsigned char HIDDMouseDriver_ChangePoints(unsigned char bmButtons,
-                                           signed char deltaX,
-                                           signed char deltaY)
+unsigned char HIDDJoystickDriver_ChangeJoystickState(
+        unsigned char buttons1,
+        unsigned char buttons2,
+        unsigned char buttons3,
+        unsigned char X,
+        unsigned char Y,
+        unsigned char Z,
+        unsigned char Rx,
+        unsigned char Ry,
+        unsigned char Rz,
+        unsigned char S1,
+        unsigned char S2
+        )
 {
-    hiddMouseDriver.inputReport.bmButtons = (bmButtons & 0x07)
-                                          | HIDDMouse_TAG;
-    hiddMouseDriver.inputReport.bX = deltaX;
-    hiddMouseDriver.inputReport.bY = deltaY;
+
+    hiddJoystickDriver.inputReport.buttons1 = buttons1;
+    hiddJoystickDriver.inputReport.buttons2 = buttons2;
+    hiddJoystickDriver.inputReport.buttons3 = buttons3;
+    hiddJoystickDriver.inputReport.X = X;
+    hiddJoystickDriver.inputReport.Y = Y;
+    hiddJoystickDriver.inputReport.Z = Z;
+    hiddJoystickDriver.inputReport.Rx = Rx;
+    hiddJoystickDriver.inputReport.Ry = Ry;
+    hiddJoystickDriver.inputReport.Rz = Rz;
+    hiddJoystickDriver.inputReport.S1 = S1;
+    hiddJoystickDriver.inputReport.S2 = S2;
+
     // Send input report through the interrupt IN endpoint
-    return USBD_Write(HIDDMouseDriverDescriptors_INTERRUPTIN,
-                      &(hiddMouseDriver.inputReport),
-                      sizeof(HIDDMouseInputReport),
+    return USBD_Write(HIDDJoystickDriverDescriptors_INTERRUPTIN,
+                      &(hiddJoystickDriver.inputReport),
+                      sizeof(HIDDJoystickInputReport),
                       0,
                       0);
 }
-
-//------------------------------------------------------------------------------
-/// Starts a remote wake-up sequence if the host has explicitely enabled it
-/// by sending the appropriate SET_FEATURE request.
-//------------------------------------------------------------------------------
-void HIDDMouseDriver_RemoteWakeUp(void)
-{
-    // Remote wake-up has been enabled
-    if (USBDDriver_IsRemoteWakeUpEnabled(&(hiddMouseDriver.usbdDriver))) {
-
-        USBD_RemoteWakeUp();
-    }
-}
-

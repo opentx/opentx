@@ -72,6 +72,7 @@
 /// - HIDGenericDesktop_MULTIAXIS
 /// - HIDGenericDesktop_X
 /// - HIDGenericDesktop_Y
+/// - HIDGenericDesktop_Z
 
 /// Pointer usage ID.
 #define HIDGenericDesktop_POINTER           0x01
@@ -92,6 +93,8 @@
 #define HIDGenericDesktop_X                 0x30
 /// Axis Usage Y direction ID.
 #define HIDGenericDesktop_Y                 0x31
+/// Axis Usage Z direction ID.
+#define HIDGenericDesktop_Z                 0x32
 //------------------------------------------------------------------------------
 
 #endif //#ifndef HIDGENERICDESKTOP_H

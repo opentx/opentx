@@ -32,17 +32,17 @@
 
  !!!Purpose
 
- Definition of methods for using a HID mouse device driver.
+ Definition of methods for using a HID joystick device driver.
 
  !!!Usage
 
  -# Re-implement the USBDCallbacks_RequestReceived callback to forward
-    requests to HIDDMouseDriver_RequestHandler. This is done
+    requests to HIDDJoystickDriver_RequestHandler. This is done
     automatically unless the NOAUTOCALLBACK symbol is defined during
     compilation.
- -# Initialize the driver using HIDDMouseDriver_Initialize. The
+ -# Initialize the driver using HIDDJoystickDriver_Initialize. The
     USB driver is automatically initialized by this method.
- -# Call the HIDDMouseDriver_ChangePoints method when one or more
+ -# Call the HIDDJoystickDriver_ChangePoints method when one or more
     keys are pressed/released.
 */
 
@@ -54,27 +54,7 @@
 //------------------------------------------------------------------------------
 
 #include <usb/common/core/USBGenericRequest.h>
-
-//------------------------------------------------------------------------------
-//         Definitions
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-/// \page "HID Mouse Button bitmaps"
-/// ...
-/// !Bits
-/// - HIDDMouse_LEFT_BUTTON
-/// - HIDDMouse_RIGHT_BUTTON
-/// - HIDDMouse_MIDDLE_BUTTON
-
-/// Left mouse button
-#define HIDDMouse_LEFT_BUTTON   (1 << 0)
-
-/// Right mouse button
-#define HIDDMouse_RIGHT_BUTTON  (1 << 1)
-
-/// Middle mouse button
-#define HIDDMouse_MIDDLE_BUTTON (1 << 2)
+#include "HIDDJoystickInputReport.h"
 
 //------------------------------------------------------------------------------
 
@@ -83,25 +63,33 @@
 //         Exported functions
 //------------------------------------------------------------------------------
 /*
-    Function: HIDDMouseDriver_Initialize
+    Function: HIDDJoystickDriver_Initialize
         Initializes the HID keyboard device driver.
 */
-extern void HIDDMouseDriver_Initialize();
+extern void HIDDJoystickDriver_Initialize();
 
 /*
-    Function: HIDDMouseDriver_RequestHandler
+    Function: HIDDJoystickDriver_RequestHandler
         Handles HID-specific SETUP request sent by the host.
 
     Parameters:
         request - Pointer to a USBGenericRequest instance.
 */
-extern void HIDDMouseDriver_RequestHandler(const USBGenericRequest *request);
+extern void HIDDJoystickDriver_RequestHandler(const USBGenericRequest *request);
 
-extern unsigned char HIDDMouseDriver_ChangePoints(unsigned char bmButtons,
-                                                  signed char deltaX,
-                                                  signed char deltaY);
-
-extern void HIDDMouseDriver_RemoteWakeUp(void);
+extern unsigned char HIDDJoystickDriver_ChangeJoystickState(
+        unsigned char buttons1,
+        unsigned char buttons2,
+        unsigned char buttons3,
+        unsigned char X,
+        unsigned char Y,
+        unsigned char Z,
+        unsigned char Rx,
+        unsigned char Ry,
+        unsigned char Rz,
+        unsigned char S1,
+        unsigned char S2
+        );
 
 #endif //#ifndef HIDDKEYBOARDDRIVER_H
 

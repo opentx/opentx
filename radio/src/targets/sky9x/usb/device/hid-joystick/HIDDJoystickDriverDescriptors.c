@@ -28,7 +28,7 @@
  */
 
 /*
-    Title: HIDDMouseDriverDescriptors
+    Title: HIDDJoystickDriverDescriptors
 
     About: Purpose
         Declaration of the descriptors used by the HID device keyboard driver.
@@ -38,8 +38,8 @@
 //         Headers
 //------------------------------------------------------------------------------
 
-#include "HIDDMouseDriverDescriptors.h"
-#include "HIDDMouseInputReport.h"
+#include "HIDDJoystickDriverDescriptors.h"
+#include "HIDDJoystickInputReport.h"
 #include <board.h>
 #include <usb/common/core/USBDeviceDescriptor.h>
 #include <usb/common/core/USBConfigurationDescriptor.h>
@@ -61,20 +61,20 @@
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/// \page "HID Mouse Device Descriptor IDs"
+/// \page "HID Joystick Device Descriptor IDs"
 /// ...
 ///
 /// !IDs
-/// - HIDDMouseDriverDescriptors_PRODUCTID
-/// - HIDDMouseDriverDescriptors_VENDORID
-/// - HIDDMouseDriverDescriptors_RELEASE
+/// - HIDDJoystickDriverDescriptors_PRODUCTID
+/// - HIDDJoystickDriverDescriptors_VENDORID
+/// - HIDDJoystickDriverDescriptors_RELEASE
 
 /// Device product ID.
-#define HIDDMouseDriverDescriptors_PRODUCTID       0x6200
+#define HIDDJoystickDriverDescriptors_PRODUCTID       0x6200
 /// Device vendor ID.
-#define HIDDMouseDriverDescriptors_VENDORID        0x03EB
+#define HIDDJoystickDriverDescriptors_VENDORID        0x03EB
 /// Device release number.
-#define HIDDMouseDriverDescriptors_RELEASE         0x0100
+#define HIDDJoystickDriverDescriptors_RELEASE         0x0100
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -83,7 +83,7 @@
 
 //------------------------------------------------------------------------------
 /// List of descriptors that make up the configuration descriptors of a
-/// %device using the HID Mouse driver.
+/// %device using the HID Joystick driver.
 //------------------------------------------------------------------------------
 typedef struct {
 
@@ -96,7 +96,7 @@ typedef struct {
     /// Interrupt IN endpoint descriptor.
     USBEndpointDescriptor interruptIn;
 
-} __attribute__ ((packed)) HIDDMouseDriverConfigurationDescriptors;
+} __attribute__ ((packed)) HIDDJoystickDriverConfigurationDescriptors;
 
 //------------------------------------------------------------------------------
 //         Internal variables
@@ -115,38 +115,57 @@ static const USBDeviceDescriptor deviceDescriptor = {
     HIDDeviceDescriptor_SUBCLASS,
     HIDDeviceDescriptor_PROTOCOL,
     BOARD_USB_ENDPOINTS_MAXPACKETSIZE(0),
-    HIDDMouseDriverDescriptors_VENDORID,
-    HIDDMouseDriverDescriptors_PRODUCTID,
-    HIDDMouseDriverDescriptors_RELEASE,
+    HIDDJoystickDriverDescriptors_VENDORID,
+    HIDDJoystickDriverDescriptors_PRODUCTID,
+    HIDDJoystickDriverDescriptors_RELEASE,
     1, // Index of manufacturer description
     2, // Index of product description
     3, // Index of serial number description
     1  // One possible configuration
 };
 
-#ifdef BOARD_USB_UDPHS
-/// Device qualifier descriptor (high-speed only).
-static const USBDeviceQualifierDescriptor qualifierDescriptor = {
+/// Report descriptor used by the driver.
+const unsigned char hiddReportDescriptor[] = {
 
-    sizeof(USBDeviceQualifierDescriptor),
-    USBGenericDescriptor_DEVICEQUALIFIER,
-    HIDDeviceDescriptor_CLASS,
-    HIDDeviceDescriptor_SUBCLASS,
-    HIDDeviceDescriptor_PROTOCOL,
-    BOARD_USB_ENDPOINTS_MAXPACKETSIZE(0),
-    1, // One possible configuration
-    0 // Reserved
+    HIDReport_GLOBAL_USAGEPAGE + 1, HIDGenericDesktop_PAGEID,           // USAGE_PAGE (Generic Desktop)
+    HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_GAMEPAD,               // USAGE (Game Pad)
+    HIDReport_COLLECTION + 1, HIDReport_COLLECTION_APPLICATION,         // COLLECTION (Application)
+        HIDReport_COLLECTION + 1, HIDReport_COLLECTION_PHYSICAL,        // COLLECTION (Physical)
+            HIDReport_GLOBAL_USAGEPAGE + 1, HIDButton_PAGEID,           // USAGE_PAGE (Button)
+            HIDReport_LOCAL_USAGEMINIMUM + 1, 1,                        // USAGE_MINIMUM (Button 1)
+            HIDReport_LOCAL_USAGEMAXIMUM + 1, 24,                       // USAGE_MAXIMUM (Button 24)
+            HIDReport_GLOBAL_LOGICALMINIMUM + 1, 0,                     // LOGICAL_MINIMUM (0)
+            HIDReport_GLOBAL_LOGICALMAXIMUM + 1, 1,                     // LOGICAL_MAXIMUM (1)
+            HIDReport_GLOBAL_REPORTCOUNT + 1, 24,                       // REPORT_COUNT (24)
+            HIDReport_GLOBAL_REPORTSIZE + 1, 1,                         // REPORT_SIZE (1)
+            HIDReport_INPUT + 1, HIDReport_VARIABLE,                    // INPUT (Data,Var,Abs)
+            HIDReport_GLOBAL_USAGEPAGE + 1, HIDGenericDesktop_PAGEID,   // USAGE_PAGE (Generic Desktop)
+            HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_X,             // USAGE (X)
+            HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_Y,             // USAGE (Y)
+            HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_Z,             // USAGE (Z)
+            HIDReport_LOCAL_USAGE + 1, 0x33,                            // USAGE (Rx)
+            HIDReport_LOCAL_USAGE + 1, 0x34,                            // USAGE (Ry)
+            HIDReport_LOCAL_USAGE + 1, 0x35,                            // USAGE (Rz)
+            HIDReport_LOCAL_USAGE + 1, 0x36,                            // USAGE (Slider)
+            HIDReport_LOCAL_USAGE + 1, 0x36,                            // USAGE (Slider)
+            HIDReport_GLOBAL_LOGICALMINIMUM + 1, (unsigned char) -127,  // LOGICAL_MINIMUM (-127)
+            HIDReport_GLOBAL_LOGICALMAXIMUM + 1, 127,                   // LOGICAL_MAXIMUM (127)
+            HIDReport_GLOBAL_REPORTSIZE + 1, 8,                         // REPORT_SIZE (8)
+            HIDReport_GLOBAL_REPORTCOUNT + 1, 8,                        // REPORT_COUNT (8)
+            HIDReport_INPUT + 1, HIDReport_VARIABLE,                    // INPUT (Data,Var,Abs)
+        HIDReport_ENDCOLLECTION,                                        // END_COLLECTION
+    HIDReport_ENDCOLLECTION                                             // END_COLLECTION
 };
-#endif
+int hiddReportDescriptorSize = sizeof(hiddReportDescriptor);
 
 /// Configuration descriptor.
-static const HIDDMouseDriverConfigurationDescriptors configurationDescriptors = {
+static const HIDDJoystickDriverConfigurationDescriptors configurationDescriptors = {
 
     // Configuration descriptor
     {
         sizeof(USBConfigurationDescriptor),
         USBGenericDescriptor_CONFIGURATION,
-        sizeof(HIDDMouseDriverConfigurationDescriptors),
+        sizeof(HIDDJoystickDriverConfigurationDescriptors),
         1, // One interface in this configuration
         1, // This is configuration #1
         0, // No associated string descriptor
@@ -162,7 +181,7 @@ static const HIDDMouseDriverConfigurationDescriptors configurationDescriptors = 
         1, // One endpoints used
         HIDInterfaceDescriptor_CLASS,
         HIDInterfaceDescriptor_SUBCLASS_NONE,
-        HIDInterfaceDescriptor_PROTOCOL_MOUSE,
+        HIDInterfaceDescriptor_PROTOCOL_NONE,
         0  // No associated string descriptor
     },
     // HID descriptor
@@ -173,71 +192,20 @@ static const HIDDMouseDriverConfigurationDescriptors configurationDescriptors = 
         0, // Device is not localized, no country code
         1, // One HID-specific descriptor (apart from this one)
         HIDGenericDescriptor_REPORT,
-        HIDDMouseDriverDescriptors_REPORTSIZE
+        sizeof(hiddReportDescriptor),
     },
     // Interrupt IN endpoint descriptor
     {
         sizeof(USBEndpointDescriptor),
-        USBGenericDescriptor_ENDPOINT,
+        USBGenericDescriptor_ENDPOINT, // 5
         USBEndpointDescriptor_ADDRESS(
             USBEndpointDescriptor_IN,
-            HIDDMouseDriverDescriptors_INTERRUPTIN),
+            HIDDJoystickDriverDescriptors_INTERRUPTIN),
         USBEndpointDescriptor_INTERRUPT,
-        sizeof(HIDDMouseInputReport),
-        HIDDMouseDriverDescriptors_INTERRUPTIN_POLLING
+        sizeof(HIDDJoystickInputReport),
+        HIDDJoystickDriverDescriptors_INTERRUPTIN_POLLING
     }
 };
-
-#ifdef BOARD_USB_UDPHS
-/// Other-speed configuration descriptor.
-static const HIDDMouseDriverConfigurationDescriptors otherSpeedDescriptors = {
-
-    // Configuration descriptor
-    {
-        sizeof(USBConfigurationDescriptor),
-        USBGenericDescriptor_OTHERSPEEDCONFIGURATION,
-        sizeof(HIDDMouseDriverConfigurationDescriptors),
-        1, // One interface in this configuration
-        1, // This is configuration #1
-        0, // No associated string descriptor
-        BOARD_USB_BMATTRIBUTES,
-        USBConfigurationDescriptor_POWER(100)
-    },
-    // Interface descriptor
-    {
-        sizeof(USBInterfaceDescriptor),
-        USBGenericDescriptor_INTERFACE,
-        0, // This is interface #0
-        0, // This is alternate setting #0
-        2, // Two endpoints used
-        HIDInterfaceDescriptor_CLASS,
-        HIDInterfaceDescriptor_SUBCLASS_NONE,
-        HIDInterfaceDescriptor_PROTOCOL_MOUSE,
-        0  // No associated string descriptor
-    },
-    // HID descriptor
-    {
-        sizeof(HIDDescriptor),
-        HIDGenericDescriptor_HID,
-        HIDDescriptor_HID1_11,
-        0, // Device is not localized, no country code
-        1, // One HID-specific descriptor (apart from this one)
-        HIDGenericDescriptor_REPORT,
-        HIDDMouseDriverDescriptors_REPORTSIZE
-    },
-    // Interrupt IN endpoint descriptor
-    {
-        sizeof(USBEndpointDescriptor),
-        USBGenericDescriptor_ENDPOINT,
-        USBEndpointDescriptor_ADDRESS(
-            USBEndpointDescriptor_IN,
-            HIDDMouseDriverDescriptors_INTERRUPTIN),
-        USBEndpointDescriptor_INTERRUPT,
-        sizeof(HIDDMouseInputReport),
-        HIDDMouseDriverDescriptors_INTERRUPTIN_POLLING
-    }
-};
-#endif
 
 /*
     Variables: String descriptors
@@ -284,11 +252,14 @@ static const unsigned char productDescriptor[] = {
     USBStringDescriptor_UNICODE('I'),
     USBStringDescriptor_UNICODE('D'),
     USBStringDescriptor_UNICODE(' '),
-    USBStringDescriptor_UNICODE('M'),
+    USBStringDescriptor_UNICODE('J'),
     USBStringDescriptor_UNICODE('O'),
-    USBStringDescriptor_UNICODE('U'),
+    USBStringDescriptor_UNICODE('Y'),
     USBStringDescriptor_UNICODE('S'),
-    USBStringDescriptor_UNICODE('E'),
+    USBStringDescriptor_UNICODE('T'),
+    USBStringDescriptor_UNICODE('I'),
+    USBStringDescriptor_UNICODE('C'),
+    USBStringDescriptor_UNICODE('K'),
 };
 
 static const unsigned char serialNumberDescriptor[] = {
@@ -322,67 +293,16 @@ static const unsigned char *stringDescriptors[] = {
 //------------------------------------------------------------------------------
 
 /// List of descriptors used by the HID keyboard driver.
-USBDDriverDescriptors hiddMouseDriverDescriptors = {
+USBDDriverDescriptors hiddJoystickDriverDescriptors = {
 
     &deviceDescriptor,
     (USBConfigurationDescriptor *) &configurationDescriptors,
-#ifdef BOARD_USB_UDPHS
-    &qualifierDescriptor,
-    (USBConfigurationDescriptor *) &otherSpeedDescriptors,
-    &deviceDescriptor,
-    (USBConfigurationDescriptor *) &configurationDescriptors,
-    &qualifierDescriptor,
-    (USBConfigurationDescriptor *) &otherSpeedDescriptors,
-#else
     0, // No full-speed device qualifier descriptor
     0, // No full-speed other speed configuration
     0, // No high-speed device descriptor
     0, // No high-speed configuration descriptor
     0, // No high-speed device qualifier descriptor
     0, // No high-speed other speed configuration descriptor
-#endif
     stringDescriptors,
     4 // Four string descriptors in list
 };
-
-/// Report descriptor used by the driver.
-const unsigned char hiddReportDescriptor[] = {
-
-    // Global Usage Page
-    HIDReport_GLOBAL_USAGEPAGE + 1, HIDGenericDesktop_PAGEID,
-    // Collection: Application
-    HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_MOUSE,
-    HIDReport_COLLECTION + 1, HIDReport_COLLECTION_APPLICATION,
-        // Physical collection: Pointer
-        HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_POINTER,
-        HIDReport_COLLECTION + 1, HIDReport_COLLECTION_PHYSICAL,
-
-            // Input report: buttons
-            HIDReport_GLOBAL_USAGEPAGE + 1, HIDButton_PAGEID,
-            HIDReport_GLOBAL_REPORTCOUNT + 1, 3,
-            HIDReport_GLOBAL_REPORTSIZE + 1, 1,
-            HIDReport_LOCAL_USAGEMINIMUM + 1, 1,
-            HIDReport_LOCAL_USAGEMAXIMUM + 1, 3,
-            HIDReport_GLOBAL_LOGICALMINIMUM + 1, 0,
-            HIDReport_GLOBAL_LOGICALMAXIMUM + 1, 1,
-            HIDReport_INPUT + 1, HIDReport_VARIABLE,    // 3 button bits
-
-            // Input report: padding
-            HIDReport_GLOBAL_REPORTCOUNT + 1, 1,
-            HIDReport_GLOBAL_REPORTSIZE + 1, 5,
-            HIDReport_INPUT + 1, HIDReport_CONSTANT,    // 5 bit padding
-
-            // Input report: pointer
-            HIDReport_GLOBAL_USAGEPAGE + 1, HIDGenericDesktop_PAGEID,
-            HIDReport_GLOBAL_REPORTSIZE + 1, 8,
-            HIDReport_GLOBAL_REPORTCOUNT + 1, 2,
-            HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_X,
-            HIDReport_LOCAL_USAGE + 1, HIDGenericDesktop_Y,
-            HIDReport_GLOBAL_LOGICALMINIMUM + 1, (unsigned char) -127,
-            HIDReport_GLOBAL_LOGICALMAXIMUM + 1, 127,
-            HIDReport_INPUT + 1, HIDReport_VARIABLE | HIDReport_RELATIVE,
-
-        HIDReport_ENDCOLLECTION,
-    HIDReport_ENDCOLLECTION
-};
-

@@ -36,14 +36,14 @@
  driver.
 
  !!!Usage
- -# Use the hiddMouseDriverDescriptors variable to initialize a
+ -# Use the hiddJoystickDriverDescriptors variable to initialize a
     USBDDriver instance.
  -# Send hiddReportDescriptor to the host when a GET_DESCRIPTOR request
     for the report descriptor is received.
 */
 
-#ifndef HIDDKEYBOARDDRIVERDESCRIPTORS_H
-#define HIDDKEYBOARDDRIVERDESCRIPTORS_H
+#ifndef HIDDJOYSTICKDRIVERDESCRIPTORS_H
+#define HIDDJOYSTICKDRIVERDESCRIPTORS_H
 
 //------------------------------------------------------------------------------
 //         Headers
@@ -56,31 +56,24 @@
 //------------------------------------------------------------------------------
 /*
     Constants: Endpoints
-        HIDDMouseDriverDescriptors_INTERRUPTIN - Interrupt IN endpoint number.
-        HIDDMouseDriverDescriptors_INTERRUPTIN_POLLING - Interrupt IN endpoint
+        HIDDJoystickDriverDescriptors_INTERRUPTIN - Interrupt IN endpoint number.
+        HIDDJoystickDriverDescriptors_INTERRUPTIN_POLLING - Interrupt IN endpoint
             polling rate (in milliseconds).
 */
-#define HIDDMouseDriverDescriptors_INTERRUPTIN           1
-#define HIDDMouseDriverDescriptors_INTERRUPTIN_POLLING   10
-
-/*
-    Constants: Report descriptor
-        HIDDMouseDriverDescriptors_REPORTSIZE - Size of the report descriptor
-            in bytes.
-*/
-#define HIDDMouseDriverDescriptors_REPORTSIZE        50
+#define HIDDJoystickDriverDescriptors_INTERRUPTIN           1
+#define HIDDJoystickDriverDescriptors_INTERRUPTIN_POLLING   10
 
 //------------------------------------------------------------------------------
 //         Exported variables
 //------------------------------------------------------------------------------
 /*
     Variables: HID keyboard driver descriptors
-        hiddMouseDriverDescriptors - List of descriptors used by the HID
+        hiddJoystickDriverDescriptors - List of descriptors used by the HID
             keyboard driver.
         hiddReportDescriptor - Report descriptor used by the driver.
 */
-extern USBDDriverDescriptors hiddMouseDriverDescriptors;
+extern USBDDriverDescriptors hiddJoystickDriverDescriptors;
 extern const unsigned char hiddReportDescriptor[];
 
-#endif //#ifndef HIDDKEYBOARDDRIVERDESCRIPTORS_H
+#endif //#ifndef HIDDJOYSTICKDRIVERDESCRIPTORS_H
 

@@ -28,45 +28,37 @@
  */
 
 /*
-    Title: HIDDMouseInputReport implementation
+    Title: HIDDJoystickInputReport implementation
 
     About: Purpose
-        Implementation of the HIDDMouseInputReport class.
+        Implementation of the HIDDJoystickInputReport class.
 */
 
 //------------------------------------------------------------------------------
 //         Headers
 //------------------------------------------------------------------------------
 
-#include "HIDDMouseInputReport.h"
-#include "HIDDMouseDriverDescriptors.h"
-//#include <utility/assert.h>
+#include "HIDDJoystickInputReport.h"
 
 //------------------------------------------------------------------------------
 //         Exported functions
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/// Initializes a mouse input report instance.
-/// \param report Pointer to a HIDDMouseInputReport instance.
+/// Initializes a joystick input report instance.
+/// \param report Pointer to a HIDDJoystickInputReport instance.
 //------------------------------------------------------------------------------
-void HIDDMouseInputReport_Initialize(HIDDMouseInputReport *report)
+void HIDDJoystickInputReport_Initialize(HIDDJoystickInputReport *report)
 {
-    report->bmButtons = 0;
-    report->bX = 0;
-    report->bY = 0;
+    report->buttons1 = 0;
+    report->buttons2 = 0;
+    report->buttons3 = 0;
+    report->X = 0;
+    report->Y = 0;
+    report->Z = 0;
+    report->Rx = 0;
+    report->Ry = 0;
+    report->Rz = 0;
+    report->S1 = 0;
+    report->S2 = 0;
 }
-
-/*
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-void HIDDMouseInputReport_UpdateButtons(HIDDMouseInputReport *report)
-{
-}
-
-//------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-void HIDDMouseInputReport_UpdateAxis(HIDDMouseInputReport *report)
-{
-}
-*/

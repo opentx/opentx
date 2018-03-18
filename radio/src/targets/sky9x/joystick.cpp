@@ -20,12 +20,11 @@
 
 #include "opentx.h"
 
+
 extern "C" {
-#include "usb/device/hid-mouse/HIDDMouseDriver.h"
-extern void HIDDMouseDriver_Initialize();
-extern unsigned char HIDDMouseDriver_ChangePoints(unsigned char bmButtons,
-                                                  signed char deltaX,
-                                                  signed char deltaY);
+#include "usb/device/hid-joystick/HIDDJoystickDriver.h"
+extern void HIDDJoystickDriver_Initialize();
+extern unsigned char HIDDJoystickDriver_ChangeJoystickState(unsigned char buttons1, unsigned char buttons2, unsigned char buttons3, unsigned char X, unsigned char Y, unsigned char Z, unsigned char Rx, unsigned char Ry, unsigned char Rz, unsigned char S1, unsigned char S2);
 extern void USBD_Connect(void);
 }
 
@@ -51,7 +50,7 @@ void usbJoystickUpdate()
         if (!initialized) {
             ConfigureUsbClock();
 
-            HIDDMouseDriver_Initialize();
+            HIDDJoystickDriver_Initialize();
 
             // VBus_Configure();
             USBD_Connect();
@@ -59,6 +58,42 @@ void usbJoystickUpdate()
             initialized = true;
         }
 
-        HIDDMouseDriver_ChangePoints(0, 10, 10);
+        static uint8_t HID_Buffer[11];
+
+        HID_Buffer[0] = 0;
+        HID_Buffer[1] = 0;
+        HID_Buffer[2] = 0;
+        for (int i = 0; i < 8; ++i) {
+          if ( channelOutputs[i+8] > 0 ) {
+            HID_Buffer[0] |= (1 << i);
+          }
+          if ( channelOutputs[i+16] > 0 ) {
+            HID_Buffer[1] |= (1 << i);
+          }
+          if ( channelOutputs[i+24] > 0 ) {
+            HID_Buffer[2] |= (1 << i);
+          }
+        }
+
+        //analog values
+        //uint8_t * p = HID_Buffer + 1;
+        for (int i = 0; i < 8; ++i) {
+          int16_t value = channelOutputs[i] / 8;
+          if ( value > 127 ) value = 127;
+          else if ( value < -127 ) value = -127;
+          HID_Buffer[i+3] = static_cast<int8_t>(value);
+        }
+
+        HIDDJoystickDriver_ChangeJoystickState(HID_Buffer[0],
+                                               HID_Buffer[1],
+                                               HID_Buffer[2],
+                                               HID_Buffer[3],
+                                               HID_Buffer[4],
+                                               HID_Buffer[5],
+                                               HID_Buffer[6],
+                                               HID_Buffer[7],
+                                               HID_Buffer[8],
+                                               HID_Buffer[9],
+                                               HID_Buffer[10]);
     }
 }
