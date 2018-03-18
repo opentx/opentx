@@ -55,7 +55,7 @@ class ModelCell
     {
       struct partialModels {
         ModelHeader header;
-        TimerData timerdata[MAX_TIMERS];
+        TimerData timers[MAX_TIMERS];
       } partialModel;
       const char * error = NULL;
 
@@ -89,8 +89,8 @@ class ModelCell
         buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
         getTimerString(timer, 0);
         for (uint8_t i = 0; i < MAX_TIMERS;i++) {
-          if(partialModel.timerdata[i].mode > 0 && partialModel.timerdata[i].persistent) {
-            getTimerString(timer, partialModel.timerdata[i].value);
+          if(partialModel.timers[i].mode > 0 && partialModel.timers[i].persistent) {
+            getTimerString(timer, partialModel.timers[i].value);
             break;
           }
         }
