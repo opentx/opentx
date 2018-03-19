@@ -440,7 +440,7 @@ bool menuModelMixAll(event_t event)
       }
       break;
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (s_editMode = -1) {
+      if (s_editMode == -1) {
         s_editMode = 0;
         break;
       }
