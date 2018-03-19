@@ -46,8 +46,8 @@
     keys are pressed/released.
 */
 
-#ifndef HIDDKEYBOARDDRIVER_H
-#define HIDDKEYBOARDDRIVER_H
+#ifndef HIDDJOYSTICKDRIVER_H
+#define HIDDJOYSTICKDRIVER_H
 
 //------------------------------------------------------------------------------
 //         Headers
@@ -64,7 +64,7 @@
 //------------------------------------------------------------------------------
 /*
     Function: HIDDJoystickDriver_Initialize
-        Initializes the HID keyboard device driver.
+        Initializes the HID joystick device driver.
 */
 extern void HIDDJoystickDriver_Initialize();
 
@@ -79,5 +79,5 @@ extern void HIDDJoystickDriver_RequestHandler(const USBGenericRequest *request);
 
 extern unsigned char HIDDJoystickDriver_ChangeJoystickState(const HIDDJoystickInputReport *report);
 
-#endif //#ifndef HIDDKEYBOARDDRIVER_H
+#endif //#ifndef HIDDJOYSTICKDRIVER_H
 

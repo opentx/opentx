@@ -32,7 +32,7 @@
 
  !!!Purpose
 
- Definitions of the descriptors required by the HID device keyboard
+ Definitions of the descriptors required by the HID device joystick
  driver.
 
  !!!Usage
@@ -67,9 +67,9 @@
 //         Exported variables
 //------------------------------------------------------------------------------
 /*
-    Variables: HID keyboard driver descriptors
+    Variables: HID joystick driver descriptors
         hiddJoystickDriverDescriptors - List of descriptors used by the HID
-            keyboard driver.
+            joystick driver.
         hiddReportDescriptor - Report descriptor used by the driver.
 */
 extern USBDDriverDescriptors hiddJoystickDriverDescriptors;

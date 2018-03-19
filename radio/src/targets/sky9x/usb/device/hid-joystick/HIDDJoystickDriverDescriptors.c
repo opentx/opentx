@@ -31,7 +31,7 @@
     Title: HIDDJoystickDriverDescriptors
 
     About: Purpose
-        Declaration of the descriptors used by the HID device keyboard driver.
+        Declaration of the descriptors used by the HID device joystick driver.
 */
 
 //------------------------------------------------------------------------------
@@ -291,7 +291,7 @@ static const unsigned char *stringDescriptors[] = {
 //         Exported variables
 //------------------------------------------------------------------------------
 
-/// List of descriptors used by the HID keyboard driver.
+/// List of descriptors used by the HID joystick driver.
 USBDDriverDescriptors hiddJoystickDriverDescriptors = {
 
     &deviceDescriptor,
