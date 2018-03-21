@@ -717,7 +717,7 @@
 #define TR_BAR                         "Barre"
 #define TR_ALARM                       INDENT "Alarme"
 #define TR_USRDATA                     "Données"
-#define TR_BLADES                      INDENT "Pales"
+#define TR_BLADES                      INDENT "Pales/Pôles"
 #define TR_SCREEN                      "Ecran "
 #define TR_SOUND_LABEL                 "Son"
 #define TR_LENGTH                      INDENT "Durée"
