@@ -27,57 +27,37 @@
  * ----------------------------------------------------------------------------
  */
 
-//------------------------------------------------------------------------------
-/// \unit
-/// !Purpose
-/// 
-/// Definitions of the descriptors required by a Mass Storage device driver.
-/// 
-/// !Usage
-/// 
-/// - For a USB %device:
-///     -# When initializing a USBDDriver instance, use msdDriverDescriptors as
-///        the list of standard descriptors.
-//------------------------------------------------------------------------------
+/**
+ \unit
 
-#ifndef MSDDRIVERDESCRIPTORS_H
-#define MSDDRIVERDESCRIPTORS_H
+ !!!Purpose
 
-//------------------------------------------------------------------------------
-//         Headers
-//------------------------------------------------------------------------------
+ Definitions for using HID-specific descriptors.
+*/
 
-#include "../../../usb/device/core/USBDDriverDescriptors.h"
+#ifndef HIDGENERICDESCRIPTOR_H
+#define HIDGENERICDESCRIPTOR_H
 
 //------------------------------------------------------------------------------
 //         Definitions
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/// \page "MSD endpoint addresses"
-/// This page lists the addresses used by the Mass Storage driver %endpoints.
-/// 
-/// !Addresses
-/// 
-/// - MSDDriverDescriptors_BULKOUT
-/// - MSDDriverDescriptors_BULKIN
+/// \page "HID Descriptors Types"
+/// ...
+///
+/// !Types
+/// - HIDGenericDescriptor_HID
+/// - HIDGenericDescriptor_REPORT
+/// - HIDGenericDescriptor_PHYSICAL
 
-/// Address of the Mass Storage bulk-out endpoint.
-#define MSDDriverDescriptors_BULKOUT        1
-
-/// Address of the Mass Storage bulk-in endpoint.
-#if defined(at91sam9m10)
- #define MSDDriverDescriptors_BULKIN        6
-#else
- #define MSDDriverDescriptors_BULKIN        2
-#endif
+/// HID descriptor type.
+#define HIDGenericDescriptor_HID            0x21
+/// Report descriptor type.
+#define HIDGenericDescriptor_REPORT         0x22
+/// Physical descriptor type.
+#define HIDGenericDescriptor_PHYSICAL       0x23
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-//         Exported variables
-//------------------------------------------------------------------------------
-
-extern const USBDDriverDescriptors msdDriverDescriptors;
-
-#endif //#ifndef MSDDRIVERDESCRIPTORS_H
+#endif //#ifndef HIDGENERICDESCRIPTOR_H
 
