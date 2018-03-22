@@ -51,6 +51,9 @@
 #elif defined(TRANSLATIONS_NL)
 #include "translations/nl.h"
 #define LEN_SPECIAL_CHARS 0
+#elif defined(TRANSLATIONS_RU)
+#include "translations/ru.h"
+#define LEN_SPECIAL_CHARS 64
 #else
 #include "translations/en.h"
 #define LEN_SPECIAL_CHARS 0
