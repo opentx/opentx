@@ -2827,7 +2827,11 @@ uint32_t pwrCheck()
 #endif
           lcdRefreshWait();
           lcdClear();
-          POPUP_CONFIRMATION("Confirm Shutdown");
+#if defined(PCBHORUS)
+          (warningText = "Shutdown ?", warningType = WARNING_TYPE_CONFIRM, warningInfoText = STR_MODEL_STILL_POWERED, popupFunc = runPopupWarning);
+#else
+          POPUP_CONFIRMATION("Confirm Shutdown ?");
+#endif
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
