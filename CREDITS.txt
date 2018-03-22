@@ -26,20 +26,22 @@ Pat Mackenzie
 Michael Byrne
 
 [Companies and projects who have donated to OpenTX]
-<a href="http://frsky-rc.com">FrSky (monthly)</a>
-<a href="http://alofthobbies.com">Aloft Hobbies</a>
-<a href="http://jonathan.it">Jonathan Modellismo</a>
+<a href="https://www.frsky-rc.com">FrSky (monthly)</a>
+<a href="https://alofthobbies.com">Aloft Hobbies</a>
+<a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
 <a href="http://aviomotive.com">Aviomotive</a>
 <a href="http://boltrc.com">BoltRC</a>
 <a href="http://aerialtechhobbies.com">Aerial Tech Hobbies</a>
 <a href="http://litepilots.com">LitePilots</a>
 <a href="http://openpilot.com">David Ankers (OpenPilot)</a>
-<a href="http://3drobotics.com">3D Robotics</a>
-<a href="http://rcstudio.cz">RC Studio (monthly)</a>
+<a href="https://3dr.com">3D Robotics</a>
+<a href="https://rcstudio.cz">RC Studio (monthly)</a>
 <a href="http://www.craftandtheoryllc.com">Craft & Theory (monthly)</a>
-<a href="http://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
-<a href="http://www.team-blacksheep.com">Team BlackSheep</a>
+<a href="https://alofthobbies.com/taranis-q-x7--opentx-user-manual.html">OpenTX Manuals by Lothar Thole</a>
+<a href="https://www.team-blacksheep.com">Team BlackSheep</a>
+<a href="https://www.3dxr.co.uk">Team BlackSheep</a>
+www.3dxr.co.uk
 
 [People who have donated to OpenTX]
 Mario Sette
@@ -1373,3 +1375,14 @@ Renato Elias
 Richard Husta
 Ian Ferreira
 Zhang Tianyu
+Josef de Beer
+Ewald Moehring 
+Kevin Karamitros
+Beat Zurflueh
+Frank Morris
+Edwin Butin Bik
+Geir Atle Storhaug
+Ted Hoenderdos
+Sebastian Stefanitsch
+Leif Pernstig
+Michael Garofalo

@@ -136,5 +136,6 @@ class TelemetryItem
 
 extern TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 extern uint8_t allowNewSensors;
+bool isFaiForbidden(source_t idx);
 
 #endif // _TELEMETRY_SENSORS_H_

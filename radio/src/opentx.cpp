@@ -1182,6 +1182,9 @@ void checkTHR()
   evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
   int16_t v = calibratedAnalogs[thrchn];
+  if (g_model.thrTraceSrc && g_model.throttleReversed) { //TODO : proper review of THR source definition and handling
+    v = -v;
+  }
   if (v <= THRCHK_DEADBAND-1024) {
     return; // prevent warning if throttle input OK
   }
@@ -1201,6 +1204,9 @@ void checkTHR()
     evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
 
     v = calibratedAnalogs[thrchn];
+    if (g_model.thrTraceSrc && g_model.throttleReversed) { //TODO : proper review of THR source definition and handling
+      v = -v;
+    }
 
 #if defined(PWR_BUTTON_PRESS)
     uint32_t pwr_check = pwrCheck();
@@ -1346,7 +1352,7 @@ uint8_t checkTrim(event_t event)
 #else
       before = getRawTrimValue(phase, idx);
 #endif
-      thro = (idx==THR_STICK && g_model.thrTrim);
+      thro = (IS_THROTTLE_TRIM(idx) && g_model.thrTrim);
     }
 #else
     phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
@@ -1355,7 +1361,7 @@ uint8_t checkTrim(event_t event)
 #else
     before = getRawTrimValue(phase, idx);
 #endif
-    thro = (idx==THR_STICK && g_model.thrTrim);
+    thro = (IS_THROTTLE_TRIM(idx) && g_model.thrTrim);
 #endif
     int8_t trimInc = g_model.trimInc + 1;
     int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc); // TODO flash saving if (trimInc < 0)

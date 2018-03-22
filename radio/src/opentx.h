@@ -231,7 +231,11 @@
   #define IF_FAI_CHOICE(x)
 #endif
 
-#define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
+#if defined(CPUARM)
+  #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() &&  isFaiForbidden(idx))
+#else
+  #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
+#endif
 
 #if defined(BLUETOOTH)
 #if defined(X9E) && !defined(USEHORUSBT)
@@ -332,6 +336,12 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_POT_WITHOUT_DETENT(x)     (true)
   #define IS_POT_SLIDER_AVAILABLE(x)   (true)
   #define IS_MULTIPOS_CALIBRATED(cal)  (false)
+#endif
+
+#if defined(VIRTUAL_INPUTS)
+  #define IS_THROTTLE_TRIM(x)          (x == virtualInputsTrims[THR_STICK])
+#else
+  #define IS_THROTTLE_TRIM(x)          (x == THR_STICK)
 #endif
 
 #if defined(PWR_BUTTON_PRESS)

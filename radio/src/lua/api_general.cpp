@@ -232,6 +232,9 @@ void luaGetValueAndPush(lua_State* L, int src)
         case UNIT_DATETIME:
           luaPushTelemetryDateTime(L, telemetrySensor, telemetryItems[qr.quot]);
           break;
+        case UNIT_TEXT:
+          lua_pushstring(L, telemetryItems[qr.quot].text);
+          break;
         case UNIT_CELLS:
           if (qr.rem == 0) {
             luaPushCells(L, telemetrySensor, telemetryItems[qr.quot]);
@@ -584,6 +587,7 @@ or a name (string) of the source.
 @retval value current source value (number). Zero is returned for:
  * non-existing sources
  * for all telemetry source when the telemetry stream is not received
+ * far all non allowed sensors while FAI MODE is active
 
 @retval table GPS position is returned in a table:
  * `lat` (number) latitude, positive is North

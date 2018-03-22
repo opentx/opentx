@@ -23,6 +23,51 @@
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
 
+bool isFaiForbidden(source_t idx)
+{
+  if (idx < MIXSRC_FIRST_TELEM) {
+    return false;
+  }
+  
+  TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
+
+  switch (telemetryProtocol) {
+
+    case PROTOCOL_FRSKY_SPORT:
+      if (sensor->id == RSSI_ID) {
+        return false;
+      }
+      else if (sensor->id == BATT_ID) {
+        return false;
+      }
+      break;
+
+    case PROTOCOL_FRSKY_D:
+      if (sensor->id == D_RSSI_ID) {
+        return false;
+      }
+      else if (sensor->id == D_A1_ID) {
+        return false;
+      }
+      break;
+
+#if defined(CROSSFIRE)
+    case PROTOCOL_PULSES_CROSSFIRE:
+      if (sensor->id == RX_RSSI1_INDEX) {
+        return false;
+      }
+      else if (sensor->id == RX_RSSI2_INDEX) {
+        return false;
+      }
+      else if (sensor->id == BATT_VOLTAGE_INDEX) {
+        return false;
+      }
+      break;
+#endif
+  }
+  return true;
+}
+
 // TODO in maths
 uint32_t getDistFromEarthAxis(int32_t latitude)
 {

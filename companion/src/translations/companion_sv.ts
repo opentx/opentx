@@ -6603,7 +6603,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>FrSky Taranis X9D</source>
-        <translation type="unfinished">FrSky Taranis X9E {9D?}</translation>
+        <translation type="unfinished">FrSky Taranis X9D</translation>
     </message>
     <message>
         <source>Horus gimbals installed (Hall sensors)</source>
@@ -6611,7 +6611,7 @@ OpenTX-gruppen.</translation>
     </message>
     <message>
         <source>FrSky Taranis X7</source>
-        <translation type="unfinished">FrSky Taranis X9E {7?}</translation>
+        <translation type="unfinished">FrSky Taranis X7</translation>
     </message>
     <message>
         <source>FrSky Horus</source>

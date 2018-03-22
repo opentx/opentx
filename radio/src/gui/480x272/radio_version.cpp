@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -32,9 +32,7 @@ bool menuRadioVersion(event_t event)
   }
 #endif
 
-  if (event == EVT_ENTRY) {
-    getCPUUniqueID(id);
-  }
+  getCPUUniqueID(id);
 
   SIMPLE_MENU(STR_MENUVERSION, RADIO_ICONS, menuTabGeneral, MENU_RADIO_VERSION, 0);
 

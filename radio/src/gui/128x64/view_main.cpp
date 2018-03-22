@@ -420,8 +420,7 @@ void menuMainView(event_t event)
 
     case EVT_KEY_TELEMETRY:
 #if defined(TELEMETRY_FRSKY)
-      if (!IS_FAI_ENABLED())
-        chainMenu(menuViewTelemetryFrsky);
+      chainMenu(menuViewTelemetryFrsky);
 #elif defined(TELEMETRY_JETI)
       JETI_EnableRXD(); // enable JETI-Telemetry reception
       chainMenu(menuViewTelemetryJeti);
