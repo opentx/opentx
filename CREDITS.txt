@@ -1383,3 +1383,6 @@ Frank Morris
 Edwin Butin Bik
 Geir Atle Storhaug
 Ted Hoenderdos
+Sebastian Stefanitsch
+Leif Pernstig
+Michael Garofalo

@@ -221,16 +221,19 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
           sportProcessTelemetryPacket(id, 0, instance, servosState);
           sportProcessTelemetryPacket(id, 1, instance, rboxState);
         }
-        else if (id >= ESC_POWER_FIRST_ID && id <= ESC_RPM_CONS_LAST_ID) {
-          // 2 sensors (POWER and RPM_CONS)
+        else if (id >= ESC_POWER_FIRST_ID && id <= ESC_POWER_LAST_ID) {
           sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
+        }
+        else if (id >= ESC_RPM_CONS_FIRST_ID && id <= ESC_RPM_CONS_LAST_ID) {
+          sportProcessTelemetryPacket(id, 0, instance, 100 * (data & 0xffff));
           sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
         else if (id >= ESC_TEMPERATURE_FIRST_ID && id <= ESC_TEMPERATURE_LAST_ID) {
           sportProcessTelemetryPacket(id, 0, instance, data & 0x00ff);
         }
         else if (id >= GASSUIT_TEMP_FIRST_ID && id <= GASSUIT_FUEL_LAST_ID) {
-          // 2 sensors
+          // 2 GASSUIT sensors
           sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
           sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }

@@ -688,7 +688,7 @@
 #define TR_BAR                 "Bar"
 #define TR_ALARM               INDENT"Alarm"
 #define TR_USRDATA             "UsrData"
-#define TR_BLADES              INDENT"Blades"
+#define TR_BLADES              INDENT"Blades/Poles"
 #define TR_SCREEN              "Screen "
 #define TR_SOUND_LABEL         "Sound"
 #define TR_LENGTH              INDENT"Length"
