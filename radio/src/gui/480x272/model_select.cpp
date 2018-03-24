@@ -350,6 +350,13 @@ bool menuModelSelect(event_t event)
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
+#define EDITIN_ENTER 1
+#if EDITIN_ENTER
+      if (selectMode == MODE_SELECT_MODEL) {
+        onModelSelectMenu(STR_SELECT_MODEL);
+        return false;
+      }
+#endif
       if (selectMode == MODE_MOVE_MODEL)
         selectMode = MODE_SELECT_MODEL;
       break;
@@ -411,9 +418,11 @@ bool menuModelSelect(event_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       if (selectMode == MODE_SELECT_MODEL) {
         killEvents(event);
+#if !EDITIN_ENTER
         if (currentModel && currentModel != modelslist.currentModel) {
           POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
         }
+#endif
         POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
         if (currentModel) {
           POPUP_MENU_ADD_ITEM(STR_DUPLICATE_MODEL);
