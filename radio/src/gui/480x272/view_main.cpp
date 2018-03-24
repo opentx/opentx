@@ -147,9 +147,18 @@ bool menuMainView(event_t event)
       killEvents(KEY_DOWN);
       break;
 
+#define EDITIN_ENTER 1
+#if EDITIN_ENTER
+    case EVT_KEY_BREAK(KEY_ENTER):
+      killEvents(event);
+      chainMenu(menuModelSelect);
+      break;
+#endif
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
+#if !EDITIN_ENTER
       POPUP_MENU_ADD_ITEM(STR_MODEL_SELECT);
+#endif
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }

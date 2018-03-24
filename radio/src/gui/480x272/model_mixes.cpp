@@ -400,7 +400,10 @@ bool menuModelMixAll(event_t event)
     s_editMode = 0;
   }
 
+#define EDITIN_ENTER 1
+#if !EDITIN_ENTER
   uint8_t chn = mixAddress(s_currIdx)->destCh + 1;
+#endif
 
   int linesCount = getMixesLinesCount();
   SIMPLE_MENU(STR_MIXER, MODEL_ICONS, menuTabModel, MENU_MODEL_MIXES, linesCount);
@@ -444,6 +447,13 @@ bool menuModelMixAll(event_t event)
         s_editMode = 0;
         break;
       }
+#if EDITIN_ENTER
+      event = 0;
+      s_copyMode = 0;
+      killEvents(event);
+      pushMenu(menuModelMixOne);
+      break;
+#else
       if ((!s_currCh || (s_copyMode && !s_copyTgtOfs)) && !READ_ONLY()) {
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
         s_copySrcIdx = s_currIdx;
@@ -451,6 +461,7 @@ bool menuModelMixAll(event_t event)
         s_copySrcRow = sub;
         break;
       }
+#endif
       // no break
 
     case EVT_KEY_LONG(KEY_ENTER):
@@ -478,7 +489,9 @@ bool menuModelMixAll(event_t event)
           else {
             event = 0;
             s_copyMode = 0;
+#if !EDITIN_ENTER
             POPUP_MENU_ADD_ITEM(STR_EDIT);
+#endif
             POPUP_MENU_ADD_ITEM(STR_INSERT_BEFORE);
             POPUP_MENU_ADD_ITEM(STR_INSERT_AFTER);
             POPUP_MENU_ADD_ITEM(STR_COPY);
