@@ -844,7 +844,7 @@
   #define BACKLIGHT_GPIO_PIN            GPIO_Pin_8 // PA.08
   #define BACKLIGHT_GPIO_PinSource      GPIO_PinSource8
   #define BACKLIGHT_GPIO_AF             GPIO_AF_TIM1
-  #define BACKLIGHT_CCMR2               TIM_CCMR2_OC1M_1 | TIM_CCMR2_OC1M_2 // Channel 1, PWM
+  #define BACKLIGHT_CCMR1               TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 // Channel 1, PWM
   #define BACKLIGHT_CCER                TIM_CCER_CC1E
   #define BACKLIGHT_COUNTER_REGISTER    BACKLIGHT_TIMER->CCR1
 #elif defined(PCBX7)

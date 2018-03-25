@@ -557,13 +557,10 @@ enum SwitchSources {
   SWSRC_SG1,
   SWSRC_SG2,
 #endif
-#if defined(PCBXLITE)
-  SWSRC_TRAINER = SWSRC_SD2,
-#else
+#if !defined(PCBXLITE)
   SWSRC_SH0,
   SWSRC_SH1,
   SWSRC_SH2,
-  SWSRC_TRAINER = SWSRC_SH2,
 #endif
 #if defined(PCBX9E)
   SWSRC_SI0,
@@ -596,11 +593,18 @@ enum SwitchSources {
   SWSRC_SR0,
   SWSRC_SR1,
   SWSRC_SR2,
+#endif
+#if defined(PCBX9E)
+  SWSRC_TRAINER = SWSRC_SH2,
   SWSRC_LAST_SWITCH = SWSRC_SR2,
+#elif defined(PCBXLITE)
+  SWSRC_TRAINER = SWSRC_SD2,
+  SWSRC_LAST_SWITCH = SWSRC_SD2,
 #else
+  SWSRC_TRAINER = SWSRC_SH2,
   SWSRC_LAST_SWITCH = SWSRC_SH2,
 #endif
-#else
+#else // neither Taranis nor Horus
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
   SWSRC_ID2,
