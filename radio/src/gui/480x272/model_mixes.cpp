@@ -155,7 +155,7 @@ enum MixFields {
   CASE_CURVES(MIX_FIELD_CURVE)
   CASE_FLIGHT_MODES(MIX_FIELD_FLIGHT_MODE)
   MIX_FIELD_SWITCH,
-  // MIX_FIELD_WARNING,
+  MIX_FIELD_WARNING,
   MIX_FIELD_MLTPX,
   MIX_FIELD_DELAY_UP,
   MIX_FIELD_DELAY_DOWN,
@@ -188,7 +188,7 @@ bool menuModelMixOne(event_t event)
 
   for (int k=0; k<2*NUM_BODY_LINES; k++) {
     coord_t y;
-    if (k >= NUM_BODY_LINES) {
+    if (k > NUM_BODY_LINES) {
       y = MENU_CONTENT_TOP - FH + (k-NUM_BODY_LINES)*FH;
     }
     else {
@@ -243,6 +243,18 @@ bool menuModelMixOne(event_t event)
       case MIX_FIELD_SWITCH:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCH);
         md2->swtch = editSwitch(MIXES_2ND_COLUMN, y, md2->swtch, attr, event);
+        break;
+      case MIX_FIELD_WARNING:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MIXWARNING);
+        if (md2->mixWarn) {
+          lcdDrawNumber(MIXES_2ND_COLUMN, y, md2->mixWarn, attr|LEFT);
+        }
+        else {
+          lcdDrawText(MIXES_2ND_COLUMN, y, STR_OFF, attr);
+        }
+        if (attr) {
+          CHECK_INCDEC_MODELVAR_ZERO(event, md2->mixWarn, 3);
+        }
         break;
       case MIX_FIELD_MLTPX:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTPX);
