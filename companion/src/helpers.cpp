@@ -87,6 +87,9 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
   dsb(dynamic_cast<QDoubleSpinBox *>(weightSB)),
   weightCB(weightCB),
   weight(weight),
+  deflt(deflt),
+  mini(mini),
+  maxi(maxi),
   step(step),
   lock(true)
 {
@@ -102,31 +105,7 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
     }
   }
 
-  int val;
-
-  if (weight>maxi || weight<mini) {
-    val = deflt;
-    weightGV->setChecked(true);
-    weightSB->hide();
-    weightCB->show();
-  }
-  else {
-    val = weight;
-    weightGV->setChecked(false);
-    weightSB->show();
-    weightCB->hide();
-  }
-
-  if (sb) {
-    sb->setMinimum(mini);
-    sb->setMaximum(maxi);
-    sb->setValue(val);
-  }
-  else {
-    dsb->setMinimum(mini*step);
-    dsb->setMaximum(maxi*step);
-    dsb->setValue(val*step);
-  }
+  setWeight(weight);
 
   connect(weightSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
 
@@ -155,6 +134,42 @@ void GVarGroup::valuesChanged()
 
     emit valueChanged();
   }
+}
+
+void GVarGroup::setWeight(int val)
+{
+  lock = true;
+
+  int tval;
+
+  if (val>maxi || val<mini) {
+    tval = deflt;
+    weightGV->setChecked(true);
+    weightSB->hide();
+    weightCB->setCurrentIndex(weightCB->findData(val));
+    if (weightCB->currentIndex() == -1)
+      weightCB->setCurrentIndex(getCurrentFirmware()->getCapability(Gvars));
+    weightCB->show();
+  }
+  else {
+    tval = val;
+    weightGV->setChecked(false);
+    weightSB->show();
+    weightCB->hide();
+  }
+
+  if (sb) {
+    sb->setMinimum(mini);
+    sb->setMaximum(maxi);
+    sb->setValue(tval);
+  }
+  else {
+    dsb->setMinimum(mini*step);
+    dsb->setMaximum(maxi*step);
+    dsb->setValue(tval*step);
+  }
+
+  lock = false;
 }
 
 /*

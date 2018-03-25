@@ -66,6 +66,8 @@ class GVarGroup: public QObject {
   public:
     GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
 
+    void setWeight(int val);
+
   signals:
     void valueChanged();
 
@@ -80,6 +82,9 @@ class GVarGroup: public QObject {
     QDoubleSpinBox *dsb;
     QComboBox *weightCB;
     int & weight;
+    int deflt;
+    int mini;
+    int maxi;
     double step;
     bool lock;
 };
