@@ -183,10 +183,10 @@
   #define SWITCHES_GPIO_REG_B_L         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_10 // PG.10
 #elif defined(PCBXLITE)
-  #define SWITCHES_GPIO_REG_B_H         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_2  // PE.02
-  #define SWITCHES_GPIO_REG_B_L         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_3  // PE.03
+  #define SWITCHES_GPIO_REG_B_H         GPIOA->IDR
+  #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_6  // PA.06
+  #define SWITCHES_GPIO_REG_B_L         GPIOA->IDR
+  #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_5  // PA.05
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_B_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_15 // PE.15
@@ -205,7 +205,10 @@
   #define SWITCHES_GPIO_REG_C_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_14 // PF.14
 #elif defined(PCBXLITE)
-  // no SWC
+  #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_2  // PE.02
+  #define SWITCHES_GPIO_REG_C_L         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_3  // PE.03
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_C_L         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_11 // PD.11
@@ -229,7 +232,10 @@
   #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_13 // PE.13
 #elif defined(PCBXLITE)
-  // no SWD
+  #define SWITCHES_GPIO_REG_D_H         GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_4  // PB.04
+  #define SWITCHES_GPIO_REG_D_L         GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_5  // PB.05
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_1  // PE.01
@@ -360,7 +366,8 @@
   #define KEYS_GPIOE_PINS               (KEYS_GPIO_PIN_PLUS | KEYS_GPIO_PIN_ENTER | KEYS_GPIO_PIN_MINUS | TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_LHL | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | SWITCHES_GPIO_PIN_F | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_B_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L)
 #elif defined(PCBXLITE)
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOE)
-  #define KEYS_GPIOB_PINS               (GPIO_Pin_0 | GPIO_Pin_1)
+  #define KEYS_GPIOA_PINS               (GPIO_Pin_5 | GPIO_Pin_6)
+  #define KEYS_GPIOB_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_4 | GPIO_Pin_5)
   #define KEYS_GPIOC_PINS               (GPIO_Pin_4 | GPIO_Pin_5)
   #define KEYS_GPIOE_PINS               (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_13 | GPIO_Pin_14)
 #elif defined(PCBX7)
@@ -834,12 +841,12 @@
   #define BACKLIGHT_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
   #define BACKLIGHT_TIMER               TIM1
   #define BACKLIGHT_GPIO                GPIOA
-  #define BACKLIGHT_GPIO_PIN            GPIO_Pin_10 // PA.10
-  #define BACKLIGHT_GPIO_PinSource      GPIO_PinSource10
+  #define BACKLIGHT_GPIO_PIN            GPIO_Pin_8 // PA.08
+  #define BACKLIGHT_GPIO_PinSource      GPIO_PinSource8
   #define BACKLIGHT_GPIO_AF             GPIO_AF_TIM1
-  #define BACKLIGHT_CCMR2               TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 // Channel 3, PWM
-  #define BACKLIGHT_CCER                TIM_CCER_CC3E
-  #define BACKLIGHT_COUNTER_REGISTER    BACKLIGHT_TIMER->CCR3
+  #define BACKLIGHT_CCMR2               TIM_CCMR2_OC1M_1 | TIM_CCMR2_OC1M_2 // Channel 1, PWM
+  #define BACKLIGHT_CCER                TIM_CCER_CC1E
+  #define BACKLIGHT_COUNTER_REGISTER    BACKLIGHT_TIMER->CCR1
 #elif defined(PCBX7)
   #define BACKLIGHT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
   #define BACKLIGHT_RCC_APB1Periph      RCC_APB1Periph_TIM4
