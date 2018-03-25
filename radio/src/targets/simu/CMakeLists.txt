@@ -8,7 +8,12 @@ set(SIMU_SRC
   simueeprom.cpp
   simufatfs.cpp
   simudisk.cpp
+
   )
+
+if(SIMU_DISKIO)
+  set(SIMU_SRC ${SIMU_SRC} ../../${FATFS_DIR}/ff.c ../../${FATFS_DIR}/option/ccsbcs.c)
+endif()
 
 remove_definitions(-DCLI)
 

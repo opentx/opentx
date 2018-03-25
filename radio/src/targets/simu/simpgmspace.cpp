@@ -35,10 +35,6 @@
   #include <sys/time.h>
 #endif
 
-#if defined(SIMU_DISKIO)
-  FILE * diskImage = 0;
-#endif
-
 #if defined(SIMU_AUDIO) && defined(CPUARM)
   #include <SDL.h>
 #endif

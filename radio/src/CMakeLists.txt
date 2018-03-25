@@ -279,6 +279,10 @@ if(SIMU_AUDIO)
   add_definitions(-DSIMU_AUDIO)
 endif()
 
+if(SIMU_DISKIO)
+  add_definitions(-DSIMU_DISKIO)
+endif()
+
 if(SDCARD)
   add_definitions(-DSDCARD)
   include_directories(${FATFS_DIR} ${FATFS_DIR}/option)

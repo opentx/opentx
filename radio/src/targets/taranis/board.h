@@ -146,10 +146,12 @@ uint32_t sdGetSpeed(void);
 #define __disk_read                     disk_read
 #define __disk_write                    disk_write
 #if defined(SIMU)
-#define sdInit()
-#define sdMount()
-#define sdDone()
-#define SD_CARD_PRESENT()               true
+  #if !defined(SIMU_DISKIO)
+    #define sdInit()
+    #define sdDone()
+  #endif
+  #define sdMount()
+  #define SD_CARD_PRESENT()               true
 #else
 void sdInit(void);
 void sdMount(void);
