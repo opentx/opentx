@@ -88,6 +88,7 @@ set(FIRMWARE_TARGET_SRC
   eeprom_driver.cpp
   lcd_driver.cpp
   pwr_driver.cpp
+  joystick.cpp
   usb/device/core/USBD_UDP.c
   usb/device/core/USBDDriver.c
   usb/device/hid-joystick/HIDDJoystickDriver.c
@@ -118,7 +119,6 @@ set(TARGET_SRC
   buzzer_driver.cpp
   haptic_driver.cpp
   sdcard_driver.cpp
-  joystick.cpp
   serial2_driver.cpp
   audio_driver.cpp
   trainer_driver.cpp

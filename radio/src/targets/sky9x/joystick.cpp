@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-#ifndef SIMU
-
 extern "C" {
 #include "usb/device/hid-joystick/HIDDJoystickDriver.h"
 extern void HIDDJoystickDriver_Initialize();
@@ -88,5 +86,3 @@ void usbJoystickUpdate()
         HIDDJoystickDriver_ChangeJoystickState((HIDDJoystickInputReport*)&HID_Buffer);
     }
 }
-
-#endif
