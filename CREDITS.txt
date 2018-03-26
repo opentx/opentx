@@ -1387,3 +1387,5 @@ Sebastian Stefanitsch
 Leif Pernstig
 Michael Garofalo
 Chris Sunman
+Adam Kalus
+Christoffer H Henni
