@@ -238,9 +238,7 @@ void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
 {
-    if (cfgnum > 0) {
-    
-    }
+    (void)cfgnum;
 }
 
 //------------------------------------------------------------------------------
