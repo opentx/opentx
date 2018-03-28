@@ -89,8 +89,14 @@ set(FIRMWARE_TARGET_SRC
   lcd_driver.cpp
   pwr_driver.cpp
   joystick.cpp
+  massstorage.cpp
   usb/device/core/USBD_UDP.c
   usb/device/core/USBDDriver.c
+  usb/device/massstorage/MSDDriver.c
+  usb/device/massstorage/MSDDStateMachine.c
+  usb/device/massstorage/MSDLun.c
+  usb/device/massstorage/MSDDriverDescriptors.c
+  usb/device/massstorage/SBCMethods.c
   usb/device/hid-joystick/HIDDJoystickDriver.c
   usb/device/hid-joystick/HIDDJoystickDriverDescriptors.c
   usb/device/hid-joystick/HIDDJoystickInputReport.c
