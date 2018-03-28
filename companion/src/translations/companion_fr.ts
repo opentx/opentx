@@ -796,59 +796,84 @@ Peut être différente de la langue du firmware</translation>
 <context>
     <name>Channels</name>
     <message>
-        <location filename="../modeledit/channels.cpp" line="102"/>
+        <location filename="../modeledit/channels.cpp" line="107"/>
         <source>Name</source>
         <translation>Nom</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="104"/>
+        <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="104"/>
+        <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="104"/>
+        <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Subtrim</source>
         <translation>Subtrim</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="104"/>
+        <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Direction</source>
         <translation>Direction</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="106"/>
+        <location filename="../modeledit/channels.cpp" line="111"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="108"/>
+        <location filename="../modeledit/channels.cpp" line="113"/>
         <source>PPM Center</source>
         <translation>Neutre PPM</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="110"/>
+        <location filename="../modeledit/channels.cpp" line="115"/>
         <source>Linear Subtrim</source>
         <translation>Subtrim linéaire</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="120"/>
+        <location filename="../modeledit/channels.cpp" line="125"/>
         <source>CH%1</source>
         <translation>VOIE%1</translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="147"/>
+        <location filename="../modeledit/channels.cpp" line="129"/>
+        <source>Popup menu available</source>
+        <translation>Menu contextuel disponible</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/channels.cpp" line="156"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/channels.cpp" line="147"/>
+        <location filename="../modeledit/channels.cpp" line="156"/>
         <source>INV</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/channels.cpp" line="359"/>
+        <source>&amp;Copy</source>
+        <translation>&amp;Copier</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/channels.cpp" line="360"/>
+        <source>&amp;Cut</source>
+        <translation>&amp;Couper</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/channels.cpp" line="361"/>
+        <source>&amp;Paste</source>
+        <translation>&amp;Coller</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/channels.cpp" line="362"/>
+        <source>&amp;Delete</source>
+        <translation>&amp;Supprimer</translation>
     </message>
 </context>
 <context>
@@ -993,27 +1018,27 @@ Do you want to import them?</source>
 Voulez-vous les importer ?</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="586"/>
+        <location filename="../helpers.cpp" line="601"/>
         <source>Simulator for this firmware is not yet available</source>
         <translation>Le simulateur n&apos;est pas encore disponible pour ce firmware</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="610"/>
+        <location filename="../helpers.cpp" line="625"/>
         <source>Uknown error during Simulator startup.</source>
         <translation>Erreur inconnue pendant le démarrage du simulateur.</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="611"/>
+        <location filename="../helpers.cpp" line="626"/>
         <source>Simulator Error</source>
         <translation>Erreur Simulateur</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="618"/>
+        <location filename="../helpers.cpp" line="633"/>
         <source>Data Load Error</source>
         <translation>Erreur de chargement des données</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="618"/>
+        <location filename="../helpers.cpp" line="633"/>
         <source>Error occurred while starting simulator.</source>
         <translation>Une erreur s&apos;est produite lors du démarrage du simulateur.</translation>
     </message>
@@ -1151,22 +1176,22 @@ Voulez-vous les importer ?</translation>
 <context>
     <name>CurveGroup</name>
     <message>
-        <location filename="../helpers.cpp" line="176"/>
+        <location filename="../helpers.cpp" line="191"/>
         <source>Diff</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="177"/>
+        <location filename="../helpers.cpp" line="192"/>
         <source>Expo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="178"/>
+        <location filename="../helpers.cpp" line="193"/>
         <source>Func</source>
         <translation>Fonc</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="179"/>
+        <location filename="../helpers.cpp" line="194"/>
         <source>Curve</source>
         <translation>Courbe</translation>
     </message>
@@ -3516,17 +3541,17 @@ Veuillez utiliser Zadig pour installer le pilote.</translation>
 <context>
     <name>FrSkyAlarmData</name>
     <message>
-        <location filename="../helpers.cpp" line="526"/>
+        <location filename="../helpers.cpp" line="541"/>
         <source>Yellow</source>
         <translation>Jaune</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="528"/>
+        <location filename="../helpers.cpp" line="543"/>
         <source>Orange</source>
         <translation>Orange</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="530"/>
+        <location filename="../helpers.cpp" line="545"/>
         <source>Red</source>
         <translation>Rouge</translation>
     </message>
@@ -3535,12 +3560,12 @@ Veuillez utiliser Zadig pour installer le pilote.</translation>
     <name>FrSkyChannelData</name>
     <message>
         <location filename="../firmwares/telem_data.cpp" line="44"/>
-        <location filename="../helpers.cpp" line="543"/>
+        <location filename="../helpers.cpp" line="558"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="541"/>
+        <location filename="../helpers.cpp" line="556"/>
         <source>---</source>
         <translation></translation>
     </message>
@@ -3730,12 +3755,12 @@ p, li { white-space: pre-wrap; }
         <translation>VG</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="370"/>
+        <location filename="../helpers.cpp" line="385"/>
         <source>Own value</source>
         <translation>Valeur indépendante</translation>
     </message>
     <message>
-        <location filename="../helpers.cpp" line="373"/>
+        <location filename="../helpers.cpp" line="388"/>
         <source>Flight mode %1 value</source>
         <translation>Valeur de la phase de vol %1</translation>
     </message>
