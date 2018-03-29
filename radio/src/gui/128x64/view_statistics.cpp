@@ -335,7 +335,7 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "BT Status");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, btChipPresent, RIGHT);
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Raw telemetry log");
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Log telem");
   if (logTelemetryNeeded) {
     lcdDrawText(MENU_DEBUG_COL1_OFS - FW + 1, MENU_DEBUG_ROW3, "Recording");
     lcdDrawTextAlignedLeft(MENU_DEBUG_ROW4, "Tlm log size");
