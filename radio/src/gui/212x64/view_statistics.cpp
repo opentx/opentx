@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+extern FIL g_telemetryFile;
+
 #define STATS_1ST_COLUMN               FW/2
 #define STATS_2ND_COLUMN               12*FW+FW/2
 #define STATS_3RD_COLUMN               24*FW+FW/2
@@ -97,6 +99,7 @@ void menuStatisticsView(event_t event)
 }
 
 #define MENU_DEBUG_COL1_OFS   (11*FW-2)
+#define MENU_DEBUG_COL2_OFS   (19*FW-2)
 #define MENU_DEBUG_ROW1       (2*FH-3)
 #define MENU_DEBUG_ROW2       (3*FH-2)
 #define MENU_DEBUG_ROW3       (4*FH-1)
@@ -224,10 +227,27 @@ void menuStatisticsDebug2(event_t event)
 
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      if(logTelemetryNeeded) {
+        f_close(&g_telemetryFile);
+        logTelemetryNeeded =  false;
+      }
       chainMenu(menuMainView);
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):
+      if(logTelemetryNeeded) {
+        f_close(&g_telemetryFile);
+      }
+      else {
+        f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
+        if (f_size(&g_telemetryFile) > 0) {
+          f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
+        }
+      }
+      logTelemetryNeeded = !logTelemetryNeeded;
+      break;
+
+    case EVT_KEY_BREAK(KEY_ENTER):
       telemetryErrors = 0;
       break;
   }
@@ -236,6 +256,16 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, "Tlm RX Err");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
 
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Raw telemetry log");
+  if (logTelemetryNeeded) {
+    lcdDrawText(MENU_DEBUG_COL2_OFS - FW + 1, MENU_DEBUG_ROW3, "Recording");
+    lcdDrawTextAlignedLeft(MENU_DEBUG_ROW4, "Telemetry log size");
+    lcdDrawNumber(MENU_DEBUG_COL2_OFS- FW + 1, MENU_DEBUG_ROW4, f_size(&g_telemetryFile) / 1024, LEFT);
+    lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, "kb");
+  }
+  else {
+    lcdDrawText(MENU_DEBUG_COL2_OFS - FW, MENU_DEBUG_ROW3, "[ENTER Long]");
+  }
 
   lcdDrawText(3*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();

@@ -23,6 +23,9 @@
 uint8_t telemetryStreaming = 0;
 uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t telemetryRxBufferCount = 0;
+#if defined(SDCARD)
+bool logTelemetryNeeded = 0;
+#endif
 
 #if defined(WS_HOW_HIGH)
 uint8_t wshhStreaming = 0;
@@ -145,7 +148,7 @@ void telemetryWakeup()
     varioWakeup();
   }
 #endif
-  
+
 #define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
 
 #if defined(CPUARM)
@@ -446,8 +449,9 @@ NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
 }
 #endif
 
-#if defined(LOG_TELEMETRY) && !defined(SIMU)
-extern FIL g_telemetryFile;
+#if defined(SDCARD)
+FIL g_telemetryFile = {};
+
 void logTelemetryWriteStart()
 {
   static tmr10ms_t lastTime = 0;

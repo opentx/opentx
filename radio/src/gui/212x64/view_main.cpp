@@ -245,7 +245,7 @@ void displayTopBar()
 
   /* Notifs icons */
   coord_t x = BAR_NOTIFS_X;
-#if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
+#if defined(WATCHDOG_DISABLED)
   LCD_NOTIF_ICON(x, ICON_REBOOT);
   x -= 12;
 #else

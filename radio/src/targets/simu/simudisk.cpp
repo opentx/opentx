@@ -204,16 +204,10 @@ void sdInit(void)
   //   return;
   // }
 
+
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
-
-#if defined(LOG_TELEMETRY)
-    f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
-    if (f_size(&g_telemetryFile) > 0) {
-      f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
-    }
-#endif
   }
   else {
     TRACE_SIMPGMSPACE("f_mount() failed");
@@ -224,9 +218,7 @@ void sdDone()
 {
   if (sdMounted()) {
     audioQueue.stopSD();
-#if defined(LOG_TELEMETRY)
     f_close(&g_telemetryFile);
-#endif
     f_mount(NULL, "", 0); // unmount SD
   }
 }

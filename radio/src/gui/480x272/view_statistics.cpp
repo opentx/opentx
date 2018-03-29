@@ -21,6 +21,8 @@
 #include "opentx.h"
 #include "stamp.h"
 
+extern FIL g_telemetryFile;
+
 #define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
 #define MENU_STATS_COLUMN2    (LCD_W/2)
 #define MENU_STATS_COLUMN3    (LCD_W/2 + 120)
@@ -97,7 +99,20 @@ bool menuStatsDebug(event_t event)
 {
   switch(event)
   {
-    case EVT_KEY_FIRST(KEY_ENTER):
+    case EVT_KEY_LONG(KEY_ENTER):
+      if(logTelemetryNeeded) {
+        f_close(&g_telemetryFile);
+      }
+      else {
+        f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
+        if (f_size(&g_telemetryFile) > 0) {
+          f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
+        }
+      }
+      logTelemetryNeeded = !logTelemetryNeeded;
+      break;
+
+    case EVT_KEY_BREAK(KEY_ENTER):
       maxMixerDuration  = 0;
 #if defined(LUA)
       maxLuaInterval = 0;
@@ -151,6 +166,16 @@ bool menuStatsDebug(event_t event)
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Tlm RX Errs");
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+line*FH, telemetryErrors, LEFT);
+
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+(line+1)*FH, "Telemetry raw log");
+  if(logTelemetryNeeded) {
+    lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+(line+1)*FH, "Recording [");
+    lcdDrawNumber(lcdNextPos, MENU_CONTENT_TOP+(line+1)*FH, f_size(&g_telemetryFile) / 1024, LEFT);
+    lcdDrawText(lcdNextPos, MENU_CONTENT_TOP+(line+1)*FH, "kb]");
+  }
+  else {
+    lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+(line+1)*FH, "[ENTER Long] to start");
+  }
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);
   return true;
