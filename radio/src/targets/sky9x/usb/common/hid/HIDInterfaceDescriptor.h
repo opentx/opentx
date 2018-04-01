@@ -27,47 +27,51 @@
  * ----------------------------------------------------------------------------
  */
 
-//------------------------------------------------------------------------------
-/// \unit
-/// !Purpose
-/// 
-/// Declaration of constants for using Device Descriptors with a Mass Storage
-/// driver.
-/// 
-/// !Usage
-/// 
-/// - For a USB device:
-///     -# When declaring a USBDeviceDescriptor instance, use the Mass Storage
-///        codes defined in this file (see "MS device codes").
-//------------------------------------------------------------------------------
+/**
+ \unit
 
-#ifndef MSDEVICEDESCRIPTOR_H
-#define MSDEVICEDESCRIPTOR_H
+ !!!Purpose
+
+ Constants used when declaring an HID interface.
+
+ !!!Usage
+
+ Use the constants defined here when declaring a USBInterfaceDescriptor
+ instance for a HID interface.
+*/
+
+#ifndef HIDINTERFACEDESCRIPTOR_H
+#define HIDINTERFACEDESCRIPTOR_H
 
 //------------------------------------------------------------------------------
 //         Definitions
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/// \page "MS device codes"
-/// This page lists the class, subclass & protocol codes used by a device with
-/// a Mass Storage driver.
-/// 
+/// \page "HID Interface Descriptor Codes"
+/// This page lists HID Interface class, subclass and protocol codes.
+///
 /// !Codes
-/// 
-/// - MSDeviceDescriptor_CLASS
-/// - MSDeviceDescriptor_SUBCLASS
-/// - MSDeviceDescriptor_PROTOCOL
+/// - HIDInterfaceDescriptor_CLASS
+/// - HIDInterfaceDescriptor_SUBCLASS_NONE
+/// - HIDInterfaceDescriptor_SUBCLASS_BOOT
+/// - HIDInterfaceDescriptor_PROTOCOL_NONE
+/// - HIDInterfaceDescriptor_PROTOCOL_KEYBOARD
+/// - HIDInterfaceDescriptor_PROTOCOL_MOUSE
 
-/// Class code for a Mass Storage device.
-#define MSDeviceDescriptor_CLASS        0
-
-/// Subclass code for a Mass Storage device.
-#define MSDeviceDescriptor_SUBCLASS     0
-
-/// Protocol code for a Mass Storage device.
-#define MSDeviceDescriptor_PROTOCOL     0
+/// HID interface class code.
+#define HIDInterfaceDescriptor_CLASS                0x03
+/// Indicates the interface does not implement a particular subclass.
+#define HIDInterfaceDescriptor_SUBCLASS_NONE        0x00
+/// Indicates the interface is compliant with the boot specification.
+#define HIDInterfaceDescriptor_SUBCLASS_BOOT        0x01
+/// Indicates the interface does not implement a particular protocol.
+#define HIDInterfaceDescriptor_PROTOCOL_NONE        0x00
+/// Indicates the interface supports the boot specification as a keyboard.
+#define HIDInterfaceDescriptor_PROTOCOL_KEYBOARD    0x01
+/// Indicates the interface supports the boot specification as a mouse.
+#define HIDInterfaceDescriptor_PROTOCOL_MOUSE       0x02
 //------------------------------------------------------------------------------
 
-#endif //#ifndef MSDEVICEDESCRIPTOR_H
+#endif //#ifndef HIDINTERFACEDESCRIPTOR_H
 

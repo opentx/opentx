@@ -27,49 +27,67 @@
  * ----------------------------------------------------------------------------
  */
 
-//------------------------------------------------------------------------------
-/// \unit
-/// !Purpose
-/// 
-/// Definition of several constants used when manipulating Mass Storage interface
-/// descriptors.
-///
-/// !Usage
-/// 
-/// - For a USB device:
-///     -# When declaring an interface descriptor for a Mass Storage device, use
-///        the class, subclass and protocol codes defined here (see
-///        "MS interface codes").
-//------------------------------------------------------------------------------
+/**
+ \unit
 
-#ifndef MSINTERFACEDESCRIPTOR_H
-#define MSINTERFACEDESCRIPTOR_H
+ !!!Purpose
+
+ Methods and definitions for manipulating a HID descriptor.
+*/
+
+#ifndef HIDDESCRIPTOR_H
+#define HIDDESCRIPTOR_H
 
 //------------------------------------------------------------------------------
 //         Definitions
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-/// \page "MS interface codes"
-/// This page lists the available class, subclass & protocol codes for a Mass
-/// Storage interface.
-/// 
-/// !Codes
-/// 
-/// - MSInterfaceDescriptor_CLASS
-/// - MSInterfaceDescriptor_SCSI
-/// - MSInterfaceDescriptor_BULKONLY
+/// \page "HID Release Numbers"
+/// ...
+///
+/// !Numbers
+/// - HIDDescriptor_HID1_11
 
-/// Class code for a Mass Storage interface.
-#define MSInterfaceDescriptor_CLASS         0x08
-
-/// Subclass code for a Mass Storage interface using the SCSI protocol.
-#define MSInterfaceDescriptor_SCSI          0x06
-
-/// Protocol code for a Mass Storage interface using Bulk-Only Transport.
-#define MSInterfaceDescriptor_BULKONLY      0x50
+/// Identifies version 1.11 of the HID specification.
+#define HIDDescriptor_HID1_11           0x0111
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+//         Types
+//------------------------------------------------------------------------------
 
-#endif //#ifndef MSINTERFACEDESCRIPTOR_H
+#ifdef __ICCARM__          // IAR
+#pragma pack(1)            // IAR
+#define __attribute__(...) // IAR
+#endif                     // IAR
+
+//------------------------------------------------------------------------------
+/// Identifies the length of type of subordinate descriptors of a HID
+/// device. This particular type only supports one subordinate descriptor.
+//------------------------------------------------------------------------------
+typedef struct {
+
+    /// Size of descriptor in bytes.
+    unsigned char bLength;
+    /// Descriptor type (HIDGenericDescriptor_HID).
+    unsigned char bDescriptorType;
+    /// HID class specification release number in BCD format.
+    unsigned short bcdHID;
+    /// Country code of the device if it is localized.
+    unsigned char bCountryCode; 
+    /// Number of subordinate descriptors.
+    unsigned char bNumDescriptors;
+    /// Type of the first subordinate descriptor.
+    unsigned char bDescriptorType0;
+    /// Size in bytes of the first subordinate descriptor.
+    unsigned short wDescriptorLength0;
+
+} __attribute__ ((packed)) HIDDescriptor; // GCC
+
+#ifdef __ICCARM__          // IAR
+#pragma pack()             // IAR
+#endif                     // IAR
+
+#endif //#ifndef HIDDESCRIPTOR_H
 

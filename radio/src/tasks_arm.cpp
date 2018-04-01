@@ -171,6 +171,10 @@ void mixerTask(void * pdata)
       }
 #endif
 
+#if defined(PCBSKY9X) && !defined(SIMU)
+      usbJoystickUpdate();
+#endif
+
 #if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();

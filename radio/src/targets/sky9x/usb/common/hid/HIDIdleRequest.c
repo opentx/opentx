@@ -27,49 +27,30 @@
  * ----------------------------------------------------------------------------
  */
 
-//------------------------------------------------------------------------------
-/// \unit
-/// !Purpose
-/// 
-/// Mass storage %device driver implementation.
-/// 
-/// !Usage
-/// 
-/// -# Enable and setup USB related pins (see pio & board.h).
-/// -# Configure the memory interfaces used for Mass Storage LUNs
-///    (see memories, MSDLun.h).
-/// -# Configure the USB MSD %driver using MSDDriver_Initialize.
-/// -# Invoke MSDDriver_StateMachine in main loop to handle all Mass Storage
-///    operations.
-//------------------------------------------------------------------------------
+/*
+    Title: HIDIdleRequest implementation
 
-#ifndef MSDDRIVER_H
-#define MSDDRIVER_H
+    About: Purpose
+        Implementation of the HIDIdleRequest methods.
+*/
 
 //------------------------------------------------------------------------------
 //         Headers
 //------------------------------------------------------------------------------
 
-#include "../../../usb/device/massstorage/MSD.h"
-#include "../../../usb/device/massstorage/MSDLun.h"
-// #include <utility/trace.h>
+#include "HIDIdleRequest.h"
 
 //------------------------------------------------------------------------------
-//      Global functions
+//         Exported functions
 //------------------------------------------------------------------------------
 
-extern void MSDDriver_Initialize(MSDLun *luns, unsigned char numLuns);
-
-extern void MSDDriver_RequestHandler(const USBGenericRequest *request);
-
-extern void MSDDriver_StateMachine(void);
-
-extern void MSDDriver_RemoteWakeUp(void);
-
-extern void MSDDriver_DataCallback(unsigned char isRead,
-                                   unsigned int dataLength,
-                                   unsigned int nullCnt,
-                                   unsigned int fullCnt);
-
-#endif // #ifndef MSDDRIVER_H
-
+//------------------------------------------------------------------------------
+/// Retrieves the Idle rate (in milliseconds) indicated by a SET_IDLE
+/// request.
+/// \param request Pointer to a USBGenericRequest instance.
+/// \return New idle rate for the report.
+//------------------------------------------------------------------------------
+unsigned char HIDIdleRequest_GetIdleRate(const USBGenericRequest *request)
+{
+    return ((USBGenericRequest_GetValue(request) >> 8) & 0xFF);
+}
