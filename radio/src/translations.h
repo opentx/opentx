@@ -500,6 +500,7 @@ extern const pm_char STR_MEMORYWARNING[];
 extern const pm_char STR_ALARMWARNING[];
 extern const pm_char STR_RSSISHUTDOWNALARM[];
 extern const pm_char STR_MODEL_STILL_POWERED[];
+extern const pm_char STR_MODEL_SHUTDOWN[];
 extern const pm_char STR_PRESS_ENTER_TO_CONFIRM[];
 extern const pm_char STR_RENAVIG[];
 extern const pm_char STR_THROTTLEREVERSE[];

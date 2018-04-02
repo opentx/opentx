@@ -727,6 +727,7 @@
 #define TR_ALARMWARNING        TR(INDENT "Alle Töne aus?", INDENT "Alle Töne ganz aus?")
 #define TR_RSSISHUTDOWNALARM   TR(INDENT "Rssi-Chk bei aus", INDENT "Prüfe RSSI bei Ausschalten")
 #define TR_MODEL_STILL_POWERED "Model still powered"
+#define TR_MODEL_SHUTDOWN              "Shutdown ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Press enter to confirm"
 #define TR_RENAVIG             "Drehgeb. Navig."
 #define TR_THROTTLE_LABEL      "Gas-Kontrolle"
