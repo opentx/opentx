@@ -176,11 +176,10 @@ uint32_t switchState(uint8_t index)
   switch (index) {
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
-#if !defined(PCBXLITE)
     ADD_3POS_CASE(C, 2);
     ADD_3POS_CASE(D, 3);
-#endif
 #if defined(PCBXLITE)
+    // no SWF, SWG and SWH on XLITE
 #elif defined(PCBX7)
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);

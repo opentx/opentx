@@ -79,14 +79,14 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 
 void telemetryPortSetDirectionOutput()
 {
-  TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
-  TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
+  TELEMETRY_DIR_OUTPUT();
+  TELEMETRY_USART->CR1 &= ~USART_CR1_RE; // turn off receiver
 }
 
 void telemetryPortSetDirectionInput()
 {
-  TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
-  TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
+  TELEMETRY_DIR_INPUT();
+  TELEMETRY_USART->CR1 |= USART_CR1_RE; // turn on receiver
 }
 
 void sportSendBuffer(uint8_t * buffer, uint32_t count)
