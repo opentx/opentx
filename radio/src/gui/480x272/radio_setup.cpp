@@ -360,7 +360,8 @@ bool menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BACKLIGHT_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        g_eeGeneral.backlightMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_VBLMODE, g_eeGeneral.backlightMode, e_backlight_mode_off, e_backlight_mode_on, attr, event);
+        if (attr & INVERS) g_eeGeneral.backlightMode = checkIncDec(event, g_eeGeneral.backlightMode, e_backlight_mode_keys, e_backlight_mode_on, EE_GENERAL);
+        lcdDrawTextAtIndex(RADIO_SETUP_2ND_COLUMN, y, STR_VBLMODE, g_eeGeneral.backlightMode, attr);
         break;
 
       case ITEM_SETUP_FLASH_BEEP:

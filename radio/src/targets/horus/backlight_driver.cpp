@@ -31,7 +31,7 @@ void backlightInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(BACKLIGHT_GPIO, &GPIO_InitStructure);
   GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource, BACKLIGHT_GPIO_AF);
-  
+
   // TIMER init
 #if defined(PCBX12S)
   if (IS_HORUS_PROD()) {
@@ -77,4 +77,11 @@ void backlightEnable(uint8_t dutyCycle)
 #elif defined(PCBX10)
   BACKLIGHT_TIMER->CCR3 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #endif
+
+  if (dutyCycle == 0) {
+    BACKLIGHT_TIMER->BDTR &= ~TIM_BDTR_MOE;
+  }
+  else if ((BACKLIGHT_TIMER->BDTR & TIM_BDTR_MOE) == 0) {
+    BACKLIGHT_TIMER->BDTR |= TIM_BDTR_MOE;
+  }
 }
