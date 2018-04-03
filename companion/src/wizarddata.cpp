@@ -98,7 +98,6 @@ WizMix::operator ModelData()
   model.setDefaultInputs(settings);
 
   int mixIndex = 0;
-  int switchIndex = 0;
   int timerIndex = 0;
 
   // Safe copy model name
@@ -109,21 +108,28 @@ WizMix::operator ModelData()
   for (int i=0; i<WIZ_MAX_CHANNELS; i++ )
   {
     Channel ch = channel[i];
-    if (ch.input1 == THROTTLE_INPUT || ch.input2 == THROTTLE_INPUT)
-      throttleChannel = i;
 
     addMix(model, ch.input1, ch.weight1, i, mixIndex);
     addMix(model, ch.input2, ch.weight2, i, mixIndex);
+
+    if (ch.input1 == THROTTLE_INPUT || ch.input2 == THROTTLE_INPUT) {
+      throttleChannel = i;
+
+      // Add the Throttle Cut option
+      if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
+        MixData & mix = model.mixData[mixIndex++];
+        mix.destCh = throttleChannel+1;
+        mix.srcRaw = SOURCE_TYPE_MAX;
+        mix.weight = -100;
+        mix.swtch.type = SWITCH_TYPE_SWITCH;
+        mix.swtch.index = IS_ARM(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
+        mix.mltpx = MLTPX_REP;
+        strncpy(mix.name, "Cut", MIXDATA_NAME_LEN);
+        mix.name[MIXDATA_NAME_LEN] = '\0';
+      }
+    }
   }
 
-  // Add the Throttle Cut option
-  if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
-    model.customFn[switchIndex].swtch.type = SWITCH_TYPE_SWITCH;
-    model.customFn[switchIndex].swtch.index = IS_ARM(getCurrentBoard()) ? SWITCH_SF0 : SWITCH_THR;
-    model.customFn[switchIndex].enabled = 1;
-    model.customFn[switchIndex].func = (AssignFunc)throttleChannel;
-    model.customFn[switchIndex].param = -100;
-  }
 
   // Add the Flight Timer option
   if (options[FLIGHT_TIMER_OPTION] ){
