@@ -130,7 +130,6 @@ WizMix::operator ModelData()
     }
   }
 
-
   // Add the Flight Timer option
   if (options[FLIGHT_TIMER_OPTION] ){
     model.timers[timerIndex].mode.type = SWITCH_TYPE_TIMER_MODE;
