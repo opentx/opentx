@@ -18,12 +18,15 @@
  * GNU General Public License for more details.
  */
 #include "opentx.h"
-#include "stamp.h"
-
 #include "boot.h"
 #include "bin_files.h"
 
-#define APP_START_ADDRESS (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
+#if defined(PCBXLITE)
+#define BOOTLOADER_KEYS                 0x0f
+#else
+#define BOOTLOADER_KEYS                 0x42
+#endif
+#define APP_START_ADDRESS               (uint32_t)(FIRMWARE_ADDRESS + BOOTLOADER_SIZE)
 
 #if defined(EEPROM)
 #define MAIN_MENU_LEN 3
@@ -63,9 +66,6 @@ uint32_t eepromAddress = 0;
 uint32_t eepromWritten = 0;
 #endif
 
-//TCHAR backupFilename[_MAX_LFN+1];
-
-//uint32_t Master_frequency;
 volatile uint8_t Tenms = 1;
 
 FlashCheckRes Valid;
@@ -134,19 +134,19 @@ uint32_t isValidBufferStart(const uint8_t * buffer)
 
 FlashCheckRes checkFlashFile(unsigned int index, FlashCheckRes res)
 {
-    if (res != FC_UNCHECKED)
-        return res;
+  if (res != FC_UNCHECKED)
+      return res;
 
-    if (openBinFile(memoryType, index) != FR_OK)
-        return FC_ERROR;
+  if (openBinFile(memoryType, index) != FR_OK)
+      return FC_ERROR;
 
-    if (closeBinFile() != FR_OK)
-        return FC_ERROR;
+  if (closeBinFile() != FR_OK)
+      return FC_ERROR;
 
-    if (!isValidBufferStart(Block_buffer))
-        return FC_ERROR;
+  if (!isValidBufferStart(Block_buffer))
+      return FC_ERROR;
 
-    return FC_OK;
+  return FC_OK;
 }
 
 int menuFlashFile(uint32_t index, event_t event)
@@ -170,8 +170,6 @@ int menuFlashFile(uint32_t index, event_t event)
 
   return -1;
 }
-
-extern Key keys[];
 
 static uint32_t PowerUpDelay;
 
@@ -228,7 +226,7 @@ int main()
   }
 
   // LHR & RHL trims not pressed simultanously
-  if (readTrims() != 0x42) {
+  if (readTrims() != BOOTLOADER_KEYS) {
       // Start main application
       jumpTo(APP_START_ADDRESS);
   }
