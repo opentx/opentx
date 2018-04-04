@@ -241,7 +241,6 @@ void menuModelSetup(event_t event)
 {
 #if defined(PCBXLITE)
   // Switch to external antenna confirmation
-  bool newAntennaSel;
   if (warningResult) {
     warningResult = 0;
     g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = XJT_EXTERNAL_ANTENNA;
@@ -1156,7 +1155,8 @@ void menuModelSetup(event_t event)
 
 #if defined(PCBXLITE)
       case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
-        newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNASELECTION, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna, 0, 1, attr, event);
+      {
+        uint8_t newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNASELECTION, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna, 0, 1, attr, event);
         if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
           POPUP_CONFIRMATION(STR_ANTENNACONFIRM1);
           const char * w = STR_ANTENNACONFIRM2;
@@ -1166,6 +1166,7 @@ void menuModelSetup(event_t event)
           g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = newAntennaSel;
         }
         break;
+      }
 #endif
       case ITEM_MODEL_EXTERNAL_MODULE_OPTIONS:
       {
