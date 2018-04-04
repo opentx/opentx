@@ -480,13 +480,12 @@
   #define ADC_GPIO_PIN_POT1             GPIO_Pin_1  // PC.01
   #define ADC_GPIO_PIN_POT2             GPIO_Pin_2  // PC.02
   #define ADC_GPIO_PIN_BATT             GPIO_Pin_0  // PC.00
-  #define STICKS_GPIOA_PINS             (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
-  #define PWM_GPIOA_PINS                STICKS_GPIOA_PINS
-  #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_POT1 | (ANALOGS_PWM_ENABLED() ? 0 : STICKS_GPIOA_PINS))
-  #define ADC_GPIOB_PINS                ADC_GPIO_PIN_POT2
-  #define ADC_GPIOC_PINS                ADC_GPIO_PIN_BATT
-  #define ADC_CHANNEL_POT1              ADC_Channel_6
-  #define ADC_CHANNEL_POT2              ADC_Channel_8
+  #define PWM_GPIOA_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
+  #define ADC_GPIOA_PINS                0
+  #define ADC_GPIOB_PINS                0
+  #define ADC_GPIOC_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2)
+  #define ADC_CHANNEL_POT1              ADC_Channel_11
+  #define ADC_CHANNEL_POT2              ADC_Channel_12
   #define ADC_CHANNEL_BATT              ADC_Channel_10
 #elif defined(PCBX7)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
@@ -558,14 +557,18 @@
 
 #if defined(PCBXLITE)
   #define STATUS_LEDS
+  #define GPIO_LED_GPIO_ON              GPIO_ResetBits
+  #define GPIO_LED_GPIO_OFF             GPIO_SetBits
+  #define LED_BLUE_GPIO                 GPIOE
+  #define LED_BLUE_GPIO_PIN             GPIO_Pin_4  // PE.04
+  #define LED_RED_GPIO                  GPIOE
+  #define LED_RED_GPIO_PIN              GPIO_Pin_6  // PE.06
   #define LED_GREEN_GPIO                GPIOE
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_5  // PE.05
-  #define LED_RED_GPIO                  GPIOE
-  #define LED_RED_GPIO_PIN              GPIO_Pin_4  // PE.04
-  #define LED_BLUE_GPIO                 GPIOE
-  #define LED_BLUE_GPIO_PIN             GPIO_Pin_6  // PE.06
 #elif defined(PCBX7)
   #define STATUS_LEDS
+  #define GPIO_LED_GPIO_ON              GPIO_SetBits
+  #define GPIO_LED_GPIO_OFF             GPIO_ResetBits
   #define LED_GREEN_GPIO                GPIOC
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_4  // PC.04
   #define LED_RED_GPIO                  GPIOC
