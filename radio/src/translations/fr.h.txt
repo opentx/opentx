@@ -597,7 +597,7 @@
 #define LEN_VCELLINDEX                 "\007"
 #define TR_VCELLINDEX                  "Mini.\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Maxi.\0 ""Diff.\0 "
 
-#if defined(PCBX10)
+#if defined(PCBX10) || defined(PCBXLITE)
 #define LEN_VANTENNATYPES              "\007"
 #define TR_VANTENNATYPES               "Interne""Externe"
 #else
@@ -1070,9 +1070,9 @@
 #define TR_UNIT                        "Unité"
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")
 #define TR_CHANNELRANGE                TR(INDENT "Canaux", INDENT "Plage de canaux")
-#define TR_ANTENNASELECTION            INDENT "Choix antenne"
+#define TR_ANTENNASELECTION            TR(INDENT "Antenne", INDENT "Choix antenne")
 #define TR_ANTENNACONFIRM1             "Vraiment changer?"
-#define TR_ANTENNACONFIRM2             "Installer l'antenne d'abord!"
+#define TR_ANTENNACONFIRM2             TR("Vérif antenne", "Installer l'antenne d'abord!")
 #define TR_LOWALARM                    INDENT "Alarme basse"
 #define TR_CRITICALALARM               INDENT "Alarme critique"
 #define TR_RSSIALARM_WARN              TR("RSSI", "TELEMETRIE")

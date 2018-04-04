@@ -573,7 +573,7 @@
 #define LEN_VCELLINDEX         "\007"
 #define TR_VCELLINDEX          "Nízký\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Nejvíce""Delta\0"
 
-#if defined(PCBX10)
+#if defined(PCBX10) || defined(PCBXLITE)
 #define LEN_VANTENNATYPES      "\010"
 #define TR_VANTENNATYPES       "Internal""External"
 #else
@@ -1056,9 +1056,9 @@
 #define TR_UNIT                "Jednotky"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Přidat senzor ručně"
 #define TR_CHANNELRANGE        TR(INDENT "Kanály", INDENT "Rozsah kanálů")
-#define TR_ANTENNASELECTION    INDENT "Volba antény"
+#define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Volba antény")
 #define TR_ANTENNACONFIRM1     "Opravdu přepnout?"
-#define TR_ANTENNACONFIRM2     "Ujisti se že je anténa připojena!"
+#define TR_ANTENNACONFIRM2     TR("Check antenna", "Ujisti se že je anténa připojena!")
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
 #define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")
