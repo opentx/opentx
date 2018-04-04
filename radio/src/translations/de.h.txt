@@ -1071,9 +1071,9 @@
 #define TR_UNIT                "Einheit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor hinzufügen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
-#define TR_ANTENNASELECTION    INDENT "Antenne auswählen"
+#define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenne auswählen")
 #define TR_ANTENNACONFIRM1     "Ant. umschalten"
-#define TR_ANTENNACONFIRM2     "Ist eine externe Antenne installiert?"
+#define TR_ANTENNACONFIRM2     TR("Check antenna", "Ist eine externe Antenne installiert?")
 #define TR_LOWALARM            INDENT "Warnungsschwelle"
 #define TR_CRITICALALARM       INDENT "Kritischer Alarm"
 #define TR_RSSIALARM_WARN      "Telemetry"
