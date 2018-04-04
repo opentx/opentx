@@ -549,7 +549,7 @@ void menuMainView(event_t event)
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
           if (i >= NUM_SWITCHES/2) {
             x = 16*FW+1;
-            y -= 3*FH;
+            y -= (NUM_SWITCHES/2)*FH;
           }
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
           getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
