@@ -116,7 +116,7 @@ WizMix::operator ModelData()
       throttleChannel = i;
 
       // Add the Throttle Cut option
-      if( options[THROTTLE_CUT_OPTION] && throttleChannel >=0 ){
+      if( options[THROTTLE_CUT_OPTION]){
         MixData & mix = model.mixData[mixIndex++];
         mix.destCh = throttleChannel+1;
         mix.srcRaw = SOURCE_TYPE_MAX;
