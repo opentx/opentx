@@ -376,7 +376,7 @@ void setupPulsesPXX(uint8_t port)
   uint8_t extra_flags = 0;
 
 /* Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise) */
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBXLITE)
   if (port == INTERNAL_MODULE) {
     extra_flags |= (g_model.moduleData[port].pxx.external_antenna << 0);
   }

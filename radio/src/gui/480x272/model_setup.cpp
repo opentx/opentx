@@ -264,7 +264,6 @@ bool menuModelSetup(event_t event)
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
 
   // Switch to external antenna confirmation
-  bool newAntennaSel;
   if (warningResult) {
     warningResult = 0;
     g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = XJT_EXTERNAL_ANTENNA;
@@ -661,8 +660,9 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
+      {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ANTENNASELECTION);
-        newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna, 0, 1, attr, event);
+        uint8_t newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna, 0, 1, attr, event);
         if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
           POPUP_CONFIRMATION(STR_ANTENNACONFIRM1);
           const char * w = STR_ANTENNACONFIRM2;
@@ -672,6 +672,7 @@ bool menuModelSetup(event_t event)
           g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = newAntennaSel;
         }
         break;
+      }
 
       case ITEM_MODEL_TRAINER_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
