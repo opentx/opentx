@@ -110,10 +110,10 @@
   #define TRIMS_GPIO_REG_RHR            GPIOC->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_13 // PC.13
 #elif defined(PCBXLITE)
-  #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_4  // PC.04
   #define TRIMS_GPIO_REG_LHL            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_5  // PC.05
+  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PC.04
+  #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_5  // PC.05
   #define TRIMS_GPIO_REG_LVU            GPIOB->IDR
   #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_0  // PB.00
   #define TRIMS_GPIO_REG_LVD            GPIOB->IDR
