@@ -1268,7 +1268,7 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
   bool refresh = false;
 #endif
 
-  while(1) {
+  while (1) {
     SIMU_SLEEP(1);
 #if defined(CPUARM)
     CoTickDelay(10);
@@ -1283,6 +1283,7 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
 #if defined(PWR_BUTTON_PRESS)
     uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
+      drawSleepBitmap();
       boardOff();
     }
     else if (pwr_check == e_power_press) {
@@ -1294,6 +1295,7 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
     }
 #else
     if (pwrCheck() == e_power_off) {
+      drawSleepBitmap();
       boardOff(); // turn power off now
     }
 #endif
