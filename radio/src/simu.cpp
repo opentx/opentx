@@ -251,7 +251,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
     KEY_Right,     KEY_RIGHT,
     KEY_Left,      KEY_LEFT,
 #elif defined(PCBXLITE)
-    KEY_Page_Up,   KEY_MENU,
+    KEY_Shift_L,   KEY_SHIFT,
     KEY_Return,    KEY_ENTER,
     KEY_BackSpace, KEY_EXIT,
     KEY_Right,     KEY_RIGHT,

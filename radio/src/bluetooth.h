@@ -42,10 +42,13 @@ enum BluetoothStates {
     BLUETOOTH_STATE_DISCONNECTED,
 };
 
-#define LEN_BLUETOOTH_ADDR             16
+#define LEN_BLUETOOTH_ADDR              16
 
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(PCBX7)
 extern uint8_t btChipPresent;
+#define IS_BLUETOOTH_CHIP_PRESENT()     (btChipPresent)
+#else
+#define IS_BLUETOOTH_CHIP_PRESENT()     (true)
 #endif
 
 extern volatile uint8_t bluetoothState;

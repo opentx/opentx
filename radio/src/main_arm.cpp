@@ -414,12 +414,10 @@ void perMain()
     mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
   }
 
-  event_t evt = getEvent(false);
-  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
-    // on keypress turn the light on
-    backlightOn();
-  }
   doLoopCommonActions();
+
+  event_t evt = getEvent(false);
+
 #if defined(NAVIGATION_STICKS)
   uint8_t sticks_evt = getSticksNavigationEvent();
   if (sticks_evt) {

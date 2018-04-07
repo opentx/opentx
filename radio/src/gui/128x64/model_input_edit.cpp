@@ -72,11 +72,6 @@ enum ExposFields {
 
 void menuModelExpoOne(event_t event)
 {
-  if (event == EVT_KEY_LONG(KEY_MENU)) {
-    // TODO pushMenu(menuChannelsView);
-    killEvents(event);
-  }
-
   ExpoData * ed = expoAddress(s_currIdx);
   drawSource(PSIZE(TR_MENUINPUTS)*FW+FW, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
   

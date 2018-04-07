@@ -103,11 +103,13 @@ void killEvents(event_t event);
 #if defined(CPUARM)
   bool clearKeyEvents();
   event_t getEvent(bool trim=false);
+  bool keyDown();
 #else
   void clearKeyEvents();
   event_t getEvent();
+  uint8_t keyDown();
 #endif
 
-uint8_t keyDown();
+
 
 #endif // _KEYS_H_

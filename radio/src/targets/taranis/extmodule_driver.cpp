@@ -70,7 +70,7 @@ void extmodulePpmStart()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_TIMER_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
@@ -100,11 +100,58 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 
+#if defined(EXTMODULE_USART)
+void extmodulePxxStart()
+{
+  // TX Pin
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_USART_AF);
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
+
+#if 0
+  // RX Pin
+  GPIO_PinAFConfig(EXTMODULE_RX_GPIO, EXTMODULE_RX_GPIO_PinSource, EXTMODULE_TX_GPIO_USART_AF);
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_RX_GPIO_PIN;
+  GPIO_Init(EXTMODULE_RX_GPIO, &GPIO_InitStructure);
+#endif
+
+  // UART config
+  USART_DeInit(EXTMODULE_USART);
+  USART_InitTypeDef USART_InitStructure;
+  USART_InitStructure.USART_BaudRate = 115200;
+  USART_InitStructure.USART_Parity = USART_Parity_No;
+  USART_InitStructure.USART_StopBits = USART_StopBits_1;
+  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
+  USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
+  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_Init(EXTMODULE_USART, &USART_InitStructure);
+  USART_Cmd(EXTMODULE_USART, ENABLE);
+
+  // Timer
+  EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
+  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
+  EXTMODULE_TIMER->ARR = (2000 * CROSSFIRE_FRAME_PERIOD);
+  EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_FRAME_PERIOD) - 1000;
+  EXTMODULE_TIMER->EGR = 1; // Restart
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
+  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
+
+  NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
+  NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
+}
+#else
 void extmodulePxxStart()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_TIMER_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
@@ -133,13 +180,14 @@ void extmodulePxxStart()
   NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
+#endif
 
 #if defined(DSM2) || defined(MULTIMODULE)
 void extmoduleDsm2Start()
 {
   EXTERNAL_MODULE_ON();
 
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TX_GPIO_TIMER_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
@@ -212,6 +260,29 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
   else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PXX) {
+#if defined(EXTMODULE_USART)
+    DMA_InitTypeDef DMA_InitStructure;
+    DMA_DeInit(EXTMODULE_DMA_STREAM);
+    DMA_InitStructure.DMA_Channel = EXTMODULE_DMA_CHANNEL;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&EXTMODULE_USART->DR);
+    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+    DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx_uart.pulses);
+    DMA_InitStructure.DMA_BufferSize = modulePulsesData[EXTERNAL_MODULE].pxx_uart.ptr - modulePulsesData[EXTERNAL_MODULE].pxx_uart.pulses;
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+    DMA_Init(EXTMODULE_DMA_STREAM, &DMA_InitStructure);
+
+    DMA_Cmd(EXTMODULE_DMA_STREAM, ENABLE);
+    USART_DMACmd(EXTMODULE_USART, USART_DMAReq_Tx, ENABLE);
+#else
     EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].pxx.ptr - 1) - 4000; // 2mS in advance
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     EXTMODULE_DMA_STREAM->CR |= EXTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
@@ -219,6 +290,7 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx.pulses);
     EXTMODULE_DMA_STREAM->NDTR = modulePulsesData[EXTERNAL_MODULE].pxx.ptr - modulePulsesData[EXTERNAL_MODULE].pxx.pulses;
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+#endif
   }
   else if (IS_DSM2_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_MULTIMODULE_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE])) {
     if (IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]))

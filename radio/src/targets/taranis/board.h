@@ -176,10 +176,12 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #define EXTERNAL_MODULE_OFF()           GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && defined(EXTMODULE_USART)
+  #define IS_UART_MODULE(port)          (true)
+#elif defined(INTMODULE_USART)
   #define IS_UART_MODULE(port)          (port == INTERNAL_MODULE)
 #else
-  #define IS_UART_MODULE(port)          false
+  #define IS_UART_MODULE(port)          (false)
 #endif
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
@@ -234,7 +236,11 @@ int sbusGetByte(uint8_t * byte);
 // Keys driver
 enum EnumKeys
 {
+#if defined(PCBXLITE)
+  KEY_SHIFT,
+#else
   KEY_MENU,
+#endif
   KEY_EXIT,
   KEY_ENTER,
 #if defined(PCBXLITE)
@@ -275,6 +281,14 @@ enum EnumKeys
   #define KEY_DOWN                      KEY_MINUS
   #define KEY_RIGHT                     KEY_MINUS
   #define KEY_LEFT                      KEY_PLUS
+#endif
+
+#if defined(KEYS_GPIO_PIN_SHIFT)
+#define IS_SHIFT_KEY(index)             (index == KEY_SHIFT)
+#define IS_SHIFT_PRESSED()              (~KEYS_GPIO_REG_SHIFT & KEYS_GPIO_PIN_SHIFT)
+#else
+#define IS_SHIFT_KEY(index)             (false)
+#define IS_SHIFT_PRESSED()              (false)
 #endif
 
 enum EnumSwitches
@@ -430,8 +444,7 @@ enum Analogs {
 
 #if defined(PCBXLITE)
   #define NUM_PWMANALOGS                4
-  extern uint8_t analogs_pwm_disabled;
-  #define ANALOGS_PWM_ENABLED()         (analogs_pwm_disabled == false)
+  #define ANALOGS_PWM_ENABLED()         (true)
   void analogPwmInit(void);
   void analogPwmRead(uint16_t * values);
   void analogPwmCheck();

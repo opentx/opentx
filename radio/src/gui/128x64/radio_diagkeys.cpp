@@ -60,7 +60,7 @@ void menuRadioDiagKeys(event_t event)
 #elif defined(PCBXLITE)
       y = MENU_HEADER_HEIGHT + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
-      displayKeyState(5*FW+2, y, KEY_MENU+(TRM_BASE-1-i));
+      displayKeyState(5*FW+2, y, KEY_SHIFT+(TRM_BASE-1-i));
 #else
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);

@@ -837,7 +837,7 @@ void checkSwitches()
       last_bad_switches = 0xff;
     }
 #else
-    if (pwrCheck()==e_power_off || keyDown()) break;
+    if (pwrCheck() == e_power_off || keyDown()) break;
 
     doLoopCommonActions();
 
