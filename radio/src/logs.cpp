@@ -308,9 +308,11 @@ void logsWrite()
             if (sensor.unit == UNIT_GPS) {
               if (telemetryItem.gps.longitude && telemetryItem.gps.latitude) {
                 div_t qr = div((int)telemetryItem.gps.latitude, 1000000);
-                f_printf(&g_oLogFile, "%d.%06d ", qr.quot, abs(qr.rem));
+                if (telemetryItem.gps.latitude < 0) f_printf(&g_oLogFile, "-");
+                f_printf(&g_oLogFile, "%d.%06d ", abs(qr.quot), abs(qr.rem));
                 qr = div((int)telemetryItem.gps.longitude, 1000000);
-                f_printf(&g_oLogFile, "%d.%06d,", qr.quot, abs(qr.rem));
+                if (telemetryItem.gps.longitude < 0) f_printf(&g_oLogFile, "-");
+                f_printf(&g_oLogFile, "%d.%06d,", abs(qr.quot), abs(qr.rem));
               }
               else {
                 f_printf(&g_oLogFile, ",");
