@@ -57,13 +57,14 @@ class RadioOutputsWidget : public QWidget
     void saveState();
     void restoreState();
     void onChannelOutValueChange(quint8 index, qint32 value);
+    void onChannelMixValueChange(quint8 index, qint32 value);
     void onVirtSwValueChange(quint8 index, qint32 value);
     void onGVarValueChange(quint8 index, qint32 value);
     void onPhaseChanged(qint32 phase, const QString &);
 
   protected:
     void changeEvent(QEvent *e);
-    void setupChannelsDisplay();
+    void setupChannelsDisplay(bool mixes = false);
     void setupLsDisplay();
     void setupGVarsDisplay();
     QWidget * createLogicalSwitch(QWidget * parent, int switchNo);
@@ -72,6 +73,7 @@ class RadioOutputsWidget : public QWidget
     Firmware * m_firmware;
 
     QHash<int, QPair<QLabel *, QSlider *> > m_channelsMap;  // m_channelsMap[chanIndex] = {QLabel*, QSlider*}
+    QHash<int, QPair<QLabel *, QSlider *> > m_mixesMap;     // m_mixesMap[chanIndex] = {QLabel*, QSlider*}
     QHash<int, QLabel *> m_logicSwitchMap;                  // m_logicSwitchMap[lsIndex] = QLabel*
     QHash<int, QHash<int, QLabel *> > m_globalVarsMap;      // m_globalVarsMap[gvarIndex][fmodeIndex] = QLabel*
 
