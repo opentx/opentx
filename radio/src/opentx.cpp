@@ -2604,10 +2604,15 @@ void opentxInit(OPENTX_INIT_ARGS)
   loadFontCache();
 #endif
 
+#if defined(PCBHORUS)
+  // we do not allow e_backlight_mode_off on Horus
+  backlightOn();
+#else
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
     // on Tx start turn the light on
     backlightOn();
   }
+#endif
 
 #if NUM_PWMANALOGS > 0
   analogPwmCheck();
@@ -2818,9 +2823,13 @@ uint32_t pwrCheck()
     }
     else {
       inactivity.counter = 0;
+#if defined(PCBHORUS)
+      BACKLIGHT_ENABLE();
+#else
       if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
         BACKLIGHT_ENABLE();
       }
+#endif
       if (get_tmr10ms() - pwr_press_time > PWR_PRESS_SHUTDOWN_DELAY) {
 #if defined(SHUTDOWN_CONFIRMATION)
         while (1) {
@@ -2835,7 +2844,7 @@ uint32_t pwrCheck()
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
-          
+
           if (warningResult) {
             pwr_check_state = PWR_CHECK_OFF;
             return e_power_off;
