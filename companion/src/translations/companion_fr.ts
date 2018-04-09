@@ -4370,7 +4370,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1174"/>
         <source>RSSI Poweroff Warning</source>
-        <translation>Désactiver avertissement RSSI</translation>
+        <translation>Vérifier RSSI à l&apos;extinction</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2023"/>
