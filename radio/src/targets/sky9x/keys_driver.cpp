@@ -122,7 +122,7 @@ void readKeysAndTrims()
 
   uint8_t trims_input = readTrims();
   for (i = 1; i < 256; i <<= 1) {
-    keys[index].input(in & i);
+    keys[index].input(trims_input & i);
     ++index;
   }
 
