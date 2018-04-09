@@ -242,6 +242,9 @@ enum EnumKeys
   NUM_KEYS
 };
 
+#define IS_SHIFT_KEY(index)             (false)
+#define IS_SHIFT_PRESSED()              (false)
+
 enum EnumSwitches
 {
   SW_SA,
