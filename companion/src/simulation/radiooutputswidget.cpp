@@ -299,21 +299,29 @@ QWidget * RadioOutputsWidget::createLogicalSwitch(QWidget * parent, int switchNo
   return swtch;
 }
 
-void RadioOutputsWidget::onChannelOutValueChange(quint8 index, qint32 value)
+void RadioOutputsWidget::onChannelOutValueChange(quint8 index, qint32 value, qint32 limit)
 {
   if (m_channelsMap.contains(index)) {
     QPair<QLabel *, QSlider *> ch = m_channelsMap.value(index);
+    if (ch.second->maximum() != limit) {
+      ch.second->setMaximum(limit);
+      ch.second->setMinimum(-limit);
+    }
     ch.first->setText(QString("%1%").arg(calcRESXto100(value)));
-    ch.second->setValue(qMin(1024, qMax(-1024, value)));
+    ch.second->setValue(qMin(limit, qMax(-limit, value)));
   }
 }
 
-void RadioOutputsWidget::onChannelMixValueChange(quint8 index, qint32 value)
+void RadioOutputsWidget::onChannelMixValueChange(quint8 index, qint32 value, qint32 limit)
 {
   if (m_mixesMap.contains(index)) {
     QPair<QLabel *, QSlider *> ch = m_mixesMap.value(index);
+    if (ch.second->maximum() != limit) {
+      ch.second->setMaximum(limit);
+      ch.second->setMinimum(-limit);
+    }
     ch.first->setText(QString("%1%").arg(calcRESXto100(value)));
-    ch.second->setValue(qMin(1024, qMax(-1024, value)));
+    ch.second->setValue(qMin(limit, qMax(-limit, value)));
   }
 }
 

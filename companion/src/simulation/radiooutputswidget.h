@@ -56,8 +56,8 @@ class RadioOutputsWidget : public QWidget
   protected slots:
     void saveState();
     void restoreState();
-    void onChannelOutValueChange(quint8 index, qint32 value);
-    void onChannelMixValueChange(quint8 index, qint32 value);
+    void onChannelOutValueChange(quint8 index, qint32 value, qint32 limit);
+    void onChannelMixValueChange(quint8 index, qint32 value, qint32 limit);
     void onVirtSwValueChange(quint8 index, qint32 value);
     void onGVarValueChange(quint8 index, qint32 value);
     void onPhaseChanged(qint32 phase, const QString &);
