@@ -415,7 +415,12 @@ void perMain()
   }
 
   event_t evt = getEvent(false);
+
+#if defined(PCBHORUS)
+  if (evt && !(g_eeGeneral.backlightMode & e_backlight_mode_sticks)) {
+#else
   if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+#endif
     // on keypress turn the light on
     backlightOn();
   }
