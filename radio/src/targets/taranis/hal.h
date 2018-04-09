@@ -648,25 +648,32 @@
 #define EXTMODULE_PULSES
 #if defined(PCBXLITE)
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
-  #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
+  #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
   #define EXTMODULE_PWR_GPIO            GPIOD
   #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_11 // PD.11
   #define EXTMODULE_TX_GPIO             GPIOC
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PC.06
   #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource6
   #define EXTMODULE_TIMER               TIM8
-  #define EXTMODULE_TX_GPIO_TIMER_AF    GPIO_AF_TIM8 // TIM8_CH1
+  #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
   #define EXTMODULE_TIMER_CC_IRQn       TIM8_CC_IRQn
   #define EXTMODULE_TIMER_CC_IRQHandler TIM8_CC_IRQHandler
-  #define EXTMODULE_DMA_CHANNEL         DMA_Channel_7
-  #define EXTMODULE_DMA_STREAM          DMA2_Stream1
-  #define EXTMODULE_DMA_IRQn            DMA2_Stream1_IRQn
-  #define EXTMODULE_DMA_IRQHandler      DMA2_Stream1_IRQHandler
-  #define EXTMODULE_DMA_FLAG_TC         DMA_IT_TCIF1
-  #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
+  #define EXTMODULE_TIMER_TX_GPIO_AF    GPIO_AF_TIM8 // TIM8_CH1
+  #define EXTMODULE_TIMER_DMA_CHANNEL           DMA_Channel_7
+  #define EXTMODULE_TIMER_DMA_STREAM            DMA2_Stream1
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQn       DMA2_Stream1_IRQn
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQHandler DMA2_Stream1_IRQHandler
+  #define EXTMODULE_TIMER_DMA_FLAG_TC           DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1E
+  #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1P
+  #define EXTMODULE_USART_TX_GPIO_AF    GPIO_AF_USART6
   #define EXTMODULE_USART               USART6
-  #define EXTMODULE_TX_GPIO_USART_AF    GPIO_AF_USART6
-  #define EXTMODULE_USART_IRQn          USART1_IRQn
+  #define EXTMODULE_USART_IRQn          USART6_IRQn
+  #define EXTMODULE_USART_DMA_CHANNEL           DMA_Channel_5
+  #define EXTMODULE_USART_DMA_STREAM            DMA2_Stream6
+  #define EXTMODULE_USART_DMA_STREAM_IRQn       DMA2_Stream6_IRQn
+  #define EXTMODULE_USART_DMA_STREAM_IRQHandler DMA2_Stream6_IRQHandler
+  #define EXTMODULE_USART_DMA_FLAG_TC           DMA_IT_TCIF6
 #else
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
@@ -676,14 +683,16 @@
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_7  // PA.07
   #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource7
   #define EXTMODULE_TIMER               TIM8
-  #define EXTMODULE_TX_GPIO_AF          GPIO_AF_TIM8 // TIM8_CH1N
+  #define EXTMODULE_TIMER_TX_GPIO_AF          GPIO_AF_TIM8 // TIM8_CH1N
   #define EXTMODULE_TIMER_CC_IRQn       TIM8_CC_IRQn
   #define EXTMODULE_TIMER_CC_IRQHandler TIM8_CC_IRQHandler
-  #define EXTMODULE_DMA_CHANNEL         DMA_Channel_7
-  #define EXTMODULE_DMA_STREAM          DMA2_Stream1
-  #define EXTMODULE_DMA_IRQn            DMA2_Stream1_IRQn
-  #define EXTMODULE_DMA_IRQHandler      DMA2_Stream1_IRQHandler
-  #define EXTMODULE_DMA_FLAG_TC         DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_DMA_CHANNEL         DMA_Channel_7
+  #define EXTMODULE_TIMER_DMA_STREAM          DMA2_Stream1
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQn       DMA2_Stream1_IRQn
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQHandler DMA2_Stream1_IRQHandler
+  #define EXTMODULE_TIMER_DMA_FLAG_TC         DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1NE
+  #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1NP
   #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #endif
 
