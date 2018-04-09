@@ -46,3 +46,30 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
   *buf++ = crc8(crc_start, 23);
   return buf - frame;
 }
+
+uint8_t createCrossfireModelConfigFrame(uint8_t * frame, uint8_t port)
+{
+  uint8_t * buf = frame;
+  *buf++ = MODULE_ADDRESS;
+  uint8_t * crc_start = buf;
+  *buf++ = MODEL_CONFIG_ID;
+  // For future-proofing, clients should treat the model ID as an opaque
+  // byte sequence. First byte indicates its length, then the actual ID
+  // follows.
+  *buf++ = 1;
+  *buf++ = g_model.header.modelId[port];
+  // Model name
+  for (int i=0; g_model.header.name[i]; i++) {
+    *buf++ = idx2char(g_model.header.name[i]);
+  }
+  *buf++ = '\0';
+
+  // Set size
+  // 1(ID) + 1(MODEL_ID SIZE) + 1(MODEL_ID) + STRLEN(NAME)+1(NAME) + 1(CRC)
+  uint8_t frame_size = buf - frame - 2 + 1;
+  *(frame + 1) = frame_size;
+
+  *buf++ = crc8(crc_start, frame_size - 1);
+
+  return buf - frame;
+}

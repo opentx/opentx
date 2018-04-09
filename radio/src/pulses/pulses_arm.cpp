@@ -30,6 +30,7 @@ TrainerPulsesData trainerPulsesData __DMA;
 
 #if defined(CROSSFIRE)
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
+uint8_t createCrossfireModelConfigFrame(uint8_t * frame, uint8_t port);
 #endif
 
 uint8_t getRequiredProtocol(uint8_t port)
@@ -199,7 +200,13 @@ void setupPulses(uint8_t port)
         else
 #endif
         {
-          len = createCrossfireChannelsFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
+          if (isCrossfireModelConfigPending()) {
+            len = createCrossfireModelConfigFrame(crossfire, port);
+            crossfireModelConfigSent();
+          }
+          else {
+            len = createCrossfireChannelsFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
+          }
         }
         sportSendBuffer(crossfire, len);
       }

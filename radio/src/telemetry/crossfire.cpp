@@ -47,6 +47,8 @@ const CrossfireSensor crossfireSensors[] = {
   {0,              0, "UNKNOWN",        UNIT_RAW,           0},
 };
 
+static bool crossfireModelConfigPending = false;
+
 const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 {
   if (id == LINK_ID)
@@ -160,6 +162,9 @@ void processCrossfireTelemetryFrame()
       }
       break;
     }
+    case REQUEST_MODEL_CONFIG_ID:
+      crossfireModelConfigPending = true;
+      break;
 
 #if defined(LUA)
     default:
@@ -177,6 +182,16 @@ void processCrossfireTelemetryFrame()
 bool isCrossfireOutputBufferAvailable()
 {
   return outputTelemetryBufferSize == 0;
+}
+
+bool isCrossfireModelConfigPending()
+{
+  return crossfireModelConfigPending;
+}
+
+void crossfireModelConfigSent()
+{
+  crossfireModelConfigPending = false;
 }
 
 void processCrossfireTelemetryData(uint8_t data)
@@ -200,7 +215,8 @@ void processCrossfireTelemetryData(uint8_t data)
     telemetryRxBufferCount = 0;
   }
 
-  if (telemetryRxBufferCount > 4) {
+  // 4 bytes of data is the size of an empty frame
+  if (telemetryRxBufferCount >= 4) {
     uint8_t length = telemetryRxBuffer[1];
     if (length + 2 == telemetryRxBufferCount) {
       processCrossfireTelemetryFrame();

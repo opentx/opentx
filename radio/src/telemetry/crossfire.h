@@ -33,6 +33,8 @@
 #define CHANNELS_ID                    0x16
 #define ATTITUDE_ID                    0x1E
 #define FLIGHT_MODE_ID                 0x21
+#define REQUEST_MODEL_CONFIG_ID        0x26
+#define MODEL_CONFIG_ID                0x27
 #define PING_DEVICES_ID                0x28
 #define DEVICE_INFO_ID                 0x29
 #define REQUEST_SETTINGS_ID            0x2A
@@ -76,6 +78,8 @@ enum CrossfireSensorIndexes {
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
 bool isCrossfireOutputBufferAvailable();
+bool isCrossfireModelConfigPending();
+void crossfireModelConfigSent();
 
 #if SPORT_MAX_BAUDRATE < 400000
 const uint32_t CROSSFIRE_BAUDRATES[] = {
