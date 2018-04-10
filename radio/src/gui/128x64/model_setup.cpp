@@ -150,7 +150,7 @@ enum MenuModelSetupItems {
 #else
   #define OUTPUT_TYPE_ROWS()
 #endif
-  #define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : (x==TRAINER_MODULE ? 1 : 0))
+  #define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
 
   #define EXTERNAL_MODULE_MODE_ROWS      (IS_MODULE_PXX(EXTERNAL_MODULE) || IS_MODULE_DSM2(EXTERNAL_MODULE) || IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
 
@@ -280,8 +280,7 @@ void menuModelSetup(event_t event)
   MULTIMODULE_MODULE_ROWS
   EXTERNAL_MODULE_POWER_ROW,
   EXTRA_MODULE_ROWS
-  TRAINER_ROWS
-  });
+  TRAINER_ROWS });
 #elif defined(CPUARM)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
   LABEL(ExternalModule),
@@ -942,7 +941,6 @@ void menuModelSetup(event_t event)
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
-        TRACE("ModuleIdx %d , PortChan %d", moduleIdx, (int8_t)PORT_CHANNELS_ROWS(moduleIdx));
         if ((int8_t)PORT_CHANNELS_ROWS(moduleIdx) >= 0) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
           lcdDrawNumber(lcdLastRightPos, y, moduleData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
