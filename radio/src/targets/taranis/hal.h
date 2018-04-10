@@ -786,7 +786,7 @@
   #define SPORT_MAX_BAUDRATE            250000 // not tested
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
   #define SPORT_UPDATE_PWR_GPIO         GPIOD
-  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_4  // PD.04
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_8  // PD.08
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON GPIO_ResetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_SetBits
 #elif defined(PCBX7)
