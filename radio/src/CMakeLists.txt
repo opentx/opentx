@@ -353,6 +353,7 @@ if(NIGHTLY_BUILD_WARNING)
 endif(NIGHTLY_BUILD_WARNING)
 
 if(USEHORUSBT)
+  # TODO -DBLUETOOTH=HORUS, move this option to Taranis options (it's X9E only)
   add_definitions(-DUSEHORUSBT)
 endif(USEHORUSBT)
 
