@@ -179,8 +179,9 @@ enum MenuModelSetupItems {
 #elif defined(PCBXLITE)
   #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
-  #define TRAINER_BLUETOOTH_ROW          (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW)),
-  #define TRAINER_ROWS                   LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW
+  #define TRAINER_BLUETOOTH_ROW          (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
+  #define TRAINER_TITLE_ROW              (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? LABEL(Trainer) : HIDDEN_ROW)
+  #define TRAINER_ROWS                   TRAINER_TITLE_ROW, (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t) 0 : HIDDEN_ROW), (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? TRAINER_BLUETOOTH_ROW : HIDDEN_ROW)
 #else
   #define TRAINER_ROWS
 #endif
@@ -279,7 +280,8 @@ void menuModelSetup(event_t event)
   MULTIMODULE_MODULE_ROWS
   EXTERNAL_MODULE_POWER_ROW,
   EXTRA_MODULE_ROWS
-  TRAINER_ROWS });
+  TRAINER_ROWS
+  });
 #elif defined(CPUARM)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
   LABEL(ExternalModule),
