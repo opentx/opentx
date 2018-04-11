@@ -40,6 +40,8 @@ void boardInit(void);
 #define KEYS_GPIO_PIN_UP           (1<<1)
 #define KEYS_GPIO_REG_DOWN         pinl
 #define KEYS_GPIO_PIN_DOWN         (1<<0)
+#define IS_SHIFT_KEY(index)        (false)
+#define IS_SHIFT_PRESSED()         (false)
 
 // Trims
 #define TRIMS_GPIO_REG_LHL         pinj
