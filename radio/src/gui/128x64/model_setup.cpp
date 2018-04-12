@@ -25,7 +25,7 @@ uint8_t g_moduleIdx;
 void menuModelFailsafe(event_t event);
 #endif
 
-
+#if defined(PCBTARANIS)
 uint8_t getSwitchWarningsCount()
 {
   int count = 0;
@@ -36,6 +36,7 @@ uint8_t getSwitchWarningsCount()
   }
   return count;
 }
+#endif
 
 enum MenuModelSetupItems {
   ITEM_MODEL_NAME,
