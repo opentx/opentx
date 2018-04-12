@@ -473,15 +473,16 @@ void OpenTxSimulator::checkOutputsChanged()
 {
   static TxOutputs lastOutputs;
   static size_t chansDim = DIM(channelOutputs);
+  const static int16_t limit = 512 * 2;
   qint32 tmpVal;
   uint8_t i, idx;
-  uint8_t phase = getFlightMode();  // opentx.cpp
-  uint8_t mode = getStickMode();
+  const uint8_t phase = getFlightMode();  // opentx.cpp
+  const uint8_t mode = getStickMode();
 
   for (i=0; i < chansDim; i++) {
     if (lastOutputs.chans[i] != channelOutputs[i] || m_resetOutputsData) {
-      emit channelOutValueChange(i, channelOutputs[i]);
-      emit channelMixValueChange(i, ex_chans[i]);
+      emit channelOutValueChange(i, channelOutputs[i], (g_model.extendedLimits ? limit * LIMIT_EXT_PERCENT / 100 : limit));
+      emit channelMixValueChange(i, ex_chans[i], limit * 2);
       emit outputValueChange(OUTPUT_SRC_CHAN_OUT, i, channelOutputs[i]);
       emit outputValueChange(OUTPUT_SRC_CHAN_MIX, i, ex_chans[i]);
       lastOutputs.chans[i] = channelOutputs[i];
