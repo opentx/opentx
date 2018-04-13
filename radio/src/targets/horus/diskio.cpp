@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -309,9 +309,7 @@ DRESULT disk_ioctl (
 // TODO everything here should not be in the driver layer ...
 
 FATFS g_FATFS_Obj __DMA;    // initialized in boardInit()
-#if defined(LOG_TELEMETRY)
-FIL g_telemetryFile = {};
-#endif
+extern FIL g_telemetryFile;
 
 #if defined(BOOT)
 void sdInit(void)
@@ -324,7 +322,7 @@ void sdInit(void)
 void sdInit()
 {
   TRACE("sdInit");
-  
+
   ioMutex = CoCreateMutex();
   if (ioMutex >= CFG_MAX_MUTEX) {
     // sd error
@@ -336,19 +334,12 @@ void sdInit()
 void sdMount()
 {
   TRACE("sdMount");
-  
+
   diskCache.clear();
-  
+
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
-
-#if defined(LOG_TELEMETRY)
-    f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
-    if (f_size(&g_telemetryFile) > 0) {
-      f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
-    }
-#endif
   }
   else {
     TRACE("f_mount() failed");
@@ -358,12 +349,10 @@ void sdMount()
 void sdDone()
 {
   TRACE("sdDone");
-  
+
   if (sdMounted()) {
     audioQueue.stopSD();
-#if defined(LOG_TELEMETRY)
     f_close(&g_telemetryFile);
-#endif
     f_mount(NULL, "", 0); // unmount SD
   }
 }

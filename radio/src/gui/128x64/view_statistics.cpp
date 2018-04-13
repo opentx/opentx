@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 
+#if defined(SDCARD)
+extern FIL g_telemetryFile;
+#endif
+
 #define STATS_1ST_COLUMN               1
 #define STATS_2ND_COLUMN               7*FW+FW/2
 #define STATS_3RD_COLUMN               14*FW+FW/2
@@ -113,11 +117,13 @@ void menuStatisticsView(event_t event)
 }
 
 #if defined(CPUARM)
-  #define MENU_DEBUG_COL1_OFS          (11*FW-3)
+  #define MENU_DEBUG_COL1_OFS          (12*FW-3)
   #define MENU_DEBUG_COL2_OFS          (17*FW)
   #define MENU_DEBUG_Y_CURRENT         (1*FH)
   #define MENU_DEBUG_ROW1              (1*FH+1)
   #define MENU_DEBUG_ROW2              (2*FH+1)
+  #define MENU_DEBUG_ROW3              (3*FH+1)
+  #define MENU_DEBUG_ROW4              (4*FH+1)
   #define MENU_DEBUG_Y_MAH             (2*FH)
   #define MENU_DEBUG_Y_CPU_TEMP        (3*FH)
   #define MENU_DEBUG_Y_COPROC          (4*FH)
@@ -282,7 +288,20 @@ void menuStatisticsDebug2(event_t event)
   TITLE(STR_MENUDEBUG);
 
   switch (event) {
-    case EVT_KEY_FIRST(KEY_ENTER):
+    case EVT_KEY_LONG(KEY_ENTER):
+      if(logTelemetryNeeded) {
+        f_close(&g_telemetryFile);
+      }
+      else {
+        f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
+        if (f_size(&g_telemetryFile) > 0) {
+          f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
+        }
+      }
+      logTelemetryNeeded = !logTelemetryNeeded;
+      break;
+
+    case EVT_KEY_BREAK(KEY_ENTER):
       telemetryErrors  = 0;
       break;
 
@@ -302,6 +321,10 @@ void menuStatisticsDebug2(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
+      if(logTelemetryNeeded) {
+        f_close(&g_telemetryFile);
+        logTelemetryNeeded =  false;
+      }
       chainMenu(menuMainView);
       break;
   }
@@ -309,8 +332,19 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, "Tlm RX Err");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
 
-  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "BT status");
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "BT Status");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, btChipPresent, RIGHT);
+
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW3, "Log telem");
+  if (logTelemetryNeeded) {
+    lcdDrawText(MENU_DEBUG_COL1_OFS - FW + 1, MENU_DEBUG_ROW3, "Recording");
+    lcdDrawTextAlignedLeft(MENU_DEBUG_ROW4, "Tlm log size");
+    lcdDrawNumber(MENU_DEBUG_COL1_OFS- FW + 1, MENU_DEBUG_ROW4, f_size(&g_telemetryFile) / 1024, LEFT);
+    lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW4, "kb");
+  }
+  else {
+    lcdDrawText(MENU_DEBUG_COL1_OFS - FW, MENU_DEBUG_ROW3, "[ENTER Long]");
+  }
 
   lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();

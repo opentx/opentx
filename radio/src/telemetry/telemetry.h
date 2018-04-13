@@ -147,11 +147,11 @@ inline uint8_t modelTelemetryProtocol()
     return PROTOCOL_PULSES_CROSSFIRE;
   }
 #endif
-     
+
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
   }
-  
+
 #if defined(MULTIMODULE)
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_MULTIMODULE;
@@ -167,12 +167,16 @@ inline uint8_t modelTelemetryProtocol()
   #include "telemetry_sensors.h"
 #endif
 
-#if defined(LOG_TELEMETRY) && !defined(SIMU)
+#if defined(SDCARD) && !defined(SIMU)
+extern bool logTelemetryNeeded;
 void logTelemetryWriteStart();
 void logTelemetryWriteByte(uint8_t data);
-#define LOG_TELEMETRY_WRITE_START()    logTelemetryWriteStart()
-#define LOG_TELEMETRY_WRITE_BYTE(data) logTelemetryWriteByte(data)
+#define LOG_TELEMETRY_WRITE_START()    if (logTelemetryNeeded) logTelemetryWriteStart()
+#define LOG_TELEMETRY_WRITE_BYTE(data) if (logTelemetryNeeded) logTelemetryWriteByte(data)
 #else
+extern bool logTelemetryNeeded;
+void logTelemetryWriteStart();
+void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_START()
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif

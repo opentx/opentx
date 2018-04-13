@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -192,7 +192,7 @@ static BYTE wait_ready (void)
 static void spi_reset()
 {
   for (int n=0; n<520; ++n) {
-    stm32_spi_rw(0xFF);  
+    stm32_spi_rw(0xFF);
   }
   TRACE_SD_CARD_EVENT(1, sd_spi_reset, 0);
 }
@@ -235,7 +235,7 @@ void stm32_dma_transfer(
 
   DMA_DeInit(SD_DMA_Stream_SPI_RX);
   DMA_DeInit(SD_DMA_Stream_SPI_TX);
-  
+
   /* shared DMA configuration values between SPI2 RX & TX*/
   DMA_InitStructure.DMA_Channel = SD_DMA_Channel_SPI;//the same channel
   DMA_InitStructure.DMA_PeripheralBaseAddr = (DWORD)(&(SD_SPI->DR));
@@ -245,7 +245,7 @@ void stm32_dma_transfer(
   DMA_InitStructure.DMA_BufferSize = btr;
   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
   DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
-  
+
   DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Enable;
   DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
   DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
@@ -305,9 +305,9 @@ void power_on (void)
   SPI_InitTypeDef  SPI_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
   volatile BYTE dummyread;
-    
+
   card_power(1);
-    
+
   GPIO_InitStructure.GPIO_Pin = SD_GPIO_PRESENT_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
@@ -343,7 +343,7 @@ void power_on (void)
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
   SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
   SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SD_SPI_BaudRatePrescaler; 
+  SPI_InitStructure.SPI_BaudRatePrescaler = SD_SPI_BaudRatePrescaler;
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
   SPI_Init(SD_SPI, &SPI_InitStructure);
@@ -480,7 +480,7 @@ BOOL xmit_datablock (
 
     This delay only happens very rarely, but it does happen. Typical response delay is some 10ms
     */
-    Timer2 = DATA_RESPONSE_TIMEOUT;   
+    Timer2 = DATA_RESPONSE_TIMEOUT;
     do {
       resp = rcvr_spi();            /* Receive data response */
       if ((resp & 0x1F) == 0x05) {
@@ -716,7 +716,7 @@ int8_t SD_WriteSectors(const uint8_t * buff, uint32_t sector, uint32_t count)
     TRACE("disk_write bad alignment (%p)", buff);
     while (count--) {
       memcpy(scratch, buff, BLOCK_SIZE);
-    
+
       int8_t res = SD_WriteSectors((const uint8_t *)scratch, sector++, 1);
 
       if (res != 0) {
@@ -729,7 +729,7 @@ int8_t SD_WriteSectors(const uint8_t * buff, uint32_t sector, uint32_t count)
     return 0;
   }
 #endif
-    
+
   if (!(CardType & CT_BLOCK)) sector *= 512;      /* Convert to byte address if needed */
 
   if (count == 1) {       /* Single block write */
@@ -977,9 +977,6 @@ void sdPoll10ms()
 // TODO everything here should not be in the driver layer ...
 
 FATFS g_FATFS_Obj;
-#if defined(LOG_TELEMETRY)
-FIL g_telemetryFile = {};
-#endif
 
 #if defined(BOOT)
 void sdInit(void)
@@ -1008,13 +1005,6 @@ void sdMount()
   if (f_mount(&g_FATFS_Obj, "", 1) == FR_OK) {
     // call sdGetFreeSectors() now because f_getfree() takes a long time first time it's called
     sdGetFreeSectors();
-    
-#if defined(LOG_TELEMETRY)
-    f_open(&g_telemetryFile, LOGS_PATH "/telemetry.log", FA_OPEN_ALWAYS | FA_WRITE);
-    if (f_size(&g_telemetryFile) > 0) {
-      f_lseek(&g_telemetryFile, f_size(&g_telemetryFile)); // append
-    }
-#endif
   }
 }
 
@@ -1022,9 +1012,6 @@ void sdDone()
 {
   if (sdMounted()) {
     audioQueue.stopSD();
-#if defined(LOG_TELEMETRY)
-    f_close(&g_telemetryFile);
-#endif
     f_mount(NULL, "", 0); // unmount SD
   }
 }
