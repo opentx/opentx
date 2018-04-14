@@ -285,8 +285,13 @@ void generalDefault()
 #elif defined(PCBX10)
   // Lipo 2V
   g_eeGeneral.vBatWarn = 66;
-  g_eeGeneral.vBatMin = -28; // 6.2V
-  g_eeGeneral.vBatMax = -38;   // 8.2V
+  g_eeGeneral.vBatMin = -28;  // 6.2V
+  g_eeGeneral.vBatMax = -38;  // 8.2V
+#elif defined(PCBXLITE)
+  // 2 x Li-Ion
+  g_eeGeneral.vBatWarn = 66;
+  g_eeGeneral.vBatMin = -23;  // 6.7V
+  g_eeGeneral.vBatMax = -37;  // 8.3V  
 #elif defined(PCBTARANIS)
   // NI-MH 7.2V, X9D, X9D+ and X7
   g_eeGeneral.vBatWarn = 65;
@@ -2835,7 +2840,7 @@ uint32_t pwrCheck()
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
           lcdRefresh();
-          
+
           if (warningResult) {
             pwr_check_state = PWR_CHECK_OFF;
             return e_power_off;
