@@ -1,6 +1,7 @@
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
+option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
 
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
@@ -185,5 +186,9 @@ endif()
 if(TARANIS_INTERNAL_PPM)
   add_definitions(-DTARANIS_INTERNAL_PPM)
 endif()
+
+if(USEHORUSBT)
+  add_definitions(-DUSEHORUSBT)
+endif(USEHORUSBT)
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})

@@ -45,7 +45,6 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
-option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -351,11 +350,6 @@ endif()
 if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
 endif(NIGHTLY_BUILD_WARNING)
-
-if(USEHORUSBT)
-  # TODO -DBLUETOOTH=HORUS, move this option to Taranis options (it's X9E only)
-  add_definitions(-DUSEHORUSBT)
-endif(USEHORUSBT)
 
 set(SRC
   ${SRC}
