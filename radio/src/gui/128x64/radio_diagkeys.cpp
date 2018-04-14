@@ -20,6 +20,12 @@
 
 #include "opentx.h"
 
+#if defined(PCBXLITE)
+#define NUM_TRIMS_KEYS   4
+#else
+#define NUM_TRIMS_KEYS   8
+#endif
+
 void displayKeyState(uint8_t x, uint8_t y, uint8_t key)
 {
   uint8_t t = keyState(key);
@@ -43,7 +49,7 @@ void menuRadioDiagKeys(event_t event)
   for (uint8_t i=0; i<9; i++) {
     coord_t y;
 
-    if (i < 8) {
+    if (i < NUM_TRIMS_KEYS) {
       y = MENU_HEADER_HEIGHT + FH*3 + FH*(i/2);
       if (i&1) lcdDraw1bitBitmap(14*FW, y, sticks, i/2, 0);
       displayKeyState(i&1? 20*FW : 18*FW, y, TRM_BASE+i);
