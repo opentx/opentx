@@ -25,6 +25,19 @@ uint8_t g_moduleIdx;
 void menuModelFailsafe(event_t event);
 #endif
 
+#if defined(PCBTARANIS)
+uint8_t getSwitchWarningsCount()
+{
+  int count = 0;
+  for (int i=0; i<NUM_SWITCHES; ++i) {
+    if (SWITCH_WARNING_ALLOWED(i)) {
+      ++count;
+    }
+  }
+  return count;
+}
+#endif
+
 enum MenuModelSetupItems {
   ITEM_MODEL_NAME,
   ITEM_MODEL_TIMER1,
@@ -54,6 +67,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_THROTTLE_WARNING,
   ITEM_MODEL_SWITCHES_WARNING,
 #if defined(PCBTARANIS)
+  ITEM_MODEL_SWITCHES_WARNING2,
   ITEM_MODEL_POTS_WARNING,
 #endif
   ITEM_MODEL_BEEP_CENTER,
@@ -131,7 +145,7 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(CPUARM)
-
+  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW)
 #if !defined(TARANIS_INTERNAL_PPM)
   #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
 #else
@@ -248,7 +262,7 @@ void menuModelSetup(event_t event)
 #endif
 
 #if defined(PCBTARANIS)
-  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1,  NUM_POTS, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
+  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, SW_WARN_ROWS, NUM_POTS, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
   LABEL(InternalModule),
   INTERNAL_MODULE_MODE_ROWS,
   INTERNAL_MODULE_CHANNELS_ROWS,
@@ -541,7 +555,79 @@ void menuModelSetup(event_t event)
         g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
         break;
 
+#if defined(PCBTARANIS)
+      case ITEM_MODEL_SWITCHES_WARNING2:
+        if (i==0) {
+          if (CURSOR_MOVED_LEFT(event))
+            menuVerticalOffset--;
+          else
+            menuVerticalOffset++;
+        }
+        break;
+#endif
+
       case ITEM_MODEL_SWITCHES_WARNING:
+#if defined(PCBTARANIS)
+        {
+          #define FIRSTSW_STR   STR_VSRCRAW+(MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1)*length
+          uint8_t length = pgm_read_byte(STR_VSRCRAW);
+          horzpos_t l_posHorz = menuHorizontalPosition;
+
+          if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 5*(NUM_BODY_LINES-i)) {
+            if (CURSOR_MOVED_LEFT(event))
+              menuVerticalOffset--;
+            else
+              menuVerticalOffset++;
+            break;
+          }
+
+          lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
+          swarnstate_t states = g_model.switchWarningState;
+          char c;
+          if (attr) {
+            s_editMode = 0;
+            if (!READ_ONLY()) {
+              switch (event) {
+                case EVT_KEY_BREAK(KEY_ENTER):
+                  break;
+
+                case EVT_KEY_LONG(KEY_ENTER):
+                  if (menuHorizontalPosition < 0) {
+                    START_NO_HIGHLIGHT();
+                    getMovedSwitch();
+                    g_model.switchWarningState = switches_states;
+                    AUDIO_WARNING1();
+                    storageDirty(EE_MODEL);
+                  }
+                  killEvents(event);
+                  break;
+              }
+            }
+          }
+
+          LcdFlags line = attr;
+
+          int current = 0;
+          for (int i=0; i<NUM_SWITCHES; i++) {
+            if (SWITCH_WARNING_ALLOWED(i)) {
+              div_t qr = div(current, 5);
+              if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && line && l_posHorz==current) {
+                g_model.switchWarningEnable ^= (1 << i);
+                storageDirty(EE_MODEL);
+              }
+              uint8_t swactive = !(g_model.switchWarningEnable & (1<<i));
+              c = "\300-\301"[states & 0x03];
+              //lcdDrawChar(MODEL_SETUP_2ND_COLUMN+qr.rem*(2*FW+1), y+FH*qr.quot, 'A'+i, line && (menuHorizontalPosition==current) ? INVERS : 0);
+              lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN + qr.rem*((2*FW)+1), y+FH*qr.quot, FIRSTSW_STR+(i*length)+3, 1, line && (menuHorizontalPosition==current) ? INVERS : 0);
+              if (swactive) lcdDrawChar(lcdNextPos, y+FH*qr.quot, c);
+              ++current;
+            }
+            states >>= 2;
+          }
+          if (attr && menuHorizontalPosition < 0) {
+            lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+4)/5));
+          }
+#else
       {
         lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
         swarnstate_t states = g_model.switchWarningState;
@@ -556,13 +642,8 @@ void menuModelSetup(event_t event)
                 g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
                 storageDirty(EE_MODEL);
 #else
-#if defined(PCBTARANIS)
-                if (menuHorizontalPosition < NUM_SWITCHES) {
-                  g_model.switchWarningEnable ^= (1 << (menuHorizontalPosition-1));
-#else
                 if (menuHorizontalPosition < NUM_SWITCHES-1) {
                   g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
-#endif
                   storageDirty(EE_MODEL);
                 }
 #endif
@@ -574,13 +655,6 @@ void menuModelSetup(event_t event)
                 g_model.switchWarningState = switches_states;
                 AUDIO_WARNING1();
                 storageDirty(EE_MODEL);
-#elif defined(PCBTARANIS)
-                if (attr && menuHorizontalPosition == 0) {
-                  getMovedSwitch();
-                  g_model.switchWarningState = switches_states;
-                  AUDIO_WARNING1();
-                  storageDirty(EE_MODEL);
-                }
 #else
                 if (menuHorizontalPosition == NUM_SWITCHES-1) {
                   START_NO_HIGHLIGHT();
@@ -596,23 +670,7 @@ void menuModelSetup(event_t event)
           }
         }
         LcdFlags line = attr;
-#if defined(PCBTARANIS)
-        int current = 0;
-        for (int i=0; i<NUM_SWITCHES-1; i++) {
-          if (SWITCH_WARNING_ALLOWED(i)) {
-            div_t qr = div(current, 8);
-            uint8_t swactive = !(g_model.switchWarningEnable & (1<<i));
-            c = "\300-\301"[states & 0x03];
-            lcdDrawChar(MODEL_SETUP_2ND_COLUMN+qr.rem*(2*FW), y, (i < 4 ? 'A'+i : 'B'+i), line && (menuHorizontalPosition-1==current) ? INVERS : 0);
-            if (swactive) lcdDrawChar(lcdNextPos, y, c);
-            ++current;
-          }
-          states >>= 2;
-        }
-        if (attr && menuHorizontalPosition == 0) {
-          lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, (NUM_SWITCHES-1)*(2*FW), 1+FH*((current+7)/8));
-        }
-#else
+
         for (uint8_t i=0; i<NUM_SWITCHES-1/*not on TRN switch*/; i++) {
           uint8_t swactive = !(g_model.switchWarningEnable & 1 << i);
           attr = 0;
