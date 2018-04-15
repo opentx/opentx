@@ -20,12 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(PCBXLITE)
-#define NUM_TRIMS_KEYS   4
-#else
-#define NUM_TRIMS_KEYS   8
-#endif
-
 void displayKeyState(uint8_t x, uint8_t y, uint8_t key)
 {
   uint8_t t = keyState(key);

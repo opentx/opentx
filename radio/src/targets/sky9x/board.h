@@ -250,6 +250,8 @@ uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
+#define NUM_TRIMS                      4
+#define NUM_TRIMS_KEYS                 (NUM_TRIMS * 2)
 #define TRIMS_PRESSED()                readTrims()
 #define KEYS_PRESSED()                 readKeys()
 
@@ -340,8 +342,15 @@ enum CalibratedAnalogs {
 void adcInit();
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 void setSticksGain(uint8_t gains);
+#define NUM_MOUSE_ANALOGS              0
+#define NUM_DUMMY_ANAS                 0
+
+// Battery driver
+uint16_t getBatteryVoltage();          // returns current battery voltage in 10mV steps
+#define BATTERY_MIN                    90  // 9V
+#define BATTERY_MAX                    120 // 12V
+#define BATTERY_WARN                   90  // 9V
 
 // Buzzer driver
 void buzzerSound(uint8_t duration);

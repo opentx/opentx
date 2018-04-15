@@ -83,6 +83,8 @@ void boardInit(void);
 #define IS_SHIFT_PRESSED()         (false)
 
 // Trims
+#define NUM_TRIMS                  4
+#define NUM_TRIMS_KEYS             (NUM_TRIMS * 2)
 #define TRIMS_GPIO_REG_LHL         pind
 #define TRIMS_GPIO_PIN_LHL         (1<<6)
 #define TRIMS_GPIO_REG_LVD         pind
@@ -258,5 +260,14 @@ void rotencPoll();
 // Buzzer driver
 #define buzzerOn()                 PORTE |=  (1 << OUT_E_BUZZER)
 #define buzzerOff()                PORTE &= ~(1 << OUT_E_BUZZER)
+
+// Battery driver
+#define BATTERY_MIN                90  // 9V
+#define BATTERY_MAX                120 // 12V
+#define BATTERY_WARN               90  // 9V
+
+// Analogs
+#define NUM_MOUSE_ANALOGS          0
+#define NUM_DUMMY_ANAS             0
 
 #endif // _BOARD_STOCK_H_

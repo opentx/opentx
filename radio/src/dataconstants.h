@@ -188,20 +188,6 @@ enum CurveType {
   #define NUM_ROTARY_ENCODERS          0
 #endif
 
-#if defined(PCBX10)
-  #define NUM_TRIMS                    (NUM_STICKS + 2)
-  #define NUM_MOUSE_ANALOGS            2
-  #define NUM_DUMMY_ANAS               2
-#elif defined(PCBHORUS)
-  #define NUM_TRIMS                    (NUM_STICKS + 2)
-  #define NUM_MOUSE_ANALOGS            2
-  #define NUM_DUMMY_ANAS               0
-#else
-  #define NUM_TRIMS                    NUM_STICKS
-  #define NUM_MOUSE_ANALOGS            0
-  #define NUM_DUMMY_ANAS               0
-#endif
-
 #if defined(COLORLCD)
 enum MainViews {
   VIEW_BLANK,

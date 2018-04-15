@@ -441,6 +441,9 @@ enum Analogs {
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
 #define NUM_XPOTS                       NUM_POTS
 #define NUM_SLIDERS                     (TX_VOLTAGE-POT_LAST-1)
+#define NUM_TRIMS                       4
+#define NUM_MOUSE_ANALOGS               0
+#define NUM_DUMMY_ANAS                  0
 
 #if defined(PCBXLITE)
   #define NUM_PWMANALOGS                4
@@ -449,6 +452,9 @@ enum Analogs {
   void analogPwmRead(uint16_t * values);
   void analogPwmCheck();
   extern volatile uint32_t pwm_interrupt_count;
+  #define NUM_TRIMS_KEYS                4
+#else
+  #define NUM_TRIMS_KEYS                8
 #endif
 
 enum CalibratedAnalogs {
@@ -473,8 +479,25 @@ void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUM_ANALOGS];
 uint16_t getAnalogValue(uint8_t index);
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
+// Battery driver
+uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
+#if defined(PCBX9E)
+  // NI-MH 9.6V
+  #define BATTERY_WARN                  87 // 8.7V
+  #define BATTERY_MIN                   85 // 8.5V
+  #define BATTERY_MAX                   115 // 11.5V
+#elif defined(PCBXLITE)
+  // 2 x Li-Ion
+  #define BATTERY_WARN                  66 // 6.6V
+  #define BATTERY_MIN                   67 // 6.7V
+  #define BATTERY_MAX                   83 // 8.3V
+#else
+  // NI-MH 7.2V
+  #define BATTERY_WARN                  65 // 6.5V
+  #define BATTERY_MIN                   60 // 6.0V
+  #define BATTERY_MAX                   80 // 8.0V
+#endif
 #if defined(PCBX7) || defined(PCBXLITE)
   #define BATT_SCALE                    123
 #else

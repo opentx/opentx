@@ -44,8 +44,9 @@ void boardInit(void);
 #define IS_SHIFT_KEY(index)       (false)
 #define IS_SHIFT_PRESSED()        (false)
 
-
 // Trims
+#define NUM_TRIMS                 4
+#define NUM_TRIMS_KEYS            (NUM_TRIMS * 2)
 #define TRIMS_GPIO_REG_LHL        pinf
 #define TRIMS_GPIO_PIN_LHL        (1<<7)
 #define TRIMS_GPIO_REG_LVD        pinf
@@ -196,5 +197,14 @@ void pwrOff();
 #define JQ6500_Serial_off         PORTE &= ~(1<<OUT_E_VoiceData)
 #define JQ6500_BUSY               (PINB & (1<<INP_B_VoiceBuzy))
 #endif
+
+// Battery driver
+#define BATTERY_MIN                90  // 9V
+#define BATTERY_MAX                120 // 12V
+#define BATTERY_WARN               90  // 9V
+
+// Analogs driver
+#define NUM_MOUSE_ANALOGS          0
+#define NUM_DUMMY_ANAS             0
 
 #endif // _BOARD_MEGA2560_H_
