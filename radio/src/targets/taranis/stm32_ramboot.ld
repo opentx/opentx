@@ -47,6 +47,7 @@ SECTIONS
   {
     . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */
+    KEEP(*(.version))
     KEEP(*(.bootversiondata))
     . = ALIGN(4);      /* Align the start of the text part */
     *(.text)           /* .text sections (code) */
