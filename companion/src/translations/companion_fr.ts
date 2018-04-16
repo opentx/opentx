@@ -9642,7 +9642,12 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>Sorties Voies</translation>
     </message>
     <message>
-        <location filename="../simulation/radiooutputswidget.ui" line="191"/>
+        <location filename="../simulation/radiooutputswidget.ui" line="132"/>
+        <source>Mix Outputs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.ui" line="210"/>
         <source>L
 o
 g
@@ -9652,7 +9657,7 @@ c</source>
 L</translation>
     </message>
     <message>
-        <location filename="../simulation/radiooutputswidget.ui" line="268"/>
+        <location filename="../simulation/radiooutputswidget.ui" line="287"/>
         <source>G
 l
 o
@@ -9663,7 +9668,7 @@ l</source>
 G</translation>
     </message>
     <message>
-        <location filename="../simulation/radiooutputswidget.ui" line="343"/>
+        <location filename="../simulation/radiooutputswidget.ui" line="362"/>
         <source>C
 h
 a
@@ -9676,6 +9681,15 @@ s</source>
 O
 I
 E</translation>
+    </message>
+    <message>
+        <location filename="../simulation/radiooutputswidget.ui" line="439"/>
+        <source>M
+i
+x
+e
+s</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
