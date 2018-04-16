@@ -9644,7 +9644,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="132"/>
         <source>Mix Outputs</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorties Mixages</translation>
     </message>
     <message>
         <location filename="../simulation/radiooutputswidget.ui" line="210"/>
@@ -9689,7 +9689,12 @@ i
 x
 e
 s</source>
-        <translation type="unfinished"></translation>
+        <translation>M
+I
+X
+A
+G
+E</translation>
     </message>
 </context>
 <context>
