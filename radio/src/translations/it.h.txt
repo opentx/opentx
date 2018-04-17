@@ -816,7 +816,7 @@
 #define TR_MENU_RADIO_ANALOGS             "ANAS"
 #define TR_MENUCALIBRATION     "CALIBRAZIONE"
 #if defined(COLORLCD)
-  #define TR_TRIMS2OFFSETS     "Trims >> Subtrims"
+  #define TR_TRIMS2OFFSETS     "Trims => Subtrims"
 #else
   #define TR_TRIMS2OFFSETS     "\006Trim  => Offset "
 #endif
