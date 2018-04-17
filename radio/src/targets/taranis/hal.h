@@ -560,9 +560,9 @@
   #define GPIO_LED_GPIO_ON              GPIO_ResetBits
   #define GPIO_LED_GPIO_OFF             GPIO_SetBits
   #define LED_BLUE_GPIO                 GPIOE
-  #define LED_BLUE_GPIO_PIN             GPIO_Pin_4  // PE.04
+  #define LED_BLUE_GPIO_PIN             GPIO_Pin_6  // PE.06
   #define LED_RED_GPIO                  GPIOE
-  #define LED_RED_GPIO_PIN              GPIO_Pin_6  // PE.06
+  #define LED_RED_GPIO_PIN              GPIO_Pin_4  // PE.04
   #define LED_GREEN_GPIO                GPIOE
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_5  // PE.05
 #elif defined(PCBX7)
