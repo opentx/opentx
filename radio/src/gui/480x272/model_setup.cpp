@@ -999,9 +999,18 @@ bool menuModelSetup(event_t event)
           }
           else if (menuHorizontalPosition==1) {
             s_editMode = 0;
-            if (moduleData.failsafeMode==FAILSAFE_CUSTOM && event==EVT_KEY_FIRST(KEY_ENTER)) {
-              g_moduleIdx = moduleIdx;
-              pushMenu(menuModelFailsafe);
+            if (moduleData.failsafeMode == FAILSAFE_CUSTOM) {
+                if (event == EVT_KEY_LONG(KEY_ENTER)) {
+                    killEvents(event);
+                    setCustomFailsafe(moduleIdx);
+                    storageDirty(EE_MODEL);
+                    AUDIO_WARNING1();
+                    SEND_FAILSAFE_NOW(moduleIdx);
+                }
+                else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+                    g_moduleIdx = moduleIdx;
+                    pushMenu(menuModelFailsafe);
+                }
             }
           }
           else {
