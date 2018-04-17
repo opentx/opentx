@@ -793,6 +793,7 @@
 #define TR_MENU_RADIO_ANALOGS             TR("ANAS","ANALOG INPUTS")
 #define TR_MENUCALIBRATION     "CALIBRATION"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
+#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
 #define TR_MENUMODELSEL        TR("MODELSEL","MODEL SELECTION")
 #define TR_MENUSETUP           TR("SETUP","MODEL SETUP")
 #define TR_MENUFLIGHTMODE     "FLIGHT MODE"

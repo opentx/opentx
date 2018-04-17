@@ -811,6 +811,7 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
 #endif
+#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
 #define TR_MENUMODELSEL        TR("MODELLEN", "MODEL KIEZEN")
 #define TR_MENUSETUP           TR("MODEL-INSTELLING", "MODEL-INSTELLINGEN")
 #define TR_MENUFLIGHTMODES     "VLIEGFASES"

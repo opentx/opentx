@@ -829,6 +829,7 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006[Spara Trimvärden]"
 #endif
+#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
 #define TR_MENUMODELSEL        TR("MODELL","VÄLJ MODELL")
 #define TR_MENUSETUP           TR("VÄRDEN","MODELLINSTÄLLNINGAR")
 #define TR_MENUFLIGHTMODE     "FLYGLÄGE"

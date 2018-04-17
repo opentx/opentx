@@ -800,6 +800,7 @@
 #define TR_MENU_RADIO_ANALOGS             "ANALOGICOS"
 #define TR_MENUCALIBRATION     "CALIBRAGEM"
 #define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
+#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
 #define TR_MENUMODELSEL        "MODELOS"
 #define TR_MENUSETUP           "SETUP"
 #define TR_MENUFLIGHTMODE     "MODO DE VOO"

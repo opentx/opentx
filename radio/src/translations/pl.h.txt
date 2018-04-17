@@ -822,6 +822,7 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
 #endif
+#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
 #define TR_MENUMODELSEL        TR("WYB.MODEL","WYBÓR MODELU")
 #define TR_MENUSETUP           TR("USTAW","USTAW MODELU")
 #define TR_MENUFLIGHTMODE     "FAZA LOTU"

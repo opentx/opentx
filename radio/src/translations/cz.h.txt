@@ -810,6 +810,7 @@
 #else
 #define TR_TRIMS2OFFSETS       "\006Trimy => Subtrimy"
 #endif
+#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
 #define TR_MENUMODELSEL        "MODEL"
 #define TR_MENUSETUP           "NASTAVENÍ"
 #define TR_MENUFLIGHTMODE      "LETOVÝ REŽIM"

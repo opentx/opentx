@@ -573,6 +573,7 @@ extern const pm_char STR_BAD_RADIO_DATA[];
 extern const pm_char STR_STORAGE_FORMAT[];
 extern const pm_char STR_EEPROMOVERFLOW[];
 extern const pm_char STR_TRIMS2OFFSETS[];
+extern const pm_char STR_OUTPUTS2FAILSAFE[];
 extern const pm_char STR_MENURADIOSETUP[];
 extern const pm_char STR_MENUDATEANDTIME[];
 extern const pm_char STR_MENUTRAINER[];
