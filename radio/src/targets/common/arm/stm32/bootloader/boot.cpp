@@ -256,10 +256,12 @@ int main()
   // init screen
   bootloaderInitScreen();
 
-#if defined(PWR_PRESS_BUTTON) or defined(PCBHORUS)
+  // TODO CHECK PWR_PRESS_BUTTON and PWR_BUTTON_PRESS!!!
+
+#if defined(PWR_PRESS_BUTTON) || defined(PCBHORUS)
   // wait until power button is released
   while(pwrPressed()) {
-      wdt_reset();
+    wdt_reset();
   }
 #endif
   
