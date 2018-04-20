@@ -515,7 +515,7 @@ uint32_t pwrCheck(void);
 void pwrOn(void);
 void pwrOff(void);
 uint32_t pwrPressed(void);
-#if defined(PWR_PRESS_BUTTON)
+#if defined(PWR_BUTTON_PRESS)
 uint32_t pwrPressedDuration(void);
 #endif
 

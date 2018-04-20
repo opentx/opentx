@@ -101,7 +101,7 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 }
 #endif
 
-#if defined(PWR_PRESS_BUTTON) && !defined(SIMU)
+#if defined(PWR_BUTTON_PRESS) && !defined(SIMU)
   #define PWR_PRESS_DURATION_MIN        100 // 1s
   #define PWR_PRESS_DURATION_MAX        500 // 5s
 #endif
@@ -207,7 +207,7 @@ void boardInit()
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);
 #endif
 
-#if defined(PWR_PRESS_BUTTON)
+#if defined(PWR_BUTTON_PRESS)
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
     lcdClear();
 #if defined(PCBX9E)
@@ -262,7 +262,7 @@ void boardInit()
 #if defined(TOPLCD_GPIO)
   toplcdInit();
 #endif
-#else // defined(PWR_PRESS_BUTTON)
+#else // defined(PWR_BUTTON_PRESS)
   backlightInit();
 #endif
 
@@ -284,7 +284,7 @@ void boardOff()
   toplcdOff();
 #endif
 
-#if defined(PWR_PRESS_BUTTON)
+#if defined(PWR_BUTTON_PRESS)
   while (pwrPressed()) {
     wdt_reset();
   }
