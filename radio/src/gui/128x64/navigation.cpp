@@ -332,33 +332,39 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   }
 #endif
 
-  if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
-    do {
-      newval++;
-    } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
+#if defined(PCBXLITE)
+  if (s_editMode > 0) {
+#endif
+    if (event==EVT_KEY_FIRST(KEY_RIGHT) || event==EVT_KEY_REPT(KEY_RIGHT) || (s_editMode>0 && (IS_ROTARY_RIGHT(event) || event==EVT_KEY_FIRST(KEY_UP) || event==EVT_KEY_REPT(KEY_UP)))) {
+      do {
+        newval++;
+      } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
 
-    if (newval > i_max) {
-      newval = val;
-      killEvents(event);
-      AUDIO_KEY_ERROR();
+      if (newval > i_max) {
+        newval = val;
+        killEvents(event);
+        AUDIO_KEY_ERROR();
+      }
     }
-  }
-  else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
-    do {
-      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
-        newval -= min(10, val-i_min);
-      }
-      else {
-        newval--;
-      }
-    } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
+    else if (event==EVT_KEY_FIRST(KEY_LEFT) || event==EVT_KEY_REPT(KEY_LEFT) || (s_editMode>0 && (IS_ROTARY_LEFT(event) || event==EVT_KEY_FIRST(KEY_DOWN) || event==EVT_KEY_REPT(KEY_DOWN)))) {
+      do {
+        if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+          newval -= min(10, val-i_min);
+        }
+        else {
+          newval--;
+        }
+      } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
 
-    if (newval < i_min) {
-      newval = val;
-      killEvents(event);
-      AUDIO_KEY_ERROR();
+      if (newval < i_min) {
+        newval = val;
+        killEvents(event);
+        AUDIO_KEY_ERROR();
+      }
     }
+#if defined(PCBXLITE)
   }
+#endif
 
   if (!READ_ONLY() && i_min==0 && i_max==1 && (event==EVT_KEY_BREAK(KEY_ENTER) || IS_ROTARY_BREAK(event))) {
     s_editMode = 0;
