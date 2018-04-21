@@ -37,7 +37,16 @@ int8_t p2valdiff;
 
 int8_t  checkIncDec_Ret;
 
-#if defined(PCBX7)
+#if defined(PCBXLITE)
+// invert the value
+#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
+// set to 0
+#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
+// set to max
+#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
+// set to min
+#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
+#elif defined(PCBX7)
 #define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
 #define DBLKEYS_PRESSED_UP_DWN(in)     (false)
 #define DBLKEYS_PRESSED_RGT_UP(in)     (false)

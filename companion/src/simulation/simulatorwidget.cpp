@@ -69,20 +69,21 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   setWindowTitle(windowName);
 
   switch(m_board) {
-    case Board::BOARD_TARANIS_X7 :
+    case Board::BOARD_TARANIS_X7:
+    case Board::BOARD_TARANIS_XLITE:
       radioUiWidget = new SimulatedUIWidgetX7(simulator, this);
       break;
-    case Board::BOARD_TARANIS_X9D  :
-    case Board::BOARD_TARANIS_X9DP :
+    case Board::BOARD_TARANIS_X9D:
+    case Board::BOARD_TARANIS_X9DP:
       radioUiWidget = new SimulatedUIWidgetX9(simulator, this);
       break;
-    case Board::BOARD_TARANIS_X9E :
+    case Board::BOARD_TARANIS_X9E:
       radioUiWidget = new SimulatedUIWidgetX9E(simulator, this);
       break;
-    case Board::BOARD_X12S :
+    case Board::BOARD_X12S:
       radioUiWidget = new SimulatedUIWidgetX12(simulator, this);
       break;
-    case Board::BOARD_X10 :
+    case Board::BOARD_X10:
       radioUiWidget = new SimulatedUIWidgetX10(simulator, this);
       break;
     default:

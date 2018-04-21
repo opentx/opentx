@@ -341,6 +341,7 @@ class Firmware
     {
       return registeredFirmwares;
     }
+
     static void addRegisteredFirmware(Firmware * fw)
     {
       registeredFirmwares.append(fw);
@@ -359,6 +360,7 @@ class Firmware
     {
       return currentVariant;
     }
+
     static void setCurrentVariant(Firmware * value)
     {
       currentVariant = value;
