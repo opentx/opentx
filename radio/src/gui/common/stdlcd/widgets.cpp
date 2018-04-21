@@ -104,7 +104,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
             s_editMode = 0;
           break;
 
-#if !defined(PCBTARANIS)
+#if defined(PCBXLITE) || !defined(PCBTARANIS)
         case EVT_KEY_BREAK(KEY_LEFT):
           if (cur>0) cur--;
           break;
@@ -114,7 +114,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
           break;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(PCBXLITE)
         case EVT_KEY_LONG(KEY_ENTER):
 #else
         case EVT_KEY_LONG(KEY_LEFT):
@@ -122,7 +122,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
 #endif
           
           if (attr & ZCHAR) {
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(PCBXLITE)
             if (v == 0) {
               s_editMode = 0;
               killEvents(event);
@@ -145,7 +145,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
               v = 'A' + v - 'a'; // toggle case
             }
           }
-#if !defined(PCBTARANIS)
+#if !defined(PCBTARANIS) || defined(PCBXLITE)
           if (event==EVT_KEY_LONG(KEY_LEFT))
             killEvents(KEY_LEFT);
 #endif
