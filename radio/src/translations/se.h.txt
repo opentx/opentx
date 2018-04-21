@@ -829,7 +829,11 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006[Spara Trimvärden]"
 #endif
-#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
+#if defined(COLORLCD)
+  #define TR_OUTPUTS2FAILSAFE  "Outputs => Failsafe"
+#else
+  #define TR_OUTPUTS2FAILSAFE  "\006Outputs => Failsafe"
+#endif
 #define TR_MENUMODELSEL        TR("MODELL","VÄLJ MODELL")
 #define TR_MENUSETUP           TR("VÄRDEN","MODELLINSTÄLLNINGAR")
 #define TR_MENUFLIGHTMODE     "FLYGLÄGE"

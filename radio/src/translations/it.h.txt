@@ -820,7 +820,11 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006Trim  => Offset "
 #endif
-#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
+#if defined(COLORLCD)
+  #define TR_OUTPUTS2FAILSAFE  "Outputs => Failsafe"
+#else
+  #define TR_OUTPUTS2FAILSAFE  "\006Outputs => Failsafe"
+#endif
 #define TR_MENUMODELSEL        "MODELLI"
 #define TR_MENUSETUP           "CONFIGURA"
 #define TR_MENUFLIGHTMODE     "FASE DI VOLO"
