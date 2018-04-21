@@ -80,8 +80,7 @@ void Key::input(bool val)
     // key is released
     if (m_state != KSTATE_KILLED) {
       // TRACE("key %d BREAK", key());
-      if (!IS_SHIFT_KEY(key()))
-        putEvent(EVT_KEY_BREAK(key()));
+      putEvent(EVT_KEY_BREAK(key()));
     }
     m_state = KSTATE_OFF;
     m_cnt = 0;
