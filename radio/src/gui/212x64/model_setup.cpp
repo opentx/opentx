@@ -1228,7 +1228,6 @@ void menuModelFailsafe(event_t event)
   const coord_t barH = (LCD_H - FH) / 8 - 1;
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   const uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
-  uint8_t ch = 0;
   uint8_t cols = 1;
   uint8_t colW = LCD_W;
 
@@ -1240,35 +1239,45 @@ void menuModelFailsafe(event_t event)
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     killEvents(event);
     event = 0;
-    if (s_editMode) {
-      g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
-      storageDirty(EE_MODEL);
-      AUDIO_WARNING1();
-      s_editMode = 0;
-      SEND_FAILSAFE_NOW(g_moduleIdx);
+
+    if (menuVerticalPosition < NUM_CHANNELS(g_moduleIdx)) {
+      if (s_editMode) {
+        g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
+        s_editMode = 0;
+      }
+      else {
+        int16_t & failsafe = g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition];
+        if (failsafe < FAILSAFE_CHANNEL_HOLD)
+          failsafe = FAILSAFE_CHANNEL_HOLD;
+        else if (failsafe == FAILSAFE_CHANNEL_HOLD)
+          failsafe = FAILSAFE_CHANNEL_NOPULSE;
+        else
+          failsafe = 0;
+      }
     }
     else {
-      int16_t & failsafe = g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition];
-      if (failsafe < FAILSAFE_CHANNEL_HOLD)
-        failsafe = FAILSAFE_CHANNEL_HOLD;
-      else if (failsafe == FAILSAFE_CHANNEL_HOLD)
-        failsafe = FAILSAFE_CHANNEL_NOPULSE;
-      else
-        failsafe = 0;
-      storageDirty(EE_MODEL);
-      AUDIO_WARNING1();
-      SEND_FAILSAFE_NOW(g_moduleIdx);
+      // "Outputs => Failsafe" menu item
+      setCustomFailsafe(g_moduleIdx);
     }
+
+    storageDirty(EE_MODEL);
+    AUDIO_WARNING1();
+    SEND_FAILSAFE_NOW(g_moduleIdx);
   }
 
-  SIMPLE_SUBMENU_NOTITLE(NUM_CHANNELS(g_moduleIdx));
+  SIMPLE_SUBMENU_NOTITLE(NUM_CHANNELS(g_moduleIdx)+1);
   SET_SCROLLBAR_X(0);
 
   if (NUM_CHANNELS(g_moduleIdx) > 8) {
     cols = 2;
     colW = LCD_W / cols - 1;
     // Column separator
-    lcdDrawSolidVerticalLine(colW, FH, LCD_H - FH);
+    if (menuVerticalPosition >= NUM_CHANNELS(g_moduleIdx)) {
+      lcdDrawSolidVerticalLine(colW, FH, LCD_H - (FH*2 + FH/2 + 2));
+    }
+    else {
+      lcdDrawSolidVerticalLine(colW, FH, LCD_H - FH);
+    }
   }
 
   lcdDrawTextAlignedCenter(0, FAILSAFESET);
@@ -1278,7 +1287,10 @@ void menuModelFailsafe(event_t event)
   for (uint8_t col = 0; col < cols; col++) {
 
     coord_t y = FH + 1;
-    for (uint8_t line = 0; line < 8; line++) {
+    uint8_t line = (menuVerticalPosition >= NUM_CHANNELS(g_moduleIdx) ? 2 : 0);
+    uint8_t ch = line + col*8;
+    
+    for (; line < 8; line++) {
       const int32_t channelValue = channelOutputs[ch+channelStart];
       int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
       uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
@@ -1356,4 +1368,10 @@ void menuModelFailsafe(event_t event)
     x += colW + 2;
 
   }  // columns
+
+  if (menuVerticalPosition >= NUM_CHANNELS(g_moduleIdx)) {
+      // Outputs => Failsafe
+      coord_t y = LCD_H - (FH + 1);
+      lcdDrawText(CENTER_OFS, y, STR_OUTPUTS2FAILSAFE, INVERS);
+  }
 }
