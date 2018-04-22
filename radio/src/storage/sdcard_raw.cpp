@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "modelslist.h"
 
 void getModelPath(char * path, const char * filename)
 {
@@ -65,41 +66,57 @@ const char * writeModel()
 {
   char path[256];
   getModelPath(path, g_eeGeneral.currModelFilename);
+
+  if (modelslist.getCurrentModel())
+    modelslist.getCurrentModel()->setRfData(&g_model);
+
   return writeFile(path, (uint8_t *)&g_model, sizeof(g_model));
 }
 
-const char * loadFile(const char * filename, uint8_t * data, uint16_t maxsize)
+const char * openFile(const char * fullpath, FIL* file, uint16_t* size)
 {
-  TRACE("loadFile(%s)", filename);
-  
-  FIL file;
-  char buf[8];
-  UINT read;
-
-  FRESULT result = f_open(&file, filename, FA_OPEN_EXISTING | FA_READ);
+  FRESULT result = f_open(file, fullpath, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {
     return SDCARD_ERROR(result);
   }
 
-  if (f_size(&file) < 8) {
-    f_close(&file);
+  if (f_size(file) < 8) {
+    f_close(file);
     return STR_INCOMPATIBLE;
   }
 
-  result = f_read(&file, (uint8_t *)buf, 8, &read);
-  if (result != FR_OK || read != 8) {
-    f_close(&file);
+  UINT read;
+  char buf[8];
+
+  result = f_read(file, (uint8_t *)buf, sizeof(buf), &read);
+  if ((result != FR_OK) || (read != sizeof(buf))) {
+    f_close(file);
     return SDCARD_ERROR(result);
   }
 
   uint8_t version = (uint8_t)buf[4];
   if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || version < FIRST_CONV_EEPROM_VER || version > EEPROM_VER || buf[5] != 'M') {
-    f_close(&file);
+    f_close(file);
     return STR_INCOMPATIBLE;
   }
 
-  uint16_t size = min<uint16_t>(maxsize, *(uint16_t*)&buf[6]);
-  result = f_read(&file, data, size, &read);
+  *size = *(uint16_t*)&buf[6];
+  return NULL;
+}
+
+const char * loadFile(const char * fullpath, uint8_t * data, uint16_t maxsize)
+{
+  FIL      file;
+  UINT     read;
+  uint16_t size;
+
+  TRACE("loadFile(%s)", fullpath);
+  
+  const char* err = openFile(fullpath, &file, &size);
+  if (err) return err;
+
+  size = min<uint16_t>(maxsize, size);
+  FRESULT result = f_read(&file, data, size, &read);
   if (result != FR_OK || read != size) {
     f_close(&file);
     return SDCARD_ERROR(result);
@@ -142,7 +159,7 @@ const char * loadRadioSettingsSettings()
   if (error) {
     TRACE("loadRadioSettingsSettings error=%s", error);
   }
-  // TODO this is temporary, we only have one model for now
+
   return error;
 }
 
@@ -193,6 +210,8 @@ void storageReadAll()
     sdCheckAndCreateDirectory(MODELS_PATH);
     createModel();
   }
+
+  modelslist.load();
 }
 
 void storageCreateModelsList()

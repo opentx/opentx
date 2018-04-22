@@ -21,318 +21,118 @@
 #ifndef _MODELSLIST_H_
 #define _MODELSLIST_H_
 
+#include <stdint.h>
 #include <list>
 #include "sdcard.h"
 
 #define MODELCELL_WIDTH                172
 #define MODELCELL_HEIGHT               59
 
+// modelXXXXXXX.bin F,FF F,3F,FF\r\n
+#define LEN_MODELS_IDX_LINE (LEN_MODEL_FILENAME + sizeof(" F,FF F,3F,FF\r\n")-1)
+
+struct SimpleModuleData
+{
+  uint8_t type;
+  uint8_t rfProtocol;
+};
+
 class ModelCell
 {
-  public:
-    ModelCell(const char * name):
-      buffer(NULL)
-    {
-      strncpy(this->modelFilename, name, sizeof(this->modelFilename));
-    }
+public:
+  char modelFilename[LEN_MODEL_FILENAME+1];
+  char modelName[LEN_MODEL_NAME+1];
+  BitmapBuffer * buffer;
 
-    ~ModelCell()
-    {
-      if (buffer) {
-        delete buffer;
-      }
-    }
+  bool             valid_rfData;
+  uint8_t          modelId[NUM_MODULES];
+  SimpleModuleData moduleData[NUM_MODULES];
 
-    const BitmapBuffer * getBuffer()
-    {
-      if (!buffer) {
-        load();
-      }
-      return buffer;
-    }
+  ModelCell(const char * name);
+  ~ModelCell();
 
-    void load()
-    {
-      PACK(struct {
-        ModelHeader header;
-        TimerData timers[MAX_TIMERS];
-      }) partialmodel;
-      const char * error = NULL;
+  void save(FIL* file);
 
-      buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-      if (buffer == NULL) {
-        return;
-      }
+  void setModelName(char* name);
 
-      if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
-        memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
-      }
-      else {
-        error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel));
-      }
+  void  loadBitmap();
+  const BitmapBuffer * getBuffer();
+  void  resetBuffer();
 
-      buffer->clear(TEXT_BGCOLOR);
+  bool fetchRfData();
 
-      if (error) {
-        buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
-        buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
-      }
-      else {
-        zchar2str(modelName, partialmodel.header.name, LEN_MODEL_NAME);
-        if (modelName[0] == 0) {
-          char * tmp;
-          strncpy(modelName, modelFilename, LEN_MODEL_NAME);
-          tmp = (char *) memchr(modelName, '.',  LEN_MODEL_NAME);
-          if (tmp != NULL)
-            *tmp = 0;
-        }
-        char timer[LEN_TIMER_STRING];
-        buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
-        getTimerString(timer, 0);
-        for (uint8_t i = 0; i < MAX_TIMERS; i++) {
-          if (partialmodel.timers[i].mode > 0 && partialmodel.timers[i].persistent) {
-            getTimerString(timer, partialmodel.timers[i].value);
-            break;
-          }
-        }
-        buffer->drawText(101, 40, timer, TEXT_COLOR);
-        for (int i=0; i<4; i++) {
-          buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
-        }
-        GET_FILENAME(filename, BITMAPS_PATH, partialmodel.header.bitmap, "");
-        const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
-        if (bitmap) {
-          buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
-          delete bitmap;
-        }
-        else {
-          buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
-        }
-      }
-      buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
-    }
-
-    char modelFilename[LEN_MODEL_FILENAME+1];
-    char modelName[LEN_MODEL_NAME+1];
-    BitmapBuffer * buffer;
+  void setRfData(ModelData* model);
+  void setRfModuleData(uint8_t moduleIdx, ModuleData* modData);
 };
 
 class ModelsCategory: public std::list<ModelCell *>
 {
-  public:
-    ModelsCategory(const char * name)
-    {
-      strncpy(this->name, name, sizeof(this->name));
-    }
+public:
+  char name[LEN_MODEL_FILENAME+1];
 
-    ~ModelsCategory()
-    {
-      for (std::list<ModelCell *>::iterator it = begin(); it != end(); ++it) {
-        delete *it;
-      }
-    }
+  ModelsCategory(const char * name);
+  ~ModelsCategory();
 
-
-    ModelCell * addModel(const char * name)
-    {
-      ModelCell * result = new ModelCell(name);
-      push_back(result);
-      return result;
-    }
-
-    void removeModel(ModelCell * model)
-    {
-      delete model;
-      remove(model);
-    }
-
-    void moveModel(ModelCell * model, int8_t step)
-    {
-      ModelsCategory::iterator current = begin();
-      for (; current != end(); current++) {
-        if (*current == model) {
-          break;
-        }
-      }
-
-      ModelsCategory::iterator new_position = current;
-      if (step > 0) {
-        while (step >= 0 && new_position != end()) {
-          new_position++;
-          step--;
-        }
-      }
-      else {
-        while (step < 0 && new_position != begin()) {
-          new_position--;
-          step++;
-        }
-      }
-
-      insert(new_position, 1, *current);
-      erase(current);
-    }
-
-    void save(FIL * file)
-    {
-      f_puts("[", file);
-      f_puts(name, file);
-      f_puts("]", file);
-      f_putc('\n', file);
-      for (std::list<ModelCell *>::iterator it = begin(); it != end(); ++it) {
-        f_puts((*it)->modelFilename, file);
-        f_putc('\n', file);
-      }
-    }
-
-    char name[LEN_MODEL_FILENAME+1];
+  ModelCell * addModel(const char * name);
+  void removeModel(ModelCell * model);
+  void moveModel(ModelCell * model, int8_t step);
+  void save(FIL * file);
 };
 
 class ModelsList
 {
-  public:
-    ModelsList()
-    {
-    }
+  bool loaded;
+  std::list<ModelsCategory *> categories;
+  ModelsCategory * currentCategory;
+  ModelCell * currentModel;
+  unsigned int modelsCount;
 
-    ~ModelsList()
-    {
-      clear();
-    }
+  void init();
 
-    void clear()
-    {
-      for (std::list<ModelsCategory *>::iterator it = categories.begin(); it != categories.end(); ++it) {
-        delete *it;
-      }
-      categories.clear();
-      currentCategory = NULL;
-      currentModel = NULL;
-      modelsCount = 0;
-    }
+public:
 
-    bool load()
-    {
-      char line[LEN_MODEL_FILENAME+1];
-      ModelsCategory * category = NULL;
+  ModelsList();
+  ~ModelsList();
 
-      clear();
+  bool load();
+  void save();
+  void clear();
 
-      FRESULT result = f_open(&file, RADIO_MODELSLIST_PATH, FA_OPEN_EXISTING | FA_READ);
-      if (result == FR_OK) {
-        while (readNextLine(line, LEN_MODEL_FILENAME)) {
-          int len = strlen(line); // TODO could be returned by readNextLine
-          if (len > 2 && line[0] == '[' && line[len-1] == ']') {
-            line[len-1] = '\0';
-            category = new ModelsCategory(&line[1]);
-            categories.push_back(category);
-          }
-          else if (len > 0) {
-            ModelCell * model = new ModelCell(line);
-            if (!category) {
-              category = new ModelsCategory("Unknown");
-              categories.push_back(category);
-            }
-            category->push_back(model);
-            if (!strncmp(line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME)) {
-              currentCategory = category;
-              currentModel = model;
-            }
-            modelsCount += 1;
-          }
-        }
-        f_close(&file);
-      }
+  const std::list<ModelsCategory *>& getCategories() const {
+    return categories;
+  }
+  
+  void setCurrentCategorie(ModelsCategory* cat);
+  ModelsCategory* getCurrentCategory() const {
+    return currentCategory;
+  }
 
-      if (categories.size() == 0) {
-        category = new ModelsCategory("Models");
-        categories.push_back(category);
-      }
+  void setCurrentModel(ModelCell* cell);
+  ModelCell* getCurrentModel() const {
+    return currentModel;
+  }
 
-      return true;
-    }
+  unsigned int getModelsCount() const {
+    return modelsCount;
+  }
+  
+  //void checkRfData();
+  
+  bool readNextLine(char * line, int maxlen);
 
-    void save()
-    {
-      FRESULT result = f_open(&file, RADIO_MODELSLIST_PATH, FA_CREATE_ALWAYS | FA_WRITE);
-      if (result != FR_OK) {
-        return;
-      }
+  ModelsCategory * createCategory();
+  void removeCategory(ModelsCategory * category);
 
-      for (std::list<ModelsCategory *>::iterator it = categories.begin(); it != categories.end(); ++it) {
-        (*it)->save(&file);
-      }
+  ModelCell * addModel(ModelsCategory * category, const char * name);
+  void removeModel(ModelsCategory * category, ModelCell * model);
+  void moveModel(ModelsCategory * category, ModelCell * model, int8_t step);
+  void moveModel(ModelCell * model, ModelsCategory * previous_category, ModelsCategory * new_category);
 
-      f_close(&file);
-    }
+protected:
+  FIL file;
 
-    bool readNextLine(char * line, int maxlen)
-    {
-      if (f_gets(line, maxlen, &file) != NULL) {
-        int curlen = strlen(line) - 1;
-        if (line[curlen] == '\n') { // remove unwanted chars if file was edited using windows
-          if (line[curlen - 1] == '\r') {
-            line[curlen - 1] = 0;
-          }
-          else {
-            line[curlen] = 0;
-          }
-        }
-        return true;
-      }
-      return false;
-    }
-
-    ModelsCategory * createCategory()
-    {
-      ModelsCategory * result = new ModelsCategory("Category");
-      categories.push_back(result);
-      save();
-      return result;
-    }
-
-    ModelCell * addModel(ModelsCategory * category, const char * name)
-    {
-      ModelCell * result = category->addModel(name);
-      modelsCount++;
-      save();
-      return result;
-    }
-
-    void removeCategory(ModelsCategory * category)
-    {
-      modelsCount -= category->size();
-      delete category;
-      categories.remove(category);
-    }
-
-    void removeModel(ModelsCategory * category, ModelCell * model)
-    {
-      category->removeModel(model);
-      modelsCount--;
-      save();
-    }
-
-    void moveModel(ModelsCategory * category, ModelCell * model, int8_t step)
-    {
-      category->moveModel(model, step);
-      save();
-    }
-
-    void moveModel(ModelCell * model, ModelsCategory * previous_category, ModelsCategory * new_category)
-    {
-      previous_category->remove(model);
-      new_category->push_back(model);
-      save();
-    }
-
-    std::list<ModelsCategory *> categories;
-    ModelsCategory * currentCategory;
-    ModelCell * currentModel;
-    unsigned int modelsCount;
-
-  protected:
-    FIL file;
 };
+
+extern ModelsList modelslist;
 
 #endif // _MODELSLIST_H_
