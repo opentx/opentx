@@ -164,7 +164,11 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 #define DOTTED  0x55
 #define STASHED 0x33
 
-#define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
+#if defined(PCBX10) && !defined(SIMU)
+  #define PIXEL_PTR(x, y) &displayBuf[(LCD_H*LCD_W-1) - (y)*LCD_W - (x)]
+#else
+  #define PIXEL_PTR(x, y) &displayBuf[(y)*LCD_W + (x)]
+#endif
 
 void lcdDrawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color);
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att=0);
