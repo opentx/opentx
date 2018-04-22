@@ -107,7 +107,9 @@ void Key::input(bool val)
       if (m_cnt == KEY_LONG_DELAY) {
         // generate long key press
         // TRACE("key %d LONG", key());
+#if !defined(LUA)
         if (!IS_SHIFT_KEY(key()))
+#endif
           putEvent(EVT_KEY_LONG(key()));
       }
       if (m_cnt == KEY_REPEAT_DELAY) {
@@ -240,5 +242,3 @@ void clearKeyEvents()
   putEvent(0);
 }
 #endif   // #if defined(CPUARM)
-
-
