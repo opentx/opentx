@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "storage/modelslist.h"
 
 uint8_t g_moduleIdx;
 
@@ -98,6 +99,71 @@ enum MenuModelSetupItems {
 
 #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 
+void checkModelIdUnique(uint8_t moduleIdx)
+{
+  ModelCell* mod_cell = modelslist.getCurrentModel();
+  if (!mod_cell || !mod_cell->valid_rfData) {
+    TRACE("!mod_cell || !mod_cell->valid_rfData");
+    return;
+  }
+
+  uint8_t modelId = mod_cell->modelId[moduleIdx];
+  uint8_t type = mod_cell->moduleData[moduleIdx].type;
+  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
+
+  uint8_t additionalOnes = 0;
+  char* warn_buf = reusableBuffer.msgbuf.msg;
+  char* curr = warn_buf;
+  curr[0] = 0;
+
+  const std::list<ModelsCategory*>& cats = modelslist.getCategories();
+  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
+  for (;cat_it != cats.end(); cat_it++) {
+    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
+      if (mod_cell == *it)
+        continue;
+
+      if (!(*it)->valid_rfData)
+        continue;
+
+      if ((type != MODULE_TYPE_NONE) &&
+          (type       == (*it)->moduleData[moduleIdx].type) &&
+          (rfProtocol == (*it)->moduleData[moduleIdx].rfProtocol) &&
+          (modelId    == (*it)->modelId[moduleIdx])) {
+
+        // Hit found!
+        const char* modelName = (*it)->modelName;
+        const char* modelFilename = (*it)->modelFilename;
+
+        // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
+        if ((WARNING_LINE_LEN - 4 - (curr - warn_buf)) > LEN_MODEL_NAME) {
+          if (warn_buf[0] != 0)
+            curr = strAppend(curr, ", ");
+          if (modelName[0] == 0) {
+            curr = strAppendFilename(curr, modelFilename, strlen(modelFilename));
+          }
+          else
+            curr = strAppend(curr, modelName, LEN_MODEL_NAME);
+        }
+        else {
+          additionalOnes++;
+        }
+      }
+    }
+  }
+
+  if (additionalOnes) {
+    curr = strAppend(curr, " (+");
+    curr = strAppendUnsigned(curr, additionalOnes);
+    curr = strAppend(curr, ")");
+  }
+
+  if (warn_buf[0] != 0) {
+    POPUP_WARNING(STR_MODELIDUSED);
+    SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.msgbuf.msg), 0);
+  }
+}
+
 void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = (menuVerticalPosition >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE);
@@ -136,6 +202,8 @@ void onModelSetupBitmapMenu(const char * result)
     // The user choosed a bmp file in the list
     copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
     storageDirty(EE_MODEL);
+    if (modelslist.getCurrentModel())
+      modelslist.getCurrentModel()->resetBuffer();
   }
 }
 
@@ -249,6 +317,7 @@ bool menuModelSetup(event_t event)
     g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = XJT_EXTERNAL_ANTENNA;
   }
 
+  int8_t old_editMode = s_editMode;
   MENU(STR_MENUSETUP, MODEL_ICONS, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX,
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
@@ -634,7 +703,6 @@ bool menuModelSetup(event_t event)
             if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
               g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
-
         }
         break;
 
@@ -891,8 +959,11 @@ bool menuModelSetup(event_t event)
           if (IS_MODULE_PXX(moduleIdx) || IS_MODULE_DSM2(moduleIdx) || IS_MODULE_MULTIMODULE(moduleIdx)) {
             if (xOffsetBind)
               lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);
-            if (attr && l_posHorz==0 && s_editMode>0)
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
+            if (attr && l_posHorz==0) {
+              if (s_editMode>0) {
+                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
+              }
+            }
             drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleFlag[moduleIdx] == MODULE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
             drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleFlag[moduleIdx] == MODULE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
             uint8_t newFlag = 0;
@@ -1110,6 +1181,35 @@ bool menuModelSetup(event_t event)
     lcdDrawNumber(WARNING_LINE_X, WARNING_INFOLINE_Y, TELEMETRY_RSSI(), DBLSIZE|LEFT);
   }
 
+  // some field just finished being edited
+  if (old_editMode > 0 && s_editMode == 0) {
+    ModelCell* mod_cell = modelslist.getCurrentModel();
+    if (mod_cell) {
+
+      switch(menuVerticalPosition) {
+      case ITEM_MODEL_NAME:
+        mod_cell->setModelName(g_model.header.name);
+        break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_BIND:
+        if (menuHorizontalPosition != 0)
+          break;
+      case ITEM_MODEL_INTERNAL_MODULE_MODE:
+        mod_cell->setRfData(&g_model);
+        checkModelIdUnique(INTERNAL_MODULE);
+        break;
+
+      case ITEM_MODEL_EXTERNAL_MODULE_BIND:
+        if (menuHorizontalPosition != 0)
+          break;
+      case ITEM_MODEL_EXTERNAL_MODULE_MODE:
+        mod_cell->setRfData(&g_model);
+        if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+          checkModelIdUnique(EXTERNAL_MODULE);
+      }
+    }
+  }
+  
   return true;
 }
 

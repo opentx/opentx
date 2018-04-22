@@ -37,7 +37,6 @@ enum ModelDeleteMode {
 };
 
 uint8_t selectMode, deleteMode;
-ModelsList modelslist;
 
 ModelsCategory * currentCategory;
 int currentCategoryIndex;
@@ -87,11 +86,12 @@ void setCurrentModel(unsigned int index)
 void setCurrentCategory(unsigned int index)
 {
   currentCategoryIndex = index;
-  std::list<ModelsCategory *>::iterator it = modelslist.categories.begin();
+  const std::list<ModelsCategory *>& cats = modelslist.getCategories();
+  std::list<ModelsCategory *>::const_iterator it = cats.begin();
   std::advance(it, index);
   currentCategory = *it;
   categoriesVerticalPosition = index;
-  categoriesVerticalOffset = limit<int>(categoriesVerticalPosition-4, categoriesVerticalOffset, min<int>(categoriesVerticalPosition, max<int>(0, modelslist.categories.size()-5)));
+  categoriesVerticalOffset = limit<int>(categoriesVerticalPosition-4, categoriesVerticalOffset, min<int>(categoriesVerticalPosition, max<int>(0, cats.size()-5)));
   if (currentCategory->size() > 0)
     setCurrentModel(0);
   else
@@ -226,6 +226,7 @@ void onModelSelectMenu(const char * result)
     storageFlushCurrentModel();
     storageCheck(true);
     memcpy(g_eeGeneral.currModelFilename, currentModel->modelFilename, LEN_MODEL_FILENAME);
+    modelslist.setCurrentModel(currentModel);
     loadModel(g_eeGeneral.currModelFilename, false);
     storageDirty(EE_GENERAL);
     storageCheck(true);
@@ -239,9 +240,10 @@ void onModelSelectMenu(const char * result)
   }
   else if (result == STR_CREATE_MODEL) {
     storageCheck(true);
-    currentModel = modelslist.currentModel = modelslist.addModel(currentCategory, createModel());
+    modelslist.addModel(currentCategory, createModel());
     selectMode = MODE_SELECT_MODEL;
     setCurrentModel(currentCategory->size() - 1);
+    modelslist.setCurrentModel(currentModel);
 #if defined(LUA)
     chainMenu(menuModelWizard);
 #endif
@@ -251,7 +253,8 @@ void onModelSelectMenu(const char * result)
     memcpy(duplicatedFilename, currentModel->modelFilename, sizeof(duplicatedFilename));
     if (findNextFileIndex(duplicatedFilename, LEN_MODEL_FILENAME, MODELS_PATH)) {
       sdCopyFile(currentModel->modelFilename, MODELS_PATH, duplicatedFilename, MODELS_PATH);
-      modelslist.addModel(currentCategory, duplicatedFilename);
+      ModelCell* dup_model = modelslist.addModel(currentCategory, duplicatedFilename);
+      dup_model->setRfData(&g_model);
       unsigned int index = currentCategory->size() - 1;
       setCurrentModel(index);
     }
@@ -264,7 +267,7 @@ void onModelSelectMenu(const char * result)
   }
   else if (result == STR_CREATE_CATEGORY) {
     currentCategory = modelslist.createCategory();
-    setCurrentCategory(modelslist.categories.size() - 1);
+    setCurrentCategory(modelslist.getCategories().size() - 1);
   }
   else if (result == STR_RENAME_CATEGORY) {
     selectMode = MODE_RENAME_CATEGORY;
@@ -291,8 +294,9 @@ void initModelsList()
   categoriesVerticalOffset = 0;
   bool found = false;
   int index = 0;
-  for (std::list<ModelsCategory *>::iterator it = modelslist.categories.begin(); it != modelslist.categories.end(); ++it, ++index) {
-    if (*it == modelslist.currentCategory) {
+  const std::list<ModelsCategory *>& cats = modelslist.getCategories();
+  for (std::list<ModelsCategory *>::const_iterator it = cats.begin(); it != cats.end(); ++it, ++index) {
+    if (*it == modelslist.getCurrentCategory()) {
       setCurrentCategory(index);
       found = true;
       break;
@@ -306,7 +310,7 @@ void initModelsList()
   found = false;
   index = 0;
   for (ModelsCategory::iterator it = currentCategory->begin(); it != currentCategory->end(); ++it, ++index) {
-    if (*it == modelslist.currentModel) {
+    if (*it == modelslist.getCurrentModel()) {
       setCurrentModel(index);
       found = true;
       break;
@@ -339,6 +343,7 @@ bool menuModelSelect(event_t event)
     }
   }
 
+  const std::list<ModelsCategory*>& cats = modelslist.getCategories();
   switch(event) {
     case 0:
       // no need to refresh the screen
@@ -371,7 +376,7 @@ bool menuModelSelect(event_t event)
 #endif
       if (selectMode == MODE_SELECT_MODEL) {
         if (categoriesVerticalPosition == 0)
-          categoriesVerticalPosition = modelslist.categories.size() - 1;
+          categoriesVerticalPosition = cats.size() - 1;
         else
           categoriesVerticalPosition -= 1;
         setCurrentCategory(categoriesVerticalPosition);
@@ -394,11 +399,11 @@ bool menuModelSelect(event_t event)
 #endif
       if (selectMode == MODE_SELECT_MODEL) {
         categoriesVerticalPosition += 1;
-        if (categoriesVerticalPosition >= modelslist.categories.size())
+        if (categoriesVerticalPosition >= cats.size())
           categoriesVerticalPosition = 0;
         setCurrentCategory(categoriesVerticalPosition);
       }
-      else if (selectMode == MODE_MOVE_MODEL && categoriesVerticalPosition < modelslist.categories.size()-1) {
+      else if (selectMode == MODE_MOVE_MODEL && categoriesVerticalPosition < cats.size()-1) {
         ModelsCategory * previous_category = currentCategory;
         ModelCell * model = currentModel;
         categoriesVerticalPosition += 1;
@@ -411,7 +416,7 @@ bool menuModelSelect(event_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       if (selectMode == MODE_SELECT_MODEL) {
         killEvents(event);
-        if (currentModel && currentModel != modelslist.currentModel) {
+        if (currentModel && currentModel != modelslist.getCurrentModel()) {
           POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
         }
         POPUP_MENU_ADD_ITEM(STR_CREATE_MODEL);
@@ -420,13 +425,13 @@ bool menuModelSelect(event_t event)
           POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
         }
         // POPUP_MENU_ADD_SD_ITEM(STR_BACKUP_MODEL);
-        if (currentModel && currentModel != modelslist.currentModel) {
+        if (currentModel && currentModel != modelslist.getCurrentModel()) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_MODEL);
         }
         // POPUP_MENU_ADD_ITEM(STR_RESTORE_MODEL);
         POPUP_MENU_ADD_ITEM(STR_CREATE_CATEGORY);
         POPUP_MENU_ADD_ITEM(STR_RENAME_CATEGORY);
-        if (modelslist.categories.size() > 1) {
+        if (cats.size() > 1) {
           POPUP_MENU_ADD_ITEM(STR_DELETE_CATEGORY);
         }
         POPUP_MENU_START(onModelSelectMenu);
@@ -441,8 +446,8 @@ bool menuModelSelect(event_t event)
   // Categories
   int index = 0;
   coord_t y = 97;
-  drawVerticalScrollbar(CATEGORIES_WIDTH-1, y-1, 5*(FH+7)-5, categoriesVerticalOffset, modelslist.categories.size(), 5);
-  for (std::list<ModelsCategory *>::iterator it = modelslist.categories.begin(); it != modelslist.categories.end(); ++it, ++index) {
+  drawVerticalScrollbar(CATEGORIES_WIDTH-1, y-1, 5*(FH+7)-5, categoriesVerticalOffset, cats.size(), 5);
+  for (std::list<ModelsCategory *>::const_iterator it = cats.begin(); it != cats.end(); ++it, ++index) {
     if (index >= categoriesVerticalOffset && index < categoriesVerticalOffset+5) {
       if (index != categoriesVerticalOffset) {
         lcdDrawSolidHorizontalLine(1, y-4, CATEGORIES_WIDTH-10, LINE_COLOR);
@@ -508,7 +513,7 @@ bool menuModelSelect(event_t event)
   uint32_t size = sdGetSize() / 100;
   lcdDrawNumber(22, LCD_H-FH-21, size, PREC1|SMLSIZE, 0, NULL, "GB");
   lcd->drawBitmap(70, LCD_H-FH-20, modelselModelQtyBitmap);
-  lcdDrawNumber(92, LCD_H-FH-21, modelslist.modelsCount,SMLSIZE);
+  lcdDrawNumber(92, LCD_H-FH-21, modelslist.getModelsCount(),SMLSIZE);
 
   return true;
 }
