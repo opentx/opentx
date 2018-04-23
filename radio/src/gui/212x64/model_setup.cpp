@@ -1080,17 +1080,17 @@ void menuModelSetup(event_t event)
           else if (menuHorizontalPosition == 1) {
             s_editMode = 0;
             if (moduleData.failsafeMode == FAILSAFE_CUSTOM) {
-                if (event == EVT_KEY_LONG(KEY_ENTER)) {
-                    killEvents(event);
-                    setCustomFailsafe(moduleIdx);
-                    storageDirty(EE_MODEL);
-                    AUDIO_WARNING1();
-                    SEND_FAILSAFE_NOW(moduleIdx);
-                }
-                else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-                    g_moduleIdx = moduleIdx;
-                    pushMenu(menuModelFailsafe);
-                }
+              if (event == EVT_KEY_LONG(KEY_ENTER)) {
+                killEvents(event);
+                setCustomFailsafe(moduleIdx);
+                storageDirty(EE_MODEL);
+                AUDIO_WARNING1();
+                SEND_FAILSAFE_NOW(moduleIdx);
+              }
+              else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+                g_moduleIdx = moduleIdx;
+                pushMenu(menuModelFailsafe);
+              }
             }
           }
           else {
@@ -1370,8 +1370,7 @@ void menuModelFailsafe(event_t event)
   }  // columns
 
   if (menuVerticalPosition >= NUM_CHANNELS(g_moduleIdx)) {
-      // Outputs => Failsafe
-      coord_t y = LCD_H - (FH + 1);
-      lcdDrawText(CENTER_OFS, y, STR_OUTPUTS2FAILSAFE, INVERS);
+    // Outputs => Failsafe
+    lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
   }
 }
