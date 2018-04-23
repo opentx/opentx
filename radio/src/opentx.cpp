@@ -2670,8 +2670,9 @@ int main()
 
   boardInit();
 
-#if defined(PCBX7)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
+#if defined(PCBX7) || defined(PCBX9E)
+  bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S and to allow X9E with Horus BT chip
+  bluetoothWriteString("AT+BAUD4\r\n");
 #endif
 
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBHORUS)

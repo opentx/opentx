@@ -91,6 +91,9 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_POWER,
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
+#if defined(BLUETOOTH)
+  ITEM_MODEL_TRAINER_BLUETOOTH,
+#endif
   ITEM_MODEL_TRAINER_LINE1,
   ITEM_MODEL_TRAINER_LINE2,
   ITEM_MODEL_SETUP_MAX
@@ -263,7 +266,7 @@ int getSwitchWarningsCount()
 #define INTERNAL_MODULE_CHANNELS_ROWS     IF_INTERNAL_MODULE_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
+#if defined(BLUETOOTH)
   #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothDistantAddr[0] == 0 || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
   #define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
@@ -731,13 +734,56 @@ void menuModelSetup(event_t event)
         if (attr) {
           g_model.trainerMode = checkIncDec(event, g_model.trainerMode, 0, TRAINER_MODE_MAX(), EE_MODEL, isTrainerModeAvailable);
         }
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
-        if (attr && checkIncDec_Ret) {
-          bluetoothState = BLUETOOTH_STATE_OFF;
-          bluetoothDistantAddr[0] = 0;
-        }
-#endif
         break;
+
+#if defined(BLUETOOTH)
+      case ITEM_MODEL_TRAINER_BLUETOOTH:
+        if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
+          if (attr) {
+            s_editMode = 0;
+          }
+          if (bluetoothDistantAddr[0]) {
+            lcdDrawText(INDENT_WIDTH, y+1, bluetoothDistantAddr, TINSIZE);
+            if (bluetoothState != BLUETOOTH_STATE_CONNECTED) {
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), menuHorizontalPosition == 0 ? attr : 0);
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW, y, BUTTON("Clear"), menuHorizontalPosition == 1 ? attr : 0);
+            }
+            else {
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Clear"), attr);
+            }
+            if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+              if (bluetoothState == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
+                bluetoothState = BLUETOOTH_STATE_OFF;
+                bluetoothDistantAddr[0] = 0;
+              }
+              else {
+                bluetoothState = BLUETOOTH_STATE_BIND_REQUESTED;
+              }
+            }
+          }
+          else {
+            lcdDrawText(INDENT_WIDTH, y, "---");
+            if (bluetoothState < BLUETOOTH_STATE_IDLE)
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Init"), attr);
+            else
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Discover"), attr);
+            if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+              if (bluetoothState < BLUETOOTH_STATE_IDLE)
+                bluetoothState = BLUETOOTH_STATE_OFF;
+              else
+                bluetoothState = BLUETOOTH_STATE_DISCOVER_REQUESTED;
+            }
+          }
+        }
+        else {
+          if (bluetoothDistantAddr[0])
+            lcdDrawText(INDENT_WIDTH, y+1, bluetoothDistantAddr, TINSIZE);
+          else
+            lcdDrawText(INDENT_WIDTH, y, "---");
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, bluetoothState == BLUETOOTH_STATE_CONNECTED ? "Connected" : "!Connected");
+        }
+        break;
+#endif
 
       case ITEM_MODEL_EXTERNAL_MODULE_LABEL:
         lcdDrawTextAlignedLeft(y, TR_EXTERNALRF);
@@ -841,7 +887,7 @@ void menuModelSetup(event_t event)
       lcdDrawTextAlignedLeft(y, STR_TRAINER);
       break;
 
-#if defined(BLUETOOTH) && defined(USEHORUSBT)
+#if defined(BLUETOOTH)
     case ITEM_MODEL_TRAINER_LINE1:
       if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
         if (attr) {
