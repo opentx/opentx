@@ -273,8 +273,6 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
     case NumTrims:
       if (IS_HORUS(board))
         return 6;
-      else if (IS_TARANIS_XLITE(board))
-        return 2;
       else
         return 4;
 
