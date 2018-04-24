@@ -261,7 +261,9 @@ void generalDefault()
   #endif
   g_eeGeneral.slidersConfig = 0x0f; // 4 sliders
   g_eeGeneral.blOffBright = 20;
-#elif defined(PCBX7) || defined(PCBXLITE)
+#elif defined(PCBXLITE)
+  g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
+#elif defined(PCBX7)
   g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent

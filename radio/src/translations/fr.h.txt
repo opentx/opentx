@@ -1115,7 +1115,7 @@
 #define TR_FACTORYRESET                "RAZ d'usine"
 #elif defined(PCBXLITE)
 #define TR_EEBACKUP                    "[ENTER Long]:Sauvegarde"
-#define TR_FACTORYRESET                "[\300ENTER Long]:RAZ usine"
+#define TR_FACTORYRESET                "[\300ENTER Long]: RAZ usine"
 #else
 #define TR_EEBACKUP                    TR("[ENTER Long]:Sauvegarde", "\004[ENTER Long]: Sauvegarder l'EEPROM")
 #define TR_FACTORYRESET                TR("\001[MENU Long]: RAZ d'usine", "\016[MENU Long]: RAZ d'usine")
