@@ -158,8 +158,8 @@ class SimulatorInterface : public QObject
     void runtimeError(const QString & error);
     void lcdChange(bool backlightEnable);
     void phaseChanged(qint8 phase, const QString & name);
-    void channelOutValueChange(quint8 index, qint32 value);
-    void channelMixValueChange(quint8 index, qint32 value);
+    void channelOutValueChange(quint8 index, qint32 value, qint32 limit);
+    void channelMixValueChange(quint8 index, qint32 value, qint32 limit);
     void virtualSwValueChange(quint8 index, qint32 value);
     void trimValueChange(quint8 index, qint32 value);
     void trimRangeChange(quint8 index, qint32 min, qint16 max);

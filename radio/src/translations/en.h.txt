@@ -813,9 +813,14 @@
 #define TR_MENU_RADIO_ANALOGS          TR("ANALOGS", "ANALOGS TEST")
 #define TR_MENUCALIBRATION             "CALIBRATION"
 #if defined(COLORLCD)
-  #define TR_TRIMS2OFFSETS             "Trims >> Subtrims"
+  #define TR_TRIMS2OFFSETS             "Trims => Subtrims"
 #else
   #define TR_TRIMS2OFFSETS             "\006Trims => Subtrims"
+#endif
+#if defined(COLORLCD)
+  #define TR_OUTPUTS2FAILSAFE          "Outputs => Failsafe"
+#else
+  #define TR_OUTPUTS2FAILSAFE          "\006Outputs => Failsafe"
 #endif
 #define TR_MENUMODELSEL                TR("MODELSEL", "MODEL SELECTION")
 #define TR_MENUSETUP                   TR("SETUP", "MODEL SETUP")

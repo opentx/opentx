@@ -507,9 +507,21 @@ int main()
     }
 
     if (state == ST_REBOOT) {
-        // Jump to proper application address
+
         lcdClear();
+        lcdRefresh();
+        lcdRefreshWait();
+
+#if !defined(EEPROM)
+        // Use jump on radios with emergency mode
+        // to avoid triggering it with a soft reset
+
+        // Jump to proper application address
         jumpTo(APP_START_ADDRESS);
+#else
+        // Use software reset everywhere else
+        NVIC_SystemReset();
+#endif
     }
   }
 

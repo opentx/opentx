@@ -96,7 +96,7 @@ unsigned int expou(unsigned int x, unsigned int k)
 {
 #if defined(EXTENDED_EXPO)
   bool extended;
-  if (k>80) {
+  if (k > 80) {
     extended=true;
   }
   else {
@@ -122,9 +122,9 @@ unsigned int expou(unsigned int x, unsigned int k)
 #endif
 
   value >>= 12;
-  value += (uint32_t)(256-k)*x+128;
+  value += (uint32_t)(256-k) * x + 128;
 
-  return value>>8;
+  return value >> 8;
 }
 
 int expo(int x, int k)
@@ -138,6 +138,9 @@ int expo(int x, int k)
 
   if (neg) {
     x = -x;
+  }
+  if (x > (int)RESXu) {
+    x = RESXu;
   }
   if (k < 0) {
     y = RESXu - expou(RESXu-x, -k);
@@ -793,7 +796,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         chans[md->destCh] = 0;
       }
 
-      //========== PHASE && SWITCH =====
+      //========== FLIGHT MODE && SWITCH =====
       bool mixCondition = (md->flightModes != 0 || md->swtch);
       delayval_t mixEnabled = (!(md->flightModes & (1 << mixerCurrentFlightMode)) && getSwitch(md->swtch)) ? DELAY_POS_MARGIN+1 : 0;
 
@@ -1040,7 +1043,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         default: // MLTPX_ADD
           *ptr += dv; //Mixer output add up to the line (dv + (dv>0 ? 100/2 : -100/2))/(100);
           break;
-      } //endswitch md->mltpx
+      } // endswitch md->mltpx
 #ifdef PREVENT_ARITHMETIC_OVERFLOW
 /*
       // a lot of assumptions must be true, for this kind of check; not really worth for only 4 bytes flash savings

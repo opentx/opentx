@@ -822,9 +822,14 @@
 #define TR_MENU_RADIO_ANALOGS             TR("WE-ANA","WEJŚCIA ANALOG.")
 #define TR_MENUCALIBRATION     "KALIBRACJA"
 #if defined(COLORLCD)
-  #define TR_TRIMS2OFFSETS     "Trymery >> Subtrimy"
+  #define TR_TRIMS2OFFSETS     "Trymery => Subtrimy"
 #else
   #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
+#endif
+#if defined(COLORLCD)
+  #define TR_OUTPUTS2FAILSAFE  "Outputs => Failsafe"
+#else
+  #define TR_OUTPUTS2FAILSAFE  "\006Outputs => Failsafe"
 #endif
 #define TR_MENUMODELSEL        TR("WYB.MODEL","WYBÓR MODELU")
 #define TR_MENUSETUP           TR("USTAW","USTAW MODELU")

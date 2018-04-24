@@ -803,7 +803,16 @@
 #define TR_MENU_RADIO_SWITCHES            "DIAGNOST"
 #define TR_MENU_RADIO_ANALOGS             "ANALOGICOS"
 #define TR_MENUCALIBRATION     "CALIBRAGEM"
-#define TR_TRIMS2OFFSETS       "\006Trims => Offsets"
+#if defined(COLORLCD)
+  #define TR_TRIMS2OFFSETS     "Trims => Subtrims"
+#else
+  #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
+#endif
+#if defined(COLORLCD)
+  #define TR_OUTPUTS2FAILSAFE  "Outputs => Failsafe"
+#else
+  #define TR_OUTPUTS2FAILSAFE  "\006Outputs => Failsafe"
+#endif
 #define TR_MENUMODELSEL        "MODELOS"
 #define TR_MENUSETUP           "SETUP"
 #define TR_MENUFLIGHTMODE     "MODO DE VOO"

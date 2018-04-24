@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>762</width>
-    <height>436</height>
+    <height>452</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -127,6 +127,25 @@
        </widget>
       </item>
       <item>
+       <widget class="QToolButton" name="btnMixes">
+        <property name="text">
+         <string>Mix Outputs</string>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextBesideIcon</enum>
+        </property>
+        <property name="autoRaise">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -219,7 +238,7 @@ c</string>
             <x>0</x>
             <y>0</y>
             <width>740</width>
-            <height>85</height>
+            <height>68</height>
            </rect>
           </property>
          </widget>
@@ -297,7 +316,7 @@ l</string>
             <x>0</x>
             <y>0</y>
             <width>739</width>
-            <height>101</height>
+            <height>78</height>
            </rect>
           </property>
          </widget>
@@ -374,7 +393,81 @@ s</string>
             <x>0</x>
             <y>0</y>
             <width>739</width>
-            <height>194</height>
+            <height>128</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mixersWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>3</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_11">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>1</number>
+       </property>
+       <property name="topMargin">
+        <number>1</number>
+       </property>
+       <property name="rightMargin">
+        <number>1</number>
+       </property>
+       <property name="bottomMargin">
+        <number>1</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_11">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="midLineWidth">
+          <number>3</number>
+         </property>
+         <property name="text">
+          <string>M
+i
+x
+e
+s</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="heading" stdset="0">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QScrollArea" name="mixersScroll">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_12">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>738</width>
+            <height>118</height>
            </rect>
           </property>
          </widget>
@@ -433,6 +526,22 @@ s</string>
     <hint type="destinationlabel">
      <x>346</x>
      <y>114</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>btnMixes</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mixersWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>370</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>380</x>
+     <y>384</y>
     </hint>
    </hints>
   </connection>
