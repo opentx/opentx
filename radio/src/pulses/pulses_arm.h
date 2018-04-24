@@ -181,6 +181,10 @@ inline void SEND_FAILSAFE_1S()
   }
 }
 
+// Assign failsafe values using the current channel outputs
+// for channels not set previously to HOLD or NOPULSE
+void setCustomFailsafe(uint8_t moduleIndex);
+
 #define LEN_R9M_MODES                  "\007"
 #define TR_R9M_MODES                   "FCC\0   ""LBT(EU)"
 #define LEN_R9M_FCC_POWER_VALUES       "\006"
