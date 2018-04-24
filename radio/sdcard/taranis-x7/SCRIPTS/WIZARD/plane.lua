@@ -76,12 +76,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_LEFT or event == EVT_RIGHT_BREAK then
+    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_BREAK then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_RIGHT or event == EVT_LEFT_BREAK then
+    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_BREAK then
       if value > min then
         value = (value - 1)
         dirty = true
