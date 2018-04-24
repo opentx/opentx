@@ -454,14 +454,17 @@
 #define TR_VSWASHTYPE                  "--- ""120 ""120X""140 ""90\0"
 
 #if defined(PCBHORUS)
-#define LEN_VKEYS                      "\006"
-#define TR_VKEYS                       "Menu\0 ""Exit\0 ""Entree""Haut\0 ""Bas\0  ""Droit\0""Gauche"
+  #define LEN_VKEYS                    "\006"
+  #define TR_VKEYS                     "Menu\0 ""Exit\0 ""Entree""Haut\0 ""Bas\0  ""Droit\0""Gauche"
+#elif defined(PCBXLITE)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "Shift""Exit\0""Enter""Bas\0 ""Haut\0""Droit""Gauch"
 #elif defined(PCBTARANIS)
-#define LEN_VKEYS                      "\005"
-#define TR_VKEYS                       "Menu\0""Exit\0""Enter""Page\0""Plus\0""Moins"
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Moins"
 #else
-#define LEN_VKEYS                      "\005"
-#define TR_VKEYS                       "Menu\0""Exit\0""Bas\0 ""Haut\0""Droit""Gauch"
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "Menu\0""Exit\0""Bas\0 ""Haut\0""Droit""Gauch"
 #endif
 
 #define LEN_VRENCODERS                 "\003"
@@ -1107,8 +1110,16 @@
 #define TR_SCRIPT                      "Script"
 #define TR_INPUTS                      "Entrées"
 #define TR_OUTPUTS                     "Sorties"
+#if defined(COLORLCD)
+#define TR_EEBACKUP                    "Sauvegarder l'EEPROM"
+#define TR_FACTORYRESET                "RAZ d'usine"
+#elif defined(PCBXLITE)
+#define TR_EEBACKUP                    "[ENTER Long]:Sauvegarde"
+#define TR_FACTORYRESET                "[\300ENTER Long]:RAZ usine"
+#else
 #define TR_EEBACKUP                    TR("[ENTER Long]:Sauvegarde", "\004[ENTER Long]: Sauvegarder l'EEPROM")
 #define TR_FACTORYRESET                TR("\001[MENU Long]: RAZ d'usine", "\016[MENU Long]: RAZ d'usine")
+#endif
 #define TR_CONFIRMRESET                TR("Effacer TOUT?","Effacer TOUS modèles/réglages?")
 #define TR_TO_MANY_LUA_SCRIPTS         "Trop de scripts lua!"
 
