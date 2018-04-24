@@ -58,7 +58,7 @@ void handleUsbConnection()
 #endif
       POPUP_MENU_START(onUSBConnectMenu);
     }
-    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE && g_eeGeneral.USBMode <= USB_MAX_MODE) {
+    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE) {
       setSelectedUsbMode(g_eeGeneral.USBMode);
     }
   }
