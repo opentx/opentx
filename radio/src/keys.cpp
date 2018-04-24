@@ -96,8 +96,7 @@ void Key::input(bool val)
       break;
     case KSTATE_START:
       // TRACE("key %d FIRST", key());
-      if (!IS_SHIFT_KEY(key()))
-        putEvent(EVT_KEY_FIRST(key()));
+      putEvent(EVT_KEY_FIRST(key()));
       inactivity.counter = 0;
       m_state = KSTATE_RPTDELAY;
       m_cnt = 0;
@@ -107,10 +106,7 @@ void Key::input(bool val)
       if (m_cnt == KEY_LONG_DELAY) {
         // generate long key press
         // TRACE("key %d LONG", key());
-#if !defined(LUA)
-        if (!IS_SHIFT_KEY(key()))
-#endif
-          putEvent(EVT_KEY_LONG(key()));
+        putEvent(EVT_KEY_LONG(key()));
       }
       if (m_cnt == KEY_REPEAT_DELAY) {
         m_state = 16;
