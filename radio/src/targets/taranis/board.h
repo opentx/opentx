@@ -520,6 +520,7 @@ uint32_t pwrPressed(void);
 #if defined(PWR_BUTTON_PRESS)
 uint32_t pwrPressedDuration(void);
 #endif
+void pwrResetHandler(void);
 
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()           false
