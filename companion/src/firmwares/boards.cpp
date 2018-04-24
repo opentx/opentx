@@ -145,7 +145,9 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, unsigned index)
   if (IS_TARANIS_XLITE(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
-      {SWITCH_3POS,   "SB"}
+      {SWITCH_3POS,   "SB"},
+      {SWITCH_2POS,   "SC"},
+      {SWITCH_2POS,   "SD"}
     };
     if (index < DIM(switches))
       return switches[index];
