@@ -427,3 +427,124 @@ void ModelsList::moveModel(ModelCell * model, ModelsCategory * previous_category
   new_category->push_back(model);
   save();
 }
+
+bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_buf_len)
+{
+  ModelCell* mod_cell = modelslist.getCurrentModel();
+  if (!mod_cell || !mod_cell->valid_rfData) {
+    // in doubt, pretend it's unique
+    return true;
+  }
+
+  uint8_t modelId = mod_cell->modelId[moduleIdx];
+  uint8_t type = mod_cell->moduleData[moduleIdx].type;
+  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
+
+  uint8_t additionalOnes = 0;
+  char* curr = warn_buf;
+  curr[0] = 0;
+
+  bool hit_found = false;
+  const std::list<ModelsCategory*>& cats = modelslist.getCategories();
+  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
+  for (;cat_it != cats.end(); cat_it++) {
+    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
+      if (mod_cell == *it)
+        continue;
+
+      if (!(*it)->valid_rfData)
+        continue;
+
+      if ((type != MODULE_TYPE_NONE) &&
+          (type       == (*it)->moduleData[moduleIdx].type) &&
+          (rfProtocol == (*it)->moduleData[moduleIdx].rfProtocol) &&
+          (modelId    == (*it)->modelId[moduleIdx])) {
+
+        // Hit found!
+        hit_found = true;
+
+        const char* modelName = (*it)->modelName;
+        const char* modelFilename = (*it)->modelFilename;
+
+        // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
+        if ((warn_buf_len - 2 - (curr - warn_buf)) > LEN_MODEL_NAME) {
+          if (warn_buf[0] != 0)
+            curr = strAppend(curr, ", ");
+          if (modelName[0] == 0) {
+            size_t len = min<size_t>(strlen(modelFilename),LEN_MODEL_NAME);
+            curr = strAppendFilename(curr, modelFilename, len);
+          }
+          else
+            curr = strAppend(curr, modelName, LEN_MODEL_NAME);
+        }
+        else {
+          additionalOnes++;
+        }
+      }
+    }
+  }
+
+  if (additionalOnes && (warn_buf_len - (curr - warn_buf) >= 7)) {
+    curr = strAppend(curr, " (+");
+    curr = strAppendUnsigned(curr, additionalOnes);
+    curr = strAppend(curr, ")");
+  }
+
+  return hit_found;
+}
+
+uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
+{
+  ModelCell* mod_cell = modelslist.getCurrentModel();
+  if (!mod_cell || !mod_cell->valid_rfData) {
+    return 0;
+  }
+
+  uint8_t type = mod_cell->moduleData[moduleIdx].type;
+  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
+
+  // assume 63 is the highest Model ID
+  // and use 64 bits
+  uint8_t usedModelIds[8];
+  memset(usedModelIds, 0, sizeof(usedModelIds));
+  
+  const std::list<ModelsCategory*>& cats = modelslist.getCategories();
+  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
+  for (;cat_it != cats.end(); cat_it++) {
+    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
+      if (mod_cell == *it)
+        continue;
+
+      if (!(*it)->valid_rfData)
+        continue;
+
+      // match module type and RF protocol
+      if ((type != MODULE_TYPE_NONE) &&
+          (type       == (*it)->moduleData[moduleIdx].type) &&
+          (rfProtocol == (*it)->moduleData[moduleIdx].rfProtocol)) {
+
+        uint8_t id = (*it)->modelId[moduleIdx];
+
+        uint8_t mask = 1;
+        for (uint8_t i = 1; i < (id & 7); i++)
+          mask <<= 1;
+
+        usedModelIds[id >> 3] |= mask;
+      }
+    }
+  }
+
+  uint8_t new_id = 0;
+  uint8_t tst_mask = 1;
+  for (;new_id < MAX_RX_NUM(moduleIdx); new_id++) {
+    if (!(usedModelIds[new_id >> 3] & tst_mask)) {
+      // found free ID
+      return new_id;
+    }
+    if ((tst_mask <<= 1) == 0)
+      tst_mask = 1;
+  }
+
+  // failed finding something...
+  return 0;
+}

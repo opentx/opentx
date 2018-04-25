@@ -102,66 +102,15 @@ enum MenuModelSetupItems {
 
 void checkModelIdUnique(uint8_t moduleIdx)
 {
-  ModelCell* mod_cell = modelslist.getCurrentModel();
-  if (!mod_cell || !mod_cell->valid_rfData) {
-    TRACE("!mod_cell || !mod_cell->valid_rfData");
-    return;
-  }
-
-  uint8_t modelId = mod_cell->modelId[moduleIdx];
-  uint8_t type = mod_cell->moduleData[moduleIdx].type;
-  uint8_t rfProtocol = mod_cell->moduleData[moduleIdx].rfProtocol;
-
-  uint8_t additionalOnes = 0;
   char* warn_buf = reusableBuffer.msgbuf.msg;
-  char* curr = warn_buf;
-  curr[0] = 0;
 
-  const std::list<ModelsCategory*>& cats = modelslist.getCategories();
-  std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
-  for (;cat_it != cats.end(); cat_it++) {
-    for (ModelsCategory::const_iterator it = (*cat_it)->begin(); it != (*cat_it)->end(); it++) {
-      if (mod_cell == *it)
-        continue;
-
-      if (!(*it)->valid_rfData)
-        continue;
-
-      if ((type != MODULE_TYPE_NONE) &&
-          (type       == (*it)->moduleData[moduleIdx].type) &&
-          (rfProtocol == (*it)->moduleData[moduleIdx].rfProtocol) &&
-          (modelId    == (*it)->modelId[moduleIdx])) {
-
-        // Hit found!
-        const char* modelName = (*it)->modelName;
-        const char* modelFilename = (*it)->modelFilename;
-
-        // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
-        if ((WARNING_LINE_LEN - 4 - (curr - warn_buf)) > LEN_MODEL_NAME) {
-          if (warn_buf[0] != 0)
-            curr = strAppend(curr, ", ");
-          if (modelName[0] == 0) {
-            curr = strAppendFilename(curr, modelFilename, strlen(modelFilename));
-          }
-          else
-            curr = strAppend(curr, modelName, LEN_MODEL_NAME);
-        }
-        else {
-          additionalOnes++;
-        }
-      }
+  // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
+  size_t warn_buf_len = sizeof(reusableBuffer.msgbuf.msg) - WARNING_LINE_LEN - 2;
+  if (!modelslist.isModelIdUnique(moduleIdx,warn_buf,warn_buf_len)) {
+    if (warn_buf[0] != 0) {
+      POPUP_WARNING(STR_MODELIDUSED);
+      SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.msgbuf.msg), 0);
     }
-  }
-
-  if (additionalOnes) {
-    curr = strAppend(curr, " (+");
-    curr = strAppendUnsigned(curr, additionalOnes);
-    curr = strAppend(curr, ")");
-  }
-
-  if (warn_buf[0] != 0) {
-    POPUP_WARNING(STR_MODELIDUSED);
-    SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.msgbuf.msg), 0);
   }
 }
 
@@ -983,6 +932,14 @@ bool menuModelSetup(event_t event)
             if (attr && l_posHorz==0) {
               if (s_editMode>0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
+                if (event == EVT_KEY_LONG(KEY_ENTER)) {
+                  killEvents(event);
+                  uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);
+                  if (newVal != g_model.header.modelId[moduleIdx]) {
+                    g_model.header.modelId[moduleIdx] = newVal;
+                    storageDirty(EE_MODEL);
+                  }
+                }
               }
             }
             drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleFlag[moduleIdx] == MODULE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
