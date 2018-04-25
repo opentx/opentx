@@ -729,7 +729,7 @@ void menuModelSetup(event_t event)
 #endif
         break;
       }
-  #if defined(PCBTARANIS)
+#if defined(PCBTARANIS)
       case ITEM_MODEL_POTS_WARNING:
         lcdDrawTextAlignedLeft(y, STR_POTWARNING);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (menuHorizontalPosition == 0) ? attr : 0);
