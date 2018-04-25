@@ -279,6 +279,7 @@ void menuModelSetup(event_t event)
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
   static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 
+  int8_t old_editMode = s_editMode;
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
     LABEL(Throttle), 0, 0, 0,
     LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
@@ -969,9 +970,14 @@ void menuModelSetup(event_t event)
                 if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
                 }
-              }
-              if (s_editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
-                checkModelIdUnique(g_eeGeneral.currModel, moduleIdx);
+                else if (event == EVT_KEY_LONG(KEY_ENTER)) {
+                  killEvents(event);
+                  uint8_t newVal = findNextUnusedModelId(g_eeGeneral.currModel, moduleIdx);
+                  if (newVal != g_model.header.modelId[moduleIdx]) {
+                    modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx] = newVal;
+                    storageDirty(EE_MODEL);
+                  }
+                }
               }
             }
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
@@ -1190,6 +1196,20 @@ void menuModelSetup(event_t event)
     lcdDrawNumber(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
   }
 #endif
+
+  if (old_editMode > 0 && s_editMode == 0) {
+    switch(menuVerticalPosition) {
+    case ITEM_MODEL_INTERNAL_MODULE_BIND:
+      if (menuHorizontalPosition == 0)
+        checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
+      break;
+
+    case ITEM_MODEL_EXTERNAL_MODULE_BIND:
+      if (menuHorizontalPosition == 0)
+        checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
+      break;
+    }
+  }
 }
 
 void menuModelFailsafe(event_t event)
