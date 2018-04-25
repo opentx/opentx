@@ -11,7 +11,7 @@
     <message>
         <location filename="../wizarddialog.cpp" line="438"/>
         <source>Yes, controlled by a single channel</source>
-        <translation></translation>
+        <translation>Oui, contrôlés par 1 voie</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="439"/>
@@ -749,7 +749,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../firmwares/boards.cpp" line="311"/>
         <source>Ail</source>
-        <translation>Ail</translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -803,22 +803,22 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Min</source>
-        <translation>Min</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Max</source>
-        <translation>Max</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Subtrim</source>
-        <translation>Subtrim</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="109"/>
         <source>Direction</source>
-        <translation>Direction</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="111"/>
@@ -1378,12 +1378,12 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="42"/>
         <source>GF</source>
-        <translation></translation>
+        <translation>FG</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="42"/>
         <source>SF</source>
-        <translation></translation>
+        <translation>FS</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="48"/>
@@ -1503,12 +1503,12 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="94"/>
         <source>SetFailsafe Int. Module</source>
-        <translation>Déf. failsafe module interne</translation>
+        <translation>Définir failsafe module interne</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="96"/>
         <source>SetFailsafe Ext. Module</source>
-        <translation>Déf. failsafe module externe</translation>
+        <translation>Définir. failsafe module externe</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="98"/>
@@ -7741,7 +7741,7 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="975"/>
         <location filename="../modelprinter.cpp" line="1049"/>
         <source>OFF</source>
-        <translation>Eteint</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="146"/>
