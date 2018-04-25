@@ -176,10 +176,12 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #define EXTERNAL_MODULE_OFF()           GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) && defined(EXTMODULE_USART)
+  #define IS_UART_MODULE(port)          (true)
+#elif defined(INTMODULE_USART)
   #define IS_UART_MODULE(port)          (port == INTERNAL_MODULE)
 #else
-  #define IS_UART_MODULE(port)          false
+  #define IS_UART_MODULE(port)          (false)
 #endif
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
@@ -234,7 +236,11 @@ int sbusGetByte(uint8_t * byte);
 // Keys driver
 enum EnumKeys
 {
+#if defined(PCBXLITE)
+  KEY_SHIFT,
+#else
   KEY_MENU,
+#endif
   KEY_EXIT,
   KEY_ENTER,
 #if defined(PCBXLITE)
@@ -275,6 +281,14 @@ enum EnumKeys
   #define KEY_DOWN                      KEY_MINUS
   #define KEY_RIGHT                     KEY_MINUS
   #define KEY_LEFT                      KEY_PLUS
+#endif
+
+#if defined(KEYS_GPIO_PIN_SHIFT)
+#define IS_SHIFT_KEY(index)             (index == KEY_SHIFT)
+#define IS_SHIFT_PRESSED()              (~KEYS_GPIO_REG_SHIFT & KEYS_GPIO_PIN_SHIFT)
+#else
+#define IS_SHIFT_KEY(index)             (false)
+#define IS_SHIFT_PRESSED()              (false)
 #endif
 
 enum EnumSwitches
@@ -427,6 +441,9 @@ enum Analogs {
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
 #define NUM_XPOTS                       NUM_POTS
 #define NUM_SLIDERS                     (TX_VOLTAGE-POT_LAST-1)
+#define NUM_TRIMS                       4
+#define NUM_MOUSE_ANALOGS               0
+#define NUM_DUMMY_ANAS                  0
 
 #if defined(PCBXLITE)
   #define NUM_PWMANALOGS                4
@@ -435,6 +452,9 @@ enum Analogs {
   void analogPwmRead(uint16_t * values);
   void analogPwmCheck();
   extern volatile uint32_t pwm_interrupt_count;
+  #define NUM_TRIMS_KEYS                4
+#else
+  #define NUM_TRIMS_KEYS                8
 #endif
 
 enum CalibratedAnalogs {
@@ -459,9 +479,28 @@ void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUM_ANALOGS];
 uint16_t getAnalogValue(uint8_t index);
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
-#if defined(PCBX7) || defined(PCBXLITE)
+// Battery driver
+uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
+#if defined(PCBX9E)
+  // NI-MH 9.6V
+  #define BATTERY_WARN                  87 // 8.7V
+  #define BATTERY_MIN                   85 // 8.5V
+  #define BATTERY_MAX                   115 // 11.5V
+#elif defined(PCBXLITE)
+  // 2 x Li-Ion
+  #define BATTERY_WARN                  66 // 6.6V
+  #define BATTERY_MIN                   67 // 6.7V
+  #define BATTERY_MAX                   83 // 8.3V
+#else
+  // NI-MH 7.2V
+  #define BATTERY_WARN                  65 // 6.5V
+  #define BATTERY_MIN                   60 // 6.0V
+  #define BATTERY_MAX                   80 // 8.0V
+#endif
+#if defined(PCBXLITE)
+  #define BATT_SCALE                    131
+#elif defined(PCBX7)
   #define BATT_SCALE                    123
 #else
   #define BATT_SCALE                    150
@@ -478,9 +517,10 @@ uint32_t pwrCheck(void);
 void pwrOn(void);
 void pwrOff(void);
 uint32_t pwrPressed(void);
-#if defined(PWR_PRESS_BUTTON)
+#if defined(PWR_BUTTON_PRESS)
 uint32_t pwrPressedDuration(void);
 #endif
+void pwrResetHandler(void);
 
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()           false

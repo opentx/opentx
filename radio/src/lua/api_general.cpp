@@ -33,6 +33,8 @@
   #include "lua/lua_exports_x9e.inc"
 #elif defined(PCBX7)
   #include "lua/lua_exports_x7.inc"
+#elif defined(PCBXLITE)
+  #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
   #include "lua/lua_exports_x9d.inc"
 #endif
@@ -1344,12 +1346,14 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBXLITE)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
+#if !defined(PCBXLITE)
   { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SH", MIXSRC_SH },
+#endif
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
 #if defined(COLORLCD)
@@ -1402,6 +1406,22 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_MODEL_FIRST",  EVT_KEY_FIRST(KEY_MODEL) },
   { "EVT_SYS_FIRST",  EVT_KEY_FIRST(KEY_RADIO) },
   { "EVT_RTN_FIRST",  EVT_KEY_FIRST(KEY_EXIT) },
+#elif defined(PCBXLITE)
+  { "EVT_DOWN_FIRST", EVT_KEY_FIRST(KEY_DOWN) },
+  { "EVT_UP_FIRST", EVT_KEY_FIRST(KEY_UP) },
+  { "EVT_LEFT_FIRST", EVT_KEY_FIRST(KEY_LEFT) },
+  { "EVT_RIGHT_FIRST", EVT_KEY_FIRST(KEY_RIGHT) },
+  { "EVT_SHIFT_FIRST", EVT_KEY_FIRST(KEY_SHIFT) },
+  { "EVT_DOWN_BREAK", EVT_KEY_BREAK(KEY_DOWN) },
+  { "EVT_UP_BREAK", EVT_KEY_BREAK(KEY_UP) },
+  { "EVT_LEFT_BREAK", EVT_KEY_BREAK(KEY_LEFT) },
+  { "EVT_RIGHT_BREAK", EVT_KEY_BREAK(KEY_RIGHT) },
+  { "EVT_SHIFT_BREAK", EVT_KEY_BREAK(KEY_SHIFT) },
+  { "EVT_DOWN_LONG", EVT_KEY_LONG(KEY_DOWN) },
+  { "EVT_UP_LONG", EVT_KEY_LONG(KEY_UP) },
+  { "EVT_LEFT_LONG", EVT_KEY_LONG(KEY_LEFT) },
+  { "EVT_RIGHT_LONG", EVT_KEY_LONG(KEY_RIGHT) },
+  { "EVT_SHIFT_LONG", EVT_KEY_LONG(KEY_SHIFT) },
 #elif defined(PCBTARANIS)
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },

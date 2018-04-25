@@ -62,10 +62,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_ROT_LEFT then
+    if event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
       value = (value + max)
       dirty = true
-    elseif event == EVT_ROT_RIGHT then
+    elseif event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
       value = (value + max + 2)
       dirty = true
     end
@@ -76,12 +76,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_LEFT or event == EVT_ROT_LEFT then
+    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_BREAK then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_RIGHT or event == EVT_ROT_RIGHT then
+    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_BREAK then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -98,16 +98,16 @@ local function navigate(event, fieldMax, prevPage, nextPage)
   elseif edit then
     if event == EVT_EXIT_BREAK then
       edit = false
-      dirty = true  
+      dirty = true
     elseif not dirty then
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK then     
+    if event == EVT_PAGE_BREAK or event==EVT_SHIFT_BREAK then
       page = nextPage
       field = 0
       dirty = true
-    elseif event == EVT_PAGE_LONG then
+    elseif event == EVT_PAGE_LONG or event==EVT_SHIFT_LONG then
       page = prevPage
       field = 0
       killEvents(event);
@@ -163,7 +163,7 @@ local function drawEngineMenu()
   end
   lcd.drawText(1, 0, "Got an engine?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, engineModeItems, engineMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W, engineModeItems, engineMode, getFieldFlags(0))
 end
 
 local function engineMenu(event)
@@ -206,7 +206,7 @@ local function drawAileronsMenu()
   end
   lcd.drawText(1, 0, "Got ailerons?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, aileronsModeItems, aileronsMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W, aileronsModeItems, aileronsMode, getFieldFlags(0))
 end
 
 local function aileronsMenu(event)
@@ -251,7 +251,7 @@ local function drawFlapsMenu()
   end
   lcd.drawText(1, 0, "Got flaps?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, flapsModeItems, flapsMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W, flapsModeItems, flapsMode, getFieldFlags(0))
 end
 
 local function flapsMenu(event)
@@ -296,7 +296,7 @@ local function drawBrakesMenu()
   end
   lcd.drawText(1, 0, "Got air brakes?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, brakesModeItems, brakesMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W, brakesModeItems, brakesMode, getFieldFlags(0))
 end
 
 local function brakesMenu(event)
@@ -313,7 +313,7 @@ local function brakesMenu(event)
     brakesCH1 = channelIncDec(event, brakesCH1)
   elseif field==2 then
     brakesCH2 = channelIncDec(event, brakesCH2)
-  end    
+  end
 end
 
 -- Tail Menu
@@ -358,7 +358,7 @@ local function drawTailMenu()
   end
   lcd.drawText(1, 0, "Tail config", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, tailModeItems, tailMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W, tailModeItems, tailMode, getFieldFlags(0))
 end
 
 local function tailMenu(event)
@@ -377,7 +377,7 @@ local function tailMenu(event)
     rudCH1 = channelIncDec(event, rudCH1)
   elseif field==2 then
     eleCH2 = channelIncDec(event, eleCH2)
-  end    
+  end
 end
 
 -- Servo (limits) Menu
@@ -396,7 +396,7 @@ local function drawServoMenu(limits)
   else
     lcd.drawText(129, 50, "\127", getFieldFlags(3));
   end
-  fieldsMax = 3    
+  fieldsMax = 3
 end
 
 local function servoMenu(event)
@@ -487,7 +487,7 @@ local function addMix(channel, input, name, weight, index)
   if weight ~= nil then
     mix.weight = weight
   end
-  if index == nil then 
+  if index == nil then
     index = 0
   end
   model.insertMix(channel, index, mix)
@@ -495,7 +495,7 @@ end
 
 local function applySettings()
   model.defaultInputs()
-  model.deleteMixes()      
+  model.deleteMixes()
   if engineMode > 0 then
     addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   end
@@ -561,7 +561,7 @@ local function run(event)
   end
 
   if servoPage ~= nil then
-    servoMenu(event) 
+    servoMenu(event)
   elseif page == ENGINE_PAGE then
     engineMenu(event)
   elseif page == AILERONS_PAGE then

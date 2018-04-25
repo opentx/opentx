@@ -119,6 +119,11 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_TRAINER_CHANNELS,
   ITEM_MODEL_TRAINER_PARAMS,
+#elif defined(PCBXLITE)
+  ITEM_MODEL_TRAINER_LABEL,
+  ITEM_MODEL_TRAINER_MODE,
+  ITEM_MODEL_TRAINER_BLUETOOTH,
+  ITEM_MODEL_TRAINER_CHANNELS,
 #endif
   ITEM_MODEL_SETUP_MAX
 };
@@ -134,9 +139,7 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS     7*FW-2
 
-#if defined(PCBXLITE)
-  #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
-#elif defined(PCBX7)
+#if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
@@ -186,6 +189,13 @@ enum MenuModelSetupItems {
 #define TRAINER_CHANNELS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
 #define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
 #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
+#elif defined(PCBXLITE)
+  #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
+  #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
+  #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
+  #define TRAINER_BLUETOOTH_ROW          (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
+  #define TRAINER_CHANNELS_ROW           (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
+  #define TRAINER_ROWS                   IF_BT_TRAINER_ON(LABEL(Trainer)), IF_BT_TRAINER_ON(0), IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), IF_BT_TRAINER_ON(TRAINER_CHANNELS_ROW)
 #else
   #define TRAINER_ROWS
 #endif
@@ -261,16 +271,35 @@ void menuModelSetup(event_t event)
   }
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PCBXLITE)
+  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, SW_WARN_ROWS,  NUM_POTS, NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, 0,
+    LABEL(InternalModule),
+    INTERNAL_MODULE_MODE_ROWS,
+    INTERNAL_MODULE_CHANNELS_ROWS,
+    IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
+    IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
+    IF_INTERNAL_MODULE_ON(0),
+    LABEL(ExternalModule),
+    EXTERNAL_MODULE_MODE_ROWS,
+    MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
+    MULTIMODULE_STATUS_ROWS
+    EXTERNAL_MODULE_CHANNELS_ROWS,
+    EXTERNAL_MODULE_BIND_ROWS(),
+    OUTPUT_TYPE_ROWS()
+    FAILSAFE_ROWS(EXTERNAL_MODULE),
+    EXTERNAL_MODULE_OPTION_ROW,
+    (IS_MODULE_R9M_LBT(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW),
+    MULTIMODULE_MODULE_ROWS
+    EXTERNAL_MODULE_POWER_ROW,
+    EXTRA_MODULE_ROWS
+    TRAINER_ROWS });
+#elif defined(PCBTARANIS)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, SW_WARN_ROWS, NUM_POTS, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
   LABEL(InternalModule),
   INTERNAL_MODULE_MODE_ROWS,
   INTERNAL_MODULE_CHANNELS_ROWS,
   IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
   IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
-#if defined(PCBXLITE)
-  IF_INTERNAL_MODULE_ON(0),
-#endif
   LABEL(ExternalModule),
   EXTERNAL_MODULE_MODE_ROWS,
   MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
@@ -581,10 +610,17 @@ void menuModelSetup(event_t event)
             break;
           }
 
-          lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
           swarnstate_t states = g_model.switchWarningState;
           char c;
+
+          lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
+#if defined(PCBXLITE)
+          lcdDrawText(LCD_W, y, "<]", RIGHT);
+          if (menuHorizontalPosition > NUM_SWITCHES) menuHorizontalPosition = NUM_SWITCHES;
+          if ((attr) && (menuHorizontalPosition == NUM_SWITCHES)) {
+#else
           if (attr) {
+#endif
             s_editMode = 0;
             if (!READ_ONLY()) {
               switch (event) {
@@ -592,7 +628,7 @@ void menuModelSetup(event_t event)
                   break;
 
                 case EVT_KEY_LONG(KEY_ENTER):
-                  if (menuHorizontalPosition < 0) {
+                  if (menuHorizontalPosition < 0 || menuHorizontalPosition >= NUM_SWITCHES) {
                     START_NO_HIGHLIGHT();
                     getMovedSwitch();
                     g_model.switchWarningState = switches_states;
@@ -624,7 +660,7 @@ void menuModelSetup(event_t event)
             }
             states >>= 2;
           }
-          if (attr && menuHorizontalPosition < 0) {
+          if (attr && ((menuHorizontalPosition < 0) || menuHorizontalPosition >= NUM_SWITCHES)) {
             lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+4)/5));
           }
 #else
@@ -907,7 +943,7 @@ void menuModelSetup(event_t event)
       break;
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
       case ITEM_MODEL_TRAINER_LABEL:
         lcdDrawTextAlignedLeft(y, STR_TRAINER);
         break;
@@ -927,7 +963,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBX7) && defined(BLUETOOTH)
+#if defined(PCBTARANIS) && defined(BLUETOOTH)
       case ITEM_MODEL_TRAINER_BLUETOOTH:
         if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
           if (attr) {
@@ -976,10 +1012,8 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBX7)
-      case ITEM_MODEL_TRAINER_CHANNELS:
-#endif
 #if defined(PCBTARANIS)
+      case ITEM_MODEL_TRAINER_CHANNELS:
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
 #endif
 #if defined(PCBSKY9X)
@@ -1595,6 +1629,6 @@ void menuModelFailsafe(event_t event)
   if (menuVerticalPosition >= NUM_CHANNELS(g_moduleIdx)) {
     // Outputs => Failsafe
     lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
-  }  
+  }
 }
 #endif

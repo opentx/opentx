@@ -58,7 +58,7 @@ void handleUsbConnection()
 #endif
       POPUP_MENU_START(onUSBConnectMenu);
     }
-    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE && g_eeGeneral.USBMode <= USB_MAX_MODE) {
+    if (g_eeGeneral.USBMode != USB_UNSELECTED_MODE) {
       setSelectedUsbMode(g_eeGeneral.USBMode);
     }
   }
@@ -414,12 +414,10 @@ void perMain()
     mainRequestFlags &= ~(1 << REQUEST_FLIGHT_RESET);
   }
 
-  event_t evt = getEvent(false);
-  if (evt && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
-    // on keypress turn the light on
-    backlightOn();
-  }
   doLoopCommonActions();
+
+  event_t evt = getEvent(false);
+
 #if defined(NAVIGATION_STICKS)
   uint8_t sticks_evt = getSticksNavigationEvent();
   if (sticks_evt) {

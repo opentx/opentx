@@ -142,9 +142,9 @@ uint16_t trimDown(uint16_t idx)
   return readTrims() & (1 << idx);
 }
 
-uint8_t keyDown()
+bool keyDown()
 {
-  return readKeys();
+  return readKeys() || readTrims();
 }
 
 /* TODO common to ARM */
@@ -153,14 +153,19 @@ void readKeysAndTrims()
   uint32_t i;
 
   uint8_t index = 0;
-  uint32_t in = readKeys();
+  uint32_t keys_input = readKeys();
   for (i = 0; i < TRM_BASE; i++) {
-    keys[index++].input(in & (1 << i));
+    keys[index++].input(keys_input & (1 << i));
   }
 
-  in = readTrims();
+  uint32_t trims_input = readTrims();
   for (i = 1; i <= 1 << (TRM_LAST-TRM_BASE); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(trims_input & i);
+  }
+
+  if ((keys_input || trims_input) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+    // on keypress turn the light on
+    backlightOn();
   }
 }
 

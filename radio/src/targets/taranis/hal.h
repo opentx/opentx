@@ -32,8 +32,8 @@
   #define KEYS_GPIO_REG_ENTER           GPIOF->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_0  // PF.00
 #elif defined(PCBXLITE)
-  #define KEYS_GPIO_REG_MENU            GPIOE->IDR
-  #define KEYS_GPIO_PIN_MENU            GPIO_Pin_8  // PE.08
+  #define KEYS_GPIO_REG_SHIFT           GPIOE->IDR
+  #define KEYS_GPIO_PIN_SHIFT           GPIO_Pin_8  // PE.08
   #define KEYS_GPIO_REG_EXIT            GPIOE->IDR
   #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_7  // PE.07
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
@@ -161,10 +161,10 @@
   #define SWITCHES_GPIO_REG_A_L         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_14 // PD.14
 #elif defined(PCBXLITE)
-  #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_1  // PE.01
   #define SWITCHES_GPIO_REG_A_H         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_0  // PE.00
+  #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_1  // PE.01
+  #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_0  // PE.00
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_7  // PE.07
@@ -183,10 +183,10 @@
   #define SWITCHES_GPIO_REG_B_L         GPIOG->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_10 // PG.10
 #elif defined(PCBXLITE)
-  #define SWITCHES_GPIO_REG_B_H         GPIOA->IDR
-  #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_6  // PA.06
   #define SWITCHES_GPIO_REG_B_L         GPIOA->IDR
-  #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_5  // PA.05
+  #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_6  // PA.06
+  #define SWITCHES_GPIO_REG_B_H         GPIOA->IDR
+  #define SWITCHES_GPIO_PIN_B_H         GPIO_Pin_5  // PA.05
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_B_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_B_L         GPIO_Pin_15 // PE.15
@@ -205,10 +205,10 @@
   #define SWITCHES_GPIO_REG_C_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_14 // PF.14
 #elif defined(PCBXLITE)
-  #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_2  // PE.02
   #define SWITCHES_GPIO_REG_C_L         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_3  // PE.03
+  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_2  // PE.02
+  #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_3  // PE.03
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_C_L         GPIOD->IDR
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_11 // PD.11
@@ -232,10 +232,10 @@
   #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_13 // PE.13
 #elif defined(PCBXLITE)
-  #define SWITCHES_GPIO_REG_D_H         GPIOB->IDR
-  #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_4  // PB.04
   #define SWITCHES_GPIO_REG_D_L         GPIOB->IDR
-  #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_5  // PB.05
+  #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_4  // PB.04
+  #define SWITCHES_GPIO_REG_D_H         GPIOB->IDR
+  #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_5  // PB.05
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_D_L         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_L         GPIO_Pin_1  // PE.01
@@ -538,9 +538,7 @@
 
 // PWR and LED driver
 #define PWR_RCC_AHB1Periph              (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE)
-#if defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITE)
-#define PWR_PRESS_BUTTON
-#endif
+
 #if defined(PCBXLITE)
   #define PWR_SWITCH_GPIO               GPIOA
   #define PWR_SWITCH_GPIO_PIN           GPIO_Pin_7  // PA.07
@@ -560,9 +558,9 @@
   #define GPIO_LED_GPIO_ON              GPIO_ResetBits
   #define GPIO_LED_GPIO_OFF             GPIO_SetBits
   #define LED_BLUE_GPIO                 GPIOE
-  #define LED_BLUE_GPIO_PIN             GPIO_Pin_4  // PE.04
+  #define LED_BLUE_GPIO_PIN             GPIO_Pin_6  // PE.06
   #define LED_RED_GPIO                  GPIOE
-  #define LED_RED_GPIO_PIN              GPIO_Pin_6  // PE.06
+  #define LED_RED_GPIO_PIN              GPIO_Pin_4  // PE.04
   #define LED_GREEN_GPIO                GPIOE
   #define LED_GREEN_GPIO_PIN            GPIO_Pin_5  // PE.05
 #elif defined(PCBX7)
@@ -648,22 +646,32 @@
 #define EXTMODULE_PULSES
 #if defined(PCBXLITE)
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
-  #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
+  #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
   #define EXTMODULE_PWR_GPIO            GPIOD
   #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_11 // PD.11
   #define EXTMODULE_TX_GPIO             GPIOC
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PC.06
   #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource6
   #define EXTMODULE_TIMER               TIM8
-  #define EXTMODULE_TX_GPIO_AF          GPIO_AF_TIM8 // TIM8_CH1
+  #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
   #define EXTMODULE_TIMER_CC_IRQn       TIM8_CC_IRQn
   #define EXTMODULE_TIMER_CC_IRQHandler TIM8_CC_IRQHandler
-  #define EXTMODULE_DMA_CHANNEL         DMA_Channel_7
-  #define EXTMODULE_DMA_STREAM          DMA2_Stream1
-  #define EXTMODULE_DMA_IRQn            DMA2_Stream1_IRQn
-  #define EXTMODULE_DMA_IRQHandler      DMA2_Stream1_IRQHandler
-  #define EXTMODULE_DMA_FLAG_TC         DMA_IT_TCIF1
-  #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
+  #define EXTMODULE_TIMER_TX_GPIO_AF    GPIO_AF_TIM8 // TIM8_CH1
+  #define EXTMODULE_TIMER_DMA_CHANNEL           DMA_Channel_7
+  #define EXTMODULE_TIMER_DMA_STREAM            DMA2_Stream1
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQn       DMA2_Stream1_IRQn
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQHandler DMA2_Stream1_IRQHandler
+  #define EXTMODULE_TIMER_DMA_FLAG_TC           DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1E
+  #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1P
+  #define EXTMODULE_USART_TX_GPIO_AF    GPIO_AF_USART6
+  #define EXTMODULE_USART               USART6
+  #define EXTMODULE_USART_IRQn          USART6_IRQn
+  #define EXTMODULE_USART_DMA_CHANNEL           DMA_Channel_5
+  #define EXTMODULE_USART_DMA_STREAM            DMA2_Stream6
+  #define EXTMODULE_USART_DMA_STREAM_IRQn       DMA2_Stream6_IRQn
+  #define EXTMODULE_USART_DMA_STREAM_IRQHandler DMA2_Stream6_IRQHandler
+  #define EXTMODULE_USART_DMA_FLAG_TC           DMA_IT_TCIF6
 #else
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
@@ -673,14 +681,16 @@
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_7  // PA.07
   #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource7
   #define EXTMODULE_TIMER               TIM8
-  #define EXTMODULE_TX_GPIO_AF          GPIO_AF_TIM8 // TIM8_CH1N
+  #define EXTMODULE_TIMER_TX_GPIO_AF          GPIO_AF_TIM8 // TIM8_CH1N
   #define EXTMODULE_TIMER_CC_IRQn       TIM8_CC_IRQn
   #define EXTMODULE_TIMER_CC_IRQHandler TIM8_CC_IRQHandler
-  #define EXTMODULE_DMA_CHANNEL         DMA_Channel_7
-  #define EXTMODULE_DMA_STREAM          DMA2_Stream1
-  #define EXTMODULE_DMA_IRQn            DMA2_Stream1_IRQn
-  #define EXTMODULE_DMA_IRQHandler      DMA2_Stream1_IRQHandler
-  #define EXTMODULE_DMA_FLAG_TC         DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_DMA_CHANNEL         DMA_Channel_7
+  #define EXTMODULE_TIMER_DMA_STREAM          DMA2_Stream1
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQn       DMA2_Stream1_IRQn
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQHandler DMA2_Stream1_IRQHandler
+  #define EXTMODULE_TIMER_DMA_FLAG_TC         DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1NE
+  #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1NP
   #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #endif
 
@@ -775,11 +785,15 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
   #define SPORT_UPDATE_PWR_GPIO         GPIOD
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_8  // PD.08
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON GPIO_SetBits
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #elif defined(PCBX7)
   #define SPORT_MAX_BAUDRATE            250000 // < 400000
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOB
   #define SPORT_UPDATE_PWR_GPIO         GPIOB
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_2  // PB.02
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON GPIO_SetBits
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #else
   #define SPORT_MAX_BAUDRATE            400000
   #define SPORT_UPDATE_RCC_AHB1Periph   0

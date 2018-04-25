@@ -43,7 +43,7 @@ void menuRadioDiagKeys(event_t event)
   for (uint8_t i=0; i<9; i++) {
     coord_t y;
 
-    if (i < 8) {
+    if (i < NUM_TRIMS_KEYS) {
       y = MENU_HEADER_HEIGHT + FH*3 + FH*(i/2);
       if (i&1) lcdDraw1bitBitmap(14*FW, y, sticks, i/2, 0);
       displayKeyState(i&1? 20*FW : 18*FW, y, TRM_BASE+i);
@@ -60,7 +60,7 @@ void menuRadioDiagKeys(event_t event)
 #elif defined(PCBXLITE)
       y = MENU_HEADER_HEIGHT + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
-      displayKeyState(5*FW+2, y, KEY_MENU+(TRM_BASE-1-i));
+      displayKeyState(5*FW+2, y, KEY_SHIFT+(TRM_BASE-1-i));
 #else
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);

@@ -433,10 +433,10 @@
   #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Up\0  ""Down\0""Right""Left\0"
 #elif defined(PCBXLITE)
   #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
+  #define TR_VKEYS                     "Shift""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
 #elif defined(PCBTARANIS)
   #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                      "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
+  #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
 #else
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0"
@@ -502,8 +502,6 @@
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_SWITCHES            "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar""\3135d""\3135u""\3136d""\3136u"
-#elif defined(PCBXLITE)
-  #define TR_TRIMS_SWITCHES            "tRl""tRr""tEd""tEu"
 #else
   #define TR_TRIMS_SWITCHES            TR("tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr", "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar")
 #endif
@@ -1109,6 +1107,9 @@
 #if defined(COLORLCD)
 #define TR_EEBACKUP                    "EEPROM backup"
 #define TR_FACTORYRESET                "Factory reset"
+#elif defined(PCBXLITE)
+#define TR_EEBACKUP                    "\001[ENT. Long]: Backup"
+#define TR_FACTORYRESET                "\001[\300ENT. Long]: Fact. reset"
 #else
 #define TR_EEBACKUP                    TR("\001[ENTER Long]: Backup", "\012[ENTER Long]: EEPROM backup")
 #define TR_FACTORYRESET                TR("\001[MENU Long]: Fact. reset", "\012[MENU Long]: Factory reset")

@@ -100,7 +100,7 @@ uint8_t trimDown(uint8_t idx)
   return readTrims() & (1 << idx);
 }
 
-uint8_t keyDown()
+bool keyDown()
 {
   return readKeys() || REA_DOWN();
 }
@@ -113,18 +113,22 @@ void readKeysAndTrims()
   keys[BTN_REa].input(REA_DOWN());
 #endif
 
-  uint8_t index = KEY_MENU;
-  uint8_t in = readKeys();
+  uint8_t index = 0;
+  uint8_t keys_input = readKeys();
   for (i = 1; i < 7; i++) {
-    keys[index].input(in & (1 << i));
+    keys[index].input(keys_input & (1 << i));
     ++index;
   }
 
-  in = readTrims();
-
+  uint8_t trims_input = readTrims();
   for (i = 1; i < 256; i <<= 1) {
-    keys[index].input(in & i);
+    keys[index].input(trims_input & i);
     ++index;
+  }
+
+  if ((keys_input || trims_input) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+    // on keypress turn the light on
+    backlightOn();
   }
 }
 

@@ -40,8 +40,12 @@ void boardInit(void);
 #define KEYS_GPIO_PIN_UP           (1<<1)
 #define KEYS_GPIO_REG_DOWN         pinl
 #define KEYS_GPIO_PIN_DOWN         (1<<0)
+#define IS_SHIFT_KEY(index)        (false)
+#define IS_SHIFT_PRESSED()         (false)
 
 // Trims
+#define NUM_TRIMS                  4
+#define NUM_TRIMS_KEYS             (NUM_TRIMS * 2)
 #define TRIMS_GPIO_REG_LHL         pinj
 #define TRIMS_GPIO_REG_LVD         pinj
 #define TRIMS_GPIO_REG_RVU         pinj
@@ -167,5 +171,14 @@ void pwrOff();
 // Buzzer driver
 #define buzzerOn()                 PORTE |=  (1 << OUT_E_BUZZER)
 #define buzzerOff()                PORTE &= ~(1 << OUT_E_BUZZER)
+
+// Battery driver
+#define BATTERY_MIN                90  // 9V
+#define BATTERY_MAX                120 // 12V
+#define BATTERY_WARN               90  // 9V
+
+// Analogs driver
+#define NUM_MOUSE_ANALOGS          0
+#define NUM_DUMMY_ANAS             0
 
 #endif // _BOARD_GRUVIN9X_H_

@@ -242,6 +242,9 @@ enum EnumKeys
   NUM_KEYS
 };
 
+#define IS_SHIFT_KEY(index)             (false)
+#define IS_SHIFT_PRESSED()              (false)
+
 enum EnumSwitches
 {
   SW_SA,
@@ -287,13 +290,17 @@ void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
+#define KEYS_PRESSED()                          (readKeys())
+#define DBLKEYS_PRESSED_RGT_LFT(in)             ((in & ((1<<KEY_RIGHT) + (1<<KEY_LEFT))) == ((1<<KEY_RIGHT) + (1<<KEY_LEFT)))
+#define DBLKEYS_PRESSED_UP_DWN(in)              ((in & ((1<<KEY_UP) + (1<<KEY_DOWN))) == ((1<<KEY_UP) + (1<<KEY_DOWN)))
+#define DBLKEYS_PRESSED_RGT_UP(in)              ((in & ((1<<KEY_RIGHT) + (1<<KEY_UP))) == ((1<<KEY_RIGHT) + (1<<KEY_UP)))
+#define DBLKEYS_PRESSED_LFT_DWN(in)             ((in & ((1<<KEY_LEFT) + (1<<KEY_DOWN))) == ((1<<KEY_LEFT) + (1<<KEY_DOWN)))
+
+// Trims driver
+#define NUM_TRIMS                               6
+#define NUM_TRIMS_KEYS                          (NUM_TRIMS * 2)
 uint32_t readTrims(void);
-#define TRIMS_PRESSED()                (readTrims())
-#define KEYS_PRESSED()                 (readKeys())
-#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & ((1<<KEY_RIGHT) + (1<<KEY_LEFT))) == ((1<<KEY_RIGHT) + (1<<KEY_LEFT)))
-#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & ((1<<KEY_UP) + (1<<KEY_DOWN))) == ((1<<KEY_UP) + (1<<KEY_DOWN)))
-#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & ((1<<KEY_RIGHT) + (1<<KEY_UP))) == ((1<<KEY_RIGHT) + (1<<KEY_UP)))
-#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & ((1<<KEY_LEFT) + (1<<KEY_DOWN))) == ((1<<KEY_LEFT) + (1<<KEY_DOWN)))
+#define TRIMS_PRESSED()                         (readTrims())
 
 // Rotary encoder driver
 #define ROTARY_ENCODER_NAVIGATION
@@ -396,7 +403,13 @@ extern uint16_t adcValues[NUM_ANALOGS];
 void adcInit(void);
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
-uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
+#define NUM_MOUSE_ANALOGS              2
+#if defined(PCBX10)
+  #define NUM_DUMMY_ANAS               2
+#else
+  #define NUM_DUMMY_ANAS               0
+#endif
+
 #if NUM_PWMANALOGS > 0
 extern uint8_t analogs_pwm_disabled;
 #define ANALOGS_PWM_ENABLED()          (analogs_pwm_disabled == false)
@@ -405,6 +418,20 @@ void analogPwmRead(uint16_t * values);
 void analogPwmCheck();
 extern volatile uint32_t pwm_interrupt_count;
 #endif
+
+// Battery driver
+#if defined(PCBX10)
+  // Lipo 2S
+  #define BATTERY_WARN      66 // 6.6V
+  #define BATTERY_MIN       62 // 6.2V
+  #define BATTERY_MAX       82 // 8.2V
+#else
+  // NI-MH 9.6V
+  #define BATTERY_WARN      87 // 8.7V
+  #define BATTERY_MIN       85 // 8.5V
+  #define BATTERY_MAX       115 // 11.5V
+#endif
+uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {

@@ -48,7 +48,9 @@ void menuStatisticsView(event_t event)
       break;
 
 #if defined(CPUARM)
-    case EVT_KEY_LONG(KEY_MENU):      // historical
+#if !defined(PCBTARANIS)
+    case EVT_KEY_LONG(KEY_MENU): // historical
+#endif
 #if !defined(PCBSKY9X)
     case EVT_KEY_LONG(KEY_ENTER):
 #endif
@@ -309,8 +311,10 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, "Tlm RX Err");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
 
+#if defined(PCBX7)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "BT status");
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, btChipPresent, RIGHT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, IS_BLUETOOTH_CHIP_PRESENT(), RIGHT);
+#endif
 
   lcdDrawText(4*FW, 7*FH+1, STR_MENUTORESET);
   lcdInvertLastLine();

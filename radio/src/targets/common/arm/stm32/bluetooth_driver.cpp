@@ -23,7 +23,7 @@
 Fifo<uint8_t, 64> btTxFifo;
 Fifo<uint8_t, 64> btRxFifo;
 
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(PCBX7)
 uint8_t btChipPresent = 0;
 #endif
 
@@ -109,8 +109,9 @@ extern "C" void BT_USART_IRQHandler(void)
     USART_ClearITPendingBit(BT_USART, USART_IT_RXNE);
     uint8_t byte = USART_ReceiveData(BT_USART);
     btRxFifo.push(byte);
-#if defined(PCBX7) || defined(PCBXLITE)
-    if (!btChipPresent) {   //This is to differentiate X7 and X7S
+#if defined(PCBX7)
+    if (!btChipPresent) {
+      // This is to differentiate X7 and X7S
       btChipPresent = 1;
       bluetoothDone();
     }

@@ -50,10 +50,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_ROT_RIGHT then
+    if event == EVT_ROT_RIGHT or event == EVT_UP_BREAK then
       value = (value + max)
       dirty = true
-    elseif event == EVT_ROT_LEFT then
+    elseif event == EVT_ROT_LEFT or event == EVT_DOWN_BREAK then
       value = (value + max + 2)
       dirty = true
     end
@@ -64,12 +64,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_RIGHT or event == EVT_ROT_RIGHT then
+    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_BREAK then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_LEFT or event == EVT_ROT_LEFT then
+    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_BREAK then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -86,16 +86,16 @@ local function navigate(event, fieldMax, prevPage, nextPage)
   elseif edit then
     if event == EVT_EXIT_BREAK then
       edit = false
-      dirty = true  
+      dirty = true
     elseif not dirty then
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK then     
+    if event == EVT_PAGE_BREAK or event==EVT_SHIFT_BREAK then
       page = nextPage
       field = 0
       dirty = true
-    elseif event == EVT_PAGE_LONG then
+    elseif event == EVT_PAGE_LONG or event==EVT_SHIFT_LONG then
       page = prevPage
       field = 0
       killEvents(event);
@@ -140,7 +140,7 @@ local function drawThrottleMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Multicopter", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, {"Throttle"}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W, {"Throttle"}, comboBoxMode, getFieldFlags(1))
   lcd.drawText(5, 30, "Assign channel", 0);
   lcd.drawText(5, 40, ">>>", 0);
   lcd.drawSource(25, 40, MIXSRC_CH1+thrCH1, getFieldFlags(0))
@@ -161,7 +161,7 @@ local function drawRollMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Multicopter", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, {"Roll"}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W, {"Roll"}, comboBoxMode, getFieldFlags(1))
   lcd.drawText(5, 30, "Assign channel", 0);
   lcd.drawText(5, 40, ">>>", 0);
   lcd.drawSource(25, 40, MIXSRC_CH1+rollCH1, getFieldFlags(0))
@@ -182,7 +182,7 @@ local function drawPitchMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Multicopter", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, {"Pitch"}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W, {"Pitch"}, comboBoxMode, getFieldFlags(1))
   lcd.drawText(5, 30, "Assign channel", 0);
   lcd.drawText(5, 40, ">>>", 0);
   lcd.drawSource(25, 40, MIXSRC_CH1+pitchCH1, getFieldFlags(0))
@@ -203,7 +203,7 @@ local function drawYawMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Multicopter", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, {"Yaw"}, comboBoxMode, getFieldFlags(1)) 
+  lcd.drawCombobox(0, 8, LCD_W, {"Yaw"}, comboBoxMode, getFieldFlags(1))
   lcd.drawText(5, 30, "Assign channel", 0);
   lcd.drawText(5, 40, ">>>", 0);
   lcd.drawSource(25, 40, MIXSRC_CH1+yawCH1, getFieldFlags(0))
@@ -251,7 +251,7 @@ local function addMix(channel, input, name, weight, index)
   if weight ~= nil then
     mix.weight = weight
   end
-  if index == nil then 
+  if index == nil then
     index = 0
   end
   model.insertMix(channel, index, mix)
@@ -259,7 +259,7 @@ end
 
 local function applySettings()
   model.defaultInputs()
-  model.deleteMixes()      
+  model.deleteMixes()
   addMix(thrCH1,   MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   addMix(rollCH1,  MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   addMix(yawCH1,   MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")

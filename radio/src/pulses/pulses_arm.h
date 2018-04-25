@@ -64,7 +64,7 @@ PACK(struct Dsm2SerialPulsesData {
 });
 #endif
 
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
 PACK(struct PxxUartPulsesData {
   uint8_t  pulses[64];
   uint8_t  * ptr;
@@ -113,7 +113,7 @@ union ModulePulsesData {
   PxxTimerPulsesData pxx;
   Dsm2TimerPulsesData dsm2;
 #endif
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   PxxUartPulsesData pxx_uart;
 #endif
   PpmPulsesData<pulse_duration_t> ppm;

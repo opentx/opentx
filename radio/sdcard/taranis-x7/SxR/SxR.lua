@@ -212,15 +212,15 @@ local function runFieldsPage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT then
+    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT or event == EVT_RIGHT_BREAK then
       addField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT then
+    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT or event == EVT_LEFT_BREAK then
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT then
+    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT then
+    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
       selectField(-1)
     end
   end
@@ -262,9 +262,9 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif event == EVT_PAGE_BREAK then
+  elseif event == EVT_PAGE_BREAK or event==EVT_SHIFT_BREAK then
     selectPage(1)
-  elseif event == EVT_PAGE_LONG then
+  elseif event == EVT_PAGE_LONG or event==EVT_SHIFT_LONG then
     killEvents(event);
     selectPage(-1)
   end

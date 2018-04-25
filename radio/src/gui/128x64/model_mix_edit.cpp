@@ -85,11 +85,6 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
-  if (event == EVT_KEY_LONG(KEY_MENU)) {
-    // TODO pushMenu(menuChannelsView);
-    killEvents(event);
-  }
-
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(PSIZE(TR_MIXER)*FW+FW, 0, md2->destCh+1,0);
   

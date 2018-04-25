@@ -21,7 +21,7 @@ elseif(PCB STREQUAL X9E)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../f4/system_stm32f4xx.c
-    ../../../../../${STM32LIB_DIR}/CMSIS/Device/ST/STM32F4xx/Source/Templates/gcc_ride7/startup_stm32f40_41xxx.s
+    ../../../../../targets/${TARGET_DIR}/startup_stm32f40_41xxx.s
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_rcc.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_gpio.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c

@@ -52,10 +52,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_ROT_RIGHT then
+    if event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
       value = (value + max)
       dirty = true
-    elseif event == EVT_ROT_LEFT then
+    elseif event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
       value = (value + max + 2)
       dirty = true
     end
@@ -66,12 +66,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_RIGHT or event == EVT_ROT_RIGHT then
+    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_BREAK then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_LEFT or event == EVT_ROT_LEFT then
+    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_BREAK then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -88,16 +88,16 @@ local function navigate(event, fieldMax, prevPage, nextPage)
   elseif edit then
     if event == EVT_EXIT_BREAK then
       edit = false
-      dirty = true  
+      dirty = true
     elseif not dirty then
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK then     
+    if event == EVT_PAGE_BREAK or event==EVT_SHIFT_BREAK then
       page = nextPage
       field = 0
       dirty = true
-    elseif event == EVT_PAGE_LONG then
+    elseif event == EVT_PAGE_LONG or event==EVT_SHIFT_LONG then
       page = prevPage
       field = 0
       killEvents(event);
@@ -140,7 +140,7 @@ end
 -- Engine Menu
 local engineModeItems = {"No", "Yes"}
 local function drawEngineMenu()
-  lcd.clear() 
+  lcd.clear()
   if engineMode == 0 then
     -- No engine
     fieldsMax = 0
@@ -177,7 +177,7 @@ local function drawElevonsMenu()
   lcd.clear()
   lcd.drawText(1, 0, "Select elevon channnels", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, elevonsModeItems, elevonsMode, 0) 
+  lcd.drawCombobox(0, 8, LCD_W, elevonsModeItems, elevonsMode, 0)
   lcd.drawText(5, 30, "Assign channels", 0);
   lcd.drawText(30, 40, "L", 0);
   lcd.drawText(65, 40, "R", 0);
@@ -219,7 +219,7 @@ local function drawRudderMenu()
   end
   lcd.drawText(1, 0, "Got a rudder?", 0)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, FILL_WHITE)
-  lcd.drawCombobox(0, 8, LCD_W, rudderModeItems, rudderMode, getFieldFlags(0)) 
+  lcd.drawCombobox(0, 8, LCD_W, rudderModeItems, rudderMode, getFieldFlags(0))
 end
 
 local function rudderMenu(event)
@@ -227,7 +227,7 @@ local function rudderMenu(event)
     dirty = false
     drawRudderMenu()
   end
-  
+
   navigate(event, fieldsMax, page-1, page+1)
 
   if field==0 then
@@ -252,7 +252,7 @@ local function drawServoMenu(limits)
   else
     lcd.drawText(129, 50, "\127", getFieldFlags(3));
   end
-  fieldsMax = 3    
+  fieldsMax = 3
 end
 
 local function servoMenu(event)
@@ -288,7 +288,7 @@ local function addMix(channel, input, name, weight, index)
   if weight ~= nil then
     mix.weight = weight
   end
-  if index == nil then 
+  if index == nil then
     index = 0
   end
   model.insertMix(channel, index, mix)
@@ -296,7 +296,7 @@ end
 
 local function applySettings()
   model.defaultInputs()
-  model.deleteMixes()      
+  model.deleteMixes()
   if engineMode == 1 then
     addMix(thrCH1, MIXSRC_FIRST_INPUT+defaultChannel(2), "Engine")
   end
@@ -346,7 +346,7 @@ local function confirmationMenu(event)
   end
 
   navigate(event, fieldsMax, RUDDER_PAGE, page)
-  
+
   if event == EVT_EXIT_BREAK then
     return 2
   elseif event == EVT_ENTER_LONG then
@@ -366,7 +366,7 @@ local function run(event)
   end
 
   if servoPage ~= nil then
-    servoMenu(event) 
+    servoMenu(event)
   elseif page == ENGINE_PAGE then
     engineMenu(event)
   elseif page == ELEVONS_PAGE then

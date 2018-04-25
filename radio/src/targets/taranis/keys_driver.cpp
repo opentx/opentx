@@ -27,22 +27,30 @@ uint32_t rotencPosition;
 uint32_t readKeys()
 {
   uint32_t result = 0;
+
   if (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
     result |= 1 << KEY_ENTER;
+
+#if defined(KEYS_GPIO_PIN_MENU)
   if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
     result |= 1 << KEY_MENU;
+#endif
+
 #if defined(KEYS_GPIO_PIN_PAGE)
   if (~KEYS_GPIO_REG_PAGE & KEYS_GPIO_PIN_PAGE)
     result |= 1 << KEY_PAGE;
 #endif
+
   if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
     result |= 1 << KEY_EXIT;
+
 #if defined(KEYS_GPIO_PIN_PLUS)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
     result |= 1 << KEY_PLUS;
   if (~KEYS_GPIO_REG_MINUS & KEYS_GPIO_PIN_MINUS)
     result |= 1 << KEY_MINUS;
 #endif
+
 #if defined(KEYS_GPIO_PIN_LEFT)
   if (~KEYS_GPIO_REG_LEFT & KEYS_GPIO_PIN_LEFT)
     result |= 1 << KEY_LEFT;
@@ -52,6 +60,11 @@ uint32_t readKeys()
     result |= 1 << KEY_UP;
   if (~KEYS_GPIO_REG_DOWN & KEYS_GPIO_PIN_DOWN)
     result |= 1 << KEY_DOWN;
+#endif
+
+#if defined(KEYS_GPIO_PIN_SHIFT)
+  if (~KEYS_GPIO_REG_SHIFT & KEYS_GPIO_PIN_SHIFT)
+    result |= 1 << KEY_SHIFT;
 #endif
 
   // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
@@ -72,7 +85,10 @@ uint32_t readTrims()
   if (~TRIMS_GPIO_REG_LVU & TRIMS_GPIO_PIN_LVU)
     result |= 0x08;
 
-#if !defined(PCBXLITE)
+#if defined(PCBXLITE)
+  if (IS_SHIFT_PRESSED())
+    result = ((result & 0x03) << 6) | ((result & 0x0c) << 2);
+#else
   if (~TRIMS_GPIO_REG_RVD & TRIMS_GPIO_PIN_RVD)
     result |= 0x10;
   if (~TRIMS_GPIO_REG_RVU & TRIMS_GPIO_PIN_RVU)
@@ -93,9 +109,9 @@ uint8_t trimDown(uint8_t idx)
   return readTrims() & (1 << idx);
 }
 
-uint8_t keyDown()
+bool keyDown()
 {
-  return readKeys();
+  return readKeys() || readTrims();
 }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -118,14 +134,19 @@ void checkRotaryEncoder()
 void readKeysAndTrims()
 {
   uint8_t index = 0;
-  uint32_t in = readKeys();
+  uint32_t keys_input = readKeys();
   for (uint8_t i = 1; i != uint8_t(1 << TRM_BASE); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(keys_input & i);
   }
 
-  in = readTrims();
+  uint32_t trims_input = readTrims();
   for (uint8_t i = 1; i != uint8_t(1 << 8); i <<= 1) {
-    keys[index++].input(in & i);
+    keys[index++].input(trims_input & i);
+  }
+
+  if ((keys_input || trims_input) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+    // on keypress turn the light on
+    backlightOn();
   }
 }
 

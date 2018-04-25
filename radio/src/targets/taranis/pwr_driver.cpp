@@ -22,17 +22,13 @@
 
 void pwrInit()
 {
-  // if any changes are done to the PWR PIN or pwrOn() function
-  // then the same changes must be done in _bootStart()
-
   GPIO_InitTypeDef GPIO_InitStructure;
+  
   GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
-  
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
@@ -63,6 +59,15 @@ void pwrInit()
 
 void pwrOn()
 {
+  GPIO_InitTypeDef GPIO_InitStructure;
+  
+  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
+  
   GPIO_SetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 
@@ -75,7 +80,7 @@ void pwrOff()
 
   while (1) {
     wdt_reset();
-#if defined(PWR_PRESS_BUTTON)
+#if defined(PWR_BUTTON_PRESS)
     // X9E/X7 needs watchdog reset because CPU is still running while
     // the power key is held pressed by the user.
     // The power key should be released by now, but we must make sure
@@ -98,4 +103,18 @@ void pwrOff()
 uint32_t pwrPressed()
 {
   return GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
+}
+
+void pwrResetHandler()
+{
+  RCC->AHB1ENR |= RCC_AHB1ENR_GPIOEEN;
+
+  // these two NOPs are needed (see STM32F errata sheet) before the peripheral
+  // register can be written after the peripheral clock was enabled
+  __ASM volatile ("nop");
+  __ASM volatile ("nop");
+
+  if (WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    pwrOn();
+  }
 }

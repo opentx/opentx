@@ -127,7 +127,8 @@ void Key::input(bool val)
       if ((m_cnt & (m_state-1)) == 0) {
         // this produces repeat events that at first repeat slowly and then increase in speed
         // TRACE("key %d REPEAT", key());
-        putEvent(EVT_KEY_REPT(key()));
+        if (!IS_SHIFT_KEY(key()))
+          putEvent(EVT_KEY_REPT(key()));
       }
       break;
 
@@ -237,5 +238,3 @@ void clearKeyEvents()
   putEvent(0);
 }
 #endif   // #if defined(CPUARM)
-
-

@@ -458,28 +458,31 @@
 #endif
 
 #if defined(PCBX12S)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0""\310JSx""\310JSy"
-  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
+  #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\313L1\0""\313L2\0""\311LS\0""\311RS\0""\310JSx""\310JSy"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
 #elif defined(PCBX10)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\3106P\0""\310S2\0""\311LS\0""\311RS\0""None""None""\310EX1""\310EX2"
-  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
+  #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\311LS\0""\311RS\0""None""None""\310EX1""\310EX2"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
 #elif defined(PCBX9E)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\310S4\0""\311LS\0""\311RS\0""\311LS2""\311RS2"
-  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
+  #define TR_POTS_VSRCRAW              "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
+#elif defined(PCBXLITE)
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0"
 #elif defined(PCBX7)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0"
-  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SF\0""\312SH\0"
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SF\0""\312SH\0"
 #elif defined(PCBTARANIS)
-  #define TR_POTS_VSRCRAW      "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
-  #define TR_SW_VSRCRAW        "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
 #elif defined(PCBSKY9X)
-  #define TR_POTS_VSRCRAW      "POT1""POT2""POT3"
-  #define TR_SW_VSRCRAW        "3POS" "THR\0""RUD\0""ELE\0""AIL\0""GEA\0""TRN\0"
-  #define TR_9X_3POS_SWITCHES  "ID0""ID1""ID2"
+  #define TR_POTS_VSRCRAW              "P1\0 ""P2\0 ""P3\0 "
+  #define TR_SW_VSRCRAW                "3POS" "THR\0""RUD\0""ELE\0""AIL\0""GEA\0""TRN\0"
+  #define TR_9X_3POS_SWITCHES          "ID0""ID1""ID2"
 #else
-  #define TR_POTS_VSRCRAW      "POT1""POT2""POT3"
-  #define TR_SW_VSRCRAW        "3POS"
-  #define TR_9X_3POS_SWITCHES  "ID0""ID1""ID2"
+  #define TR_POTS_VSRCRAW              "P1\0 ""P2\0 ""P3\0 "
+  #define TR_SW_VSRCRAW                "3POS"
+  #define TR_9X_3POS_SWITCHES          "ID0""ID1""ID2"
 #endif
 
 #if defined(CPUARM)
@@ -490,8 +493,6 @@
 
 #if defined(PCBHORUS)
   #define TR_TRIMS_SWITCHES    "\313Sl""\313Sp""\313Vd""\313Vn""\313Pd""\313Pn""\313Kl""\313Kp""\3135d""\3135n""\3136d""\3136n"
-#elif defined(PCBXLITE)
-  #define TR_TRIMS_SWITCHES            "tRl""tRr""tEd""tEu"
 #else
   #define TR_TRIMS_SWITCHES    TR("tSl""tSp""tVd""tVn""tPd""tPn""tKl""tKp", "\313Sl""\313Sp""\313Vd""\313Vn""\313Pd""\313Pn""\313Kl""\313Kp")
 #endif
