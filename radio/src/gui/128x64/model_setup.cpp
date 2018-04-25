@@ -610,10 +610,16 @@ void menuModelSetup(event_t event)
             break;
           }
 
-          lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
           swarnstate_t states = g_model.switchWarningState;
           char c;
+
+          lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
+#if defined(PCBXLITE)
+          lcdDrawText(LCD_W, y, "<]", RIGHT);
+          if ((attr) && (menuHorizontalPosition >= NUM_SWITCHES)) {
+#else
           if (attr) {
+#endif
             s_editMode = 0;
             if (!READ_ONLY()) {
               switch (event) {
@@ -621,7 +627,7 @@ void menuModelSetup(event_t event)
                   break;
 
                 case EVT_KEY_LONG(KEY_ENTER):
-                  if (menuHorizontalPosition < 0) {
+                  if (menuHorizontalPosition < 0 || menuHorizontalPosition >= NUM_SWITCHES) {
                     START_NO_HIGHLIGHT();
                     getMovedSwitch();
                     g_model.switchWarningState = switches_states;
@@ -653,7 +659,7 @@ void menuModelSetup(event_t event)
             }
             states >>= 2;
           }
-          if (attr && menuHorizontalPosition < 0) {
+          if (attr && ((menuHorizontalPosition < 0) || menuHorizontalPosition >= NUM_SWITCHES)) {
             lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+4)/5));
           }
 #else
@@ -1622,6 +1628,6 @@ void menuModelFailsafe(event_t event)
   if (menuVerticalPosition >= NUM_CHANNELS(g_moduleIdx)) {
     // Outputs => Failsafe
     lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
-  }  
+  }
 }
 #endif
