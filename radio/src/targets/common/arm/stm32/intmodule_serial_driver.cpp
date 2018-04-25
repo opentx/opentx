@@ -86,7 +86,7 @@ void intmodulePxxStart()
   // UART config
   USART_DeInit(INTMODULE_USART);
   USART_InitTypeDef USART_InitStructure;
-  USART_InitStructure.USART_BaudRate = 115200;
+  USART_InitStructure.USART_BaudRate = INTMODULE_USART_PXX_BAUDRATE;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -98,8 +98,8 @@ void intmodulePxxStart()
   // Timer
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  INTMODULE_TIMER->ARR = 18000; // 9mS
-  INTMODULE_TIMER->CCR2 = 15000; // Update time
+  INTMODULE_TIMER->ARR = 2000 * MODULES_TIMER_PXX_PERIOD;
+  INTMODULE_TIMER->CCR2 = (2000 * MODULES_TIMER_PXX_PERIOD) - 2000; // Update time
   INTMODULE_TIMER->CCER = TIM_CCER_CC3E;
   INTMODULE_TIMER->CCMR2 = 0;
   INTMODULE_TIMER->EGR = 1; // Restart

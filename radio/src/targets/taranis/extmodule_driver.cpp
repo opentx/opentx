@@ -138,7 +138,7 @@ void extmodulePxxStart()
   // UART config
   USART_DeInit(EXTMODULE_USART);
   USART_InitTypeDef USART_InitStructure;
-  USART_InitStructure.USART_BaudRate = 115200;
+  USART_InitStructure.USART_BaudRate = EXTMODULE_USART_PXX_BAUDRATE;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -150,8 +150,8 @@ void extmodulePxxStart()
   // Timer
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  EXTMODULE_TIMER->ARR = 18000; // 9mS
-  EXTMODULE_TIMER->CCR2 = 16000; // Update time
+  EXTMODULE_TIMER->ARR = 2000 * MODULES_TIMER_PXX_PERIOD;
+  EXTMODULE_TIMER->CCR2 = (2000 * MODULES_TIMER_PXX_PERIOD) - 2000; // Update time
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt

@@ -44,6 +44,16 @@ template<class T> struct PpmPulsesData {
   T * ptr;
 };
 
+#if defined(PXX_FREQUENCY_HIGH)
+#define EXTMODULE_USART_PXX_BAUDRATE  420000
+#define INTMODULE_USART_PXX_BAUDRATE  450000
+#define MODULES_TIMER_PXX_PERIOD      4 // 4ms
+#else
+#define EXTMODULE_USART_PXX_BAUDRATE  115200
+#define INTMODULE_USART_PXX_BAUDRATE  115200
+#define MODULES_TIMER_PXX_PERIOD      9 // 9ms
+#endif
+
 #if defined(PPM_PIN_SERIAL)
 PACK(struct PxxSerialPulsesData {
   uint8_t  pulses[64];
