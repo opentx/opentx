@@ -1615,7 +1615,7 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="248"/>
         <source>CFN</source>
-        <translation></translation>
+        <translation>FPN</translation>
     </message>
 </context>
 <context>
