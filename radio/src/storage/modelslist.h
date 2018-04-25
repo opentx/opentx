@@ -116,8 +116,6 @@ public:
     return modelsCount;
   }
   
-  //void checkRfData();
-  
   bool readNextLine(char * line, int maxlen);
 
   ModelsCategory * createCategory();
@@ -127,6 +125,9 @@ public:
   void removeModel(ModelsCategory * category, ModelCell * model);
   void moveModel(ModelsCategory * category, ModelCell * model, int8_t step);
   void moveModel(ModelCell * model, ModelsCategory * previous_category, ModelsCategory * new_category);
+
+  bool isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_buf_len);
+  uint8_t findNextUnusedModelId(uint8_t moduleIdx);
 
 protected:
   FIL file;
