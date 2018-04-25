@@ -616,7 +616,8 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
 #if defined(PCBXLITE)
           lcdDrawText(LCD_W, y, "<]", RIGHT);
-          if ((attr) && (menuHorizontalPosition >= NUM_SWITCHES)) {
+          if (menuHorizontalPosition > NUM_SWITCHES) menuHorizontalPosition = NUM_SWITCHES;
+          if ((attr) && (menuHorizontalPosition == NUM_SWITCHES)) {
 #else
           if (attr) {
 #endif
