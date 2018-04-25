@@ -54,15 +54,15 @@ public:
   void save(FIL* file);
 
   void setModelName(char* name);
+  void setRfData(ModelData* model);
 
+  void setModelId(uint8_t moduleIdx, uint8_t id);
+  void setRfModuleData(uint8_t moduleIdx, ModuleData* modData);
+
+  bool  fetchRfData();
   void  loadBitmap();
   const BitmapBuffer * getBuffer();
   void  resetBuffer();
-
-  bool fetchRfData();
-
-  void setRfData(ModelData* model);
-  void setRfModuleData(uint8_t moduleIdx, ModuleData* modData);
 };
 
 class ModelsCategory: public std::list<ModelCell *>
@@ -128,6 +128,8 @@ public:
 
   bool isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_buf_len);
   uint8_t findNextUnusedModelId(uint8_t moduleIdx);
+
+  void onNewModelCreated(ModelCell* cell, ModelData* model);
 
 protected:
   FIL file;

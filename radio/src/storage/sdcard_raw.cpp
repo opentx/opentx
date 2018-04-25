@@ -66,10 +66,6 @@ const char * writeModel()
 {
   char path[256];
   getModelPath(path, g_eeGeneral.currModelFilename);
-
-  if (modelslist.getCurrentModel())
-    modelslist.getCurrentModel()->setRfData(&g_model);
-
   return writeFile(path, (uint8_t *)&g_model, sizeof(g_model));
 }
 

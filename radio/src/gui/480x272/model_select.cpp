@@ -244,6 +244,8 @@ void onModelSelectMenu(const char * result)
     selectMode = MODE_SELECT_MODEL;
     setCurrentModel(currentCategory->size() - 1);
     modelslist.setCurrentModel(currentModel);
+    modelslist.onNewModelCreated(currentModel, &g_model);
+E);
 #if defined(LUA)
     chainMenu(menuModelWizard);
 #endif

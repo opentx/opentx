@@ -49,6 +49,11 @@ void ModelCell::setModelName(char* name)
   resetBuffer();
 }
 
+void ModelCell::setModelId(uint8_t moduleIdx, uint8_t id)
+{
+  modelId[moduleIdx] = id;
+}
+
 void ModelCell::resetBuffer()
 {
   if (buffer) {
@@ -547,4 +552,14 @@ uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
 
   // failed finding something...
   return 0;
+}
+
+void ModelsList::onNewModelCreated(ModelCell* cell, ModelData* model)
+{
+  cell->setModelName(model->header.modelName);
+  cell->setRfData(model);
+
+  uint8_t new_id = findNextUnusedModelId(INTERNAL_MODULE);
+  model->header.modelId[INTERNAL_MODULE] = new_id;
+  cell->setModelId(INTERNAL_MODULE, new_id);
 }
