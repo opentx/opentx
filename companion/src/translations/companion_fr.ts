@@ -1508,7 +1508,7 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="96"/>
         <source>SetFailsafe Ext. Module</source>
-        <translation>Définir. failsafe module externe</translation>
+        <translation>Définir failsafe module externe</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="98"/>
