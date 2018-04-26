@@ -252,12 +252,6 @@ void menuModelSelect(event_t event)
         }
 #endif
       }
-      else if (eeModelExists(sub)) {
-        killEvents(event);
-        s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
-        s_copyTgtOfs = 0;
-        s_copySrcRow = -1;
-      }
       break;
 
 #if defined(PCBX7)

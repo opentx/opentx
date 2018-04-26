@@ -185,12 +185,6 @@ void menuModelSelect(event_t event)
           }
           POPUP_MENU_START(onModelSelectMenu);
         }
-        else if (eeModelExists(sub)) {
-          killEvents(event);
-          s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
-          s_copyTgtOfs = 0;
-          s_copySrcRow = -1;
-        }
         break;
 
       case EVT_KEY_BREAK(KEY_PAGE):
