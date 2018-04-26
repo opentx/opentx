@@ -91,11 +91,11 @@ local function navigate(event, fieldMax, prevPage, nextPage)
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK or event==EVT_SHIFT_BREAK then
+    if event == EVT_PAGE_BREAK or event==EVT_RIGHT_BREAK then
       page = nextPage
       field = 0
       dirty = true
-    elseif event == EVT_PAGE_LONG or event==EVT_SHIFT_LONG then
+    elseif event == EVT_PAGE_LONG or event==EVT_LEFT_BREAK then
       page = prevPage
       field = 0
       killEvents(event);
