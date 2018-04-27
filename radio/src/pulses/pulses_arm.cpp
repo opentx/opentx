@@ -168,7 +168,7 @@ void setupPulses(uint8_t port)
   switch (required_protocol) {
     case PROTO_PXX:
       setupPulsesPXX(port);
-      scheduleNextMixerCalculation(port, 9);
+      scheduleNextMixerCalculation(port, MODULES_TIMER_PXX_PERIOD);
       break;
     case PROTO_SBUS:
       setupPulsesSbus(port);
