@@ -163,7 +163,6 @@ void pxxPutPcmBit(uint8_t port, uint8_t bit)
     pxxPutPcmPart(port, 0);
     modulePulsesData[port].pxx.pcmOnesCount = 0;
   }
-
 }
 
 void pxxPutPcmByte(uint8_t port, uint8_t byte)
