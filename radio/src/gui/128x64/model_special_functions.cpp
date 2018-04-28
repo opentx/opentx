@@ -146,7 +146,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
   int8_t sub = menuVerticalPosition - HEADER_LINE;
 #if defined(PCBXLITE)
   if(menuHorizontalPosition > 4) menuHorizontalPosition = 4;
-#endif  
+#endif
 
 #if defined(CPUARM)
   uint8_t eeFlags = (functions == g_model.customFn) ? EE_MODEL : EE_GENERAL;
@@ -154,6 +154,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
   uint8_t eeFlags = EE_MODEL;
 #endif
 
+#if defined(PCBTARANIS)
 #if defined(PCBXLITE)
   if (menuHorizontalPosition==0 && event==EVT_KEY_LONG(KEY_LEFT) && !READ_ONLY()) {
 #else
@@ -177,7 +178,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     }
     POPUP_MENU_START(onCustomFunctionsMenu);
   }
-
+#endif
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
@@ -186,7 +187,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     CustomFunctionData * cfn = &functions[k];
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
-      uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
+      uint8_t attr = (sub==k && ((menuHorizontalPosition==j) || (menuHorizontalPosition>0 && !CFN_SWITCH(cfn))) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && (s_editMode>0 || p1valdiff));
       switch (j) {
         case 0:
