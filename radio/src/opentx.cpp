@@ -1316,7 +1316,7 @@ uint8_t checkTrim(event_t event)
   if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
 #endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
-    uint8_t idx = CONVERT_MODE((uint8_t)k/2);
+    uint8_t idx = CONVERT_MODE_TRIMS((uint8_t)k/2);
     uint8_t phase;
     int before;
     bool thro;
