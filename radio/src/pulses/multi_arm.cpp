@@ -24,15 +24,12 @@
 // see https://github.com/pascallanger/DIY-Multiprotocol-TX-Module
 // file Multiprotocol/multiprotocol.h
 
-
-
 #define MULTI_SEND_BIND                     (1 << 7)
 #define MULTI_SEND_RANGECHECK               (1 << 5)
 #define MULTI_SEND_AUTOBIND                 (1 << 6)
 
-
-#define MULTI_CHANS           16
-#define MULTI_CHAN_BITS       11
+#define MULTI_CHANS                         16
+#define MULTI_CHAN_BITS                     11
 
 static void sendFrameProtocolHeader(uint8_t port, bool failsafe);
 
@@ -68,7 +65,6 @@ static void sendFailsafeChannels(uint8_t port)
     if (g_model.moduleData[port].failsafeMode == FAILSAFE_NOPULSES)
       failsafeValue = FAILSAFE_CHANNEL_NOPULSE;
 
-
     if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
       pulseValue = 0;
     }
@@ -87,13 +83,13 @@ static void sendFailsafeChannels(uint8_t port)
       bits >>= 8;
       bitsavailable -= 8;
     }
-
   }
 }
 
 void setupPulsesMultimodule(uint8_t port)
 {
-  static int counter=0;
+  static int counter = 0;
+
 #if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
