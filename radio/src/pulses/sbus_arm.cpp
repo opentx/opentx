@@ -115,7 +115,7 @@ void setupPulsesSbus(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = (g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = SBUS_PERIOD_HALF_US;
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
 #endif
 

@@ -182,7 +182,7 @@ void pxxInitPcmArray(uint8_t port)
 #if defined(PPM_PIN_SERIAL)
   modulePulsesData[port].pxx.pcmValue = 0;
 #else
-  modulePulsesData[port].pxx.rest = 18000;
+  modulePulsesData[port].pxx.rest = PXX_PERIOD_HALF_US;
 #endif
 
   modulePulsesData[port].pxx.pcmOnesCount = 0;

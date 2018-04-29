@@ -262,7 +262,7 @@ void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
 void init_pxx(uint32_t port);
 void disable_pxx(uint32_t port);
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period);
+void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint32_t port);
 
 // SD driver

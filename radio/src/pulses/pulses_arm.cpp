@@ -168,7 +168,7 @@ void setupPulses(uint8_t port)
   switch (required_protocol) {
     case PROTO_PXX:
       setupPulsesPXX(port);
-      scheduleNextMixerCalculation(port, MODULES_TIMER_PXX_PERIOD);
+      scheduleNextMixerCalculation(port, PXX_PERIOD);
       break;
     case PROTO_SBUS:
       setupPulsesSbus(port);
@@ -236,7 +236,7 @@ void setupPulses(uint8_t port)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
-        init_serial(port, DSM2_BAUDRATE, DSM2_PERIOD);
+        init_serial(port, DSM2_BAUDRATE, DSM2_PERIOD_HALF_US);
         break;
 #endif
 
@@ -248,12 +248,12 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
-        init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD);
+        init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD_HALF_US);
         break;
 #endif
 
       case PROTO_SBUS:
-        init_serial(port, SBUS_BAUDRATE, SBUS_PERIOD);
+        init_serial(port, SBUS_BAUDRATE, SBUS_PERIOD_HALF_US);
         break;
 
       case PROTO_PPM:

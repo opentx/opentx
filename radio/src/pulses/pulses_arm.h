@@ -47,12 +47,14 @@ template<class T> struct PpmPulsesData {
 #if defined(PXX_FREQUENCY_HIGH)
 #define EXTMODULE_USART_PXX_BAUDRATE  420000
 #define INTMODULE_USART_PXX_BAUDRATE  450000
-#define MODULES_TIMER_PXX_PERIOD      4 // 4ms
+#define PXX_PERIOD                    4/*ms*/
 #else
 #define EXTMODULE_USART_PXX_BAUDRATE  115200
 #define INTMODULE_USART_PXX_BAUDRATE  115200
-#define MODULES_TIMER_PXX_PERIOD      9 // 9ms
+#define PXX_PERIOD                    9/*ms*/
 #endif
+
+#define PXX_PERIOD_HALF_US            (PXX_PERIOD * 2000)
 
 #if defined(PPM_PIN_SERIAL)
 // TODO use this on X-Lite
@@ -94,12 +96,13 @@ PACK(struct PxxUartPulsesData {
 });
 #endif
 
-#define DSM2_BAUDRATE        125000
-#define DSM2_PERIOD          44000 /*half us*/
-#define SBUS_BAUDRATE        100000
-#define SBUS_PERIOD          ((g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200) /*half us*/
-#define MULTIMODULE_BAUDRATE 100000
-#define MULTIMODULE_PERIOD   14000 /*half us*/
+#define DSM2_BAUDRATE                125000
+#define DSM2_PERIOD_HALF_US          44000 /*half us*/
+#define SBUS_BAUDRATE                100000
+#define SBUS_PERIOD_HALF_US          ((g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200) /*half us*/
+#define MULTIMODULE_BAUDRATE         100000
+#define MULTIMODULE_PERIOD_HALF_US   14000 /*half us*/
+
 #if !defined(EXTMODULE_USART) || !defined(EXTMODULE_USART)
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */

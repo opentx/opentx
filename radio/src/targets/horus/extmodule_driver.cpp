@@ -162,7 +162,7 @@ void extmodulePxxStart()
 }
 
 #if defined(DSM2)
-void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period)
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
 {
   EXTERNAL_MODULE_ON();
 
@@ -178,7 +178,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period)
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = period;
+  EXTMODULE_TIMER->ARR = period_half_us;
   
 #if defined(PCBX10) || PCBREV >= 13
   EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3P;

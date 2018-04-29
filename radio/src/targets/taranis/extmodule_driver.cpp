@@ -106,7 +106,7 @@ void extmodulePpmStart()
 }
 
 #if defined(EXTMODULE_USART)
-void extmodulePulsesStart(uint32_t baudrate, uint32_t period)
+void extmodulePulsesStart(uint32_t baudrate, uint32_t period_half_us)
 {
   EXTERNAL_MODULE_ON();
 
@@ -150,8 +150,8 @@ void extmodulePulsesStart(uint32_t baudrate, uint32_t period)
   // Timer
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  EXTMODULE_TIMER->ARR = period;
-  EXTMODULE_TIMER->CCR2 = period - 2000; // Update time
+  EXTMODULE_TIMER->ARR = period_half_us;
+  EXTMODULE_TIMER->CCR2 = period_half_us - 2000; // Update time
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
@@ -161,7 +161,7 @@ void extmodulePulsesStart(uint32_t baudrate, uint32_t period)
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 #else
-void extmodulePulsesStart(uint32_t /*baudrate*/, uint32_t period)
+void extmodulePulsesStart(uint32_t /*baudrate*/, uint32_t period_half_us
 {
   EXTERNAL_MODULE_ON();
 
@@ -198,12 +198,12 @@ void extmodulePulsesStart(uint32_t /*baudrate*/, uint32_t period)
 
 void extmodulePxxStart()
 {
-  extmodulePulsesStart(EXTMODULE_USART_PXX_BAUDRATE, MODULES_TIMER_PXX_PERIOD);
+  extmodulePulsesStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
 }
 
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period)
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us)
 {
-  extmodulePulsesStart(baudrate, period);
+  extmodulePulsesStart(baudrate, period_half_us);
 }
 
 void extmoduleCrossfireStart()
