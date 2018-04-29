@@ -195,7 +195,7 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 #else
-void extmoduleSerialStart(uint32_t baudrate*/, uint32_t period_half_us)
+void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
 {
   extmoduleInvertedSerialStart(baudrate, period_half_us);
 }
