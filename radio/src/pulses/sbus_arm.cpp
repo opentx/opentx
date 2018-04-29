@@ -27,7 +27,7 @@
 /* The protocol reuse some the DSM2 definitions where they are identical */
 
 
-#if defined(PPM_PIN_SERIAL)
+#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
 void sendByteSbus(uint8_t b)
 {
   uint8_t parity = 1;
@@ -110,7 +110,7 @@ inline int  getChannelValue(uint8_t port, int channel) {
 
 void setupPulsesSbus(uint8_t port)
 {
-#if defined(PPM_PIN_SERIAL)
+#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else

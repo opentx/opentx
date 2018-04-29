@@ -106,6 +106,8 @@ void uartPutPcmCrc(uint8_t port)
 }
 #endif
 
+#if !defined(INTMODULE_USART) && !defined(EXTMODULE_USART)
+
 #if defined(PPM_PIN_SERIAL)
 void pxxPutPcmSerialBit(uint8_t port, uint8_t bit)
 {
@@ -211,6 +213,15 @@ void pxxPutPcmCrc(uint8_t port)
   pxxPutPcmByte(port, pulseValue >> 8);
   pxxPutPcmByte(port, pulseValue);
 }
+#else
+  // those functions should not be used, a link error will occur if wrong
+  void pxxInitPcmArray(uint8_t port);
+  void pxxInitPcmCrc(uint8_t port);
+  void pxxPutPcmByte(uint8_t port, uint8_t byte);
+  void pxxPutPcmHead(uint8_t port);
+  void pxxPutPcmTail(uint8_t port);
+  void pxxPutPcmCrc(uint8_t port);
+#endif
 
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
 inline void initPcmArray(uint8_t port)
