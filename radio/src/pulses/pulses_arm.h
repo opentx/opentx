@@ -57,7 +57,6 @@ template<class T> struct PpmPulsesData {
 #define PXX_PERIOD_HALF_US            (PXX_PERIOD * 2000)
 
 #if defined(PPM_PIN_SERIAL)
-// TODO use this on X-Lite
 PACK(struct PxxSerialPulsesData {
   uint8_t  pulses[64];
   uint8_t  * ptr;
