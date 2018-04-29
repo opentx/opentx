@@ -70,7 +70,7 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
 }
 #endif // CPUARM && SDCARD
 
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
 
 void onAdjustGvarSourceLongEnterPress(const char * result)
 {
@@ -151,8 +151,14 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
   uint8_t eeFlags = EE_MODEL;
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
+#if defined(PCBXLITE)
+  if (menuHorizontalPosition==0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+    killEvents(KEY_ENTER);
+    if (IS_SHIFT_PRESSED()) {
+#else
   if (menuHorizontalPosition<0 && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
+#endif
     killEvents(event);
     CustomFunctionData *cfn = &functions[sub];
     if (!CFN_EMPTY(cfn))
@@ -171,6 +177,9 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     }
     POPUP_MENU_START(onCustomFunctionsMenu);
   }
+#if defined(PCBXLITE)
+  }
+#endif
 #endif // PCBX7
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {

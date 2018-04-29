@@ -438,7 +438,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 
 #if defined(PCBXLITE)
   if (i_flags & INCDEC_SOURCE) {
-    if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    if (event == EVT_KEY_LONG(KEY_ENTER) && !IS_SHIFT_PRESSED()) {
       killEvents(event);
       checkIncDecSelection = MIXSRC_NONE;
 
@@ -487,7 +487,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
     }
   }
   else if (i_flags & INCDEC_SWITCH) {
-    if (event == EVT_KEY_LONG(KEY_ENTER)) {
+    if (event == EVT_KEY_LONG(KEY_ENTER) && !IS_SHIFT_PRESSED()) {
       killEvents(event);
       checkIncDecSelection = SWSRC_NONE;
       if (i_min <= SWSRC_FIRST_SWITCH && i_max >= SWSRC_LAST_SWITCH)       POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
@@ -896,7 +896,12 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   menuHorizontalPosition = l_posHorz;
 }
 #else
+#if defined(PCBXLITE)
+#define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
+#else
 #define MAXCOL(row)                    (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#endif
 #define POS_HORZ_INIT(posVert)         0
 
 void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow)
