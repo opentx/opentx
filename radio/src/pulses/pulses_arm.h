@@ -67,13 +67,21 @@ PACK(struct PxxSerialPulsesData {
 });
 #endif
 
-#if defined(EXTMODULE_USART)
+#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
 PACK(struct Dsm2SerialPulsesData {
   uint8_t  pulses[64];
   uint8_t * ptr;
   uint8_t  serialByte ;
   uint8_t  serialBitCount;
   uint16_t _alignment;
+});
+#else
+#define MAX_PULSES_TRANSITIONS 300
+PACK(struct Dsm2TimerPulsesData {
+  pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
+  pulse_duration_t * ptr;
+  uint16_t rest;
+  uint8_t index;
 });
 #endif
 
@@ -88,7 +96,6 @@ PACK(struct PxxUartPulsesData {
 
 #define MULTIMODULE_BAUDRATE 100000
 #if !defined(EXTMODULE_USART) || !defined(EXTMODULE_USART)
-
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
 /* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
@@ -106,15 +113,6 @@ PACK(struct PxxTimerPulsesData {
   uint16_t pcmCrc;
   uint32_t pcmOnesCount;
 });
-
-#define MAX_PULSES_TRANSITIONS 300
-
-PACK(struct Dsm2TimerPulsesData {
-  pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
-  pulse_duration_t * ptr;
-  uint16_t rest;
-  uint8_t index;
-});
 #endif
 
 #define CROSSFIRE_FRAME_MAXLEN         64
@@ -127,14 +125,13 @@ union ModulePulsesData {
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   PxxUartPulsesData pxx_uart;
 #endif
-#if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
-  PxxTimerPulsesData pxx;
-#endif
 #if defined(PPM_PIN_SERIAL)
   PxxSerialPulsesData pxx;
+#elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
+  PxxTimerPulsesData pxx;
 #endif
 
-#if defined(EXTMODULE_USART)
+#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
   Dsm2SerialPulsesData dsm2;
 #else
   Dsm2TimerPulsesData dsm2;
