@@ -1154,7 +1154,13 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
         break;
       }
 #else
+#if defined(PCBXLITE)
+      if (l_posHorz > 0) {
+        l_posHorz--;
+      }
+#else
       DEC(l_posHorz, 0, maxcol);
+#endif
       break;
 #endif
 
