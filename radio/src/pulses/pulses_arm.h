@@ -94,7 +94,12 @@ PACK(struct PxxUartPulsesData {
 });
 #endif
 
+#define DSM2_BAUDRATE        125000
+#define DSM2_PERIOD          44000 /*half us*/
+#define SBUS_BAUDRATE        100000
+#define SBUS_PERIOD          ((g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200) /*half us*/
 #define MULTIMODULE_BAUDRATE 100000
+#define MULTIMODULE_PERIOD   14000 /*half us*/
 #if !defined(EXTMODULE_USART) || !defined(EXTMODULE_USART)
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */

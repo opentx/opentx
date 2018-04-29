@@ -136,7 +136,7 @@ void setupPulses(uint8_t port)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
-        disable_dsm2(port);
+        disable_serial(port);
         break;
 #endif
 
@@ -150,7 +150,7 @@ void setupPulses(uint8_t port)
       case PROTO_MULTIMODULE:
 #endif
       case PROTO_SBUS:
-        disable_sbusOut(port);
+        disable_serial(port);
         break;
 
       case PROTO_PPM:
@@ -236,7 +236,7 @@ void setupPulses(uint8_t port)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
-        init_dsm2(port);
+        init_serial(port, DSM2_BAUDRATE, DSM2_PERIOD);
         break;
 #endif
 
@@ -248,11 +248,13 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
-#endif
-      case PROTO_SBUS:
-        init_sbusOut(port);
+        init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD);
         break;
+#endif
 
+      case PROTO_SBUS:
+        init_serial(port, SBUS_BAUDRATE, SBUS_PERIOD);
+        break;
 
       case PROTO_PPM:
         init_ppm(port);

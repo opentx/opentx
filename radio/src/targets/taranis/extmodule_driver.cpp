@@ -106,7 +106,7 @@ void extmodulePpmStart()
 }
 
 #if defined(EXTMODULE_USART)
-void extmodulePulsesStart(uint32_t baudrate, uint8_t period)
+void extmodulePulsesStart(uint32_t baudrate, uint32_t period)
 {
   EXTERNAL_MODULE_ON();
 
@@ -150,8 +150,8 @@ void extmodulePulsesStart(uint32_t baudrate, uint8_t period)
   // Timer
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  EXTMODULE_TIMER->ARR = 2000 * period;
-  EXTMODULE_TIMER->CCR2 = (2000 * period) - 2000; // Update time
+  EXTMODULE_TIMER->ARR = period;
+  EXTMODULE_TIMER->CCR2 = period - 2000; // Update time
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
@@ -161,7 +161,7 @@ void extmodulePulsesStart(uint32_t baudrate, uint8_t period)
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 #else
-void extmodulePulsesStart(uint32_t /*baudrate*/, uint8_t period)
+void extmodulePulsesStart(uint32_t /*baudrate*/, uint32_t period)
 {
   EXTERNAL_MODULE_ON();
 
@@ -177,7 +177,7 @@ void extmodulePulsesStart(uint32_t /*baudrate*/, uint8_t period)
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = 18000;
+  EXTMODULE_TIMER->ARR = period;
   EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY; // polarity, default low
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 18;
@@ -201,9 +201,9 @@ void extmodulePxxStart()
   extmodulePulsesStart(EXTMODULE_USART_PXX_BAUDRATE, MODULES_TIMER_PXX_PERIOD);
 }
 
-void extmoduleDsm2Start()
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period)
 {
-  extmodulePulsesStart(EXTMODULE_USART_PXX_BAUDRATE, 22/*ms*/);
+  extmodulePulsesStart(baudrate, period);
 }
 
 void extmoduleCrossfireStart()

@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 
-#define BITLEN_SBUS          (10*2) //100000 Baud => 10uS per bit
+#define BITLEN_SBUS          (10*2) // 100000 Baud => 10uS per bit
 
 
 /* The protocol reuse some the DSM2 definitions where they are identical */
@@ -100,26 +100,26 @@ void sendByteSbus(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
 
 #define SBUS_CHAN_CENTER            992
 
-inline int  getChannelValue(uint8_t port, int channel) {
+inline int getChannelValue(uint8_t port, int channel)
+{
   int ch = g_model.moduleData[port].channelsStart+channel;
   // We will ignore 17 and 18th if that brings us over the limit
   if (ch > 31)
     return 0;
-  return channelOutputs[ch] + 2*PPM_CH_CENTER(ch) - 2*PPM_CENTER;
+  return channelOutputs[ch] + 2 * PPM_CH_CENTER(ch) - 2*PPM_CENTER;
 }
 
 void setupPulsesSbus(uint8_t port)
 {
 #if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest =  (g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225)*200 ;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = (g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200;
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
-
 
   // Sync Byte
   sendByteSbus(SBUS_FRAME_BEGIN_BYTE);
@@ -140,7 +140,8 @@ void setupPulsesSbus(uint8_t port)
       bitsavailable -= 8;
     }
   }
-  // Flags
+
+  // flags
   uint8_t flags=0;
   if (getChannelValue(port, 16) > 0)
     flags |=SBUS_FLAG_CHANNEL_17;
@@ -149,7 +150,7 @@ void setupPulsesSbus(uint8_t port)
 
   sendByteSbus(flags);
 
-  // Last byte, always 0x0
+  // last byte, always 0x0
   sendByteSbus(0x0);
 
   putDsm2Flush();

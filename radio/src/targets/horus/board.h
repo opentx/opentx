@@ -196,12 +196,10 @@ void init_ppm(uint32_t module_index);
 void disable_ppm(uint32_t module_index);
 void init_pxx(uint32_t module_index);
 void disable_pxx(uint32_t module_index);
-void init_dsm2(uint32_t module_index);
-void disable_dsm2(uint32_t module_index);
+void init_serial(uint32_t module_index, uint32_t baudrate, uint32_t period);
+void disable_serial(uint32_t module_index);
 void init_crossfire(uint32_t module_index);
 void disable_crossfire(uint32_t module_index);
-void init_sbusOut(uint32_t module_index);
-void disable_sbusOut(uint32_t module_index);
 
 // Trainer driver
 void init_trainer_ppm(void);

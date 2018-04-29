@@ -222,18 +222,25 @@ void disable_pxx(uint32_t port)
   }
 }
 
-void init_dsm2(uint32_t port)
+void init_serial(uint32_t port, uint32_t baudrate, uint32_t period)
 {
   if (port == EXTERNAL_MODULE) {
-    init_main_ppm(2500 * 2, 0);
-    init_ssc(125);
+    if (baudrate == 125000) {
+      // TODO init_main_ppm could take the period as parameter?
+      init_main_ppm(2500 * 2, 0);
+      init_ssc(125);
+    }
+    else {
+      init_main_ppm(3500 * 2, 0);
+      init_ssc(100);
+    }
     }
   else {
     // TODO
   }
 }
 
-void disable_dsm2(uint32_t port)
+void disable_serial(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     disable_ssc();
@@ -242,22 +249,6 @@ void disable_dsm2(uint32_t port)
   else {
     // TODO
   }
-}
-
-void init_sbusOut(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    init_main_ppm(3500 * 2, 0);
-    init_ssc(100);
-  }
-  else {
-    // TODO
-  }
-}
-
-void disable_sbusOut(uint32_t port)
-{
-  disable_dsm2(port);
 }
 
 #if !defined(SIMU)
