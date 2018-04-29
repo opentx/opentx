@@ -106,6 +106,12 @@ elif options[optcount] == "x7":
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "xlite":
+    command_options["PCB"] = "Xlite"
+    firmware_options = options_taranisplus
+    maxsize = 65536 * 8
+    board = BOARD_TARANIS
+    board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x9d":
     command_options["PCB"] = "X9D"
     firmware_options = options_taranis
