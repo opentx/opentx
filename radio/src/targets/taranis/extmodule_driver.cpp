@@ -197,7 +197,7 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
 #else
 void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
 {
-  extmoduleInvertedSerialStart(baudrate, period_half_us);
+  extmoduleSerialStart(baudrate, period_half_us);
 }
 #endif
 
