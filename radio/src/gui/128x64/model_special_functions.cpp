@@ -103,7 +103,7 @@ void onAdjustGvarSourceLongEnterPress(const char * result)
 
 void onCustomFunctionsMenu(const char * result)
 {
-  int sub = menuVerticalPosition;
+  int sub = menuVerticalPosition - HEADER_LINE;
   CustomFunctionData * cfn;
   uint8_t eeFlags;
 
