@@ -35,7 +35,7 @@ uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 
 #define BITLEN_DSM2          (8*2) //125000 Baud => 8uS per bit
 
-#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
+#if defined(PPM_PIN_SERIAL)
 void putDsm2SerialBit(uint8_t bit)
 {
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte >>= 1;
@@ -114,7 +114,7 @@ void setupPulsesDSM2(uint8_t port)
 {
   uint8_t dsmDat[14];
 
-#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
+#if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else

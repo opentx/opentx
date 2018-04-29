@@ -27,7 +27,7 @@
 /* The protocol reuse some the DSM2 definitions where they are identical */
 
 
-#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
+#if defined(PPM_PIN_SERIAL)
 void sendByteSbus(uint8_t b)
 {
   uint8_t parity = 1;
@@ -84,8 +84,6 @@ void sendByteSbus(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
 #endif
 
 
-
-
 #define SBUS_NORMAL_CHANS           16
 #define SBUS_CHAN_BITS       11
 
@@ -111,7 +109,7 @@ inline int getChannelValue(uint8_t port, int channel)
 
 void setupPulsesSbus(uint8_t port)
 {
-#if defined(EXTMODULE_USART) || defined(PPM_PIN_SERIAL)
+#if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
 #else

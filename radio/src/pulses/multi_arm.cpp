@@ -94,7 +94,7 @@ static void sendFailsafeChannels(uint8_t port)
 void setupPulsesMultimodule(uint8_t port)
 {
   static int counter=0;
-#if defined(PPM_PIN_SERIAL) || defined(EXTMODULE_USART)
+#if defined(PPM_PIN_SERIAL)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
