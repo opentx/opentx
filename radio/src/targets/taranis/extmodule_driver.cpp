@@ -105,8 +105,42 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
+{
+  EXTERNAL_MODULE_ON();
+
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TIMER_TX_GPIO_AF);
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
+
+  EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
+  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
+  EXTMODULE_TIMER->ARR = period_half_us;
+  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY;
+  EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
+  EXTMODULE_TIMER->CCR1 = 0;
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
+  EXTMODULE_TIMER->EGR = 1; // Restart
+  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
+  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
+
+  extmoduleSendNextFrame();
+
+  NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
+  NVIC_SetPriority(EXTMODULE_TIMER_DMA_STREAM_IRQn, 7);
+  NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
+  NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
+}
+
 #if defined(EXTMODULE_USART)
-void extmodulePxxStart()
+void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
 {
   EXTERNAL_MODULE_ON();
 
@@ -138,7 +172,7 @@ void extmodulePxxStart()
   // UART config
   USART_DeInit(EXTMODULE_USART);
   USART_InitTypeDef USART_InitStructure;
-  USART_InitStructure.USART_BaudRate = EXTMODULE_USART_PXX_BAUDRATE;
+  USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -150,8 +184,8 @@ void extmodulePxxStart()
   // Timer
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  EXTMODULE_TIMER->ARR = 2000 * MODULES_TIMER_PXX_PERIOD;
-  EXTMODULE_TIMER->CCR2 = (2000 * MODULES_TIMER_PXX_PERIOD) - 2000; // Update time
+  EXTMODULE_TIMER->ARR = period_half_us;
+  EXTMODULE_TIMER->CCR2 = period_half_us - 2000; // Update time
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
@@ -159,6 +193,11 @@ void extmodulePxxStart()
 
   NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
+}
+
+void extmodulePxxStart()
+{
+  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
 }
 #else
 void extmodulePxxStart()
@@ -177,7 +216,7 @@ void extmodulePxxStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = 18000;
+  EXTMODULE_TIMER->ARR = PXX_PERIOD_HALF_US;
   EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY; // polarity, default low
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 18;
@@ -185,42 +224,6 @@ void extmodulePxxStart()
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  extmoduleSendNextFrame();
-
-  NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
-  NVIC_SetPriority(EXTMODULE_TIMER_DMA_STREAM_IRQn, 7);
-  NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
-  NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
-}
-#endif
-
-#if defined(DSM2) || defined(MULTIMODULE)
-void extmoduleDsm2Start()
-{
-  EXTERNAL_MODULE_ON();
-
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TIMER_TX_GPIO_AF);
-
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
-
-  EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  EXTMODULE_TIMER->ARR = 44000; // 22mS
-  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY;
-  EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
-  EXTMODULE_TIMER->CCR1 = 0;
-  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
-  EXTMODULE_TIMER->EGR = 1; // Restart
-  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
-  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   extmoduleSendNextFrame();
@@ -249,8 +252,8 @@ void extmoduleCrossfireStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  EXTMODULE_TIMER->ARR = (2000 * CROSSFIRE_FRAME_PERIOD);
-  EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_FRAME_PERIOD) - 1000;
+  EXTMODULE_TIMER->ARR = (2000 * CROSSFIRE_PERIOD);
+  EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_PERIOD) - 1000;
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
@@ -308,7 +311,7 @@ void extmoduleSendNextFrame()
   }
   else if (IS_DSM2_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_MULTIMODULE_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE])) {
     if (IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]))
-      EXTMODULE_TIMER->CCER = TIM_CCER_CC1NE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC1NP : 0); // reverse polarity for Sbus if needed
+      EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); // reverse polarity for Sbus if needed
     EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) - 4000; // 2mS in advance
     EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;

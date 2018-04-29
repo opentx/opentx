@@ -35,7 +35,38 @@ uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 
 #define BITLEN_DSM2          (8*2) //125000 Baud => 8uS per bit
 
-#if !defined(PPM_PIN_SERIAL)
+#if defined(PPM_PIN_SERIAL)
+void putDsm2SerialBit(uint8_t bit)
+{
+  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte >>= 1;
+  if (bit & 1) {
+    modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte |= 0x80;
+  }
+  if (++modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount >= 8) {
+    *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte;
+    modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
+  }
+}
+
+void sendByteDsm2(uint8_t b)     // max 10changes 0 10 10 10 10 1
+{
+  putDsm2SerialBit(0);           // Start bit
+  for (uint8_t i=0; i<8; i++) {  // 8 data Bits
+    putDsm2SerialBit(b & 1);
+    b >>= 1;
+  }
+
+  putDsm2SerialBit(1);           // Stop bit
+  putDsm2SerialBit(1);           // Stop bit
+}
+
+void putDsm2Flush()
+{
+  for (int i=0; i<16; i++) {
+    putDsm2SerialBit(1);         // 16 extra stop bits
+  }
+}
+#else
 void _send_1(uint8_t v)
 {
   if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
@@ -74,37 +105,6 @@ void putDsm2Flush()
   else
     *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;      
 }
-#else
-void putDsm2SerialBit(uint8_t bit)
-{
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte >>= 1;
-  if (bit & 1) {
-    modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte |= 0x80;
-  }
-  if (++modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount >= 8) {
-    *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte;
-    modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
-  }
-}
-
-void sendByteDsm2(uint8_t b)     // max 10changes 0 10 10 10 10 1
-{
-  putDsm2SerialBit(0);           // Start bit
-  for (uint8_t i=0; i<8; i++) {  // 8 data Bits
-    putDsm2SerialBit(b & 1);
-    b >>= 1;
-  }
-
-  putDsm2SerialBit(1);           // Stop bit
-  putDsm2SerialBit(1);           // Stop bit
-}
-
-void putDsm2Flush()
-{
-  for (int i=0; i<16; i++) {
-    putDsm2SerialBit(1);         // 16 extra stop bits
-  }
-}
 #endif
 
 // This is the data stream to send, prepare after 19.5 mS
@@ -119,7 +119,7 @@ void setupPulsesDSM2(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = 44000;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = DSM2_PERIOD * 2000;
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;

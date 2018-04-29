@@ -702,7 +702,7 @@ extern uint8_t flightModeTransitionLast;
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
 void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
-void scheduleNextMixerCalculation(uint8_t module, uint16_t delay);
+void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms);
 
 #if defined(CPUARM)
   void checkTrims();

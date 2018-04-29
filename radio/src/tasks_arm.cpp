@@ -192,11 +192,11 @@ void mixerTask(void * pdata)
   }
 }
 
-void scheduleNextMixerCalculation(uint8_t module, uint16_t delay)
+void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
 {
   // Schedule next mixer calculation time,
   // for now assume mixer calculation takes 2 ms.
-  nextMixerTime[module] = (uint32_t)CoGetOSTime() + (delay)/2 - 1/*2ms*/;
+  nextMixerTime[module] = (uint32_t)CoGetOSTime() + period_ms / 2 - 1/*2ms*/;
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
 }
 

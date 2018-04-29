@@ -162,7 +162,7 @@ void extmodulePxxStart()
 }
 
 #if defined(DSM2)
-void extmoduleDsm2Start()
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
 {
   EXTERNAL_MODULE_ON();
 
@@ -178,7 +178,7 @@ void extmoduleDsm2Start()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = 44000; // 22mS
+  EXTMODULE_TIMER->ARR = period_half_us;
   
 #if defined(PCBX10) || PCBREV >= 13
   EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3P;
@@ -226,8 +226,8 @@ void extmoduleCrossfireStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = (2000 * CROSSFIRE_FRAME_PERIOD);
-  EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_FRAME_PERIOD) - 1000;
+  EXTMODULE_TIMER->ARR = (2000 * CROSSFIRE_PERIOD);
+  EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_PERIOD) - 1000;
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
