@@ -170,9 +170,10 @@ void setupPulses(uint8_t port)
       setupPulsesPXX(port);
       scheduleNextMixerCalculation(port, PXX_PERIOD);
       break;
+
     case PROTO_SBUS:
       setupPulsesSbus(port);
-      scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].sbus.refreshRate)/2);
+      scheduleNextMixerCalculation(port, SBUS_PERIOD);
       break;
 
 #if defined(DSM2)
@@ -180,7 +181,7 @@ void setupPulses(uint8_t port)
     case PROTO_DSM2_DSM2:
     case PROTO_DSM2_DSMX:
       setupPulsesDSM2(port);
-      scheduleNextMixerCalculation(port, 11);
+      scheduleNextMixerCalculation(port, DSM2_PERIOD);
       break;
 #endif
 
@@ -203,14 +204,14 @@ void setupPulses(uint8_t port)
         }
         sportSendBuffer(crossfire, len);
       }
-      scheduleNextMixerCalculation(port, CROSSFIRE_FRAME_PERIOD);
+      scheduleNextMixerCalculation(port, CROSSFIRE_PERIOD);
       break;
 #endif
 
 #if defined(MULTIMODULE)
     case PROTO_MULTIMODULE:
       setupPulsesMultimodule(port);
-      scheduleNextMixerCalculation(port, 4);
+      scheduleNextMixerCalculation(port, MULTIMODULE_PERIOD);
       break;
 #endif
 
@@ -219,7 +220,7 @@ void setupPulses(uint8_t port)
     case PROTO_NONE:
 #endif
       setupPulsesPPMModule(port);
-      scheduleNextMixerCalculation(port, (45+g_model.moduleData[port].ppm.frameLength)/2);
+      scheduleNextMixerCalculation(port, PPM_PERIOD(port));
       break;
 
     default:
@@ -236,7 +237,7 @@ void setupPulses(uint8_t port)
       case PROTO_DSM2_LP45:
       case PROTO_DSM2_DSM2:
       case PROTO_DSM2_DSMX:
-        init_serial(port, DSM2_BAUDRATE, DSM2_PERIOD_HALF_US);
+        init_serial(port, DSM2_BAUDRATE, DSM2_PERIOD * 2000);
         break;
 #endif
 
@@ -248,7 +249,7 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
-        init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD_HALF_US);
+        init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000);
         break;
 #endif
 

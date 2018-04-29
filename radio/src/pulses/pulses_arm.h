@@ -96,12 +96,15 @@ PACK(struct PxxUartPulsesData {
 });
 #endif
 
+#define PPM_PERIOD_HALF_US(module)   ((g_model.moduleData[module].ppm.frameLength * 5 + 225) * 200) /*half us*/
+#define PPM_PERIOD(module)           (PPM_PERIOD_HALF_US(module) / 2000) /*ms*/
 #define DSM2_BAUDRATE                125000
-#define DSM2_PERIOD_HALF_US          44000 /*half us*/
+#define DSM2_PERIOD                  22 /*ms*/
 #define SBUS_BAUDRATE                100000
 #define SBUS_PERIOD_HALF_US          ((g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200) /*half us*/
+#define SBUS_PERIOD                  (SBUS_PERIOD_HALF_US / 2000) /*ms*/
 #define MULTIMODULE_BAUDRATE         100000
-#define MULTIMODULE_PERIOD_HALF_US   14000 /*half us*/
+#define MULTIMODULE_PERIOD           7 /*ms*/
 
 #if !defined(EXTMODULE_USART) || !defined(EXTMODULE_USART)
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */

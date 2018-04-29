@@ -119,7 +119,7 @@ void setupPulsesDSM2(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
 #else
   modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = DSM2_PERIOD_HALF_US;
+  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = DSM2_PERIOD * 2000;
 #endif
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
