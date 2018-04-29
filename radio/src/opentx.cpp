@@ -468,6 +468,10 @@ void modelDefault(uint8_t id)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
 
+#if defined(PCBXLITE)
+  g_model.trainerMode = TRAINER_MODE_MASTER_BLUETOOTH;
+#endif
+
 #if defined(CPUARM) && defined(EEPROM)
   for (int i=0; i<NUM_MODULES; i++) {
     modelHeaders[id].modelId[i] = g_model.header.modelId[i] = id+1;
