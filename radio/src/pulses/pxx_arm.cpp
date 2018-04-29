@@ -106,7 +106,7 @@ void uartPutPcmCrc(uint8_t port)
 }
 #endif
 
-#if !defined(INTMODULE_USART) && !defined(EXTMODULE_USART)
+#if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
 
 #if defined(PPM_PIN_SERIAL)
 void pxxPutPcmSerialBit(uint8_t port, uint8_t bit)
