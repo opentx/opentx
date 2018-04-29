@@ -120,15 +120,15 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
   GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
+  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
   EXTMODULE_TIMER->ARR = period_half_us;
-  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY; // polarity, default low
+  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY;
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
-  EXTMODULE_TIMER->CCR1 = 18;
+  EXTMODULE_TIMER->CCR1 = 0;
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
-  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   extmoduleSendNextFrame();
@@ -194,17 +194,46 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
   NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
-#else
-void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
-{
-  extmoduleSerialStart(baudrate, period_half_us);
-}
-#endif
 
 void extmodulePxxStart()
 {
   extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
 }
+#else
+void extmodulePxxStart()
+{
+  EXTERNAL_MODULE_ON();
+
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_TIMER_TX_GPIO_AF);
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
+
+  EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
+  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
+  EXTMODULE_TIMER->ARR = PXX_FREQUENCY_HALF_US;
+  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY; // polarity, default low
+  EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
+  EXTMODULE_TIMER->CCR1 = 18;
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
+  EXTMODULE_TIMER->EGR = 1; // Restart
+  EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
+  EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
+  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
+
+  extmoduleSendNextFrame();
+
+  NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
+  NVIC_SetPriority(EXTMODULE_TIMER_DMA_STREAM_IRQn, 7);
+  NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
+  NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
+}
+#endif
 
 void extmoduleCrossfireStart()
 {
