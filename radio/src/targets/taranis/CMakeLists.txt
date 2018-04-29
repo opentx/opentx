@@ -76,7 +76,7 @@ elseif(PCB STREQUAL X7)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL XLITE)
-  option(PXX_FREQUENCY "PXX Frequency (LOW / HIGH)" HIGH)
+  set(PXX_FREQUENCY "HIGH" CACHE STRING "PXX frequency (LOW / HIGH)")
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report

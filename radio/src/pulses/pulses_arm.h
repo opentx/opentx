@@ -55,6 +55,7 @@ template<class T> struct PpmPulsesData {
 #endif
 
 #if defined(PPM_PIN_SERIAL)
+// TODO use this on X-Lite
 PACK(struct PxxSerialPulsesData {
   uint8_t  pulses[64];
   uint8_t  * ptr;
@@ -64,7 +65,9 @@ PACK(struct PxxSerialPulsesData {
   uint16_t serialByte;
   uint16_t serialBitCount;
 });
+#endif
 
+#if defined(EXTMODULE_USART)
 PACK(struct Dsm2SerialPulsesData {
   uint8_t  pulses[64];
   uint8_t * ptr;
@@ -84,7 +87,7 @@ PACK(struct PxxUartPulsesData {
 #endif
 
 #define MULTIMODULE_BAUDRATE 100000
-#if defined(INTMODULE_PULSES) || defined(EXTMODULE_PULSES)
+#if !defined(EXTMODULE_USART) || !defined(EXTMODULE_USART)
 
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
@@ -121,17 +124,22 @@ PACK(struct CrossfirePulsesData {
 });
 
 union ModulePulsesData {
-#if defined(PPM_PIN_SERIAL)
-  PxxSerialPulsesData pxx;
-  Dsm2SerialPulsesData dsm2;
-#endif
-#if defined(INTMODULE_PULSES) || defined(EXTMODULE_PULSES)
-  PxxTimerPulsesData pxx;
-  Dsm2TimerPulsesData dsm2;
-#endif
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   PxxUartPulsesData pxx_uart;
 #endif
+#if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
+  PxxTimerPulsesData pxx;
+#endif
+#if defined(PPM_PIN_SERIAL)
+  PxxSerialPulsesData pxx;
+#endif
+
+#if defined(EXTMODULE_USART)
+  Dsm2SerialPulsesData dsm2;
+#else
+  Dsm2TimerPulsesData dsm2;
+#endif
+
   PpmPulsesData<pulse_duration_t> ppm;
   CrossfirePulsesData crossfire;
 } __ALIGNED;
