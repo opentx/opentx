@@ -85,6 +85,9 @@ enum MenuModelSetupItems {
 #if defined(CPUARM)
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
+#if defined(PCBXLITE)
+  ITEM_MODEL_EXTERNAL_MODULE_RATE,
+#endif
 #if defined(MULTIMODULE)
   ITEM_MODEL_EXTERNAL_MODULE_SUBTYPE,
   ITEM_MODEL_EXTERNAL_MODULE_STATUS,
@@ -145,6 +148,12 @@ enum MenuModelSetupItems {
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
   #define CURRENT_MODULE_EDITED(k)       (EXTERNAL_MODULE)
+#endif
+
+#if defined(PCBXLITE)
+  #define EXTERNAL_MODULE_RATE_ROWS       ((IS_MODULE_PXX(EXTERNAL_MODULE) || IS_MODULE_R9M(EXTERNAL_MODULE)) ? (uint8_t)0 : HIDDEN_ROW),   // Fast/Normal PXX RATE
+#else
+  #define EXTERNAL_MODULE_RATE_ROWS
 #endif
 
 #if defined(CPUARM)
@@ -281,6 +290,7 @@ void menuModelSetup(event_t event)
     IF_INTERNAL_MODULE_ON(0),
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
+    EXTERNAL_MODULE_RATE_ROWS
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
     MULTIMODULE_STATUS_ROWS
     EXTERNAL_MODULE_CHANNELS_ROWS,
@@ -906,6 +916,14 @@ void menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(EXTERNAL_MODULE);
               }
           }
+        }
+        break;
+#endif
+
+#if defined(PCBXLITE)
+      case ITEM_MODEL_EXTERNAL_MODULE_RATE:
+        {
+          g_model.moduleData[EXTERNAL_MODULE].pxx.fast = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_MOD_RATE, STR_MODULE_RATE, g_model.moduleData[EXTERNAL_MODULE].pxx.fast, 0, 1, attr, event);
         }
         break;
 #endif

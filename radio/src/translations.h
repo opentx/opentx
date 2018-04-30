@@ -220,7 +220,8 @@ extern const pm_char STR_OPEN9X[];
 #endif
 #if defined(CPUARM)
   #define OFS_TARANIS_PROTOCOLS        (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
-  #define OFS_R9M_MODES                (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
+  #define OFS_MODULE_RATE              (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
+  #define OFS_R9M_MODES                (OFS_MODULE_RATE + sizeof(TR_MODULE_RATE))
   #define OFS_R9M_FCC_POWER_VALUES     (OFS_R9M_MODES + sizeof(TR_R9M_MODES))
   #define OFS_R9M_LBT_POWER_VALUES     (OFS_R9M_FCC_POWER_VALUES + sizeof(TR_R9M_FCC_POWER_VALUES))
   #define OFS_TELEMETRY_PROTOCOLS      (OFS_R9M_LBT_POWER_VALUES + sizeof(TR_R9M_LBT_POWER_VALUES))
@@ -351,6 +352,7 @@ extern const pm_char STR_OPEN9X[];
 #if defined(CPUARM)
   #define STR_VTRAINERMODES     (STR_OPEN9X + OFS_VTRAINERMODES)
   #define STR_TARANIS_PROTOCOLS (STR_OPEN9X + OFS_TARANIS_PROTOCOLS)
+  #define STR_MODULE_RATE       (STR_OPEN9X + OFS_MODULE_RATE)
   #define STR_R9M_MODES         (STR_OPEN9X + OFS_R9M_MODES)
   #define STR_R9M_FCC_POWER_VALUES     (STR_OPEN9X + OFS_R9M_FCC_POWER_VALUES)
   #define STR_R9M_LBT_POWER_VALUES     (STR_OPEN9X + OFS_R9M_LBT_POWER_VALUES)
@@ -441,6 +443,7 @@ extern const pm_char STR_ELEDIRECTION[];
 extern const pm_char STR_AILDIRECTION[];
 extern const pm_char STR_COLDIRECTION[];
 extern const pm_char STR_MODE[];
+extern const pm_char STR_MOD_RATE[];
 #if defined(AUDIO) && defined(BUZZER)
 extern const pm_char STR_SPEAKER[];
 extern const pm_char STR_BUZZER[];
