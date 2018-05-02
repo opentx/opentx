@@ -1,0 +1,71 @@
+/*
+  User by Model Print and Compare
+
+  QT 5
+    1. Supports a subset of the HTML 4 and CSS 2.1 standards
+    2. Translates css to inline HTML which can lead to unexpected formatting
+
+  Reference Official QT 5 website https://doc.qt.io/qt-5/
+*/
+
+/*  overide environment defaults */
+p, table, td, th {
+  font-family: monospace;
+  font-size: 15px;
+  color: black;
+  font-style: normal;
+  font-weight: normal;
+}
+
+table {
+  border-style: solid;
+  border-color: grey;
+  border-width: 1px;
+}
+
+td, th {
+  margin: 0px;
+  padding: 1px;
+}
+
+/*  The style applied to section titles */
+.mpc-section-title {
+  color: black;
+  background-color: white;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: bold;
+}
+
+/*
+    These model compare differences style classes inherit field classes above
+
+    Notes:
+    1. The class is applied as <span class=...>some content</span>
+    2. It is strongly recommended customisation is limited to font attributes
+*/
+
+/*  model 1  */
+.mpc-diff1 {
+  color: green;
+/*
+  font-weight: bold;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+  background-color: white;
+*/
+}
+
+/*  model 2  */
+.mpc-diff2 {
+  color: red;
+/*
+  font-weight: bold;
+  font-style: normal;
+  font-weight: normal;
+  text-decoration: none;
+  background-color: white;
+*/
+}
+

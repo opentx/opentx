@@ -61,43 +61,18 @@ void MultiModelPrinter::MultiColumns::beginCompare()
   compareColumns = new QString[count];
 }
 
-void MultiModelPrinter::MultiColumns::endCompare(const QString & color)
+void MultiModelPrinter::MultiColumns::endCompare()
 {
   for (int i=0; i<count; i++) {
-    QString cellColor = color;
+    QString style = "";
     if (i==0 && count>1 && compareColumns[0]!=compareColumns[1])
-      cellColor = "green";
+      style = "mpc-diff1";
     else if (i>0 && compareColumns[i]!=compareColumns[0])
-      cellColor = "red";
-    // font instructions must be applied at table cell level if they exist in the comparison string
-    if (compareColumns[i].indexOf(QString("<td")) > -1) {
-      QString t = compareColumns[i];
-      int p1 = 0;
-      int p2 = 0;
-      int p3 = 0;
-      while (t.indexOf(QString("<td"), p1) > -1) {
-        p1 = t.indexOf(QString("<td"), p1);
-        p2 = t.indexOf(QString(">"), p1 + 3);
-        p3 = t.indexOf(QString("</td>"), p2 + 1);
-        QString td = t.mid(p2 + 1, p3 - (p2 + 1));
-        // remove existing font instructions from current cell
-        if (td.contains(QString("<font "))) {
-          int p4 = t.indexOf(QString("<font "), p2 + 1);
-          int p5 = t.indexOf(QString("</font>"), p4) + 6;
-          if (p5 < p3)
-            t.remove(p4, p5 - p4 + 1);
-        }
-        t.insert(p2 + 1, QString("<font color='%1'>").arg(cellColor));
-        p3 = t.indexOf(QString("</td>"), p2);
-        t.insert(p3, QString("</font>"));
-        p1 = p3 + QString("</font></td>").size();
-      }
-      compareColumns[i] = t;
-      columns[i].append(QString("%1").arg(compareColumns[i]));
-    }
-    else {
-      columns[i].append(QString("<font color='%1'>%2</font>").arg(cellColor).arg(compareColumns[i]));
-    }
+      style = "mpc-diff2";
+    if (style!="")
+      columns[i].append(QString("<span class='%1'>%2</span>").arg(style).arg(compareColumns[i]));
+    else
+      columns[i].append(compareColumns[i]);
   }
   delete[] compareColumns;
   compareColumns = NULL;
@@ -250,7 +225,7 @@ void MultiModelPrinter::MultiColumns::appendFieldSeparator(const bool sep)
 
 QString MultiModelPrinter::printTitle(const QString & label)
 {
-  return QString("<tr><td colspan='%1'><h2>").arg(modelPrinterMap.count()) + label + "</h2></td></tr>";
+  return QString("<tr><td class=mpc-section-title colspan='%1'>").arg(modelPrinterMap.count()) + label + "</td></tr>";
 }
 
 MultiModelPrinter::MultiModelPrinter(Firmware * firmware):
@@ -292,8 +267,10 @@ void MultiModelPrinter::clearModels()
 QString MultiModelPrinter::print(QTextDocument * document)
 {
   if (document) document->clear();
-
-  QString str = "<table border='1' cellspacing='0' cellpadding='3' width='100%' style='font-family: monospace;'>";
+  Stylesheet css(MODEL_PRINT_CSS);
+  if (css.load(Stylesheet::StyleType::STYLE_TYPE_EFFECTIVE))
+    document->setDefaultStyleSheet(css.text());
+  QString str = "<table cellspacing='0' cellpadding='3' width='100%'>";   // attributes not settable via QT stylesheet
   str.append(printSetup());
   if (firmware->getCapability(Timers)) {
     str.append(printTimers());

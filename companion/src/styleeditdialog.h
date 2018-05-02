@@ -18,43 +18,33 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _PRINTDIALOG_H_
-#define _PRINTDIALOG_H_
+#ifndef _STYLEEDITDIALOG_H_
+#define _STYLEEDITDIALOG_H_
 
+#include "helpers_html.h"
 #include <QtWidgets>
-#include "eeprominterface.h"
-#include "multimodelprinter.h"
 
 namespace Ui {
-  class PrintDialog;
+  class StyleEditDialog;
 }
 
-class PrintDialog : public QDialog
+class StyleEditDialog : public QDialog
 {
   Q_OBJECT
 
   public:
-    PrintDialog(QWidget * parent, Firmware * firmware, GeneralSettings & generalSettings, ModelData & model, const QString & filename="");
-    ~PrintDialog();
-    void closeEvent(QCloseEvent * event);
-
-    Firmware * firmware;
-    GeneralSettings & generalSettings;
-    ModelData & model;
-
-    QString printfilename;
-
-  protected:
-    Ui::PrintDialog *ui;
-    MultiModelPrinter multiModelPrinter;
-
-    void printToFile();
+    StyleEditDialog(QWidget * parent, const QString stylesheet);
+    ~StyleEditDialog();
 
   private slots:
-    void on_printButton_clicked();
-    void on_printFileButton_clicked();
-    void autoClose();
-    void on_styleButton_clicked();
+    void update();
+    void changed();
+    void resetToDefault();
+
+  private:
+    Ui::StyleEditDialog *ui;
+    Stylesheet mStylesheet;
+    bool mDirty;
 };
 
-#endif // _PRINTDIALOG_H_
+#endif // _STYLEEDITDIALOG_H_

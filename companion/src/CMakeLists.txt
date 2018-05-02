@@ -244,6 +244,7 @@ set(companion_SRCS
   radionotfound.cpp
   wizarddata.cpp
   wizarddialog.cpp
+  styleeditdialog.cpp
   )
 
 set(companion_MOC_HDRS
@@ -275,6 +276,8 @@ set(companion_MOC_HDRS
   modelprinter.h
   multimodelprinter.h
   modelslist.h
+  styleeditdialog.h
+  helpers_html.h
   )
 
 set(companion_UIS
@@ -295,6 +298,7 @@ set(companion_UIS
   flashfirmwaredialog.ui
   flasheepromdialog.ui
   radionotfound.ui
+  styleeditdialog.ui
   )
 
 if(WIN32)

@@ -43,6 +43,9 @@
        <property name="text">
         <string>To compare models, drag and drop them anywhere in this window.</string>
        </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -62,6 +65,13 @@
       <widget class="QPushButton" name="closeButton">
        <property name="text">
         <string>Close</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="styleButton">
+       <property name="text">
+        <string>Style</string>
        </property>
       </widget>
      </item>

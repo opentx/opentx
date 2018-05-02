@@ -18,7 +18,12 @@
  * GNU General Public License for more details.
  */
 
+#include "helpers.h"
 #include "helpers_html.h"
+#include <QStringList>
+#include <QDir>
+#include <QFile>
+#include <QTextStream>
 
 QString tdAlign(const QString & s, const QString & align, const QString & color, bool bold)
 {
@@ -80,3 +85,145 @@ QString doTableBlankRow()
 {
   return "<tr></tr>";
 }
+
+Stylesheet::Stylesheet(const QString & name):
+  mName(name)
+{
+  init();
+}
+
+Stylesheet::Stylesheet(const QString & name, const StyleType styleType):
+  mName(name)
+{
+  init();
+  mResult = load(styleType);
+}
+
+Stylesheet::~Stylesheet()
+{
+}
+
+void Stylesheet::init()
+{
+  mResult = false;
+  mErrormsg = "";
+  mText = "";
+  QStringList p = QStandardPaths::standardLocations(QStandardPaths::AppDataLocation);
+  mCustomPath = p[0];
+  mCustomFile = p[0] + "/" + mName;
+  mDefaultFile = THEMES_DEFAULT_PATH + mName;
+}
+
+bool Stylesheet::load(const StyleType styleType)
+{
+  mResult = false;
+  switch (styleType) {
+  case STYLE_TYPE_NONE:
+  case STYLE_TYPE_DEFAULT:
+    mResult = read(mDefaultFile);
+  case STYLE_TYPE_CUSTOM:
+    mResult = read(mCustomFile);
+  case STYLE_TYPE_EFFECTIVE:
+    mResult = read(mCustomFile);
+    if(!mResult)
+      mResult = read(mDefaultFile);
+  }
+  return mResult;
+}
+
+bool Stylesheet::read(const QString & path)
+{
+  mResult = false;
+  mText = "";
+
+  QFile file(path);
+  if (file.exists()) {
+    if (file.open(QFile::ReadOnly | QFile::Text)) {
+      QTextStream in(&file);
+      if (in.status()==QTextStream::Ok) {
+        mText = in.readAll();
+        if (in.status()==QTextStream::Ok)
+          mResult = true;
+        else
+          mText = "";
+      }
+      file.close();
+    }
+  }
+  if (mResult)
+    mErrormsg = tr("Style sheet data successfully read from '%1'").arg(QDir::toNativeSeparators(path));
+  else
+    mErrormsg = tr("Style sheet data unable to be read from '%1'").arg(QDir::toNativeSeparators(path));
+  qDebug() << mErrormsg;
+  return mResult;
+}
+
+bool Stylesheet::update()
+{
+  mResult = false;
+  mErrormsg = "";
+  QDir path(mCustomPath);
+  if (!path.exists()) {
+    QDir dir;
+    if (!dir.mkpath(mCustomPath))
+      mErrormsg = tr("Cannot create folder '%1'").arg(QDir::toNativeSeparators(mCustomPath));
+    else
+      mErrormsg = tr("Created folder '%1'").arg(QDir::toNativeSeparators(mCustomPath));
+  }
+  QFile file(mCustomFile);
+  if (!file.open(QFile::WriteOnly | QFile::Text)) {
+    mErrormsg = tr("Cannot open file for writing '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
+  }
+  else {
+    QTextStream out(&file);
+    if (out.status()==QTextStream::Ok) {
+      out << mText;
+      if (!(out.status()==QTextStream::Ok)) {
+        mErrormsg = tr("Cannot write to file '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
+        if (!file.flush()) {
+          mErrormsg = tr("Cannot flush buffer for file '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
+        }
+      }
+      else {
+        mResult = true;
+        mErrormsg = tr("Style sheet written to '%1'").arg(QDir::toNativeSeparators(mCustomFile));
+      }
+    }
+  }
+  file.close();
+  qDebug() << mErrormsg;
+  return mResult;
+}
+
+bool Stylesheet::deleteCustom()
+{
+  QFile file(mCustomFile);
+  mResult = file.remove();
+  if (mResult)
+    mErrormsg = tr("Custom style sheet successfully deleted: '%1'").arg(QDir::toNativeSeparators(mCustomFile));
+  else
+    mErrormsg = tr("Unable to delete custom style sheet: '%1'").arg(QDir::toNativeSeparators(mCustomFile));
+  qDebug() << mErrormsg;
+  return mResult;
+}
+
+QString Stylesheet::name()
+{
+  return mName;
+}
+
+QString Stylesheet::text()
+{
+  return mText;
+}
+
+void Stylesheet::setText(const QString & text)
+{
+  mText = text;
+}
+
+QString Stylesheet::errormsg()
+{
+  return mErrormsg;
+}
+
