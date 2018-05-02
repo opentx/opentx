@@ -1403,3 +1403,5 @@ Christopher Marshall
 Christopher Prinos
 AntiSocial Engineering
 Pierre Duvezin-Caubet
+Hermann Haberer
+Guy Poignonec
