@@ -1311,8 +1311,10 @@ void menuModelSetup(event_t event)
               CHECK_INCDEC_MODELVAR(event, selectedPxxPower, 0, R9M_LBT_POWER_MAX);
             }
             if (attr && editMode == 0 && selectedPxxPower != g_model.moduleData[moduleIdx].pxx.power) {
+              // TODO bellow needs to be done, calling bind after warning of some kind
+              if((selectedPxxPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
+                TRACE("Bind required");
               g_model.moduleData[moduleIdx].pxx.power = selectedPxxPower;
-              TRACE("Bind required");
             }
           }
         }
