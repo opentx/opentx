@@ -445,7 +445,8 @@ enum Analogs {
 
 #if defined(PCBXLITE)
   #define NUM_PWMANALOGS                4
-  #define ANALOGS_PWM_ENABLED()         (true)
+  extern uint8_t analogs_pwm_disabled;
+  #define ANALOGS_PWM_ENABLED()         (analogs_pwm_disabled == false)
   void analogPwmInit(void);
   void analogPwmRead(uint16_t * values);
   void analogPwmCheck();
