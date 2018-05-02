@@ -216,12 +216,12 @@ inline void SEND_FAILSAFE_1S()
 // for channels not set previously to HOLD or NOPULSE
 void setCustomFailsafe(uint8_t moduleIndex);
 
-#define LEN_R9M_MODES                  "\007"
-#define TR_R9M_MODES                   "FCC\0   ""LBT(EU)"
+#define LEN_R9M_REGION                  "\007"
+#define TR_R9M_REGION                   "FCC\0   ""LBT(EU)"
 #define LEN_R9M_FCC_POWER_VALUES       "\006"
-#define LEN_R9M_LBT_POWER_VALUES       "\006"
+#define LEN_R9M_LBT_POWER_VALUES       "\013"
 #define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
-#define TR_R9M_LBT_POWER_VALUES        "25 mW\0" "500 mW"
+#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
 
 enum R9MFCCPowerValues {
   R9M_FCC_POWER_10 = 0,
@@ -233,11 +233,13 @@ enum R9MFCCPowerValues {
 
 enum R9MLBTPowerValues {
   R9M_LBT_POWER_25 = 0,
+  R9M_LBT_POWER_25_16,
+  R9M_LBT_POWER_200,
   R9M_LBT_POWER_500,
   R9M_LBT_POWER_MAX = R9M_LBT_POWER_500
 };
 
-#define BIND_TELEM_ALLOWED(idx)      (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power == R9M_LBT_POWER_25)
+#define BIND_TELEM_ALLOWED(idx)      (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)
 #define BIND_CH9TO16_ALLOWED(idx)    (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
 
 #endif // _PULSES_ARM_H_
