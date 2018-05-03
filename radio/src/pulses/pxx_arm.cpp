@@ -409,12 +409,9 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
   }
 #endif
 
-  // Bit1 is ignored by R9M EU when power is set to 1500 mW
   extra_flags |= (g_model.moduleData[port].pxx.receiver_telem_off << 1);
-
   extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
   if (IS_MODULE_R9M(port)) {
-    // For R9M EU, bit3 (MODE) is taken into account ONLY at bind time. Value change requires re-bind
     extra_flags |= (min(g_model.moduleData[port].pxx.power, IS_MODULE_R9M_FCC(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
     // Disable S.PORT if internal module is active
     if (IS_TELEMETRY_INTERNAL_MODULE()) {
