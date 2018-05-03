@@ -216,27 +216,7 @@ void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
 
-  if (result == STR_BINDING_25MW_CH1_8_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_25;
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
-  }
-  else if (result == STR_BINDING_25MW_CH1_8_TELEM_ON) {
-    g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_25;
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = false;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
-  }
-  else if (result == STR_BINDING_500MW_CH1_8_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_500;
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
-  }
-  else if (result == STR_BINDING_500MW_CH9_16_TELEM_OFF) {
-    g_model.moduleData[moduleIdx].pxx.power = R9M_LBT_POWER_500;
-    g_model.moduleData[moduleIdx].pxx.receiver_telem_off = true;
-    g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = true;
-  }
-  else if (result == STR_BINDING_1_8_TELEM_ON) {
+  if (result == STR_BINDING_1_8_TELEM_ON) {
     g_model.moduleData[moduleIdx].pxx.receiver_telem_off = false;
     g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 = false;
   }
@@ -269,6 +249,10 @@ void menuModelSetup(event_t event)
     warningResult = 0;
     g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna = XJT_EXTERNAL_ANTENNA;
   }
+#endif
+
+#if defined(CPUARM)
+    static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
 #endif
 
 #if defined(PCBXLITE)
@@ -309,7 +293,7 @@ void menuModelSetup(event_t event)
   OUTPUT_TYPE_ROWS()
   FAILSAFE_ROWS(EXTERNAL_MODULE),
   EXTERNAL_MODULE_OPTION_ROW,
-  (IS_MODULE_R9M_LBT(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW),
+  (HIDDEN_ROW),
   MULTIMODULE_MODULE_ROWS
   EXTERNAL_MODULE_POWER_ROW,
   EXTRA_MODULE_ROWS
@@ -851,7 +835,7 @@ void menuModelSetup(event_t event)
         else if (IS_MODULE_DSM2(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (IS_MODULE_R9M(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_R9M_MODES, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
           int multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
@@ -1141,20 +1125,21 @@ void menuModelSetup(event_t event)
                   if (IS_MODULE_R9M(moduleIdx) || (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16)) {
                     if (EVT_KEY_MASK(event) == KEY_ENTER) {
                       killEvents(event);
-                      uint8_t default_selection;
+                      uint8_t default_selection = 0; // R9M_LBT should default to 0 as available option is depends on power mode.
                       if (IS_MODULE_R9M_LBT(moduleIdx)) {
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_OFF);
-                        if (!IS_TELEMETRY_INTERNAL_MODULE())
-                          POPUP_MENU_ADD_ITEM(STR_BINDING_25MW_CH1_8_TELEM_ON);
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH1_8_TELEM_OFF);
-                        POPUP_MENU_ADD_ITEM(STR_BINDING_500MW_CH9_16_TELEM_OFF);
-                        default_selection = 2;
-                      }
-                      else {
-                        if (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE))
+                        if (BIND_TELEM_ALLOWED(moduleIdx))
                           POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_OFF);
-                        if (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE))
+                        if (BIND_TELEM_ALLOWED(moduleIdx) && BIND_CH9TO16_ALLOWED(moduleIdx))
+                         POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
+                        if (BIND_CH9TO16_ALLOWED(moduleIdx))
+                          POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
+                      }
+                      else {
+                        if (BIND_TELEM_ALLOWED(moduleIdx))
+                          POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
+                        POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_OFF);
+                        if (BIND_TELEM_ALLOWED(moduleIdx))
                           POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
                         default_selection = g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off + (g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 << 1);
@@ -1338,12 +1323,24 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_POWER:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        if (IS_MODULE_R9M_FCC(moduleIdx)) {
-          // Power selection is only available on R9M FCC
+        if (IS_MODULE_R9M(moduleIdx)) {
           lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
-          if (attr)
-            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_FCC_POWER_MAX);
+          if(IS_MODULE_R9M_FCC(moduleIdx)) {
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
+            if (attr)
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_FCC_POWER_MAX);
+          }
+          else {
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, selectedPxxPower, LEFT | attr);
+            if (attr) {
+              CHECK_INCDEC_MODELVAR(event, selectedPxxPower, 0, R9M_LBT_POWER_MAX);
+            }
+            if (attr && editMode == 0 && selectedPxxPower != g_model.moduleData[moduleIdx].pxx.power) {
+              if((selectedPxxPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
+                POPUP_WARNING("Rebinding required");
+              g_model.moduleData[moduleIdx].pxx.power = selectedPxxPower;
+            }
+          }
         }
 #if defined(MULTIMODULE)
         else if (IS_MODULE_MULTIMODULE(moduleIdx)) {
