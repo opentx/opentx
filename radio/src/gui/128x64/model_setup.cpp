@@ -1312,7 +1312,7 @@ void menuModelSetup(event_t event)
             }
             if (attr && editMode == 0 && selectedPxxPower != g_model.moduleData[moduleIdx].pxx.power) {
               if((selectedPxxPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
-                POPUP_WARNING("Rebinding required");
+                POPUP_WARNING(STR_REBIND);
               g_model.moduleData[moduleIdx].pxx.power = selectedPxxPower;
             }
           }

@@ -277,7 +277,7 @@ void menuModelSetup(event_t event)
 {
   horzpos_t l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
-  static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+  static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
     LABEL(Throttle), 0, 0, 0,
@@ -1005,7 +1005,7 @@ void menuModelSetup(event_t event)
                         if (BIND_TELEM_ALLOWED(moduleIdx))
                           POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
-                        default_selection = g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off + (g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 << 1);
+                        default_selection = g_model.moduleData[moduleIdx].pxx.receiver_telem_off + (g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 << 1);
                       }
                       POPUP_MENU_SELECT_ITEM(default_selection);
                       POPUP_MENU_START(onBindMenu);
@@ -1144,7 +1144,7 @@ void menuModelSetup(event_t event)
         }
         if (attr && s_editMode == 0 && selectedPxxPower != g_model.moduleData[moduleIdx].pxx.power) {
           if((selectedPxxPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
-            POPUP_WARNING("Rebinding required");
+            POPUP_WARNING(STR_REBIND);
           g_model.moduleData[moduleIdx].pxx.power = selectedPxxPower;
         }
       }
