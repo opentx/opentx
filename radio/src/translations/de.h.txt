@@ -104,6 +104,9 @@
 #define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF""MULT""R9M\0""SBUS"
 
+#define LEN_MODULE_RATE        "\005"
+#define TR_MODULE_RATE         "Pulse""Uart\0 "
+
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (Kabel)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
 
@@ -684,6 +687,7 @@
 #define TR_AILDIRECTION        TR("Roll   Richtung", "Roll   Servo Richtung")
 #define TR_COLDIRECTION        TR("Pitch Richtung", "Pitch Servo Richtung")
 #define TR_MODE                INDENT "Modus"
+#define TR_MOD_RATE            INDENT "Mod type"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expos voll!"
 #define TR_NOFREEMIXER         "Mischer voll!"
