@@ -627,7 +627,6 @@ extern const pm_char STR_MODULE_NO_INPUT[];
 extern const pm_char STR_MODULE_WAITFORBIND[];
 extern const pm_char STR_MODULE_NO_TELEMETRY[];
 extern const pm_char STR_MODULE_BINDING[];
-extern const pm_char STR_REBIND[];
 extern const pm_char STR_PROTOCOL_INVALID[];
 extern const pm_char STR_MODULE_STATUS[];
 extern const pm_char STR_MODULE_SYNC[];
@@ -639,6 +638,7 @@ extern const pm_char STR_SUBTYPE[];
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RECEIVER_NUM[];
 extern const pm_char STR_RECEIVER[];
+extern const pm_char STR_REBIND[];
 #endif
 
 #if defined(PXX) || defined(CPUARM)
