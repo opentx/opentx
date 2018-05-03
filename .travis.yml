@@ -11,11 +11,11 @@ python:
 
 env:
   global:
-    - QT_BASE=53
+    #- QT_BASE=53
     # - QT_BASE=54
     # - QT_BASE=55
     # - QT_BASE=56
-    # - QT_BASE=57
+     - QT_BASE=57
     #- GCC_ARM=/opt/gcc-arm-none-eabi/bin
     - AVR_FLAVORS="AVR9X 9X GRUVIN9X MEGA2560"
     - PYTHONPATH=${PYTHONPATH}:/usr/lib/python3/dist-packages
@@ -67,7 +67,7 @@ install:
     fi
     if [[ ! " ${AVR_FLAVORS} " =~ " ${FLAVOR} " || ${FLAVOR} == "ALL" ]]; then
       sudo apt-get --yes --force-yes install gcc-arm-none-eabi
-      # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above 
+      # Trying to build with gcc-arm 4.7 isn't working because it can't find the compiler, despite adding to PATH (in commit-tests.sh) by defining GCC_ARM above
       # - wget --quiet https://launchpad.net/gcc-arm-embedded/4.7/4.7-2013-q3-update/+download/gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
       # - tar xjf gcc-arm-none-eabi-4_7-2013q3-20130916-linux.tar.bz2
       # - mv gcc-arm-none-eabi-4_7-2013q3 /opt/gcc-arm-none-eabi
