@@ -251,7 +251,7 @@ void menuModelSetup(event_t event)
 #endif
 
 #if defined(CPUARM)
-    static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 #endif
 
 #if defined(PCBXLITE)
@@ -1121,7 +1121,7 @@ void menuModelSetup(event_t event)
                   if (IS_MODULE_R9M(moduleIdx) || (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16)) {
                     if (EVT_KEY_MASK(event) == KEY_ENTER) {
                       killEvents(event);
-                      uint8_t default_selection = 0; // R9M_LBT should default to 0 as available option is depends on power mode.
+                      uint8_t default_selection = 0; // R9M_LBT should default to 0 as available options are variables
                       if (IS_MODULE_R9M_LBT(moduleIdx)) {
                         if (BIND_TELEM_ALLOWED(moduleIdx))
                           POPUP_MENU_ADD_ITEM(STR_BINDING_1_8_TELEM_ON);
