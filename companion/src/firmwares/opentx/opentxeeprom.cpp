@@ -34,8 +34,8 @@ using namespace Board;
 #define HAS_PERSISTENT_TIMERS(board)          (IS_ARM(board) || IS_2560(board))
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
 #define MAX_POTS(board, version)              (IS_TARANIS_NOT_X9E(board) && version < 216 ? 2 : Boards::getCapability(board, Board::Pots))
-#define MAX_SLIDERS(board)                    (Boards::getCapability(board, Board::Sliders))
-#define MAX_MOUSE_ANALOGS(board)              (Boards::getCapability(board, Board::MouseAnalogs))
+#define MAX_SLIDERS(board)                    (IS_HORUS_X10(board) ? 4 : (Boards::getCapability(board, Board::Sliders))) //TODO need to be remove when x10 eeprom gets fixed
+#define MAX_MOUSE_ANALOGS(board)              (IS_HORUS_X10(board) ? 2 : (Boards::getCapability(board, Board::MouseAnalogs))) //TODO need to be remove when x10 eeprom gets fixed
 #define MAX_SWITCHES(board, version)          (Boards::getCapability(board, Board::Switches))
 #define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : 8)  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
 #define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
