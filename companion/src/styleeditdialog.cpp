@@ -25,7 +25,8 @@
 StyleEditDialog::StyleEditDialog(QWidget * parent, const QString stylesheet):
   QDialog(parent),
   ui(new Ui::StyleEditDialog),
-  mStylesheet(stylesheet)
+  mStylesheet(stylesheet),
+  mDirty(false)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("edit.png"));

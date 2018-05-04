@@ -151,7 +151,7 @@ bool Stylesheet::read(const QString & path)
     }
   }
   if (mResult)
-    mErrormsg = tr("Style sheet data successfully read from '%1'").arg(QDir::toNativeSeparators(path));
+    mErrormsg = tr("Style sheet data read from '%1'").arg(QDir::toNativeSeparators(path));
   else
     mErrormsg = tr("Style sheet data unable to be read from '%1'").arg(QDir::toNativeSeparators(path));
   qDebug() << mErrormsg;
@@ -167,30 +167,30 @@ bool Stylesheet::update()
     QDir dir;
     if (!dir.mkpath(mCustomPath))
       mErrormsg = tr("Cannot create folder '%1'").arg(QDir::toNativeSeparators(mCustomPath));
-    else
-      mErrormsg = tr("Created folder '%1'").arg(QDir::toNativeSeparators(mCustomPath));
   }
-  QFile file(mCustomFile);
-  if (!file.open(QFile::WriteOnly | QFile::Text)) {
-    mErrormsg = tr("Cannot open file for writing '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
-  }
-  else {
-    QTextStream out(&file);
-    if (out.status()==QTextStream::Ok) {
-      out << mText;
-      if (!(out.status()==QTextStream::Ok)) {
-        mErrormsg = tr("Cannot write to file '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
-        if (!file.flush()) {
-          mErrormsg = tr("Cannot flush buffer for file '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
+  if (path.exists()) {
+    QFile file(mCustomFile);
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+      mErrormsg = tr("Cannot open file for writing '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
+    }
+    else {
+      QTextStream out(&file);
+      if (out.status()==QTextStream::Ok) {
+        out << mText;
+        if (!(out.status()==QTextStream::Ok)) {
+          mErrormsg = tr("Cannot write to file '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
+          if (!file.flush()) {
+            mErrormsg = tr("Cannot flush buffer for file '%1': Error: %2").arg(QDir::toNativeSeparators(mCustomFile), file.errorString());
+          }
+        }
+        else {
+          mResult = true;
+          mErrormsg = tr("Style sheet written to '%1'").arg(QDir::toNativeSeparators(mCustomFile));
         }
       }
-      else {
-        mResult = true;
-        mErrormsg = tr("Style sheet written to '%1'").arg(QDir::toNativeSeparators(mCustomFile));
-      }
     }
+    file.close();
   }
-  file.close();
   qDebug() << mErrormsg;
   return mResult;
 }
@@ -200,7 +200,7 @@ bool Stylesheet::deleteCustom()
   QFile file(mCustomFile);
   mResult = file.remove();
   if (mResult)
-    mErrormsg = tr("Custom style sheet successfully deleted: '%1'").arg(QDir::toNativeSeparators(mCustomFile));
+    mErrormsg = tr("Custom style sheet deleted: '%1'").arg(QDir::toNativeSeparators(mCustomFile));
   else
     mErrormsg = tr("Unable to delete custom style sheet: '%1'").arg(QDir::toNativeSeparators(mCustomFile));
   qDebug() << mErrormsg;
