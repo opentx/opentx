@@ -216,7 +216,7 @@ inline void SEND_FAILSAFE_1S()
 // for channels not set previously to HOLD or NOPULSE
 void setCustomFailsafe(uint8_t moduleIndex);
 
-#if defined(PCBXLITE) && !defined(R9MJR)
+#if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
 #define LEN_R9M_REGION                 "\007"
 #define TR_R9M_REGION                  "FCC\0   ""LBT(EU)"
 #define LEN_R9M_FCC_POWER_VALUES       "\006"
