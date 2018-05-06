@@ -495,7 +495,7 @@ bool ModelsList::isModelIdUnique(uint8_t moduleIdx, char* warn_buf, size_t warn_
     curr = strAppend(curr, ")");
   }
 
-  return hit_found;
+  return !hit_found;
 }
 
 uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
