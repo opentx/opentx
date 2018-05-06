@@ -792,13 +792,19 @@ void AudioQueue::wakeup()
     if (size > 0) {
       // TRACE("pushing buffer %p", buffer);
       buffer->size = size;
+
 #if defined(SOFTWARE_VOLUME)
-      for(uint32_t i=0; i<buffer->size; ++i) {
-        int32_t tmpSample = (int32_t) ((uint32_t) (buffer->data[i]) - AUDIO_DATA_SILENCE);  // conversion from uint16_t
-        buffer->data[i] = (int16_t) (((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX) + AUDIO_DATA_SILENCE);
+      if (currentSpeakerVolume > 0) {
+          for(uint32_t i=0; i<buffer->size; ++i) {
+              int32_t tmpSample = (int32_t) ((uint32_t) (buffer->data[i]) - AUDIO_DATA_SILENCE);  // conversion from uint16_t
+              buffer->data[i] = (int16_t) (((tmpSample * currentSpeakerVolume) / VOLUME_LEVEL_MAX) + AUDIO_DATA_SILENCE);
+          }
+
+          buffersFifo.audioPushBuffer();
       }
-#endif
+#else
       buffersFifo.audioPushBuffer();
+#endif
     }
     else {
       // break the endless loop
