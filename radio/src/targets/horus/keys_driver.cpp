@@ -71,6 +71,10 @@ void checkRotaryEncoder()
     else {
       ++rotencValue[0];
     }
+#if !defined(BOOT)
+    if (g_eeGeneral.backlightMode & e_backlight_mode_keys)
+      backlightOn();
+#endif
   }
 }
 
