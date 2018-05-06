@@ -126,6 +126,11 @@ void checkRotaryEncoder()
       ++rotencValue[0];
     }
     rotencPosition = newpos;
+#if !defined(BOOT)
+    if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
+      backlightOn();
+    }
+#endif
   }
 }
 #endif
