@@ -255,9 +255,8 @@ void onModelSelectMenu(const char * result)
     if (findNextFileIndex(duplicatedFilename, LEN_MODEL_FILENAME, MODELS_PATH)) {
       sdCopyFile(currentModel->modelFilename, MODELS_PATH, duplicatedFilename, MODELS_PATH);
       ModelCell* dup_model = modelslist.addModel(currentCategory, duplicatedFilename);
-      dup_model->setRfData(&g_model);
-      unsigned int index = currentCategory->size() - 1;
-      setCurrentModel(index);
+      dup_model->fetchRfData();
+      setCurrentModel(currentCategory->size() - 1);
     }
     else {
       POPUP_WARNING("Invalid File");
