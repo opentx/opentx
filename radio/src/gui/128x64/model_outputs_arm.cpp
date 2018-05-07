@@ -85,8 +85,12 @@ enum MenuModelOutputsOneItems {
   ITEM_OUTPUTONE_MAX,
   ITEM_OUTPUTONE_DIR,
   ITEM_OUTPUTONE_CURVE,
+#if defined(PPM_CENTER_ADJUSTABLE)
   ITEM_OUTPUTONE_PPM_CENTER,
+#endif
+#if defined(PPM_LIMITS_SYMETRICAL)
   ITEM_OUTPUTONE_SYMETRICAL,
+#endif
   ITEM_OUTPUTONE_MAXROW
 };
 
@@ -123,7 +127,7 @@ void menuModelLimitsOne(event_t event)
         break;
 
       case ITEM_OUTPUTONE_MIN:
-        lcdDrawTextAlignedLeft(y, TR_MIN);
+        lcdDrawTextAlignedLeft(y, STR_MIN);
         if (GV_IS_GV_VALUE(ld->min, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
            ld->min = GVAR_MENU_ITEM(LIMITS_ONE_2ND_COLUMN, y, ld->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1, 0, event);
            break;
@@ -135,7 +139,7 @@ void menuModelLimitsOne(event_t event)
         break;
 
       case ITEM_OUTPUTONE_MAX:
-        lcdDrawTextAlignedLeft(y, TR_MAX);
+        lcdDrawTextAlignedLeft(y, STR_MAX);
         if (GV_IS_GV_VALUE(ld->max, -GV_RANGELARGE, GV_RANGELARGE) || (attr && event == EVT_KEY_LONG(KEY_ENTER))) {
             ld->max = GVAR_MENU_ITEM(LIMITS_ONE_2ND_COLUMN, y, ld->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, attr|PREC1, 0, event);
             break;
@@ -157,18 +161,24 @@ void menuModelLimitsOne(event_t event)
       }
 
       case ITEM_OUTPUTONE_CURVE:
-        lcdDrawTextAlignedLeft(y, TR_CURVE);
+        lcdDrawTextAlignedLeft(y, STR_CURVE);
         drawCurveName(LIMITS_ONE_2ND_COLUMN, y, ld->curve, attr);
         if (active) {
           CHECK_INCDEC_MODELVAR(event, ld->curve, -MAX_CURVES, +MAX_CURVES);
         }
         break;
 
+#if defined(PPM_CENTER_ADJUSTABLE)
       case ITEM_OUTPUTONE_PPM_CENTER:
         lcdDrawTextAlignedLeft(y, TR_LIMITS_HEADERS_PPMCENTER);
-        ld->ppmCenter = GVAR_MENU_ITEM(LIMITS_ONE_2ND_COLUMN, y, ld->ppmCenter, -PPM_CENTER_MAX, PPM_CENTER_MAX, PREC1 | attr, 0, event);
+        lcdDrawNumber(LIMITS_ONE_2ND_COLUMN, y, PPM_CENTER+ld->ppmCenter, attr);
+        if (active) {
+          CHECK_INCDEC_MODELVAR(event, ld->ppmCenter, -PPM_CENTER_MAX, +PPM_CENTER_MAX);
+        }
         break;
+#endif
 
+#if defined(PPM_LIMITS_SYMETRICAL)
       case ITEM_OUTPUTONE_SYMETRICAL:
         lcdDrawTextAlignedLeft(y, TR_LIMITS_HEADERS_SUBTRIMMODE);
         lcdDrawChar(LIMITS_ONE_2ND_COLUMN, y, ld->symetrical ? '=' : '\306', attr);
@@ -176,6 +186,7 @@ void menuModelLimitsOne(event_t event)
           CHECK_INCDEC_MODELVAR_ZERO(event, ld->symetrical, 1);
         }
         break;
+#endif
     }
   }
 }
