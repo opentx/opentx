@@ -237,7 +237,7 @@ enum R9MLBTPowerValues {
 };
 
 #define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_100))
-#define BIND_CH9TO16_ALLOWED(idx)    (true)
+#define BIND_CH9TO16_ALLOWED(idx)    (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
 
 #else
 
