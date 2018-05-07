@@ -654,6 +654,9 @@ void menuModelSetup(event_t event)
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && line && l_posHorz==current) {
                 g_model.switchWarningEnable ^= (1 << i);
                 storageDirty(EE_MODEL);
+#if defined(PCBXLITE)
+                s_editMode = 0;
+#endif
               }
               uint8_t swactive = !(g_model.switchWarningEnable & (1<<i));
               c = "\300-\301"[states & 0x03];
@@ -667,7 +670,7 @@ void menuModelSetup(event_t event)
           if (attr && ((menuHorizontalPosition < 0) || menuHorizontalPosition >= NUM_SWITCHES)) {
             lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+4)/5));
           }
-#else
+#else //PCBTARANIS
       {
         lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
         swarnstate_t states = g_model.switchWarningState;
