@@ -220,8 +220,8 @@ extern const pm_char STR_OPEN9X[];
 #endif
 #if defined(CPUARM)
   #define OFS_TARANIS_PROTOCOLS        (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
-  #define OFS_R9M_MODES                (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
-  #define OFS_R9M_FCC_POWER_VALUES     (OFS_R9M_MODES + sizeof(TR_R9M_MODES))
+  #define OFS_R9M_REGION                (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
+  #define OFS_R9M_FCC_POWER_VALUES     (OFS_R9M_REGION + sizeof(TR_R9M_REGION))
   #define OFS_R9M_LBT_POWER_VALUES     (OFS_R9M_FCC_POWER_VALUES + sizeof(TR_R9M_FCC_POWER_VALUES))
   #define OFS_TELEMETRY_PROTOCOLS      (OFS_R9M_LBT_POWER_VALUES + sizeof(TR_R9M_LBT_POWER_VALUES))
   #define OFS_XJT_PROTOCOLS            (OFS_TELEMETRY_PROTOCOLS + sizeof(TR_TELEMETRY_PROTOCOLS))
@@ -351,7 +351,7 @@ extern const pm_char STR_OPEN9X[];
 #if defined(CPUARM)
   #define STR_VTRAINERMODES     (STR_OPEN9X + OFS_VTRAINERMODES)
   #define STR_TARANIS_PROTOCOLS (STR_OPEN9X + OFS_TARANIS_PROTOCOLS)
-  #define STR_R9M_MODES         (STR_OPEN9X + OFS_R9M_MODES)
+  #define STR_R9M_REGION         (STR_OPEN9X + OFS_R9M_REGION)
   #define STR_R9M_FCC_POWER_VALUES     (STR_OPEN9X + OFS_R9M_FCC_POWER_VALUES)
   #define STR_R9M_LBT_POWER_VALUES     (STR_OPEN9X + OFS_R9M_LBT_POWER_VALUES)
   #define STR_TELEMETRY_PROTOCOLS      (STR_OPEN9X + OFS_TELEMETRY_PROTOCOLS)
@@ -638,6 +638,7 @@ extern const pm_char STR_SUBTYPE[];
 #if defined(DSM2) || defined(PXX)
 extern const pm_char STR_RECEIVER_NUM[];
 extern const pm_char STR_RECEIVER[];
+extern const pm_char STR_REBIND[];
 #endif
 
 #if defined(PXX) || defined(CPUARM)
@@ -936,10 +937,6 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_BINDING_1_8_TELEM_OFF[];
   extern const pm_char STR_BINDING_9_16_TELEM_ON[];
   extern const pm_char STR_BINDING_9_16_TELEM_OFF[];
-  extern const pm_char STR_BINDING_25MW_CH1_8_TELEM_OFF[];
-  extern const pm_char STR_BINDING_25MW_CH1_8_TELEM_ON[];
-  extern const pm_char STR_BINDING_500MW_CH1_8_TELEM_OFF[];
-  extern const pm_char STR_BINDING_500MW_CH9_16_TELEM_OFF[];
   extern const pm_char STR_CHANNELRANGE[];
   extern const pm_char STR_ANTENNASELECTION[];
   extern const pm_char STR_ANTENNACONFIRM1[];
