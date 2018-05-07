@@ -148,7 +148,11 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(CPUARM)
+#if defined(PCBXLITE)
+  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW) //xlite needs an additional column for full line selection (<])
+#else
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW)
+#endif
 #if !defined(TARANIS_INTERNAL_PPM)
   #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
 #else
