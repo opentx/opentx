@@ -266,6 +266,22 @@ options_taranisplus = {
     "multimodule": ("MULTIMODULE", "YES", "NO")
 }
 
+options_xlite = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "luac": ("LUA_COMPILER", "YES", "NO"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "sqt5font": ("FONT", "SQT5", None),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
+    "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
+    "multimodule": ("MULTIMODULE", "YES", "NO"),
+    "stdr9m": ("MODULE_R9M_FULLSIZE", "YES", None)
+}
+
 options_taranisx9e = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
@@ -273,7 +289,6 @@ options_taranisx9e = {
     "luac": ("LUA_COMPILER", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
-    "noras": ("RAS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
