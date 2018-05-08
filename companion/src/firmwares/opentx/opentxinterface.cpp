@@ -1104,7 +1104,6 @@ void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
 {
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
-  firmware->addOption("noras", QCoreApplication::translate("Firmware", "Disable RAS (SWR)"));
 }
 
 void addOpenTxLcdOptions(OpenTxFirmware * firmware)
@@ -1168,6 +1167,7 @@ void registerOpenTxFirmwares()
   /* FrSky Taranis X9D+ board */
   firmware = new OpenTxFirmware("opentx-x9d+", QCoreApplication::translate("Firmware", "FrSky Taranis X9D+"), BOARD_TARANIS_X9DP);
   firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
+  firmware->addOption("noras", QCoreApplication::translate("Firmware", "Disable RAS (SWR)"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
@@ -1193,6 +1193,7 @@ void registerOpenTxFirmwares()
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
+  firmware->addOption("stdr9m", QCoreApplication::translate("Firmware", "Use full size R9M module"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
