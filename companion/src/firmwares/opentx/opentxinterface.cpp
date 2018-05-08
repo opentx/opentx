@@ -1175,7 +1175,6 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x9d", QCoreApplication::translate("Firmware", "FrSky Taranis X9D"), BOARD_TARANIS_X9D);
   firmware->addOption("haptic", QCoreApplication::translate("Firmware", "Haptic module installed"));
   firmware->addOption("internalppm", QCoreApplication::translate("Firmware", "Support for PPM internal module hack"));
-  firmware->addOption("noras", QCoreApplication::translate("Firmware", "Disable RAS (SWR)"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
