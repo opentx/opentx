@@ -52,7 +52,7 @@ void dacInit()
 
   GPIO_InitTypeDef GPIO_InitStructure;
 
-#if defined(PCBX10)
+#if defined(AUDIO_MUTE_GPIO_PIN)
   GPIO_InitStructure.GPIO_Pin = AUDIO_MUTE_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
@@ -94,7 +94,7 @@ void audioConsumeCurrentBuffer()
 
     nextBuffer = audioQueue.buffersFifo.getNextFilledBuffer();
     if (nextBuffer) {
-#if defined(PCBX10)
+#if defined(AUDIO_MUTE_GPIO_PIN)
       // un-mute
       GPIO_ResetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
 #endif
@@ -106,7 +106,7 @@ void audioConsumeCurrentBuffer()
       DAC->SR = DAC_SR_DMAUDR1 ;                      // Write 1 to clear flag
       DAC->CR |= DAC_CR_EN1 | DAC_CR_DMAEN1 ;                 // Enable DAC
     }
-#if defined(PCBX10)
+#if defined(AUDIO_MUTE_GPIO_PIN)
     else {
       // mute
       GPIO_SetBits(AUDIO_MUTE_GPIO, AUDIO_MUTE_GPIO_PIN);
