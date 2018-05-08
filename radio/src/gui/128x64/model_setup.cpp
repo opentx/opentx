@@ -1126,7 +1126,11 @@ void menuModelSetup(event_t event)
               if (s_editMode > 0) {
                 if (l_posHorz == 1) {
                   if (IS_MODULE_R9M(moduleIdx) || (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16)) {
+#if defined(PCBXLITE)
                     if (EVT_KEY_MASK(event) == KEY_ENTER) {
+#else
+                    if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+#endif
                       killEvents(event);
                       uint8_t default_selection = 0; // R9M_LBT should default to 0 as available options are variables
                       if (IS_MODULE_R9M_LBT(moduleIdx)) {
