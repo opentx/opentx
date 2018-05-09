@@ -3,11 +3,11 @@ dist: trusty
 language: cpp
 compiler: gcc
 
-#virtualenv:
-#  system_site_packages: true
+virtualenv:
+  system_site_packages: true
 
-# python:
-#  - 3.4
+python:
+ - 3.4
 
 env:
   global:
