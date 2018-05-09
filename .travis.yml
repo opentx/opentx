@@ -2,8 +2,6 @@ sudo: required
 dist: trusty
 language: cpp
 compiler: gcc
-python:
- - "3.4"
 
 env:
   global:
@@ -15,6 +13,7 @@ env:
     # - GCC_ARM=/opt/gcc-arm-none-eabi/bin
     - AVR_FLAVORS="AVR9X 9X GRUVIN9X MEGA2560"
     - PYTHONPATH=${PYTHONPATH}:/usr/lib/python3/dist-packages
+    - PYTHON=3.4
   matrix:
     #
     # ALL will build every individual board & DEFAULT, sequentially.
