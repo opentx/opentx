@@ -13,7 +13,6 @@ env:
     # - GCC_ARM=/opt/gcc-arm-none-eabi/bin
     - AVR_FLAVORS="AVR9X 9X GRUVIN9X MEGA2560"
     - PYTHONPATH=${PYTHONPATH}:/usr/lib/python3/dist-packages
-    - PYTHON=3.4
   matrix:
     #
     # ALL will build every individual board & DEFAULT, sequentially.
@@ -54,8 +53,7 @@ before_install:
   - pyenv install 3.5.4 && pyenv global 3.5.4
 
 install:
-  - sudo apt-get --yes --force-yes purge python2.7-minimal
-  - sudo apt-get --yes --force-yes install python3 python3-pyqt5 curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
+  - sudo apt-get --yes --force-yes install python3-pyqt5 curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
   - |
     if [[ " ${AVR_FLAVORS} " =~ " ${FLAVOR} " || ${FLAVOR} == "ALL" ]]; then
       wget --quiet https://launchpad.net/ubuntu/+source/gcc-avr/1:4.9.2+Atmel3.5.0-1/+build/8403710/+files/gcc-avr_4.9.2+Atmel3.5.0-1_amd64.deb
