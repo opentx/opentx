@@ -3,12 +3,6 @@ dist: trusty
 language: cpp
 compiler: gcc
 
-virtualenv:
-  system_site_packages: true
-
-python:
- - 3.4
-
 env:
   global:
     # - QT_BASE=53
@@ -57,7 +51,7 @@ before_install:
   - sudo apt-get update -qq
 
 install:
-  - sudo apt-get --yes --force-yes autoremove python
+  - sudo apt-get --yes --force-yes autoremove python2.7-minimal
   - sudo apt-get --yes --force-yes install python3 python3-pyqt5 curl libmpfr4 libmpc3 libfox-1.6-dev libgtest-dev
   - |
     if [[ " ${AVR_FLAVORS} " =~ " ${FLAVOR} " || ${FLAVOR} == "ALL" ]]; then
