@@ -799,20 +799,41 @@
 #endif
 
 // Heartbeat
-#if defined(PCBXLITE)
+#if defined(PCBXLITE)  // TIM4_CH4
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
+  #define HEARTBEAT_RCC_APB1Periph      RCC_APB1Periph_TIM4
   #define HEARTBEAT_RCC_APB2Periph      0
   #define HEARTBEAT_GPIO                GPIOD
   #define HEARTBEAT_GPIO_PIN            GPIO_Pin_15 // PD.15
-#else
-  #define TRAINER_MODULE_HEARTBEAT
+  #define HEARTBEAT_GPIO_PinSource      GPIO_PinSource15
+  #define HEARTBEAT_GPIO_AF_CAPTURE     GPIO_AF_TIM4
+  #define HEARTBEAT_TIMER_CCMR_REG      CCMR2
+  #define HEARTBEAT_TIMER_CCMR_CFG      TIM_CCMR2_IC4F_0 | TIM_CCMR2_IC4F_1 | TIM_CCMR2_CC4S_0
+  #define HEARTBEAT_TIMER_CCER_CFG      TIM_CCER_CC4E
+  #define HEARTBEAT_TIMER_IF            TIM_SR_CC4IF
+  #define HEARTBEAT_TIMER_IE            TIM_DIER_CC4IE 
+  #define HEARTBEAT_TIMER_CCR           CCR4
+  #define HEARTBEAT_TIMER               TIM4
+  #define HEARTBEAT_TIMER_IRQn          TIM4_IRQn
+  #define HEARTBEAT_TIMER_IRQHandler    TIM4_IRQHandler
+#else                  // TIM3_CH2
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
+  #define HEARTBEAT_RCC_APB1Periph      0
   #define HEARTBEAT_RCC_APB2Periph      RCC_APB2Periph_USART6
   #define HEARTBEAT_GPIO                GPIOC
   #define HEARTBEAT_GPIO_PIN            GPIO_Pin_7  // PC.07
   #define HEARTBEAT_GPIO_PinSource      GPIO_PinSource7
   #define HEARTBEAT_GPIO_AF_SBUS        GPIO_AF_USART6
   #define HEARTBEAT_GPIO_AF_CAPTURE     GPIO_AF_TIM3
+  #define HEARTBEAT_TIMER_CCMR_REG      CCMR1
+  #define HEARTBEAT_TIMER_CCMR_CFG      TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0
+  #define HEARTBEAT_TIMER_CCER          TIM_CCER_CC2E
+  #define HEARTBEAT_TIMER_CCER_CFG      TIM_CCER_CC2E
+  #define HEARTBEAT_TIMER_IF            TIM_SR_CC2IF
+  #define HEARTBEAT_TIMER_IE            TIM_DIER_CC2IE 
+  #define HEARTBEAT_TIMER_CCR           CCR2
+  #define HEARTBEAT_TIMER               TIM3
+  #define HEARTBEAT_TIMER_IRQn          TIM3_IRQn
   #define HEARTBEAT_USART               USART6
   #define HEARTBEAT_USART_IRQHandler    USART6_IRQHandler
   #define HEARTBEAT_USART_IRQn          USART6_IRQn
