@@ -830,6 +830,7 @@ extern const pm_char STR_VIEW_TEXT[];
 extern const pm_char STR_FLASH_BOOTLOADER[];
 extern const pm_char STR_FLASH_EXTERNAL_DEVICE[];
 extern const pm_char STR_FLASH_INTERNAL_MODULE[];
+extern const pm_char STR_FLASH_EXTERNAL_MODULE[];
 extern const pm_char STR_FIRMWARE_UPDATE_ERROR[];
 extern const pm_char STR_WRITING[];
 extern const pm_char STR_CONFIRM_FORMAT[];

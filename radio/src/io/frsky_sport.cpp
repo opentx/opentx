@@ -180,6 +180,8 @@ const char * sportUpdatePowerOn(ModuleIndex module)
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE)
     INTERNAL_MODULE_ON();
+  else if (module == EXTERNAL_MODULE)
+    EXTERNAL_MODULE_ON();
   else
     SPORT_UPDATE_POWER_ON();
 #endif
@@ -307,6 +309,7 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
+  SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
   watchdogSuspend(2000);
@@ -325,6 +328,7 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   INTERNAL_MODULE_OFF();
+  EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 #endif
 

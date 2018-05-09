@@ -541,8 +541,8 @@ void sportUpdatePowerOff(void);
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
 #else
-#define SPORT_UPDATE_POWER_ON()        EXTERNAL_MODULE_ON()
-#define SPORT_UPDATE_POWER_OFF()       EXTERNAL_MODULE_OFF()
+#define SPORT_UPDATE_POWER_ON()
+#define SPORT_UPDATE_POWER_OFF()
 #endif
 
 // Haptic driver
