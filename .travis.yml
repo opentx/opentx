@@ -50,7 +50,7 @@ before_install:
   - if [ "$QT_BASE" = "56" ]; then sudo add-apt-repository ppa:beineri/opt-qt562-trusty -y; fi
   - if [ "$QT_BASE" = "57" ]; then sudo add-apt-repository ppa:beineri/opt-qt571-trusty -y; fi
   - sudo apt-get update -qq
-  - pyenv uninstall
+  - pyenv uninstall -f 2.7.6
   - pyenv install 3.5.4 && pyenv global 3.5.4
 
 install:
