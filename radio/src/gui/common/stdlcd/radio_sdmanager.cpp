@@ -149,9 +149,14 @@ void onSdManagerMenu(const char * result)
     getSelectionFullPath(lfn);
     sportFlashDevice(INTERNAL_MODULE, lfn);
   }
-  else if (result == STR_FLASH_EXTERNAL_DEVICE) {
+  else if (result == STR_FLASH_EXTERNAL_MODULE) {
+    // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
     sportFlashDevice(EXTERNAL_MODULE, lfn);
+  }
+  else if (result == STR_FLASH_EXTERNAL_DEVICE) {
+    getSelectionFullPath(lfn);
+    sportFlashDevice(FLASHING_MODULE, lfn);
   }
 #endif
 #if defined(LUA)
@@ -283,8 +288,10 @@ void menuRadioSdManager(event_t _event)
             }
           }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
-            POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+            if (HAS_SPORT_UPDATE_CONNECTOR())
+              POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+            POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
           }
 #endif
         }

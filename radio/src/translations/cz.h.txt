@@ -1001,8 +1001,9 @@
 #define TR_PATH_TOO_LONG       "Cesta je moc dlouhá"
 #define TR_VIEW_TEXT           "Zobrazit text"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoaderu"
-#define TR_FLASH_EXTERNAL_DEVICE TR("Flash ext. modulu", "Flash externího zařízení")
+#define TR_FLASH_EXTERNAL_DEVICE TR("Flash ext. port", "Flash externího port")
 #define TR_FLASH_INTERNAL_MODULE TR("Flash vnitř. modulu", "Flash vnitřního modulu")
+#define TR_FLASH_EXTERNAL_MODULE TR("Flash ext. modulu", "Flash externího zařízení")
 #define TR_FIRMWARE_UPDATE_ERROR TR("Chyba zápisu FW", "Chyba zápisu firmware")
 #define TR_WRITING             TR3("\14Zapisuji..", "\032Zapisuji..", "Zapisuji..")
 #define TR_CONFIRM_FORMAT      "Provést Formát?"

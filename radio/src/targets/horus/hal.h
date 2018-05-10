@@ -258,8 +258,10 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOH
   #define SPORT_UPDATE_PWR_GPIO         GPIOH
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_13  // PH.13
+  #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #else
   #define SPORT_UPDATE_RCC_AHB1Periph   0
+  #define HAS_SPORT_UPDATE_CONNECTOR()  false
 #endif
 
 // PCBREV

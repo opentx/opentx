@@ -227,7 +227,8 @@ enum BeeperMode {
   enum ModuleIndex {
     INTERNAL_MODULE,
     EXTERNAL_MODULE,
-    TRAINER_MODULE
+    TRAINER_MODULE,
+    FLASHING_MODULE,
   };
   enum TrainerMode {
     TRAINER_MODE_MASTER_TRAINER_JACK,
