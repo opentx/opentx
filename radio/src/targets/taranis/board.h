@@ -591,6 +591,7 @@ void sportUpdatePowerOff(void);
 #define SPORT_UPDATE_POWER_ON()         sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()        sportUpdatePowerOff()
 #else
+#define sportUpdateInit()
 #define SPORT_UPDATE_POWER_ON()
 #define SPORT_UPDATE_POWER_OFF()
 #endif
