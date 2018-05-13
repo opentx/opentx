@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.1" language="fr_FR">
+<TS version="2.0" language="fr_FR">
 <context>
     <name>AileronsPage</name>
     <message>
@@ -2582,8 +2582,8 @@ Si vide, la ligne est toujours active.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
-        <source>Use full size R9M module</source>
-        <translation>Utiliser le module R9M en taille réelle</translation>
+        <source>Use JR-sized R9M module</source>
+        <translation>Utiliser un module R9M au format JR</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>

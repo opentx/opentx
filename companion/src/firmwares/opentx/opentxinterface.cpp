@@ -1193,7 +1193,7 @@ void registerOpenTxFirmwares()
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
-  firmware->addOption("stdr9m", QCoreApplication::translate("Firmware", "Use full size R9M module"));
+  firmware->addOption("stdr9m", QCoreApplication::translate("Firmware", "Use JR-sized R9M module"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
