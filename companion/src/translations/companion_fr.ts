@@ -2578,12 +2578,12 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1195"/>
         <source>FrSky Taranis X-Lite</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1196"/>
         <source>Use full size R9M module</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser le module R9M en taille réelle</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1201"/>
