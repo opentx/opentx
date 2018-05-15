@@ -1312,18 +1312,19 @@ void menuModelSetup(event_t event)
         if (IS_MODULE_R9M(moduleIdx)) {
           lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
           if(IS_MODULE_R9M_FCC(moduleIdx)) {
+            g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Lite FCC has only one setting
 #if defined(MODULE_R9M_FULLSIZE)
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr)
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_FCC_POWER_MAX);
 #else
-            g_model.moduleData[moduleIdx].pxx.power = R9M_FCC_POWER_MAX; // Lite FCC has only one setting
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT);
             if (attr)
               REPEAT_LAST_CURSOR_MOVE();
 #endif
           }
           else {
+            g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LBT_POWER_MAX);
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, selectedPxxPower, LEFT | attr);
             if (attr) {
               CHECK_INCDEC_MODELVAR_ZERO(event, selectedPxxPower, R9M_LBT_POWER_MAX);
