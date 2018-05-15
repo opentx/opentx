@@ -18,11 +18,17 @@ chars_en = u""" !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
 chars_fr = u"""éèàîç"""
 chars_de = u"""ÄäÖöÜüß"""
 chars_cz = u"""ěščřžýáíéňóůúďťĚŠČŘŽÝÁÍÉŇÓÚŮĎŤ"""
+chars_es = u"""Ññ"""
+chars_fi = u"""åäöÅÄÖ"""
+chars_it = u"""àù"""
+chars_pl = u"""ąćęłńóśżźĄĆĘŁŃÓŚŻŹ"""
+chars_pt = u"""ÁáÂâÃãÀàÇçÉéÊêÍíÓóÔôÕõÚú"""
+chars_se = u"""åäöÅÄÖ"""
 
 COUNT_EXTRA_CHARS = 12
 
 chars_extra = u"".join([chr(1+i) for i in range(COUNT_EXTRA_CHARS)])
-chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz
+chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz + chars_es + chars_fi + chars_it + chars_pl + chars_se
 
 
 def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):
