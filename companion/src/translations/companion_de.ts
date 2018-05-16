@@ -747,7 +747,7 @@ May be different from firmware language</source>
     <message>
         <location filename="../firmwares/boards.cpp" line="311"/>
         <source>Ail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Qur</translation>
     </message>
 </context>
 <context>
@@ -1386,7 +1386,7 @@ Do you want to import them?</source>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="50"/>
         <source>Trainer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Schüler Signaleingang</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="52"/>
@@ -4943,7 +4943,7 @@ Are you sure ?</source>
     <message>
         <location filename="../generaledit/hardware.ui" line="440"/>
         <source>Ail</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Qur</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="454"/>
