@@ -1,4 +1,4 @@
-set(FONT "Ubuntu")
+set(FONT "Kanit/Kanit")
 
 add_truetype_font_target(480x272 tinsize ${FONT} 9 False)
 add_truetype_font_target(480x272 smlsize ${FONT} 13 False)

@@ -25,7 +25,7 @@ chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz + chars_es + cha
 
 def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):
 
-    font_filename = 'fonts/' + fontname + '/' + fontname
+    font_filename = 'fonts/' + fontname
     if fontbold:
         font_filename = font_filename + '-Bold'
     else:
@@ -84,7 +84,7 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
             pass
         else:
             w, h = font.getsize(c)
-            draw.text( (width + 1, 1) , c, fill=foreground, font=font)
+            draw.text( (width + 1, -2) , c, fill=foreground, font=font)
 
         width += getCharWidth(c)
 
