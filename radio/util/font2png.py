@@ -23,17 +23,12 @@ chars_extra = u"".join([chr(1+i) for i in range(COUNT_EXTRA_CHARS)])
 chars = chars_en + chars_extra + chars_fr + chars_de + chars_cz + chars_es + chars_fi + chars_it + chars_pl + chars_se
 
 
-def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, background, coordsfile=True):
+def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, background, coordsfile=True):
 
-    font_filename = 'fonts/' + fontname
-    if fontbold:
-        font_filename = font_filename + '-Bold'
-    else:
-        font_filename = font_filename + '-Regular'
-
-    font_filename = font_filename + '.ttf'
 
     coords = []
+    font_filename = 'fonts/' + fontname + '.ttf'
+
     print 'Font filename: %s' % font_filename
     font = ImageFont.truetype(font_filename, fontsize)
 
@@ -84,7 +79,7 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
             pass
         else:
             w, h = font.getsize(c)
-            draw.text( (width + 1, -2) , c, fill=foreground, font=font)
+            draw.text( (width + 1, fontoffset) , c, fill=foreground, font=font)
 
         width += getCharWidth(c)
 
@@ -98,4 +93,4 @@ def createFontBitmap(filename, fontname, fontsize, fontbold, foreground, backgro
 
 # Main
 if __name__ == "__main__":
-    createFontBitmap(sys.argv[4], sys.argv[1], int(sys.argv[2]), sys.argv[3] == "True", (0,0,0), (255,255,255))
+    createFontBitmap(sys.argv[4], sys.argv[1], int(sys.argv[2]), int(sys.argv[3]), (0,0,0), (255,255,255))
