@@ -1,27 +1,11 @@
 # An Debian image for compiling OpenTX 2.2
 
-FROM debian:stretch
+FROM debian:jessie
 
-RUN apt-get update && \
-    apt-get install -y \
-      build-essential \
-      cmake \
-      gcc \
-      git \
-      lib32ncurses5 \
-      lib32z1 \
-      libfox-1.6-dev \
-      libsdl1.2-dev \
-      python-qt4 \
-      qt5-default \
-      qtmultimedia5-dev \
-      qttools5-dev \
-      qttools5-dev-tools \
-      libqt5svg5-dev \
-      software-properties-common \
-      wget \
-      zip \
-      python-pip
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y update
+RUN DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake gcc git lib32ncurses5 lib32z1 libfox-1.6-dev libsdl1.2-dev \
+      python-qt4 qt5-default qtmultimedia5-dev qttools5-dev qttools5-dev-tools libqt5svg5-dev \
+      software-properties-common wget zip python-pip python-pil
 
 RUN python -m pip install filelock
 
@@ -38,5 +22,6 @@ RUN wget -q http://ftp.de.debian.org/debian/pool/main/g/gcc-avr/gcc-avr_4.7.2-2_
 VOLUME ["/opentx"]
 
 ENV PATH $PATH:/opt/gcc-arm-none-eabi/bin:/opentx/code/radio/util
+
 ARG OPENTX_VERSION_SUFFIX=
 ENV OPENTX_VERSION_SUFFIX ${OPENTX_VERSION_SUFFIX}
