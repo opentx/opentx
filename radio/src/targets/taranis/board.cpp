@@ -252,6 +252,9 @@ void boardInit()
   else {
     pwrInit();
     backlightInit();
+#if NUM_PWMANALOGS > 0
+    delay_ms(650);
+#endif
   }
 #if defined(TOPLCD_GPIO)
   toplcdInit();
