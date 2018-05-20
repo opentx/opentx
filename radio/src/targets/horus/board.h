@@ -339,10 +339,10 @@ void watchdogInit(unsigned int duration);
 #define NUM_XPOTS                      NUM_POTS
 #if defined(PCBX10)
   #define NUM_SLIDERS                  2
-  #define NUM_PWMANALOGS               4
+  #define NUM_PWMSTICKS                4
 #else
   #define NUM_SLIDERS                  4
-  #define NUM_PWMANALOGS               0
+  #define NUM_PWMSTICKS                0
 #endif
 enum Analogs {
   STICK1,
@@ -408,12 +408,11 @@ uint16_t getAnalogValue(uint8_t index);
   #define NUM_DUMMY_ANAS               0
 #endif
 
-#if NUM_PWMANALOGS > 0
-extern uint8_t analogs_pwm_disabled;
-#define ANALOGS_PWM_ENABLED()          (analogs_pwm_disabled == false)
-void analogPwmInit(void);
-void analogPwmRead(uint16_t * values);
-void analogPwmCheck();
+#if NUM_PWMSTICKS > 0
+extern uint8_t sticks_pwm_disabled;
+#define STICKS_PWM_ENABLED()          (sticks_pwm_disabled == false)
+void sticksPwmInit(void);
+void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;
 #endif
 

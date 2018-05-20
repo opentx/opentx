@@ -174,6 +174,15 @@ void boardInit()
 #endif
 
   keysInit();
+
+#if NUM_PWMSTICKS > 0
+  sticksPwmInit();
+  delay_ms(20);
+  if (pwm_interrupt_count < 32) {
+    sticks_pwm_disabled = true;
+  }
+#endif
+
   adcInit();
   delaysInit();
   lcdInit(); // delaysInit() must be called before
@@ -252,9 +261,6 @@ void boardInit()
   else {
     pwrInit();
     backlightInit();
-#if NUM_PWMANALOGS > 0
-    delay_ms(730);
-#endif
   }
 #if defined(TOPLCD_GPIO)
   toplcdInit();

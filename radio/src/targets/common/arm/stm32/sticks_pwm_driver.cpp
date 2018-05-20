@@ -22,14 +22,14 @@
 
 #define TIMESAMPLE_COUNT 6
 
-uint8_t analogs_pwm_disabled = 0;
+uint8_t sticks_pwm_disabled = 0;
 volatile uint32_t pwm_interrupt_count;
 volatile uint8_t  timer_capture_states[4];
 volatile uint32_t timer_capture_rising_time[4];
 volatile uint32_t timer_capture_values[4][TIMESAMPLE_COUNT];
 volatile uint8_t  timer_capture_indexes[4];
 
-void analogPwmInit()
+void sticksPwmInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = PWM_GPIOA_PINS;
@@ -121,7 +121,7 @@ extern "C" void PWM_IRQHandler(void)
   }
 }
 
-void analogPwmRead(uint16_t * values)
+void sticksPwmRead(uint16_t * values)
 {
   uint32_t tmp[4];
 
@@ -145,15 +145,4 @@ void analogPwmRead(uint16_t * values)
   values[1] = tmp[1];
   values[2] = tmp[3];
   values[3] = tmp[2];
-}
-
-void analogPwmCheck()
-{
-  // I have ~1860 interrupts with only one stick
-  if (pwm_interrupt_count < 1000) {
-    analogs_pwm_disabled = true;
-#if !defined(SIMU)
-    adcInit();
-#endif
-  }
 }

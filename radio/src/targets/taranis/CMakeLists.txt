@@ -169,13 +169,13 @@ set(TARGET_SRC
   backlight_driver.cpp
   extmodule_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
-  ../common/arm/stm32/analog_adc_driver.cpp
+  ../common/arm/stm32/adc_driver.cpp
   )
 
 if(PCB STREQUAL XLITE)
   set(TARGET_SRC
     ${TARGET_SRC}
-    ../common/arm/stm32/analog_pwm_driver.cpp
+    ../common/arm/stm32/sticks_pwm_driver.cpp
     )
 endif()
 

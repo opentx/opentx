@@ -2627,10 +2627,6 @@ void opentxInit(OPENTX_INIT_ARGS)
     backlightOn();
   }
 
-#if NUM_PWMANALOGS > 0
-  analogPwmCheck();
-#endif
-
   if (!unexpectedShutdown) {
     opentxStart();
   }
