@@ -148,7 +148,7 @@ enum MenuModelSetupItems {
 
 #if defined(CPUARM)
 #if defined(PCBXLITE)
-  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW) //xlite needs an additional column for full line selection (<])
+  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW) // X-Lite needs an additional column for full line selection (<])
 #else
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW)
 #endif
@@ -268,7 +268,7 @@ void menuModelSetup(event_t event)
     0, // Show trims
     0, // Trims step
     0, // Throttle reverse
-    0, // Throttle source
+    0, // Throttle trace source
     0, // Throttle trim
     CASE_CPUARM(LABEL(PreflightCheck))
     CASE_CPUARM(0) // Checklist
@@ -339,7 +339,7 @@ void menuModelSetup(event_t event)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, NUM_SWITCHES, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, CASE_PCBSKY9X(1) CASE_PCBSKY9X(2) });
 #endif
 
-  MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, MODEL_SETUP_MAX_LINES);
+  MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE+MODEL_SETUP_MAX_LINES);
 
 #if defined(CPUARM) && (defined(DSM2) || defined(PXX))
   if (menuEvent) {
@@ -357,7 +357,7 @@ void menuModelSetup(event_t event)
 
   for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+menuVerticalOffset;
+    uint8_t k = i + menuVerticalOffset;
 #if defined(CPUARM)
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW) {
@@ -617,8 +617,11 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
 #if defined(PCBXLITE)
           lcdDrawText(LCD_W, y, "<]", RIGHT);
-          if (menuHorizontalPosition > NUM_SWITCHES) menuHorizontalPosition = NUM_SWITCHES;
-          if ((attr) && (menuHorizontalPosition == NUM_SWITCHES)) {
+          if (attr) {
+            if (menuHorizontalPosition > NUM_SWITCHES)
+              menuHorizontalPosition = NUM_SWITCHES;
+          }
+          if (attr && menuHorizontalPosition == NUM_SWITCHES) {
 #else
           if (attr) {
 #endif
