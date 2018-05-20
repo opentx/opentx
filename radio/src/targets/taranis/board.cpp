@@ -174,6 +174,7 @@ void boardInit()
 #endif
 
   keysInit();
+  delaysInit();
 
 #if NUM_PWMSTICKS > 0
   sticksPwmInit();
@@ -184,7 +185,6 @@ void boardInit()
 #endif
 
   adcInit();
-  delaysInit();
   lcdInit(); // delaysInit() must be called before
   audioInit();
   init2MhzTimer();
