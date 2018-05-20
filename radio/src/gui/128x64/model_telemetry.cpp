@@ -518,8 +518,11 @@ void menuModelTelemetryFrsky(event_t event)
     uint8_t k = i + menuVerticalOffset;
 #if defined(CPUARM)
     for (int j=0; j<=k; j++) {
-      if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW)
-        k++;
+      if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW) {
+        if (++k >= (int)DIM(mstate_tab)) {
+          return;
+        }
+      }
     }
 #endif
 
