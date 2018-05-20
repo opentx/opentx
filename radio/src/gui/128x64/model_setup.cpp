@@ -255,11 +255,28 @@ void menuModelSetup(event_t event)
 #endif
 
 #if defined(CPUARM)
-    static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
+  static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 #endif
 
 #if defined(PCBXLITE)
-  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, SW_WARN_ROWS,  POT_WARN_ITEMS(), NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, 0,
+  MENU_TAB({
+    HEADER_LINE_COLUMNS
+    0,
+    TIMER_ROWS, TIMER_ROWS, TIMER_ROWS,
+    0, // Extended limits
+    1, // Extended trims
+    0, // Show trims
+    0, // Trims step
+    0, // Throttle reverse
+    0, // Throttle source
+    0, // Throttle trim
+    CASE_CPUARM(LABEL(PreflightCheck))
+    CASE_CPUARM(0) // Checklist
+    0, // Throttle warning
+    SW_WARN_ROWS, // Switch warning
+    POT_WARN_ITEMS(), // Pot warning
+    NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
+    0, // Global functions
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     INTERNAL_MODULE_CHANNELS_ROWS,
