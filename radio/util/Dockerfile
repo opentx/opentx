@@ -4,7 +4,7 @@ FROM debian:stretch
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y update
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y install build-essential cmake gcc git lib32ncurses5 lib32z1 libfox-1.6-dev libsdl1.2-dev \
-      python-qt4 qt5-default qtmultimedia5-dev qttools5-dev qttools5-dev-tools libqt5svg5-dev \
+      qt5-default qtmultimedia5-dev qttools5-dev qttools5-dev-tools libqt5svg5-dev \
       software-properties-common wget zip python-pip python-pil libgtest-dev
 
 RUN python -m pip install filelock
