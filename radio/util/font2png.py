@@ -33,25 +33,26 @@ def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, backg
     font = ImageFont.truetype(font_filename, fontsize)
 
     extraImage = None
-    extraWidth, extraHeight = 0, 0
     extraFilename = 'fonts/extra_%dpx.png' % fontsize
 
     try:
         extraImage = Image.open(extraFilename)
         extraImage = extraImage.convert('RGB');
-        extraWidth, extraHeight = extraImage.size
-
-        extraWidth = extraWidth / COUNT_EXTRA_CHARS
 
     except IOError:
         print 'Missing extra symbol filename %s' % extraFilename
 
     def getCharWidth(c):
         if c in chars_extra:
-            if ord(c) <= 9:
-                return 13
+            if extraImage:
+                # Extra characters 16px
+                #if fontsize == 16:
+                if ord(c) <= 9:
+                    return 13
+                else:
+                    return 15
             else:
-                return 15
+                return 0
         elif c == " ":
             return 4
         else:
