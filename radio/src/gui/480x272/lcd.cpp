@@ -37,7 +37,7 @@ uint8_t getMappedChar(uint8_t c)
   if (c == 0)
     result = 0;
 #if defined(TRANSLATIONS_FR)
-  else if (c >= 0x80 && c <= 0x85) {
+  else if (c >= 0x80 && c <= 0x84) {
     result = 115 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_DE)
@@ -45,8 +45,32 @@ uint8_t getMappedChar(uint8_t c)
     result = 120 + c - 0x80;
   }
 #elif defined(TRANSLATIONS_CZ)
-  else if (c >= 0x80 && c < 0x80+30) {
+  else if (c >= 0x80 && c <= 0x80+29) {
     result = 127 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_ES)
+  else if (c >= 0x80 && c <= 0x81) {
+    result = 157 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_FI)
+  else if (c >= 0x80 && c <= 0x85) {
+    result = 159 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_IT)
+  else if (c >= 0x80 && c <= 0x81) {
+    result = 165 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_PL)
+  else if (c >= 0x80 && c <= 0x80+17) {
+    result = 167 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_PT)
+  else if (c >= 0x80 && c <= 0x80+21) {
+    result = 185 + c - 0x80;
+  }
+#elif defined(TRANSLATIONS_SE)
+  else if (c >= 0x80 && c <= 0x85) {
+    result = 207 + c - 0x80;
   }
 #endif
   else if (c < 0xC0)
