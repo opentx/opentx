@@ -145,7 +145,6 @@ void dumpTraceBuffer()
     "Audio",   // INT_AUDIO,
     "BlueT",   // INT_BLUETOOTH,
     "Lcd  ",   // INT_LCD,
-    "D2S7 ",   // INT_DMA2S7,
     "T1CC ",   // INT_TIM1CC,
     "Tim1 ",   // INT_TIM1,
     "Tim8 ",   // INT_TIM8,
@@ -153,7 +152,6 @@ void dumpTraceBuffer()
     "TelDm",   // INT_TELEM_DMA,
     "TelUs",   // INT_TELEM_USART,
     "Train",   // INT_TRAINER,
-    "Hbeat",   // INT_HEARTBEAT,
     "Usb  ",   // INT_OTG_FS,
 #if defined(DEBUG_USB_INTERRUPTS)
     " spur",  // INT_OTG_FS_SPURIOUS,

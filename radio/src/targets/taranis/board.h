@@ -205,31 +205,25 @@ void disable_crossfire( uint32_t module_index );
 #else
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
-#if defined(TRAINER_OUT_GPIO_PIN)
+#if defined(TRAINER_GPIO)
   void init_trainer_ppm(void);
   void stop_trainer_ppm(void);
-#else
-  #define init_trainer_ppm()
-  #define stop_trainer_ppm()
-#endif
-#if defined(TRAINER_IN_GPIO_PIN)
   void init_trainer_capture(void);
   void stop_trainer_capture(void);
 #else
+  #define init_trainer_ppm()
+  #define stop_trainer_ppm()
   #define init_trainer_capture()
   #define stop_trainer_capture()
 #endif
-#if defined(HEARTBEAT_GPIO_AF_CAPTURE)
+#if defined(TRAINER_MODULE_HEARTBEAT)
   void init_cppm_on_heartbeat_capture(void);
   void stop_cppm_on_heartbeat_capture(void);
-#else
-  #define init_cppm_on_heartbeat_capture()
-  #define stop_cppm_on_heartbeat_capture()
-#endif
-#if defined(HEARTBEAT_GPIO_AF_SBUS)
   void init_sbus_on_heartbeat_capture(void);
   void stop_sbus_on_heartbeat_capture(void);
 #else
+  #define init_cppm_on_heartbeat_capture()
+  #define stop_cppm_on_heartbeat_capture()
   #define init_sbus_on_heartbeat_capture()
   #define stop_sbus_on_heartbeat_capture()
 #endif

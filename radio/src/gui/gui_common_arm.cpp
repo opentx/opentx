@@ -597,7 +597,7 @@ bool isTrainerModeAvailable(int mode)
 #elif defined(PCBXLITE)
 bool isTrainerModeAvailable(int mode)
 {
-  if ((g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)) || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
    return true;
   else
    return false;
