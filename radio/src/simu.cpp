@@ -578,6 +578,9 @@ uint16_t anaIn(uint8_t chan)
 #elif defined(PCBX9E)
   else if (chan == TX_VOLTAGE)
     return 1420;      //~10.6V
+#elif defined(PCBXLITE)
+  else if (chan == TX_VOLTAGE)
+    return 1100;
 #elif defined(PCBTARANIS)
   else if (chan == TX_VOLTAGE)
     return 1000;      //~7.4V

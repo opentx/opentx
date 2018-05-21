@@ -145,7 +145,7 @@ enum MenuModelSetupItems {
 
 #if defined(CPUARM)
 #if defined(PCBXLITE)
-  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW) //xlite needs an additional column for full line selection (<])
+  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW) // X-Lite needs an additional column for full line selection (<])
 #else
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW)
 #endif
@@ -251,17 +251,36 @@ void menuModelSetup(event_t event)
 #endif
 
 #if defined(CPUARM)
-    static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
+  static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 #endif
 
-#if defined(PCBXLITE)
-  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, SW_WARN_ROWS,  POT_WARN_ITEMS(), NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, 0,
+#if defined(PCBTARANIS)
+  MENU_TAB({
+    HEADER_LINE_COLUMNS
+    0,
+    TIMER_ROWS, TIMER_ROWS, TIMER_ROWS,
+    0, // Extended limits
+    1, // Extended trims
+    0, // Show trims
+    0, // Trims step
+    0, // Throttle reverse
+    0, // Throttle trace source
+    0, // Throttle trim
+    CASE_CPUARM(LABEL(PreflightCheck))
+    CASE_CPUARM(0) // Checklist
+    0, // Throttle warning
+    SW_WARN_ROWS, // Switch warning
+    POT_WARN_ITEMS(), // Pot warning
+    NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
+    0, // Global functions
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     INTERNAL_MODULE_CHANNELS_ROWS,
     IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
-    IF_INTERNAL_MODULE_ON(0),
+#if defined(PCBXLITE)
+    IF_INTERNAL_MODULE_ON(0), // Int/Ext antenna
+#endif
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
@@ -275,41 +294,21 @@ void menuModelSetup(event_t event)
     EXTERNAL_MODULE_POWER_ROW,
     EXTRA_MODULE_ROWS
     TRAINER_ROWS });
-#elif defined(PCBTARANIS)
-  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, SW_WARN_ROWS, POT_WARN_ITEMS(), NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
-  LABEL(InternalModule),
-  INTERNAL_MODULE_MODE_ROWS,
-  INTERNAL_MODULE_CHANNELS_ROWS,
-  IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
-  IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
-  LABEL(ExternalModule),
-  EXTERNAL_MODULE_MODE_ROWS,
-  MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-  MULTIMODULE_STATUS_ROWS
-  EXTERNAL_MODULE_CHANNELS_ROWS,
-  EXTERNAL_MODULE_BIND_ROWS(),
-  OUTPUT_TYPE_ROWS()
-  FAILSAFE_ROWS(EXTERNAL_MODULE),
-  EXTERNAL_MODULE_OPTION_ROW,
-  MULTIMODULE_MODULE_ROWS
-  EXTERNAL_MODULE_POWER_ROW,
-  EXTRA_MODULE_ROWS
-  TRAINER_ROWS });
 #elif defined(CPUARM)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, CASE_CPUARM(LABEL(PreflightCheck)) CASE_CPUARM(0) 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
-  LABEL(ExternalModule),
-  EXTERNAL_MODULE_MODE_ROWS,
-  MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-  MULTIMODULE_STATUS_ROWS
-  EXTERNAL_MODULE_CHANNELS_ROWS,
-  EXTERNAL_MODULE_BIND_ROWS(),
-  OUTPUT_TYPE_ROWS()
-  FAILSAFE_ROWS(EXTERNAL_MODULE),
-  EXTERNAL_MODULE_OPTION_ROW,
-  MULTIMODULE_MODULE_ROWS
-  EXTERNAL_MODULE_POWER_ROW,
-  EXTRA_MODULE_ROWS
-  TRAINER_ROWS });
+    LABEL(ExternalModule),
+    EXTERNAL_MODULE_MODE_ROWS,
+    MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
+    MULTIMODULE_STATUS_ROWS
+    EXTERNAL_MODULE_CHANNELS_ROWS,
+    EXTERNAL_MODULE_BIND_ROWS(),
+    OUTPUT_TYPE_ROWS()
+    FAILSAFE_ROWS(EXTERNAL_MODULE),
+    EXTERNAL_MODULE_OPTION_ROW,
+    MULTIMODULE_MODULE_ROWS
+    EXTERNAL_MODULE_POWER_ROW,
+    EXTRA_MODULE_ROWS
+    TRAINER_ROWS });
 #elif defined(CPUM64)
   uint8_t protocol = g_model.protocol;
   MENU_TAB({ HEADER_LINE_COLUMNS 0, 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2 });
@@ -318,7 +317,7 @@ void menuModelSetup(event_t event)
   MENU_TAB({ HEADER_LINE_COLUMNS 0, 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 2, CASE_PERSISTENT_TIMERS(0) 0, 0, 0, 1, 0, 0, 0, 0, 0, NUM_SWITCHES, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, FIELD_PROTOCOL_MAX, 2, CASE_PCBSKY9X(1) CASE_PCBSKY9X(2) });
 #endif
 
-  MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, MODEL_SETUP_MAX_LINES);
+  MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE+MODEL_SETUP_MAX_LINES);
 
 #if defined(CPUARM) && (defined(DSM2) || defined(PXX))
   if (menuEvent) {
@@ -336,7 +335,7 @@ void menuModelSetup(event_t event)
 
   for (uint8_t i=0; i<NUM_BODY_LINES; ++i) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t k = i+menuVerticalOffset;
+    uint8_t k = i + menuVerticalOffset;
 #if defined(CPUARM)
     for (int j=0; j<=k; j++) {
       if (mstate_tab[j+HEADER_LINE] == HIDDEN_ROW) {
@@ -596,8 +595,11 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, STR_SWITCHWARNING);
 #if defined(PCBXLITE)
           lcdDrawText(LCD_W, y, "<]", RIGHT);
-          if (menuHorizontalPosition > NUM_SWITCHES) menuHorizontalPosition = NUM_SWITCHES;
-          if ((attr) && (menuHorizontalPosition == NUM_SWITCHES)) {
+          if (attr) {
+            if (menuHorizontalPosition > NUM_SWITCHES)
+              menuHorizontalPosition = NUM_SWITCHES;
+          }
+          if (attr && menuHorizontalPosition == NUM_SWITCHES) {
 #else
           if (attr) {
 #endif
