@@ -155,7 +155,7 @@ void boardInit()
                          BACKLIGHT_RCC_APB1Periph | HAPTIC_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
                          SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
-                         TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph |
+                         TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph | HEARTBEAT_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph | BT_RCC_APB1Periph, ENABLE);
 
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph |
