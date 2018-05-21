@@ -28,7 +28,7 @@ bool isFaiForbidden(source_t idx)
   if (idx < MIXSRC_FIRST_TELEM) {
     return false;
   }
-  
+
   TelemetrySensor * sensor = &g_model.telemetrySensors[(idx-MIXSRC_FIRST_TELEM)/3];
 
   switch (telemetryProtocol) {
@@ -477,6 +477,26 @@ int lastUsedTelemetryIndex()
     }
   }
   return -1;
+}
+
+bool isValidIdAndInstance(uint16_t id, uint8_t instance)
+{
+  bool sensorFound = false;
+
+  for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
+    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id)
+    {
+      sensorFound = true;
+      if (telemetrySensor.instance == instance || g_model.ignoreSensorIds)
+        return true;
+    }
+  }
+
+  if (sensorFound)
+    return false;
+
+  return true;
 }
 
 int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
