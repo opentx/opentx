@@ -23,6 +23,7 @@
 #include "appdata.h"
 #include "helpers.h"
 #include "modelslist.h"
+#include "styleeditdialog.h"
 #include <QPrinter>
 #include <QPrintDialog>
 
@@ -188,4 +189,11 @@ void CompareDialog::on_printFileButton_clicked()
     printer.setOutputFileName(filename);
     ui->textEdit->print(&printer);
   }
+}
+
+void CompareDialog::on_styleButton_clicked()
+{
+  StyleEditDialog *g = new StyleEditDialog(this, MODEL_PRINT_CSS);
+  if (g->exec() == QDialog::Accepted)
+    compare();
 }

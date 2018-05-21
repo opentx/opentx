@@ -51,6 +51,7 @@ class CompareDialog : public QDialog
     void removeModelBtnClicked();
     void on_printButton_clicked();
     void on_printFileButton_clicked();
+    void on_styleButton_clicked();
 
   protected:
     virtual void closeEvent(QCloseEvent * event);
