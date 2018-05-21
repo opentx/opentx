@@ -451,15 +451,15 @@ local function runDevicePage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT then
+    if event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT or event == EVT_ROT_LEFT then
       incrField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT then
+    elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT or event == EVT_ROT_RIGHT then
       incrField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST then
+    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST then
+    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT then
       selectField(-1)
     end
   end
