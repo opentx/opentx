@@ -62,7 +62,7 @@ with open(sys.argv[2], "w") as f:
         values = []
         for y in range(height):
             for x in range(width):
-                pixel = image.getpixel(width-x-1, height-y-1)
+                pixel = image.getpixel((width-x-1, height-y-1))
                 val = ((pixel[3] // 16) << 12) + ((pixel[0] // 16) << 8) + ((pixel[1] // 16) << 4) + ((pixel[2] // 16) << 0)
                 values.append(str(val))
         f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
@@ -118,6 +118,7 @@ with open(sys.argv[2], "w") as f:
     elif what == "8bits":
         colors = []
         writeSize(f, width, height)
+        image = image.convert(mode='L')
         for y in range(height):
             for x in range(width):
                 value = image.getpixel((x, y))
