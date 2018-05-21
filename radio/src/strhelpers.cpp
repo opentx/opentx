@@ -463,8 +463,10 @@ char * strAppendFilename(char * dest, const char * filename, const int size)
   memset(dest, 0, size);
   for (int i=0; i<size; i++) {
     char c = *filename++;
-    if (c == '\0' || c == '.')
+    if (c == '\0' || c == '.') {
+      *dest = 0;
       break;
+    }
     *dest++ = c;
   }
   return dest;

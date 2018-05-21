@@ -446,6 +446,44 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
     SET_WARNING_INFO(reusableBuffer.msgbuf.msg, sizeof(reusableBuffer.msgbuf.msg), 0);
   }
 }
+
+uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
+{
+  // assume 63 is the highest Model ID
+  // and use 64 bits
+  uint8_t usedModelIds[8];
+  memset(usedModelIds, 0, sizeof(usedModelIds));
+
+  for (uint8_t mod_i = 0; mod_i < MAX_MODELS; mod_i++) {
+
+    if (mod_i == index)
+      continue;
+
+    uint8_t id = modelHeaders[mod_i].modelId[module];
+    if (id == 0)
+      continue;
+
+    uint8_t mask = 1;
+    for (uint8_t i = 1; i < (id & 7); i++)
+      mask <<= 1;
+
+    usedModelIds[id >> 3] |= mask;
+  }
+
+  uint8_t new_id = 1;
+  uint8_t tst_mask = 1;
+  for (;new_id < MAX_RX_NUM(module); new_id++) {
+    if (!(usedModelIds[new_id >> 3] & tst_mask)) {
+      // found free ID
+      return new_id;
+    }
+    if ((tst_mask <<= 1) == 0)
+      tst_mask = 1;
+  }
+
+  // failed finding something...
+  return 0;
+}
 #endif
 
 void modelDefault(uint8_t id)

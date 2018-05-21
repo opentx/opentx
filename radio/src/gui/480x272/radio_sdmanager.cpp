@@ -20,6 +20,7 @@
 
 #include <stdio.h>
 #include "opentx.h"
+#include "storage/modelslist.h"
 
 #define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; currentBitmapIndex = -1; } while (0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
@@ -126,6 +127,8 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_ASSIGN_BITMAP) {
     memcpy(g_model.header.bitmap, line, sizeof(g_model.header.bitmap));
+    if(modelslist.getCurrentModel())
+      modelslist.getCurrentModel()->resetBuffer();
     storageDirty(EE_MODEL);
   }
   else if (result == STR_ASSIGN_SPLASH) {

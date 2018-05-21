@@ -939,8 +939,9 @@ inline void resumeMixerCalculations()
 void generalDefault();
 void modelDefault(uint8_t id);
 
-#if defined(CPUARM)
+#if defined(CPUARM) && defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module);
+uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
 #endif
 
 #if defined(CPUARM)

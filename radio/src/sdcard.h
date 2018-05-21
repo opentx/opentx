@@ -22,6 +22,7 @@
 #define _SDCARD_H_
 
 #include "ff.h"
+#include "opentx.h"
 
 #define ROOT_PATH           "/"
 #define MODELS_PATH         ROOT_PATH "MODELS"      // no trailing slash = important

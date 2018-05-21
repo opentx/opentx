@@ -258,6 +258,8 @@ void menuModelSetup(event_t event)
   static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 #endif
 
+  int8_t old_editMode = s_editMode;
+
 #if defined(PCBTARANIS)
   MENU_TAB({
     HEADER_LINE_COLUMNS
@@ -1109,9 +1111,14 @@ void menuModelSetup(event_t event)
                 if (checkIncDec_Ret) {
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
                 }
-              }
-              if (editMode==0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
-                checkModelIdUnique(g_eeGeneral.currModel, moduleIdx);
+                else if (event == EVT_KEY_LONG(KEY_ENTER)) {
+                  killEvents(event);
+                  uint8_t newVal = findNextUnusedModelId(g_eeGeneral.currModel, moduleIdx);
+                  if (newVal != g_model.header.modelId[moduleIdx]) {
+                    modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx] = newVal;
+                    storageDirty(EE_MODEL);
+                  }
+                }
               }
             }
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, l_posHorz==1 ? attr : 0);
@@ -1507,6 +1514,30 @@ void menuModelSetup(event_t event)
     lcdDrawNumber(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
   }
 #endif
+
+  // some field just finished being edited
+  if (old_editMode > 0 && s_editMode == 0) {
+    switch(menuVerticalPosition) {
+#if defined(PCBTARANIS)
+    case ITEM_MODEL_INTERNAL_MODULE_BIND:
+      if (menuHorizontalPosition == 0)
+        checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
+      break;
+#endif
+#if defined(PCBSKY9X)
+    case ITEM_MODEL_EXTRA_MODULE_BIND:
+      if (menuHorizontalPosition == 0)
+        checkModelIdUnique(g_eeGeneral.currModel, EXTRA_MODULE);
+      break;
+#endif
+#if defined(CPUARM)
+      case ITEM_MODEL_EXTERNAL_MODULE_BIND:
+      if (menuHorizontalPosition == 0)
+        checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
+      break;
+#endif
+    }
+  }
 }
 
 #if defined(CPUARM)
