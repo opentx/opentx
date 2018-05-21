@@ -46,9 +46,9 @@
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1};
 #endif
 
-#if NUM_PWMANALOGS > 0
-  #define FIRST_ANALOG_ADC             (ANALOGS_PWM_ENABLED() ? NUM_PWMANALOGS : 0)
-  #define NUM_ANALOGS_ADC              (ANALOGS_PWM_ENABLED() ? (NUM_ANALOGS - NUM_PWMANALOGS) : NUM_ANALOGS)
+#if NUM_PWMSTICKS > 0
+  #define FIRST_ANALOG_ADC             (STICKS_PWM_ENABLED() ? NUM_PWMSTICKS : 0)
+  #define NUM_ANALOGS_ADC              (STICKS_PWM_ENABLED() ? (NUM_ANALOGS - NUM_PWMSTICKS) : NUM_ANALOGS)
 #elif defined(PCBX9E)
   #define FIRST_ANALOG_ADC             0
   #define NUM_ANALOGS_ADC              10
@@ -93,7 +93,7 @@ void adcInit()
   ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC-1) << 20; // bits 23:20 = number of conversions
 
 #if defined(PCBX10)
-  if (ANALOGS_PWM_ENABLED()) {
+  if (STICKS_PWM_ENABLED()) {
     ADC_MAIN->SQR2 = (ADC_CHANNEL_EXT1<<0) + (ADC_CHANNEL_EXT2<<5); // conversions 7 and more
     ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_POT2<<5) + (ADC_CHANNEL_POT3<<10) + (ADC_CHANNEL_SLIDER1<<15) + (ADC_CHANNEL_SLIDER2<<20) + (ADC_CHANNEL_BATT<<25); // conversions 1 to 6
   }
@@ -105,7 +105,7 @@ void adcInit()
   ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
 #elif defined(PCBXLITE)
-  if (ANALOGS_PWM_ENABLED()) {
+  if (STICKS_PWM_ENABLED()) {
     ADC_MAIN->SQR2 = 0;
     ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_POT2<<5) + (ADC_CHANNEL_BATT<<10);
   }
@@ -149,9 +149,9 @@ void adcInit()
   ADC_EXT_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 #endif
 
-#if NUM_PWMANALOGS > 0
-  if (ANALOGS_PWM_ENABLED()) {
-    analogPwmInit();
+#if NUM_PWMSTICKS > 0
+  if (STICKS_PWM_ENABLED()) {
+    sticksPwmInit();
   }
 #endif
 }
@@ -211,9 +211,9 @@ void adcRead()
     adcValues[x] = temp[x] >> 2;
   }
 
-#if NUM_PWMANALOGS > 0
-  if (ANALOGS_PWM_ENABLED()) {
-    analogPwmRead(adcValues);
+#if NUM_PWMSTICKS > 0
+  if (STICKS_PWM_ENABLED()) {
+    sticksPwmRead(adcValues);
   }
 #endif
 }

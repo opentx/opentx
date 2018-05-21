@@ -197,6 +197,15 @@ void boardInit()
   memset(&g_FATFS_Obj, 0, sizeof(g_FATFS_Obj));
 
   keysInit();
+
+#if NUM_PWMSTICKS > 0
+  sticksPwmInit();
+  delay_ms(20);
+  if (pwm_interrupt_count < 32) {
+    sticks_pwm_disabled = true;
+  }
+#endif
+
   adcInit();
   lcdInit();
   backlightInit();

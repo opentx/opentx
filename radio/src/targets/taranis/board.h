@@ -450,12 +450,11 @@ enum Analogs {
 #define NUM_DUMMY_ANAS                  0
 
 #if defined(PCBXLITE)
-  #define NUM_PWMANALOGS                4
-  extern uint8_t analogs_pwm_disabled;
-  #define ANALOGS_PWM_ENABLED()         (analogs_pwm_disabled == false)
-  void analogPwmInit(void);
-  void analogPwmRead(uint16_t * values);
-  void analogPwmCheck();
+  #define NUM_PWMSTICKS                 4
+  extern uint8_t sticks_pwm_disabled;
+  #define STICKS_PWM_ENABLED()         (sticks_pwm_disabled == false)
+  void sticksPwmInit(void);
+  void sticksPwmRead(uint16_t * values);
   extern volatile uint32_t pwm_interrupt_count;
   #define NUM_TRIMS_KEYS                4
 #else
