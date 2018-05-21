@@ -101,10 +101,10 @@ extern "C" void PWM_IRQHandler(void)
   for (int i=0; i<4; i++) {
     if (PWM_TIMER->SR & (TIM_DIER_CC1IE << i)) {
       uint32_t capture = TIM_GetCapture(i);
+      pwm_interrupt_count++;
       if (timer_capture_states[i] != 0) {
         uint32_t value = diff_with_16bits_overflow(timer_capture_rising_time[i], capture);
         if (value < 10000) {
-          pwm_interrupt_count++;
           timer_capture_values[i][timer_capture_indexes[i]++] = value;
           timer_capture_indexes[i] %= TIMESAMPLE_COUNT;
         }

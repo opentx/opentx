@@ -178,7 +178,7 @@ void boardInit()
 
 #if NUM_PWMSTICKS > 0
   sticksPwmInit();
-  delay_ms(40);
+  delay_ms(20);
   if (pwm_interrupt_count < 32) {
     sticks_pwm_disabled = true;
   }
