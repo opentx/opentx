@@ -53,6 +53,8 @@ def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, backg
                     return 15
             else:
                 return 0
+        elif c == " ":
+            return 4
         else:
             w, h = font.getsize(c)
             return w + 1
