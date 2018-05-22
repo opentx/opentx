@@ -420,8 +420,8 @@ extern volatile uint32_t pwm_interrupt_count;
 #if defined(PCBX10)
   // Lipo 2S
   #define BATTERY_WARN      66 // 6.6V
-  #define BATTERY_MIN       62 // 6.2V
-  #define BATTERY_MAX       82 // 8.2V
+  #define BATTERY_MIN       67 // 6.7V
+  #define BATTERY_MAX       83 // 8.3V
 #else
   // NI-MH 9.6V
   #define BATTERY_WARN      87 // 8.7V

@@ -86,13 +86,7 @@ GeneralSettings::GeneralSettings()
     vBatMin = -5;   //8,5V
     vBatMax = -5;   //11,5V
   }
-  else if (IS_HORUS_X10(board)) {
-    // Lipo 2S
-    vBatWarn = 66;
-    vBatMin = -28; // 6.2V
-    vBatMax = -38;   // 8.2V
-  }
-  else if (IS_TARANIS_XLITE(board)) {
+  else if (IS_TARANIS_XLITE(board) || IS_HORUS_X10(board)) {
     vBatWarn = 66;
     vBatMin = -23;  // 6.7V
     vBatMax = -37;  // 8.3V 

@@ -687,9 +687,7 @@ void SimulatorWidget::restoreRadioWidgetsState()
   emit stickModeChange(radioSettings.stickMode);
 
   // TODO : custom voltages
-  qint16 volts = radioSettings.vBatWarn + 2;
-  if (firmware->getCapability(Capability::HasBatMeterRange))
-    volts = (radioSettings.vBatMin + 90) + ((radioSettings.vBatMax + 30) - radioSettings.vBatMin) / 2;
+  qint16 volts = radioSettings.vBatWarn + 20; // 1V above min
   emit inputValueChange(SimulatorInterface::INPUT_SRC_TXVIN, 0, volts);
 }
 
