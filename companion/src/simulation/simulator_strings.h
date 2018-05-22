@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 
 #define SIMU_STR_HLP_KEY_ENTER         QCoreApplication::translate("SimulatedUIWidget", "ENTER")
+#define SIMU_STR_HLP_KEY_SHIFT         QCoreApplication::translate("SimulatedUIWidget", "SHIFT")
 #define SIMU_STR_HLP_KEY_PGUP          QCoreApplication::translate("SimulatedUIWidget", "PG-UP")
 #define SIMU_STR_HLP_KEY_PGDN          QCoreApplication::translate("SimulatedUIWidget", "PG-DN")
 #define SIMU_STR_HLP_KEY_DEL           QCoreApplication::translate("SimulatedUIWidget", "DEL")
@@ -39,6 +40,7 @@
 #define SIMU_STR_HLP_ACT_PAGE          QCoreApplication::translate("SimulatedUIWidget", "<pre>[ PAGE ]</pre>")
 #define SIMU_STR_HLP_ACT_EXIT          QCoreApplication::translate("SimulatedUIWidget", "<pre>[ EXIT ]</pre>")
 #define SIMU_STR_HLP_ACT_ENT           QCoreApplication::translate("SimulatedUIWidget", "<pre>[ ENT ]</pre>")
+#define SIMU_STR_HLP_ACT_SHIFT         QCoreApplication::translate("SimulatedUIWidget", "<pre>[ SHIFT ]</pre>")
 #define SIMU_STR_HLP_ACT_UP            QCoreApplication::translate("SimulatedUIWidget", "<pre>[ UP ]</pre>")
 #define SIMU_STR_HLP_ACT_DN            QCoreApplication::translate("SimulatedUIWidget", "<pre>[ DN ]</pre>")
 #define SIMU_STR_HLP_ACT_PLS           QCoreApplication::translate("SimulatedUIWidget", "<pre>[ <font size=+2>+</font> ]</pre>")

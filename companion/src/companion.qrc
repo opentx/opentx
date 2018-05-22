@@ -136,6 +136,18 @@
     <file>images/simulator/X9E/right.png</file>
     <file>images/simulator/X9E/right_enter.png</file>
     <file>images/simulator/X9E/top.png</file>
+    <file>images/simulator/XLITE/bottom.png</file>
+    <file>images/simulator/XLITE/left.png</file>
+    <file>images/simulator/XLITE/left_scrnshot.png</file>
+    <file>images/simulator/XLITE/right.png</file>
+    <file>images/simulator/XLITE/right_ent.png</file>
+    <file>images/simulator/XLITE/top.png</file>
+    <file>images/simulator/XLITE/right_exit.png</file>
+    <file>images/simulator/XLITE/right_shift.png</file>
+    <file>images/simulator/XLITE/right_right.png</file>
+    <file>images/simulator/XLITE/right_left.png</file>
+    <file>images/simulator/XLITE/right_up.png</file>
+    <file>images/simulator/XLITE/right_down.png</file>
     <file>images/wizard/ailerons.png</file>
     <file>images/wizard/airbrakes.png</file>
     <file>images/wizard/elevons.png</file> 

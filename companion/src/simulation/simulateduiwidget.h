@@ -106,6 +106,7 @@ namespace Ui {
   class SimulatedUIWidget9X;
   class SimulatedUIWidgetX7;
   class SimulatedUIWidgetX9;
+  class SimulatedUIWidgetXLITE;
   class SimulatedUIWidgetX9E;
   class SimulatedUIWidgetX10;
   class SimulatedUIWidgetX12;
@@ -149,6 +150,18 @@ class SimulatedUIWidgetX9: public SimulatedUIWidget
 
   private:
     Ui::SimulatedUIWidgetX9 * ui;
+};
+
+class SimulatedUIWidgetXLITE: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetXLITE(SimulatorInterface * simulator, QWidget * parent = NULL);
+    virtual ~SimulatedUIWidgetXLITE();
+
+  private:
+    Ui::SimulatedUIWidgetXLITE * ui;
 };
 
 class SimulatedUIWidgetX9E: public SimulatedUIWidget
