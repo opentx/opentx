@@ -21,7 +21,10 @@
 #ifndef _SDCARD_H_
 #define _SDCARD_H_
 
+#if !defined(SIMU)
 #include "ff.h"
+#endif
+
 #include "opentx.h"
 
 #define ROOT_PATH           "/"
