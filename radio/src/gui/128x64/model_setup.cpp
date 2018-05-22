@@ -260,7 +260,7 @@ void menuModelSetup(event_t event)
 
   int8_t old_editMode = s_editMode;
 
-#if defined(PCBTARANIS)
+#if defined(PCBXLITE)
   MENU_TAB({
     HEADER_LINE_COLUMNS
     0,
@@ -284,9 +284,44 @@ void menuModelSetup(event_t event)
     INTERNAL_MODULE_CHANNELS_ROWS,
     IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
-#if defined(PCBXLITE)
     IF_INTERNAL_MODULE_ON(0), // Int/Ext antenna
-#endif
+    LABEL(ExternalModule),
+    EXTERNAL_MODULE_MODE_ROWS,
+    MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
+    MULTIMODULE_STATUS_ROWS
+    EXTERNAL_MODULE_CHANNELS_ROWS,
+    EXTERNAL_MODULE_BIND_ROWS(),
+    OUTPUT_TYPE_ROWS()
+    FAILSAFE_ROWS(EXTERNAL_MODULE),
+    EXTERNAL_MODULE_OPTION_ROW,
+    MULTIMODULE_MODULE_ROWS
+    EXTERNAL_MODULE_POWER_ROW,
+    EXTRA_MODULE_ROWS
+    TRAINER_ROWS });
+#elif defined(PCBTARANIS)
+  MENU_TAB({
+    HEADER_LINE_COLUMNS
+    0,
+    TIMER_ROWS, TIMER_ROWS, TIMER_ROWS,
+    0, // Extended limits
+    1, // Extended trims
+    0, // Show trims
+    0, // Trims step
+    0, // Throttle reverse
+    0, // Throttle trace source
+    0, // Throttle trim
+    CASE_CPUARM(LABEL(PreflightCheck))
+    CASE_CPUARM(0) // Checklist
+    0, // Throttle warning
+    SW_WARN_ROWS, // Switch warning
+    POT_WARN_ITEMS(), // Pot warning
+    NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
+    0, // Global functions
+    LABEL(InternalModule),
+    INTERNAL_MODULE_MODE_ROWS,
+    INTERNAL_MODULE_CHANNELS_ROWS,
+    IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
+    IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
