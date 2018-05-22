@@ -38,7 +38,7 @@ SimulatedUIWidgetXLITE::SimulatedUIWidgetXLITE(SimulatorInterface *simulator, QW
   act = new RadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
   addRadioWidget(ui->rightbuttons->addArea(QRect(36, 147, 27, 27), "XLITE/right_exit.png", act));
 
-  act = new RadioUiAction(7, QList<int>() << Qt::Key_Shift, SIMU_STR_HLP_KEY_SHIFT, SIMU_STR_HLP_ACT_SHIFT);
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_S, SIMU_STR_HLP_KEY_SHIFT, SIMU_STR_HLP_ACT_SHIFT);
   addRadioWidget(ui->rightbuttons->addArea(QRect(73, 129, 27, 27), "XLITE/right_shift.png", act));
 
   addRadioWidget(ui->leftbuttons->addArea(QRect(9, 152, 25, 25), "XLITE/left_scrnshot.png", m_screenshotAction));

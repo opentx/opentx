@@ -4,7 +4,7 @@
 #include <QCoreApplication>
 
 #define SIMU_STR_HLP_KEY_ENTER         QCoreApplication::translate("SimulatedUIWidget", "ENTER")
-#define SIMU_STR_HLP_KEY_SHIFT         QCoreApplication::translate("SimulatedUIWidget", "SHIFT")
+#define SIMU_STR_HLP_KEY_SHIFT         QCoreApplication::translate("SimulatedUIWidget", "S")
 #define SIMU_STR_HLP_KEY_PGUP          QCoreApplication::translate("SimulatedUIWidget", "PG-UP")
 #define SIMU_STR_HLP_KEY_PGDN          QCoreApplication::translate("SimulatedUIWidget", "PG-DN")
 #define SIMU_STR_HLP_KEY_DEL           QCoreApplication::translate("SimulatedUIWidget", "DEL")

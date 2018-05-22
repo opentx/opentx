@@ -280,10 +280,17 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
 #else
   // TODO : this should probably be handled in the GUI
   int key;
+#if defined(PCBXLITE)
+  if (steps > 0)
+    key = KEY_DOWN;
+  else if (steps < 0)
+    key = KEY_UP;
+#else
   if (steps > 0)
     key = KEY_MINUS;
   else if (steps < 0)
     key = KEY_PLUS;
+#endif
   else
     // Should not happen but Clang complains that key is unset otherwise
     return;
