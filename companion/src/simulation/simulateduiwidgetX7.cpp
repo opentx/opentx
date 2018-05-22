@@ -1,6 +1,8 @@
 #include "simulateduiwidget.h"
 #include "ui_simulateduiwidgetX7.h"
 
+// NOTE: RadioUiAction(NUMBER,...): NUMBER relates to enum EnumKeys in the specific board.h
+
 SimulatedUIWidgetX7::SimulatedUIWidgetX7(SimulatorInterface *simulator, QWidget * parent):
   SimulatedUIWidget(simulator, parent),
   ui(new Ui::SimulatedUIWidgetX7)
