@@ -507,7 +507,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="983"/>
         <source>Output Logs Folder</source>
-        <translation>Répertoire des logs sauvegardés</translation>
+        <translation>Dossier des logs sauvegardés</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1000"/>
@@ -567,7 +567,7 @@ Peut être différente de la langue du firmware</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1302"/>
         <source>Screenshot capture folder</source>
-        <translation>Répertoire des captures d&apos;écran</translation>
+        <translation>Dossier des captures d&apos;écran</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1364"/>
@@ -1063,7 +1063,7 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../comparedialog.ui" line="74"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../comparedialog.ui" line="81"/>
@@ -6364,12 +6364,12 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="880"/>
         <source>Local Folder:</source>
-        <translation>Répertoire Local:</translation>
+        <translation>Dossier Local:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="883"/>
         <source>Radio Folder:</source>
-        <translation>Répertoire Radio:</translation>
+        <translation>Dossier Radio:</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="886"/>
@@ -6379,22 +6379,22 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="888"/>
         <source>%1%2 Both directions, to radio folder first</source>
-        <translation>%1%2 Dans les deux sens, répertoire Radio d&apos;abord</translation>
+        <translation>%1%2 Dans les deux sens, dossier Radio d&apos;abord</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="889"/>
         <source>%1%2 Both directions, to local folder first</source>
-        <translation>%1%2 Dans les deux sens, répertoire Local d&apos;abord</translation>
+        <translation>%1%2 Dans les deux sens, dossier Local d&apos;abord</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="890"/>
         <source> %1  Only from local folder to radio folder</source>
-        <translation> %1  Seulement du répertoire Local vers le répertoire Radio</translation>
+        <translation> %1  Seulement du dossier Local vers le dossier Radio</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="891"/>
         <source> %1  Only from radio folder to local folder</source>
-        <translation> %1  Seulement du répertoire Radio vers le répertoire Local</translation>
+        <translation> %1  Seulement du dossier Radio vers le dossier Local</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="894"/>
@@ -9013,7 +9013,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="331"/>
         <source>Persist</source>
-        <translation type="unfinished"></translation>
+        <translation>Persistant</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="364"/>
@@ -9044,17 +9044,17 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="419"/>
         <source>F.In</source>
-        <translation type="unfinished"></translation>
+        <translation>F.Entrée</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="419"/>
         <source>F.Out</source>
-        <translation type="unfinished"></translation>
+        <translation>F.Sortie</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="448"/>
         <source>Global vars</source>
-        <translation type="unfinished"></translation>
+        <translation>Variables globales</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="470"/>
@@ -9416,7 +9416,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../printdialog.ui" line="61"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../printdialog.ui" line="68"/>
@@ -10735,7 +10735,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulator_strings.h" line="7"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="8"/>
@@ -10866,7 +10866,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulation/simulator_strings.h" line="43"/>
         <source>&lt;pre&gt;[ SHIFT ]&lt;/pre&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../simulation/simulator_strings.h" line="44"/>
@@ -10974,7 +10974,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../simulator.cpp" line="122"/>
         <source>Directory containing the SD card image to use. The default is configured in the chosen Radio Profile.</source>
-        <translation>Répertoire contenant l&apos;image de la carte SD. La valeur par défaut est configurée dans le profil radio sélectionné.</translation>
+        <translation>Dossier contenant l&apos;image de la carte SD. La valeur par défaut est configurée dans le profil radio sélectionné.</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="123"/>
@@ -11000,7 +11000,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
         <location filename="../simulator.cpp" line="130"/>
         <source>Radio data (.bin/.eeprom/.otx) image file to use OR data folder path (for Horus-style radios).
 NOTE: any existing EEPROM data incompatible with the selected radio type may be overwritten!</source>
-        <translation>Fichier de données utilisé (.bin/.eeprom/.otx) OU chemin du répertoire de données (pour les radios de type Horus).
+        <translation>Fichier de données utilisé (.bin/.eeprom/.otx) OU chemin du dossier de données (pour les radios de type Horus).
 NOTE: toutes les données EEPROM existantes non compatible avec le type de radio sélectionné peuvent être écrasées !</translation>
     </message>
     <message>
@@ -11035,7 +11035,7 @@ NOTE: toutes les données EEPROM existantes non compatible avec le type de radio
         <source>ERROR: Couldn&apos;t start simulator, missing radio/profile/data file/folder.
   Profile ID: [%1]; Radio ID: [%2];
 Data File: [%3]</source>
-        <translation>ERREUR : Impossible de démarer le simulateur, radio/profile/fichier de données/répertoire manquant.
+        <translation>ERREUR : Impossible de démarer le simulateur, radio/profile/fichier de données/dossier manquant.
   Profil ID: [%1]; Radio ID: [%2];
 Fichier de Données: [%3]</translation>
     </message>
@@ -11326,12 +11326,12 @@ Le type de radio choisi par défaut est celui défini dans le profil selectionn�
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="130"/>
         <source>Data Folder:</source>
-        <translation>Répertoire Données:</translation>
+        <translation>Dossier Données:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="137"/>
         <source>SD Image Path:</source>
-        <translation>Répertoire Image SD:</translation>
+        <translation>Dossier Image SD:</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="168"/>
@@ -11356,30 +11356,30 @@ Le type de radio choisi par défaut est celui défini dans le profil selectionn�
         <location filename="../simulation/simulatorstartupdialog.ui" line="220"/>
         <source>Directory containing RADIO and MODELS folders to use.&lt;br /&gt;
 New folder(s) with default radio/model will be created here if necessary.</source>
-        <translation>Chemin contenant les répertoires RADIO et MODELS à utiliser.&lt;br /&gt;
-Un (ou plusieurs) répertoire peut être créé ici si nécessaire.</translation>
+        <translation>Chemin contenant les dossiers RADIO et MODELS à utiliser.&lt;br /&gt;
+Un (ou plusieurs) dossier peut être créé ici si nécessaire.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="228"/>
         <source>Select data folder...</source>
-        <translation>Sélectionner le répertoire de données...</translation>
+        <translation>Sélectionner le dossier de données...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="272"/>
         <source>Directory containing the SD card image to use.&lt;br/&gt;
 The default is configured in the chosen Radio Profile.</source>
-        <translation>Répertoire contenant l&apos;image de la carte SD.&lt;br/&gt;
+        <translation>Dossier contenant l&apos;image de la carte SD.&lt;br/&gt;
 La valeur par défaut est configurée dans le profil radio sélectionné.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="280"/>
         <source>Select SD card image folder...</source>
-        <translation>Choisir le répertoire contenant l&apos;image de la carte SD...</translation>
+        <translation>Choisir le dossier contenant l&apos;image de la carte SD...</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="306"/>
         <source>Select which of the data sources (File/Folder/SD Card) you would like to start the simulator with.</source>
-        <translation>Choisir la source (Fichier/Répertoire/Image SD) du type de donnée utilisé par le simulateur.</translation>
+        <translation>Choisir la source (Fichier/Dossier/Image SD) du type de donnée utilisé par le simulateur.</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="327"/>
@@ -11389,7 +11389,7 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="337"/>
         <source>Folder</source>
-        <translation>Répertoire</translation>
+        <translation>Dossier</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.ui" line="347"/>
@@ -11409,12 +11409,12 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
     <message>
         <location filename="../simulation/simulatorstartupdialog.cpp" line="241"/>
         <source>Select Data Directory</source>
-        <translation>Slectionnez un répertoire</translation>
+        <translation>Sélectionnez un dossier</translation>
     </message>
     <message>
         <location filename="../simulation/simulatorstartupdialog.cpp" line="252"/>
         <source>Select SD Card Image Folder</source>
-        <translation>Slelectionnez le répertoire image carte SD</translation>
+        <translation>Sélectionnez le dossier image carte SD</translation>
     </message>
 </context>
 <context>
@@ -11551,45 +11551,49 @@ La valeur par défaut est configurée dans le profil radio sélectionné.</trans
         <location filename="../styleeditdialog.cpp" line="60"/>
         <location filename="../styleeditdialog.cpp" line="70"/>
         <source>Style Sheet Editor</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditeur de style</translation>
     </message>
     <message>
         <location filename="../styleeditdialog.ui" line="88"/>
         <source>&amp;Reset to default</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Réglages par défaut</translation>
     </message>
     <message>
         <location filename="../styleeditdialog.ui" line="101"/>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">&amp;Annuler</translation>
+        <translation>&amp;Annuler</translation>
     </message>
     <message>
         <location filename="../styleeditdialog.ui" line="114"/>
         <source>&amp;OK</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../styleeditdialog.ui" line="129"/>
         <source>This feature does not validate your changes and assumes you are familiar with CSS syntax for QT.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cet éditeur ne vérifie/valide pas vos modifications.
+Vous devez connaitre la syntaxe CSS pour QT.</translation>
     </message>
     <message>
         <location filename="../styleeditdialog.cpp" line="34"/>
         <source>Cannot retrieve style %1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de récupérer le style%1
+Erreur: %2</translation>
     </message>
     <message>
         <location filename="../styleeditdialog.cpp" line="60"/>
         <source>Cannot retrieve default style %1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de récupérer le style par défaut %1
+Erreur: %2</translation>
     </message>
     <message>
         <location filename="../styleeditdialog.cpp" line="70"/>
         <source>Cannot update custom style %1
 Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de mettre à jour le style personnalisé %1
+Erreur: %2</translation>
     </message>
 </context>
 <context>
@@ -11597,47 +11601,47 @@ Error: %2</source>
     <message>
         <location filename="../helpers_html.cpp" line="154"/>
         <source>Style sheet data read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Données de style lues à partir de &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="156"/>
         <source>Style sheet data unable to be read from &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de lire les données de style à partir de &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="169"/>
         <source>Cannot create folder &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de créer le dossier &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="174"/>
         <source>Cannot open file for writing &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier en mode écriture &apos;%1&apos;: Erreur: %2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="181"/>
         <source>Cannot write to file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;écrire le fichier &apos;%1&apos;: Erreur:%2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="183"/>
         <source>Cannot flush buffer for file &apos;%1&apos;: Error: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de vider le tampon pour le fichier &apos;%1&apos;: Erreur:%2</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="188"/>
         <source>Style sheet written to &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Style sauvegardé dans le fichier &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="203"/>
         <source>Custom style sheet deleted: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Style personnalisé effacé: &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../helpers_html.cpp" line="205"/>
         <source>Unable to delete custom style sheet: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;éffacer le style personnalisé: &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -11695,17 +11699,17 @@ Error: %2</source>
     <message>
         <location filename="../process_sync.cpp" line="194"/>
         <source>Creating directory: %1</source>
-        <translation>Création répertoire: %1</translation>
+        <translation>Création dossier: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="196"/>
         <source>Could not create directory: %1</source>
-        <translation>Impossible de créer le répertoire: %1</translation>
+        <translation>Impossible de créer le dossier: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="203"/>
         <source>Destination directory exists: %1</source>
-        <translation>Le répertoire de destination existe: %1</translation>
+        <translation>Le dossier de destination existe: %1</translation>
     </message>
     <message>
         <location filename="../process_sync.cpp" line="218"/>
@@ -14137,7 +14141,7 @@ Cliquer sur Annuler pour interrompre la calibration sans sauvegarder.</translati
         <location filename="../imgpreferences.ui" line="189"/>
         <location filename="../imgpreferences.ui" line="235"/>
         <source>Open Folder</source>
-        <translation>Ouvrir le répertoire</translation>
+        <translation>Ouvrir le dossier</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="311"/>
@@ -14147,7 +14151,7 @@ Cliquer sur Annuler pour interrompre la calibration sans sauvegarder.</translati
     <message>
         <location filename="../imgpreferences.ui" line="74"/>
         <source>Simulator capture folder</source>
-        <translation>Répertoire des captures d&apos;écran</translation>
+        <translation>Dossier des captures d&apos;écran</translation>
     </message>
     <message>
         <location filename="../imgpreferences.ui" line="129"/>
