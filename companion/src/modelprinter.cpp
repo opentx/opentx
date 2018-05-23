@@ -109,10 +109,10 @@ QString ModelPrinter::printTimeValue(const int value, const unsigned int mask)
     val = -val;
     sign = -1;
   }
-  result = (sign < 0 ? QString("-") : ((mask && MASK_TIMEVALUE_PADSIGN) ? QString(" ") : QString("")));
-  if (mask && MASK_TIMEVALUE_HRSMINS) {
+  result = (sign < 0 ? QString("-") : ((mask & MASK_TIMEVALUE_PADSIGN) ? QString(" ") : QString("")));
+  if (mask & MASK_TIMEVALUE_HRSMINS) {
     int hours = val / 3600;
-    if (hours > 0 || (mask && MASK_TIMEVALUE_ZEROHRS)) {
+    if (hours > 0 || (mask & MASK_TIMEVALUE_ZEROHRS)) {
       val -= hours * 3600;
       result.append(QString("%1:").arg(hours, 2, 10, QLatin1Char('0')));
     }
