@@ -11578,7 +11578,7 @@ Vous devez connaitre la syntaxe CSS pour QT.</translation>
         <location filename="../styleeditdialog.cpp" line="34"/>
         <source>Cannot retrieve style %1
 Error: %2</source>
-        <translation>Impossible de récupérer le style%1
+        <translation>Impossible de récupérer le style %1
 Erreur: %2</translation>
     </message>
     <message>
