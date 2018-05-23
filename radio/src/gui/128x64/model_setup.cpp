@@ -182,6 +182,7 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PCBX7)
+#define ANTENNA_ROW
 #if defined(BLUETOOTH)
   #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
@@ -193,6 +194,7 @@ enum MenuModelSetupItems {
 #define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
 #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
 #elif defined(PCBXLITE)
+  #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
   #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
   #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
@@ -260,7 +262,7 @@ void menuModelSetup(event_t event)
 
   int8_t old_editMode = s_editMode;
 
-#if defined(PCBXLITE)
+#if defined(PCBTARANIS)
   MENU_TAB({
     HEADER_LINE_COLUMNS
     0,
@@ -284,44 +286,7 @@ void menuModelSetup(event_t event)
     INTERNAL_MODULE_CHANNELS_ROWS,
     IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
-    IF_INTERNAL_MODULE_ON(0), // Int/Ext antenna
-    LABEL(ExternalModule),
-    EXTERNAL_MODULE_MODE_ROWS,
-    MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-    MULTIMODULE_STATUS_ROWS
-    EXTERNAL_MODULE_CHANNELS_ROWS,
-    EXTERNAL_MODULE_BIND_ROWS(),
-    OUTPUT_TYPE_ROWS()
-    FAILSAFE_ROWS(EXTERNAL_MODULE),
-    EXTERNAL_MODULE_OPTION_ROW,
-    MULTIMODULE_MODULE_ROWS
-    EXTERNAL_MODULE_POWER_ROW,
-    EXTRA_MODULE_ROWS
-    TRAINER_ROWS });
-#elif defined(PCBTARANIS)
-  MENU_TAB({
-    HEADER_LINE_COLUMNS
-    0,
-    TIMER_ROWS, TIMER_ROWS, TIMER_ROWS,
-    0, // Extended limits
-    1, // Extended trims
-    0, // Show trims
-    0, // Trims step
-    0, // Throttle reverse
-    0, // Throttle trace source
-    0, // Throttle trim
-    CASE_CPUARM(LABEL(PreflightCheck))
-    CASE_CPUARM(0) // Checklist
-    0, // Throttle warning
-    SW_WARN_ROWS, // Switch warning
-    POT_WARN_ITEMS(), // Pot warning
-    NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
-    0, // Global functions
-    LABEL(InternalModule),
-    INTERNAL_MODULE_MODE_ROWS,
-    INTERNAL_MODULE_CHANNELS_ROWS,
-    IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
-    IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
+    ANTENNA_ROW
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
