@@ -108,7 +108,7 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
   vJoyLeft = new VirtualJoystickWidget(this, 'L');
   ui->leftStickLayout->addWidget(vJoyLeft);
 
-  vJoyRight = new VirtualJoystickWidget(this, 'R');
+  vJoyRight = new VirtualJoystickWidget(this, 'R', (m_board == Board::BOARD_TARANIS_XLITE ? false : true));  // TODO: maybe remove trims for both joysticks and add a cross in the middle?
   ui->rightStickLayout->addWidget(vJoyRight);
 
   connect(vJoyLeft, &VirtualJoystickWidget::valueChange, this, &SimulatorWidget::onRadioWidgetValueChange);
