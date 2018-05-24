@@ -9008,7 +9008,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="331"/>
         <source>Min.call</source>
-        <translation type="unfinished"></translation>
+        <translation>Annonces minutes</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="331"/>
@@ -9044,12 +9044,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="419"/>
         <source>F.In</source>
-        <translation>F.Entrée</translation>
+        <translation>Fondu en entrée</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="419"/>
         <source>F.Out</source>
-        <translation>F.Sortie</translation>
+        <translation>Fondu en sortie</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="448"/>
