@@ -23,7 +23,6 @@
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
 #include "switchitemmodel.h"
-#include "helpers.h"
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
@@ -470,9 +469,35 @@ void ModulePanel::update()
   ui->antennaMode->setCurrentIndex(module.pxx.external_antenna);
 
   // R9M options
-  ui->r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
-  ui->label_r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
+  ui->r9mPower->setVisible(mask & MASK_R9M);
+  ui->label_r9mPower->setVisible(mask & MASK_R9M);
+
   if (mask & MASK_R9M) {
+    Board::Type board = firmware->getBoard();
+    if (IS_TARANIS_XLITE(board)) {
+      if (module.subType == R9M_FCC) {
+        ui->r9mPower->addItem(tr("100 mW - 16CH"));
+      }
+      else {
+        ui->r9mPower->addItem(tr("25 mW - 8CH"));
+        ui->r9mPower->addItem(tr("25 mW - 16CH"));
+        ui->r9mPower->addItem(tr("100 mW - 16CH, no telemetry"));
+      }
+    }
+    else {
+      if (module.subType == R9M_FCC) {
+        ui->r9mPower->addItem(tr("10 mW - 16CH"));
+        ui->r9mPower->addItem(tr("100 mW - 16CH"));
+        ui->r9mPower->addItem(tr("500 mW - 16CH"));
+        ui->r9mPower->addItem(tr("1000 mW - 16CH"));
+      }
+      else {
+        ui->r9mPower->addItem(tr("25 mW - 8CH"));
+        ui->r9mPower->addItem(tr("25 mW - 16CH"));
+        ui->r9mPower->addItem(tr("200 mW - 16CH"));
+        ui->r9mPower->addItem(tr("500 mW - 16CH"));
+      }
+    }
     ui->r9mPower->setCurrentIndex(module.pxx.power);
   }
 

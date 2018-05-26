@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>708</width>
-    <height>259</height>
+    <width>926</width>
+    <height>320</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -237,28 +237,7 @@
          </widget>
         </item>
         <item row="3" column="1">
-         <widget class="QComboBox" name="r9mPower">
-          <item>
-           <property name="text">
-            <string>10 mW</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>100 mW</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>500 mW</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>1000 mW</string>
-           </property>
-          </item>
-         </widget>
+         <widget class="QComboBox" name="r9mPower"/>
         </item>
         <item row="4" column="0" colspan="2">
          <layout class="QHBoxLayout" name="horizontalLayout_2">

@@ -95,6 +95,11 @@ enum TrainerProtocol {
   TRAINER_MASTER_SBUS_BATT_COMPARTMENT
 };
 
+enum R9MSubTypes {
+  R9M_FCC,
+  R9M_LBT
+};
+
 class ModuleData {
   Q_DECLARE_TR_FUNCTIONS(ModuleData)
 
