@@ -1422,6 +1422,9 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_LEFT_LONG", EVT_KEY_LONG(KEY_LEFT) },
   { "EVT_RIGHT_LONG", EVT_KEY_LONG(KEY_RIGHT) },
   { "EVT_SHIFT_LONG", EVT_KEY_LONG(KEY_SHIFT) },
+  { "FORCE", FORCE },
+  { "ERASE", ERASE },
+  { "ROUND", ROUND },
 #elif defined(PCBTARANIS)
   { "EVT_MENU_BREAK", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
