@@ -529,8 +529,8 @@ void ModulePanel::update()
 
   if (mask & MASK_MULTIMODULE) {
     ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
-    ui->autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
-    ui->lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
+    ui->autoBind->setChecked(module.multi.autoBindMode);
+    ui->lowPower->setChecked(module.multi.lowPowerMode);
   }
 
   if (mask & MASK_MULTIOPTION) {
