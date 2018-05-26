@@ -471,6 +471,7 @@ void ModulePanel::update()
   // R9M options
   ui->r9mPower->setVisible(mask & MASK_R9M);
   ui->label_r9mPower->setVisible(mask & MASK_R9M);
+  ui->warning_r9mPower->setVisible((mask & MASK_R9M) && module.subType == R9M_LBT);
 
   if (mask & MASK_R9M) {
     ui->r9mPower->clear();
