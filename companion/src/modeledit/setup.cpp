@@ -473,6 +473,7 @@ void ModulePanel::update()
   ui->label_r9mPower->setVisible(mask & MASK_R9M);
 
   if (mask & MASK_R9M) {
+    ui->r9mPower->clear();
     Board::Type board = firmware->getBoard();
     if (IS_TARANIS_XLITE(board)) {
       if (module.subType == R9M_FCC) {
