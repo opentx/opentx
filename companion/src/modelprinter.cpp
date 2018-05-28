@@ -228,13 +228,21 @@ QString ModelPrinter::printMultiSubType(unsigned rfProtocol, bool custom, unsign
 
 QString ModelPrinter::printR9MPowerValue(unsigned subType, unsigned val, bool telem)
 {
-  #warning "Here R9M power values are wrong";
+  QStringList strFCC;
+  QStringList strLBT;
 
-  static const QStringList strFTC = QStringList() << tr("10mW") << tr("100mW") << tr("500mW") << tr("1W");
-  static const QStringList strLBT = QStringList() << tr("25mW") << tr("500mW");
+  if (IS_TARANIS_XLITE(firmware->getBoard())) {
+    strFCC = QStringList() << tr("100mW - 16CH");
+    strLBT = QStringList() << tr("25mW - 8CH") << tr("25mW - 16CH") << tr("100mW 16CH");
+  }
+  else {
+    strFCC = QStringList() << tr("10mW") << tr("100mW") << tr("500mW") << tr("1W");
+    strLBT = QStringList() << tr("25mW - 8CH") << tr("25mW - 16CH") << tr("200mW 16CH") << tr("500mW 16CH");
+  }
 
-  if (subType == R9M_FCC && (int)val < strFTC.size())
-    return strFTC.at(val);
+
+  if (subType == R9M_FCC && (int)val < strFCC.size())
+    return strFCC.at(val);
   else if (subType == R9M_LBT)
     return (telem ? strLBT.at(0) : strLBT.at(1));
   else
