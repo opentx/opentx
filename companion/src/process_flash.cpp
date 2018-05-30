@@ -282,11 +282,7 @@ void FlashProcess::errorWizard()
     }
   }
   else if (output.contains("No DFU capable USB device found")){
-#if defined WIN32 || !defined __GNUC__
-    QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not installed!!!\n\nPlease use ZADIG to properly install the driver."));
-#else
     QMessageBox::warning(NULL, "Companion - Tip of the day", tr("Your radio does not seem connected to USB or the driver is not initialized!!!."));
-#endif
   }
 }
 
