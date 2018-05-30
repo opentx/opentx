@@ -378,7 +378,7 @@ void ModulePanel::update()
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
         if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 || protocol==PULSES_PXX_R9M)
           mask |= MASK_RX_NUMBER;
-        if (IS_HORUS(firmware->getBoard()) && moduleIdx==0)
+        if (IS_HORUS(firmware->getBoard()) || IS_TARANIS_XLITE(firmware->getBoard()) && moduleIdx==0)
           mask |= MASK_ANTENNA;
         break;
       case PULSES_LP45:
