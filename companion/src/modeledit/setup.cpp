@@ -464,9 +464,15 @@ void ModulePanel::update()
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
   ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
 
-  // Antenna slection on Horus
+  // Antenna selection on Horus and xlite
   ui->label_antenna->setVisible(mask & MASK_ANTENNA);
   ui->antennaMode->setVisible(mask & MASK_ANTENNA);
+  if IS_HORUS_X12S(firmware->getBoard()) {
+    ui->antennaMode->setItemText(1,tr("Ext. + Int"));
+  }
+  else {
+    ui->antennaMode->setItemText(1,tr("External"));
+  }
   ui->antennaMode->setCurrentIndex(module.pxx.external_antenna);
 
   // R9M options
