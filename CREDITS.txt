@@ -1408,3 +1408,4 @@ Guy Poignonec
 Robin Lauff
 Renato Müller
 Hannes Mössler
+Cédric Lagoutte
