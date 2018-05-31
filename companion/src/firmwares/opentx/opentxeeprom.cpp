@@ -3836,7 +3836,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
     }
     else if (IS_TARANIS_X9E(board) && version >= 217) {
-      internalField.Append(new BoolField<8>(this, generalData.bluetoothEnable));
+      internalField.Append(new UnsignedField<8>(this, generalData.bluetoothMode));
       internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
     }
 

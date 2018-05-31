@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>470</width>
-    <height>1095</height>
+    <height>1419</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1099,10 +1099,25 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QCheckBox" name="bluetoothEnable">
-        <property name="text">
+       <widget class="QComboBox" name="bluetoothMode">
+        <property name="text" stdset="0">
          <string/>
         </property>
+        <item>
+         <property name="text">
+          <string>OFF</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Telemetry</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Trainer</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item>
