@@ -56,8 +56,9 @@ static const QStringList STR_SUBTYPE_AFHDS2A {"PWM and IBUS", "PPM and IBUS", "P
 static const QStringList STR_SUBTYPE_Q2X2    {"Q222", "Q242", "Q282"};
 static const QStringList STR_SUBTYPE_WK2x01  {"WK2801", "WK2401", "W6_5_1", "W6_6_1", "W6_HEL", "W6_HEL_I"};
 static const QStringList STR_SUBTYPE_Q303    {"Q303", "CX35", "CX10D", "CX10WD"};
-static const QStringList STR_SUBTYPE_CABELL  {"CABELL V3","C TELEM","-","-","-","-","F_SAFE","UNBIND"};
-static const QStringList STR_SUBTYPE_H83D    {"H8_3D","H20H","H20Mini","H30Mini"};
+static const QStringList STR_SUBTYPE_CABELL  {"CABELL V3", "C TELEM", "-", "-", "-", "-", "F_SAFE", "UNBIND"};
+static const QStringList STR_SUBTYPE_H83D    {"H8_3D", "H20H", "H20Mini", "H30Mini"};
+static const QStringList STR_SUBTYPE_CORONA  {"V1", "V2"};
 static const QStringList NO_SUBTYPE          {STR_MULTI_DEFAULT};
 
 
@@ -89,6 +90,7 @@ const Multiprotocols multiProtocols {
   {MM_RF_PROTO_Q303,       3, false,      STR_SUBTYPE_Q303,    nullptr},
   {MM_RF_PROTO_CABELL,     7, false,      STR_SUBTYPE_CABELL,  STR_MULTI_OPTION},
   {MM_RF_PROTO_H83D,       3, false,      STR_SUBTYPE_H83D,    nullptr},
+  {MM_RF_PROTO_CORONA,     1, false,      STR_SUBTYPE_CORONA,  nullptr},
   {MM_RF_CUSTOM_SELECTED,  7, true,       STR_SUBTYPE_CUSTOM,  STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
