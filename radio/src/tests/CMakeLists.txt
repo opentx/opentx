@@ -38,9 +38,8 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
   add_executable(gtests EXCLUDE_FROM_ALL ${TEST_SRC_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/location.h ${RADIO_SRC} ../targets/simu/simpgmspace.cpp ../targets/simu/simueeprom.cpp ../targets/simu/simufatfs.cpp)
-  qt5_use_modules(gtests Core Widgets)
   add_dependencies(gtests ${FIRMWARE_DEPENDENCIES} gtests-lib)
-  target_link_libraries(gtests gtests-lib pthread)
+  target_link_libraries(gtests gtests-lib pthread Qt5::Core Qt5::Widgets)
   message(STATUS "Added optional gtests target")
 else()
   message(WARNING "WARNING: gtests target will not be available (check that GTEST_INCDIR, GTEST_SRCDIR, and Qt5Widgets are configured).")
