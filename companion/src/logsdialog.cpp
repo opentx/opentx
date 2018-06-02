@@ -118,7 +118,7 @@ LogsDialog::LogsDialog(QWidget *parent) :
   connect(ui->FieldsTW, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->logTable, SIGNAL(itemSelectionChanged()), this, SLOT(plotLogs()));
   connect(ui->Reset_PB, SIGNAL(clicked()), this, SLOT(plotLogs()));
-  connect(ui->SaveSession_PB, SIGNAL(clicked()), this, SLOT(on_saveSession_BT_clicked()));
+  connect(ui->SaveSession_PB, SIGNAL(clicked()), this, SLOT(saveSession()));
 }
 
 LogsDialog::~LogsDialog()
@@ -324,23 +324,20 @@ void LogsDialog::exportToGoogleEarth()
   }
 
   // qDebug() << "gpscol" << gpscol << "altcol" << altcol << "speedcol" << speedcol << "altMultiplier" << altMultiplier;
-  const QString geIconFilename = QStringLiteral("track0.png");
-  const QString giIconPath = QDir::tempPath() + "/" + geIconFilename;
-  if (!QFile::exists(giIconPath)) {
-    QFile::copy(":/images/track0.png", giIconPath);
-  }
-
   const QString geFilename = generateProcessUniqueTempFileName("flight.kml");
-  if (QFile::exists(geFilename)) {
-    QFile::remove(geFilename);
-  }
   QFile geFile(geFilename);
-  if (!geFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+  if (!geFile.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text)) {
     QMessageBox::warning(this, CPN_STR_TTL_ERROR,
         tr("Cannot write file %1:\n%2.")
         .arg(geFilename)
         .arg(geFile.errorString()));
     return;
+  }
+
+  const QString geIconFilename = QStringLiteral("track0.png");
+  const QString geIconPath = QFileInfo(geFile).absolutePath() + "/" + geIconFilename;
+  if (!QFile::exists(geIconPath)) {
+    QFile::copy(":/images/" + geIconFilename, geIconPath);
   }
 
   QTextStream outputStream(&geFile);
@@ -611,7 +608,7 @@ void LogsDialog::on_fileOpen_BT_clicked()
   }
 }
 
-void LogsDialog::on_saveSession_BT_clicked()
+void LogsDialog::saveSession()
 {
   int index = ui->sessions_CB->currentIndex();
   // ignore index 0 is its all sessions combined
