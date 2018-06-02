@@ -252,7 +252,7 @@ QList<QStringList> LogsDialog::filterGePoints(const QList<QStringList> & input)
     }
   }
   if (gpscol == 0) {
-    QMessageBox::critical(this, tr("Error: no GPS data not found"),
+    QMessageBox::critical(this, tr("Error: no GPS data found"),
       tr("The column containing GPS coordinates must be named \"GPS\".\n\n\
 The columns for altitude \"GAlt\" and for speed \"GSpd\" are optional"));
     return result;
@@ -324,13 +324,13 @@ void LogsDialog::exportToGoogleEarth()
   }
 
   // qDebug() << "gpscol" << gpscol << "altcol" << altcol << "speedcol" << speedcol << "altMultiplier" << altMultiplier;
-  QString geIconFilename = generateProcessUniqueTempFileName("track0.png");
-  if (QFile::exists(geIconFilename)) {
-    QFile::remove(geIconFilename);
+  const QString geIconFilename = QStringLiteral("track0.png");
+  const QString giIconPath = QDir::tempPath() + "/" + geIconFilename;
+  if (!QFile::exists(giIconPath)) {
+    QFile::copy(":/images/track0.png", giIconPath);
   }
-  QFile::copy(":/images/track0.png", geIconFilename);
 
-  QString geFilename = generateProcessUniqueTempFileName("flight.kml");
+  const QString geFilename = generateProcessUniqueTempFileName("flight.kml");
   if (QFile::exists(geFilename)) {
     QFile::remove(geFilename);
   }
@@ -348,8 +348,8 @@ void LogsDialog::exportToGoogleEarth()
   // file header
   outputStream << "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<kml xmlns=\"http://www.opengis.net/kml/2.2\" xmlns:gx=\"http://www.google.com/kml/ext/2.2\">\n";
   outputStream << "\t<Document>\n\t\t<name>" << logFilename << "</name>\n";
-  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
-  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>0</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>file://" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_n\">\n\t\t\t<IconStyle>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
+  outputStream << "\t\t<Style id=\"multiTrack_h\">\n\t\t\t<IconStyle>\n\t\t\t\t<scale>0</scale>\n\t\t\t\t<Icon>\n\t\t\t\t\t<href>" << geIconFilename << "</href>\n\t\t\t\t</Icon>\n\t\t\t</IconStyle>\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>8</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<StyleMap id=\"multiTrack\">\n\t\t\t<Pair>\n\t\t\t\t<key>normal</key>\n\t\t\t\t<styleUrl>#multiTrack_n</styleUrl>\n\t\t\t</Pair>\n\t\t\t<Pair>\n\t\t\t\t<key>highlight</key>\n\t\t\t\t<styleUrl>#multiTrack_h</styleUrl>\n\t\t\t</Pair>\n\t\t</StyleMap>\n";
   outputStream << "\t\t<Style id=\"lineStyle\">\n\t\t\t<LineStyle>\n\t\t\t\t<color>991081f4</color>\n\t\t\t\t<width>6</width>\n\t\t\t</LineStyle>\n\t\t</Style>\n";
   outputStream << "\t\t<Schema id=\"schema\">\n";
@@ -423,7 +423,6 @@ void LogsDialog::exportToGoogleEarth()
   outputStream << "\t\t\t\t\t\t</SchemaData>\n\t\t\t\t\t</ExtendedData>\n\t\t\t\t</gx:Track>\n\t\t\t</Placemark>\n\t\t</Folder>\n\t</Document>\n</kml>";
   geFile.close();
 
-  QString gePath = g.gePath();
   QStringList parameters;
 #ifdef __APPLE__
   parameters << "-a";
@@ -431,8 +430,7 @@ void LogsDialog::exportToGoogleEarth()
   gePath = "/usr/bin/open";
 #endif
   parameters << geFilename;
-  QProcess *process = new QProcess(this);
-  process->start(gePath, parameters);
+  QProcess::startDetached(g.gePath(), parameters);
 }
 
 void LogsDialog::on_mapsButton_clicked()
