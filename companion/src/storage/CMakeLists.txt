@@ -27,5 +27,4 @@ foreach(name ${storage_NAMES})
 endforeach()
 
 add_library(storage ${storage_SRCS})
-qt5_use_modules(storage Core Xml Widgets)
 target_link_libraries(storage PRIVATE ${CPN_COMMON_LIB})

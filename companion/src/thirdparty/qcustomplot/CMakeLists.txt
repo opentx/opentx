@@ -9,4 +9,4 @@ set(qcustomplot_HDRS
 qt5_wrap_cpp(qcustomplot_SRCS ${qcustomplot_HDRS})
 
 add_library(qcustomplot ${qcustomplot_SRCS})
-qt5_use_modules(qcustomplot Widgets PrintSupport)
+target_link_libraries(qcustomplot PRIVATE ${CPN_COMMON_LIB} Qt5::Widgets Qt5::PrintSupport)
