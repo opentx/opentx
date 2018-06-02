@@ -60,6 +60,7 @@ class CustomFunctionsPanel : public GenericPanel
     CustomFunctionData * functions;
 
   private slots:
+    void setDataModels();
     void customFunctionEdited();
     void functionEdited();
     void fsw_customContextMenuRequested(QPoint pos);
