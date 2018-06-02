@@ -37,6 +37,7 @@ class HeliPanel : public ModelPanel
     void update();
 
   private slots:
+    void setDataModels();
     void edited();
 
   private:
