@@ -454,4 +454,8 @@ void ModelData::convert(RadioDataConversionState & cstate)
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
     flightModeData[i].convert(cstate.withComponentIndex(i));
   }
+
+  for (int i=0; i<CPN_MAX_MODULES; i++) {
+    moduleData[i].convert(cstate.withComponentIndex(i));
+  }
 }

@@ -25,6 +25,8 @@
 
 #include <QtCore>
 
+class RadioDataConversionState;
+
 enum PulsesProtocol {
   PULSES_OFF,
   PULSES_PPM,
@@ -97,6 +99,11 @@ enum TrainerProtocol {
   TRAINER_MASTER_SBUS_BATT_COMPARTMENT
 };
 
+enum R9MSubTypes {
+  R9M_FCC,
+  R9M_LBT
+};
+
 class ModuleData {
   Q_DECLARE_TR_FUNCTIONS(ModuleData)
 
@@ -138,6 +145,7 @@ class ModuleData {
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); } // TODO ModelPrinter
+    void convert(RadioDataConversionState & cstate);
 };
 
 #endif // MODULEDATA_H

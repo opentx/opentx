@@ -23,7 +23,6 @@
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
 #include "switchitemmodel.h"
-#include "helpers.h"
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
@@ -228,8 +227,11 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
 
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
-    if (firmware->isAvailable((PulsesProtocol)i, moduleIdx)) {
-      ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant)i);
+    if (firmware->isAvailable((PulsesProtocol) i, moduleIdx)) {
+      if (IS_TARANIS_XLITE(firmware->getBoard()) && i == PULSES_PXX_R9M)  //TODO remove when mini are handled as a different module type
+        ui->protocol->addItem("FrSky R9M Mini", (QVariant) i);
+      else
+        ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant) i);
       if (i == module.protocol)
         ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
@@ -476,9 +478,37 @@ void ModulePanel::update()
   ui->antennaMode->setCurrentIndex(module.pxx.external_antenna);
 
   // R9M options
-  ui->r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
-  ui->label_r9mPower->setVisible((mask & MASK_R9M) && module.subType == 0);
+  ui->r9mPower->setVisible(mask & MASK_R9M);
+  ui->label_r9mPower->setVisible(mask & MASK_R9M);
+  ui->warning_r9mPower->setVisible((mask & MASK_R9M) && module.subType == R9M_LBT);
+
   if (mask & MASK_R9M) {
+    ui->r9mPower->clear();
+    Board::Type board = firmware->getBoard();
+    if (IS_TARANIS_XLITE(board)) {
+      if (module.subType == R9M_FCC) {
+        ui->r9mPower->addItem(tr("100 mW - 16CH"));
+      }
+      else {
+        ui->r9mPower->addItem(tr("25 mW - 8CH"));
+        ui->r9mPower->addItem(tr("25 mW - 16CH"));
+        ui->r9mPower->addItem(tr("100 mW - 16CH, no telemetry"));
+      }
+    }
+    else {
+      if (module.subType == R9M_FCC) {
+        ui->r9mPower->addItem(tr("10 mW - 16CH"));
+        ui->r9mPower->addItem(tr("100 mW - 16CH"));
+        ui->r9mPower->addItem(tr("500 mW - 16CH"));
+        ui->r9mPower->addItem(tr("1000 mW - 16CH"));
+      }
+      else {
+        ui->r9mPower->addItem(tr("25 mW - 8CH"));
+        ui->r9mPower->addItem(tr("25 mW - 16CH"));
+        ui->r9mPower->addItem(tr("200 mW - 16CH"));
+        ui->r9mPower->addItem(tr("500 mW - 16CH"));
+      }
+    }
     ui->r9mPower->setCurrentIndex(module.pxx.power);
   }
 
@@ -508,8 +538,8 @@ void ModulePanel::update()
 
   if (mask & MASK_MULTIMODULE) {
     ui->multiProtocol->setCurrentIndex(module.multi.rfProtocol);
-    ui->autoBind->setChecked(module.multi.autoBindMode ? Qt::Checked : Qt::Unchecked);
-    ui->lowPower->setChecked(module.multi.lowPowerMode ? Qt::Checked : Qt::Unchecked);
+    ui->autoBind->setChecked(module.multi.autoBindMode);
+    ui->lowPower->setChecked(module.multi.lowPowerMode);
   }
 
   if (mask & MASK_MULTIOPTION) {

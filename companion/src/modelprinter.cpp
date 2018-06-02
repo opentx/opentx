@@ -201,13 +201,13 @@ QString ModelPrinter::printModuleProtocol(unsigned int protocol)
 
 QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
 {
-  static const char *strings[] = {
+  static const char * strings[] = {
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
     "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS",
     "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002", "CABELL", "Esky 150", "H8 3D", "Corona", "CFlie"
   };
   if (custom)
-    return "Custom - proto " + QString::number(rfProtocol);
+    return QObject::tr("Custom - proto %1)").arg(QString::number(rfProtocol));
   else
     return CHECK_IN_ARRAY(strings, rfProtocol);
 }
@@ -228,13 +228,22 @@ QString ModelPrinter::printMultiSubType(unsigned rfProtocol, bool custom, unsign
 
 QString ModelPrinter::printR9MPowerValue(unsigned subType, unsigned val, bool telem)
 {
-  static const QStringList strFTC = QStringList() << tr("10mW") << tr("100mW") << tr("500mW") << tr("1W");
-  static const QStringList strLBT = QStringList() << tr("25mW") << tr("500mW");
+  QStringList strFCC;
+  QStringList strLBT;
+
+  if (IS_TARANIS_XLITE(firmware->getBoard())) {
+    strFCC = QStringList() << tr("100mW - 16CH");
+    strLBT = QStringList() << tr("25mW - 8CH") << tr("25mW - 16CH") << tr("100mW 16CH");
+  }
+  else {
+    strFCC = QStringList() << tr("10mW") << tr("100mW") << tr("500mW") << tr("1W");
+    strLBT = QStringList() << tr("25mW - 8CH") << tr("25mW - 16CH") << tr("200mW 16CH") << tr("500mW 16CH");
+  }
 
 
-  if (subType == 0 && (int)val < strFTC.size())
-    return strFTC.at(val);
-  else if (subType == 1)
+  if (subType == R9M_FCC && (int)val < strFCC.size())
+    return strFCC.at(val);
+  else if (subType == R9M_LBT)
     return (telem ? strLBT.at(0) : strLBT.at(1));
   else
     return "???";

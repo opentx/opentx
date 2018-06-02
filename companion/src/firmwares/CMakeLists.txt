@@ -9,6 +9,7 @@ set(firmwares_SRCS
   io_data.cpp
   logicalswitchdata.cpp
   modeldata.cpp
+  moduledata.cpp
   multiprotocols.cpp
   radiodata.cpp
   radiodataconversionstate.cpp
