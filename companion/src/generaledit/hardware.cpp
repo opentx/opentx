@@ -158,7 +158,8 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   }
 
   if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_HORUS(board)) {
-    ui->bluetoothMode->setCurrentIndex(generalSettings.bluetoothMode);
+    ui->bluetoothMode->setAutoIndexes();
+    ui->bluetoothMode->setField(generalSettings.bluetoothMode, this);
     ui->bluetoothName->setField(generalSettings.bluetoothName, 10, this);
   }
   else {
@@ -236,12 +237,6 @@ void HardwarePanel::on_txCurrentCalibration_editingFinished()
     generalSettings.txCurrentCalibration = ui->txCurrentCalibration->value();
     emit modified();
   }
-}
-
-void HardwarePanel::on_bluetoothMode_stateChanged(int index)
-{
-  generalSettings.bluetoothMode = index;
-  emit modified();
 }
 
 void HardwarePanel::setValues()

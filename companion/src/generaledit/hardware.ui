@@ -1099,7 +1099,7 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QComboBox" name="bluetoothMode">
+       <widget class="AutoComboBox" name="bluetoothMode">
         <property name="text" stdset="0">
          <string/>
         </property>

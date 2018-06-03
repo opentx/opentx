@@ -48,7 +48,6 @@ class HardwarePanel : public GeneralPanel
 
     void on_txCurrentCalibration_editingFinished();
     void on_txVoltageCalibration_editingFinished();
-    void on_bluetoothMode_stateChanged(int);
     void on_filterEnable_stateChanged();
 
     void on_serialPortMode_currentIndexChanged(int index);
