@@ -122,8 +122,10 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
     ui->curveNameLabel->hide();
   }
 
-  QGraphicsScene *scene = new QGraphicsScene(ui->curvePreview);
+  scene = new CustomScene(ui->curvePreview);
   scene->setItemIndexMethod(QGraphicsScene::NoIndex);
+  connect(scene, SIGNAL(newPoint(int, int)), this, SLOT(onSceneNewPoint(int, int)));
+
   ui->curvePreview->setScene(scene);
   int numcurves=firmware->getCapability(NumCurves);
   int limit;
@@ -292,14 +294,13 @@ void Curves::updateCurve()
   Node * nodex = 0;
   QColor color;
 
-  QGraphicsScene *scene = ui->curvePreview->scene();
   scene->clear();
 
   qreal width  = scene->sceneRect().width();
   qreal height = scene->sceneRect().height();
 
-  qreal centerX = scene->sceneRect().left() + width/2; //center X
-  qreal centerY = scene->sceneRect().top() + height/2; //center Y
+  qreal centerX = scene->sceneRect().left() + width/2;
+  qreal centerY = scene->sceneRect().top() + height/2;
 
   QGraphicsSimpleTextItem *ti = scene->addSimpleText(tr("Editing curve %1").arg(currentCurve+1));
   ti->setPos(3, 3);
@@ -641,4 +642,54 @@ void Curves::ShowContextMenu(const QPoint& pos) // this is a slot
       }
     }
   }
+}
+
+void Curves::onSceneNewPoint(int x, int y)
+{
+  if ((model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) && (model->curves[currentCurve].count < CPN_MAX_POINTS)) {
+    int newidx;
+    int numpoints = model->curves[currentCurve].count;
+    if (x < model->curves[currentCurve].points[0].x) {
+      newidx = 0;
+    }
+    else if (x > model->curves[currentCurve].points[numpoints - 1].x) {
+      newidx = numpoints;
+    }
+    else {
+      for (int i=0; i<numpoints; i++) {
+        if (x < model->curves[currentCurve].points[i].x) {
+          newidx = i;
+          break;
+        }
+      }
+    }
+    numpoints++;
+    model->curves[currentCurve].count = numpoints;
+    for (int idx=(numpoints-1); idx>(newidx); idx--) {
+      model->curves[currentCurve].points[idx] = model->curves[currentCurve].points[idx-1];
+    }
+    model->curves[currentCurve].points[newidx].x = x;
+    model->curves[currentCurve].points[newidx].y = y;
+    update();
+    emit modified();
+  }
+}
+
+CustomScene::CustomScene(QGraphicsView * view)
+{
+}
+
+void CustomScene::mouseReleaseEvent(QGraphicsSceneMouseEvent * event)
+{
+  if (event->button() == Qt::LeftButton && event->modifiers() == Qt::ControlModifier) {
+    QRectF rect = sceneRect();
+    QPointF pos = event->scenePos();
+    QPointF p;
+    p.setX(-100 + ((pos.x() - rect.left()) * 200) / rect.width());
+    p.setY(100 + (rect.top() - pos.y()) * 200 / rect.height());
+    QGraphicsScene::mouseReleaseEvent(event);
+    emit newPoint((int)p.x(), (int)p.y());
+  }
+  else
+    QGraphicsScene::mouseReleaseEvent(event);
 }

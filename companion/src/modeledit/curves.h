@@ -23,6 +23,8 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
 enum CopyAction {
   CURVE_COPY,
@@ -41,6 +43,20 @@ struct CurveCreatorTemplate {
   QString name;
   unsigned int flags;
   curveFunction function;
+};
+
+class CustomScene : public QGraphicsScene
+{
+  Q_OBJECT
+
+  public:
+    CustomScene(QGraphicsView * view);
+
+  signals:
+    void newPoint(int, int);
+
+  protected:
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
 };
 
 class Curves : public ModelPanel
@@ -67,6 +83,7 @@ class Curves : public ModelPanel
     void onNodeUnfocus();
     void on_curveType_currentIndexChanged(int index);
     void on_curveApply_clicked();
+    void onSceneNewPoint(int x, int y);
 
   protected:
     virtual void resizeEvent(QResizeEvent *event);
@@ -85,7 +102,7 @@ class Curves : public ModelPanel
     void updateCurvePoints();
     bool allowCurveType(int points, CurveData::CurveType type);
     void setPointY(int i, int x, int y);
-
+    CustomScene * scene;
 };
 
 #endif // _CURVES_H_
