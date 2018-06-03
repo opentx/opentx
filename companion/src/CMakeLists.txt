@@ -86,6 +86,7 @@ if(WIN32)
       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")  # is this even needed?
     endif()
   elseif(MINGW)
+    get_filename_component(MINGW_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mno-ms-bitfields")
   endif()
@@ -404,6 +405,29 @@ elseif(WIN32)
   elseif(SDL_FOUND)
     message(WARNING "Installer: SDL.dll not found!")
   endif()
+
+  # libeay (SSL) dlls  (used by QtNetwork)
+  set(EAY_LIB_DIR "")  # this is also used by NSIS installer script
+  # Mingw-w64 comes with the required DLLs
+  if (MINGW AND IS_DIRECTORY "${MINGW_DIR}/../opt/bin/libeay32.dll")
+    set(EAY_LIB_DIR "${MINGW_DIR}/../opt/bin")
+  # check the user-configured WIN_EXTRA_LIBS_PATH for an OpenSSL folder
+  elseif(EXISTS "${WIN_EXTRA_LIBS_PATH}/OpenSSL/libeay32.dll")
+    set(EAY_LIB_DIR "${WIN_EXTRA_LIBS_PATH}/OpenSSL")
+  # most build setups will still have the (now legacy) PyQt dependency, so check for that next
+  elseif(EXISTS "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4/libeay32.dll")
+    set(EAY_LIB_DIR "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4")
+  else()
+    # the "slow" way -- look for an OpenSSL install
+    find_package("OpenSSL")
+    if (OPENSSL_FOUND)
+      set(EAY_LIB_DIR "${OPENSSL_INCLUDE_DIR}/../bin")
+    endif()
+  endif()
+  if (EAY_LIB_DIR)
+    install(FILES "${EAY_LIB_DIR}/libeay32.dll" "${EAY_LIB_DIR}/ssleay32.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+  endif()
+
   # C++/system dlls, depends on compiler
   if(MSVC)
     string(REPLACE "\\" "/" WIN_SYSDIR "$ENV{windir}")
@@ -415,13 +439,7 @@ elseif(WIN32)
       install(FILES "${WIN_PTHREAD_DLL}" DESTINATION ${INSTALL_DESTINATION})
     endif()
   elseif(MINGW)
-    get_filename_component(MINGW_DIR ${CMAKE_CXX_COMPILER} PATH)
-    if(IS_DIRECTORY ${MINGW_DIR})
-      install(FILES "${MINGW_DIR}/libgcc_s_dw2-1.dll" "${MINGW_DIR}/libstdc++-6.dll" "${MINGW_DIR}/libwinpthread-1.dll" DESTINATION ${INSTALL_DESTINATION})
-      set(MINGW_DIR "${MINGW_DIR}/../opt/bin")
-      # SSL support
-      install(FILES "${MINGW_DIR}/libeay32.dll" "${MINGW_DIR}/ssleay32.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
-    endif()
+    install(FILES "${MINGW_DIR}/libgcc_s_dw2-1.dll" "${MINGW_DIR}/libstdc++-6.dll" "${MINGW_DIR}/libwinpthread-1.dll" DESTINATION ${INSTALL_DESTINATION})
   endif()
 
 endif() # WIN32 install

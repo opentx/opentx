@@ -125,8 +125,11 @@ Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
   File "@QT_DLL_DIR@\Qt5Multimedia.dll"
   File "@QT_DLL_DIR@\Qt5Svg.dll"
   File "@QT_DLL_DIR@\Qt5Xml.dll"
-  File "@PYTHON_DIRECTORY@\lib\site-packages\PyQt4\libeay32.dll"
-  File "@PYTHON_DIRECTORY@\lib\site-packages\PyQt4\ssleay32.dll"
+  ${!defineifexist} EAY_LIB_WINDIR "@EAY_LIB_DIR@\libeay32.dll"
+  !ifdef EAY_LIB_WINDIR
+  File "@EAY_LIB_DIR@\libeay32.dll"
+  File "@EAY_LIB_DIR@\ssleay32.dll"
+  !endif
 
   File "@SDL_DIR@\SDL.dll"
   File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.exe"
