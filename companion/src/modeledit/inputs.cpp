@@ -70,33 +70,20 @@ InputsPanel::~InputsPanel()
 void InputsPanel::update()
 {
   lock = true;
-
-  // curDest -> destination channel
-  // i -> mixer number
-  QByteArray qba;
   ExposlistWidget->clear();
-  int curDest = -1;
-
-  for (int i=0; i<CPN_MAX_EXPOS; i++) {
-    ExpoData *md = &model->expoData[i];
-
-    if (!md->mode)
-      break;
-
-    while (curDest < (int)md->chn-1) {
-      curDest++;
-      AddInputLine(-curDest-1);
+  for (int i=0; i < inputsCount; ++i) {
+    bool filled = false;
+    for (uint j=0; j < CPN_MAX_EXPOS; ++j) {
+      const ExpoData & ed = model->expoData[j];
+      if ((int)ed.chn == i && ed.mode) {
+        AddInputLine(j);
+        filled = true;
+      }
     }
-    if (AddInputLine(i)) {
-      curDest++;
+    if (!filled) {
+      AddInputLine(-i-1);
     }
   }
-
-  while (curDest < inputsCount-1) {
-    curDest++;
-    AddInputLine(-curDest-1);
-  }
-
   lock = false;
 }
 
@@ -109,65 +96,52 @@ void InputsPanel::update()
   @param[in] dest   defines which input line to create.
                     If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
                     if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
-
-  @retval true      created input number is different from the previous list item
-          false     created input number is the same as previous list item
 */
-bool InputsPanel::AddInputLine(int dest)
+void InputsPanel::AddInputLine(int dest)
 {
-  bool new_ch;
-  QString str = getInputText(dest, &new_ch);
-  QListWidgetItem *itm = new QListWidgetItem(str);
   QByteArray qba(1, (quint8)dest);
   unsigned destId = abs(dest);
+  bool newChan = false;
   bool hasSibs = false;
-  if (dest >= 0) {
+  if (dest >= 0 && dest < CPN_MAX_EXPOS) {
     //add input data
-    ExpoData *md = &model->expoData[dest];
-    qba.append((const char*)md, sizeof(ExpoData));
-    destId = md->chn + 1;
-    hasSibs = (dest < CPN_MAX_EXPOS && model->expoData[dest+1].chn == md->chn);
+    const ExpoData &md = model->expoData[dest];
+    qba.append((const char*)&md, sizeof(ExpoData));
+    destId = md.chn + 1;
+    const QVector<const ExpoData *> expos = model->expos(md.chn);
+    newChan = (expos.constFirst() == &md);
+    hasSibs = (expos.constLast() != &md);
   }
+  QListWidgetItem *itm = new QListWidgetItem(getInputText(dest, newChan));
   itm->setData(Qt::UserRole, qba);
-  ExposlistWidget->addItem(itm, destId, new_ch, hasSibs);
-  //qDebug() << "InputsPanel::AddInputLine(): dest" << dest << "text" << str;
-  return new_ch;
+  ExposlistWidget->addItem(itm, destId, newChan, hasSibs);
 }
 
 
 /**
   @brief Returns HTML formated input representation
 
- @param[in] dest   defines which input line to create.
+  @param dest   defines which input line to create.
                     If dest < 0 then create empty input slot for input -dest ( dest=-6 -> Input05)
                     if dest >=0 then create used input based on model input data from slot dest (dest=4 -> model expoData[4])
 
+  @param newChan  If true, prints the full channel name in leading column, otherwise pads the column with spaces. Assumed true if @a dest < 0.
+
   @retval string    input line in HTML
 */
-QString InputsPanel::getInputText(int dest, bool * new_ch)
+QString InputsPanel::getInputText(int dest, bool newChan)
 {
   QString str;
-
-  if (new_ch)
-    *new_ch = false;
-
   if (dest < 0) {
     str = modelPrinter.printInputName(-dest-1);
-    if (new_ch)
-      *new_ch = true;
   }
   else {
-    ExpoData & input = model->expoData[dest];
-    int nameChars = (firmware->getCapability(VirtualInputs) ? 10 : 4);
-
-    if ((dest == 0) || (model->expoData[dest-1].chn != input.chn)) {
-      if (new_ch)
-        *new_ch = true;
+    const ExpoData & input = model->expoData[dest];
+    const int nameChars = (firmware->getCapability(VirtualInputs) ? 10 : 4);
+    if (newChan)
       str = QString("%1").arg(modelPrinter.printInputName(input.chn), -nameChars, QChar(' '));
-    }
-    else {
+    else
       str = QString(nameChars, QChar(' '));
-    }
     str.replace(" ", "&nbsp;");
     str += modelPrinter.printInputLine(input);
   }
@@ -191,9 +165,9 @@ bool InputsPanel::gm_insertExpo(int idx)
   return true;
 }
 
-void InputsPanel::gm_deleteExpo(int index)
+void InputsPanel::gm_deleteExpo(int index, bool clearName)
 {
-  model->removeInput(index);
+  model->removeInput(index, clearName);
 }
 
 void InputsPanel::gm_openExpo(int index)
@@ -266,7 +240,7 @@ void InputsPanel::exposDelete(bool ask)
 
 
     if ((ret == QMessageBox::Yes) || (!ask)) {
-        exposDeleteList(list);
+        exposDeleteList(list, ask);
         emit modified();
         update();
     }
@@ -300,7 +274,7 @@ void InputsPanel::mimeExpoDropped(int index, const QMimeData *data, Qt::DropActi
   }
   else if (action==Qt::MoveAction) {
     QList<int> list = createExpoListFromSelected();
-    exposDeleteList(list);
+    exposDeleteList(list, false);
     foreach (const int del, list) {
       if (del < idx)
         --idx;
@@ -332,7 +306,9 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
         break;
       ExpoData *md = &model->expoData[idx];
       memcpy(md, mxData.mid(i, sizeof(ExpoData)).constData(), sizeof(ExpoData));
+      const int oldChan = md->chn;
       md->chn = dch;
+      maybeCopyInputName(oldChan, md->chn);
       i += sizeof(ExpoData);
     }
 
@@ -354,8 +330,8 @@ void InputsPanel::exposPaste()
 
 void InputsPanel::exposDuplicate()
 {
-    exposCopy();
-    exposPaste();
+  exposCopy();
+  exposPaste();
 }
 
 
@@ -393,7 +369,6 @@ void InputsPanel::expoAdd()
     }
     gm_openExpo(index);
 }
-
 
 void InputsPanel::expolistWidget_customContextMenuRequested(QPoint pos)
 {
@@ -438,80 +413,81 @@ void InputsPanel::expolistWidget_KeyPress(QKeyEvent *event)
         ExposlistWidget->setCurrentRow(ExposlistWidget->currentRow()-1);
 }
 
-
 int InputsPanel::gm_moveExpo(int idx, bool dir) //true=inc=down false=dec=up
 {
+  if (idx >= CPN_MAX_EXPOS || idx < 0 || (dir && idx >= CPN_MAX_EXPOS - 1) || (!dir && !idx))
+    return -1;
 
-    if(idx>CPN_MAX_EXPOS || (idx==CPN_MAX_EXPOS && dir)) return idx;
+  const int tdx = dir ? idx+1 : idx-1;
+  ExpoData temp;
+  ExpoData &src = model->expoData[idx];
+  ExpoData &tgt = model->expoData[tdx];
 
-    int tdx = dir ? idx+1 : idx-1;
-    ExpoData temp;
-    temp.clear();
-    ExpoData &src=model->expoData[idx];
-    ExpoData &tgt=model->expoData[tdx];
-    if (!dir && tdx<0 && src.chn>0) {
+  if (memcmp(&src, &temp, sizeof(ExpoData)) == 0) {
+    // src expo is empty
+    return -1;
+  }
+
+  bool tgtempty = (memcmp(&tgt, &temp, sizeof(ExpoData)) == 0);
+
+  if (tgt.chn != src.chn || tgtempty) {
+    const int oldChan = src.chn;
+    if (dir && src.chn < unsigned(inputsCount-1))
+      src.chn++;
+    else if (!dir && src.chn > 0)
       src.chn--;
-      return idx;
-    }
-    else if (!dir && tdx<0) {
-      return idx;
-    }
+    maybeCopyInputName(oldChan, src.chn);
+    return idx;
+  }
 
-    if (memcmp(&src, &temp, sizeof(ExpoData)) == 0) {
-      return idx;
+  // flip between src and tgt
+  memcpy(&temp, &src, sizeof(ExpoData));
+  memcpy(&src, &tgt, sizeof(ExpoData));
+  memcpy(&tgt, &temp, sizeof(ExpoData));
+  return tdx;
+}
+
+void InputsPanel::moveExpoList(bool down)
+{
+  QList<int> list = createExpoListFromSelected();
+  QList<int> highlightList;
+  bool mod = false;
+  foreach(int idx, list) {
+    const int newIdx = gm_moveExpo(idx, down);
+    if (newIdx > -1) {
+      highlightList << newIdx;
+      mod = true;
     }
-
-    bool tgtempty = (memcmp(&tgt, &temp, sizeof(ExpoData)) == 0);
-
-    if (tgt.chn!=src.chn || tgtempty) {
-      if ((dir)  && (src.chn<unsigned(inputsCount-1))) src.chn++;
-      if ((!dir) && (src.chn>0)) src.chn--;
-      return idx;
-    }
-
-    // flip between idx and tgt
-    memcpy(&temp, &src, sizeof(ExpoData));
-    memcpy(&src, &tgt, sizeof(ExpoData));
-    memcpy(&tgt, &temp, sizeof(ExpoData));
-    return tdx;
+  }
+  if (mod) {
+    emit modified();
+    update();
+  }
+  setSelectedByExpoList(highlightList);
 }
 
 void InputsPanel::moveExpoUp()
 {
-    QList<int> list = createExpoListFromSelected();
-    QList<int> highlightList;
-    foreach(int idx, list) {
-      highlightList << gm_moveExpo(idx, false);
-    }
-    emit modified();
-    update();
-    setSelectedByExpoList(highlightList);
+  moveExpoList(false);
 }
 
 void InputsPanel::moveExpoDown()
 {
-    QList<int> list = createExpoListFromSelected();
-    QList<int> highlightList;
-    foreach(int idx, list) {
-      highlightList << gm_moveExpo(idx, true);
-    }
-    emit modified();
-    update();
-    setSelectedByExpoList(highlightList);
+  moveExpoList(true);
 }
 
 void InputsPanel::expolistWidget_doubleClicked(QModelIndex index)
 {
-    expoOpen(ExposlistWidget->item(index.row()));
+  expoOpen(ExposlistWidget->item(index.row()));
 }
 
-void InputsPanel::exposDeleteList(QList<int> list)
+void InputsPanel::exposDeleteList(QList<int> list, bool clearName)
 {
     qSort(list.begin(), list.end());
 
     int iDec = 0;
     foreach(int idx, list) {
-      gm_deleteExpo(idx-iDec);
+      gm_deleteExpo(idx-iDec, clearName);
       iDec++;
     }
 }
@@ -522,5 +498,22 @@ void InputsPanel::clearExpos()
     model->clearInputs();
     emit modified();
     update();
+  }
+}
+
+void InputsPanel::maybeCopyInputName(int srcChan, int destChan)
+{
+  if (srcChan == destChan)
+    return;
+
+  // check to see if source input channel is now empty
+  const bool srcEmpty = (model->expos(srcChan).size() == 0);
+
+  if (srcEmpty) {
+    // if destination input name is empty, copy it from source expo input
+    if (!strlen(model->inputNames[destChan]))
+      strncpy(model->inputNames[destChan], model->inputNames[srcChan], 5);
+    // clear the emptry source channel name
+    model->inputNames[srcChan][0] = 0;
   }
 }
