@@ -120,6 +120,8 @@ void MdiChild::closeEvent(QCloseEvent *event)
     event->ignore();
     return;
   }
+  event->accept();
+
   if (!isMinimized()) {
     QByteArray geo;
     if (isMaximized())
@@ -131,15 +133,16 @@ void MdiChild::closeEvent(QCloseEvent *event)
     g.mdiWinGeo(geo);
   }
 
+  if (!isVisible())
+    return;
+
   QByteArray state;
   QDataStream stream(&state, QIODevice::WriteOnly);
   stream << stateDataVersion
-        << (firmware->getCapability(Capability::HasModelCategories) ? categoriesToolbar->isVisible() : showCatToolbar)
-        << modelsToolbar->isVisible()
-        << radioToolbar->isVisible();
+         << (firmware->getCapability(Capability::HasModelCategories) ? categoriesToolbar->isVisible() : showCatToolbar)
+         << modelsToolbar->isVisible()
+         << radioToolbar->isVisible();
   g.mdiWinState(state);
-
-  event->accept();
 }
 
 void MdiChild::resizeEvent(QResizeEvent * event)
