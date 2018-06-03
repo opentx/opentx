@@ -24,12 +24,12 @@
 
 HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  ui(new Ui::Heli)
+  ui(new Ui::Heli),
+  rawSourceItemModel(nullptr)
 {
   ui->setupUi(this);
 
-  rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
-  rawSourceItemModel->setParent(this);
+  setDataModels();
 
   connect(ui->swashType, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
   connect(ui->swashRingVal, SIGNAL(editingFinished()), this, SLOT(edited()));
@@ -66,9 +66,19 @@ HeliPanel::~HeliPanel()
   delete ui;
 }
 
+void HeliPanel::setDataModels()
+{
+  if (rawSourceItemModel)
+    rawSourceItemModel->deleteLater();
+
+  rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
+  rawSourceItemModel->setParent(this);
+}
+
 void HeliPanel::update()
 {
   lock = true;
+  setDataModels();
 
   ui->swashType->setCurrentIndex(model->swashRingData.type);
   ui->swashCollectiveSource->setModel(rawSourceItemModel);
