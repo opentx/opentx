@@ -26,6 +26,8 @@
 #include <QtCore>
 
 class FrSkyAlarmData {
+  Q_DECLARE_TR_FUNCTIONS(FrSkyAlarmData)
+
   public:
     FrSkyAlarmData() { clear(); }
     unsigned int   level;               // 0=none, 1=Yellow, 2=Orange, 3=Red
@@ -33,6 +35,20 @@ class FrSkyAlarmData {
     unsigned int value;               // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
 
     void clear() { memset(this, 0, sizeof(FrSkyAlarmData)); }
+
+    static QString alarmLevelName(int alarm)
+    {
+      switch (alarm) {
+        case 1:
+          return tr("Yellow");
+        case 2:
+          return tr("Orange");
+        case 3:
+          return tr("Red");
+        default:
+          return "----";
+      }
+    }
 };
 
 class FrSkyChannelData {
@@ -49,6 +65,16 @@ class FrSkyChannelData {
     float getRatio() const;
     RawSourceRange getRange() const;
     void clear() { memset(this, 0, sizeof(FrSkyChannelData)); }
+
+    static QString unitString(int units)
+    {
+      switch(units) {
+        case 1:
+          return QCoreApplication::translate("FrSkyChannelData", "---");
+        default:
+          return QCoreApplication::translate("FrSkyChannelData", "V");
+      }
+    }
 };
 
 struct FrSkyBarData {

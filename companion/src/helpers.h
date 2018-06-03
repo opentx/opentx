@@ -52,8 +52,6 @@ extern const QColor colors[CPN_MAX_CURVES];
 
 #define TRIM_MODE_NONE  0x1F  // 0b11111
 
-QString getTheme();
-
 class CompanionIcon: public QIcon {
   public:
     CompanionIcon(const QString &baseimage);
@@ -146,14 +144,7 @@ namespace Helpers
   void getFileComboBoxValue(QComboBox * b, char * dest, int length);
 }  // namespace Helpers
 
-// TODO : move to Helpers namespace
-
-QString image2qstring(QImage image);
-int findmult(float value, float base);
-
-/* FrSky helpers */
-QString getFrSkyAlarmType(int alarm);
-QString getFrSkyUnits(int units);
+// TODO : move globals to Helpers namespace
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx);
 
@@ -163,14 +154,6 @@ QPixmap makePixMap(const QImage & image);
 int version2index(const QString & version);
 const QString index2version(int index);
 
-class QTimeS : public QTime
-{
-  public:
-    QTimeS(int s) { int h = s/3600; s %= 3600; int m = s/60; s %=60; setHMS(h, m, s); }
-    QTimeS(const QTime & q) : QTime(q) {}
-    int seconds() const { return hour()*3600 + minute()*60 + second(); }
-};
-
 bool qunlink(const QString & fileName);
 
 QString generateProcessUniqueTempFileName(const QString & fileName);
@@ -179,8 +162,14 @@ bool isTempFileName(const QString & fileName);
 QString getSoundsPath(const GeneralSettings &generalSettings);
 QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int maxLen);
 
-bool caseInsensitiveLessThan(const QString &s1, const QString &s2);
 
+class QTimeS : public QTime
+{
+  public:
+    QTimeS(int s) { int h = s/3600; s %= 3600; int m = s/60; s %=60; setHMS(h, m, s); }
+    QTimeS(const QTime & q) : QTime(q) {}
+    int seconds() const { return hour()*3600 + minute()*60 + second(); }
+};
 
 class GpsCoord
 {

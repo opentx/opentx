@@ -752,7 +752,7 @@ QString MultiModelPrinter::printTelemetry()
     columns.appendRowHeader(QStringList() << tr("Analogs") << tr("Unit") << tr("Scale") << tr("Offset"));
     for (int i=0; i<2; i++) {
       columns.appendRowStart(QString("A%1").arg(i+1), 20);
-      COMPARECELLWIDTH(getFrSkyUnits(model->frsky.channels[i].type), 20);
+      COMPARECELLWIDTH(FrSkyChannelData::unitString(model->frsky.channels[i].type), 20);
       COMPARECELLWIDTH(QString::number((model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ? 10.0 : 1)), 10, (model->frsky.channels[i].type==0 ? 1 : 0)), 20);
       COMPARECELLWIDTH(QString::number((model->frsky.channels[i].offset*(model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ?10.0 : 1)))/255, 10, (model->frsky.channels[i].type==0 ? 1 : 0)), 40);
       columns.appendRowEnd();
@@ -769,10 +769,10 @@ QString MultiModelPrinter::printTelemetry()
   {
     columns.appendRowStart(tr("RSSI Alarms"), 20);
     columns.appendCellStart(80);
-    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Low") : getFrSkyAlarmType(model->rssiAlarms.level[0])), false);
+    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Low") : FrSkyAlarmData::alarmLevelName(model->rssiAlarms.level[0])), false);
     columns.append(": ");
     COMPARESTRING("", QString("&lt; %1").arg(QString::number(model->rssiAlarms.warning, 10)), true);
-    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Critical") : getFrSkyAlarmType(model->rssiAlarms.level[1])), false);
+    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Critical") : FrSkyAlarmData::alarmLevelName(model->rssiAlarms.level[1])), false);
     columns.append(": ");
     COMPARESTRING("", QString("&lt; %1").arg(QString::number(model->rssiAlarms.critical, 10)), true);
     COMPARESTRING(tr("Telemetry audio"), modelPrinter->printRssiAlarmsDisabled(model->rssiAlarms.disabled), false);

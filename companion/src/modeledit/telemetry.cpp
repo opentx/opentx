@@ -93,6 +93,23 @@ void TelemetryAnalog::update()
   ui->CalibSB->setValue(mini);
 }
 
+static int findmult(float value, float base)
+{
+  int vvalue = value*10;
+  int vbase = base*10;
+  vvalue--;
+
+  int mult = 0;
+  for (int i=8; i>=0; i--) {
+    if (vvalue/vbase >= (1<<i)) {
+      mult = i+1;
+      break;
+    }
+  }
+
+  return mult;
+}
+
 void TelemetryAnalog::on_UnitCB_currentIndexChanged(int index)
 {
     float ratio = analog.getRatio();

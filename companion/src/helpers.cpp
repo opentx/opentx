@@ -75,6 +75,37 @@ const QColor colors[CPN_MAX_CURVES] = {
   QColor(255,127,0),
 };
 
+
+/*
+ * CompanionIcon
+*/
+
+static QString iconThemeFolder(int theme_set)
+{
+  switch(theme_set) {
+    case 0:
+      return QStringLiteral("classic");
+    case 2:
+      return QStringLiteral("monowhite");
+    case 3:
+      return QStringLiteral("monochrome");
+    case 4:
+      return QStringLiteral("monoblue");
+    default:
+      return QStringLiteral("yerico");
+  }
+}
+
+CompanionIcon::CompanionIcon(const QString &baseimage)
+{
+  const QString theme = iconThemeFolder(g.theme());
+  addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16));
+  addFile(":/themes/"+theme+"/24/"+baseimage, QSize(24,24));
+  addFile(":/themes/"+theme+"/32/"+baseimage, QSize(32,32));
+  addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
+}
+
+
 /*
  * GVarGroup
 */
@@ -171,6 +202,7 @@ void GVarGroup::setWeight(int val)
 
   lock = false;
 }
+
 
 /*
  * CurveGroup
@@ -334,6 +366,7 @@ void CurveGroup::valuesChanged()
   }
 }
 
+
 /*
  * Helpers namespace functions
 */
@@ -388,6 +421,11 @@ void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
       b->addItem(QCoreApplication::translate("GVarData", "Flight mode %1 value").arg(i));
     }
   }
+}
+
+static bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
+{
+  return s1.toLower() < s2.toLower();
 }
 
 void Helpers::populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current)
@@ -498,98 +536,6 @@ QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * cons
   }
 
   return itemModel;
-}
-
-QString image2qstring(QImage image)
-{
-    if (image.isNull())
-      return "";
-    QBuffer buffer;
-    image.save(&buffer, "PNG");
-    QString ImageStr;
-    int b=0;
-    int size=buffer.data().size();
-    for (int j = 0; j < size; j++) {
-      b=buffer.data().at(j);
-      ImageStr += QString("%1").arg(b&0xff, 2, 16, QChar('0'));
-    }
-    return ImageStr;
-}
-
-int findmult(float value, float base)
-{
-  int vvalue = value*10;
-  int vbase = base*10;
-  vvalue--;
-
-  int mult = 0;
-  for (int i=8; i>=0; i--) {
-    if (vvalue/vbase >= (1<<i)) {
-      mult = i+1;
-      break;
-    }
-  }
-
-  return mult;
-}
-
-// TODO: Move to FrSkyAlarmData
-QString getFrSkyAlarmType(int alarm)
-{
-  switch (alarm) {
-    case 1:
-      return QCoreApplication::translate("FrSkyAlarmData", "Yellow");
-    case 2:
-      return QCoreApplication::translate("FrSkyAlarmData", "Orange");
-    case 3:
-      return QCoreApplication::translate("FrSkyAlarmData", "Red");
-    default:
-      return "----";
-  }
-}
-
-// TODO: move to FrSkyChannelData
-QString getFrSkyUnits(int units)
-{
-  switch(units) {
-    case 1:
-      return QCoreApplication::translate("FrSkyChannelData", "---");
-    default:
-      return QCoreApplication::translate("FrSkyChannelData", "V");
-  }
-}
-
-QString getTheme()
-{
-  int theme_set = g.theme();
-  QString Theme;
-  switch(theme_set) {
-    case 0:
-      Theme="classic";
-      break;
-    case 2:
-      Theme="monowhite";
-      break;
-    case 3:
-      Theme="monochrome";
-      break;
-    case 4:
-      Theme="monoblue";
-      break;
-    default:
-      Theme="yerico";
-      break;
-  }
-  return Theme;
-}
-
-CompanionIcon::CompanionIcon(const QString &baseimage)
-{
-  static QString theme = getTheme();
-  addFile(":/themes/"+theme+"/16/"+baseimage, QSize(16,16));
-  addFile(":/themes/"+theme+"/24/"+baseimage, QSize(24,24));
-  addFile(":/themes/"+theme+"/32/"+baseimage, QSize(32,32));
-  addFile(":/themes/"+theme+"/48/"+baseimage, QSize(48,48));
 }
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)
@@ -752,11 +698,6 @@ QSet<QString> getFilesSet(const QString &path, const QStringList &filter, int ma
     }
   }
   return result;
-}
-
-bool caseInsensitiveLessThan(const QString &s1, const QString &s2)
-{
-  return s1.toLower() < s2.toLower();
 }
 
 bool GpsGlitchFilter::isGlitch(GpsCoord coord)
