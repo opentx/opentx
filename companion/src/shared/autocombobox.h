@@ -93,7 +93,7 @@ class AutoComboBox: public QComboBox
     {
       for (int i=0; i<count(); ++i) {
         setItemData(i, i);
-        if (*this->field == i)
+        if (this->field && *this->field == i)
           setCurrentIndex(i);
       }
     }
