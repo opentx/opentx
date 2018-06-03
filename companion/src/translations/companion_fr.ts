@@ -5102,7 +5102,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../generaledit/hardware.ui" line="1118"/>
         <source>Trainer</source>
-        <translation type="unfinished">Écolage</translation>
+        <translation>Écolage</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="1142"/>
@@ -7769,34 +7769,34 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="235"/>
         <source>100mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>100mW - 16VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="236"/>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>25mW - 8CH</source>
-        <translation type="unfinished"></translation>
+        <translation>25mW - 8VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="236"/>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>25mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>25mW - 16VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="236"/>
         <source>100mW 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>100mW 16VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>200mW 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>200mW 16VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>500mW 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>500mW 16VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="277"/>
@@ -8690,7 +8690,8 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="678"/>
         <source>WARNING: changing RF Output Power needs RE-BIND</source>
-        <translation type="unfinished"></translation>
+        <translation>ATTENTION: le RE-BIND est nécessaire
+pour tout changement de puissance RF</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="710"/>
@@ -8827,56 +8828,56 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup.cpp" line="473"/>
         <source>Ext. + Int</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="476"/>
         <source>External</source>
-        <translation type="unfinished"></translation>
+        <translation>Externe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="490"/>
         <location filename="../modeledit/setup.cpp" line="501"/>
         <source>100 mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>100 mW - 16VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="493"/>
         <location filename="../modeledit/setup.cpp" line="506"/>
         <source>25 mW - 8CH</source>
-        <translation type="unfinished"></translation>
+        <translation>25 mW - 8VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
         <location filename="../modeledit/setup.cpp" line="507"/>
         <source>25 mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>25 mW - 16VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="495"/>
         <source>100 mW - 16CH, no telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>100 mW - 16VOIES, pas de télémétrie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="500"/>
         <source>10 mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>10 mW - 16VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="502"/>
         <location filename="../modeledit/setup.cpp" line="509"/>
         <source>500 mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>10 mW - 16VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="503"/>
         <source>1000 mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>1000 mW - 16VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="508"/>
         <source>200 mW - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>1000 mW - 16VOIES</translation>
     </message>
 </context>
 <context>
@@ -9534,7 +9535,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="210"/>
         <source>Custom - proto %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Personnaliser - proto %1)</translation>
     </message>
 </context>
 <context>
