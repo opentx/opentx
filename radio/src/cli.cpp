@@ -701,6 +701,7 @@ int cliTest(const char ** argv)
   return 0;
 }
 
+#if defined(DEBUG)
 int cliTrace(const char ** argv)
 {
   if (!strcmp(argv[1], "on")) {
@@ -714,6 +715,7 @@ int cliTrace(const char ** argv)
   }
   return 0;
 }
+#endif
 
 int cliStackInfo(const char ** argv)
 {
@@ -1220,7 +1222,9 @@ const CliCommand cliCommands[] = {
   { "stackinfo", cliStackInfo, "" },
   { "meminfo", cliMemoryInfo, "" },
   { "test", cliTest, "new | std::exception | graphics | memspd" },
+#if defined(DEBUG)
   { "trace", cliTrace, "on | off" },
+#endif
   { "help", cliHelp, "[<command>]" },
   { "debugvars", cliDebugVars, "" },
   { "repeat", cliRepeat, "<interval> <command>" },
