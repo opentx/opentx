@@ -136,7 +136,7 @@ class ModelData {
     void convert(RadioDataConversionState & cstate);
 
     ExpoData * insertInput(const int idx);
-    void removeInput(const int idx);
+    void removeInput(const int idx, bool clearName = true);
 
     bool isInputValid(const unsigned int idx) const;
     bool hasExpos(uint8_t inputIdx) const;

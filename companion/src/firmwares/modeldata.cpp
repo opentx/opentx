@@ -151,7 +151,7 @@ QVector<const MixData *> ModelData::mixes(int channel) const
   return result;
 }
 
-void ModelData::removeInput(const int idx)
+void ModelData::removeInput(const int idx, bool clearName)
 {
   unsigned int chn = expoData[idx].chn;
 
@@ -159,15 +159,8 @@ void ModelData::removeInput(const int idx)
   expoData[CPN_MAX_EXPOS-1].clear();
 
   //also remove input name if removing last line for this input
-  bool found = false;
-  for (int i=0; i<CPN_MAX_EXPOS; i++) {
-    if (expoData[i].mode==0) continue;
-    if (expoData[i].chn==chn) {
-      found = true;
-      break;
-    }
-  }
-  if (!found) inputNames[chn][0] = 0;
+  if (clearName && !expos(chn).size())
+    inputNames[chn][0] = 0;
 }
 
 void ModelData::clearInputs()

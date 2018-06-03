@@ -37,6 +37,7 @@ class InputsPanel : public ModelPanel
 
   private slots:
     void clearExpos();
+    void moveExpoList(bool down);
     void moveExpoUp();
     void moveExpoDown();
     void mimeExpoDropped(int index, const QMimeData *data, Qt::DropAction action);
@@ -50,6 +51,7 @@ class InputsPanel : public ModelPanel
     void exposDuplicate();
     void expoOpen(QListWidgetItem *item = NULL);
     void expoAdd();
+    void maybeCopyInputName(int srcChan, int destChan);
 
   private:
     bool expoInserted;
@@ -59,15 +61,15 @@ class InputsPanel : public ModelPanel
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);
-    void gm_deleteExpo(int index);
+    void gm_deleteExpo(int index, bool clearName = true);
     void gm_openExpo(int index);
     int gm_moveExpo(int idx, bool dir);
-    void exposDeleteList(QList<int> list);
+    void exposDeleteList(QList<int> list, bool clearName = true);
     QList<int> createExpoListFromSelected();
     void setSelectedByExpoList(QList<int> list);
     void pasteExpoMimeData(const QMimeData * mimeData, int destIdx);
-    bool AddInputLine(int dest);
-    QString getInputText(int dest, bool * new_ch);
+    void AddInputLine(int dest);
+    QString getInputText(int dest, bool newChan);
 
 };
 
