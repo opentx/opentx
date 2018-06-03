@@ -39,7 +39,7 @@ set(FIRMWARE_TARGET_SRC
   ../common/arm/stm32/flash_driver.cpp
   )
 
-if(DEBUG)
+if(DEBUG OR CLI)
   set(STM32USB_SRC
     ${STM32USB_SRC}
     STM32_USB_Device_Library/Class/cdc/src/usbd_cdc_core.c
