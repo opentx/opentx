@@ -113,10 +113,6 @@ struct SimulatorOptions
       START_WITH_RAWDATA
     };
 
-  private:
-    quint16 _version = SIMULATOR_OPTIONS_VERSION;  // structure definition version
-
-  public:
     // v1 fields
     quint8  startupDataType = START_WITH_FILE;
     QString firmwareId;
@@ -131,6 +127,8 @@ struct SimulatorOptions
     QByteArray dbgConsoleState;       // DebugOutput UI state
     QByteArray radioOutputsState;     // RadioOutputsWidget UI state
 
+    quint16 loadedVersion() const { return m_version; }  //! loaded structure definition version (0 if none/error)
+
     friend QDataStream & operator << (QDataStream &out, const SimulatorOptions & o)
     {
       out << quint16(SIMULATOR_OPTIONS_VERSION) << o.startupDataType << o.firmwareId << o.dataFile << o.dataFolder
@@ -140,11 +138,16 @@ struct SimulatorOptions
 
     friend QDataStream & operator >> (QDataStream &in, SimulatorOptions & o)
     {
-      if (o._version <= SIMULATOR_OPTIONS_VERSION) {
-        in >> o._version >> o.startupDataType >> o.firmwareId >> o.dataFile >> o.dataFolder
+      in >> o.m_version;
+      if (o.m_version && o.m_version <= SIMULATOR_OPTIONS_VERSION) {
+        in >> o.startupDataType >> o.firmwareId >> o.dataFile >> o.dataFolder
            >> o.sdPath >> o.windowGeometry >> o.controlsState >> o.lcdColor;
-        if (o._version >= 2)
+        if (o.m_version >= 2)
           in >> o.windowState >> o.dbgConsoleState >> o.radioOutputsState;
+      }
+      else {
+        qWarning() << "Error loading SimulatorOptions, saved version not valid:" << o.m_version << "Expected <=" << SIMULATOR_OPTIONS_VERSION;
+        o.m_version = 0;
       }
       return in;
     }
@@ -156,6 +159,9 @@ struct SimulatorOptions
                   << "; sdPath=" << o.sdPath << "; startupDataType=" << o.startupDataType;
       return d;
     }
+
+  private:
+    quint16 m_version = 0;
 };
 
 Q_DECLARE_METATYPE(SimulatorOptions)
