@@ -422,6 +422,7 @@ void LogsDialog::exportToGoogleEarth()
 
   QStringList parameters;
 #ifdef __APPLE__
+  QString gePath = g.gePath();
   parameters << "-a";
   parameters << gePath;
   gePath = "/usr/bin/open";
