@@ -420,15 +420,15 @@ void LogsDialog::exportToGoogleEarth()
   outputStream << "\t\t\t\t\t\t</SchemaData>\n\t\t\t\t\t</ExtendedData>\n\t\t\t\t</gx:Track>\n\t\t\t</Placemark>\n\t\t</Folder>\n\t</Document>\n</kml>";
   geFile.close();
 
+  QString gePath = g.gePath();
   QStringList parameters;
 #ifdef __APPLE__
-  QString gePath = g.gePath();
   parameters << "-a";
   parameters << gePath;
   gePath = "/usr/bin/open";
 #endif
   parameters << geFilename;
-  QProcess::startDetached(g.gePath(), parameters);
+  QProcess::startDetached(gePath, parameters);
 }
 
 void LogsDialog::on_mapsButton_clicked()
