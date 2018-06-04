@@ -25,8 +25,7 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-**Smartphone (please complete the following information):**
-# General information
+**General information**
  - OpenTX version (e.g. 2.1.23 or N123)
  - Hardware (e.g. Frsky X9D+ or 9X Pro)
  - OpenTX Companion (e.g. 2.1.23 on Ubuntu 16.04)
