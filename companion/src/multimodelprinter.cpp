@@ -895,7 +895,7 @@ QString MultiModelPrinter::printTelemetryScreens()
   for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); ++i) {
     bool tsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
-      if (!modelPrinterMap.value(k).first->frsky.screens[i].type == TELEMETRY_SCREEN_NONE) {
+      if (!(modelPrinterMap.value(k).first->frsky.screens[i].type == TELEMETRY_SCREEN_NONE)) {
         tsEmpty = false;
         break;
       }
