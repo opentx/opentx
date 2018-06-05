@@ -318,7 +318,7 @@ PrintTargetReport("${COMPANION_NAME}")
 
 set(simu_SRCS simulator.cpp )
 
-add_executable(${SIMULATOR_NAME} MACOSX_BUNDLE ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
+add_executable(${SIMULATOR_NAME} ${WIN_EXECUTABLE_TYPE} ${simu_SRCS} ${icon_RC})
 target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 
 ############# Install ####################
@@ -499,6 +499,8 @@ IF(APPLE)
   set(qtconf_dest_dir ${COMPANION_NAME}.app/Contents/Resources)
   set(APPS "\${CMAKE_INSTALL_PREFIX}/${COMPANION_NAME}.app")
   set(companion_res_dir ${COMPANION_NAME}.app/Contents/Resources)
+  set(companion_osxbinary_dir ${COMPANION_NAME}.app/Contents/MacOS)
+
 
   set_target_properties(${COMPANION_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Companion ${VERSION_MAJOR}.${VERSION_MINOR}")
   set_target_properties(${SIMULATOR_NAME} PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Simulator ${VERSION_MAJOR}.${VERSION_MINOR}")
@@ -512,7 +514,10 @@ IF(APPLE)
       RUNTIME DESTINATION bin COMPONENT Runtime
       )
 
+  INSTALL(TARGETS ${SIMULATOR_NAME} DESTINATION "${companion_osxbinary_dir}" COMPONENT Runtime)
+
   install(FILES ${simulator_plugins} DESTINATION "${companion_res_dir}" COMPONENT Runtime)
+
 
   # Write qt.conf to tell qt where to find it plugins
   file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/qt.conf"
@@ -585,7 +590,7 @@ if(DPKG_PROGRAM)
   set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 elseif(APPLE)
   set(CPACK_GENERATOR "DragNDrop")
-# set(CPACK_GENERATOR "TGZ")  # for quick testing
+  #set(CPACK_GENERATOR "TGZ")  # for quick testing
   set(CPACK_BINARY_DRAGNDROP ON)
   set(CPACK_DMG_BACKGROUND_IMAGE ${COMPANION_SRC_DIRECTORY}/images/splash22_3_dmg.png)
   set(CPACK_DMG_VOLUME_NAME "OpenTX Companion")

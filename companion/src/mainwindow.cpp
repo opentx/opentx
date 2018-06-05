@@ -845,6 +845,48 @@ QWidget * folderSelectorWidget(QString * path, const QString & label, QWidget * 
   return fsw;
 }
 
+void MainWindow::launchSimulator()
+{
+  const QString &simuLoc = QFileInfo(QApplication::applicationDirPath() + "/simulator").absoluteFilePath();
+  QProcess* simuProcess = new QProcess;
+
+
+  //From manual: ote:Signal finished is overloaded in this class. To connect to this one using the function pointer
+  // syntax, you must specify the signal type in a static cast, as shown in this example
+
+  connect(simuProcess, static_cast<void(QProcess::*)(int, QProcess::ExitStatus)>(&QProcess::finished),
+      [=](int code, QProcess::ExitStatus exitStatus) {
+        if (exitStatus == QProcess::CrashExit) {
+           QMessageBox msgBox(this);
+          msgBox.setWindowTitle(CPN_STR_APP_NAME);
+          msgBox.setIcon(QMessageBox::Critical);
+          msgBox.setWindowTitle(tr("Failed to start simulator"));
+          msgBox.setText(tr("Failed to start %1").arg(simuLoc));
+          msgBox.exec();
+        }
+        std::cout << "simulator process ended" << std::endl;
+        delete simuProcess;
+  });
+
+  connect(simuProcess, static_cast<void(QProcess::*)(QProcess::ProcessError)>(&QProcess::error),
+          [=](QProcess::ProcessError error) {
+              QMessageBox msgBox(this);
+              msgBox.setWindowTitle(CPN_STR_APP_NAME);
+              msgBox.setIcon(QMessageBox::Critical);
+              msgBox.setWindowTitle(tr("Failed to start simulator"));
+              QMetaEnum errType =  QMetaEnum::fromType<QProcess::ProcessError>();
+              msgBox.setText(tr("Failed to start %1: %2").arg(simuLoc).arg(errType.valueToKey(error)));
+              msgBox.exec();
+              delete simuProcess;
+          });
+
+  QStringList args;
+  args.append(simuLoc);
+  simuProcess->start(simuLoc, args, QIODevice::NotOpen);
+  std::cout << "Starting simulator " << simuLoc.toStdString() << std::endl;
+
+}
+
 void MainWindow::sdsync()
 {
   const QString dlgTtl = tr("Synchronize SD");
@@ -1371,6 +1413,7 @@ void MainWindow::retranslateUi(bool showMsg)
   trAct(readFlashAct,       tr("Read Firmware from Radio"),   tr("Read firmware from Radio"));
   trAct(writeFlashAct,      tr("Write Firmware to Radio"),    tr("Write firmware to Radio"));
   trAct(sdsyncAct,          tr("Synchronize SD"),             tr("SD card synchronization"));
+  trAct(launchSimulatorAct, tr("Launch Simulator"),           tr("Starts the standalone simulator"));
 
   trAct(openDocURLAct,      tr("Manuals and other Documents"),         tr("Open the OpenTX document page in a web browser"));
   trAct(writeEepromAct,     tr("Write Models and Settings To Radio"),  tr("Write Models and Settings to Radio"));
@@ -1423,6 +1466,7 @@ void MainWindow::createActions()
   fwPrefsAct =         addAct("fwpreferences.png",  SLOT(fwPrefs()),          tr("Ctrl+Alt+D"));
   compareAct =         addAct("compare.png",        SLOT(compare()),          tr("Ctrl+Alt+R"));
   sdsyncAct =          addAct("sdsync.png",         SLOT(sdsync()));
+  launchSimulatorAct = addAct("",                   SLOT(launchSimulator()));
 
   editSplashAct =      addAct("paintbrush.png",        SLOT(customizeSplash()));
   burnListAct =        addAct("list.png",              SLOT(burnList()));
@@ -1480,6 +1524,9 @@ void MainWindow::createMenus()
   fileMenu->addAction(fwPrefsAct);
   fileMenu->addAction(compareAct);
   fileMenu->addAction(sdsyncAct);
+#if __APPLE__
+  fileMenu->addAction(launchSimulatorAct);
+#endif
   fileMenu->addSeparator();
   fileMenu->addAction(exitAct);
 
@@ -1591,6 +1638,9 @@ void MainWindow::createToolBars()
   fileToolBar->addAction(editSplashAct);
   fileToolBar->addSeparator();
   fileToolBar->addAction(compareAct);
+#if __APPLE__
+  fileToolBar->addAction(launchSimulatorAct);
+#endif
   fileToolBar->addAction(sdsyncAct);
 
   // workaround for default split button appearance of action with menu  :-/
