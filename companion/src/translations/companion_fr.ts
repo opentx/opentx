@@ -8690,8 +8690,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="300"/>
         <source>WARNING: changing RF Output Power needs RE-BIND</source>
-        <translation>ATTENTION: le RE-BIND est nécessaire
-pour tout changement de puissance RF</translation>
+        <translation>ATTENTION: RE-BIND nécessaire pour tout changement de puissance RF</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="332"/>
