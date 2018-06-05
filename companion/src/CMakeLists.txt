@@ -362,13 +362,6 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 elseif(WIN32)
 
-  set(QT_DLL_DIR ${QT_LIB_DIR})
-  set(INSTALL_TEMP_QTDLL_FILES Qt5Core Qt5Gui Qt5Widgets Qt5Xml Qt5Network Qt5PrintSupport Qt5Multimedia Qt5Svg)
-  set(INSTALL_TEMP_ICUDLL_FILES icudt54.dll icuin54.dll icuuc54.dll)
-  if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(INSTALL_TEMP_QTDLL_SFX "d")
-  endif()
-
   if(NOT WIN_DO_FULL_INSTALL)
     # Just copy supporting DLLs to build folder
     set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
@@ -382,106 +375,90 @@ elseif(WIN32)
     install(TARGETS ${SIMULATOR_NAME} DESTINATION ${INSTALL_DESTINATION})
     install(FILES ${simulator_plugins} DESTINATION "${INSTALL_DESTINATION}")
     # supporting utilities
-    set(INSTALL_TEMP_FILES avrdude.exe avrdude.conf dfu-util.exe libusb0.dll libusb-1.0.dll)
+    set(INSTALL_TEMP_FILES avrdude.exe avrdude.conf dfu-util.exe libusb0.dll libusb-1.0.dll license.txt)
     foreach(tmpfile ${INSTALL_TEMP_FILES})
       install(FILES "${COMPANION_SRC_DIRECTORY}/../targets/windows/${tmpfile}" DESTINATION ${INSTALL_DESTINATION})
     endforeach()
   endif()  # WIN_DO_FULL_INSTALL
 
-  # Qt dlls
-  foreach(tmpfile ${INSTALL_TEMP_QTDLL_FILES})
-    install(FILES ${QT_DLL_DIR}/${tmpfile}${INSTALL_TEMP_QTDLL_SFX}.dll DESTINATION ${INSTALL_DESTINATION})
-  endforeach()
-  install(FILES ${QT_DLL_DIR}/../plugins/platforms/qwindows${INSTALL_TEMP_QTDLL_SFX}.dll DESTINATION ${INSTALL_DESTINATION}/platforms)
-  # ICU dlls
-  foreach(tmpfile ${INSTALL_TEMP_ICUDLL_FILES})
-    # Qt5.7+ doesn't use icu dlls anymore, hence optional
-    install(FILES ${QT_DLL_DIR}/${tmpfile}.dll DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
-  endforeach()
+  # Qt dlls (using windeployqt)
+  ## Qt translations are already packaged into our custom qrc. Pckg size could be further reduced with: [--no-system-d3d-compiler] [--no-angle]
+  set(wdqtopts --no-translations --no-opengl-sw)
+  if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(wdqtopts ${wdqtopts} --release)  # release builds aren't always properly detected with mingw
+  endif()
+  if(MSVC)
+    set(wdqtopts ${wdqtopts} --no-compiler-runtime)  # --compiler-runtime includes vcredist_x86, but we just copy the required DLLs manually
+  endif()
+  set(wdqtopts ${wdqtopts} -dir "${INSTALL_DESTINATION}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SIMULATOR_NAME}.exe")
+  # Add installer command to execute windeployqt
+  install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
+
   # SDL dll
-  if(SDL_FOUND AND SDL_LIBRARY_PATH AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
+  if(SDL_FOUND AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
     set(SDL_DIR ${SDL_LIBRARY_PATH})  # this is also used by NSIS installer script
     install(FILES ${SDL_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
   elseif(SDL_FOUND)
-    message(WARNING "Installer: SDL.dll not found!")
+    message(WARNING "Installer: SDL.dll not found, set SDL_LIBRARY_PATH manually.")
   endif()
 
-  # libeay (SSL) dlls  (used by QtNetwork)
-  set(EAY_LIB_DIR "")  # this is also used by NSIS installer script
-  # Mingw-w64 comes with the required DLLs
-  if (MINGW AND IS_DIRECTORY "${MINGW_DIR}/../opt/bin/libeay32.dll")
-    set(EAY_LIB_DIR "${MINGW_DIR}/../opt/bin")
-  # check the user-configured WIN_EXTRA_LIBS_PATH for an OpenSSL folder
-  elseif(EXISTS "${WIN_EXTRA_LIBS_PATH}/OpenSSL/libeay32.dll")
-    set(EAY_LIB_DIR "${WIN_EXTRA_LIBS_PATH}/OpenSSL")
-  # most build setups will still have the (now legacy) PyQt dependency, so check for that next
-  elseif(EXISTS "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4/libeay32.dll")
-    set(EAY_LIB_DIR "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4")
-  else()
-    # the "slow" way -- look for an OpenSSL install
-    find_package("OpenSSL")
-    if (OPENSSL_FOUND)
-      set(EAY_LIB_DIR "${OPENSSL_INCLUDE_DIR}/../bin")
-    endif()
-  endif()
+  # libeay (SSL) dlls  (used by QtNetwork) -- not strictly required but avoids possible issues with downloads and Qt warnings.
+  file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" WIN_PROGRAM_FILES)
+  find_path(EAY_LIB_DIR libeay32.dll HINTS
+    "${WIN_PROGRAM_FILES}/OpenSSL" "${WIN_PROGRAM_FILES}/OpenSSL-Win32"
+    "C:/OpenSSL/" "C:/OpenSSL-Win32/"
+    "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/OpenSSL" "${WIN_EXTRA_LIBS_PATH}/OpenSSL-Win32"
+    "${MINGW_DIR}/../opt/bin"
+    "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4"
+    PATH_SUFFIXES bin
+    DOC "Path to libeay32.dll and ssleay32.dll (OpenSSL)"
+  )
   if (EAY_LIB_DIR)
     install(FILES "${EAY_LIB_DIR}/libeay32.dll" "${EAY_LIB_DIR}/ssleay32.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+  else()
+    message(WARNING "Installer: SSL libs not found, set EAY_LIB_DIR manually.")
   endif()
 
   # C++/system dlls, depends on compiler
   if(MSVC)
-    string(REPLACE "\\" "/" WIN_SYSDIR "$ENV{windir}")
-    set(WIN_SYSDIR "${WIN_SYSDIR}/SysWOW64")  # This would be "system32" for a 64-bit build or on x86... but how to tell?
-    if(IS_DIRECTORY "${WIN_SYSDIR}")
-      install(FILES "${WIN_SYSDIR}/msvcp140.dll" "${WIN_SYSDIR}/vcruntime140.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+    file(TO_CMAKE_PATH "$ENV{windir}/SysWOW64" WIN_SYSDIR)    # This would be "system32" for a 64-bit build or on x86... but how to tell?
+    if (NOT EXISTS "${WIN_SYSDIR}")
+      file(TO_CMAKE_PATH "$ENV{windir}/system32" WIN_SYSDIR)  # Must be 32-bit Windows.
     endif()
+    install(FILES "${WIN_SYSDIR}/msvcp140.dll" "${WIN_SYSDIR}/vcruntime140.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
     if(WIN_PTHREAD_DLL)
       install(FILES "${WIN_PTHREAD_DLL}" DESTINATION ${INSTALL_DESTINATION})
     endif()
-  elseif(MINGW)
-    install(FILES "${MINGW_DIR}/libgcc_s_dw2-1.dll" "${MINGW_DIR}/libstdc++-6.dll" "${MINGW_DIR}/libwinpthread-1.dll" DESTINATION ${INSTALL_DESTINATION})
   endif()
 
 endif() # WIN32 install
 
 ############# Packaging ####################
 
-# Create Windows installer with NSIS (only works for MSVC for now)
+# Create Windows installer with NSIS
 if(WIN32)
-  if(MSVC)
-    set(COMPANION_NSI_IN_FILE companion-vs.nsi.in)
-    set(SIMULATOR_NSI_IN_FILE simulator-vs.nsi.in)
-  else()
-    set(COMPANION_NSI_IN_FILE companion-msys.nsi.in)
-    set(SIMULATOR_NSI_IN_FILE simulator-msys.nsi.in)
-  endif()
-
-  set(SYSDIR "$ENV{windir}/system32")
-  configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${COMPANION_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/companion.nsi @ONLY)
-  #configure_file(${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/${SIMULATOR_NSI_IN_FILE} ${PROJECT_BINARY_DIR}/companion/simulator.nsi @ONLY)
 
   find_program(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
     "C:/Program Files (x86)/NSIS"
     "C:/Programs/NSIS"
+    "${WIN_EXTRA_LIBS_PATH}/NSIS"
+  )
+
+  if (NSIS_EXE)
+    file(TO_NATIVE_PATH "${INSTALL_DESTINATION}" NSIS_DISTRO)  # all files in here will be included in installer
+    set(NSI_FILE "${PROJECT_BINARY_DIR}/companion/companion.nsi")
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/companion-vs.nsi.in" "${NSI_FILE}" @ONLY)
+
+    add_custom_target(installer
+      # The 'install' target prepares all the distro files, make sure it has been executed first.
+      COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install
+      COMMAND "${NSIS_EXE}" "${NSI_FILE}"
+      DEPENDS "${NSI_FILE}"
+      COMMENT "Building Windows NSIS installer..."
     )
+  endif()
 
-  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/companion-windows.exe
-    COMMAND "${NSIS_EXE}" ARGS ${PROJECT_BINARY_DIR}/companion/companion.nsi
-    DEPENDS companion simulator opentx-simulators ${PROJECT_BINARY_DIR}/companion/companion.nsi
-    COMMENT "Companion Windows NSIS Installer")
-
-#  add_custom_command(OUTPUT ${PROJECT_BINARY_DIR}/companion/simulator-install.exe
-#    COMMAND "${NSIS_EXE}" ARGS ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-#    DEPENDS simulator ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-#    COMMENT "Simulator Windows NSIS Installer")
-
-  add_custom_target(installer
-    DEPENDS ${PROJECT_BINARY_DIR}/companion/companion-windows.exe
-#    DEPENDS ${PROJECT_BINARY_DIR}/companion/simulator-windows.exe
-    SOURCES ${PROJECT_BINARY_DIR}/companion/companion.nsi
-#    SOURCES ${PROJECT_BINARY_DIR}/companion/simulator.nsi
-    )
 endif()
 
 set(CPACK_PACKAGE_NAME "companion${C9X_NAME_SUFFIX}")
