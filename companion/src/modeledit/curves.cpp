@@ -214,6 +214,11 @@ Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSet
   addTemplate(tr("Symmetrical f(x)=-f(-x)"), CURVE_COEFF_ENABLE, curveSymmetricalY);
   addTemplate(tr("Symmetrical f(x)=f(-x)"), CURVE_COEFF_ENABLE | CURVE_YMID_ENABLE, curveSymmetricalX);
 
+  ui->pointSize->setValue(10);
+  ui->pointSize->setMinimum(3);
+  ui->pointSize->setMaximum(20);
+  connect(ui->pointSize, SIGNAL(valueChanged(int)), this, SLOT(onPointSizeEdited()));
+
   disableMouseScrolling();
 
   lock = false;
@@ -332,6 +337,8 @@ void Curves::updateCurve()
     nodex = new Node();
     nodex->setProperty("index", i);
     nodex->setColor(colors[currentCurve]);
+    nodex->setBallSize(ui->pointSize->value());
+    nodex->setBallHeight(0);
     if (model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) {
       if (i>0 && i<numpoints-1) {
         nodex->setFixedX(false);
@@ -350,6 +357,7 @@ void Curves::updateCurve()
     connect(nodex, SIGNAL(moved(int, int)), this, SLOT(onNodeMoved(int, int)));
     connect(nodex, SIGNAL(focus()), this, SLOT(onNodeFocus()));
     connect(nodex, SIGNAL(unfocus()), this, SLOT(onNodeUnfocus()));
+    connect(nodex, SIGNAL(deleteMe()), this, SLOT(onNodeDelete()));
     scene->addItem(nodex);
     if (i>0) scene->addItem(new Edge(nodel, nodex));
   }
@@ -641,6 +649,31 @@ void Curves::ShowContextMenu(const QPoint& pos) // this is a slot
         emit modified();
       }
     }
+  }
+}
+
+void Curves::onPointSizeEdited()
+{
+  if (!lock) {
+    update();
+  }
+}
+
+void Curves::onNodeDelete()
+{
+  int index = sender()->property("index").toInt();
+  int numpoints = model->curves[currentCurve].count;
+  if ((model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) && (index > 0) && (index < numpoints-1)) {
+    spny[index]->clearFocus();
+    for (int i=index+1; i<numpoints; i++) {
+      model->curves[currentCurve].points[i-1] = model->curves[currentCurve].points[i];
+    }
+    numpoints--;
+    model->curves[currentCurve].points[numpoints].x = 0;
+    model->curves[currentCurve].points[numpoints].y = 0;
+    model->curves[currentCurve].count = numpoints;
+    update();
+    emit modified();
   }
 }
 

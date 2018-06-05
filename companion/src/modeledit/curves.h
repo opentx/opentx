@@ -84,6 +84,8 @@ class Curves : public ModelPanel
     void on_curveType_currentIndexChanged(int index);
     void on_curveApply_clicked();
     void onSceneNewPoint(int x, int y);
+    void onPointSizeEdited();
+    void onNodeDelete();
 
   protected:
     virtual void resizeEvent(QResizeEvent *event);

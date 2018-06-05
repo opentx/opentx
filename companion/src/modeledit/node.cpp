@@ -41,6 +41,7 @@ Node::Node():
   fixedX    = false;
   fixedY    = false;
   ballSize = DEFAULT_BALL_SIZE;
+  ballHeight = DEFAULT_BALL_HEIGHT;
 }
 
 void Node::addEdge(Edge *edge)
@@ -138,7 +139,7 @@ QRectF Node::boundingRect() const
 {
     qreal adjust = 2;
     return QRectF(-ballSize/2 - adjust, -ballSize/2 - adjust,
-                  ballSize+BALL_HEIGHT + adjust, ballSize+BALL_HEIGHT + adjust);
+                  ballSize+ballHeight + adjust, ballSize+ballHeight + adjust);
 }
 
 
@@ -153,12 +154,12 @@ void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWid
 {
     painter->setPen(Qt::NoPen);
     painter->setBrush(Qt::darkGray);
-    painter->drawEllipse(-ballSize/2 + BALL_HEIGHT, -ballSize/2 + BALL_HEIGHT, ballSize, ballSize);
+    painter->drawEllipse(-ballSize/2 + ballHeight, -ballSize/2 + ballHeight, ballSize, ballSize);
 
-    QRadialGradient gradient(-BALL_HEIGHT, -BALL_HEIGHT, ballSize/2);
+    QRadialGradient gradient(-ballHeight, -ballHeight, ballSize/2);
     if (option->state & QStyle::State_Sunken) {
-        gradient.setCenter(BALL_HEIGHT, BALL_HEIGHT);
-        gradient.setFocalPoint(BALL_HEIGHT, BALL_HEIGHT);
+        gradient.setCenter(ballHeight, ballHeight);
+        gradient.setFocalPoint(ballHeight, ballHeight);
         gradient.setColorAt(1, nodecolor.light(180));
         gradient.setColorAt(0, nodecolor.light(120));
     } else {
@@ -189,10 +190,10 @@ QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)
              if (newX < minX) newX = minX;
              if (newX > maxX) newX = maxX;
 
-             if (!getFixedX()) {           
+             if (!getFixedX()) {
                newPos.setX(((newX+100)*rect.width()/200+rect.left()));
              }
-             
+
              emit moved(newX, newY);
              return newPos;
          }
@@ -220,11 +221,23 @@ void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     update();
     bPressed = false;
+
     if (scene()) {
       QGraphicsItem::mouseReleaseEvent(event);
-      emit unfocus();
+      if (event->button() == Qt::LeftButton && event->modifiers() == (Qt::ControlModifier | Qt::ShiftModifier)) {
+        emit deleteMe();
+      }
+      else {
+        emit unfocus();
+      }
     }
     else {
       QGraphicsItem::mouseReleaseEvent(event);
     }
 }
+
+void Node::setBallHeight(int height)
+{
+    ballHeight = height;
+}
+
