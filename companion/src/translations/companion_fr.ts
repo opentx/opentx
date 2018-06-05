@@ -5697,7 +5697,7 @@ Extra long : bips extra longs.</translation>
     <message>
         <location filename="../logsdialog.cpp" line="255"/>
         <source>Error: no GPS data found</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur: pas de données GPS trouvées</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="256"/>
@@ -7769,34 +7769,34 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="235"/>
         <source>100mW - 16CH</source>
-        <translation>100mW - 16VOIES</translation>
+        <translation>100mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="236"/>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>25mW - 8CH</source>
-        <translation>25mW - 8VOIES</translation>
+        <translation>25mW - 8 VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="236"/>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>25mW - 16CH</source>
-        <translation>25mW - 16VOIES</translation>
+        <translation>25mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="236"/>
         <source>100mW 16CH</source>
-        <translation>100mW 16VOIES</translation>
+        <translation>100mW 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>200mW 16CH</source>
-        <translation>200mW 16VOIES</translation>
+        <translation>200mW 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="240"/>
         <source>500mW 16CH</source>
-        <translation>500mW 16VOIES</translation>
+        <translation>500mW 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="277"/>
@@ -8839,45 +8839,45 @@ pour tout changement de puissance RF</translation>
         <location filename="../modeledit/setup.cpp" line="490"/>
         <location filename="../modeledit/setup.cpp" line="501"/>
         <source>100 mW - 16CH</source>
-        <translation>100 mW - 16VOIES</translation>
+        <translation>100mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="493"/>
         <location filename="../modeledit/setup.cpp" line="506"/>
         <source>25 mW - 8CH</source>
-        <translation>25 mW - 8VOIES</translation>
+        <translation>25mW - 8 VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="494"/>
         <location filename="../modeledit/setup.cpp" line="507"/>
         <source>25 mW - 16CH</source>
-        <translation>25 mW - 16VOIES</translation>
+        <translation>25mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="495"/>
         <source>100 mW - 16CH, no telemetry</source>
-        <translation>100 mW - 16VOIES, pas de télémétrie</translation>
+        <translation>100mW - 16 VOIES, pas de télémétrie</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="500"/>
         <source>10 mW - 16CH</source>
-        <translation>10 mW - 16VOIES</translation>
+        <translation>10mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="502"/>
         <location filename="../modeledit/setup.cpp" line="509"/>
         <source>500 mW - 16CH</source>
-        <translation>10 mW - 16VOIES</translation>
+        <translation>500mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="503"/>
         <source>1000 mW - 16CH</source>
-        <translation>1000 mW - 16VOIES</translation>
+        <translation>1W - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="508"/>
         <source>200 mW - 16CH</source>
-        <translation>1000 mW - 16VOIES</translation>
+        <translation>200mW - 16 VOIES</translation>
     </message>
 </context>
 <context>
