@@ -448,7 +448,7 @@ if(WIN32)
   if (NSIS_EXE)
     file(TO_NATIVE_PATH "${INSTALL_DESTINATION}" NSIS_DISTRO)  # all files in here will be included in installer
     set(NSI_FILE "${PROJECT_BINARY_DIR}/companion/companion.nsi")
-    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/companion-vs.nsi.in" "${NSI_FILE}" @ONLY)
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/../targets/windows/companion.nsi.in" "${NSI_FILE}" @ONLY)
 
     add_custom_target(installer
       # The 'install' target prepares all the distro files, make sure it has been executed first.
