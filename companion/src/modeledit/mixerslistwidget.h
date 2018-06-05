@@ -21,10 +21,11 @@
 #ifndef _MIXERSLISTWIDGET_H_
 #define _MIXERSLISTWIDGET_H_
 
-#include <QtWidgets>
+#include <QListWidget>
 #include <QProxyStyle>
 #include <QStyleOption>
 #include <QStyledItemDelegate>
+#include <QTextDocument>
 
 class MixersListWidget : public QListWidget
 {
@@ -78,9 +79,9 @@ class MixersDelegate : public QStyledItemDelegate
 class MixerItemViewProxyStyle: public QProxyStyle
 {
   public:
-    explicit MixerItemViewProxyStyle(QStyle * style = 0) : QProxyStyle(style) {}
+    explicit MixerItemViewProxyStyle(QStyle * style = nullptr) : QProxyStyle(style) {}
 
-    void drawPrimitive(PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = 0) const;
+    virtual void drawPrimitive(PrimitiveElement element, const QStyleOption * option, QPainter * painter, const QWidget * widget = nullptr) const override;
 };
 
 #endif // _MIXERSLISTWIDGET_H_
