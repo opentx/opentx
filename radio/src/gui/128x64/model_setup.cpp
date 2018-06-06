@@ -332,9 +332,11 @@ void menuModelSetup(event_t event)
 
   TITLE(STR_MENUSETUP);
 
+#if defined(CPUARM)
   if (event == EVT_ENTRY) {
     reusableBuffer.modelsetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
+#endif
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
   int8_t editMode = s_editMode;
