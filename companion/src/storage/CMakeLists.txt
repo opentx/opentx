@@ -21,10 +21,16 @@ set(storage_SRCS
 set(storage_HDRS
 )
 
+set(storage_MOC_HDRS
+  appdata.h
+)
+
 foreach(name ${storage_NAMES})
   set(storage_SRCS ${storage_SRCS} ${name}.cpp)
   set(storage_HDRS ${storage_HDRS} ${name}.h)
 endforeach()
 
-add_library(storage ${storage_SRCS})
+qt5_wrap_cpp(storage_SRCS ${storage_MOC_HDRS})
+
+add_library(storage ${storage_SRCS} ${storage_HDRS})
 target_link_libraries(storage PRIVATE ${CPN_COMMON_LIB})

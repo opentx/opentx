@@ -70,6 +70,7 @@ class MainWindow : public QMainWindow
 
   private slots:
     void openDocURL();
+    void initWindowOptions();
     void retranslateUi(bool showMsg = false);
 
     void setLanguage(const QString & langString);
@@ -84,6 +85,7 @@ class MainWindow : public QMainWindow
     void updateWindowActionTitle(const QMdiSubWindow * win, QAction * act = NULL);
     void onSubwindowTitleChanged();
     void onSubwindowModified();
+    void onCurrentProfileChanged();
 
     void checkForUpdates();
     void checkForFirmwareUpdate();

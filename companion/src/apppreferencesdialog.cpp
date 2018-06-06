@@ -66,16 +66,18 @@ void AppPreferencesDialog::setMainWinHasDirtyChild(bool value)
 
 void AppPreferencesDialog::accept()
 {
+  Profile & profile = g.currentProfile();
+
   g.autoCheckApp(ui->autoCheckCompanion->isChecked());
-  g.OpenTxBranch(DownloadBranchType(ui->OpenTxBranch->currentIndex()));
+  g.OpenTxBranch(AppData::DownloadBranchType(ui->OpenTxBranch->currentIndex()));
   g.autoCheckFw(ui->autoCheckFirmware->isChecked());
   g.showSplash(ui->showSplash->isChecked());
   g.simuSW(ui->simuSW->isChecked());
   g.removeModelSlots(ui->opt_removeBlankSlots->isChecked());
-  g.newModelAction(ui->opt_newMdl_useWizard->isChecked() ? 1 : ui->opt_newMdl_useEditor->isChecked() ? 2 : 0);
+  g.newModelAction(ui->opt_newMdl_useWizard->isChecked() ? AppData::MODEL_ACT_WIZARD : ui->opt_newMdl_useEditor->isChecked() ? AppData::MODEL_ACT_EDITOR : AppData::MODEL_ACT_NONE);
   g.historySize(ui->historySize->value());
   g.backLight(ui->backLightColor->currentIndex());
-  g.profile[g.id()].volumeGain(round(ui->volumeGain->value() * 10.0));
+  profile.volumeGain(round(ui->volumeGain->value() * 10.0));
   g.libDir(ui->libraryPath->text());
   g.gePath(ui->ge_lineedit->text());
   g.embedSplashes(ui->splashincludeCB->currentIndex());
@@ -93,20 +95,20 @@ void AppPreferencesDialog::accept()
     g.jsSupport(false);
     g.jsCtrl(0);
   }
-  g.profile[g.id()].channelOrder(ui->channelorderCB->currentIndex());
-  g.profile[g.id()].defaultMode(ui->stickmodeCB->currentIndex());
-  g.profile[g.id()].renameFwFiles(ui->renameFirmware->isChecked());
-  g.profile[g.id()].burnFirmware(ui->burnFirmware->isChecked());
-  g.profile[g.id()].sdPath(ui->sdPath->text());
-  g.profile[g.id()].pBackupDir(ui->profilebackupPath->text());
-  g.profile[g.id()].penableBackup(ui->pbackupEnable->isChecked());
-  g.profile[g.id()].splashFile(ui->SplashFileName->text());
+  profile.channelOrder(ui->channelorderCB->currentIndex());
+  profile.defaultMode(ui->stickmodeCB->currentIndex());
+  profile.renameFwFiles(ui->renameFirmware->isChecked());
+  profile.burnFirmware(ui->burnFirmware->isChecked());
+  profile.sdPath(ui->sdPath->text());
+  profile.pBackupDir(ui->profilebackupPath->text());
+  profile.penableBackup(ui->pbackupEnable->isChecked());
+  profile.splashFile(ui->SplashFileName->text());
 
   // The profile name may NEVER be empty
   if (ui->profileNameLE->text().isEmpty())
-    g.profile[g.id()].name(tr("My Radio"));
+    profile.name(tr("My Radio"));
   else
-    g.profile[g.id()].name(ui->profileNameLE->text());
+    profile.name(ui->profileNameLE->text());
 
   bool fwchange = false;
   Firmware * newFw = getFirmwareVariant();
@@ -134,16 +136,16 @@ void AppPreferencesDialog::accept()
       }
     }
     Firmware::setCurrentVariant(newFw);
-    g.profile[g.id()].fwName("");
-    g.profile[g.id()].initFwVariables();
-    g.profile[g.id()].fwType(newFw->getId());
+    profile.fwName("");
+    profile.resetFwVariables();
+    profile.fwType(newFw->getId());
     fwchange = true;
   }
 
   QDialog::accept();
 
   if (fwchange)
-    emit firmwareProfileChanged(g.id());  // important to do this after the accepted() signal
+    emit firmwareProfileChanged();  // important to do this after the accepted() signal
 }
 
 void AppPreferencesDialog::on_snapshotPathButton_clicked()
@@ -158,8 +160,10 @@ void AppPreferencesDialog::on_snapshotPathButton_clicked()
 
 void AppPreferencesDialog::initSettings()
 {
+  const Profile & profile = g.currentProfile();
+
   ui->snapshotClipboardCKB->setChecked(g.snapToClpbrd());
-  ui->burnFirmware->setChecked(g.profile[g.id()].burnFirmware());
+  ui->burnFirmware->setChecked(profile.burnFirmware());
   ui->snapshotPath->setText(g.snapshotDir());
   ui->snapshotPath->setReadOnly(true);
   if (ui->snapshotClipboardCKB->isChecked()) {
@@ -175,7 +179,7 @@ void AppPreferencesDialog::initSettings()
   ui->showSplash->setChecked(g.showSplash());
   ui->historySize->setValue(g.historySize());
   ui->backLightColor->setCurrentIndex(g.backLight());
-  ui->volumeGain->setValue(g.profile[g.id()].volumeGain() / 10.0);
+  ui->volumeGain->setValue(profile.volumeGain() / 10.0);
 
   if (IS_TARANIS(getCurrentBoard())) {
     ui->backLightColor->setEnabled(false);
@@ -183,9 +187,9 @@ void AppPreferencesDialog::initSettings()
 
   ui->simuSW->setChecked(g.simuSW());
   ui->opt_removeBlankSlots->setChecked(g.removeModelSlots());
-  ui->opt_newMdl_useNone->setChecked(g.newModelAction() == 0);
-  ui->opt_newMdl_useWizard->setChecked(g.newModelAction() == 1);
-  ui->opt_newMdl_useEditor->setChecked(g.newModelAction() == 2);
+  ui->opt_newMdl_useNone->setChecked(g.newModelAction() == AppData::MODEL_ACT_NONE);
+  ui->opt_newMdl_useWizard->setChecked(g.newModelAction() == AppData::MODEL_ACT_WIZARD);
+  ui->opt_newMdl_useEditor->setChecked(g.newModelAction() == AppData::MODEL_ACT_EDITOR);
   ui->libraryPath->setText(g.libDir());
   ui->ge_lineedit->setText(g.gePath());
 
@@ -237,15 +241,15 @@ void AppPreferencesDialog::initSettings()
   }
 #endif
   //  Profile Tab Inits
-  ui->channelorderCB->setCurrentIndex(g.profile[g.id()].channelOrder());
-  ui->stickmodeCB->setCurrentIndex(g.profile[g.id()].defaultMode());
-  ui->renameFirmware->setChecked(g.profile[g.id()].renameFwFiles());
-  ui->sdPath->setText(g.profile[g.id()].sdPath());
-  if (!g.profile[g.id()].pBackupDir().isEmpty()) {
-    if (QDir(g.profile[g.id()].pBackupDir()).exists()) {
-      ui->profilebackupPath->setText(g.profile[g.id()].pBackupDir());
+  ui->channelorderCB->setCurrentIndex(profile.channelOrder());
+  ui->stickmodeCB->setCurrentIndex(profile.defaultMode());
+  ui->renameFirmware->setChecked(profile.renameFwFiles());
+  ui->sdPath->setText(profile.sdPath());
+  if (!profile.pBackupDir().isEmpty()) {
+    if (QDir(profile.pBackupDir()).exists()) {
+      ui->profilebackupPath->setText(profile.pBackupDir());
       ui->pbackupEnable->setEnabled(true);
-      ui->pbackupEnable->setChecked(g.profile[g.id()].penableBackup());
+      ui->pbackupEnable->setChecked(profile.penableBackup());
     } else {
       ui->pbackupEnable->setDisabled(true);
     }
@@ -254,14 +258,14 @@ void AppPreferencesDialog::initSettings()
       ui->pbackupEnable->setDisabled(true);
   }
 
-  ui->profileNameLE->setText(g.profile[g.id()].name());
+  ui->profileNameLE->setText(profile.name());
 
   QString hwSettings;
-  if (g.profile[g.id()].stickPotCalib() == "" ) {
+  if (profile.stickPotCalib() == "" ) {
     hwSettings = tr("EMPTY: No radio settings stored in profile");
   }
   else  {
-    QString str = g.profile[g.id()].timeStamp();
+    QString str = profile.timeStamp();
     if (str.isEmpty())
       hwSettings = tr("AVAILABLE: Radio settings of unknown age");
     else
@@ -269,7 +273,7 @@ void AppPreferencesDialog::initSettings()
   }
   ui->lblGeneralSettings->setText(hwSettings);
 
-  QString currType = QStringList(g.profile[g.id()].fwType().split('-').mid(0, 2)).join('-');
+  QString currType = QStringList(profile.fwType().split('-').mid(0, 2)).join('-');
   foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
     ui->downloadVerCB->addItem(firmware->getName(), firmware->getId());
     if (currType == firmware->getId()) {
@@ -377,7 +381,7 @@ void AppPreferencesDialog::on_joystickcalButton_clicked() {
 
 void AppPreferencesDialog::on_sdPathButton_clicked()
 {
-  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), g.profile[g.id()].sdPath());
+  QString fileName = QFileDialog::getExistingDirectory(this,tr("Select the folder replicating your SD structure"), g.currentProfile().sdPath());
   if (!fileName.isEmpty()) {
     ui->sdPath->setText(fileName);
   }
@@ -581,8 +585,8 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
   }
   else {
     ui->widget_splashImage->show();
-    ui->SplashFileName->setText(g.profile[g.id()].splashFile());
-    displayImage(g.profile[g.id()].splashFile());
+    ui->SplashFileName->setText(g.currentProfile().splashFile());
+    displayImage(g.currentProfile().splashFile());
   }
 
   updateLock = false;

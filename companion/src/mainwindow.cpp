@@ -103,14 +103,11 @@ MainWindow::MainWindow():
   createMenus();
   createToolBars();
   retranslateUi();
-  updateMenus();
 
-  setIconThemeSize(g.iconSize());
-  restoreGeometry(g.mainWinGeo());
-  restoreState(g.mainWinState());
-  setTabbedWindows(g.tabbedMdi());
+  initWindowOptions();
 
   connect(windowsListActions, &QActionGroup::triggered, this, &MainWindow::onChangeWindowAction);
+  connect(&g, &AppData::currentProfileChanged, this, &MainWindow::onCurrentProfileChanged);
 
   // give time to the splash to disappear and main window to open before starting updates
   int updateDelay = 1000;
@@ -179,6 +176,15 @@ MainWindow::~MainWindow()
     delete windowsListActions;
     windowsListActions = NULL;
   }
+}
+
+void MainWindow::initWindowOptions()
+{
+  updateMenus();
+  setIconThemeSize(g.iconSize());
+  restoreGeometry(g.mainWinGeo());
+  restoreState(g.mainWinState());
+  setTabbedWindows(g.tabbedMdi());
 }
 
 void MainWindow::displayWarnings()
@@ -756,9 +762,6 @@ bool MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables -
 
   // Set the new profile number
   g.id(pid);
-  Firmware::setCurrentVariant(newFw);
-  emit firmwareChanged();
-  updateMenus();
   return true;
 }
 
@@ -778,7 +781,7 @@ void MainWindow::appPrefs()
   AppPreferencesDialog * dialog = new AppPreferencesDialog(this);
   dialog->setMainWinHasDirtyChild(anyChildrenDirty());
   connect(dialog, &AppPreferencesDialog::firmwareProfileAboutToChange, this, &MainWindow::saveAll);
-  connect(dialog, &AppPreferencesDialog::firmwareProfileChanged, this, &MainWindow::loadProfileId);
+  connect(dialog, &AppPreferencesDialog::firmwareProfileChanged, this, &MainWindow::onCurrentProfileChanged);
   dialog->exec();
   dialog->deleteLater();
 }
@@ -1783,6 +1786,13 @@ void MainWindow::onChangeWindowAction(QAction * act)
     mdiArea->setActiveSubWindow(win);
 }
 
+void MainWindow::onCurrentProfileChanged()
+{
+  Firmware::setCurrentVariant(Firmware::getFirmwareForId(g.currentProfile().fwType()));
+  emit firmwareChanged();
+  updateMenus();
+}
+
 int MainWindow::newProfile(bool loadProfile)
 {
   int i;
@@ -1791,7 +1801,7 @@ int MainWindow::newProfile(bool loadProfile)
   if (i == MAX_PROFILES)  //Failed to find free slot
     return -1;
 
-  g.profile[i].init(i);
+  g.profile[i].init();
   g.profile[i].name(tr("New Radio"));
 
   if (loadProfile) {
@@ -1835,7 +1845,7 @@ void MainWindow::deleteProfile(const int pid)
   if (ret != QMessageBox::Yes)
     return;
 
-  g.profile[pid].remove();
+  g.getProfile(pid).resetAll();
   loadProfileId(0);
 }
 
