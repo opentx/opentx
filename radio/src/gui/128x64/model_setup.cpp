@@ -256,10 +256,6 @@ void menuModelSetup(event_t event)
   }
 #endif
 
-#if defined(CPUARM)
-  static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
-#endif
-
   int8_t old_editMode = s_editMode;
 
 #if defined(PCBTARANIS)
@@ -335,6 +331,10 @@ void menuModelSetup(event_t event)
 #endif
 
   TITLE(STR_MENUSETUP);
+
+  if (event == EVT_ENTRY) {
+    reusableBuffer.modelsetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+  }
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
   int8_t editMode = s_editMode;
@@ -1334,14 +1334,15 @@ void menuModelSetup(event_t event)
           }
           else {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LBT_POWER_MAX);
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, selectedPxxPower, LEFT | attr);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr) {
-              CHECK_INCDEC_MODELVAR_ZERO(event, selectedPxxPower, R9M_LBT_POWER_MAX);
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_LBT_POWER_MAX);
             }
-            if (attr && editMode == 0 && selectedPxxPower != g_model.moduleData[moduleIdx].pxx.power) {
-              if((selectedPxxPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
+            if (attr && editMode == 0 && reusableBuffer.modelsetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
+              if((reusableBuffer.modelsetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
                 POPUP_WARNING(STR_REBIND);
-              g_model.moduleData[moduleIdx].pxx.power = selectedPxxPower;
+                reusableBuffer.modelsetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+              }  
             }
           }
         }
