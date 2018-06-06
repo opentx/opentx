@@ -1471,7 +1471,7 @@ void opentxResume();
 #endif
 union ReusableBuffer
 {
-  // ARM 398 bytes
+  // ARM 334 bytes
   struct
   {
 #if !defined(CPUARM)
@@ -1486,7 +1486,6 @@ union ReusableBuffer
 #else
     char mainname[LEN_MODEL_NAME];
 #endif
-    char msg[64];
   } modelsel;
 
   // 65 bytes
