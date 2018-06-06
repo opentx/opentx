@@ -303,7 +303,7 @@ set(companion_UIS
   )
 
 if(WIN32)
-  set(icon_RC icon.rc)
+  set(icon_RC images/winicons/icon.rc)
 endif()
 
 qt5_wrap_ui(companion_SRCS ${companion_UIS})
