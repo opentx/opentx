@@ -1341,8 +1341,8 @@ void menuModelSetup(event_t event)
             if (attr && editMode == 0 && reusableBuffer.modelsetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
               if((reusableBuffer.modelsetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
                 POPUP_WARNING(STR_REBIND);
-                reusableBuffer.modelsetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
-              }  
+              }
+              reusableBuffer.modelsetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
             }
           }
         }
