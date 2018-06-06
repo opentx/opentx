@@ -277,7 +277,6 @@ void menuModelSetup(event_t event)
 {
   horzpos_t l_posHorz = menuHorizontalPosition;
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
-  static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 
   int8_t old_editMode = s_editMode;
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
@@ -300,6 +299,10 @@ void menuModelSetup(event_t event)
     LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS});
 
   MENU_CHECK(STR_MENUSETUP, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX);
+
+  if (event == EVT_ENTRY) {
+    reusableBuffer.modelsetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+  }
 
 #if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
@@ -1139,19 +1142,19 @@ void menuModelSetup(event_t event)
       if (IS_MODULE_R9M(moduleIdx)) {
         lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
         if(IS_MODULE_R9M_FCC(moduleIdx)) {
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, selectedPxxPower, LEFT | attr);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
           if (attr)
-            CHECK_INCDEC_MODELVAR(event, selectedPxxPower, 0, R9M_FCC_POWER_MAX);
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_FCC_POWER_MAX);
         }
         else {
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, selectedPxxPower, LEFT | attr);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
           if (attr)
-            CHECK_INCDEC_MODELVAR(event, selectedPxxPower, 0, R9M_LBT_POWER_MAX);
-        }
-        if (attr && s_editMode == 0 && selectedPxxPower != g_model.moduleData[moduleIdx].pxx.power) {
-          if((selectedPxxPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
-            POPUP_WARNING(STR_REBIND);
-          g_model.moduleData[moduleIdx].pxx.power = selectedPxxPower;
+            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_LBT_POWER_MAX);
+          if (attr && s_editMode == 0 && reusableBuffer.modelsetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
+            if((reusableBuffer.modelsetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
+              POPUP_WARNING(STR_REBIND);
+            reusableBuffer.modelsetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+          }
         }
       }
 #if defined (MULTIMODULE)
