@@ -101,14 +101,14 @@ enum MenuModelSetupItems {
 
 void checkModelIdUnique(uint8_t moduleIdx)
 {
-  char* warn_buf = reusableBuffer.msgbuf.msg;
+  char* warn_buf = reusableBuffer.modelsetup.msg;
 
   // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
-  size_t warn_buf_len = sizeof(reusableBuffer.msgbuf.msg) - WARNING_LINE_LEN - 2;
+  size_t warn_buf_len = sizeof(reusableBuffer.modelsetup.msg) - WARNING_LINE_LEN - 2;
   if (!modelslist.isModelIdUnique(moduleIdx,warn_buf,warn_buf_len)) {
     if (warn_buf[0] != 0) {
       POPUP_WARNING(STR_MODELIDUSED);
-      SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.msgbuf.msg), 0);
+      SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.modelsetup.msg), 0);
     }
   }
 }
@@ -258,7 +258,6 @@ int getSwitchWarningsCount()
 bool menuModelSetup(event_t event)
 {
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
-  static uint8_t selectedPxxPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power; //TODO could go to the reusable struct
 
   // Switch to external antenna confirmation
   if (warningResult) {
@@ -291,6 +290,10 @@ bool menuModelSetup(event_t event)
          TRAINER_LINE1_ROWS,
          TRAINER_LINE2_ROWS });
 
+  if (event == EVT_ENTRY) {
+    reusableBuffer.modelsetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+  }
+  
   if (menuEvent) {
     moduleFlag[0] = 0;
     moduleFlag[1] = 0;
@@ -1079,21 +1082,21 @@ bool menuModelSetup(event_t event)
         if (IS_MODULE_R9M(moduleIdx)) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MULTI_RFPOWER);
           if(IS_MODULE_R9M_FCC(moduleIdx)) {
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, selectedPxxPower, LEFT | attr);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr)
-              CHECK_INCDEC_MODELVAR(event, selectedPxxPower, 0, R9M_FCC_POWER_MAX);
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_FCC_POWER_MAX);
           }
           else {
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, selectedPxxPower, LEFT | attr);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr)
-              CHECK_INCDEC_MODELVAR(event, selectedPxxPower, 0, R9M_LBT_POWER_MAX);
-          }
-          if (attr && s_editMode == 0 && selectedPxxPower != g_model.moduleData[moduleIdx].pxx.power) {
-            if((selectedPxxPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
-              POPUP_WARNING(STR_WARNING);
-              SET_WARNING_INFO(STR_REBIND, sizeof(TR_REBIND), 0);
+              CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_LBT_POWER_MAX);
+            if (attr && s_editMode == 0 && reusableBuffer.modelsetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
+              if((reusableBuffer.modelsetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
+                POPUP_WARNING(STR_WARNING);
+                SET_WARNING_INFO(STR_REBIND, sizeof(TR_REBIND), 0);
+              }
+              reusableBuffer.modelsetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
             }
-            g_model.moduleData[moduleIdx].pxx.power = selectedPxxPower;
           }
         }
 #if defined(MULTIMODULE)

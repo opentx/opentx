@@ -1471,7 +1471,7 @@ void opentxResume();
 #endif
 union ReusableBuffer
 {
-  // 275 bytes
+  // ARM 334 bytes
   struct
   {
 #if !defined(CPUARM)
@@ -1488,9 +1488,12 @@ union ReusableBuffer
 #endif
   } modelsel;
 
+  // 65 bytes
   struct {
     char msg[64];
-  } msgbuf; // used in modelsel and modelsetup (only in a warning message)
+    uint8_t r9mPower;
+  } modelsetup;
+
 
   // 103 bytes
   struct
