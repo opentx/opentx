@@ -708,7 +708,8 @@ void Curves::onSceneNewPoint(int x, int y)
   }
 }
 
-CustomScene::CustomScene(QGraphicsView * view)
+CustomScene::CustomScene(QGraphicsView * view) :
+  QGraphicsScene(view)
 {
 }
 
