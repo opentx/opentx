@@ -505,6 +505,7 @@ extern void (*popupMenuHandler)(const char * result);
 extern char s_text_file[TEXT_FILENAME_MAXLEN];
 void pushMenuTextView(const char * filename);
 void pushModelNotes();
+void readModelNotes();
 
 #define LABEL(...)                     (uint8_t)-1
 
