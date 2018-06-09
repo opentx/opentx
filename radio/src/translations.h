@@ -995,6 +995,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_ADDMAINVIEW[];
   extern const pm_char STR_BACKGROUND_COLOR[];
   extern const pm_char STR_MAIN_COLOR[];
+extern const pm_char STR_TEXT_VIEWER[];
   extern const pm_char STR_MULTI_RFPOWER[];
 #endif
 
