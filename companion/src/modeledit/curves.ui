@@ -132,17 +132,17 @@
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <layout class="QGridLayout" name="pointsLayout">
-       <property name="horizontalSpacing">
-        <number>0</number>
-       </property>
-       <property name="verticalSpacing">
-        <number>2</number>
-       </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
+       </property>
+       <property name="horizontalSpacing">
+        <number>0</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>2</number>
        </property>
       </layout>
      </item>
@@ -175,16 +175,40 @@
      <property name="title">
       <string>Curve Creator</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_76" rowstretch="0,0,0,0,0,0,0,0">
-      <item row="0" column="1" colspan="3">
-       <widget class="QComboBox" name="curveType"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="yMidLabel">
+     <layout class="QGridLayout" name="gridLayout_76" rowstretch="0,0,0,0,0,0,0,0,0,0">
+      <item row="1" column="0">
+       <widget class="QLabel" name="curveCoeffLabel">
         <property name="text">
-         <string>Y at X=0</string>
+         <string>Coefficient</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="curveTypeLabel_2">
+        <property name="text">
+         <string>Curve type</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="curveSideLabel">
+        <property name="text">
+         <string>Side</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <spacer name="verticalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item row="4" column="1" colspan="3">
        <widget class="QSpinBox" name="yMax">
@@ -200,6 +224,48 @@
         <property name="maximum">
          <number>100</number>
         </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="3">
+       <widget class="QSpinBox" name="yMid">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimum">
+         <number>-100</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="yMinLabel">
+        <property name="text">
+         <string>Y at X=-100</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="3">
+       <widget class="QComboBox" name="curveSide">
+        <item>
+         <property name="text">
+          <string>Both</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>x&gt;0</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>x&lt;0</string>
+         </property>
+        </item>
        </widget>
       </item>
       <item row="4" column="0">
@@ -225,23 +291,28 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1" colspan="3">
-       <widget class="QComboBox" name="curveSide">
-        <item>
-         <property name="text">
-          <string>Both</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>x&gt;0</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>x&lt;0</string>
-         </property>
-        </item>
+      <item row="6" column="0" colspan="4">
+       <widget class="QPushButton" name="curveApply">
+        <property name="text">
+         <string>Apply</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="3">
+       <widget class="QComboBox" name="curveType"/>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="yMidLabel">
+        <property name="text">
+         <string>Y at X=0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="pointSizeLabel">
+        <property name="text">
+         <string>Point size</string>
+        </property>
        </widget>
       </item>
       <item row="2" column="1" colspan="3">
@@ -260,67 +331,13 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="0" colspan="4">
-       <widget class="QPushButton" name="curveApply">
-        <property name="text">
-         <string>Apply</string>
-        </property>
-       </widget>
+      <item row="8" column="1" colspan="3">
+       <widget class="QSpinBox" name="pointSize"/>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="curveSideLabel">
-        <property name="text">
-         <string>Side</string>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="0">
-       <spacer name="verticalSpacer_3">
+      <item row="7" column="0" colspan="4">
+       <widget class="Line" name="line">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>40</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="3" column="1" colspan="3">
-       <widget class="QSpinBox" name="yMid">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="minimum">
-         <number>-100</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="curveTypeLabel_2">
-        <property name="text">
-         <string>Curve type</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="yMinLabel">
-        <property name="text">
-         <string>Y at X=-100</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="curveCoeffLabel">
-        <property name="text">
-         <string>Coefficient</string>
+         <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
