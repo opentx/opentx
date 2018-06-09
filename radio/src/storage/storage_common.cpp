@@ -72,17 +72,6 @@ void postModelLoad(bool alarms)
   AUDIO_FLUSH();
   flightReset(false);
 
-  if (pulsesStarted()) {
-#if defined(GUI)
-    if (alarms) {
-      checkAll();
-      PLAY_MODEL_NAME();
-    }
-#endif
-    resumePulses();
-  }
-
-
   customFunctionsReset();
 
   restoreTimers();
@@ -100,7 +89,15 @@ void postModelLoad(bool alarms)
   LOAD_MODEL_CURVES();
 
   resumeMixerCalculations();
-  // TODO pulses should be started after mixer calculations ...
+  if (pulsesStarted()) {
+#if defined(GUI)
+    if (alarms) {
+      checkAll();
+      PLAY_MODEL_NAME();
+    }
+#endif
+    resumePulses();
+  }
 
 #if defined(TELEMETRY_FRSKY)
   frskySendAlarms();

@@ -24,7 +24,7 @@
 #include <QtWidgets>
 
 #define DEFAULT_BALL_SIZE 10
-#define BALL_HEIGHT 2
+#define DEFAULT_BALL_HEIGHT 2
 
 class Edge;
 QT_BEGIN_NAMESPACE
@@ -64,13 +64,15 @@ class Node : public QGraphicsObject
     void setMaxX(int val) { maxX = val; }
     void setPressed(bool pressed) { bPressed = pressed; }
     bool isPressed() const { return bPressed; }
-
     void setColor(const QColor & color);
+    void setBallHeight(int height);
+    int geBallHeight() { return ballHeight; }
 
   signals:
     void moved(int x, int y);
     void focus();
     void unfocus();
+    void deleteMe();
 
   protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -89,6 +91,7 @@ class Node : public QGraphicsObject
     QList<Edge *> edgeList;
     QPointF newPos;
     QColor nodecolor;
+    int ballHeight;
 };
 
 #endif // _NODE_H_
