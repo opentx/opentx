@@ -1248,7 +1248,7 @@ Voulez-vous les importer ?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="104"/>
-        <location filename="../modeledit/curves.ui" line="309"/>
+        <location filename="../modeledit/curves.ui" line="189"/>
         <source>Curve type</source>
         <translation>Type de courbe</translation>
     </message>
@@ -1258,47 +1258,52 @@ Voulez-vous les importer ?</translation>
         <translation>Créateur de courbe</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="185"/>
+        <location filename="../modeledit/curves.ui" line="307"/>
         <source>Y at X=0</source>
         <translation>Y pour X=0</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="208"/>
+        <location filename="../modeledit/curves.ui" line="314"/>
+        <source>Point size</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../modeledit/curves.ui" line="274"/>
         <source>Y at X=100</source>
         <translation>Y pour X=100</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="232"/>
+        <location filename="../modeledit/curves.ui" line="256"/>
         <source>Both</source>
         <translation>Les 2</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="237"/>
+        <location filename="../modeledit/curves.ui" line="261"/>
         <source>x&gt;0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="242"/>
+        <location filename="../modeledit/curves.ui" line="266"/>
         <source>x&lt;0</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="266"/>
+        <location filename="../modeledit/curves.ui" line="297"/>
         <source>Apply</source>
         <translation>Appliquer</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="273"/>
+        <location filename="../modeledit/curves.ui" line="196"/>
         <source>Side</source>
         <translation>Côté</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="316"/>
+        <location filename="../modeledit/curves.ui" line="248"/>
         <source>Y at X=-100</source>
         <translation>Y pour X=-100</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.ui" line="323"/>
+        <location filename="../modeledit/curves.ui" line="182"/>
         <source>Coefficient</source>
         <translation></translation>
     </message>
@@ -1308,72 +1313,72 @@ Voulez-vous les importer ?</translation>
         <translation>Nom de la courbe</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="152"/>
+        <location filename="../modeledit/curves.cpp" line="154"/>
         <source>Curve %1</source>
         <translation>Courbe %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="206"/>
+        <location filename="../modeledit/curves.cpp" line="208"/>
         <source>%1 points</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="210"/>
+        <location filename="../modeledit/curves.cpp" line="212"/>
         <source>Linear</source>
         <translation>Linéaire</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="211"/>
+        <location filename="../modeledit/curves.cpp" line="213"/>
         <source>Single Expo</source>
         <translation>Expo simple</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="212"/>
+        <location filename="../modeledit/curves.cpp" line="214"/>
         <source>Symmetrical f(x)=-f(-x)</source>
         <translation>Symétrique f(x)=-f(-x)</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="213"/>
+        <location filename="../modeledit/curves.cpp" line="215"/>
         <source>Symmetrical f(x)=f(-x)</source>
         <translation>Symétrique f(x)=f(-x)</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="593"/>
+        <location filename="../modeledit/curves.cpp" line="602"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="596"/>
+        <location filename="../modeledit/curves.cpp" line="605"/>
         <source>Paste</source>
         <translation>Coller</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="602"/>
+        <location filename="../modeledit/curves.cpp" line="611"/>
         <source>Clear</source>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="604"/>
+        <location filename="../modeledit/curves.cpp" line="613"/>
         <source>Clear all curves</source>
         <translation>Effacer toutes les courbes</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="625"/>
+        <location filename="../modeledit/curves.cpp" line="634"/>
         <source>Are you sure you want to reset curve %1?</source>
         <translation>Etes-vous sûr de vouloir effacer la courbe %1 ?</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="633"/>
+        <location filename="../modeledit/curves.cpp" line="642"/>
         <source>Are you sure you want to reset all curves?</source>
         <translation>Etes-vous sûr de vouloir effacer toutes les courbes ?</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="304"/>
+        <location filename="../modeledit/curves.cpp" line="310"/>
         <source>Editing curve %1</source>
         <translation>Édition de la courbe %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/curves.cpp" line="448"/>
+        <location filename="../modeledit/curves.cpp" line="457"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
         <translation>Pas assez de points disponibles en mémoire pour enregistrer la courbe.</translation>
     </message>
