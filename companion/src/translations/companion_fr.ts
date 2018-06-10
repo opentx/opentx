@@ -1265,7 +1265,7 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../modeledit/curves.ui" line="314"/>
         <source>Point size</source>
-        <translation type="unfinished"></translation>
+        <translation>Taille point</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.ui" line="274"/>
