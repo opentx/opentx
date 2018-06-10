@@ -3,8 +3,8 @@
 set -e
 
 branch=2.2
-workdir=/home/opentx/release22
-output=/var/www/html/2.2/release
+workdir=/home/opentx/rc22
+output=/var/www/html/2.2/rc
 
 # Handle opentx.sdcard.version
 sdcard_version="2.2V"$(grep 'set(SDCARD_REVISION' ${workdir}/code/CMakeLists.txt | grep -o '".*"' | sed 's/"//g')
