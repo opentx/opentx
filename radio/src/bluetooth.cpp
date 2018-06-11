@@ -237,13 +237,11 @@ void bluetoothSendTrainer()
 
 void bluetoothForwardTelemetry(uint8_t data)
 {
-#if !defined(SIMU)
   bluetoothBuffer[bluetoothBufferIndex++] = data;
   if (data == START_STOP && bluetoothBufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
     bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
     bluetoothBufferIndex = 0;
   }
-#endif
 }
 
 void bluetoothReceiveTrainer()
