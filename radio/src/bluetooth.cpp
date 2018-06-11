@@ -237,11 +237,13 @@ void bluetoothSendTrainer()
 
 void bluetoothForwardTelemetry(uint8_t data)
 {
+#if !defined(SIMU)
   bluetoothBuffer[bluetoothBufferIndex++] = data;
   if (data == START_STOP && bluetoothBufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
     bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
     bluetoothBufferIndex = 0;
   }
+#endif
 }
 
 void bluetoothReceiveTrainer()
@@ -262,6 +264,7 @@ void bluetoothReceiveTrainer()
 #if defined(PCBX9E) && !defined(USEHORUSBT)
 void bluetoothWakeup(void)
 {
+#if !defined(SIMU)
   if (!g_eeGeneral.bluetoothMode) {
     if (bluetoothState != BLUETOOTH_INIT) {
       bluetoothDone();
@@ -317,6 +320,7 @@ void bluetoothWakeup(void)
       bluetoothSendTrainer();
     }
   }
+#endif
 }
 #else // PCBX9E
 void bluetoothWakeup()

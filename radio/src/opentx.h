@@ -155,7 +155,7 @@
   #define CASE_SDCARD(x)
 #endif
 
-#if defined(BLUETOOTH) && !(defined(PCBX9E) && !defined(USEHORUSBT))
+#if defined(BLUETOOTH)
   #define CASE_BLUETOOTH(x) x,
 #else
   #define CASE_BLUETOOTH(x)
@@ -201,12 +201,6 @@
   #define CASE_PCBX9E(x) x,
 #else
   #define CASE_PCBX9E(x)
-#endif
-
-#if defined(BLUETOOTH) && !(defined(PCBX9E) && !defined(USEHORUSBT))
-  #define CASE_BLUETOOTH(x) x,
-#else
-  #define CASE_BLUETOOTH(x)
 #endif
 
 #if defined(PCBSKY9X) && !defined(AR9X) && !defined(REVA)
