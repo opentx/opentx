@@ -70,13 +70,19 @@ set(GUI_SRC
   model_input_edit.cpp
   model_mix_edit.cpp
   model_display.cpp
-  model_gvars.cpp
   radio_diagkeys.cpp
   radio_diaganas.cpp
   radio_hardware.cpp
   view_telemetry.cpp
   view_about.cpp
   )
+
+if(GVARS)
+  set(GUI_SRC
+    ${GUI_SRC}
+    model_gvars.cpp
+    )
+endif()
 
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
