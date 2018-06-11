@@ -170,6 +170,7 @@ class Boards
     static const QString getAxisName(int index);
     static const QString getAnalogInputName(Board::Type board, unsigned index);
     static const bool isBoardCompatible(Board::Type board1, Board::Type board2);
+    static const QString getBoardName(Board::Type board);
 
   protected:
 
