@@ -293,6 +293,7 @@ void ModelsList::clear()
     delete *it;
   }
   categories.clear();
+  init();
 }
 
 bool ModelsList::load()
