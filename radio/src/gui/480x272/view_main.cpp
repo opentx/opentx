@@ -51,10 +51,10 @@ void drawTrims(uint8_t flightMode)
     static uint8_t vert[4] = {0, 1, 1, 0};
     unsigned int stickIndex = CONVERT_MODE(i);
     coord_t xm = x[stickIndex];
-    trim_t v = getRawTrimValue(flightMode, i);
-    int32_t trim = v.value;
+    int32_t trim = getTrimValue(flightMode, i);
 
-    if(v.mode == TRIM_MODE_NONE)
+
+    if(getRawTrimValue(flightMode, i).mode == TRIM_MODE_NONE)
       continue;
 
     if (vert[i]) {

@@ -103,10 +103,9 @@ void displayTrims(uint8_t phase)
     uint8_t stickIndex = CONVERT_MODE(i);
     xm = x[stickIndex];
     uint8_t att = ROUND;
-    trim_t v = getRawTrimValue(phase, i);
-    int16_t val = v.value;
+    int16_t val = getTrimValue(phase, i);
 
-    if(v.mode == TRIM_MODE_NONE)
+    if(getRawTrimValue(phase, i).mode == TRIM_MODE_NONE)
       continue;
 
 #if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
