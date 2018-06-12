@@ -105,8 +105,10 @@ void displayTrims(uint8_t phase)
     uint8_t att = ROUND;
     int16_t val = getTrimValue(phase, i);
 
+#if defined(CPUARM)
     if(getRawTrimValue(phase, i).mode == TRIM_MODE_NONE)
       continue;
+#endif
 
 #if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
     int16_t dir = val;
