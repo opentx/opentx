@@ -94,7 +94,6 @@ void displayTrims(uint8_t phase)
 
     uint32_t att = ROUND;
     trim_t v = getRawTrimValue(phase, i);
-    
     int32_t trim = v.value;
     int32_t val = trim;
     bool exttrim = false;
