@@ -93,9 +93,15 @@ void displayTrims(uint8_t phase)
     xm = x[stickIndex];
 
     uint32_t att = ROUND;
-    int32_t trim = getTrimValue(phase, i);
+    trim_t v = getRawTrimValue(phase, i);
+    
+    int32_t trim = v.value;
     int32_t val = trim;
     bool exttrim = false;
+    
+    if(v.mode == TRIM_MODE_NONE)
+      continue;
+    
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
     }
