@@ -77,6 +77,11 @@ for s, f, a in [("Inaktivitätsalarm", "inactiv", 486),
                 ("servo overload", "servoko", NO_ALTERNATE),
                 ("power overload", "rxko", NO_ALTERNATE),
                 ("Empfänger noch verbunden", "modelpwr", NO_ALTERNATE),
+                ("timer 1 abgelaufen", "timovr1", NO_ALTERNATE),
+                ("timer 1 abgelaufen", "timovr2", NO_ALTERNATE),
+                ("timer 1 abgelaufen", "timovr3", NO_ALTERNATE),
+                ("Sensor veloren", "sensorko", NO_ALTERNATE),
+                ("Willkommen bei open te ix", "hello", 480),
                 ]:
     systemSounds.append((s, filename(f, a)))
 for i, s in enumerate(["Uhr", "Uhr", "Sender", "Empfang", "A1", "A2", "Hoehe", "Motor",
