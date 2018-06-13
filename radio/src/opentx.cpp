@@ -971,6 +971,7 @@ void doSplash()
 #endif
 
   if (SPLASH_NEEDED()) {
+    backlightOn();
     drawSplash();
 
 #if !defined(CPUARM)
