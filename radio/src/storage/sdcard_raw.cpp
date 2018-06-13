@@ -207,6 +207,11 @@ void storageReadAll()
     createModel();
   }
 
+  // Wipe models list in case
+  // it's being reloaded after USB connection
+  modelslist.clear();
+
+  // and reload the list
   modelslist.load();
 }
 
