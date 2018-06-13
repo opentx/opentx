@@ -721,6 +721,7 @@ void checkSwitches()
     }
 
     LED_ERROR_BEGIN();
+    backlightOn();
 
     // first - display warning
 #if defined(PCBTARANIS) || defined(PCBHORUS)
