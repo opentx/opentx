@@ -72,8 +72,8 @@ class MixesPanel : public ModelPanel
     void mixersDeleteList(QList<int> list);
     QList<int> createMixListFromSelected();
     void setSelectedByMixList(QList<int> list);
-    bool AddMixerLine(int dest);
-    QString getMixerText(int dest, bool * new_ch);
+    void AddMixerLine(int dest);
+    QString getMixerText(int dest, bool newChannel);
 };
 
 #endif // _MIXES_H_

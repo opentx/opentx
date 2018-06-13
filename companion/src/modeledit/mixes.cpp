@@ -64,31 +64,22 @@ MixesPanel::~MixesPanel()
 
 void MixesPanel::update()
 {
+  lock = true;
   mixersListWidget->clear();
-
-  unsigned int curDest = 0;
-  unsigned int outputs = firmware->getCapability(Outputs);
-
-  for (int i=0; i<firmware->getCapability(Mixes); i++) {
-    MixData & mix = model->mixData[i];
-    if (mix.destCh == 0 || mix.destCh > outputs) {
-      // we reached the end of the mixes list
-      break;
+  for (int i=0; i < firmware->getCapability(Outputs); ++i) {
+    bool filled = false;
+    for (int j=0; j < firmware->getCapability(Mixes); ++j) {
+      const MixData & mix = model->mixData[j];
+      if ((int)mix.destCh == i+1) {
+        AddMixerLine(j);
+        filled = true;
+      }
     }
-    QString str = "";
-    while (curDest < mix.destCh-1) {
-      curDest++;
-      AddMixerLine(-int(curDest));
-    }
-    if (AddMixerLine(i)) {
-      curDest++;
+    if (!filled) {
+      AddMixerLine(-i-1);
     }
   }
-
-  while (curDest < outputs) {
-    curDest++;
-    AddMixerLine(-int(curDest));
-  }
+  lock = false;
 }
 
 /**
@@ -97,30 +88,27 @@ void MixesPanel::update()
   @note Mixer lines are now HTML formated in order to support bold text.
 
   @param[in] dest   defines which mixer line to create.
-                    If dest < 0 then create empty channel slotr fo channel -dest ( dest=-2 -> CH2)
+                    If dest < 0 then create empty channel slot fo channel -dest ( dest=-2 -> CH2)
                     if dest >=0 then create used channel based on model mix data from slot dest (dest=4 -> model mix[4])
-
-  @retval true      destination channel is different from the previous list item
-          false     destination channle is the same as previous list item
 */
-bool MixesPanel::AddMixerLine(int dest)
+void MixesPanel::AddMixerLine(int dest)
 {
-  bool new_ch;
-  QString str = getMixerText(dest, &new_ch);
-  QListWidgetItem *itm = new QListWidgetItem(str);
   QByteArray qba(1, (quint8)dest);
   unsigned destId = abs(dest);
+  bool newChan = false;
   bool hasSibs = false;
   if (dest >= 0) {
     //add mix data
-    MixData * md = &model->mixData[dest];
-    qba.append((const char*)md, sizeof(MixData));
-    destId = md->destCh;
-    hasSibs = (dest < CPN_MAX_MIXERS && model->mixData[dest+1].destCh == md->destCh);
+    const MixData & md = model->mixData[dest];
+    qba.append((const char*)&md, sizeof(MixData));
+    destId = md.destCh;
+    const QVector<const MixData *> mixes = model->mixes(md.destCh-1);
+    newChan = (mixes.constFirst() == &md);
+    hasSibs = (mixes.constLast() != &md);
   }
+  QListWidgetItem *itm = new QListWidgetItem(getMixerText(dest, newChan));
   itm->setData(Qt::UserRole, qba);
-  mixersListWidget->addItem(itm, destId, new_ch, hasSibs);
-  return new_ch;
+  mixersListWidget->addItem(itm, destId, newChan, hasSibs);
 }
 
 /**
@@ -132,37 +120,28 @@ bool MixesPanel::AddMixerLine(int dest)
 
   @retval string    mixer line in HTML
 */
-QString MixesPanel::getMixerText(int dest, bool * new_ch)
+QString MixesPanel::getMixerText(int dest, bool newChannel)
 {
   QString str;
-  bool newChannel = false;
   if (dest < 0) {
     dest = abs(dest);
     str = modelPrinter.printChannelName(dest-1);
     //highlight channel if needed
     if (dest == (int)highlightedSource)
       str = "<b>" + str + "</b>";
-    newChannel = true;
   }
   else {
-    MixData & mix = model->mixData[dest];
+    const MixData & mix = model->mixData[dest];
     //mix->destCh from 1 to 32
     str = modelPrinter.printChannelName(mix.destCh-1);
 
-    if ((dest == 0) || (model->mixData[dest-1].destCh != mix.destCh)) {
-      newChannel = true;
-      //highlight channel if needed
-      if (mix.destCh == highlightedSource)
-        str = "<b>" + str + "</b>";
-    }
-    else {
+    if (!newChannel)
       str.fill(' ');
-    }
+    else if (mix.destCh == highlightedSource)
+      str = "<b>" + str + "</b>";
 
     str += modelPrinter.printMixerLine(mix, !newChannel, highlightedSource);
   }
-  if (new_ch)
-    *new_ch = newChannel;
   return str.replace(" ", "&nbsp;");
 }
 
