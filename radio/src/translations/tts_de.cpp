@@ -131,9 +131,9 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #endif
     div_t qr = div((int)number, 10);
     if (qr.rem > 0) {
-      PUSH_NUMBER_PROMPT(qr.quot);
+      PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(DE_PROMPT_COMMA);
-      PUSH_NUMBER_PROMPT(qr.rem);
+      PUSH_NUMBER_PROMPT(DE_PROMPT_NUMBERS_BASE + qr.rem);
     }
     else {
       if (qr.quot == 1) {
@@ -143,7 +143,8 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         PUSH_NUMBER_PROMPT(qr.quot);
       }
     }
-    DE_PUSH_UNIT_PROMPT(unit);
+    if(unit)
+      DE_PUSH_UNIT_PROMPT(unit);
     return;
   }
 
