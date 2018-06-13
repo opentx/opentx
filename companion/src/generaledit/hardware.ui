@@ -149,15 +149,6 @@
      <property name="statusTip">
       <string/>
      </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-     </property>
     </widget>
    </item>
    <item row="13" column="2">
@@ -167,15 +158,6 @@
      </property>
      <property name="statusTip">
       <string/>
-     </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
      </property>
     </widget>
    </item>
@@ -899,15 +881,6 @@
      <property name="statusTip">
       <string/>
      </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-     </property>
     </widget>
    </item>
    <item row="10" column="2">
@@ -917,15 +890,6 @@
      </property>
      <property name="statusTip">
       <string/>
-     </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
      </property>
     </widget>
    </item>
@@ -937,15 +901,6 @@
      <property name="statusTip">
       <string/>
      </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-     </property>
     </widget>
    </item>
    <item row="8" column="2">
@@ -955,15 +910,6 @@
      </property>
      <property name="statusTip">
       <string/>
-     </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
      </property>
     </widget>
    </item>
@@ -975,15 +921,6 @@
      <property name="statusTip">
       <string/>
      </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-     </property>
     </widget>
    </item>
    <item row="6" column="2">
@@ -993,15 +930,6 @@
      </property>
      <property name="statusTip">
       <string/>
-     </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
      </property>
     </widget>
    </item>
@@ -1013,15 +941,6 @@
      <property name="statusTip">
       <string/>
      </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
-     </property>
     </widget>
    </item>
    <item row="4" column="2">
@@ -1031,15 +950,6 @@
      </property>
      <property name="statusTip">
       <string/>
-     </property>
-     <property name="whatsThis">
-      <string>Beeper volume
-
-0 - Quiet.  No beeps at all.
-1 - No Keys.  Normal beeps but menu keys do not beep.
-2 - Normal.
-3 - Loud.
-4 - Extra loud.</string>
      </property>
     </widget>
    </item>
@@ -1103,21 +1013,6 @@
         <property name="text" stdset="0">
          <string/>
         </property>
-        <item>
-         <property name="text">
-          <string>OFF</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Telemetry</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Trainer</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
