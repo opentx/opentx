@@ -96,6 +96,10 @@ void displayTrims(uint8_t phase)
     int32_t trim = getTrimValue(phase, i);
     int32_t val = trim;
     bool exttrim = false;
+    
+    if(getRawTrimValue(phase, i).mode == TRIM_MODE_NONE)
+      continue;
+    
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
     }

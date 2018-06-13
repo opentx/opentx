@@ -53,6 +53,10 @@ void drawTrims(uint8_t flightMode)
     coord_t xm = x[stickIndex];
     int32_t trim = getTrimValue(flightMode, i);
 
+
+    if(getRawTrimValue(flightMode, i).mode == TRIM_MODE_NONE)
+      continue;
+
     if (vert[i]) {
       if (g_model.extendedTrims == 1) {
         drawVerticalSlider(xm, TRIM_V_Y, 160, trim, TRIM_EXTENDED_MIN, TRIM_EXTENDED_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
