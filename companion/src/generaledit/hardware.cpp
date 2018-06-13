@@ -158,7 +158,14 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   }
 
   if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_HORUS(board)) {
-    ui->bluetoothMode->setAutoIndexes();
+    ui->bluetoothMode->addItem(tr("OFF"), 0);
+    if (IS_TARANIS_X9E(board)) {
+      ui->bluetoothMode->addItem(tr("Enabled"), 1);
+    }
+    else {
+      ui->bluetoothMode->addItem(tr("Telemetry"), 1);
+      ui->bluetoothMode->addItem(tr("Trainer"), 2);
+    }
     ui->bluetoothMode->setField(generalSettings.bluetoothMode, this);
     ui->bluetoothName->setField(generalSettings.bluetoothName, 10, this);
   }

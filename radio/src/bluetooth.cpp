@@ -262,6 +262,7 @@ void bluetoothReceiveTrainer()
 #if defined(PCBX9E) && !defined(USEHORUSBT)
 void bluetoothWakeup(void)
 {
+#if !defined(SIMU)
   if (!g_eeGeneral.bluetoothMode) {
     if (bluetoothState != BLUETOOTH_INIT) {
       bluetoothDone();
@@ -317,6 +318,7 @@ void bluetoothWakeup(void)
       bluetoothSendTrainer();
     }
   }
+#endif
 }
 #else // PCBX9E
 void bluetoothWakeup()
