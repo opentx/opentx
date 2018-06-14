@@ -5130,22 +5130,22 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.cpp" line="161"/>
         <source>OFF</source>
-        <translation type="unfinished">Eteint</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="163"/>
         <source>Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Activé</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="166"/>
         <source>Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Télémétrie</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="167"/>
         <source>Trainer</source>
-        <translation type="unfinished">Écolage</translation>
+        <translation>Écolage</translation>
     </message>
 </context>
 <context>
@@ -7122,7 +7122,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1455"/>
         <source>&lt;p&gt;&lt;b&gt;Currently selected radio type (%1) is not compatible with file %3 (from %2), models and settings need to be converted.&lt;/b&gt;&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;&lt;b&gt;Le type de radio actuellement sélectionné (%1) n&apos;est pas compatible avec le fichier %3 (à partir de %2), les modèles et les paramètres doivent être convertis.&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1547"/>
