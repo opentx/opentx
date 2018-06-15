@@ -483,6 +483,7 @@ void ModulePanel::update()
   ui->warning_r9mPower->setVisible((mask & MASK_R9M) && module.subType == R9M_LBT);
 
   if (mask & MASK_R9M) {
+    const QSignalBlocker blocker(ui->r9mPower);
     ui->r9mPower->clear();
     Board::Type board = firmware->getBoard();
     if (IS_TARANIS_XLITE(board)) {
@@ -520,12 +521,11 @@ void ModulePanel::update()
     if (mask & MASK_MULTIMODULE)
       numEntries = (module.multi.customProto ? 8 : multiProtocols.getProtocol(module.multi.rfProtocol).numSubytes());
 
-    bool blocker = ui->multiSubType->blockSignals(true);
+    const QSignalBlocker blocker(ui->multiSubType);
     ui->multiSubType->clear();
     for (unsigned i=0; i < numEntries; i++)
       ui->multiSubType->addItem(ModelPrinter::printModuleSubType(protocol, i, module.multi.rfProtocol, module.multi.customProto), i);
     ui->multiSubType->setCurrentIndex(module.subType);
-    ui->multiSubType->blockSignals(blocker);
   }
 
   // Multi settings fields
@@ -591,7 +591,7 @@ void ModulePanel::update()
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!lock && model->trainerMode != (unsigned)index) {
     model->trainerMode = index;
     update();
     emit modified();
@@ -600,7 +600,7 @@ void ModulePanel::on_trainerMode_currentIndexChanged(int index)
 
 void ModulePanel::onProtocolChanged(int index)
 {
-  if (!lock) {
+  if (!lock && module.protocol != ui->protocol->itemData(index).toInt()) {
     module.protocol = ui->protocol->itemData(index).toInt();
     update();
     emit modified();
@@ -609,26 +609,34 @@ void ModulePanel::onProtocolChanged(int index)
 
 void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
 {
-  module.ppm.pulsePol = index;
-  emit modified();
+  if (!lock && module.ppm.pulsePol != (bool)index) {
+    module.ppm.pulsePol = index;
+    emit modified();
+  }
 }
 
 void ModulePanel::on_antennaMode_currentIndexChanged(int index)
 {
-  module.pxx.external_antenna = index;
-  emit modified();
+  if (!lock && module.pxx.external_antenna != (bool)index) {
+    module.pxx.external_antenna = index;
+    emit modified();
+  }
 }
 
 void ModulePanel::on_r9mPower_currentIndexChanged(int index)
 {
-  module.pxx.power = index;
-  emit modified();
+  if (!lock && module.pxx.power != index) {
+    module.pxx.power = index;
+    emit modified();
+  }
 }
 
 void ModulePanel::on_ppmOutputType_currentIndexChanged(int index)
 {
-  module.ppm.outputType = index;
-  emit modified();
+  if (!lock && module.ppm.outputType != (bool)index) {
+    module.ppm.outputType = index;
+    emit modified();
+  }
 }
 
 void ModulePanel::on_channelsCount_editingFinished()
@@ -679,7 +687,7 @@ void ModulePanel::on_ppmFrameLength_editingFinished()
 
 void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
 {
-  if (!lock) {
+  if (!lock && module.failsafeMode != (unsigned)value) {
     module.failsafeMode = value;
     update();
     emit modified();
@@ -688,7 +696,7 @@ void ModulePanel::on_failsafeMode_currentIndexChanged(int value)
 
 void ModulePanel::onMultiProtocolChanged(int index)
 {
-  if (!lock) {
+  if (!lock && module.multi.rfProtocol != (unsigned)index) {
     lock=true;
     module.multi.rfProtocol = (unsigned int) index;
     unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubytes();
@@ -711,7 +719,7 @@ void ModulePanel::on_optionValue_editingFinished()
 
 void ModulePanel::on_multiSubType_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!lock && module.subType != (unsigned)index) {
     lock=true;
     module.subType = index;
     update();
