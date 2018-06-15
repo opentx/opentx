@@ -1387,6 +1387,9 @@ void MainWindow::retranslateUi(bool showMsg)
   trAct(copyProfileAct,     tr("Copy Current Radio Profile"),      tr("Duplicate current Radio Settings Profile"));
   trAct(deleteProfileAct,   tr("Delete Current Radio Profile..."), tr("Delete the current Radio Settings Profile"));
 
+  trAct(exportSettingsAct,   tr("Export Application Settings.."),  tr("Save all the current %1 and Simulator settings (including radio profiles) to a file.").arg(CPN_STR_APP_NAME));
+  trAct(importSettingsAct,   tr("Import Application Settings.."),  tr("Load %1 and Simulator settings from a prevously exported settings file.").arg(CPN_STR_APP_NAME));
+
   trAct(actTabbedWindows,   tr("Tabbed Windows"),    tr("Use tabs to arrange open windows."));
   trAct(actTileWindows,     tr("Tile Windows"),      tr("Arrange open windows across all the available space."));
   trAct(actCascadeWindows,  tr("Cascade Windows"),   tr("Arrange all open windows in a stack."));
@@ -1441,6 +1444,9 @@ void MainWindow::createActions()
   createProfileAct =   addAct("new.png",   SLOT(createProfile()));
   copyProfileAct   =   addAct("copy.png",  SLOT(copyProfile()));
   deleteProfileAct =   addAct("clear.png", SLOT(deleteCurrentProfile()));
+
+  exportSettingsAct =  addAct("saveas.png",  SLOT(exportSettings()));
+  importSettingsAct =  addAct("open.png",    SLOT(importSettings()));
 
   actTabbedWindows =   addAct("", SLOT(setTabbedWindows(bool)), 0, this, SIGNAL(triggered(bool)));
   actTileWindows =     addAct("", SLOT(tileSubWindows()),       0, mdiArea);
@@ -1515,6 +1521,9 @@ void MainWindow::createMenus()
   settingsMenu->addAction(profilesMenuAct);
   settingsMenu->addAction(editSplashAct);
   settingsMenu->addAction(burnConfigAct);
+  settingsMenu->addSeparator();
+  settingsMenu->addAction(exportSettingsAct);
+  settingsMenu->addAction(importSettingsAct);
 
   burnMenu = menuBar()->addMenu("");
   burnMenu->addAction(writeEepromAct);
@@ -1852,6 +1861,68 @@ void MainWindow::deleteProfile(const int pid)
 void MainWindow::deleteCurrentProfile()
 {
   deleteProfile(g.id());
+}
+
+void MainWindow::exportSettings()
+{
+  Helpers::exportAppSettings();
+}
+
+void MainWindow::importSettings()
+{
+  if (anyChildrenDirty()) {
+    QMessageBox::warning(this, CPN_STR_APP_NAME, tr("Please save or close all modified files before importing settings"));
+    return;
+  }
+  QString resultMsg = tr("<html>" \
+    "<p>%1 and Simulator settings can be imported (restored) from a previosly saved export (backup) file. " \
+      "This will replace current settings with any settings found in the file.</p>" \
+    "<p>An automatic backup of the current settings will be attempted. But if the current settings are useful then it is recommended that you make a manual backup first.</p>" \
+    "<p>For best results when importing settings, <b>close any other %1 windows you may have open, and make sure the standalone Simulator application is not running.</p>" \
+    "<p>Do you wish to continue?</p>" \
+    "</html>").arg(CPN_STR_APP_NAME);
+
+  int ret = QMessageBox::question(this, tr("Confirm Settings Import"), resultMsg);
+  if (ret != QMessageBox::Yes)
+    return;
+
+  QString impFile = CPN_SETTINGS_BACKUP_DIR;
+  impFile = QFileDialog::getOpenFileName(this, tr("Select %1:").arg(CPN_STR_APP_SETTINGS_FILES), impFile, CPN_STR_APP_SETTINGS_FILTER);
+  if (impFile.isEmpty() || !QFileInfo(impFile).isReadable() || QFileInfo(impFile).isExecutable())
+    return;
+
+  // Try a backup first
+  QString expFile = CPN_SETTINGS_INI_PATH.arg(tr("backup") % " " % QDateTime::currentDateTime().toString("dd-MMM-yy HH-mm"));
+  if (!g.exportSettingsToFile(expFile, resultMsg)) {
+    resultMsg.append("\n" % tr("Press the 'Ignore' button to continue anyway."));
+    if (QMessageBox::warning(this, CPN_STR_APP_NAME, resultMsg, QMessageBox::Cancel, QMessageBox::Ignore) == QMessageBox::Cancel)
+      return;
+    expFile.clear();
+  }
+  const QString prevLoc = g.locale();
+
+  // Do the import
+  QSettings fromSettings(impFile, QSettings::IniFormat);
+  if (!g.importSettings(&fromSettings)) {
+    QMessageBox::critical(this, CPN_STR_APP_NAME, tr("The settings could not be imported."), QMessageBox::Ok, 0);
+    return;
+  }
+  resultMsg = tr("<html>" \
+                 "<p>New settings have been imported from:<br> %1.</p>" \
+                 "<p>%2 will now re-initialize.</p>" \
+                 "<p>Note that you may need to close and restart %2 before some settings like language and icon theme take effect.</p>" \
+                ).arg(impFile).arg(CPN_STR_APP_NAME);
+
+  if (!expFile.isEmpty())
+    resultMsg.append(tr("<p>The previous settings were backed up to:<br> %1</p>").arg(expFile));
+  resultMsg.append("</html>");
+  QMessageBox::information(this, CPN_STR_APP_NAME, resultMsg);
+
+  g.init();
+  initWindowOptions();
+  if (prevLoc != g.locale())
+    Translations::installTranslators();
+  onCurrentProfileChanged();
 }
 
 QString MainWindow::strippedName(const QString &fullFileName)

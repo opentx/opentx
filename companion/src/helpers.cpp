@@ -33,6 +33,7 @@
 #include "simulatormainwindow.h"
 #include "storage/sdcard.h"
 
+#include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
 
@@ -541,6 +542,24 @@ QStandardItemModel * Helpers::getRawSourceItemModel(const GeneralSettings * cons
   }
 
   return itemModel;
+}
+
+void Helpers::exportAppSettings(QWidget * dlgParent)
+{
+  static QString lastExpFile = CPN_SETTINGS_INI_PATH.arg(QDateTime::currentDateTime().toString("dd-MMM-yy"));
+  const QString expFile = QFileDialog::getSaveFileName(dlgParent, QCoreApplication::translate("Companion", "Select or create a file for exported Settings:"), lastExpFile, CPN_STR_APP_SETTINGS_FILTER);
+  if (expFile.isEmpty())
+    return;
+
+  lastExpFile = expFile;
+  QString resultMsg;
+  if (g.exportSettingsToFile(expFile, resultMsg)) {
+    QMessageBox::information(dlgParent, CPN_STR_APP_NAME, resultMsg);
+    return;
+  }
+  resultMsg.append("\n" % QCoreApplication::translate("Companion", "Press the 'Retry' button to choose another file."));
+  if (QMessageBox::warning(dlgParent, CPN_STR_APP_NAME, resultMsg, QMessageBox::Cancel, QMessageBox::Retry) == QMessageBox::Retry)
+    exportAppSettings(dlgParent);
 }
 
 void startSimulation(QWidget * parent, RadioData & radioData, int modelIdx)

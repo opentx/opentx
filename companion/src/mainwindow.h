@@ -130,6 +130,8 @@ class MainWindow : public QMainWindow
     void copyProfile();
     void deleteProfile(const int pid);
     void deleteCurrentProfile();
+    void exportSettings();
+    void importSettings();
     void autoClose();
 
     void closeUpdatesWaitDialog();
@@ -221,6 +223,8 @@ class MainWindow : public QMainWindow
     QAction *createProfileAct;
     QAction *copyProfileAct;
     QAction *deleteProfileAct;
+    QAction *exportSettingsAct;
+    QAction *importSettingsAct;
     QAction *openDocURLAct;
     QAction *actTabbedWindows;
     QAction *actTileWindows;
