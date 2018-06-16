@@ -1324,7 +1324,7 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
           if (IS_MODULE_R9M_FCC(moduleIdx)) {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Lite FCC has only one setting
-#if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
+#if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)    // R9M lite FCC has only one power value, so displayed for info only
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT);
             if (attr)
               REPEAT_LAST_CURSOR_MOVE();
