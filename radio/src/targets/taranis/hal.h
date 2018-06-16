@@ -479,10 +479,10 @@
   #define PWM_GPIOA_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
   #define ADC_GPIOA_PINS                (STICKS_PWM_ENABLED() ? 0 : (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3))
   #define ADC_GPIOC_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2)
-  #define ADC_CHANNEL_STICK_RV          ADC_Channel_0  // ADC1_IN0
-  #define ADC_CHANNEL_STICK_RH          ADC_Channel_1  // ADC1_IN1
-  #define ADC_CHANNEL_STICK_LV          ADC_Channel_2  // ADC1_IN2
-  #define ADC_CHANNEL_STICK_LH          ADC_Channel_3  // ADC1_IN3
+  #define ADC_CHANNEL_STICK_RV          ADC_Channel_3  // ADC1_IN3
+  #define ADC_CHANNEL_STICK_RH          ADC_Channel_2  // ADC1_IN2
+  #define ADC_CHANNEL_STICK_LV          ADC_Channel_1  // ADC1_IN1
+  #define ADC_CHANNEL_STICK_LH          ADC_Channel_0  // ADC1_IN0
   #define ADC_CHANNEL_POT1              ADC_Channel_11 // ADC1_IN11
   #define ADC_CHANNEL_POT2              ADC_Channel_12 // ADC1_IN12
   #define ADC_CHANNEL_BATT              ADC_Channel_10 // ADC1_IN10
