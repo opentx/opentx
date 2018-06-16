@@ -29,10 +29,12 @@
 #if defined(CPUARM)
 typedef int32_t tmrval_t;
 typedef uint32_t tmrstart_t;
+typedef int16_t tmrmode_t;
 #define TIMER_MAX     (0xffffff/2)
 #else
 typedef int16_t tmrval_t;
 typedef uint16_t tmrstart_t;
+typedef int8_t tmrmode_t;
 #define TIMER_MAX     (0xffff/2)
 #endif
 
