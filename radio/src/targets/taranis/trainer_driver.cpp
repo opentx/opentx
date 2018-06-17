@@ -20,10 +20,13 @@
 
 #include "opentx.h"
 
+#if defined(HEARTBEAT_DMA_Stream)
 DMAFifo<32> heartbeatFifo __DMA (HEARTBEAT_DMA_Stream);
+#endif
 
 void trainerSendNextFrame();
 
+#if defined(TRAINER_OUT_GPIO_PIN)
 void init_trainer_ppm()
 {
   GPIO_PinAFConfig(TRAINER_GPIO, TRAINER_OUT_GPIO_PinSource, TRAINER_GPIO_AF);
@@ -63,6 +66,7 @@ void stop_trainer_ppm()
   TRAINER_TIMER->DIER = 0;
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop counter
 }
+#endif
 
 void init_trainer_capture()
 {
@@ -79,10 +83,10 @@ void init_trainer_capture()
   TRAINER_TIMER->ARR = 0xFFFF;
   TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
   TRAINER_TIMER->CR2 = 0;
-  TRAINER_TIMER->CCMR2 = TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1 | TIM_CCMR2_CC3S_0;
-  TRAINER_TIMER->CCER = TIM_CCER_CC3E;
-  TRAINER_TIMER->SR &= ~TIM_SR_CC3IF & ~TIM_SR_CC2IF & ~TIM_SR_UIF; // Clear flags
-  TRAINER_TIMER->DIER |= TIM_DIER_CC3IE;
+  TRAINER_TIMER->TRAINER_TIMER_CCMR = TRAINER_TIMER_CCMRx;
+  TRAINER_TIMER->CCER = TRAINER_TIMER_CCER;
+  TRAINER_TIMER->SR &= TRAINER_TIMER_SR; // Clear flags
+  TRAINER_TIMER->DIER |= TRAINER_TIMER_DIER;
   TRAINER_TIMER->CR1 = TIM_CR1_CEN;
 
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
@@ -129,9 +133,9 @@ extern "C" void TRAINER_TIMER_IRQHandler()
   bool doCapture = false;
 
   // What mode? in or out?
-  if ((TRAINER_TIMER->DIER & TIM_DIER_CC3IE) && (TRAINER_TIMER->SR & TIM_SR_CC3IF)) {
+  if ((TRAINER_TIMER->DIER & TRAINER_TIMER_DIER) && (TRAINER_TIMER->SR & TRAINER_TIMER_IF)) {
     // capture mode on trainer jack
-    capture = TRAINER_TIMER->CCR3;
+    capture = TRAINER_TIMER->TRAINER_TIMER_CCR;
     if (TRAINER_CONNECTED() && currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK) {
       doCapture = true;
     }
@@ -149,6 +153,7 @@ extern "C" void TRAINER_TIMER_IRQHandler()
     captureTrainerPulses(capture);
   }
 
+#if defined(TRAINER_OUT_GPIO_PIN)
   // PPM out compare interrupt
   if ((TRAINER_TIMER->DIER & TIM_DIER_CC1IE) && (TRAINER_TIMER->SR & TIM_SR_CC1IF)) {
     // compare interrupt
@@ -157,8 +162,10 @@ extern "C" void TRAINER_TIMER_IRQHandler()
     setupPulsesPPMTrainer();
     trainerSendNextFrame();
   }
+#endif
 }
 
+#if defined(HEARTBEAT_GPIO_AF_CAPTURE)
 void init_cppm_on_heartbeat_capture(void)
 {
   EXTERNAL_MODULE_ON();
@@ -196,7 +203,9 @@ void stop_cppm_on_heartbeat_capture()
     EXTERNAL_MODULE_OFF();
   }
 }
+#endif
 
+#if defined(HEARTBEAT_DMA_Stream)
 void init_sbus_on_heartbeat_capture()
 {
   EXTERNAL_MODULE_ON();
@@ -272,3 +281,4 @@ int sbusGetByte(uint8_t * byte)
       return false;
   }
 }
+#endif

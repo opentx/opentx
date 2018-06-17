@@ -110,19 +110,16 @@ enum MenuModelSetupItems {
   ITEM_MODEL_PPM1_PROTOCOL,
   ITEM_MODEL_PPM1_PARAMS,
 #endif
-#if defined(PCBX7)
+#if defined(PCBTARANIS)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
 #if defined(BLUETOOTH)
   ITEM_MODEL_TRAINER_BLUETOOTH,
 #endif
   ITEM_MODEL_TRAINER_CHANNELS,
+#if defined(PCBX7)
   ITEM_MODEL_TRAINER_PARAMS,
-#elif defined(PCBXLITE)
-  ITEM_MODEL_TRAINER_LABEL,
-  ITEM_MODEL_TRAINER_MODE,
-  ITEM_MODEL_TRAINER_BLUETOOTH,
-  ITEM_MODEL_TRAINER_CHANNELS,
+#endif
 #endif
   ITEM_MODEL_SETUP_MAX
 };
@@ -195,12 +192,11 @@ enum MenuModelSetupItems {
 #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
 #elif defined(PCBXLITE)
   #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
-  #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
   #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
   #define TRAINER_BLUETOOTH_ROW          (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW))
   #define TRAINER_CHANNELS_ROW           (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
-  #define TRAINER_ROWS                   IF_BT_TRAINER_ON(LABEL(Trainer)), IF_BT_TRAINER_ON(0), IF_BT_TRAINER_ON(TRAINER_BLUETOOTH_ROW), IF_BT_TRAINER_ON(TRAINER_CHANNELS_ROW)
+  #define TRAINER_ROWS                   LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW, TRAINER_CHANNELS_ROW
 #else
   #define TRAINER_ROWS
 #endif

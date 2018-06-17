@@ -577,7 +577,7 @@
 // Internal Module
 #if defined(PCBXLITE)
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
-  #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
+  #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM4
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #define INTMODULE_PWR_GPIO            GPIOD
   #define INTMODULE_PWR_GPIO_PIN        GPIO_Pin_9  // PD.09
@@ -595,9 +595,9 @@
   #define INTMODULE_DMA_STREAM_IRQHandler DMA2_Stream7_IRQHandler
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
   #define INTMODULE_DMA_CHANNEL         DMA_Channel_4
-  #define INTMODULE_TIMER               TIM3
-  #define INTMODULE_TIMER_IRQn          TIM3_IRQn
-  #define INTMODULE_TIMER_IRQHandler    TIM3_IRQHandler
+  #define INTMODULE_TIMER               TIM4
+  #define INTMODULE_TIMER_IRQn          TIM4_IRQn
+  #define INTMODULE_TIMER_IRQHandler    TIM4_IRQHandler
   #define INTMODULE_TIMER_FREQ          (PERI1_FREQUENCY * TIMER_MULT_APB1)
 #elif defined(PCBX9E) || defined(PCBX9DP) || defined(PCBX7)
   #define INTMODULE_PULSES
@@ -695,8 +695,30 @@
 
 // Trainer Port
 #if defined(PCBXLITE)
-  #define TRAINER_RCC_AHB1Periph        0
-  #define TRAINER_RCC_APB1Periph        0
+  #define TRAINER_RCC_AHB1Periph        RCC_AHB1Periph_GPIOC
+  #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM3
+  #define TRAINER_GPIO                  GPIOC
+  #define TRAINER_IN_GPIO_PIN           GPIO_Pin_7  // PC.07
+  #define TRAINER_IN_GPIO_PinSource     GPIO_PinSource7
+  #define TRAINER_TIMER                 TIM3
+  #define TRAINER_TIMER_IRQn            TIM3_IRQn
+  #define TRAINER_GPIO_AF               GPIO_AF_TIM3
+  #define TRAINER_DMA                   DMA1
+  #define TRAINER_DMA_CHANNEL           DMA_Channel_5
+  #define TRAINER_DMA_STREAM            DMA1_Stream2
+  #define TRAINER_DMA_IRQn              DMA1_Stream2_IRQn
+  #define TRAINER_DMA_IRQHandler        DMA1_Stream2_IRQHandler
+  #define TRAINER_DMA_FLAG_TC           DMA_IT_TCIF2
+  #define TRAINER_TIMER_IRQn            TIM3_IRQn
+  #define TRAINER_TIMER_IRQHandler      TIM3_IRQHandler
+  #define TRAINER_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
+  #define TRAINER_TIMER_CCMR            CCMR1
+  #define TRAINER_TIMER_CCR             CCR2
+  #define TRAINER_TIMER_CCMRx           TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0
+  #define TRAINER_TIMER_CCER            TIM_CCER_CC2E
+  #define TRAINER_TIMER_SR              ~TIM_SR_CC2IF & ~TIM_SR_CC2IF & ~TIM_SR_UIF
+  #define TRAINER_TIMER_DIER            TIM_DIER_CC2IE
+  #define TRAINER_TIMER_IF              TIM_SR_CC2IF
 #else
   #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM3
@@ -719,6 +741,13 @@
   #define TRAINER_TIMER_IRQn            TIM3_IRQn
   #define TRAINER_TIMER_IRQHandler      TIM3_IRQHandler
   #define TRAINER_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
+  #define TRAINER_TIMER_CCMR            CCMR2
+  #define TRAINER_TIMER_CCR             CCR3
+  #define TRAINER_TIMER_CCMRx           TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1 | TIM_CCMR2_CC3S_0
+  #define TRAINER_TIMER_CCER            TIM_CCER_CC3E
+  #define TRAINER_TIMER_SR              ~TIM_SR_CC3IF & ~TIM_SR_CC2IF & ~TIM_SR_UIF
+  #define TRAINER_TIMER_DIER            TIM_DIER_CC3IE
+  #define TRAINER_TIMER_IF              TIM_SR_CC3IF
 #endif
 
 // Serial Port

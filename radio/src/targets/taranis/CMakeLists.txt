@@ -110,7 +110,6 @@ else()
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
-    trainer_driver.cpp
     )
   add_definitions(-DSBUS)
   set(PULSES_SRC
@@ -168,6 +167,7 @@ set(TARGET_SRC
   ${LED_DRIVER}
   backlight_driver.cpp
   extmodule_driver.cpp
+  trainer_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp
   )
