@@ -294,9 +294,10 @@ bool menuRadioSdManager(event_t _event)
       bool firstTime = true;
       for (;;) {
         res = sdReadDir(&dir, &fno, firstTime);
-        if (res != FR_OK || fno.fname[0] == 0) break;  /* Break on error or end of dir */
+        if (res != FR_OK || fno.fname[0] == 0) break;              /* Break on error or end of dir */
         if (strlen(fno.fname) > SD_SCREEN_FILE_LENGTH) continue;
-        if (fno.fname[0] == '.' && fno.fname[1] != '.') continue;             /* Ignore hidden files under UNIX, but not .. */
+        if (fno.fattrib & AM_HID) continue;                        /* Ignore Windows hidden files */
+        if (fno.fname[0] == '.' && fno.fname[1] != '.') continue;  /* Ignore UNIX hidden files, but not .. */
 
         reusableBuffer.sdmanager.count++;
 
