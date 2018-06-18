@@ -559,7 +559,11 @@
 
 #define LEN_VTRAINERMODES              "\022" /*18 decimal*/
 #define TR_VTRAINER_MASTER_JACK        "Trener/Jack\0      "
-#define TR_VTRAINER_SLAVE_JACK         "Uczeń/Jack\0       "
+#if defined(PCBXLITE)
+  #define TR_VTRAINER_SLAVE_JACK       "OFF\0              "
+#else
+  #define TR_VTRAINER_SLAVE_JACK       "Uczeń/Jack\0       "
+#endif
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Trener/SBUS Moduł "
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Trener/CPPM Moduł "
 #define TR_VTRAINER_MASTER_BATTERY     "Trener/Serial\0    "

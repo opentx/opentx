@@ -566,7 +566,11 @@
 
 #define LEN_VTRAINERMODES              "\022"
 #define TR_VTRAINER_MASTER_JACK        "Lärare/Uttag\0     "
-#define TR_VTRAINER_SLAVE_JACK         "Elev./Uttag\0      "
+#if defined(PCBXLITE)
+  #define TR_VTRAINER_SLAVE_JACK       "OFF\0              "
+#else
+  #define TR_VTRAINER_SLAVE_JACK       "Elev./Uttag\0      "
+#endif
 #define TR_VTRAINER_MASTER_SBUS_MODULE "Lärare/SBUS-Modul\0"
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Lärare/CPPM-Modul\0"
 #define TR_VTRAINER_MASTER_BATTERY     "Lärare/Serial\0    "

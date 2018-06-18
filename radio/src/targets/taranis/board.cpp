@@ -309,7 +309,9 @@ void checkTrainerSettings()
         stop_trainer_capture();
         break;
       case TRAINER_MODE_SLAVE:
+#if !defined(PCBXLITE)
         stop_trainer_ppm();
+#endif
         break;
       case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
         stop_cppm_on_heartbeat_capture() ;
@@ -326,7 +328,9 @@ void checkTrainerSettings()
     currentTrainerMode = requiredTrainerMode;
     switch (requiredTrainerMode) {
       case TRAINER_MODE_SLAVE:
+#if !defined(PCBXLITE)
         init_trainer_ppm();
+#endif
         break;
       case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
          init_cppm_on_heartbeat_capture();
