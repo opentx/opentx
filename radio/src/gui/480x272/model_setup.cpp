@@ -721,6 +721,8 @@ bool menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(EXTERNAL_MODULE);
                 if (IS_MODULE_SBUS(EXTERNAL_MODULE))
                   g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
+                if(IS_MODULE_PPM(EXTERNAL_MODULE))
+                  SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
               }
               break;
             case 1:
