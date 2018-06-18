@@ -60,7 +60,7 @@ SyncProcess::SyncProcess(const QString & folderA, const QString & folderB, const
   if (ctype == OVERWR_ALWAYS && direction == SYNC_A2B_B2A)
     ctype = OVERWR_IF_DIFF;
 
-  dirFilters = QDir::Filters(QDir::AllDirs | QDir::Files | QDir::NoDotAndDotDot);
+  dirFilters = QDir::Filters(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot);
 
   reportTemplate = tr("New: <b>%1</b>; Updated: <b>%2</b>; Skipped: <b>%3</b>; Errors: <font color=%5><b>%4</b></font>;");
   if (dryRun)
