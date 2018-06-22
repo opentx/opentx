@@ -219,9 +219,9 @@ void setCustomFailsafe(uint8_t moduleIndex);
 #if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
 #define LEN_R9M_REGION                 "\007"
 #define TR_R9M_REGION                  "FCC\0   ""LBT(EU)"
-#define LEN_R9M_FCC_POWER_VALUES       "\006"
+#define LEN_R9M_FCC_POWER_VALUES       "\010"
 #define LEN_R9M_LBT_POWER_VALUES       "\015"
-#define TR_R9M_FCC_POWER_VALUES        "100 mW"
+#define TR_R9M_FCC_POWER_VALUES        "(100 mW)"
 #define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
 
 enum R9MFCCPowerValues {
