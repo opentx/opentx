@@ -378,9 +378,8 @@ void evalFunctions()
             break;
 
           case FUNC_SET_FAILSAFE:
-          {
             setCustomFailsafe(CFN_PARAM(cfn));
-          }
+            break;
 
 #if defined(DANGEROUS_MODULE_FUNCTIONS)
           case FUNC_RANGECHECK:
