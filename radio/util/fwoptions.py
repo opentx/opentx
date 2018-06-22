@@ -125,7 +125,6 @@ options_9x128.update(tts_avr)
 options_gruvin9x = {
     "heli": ("HELI", "YES", "NO"),
     "templates": ("TEMPLATES", "YES", "NO"),
-    "nofp": ("FLIGHT_MODES", "NO", "YES"),
     "nocurves": ("CURVES", "NO", "YES"),
     "sdcard": ("SDCARD", "YES", "NO"),
     "voice": ("VOICE", "YES", "NO"),
@@ -190,7 +189,6 @@ options_mega2560.update(tts_avr)
 
 options_sky9x = {
     "heli": ("HELI", "YES", "NO"),
-    "nofp": ("FLIGHT_MODES", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "gvars": ("GVARS", "YES", "NO"),
     "potscroll": ("NAVIGATION", "POTS", "NO"),
@@ -211,7 +209,6 @@ options_sky9x = {
 
 options_ar9x = {
     "heli": ("HELI", "YES", "NO"),
-    "nofp": ("FLIGHT_MODES", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "gvars": ("GVARS", "YES", "NO"),
     "potscroll": ("NAVIGATION", "POTS", "NO"),
