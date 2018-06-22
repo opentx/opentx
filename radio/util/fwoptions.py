@@ -126,6 +126,7 @@ options_gruvin9x = {
     "heli": ("HELI", "YES", "NO"),
     "templates": ("TEMPLATES", "YES", "NO"),
     "nocurves": ("CURVES", "NO", "YES"),
+    "nofp": ("FLIGHT_MODES", "NO", "YES"),
     "sdcard": ("SDCARD", "YES", "NO"),
     "voice": ("VOICE", "YES", "NO"),
     "PXX": ("PXX", "YES", "NO"),
