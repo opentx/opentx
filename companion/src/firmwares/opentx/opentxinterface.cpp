@@ -1211,7 +1211,6 @@ void registerOpenTxFirmwares()
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", QCoreApplication::translate("Firmware", "Turnigy 9XR-PRO"), BOARD_9XRPRO);
   firmware->addOption("heli", QCoreApplication::translate("Firmware", "Enable HELI menu and cyclic mix support"));
-  firmware->addOption("nofp", QCoreApplication::translate("Firmware", "No flight modes"));
   firmware->addOption("gvars", QCoreApplication::translate("Firmware", "Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QCoreApplication::translate("Firmware", "Pots use in menus navigation"));
   firmware->addOption("autosource", QCoreApplication::translate("Firmware", "In model setup menus automatically set source by moving the control"));
@@ -1359,7 +1358,6 @@ void registerOpenTxFirmwares()
   /* ar9x board */
   firmware = new OpenTxFirmware("opentx-ar9x", QCoreApplication::translate("Firmware", "9X with AR9X board"), BOARD_AR9X);
   firmware->addOption("heli", QCoreApplication::translate("Firmware", "Enable HELI menu and cyclic mix support"));
-  firmware->addOption("nofp", QCoreApplication::translate("Firmware", "No flight modes"));
   firmware->addOption("gvars", QCoreApplication::translate("Firmware", "Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QCoreApplication::translate("Firmware", "Pots use in menus navigation"));
   firmware->addOption("autosource", QCoreApplication::translate("Firmware", "In model setup menus automatically set source by moving the control"));
@@ -1379,7 +1377,6 @@ void registerOpenTxFirmwares()
   /* Sky9x board */
   firmware = new OpenTxFirmware("opentx-sky9x", QCoreApplication::translate("Firmware", "9X with Sky9x board"), BOARD_SKY9X);
   firmware->addOption("heli", QCoreApplication::translate("Firmware", "Enable HELI menu and cyclic mix support"));
-  firmware->addOption("nofp", QCoreApplication::translate("Firmware", "No flight modes"));
   firmware->addOption("gvars", QCoreApplication::translate("Firmware", "Global variables"), GVARS_VARIANT);
   firmware->addOption("potscroll", QCoreApplication::translate("Firmware", "Pots use in menus navigation"));
   firmware->addOption("autosource", QCoreApplication::translate("Firmware", "In model setup menus automatically set source by moving the control"));
