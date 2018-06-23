@@ -459,7 +459,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     if (currentVersion == 0) {
       QString rn = getCurrentFirmware()->getReleaseNotesUrl();
       QAbstractButton *rnButton = NULL;
-      msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nRelease %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
+      msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(fullVersionString));
       QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
       msgBox.addButton(trUtf8("No"), QMessageBox::NoRole);
@@ -472,7 +472,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       if (msgBox.clickedButton() == rnButton) {
         ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
         dialog->exec();
-        int ret2 = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Do you want to download release %1 now ?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
+        int ret2 = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Do you want to download version %1 now ?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
         if (ret2 == QMessageBox::Yes)
           download = true;
         else
@@ -501,7 +501,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       if( msgBox.clickedButton() == rnButton ) {
         ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, rn);
         dialog->exec();
-        int ret2 = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Do you want to download release %1 now ?").arg(fullVersionString),
+        int ret2 = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Do you want to download version %1 now ?").arg(fullVersionString),
               QMessageBox::Yes | QMessageBox::No);
         if (ret2 == QMessageBox::Yes) {
           download = true;
@@ -525,7 +525,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
   }
 
   if (ignore) {
-    int res = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Ignore this release %1?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
+    int res = QMessageBox::question(this, CPN_STR_APP_NAME, tr("Ignore this version %1?").arg(fullVersionString), QMessageBox::Yes | QMessageBox::No);
     if (res==QMessageBox::Yes)   {
       g.fwRev.set(Firmware::getCurrentVariant()->getId(), version);
     }
