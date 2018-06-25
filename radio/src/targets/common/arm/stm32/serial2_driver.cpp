@@ -101,6 +101,8 @@ void serial2Init(unsigned int mode, unsigned int protocol)
         uart3Setup(FRSKY_D_BAUDRATE, true);
       }
       break;
+    case UART_MODE_LUA:
+      uart3Setup(DEBUG_BAUDRATE, false);
   }
 }
 
