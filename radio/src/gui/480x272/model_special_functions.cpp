@@ -152,7 +152,7 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     CustomFunctionData *cfn = &functions[menuVerticalPosition];
     if (!CFN_EMPTY(cfn))
       POPUP_MENU_ADD_ITEM(STR_COPY);
-    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION)
+    if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_FUNCTION && isAssignableFunctionAvailable(clipboard.data.cfn.func))
       POPUP_MENU_ADD_ITEM(STR_PASTE);
     if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[MAX_SPECIAL_FUNCTIONS-1]))
       POPUP_MENU_ADD_ITEM(STR_INSERT);
