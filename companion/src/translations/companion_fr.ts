@@ -6303,18 +6303,22 @@ Version %2 is available.
 Do you want to download it now?
 
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le firmware %1 ne semble pas avoir été téléchargé.
+La version %2 est disponible.
+Voulez-vous le télécharger maintenant?
+
+Nous vous recommandons de consulter les notes de mise à jour à l&apos;aide du bouton ci-dessous pour en savoir plus sur les modifications susceptibles de vous intéresser.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="475"/>
         <location filename="../mainwindow.cpp" line="504"/>
         <source>Do you want to download version %1 now ?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous télécharger la version %1 maintenant?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="528"/>
         <source>Ignore this version %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignorer cette version %1?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="750"/>
