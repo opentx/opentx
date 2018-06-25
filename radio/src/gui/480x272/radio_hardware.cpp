@@ -50,7 +50,7 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
-#if defined(SERIAL2) && defined(DEBUG)
+#if defined(SERIAL2)
   ITEM_RADIO_HARDWARE_UART3_MODE,
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
@@ -203,7 +203,7 @@ bool menuRadioHardware(event_t event)
         editName(HW_SETTINGS_COLUMN+50, y, g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME, event, attr);
         break;
 
-#if defined(SERIAL2) && defined(DEBUG)
+#if defined(SERIAL2)
       case ITEM_RADIO_HARDWARE_UART3_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UART3MODE);
         g_eeGeneral.serial2Mode = editChoice(HW_SETTINGS_COLUMN+50, y, STR_UART3MODES, g_eeGeneral.serial2Mode, 0, UART_MODE_MAX, attr, event);
