@@ -445,7 +445,7 @@ enum Analogs {
 
 #if defined(PCBXLITE)
   #define NUM_PWMSTICKS                 4
-  extern uint8_t sticks_pwm_disabled;
+  extern bool sticks_pwm_disabled;
   #define STICKS_PWM_ENABLED()         (sticks_pwm_disabled == false)
   void sticksPwmInit(void);
   void sticksPwmRead(uint16_t * values);

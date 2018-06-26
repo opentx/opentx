@@ -409,7 +409,7 @@ uint16_t getAnalogValue(uint8_t index);
 #endif
 
 #if NUM_PWMSTICKS > 0
-extern uint8_t sticks_pwm_disabled;
+extern bool sticks_pwm_disabled;
 #define STICKS_PWM_ENABLED()          (sticks_pwm_disabled == false)
 void sticksPwmInit(void);
 void sticksPwmRead(uint16_t * values);
