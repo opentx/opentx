@@ -1,4 +1,0 @@
-void _init (void)
-{
-  
-}
