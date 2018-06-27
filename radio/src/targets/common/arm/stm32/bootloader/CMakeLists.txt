@@ -73,7 +73,6 @@ set(BOOTLOADER_SRC
   ../usb_bsp.c
   ../usb_driver.cpp
   ../flash_driver.cpp
-  init.c
   boot.cpp
   bin_files.cpp
   )
