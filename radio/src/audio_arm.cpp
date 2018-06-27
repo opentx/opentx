@@ -801,6 +801,9 @@ void AudioQueue::wakeup()
         }
         buffersFifo.audioPushBuffer();
       }
+      else {
+        break;
+      }
 #else
       buffersFifo.audioPushBuffer();
 #endif
