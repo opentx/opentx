@@ -227,11 +227,10 @@ void onModelSelectMenu(const char * result)
     storageCheck(true);
     memcpy(g_eeGeneral.currModelFilename, currentModel->modelFilename, LEN_MODEL_FILENAME);
     modelslist.setCurrentModel(currentModel);
-    loadModel(g_eeGeneral.currModelFilename, false);
+    loadModel(g_eeGeneral.currModelFilename, true);
     storageDirty(EE_GENERAL);
     storageCheck(true);
     chainMenu(menuMainView);
-    postModelLoad(true);
   }
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
