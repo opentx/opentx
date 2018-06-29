@@ -3,12 +3,60 @@
 from __future__ import division, print_function
 
 import sys
+import os.path
 from PIL import Image
 
-image = Image.open(sys.argv[1])
-width, height = image.size
+class RLE_encoder:
+    RLE_BYTE = 0
+    RLE_SEQ  = 1
 
-image_fmt = image.format
+    def __init__(self, out):
+        self.state = self.RLE_BYTE
+        self.count = 0
+        self.prev_byte = None
+        self.out = out
+
+    def eq_prev_byte(self, in_byte):
+        if self.prev_byte is None:
+            return False
+        return in_byte == self.prev_byte
+        
+    def encode_byte(self, in_byte):
+
+        if self.state == self.RLE_BYTE:
+            self.out(in_byte)
+            if self.eq_prev_byte(in_byte):
+                self.state = self.RLE_SEQ
+                self.count = 0
+            else:
+                self.prev_byte = in_byte
+
+        elif self.state == self.RLE_SEQ:
+            if self.eq_prev_byte(in_byte):
+                self.count += 1
+                if self.count == 255:
+                    self.out(self.count)
+                    self.prev_byte = None
+                    self.state = self.RLE_BYTE
+            else:
+                self.out(self.count)
+                self.out(in_byte)
+                self.prev_byte = in_byte
+                self.state = self.RLE_BYTE
+
+    def encode_end(self):
+        if self.state == self.RLE_SEQ:
+            self.out(self.count)
+
+class dummy_encoder:
+    def __init__(self, out):
+        self.out = out
+
+    def encode_byte(self, in_byte):
+        self.out(in_byte)
+
+    def encode_end(self):
+        pass
 
 def writeSize(f, width, height):
     if lcdwidth > 255:
@@ -16,8 +64,20 @@ def writeSize(f, width, height):
     else:
         f.write("%d,%d,\n" % (width, height))
 
+def F_writeValue(f):
+    def writeValue(value):
+        f.write("0x%02x," % value)
+    return writeValue
 
-with open(sys.argv[2], "w") as f:
+## MAIN ##
+
+image = Image.open(sys.argv[1])
+width, height = image.size
+
+image_fmt = image.format
+output_filename = sys.argv[2]
+
+with open(output_filename, "w") as f:
     lcdwidth = int(sys.argv[3])
 
     if len(sys.argv) > 4:
@@ -27,6 +87,14 @@ with open(sys.argv[2], "w") as f:
             if s in sys.argv[2]:
                 what = s
                 break
+
+    extension = os.path.splitext(output_filename)[1]
+    out = F_writeValue(f)
+
+    if extension == ".rle":
+        encoder = RLE_encoder(out)
+    else:
+        encoder = dummy_encoder(out)
 
     if what == "1bit":
         rows = 1
@@ -45,8 +113,9 @@ with open(sys.argv[2], "w") as f:
                         else:
                             if image.getpixel((x, y + z)) == 0:
                                 value += 1 << z
-                f.write("0x%02x," % value)
+                encoder.encode_byte(value)
             f.write("\n")
+        encoder.encode_end()
     elif what == "4/4/4/4":
         constant = sys.argv[2].upper()[:-4]
         values = []
@@ -87,15 +156,6 @@ with open(sys.argv[2], "w") as f:
                 values.append(str(val))
         f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
         f.write("const Bitmap %s(BMP_RGB565, %d, %d, __%s);\n" % (constant, width, height, constant))
-    # elif what == "5/6/5/8":
-    #     colors = []
-    #     writeSize(f, width, height)
-    #     for y in range(height):
-    #         for x in range(width):
-    #             pixel = image.pixel(x, y)
-    #             val = ((Qt.qRed(pixel) >> 4) << 12) + ((Qt.qGreen(pixel) >> 4) << 7) + ((Qt.qBlue(pixel) >> 4) << 1)
-    #             f.write("%d,%d,%d," % (val % 256, val // 256, Qt.qAlpha(pixel)))
-    #         f.write("\n")
     elif what == "4bits":
         colors = []
         writeSize(f, width, height)
@@ -113,8 +173,9 @@ with open(sys.argv[2], "w") as f:
                         value -= 1 << i
                     if (gray2 & (1 << (4 + i))):
                         value -= 1 << (4 + i)
-                f.write("0x%02x," % value)
+                encoder.encode_byte(value)
             f.write("\n")
+        encoder.encode_end()
     elif what == "8bits":
         colors = []
         writeSize(f, width, height)
@@ -123,8 +184,9 @@ with open(sys.argv[2], "w") as f:
             for x in range(width):
                 value = image.getpixel((x, y))
                 value = 0x0f - (value >> 4)
-                f.write("0x%02x," % value)
+                encoder.encode_byte(value)
             f.write("\n")
+        encoder.encode_end()
     elif what == "03x05":
         image = image.convert(mode='L')
         for y in range(0, height, 5):
@@ -173,7 +235,6 @@ with open(sys.argv[2], "w") as f:
                     if skip and l == 8:
                         value = 0xff
                     f.write("0x%02x," % value)
-                    #print ("0x%02x (%d,%d,%d)" % (value,x,y,l))
             f.write("\n")
     elif what == "10x14":
         image = image.convert(mode='L')
