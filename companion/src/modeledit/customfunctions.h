@@ -21,9 +21,10 @@
 #ifndef _CUSTOMFUNCTIONS_H_
 #define _CUSTOMFUNCTIONS_H_
 
-#include <QMediaPlayer>
 #include "modeledit.h"
 #include "eeprominterface.h"
+
+#include <QMediaPlayer>
 
 class RawSwitchFilterItemModel;
 class TimerEdit;
@@ -66,7 +67,9 @@ class CustomFunctionsPanel : public GenericPanel
     void fsw_customContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
     void onChildModified();
-    void playMusic();
+    bool playSound(int index);
+    void stopSound(int index);
+    void toggleSound(bool play);
     void onMediaPlayerStateChanged(QMediaPlayer::State state);
     void onMediaPlayerError(QMediaPlayer::Error error);
     void fswDelete();
@@ -90,7 +93,7 @@ class CustomFunctionsPanel : public GenericPanel
     QCheckBox * fswtchParamGV[CPN_MAX_SPECIAL_FUNCTIONS];
     QDoubleSpinBox * fswtchParam[CPN_MAX_SPECIAL_FUNCTIONS];
     TimerEdit * fswtchParamTime[CPN_MAX_SPECIAL_FUNCTIONS];
-    QPushButton * playBT[CPN_MAX_SPECIAL_FUNCTIONS];
+    QToolButton * playBT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamArmT[CPN_MAX_SPECIAL_FUNCTIONS];
     QCheckBox * fswtchEnable[CPN_MAX_SPECIAL_FUNCTIONS];

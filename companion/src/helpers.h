@@ -55,6 +55,7 @@ extern const QColor colors[CPN_MAX_CURVES];
 class CompanionIcon: public QIcon {
   public:
     CompanionIcon(const QString &baseimage);
+    void addImage(const QString &baseimage, Mode mode = Normal, State state = Off);
 };
 
 class GVarGroup: public QObject {
