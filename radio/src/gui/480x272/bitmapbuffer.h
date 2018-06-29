@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include "colors.h"
+#include "rle.h"
 
 #if defined(PCBX10) && !defined(SIMU)
   #define MOVE_PIXEL_RIGHT(p, count)   p -= count
@@ -57,6 +58,16 @@ class BitmapBufferBase
       data(data),
       data_end(data + (width * height))
     {
+    }
+
+    BitmapBufferBase(uint8_t format, T * data):
+      format(format),
+      data(data),
+      data_end(NULL)
+    {
+      width  = *((uint16_t*)data);
+      height = *(((uint16_t*)data)+1);
+      data_end = data + 4 + (width * height);
     }
 
     inline uint8_t getFormat() const
@@ -102,6 +113,28 @@ class BitmapBufferBase
 };
 
 typedef BitmapBufferBase<const uint16_t> Bitmap;
+
+class RLEBitmap:
+  public BitmapBufferBase<uint16_t>
+{
+public:
+  RLEBitmap(uint8_t format, const uint8_t* rle_data)
+    : BitmapBufferBase<uint16_t>(format, 0, 0, NULL)
+  {
+    width  = *((uint16_t *)rle_data);
+    height = *(((uint16_t *)rle_data)+1);
+
+    uint32_t pixels = width * height;
+    data = (uint16_t*)malloc(pixels * sizeof(uint16_t));
+    rle_decode_8bit((uint8_t*)data, pixels * sizeof(uint16_t), rle_data+4);
+    data_end = data + pixels;
+  }
+
+  ~RLEBitmap()
+  {
+    free(data);
+  }
+};
 
 class BitmapBuffer: public BitmapBufferBase<uint16_t>
 {
@@ -231,11 +264,13 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     void drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * img, LcdFlags flags, int startAngle, int endAngle);
 
+#if !defined(BOOT)
     static BitmapBuffer * load(const char * filename);
 
     static BitmapBuffer * loadMask(const char * filename);
 
     static BitmapBuffer * loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background);
+#endif
 
     void drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags flags, coord_t offset=0, coord_t width=0);
 
@@ -325,8 +360,10 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
     }
 
   protected:
+#if !defined(BOOT)
     static BitmapBuffer * load_bmp(const char * filename);
     static BitmapBuffer * load_stb(const char * filename);
+#endif
 };
 
 extern BitmapBuffer * lcd;

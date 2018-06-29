@@ -69,6 +69,16 @@ def F_writeValue(f):
         f.write("0x%02x," % value)
     return writeValue
 
+def F_getPixelCoord():
+    def getCoord(x,y):
+        return (x,y)
+    return getCoord
+
+def F_getPixelCoord_R(w,h):
+    def getCoord(x,y):
+        return (w-x-1, h-y-1)
+    return getCoord
+
 ## MAIN ##
 
 image = Image.open(sys.argv[1])
@@ -81,7 +91,11 @@ with open(output_filename, "w") as f:
     lcdwidth = int(sys.argv[3])
 
     if len(sys.argv) > 4:
-        what = sys.argv[4]
+        s = sys.argv[4].split('-')
+        what = s[0]
+        pixel_coord = F_getPixelCoord()
+        if (len(s) > 1) and (s[1] == 'R'):
+            pixel_coord = F_getPixelCoord_R(width,height)
     else:
         for s in ("03x05", "04x06", "05x07", "08x10", "10x14", "22x38"):
             if s in sys.argv[2]:
@@ -116,46 +130,6 @@ with open(output_filename, "w") as f:
                 encoder.encode_byte(value)
             f.write("\n")
         encoder.encode_end()
-    elif what == "4/4/4/4":
-        constant = sys.argv[2].upper()[:-4]
-        values = []
-        for y in range(height):
-            for x in range(width):
-                pixel = image.getpixel((x, y))
-                val = ((pixel[3] // 16) << 12) + ((pixel[0] // 16) << 8) + ((pixel[1] // 16) << 4) + ((pixel[2] // 16) << 0)
-                values.append(str(val))
-        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
-        f.write("const Bitmap %s(BMP_ARGB4444, %d, %d, __%s);\n" % (constant, width, height, constant))
-    elif what == "4/4/4/4-R":
-        constant = sys.argv[2].upper()[:-4]
-        values = []
-        for y in range(height):
-            for x in range(width):
-                pixel = image.getpixel((width-x-1, height-y-1))
-                val = ((pixel[3] // 16) << 12) + ((pixel[0] // 16) << 8) + ((pixel[1] // 16) << 4) + ((pixel[2] // 16) << 0)
-                values.append(str(val))
-        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
-        f.write("const Bitmap %s(BMP_ARGB4444, %d, %d, __%s);\n" % (constant, width, height, constant))
-    elif what == "5/6/5":
-        constant = sys.argv[2].upper()[:-4]
-        values = []
-        for y in range(height):
-            for x in range(width):
-                pixel = image.getpixel((x, y))
-                val = ((pixel[0] >> 3) << 11) + ((pixel[1] >> 2) << 5) + ((pixel[2] >> 3) << 0)
-                values.append(str(val))
-        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
-        f.write("const Bitmap %s(BMP_RGB565, %d, %d, __%s);\n" % (constant, width, height, constant))
-    elif what == "5/6/5-R":
-        constant = sys.argv[2].upper()[:-4]
-        values = []
-        for y in range(height):
-            for x in range(width):
-                pixel = image.getpixel((width-x-1, height-y-1))
-                val = ((pixel[0] >> 3) << 11) + ((pixel[1] >> 2) << 5) + ((pixel[2] >> 3) << 0)
-                values.append(str(val))
-        f.write("const uint16_t __%s[] __ALIGNED = { %s };\n" % (constant, ",".join(values)))
-        f.write("const Bitmap %s(BMP_RGB565, %d, %d, __%s);\n" % (constant, width, height, constant))
     elif what == "4bits":
         colors = []
         writeSize(f, width, height)
@@ -187,6 +161,36 @@ with open(output_filename, "w") as f:
                 encoder.encode_byte(value)
             f.write("\n")
         encoder.encode_end()
+    elif what == "4/4/4/4":
+        constant = sys.argv[2].upper()[:-4]
+        values = []
+        #f.write("const uint8_t __%s[] __ALIGNED = {\n" % constant)
+        writeSize(f, width, height)
+        for y in range(height):
+            for x in range(width):
+                pixel = image.getpixel(pixel_coord(x, y))
+                val = ((pixel[3] // 16) << 12) + ((pixel[0] // 16) << 8) + ((pixel[1] // 16) << 4) + ((pixel[2] // 16) << 0)
+                encoder.encode_byte(val & 255)
+                encoder.encode_byte(val >> 8)
+        encoder.encode_end()
+        #f.write("\n};\n")
+        #if extension != ".rle":
+        #    f.write("const Bitmap %s(BMP_ARGB4444, %d, %d, (uint16_t*)__%s);\n" % (constant, width, height, constant))
+    elif what == "5/6/5":
+        constant = sys.argv[2].upper()[:-4]
+        values = []
+        #f.write("const uint8_t __%s[] __ALIGNED = {\n" % constant)
+        writeSize(f, width, height)
+        for y in range(height):
+            for x in range(width):
+                pixel = image.getpixel(pixel_coord(x, y))
+                val = ((pixel[0] >> 3) << 11) + ((pixel[1] >> 2) << 5) + ((pixel[2] >> 3) << 0)
+                encoder.encode_byte(val & 255)
+                encoder.encode_byte(val >> 8)
+        encoder.encode_end()
+        #f.write("\n};\n")
+        #if extension != ".rle":
+        #    f.write("const Bitmap %s(BMP_RGB565, %d, %d, (uint16_t*)__%s);\n" % (constant, width, height, constant))
     elif what == "03x05":
         image = image.convert(mode='L')
         for y in range(0, height, 5):

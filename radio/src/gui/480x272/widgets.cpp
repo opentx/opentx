@@ -34,8 +34,15 @@ void drawColumnHeader(const char * const * headers, const char * const * descrip
   }
 }
 
+const uint8_t __alpha_button_on[] {
 #include "alpha_button_on.lbm"
+};
+Bitmap ALPHA_BUTTON_ON(BMP_ARGB4444, (const uint16_t*)__alpha_button_on);
+
+const uint8_t __alpha_button_off[] {
 #include "alpha_button_off.lbm"
+};
+Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
 
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 {
