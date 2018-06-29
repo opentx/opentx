@@ -527,3 +527,7 @@ int main()
 
   return 0;
 }
+
+#if defined(PCBHORUS)
+void *__dso_handle = 0;
+#endif
