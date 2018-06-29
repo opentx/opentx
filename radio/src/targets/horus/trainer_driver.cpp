@@ -102,7 +102,7 @@ void trainerSendNextFrame()
 {
   TRAINER_TIMER->CCR2 = GET_PPM_DELAY(TRAINER_MODULE)*2;
   TRAINER_TIMER->CCER = TIM_CCER_CC2E | (g_model.moduleData[TRAINER_MODULE].ppm.pulsePol ? 0 : TIM_CCER_CC2P);
-  TRAINER_TIMER->CCR1 = *(trainerPulsesData.ppm.ptr - 1) - 4000; // 2mS in advance
+  TRAINER_TIMER->CCR1 = *(trainerPulsesData.ppm.ptr - 1) - 600; // 300uS in advance
 
   TRAINER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
   TRAINER_DMA_STREAM->CR |= TRAINER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;

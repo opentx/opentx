@@ -99,7 +99,7 @@ void intmodulePxxStart()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
   INTMODULE_TIMER->ARR = PXX_PERIOD_HALF_US;
-  INTMODULE_TIMER->CCR2 = PXX_PERIOD_HALF_US - 2000; // Update time
+  INTMODULE_TIMER->CCR2 = PXX_PERIOD_HALF_US - 300; // Update time (150 uS in advance)
   INTMODULE_TIMER->CCER = TIM_CCER_CC3E;
   INTMODULE_TIMER->CCMR2 = 0;
   INTMODULE_TIMER->EGR = 1; // Restart
@@ -152,6 +152,7 @@ void intmoduleSendNextFrame()
 extern "C" void INTMODULE_TIMER_IRQHandler()
 {
   DEBUG_INTERRUPT(INT_TIM1CC);
+  DEBUG_TIMER_STOP(debugTimerMixerToIntPulses);
   DEBUG_TIMER_SAMPLE(debugTimerIntPulses);
   DEBUG_TIMER_START(debugTimerIntPulsesDuration);
 
@@ -161,3 +162,5 @@ extern "C" void INTMODULE_TIMER_IRQHandler()
   
   DEBUG_TIMER_STOP(debugTimerIntPulsesDuration);
 }
+void stop_heartbeat_capture() {}
+void start_heartbeat_capture() {}

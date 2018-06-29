@@ -249,7 +249,7 @@ void setupPulses(uint8_t port)
 
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
-        init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000);
+        init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD);
         break;
 #endif
 

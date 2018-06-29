@@ -185,7 +185,7 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
   EXTMODULE_TIMER->ARR = period_half_us;
-  EXTMODULE_TIMER->CCR2 = period_half_us - 2000; // Update time
+  EXTMODULE_TIMER->CCR2 = period_half_us - 300; // Update time, 150uS in advance
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
@@ -253,7 +253,7 @@ void extmoduleCrossfireStart()
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
   EXTMODULE_TIMER->ARR = (2000 * CROSSFIRE_PERIOD);
-  EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_PERIOD) - 1000;
+  EXTMODULE_TIMER->CCR2 = (2000 * CROSSFIRE_PERIOD) - 300; //150uS in advance
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
   EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
@@ -268,7 +268,7 @@ void extmoduleSendNextFrame()
   if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
     EXTMODULE_TIMER->CCR1 = GET_PPM_DELAY(EXTERNAL_MODULE)*2;
     EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_PPM_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); //     // we are using complementary output so logic has to be reversed here
-    EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].ppm.ptr - 1) - 4000; // 2mS in advance
+    EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].ppm.ptr - 1) - 600; // 300uS in advance
     EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     EXTMODULE_TIMER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
@@ -300,7 +300,7 @@ void extmoduleSendNextFrame()
     USART_DMACmd(EXTMODULE_USART, USART_DMAReq_Tx, ENABLE);
     EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
 #else
-    EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].pxx.ptr - 1) - 4000; // 2mS in advance
+    EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].pxx.ptr - 1) - 600; // 300uS in advance
     EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     EXTMODULE_TIMER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
@@ -312,7 +312,7 @@ void extmoduleSendNextFrame()
   else if (IS_DSM2_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_MULTIMODULE_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE])) {
     if (IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]))
       EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); // reverse polarity for Sbus if needed
-    EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) - 4000; // 2mS in advance
+    EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) - 600; // 300uS in advance
     EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     EXTMODULE_TIMER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
@@ -340,6 +340,13 @@ extern "C" void EXTMODULE_TIMER_CC_IRQHandler()
 {
   EXTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
+
+  DEBUG_TIMER_SAMPLE(debugTimerExtPulses);
+  DEBUG_TIMER_START(debugTimerExtPulsesDuration);
+
   setupPulses(EXTERNAL_MODULE);
   extmoduleSendNextFrame();
+
+  DEBUG_TIMER_STOP(debugTimerExtPulsesDuration);
+
 }

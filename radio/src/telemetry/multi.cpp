@@ -236,7 +236,7 @@ static uint8_t counter;
 
 uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate() {
   if (!isValid() || refreshRate == 0)
-    return 18000;
+    return 14000;
 
 
   counter = (uint8_t) (counter + 1 % 10);

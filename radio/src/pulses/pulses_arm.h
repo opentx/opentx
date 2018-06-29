@@ -103,7 +103,7 @@ PACK(struct PxxUartPulsesData {
 #define SBUS_PERIOD_HALF_US          ((g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200) /*half us*/
 #define SBUS_PERIOD                  (SBUS_PERIOD_HALF_US / 2000) /*ms*/
 #define MULTIMODULE_BAUDRATE         100000
-#define MULTIMODULE_PERIOD           7 /*ms*/
+#define MULTIMODULE_PERIOD           (multiSyncStatus.getAdjustedRefreshRate())
 
 #if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
