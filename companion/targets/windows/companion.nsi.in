@@ -60,7 +60,7 @@
 ;--------------------------------
 ;Pages
 
-  !insertmacro MUI_PAGE_LICENSE "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
+  !insertmacro MUI_PAGE_LICENSE "@NSIS_DISTRO@\license.txt"
   !insertmacro MUI_PAGE_COMPONENTS
   !insertmacro MUI_PAGE_DIRECTORY
 
@@ -98,70 +98,18 @@
 Section "OpenTX Companion @VERSION_FAMILY@" SecDummy
 
   Delete "$INSTDIR\opentx-*-simulator.dll"
-  Delete "$INSTDIR\lang\*.*"
-  RMDir  "$INSTDIR\lang"
-  SetOutPath "$INSTDIR\platforms"
-  File "@QT_DLL_DIR@\..\plugins\platforms\qwindows.dll"
+  RMDir /r "$INSTDIR\lang"
+  RMDir /r "$INSTDIR\phonon_backend"
 
   SetOutPath "$INSTDIR"
 
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\license.txt"
-  File "..\Release\companion.exe"
-  File "..\Release\simulator.exe"
-  File "..\Release\opentx-*-simulator.dll"
-  ${!defineifexist} PTHREAD_WINDIR "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
-  !ifdef PTHREAD_WINDIR
-  File "C:\Programs\pthreads\Pre-built.2\lib\pthreadVC2.dll"
-  !else
-  File "@SYSDIR@\system32\pthreadVC2.dll"
-  !endif
-  File "@SYSDIR@\msvcp140.dll"
-  File "@SYSDIR@\vcruntime140.dll"
-  File "@QT_DLL_DIR@\Qt5Core.dll"
-  File "@QT_DLL_DIR@\Qt5Gui.dll"
-  File "@QT_DLL_DIR@\Qt5Widgets.dll"
-  File "@QT_DLL_DIR@\Qt5PrintSupport.dll"
-  File "@QT_DLL_DIR@\Qt5Network.dll"
-  File "@QT_DLL_DIR@\Qt5Multimedia.dll"
-  File "@QT_DLL_DIR@\Qt5Svg.dll"
-  File "@QT_DLL_DIR@\Qt5Xml.dll"
-  ${!defineifexist} EAY_LIB_WINDIR "@EAY_LIB_DIR@\libeay32.dll"
-  !ifdef EAY_LIB_WINDIR
-  File "@EAY_LIB_DIR@\libeay32.dll"
-  File "@EAY_LIB_DIR@\ssleay32.dll"
-  !endif
+  ; Copy the complete distribution folder contents
+  File /r "@NSIS_DISTRO@\*"
 
-  File "@SDL_DIR@\SDL.dll"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.exe"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\avrdude.conf"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb0.dll"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\dfu-util.exe"
-  File "@CMAKE_CURRENT_SOURCE_DIR@\..\targets\windows\libusb-1.0.dll"
-
-  SetOutPath "$INSTDIR\printsupport"
-  File "@QT_DLL_DIR@\..\plugins\printsupport\windowsprintersupport.dll"
-
-  SetOutPath "$INSTDIR\imageformats"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qjpeg.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qsvg.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qdds.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qgif.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qicns.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qico.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qtga.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qtiff.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qwbmp.dll"
-  File "@QT_DLL_DIR@\..\plugins\imageformats\qwebp.dll"
-
-  SetOutPath "$INSTDIR\mediaservice"
-  File "@QT_DLL_DIR@\..\plugins\mediaservice\dsengine.dll"
-
-  SetOutPath "$INSTDIR"
   ;Store installation folder
   WriteRegStr HKCU "Software\OpenTX\Companion @VERSION_FAMILY@" "" $INSTDIR
 
-  ;Associate with extentions .otx, .bin (TODO: remove .bin)
-  ${registerExtension} "$INSTDIR\companion.exe" ".bin" "BIN File"
+  ;Associate with extentions .otx
   ${registerExtension} "$INSTDIR\companion.exe" ".otx" "OpenTX Settings File"
 
   ;Create uninstaller
@@ -206,46 +154,46 @@ Section "un.OpenTX Companion @VERSION_FAMILY@"
 
   SectionIn RO  ; Not deselectable
 
-  ;ADD YOUR OWN FILES HERE...
-
   Delete "$INSTDIR\license.txt"
   Delete "$INSTDIR\companion.exe"
   Delete "$INSTDIR\simulator.exe"
-  Delete "$INSTDIR\opentx-*-simulator.dll"
-  Delete "$INSTDIR\pthreadVC2.dll"
+  Delete "$INSTDIR\*opentx-*-simulator.dll"
   Delete "$INSTDIR\SDL.dll"
+  ; MSVC-specific libs
   Delete "$INSTDIR\msvcp140.dll"
   Delete "$INSTDIR\vcruntime140.dll"
-  Delete "$INSTDIR\Qt5Core.dll"
-  Delete "$INSTDIR\Qt5Gui.dll"
-  Delete "$INSTDIR\Qt5Widgets.dll"
-  Delete "$INSTDIR\Qt5PrintSupport.dll"
-  Delete "$INSTDIR\Qt5Network.dll"
-  Delete "$INSTDIR\Qt5Multimedia.dll"
-  Delete "$INSTDIR\Qt5Xml.dll"
-  Delete "$INSTDIR\Qt5Svg.dll"
+  Delete "$INSTDIR\pthreadVC2.dll"
+  ; Qt libs
+  Delete "$INSTDIR\Qt5*.dll"
+  Delete "$INSTDIR\d3dcompiler_47.dll"
+  Delete "$INSTDIR\libEGL.dll"
+  Delete "$INSTDIR\libGLESV2.dll"
+  ; flashing utils
   Delete "$INSTDIR\avrdude.exe"
   Delete "$INSTDIR\avrdude.conf"
-  Delete "$INSTDIR\libusb0.dll"
   Delete "$INSTDIR\dfu-util.exe"
+  Delete "$INSTDIR\libusb0.dll"
   Delete "$INSTDIR\libusb-1.0.dll"
+  ; OpenSSL libs
   Delete "$INSTDIR\libeay32.dll"
   Delete "$INSTDIR\ssleay32.dll"
+  ; MinGW libs
+  Delete "$INSTDIR\libgcc_s_dw2-1.dll"
+  Delete "$INSTDIR\libstdc++-6.dll"
+  Delete "$INSTDIR\libwinpthread-1.dll"
+
   Delete "$INSTDIR\Uninstall.exe"
 
-  Delete "$INSTDIR\lang\*.*"
-  Delete "$INSTDIR\phonon_backend\*.*"
-  Delete "$INSTDIR\platforms\*.*"
-  Delete "$INSTDIR\printsupport\*.*"
-  Delete "$INSTDIR\mediaservice\*.*"
-  Delete "$INSTDIR\imageformats\*.*"
+  ; Qt plugin folders
+  RMDir /r "$INSTDIR\audio"
+  RMDir /r "$INSTDIR\bearer"
+  RMDir /r "$INSTDIR\iconengines"
+  RMDir /r "$INSTDIR\imageformats"
+  RMDir /r "$INSTDIR\mediaservice"
+  RMDir /r "$INSTDIR\platforms"
+  RMDir /r "$INSTDIR\playlistformats"
+  RMDir /r "$INSTDIR\printsupport"
 
-  RMDir "$INSTDIR\lang"
-  RMDir "$INSTDIR\phonon_backend"
-  RMDir "$INSTDIR\platforms"
-  RMDir "$INSTDIR\printsupport"
-  RMDir "$INSTDIR\mediaservice"
-  RMDir "$INSTDIR\imageformats"
   RMDir "$INSTDIR"
 
   ${unregisterExtension} ".bin" "BIN File"
