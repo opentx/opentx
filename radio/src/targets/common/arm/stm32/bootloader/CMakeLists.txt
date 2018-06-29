@@ -93,6 +93,7 @@ else()
     ../../../../../targets/common/arm/stm32/sdio_sd.c
     ../../../../../targets/${TARGET_DIR}/haptic_driver.cpp
     ../../../../../gui/${GUI_DIR}/bitmapbuffer.cpp
+    ../../../../../gui/${GUI_DIR}/rle.cpp
     ../../../../../syscalls.c
     )
 

@@ -91,7 +91,7 @@ with open(output_filename, "w") as f:
     extension = os.path.splitext(output_filename)[1]
     out = F_writeValue(f)
 
-    if extension == ".rle":
+    if extension == ".rle" or ((len(sys.argv) > 5) and (sys.argv[5] == "rle")):
         encoder = RLE_encoder(out)
     else:
         encoder = dummy_encoder(out)

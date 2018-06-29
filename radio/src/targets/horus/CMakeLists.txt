@@ -101,6 +101,7 @@ set(GUI_SRC
   ${THEMES_SRC}
   ${LAYOUTS_SRC}
   ${WIDGETS_SRC}
+  rle.cpp
   )
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)

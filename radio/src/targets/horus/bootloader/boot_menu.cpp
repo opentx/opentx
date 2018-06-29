@@ -40,6 +40,9 @@ void bootloaderInitScreen()
   lcdColorTable[BARGRAPH2_COLOR_INDEX] = RGB(73, 219, 62); // green
  
   backlightEnable(BACKLIGHT_LEVEL_MAX);
+
+  //TODO: load/decompress bitmaps
+  loadFonts();
 }
 
 static void bootloaderDrawTitle(unsigned int x, const char* text)
