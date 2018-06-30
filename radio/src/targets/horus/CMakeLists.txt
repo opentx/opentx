@@ -13,6 +13,8 @@ set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
+SET(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
+
 # for size report script
 set(CPU_TYPE_FULL STM32F429xI)
 set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
