@@ -36,7 +36,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
 
         // Remove opentx- from string
         const char* other_ver = getOtherVersion(nullptr);
-        if (strstr(other_ver, "opentx-"))
+        if (!strncmp(other_ver, "opentx-", 7))
           other_ver = other_ver+7;
         lcdDrawText(20, 6*FH, other_ver);
 #endif
@@ -69,7 +69,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
             const char* vers = getOtherVersion((char*)Block_buffer);
 #if LCD_W < 212
             // Remove opentx- from string
-            if (strstr(vers, "opentx-"))
+            if (!strncmp(vers, "opentx-", 7))
                 vers = vers+7;
 #endif
             bootloaderDrawMsg(INDENT_WIDTH, vers, 0, false);
