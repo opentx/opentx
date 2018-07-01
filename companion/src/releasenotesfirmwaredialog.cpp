@@ -48,5 +48,6 @@ void ReleaseNotesFirmwareDialog::replyFinished(QNetworkReply * reply)
 {
   ui->textEditor->setHtml(reply->readAll());
   ui->textEditor->setOpenExternalLinks(true);
+  reply->deleteLater();
 }
 
