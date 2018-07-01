@@ -205,6 +205,8 @@ class TelemetrySimulator : public QWidget
         uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
     };  // GPSEmulator
 
+    void startTelemetry();
+    void stopTelemetry();
 };  // TelemetrySimulator
 
 #endif // _TELEMETRYSIMU_H_
