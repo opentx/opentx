@@ -73,7 +73,7 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 
 TelemetrySimulator::~TelemetrySimulator()
 {
-  stopTelemetry();
+  timer.stop();
   logTimer.stop();
   delete logPlayback;
   delete ui;
@@ -93,10 +93,10 @@ void TelemetrySimulator::onSimulatorStopped()
 void TelemetrySimulator::onSimulateToggled(bool isChecked)
 {
   if (isChecked) {
-    startTelemetry();
+    timer.start();
   }
   else {
-    stopTelemetry();
+    timer.stop();
   }
 }
 
@@ -1055,24 +1055,5 @@ void TelemetrySimulator::LogPlaybackController::setUiDataValues()
     else {
       // file is corrupt - shut down with open logs, or log format changed mid-day
     }
-  }
-}
-
-void TelemetrySimulator::startTelemetry()
-{
-  timer.start();
-}
-
-void TelemetrySimulator::stopTelemetry()
-{
-  timer.stop();
-
-  bool ok;
-  uint8_t buffer[FRSKY_SPORT_PACKET_SIZE] = {0};
-  generateSportPacket(buffer, ui->rssi_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, RSSI_ID, 0);
-
-  if (ok) {
-    QByteArray ba((char *)buffer, FRSKY_SPORT_PACKET_SIZE);  
-    emit telemetryDataChanged(ba);
   }
 }
