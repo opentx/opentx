@@ -8,7 +8,15 @@ import time
 import os
 
 if sys.platform == "darwin":
-    clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
+    if os.path.exists('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib'):
+        print("// Using brew llvm")
+        clang.cindex.Config.set_library_file('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib')
+    elif os.path.exists('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'):
+        print("// Using XCode llvm")
+        clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
+    elif os.path.exists('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'):
+        print("// Using Command Line Tools llvm")
+        clang.cindex.Config.set_library_file('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
 
 
 structs = []
@@ -48,8 +56,9 @@ def build_struct(cursor, anonymousUnion=False):
 def build(cursor):
     result = []
     for c in cursor.get_children():
-        if c.kind == clang.cindex.CursorKind.STRUCT_DECL:
-            build_struct(c)
+        if c.location.file.name == sys.argv[1]:
+            if c.kind == clang.cindex.CursorKind.STRUCT_DECL:
+                build_struct(c)
     for c, spelling in extrastructs:
         print("template <class A, class B>\nvoid copy%s(A * dest, B * src)\n{" % spelling)
         build_struct(c, True)

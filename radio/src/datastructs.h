@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include "dataconstants.h"
+#include "definitions.h"
 
 #if defined(CPUARM)
   #define ARM_FIELD(x)                 x;
