@@ -1669,7 +1669,7 @@ Voulez-vous les importer ?</translation>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="285"/>
         <source>Error occurred while trying to play sound, possibly the file is already opened. (Err: %1 [%2])</source>
-        <translation>Une erreur s&apos;est produite lors de la tentative de lecture du son, le fichier est peut-être déjà ouvert. (Err: %1 [%2])</translation>
+        <translation>Une erreur s&apos;est produite lors de la lecture du son, le fichier est peut-être déjà ouvert. (Err: %1 [%2])</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="307"/>
