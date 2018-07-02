@@ -9,13 +9,10 @@ import os
 
 if sys.platform == "darwin":
     if os.path.exists('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib'):
-        print("// Using brew llvm")
         clang.cindex.Config.set_library_file('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib')
     elif os.path.exists('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'):
-        print("// Using XCode llvm")
         clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
     elif os.path.exists('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'):
-        print("// Using Command Line Tools llvm")
         clang.cindex.Config.set_library_file('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
 
 
@@ -49,7 +46,6 @@ def build_struct(cursor, anonymousUnion=False):
         elif c.kind == clang.cindex.CursorKind.FIELD_DECL:
             copy_decl(c, c.spelling)
 
-
     if not anonymousUnion:
         print("}\n")
 
@@ -76,7 +72,7 @@ def copy_decl(c, spelling):
             print("  }")
         else:
             print("  memcpy(dest->%s, src->%s, sizeof(dest->%s));" % (spelling, spelling, spelling))
-    elif c.type.kind == clang.cindex.TypeKind.UNEXPOSED and len(childs)==1 and childs[0].kind == clang.cindex.CursorKind.STRUCT_DECL:
+    elif len(childs)==1 and childs[0].kind == clang.cindex.CursorKind.STRUCT_DECL and not childs[0].spelling:
         # inline declared structs
         if c.semantic_parent.spelling:
             spellingFunc = c.semantic_parent.spelling + "_" + spelling
