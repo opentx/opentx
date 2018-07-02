@@ -15,6 +15,9 @@ if sys.platform == "darwin":
     elif os.path.exists('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'):
         clang.cindex.Config.set_library_file('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
 
+if sys.platform == "linux2":
+    if os.path.exists('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1'):
+        clang.cindex.Config.set_library_file('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1')
 
 structs = []
 extrastructs = []
