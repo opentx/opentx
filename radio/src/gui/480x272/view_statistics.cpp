@@ -185,6 +185,10 @@ bool menuStatsAnalogs(event_t event)
     lcdDrawNumber(LCD_W/2 + MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.xjtVersion);
   }
 
+#if (NUM_PWMSTICKS > 0) && !defined(SIMU)
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+8*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
+#endif
+
   return true;
 }
 

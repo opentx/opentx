@@ -127,4 +127,8 @@ void menuRadioDiagAnalogs(event_t event)
   if (menuVerticalPosition==TEMP_CALIB_MENU_POS)
     CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
 #endif
+
+#if (NUM_PWMSTICKS > 0) && !defined(SIMU)
+  lcdDrawTextAlignedLeft(7*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
+#endif
 }
