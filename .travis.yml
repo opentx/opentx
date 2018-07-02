@@ -20,7 +20,7 @@ env:
     #
     # - FLAVOR=ALL
     - FLAVOR=DEFAULT
-    - FLAVOR=AVR9X
+    # - FLAVOR=AVR9X
     # - FLAVOR=9X
     # - FLAVOR=GRUVIN9X
     # - FLAVOR=MEGA2560
