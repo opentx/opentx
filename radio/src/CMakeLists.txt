@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB_TYPES X7 XLITE X9D X9D+ X9E X10 X12S 9X 9XR 9X128 9XR128 9X2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO AR9X)
+set(PCB_TYPES X7 XLITE X9D X9D+ X9E X10 X12S SKY9X 9XRPRO AR9X)
 set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL)
 set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU RU)
 
@@ -87,41 +87,11 @@ elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL
   include(targets/taranis/CMakeLists.txt)
 elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   include(targets/sky9x/CMakeLists.txt)
-elseif(PCB STREQUAL 9X OR PCB STREQUAL 9XR OR PCB STREQUAL 9X128 OR PCB STREQUAL 9XR128)
-  include(targets/9x/CMakeLists.txt)
-elseif(PCB STREQUAL 9X2561)
-  set(ARCH AVR)
-  set(MCU atmega2561)
-  string(TOLOWER ${PCB} FLAVOUR)
-  set(EEPROM EEPROM_RLC)
-  set(SDCARD NO)
-  add_definitions(-DEEPROM_VARIANT=${M2561_VARIANT})
-  set(GUI_DIR 128x64)
-  set(TARGET_DIR 9x)
-  set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} 9x_bitmaps)
-  add_definitions(-DPCBSTD -DPCB${PCB} -DCPUM2561)
-  set(TARGET_SRC ${TARGET_SRC} board.cpp)
-  set(GUI_SRC
-    ${GUI_SRC}
-    model_inputs_mixes.cpp
-    radio_diagkeys.cpp
-    radio_diaganas.cpp)
-  if(SP22)
-    add_definitions(-DSP22)
-  endif()
-  if(PWM_BACKLIGHT)
-    add_definitions(-DPWM_BACKLIGHT)
-  endif()
-  set(FIRMWARE_TARGET_SRC ${FIRMWARE_TARGET_SRC} lcd_driver.cpp)
-elseif(PCB STREQUAL GRUVIN9X)
-  include(targets/gruvin9x/CMakeLists.txt)
-elseif(PCB STREQUAL MEGA2560)
-  include(targets/mega2560/CMakeLists.txt)
 else()
   message(FATAL_ERROR "Unknown PCB '${PCB}'")
 endif()
 
-if(NOT PCB STREQUAL 9XR AND NOT PCB STREQUAL 9XRPRO)
+if(NOT PCB STREQUAL 9XRPRO)
   option(DBLKEYS "Double Keys" ON)
   if(DBLKEYS)
     add_definitions(-DDBLKEYS)
@@ -142,8 +112,6 @@ endif()
 
 if(ARCH STREQUAL ARM)
   include(targets/common/arm/CMakeLists.txt)
-else()
-  include(targets/common/avr/CMakeLists.txt)
 endif()
 
 include_directories(targets/${TARGET_DIR} ${THIRDPARTY_DIR})
@@ -531,73 +499,7 @@ if(NOT MSVC)
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         )
     endif()
-
-  else()  # AVR
-
-    set(CMAKE_C_COMPILER avr-gcc)
-    set(CMAKE_CXX_COMPILER avr-gcc)
-
-    set(COMMON_FLAGS "-mmcu=${MCU} -DF_CPU=16000000UL -O${OPT} -gdwarf-2 -fno-exceptions -flto -fwhole-program -fno-inline-small-functions -mstrict-X ${WARNING_FLAGS}")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${COMMON_FLAGS}")
-    set(CMAKE_EXE_LINKER_FLAGS "-Wno-uninitialized")  # bogus "uninitialized" warnings from ld
-
-    include_directories(storage gui/${GUI_DIR})
-
-    set(ALLSRC ${PROJECT_BINARY_DIR}/allsrc.cpp)
-    if (BASH AND NOT WIN32)
-      add_custom_command(
-        OUTPUT ${ALLSRC}
-        COMMAND ${BASH} -kc 'rm -f ${ALLSRC}\; for f in ${SRC}\; do echo "\\# 1 \\\"$$f\\\"" >> ${ALLSRC}\; cat "$$f" >> ${ALLSRC}\; done'
-        WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-        DEPENDS ${SRC}
-        )
-    elseif(WIN32)
-      string(REPLACE "/" "\\" SRC_WIN "${SRC}")
-      string(REPLACE "/" "\\" ALLSRC_WIN "${ALLSRC}")
-      set(ALLSRC_BAT
-          "setlocal EnableDelayedExpansion"
-          "del \"${ALLSRC_WIN}\""
-          "for %%f in (${SRC_WIN}) do ("
-            "set p=\"%%f\""
-            "set p=!p:^\\=/! \necho \# 1 !p! >> \"${ALLSRC_WIN}\""
-            "type %%f >> \"${ALLSRC_WIN}\""
-          ")\n"
-        )
-      string(REPLACE ";" "\n" ALLSRC_BAT "${ALLSRC_BAT}")
-      file(WRITE "${ALLSRC}.bat" "${ALLSRC_BAT}")
-      add_custom_command(
-        OUTPUT ${ALLSRC}
-        COMMAND "${ALLSRC}.bat"
-        WORKING_DIRECTORY ${RADIO_SRC_DIRECTORY}
-        DEPENDS ${SRC}
-        )
-    else()
-      set(ALLSRC ${SRC})
-    endif()
-    add_executable(firmware ${ALLSRC})
-
-    add_dependencies(firmware ${FIRMWARE_DEPENDENCIES})
-
-    add_custom_command(
-      TARGET firmware POST_BUILD
-      COMMAND avr-objcopy -O ihex -R .eeprom firmware.elf firmware.hex
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      )
-
-    add_custom_target(firmware.lss
-      COMMAND avr-objdump -h -S firmware.elf > firmware.lss
-      DEPENDS firmware
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      )
-
-    add_custom_target(firmware-size
-      COMMAND avr-size --format=avr --mcu=${MCU} firmware.elf
-      DEPENDS firmware
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      )
-
-  endif()  # ARM or AVR
+  endif()  # ARM
 
   if(CPU_FAMILY STREQUAL STM32)
     add_custom_target(flash
@@ -608,12 +510,6 @@ if(NOT MSVC)
 
     add_custom_target(jtag-flash
       COMMAND st-flash --reset write firmware.bin 0x8000000
-      DEPENDS firmware
-      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-      )
-  else()
-    add_custom_target(flash
-      COMMAND avrdude -c usbasp -p ${AVRDUDE_MCU} -U flash:w:firmware.hex:i
       DEPENDS firmware
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       )
