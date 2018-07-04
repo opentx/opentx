@@ -129,7 +129,6 @@ void menuStatisticsDebug(event_t event)
       maxLuaInterval = 0;
       maxLuaDuration = 0;
 #endif
-      maxMixerDuration  = 0;
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
@@ -170,7 +169,7 @@ void menuStatisticsDebug(event_t event)
 #endif
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW1, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, DURATION_MS_PREC2(mixerMaxTime.getMaxTime()), PREC2|LEFT);
   lcdDrawText(lcdLastRightPos, MENU_DEBUG_ROW1, "ms");
 
 #if !defined(SIMU) && defined(DEBUG)

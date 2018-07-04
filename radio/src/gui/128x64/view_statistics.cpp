@@ -131,7 +131,6 @@ void menuStatisticsDebug(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
-      maxMixerDuration  = 0;
       break;
 
 
@@ -225,7 +224,7 @@ void menuStatisticsDebug(event_t event)
 #endif // PCBTARANIS
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_MIXMAX, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_MIXMAX, DURATION_MS_PREC2(mixerMaxTime.getMaxTime()), PREC2|LEFT);
   lcdDrawText(lcdLastRightPos, MENU_DEBUG_Y_MIXMAX, "ms");
 
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_RTOS, STR_FREESTACKMINB);

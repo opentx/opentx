@@ -52,4 +52,13 @@ void timerSet(int idx, int val);
 
 void evalTimers(int16_t throttle, uint8_t tick10ms);
 
+/* Used to determine the real difference between 16 bit timers */
+inline uint16_t diff_with_16bits_overflow(uint16_t a, uint16_t b)
+{
+  if (b > a)
+    return b - a;
+  else
+    return (uint16_t)(b + 0xffff - a);
+}
+
 #endif // _TIMERS_H_

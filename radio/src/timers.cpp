@@ -172,3 +172,25 @@ void evalTimers(int16_t throttle, uint8_t tick10ms)
     }
   }
 }
+
+void maxTimeRecorder::timeStop(int interval)
+{
+  uint16_t diffTime = diff_with_16bits_overflow(getTmr2MHz(), mixerstart);
+  // Worse time found set it be the worst time
+  if (diffTime > worstTime) {
+    worstTime = diffTime;
+    worstTimeSample = run;
+    nextTimeSample = nextTime = 0;
+  }
+  else if (diffTime > nextTime) {
+    nextTime = diffTime;
+    nextTimeSample = run;
+  }
+  if (diff_with_16bits_overflow(run, worstTimeSample) > interval) {
+    /* We haven't seen a worse sample in last x iterations, set the worst time to
+       the worst time in last 200 samples */
+    worstTimeSample = nextTimeSample;
+    worstTime = nextTime;
+    nextTimeSample = nextTime = 0;
+  }
+}

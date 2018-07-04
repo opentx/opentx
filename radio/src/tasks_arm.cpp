@@ -33,6 +33,8 @@ TaskStack<AUDIO_STACK_SIZE> audioStack;
 OS_MutexID audioMutex;
 OS_MutexID mixerMutex;
 
+maxTimeRecorder mixerMaxTime;
+
 enum TaskIndex {
   MENU_TASK_INDEX,
   MIXER_TASK_INDEX,
@@ -155,8 +157,7 @@ void mixerTask(void * pdata)
     lastRunTime = now;
 
     if (!s_pulses_paused) {
-      uint16_t t0 = getTmr2MHz();
-
+      mixerMaxTime.timeStart();
       DEBUG_TIMER_START(debugTimerMixer);
       CoEnterMutexSection(mixerMutex);
       doMixerCalculations();
@@ -186,8 +187,8 @@ void mixerTask(void * pdata)
         heartbeat = 0;
       }
 
-      t0 = getTmr2MHz() - t0;
-      if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
+      mixerMaxTime.timeStop(200);
+
     }
   }
 }

@@ -98,7 +98,6 @@ bool menuStatsDebug(event_t event)
   switch(event)
   {
     case EVT_KEY_FIRST(KEY_ENTER):
-      maxMixerDuration  = 0;
 #if defined(LUA)
       maxLuaInterval = 0;
       maxLuaDuration = 0;
@@ -112,7 +111,7 @@ bool menuStatsDebug(event_t event)
   lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, availableMemory(), LEFT, 0, NULL, "b");
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, NULL, "ms");
+  lcdDrawNumber(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, DURATION_MS_PREC2(mixerMaxTime.getMaxTime()), PREC2|LEFT, 0, NULL, "ms");
 
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, STR_FREESTACKMINB);
   lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH+1, "[Menus]", HEADER_COLOR|SMLSIZE);

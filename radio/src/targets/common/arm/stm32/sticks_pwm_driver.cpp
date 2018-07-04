@@ -83,14 +83,6 @@ inline void TIM_ClearITPendingBit(uint8_t n)
   PWM_TIMER->SR = ~(TIM_IT_CC1 << n);
 }
 
-inline uint32_t diff_with_16bits_overflow(uint32_t a, uint32_t b)
-{
-  if (b > a)
-    return b - a;
-  else
-    return b + 0xffff - a;
-}
-
 extern "C" void PWM_IRQHandler(void)
 {
   static uint8_t  timer_capture_states[NUM_PWMSTICKS];

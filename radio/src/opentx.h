@@ -697,7 +697,6 @@ extern uint8_t unexpectedShutdown;
 
 extern uint16_t maxMixerDuration;
 
-
   #define DURATION_MS_PREC2(x) ((x)/20)
 
 #if defined(THRTRACE)
@@ -1451,8 +1450,34 @@ struct Clipboard {
     } sd;
   } data;
 };
-
 extern Clipboard clipboard;
+
+/* Calculates and returns the worst time in the last interval */
+struct maxTimeRecorder {
+  uint16_t run;
+  uint16_t mixerstart;
+
+  uint16_t worstTime=4000;
+  uint16_t nextTime=0;
+  uint16_t worstTimeSample=0;
+  uint16_t nextTimeSample=0;
+
+  inline void timeStart() {
+    mixerstart=getTmr2MHz();
+    run++;
+  }
+
+  void timeStop(int interval);
+
+
+  inline uint16_t getMaxTime()
+  {
+    return worstTime;
+  }
+};
+
+extern maxTimeRecorder mixerMaxTime;
+
 #endif
 
 #if !defined(SIMU)
