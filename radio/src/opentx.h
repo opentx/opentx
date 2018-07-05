@@ -123,8 +123,6 @@
   #define CASE_FRSKY(x)
 #endif
 
-  #define CASE_MAVLINK(x)
-
 #if defined(PXX)
   #define CASE_PXX(x) x,
 #else

@@ -37,7 +37,6 @@ const MenuHandlerFunc menuTabModel[] = {
   menuModelCustomScripts,
 #endif
   CASE_FRSKY(menuModelTelemetryFrsky)
-  CASE_MAVLINK(menuModelTelemetryMavlink)
 };
 
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags attr);

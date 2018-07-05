@@ -38,7 +38,6 @@ const MenuHandlerFunc menuTabModel[] = {
   menuModelCustomScripts,
 #endif
   CASE_FRSKY(menuModelTelemetryFrsky)
-  CASE_MAVLINK(menuModelTelemetryMavlink)
   menuModelDisplay
 };
 

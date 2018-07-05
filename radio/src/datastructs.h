@@ -347,11 +347,6 @@ PACK(struct FrSkyTelemetryData {
 #endif
 
 /*
- * MAVLINK Telemetry structure
- */
-
-
-/*
  * Telemetry Sensor structure
  */
 

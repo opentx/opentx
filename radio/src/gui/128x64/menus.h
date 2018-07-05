@@ -67,7 +67,6 @@ void onMainViewMenu(const char * result);
 void menuFirstCalib(event_t event);
 void menuMainView(event_t event);
 void menuViewTelemetryFrsky(event_t event);
-void menuViewTelemetryMavlink(event_t event);
 void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 
 enum MenuRadioIndexes
@@ -121,7 +120,6 @@ enum MenuModelIndexes {
   MENU_MODEL_CUSTOM_SCRIPTS,
 #endif
   CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
-  CASE_MAVLINK(MENU_MODEL_TELEMETRY_MAVLINK)
   MENU_MODEL_DISPLAY,
   CASE_TEMPLATES(MENU_MODEL_TEMPLATES)
   MENU_MODEL_PAGES_COUNT
@@ -143,7 +141,6 @@ void menuModelLogicalSwitches(event_t event);
 void menuModelSpecialFunctions(event_t event);
 void menuModelCustomScripts(event_t event);
 void menuModelTelemetryFrsky(event_t event);
-void menuModelTelemetryMavlink(event_t event);
 void menuModelDisplay(event_t event);
 void menuModelTemplates(event_t event);
 void menuModelGVarOne(event_t event);
@@ -163,7 +160,6 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   menuModelCustomScripts,
 #endif
   CASE_FRSKY(menuModelTelemetryFrsky)
-  CASE_MAVLINK(menuModelTelemetryMavlink)
   menuModelDisplay,
   CASE_TEMPLATES(menuModelTemplates)
 };
