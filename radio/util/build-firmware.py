@@ -16,14 +16,11 @@ INVALID_BOARD = 6
 INVALID_LANGUAGE = 7
 
 # Board types
-BOARD_9X = 0
-BOARD_GRUVIN9X = 1
 BOARD_SKY9X = 2
 BOARD_TARANIS = 3
 BOARD_HORUS = 4
 
 # Board families
-BOARD_FAMILY_AVR = 0
 BOARD_FAMILY_ARM = 1
 
 if len(sys.argv) != 3:
@@ -40,47 +37,8 @@ if len(options) < 2 or options[0] != "opentx":
 optcount = 1
 command_options = {}
 
-if options[optcount] == "9x":
-    command_options["PCB"] = "9X"
-    firmware_options = options_9x
-    maxsize = 65536
-    board = BOARD_9X
-    board_family = BOARD_FAMILY_AVR
-elif options[optcount] == "9xr":
-    command_options["PCB"] = "9XR"
-    firmware_options = options_9x
-    maxsize = 65536
-    board = BOARD_9X
-    board_family = BOARD_FAMILY_AVR
-elif options[optcount] == "9x128":
-    command_options["PCB"] = "9X128"
-    command_options["FRSKY_STICKS"] = "YES"
-    firmware_options = options_9x128
-    maxsize = 65536 * 2
-    board = BOARD_9X
-    board_family = BOARD_FAMILY_AVR
-elif options[optcount] == "9xr128":
-    command_options["PCB"] = "9XR128"
-    command_options["FRSKY_STICKS"] = "YES"
-    firmware_options = options_9x128
-    maxsize = 65536 * 2
-    board = BOARD_9X
-    board_family = BOARD_FAMILY_AVR
-elif options[optcount] == "gruvin9x":
-    command_options["PCB"] = "GRUVIN9X"
-    command_options["TELEMETRY"] = "FRSKY"
-    firmware_options = options_gruvin9x
-    maxsize = 65536 * 4
-    board = BOARD_GRUVIN9X
-    board_family = BOARD_FAMILY_AVR
-elif options[optcount] == "mega2560":
-    command_options["PCB"] = "MEGA2560"
-    command_options["TELEMETRY"] = "FRSKY"
-    firmware_options = options_mega2560
-    maxsize = 65536 * 4
-    board = BOARD_GRUVIN9X
-    board_family = BOARD_FAMILY_AVR
-elif options[optcount] == "sky9x":
+
+if options[optcount] == "sky9x":
     command_options["PCB"] = "SKY9X"
     firmware_options = options_sky9x
     maxsize = 65536 * 4
@@ -234,9 +192,6 @@ def build_firmware(path):
         # Check binary size
         if board_family == BOARD_FAMILY_ARM:
             size = os.stat(target).st_size
-        else:
-            size = subprocess.check_output('avr-size -A %s | grep Total | cut -f2- -d " "' % target, shell=True)
-            size = int(size.strip())
         if size > maxsize:
             exit(FIRMWARE_SIZE_TOO_BIG)
 

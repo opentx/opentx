@@ -341,12 +341,8 @@ if(GUI)
   foreach(FILE ${GUI_SRC})
     set(SRC ${SRC} gui/${GUI_DIR}/${FILE})
   endforeach()
-  if(ARCH STREQUAL ARM)
-    set(SRC
-      ${SRC}
-      gui/gui_common_arm.cpp
+  set(SRC ${SRC} gui/gui_common_arm.cpp
       )
-  endif()
 endif()
 
 foreach(FILE ${TARGET_SRC})
