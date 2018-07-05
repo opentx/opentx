@@ -18,414 +18,474 @@
  * GNU General Public License for more details.
  */
 
-// All temporary and permanent global variables are defined here to make
-// initialization and storage safe and visible.
-// Do not access variables in QSettings directly, it is not type safe!
-
+/*! \defgroup AppData Application Settings Manager
+  \brief All temporary and permanent global variables are defined here to make initialization and storage safe and visible.
+  \note Do not access variables in QSettings directly.
+  \sa CompStoreObj
+  @{
+*/
 
 #ifndef _APPDATA_H_
 #define _APPDATA_H_
 
-#include <QByteArray>
-#include <QStringList>
-#include <QString>
+#include "constants.h"
+#include "macros.h"
+#include "simulator.h"
+#include "version.h"
+
+#include <QCoreApplication>
+#include <QObject>
 #include <QSettings>
 #include <QStandardPaths>
 
-#include "constants.h"
-#include "simulator.h"
+//! CPN_SETTINGS_REVISION is used to track settings changes independently of OpenTX version. It should be reset to zero whenever settings are migrated to new COMPANY or PRODUCT.
+//! \note !! Increment this value if properties are removed or refactored. It will trigger a conversion/cleanup of any stored settings. \sa AppData::convertSettings()
+#define CPN_SETTINGS_REVISION       0
 
-#define COMPANY            "OpenTX"
-#define COMPANY_DOMAIN     "open-tx.org"
-#define PRODUCT            "Companion 2.2"
-#define APP_COMPANION      "OpenTX Companion"
-#define APP_SIMULATOR      "OpenTX Simulator"
+//! CPN_SETTINGS_VERSION is used for settings data version tracking.
+#define CPN_SETTINGS_VERSION        ((VERSION_NUMBER << 8) | CPN_SETTINGS_REVISION)
+
+#define COMPANY                     QStringLiteral("OpenTX")
+#define COMPANY_DOMAIN              QStringLiteral("open-tx.org")
+#define PRODUCT                     QStringLiteral("Companion " QT_STRINGIFY(VERSION_MAJOR) "." QT_STRINGIFY(VERSION_MINOR))
+#define APP_COMPANION               QStringLiteral("OpenTX Companion")
+#define APP_SIMULATOR               QStringLiteral("OpenTX Simulator")
+
+//! Default location for OpenTX-related user documents (settigns, logs, etc)
+#define CPN_DOCUMENTS_LOCATION      QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) % "/" % COMPANY
+//! Location for settings backup files. TODO: make option or remember last location.
+#define CPN_SETTINGS_BACKUP_DIR     CPN_DOCUMENTS_LOCATION % "/backup"
+#define CPN_SETTINGS_INI_FILE       QString(PRODUCT % " " % QCoreApplication::translate("Companion", "settings") % " %1.ini")
+#define CPN_SETTINGS_INI_PATH       QString(CPN_SETTINGS_BACKUP_DIR % "/" % CPN_SETTINGS_INI_FILE)
 
 #define MAX_PROFILES 15
 #define MAX_JOYSTICKS 8
 
-class CompStoreObj
-{
-  public:
-    void clear (const QString & tag1 = "", const QString &tag2 = "", const QString &tag3 = "");
+// It important that these function names are consistent everywhere.
+#define PROP_FSIG_INIT_IMPL         _init()
+#define PROP_FSIG_KEY_IMPL          _key()
+#define PROP_FSIG_DFLT_IMPL         _default()
+// this set is used in macros
+#define PROP_FSIG_INIT(NAME)        CONCATENATE(NAME, PROP_FSIG_INIT_IMPL)
+#define PROP_FSIG_KEY(NAME)         CONCATENATE(NAME, PROP_FSIG_KEY_IMPL)
+#define PROP_FSIG_DFLT(NAME)        CONCATENATE(NAME, PROP_FSIG_DFLT_IMPL)
+// this set is used at runtime
+#define PROP_FSIG_INIT_STR(NAME)    qPrintable(QString("%1" QT_STRINGIFY(PROP_FSIG_INIT_IMPL)).arg(NAME))
+#define PROP_FSIG_KEY_STR(NAME)     qPrintable(QString("%1" QT_STRINGIFY(PROP_FSIG_KEY_IMPL)).arg(NAME))
+#define PROP_FSIG_DFLT_STR(NAME)    qPrintable(QString("%1" QT_STRINGIFY(PROP_FSIG_DFLT_IMPL)).arg(NAME))
 
-    // NOTE: OBJ_T can only be a standard or registered Qt type. To use custom types,
-    //   either Q_DECLARE_METATYPE() them or add additional logic in retrieve() to handle QMetaType::User.
+//! Helper macro to cast the default value of property \a NAME to its actual \a TYPE .
+#define PROP_DFLT_CAST(NAME, TYPE)  PROP_FSIG_DFLT(NAME).value<TYPE >()
 
-    template <typename OBJ_T, typename TAG_T, typename GP1_T = QString, typename GP2_T = QString>
-    void store(const OBJ_T newValue, OBJ_T & destValue, const TAG_T tag, const GP1_T group1 = "", const GP2_T group2 = "");
 
-    template <typename OBJ_T, typename TAG_T, typename DEF_T, typename GP1_T = QString, typename GP2_T = QString>
-    void retrieve(OBJ_T & destValue, const TAG_T tag, const DEF_T def, const GP1_T group1 = "", const GP2_T group2 = "");
+/*!
+  \brief The PROPERTY_META4 macro declares and defines member property meta data functions, and declares the member variable. It also sets up the Q_PROPERTY declaration, essential for introspection.
 
-    template <typename OBJ_T, typename TAG_T, typename DEF_T, typename GP1_T = QString, typename GP2_T = QString>
-    void getset(OBJ_T & value, const TAG_T tag, const DEF_T def, const GP1_T group1 = "", const GP2_T group2 = "" );
+  It produces the following code for each invokation (where \e name is the property name and \e T is the type.):
+  \code
+    public:
+      static const QVariant name_default();   // Returns the default value as a QVariant.
+      static const QString name_key();        // Returns the settings storage key name (may or may not be same as \a name )
+      Q_SIGNAL void nameChanged(const T &);   // Value change notifier signal.
+    private:
+      T m_name;                               // Member variable.
+  \endcode
 
-    // this specialization is needed because QVariant::fromValue(const char *) fails
-    template <typename OBJ_T, typename TAG_T, typename GP1_T = QString, typename GP2_T = QString>
-    void getset(OBJ_T & value, const TAG_T tag, const char * def, const GP1_T group1 = "", const GP2_T group2 = "" );
+  If you only use this macro (w/out a \p PROPERTY*() macro) then you need to provide the getter, setter, and reset functions yourself. The initializer functoin is optional.
+  Those function names must match the expected signatures as defined in the \e Q_PROPERTY() macro.
 
-};
+  \param TYPE   The data type (T).
+  \param NAME  Name of the property.
+  \param KEY   Settings key name, a const string. Can be the same as \a NAME.
+  \param DFLT  Default value, must be compatible with \a TYPE.
 
-class FwRevision: protected CompStoreObj
-{
-  public:
-    int get( const QString);
-    void set( const QString, const int );
-    void remove( const QString );
-};
+  \note \a Macro should be placed in the private declarations section.
+  \note \a TYPE must be a standard or registered Qt type. See notes in CompStoreObj.
 
-class JStickData: protected CompStoreObj
-{
+  \sa PROPERTY4()  \sa PROPERTY_META()
+*/
+#define PROPERTY_META4(TYPE, NAME, KEY, DFLT)                                           \
+  public:                                                                               \
+    Q_INVOKABLE static inline const QVariant PROP_FSIG_DFLT(NAME)                       \
+      { return QVariant::fromValue(DFLT); }                                             \
+    Q_INVOKABLE static inline const QString PROP_FSIG_KEY(NAME)                         \
+      { return QStringLiteral(KEY); }                                                   \
+  Q_SIGNALS: void NAME##Changed(const TYPE & val);                                      \
+  private:                                                                                        \
+    Q_PROPERTY(TYPE NAME READ NAME WRITE NAME RESET NAME##Reset NOTIFY NAME##Changed STORED true) \
+    TYPE m_##NAME;
+
+/*!
+  \brief Convenience equivalent to \p PROPERTY_META4() macro when the \a NAME and \a KEY are the same (recommended).
+  \sa PROPERTY()  \sa PROPERTY_META4()
+*/
+#define PROPERTY_META(TYPE, NAME, DFLT)     PROPERTY_META4(TYPE, NAME, #NAME, DFLT)
+
+
+/*!
+  \brief This macro extends \p PROPERTY_META4() to add initializer, getter, setter, and reset functions.
+  It produces the following additional code for each invokation (where \e name is the property name and \e T is the type.):
+  \code
+    public:
+      inline T name() const;            // Getter function.
+      void name(const T &, bool=true);  // Sets value and optionally saves to storage. If new value == default value, and store == true, the storage is cleared.
+      void nameReset(bool=true);        // Reset to default and optionally save.
+    protected:
+      void name_init();                 // Sets value from saved settings, if any, otherwise sets default value. Calls CompStoreObj::load()
+  \endcode
+
+  \note \a Macro should be placed in the private declarations section.
+  \sa PROPERTY(), PROPERTY_META4()
+*/
+#define PROPERTY4(TYPE, NAME, KEY, DFLT)                                               \
+  PROPERTY_META4(TYPE, NAME, KEY, DFLT)                                                \
+  public:                                                                              \
+    inline TYPE NAME() const { return m_##NAME; }                                      \
+  public Q_SLOTS:                                                                      \
+    void NAME(const TYPE &val, bool store = true) {                                    \
+      if (val == m_##NAME) return;                                                     \
+      m_##NAME = val;                                                                  \
+      emit NAME##Changed(val);                                                         \
+      if (store)                                                                       \
+        CompStoreObj::storeProperty(this, QStringLiteral(#NAME));                      \
+    }                                                                                  \
+    inline void NAME##Reset(bool store = true)                                         \
+      { NAME(PROP_DFLT_CAST(NAME, TYPE), store); }                                     \
+  protected Q_SLOTS:                                                                   \
+    void PROP_FSIG_INIT(NAME) {                                                        \
+      load(this, QStringLiteral(#NAME), PROP_FSIG_KEY(NAME), PROP_FSIG_DFLT(NAME));    \
+    }                                                                                  \
   private:
-    int index;
 
-    int _stickAxe;
-    int _stickMin;
-    int _stickMed;
-    int _stickMax;
-    int _stickInv;
+/*!
+  \brief Convenience equivalent to \p PROPERTY4() macro when the \a NAME and \a KEY are the same (recommended).
+  \param TYPE   The data type (T).
+  \param NAME  Name of the property, and also the settings key name.
+  \param DFLT  Default value, must be compatible with \a TYPE.
+  \sa PROPERTY4()
+*/
+#define PROPERTY(TYPE, NAME, DFLT)      PROPERTY4(TYPE, NAME, #NAME, DFLT)
 
-  public:
-    // All the get definitions
-    int stick_axe();
-    int stick_min();
-    int stick_med();
-    int stick_max();
-    int stick_inv();
+//! Convenience macros for QString types with either null or custom default value. \sa PROPERTY()
+#define PROPERTYSTR(NAME)               PROPERTY(QString, NAME, QStringLiteral(""))
+#define PROPERTYSTRD(NAME, DFLT)        PROPERTY(QString, NAME, QString(DFLT))
+//! Convenience macros for QString types where key name != property name and either null or custom default value. \sa PROPERTY4()
+#define PROPERTYSTR2(NAME, KEY)         PROPERTY4(QString, NAME, KEY, QStringLiteral(""))
+#define PROPERTYSTR3(NAME, KEY, DFLT)   PROPERTY4(QString, NAME, KEY, QString(DFLT))
 
-    // All the set definitions
-    void stick_axe(const int);
-    void stick_min(const int);
-    void stick_med(const int);
-    void stick_max(const int);
-    void stick_inv(const int);
+//! Convenience macros for QByteArray types with null value. \sa PROPERTY()
+#define PROPERTYQBA(NAME)               PROPERTY(QByteArray, NAME, QByteArray())
+#define PROPERTYQBA2(NAME, KEY)         PROPERTY4(QByteArray, NAME, KEY, QByteArray())
 
-    JStickData();
-    void remove();
+
+/*!
+  \brief CompStoreObj manages staic meta data on member properties (extending Qt's own property system) and provides utility functions for subclasses.
+
+  The extension is essentially used to provide some "integration" with \e QSettings by providing storage path/key mappings to properties.
+  It also adds ability to access property default values, auto-initialization from saved settings (with fallback to default), and provides change notification signals.
+  A reset slot is provided for all properties, which sets the value back to default and is invokable through the Qt property system.
+
+  The process of managing which settings key is used to store the property is complicated by properties which were originally configured to use a different key name than propety name.
+  Hence we need to keep a mapping of all names to keys, even if they're identical (which should be the case with any newly/recently added properties.
+
+  \note Property types must be a standard or registered Qt type which are compatible with \e QVariant and \e QSettings. To use custom types, you need to \e Q_DECLARE_METATYPE()
+          them and add \e QDataStream streaming operators and (possibly) comparison operators so that they can be handled by \e QVariant and read/written by \e QSettings.
+        For an example of using a custom type with stream operators see the \p SimulatorOptions class, or e.g. https://stackoverflow.com/questions/18144377/writing-and-reading-custom-class-to-qsettings .
+        For an example of using a custom enum type, see \p AppData::DownloadBranchType .
+
+  \sa AppData
+*/
+class CompStoreObj: public QObject
+{
+  Q_OBJECT
+  public slots:
+    virtual inline void init() { initAllProperties(this); }
+    virtual inline void resetAll() { resetAllProperties(this); }
+    virtual inline void storeAll() { storeAllProperties(this); }
+
+  protected:
+    CompStoreObj();
+
+    mutable QSettings m_settings;
+
+    //! Subclasses must reimplement this to return a unique name, typically used in settings storage as the base path.
+    virtual QString propertyGroup() const = 0;
+
+    //! reimplement this function to return the default settings group (used in \p pathForKey() if the \a group is not specified).
+    virtual QString settingsPath() const { return propertyGroup() % "/"; }
+
+    //! Utility function to return a fully qualified settings path for given \a key in optional \a group. If \a group is null, \p settingsPath() is used. Reimpliment to provide custom paths.
+    virtual QString pathForKey(const QString &key, const QString &group = QString()) const;
+
+    //! Set property to value saved in persistent storage, if any, otherwise to \a def default value. Calls \p pathForKey() to determine full settings path from  given \a key and \a group.
+    void load(CompStoreObj *obj, const QString & name, const QString & key, const QVariant & def, const QString & group = QString());
+
+    //! Save property value \a newValue to \a key in persistent storage. Calls \p pathForKey() to determine full settings path from  given \a key and \a group.
+    void store(const QVariant & newValue, const QString & key, const QString & group = QString()) const;
+
+    //! Deletes any saved settings in \a key, which is (optionally) a subkey of \a group. Calls \p pathForKey() to determine full settings path from  given \a key and \a group.
+    void clear(const QString & key, const QString & group = QString()) const;
+
+    //! Deletes settings \a group if it is empty.
+    void removeGroupIfEmpty(const QString & group) const;
+
+    //// Static property meta data handling functions. This first set of functons operates on specific object instances.
+
+    //! Calls the initialization function on a property declared with a Q_PROPERTY() macro for given \a obj object.
+    static bool initProperty(CompStoreObj * obj, const QString & name);
+    //! Calls the initialization function on all properties declared with a Q_PROPERTY() macro (and by extension with our own PROPERTY() et.al.).
+    static void initAllProperties(CompStoreObj * obj);
+
+    //! Invokes the RESET function on a property declared with a Q_PROPERTY() macro for given \a obj object.
+    static bool resetProperty(CompStoreObj * obj, const QString & name);
+    //! Invokes the RESET function on all properties declared with a Q_PROPERTY() macro for given \a obj object.
+    static void resetAllProperties(CompStoreObj * obj);
+
+    //! Invokes the \p store() function on a property declared with a Q_PROPERTY() macro for given \a obj object.
+    static bool storeProperty(CompStoreObj * obj, const QString & name);
+    //! Invokes the \p store() function on all properties declared with a Q_PROPERTY() macro for given \a obj object.
+    static void storeAllProperties(CompStoreObj * obj);
+
+    //// Methods below here operate only on static object data, not specific object instances. They are only used to look up meta data about an obect.
+
+    //! Each subclass should register their settings group name (root path). This way we can easily look up which object a property key belongs to.
+    //! The actual instance of \a obj doesn't matter, we just use static data and only store this mapping once.
+    static inline void addObjectMapping(const QString & groupName, CompStoreObj * obj) { group2ObjMap().insert(groupName, obj); }
+    //! Get the CompStoreObj associated with \a group, if any. Returns null pointer if \a group is invalid. Note that this object is only useful for static data lookup, it is not guaranteed to be any specific instance.
+    static inline CompStoreObj * getObjectByGroup(const QString & group)               { return group2ObjMap().value(group, nullptr); }
+
+    //! Returns true if property exists based on settings \a path. Special exception for groups with dynamic property names, eg. FwRevision. \sa propertyPathIsValidNonDefault(), propertyExists(), groupHasDynamicProperties()
+    static bool propertyPathIsValid(const QString & path);
+    //! Returns true if property exists (based on settings \a path) and \a newVal != the default property value. Special exception for groups with dynamic property names, eg. FwRevision.
+    static bool propertyPathIsValidNonDefault(const QString & path, const QVariant & newVal);
+
+    //! Return true if  \a name property exists in the given \a obj object.
+    static bool propertyExists(CompStoreObj * obj, const QString & name);
+    //! Return true if  \a name property exists within settings \a group.  Group names must be declared with \p addObjectMapping()
+    static inline bool propertyExists(const QString & group, const QString & name) { return propertyExists(getObjectByGroup(group), name); }
+
+    //! Return true if a property exists by checking the given settings \a key in the given \a obj object.
+    static inline bool propertyKeyExists(CompStoreObj * obj, const QString & key)    { return keyToNameMap().value(obj->propertyGroup()).contains(key); }
+    //! Return true if a property exists by checking the given settings \a key within settings \a group.
+    static inline bool propertyKeyExists(const QString & group, const QString & key) { return keyToNameMap().value(group).contains(key); }
+
+    //! Get the default value for a property \a name in the given \a obj object.
+    static const QVariant propertyDefaultValue(CompStoreObj * obj, const QString & name);
+    //! Get the default value for a property \a name within \a group.
+    static inline const QVariant propertyDefaultValue(const QString & group, const QString & name) { return propertyDefaultValue(getObjectByGroup(group), name); }
+
+    //! Get the default value for a property with settings key name of \a key in the given \a obj object.
+    static inline const QVariant propertyKeyDefaultValue(CompStoreObj * obj, const QString & key)    { return propertyDefaultValue(obj, keyToNameMap().value(obj->propertyGroup()).value(key)); }
+    //! Get the default value for a property with settings key name of \a key within \a group. Group names must be declared with \p addObjectMapping()
+    static inline const QVariant propertyKeyDefaultValue(const QString & group, const QString & key) { return propertyDefaultValue(group, keyToNameMap().value(group).value(key)); }
+
+    //! Get the settings key name for property \a name for the given \a obj object.
+    static const QString propertyKeyName(CompStoreObj * obj, const QString & name);
+    //! Get the settings key name for property \a name within the \a group.
+    static inline const QString propertyKeyName(const QString & group, const QString & name) { return propertyKeyName(getObjectByGroup(group), name); }
+
+    //! Groups which have dynamic property names always return true in \p propertyPathIsValid() and \p propertyPathIsValidNonDefault(). So far only FwRevision uses this.
+    static void addDynamicPropertyGroup(const QString & group)          { dynamicPropGroups().append(group); }
+    //! Check if \a group has dynamic properties.
+    static inline bool groupHasDynamicProperties(const QString & group) { return dynamicPropGroups().contains(group); }
+
+    //! Utility function. Given a full settings path ([group/][.../]key), returns the primary group (or "General" if no group) and
+    //!   the last key value in the path (which would correspond to a property in the object which owns the group).
+    //! \retval QPair({<group name>, <property key>})
+    static QPair<QString, QString> splitGroupedPath(const QString & path);
+
+  private:
+    // static lookup tables storage
+    static QHash<QString, CompStoreObj *> & group2ObjMap();                   //! Maps propertyGroup() name to the CompStoreObj subclass which owns it.
+    static const QHash<QString, QHash<QString, QString> > & keyToNameMap();   //! Maps key names to property names for each property group.
+    static QVector<QString> & dynamicPropGroups();                            //! \sa addDynamicPropertyGroup()
+};
+
+class AppData;
+
+
+//! \brief FwRevision class stores data about downloaded firmware binaries. It uses dynamic key names and does not have any properties.
+class FwRevision: public CompStoreObj
+{
+  Q_OBJECT
+  public slots:
+    inline int get(const QString & fwType) const { return m_settings.value(fwType, 0).toInt(); }
+    inline void set(const QString & fwType, const int fwRevision) const { store(QString("%1").arg(fwRevision), fwType); }
+    inline void remove(const QString & tag) const { clear(tag); }
+    inline void resetAll() override { clear(propertyGroup(), ""); }
+
+  protected:
+    explicit FwRevision() : CompStoreObj() { CompStoreObj::addDynamicPropertyGroup(propertyGroup()); }
+    QString propertyGroup() const override { return QStringLiteral("FwRevisions"); }
+    friend class AppData;
+};
+
+
+//! \brief JStickData class stores properties related to each joystick axis (calibration/assignment/direction).
+class JStickData: public CompStoreObj
+{
+  Q_OBJECT
+  public slots:
     bool existsOnDisk();
-    void init(int index);
-    void flush();
+
+  protected:
+    explicit JStickData();
+    void setIndex(int idx) { index = idx; }
+    inline QString propertyGroup() const override { return QStringLiteral("JsCalibration"); }
+    inline QString settingsPath()  const override { return QString("%1/%2/").arg(propertyGroup()).arg(index); }
+    friend class AppData;
+
+  private:
+    PROPERTY(int, stick_axe, -1)
+    PROPERTY(int, stick_min, -32768)
+    PROPERTY(int, stick_med, 0)
+    PROPERTY(int, stick_max, 32767)
+    PROPERTY(int, stick_inv, 0)
+
+    int index;
 };
 
-class Profile: protected CompStoreObj
+
+//! \brief Profile class stores properties related to each Radio Profile.
+//! \todo TODO: Remove or refactor stored radio settings system (#4583)
+class Profile: public CompStoreObj
 {
+  Q_OBJECT
+  public:
+    Profile & operator=(const Profile & rhs);
+
+  public slots:
+    bool existsOnDisk();
+    void resetFwVariables();
+
+  protected:
+    explicit Profile();
+    void setIndex(int idx) { index = idx; }
+    inline QString propertyGroup() const override { return QStringLiteral("Profiles"); }
+    inline QString settingsPath()  const override { return QString("%1/profile%2/").arg(propertyGroup()).arg(index); }
+    friend class AppData;
+
   private:
-    // Class Internal Variable
-    int index;
+    PROPERTYSTR2(name,       "Name")
+    PROPERTYSTR2(splashFile, "SplashFileName")
+    PROPERTYSTR(fwName)
+    PROPERTYSTR(fwType)
+    PROPERTYSTR(sdPath)
+    PROPERTYSTR(pBackupDir)
 
-    // Application Variables
-    QString _fwName;
-    QString _fwType;
-    QString _name;
-    QString _sdPath;
-    int     _volumeGain;
-    QString _pBackupDir;
-    QString _splashFile;
-    bool    _burnFirmware;
-    bool    _penableBackup;
-    bool    _renameFwFiles;
-    int     _channelOrder;
-    int     _defaultMode;
+    PROPERTY4(int, channelOrder, "default_channel_order",  0)
+    PROPERTY4(int, defaultMode,  "default_mode",           1)
+    PROPERTY (int, volumeGain,   10)
 
-    // Firmware Variables
-    QString _beeper;
-    QString _countryCode;
-    QString _display;
-    QString _haptic;
-    QString _speaker;
-    QString _stickPotCalib;
-    QString _timeStamp;
-    QString _trainerCalib;
-    QString _controlTypes;
-    QString _controlNames;
-    int     _gsStickMode;
-    int     _ppmMultiplier;
-    int     _vBatWarn;
-    int     _vBatMin;
-    int     _vBatMax;
-    int     _txCurrentCalibration;
-    int     _txVoltageCalibration;
+    PROPERTY4(bool, renameFwFiles, "rename_firmware_files", false)
+    PROPERTY (bool, burnFirmware,  false)
+    PROPERTY (bool, penableBackup, false)
 
     // Simulator variables
-    SimulatorOptions _simulatorOptions;
+    PROPERTY(SimulatorOptions, simulatorOptions,  SimulatorOptions())
 
-  public:
-    // All the get definitions
-    QString fwName() const;
-    QString fwType() const;
-    QString name() const;
-    QString sdPath() const;
-    int     volumeGain() const;
-    QString pBackupDir() const;
-    QString splashFile() const;
-    bool    burnFirmware() const;
-    bool    renameFwFiles() const;
-    bool    penableBackup() const;
-    int     channelOrder() const;
-    int     defaultMode() const;
+    // Firmware Variables
+    PROPERTYSTR2(beeper,        "Beeper")
+    PROPERTYSTR2(countryCode,   "countryCode")
+    PROPERTYSTR2(display,       "Display")
+    PROPERTYSTR2(haptic,        "Haptic")
+    PROPERTYSTR2(speaker,       "Speaker")
+    PROPERTYSTR2(stickPotCalib, "StickPotCalib")
+    PROPERTYSTR2(timeStamp,     "TimeStamp")
+    PROPERTYSTR2(trainerCalib,  "TrainerCalib")
+    PROPERTYSTR2(controlTypes,  "ControlTypes")
+    PROPERTYSTR2(controlNames,  "ControlNames")
 
-    QString beeper() const;
-    QString countryCode() const;
-    QString display() const;
-    QString haptic() const;
-    QString speaker() const;
-    QString stickPotCalib() const;
-    QString timeStamp() const;
-    QString trainerCalib() const;
-    QString controlTypes() const;
-    QString controlNames() const;
-    int     txCurrentCalibration() const;
-    int     gsStickMode() const;
-    int     ppmMultiplier() const;
-    int     txVoltageCalibration() const;
-    int     vBatWarn() const;
-    int     vBatMin() const;
-    int     vBatMax() const;
+    PROPERTY4(int, gsStickMode,   "GSStickMode",    0)
+    PROPERTY4(int, ppmMultiplier, "PPM_Multiplier", 0)
+    PROPERTY4(int, vBatWarn,      "vBatWarn",       0)  // not a typo.. vBat vs. Vbat
+    PROPERTY4(int, vBatMin,       "VbatMin",        0)
+    PROPERTY4(int, vBatMax,       "VbatMax",        0)
+    PROPERTY4(int, txCurrentCalibration, "currentCalib",  0)
+    PROPERTY4(int, txVoltageCalibration, "VbatCalib",     0)
 
-    SimulatorOptions simulatorOptions() const;
+    int index;
 
-    // All the set definitions
-    void name          (const QString);
-    void fwName        (const QString);
-    void fwType        (const QString);
-    void volumeGain    (const int);
-    void sdPath        (const QString);
-    void pBackupDir    (const QString);
-    void splashFile    (const QString);
-    void burnFirmware  (const bool);
-    void renameFwFiles (const bool);
-    void penableBackup (const bool);
-    void channelOrder  (const int);
-    void defaultMode   (const int);
-
-    void beeper        (const QString);
-    void countryCode   (const QString);
-    void display       (const QString);
-    void haptic        (const QString);
-    void speaker       (const QString);
-    void stickPotCalib (const QString);
-    void timeStamp     (const QString);
-    void trainerCalib  (const QString);
-    void controlTypes  (const QString);
-    void controlNames  (const QString);
-    void txCurrentCalibration  (const int);
-    void gsStickMode   (const int);
-    void ppmMultiplier (const int);
-    void txVoltageCalibration     (const int);
-    void vBatWarn      (const int);
-    void vBatMin       (const int);
-    void vBatMax       (const int);
-
-    void simulatorOptions (const SimulatorOptions &);
-
-    Profile();
-    Profile& operator=(const Profile&);
-    void remove();
-    bool existsOnDisk();
-    void init(int newIndex);
-    void initFwVariables();
-    void flush();
-    QString groupId();
+    static const QStringList fwVarsList()  //! for resetFwVariables()... TODO: make this go away
+    {
+      static const QStringList list({
+        "Beeper", "countryCode", "Display", "Haptic", "Speaker", "TimeStamp", "TrainerCalib", "StickPotCalib",
+        "ControlTypes", "ControlNames", "GSStickMode", "PPM_Multiplier", "vBatWarn", "VbatMin", "VbatMax", "currentCalib", "VbatCalib"
+      });
+      return list;
+    }
 };
 
 
-#define PROPERTY4(type, name, key, dflt)                            \
-    public:                                                         \
-      inline type name() { return _ ## name; }                      \
-      void name(const type val) { store(val, _ ## name, # key); }   \
-    private:                                                        \
-      void name ## _init() { getset(_ ## name, # key, dflt); }      \
-      type _ ## name;
+/*!
+  \brief The AppData class acts as the main interface for all application settings.
+  \note Only one instance of this class should ever exist. It is accessible application-wide through the glabal variable \p g .
 
-#define PROPERTY(type, name, dflt)    PROPERTY4(type, name, name, dflt)
-
-class AppData: protected CompStoreObj
+  \todo TODO: constructor should be protected/private, this class acts as a singleton.
+  \todo TODO: formalize access to Profile and JStickData via getter functions.
+  \todo TODO: better profile handling... e.g. a dynamic list instead of fixed number (see above TODO).
+  \todo TODO: move \p backLight to \p Profile
+*/
+class AppData: public CompStoreObj
 {
-  PROPERTY(bool, enableBackup,               false)
-  PROPERTY(bool, backupOnFlash,              true)
-  PROPERTY(bool, outputDisplayDetails,       false)
-  PROPERTY(bool, checkHardwareCompatibility, true)
-  PROPERTY(bool, removeModelSlots,           true)
-  PROPERTY(bool, maximized,   false)
-  PROPERTY(bool, simuSW,      false)
-  PROPERTY(bool, tabbedMdi,   false)
-  PROPERTY(bool, appDebugLog, false)
-  PROPERTY(bool, fwTraceLog,  false)
-
-  PROPERTY(unsigned, OpenTxBranch, BRANCH_RELEASE_STABLE);
-
-  PROPERTY4(bool, jsSupport,       js_support              ,false)
-  PROPERTY4(bool, showSplash,      show_splash             ,true)
-  PROPERTY4(bool, snapToClpbrd,    snapshot_to_clipboard   ,false)
-  PROPERTY4(bool, autoCheckApp,    startup_check_companion ,true)
-  PROPERTY4(bool, autoCheckFw,     startup_check_fw        ,true)
-
-  // All the global variables
+  Q_OBJECT
   public:
-    Profile    profile[MAX_PROFILES];
-    JStickData joystick[MAX_JOYSTICKS];
-    FwRevision fwRev;
+    enum DownloadBranchType {
+      BRANCH_RELEASE_STABLE,
+      BRANCH_RC_TESTING,
+      BRANCH_NIGHTLY_UNSTABLE
+    };
+    Q_ENUM(DownloadBranchType)
 
-  private:
-    QStringList _recentFiles;
-    QStringList _simuDbgFilters;
+    enum NewModelAction {
+      MODEL_ACT_NONE,
+      MODEL_ACT_WIZARD,
+      MODEL_ACT_EDITOR
+    };
+    Q_ENUM(NewModelAction)
 
-    QByteArray _mainWinGeo;
-    QByteArray _mainWinState;
-    QByteArray _modelEditGeo;
-    QByteArray _mdiWinGeo;
-    QByteArray _mdiWinState;
-    QByteArray _compareWinGeo;
+    explicit AppData();
+    void init() override;
+    void initAll();
+    void resetAllSettings();
+    void storeAllSettings();
 
-    QString _armMcu;
-    QString _avrArguments;
-    QString _avrPort;
-    QString _avrdudeLocation;
-    QString _dfuArguments;
-    QString _dfuLocation;
-    QString _locale;
-    QString _mcu;
-    QString _programmer;
-    QString _sambaLocation;
-    QString _sambaPort;
-
-    QString _backupDir;
-    QString _gePath;
-    QString _eepromDir;
-    QString _flashDir;
-    QString _imagesDir;
-    QString _logDir;
-    QString _libDir;
-    QString _snapshotDir;
-    QString _updatesDir;
-    PROPERTY(QString, appLogsDir,  QString(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) % "/" COMPANY "/DebugLogs"))
-
-    int _newModelAction;  // 0=no action; 1=model wizard; 2=model edit
-    int _backLight;
-    int _embedSplashes;
-    int _fwServerFails;
-    int _generalEditTab;
-    int _iconSize;
-    int _jsCtrl;
-    int _historySize;
-    int _id;
-    int _theme;
-    int _warningId;
-    int _simuLastProfId;
-    // currently loaded radio profile ID, NOT saved to persistent storage
-    int _sessionId;
-
-  public:
-    // All the get definitions
-    QStringList recentFiles();
-    QStringList simuDbgFilters();
-
-    QByteArray mainWinGeo();
-    QByteArray mainWinState();
-    QByteArray modelEditGeo();
-    QByteArray mdiWinGeo();
-    QByteArray mdiWinState();
-    QByteArray compareWinGeo();
-
-    QString armMcu();
-    QString avrArguments();
-    QString avrPort();
-    QString avrdudeLocation();
-    QString dfuArguments();
-    QString dfuLocation();
-    QString lastFw();
-    QString locale();
-    QString mcu();
-    QString programmer();
-    QString sambaLocation();
-    QString sambaPort();
-
-    QString backupDir();
-    QString gePath();
-    QString eepromDir();
-    QString flashDir();
-    QString imagesDir();
-    QString logDir();
-    QString libDir();
-    QString snapshotDir();
-    QString updatesDir();
-
-    int newModelAction();
-    int backLight();
-    int embedSplashes();
-    int fwServerFails();
-    int generalEditTab();
-    int iconSize();
-    int historySize();
-    int jsCtrl();
-    int id();
-    int theme();
-    int warningId();
-    int simuLastProfId();
-    int sessionId();
-
-    // All the set definitions
-    void recentFiles     (const QStringList x);
-    void simuDbgFilters  (const QStringList x);
-
-    void mainWinGeo      (const QByteArray);
-    void mainWinState    (const QByteArray);
-    void modelEditGeo    (const QByteArray);
-    void mdiWinGeo       (const QByteArray);
-    void mdiWinState     (const QByteArray);
-    void compareWinGeo   (const QByteArray);
-
-    void armMcu          (const QString);
-    void avrArguments    (const QString);
-    void avrPort         (const QString);
-    void avrdudeLocation (const QString);
-    void dfuArguments    (const QString);
-    void dfuLocation     (const QString);
-    void lastFw          (const QString);
-    void locale          (const QString);
-    void mcu             (const QString);
-    void programmer      (const QString);
-    void sambaLocation   (const QString);
-    void sambaPort       (const QString);
-
-    void backupDir       (const QString);
-    void gePath          (const QString);
-    void eepromDir       (const QString);
-    void flashDir        (const QString);
-    void imagesDir       (const QString);
-    void logDir          (const QString);
-    void libDir          (const QString);
-    void snapshotDir     (const QString);
-    void updatesDir      (const QString);
-
-    void newModelAction  (const int);
-    void backLight       (const int);
-    void embedSplashes   (const int);
-    void fwServerFails   (const int);
-    void generalEditTab  (const int);
-    void iconSize        (const int);
-    void historySize     (const int);
-    void jsCtrl          (const int);
-    void modelEditTab    (const int);
-    void id              (const int);
-    void theme           (const int);
-    void warningId       (const int);
-    void simuLastProfId  (const int);
-    void sessionId       (const int);
-
-    // Constructor
-    AppData();
-    void init();
-
-    QMap<int, QString> getActiveProfiles();
-    inline bool isFirstUse() const { return firstUse; }
+    inline bool isFirstUse()         const { return firstUse; }
     inline QString previousVersion() const { return upgradeFromVersion; }
-    bool hasCurrentSettings();
-    bool findPreviousVersionSettings(QString * version);
-    bool importSettings(QString fromVersion);
+    bool hasCurrentSettings() const;
 
-    inline DownloadBranchType boundedOpenTxBranch() {
+    //! Get the currently active radio profile ID. This may or may not be the same as \p id(). \sa currentProfile()
+    inline int sessionId() const { return m_sessionId; }
+    //! Set the current profile ID, but do not save it in persisted settings. To set and save the ID, use \p id(int).
+    Q_SLOT void sessionId(int index);
+    //! Reset to stored ID
+    Q_SLOT inline void sessionIdReset() { sessionId(id()); }
+
+    //! Get a modifiable (non-const) reference to the currently active Profile.  \sa sessionId()
+    inline Profile & currentProfile() { return getProfile(m_sessionId); }
+    //! Get a non-modifiable (const) reference to the currently active Profile.  \sa sessionId()
+    inline const Profile & currentProfile() const { return getProfile(m_sessionId); }
+    //! Get a modifiable (non-const) reference to the Profile at \a index. Returns the default profile if \a index is invalid.
+    Profile & getProfile(int index);
+    //! Get a non-modifiable (const) reference to the Profile at \a index. Returns the default profile if \a index is invalid.
+    const Profile & getProfile(int index) const;
+    //! List of all active profiles mapped by index.
+    QMap<int, QString> getActiveProfiles() const;
+
+    //! Find the set of settings from the last previous version installed, if any. Used at virgin startup to offer import option.
+    bool findPreviousVersionSettings(QString * version) const;
+    //! Converts any old/refactored settings to new ones and removes anything stale if \a removeUnused is true. This is only important when
+    //! the meanings of property values change, or to do cleanup when properties are removed.
+    void convertSettings(QSettings & settings);
+    //! Removes all stored properties which either no longer exist or are set to default value.
+    void clearUnusedSettings(QSettings & settings);
+
+    bool importSettings(const QString & fromVersion);
+    bool importSettings(QSettings * fromSettings);
+    bool exportSettings(QSettings * toSettings, bool clearDestination = true);
+    bool exportSettingsToFile(const QString & expFile, QString & resultMsg);
+
+    inline DownloadBranchType boundedOpenTxBranch() const {
 #if defined(ALLOW_NIGHTLY_BUILDS)
       return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(OpenTxBranch()), BRANCH_NIGHTLY_UNSTABLE);
 #else
@@ -433,13 +493,96 @@ class AppData: protected CompStoreObj
 #endif
     }
 
+    Profile    profile[MAX_PROFILES];
+    JStickData joystick[MAX_JOYSTICKS];
+    FwRevision fwRev;
+
+  signals:
+    void currentProfileChanged();
+
   protected:
-    void convertSettings(QSettings & settings);
+    inline QString propertyGroup() const override { return QStringLiteral("General"); }
+    inline QString settingsPath()  const override { return QString(); }
+
+  private:
+
+    PROPERTY_META(int, sessionId, 0)    // currently active radio profile ID, NOT saved to persistent storage -- Initialize before profileId!
+    PROPERTY4(int, id, "profileId", 0)  // saved radio profile id, loaded at next Companion startup
+
+    PROPERTY4(QStringList, recentFiles,  "recentFileList", QStringList())
+
+    PROPERTYQBA2(mainWinGeo,   "mainWindowGeometry")
+    PROPERTYQBA2(mainWinState, "mainWindowState")
+    PROPERTYQBA2(modelEditGeo, "modelEditGeometry")
+    PROPERTYQBA (mdiWinGeo)
+    PROPERTYQBA (mdiWinState)
+    PROPERTYQBA (compareWinGeo)
+
+    PROPERTYSTR3(armMcu,          "arm_mcu",         QStringLiteral("at91sam3s4-9x"))
+    PROPERTYSTR2(avrArguments,    "avr_arguments")
+    PROPERTYSTR2(avrPort,         "avr_port")
+    PROPERTYSTR2(avrdudeLocation, "avrdudeLocation")
+    PROPERTYSTR3(dfuArguments,    "dfu_arguments",   QStringLiteral("-a 0"))
+    PROPERTYSTR2(dfuLocation,     "dfu_location")
+    PROPERTYSTR2(sambaLocation,   "samba_location")
+    PROPERTYSTR3(sambaPort,       "samba_port",      QStringLiteral("\\USBserial\\COM23"))
+    PROPERTYSTR2(backupDir,       "backupPath")
+    PROPERTYSTR2(eepromDir,       "lastDir")
+    PROPERTYSTR2(flashDir,        "lastFlashDir")
+    PROPERTYSTR2(imagesDir,       "lastImagesDir")
+    PROPERTYSTR2(logDir,          "lastLogDir")
+    PROPERTYSTR2(libDir,          "libraryPath")
+    PROPERTYSTR2(snapshotDir,     "snapshotpath")
+    PROPERTYSTR2(updatesDir,      "lastUpdatesDir")
+
+    PROPERTYSTR (locale)
+    PROPERTYSTR (gePath)
+    PROPERTYSTRD(mcu,        QStringLiteral("m64"))
+    PROPERTYSTRD(programmer, QStringLiteral("usbasp"))
+    PROPERTYSTRD(appLogsDir, CPN_DOCUMENTS_LOCATION % "/DebugLogs")
+
+    PROPERTY(DownloadBranchType, OpenTxBranch,   BRANCH_RELEASE_STABLE)
+    PROPERTY(NewModelAction,     newModelAction, MODEL_ACT_WIZARD)
+
+    PROPERTY4(int, embedSplashes,   "embedded_splashes",  0)
+    PROPERTY4(int, fwServerFails,   "fwserver",           0)
+    PROPERTY4(int, iconSize,        "icon_size",          2)
+    PROPERTY4(int, jsCtrl,          "js_ctrl",            0)
+    PROPERTY4(int, historySize,     "history_size",      10)
+    PROPERTY (int, generalEditTab,  0)
+    PROPERTY (int, theme,           1)
+    PROPERTY (int, warningId,       0)
+
+    PROPERTY4(bool, jsSupport,       "js_support",              false)
+    PROPERTY4(bool, showSplash,      "show_splash",             true)
+    PROPERTY4(bool, snapToClpbrd,    "snapshot_to_clipboard",   false)
+    PROPERTY4(bool, autoCheckApp,    "startup_check_companion", true)
+    PROPERTY4(bool, autoCheckFw,     "startup_check_fw",        true)
+
+    PROPERTY(bool, enableBackup,               false)
+    PROPERTY(bool, backupOnFlash,              true)
+    PROPERTY(bool, outputDisplayDetails,       false)
+    PROPERTY(bool, checkHardwareCompatibility, true)
+    PROPERTY(bool, removeModelSlots,           true)
+    PROPERTY(bool, maximized,                  false)
+    PROPERTY(bool, tabbedMdi,                  false)
+    PROPERTY(bool, appDebugLog,                false)
+    PROPERTY(bool, fwTraceLog,                 false)
+
+    // Simulator global (non-profile) settings
+    PROPERTY(QStringList, simuDbgFilters, QStringList())
+    PROPERTY(int, backLight,       0)
+    PROPERTY(int, simuLastProfId, -1)
+    PROPERTY(bool, simuSW,      true)
 
     bool firstUse;
     QString upgradeFromVersion;
+
+    CREATE_ENUM_FRIEND_STREAM_OPS(AppData::DownloadBranchType)
+    CREATE_ENUM_FRIEND_STREAM_OPS(AppData::NewModelAction)
 };
 
 extern AppData g;
 
+//! @}
 #endif // _APPDATA_H_

@@ -46,7 +46,7 @@ class AppPreferencesDialog : public QDialog
     void setMainWinHasDirtyChild(bool value);
 
   signals:
-    void firmwareProfileChanged(int profId);
+    void firmwareProfileChanged();
     void firmwareProfileAboutToChange(bool saveFiles = true);
 
   private:

@@ -894,9 +894,9 @@ int MdiChild::newModel(int modelIndex, int categoryIndex)
   setSelectedModel(modelIndex);
   //qDebug() << modelIndex << categoryIndex << isNewModel;
 
-  if (isNewModel && g.newModelAction() == 1)
+  if (isNewModel && g.newModelAction() == AppData::MODEL_ACT_WIZARD)
     openModelWizard(modelIndex);
-  else if (g.newModelAction() == 2)
+  else if (g.newModelAction() == AppData::MODEL_ACT_EDITOR)
     openModelEditWindow(modelIndex);
 
   return modelIndex;
