@@ -655,8 +655,8 @@
 #define TR_SPLASHSCREEN        TR("Schermo avvio", "Schermata di avvio")
 #define TR_THROTTLEWARNING     TR("All. Mot.", INDENT "Allarme Motore")
 #define TR_SWITCHWARNING       TR("Avv. Int.", INDENT "Avviso Interr.")
-#define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
-#define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
+#define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
+#define TR_SLIDERWARNING       TR(INDENT "Slid. pos.", INDENT "Slider positions")
 #define TR_POTWARNING          TR("Avv. Pot.", INDENT "Avviso Pot.")
 #define TR_TIMEZONE            "Ora locale"
 #define TR_ADJUST_RTC          TR("Aggiusta RTC", INDENT "Aggiusta RTC")

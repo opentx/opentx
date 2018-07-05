@@ -649,8 +649,8 @@
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("T-Warning", INDENT "Throttle Warning")
 #define TR_SWITCHWARNING       TR("S-Warning", INDENT "Switch Warning")
-#define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
-#define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
+#define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
+#define TR_SLIDERWARNING       TR(INDENT "Slid. pos.", INDENT "Slider positions")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            TR("Time Zone","GPS Time zone")
 #define TR_ADJUST_RTC          TR("Adjust RTC", INDENT "Adjust RTC")

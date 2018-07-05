@@ -656,8 +656,8 @@
 #define TR_SPLASHSCREEN        "Splash screen"
 #define TR_THROTTLEWARNING     TR("Avisa Acel", INDENT "Avisa Acel")
 #define TR_SWITCHWARNING       TR("Avisa Chav", INDENT "Avisa Chav")
-#define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
-#define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
+#define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
+#define TR_SLIDERWARNING       TR(INDENT "Slid. pos.", INDENT "Slider positions")
 #define TR_POTWARNING          TR("Pot Warn.", INDENT "Pot Warning")
 #define TR_TIMEZONE            "Time Zone"
 #define TR_ADJUST_RTC          TR("Adjust RTC", INDENT "Adjust RTC")

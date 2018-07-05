@@ -45,9 +45,6 @@
   #define CASE_PCBSKY9X(x)
 #endif
 
-  #define CASE_CPUARM(x)     x,
-  #define IF_CPUARM(x)       x
-
 #if defined(STM32)
   #define CASE_STM32(x)     x,
 #else

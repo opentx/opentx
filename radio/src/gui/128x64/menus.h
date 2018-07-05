@@ -74,12 +74,12 @@ enum MenuRadioIndexes
 {
   MENU_RADIO_SETUP,
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
-  CASE_CPUARM(MENU_RADIO_SPECIAL_FUNCTIONS)
+  MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_VERSION,
   MENU_RADIO_SWITCHES_TEST,
   MENU_RADIO_ANALOGS_TEST,
-  CASE_CPUARM(MENU_RADIO_HARDWARE)
+  MENU_RADIO_HARDWARE,
   MENU_RADIO_CALIBRATION,
   MENU_RADIO_PAGES_COUNT
 };
@@ -97,12 +97,12 @@ void menuRadioCalibration(event_t event);
 static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
-  CASE_CPUARM(menuRadioSpecialFunctions)
+  menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioVersion,
   menuRadioDiagKeys,
   menuRadioDiagAnalogs,
-  CASE_CPUARM(menuRadioHardware)
+  menuRadioHardware,
   menuRadioCalibration
 };
 
@@ -122,7 +122,7 @@ enum MenuModelIndexes {
 #endif
   CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
   CASE_MAVLINK(MENU_MODEL_TELEMETRY_MAVLINK)
-  CASE_CPUARM(MENU_MODEL_DISPLAY)
+  MENU_MODEL_DISPLAY,
   CASE_TEMPLATES(MENU_MODEL_TEMPLATES)
   MENU_MODEL_PAGES_COUNT
 };
@@ -164,7 +164,7 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
 #endif
   CASE_FRSKY(menuModelTelemetryFrsky)
   CASE_MAVLINK(menuModelTelemetryMavlink)
-  CASE_CPUARM(menuModelDisplay)
+  menuModelDisplay,
   CASE_TEMPLATES(menuModelTemplates)
 };
 

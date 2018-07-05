@@ -655,11 +655,11 @@
 #define TR_BLOFFBRIGHTNESS     INDENT"Jasność wył."
 #define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Logo ekranu"
-#define TR_THROTTLEWARNING     TR(IF_CPUARM(INDENT)"OstrzGaz", INDENT "OstrzeżenieGaz")
-#define TR_SWITCHWARNING       TR(IF_CPUARM(INDENT) "OstrzPrzeł", INDENT "PozycjaPrzeł")
-#define TR_POTWARNINGSTATE     TR(IF_CPUARM(INDENT) "Pot&Slid.", INDENT "Pots & sliders")
-#define TR_SLIDERWARNING       TR(IF_CPUARM(INDENT) "Slid. pos.", INDENT "Slider positions")
-#define TR_POTWARNING          TR(IF_CPUARM(INDENT) "Ostrz.Poten.", INDENT "PozycjaPotencj.")
+#define TR_THROTTLEWARNING     TR(INDENT"OstrzGaz", INDENT "OstrzeżenieGaz")
+#define TR_SWITCHWARNING       TR(INDENT "OstrzPrzeł", INDENT "PozycjaPrzeł")
+#define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
+#define TR_SLIDERWARNING       TR(INDENT "Slid. pos.", INDENT "Slider positions")
+#define TR_POTWARNING          TR(INDENT "Ostrz.Poten.", INDENT "PozycjaPotencj.")
 #define TR_TIMEZONE            TR("Strefa czasowa" ,"Strefa czasowa GPS")
 #define TR_ADJUST_RTC          TR("RegulujRTC", INDENT "RegulujRTC")
 #define TR_GPS                 "GPS"
