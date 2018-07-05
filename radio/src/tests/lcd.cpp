@@ -122,7 +122,6 @@ TEST(outdezNAtt, test_unsigned)
 }
 #endif
 
-#if defined(CPUARM)
 TEST(outdezNAtt, testBigNumbers)
 {
   lcdClear();
@@ -130,7 +129,6 @@ TEST(outdezNAtt, testBigNumbers)
   lcdDrawNumber(0, FH, -1234567, LEFT);
   EXPECT_TRUE(checkScreenshot("big_numbers"));
 }
-#endif // #if defined(CPUARM)
 
 TEST(Lcd, Invers_0_0)
 {
@@ -160,14 +158,12 @@ TEST(Lcd, Prec2_Right)
   EXPECT_TRUE(checkScreenshot("prec2_right"));
 }
 
-#if defined(CPUARM)
 TEST(Lcd, Prec1_Dblsize_Invers)
 {
   lcdClear();
   lcdDrawNumber(LCD_W, 10, 51, PREC1|DBLSIZE|INVERS|RIGHT);
   EXPECT_TRUE(checkScreenshot("prec1_dblsize_invers"));
 }
-#endif
 
 TEST(Lcd, Line_Wrap)
 {
@@ -183,14 +179,12 @@ TEST(Lcd, DblsizeBottomRight)
   EXPECT_TRUE(checkScreenshot("dblsize_bottom_right"));
 }
 
-#if defined(CPUARM)
 TEST(Lcd, Smlsize_drawStringWithIndex)
 {
   lcdClear();
   drawStringWithIndex(0, 0, "FM", 0, SMLSIZE);
   EXPECT_TRUE(checkScreenshot("smlsize_drawstringwithindex"));
 }
-#endif
 
 TEST(Lcd, vline)
 {
@@ -201,7 +195,6 @@ TEST(Lcd, vline)
   EXPECT_TRUE(checkScreenshot("vline"));
 }
 
-#if defined(CPUARM)
 TEST(Lcd, vline_x_lt0)
 {
   lcdClear();
@@ -209,9 +202,7 @@ TEST(Lcd, vline_x_lt0)
   lcdDrawSolidVerticalLine(100, -10, 1);
   EXPECT_TRUE(checkScreenshot("vline_lt0"));
 }
-#endif
 
-#if defined(CPUARM)
 TEST(Lcd, Smlsize)
 {
   lcdClear();
@@ -279,7 +270,6 @@ TEST(Lcd, Dblsize)
 
   EXPECT_TRUE(checkScreenshot("dblsize"));
 }
-#endif
 
 #if defined(PCBTARANIS) && LCD_W >= 212
 TEST(Lcd, DrawSwitch)

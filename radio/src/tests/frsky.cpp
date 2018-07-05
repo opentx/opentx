@@ -30,59 +30,6 @@ void frskyCalculateCellStats(void);
 void displayVoltagesScreen();
 #endif
 
-#if defined(TELEMETRY_FRSKY) && !defined(CPUARM)
-TEST(FrSky, gpsNfuel)
-{
-  MODEL_RESET();
-  TELEMETRY_RESET();
-  g_model.frsky.usrProto = 1;
-  telemetryData.hub.gpsFix = 1;
-
-  uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x14, 0x2c, 0x00, 0x5e, 0x1c, 0x03 };
-  uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x13, 0x38, 0x0c, 0x5e, 0x1b };
-  uint8_t pkt3[] = { 0xfd, 0x07, 0x00, 0xc9, 0x06, 0x5e, 0x23, 0x4e, 0x00, 0x5e };
-  uint8_t pkt4[] = { 0xfd, 0x07, 0x00, 0x12, 0xef, 0x2e, 0x5e, 0x1a, 0x98, 0x26 };
-  uint8_t pkt5[] = { 0xfd, 0x07, 0x00, 0x5e, 0x22, 0x45, 0x00, 0x5e, 0x11, 0x02 };
-  uint8_t pkt6[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x19, 0x93, 0x00, 0x5e, 0x04 };
-  uint8_t pkt7[] = { 0xfd, 0x03, 0x00, 0x64, 0x00, 0x5e };
-  frskyDProcessPacket(pkt1);
-  frskyDProcessPacket(pkt2);
-  frskyDProcessPacket(pkt3);
-  frskyDProcessPacket(pkt4);
-  frskyDProcessPacket(pkt5);
-  frskyDProcessPacket(pkt6);
-  frskyDProcessPacket(pkt7);
-  EXPECT_EQ(telemetryData.hub.gpsCourse_bp, 44);
-  EXPECT_EQ(telemetryData.hub.gpsCourse_ap, 03);
-  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp / 100, 120);
-  EXPECT_EQ(telemetryData.hub.gpsLongitude_bp % 100, 15);
-  EXPECT_EQ(telemetryData.hub.gpsLongitude_ap, 0x2698);
-  EXPECT_EQ(telemetryData.hub.gpsLatitudeNS, 'N');
-  EXPECT_EQ(telemetryData.hub.gpsLongitudeEW, 'E');
-  EXPECT_EQ(telemetryData.hub.fuelLevel, 100);
-}
-
-TEST(FrSky, dateNtime)
-{
-  MODEL_RESET();
-  TELEMETRY_RESET();
-  g_model.frsky.usrProto = 1;
-  telemetryData.hub.gpsFix = 1;
-
-  uint8_t pkt1[] = { 0xfd, 0x07, 0x00, 0x5e, 0x15, 0x0f, 0x07, 0x5e, 0x16, 0x0b };
-  uint8_t pkt2[] = { 0xfd, 0x07, 0x00, 0x00, 0x5e, 0x17, 0x06, 0x12, 0x5e, 0x18 };
-  uint8_t pkt3[] = { 0xfd, 0x03, 0x00, 0x32, 0x00, 0x5e };
-  frskyDProcessPacket(pkt1);
-  frskyDProcessPacket(pkt2);
-  frskyDProcessPacket(pkt3);
-  EXPECT_EQ(telemetryData.hub.day, 15);
-  EXPECT_EQ(telemetryData.hub.month, 07);
-  EXPECT_EQ(telemetryData.hub.year, 11);
-  EXPECT_EQ(telemetryData.hub.hour, 06);
-  EXPECT_EQ(telemetryData.hub.min, 18);
-  EXPECT_EQ(telemetryData.hub.sec, 50);
-}
-#endif
 
 #if defined(TELEMETRY_FRSKY) && defined(CPUARM)
 TEST(FrSky, TelemetryValueWithMinAveraging)

@@ -27,11 +27,6 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-#if !defined(CPUARM)
-uint8_t g_tmr1Latency_max;
-uint8_t g_tmr1Latency_min;
-uint16_t lastMixerDuration;
-#endif
 
 uint8_t unexpectedShutdown = 0;
 
@@ -39,9 +34,6 @@ uint8_t unexpectedShutdown = 0;
 /* ARM: mixer duration in 0.5us */
 uint16_t maxMixerDuration;
 
-#if defined(AUDIO) && !defined(CPUARM)
-audioQueue  audio;
-#endif
 
 uint8_t heartbeat;
 
@@ -81,7 +73,6 @@ const pm_uint8_t modn12x3[] PROGMEM = {
 
 volatile tmr10ms_t g_tmr10ms;
 
-#if defined(CPUARM)
 volatile uint8_t rtc_count = 0;
 uint32_t watchdogTimeout = 0;
 
@@ -89,18 +80,15 @@ void watchdogSuspend(uint32_t timeout)
 {
   watchdogTimeout = timeout;
 }
-#endif
 
 void per10ms()
 {
   g_tmr10ms++;
 
-#if defined(CPUARM)
   if (watchdogTimeout) {
     watchdogTimeout -= 1;
     wdt_reset();  // Retrigger hardware watchdog
   }
-#endif
 
 #if defined(GUI)
   if (lightOffCounter) lightOffCounter--;
@@ -111,12 +99,10 @@ void per10ms()
   if (trimsCheckTimer) trimsCheckTimer--;
   if (ppmInputValidityTimer) ppmInputValidityTimer--;
 
-#if defined(CPUARM)
   if (trimsDisplayTimer)
     trimsDisplayTimer--;
   else
     trimsDisplayMask = 0;
-#endif
 
 #if defined(RTCLOCK)
   /* Update global Date/Time every 100 per10ms cycles */
@@ -152,7 +138,6 @@ void per10ms()
 
         putEvent(new_cw ? EVT_ROTARY_RIGHT : EVT_ROTARY_LEFT);
 
-#if defined(CPUARM)
         // rotary encoder navigation speed (acceleration) detection/calculation
         static uint32_t delay = 2*ROTENC_DELAY_MIDSPEED;
 
@@ -170,7 +155,6 @@ void per10ms()
           rotencSpeed = ROTENC_MIDSPEED;
         else
           rotencSpeed = ROTENC_LOWSPEED;
-#endif
         cw = new_cw;
         lastEvent = g_tmr10ms;
       }
@@ -223,12 +207,6 @@ LimitData *limitAddress(uint8_t idx)
   return &g_model.limitData[idx];
 }
 
-#if defined(CPUM64)
-void memclear(void *ptr, uint8_t size)
-{
-  memset(ptr, 0, size);
-}
-#endif
 
 void memswap(void * a, void * b, uint8_t size)
 {
@@ -293,26 +271,20 @@ void generalDefault()
   g_eeGeneral.templateSetup = 17; /* TAER */
 #endif
 
-#if !defined(CPUM64)
   g_eeGeneral.backlightMode = e_backlight_mode_all;
   g_eeGeneral.lightAutoOff = 2;
   g_eeGeneral.inactivityTimer = 10;
-#endif
 
-#if defined(CPUARM)
   g_eeGeneral.ttsLanguage[0] = 'e';
   g_eeGeneral.ttsLanguage[1] = 'n';
   g_eeGeneral.wavVolume = 2;
   g_eeGeneral.backgroundVolume = 1;
-#endif
 
-#if defined(CPUARM)
   for (int i=0; i<NUM_STICKS; ++i) {
     g_eeGeneral.trainer.mix[i].mode = 2;
     g_eeGeneral.trainer.mix[i].srcChn = channel_order(i+1) - 1;
     g_eeGeneral.trainer.mix[i].studWeight = 100;
   }
-#endif
 
 #if defined(PCBX9E)
   const int8_t defaultName[] = { 20, -1, -18, -1, -14, -9, -19 };
@@ -637,16 +609,11 @@ uint8_t getFlightMode()
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx)
 {
   FlightModeData * p = flightModeAddress(phase);
-#if defined(PCBSTD)
-  return (((trim_t)p->trim[idx]) << 2) + ((p->trim_ext >> (2*idx)) & 0x03);
-#else
   return p->trim[idx];
-#endif
 }
 
 int getTrimValue(uint8_t phase, uint8_t idx)
 {
-#if defined(CPUARM)
   int result = 0;
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
     trim_t v = getRawTrimValue(phase, idx);
@@ -667,12 +634,8 @@ int getTrimValue(uint8_t phase, uint8_t idx)
     }
   }
   return 0;
-#else
-  return getRawTrimValue(getTrimFlightMode(phase, idx), idx);
-#endif
 }
 
-#if defined(CPUARM)
 bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
 {
   for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
@@ -695,36 +658,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
   storageDirty(EE_MODEL);
   return true;
 }
-#else
-void setTrimValue(uint8_t phase, uint8_t idx, int trim)
-{
-#if defined(PCBSTD)
-  FlightModeData *p = flightModeAddress(phase);
-  p->trim[idx] = (int8_t)(trim >> 2);
-  idx <<= 1;
-  p->trim_ext = (p->trim_ext & ~(0x03 << idx)) + (((trim & 0x03) << idx));
-#else
-  FlightModeData *p = flightModeAddress(phase);
-  p->trim[idx] = trim;
-#endif
-  storageDirty(EE_MODEL);
-}
-#endif
 
-#if !defined(CPUARM)
-uint8_t getTrimFlightMode(uint8_t phase, uint8_t idx)
-{
-  for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-    if (phase == 0) return 0;
-    trim_t trim = getRawTrimValue(phase, idx);
-    if (trim <= TRIM_EXTENDED_MAX) return phase;
-    uint8_t result = trim-TRIM_EXTENDED_MAX-1;
-    if (result >= phase) result++;
-    phase = result;
-  }
-  return 0;
-}
-#endif
 
 #if defined(ROTARY_ENCODERS)
 uint8_t getRotaryEncoderFlightMode(uint8_t idx)
@@ -755,7 +689,6 @@ void incRotaryEncoder(uint8_t idx, int8_t inc)
 }
 #endif
 
-#if defined(CPUARM)
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
 {
   return value;
@@ -783,111 +716,7 @@ ls_telemetry_value_t max8bitsTelemValue(source_t channel)
   return 30000;
 }
 
-#elif defined(TELEMETRY_FRSKY)
 
-/*
-ls_telemetry_value_t minTelemValue(uint8_t channel)
-{
-  switch (channel) {
-    case TELEM_TIMER1:
-    case TELEM_TIMER2:
-      return -3600;
-    case TELEM_ALT:
-    case TELEM_MIN_ALT:
-    case TELEM_MAX_ALT:
-    case TELEM_GPSALT:
-      return -500;
-    case TELEM_T1:
-    case TELEM_MAX_T1:
-    case TELEM_T2:
-    case TELEM_MAX_T2:
-      return -30;
-    case TELEM_ACCx:
-    case TELEM_ACCy:
-    case TELEM_ACCz:
-      return -1000;
-    case TELEM_VSPEED:
-      return -3000;
-    default:
-      return 0;
-  }
-}
-*/
-ls_telemetry_value_t maxTelemValue(uint8_t channel)
-{
-  switch (channel) {
-    case TELEM_FUEL:
-    case TELEM_RSSI_TX:
-    case TELEM_RSSI_RX:
-      return 100;
-    case TELEM_HDG:
-      return 180;
-    default:
-      return 255;
-  }
-}
-#endif
-
-#if !defined(CPUARM)
-getvalue_t convert8bitsTelemValue(uint8_t channel, ls_telemetry_value_t value)
-{
-  getvalue_t result;
-  switch (channel) {
-    case TELEM_TIMER1:
-    case TELEM_TIMER2:
-      result = value * 5;
-      break;
-#if defined(TELEMETRY_FRSKY)
-    case TELEM_ALT:
-    case TELEM_GPSALT:
-    case TELEM_MAX_ALT:
-    case TELEM_MIN_ALT:
-      result = value * 8 - 500;
-      break;
-    case TELEM_RPM:
-    case TELEM_MAX_RPM:
-      result = value * 50;
-      break;
-    case TELEM_T1:
-    case TELEM_T2:
-    case TELEM_MAX_T1:
-    case TELEM_MAX_T2:
-      result = (getvalue_t)value - 30;
-      break;
-    case TELEM_CELL:
-    case TELEM_HDG:
-    case TELEM_SPEED:
-    case TELEM_MAX_SPEED:
-      result = value * 2;
-      break;
-    case TELEM_ASPEED:
-    case TELEM_MAX_ASPEED:
-      result = value * 20;
-      break;
-    case TELEM_DIST:
-    case TELEM_MAX_DIST:
-      result = value * 8;
-      break;
-    case TELEM_CURRENT:
-    case TELEM_POWER:
-    case TELEM_MAX_CURRENT:
-    case TELEM_MAX_POWER:
-      result = value * 5;
-      break;
-    case TELEM_CONSUMPTION:
-      result = value * 100;
-      break;
-    case TELEM_VSPEED:
-      result = ((getvalue_t)value - 125) * 10;
-      break;
-#endif
-    default:
-      result = value;
-      break;
-  }
-  return result;
-}
-#endif
 
 #define INAC_STICKS_SHIFT   6
 #define INAC_SWITCHES_SHIFT 8
@@ -912,9 +741,6 @@ void checkBacklight()
 {
   static uint8_t tmr10ms ;
 
-#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION)
-  rotencPoll();
-#endif
 
   uint8_t x = g_blinkTmr10ms;
   if (tmr10ms != x) {
@@ -933,9 +759,6 @@ void checkBacklight()
     else
       BACKLIGHT_DISABLE();
 
-#if defined(PCBSTD) && defined(VOICE) && !defined(SIMU)
-    Voice.voice_process() ;
-#endif
   }
 }
 
@@ -974,13 +797,8 @@ void doSplash()
     backlightOn();
     drawSplash();
 
-#if !defined(CPUARM)
-    AUDIO_HELLO();
-#endif
 
-#if defined(PCBSTD)
-    lcdSetContrast();
-#elif defined(PCBSKY9X)
+#if   defined(PCBSKY9X)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -995,7 +813,7 @@ void doSplash()
     while (tgtime > get_tmr10ms()) {
 #if defined(SIMU)
       SIMU_SLEEP(1);
-#elif defined(CPUARM)
+#else
       CoTickDelay(1);
 #endif
 
@@ -1100,14 +918,12 @@ void checkFailsafe()
 #else
 #define checkFailsafe()
 #endif
-#if defined(CPUARM)
 void checkRSSIAlarmsDisabled()
 {
   if (g_model.rssiAlarms.disabled) {
     ALERT(STR_RSSIALARM_WARN, STR_NO_RSSIALARM, AU_ERROR);
   }
 }
-#endif
 
 #if defined(GUI)
 void checkAll()
@@ -1125,36 +941,28 @@ void checkAll()
   checkSwitches();
   checkFailsafe();
 #endif
-#if defined(CPUARM)
   checkRSSIAlarmsDisabled();
-#endif
 
 #if defined(SDCARD) && defined(CPUARM)
   checkSDVersion();
 #endif
 
-#if defined(CPUARM)
   if (g_model.displayChecklist && modelHasNotes()) {
     readModelNotes();
   }
-#endif
 
-#if defined(CPUARM)
   if (!clearKeyEvents()) {
     showMessageBox(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
 #if defined(SIMU)
       SIMU_SLEEP(1);
-#elif defined(CPUARM)
+#else
       CoTickDelay(1);
 #endif
       wdt_reset();
     }
   }
-#else    // #if defined(CPUARM)
-  clearKeyEvents();
-#endif   // #if defined(CPUARM)
 
   START_SILENCE_PERIOD();
 }
@@ -1267,9 +1075,7 @@ void checkTHR()
     wdt_reset();
 
     SIMU_SLEEP(1);
-#if defined(CPUARM)
     CoTickDelay(10);
-#endif
 
   }
 #endif
@@ -1302,9 +1108,7 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
 
   while (1) {
     SIMU_SLEEP(1);
-#if defined(CPUARM)
     CoTickDelay(10);
-#endif
 
     if (keyDown()) break; // wait for key release
 
@@ -1346,55 +1150,34 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
 #endif
 #endif
 
-#if defined(CPUARM)
 void checkTrims()
 {
   event_t event = getEvent(true);
   if (event && !IS_KEY_BREAK(event)) {
     int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-#else
-uint8_t checkTrim(event_t event)
-{
-  int8_t k = EVT_KEY_MASK(event) - TRM_BASE;
-  if (k>=0 && k<8 && !IS_KEY_BREAK(event)) {
-#endif
     // LH_DWN LH_UP LV_DWN LV_UP RV_DWN RV_UP RH_DWN RH_UP
     uint8_t idx = CONVERT_MODE_TRIMS((uint8_t)k/2);
     uint8_t phase;
     int before;
     bool thro;
 
-#if defined(CPUARM)
     trimsDisplayTimer = 200; // 2 seconds
     trimsDisplayMask |= (1<<idx);
-#endif
 
 #if defined(GVARS)
     if (TRIM_REUSED(idx)) {
-#if defined(PCBSTD)
-      phase = 0;
-#else
       phase = getGVarFlightMode(mixerCurrentFlightMode, trimGvar[idx]);
-#endif
       before = GVAR_VALUE(trimGvar[idx], phase);
       thro = false;
     }
     else {
       phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
-#if defined(CPUARM)
       before = getTrimValue(phase, idx);
-#else
-      before = getRawTrimValue(phase, idx);
-#endif
       thro = (IS_THROTTLE_TRIM(idx) && g_model.thrTrim);
     }
 #else
     phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
-#if defined(CPUARM)
     before = getTrimValue(phase, idx);
-#else
-    before = getRawTrimValue(phase, idx);
-#endif
     thro = (IS_THROTTLE_TRIM(idx) && g_model.thrTrim);
 #endif
     int8_t trimInc = g_model.trimInc + 1;
@@ -1416,13 +1199,8 @@ uint8_t checkTrim(event_t event)
 #if defined(GVARS)
     if (TRIM_REUSED(idx)) {
       int8_t gvar = trimGvar[idx];
-#if defined(CPUARM)
       int16_t vmin = GVAR_MIN + g_model.gvars[gvar].min;
       int16_t vmax = GVAR_MAX - g_model.gvars[gvar].max;
-#else
-      int16_t vmin = TRIM_MIN;
-      int16_t vmax = TRIM_MAX;
-#endif
       if (after < vmin) {
         after = vmin;
         beepTrim = true;
@@ -1463,27 +1241,17 @@ uint8_t checkTrim(event_t event)
         after = TRIM_EXTENDED_MAX;
       }
 
-#if defined(CPUARM)
       if (!setTrimValue(phase, idx, after)) {
         // we don't play a beep, so we exit now the function
         return;
       }
-#else
-      setTrimValue(phase, idx, after);
-#endif
     }
 
     if (!beepTrim) {
       AUDIO_TRIM_PRESS(after);
     }
 
-#if !defined(CPUARM)
-    return 0;
-#endif
   }
-#if !defined(CPUARM)
-  return event;
-#endif
 }
 
 #if !defined(SIMU)
@@ -1492,14 +1260,6 @@ uint16_t s_anaFilt[NUM_ANALOGS];
 
 #if defined(SIMU)
 uint16_t BandGap = 225;
-#elif defined(CPUM2560)
-// #define STARTADCONV (ADCSRA  = (1<<ADEN) | (1<<ADPS0) | (1<<ADPS1) | (1<<ADPS2) | (1<<ADSC) | (1 << ADIE))
-// G: Note that the above would have set the ADC prescaler to 128, equating to
-// 125KHz sample rate. We now sample at 500KHz, with oversampling and other
-// filtering options to produce 11-bit results.
-uint16_t BandGap = 2040;
-#elif defined(PCBSTD)
-uint16_t BandGap;
 #endif
 
 #if defined(JITTER_MEASURE)
@@ -1550,7 +1310,6 @@ uint16_t anaIn(uint8_t chan)
 #endif
 }
 
-#if defined(CPUARM)
 void getADC()
 {
 #if defined(JITTER_MEASURE)
@@ -1640,7 +1399,6 @@ void getADC()
     }
   }
 }
-#endif  // #if defined(CPUARM)
 
 #endif // SIMU
 
@@ -1654,10 +1412,8 @@ uint16_t s_timeCum16ThrP; // THR% in 1/16 sec
 
 uint8_t  trimsCheckTimer = 0;
 
-#if defined(CPUARM)
 uint8_t trimsDisplayTimer = 0;
 uint8_t trimsDisplayMask = 0;
-#endif
 
 void flightReset(uint8_t check)
 {
@@ -1711,12 +1467,6 @@ void evalTrims()
   for (uint8_t i=0; i<NUM_TRIMS; i++) {
     // do trim -> throttle trim if applicable
     int16_t trim = getTrimValue(phase, i);
-#if !defined(CPUARM)
-    if (i==THR_STICK && g_model.thrTrim) {
-      int16_t trimMin = g_model.extendedTrims ? TRIM_EXTENDED_MIN : TRIM_MIN;
-      trim = (((g_model.throttleReversed)?(int32_t)(trim+trimMin):(int32_t)(trim-trimMin)) * (RESX-anas[i])) >> (RESX_SHIFT+1);
-    }
-#endif
     if (trimsCheckTimer > 0) {
       trim = 0;
     }
@@ -1725,10 +1475,8 @@ void evalTrims()
   }
 }
 
-#if !defined(PCBSTD)
 uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
 #define CFN_PRESSLONG_DURATION   100
-#endif
 
 
 uint8_t s_mixer_first_run_done = false;
@@ -1758,18 +1506,11 @@ void doMixerCalculations()
     Current_max = Current_analogue ;
 #endif
 
-#if !defined(CPUARM)
-  adcPrepareBandgap();
-#endif
 
   DEBUG_TIMER_START(debugTimerEvalMixes);
   evalMixes(tick10ms);
   DEBUG_TIMER_STOP(debugTimerEvalMixes);
 
-#if !defined(CPUARM)
-  // Bandgap has had plenty of time to settle...
-  getADC_bandgap();
-#endif
 
   DEBUG_TIMER_START(debugTimerMixes10ms);
   if (tick10ms) {
@@ -1916,9 +1657,7 @@ void doMixerCalculations()
     }
 #endif
 
-#if defined(CPUARM)
     checkTrims();
-#endif
   }
   DEBUG_TIMER_STOP(debugTimerMixes10ms);
 
@@ -1951,13 +1690,8 @@ uint8_t calcStickScroll( uint8_t index )
 }
 #endif
 
-#if defined(CPUARM)
   #define OPENTX_START_ARGS            uint8_t splash=true
   #define OPENTX_START_SPLASH_NEEDED() (splash)
-#else
-  #define OPENTX_START_ARGS
-  #define OPENTX_START_SPLASH_NEEDED() true
-#endif
 
 void opentxStart(OPENTX_START_ARGS)
 {
@@ -2003,15 +1737,12 @@ void opentxStart(OPENTX_START_ARGS)
 #endif
 }
 
-#if defined(CPUARM) || defined(CPUM2560)
 void opentxClose(uint8_t shutdown)
 {
   TRACE("opentxClose");
 
   if (shutdown) {
-#if defined(CPUARM)
     watchdogSuspend(2000/*20s*/);
-#endif
     pausePulses();   // stop mixer task to disable trims processing while in shutdown
     AUDIO_BYE();
 #if defined(TELEMETRY_FRSKY)
@@ -2052,18 +1783,15 @@ void opentxClose(uint8_t shutdown)
   storageDirty(EE_GENERAL);
   storageCheck(true);
 
-#if defined(CPUARM)
   while (IS_PLAYING(ID_PLAY_PROMPT_BASE + AU_BYE)) {
     CoTickDelay(10);
   }
   CoTickDelay(50);
-#endif
 
 #if defined(SDCARD)
   sdDone();
 #endif
 }
-#endif
 
 #if defined(STM32)
 void opentxResume()
@@ -2081,16 +1809,12 @@ void opentxResume()
 
   opentxStart(false);
 
-#if defined(CPUARM)
   referenceSystemAudioFiles();
-#endif
 
-#if defined(CPUARM) || defined(CPUM2560)
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
   }
-#endif
 }
 #endif
 
@@ -2163,201 +1887,12 @@ uint8_t getSticksNavigationEvent()
 }
 #endif
 
-#if !defined(CPUARM)
-void checkBattery()
-{
-  static uint8_t counter = 0;
-#if defined(GUI) && !defined(COLORLCD)
-  // TODO not the right menu I think ...
-  if (menuHandlers[menuLevel] == menuRadioDiagAnalogs) {
-    g_vbat100mV = 0;
-    counter = 0;
-  }
-#endif
-  if (counter-- == 0) {
-    counter = 10;
-    int32_t instant_vbat = anaIn(TX_VOLTAGE);
-#if defined(CPUM2560)
-    instant_vbat = (instant_vbat*1112 + instant_vbat*g_eeGeneral.txVoltageCalibration + (BandGap<<2)) / (BandGap<<3);
-#else
-    instant_vbat = (instant_vbat*16 + instant_vbat*g_eeGeneral.txVoltageCalibration/8) / BandGap;
-#endif
-
-    static uint8_t  s_batCheck;
-    static uint16_t s_batSum;
-
-#if defined(VOICE)
-    s_batCheck += 8;
-#else
-    s_batCheck += 32;
-#endif
-
-    s_batSum += instant_vbat;
-
-    if (g_vbat100mV == 0) {
-      g_vbat100mV = instant_vbat;
-      s_batSum = 0;
-      s_batCheck = 0;
-    }
-#if defined(VOICE)
-    else if (!(s_batCheck & 0x3f)) {
-#else
-    else if (s_batCheck == 0) {
-#endif
-      g_vbat100mV = s_batSum / 8;
-      s_batSum = 0;
-#if defined(VOICE)
-      if (s_batCheck != 0) {
-        // no alarms
-      }
-      else
-#endif
-      if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
-        AUDIO_TX_BATTERY_LOW();
-      }
-    }
-  }
-}
-#endif // #if !defined(CPUARM)
 
 
-#if !defined(SIMU) && !defined(CPUARM)
 
-volatile uint8_t g_tmr16KHz; //continuous timer 16ms (16MHz/1024/256) -- 8-bit counter overflow
-ISR(TIMER_16KHZ_VECT, ISR_NOBLOCK)
-{
-  g_tmr16KHz++; // gruvin: Not 16KHz. Overflows occur at 61.035Hz (1/256th of 15.625KHz)
-                // to give *16.384ms* intervals. Kind of matters for accuracy elsewhere. ;)
-                // g_tmr16KHz is used to software-construct a 16-bit timer
-                // from TIMER-0 (8-bit). See getTmr16KHz, below.
-}
 
-uint16_t getTmr16KHz()
-{
-  while(1){
-    uint8_t hb  = g_tmr16KHz;
-    uint8_t lb  = COUNTER_16KHZ;
-    if(hb-g_tmr16KHz==0) return (hb<<8)|lb;
-  }
-}
 
-#if defined(PCBSTD) && (defined(AUDIO) || defined(VOICE))
-// Clocks every 128 uS
-ISR(TIMER_AUDIO_VECT, ISR_NOBLOCK)
-{
-  cli();
-  PAUSE_AUDIO_INTERRUPT(); // stop reentrance
-  sei();
-
-#if defined(AUDIO)
-  AUDIO_DRIVER();
-#endif
-
-#if defined(VOICE)
-  VOICE_DRIVER();
-#endif
-
-  cli();
-  RESUME_AUDIO_INTERRUPT();
-  sei();
-}
-#endif
-
-// Clocks every 10ms
-ISR(TIMER_10MS_VECT, ISR_NOBLOCK)
-{
-  // without correction we are 0,16% too fast; that mean in one hour we are 5,76Sek too fast; we do not like that
-  static uint8_t accuracyWarble; // because 16M / 1024 / 100 = 156.25. we need to correct the fault; no start value needed
-
-#if defined(AUDIO)
-  AUDIO_HEARTBEAT();
-#endif
-
-#if defined(BUZZER)
-  BUZZER_HEARTBEAT();
-#endif
-
-#if defined(HAPTIC)
-  HAPTIC_HEARTBEAT();
-#endif
-
-  per10ms();
-
-  uint8_t bump = (!(++accuracyWarble & 0x03)) ? 157 : 156;
-  TIMER_10MS_COMPVAL += bump;
-}
-
-// Timer3 used for PPM_IN pulse width capture. Counter running at 16MHz / 8 = 2MHz
-// equating to one count every half millisecond. (2 counts = 1ms). Control channel
-// count delta values thus can range from about 1600 to 4400 counts (800us to 2200us),
-// corresponding to a PPM signal in the range 0.8ms to 2.2ms (1.5ms at center).
-// (The timer is free-running and is thus not reset to zero at each capture interval.)
-ISR(TIMER3_CAPT_vect) // G: High frequency noise can cause stack overflo with ISR_NOBLOCK
-{
-  uint16_t capture=ICR3;
-
-  // Prevent rentrance for this IRQ only
-  PAUSE_PPMIN_INTERRUPT();
-  sei(); // enable other interrupts
-
-  captureTrainerPulses(capture);
-
-  cli(); // disable other interrupts for stack pops before this function's RETI
-  RESUME_PPMIN_INTERRUPT();
-}
-#endif
-
-#if defined(DSM2_SERIAL) && !defined(CPUARM)
-FORCEINLINE void DSM2_USART_vect()
-{
-  UDR0 = *((uint16_t*)pulses2MHzRPtr); // transmit next byte
-
-  pulses2MHzRPtr += sizeof(uint16_t);
-
-  if (pulses2MHzRPtr == pulses2MHzWPtr) { // if reached end of DSM2 data buffer ...
-    UCSRB_N(TLM_USART) &= ~(1 << UDRIE_N(TLM_USART)); // disable UDRE interrupt
-  }
-}
-#endif
-
-#if !defined(SIMU) && !defined(CPUARM)
-
-#if defined(TELEMETRY_FRSKY)
-
-FORCEINLINE void FRSKY_USART_vect()
-{
-  if (frskyTxBufferCount > 0) {
-    UDR_N(TLM_USART) = frskyTxBuffer[--frskyTxBufferCount];
-  }
-  else {
-    UCSRB_N(TLM_USART) &= ~(1 << UDRIE_N(TLM_USART)); // disable UDRE interrupt
-  }
-}
-
-// USART0/1 Transmit Data Register Emtpy ISR
-ISR(USART_UDRE_vect_N(TLM_USART))
-{
-#if defined(TELEMETRY_FRSKY) && defined(DSM2_SERIAL)
-  if (IS_DSM2_PROTOCOL(g_model.protocol)) { // TODO not s_current_protocol?
-    DSM2_USART_vect();
-  }
-  else {
-    FRSKY_USART_vect();
-  }
-#elif defined(TELEMETRY_FRSKY)
-  FRSKY_USART_vect();
-#else
-  DSM2_USART_vect();
-#endif
-}
-#endif
-#endif
-
-#if defined(CPUARM)
   #define INSTANT_TRIM_MARGIN 10 /* around 1% */
-#else
-  #define INSTANT_TRIM_MARGIN 15 /* around 1.5% */
-#endif
 
 void instantTrim()
 {
@@ -2410,11 +1945,7 @@ void copySticksToOffset(uint8_t ch)
     val = -val;
     lim = LIMIT_MIN(ld);
   }
-#if defined(CPUARM)
   zero = (zero*256000 - val*lim) / (1024*256-val);
-#else
-  zero = (zero*25600 - val*lim) / (26214-val);
-#endif
   ld->offset = (ld->revert ? -zero : zero);
   resumeMixerCalculations();
   storageDirty(EE_MODEL);
@@ -2434,11 +1965,7 @@ void copyTrimsToOffset(uint8_t ch)
   int16_t output = applyLimits(ch, chans[ch]) - zero;
   int16_t v = g_model.limitData[ch].offset;
   if (g_model.limitData[ch].revert) output = -output;
-#if defined(CPUARM)
   v += (output * 125) / 128;
-#else
-  v += output;
-#endif
   g_model.limitData[ch].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
 
   resumeMixerCalculations();
@@ -2462,11 +1989,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     int16_t output = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
     if (g_model.limitData[i].revert) output = -output;
-#if defined(CPUARM)
     v += (output * 125) / 128;
-#else
-    v += output;
-#endif
     g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
   }
 
@@ -2475,15 +1998,9 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     if (i != THR_STICK || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
       for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
-#if defined(CPUARM)
         trim_t trim = getRawTrimValue(fm, i);
         if (trim.mode / 2 == fm)
           setTrimValue(fm, i, trim.value - original_trim);
-#else
-        trim_t trim = getRawTrimValue(fm, i);
-        if (trim <= TRIM_EXTENDED_MAX)
-          setTrimValue(fm, i, trim - original_trim);
-#endif
       }
     }
   }
@@ -2504,40 +2021,8 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 uint8_t rotencSpeed;
 #endif
 
-#if !defined(CPUARM) && !defined(SIMU)
-extern unsigned char __bss_end ;
-#define STACKPTR     _SFR_IO16(0x3D)
-void stackPaint()
-{
-  // Init Stack while interrupts are disabled
-  unsigned char *p ;
-  unsigned char *q ;
 
-  p = (unsigned char *) STACKPTR ;
-  q = &__bss_end ;
-  p -= 2 ;
-  while ( p > q ) {
-    *p-- = 0x55 ;
-  }
-}
-
-uint16_t stackAvailable()
-{
-  unsigned char *p ;
-
-  p = &__bss_end + 1 ;
-  while ( *p++ == 0x55 );
-  return p - &__bss_end ;
-}
-#endif
-
-#if defined(CPUM2560)
-  #define OPENTX_INIT_ARGS const uint8_t mcusr
-#elif defined(PCBSTD)
-  #define OPENTX_INIT_ARGS const uint8_t mcusr
-#else
   #define OPENTX_INIT_ARGS
-#endif
 
 void opentxInit(OPENTX_INIT_ARGS)
 {
@@ -2641,11 +2126,9 @@ void opentxInit(OPENTX_INIT_ARGS)
   #endif
 #endif
 
-#if defined(CPUARM)
   referenceSystemAudioFiles();
   audioQueue.start();
   BACKLIGHT_ENABLE();
-#endif
 
 #if defined(PCBSKY9X)
   // Set ADC gains here
@@ -2670,13 +2153,11 @@ void opentxInit(OPENTX_INIT_ARGS)
     opentxStart();
   }
 
-#if defined(CPUARM) || defined(CPUM2560)
 	// TODO Horus does not need this
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
   }
-#endif
 
 #if defined(GUI)
   lcdSetContrast();
@@ -2687,9 +2168,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   init_trainer_capture();
 #endif
 
-#if !defined(CPUARM)
-  doMixerCalculations();
-#endif
 
   startPulses();
 
@@ -2711,10 +2189,6 @@ int main()
   MCUSR = 0; // must be zeroed before disabling the WDT
   MCUCR = 0x80 ;   // Disable JTAG port that can interfere with POT3
   MCUCR = 0x80 ;   // Must be done twice
-#elif defined(PCBSTD)
-  uint8_t mcusr = MCUCSR;
-  MCUCSR = 0x80 ;   // Disable JTAG port that can interfere with POT3
-  MCUCSR = 0x80 ;   // Must be done twice
 #endif
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
@@ -2746,9 +2220,6 @@ int main()
 
   sei(); // interrupts needed now
 
-#if !defined(CPUARM) && defined(TELEMETRY_FRSKY) && !defined(DSM2_SERIAL)
-  telemetryInit();
-#endif
 
 #if defined(DSM2_SERIAL) && !defined(TELEMETRY_FRSKY)
   DSM2_Init();
@@ -2786,42 +2257,8 @@ int main()
   }
 #endif
 
-#if defined(CPUARM)
   tasksStart();
-#else
-  opentxInit(mcusr);
-#if defined(CPUM2560)
-  uint8_t shutdown_state = 0;
-#endif
 
-  while (1) {
-#if defined(CPUM2560)
-    if ((shutdown_state=pwrCheck()) > e_power_trainer)
-      break;
-#endif
-#if defined(SIMU)
-    sleep(5/*ms*/);
-    if (main_thread_running == 0)
-      return 0;
-#endif
-
-    perMain();
-
-    if (heartbeat == HEART_WDT_CHECK) {
-      wdt_reset();
-      heartbeat = 0;
-    }
-  }
-#endif
-
-#if defined(CPUM2560)
-  // Time to switch off
-  drawSleepBitmap();
-  opentxClose();
-  boardOff(); // Only turn power off if necessary
-  wdt_disable();  // this function is provided by AVR Libc
-  while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
-#endif
 
 #if defined(SIMU)
   return NULL;
@@ -2916,7 +2353,7 @@ uint32_t pwrCheck()
 
   return e_power_on;
 }
-#elif defined(CPUARM)
+#else
 uint32_t pwrCheck()
 {
 #if defined(SOFT_PWR_CTRL)

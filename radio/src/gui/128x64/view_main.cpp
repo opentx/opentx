@@ -105,18 +105,14 @@ void displayTrims(uint8_t phase)
     uint8_t att = ROUND;
     int16_t val = getTrimValue(phase, i);
 
-#if defined(CPUARM)
     if(getRawTrimValue(phase, i).mode == TRIM_MODE_NONE)
       continue;
-#endif
 
-#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
     int16_t dir = val;
     bool exttrim = false;
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
     }
-#endif
     if (val < -(TRIM_LEN+1)*4) {
       val = -(TRIM_LEN+1);
     }
@@ -135,7 +131,6 @@ void displayTrims(uint8_t phase)
         lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
       }
       ym -= val;
-#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
       lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
@@ -146,14 +141,11 @@ void displayTrims(uint8_t phase)
       if (exttrim) {
         lcdDrawSolidHorizontalLine(xm-1, ym,  3);
       }
-#endif
-#if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
           lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
         }
       }
-#endif
     }
     else {
       ym = 60;
@@ -161,7 +153,6 @@ void displayTrims(uint8_t phase)
       lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
       lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
       xm += val;
-#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
       lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
       if (dir >= 0) {
         lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
@@ -172,14 +163,11 @@ void displayTrims(uint8_t phase)
       if (exttrim) {
         lcdDrawSolidVerticalLine(xm, ym-1,  3);
       }
-#endif
-#if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
           lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
         }
       }
-#endif
     }
     lcdDrawSquare(xm-3, ym-3, 7, att);
   }
@@ -193,7 +181,6 @@ FORCEINLINE void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
     const uint8_t negative = (timerState.val<0 ? BLINK | INVERS : 0);
     LcdFlags att = RIGHT | DBLSIZE | negative;
     drawTimer(x, y, timerState.val, att, att);
-#if defined(CPUARM)
     uint8_t xLabel = (negative ? x-56 : x-49);
     uint8_t len = zlen(timer.name, LEN_TIMER_NAME);
     if (len > 0) {
@@ -202,10 +189,6 @@ FORCEINLINE void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
     else {
       drawTimerMode(xLabel, y+FH, timer.mode, RIGHT);
     }
-#else
-    uint8_t xLabel = (negative ? x-76 : x-69);
-    drawTimerMode(xLabel, y+FH, timer.mode);
-#endif
   }
 }
 
@@ -289,7 +272,6 @@ void onMainViewMenu(const char *result)
     timerReset(2);
   }
 #endif
-#if defined(CPUARM)
   else if (result == STR_VIEW_NOTES) {
     pushModelNotes();
   }
@@ -302,7 +284,6 @@ void onMainViewMenu(const char *result)
     POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
 #endif
   }
-#endif
 #if defined(TELEMETRY_FRSKY)
   else if (result == STR_RESET_TELEMETRY) {
     telemetryReset();
@@ -314,11 +295,9 @@ void onMainViewMenu(const char *result)
   else if (result == STR_STATISTICS) {
     chainMenu(menuStatisticsView);
   }
-#if defined(CPUARM)
   else if (result == STR_ABOUT_US) {
     chainMenu(menuAboutView);
   }
-#endif
 }
 #endif
 
@@ -348,14 +327,10 @@ void menuMainView(event_t event)
     case EVT_KEY_NEXT_PAGE:
     case EVT_KEY_PREVIOUS_PAGE:
       if (view_base <= VIEW_INPUTS) {
-#if defined(CPUARM)
         if (view_base == VIEW_INPUTS)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
         else
           g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
-#else
-        g_eeGeneral.view ^= ALTERNATE_VIEW;
-#endif
         storageDirty(EE_GENERAL);
         AUDIO_KEY_PRESS();
       }
@@ -365,27 +340,14 @@ void menuMainView(event_t event)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
 
-#if defined(CPUARM)
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
-#endif
 
-#if defined(CPUARM)
       POPUP_MENU_ADD_ITEM(STR_RESET_SUBMENU);
-#else
-      POPUP_MENU_ADD_ITEM(STR_RESET_TIMER1);
-      POPUP_MENU_ADD_ITEM(STR_RESET_TIMER2);
-#if defined(TELEMETRY_FRSKY)
-      POPUP_MENU_ADD_ITEM(STR_RESET_TELEMETRY);
-#endif
-      POPUP_MENU_ADD_ITEM(STR_RESET_FLIGHT);
-#endif
 
       POPUP_MENU_ADD_ITEM(STR_STATISTICS);
-#if defined(CPUARM)
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
-#endif
       POPUP_MENU_START(onMainViewMenu);
       break;
 #endif
@@ -501,19 +463,11 @@ void menuMainView(event_t event)
   if (view_base < VIEW_INPUTS) {
     // scroll bar
     lcdDrawHorizontalLine(38, 34, 54, DOTTED);
-#if defined(CPUARM)
     lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
-#else
-    lcdDrawSolidHorizontalLine((g_eeGeneral.view & ALTERNATE_VIEW) ? 64 : 38, 34, 26, SOLID);
-#endif
 
     for (uint8_t i=0; i<8; i++) {
       uint8_t x0,y0;
-#if defined(CPUARM)
       uint8_t chan = 8*(g_eeGeneral.view / ALTERNATE_VIEW) + i;
-#else
-      uint8_t chan = (g_eeGeneral.view & ALTERNATE_VIEW) ? 8+i : i;
-#endif
 
       int16_t val = channelOutputs[chan];
 
@@ -585,22 +539,8 @@ void menuMainView(event_t event)
 #endif
     }
     else {
-#if defined(PCBMEGA2560) && defined(ROTARY_ENCODERS)
-      for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
-        int16_t val = getRotaryEncoder(i);
-        int8_t len = limit((int16_t)0, (int16_t)(((val+1024) * BAR_HEIGHT) / 2048), (int16_t)BAR_HEIGHT);
-#if ROTARY_ENCODERS > 2
-#define V_BAR_W 5
-        V_BAR(LCD_W/2-8+V_BAR_W*i, LCD_H-8, len);
-#else
-#define V_BAR_W 5
-        V_BAR(LCD_W/2-3+V_BAR_W*i, LCD_H-8, len);
-#endif
-      }
-#endif // PCBGRUVIN9X && ROTARY_ENCODERS
 
       // Logical Switches
-#if defined(CPUARM)
       uint8_t index = 0;
       uint8_t y = LCD_H-20;
       for (uint8_t line=0; line<2; line++) {
@@ -613,19 +553,6 @@ void menuMainView(event_t event)
         }
         y += 12;
       }
-#elif defined(CPUM2560)
-      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
-        drawSwitch(2*FW-3 + (i/3)*(i/3>2 ? 3*FW+2 : (3*FW-1)) + (i/3>2 ? 2*FW : 0), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
-      }
-#elif !defined(PCBSTD)
-      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
-        drawSwitch(2*FW-2 + (i/3)*(4*FW-1), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
-      }
-#else
-      for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
-        drawSwitch(2*FW-3 + (i/3)*(4*FW), 4*FH+1 + (i%3)*FH, SWSRC_SW1+i, getSwitch(SWSRC_SW1+i) ? INVERS : 0);
-      }
-#endif
     }
   }
   else {
@@ -649,14 +576,10 @@ void menuMainView(event_t event)
     drawMessageBox();
     lcdDrawSizedText(16, 5*FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(16+6*FW, 5*FH, PSTR("["), BOLD);
-#if defined(CPUARM)
     drawGVarValue(lcdLastRightPos, 5*FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
     if (g_model.gvars[gvarLastChanged].unit) {
       lcdDrawText(lcdLastRightPos, 5*FH, "%", BOLD);
     }
-#else
-    lcdDrawNumber(lcdLastRightPos, 5*FH, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), BOLD);
-#endif
     lcdDrawText(lcdLastRightPos, 5*FH, PSTR("]"), BOLD);
     warningText = NULL;
   }

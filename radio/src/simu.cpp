@@ -589,9 +589,6 @@ uint16_t anaIn(uint8_t chan)
     return 5.1*1500/11.3;
   else if (chan == TX_CURRENT)
     return 100;
-#elif defined(PCBGRUVIN9X)
-  else if (chan == TX_VOLTAGE)
-    return 150;
 #else
   else if (chan == TX_VOLTAGE)
     return 1500;

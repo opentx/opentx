@@ -62,29 +62,18 @@ enum GermanPrompts {
   DE_PROMPT_SECONDS = DE_PROMPT_UNITS_BASE+UNIT_SECONDS,
   DE_PROMPT_RPMS = DE_PROMPT_UNITS_BASE+UNIT_RPMS,
   DE_PROMPT_G = DE_PROMPT_UNITS_BASE+UNIT_G,
-#if defined(CPUARM)
   DE_PROMPT_MILLILITERS = DE_PROMPT_UNITS_BASE+UNIT_MILLILITERS,
   DE_PROMPT_FLOZ = DE_PROMPT_UNITS_BASE+UNIT_FLOZ,
   DE_PROMPT_FEET_PER_SECOND = DE_PROMPT_UNITS_BASE+UNIT_FEET_PER_SECOND,
-#endif
 
 };
 
 #if defined(VOICE)
-#if defined(CPUARM)
   #define DE_PUSH_UNIT_PROMPT(u) de_pushUnitPrompt((u), id)
-#else
-  #define DE_PUSH_UNIT_PROMPT(u) pushUnitPrompt((u))
-#endif
 
 I18N_PLAY_FUNCTION(de, pushUnitPrompt, uint8_t unitprompt)
 {
-#if defined(CPUARM)
   PUSH_UNIT_PROMPT(unitprompt, 0);
-#else
-  unitprompt = DE_PROMPT_UNITS_BASE + unitprompt*2
-  PUSH_NUMBER_PROMPT(unitprompt);
-#endif
 }
 
 I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -104,31 +93,12 @@ I18N_PLAY_FUNCTION(de, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-         unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     div_t qr = div((int)number, 10);
     if (qr.rem > 0) {
       PLAY_NUMBER(qr.quot, 0, 0);

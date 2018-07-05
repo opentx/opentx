@@ -41,11 +41,7 @@ enum CzechPrompts {
 
 #if defined(VOICE)
 
-#if defined(CPUARM)
   #define CZ_PUSH_UNIT_PROMPT(u, p) cz_pushUnitPrompt((u), (p), id)
-#else
-  #define CZ_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
-#endif
 
 #define MALE     0x80
 #define FEMALE     0x81
@@ -53,7 +49,6 @@ enum CzechPrompts {
 
 I18N_PLAY_FUNCTION(cz, pushUnitPrompt, uint8_t unit, int16_t number)
 {
-#if defined(CPUARM)
   TRACE("CZSAY unit:%d number:%d", unit, number);
   if (number == 1)
     PUSH_UNIT_PROMPT(unit, 0);
@@ -61,15 +56,6 @@ I18N_PLAY_FUNCTION(cz, pushUnitPrompt, uint8_t unit, int16_t number)
     PUSH_UNIT_PROMPT(unit, 1);
   else
     PUSH_UNIT_PROMPT(unit, 2);
-#else
-  unitprompt = CZ_PROMPT_UNITS_BASE+((unit-1)*4);
-  if (number == 1)
-    PUSH_NUMBER_PROMPT(unit);
-  else if (number > 1 && number < 5)
-    PUSH_NUMBER_PROMPT(unit+1);
-  else
-    PUSH_NUMBER_PROMPT(unit+2);
-#endif
 }
 
 I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -79,31 +65,12 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     div_t qr = div((int)number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, FEMALE);
@@ -117,11 +84,7 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
         PUSH_NUMBER_PROMPT(CZ_PROMPT_CELYCH);
       };
       PLAY_NUMBER(qr.rem, 0, FEMALE);
-#if defined(CPUARM)
       PUSH_UNIT_PROMPT(unit, 3);
-#else
-      PUSH_NUMBER_PROMPT(CZ_PROMPT_UNITS_BASE+((unit-1)*4)+3);
-#endif
       return;
     }
     else {

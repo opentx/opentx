@@ -37,26 +37,14 @@ enum DutchPrompts {
 
 #if defined(VOICE)
 
-#if defined(CPUARM)
   #define NL_PUSH_UNIT_PROMPT(u, p) nl_pushUnitPrompt((u), (p), id)
-#else
-  #define NL_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
-#endif
 
 I18N_PLAY_FUNCTION(nl, pushUnitPrompt,  uint8_t unitprompt, int16_t number)
 {
-#if defined(CPUARM)
   if (number == 1)
     PUSH_UNIT_PROMPT(unitprompt, 0);
   else
     PUSH_UNIT_PROMPT(unitprompt, 1);
-#else
-  unitprompt = NL_PROMPT_UNITS_BASE + unitprompt*2;
-  if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
-  else
-    PUSH_NUMBER_PROMPT(unitprompt+1);
-#endif
 }
 
 I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -66,31 +54,12 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     div_t qr = div(number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);

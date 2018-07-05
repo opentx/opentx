@@ -32,11 +32,7 @@ extern uint8_t ppmInputValidityTimer;
 
 #define IS_TRAINER_INPUT_VALID() (ppmInputValidityTimer != 0)
 
-#if defined(CPUARM)
 void checkTrainerSignalWarning();
-#else
-#define checkTrainerSignalWarning()
-#endif
 
 // Needs to be inlined to avoid slow function calls in ISR routines
 inline void captureTrainerPulses(uint16_t capture)

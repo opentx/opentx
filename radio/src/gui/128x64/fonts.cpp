@@ -21,11 +21,7 @@
 #include "opentx.h"
 
 const pm_uchar font_5x7[] PROGMEM = {
-#if defined (CPUARM)
 #include "font_05x07.lbm"
-#else
-#include "font_05x07_avr.lbm"
-#endif
 #if defined(TRANSLATIONS_DE)
 #include "font_de_05x07.lbm"
 #elif defined(TRANSLATIONS_CZ)
@@ -56,7 +52,6 @@ const pm_uchar font_5x7_B[] PROGMEM = {
 #if !defined(BOOT)
 const pm_uchar font_10x14[] PROGMEM = {
 #include "font_10x14_compressed.lbm"
-#if defined(CPUARM)
   #if defined(TRANSLATIONS_DE)
   #include "font_de_10x14.lbm"
   #elif defined(TRANSLATIONS_CZ)
@@ -76,7 +71,6 @@ const pm_uchar font_10x14[] PROGMEM = {
   #elif defined(TRANSLATIONS_SE)
   #include "font_se_10x14.lbm"
   #endif
-#endif
 };
 #endif
 

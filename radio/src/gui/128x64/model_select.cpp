@@ -54,13 +54,7 @@ void onModelSelectMenu(const char * result)
 #endif
   else if (result == STR_DELETE_MODEL) {
     POPUP_CONFIRMATION(STR_DELETEMODEL);
-#if defined(CPUARM)
     SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
-#else
-    char * name = reusableBuffer.modelsel.mainname;
-    eeLoadModelName(sub, name);
-    SET_WARNING_INFO(name, sizeof(g_model.header.name), ZCHAR);
-#endif
   }
 #if defined(SDCARD)
   else {
@@ -79,9 +73,7 @@ void menuModelSelect(event_t event)
 {
   if (warningResult) {
     warningResult = 0;
-#if defined(CPUARM)
     storageCheck(true);
-#endif
     eeDeleteModel(menuVerticalPosition); // delete file
     s_copyMode = 0;
     event = EVT_ENTRY_UP;
@@ -105,11 +97,6 @@ void menuModelSelect(event_t event)
 
   if (s_editMode > 0) s_editMode = 0;
 
-#if !defined(CPUARM)
-  if (event) {
-    eeFlush(); // flush eeprom write
-  }
-#endif
 
   int8_t sub = menuVerticalPosition;
 
@@ -120,22 +107,13 @@ void menuModelSelect(event_t event)
         menuVerticalOffset = sub-(NUM_BODY_LINES-1);
       s_copyMode = 0;
       s_editMode = EDIT_MODE_INIT;
-#if !defined(CPUARM)
-      storageCheck(true);
-#endif
       break;
 
     case EVT_KEY_LONG(KEY_EXIT):
       killEvents(event);
       if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
         POPUP_CONFIRMATION(STR_DELETEMODEL);
-#if defined(CPUARM)
         SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
-#else
-        char * name = reusableBuffer.modelsel.mainname;
-        eeLoadModelName(sub, name);
-        SET_WARNING_INFO(name, sizeof(g_model.header.name), ZCHAR);
-#endif
       }
       else {
         s_copyMode = 0;
@@ -367,14 +345,7 @@ void menuModelSelect(event_t event)
     k %= MAX_MODELS;
 
     if (eeModelExists(k)) {
-#if defined(CPUARM)
       putsModelName(4*FW, y, modelHeaders[k].name, k, 0);
-#else
-      char * name = reusableBuffer.modelsel.listnames[i];
-      if (event) eeLoadModelName(k, name);
-      putsModelName(4*FW, y, name, k, 0);
-      lcdDrawNumber(20*FW, y, eeModelSize(k), RIGHT);
-#endif
       if (k==g_eeGeneral.currModel && (s_copyMode!=COPY_MODE || s_copySrcRow<0 || i+menuVerticalOffset!=(vertpos_t)sub)) {
         lcdDrawChar(1, y, '*');
       }

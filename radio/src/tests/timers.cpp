@@ -20,16 +20,6 @@
 
 #include "gtests.h"
 
-#if !defined(CPUARM)
-#undef timerSet
-void timerSet(int idx, int16_t val)
-{
-  TimerState & timerState = timersStates[idx];
-  timerState.state = TMR_OFF; // is changed to RUNNING dep from mode
-  timerState.val = val;
-  timerState.val_10ms = 0 ;
-}
-#endif // #if !defined(CPUARM)
 
 #if defined(ACCURAT_THROTTLE_TIMER)
   #define THR_100    128      // approximately 10% full throttle
@@ -78,7 +68,6 @@ TEST(Timers, timerReset)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 1, TMR_OFF, 0));
 }
 
-#if defined(CPUARM)
 TEST(Timers, timerSet)
 {
   timerSet(0, 500);
@@ -95,9 +84,7 @@ TEST(Timers, timerGreaterThan9hours)
   // test with 24 hours
   EXPECT_TRUE(evalTimersForNSecondsAndTest(24*3600, THR_100, 0, TMR_RUNNING, 24*3600));
 }
-#endif // #if defined(CPUARM)
 
-#if defined(CPUARM) || defined(CPUM2560)
 TEST(Timers, saveRestoreTimers)
 {
   g_model.timers[0].persistent = 1;
@@ -116,7 +103,6 @@ TEST(Timers, saveRestoreTimers)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 0, TMR_OFF,  500));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(0, THR_100, 1, TMR_OFF, 1500));
 }
-#endif
 
 TEST(Timers, timerOff)
 {
@@ -149,12 +135,6 @@ TEST(Timers, timerAbsolute)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_NEGATIVE,  -1));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_STOPPED, -101));
 
-#if !defined(CPUARM)
-  // min timer value test
-  timerSet(0, TIMER_MIN+10);
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(1,   THR_100, 0, TMR_RUNNING, TIMER_MIN+9));
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_RUNNING,   TIMER_MIN));
-#endif
 }
 
 TEST(Timers, timerThrottle)

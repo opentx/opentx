@@ -243,11 +243,9 @@ void menuModelExpoOne(event_t event)
   for (uint8_t i=0; i<EXPO_FIELD_MAX+1; i++) {
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch (i) {
-#if defined(CPUARM)
       case EXPO_FIELD_NAME:
         editSingleName(EXPO_ONE_2ND_COLUMN-sizeof(ed->name)*FW, y, STR_EXPONAME, ed->name, sizeof(ed->name), event, attr);
         break;
-#endif
 
       case EXPO_FIELD_WEIGHT:
         lcdDrawTextAlignedLeft(y, STR_WEIGHT);
@@ -309,13 +307,8 @@ void menuModelExpoOne(event_t event)
   int16_t y512 = expoFn(x512);
   lcdDrawNumber(LCD_W-8-6*FW, 1*FH, calcRESXto100(y512), 0);
 
-#if defined(CPUARM)
   x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
   y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
-#else
-  x512 = CURVE_CENTER_X+x512/(RESXu/CURVE_SIDE_WIDTH);
-  y512 = (LCD_H-1) - (uint16_t)((y512+RESX)/2) * (LCD_H-1) / RESX;
-#endif
 
   lcdDrawSolidVerticalLine(x512, y512-3, 3*2+1);
   lcdDrawSolidHorizontalLine(x512-3, y512, 3*2+1);
@@ -339,7 +332,6 @@ enum MixFields {
   MIX_FIELD_COUNT
 };
 
-#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
 #define GAUGE_WIDTH  33
 #define GAUGE_HEIGHT 6
 void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
@@ -349,13 +341,8 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
   int barMin = offset - weight;
   int barMax = offset + weight;
   if (y > 15) {
-#if defined(CPUARM)
     lcdDrawNumber(x-((barMin >= 0) ? 2 : 3), y-6, barMin, TINSIZE|LEFT);
     lcdDrawNumber(x+GAUGE_WIDTH+1, y-6, barMax, TINSIZE);
-#else
-    lcdDrawNumber(x-((barMin >= 0) ? 2 : 3), y-8, barMin, LEFT);
-    lcdDrawNumber(x+GAUGE_WIDTH+1, y-8, barMax);
-#endif
   }
   if (weight < 0) {
     barMin = -barMin;
@@ -390,7 +377,6 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 }
 #undef GAUGE_WIDTH
 #undef GAUGE_HEIGHT
-#endif
 
 void menuModelMixOne(event_t event)
 {
@@ -420,11 +406,9 @@ void menuModelMixOne(event_t event)
 
     uint8_t attr = (sub==i ? (editMode>0 ? BLINK|INVERS : INVERS) : 0);
     switch (i) {
-#if defined(CPUARM)
       case MIX_FIELD_NAME:
         editSingleName(COLUMN_X+MIXES_2ND_COLUMN, y, STR_MIXNAME, md2->name, sizeof(md2->name), event, attr);
         break;
-#endif
       case MIX_FIELD_SOURCE:
         drawFieldLabel(COLUMN_X, y, NO_INDENT(STR_SOURCE));
         drawSource(COLUMN_X+MIXES_2ND_COLUMN, y, md2->srcRaw, STREXPANDED|attr);
@@ -441,9 +425,7 @@ void menuModelMixOne(event_t event)
         MD_OFFSET_TO_UNION(md2, offset);
         offset.word = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN, y, offset.word, GV_RANGELARGE_OFFSET_NEG, GV_RANGELARGE_OFFSET, attr|LEFT, 0, event);
         MD_UNION_TO_OFFSET(offset, md2);
-#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
         drawOffsetBar(COLUMN_X+MIXES_2ND_COLUMN+22, y, md2);
-#endif
         break;
       }
 
@@ -537,7 +519,6 @@ void menuModelMixOne(event_t event)
 #define _STR_MAX(x) PSTR("/" #x)
 #define STR_MAX(x) _STR_MAX(x)
 
-#if defined(CPUARM)
   #define EXPO_LINE_WEIGHT_POS 7*FW+1
   #define EXPO_LINE_EXPO_POS   10*FW+5
   #define EXPO_LINE_SWITCH_POS 11*FW+2
@@ -550,23 +531,6 @@ void menuModelMixOne(event_t event)
   #define MIX_LINE_CURVE_POS   12*FW+2
   #define MIX_LINE_SWITCH_POS  16*FW
   #define MIX_LINE_DELAY_POS   19*FW+7
-#else
-  #define EXPO_LINE_WEIGHT_POS 7*FW+1
-  #define EXPO_LINE_EXPO_POS   11*FW
-  #define EXPO_LINE_SWITCH_POS 11*FW+4
-  #if MAX_FLIGHT_MODES == 6
-    #define EXPO_LINE_SIDE_POS 15*FW
-  #else
-    #define EXPO_LINE_SIDE_POS 15*FW+2
-  #endif
-  #define EXPO_LINE_FM_POS     LCD_W-FW
-  #define EXPO_LINE_SELECT_POS 24
-  #define MIX_LINE_SRC_POS     4*FW-1
-  #define MIX_LINE_WEIGHT_POS  11*FW+3
-  #define MIX_LINE_CURVE_POS   12*FW+2
-  #define MIX_LINE_SWITCH_POS  16*FW
-  #define MIX_LINE_DELAY_POS   19*FW+7
-#endif
 
 #if defined(NAVIGATION_MENUS)
 void onExpoMixMenu(const char *result)
@@ -611,7 +575,6 @@ void displayMixInfos(coord_t y, MixData *md)
   }
 }
 
-#if defined(CPUARM)
 void displayMixLine(coord_t y, MixData * md)
 {
   if (md->name[0]) {
@@ -621,9 +584,6 @@ void displayMixLine(coord_t y, MixData * md)
     displayMixInfos(y, md);
   }
 }
-#else
-#define displayMixLine(y, md) displayMixInfos(y, md)
-#endif
 
 void displayExpoInfos(coord_t y, ExpoData *ed)
 {
@@ -635,7 +595,6 @@ void displayExpoInfos(coord_t y, ExpoData *ed)
   drawSwitch(EXPO_LINE_SWITCH_POS, y, ed->swtch, 0);
 }
 
-#if defined(CPUARM)
 void displayExpoLine(coord_t y, ExpoData *ed)
 {
   displayExpoInfos(y, ed);
@@ -644,11 +603,6 @@ void displayExpoLine(coord_t y, ExpoData *ed)
     lcdDrawSizedText(EXPO_LINE_NAME_POS, y, ed->name, sizeof(ed->name), ZCHAR);
   }
 }
-#else
-#define displayExpoLine(y, ed) \
-  displayExpoInfos(y, ed); \
-  displayFlightModes(EXPO_LINE_FM_POS, y, ed->flightModes)
-#endif
 
 void menuModelExpoMix(uint8_t expo, event_t event)
 {

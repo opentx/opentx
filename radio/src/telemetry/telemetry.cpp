@@ -30,31 +30,16 @@ uint8_t wshhStreaming = 0;
 
 uint8_t link_counter = 0;
 
-#if defined(CPUARM)
 uint8_t telemetryState = TELEMETRY_INIT;
-#endif
 
 TelemetryData telemetryData;
 
-#if defined(CPUARM)
 uint8_t telemetryProtocol = 255;
-#endif
 
 #if defined(PCBSKY9X) && defined(REVX)
 uint8_t serialInversion = 0;
 #endif
 
-#if !defined(CPUARM)
-uint16_t getChannelRatio(source_t channel)
-{
-  return (uint16_t)g_model.frsky.channels[channel].ratio << g_model.frsky.channels[channel].multiplier;
-}
-
-lcdint_t applyChannelRatio(source_t channel, lcdint_t val)
-{
-  return ((int32_t)val+g_model.frsky.channels[channel].offset) * getChannelRatio(channel) * 2 / 51;
-}
-#endif
 
 void processTelemetryData(uint8_t data)
 {
@@ -83,7 +68,6 @@ void processTelemetryData(uint8_t data)
 
 void telemetryWakeup()
 {
-#if defined(CPUARM)
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
 #if defined(REVX)
   uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
@@ -94,7 +78,6 @@ void telemetryWakeup()
 #endif
     telemetryInit(requiredTelemetryProtocol);
   }
-#endif
 
 #if defined(STM32)
   uint8_t data;
@@ -118,27 +101,13 @@ void telemetryWakeup()
   }
 #endif
 
-#if !defined(CPUARM)
-  if (IS_FRSKY_D_PROTOCOL()) {
-    // Attempt to transmit any waiting Fr-Sky alarm set packets every 50ms (subject to packet buffer availability)
-    static uint8_t frskyTxDelay = 5;
-    if (frskyAlarmsSendState && (--frskyTxDelay == 0)) {
-      frskyTxDelay = 5; // 50ms
-#if !defined(SIMU)
-      frskyDSendNextAlarm();
-#endif
-    }
-  }
-#endif
 
-#if defined(CPUARM)
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     const TelemetrySensor & sensor = g_model.telemetrySensors[i];
     if (sensor.type == TELEM_TYPE_CALCULATED) {
       telemetryItems[i].eval(sensor);
     }
   }
-#endif
 
 #if defined(VARIO)
   if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
@@ -148,7 +117,6 @@ void telemetryWakeup()
   
 #define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
 
-#if defined(CPUARM)
   static tmr10ms_t alarmsCheckTime = 0;
   #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
@@ -206,70 +174,21 @@ void telemetryWakeup()
       }
     }
   }
-#endif
 }
 
 void telemetryInterrupt10ms()
 {
-#if defined(FRSKY_HUB) && !defined(CPUARM)
-  uint16_t voltage = 0; /* unit: 1/10 volts */
-  for (uint8_t i=0; i<telemetryData.hub.cellsCount; i++)
-    voltage += telemetryData.hub.cellVolts[i];
-  voltage /= (10 / TELEMETRY_CELL_VOLTAGE_MUTLIPLIER);
-  telemetryData.hub.cellsSum = voltage;
-  if (telemetryData.hub.cellsSum < telemetryData.hub.minCells) {
-    telemetryData.hub.minCells = telemetryData.hub.cellsSum;
-  }
-#endif
 
   if (TELEMETRY_STREAMING()) {
     if (!TELEMETRY_OPENXSENSOR()) {
-#if defined(CPUARM)
       for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
         const TelemetrySensor & sensor = g_model.telemetrySensors[i];
         if (sensor.type == TELEM_TYPE_CALCULATED) {
           telemetryItems[i].per10ms(sensor);
         }
       }
-#else
-      // power calculation
-      uint8_t channel = g_model.frsky.voltsSource;
-      if (channel <= FRSKY_VOLTS_SOURCE_A2) {
-        voltage = applyChannelRatio(channel, telemetryData.analog[channel].value) / 10;
-      }
-
-#if defined(FRSKY_HUB)
-      else if (channel == FRSKY_VOLTS_SOURCE_FAS) {
-        voltage = telemetryData.hub.vfas;
-      }
-#endif
-
-#if defined(FRSKY_HUB)
-      uint16_t current = telemetryData.hub.current; /* unit: 1/10 amps */
-#else
-      uint16_t current = 0;
-#endif
-
-      channel = g_model.frsky.currentSource - FRSKY_CURRENT_SOURCE_A1;
-      if (channel < MAX_FRSKY_A_CHANNELS) {
-        current = applyChannelRatio(channel, telemetryData.analog[channel].value) / 10;
-      }
-
-      telemetryData.hub.power = ((current>>1) * (voltage>>1)) / 25;
-
-      telemetryData.hub.currentPrescale += current;
-      if (telemetryData.hub.currentPrescale >= 3600) {
-        telemetryData.hub.currentConsumption += 1;
-        telemetryData.hub.currentPrescale -= 3600;
-      }
-#endif
     }
 
-#if !defined(CPUARM)
-    if (telemetryData.hub.power > telemetryData.hub.maxPower) {
-      telemetryData.hub.maxPower = telemetryData.hub.power;
-    }
-#endif
   }
 
 #if defined(WS_HOW_HIGH)
@@ -283,12 +202,7 @@ void telemetryInterrupt10ms()
   }
   else {
 #if !defined(SIMU)
-#if defined(CPUARM)
     telemetryData.rssi.reset();
-#else
-    telemetryData.rssi[0].set(0);
-    telemetryData.rssi[1].set(0);
-#endif
 #endif
   }
 }
@@ -297,82 +211,18 @@ void telemetryReset()
 {
   memclear(&telemetryData, sizeof(telemetryData));
 
-#if defined(CPUARM)
   for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
     telemetryItems[index].clear();
   }
-#endif
 
   telemetryStreaming = 0; // reset counter only if valid frsky packets are being detected
   link_counter = 0;
 
-#if defined(CPUARM)
   telemetryState = TELEMETRY_INIT;
-#endif
 
-#if defined(FRSKY_HUB) && !defined(CPUARM)
-  telemetryData.hub.gpsLatitude_bp = 2;
-  telemetryData.hub.gpsLongitude_bp = 2;
-  telemetryData.hub.gpsFix = -1;
-#endif
 
-#if defined(SIMU) && !defined(CPUARM)
-  telemetryData.rssi[0].value = 75;
-  telemetryData.rssi[1].value = 75;
-  telemetryData.analog[TELEM_ANA_A1].set(120, UNIT_VOLTS);
-  telemetryData.analog[TELEM_ANA_A2].set(240, UNIT_VOLTS);
-
-  telemetryData.hub.fuelLevel = 75;
-  telemetryData.hub.rpm = 12000;
-  telemetryData.hub.vfas = 100;
-  telemetryData.hub.minVfas = 90;
-
-#if defined(GPS)
-  telemetryData.hub.gpsFix = 1;
-  telemetryData.hub.gpsLatitude_bp = 4401;
-  telemetryData.hub.gpsLatitude_ap = 7710;
-  telemetryData.hub.gpsLongitude_bp = 1006;
-  telemetryData.hub.gpsLongitude_ap = 8872;
-  telemetryData.hub.gpsSpeed_bp = 200;  //in knots
-  telemetryData.hub.gpsSpeed_ap = 0;
-  getGpsPilotPosition();
-
-  telemetryData.hub.gpsLatitude_bp = 4401;
-  telemetryData.hub.gpsLatitude_ap = 7455;
-  telemetryData.hub.gpsLongitude_bp = 1006;
-  telemetryData.hub.gpsLongitude_ap = 9533;
-  getGpsDistance();
-#endif
-
-  telemetryData.hub.airSpeed = 1000; // 185.1 km/h
-
-  telemetryData.hub.cellsCount = 6;
-  telemetryData.hub.cellVolts[0] = 410/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
-  telemetryData.hub.cellVolts[1] = 420/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
-  telemetryData.hub.cellVolts[2] = 430/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
-  telemetryData.hub.cellVolts[3] = 440/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
-  telemetryData.hub.cellVolts[4] = 450/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
-  telemetryData.hub.cellVolts[5] = 460/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
-  telemetryData.hub.minCellVolts = 250/TELEMETRY_CELL_VOLTAGE_MUTLIPLIER;
-  telemetryData.hub.minCell = 300;    //unit 10mV
-  telemetryData.hub.minCells = 220;  //unit 100mV
-  //telemetryData.hub.cellsSum = 261;    //calculated from cellVolts[]
-
-  telemetryData.hub.gpsAltitude_bp = 50;
-  telemetryData.hub.baroAltitude_bp = 50;
-  telemetryData.hub.minAltitude = 10;
-  telemetryData.hub.maxAltitude = 500;
-
-  telemetryData.hub.accelY = 100;
-  telemetryData.hub.temperature1 = -30;
-  telemetryData.hub.maxTemperature1 = 100;
-
-  telemetryData.hub.current = 55;
-  telemetryData.hub.maxCurrent = 65;
-#endif
 }
 
-#if defined(CPUARM)
 // we don't reset the telemetry here as we would also reset the consumption after model load
 void telemetryInit(uint8_t protocol)
 {
@@ -432,19 +282,7 @@ void telemetryInit(uint8_t protocol)
   }
 #endif
 }
-#else
-void telemetryInit()
-{
-  telemetryPortInit();
-}
-#endif
 
-#if !defined(CPUARM)
-NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm)
-{
-  return (45 - 3*alarm + g_model.frsky.rssiAlarms[alarm].value);
-}
-#endif
 
 #if defined(LOG_TELEMETRY) && !defined(SIMU)
 extern FIL g_telemetryFile;

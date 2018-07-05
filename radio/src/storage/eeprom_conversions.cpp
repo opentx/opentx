@@ -194,14 +194,12 @@ enum Telemetry216Source {
   TELEM216_GPS_TIME,
 };
 
-#if defined(CPUARM)
 PACK(typedef struct {
   uint8_t type:3;
   uint8_t smooth:1;
   uint8_t spare:4;
   int8_t  points;
 }) CurveData_v216;
-#endif
 
 #if defined(PCBTARANIS)
 PACK(typedef struct {

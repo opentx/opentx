@@ -45,15 +45,10 @@ enum RusPrompts {
 
 #if defined(VOICE)
 
-#if defined(CPUARM)
   #define RU_PUSH_UNIT_PROMPT(u, p) ru_pushUnitPrompt((u), (p), id)
-#else
-  #define RU_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
-#endif
 
 I18N_PLAY_FUNCTION(ru, pushUnitPrompt,  uint8_t unitprompt, int16_t number)
 {
-#if defined(CPUARM)
     if (number < 0){ // if negative number, we have to use 2 units form (for example value = 1.3)
        PUSH_UNIT_PROMPT(unitprompt, 2);
     }
@@ -74,15 +69,6 @@ I18N_PLAY_FUNCTION(ru, pushUnitPrompt,  uint8_t unitprompt, int16_t number)
       else
         PUSH_UNIT_PROMPT(unitprompt, 5);
     }
-#else
-
-   // TODO: add rules for Russian language
-  unitprompt = RU_PROMPT_UNITS_BASE + unitprompt*4;
-  if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
-  else
-    PUSH_NUMBER_PROMPT(unitprompt+1);
-#endif
 }
 
 I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -92,31 +78,12 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
   div_t qr = div((int)number, 10);
   int8_t mode = MODE(att);
   if (mode > 0 && att != RU_FEMALE_UNIT) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(RU_PROMPT_POINT_BASE + qr.rem);

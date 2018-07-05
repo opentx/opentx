@@ -20,10 +20,8 @@
 
 #include "opentx.h"
 
-#if defined(CPUARM)
 uint8_t popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 void (*popupFunc)(event_t event) = NULL;
-#endif
 
 #if defined(NAVIGATION_MENUS)
 const char * popupMenuItems[POPUP_MENU_MAX_LINES];
@@ -43,11 +41,7 @@ const char * runPopupMenu(event_t event)
   lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
 
   for (uint8_t i=0; i<display_count; i++) {
-#if defined(CPUARM)
     lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], 0);
-#else
-    lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i], popupMenuFlags);
-#endif
     if (i == s_menu_item) lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
@@ -71,11 +65,7 @@ const char * runPopupMenu(event_t event)
       }
 #endif
       else {
-#if defined(CPUARM)
         s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
-#else
-        s_menu_item = display_count - 1;
-#endif
 #if defined(SDCARD)
         if (popupMenuNoItems > MENU_MAX_DISPLAY_LINES) {
           popupMenuOffset = popupMenuNoItems - display_count;
@@ -114,11 +104,7 @@ const char * runPopupMenu(event_t event)
     CASE_EVT_ROTARY_BREAK
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
-#if defined(CPUARM)
       result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
-#else
-      result = popupMenuItems[s_menu_item];
-#endif
       // no break
 
 #if defined(CASE_EVT_ROTARY_LONG)

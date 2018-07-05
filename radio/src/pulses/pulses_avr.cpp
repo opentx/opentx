@@ -62,17 +62,6 @@ void set_timer3_ppm(void);
 
 void startPulses()
 {
-#if defined(CPUM2560)
-#if defined(DSM2_SERIAL)
-  if (!IS_DSM2_PROTOCOL(g_model.protocol))
-#endif
-  {
-    // TODO g: There has to be a better place for this bug fix
-    OCR1B = 0xffff; /* Prevent any PPM_OUT pin toggle before the TCNT1 interrupt
-                       fires for the first time and sets up the pulse period. 
-                       *** Prevents WDT reset loop. */
-  }
-#endif
 
 #if defined(SIMU)
   s_current_protocol[0] = g_model.protocol;
@@ -107,17 +96,6 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
   if (IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0]) || *((uint16_t*)pulses2MHzRPtr) == 0) {
     if (!IS_DSM2_SERIAL_PROTOCOL(s_current_protocol[0])) {
       OCR1A = SETUP_PULSES_DURATION;
-#if defined(CPUM2560) // CPUM2560 hardware toggled PPM out.
-      OCR1B = OCR1A;
-      if (g_model.pulsePol) {
-        TCCR1A = (TCCR1A | (1<<COM1B1)) & ~(1<<COM1B0); // Set idle level.
-      }
-      else {
-        TCCR1A |= 3<<COM1B0;
-      }
-      TCCR1C = 1<<FOC1B; // Strobe FOC1B.
-      TCCR1A = (TCCR1A | (1<<COM1B0)) & ~(1<<COM1B1); // Toggle OC1B on next match.
-#endif
     }
     setupPulses(); // Does not sei() for setupPulsesPPM.
     heartbeat |= HEART_TIMER_PULSES;
@@ -125,7 +103,6 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
   }
 
   if (s_current_protocol[0] != PROTO_NONE) {
-#if !defined(CPUM2560)
     // Original Bit-bang for PPM.
     if (g_ppmPulsePolarity) {
       PORTB |= (1<<OUT_B_PPM); // GCC optimisation should result in a single SBI instruction
@@ -135,16 +112,6 @@ ISR(TIMER1_COMPA_vect) // 2MHz pulse generation (BLOCKING ISR).
       PORTB &= ~(1<<OUT_B_PPM);
       g_ppmPulsePolarity = 1;
     }
-#else // defined(CPUM2560)
-    // CPUM2560 hardware toggled PPM out.
-    if (*(uint16_t*)(pulses2MHzRPtr + sizeof(uint16_t)) == 0) {
-      // Look one step ahead to see if we are currently the "rest" period.
-      OCR1B = 0xffff; // Prevent next compare match hence toggle.
-    }
-    else {
-      OCR1B = *((uint16_t*) pulses2MHzRPtr);
-    }
-#endif
   }
 
   OCR1A = *((uint16_t*) pulses2MHzRPtr); // Schedule next Timer1 interrupt vector (to this function).
@@ -487,23 +454,13 @@ void sendByteDsm2(uint8_t b) //max 10changes 0 10 10 10 10 1
       len += BITLEN_DSM2;
     }
     else {
-#if defined(CPUM2560)
-      // G: Compensate for main clock synchronisation -- to get accurate 8us bit length
-      // NOTE: This has now been tested as NOT required on the stock board, with the ATmega64A chip.
-      _send_1(nlev ? len-5 : len+3);
-#else
       _send_1(len-1);
-#endif
       len  = BITLEN_DSM2;
       lev  = nlev;
     }
     b = (b>>1) | 0x80; //shift in stop bit
   }
-#if defined (CPUM2560)
-  _send_1(len+BITLEN_DSM2+3); // 2 stop bits
-#else
   _send_1(len+BITLEN_DSM2-1); // 2 stop bits
-#endif
 }
 
 // DSM2=PPM mode
@@ -554,10 +511,8 @@ void setupPulsesDSM2()
 
   pulses2MHzWPtr -= 1; //remove last stopbits and
 
-#if !defined(CPUM2560)
 //G: Removed to get waveform correct on analyser. Leave in for stock board until tests can be done.
   _send_1(255); // prolong them
-#endif
   _send_1(0); //end of pulse stream
   
   pulses2MHzRPtr = pulses2MHz;
@@ -749,16 +704,6 @@ void setupPulses()
     required_protocol = PROTO_NONE;
   }
 
-#if defined(CPUM2560) && defined(DSM2_PPM) && defined(TX_CADDY)
-// This should be here, executed on every loop, to ensure re-setting of the 
-// TX moudle power control output register, in case of electrical glitch.
-// (Following advice of Atmel for MCU's used  in industrial / mission cricital 
-// applications.)
-  if (IS_DSM2_PROTOCOL(required_protocol))
-    PORTH &= ~0x80;
-  else
-    PORTH |= 0x80;
-#endif
 
   if (s_current_protocol[0] != required_protocol) {
 
@@ -901,12 +846,6 @@ void setupPulses()
       sei();
 #endif
       setupPulsesDSM2(); // Different versions for DSM2=SERIAL vs. DSM2=PPM
-#if defined(CPUM2560) && defined(DSM2_PPM)
-      // Ensure each DSM2=PPM serial packet starts out with the correct bit polarity
-      TCCR1A = (0 << WGM10) | (3<<COM1B1);  // Make Waveform Generator 'SET' OCR1B pin on next compare event and ...
-      TCCR1C = (1<<FOC1B);                  // ... force compare event, to set OCR1B pin high.
-      TCCR1A = (1<<COM1B0);                 // Output is ready. Now configure OCR1B pin into 'TOGGLE' mode.
-#endif
       break;
 #endif
 
@@ -939,26 +878,11 @@ void setupPulses()
 #if defined(DSM2_PPM) || defined(PXX)
 ISR(TIMER1_CAPT_vect) // 2MHz pulse generation
 {
-#if defined (CPUM2560)
-  /*** G9X V4 hardware toggled PPM_out avoids any chance of output timing jitter ***/
-
-  // OCR1B output pin (PPM_OUT) is pre-SET in setupPulses -- on every new 
-  // frame, for safety -- and then configured to toggle on each OCR1B compare match.
-  // Thus, all we need do here is update the compare regisiter(s) ...
-  uint8_t x;
-  x = *pulses2MHzRPtr++;  // Byte size
-  ICR1 = x;
-  OCR1B = (uint16_t)x;    // Duplicate capture compare value for OCR1B, because Timer1 is in CTC mode
-                          // and thus we cannot use the OCR1B int. vector. (Should have put PPM_OUT 
-                          // pin on OCR1A. Oh well.)
-
-#else // manual bit-bang mode
   uint8_t x;
   PORTB ^= (1<<OUT_B_PPM);    // Toggle PPM_OUT
   x = *pulses2MHzRPtr++;      // Byte size
   ICR1 = x;
   if (x > 200) PORTB |= (1<<OUT_B_PPM); // Make sure pulses are the correct way up.
-#endif
 }
 
 #if defined(PXX)

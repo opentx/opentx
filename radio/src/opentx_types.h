@@ -21,7 +21,6 @@
 #ifndef _OTXTYPES_H_
 #define _OTXTYPES_H_
 
-#if defined(CPUARM)
   typedef uint32_t tmr10ms_t;
   typedef int32_t rotenc_t;
   typedef int32_t getvalue_t;
@@ -29,14 +28,5 @@
   typedef int32_t swsrc_t;
   typedef int16_t safetych_t;
   typedef uint16_t bar_threshold_t;
-#else
-  typedef uint16_t tmr10ms_t;
-  typedef int8_t rotenc_t;
-  typedef int16_t getvalue_t;
-  typedef uint8_t mixsrc_t;
-  typedef int8_t swsrc_t;
-  typedef int8_t safetych_t;
-  typedef uint8_t bar_threshold_t;
-#endif
 
 #endif // _OTXTYPES_H_

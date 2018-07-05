@@ -70,10 +70,6 @@ inline void MIXER_RESET()
   memset(ex_chans, 0, sizeof(ex_chans));
   memset(act, 0, sizeof(act));
   memset(swOn, 0, sizeof(swOn));
-#if !defined(CPUARM)
-  s_last_switch_used = 0;
-  s_last_switch_value = 0;
-#endif
   mixerCurrentFlightMode = lastFlightMode = 0;
   lastAct = 0;
   logicalSwitchesReset();
@@ -85,14 +81,12 @@ inline void TELEMETRY_RESET()
   memclear(&telemetryData, sizeof(telemetryData));
   TELEMETRY_RSSI() = 100;
 #endif
-#if defined(CPUARM)
 #if defined(TELEMETRY_FRSKY)
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     telemetryItems[i].clear();
   }
 #endif
   memclear(g_model.telemetrySensors, sizeof(g_model.telemetrySensors));
-#endif
 }
 
 class OpenTxTest : public testing::Test 

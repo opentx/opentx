@@ -101,11 +101,7 @@
   #define MAX_TELEMETRY_SENSORS        0
 #endif
 
-#if defined(CPUARM)
   #define MAX_TIMERS                   3
-#else
-  #define MAX_TIMERS                   2
-#endif
 
 #define NUM_CYC                        3
 #define NUM_CAL_PPM                    4
@@ -116,11 +112,7 @@ enum CurveType {
   CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
 };
 
-#if defined(CPUARM)
   #define MIN_POINTS_PER_CURVE         3
-#else
-  #define MIN_POINTS_PER_CURVE         3
-#endif
 
 #define MAX_POINTS_PER_CURVE           17
 
@@ -148,7 +140,7 @@ enum CurveType {
   #define LEN_FUNCTION_NAME            8
   #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
-#elif defined(CPUARM)
+#else
   #define LEN_MODEL_NAME               10
   #define LEN_TIMER_NAME               3
   #define LEN_FLIGHT_MODE_NAME         6
@@ -159,11 +151,6 @@ enum CurveType {
   #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
   #define MAX_CURVE_POINTS             512
-#else
-  #define LEN_MODEL_NAME               10
-  #define LEN_FLIGHT_MODE_NAME         6
-  #define MAX_CURVES                   8
-  #define MAX_CURVE_POINTS             (112-MAX_CURVES)
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
@@ -180,9 +167,6 @@ enum CurveType {
 #elif defined(PCBSKY9X)
   #define MAX_ROTARY_ENCODERS          1
   #define NUM_ROTARY_ENCODERS          1
-#elif defined(CPUM2560)
-  #define MAX_ROTARY_ENCODERS          2
-  #define NUM_ROTARY_ENCODERS          2
 #else
   #define MAX_ROTARY_ENCODERS          0
   #define NUM_ROTARY_ENCODERS          0
@@ -286,13 +270,12 @@ enum UartModes {
   #define LEN_ANA_NAME                 3
   #define LEN_MODEL_FILENAME           16
   #define LEN_BLUETOOTH_NAME           10
-#elif defined(CPUARM)
+#else
   #define LEN_SWITCH_NAME              3
   #define LEN_ANA_NAME                 3
   #define LEN_BLUETOOTH_NAME           10
 #endif
 
-#if defined(CPUARM)
 #define TELEM_LABEL_LEN           4
 enum TelemetryUnit {
   UNIT_RAW,
@@ -341,109 +324,6 @@ enum TelemetryUnit {
 #define UNIT_DIST UNIT_METERS
 #define UNIT_TEMPERATURE UNIT_CELSIUS
 #define UNIT_SPEED UNIT_KMH
-#else
-#if !defined(CPUARM)
-enum TelemetrySource {
-  TELEM_NONE,
-  TELEM_TX_VOLTAGE,
-  TELEM_TIMER1,
-  TELEM_TIMER2,
-  TELEM_TIMER_MAX=TELEM_TIMER2,
-  TELEM_RSSI_TX,
-  TELEM_RSSI_RX,
-  TELEM_A_FIRST,
-  TELEM_A1=TELEM_A_FIRST,
-  TELEM_A2,
-  TELEM_A_LAST=TELEM_A2,
-  TELEM_ALT,
-  TELEM_RPM,
-  TELEM_FUEL,
-  TELEM_T1,
-  TELEM_T2,
-  TELEM_SPEED,
-  TELEM_DIST,
-  TELEM_GPSALT,
-  TELEM_CELL,
-  TELEM_CELLS_SUM,
-  TELEM_VFAS,
-  TELEM_CURRENT,
-  TELEM_CONSUMPTION,
-  TELEM_POWER,
-  TELEM_ACCx,
-  TELEM_ACCy,
-  TELEM_ACCz,
-  TELEM_HDG,
-  TELEM_VSPEED,
-  TELEM_ASPEED,
-  TELEM_DTE,
-  TELEM_MIN_A_FIRST,
-  TELEM_MIN_A1=TELEM_MIN_A_FIRST,
-  TELEM_MIN_A2,
-  TELEM_MIN_A_LAST=TELEM_MIN_A2,
-  TELEM_MIN_ALT,
-  TELEM_MAX_ALT,
-  TELEM_MAX_RPM,
-  TELEM_MAX_T1,
-  TELEM_MAX_T2,
-  TELEM_MAX_SPEED,
-  TELEM_MAX_DIST,
-  TELEM_MAX_ASPEED,
-  TELEM_MIN_CELL,
-  TELEM_MIN_CELLS_SUM,
-  TELEM_MIN_VFAS,
-  TELEM_MAX_CURRENT,
-  TELEM_MAX_POWER,
-  TELEM_ACC,
-  TELEM_GPS_TIME,
-  TELEM_CSW_MAX = TELEM_MAX_POWER,
-  TELEM_NOUSR_MAX = TELEM_A2,
-#if defined(TELEMETRY_FRSKY)
-  TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
-#else
-  TELEM_DISPLAY_MAX = TELEM_TIMER2, // because used also in PlayValue
-#endif
-  TELEM_STATUS_MAX = TELEM_GPS_TIME,
-  TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
-};
-
-#if defined(FRSKY_HUB)
-  #define NUM_TELEMETRY      TELEM_CSW_MAX
-#elif defined(WS_HOW_HIGH)
-  #define NUM_TELEMETRY      TELEM_ALT
-#elif defined(TELEMETRY_FRSKY)
-  #define NUM_TELEMETRY      TELEM_A2
-#elif defined(TELEMETRY_MAVLINK)
-  #define NUM_TELEMETRY      4
-#else
-  #define NUM_TELEMETRY      TELEM_TIMER2
-#endif
-
-#endif
-
-enum TelemetryUnit {
-  UNIT_VOLTS,
-  UNIT_AMPS,
-  UNIT_METERS_PER_SECOND,
-  UNIT_RAW,
-  UNIT_SPEED,
-  UNIT_DIST,
-  UNIT_TEMPERATURE,
-  UNIT_PERCENT,
-  UNIT_MILLIAMPS,
-  UNIT_A1A2_MAX = UNIT_MILLIAMPS,
-  UNIT_MAH,
-  UNIT_WATTS,
-  UNIT_DB,
-  UNIT_FEET,
-  UNIT_KTS,
-  UNIT_HOURS,
-  UNIT_MINUTES,
-  UNIT_SECONDS,
-  UNIT_RPMS,
-  UNIT_G,
-  UNIT_HDG
-};
-#endif
 
 #if LCD_W >= 212
   #define NUM_LINE_ITEMS 3
@@ -455,7 +335,6 @@ enum TelemetryUnit {
 #define MAX_TELEM_SCRIPT_INPUTS  8
 #endif
 
-#if defined(CPUARM)
 enum TelemetryScreenType {
   TELEMETRY_SCREEN_TYPE_NONE,
   TELEMETRY_SCREEN_TYPE_VALUES,
@@ -470,13 +349,6 @@ enum TelemetryScreenType {
 #define MAX_TELEMETRY_SCREENS 4
 #define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.frsky.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
-#else
-#define MAX_FRSKY_A_CHANNELS 2
-#define MAX_TELEMETRY_SCREENS 2
-#define IS_BARS_SCREEN(screenIndex)    (g_model.frsky.screensType & (1<<(screenIndex)))
-#define MIN_BLADES 0 // 2 blades
-#define MAX_BLADES 3 // 5 blades
-#endif
 
 #define FAILSAFE_CHANNEL_HOLD          2000
 #define FAILSAFE_CHANNEL_NOPULSE       2001
@@ -492,24 +364,14 @@ enum PotsWarnMode {
   POTS_WARN_AUTO
 };
 
-#if !defined(PCBSTD)
   #define LEN_GVAR_NAME                3
   #define GVAR_MAX                     1024
   #define GVAR_MIN                     -GVAR_MAX
-#endif
 
 #define RESERVE_RANGE_FOR_GVARS        10
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
 
-#if defined(PCBSTD) && defined(GVARS)
-  #define MAX_GVARS                    5
-#elif defined(PCBSTD)
-  #define MAX_GVARS                    0
-#elif defined(CPUARM)
   #define MAX_GVARS                    9
-#else
-  #define MAX_GVARS                    5
-#endif
 
 enum SwitchSources {
   SWSRC_NONE = 0,
@@ -630,9 +492,6 @@ enum SwitchSources {
 
 #if defined(PCBSKY9X)
   SWSRC_REa,
-#elif defined(CPUM2560)
-  SWSRC_REa,
-  SWSRC_REb,
 #endif
 
   SWSRC_FIRST_LOGICAL_SWITCH,
@@ -653,14 +512,12 @@ enum SwitchSources {
   SWSRC_ON,
   SWSRC_ONE,
 
-#if defined(CPUARM)
   SWSRC_FIRST_FLIGHT_MODE,
   SWSRC_LAST_FLIGHT_MODE = SWSRC_FIRST_FLIGHT_MODE+MAX_FLIGHT_MODES-1,
 
   SWSRC_TELEMETRY_STREAMING,
   SWSRC_FIRST_SENSOR,
   SWSRC_LAST_SENSOR = SWSRC_FIRST_SENSOR+MAX_TELEMETRY_SENSORS-1,
-#endif
 
   SWSRC_COUNT,
 
@@ -669,20 +526,13 @@ enum SwitchSources {
   SWSRC_LAST = SWSRC_COUNT-1,
   SWSRC_FIRST = -SWSRC_LAST,
 
-#if defined(CPUARM)
   SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_COUNT-1,
   SWSRC_LAST_IN_MIXES = SWSRC_COUNT-1,
-#else
-  SWSRC_LAST_IN_LOGICAL_SWITCHES = SWSRC_LAST_LOGICAL_SWITCH,
-  SWSRC_LAST_IN_MIXES = SWSRC_LAST_LOGICAL_SWITCH,
-#endif
 
   SWSRC_FIRST_IN_LOGICAL_SWITCHES = -SWSRC_LAST_IN_LOGICAL_SWITCHES,
   SWSRC_FIRST_IN_MIXES = -SWSRC_LAST_IN_MIXES,
 
-#if defined(CPUARM)
   SWSRC_INVERT = SWSRC_COUNT+1,
-#endif
 };
 
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
@@ -755,16 +605,6 @@ enum MixSources {
 #if defined(PCBSKY9X)
   MIXSRC_REa,
   MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REa,
-#elif defined(CPUM2560)
-  MIXSRC_REa,
-  MIXSRC_REb,
-  #if ROTARY_ENCODERS > 2
-    MIXSRC_REc,
-    MIXSRC_REd,
-    MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REd,
-  #else
-    MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REb,
-  #endif
 #endif
 
   MIXSRC_MAX,
@@ -863,7 +703,6 @@ enum MixSources {
   MIXSRC_GVAR1 = MIXSRC_FIRST_GVAR,         LUA_EXPORT_MULTIPLE("gvar", "Global variable %d", MAX_GVARS)
   MIXSRC_LAST_GVAR = MIXSRC_FIRST_GVAR+MAX_GVARS-1,
 
-#if defined(CPUARM)
   MIXSRC_TX_VOLTAGE,                        LUA_EXPORT("tx-voltage", "Transmitter battery voltage [volts]")
   MIXSRC_TX_TIME,                           LUA_EXPORT("clock", "RTC clock [minutes from midnight]")
 #if defined(INTERNAL_GPS)
@@ -881,14 +720,9 @@ enum MixSources {
   MIXSRC_TIMER2,                            LUA_EXPORT("timer2", "Timer 2 value [seconds]")
   MIXSRC_TIMER3,                            LUA_EXPORT("timer3", "Timer 3 value [seconds]")
   MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
-#endif
 
   MIXSRC_FIRST_TELEM,
-#if defined(CPUARM)
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
-#else
-  MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+NUM_TELEMETRY-1
-#endif
 };
 
 #define MIXSRC_FIRST   (MIXSRC_NONE+1)
@@ -910,36 +744,25 @@ enum Functions {
   FUNC_TRAINER,
   FUNC_INSTANT_TRIM,
   FUNC_RESET,
-#if defined(CPUARM)
   FUNC_SET_TIMER,
-#endif
   FUNC_ADJUST_GVAR,
-#if defined(CPUARM)
   FUNC_VOLUME,
   FUNC_SET_FAILSAFE,
   FUNC_RANGECHECK,
   FUNC_BIND,
-#endif
   // then the other functions
   FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_SOUND = FUNC_FIRST_WITHOUT_ENABLE,
   FUNC_PLAY_TRACK,
-#if !defined(CPUARM)
-  FUNC_PLAY_BOTH,
-#endif
   FUNC_PLAY_VALUE,
-#if defined(CPUARM)
   FUNC_RESERVE4,
   FUNC_PLAY_SCRIPT,
   FUNC_RESERVE5,
   FUNC_BACKGND_MUSIC,
   FUNC_BACKGND_MUSIC_PAUSE,
-#endif
   FUNC_VARIO,
   FUNC_HAPTIC,
-#if !defined(PCBSTD)
   FUNC_LOGS,
-#endif
   FUNC_BACKLIGHT,
 #if defined(PCBTARANIS)
   FUNC_SCREENSHOT,
@@ -972,9 +795,7 @@ enum CountDownModes {
 enum ResetFunctionParam {
   FUNC_RESET_TIMER1,
   FUNC_RESET_TIMER2,
-#if defined(CPUARM)
   FUNC_RESET_TIMER3,
-#endif
   FUNC_RESET_FLIGHT,
 #if defined(TELEMETRY_FRSKY)
   FUNC_RESET_TELEMETRY,
@@ -985,10 +806,8 @@ enum ResetFunctionParam {
 #if ROTARY_ENCODERS > 1
   FUNC_RESET_ROTENC2,
 #endif
-#if defined(CPUARM)
   FUNC_RESET_PARAM_FIRST_TELEM,
   FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + MAX_TELEMETRY_SENSORS,
-#endif
   FUNC_RESET_PARAMS_COUNT,
   FUNC_RESET_PARAM_LAST = FUNC_RESET_PARAMS_COUNT-1,
 };

@@ -124,13 +124,6 @@ void logsClose()
   }
 }
 
-#if !defined(CPUARM)
-getvalue_t getConvertedTelemetryValue(getvalue_t val, uint8_t unit)
-{
-  convertUnit(val, unit);
-  return val;
-}
-#endif
 
 void writeHeader()
 {
@@ -141,23 +134,7 @@ void writeHeader()
 #endif
 
 #if defined(TELEMETRY_FRSKY)
-#if !defined(CPUARM)
-  f_puts("Buffer,RX,TX,A1,A2,", &g_oLogFile);
-#if defined(FRSKY_HUB)
-  if (IS_USR_PROTO_FRSKY_HUB()) {
-    f_puts("GPS Date,GPS Time,Long,Lat,Course,GPS Speed(kts),GPS Alt,Baro Alt(", &g_oLogFile);
-    f_puts(TELEMETRY_BARO_ALT_UNIT, &g_oLogFile);
-    f_puts("),Vertical Speed,Air Speed(kts),Temp1,Temp2,RPM,Fuel," TELEMETRY_CELLS_LABEL "Current,Consumption,Vfas,AccelX,AccelY,AccelZ,", &g_oLogFile);
-  }
-#endif
-#if defined(WS_HOW_HIGH)
-  if (IS_USR_PROTO_WS_HOW_HIGH()) {
-    f_puts("WSHH Alt,", &g_oLogFile);
-  }
-#endif
-#endif
 
-#if defined(CPUARM)
   char label[TELEM_LABEL_LEN+7];
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     if (isTelemetryFieldAvailable(i)) {
@@ -177,7 +154,6 @@ void writeHeader()
       }
     }
   }
-#endif
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
@@ -249,59 +225,7 @@ void logsWrite()
 #endif
 
 #if defined(TELEMETRY_FRSKY)
-#if !defined(CPUARM)
-      f_printf(&g_oLogFile, "%d,%d,%d,", telemetryStreaming, RAW_FRSKY_MINMAX(telemetryData.rssi[0]), RAW_FRSKY_MINMAX(telemetryData.rssi[1]));
-      for (uint8_t i=0; i<MAX_FRSKY_A_CHANNELS; i++) {
-        int16_t converted_value = applyChannelRatio(i, RAW_FRSKY_MINMAX(telemetryData.analog[i]));
-        f_printf(&g_oLogFile, "%d.%02d,", converted_value/100, converted_value%100);
-      }
 
-#if defined(FRSKY_HUB)
-      TELEMETRY_BARO_ALT_PREPARE();
-
-      if (IS_USR_PROTO_FRSKY_HUB()) {
-        f_printf(&g_oLogFile, "%4d-%02d-%02d,%02d:%02d:%02d,%03d.%04d%c,%03d.%04d%c,%03d.%02d," TELEMETRY_GPS_SPEED_FORMAT TELEMETRY_GPS_ALT_FORMAT TELEMETRY_BARO_ALT_FORMAT TELEMETRY_VSPEED_FORMAT TELEMETRY_ASPEED_FORMAT "%d,%d,%d,%d," TELEMETRY_CELLS_FORMAT TELEMETRY_CURRENT_FORMAT "%d," TELEMETRY_VFAS_FORMAT "%d,%d,%d,",
-            telemetryData.hub.year+2000,
-            telemetryData.hub.month,
-            telemetryData.hub.day,
-            telemetryData.hub.hour,
-            telemetryData.hub.min,
-            telemetryData.hub.sec,
-            telemetryData.hub.gpsLongitude_bp,
-            telemetryData.hub.gpsLongitude_ap,
-            telemetryData.hub.gpsLongitudeEW ? telemetryData.hub.gpsLongitudeEW : '-',
-            telemetryData.hub.gpsLatitude_bp,
-            telemetryData.hub.gpsLatitude_ap,
-            telemetryData.hub.gpsLatitudeNS ? telemetryData.hub.gpsLatitudeNS : '-',
-            telemetryData.hub.gpsCourse_bp,
-            telemetryData.hub.gpsCourse_ap,
-            TELEMETRY_GPS_SPEED_ARGS
-            TELEMETRY_GPS_ALT_ARGS
-            TELEMETRY_BARO_ALT_ARGS
-            TELEMETRY_VSPEED_ARGS
-            TELEMETRY_ASPEED_ARGS
-            telemetryData.hub.temperature1,
-            telemetryData.hub.temperature2,
-            telemetryData.hub.rpm,
-            telemetryData.hub.fuelLevel,
-            TELEMETRY_CELLS_ARGS
-            TELEMETRY_CURRENT_ARGS
-            telemetryData.hub.currentConsumption,
-            TELEMETRY_VFAS_ARGS
-            telemetryData.hub.accelX,
-            telemetryData.hub.accelY,
-            telemetryData.hub.accelZ);
-      }
-#endif
-
-#if defined(WS_HOW_HIGH)
-      if (IS_USR_PROTO_WS_HOW_HIGH()) {
-        f_printf(&g_oLogFile, "%d,", TELEMETRY_RELATIVE_BARO_ALT_BP);
-      }
-#endif
-#endif
-
-#if defined(CPUARM)
       for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
         if (isTelemetryFieldAvailable(i)) {
           TelemetrySensor & sensor = g_model.telemetrySensors[i];
@@ -339,7 +263,6 @@ void logsWrite()
           }
         }
       }
-#endif
 #endif
 
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {

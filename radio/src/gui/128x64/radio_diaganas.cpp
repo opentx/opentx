@@ -49,11 +49,7 @@ void menuRadioDiagAnalogs(event_t event)
     lcdDrawChar(lcdNextPos, y, ':');
 #endif
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
-#if defined(CPUARM)
     lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256, RIGHT);
-#else
-    lcdDraw8bitsNumber(x+10*FW-1, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256);
-#endif
   }
 
   // RAS
@@ -63,7 +59,7 @@ void menuRadioDiagAnalogs(event_t event)
     lcdDrawText(1, y, "RAS:");
     lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
   }
-#elif defined(CPUARM)
+#else
   if (IS_MODULE_XJT(EXTERNAL_MODULE)) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + ((NUM_STICKS+NUM_POTS+NUM_SLIDERS)/2)*FH;
     uint8_t x = ((NUM_STICKS+NUM_POTS+NUM_SLIDERS) & 1) ? (LCD_W/2)+FW : 0;
@@ -73,11 +69,6 @@ void menuRadioDiagAnalogs(event_t event)
   }
 #endif
 
-#if !defined(CPUARM)
-  // Display raw BandGap result (debug)
-  lcdDrawText(64+5, MENU_HEADER_HEIGHT+1+3*FH, STR_BG);
-  lcdDrawNumber(64+5+6*FW-3, 1+4*FH, BandGap, RIGHT);
-#endif
 
 #if defined(PCBTARANIS)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, STR_BATT_CALIB);
@@ -90,14 +81,6 @@ void menuRadioDiagAnalogs(event_t event)
   uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
   batCalV /= 55296;
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+4*FH, batCalV, (menuVerticalPosition==HEADER_LINE ? INVERS : 0));
-#elif defined(PCBGRUVIN9X)
-  lcdDrawTextAlignedLeft(6*FH-2, STR_BATT_CALIB);
-  // Gruvin wants 2 decimal places and instant update of volts calib field when button pressed
-  // TODO board.cpp
-  static uint16_t adcBatt;
-  adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8; // running average, sourced directly (to avoid unending debate :P)
-  uint32_t batCalV = ((uint32_t)adcBatt*1390 + (10*(int32_t)adcBatt*g_eeGeneral.txVoltageCalibration)/8) / BandGap;
-  lcdDrawNumber(LEN_CALIB_FIELDS*FW+4*FW, 6*FH-2, batCalV, PREC2|(menuVerticalPosition==HEADER_LINE ? INVERS : 0));
 #else
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH, STR_BATT_CALIB);
   putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH, g_vbat100mV, (menuVerticalPosition==HEADER_LINE ? INVERS : 0));

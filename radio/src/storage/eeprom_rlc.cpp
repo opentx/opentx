@@ -27,9 +27,7 @@ uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
 EeFs      eeFs;
 
-#if defined(CPUARM)
 blkid_t   freeBlocks = 0;
-#endif
 
 uint8_t s_sync_write = false;
 
@@ -42,13 +40,9 @@ static uint8_t EeFsRead(blkid_t blk, uint8_t ofs)
 
 static blkid_t EeFsGetLink(blkid_t blk)
 {
-#if defined(CPUARM)
   blkid_t ret;
   eepromReadBlock((uint8_t *)&ret, blk*BS+BLOCKS_OFFSET, sizeof(blkid_t));
   return ret;
-#else
-  return EeFsRead(blk, 0);
-#endif
 }
 
 static void EeFsSetLink(blkid_t blk, blkid_t val)
@@ -85,16 +79,7 @@ static void EeFsFlush()
 
 uint16_t EeFsGetFree()
 {
-#if defined(CPUARM)
   int32_t ret = freeBlocks * (BS-sizeof(blkid_t));
-#else
-  int16_t ret = 0;
-  blkid_t i = eeFs.freeList;
-  while (i) {
-    ret += BS-sizeof(blkid_t);
-    i = EeFsGetLink(i);
-  }
-#endif
   ret += eeFs.files[FILE_TMP].size;
   ret -= eeFs.files[FILE_MODEL(g_eeGeneral.currModel)].size;
   return (ret > 0 ? ret : 0);
@@ -106,15 +91,11 @@ static void EeFsFree(blkid_t blk)
   blkid_t i = blk;
   blkid_t tmp;
 
-#if defined(CPUARM)
   freeBlocks++;
-#endif
 
   while ((tmp=EeFsGetLink(i))) {
     i = tmp;
-#if defined(CPUARM)
     freeBlocks++;
-#endif
   }
 
   EeFsSetLink(i, eeFs.freeList);
@@ -130,13 +111,9 @@ void eepromCheck()
   memclear(bufp, BLOCKS);
   blkid_t blk ;
 
-#if defined(CPUARM)
   blkid_t blocksCount;
-#endif
   for (uint8_t i=0; i<=MAXFILES; i++) {
-#if defined(CPUARM)
     blocksCount = 0;
-#endif
     blkid_t blk = (i==MAXFILES ? eeFs.freeList : eeFs.files[i].startBlk);
     blkid_t lastBlk = 0;
     while (blk) {
@@ -153,9 +130,7 @@ void eepromCheck()
         blk = 0; // abort
       }
       else {
-#if defined(CPUARM)
         blocksCount++;
-#endif
         bufp[blk] = i+1;
         lastBlk   = blk;
         blk       = EeFsGetLink(blk);
@@ -163,15 +138,11 @@ void eepromCheck()
     }
   }
 
-#if defined(CPUARM)
   freeBlocks = blocksCount;
-#endif
 
   for (blk=FIRSTBLK; blk<BLOCKS; blk++) {
     if (!bufp[blk]) { // unused block
-#if defined(CPUARM)
       freeBlocks++;
-#endif
       EeFsSetLink(blk, eeFs.freeList);
       eeFs.freeList = blk; // chain in front
       EeFsFlushFreelist();
@@ -201,9 +172,7 @@ void storageFormat()
   }
   EeFsSetLink(BLOCKS-1, 0);
   eeFs.freeList = FIRSTBLK;
-#if defined(CPUARM)
   freeBlocks = BLOCKS;
-#endif
   EeFsFlush();
 
   ENABLE_SYNC_WRITE(false);
@@ -358,9 +327,7 @@ void RlcFile::nextWriteStep()
   if (!m_currBlk && m_pos==0) {
     eeFs.files[FILE_TMP].startBlk = m_currBlk = eeFs.freeList;
     if (m_currBlk) {
-#if defined(CPUARM)
       freeBlocks--;
-#endif
       eeFs.freeList = EeFsGetLink(m_currBlk);
       m_write_step |= WRITE_FIRST_LINK;
       EeFsFlushFreelist();
@@ -397,9 +364,7 @@ void RlcFile::nextWriteStep()
     switch (m_write_step & 0x0f) {
       case WRITE_NEXT_LINK_1:
         m_currBlk = eeFs.freeList;
-#if defined(CPUARM)
         freeBlocks--;
-#endif
         eeFs.freeList = EeFsGetLink(eeFs.freeList);
         m_write_step += 1;
         EeFsFlushFreelist();
@@ -636,9 +601,7 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   }
 #endif
 
-#if defined(CPUARM)
   eeLoadModelHeader(i_fileDst, &modelHeaders[i_fileDst]);
-#endif
 
   return NULL;
 }
@@ -722,14 +685,10 @@ void RlcFile::nextRlcWriteStep()
         // TODO reuse EeFsFree!!!
         blkid_t prev_freeList = eeFs.freeList;
         eeFs.freeList = fri;
-#if defined(CPUARM)
         freeBlocks++;
-#endif
         while (EeFsGetLink(fri)) {
           fri = EeFsGetLink(fri);
-#if defined(CPUARM)
           freeBlocks++;
-#endif
         }
         m_write_step = WRITE_FREE_UNUSED_BLOCKS_STEP1;
         EeFsSetLink(fri, prev_freeList);
@@ -795,20 +754,16 @@ void RlcFile::drawProgressBar(uint8_t x)
 #endif
 
 // For conversions ...
-#if defined(CPUARM)
 uint16_t eeLoadGeneralSettingsData()
 {
   memset(&g_eeGeneral, 0, sizeof(g_eeGeneral));
   theFile.openRlc(FILE_GENERAL);
   return theFile.readRlc((uint8_t*)&g_eeGeneral, sizeof(g_eeGeneral));
 }
-#endif
 
 uint16_t eeLoadModelData(uint8_t index)
 {
-#if defined(CPUARM)
   memset(&g_model, 0, sizeof(g_model));
-#endif
   theFile.openRlc(FILE_MODEL(index));
   return theFile.readRlc((uint8_t*)&g_model, sizeof(g_model));
 }
@@ -886,7 +841,6 @@ void storageCheck(bool immediately)
   }
 }
 
-#if defined(CPUARM)
 void eeLoadModelHeader(uint8_t id, ModelHeader *header)
 {
   memclear(header, sizeof(ModelHeader));
@@ -922,7 +876,6 @@ void eeDeleteModel(uint8_t idx)
   EFile::rm(FILE_MODEL(idx));
   memset(&modelHeaders[idx], 0, sizeof(ModelHeader));
 }
-#endif
 
 #if defined(SDCARD)
 void eepromBackup()

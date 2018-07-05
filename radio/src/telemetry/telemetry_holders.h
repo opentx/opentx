@@ -23,7 +23,6 @@
 
 #include <inttypes.h>
 
-#if defined(CPUARM)
 #define TELEMETRY_AVERAGE_COUNT   3     // we actually average one more reading!
 #define RAW_FRSKY_MINMAX(v)       v.values[TELEMETRY_AVERAGE_COUNT-1]
 class TelemetryValueWithMin {
@@ -34,16 +33,6 @@ class TelemetryValueWithMin {
     void set(uint8_t value);
     void reset();
 };
-#else
-#define RAW_FRSKY_MINMAX(v)       v.value
-class TelemetryValueWithMin {
-  public:
-    uint8_t value;
-    uint8_t min;
-    uint16_t sum;
-    void set(uint8_t value);
-};
-#endif
 
 class TelemetryValueWithMinMax: public TelemetryValueWithMin {
   public:

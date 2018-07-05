@@ -208,16 +208,10 @@ extern uint8_t eeprom[EEPROM_SIZE];
 extern uint8_t * eeprom;
 #endif
 
-#if defined(CPUARM)
 extern void startPdcUsartReceive() ;
 extern uint32_t txPdcUsart( uint8_t *buffer, uint32_t size );
 extern uint32_t txPdcPending();
 extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
-#else
-#define PIOA 0
-#define PIOB 0
-#define PIOC 0
-#endif
 
 #define loop_until_bit_is_set( port, bitnum) \
   while ( 0/*! ( (port) & (1 << (bitnum)) )*/ ) ;
@@ -336,7 +330,6 @@ extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 #define asm(...)
 #endif
 
-#if defined(CPUARM)
 extern uint32_t Master_frequency;
 #define NVIC_EnableIRQ(x)
 #define NVIC_DisableIRQ(x)
@@ -344,7 +337,6 @@ extern uint32_t Master_frequency;
 #define NVIC_SystemReset() exit(0)
 #define __disable_irq()
 #define __enable_irq()
-#endif
 
 extern uint8_t portb, portc, porth, dummyport;
 extern uint16_t dummyport16;
@@ -378,11 +370,6 @@ void StopEepromThread();
   #define StopAudioThread()
 #endif
 
-#if !defined(CPUARM)
-#define wdt_disable(...)  sleep(1/*ms*/)
-#define wdt_enable(...)   sleep(1/*ms*/)
-#define wdt_reset()       sleep(1/*ms*/)
-#endif
 
 #define OS_MutexID pthread_mutex_t
 extern OS_MutexID audioMutex;

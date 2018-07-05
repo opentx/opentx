@@ -45,13 +45,8 @@
   #define CASE_PCBSKY9X(x)
 #endif
 
-#if defined(CPUARM)
   #define CASE_CPUARM(x)     x,
   #define IF_CPUARM(x)       x
-#else
-  #define CASE_CPUARM(x)
-  #define IF_CPUARM(x)
-#endif
 
 #if defined(STM32)
   #define CASE_STM32(x)     x,
@@ -71,11 +66,7 @@
   #define CASE_LUA(x)
 #endif
 
-#if defined(CPUARM) || defined(CPUM2560)
   #define CASE_PERSISTENT_TIMERS(x) x,
-#else
-  #define CASE_PERSISTENT_TIMERS(x)
-#endif
 
 #if defined(RTCLOCK)
   #define CASE_RTCLOCK(x) x,
@@ -225,11 +216,7 @@
   #define IF_FAI_CHOICE(x)
 #endif
 
-#if defined(CPUARM)
   #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() &&  isFaiForbidden(idx))
-#else
-  #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && idx >= MIXSRC_FIRST_TELEM)
-#endif
 
 #if defined(BLUETOOTH)
 #if defined(X9E) && !defined(USEHORUSBT)
@@ -244,9 +231,7 @@
   #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
 #endif
 
-#if defined(CPUARM)
   #define MASTER_VOLUME
-#endif
 
 #if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
     //  code cost is about 16 bytes for higher throttle accuracy for timer
@@ -272,7 +257,7 @@
 
 #if defined(SIMU)
   #include "targets/simu/simpgmspace.h"
-#elif defined(CPUARM)
+#else
   typedef const unsigned char pm_uchar;
   typedef const char pm_char;
   typedef const uint16_t pm_uint16_t;
@@ -304,11 +289,7 @@
 
 #include "myeeprom.h"
 
-#if defined(CPUM64)
-  void memclear(void * ptr, uint8_t size);
-#else
   #define memclear(p, s)               memset(p, 0, s)
-#endif
 
 void memswap(void * a, void * b, uint8_t size);
 
@@ -365,23 +346,11 @@ void memswap(void * a, void * b, uint8_t size);
   #define PPM_CH_CENTER(ch)            (PPM_CENTER)
 #endif
 
-#if defined(CPUARM)
   #include "fifo.h"
   #include "io/io_arm.h"
   // This doesn't need protection on this processor
   extern volatile tmr10ms_t g_tmr10ms;
   #define get_tmr10ms()                g_tmr10ms
-#else
-  extern volatile tmr10ms_t g_tmr10ms;
-  extern inline uint16_t get_tmr10ms()
-  {
-    uint16_t time  ;
-    cli();
-    time = g_tmr10ms ;
-    sei();
-    return time ;
-  }
-#endif
 
 #if defined(NAVIGATION_STICKS)
   extern uint8_t StickScrollAllowed;
@@ -400,12 +369,10 @@ void memswap(void * a, void * b, uint8_t size);
 #include "storage/storage.h"
 #include "pulses/pulses.h"
 
-#if defined(CPUARM)
 // Order is the same as in enum Protocols in myeeprom.h (none, ppm, xjt, dsm, crossfire, multi, r9m, sbus)
   static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8, 8}; // relative to 8!
   static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
   #define MAX_TRAINER_CHANNELS_M8()    (MAX_TRAINER_CHANNELS-8)
-#endif
 
 
 
@@ -471,16 +438,8 @@ void memswap(void * a, void * b, uint8_t size);
 #define DEFAULT_CHANNELS(idx)               (IS_MODULE_PPM(idx) ? 0 : MAX_CHANNELS(idx))
 #endif
 
-#if defined(CPUARM)
   #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
   #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
-#elif defined(CPUM64)
-  #define MASK_CFN_TYPE  uint16_t  // current max = 16 function switches
-  #define MASK_FUNC_TYPE uint8_t   // current max = 8  functions
-#else
-  #define MASK_CFN_TYPE  uint32_t  // current max = 32 function switches
-  #define MASK_FUNC_TYPE uint8_t   // current max = 8 functions
-#endif
 
 typedef struct {
   MASK_FUNC_TYPE activeFunctions;
@@ -537,10 +496,8 @@ extern uint8_t channel_order(uint8_t x);
   #define SPLASH_NEEDED()              (false)
 #elif defined(PCBTARANIS)
   #define SPLASH_NEEDED()              (g_eeGeneral.splashMode != 3)
-#elif defined(CPUARM)
-  #define SPLASH_NEEDED()              (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_DSM2 && !g_eeGeneral.splashMode)
 #else
-  #define SPLASH_NEEDED()              (!IS_DSM2_PROTOCOL(g_model.protocol) && !g_eeGeneral.splashMode)
+  #define SPLASH_NEEDED()              (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_DSM2 && !g_eeGeneral.splashMode)
 #endif
 
 #if defined(PCBHORUS)
@@ -608,11 +565,9 @@ extern struct t_inactivity inactivity;
 
 char hex2zchar(uint8_t hex);
 char idx2char(int8_t idx);
-#if defined(CPUARM) || defined(SIMU)
 int8_t char2idx(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
-#endif
 
 #include "keys.h"
 #include "pwr.h"
@@ -666,21 +621,13 @@ enum StartupWarningStates {
 
 
 // Fiddle to force compiler to use a pointer
-#if defined(CPUARM) || defined(SIMU)
   #define FORCE_INDIRECT(ptr)
-#else
-  #define FORCE_INDIRECT(ptr) __asm__ __volatile__ ("" : "=e" (ptr) : "0" (ptr))
-#endif
 
 extern uint8_t mixerCurrentFlightMode;
 extern uint8_t lastFlightMode;
 extern uint8_t flightModeTransitionLast;
 
-#if defined(CPUARM)
   #define bitfield_channels_t uint32_t
-#else
-  #define bitfield_channels_t uint16_t
-#endif
 
 #if defined(SIMU)
   inline int availableMemory() { return 1000; }
@@ -698,35 +645,21 @@ void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
 void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms);
 
-#if defined(CPUARM)
   void checkTrims();
-#endif
 void perMain();
 NOINLINE void per10ms();
 
 getvalue_t getValue(mixsrc_t i);
 
-#if defined(CPUARM)
 #define GETSWITCH_MIDPOS_DELAY   1
 bool getSwitch(swsrc_t swtch, uint8_t flags=0);
-#else
-bool getSwitch(swsrc_t swtch);
-#endif
 
 void logicalSwitchesTimerTick();
 void logicalSwitchesReset();
 
-#if defined(CPUARM)
   void evalLogicalSwitches(bool isCurrentPhase=true);
   void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
   #define LS_RECURSIVE_EVALUATION_RESET()
-#else
-  #define evalLogicalSwitches(xxx)
-  #define GETSWITCH_RECURSIVE_TYPE uint16_t
-  extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used;
-  extern volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value;
-  #define LS_RECURSIVE_EVALUATION_RESET() s_last_switch_used = 0
-#endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   void getSwitchesPosition(bool startup);
@@ -737,15 +670,9 @@ void logicalSwitchesReset();
 extern swarnstate_t switches_states;
 swsrc_t getMovedSwitch();
 
-#if defined(CPUARM)
   #define GET_MOVED_SOURCE_PARAMS uint8_t min
   int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS);
   #define GET_MOVED_SOURCE(min, max) getMovedSource(min)
-#else
-  #define GET_MOVED_SOURCE_PARAMS
-  int8_t getMovedSource();
-  #define GET_MOVED_SOURCE(min, max) getMovedSource()
-#endif
 
 #if defined(FLIGHT_MODES)
   extern uint8_t getFlightMode();
@@ -753,11 +680,7 @@ swsrc_t getMovedSwitch();
   #define getFlightMode() 0
 #endif
 
-#if !defined(CPUARM)
-  uint8_t getTrimFlightMode(uint8_t phase, uint8_t idx);
-#else
   #define getTrimFlightMode(phase, idx) (phase)
-#endif
 
 #if defined(GVARS)
   extern int8_t trimGvar[NUM_TRIMS];
@@ -769,20 +692,14 @@ swsrc_t getMovedSwitch();
 trim_t getRawTrimValue(uint8_t phase, uint8_t idx);
 int getTrimValue(uint8_t phase, uint8_t idx);
 
-#if defined(CPUARM)
   bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
-#else
-  void setTrimValue(uint8_t phase, uint8_t idx, int trim);
-#endif
 
 #if defined(ROTARY_ENCODERS)
   int16_t getRotaryEncoder(uint8_t idx);
   void incRotaryEncoder(uint8_t idx, int8_t inc);
 #endif
 
-#if defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
-  #define ROTARY_ENCODER_GRANULARITY (1)
-#elif defined(PCBSKY9X)
+#if   defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
 #elif defined(PCBHORUS)
   #define ROTARY_ENCODER_GRANULARITY (1)
@@ -797,20 +714,14 @@ extern uint16_t s_timeCumThr;
 extern uint16_t s_timeCum16ThrP;
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-#if defined(CPUARM)
   #define OVERRIDE_CHANNEL_UNDEFINED -4096
-#else
-  #define OVERRIDE_CHANNEL_UNDEFINED -128
-#endif
 extern safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
 #endif
 
 extern uint8_t trimsCheckTimer;
 
-#if defined(CPUARM)
 extern uint8_t trimsDisplayTimer;
 extern uint8_t trimsDisplayMask;
-#endif
 
 void flightReset(uint8_t check=true);
 
@@ -818,17 +729,8 @@ extern uint8_t unexpectedShutdown;
 
 extern uint16_t maxMixerDuration;
 
-#if !defined(CPUARM)
-extern uint8_t g_tmr1Latency_max;
-extern uint8_t g_tmr1Latency_min;
-extern uint16_t lastMixerDuration;
-#endif
 
-#if defined(CPUARM)
   #define DURATION_MS_PREC2(x) ((x)/20)
-#else
-  #define DURATION_MS_PREC2(x) ((x)*100)/16
-#endif
 
 #if defined(THRTRACE)
   #if defined(COLORLCD)
@@ -857,9 +759,6 @@ extern uint16_t lastMixerDuration;
   uint16_t getTmr16KHz();
 #endif
 
-#if !defined(CPUARM)
-  uint16_t stackAvailable();
-#endif
 
 #if defined(SPLASH)
   void doSplash();
@@ -883,11 +782,7 @@ void checkAll();
 
 #if !defined(SIMU)
 void getADC();
-  #if defined(CPUARM)
     #define GET_ADC_IF_MIXER_NOT_RUNNING()    do { if (s_pulses_paused) getADC(); } while(0)
-  #else
-    #define GET_ADC_IF_MIXER_NOT_RUNNING()    getADC()
-  #endif
 #endif
 
 #include "sbus.h"
@@ -938,7 +833,6 @@ void checkModelIdUnique(uint8_t index, uint8_t module);
 uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
 #endif
 
-#if defined(CPUARM)
 uint32_t hash(const void * ptr, uint32_t size);
 inline int divRoundClosest(const int n, const int d)
 {
@@ -976,15 +870,6 @@ inline int calcRESXto100(int x)
   return divRoundClosest(x*100, RESX);
 }
 
-#else
-extern int16_t calc100to256_16Bits(int16_t x); // @@@2 open.20.fsguruh: return x*2.56
-extern int16_t calc100to256(int8_t x); // @@@2 open.20.fsguruh: return x*2.56
-extern int16_t calc100toRESX_16Bits(int16_t x); // @@@ open.20.fsguruh
-extern int16_t calc100toRESX(int8_t x);
-extern int16_t calc1000toRESX(int16_t x);
-extern int16_t calcRESXto1000(int16_t x);
-extern int8_t  calcRESXto100(int16_t x);
-#endif
 
 #if defined(COLORLCD)
 extern const char vers_stamp[];
@@ -1021,15 +906,10 @@ extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMI
 extern int16_t            channelOutputs[MAX_OUTPUT_CHANNELS];
 extern uint16_t           BandGap;
 
-#if defined(CPUARM)
   #define NUM_INPUTS      (MAX_INPUTS)
-#else
-  #define NUM_INPUTS      (NUM_STICKS)
-#endif
 
 int expo(int x, int k);
 
-#if defined(CPUARM)
 inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax, LcdFlags * flags = 0)
 {
   if (source >= MIXSRC_FIRST_TRIM && source <= MIXSRC_LAST_TRIM) {
@@ -1079,7 +959,6 @@ inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax,
     valMin = -valMax;
   }
 }
-#endif
 
 // Curves
 enum BaseCurves {
@@ -1102,7 +981,7 @@ point_t getPoint(uint8_t i);
 #if !defined(CURVES)
 #define LOAD_MODEL_CURVES()
 #define applyCurve(x, idx) (x)
-#elif defined(CPUARM)
+#else
 typedef CurveData CurveInfo;
 void loadCurves();
 #define LOAD_MODEL_CURVES() loadCurves()
@@ -1113,33 +992,13 @@ int applyCurrentCurve(int x);
 int8_t getCurveX(int noPoints, int point);
 void resetCustomCurveX(int8_t * points, int noPoints);
 bool moveCurve(uint8_t index, int8_t shift); // TODO bool?
-#else
-struct CurveInfo {
-  int8_t * crv;
-  uint8_t points:7;
-  uint8_t custom:1;
-};
-CurveInfo curveInfo(uint8_t idx);
-int intpol(int x, uint8_t idx);
-int applyCurve(int x, int8_t idx);
-#define LOAD_MODEL_CURVES()
-#define applyCustomCurve(x, idx) intpol(x, idx)
-int applyCurrentCurve(int x);
-bool moveCurve(uint8_t index, int8_t shift, int8_t custom=0);
 #endif
 
-#if defined(CPUARM)
   #define APPLY_EXPOS_EXTRA_PARAMS_INC , uint8_t ovwrIdx=0, int16_t ovwrValue=0
   #define APPLY_EXPOS_EXTRA_PARAMS     , uint8_t ovwrIdx, int16_t ovwrValue
-#else
-  #define APPLY_EXPOS_EXTRA_PARAMS_INC
-  #define APPLY_EXPOS_EXTRA_PARAMS
-#endif
 
-#if defined(CPUARM)
 void clearInputs();
 void defaultInputs();
-#endif
 
 void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS_INC);
 int16_t applyLimits(uint8_t channel, int32_t value);
@@ -1164,11 +1023,7 @@ LogicalSwitchData * lswAddress(uint8_t idx);
 
 // static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
 // It's also easier to initialize them here.
-#if defined(CPUARM)
   extern int8_t  virtualInputsTrims[NUM_INPUTS];
-#else
-  extern int16_t rawAnas[NUM_INPUTS];
-#endif
 
 extern int16_t anas [NUM_INPUTS];
 extern int16_t trims[NUM_TRIMS];
@@ -1185,7 +1040,6 @@ void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
 void moveTrimsToOffsets();
 
-#if defined(CPUARM)
 #define ACTIVE_PHASES_TYPE uint16_t
 #define DELAY_POS_SHIFT    0
 #define DELAY_POS_MARGIN   3
@@ -1197,19 +1051,6 @@ PACK(typedef struct {
   uint8_t  activeMix;
   uint8_t  activeExpo;
 }) SwOn;
-#else
-#define ACTIVE_PHASES_TYPE uint8_t
-#define DELAY_POS_SHIFT    10
-#define DELAY_POS_MARGIN   0
-#define delayval_t         int8_t
-PACK(typedef struct {
-  uint16_t delay:10;
-  int16_t  now:2;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  int16_t  prev:2;
-  int16_t  activeMix:1;
-  int16_t  activeExpo:1;
-}) SwOn;
-#endif
 
 extern SwOn   swOn[MAX_MIXERS];
 extern int24_t act[MAX_MIXERS];
@@ -1251,10 +1092,8 @@ enum FunctionsActive {
 #if defined(SDCARD)
   FUNCTION_LOGS,
 #endif
-#if defined(CPUARM)
   FUNCTION_BACKGND_MUSIC,
   FUNCTION_BACKGND_MUSIC_PAUSE,
-#endif
 };
 
 #define VARIO_FREQUENCY_ZERO   700/*Hz*/
@@ -1262,7 +1101,6 @@ enum FunctionsActive {
 #define VARIO_REPEAT_ZERO      500/*ms*/
 #define VARIO_REPEAT_MAX       80/*ms*/
 
-#if defined(CPUARM)
 extern CustomFunctionsContext modelFunctionsContext;
 extern CustomFunctionsContext globalFunctionsContext;
 inline bool isFunctionActive(uint8_t func)
@@ -1275,19 +1113,11 @@ inline void customFunctionsReset()
   globalFunctionsContext.reset();
   modelFunctionsContext.reset();
 }
-#else
-extern CustomFunctionsContext modelFunctionsContext;
-#define isFunctionActive(func) modelFunctionsContext.isFunctionActive(func)
-void evalFunctions();
-#define customFunctionsReset() modelFunctionsContext.reset()
-#endif
 
 #include "telemetry/telemetry.h"
 
-#if defined(CPUARM)
 uint8_t crc8(const uint8_t * ptr, uint32_t len);
 uint16_t crc16(const uint8_t * ptr, uint32_t len);
-#endif
 
 #define PLAY_REPEAT(x)            (x)                 /* Range 0 to 15 */
 #define PLAY_NOW                  0x10
@@ -1296,9 +1126,7 @@ uint16_t crc16(const uint8_t * ptr, uint32_t len);
 
 enum AUDIO_SOUNDS {
   AUDIO_HELLO,
-#if defined(CPUARM)
   AU_BYE,
-#endif
 #if defined(VOICE)
   AU_THROTTLE_ALERT,
   AU_SWITCH_ALERT,
@@ -1306,7 +1134,6 @@ enum AUDIO_SOUNDS {
 #endif
   AU_TX_BATTERY_LOW,
   AU_INACTIVITY,
-#if defined(CPUARM)
   AU_RSSI_ORANGE,
   AU_RSSI_RED,
   AU_RAS_RED,
@@ -1318,7 +1145,6 @@ enum AUDIO_SOUNDS {
   AU_SERVO_KO,
   AU_RX_OVERLOAD,
   AU_MODEL_STILL_POWERED,
-#endif
 #if defined(PCBSKY9X)
   AU_TX_MAH_HIGH,
   AU_TX_TEMP_HIGH,
@@ -1328,16 +1154,12 @@ enum AUDIO_SOUNDS {
   AU_WARNING2,
   AU_WARNING3,
   AU_TRIM_MIDDLE,
-#if defined(CPUARM)
   AU_TRIM_MIN,
   AU_TRIM_MAX,
-#endif
-#if defined(CPUARM)
   AU_STICK1_MIDDLE,
   AU_STICK2_MIDDLE,
   AU_STICK3_MIDDLE,
   AU_STICK4_MIDDLE,
-#endif
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   AU_POT1_MIDDLE,
   AU_POT2_MIDDLE,
@@ -1351,21 +1173,17 @@ enum AUDIO_SOUNDS {
   AU_SLIDER3_MIDDLE,
   AU_SLIDER4_MIDDLE,
 #endif
-#elif defined(CPUARM)
+#else
   AU_POT1_MIDDLE,
   AU_POT2_MIDDLE,
   AU_POT3_MIDDLE,
-#else
-  AU_POT_MIDDLE,
 #endif
   AU_MIX_WARNING_1,
   AU_MIX_WARNING_2,
   AU_MIX_WARNING_3,
-#if defined(CPUARM)
   AU_TIMER1_ELAPSED,
   AU_TIMER2_ELAPSED,
   AU_TIMER3_ELAPSED,
-#endif
 
   AU_SPECIAL_SOUND_FIRST,
   AU_SPECIAL_SOUND_BEEP1 = AU_SPECIAL_SOUND_FIRST,
@@ -1390,26 +1208,13 @@ enum AUDIO_SOUNDS {
 };
 
 #if defined(AUDIO)
-#if defined(CPUARM)
 #include "audio_arm.h"
-#else
-#include "audio_avr.h"
-#endif
 #endif
 
 #include "buzzer.h"
 
-#if defined(PCBSTD) && defined(VOICE)
-#include "targets/9x/voice.h"
-#endif
 
-#if defined(PCBGRUVIN9X) && defined(VOICE)
-#include "targets/gruvin9x/voice.h"
-#endif
 
-#if defined(PCBMEGA2560) && defined(VOICE)
-#include "targets/mega2560/voice.h"
-#endif
 
 #include "translations.h"
 #include "fonts.h"
@@ -1431,18 +1236,14 @@ void setMFP();
 void clearMFP();
 #endif
 
-#if defined(CPUARM)
 extern uint8_t requiredSpeakerVolume;
-#endif
 
-#if defined(CPUARM)
 enum MainRequest {
   REQUEST_SCREENSHOT,
   REQUEST_FLIGHT_RESET,
 };
 
 extern uint8_t mainRequestFlags;
-#endif
 
 void checkBattery();
 void opentxClose(uint8_t shutdown=true);
@@ -1468,9 +1269,6 @@ union ReusableBuffer
   // ARM 334 bytes
   struct
   {
-#if !defined(CPUARM)
-    char listnames[NUM_BODY_LINES][LEN_MODEL_NAME];
-#endif
 #if defined(EEPROM_RLC) && LCD_W < 212
     uint16_t eepromfree;
 #endif
@@ -1533,7 +1331,6 @@ extern union ReusableBuffer reusableBuffer;
 
 void checkFlashOnBeep();
 
-#if defined(CPUARM)
 uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 unsigned int effectiveLen(const char * str, unsigned int size);
@@ -1547,7 +1344,6 @@ char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defa
 #endif
 #define ZLEN(s) zlen(s, sizeof(s))
 #define ZEXIST(s) zexist(s, sizeof(s))
-#endif
 
 // Stick tolerance varies between transmitters, Higher is better
 #if defined (PCB9XR) || defined (PCB9XR128)
@@ -1574,11 +1370,7 @@ enum BarThresholdIdx {
   THLD_MAX,
 };
 
-#if defined(CPUARM)
   #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = (val)
-#else
-  #define FILL_THRESHOLD(idx, val) barsThresholds[idx] = 128 + (val)
-#endif
 
 extern bar_threshold_t barsThresholds[THLD_MAX];
 #else
@@ -1593,28 +1385,18 @@ extern bar_threshold_t barsThresholds[THLD_MAX];
   #define maxTelemValue(channel) 255
 #endif
 
-#if defined(CPUARM)
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 ls_telemetry_value_t max8bitsTelemValue(source_t channel);
-#endif
 
 getvalue_t convert8bitsTelemValue(source_t channel, ls_telemetry_value_t value);
 getvalue_t convertLswTelemValue(LogicalSwitchData * cs);
 
-#if defined(CPUARM)
   #define convertTelemValue(channel, value) convert16bitsTelemValue(channel, value)
   #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
   #define maxBarTelemValue(channel) max8bitsTelemValue(channel)
-#else
-  #define convertTelemValue(channel, value) convert8bitsTelemValue(channel, value)
-  #define convertBarTelemValue(channel, value) convert8bitsTelemValue(channel, value)
-  #define maxBarTelemValue(channel) maxTelemValue(channel)
-#endif
 
-#if defined(TELEMETRY_FRSKY) || defined(CPUARM)
 lcdint_t applyChannelRatio(source_t channel, lcdint_t val);
 #define ANA_CHANNEL_UNIT(channel) g_model.frsky.channels[channel].type
-#endif
 
 inline int div_and_round(int num, int den)
 {
@@ -1631,30 +1413,17 @@ inline int div_and_round(int num, int den)
 }
 
 #if defined(TELEMETRY_FRSKY)
-#if !defined(CPUARM)
-NOINLINE uint8_t getRssiAlarmValue(uint8_t alarm);
-#endif
 
 extern const pm_uint8_t bchunit_ar[];
 
-#if defined(CPUARM)
   #define FRSKY_MULTIPLIER_MAX 5
-#else
-  #define FRSKY_MULTIPLIER_MAX 3
-#endif
 
 enum TelemetryViews {
   TELEMETRY_CUSTOM_SCREEN_1,
   TELEMETRY_CUSTOM_SCREEN_2,
-#if defined(CPUARM)
   TELEMETRY_CUSTOM_SCREEN_3,
   TELEMETRY_CUSTOM_SCREEN_4,
   TELEMETRY_VIEW_MAX = TELEMETRY_CUSTOM_SCREEN_4
-#else
-  TELEMETRY_VOLTAGES_SCREEN,
-  TELEMETRY_AFTER_FLIGHT_SCREEN,
-  TELEMETRY_VIEW_MAX = TELEMETRY_AFTER_FLIGHT_SCREEN
-#endif
 };
 
 extern uint8_t s_frsky_view;
@@ -1674,57 +1443,9 @@ void varioWakeup();
   #define IS_SOUND_OFF() (g_eeGeneral.beepMode == e_mode_quiet)
 #endif
 
-#if defined(CPUARM)
   #define IS_IMPERIAL_ENABLE() (g_eeGeneral.imperial)
-#elif defined(IMPERIAL_UNITS)
-  #define IS_IMPERIAL_ENABLE() (1)
-#else
-  #define IS_IMPERIAL_ENABLE() (0)
-#endif
 
-#if defined(CPUARM)
-#elif defined(TELEMETRY_FRSKY)
-FORCEINLINE void convertUnit(getvalue_t & val, uint8_t & unit)
-{
-  if (IS_IMPERIAL_ENABLE()) {
-    if (unit == UNIT_TEMPERATURE) {
-      val += 18;
-      val *= 115;
-      val >>= 6;
-    }
-    if (unit == UNIT_DIST) {
-      // m to ft *105/32
-      val = val * 3 + (val >> 2) + (val >> 5);
-    }
-    if (unit == UNIT_FEET) {
-      unit = UNIT_DIST;
-    }
-    if (unit == UNIT_KTS) {
-      // kts to mph
-      unit = UNIT_SPEED;
-      val = (val * 23) / 20;
-    }
-  }
-  else {
-    if (unit == UNIT_KTS) {
-      // kts to km/h
-      unit = UNIT_SPEED;
-      val = (val * 50) / 27;
-    }
-  }
 
-  if (unit == UNIT_HDG) {
-    unit = UNIT_TEMPERATURE;
-  }
-}
-#else
-#define convertUnit(...)
-#endif
-
-#if !defined(CPUARM)
-  #define IS_USR_PROTO_FRSKY_HUB()   (g_model.frsky.usrProto == USR_PROTO_FRSKY)
-  #define IS_USR_PROTO_WS_HOW_HIGH() (g_model.frsky.usrProto == USR_PROTO_WS_HOW_HIGH)
-#endif
 
 #if defined(TELEMETRY_FRSKY) && defined(FRSKY_HUB) && defined(GPS)
   #define IS_GPS_AVAILABLE()         IS_USR_PROTO_FRSKY_HUB()

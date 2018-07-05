@@ -54,14 +54,7 @@ extern uint8_t noHighlightCounter;
 #define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
 
-#if !defined(CPUM64)
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
-#elif defined(GRAPHICS)
-void display5posSlider(coord_t x, coord_t y, uint8_t value, uint8_t attr);
-  #define drawSlider(x, y, value, max, attr) lcdDrawNumber(x, y, value, attr|LEFT)
-#else
-  #define drawSlider(x, y, value, max, attr) lcdDrawNumber(x, y, value, attr|LEFT)
-#endif
 
 #if defined(NAVIGATION_POT1)
 extern int16_t p1valdiff;
@@ -92,28 +85,15 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_REP10                   0x40
 #define NO_DBLKEYS                     0x80
 
-#if defined(CPUARM)
   #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
   #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
   #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
   #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
-#elif defined(CPUM64)
-#define INCDEC_DECLARE_VARS(f)
-  #define INCDEC_SET_FLAG(f)
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, EE_MODEL)
-#else
-  #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f)
-  #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
-  #define INCDEC_ENABLE_CHECK(fn)
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag)
-#endif
 
 // mawrow special values
 #define TITLE_ROW      ((uint8_t)-1)
 #define HIDDEN_ROW     ((uint8_t)-2)
 
-#if defined(CPUARM)
 struct CheckIncDecStops {
   const int count;
   const int stops[];
@@ -146,19 +126,10 @@ extern const CheckIncDecStops &stopsSwitch;
 #define CATEGORY_END(val)                                          \
   (val), (val+1)
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
-#else
-int16_t checkIncDec(event_t event, int16_t i_pval, int16_t i_min, int16_t i_max, uint8_t i_flags=0);
-#endif
 
-#if defined(CPUM64)
-int8_t checkIncDecModel(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
-int8_t checkIncDecModelZero(event_t event, int8_t i_val, int8_t i_max);
-int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
-#else
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
 #define checkIncDecGen(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_GENERAL)
-#endif
 
 #define CHECK_INCDEC_MODELVAR(event, var, min, max) \
   var = checkIncDecModel(event, var, min, max)
@@ -166,47 +137,19 @@ int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max);
 #define CHECK_INCDEC_MODELVAR_ZERO(event, var, max) \
   var = checkIncDecModelZero(event, var, max)
 
-#if defined(CPUARM)
 #define CHECK_INCDEC_MODELVAR_CHECK(event, var, min, max, check) \
     var = checkIncDec(event, var, min, max, EE_MODEL, check)
   #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
     var = checkIncDec(event, var, 0, max, EE_MODEL, check)
-#else
-  #define CHECK_INCDEC_MODELVAR_CHECK(event, var, min, max, check) \
-    var = checkIncDec(event, var, min, max, EE_MODEL)
-  #define CHECK_INCDEC_MODELVAR_ZERO_CHECK(event, var, max, check) \
-    CHECK_INCDEC_MODELVAR_ZERO(event, var, max)
-#endif
 
-#if defined(CPUARM)
 #define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
   #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
     var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH, available)
   #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
     CHECK_INCDEC_SWITCH(event, var, min, max, EE_MODEL, available)
-#elif defined(AUTOSWITCH)
-#define AUTOSWITCH_ENTER_LONG() (attr && event==EVT_KEY_LONG(KEY_ENTER))
-  #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
-    var = checkIncDec(event, var, min, max, (flags)|INCDEC_SWITCH)
-  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
-    CHECK_INCDEC_SWITCH(event, var, min, max, EE_MODEL, available)
-#else
-  #define AUTOSWITCH_ENTER_LONG() (0)
-  #define CHECK_INCDEC_SWITCH(event, var, min, max, flags, available) \
-    CHECK_INCDEC_MODELVAR(event, var, min, max)
-  #define CHECK_INCDEC_MODELSWITCH(event, var, min, max, available) \
-    CHECK_INCDEC_MODELVAR(event, var, min, max)
-#endif
 
-#if defined(CPUARM)
 #define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
     var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailable)
-#elif defined(AUTOSOURCE)
-#define CHECK_INCDEC_MODELSOURCE(event, var, min, max) \
-    var = checkIncDec(event,var,min,max,EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS)
-#else
-  #define CHECK_INCDEC_MODELSOURCE CHECK_INCDEC_MODELVAR
-#endif
 
 #define CHECK_INCDEC_GENVAR(event, var, min, max) \
   var = checkIncDecGen(event, var, min, max)
@@ -224,11 +167,7 @@ void check_submenu_simple(event_t event, uint8_t maxrow);
 void title(const pm_char * s);
 #define TITLE(str) title(str)
 
-#if defined(CPUARM)
   #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
-#else
-  #define MENU_TAB(...) static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__
-#endif
 
 #if defined(PCBX7)
 #define MENU_CHECK(tab, menu, lines_count) \
@@ -284,11 +223,7 @@ void title(const pm_char * s);
   SIMPLE_SUBMENU_NOTITLE(lines_count); \
   TITLE(title)
 
-#if defined(CPUARM)
 typedef int choice_t;
-#else
-typedef int8_t choice_t;
-#endif
 
 choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char * label, LcdFlags attr, event_t event);
@@ -321,17 +256,9 @@ void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t e
 #define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
 #endif
 
-#if defined(CPUARM)
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr=ZCHAR);
-#else
-void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active);
-#endif
 
-#if defined(CPUM64)
-#define editSingleName(x, y, label, name, size, event, active) editName(x, y, name, size, event, active)
-#else
 void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active);
-#endif
 
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay);
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
@@ -367,14 +294,12 @@ void drawStatusLine();
 #define drawStatusLine()
 #endif
 
-#if defined(CPUARM)
 #define TEXT_FILENAME_MAXLEN         40
   extern char s_text_file[TEXT_FILENAME_MAXLEN];
   void menuTextView(event_t event);
   void pushMenuTextView(const char *filename);
   void pushModelNotes();
   void readModelNotes();
-#endif
 
 #define LABEL(...)                     (uint8_t)-1
 
@@ -416,11 +341,7 @@ void drawStatusLine();
 #define EDIT_MODE_INIT                 -1
 #endif
 
-#if defined(CPUM64)
-  #define editNameCursorPos menuHorizontalPosition
-#else
   extern uint8_t editNameCursorPos;
-#endif
 
 #if defined(VIRTUAL_INPUTS)
 uint8_t getExposCount();
@@ -454,9 +375,7 @@ void doMainScreenGraphics();
 void drawProgressBar(const char * label, int num, int den);
 void drawSleepBitmap();
 
-#if !defined(CPUM64)
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-#endif
 
 #if defined(PCBTARANIS)
 void drawAlertBox(const pm_char * title, const pm_char * text, const char * action);
@@ -481,9 +400,7 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
 #endif
 #define IS_OTHER_VIEW_DISPLAYED()      false
 
-#if defined(CPUARM)
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
-#endif
 
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);

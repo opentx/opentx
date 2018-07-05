@@ -25,11 +25,7 @@
   #define MAX_LOGICAL_SWITCHES    NUM_CSW
 #endif
 
-#if defined(CPUARM)
   #define GET_SWITCH_BOOL(sw__)    getSwitch((sw__), 0);
-#else
-  #define GET_SWITCH_BOOL(sw__)    getSwitch(sw__);
-#endif
 
 #define OTXS_DBG    qDebug() << "(" << simuTimerMicros() << "us)"
 
@@ -211,7 +207,6 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
     i = modn12x3[4 * getStickMode() + idx];
   uint8_t phase = getTrimFlightMode(getFlightMode(), i);
 
-#ifdef CPUARM
   if (!setTrimValue(phase, i, value)) {
     QTimer *timer = new QTimer(this);
     timer->setSingleShot(true);
@@ -222,9 +217,6 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
     });
     timer->start(350);
   }
-#else
-  setTrimValue(phase, i, value);
-#endif
 }
 
 void OpenTxSimulator::setTrainerInput(unsigned int inputNumber, int16_t value)
@@ -535,10 +527,8 @@ void OpenTxSimulator::checkOutputsChanged()
 #if defined(GVAR_VALUE) && defined(GVARS)
   gVarMode_t gvar;
   for (uint8_t gv=0; gv < MAX_GVARS; gv++) {
-#if !defined(PCBSTD)
     gvar.prec = g_model.gvars[gv].prec;
     gvar.unit = g_model.gvars[gv].unit;
-#endif
     for (uint8_t fm=0; fm < MAX_FLIGHT_MODES; fm++) {
       gvar.mode = fm;
       gvar.value = (int16_t)GVAR_VALUE(gv, getGVarFlightMode(fm, gv));
@@ -588,8 +578,6 @@ const int OpenTxSimulator::voltageToAdc(const int volts)
   ret = (float)volts * 16.2f;
 #elif defined(PCBTARANIS) || defined(PCBSKY9X)
   ret = (float)volts * 13.3f;
-#elif defined(PCBGRUVIN9X)
-  ret = (float)volts * 1.63f;
 #else
   ret = (float)volts * 14.15f;
 #endif

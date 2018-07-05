@@ -41,9 +41,7 @@ typedef uint8_t vertpos_t;
 
 typedef void (*MenuHandlerFunc)(event_t event);
 
-#if defined(CPUARM)
 extern tmr10ms_t menuEntryTime;
-#endif
 
 extern vertpos_t menuVerticalPosition;
 extern horzpos_t menuHorizontalPosition;

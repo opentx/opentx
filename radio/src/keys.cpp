@@ -42,7 +42,6 @@ event_t s_evt;
 struct t_inactivity inactivity = {0};
 Key keys[NUM_KEYS];
 
-#if defined(CPUARM)
 event_t getEvent(bool trim)
 {
   event_t evt = s_evt;
@@ -57,14 +56,6 @@ event_t getEvent(bool trim)
     return 0;
   }
 }
-#else
-event_t getEvent()
-{
-  event_t evt = s_evt;
-  s_evt = 0;
-  return evt;
-}
-#endif
 
 void Key::input(bool val)
 {
@@ -185,7 +176,6 @@ void killEvents(event_t event)
   }
 }
 
-#if defined(CPUARM)
 bool clearKeyEvents()
 {
 #if defined(PCBSKY9X)
@@ -217,24 +207,3 @@ bool clearKeyEvents()
   putEvent(0);
   return true;
 }
-#else
-void clearKeyEvents()
-{
-  // loop until all keys are up
-  while (keyDown()) {
-
-#if defined(SIMU)
-    SIMU_SLEEP(1/*ms*/);
-#else
-    wdt_reset();
-#endif
-
-#if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION) && !defined(TELEMETREZ)
-    rotencPoll();
-#endif
-  }
-
-  memclear(keys, sizeof(keys));
-  putEvent(0);
-}
-#endif   // #if defined(CPUARM)

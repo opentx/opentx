@@ -48,11 +48,7 @@
   #define __NOINIT
 #endif
 
-#if defined(SIMU) || defined(CPUARM) || GCC_VERSION < 472
 typedef int32_t int24_t;
-#else
-typedef __int24 int24_t;
-#endif
 
 #if __GNUC__
   #define PACK( __Declaration__ )      __Declaration__ __attribute__((__packed__))

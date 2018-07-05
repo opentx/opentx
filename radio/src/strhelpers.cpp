@@ -44,7 +44,6 @@ char idx2char(int8_t idx)
   return ' ';
 }
 
-#if defined(CPUARM) || defined(SIMU)
 int8_t char2idx(char c)
 {
   if (c == '_') return 37;
@@ -78,9 +77,7 @@ int zchar2str(char * dest, const char * src, int size)
   } while (size >= 0 && dest[size] == ' ');
   return size+1;
 }
-#endif
 
-#if defined(CPUARM)
 unsigned int effectiveLen(const char * str, unsigned int size)
 {
   while (size > 0) {
@@ -142,7 +139,6 @@ char * strcat_zchar(char * dest, const char * name, uint8_t size, const char * d
 
   return &dest[len];
 }
-#endif
 #endif
 
 #if defined(CPUARM) && !defined(BOOT)
@@ -438,7 +434,6 @@ char * strAppendSigned(char * dest, int32_t value, uint8_t digits, uint8_t radix
   return strAppendUnsigned(dest, (uint32_t)value, digits, radix);
 }
 
-#if defined(CPUARM) || defined(SDCARD)
 char * strAppend(char * dest, const char * source, int len)
 {
   while ((*dest++ = *source++)) {
@@ -515,5 +510,4 @@ char * strAppendDate(char * str, bool time)
     return &str[11];
   }
 }
-#endif
 #endif

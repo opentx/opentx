@@ -30,21 +30,11 @@ const pm_uchar sticks[] PROGMEM = {
 #define RADIO_SETUP_DATE_COLUMN (FW*15+7)
 #define RADIO_SETUP_TIME_COLUMN (FW*15+9)
 
-#if !defined(CPUM64)
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
     drawSlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
     value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
   }
-#elif defined(GRAPHICS)
-  #define SLIDER_5POS(y, value, label, event, attr) { \
-    int8_t tmp = value; \
-    display5posSlider(RADIO_SETUP_2ND_COLUMN, y, tmp, attr); \
-    value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
-  }
-#else
-  #define SLIDER_5POS(y, value, label, event, attr) value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, STR_VBEEPLEN, value, -2, +2, attr, event)
-#endif
 
 #if defined(SPLASH) && !defined(FSPLASH)
   #define CASE_SPLASH_PARAM(x) x,
@@ -270,16 +260,12 @@ void menuRadioSetup(event_t event)
           CHECK_INCDEC_GENVAR(event, b, 0, VOLUME_LEVEL_MAX);
           if (checkIncDec_Ret) {
             g_eeGeneral.speakerVolume = (int8_t)b-VOLUME_LEVEL_DEF;
-#if !defined(CPUARM)
-            setScaledVolume(b);
-#endif
           }
         }
         break;
       }
 #endif
 
-#if defined(CPUARM)
       case ITEM_SETUP_BEEP_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.beepVolume, STR_BEEP_VOLUME, event, attr);
         break;
@@ -289,7 +275,6 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_BACKGROUND_VOLUME:
         SLIDER_5POS(y, g_eeGeneral.backgroundVolume, STR_BG_VOLUME, event, attr);
         break;
-#endif
 
       case ITEM_SETUP_BEEP_LENGTH:
         SLIDER_5POS(y, g_eeGeneral.beepLength, STR_BEEP_LENGTH, event, attr);
@@ -298,13 +283,9 @@ void menuRadioSetup(event_t event)
 #if defined(AUDIO)
       case ITEM_SETUP_SPEAKER_PITCH:
         lcdDrawTextAlignedLeft( y, STR_SPKRPITCH);
-#if defined(CPUARM)
         lcdDrawChar(RADIO_SETUP_2ND_COLUMN, y, '+', attr);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN+FW, y, g_eeGeneral.speakerPitch*15, attr|LEFT);
         lcdDrawText(lcdLastRightPos, y, "Hz", attr);
-#else
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.speakerPitch, attr|LEFT);
-#endif
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.speakerPitch, 0, 20);
         }
@@ -389,14 +370,12 @@ void menuRadioSetup(event_t event)
         break;
       }
 
-#if defined(CPUARM)
       case ITEM_SETUP_RSSI_POWEROFF_ALARM:
       {
         uint8_t b = 1 - g_eeGeneral.disableRssiPoweroffAlarm;
         g_eeGeneral.disableRssiPoweroffAlarm = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_RSSISHUTDOWNALARM, attr, event);
         break;
       }
-#endif
 
 #if defined(TX_CAPACITY_MEASUREMENT)
       case ITEM_SETUP_CAPACITY_WARNING:
@@ -449,7 +428,6 @@ void menuRadioSetup(event_t event)
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.lightAutoOff, 0, 600/5);
         break;
 
-#if defined(CPUARM)
       case ITEM_SETUP_BRIGHTNESS:
         lcdDrawTextAlignedLeft(y, STR_BRIGHTNESS);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 100-g_eeGeneral.backlightBright, attr|LEFT) ;
@@ -459,7 +437,6 @@ void menuRadioSetup(event_t event)
           g_eeGeneral.backlightBright = 100 - b;
         }
         break;
-#endif
 
 #if defined(PWM_BACKLIGHT)
       case ITEM_SETUP_BACKLIGHT_BRIGHTNESS_OFF:
@@ -478,7 +455,6 @@ void menuRadioSetup(event_t event)
 #if defined(SPLASH) && !defined(FSPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
-#if defined(CPUARM)
         lcdDrawTextAlignedLeft(y, STR_SPLASHSCREEN);
         if (SPLASH_NEEDED()) {
           lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, SPLASH_TIMEOUT/100, attr|LEFT);
@@ -489,11 +465,6 @@ void menuRadioSetup(event_t event)
         }
         if (attr) g_eeGeneral.splashMode = -checkIncDecGen(event, -g_eeGeneral.splashMode, -3, 4);
         break;
-#else
-        uint8_t b = 1-g_eeGeneral.splashMode;
-        g_eeGeneral.splashMode = 1 - editCheckBox(b, RADIO_SETUP_2ND_COLUMN, y, STR_SPLASHSCREEN, attr, event);
-        break;
-#endif
       }
 #endif
 
@@ -504,11 +475,9 @@ void menuRadioSetup(event_t event)
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
         break;
 
-#if defined(CPUARM)
       case ITEM_SETUP_ADJUST_RTC:
         g_eeGeneral.adjustRTC = editCheckBox(g_eeGeneral.adjustRTC, RADIO_SETUP_2ND_COLUMN, y, STR_ADJUST_RTC, attr, event);
         break;
-#endif
 
       case ITEM_SETUP_GPSFORMAT:
         g_eeGeneral.gpsFormat = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_GPSCOORD, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
@@ -521,7 +490,6 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(CPUARM)
       case ITEM_SETUP_LANGUAGE:
         lcdDrawTextAlignedLeft(y, STR_VOICELANG);
         lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, currentLanguagePack->name, attr);
@@ -537,7 +505,6 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_IMPERIAL:
         g_eeGeneral.imperial = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_UNITSSYSTEM, STR_VUNITSSYSTEM, g_eeGeneral.imperial, 0, 1, attr, event);
         break;
-#endif
 
 #if defined(FAI_CHOICE)
       case ITEM_SETUP_FAI:
@@ -557,14 +524,12 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(CPUARM)
       case ITEM_SETUP_SWITCHES_DELAY:
         lcdDrawTextAlignedLeft(y, STR_SWITCHES_DELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 10*SWITCHES_DELAY(), attr|LEFT);
         lcdDrawText(lcdLastRightPos, y, STR_MS, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, 100-15);
         break;
-#endif
 #if defined(STM32)
       case ITEM_SETUP_USB_MODE:
         g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODE, STR_USBMODES, g_eeGeneral.USBMode, USB_UNSELECTED_MODE, USB_MAX_MODE, attr, event);

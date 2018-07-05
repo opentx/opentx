@@ -40,9 +40,7 @@
 
 #include "opentx.h"
 
-#if defined(CPUARM)
   #pragma message("Templates are not implemented on this board")
-#endif
 
 MixData* setDest(uint8_t dch, uint8_t src, bool clear=false)
 {

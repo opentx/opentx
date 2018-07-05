@@ -18,12 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#if defined(QT_CORE_LIB) && 0    // experimental
-  #define SIMPGMSPC_USE_QT    1
-  #include <QElapsedTimer>
-#else
   #define SIMPGMSPC_USE_QT    0
-#endif
 
 #include "opentx.h"
 #include <errno.h>
@@ -58,7 +53,7 @@ DMA_Stream_TypeDef dma1_stream2, dma1_stream5, dma1_stream7, dma2_stream1, dma2_
 DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 SysTick_Type systick;
-#elif defined(CPUARM)
+#else
 Pio Pioa, Piob, Pioc;
 Pmc pmc;
 Ssc ssc;
@@ -159,7 +154,6 @@ void simuInit()
       if ((int)state > 0) pin |= (mask); else pin &= ~(mask); \
       break;
 
-#if defined(CPUARM)
   #if defined(PCBHORUS) || (defined(PCBTARANIS) && !defined(PCBX9E))
     #define SWITCH_CASE    NEG_CASE
     #define SWITCH_INV     POS_CASE
@@ -173,19 +167,6 @@ void simuInit()
       if ((int)state > 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
       break;
   #define SWITCH_3_INV(swtch, pin1, pin2, mask1, mask2)  SWITCH_3_CASE(swtch, pin2, pin1, mask2, mask1)
-#else  // AVR
-  #if defined(PCBMEGA2560)
-    #define SWITCH_CASE    POS_CASE
-  #else
-    #define SWITCH_CASE    NEG_CASE
-  #endif
-  #define KEY_CASE         POS_CASE
-  #define SWITCH_3_CASE(swtch, pin1, pin2, mask1, mask2) \
-    case swtch: \
-      if ((int)state >= 0) pin1 &= ~(mask1); else pin1 |= (mask1); \
-      if ((int)state <= 0) pin2 &= ~(mask2); else pin2 |= (mask2); \
-      break;
-#endif
 
 #define TRIM_CASE          KEY_CASE
 
@@ -236,10 +217,6 @@ void simuSetKey(uint8_t key, bool state)
 #endif
 #if defined(PCBSKY9X) && !defined(REVX) && !defined(AR9X) && defined(ROTARY_ENCODERS)
     KEY_CASE(BTN_REa, PIOB->PIO_PDSR, 0x40)
-#elif (defined(PCBGRUVIN9X) || defined(PCBMEGA2560)) && (defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION))
-    KEY_CASE(BTN_REa, pind, 0x20)
-#elif defined(PCB9X) && defined(ROTARY_ENCODER_NAVIGATION)
-    KEY_CASE(BTN_REa, RotEncoder, 0x20)
 #endif
   }
 }
@@ -329,22 +306,6 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_CASE(4, PIOA->PIO_PDSR, 1<<2)
     SWITCH_CASE(5, PIOC->PIO_PDSR, 1<<16)
     SWITCH_CASE(6, PIOC->PIO_PDSR, 1<<8)
-#elif defined(PCBGRUVIN9X)
-    SWITCH_3_CASE(0, ping, pinb, (1<<INP_G_ID1), (1<<INP_B_ID2))
-    SWITCH_CASE(1, ping, 1<<INP_G_ThrCt)
-    SWITCH_CASE(2, ping, 1<<INP_G_RuddDR)
-    SWITCH_CASE(3, pinc, 1<<INP_C_ElevDR)
-    SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)
-    SWITCH_CASE(5, ping, 1<<INP_G_Gear)
-    SWITCH_CASE(6, pinb, 1<<INP_B_Trainer)
-#elif defined(PCBMEGA2560)
-    SWITCH_3_CASE(0, pinc, pinc, (1<<INP_C_ID1), (1<<INP_C_ID2))
-    SWITCH_CASE(1, ping, 1<<INP_G_ThrCt)
-    SWITCH_CASE(2, ping, 1<<INP_G_RuddDR)
-    SWITCH_CASE(3, pinc, 1<<INP_L_ElevDR)
-    SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)
-    SWITCH_CASE(5, ping, 1<<INP_G_Gear)
-    SWITCH_CASE(6, pinb, 1<<INP_L_Trainer)
 #else // PCB9X
     SWITCH_3_CASE(0, ping, pine, (1<<INP_G_ID1), (1<<INP_E_ID2))
   #if defined(TELEMETRY_JETI) || defined(TELEMETRY_FRSKY) || defined(TELEMETRY_NMEA) || defined(TELEMETRY_ARDUPILOT) || defined(TELEMETRY_MAVLINK)
@@ -418,14 +379,11 @@ void StopSimu()
 
   main_thread_running = 0;
 
-#if defined(CPUARM)
   pthread_join(mixerTaskId, NULL);
   pthread_join(menusTaskId, NULL);
-#endif
   pthread_join(main_thread_pid, NULL);
 }
 
-#if defined(CPUARM)
 struct SimulatorAudio {
   int volumeGain;
   int currentVolume;
@@ -434,7 +392,6 @@ struct SimulatorAudio {
   bool threadRunning;
   pthread_t threadPid;
 } simuAudio;
-#endif
 
 void audioConsumeCurrentBuffer()
 {
@@ -636,7 +593,6 @@ int lcdRestoreBackupBuffer()
 }
 
 
-#if defined(CPUARM)
 void pwrOff()
 {
 }
@@ -648,7 +604,6 @@ uint32_t pwrPressed()
   return true;
 #endif
 }
-#endif
 
 #if defined(STM32)
 void pwrInit() { }

@@ -26,7 +26,7 @@
 #include "dump.h"
 #if defined(CLI)
 #include "cli.h"
-#elif defined(CPUARM)
+#else
 #include "serial.h"
 #endif
 

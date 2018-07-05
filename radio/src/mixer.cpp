@@ -193,29 +193,13 @@ void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
         cur_chn = ed->chn;
 
         //========== CURVE=================
-#if defined(CPUARM)
         if (ed->curve.value) {
           v = applyCurve(v, ed->curve);
         }
-#else
-        int8_t curveParam = ed->curveParam;
-        if (curveParam) {
-          if (ed->curveMode == MODE_CURVE)
-            v = applyCurve(v, curveParam);
-          else
-            v = expo(v, GET_GVAR(curveParam, -100, 100, mixerCurrentFlightMode));
-        }
-#endif
 
         //========== WEIGHT ===============
-#if defined(CPUARM)
         int32_t weight = GET_GVAR_PREC1(ed->weight, MIN_EXPO_WEIGHT, 100, mixerCurrentFlightMode);
         v = div_and_round((int32_t)v * weight, 1000);
-#else
-        int16_t weight = GET_GVAR(ed->weight, MIN_EXPO_WEIGHT, 100, mixerCurrentFlightMode);
-        weight = calc100to256(weight);
-        v = ((int32_t)v * weight) >> 8;
-#endif
 
 #if defined(VIRTUAL_INPUTS)
         //========== OFFSET ===============
@@ -425,7 +409,6 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
-#if defined(CPUARM)
   else if (i == MIXSRC_TX_VOLTAGE) {
     return g_vbat100mV;
   }
@@ -440,16 +423,7 @@ getvalue_t getValue(mixsrc_t i)
   else if (i <= MIXSRC_LAST_TIMER) {
     return timersStates[i-MIXSRC_FIRST_TIMER].val;
   }
-#else
-  else if (i == MIXSRC_FIRST_TELEM-1+TELEM_TX_VOLTAGE) {
-    return g_vbat100mV;
-  }
-  else if (i <= MIXSRC_FIRST_TELEM-1+TELEM_TIMER2) {
-    return timersStates[i-MIXSRC_FIRST_TELEM+1-TELEM_TIMER1].val;
-  }
-#endif
 
-#if defined(CPUARM)
   else if (i <= MIXSRC_LAST_TELEM) {
     if(IS_FAI_FORBIDDEN(i)) {
       return 0;
@@ -466,42 +440,6 @@ getvalue_t getValue(mixsrc_t i)
         return telemetryItem.value;
     }
   }
-#elif defined(TELEMETRY_FRSKY)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_TX) return telemetryData.rssi[1].value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RSSI_RX) return telemetryData.rssi[0].value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A1) return telemetryData.analog[TELEM_ANA_A1].value;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_A2) return telemetryData.analog[TELEM_ANA_A2].value;
-#if defined(TELEMETRY_FRSKY_SPORT)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return telemetryData.hub.baroAltitude;
-#elif defined(FRSKY_HUB) || defined(WS_HOW_HIGH)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ALT) return TELEMETRY_RELATIVE_BARO_ALT_BP;
-#endif
-#if defined(FRSKY_HUB)
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_RPM) return telemetryData.hub.rpm;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_FUEL) return telemetryData.hub.fuelLevel;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T1) return telemetryData.hub.temperature1;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_T2) return telemetryData.hub.temperature2;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_SPEED) return TELEMETRY_GPS_SPEED_BP;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DIST) return telemetryData.hub.gpsDistance;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_GPSALT) return TELEMETRY_RELATIVE_GPS_ALT_BP;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELL) return (int16_t)TELEMETRY_MIN_CELL_VOLTAGE;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CELLS_SUM) return (int16_t)telemetryData.hub.cellsSum;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VFAS) return (int16_t)telemetryData.hub.vfas;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CURRENT) return (int16_t)telemetryData.hub.current;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_CONSUMPTION) return telemetryData.hub.currentConsumption;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_POWER) return telemetryData.hub.power;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCx) return telemetryData.hub.accelX;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCy) return telemetryData.hub.accelY;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ACCz) return telemetryData.hub.accelZ;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_HDG) return telemetryData.hub.gpsCourse_bp;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_VSPEED) return telemetryData.hub.varioSpeed;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_ASPEED) return telemetryData.hub.airSpeed;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_DTE) return telemetryData.hub.dTE;
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_MIN_A1) return telemetryData.analog[TELEM_ANA_A1].min;
-  else if (i==MIXSRC_FIRST_TELEM-1+TELEM_MIN_A2) return telemetryData.analog[TELEM_ANA_A2].min;
-  else if (i<=MIXSRC_FIRST_TELEM-1+TELEM_CSW_MAX) return *(((int16_t*)(&telemetryData.hub.minAltitude))+i-(MIXSRC_FIRST_TELEM-1+TELEM_MIN_ALT));
-#endif
-#endif
   else return 0;
 }
 
@@ -550,7 +488,6 @@ void evalInputs(uint8_t mode)
 
     // filtering for center beep
     uint8_t tmp = (uint16_t)abs(v) / 16;
-#if defined(CPUARM)
     if (mode == e_perout_mode_normal) {
       if (tmp==0 || (tmp==1 && (bpanaCenter & mask))) {
         anaCenter |= mask;
@@ -561,9 +498,6 @@ void evalInputs(uint8_t mode)
         }
       }
     }
-#else
-    if (tmp <= 1) anaCenter |= (tmp==0 ? mask : (bpanaCenter & mask));
-#endif
 
     if (ch < NUM_STICKS) { // only do this for sticks
 #if defined(VIRTUAL_INPUTS)
@@ -635,10 +569,6 @@ void evalInputs(uint8_t mode)
   evalTrims(); // when no virtual inputs, the trims need the anas array calculated above (when throttle trim enabled)
 
   if (mode == e_perout_mode_normal) {
-#if !defined(CPUARM)
-    anaCenter &= g_model.beepANACenter;
-    if (((bpanaCenter ^ anaCenter) & anaCenter)) AUDIO_POT_MIDDLE();
-#endif
     bpanaCenter = anaCenter;
   }
 }
@@ -928,14 +858,8 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         }
       }
 
-#if defined(CPUARM)
       int32_t weight = GET_GVAR_PREC1(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
       weight = calc100to256_16Bits(weight);
-#else
-      // saves 12 bytes code if done here and not together with weight; unknown reason
-      int16_t weight = GET_GVAR(MD_WEIGHT(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-      weight = calc100to256_16Bits(weight);
-#endif
       //========== SPEED ===============
       // now its on input side, but without weight compensation. More like other remote controls
       // lower weight causes slower movement
@@ -978,48 +902,24 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       //========== CURVES ===============
-#if defined(CPUARM)
       if (apply_offset_and_curve && md->curve.type != CURVE_REF_DIFF && md->curve.value) {
         v = applyCurve(v, md->curve);
       }
-#else
-      if (apply_offset_and_curve && md->curveParam && md->curveMode == MODE_CURVE) {
-        v = applyCurve(v, md->curveParam);
-      }
-#endif
 
       //========== WEIGHT ===============
       int32_t dv = (int32_t)v * weight;
-#if defined(CPUARM)
       dv = div_and_round(dv, 10);
-#endif
 
       //========== OFFSET / AFTER ===============
       if (apply_offset_and_curve) {
-#if defined(CPUARM)
         int32_t offset = GET_GVAR_PREC1(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
         if (offset) dv += div_and_round(calc100toRESX_16Bits(offset), 10) << 8;
-#else
-        int16_t offset = GET_GVAR(MD_OFFSET(md), GV_RANGELARGE_NEG, GV_RANGELARGE, mixerCurrentFlightMode);
-        if (offset) dv += int32_t(calc100toRESX_16Bits(offset)) << 8;
-#endif
       }
 
       //========== DIFFERENTIAL =========
-#if defined(CPUARM)
       if (md->curve.type == CURVE_REF_DIFF && md->curve.value) {
         dv = applyCurve(dv, md->curve);
       }
-#else
-      if (md->curveMode == MODE_DIFFERENTIAL) {
-        // @@@2 also recalculate curveParam to a 256 basis which ease the calculation later a lot
-        int16_t curveParam = calc100to256(GET_GVAR(md->curveParam, -100, 100, mixerCurrentFlightMode));
-        if (curveParam > 0 && dv < 0)
-          dv = (dv * (256 - curveParam)) >> 8;
-        else if (curveParam < 0 && dv > 0)
-          dv = (dv * (256 + curveParam)) >> 8;
-      }
-#endif
 
       int32_t * ptr = &chans[md->destCh]; // Save calculating address several times
 
@@ -1100,17 +1000,12 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 #define MAX_ACT 0xffff
 uint8_t lastFlightMode = 255; // TODO reinit everything here when the model changes, no???
 
-#if defined(CPUARM)
 tmr10ms_t flightModeTransitionTime;
 uint8_t   flightModeTransitionLast = 255;
-#endif
 
 void evalMixes(uint8_t tick10ms)
 {
   int32_t sum_chans512[MAX_OUTPUT_CHANNELS];
-#if defined(PCBMEGA2560) && defined(DEBUG) && !defined(VOICE)
-  PORTH |= 0x40; // PORTH:6 LOW->HIGH signals start of mixer interrupt
-#endif
 
   static uint16_t fp_act[MAX_FLIGHT_MODES] = {0};
   static uint16_t delta = 0;
@@ -1121,9 +1016,7 @@ void evalMixes(uint8_t tick10ms)
   uint8_t fm = getFlightMode();
 
   if (lastFlightMode != fm) {
-#if defined(CPUARM)
     flightModeTransitionTime = get_tmr10ms();
-#endif
 
     if (lastFlightMode == 255) {
       fp_act[fm] = MAX_ACT;
@@ -1140,14 +1033,11 @@ void evalMixes(uint8_t tick10ms)
         fp_act[lastFlightMode] = 0;
         fp_act[fm] = MAX_ACT;
       }
-#if defined(CPUARM)
       logicalSwitchesCopyState(lastFlightMode, fm); // push last logical switches state from old to new flight mode
-#endif
     }
     lastFlightMode = fm;
   }
 
-#if defined(CPUARM)
   if (flightModeTransitionTime && get_tmr10ms() > flightModeTransitionTime+SWITCHES_DELAY()) {
     flightModeTransitionTime = 0;
     if (fm != flightModeTransitionLast) {
@@ -1158,7 +1048,6 @@ void evalMixes(uint8_t tick10ms)
       flightModeTransitionLast = fm;
     }
   }
-#endif
 
   int32_t weight = 0;
   if (flightModesFade) {
@@ -1190,14 +1079,10 @@ void evalMixes(uint8_t tick10ms)
     requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
 #endif
 
-#if defined(CPUARM)
     if (!g_model.noGlobalFunctions) {
       evalFunctions(g_eeGeneral.customFn, globalFunctionsContext);
     }
     evalFunctions(g_model.customFn, modelFunctionsContext);
-#else
-    evalFunctions();
-#endif
   }
 
   //========== LIMITS ===============
@@ -1209,11 +1094,7 @@ void evalMixes(uint8_t tick10ms)
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
     int32_t q = (flightModesFade ? (sum_chans512[i] / weight) << 4 : chans[i]);
 
-#if defined(PCBSTD)
-    ex_chans[i] = q >> 8;
-#else
     ex_chans[i] = q / 256;
-#endif
 
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
@@ -1247,7 +1128,4 @@ void evalMixes(uint8_t tick10ms)
     }
   }
 
-#if defined(CPUM2560) && defined(DEBUG) && !defined(VOICE)
-  PORTH &= ~0x40; // PORTH:6 HIGH->LOW signals end of mixer interrupt
-#endif
 }

@@ -55,14 +55,12 @@ extern uint8_t wshhStreaming;
 
 extern uint8_t link_counter;
 
-#if defined(CPUARM)
 enum TelemetryStates {
   TELEMETRY_INIT,
   TELEMETRY_OK,
   TELEMETRY_KO
 };
 extern uint8_t telemetryState;
-#endif
 
 #define TELEMETRY_TIMEOUT10ms          100 // 1 second
 
@@ -80,7 +78,6 @@ extern uint8_t telemetryState;
 extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 extern uint8_t telemetryRxBufferCount;
 
-#if defined(CPUARM)
 #define TELEMETRY_AVERAGE_COUNT        3
 
 enum {
@@ -119,12 +116,10 @@ int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t
 
 void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 void frskyDSetDefault(int index, uint16_t id);
-#endif
 
 #define IS_DISTANCE_UNIT(unit)         ((unit) == UNIT_METERS || (unit) == UNIT_FEET)
 #define IS_SPEED_UNIT(unit)            ((unit) >= UNIT_KTS && (unit) <= UNIT_MPH)
 
-#if defined(CPUARM)
 extern uint8_t telemetryProtocol;
 #define IS_FRSKY_D_PROTOCOL()          (telemetryProtocol == PROTOCOL_FRSKY_D)
 #if defined (MULTIMODULE)
@@ -134,12 +129,7 @@ extern uint8_t telemetryProtocol;
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
 #endif
 #define IS_SPEKTRUM_PROTOCOL()         (telemetryProtocol == PROTOCOL_SPEKTRUM)
-#else
-#define IS_FRSKY_D_PROTOCOL()          (true)
-#define IS_FRSKY_SPORT_PROTOCOL()      (false)
-#endif
 
-#if defined(CPUARM)
 inline uint8_t modelTelemetryProtocol()
 {
 #if defined(CROSSFIRE)
@@ -161,11 +151,8 @@ inline uint8_t modelTelemetryProtocol()
   // default choice
   return PROTOCOL_FRSKY_SPORT;
 }
-#endif
 
-#if defined(CPUARM)
   #include "telemetry_sensors.h"
-#endif
 
 #if defined(LOG_TELEMETRY) && !defined(SIMU)
 void logTelemetryWriteStart();
@@ -204,3 +191,4 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
 #endif // _TELEMETRY_H_
+

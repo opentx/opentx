@@ -32,7 +32,6 @@ void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx,
   }
 }
 
-#if defined(CPUARM)
 FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModesType value, uint8_t attr)
 {
   int posHorz = menuHorizontalPosition;
@@ -60,9 +59,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
   
   return value;
 }
-#endif
 
-#if defined(CPUARM)
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr)
 {
   uint8_t mode = 0;
@@ -176,7 +173,6 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
     lcdNextPos = backupNextPos;
   }
 }
-#endif
 
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event)
 {
@@ -186,11 +182,9 @@ void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t e
   MD_UNION_TO_WEIGHT(weight, md);
 }
 
-#if defined(CPUARM)
 void drawGVarName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
   char s[8];
   getGVarString(s, idx);
   lcdDrawText(x, y, s, flags);
 }
-#endif

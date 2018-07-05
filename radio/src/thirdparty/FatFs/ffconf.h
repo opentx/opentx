@@ -119,13 +119,8 @@ extern "C" {
 */
 
 
-#if defined(CPUARM)
   #define _USE_LFN	    2
   #define _MAX_LFN      255
-#else
-  #define _USE_LFN      1
-  #define _MAX_LFN      32
-#endif
 /* The _USE_LFN switches the support of long file name (LFN).
 /
 /   0: Disable support of LFN. _MAX_LFN has no effect.

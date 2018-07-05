@@ -132,44 +132,5 @@ inline void beep(uint8_t) { }
   #define START_SILENCE_PERIOD()
 #endif /* !AUDIO */
 
-#if !defined(CPUARM)
-#if defined(BUZZER)
-inline void BUZZER_HEARTBEAT()
-{
-  if (g_beepCnt) {
-    if (!beepAgainOrig) {
-      beepAgainOrig = g_beepCnt;
-      beepOn = true;
-    }
-    g_beepCnt--;
-  }
-  else {
-    if (beepAgain && beepAgainOrig) {
-      beepOn = !beepOn;
-      g_beepCnt = beepOn ? beepAgainOrig : 8;
-      if (beepOn) beepAgain--;
-    }
-    else {
-      beepAgainOrig = 0;
-      beepOn = false;
-      warble = false;
-    }
-  }
-
-  if (beepOn) {
-    warbleC = warble && !warbleC;
-    if (warbleC)
-      buzzerOff();
-    else
-      buzzerOn();
-  }
-  else {
-    buzzerOff();
-  }
-}
-#else // BUZZER
-#define BUZZER_HEARTBEAT()
-#endif // BUZZER
-#endif // CPUARM
 
 #endif // _BUZZER_H_

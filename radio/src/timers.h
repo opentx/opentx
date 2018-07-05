@@ -26,17 +26,10 @@
 #define TMR_NEGATIVE 2
 #define TMR_STOPPED  3
 
-#if defined(CPUARM)
 typedef int32_t tmrval_t;
 typedef uint32_t tmrstart_t;
 typedef int16_t tmrmode_t;
 #define TIMER_MAX     (0xffffff/2)
-#else
-typedef int16_t tmrval_t;
-typedef uint16_t tmrstart_t;
-typedef int8_t tmrmode_t;
-#define TIMER_MAX     (0xffff/2)
-#endif
 
 #define TIMER_MIN     (tmrval_t(-TIMER_MAX-1))
 
@@ -52,17 +45,10 @@ extern TimerState timersStates[TIMERS];
 
 void timerReset(uint8_t idx);
 
-#if defined(CPUARM)
 void timerSet(int idx, int val);
-#endif // #if defined(CPUARM)
 
-#if defined(CPUARM) || defined(CPUM2560)
   void saveTimers();
   void restoreTimers();
-#else
-  #define saveTimers()
-  #define restoreTimers()
-#endif
 
 void evalTimers(int16_t throttle, uint8_t tick10ms);
 

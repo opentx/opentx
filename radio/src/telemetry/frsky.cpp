@@ -20,10 +20,6 @@
 
 #include "opentx.h"
 
-#if !defined(CPUARM)
-uint8_t frskyTxBuffer[FRSKY_TX_PACKET_SIZE];
-uint8_t frskyTxBufferCount = 0;
-#endif
 
 #if defined(TELEMETREZ)
 #define PRIVATE         0x1B
@@ -152,23 +148,3 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
 #endif
 }
 
-#if defined(FRSKY_HUB) && !defined(CPUARM)
-void frskyUpdateCells(void)
-{
-  // Voltage => Cell number + Cell voltage
-  uint8_t battnumber = ((telemetryData.hub.volts & 0x00F0) >> 4);
-  if (battnumber < 12) {
-    if (telemetryData.hub.cellsCount < battnumber+1) {
-      telemetryData.hub.cellsCount = battnumber+1;
-    }
-    uint8_t cellVolts = (uint8_t)(((((telemetryData.hub.volts & 0xFF00) >> 8) + ((telemetryData.hub.volts & 0x000F) << 8))) / 10);
-    telemetryData.hub.cellVolts[battnumber] = cellVolts;
-    if (!telemetryData.hub.minCellVolts || cellVolts<telemetryData.hub.minCellVolts || battnumber==telemetryData.hub.minCellIdx) {
-      telemetryData.hub.minCellIdx = battnumber;
-      telemetryData.hub.minCellVolts = cellVolts;
-      if (!telemetryData.hub.minCell || telemetryData.hub.minCellVolts<telemetryData.hub.minCell)
-        telemetryData.hub.minCell = telemetryData.hub.minCellVolts;
-    }
-  }
-}
-#endif

@@ -24,11 +24,7 @@
 #define STR2(s) #s
 #define DEFNUMSTR(s)  STR2(s)
 
-#if defined(PCBSTD)
-  #define EEPROM_STR DEFNUMSTR(EEPROM_VER) "-" DEFNUMSTR(EEPROM_VARIANT)
-#else
   #define EEPROM_STR DEFNUMSTR(EEPROM_VER);
-#endif
 
 #if defined(PCBHORUS)
 #define TAB "\037\075"

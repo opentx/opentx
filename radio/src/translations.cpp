@@ -46,9 +46,7 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(SLIDERTYPES)
 #endif
     ISTR(VTRIMINC)
-#if defined(CPUARM)
     ISTR(VDISPLAYTRIMS)
-#endif
     ISTR(RETA123)
     ISTR(VPROTOS)
     ISTR(POSNEG)
@@ -64,10 +62,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(VFSWFUNC)
     ISTR(VFSWRESET)
     ISTR(FUNCSOUNDS)
-#if !defined(CPUARM)
-    ISTR(VTELEMCHNS)
-#endif
-#if defined(TELEMETRY_FRSKY) || defined(CPUARM)
     ISTR(VTELEMUNIT)
     ISTR(VALARM)
     ISTR(VALARMFN)
@@ -76,7 +70,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(AMPSRC)
     ISTR(VARIOSRC)
     ISTR(VTELEMSCREENTYPE)
-#endif
 #if defined(TEMPLATES)
     ISTR(VTEMPLATES)
 #endif
@@ -90,22 +83,15 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(INPUTNAMES)
 #endif
     ISTR(VTMRMODES)
-#if defined(CPUM2560) || defined(CPUARM)
     ISTR(DATETIME)
     ISTR(VPERSISTENT)
-#endif
-#if defined(CPUARM)
     ISTR(VLCD)
     ISTR(VUNITSSYSTEM)
     ISTR(VBEEPCOUNTDOWN)
     ISTR(VVARIOCENTER)
-#endif
-#if defined(PXX) || defined(CPUARM)
     ISTR(COUNTRYCODES)
     ISTR(USBMODES)
     ISTR(VFAILSAFE)
-#endif
-#if defined(CPUARM)
     ISTR(VTRAINERMODES)
     ISTR(TARANIS_PROTOCOLS)
     ISTR(R9M_REGION)
@@ -127,7 +113,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(BLUETOOTH_MODES)
 #endif
     ISTR(VANTENNATYPES)
-#endif
 #if defined(TELEMETRY_MAVLINK)
     ISTR(MAVLINK_BAUDS)
     ISTR(MAVLINK_AC_MODES)
@@ -164,10 +149,8 @@ const pm_char STR_USE_GLOBAL_FUNCS[] PROGMEM = TR_USE_GLOBAL_FUNCS;
 #endif
 const pm_char STR_PROTO[] PROGMEM = TR_PROTO;
 const pm_char STR_PPMFRAME[] PROGMEM = TR_PPMFRAME;
-#if defined(CPUARM)
 const pm_char STR_REFRESHRATE[] PROGMEM = TR_REFRESHRATE;
 const pm_char SSTR_WARN_BATTVOLTAGE[] PROGMEM = STR_WARN_BATTVOLTAGE;
-#endif
 const pm_char STR_MS[] PROGMEM = TR_MS;
 const pm_char STR_SWITCH[] PROGMEM = TR_SWITCH;
 const pm_char STR_TRIMS[] PROGMEM = TR_TRIMS;
@@ -222,9 +205,7 @@ const pm_char STR_BLADES[] PROGMEM = TR_BLADES;
 const pm_char STR_SCREEN[] PROGMEM = TR_SCREEN;
 const pm_char STR_SOUND_LABEL[] PROGMEM = TR_SOUND_LABEL;
 const pm_char STR_LENGTH[] PROGMEM = TR_LENGTH;
-#if defined(CPUARM)
 const pm_char STR_BEEP_LENGTH[] PROGMEM = TR_BEEP_LENGTH;
-#endif
 #if defined(AUDIO)
 const pm_char STR_SPKRPITCH[] PROGMEM = TR_SPKRPITCH;
 #endif
@@ -234,9 +215,7 @@ const pm_char STR_HAPTICSTRENGTH[] PROGMEM = TR_HAPTICSTRENGTH;
 #endif
 const pm_char STR_CONTRAST[] PROGMEM = TR_CONTRAST;
 const pm_char STR_ALARMS_LABEL[] PROGMEM = TR_ALARMS_LABEL;
-#if defined(BATTGRAPH) || defined(CPUARM)
 const pm_char STR_BATTERY_RANGE[] PROGMEM = TR_BATTERY_RANGE;
-#endif
 const pm_char STR_BATTERYWARNING[] PROGMEM = TR_BATTERYWARNING;
 const pm_char STR_INACTIVITYALARM[] PROGMEM = TR_INACTIVITYALARM;
 const pm_char STR_MEMORYWARNING[] PROGMEM = TR_MEMORYWARNING;
@@ -306,9 +285,7 @@ const pm_char STR_PPM_TRAINER[] PROGMEM = TR_PPM_TRAINER;
 const pm_char STR_CH[] PROGMEM = TR_CH;
 const pm_char STR_MODEL[] PROGMEM = TR_MODEL;
 const pm_char STR_FP[] PROGMEM = TR_FP;
-#if defined(CPUARM)
 const pm_char STR_MIX[] PROGMEM = TR_MIX;
-#endif
 const pm_char STR_ALERT[] PROGMEM = TR_ALERT;
 const pm_char STR_PRESSANYKEYTOSKIP[] PROGMEM = TR_PRESSANYKEYTOSKIP;
 const pm_char STR_THROTTLENOTIDLE[] PROGMEM = TR_THROTTLENOTIDLE;
@@ -331,13 +308,9 @@ const pm_char STR_STORAGE_WARNING[] PROGMEM = TR_STORAGE_WARNING;
 const pm_char STR_STORAGE_FORMAT[] PROGMEM = TR_STORAGE_FORMAT;
 #endif
 
-#if defined(FAS_OFFSET) || !defined(CPUM64)
 const pm_char STR_FAS_OFFSET[] PROGMEM = TR_FAS_OFFSET;
-#endif
 
-#if defined(CPUM2560) || defined(CPUARM)
 const pm_char STR_MENUDATEANDTIME[] PROGMEM = TR_MENUDATEANDTIME;
-#endif
 
 const pm_char STR_MENUTRAINER[] PROGMEM = TR_MENUTRAINER;
 const pm_char STR_MENUSPECIALFUNCS[] PROGMEM = TR_MENUSPECIALFUNCS;
@@ -390,7 +363,6 @@ const pm_char STR_RECEIVER[] PROGMEM = TR_RECEIVER;
 const pm_char STR_REBIND[] PROGMEM = TR_REBIND;
 #endif
 
-#if defined(PXX) || defined(CPUARM)
 const pm_char STR_SYNCMENU[] PROGMEM = TR_SYNCMENU;
 const pm_char STR_INTERNALRF[] PROGMEM = TR_INTERNALRF;
 const pm_char STR_EXTERNALRF[] PROGMEM = TR_EXTERNALRF;
@@ -405,7 +377,6 @@ const pm_char STR_NONE[] PROGMEM = TR_NONE;
 const pm_char STR_MENUSENSOR[] PROGMEM = TR_MENUSENSOR;
 const pm_char STR_SENSOR[] PROGMEM = TR_SENSOR;
 const pm_char STR_DISABLE_INTERNAL[] PROGMEM = TR_DISABLE_INTERNAL;
-#endif
 
 const pm_char STR_INVERT_THR[] PROGMEM = TR_INVERT_THR;
 const pm_char STR_AND_SWITCH[] PROGMEM = TR_AND_SWITCH;
@@ -418,10 +389,8 @@ const pm_char STR_LATITUDE[] PROGMEM = TR_LATITUDE;
 const pm_char STR_LONGITUDE[] PROGMEM = TR_LONGITUDE;
 #endif
 
-#if defined(CPUARM) || defined(CPUM2560)
 const pm_char STR_SHUTDOWN[] PROGMEM = TR_SHUTDOWN;
 const pm_char STR_SAVEMODEL[] PROGMEM = TR_SAVEMODEL;
-#endif
 
 #if defined(PCBX9E)
 const pm_char STR_POWEROFF[] PROGMEM = TR_POWEROFF;
@@ -429,12 +398,9 @@ const pm_char STR_POWEROFF[] PROGMEM = TR_POWEROFF;
 
 const pm_char STR_BATT_CALIB[] PROGMEM = TR_BATT_CALIB;
 
-#if defined(CPUARM) || defined(TELEMETRY_FRSKY)
 const pm_char STR_VOLTAGE[] PROGMEM = TR_VOLTAGE;
 const pm_char STR_CURRENT[] PROGMEM = TR_CURRENT;
-#endif
 
-#if defined(CPUARM)
 const pm_char STR_CURRENT_CALIB[] PROGMEM = TR_CURRENT_CALIB;
 const pm_char STR_UNITSSYSTEM[]   PROGMEM = TR_UNITSSYSTEM;
 const pm_char STR_VOICELANG[] PROGMEM = TR_VOICELANG;
@@ -443,7 +409,6 @@ const pm_char STR_BEEP_VOLUME[] PROGMEM = INDENT TR_BEEP_VOLUME;
 const pm_char STR_WAV_VOLUME[] PROGMEM = INDENT TR_WAV_VOLUME;
 const pm_char STR_BG_VOLUME[] PROGMEM = INDENT TR_BG_VOLUME;
 const pm_char STR_PERSISTENT_MAH[] PROGMEM = TR_PERSISTENT_MAH;
-#endif
 
 #if defined(NAVIGATION_MENUS)
 const pm_char STR_SELECT_MODEL[] PROGMEM = TR_SELECT_MODEL;
@@ -606,13 +571,11 @@ const pm_char STR_CONFIRMRESET[] PROGMEM = TR_CONFIRMRESET;
 const pm_char STR_TOO_MANY_LUA_SCRIPTS[] PROGMEM = TR_TO_MANY_LUA_SCRIPTS;
 const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
 
-#if defined(CPUARM)
   const pm_char STR_MODELNAME[] PROGMEM = TR_MODELNAME;
   const pm_char STR_PHASENAME[] PROGMEM = TR_PHASENAME;
   const pm_char STR_MIXNAME[] PROGMEM = TR_MIXNAME;
   const pm_char STR_INPUTNAME[] PROGMEM = TR_INPUTNAME;
   const pm_char STR_EXPONAME[] PROGMEM = TR_EXPONAME;
-#endif
 
 #if LCD_W >= 212
   const char * const STR_PHASES_HEADERS[] = TR_PHASES_HEADERS;
@@ -622,7 +585,6 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const char * const STR_GVAR_HEADERS[] = TR_GVAR_HEADERS;
 #endif
 
-#if defined(CPUARM)
   const pm_char STR_TRAINER[] PROGMEM = TR_TRAINER;
   const pm_char STR_MODULE_BIND[] PROGMEM  = TR_MODULE_BIND;
   const pm_char STR_BINDING_1_8_TELEM_ON[] PROGMEM = TR_BINDING_CH1_8_TELEM_ON;
@@ -688,9 +650,7 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_MAIN_COLOR[] PROGMEM = TR_MAIN_COLOR;
   const pm_char STR_TEXT_VIEWER[] PROGMEM = TR_TEXT_VIEWER;
   const pm_char STR_MULTI_RFPOWER[] PROGMEM = TR_MULTI_RFPOWER;
-#endif
 
-#if defined(CPUARM)
   const pm_char STR_BYTES[] PROGMEM = TR_BYTES;
   const pm_char STR_ANTENNAPROBLEM[] PROGMEM = TR_ANTENNAPROBLEM;
   const pm_char STR_MODULE[] PROGMEM = TR_MODULE;
@@ -740,7 +700,6 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_MENU_OTHER[] PROGMEM = TR_MENU_OTHER;
   const pm_char STR_MENU_INVERT[] PROGMEM = TR_MENU_INVERT;
   const pm_char STR_JITTER_FILTER[] PROGMEM = TR_JITTER_FILTER;
-#endif
 
 #if MENUS_LOCK == 1
   const pm_char STR_UNLOCKED[] PROGMEM = TR_UNLOCKED;
@@ -786,7 +745,6 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_MAVLINK_LON[] PROGMEM = TR_MAVLINK_LON;
 #endif
 
-#if !defined(CPUM64)
   const pm_char STR_ABOUTUS[] PROGMEM = TR_ABOUTUS;
   const pm_char STR_ABOUT_OPENTX_1[] PROGMEM = TR_ABOUT_OPENTX_1;
   const pm_char STR_ABOUT_OPENTX_2[] PROGMEM = TR_ABOUT_OPENTX_2;
@@ -830,4 +788,3 @@ const pm_char STR_BLCOLOR[]  PROGMEM = TR_BLCOLOR;
   const pm_char STR_ABOUT_PARENTS_2[] PROGMEM = TR_ABOUT_PARENTS_2;
   const pm_char STR_ABOUT_PARENTS_3[] PROGMEM = TR_ABOUT_PARENTS_3;
   const pm_char STR_ABOUT_PARENTS_4[] PROGMEM = TR_ABOUT_PARENTS_4;
-#endif

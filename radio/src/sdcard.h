@@ -141,9 +141,6 @@ const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t ext
 #elif defined(PCBSKY9X)
   #define OTX_FOURCC 0x3278746F // otx for sky9x
   #define O9X_FOURCC 0x3278396F // o9x for sky9x
-#elif defined(PCBGRUVIN9X) || defined(PCBMEGA2560)
-  #define OTX_FOURCC 0x3178746F // otx for gruvin9x/MEGA2560
-  #define O9X_FOURCC 0x3178396F // o9x for gruvin9x/MEGA2560
 #endif
 
 bool isFileAvailable(const char * filename, bool exclDir = false);

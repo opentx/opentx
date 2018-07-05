@@ -58,20 +58,14 @@ enum PolishPrompts {
   PL_PROMPT_SECONDS = PL_PROMPT_UNITS_BASE+(UNIT_SECONDS*4),
   PL_PROMPT_RPMS = PL_PROMPT_UNITS_BASE+(UNIT_RPMS*4),
   PL_PROMPT_G = PL_PROMPT_UNITS_BASE+(UNIT_G*4),
-#if defined(CPUARM)
   PL_PROMPT_MILLILITERS = PL_PROMPT_UNITS_BASE+(UNIT_MILLILITERS*4),
   PL_PROMPT_FLOZ = PL_PROMPT_UNITS_BASE+(UNIT_FLOZ*4),
   PL_PROMPT_FEET_PER_SECOND = PL_PROMPT_UNITS_BASE+(UNIT_FEET_PER_SECOND*4),
-#endif
 };
 
 #if defined(VOICE)
 
-#if defined(CPUARM)
   #define PL_PUSH_UNIT_PROMPT(u, p) pl_pushUnitPrompt((u), (p), id)
-#else
-  #define PL_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
-#endif
 
 #define MESKI 0x80
 #define ZENSKI 0x81
@@ -79,7 +73,6 @@ enum PolishPrompts {
 
 I18N_PLAY_FUNCTION(pl, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
-#if defined(CPUARM)
   if (number == 1)
     PUSH_UNIT_PROMPT(unitprompt, 0);
   else if (number > 1 && number < 5)
@@ -94,23 +87,6 @@ I18N_PLAY_FUNCTION(pl, pushUnitPrompt, uint8_t unitprompt, int16_t number)
     else
 	PUSH_UNIT_PROMPT(unitprompt, 2);
     }
-#else
-  unitprompt = PL_PROMPT_UNITS_BASE + unitprompt*4;
-  if (number == 1)
-    PUSH_NUMBER_PROMPT(unitprompt);
-  else if (number > 1 && number < 5)
-    PUSH_NUMBER_PROMPT(unitprompt+1);
-  else {
-    int test_2 =0;
-    test_2 =number % 10;
-    int ten=0;
-    ten=(number - (number % 10))/10;
-    if ((test_2 > 1 && test_2 < 5) && ten >=2)
-	PUSH_NUMBER_PROMPT(unitprompt+1);
-    else
-	PUSH_NUMBER_PROMPT(unitprompt+2);
-    }
-#endif
 }
 
 I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -121,31 +97,12 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-#if !defined(CPUARM)
-  if (unit) {
-    unit--;
-    convertUnit(number, unit);
-    if (IS_IMPERIAL_ENABLE()) {
-      if (unit == UNIT_DIST) {
-        unit = UNIT_FEET;
-      }
-      if (unit == UNIT_SPEED) {
-    	unit = UNIT_KTS;
-      }
-    }
-    unit++;
-  }
-#endif
 
   int8_t mode = MODE(att);
   if (mode > 0) {
-#if defined(CPUARM)
     if (mode == 2) {
       number /= 10;
     }
-#else
-    // we assume that we are PREC1
-#endif
     div_t qr = div((int)number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, ZENSKI);

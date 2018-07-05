@@ -114,12 +114,10 @@ void parseTelemHubByte(uint8_t byte)
       break;
 
     case offsetof(FrskyTelemetryData, current):
-#if defined(FAS_OFFSET) || !defined(CPUM64)
       if ((int16_t)telemetryData.hub.current > 0 && ((int16_t)telemetryData.hub.current + g_model.frsky.fasOffset) > 0)
         telemetryData.hub.current += g_model.frsky.fasOffset;
       else
         telemetryData.hub.current = 0;
-#endif
       if (telemetryData.hub.current > telemetryData.hub.maxCurrent)
         telemetryData.hub.maxCurrent = telemetryData.hub.current;
       break;

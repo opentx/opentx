@@ -20,16 +20,13 @@
 
 #include "opentx.h"
 
-#if defined(CPUARM)
 void TelemetryValueWithMin::reset()
 {
   memclear(this, sizeof(*this));
 }
-#endif
 
 void TelemetryValueWithMin::set(uint8_t value)
 {
-#if defined(CPUARM)
   if (this->value == 0) {
     memset(values, value, TELEMETRY_AVERAGE_COUNT);
     this->value = value;
@@ -47,18 +44,6 @@ void TelemetryValueWithMin::set(uint8_t value)
     sum += value;
     this->value = sum/(TELEMETRY_AVERAGE_COUNT+1);
   }
-#else
-  if (this->value == 0) {
-    this->value = value;
-  }
-  else {
-    sum += value;
-    if (link_counter == 0) {
-      this->value = sum / (IS_FRSKY_D_PROTOCOL() ? FRSKY_D_AVERAGING : FRSKY_SPORT_AVERAGING);
-      sum = 0;
-    }
-  }
-#endif
 
   if (!min || value < min) {
     min = value;

@@ -32,7 +32,6 @@
   #define CASE_EVT_ROTARY_RIGHT
 #endif
 
-#if defined(CPUARM)
 typedef bool (*IsValueAvailable)(int);
 
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
@@ -70,7 +69,6 @@ bool isTelemetryFieldComparisonAvailable(int index);
 bool isSensorAvailable(int sensor);
 
 bool modelHasNotes();
-#endif
 
 #if defined(COLORLCD)
 bool isSwitch2POSWarningStateAvailable(int state);
@@ -88,7 +86,6 @@ void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att=0);
 
 swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 
-#if defined(CPUARM)
 #include "telemetry/telemetry_sensors.h"
 void drawValueWithUnit(coord_t x, coord_t y, int32_t val, uint8_t unit, LcdFlags flags);
 void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags flags=0);
@@ -99,7 +96,6 @@ void drawGPSSensorValue(coord_t x, coord_t y, TelemetryItem & telemetryItem, Lcd
 void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, LcdFlags flags=0);
 void drawSourceCustomValue(coord_t x, coord_t y, source_t channel, int32_t val, LcdFlags flags=0);
 void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags flags=0);
-#endif
 
 void drawCurve(coord_t offset=0);
 

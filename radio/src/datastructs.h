@@ -24,19 +24,10 @@
 #include <inttypes.h>
 #include "dataconstants.h"
 
-#if defined(CPUARM)
   #define ARM_FIELD(x)                 x;
   #define AVR_FIELD(x)
-#else
-  #define ARM_FIELD(x)
-  #define AVR_FIELD(x)                 x;
-#endif
 
-#if defined(PCBSTD)
-  #define N_PCBSTD_FIELD(x)
-#else
   #define N_PCBSTD_FIELD(x) x;
-#endif
 
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
@@ -76,7 +67,6 @@ typedef uint8_t source_t;
  * Mixer structure
  */
 
-#if defined(CPUARM)
 PACK(struct CurveRef {
   uint8_t type;
   int8_t  value;
@@ -100,56 +90,11 @@ PACK(struct MixData {
   uint8_t  speedDown;
   NOBACKUP(char name[LEN_EXPOMIX_NAME]);
 });
-#elif defined(CPUM2560) || defined(CPUM2561)
-PACK(struct MixData {
-  uint8_t destCh:4;          // 0, 1..MAX_OUTPUT_CHANNELS
-  uint8_t curveMode:1;       // O=curve, 1=differential
-  uint8_t noExpo:1;
-  uint8_t weightMode:1;
-  uint8_t offsetMode:1;
-  uint8_t srcRaw;
-  int8_t  weight;
-  int8_t  swtch;
-  uint8_t flightModes;
-  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  int8_t  carryTrim:3;
-  uint8_t mixWarn:2;         // mixer warning
-  uint8_t spare:1;
-  uint8_t delayUp:4;
-  uint8_t delayDown:4;
-  uint8_t speedUp:4;
-  uint8_t speedDown:4;
-  int8_t  curveParam;
-  int8_t  offset;
-});
-#else
-PACK(struct MixData {
-  uint8_t destCh:4;          // 0, 1..MAX_OUTPUT_CHANNELS
-  uint8_t curveMode:1;       // O=curve, 1=differential
-  uint8_t noExpo:1;
-  uint8_t weightMode:1;
-  uint8_t offsetMode:1;
-  int8_t  weight;
-  int8_t  swtch:6;
-  uint8_t mltpx:2;           // multiplex method: 0 means +=, 1 means *=, 2 means :=
-  uint8_t flightModes:5;
-  int8_t  carryTrim:3;
-  uint8_t srcRaw:6;
-  uint8_t mixWarn:2;         // mixer warning
-  uint8_t delayUp:4;
-  uint8_t delayDown:4;
-  uint8_t speedUp:4;
-  uint8_t speedDown:4;
-  int8_t  curveParam;
-  int8_t  offset;
-});
-#endif
 
 /*
  * Expo/Input structure
  */
 
-#if defined(CPUARM)
 PACK(struct ExpoData {
   uint16_t mode:2;
   uint16_t scale:14;
@@ -164,34 +109,11 @@ PACK(struct ExpoData {
   int8_t   offset;
   CurveRef curve;
 });
-#elif defined(CPUM2560) || defined(CPUM2561)
-PACK(struct ExpoData {
-  uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
-  uint8_t chn:2;
-  uint8_t curveMode:1;
-  uint8_t spare:3;
-  uint8_t flightModes;
-  int8_t  swtch;
-  uint8_t weight;
-  int8_t  curveParam;
-});
-#else
-PACK(struct ExpoData {
-  uint8_t mode:2;         // 0=end, 1=pos, 2=neg, 3=both
-  int8_t  swtch:6;
-  uint8_t chn:2;
-  uint8_t flightModes:5;
-  uint8_t curveMode:1;
-  uint8_t weight;         // One spare bit here (used for GVARS)
-  int8_t  curveParam;
-});
-#endif
 
 /*
  * Limit structure
  */
 
-#if defined(CPUARM)
 PACK(struct LimitData {
   int32_t min:11;
   int32_t max:11;
@@ -203,22 +125,11 @@ PACK(struct LimitData {
   int8_t curve;
   NOBACKUP(char name[LEN_CHANNEL_NAME]);
 });
-#else
-PACK(struct LimitData {
-  int8_t min;
-  int8_t max;
-  int8_t  ppmCenter;
-  int16_t offset:14;
-  uint16_t symetrical:1;
-  uint16_t revert:1;
-});
-#endif
 
 /*
  * LogicalSwitch structure
  */
 
-#if defined(CPUARM)
 PACK(struct LogicalSwitchData {
   uint8_t  func;
   int32_t  v1:10;
@@ -230,20 +141,11 @@ PACK(struct LogicalSwitchData {
   uint8_t  delay;
   uint8_t  duration;
 });
-#else
-PACK(struct LogicalSwitchData {
-  int8_t  v1; //input
-  int8_t  v2; //offset
-  uint8_t func:4;
-  uint8_t andsw:4;
-});
-#endif
 
 /*
  * SpecialFunction structure
  */
 
-#if defined(CPUARM)
 
 #if defined(PCBTARANIS)
   #define CFN_SPARE_TYPE               int32_t
@@ -273,51 +175,15 @@ PACK(struct CustomFunctionData {
   });
   uint8_t active;
 });
-#elif defined(CPUM2560)
-PACK(struct CustomFunctionData {
-  int8_t  swtch;
-  uint8_t func;
-  uint8_t mode:2;
-  uint8_t param:4;
-  uint8_t active:1;
-  uint8_t spare:1;
-  uint8_t value;
-});
-#else
-PACK(struct CustomFunctionData {
-  PACK(union {
-    PACK(struct {
-      int16_t   swtch:6;
-      uint16_t  func:4;
-      uint16_t  mode:2;
-      uint16_t  param:3;
-      uint16_t  active:1;
-    }) gvar;
-
-    PACK(struct {
-      int16_t   swtch:6;
-      uint16_t  func:4;
-      uint16_t  param:4;
-      uint16_t  spare:1;
-      uint16_t  active:1;
-    }) all;
-  });
-  uint8_t value;
-});
-#endif
 
 /*
  * FlightMode structure
  */
 
-#if defined(CPUARM)
 PACK(struct trim_t {
   int16_t  value:11;
   uint16_t mode:5;
 });
-#else
-typedef int16_t trim_t;
-#endif
 
 typedef int16_t gvar_t;
 
@@ -327,7 +193,6 @@ typedef int16_t gvar_t;
   #define FLIGHT_MODE_ROTARY_ENCODERS_FIELD
 #endif
 
-#if defined(CPUARM)
 PACK(struct FlightModeData {
   trim_t trim[NUM_TRIMS];
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
@@ -338,47 +203,22 @@ PACK(struct FlightModeData {
   FLIGHT_MODE_ROTARY_ENCODERS_FIELD
   gvar_t gvars[MAX_GVARS];
 });
-#elif !defined(PCBSTD)
-PACK(struct FlightModeData {
-  trim_t trim[NUM_STICKS];
-  int8_t swtch;       // swtch of phase[0] is not used
-  NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
-  uint8_t fadeIn:4;
-  uint8_t fadeOut:4;
-  FLIGHT_MODE_ROTARY_ENCODERS_FIELD
-  gvar_t gvars[MAX_GVARS];
-});
-#else
-PACK(struct FlightModeData {
-  int8_t trim[NUM_STICKS];
-  int8_t trim_ext;    // 2 extra bits per trim (10bits)
-  int8_t swtch;       // swtch of phase[0] is not used
-  NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
-  uint8_t fadeIn:4;
-  uint8_t fadeOut:4;
-});
-#endif
 
 /*
  * Curve structure
  */
 
-#if defined(CPUARM)
 PACK(struct CurveData {
   uint8_t type:1;
   uint8_t smooth:1;
   int8_t  points:6;   // describes number of points - 5
   NOBACKUP(char name[LEN_CURVE_NAME]);
 });
-#else
-typedef int8_t CurveData;
-#endif
 
 /*
  * GVar structure
  */
 
-#if !defined(PCBSTD)
 PACK(struct GVarData {
   NOBACKUP(char name[LEN_GVAR_NAME]);
   uint32_t min:12;
@@ -388,13 +228,11 @@ PACK(struct GVarData {
   uint32_t unit:2;
   uint32_t spare:4;
 });
-#endif
 
 /*
  * Timer structure
  */
 
-#if defined(CPUARM)
 PACK(struct TimerData {
   int32_t  mode:9;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint32_t start:23;
@@ -406,25 +244,6 @@ PACK(struct TimerData {
   uint32_t direction:1;
   NOBACKUP(char name[LEN_TIMER_NAME]);
 });
-#elif defined(CPUM2560)
-PACK(struct TimerData {
-  int8_t   mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint16_t start;
-  uint8_t  countdownBeep:2;
-  uint8_t  minuteBeep:1;
-  uint8_t  persistent:2;
-  uint8_t  countdownStart:3;
-  uint16_t value;
-});
-#else
-PACK(struct TimerData {
-  int8_t    mode;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  uint16_t  start:12;
-  uint16_t  countdownBeep:1;
-  uint16_t  minuteBeep:1;
-  uint16_t  spare:2;
-});
-#endif
 
 /*
  * Swash Ring structure
@@ -468,7 +287,6 @@ PACK(struct ScriptData {
 /*
  * Frsky Telemetry structure
  */
-#if defined(CPUARM)
 PACK(struct RssiAlarmData {
   int8_t disabled:1;
   int8_t spare:1;
@@ -478,18 +296,8 @@ PACK(struct RssiAlarmData {
   inline int8_t getWarningRssi() {return 45 + warning;}
   inline int8_t getCriticalRssi() {return 42 + critical;}
  });
-#else
-PACK(struct FrSkyRSSIAlarm {
-  int8_t level:2;
-  int8_t value:6;
-});
-#endif
 
-#if defined(CPUARM)
 typedef int16_t ls_telemetry_value_t;
-#else
-typedef uint8_t ls_telemetry_value_t;
-#endif
 
 #if !defined(COLORLCD)
 PACK(struct FrSkyBarData {
@@ -527,7 +335,7 @@ PACK(struct FrSkyTelemetryData {  // TODO EEPROM change, rename to VarioData
   int8_t  varioMin;
   int8_t  varioMax;
 });
-#elif defined(CPUARM)
+#else
 // TODO remove this also on Taranis
 PACK(struct FrSkyTelemetryData {
   uint8_t voltsSource;
@@ -540,33 +348,6 @@ PACK(struct FrSkyTelemetryData {
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
-});
-#else
-PACK(struct FrSkyChannelData {
-  uint8_t   ratio;              // 0.0 means not used, 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
-  int16_t   offset:12;
-  uint16_t  type:4;             // channel unit (0=volts, ...)
-  uint8_t   alarms_value[2];    // 0.1V steps EG. 6.6 Volts = 66. 25.1V = 251, etc.
-  uint8_t   alarms_level:4;
-  uint8_t   alarms_greater:2;   // 0=LT(<), 1=GT(>)
-  uint8_t   multiplier:2;       // 0=no multiplier, 1=*2 multiplier
-});
-
-PACK(struct FrSkyTelemetryData {
-  FrSkyChannelData channels[MAX_FRSKY_A_CHANNELS];
-  uint8_t usrProto:2; // Protocol in FrSky user data, 0=None, 1=FrSky hub, 2=WS HowHigh, 3=Halcyon
-  uint8_t blades:2;   // How many blades for RPMs, 0=2 blades
-  uint8_t screensType:2;
-  uint8_t voltsSource:2;
-  int8_t  varioMin:4;
-  int8_t  varioMax:4;
-  FrSkyRSSIAlarm rssiAlarms[2];
-  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
-  uint8_t varioSource:3;
-  int8_t  varioCenterMin:5;
-  uint8_t currentSource:3;
-  int8_t  varioCenterMax:5;
-  int8_t  fasOffset;
 });
 #endif
 
@@ -587,7 +368,6 @@ PACK(struct MavlinkTelemetryData {
  * Telemetry Sensor structure
  */
 
-#if defined(CPUARM)
 PACK(struct TelemetrySensor {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
@@ -641,7 +421,6 @@ PACK(struct TelemetrySensor {
   int32_t getPrecMultiplier() const;
   int32_t getPrecDivisor() const);
 });
-#endif
 
 /*
  * Module structure
@@ -709,11 +488,7 @@ PACK(struct ModuleData {
  * Model structure
  */
 
-#if defined(CPUARM) || defined(CPUM2560)
 typedef uint16_t BeepANACenter;
-#else
-typedef uint8_t BeepANACenter;
-#endif
 
 #if LEN_BITMAP_NAME > 0
 #define MODEL_HEADER_BITMAP_FIELD      NOBACKUP(char bitmap[LEN_BITMAP_NAME]);
@@ -753,23 +528,9 @@ typedef uint8_t swarnenable_t;
     swarnenable_t switchWarningEnable;
 #endif
 
-#if defined(PCBSTD) && defined(GVARS)
-  #define MODEL_GVARS_DATA gvar_t gvars[MAX_GVARS];
-#elif defined(PCBSTD)
-  #define MODEL_GVARS_DATA
-#else
   #define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
-#endif
 
-#if defined(CPUARM)
   #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
-#elif defined(TELEMETRY_MAVLINK)
-  #define TELEMETRY_DATA MavlinkTelemetryData mavlink;
-#elif defined(TELEMETRY_FRSKY) || !defined(PCBSTD)
-  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky);
-#else
-  #define TELEMETRY_DATA
-#endif
 
 #if defined(PCBHORUS)
 #include "gui/480x272/layout.h"
@@ -885,13 +646,10 @@ PACK(struct TrainerData {
   #define SPLASH_MODE uint8_t splashSpares:3
 #elif defined(FSPLASH)
   #define SPLASH_MODE uint8_t splashMode:3
-#elif defined(CPUARM)
-  #define SPLASH_MODE int8_t splashMode:3
 #else
-  #define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
+  #define SPLASH_MODE int8_t splashMode:3
 #endif
 
-#if defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS_ARM \
     NOBACKUP(uint8_t  backlightBright); \
     NOBACKUP(uint32_t globalTimer); \
@@ -912,7 +670,6 @@ PACK(struct TrainerData {
     NOBACKUP(int8_t   varioRange); \
     NOBACKUP(int8_t   varioRepeat); \
     CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
-#endif
 
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
@@ -959,12 +716,8 @@ PACK(struct TrainerData {
     uint8_t  rotarySteps; \
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
-#elif defined(CPUARM)
-  #define EXTRA_GENERAL_FIELDS  EXTRA_GENERAL_FIELDS_ARM
-#elif defined(PXX)
-  #define EXTRA_GENERAL_FIELDS uint8_t countryCode;
 #else
-  #define EXTRA_GENERAL_FIELDS
+  #define EXTRA_GENERAL_FIELDS  EXTRA_GENERAL_FIELDS_ARM
 #endif
 
 #if defined(PCBHORUS)
@@ -1061,9 +814,7 @@ static inline void check_struct()
 #define CHKSIZE(x, y) check_size<struct x, y>()
 #define CHKTYPE(x, y) check_size<x, y>()
 
-#if defined(CPUARM)
   CHKSIZE(CurveRef, 2);
-#endif
 
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
@@ -1143,43 +894,21 @@ static inline void check_struct()
   CHKSIZE(ExpoData, 4);
 #endif
 
-#if defined(CPUM2560)
-  CHKSIZE(CustomFunctionData, 4);
-  CHKSIZE(TimerData, 6);
-#else
   CHKSIZE(CustomFunctionData, 3);
   CHKSIZE(TimerData, 3);
-#endif
 
-#if defined(PCBSTD)
-  CHKSIZE(FlightModeData, 13);
-  CHKSIZE(RadioData, 84);
-#else
   CHKSIZE(FlightModeData, 30);
   CHKSIZE(RadioData, 85);
-#endif
 
 #endif /* board specific ifdefs*/
 
-#if defined(CPUARM)
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
   CHKSIZE(ModuleData,70);
-#else
-  CHKSIZE(LogicalSwitchData, 3);
-  CHKSIZE(FrSkyChannelData, 6);
-  CHKSIZE(ModuleData, 38);
-#endif
 
-#if !defined(PCBSTD)
   CHKSIZE(GVarData, 7);
-#endif
 
-#if defined(CPUARM)
   CHKSIZE(RssiAlarmData, 2);
-#else
-  CHKSIZE(FrSkyRSSIAlarm, 1);
-#endif
   CHKSIZE(TrainerData, 16);
 
 #if defined(PCBXLITE)

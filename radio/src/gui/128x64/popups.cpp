@@ -26,22 +26,16 @@ uint8_t         warningInfoLength;
 uint8_t         warningType;
 uint8_t         warningResult = 0;
 
-#if defined(CPUARM)
 uint8_t         warningInfoFlags = ZCHAR;
 int16_t         warningInputValue;
 int16_t         warningInputValueMin;
 int16_t         warningInputValueMax;
-#endif
 
 void drawMessageBox()
 {
   lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
   lcdDrawRect(10, 16, LCD_W-20, 40);
-#if defined(CPUARM)
   lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, warningText, WARNING_LINE_LEN);
-#else
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y, warningText);
-#endif
   // could be a place for a warningInfoText
 }
 
@@ -114,13 +108,11 @@ void runPopupWarning(event_t event)
       warningText = NULL;
       warningType = WARNING_TYPE_ASTERISK;
       break;
-#if defined(CPUARM)
     default:
       if (warningType != WARNING_TYPE_INPUT) break;
       s_editMode = EDIT_MODIFY_FIELD;
       warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
       s_editMode = EDIT_SELECT_FIELD;
       break;
-#endif
   }
 }

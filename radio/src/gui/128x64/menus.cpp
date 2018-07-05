@@ -63,7 +63,6 @@ void pushMenu(MenuHandlerFunc newMenu)
   TRACE("pushMenu(%d, %p)", menuLevel, newMenu);
 }
 
-#if defined(CPUARM)
 void menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {
@@ -79,4 +78,3 @@ void pushModelNotes()
 {
   pushMenu(menuModelNotes);
 }
-#endif

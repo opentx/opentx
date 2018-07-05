@@ -46,7 +46,6 @@ extern const pm_uchar font_10x14[];
  extern const pm_uchar font_5x7_B[];
 #endif
 
-#if defined(CPUARM)
 extern const pm_uchar font_3x5[];
 extern const pm_uchar font_4x6[];
 extern const pm_uchar font_8x10[];
@@ -54,7 +53,6 @@ extern const pm_uchar font_22x38_num[];
 extern const pm_uchar font_5x7_extra[];
 extern const pm_uchar font_10x14_extra[];
 extern const pm_uchar font_4x6_extra[];
-#endif
 
 #endif
 

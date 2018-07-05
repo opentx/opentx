@@ -34,7 +34,6 @@
   #define SWITCH_WARNING_LIST_Y        4*FH+4
 #endif
 
-#if defined(CPUARM)
 
 enum LogicalSwitchContextState {
   SWITCH_START,
@@ -57,15 +56,6 @@ LogicalSwitchesFlightModeContext lswFm[MAX_FLIGHT_MODES];
 
 #define LS_LAST_VALUE(fm, idx) lswFm[fm].lsw[idx].lastValue
 
-#else
-
-int16_t lsLastValue[MAX_LOGICAL_SWITCHES];
-#define LS_LAST_VALUE(fm, idx) lsLastValue[idx]
-
-volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_used = 0;
-volatile GETSWITCH_RECURSIVE_TYPE s_last_switch_value = 0;
-
-#endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
 #if defined(PCBX9E)
@@ -231,21 +221,10 @@ bool getLogicalSwitch(uint8_t idx)
   LogicalSwitchData * ls = lswAddress(idx);
   bool result;
 
-#if defined(CPUARM)
   swsrc_t s = ls->andsw;
-#else
-  uint8_t s = ls->andsw;
-  if (s > SWSRC_LAST_SWITCH) {
-    s += SWSRC_SW1-SWSRC_LAST_SWITCH-1;
-  }
-#endif
 
   if (ls->func == LS_FUNC_NONE || (s && !getSwitch(s))) {
-#if defined(CPUARM)
     if (ls->func != LS_FUNC_STICKY && ls->func != LS_FUNC_EDGE ) {
-#else
-    if (ls->func != LS_FUNC_STICKY) {
-#endif
       // AND switch must not affect STICKY and EDGE processing
       LS_LAST_VALUE(mixerCurrentFlightMode, idx) = CS_LAST_VALUE_INIT;
     }
@@ -273,11 +252,9 @@ bool getLogicalSwitch(uint8_t idx)
   else if (s == LS_FAMILY_STICKY) {
     result = (LS_LAST_VALUE(mixerCurrentFlightMode, idx) & (1<<0));
   }
-#if defined(CPUARM)
   else if (s == LS_FAMILY_EDGE) {
     result = (LS_LAST_VALUE(mixerCurrentFlightMode, idx) & (1<<0));
   }
-#endif
   else {
     getvalue_t x = getValueForLogicalSwitch(ls->v1);
     getvalue_t y;
@@ -301,26 +278,13 @@ bool getLogicalSwitch(uint8_t idx)
 #if defined(TELEMETRY_FRSKY)
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {
-#if defined(CPUARM)
         if (!TELEMETRY_STREAMING() || IS_FAI_FORBIDDEN(v1-1)) {
-#else
-        if ((!TELEMETRY_STREAMING() && v1 >= MIXSRC_FIRST_TELEM+TELEM_FIRST_STREAMED_VALUE-1) || IS_FAI_FORBIDDEN(v1-1)) {
-#endif
           result = false;
           goto DurationAndDelayProcessing;
         }
 
         y = convertLswTelemValue(ls);
 
-#if defined(GAUGES) && !defined(CPUARM)
-        // Fill the telemetry bars threshold array
-        if (s == LS_FAMILY_OFS) {
-          uint8_t idx = v1-MIXSRC_FIRST_TELEM+1-TELEM_ALT;
-          if (idx < THLD_MAX) {
-            FILL_THRESHOLD(idx, ls->v2);
-          }
-        }
-#endif
 
       }
       else if (v1 >= MIXSRC_GVAR1) {
@@ -342,11 +306,9 @@ bool getLogicalSwitch(uint8_t idx)
 #endif
 
       switch (ls->func) {
-#if defined(CPUARM)
         case LS_FUNC_VEQUAL:
           result = (x==y);
           break;
-#endif
         case LS_FUNC_VALMOSTEQUAL:
 #if defined(GVARS)
           if (v1 >= MIXSRC_GVAR1 && v1 <= MIXSRC_LAST_GVAR)
@@ -402,7 +364,6 @@ bool getLogicalSwitch(uint8_t idx)
 DurationAndDelayProcessing:
 #endif
 
-#if defined(CPUARM)
     if (ls->delay || ls->duration) {
       LogicalSwitchContext &context = lswFm[mixerCurrentFlightMode].lsw[idx];
       if (result) {
@@ -439,16 +400,11 @@ DurationAndDelayProcessing:
         context.timer = 0;
       }
     }
-#endif
 
   return result;
 }
 
-#if defined(CPUARM)
 bool getSwitch(swsrc_t swtch, uint8_t flags)
-#else
-bool getSwitch(swsrc_t swtch)
-#endif
 {
   bool result;
 
@@ -508,7 +464,6 @@ bool getSwitch(swsrc_t swtch)
     result = REB_DOWN();
   }
 #endif
-#if defined(CPUARM)
   else if (cs_idx >= SWSRC_FIRST_SENSOR) {
     result = !telemetryItems[cs_idx-SWSRC_FIRST_SENSOR].isOld();
   }
@@ -526,33 +481,14 @@ bool getSwitch(swsrc_t swtch)
     result = false;
 #endif
    }
-#endif
   else {
     cs_idx -= SWSRC_FIRST_LOGICAL_SWITCH;
-#if defined(CPUARM)
     result = lswFm[mixerCurrentFlightMode].lsw[cs_idx].state;
-#else
-    GETSWITCH_RECURSIVE_TYPE mask = ((GETSWITCH_RECURSIVE_TYPE)1 << cs_idx);
-    if (s_last_switch_used & mask) {
-      result = (s_last_switch_value & mask);
-    }
-    else {
-      s_last_switch_used |= mask;
-      result = getLogicalSwitch(cs_idx);
-      if (result) {
-        s_last_switch_value |= mask;
-      }
-      else {
-        s_last_switch_value &= ~mask;
-      }
-    }
-#endif
   }
 
   return swtch > 0 ? result : !result;
 }
 
-#if defined(CPUARM)
 /**
   @brief Calculates new state of logical switches for mixerCurrentFlightMode
 */
@@ -572,7 +508,6 @@ void evalLogicalSwitches(bool isCurrentPhase)
     context.state = result;
   }
 }
-#endif
 
 swarnstate_t switches_states = 0;
 swsrc_t getMovedSwitch()
@@ -843,9 +778,7 @@ void checkSwitches()
     wdt_reset();
 
     SIMU_SLEEP(1);
-#if defined(CPUARM)
     CoTickDelay(10);
-#endif
   }
 #endif
 
@@ -855,9 +788,7 @@ void checkSwitches()
 
 void logicalSwitchesTimerTick()
 {
-#if defined(CPUARM)
   for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
-#endif
     for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
       LogicalSwitchData * ls = lswAddress(i);
       if (ls->func == LS_FUNC_TIMER) {
@@ -895,7 +826,6 @@ void logicalSwitchesTimerTick()
           }
         }
       }
-#if defined(CPUARM)
       else if (ls->func == LS_FUNC_EDGE) {
         ls_stay_struct & lastValue = (ls_stay_struct &)LS_LAST_VALUE(fm, i);
         // if this ls was reset by the logicalSwitchesReset() the lastValue will be set to CS_LAST_VALUE_INIT(0x8000)
@@ -925,11 +855,8 @@ void logicalSwitchesTimerTick()
       if (context.timer) {
         context.timer--;
       }
-#endif
     }
-#if defined(CPUARM)
   }
-#endif
 }
 
 LogicalSwitchData * lswAddress(uint8_t idx)
@@ -943,10 +870,8 @@ uint8_t lswFamily(uint8_t func)
     return LS_FAMILY_OFS;
   else if (func <= LS_FUNC_XOR)
     return LS_FAMILY_BOOL;
-#if defined(CPUARM)
   else if (func == LS_FUNC_EDGE)
     return LS_FAMILY_EDGE;
-#endif
   else if (func <= LS_FUNC_LESS)
     return LS_FAMILY_COMP;
   else if (func <= LS_FUNC_ADIFFEGREATER)
@@ -962,40 +887,23 @@ int16_t lswTimerValue(delayval_t val)
 
 void logicalSwitchesReset()
 {
-#if defined(CPUARM)
   memset(lswFm, 0, sizeof(lswFm));
-#else
-  s_last_switch_value = 0;
-#endif
 
-#if defined(CPUARM)
   for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
-#endif
     for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES; i++) {
       LS_LAST_VALUE(fm, i) = CS_LAST_VALUE_INIT;
     }
-#if defined(CPUARM)
   }
-#endif
 }
 
 getvalue_t convertLswTelemValue(LogicalSwitchData * ls)
 {
   getvalue_t val;
-#if defined(CPUARM)
   val = convert16bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, ls->v2);
-#else
-  if (lswFamily(ls->func)==LS_FAMILY_OFS)
-    val = convert8bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, 128+ls->v2);
-  else
-    val = convert8bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, 128+ls->v2) - convert8bitsTelemValue(ls->v1 - MIXSRC_FIRST_TELEM + 1, 128);
-#endif
   return val;
 }
 
-#if defined(CPUARM)
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst)
 {
   lswFm[dst] = lswFm[src];
 }
-#endif
