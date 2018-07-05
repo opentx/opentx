@@ -121,7 +121,6 @@ void menuModelExpoOne(event_t event)
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, RIGHT | attr, 0, event);
         break;
 
-#if defined(CURVES)
       case EXPO_FIELD_CURVE_LABEL:
         lcdDrawTextAlignedLeft(y, STR_CURVE);
         break;
@@ -129,7 +128,6 @@ void menuModelExpoOne(event_t event)
       case EXPO_FIELD_CURVE:
         editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, s_editMode > 0 ? event : 0, RIGHT | attr);
         break;
-#endif
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES_LABEL:

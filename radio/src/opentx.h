@@ -166,11 +166,7 @@
   #define CASE_FLIGHT_MODES(x)
 #endif
 
-#if defined(CURVES)
   #define CASE_CURVES(x) x,
-#else
-  #define CASE_CURVES(x)
-#endif
 
 #if defined(GVARS)
   #define CASE_GVARS(x) x,
@@ -974,10 +970,6 @@ struct point_t
   coord_t y;
 };
 point_t getPoint(uint8_t i);
-#if !defined(CURVES)
-#define LOAD_MODEL_CURVES()
-#define applyCurve(x, idx) (x)
-#else
 typedef CurveData CurveInfo;
 void loadCurves();
 #define LOAD_MODEL_CURVES() loadCurves()
@@ -988,7 +980,6 @@ int applyCurrentCurve(int x);
 int8_t getCurveX(int noPoints, int point);
 void resetCustomCurveX(int8_t * points, int noPoints);
 bool moveCurve(uint8_t index, int8_t shift); // TODO bool?
-#endif
 
   #define APPLY_EXPOS_EXTRA_PARAMS_INC , uint8_t ovwrIdx=0, int16_t ovwrValue=0
   #define APPLY_EXPOS_EXTRA_PARAMS     , uint8_t ovwrIdx, int16_t ovwrValue

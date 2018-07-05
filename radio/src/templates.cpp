@@ -100,7 +100,6 @@ void clearCurves()
   memclear(g_model.curves, sizeof(g_model.curves) + sizeof(g_model.points)); // clear all curves
 }
 
-#if defined(CURVES)
 void setCurve(uint8_t c, const pm_int8_t ar[])
 {
   int8_t * cv = curveAddress(c);
@@ -108,7 +107,6 @@ void setCurve(uint8_t c, const pm_int8_t ar[])
     cv[i] = pgm_read_byte(&ar[i]);
   }
 }
-#endif
 
 void setLogicalSwitch(uint8_t idx, uint8_t func, int8_t v1, int8_t v2)
 {

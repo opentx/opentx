@@ -267,12 +267,10 @@ bool menuModelExpoOne(event_t event)
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
 
-#if defined(CURVES)
       case EXPO_FIELD_CURVE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CURVE);
         editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, event, attr);
         break;
-#endif
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:
