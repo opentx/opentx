@@ -863,13 +863,8 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 11);
   CHKTYPE(CurveData, 1);
 
-#if defined(CPUM2560) || defined(CPUM2561)
-  CHKSIZE(ExpoData, 5);
-  CHKSIZE(MixData, 10);
-#else
   CHKSIZE(MixData, 9);
   CHKSIZE(ExpoData, 4);
-#endif
 
   CHKSIZE(CustomFunctionData, 3);
   CHKSIZE(TimerData, 3);
