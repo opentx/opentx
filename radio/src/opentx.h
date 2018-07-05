@@ -147,12 +147,6 @@
   #define CASE_HELI(x)
 #endif
 
-#if defined(TEMPLATES)
-  #define CASE_TEMPLATES(x) x,
-#else
-  #define CASE_TEMPLATES(x)
-#endif
-
 #if defined(FLIGHT_MODES)
   #define CASE_FLIGHT_MODES(x) x,
 #else
@@ -443,9 +437,6 @@ typedef struct {
 #include "strhelpers.h"
 #include "gui.h"
 
-#if defined(TEMPLATES)
-  #include "templates.h"
-#endif
 
 #if !defined(SIMU)
   #define assert(x)

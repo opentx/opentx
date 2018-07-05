@@ -347,12 +347,6 @@ void defaultInputs()
 }
 #endif
 
-#if defined(TEMPLATES)
-inline void applyDefaultTemplate()
-{
-  applyTemplate(TMPL_SIMPLE_4CH); // calls storageDirty internally
-}
-#else
 void applyDefaultTemplate()
 {
 #if defined(VIRTUAL_INPUTS)
@@ -372,7 +366,6 @@ void applyDefaultTemplate()
 #endif
   }
 }
-#endif
 
 #if defined(CPUARM) && defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)

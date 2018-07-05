@@ -70,9 +70,6 @@ const pm_char STR_OPEN9X[] PROGMEM =
     ISTR(AMPSRC)
     ISTR(VARIOSRC)
     ISTR(VTELEMSCREENTYPE)
-#if defined(TEMPLATES)
-    ISTR(VTEMPLATES)
-#endif
 #if defined(HELI)
     ISTR(VSWASHTYPE)
 #endif
@@ -340,9 +337,6 @@ const pm_char STR_MENUTELEMETRY[] PROGMEM = TR_MENUTELEMETRY;
 const pm_char STR_LIMIT[] PROGMEM = TR_LIMIT;
 #endif
 
-#if defined(TEMPLATES)
-const pm_char STR_MENUTEMPLATES[] PROGMEM = TR_MENUTEMPLATES;
-#endif
 
 const pm_char STR_MENUSTAT[] PROGMEM = TR_MENUSTAT;
 const pm_char STR_MENUDEBUG[] PROGMEM = TR_MENUDEBUG;

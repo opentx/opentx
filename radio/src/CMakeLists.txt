@@ -150,12 +150,6 @@ if(RAMBACKUP)
   set(SRC ${SRC} storage/rambackup.cpp storage/rlc.cpp)
 endif()
 
-if(TEMPLATES)
-  add_definitions(-DTEMPLATES)
-  set(SRC ${SRC} templates.cpp)
-  set(GUI_SRC ${GUI_SRC} model_templates.cpp)
-endif()
-
 if(NOT LUA STREQUAL NO)
   add_definitions(-DLUA)
   if(LUA_COMPILER)

@@ -121,7 +121,6 @@ enum MenuModelIndexes {
 #endif
   CASE_FRSKY(MENU_MODEL_TELEMETRY_FRSKY)
   MENU_MODEL_DISPLAY,
-  CASE_TEMPLATES(MENU_MODEL_TEMPLATES)
   MENU_MODEL_PAGES_COUNT
 };
 
@@ -161,7 +160,6 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
 #endif
   CASE_FRSKY(menuModelTelemetryFrsky)
   menuModelDisplay,
-  CASE_TEMPLATES(menuModelTemplates)
 };
 
 void menuStatisticsView(event_t event);
