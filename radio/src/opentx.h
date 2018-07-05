@@ -1053,7 +1053,7 @@ PACK(typedef struct {
 }) SwOn;
 
 extern SwOn   swOn[MAX_MIXERS];
-extern int24_t act[MAX_MIXERS];
+extern int32_t act[MAX_MIXERS];
 
 #if defined(BOLD_FONT)
   inline bool isExpoActive(uint8_t expo)

@@ -32,7 +32,7 @@ int16_t  trims[NUM_TRIMS] = {0};
 int32_t  chans[MAX_OUTPUT_CHANNELS] = {0};
 BeepANACenter bpanaCenter = 0;
 
-int24_t act   [MAX_MIXERS] = {0};
+int32_t act   [MAX_MIXERS] = {0};
 SwOn    swOn  [MAX_MIXERS]; // TODO better name later...
 
 uint8_t mixWarning;
