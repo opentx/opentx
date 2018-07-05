@@ -24,18 +24,6 @@
 #if defined(TELEMETRY_FRSKY)
   // FrSky Telemetry
   #include "frsky.h"
-#elif defined(TELEMETRY_JETI)
-  // Jeti-DUPLEX Telemetry
-  #include "jeti.h"
-#elif defined(TELEMETRY_ARDUPILOT)
-  // ArduPilot Telemetry
-  #include "ardupilot.h"
-#elif defined(TELEMETRY_NMEA)
-  // NMEA Telemetry
-  #include "nmea.h"
-#elif defined(TELEMETRY_MAVLINK)
-  // Mavlink Telemetry
-  #include "mavlink.h"
 #endif
 
 #if defined(CROSSFIRE)

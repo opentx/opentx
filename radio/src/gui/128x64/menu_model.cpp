@@ -20,9 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(TELEMETRY_MAVLINK)
-#include "view_mavlink.h"
-#endif
 
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay)
 {

@@ -128,11 +128,7 @@
   #define CASE_FRSKY(x)
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-  #define CASE_MAVLINK(x) x,
-#else
   #define CASE_MAVLINK(x)
-#endif
 
 #if defined(PXX)
   #define CASE_PXX(x) x,

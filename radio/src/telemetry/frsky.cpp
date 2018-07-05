@@ -21,16 +21,7 @@
 #include "opentx.h"
 
 
-#if defined(TELEMETREZ)
-#define PRIVATE         0x1B
-uint8_t privateDataLen;
-uint8_t privateDataPos;
-#endif
 
-#if defined(ROTARY_ENCODER_NAVIGATION) && defined(TELEMETREZ)
-extern uint8_t TrotCount;
-extern uint8_t TezRotary;
-#endif
 
 NOINLINE void processFrskyTelemetryData(uint8_t data)
 {
@@ -102,42 +93,8 @@ NOINLINE void processFrskyTelemetryData(uint8_t data)
         telemetryRxBufferCount = 0;
         dataState = STATE_DATA_START;
       }
-#if defined(TELEMETREZ)
-      if (data == PRIVATE) {
-        dataState = STATE_DATA_PRIVATE_LEN;
-      }
-#endif
       break;
 
-#if defined(TELEMETREZ)
-    case STATE_DATA_PRIVATE_LEN:
-      dataState = STATE_DATA_PRIVATE_VALUE;
-      privateDataLen = data; // Count of bytes to receive
-      privateDataPos = 0;
-      break;
-
-    case STATE_DATA_PRIVATE_VALUE :
-      if (privateDataPos == 0) {
-        // Process first private data byte
-        // PC6, PC7
-        if ((data & 0x3F) == 0) {// Check byte is valid
-          DDRC |= 0xC0;          // Set as outputs
-          PORTC = ( PORTC & 0x3F ) | ( data & 0xC0 ); // update outputs
-        }
-      }
-#if defined(ROTARY_ENCODER_NAVIGATION)
-      if (privateDataPos == 1) {
-        TrotCount = data;
-      }
-      if (privateDataPos == 2) { // rotary encoder switch
-        RotEncoder = data;
-      }
-#endif
-      if (++privateDataPos == privateDataLen) {
-        dataState = STATE_DATA_IDLE;
-      }
-      break;
-#endif
   } // switch
 
 #if defined(TELEMETRY_FRSKY_SPORT)

@@ -518,11 +518,6 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-      case ITEM_MAVLINK_BAUD:
-        g_eeGeneral.mavbaud = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUD_LABEL, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
-        break;
-#endif
 
       case ITEM_SETUP_SWITCHES_DELAY:
         lcdDrawTextAlignedLeft(y, STR_SWITCHES_DELAY);

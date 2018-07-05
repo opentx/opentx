@@ -442,12 +442,6 @@ bool menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-      case ITEM_MAVLINK_BAUD:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAVLINK_BAUD_LABEL);
-        g_eeGeneral.mavbaud = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
-        break;
-#endif
 
       case ITEM_SETUP_SWITCHES_DELAY:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCHES_DELAY);

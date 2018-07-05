@@ -505,10 +505,6 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-  g_model.mavlink.rc_rssi_scale = 15;
-  g_model.mavlink.pc_rssi_en = 1;
-#endif
 
 #if !defined(EEPROM)
   strcpy(g_model.header.name, "\015\361\374\373\364");
@@ -2225,21 +2221,9 @@ int main()
   DSM2_Init();
 #endif
 
-#if defined(TELEMETRY_JETI)
-  JETI_Init();
-#endif
 
-#if defined(TELEMETRY_ARDUPILOT)
-  ARDUPILOT_Init();
-#endif
 
-#if defined(TELEMETRY_NMEA)
-  NMEA_Init();
-#endif
 
-#if defined(TELEMETRY_MAVLINK)
-  MAVLINK_Init();
-#endif
 
 #if defined(MENU_ROTARY_SW)
   init_rotary_sw();
