@@ -27,7 +27,7 @@ const MenuHandlerFunc menuTabModel[] = {
   menuModelExposAll,
   menuModelMixAll,
   menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
+  menuModelCurvesAll,
 #if defined(GVARS) && defined(FLIGHT_MODES)
   CASE_GVARS(menuModelGVars)
 #endif

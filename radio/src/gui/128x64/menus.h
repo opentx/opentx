@@ -114,7 +114,7 @@ enum MenuModelIndexes {
   MENU_MODEL_INPUTS,
   MENU_MODEL_MIXES,
   MENU_MODEL_OUTPUTS,
-  CASE_CURVES(MENU_MODEL_CURVES)
+  MENU_MODEL_CURVES,
   MENU_MODEL_LOGICAL_SWITCHES,
   MENU_MODEL_SPECIAL_FUNCTIONS,
 #if defined(LUA_MODEL_SCRIPTS)
@@ -156,7 +156,7 @@ static const MenuHandlerFunc menuTabModel[] PROGMEM = {
   menuModelExposAll,
   menuModelMixAll,
   menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
+  menuModelCurvesAll,
   menuModelLogicalSwitches,
   menuModelSpecialFunctions,
 #if defined(LUA_MODEL_SCRIPTS)

@@ -161,8 +161,6 @@
   #define CASE_FLIGHT_MODES(x)
 #endif
 
-  #define CASE_CURVES(x) x,
-
 #if defined(GVARS)
   #define CASE_GVARS(x) x,
 #else
