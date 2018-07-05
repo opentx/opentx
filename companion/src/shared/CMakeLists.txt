@@ -7,6 +7,7 @@ set(shared_SRCS
 )
 
 set(shared_HDRS
+  autobitsetcheckbox.h
   autocheckbox.h
   autocombobox.h
   autodoublespinbox.h

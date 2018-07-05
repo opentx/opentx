@@ -246,6 +246,7 @@ set(companion_SRCS
   wizarddata.cpp
   wizarddialog.cpp
   styleeditdialog.cpp
+  dialogs/filesyncdialog.cpp
   )
 
 set(companion_MOC_HDRS
@@ -279,6 +280,7 @@ set(companion_MOC_HDRS
   modelslist.h
   styleeditdialog.h
   helpers_html.h
+  dialogs/filesyncdialog.h
   )
 
 set(companion_UIS
