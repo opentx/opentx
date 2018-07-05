@@ -22,7 +22,10 @@
 // i.e. BACKUP RAM Backup/Restore functions
 
 #include <inttypes.h>
+
+#include "board.h"
 #include "dataconstants.h"
+#include "definitions.h"
 
 #if defined(CPUARM)
   #define ARM_FIELD(x)                 x;
@@ -266,10 +269,10 @@ PACK(struct CustomFunctionData {
       NOBACKUP(CFN_SPARE_TYPE spare);
     }) all;
 
-    PACK(struct {
+    NOBACKUP(PACK(struct {
       int32_t val1;
       NOBACKUP(CFN_SPARE_TYPE val2);
-    }) clear;
+    }) clear);
   });
   uint8_t active;
 });
@@ -591,11 +594,11 @@ PACK(struct MavlinkTelemetryData {
 PACK(struct TelemetrySensor {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
-    uint16_t persistentValue;
+    NOBACKUP(uint16_t persistentValue);
   };
   union {
     uint8_t instance;              // instance ID to allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
-    uint8_t formula;
+    NOBACKUP(uint8_t formula);
   };
   char     label[TELEM_LABEL_LEN]; // user defined label
   uint8_t  type:1;                 // 0=custom / 1=calculated
@@ -608,27 +611,27 @@ PACK(struct TelemetrySensor {
   uint8_t  onlyPositive:1;
   uint8_t  subId:3;
   union {
-    PACK(struct {
+    NOBACKUP(PACK(struct {
       uint16_t ratio;
       int16_t  offset;
-    }) custom;
-    PACK(struct {
+    }) custom);
+    NOBACKUP(PACK(struct {
       uint8_t source;
       uint8_t index;
       uint16_t spare;
-    }) cell;
-    PACK(struct {
+    }) cell);
+    NOBACKUP(PACK(struct {
       int8_t sources[4];
-    }) calc;
-    PACK(struct {
+    }) calc);
+    NOBACKUP(PACK(struct {
       uint8_t source;
       uint8_t spare[3];
-    }) consumption;
-    PACK(struct {
+    }) consumption);
+    NOBACKUP(PACK(struct {
       uint8_t gps;
       uint8_t alt;
       uint16_t spare;
-    }) dist;
+    }) dist);
     uint32_t param;
   };
   NOBACKUP(

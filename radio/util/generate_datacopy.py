@@ -8,8 +8,16 @@ import time
 import os
 
 if sys.platform == "darwin":
-    clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
+    if os.path.exists('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib'):
+        clang.cindex.Config.set_library_file('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib')
+    elif os.path.exists('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib'):
+        clang.cindex.Config.set_library_file('/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib')
+    elif os.path.exists('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib'):
+        clang.cindex.Config.set_library_file('/Library/Developer/CommandLineTools/usr/lib/libclang.dylib')
 
+if sys.platform == "linux2":
+    if os.path.exists('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1'):
+        clang.cindex.Config.set_library_file('/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1')
 
 structs = []
 extrastructs = []
@@ -41,15 +49,15 @@ def build_struct(cursor, anonymousUnion=False):
         elif c.kind == clang.cindex.CursorKind.FIELD_DECL:
             copy_decl(c, c.spelling)
 
-
     if not anonymousUnion:
         print("}\n")
 
 def build(cursor):
     result = []
     for c in cursor.get_children():
-        if c.kind == clang.cindex.CursorKind.STRUCT_DECL:
-            build_struct(c)
+        if c.location.file.name == sys.argv[1]:
+            if c.kind == clang.cindex.CursorKind.STRUCT_DECL:
+                build_struct(c)
     for c, spelling in extrastructs:
         print("template <class A, class B>\nvoid copy%s(A * dest, B * src)\n{" % spelling)
         build_struct(c, True)
@@ -67,7 +75,7 @@ def copy_decl(c, spelling):
             print("  }")
         else:
             print("  memcpy(dest->%s, src->%s, sizeof(dest->%s));" % (spelling, spelling, spelling))
-    elif c.type.kind == clang.cindex.TypeKind.UNEXPOSED and len(childs)==1 and childs[0].kind == clang.cindex.CursorKind.STRUCT_DECL:
+    elif len(childs)==1 and childs[0].kind == clang.cindex.CursorKind.STRUCT_DECL and not childs[0].spelling:
         # inline declared structs
         if c.semantic_parent.spelling:
             spellingFunc = c.semantic_parent.spelling + "_" + spelling
