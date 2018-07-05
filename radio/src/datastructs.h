@@ -24,11 +24,6 @@
 #include <inttypes.h>
 #include "dataconstants.h"
 
-  #define ARM_FIELD(x)                 x;
-  #define AVR_FIELD(x)
-
-  #define N_PCBSTD_FIELD(x) x;
-
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
   #define TARANIS_FIELD(x) x;
@@ -558,21 +553,17 @@ PACK(struct CustomScreenData {
 PACK(struct ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
-  AVR_FIELD(uint8_t   protocol:3)
-  ARM_FIELD(uint8_t   telemetryProtocol:3)
+  uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
-  AVR_FIELD(int8_t    ppmNCH:4)
-  ARM_FIELD(uint8_t   noGlobalFunctions:1)
-  ARM_FIELD(uint8_t   displayTrims:2)
-  ARM_FIELD(uint8_t   ignoreSensorIds:1)
+  uint8_t   noGlobalFunctions:1;
+  uint8_t   displayTrims:2;
+  uint8_t   ignoreSensorIds:1;
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  ARM_FIELD(uint8_t displayChecklist:1)
-  AVR_FIELD(uint8_t pulsePol:1)
+  uint8_t displayChecklist:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
-  AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;
   MixData   mixData[MAX_MIXERS];
   LimitData limitData[MAX_OUTPUT_CHANNELS];
@@ -586,8 +577,6 @@ PACK(struct ModelData {
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
-  AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
-
   NOBACKUP(uint8_t thrTraceSrc);
 
   SWITCHES_WARNING_DATA
@@ -598,7 +587,7 @@ PACK(struct ModelData {
 
   MODELDATA_EXTRA
 
-  ARM_FIELD(NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS]))
+  NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];)
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
@@ -749,18 +738,15 @@ PACK(struct RadioData {
   NOBACKUP(int8_t timezone:5);
   NOBACKUP(uint8_t adjustRTC:1);
   NOBACKUP(uint8_t inactivityTimer);
-  AVR_FIELD(uint8_t mavbaud:3)
-  ARM_FIELD(uint8_t telemetryBaudrate:3)
+  uint8_t telemetryBaudrate:3;
   SPLASH_MODE; /* 3bits */
   NOBACKUP(int8_t hapticMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  AVR_FIELD(uint8_t blOffBright:4)
-  AVR_FIELD(uint8_t blOnBright:4)
-  ARM_FIELD(int8_t switchesDelay)
+  int8_t switchesDelay;
   NOBACKUP(uint8_t lightAutoOff);
   NOBACKUP(uint8_t templateSetup);   // RETA order for receiver channels
   NOBACKUP(int8_t PPM_Multiplier);
   NOBACKUP(int8_t hapticLength);
-  N_HORUS_FIELD(N_TARANIS_FIELD(N_PCBSTD_FIELD(uint8_t reNavigation)));
+  N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t reNavigation));
   N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t stickReverse));
   NOBACKUP(int8_t beepLength:3);
   NOBACKUP(int8_t hapticStrength:3);
@@ -877,7 +863,6 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 11);
   CHKTYPE(CurveData, 1);
 
-  // AVR
 #if defined(CPUM2560) || defined(CPUM2561)
   CHKSIZE(ExpoData, 5);
   CHKSIZE(MixData, 10);
