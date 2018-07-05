@@ -63,8 +63,6 @@
   #define CASE_LUA(x)
 #endif
 
-  #define CASE_PERSISTENT_TIMERS(x) x,
-
 #if defined(RTCLOCK)
   #define CASE_RTCLOCK(x) x,
 #else
