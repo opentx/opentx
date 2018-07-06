@@ -97,6 +97,9 @@ void TelemetrySimulator::showEvent(QShowEvent * event)
 
 void TelemetrySimulator::startTelemetry()
 {
+  if (!m_simuStarted)
+    return;
+
   timer.start();
   if (m_logReplayEnable)
     onPlay();
@@ -125,11 +128,14 @@ void TelemetrySimulator::onSimulatorStarted()
 {
   m_simuStarted = true;
   setupDataFields();
+  if (isVisible() && g.currentProfile().telemSimEnabled())
+    startTelemetry();
 }
 
 void TelemetrySimulator::onSimulatorStopped()
 {
   m_simuStarted = false;
+  stopTelemetry();
 }
 
 void TelemetrySimulator::onSimulateToggled(bool isChecked)
