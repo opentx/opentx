@@ -79,6 +79,7 @@ class SimulatorMainWindow : public QMainWindow
     void toggleMenuBar(bool show);
     void setRadioSizePolicy(int fixType);
     void toggleRadioDocked(bool dock);
+    void setDockWidgetMinimizeHint(QDockWidget * widget);
     void openJoystickDialog(bool);
     void showHelp(bool show);
 

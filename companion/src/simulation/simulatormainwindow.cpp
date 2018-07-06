@@ -250,6 +250,8 @@ void SimulatorMainWindow::restoreUiState()
   toggleMenuBar(m_showMenubar);
   restoreGeometry(g.profile[m_radioProfileId].simulatorOptions().windowGeometry);
   restoreState(windowState, m_savedUiStateVersion);
+
+  setDockWidgetMinimizeHint(m_telemetryDockWidget);  // must be done after restore state
 }
 
 int SimulatorMainWindow::getExitStatus(QString * msg)
@@ -297,6 +299,7 @@ void SimulatorMainWindow::createDockWidgets()
     m_telemetryDockWidget->setWidget(telem);
     m_telemetryDockWidget->setObjectName("TELEMETRY_SIMULATOR");
     addTool(m_telemetryDockWidget, Qt::LeftDockWidgetArea, icon, QKeySequence(tr("F4")));
+    connect(m_telemetryDockWidget, &QDockWidget::topLevelChanged, [this](bool) { setDockWidgetMinimizeHint(m_telemetryDockWidget); });
   }
 
   if (!m_trainerDockWidget) {
@@ -464,6 +467,16 @@ void SimulatorMainWindow::toggleRadioDocked(bool dock)
   if (ui->actionDockRadio->isChecked() != dock)
     ui->actionDockRadio->setChecked(dock);
 
+}
+
+void SimulatorMainWindow::setDockWidgetMinimizeHint(QDockWidget * widget)
+{
+  if (widget->isFloating()) {
+    const bool wasVisible = widget->isVisible();
+    widget->setWindowFlags(Qt::CustomizeWindowHint | Qt::Window | Qt::WindowMinimizeButtonHint | Qt::WindowCloseButtonHint);
+    if (wasVisible)
+      widget->show();
+  }
 }
 
 void SimulatorMainWindow::openJoystickDialog(bool)
