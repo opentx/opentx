@@ -32,7 +32,8 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   ui(new Ui::TelemetrySimulator),
   simulator(simulator),
   m_simuStarted(false),
-  m_logReplayEnable(false)
+  m_logReplayEnable(false),
+  logPlayback(new LogPlaybackController(ui))
 {
   ui->setupUi(this);
 
@@ -52,30 +53,26 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   ui->cbResetRssiOnStop->setChecked(g.currentProfile().telemSimResetRssiOnStop());
 
   timer.setInterval(10);
-  connect(&timer, &QTimer::timeout, this, &TelemetrySimulator::generateTelemetryFrame);
-
+  connect(&timer,    &QTimer::timeout, this, &TelemetrySimulator::generateTelemetryFrame);
   connect(&logTimer, &QTimer::timeout, this, &TelemetrySimulator::onLogTimerEvent);
 
-  logPlayback = new LogPlaybackController(ui);
+  connect(ui->Simulate,          &QCheckBox::toggled, [&](bool on) { g.currentProfile().telemSimEnabled(on);         });
+  connect(ui->cbPauseOnHide,     &QCheckBox::toggled, [&](bool on) { g.currentProfile().telemSimPauseOnHide(on);     });
+  connect(ui->cbResetRssiOnStop, &QCheckBox::toggled, [&](bool on) { g.currentProfile().telemSimResetRssiOnStop(on); });
 
-  connect(ui->Simulate, &QCheckBox::toggled, &g.currentProfile(), [=](bool on) { g.currentProfile().telemSimEnabled(on); });
-  connect(ui->cbPauseOnHide, &QCheckBox::toggled, &g.currentProfile(), [=](bool on) { g.currentProfile().telemSimPauseOnHide(on); });
-  connect(ui->cbResetRssiOnStop, &QCheckBox::toggled, &g.currentProfile(), [=](bool on) { g.currentProfile().telemSimResetRssiOnStop(on); });
+  connect(ui->loadLogFile,       &QPushButton::released,    this, &TelemetrySimulator::onLoadLogFile);
+  connect(ui->play,              &QPushButton::released,    this, &TelemetrySimulator::onPlay);
+  connect(ui->rewind,            &QPushButton::clicked,     this, &TelemetrySimulator::onRewind);
+  connect(ui->stepForward,       &QPushButton::clicked,     this, &TelemetrySimulator::onStepForward);
+  connect(ui->stepBack,          &QPushButton::clicked,     this, &TelemetrySimulator::onStepBack);
+  connect(ui->stop,              &QPushButton::clicked,     this, &TelemetrySimulator::onStop);
+  connect(ui->positionIndicator, &QScrollBar::valueChanged, this, &TelemetrySimulator::onPositionIndicatorChanged);
+  connect(ui->replayRate,        &QSlider::valueChanged,    this, &TelemetrySimulator::onReplayRateChanged);
 
-  connect(&g.currentProfile(), &Profile::telemSimEnabledChanged, this, &TelemetrySimulator::onSimulateToggled);
-
-  connect(ui->loadLogFile, SIGNAL(released()), this, SLOT(onLoadLogFile()));
-  connect(ui->play, SIGNAL(released()), this, SLOT(onPlay()));
-  connect(ui->rewind, SIGNAL(clicked()), this, SLOT(onRewind()));
-  connect(ui->stepForward, SIGNAL(clicked()), this, SLOT(onStepForward()));
-  connect(ui->stepBack, SIGNAL(clicked()), this, SLOT(onStepBack()));
-  connect(ui->stop, SIGNAL(clicked()), this, SLOT(onStop()));
-  connect(ui->positionIndicator, SIGNAL(valueChanged(int)), this, SLOT(onPositionIndicatorChanged(int)));
-  connect(ui->replayRate, SIGNAL(valueChanged(int)), this, SLOT(onReplayRateChanged(int)));
-
-  connect(this, &TelemetrySimulator::telemetryDataChanged, simulator, &SimulatorInterface::sendTelemetry);
-  connect(simulator, &SimulatorInterface::started, this, &TelemetrySimulator::onSimulatorStarted);
-  connect(simulator, &SimulatorInterface::stopped, this, &TelemetrySimulator::onSimulatorStopped);
+  connect(this,                &TelemetrySimulator::telemetryDataChanged, simulator, &SimulatorInterface::sendTelemetry);
+  connect(simulator,           &SimulatorInterface::started,              this,      &TelemetrySimulator::onSimulatorStarted);
+  connect(simulator,           &SimulatorInterface::stopped,              this,      &TelemetrySimulator::onSimulatorStopped);
+  connect(&g.currentProfile(), &Profile::telemSimEnabledChanged,          this,      &TelemetrySimulator::onSimulateToggled);
 }
 
 TelemetrySimulator::~TelemetrySimulator()
