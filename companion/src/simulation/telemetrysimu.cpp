@@ -73,7 +73,7 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 
 TelemetrySimulator::~TelemetrySimulator()
 {
-  timer.stop();
+  stopTelemetry();
   logTimer.stop();
   delete logPlayback;
   delete ui;
@@ -93,10 +93,10 @@ void TelemetrySimulator::onSimulatorStopped()
 void TelemetrySimulator::onSimulateToggled(bool isChecked)
 {
   if (isChecked) {
-    timer.start();
+    startTelemetry();
   }
   else {
-    timer.stop();
+    stopTelemetry();
   }
 }
 
@@ -445,6 +445,31 @@ void TelemetrySimulator::generateTelemetryFrame()
   else {
     generateTelemetryFrame();
   }
+}
+
+void TelemetrySimulator::startTelemetry()
+{
+  timer.start();
+}
+
+void TelemetrySimulator::stopTelemetry()
+{
+  timer.stop();
+
+  if (ui && ui->rssi_inst)
+    return;
+
+  bool ok = false;
+  int id = ui->rssi_inst->text().toInt(&ok, 0);
+
+  if (!ok)
+    return;
+
+  uint8_t buffer[FRSKY_SPORT_PACKET_SIZE] = {0};
+  generateSportPacket(buffer, id - 1, DATA_FRAME, RSSI_ID, 0);
+
+  QByteArray ba((char *)buffer, FRSKY_SPORT_PACKET_SIZE);
+  emit telemetryDataChanged(ba);
 }
 
 uint32_t TelemetrySimulator::FlvssEmulator::encodeCellPair(uint8_t cellNum, uint8_t firstCellNo, double cell1, double cell2)
@@ -912,7 +937,7 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
     lon = convertDegMin(lonLat[0]);
     lat = convertDegMin(lonLat[1]);
   }
-  return QString::number(lat) + ", " + QString::number(lon);
+  return QString::number(lat, 'f', 6) + ", " + QString::number(lon, 'f', 6);
 }
 
 void TelemetrySimulator::LogPlaybackController::updatePositionLabel(int32_t percentage)

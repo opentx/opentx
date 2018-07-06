@@ -69,6 +69,8 @@ class TelemetrySimulator : public QWidget
     void onReplayRateChanged(int value);
     void refreshSensorRatios();
     void generateTelemetryFrame();
+    void startTelemetry();
+    void stopTelemetry();
 
   protected:
 
@@ -204,7 +206,6 @@ class TelemetrySimulator : public QWidget
         uint32_t encodeLatLon(double latLon, bool isLat);
         uint32_t encodeDateTime(uint8_t yearOrHour, uint8_t monthOrMinute, uint8_t dayOrSecond, bool isDate);
     };  // GPSEmulator
-
 };  // TelemetrySimulator
 
 #endif // _TELEMETRYSIMU_H_
