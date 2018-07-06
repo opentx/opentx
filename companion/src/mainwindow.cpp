@@ -82,8 +82,9 @@ const char * const OPENTX_COMPANION_DOWNLOAD_URL[] = {
 };
 
 MainWindow::MainWindow():
-  downloadDialog_forWait(NULL),
+  downloadDialog_forWait(nullptr),
   checkForUpdatesState(0),
+  networkManager(nullptr),
   windowsListActions(new QActionGroup(this))
 {
   // setUnifiedTitleAndToolBarOnMac(true);
@@ -260,39 +261,50 @@ QString MainWindow::getCompanionUpdateBaseUrl()
 
 void MainWindow::checkForUpdates()
 {
+  if (!checkForUpdatesState) {
+    closeUpdatesWaitDialog();
+    if (networkManager) {
+      networkManager->deleteLater();
+      networkManager = nullptr;
+    }
+    return;
+  }
+
   if (checkForUpdatesState & SHOW_DIALOG_WAIT) {
     checkForUpdatesState -= SHOW_DIALOG_WAIT;
     downloadDialog_forWait = new downloadDialog(NULL, tr("Checking for updates"));
     downloadDialog_forWait->show();
   }
 
+  if (networkManager)
+    disconnect(networkManager, 0, this, 0);
+  else
+    networkManager = new QNetworkAccessManager(this);
+
+  QUrl url;
   if (checkForUpdatesState & CHECK_COMPANION) {
     checkForUpdatesState -= CHECK_COMPANION;
-    // TODO why create each time a network manager?
-    networkManager = new QNetworkAccessManager(this);
-    connect(networkManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(checkForCompanionUpdateFinished(QNetworkReply*)));
-    QUrl url(QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(COMPANION_STAMP));
+    url.setUrl(QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(COMPANION_STAMP));
+    connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::checkForCompanionUpdateFinished);
     qDebug() << "Checking for Companion update " << url.url();
-    QNetworkRequest request(url);
-    request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-    networkManager->get(request);
   }
   else if (checkForUpdatesState & CHECK_FIRMWARE) {
     checkForUpdatesState -= CHECK_FIRMWARE;
-    QString stamp = getCurrentFirmware()->getStampUrl();
+    const QString stamp = getCurrentFirmware()->getStampUrl();
     if (!stamp.isEmpty()) {
-      networkManager = new QNetworkAccessManager(this);
-      connect(networkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(checkForFirmwareUpdateFinished(QNetworkReply*)));
-      QUrl url(stamp);
+      url.setUrl(stamp);
+      connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::checkForFirmwareUpdateFinished);
       qDebug() << "Checking for firmware update " << url.url();
-      QNetworkRequest request(url);
-      request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-      networkManager->get(request);
     }
   }
-  else if (checkForUpdatesState==0) {
-    closeUpdatesWaitDialog();
+  if (!url.isValid()) {
+    checkForUpdates();
+    return;
   }
+
+  QNetworkRequest request(url);
+  request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
+  networkManager->get(request);
 }
 
 void MainWindow::onUpdatesError()
@@ -328,6 +340,7 @@ QString MainWindow::seekCodeString(const QByteArray & qba, const QString & label
 void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 {
   QByteArray qba = reply->readAll();
+  reply->deleteLater();
   QString version = seekCodeString(qba, "VERSION");
   if (version.isNull())
     return onUpdatesError();
@@ -439,6 +452,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
   bool ignore = false;
 
   QByteArray qba = reply->readAll();
+  reply->deleteLater();
   QString versionString = seekCodeString(qba, "VERSION");
   QString dateString = seekCodeString(qba, "DATE");
   if (versionString.isNull() || dateString.isNull())
