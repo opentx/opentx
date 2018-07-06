@@ -383,6 +383,9 @@ class Profile: public CompStoreObj
 
     // Simulator variables
     PROPERTY(SimulatorOptions, simulatorOptions,  SimulatorOptions())
+    PROPERTY(bool, telemSimEnabled, false)
+    PROPERTY(bool, telemSimPauseOnHide, true)
+    PROPERTY(bool, telemSimResetRssiOnStop, false)
 
     // Firmware Variables
     PROPERTYSTR2(beeper,        "Beeper")

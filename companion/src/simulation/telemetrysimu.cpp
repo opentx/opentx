@@ -32,7 +32,6 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   ui(new Ui::TelemetrySimulator),
   simulator(simulator),
   m_simuStarted(false),
-  m_telemEnable(false),
   m_logReplayEnable(false)
 {
   ui->setupUi(this);
@@ -48,6 +47,9 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
   ui->A1_ratio->setEnabled(false);
   ui->A2_ratio->setEnabled(false);
 
+  ui->Simulate->setChecked(g.currentProfile().telemSimEnabled());
+  ui->cbPauseOnHide->setChecked(g.currentProfile().telemSimPauseOnHide());
+  ui->cbResetRssiOnStop->setChecked(g.currentProfile().telemSimResetRssiOnStop());
 
   timer.setInterval(10);
   connect(&timer, &QTimer::timeout, this, &TelemetrySimulator::generateTelemetryFrame);
@@ -56,7 +58,12 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 
   logPlayback = new LogPlaybackController(ui);
 
-  connect(ui->Simulate, SIGNAL(toggled(bool)), this, SLOT(onSimulateToggled(bool)));
+  connect(ui->Simulate, &QCheckBox::toggled, &g.currentProfile(), [=](bool on) { g.currentProfile().telemSimEnabled(on); });
+  connect(ui->cbPauseOnHide, &QCheckBox::toggled, &g.currentProfile(), [=](bool on) { g.currentProfile().telemSimPauseOnHide(on); });
+  connect(ui->cbResetRssiOnStop, &QCheckBox::toggled, &g.currentProfile(), [=](bool on) { g.currentProfile().telemSimResetRssiOnStop(on); });
+
+  connect(&g.currentProfile(), &Profile::telemSimEnabledChanged, this, &TelemetrySimulator::onSimulateToggled);
+
   connect(ui->loadLogFile, SIGNAL(released()), this, SLOT(onLoadLogFile()));
   connect(ui->play, SIGNAL(released()), this, SLOT(onPlay()));
   connect(ui->rewind, SIGNAL(clicked()), this, SLOT(onRewind()));
@@ -73,10 +80,48 @@ TelemetrySimulator::TelemetrySimulator(QWidget * parent, SimulatorInterface * si
 
 TelemetrySimulator::~TelemetrySimulator()
 {
-  timer.stop();
-  logTimer.stop();
+  stopTelemetry();
   delete logPlayback;
   delete ui;
+}
+
+void TelemetrySimulator::hideEvent(QHideEvent *event)
+{
+  if (g.currentProfile().telemSimPauseOnHide())
+    stopTelemetry();
+  event->accept();
+}
+
+void TelemetrySimulator::showEvent(QShowEvent * event)
+{
+  if (g.currentProfile().telemSimEnabled())
+    startTelemetry();
+}
+
+void TelemetrySimulator::startTelemetry()
+{
+  timer.start();
+  if (m_logReplayEnable)
+    onPlay();
+}
+
+void TelemetrySimulator::stopTelemetry()
+{
+  timer.stop();
+  m_logReplayEnable = logTimer.isActive();
+  onStop();
+
+  if (!(g.currentProfile().telemSimResetRssiOnStop() && ui && ui->rssi_inst))
+    return;
+
+  bool ok = false;
+  const int id = ui->rssi_inst->text().toInt(&ok, 0);
+  if (!ok)
+    return;
+
+  uint8_t buffer[FRSKY_SPORT_PACKET_SIZE] = {0};
+  generateSportPacket(buffer, id - 1, DATA_FRAME, RSSI_ID, 0);
+  emit telemetryDataChanged(QByteArray((char *)buffer, FRSKY_SPORT_PACKET_SIZE));
 }
 
 void TelemetrySimulator::onSimulatorStarted()
@@ -92,12 +137,10 @@ void TelemetrySimulator::onSimulatorStopped()
 
 void TelemetrySimulator::onSimulateToggled(bool isChecked)
 {
-  if (isChecked) {
-    timer.start();
-  }
-  else {
-    timer.stop();
-  }
+  if (isChecked)
+    startTelemetry();
+  else
+    stopTelemetry();
 }
 
 void TelemetrySimulator::onLogTimerEvent()
@@ -113,6 +156,7 @@ void TelemetrySimulator::onLoadLogFile()
 
 void TelemetrySimulator::onPlay()
 {
+  ui->Simulate->setChecked(true);
   if (logPlayback->isReady()) {
     logTimer.start(logPlayback->logFrequency * 1000 / SPEEDS[ui->replayRate->value()]);
     logPlayback->play();
@@ -164,23 +208,6 @@ void TelemetrySimulator::onReplayRateChanged(int value)
   if (logTimer.isActive()) {
     logTimer.setInterval(logPlayback->logFrequency * 1000 / SPEEDS[ui->replayRate->value()]);
   }
-}
-
-void TelemetrySimulator::hideEvent(QHideEvent *event)
-{
-  m_telemEnable = ui->Simulate->isChecked();
-  m_logReplayEnable = logTimer.isActive();
-
-  ui->Simulate->setChecked(false);
-  ui->stop->click();
-  event->accept();
-}
-
-void TelemetrySimulator::showEvent(QShowEvent * event)
-{
-  ui->Simulate->setChecked(m_telemEnable);
-  if (m_logReplayEnable)
-    ui->play->click();
 }
 
 #define SET_INSTANCE(control, id, def)  ui->control->setText(QString::number(simulator->getSensorInstance(id, ((def) & 0x1F) + 1)))
@@ -235,7 +262,7 @@ uint8_t getBit(uint8_t position, uint8_t value)
   return (value & (uint8_t)(1 << position)) ? 1 : 0;
 }
 
-bool generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_t appId, uint32_t data)
+bool TelemetrySimulator::generateSportPacket(uint8_t * packet, uint8_t dataId, uint8_t prim, uint16_t appId, uint32_t data)
 {
   if (dataId > 0x1B ) return false;
 
