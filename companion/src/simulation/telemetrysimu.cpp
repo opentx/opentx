@@ -456,12 +456,11 @@ void TelemetrySimulator::stopTelemetry()
 {
   timer.stop();
 
-  bool ok = (ui && ui->rssi_inst);
+  if (ui && ui->rssi_inst)
+    return;
 
-  int id = 0;
-  if (ok) {
-    id = ui->rssi_inst->text().toInt(&ok, 0);
-  }
+  bool ok = false;
+  int id = ui->rssi_inst->text().toInt(&ok, 0);
 
   if (!ok)
     return;
