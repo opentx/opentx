@@ -489,6 +489,8 @@ void BitmapBuffer::drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * 
   }
 }
 
+#if !defined(BOOT)
+
 BitmapBuffer * BitmapBuffer::load(const char * filename)
 {
   const char * ext = getFileExtension(filename);
@@ -743,7 +745,6 @@ void *stb_realloc(void *ptr, unsigned int oldsz, unsigned int newsz)
 }
 #endif // #if defined(TRACE_STB_MALLOC)
 
-
 #include "thirdparty/Stb/stb_image.h"
 
 // fill 'data' with 'size' bytes.  return number of bytes actually read
@@ -831,3 +832,4 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
   stbi_image_free(img);
   return bmp;
 }
+#endif

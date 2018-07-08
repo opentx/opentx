@@ -22,7 +22,10 @@
 
 #if defined(SPLASH)
 
+const uint8_t __bmp_splash[] {
 #include "bmp_splash.lbm"
+};
+Bitmap BMP_SPLASH(BMP_RGB565, (const uint16_t*)__bmp_splash);
 
 void drawSplash()
 {
@@ -45,6 +48,7 @@ void drawSplash()
                         splashImg);
     }
     else {
+      // TODO: verify / load / decompress bitmap
         lcd->drawBitmap((LCD_W - BMP_SPLASH.getWidth())/2,
                         (LCD_H - BMP_SPLASH.getHeight())/2,
                         &BMP_SPLASH);

@@ -24,17 +24,17 @@
 #if defined(COLORLCD)
 
 #if !defined(BOOT)
-extern const uint16_t * const fontspecsTable[16];
-extern const uint8_t * const fontsTable[16];
+#define FONT_TABLE_SIZE 16
 #else
-extern const uint16_t * const fontspecsTable[1];
-extern const uint8_t * const fontsTable[1];
+#define FONT_TABLE_SIZE 1
 #endif
 
-#if defined(PCBHORUS)
-extern BitmapBuffer * fontCache[2];
+extern const uint16_t * const fontspecsTable[FONT_TABLE_SIZE];
+extern const uint8_t * fontsTable[FONT_TABLE_SIZE];
+extern BitmapBuffer *  fontCache[2];
+
 void loadFontCache();
-#endif
+void loadFonts();
 
 #else
 
