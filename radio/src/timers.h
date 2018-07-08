@@ -61,4 +61,13 @@ inline uint16_t diff_with_16bits_overflow(uint16_t a, uint16_t b)
     return (uint16_t)(b + 0xffff - a);
 }
 
+inline int16_t signed_diff_with_16bits_overflow(uint16_t a, uint16_t b)
+{
+  int diff = b - a;
+  if(diff > 0x8000)
+    diff =diff - 0x8000;
+  return diff;
+
+}
+
 #endif // _TIMERS_H_

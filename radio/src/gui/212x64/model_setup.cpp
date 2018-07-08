@@ -74,6 +74,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_INTERNAL_MODULE_BIND,
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
+  ITEM_MODEL_INTERNAL_MODULE_OPTIONS,
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
 #if defined (MULTIMODULE)
@@ -287,6 +288,7 @@ void menuModelSetup(event_t event)
     INTERNAL_MODULE_CHANNELS_ROWS,
     IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1),
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
+    0, // Internal module status for timer
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
     MULTIMODULE_STATUS_ROWS
@@ -1092,6 +1094,7 @@ void menuModelSetup(event_t event)
       }
       break;
 
+     case ITEM_MODEL_INTERNAL_MODULE_OPTIONS:
      case ITEM_MODEL_EXTERNAL_MODULE_OPTIONS:
      {
        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
@@ -1134,6 +1137,15 @@ void menuModelSetup(event_t event)
        else if (IS_MODULE_SBUS(moduleIdx)) {
          lcdDrawTextAlignedLeft(y, STR_WARN_BATTVOLTAGE);
          putsVolts(lcdLastRightPos, y, getBatteryVoltage(), attr | PREC2 | LEFT);
+       }
+       else if (IS_MODULE_XJT(moduleIdx)) {
+         lcdDrawTextAlignedLeft(y, "XJT Sync Time (uS)");
+         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx.syncTime * 100/2, LEFT | attr);
+         lcdDrawNumber(MODEL_SETUP_3RD_COLUMN, y, signed_diff_with_16bits_overflow(xjtHeartbeatCapture.pulsesTime, xjtHeartbeatCapture.heartBeatTime)/2, LEFT | attr);
+         lcdDrawNumber(MODEL_SETUP_3RD_COLUMN+6*FW, y,  xjtHeartbeatCapture.pulsesTime, LEFT | attr);
+
+
+         CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.syncTime, 0, 255);
        }
      }
      break;

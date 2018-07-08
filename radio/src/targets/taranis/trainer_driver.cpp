@@ -125,6 +125,9 @@ extern "C" void TRAINER_DMA_IRQHandler()
 
 extern "C" void TRAINER_TIMER_IRQHandler()
 {
+  // Save the time for XJT syncronisation
+  xjtHeartbeatCapture.heartBeatTime = TIMER_2MHz_TIMER->CNT;
+
   DEBUG_INTERRUPT(INT_TRAINER);
 
   uint16_t capture = 0;

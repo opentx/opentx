@@ -42,7 +42,6 @@ inline void captureTrainerPulses(uint16_t capture)
 
   uint16_t val = (uint16_t)(capture - lastCapt) / 2;
   lastCapt = capture;
-
   // We process ppmInput right here to make servo movement as smooth as possible
   //    while under trainee control
   //
