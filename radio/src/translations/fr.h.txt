@@ -71,7 +71,11 @@
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
 
 #define LEN_UART3MODES                 "\016"
-#define TR_UART3MODES                  "OFF\0          ""Recopie S-Port""Télémétrie\0   ""Ecolage SBUS\0 ""Debug\0"
+#if defined(CLI) || defined(DEBUG)
+#define TR_UART3MODES                  "Debug\0        ""Recopie S-Port""Télémétrie\0   ""Ecolage SBUS\0 ""LUA\0          "
+#else
+#define TR_UART3MODES                  "OFF\0          ""Recopie S-Port""Télémétrie\0   ""Ecolage SBUS\0 ""LUA\0          "
+#endif
 
 #define LEN_SWTYPES                    "\006"
 #define TR_SWTYPES                     "Rien\0 ""Levier""2-POS\0""3-POS\0"
