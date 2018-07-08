@@ -228,7 +228,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol) i, moduleIdx)) {
-      if (IS_TARANIS_XLITE(firmware->getBoard()) && i == PULSES_PXX_R9M)  //TODO remove when mini are handled as a different module type
+      if (IS_TARANIS_XLITE(firmware->getBoard()) && i == PULSES_PXX_R9M && firmware->getCapability(HasMiniR9M))  //TODO remove when mini are handled as a different module type
         ui->protocol->addItem("FrSky R9M Mini", (QVariant) i);
       else
         ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant) i);
@@ -486,7 +486,7 @@ void ModulePanel::update()
     const QSignalBlocker blocker(ui->r9mPower);
     ui->r9mPower->clear();
     Board::Type board = firmware->getBoard();
-    if (IS_TARANIS_XLITE(board)) {
+    if (firmware->getCapability(HasMiniR9M)) {
       if (module.subType == R9M_FCC) {
         ui->r9mPower->addItem(tr("100 mW - 16CH"));
       }

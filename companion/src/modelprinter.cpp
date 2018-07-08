@@ -231,7 +231,7 @@ QString ModelPrinter::printR9MPowerValue(unsigned subType, unsigned val, bool te
   QStringList strFCC;
   QStringList strLBT;
 
-  if (IS_TARANIS_XLITE(firmware->getBoard())) {
+  if (firmware->getCapability(HasMiniR9M)) {
     strFCC = QStringList() << tr("100mW - 16CH");
     strLBT = QStringList() << tr("25mW - 8CH") << tr("25mW - 16CH") << tr("100mW 16CH");
   }

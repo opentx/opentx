@@ -711,6 +711,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return id.contains("danger") ? 1 : 0;
     case HasModelCategories:
       return IS_HORUS(board);
+    case HasMiniR9M:
+      return (IS_TARANIS_XLITE(board) && !id.contains("stdr9m") ? true : false);
     default:
       return 0;
   }
