@@ -28,7 +28,7 @@ void extmoduleStop()
   NVIC_DisableIRQ(EXTMODULE_TIMER_CC_IRQn);
   EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
 
-#if defined(EXTMODULE_USART)
+#if defined(EXTMODULE_USART) && !defined(MODULE_R9M_FULLSIZE)
   NVIC_DisableIRQ(EXTMODULE_USART_DMA_STREAM_IRQn);
   EXTMODULE_USART_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
 #endif
@@ -139,7 +139,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 
-#if defined(EXTMODULE_USART)
+#if defined(EXTMODULE_USART) && !defined(MODULE_R9M_FULLSIZE)
 void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
 {
   EXTERNAL_MODULE_ON();
@@ -277,7 +277,7 @@ void extmoduleSendNextFrame()
     EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
   else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PXX) {
-#if defined(EXTMODULE_USART)
+#if defined(EXTMODULE_USART) && !defined(MODULE_R9M_FULLSIZE)
     DMA_InitTypeDef DMA_InitStructure;
     DMA_DeInit(EXTMODULE_USART_DMA_STREAM);
     DMA_InitStructure.DMA_Channel = EXTMODULE_USART_DMA_CHANNEL;

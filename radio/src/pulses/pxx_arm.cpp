@@ -106,7 +106,7 @@ void uartPutPcmCrc(uint8_t port)
 }
 #endif
 
-#if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
+#if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART) || defined(MODULE_R9M_FULLSIZE)
 
 #if defined(PPM_PIN_SERIAL)
 void pxxPutPcmSerialBit(uint8_t port, uint8_t bit)
@@ -436,16 +436,21 @@ void setupPulsesPXX(uint8_t port)
   initPcmArray(port);
 
 #if defined(PXX_FREQUENCY_HIGH)
-  setupFramePXX(port, 0);
-  if (NUM_CHANNELS(port) > 8) {
-    setupFramePXX(port, 8);
+  if (IS_UART_MODULE(port)) {
+    setupFramePXX(port, 0);
+    if (NUM_CHANNELS(port) > 8) {
+      setupFramePXX(port, 8);
+    }
   }
+  else
 #else
-  static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
-  uint8_t sendUpperChannels = 0;
-  if (pass[port]++ & 0x01) {
-    sendUpperChannels = g_model.moduleData[port].channelsCount;
+  {
+    static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
+    uint8_t sendUpperChannels = 0;
+    if (pass[port]++ & 0x01) {
+      sendUpperChannels = g_model.moduleData[port].channelsCount;
+    }
+    setupFramePXX(port, sendUpperChannels);
   }
-  setupFramePXX(port, sendUpperChannels);
 #endif
 }

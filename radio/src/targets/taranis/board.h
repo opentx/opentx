@@ -176,7 +176,7 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #define EXTERNAL_MODULE_OFF()           GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#if defined(INTMODULE_USART) && defined(EXTMODULE_USART)
+#if defined(INTMODULE_USART) && (defined(EXTMODULE_USART) && !defined(MODULE_R9M_FULLSIZE))
   #define IS_UART_MODULE(port)          (true)
 #elif defined(INTMODULE_USART)
   #define IS_UART_MODULE(port)          (port == INTERNAL_MODULE)
