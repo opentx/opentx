@@ -75,6 +75,7 @@ if(WIN32)
 endif(WIN32)
 
 if(MSVC)
+  set(CMAKE_CXX_FLAGS "/EHsc")
   if(NOT CLANG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /LD /MP")
   endif()
