@@ -81,7 +81,9 @@ if(WIN32)
     set(WIN_EXECUTABLE_TYPE WIN32)  # GUI (WinMain) app
   endif()
   if(MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /LD /MP")
+    if(NOT CLANG)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /LD /MP")
+    endif()
     if(NOT WIN_USE_CONSOLE)
       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /SUBSYSTEM:WINDOWS,5.01")  # is this even needed?
     endif()

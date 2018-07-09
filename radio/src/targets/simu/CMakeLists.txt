@@ -75,7 +75,9 @@ if(WIN32)
 endif(WIN32)
 
 if(MSVC)
-  set(CMAKE_CXX_FLAGS "/EHsc /LD /MP")
+  if(NOT CLANG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /LD /MP")
+  endif()
 else()
   if(MINGW)
     # struct packing breaks on MinGW w/out -mno-ms-bitfields: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52991 & http://stackoverflow.com/questions/24015852/struct-packing-and-alignment-with-mingw
