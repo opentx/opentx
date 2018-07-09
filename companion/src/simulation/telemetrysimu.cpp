@@ -942,7 +942,7 @@ QString TelemetrySimulator::LogPlaybackController::convertGPS(QString input)
     lon = convertDegMin(lonLat[0]);
     lat = convertDegMin(lonLat[1]);
   }
-  return QString::number(lat) + ", " + QString::number(lon);
+  return QString::number(lat, 'f', 6) + ", " + QString::number(lon, 'f', 6);
 }
 
 void TelemetrySimulator::LogPlaybackController::updatePositionLabel(int32_t percentage)
