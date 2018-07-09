@@ -165,6 +165,7 @@ void mixerTask(void * pdata)
       DEBUG_TIMER_SAMPLE(debugTimerMixerIterval);
       CoLeaveMutexSection(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
+      DEBUG_TIMER_START(debugTimerMixerToIntPulses);
 
 #if defined(STM32) && !defined(SIMU)
       if (getSelectedUsbMode() == USB_JOYSTICK_MODE) {

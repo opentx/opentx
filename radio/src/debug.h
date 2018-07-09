@@ -368,6 +368,7 @@ public:
 enum DebugTimers {
   debugTimerIntPulses,
   debugTimerIntPulsesDuration,
+  debugTimerMixerToIntPulses,
   debugTimerExtPulses,
   debugTimerExtPulsesDuration,
   debugTimerPer10ms,

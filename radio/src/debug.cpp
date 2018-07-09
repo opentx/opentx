@@ -234,6 +234,7 @@ DebugTimer debugTimers[DEBUG_TIMERS_COUNT];
 const char * const debugTimerNames[DEBUG_TIMERS_COUNT] = {
    "Pulses int."   // debugTimerIntPulses,
   ,"Pulses dur."   // debugTimerIntPulsesDuration,
+  ,"Mix2IntPuls"   // debugTimerMixerToIntPulses,
   ,"Pulses ext."   // debugTimerExttPulses,
   ,"Puls ext d."   // debugTimerExPulsesDuration,
   ,"10ms dur.  "   // debugTimerPer10ms,

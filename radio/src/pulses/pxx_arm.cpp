@@ -186,7 +186,6 @@ void pxxInitPcmArray(uint8_t port)
   modulePulsesData[port].pxx.rest = PXX_PERIOD_HALF_US;
 
   if (xjtHeartbeatCapture.valid) {
-    // Try to use a delay of 4,352 ms as Mike has tested for erksy9x (0x2200)
     if (signed_diff_with_16bits_overflow(xjtHeartbeatCapture.heartBeatTime, xjtHeartbeatCapture.pulsesTime) > g_model.moduleData[port].pxx.syncTime*100) {
       modulePulsesData[port].pxx.rest -= 20;
     } else
