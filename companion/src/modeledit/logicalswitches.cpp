@@ -194,7 +194,7 @@ void LogicalSwitchesPanel::functionChanged()
       model->logicalSw[i].val2 = -129;
     }
   }
-  updateLine(i);
+  update();
   emit modified();
 }
 
