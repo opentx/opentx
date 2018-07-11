@@ -247,7 +247,6 @@ PACK(struct TimerData {
  * Swash Ring structure
  */
 
-#if defined(VIRTUAL_INPUTS)
 PACK(struct SwashRingData {
   uint8_t   type;
   uint8_t   value;
@@ -258,16 +257,6 @@ PACK(struct SwashRingData {
   int8_t    aileronWeight;
   int8_t    elevatorWeight;
 });
-#else
-PACK(struct SwashRingData {
-  uint8_t   invertELE:1;
-  uint8_t   invertAIL:1;
-  uint8_t   invertCOL:1;
-  uint8_t   type:5;
-  uint8_t   collectiveSource;
-  uint8_t   value;
-});
-#endif
 
 #if MAX_SCRIPTS > 0
 union ScriptDataInput {

@@ -9,7 +9,7 @@ macro(add_lua_export_target target)
 endmacro(add_lua_export_target)
 
 set(LUA_INCLUDES
-  -DCPUARM -DLUA -DVIRTUAL_INPUTS -DLUA_INPUTS
+  -DCPUARM -DLUA -DLUA_INPUTS
   -I${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}
   -I${RADIO_SRC_DIRECTORY}/thirdparty
   -I${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32
