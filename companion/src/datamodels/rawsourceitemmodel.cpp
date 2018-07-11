@@ -50,7 +50,7 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
   addItems(SOURCE_TYPE_GVAR,           RawSource::GVarsGroup,    fw->getCapability(Gvars));
 }
 
-void RawSourceItemModel::setDynamicItemData(QStandardItem * item, const RawSource & src)
+void RawSourceItemModel::setDynamicItemData(QStandardItem * item, const RawSource & src) const
 {
   Board::Type board = getCurrentBoard();
   item->setText(src.toString(modelData, generalSettings, board));
@@ -70,7 +70,7 @@ void RawSourceItemModel::addItems(const RawSourceType & type, const unsigned gro
   }
 }
 
-void RawSourceItemModel::update()
+void RawSourceItemModel::update() const
 {
   for (int i=0; i < rowCount(); ++i)
     setDynamicItemData(item(i), RawSource(item(i)->data(ItemIdRole).toInt()));
@@ -107,18 +107,19 @@ void RawSourceFilterItemModel::setFilterGroups(unsigned groups)
 
 bool RawSourceFilterItemModel::filterAcceptsRow(int sourceRow, const QModelIndex & sourceParent) const
 {
-  bool ok = true;
   const QModelIndex & srcIdx = sourceModel()->index(sourceRow, 0, sourceParent);
-  if (!sourceModel()->data(srcIdx, filterRole()).toBool())
+  if (!srcIdx.isValid() || !sourceModel()->data(srcIdx, filterRole()).toBool())
     return false;
+
   if (filterGroups && filterGroups != RawSource::AllSourceGroups) {
+    bool ok;
     const unsigned group = sourceModel()->data(srcIdx, RawSourceItemModel::ItemGroupRole).toUInt(&ok);
     return (ok && (filterGroups & group));
   }
   return true;
 }
 
-void RawSourceFilterItemModel::update()
+void RawSourceFilterItemModel::update() const
 {
   RawSourceItemModel * model = qobject_cast<RawSourceItemModel *>(sourceModel());
   if (model)

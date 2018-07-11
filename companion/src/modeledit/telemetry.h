@@ -90,7 +90,6 @@ class TelemetryCustomScreen: public ModelPanel
     void updateBar(int line);
     Ui::TelemetryCustomScreen * ui;
     FrSkyScreenData & screen;
-    RawSourceFilterItemModel * rawSourceItemModel;
     QComboBox * fieldsCB[4][3];
     QComboBox * barsCB[4];
     QDoubleSpinBox * minSB[4];

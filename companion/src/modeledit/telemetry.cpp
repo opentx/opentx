@@ -320,8 +320,7 @@ TelemetryAnalog::~TelemetryAnalog()
 TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware, RawSourceFilterItemModel * srcModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryCustomScreen),
-  screen(screen),
-  rawSourceItemModel(srcModel)
+  screen(screen)
 {
   ui->setupUi(this);
 
@@ -329,7 +328,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
     for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
       fieldsCB[l][c] = new QComboBox(this);
       fieldsCB[l][c]->setProperty("index", c + (l<<8));
-      fieldsCB[l][c]->setModel(rawSourceItemModel);
+      fieldsCB[l][c]->setModel(srcModel);
       ui->screenNumsLayout->addWidget(fieldsCB[l][c], l, c, 1, 1);
       connect(fieldsCB[l][c], SIGNAL(activated(int)), this, SLOT(customFieldChanged(int)));
     }
@@ -338,7 +337,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   for (int l=0; l<4; l++) {
     barsCB[l] = new QComboBox(this);
     barsCB[l]->setProperty("index", l);
-    barsCB[l]->setModel(rawSourceItemModel);
+    barsCB[l]->setModel(srcModel);
     connect(barsCB[l], SIGNAL(activated(int)), this, SLOT(barSourceChanged(int)));
     ui->screenBarsLayout->addWidget(barsCB[l], l, 0, 1, 1);
 

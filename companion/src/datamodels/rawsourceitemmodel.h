@@ -39,10 +39,10 @@ class RawSourceItemModel: public QStandardItemModel
     RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
 
   public slots:
-    void update();
+    void update() const;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const RawSource & src);
+    void setDynamicItemData(QStandardItem * item, const RawSource & src) const;
     void addItems(const RawSourceType & type, const unsigned group, const int count, const int start = 0);
 
     const GeneralSettings * generalSettings;
@@ -66,7 +66,7 @@ class RawSourceFilterItemModel: public QSortFilterProxyModel
 
   public slots:
     void setFilterGroups(unsigned groups);
-    void update();
+    void update() const;
 
   protected:
     bool filterAcceptsRow(int sourceRow, const QModelIndex & sourceParent) const override;
