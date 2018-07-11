@@ -650,7 +650,7 @@ int getStickTrimValue(int stick, int stickValue)
     return 0;
 
   int trim = trims[stick];
-  if (IS_THROTTLE_TRIM(stick)) {
+  if (stick == THR_STICK) {
     if (g_model.thrTrim) {
       int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
       trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-stickValue)) >> (RESX_SHIFT+1);
