@@ -20,39 +20,44 @@
 
 #include <QStandardItemModel>
 #include <QSortFilterProxyModel>
-#include "radiodata.h"
+#include "rawswitch.h"
 
-enum SwitchContext
+class GeneralSettings;
+class ModelData;
+
+class RawSwitchItemModel: public QStandardItemModel
 {
-    LogicalSwitchesContext,
-    SpecialFunctionsContext,
-    GlobalFunctionsContext,
-    TimersContext,
-    MixesContext
-};
-
-class RawSwitchItemModel: public QStandardItemModel {
+    Q_OBJECT
   public:
-    RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData);
-    void update();
+    enum DataRoles { ItemIdRole = Qt::UserRole, ItemTypeRole, ContextRole, IsAvailableRole };
+    Q_ENUM(DataRoles)
+
+    RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() const;
 
   protected:
+    void setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const;
     void add(const RawSwitchType & type, int count);
 
     const GeneralSettings * generalSettings;
     const ModelData * modelData;
 };
 
-class RawSwitchFilterItemModel: public QSortFilterProxyModel {
+class RawSwitchFilterItemModel: public QSortFilterProxyModel
+{
+    Q_OBJECT
   public:
-    RawSwitchFilterItemModel(const GeneralSettings * const generalSettings = NULL, const ModelData * const modelData = NULL, SwitchContext context = LogicalSwitchesContext);
-    void update();
+    RawSwitchFilterItemModel(QAbstractItemModel * sourceModel, RawSwitch::SwitchContext context, QObject * parent = nullptr);
+    RawSwitchFilterItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, RawSwitch::SwitchContext context, QObject * parent = nullptr);
+
+  public slots:
+    void setSwitchContext(RawSwitch::SwitchContext ctxt);
+    void update() const;
 
   protected:
-    const GeneralSettings * generalSettings;
-    const ModelData * modelData;
-    SwitchContext context;
-    RawSwitchItemModel * parent;
-
     bool filterAcceptsRow(int sourceRow, const QModelIndex & sourceParent) const override;
+
+    RawSwitch::SwitchContext context = RawSwitch::NoSwitchContext;
 };

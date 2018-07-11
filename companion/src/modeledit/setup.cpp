@@ -50,7 +50,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
 
   // Mode
-  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, TimersContext);
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::TimersContext, this);
   ui->mode->setModel(rawSwitchItemModel);
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
 

@@ -31,7 +31,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
 {
   Stopwatch s1("LogicalSwitchesPanel");
 
-  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, LogicalSwitchesContext);
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::LogicalSwitchesContext, this);
 
   const unsigned srcGroups = firmware->getCapability(GvarsInCS) ? RawSource::AllSourceGroups : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
   rawSourceItemModel = new RawSourceFilterItemModel(&generalSettings, &model, srcGroups, this);

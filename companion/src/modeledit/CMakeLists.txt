@@ -29,6 +29,7 @@ set(modeledit_SRCS
 )
 
 set(modeledit_HDRS
+  switchitemmodel.h
   flightmodes.h
   inputs.h
   mixes.h

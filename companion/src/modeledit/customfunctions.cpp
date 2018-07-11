@@ -77,7 +77,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? SpecialFunctionsContext : GlobalFunctionsContext);
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext, this);
   rawSrcAllItemModel = new RawSourceFilterItemModel(&generalSettings, model, this);
   rawSrcInputsItemModel = new RawSourceFilterItemModel(rawSrcAllItemModel->sourceModel(), RawSource::InputSourceGroups, this);
   rawSrcGVarsItemModel = new RawSourceFilterItemModel(rawSrcAllItemModel->sourceModel(), RawSource::GVarsGroup, this);

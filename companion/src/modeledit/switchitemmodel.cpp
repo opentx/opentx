@@ -21,7 +21,8 @@
 #include "switchitemmodel.h"
 #include "eeprominterface.h"
 
-RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData):
+RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  QStandardItemModel(parent),
   generalSettings(generalSettings),
   modelData(modelData)
 {
@@ -58,78 +59,110 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   add(SWITCH_TYPE_ONE, 1);
 }
 
+void RawSwitchItemModel::setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const
+{
+  const Board::Type board = getCurrentBoard();
+  item->setText(rsw.toString(board, generalSettings, modelData));
+  item->setData(rsw.isAvailable(modelData, generalSettings, board), IsAvailableRole);
+}
+
 void RawSwitchItemModel::add(const RawSwitchType & type, int count)
 {
   // Most RawSwitch() indices are one-based (vs. typical zero); these are exceptions to the rule:
   const static QVector<int> rawSwitchIndexBaseZeroTypes = QVector<int>() << SWITCH_TYPE_NONE << SWITCH_TYPE_ON << SWITCH_TYPE_OFF << SWITCH_TYPE_TIMER_MODE;
 
-  int rawIdxAdj = 0;
-  const Board::Type board = getCurrentBoard();
-  int i = (count < 0 ? count : 1);
-  const int maxCount = (i < 0 ? 0 : count + i);
-
   // handle exceptions in RawSwitch() index values
-  if (rawSwitchIndexBaseZeroTypes.contains(type))
-    rawIdxAdj = -1;
+  const short rawIdxAdj = rawSwitchIndexBaseZeroTypes.contains(type) ? -1 : 0;
 
-  for ( ; i < maxCount; ++i) {
+  // determine cotext flags
+  unsigned context = RawSwitch::AllSwitchContexts;
+  switch (type) {
+    case SWITCH_TYPE_FLIGHT_MODE:
+      context &= ~RawSwitch::MixesContext;
+    // fallthrough
+    case SWITCH_TYPE_VIRTUAL:
+    case SWITCH_TYPE_SENSOR:
+      context &= ~RawSwitch::GlobalFunctionsContext;
+      break;
+
+    case SWITCH_TYPE_TIMER_MODE:
+      context = RawSwitch::TimersContext;
+      break;
+
+    case SWITCH_TYPE_NONE:
+      context &= ~RawSwitch::TimersContext;
+      break;
+
+    case SWITCH_TYPE_ON:
+    case SWITCH_TYPE_ONE:
+      context = RawSwitch::SpecialFunctionsContext | RawSwitch::GlobalFunctionsContext;
+      break;
+
+    default:
+      break;
+  }
+
+  int i = (count < 0 ? count : 1);
+  count = (i < 0 ? 0 : count + i);
+  for ( ; i < count; ++i) {
     RawSwitch rs(type, i + rawIdxAdj);
-    QStandardItem * modelItem = new QStandardItem(rs.toString(board, generalSettings, modelData));
-    modelItem->setData(rs.toValue(), Qt::UserRole);
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(rs.toValue(), ItemIdRole);
+    modelItem->setData(type, ItemTypeRole);
+    modelItem->setData(context, ContextRole);
+    setDynamicItemData(modelItem, rs);
     appendRow(modelItem);
   }
 }
 
-void RawSwitchItemModel::update()
+void RawSwitchItemModel::update() const
 {
-  for (int i=0; i<rowCount(); i++) {
-    QStandardItem * modelItem = item(i, 0);
-    RawSwitch swtch(modelItem->data(Qt::UserRole).toInt());
-    modelItem->setText(swtch.toString(getCurrentBoard(), generalSettings, modelData));
-  }
+  for (int i=0; i < rowCount(); ++i)
+    setDynamicItemData(item(i), RawSwitch(item(i)->data(ItemIdRole).toInt()));
 }
 
-RawSwitchFilterItemModel::RawSwitchFilterItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, SwitchContext context):
-  generalSettings(generalSettings),
-  modelData(modelData),
-  context(context),
-  parent(new RawSwitchItemModel(generalSettings, modelData))
+
+//
+// RawSwitchFilterItemModel
+//
+
+RawSwitchFilterItemModel::RawSwitchFilterItemModel(QAbstractItemModel * sourceModel, RawSwitch::SwitchContext context, QObject * parent) :
+  QSortFilterProxyModel(parent)
 {
-  setSourceModel(parent);
-  setDynamicSortFilter(false);
+  setFilterRole(RawSwitchItemModel::IsAvailableRole);
+  setFilterKeyColumn(0);
+  setSwitchContext(context);
+  setDynamicSortFilter(true);
+  setSourceModel(sourceModel);
+}
+
+RawSwitchFilterItemModel::RawSwitchFilterItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, RawSwitch::SwitchContext context, QObject * parent):
+  RawSwitchFilterItemModel(new RawSwitchItemModel(generalSettings, modelData, parent), context, parent)
+{
+}
+
+void RawSwitchFilterItemModel::setSwitchContext(RawSwitch::SwitchContext ctxt)
+{
+  if (ctxt != context) {
+    context = ctxt;
+    invalidateFilter();
+  }
 }
 
 bool RawSwitchFilterItemModel::filterAcceptsRow(int sourceRow, const QModelIndex & sourceParent) const
 {
-  QModelIndex index = sourceModel()->index(sourceRow, 0, sourceParent);
-  RawSwitch swtch(sourceModel()->data(index, Qt::UserRole).toInt());
-
-  if (swtch.type == SWITCH_TYPE_FLIGHT_MODE && (context == MixesContext || context == GlobalFunctionsContext))
+  const QModelIndex & srcIdx = sourceModel()->index(sourceRow, 0, sourceParent);
+  if (!srcIdx.isValid() || !sourceModel()->data(srcIdx, filterRole()).toBool())
     return false;
 
-  if (swtch.type == SWITCH_TYPE_VIRTUAL && context == GlobalFunctionsContext)
-    return false;
-
-  if (swtch.type == SWITCH_TYPE_TIMER_MODE && context != TimersContext)
-    return false;
-
-  if (swtch.type == SWITCH_TYPE_NONE && context == TimersContext)
-    return false;
-
-  if (swtch.type == SWITCH_TYPE_SENSOR && context == GlobalFunctionsContext)
-    return false;
-
-  if ((swtch.type == SWITCH_TYPE_ON || swtch.type == SWITCH_TYPE_ONE) && (context != SpecialFunctionsContext && context != GlobalFunctionsContext))
-    return false;
-
-  if (!swtch.isAvailable(modelData, generalSettings, getCurrentBoard()))
-    return false;
-
-  return true;
+  bool ok;
+  const RawSwitch::SwitchContext ctxt = RawSwitch::SwitchContext(sourceModel()->data(srcIdx, RawSwitchItemModel::ContextRole).toUInt(&ok));
+  return (ok && (ctxt == RawSwitch::AllSwitchContexts || context != RawSwitch::NoSwitchContext || (context & ctxt)));
 }
 
-void RawSwitchFilterItemModel::update()
+void RawSwitchFilterItemModel::update() const
 {
-  parent->update();
-  invalidate();
+  RawSwitchItemModel * model = qobject_cast<RawSwitchItemModel *>(sourceModel());
+  if (model)
+    model->update();
 }

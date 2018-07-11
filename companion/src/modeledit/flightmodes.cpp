@@ -53,7 +53,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
   // Phase switch
   if (phaseIdx > 0) {
-    rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, MixesContext);
+    rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this);
     ui->swtch->setModel(rawSwitchItemModel);
     ui->swtch->setCurrentIndex(ui->swtch->findData(phase.swtch.toValue()));
     connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));

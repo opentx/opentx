@@ -105,7 +105,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
     }
   }
 
-  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, MixesContext));
+  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this));
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(md->swtch.toValue()));
   ui->warningCB->setCurrentIndex(md->mixWarn);
   ui->mltpxCB->setCurrentIndex(md->mltpx);

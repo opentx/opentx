@@ -142,7 +142,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
   }
 }
 
-bool RawSwitch::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board)
+bool RawSwitch::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board) const
 {
   if (board == Board::BOARD_UNKNOWN)
     board = getCurrentBoard();
