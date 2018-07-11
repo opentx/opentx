@@ -106,6 +106,7 @@ include_directories(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}
   ${COMPANION_SRC_DIRECTORY}
+  ${COMPANION_SRC_DIRECTORY}/datamodels
   ${COMPANION_SRC_DIRECTORY}/shared
   ${SIMU_SRC_DIRECTORY}
   ${COMPANION_SRC_DIRECTORY}/thirdparty/qcustomplot
@@ -248,7 +249,8 @@ set(companion_SRCS
   wizarddata.cpp
   wizarddialog.cpp
   styleeditdialog.cpp
-  dialogs/filesyncdialog.cpp
+  datamodels/rawsourceitemmodel.cpp  # TODO move to own lib with other item models
+  dialogs/filesyncdialog.cpp         # also move all dialogs into subfolder
   )
 
 set(companion_MOC_HDRS
@@ -282,6 +284,7 @@ set(companion_MOC_HDRS
   modelslist.h
   styleeditdialog.h
   helpers_html.h
+  datamodels/rawsourceitemmodel.h
   dialogs/filesyncdialog.h
   )
 
