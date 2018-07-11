@@ -35,7 +35,7 @@ class FlightModePanel : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, Firmware * firmware);
+    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchFilterItemModel * switchModel);
     virtual ~FlightModePanel();
 
     virtual void update();
@@ -45,7 +45,7 @@ class FlightModePanel : public ModelPanel
 
   private slots:
     void phaseName_editingFinished();
-    void phaseSwitch_currentIndexChanged(int index);
+    void phaseSwitchChanged(int index);
     void phaseFadeIn_editingFinished();
     void phaseFadeOut_editingFinished();
     void phaseTrimUse_currentIndexChanged(int index);
@@ -104,18 +104,20 @@ class FlightModesPanel : public ModelPanel
     FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~FlightModesPanel();
 
-    virtual void update();
+  public slots:
+    virtual void update() override;
+
+  signals:
+    void updated();
 
   private slots:
-    void onPhaseModified();
     void onPhaseNameChanged();
-    void on_tabWidget_currentChanged(int index);
 
   private:
+    QString getTabName(int index);
+
     int modesCount;
     QTabWidget *tabWidget;
-    QString getTabName(int index);
-    QVector<FlightModePanel *> panels;
 
 };
 

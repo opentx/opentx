@@ -28,7 +28,7 @@
 #include "multiprotocols.h"
 #include "checklistdialog.h"
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus):
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawSwitchFilterItemModel * switchModel):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
@@ -50,9 +50,9 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
 
   // Mode
-  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::TimersContext, this);
-  ui->mode->setModel(rawSwitchItemModel);
+  ui->mode->setModel(switchModel);
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
+  connect(ui->mode, SIGNAL(activated(int)), this, SLOT(onModeChanged(int)));
 
   if (!firmware->getCapability(PermTimers)) {
     ui->persistent->hide();
@@ -92,12 +92,11 @@ TimerPanel::~TimerPanel()
 
 void TimerPanel::update()
 {
-  rawSwitchItemModel->update();
-
   int hour = timer.val / 3600;
   int min = (timer.val - (hour * 3600)) / 60;
   int sec = (timer.val - (hour * 3600)) % 60;
 
+  ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
   ui->value->setTime(QTime(hour, min, sec));
 
   if (firmware->getCapability(PermTimers)) {
@@ -131,10 +130,15 @@ void TimerPanel::on_value_editingFinished()
   }
 }
 
-void TimerPanel::on_mode_currentIndexChanged(int index)
+void TimerPanel::onModeChanged(int index)
 {
-  if (!lock) {
-    timer.mode = RawSwitch(ui->mode->itemData(index).toInt());
+  if (lock)
+    return;
+
+  bool ok;
+  const RawSwitch rs(ui->mode->itemData(index).toInt(&ok));
+  if (ok && timer.mode.toValue() != rs.toValue()) {
+    timer.mode = rs;
     emit modified();
   }
 }
@@ -937,11 +941,15 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   }
 
   QWidget * prevFocus = ui->image;
+  RawSwitchFilterItemModel * swModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::TimersContext, this);
+  connect(this, &SetupPanel::updated, swModel, &RawSwitchFilterItemModel::update);
+
   for (int i=0; i<CPN_MAX_TIMERS; i++) {
     if (i<firmware->getCapability(Timers)) {
-      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus);
+      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus, swModel);
       ui->gridLayout->addWidget(timers[i], 1+i, 1);
       connect(timers[i], &TimerPanel::modified, this, &SetupPanel::modified);
+      connect(this, &SetupPanel::updated, timers[i], &TimerPanel::update);
       prevFocus = timers[i]->getLastFocus();
     }
     else {
@@ -1219,15 +1227,13 @@ void SetupPanel::update()
     updatePotWarnings();
   }
 
-  for (int i=0; i<firmware->getCapability(Timers); i++) {
-    timers[i]->update();
-  }
-
   for (int i=0; i<CPN_MAX_MODULES+1; i++) {
     if (modules[i]) {
       modules[i]->update();
     }
   }
+
+  emit updated();
 }
 
 void SetupPanel::updateBeepCenter()

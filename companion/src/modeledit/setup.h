@@ -37,14 +37,14 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus, RawSwitchFilterItemModel * switchModel);
     virtual ~TimerPanel();
 
     virtual void update();
     QWidget * getLastFocus();
 
   private slots:
-    void on_mode_currentIndexChanged(int index);
+    void onModeChanged(int index);
     void on_value_editingFinished();
     void on_minuteBeep_toggled(bool checked);
     void on_name_editingFinished();
@@ -52,7 +52,6 @@ class TimerPanel : public ModelPanel
   private:
     TimerData & timer;
     Ui::Timer * ui;
-    RawSwitchFilterItemModel * rawSwitchItemModel;
 };
 
 class ModulePanel : public ModelPanel
@@ -126,6 +125,7 @@ class SetupPanel : public ModelPanel
 
   signals:
     void extendedLimitsToggled();
+    void updated();
 
   private slots:
     void on_name_editingFinished();
