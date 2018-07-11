@@ -20,17 +20,6 @@
 
 #include "gtests.h"
 
-#if !defined(VIRTUAL_INPUTS)
-TEST(getSwitch, undefCSW)
-{
-  MODEL_RESET();
-  EXPECT_EQ(getSwitch(NUM_PSWITCH), false);
-  EXPECT_EQ(getSwitch(-NUM_PSWITCH), true); // no good answer there!
-}
-#endif
-
-
-#if defined(VIRTUAL_INPUTS)
 void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16_t _v3 = 0, uint8_t _delay = 0, uint8_t _duration = 0, int8_t _andsw = 0)
 {
   g_model.logicalSw[index].func = _func;
@@ -41,7 +30,6 @@ void setLogicalSwitch(int index, uint16_t _func, int16_t _v1, int16_t _v2, int16
   g_model.logicalSw[index].duration = _duration;
   g_model.logicalSw[index].andsw = _andsw;
 }
-#endif
 
 #if defined(PCBTARANIS)
 TEST(getSwitch, OldTypeStickyCSW)

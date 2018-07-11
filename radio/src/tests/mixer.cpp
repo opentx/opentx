@@ -168,14 +168,8 @@ TEST_F(TrimsTest, invertedThrottlePlusThrottleTrim)
 TEST_F(TrimsTest, throttleTrimWithZeroWeightOnThrottle)
 {
   g_model.thrTrim = 1;
-#if defined(VIRTUAL_INPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
-#else
-  ExpoData *expo = expoAddress(0);
-  expo->mode = 3;
-  expo->chn = THR_STICK;
-#endif
   expo->weight = 0;
   // stick max + trim max
   anaInValues[THR_STICK] = +1024;
@@ -245,14 +239,8 @@ TEST_F(TrimsTest, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
 {
   g_model.throttleReversed = 1;
   g_model.thrTrim = 1;
-#if defined(VIRTUAL_INPUTS)
   // the input already exists
   ExpoData *expo = expoAddress(THR_STICK);
-#else
-  ExpoData *expo = expoAddress(0);
-  expo->mode = 3;
-  expo->chn = THR_STICK;
-#endif
   expo->weight = 0;
   // stick max + trim max
   anaInValues[THR_STICK] = +1024;
@@ -318,32 +306,6 @@ TEST_F(TrimsTest, invertedThrottlePlusthrottleTrimWithZeroWeightOnThrottle)
   EXPECT_EQ(channelOutputs[2], 0);
 }
 
-#if !defined(VIRTUAL_INPUTS)
-TEST_F(TrimsTest, greaterTrimLink)
-{
-  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
-  setTrimValue(3, RUD_STICK, 32);
-  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(1, RUD_STICK), RUD_STICK), 32);
-}
-
-TEST_F(TrimsTest, chainedTrims)
-{
-  setTrimValue(0, RUD_STICK, 32);
-  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+1); // link to FP0 trim
-  setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
-}
-
-TEST_F(TrimsTest, infiniteChainedTrims)
-{
-  setTrimValue(0, RUD_STICK, 32);
-  setTrimValue(1, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP3 trim
-  setTrimValue(2, RUD_STICK, TRIM_EXTENDED_MAX+2); // link to FP1 trim
-  setTrimValue(3, RUD_STICK, TRIM_EXTENDED_MAX+3); // link to FP2 trim
-  EXPECT_EQ(getRawTrimValue(getTrimFlightMode(0, RUD_STICK), RUD_STICK), 32);
-}
-#endif
-
 TEST_F(TrimsTest, CopyTrimsToOffset)
 {
   setTrimValue(0, ELE_STICK, -100); // -100 on elevator
@@ -368,7 +330,6 @@ TEST_F(TrimsTest, InstantTrim)
   EXPECT_EQ(25, getTrimValue(0, AIL_STICK));
 }
 
-#if defined(VIRTUAL_INPUTS)
 TEST_F(TrimsTest, InstantTrimNegativeCurve)
 {
   ExpoData *expo = expoAddress(AIL_STICK);
@@ -383,7 +344,6 @@ TEST_F(TrimsTest, InstantTrimNegativeCurve)
   instantTrim();
   EXPECT_EQ(128, getTrimValue(0, AIL_STICK));
 }
-#endif
 
 TEST(Curves, LinearIntpol)
 {
@@ -567,30 +527,6 @@ TEST_F(MixerTest, DelayOnSwitch)
   EXPECT_EQ(chans[0], 0);
 }
 
-
-
-#if !defined(VIRTUAL_INPUTS)
-TEST_F(MixerTest, NoTrimOnInactiveMix)
-{
-  g_model.mixData[0].destCh = 0;
-  g_model.mixData[0].mltpx = MLTPX_ADD;
-  g_model.mixData[0].srcRaw = MIXSRC_Thr;
-  g_model.mixData[0].weight = 100;
-  g_model.mixData[0].swtch = SWSRC_THR;
-  g_model.mixData[0].speedUp = SLOW_STEP*5;
-  g_model.mixData[0].speedDown = SLOW_STEP*5;
-  setTrimValue(0, 2, 256);
-
-  s_mixer_first_run_done = true;
-
-  simuSetSwitch(1, 1);
-  CHECK_SLOW_MOVEMENT(0, 1, 100);
-
-  simuSetSwitch(1, -1);
-  CHECK_SLOW_MOVEMENT(0, -1, 100);
-}
-#endif
-
 TEST_F(MixerTest, SlowOnMultiply)
 {
   g_model.mixData[0].destCh = 0;
@@ -618,7 +554,7 @@ TEST_F(MixerTest, SlowOnMultiply)
 }
 
 
-#if defined(HELI) && defined(VIRTUAL_INPUTS)
+#if defined(HELI)
 TEST(Heli, BasicTest)
 {
   SYSTEM_RESET();
@@ -684,22 +620,6 @@ TEST(Heli, Mode2Test)
   EXPECT_EQ(chans[1], CHANNEL_MAX/2);
   EXPECT_EQ(chans[2], CHANNEL_MAX/2);
   SYSTEM_RESET();
-}
-#endif
-
-#if defined(HELI) && !defined(VIRTUAL_INPUTS)
-TEST(Heli, SimpleTest)
-{
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  applyTemplate(TMPL_HELI_SETUP);
-  anaInValues[ELE_STICK] = 1024;
-  evalFlightModeMixes(e_perout_mode_normal, 0);
-  EXPECT_EQ(chans[0], -CHANNEL_MAX);
-  EXPECT_EQ(chans[1], CHANNEL_MAX/2);
-  EXPECT_EQ(chans[1], CHANNEL_MAX/2);
 }
 #endif
 

@@ -23,19 +23,12 @@
 enum MenuModelHeliItems {
   ITEM_HELI_SWASHTYPE,
   ITEM_HELI_SWASHRING,
-#if defined(VIRTUAL_INPUTS)
   ITEM_HELI_ELE,
   ITEM_HELI_ELE_WEIGHT,
   ITEM_HELI_AIL,
   ITEM_HELI_AIL_WEIGHT,
   ITEM_HELI_COL,
   ITEM_HELI_COL_WEIGHT,
-#else
-  ITEM_HELI_COLLECTIVE,
-  ITEM_HELI_ELEDIRECTION,
-  ITEM_HELI_AILDIRECTION,
-  ITEM_HELI_COLDIRECTION,
-#endif
   ITEM_HELI_MAX
 };
 
@@ -51,14 +44,9 @@ void menuModelHeli(event_t event)
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
 
-#if defined(VIRTUAL_INPUTS)
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
     uint8_t k = i + menuVerticalOffset;
-#else
-  for (uint8_t k=0; k<ITEM_HELI_MAX; k++) {
-    coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-#endif
     LcdFlags blink = (s_editMode > 0 ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
@@ -73,7 +61,6 @@ void menuModelHeli(event_t event)
         if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.swashR.value, 100);
         break;
 
-#if defined(VIRTUAL_INPUTS)
       case ITEM_HELI_ELE:
         lcdDrawTextAlignedLeft(y, STR_ELEVATOR);
         drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.elevatorSource, attr);
@@ -109,24 +96,6 @@ void menuModelHeli(event_t event)
         lcdDrawNumber(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveWeight, LEFT|attr);
         if (attr) CHECK_INCDEC_MODELVAR(event, g_model.swashR.collectiveWeight, -100, 100);
         break;
-#else
-      case ITEM_HELI_COLLECTIVE:
-        g_model.swashR.collectiveSource = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_COLLECTIVE, NULL, g_model.swashR.collectiveSource, 0, MIXSRC_LAST_CH, attr, event);
-        drawSource(MODEL_HELI_2ND_COLUMN, y, g_model.swashR.collectiveSource, attr);
-        break;
-
-      case ITEM_HELI_ELEDIRECTION:
-        g_model.swashR.invertELE = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_ELEDIRECTION, STR_MMMINV, g_model.swashR.invertELE, 0, 1, attr, event);
-        break;
-
-      case ITEM_HELI_AILDIRECTION:
-        g_model.swashR.invertAIL = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_AILDIRECTION, STR_MMMINV, g_model.swashR.invertAIL, 0, 1, attr, event);
-        break;
-
-      case ITEM_HELI_COLDIRECTION:
-        g_model.swashR.invertCOL = editChoice(MODEL_HELI_2ND_COLUMN, y, STR_COLDIRECTION, STR_MMMINV, g_model.swashR.invertCOL, 0, 1, attr, event);
-        break;
-#endif
     }
   }
 }

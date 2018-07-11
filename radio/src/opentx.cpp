@@ -312,7 +312,6 @@ uint16_t evalChkSum()
   return sum;
 }
 
-#if defined(VIRTUAL_INPUTS)
 void clearInputs()
 {
   memset(g_model.expoData, 0, sizeof(g_model.expoData)); // clear all expos
@@ -345,25 +344,16 @@ void defaultInputs()
   }
   storageDirty(EE_MODEL);
 }
-#endif
 
 void applyDefaultTemplate()
 {
-#if defined(VIRTUAL_INPUTS)
   defaultInputs(); // calls storageDirty internally
-#else
-  storageDirty(EE_MODEL);
-#endif
 
   for (int i=0; i<NUM_STICKS; i++) {
     MixData * mix = mixAddress(i);
     mix->destCh = i;
     mix->weight = 100;
-#if defined(VIRTUAL_INPUTS)
     mix->srcRaw = i+1;
-#else
-    mix->srcRaw = MIXSRC_Rud - 1 + channel_order(i+1);
-#endif
   }
 }
 
@@ -519,7 +509,6 @@ void modelDefault(uint8_t id)
 #endif
 }
 
-#if defined(VIRTUAL_INPUTS)
 bool isInputRecursive(int index)
 {
   ExpoData * line = expoAddress(0);
@@ -533,7 +522,6 @@ bool isInputRecursive(int index)
   }
   return false;
 }
-#endif
 
 #if defined(AUTOSOURCE)
 int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
@@ -541,7 +529,6 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   int8_t result = 0;
   static tmr10ms_t s_move_last_time = 0;
 
-#if defined(VIRTUAL_INPUTS)
   static int16_t inputsStates[MAX_INPUTS];
   if (min <= MIXSRC_FIRST_INPUT) {
     for (uint8_t i=0; i<MAX_INPUTS; i++) {
@@ -553,7 +540,6 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
       }
     }
   }
-#endif
 
   static int16_t sourcesStates[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
   if (result == 0) {
@@ -571,9 +557,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   }
 
   if (result || recent) {
-#if defined(VIRTUAL_INPUTS)
     memcpy(inputsStates, anas, sizeof(inputsStates));
-#endif
     memcpy(sourcesStates, calibratedAnalogs, sizeof(sourcesStates));
   }
 
@@ -994,11 +978,6 @@ void checkTHR()
   }
   else {
     calibratedAnalogs[thrchn] = -1024;
-#if !defined(VIRTUAL_INPUTS)
-    if (thrchn < NUM_STICKS) {
-      rawAnas[thrchn] = anas[thrchn] = calibratedAnalogs[thrchn];
-    }
-#endif
     RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
   }
 #else
@@ -1257,46 +1236,20 @@ JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
 tmr10ms_t jitterResetTime = 0;
 #endif
 
-#if defined(VIRTUAL_INPUTS)
-  #define JITTER_FILTER_STRENGTH  4         // tune this value, bigger value - more filtering (range: 1-5) (see explanation below)
-  #define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-1) (see explanation below)
+#define JITTER_FILTER_STRENGTH  4         // tune this value, bigger value - more filtering (range: 1-5) (see explanation below)
+#define ANALOG_SCALE            1         // tune this value, bigger value - more filtering (range: 0-1) (see explanation below)
 
-  #define JITTER_ALPHA            (1<<JITTER_FILTER_STRENGTH)
-  #define ANALOG_MULTIPLIER       (1<<ANALOG_SCALE)
-  #define ANA_FILT(chan)          (s_anaFilt[chan] / (JITTER_ALPHA * ANALOG_MULTIPLIER))
-  #if (JITTER_ALPHA * ANALOG_MULTIPLIER > 32)
-    #error "JITTER_FILTER_STRENGTH and ANALOG_SCALE are too big, their summ should be <= 5 !!!"
-  #endif
-#else
-  #define ANALOG_SCALE            0
-  #define JITTER_ALPHA            1
-  #define ANALOG_MULTIPLIER       1
-  #define ANA_FILT(chan)          (s_anaFilt[chan])
+#define JITTER_ALPHA            (1<<JITTER_FILTER_STRENGTH)
+#define ANALOG_MULTIPLIER       (1<<ANALOG_SCALE)
+#define ANA_FILT(chan)          (s_anaFilt[chan] / (JITTER_ALPHA * ANALOG_MULTIPLIER))
+#if (JITTER_ALPHA * ANALOG_MULTIPLIER > 32)
+  #error "JITTER_FILTER_STRENGTH and ANALOG_SCALE are too big, their summ should be <= 5 !!!"
 #endif
-
 
 #if !defined(SIMU)
 uint16_t anaIn(uint8_t chan)
 {
-#if defined(VIRTUAL_INPUTS)
   return ANA_FILT(chan);
-#else
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
-  static const pm_char crossAna[] PROGMEM = {3,1,2,0,4,5,6,0/* shouldn't be used */,TX_VOLTAGE};
-#else
-  static const pm_char crossAna[] PROGMEM = {3,1,2,0,4,5,6,7};
-#endif
-#if defined(FRSKY_STICKS)
-  volatile uint16_t temp = s_anaFilt[pgm_read_byte(crossAna+chan)];  // volatile saves here 40 bytes; maybe removed for newer AVR when available
-  if (chan < NUM_STICKS && (g_eeGeneral.stickReverse & (1 << chan))) {
-    temp = 2048 - temp;
-  }
-  return temp;
-#else
-  volatile uint16_t *p = &s_anaFilt[pgm_read_byte(crossAna+chan)];
-  return *p;
-#endif
-#endif
 }
 
 void getADC()
@@ -1319,7 +1272,6 @@ void getADC()
   for (uint8_t x=0; x<NUM_ANALOGS; x++) {
     uint16_t v = getAnalogValue(x) >> (1 - ANALOG_SCALE);
 
-#if defined(VIRTUAL_INPUTS)
     // Jitter filter:
     //    * pass trough any big change directly
     //    * for small change use Modified moving average (MMA) filter
@@ -1360,10 +1312,8 @@ void getADC()
       // apply jitter filter
       s_anaFilt[x] = (s_anaFilt[x] - previous) + v;
     }
-    else
-#endif  // #if defined(VIRTUAL_INPUTS)
-    {
-    	//use unfiltered value
+    else {
+      // use unfiltered value
       s_anaFilt[x] = v * JITTER_ALPHA;
     }
 
@@ -1551,11 +1501,7 @@ void doMixerCalculations()
       if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
     }
     else {
-#if defined(VIRTUAL_INPUTS)
       val = RESX + calibratedAnalogs[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
-#else
-      val = RESX + (g_model.thrTraceSrc == 0 ? rawAnas[THR_STICK] : calibratedAnalogs[g_model.thrTraceSrc+NUM_STICKS-1]);
-#endif
     }
 
 #if defined(ACCURAT_THROTTLE_TIMER)
@@ -1885,11 +1831,9 @@ uint8_t getSticksNavigationEvent()
 
 void instantTrim()
 {
-#if defined(VIRTUAL_INPUTS)
   int16_t  anas_0[NUM_INPUTS];
   evalInputs(e_perout_mode_notrainer | e_perout_mode_nosticks);
   memcpy(anas_0, anas, sizeof(anas_0));
-#endif
 
   evalInputs(e_perout_mode_notrainer);
 
@@ -1897,7 +1841,6 @@ void instantTrim()
     if (stick!=THR_STICK) {
       // don't instant trim the throttle stick
       uint8_t trim_phase = getTrimFlightMode(mixerCurrentFlightMode, stick);
-#if defined(VIRTUAL_INPUTS)
       int16_t delta = 0;
       for (int e=0; e<MAX_EXPOS; e++) {
         ExpoData * ed = expoAddress(e);
@@ -1907,9 +1850,6 @@ void instantTrim()
           break;
         }
       }
-#else
-      int16_t delta = anas[stick];
-#endif
       if (abs(delta) >= INSTANT_TRIM_MARGIN) {
         int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[stick]) / 2, TRIM_EXTENDED_MAX);
         setTrimValue(trim_phase, stick, trim);

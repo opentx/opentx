@@ -520,10 +520,8 @@ enum SwitchSources {
 enum MixSources {
   MIXSRC_NONE,
 
-#if defined(VIRTUAL_INPUTS)
   MIXSRC_FIRST_INPUT,                   LUA_EXPORT_MULTIPLE("input", "Input [I%d]", MAX_INPUTS)
   MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
-#endif
 
 #if defined(LUA_INPUTS)
   MIXSRC_FIRST_LUA,
