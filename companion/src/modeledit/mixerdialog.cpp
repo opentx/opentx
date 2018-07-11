@@ -22,6 +22,7 @@
 #include "ui_mixerdialog.h"
 #include "radiodata.h"
 #include "switchitemmodel.h"
+#include "rawsourceitemmodel.h"
 #include "helpers.h"
 
 MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, GeneralSettings & generalSettings, Firmware * firmware) :
@@ -43,7 +44,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 
   this->setWindowTitle(tr("DEST -> %1").arg(RawSource(SOURCE_TYPE_CH, md->destCh-1).toString(&model, &generalSettings)));
 
-  ui->sourceCB->setModel(Helpers::getRawSourceItemModel(&generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS));
+  ui->sourceCB->setModel(new RawSourceFilterItemModel(&generalSettings, &model, RawSource::InputSourceGroups | RawSource::ScriptsGroup, this));
   ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(md->srcRaw.toValue()));
   ui->sourceCB->removeItem(0);
 

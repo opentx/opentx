@@ -21,6 +21,7 @@
 #include "expodialog.h"
 #include "ui_expodialog.h"
 #include "switchitemmodel.h"
+#include "rawsourceitemmodel.h"
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,
@@ -93,7 +94,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
-    ui->sourceCB->setModel(Helpers::getRawSourceItemModel(&generalSettings, &model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_SWITCHES | POPULATE_TRIMS | POPULATE_TELEMETRY));
+    ui->sourceCB->setModel(new RawSourceFilterItemModel(&generalSettings, &model, (RawSource::InputSourceGroups & ~RawSource::InputsGroup) | RawSource::TelemGroup, this));
     ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(ed->srcRaw.toValue()));
     ui->sourceCB->removeItem(0);
     ui->inputName->setValidator(new QRegExpValidator(rx, this));
