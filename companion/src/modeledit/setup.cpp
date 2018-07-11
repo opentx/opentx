@@ -22,7 +22,7 @@
 #include "ui_setup.h"
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
-#include "switchitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"

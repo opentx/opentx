@@ -20,7 +20,7 @@
 
 #include "flightmodes.h"
 #include "ui_flightmode.h"
-#include "switchitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 #include "customdebug.h"
 

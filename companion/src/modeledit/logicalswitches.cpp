@@ -19,8 +19,7 @@
  */
 
 #include "logicalswitches.h"
-#include "switchitemmodel.h"
-#include "rawsourceitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 
 #include <TimerEdit>
@@ -33,7 +32,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
 
   rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::LogicalSwitchesContext, this);
 
-  const unsigned srcGroups = firmware->getCapability(GvarsInCS) ? RawSource::AllSourceGroups : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
+  const int srcGroups = firmware->getCapability(GvarsInCS) ? 0 : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
   rawSourceItemModel = new RawSourceFilterItemModel(&generalSettings, &model, srcGroups, this);
 
   QStringList headerLabels;

@@ -25,7 +25,7 @@
 #include "ui_telemetry_sensor.h"
 #include "helpers.h"
 #include "appdata.h"
-#include "rawsourceitemmodel.h"
+#include "rawitemfilteredmodel.h"
 
 #include <TimerEdit>
 

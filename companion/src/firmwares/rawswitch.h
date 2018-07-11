@@ -54,7 +54,6 @@ class RawSwitch {
   public:
     enum SwitchContext
     {
-      NoSwitchContext = 0,
       LogicalSwitchesContext  = 0x01,
       SpecialFunctionsContext = 0x02,
       GlobalFunctionsContext  = 0x04,

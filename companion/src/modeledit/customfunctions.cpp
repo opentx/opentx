@@ -19,8 +19,7 @@
  */
 
 #include "customfunctions.h"
-#include "switchitemmodel.h"
-#include "rawsourceitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 #include "appdata.h"
 
@@ -381,7 +380,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
     unsigned int widgetsMask = 0;
     if (modified) {
-      const bool wasEmpty = cfn.isEmpty();
       cfn.swtch = RawSwitch(fswtchSwtch[i]->currentData().toInt());
       cfn.func = func;
       cfn.enabled = fswtchEnable[i]->isChecked();

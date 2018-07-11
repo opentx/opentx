@@ -20,8 +20,7 @@
 
 #include "expodialog.h"
 #include "ui_expodialog.h"
-#include "switchitemmodel.h"
-#include "rawsourceitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,

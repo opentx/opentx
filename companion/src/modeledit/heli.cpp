@@ -21,7 +21,7 @@
 #include "heli.h"
 #include "ui_heli.h"
 #include "helpers.h"
-#include "rawsourceitemmodel.h"
+#include "rawitemfilteredmodel.h"
 
 HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),

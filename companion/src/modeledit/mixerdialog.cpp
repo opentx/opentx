@@ -21,8 +21,7 @@
 #include "mixerdialog.h"
 #include "ui_mixerdialog.h"
 #include "radiodata.h"
-#include "switchitemmodel.h"
-#include "rawsourceitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 
 MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, GeneralSettings & generalSettings, Firmware * firmware) :
