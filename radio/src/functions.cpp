@@ -284,7 +284,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
           }
 #endif
 
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(SDCARD)
           case FUNC_PLAY_SOUND:
           case FUNC_PLAY_TRACK:
           case FUNC_PLAY_VALUE:
@@ -411,7 +411,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
       }
       else {
         functionsContext.lastFunctionTime[i] = 0;
-#if defined(CPUARM) && defined(DANGEROUS_MODULE_FUNCTIONS)
+#if defined(DANGEROUS_MODULE_FUNCTIONS)
         if (functionsContext.activeSwitches & switch_mask) {
           switch (CFN_FUNC(cfn)) {
             case FUNC_RANGECHECK:

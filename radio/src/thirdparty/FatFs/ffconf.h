@@ -4,7 +4,7 @@
 
 #define _FFCONF 68020	/* Revision ID */
 
-#if defined(CPUARM) && !defined(SIMU)
+#if !defined(SIMU)
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -261,7 +261,7 @@ extern "C" {
 /      can be opened simultaneously under file lock control. Note that the file
 /      lock control is independent of re-entrancy. */
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
   #define _FS_REENTRANT		1	   /* 0:Disable or 1:Enable */
   #define _SYNC_t               unsigned char /*OS_MutexID*/       /* O/S dependent type of sync object. e.g. HANDLE, OS_EVENT*, ID and etc.. */
 #else

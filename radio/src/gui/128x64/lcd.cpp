@@ -115,7 +115,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   }
 }
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
 struct PatternData
 {
   uint8_t width;
@@ -287,7 +287,7 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
   lcdDrawChar(x, y, c, 0);
 }
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
 uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
@@ -310,7 +310,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   const uint8_t orig_len = len;
   uint32_t fontsize = FONTSIZE(flags);
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
   uint8_t width = 0;
   if (flags & RIGHT) {
     width = getTextWidth(s, len, flags);
@@ -372,7 +372,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
   }
   lcdLastRightPos = x;
   lcdNextPos = x;
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
   if (fontsize == MIDSIZE) {
     lcdLastRightPos += 1;
   }
@@ -475,7 +475,7 @@ void lcdDrawSolidHorizontalLine(coord_t x, coord_t y, coord_t w, LcdFlags att)
   lcdDrawHorizontalLine(x, y, w, 0xff, att);
 }
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
 void lcdDrawLine(coord_t x1, coord_t y1, coord_t x2, coord_t y2, uint8_t pat, LcdFlags att)
 {
   int dx = x2-x1;      /* the horizontal distance of the line */
@@ -595,7 +595,7 @@ void drawTelemetryTopBar()
   lcdInvertLine(0);
 }
 
-#if defined(CPUARM) && defined(RTCLOCK)
+#if defined(RTCLOCK)
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att)
 {
   drawTimer(x, y, getValue(MIXSRC_TX_TIME), att, att);
@@ -638,7 +638,7 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   }
   if (separator == CHR_HOUR)
     att &= ~DBLSIZE;
-#if defined(CPUARM) && defined(RTCLOCK)
+#if defined(RTCLOCK)
   if (att & TIMEBLINK)
     lcdDrawChar(lcdLastRightPos, y, separator, BLINK);
   else

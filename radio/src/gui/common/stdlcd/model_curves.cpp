@@ -94,7 +94,7 @@ void menuModelCurvesAll(event_t event)
 
   if (CURVE_SELECTED()) {
     s_curveChan = sub;
-#if !defined(CPUARM) || LCD_W >= 212
+#if LCD_W >= 212
     drawCurve(23);
 #else
     drawCurve(10);

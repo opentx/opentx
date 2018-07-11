@@ -44,7 +44,7 @@ void doMixerCalculations();
 
 inline void SYSTEM_RESET()
 {
-#if defined(CPUARM) && defined(EEPROM)
+#if defined(EEPROM)
   memset(modelHeaders, 0, sizeof(modelHeaders));
 #endif
   generalDefault();

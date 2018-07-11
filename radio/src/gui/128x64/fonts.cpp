@@ -74,7 +74,7 @@ const pm_uchar font_10x14[] PROGMEM = {
 };
 #endif
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
 const pm_uchar font_3x5[] PROGMEM = {
 #include "font_03x05.lbm"
 };
@@ -140,4 +140,4 @@ const pm_uchar font_10x14_extra[] PROGMEM = {
 #include "font_10x14_extra.lbm"
 };
 
-#endif // defined(CPUARM) && !defined(BOOT)
+#endif // !defined(BOOT)

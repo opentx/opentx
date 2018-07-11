@@ -367,7 +367,7 @@ void applyDefaultTemplate()
   }
 }
 
-#if defined(CPUARM) && defined(EEPROM)
+#if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
   uint8_t modelId = g_model.header.modelId[module];
@@ -475,14 +475,14 @@ void modelDefault(uint8_t id)
   g_model.trainerMode = TRAINER_MODE_MASTER_BLUETOOTH;
 #endif
 
-#if defined(CPUARM) && defined(EEPROM)
+#if defined(EEPROM)
   for (int i=0; i<NUM_MODULES; i++) {
     modelHeaders[id].modelId[i] = g_model.header.modelId[i] = id+1;
   }
   checkModelIdUnique(id, 0);
 #endif
 
-#if defined(CPUARM) && defined(FLIGHT_MODES) && defined(GVARS)
+#if defined(FLIGHT_MODES) && defined(GVARS)
   for (int p=1; p<MAX_FLIGHT_MODES; p++) {
     for (int i=0; i<MAX_GVARS; i++) {
       g_model.flightModeData[p].gvars[i] = GVAR_MAX+1;
@@ -864,7 +864,7 @@ void doSplash()
 #define doSplash()
 #endif
 
-#if defined(SDCARD) && defined(CPUARM)
+#if defined(SDCARD)
 void checkSDVersion()
 {
   if (sdMounted()) {
@@ -932,7 +932,7 @@ void checkAll()
 #endif
   checkRSSIAlarmsDisabled();
 
-#if defined(SDCARD) && defined(CPUARM)
+#if defined(SDCARD)
   checkSDVersion();
 #endif
 
@@ -1754,7 +1754,7 @@ void opentxClose(uint8_t shutdown)
 
   storageFlushCurrentModel();
 
-#if defined(CPUARM) && !defined(REVA)
+#if !defined(REVA)
   if (sessionTimer > 0) {
     g_eeGeneral.globalTimer += sessionTimer;
     sessionTimer = 0;
@@ -2006,7 +2006,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   volatile rotenc_t rotencValue[1] = {0};
 #endif
 
-#if defined(CPUARM) && defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 uint8_t rotencSpeed;
 #endif
 
@@ -2108,7 +2108,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #endif
 
-#if defined(VOICE) && defined(CPUARM)
+#if defined(VOICE)
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
   #if !defined(SOFTWARE_VOLUME)
     setScaledVolume(currentSpeakerVolume);

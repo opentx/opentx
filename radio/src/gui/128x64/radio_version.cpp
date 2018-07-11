@@ -22,7 +22,7 @@
 
 void menuRadioVersion(event_t event)
 {
-#if defined(CPUARM) && defined(EEPROM_RLC)
+#if defined(EEPROM_RLC)
   if (warningResult) {
     warningResult = 0;
     showMessageBox(STR_STORAGE_FORMAT);
@@ -43,7 +43,7 @@ void menuRadioVersion(event_t event)
   else {
      lcdDrawTextAlignedLeft(6*FH, PSTR("CoPr: ---"));
   }
-#elif defined(CPUARM) && defined(EEPROM_RLC)
+#elif defined(EEPROM_RLC)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);
   lcdDrawFilledRect(0, MENU_HEADER_HEIGHT+5*FH, LCD_W, 2*FH+1, SOLID);

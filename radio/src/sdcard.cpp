@@ -433,7 +433,7 @@ FRESULT sdReadDir(DIR * dir, FILINFO * fno, bool & firstTime)
   return res;
 }
 
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(SDCARD)
 const char * sdCopyFile(const char * srcPath, const char * destPath)
 {
   FIL srcFile;
@@ -484,7 +484,7 @@ const char * sdCopyFile(const char * srcFilename, const char * srcDir, const cha
 
   return sdCopyFile(srcPath, destPath);
 }
-#endif // defined(CPUARM) && defined(SDCARD)
+#endif // defined(SDCARD)
 
 
 #if !defined(SIMU) || defined(SIMU_DISKIO)

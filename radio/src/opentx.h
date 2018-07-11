@@ -51,10 +51,10 @@
   #define CASE_STM32(x)
 #endif
 
-#if defined(VARIO) && defined(CPUARM)
-  #define CASE_VARIO_CPUARM(x) x,
+#if defined(VARIO)
+  #define CASE_VARIO(x) x,
 #else
-  #define CASE_VARIO_CPUARM(x)
+  #define CASE_VARIO(x)
 #endif
 
 #if defined(LUA)
@@ -440,7 +440,7 @@ typedef struct {
 
 #if !defined(SIMU)
   #define assert(x)
-  #if !defined(CPUARM) || !defined(DEBUG)
+  #if !defined(DEBUG)
     #define printf printf_not_allowed
   #endif
 #endif
@@ -494,7 +494,7 @@ extern uint8_t channel_order(uint8_t x);
   #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[0]
 #endif
 
-#if defined(CPUARM) && defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION)
   extern uint8_t rotencSpeed;
   #define ROTENC_LOWSPEED              1
   #define ROTENC_MIDSPEED              5
@@ -512,7 +512,7 @@ extern uint8_t channel_order(uint8_t x);
 #endif
 extern uint8_t heartbeat;
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
 void watchdogSuspend(uint32_t timeout);
 #define WATCHDOG_SUSPEND(x)            watchdogSuspend(x)
 #else
@@ -605,7 +605,7 @@ extern uint8_t flightModeTransitionLast;
 
 #if defined(SIMU)
   inline int availableMemory() { return 1000; }
-#elif defined(CPUARM) && !defined(SIMU)
+#elif !defined(SIMU)
   extern unsigned char *heap;
   extern int _end;
   extern int _estack;
@@ -782,7 +782,7 @@ template<class t> void SWAP(t & a, t & b) { t tmp = b; b = a; a = tmp; }
 
 uint16_t isqrt32(uint32_t n);
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
 #include "tasks_arm.h"
 extern OS_MutexID mixerMutex;
 inline void pauseMixerCalculations()
@@ -802,7 +802,7 @@ inline void resumeMixerCalculations()
 void generalDefault();
 void modelDefault(uint8_t id);
 
-#if defined(CPUARM) && defined(EEPROM)
+#if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module);
 uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
 #endif

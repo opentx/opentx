@@ -30,7 +30,7 @@
   #define MODEL_SPECIAL_FUNC_4TH_COLUMN_ONOFF  (18*FW+2)
 #endif
 
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(SDCARD)
 void onCustomFunctionsFileSelectionMenu(const char * result)
 {
   int  sub = menuVerticalPosition - HEADER_LINE;
@@ -68,7 +68,7 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
     storageDirty(eeFlags);
   }
 }
-#endif // CPUARM && SDCARD
+#endif // SDCARD
 
 #if defined(PCBTARANIS)
 
@@ -296,7 +296,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|LEFT);
           }
 #endif
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(SDCARD)
           else if (func == FUNC_PLAY_TRACK || func == FUNC_BACKGND_MUSIC || func == FUNC_PLAY_SCRIPT) {
             if (ZEXIST(cfn->play.name))
               lcdDrawSizedText(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, cfn->play.name, sizeof(cfn->play.name), attr);
@@ -330,7 +330,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
             }
           }
-#endif // CPUARM && SDCARD
+#endif // SDCARD
           else if (func == FUNC_VOLUME) {
             val_max = MIXSRC_LAST_CH;
             drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);

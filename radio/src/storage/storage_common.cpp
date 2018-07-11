@@ -99,7 +99,7 @@ void postModelLoad(bool alarms)
   frskySendAlarms();
 #endif
 
-#if defined(CPUARM) && defined(SDCARD)
+#if defined(SDCARD)
   referenceModelAudioFiles();
 #endif
 

@@ -171,7 +171,7 @@ extern const pm_char STR_OPEN9X[];
 #endif
 #define OFS_VSWITCHES           (OFS_VKEYS + sizeof(TR_VKEYS))
 #define OFS_VSRCRAW             (OFS_VSWITCHES + sizeof(TR_VSWITCHES))
-#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
+#if defined(TRANSLATIONS_CZ)
   #define OFS_INPUTNAMES          (OFS_VSRCRAW + sizeof(TR_VSRCRAW))
   #define OFS_VTMRMODES           (OFS_INPUTNAMES + sizeof(TR_INPUTNAMES))
 #else
@@ -267,7 +267,7 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VKEYS               (STR_OPEN9X + OFS_VKEYS)
 #define STR_VSWITCHES           (STR_OPEN9X + OFS_VSWITCHES)
 #define STR_VSRCRAW             (STR_OPEN9X + OFS_VSRCRAW)
-#if defined(TRANSLATIONS_CZ) && defined(CPUARM)
+#if defined(TRANSLATIONS_CZ)
 #define STR_INPUTNAMES          (STR_OPEN9X + OFS_INPUTNAMES)
 #endif
 #define STR_VTMRMODES           (STR_OPEN9X + OFS_VTMRMODES)
@@ -757,7 +757,7 @@ extern const pm_char STR_CONFIRMRESET[];
 extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 
-#if defined(CPUARM) && defined(VOICE)
+#if defined(VOICE)
   struct LanguagePack {
     const char * id;
     const char * name;

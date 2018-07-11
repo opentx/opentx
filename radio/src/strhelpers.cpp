@@ -141,7 +141,7 @@ char * strcat_zchar(char * dest, const char * name, uint8_t size, const char * d
 }
 #endif
 
-#if defined(CPUARM) && !defined(BOOT)
+#if !defined(BOOT)
 char * getStringAtIndex(char * dest, const char * s, int idx)
 {
   uint8_t len = s[0];

@@ -30,7 +30,7 @@
   #include <sys/time.h>
 #endif
 
-#if defined(SIMU_AUDIO) && defined(CPUARM)
+#if defined(SIMU_AUDIO)
   #include <SDL.h>
 #endif
 
@@ -401,7 +401,7 @@ int32_t getVolume()
 }
 #endif
 
-#if defined(SIMU_AUDIO) && defined(CPUARM)
+#if defined(SIMU_AUDIO)
 void copyBuffer(uint8_t * dest, const uint16_t * buff, unsigned int samples)
 {
   for(unsigned int i=0; i<samples; i++) {
@@ -522,7 +522,7 @@ void StopAudioThread()
   simuAudio.threadRunning = false;
   pthread_join(simuAudio.threadPid, NULL);
 }
-#endif // #if defined(SIMU_AUDIO) && defined(CPUARM)
+#endif // #if defined(SIMU_AUDIO)
 
 uint16_t stackAvailable()
 {

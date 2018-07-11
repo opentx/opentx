@@ -297,7 +297,7 @@ void menuModelSetup(event_t event)
 
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE+MODEL_SETUP_MAX_LINES);
 
-#if defined(CPUARM) && (defined(DSM2) || defined(PXX))
+#if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
     moduleFlag[0] = 0;
 #if NUM_MODULES > 1
@@ -1315,7 +1315,7 @@ void menuModelSetup(event_t event)
     }
   }
 
-#if defined(CPUARM) && defined(PXX)
+#if defined(PXX)
   if (IS_RANGECHECK_ENABLE()) {
     showMessageBox("RSSI: ");
     lcdDrawNumber(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);

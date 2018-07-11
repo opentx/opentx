@@ -35,17 +35,17 @@ extern uint8_t hapticTick;
 
 #if defined(BUZZER)
 
-#if defined(CPUARM) && !defined(SIMU)
-inline void _beep(uint8_t b)
-{
-  buzzerSound(b);
-}
-#else /* CPUARM && !SIMU */
+#if defined(SIMU)
 inline void _beep(uint8_t b)
 {
   g_beepCnt = b;
 }
-#endif /* CPUARM && !SIMU */
+#else /* SIMU */
+inline void _beep(uint8_t b)
+{
+  buzzerSound(b);
+}
+#endif /* SIMU */
 
 void beep(uint8_t val);
 #else /* BUZZER */
