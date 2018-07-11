@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-#include <stdio.h>
 
 void drawStatusText(const char * text)
 {

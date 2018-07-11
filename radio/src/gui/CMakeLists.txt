@@ -3,7 +3,6 @@ set(GUI_SRC
   lcd.cpp
   splash.cpp
   fonts.cpp
-  navigation.cpp
   popups.cpp
   widgets.cpp
   menus.cpp
@@ -37,7 +36,8 @@ endif()
 set(SRC
   ${SRC}
   gui/common/widgets.cpp
-  gui/common/navigation.cpp
+  gui/navigation/navigation_${NAVIGATION_TYPE}.cpp
+  gui/navigation/common.cpp
   )
 
 include_directories(gui gui/${GUI_DIR})
