@@ -300,7 +300,7 @@ void menuModelSelect(event_t event)
       break;
   }
 
-#if defined(EEPROM_RLC) && defined(CPUARM)
+#if defined(EEPROM_RLC)
   lcdDrawText(9*FW-(LEN_FREE-4)*FW-4, 0, STR_FREE);
   if (event) reusableBuffer.modelsel.eepromfree = EeFsGetFree();
   lcdDrawNumber(lcdLastRightPos+3, 0, reusableBuffer.modelsel.eepromfree, LEFT);

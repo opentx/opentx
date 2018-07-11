@@ -31,7 +31,7 @@ void displayVoltagesScreen();
 #endif
 
 
-#if defined(TELEMETRY_FRSKY) && defined(CPUARM)
+#if defined(TELEMETRY_FRSKY)
 TEST(FrSky, TelemetryValueWithMinAveraging)
 {
   /*
@@ -150,7 +150,7 @@ TEST(FrSky, Gps)
   EXPECT_EQ(telemetryItems[0].gps.longitude, 45341666);
 }
 
-#endif // defined(TELEMETRY_FRSKY) && defined(CPUARM)
+#endif // defined(TELEMETRY_FRSKY)
 
 #if defined(TELEMETRY_FRSKY_SPORT)
 TEST(FrSkySPORT, checkCrc)

@@ -362,7 +362,7 @@ void simuSetSwitch(uint8_t swtch, int8_t state);
 
 void StartEepromThread(const char *filename="eeprom.bin");
 void StopEepromThread();
-#if defined(SIMU_AUDIO) && defined(CPUARM)
+#if defined(SIMU_AUDIO)
   void StartAudioThread(int volumeGain = 10);
   void StopAudioThread(void);
 #else
