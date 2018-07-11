@@ -28,7 +28,7 @@ const MenuHandlerFunc menuTabModel[] = {
   menuModelExposAll,
   menuModelMixAll,
   menuModelLimits,
-  CASE_CURVES(menuModelCurvesAll)
+  menuModelCurvesAll,
 #if defined(GVARS) && defined(FLIGHT_MODES)
   CASE_GVARS(menuModelGVars)
 #endif
@@ -38,7 +38,6 @@ const MenuHandlerFunc menuTabModel[] = {
   menuModelCustomScripts,
 #endif
   CASE_FRSKY(menuModelTelemetryFrsky)
-  CASE_MAVLINK(menuModelTelemetryMavlink)
   menuModelDisplay
 };
 

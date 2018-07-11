@@ -171,7 +171,7 @@ void mixerTask(void * pdata)
       }
 #endif
 
-#if defined(TELEMETRY_FRSKY) || defined(TELEMETRY_MAVLINK)
+#if defined(TELEMETRY_FRSKY)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);

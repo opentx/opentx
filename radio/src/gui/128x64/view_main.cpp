@@ -398,17 +398,6 @@ void menuMainView(event_t event)
     case EVT_KEY_TELEMETRY:
 #if defined(TELEMETRY_FRSKY)
       chainMenu(menuViewTelemetryFrsky);
-#elif defined(TELEMETRY_JETI)
-      JETI_EnableRXD(); // enable JETI-Telemetry reception
-      chainMenu(menuViewTelemetryJeti);
-#elif defined(TELEMETRY_ARDUPILOT)
-      ARDUPILOT_EnableRXD(); // enable ArduPilot-Telemetry reception
-      chainMenu(menuViewTelemetryArduPilot);
-#elif defined(TELEMETRY_NMEA)
-      NMEA_EnableRXD(); // enable NMEA-Telemetry reception
-      chainMenu(menuViewTelemetryNMEA);
-#elif defined(TELEMETRY_MAVLINK)
-      chainMenu(menuViewTelemetryMavlink);
 #else
       chainMenu(menuStatisticsDebug);
 #endif

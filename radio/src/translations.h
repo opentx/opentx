@@ -163,12 +163,7 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VARIOSRC          (OFS_AMPSRC + sizeof(TR_AMPSRC))
   #define OFS_VSCREEN           (OFS_VARIOSRC + sizeof(TR_VARIOSRC))
   #define OFS_VTEMPLATES        (OFS_VSCREEN + sizeof(TR_VTELEMSCREENTYPE))
-#if defined(TEMPLATES)
-  #define TR_VTEMPLATES         TR_TEMPLATE_CLEAR_MIXES TR_TEMPLATE_SIMPLE_4CH TR_TEMPLATE_STICKY_TCUT TR_TEMPLATE_VTAIL TR_TEMPLATE_DELTA TR_TEMPLATE_ECCPM TR_TEMPLATE_HELI TR_TEMPLATE_SERVO_TEST
-  #define OFS_VSWASHTYPE        (OFS_VTEMPLATES + sizeof(TR_VTEMPLATES))
-#else
   #define OFS_VSWASHTYPE        (OFS_VTEMPLATES)
-#endif
 #if defined(HELI)
   #define OFS_VKEYS             (OFS_VSWASHTYPE + sizeof(TR_VSWASHTYPE))
 #else
@@ -217,13 +212,7 @@ extern const pm_char STR_OPEN9X[];
   #define OFS_VANTENNATYPES     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
 #endif
   #define OFS_MAVLINK_BAUDS     (OFS_VANTENNATYPES + sizeof(TR_VANTENNATYPES))
-#if defined(TELEMETRY_MAVLINK)
-  #define OFS_MAVLINK_AC_MODES	(OFS_MAVLINK_BAUDS + sizeof(TR_MAVLINK_BAUDS))
-  #define OFS_MAVLINK_AP_MODES	(OFS_MAVLINK_AC_MODES + sizeof(TR_MAVLINK_AC_MODES))
-  #define OFS_SPARE		(OFS_MAVLINK_AP_MODES + sizeof(TR_MAVLINK_AP_MODES))
-#else
   #define OFS_SPARE		(OFS_MAVLINK_BAUDS)
-#endif
 
 #define STR_OFFON               (STR_OPEN9X + OFS_OFFON)
 #define STR_MMMINV              (STR_OPEN9X + OFS_MMMINV)
@@ -270,9 +259,6 @@ extern const pm_char STR_OPEN9X[];
 #define STR_VTELEMSCREENTYPE    (STR_OPEN9X + OFS_VSCREEN)
 #define STR_TELEMCHNS           (STR_OPEN9X + OFS_TELEMCHNS)
 
-#if defined(TEMPLATES)
-  #define STR_VTEMPLATES        (STR_OPEN9X + OFS_VTEMPLATES)
-#endif
 
 #if defined(HELI)
   #define STR_VSWASHTYPE        (STR_OPEN9X + OFS_VSWASHTYPE)
@@ -334,11 +320,6 @@ extern const pm_char STR_BLUETOOTH_LOCAL_ADDR[];
   #define STR_BLUETOOTH_MODES   (STR_OPEN9X + OFS_BLUETOOTH_MODES)
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-  #define STR_MAVLINK_BAUDS	(STR_OPEN9X + OFS_MAVLINK_BAUDS)
-  #define STR_MAVLINK_AC_MODES	(STR_OPEN9X + OFS_MAVLINK_AC_MODES)
-  #define STR_MAVLINK_AP_MODES	(STR_OPEN9X + OFS_MAVLINK_AP_MODES)
-#endif
 
 // The 0-terminated-strings
 #define NO_INDENT(x) (x)+LEN_INDENT
@@ -986,31 +967,6 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_MODULE_RANGE[];
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-  extern const pm_char STR_MAVLINK_RC_RSSI_SCALE_LABEL[];
-  extern const pm_char STR_MAVLINK_PC_RSSI_EN_LABEL[];
-  extern const pm_char STR_MAVMENUSETUP_TITLE[];
-  extern const pm_char STR_MAVLINK_BAUD_LABEL[];
-  extern const pm_char STR_MAVLINK_INFOS[];
-  extern const pm_char STR_MAVLINK_MODE[];
-  extern const pm_char STR_MAVLINK_CUR_MODE[];
-  extern const pm_char STR_MAVLINK_ARMED[];
-  extern const pm_char STR_MAVLINK_BAT_MENU_TITLE[];
-  extern const pm_char STR_MAVLINK_BATTERY_LABEL[];
-  extern const pm_char STR_MAVLINK_RC_RSSI_LABEL[];
-  extern const pm_char STR_MAVLINK_PC_RSSI_LABEL[];
-  extern const pm_char STR_MAVLINK_NAV_MENU_TITLE[];
-  extern const pm_char STR_MAVLINK_COURSE[];
-  extern const pm_char STR_MAVLINK_HEADING[];
-  extern const pm_char STR_MAVLINK_BEARING[];
-  extern const pm_char STR_MAVLINK_ALTITUDE[];
-  extern const pm_char STR_MAVLINK_GPS[];
-  extern const pm_char STR_MAVLINK_NO_FIX[];
-  extern const pm_char STR_MAVLINK_SAT[];
-  extern const pm_char STR_MAVLINK_HDOP[];
-  extern const pm_char STR_MAVLINK_LAT[];
-  extern const pm_char STR_MAVLINK_LON[];
-#endif
 
   extern const pm_char STR_ABOUTUS[];
   extern const pm_char STR_ABOUT_OPENTX_1[];

@@ -59,7 +59,7 @@ enum ExposFields {
   EXPO_FIELD_SCALE,
   EXPO_FIELD_WEIGHT,
   EXPO_FIELD_OFFSET,
-  CASE_CURVES(EXPO_FIELD_CURVE)
+  EXPO_FIELD_CURVE,
   CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES)
   EXPO_FIELD_SWITCH,
   EXPO_FIELD_SIDE,
@@ -80,7 +80,7 @@ void menuModelExpoOne(event_t event)
   drawSource(PSIZE(TR_MENUINPUTS)*FW+FW, 0, MIXSRC_FIRST_INPUT+ed->chn, 0);
   lcdDrawFilledRect(0, 0, LCD_W, FH, SOLID, FILL_WHITE|GREY_DEFAULT);
 
-  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW, 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, ed->srcRaw >= MIXSRC_FIRST_TELEM ? (uint8_t)0 : (uint8_t)HIDDEN_ROW, 0, 0, CURVE_ROWS, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
 
   SET_SCROLLBAR_X(EXPO_ONE_2ND_COLUMN+10*FW);
 
@@ -128,12 +128,10 @@ void menuModelExpoOne(event_t event)
         ed->offset = GVAR_MENU_ITEM(EXPO_ONE_2ND_COLUMN, y, ed->offset, -100, 100, LEFT|attr, 0, event);
         break;
 
-#if defined(CURVES)
       case EXPO_FIELD_CURVE:
         lcdDrawTextAlignedLeft(y, STR_CURVE);
         editCurveRef(EXPO_ONE_2ND_COLUMN, y, ed->curve, event, attr);
         break;
-#endif
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:

@@ -543,19 +543,15 @@ PACK(typedef struct {
 PACK(typedef struct {
   ModelHeader_v216 header;
   TimerData_v216 timers[2];
-  AVR_FIELD(uint8_t   protocol:3)
-  ARM_FIELD(uint8_t   telemetryProtocol:3)
+  uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
-  AVR_FIELD(int8_t    ppmNCH:4)
-  ARM_FIELD(int8_t    spare2:4)
+  int8_t    spare2:4;
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  ARM_FIELD(uint8_t displayChecklist:1)
-  AVR_FIELD(uint8_t pulsePol:1)
+  uint8_t displayChecklist:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
-  AVR_FIELD(int8_t ppmDelay)
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData_v216 mixData[MAX_MIXERS];
   LimitData_v216 limitData[MAX_OUTPUT_CHANNELS];
@@ -591,14 +587,14 @@ PACK(typedef struct {
 PACK(typedef struct {
   ModelHeader header;
   TimerData_v217 timers[MAX_TIMERS];
-  ARM_FIELD(uint8_t   telemetryProtocol:3)
+  uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
-  ARM_FIELD(uint8_t   noGlobalFunctions:1)
-  ARM_FIELD(uint8_t   displayTrims:2)
-  ARM_FIELD(uint8_t   ignoreSensorIds:1)
+  uint8_t   noGlobalFunctions:1;
+  uint8_t   displayTrims:2;
+  uint8_t   ignoreSensorIds:1;
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  ARM_FIELD(uint8_t displayChecklist:1)
+  uint8_t displayChecklist:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;

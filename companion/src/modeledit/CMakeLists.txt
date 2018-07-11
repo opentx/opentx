@@ -23,7 +23,6 @@ set(modeledit_SRCS
   channels.cpp
   logicalswitches.cpp
   customfunctions.cpp
-  # templates.cpp
   mixerslistwidget.cpp
   # node.cpp  ## node and edge are built in common lib because also used by simulator
   # edge.cpp  ## commenting them here avoids a "duplicate target" warning eg. from ninja
@@ -36,7 +35,6 @@ set(modeledit_HDRS
   channels.h
   logicalswitches.h
   customfunctions.h
-  # templates.h
   mixerslistwidget.h
   # node.h
 )

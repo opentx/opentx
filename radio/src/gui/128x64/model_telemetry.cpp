@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 enum MenuModelTelemetryFrskyItems {
-  CASE_CPUARM(ITEM_TELEMETRY_PROTOCOL_TYPE)
+  ITEM_TELEMETRY_PROTOCOL_TYPE,
 #if defined(REVX)
   ITEM_TELEMETRY_INVERTED_SERIAL,
 #endif

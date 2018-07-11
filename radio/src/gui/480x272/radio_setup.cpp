@@ -74,7 +74,6 @@ enum menuRadioSetupItems {
   ITEM_SETUP_LANGUAGE,
   ITEM_SETUP_IMPERIAL,
   IF_FAI_CHOICE(ITEM_SETUP_FAI)
-  // CASE_MAVLINK(ITEM_MAVLINK_BAUD)
   ITEM_SETUP_SWITCHES_DELAY,
   ITEM_SETUP_USB_MODE,
   ITEM_SETUP_RX_CHANNEL_ORD,
@@ -442,12 +441,6 @@ bool menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-      case ITEM_MAVLINK_BAUD:
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MAVLINK_BAUD_LABEL);
-        g_eeGeneral.mavbaud = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_MAVLINK_BAUDS, g_eeGeneral.mavbaud, 0, 7, attr, event);
-        break;
-#endif
 
       case ITEM_SETUP_SWITCHES_DELAY:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCHES_DELAY);

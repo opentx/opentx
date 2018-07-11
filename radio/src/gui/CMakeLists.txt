@@ -23,17 +23,10 @@ set(GUI_SRC
   )
 
 if(GUI_DIR STREQUAL 128x64)
-  if (ARCH STREQUAL ARM)
-    set(GUI_SRC
+   set(GUI_SRC
       ${GUI_SRC}
       model_outputs_arm.cpp
       )
-  else()
-    set(GUI_SRC
-      ${GUI_SRC}
-      model_outputs_avr.cpp
-      )
-  endif()
 else()
   set(GUI_SRC
     ${GUI_SRC}

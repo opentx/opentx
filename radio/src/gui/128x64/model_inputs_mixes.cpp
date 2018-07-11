@@ -217,10 +217,10 @@ bool swapExpoMix(uint8_t expo, uint8_t &idx, uint8_t up)
 }
 
 enum ExposFields {
-  CASE_CPUARM(EXPO_FIELD_NAME)
+  EXPO_FIELD_NAME,
   EXPO_FIELD_WEIGHT,
   EXPO_FIELD_EXPO,
-  CASE_CURVES(EXPO_FIELD_CURVE)
+  EXPO_FIELD_CURVE,
   CASE_FLIGHT_MODES(EXPO_FIELD_FLIGHT_MODES)
   EXPO_FIELD_SWITCH,
   EXPO_FIELD_SIDE,
@@ -234,7 +234,7 @@ void menuModelExpoOne(event_t event)
   ExpoData * ed = expoAddress(s_currIdx);
   drawSource(7*FW+FW/2, 0, MIXSRC_Rud+ed->chn, 0);
 
-  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {CASE_CPUARM(0) 0, 0, CASE_CURVES(CURVE_ROWS) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
+  SUBMENU(STR_MENUINPUTS, EXPO_FIELD_MAX, {0, 0, 0, CURVE_ROWS, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0 /*, ...*/});
 
   int8_t sub = menuVerticalPosition;
 
@@ -263,7 +263,6 @@ void menuModelExpoOne(event_t event)
         }
         break;
 
-#if defined(CURVES)
       case EXPO_FIELD_CURVE:
         lcdDrawTextAlignedLeft(y, STR_CURVE);
         if (ed->curveMode!=MODE_EXPO || ed->curveParam==0) {
@@ -281,7 +280,6 @@ void menuModelExpoOne(event_t event)
           lcdDrawText(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_NA, attr);
         }
         break;
-#endif
 
 #if defined(FLIGHT_MODES)
       case EXPO_FIELD_FLIGHT_MODES:
@@ -315,12 +313,12 @@ void menuModelExpoOne(event_t event)
 }
 
 enum MixFields {
-  CASE_CPUARM(MIX_FIELD_NAME)
+  MIX_FIELD_NAME,
   MIX_FIELD_SOURCE,
   MIX_FIELD_WEIGHT,
   MIX_FIELD_OFFSET,
   MIX_FIELD_TRIM,
-  CASE_CURVES(MIX_FIELD_CURVE)
+  MIX_FIELD_CURVE,
   CASE_FLIGHT_MODES(MIX_FIELD_FLIGHT_PHASE)
   MIX_FIELD_SWITCH,
   MIX_FIELD_WARNING,
@@ -385,16 +383,12 @@ void menuModelMixOne(event_t event)
   putsChn(lcdLastRightPos+1*FW, 0, md2->destCh+1,0);
 
 #if defined(ROTARY_ENCODERS)
-#if defined(CURVES)
   if ((menuVerticalPosition == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS) || (menuVerticalPosition == MIX_FIELD_CURVE && md2->curveMode == MODE_CURVE))
-#else
-  if (menuVerticalPosition == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS)
-#endif
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, 0, CASE_CURVES(0) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 0, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
   else
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, 1, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 1, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #else
-  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {CASE_CPUARM(0) 0, 0, 0, 1, CASE_CURVES(1) CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
+  SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 1, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
 #endif
 
   int8_t sub = menuVerticalPosition;
@@ -447,7 +441,6 @@ void menuModelMixOne(event_t event)
         break;
       }
 
-#if defined(CURVES)
       case MIX_FIELD_CURVE:
       {
         drawFieldLabel(COLUMN_X, y, STR_CURVE);
@@ -480,7 +473,6 @@ void menuModelMixOne(event_t event)
         }
         break;
       }
-#endif
 #if defined(FLIGHT_MODES)
       case MIX_FIELD_FLIGHT_PHASE:
         md2->flightModes = editFlightModes(COLUMN_X+MIXES_2ND_COLUMN, y, event, md2->flightModes, attr);

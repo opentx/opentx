@@ -32,7 +32,7 @@ int16_t  trims[NUM_TRIMS] = {0};
 int32_t  chans[MAX_OUTPUT_CHANNELS] = {0};
 BeepANACenter bpanaCenter = 0;
 
-int24_t act   [MAX_MIXERS] = {0};
+int32_t act   [MAX_MIXERS] = {0};
 SwOn    swOn  [MAX_MIXERS]; // TODO better name later...
 
 uint8_t mixWarning;
@@ -244,7 +244,6 @@ int16_t applyLimits(uint8_t channel, int32_t value)
 {
   LimitData * lim = limitAddress(channel);
 
-#if defined(CPUARM) && defined(CURVES)
   if (lim->curve) {
     // TODO we loose precision here, applyCustomCurve could work with int32_t on ARM boards...
     if (lim->curve > 0)
@@ -252,7 +251,6 @@ int16_t applyLimits(uint8_t channel, int32_t value)
     else
       value = 256 * applyCustomCurve(-value/256, -lim->curve-1);
   }
-#endif
 
   int16_t ofs   = LIMIT_OFS_RESX(lim);
   int16_t lim_p = LIMIT_MAX_RESX(lim);

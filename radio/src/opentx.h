@@ -45,9 +45,6 @@
   #define CASE_PCBSKY9X(x)
 #endif
 
-  #define CASE_CPUARM(x)     x,
-  #define IF_CPUARM(x)       x
-
 #if defined(STM32)
   #define CASE_STM32(x)     x,
 #else
@@ -65,8 +62,6 @@
 #else
   #define CASE_LUA(x)
 #endif
-
-  #define CASE_PERSISTENT_TIMERS(x) x,
 
 #if defined(RTCLOCK)
   #define CASE_RTCLOCK(x) x,
@@ -128,12 +123,6 @@
   #define CASE_FRSKY(x)
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-  #define CASE_MAVLINK(x) x,
-#else
-  #define CASE_MAVLINK(x)
-#endif
-
 #if defined(PXX)
   #define CASE_PXX(x) x,
 #else
@@ -158,22 +147,10 @@
   #define CASE_HELI(x)
 #endif
 
-#if defined(TEMPLATES)
-  #define CASE_TEMPLATES(x) x,
-#else
-  #define CASE_TEMPLATES(x)
-#endif
-
 #if defined(FLIGHT_MODES)
   #define CASE_FLIGHT_MODES(x) x,
 #else
   #define CASE_FLIGHT_MODES(x)
-#endif
-
-#if defined(CURVES)
-  #define CASE_CURVES(x) x,
-#else
-  #define CASE_CURVES(x)
 #endif
 
 #if defined(GVARS)
@@ -460,9 +437,6 @@ typedef struct {
 #include "strhelpers.h"
 #include "gui.h"
 
-#if defined(TEMPLATES)
-  #include "templates.h"
-#endif
 
 #if !defined(SIMU)
   #define assert(x)
@@ -978,10 +952,6 @@ struct point_t
   coord_t y;
 };
 point_t getPoint(uint8_t i);
-#if !defined(CURVES)
-#define LOAD_MODEL_CURVES()
-#define applyCurve(x, idx) (x)
-#else
 typedef CurveData CurveInfo;
 void loadCurves();
 #define LOAD_MODEL_CURVES() loadCurves()
@@ -992,7 +962,6 @@ int applyCurrentCurve(int x);
 int8_t getCurveX(int noPoints, int point);
 void resetCustomCurveX(int8_t * points, int noPoints);
 bool moveCurve(uint8_t index, int8_t shift); // TODO bool?
-#endif
 
   #define APPLY_EXPOS_EXTRA_PARAMS_INC , uint8_t ovwrIdx=0, int16_t ovwrValue=0
   #define APPLY_EXPOS_EXTRA_PARAMS     , uint8_t ovwrIdx, int16_t ovwrValue
@@ -1053,7 +1022,7 @@ PACK(typedef struct {
 }) SwOn;
 
 extern SwOn   swOn[MAX_MIXERS];
-extern int24_t act[MAX_MIXERS];
+extern int32_t act[MAX_MIXERS];
 
 #if defined(BOLD_FONT)
   inline bool isExpoActive(uint8_t expo)

@@ -306,19 +306,6 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
     SWITCH_CASE(4, PIOA->PIO_PDSR, 1<<2)
     SWITCH_CASE(5, PIOC->PIO_PDSR, 1<<16)
     SWITCH_CASE(6, PIOC->PIO_PDSR, 1<<8)
-#else // PCB9X
-    SWITCH_3_CASE(0, ping, pine, (1<<INP_G_ID1), (1<<INP_E_ID2))
-  #if defined(TELEMETRY_JETI) || defined(TELEMETRY_FRSKY) || defined(TELEMETRY_NMEA) || defined(TELEMETRY_ARDUPILOT) || defined(TELEMETRY_MAVLINK)
-    SWITCH_CASE(1, pinc, 1<<INP_C_ThrCt)
-    SWITCH_CASE(4, pinc, 1<<INP_C_AileDR)
-  #else
-    SWITCH_CASE(1, pine, 1<<INP_E_ThrCt)
-    SWITCH_CASE(4, pine, 1<<INP_E_AileDR)
-  #endif
-    SWITCH_CASE(2, ping, 1<<INP_G_RuddDR)
-    SWITCH_CASE(3, pine, 1<<INP_E_ElevDR)
-    SWITCH_CASE(5, pine, 1<<INP_E_Gear)
-    SWITCH_CASE(6, pine, 1<<INP_E_Trainer)
 #endif
 
     default:

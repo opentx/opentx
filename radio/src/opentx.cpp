@@ -347,12 +347,6 @@ void defaultInputs()
 }
 #endif
 
-#if defined(TEMPLATES)
-inline void applyDefaultTemplate()
-{
-  applyTemplate(TMPL_SIMPLE_4CH); // calls storageDirty internally
-}
-#else
 void applyDefaultTemplate()
 {
 #if defined(VIRTUAL_INPUTS)
@@ -372,7 +366,6 @@ void applyDefaultTemplate()
 #endif
   }
 }
-#endif
 
 #if defined(CPUARM) && defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
@@ -505,10 +498,6 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-  g_model.mavlink.rc_rssi_scale = 15;
-  g_model.mavlink.pc_rssi_en = 1;
-#endif
 
 #if !defined(EEPROM)
   strcpy(g_model.header.name, "\015\361\374\373\364");
@@ -2184,12 +2173,6 @@ int main()
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more wdt_reset()s in. But I don't like that approach
   // during boot up.)
-#if defined(CPUM2560) || defined(CPUM2561)
-  uint8_t mcusr = MCUSR; // save the WDT (etc) flags
-  MCUSR = 0; // must be zeroed before disabling the WDT
-  MCUCR = 0x80 ;   // Disable JTAG port that can interfere with POT3
-  MCUCR = 0x80 ;   // Must be done twice
-#endif
 #if defined(PCBTARANIS)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
@@ -2230,21 +2213,9 @@ int main()
   DSM2_Init();
 #endif
 
-#if defined(TELEMETRY_JETI)
-  JETI_Init();
-#endif
 
-#if defined(TELEMETRY_ARDUPILOT)
-  ARDUPILOT_Init();
-#endif
 
-#if defined(TELEMETRY_NMEA)
-  NMEA_Init();
-#endif
 
-#if defined(TELEMETRY_MAVLINK)
-  MAVLINK_Init();
-#endif
 
 #if defined(MENU_ROTARY_SW)
   init_rotary_sw();

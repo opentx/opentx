@@ -69,9 +69,6 @@ set(EEPROM_VARIANT  0)
 set(GVARS_VARIANT   1)
 set(FRSKY_VARIANT   2)
 set(3POS_VARIANT    4)
-set(MAVLINK_VARIANT 8)
-set(M2561_VARIANT   16384)
-set(M128_VARIANT    32768)
 
 set(FIRMWARE_DEPENDENCIES firmware_translations)
 
@@ -151,12 +148,6 @@ include(gui/CMakeLists.txt)
 if(RAMBACKUP)
   add_definitions(-DRAMBACKUP)
   set(SRC ${SRC} storage/rambackup.cpp storage/rlc.cpp)
-endif()
-
-if(TEMPLATES)
-  add_definitions(-DTEMPLATES)
-  set(SRC ${SRC} templates.cpp)
-  set(GUI_SRC ${GUI_SRC} model_templates.cpp)
 endif()
 
 if(NOT LUA STREQUAL NO)
@@ -344,12 +335,8 @@ if(GUI)
   foreach(FILE ${GUI_SRC})
     set(SRC ${SRC} gui/${GUI_DIR}/${FILE})
   endforeach()
-  if(ARCH STREQUAL ARM)
-    set(SRC
-      ${SRC}
-      gui/gui_common_arm.cpp
+  set(SRC ${SRC} gui/gui_common_arm.cpp
       )
-  endif()
 endif()
 
 foreach(FILE ${TARGET_SRC})
