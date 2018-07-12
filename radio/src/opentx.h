@@ -292,8 +292,6 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MULTIPOS_CALIBRATED(cal)  (false)
 #endif
 
-#define IS_THROTTLE_TRIM(x)          (x == virtualInputsTrims[THR_STICK])
-
 #if defined(PWR_BUTTON_PRESS)
   #define pwrOffPressed()              pwrPressed()
 #else

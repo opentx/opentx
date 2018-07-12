@@ -1141,12 +1141,12 @@ void checkTrims()
     else {
       phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
       before = getTrimValue(phase, idx);
-      thro = (IS_THROTTLE_TRIM(idx) && g_model.thrTrim);
+      thro = (idx==THR_STICK && g_model.thrTrim);
     }
 #else
     phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
     before = getTrimValue(phase, idx);
-    thro = (IS_THROTTLE_TRIM(idx) && g_model.thrTrim);
+    thro = (idx==THR_STICK && g_model.thrTrim);
 #endif
     int8_t trimInc = g_model.trimInc + 1;
     int8_t v = (trimInc==-1) ? min(32, abs(before)/4+1) : (1 << trimInc); // TODO flash saving if (trimInc < 0)
