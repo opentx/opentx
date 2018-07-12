@@ -75,6 +75,12 @@ TEST_F(TrimsTest, throttleTrim)
   setTrimValue(0, THR_STICK, TRIM_MIN);
   evalMixes(1);
   EXPECT_EQ(channelOutputs[2], -1024);
+  // checks ELE sticks are not affected by throttleTrim
+  // stick max + trim min
+  anaInValues[ELE_STICK] = +1024;
+  setTrimValue(0, ELE_STICK, TRIM_MIN);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[1], 1024-250);
 
   // now the same tests with extended Trims
   g_model.extendedTrims = 1;
