@@ -568,22 +568,6 @@ TEST_F(MixerTest, SlowOnMultiply)
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
 }
 
-TEST_F(TrimsTest, throttleTrimEle) {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  g_eeGeneral.templateSetup = 17;
-  applyDefaultTemplate();
-  g_model.thrTrim = 1;
-// checks ELE sticks are not affected by throttleTrim
-// stick max + trim min
-  anaInValues[ELE_STICK] = +1024;
-  setTrimValue(0, ELE_STICK, TRIM_MIN);
-  evalMixes(1);
-  EXPECT_EQ(channelOutputs[2], 1024 - 250);
-}
-
 #if defined(HELI)
 TEST(Heli, BasicTest)
 {
