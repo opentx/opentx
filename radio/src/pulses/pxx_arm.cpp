@@ -24,6 +24,8 @@
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
 
+#define PXX_UPPER_CHANNEL_MAX_INTERVAL_FRAMES 110
+
 const uint16_t CRCTable[]=
 {
   0x0000,0x1189,0x2312,0x329b,0x4624,0x57ad,0x6536,0x74bf,
@@ -303,6 +305,10 @@ inline void putPcmTail(uint8_t port)
 
 inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
 {
+  static int lastUpperChannelValues[8];
+  static uint32_t frameCounter = 0;
+  static bool triggerSendUpperChannels = true;
+
   uint16_t pulseValue=0, pulseValueLow=0;
 
   initPcmCrc(port);
@@ -315,8 +321,10 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
 
   /* FLAG1 */
   uint8_t flag1 = (g_model.moduleData[port].rfProtocol << 6);
+  bool sendAllUpperChannels = false;
   if (moduleFlag[port] == MODULE_BIND) {
     flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
+    sendAllUpperChannels = true;
   }
   else if (moduleFlag[port] == MODULE_RANGECHECK) {
     flag1 |= PXX_SEND_RANGECHECK;
@@ -335,6 +343,9 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
 
   /* FLAG2 */
   putPcmByte(port, 0);
+
+  triggerSendUpperChannels |= (frameCounter % PXX_UPPER_CHANNEL_MAX_INTERVAL_FRAMES) == 0;
+  frameCounter++;
 
   /* CHANNELS */
   for (int i=0; i<8; i++) {
@@ -375,18 +386,31 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
       }
     }
     else {
+      bool channelSent = false;
       if (i < sendUpperChannels) {
+        if (triggerSendUpperChannels) {
+          sendAllUpperChannels = true;
+          triggerSendUpperChannels = false;
+        }
+
         int channel = 8 + g_model.moduleData[port].channelsStart + i;
         int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
-        pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
+        if (sendAllUpperChannels || value != lastUpperChannelValues[i]) {
+          pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
+          channelSent = true;
+        }
+        lastUpperChannelValues[i] = value;
       }
-      else if (i < NUM_CHANNELS(port)) {
-        int channel = g_model.moduleData[port].channelsStart + i;
-        int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
-        pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
-      }
-      else {
-        pulseValue = 1024;
+
+      if (!channelSent) {
+        if (i < NUM_CHANNELS(port)) {
+          int channel = g_model.moduleData[port].channelsStart + i;
+          int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+          pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+        }
+        else {
+          pulseValue = 1024;
+        }
       }
     }
 
