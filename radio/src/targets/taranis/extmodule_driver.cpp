@@ -197,7 +197,7 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
 
 void extmodulePxxStart()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
+  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US(EXTERNAL_MODULE));
 }
 #else
 void extmodulePxxStart()
@@ -216,7 +216,7 @@ void extmodulePxxStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = PXX_PERIOD_HALF_US;
+  EXTMODULE_TIMER->ARR = PXX_PERIOD_HALF_US(EXTERNAL_MODULE);
   EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY; // polarity, default low
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 18;
