@@ -75,6 +75,7 @@ TEST_F(TrimsTest, throttleTrim)
   setTrimValue(0, THR_STICK, TRIM_MIN);
   evalMixes(1);
   EXPECT_EQ(channelOutputs[2], -1024);
+
   // now the same tests with extended Trims
   g_model.extendedTrims = 1;
   // stick max + trim max
@@ -344,22 +345,6 @@ TEST_F(TrimsTest, InstantTrimNegativeCurve)
   EXPECT_EQ(128, getTrimValue(0, AIL_STICK));
 }
 
-TEST_F(TrimsTest, throttleTrimEle) {
-  SYSTEM_RESET();
-  MODEL_RESET();
-  MIXER_RESET();
-  modelDefault(0);
-  g_eeGeneral.templateSetup = 17;
-  applyDefaultTemplate();
-  g_model.thrTrim = 1;
-// checks ELE sticks are not affected by throttleTrim
-// stick max + trim min
-  anaInValues[ELE_STICK] = +1024;
-  setTrimValue(0, ELE_STICK, TRIM_MIN);
-  evalMixes(1);
-  EXPECT_EQ(channelOutputs[2], 1024 - 250);
-}
-
 TEST(Curves, LinearIntpol)
 {
   SYSTEM_RESET();
@@ -566,6 +551,28 @@ TEST_F(MixerTest, SlowOnMultiply)
 
   simuSetSwitch(0, 1);
   CHECK_NO_MOVEMENT(0, CHANNEL_MAX, 250);
+}
+
+TEST_F(TrimsTest, throttleTrimEle) {
+  SYSTEM_RESET();
+  MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
+  g_eeGeneral.templateSetup = 17;
+  applyDefaultTemplate();
+  g_model.thrTrim = 1;
+// checks ELE sticks are not affected by throttleTrim
+// stick max + trim min
+  anaInValues[ELE_STICK] = +1024;
+  setTrimValue(0, ELE_STICK, TRIM_MIN);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 1024 - 250);
+  SYSTEM_RESET();
+  MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
+  g_eeGeneral.templateSetup = 0;
+  applyDefaultTemplate();
 }
 
 #if defined(HELI)
