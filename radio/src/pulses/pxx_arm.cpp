@@ -182,7 +182,7 @@ void pxxInitPcmArray(uint8_t port)
 #if defined(PPM_PIN_SERIAL)
   modulePulsesData[port].pxx.pcmValue = 0;
 #else
-  modulePulsesData[port].pxx.rest = PXX_PERIOD_HALF_US;
+  modulePulsesData[port].pxx.rest = PXX_PERIOD_HALF_US(port);
 #endif
 
   modulePulsesData[port].pxx.pcmOnesCount = 0;
@@ -431,6 +431,16 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
   putPcmTail(port);
 }
 
+void setupFramePXXSlow(uint8_t port)
+{
+  static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
+  uint8_t sendUpperChannels = 0;
+  if (pass[port]++ & 0x01) {
+    sendUpperChannels = g_model.moduleData[port].channelsCount;
+  }
+  setupFramePXX(port, sendUpperChannels);
+}
+
 void setupPulsesPXX(uint8_t port)
 {
   initPcmArray(port);
@@ -442,15 +452,10 @@ void setupPulsesPXX(uint8_t port)
       setupFramePXX(port, 8);
     }
   }
-  else
-#else
-  {
-    static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
-    uint8_t sendUpperChannels = 0;
-    if (pass[port]++ & 0x01) {
-      sendUpperChannels = g_model.moduleData[port].channelsCount;
-    }
-    setupFramePXX(port, sendUpperChannels);
+  else {
+    setupFramePXXSlow(port);
   }
+#else
+  setupFramePXXSlow(port);
 #endif
 }
