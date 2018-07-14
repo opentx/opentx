@@ -256,6 +256,7 @@ uint32_t readTrims(void);
 #define KEYS_PRESSED()                 readKeys()
 
 // Pulses driver
+#define IS_UART_MODULE(port)           (false)
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm(uint32_t port);

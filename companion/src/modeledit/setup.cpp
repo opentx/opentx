@@ -485,7 +485,6 @@ void ModulePanel::update()
   if (mask & MASK_R9M) {
     const QSignalBlocker blocker(ui->r9mPower);
     ui->r9mPower->clear();
-    Board::Type board = firmware->getBoard();
     if (firmware->getCapability(HasMiniR9M)) {
       if (module.subType == R9M_FCC) {
         ui->r9mPower->addItem(tr("100 mW - 16CH"));
