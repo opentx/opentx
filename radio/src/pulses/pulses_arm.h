@@ -77,7 +77,7 @@ PACK(struct Dsm2SerialPulsesData {
   uint16_t _alignment;
 });
 #else
-#define MAX_PULSES_TRANSITIONS 300
+#define MAX_PULSES_TRANSITIONS 340
 PACK(struct Dsm2TimerPulsesData {
   pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
   pulse_duration_t * ptr;
@@ -106,18 +106,15 @@ PACK(struct PxxUartPulsesData {
 #define MULTIMODULE_PERIOD           (multiSyncStatus.getAdjustedRefreshRate())
 
 #if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
-/* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
+/* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses.
+ * We send both ppx frames (1-8 and 9-16) at the same time so 2*162 = 324 */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
 /* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
 /* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enough */
 /* sbus is 1 byte header, 22 channel bytes (11bit * 16ch) + 1 byte flags */
 
-#if defined(PXX_FREQUENCY_HIGH)
-#error "Pulses array needs to be increased (PXX_FREQUENCY=HIGH)"
-#endif
-
 PACK(struct PxxTimerPulsesData {
-  pulse_duration_t pulses[200];
+  pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
   pulse_duration_t * ptr;
   uint16_t rest;
   uint16_t pcmCrc;

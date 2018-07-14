@@ -438,24 +438,16 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
   /* Sync */
   putPcmHead(port);
 
-  putPcmTail(port);
 }
 
 void setupPulsesPXX(uint8_t port)
 {
   initPcmArray(port);
 
-#if defined(PXX_FREQUENCY_HIGH)
   setupFramePXX(port, 0);
   if (NUM_CHANNELS(port) > 8) {
     setupFramePXX(port, 8);
   }
-#else
-  static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
-  uint8_t sendUpperChannels = 0;
-  if (pass[port]++ & 0x01) {
-    sendUpperChannels = g_model.moduleData[port].channelsCount;
-  }
-  setupFramePXX(port, sendUpperChannels);
-#endif
+  putPcmTail(port);
+
 }
