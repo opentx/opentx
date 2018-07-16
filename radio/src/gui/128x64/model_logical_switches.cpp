@@ -102,7 +102,7 @@ void menuModelLogicalSwitchOne(event_t event)
         int v1_min=0, v1_max=MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY || cstate == LS_FAMILY_EDGE) {
           drawSwitch(CSWONE_2ND_COLUMN, y, v1_val, attr);
-          v1_min = SWSRC_OFF+1; v1_max = SWSRC_ON-1;
+          v1_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v1_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
           INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
           INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
         }
@@ -130,7 +130,7 @@ void menuModelLogicalSwitchOne(event_t event)
         int16_t v2_min = 0, v2_max = MIXSRC_LAST_TELEM;
         if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
           drawSwitch(CSWONE_2ND_COLUMN, y, cs->v2, attr);
-          v2_min = SWSRC_OFF+1; v2_max = SWSRC_ON-1;
+          v2_min = SWSRC_FIRST_IN_LOGICAL_SWITCHES; v2_max = SWSRC_LAST_IN_LOGICAL_SWITCHES;
           INCDEC_SET_FLAG(EE_MODEL | INCDEC_SWITCH);
           INCDEC_ENABLE_CHECK(isSwitchAvailableInLogicalSwitches);
         }

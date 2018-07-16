@@ -860,9 +860,9 @@ Set Curve parameters
 @param curve (unsigned number) curve number (use 0 for Curve1)
 
 @param params see model.getCurve return format for table format. setCurve uses standard
- lua array indexing and array start at index 1
+ lua array indexing and arrays start at index 1
 
-The first and last x value must 0 and 100 and x values must be monotonically increasing
+The first and last x value must -100 and 100 and x values must be monotonically increasing
 
 @retval  0 - Everything okay
          1 - Wrong number of points
@@ -879,15 +879,15 @@ The first and last x value must 0 and 100 and x values must be monotonically inc
 Example setting a 4-point custom curve:
 ```lua
   params = {}
-  params["x"] =  {0, 34, 77, 100}
+  params["x"] =  {-100, -34, 77, 100}
   params["y"] = {-70, 20, -89, -100}
-  params["smooth"] = 1
+  params["smooth"] = true
   params["type"] = 1
   val =  model.setCurve(2, params)
  ```
 setting a 6-point standard smoothed curve
  ```lua
- val = model.setCurve(3, {smooth=1, y={-100, -50, 0, 50, 100, 80}})
+ val = model.setCurve(3, {smooth=true, y={-100, -50, 0, 50, 100, 80}})
  ```
 
 */
@@ -923,7 +923,12 @@ static int luaModelSetCurve(lua_State *L)
       newCurveData.type = luaL_checkinteger(L, -1);
     }
     else if (!strcmp(key, "smooth")) {
-      newCurveData.smooth = luaL_checkinteger(L, -1);
+      // Earlier version of this api expected a 0/1 integer instead of a boolean
+      // Still accept a 0/1 here
+      if (lua_isboolean(L,-1))
+        newCurveData.smooth = lua_toboolean(L, -1);
+      else
+        newCurveData.smooth = luaL_checkinteger(L, -1);
     }
     else if (!strcmp(key, "x") || !strcmp(key, "y")) {
       luaL_checktype(L, -1, LUA_TTABLE);
@@ -972,7 +977,7 @@ static int luaModelSetCurve(lua_State *L)
     }
 
     // Check first and last point
-    if (xPoints[0] != 0 || xPoints[newCurveData.points + 4] != 100) {
+    if (xPoints[0] != -100 || xPoints[newCurveData.points + 4] != 100) {
       lua_pushinteger(L, 5);
       return 1;
     }
