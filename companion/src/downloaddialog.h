@@ -39,6 +39,9 @@ public:
     explicit downloadDialog(QWidget *parent = 0, QString src = "", QString tgt = "");
     ~downloadDialog();
 
+  public slots:
+    virtual void reject() override;
+
 private slots:
     void fileError();
     void httpFinished();
@@ -54,7 +57,7 @@ private:
     QNetworkAccessManager qnam;
     QNetworkReply *reply;
     QFile *file;
-
+    bool aborted;
 };
 
 #endif // _DOWNLOADDIALOG_H_

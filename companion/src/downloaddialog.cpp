@@ -28,7 +28,9 @@
 downloadDialog::downloadDialog(QWidget *parent, QString src, QString tgt):
   QDialog(parent),
   ui(new Ui::downloadDialog),
-  file(NULL)
+  reply(nullptr),
+  file(nullptr),
+  aborted(false)
 {
     ui->setupUi(this);
     setWindowIcon(CompanionIcon("fwpreferences.png"));
@@ -62,29 +64,38 @@ downloadDialog::~downloadDialog()
   delete file;
 }
 
+void downloadDialog::reject()
+{
+  if (reply && reply->isRunning()) {
+    aborted = true;
+    reply->abort();  // this will call QNetworkReply::finished()
+    return;
+  }
+
+  QDialog::reject();
+}
+
 void downloadDialog::httpFinished()
 {
-    file->flush();
-    file->close();
+  file->flush();
+  file->close();
 
-    bool ok = true;
-    if (reply->error()) {
-        file->remove();
-        QMessageBox::information(this, CPN_STR_APP_NAME,
-                                 tr("Download failed: %1.")
-                                 .arg(reply->errorString()));
-        ok = false;
-    }
+  const bool ok = !(reply->error() || aborted);
+  if (!ok) {
+    file->remove();
+    if (!aborted)
+      QMessageBox::information(this, CPN_STR_APP_NAME, tr("Download failed: %1.").arg(reply->errorString()));
+  }
 
-    reply->deleteLater();
-    reply = 0;
-    delete file;
-    file = NULL;
+  reply->deleteLater();
+  reply = nullptr;
+  file->deleteLater();
+  file = nullptr;
 
-    if (ok)
-      accept();
-    else
-      reject();
+  if (ok)
+    accept();
+  else
+    reject();
 }
 
 void downloadDialog::httpReadyRead()
