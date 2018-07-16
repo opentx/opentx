@@ -55,6 +55,12 @@
 #include <QFileInfo>
 #include <QDesktopServices>
 
+// update check flags
+#define CHECK_COMPANION        1
+#define CHECK_FIRMWARE         2
+#define INTERACTIVE_DOWNLOAD   4
+#define AUTOMATIC_DOWNLOAD     8
+
 #define OPENTX_DOWNLOADS_PAGE_URL         "http://www.open-tx.org/downloads"
 #define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
 
@@ -238,19 +244,19 @@ void MainWindow::doAutoUpdates()
 
 void MainWindow::doUpdates()
 {
-  checkForUpdatesState = CHECK_COMPANION | CHECK_FIRMWARE | SHOW_DIALOG_WAIT;
+  checkForUpdatesState = CHECK_COMPANION | CHECK_FIRMWARE | INTERACTIVE_DOWNLOAD;
   checkForUpdates();
 }
 
 void MainWindow::checkForFirmwareUpdate()
 {
-  checkForUpdatesState = CHECK_FIRMWARE | SHOW_DIALOG_WAIT;
+  checkForUpdatesState = CHECK_FIRMWARE | INTERACTIVE_DOWNLOAD;
   checkForUpdates();
 }
 
 void MainWindow::dowloadLastFirmwareUpdate()
 {
-  checkForUpdatesState = CHECK_FIRMWARE | AUTOMATIC_DOWNLOAD | SHOW_DIALOG_WAIT;
+  checkForUpdatesState = CHECK_FIRMWARE | AUTOMATIC_DOWNLOAD | INTERACTIVE_DOWNLOAD;
   checkForUpdates();
 }
 
@@ -261,19 +267,13 @@ QString MainWindow::getCompanionUpdateBaseUrl()
 
 void MainWindow::checkForUpdates()
 {
-  if (!checkForUpdatesState) {
-    closeUpdatesWaitDialog();
+  if (!(checkForUpdatesState & (CHECK_COMPANION | CHECK_FIRMWARE))) {
     if (networkManager) {
       networkManager->deleteLater();
       networkManager = nullptr;
     }
+    checkForUpdatesState = 0;
     return;
-  }
-
-  if (checkForUpdatesState & SHOW_DIALOG_WAIT) {
-    checkForUpdatesState -= SHOW_DIALOG_WAIT;
-    downloadDialog_forWait = new downloadDialog(NULL, tr("Checking for updates"));
-    downloadDialog_forWait->show();
   }
 
   if (networkManager)
@@ -284,6 +284,8 @@ void MainWindow::checkForUpdates()
   QUrl url;
   if (checkForUpdatesState & CHECK_COMPANION) {
     checkForUpdatesState -= CHECK_COMPANION;
+    if (checkForUpdatesState & INTERACTIVE_DOWNLOAD)
+      openUpdatesWaitDialog();
     url.setUrl(QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(COMPANION_STAMP));
     connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::checkForCompanionUpdateFinished);
     qDebug() << "Checking for Companion update " << url.url();
@@ -292,6 +294,8 @@ void MainWindow::checkForUpdates()
     checkForUpdatesState -= CHECK_FIRMWARE;
     const QString stamp = getCurrentFirmware()->getStampUrl();
     if (!stamp.isEmpty()) {
+      if (checkForUpdatesState & INTERACTIVE_DOWNLOAD)
+        openUpdatesWaitDialog();
       url.setUrl(stamp);
       connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::checkForFirmwareUpdateFinished);
       qDebug() << "Checking for firmware update " << url.url();
@@ -307,11 +311,18 @@ void MainWindow::checkForUpdates()
   networkManager->get(request);
 }
 
-void MainWindow::onUpdatesError()
+void MainWindow::onUpdatesError(const QString &err)
 {
-  checkForUpdatesState = 0;
-  closeUpdatesWaitDialog();
-  QMessageBox::warning(this, CPN_STR_APP_NAME, tr("Unable to check for updates."));
+  QMessageBox::warning(this, CPN_STR_APP_NAME, err);
+  checkForUpdates();
+}
+
+void MainWindow::openUpdatesWaitDialog()
+{
+  if (!downloadDialog_forWait) {
+    downloadDialog_forWait = new downloadDialog(NULL, tr("Checking for updates"));
+    downloadDialog_forWait->show();
+  }
 }
 
 void MainWindow::closeUpdatesWaitDialog()
@@ -341,9 +352,11 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 {
   QByteArray qba = reply->readAll();
   reply->deleteLater();
+  closeUpdatesWaitDialog();
+
   QString version = seekCodeString(qba, "VERSION");
   if (version.isNull())
-    return onUpdatesError();
+    return onUpdatesError(tr("Companion update check failed, new version informaion not found."));
 
   int webVersion = version2index(version);
 
@@ -372,7 +385,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 #endif
   }
   else {
-    if (downloadDialog_forWait && checkForUpdatesState==0) {
+    if (checkForUpdatesState == INTERACTIVE_DOWNLOAD) {
       QMessageBox::information(this, CPN_STR_APP_NAME, tr("No updates available at this time."));
     }
   }
@@ -451,16 +464,16 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
   bool download = false;
   bool ignore = false;
 
-  QByteArray qba = reply->readAll();
+  const QByteArray qba = reply->readAll();
   reply->deleteLater();
-  QString versionString = seekCodeString(qba, "VERSION");
-  QString dateString = seekCodeString(qba, "DATE");
-  if (versionString.isNull() || dateString.isNull())
-    return onUpdatesError();
+  closeUpdatesWaitDialog();
 
-  long version = version2index(versionString);
-  if (version <= 0)
-    return onUpdatesError();
+  const QString versionString = seekCodeString(qba, "VERSION");
+  const QString dateString = seekCodeString(qba, "DATE");
+  long version;
+
+  if (versionString.isNull() || dateString.isNull() || (version = version2index(versionString)) <= 0)
+    return onUpdatesError(tr("Firmware update check failed, new version information not found or invalid."));
 
   QString fullVersionString = QString("%1 (%2)").arg(versionString).arg(dateString);
 
@@ -540,7 +553,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
       }
     }
     else {
-      if (downloadDialog_forWait && checkForUpdatesState==0) {
+      if (checkForUpdatesState == INTERACTIVE_DOWNLOAD) {
         QMessageBox::information(this, CPN_STR_APP_NAME, tr("No updates available at this time."));
       }
     }

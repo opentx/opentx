@@ -37,11 +37,6 @@ class QMdiSubWindow;
 class QSignalMapper;
 QT_END_NAMESPACE
 
-#define CHECK_COMPANION    1
-#define CHECK_FIRMWARE     2
-#define SHOW_DIALOG_WAIT   4
-#define AUTOMATIC_DOWNLOAD 8
-
 class MainWindow : public QMainWindow
 {
     friend class FirmwarePreferencesDialog;
@@ -134,8 +129,9 @@ class MainWindow : public QMainWindow
     void importSettings();
     void autoClose();
 
+    void openUpdatesWaitDialog();
     void closeUpdatesWaitDialog();
-    void onUpdatesError();
+    void onUpdatesError(const QString & err);
     void openFile(const QString & fileName, bool updateLastUsedDir = false);
 
   private:
