@@ -170,10 +170,17 @@ void AppPreferencesDialog::initSettings()
     ui->snapshotPath->setDisabled(true);
     ui->snapshotPathButton->setDisabled(true);
   }
+
 #if !defined(ALLOW_NIGHTLY_BUILDS)
-  // TODO should we gray out nightly builds here?
+  // remove nightly version option entirely unless it's the current one (because user might have nightly version also installed)
+  if (g.OpenTxBranch() != AppData::BRANCH_NIGHTLY_UNSTABLE)
+    ui->OpenTxBranch->removeItem(2);
+  // if it's already selected, add a warning message
+  else
+    ui->updatesLayout->addWidget(new QLabel("<font color='red'>" % tr("Note: Nightly builds are not available in this version, Release/RC update channel will be used.") % "</font>", this));
 #endif
   ui->OpenTxBranch->setCurrentIndex(g.OpenTxBranch());
+
   ui->autoCheckCompanion->setChecked(g.autoCheckApp());
   ui->autoCheckFirmware->setChecked(g.autoCheckFw());
   ui->showSplash->setChecked(g.showSplash());
