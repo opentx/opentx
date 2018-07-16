@@ -52,8 +52,8 @@ class MainWindow : public QMainWindow
     void startSync();
 
   protected:
-    QString getCompanionUpdateBaseUrl();
-    QString seekCodeString(const QByteArray & qba, const QString & label);
+    QString getCompanionUpdateBaseUrl() const;
+    QString seekCodeString(const QByteArray & qba, const QString & label) const;
 
   protected slots:
     void dowloadLastFirmwareUpdate();

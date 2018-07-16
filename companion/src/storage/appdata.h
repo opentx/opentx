@@ -58,6 +58,12 @@
 #define CPN_SETTINGS_INI_FILE       QString(PRODUCT % " " % QCoreApplication::translate("Companion", "settings") % " %1.ini")
 #define CPN_SETTINGS_INI_PATH       QString(CPN_SETTINGS_BACKUP_DIR % "/" % CPN_SETTINGS_INI_FILE)
 
+#define CPN_URL_DOWNLOAD           "https://downloads.open-tx.org/"
+#define CPN_URL_DOWNLOAD_CUR_VERS  CPN_URL_DOWNLOAD QT_STRINGIFY(VERSION_MAJOR) "." QT_STRINGIFY(VERSION_MINOR) "/"
+#define CPN_URL_DOWNLOAD_CUR_REL   CPN_URL_DOWNLOAD_CUR_VERS "release/"
+#define CPN_URL_DOWNLOAD_CUR_RC    CPN_URL_DOWNLOAD_CUR_VERS "rc/"
+#define CPN_URL_DOWNLOAD_CUR_UNST  CPN_URL_DOWNLOAD_CUR_VERS "nightlies/"
+
 #define MAX_PROFILES 15
 #define MAX_JOYSTICKS 8
 
@@ -490,10 +496,18 @@ class AppData: public CompStoreObj
 
     inline DownloadBranchType boundedOpenTxBranch() const {
 #if defined(ALLOW_NIGHTLY_BUILDS)
-      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(OpenTxBranch()), BRANCH_NIGHTLY_UNSTABLE);
+      return qBound(BRANCH_RELEASE_STABLE, OpenTxBranch(), BRANCH_NIGHTLY_UNSTABLE);
 #else
-      return qBound(BRANCH_RELEASE_STABLE, DownloadBranchType(OpenTxBranch()), BRANCH_RC_TESTING);
+      return qBound(BRANCH_RELEASE_STABLE, OpenTxBranch(), BRANCH_RC_TESTING);
 #endif
+    }
+
+    inline QString openTxCurrentDownloadBranchUrl() const { return openTxDownloadBranchUrl(boundedOpenTxBranch()); }
+
+    static const QString openTxDownloadBranchUrl(DownloadBranchType type)
+    {
+      static const QStringList urlList({ CPN_URL_DOWNLOAD_CUR_REL, CPN_URL_DOWNLOAD_CUR_RC, CPN_URL_DOWNLOAD_CUR_UNST });
+      return urlList.value(type, CPN_URL_DOWNLOAD_CUR_VERS);
     }
 
     Profile    profile[MAX_PROFILES];

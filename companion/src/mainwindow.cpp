@@ -61,31 +61,25 @@
 #define INTERACTIVE_DOWNLOAD   4
 #define AUTOMATIC_DOWNLOAD     8
 
-#define OPENTX_DOWNLOADS_PAGE_URL         "http://www.open-tx.org/downloads"
-#define DONATE_STR                        "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2"
+#define OPENTX_DOWNLOADS_PAGE_URL         QStringLiteral("http://www.open-tx.org/downloads")
+#define DONATE_STR                        QStringLiteral("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QUZ48K4SEXDP2")
 
 #ifdef Q_OS_MACOS
-  #define COMPANION_STAMP                 "companion-macosx.stamp"
-  #define COMPANION_INSTALLER             "macosx/opentx-companion-%1.dmg"
+  #define COMPANION_STAMP                 QStringLiteral("companion-macosx.stamp")
+  #define COMPANION_INSTALLER             QStringLiteral("macosx/opentx-companion-%1.dmg")
   #define COMPANION_FILEMASK              QT_TRANSLATE_NOOP("MainWindow", "Diskimage (*.dmg)")
   #define COMPANION_INSTALL_QUESTION      QT_TRANSLATE_NOOP("MainWindow", "Would you like to open the disk image to install the new version?")
 #elif defined(Q_OS_WIN)
-  #define COMPANION_STAMP                 "companion-windows.stamp"
-  #define COMPANION_INSTALLER             "windows/companion-windows-%1.exe"
+  #define COMPANION_STAMP                 QStringLiteral("companion-windows.stamp")
+  #define COMPANION_INSTALLER             QStringLiteral("windows/companion-windows-%1.exe")
   #define COMPANION_FILEMASK              QT_TRANSLATE_NOOP("MainWindow", "Executable (*.exe)")
   #define COMPANION_INSTALL_QUESTION      QT_TRANSLATE_NOOP("MainWindow", "Would you like to launch the installer?")
 #else
-  #define COMPANION_STAMP                 "companion-linux.stamp"
+  #define COMPANION_STAMP                 QStringLiteral("companion-linux.stamp")
   #define COMPANION_INSTALLER             "" // no automated updates for linux
-  #define COMPANION_FILEMASK              "*.*"
+  #define COMPANION_FILEMASK              QStringLiteral("*.*")
   #define COMPANION_INSTALL_QUESTION      QT_TRANSLATE_NOOP("MainWindow", "Would you like to launch the installer?")
 #endif
-
-const char * const OPENTX_COMPANION_DOWNLOAD_URL[] = {
-  "https://downloads.open-tx.org/2.2/release/companion",
-  "https://downloads.open-tx.org/2.2/rc/companion",
-  "https://downloads.open-tx.org/2.2/nightlies/companion"
-};
 
 MainWindow::MainWindow():
   downloadDialog_forWait(nullptr),
@@ -260,9 +254,9 @@ void MainWindow::dowloadLastFirmwareUpdate()
   checkForUpdates();
 }
 
-QString MainWindow::getCompanionUpdateBaseUrl()
+QString MainWindow::getCompanionUpdateBaseUrl() const
 {
-  return OPENTX_COMPANION_DOWNLOAD_URL[g.boundedOpenTxBranch()];
+  return g.openTxCurrentDownloadBranchUrl() % QStringLiteral("companion/");
 }
 
 void MainWindow::checkForUpdates()
@@ -286,7 +280,7 @@ void MainWindow::checkForUpdates()
     checkForUpdatesState -= CHECK_COMPANION;
     if (checkForUpdatesState & INTERACTIVE_DOWNLOAD)
       openUpdatesWaitDialog();
-    url.setUrl(QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(COMPANION_STAMP));
+    url.setUrl(getCompanionUpdateBaseUrl() % COMPANION_STAMP);
     connect(networkManager, &QNetworkAccessManager::finished, this, &MainWindow::checkForCompanionUpdateFinished);
     qDebug() << "Checking for Companion update " << url.url();
   }
@@ -334,7 +328,7 @@ void MainWindow::closeUpdatesWaitDialog()
   }
 }
 
-QString MainWindow::seekCodeString(const QByteArray & qba, const QString & label)
+QString MainWindow::seekCodeString(const QByteArray & qba, const QString & label) const
 {
   int posLabel = qba.indexOf(label);
   if (posLabel < 0)
@@ -374,7 +368,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
       if (!fileName.isEmpty()) {
         g.updatesDir(QFileInfo(fileName).dir().absolutePath());
-        downloadDialog * dd = new downloadDialog(this, QString("%1/%2").arg(getCompanionUpdateBaseUrl()).arg(QString(COMPANION_INSTALLER).arg(version)), fileName);
+        downloadDialog * dd = new downloadDialog(this, getCompanionUpdateBaseUrl() % QString(COMPANION_INSTALLER).arg(version), fileName);
         installer_fileName = fileName;
         connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
         dd->exec();

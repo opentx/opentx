@@ -23,19 +23,13 @@
 #include "rlefile.h"
 #include "appdata.h"
 #include "constants.h"
+
 #include <bitset>
 #include <QMessageBox>
 #include <QTime>
 #include <QUrl>
-#include <companion/src/storage/storage.h>
 
-using namespace Board;
-
-const char * const OPENTX_FIRMWARE_DOWNLOAD_URL[] = {
-  "https://downloads.open-tx.org/2.2/release/firmware",
-  "https://downloads.open-tx.org/2.2/rc/firmware",
-  "https://downloads.open-tx.org/2.2/nightlies/firmware"
-};
+#include "storage.h"  // does this need to be last include?
 
 #define FILE_TYP_GENERAL 1
 #define FILE_TYP_MODEL   2
@@ -44,6 +38,8 @@ const char * const OPENTX_FIRMWARE_DOWNLOAD_URL[] = {
 #define FILE_GENERAL   0
 /// convert model number 0..MAX_MODELS-1  int fileId
 #define FILE_MODEL(n) (1+n)
+
+using namespace Board;
 
 template<typename T, size_t N>
 inline
@@ -1045,33 +1041,22 @@ unsigned long OpenTxEepromInterface::loadBackup(RadioData &radioData, const uint
 
 QString OpenTxFirmware::getFirmwareBaseUrl()
 {
-  return OPENTX_FIRMWARE_DOWNLOAD_URL[g.boundedOpenTxBranch()];
+  return g.openTxCurrentDownloadBranchUrl() % QStringLiteral("firmware/");
 }
 
 QString OpenTxFirmware::getFirmwareUrl()
 {
-  QString url = getFirmwareBaseUrl();
-  QByteArray data = QUrl::toPercentEncoding(id);
-
-  if (IS_ARM(board))
-    url.append(QString("/getfw.php?fw=%1.bin").arg((QString) data));
-  else
-    url.append(QString("/getfw.php?fw=%1.hex").arg((QString) data));
-  return url;
+  return getFirmwareBaseUrl() % QString("getfw.php?fw=%1.bin").arg(QString(QUrl::toPercentEncoding(id)));
 }
 
 QString OpenTxFirmware::getReleaseNotesUrl()
 {
-  QString url = getFirmwareBaseUrl();
-  url.append("/releasenotes.txt");
-  return url;
+  return getFirmwareBaseUrl() % QStringLiteral("releasenotes.txt");
 }
 
 QString OpenTxFirmware::getStampUrl()
 {
-  QString url = getFirmwareBaseUrl();
-  url.append("/stamp-opentx.txt");
-  return url;
+  return getFirmwareBaseUrl() % QStringLiteral("stamp-opentx.txt");
 }
 
 void addOpenTxCommonOptions(OpenTxFirmware * firmware)
