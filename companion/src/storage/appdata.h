@@ -315,7 +315,7 @@ class FwRevision: public CompStoreObj
 {
   Q_OBJECT
   public slots:
-    inline int get(const QString & fwType) const { return m_settings.value(fwType, 0).toInt(); }
+    inline int get(const QString & fwType) const { return m_settings.value(settingsPath() % fwType, 0).toInt(); }
     inline void set(const QString & fwType, const int fwRevision) const { store(QString("%1").arg(fwRevision), fwType); }
     inline void remove(const QString & tag) const { clear(tag); }
     inline void resetAll() override { clear(propertyGroup(), ""); }
