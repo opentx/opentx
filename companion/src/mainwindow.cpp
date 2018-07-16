@@ -51,9 +51,12 @@
 #include "dialogs/filesyncdialog.h"
 
 #include <QtGui>
-#include <QNetworkProxyFactory>
 #include <QFileInfo>
 #include <QDesktopServices>
+#include <QNetworkAccessManager>
+#include <QNetworkProxyFactory>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 
 // update check flags
 #define CHECK_COMPANION        1
@@ -302,7 +305,9 @@ void MainWindow::checkForUpdates()
 
   QNetworkRequest request(url);
   request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
-  networkManager->get(request);
+  QNetworkReply * repl = networkManager->get(request);
+  if (downloadDialog_forWait)
+    connect(downloadDialog_forWait, &downloadDialog::rejected, repl, &QNetworkReply::abort);
 }
 
 void MainWindow::onUpdatesError(const QString &err)
