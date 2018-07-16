@@ -633,9 +633,6 @@ bool luaLoadMixScript(uint8_t index)
 
 bool luaLoadFunctionScript(uint8_t index, uint8_t ref)
 {
-  if ((ref >= SCRIPT_GFUNC_FIRST) && g_model.noGlobalFunctions)
-    return false;
-  
   CustomFunctionData & fn = (ref < SCRIPT_GFUNC_FIRST ? g_model.customFn[index] : g_eeGeneral.customFn[index]);
 
   if (fn.func == FUNC_PLAY_SCRIPT && ZEXIST(fn.play.name)) {
