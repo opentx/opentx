@@ -48,6 +48,7 @@ class MainWindow : public QMainWindow
    ~MainWindow();
 
   signals:
+    void firmwareDownloadCompleted();
     void firmwareChanged();
     void startSync();
 

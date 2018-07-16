@@ -31,6 +31,9 @@ FirmwarePreferencesDialog::FirmwarePreferencesDialog(QWidget * parent) :
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("fwpreferences.png"));
   initSettings();
+  MainWindow * mw = qobject_cast<MainWindow *>(this->parent());
+  if (mw)
+    connect(mw, &MainWindow::firmwareDownloadCompleted, this, &FirmwarePreferencesDialog::initSettings);
 }
 
 FirmwarePreferencesDialog::~FirmwarePreferencesDialog()
@@ -40,25 +43,26 @@ FirmwarePreferencesDialog::~FirmwarePreferencesDialog()
 
 void FirmwarePreferencesDialog::initSettings()
 {
-  ui->fwTypeLbl->setText(g.profile[g.id()].fwType());
-  int version = g.fwRev.get(g.profile[g.id()].fwType());
-  if (version > 0) {
+  ui->fwTypeLbl->setText(g.currentProfile().fwType());
+  int version = g.fwRev.get(g.currentProfile().fwType());
+  if (version > 0)
     ui->lastRevisionLbl->setText(index2version(version));
-  }
+  else
+    ui->lastRevisionLbl->setText(tr("Unknown"));
 }
 
 void FirmwarePreferencesDialog::on_checkFWUpdates_clicked()
 {
   MainWindow * mw = qobject_cast<MainWindow *>(this->parent());
-  mw->checkForFirmwareUpdate();
-  initSettings();
+  if (mw)
+    mw->checkForFirmwareUpdate();
 }
 
 void FirmwarePreferencesDialog::on_fw_dnld_clicked()
 {
   MainWindow * mw = qobject_cast<MainWindow *>(this->parent());
-  mw->dowloadLastFirmwareUpdate();
-  initSettings();
+  if (mw)
+    mw->dowloadLastFirmwareUpdate();
 }
 
 void FirmwarePreferencesDialog::on_sd_dnld_clicked()

@@ -456,6 +456,7 @@ void MainWindow::firmwareDownloadAccepted()
       writeFlash(g.profile[g.id()].fwName());
     }
   }
+  emit firmwareDownloadCompleted();
 }
 
 void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
