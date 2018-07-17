@@ -405,6 +405,12 @@ TEST_F(TrimsTest, throttleTrimEle) {
   setTrimValue(0, ELE_STICK, TRIM_MIN);
   evalMixes(1);
   EXPECT_EQ(channelOutputs[2], 1024 - 250);
+  SYSTEM_RESET();
+  MODEL_RESET();
+  MIXER_RESET();
+  modelDefault(0);
+  g_eeGeneral.templateSetup = 0;
+  applyDefaultTemplate();
 }
 
 TEST(Curves, LinearIntpol)
