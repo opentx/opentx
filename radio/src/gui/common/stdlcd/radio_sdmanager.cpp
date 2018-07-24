@@ -290,8 +290,8 @@ void menuRadioSdManager(event_t _event)
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
             if (HAS_SPORT_UPDATE_CONNECTOR())
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
-            POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
+            POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
           }
 #endif
         }
