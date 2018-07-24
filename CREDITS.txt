@@ -1416,3 +1416,4 @@ Felix Tang
 Heiko Polig
 Pierre Marty
 Dirk Weiler
+Douglas George
