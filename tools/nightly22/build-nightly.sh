@@ -15,6 +15,12 @@ suffix="N$index"
 
 cd ${workdir}
 
+#make sure there are no leftovers
+rm -f ${workdir}/binaries/*.deb
+rm -f ${output}/companion/linux/companion22_${version}${suffix}_amd64.deb
+rm -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe
+rm -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg
+
 # Create on-demand build environment
 cp code/radio/util/Dockerfile .
 docker build -t new-${docker} --build-arg OPENTX_VERSION_SUFFIX=${suffix} .
