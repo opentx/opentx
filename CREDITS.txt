@@ -1416,3 +1416,5 @@ Felix Tang
 Heiko Polig
 Pierre Marty
 Dirk Weiler
+Eddie Ehlin
+John Clarke
