@@ -61,13 +61,8 @@ class BitmapBufferBase
     }
 
     BitmapBufferBase(uint8_t format, T * data):
-      format(format),
-      data(data),
-      data_end(NULL)
+      BitmapBufferBase(format, *((uint16_t*)data), *(((uint16_t*)data)+1), data + 2)
     {
-      width  = *((uint16_t*)data);
-      height = *(((uint16_t*)data)+1);
-      data_end = data + 4 + (width * height);
     }
 
     inline uint8_t getFormat() const
