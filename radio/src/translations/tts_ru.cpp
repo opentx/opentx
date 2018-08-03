@@ -43,7 +43,6 @@ enum RusPrompts {
 #define FEMALE     0x01
 #define RU_FEMALE_UNIT 0xFF
 
-#if defined(VOICE)
 
   #define RU_PUSH_UNIT_PROMPT(u, p) ru_pushUnitPrompt((u), (p), id)
 
@@ -186,4 +185,3 @@ I18N_PLAY_FUNCTION(ru, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(ru, "Russian");
 
-#endif

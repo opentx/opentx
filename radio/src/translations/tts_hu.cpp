@@ -48,7 +48,6 @@ enum HungarianPrompts {
   HU_PROMPT_POINT_BASE = 165, //.0 - .9
 };
 
-#if defined(VOICE)
 
   #define HU_PUSH_UNIT_PROMPT(u, p) hu_pushUnitPrompt((u), (p), id)
 
@@ -142,4 +141,3 @@ I18N_PLAY_FUNCTION(hu, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(hu, "Hungarian");
 
-#endif

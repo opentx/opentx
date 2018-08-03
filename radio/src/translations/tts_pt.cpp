@@ -81,7 +81,6 @@ enum PortuguesePrompts {
   PT_PROMPT_FEET_PER_SECOND = PT_PROMPT_UNITS_BASE+UNIT_FEET_PER_SECOND,
 };
 
-#if defined(VOICE)
 
   #define PT_PUSH_UNIT_PROMPT(u) pt_pushUnitPrompt((u), id)
 
@@ -189,4 +188,3 @@ I18N_PLAY_FUNCTION(pt, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(pt, "Portugues");
 
-#endif

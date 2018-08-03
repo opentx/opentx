@@ -52,7 +52,6 @@ enum FrenchPrompts {
   FR_PROMPT_VIRGULE_BASE = 180, //,0 - ,9
 };
 
-#if defined(VOICE)
 
   #define FR_PUSH_UNIT_PROMPT(u) fr_pushUnitPrompt((u), id)
 
@@ -169,4 +168,3 @@ I18N_PLAY_FUNCTION(fr, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(fr, "Francais");
 
-#endif

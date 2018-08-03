@@ -77,7 +77,7 @@ void drawAlertBox(const pm_char * title, const pm_char * text, const char * acti
 #undef MESSAGE_LCD_OFFSET
 }
 
-void showAlertBox(const pm_char * title, const pm_char * text, const char * action ALERT_SOUND_ARG)
+void showAlertBox(const pm_char * title, const pm_char * text, const char * action , uint8_t sound)
 {
   drawAlertBox(title, text, action);
   

@@ -379,13 +379,7 @@ void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uin
 void drawAlertBox(const pm_char * title, const pm_char * text, const char * action);
 #endif
 
-#if defined(VOICE)
- #define ALERT_SOUND_ARG , uint8_t sound
-#else
- #define ALERT_SOUND_ARG
-#endif
-
-void showAlertBox(const pm_char * title, const pm_char * text, const char * action ALERT_SOUND_ARG);
+void showAlertBox(const pm_char * title, const pm_char * text, const char * action , uint8_t sound);
 
 #define SET_SCROLLBAR_X(x)
 #define LOAD_MODEL_BITMAP()

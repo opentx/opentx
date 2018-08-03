@@ -87,7 +87,6 @@ enum SpanishPrompts {
 
 };
 
-#if defined(VOICE)
   #define ES_PUSH_UNIT_PROMPT(u) es_pushUnitPrompt((u), id)
 
 I18N_PLAY_FUNCTION(es, pushUnitPrompt, uint8_t unitprompt)
@@ -210,4 +209,3 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(es, "Espanol");
 
-#endif

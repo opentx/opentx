@@ -36,7 +36,6 @@ void testFunc()
 }
 #endif
 
-#if defined(VOICE)
 PLAY_FUNCTION(playValue, source_t idx)
 {
   if (IS_FAI_FORBIDDEN(idx))
@@ -87,7 +86,6 @@ PLAY_FUNCTION(playValue, source_t idx)
     PLAY_NUMBER(val, 0, 0);
   }
 }
-#endif
 
 void playCustomFunctionFile(const CustomFunctionData * sd, uint8_t id)
 {
@@ -328,7 +326,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             newActiveFunctions |= (1 << FUNCTION_BACKGND_MUSIC_PAUSE);
             break;
 
-#elif defined(VOICE)
+#else
           case FUNC_PLAY_SOUND:
           case FUNC_PLAY_TRACK:
           case FUNC_PLAY_BOTH:
@@ -356,17 +354,6 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             if (!active) {
               // PLAY_BOTH would change activeFnSwitches otherwise
               switch_mask = 0;
-            }
-            break;
-          }
-#else
-          case FUNC_PLAY_SOUND:
-          {
-            tmr10ms_t tmr10ms = get_tmr10ms();
-            uint8_t repeatParam = CFN_PLAY_REPEAT(cfn);
-            if (!functionsContext.lastFunctionTime[i] || (repeatParam && (signed)(tmr10ms-functionsContext.lastFunctionTime[i])>=1000*repeatParam)) {
-              functionsContext.lastFunctionTime[i] = tmr10ms;
-              AUDIO_PLAY(AU_SPECIAL_SOUND_FIRST+CFN_PARAM(cfn));
             }
             break;
           }

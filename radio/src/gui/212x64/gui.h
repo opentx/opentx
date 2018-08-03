@@ -78,7 +78,6 @@ void drawColumnHeader(const char * const * headers, uint8_t index);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 
 void drawAlertBox(const char * title, const char * text, const char * action);
-#define ALERT_SOUND_ARG , uint8_t sound
 void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound);
 
 void doMainScreenGraphics();

@@ -757,7 +757,6 @@ extern const pm_char STR_CONFIRMRESET[];
 extern const pm_char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const pm_char STR_BLCOLOR[];
 
-#if defined(VOICE)
   struct LanguagePack {
     const char * id;
     const char * name;
@@ -807,15 +806,6 @@ extern const pm_char STR_BLCOLOR[];
   #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); const LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
   inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags) { currentLanguagePack->playNumber(number, unit, flags, id); }
   inline PLAY_FUNCTION(playDuration, int seconds, uint8_t flags) { currentLanguagePack->playDuration(seconds, flags, id); }
-#elif defined(VOICE)
-  PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t att);
-  PLAY_FUNCTION(playDuration, int seconds);
-  #define LANGUAGE_PACK_DECLARE(lng, name)
-  #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name)
-#else
-  #define LANGUAGE_PACK_DECLARE(lng, name)
-  #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name)
-#endif
 
   extern const pm_char STR_MODELNAME[];
   extern const pm_char STR_PHASENAME[];

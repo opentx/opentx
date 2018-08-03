@@ -68,7 +68,6 @@ enum GermanPrompts {
 
 };
 
-#if defined(VOICE)
   #define DE_PUSH_UNIT_PROMPT(u) de_pushUnitPrompt((u), id)
 
 I18N_PLAY_FUNCTION(de, pushUnitPrompt, uint8_t unitprompt)
@@ -214,4 +213,3 @@ I18N_PLAY_FUNCTION(de, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(de, "Deutsch");
 
-#endif

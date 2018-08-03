@@ -55,7 +55,6 @@ inline void beep(uint8_t) { }
 #if !defined(AUDIO)
 
 #if defined(BUZZER)
-  #if defined(VOICE)
     #define AUDIO_HELLO()           PUSH_SYSTEM_PROMPT(AUDIO_HELLO)
     #define AUDIO_BYE()
     #define AUDIO_TX_BATTERY_LOW() PUSH_SYSTEM_PROMPT(AU_TX_BATTERY_LOW)
@@ -65,17 +64,6 @@ inline void beep(uint8_t) { }
     // TODO
     #define AUDIO_TIMER_30()       PUSH_SYSTEM_PROMPT(AU_TIMER_30)
     #define AUDIO_TIMER_20()       PUSH_SYSTEM_PROMPT(AU_TIMER_20)
-  #else
-    #define AUDIO_HELLO()
-    #define AUDIO_BYE()
-    #define AUDIO_TX_BATTERY_LOW() beep(4)
-    #define AUDIO_INACTIVITY()     beep(3)
-    #define AUDIO_ERROR_MESSAGE(e) beep(4)
-    #define AUDIO_TIMER_MINUTE(t)  beep(2)
-    // TODO
-    #define AUDIO_TIMER_30()       { beepAgain=2; beep(2); }
-    #define AUDIO_TIMER_20()       { beepAgain=1; beep(2); }
-  #endif
 
   #define AUDIO_KEY_PRESS()        beep(0)
   #define AUDIO_KEY_ERROR()        beep(2)

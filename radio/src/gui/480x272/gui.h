@@ -81,8 +81,6 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
 #define displayFlightModes(...)
 #endif
 
-#define ALERT_SOUND_ARG                , uint8_t sound
-
 // Curve functions
 coord_t getCurveYCoord(FnFuncP fn, int x, int width);
 void drawFunction(FnFuncP fn, int offset);

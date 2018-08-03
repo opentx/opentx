@@ -59,7 +59,6 @@ enum ItalianPrompts {
 
 };
 
-#if defined(VOICE)
   #define IT_PUSH_UNIT_PROMPT(u, p) it_pushUnitPrompt((u), (p), id)
 
 I18N_PLAY_FUNCTION(it, pushUnitPrompt, uint8_t unitprompt, int16_t number)
@@ -177,4 +176,3 @@ I18N_PLAY_FUNCTION(it, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE(it, "Italiano");
 
-#endif

@@ -48,7 +48,6 @@ enum EnglishPrompts {
   EN_PROMPT_POINT_BASE = 167, //.0 - .9
 };
 
-#if defined(VOICE)
 
   #define EN_PUSH_UNIT_PROMPT(u, p) en_pushUnitPrompt((u), (p), id)
 
@@ -141,4 +140,3 @@ I18N_PLAY_FUNCTION(en, playDuration, int seconds PLAY_DURATION_ATT)
 
 LANGUAGE_PACK_DECLARE_DEFAULT(en, "English");
 
-#endif

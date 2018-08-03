@@ -81,12 +81,6 @@
   #define CASE_AUDIO(x)
 #endif
 
-#if defined(VOICE)
-  #define CASE_VOICE(x) x,
-#else
-  #define CASE_VOICE(x)
-#endif
-
 #if defined(PWM_BACKLIGHT)
   #define CASE_PWM_BACKLIGHT(x) x,
 #else
@@ -557,15 +551,12 @@ uint16_t evalChkSum();
 #if !defined(GUI)
   #define RAISE_ALERT(...)
   #define ALERT(...)
-#elif defined(VOICE)
+#else
   #define RAISE_ALERT(title, msg, info, sound) showAlertBox(title, msg, info, sound)
   #define ALERT(title, msg, sound) alert(title, msg, sound)
-#else
-  #define RAISE_ALERT(title, msg, info, sound) showAlertBox(title, msg, info)
-  #define ALERT(title, msg, sound) alert(title, msg)
 #endif
 
-void alert(const pm_char * t, const pm_char * s ALERT_SOUND_ARG);
+void alert(const pm_char * t, const pm_char * s , uint8_t sound);
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
@@ -1090,11 +1081,9 @@ uint16_t crc16(const uint8_t * ptr, uint32_t len);
 enum AUDIO_SOUNDS {
   AUDIO_HELLO,
   AU_BYE,
-#if defined(VOICE)
   AU_THROTTLE_ALERT,
   AU_SWITCH_ALERT,
   AU_BAD_RADIODATA,
-#endif
   AU_TX_BATTERY_LOW,
   AU_INACTIVITY,
   AU_RSSI_ORANGE,

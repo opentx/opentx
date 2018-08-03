@@ -1062,7 +1062,7 @@ void checkAlarm() // added by Gohst
   }
 }
 
-void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
+void alert(const pm_char * title, const pm_char * msg , uint8_t sound)
 {
   LED_ERROR_BEGIN();
 
@@ -2048,12 +2048,10 @@ void opentxInit(OPENTX_INIT_ARGS)
   }
 #endif
 
-#if defined(VOICE)
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
   #if !defined(SOFTWARE_VOLUME)
     setScaledVolume(currentSpeakerVolume);
   #endif
-#endif
 
   referenceSystemAudioFiles();
   audioQueue.start();

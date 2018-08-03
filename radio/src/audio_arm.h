@@ -532,13 +532,8 @@ void audioTask(void * pdata);
   #define AUDIO_BUZZER(a, b)  b
 #endif
 
-#if defined(VOICE)
   #define AUDIO_ERROR_MESSAGE(e) audioEvent(e)
   #define AUDIO_TIMER_MINUTE(t)  playDuration(t, 0, 0)
-#else
-  #define AUDIO_ERROR_MESSAGE(e) audioEvent(AU_ERROR)
-  #define AUDIO_TIMER_MINUTE(t)  audioDefevent(AU_WARNING1)
-#endif
 
 void audioKeyPress();
 void audioKeyError();
