@@ -56,9 +56,9 @@ void loadCustomScreens()
 {
   for (unsigned int i=0; i<MAX_CUSTOM_SCREENS; i++) {
     delete customScreens[i];
-    char name[sizeof(g_model.screenData[i].layoutName)+1];
+    char name[LAYOUT_NAME_LEN + 1];
     memset(name, 0, sizeof(name));
-    strncpy(name, g_model.screenData[i].layoutName, sizeof(g_model.screenData[i].layoutName));
+    strncpy(name, g_model.screenData[i].layoutName, LAYOUT_NAME_LEN);
     customScreens[i] = loadLayout(name, &g_model.screenData[i].layoutData);
   }
 

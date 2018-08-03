@@ -91,7 +91,7 @@ class TelemetryItem
 
     void clear()
     {
-      memset(this, 0, sizeof(*this));
+      memset(reinterpret_cast<void*>(this), 0, sizeof(TelemetryItem));
       lastReceived = TELEMETRY_VALUE_UNAVAILABLE;
     }
 

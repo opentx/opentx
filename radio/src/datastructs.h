@@ -509,8 +509,9 @@ typedef uint8_t swarnenable_t;
 #if defined(PCBHORUS)
 #include "gui/480x272/layout.h"
 #include "gui/480x272/topbar.h"
+#define LAYOUT_NAME_LEN 10
 PACK(struct CustomScreenData {
-  char layoutName[10];
+  char layoutName[LAYOUT_NAME_LEN];
   Layout::PersistentData layoutData;
 });
 #define CUSTOM_SCREENS_DATA \
@@ -690,8 +691,9 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS)
   #include "gui/480x272/theme.h"
+  #define THEME_NAME_LEN 8
   #define THEME_DATA \
-    NOBACKUP(char themeName[8]); \
+    NOBACKUP(char themeName[THEME_NAME_LEN]); \
     NOBACKUP(Theme::PersistentData themeData);
 #else
   #define THEME_DATA

@@ -552,8 +552,8 @@ void lcdRefresh()
 {
   static bool lightEnabled = (bool)isBacklightEnabled();
 
-  if (bool(isBacklightEnabled()) != lightEnabled || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE)) {
-    memcpy(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE);
+  if (bool(isBacklightEnabled()) != lightEnabled || memcmp(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE * sizeof(display_t))) {
+    memcpy(simuLcdBuf, displayBuf, DISPLAY_BUFFER_SIZE * sizeof(display_t));
     lightEnabled = (bool)isBacklightEnabled();
     simuLcdRefresh = true;
   }

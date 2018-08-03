@@ -90,12 +90,12 @@ PLAY_FUNCTION(playValue, source_t idx)
 void playCustomFunctionFile(const CustomFunctionData * sd, uint8_t id)
 {
   if (sd->play.name[0] != '\0') {
-    char filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)+sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
-    strncpy(filename+SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
-    strncpy(filename+sizeof(SOUNDS_PATH), sd->play.name, sizeof(sd->play.name));
-    filename[sizeof(SOUNDS_PATH)+sizeof(sd->play.name)] = '\0';
-    strcat(filename+sizeof(SOUNDS_PATH), SOUNDS_EXT);
-    PLAY_FILE(filename, sd->func==FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
+    char filename[sizeof(SOUNDS_PATH) + LEN_FUNCTION_NAME + sizeof(SOUNDS_EXT)] = SOUNDS_PATH "/";
+    strncpy(filename + SOUNDS_PATH_LNG_OFS, currentLanguagePack->id, 2);
+    strncpy(filename + sizeof(SOUNDS_PATH), sd->play.name, LEN_FUNCTION_NAME);
+    filename[sizeof(SOUNDS_PATH) + LEN_FUNCTION_NAME] = '\0';
+    strcat(filename + sizeof(SOUNDS_PATH), SOUNDS_EXT);
+    PLAY_FILE(filename, sd->func == FUNC_BACKGND_MUSIC ? PLAY_BACKGROUND : 0, id);
   }
 }
 

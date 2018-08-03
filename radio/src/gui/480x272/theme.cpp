@@ -144,9 +144,9 @@ void loadTheme(Theme * new_theme)
 
 void loadTheme()
 {
-  char name[sizeof(g_eeGeneral.themeName)+1];
+  char name[THEME_NAME_LEN + 1];
   memset(name, 0, sizeof(name));
-  strncpy(name, g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
+  strncpy(name, g_eeGeneral.themeName, THEME_NAME_LEN);
   Theme * new_theme = getTheme(name);
   if (new_theme) {
     loadTheme(new_theme);
