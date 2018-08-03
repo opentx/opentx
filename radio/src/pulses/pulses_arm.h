@@ -126,7 +126,6 @@ PACK(struct PxxTimerPulsesData {
 #endif
 
 #define CROSSFIRE_FRAME_MAXLEN         64
-#define CROSSFIRE_CHANNELS_COUNT       16
 PACK(struct CrossfirePulsesData {
   uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
 });
@@ -236,8 +235,8 @@ enum R9MLBTPowerValues {
   R9M_LBT_POWER_MAX = R9M_LBT_POWER_100
 };
 
-#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_100))
-#define BIND_CH9TO16_ALLOWED(idx)    (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
+#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_100))
+#define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
 
 #else
 
@@ -264,7 +263,7 @@ enum R9MLBTPowerValues {
   R9M_LBT_POWER_MAX = R9M_LBT_POWER_500
 };
 
-#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200))
-#define BIND_CH9TO16_ALLOWED(idx)    (!IS_MODULE_R9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
+#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200))
+#define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
 #endif
 #endif // _PULSES_ARM_H_

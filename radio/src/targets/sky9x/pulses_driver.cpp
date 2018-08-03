@@ -177,7 +177,7 @@ void init_ssc(uint8_t baudrateDiv1000)
   sscptr->SSC_CR = SSC_CR_TXEN;
 
 #if defined(REVX)
-  if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
+  if (isModuleMultimodule(EXTERNAL_MODULE)) {
     PIOA->PIO_MDDR = PIO_PA17;                 // Push Pull O/p in A17
   } else {
     PIOA->PIO_MDER = PIO_PA17;						// Open Drain O/p in A17

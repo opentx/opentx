@@ -165,7 +165,7 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
       subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
     // Multi module in DSM mode wants the number of channels to be used as option value
-    optionValue = NUM_CHANNELS(EXTERNAL_MODULE);
+    optionValue = sentModuleChannels(EXTERNAL_MODULE);
 
   }
 

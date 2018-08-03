@@ -54,13 +54,13 @@ void menuRadioDiagAnalogs(event_t event)
 
   // RAS
 #if defined(PCBTARANIS)
-  if (IS_MODULE_XJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
+  if (isModuleXJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2;
     lcdDrawText(1, y, "RAS:");
     lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
   }
 #else
-  if (IS_MODULE_XJT(EXTERNAL_MODULE)) {
+  if (isModuleXJT(EXTERNAL_MODULE)) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + ((NUM_STICKS+NUM_POTS+NUM_SLIDERS)/2)*FH;
     uint8_t x = ((NUM_STICKS+NUM_POTS+NUM_SLIDERS) & 1) ? (LCD_W/2)+FW : 0;
 

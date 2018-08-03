@@ -42,7 +42,7 @@ void menuRadioDiagAnalogs(event_t event)
   }
 
   // RAS
-  if((IS_MODULE_XJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (IS_MODULE_PXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
+  if((isModuleXJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (isModulePXX(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
     lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH, "RAS");
     lcdDrawNumber(10*FW-1, MENU_HEADER_HEIGHT+6*FH, telemetryData.swr.value, RIGHT);
     lcdDrawText(LCD_W/2, MENU_HEADER_HEIGHT+6*FH, "XJTVER");
