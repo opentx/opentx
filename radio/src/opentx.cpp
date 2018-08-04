@@ -456,7 +456,7 @@ void modelDefault(uint8_t id)
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
-  g_model.moduleData[INTERNAL_MODULE].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+  g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
 #elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
@@ -879,7 +879,7 @@ void checkSDVersion()
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
-    if (IS_MODULE_PXX(i)) {
+    if (isModulePXX(i)) {
       ModuleData & moduleData = g_model.moduleData[i];
       if (HAS_RF_PROTOCOL_FAILSAFE(moduleData.rfProtocol) && moduleData.failsafeMode == FAILSAFE_NOT_SET) {
         ALERT(STR_FAILSAFEWARN, STR_NO_FAILSAFE, AU_ERROR);

@@ -380,7 +380,7 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
         int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
         pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
       }
-      else if (i < NUM_CHANNELS(port)) {
+      else if (i < sentModuleChannels(port)) {
         int channel = g_model.moduleData[port].channelsStart + i;
         int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
         pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
@@ -411,8 +411,8 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
 
   extra_flags |= (g_model.moduleData[port].pxx.receiver_telem_off << 1);
   extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
-  if (IS_MODULE_R9M(port)) {
-    extra_flags |= (min(g_model.moduleData[port].pxx.power, IS_MODULE_R9M_FCC(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
+  if (isModuleR9M(port)) {
+    extra_flags |= (min(g_model.moduleData[port].pxx.power, isModuleR9M_FCC(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
   }
 
   // Disable S.PORT if internal module is active
@@ -437,7 +437,7 @@ void setupPulsesPXX(uint8_t port)
 
 #if defined(PXX_FREQUENCY_HIGH)
   setupFramePXX(port, 0);
-  if (NUM_CHANNELS(port) > 8) {
+  if (sentModuleChannels(port) > 8) {
     setupFramePXX(port, 8);
   }
 #else
