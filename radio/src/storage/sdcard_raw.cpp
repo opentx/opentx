@@ -22,13 +22,6 @@
 #include "modelslist.h"
 #include "conversions/conversions.h"
 
-void getModelPath(char * path, const char * filename)
-{
-  strcpy(path, STR_MODELS_PATH);
-  path[sizeof(MODELS_PATH)-1] = '/';
-  strcpy(&path[sizeof(MODELS_PATH)], filename);
-}
-
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
   TRACE("writeFile(%s)", filename);
@@ -91,6 +84,8 @@ const char * openFile(const char * fullpath, FIL * file, uint16_t * size, uint8_
     return SDCARD_ERROR(result);
   }
 
+  //TODO: move this code into some checkCompatibleFormat()
+
   *version = (uint8_t)buf[4];
   if (*(uint32_t*)&buf[0] != OTX_FOURCC || *version < FIRST_CONV_EEPROM_VER || *version > EEPROM_VER || buf[5] != 'M') {
     f_close(file);
@@ -131,32 +126,6 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size, u
   return loadFile(path, buffer, size, version);
 }
 
-const char * loadModel(const char * filename, bool alarms)
-{
-  uint8_t version;
-
-  preModelLoad();
-
-  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model), &version);
-  if (error) {
-    TRACE("loadModel error=%s", error);
-  }
-
-  if (error) {
-    modelDefault(0) ;
-    storageCheck(true);
-    alarms = false;
-  }
-#if defined(EEPROM_CONVERSIONS)
-  else if (version < EEPROM_VER) {
-    convertModelData(version);
-  }
-#endif
-
-  postModelLoad(alarms);
-
-  return error;
-}
 
 const char * loadRadioSettings(const char * path)
 {

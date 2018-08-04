@@ -55,6 +55,10 @@
 #if defined(COLORLCD)
 const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
 const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
+#if defined(SDCARD_YAML)
+const char RADIO_MODELSLIST_YAML_PATH[] = RADIO_PATH "/models.yml";
+const char RADIO_SETTINGS_YAML_PATH[] = RADIO_PATH "/radio.yml";
+#endif
 #define    SPLASH_FILE             "splash.png"
 #endif
 
@@ -72,6 +76,9 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define SPORT_FIRMWARE_EXT  ".frk"
 #define FRSKY_FIRMWARE_EXT  ".frsk"
 #define MULTI_FIRMWARE_EXT  ".bin"
+#define YAML_EXT            ".yml"
+
+#define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
 #if defined(COLORLCD)
 #define BITMAPS_EXT         BMP_EXT JPG_EXT PNG_EXT

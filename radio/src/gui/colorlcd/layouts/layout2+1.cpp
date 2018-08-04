@@ -49,10 +49,10 @@ class Layout2P1: public Layout
     void create() override
     {
       Layout::create();
-      persistentData->options[0].boolValue = true;
-      persistentData->options[1].boolValue = true;
-      persistentData->options[2].boolValue = true;
-      persistentData->options[3].boolValue = true;
+      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[2] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[3] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
     }
 
     unsigned int getZonesCount() const override
@@ -72,11 +72,11 @@ class Layout2P1: public Layout
 //{
 //  theme->drawBackground();
 //
-//  if (persistentData->options[0].boolValue) {
+//  if (persistentData->options[0].value.boolValue) {
 //    drawTopBar();
 //  }
 //
-//  if (persistentData->options[1].boolValue) {
+//  if (persistentData->options[1].value.boolValue) {
 //    // Flight mode
 //    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
 //                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
@@ -86,12 +86,12 @@ class Layout2P1: public Layout
 //                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS));
 //  }
 //
-//  if (persistentData->options[2].boolValue) {
+//  if (persistentData->options[2].value.boolValue) {
 //    // Pots and rear sliders positions
 //    drawMainPots();
 //  }
 //
-//  if (persistentData->options[3].boolValue) {
+//  if (persistentData->options[3].value.boolValue) {
 //    // Trims
 //    drawTrims(mixerCurrentFlightMode);
 //  }

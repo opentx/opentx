@@ -40,7 +40,7 @@ class Layout2x1: public Layout
     void create() override
     {
       Layout::create();
-      persistentData->options[0].boolValue = true;
+      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
     }
 
     unsigned int getZonesCount() const override
@@ -53,7 +53,7 @@ class Layout2x1: public Layout
       Zone zone;
       zone.w = (LCD_W-3*10) / 2;
       zone.x = (index & 1) ? 20 + zone.w : 10;
-      if (persistentData->options[0].boolValue) {
+      if (persistentData->options[0].value.boolValue) {
         zone.h = (LCD_H-MENU_HEADER_HEIGHT-2*10);
         zone.y = MENU_HEADER_HEIGHT + 10;
       }
@@ -71,7 +71,7 @@ class Layout2x1: public Layout
 //{
 //  theme->drawBackground();
 //
-//  if (persistentData->options[0].boolValue) {
+//  if (persistentData->options[0].value.boolValue) {
 //    drawTopBar();
 //  }
 //
