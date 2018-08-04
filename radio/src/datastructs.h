@@ -55,6 +55,21 @@
   #define NOBACKUP(...)                __VA_ARGS__
 #endif
 
+#if defined(YAML_GENERATOR)
+
+/* private definitions */
+#define _yaml_note(label) #label
+#define _yaml_attribute(attr) __attribute__((annotate(attr)))
+
+/* public definitions */
+#define ENUM(label) _yaml_attribute("enum:" _yaml_note(label))
+
+#else
+
+#define ENUM(label)
+
+#endif
+
 #if defined(PCBFRSKY)
 typedef uint16_t source_t;
 #else
@@ -73,7 +88,7 @@ PACK(struct CurveRef {
 PACK(struct MixData {
   int16_t  weight:11;       // GV1=-1024, -GV1=1023
   uint16_t destCh:5;
-  uint16_t srcRaw:10;       // srcRaw=0 means not used
+  uint16_t srcRaw:10 ENUM(MixSources); // srcRaw=0 means not used
   uint16_t carryTrim:1;
   uint16_t mixWarn:2;       // mixer warning
   uint16_t mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
@@ -96,7 +111,7 @@ PACK(struct MixData {
 PACK(struct ExpoData {
   uint16_t mode:2;
   uint16_t scale:14;
-  uint16_t srcRaw:10;
+  uint16_t srcRaw:10 ENUM(MixSources);
   int16_t  carryTrim:6;
   uint32_t chn:5;
   int32_t  swtch:9;
@@ -129,7 +144,7 @@ PACK(struct LimitData {
  */
 
 PACK(struct LogicalSwitchData {
-  uint8_t  func;
+  uint8_t  func ENUM(LogicalSwitchesFunctions);
   int32_t  v1:10;
   int32_t  v3:10;
   int32_t  andsw:9;      // TODO rename to xswtch
@@ -153,7 +168,7 @@ PACK(struct LogicalSwitchData {
 
 PACK(struct CustomFunctionData {
   int16_t  swtch:9;
-  uint16_t func:7;
+  uint16_t func:7 ENUM(Functions);
   PACK(union {
     NOBACKUP(PACK(struct {
       char name[LEN_FUNCTION_NAME];
@@ -421,8 +436,8 @@ PACK(struct TrainerModuleData {
 // Only used in case switch and if statements as "virtual" protocol
 #define MM_RF_CUSTOM_SELECTED 0xff
 PACK(struct ModuleData {
-  uint8_t type:4;
-  int8_t  rfProtocol:4;
+  uint8_t type:4 ENUM(Protocols);
+  int8_t  rfProtocol:4 ENUM(XJTRFProtocols) ENUM(DSM2Protocols);
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   union {
