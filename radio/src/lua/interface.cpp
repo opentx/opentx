@@ -620,10 +620,10 @@ bool luaLoadMixScript(uint8_t index)
     ScriptInputsOutputs * sio = &scriptInputsOutputs[index];
     sid.reference = SCRIPT_MIX_FIRST+index;
     sid.state = SCRIPT_NOFILE;
-    char filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)+sizeof(SCRIPT_EXT)] = SCRIPTS_MIXES_PATH "/";
-    strncpy(filename+sizeof(SCRIPTS_MIXES_PATH), sd.file, sizeof(sd.file));
-    filename[sizeof(SCRIPTS_MIXES_PATH)+sizeof(sd.file)] = '\0';
-    strcat(filename+sizeof(SCRIPTS_MIXES_PATH), SCRIPT_EXT);
+    char filename[sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME + sizeof(SCRIPT_EXT)] = SCRIPTS_MIXES_PATH "/";
+    strncpy(filename + sizeof(SCRIPTS_MIXES_PATH), sd.file, LEN_SCRIPT_FILENAME);
+    filename[sizeof(SCRIPTS_MIXES_PATH) + LEN_SCRIPT_FILENAME] = '\0';
+    strcat(filename + sizeof(SCRIPTS_MIXES_PATH), SCRIPT_EXT);
     if (luaLoad(lsScripts, filename, sid, sio) == SCRIPT_PANIC) {
       return false;
     }
@@ -643,10 +643,10 @@ bool luaLoadFunctionScript(uint8_t index, uint8_t ref)
       ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
       sid.reference = ref + index;
       sid.state = SCRIPT_NOFILE;
-      char filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)+sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
-      strncpy(filename+sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, sizeof(fn.play.name));
-      filename[sizeof(SCRIPTS_FUNCS_PATH)+sizeof(fn.play.name)] = '\0';
-      strcat(filename+sizeof(SCRIPTS_FUNCS_PATH), SCRIPT_EXT);
+      char filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME + sizeof(SCRIPT_EXT)] = SCRIPTS_FUNCS_PATH "/";
+      strncpy(filename + sizeof(SCRIPTS_FUNCS_PATH), fn.play.name, LEN_FUNCTION_NAME);
+      filename[sizeof(SCRIPTS_FUNCS_PATH) + LEN_FUNCTION_NAME] = '\0';
+      strcat(filename + sizeof(SCRIPTS_FUNCS_PATH), SCRIPT_EXT);
       if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
         return false;
       }
