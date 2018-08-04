@@ -25,6 +25,7 @@
 #include "eeprominterface.h"
 
 class AutoComboBox;
+class RawSourceFilterItemModel;
 class TimerEdit;
 
 namespace Ui {
@@ -72,7 +73,7 @@ class TelemetryCustomScreen: public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware);
+    TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware, RawSourceFilterItemModel * srcModel);
     ~TelemetryCustomScreen();
     void update();
 
@@ -84,9 +85,6 @@ class TelemetryCustomScreen: public ModelPanel
     void barMinChanged(double value);
     void barMaxChanged(double value);
     void barTimeChanged();
-
-  protected:
-    void populateTelemetrySourceCB(QComboBox * b, RawSource & source, bool last=false);
 
   private:
     void updateBar(int line);
@@ -136,6 +134,9 @@ class TelemetryPanel : public ModelPanel
     TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~TelemetryPanel();
     virtual void update();
+
+  signals:
+    void updated();
 
   private slots:
     void on_telemetryProtocol_currentIndexChanged(int index);

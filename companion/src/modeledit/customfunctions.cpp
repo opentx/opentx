@@ -19,7 +19,7 @@
  */
 
 #include "customfunctions.h"
-#include "switchitemmodel.h"
+#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 #include "appdata.h"
 
@@ -69,9 +69,6 @@ void RepeatComboBox::update()
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware):
   GenericPanel(parent, model, generalSettings, firmware),
   functions(model ? model->customFn : generalSettings.customFn),
-  rawSwitchItemModel(NULL),
-  rawSrcInputsItemModel(NULL),
-  rawSrcAllItemModel(NULL),
   mediaPlayerCurrent(-1),
   mediaPlayer(NULL)
 {
@@ -79,7 +76,10 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  setDataModels();
+  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext, this);
+  rawSrcAllItemModel = new RawSourceFilterItemModel(&generalSettings, model, this);
+  rawSrcInputsItemModel = new RawSourceFilterItemModel(rawSrcAllItemModel->sourceModel(), RawSource::InputSourceGroups, this);
+  rawSrcGVarsItemModel = new RawSourceFilterItemModel(rawSrcAllItemModel->sourceModel(), RawSource::GVarsGroup, this);
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -253,24 +253,13 @@ CustomFunctionsPanel::~CustomFunctionsPanel()
     stopSound(mediaPlayerCurrent);
 }
 
-void CustomFunctionsPanel::setDataModels()
+void CustomFunctionsPanel::updateDataModels()
 {
-  if (rawSwitchItemModel)
-    rawSwitchItemModel->update();
-  else
-    rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, model, model ? SpecialFunctionsContext : GlobalFunctionsContext);
-
-  // The RawSource item models have to be reloaded on every update().  TODO: convert to filtered model like for RawSwitches
-
-  if (rawSrcInputsItemModel)
-    rawSrcInputsItemModel->deleteLater();
-  if (rawSrcAllItemModel)
-    rawSrcAllItemModel->deleteLater();
-
-  rawSrcInputsItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_TRIMS|POPULATE_SWITCHES);
-  rawSrcInputsItemModel->setParent(this);
-  rawSrcAllItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE|POPULATE_SOURCES|POPULATE_VIRTUAL_INPUTS|POPULATE_SWITCHES|POPULATE_GVARS|POPULATE_TRIMS|POPULATE_TELEMETRY|POPULATE_TELEMETRYEXT|POPULATE_SCRIPT_OUTPUTS);
-  rawSrcAllItemModel->setParent(this);
+  const bool oldLock = lock;
+  lock = true;
+  rawSwitchItemModel->update();
+  rawSrcAllItemModel->update();
+  lock = oldLock;
 }
 
 void CustomFunctionsPanel::onMediaPlayerStateChanged(QMediaPlayer::State state)
@@ -603,8 +592,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 
 void CustomFunctionsPanel::update()
 {
-  setDataModels();
-
+  updateDataModels();
   lock = true;
   int num_fsw = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
   for (int i=0; i<num_fsw; i++) {
@@ -749,7 +737,7 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
         b->setCurrentIndex(b->findData(value));
         break;
       case 2:
-        b->setModel(Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_GVARS));
+        b->setModel(rawSrcGVarsItemModel);
         b->setCurrentIndex(b->findData(value));
         break;
     }

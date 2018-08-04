@@ -25,6 +25,7 @@
 #include "ui_telemetry_sensor.h"
 #include "helpers.h"
 #include "appdata.h"
+#include "rawitemfilteredmodel.h"
 
 #include <TimerEdit>
 
@@ -316,7 +317,7 @@ TelemetryAnalog::~TelemetryAnalog()
 
 /******************************************************/
 
-TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware):
+TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware, RawSourceFilterItemModel * srcModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryCustomScreen),
   screen(screen)
@@ -327,15 +328,17 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
     for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
       fieldsCB[l][c] = new QComboBox(this);
       fieldsCB[l][c]->setProperty("index", c + (l<<8));
+      fieldsCB[l][c]->setModel(srcModel);
       ui->screenNumsLayout->addWidget(fieldsCB[l][c], l, c, 1, 1);
-      connect(fieldsCB[l][c], SIGNAL(currentIndexChanged(int)), this, SLOT(customFieldChanged(int)));
+      connect(fieldsCB[l][c], SIGNAL(activated(int)), this, SLOT(customFieldChanged(int)));
     }
   }
 
   for (int l=0; l<4; l++) {
     barsCB[l] = new QComboBox(this);
     barsCB[l]->setProperty("index", l);
-    connect(barsCB[l], SIGNAL(currentIndexChanged(int)), this, SLOT(barSourceChanged(int)));
+    barsCB[l]->setModel(srcModel);
+    connect(barsCB[l], SIGNAL(activated(int)), this, SLOT(barSourceChanged(int)));
     ui->screenBarsLayout->addWidget(barsCB[l], l, 0, 1, 1);
 
     minSB[l] = new QDoubleSpinBox(this);
@@ -393,19 +396,6 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   update();
 }
 
-void TelemetryCustomScreen::populateTelemetrySourceCB(QComboBox * b, RawSource & source, bool last)
-{
-  int flags = POPULATE_NONE | POPULATE_TELEMETRY;
-  if (IS_ARM(firmware->getBoard())) {
-    flags |= POPULATE_SOURCES | POPULATE_SCRIPT_OUTPUTS | POPULATE_VIRTUAL_INPUTS | POPULATE_TRIMS | POPULATE_SWITCHES | (firmware->getCapability(GvarsInCS) ? POPULATE_GVARS : 0);
-  }
-  else if (last) {
-    flags |= POPULATE_TELEMETRYEXT;
-  }
-  b->setModel(Helpers::getRawSourceItemModel(&generalSettings, model, flags));
-  b->setCurrentIndex(b->findData(source.toValue()));
-}
-
 TelemetryCustomScreen::~TelemetryCustomScreen()
 {
   delete ui;
@@ -421,12 +411,12 @@ void TelemetryCustomScreen::update()
 
   for (int l=0; l<4; l++) {
     for (int c=0; c<firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
-      populateTelemetrySourceCB(fieldsCB[l][c], screen.body.lines[l].source[c], l==3);
+      fieldsCB[l][c]->setCurrentIndex(fieldsCB[l][c]->findData(screen.body.lines[l].source[c].toValue()));
     }
   }
 
   for (int l=0; l<4; l++) {
-    populateTelemetrySourceCB(barsCB[l], screen.body.bars[l].source);
+    barsCB[l]->setCurrentIndex(barsCB[l]->findData(screen.body.bars[l].source.toValue()));
   }
 
   if (screen.type == TELEMETRY_SCREEN_BARS) {
@@ -526,24 +516,36 @@ void TelemetryCustomScreen::scriptNameEdited()
 
 void TelemetryCustomScreen::customFieldChanged(int value)
 {
-  if (!lock) {
-    int index = sender()->property("index").toInt();
-    screen.body.lines[index/256].source[index%256] = RawSource(((QComboBox *)sender())->itemData(value).toInt());
+  if (lock || !sender() || !qobject_cast<QComboBox *>(sender()))
+    return;
+
+  bool ok;
+  const int index = sender()->property("index").toInt(&ok),
+      i = index / 256,
+      m = index % 256;
+  const RawSource src(qobject_cast<QComboBox *>(sender())->itemData(value).toInt());
+  if (ok && screen.body.lines[i].source[m].toValue() != src.toValue()) {
+    screen.body.lines[i].source[m] = src;
     emit modified();
   }
 }
 
 void TelemetryCustomScreen::barSourceChanged(int value)
 {
-  if (!lock) {
-    QComboBox * cb = qobject_cast<QComboBox*>(sender());
-    int index = cb->property("index").toInt();
-    screen.body.bars[index].source = RawSource(((QComboBox *)sender())->itemData(value).toInt());
-    screen.body.bars[index].barMin = 0;
-    screen.body.bars[index].barMax = 0;
-    updateBar(index);
-    emit modified();
-  }
+  if (lock || !sender() || !qobject_cast<QComboBox *>(sender()))
+    return;
+
+  bool ok;
+  const int index = sender()->property("index").toInt(&ok);
+  const RawSource src(qobject_cast<QComboBox *>(sender())->itemData(value).toInt());
+  if (!ok || screen.body.bars[index].source.toValue() == src.toValue())
+    return;
+
+  screen.body.bars[index].source = src;
+  screen.body.bars[index].barMin = 0;
+  screen.body.bars[index].barMax = 0;
+  updateBar(index);
+  emit modified();
 }
 
 void TelemetryCustomScreen::barMinChanged(double value)
@@ -854,11 +856,15 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     ui->topbarGB->hide();
   }
 
+  RawSourceFilterItemModel * srcModel = (new RawSourceFilterItemModel(&generalSettings, &model, this));
+  connect(this, &TelemetryPanel::updated, srcModel, &RawSourceFilterItemModel::update);
+
   for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++) {
-    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware);
+    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware, srcModel);
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i+1));
     telemetryCustomScreens[i] = tab;
-    connect(tab, SIGNAL(modified()), this, SLOT(onModified()));
+    connect(tab, &TelemetryCustomScreen::modified, this, &TelemetryPanel::onModified);
+    connect(this, &TelemetryPanel::updated, tab, &TelemetryCustomScreen::update);
   }
 
   disableMouseScrolling();
@@ -891,10 +897,9 @@ void TelemetryPanel::update()
     for (int i=0; i<CPN_MAX_SENSORS; ++i) {
       sensorPanels[i]->update();
     }
-    for (int i=0; i<firmware->getCapability(TelemetryCustomScreens); i++) {
-      telemetryCustomScreens[i]->update();
-    }
   }
+
+  emit updated();
 }
 
 void TelemetryPanel::setup()

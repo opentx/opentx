@@ -495,7 +495,7 @@ bool RawSource::isTimeBased(Board::Type board) const
     return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
 }
 
-bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board)
+bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board) const
 {
   if (board == Board::BOARD_UNKNOWN)
     board = getCurrentBoard();

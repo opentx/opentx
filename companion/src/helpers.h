@@ -117,26 +117,8 @@ class CurveGroup : public QObject {
     int lastType;
 };
 
-
-#define POPULATE_NONE           (1<<0)
-#define POPULATE_SOURCES        (1<<1)
-#define POPULATE_TRIMS          (1<<2)
-#define POPULATE_SWITCHES       (1<<3)
-#define POPULATE_GVARS          (1<<4)
-#define POPULATE_TELEMETRY      (1<<5)
-#define POPULATE_TELEMETRYEXT   (1<<6)
-#define POPULATE_VIRTUAL_INPUTS (1<<7)
-#define POPULATE_SCRIPT_OUTPUTS (1<<8)
-
-#define GVARS_VARIANT           0x0001
-#define FRSKY_VARIANT           0x0002
-
 namespace Helpers
 {
-  void addRawSourceItems(QStandardItemModel * itemModel, const RawSourceType & type, int count, const GeneralSettings * const generalSettings = NULL,
-                         const ModelData * const model = NULL, const int start = 0);
-  QStandardItemModel * getRawSourceItemModel(const GeneralSettings * const generalSettings = NULL, const ModelData * const model = NULL, unsigned int flags = 0);
-
   void populateGvarUseCB(QComboBox *b, unsigned int phase);
   void populateGVCB(QComboBox & b, int value, const ModelData & model);
   QString getAdjustmentString(int16_t val, const ModelData * model = NULL, bool sign = false);

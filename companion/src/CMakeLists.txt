@@ -204,6 +204,7 @@ set(CPN_COMMON_LIB common)
 
 ############# Supporting libraries ###############
 
+add_subdirectory(datamodels)
 add_subdirectory(firmwares)
 add_subdirectory(shared)
 add_subdirectory(modeledit)
@@ -248,7 +249,7 @@ set(companion_SRCS
   wizarddata.cpp
   wizarddialog.cpp
   styleeditdialog.cpp
-  dialogs/filesyncdialog.cpp
+  dialogs/filesyncdialog.cpp         # TODO move to own lib with other dialogs
   )
 
 set(companion_MOC_HDRS

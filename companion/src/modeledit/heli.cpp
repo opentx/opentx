@@ -21,15 +21,15 @@
 #include "heli.h"
 #include "ui_heli.h"
 #include "helpers.h"
+#include "rawitemfilteredmodel.h"
 
 HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
-  ui(new Ui::Heli),
-  rawSourceItemModel(nullptr)
+  ui(new Ui::Heli)
 {
   ui->setupUi(this);
 
-  setDataModels();
+  rawSourceItemModel = new RawSourceFilterItemModel(&generalSettings, &model, RawSource::InputSourceGroups, this);
 
   connect(ui->swashType, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
   connect(ui->swashRingVal, SIGNAL(editingFinished()), this, SLOT(edited()));
@@ -66,19 +66,18 @@ HeliPanel::~HeliPanel()
   delete ui;
 }
 
-void HeliPanel::setDataModels()
+void HeliPanel::updateDataModels()
 {
-  if (rawSourceItemModel)
-    rawSourceItemModel->deleteLater();
-
-  rawSourceItemModel = Helpers::getRawSourceItemModel(&generalSettings, model, POPULATE_NONE | POPULATE_SOURCES | POPULATE_VIRTUAL_INPUTS | POPULATE_SWITCHES | POPULATE_TRIMS);
-  rawSourceItemModel->setParent(this);
+  const bool oldLock = lock;
+  lock = true;
+  rawSourceItemModel->update();
+  lock = oldLock;
 }
 
 void HeliPanel::update()
 {
   lock = true;
-  setDataModels();
+  updateDataModels();
 
   ui->swashType->setCurrentIndex(model->swashRingData.type);
   ui->swashCollectiveSource->setModel(rawSourceItemModel);
