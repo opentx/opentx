@@ -46,7 +46,10 @@ class AST_Element:
         return self.elmts
 
     def append(self,elmt):
-        self.elmts.append(elmt)
+        if isinstance(elmt, list):
+            self.elmts.extend(elmt)
+        else:
+            self.elmts.append(elmt)
 
     def str(self):
         if hasattr(self,'value'):
@@ -54,7 +57,10 @@ class AST_Element:
                 return '{}:\t{} ({})'.format(self.name,self.value,self.ann)
             return '{}:\t{}'.format(self.name,self.value)
         elif hasattr(self,'type'):
-            return '{}\t{}'.format(self.type, self.name)
+            if hasattr(self,'var_type'):
+                return '{} {}\t{}'.format(self.type, self.var_type, self.name)
+            else:
+                return '{}\t{}'.format(self.type, self.name)
         return self.name
 
 class FieldAST(AST_Element):
@@ -81,25 +87,29 @@ class FieldAST(AST_Element):
 
 
 class StructAST(AST_Element):
+    type = 'struct'
+
     def __init__(self, name, cursor):
         if name == '':
             name = 'anonymous_' + self.name_prefix() + get_next_anon()
         else:
             name = self.name_prefix() + name
+
         super(StructAST, self).__init__(name, cursor)
 
     def name_prefix(self):
-        return 'struct_'
+        return self.type + '_'
 
 class UnionAST(StructAST):
-    def name_prefix(self):
-        return 'union_'
+    type = 'union'
         
 class EnumAST(AST_Element):
     def __init__(self, name, cursor):
         super(EnumAST, self).__init__('enum_' + name, cursor)
 
 class AST:
+    name = 'ROOT'
+
     def __init__(self):
         self.structs = []
         self.enums = []
@@ -121,24 +131,55 @@ class AST:
     
     def append(self, elmt):
         if isinstance(elmt, StructAST):
-            #print(elmt)
             self.structs.append(elmt)
         elif isinstance(elmt, EnumAST):
             self.enums.append(elmt)
 
     def str(self):
-        return 'ROOT'
+        return self.name
 
-def parse_struct(node):
-    st = StructAST(node.spelling, node)
-    for c in node.get_children():
-        parse_field(st,c)            
-    return st
+def parse_struct(ast, node):
+    st = None
 
-def parse_union(node):
-    st = UnionAST(node.spelling, node)
+    if ast is not RootAST:
+        ast.var_type = ast.type
+        ast.type = 'struct'
+        #print("ast.type = " + ast.type + "; ast.var_type = " + ast.var_type)
+
+    if node.is_anonymous():
+        st = ast
+        st.var_type = 'anonymous_struct_' + get_next_anon()
+    else:
+        st = StructAST(node.spelling, node)
+        #ast.var_type = st.name
+
     for c in node.get_children():
         parse_field(st,c)
+
+    if st is not ast:
+        ast.append(st)
+
+    return st
+
+def parse_union(ast, node):
+    st = None
+
+    if ast is not RootAST:
+        ast.var_type = ast.type
+        ast.type = 'union'
+
+    if node.is_anonymous():
+        st = ast
+        st.var_type = 'anonymous_union_' + get_next_anon()
+    else:
+        st = UnionAST(node.spelling, node)
+
+    for c in node.get_children():
+        parse_field(st,c)
+
+    if st is not ast:
+        ast.append(st)
+
     return st
 
 def get_annotations(node):
@@ -159,15 +200,19 @@ def parse_field(ast,node):
     st = None
     f = FieldAST(node.spelling, node)
 
+    root = RootAST
+    if node.is_anonymous():
+        root = f
+    
     if node.type.kind == TypeKind.RECORD:
-        st = parse_node(RootAST,node.type.get_declaration())
+        st = parse_node(root,node.type.get_declaration())
     elif node.type.kind == TypeKind.ELABORATED:
-        st = parse_node(RootAST,node.type.get_declaration())
+        st = parse_node(root,node.type.get_declaration())
     elif node.type.kind == TypeKind.CONSTANTARRAY:
         et = node.type.element_type
-        st = parse_node(RootAST,et.get_declaration())
+        parse_node(root,et.get_declaration())
     elif node.type.kind == TypeKind.ENUM:
-        st = parse_node(RootAST,node.type.get_declaration())
+        parse_node(root,node.type.get_declaration())
     else:
         pass
         #print('{} {}'.format(node.spelling, str(node.type.kind)))
@@ -175,11 +220,12 @@ def parse_field(ast,node):
     ann = get_annotations(node)
     if len(ann) > 0:
         for a in ann:
-            #print(RootAST.get_enums())
             if a['type'] == 'enum' and not RootAST.has_enum(a['val']):
                 parse_node(RootAST,get_top_node(a['val']))
-    elif st is not None:
-        f.type = st.name
+    elif st is not None and st is not f:
+        #print("obj = '{}'".format(st.str()))
+        f.var_type = st.name
+        f.type = st.type
 
     ast.append(f)
 
@@ -198,27 +244,24 @@ def parse_enum(ast,node):
     st = EnumAST(node.spelling or node.displayname, node)
     for c in node.get_children():
         parse_enum_field(st,c)
-    return st
-        
+    ast.append(st)
+
 def parse_node(ast,node):
     st = None
 
     if node.kind == CursorKind.STRUCT_DECL:
-        st = parse_struct(node)
+        st = parse_struct(ast,node)
     elif node.kind == CursorKind.UNION_DECL:
-        st = parse_union(node)
+        st = parse_union(ast,node)
     elif node.kind == CursorKind.FIELD_DECL:
         parse_field(ast,node)
     elif node.kind == CursorKind.ENUM_DECL:
-        st = parse_enum(ast,node)
+        parse_enum(ast,node)
     elif node.kind in [CursorKind.NO_DECL_FOUND, CursorKind.TYPEDEF_DECL]:
         pass
     else:
         pass
         #print('{} {}'.format(str(node.kind),node.spelling))
-
-    if st is not None:
-        ast.append(st)
 
     return st
 
@@ -257,5 +300,5 @@ parse_node(RootAST, get_top_node(sys.argv[3]))
 #print("Structs:", RootAST.get_structs())
 print(asciitree.draw_tree(RootAST, ast_children, print_ast_node))
 
-#template = jinja2.Template(open(sys.argv[2]).read(), lstrip_blocks=True, trim_blocks=True)
-#print(template.render(root=RootAST))
+template = jinja2.Template(open(sys.argv[2]).read(), lstrip_blocks=True, trim_blocks=True)
+print(template.render(root=RootAST))

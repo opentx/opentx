@@ -21,21 +21,33 @@ static const struct YamlIdStr {{ enum.name }}[] = {
 YAML_{{type|upper}}( {{ tag }}, {{ width }} ),
 {%- endmacro %}
 
-{% for struct in root.get_structs() %}
-static const struct YamlNode {{ struct.name }}[] = {
+{% macro field_list(struct) %}
   {% for elmt in struct.get_elmts() %}
     {% if elmt.type == 'string' %}
-      YAML_STRING({{elmt.name}}, {{elmt.length}}),
+  YAML_STRING({{elmt.name}}, {{elmt.length}}),
     {% elif elmt.type in ['signed','unsigned'] %}
-      {{ field(elmt.type, elmt.name, elmt.bits) }}
+  {{ field(elmt.type, elmt.name, elmt.bits) }}
     {% elif elmt.type == 'enum' %}
-      YAML_ENUM({{elmt.name}}, {{elmt.bits}}, {{elmt.var_type}}),
+  YAML_ENUM({{elmt.name}}, {{elmt.bits}}, {{elmt.var_type}}),
     {% elif elmt.type == 'struct' %}
-      YAML_STRUCT({{elmt.name}}, {{elmt.bits}}, {{elmt.var_type}}, NULL),
+      {% if elmt.name == '' %}
+  {{- field_list(elmt) }}
+      {% else %}
+  YAML_STRUCT("{{elmt.name}}", {{elmt.bits}}, {{elmt.var_type}}, NULL),
+      {% endif %}
+    {% elif elmt.type == 'union' %}
+      {% if elmt.name == '' %}
+  {{- field_list(elmt) }}
+      {% endif %}
     {% else %}
-      // {{elmt.name}}, {{elmt.type}}
+  // {{elmt.name}}, {{elmt.type}}
     {% endif %}
   {% endfor %}
-      YAML_END
+{%- endmacro %}
+
+{% for struct in root.get_structs() %}
+static const struct YamlNode {{ struct.name }}[] = {
+{{ field_list(struct) }}
+  YAML_END
 };
 {% endfor %}
