@@ -429,20 +429,6 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
     result = switchState(cs_idx-SWSRC_FIRST_SWITCH);
 #endif
 
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-    if (startupWarningState < STARTUP_WARNING_DONE) {
-      // if throttle or switch warning is currently active, ignore actual stick position and use wanted values
-      if (cs_idx <= 3) {
-        if (!(g_model.switchWarningEnable & 1)) {     // ID1 to ID3 is just one bit in switchWarningEnable
-          result = (cs_idx)==((g_model.switchWarningState & 3)+1);  // overwrite result with desired value
-        }
-      }
-      else if (!(g_model.switchWarningEnable & (1<<(cs_idx-3)))) {
-        // current switch should not be ignored for warning
-        result = g_model.switchWarningState & (1<<(cs_idx-2)); // overwrite result with desired value
-      }
-    }
-#endif
   }
 #if NUM_XPOTS > 0
   else if (cs_idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
@@ -558,18 +544,13 @@ swsrc_t getMovedSwitch()
 #if defined(GUI)
 void checkSwitches()
 {
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-  static swarnstate_t last_bad_switches = 0xff;
-#else
   swarnstate_t last_bad_switches = 0xff;
-#endif
   swarnstate_t states = g_model.switchWarningState;
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   uint8_t bad_pots = 0, last_bad_pots = 0xff;
 #endif
 
-#if !defined(MODULE_ALWAYS_SEND_PULSES)
   while (1) {
 
 #if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
@@ -583,7 +564,6 @@ void checkSwitches()
     }
 #undef GETADC_COUNT
 #endif
-#endif // !defined(MODULE_ALWAYS_SEND_PULSES)
 
     getMovedSwitch();
 
@@ -648,10 +628,6 @@ void checkSwitches()
 #endif
 
     if (!warn) {
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-      startupWarningState = STARTUP_WARNING_SWITCHES+1;
-      last_bad_switches = 0xff;
-#endif
       break;
     }
 
@@ -765,12 +741,6 @@ void checkSwitches()
       last_bad_switches = switches_states;
     }
 
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-    if (pwrCheck()==e_power_off || keyDown()) {
-      startupWarningState = STARTUP_WARNING_SWITCHES+1;
-      last_bad_switches = 0xff;
-    }
-#else
     if (pwrCheck() == e_power_off || keyDown()) break;
 
     doLoopCommonActions();
@@ -780,7 +750,6 @@ void checkSwitches()
     SIMU_SLEEP(1);
     CoTickDelay(10);
   }
-#endif
 
   LED_ERROR_END();
 }

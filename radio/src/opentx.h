@@ -502,15 +502,6 @@ enum PerOutMode {
 };
 
 
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-extern uint8_t startupWarningState;
-
-enum StartupWarningStates {
-  STARTUP_WARNING_THROTTLE,
-  STARTUP_WARNING_SWITCHES,
-  STARTUP_WARNING_DONE,
-};
-#endif
 
 
 // Fiddle to force compiler to use a pointer

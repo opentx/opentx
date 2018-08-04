@@ -905,15 +905,11 @@ void checkAll()
   checkLowEEPROM();
 #endif
 
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-  startupWarningState = STARTUP_WARNING_THROTTLE;
-#else
   if (g_eeGeneral.chkSum == evalChkSum()) {
     checkTHR();
   }
   checkSwitches();
   checkFailsafe();
-#endif
   checkRSSIAlarmsDisabled();
 
 #if defined(SDCARD)
@@ -941,17 +937,6 @@ void checkAll()
 }
 #endif // GUI
 
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-void checkStartupWarnings()
-{
-  if (startupWarningState < STARTUP_WARNING_DONE) {
-    if (startupWarningState == STARTUP_WARNING_THROTTLE)
-      checkTHR();
-    else
-      checkSwitches();
-  }
-}
-#endif
 
 #if defined(EEPROM_RLC)
 void checkLowEEPROM()
@@ -971,16 +956,6 @@ void checkTHR()
   // in case an output channel is choosen as throttle source (thrTraceSrc>NUM_POTS+NUM_SLIDERS) we assume the throttle stick is the input
   // no other information available at the moment, and good enough to my option (otherwise too much exceptions...)
 
-#if defined(MODULE_ALWAYS_SEND_PULSES)
-  int16_t v = calibratedAnalogs[thrchn];
-  if (v<=THRCHK_DEADBAND-1024 || g_model.disableThrottleWarning || pwrCheck()==e_power_off || keyDown()) {
-    startupWarningState = STARTUP_WARNING_THROTTLE+1;
-  }
-  else {
-    calibratedAnalogs[thrchn] = -1024;
-    RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
-  }
-#else
   if (g_model.disableThrottleWarning) {
     return;
   }
@@ -1046,7 +1021,6 @@ void checkTHR()
     CoTickDelay(10);
 
   }
-#endif
 
   LED_ERROR_END();
 }
