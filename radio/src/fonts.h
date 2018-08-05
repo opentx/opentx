@@ -41,9 +41,9 @@ void loadFonts();
 extern const unsigned char font_5x7[];
 extern const unsigned char font_10x14[];
 
-#if defined(BOLD_FONT) && ((!defined(CPUM64) && !defined(PCBMEGA2560)) || defined(TELEMETRY_NONE)) && !defined(BOOT)
- #define BOLD_SPECIFIC_FONT
- extern const unsigned char font_5x7_B[];
+#if defined(BOLD_FONT) &&  !defined(BOOT)
+  #define BOLD_SPECIFIC_FONT
+  extern const unsigned char font_5x7_B[];
 #endif
 
 extern const unsigned char font_3x5[];

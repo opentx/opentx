@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(FRSKY_HUB)
 void parseTelemHubByte(uint8_t byte)
 {
   static int8_t structPos;
@@ -61,7 +60,6 @@ void parseTelemHubByte(uint8_t byte)
   state = TS_IDLE;
   processHubPacket(structPos, (byte << 8) + lowByte);
 }
-#endif  // #if defined(FRSKY_HUB)
 
 void frskyDProcessPacket(const uint8_t *packet)
 {

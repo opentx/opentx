@@ -585,11 +585,9 @@ extern const char STR_DISABLE_INTERNAL[];
 extern const char STR_LIMIT[];
 #endif
 
-#ifdef FRSKY_HUB
 extern const char STR_MINRSSI[];
 extern const char STR_LATITUDE[];
 extern const char STR_LONGITUDE[];
-#endif
 
 extern const char STR_SHUTDOWN[];
 extern const char STR_SAVEMODEL[];

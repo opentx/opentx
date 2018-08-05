@@ -23,6 +23,10 @@
 
 #include <inttypes.h>
 
+#if !defined(UNUSED)
+  #define UNUSED(x)           ((void)(x)) /* to avoid warnings */
+#endif
+
 #if defined(SIMU) &&  __GNUC__
   #define __ALIGNED(x)        __attribute__((aligned(x)))
   #define __SECTION_USED(s)   __attribute__((used))
@@ -57,17 +61,9 @@
 #endif
 
 #if defined(SIMU)
-  #if !defined(FORCEINLINE)
-    #define FORCEINLINE inline
-  #endif
-  #if !defined(NOINLINE)
-    #define NOINLINE
-  #endif
   #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
 #else
-  #define FORCEINLINE inline __attribute__ ((always_inline))
-  #define NOINLINE    __attribute__ ((noinline))
   #define SIMU_SLEEP(x)
   #define SIMU_SLEEP_NORET(x)
   #define CONVERT_PTR_UINT(x) ((uint32_t)(x))

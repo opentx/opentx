@@ -173,7 +173,7 @@ void displayTrims(uint8_t phase)
   }
 }
 
-FORCEINLINE void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
+void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
 {
   const TimerData & timer = g_model.timers[index];
   if (timer.mode) {

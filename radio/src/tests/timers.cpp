@@ -20,17 +20,9 @@
 
 #include "gtests.h"
 
-
-#if defined(ACCURAT_THROTTLE_TIMER)
-  #define THR_100    128      // approximately 10% full throttle
-  #define THR_50      64      // approximately 10% full throttle
-  #define THR_10      13      // approximately 10% full throttle
-#else
-  #define THR_100     32      // approximately 10% full throttle
-  #define THR_50      16      // approximately 10% full throttle
-  #define THR_10       3      // approximately 10% full throttle
-#endif
-
+#define THR_100    128      // approximately 10% full throttle
+#define THR_50      64      // approximately 10% full throttle
+#define THR_10      13      // approximately 10% full throttle
 
 #define TEST_AB_EQUAL(a, b) if (a != b) { return ::testing::AssertionFailure() << \
                             #a "= " << (uint32_t)a << ", " << #b "= " << (uint32_t)b; };
@@ -165,13 +157,8 @@ TEST(Timers, timerThrottleRelative)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(1,         0, 0, TMR_RUNNING,   0));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_RUNNING, 100));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100,  THR_50, 0, TMR_RUNNING, 150)); // 50% throttle == 50s
-#if defined(ACCURAT_THROTTLE_TIMER)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100,  THR_10, 0, TMR_RUNNING, 160)); // 10% throttle == 10s
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100,       0, 0, TMR_RUNNING, 160));
-#else
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(100,  THR_10, 0, TMR_RUNNING, 159)); // 10% throttle == 10s
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(100,       0, 0, TMR_RUNNING, 159));
-#endif
 
   // test down-running
   initModelTimer(0, TMRMODE_THR_REL, 200);
@@ -180,13 +167,8 @@ TEST(Timers, timerThrottleRelative)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(1,         0, 0, TMR_RUNNING, 199));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_RUNNING,  99));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(200,  THR_50, 0, TMR_NEGATIVE, -1)); // 50% throttle == 100s
-#if defined(ACCURAT_THROTTLE_TIMER)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100,  THR_10, 0, TMR_NEGATIVE,-11)); // 10% throttle == 10s
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_STOPPED,-111));
-#else
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(100,  THR_10, 0, TMR_NEGATIVE,-10)); // 10% throttle == 10s
-  EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_100, 0, TMR_STOPPED,-110));
-#endif
 }
 
 TEST(Timers, timerThrottleTriggered)

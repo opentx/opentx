@@ -372,11 +372,9 @@ const char STR_AND_SWITCH[]  = TR_AND_SWITCH;
 const char STR_SF[]  = TR_SF;
 const char STR_GF[]  = TR_GF;
 
-#if defined(FRSKY_HUB)
 const char STR_MINRSSI[]  = TR_MINRSSI;
 const char STR_LATITUDE[]  = TR_LATITUDE;
 const char STR_LONGITUDE[]  = TR_LONGITUDE;
-#endif
 
 const char STR_SHUTDOWN[]  = TR_SHUTDOWN;
 const char STR_SAVEMODEL[]  = TR_SAVEMODEL;

@@ -259,9 +259,8 @@ enum AlarmLevel {
 #define BYTESTUFF                         0x7d
 #define STUFF_MASK                        0x20
 
-  #define frskySendAlarms()
+#define frskySendAlarms()
 
-#if defined(FRSKY_HUB)
 typedef enum {
   TS_IDLE = 0,  // waiting for 0x5e frame marker
   TS_DATA_ID,   // waiting for dataID
@@ -269,7 +268,6 @@ typedef enum {
   TS_DATA_HIGH, // waiting for data high byte
   TS_XOR = 0x80 // decode stuffed byte
 } TS_STATE;
-#endif
 
 // FrSky D Telemetry Protocol
 void processHubPacket(uint8_t id, int16_t value);

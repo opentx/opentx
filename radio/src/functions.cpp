@@ -269,7 +269,6 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             break;
 #endif
 
-#if defined(MASTER_VOLUME)
           case FUNC_VOLUME:
           {
             getvalue_t raw = getValue(CFN_PARAM(cfn));
@@ -280,7 +279,6 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             requiredSpeakerVolume = ((1024 + requiredSpeakerVolumeRawLast) * VOLUME_LEVEL_MAX) / 2048;
             break;
           }
-#endif
 
 #if defined(SDCARD)
           case FUNC_PLAY_SOUND:

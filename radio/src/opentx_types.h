@@ -21,12 +21,13 @@
 #ifndef _OTXTYPES_H_
 #define _OTXTYPES_H_
 
-  typedef uint32_t tmr10ms_t;
-  typedef int32_t rotenc_t;
-  typedef int32_t getvalue_t;
-  typedef uint32_t mixsrc_t;
-  typedef int32_t swsrc_t;
-  typedef int16_t safetych_t;
-  typedef uint16_t bar_threshold_t;
+#include <inttypes.h>
+
+typedef uint32_t tmr10ms_t;
+typedef int32_t rotenc_t;
+typedef int32_t getvalue_t;
+typedef uint32_t mixsrc_t;
+typedef int32_t swsrc_t;
+typedef int16_t safetych_t;
 
 #endif // _OTXTYPES_H_

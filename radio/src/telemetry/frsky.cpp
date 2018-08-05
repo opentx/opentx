@@ -20,10 +20,7 @@
 
 #include "opentx.h"
 
-
-
-
-NOINLINE void processFrskyTelemetryData(uint8_t data)
+void processFrskyTelemetryData(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
 
