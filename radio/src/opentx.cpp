@@ -48,7 +48,7 @@ union ReusableBuffer reusableBuffer __DMA;
 uint8_t* MSC_BOT_Data = reusableBuffer.MSC_BOT_Data;
 #endif
 
-const pm_uint8_t bchout_ar[]  = {
+const uint8_t bchout_ar[]  = {
     0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
     0x4B, 0x4E, 0x63, 0x6C, 0x72, 0x78,
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
@@ -56,7 +56,7 @@ const pm_uint8_t bchout_ar[]  = {
 
 uint8_t channel_order(uint8_t x)
 {
-  return ( ((pgm_read_byte(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
+  return ( ((*(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
 }
 
 /*
@@ -65,7 +65,7 @@ mode2 rud thr ele ail
 mode3 ail ele thr rud
 mode4 ail thr ele rud
 */
-const pm_uint8_t modn12x3[]  = {
+const uint8_t modn12x3[]  = {
     0, 1, 2, 3,
     0, 2, 1, 3,
     3, 1, 2, 0,
@@ -1026,7 +1026,7 @@ void checkAlarm() // added by Gohst
   }
 }
 
-void alert(const pm_char * title, const pm_char * msg , uint8_t sound)
+void alert(const char * title, const char * msg , uint8_t sound)
 {
   LED_ERROR_BEGIN();
 
@@ -1562,34 +1562,8 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-#if defined(NAVIGATION_STICKS)
-uint8_t StickScrollAllowed;
-uint8_t StickScrollTimer;
-static const pm_uint8_t rate[]  = { 0, 0, 100, 40, 16, 7, 3, 1 } ;
-
-uint8_t calcStickScroll( uint8_t index )
-{
-  uint8_t direction;
-  int8_t value;
-
-  if ( ( g_eeGeneral.stickMode & 1 ) == 0 )
-    index ^= 3;
-
-  value = calibratedAnalogs[index] / 128;
-  direction = value > 0 ? 0x80 : 0;
-  if (value < 0)
-    value = -value;                        // (abs)
-  if (value > 7)
-    value = 7;
-  value = pgm_read_byte(rate+(uint8_t)value);
-  if (value)
-    StickScrollTimer = STICK_SCROLL_TIMEOUT;               // Seconds
-  return value | direction;
-}
-#endif
-
-  #define OPENTX_START_ARGS            uint8_t splash=true
-  #define OPENTX_START_SPLASH_NEEDED() (splash)
+#define OPENTX_START_ARGS            uint8_t splash=true
+#define OPENTX_START_SPLASH_NEEDED() (splash)
 
 void opentxStart(OPENTX_START_ARGS)
 {
@@ -1717,81 +1691,7 @@ void opentxResume()
 }
 #endif
 
-#if defined(NAVIGATION_STICKS)
-uint8_t getSticksNavigationEvent()
-{
-  uint8_t evt = 0;
-  if (StickScrollAllowed) {
-    if ( StickScrollTimer ) {
-      static uint8_t repeater;
-      uint8_t direction;
-      uint8_t value;
-
-      if ( repeater < 128 )
-      {
-        repeater += 1;
-      }
-      value = calcStickScroll( 2 );
-      direction = value & 0x80;
-      value &= 0x7F;
-      if ( value )
-      {
-        if ( repeater > value )
-        {
-          repeater = 0;
-          if ( evt == 0 )
-          {
-            if ( direction )
-            {
-              evt = EVT_KEY_FIRST(KEY_UP);
-            }
-            else
-            {
-              evt = EVT_KEY_FIRST(KEY_DOWN);
-            }
-          }
-        }
-      }
-      else
-      {
-        value = calcStickScroll( 3 );
-        direction = value & 0x80;
-        value &= 0x7F;
-        if ( value )
-        {
-          if ( repeater > value )
-          {
-            repeater = 0;
-            if ( evt == 0 )
-            {
-              if ( direction )
-              {
-                evt = EVT_KEY_FIRST(KEY_RIGHT);
-              }
-              else
-              {
-                evt = EVT_KEY_FIRST(KEY_LEFT);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  else {
-    StickScrollTimer = 0;          // Seconds
-  }
-  StickScrollAllowed = 1 ;
-  return evt;
-}
-#endif
-
-
-
-
-
-
-  #define INSTANT_TRIM_MARGIN 10 /* around 1% */
+#define INSTANT_TRIM_MARGIN 10 /* around 1% */
 
 void instantTrim()
 {
@@ -2108,16 +2008,9 @@ int main()
   drawSplash();
 #endif
 
-  sei(); // interrupts needed now
-
-
 #if defined(DSM2_SERIAL) && !defined(TELEMETRY_FRSKY)
   DSM2_Init();
 #endif
-
-
-
-
 
 #if defined(MENU_ROTARY_SW)
   init_rotary_sw();

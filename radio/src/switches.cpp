@@ -553,11 +553,10 @@ void checkSwitches()
 
   while (1) {
 
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
-  #define GETADC_COUNT (MUX_MAX+1)
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   #define GETADC_COUNT 1
 #endif
+
 #ifdef GETADC_COUNT
     for (uint8_t i=0; i<GETADC_COUNT; i++) {
       GET_ADC_IF_MIXER_NOT_RUNNING();

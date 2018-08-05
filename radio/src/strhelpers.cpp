@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if !defined(BOOT)
-const pm_char s_charTab[]  = "_-.,";
+const char s_charTab[]  = "_-.,";
 
 char hex2zchar(uint8_t hex)
 {
@@ -37,7 +37,7 @@ char idx2char(int8_t idx)
   }
   if (idx < 27) return 'A' + idx - 1;
   if (idx < 37) return '0' + idx - 27;
-  if (idx <= 40) return pgm_read_byte(s_charTab+idx-37);
+  if (idx <= 40) return *(s_charTab+idx-37);
 #if LEN_SPECIAL_CHARS > 0
   if (idx <= (LEN_STD_CHARS + LEN_SPECIAL_CHARS)) return 'z' + 5 + idx - 40;
 #endif

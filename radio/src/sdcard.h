@@ -107,7 +107,7 @@ uint32_t sdGetFreeSectors();
 const char * sdCheckAndCreateDirectory(const char * path);
 
 #if !defined(BOOT)
-inline const pm_char * SDCARD_ERROR(FRESULT result)
+inline const char * SDCARD_ERROR(FRESULT result)
 {
   if (result == FR_NOT_READY)
     return STR_NO_SDCARD;

@@ -67,7 +67,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
       else if (i<=width) {
         uint8_t skip = true;
         for (uint8_t j=0; j<lines; j++) {
-          b[j] = pgm_read_byte(pattern++); /*top byte*/
+          b[j] = *(pattern++); /*top byte*/
           if (b[j] != 0xff) {
             skip = false;
           }
@@ -214,7 +214,7 @@ uint8_t getCharWidth(char c, LcdFlags flags)
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
-  const pm_uchar * q;
+  const unsigned char * q;
 
   lcdNextPos = x-1;
 
@@ -303,7 +303,7 @@ uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 }
 #endif
 
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags flags)
+void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags)
 {
   const coord_t orig_x = x;
 
@@ -331,7 +331,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
         break;
 #endif
       default:
-        c = pgm_read_byte(s);
+        c = *s;
         break;
     }
 
@@ -388,31 +388,31 @@ void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdF
 #endif
 }
 
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len)
+void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len)
 {
   lcdDrawSizedText(x, y, s, len, 0);
 }
 
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
+void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
 {
   lcdDrawSizedText(x, y, s, 255, flags);
 }
 
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s)
+void lcdDrawText(coord_t x, coord_t y, const char * s)
 {
   lcdDrawText(x, y, s, 0);
 }
 
-void lcdDrawTextAlignedLeft(coord_t y, const pm_char * s)
+void lcdDrawTextAlignedLeft(coord_t y, const char * s)
 {
   lcdDrawText(0, y, s);
 }
 
 #if !defined(BOOT)
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s,uint8_t idx, LcdFlags flags)
 {
   uint8_t length;
-  length = pgm_read_byte(s++);
+  length = *(s++);
   lcdDrawSizedText(x, y, s+length*idx, length, flags & ~(BSS|ZCHAR));
 }
 

@@ -108,26 +108,19 @@ extern coord_t lcdNextPos;
 #define DISPLAY_END                    (displayBuf + DISPLAY_BUFFER_SIZE)
 #define ASSERT_IN_DISPLAY(p)           assert((p) >= displayBuf && (p) < DISPLAY_END)
 
-
 #if defined(PCBSKY9X)
   extern volatile uint8_t lcdLock ;
   extern volatile uint32_t lcdInputs ;
 #endif
 
-#if defined(BOOT)
-// TODO quick & dirty :(
-typedef const unsigned char pm_uchar;
-typedef const char pm_char;
-#endif
-
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c);
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags);
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags);
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags);
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len, LcdFlags flags);
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s);
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, unsigned char len);
-void lcdDrawTextAlignedLeft(coord_t y, const pm_char * s);
+void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags);
+void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len, LcdFlags flags);
+void lcdDrawText(coord_t x, coord_t y, const char * s);
+void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
+void lcdDrawTextAlignedLeft(coord_t y, const char * s);
 
 #define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
 
@@ -137,7 +130,7 @@ void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode, uint8_t le
 void lcdDrawNumber(coord_t x, coord_t y, lcdint_t val, LcdFlags mode=0);
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx, LcdFlags att=0);
+void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
 #if !defined(BOOT) // TODO not here ...
 void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
@@ -202,7 +195,7 @@ void drawTelemetryTopBar();
 
 
 void lcdClear(void);
-void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att=0);
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const unsigned char * img, uint8_t idx, LcdFlags att=0);
 inline void lcdDrawBitmap(coord_t x, coord_t y, const uint8_t * bitmap)
 {
   lcdDraw1bitBitmap(x, y, bitmap, 0);

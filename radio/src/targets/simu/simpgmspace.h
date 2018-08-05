@@ -77,15 +77,7 @@ void sig(int sgn)
 #undef min
 #undef max
 
-#define APM
 #define __REV
-
-typedef const unsigned char pm_uchar;
-typedef const char pm_char;
-typedef const uint16_t pm_uint16_t;
-typedef const uint8_t pm_uint8_t;
-typedef const int16_t pm_int16_t;
-typedef const int8_t pm_int8_t;
 
 #if defined(STM32)
 extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
@@ -235,13 +227,12 @@ extern uint32_t Master_frequency;
 #define __disable_irq()
 #define __enable_irq()
 
-extern uint8_t portb, portc, porth, dummyport;
-extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
 extern char * main_thread_error;
 
-#define getADC()
-#define GET_ADC_IF_MIXER_NOT_RUNNING()
+static inline void getADC()
+{
+}
 
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
 #define SIMU_SLEEP_NORET(x) do { sleep(x/*ms*/); } while (0)

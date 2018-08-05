@@ -33,8 +33,6 @@ void menuRadioDiagAnalogs(event_t event)
 
   SIMPLE_MENU(STR_MENU_RADIO_ANALOGS, menuTabGeneral, MENU_RADIO_ANALOGS_TEST, HEADER_LINE+ANAS_ITEMS_COUNT);
 
-  STICK_SCROLL_DISABLE();
-
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
 #if (NUM_STICKS+NUM_POTS+NUM_SLIDERS) > 9
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;

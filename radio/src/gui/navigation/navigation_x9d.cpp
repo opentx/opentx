@@ -316,7 +316,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 }
 
 #define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
-#define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL_RAW(row)                (horTab ? *(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
 #define INC(val, min, max)             if (val<max) {val++;} else if (max>min) {val=min;}
@@ -336,7 +336,7 @@ void onLongMenuPress(const char * result)
 
 tmr10ms_t menuEntryTime;
 
-void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
+void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t rowcount, uint8_t flags)
 {
   vertpos_t l_posVert = menuVerticalPosition;
   horzpos_t l_posHorz = menuHorizontalPosition;
@@ -377,7 +377,7 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
     }
 
     if (!menuCalibrationState && cc != curr) {
-      chainMenu((MenuHandlerFunc)pgm_read_adr(&menuTab[cc]));
+      chainMenu(menuTab[cc]);
     }
 
     if (!(flags&CHECK_FLAG_NO_SCREEN_INDEX)) {

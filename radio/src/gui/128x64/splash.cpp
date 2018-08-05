@@ -41,12 +41,12 @@
 #endif
 
 #if defined(SPLASH)
-const pm_uchar splashdata[]  = {
+const unsigned char splashdata[]  = {
   'S','P','S',0,
   #include "bitmaps/128x64/splash.lbm"
   'S','P','E',0 };
 
-const pm_uchar * const splash_lbm = splashdata+4;
+const unsigned char * const splash_lbm = splashdata+4;
 
 void drawSplash()
 {
@@ -65,12 +65,12 @@ void drawSplash()
 #endif
 
 #if defined(SPLASH_FRSKY)
-const pm_uchar splashdata2[]  = {
+const unsigned char splashdata2[]  = {
   'S','F','S',0,
   #include "bitmaps/128x64/splash_frsky.lbm"
   'S','F','E',0 };
 
-const pm_uchar * const splash2_lbm = splashdata2+4;
+const unsigned char * const splash2_lbm = splashdata2+4;
 
 void drawSecondSplash()
 {

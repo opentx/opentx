@@ -126,7 +126,6 @@ void menuCommonCalib(event_t event)
 
     case CALIB_MOVE_STICKS:
       // MOVE STICKS/POTS
-      STICK_SCROLL_DISABLE();
       lcdDrawText(0*FW, MENU_HEADER_HEIGHT+FH, STR_MOVESTICKSPOTS, INVERS);
       lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+2*FH, STR_MENUWHENDONE);
       for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {

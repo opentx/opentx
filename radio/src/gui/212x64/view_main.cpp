@@ -49,11 +49,11 @@
 #define TRIM_LEN 27
 #define MARKER_WIDTH  5
 
-const pm_uchar logo_taranis[]  = {
+const unsigned char logo_taranis[]  = {
 #include "logo.lbm"
 };
 
-const pm_uchar icons[]  = {
+const unsigned char icons[]  = {
 #include "icons.lbm"
 };
 
@@ -438,8 +438,6 @@ int getSwitchCount()
 void menuMainView(event_t event)
 {
   static bool secondPage = false;
-
-  STICK_SCROLL_DISABLE();
 
   switch(event) {
 

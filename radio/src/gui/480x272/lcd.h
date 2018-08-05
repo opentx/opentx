@@ -120,7 +120,7 @@ extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags=0);
 
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags=0);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
 
 inline void lcdClear()
 {
@@ -132,7 +132,7 @@ inline void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags attr=0)
   lcd->drawText(x, y, s, attr);
 }
 
-inline void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=0)
+inline void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags attr=0)
 {
   lcd->drawSizedText(x, y, s, len, attr);
 }

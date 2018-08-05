@@ -22,7 +22,7 @@
 
 #include "opentx.h"
 
-const pm_uchar sticks[]  = {
+const unsigned char sticks[]  = {
 #include "sticks.lbm"
 };
 
@@ -166,8 +166,8 @@ void menuRadioSetup(event_t event)
             {
               int16_t year = TM_YEAR_BASE + t.tm_year;
               int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
-              static const pm_uint8_t dmon[]  = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
-              dlim += pgm_read_byte(&dmon[t.tm_mon]);
+              static const uint8_t dmon[]  = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+              dlim += dmon[t.tm_mon];
               lcdDrawNumber(RADIO_SETUP_DATE_COLUMN+6*FW-4, y, t.tm_mday, rowattr|LEADING0|RIGHT, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
@@ -559,7 +559,7 @@ void menuRadioSetup(event_t event)
       case ITEM_SETUP_STICK_MODE:
         lcdDrawChar(2*FW, y, '1'+reusableBuffer.generalSettings.stickMode, attr);
         for (uint8_t i=0; i<NUM_STICKS; i++) {
-          drawSource((5*FW-3)+i*(4*FW+2), y, MIXSRC_Rud + pgm_read_byte(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i), 0);
+          drawSource((5*FW-3)+i*(4*FW+2), y, MIXSRC_Rud + *(modn12x3 + 4*reusableBuffer.generalSettings.stickMode + i), 0);
         }
         if (attr && s_editMode>0) {
           CHECK_INCDEC_GENVAR(event, reusableBuffer.generalSettings.stickMode, 0, 3);

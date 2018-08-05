@@ -303,8 +303,6 @@ void onMainViewMenu(const char *result)
 
 void menuMainView(event_t event)
 {
-  STICK_SCROLL_DISABLE();
-
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 

@@ -318,7 +318,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
   uint32_t fontindex = FONTINDEX(flags);
-  const pm_uchar * font = fontsTable[fontindex];
+  const unsigned char * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
   BitmapBuffer * fontcache = NULL;
 

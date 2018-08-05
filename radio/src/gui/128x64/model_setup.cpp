@@ -493,7 +493,7 @@ void menuModelSetup(event_t event)
 #if defined(PCBTARANIS)
         {
           #define FIRSTSW_STR   STR_VSRCRAW+(MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1)*length
-          uint8_t length = pgm_read_byte(STR_VSRCRAW);
+          uint8_t length = STR_VSRCRAW[0];
           horzpos_t l_posHorz = menuHorizontalPosition;
 
           if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 5*(NUM_BODY_LINES-i)) {
@@ -606,7 +606,7 @@ void menuModelSetup(event_t event)
           else {
             if ((states & 0x01) && swactive)
               attr = INVERS;
-            c = pgm_read_byte(STR_VSWITCHES - 2 + 9 + (3*(i+1)));
+            c = *(STR_VSWITCHES - 2 + 9 + (3*(i+1)));
             states >>= 1;
           }
           if (line && (menuHorizontalPosition == i)) {

@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 
-uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay)
+uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay)
 {
   lcdDrawTextAlignedLeft(y, str);
   lcdDrawNumber(MIXES_2ND_COLUMN, y, (10/DELAY_STEP)*delay, attr|PREC1|LEFT);
@@ -39,7 +39,7 @@ uint8_t s_copySrcCh;
   uint8_t editNameCursorPos = 0;
 
 
-void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active)
+void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8_t size, event_t event, uint8_t active)
 {
   lcdDrawTextAlignedLeft(y, label);
   editName(x, y, name, size, event, active);

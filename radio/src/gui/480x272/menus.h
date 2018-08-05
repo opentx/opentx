@@ -428,8 +428,8 @@ extern uint8_t s_curveChan;
 #define WARNING_TYPE_INPUT     3
 #define WARNING_TYPE_INFO      4
 
-extern const pm_char * warningText;
-extern const pm_char * warningInfoText;
+extern const char * warningText;
+extern const char * warningInfoText;
 extern uint8_t         warningInfoLength;
 extern uint8_t         warningResult;
 extern uint8_t         warningType;

@@ -228,17 +228,6 @@
 
 #if defined(SIMU)
   #include "targets/simu/simpgmspace.h"
-#else
-  typedef const unsigned char pm_uchar;
-  typedef const char pm_char;
-  typedef const uint16_t pm_uint16_t;
-  typedef const uint8_t pm_uint8_t;
-  typedef const int16_t pm_int16_t;
-  typedef const int8_t pm_int8_t;
-  #define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
-  #define pgm_read_adr(x)              *(x)
-  #define cli()
-  #define sei()
 #endif
 
 #include "debug.h"
@@ -309,20 +298,14 @@ void memswap(void * a, void * b, uint8_t size);
   #define PPM_CH_CENTER(ch)            (PPM_CENTER)
 #endif
 
-  #include "fifo.h"
-  #include "io/io_arm.h"
-  // This doesn't need protection on this processor
-  extern volatile tmr10ms_t g_tmr10ms;
-  #define get_tmr10ms()                g_tmr10ms
+#include "fifo.h"
+#include "io/io_arm.h"
 
-#if defined(NAVIGATION_STICKS)
-  extern uint8_t StickScrollAllowed;
-  extern uint8_t StickScrollTimer;
-  #define STICK_SCROLL_TIMEOUT          9
-  #define STICK_SCROLL_DISABLE()        StickScrollAllowed = 0
-#else
-  #define STICK_SCROLL_DISABLE()
-#endif
+extern volatile tmr10ms_t g_tmr10ms;
+static inline tmr10ms_t get_tmr10ms()
+{
+  return g_tmr10ms;
+}
 
 #if defined(CLI)
 #include "cli.h"
@@ -331,12 +314,10 @@ void memswap(void * a, void * b, uint8_t size);
 #include "timers.h"
 #include "storage/storage.h"
 #include "pulses/pulses.h"
-
 #include "pulses/modules.h"
 
-
-  #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
-  #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
+#define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
+#define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
 
 typedef struct {
   MASK_FUNC_TYPE activeFunctions;
@@ -365,8 +346,8 @@ typedef struct {
   #endif
 #endif
 
-extern const pm_uint8_t bchout_ar[];
-extern const pm_uint8_t modn12x3[];
+extern const uint8_t bchout_ar[];
+extern const uint8_t modn12x3[];
 
 //convert from mode 1 to mode stickMode
 //NOTICE!  =>  0..3 -> 0..3
@@ -374,7 +355,7 @@ extern const pm_uint8_t modn12x3[];
 #define ELE_STICK 1
 #define THR_STICK 2
 #define AIL_STICK 3
-#define CONVERT_MODE(x)          (((x)<=AIL_STICK) ? pgm_read_byte(modn12x3 + 4*g_eeGeneral.stickMode + (x)) : (x) )
+#define CONVERT_MODE(x)          (((x)<=AIL_STICK) ? *(modn12x3 + 4*g_eeGeneral.stickMode + (x)) : (x) )
 
 #if defined(PCBXLITE)
   #define CONVERT_MODE_TRIMS(x)  (((x) == RUD_STICK) ? AIL_STICK : ((x) == AIL_STICK) ? RUD_STICK : (x))
@@ -488,7 +469,7 @@ uint16_t evalChkSum();
   #define ALERT(title, msg, sound) alert(title, msg, sound)
 #endif
 
-void alert(const pm_char * t, const pm_char * s , uint8_t sound);
+void alert(const char * t, const char * s , uint8_t sound);
 
 enum PerOutMode {
   e_perout_mode_normal = 0,
@@ -610,7 +591,7 @@ extern uint8_t unexpectedShutdown;
 extern uint16_t maxMixerDuration;
 
 
-  #define DURATION_MS_PREC2(x) ((x)/20)
+#define DURATION_MS_PREC2(x) ((x)/20)
 
 #if defined(THRTRACE)
   #if defined(COLORLCD)
@@ -660,10 +641,16 @@ void checkSwitches();
 void checkAlarm();
 void checkAll();
 
-#if !defined(SIMU)
 void getADC();
-#define GET_ADC_IF_MIXER_NOT_RUNNING()    do { if (s_pulses_paused) getADC(); } while(0)
-#endif
+static inline void GET_ADC_IF_MIXER_NOT_RUNNING()
+{
+  do {
+    if (s_pulses_paused) {
+      getADC();
+    }
+  }
+  while(0);
+}
 
 #include "sbus.h"
 
@@ -1287,7 +1274,7 @@ inline int div_and_round(int num, int den)
 
 #if defined(TELEMETRY_FRSKY)
 
-extern const pm_uint8_t bchunit_ar[];
+extern const uint8_t bchunit_ar[];
 
   #define FRSKY_MULTIPLIER_MAX 5
 
@@ -1327,7 +1314,7 @@ void varioWakeup();
 #endif
 
 #if defined(PCBTARANIS)
-  extern const pm_uchar logo_taranis[];
+  extern const unsigned char logo_taranis[];
 #endif
 
 #if defined(STM32)

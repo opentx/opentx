@@ -20,8 +20,8 @@
 
 #include "opentx.h"
 
-const pm_char * warningText = NULL;
-const pm_char * warningInfoText;
+const char * warningText = NULL;
+const char * warningInfoText;
 uint8_t         warningInfoLength;
 uint8_t         warningType;
 uint8_t         warningResult = 0;
@@ -39,7 +39,7 @@ void drawMessageBox()
   // could be a place for a warningInfoText
 }
 
-void showMessageBox(const pm_char * str)
+void showMessageBox(const char * str)
 {
   warningText = str;
   drawMessageBox();
@@ -47,11 +47,11 @@ void showMessageBox(const pm_char * str)
   lcdRefresh();
 }
 
-const pm_uchar ASTERISK_BITMAP[]  = {
+const unsigned char ASTERISK_BITMAP[]  = {
 #include "asterisk.lbm"
 };
 
-void drawAlertBox(const pm_char * title, const pm_char * text, const char * action)
+void drawAlertBox(const char * title, const char * text, const char * action)
 {
   lcdClear();
   lcdDraw1bitBitmap(2, 0, ASTERISK_BITMAP, 0, 0);
@@ -77,7 +77,7 @@ void drawAlertBox(const pm_char * title, const pm_char * text, const char * acti
 #undef MESSAGE_LCD_OFFSET
 }
 
-void showAlertBox(const pm_char * title, const pm_char * text, const char * action , uint8_t sound)
+void showAlertBox(const char * title, const char * text, const char * action , uint8_t sound)
 {
   drawAlertBox(title, text, action);
   

@@ -647,53 +647,53 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 // we don't need the special eeprom/flash string handling, just define them as
 // local strings
 
-const pm_char STR_SUBTYPE_FLYSKY[]  =     "\004""Std\0""V9x9""V6x6""V912""CX20";
+const char STR_SUBTYPE_FLYSKY[]  =     "\004""Std\0""V9x9""V6x6""V912""CX20";
 
-const pm_char STR_SUBTYPE_AFHDS2A[]  =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
+const char STR_SUBTYPE_AFHDS2A[]  =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
 
-const pm_char STR_SUBTYPE_FRSKY[]  =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch";
+const char STR_SUBTYPE_FRSKY[]  =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch";
 
-const pm_char STR_SUBTYPE_HISKY[]  =      "\005""HiSky""HK310";
+const char STR_SUBTYPE_HISKY[]  =      "\005""HiSky""HK310";
 
-const pm_char STR_SUBTYPE_DSM[]  =        "\006""2 22ms""2 11ms""X 22ms""X 11ms";
+const char STR_SUBTYPE_DSM[]  =        "\006""2 22ms""2 11ms""X 22ms""X 11ms";
 
-const pm_char STR_SUBTYPE_YD717[]  =      "\007""YD717\0 ""SKYWLKR""Syma X2""XINXUN\0""NIHUI\0  ";
+const char STR_SUBTYPE_YD717[]  =      "\007""YD717\0 ""SKYWLKR""Syma X2""XINXUN\0""NIHUI\0  ";
 
-const pm_char STR_SUBTYPE_SYMAX[]  =      "\003""Std""5c\0";
+const char STR_SUBTYPE_SYMAX[]  =      "\003""Std""5c\0";
 
-const pm_char STR_SUBTYPE_SLT[]  =        "\005""SLT\0 ""Vista";
+const char STR_SUBTYPE_SLT[]  =        "\005""SLT\0 ""Vista";
 
-const pm_char STR_SUBTYPE_CX10[]  =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041""Q242\0  ";
+const char STR_SUBTYPE_CX10[]  =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041""Q242\0  ";
 
-const pm_char STR_SUBTYPE_CG023[]  =      "\005""CG023""YD829";
+const char STR_SUBTYPE_CG023[]  =      "\005""CG023""YD829";
 
-const pm_char STR_SUBTYPE_KN[]  =         "\006""WLtoys""FeiLun";
+const char STR_SUBTYPE_KN[]  =         "\006""WLtoys""FeiLun";
 
-const pm_char STR_SUBTYPE_MT99[]  =       "\005""MT99\0""H7\0  ""YZ\0  ""LS\0  ""FY805";
+const char STR_SUBTYPE_MT99[]  =       "\005""MT99\0""H7\0  ""YZ\0  ""LS\0  ""FY805";
 
-const pm_char STR_SUBTYPE_MJXQ[]  =       "\005""WLH08""X600\0""X800\0""H26D\0""E010\0""H26WH";
+const char STR_SUBTYPE_MJXQ[]  =       "\005""WLH08""X600\0""X800\0""H26D\0""E010\0""H26WH";
 
-const pm_char STR_SUBTYPE_HONTAI[]  =     "\007""Std\0   ""JJRC X1""X5C1cln";
+const char STR_SUBTYPE_HONTAI[]  =     "\007""Std\0   ""JJRC X1""X5C1cln";
 
-const pm_char STR_SUBTYPE_Q2X2[]  =       "\004""Q222""Q242""Q282";
+const char STR_SUBTYPE_Q2X2[]  =       "\004""Q222""Q242""Q282";
 
-const pm_char STR_SUBTYPE_Q303[]  =       "\006""Q303\0 ""CX35\0 ""CX10D\0""CX10WD";
+const char STR_SUBTYPE_Q303[]  =       "\006""Q303\0 ""CX35\0 ""CX10D\0""CX10WD";
 
-const pm_char STR_SUBTYPE_WK2x01[]  =     "\006""WK2801""WK2401""W6_5_1""W6_6_1""W6_Hel""W6_HeI";
+const char STR_SUBTYPE_WK2x01[]  =     "\006""WK2801""WK2401""W6_5_1""W6_6_1""W6_Hel""W6_HeI";
 
-const pm_char STR_SUBTYPE_V2X2[]  =       "\006""V2x2\0 ""JXD506";
+const char STR_SUBTYPE_V2X2[]  =       "\006""V2x2\0 ""JXD506";
 
-const pm_char STR_SUBTYPE_BAYANG[]  =     "\007""Bayang\0""H8S3D\0 ""X16 AH\0 ""irdrone";
+const char STR_SUBTYPE_BAYANG[]  =     "\007""Bayang\0""H8S3D\0 ""X16 AH\0 ""irdrone";
 
-const pm_char STR_SUBTYPE_FY326[]  =      "\005""FY326""FY319";
+const char STR_SUBTYPE_FY326[]  =      "\005""FY326""FY319";
 
-const pm_char STR_SUBTYPE_CABELL[]  =     "\006""CAB_V3""C_TELM""-\0    ""-\0    ""-\0    ""-\0    ""F_SAFE""UNBIND";
+const char STR_SUBTYPE_CABELL[]  =     "\006""CAB_V3""C_TELM""-\0    ""-\0    ""-\0    ""-\0    ""F_SAFE""UNBIND";
 
-const pm_char STR_SUBTYPE_H83D[]  =       "\006""H8_3D\0""H20H\0 ""H20Mini""H30Mini";
+const char STR_SUBTYPE_H83D[]  =       "\006""H8_3D\0""H20H\0 ""H20Mini""H30Mini";
 
-const pm_char STR_SUBTYPE_CORONA[]  =     "\005""V1\0  ""V2\0  ""FD V3";
+const char STR_SUBTYPE_CORONA[]  =     "\005""V1\0  ""V2\0  ""FD V3";
 
-const pm_char STR_SUBTYPE_HITEC[]  =      "\006""Optima\0""Minima";
+const char STR_SUBTYPE_HITEC[]  =      "\006""Optima\0""Minima";
 
 const mm_protocol_definition multi_protocols[] = {
 

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-const pm_uchar SLEEP_BITMAP[]  = {
+const unsigned char SLEEP_BITMAP[]  = {
   #include "../../bitmaps/212x64/sleep.lbm"
 };
 
@@ -34,7 +34,7 @@ void drawSleepBitmap()
 }
 
 #if defined(PWR_BUTTON_PRESS)
-const pm_uchar SHUTDOWN_BITMAP[]  = {
+const unsigned char SHUTDOWN_BITMAP[]  = {
   #include "../../bitmaps/212x64/shutdown.lbm"
 };
 
@@ -125,12 +125,12 @@ void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t 
   }
 }
 
-void title(const pm_char * s)
+void title(const char * s)
 {
   lcdDrawText(0, 0, s, INVERS);
 }
 
-choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event)
+choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event)
 {
   drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
@@ -138,7 +138,7 @@ choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *
   return value;
 }
 
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, event_t event )
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, LcdFlags attr, event_t event )
 {
   drawCheckBox(x, y, value, attr);
   return editChoice(x, y, label, NULL, value, 0, 1, attr, event);

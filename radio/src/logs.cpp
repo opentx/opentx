@@ -22,7 +22,7 @@
 #include "ff.h"
 
 FIL g_oLogFile __DMA;
-const pm_char * g_logError = NULL;
+const char * g_logError = NULL;
 uint8_t logDelay;
 
 void writeHeader();
@@ -41,7 +41,7 @@ void logsInit()
   memset(&g_oLogFile, 0, sizeof(g_oLogFile));
 }
 
-const pm_char * logsOpen()
+const char * logsOpen()
 {
   // Determine and set log file filename
   FRESULT result;
@@ -192,7 +192,7 @@ uint32_t getLogicalSwitchesStates(uint8_t first)
 
 void logsWrite()
 {
-  static const pm_char * error_displayed = NULL;
+  static const char * error_displayed = NULL;
 
   if (isFunctionActive(FUNCTION_LOGS) && logDelay > 0) {
     tmr10ms_t tmr10ms = get_tmr10ms();
@@ -200,7 +200,7 @@ void logsWrite()
       lastLogTime = tmr10ms;
 
       if (!g_oLogFile.obj.fs) {
-        const pm_char * result = logsOpen();
+        const char * result = logsOpen();
         if (result != NULL) {
           if (result != error_displayed) {
             error_displayed = result;
