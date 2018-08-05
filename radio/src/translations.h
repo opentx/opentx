@@ -487,7 +487,7 @@ extern const char STR_MENUTORESET[];
 extern const char STR_PPM_TRAINER[];
 extern const char STR_CH[];
 extern const char STR_MODEL[];
-extern const char STR_FP[];
+extern const char STR_FM[];
 extern const char STR_MIX[];
 extern const char STR_EEPROMLOWMEM[];
 extern const char STR_ALERT[];

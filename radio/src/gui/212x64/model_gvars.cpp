@@ -107,7 +107,7 @@ void menuModelGVarOne(event_t event)
         break;
 
       default:
-        drawStringWithIndex(0, y, STR_FP, k-GVAR_FIELD_FM0);
+        drawStringWithIndex(0, y, STR_FM, k-GVAR_FIELD_FM0);
         editGVarValue(GVAR_2ND_COLUMN, y, event, s_currIdx, k-GVAR_FIELD_FM0, LEFT|attr);
         break;
     }
@@ -142,7 +142,7 @@ void menuModelGVars(event_t event)
   if (after2seconds) {
     menuTitle = STR_GVARS;
     for (int i=0; i<MAX_GVARS; i++) {
-      drawStringWithIndex(GVARS_FM_COLUMN(i), 1, STR_FP, i, SMLSIZE|(getFlightMode()==i ? INVERS : 0));
+      drawStringWithIndex(GVARS_FM_COLUMN(i), 1, STR_FM, i, SMLSIZE|(getFlightMode()==i ? INVERS : 0));
     }
   }
   else {

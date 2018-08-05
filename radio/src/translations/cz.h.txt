@@ -701,7 +701,7 @@
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
-#define TR_FP                  "LR"
+#define TR_FM                  "LR"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Dochází EEPROM"
 #define TR_ALERT               "\006   POZOR"

@@ -40,7 +40,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
   int modesCount = firmware->getCapability(FlightModes);
 
-  // Phase name
+  // Flight mode name
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   if (modesCount) {
     ui->name->setValidator(new QRegExpValidator(rx, this));
@@ -51,7 +51,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
     ui->name->setDisabled(true);
   }
 
-  // Phase switch
+  // Flight mode switch
   if (phaseIdx > 0) {
     ui->swtch->setModel(switchModel);
     connect(ui->swtch, SIGNAL(activated(int)), this, SLOT(phaseSwitchChanged(int)));

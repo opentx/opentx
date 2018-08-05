@@ -223,7 +223,7 @@ const char * const audioFilenames[] = {
 };
 
 BitField<(AU_SPECIAL_SOUND_FIRST)> sdAvailableSystemAudioFiles;
-BitField<(MAX_FLIGHT_MODES * 2/*on, off*/)> sdAvailablePhaseAudioFiles;
+BitField<(MAX_FLIGHT_MODES * 2/*on, off*/)> sdAvailableFlightmodeAudioFiles;
 BitField<(SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT)> sdAvailableSwitchAudioFiles;
 BitField<(MAX_LOGICAL_SWITCHES * 2/*on, off*/)> sdAvailableLogicalSwitchAudioFiles;
 
@@ -294,10 +294,10 @@ char * getModelAudioPath(char * path)
   return result;
 }
 
-void getPhaseAudioFile(char * filename, int index, unsigned int event)
+void getFlightmodeAudioFile(char * filename, int index, unsigned int event)
 {
   char * str = getModelAudioPath(filename);
-  char * tmp = strcat_phasename(str, index);
+  char * tmp = strcatFlightmodeName(str, index);
   strcpy(tmp, suffixes[event]);
   strcat(tmp, SOUNDS_EXT);
 }
@@ -360,7 +360,7 @@ void referenceModelAudioFiles()
   FILINFO fno;
   DIR dir;
 
-  sdAvailablePhaseAudioFiles.reset();
+  sdAvailableFlightmodeAudioFiles.reset();
   sdAvailableSwitchAudioFiles.reset();
   sdAvailableLogicalSwitchAudioFiles.reset();
 
@@ -379,13 +379,13 @@ void referenceModelAudioFiles()
       if (len < 5 || strcasecmp(fno.fname+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
       TRACE("referenceModelAudioFiles(): using file: %s", fno.fname);
 
-      // Phases Audio Files <phasename>-[on|off].wav
+      // Flight modes Audio Files <flightmodename>-[on|off].wav
       for (int i=0; i<MAX_FLIGHT_MODES && !found; i++) {
         for (int event=0; event<2; event++) {
-          getPhaseAudioFile(path, i, event);
+          getFlightmodeAudioFile(path, i, event);
           // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fno.fname);
           if (!strcasecmp(filename, fno.fname)) {
-            sdAvailablePhaseAudioFiles.setBit(INDEX_PHASE_AUDIO_FILE(i, event));
+            sdAvailableFlightmodeAudioFiles.setBit(INDEX_PHASE_AUDIO_FILE(i, event));
             found = true;
             TRACE("\tfound: %s", filename);
             break;
@@ -437,8 +437,8 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
     }
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
-    if (sdAvailablePhaseAudioFiles.getBit(INDEX_PHASE_AUDIO_FILE(index, event))) {
-      getPhaseAudioFile(filename, index, event);
+    if (sdAvailableFlightmodeAudioFiles.getBit(INDEX_PHASE_AUDIO_FILE(index, event))) {
+      getFlightmodeAudioFile(filename, index, event);
       return true;
     }
   }

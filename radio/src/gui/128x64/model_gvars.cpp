@@ -107,7 +107,7 @@ void menuModelGVarOne(event_t event)
         break;
 
       default:
-        drawStringWithIndex(0, y, STR_FP, k-GVAR_FIELD_FM0);
+        drawStringWithIndex(0, y, STR_FM, k-GVAR_FIELD_FM0);
         editGVarValue(GVAR_2ND_COLUMN, y, event, s_currIdx, k-GVAR_FIELD_FM0, LEFT|attr);
         break;
     }

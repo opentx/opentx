@@ -704,7 +704,7 @@
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
 #define TR_MODEL               "MODEL"
-#define TR_FP                  "FP"
+#define TR_FM                  "FP"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "EEPROM BX Memoria"
 #define TR_ALERT               "\016ALERT"

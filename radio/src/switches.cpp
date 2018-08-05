@@ -478,12 +478,12 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
 /**
   @brief Calculates new state of logical switches for mixerCurrentFlightMode
 */
-void evalLogicalSwitches(bool isCurrentPhase)
+void evalLogicalSwitches(bool isCurrentFlightmode)
 {
   for (unsigned int idx=0; idx<MAX_LOGICAL_SWITCHES; idx++) {
     LogicalSwitchContext & context = lswFm[mixerCurrentFlightMode].lsw[idx];
     bool result = getLogicalSwitch(idx);
-    if (isCurrentPhase) {
+    if (isCurrentFlightmode) {
       if (result) {
         if (!context.state) PLAY_LOGICAL_SWITCH_ON(idx);
       }

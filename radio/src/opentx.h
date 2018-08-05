@@ -472,8 +472,6 @@ extern uint8_t mixerCurrentFlightMode;
 extern uint8_t lastFlightMode;
 extern uint8_t flightModeTransitionLast;
 
-typedef uint32_t bitfield_channels_t;
-
 #if defined(SIMU)
   inline int availableMemory() { return 1000; }
 #elif !defined(SIMU)
@@ -500,7 +498,7 @@ bool getSwitch(swsrc_t swtch, uint8_t flags=0);
 void logicalSwitchesTimerTick();
 void logicalSwitchesReset();
 
-void evalLogicalSwitches(bool isCurrentPhase=true);
+void evalLogicalSwitches(bool isCurrentFlightmode=true);
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
 #define LS_RECURSIVE_EVALUATION_RESET()
 
@@ -1162,7 +1160,7 @@ uint8_t zlen(const char *str, uint8_t size);
 bool zexist(const char *str, uint8_t size);
 unsigned int effectiveLen(const char * str, unsigned int size);
 char * strcat_zchar(char *dest, const char *name, uint8_t size, const char *defaultName=NULL, uint8_t defaultNameSize=0, uint8_t defaultIdx=0);
-#define strcat_phasename(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FP, PSIZE(TR_FP), idx+1)
+#define strcatFlightmodeName(dest, idx) strcat_zchar(dest, g_model.flightModeData[idx].name, LEN_FLIGHT_MODE_NAME, STR_FM, PSIZE(TR_FM), idx+1)
 #if defined(EEPROM)
 #define strcat_modelname(dest, idx) strcat_zchar(dest, modelHeaders[idx].name, LEN_MODEL_NAME, STR_MODEL, PSIZE(TR_MODEL), idx+1)
 #define strcat_currentmodelname(dest) strcat_modelname(dest, g_eeGeneral.currModel)
