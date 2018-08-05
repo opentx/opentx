@@ -18,7 +18,11 @@ static const struct YamlIdStr {{ enum.name }}[] = {
 //
 
 {% for struct in root.get_structs() %}
+{% if struct.name.startswith('union_') %}
+static const struct YamlNode {{ struct.name }}_elmts[]
+{% else %}
 static const struct YamlNode {{ struct.name }}[] = {
+{% endif %}
   {% for elmt in struct.get_elmts() %}
     {% if elmt.type == 'string' %}
   YAML_STRING("{{ max_len(elmt.name) }}", {{elmt.length}}),
@@ -29,7 +33,7 @@ static const struct YamlNode {{ struct.name }}[] = {
     {% elif elmt.type == 'struct' %}
   YAML_STRUCT("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}, NULL),
     {% elif elmt.type == 'union' %}
-  YAML_UNION("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}, NULL),
+  YAML_UNION("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}_elmts, NULL),
     {% elif elmt.type == 'array' %}
   YAML_ARRAY("{{ max_len(elmt.name) }}", {{elmt.bits // elmt.length}}, {{elmt.length}}, {{elmt.var_type}}, NULL),
     {% else %}
@@ -38,6 +42,12 @@ static const struct YamlNode {{ struct.name }}[] = {
   {% endfor %}
   YAML_END
 };
+{% if struct.name.startswith('union_') and struct.used_in_arrays %}
+static const struct YamlNode {{ struct.name }}[] = {
+  YAML_UNION("", {{ max_bits(struct) }}, {{ struct.name }}_elmts, NULL),
+  YAML_END
+};
+{% endif %}
 {% endfor %}
 
 #define MAX_{{ root_node_name | upper }}_STR_LEN {{ get_max_len() }}
