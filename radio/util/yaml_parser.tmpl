@@ -4,50 +4,40 @@
 // Enums first
 //
 
-{#
 {% for enum in root.get_enums() %}
 static const struct YamlIdStr {{ enum.name }}[] = {
-  {% for elmt in enum.get_elmts() %}{  {{ elmt.value }}, "{{ elmt.name }}"  },
-  {% endfor %}{  0, NULL  }
+  {% for elmt in enum.get_elmts() %}
+  {  {{ elmt.value }}, "{{ max_len(elmt.name) }}"  },
+  {% endfor %}
+  {  0, NULL  }
 };
 {% endfor %}
-#}
 
 //
 // Structs last
 //
 
-{% macro field(type, tag, width) %}
-YAML_{{type|upper}}( {{ tag }}, {{ width }} ),
-{%- endmacro %}
-
-{% macro field_list(struct) %}
-  {% for elmt in struct.get_elmts() %}
-    {% if elmt.type == 'string' %}
-  YAML_STRING({{elmt.name}}, {{elmt.length}}),
-    {% elif elmt.type in ['signed','unsigned'] %}
-  {{ field(elmt.type, elmt.name, elmt.bits) }}
-    {% elif elmt.type == 'enum' %}
-  YAML_ENUM({{elmt.name}}, {{elmt.bits}}, {{elmt.var_type}}),
-    {% elif elmt.type == 'struct' %}
-      {% if elmt.name == '' %}
-  {{- field_list(elmt) }}
-      {% else %}
-  YAML_STRUCT("{{elmt.name}}", {{elmt.bits}}, {{elmt.var_type}}, NULL),
-      {% endif %}
-    {% elif elmt.type == 'union' %}
-      {% if elmt.name == '' %}
-  {{- field_list(elmt) }}
-      {% endif %}
-    {% else %}
-  // {{elmt.name}}, {{elmt.type}}
-    {% endif %}
-  {% endfor %}
-{%- endmacro %}
-
 {% for struct in root.get_structs() %}
 static const struct YamlNode {{ struct.name }}[] = {
-{{ field_list(struct) }}
+  {% for elmt in struct.get_elmts() %}
+    {% if elmt.type == 'string' %}
+  YAML_STRING("{{ max_len(elmt.name) }}", {{elmt.length}}),
+    {% elif elmt.type in ['signed','unsigned'] %}
+  YAML_{{elmt.type|upper}}( "{{ max_len(elmt.name) }}", {{ elmt.bits }} ),
+    {% elif elmt.type == 'enum' %}
+  YAML_ENUM("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}),
+    {% elif elmt.type == 'struct' %}
+  YAML_STRUCT("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}, NULL),
+    {% elif elmt.type == 'union' %}
+  YAML_UNION("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}, NULL),
+    {% elif elmt.type == 'array' %}
+  YAML_ARRAY("{{ max_len(elmt.name) }}", {{elmt.bits // elmt.length}}, {{elmt.length}}, {{elmt.var_type}}, NULL),
+    {% else %}
+  // name='{{elmt.name}}', type='{{elmt.type}}', bits='{{elmt.bits}}', is_array='{{elmt.is_array}}', var_type='{{elmt.var_type}}', kind='{{elmt.cursor.kind}}' , type.kind='{{elmt.cursor.type.kind}}'
+    {% endif %}
+  {% endfor %}
   YAML_END
 };
 {% endfor %}
+
+#define MAX_{{ root_node_name | upper }}_STR_LEN {{ get_max_len() }}
