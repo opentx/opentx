@@ -100,7 +100,7 @@ uint64_t simuTimerMicros(void)
   // read the timer
   QueryPerformanceCounter(&newTick);
   // compute the elapsed time
-  return U64((newTick.QuadPart - firstTick.QuadPart) * freqScale);
+  return (newTick.QuadPart - firstTick.QuadPart) * freqScale;
 
 #else  // GNUC
 
