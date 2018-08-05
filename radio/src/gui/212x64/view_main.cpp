@@ -592,9 +592,9 @@ void menuMainView(event_t event)
     lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
     drawStringWithIndex(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, gvarLastChanged+1);
     lcdDrawSizedText(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
-    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, "[", BOLD;
+    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, "[", BOLD);
     drawGVarValue(BITMAP_X+2*FW, BITMAP_Y+2*FH+3, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
-    lcdDrawText(lcdLastRightPos, BITMAP_Y+2*FH+3, "]", BOLD;
+    lcdDrawText(lcdLastRightPos, BITMAP_Y+2*FH+3, "]", BOLD);
   }
 #endif
 }
