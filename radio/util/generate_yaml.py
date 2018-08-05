@@ -73,10 +73,13 @@ class FieldAST(AST_Element):
             self.type = map_type(cursor.type.get_canonical().spelling)
         elif cursor.type.kind == TypeKind.CONSTANTARRAY:
             self.type = cursor.type.element_type.spelling
+            self.is_array = True
+            self.length = cursor.type.element_count
+
             if self.type == 'char':
                 self.type   = 'string'
-                self.length = cursor.type.element_count
-            self.is_array = True
+            else:
+                pass
         else:
             self.type = cursor.type.spelling
 
@@ -146,12 +149,15 @@ def parse_struct(ast, node):
         ast.type = 'struct'
         #print("ast.type = " + ast.type + "; ast.var_type = " + ast.var_type)
 
-    if node.is_anonymous():
-        st = ast
-        st.var_type = 'anonymous_struct_' + get_next_anon()
-    else:
-        st = StructAST(node.spelling, node)
-        #ast.var_type = st.name
+    st = StructAST(node.spelling, node)
+    #if node.is_anonymous():
+    #    st.var_type = 'anonymous_struct_' + get_next_anon()
+
+    # if node.is_anonymous():
+    #     st = ast
+    #     st.var_type = 'anonymous_struct_' + get_next_anon()
+    # else:
+    #     st = StructAST(node.spelling, node)
 
     for c in node.get_children():
         parse_field(st,c)
@@ -168,11 +174,12 @@ def parse_union(ast, node):
         ast.var_type = ast.type
         ast.type = 'union'
 
-    if node.is_anonymous():
-        st = ast
-        st.var_type = 'anonymous_union_' + get_next_anon()
-    else:
-        st = UnionAST(node.spelling, node)
+    st = UnionAST(node.spelling, node)
+    # if node.is_anonymous():
+    #     st = ast
+    #     st.var_type = 'anonymous_union_' + get_next_anon()
+    # else:
+    #     st = UnionAST(node.spelling, node)
 
     for c in node.get_children():
         parse_field(st,c)
@@ -201,8 +208,8 @@ def parse_field(ast,node):
     f = FieldAST(node.spelling, node)
 
     root = RootAST
-    if node.is_anonymous():
-        root = f
+    #if node.is_anonymous():
+    #    root = f
     
     if node.type.kind == TypeKind.RECORD:
         st = parse_node(root,node.type.get_declaration())
@@ -210,9 +217,26 @@ def parse_field(ast,node):
         st = parse_node(root,node.type.get_declaration())
     elif node.type.kind == TypeKind.CONSTANTARRAY:
         et = node.type.element_type
-        parse_node(root,et.get_declaration())
+        if f.type != 'string':
+            elmt_decl = et.get_declaration()
+            elmt_st = parse_node(root,elmt_decl) #or parse_struct(RootAST,elmt_decl)
+            if elmt_st is not None:
+                f.type = 'array'
+                f.var_type = elmt_st.name
+            elif elmt_decl.kind == CursorKind.TYPEDEF_DECL:
+                elmt_st = StructAST('', elmt_decl)
+                elmt_st.append(FieldAST('val',elmt_decl))
+                f.type = 'array'
+                f.var_type = elmt_st.name
+                RootAST.append(elmt_st)
+                print("# array attr: {} {}".format(f.var_type,f.name))
+            else:
+                print("# array attr: {} {}".format(str(elmt_decl.kind),f.name))
     elif node.type.kind == TypeKind.ENUM:
         parse_node(root,node.type.get_declaration())
+    elif node.type.kind == TypeKind.TYPEDEF:
+        pass
+        #print("# typedef {} {}".format(node.type.get_canonical().spelling,node.type.spelling))
     else:
         pass
         #print('{} {}'.format(node.spelling, str(node.type.kind)))
@@ -220,8 +244,12 @@ def parse_field(ast,node):
     ann = get_annotations(node)
     if len(ann) > 0:
         for a in ann:
-            if a['type'] == 'enum' and not RootAST.has_enum(a['val']):
-                parse_node(RootAST,get_top_node(a['val']))
+            if a['type'] == 'enum':
+                f.type = 'enum'
+                enum_name = 'enum_' + a['val']
+                f.var_type = enum_name
+                if not RootAST.has_enum(enum_name):
+                    parse_node(RootAST,get_top_node(a['val']))
     elif st is not None and st is not f:
         #print("obj = '{}'".format(st.str()))
         f.var_type = st.name
@@ -300,5 +328,25 @@ parse_node(RootAST, get_top_node(sys.argv[3]))
 #print("Structs:", RootAST.get_structs())
 print(asciitree.draw_tree(RootAST, ast_children, print_ast_node))
 
+#
+# Template rendering
+#
+
+__max_str_len = 0
+
+def max_len(str):
+    global __max_str_len
+    if len(str) > __max_str_len:
+       __max_str_len = len(str)
+    return str
+
+def get_max_len():
+    global __max_str_len
+    return __max_str_len
+
 template = jinja2.Template(open(sys.argv[2]).read(), lstrip_blocks=True, trim_blocks=True)
-print(template.render(root=RootAST))
+
+template.globals['max_len'] = max_len
+template.globals['get_max_len'] = get_max_len
+
+print(template.render(root=RootAST,root_node_name=sys.argv[3]))
