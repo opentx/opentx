@@ -747,8 +747,7 @@ void checkSwitches()
 
     wdt_reset();
 
-    SIMU_SLEEP(1);
-    CoTickDelay(10);
+    RTOS_WAIT_MS(10);
   }
 
   LED_ERROR_END();

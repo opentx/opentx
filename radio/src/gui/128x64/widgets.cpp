@@ -246,7 +246,7 @@ void drawProgressBar(const char * label, int num, int den)
   lcdRefresh();
 }
 
-const pm_uchar SLEEP_BITMAP[] PROGMEM = {
+const pm_uchar SLEEP_BITMAP[]  = {
 #include "sleep.lbm"
 };
 

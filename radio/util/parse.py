@@ -15,7 +15,7 @@ cw = open(filename + ".stringsc", "w")
 replacements = {}
 
 for line in fr.readlines():
-    pos_pstr = line.find("PSTR(\"")
+    pos_pstr = line.find("\""
     MENU = False
     if pos_pstr < 0:
         pos_pstr = line.find("MENU(\"")
@@ -53,10 +53,10 @@ for line in fr.readlines():
                 replacements[str_rep] = pstr
                 print(glob_str, "=>", pstr, str_rep)
                 ew.write("#define " + str_rep[1:] + " " * (17 - len(str_rep)) + '"%s"\n' % pstr)
-                hw.write("extern const PROGMEM char %s[];\n" % str_rep)
+                hw.write("extern const  char %s[];\n" % str_rep)
                 cw.write("const prog_char APM %s[] = %s;\n" % (str_rep, str_rep[1:]))
 
-            pos_pstr = line.find("PSTR(\"")
+            pos_pstr = line.find("\""
 
     fw.write(line)
 

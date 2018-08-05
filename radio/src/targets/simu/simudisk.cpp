@@ -29,7 +29,7 @@
 FILE * diskImage = 0;
 FATFS g_FATFS_Obj = {0};
 
-OS_MutexID ioMutex;
+RTOS_MUTEX_HANDLE ioMutex;
 
 int ff_cre_syncobj (BYTE vol, _SYNC_t* sobj) /* Create a sync object */
 {

@@ -48,7 +48,7 @@ union ReusableBuffer reusableBuffer __DMA;
 uint8_t* MSC_BOT_Data = reusableBuffer.MSC_BOT_Data;
 #endif
 
-const pm_uint8_t bchout_ar[] PROGMEM = {
+const pm_uint8_t bchout_ar[]  = {
     0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
     0x4B, 0x4E, 0x63, 0x6C, 0x72, 0x78,
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
@@ -65,7 +65,7 @@ mode2 rud thr ele ail
 mode3 ail ele thr rud
 mode4 ail thr ele rud
 */
-const pm_uint8_t modn12x3[] PROGMEM = {
+const pm_uint8_t modn12x3[]  = {
     0, 1, 2, 3,
     0, 2, 1, 3,
     3, 1, 2, 0,
@@ -784,11 +784,7 @@ void doSplash()
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
 
     while (tgtime > get_tmr10ms()) {
-#if defined(SIMU)
-      SIMU_SLEEP(1);
-#else
-      CoTickDelay(1);
-#endif
+      RTOS_WAIT_TICKS(1);
 
       getADC();
 
@@ -924,11 +920,7 @@ void checkAll()
     showMessageBox(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
-#if defined(SIMU)
-      SIMU_SLEEP(1);
-#else
-      CoTickDelay(1);
-#endif
+      RTOS_WAIT_MS(1);
       wdt_reset();
     }
   }
@@ -1017,9 +1009,7 @@ void checkTHR()
 
     wdt_reset();
 
-    SIMU_SLEEP(1);
-    CoTickDelay(10);
-
+    RTOS_WAIT_MS(10);
   }
 
   LED_ERROR_END();
@@ -1049,8 +1039,7 @@ void alert(const pm_char * title, const pm_char * msg , uint8_t sound)
 #endif
 
   while (1) {
-    SIMU_SLEEP(1);
-    CoTickDelay(10);
+    RTOS_WAIT_MS(10);
 
     if (keyDown()) break; // wait for key release
 
@@ -1576,7 +1565,7 @@ void doMixerCalculations()
 #if defined(NAVIGATION_STICKS)
 uint8_t StickScrollAllowed;
 uint8_t StickScrollTimer;
-static const pm_uint8_t rate[] PROGMEM = { 0, 0, 100, 40, 16, 7, 3, 1 } ;
+static const pm_uint8_t rate[]  = { 0, 0, 100, 40, 16, 7, 3, 1 } ;
 
 uint8_t calcStickScroll( uint8_t index )
 {
@@ -1626,7 +1615,7 @@ void opentxStart(OPENTX_START_ARGS)
 
 #if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
   for (int i=0; i<500 && !Card_initialized; i++) {
-    CoTickDelay(1);  // 2ms
+    RTOS_WAIT_MS(2); // 2ms
   }
 #endif
 
@@ -1693,9 +1682,10 @@ void opentxClose(uint8_t shutdown)
   storageCheck(true);
 
   while (IS_PLAYING(ID_PLAY_PROMPT_BASE + AU_BYE)) {
-    CoTickDelay(10);
+    RTOS_WAIT_MS(10);
   }
-  CoTickDelay(50);
+
+  RTOS_WAIT_MS(100);
 
 #if defined(SDCARD)
   sdDone();
@@ -2265,7 +2255,7 @@ uint32_t pwrCheck()
       RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
       while (TELEMETRY_STREAMING()) {
         resetForcePowerOffRequest();
-        CoTickDelay(10);
+        RTOS_WAIT_MS(20);
         if (pwrPressed()) {
           return e_power_on;
         }

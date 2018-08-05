@@ -22,7 +22,7 @@
 
 #include "opentx.h"
 
-const pm_uchar sticks[] PROGMEM = {
+const pm_uchar sticks[]  = {
 #include "sticks.lbm"
 };
 
@@ -166,7 +166,7 @@ void menuRadioSetup(event_t event)
             {
               int16_t year = TM_YEAR_BASE + t.tm_year;
               int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
-              static const pm_uint8_t dmon[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+              static const pm_uint8_t dmon[]  = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
               dlim += pgm_read_byte(&dmon[t.tm_mon]);
               lcdDrawNumber(RADIO_SETUP_DATE_COLUMN+6*FW-4, y, t.tm_mday, rowattr|LEADING0|RIGHT, 2);
               if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
@@ -507,12 +507,12 @@ void menuRadioSetup(event_t event)
 
 #if defined(FAI_CHOICE)
       case ITEM_SETUP_FAI:
-        editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, PSTR("FAI Mode"), attr, event);
+        editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, "FAI Mode", attr, event);
         if (attr && checkIncDec_Ret) {
           if (g_eeGeneral.fai)
-            POPUP_WARNING(PSTR("FAI\001mode blocked!"));
+            POPUP_WARNING("FAI\001mode blocked!");
           else
-            POPUP_CONFIRMATION(PSTR("FAI mode?"));
+            POPUP_CONFIRMATION("FAI mode?");
         }
         break;
 #endif

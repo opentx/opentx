@@ -28,7 +28,7 @@ bool warble = false;
 bool warbleC;
 
 // The various "beep" tone lengths
-static const pm_uint8_t beepTab[] PROGMEM = {
+static const pm_uint8_t beepTab[]  = {
     // key, trim, warn2, warn1, error
     1,  1,  2, 10,  60, //xShort
     1,  1,  4, 20,  80, //short

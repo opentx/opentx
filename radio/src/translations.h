@@ -856,7 +856,7 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_TELEMETRY_SENSORS[];
   extern const pm_char STR_VALUE[];
   extern const pm_char STR_TOPLCDTIMER[];
-  extern const pm_char STR_UNIT[] PROGMEM;
+  extern const pm_char STR_UNIT[] ;
   extern const pm_char STR_TELEMETRY_NEWSENSOR[];
   extern const pm_char STR_ID[];
   extern const pm_char STR_PRECISION[];

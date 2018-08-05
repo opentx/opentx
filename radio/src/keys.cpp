@@ -179,7 +179,7 @@ void killEvents(event_t event)
 bool clearKeyEvents()
 {
 #if defined(PCBSKY9X)
-  CoTickDelay(100);  // 200ms
+  RTOS_WAIT_MS(200); // 200ms
 #endif
 
   // loop until all keys are up

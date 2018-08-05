@@ -187,13 +187,13 @@ void menuStatisticsDebug(event_t event)
   lcdDrawTextAlignedLeft(MENU_DEBUG_Y_COPROC, STR_COPROC_TEMP);
 
   if (Coproc_read==0) {
-    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Co Proc NACK"),INVERS);
+    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, "Co Proc NACK",INVERS);
   }
   else if (Coproc_read==0x81) {
-    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Inst.TinyApp"),INVERS);
+    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, "Inst.TinyApp",INVERS);
   }
   else if (Coproc_read<3) {
-    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, PSTR("Upgr.TinyApp"),INVERS);
+    lcdDrawText(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, "Upgr.TinyApp",INVERS);
   }
   else {
     drawValueWithUnit(MENU_DEBUG_COL1_OFS, MENU_DEBUG_Y_COPROC, Coproc_temp, UNIT_TEMPERATURE, LEFT);

@@ -49,7 +49,7 @@ uint32_t Peri1_frequency, Peri2_frequency;
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 RCC_TypeDef rcc;
-DMA_Stream_TypeDef dma1_stream2, dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
+DMA_Stream_TypeDef dma1_stream1, dma1_stream2, dma1_stream3, dma1_stream4, dma1_stream5, dma1_stream6, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
 DMA_TypeDef dma2;
 USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 SysTick_Type systick;
@@ -105,7 +105,7 @@ uint64_t simuTimerMicros(void)
 #else  // GNUC
 
   auto now = std::chrono::steady_clock::now();
-  return (U64) std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
+  return (uint64_t) std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch()).count();
 
 #endif
 }
@@ -121,7 +121,7 @@ uint16_t getTmr2MHz()
 }
 
 // return 2ms resolution to match CoOS settings
-U64 CoGetOSTime(void)
+uint64_t CoGetOSTime(void)
 {
   return simuTimerMicros() / 2000;
 }
@@ -524,11 +524,6 @@ void StopAudioThread()
 }
 #endif // #if defined(SIMU_AUDIO)
 
-uint16_t stackAvailable()
-{
-  return 500;
-}
-
 bool simuLcdRefresh = true;
 display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
 
@@ -666,18 +661,3 @@ void LCD_ControlLight(uint16_t dutyCycle) { }
 void serialPrintf(const char * format, ...) { }
 void serialCrlf() { }
 void serialPutc(char c) { }
-uint16_t stackSize() { return 0; }
-
-void * start_routine(void * attr)
-{
-  FUNCPtr task = (FUNCPtr)attr;
-  task(NULL);
-  return NULL;
-}
-
-OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, uint32_t stksize)
-{
-  pthread_t tid;
-  pthread_create(&tid, NULL, start_routine, (void *)task);
-  return tid;
-}

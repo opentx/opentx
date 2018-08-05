@@ -37,11 +37,11 @@ void menuRadioVersion(event_t event)
 
 #if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
-     lcdDrawTextAlignedLeft(6*FH, PSTR("CoPr:"));
+     lcdDrawTextAlignedLeft(6*FH, "CoPr:");
      lcdDraw8bitsNumber(10*FW, 6*FH, Coproc_read);
   }
   else {
-     lcdDrawTextAlignedLeft(6*FH, PSTR("CoPr: ---"));
+     lcdDrawTextAlignedLeft(6*FH, "CoPr: ---");
   }
 #elif defined(EEPROM_RLC)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);

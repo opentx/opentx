@@ -361,7 +361,7 @@ void deleteExpoMix(uint8_t expo, uint8_t idx);
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
-extern const pm_uchar sticks[] PROGMEM;
+extern const pm_uchar sticks[] ;
 
 void drawSplash();
 void drawSecondSplash();

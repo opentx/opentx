@@ -166,9 +166,9 @@ void menuModelCurveOne(event_t event)
       lcdDrawFilledRect(3, 2*FH+4, 7*FW-2, 4*FH-2, SOLID, ERASE);
       lcdDrawRect(3, 2*FH+4, 7*FW-2, 4*FH-2);
       drawStringWithIndex(7, 3*FH, STR_PT, i+1, LEFT);
-      lcdDrawText(7, 4*FH, PSTR("x="));
+      lcdDrawText(7, 4*FH, "x=");
       lcdDrawNumber(7+2*FW+1, 4*FH, x, LEFT|(selectionMode==1?attr:0));
-      lcdDrawText(7, 5*FH, PSTR("y="));
+      lcdDrawText(7, 5*FH, "y=");
       lcdDrawNumber(7+2*FW+1, 5*FH, points[i], LEFT|(selectionMode==2?attr:0));
       
       // Selection square

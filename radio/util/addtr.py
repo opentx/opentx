@@ -31,7 +31,7 @@ def modifyDeclaration(constant, after):
 
 
 def modifyDefinition(constant, after):
-    newline = "const pm_char S" + constant + "[] PROGMEM = " + constant + ";"
+    newline = "const pm_char S" + constant + "[]  = " + constant + ";"
     filename = "translations.cpp"
     addLine(filename, newline, after + "[] ")
 

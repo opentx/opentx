@@ -326,7 +326,7 @@ uint8_t switchToMix(uint8_t source);
 extern coord_t scrollbar_X;
 #define SET_SCROLLBAR_X(x) scrollbar_X = (x);
 
-extern const pm_uchar sticks[] PROGMEM;
+extern const pm_uchar sticks[] ;
 
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);

@@ -218,7 +218,7 @@ bool menuStatsDebug(event_t event);
 bool menuStatsAnalogs(event_t event);
 bool menuStatsTraces(event_t event);
 
-static const MenuHandlerFunc menuTabStats[] PROGMEM = {
+static const MenuHandlerFunc menuTabStats[]  = {
   menuStatsGraph,
   menuStatsDebug,
   menuStatsAnalogs,
@@ -243,7 +243,7 @@ extern uint8_t lastMonitorPage;
 extern void drawSingleMixerBar(coord_t, coord_t, coord_t, coord_t, uint8_t);
 extern void drawSingleOutputBar(coord_t, coord_t, coord_t, coord_t, uint8_t);
 
-extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] PROGMEM;
+extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] ;
 
 bool menuFirstCalib(event_t event);
 bool menuMainView(event_t event);

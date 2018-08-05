@@ -41,7 +41,7 @@
 #endif
 
 #if defined(SPLASH)
-const pm_uchar splashdata[] PROGMEM = {
+const pm_uchar splashdata[]  = {
   'S','P','S',0,
   #include "bitmaps/128x64/splash.lbm"
   'S','P','E',0 };
@@ -65,7 +65,7 @@ void drawSplash()
 #endif
 
 #if defined(SPLASH_FRSKY)
-const pm_uchar splashdata2[] PROGMEM = {
+const pm_uchar splashdata2[]  = {
   'S','F','S',0,
   #include "bitmaps/128x64/splash_frsky.lbm"
   'S','F','E',0 };

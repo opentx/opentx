@@ -86,7 +86,7 @@ void btSendBuffer()
   btTx.buffer = btTxBuffer;
   txPdcBt(&btTx);
   while (btTx.ready == 1) {
-    CoTickDelay(1); // 2ms for now
+    RTOS_WAIT_TICKS(1);
   }
   btTx.size = 0;
 }
@@ -131,7 +131,7 @@ uint32_t btChangeBaudrate( uint32_t baudIndex )
       }
     }
     else {
-      CoTickDelay(1) ;                                        // 2mS
+      RTOS_WAIT_TICKS(1);
     }
   }
 
@@ -167,7 +167,7 @@ uint32_t btPollDevice()
       }
     }
     else {
-      CoTickDelay(1) ;                                        // 2mS
+      RTOS_WAIT_TICKS(1) ;                                        // 2mS
     }
   }
 
@@ -229,7 +229,7 @@ void bluetoothTask(void * pdata)
         x = 0 ;
       }
       btSetBaudrate(x) ;
-      CoTickDelay(1) ;                                        // 2mS
+      RTOS_WAIT_TICKS(1) ;                                        // 2mS
       btStatus = btPollDevice() ;              // Do we get a response?
     }
   }
@@ -248,7 +248,7 @@ void bluetoothTask(void * pdata)
     btInit();
   }
 
-  CoTickDelay(1) ;
+  RTOS_WAIT_TICKS(1) ;
 
   btPollDevice(); // Do we get a response?
 

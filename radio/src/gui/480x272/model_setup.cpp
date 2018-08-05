@@ -530,7 +530,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_SLIDPOT_WARNING_STATE:
         lcdDrawText(MENUS_MARGIN_LEFT, y,STR_POTWARNINGSTATE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, "\004""OFF\0""Man\0""Auto", g_model.potsWarnMode, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR(event, g_model.potsWarnMode, POTS_WARN_OFF, POTS_WARN_AUTO);
           storageDirty(EE_MODEL);

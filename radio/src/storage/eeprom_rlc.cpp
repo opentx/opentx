@@ -450,7 +450,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   logsClose();
 
   // check and create folder here
-  strcpy_P(buf, STR_MODELS_PATH);
+  strcpy(buf, STR_MODELS_PATH);
   const char * error = sdCheckAndCreateDirectory(buf);
   if (error) {
     return error;
@@ -476,7 +476,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
 
   if (len == 0) {
     uint8_t num = i_fileSrc + 1;
-    strcpy_P(&buf[sizeof(MODELS_PATH)], STR_MODEL);
+    strcpy(&buf[sizeof(MODELS_PATH)], STR_MODEL);
     buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
     buf[sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');
     len = sizeof(MODELS_PATH) + PSIZE(TR_MODEL) + 2;
@@ -487,7 +487,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   len = tmp - buf;
 #endif
 
-  strcpy_P(&buf[len], STR_MODELS_EXT);
+  strcpy(&buf[len], STR_MODELS_EXT);
 
 #ifdef SIMU
   TRACE("SD-card backup filename=%s", buf);
@@ -532,10 +532,10 @@ const pm_char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
   // we must close the logs as we reuse the same FIL structure
   logsClose();
 
-  strcpy_P(buf, STR_MODELS_PATH);
+  strcpy(buf, STR_MODELS_PATH);
   buf[sizeof(MODELS_PATH)-1] = '/';
   strcpy(&buf[sizeof(MODELS_PATH)], model_name);
-  strcpy_P(&buf[strlen(buf)], STR_MODELS_EXT);
+  strcpy(&buf[strlen(buf)], STR_MODELS_EXT);
 
   FRESULT result = f_open(&g_oLogFile, buf, FA_OPEN_EXISTING | FA_READ);
   if (result != FR_OK) {

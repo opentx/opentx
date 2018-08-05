@@ -79,7 +79,7 @@ uint32_t transSpeed;
 /*-----------------------------------------------------------------------*/
 
 #if !defined(BOOT)
-static OS_MutexID ioMutex;
+static RTOS_MUTEX_HANDLE ioMutex;
 volatile int mutexCheck = 0;
 int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 {
@@ -89,7 +89,7 @@ int ff_cre_syncobj (BYTE vol, _SYNC_t *mutex)
 
 int ff_req_grant (_SYNC_t mutex)
 {
-  CoEnterMutexSection(mutex);
+  RTOS_LOCK_MUTEX(mutex);
   return 1;
 }
 
@@ -676,7 +676,7 @@ const char * sdIdentify()
      * The host that does not support CMD8 shall supply high voltage range... */
     result = sdCmd8(1);
     if (result == 0) f8 = 1;
-    else if (result == SD_NORESPONSE) CoTickDelay(1); /* 2ms delay after "no response" */
+    else if (result == SD_NORESPONSE) RTOS_WAIT_MS(2); /* 2ms delay after "no response" */
     else return "Identify.8 error";
 
 #if 0
@@ -956,7 +956,7 @@ void sdInit()
   }
 
   sdCmd0();
-  CoTickDelay(5);  // 10ms
+  RTOS_WAIT_MS(10); // 10ms
   sdCmd8(1);
 
 #if 0
@@ -971,7 +971,7 @@ void sdInit()
   uint8_t retry;
   for (retry=0; retry<10; retry++) {
     if (!sdCmd2()) break;
-    CoTickDelay(1);  // 2ms
+    RTOS_WAIT_MS(2); // 2ms
   }
 
   if (retry == 10) {
@@ -982,7 +982,7 @@ void sdInit()
 
   for (retry=0; retry<10; retry++) {
     if (!sdCmd3()) break;
-    CoTickDelay(1);  // 2ms
+    RTOS_WAIT_MS(2); // 2ms
   }
 
   if (retry == 10) {

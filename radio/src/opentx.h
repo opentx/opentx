@@ -236,8 +236,6 @@
   typedef const int16_t pm_int16_t;
   typedef const int8_t pm_int8_t;
   #define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
-  #define PSTR(adr) adr
-  #define PROGMEM
   #define pgm_read_adr(x)              *(x)
   #define cli()
   #define sei()
@@ -518,8 +516,6 @@ extern uint8_t flightModeTransitionLast;
 #elif !defined(SIMU)
   extern unsigned char *heap;
   extern int _end;
-  extern int _estack;
-  extern int _main_stack_start;
   extern int _heap_end;
   #define availableMemory() ((unsigned int)((unsigned char *)&_heap_end - heap))
 #endif
@@ -666,7 +662,7 @@ void checkAll();
 
 #if !defined(SIMU)
 void getADC();
-    #define GET_ADC_IF_MIXER_NOT_RUNNING()    do { if (s_pulses_paused) getADC(); } while(0)
+#define GET_ADC_IF_MIXER_NOT_RUNNING()    do { if (s_pulses_paused) getADC(); } while(0)
 #endif
 
 #include "sbus.h"
@@ -694,15 +690,15 @@ uint16_t isqrt32(uint32_t n);
 
 #if !defined(BOOT)
 #include "tasks_arm.h"
-extern OS_MutexID mixerMutex;
+extern RTOS_MUTEX_HANDLE mixerMutex;
 inline void pauseMixerCalculations()
 {
-  CoEnterMutexSection(mixerMutex);
+  RTOS_LOCK_MUTEX(mixerMutex);
 }
 
 inline void resumeMixerCalculations()
 {
-  CoLeaveMutexSection(mixerMutex);
+  RTOS_UNLOCK_MUTEX(mixerMutex);
 }
 #else
 #define pauseMixerCalculations()

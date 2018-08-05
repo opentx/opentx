@@ -107,10 +107,10 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 #endif
 
 #if (defined(PCBX9E) && !defined(SIMU))
-const pm_uchar bmp_startup[] PROGMEM = {
+const pm_uchar bmp_startup[]  = {
   #include "startup.lbm"
 };
-const pm_uchar bmp_lock[] PROGMEM = {
+const pm_uchar bmp_lock[]  = {
   #include "lock.lbm"
 };
 #endif

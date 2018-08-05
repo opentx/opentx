@@ -93,7 +93,7 @@ void menuRadioDiagAnalogs(event_t event);
 void menuRadioHardware(event_t event);
 void menuRadioCalibration(event_t event);
 
-static const MenuHandlerFunc menuTabGeneral[] PROGMEM = {
+static const MenuHandlerFunc menuTabGeneral[]  = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
   menuRadioSpecialFunctions,
@@ -144,7 +144,7 @@ void menuModelDisplay(event_t event);
 void menuModelTemplates(event_t event);
 void menuModelGVarOne(event_t event);
 
-static const MenuHandlerFunc menuTabModel[] PROGMEM = {
+static const MenuHandlerFunc menuTabModel[]  = {
   menuModelSelect,
   menuModelSetup,
   CASE_HELI(menuModelHeli)

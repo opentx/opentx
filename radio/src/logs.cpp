@@ -54,7 +54,7 @@ const pm_char * logsOpen()
     return STR_SDCARD_FULL;
 
   // check and create folder here
-  strcpy_P(filename, STR_LOGS_PATH);
+  strcpy(filename, STR_LOGS_PATH);
   const char * error = sdCheckAndCreateDirectory(filename);
   if (error) {
     return error;
@@ -85,7 +85,7 @@ const pm_char * logsOpen()
     // TODO
     uint8_t num = 1;
 #endif
-    strcpy_P(&filename[sizeof(LOGS_PATH)], STR_MODEL);
+    strcpy(&filename[sizeof(LOGS_PATH)], STR_MODEL);
     filename[sizeof(LOGS_PATH) + PSIZE(TR_MODEL)] = (char)((num / 10) + '0');
     filename[sizeof(LOGS_PATH) + PSIZE(TR_MODEL) + 1] = (char)((num % 10) + '0');
     len = sizeof(LOGS_PATH) + PSIZE(TR_MODEL) + 2;
@@ -97,7 +97,7 @@ const pm_char * logsOpen()
   tmp = strAppendDate(&filename[len]);
 #endif
 
-  strcpy_P(tmp, STR_LOGS_EXT);
+  strcpy(tmp, STR_LOGS_EXT);
 
   result = f_open(&g_oLogFile, filename, FA_OPEN_ALWAYS | FA_WRITE | FA_OPEN_APPEND);
   if (result != FR_OK) {

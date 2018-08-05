@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if !defined(BOOT)
-const pm_char s_charTab[] PROGMEM = "_-.,";
+const pm_char s_charTab[]  = "_-.,";
 
 char hex2zchar(uint8_t hex)
 {

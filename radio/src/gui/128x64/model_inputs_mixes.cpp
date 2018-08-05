@@ -460,7 +460,7 @@ void menuModelMixOne(event_t event)
           }
         }
         else {
-          lcdDrawText(COLUMN_X+MIXES_2ND_COLUMN, y, PSTR("Diff"), menuHorizontalPosition==0 ? attr : 0);
+          lcdDrawText(COLUMN_X+MIXES_2ND_COLUMN, y, "Diff", menuHorizontalPosition==0 ? attr : 0);
           md2->curveParam = GVAR_MENU_ITEM(COLUMN_X+MIXES_2ND_COLUMN+5*FW, y, curveParam, -100, 100, LEFT|(menuHorizontalPosition==1 ? attr : 0), 0, editMode>0 ? event : 0);
           if (attr && editMode>0 && menuHorizontalPosition==0) {
             int8_t tmp = 0;
@@ -508,7 +508,7 @@ void menuModelMixOne(event_t event)
   }
 }
 
-#define _STR_MAX(x) PSTR("/" #x)
+#define _STR_MAX(x) "/" #x
 #define STR_MAX(x) _STR_MAX(x)
 
   #define EXPO_LINE_WEIGHT_POS 7*FW+1

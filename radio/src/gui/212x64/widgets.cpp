@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-const pm_uchar SLEEP_BITMAP[] PROGMEM = {
+const pm_uchar SLEEP_BITMAP[]  = {
   #include "../../bitmaps/212x64/sleep.lbm"
 };
 
@@ -34,7 +34,7 @@ void drawSleepBitmap()
 }
 
 #if defined(PWR_BUTTON_PRESS)
-const pm_uchar SHUTDOWN_BITMAP[] PROGMEM = {
+const pm_uchar SHUTDOWN_BITMAP[]  = {
   #include "../../bitmaps/212x64/shutdown.lbm"
 };
 

@@ -43,7 +43,7 @@ bool menuChannelsMonitor(event_t event)
   return menuChannelsMonitor(event, index);
 }
 
-const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
+const MenuHandlerFunc menuTabMonitors[]  = {
   menuChannelsMonitor<0>,
   menuChannelsMonitor<1>,
   menuChannelsMonitor<2>,

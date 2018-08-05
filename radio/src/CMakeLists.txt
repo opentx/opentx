@@ -430,10 +430,12 @@ if(NOT MSVC)
 
     # these are in addition to CMAKE_CXX_FLAGS
     set(CMAKE_EXE_LINKER_FLAGS "-lm -T${RADIO_SRC_DIRECTORY}/${LINKER_SCRIPT} -Wl,-Map=firmware.map,--cref,--no-warn-mismatch,--gc-sections")
+
     if(SEMIHOSTING)
       add_definitions(-DSEMIHOSTING)
       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=rdimon.specs")
     endif()
+
     # Use newlib nano, which saves a few kilobytes.
     if(NOT NANO STREQUAL NO)
       set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs")
@@ -445,7 +447,6 @@ if(NOT MSVC)
       add_definitions(-DUSE_BIN_ALLOCATOR)
       set(SRC ${SRC} bin_allocator.cpp)
     endif()
-
 
     if(PCB STREQUAL XLITE OR PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X10 OR PCB STREQUAL X12S)
       add_subdirectory(targets/common/arm/stm32/bootloader)
@@ -461,6 +462,8 @@ if(NOT MSVC)
         message(FATAL_ERROR "Download failed: ${error_message}")
       endif()
     endif()
+
+    add_definitions(-DRTOS_COOS)
 
     add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
     link_libraries(firmware -lstdc++)

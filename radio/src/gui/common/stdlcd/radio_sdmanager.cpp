@@ -64,7 +64,7 @@ inline bool isFilenameLower(bool isfile, const char * fn, const char * line)
 void getSelectionFullPath(char * lfn)
 {
   f_getcwd(lfn, _MAX_LFN);
-  strcat(lfn, PSTR("/"));
+  strcat(lfn, "/");
   strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - HEADER_LINE - menuVerticalOffset]);
 }
 
@@ -92,7 +92,7 @@ void onSdManagerMenu(const char * result)
     f_getcwd(lfn, _MAX_LFN);
     // if destination is dir, copy into that dir
     if (IS_DIRECTORY(line)) {
-      strcat(lfn, PSTR("/"));
+      strcat(lfn, "/");
       strcat(lfn, line);
     }
     if (strcmp(clipboard.data.sd.directory, lfn)) {  // prevent copying to the same directory
@@ -114,7 +114,7 @@ void onSdManagerMenu(const char * result)
     getSelectionFullPath(lfn);
     f_unlink(lfn);
     strncpy(statusLineMsg, line, 13);
-    strcpy_P(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
+    strcpy(statusLineMsg+min((uint8_t)strlen(statusLineMsg), (uint8_t)13), STR_REMOVED);
     showStatusLine();
     REFRESH_FILES();
   }

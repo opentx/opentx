@@ -95,9 +95,6 @@ extern "C" {
 #define TIMER_MULT_APB1                2
 #define TIMER_MULT_APB2                2
 
-#define strcpy_P strcpy
-#define strcat_P strcat
-
 extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)

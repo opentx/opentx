@@ -305,7 +305,7 @@ void eepromWriteWait(EepromWriteState state/* = EEPROM_IDLE*/)
   while (eepromWriteState != state) {
 #if defined(STM32)
     // Waits a little bit for CS transitions
-    CoTickDelay(1/*2ms*/);
+    RTOS_WAIT_MS(2);
 #endif
     eepromWriteProcess();
 #ifdef SIMU
@@ -468,7 +468,7 @@ const pm_char * eeBackupModel(uint8_t i_fileSrc)
   }
 
 #if defined(PCBSKY9X)
-  strcpy(statusLineMsg, PSTR("File "));
+  strcpy(statusLineMsg, "File ");
   strcpy(statusLineMsg+5, &buf[sizeof(MODELS_PATH)]);
 #endif
 
