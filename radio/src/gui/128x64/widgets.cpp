@@ -65,12 +65,12 @@ void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uin
   lcdDrawVerticalLine(x, y + yofs, yhgt, SOLID, FORCE);
 }
 
-void title(const pm_char * s)
+void title(const char * s)
 {
   lcdDrawText(0, 0, s, INVERS);
 }
 
-choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event)
+choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event)
 {
   drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
@@ -78,7 +78,7 @@ choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *
   return value;
 }
 
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, event_t event )
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, LcdFlags attr, event_t event )
 {
 #if defined(GRAPHICS)
   drawCheckBox(x, y, value, attr);
@@ -246,7 +246,7 @@ void drawProgressBar(const char * label, int num, int den)
   lcdRefresh();
 }
 
-const pm_uchar SLEEP_BITMAP[] PROGMEM = {
+const unsigned char SLEEP_BITMAP[]  = {
 #include "sleep.lbm"
 };
 

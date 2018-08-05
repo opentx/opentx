@@ -148,7 +148,7 @@ union ModulePulsesData {
 
   PpmPulsesData<pulse_duration_t> ppm;
   CrossfirePulsesData crossfire;
-} __ALIGNED;
+} __ALIGNED(4);
 
 /* The __ALIGNED keyword is required to align the struct inside the modulePulsesData below,
  * which is also defined to be __DMA  (which includes __ALIGNED) aligned.

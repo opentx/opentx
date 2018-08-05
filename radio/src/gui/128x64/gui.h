@@ -160,11 +160,11 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #define CURSOR_ON_LINE()               (0)
 #endif
 
-void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
+void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
 void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 void check_submenu_simple(event_t event, uint8_t maxrow);
 
-void title(const pm_char * s);
+void title(const char * s);
 #define TITLE(str) title(str)
 
   #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
@@ -225,8 +225,8 @@ void title(const pm_char * s);
 
 typedef int choice_t;
 
-choice_t editChoice(coord_t x, coord_t y, const pm_char * label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char * label, LcdFlags attr, event_t event);
+choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char * label, LcdFlags attr, event_t event);
 int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t event);
 
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
@@ -258,17 +258,17 @@ void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t e
 
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr=ZCHAR);
 
-void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active);
+void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8_t size, event_t event, uint8_t active);
 
-uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const pm_char * str, uint8_t delay);
+uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
 #define WARNING_TYPE_ASTERISK          0
 #define WARNING_TYPE_CONFIRM           1
 #define WARNING_TYPE_INPUT             2
 
-extern const pm_char * warningText;
-extern const pm_char * warningInfoText;
+extern const char * warningText;
+extern const char * warningInfoText;
 extern uint8_t         warningInfoLength;
 extern uint8_t         warningResult;
 extern uint8_t         warningType;
@@ -361,7 +361,7 @@ void deleteExpoMix(uint8_t expo, uint8_t idx);
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
-extern const pm_uchar sticks[] PROGMEM;
+extern const unsigned char sticks[] ;
 
 void drawSplash();
 void drawSecondSplash();
@@ -376,10 +376,10 @@ void drawSleepBitmap();
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 
 #if defined(PCBTARANIS)
-void drawAlertBox(const pm_char * title, const pm_char * text, const char * action);
+void drawAlertBox(const char * title, const char * text, const char * action);
 #endif
 
-void showAlertBox(const pm_char * title, const pm_char * text, const char * action , uint8_t sound);
+void showAlertBox(const char * title, const char * text, const char * action , uint8_t sound);
 
 #define SET_SCROLLBAR_X(x)
 #define LOAD_MODEL_BITMAP()

@@ -493,7 +493,7 @@ void menuModelSetup(event_t event)
 #if defined(PCBTARANIS)
         {
           #define FIRSTSW_STR   STR_VSRCRAW+(MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1)*length
-          uint8_t length = pgm_read_byte(STR_VSRCRAW);
+          uint8_t length = STR_VSRCRAW[0];
           horzpos_t l_posHorz = menuHorizontalPosition;
 
           if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 5*(NUM_BODY_LINES-i)) {
@@ -606,14 +606,14 @@ void menuModelSetup(event_t event)
           else {
             if ((states & 0x01) && swactive)
               attr = INVERS;
-            c = pgm_read_byte(STR_VSWITCHES - 2 + 9 + (3*(i+1)));
+            c = *(STR_VSWITCHES - 2 + 9 + (3*(i+1)));
             states >>= 1;
           }
           if (line && (menuHorizontalPosition == i)) {
             attr = BLINK | INVERS;
           }
           lcdDrawChar(MODEL_SETUP_2ND_COLUMN+i*FW, y, (swactive) ? c : '-', attr);
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, PSTR("<]"), (menuHorizontalPosition == NUM_SWITCHES-1 && !NO_HIGHLIGHT()) ? line : 0);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN+(NUM_SWITCHES*FW), y, "<]", (menuHorizontalPosition == NUM_SWITCHES-1 && !NO_HIGHLIGHT()) ? line : 0);
         }
 #endif
         break;
@@ -621,7 +621,7 @@ void menuModelSetup(event_t event)
 #if defined(PCBTARANIS)
       case ITEM_MODEL_POTS_WARNING:
         lcdDrawTextAlignedLeft(y, STR_POTWARNING);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, PSTR("\004""OFF\0""Man\0""Auto"), g_model.potsWarnMode, (menuHorizontalPosition == 0) ? attr : 0);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, "\004""OFF\0""Man\0""Auto", g_model.potsWarnMode, (menuHorizontalPosition == 0) ? attr : 0);
         if (attr && (menuHorizontalPosition == 0)) {
           CHECK_INCDEC_MODELVAR(event, g_model.potsWarnMode, POTS_WARN_OFF, POTS_WARN_AUTO);
           storageDirty(EE_MODEL);
@@ -1269,7 +1269,7 @@ void menuModelSetup(event_t event)
 
 #if 0
       case ITEM_MODEL_PPM2_PROTOCOL:
-        lcdDrawTextAlignedLeft(y, PSTR("Port2"));
+        lcdDrawTextAlignedLeft(y, "Port2");
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VPROTOS, 0, 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+4*FW+3, y, STR_CH, menuHorizontalPosition<=0 ? attr : 0);
         lcdDrawNumber(lcdLastRightPos, y, g_model.moduleData[1].channelsStart+1, LEFT | (menuHorizontalPosition<=0 ? attr : 0));

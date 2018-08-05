@@ -173,7 +173,7 @@ void displayTrims(uint8_t phase)
   }
 }
 
-FORCEINLINE void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
+void drawTimerWithMode(coord_t x, coord_t y, uint8_t index)
 {
   const TimerData & timer = g_model.timers[index];
   if (timer.mode) {
@@ -303,8 +303,6 @@ void onMainViewMenu(const char *result)
 
 void menuMainView(event_t event)
 {
-  STICK_SCROLL_DISABLE();
-
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 
@@ -564,12 +562,12 @@ void menuMainView(event_t event)
     warningText = STR_GLOBAL_VAR;
     drawMessageBox();
     lcdDrawSizedText(16, 5*FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
-    lcdDrawText(16+6*FW, 5*FH, PSTR("["), BOLD);
+    lcdDrawText(16+6*FW, 5*FH, "[", BOLD);
     drawGVarValue(lcdLastRightPos, 5*FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
     if (g_model.gvars[gvarLastChanged].unit) {
       lcdDrawText(lcdLastRightPos, 5*FH, "%", BOLD);
     }
-    lcdDrawText(lcdLastRightPos, 5*FH, PSTR("]"), BOLD);
+    lcdDrawText(lcdLastRightPos, 5*FH, "]", BOLD);
     warningText = NULL;
   }
 #endif
@@ -577,7 +575,7 @@ void menuMainView(event_t event)
 #if defined(DSM2)
   if (moduleFlag[0] == MODULE_BIND) {
     // Issue 98
-    lcdDrawText(15*FW, 0, PSTR("BIND"), 0);
+    lcdDrawText(15*FW, 0, "BIND", 0);
   }
 #endif
 }

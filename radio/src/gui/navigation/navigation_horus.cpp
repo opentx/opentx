@@ -339,7 +339,7 @@ int8_t navigate(event_t event, int count, int rows, int columns, bool loop)
   return (prevPosHorz != menuHorizontalPosition || prevPosVert != menuVerticalPosition) ? result : 0;
 }
 
-bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, int rowcount, uint8_t flags)
+bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const uint8_t * horTab, uint8_t horTabMax, int rowcount, uint8_t flags)
 {
   uint8_t maxcol = MAXCOL(menuVerticalPosition);
 
@@ -372,7 +372,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
     }
 
     if (cc != curr) {
-      chainMenu((MenuHandlerFunc)pgm_read_adr(&menuTab[cc]));
+      chainMenu(menuTab[cc]);
       return false;
     }
 

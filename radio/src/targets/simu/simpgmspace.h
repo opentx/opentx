@@ -77,22 +77,14 @@ void sig(int sgn)
 #undef min
 #undef max
 
-#define APM
 #define __REV
-
-typedef const unsigned char pm_uchar;
-typedef const char pm_char;
-typedef const uint16_t pm_uint16_t;
-typedef const uint8_t pm_uint8_t;
-typedef const int16_t pm_int16_t;
-typedef const int8_t pm_int8_t;
 
 #if defined(STM32)
 extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 extern TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
-extern DMA_Stream_TypeDef dma1_stream2, dma1_stream5, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
+extern DMA_Stream_TypeDef dma1_stream0, dma1_stream1, dma1_stream2, dma1_stream3, dma1_stream4, dma1_stream5, dma1_stream6, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
 extern DMA_TypeDef dma2;
 extern SysTick_Type systick;
 #undef SysTick
@@ -147,7 +139,11 @@ extern SysTick_Type systick;
 #define USART3 (&Usart3)
 #undef RCC
 #define RCC (&rcc)
+#undef DMA1_Stream0
+#undef DMA1_Stream1
 #undef DMA1_Stream2
+#undef DMA1_Stream3
+#undef DMA1_Stream4
 #undef DMA1_Stream5
 #undef DMA1_Stream7
 #undef DMA2_Stream1
@@ -155,7 +151,11 @@ extern SysTick_Type systick;
 #undef DMA2_Stream5
 #undef DMA2_Stream6
 #undef DMA2_Stream7
+#define DMA1_Stream0 (&dma1_stream0)
+#define DMA1_Stream1 (&dma1_stream1)
 #define DMA1_Stream2 (&dma1_stream2)
+#define DMA1_Stream3 (&dma1_stream3)
+#define DMA1_Stream4 (&dma1_stream4)
 #define DMA1_Stream5 (&dma1_stream5)
 #define DMA1_Stream7 (&dma1_stream7)
 #define DMA2_Stream1 (&dma2_stream1)
@@ -213,117 +213,6 @@ extern uint32_t txPdcUsart( uint8_t *buffer, uint32_t size );
 extern uint32_t txPdcPending();
 extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
-#define loop_until_bit_is_set( port, bitnum) \
-  while ( 0/*! ( (port) & (1 << (bitnum)) )*/ ) ;
-
-#define PROGMEM
-#define pgm_read_byte(address_short) (*(uint8_t*)(address_short))
-#define pgm_read_word(address_short) (*(uint16_t*)(address_short))
-#define pgm_read_adr(address_short) *address_short
-#define pgm_read_stringP(adr) ((adr))
-#define PSTR(adr) adr
-#define _delay_us(a)
-#define _delay_ms(a)
-#define cli()
-#define sei()
-#define strcpy_P strcpy
-#define strcat_P strcat
-#define memcpy_P memcpy
-
-#define PORTA dummyport
-#define PORTB portb
-#define PORTC portc
-#define PORTD dummyport
-#define PORTE dummyport
-#define PORTF dummyport
-#define PORTG dummyport
-#define PORTH porth
-#define PORTL dummyport
-#define DDRA  dummyport
-#define DDRB  dummyport
-#define DDRC  dummyport
-#define DDRD  dummyport
-#define DDRE  dummyport
-#define DDRF  dummyport
-#define DDRG  dummyport
-#define EEMEM
-
-#define UCSR0B dummyport
-#define UDRIE0 dummyport
-#define TXB80 dummyport
-#define TXCIE0 dummyport
-#define TXEN0 dummyport
-#define RXEN0 dummyport
-#define DDE0 dummyport
-#define PORTE0 dummyport
-#define RXCIE0 dummyport
-#define OCR0A dummyport
-#define OCR1A dummyport16
-#define OCR1B dummyport16
-#define OCR1C dummyport16
-#define OCR2 dummyport
-#define OCR3A dummyport16
-#define OCR3B dummyport16
-#define OCR4A dummyport
-#define OCR5A dummyport
-#define TCCR0A dummyport
-#define TCCR1A dummyport
-#define TCCR1B dummyport
-#define TCCR1C dummyport
-#define COM1B0 dummyport
-#define COM0A0 dummyport
-#define TCNT1 dummyport16
-#define TCNT1L dummyport
-#define TCNT5 dummyport16
-#define ICR1 dummyport16
-#define TIFR dummyport
-#define TIFR1 dummyport
-#define ETIFR dummyport
-
-#define SPDR dummyport
-#define SPSR dummyport
-#define SPIF dummyport
-#define SPCR dummyport
-
-#define TIMSK  dummyport
-#define TIMSK1 dummyport
-#define TIMSK3 dummyport
-#define TIMSK4 dummyport
-#define TIMSK5 dummyport
-#define ETIMSK  dummyport
-#define ETIMSK1 dummyport
-
-#define UCSZ02 dummyport
-#define UCSR0C dummyport
-#define UCSZ01 dummyport
-#define UCSZ00 dummyport
-#define UCSR0A dummyport
-#define RXC0 dummyport
-
-#define UDR0 dummyport
-#define OCIE1A dummyport
-#define OCIE1B dummyport
-#define OCIE1C dummyport
-#define OCIE4A dummyport
-#define OCIE5A dummyport
-
-#define OUT_B_LIGHT   7
-#define INP_E_ElevDR  2
-#define INP_E_Trainer 5
-#define INP_E_Gear    4
-#define INP_C_ThrCt   6
-#define INP_C_AileDR  7
-#define INP_E_ID2     6
-
-#define WGM10   0
-#define WGM12   0
-#define COM1B1  0
-#define FOC1B   0
-#define CS10    0
-#define DOR0    0
-#define UPE0    0
-#define FE0     0
-
 #define ISR(x, ...)  void x()
 
 #if !defined(_MSC_VER) && defined(__GNUC__)
@@ -338,14 +227,12 @@ extern uint32_t Master_frequency;
 #define __disable_irq()
 #define __enable_irq()
 
-extern uint8_t portb, portc, porth, dummyport;
-extern uint16_t dummyport16;
 extern uint8_t main_thread_running;
 extern char * main_thread_error;
 
-#define getADC()
-#define GET_ADC_IF_MIXER_NOT_RUNNING()
-#define getADC_bandgap()
+static inline void getADC()
+{
+}
 
 #define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
 #define SIMU_SLEEP_NORET(x) do { sleep(x/*ms*/); } while (0)
@@ -370,49 +257,12 @@ void StopEepromThread();
   #define StopAudioThread()
 #endif
 
-
-#define OS_MutexID pthread_mutex_t
-extern OS_MutexID audioMutex;
-
-#define OS_FlagID uint32_t
-#define OS_TID pthread_t
-#define OS_TCID uint32_t
-#define OS_STK uint32_t
-
-#define E_OK   0
-#define WDRF   0
-
 void * simuMain(void * args = NULL);
-extern uint8_t MCUCSR, MCUSR, MCUCR;
-
-typedef unsigned int       U32;
-typedef unsigned long long U64;
-typedef void               (*FUNCPtr)(void*);
-
-#define CoInitOS(...)
-#define CoStartOS(...)
-
-OS_TID CoCreateTask(FUNCPtr task, void *argv, uint32_t parameter, void * stk, uint32_t stksize);
-#define CoCreateTaskEx(...)            0
-
-#define CoCreateMutex(...)             PTHREAD_MUTEX_INITIALIZER
-#define CoEnterMutexSection(m)         pthread_mutex_lock(&(m))
-#define CoLeaveMutexSection(m)         pthread_mutex_unlock(&(m))
-
-#define CoSetFlag(...)
-#define CoClearFlag(...)
-#define CoSetTmrCnt(...)
-#define CoEnterISR(...)
-#define CoExitISR(...)
-#define CoStartTmr(...)
-#define CoWaitForSingleFlag(...)       0
-#define CoTickDelay(x)                 sleep(2*(x))
-#define CoCreateFlag(...)              0
-U64 CoGetOSTime(void);
 
 #define UART_Stop(...)
 #define UART3_Stop(...)
 #define USART_GetITStatus(...)         0
+#define USART_ClearFlag(...)
 
 #if defined(STM32)
 inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
@@ -437,6 +287,7 @@ inline void DMA_Init(DMA_Stream_TypeDef* DMAy_Streamx, DMA_InitTypeDef* DMA_Init
 inline void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewState) { }
 inline void DMA_StructInit(DMA_InitTypeDef* DMA_InitStruct) { }
 inline void DMA_Cmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState) { }
+void DMACopy(void * src, void * dest, unsigned size);
 inline FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG) { return RESET; }
 inline ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { return RESET; }
 inline void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { }

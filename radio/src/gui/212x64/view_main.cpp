@@ -49,11 +49,11 @@
 #define TRIM_LEN 27
 #define MARKER_WIDTH  5
 
-const pm_uchar logo_taranis[] PROGMEM = {
+const unsigned char logo_taranis[]  = {
 #include "logo.lbm"
 };
 
-const pm_uchar icons[] PROGMEM = {
+const unsigned char icons[]  = {
 #include "icons.lbm"
 };
 
@@ -439,8 +439,6 @@ void menuMainView(event_t event)
 {
   static bool secondPage = false;
 
-  STICK_SCROLL_DISABLE();
-
   switch(event) {
 
     case EVT_ENTRY:
@@ -594,9 +592,9 @@ void menuMainView(event_t event)
     lcdDrawRect(BITMAP_X, BITMAP_Y, 64, 32);
     drawStringWithIndex(BITMAP_X+FW, BITMAP_Y+FH-1, STR_GV, gvarLastChanged+1);
     lcdDrawSizedText(BITMAP_X+4*FW+FW/2, BITMAP_Y+FH-1, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
-    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, PSTR("["), BOLD);
+    lcdDrawText(BITMAP_X+FW, BITMAP_Y+2*FH+3, "[", BOLD);
     drawGVarValue(BITMAP_X+2*FW, BITMAP_Y+2*FH+3, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
-    lcdDrawText(lcdLastRightPos, BITMAP_Y+2*FH+3, PSTR("]"), BOLD);
+    lcdDrawText(lcdLastRightPos, BITMAP_Y+2*FH+3, "]", BOLD);
   }
 #endif
 }

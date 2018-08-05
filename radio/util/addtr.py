@@ -25,13 +25,13 @@ def modifyTranslations(constant, translation, after):
 
 
 def modifyDeclaration(constant, after):
-    newline = "extern const pm_char S" + constant + "[];"
+    newline = "extern const char S" + constant + "[];"
     filename = "translations.h"
     addLine(filename, newline, after + "[];")
 
 
 def modifyDefinition(constant, after):
-    newline = "const pm_char S" + constant + "[] PROGMEM = " + constant + ";"
+    newline = "const char S" + constant + "[]  = " + constant + ";"
     filename = "translations.cpp"
     addLine(filename, newline, after + "[] ")
 

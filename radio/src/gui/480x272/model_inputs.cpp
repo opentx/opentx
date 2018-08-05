@@ -303,7 +303,7 @@ bool menuModelExpoOne(event_t event)
   return true;
 }
 
-#define _STR_MAX(x) PSTR("/" #x)
+#define _STR_MAX(x) "/" #x
 #define STR_MAX(x) _STR_MAX(x)
 
 #define EXPO_LINE_WEIGHT_POS    125

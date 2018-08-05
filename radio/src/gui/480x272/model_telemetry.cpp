@@ -526,10 +526,10 @@ bool menuModelTelemetryFrsky(event_t event)
         if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF &&
           g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE  &&
           g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
-          lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("RSNR"));
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "RSNR");
         else
 #endif
-        lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("RSSI"));
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "RSSI");
         break;
 
       case ITEM_TELEMETRY_RSSI_ALARM1:

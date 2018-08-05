@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void drawStringWithIndex(coord_t x, coord_t y, const pm_char * str, uint8_t idx, LcdFlags flags)
+void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags flags)
 {
   if (flags & RIGHT) {
     lcdDrawNumber(x, y, idx, flags);

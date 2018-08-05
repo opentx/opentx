@@ -43,6 +43,6 @@ void drawFlightMode(coord_t x, coord_t y, int8_t idx, LcdFlags att)
     return;
   }
 #endif
-  drawStringWithIndex(x, y, STR_FP, idx-1, att);
+  drawStringWithIndex(x, y, STR_FM, idx-1, att);
 }
 #endif

@@ -20,33 +20,13 @@
 
 #include "opentx.h"
 
-#if !defined GET_FAR_ADDRESS
-#define GET_FAR_ADDRESS(var)                          \
-({                                                    \
-    uint32_t tmp;                                     \
-                                                      \
-    __asm__ __volatile__(                             \
-                                                      \
-            "ldi    %A0, lo8(%1)"           "\n\t"    \
-            "ldi    %B0, hi8(%1)"           "\n\t"    \
-            "ldi    %C0, hh8(%1)"           "\n\t"    \
-            "clr    %D0"                    "\n\t"    \
-        :                                             \
-            "=d" (tmp)                                \
-        :                                             \
-            "p"  (&(var))                             \
-    );                                                \
-    tmp;                                              \
-})
-#endif
-
 #if defined(SPLASH)
-const pm_uchar splashdata[] PROGMEM = {
+const unsigned char splashdata[]  = {
   'S','P','S',0,
   #include "bitmaps/128x64/splash.lbm"
   'S','P','E',0 };
 
-const pm_uchar * const splash_lbm = splashdata+4;
+const unsigned char * const splash_lbm = splashdata+4;
 
 void drawSplash()
 {
@@ -65,12 +45,12 @@ void drawSplash()
 #endif
 
 #if defined(SPLASH_FRSKY)
-const pm_uchar splashdata2[] PROGMEM = {
+const unsigned char splashdata2[]  = {
   'S','F','S',0,
   #include "bitmaps/128x64/splash_frsky.lbm"
   'S','F','E',0 };
 
-const pm_uchar * const splash2_lbm = splashdata2+4;
+const unsigned char * const splash2_lbm = splashdata2+4;
 
 void drawSecondSplash()
 {

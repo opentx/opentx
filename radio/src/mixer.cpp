@@ -143,7 +143,7 @@ int expo(int x, int k)
   return neg ? -y : y;
 }
 
-void applyExpos(int16_t * anas, uint8_t mode APPLY_EXPOS_EXTRA_PARAMS)
+void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue)
 {
   int8_t cur_chn = -1;
 
@@ -969,9 +969,7 @@ void evalMixes(uint8_t tick10ms)
   // must be done after mixing because some functions use the inputs/channels values
   // must be done before limits because of the applyLimit function: it checks for safety switches which would be not initialized otherwise
   if (tick10ms) {
-#if defined(MASTER_VOLUME)
     requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-#endif
 
     if (!g_model.noGlobalFunctions) {
       evalFunctions(g_eeGeneral.customFn, globalFunctionsContext);
@@ -992,9 +990,7 @@ void evalMixes(uint8_t tick10ms)
 
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
-    cli();
     channelOutputs[i] = value;  // copy consistent word to int-level
-    sei();
   }
 
   if (tick10ms && flightModesFade) {

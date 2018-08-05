@@ -22,7 +22,7 @@
 
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value)
 {
-  lcdDrawText(x, y, STR_FP);
+  lcdDrawText(x, y, STR_FM);
   x = lcdNextPos + 1;
   for (uint8_t p=0; p<MAX_FLIGHT_MODES; p++) {
     lcdDrawChar(x, y, ((value & (1<<p)) ? '-' : '0'+p));

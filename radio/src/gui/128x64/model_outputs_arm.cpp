@@ -266,7 +266,6 @@ void menuModelLimits(event_t event)
     }
 
     for (uint8_t j=0; j<ITEM_OUTPUTS_COUNT; j++) {
-      if (attr && (s_editMode>0 || p1valdiff)) STICK_SCROLL_DISABLE();
       switch (j) {
         case ITEM_OUTPUTS_OFFSET:
 #if defined(PPM_UNIT_US)

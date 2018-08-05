@@ -178,11 +178,11 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #define CURSOR_ON_LINE()         (menuHorizontalPosition<0)
 
 #define CHECK_FLAG_NO_SCREEN_INDEX   1
-void check(const char * title, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const pm_uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
+void check(const char * title, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow, uint8_t flags=0);
 void check_simple(const char *title, event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 void check_submenu_simple(const char * title, event_t event, uint8_t maxrow);
 
-void title(const pm_char * s);
+void title(const char * s);
 #define TITLE(str) title(str)
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
@@ -224,8 +224,8 @@ void title(const pm_char * s);
 
 typedef int choice_t;
 
-choice_t editChoice(coord_t x, coord_t y, const pm_char *label, const pm_char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
-uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const pm_char *label, LcdFlags attr, event_t event);
+choice_t editChoice(coord_t x, coord_t y, const char *label, const char *values, choice_t value, choice_t min, choice_t max, LcdFlags attr, event_t event);
+uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, const char *label, LcdFlags attr, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t event);
 
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
@@ -249,7 +249,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
 
 extern uint8_t editNameCursorPos;
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr=ZCHAR);
-void editSingleName(coord_t x, coord_t y, const pm_char * label, char * name, uint8_t size, event_t event, uint8_t active);
+void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8_t size, event_t event, uint8_t active);
 
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
 #define EDIT_DELAY(y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
@@ -260,8 +260,8 @@ uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint
 
 void copySelection(char * dst, const char * src, uint8_t size);
 
-extern const pm_char * warningText;
-extern const pm_char * warningInfoText;
+extern const char * warningText;
+extern const char * warningInfoText;
 extern uint8_t         warningInfoLength;
 extern uint8_t         warningResult;
 extern uint8_t         warningType;
@@ -326,7 +326,7 @@ uint8_t switchToMix(uint8_t source);
 extern coord_t scrollbar_X;
 #define SET_SCROLLBAR_X(x) scrollbar_X = (x);
 
-extern const pm_uchar sticks[] PROGMEM;
+extern const unsigned char sticks[] ;
 
 #if defined(FLIGHT_MODES)
 void displayFlightModes(coord_t x, coord_t y, FlightModesType value);

@@ -125,7 +125,7 @@ void menuModelDisplay(event_t event)
         uint8_t screenIndex = TELEMETRY_CURRENT_SCREEN(k);
         drawStringWithIndex(0*FW, y, STR_SCREEN, screenIndex+1);
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
-        TelemetryScreenType newScreenType = (TelemetryScreenType)editChoice(DISPLAY_COL2, y, PSTR(""), STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
+        TelemetryScreenType newScreenType = (TelemetryScreenType)editChoice(DISPLAY_COL2, y, "", STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {
           g_model.frsky.screensType = (g_model.frsky.screensType & (~(0x03 << (2*screenIndex)))) | (newScreenType << (2*screenIndex));
           memset(&g_model.frsky.screens[screenIndex], 0, sizeof(g_model.frsky.screens[screenIndex]));

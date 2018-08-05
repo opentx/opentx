@@ -1,0 +1,281 @@
+/*
+ * Copyright (C) OpenTX
+ *
+ * Based on code named
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
+ *
+ * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License version 2 as
+ * published by the Free Software Foundation.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
+
+#ifndef _RTOS_H_
+#define _RTOS_H_
+
+#include "definitions.h"
+
+#ifdef __cplusplus
+extern "C++" {
+#endif
+
+#define doNothing()                     do { } while(0)
+
+#if defined(SIMU)
+  #include <pthread.h>
+  #include <semaphore.h>
+  #if __GNUC__
+    #include <unistd.h>
+    static inline void msleep(unsigned x)
+    {
+      usleep(1000 * x);
+    }
+  #else
+    #include <windows.h>
+    inline void msleep(unsigned x)
+    {
+      Sleep(x);
+    }
+  #endif
+
+  static inline void RTOS_INIT()
+  {
+  }
+
+  static inline void RTOS_START()
+  {
+  }
+
+  static inline void RTOS_WAIT_MS(unsigned x)
+  {
+    msleep(x);
+  }
+
+  static inline void RTOS_WAIT_TICKS(unsigned x)
+  {
+    msleep(x * 2);
+  }
+
+  typedef pthread_t RTOS_TASK_HANDLE;
+  typedef pthread_mutex_t RTOS_MUTEX_HANDLE;
+  typedef uint32_t RTOS_FLAG_HANDLE;
+  typedef sem_t * RTOS_EVENT_HANDLE;
+
+#ifdef __cplusplus
+  static inline void RTOS_CREATE_MUTEX(pthread_mutex_t &mutex)
+  {
+    mutex = PTHREAD_MUTEX_INITIALIZER;
+  }
+
+  static inline void RTOS_LOCK_MUTEX(pthread_mutex_t &mutex)
+  {
+      pthread_mutex_lock(&mutex);
+  }
+
+  static inline void RTOS_UNLOCK_MUTEX(pthread_mutex_t &mutex)
+  {
+      pthread_mutex_unlock(&mutex);
+  }
+
+  static inline void RTOS_CREATE_FLAG(uint32_t &flag)
+  {
+    flag = 0; // TODO: real flags (use semaphores?)
+  }
+
+  static inline void RTOS_SET_FLAG(uint32_t &flag)
+  {
+    flag = 1;
+  }
+
+  template<int SIZE>
+  class FakeTaskStack
+  {
+    public:
+      FakeTaskStack()
+      {
+      }
+
+      void paint()
+      {
+      }
+
+      uint16_t size()
+      {
+        return SIZE;
+      }
+
+      uint16_t available()
+      {
+        return SIZE / 2;
+      }
+  };
+  #define RTOS_DEFINE_STACK(name, size) FakeTaskStack<size> name
+
+  #define TASK_FUNCTION(task)           void * task(void * pdata)
+
+  template<int SIZE>
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name, FakeTaskStack<SIZE> &stack, unsigned stackSize, unsigned priority)
+  {
+    pthread_create(&taskId, nullptr, task, nullptr);
+  }
+
+  #define TASK_RETURN()                 return nullptr
+
+  constexpr uint16_t stackAvailable()
+  {
+    return 500;
+  }
+#endif
+
+  // return 2ms resolution to match CoOS settings
+  static inline uint32_t RTOS_GET_TIME(void)
+  {
+    extern uint64_t simuTimerMicros(void);
+    return simuTimerMicros() / 2000;
+  }
+#elif defined(RTOS_COOS)
+#ifdef __cplusplus
+  extern "C" {
+#endif
+    #include <CoOS.h>
+#ifdef __cplusplus
+  }
+#endif
+
+  typedef OS_TID RTOS_TASK_HANDLE;
+  typedef OS_MutexID RTOS_MUTEX_HANDLE;
+  typedef OS_FlagID RTOS_FLAG_HANDLE;
+  typedef OS_EventID RTOS_EVENT_HANDLE;
+
+  static inline void RTOS_INIT()
+  {
+    CoInitOS();
+  }
+
+  static inline void RTOS_START()
+  {
+    CoStartOS();
+  }
+
+  static inline void RTOS_WAIT_MS(unsigned x)
+  {
+    CoTickDelay(x / 2);
+  }
+
+  static inline void RTOS_WAIT_TICKS(unsigned x)
+  {
+    CoTickDelay(x);
+  }
+
+  #define RTOS_CREATE_TASK(taskId, task, name, stackStruct, stackSize, priority)   \
+                                        taskId = CoCreateTask(task, NULL, priority, &stackStruct.stack[stackSize-1], stackSize)
+
+#ifdef __cplusplus
+  static inline void RTOS_CREATE_MUTEX(OS_MutexID &mutex)
+  {
+    mutex = CoCreateMutex();
+  }
+
+  static inline void RTOS_LOCK_MUTEX(OS_MutexID &mutex)
+  {
+    CoEnterMutexSection(mutex);
+  }
+
+  static inline void RTOS_UNLOCK_MUTEX(OS_MutexID &mutex)
+  {
+    CoLeaveMutexSection(mutex);
+  }
+#endif
+
+  static inline uint16_t getStackAvailable(void * address, uint16_t size)
+  {
+    uint32_t * array = (uint32_t *)address;
+    uint16_t i = 0;
+    while (i < size && array[i] == 0x55555555) {
+      i++;
+    }
+    return i*4;
+  }
+
+  extern int _estack;
+  extern int _main_stack_start;
+  static inline uint16_t stackSize()
+  {
+    return ((unsigned char *)&_estack - (unsigned char *)&_main_stack_start) / 4;
+  }
+
+  static inline uint16_t stackAvailable()
+  {
+    return getStackAvailable(&_main_stack_start, stackSize());
+  }
+
+  #define RTOS_CREATE_FLAG(flag)        flag = CoCreateFlag(false, false)
+  #define RTOS_SET_FLAG(flag)           (void)CoSetFlag(flag)
+
+#ifdef __cplusplus
+  template<int SIZE>
+  class TaskStack
+  {
+    public:
+      TaskStack()
+      {
+      }
+
+      void paint()
+      {
+        for (uint32_t i=0; i<SIZE; i++) {
+          stack[i] = 0x55555555;
+        }
+      }
+
+      uint16_t size()
+      {
+        return SIZE * 4;
+      }
+
+      uint16_t available()
+      {
+        return getStackAvailable(stack, SIZE);
+      }
+
+      OS_STK stack[SIZE];
+  };
+#endif // __cplusplus
+
+  static inline uint32_t RTOS_GET_TIME(void)
+  {
+    return CoGetOSTime();
+  }
+
+  #define RTOS_DEFINE_STACK(name, size) TaskStack<size> __ALIGNED(8) name // stack must be aligned to 8 bytes otherwise printf for %f does not work!
+
+  #define TASK_FUNCTION(task)           void task(void * pdata)
+  #define TASK_RETURN()                 return
+
+#else // no RTOS
+  static inline void RTOS_START()
+  {
+  }
+
+  static inline void RTOS_WAIT_MS(unsigned x)
+  {
+  }
+
+  static inline void RTOS_WAIT_TICKS(unsigned x)
+  {
+  }
+#endif
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // _RTOS_H_

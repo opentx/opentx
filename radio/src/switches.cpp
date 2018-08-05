@@ -478,12 +478,12 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
 /**
   @brief Calculates new state of logical switches for mixerCurrentFlightMode
 */
-void evalLogicalSwitches(bool isCurrentPhase)
+void evalLogicalSwitches(bool isCurrentFlightmode)
 {
   for (unsigned int idx=0; idx<MAX_LOGICAL_SWITCHES; idx++) {
     LogicalSwitchContext & context = lswFm[mixerCurrentFlightMode].lsw[idx];
     bool result = getLogicalSwitch(idx);
-    if (isCurrentPhase) {
+    if (isCurrentFlightmode) {
       if (result) {
         if (!context.state) PLAY_LOGICAL_SWITCH_ON(idx);
       }
@@ -553,11 +553,10 @@ void checkSwitches()
 
   while (1) {
 
-#if defined(TELEMETRY_MOD_14051) || defined(TELEMETRY_MOD_14051_SWAPPED)
-  #define GETADC_COUNT (MUX_MAX+1)
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   #define GETADC_COUNT 1
 #endif
+
 #ifdef GETADC_COUNT
     for (uint8_t i=0; i<GETADC_COUNT; i++) {
       GET_ADC_IF_MIXER_NOT_RUNNING();
@@ -747,8 +746,7 @@ void checkSwitches()
 
     wdt_reset();
 
-    SIMU_SLEEP(1);
-    CoTickDelay(10);
+    RTOS_WAIT_MS(10);
   }
 
   LED_ERROR_END();

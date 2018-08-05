@@ -44,7 +44,7 @@ void showMessageBox(const char * title)
   lcdRefresh();
 }
 
-const pm_uchar ASTERISK_BITMAP[] PROGMEM = {
+const unsigned char ASTERISK_BITMAP[]  = {
 #include "asterisk.lbm"
 };
 

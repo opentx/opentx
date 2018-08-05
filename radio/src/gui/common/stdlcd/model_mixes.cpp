@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#define _STR_MAX(x)                     PSTR("/" #x)
+#define _STR_MAX(x)                     "/" #x
 #define STR_MAX(x)                     _STR_MAX(x)
 
 uint8_t getMixesCount()

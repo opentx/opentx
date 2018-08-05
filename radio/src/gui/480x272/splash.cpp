@@ -22,45 +22,39 @@
 
 #if defined(SPLASH)
 
-const uint8_t __bmp_splash[] {
+const uint8_t __bmp_splash[] __ALIGNED(4) {
 #include "bmp_splash.lbm"
 };
-Bitmap BMP_SPLASH(BMP_RGB565, (const uint16_t*)__bmp_splash);
+Bitmap BMP_SPLASH(BMP_RGB565, (const uint16_t *)__bmp_splash);
 
 void drawSplash()
 {
-    static bool     loadImgFromSD  = true;
-    static BitmapBuffer* splashImg = NULL;
+  static bool loadImgFromSD = true;
+  static BitmapBuffer * splashImg = nullptr;
 
-    if (loadImgFromSD && splashImg == NULL) {
-        bool sd_mounted = sdMounted();
-        if (!sd_mounted) sdInit();
-        splashImg = BitmapBuffer::load(BITMAPS_PATH "/" SPLASH_FILE);
-        loadImgFromSD = false;
-        if (!sd_mounted) sdDone();
-    }
-
-    lcd->clear();
-
-    if (splashImg) {
-        lcd->drawBitmap((LCD_W - splashImg->getWidth())/2,
-                        (LCD_H - splashImg->getHeight())/2,
-                        splashImg);
-    }
-    else {
-      // TODO: verify / load / decompress bitmap
-        lcd->drawBitmap((LCD_W - BMP_SPLASH.getWidth())/2,
-                        (LCD_H - BMP_SPLASH.getHeight())/2,
-                        &BMP_SPLASH);
-    }
-
-#if MENUS_LOCK == 1
-  if (readonly == false) {
-    lcdDrawSolidFilledRect((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 - 9, 50, (sizeof(TR_UNLOCKED)-1)*FW+16, 11, SOLID|ROUND);
-    lcdDrawText((LCD_W-(sizeof(TR_UNLOCKED)-1)*FW)/2 , 53, STR_UNLOCKED);
+  if (loadImgFromSD && splashImg == nullptr) {
+    bool sd_mounted = sdMounted();
+    if (!sd_mounted)
+      sdInit();
+    splashImg = BitmapBuffer::load(BITMAPS_PATH "/" SPLASH_FILE);
+    loadImgFromSD = false;
+    if (!sd_mounted)
+      sdDone();
   }
-#endif
 
+  lcd->clear();
+
+  if (splashImg) {
+    lcd->drawBitmap((LCD_W - splashImg->getWidth())/2,
+                    (LCD_H - splashImg->getHeight())/2,
+                    splashImg);
+  }
+  else {
+    lcd->drawBitmap((LCD_W - BMP_SPLASH.getWidth())/2,
+                    (LCD_H - BMP_SPLASH.getHeight())/2,
+                    &BMP_SPLASH);
+  }
+  
   lcdRefresh();
 }
 #endif

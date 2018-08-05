@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -21,59 +21,37 @@
 #ifndef _TASKS_ARM_H_
 #define _TASKS_ARM_H_
 
-#if !defined(SIMU)
-extern "C" {
-#include <CoOS.h>
-}
-#endif
+#include "rtos.h"
 
+// stack sizes should be in multiples of 8 for better alignment
 #define MENUS_STACK_SIZE       2000
-#define MIXER_STACK_SIZE       500
-#define AUDIO_STACK_SIZE       500
-#define BLUETOOTH_STACK_SIZE   500
+#define MIXER_STACK_SIZE       512
+#define AUDIO_STACK_SIZE       512
 
-#if defined(_MSC_VER)
-#define _ALIGNED(x) __declspec(align(x))
-#elif defined(__GNUC__)
-#define _ALIGNED(x) __attribute__ ((aligned(x)))
-#endif
+#define MIXER_TASK_PRIO        5
+#define AUDIO_TASK_PRIO        7
+#define MENUS_TASK_PRIO        10
+#define CLI_TASK_PRIO          10
 
-uint16_t getStackAvailable(void * address, uint16_t size);
+extern RTOS_TASK_HANDLE menusTaskId;
+extern RTOS_DEFINE_STACK(menusStack, MENUS_STACK_SIZE);
 
-template<int SIZE>
-class TaskStack
-{
-  public:
-    TaskStack() { }
-    void paint();
-    uint16_t size()
-    {
-      return SIZE * 4;
-    }
-    uint16_t available()
-    {
-      return getStackAvailable(stack, SIZE);
-    }
-    OS_STK stack[SIZE];
-};
+extern RTOS_TASK_HANDLE mixerTaskId;
+extern RTOS_DEFINE_STACK(mixerStack, MIXER_STACK_SIZE);
+
+extern RTOS_TASK_HANDLE audioTaskId;
+extern RTOS_DEFINE_STACK(audioStack, AUDIO_STACK_SIZE);
+
+extern RTOS_MUTEX_HANDLE mixerMutex;
+extern RTOS_FLAG_HANDLE openTxInitCompleteFlag;
 
 void stackPaint();
-uint16_t stackSize();
-uint16_t stackAvailable();
-
-extern OS_TID menusTaskId;
-// menus stack must be aligned to 8 bytes otherwise printf for %f does not work!
-extern TaskStack<MENUS_STACK_SIZE> _ALIGNED(8) menusStack;
-
-extern OS_TID mixerTaskId;
-extern TaskStack<MIXER_STACK_SIZE> mixerStack;
-
-extern OS_TID audioTaskId;
-extern TaskStack<AUDIO_STACK_SIZE> audioStack;
-
 void tasksStart();
 
 extern volatile uint16_t timeForcePowerOffPressed;
-inline void resetForcePowerOffRequest() {timeForcePowerOffPressed = 0; }
+inline void resetForcePowerOffRequest()
+{
+  timeForcePowerOffPressed = 0;
+}
 
 #endif // _TASKS_ARM_H_

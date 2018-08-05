@@ -29,7 +29,7 @@
 #define WARNING_LINE_Y                 3*FH
 
 void drawMessageBox();
-void showMessageBox(const pm_char * title);
+void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
 
 #define DRAW_MESSAGE_BOX(title)        (warningText = title, drawMessageBox(), warningText = NULL)

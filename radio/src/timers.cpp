@@ -65,11 +65,7 @@ void saveTimers()
   }
 }
 
-#if defined(ACCURAT_THROTTLE_TIMER)
-  #define THR_TRG_TRESHOLD    13      // approximately 10% full throttle
-#else
-  #define THR_TRG_TRESHOLD    3       // approximately 10% full throttle
-#endif
+#define THR_TRG_TRESHOLD    13      // approximately 10% full throttle
 
 void evalTimers(int16_t throttle, uint8_t tick10ms)
 {
@@ -105,19 +101,10 @@ void evalTimers(int16_t throttle, uint8_t tick10ms)
           if (throttle) newTimerVal++;
         }
         else if (timerMode == TMRMODE_THR_REL) {
-          // @@@ open.20.fsguruh: why so complicated? we have already a s_sum field; use it for the half seconds (not showable) as well
-          // check for s_cnt[i]==0 is not needed because we are shure it is at least 1
-  #if defined(ACCURAT_THROTTLE_TIMER)
           if ((timerState->sum/timerState->cnt) >= 128) {  // throttle was normalized to 0 to 128 value (throttle/64*2 (because - range is added as well)
             newTimerVal++;  // add second used of throttle
             timerState->sum -= 128*timerState->cnt;
           }
-  #else
-          if ((timerState->sum/timerState->cnt) >= 32) {  // throttle was normalized to 0 to 32 value (throttle/16*2 (because - range is added as well)
-            newTimerVal++;  // add second used of throttle
-            timerState->sum -= 32*timerState->cnt;
-          }
-  #endif
           timerState->cnt = 0;
         }
         else if (timerMode == TMRMODE_THR_TRG) {

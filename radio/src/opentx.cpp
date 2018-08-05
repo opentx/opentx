@@ -48,7 +48,7 @@ union ReusableBuffer reusableBuffer __DMA;
 uint8_t* MSC_BOT_Data = reusableBuffer.MSC_BOT_Data;
 #endif
 
-const pm_uint8_t bchout_ar[] PROGMEM = {
+const uint8_t bchout_ar[]  = {
     0x1B, 0x1E, 0x27, 0x2D, 0x36, 0x39,
     0x4B, 0x4E, 0x63, 0x6C, 0x72, 0x78,
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
@@ -56,7 +56,7 @@ const pm_uint8_t bchout_ar[] PROGMEM = {
 
 uint8_t channel_order(uint8_t x)
 {
-  return ( ((pgm_read_byte(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
+  return ( ((*(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
 }
 
 /*
@@ -65,7 +65,7 @@ mode2 rud thr ele ail
 mode3 ail ele thr rud
 mode4 ail thr ele rud
 */
-const pm_uint8_t modn12x3[] PROGMEM = {
+const uint8_t modn12x3[]  = {
     0, 1, 2, 3,
     0, 2, 1, 3,
     3, 1, 2, 0,
@@ -667,11 +667,6 @@ getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
   return value;
 }
 
-getvalue_t convert8bitsTelemValue(source_t channel, ls_telemetry_value_t value)
-{
-  return value;
-}
-
 #if defined(TELEMETRY_FRSKY)
 ls_telemetry_value_t minTelemValue(source_t channel)
 {
@@ -683,13 +678,6 @@ ls_telemetry_value_t maxTelemValue(source_t channel)
   return 30000;
 }
 #endif
-
-ls_telemetry_value_t max8bitsTelemValue(source_t channel)
-{
-  return 30000;
-}
-
-
 
 #define INAC_STICKS_SHIFT   6
 #define INAC_SWITCHES_SHIFT 8
@@ -770,8 +758,7 @@ void doSplash()
     backlightOn();
     drawSplash();
 
-
-#if   defined(PCBSKY9X)
+#if defined(PCBSKY9X)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -784,24 +771,11 @@ void doSplash()
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
 
     while (tgtime > get_tmr10ms()) {
-#if defined(SIMU)
-      SIMU_SLEEP(1);
-#else
-      CoTickDelay(1);
-#endif
+      RTOS_WAIT_TICKS(1);
 
       getADC();
 
-#if defined(FSPLASH)
-      // Splash is forced, we can't skip it
-      if (!(g_eeGeneral.splashMode & 0x04)) {
-#endif
-
       if (keyDown() || inputsMoved()) return;
-
-#if defined(FSPLASH)
-      }
-#endif
 
 #if defined(PWR_BUTTON_PRESS)
       uint32_t pwr_check = pwrCheck();
@@ -924,11 +898,7 @@ void checkAll()
     showMessageBox(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
-#if defined(SIMU)
-      SIMU_SLEEP(1);
-#else
-      CoTickDelay(1);
-#endif
+      RTOS_WAIT_MS(1);
       wdt_reset();
     }
   }
@@ -1017,9 +987,7 @@ void checkTHR()
 
     wdt_reset();
 
-    SIMU_SLEEP(1);
-    CoTickDelay(10);
-
+    RTOS_WAIT_MS(10);
   }
 
   LED_ERROR_END();
@@ -1036,7 +1004,7 @@ void checkAlarm() // added by Gohst
   }
 }
 
-void alert(const pm_char * title, const pm_char * msg , uint8_t sound)
+void alert(const char * title, const char * msg , uint8_t sound)
 {
   LED_ERROR_BEGIN();
 
@@ -1049,8 +1017,7 @@ void alert(const pm_char * title, const pm_char * msg , uint8_t sound)
 #endif
 
   while (1) {
-    SIMU_SLEEP(1);
-    CoTickDelay(10);
+    RTOS_WAIT_MS(10);
 
     if (keyDown()) break; // wait for key release
 
@@ -1198,10 +1165,6 @@ void checkTrims()
 
 #if !defined(SIMU)
 uint16_t s_anaFilt[NUM_ANALOGS];
-#endif
-
-#if defined(SIMU)
-uint16_t BandGap = 225;
 #endif
 
 #if defined(JITTER_MEASURE)
@@ -1424,17 +1387,8 @@ void doMixerCalculations()
   evalMixes(tick10ms);
   DEBUG_TIMER_STOP(debugTimerEvalMixes);
 
-
   DEBUG_TIMER_START(debugTimerMixes10ms);
   if (tick10ms) {
-
-#if !defined(CPUM64) && !defined(ACCURAT_THROTTLE_TIMER)
-    //  code cost is about 16 bytes for higher throttle accuracy for timer
-    //  would not be noticable anyway, because all version up to this change had only 16 steps;
-    //  now it has already 32  steps; this define would increase to 128 steps
-    #define ACCURAT_THROTTLE_TIMER
-#endif
-
     /* Throttle trace */
     int16_t val;
 
@@ -1442,7 +1396,7 @@ void doMixerCalculations()
       uint8_t ch = g_model.thrTraceSrc-NUM_POTS-NUM_SLIDERS-1;
       val = channelOutputs[ch];
 
-      LimitData *lim = limitAddress(ch);
+      LimitData * lim = limitAddress(ch);
       int16_t gModelMax = LIMIT_MAX_RESX(lim);
       int16_t gModelMin = LIMIT_MIN_RESX(lim);
 
@@ -1460,29 +1414,17 @@ void doMixerCalculations()
       gModelMax -= gModelMin; // we compare difference between Max and Mix for recaling needed; Max and Min are shifted to 0 by default
       // usually max is 1024 min is -1024 --> max-min = 2048 full range
 
-#ifdef ACCURAT_THROTTLE_TIMER
-      if (gModelMax!=0 && gModelMax!=2048) val = (int32_t) (val << 11) / (gModelMax); // rescaling only needed if Min, Max differs
-#else
-      // @@@ open.20.fsguruh  optimized calculation; now *8 /8 instead of 10 base; (*16/16 already cause a overrun; unsigned calculation also not possible, because v may be negative)
-      gModelMax+=255; // force rounding up --> gModelMax is bigger --> val is smaller
-      gModelMax >>= (10-2);
+      if (gModelMax != 0 && gModelMax != 2048)
+        val = (int32_t) (val << 11) / (gModelMax); // rescaling only needed if Min, Max differs
 
-      if (gModelMax!=0 && gModelMax!=8) {
-        val = (val << 3) / gModelMax; // rescaling only needed if Min, Max differs
-      }
-#endif
-
-      if (val<0) val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
+      if (val < 0)
+        val=0;  // prevent val be negative, which would corrupt throttle trace and timers; could occur if safetyswitch is smaller than limits
     }
     else {
       val = RESX + calibratedAnalogs[g_model.thrTraceSrc == 0 ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1];
     }
 
-#if defined(ACCURAT_THROTTLE_TIMER)
     val >>= (RESX_SHIFT-6); // calibrate it (resolution increased by factor 4)
-#else
-    val >>= (RESX_SHIFT-4); // calibrate it
-#endif
 
     evalTimers(val, tick10ms);
 
@@ -1504,11 +1446,8 @@ void doMixerCalculations()
       if (s_cnt_1s >= 10) { // 1sec
         s_cnt_1s -= 10;
         sessionTimer += 1;
-
-        struct t_inactivity *ptrInactivity = &inactivity;
-        FORCE_INDIRECT(ptrInactivity) ;
-        ptrInactivity->counter++;
-        if ((((uint8_t)ptrInactivity->counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && ptrInactivity->counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
+        inactivity.counter++;
+        if ((((uint8_t)inactivity.counter)&0x07)==0x01 && g_eeGeneral.inactivityTimer && g_vbat100mV>50 && inactivity.counter > ((uint16_t)g_eeGeneral.inactivityTimer*60))
           AUDIO_INACTIVITY();
 
 #if defined(AUDIO)
@@ -1517,16 +1456,10 @@ void doMixerCalculations()
         if (mixWarning & 4) if ((sessionTimer&0x03)==2) AUDIO_MIX_WARNING(3);
 #endif
 
-#if defined(ACCURAT_THROTTLE_TIMER)
         val = s_sum_samples_thr_1s / s_cnt_samples_thr_1s;
         s_timeCum16ThrP += (val>>3);  // s_timeCum16ThrP would overrun if we would store throttle value with higher accuracy; therefore stay with 16 steps
         if (val) s_timeCumThr += 1;
         s_sum_samples_thr_1s>>=2;  // correct better accuracy now, because trace graph can show this information; in case thrtrace is not active, the compile should remove this
-#else
-        val = s_sum_samples_thr_1s / s_cnt_samples_thr_1s;
-        s_timeCum16ThrP += (val>>1);
-        if (val) s_timeCumThr += 1;
-#endif
 
 #if defined(THRTRACE)
         // throttle trace is done every 10 seconds; Tracebuffer is adjusted to screen size.
@@ -1573,36 +1506,7 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-#if defined(NAVIGATION_STICKS)
-uint8_t StickScrollAllowed;
-uint8_t StickScrollTimer;
-static const pm_uint8_t rate[] PROGMEM = { 0, 0, 100, 40, 16, 7, 3, 1 } ;
-
-uint8_t calcStickScroll( uint8_t index )
-{
-  uint8_t direction;
-  int8_t value;
-
-  if ( ( g_eeGeneral.stickMode & 1 ) == 0 )
-    index ^= 3;
-
-  value = calibratedAnalogs[index] / 128;
-  direction = value > 0 ? 0x80 : 0;
-  if (value < 0)
-    value = -value;                        // (abs)
-  if (value > 7)
-    value = 7;
-  value = pgm_read_byte(rate+(uint8_t)value);
-  if (value)
-    StickScrollTimer = STICK_SCROLL_TIMEOUT;               // Seconds
-  return value | direction;
-}
-#endif
-
-  #define OPENTX_START_ARGS            uint8_t splash=true
-  #define OPENTX_START_SPLASH_NEEDED() (splash)
-
-void opentxStart(OPENTX_START_ARGS)
+void opentxStart(uint8_t splash=true)
 {
   TRACE("opentxStart");
 
@@ -1615,7 +1519,7 @@ void opentxStart(OPENTX_START_ARGS)
   uint8_t calibration_needed = (g_eeGeneral.chkSum != evalChkSum());
 
 #if defined(GUI)
-  if (!calibration_needed && OPENTX_START_SPLASH_NEEDED()) {
+  if (!calibration_needed && splash) {
     doSplash();
   }
 #endif
@@ -1626,7 +1530,7 @@ void opentxStart(OPENTX_START_ARGS)
 
 #if defined(PCBSKY9X) && defined(SDCARD) && !defined(SIMU)
   for (int i=0; i<500 && !Card_initialized; i++) {
-    CoTickDelay(1);  // 2ms
+    RTOS_WAIT_MS(2); // 2ms
   }
 #endif
 
@@ -1693,9 +1597,10 @@ void opentxClose(uint8_t shutdown)
   storageCheck(true);
 
   while (IS_PLAYING(ID_PLAY_PROMPT_BASE + AU_BYE)) {
-    CoTickDelay(10);
+    RTOS_WAIT_MS(10);
   }
-  CoTickDelay(50);
+
+  RTOS_WAIT_MS(100);
 
 #if defined(SDCARD)
   sdDone();
@@ -1727,81 +1632,7 @@ void opentxResume()
 }
 #endif
 
-#if defined(NAVIGATION_STICKS)
-uint8_t getSticksNavigationEvent()
-{
-  uint8_t evt = 0;
-  if (StickScrollAllowed) {
-    if ( StickScrollTimer ) {
-      static uint8_t repeater;
-      uint8_t direction;
-      uint8_t value;
-
-      if ( repeater < 128 )
-      {
-        repeater += 1;
-      }
-      value = calcStickScroll( 2 );
-      direction = value & 0x80;
-      value &= 0x7F;
-      if ( value )
-      {
-        if ( repeater > value )
-        {
-          repeater = 0;
-          if ( evt == 0 )
-          {
-            if ( direction )
-            {
-              evt = EVT_KEY_FIRST(KEY_UP);
-            }
-            else
-            {
-              evt = EVT_KEY_FIRST(KEY_DOWN);
-            }
-          }
-        }
-      }
-      else
-      {
-        value = calcStickScroll( 3 );
-        direction = value & 0x80;
-        value &= 0x7F;
-        if ( value )
-        {
-          if ( repeater > value )
-          {
-            repeater = 0;
-            if ( evt == 0 )
-            {
-              if ( direction )
-              {
-                evt = EVT_KEY_FIRST(KEY_RIGHT);
-              }
-              else
-              {
-                evt = EVT_KEY_FIRST(KEY_LEFT);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-  else {
-    StickScrollTimer = 0;          // Seconds
-  }
-  StickScrollAllowed = 1 ;
-  return evt;
-}
-#endif
-
-
-
-
-
-
-  #define INSTANT_TRIM_MARGIN 10 /* around 1% */
+#define INSTANT_TRIM_MARGIN 10 /* around 1% */
 
 void instantTrim()
 {
@@ -2118,16 +1949,9 @@ int main()
   drawSplash();
 #endif
 
-  sei(); // interrupts needed now
-
-
 #if defined(DSM2_SERIAL) && !defined(TELEMETRY_FRSKY)
   DSM2_Init();
 #endif
-
-
-
-
 
 #if defined(MENU_ROTARY_SW)
   init_rotary_sw();
@@ -2265,7 +2089,7 @@ uint32_t pwrCheck()
       RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
       while (TELEMETRY_STREAMING()) {
         resetForcePowerOffRequest();
-        CoTickDelay(10);
+        RTOS_WAIT_MS(20);
         if (pwrPressed()) {
           return e_power_on;
         }

@@ -52,7 +52,7 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_STICKS_GAINS_LABELS:
-        lcdDrawTextAlignedLeft(y, PSTR("Sticks"));
+        lcdDrawTextAlignedLeft(y, "Sticks");
         break;
 
       case ITEM_RADIO_HARDWARE_STICK_LV_GAIN:
@@ -60,8 +60,8 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_STICK_RV_GAIN:
       case ITEM_RADIO_HARDWARE_STICK_RH_GAIN:
       {
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, PSTR("\002LVLHRVRH"), k-ITEM_RADIO_HARDWARE_STICK_LV_GAIN, 0);
-        lcdDrawText(INDENT_WIDTH+3*FW, y, PSTR("Gain"));
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, "\002LVLHRVRH", k-ITEM_RADIO_HARDWARE_STICK_LV_GAIN, 0);
+        lcdDrawText(INDENT_WIDTH+3*FW, y, "Gain");
         uint8_t mask = (1<<(k-ITEM_RADIO_HARDWARE_STICK_LV_GAIN));
         uint8_t val = (g_eeGeneral.sticksGain & mask ? 1 : 0);
         lcdDrawChar(HW_SETTINGS_COLUMN, y, val ? '2' : '1', attr);
@@ -77,13 +77,13 @@ void menuRadioHardware(event_t event)
 
 #if defined(ROTARY_ENCODERS)
       case ITEM_RADIO_HARDWARE_ROTARY_ENCODER:
-        g_eeGeneral.rotarySteps = editChoice(HW_SETTINGS_COLUMN, y, PSTR("Rotary Encoder"), PSTR("\0062steps4steps"), g_eeGeneral.rotarySteps, 0, 1, attr, event);
+        g_eeGeneral.rotarySteps = editChoice(HW_SETTINGS_COLUMN, y, "Rotary Encoder", "\0062steps4steps", g_eeGeneral.rotarySteps, 0, 1, attr, event);
         break;
 #endif
 
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BT_BAUDRATE:
-        g_eeGeneral.bluetoothBaudrate = editChoice(HW_SETTINGS_COLUMN, y, STR_BAUDRATE, PSTR("\005115k 9600 19200"), g_eeGeneral.bluetoothBaudrate, 0, 2, attr, event);
+        g_eeGeneral.bluetoothBaudrate = editChoice(HW_SETTINGS_COLUMN, y, STR_BAUDRATE, "\005115k 9600 19200", g_eeGeneral.bluetoothBaudrate, 0, 2, attr, event);
         if (attr && checkIncDec_Ret) {
           btInit();
         }
@@ -235,7 +235,7 @@ void menuRadioHardware(event_t event)
             pauseMixerCalculations();
             pausePulses();
             EXTERNAL_MODULE_OFF();
-            CoTickDelay(10); // 20ms so that the pulses interrupt will reinit the frame rate
+            RTOS_WAIT_MS(20); // 20ms so that the pulses interrupt will reinit the frame rate
             telemetryProtocol = 255; // force telemetry port + module reinitialization
             EXTERNAL_MODULE_ON();
             resumePulses();

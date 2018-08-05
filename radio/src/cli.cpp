@@ -28,7 +28,7 @@
 #define CLI_COMMAND_MAX_LEN            256
 
 OS_TID cliTaskId;
-TaskStack<CLI_STACK_SIZE> _ALIGNED(8) cliStack; // stack must be aligned to 8 bytes otherwise printf for %f does not work!
+TaskStack<CLI_STACK_SIZE> __ALIGNED(8) cliStack; // stack must be aligned to 8 bytes otherwise printf for %f does not work!
 Fifo<uint8_t, 256> cliRxFifo;
 uint8_t cliTracesEnabled = true;
 char cliLastLine[CLI_COMMAND_MAX_LEN+1];
@@ -308,7 +308,7 @@ int cliTestNew()
 {
   char * tmp = 0;
   serialPrint("Allocating 1kB with new()");
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
   tmp = new char[1024];
   if (tmp) {
     serialPrint("\tsuccess");
@@ -320,7 +320,7 @@ int cliTestNew()
   }
 
   serialPrint("Allocating 10MB with (std::nothrow) new()");
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
   tmp = new (std::nothrow) char[1024*1024*10];
   if (tmp) {
     serialPrint("\tFAILURE, tmp = %p", tmp);
@@ -332,7 +332,7 @@ int cliTestNew()
   }
 
   serialPrint("Allocating 10MB with new()");
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
   tmp = new char[1024*1024*10];
   if (tmp) {
     serialPrint("\tFAILURE, tmp = %p", tmp);
@@ -437,14 +437,14 @@ float runGraphicsTest(graphichTestFunc func, const char * name, uint32_t runtime
   uint32_t actualRuntime = (uint32_t)CoGetOSTime() - start;
   float result = (noRuns * 500.0f) / (float)actualRuntime;     // runs/second
   serialPrint("Test %s speed: %0.2f, (%d runs in %d ms)", name, result, noRuns, actualRuntime*2);
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
   return result;
 }
 
 int cliTestGraphics()
 {
   serialPrint("Starting graphics performance test...");
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
 
   watchdogSuspend(6000/*60s*/);
   if (pulsesStarted()) {
@@ -581,7 +581,7 @@ float runMemoryTest(graphichTestFunc func, const char * name, uint32_t runtime)
   uint32_t actualRuntime = (uint32_t)CoGetOSTime() - start;
   float result = (noRuns * 500.0f) / (float)actualRuntime;     // runs/second
   serialPrint("Test %s speed: %0.2f, (%d runs in %d ms)", name, result, noRuns, actualRuntime*2);
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
   return result;
 }
 
@@ -589,7 +589,7 @@ float runMemoryTest(graphichTestFunc func, const char * name, uint32_t runtime)
 int cliTestMemorySpeed()
 {
   serialPrint("Starting memory speed test...");
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
 
   watchdogSuspend(6000/*60s*/);
   if (pulsesStarted()) {
@@ -610,7 +610,7 @@ int cliTestMemorySpeed()
 
   LTDC_Cmd(DISABLE);
   serialPrint("Disabling LCD...");
-  CoTickDelay(100);
+  RTOS_WAIT_MS(200);
 
   result += RUN_GRAPHICS_TEST(testMemoryReadFrom_RAM_8bit, 200);
   result += RUN_GRAPHICS_TEST(testMemoryReadFrom_RAM_32bit, 200);
@@ -936,7 +936,7 @@ void printDebugTimers()
 #endif
 
 #include "OsMutex.h"
-extern OS_MutexID audioMutex;
+extern RTOS_MUTEX_HANDLE audioMutex;
 
 void printAudioVars()
 {
@@ -1124,7 +1124,7 @@ int cliRepeat(const char ** argv)
     counter = interval;
     uint8_t c;
     while (!cliRxFifo.pop(c) || !(c == '\r' || c == '\n' || c == ' ')) {
-      CoTickDelay(10); // 20ms
+      RTOS_WAIT_MS(20); // 20ms
       if (++counter >= interval) {
         cliExecCommand(&argv[2]);
         counter = 0;
@@ -1299,7 +1299,7 @@ void cliTask(void * pdata)
     uint8_t c;
 
     while (!cliRxFifo.pop(c)) {
-      CoTickDelay(10); // 20ms
+      RTOS_WAIT_MS(20); // 20ms
     }
 
     if (c == 12) {

@@ -1250,10 +1250,10 @@ bool eeConvert()
   const char *msg = NULL;
 
   if (g_eeGeneral.version == 216) {
-    msg = PSTR("EEprom Data v216");
+    msg = "EEprom Data v216";
   }
   else if (g_eeGeneral.version == 217) {
-    msg = PSTR("EEprom Data v217");
+    msg = "EEprom Data v217";
   }
   else {
     return false;

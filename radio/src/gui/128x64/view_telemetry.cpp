@@ -23,10 +23,6 @@
 #define STATUS_BAR_Y     (7*FH+1)
 #define TELEM_2ND_COLUMN (10*FW)
 
-#if defined(FRSKY_HUB) && defined(GAUGES)
-bar_threshold_t barsThresholds[THLD_MAX];
-#endif
-
 uint8_t s_frsky_view = 0;
 
 #define BAR_LEFT    25
@@ -168,11 +164,9 @@ bool displayCustomTelemetryScreen(uint8_t index)
 {
   FrSkyScreenData & screen = g_model.frsky.screens[index];
 
-#if defined(GAUGES)
   if (IS_BARS_SCREEN(s_frsky_view)) {
     return displayGaugesTelemetryScreen(screen);
   }
-#endif
 
   displayNumbersTelemetryScreen(screen);
 

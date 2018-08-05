@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include <math.h>
 
-extern OS_MutexID audioMutex;
+extern RTOS_MUTEX_HANDLE audioMutex;
 
 const int16_t sineValues[] =
 {
@@ -223,7 +223,7 @@ const char * const audioFilenames[] = {
 };
 
 BitField<(AU_SPECIAL_SOUND_FIRST)> sdAvailableSystemAudioFiles;
-BitField<(MAX_FLIGHT_MODES * 2/*on, off*/)> sdAvailablePhaseAudioFiles;
+BitField<(MAX_FLIGHT_MODES * 2/*on, off*/)> sdAvailableFlightmodeAudioFiles;
 BitField<(SWSRC_LAST_SWITCH+NUM_XPOTS*XPOTS_MULTIPOS_COUNT)> sdAvailableSwitchAudioFiles;
 BitField<(MAX_LOGICAL_SWITCHES * 2/*on, off*/)> sdAvailableLogicalSwitchAudioFiles;
 
@@ -294,10 +294,10 @@ char * getModelAudioPath(char * path)
   return result;
 }
 
-void getPhaseAudioFile(char * filename, int index, unsigned int event)
+void getFlightmodeAudioFile(char * filename, int index, unsigned int event)
 {
   char * str = getModelAudioPath(filename);
-  char * tmp = strcat_phasename(str, index);
+  char * tmp = strcatFlightmodeName(str, index);
   strcpy(tmp, suffixes[event]);
   strcat(tmp, SOUNDS_EXT);
 }
@@ -360,7 +360,7 @@ void referenceModelAudioFiles()
   FILINFO fno;
   DIR dir;
 
-  sdAvailablePhaseAudioFiles.reset();
+  sdAvailableFlightmodeAudioFiles.reset();
   sdAvailableSwitchAudioFiles.reset();
   sdAvailableLogicalSwitchAudioFiles.reset();
 
@@ -379,13 +379,13 @@ void referenceModelAudioFiles()
       if (len < 5 || strcasecmp(fno.fname+len-4, SOUNDS_EXT) || (fno.fattrib & AM_DIR)) continue;
       TRACE("referenceModelAudioFiles(): using file: %s", fno.fname);
 
-      // Phases Audio Files <phasename>-[on|off].wav
+      // Flight modes Audio Files <flightmodename>-[on|off].wav
       for (int i=0; i<MAX_FLIGHT_MODES && !found; i++) {
         for (int event=0; event<2; event++) {
-          getPhaseAudioFile(path, i, event);
+          getFlightmodeAudioFile(path, i, event);
           // TRACE("referenceModelAudioFiles(): searching for %s in %s", filename, fno.fname);
           if (!strcasecmp(filename, fno.fname)) {
-            sdAvailablePhaseAudioFiles.setBit(INDEX_PHASE_AUDIO_FILE(i, event));
+            sdAvailableFlightmodeAudioFiles.setBit(INDEX_PHASE_AUDIO_FILE(i, event));
             found = true;
             TRACE("\tfound: %s", filename);
             break;
@@ -437,8 +437,8 @@ bool isAudioFileReferenced(uint32_t i, char * filename)
     }
   }
   else if (category == PHASE_AUDIO_CATEGORY) {
-    if (sdAvailablePhaseAudioFiles.getBit(INDEX_PHASE_AUDIO_FILE(index, event))) {
-      getPhaseAudioFile(filename, index, event);
+    if (sdAvailableFlightmodeAudioFiles.getBit(INDEX_PHASE_AUDIO_FILE(index, event))) {
+      getFlightmodeAudioFile(filename, index, event);
       return true;
     }
   }
@@ -508,14 +508,14 @@ AudioQueue::AudioQueue()
 void audioTask(void * pdata)
 {
   while (!audioQueue.started()) {
-    CoTickDelay(1);
+    RTOS_WAIT_TICKS(1);
   }
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
 #if defined(PCBX12S)
   // The audio amp needs ~2s to start
-  CoTickDelay(500); // 1s
+  RTOS_WAIT_MS(1000); // 1s
 #endif
 
   if (!unexpectedShutdown) {
@@ -527,7 +527,7 @@ void audioTask(void * pdata)
     DEBUG_TIMER_START(debugTimerAudioDuration);
     audioQueue.wakeup();
     DEBUG_TIMER_STOP(debugTimerAudioDuration);
-    CoTickDelay(2/*4ms*/);
+    RTOS_WAIT_MS(4);
   }
 }
 #endif
@@ -763,9 +763,9 @@ void AudioQueue::wakeup()
 
     // mix the normal context (tones and wavs)
     if (normalContext.isEmpty() && !fragmentsFifo.empty()) {
-      CoEnterMutexSection(audioMutex);
+      RTOS_LOCK_MUTEX(audioMutex);
       normalContext.setFragment(fragmentsFifo.get());
-      CoLeaveMutexSection(audioMutex);
+      RTOS_UNLOCK_MUTEX(audioMutex);
     }
     result = normalContext.mixBuffer(buffer, g_eeGeneral.beepVolume, g_eeGeneral.wavVolume, fade);
     if (result > 0) {
@@ -848,7 +848,7 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
   return;
 #endif
 
-  CoEnterMutexSection(audioMutex);
+  RTOS_LOCK_MUTEX(audioMutex);
 
   freq = limit<uint16_t>(BEEP_MIN_FREQ, freq, BEEP_MAX_FREQ);
 
@@ -871,7 +871,7 @@ void AudioQueue::playTone(uint16_t freq, uint16_t len, uint16_t pause, uint8_t f
     }
   }
 
-  CoLeaveMutexSection(audioMutex);
+  RTOS_UNLOCK_MUTEX(audioMutex);
 }
 
 #if defined(SDCARD)
@@ -899,7 +899,7 @@ void AudioQueue::playFile(const char * filename, uint8_t flags, uint8_t id)
     return;
   }
 
-  CoEnterMutexSection(audioMutex);
+  RTOS_LOCK_MUTEX(audioMutex);
 
   if (flags & PLAY_BACKGROUND) {
     backgroundContext.clear();
@@ -909,7 +909,7 @@ void AudioQueue::playFile(const char * filename, uint8_t flags, uint8_t id)
     fragmentsFifo.push(AudioFragment(filename, flags & 0x0f, id));
   }
 
-  CoLeaveMutexSection(audioMutex);
+  RTOS_UNLOCK_MUTEX(audioMutex);
 }
 
 void AudioQueue::stopPlay(uint8_t id)
@@ -922,12 +922,12 @@ void AudioQueue::stopPlay(uint8_t id)
   return;
 #endif
 
-  CoEnterMutexSection(audioMutex);
+  RTOS_LOCK_MUTEX(audioMutex);
 
   fragmentsFifo.removePromptById(id);
   backgroundContext.stop(id);
 
-  CoLeaveMutexSection(audioMutex);
+  RTOS_UNLOCK_MUTEX(audioMutex);
 }
 
 void AudioQueue::stopSD()
@@ -942,19 +942,19 @@ void AudioQueue::stopSD()
 void AudioQueue::stopAll()
 {
   flush();
-  CoEnterMutexSection(audioMutex);
+  RTOS_LOCK_MUTEX(audioMutex);
   priorityContext.clear();
   normalContext.clear();
-  CoLeaveMutexSection(audioMutex);
+  RTOS_UNLOCK_MUTEX(audioMutex);
 }
 
 void AudioQueue::flush()
 {
-  CoEnterMutexSection(audioMutex);
+  RTOS_LOCK_MUTEX(audioMutex);
   fragmentsFifo.clear();
   varioContext.clear();
   backgroundContext.clear();
-  CoLeaveMutexSection(audioMutex);
+  RTOS_UNLOCK_MUTEX(audioMutex);
 }
 
 void audioPlay(unsigned int index, uint8_t id)

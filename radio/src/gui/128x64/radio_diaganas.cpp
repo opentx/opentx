@@ -33,8 +33,6 @@ void menuRadioDiagAnalogs(event_t event)
 
   SIMPLE_MENU(STR_MENU_RADIO_ANALOGS, menuTabGeneral, MENU_RADIO_ANALOGS_TEST, HEADER_LINE+ANAS_ITEMS_COUNT);
 
-  STICK_SCROLL_DISABLE();
-
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
 #if (NUM_STICKS+NUM_POTS+NUM_SLIDERS) > 9
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;
@@ -45,7 +43,7 @@ void menuRadioDiagAnalogs(event_t event)
 #else
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
     uint8_t x = (i & 1) ? LCD_W/2+FW : 0;
-    drawStringWithIndex(x, y, PSTR("A"), i+1);
+    drawStringWithIndex(x, y, "A", i+1);
     lcdDrawChar(lcdNextPos, y, ':');
 #endif
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));

@@ -718,7 +718,7 @@
 #define TR_PPM_TRAINER                 "TR"
 #define TR_CH                          "CH"
 #define TR_MODEL                       "MODELE"
-#define TR_FP                          "PV"
+#define TR_FM                          "PV"
 #define TR_MIX                         "MIX"
 #define TR_EEPROMLOWMEM                "EEPROM pleine!"
 #define TR_ALERT                       "\014ALERTE"

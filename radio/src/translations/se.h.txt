@@ -718,7 +718,7 @@
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "KN"
 #define TR_MODEL               "Modell"
-#define TR_FP                  "FL"
+#define TR_FM                  "FL"
 #define TR_MIX                 "MIX"
 #define TR_EEPROMLOWMEM        "Minnesbrist"
 #define TR_ALERT               "\016OBS"

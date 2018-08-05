@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-const pm_uchar font_5x7[] PROGMEM = {
+const unsigned char font_5x7[]  = {
 #include "font_05x07.lbm"
 #if defined(TRANSLATIONS_DE)
 #include "font_de_05x07.lbm"
@@ -44,13 +44,13 @@ const pm_uchar font_5x7[] PROGMEM = {
 };
 
 #if defined(BOLD_SPECIFIC_FONT)
-const pm_uchar font_5x7_B[] PROGMEM = {
+const unsigned char font_5x7_B[]  = {
 #include "font_05x07_B_compressed.lbm"
 };
 #endif
 
 #if !defined(BOOT)
-const pm_uchar font_10x14[] PROGMEM = {
+const unsigned char font_10x14[]  = {
 #include "font_10x14_compressed.lbm"
   #if defined(TRANSLATIONS_DE)
   #include "font_de_10x14.lbm"
@@ -75,10 +75,10 @@ const pm_uchar font_10x14[] PROGMEM = {
 #endif
 
 #if !defined(BOOT)
-const pm_uchar font_3x5[] PROGMEM = {
+const unsigned char font_3x5[]  = {
 #include "font_03x05.lbm"
 };
-const pm_uchar font_4x6[] PROGMEM = {
+const unsigned char font_4x6[]  = {
 #include "font_04x06.lbm"
 #if defined(TRANSLATIONS_DE)
 #include "font_de_04x06.lbm"
@@ -101,7 +101,7 @@ const pm_uchar font_4x6[] PROGMEM = {
 #endif
 };
 
-const pm_uchar font_8x10[] PROGMEM = {
+const unsigned char font_8x10[]  = {
 #include "font_08x10.lbm"
 #if defined(TRANSLATIONS_DE)
 #include "font_de_08x10.lbm"
@@ -124,19 +124,19 @@ const pm_uchar font_8x10[] PROGMEM = {
 #endif
 };
 
-const pm_uchar font_22x38_num[] PROGMEM = {
+const unsigned char font_22x38_num[]  = {
 #include "font_22x38_num.lbm"
 };
 
-const pm_uchar font_4x6_extra[] PROGMEM = {
+const unsigned char font_4x6_extra[]  = {
 #include "font_04x06_extra.lbm"
 };
 
-const pm_uchar font_5x7_extra[] PROGMEM = {
+const unsigned char font_5x7_extra[]  = {
 #include "font_05x07_extra.lbm"
 };
 
-const pm_uchar font_10x14_extra[] PROGMEM = {
+const unsigned char font_10x14_extra[]  = {
 #include "font_10x14_extra.lbm"
 };
 

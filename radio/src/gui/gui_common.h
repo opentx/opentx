@@ -132,7 +132,7 @@ struct mm_protocol_definition {
   uint8_t protocol;
   uint8_t maxSubtype;
   bool failsafe;
-  const pm_char *subTypeString;
+  const char *subTypeString;
   const char *optionsstr;
 };
 

@@ -38,7 +38,7 @@ const char * writeScreenshot()
   char filename[42]; // /SCREENSHOTS/screen-2013-01-01-123540.bmp
 
   // check and create folder here
-  strcpy_P(filename, SCREENSHOTS_PATH);
+  strcpy(filename, SCREENSHOTS_PATH);
   const char * error = sdCheckAndCreateDirectory(filename);
   if (error) {
     return error;

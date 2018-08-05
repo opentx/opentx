@@ -164,7 +164,6 @@ with open(output_filename, "w") as f:
     elif what == "4/4/4/4":
         constant = sys.argv[2].upper()[:-4]
         values = []
-        #f.write("const uint8_t __%s[] __ALIGNED = {\n" % constant)
         writeSize(f, width, height)
         for y in range(height):
             for x in range(width):
@@ -179,7 +178,6 @@ with open(output_filename, "w") as f:
     elif what == "5/6/5":
         constant = sys.argv[2].upper()[:-4]
         values = []
-        #f.write("const uint8_t __%s[] __ALIGNED = {\n" % constant)
         writeSize(f, width, height)
         for y in range(height):
             for x in range(width):

@@ -148,7 +148,6 @@ void menuModelLimits(event_t event)
     for (int j=0; j<ITEM_LIMITS_COUNT; j++) {
       LcdFlags attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
       uint8_t active = (attr && s_editMode>0) ;
-      if (active) STICK_SCROLL_DISABLE();
       switch(j)
       {
         case ITEM_LIMITS_CH_NAME:

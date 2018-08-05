@@ -423,13 +423,6 @@ void perMain()
 
   event_t evt = getEvent(false);
 
-#if defined(NAVIGATION_STICKS)
-  uint8_t sticks_evt = getSticksNavigationEvent();
-  if (sticks_evt) {
-    evt = sticks_evt;
-  }
-#endif
-
 #if defined(RAMBACKUP)
   if (unexpectedShutdown) {
     drawFatalErrorScreen(STR_EMERGENCY_MODE);

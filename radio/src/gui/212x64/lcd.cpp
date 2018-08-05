@@ -103,7 +103,7 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
       else if (i<=width) {
         uint8_t skip = true;
         for (uint8_t j=0; j<lines; j++) {
-          b[j] = pgm_read_byte(pattern++); /*top byte*/
+          b[j] = *(pattern++); /*top byte*/
           if (b[j] != 0xff) {
             skip = false;
           }
@@ -342,30 +342,30 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
   }
 }
 
-void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len)
+void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len)
 {
   lcdDrawSizedText(x, y, s, len, 0);
 }
 
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s, LcdFlags flags)
+void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
 {
   lcdDrawSizedText(x, y, s, 255, flags);
 }
 
-void lcdDrawText(coord_t x, coord_t y, const pm_char * s)
+void lcdDrawText(coord_t x, coord_t y, const char * s)
 {
   lcdDrawText(x, y, s, 0);
 }
 
-void lcdDrawTextAlignedLeft(coord_t y, const pm_char * s)
+void lcdDrawTextAlignedLeft(coord_t y, const char * s)
 {
   lcdDrawText(0, y, s);
 }
 
 #if !defined(BOOT)
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s,uint8_t idx, LcdFlags flags)
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s,uint8_t idx, LcdFlags flags)
 {
-  uint8_t length = pgm_read_byte(s++);
+  uint8_t length = *(s++);
   lcdDrawSizedText(x, y, s+length*idx, length, flags & ~ZCHAR);
 }
 
@@ -914,16 +914,16 @@ void lcdInvertLine(int8_t line)
 }
 
 #if !defined(BOOT)
-void lcdDraw1bitBitmap(coord_t x, coord_t y, const pm_uchar * img, uint8_t idx, LcdFlags att)
+void lcdDraw1bitBitmap(coord_t x, coord_t y, const unsigned char * img, uint8_t idx, LcdFlags att)
 {
-  const pm_uchar *q = img;
-  uint8_t w    = pgm_read_byte(q++);
-  uint8_t hb   = (pgm_read_byte(q++)+7) / 8;
+  const unsigned char *q = img;
+  uint8_t w    = *(q++);
+  uint8_t hb   = (*(q++)+7) / 8;
   bool    inv  = (att & INVERS) ? true : (att & BLINK ? BLINK_ON_PHASE : false);
   q += idx*w*hb;
   for (uint8_t yb = 0; yb < hb; yb++) {
     for (uint8_t i=0; i<w; i++) {
-      uint8_t b = pgm_read_byte(q++);
+      uint8_t b = *(q++);
       uint8_t val = inv ? ~b : b;
       for (int k=0; k<8; k++) {
         if (val & (1<<k)) {

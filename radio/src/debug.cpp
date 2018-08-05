@@ -94,7 +94,7 @@ void dumpTraceBuffer()
 #if !defined(SIMU)
     if ((n % 5) == 0) {
       while (!serial2TxFifo.isEmpty()) {
-        CoTickDelay(1);
+        RTOS_WAIT_TICKS(1);
       }
     }
 #endif
