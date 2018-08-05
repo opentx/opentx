@@ -759,7 +759,7 @@ void doSplash()
     drawSplash();
 
 
-#if   defined(PCBSKY9X)
+#if defined(PCBSKY9X)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
     lcdSetRefVolt(contrast);
@@ -776,16 +776,7 @@ void doSplash()
 
       getADC();
 
-#if defined(FSPLASH)
-      // Splash is forced, we can't skip it
-      if (!(g_eeGeneral.splashMode & 0x04)) {
-#endif
-
       if (keyDown() || inputsMoved()) return;
-
-#if defined(FSPLASH)
-      }
-#endif
 
 #if defined(PWR_BUTTON_PRESS)
       uint32_t pwr_check = pwrCheck();

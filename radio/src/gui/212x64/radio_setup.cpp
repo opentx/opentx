@@ -36,7 +36,7 @@ const unsigned char sticks[]  = {
   value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
 }
 
-#if defined(SPLASH) && !defined(FSPLASH)
+#if defined(SPLASH)
   #define CASE_SPLASH_PARAM(x) x,
 #else
   #define CASE_SPLASH_PARAM(x)
@@ -395,7 +395,7 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
-#if defined(SPLASH) && !defined(FSPLASH)
+#if defined(SPLASH)
       case ITEM_SETUP_DISABLE_SPLASH:
       {
         lcdDrawTextAlignedLeft(y, STR_SPLASHSCREEN);
