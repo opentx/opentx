@@ -34,7 +34,7 @@ extern "C++" {
   #include <semaphore.h>
   #if __GNUC__
     #include <unistd.h>
-    inline void msleep(unsigned x)
+    static inline void msleep(unsigned x)
     {
       usleep(1000 * x);
     }
@@ -46,20 +46,20 @@ extern "C++" {
     }
   #endif
 
-  inline void RTOS_INIT()
+  static inline void RTOS_INIT()
   {
   }
 
-  inline void RTOS_START()
+  static inline void RTOS_START()
   {
   }
 
-  inline void RTOS_WAIT_MS(unsigned x)
+  static inline void RTOS_WAIT_MS(unsigned x)
   {
     msleep(x);
   }
 
-  inline void RTOS_WAIT_TICKS(unsigned x)
+  static inline void RTOS_WAIT_TICKS(unsigned x)
   {
     msleep(x * 2);
   }
@@ -70,27 +70,27 @@ extern "C++" {
   typedef sem_t * RTOS_EVENT_HANDLE;
 
 #ifdef __cplusplus
-  inline void RTOS_CREATE_MUTEX(pthread_mutex_t &mutex)
+  static inline void RTOS_CREATE_MUTEX(pthread_mutex_t &mutex)
   {
     mutex = PTHREAD_MUTEX_INITIALIZER;
   }
 
-  inline void RTOS_LOCK_MUTEX(pthread_mutex_t &mutex)
+  static inline void RTOS_LOCK_MUTEX(pthread_mutex_t &mutex)
   {
       pthread_mutex_lock(&mutex);
   }
 
-  inline void RTOS_UNLOCK_MUTEX(pthread_mutex_t &mutex)
+  static inline void RTOS_UNLOCK_MUTEX(pthread_mutex_t &mutex)
   {
       pthread_mutex_unlock(&mutex);
   }
 
-  inline void RTOS_CREATE_FLAG(uint32_t &flag)
+  static inline void RTOS_CREATE_FLAG(uint32_t &flag)
   {
     flag = 0; // TODO: real flags (use semaphores?)
   }
 
-  inline void RTOS_SET_FLAG(uint32_t &flag)
+  static inline void RTOS_SET_FLAG(uint32_t &flag)
   {
     flag = 1;
   }
@@ -136,7 +136,7 @@ extern "C++" {
 #endif
 
   // return 2ms resolution to match CoOS settings
-  inline uint32_t RTOS_GET_TIME(void)
+  static inline uint32_t RTOS_GET_TIME(void)
   {
     extern uint64_t simuTimerMicros(void);
     return simuTimerMicros() / 2000;
