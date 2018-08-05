@@ -57,6 +57,8 @@ def node_children(node):
                 return list(c for c in et.get_fields())
         elif node.type.kind == TypeKind.ENUM:
             return node_children(node.type.get_declaration())
+        else:
+            print("{} {}".format(str(node.type.kind),node.spelling))
 
     return list(c for c in node.get_children() if filter_node(c))
 
@@ -167,14 +169,14 @@ def print_all():
 
 ### Main ###
 
-if len(sys.argv) < 2:
-    print("Usage: dump_ast_yaml.py [header file name] [additional compile args]")
+if len(sys.argv) < 3:
+    print("Usage: dump_ast_yaml.py [header file name] [top node] [additional compile args]")
     sys.exit()
 
 Config.set_library_file('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib')
 index = Index.create()
-translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11'] + sys.argv[2:])
+translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11'] + sys.argv[3:])
 
-print_top_node('ModelData')
+print_top_node(sys.argv[2])
 #print_top_node('CustomFunctionData')
 #print_all()
