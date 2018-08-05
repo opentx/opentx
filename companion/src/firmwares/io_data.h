@@ -53,7 +53,7 @@ class ExpoData {
     CurveReference curve;
     int carryTrim;
     char name[10+1];
-    void clear() { memset(this, 0, sizeof(ExpoData)); }
+    void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(ExpoData)); }
     void convert(RadioDataConversionState & cstate);
 };
 
@@ -89,7 +89,7 @@ class MixData {
     int    sOffset;
     char   name[MIXDATA_NAME_LEN+1];
 
-    void clear() { memset(this, 0, sizeof(MixData)); }
+    void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(MixData)); }
 };
 
 class LimitData {
@@ -173,7 +173,7 @@ class SwashRingData {
     RawSource aileronSource;
     RawSource elevatorSource;
     unsigned int  value;
-    void clear() { memset(this, 0, sizeof(SwashRingData)); }
+    void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(SwashRingData)); }
 };
 
 #endif // IO_DATA_H

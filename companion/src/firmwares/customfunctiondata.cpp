@@ -26,7 +26,7 @@
 
 void CustomFunctionData::clear()
 {
-  memset(this, 0, sizeof(CustomFunctionData));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(CustomFunctionData));
   if (!getCurrentFirmware()->getCapability(SafetyChannelCustomFunction)) {
     func = FuncTrainer;
   }

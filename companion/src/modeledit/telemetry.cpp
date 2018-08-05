@@ -498,7 +498,7 @@ void TelemetryCustomScreen::updateBar(int line)
 void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
 {
   if (!lock) {
-    memset(&screen.body, 0, sizeof(screen.body));
+    memset(reinterpret_cast<void *>(&screen.body), 0, sizeof(screen.body));
     update();
     emit modified();
   }

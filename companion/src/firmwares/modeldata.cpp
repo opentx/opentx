@@ -83,7 +83,7 @@ ModelData::ModelData(const ModelData & src)
 
 ModelData & ModelData::operator = (const ModelData & src)
 {
-  memcpy(this, &src, sizeof(ModelData));
+  memcpy(reinterpret_cast<void *>(this), &src, sizeof(ModelData));
   return *this;
 }
 
@@ -184,7 +184,7 @@ void ModelData::clearMixes()
 
 void ModelData::clear()
 {
-  memset(this, 0, sizeof(ModelData));
+  memset(reinterpret_cast<void *>(this), 0, sizeof(ModelData));
   modelIndex = -1;  // an invalid index, this is managed by the TreeView data model
   moduleData[0].channelsCount = 8;
   moduleData[1].channelsStart = 0;

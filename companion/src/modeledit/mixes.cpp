@@ -155,7 +155,7 @@ bool MixesPanel::gm_insertMix(int idx)
   int i = model->mixData[idx].destCh;
   memmove(&model->mixData[idx+1], &model->mixData[idx],
           (firmware->getCapability(Mixes)-(idx+1)) * sizeof(MixData) );
-  memset(&model->mixData[idx], 0, sizeof(MixData));
+  memset(reinterpret_cast<void *>(&model->mixData[idx]), 0, sizeof(MixData));
   model->mixData[idx].srcRaw = RawSource(SOURCE_TYPE_NONE);
   model->mixData[idx].destCh = i;
   model->mixData[idx].weight = 100;
@@ -166,7 +166,7 @@ void MixesPanel::gm_deleteMix(int index)
 {
   memmove(&model->mixData[index], &model->mixData[index+1],
           (firmware->getCapability(Mixes)-(index+1)) * sizeof(MixData));
-  memset(&model->mixData[firmware->getCapability(Mixes)-1], 0, sizeof(MixData));
+  memset(reinterpret_cast<void *>(&model->mixData[firmware->getCapability(Mixes)-1]), 0, sizeof(MixData));
 }
 
 void MixesPanel::gm_openMix(int index)

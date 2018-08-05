@@ -64,7 +64,7 @@ class FrSkyChannelData {
 
     float getRatio() const;
     RawSourceRange getRange() const;
-    void clear() { memset(this, 0, sizeof(FrSkyChannelData)); }
+    void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(FrSkyChannelData)); }
 
     static QString unitString(int units)
     {

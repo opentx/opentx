@@ -74,7 +74,7 @@ class TimerData {
     unsigned int val;
     unsigned int persistent;
     int          pvalue;
-    void clear() { memset(this, 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
+    void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(TimerData)); mode = RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
     void convert(RadioDataConversionState & cstate);
 };
 
@@ -86,7 +86,7 @@ class ScriptData {
     char    filename[10+1];
     char    name[10+1];
     int     inputs[CPN_MAX_SCRIPT_INPUTS];
-    void clear() { memset(this, 0, sizeof(ScriptData)); }
+    void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(ScriptData)); }
 };
 
 /*
