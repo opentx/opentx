@@ -88,7 +88,7 @@ void interrupt10ms(void)
 #if defined(ROTARY_ENCODER_NAVIGATION)
   checkRotaryEncoder();
   static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (rotencValue[0] / 2);
+  rotenc_t reNewValue = (rotencValue[0] / ROTARY_ENCODER_GRANULARITY);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;
