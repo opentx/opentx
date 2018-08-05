@@ -22,7 +22,7 @@
 
 #if defined(SPLASH)
 
-const uint8_t __bmp_splash[] {
+const uint8_t __bmp_splash[] __ALIGNED(4) {
 #include "bmp_splash.lbm"
 };
 Bitmap BMP_SPLASH(BMP_RGB565, (const uint16_t *)__bmp_splash);
