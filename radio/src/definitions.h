@@ -27,11 +27,8 @@
   #define UNUSED(x)           ((void)(x)) /* to avoid warnings */
 #endif
 
-#if defined(SIMU) &&  __GNUC__
-  #define __ALIGNED(x)        __attribute__((aligned(x)))
-  #define __SECTION_USED(s)   __attribute__((used))
-#elif defined(SIMU)
-  #define __ALIGNED(x)        __declspec(align(x))
+#if defined(SIMU)
+  #define __ALIGNED(x)
   #define __SECTION_USED(s)
 #else
   #define __ALIGNED(x)        __attribute__((aligned(x)))
@@ -41,9 +38,9 @@
 #if defined(SIMU)
   #define __DMA
 #elif (defined(STM32F4) && !defined(BOOT)) || defined(SDRAM)
-  #define __DMA __attribute__((section(".ram"), aligned(4)))
+  #define __DMA               __attribute__((section(".ram"), aligned(4)))
 #else
-  #define __DMA __ALIGNED(4)
+  #define __DMA               __ALIGNED(4)
 #endif
 
 #if defined(SDRAM) && !defined(SIMU)
