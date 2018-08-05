@@ -758,7 +758,6 @@ void doSplash()
     backlightOn();
     drawSplash();
 
-
 #if defined(PCBSKY9X)
     tmr10ms_t curTime = get_tmr10ms() + 10;
     uint8_t contrast = 10;
