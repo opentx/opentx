@@ -22,7 +22,7 @@
 
 OS_TID menusTaskId;
 // menus stack must be aligned to 8 bytes otherwise printf for %f does not work!
-TaskStack<MENUS_STACK_SIZE> _ALIGNED(8) menusStack;
+TaskStack<MENUS_STACK_SIZE> __ALIGNED(8) menusStack;
 
 OS_TID mixerTaskId;
 TaskStack<MIXER_STACK_SIZE> mixerStack;

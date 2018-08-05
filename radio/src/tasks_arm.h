@@ -32,12 +32,6 @@ extern "C" {
 #define AUDIO_STACK_SIZE       500
 #define BLUETOOTH_STACK_SIZE   500
 
-#if defined(_MSC_VER)
-#define _ALIGNED(x) __declspec(align(x))
-#elif defined(__GNUC__)
-#define _ALIGNED(x) __attribute__ ((aligned(x)))
-#endif
-
 uint16_t getStackAvailable(void * address, uint16_t size);
 
 template<int SIZE>
