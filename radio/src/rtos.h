@@ -122,7 +122,7 @@ extern "C++" {
   #define TASK_FUNCTION(task)           void * task(void * pdata)
 
   template<int SIZE>
-  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *) , const char * name, FakeTaskStack<SIZE> &stack, unsigned stackSize, unsigned priority)
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name, FakeTaskStack<SIZE> &stack, unsigned stackSize, unsigned priority)
   {
     pthread_create(&taskId, nullptr, task, nullptr);
   }
