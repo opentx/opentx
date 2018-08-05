@@ -61,7 +61,7 @@ class BitmapBufferBase
     }
 
     BitmapBufferBase(uint8_t format, T * data):
-      BitmapBufferBase(format, *((uint16_t*)data), *(((uint16_t*)data)+1), data + 2)
+      BitmapBufferBase(format, data[0], data[1], data + 2)
     {
     }
 

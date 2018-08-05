@@ -1506,10 +1506,7 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-#define OPENTX_START_ARGS            uint8_t splash=true
-#define OPENTX_START_SPLASH_NEEDED() (splash)
-
-void opentxStart(OPENTX_START_ARGS)
+void opentxStart(uint8_t splash=true)
 {
   TRACE("opentxStart");
 
@@ -1522,7 +1519,7 @@ void opentxStart(OPENTX_START_ARGS)
   uint8_t calibration_needed = (g_eeGeneral.chkSum != evalChkSum());
 
 #if defined(GUI)
-  if (!calibration_needed && OPENTX_START_SPLASH_NEEDED()) {
+  if (!calibration_needed && splash) {
     doSplash();
   }
 #endif
