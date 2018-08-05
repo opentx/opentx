@@ -1422,3 +1422,4 @@ Laurent Thibaudet
 James A Davey
 Stuart Olson
 claudio Piccinini
+Kenneth Kriegel
