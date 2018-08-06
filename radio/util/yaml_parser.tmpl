@@ -19,7 +19,7 @@ static const struct YamlIdStr {{ enum.name }}[] = {
 
 {% for struct in root.get_structs() %}
 {% if struct.name.startswith('union_') %}
-static const struct YamlNode {{ struct.name }}_elmts[]
+static const struct YamlNode {{ struct.name }}_elmts[] = {
 {% else %}
 static const struct YamlNode {{ struct.name }}[] = {
 {% endif %}
