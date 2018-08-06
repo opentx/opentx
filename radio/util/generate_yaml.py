@@ -34,6 +34,9 @@ def dump_node(node):
 def print_error(*args):
     print("ERROR:",*args,file=sys.stderr)
 
+def print_debug(*args):
+    print("DBG:",*args,file=sys.stderr)
+
 def bail_out(*args):
     print_error(*args)
     sys.exit(-1)
@@ -94,6 +97,7 @@ class FieldAST(AST_Element):
         super(FieldAST, self).__init__(name, cursor)
 
         self.is_array = False
+        self.func = 'NULL'
 
         if self.name in DEBUG_ATTRS:
             #print("# field name={} type={} canon={} decl={}".format(self.name,cursor.type.spelling,cursor.type.get_canonical().spelling,str(cursor.type.kind)))
@@ -204,12 +208,22 @@ def parse_struct(ast, node, alt_name):
         if old_st is not None:
             return old_st
 
+    st.use_idx = False
+    ann = get_annotations(node)
+    if len(ann) > 0:
+        #print(ann)
+        for a in ann:
+            if a['type'] == 'idx' and a['val'] == 'true':
+                st.use_idx = True
+                break
+
     for c in node.get_children():
         parse_field(st,c)
 
     if st is not ast:
         ast.append(st)
 
+    #print_debug("IDX ",st.name, " ", st.use_idx)
     return st
 
 def parse_union(ast, node):
@@ -254,7 +268,7 @@ def parse_field_record(f, node):
         f.var_type = st.name
         f.type = st.type
 
-def make_fake_array_struct(f, node_type):
+def make_fake_array_struct(f, node_type, use_idx):
 
     field = FieldAST('val', node_type)
     type_name = field.type + '_' + str(field.bits)
@@ -265,6 +279,7 @@ def make_fake_array_struct(f, node_type):
         st = StructAST(type_name, node_type)
         st.append(field)
         st.used_in_arrays = True
+        st.use_idx = use_idx
         RootAST.append(st)
 
     f.type = 'array'
@@ -275,6 +290,13 @@ def parse_field_array(f, node):
     if f.type != 'string':
         elmt_decl = et.get_declaration()
 
+        use_idx = False
+        ann = get_annotations(node)
+        if len(ann) > 0:
+            for a in ann:
+                if a['type'] == 'idx':
+                    use_idx = True
+
         # let's see first if it's some kind of struct/union/enum
         elmt_st = parse_node(RootAST, elmt_decl)
         if elmt_st is not None:
@@ -284,14 +306,15 @@ def parse_field_array(f, node):
             elmt_st.used_in_arrays = True
         elif elmt_decl.kind == CursorKind.TYPEDEF_DECL:
             # it's some typedef
-            make_fake_array_struct(f, elmt_decl)
+            make_fake_array_struct(f, elmt_decl, use_idx)
         elif et.kind == TypeKind.CONSTANTARRAY:
             # it's an array:
             #   let's create a fake struct with the element type
-            make_fake_array_struct(f, et)
+            make_fake_array_struct(f, et, use_idx)
         else:
             pass
             #print("# unknown array attr: {} {}".format(str(elmt_decl.kind), f.name))
+
 
 def parse_field(ast,node):
 
@@ -318,6 +341,8 @@ def parse_field(ast,node):
                 f.var_type = enum_name
                 if not RootAST.has_enum(enum_name):
                     parse_node(RootAST,get_top_node(a['val']))
+            elif a['type'] == 'func':
+                f.func = a['val']
 
     ast.append(f)
 
@@ -349,13 +374,8 @@ def parse_node(ast,node,alt_name=''):
         parse_field(ast,node)
     elif node.kind == CursorKind.ENUM_DECL:
         parse_enum(ast,node)
-    elif node.kind in [CursorKind.NO_DECL_FOUND, CursorKind.TYPEDEF_DECL]:
-        pass
-    elif node.type.kind == CursorKind.CONSTANTARRAY:
-        print('CONSTANTARRAY<')
     else:
         pass
-        #print('{} {}'.format(str(node.kind),node.spelling))
 
     return st
 

@@ -22,6 +22,9 @@ static const struct YamlIdStr {{ enum.name }}[] = {
 static const struct YamlNode {{ struct.name }}_elmts[] = {
 {% else %}
 static const struct YamlNode {{ struct.name }}[] = {
+  {% if struct.use_idx %}
+  YAML_IDX,
+  {% endif%}
 {% endif %}
   {% for elmt in struct.get_elmts() %}
     {% if elmt.type == 'string' %}
@@ -31,7 +34,7 @@ static const struct YamlNode {{ struct.name }}[] = {
     {% elif elmt.type == 'enum' %}
   YAML_ENUM("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}),
     {% elif elmt.type == 'struct' %}
-  YAML_STRUCT("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}, NULL),
+  YAML_STRUCT("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}, {{ elmt.func }}),
     {% elif elmt.type == 'union' %}
   YAML_UNION("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}_elmts, NULL),
     {% elif elmt.type == 'array' %}
