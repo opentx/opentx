@@ -30,7 +30,11 @@ static const struct YamlNode {{ struct.name }}[] = {
     {% if elmt.type == 'string' %}
   YAML_STRING("{{ max_len(elmt.name) }}", {{elmt.length}}),
     {% elif elmt.type in ['signed','unsigned'] %}
+      {% if elmt.f_read and elmt.f_write %}
+  YAML_{{elmt.type|upper}}_CUST( "{{ max_len(elmt.name) }}", {{ elmt.bits }}, {{ elmt.f_read}}, {{ elmt.f_write}} ),
+      {% else %}
   YAML_{{elmt.type|upper}}( "{{ max_len(elmt.name) }}", {{ elmt.bits }} ),
+      {% endif %}
     {% elif elmt.type == 'enum' %}
   YAML_ENUM("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}),
     {% elif elmt.type == 'struct' %}
