@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 import sys
 from clang.cindex import *
 
@@ -382,7 +383,20 @@ def print_ast_node(ast_node):
 if len(sys.argv) < 2:
     bail_out(f"usage: {sys.argv[0]} [header file name] [template] [node name] [additional compile args]")
 
-Config.set_library_file('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib')
+CLANG_LIB_LOCATIONS = [
+    '/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib',
+    '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/libclang.dylib',
+    '/Library/Developer/CommandLineTools/usr/lib/libclang.dylib',
+    '/usr/lib/x86_64-linux-gnu/libclang-3.8.so.1'
+]
+
+# set clang lib file
+for lib in CLANG_LIB_LOCATIONS:
+    if os.path.exists(lib):
+        Config.set_library_file(lib)
+        break
+
+# compile source file
 index = Index.create()
 translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11'] + sys.argv[4:])
 
