@@ -386,6 +386,18 @@ Config.set_library_file('/usr/local/Cellar/llvm/6.0.0/lib/libclang.dylib')
 index = Index.create()
 translation_unit = index.parse(sys.argv[1], ['-x', 'c++', '-std=c++11'] + sys.argv[4:])
 
+def show_tu_diags(diags, prefix=''):
+    tu_errors =  0
+    for diag in diags:
+        tu_errors = tu_errors + 1
+        print_error(prefix + str(diag))
+        show_tu_diags(diag.children, '  ' + prefix)
+    return tu_errors
+
+tu_errors = show_tu_diags(translation_unit.diagnostics)
+if tu_errors > 0:
+    bail_out("{} error(s) while compiling '{}'".format(tu_errors, sys.argv[1]))
+
 RootAST = AST()
 top_node = get_top_node(sys.argv[3])
 #dump_node(top_node)
