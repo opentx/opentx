@@ -343,6 +343,10 @@ def parse_field(ast,node):
                     parse_node(RootAST,get_top_node(a['val']))
             elif a['type'] == 'func':
                 f.func = a['val']
+            elif a['type'] == 'read':
+                f.f_read = a['val']
+            elif a['type'] == 'write':
+                f.f_write = a['val']
 
     ast.append(f)
 
