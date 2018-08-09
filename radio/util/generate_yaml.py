@@ -437,9 +437,13 @@ if tu_errors > 0:
     bail_out("{} error(s) while compiling '{}'".format(tu_errors, sys.argv[1]))
 
 RootAST = AST()
-top_node = get_top_node(sys.argv[3])
-#dump_node(top_node)
-parse_node(RootAST, top_node)
+
+top_node_names = sys.argv[3].split(',')
+# cycle on top nodes:
+for tn in top_node_names:
+    top_node = get_top_node(tn)
+    #dump_node(top_node)
+    parse_node(RootAST, top_node)
 
 #print("Enums:", RootAST.get_enums())
 #print("Structs:", RootAST.get_structs())
@@ -474,4 +478,5 @@ template.globals['max_len'] = max_len
 template.globals['get_max_len'] = get_max_len
 template.globals['max_bits'] = max_bits
 
+## fixme: root_node_name needs to be mangled (contains ',')
 print(template.render(root=RootAST,root_node_name=sys.argv[3]))
