@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,25 +18,10 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _EEPROM_COMMON_H_
-#define _EEPROM_COMMON_H_
+#ifndef _RLC_H_
+#define _RLC_H_
 
-#define EEPROM_MIN_MODEL_SIZE          256
-
-uint16_t eeLoadModelData(uint8_t id);
-uint16_t eeLoadGeneralSettingsData();
-
-bool eeModelExists(uint8_t id);
-void eeLoadModel(uint8_t id);
-uint8_t eeFindEmptyModel(uint8_t id, bool down);
-void selectModel(uint8_t sub);
-
-extern ModelHeader modelHeaders[MAX_MODELS];
-void eeLoadModelHeader(uint8_t id, ModelHeader *header);
-void eeLoadModelHeaders();
-
-void storageClearRadioSetting();
-void storageReadRadioSettings(bool allowConversion);
-void storageReadCurrentModel();
+unsigned int compress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, unsigned int len);
+unsigned int uncompress(uint8_t * dst, unsigned int dstsize, const uint8_t * src, unsigned int len);
 
 #endif
