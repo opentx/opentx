@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "rambackup.h"
 
 namespace Backup {
 #define BACKUP

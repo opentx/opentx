@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -18,24 +18,24 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _EEPROM_COMMON_H_
-#define _EEPROM_COMMON_H_
+#ifndef _SDCARD_COMMON_H_
+#define _SDCARD_COMMON_H_
 
-#define EEPROM_MIN_MODEL_SIZE          256
+#include "ff.h"
 
-uint16_t eeLoadModelData(uint8_t id);
-uint16_t eeLoadGeneralSettingsData();
+#if defined(SDCARD_RAW)
+#define DEFAULT_MODEL_FILENAME   "model1.bin"
+#elif defined(SDCARD_YAML)
+#define DEFAULT_MODEL_FILENAME   "model1.yml"
+#endif
 
-bool eeModelExists(uint8_t id);
-void eeLoadModel(uint8_t id);
-uint8_t eeFindEmptyModel(uint8_t id, bool down);
-void selectModel(uint8_t sub);
+// opens radio.bin or model file
+const char * openFile(const char * fullpath, FIL * file, uint16_t * size, uint8_t * version);
 
-extern ModelHeader modelHeaders[MAX_MODELS];
-void eeLoadModelHeader(uint8_t id, ModelHeader *header);
-void eeLoadModelHeaders();
+void getModelPath(char * path, const char * filename);
 
-void storageReadRadioSettings();
-void storageReadCurrentModel();
+const char * readModel(const char * filename, uint8_t * buffer, uint32_t size);
+const char * loadModel(const char * filename, bool alarms=true);
+const char * createModel();
 
 #endif

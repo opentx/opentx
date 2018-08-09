@@ -22,12 +22,7 @@
 #include "modelslist.h"
 #include "conversions/conversions.h"
 
-void getModelPath(char * path, const char * filename)
-{
-  strcpy(path, STR_MODELS_PATH);
-  path[sizeof(MODELS_PATH)-1] = '/';
-  strcpy(&path[sizeof(MODELS_PATH)], filename);
-}
+#define DEFAULT_CATEGORY "Models"
 
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
@@ -68,37 +63,6 @@ const char * writeModel()
   char path[256];
   getModelPath(path, g_eeGeneral.currModelFilename);
   return writeFile(path, (uint8_t *)&g_model, sizeof(g_model));
-}
-
-const char * openFile(const char * fullpath, FIL * file, uint16_t * size, uint8_t * version)
-{
-  FRESULT result = f_open(file, fullpath, FA_OPEN_EXISTING | FA_READ);
-  if (result != FR_OK) {
-    return SDCARD_ERROR(result);
-  }
-
-  if (f_size(file) < 8) {
-    f_close(file);
-    return STR_INCOMPATIBLE;
-  }
-
-  UINT read;
-  char buf[8];
-
-  result = f_read(file, (uint8_t *)buf, sizeof(buf), &read);
-  if ((result != FR_OK) || (read != sizeof(buf))) {
-    f_close(file);
-    return SDCARD_ERROR(result);
-  }
-
-  *version = (uint8_t)buf[4];
-  if (*(uint32_t*)&buf[0] != OTX_FOURCC || *version < FIRST_CONV_EEPROM_VER || *version > EEPROM_VER || buf[5] != 'M') {
-    f_close(file);
-    return STR_INCOMPATIBLE;
-  }
-
-  *size = *(uint16_t*)&buf[6];
-  return nullptr;
 }
 
 const char * loadFile(const char * fullpath, uint8_t * data, uint16_t maxsize)
@@ -192,9 +156,29 @@ void storageCheck(bool immediately)
   }
 }
 
+#include "yaml/yaml_parser.h"
+#include "yaml/yaml_node.h"
+
+#include "yaml_datastructs.cpp"
+static const struct YamlNode radioNode = YAML_ROOT( struct_RadioData );
+static const struct YamlNode modelNode = YAML_ROOT( struct_ModelData );
+
+static void yaml_fake_read_write(const YamlNode* node)
+{
+  YamlParser yp;
+
+  yp.init(node);
+  yp.parse(NULL, 0, NULL);
+  yp.generate(NULL, NULL, NULL);
+}
+
 void storageReadAll()
 {
   TRACE("storageReadAll");
+
+  // do some fake stuff with the structs in yaml_datastructs...
+  // yaml_fake_read_write(&radioNode);
+  // yaml_fake_read_write(&modelNode);
 
   if (loadRadioSettings() != nullptr) {
     storageEraseAll(true);
