@@ -31,8 +31,11 @@ def print_node(node):
 def dump_node(node):
     print(asciitree.draw_tree(node, node_children, print_node))
 
+has_errors = False
+    
 def print_error(*args):
     print("ERROR:",*args,file=sys.stderr)
+    has_errors = True
 
 def print_debug(*args):
     print("DBG:",*args,file=sys.stderr)
@@ -149,6 +152,8 @@ class UnionAST(StructAST):
     type = 'union'
         
 class EnumAST(AST_Element):
+    type = 'enum'
+
     def __init__(self, name, cursor):
         super(EnumAST, self).__init__('enum_' + name, cursor)
 
@@ -323,14 +328,11 @@ def parse_field(ast,node):
 
     f = FieldAST(node.spelling, node)
 
-    if node.type.kind in [TypeKind.ELABORATED, TypeKind.RECORD]:
+    if node.type.kind in [TypeKind.ELABORATED, TypeKind.RECORD, TypeKind.ENUM]:
         parse_field_record(f, node)
 
     elif node.type.kind == TypeKind.CONSTANTARRAY:
         parse_field_array(f, node)
-
-    elif node.type.kind == TypeKind.ENUM:
-        parse_node(root,node.type.get_declaration())
 
     ann = get_annotations(node)
     if len(ann) > 0:
@@ -343,16 +345,26 @@ def parse_field(ast,node):
                     parse_node(RootAST,get_top_node(a['val']))
             elif a['type'] == 'func':
                 f.func = a['val']
+            elif a['type'] == 'name':
+                f.name = a['val']
             elif a['type'] == 'read':
                 f.f_read = a['val']
             elif a['type'] == 'write':
                 f.f_write = a['val']
 
+    if len(f.name) == 0:
+        print_error("in '{}', field of type '{}' does not have a name".format(ast.name,f.var_type))
+
     ast.append(f)
 
 
 def parse_enum_field(ast,node):
-    st = AST_Element(node.spelling[node.spelling.index('_')+1:], node)
+
+    enum_value = node.spelling
+    if '_' in enum_value:
+        enum_value = enum_value[enum_value.index('_')+1:]
+    
+    st = AST_Element(enum_value, node)
     st.value = node.spelling #node.enum_value
     ast.append(st)
     # debug
@@ -367,6 +379,8 @@ def parse_enum(ast,node):
         parse_enum_field(st,c)
     ast.append(st)
 
+    return st
+
 def parse_node(ast,node,alt_name=''):
     st = None
 
@@ -377,7 +391,7 @@ def parse_node(ast,node,alt_name=''):
     elif node.kind == CursorKind.FIELD_DECL:
         parse_field(ast,node)
     elif node.kind == CursorKind.ENUM_DECL:
-        parse_enum(ast,node)
+        st = parse_enum(ast,node)
     else:
         pass
 
@@ -438,13 +452,22 @@ if tu_errors > 0:
 
 RootAST = AST()
 
+root_nodes_name = ''
 top_node_names = sys.argv[3].split(',')
 # cycle on top nodes:
 for tn in top_node_names:
     top_node = get_top_node(tn)
     #dump_node(top_node)
     parse_node(RootAST, top_node)
+    if len(root_nodes_name) > 0:
+        root_nodes_name = root_nodes_name + '_' + tn
+    else:
+        root_nodes_name = tn
 
+# Do not generate anything we had some errors
+if has_errors:
+    sys.exit(-1)
+        
 #print("Enums:", RootAST.get_enums())
 #print("Structs:", RootAST.get_structs())
 #print(asciitree.draw_tree(RootAST, ast_children, print_ast_node))
@@ -479,4 +502,4 @@ template.globals['get_max_len'] = get_max_len
 template.globals['max_bits'] = max_bits
 
 ## fixme: root_node_name needs to be mangled (contains ',')
-print(template.render(root=RootAST,root_node_name=sys.argv[3]))
+print(template.render(root=RootAST,root_node_name=root_nodes_name))
