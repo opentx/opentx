@@ -119,16 +119,19 @@ void ModelCell::loadBitmap()
   if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
   }
-#if !defined (SDCARD_YAML)
   else {
+#if !defined (SDCARD_YAML)
     error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
     // LEN_BITMAP_NAME has now 4 bytes more
     if (version <= 218) {
       memmove(partialmodel.timers, &(partialmodel.header.bitmap[10]), sizeof(TimerData)*MAX_TIMERS);
       memclear(&(partialmodel.header.bitmap[10]), 4);
     }
-  }
+    error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel));
+#else
+    memset(&partialmodel.header,0,sizeof(partialmodel));
 #endif
+  }
 
   if ((modelName[0] == 0) && ! error)
     setModelName(partialmodel.header.name); // resets buffer!!!
