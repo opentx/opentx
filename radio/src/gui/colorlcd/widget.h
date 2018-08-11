@@ -27,12 +27,17 @@
 
 #define MAX_WIDGET_OPTIONS             5
 
+// YAML_GENERATOR defs
+#if !defined(USE_IDX)
+#define USE_IDX
+#endif
+
 class WidgetFactory;
 class Widget
 {
   public:
     struct PersistentData {
-      ZoneOptionValue options[MAX_WIDGET_OPTIONS];
+      ZoneOptionValue options[MAX_WIDGET_OPTIONS] USE_IDX;
     };
 
     Widget(const WidgetFactory * factory, const Zone & zone, PersistentData * persistentData):

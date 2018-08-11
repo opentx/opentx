@@ -33,11 +33,16 @@ class PageTab;
 class Theme;
 void registerTheme(Theme * theme);
 
+// YAML_GENERATOR defs
+#if !defined(USE_IDX)
+#define USE_IDX
+#endif
+
 class Theme
 {
   public:
     struct PersistentData {
-      ZoneOptionValue options[MAX_THEME_OPTIONS];
+      ZoneOptionValue options[MAX_THEME_OPTIONS] USE_IDX;
     };
 
     Theme(const char * name, const ZoneOption * options = nullptr):
