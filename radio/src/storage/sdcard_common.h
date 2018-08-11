@@ -23,10 +23,14 @@
 
 #include "ff.h"
 
+#define DEFAULT_CATEGORY "Models"
+
 #if defined(SDCARD_RAW)
 #define DEFAULT_MODEL_FILENAME   "model1.bin"
+#define MODEL_FILENAME_PATTERN   "model.bin"
 #elif defined(SDCARD_YAML)
 #define DEFAULT_MODEL_FILENAME   "model1.yml"
+#define MODEL_FILENAME_PATTERN   "model.yml"
 #endif
 
 // opens radio.bin or model file
@@ -37,6 +41,11 @@ void getModelPath(char * path, const char * filename);
 const char * readModel(const char * filename, uint8_t * buffer, uint32_t size, uint8_t * version);
 const char * loadModel(const char * filename, bool alarms=true);
 const char * createModel();
+const char * writeModel();
+
+void storageFormat();
+const char * loadRadioSettingsSettings();
+const char * writeGeneralSettings();
 
 const char * loadRadioSettings(const char * path);
 const char * loadRadioSettings();

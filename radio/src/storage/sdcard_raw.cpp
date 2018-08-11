@@ -22,8 +22,6 @@
 #include "gui/colorlcd/modelslist.h"
 #include "conversions/conversions.h"
 
-#define DEFAULT_CATEGORY "Models"
-
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
   TRACE("writeFile(%s)", filename);
@@ -65,6 +63,39 @@ const char * writeModel()
   return writeFile(path, (uint8_t *)&g_model, sizeof(g_model));
 }
 
+const char * openFile(const char * fullpath, FIL* file, uint16_t* size, uint8_t * version)
+{
+  FRESULT result = f_open(file, fullpath, FA_OPEN_EXISTING | FA_READ);
+  if (result != FR_OK) {
+    return SDCARD_ERROR(result);
+  }
+
+  if (f_size(file) < 8) {
+    f_close(file);
+    return STR_INCOMPATIBLE;
+  }
+
+  UINT read;
+  char buf[8];
+
+  result = f_read(file, (uint8_t *)buf, sizeof(buf), &read);
+  if ((result != FR_OK) || (read != sizeof(buf))) {
+    f_close(file);
+    return SDCARD_ERROR(result);
+  }
+
+  //TODO: move this code into some checkCompatibleFormat()
+
+  *version = (uint8_t)buf[4];
+  if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || *version < FIRST_CONV_EEPROM_VER || *version > EEPROM_VER || buf[5] != 'M') {
+    f_close(file);
+    return STR_INCOMPATIBLE;
+  }
+
+  *size = *(uint16_t*)&buf[6];
+  return nullptr;
+}
+
 const char * loadFile(const char * fullpath, uint8_t * data, uint16_t maxsize, uint8_t * version)
 {
   FIL      file;
@@ -95,32 +126,6 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size, u
   return loadFile(path, buffer, size, version);
 }
 
-const char * loadModel(const char * filename, bool alarms)
-{
-  uint8_t version;
-
-  preModelLoad();
-
-  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model), &version);
-  if (error) {
-    TRACE("loadModel error=%s", error);
-  }
-
-  if (error) {
-    modelDefault(0) ;
-    storageCheck(true);
-    alarms = false;
-  }
-#if defined(EEPROM_CONVERSIONS)
-  else if (version < EEPROM_VER) {
-    convertModelData(version);
-  }
-#endif
-
-  postModelLoad(alarms);
-
-  return error;
-}
 
 const char * loadRadioSettings(const char * path)
 {
@@ -150,76 +155,6 @@ const char * writeGeneralSettings()
   return writeFile(RADIO_SETTINGS_PATH, (uint8_t *)&g_eeGeneral, sizeof(g_eeGeneral));
 }
 
-void storageCheck(bool immediately)
-{
-  if (storageDirtyMsk & EE_GENERAL) {
-    TRACE("Storage write general");
-    storageDirtyMsk -= EE_GENERAL;
-    const char * error = writeGeneralSettings();
-    if (error) {
-      TRACE("writeGeneralSettings error=%s", error);
-    }
-  }
-
-  if (storageDirtyMsk & EE_MODEL) {
-    TRACE("Storage write current model");
-    storageDirtyMsk -= EE_MODEL;
-    const char * error = writeModel();
-    if (error) {
-      TRACE("writeModel error=%s", error);
-    }
-  }
-}
-
-#include "yaml/yaml_parser.h"
-#include "yaml/yaml_node.h"
-
-#include "yaml_datastructs.cpp"
-static const struct YamlNode radioNode = YAML_ROOT( struct_RadioData );
-static const struct YamlNode modelNode = YAML_ROOT( struct_ModelData );
-
-static void yaml_fake_read_write(const YamlNode* node)
-{
-  YamlParser yp;
-
-  yp.init(node);
-  yp.parse(NULL, 0, NULL);
-  yp.generate(NULL, NULL, NULL);
-}
-
-void storageReadAll()
-{
-  TRACE("storageReadAll");
-
-  // do some fake stuff with the structs in yaml_datastructs...
-  // yaml_fake_read_write(&radioNode);
-  // yaml_fake_read_write(&modelNode);
-
-  if (loadRadioSettings() != nullptr) {
-    storageEraseAll(true);
-  }
-
-  for (uint8_t i = 0; languagePacks[i] != nullptr; i++) {
-    if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
-      currentLanguagePackIdx = i;
-      currentLanguagePack = languagePacks[i];
-    }
-  }
-
-  if (loadModel(g_eeGeneral.currModelFilename, false) != nullptr) {
-    sdCheckAndCreateDirectory(MODELS_PATH);
-    createModel();
-  }
-
-  // Wipe models list in case
-  // it's being reloaded after USB connection
-  #warning "TODO modelslist.clear() + load()"
-  // modelslist.clear();
-
-  // and reload the list
-  // modelslist.load();
-}
-
 void storageCreateModelsList()
 {
   FIL file;
@@ -231,53 +166,3 @@ void storageCreateModelsList()
   }
 }
 
-void storageFormat()
-{
-  sdCheckAndCreateDirectory(RADIO_PATH);
-  sdCheckAndCreateDirectory(MODELS_PATH);
-  storageCreateModelsList();
-}
-
-const char * createModel()
-{
-  preModelLoad();
-
-  char filename[LEN_MODEL_FILENAME+1];
-  memset(filename, 0, sizeof(filename));
-  strcpy(filename, "model.bin");
-
-  int index = findNextFileIndex(filename, LEN_MODEL_FILENAME, MODELS_PATH);
-  if (index > 0) {
-    modelDefault(index);
-    memcpy(g_eeGeneral.currModelFilename, filename, sizeof(g_eeGeneral.currModelFilename));
-    storageDirty(EE_GENERAL);
-    storageDirty(EE_MODEL);
-    storageCheck(true);
-  }
-  postModelLoad(false);
-
-  return g_eeGeneral.currModelFilename;
-}
-
-void storageEraseAll(bool warn)
-{
-  TRACE("storageEraseAll");
-
-#if defined(LIBOPENUI)
-  // the theme has not been loaded before
-  theme->load();
-#endif
-
-  generalDefault();
-  modelDefault(1);
-
-  if (warn) {
-    ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
-  }
-
-  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
-
-  storageFormat();
-  storageDirty(EE_GENERAL|EE_MODEL);
-  storageCheck(true);
-}

@@ -1939,6 +1939,18 @@ void opentxInit()
     // TODO topbar removed from new UI for now
     // topbar = new Topbar(&g_model.topbarData);
 
+// #if __clang__
+// // clang does not like this at all, turn into a warning so that -Werror does not stop here
+// // taking address of packed member 'topbarData' of class or structure 'ModelData' may result in an unaligned pointer value [-Werror,-Waddress-of-packed-member]
+// #pragma clang diagnostic push
+// #pragma clang diagnostic warning "-Waddress-of-packed-member"
+// #endif
+//     topbar = new Topbar((Topbar::PersistentData*)(((uint8_t*)&g_model) + offsetof(ModelData,topbarData)));
+// #if __clang__
+// // Restore warnings
+// #pragma clang diagnostic pop
+// #endif
+
     // lua widget state must also be prepared before the call to storageReadAll()
     LUA_INIT_THEMES_AND_WIDGETS();
   }

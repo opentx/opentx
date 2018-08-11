@@ -21,6 +21,11 @@
 #include "modelslist.h"
 using std::list;
 
+#if defined(SDCARD_YAML)
+#include "yaml/yaml_parser.h"
+#include "yaml/yaml_modelslist.h"
+#endif
+
 ModelsList modelslist;
 
 ModelCell::ModelCell(const char * name)
@@ -28,6 +33,16 @@ ModelCell::ModelCell(const char * name)
 {
   strncpy(modelFilename, name, sizeof(modelFilename));
   memset(modelName, 0, sizeof(modelName));
+}
+
+ModelCell::ModelCell(const char * name, uint8_t len)
+  : buffer(NULL), valid_rfData(false)
+{
+  if (len > sizeof(modelFilename)-1)
+    len = sizeof(modelFilename)-1;
+
+  memcpy(modelFilename, name, len);
+  modelFilename[len] = '\0';
 }
 
 ModelCell::~ModelCell()
@@ -38,6 +53,25 @@ ModelCell::~ModelCell()
 void ModelCell::setModelName(char* name)
 {
   zchar2str(modelName, name, LEN_MODEL_NAME);
+  if (modelName[0] == 0) {
+    char * tmp;
+    strncpy(modelName, modelFilename, LEN_MODEL_NAME);
+    tmp = (char *) memchr(modelName, '.',  LEN_MODEL_NAME);
+    if (tmp != NULL)
+      *tmp = 0;
+  }
+
+  resetBuffer();
+}
+
+void ModelCell::setModelName(char* name, uint8_t len)
+{
+  if (len > LEN_MODEL_NAME-1)
+    len = LEN_MODEL_NAME-1;
+
+  memcpy(modelName, name, len);
+  modelName[len] = '\0';
+
   if (modelName[0] == 0) {
     char * tmp;
     strncpy(modelName, modelFilename, LEN_MODEL_NAME);
@@ -78,7 +112,9 @@ void ModelCell::loadBitmap()
          ModelHeader header;
          TimerData timers[MAX_TIMERS];
        }) partialmodel;
+
   const char * error = NULL;
+  BitmapBuffer * tmp_buffer;
 
   if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
@@ -95,19 +131,21 @@ void ModelCell::loadBitmap()
   if ((modelName[0] == 0) && ! error)
     setModelName(partialmodel.header.name); // resets buffer!!!
 
-  buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
-  if (buffer == NULL) {
+  tmp_buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
+  if (tmp_buffer == NULL) {
     return;
   }
-  buffer->clear(TEXT_BGCOLOR);
+  tmp_buffer->clear(TEXT_BGCOLOR);
 
   if (error) {
-    buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
-    buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
+    tmp_buffer->drawText(5, 2, "(Invalid Model)", TEXT_COLOR);
+    tmp_buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
   }
   else {
     char timer[LEN_TIMER_STRING];
-    buffer->drawSizedText(5, 2, modelName, LEN_MODEL_NAME, SMLSIZE|TEXT_COLOR);
+    tmp_buffer->drawSizedText(5, 2, modelName, /*LEN_MODEL_NAME*/strlen(modelName),
+                          SMLSIZE|TEXT_COLOR);
+
     getTimerString(timer, 0);
     for (uint8_t i = 0; i < MAX_TIMERS; i++) {
       if (partialmodel.timers[i].mode > 0 && partialmodel.timers[i].persistent) {
@@ -115,27 +153,39 @@ void ModelCell::loadBitmap()
         break;
       }
     }
-    buffer->drawText(101, 40, timer, TEXT_COLOR);
+    tmp_buffer->drawText(101, 40, timer, TEXT_COLOR);
     for (int i=0; i<4; i++) {
-      buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
+      tmp_buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
     }
     GET_FILENAME(filename, BITMAPS_PATH, partialmodel.header.bitmap, "");
     const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
     if (bitmap) {
-      buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
+      tmp_buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
       delete bitmap;
     }
     else {
-      buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
+      tmp_buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, TEXT_COLOR);
     }
   }
-  buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
+  tmp_buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
+
+  buffer = tmp_buffer;
 }
 
 void ModelCell::save(FIL* file)
 {
+#if !defined(SDCARD_YAML)
   f_puts(modelFilename, file);
   f_putc('\n', file);
+#else
+  f_puts("  - filename: ", file);
+  f_puts(modelFilename, file);
+  f_putc('\n', file);
+
+  f_puts("    name: ", file);
+  f_puts(modelName, file);
+  f_putc('\n', file);
+#endif
 }
 
 void ModelCell::setRfData(ModelData* model)
@@ -164,6 +214,7 @@ void ModelCell::setRfModuleData(uint8_t moduleIdx, ModuleData* modData)
 
 bool ModelCell::fetchRfData()
 {
+#if !defined(SDCARD_YAML)
   //TODO: use g_model in case fetching data for current model
   //
   char buf[256];
@@ -209,11 +260,24 @@ bool ModelCell::fetchRfData()
   error:
   f_close(&file);
   return false;
+
+#else
+  return false;
+#endif
 }
 
 ModelsCategory::ModelsCategory(const char * name)
 {
   strncpy(this->name, name, sizeof(this->name));
+}
+
+ModelsCategory::ModelsCategory(const char * name, uint8_t len)
+{
+  if (len > sizeof(this->name)-1)
+      len = sizeof(this->name)-1;
+
+  memcpy(this->name, name, len);
+  this->name[len] = '\0';
 }
 
 ModelsCategory::~ModelsCategory()
@@ -226,6 +290,8 @@ ModelsCategory::~ModelsCategory()
 
 ModelCell * ModelsCategory::addModel(const char * name)
 {
+  if (!name) return NULL;
+
   ModelCell * result = new ModelCell(name);
   push_back(result);
   return result;
@@ -266,10 +332,16 @@ void ModelsCategory::moveModel(ModelCell * model, int8_t step)
 
 void ModelsCategory::save(FIL * file)
 {
+#if !defined(SDCARD_YAML)
   f_puts("[", file);
   f_puts(name, file);
   f_puts("]", file);
   f_putc('\n', file);
+#else
+  f_puts("- name: ", file);
+  f_puts(name, file);
+  f_putc('\n', file);
+#endif
   for (list<ModelCell *>::iterator it = begin(); it != end(); ++it) {
     (*it)->save(file);
   }
@@ -310,8 +382,15 @@ bool ModelsList::load()
   if (loaded)
     return true;
 
+#if !defined(SDCARD_YAML)
   FRESULT result = f_open(&file, RADIO_MODELSLIST_PATH, FA_OPEN_EXISTING | FA_READ);
+#else
+  FRESULT result = f_open(&file, RADIO_MODELSLIST_YAML_PATH, FA_OPEN_EXISTING | FA_READ);
+#endif
   if (result == FR_OK) {
+
+#if !defined(SDCARD_YAML)
+    // TXT reader
     while (readNextLine(line, LEN_MODELS_IDX_LINE)) {
       int len = strlen(line); // TODO could be returned by readNextLine
       if (len > 2 && line[0] == '[' && line[len-1] == ']') {
@@ -320,8 +399,6 @@ bool ModelsList::load()
         categories.push_back(category);
       }
       else if (len > 0) {
-
-        //char* rf_data_str = cutModelFilename(line);
         ModelCell * model = new ModelCell(line);
         if (!category) {
           category = new ModelsCategory("Models");
@@ -332,12 +409,32 @@ bool ModelsList::load()
           currentCategory = category;
           currentModel = model;
         }
-        //parseModulesData(model, rf_data_str);
-        //TRACE("model=<%s>, valid_rfData=<%i>",model->modelFilename,model->valid_rfData);
         model->fetchRfData();
         modelsCount += 1;
       }
     }
+#else
+    // YAML reader
+    TRACE("YAML modelslist reader");
+      
+    YamlParser yp; //TODO: move to re-usable buffer
+    yp.init(get_modelslist_parser_calls(), get_modelslist_iter());
+
+    UINT bytes_read=0;
+    while (f_read(&file, line, sizeof(line), &bytes_read) == FR_OK) {
+
+      // reached EOF?
+      if (bytes_read == 0)
+        break;
+      
+      if (yp.parse(line, bytes_read) != YamlParser::CONTINUE_PARSING)
+        break;
+    }
+
+    // debug output
+    //modelslist.dump();
+#endif
+
     f_close(&file);
 
     if (!getCurrentModel()) {
@@ -356,12 +453,18 @@ bool ModelsList::load()
 
 void ModelsList::save()
 {
+#if !defined(SDCARD_YAML)
   FRESULT result = f_open(&file, RADIO_MODELSLIST_PATH, FA_CREATE_ALWAYS | FA_WRITE);
+#else
+  FRESULT result = f_open(&file, RADIO_MODELSLIST_YAML_PATH, FA_CREATE_ALWAYS | FA_WRITE);
+#endif
+
   if (result != FR_OK) {
     return;
   }
 
-  for (list<ModelsCategory *>::iterator it = categories.begin(); it != categories.end(); ++it) {
+  for (list<ModelsCategory *>::iterator it = categories.begin();
+       it != categories.end(); ++it) {
     (*it)->save(&file);
   }
 
@@ -397,11 +500,16 @@ bool ModelsList::readNextLine(char * line, int maxlen)
   return false;
 }
 
-ModelsCategory * ModelsList::createCategory()
+ModelsCategory * ModelsList::createCategory(bool save)
 {
-  ModelsCategory * result = new ModelsCategory("Category");
+  return createCategory("Category", save);
+}
+
+ModelsCategory * ModelsList::createCategory(const char* name, bool save)
+{
+  ModelsCategory * result = new ModelsCategory(name);
   categories.push_back(result);
-  save();
+  if (save) this->save();
   return result;
 }
 
