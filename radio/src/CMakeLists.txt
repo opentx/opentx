@@ -124,6 +124,12 @@ endforeach()
 
 set(SRC ${SRC} debug.cpp)
 
+add_definitions(-DFLAVOUR="${FLAVOUR}")
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
+include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
+
 set(SRC ${SRC} storage/storage_common.cpp)
 if(${STORAGE} STREQUAL SDCARD)
   set(SRC ${SRC} storage/modelslist.cpp storage/sdcard_common.cpp)
@@ -131,11 +137,10 @@ if(${STORAGE} STREQUAL SDCARD)
     set(SRC ${SRC} storage/sdcard_raw.cpp)
     add_definitions(-DSDCARD_RAW)
   elseif(${STORAGE_FORMAT} STREQUAL YAML)
-    set(SRC ${SRC} storage/sdcard_yaml.cpp
-                   storage/yaml/yaml_node.cpp
-                   storage/yaml/yaml_parser.cpp
-                   storage/yaml/yaml_bits.cpp)
+    set(SRC ${SRC} storage/sdcard_yaml.cpp)
     add_definitions(-DSDCARD_YAML)
+    include(storage/yaml/CMakeLists.txt)
+    #add_subdirectory(storage/yaml)
   endif()
 elseif(${STORAGE} STREQUAL EEPROM)
   set(SRC ${SRC} storage/eeprom_common.cpp)
@@ -153,12 +158,6 @@ elseif(${STORAGE} STREQUAL EEPROM)
 endif()
 
 include(storage/conversions/CMakeLists.txt)
-
-add_definitions(-DFLAVOUR="${FLAVOUR}")
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR})
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/bitmaps/${GUI_DIR})
 
 add_subdirectory(lua)
 include(gui/CMakeLists.txt)
