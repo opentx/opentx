@@ -122,9 +122,11 @@ void ModelCell::loadBitmap()
   if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
   }
+#if !defined (SDCARD_YAML)
   else {
     error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel));
   }
+#endif
 
   tmp_buffer->clear(TEXT_BGCOLOR);
 
