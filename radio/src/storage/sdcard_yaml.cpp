@@ -153,6 +153,9 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
     YamlTreeWalker tree;
     tree.reset(&modelDataNode, buffer);
 
+    // wipe memory before reading YAML
+    memset(buffer,0,size);
+
     return readYamlFile(path, &YamlTreeWalkerCalls, &tree);
 }
 
