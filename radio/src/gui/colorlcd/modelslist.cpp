@@ -119,6 +119,7 @@ void ModelCell::loadBitmap()
   if (strncmp(modelFilename, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME) == 0) {
     memcpy(&partialmodel.header, &g_model.header, sizeof(partialmodel));
   }
+#if !defined (SDCARD_YAML)
   else {
     error = readModel(modelFilename, (uint8_t *)&partialmodel.header, sizeof(partialmodel), &version);
     // LEN_BITMAP_NAME has now 4 bytes more
@@ -127,6 +128,7 @@ void ModelCell::loadBitmap()
       memclear(&(partialmodel.header.bitmap[10]), 4);
     }
   }
+#endif
 
   if ((modelName[0] == 0) && ! error)
     setModelName(partialmodel.header.name); // resets buffer!!!
