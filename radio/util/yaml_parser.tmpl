@@ -22,7 +22,7 @@ static const struct YamlIdStr {{ enum.name }}[] = {
 static const struct YamlNode {{ struct.name }}_elmts[] = {
 {% else %}
 static const struct YamlNode {{ struct.name }}[] = {
-  {% if struct.use_idx %}
+  {% if struct.used_in_arrays %}
   YAML_IDX,
   {% endif%}
 {% endif %}
@@ -51,7 +51,8 @@ static const struct YamlNode {{ struct.name }}[] = {
 };
 {% if struct.name.startswith('union_') and struct.used_in_arrays %}
 static const struct YamlNode {{ struct.name }}[] = {
-  YAML_UNION("", {{ max_bits(struct) }}, {{ struct.name }}_elmts, NULL),
+  YAML_IDX,
+  YAML_UNION("u", {{ max_bits(struct) }}, {{ struct.name }}_elmts, NULL),
   YAML_END
 };
 {% endif %}
