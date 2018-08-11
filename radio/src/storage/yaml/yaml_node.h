@@ -6,7 +6,7 @@
 
 #include "yaml_parser.h"
 
-#define NODE_STACK_DEPTH 6
+#define NODE_STACK_DEPTH 12
 
 enum YamlDataType {
     YDT_NONE=0,

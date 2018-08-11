@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 #define MAX_STR 32
-#define MAX_DEPTH 8 // 6 real + 2 virtual
+#define MAX_DEPTH 14 // 12 real + 4 virtual
 
 struct YamlParserCalls
 {
