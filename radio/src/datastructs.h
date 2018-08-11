@@ -65,6 +65,7 @@
 #define ENUM(label) _yaml_attribute("enum:" _yaml_note(label))
 #define USE_IDX     _yaml_attribute("idx:true")
 #define FUNC(name)  _yaml_attribute("func:" _yaml_note(name))
+#define NAME(label) _yaml_attribute("name:" _yaml_note(label))
 #define CUST(read,write)                        \
   _yaml_attribute("read:" _yaml_note(read))     \
   _yaml_attribute("write:" _yaml_note(write))
@@ -74,6 +75,7 @@
 #define ENUM(label)
 #define USE_IDX
 #define FUNC(name)
+#define NAME(label)
 #define CUST(read,write)
 
 #endif
@@ -94,9 +96,9 @@ PACK(struct CurveRef {
 });
 
 PACK(struct MixData {
-  int16_t  weight:11;       // GV1=-1024, -GV1=1023
+  int16_t  weight:11 CUST(in_read_weight,in_write_weight);       // GV1=-1024, -GV1=1023
   uint16_t destCh:5;
-  uint16_t srcRaw:10 ENUM(MixSources); // srcRaw=0 means not used
+  uint16_t srcRaw:10; // srcRaw=0 means not used
   uint16_t carryTrim:1;
   uint16_t mixWarn:2;       // mixer warning
   uint16_t mltpx:2;         // multiplex method: 0 means +=, 1 means *=, 2 means :=
@@ -124,7 +126,7 @@ PACK(struct ExpoData {
   uint32_t chn:5;
   int32_t  swtch:9;
   uint32_t flightModes:9;
-  int32_t  weight:8;
+  int32_t  weight:8 CUST(in_read_weight,in_write_weight);
   int32_t  spare:1;
   NOBACKUP(char name[LEN_EXPOMIX_NAME]);
   int8_t   offset;
@@ -193,7 +195,7 @@ PACK(struct CustomFunctionData {
       int32_t val1;
       NOBACKUP(CFN_SPARE_TYPE val2);
     }) clear);
-  });
+  }) NAME(fp);
   uint8_t active;
 });
 
@@ -346,7 +348,7 @@ PACK(struct TelemetrySensor {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
     NOBACKUP(uint16_t persistentValue);
-  };
+  } NAME(id1);
   union {
     PACK(struct {
       uint8_t physID:5;
@@ -354,7 +356,7 @@ PACK(struct TelemetrySensor {
     }) frskyInstance;
     uint8_t instance;
     NOBACKUP(uint8_t formula);
-  };
+  } NAME(id2);
   char     label[TELEM_LABEL_LEN]; // user defined label
   uint8_t  subId;
   uint8_t  type:1; // 0=custom / 1=calculated // user can choose what unit to display each value in
@@ -390,7 +392,7 @@ PACK(struct TelemetrySensor {
       uint16_t spare;
     }) dist);
     uint32_t param;
-  };
+  } NAME(cfg);
   NOBACKUP(
     void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
     void init(uint16_t id);
@@ -440,7 +442,7 @@ PACK(struct TrainerModuleData {
 // Only used in case switch and if statements as "virtual" protocol
 #define MM_RF_CUSTOM_SELECTED 0xff
 PACK(struct ModuleData {
-  uint8_t type:4 ENUM(Protocols);
+  uint8_t type:4 ENUM(ModuleTypes);
   int8_t  rfProtocol:4 ENUM(XJTRFProtocols) ENUM(DSM2Protocols);
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
@@ -486,7 +488,7 @@ PACK(struct ModuleData {
       uint8_t receivers; // 5 bits spare
       char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
     }) pxx2);
-  };
+  } NAME(mod);
 
   // Helper functions to set both of the rfProto protocol at the same time
   NOBACKUP(inline uint8_t getMultiProtocol(bool returnCustom) {
@@ -892,8 +894,8 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(ModelHeader, 31);
   CHKSIZE(CurveData, 4);
-  CHKSIZE(CustomScreenData, 610);
-  CHKSIZE(Topbar::PersistentData, 216);
+  CHKSIZE(CustomScreenData, 850);
+  CHKSIZE(Topbar::PersistentData, 300);
 #elif defined(PCBSKY9X)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
@@ -952,8 +954,8 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 883);
-  CHKSIZE(ModelData, 9736);
+  CHKSIZE(RadioData, 867);
+  CHKSIZE(ModelData, 10664);
 #endif
 
 #undef CHKSIZE

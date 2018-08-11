@@ -49,10 +49,10 @@ class Layout2P1: public Layout
     virtual void create()
     {
       Layout::create();
-      persistentData->options[0].boolValue = true;
-      persistentData->options[1].boolValue = true;
-      persistentData->options[2].boolValue = true;
-      persistentData->options[3].boolValue = true;
+      persistentData->options[0] = OPTION_VALUE_BOOL(true);
+      persistentData->options[1] = OPTION_VALUE_BOOL(true);
+      persistentData->options[2] = OPTION_VALUE_BOOL(true);
+      persistentData->options[3] = OPTION_VALUE_BOOL(true);
     }
 
     virtual unsigned int getZonesCount() const

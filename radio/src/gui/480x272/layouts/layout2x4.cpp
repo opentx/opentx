@@ -47,14 +47,14 @@ class Layout2x4: public Layout
     virtual void create()
     {
       Layout::create();
-      persistentData->options[0].boolValue = true;
-      persistentData->options[1].boolValue = true;
-      persistentData->options[2].boolValue = true;
-      persistentData->options[3].boolValue = true;
-      persistentData->options[4].boolValue = true;
-      persistentData->options[5].unsignedValue = RGB(77, 112, 203);
-      persistentData->options[6].boolValue = false;
-      persistentData->options[7].unsignedValue = RGB(77, 112, 203);
+      persistentData->options[0] = OPTION_VALUE_BOOL(true);
+      persistentData->options[1] = OPTION_VALUE_BOOL(true);
+      persistentData->options[2] = OPTION_VALUE_BOOL(true);
+      persistentData->options[3] = OPTION_VALUE_BOOL(true);
+      persistentData->options[4] = OPTION_VALUE_BOOL(true);
+      persistentData->options[5] = OPTION_VALUE_UNSIGNED( RGB(77, 112, 203) );
+      persistentData->options[6] = OPTION_VALUE_BOOL(true);
+      persistentData->options[7] = OPTION_VALUE_UNSIGNED( RGB(77, 112, 203) );
     }
 
     virtual unsigned int getZonesCount() const
