@@ -49,11 +49,13 @@ public:
   SimpleModuleData moduleData[NUM_MODULES];
 
   ModelCell(const char * name);
+  ModelCell(const char * name, uint8_t len);
   ~ModelCell();
 
   void save(FIL* file);
 
   void setModelName(char* name);
+  void setModelName(char* name, uint8_t len);
   void setRfData(ModelData* model);
 
   void setModelId(uint8_t moduleIdx, uint8_t id);
@@ -71,11 +73,13 @@ public:
   char name[LEN_MODEL_FILENAME+1];
 
   ModelsCategory(const char * name);
+  ModelsCategory(const char * name, uint8_t len);
   ~ModelsCategory();
 
   ModelCell * addModel(const char * name);
   void removeModel(ModelCell * model);
   void moveModel(ModelCell * model, int8_t step);
+
   void save(FIL * file);
 };
 
@@ -102,6 +106,10 @@ public:
     return categories;
   }
   
+  std::list<ModelsCategory *>& getCategories() {
+    return categories;
+  }
+
   void setCurrentCategorie(ModelsCategory* cat);
   ModelsCategory* getCurrentCategory() const {
     return currentCategory;
@@ -112,13 +120,18 @@ public:
     return currentModel;
   }
 
+  void incModelsCount() {
+    modelsCount++;
+  }
+  
   unsigned int getModelsCount() const {
     return modelsCount;
   }
   
   bool readNextLine(char * line, int maxlen);
 
-  ModelsCategory * createCategory();
+  ModelsCategory * createCategory(bool save=true);
+  ModelsCategory * createCategory(const char* name, bool save=true);
   void removeCategory(ModelsCategory * category);
 
   ModelCell * addModel(ModelsCategory * category, const char * name);

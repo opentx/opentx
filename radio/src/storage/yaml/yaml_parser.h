@@ -2,10 +2,19 @@
 #define _yaml_parser_h_
 
 #include <stdint.h>
-#include "yaml_node.h"
 
-#define MAX_STR 16
-#define MAX_DEPTH 6 // 4 real + 2 virtual
+#define MAX_STR 32
+#define MAX_DEPTH 8 // 6 real + 2 virtual
+
+struct YamlParserCalls
+{
+    bool (*to_parent)    (void* ctx);
+    bool (*to_child)     (void* ctx);
+    bool (*to_next_elmt) (void* ctx);
+    int  (*get_level)    (void* ctx);
+    bool (*find_node)    (void* ctx, char* buf, uint8_t len);
+    void (*set_attr)     (void* ctx, char* buf, uint8_t len);
+};
 
 class YamlParser
 {
@@ -36,7 +45,8 @@ class YamlParser
     bool node_found;
 
     // tree iterator state
-    YamlTreeWalker walker;
+    const YamlParserCalls* calls;
+    void*                  ctx;
     
     // Reset parser state for next line
     void reset();
@@ -53,16 +63,9 @@ public:
 
     YamlParser();
 
-    void init(const YamlNode * node);
+    void init(const YamlParserCalls* parser_calls, void* parser_ctx);
     
-    YamlResult parse(const char* buffer, unsigned int size, uint8_t* data);
-    bool       generate(uint8_t* data, YamlNode::writer_func wf, void* opaque);
+    YamlResult parse(const char* buffer, unsigned int size);
 };
-
-// int32_t  str2int(const char* val, uint8_t val_len);
-// uint32_t str2uint(const char* val, uint8_t val_len);
-
-char* unsigned2str(uint32_t i);
-char* signed2str(int32_t i);
 
 #endif

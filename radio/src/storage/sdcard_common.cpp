@@ -21,6 +21,10 @@
 #include "opentx.h"
 #include "storage.h"
 #include "sdcard_common.h"
+#include "modelslist.h"
+
+// defined either in sdcard_raw.cpp or sdcard_yaml.cpp
+void storageCreateModelsList();
 
 void getModelPath(char * path, const char * filename)
 {
@@ -29,36 +33,123 @@ void getModelPath(char * path, const char * filename)
   strcpy(&path[sizeof(MODELS_PATH)], filename);
 }
 
-const char * openFile(const char * fullpath, FIL* file, uint16_t* size, uint8_t * version)
+void storageEraseAll(bool warn)
 {
-  FRESULT result = f_open(file, fullpath, FA_OPEN_EXISTING | FA_READ);
-  if (result != FR_OK) {
-    return SDCARD_ERROR(result);
+  TRACE("storageEraseAll");
+
+#if defined(COLORLCD)
+  // the theme has not been loaded before
+  theme->load();
+#endif
+
+  generalDefault();
+  modelDefault(1);
+
+  if (warn) {
+    ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
   }
 
-  if (f_size(file) < 8) {
-    f_close(file);
-    return STR_INCOMPATIBLE;
+  RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
+
+  storageFormat();
+  storageDirty(EE_GENERAL|EE_MODEL);
+  storageCheck(true);
+}
+
+void storageFormat()
+{
+  sdCheckAndCreateDirectory(RADIO_PATH);
+  sdCheckAndCreateDirectory(MODELS_PATH);
+  storageCreateModelsList();
+}
+
+void storageCheck(bool immediately)
+{
+  if (storageDirtyMsk & EE_GENERAL) {
+    TRACE("eeprom write general");
+    storageDirtyMsk -= EE_GENERAL;
+    const char * error = writeGeneralSettings();
+    if (error) {
+      TRACE("writeGeneralSettings error=%s", error);
+    }
   }
 
-  UINT read;
-  char buf[8];
+  if (storageDirtyMsk & EE_MODEL) {
+    TRACE("eeprom write model");
+    storageDirtyMsk -= EE_MODEL;
+    const char * error = writeModel();
+    if (error) {
+      TRACE("writeModel error=%s", error);
+    }
+  }
+}
 
-  result = f_read(file, (uint8_t *)buf, sizeof(buf), &read);
-  if ((result != FR_OK) || (read != sizeof(buf))) {
-    f_close(file);
-    return SDCARD_ERROR(result);
+const char * createModel()
+{
+  preModelLoad();
+
+  char filename[LEN_MODEL_FILENAME+1];
+  memset(filename, 0, sizeof(filename));
+  strcpy(filename, MODEL_FILENAME_PATTERN);
+
+  int index = findNextFileIndex(filename, LEN_MODEL_FILENAME, MODELS_PATH);
+  if (index > 0) {
+    modelDefault(index);
+    memcpy(g_eeGeneral.currModelFilename, filename, sizeof(g_eeGeneral.currModelFilename));
+    storageDirty(EE_GENERAL);
+    storageDirty(EE_MODEL);
+    storageCheck(true);
+  }
+  postModelLoad(false);
+
+  return g_eeGeneral.currModelFilename;
+}
+
+const char * loadModel(const char * filename, bool alarms)
+{
+  preModelLoad();
+
+  const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model));
+  if (error) {
+    TRACE("loadModel error=%s", error);
+  }
+  
+  if (error) {
+    modelDefault(0) ;
+    storageCheck(true);
+    alarms = false;
   }
 
-  //TODO: move this code into some checkCompatibleFormat()
+  postModelLoad(alarms);
 
-  *version = (uint8_t)buf[4];
-  if ((*(uint32_t*)&buf[0] != OTX_FOURCC && *(uint32_t*)&buf[0] != O9X_FOURCC) || *version < FIRST_CONV_EEPROM_VER || *version > EEPROM_VER || buf[5] != 'M') {
-    f_close(file);
-    return STR_INCOMPATIBLE;
+  return error;
+}
+
+void storageReadAll()
+{
+  TRACE("storageReadAll");
+
+  if (loadRadioSettingsSettings() != NULL) {
+    storageEraseAll(true);
   }
 
-  *size = *(uint16_t*)&buf[6];
-  return nullptr;
+  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
+    if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
+      currentLanguagePackIdx = i;
+      currentLanguagePack = languagePacks[i];
+    }
+  }
+
+  if (loadModel(g_eeGeneral.currModelFilename, false) != NULL) {
+    sdCheckAndCreateDirectory(MODELS_PATH);
+    createModel();
+  }
+
+  // Wipe models list in case
+  // it's being reloaded after USB connection
+  modelslist.clear();
+
+  // and reload the list
+  modelslist.load();
 }
 

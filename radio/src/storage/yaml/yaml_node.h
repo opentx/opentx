@@ -4,7 +4,9 @@
 #include <stdint.h>
 #include <stddef.h>
 
-#define NODE_STACK_DEPTH 4
+#include "yaml_parser.h"
+
+#define NODE_STACK_DEPTH 6
 
 enum YamlDataType {
     YDT_NONE=0,
@@ -28,17 +30,17 @@ struct YamlNode
 {
     typedef bool (*is_active_func)(uint8_t* data);
 
-    typedef uint32_t (*cust_to_uint_func)(const char* val, uint8_t val_len);
+    typedef uint32_t (*cust_to_uint_func)(const YamlNode* node, const char* val, uint8_t val_len);
 
     // return false if error
     typedef bool (*writer_func)(void* opaque, const char* str, size_t len);
 
-    typedef bool (*uint_to_cust_func)(uint32_t val, writer_func wf, void* opaque);
+    typedef bool (*uint_to_cust_func)(const YamlNode* node, uint32_t val, writer_func wf, void* opaque);
 
-    typedef const struct YamlNode* (*select_member_func)(uint8_t* data);
+    typedef uint8_t (*select_member_func)(uint8_t* data);
     
     uint8_t      type;
-    uint16_t     size;  // bits
+    uint32_t     size;  // bits
     uint8_t      tag_len;
     const char*  tag;
     union {
@@ -116,11 +118,11 @@ class YamlTreeWalker
 {
     struct State {
         const YamlNode* node;
-        unsigned int    bit_ofs;
-        uint8_t         attr_idx;
-        uint8_t         elmts;
+        uint32_t    bit_ofs;
+        int8_t      attr_idx;
+        uint16_t    elmts;
 
-        inline unsigned int getOfs() {
+        inline uint32_t getOfs() {
             return bit_ofs + node->size * elmts;
         }
     };
@@ -130,8 +132,10 @@ class YamlTreeWalker
     uint8_t virt_level;
     uint8_t anon_union;
 
-    unsigned int getAttrOfs() { return stack[stack_level].bit_ofs; }
-    unsigned int getLevelOfs() {
+    uint8_t* data;
+
+    uint32_t getAttrOfs() { return stack[stack_level].bit_ofs; }
+    uint32_t getLevelOfs() {
         if (stack_level < NODE_STACK_DEPTH - 1) {
             return stack[stack_level + 1].getOfs();
         }
@@ -153,10 +157,14 @@ class YamlTreeWalker
     bool push();
     bool pop();
     
+    // Rewind to the current node's first attribute
+    // (and reset the bit offset)
+    void rewind();
+
 public:
     YamlTreeWalker();
 
-    void reset(const YamlNode* node);
+    void reset(const YamlNode* node, uint8_t* data);
 
     int getLevel() {
         return NODE_STACK_DEPTH - stack_level
@@ -168,17 +176,16 @@ public:
     }
 
     const YamlNode* getAttr() {
-        uint8_t idx = stack[stack_level].attr_idx;
-        return &(stack[stack_level].node->u._array.child[idx]);
+        int8_t idx = stack[stack_level].attr_idx;
+        if (idx >= 0)
+            return &(stack[stack_level].node->u._array.child[idx]);
+
+        return NULL;
     }
 
-    unsigned int getElmts() {
+    uint16_t getElmts() {
         return stack[stack_level].elmts;
     }
-
-    // Rewind to the current node's first attribute
-    // (and reset the bit offset)
-    void rewind();
 
     // Increment the cursor until a match is found or the end of
     // the current collection (node of type YDT_NONE) is reached.
@@ -197,10 +204,13 @@ public:
 
     bool isElmtEmpty(uint8_t* data);
 
-    bool finished() { return empty(); }
+    void setAttrValue(char* buf, uint8_t len);
+
+    bool generate(YamlNode::writer_func wf, void* opaque);
 
     void dump_stack();
 };
 
+extern const YamlParserCalls YamlTreeWalkerCalls;
 
 #endif

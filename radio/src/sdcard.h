@@ -55,6 +55,10 @@
 #if defined(COLORLCD)
 const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
 const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
+#if defined(SDCARD_YAML)
+const char RADIO_MODELSLIST_YAML_PATH[] = RADIO_PATH "/models.yml";
+const char RADIO_SETTINGS_YAML_PATH[] = RADIO_PATH "/radio.yml";
+#endif
 #define    SPLASH_FILE             "splash.png"
 #endif
 
