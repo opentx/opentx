@@ -23,7 +23,11 @@
 
 #include <stdint.h>
 #include <list>
+
 #include "sdcard.h"
+#if !defined(SDCARD_YAML)
+#include "sdcard_raw.h"
+#endif
 
 #define MODELCELL_WIDTH                172
 #define MODELCELL_HEIGHT               59
