@@ -72,6 +72,35 @@ static const char* yaml_output_enum(int32_t i, const struct YamlIdStr* choices)
     return choices->str;
 }
 
+static const char hex_digits[] {
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+};
+
+static bool yaml_output_string(const char* str, uint32_t max_len,
+                               YamlNode::writer_func wf, void* opaque)
+{
+    if (!wf(opaque, "\"", 1))
+        return false;
+    
+    while(*str && max_len > 0) {
+        if (*str >= 0x20 && *str <= 0x7E) {
+            if (!wf(opaque, str++, 1)) return false;
+            max_len--;
+        }
+        else {
+            if (!wf(opaque, "\\x", 2)) return false;
+            if (!wf(opaque, &(hex_digits[((uint8_t)*str) >> 4]), 1)) return false;
+            if (!wf(opaque, &(hex_digits[((uint8_t)*str) & 0x0F]), 1)) return false;
+            str++; max_len--;
+        }
+    }
+
+    if (!wf(opaque, "\"", 1))
+        return false;
+
+    return true;
+}
+
 static bool yaml_output_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* node,
                              YamlNode::writer_func wf, void* opaque)
 {
@@ -96,7 +125,8 @@ static bool yaml_output_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* nod
         const char* p_out = NULL;
         if (node->type == YDT_STRING) {
             //assert(!bit_ofs);
-            p_out = (const char*)ptr;
+            if (!yaml_output_string((const char*)ptr, (node->size)>>3UL, wf, opaque))
+                return false;
         }
         else {
             unsigned int i = yaml_get_bits(ptr, bit_ofs, node->size);
