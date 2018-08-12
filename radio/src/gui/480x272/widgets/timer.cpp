@@ -40,7 +40,7 @@ const ZoneOption TimerWidget::options[] = {
 
 void TimerWidget::refresh()
 {
-  uint32_t index = persistentData->options[0].unsignedValue;
+  uint32_t index = persistentData->options[0].value.unsignedValue;
   TimerData & timerData = g_model.timers[index];
   TimerState & timerState = timersStates[index];
 

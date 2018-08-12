@@ -272,8 +272,8 @@ class DefaultTheme: public Theme
 
     virtual void update() const
     {
-      uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
-      uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
+      uint32_t color = g_eeGeneral.themeData.options[1].value.unsignedValue;
+      uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].value.unsignedValue;
 
       lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
@@ -300,7 +300,7 @@ class DefaultTheme: public Theme
         lcd->drawBitmap(0, 0, backgroundBitmap);
       }
       else {
-        lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
+        lcdSetColor(g_eeGeneral.themeData.options[0].value.unsignedValue);
         lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
       }
     }

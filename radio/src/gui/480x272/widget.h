@@ -37,7 +37,7 @@ class Widget
 {
   public:
     struct PersistentData {
-      ZoneOptionValue options[MAX_WIDGET_OPTIONS] USE_IDX;
+      ZoneOptionValueTyped options[MAX_WIDGET_OPTIONS] USE_IDX;
     };
 
     Widget(const WidgetFactory * factory, const Zone & zone, PersistentData * persistentData):
@@ -69,7 +69,7 @@ class Widget
 
     inline ZoneOptionValue * getOptionValue(unsigned int index) const
     {
-      return &persistentData->options[index];
+      return &persistentData->options[index].value;
     }
 
     virtual void refresh() = 0;
@@ -114,7 +114,8 @@ class WidgetFactory
         for (const ZoneOption * option = options; option->name; option++) {
           TRACE("WidgetFactory::initPersistentData() setting option '%s'", option->name);
           // TODO compiler bug? The CPU freezes ... persistentData->options[i++] = option->deflt;
-          memcpy(&persistentData->options[i++], &option->deflt, sizeof(ZoneOptionValue));
+          memcpy(&persistentData->options[i++].value, &option->deflt, sizeof(ZoneOptionValue));
+          persistentData->options[i++].type = zoneValueEnumFromType(option->type);
         }
       }
     }

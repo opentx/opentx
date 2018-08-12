@@ -7,15 +7,15 @@
 #define LEN_ZONE_OPTION_STRING         8
 
 #if defined(_MSC_VER)
-  #define OPTION_VALUE_UNSIGNED(x)    { ZOV_Unsigned, uint32_t(x) }
-  #define OPTION_VALUE_SIGNED(x)      { ZOV_Signed, uint32_t(x) }
-  #define OPTION_VALUE_BOOL(x)        { ZOV_Bool, bool(x) }
-  #define OPTION_VALUE_STRING(...)    { ZOV_String, *(ZoneOptionValue *)(const char *) #__VA_ARGS__ }
+  #define OPTION_VALUE_UNSIGNED(x)    { uint32_t(x) }
+  #define OPTION_VALUE_SIGNED(x)      { uint32_t(x) }
+  #define OPTION_VALUE_BOOL(x)        {  bool(x) }
+  #define OPTION_VALUE_STRING(...)    { *(ZoneOptionValue *)(const char *) #__VA_ARGS__ }
 #else
-  #define OPTION_VALUE_UNSIGNED(x) { .type=ZOV_Unsigned, .unsignedValue = (x) }
-  #define OPTION_VALUE_SIGNED(x)   { .type=ZOV_Signed, .signedValue = (x) }
-  #define OPTION_VALUE_BOOL(x)     { .type=ZOV_Bool, .boolValue = (x) }
-  #define OPTION_VALUE_STRING(...) { .type=ZOV_String, .stringValue = {__VA_ARGS__} }
+  #define OPTION_VALUE_UNSIGNED(x) { .unsignedValue = (x) }
+  #define OPTION_VALUE_SIGNED(x)   { .signedValue = (x) }
+  #define OPTION_VALUE_BOOL(x)     { .boolValue = (x) }
+  #define OPTION_VALUE_STRING(...) { .stringValue = { __VA_ARGS__ } }
 #endif
 
 struct Zone
@@ -23,23 +23,19 @@ struct Zone
   uint16_t x, y, w, h;
 };
 
-enum ZoneOptionValueType {
+union ZoneOptionValue
+{
+  uint32_t unsignedValue;
+  int32_t signedValue;
+  bool boolValue;
+  char stringValue[LEN_ZONE_OPTION_STRING];
+};
+
+enum ZoneOptionValueEnum {
   ZOV_Unsigned=0,
   ZOV_Signed,
   ZOV_Bool,
   ZOV_String
-};
-
-struct ZoneOptionValue
-{
-  ZoneOptionValueType type;
-
-  union {
-    uint32_t unsignedValue;
-    int32_t signedValue;
-    bool boolValue;
-    char stringValue[LEN_ZONE_OPTION_STRING];
-  } NAME(val);
 };
 
 struct ZoneOption
@@ -62,5 +58,35 @@ struct ZoneOption
   ZoneOptionValue min;
   ZoneOptionValue max;
 };
+
+struct ZoneOptionValueTyped
+{
+  ZoneOptionValueEnum type;
+  ZoneOptionValue     value;
+};
+
+
+inline ZoneOptionValueEnum zoneValueEnumFromType(ZoneOption::Type type)
+{
+  switch(type) {
+  case ZoneOption::File:
+  case ZoneOption::String:
+    return ZOV_String;
+
+  case ZoneOption::Integer:
+    return ZOV_Signed;
+
+  case ZoneOption::Bool:
+    return ZOV_Bool;
+
+  case ZoneOption::Color:
+  case ZoneOption::Timer:
+  case ZoneOption::Switch:
+  case ZoneOption::Source:
+  case ZoneOption::TextSize:
+  default:
+    return ZOV_Unsigned;
+  }
+}
 
 #endif

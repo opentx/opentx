@@ -39,7 +39,7 @@ class Theme
 {
   public:
     struct PersistentData {
-      ZoneOptionValue options[MAX_THEME_OPTIONS] USE_IDX;
+      ZoneOptionValueTyped options[MAX_THEME_OPTIONS] USE_IDX;
     };
 
     Theme(const char * name, const ZoneOption * options=NULL):
