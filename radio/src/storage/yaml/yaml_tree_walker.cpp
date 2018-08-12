@@ -1,6 +1,10 @@
+
 #include "debug.h"
 #include "yaml_node.h"
 #include "yaml_bits.h"
+#include "yaml_tree_walker.h"
+#include "yaml_parser.h"
+
 #include <string.h>
 
 #define MIN(a,b) (a < b ? a : b)
@@ -77,7 +81,7 @@ static const char hex_digits[] {
 };
 
 static bool yaml_output_string(const char* str, uint32_t max_len,
-                               YamlNode::writer_func wf, void* opaque)
+                               yaml_writer_func wf, void* opaque)
 {
     if (!wf(opaque, "\"", 1))
         return false;
@@ -102,7 +106,7 @@ static bool yaml_output_string(const char* str, uint32_t max_len,
 }
 
 static bool yaml_output_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* node,
-                             YamlNode::writer_func wf, void* opaque)
+                             yaml_writer_func wf, void* opaque)
 {
     if (node->type == YDT_NONE)
         return false;
@@ -165,45 +169,6 @@ static bool yaml_output_attr(uint8_t* ptr, uint32_t bit_ofs, const YamlNode* nod
 
     return true;
 }
-
-static bool to_parent(void* ctx)
-{
-    return ((YamlTreeWalker*)ctx)->toParent();
-}
-
-static bool to_child(void* ctx)
-{
-    return ((YamlTreeWalker*)ctx)->toChild();
-}
-
-static bool to_next_elmt(void* ctx)
-{
-    return ((YamlTreeWalker*)ctx)->toNextElmt();
-}
-
-static int get_level(void* ctx)
-{
-    return ((YamlTreeWalker*)ctx)->getLevel();
-}
-
-static bool find_node(void* ctx, char* buf, uint8_t len)
-{
-    return ((YamlTreeWalker*)ctx)->findNode(buf,len);
-}
-
-static void set_attr(void* ctx, char* buf, uint8_t len)
-{
-    return ((YamlTreeWalker*)ctx)->setAttrValue(buf,len);
-}
-
-const YamlParserCalls YamlTreeWalkerCalls = {
-    .to_parent=to_parent,
-    .to_child=to_child,
-    .to_next_elmt=to_next_elmt,
-    .get_level=get_level,
-    .find_node=find_node,
-    .set_attr=set_attr
-};
 
 YamlTreeWalker::YamlTreeWalker()
     : stack_level(NODE_STACK_DEPTH),
@@ -435,7 +400,7 @@ void YamlTreeWalker::setAttrValue(char* buf, uint8_t len)
     }
 }
 
-bool YamlTreeWalker::generate(YamlNode::writer_func wf, void* opaque)
+bool YamlTreeWalker::generate(yaml_writer_func wf, void* opaque)
 {
     bool new_elmt = false;
     
@@ -582,3 +547,54 @@ void YamlTreeWalker::dump_stack()
     }
     TRACE("\n");
 }
+
+static bool to_parent(void* ctx)
+{
+    return ((YamlTreeWalker*)ctx)->toParent();
+}
+
+static bool to_child(void* ctx)
+{
+    return ((YamlTreeWalker*)ctx)->toChild();
+}
+
+static bool to_next_elmt(void* ctx)
+{
+    return ((YamlTreeWalker*)ctx)->toNextElmt();
+}
+
+static int get_level(void* ctx)
+{
+    return ((YamlTreeWalker*)ctx)->getLevel();
+}
+
+static bool find_node(void* ctx, char* buf, uint8_t len)
+{
+    return ((YamlTreeWalker*)ctx)->findNode(buf,len);
+}
+
+static void set_attr(void* ctx, char* buf, uint8_t len)
+{
+    return ((YamlTreeWalker*)ctx)->setAttrValue(buf,len);
+}
+
+const YamlParserCalls YamlTreeWalkerCalls = {
+    // .to_parent=
+    to_parent,
+    // .to_child=
+    to_child,
+    // .to_next_elmt=
+    to_next_elmt,
+    // .get_level=
+    get_level,
+    // .find_node=
+    find_node,
+    // .set_attr=
+    set_attr
+};
+
+const YamlParserCalls* YamlTreeWalker::get_parser_calls()
+{
+    return &YamlTreeWalkerCalls;
+}
+
