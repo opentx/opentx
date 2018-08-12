@@ -59,3 +59,12 @@ static const struct YamlNode {{ struct.name }}[] = {
 {% endfor %}
 
 #define MAX_{{ root_node_name | upper }}_STR_LEN {{ get_max_len() }}
+
+{% for tn in root_nodes %}
+static const struct YamlNode __{{ tn }}_root_node = YAML_ROOT( struct_{{ tn }} );
+
+const YamlNode* get_{{ tn | lower }}_nodes()
+{
+   return &__{{ tn }}_root_node;
+}
+{% endfor %}

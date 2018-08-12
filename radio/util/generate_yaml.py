@@ -502,4 +502,4 @@ template.globals['get_max_len'] = get_max_len
 template.globals['max_bits'] = max_bits
 
 ## fixme: root_node_name needs to be mangled (contains ',')
-print(template.render(root=RootAST,root_node_name=root_nodes_name))
+print(template.render(root=RootAST,root_nodes=top_node_names,root_node_name=root_nodes_name))

@@ -1,3 +1,6 @@
+#include "opentx.h"
+#include "yaml_bits.h"
+
 #define GVAR_SMALL 128
 
 static uint32_t in_read_weight(const YamlNode* node, const char* val, uint8_t val_len)
@@ -26,7 +29,7 @@ static uint32_t in_read_weight(const YamlNode* node, const char* val, uint8_t va
     return (uint32_t)yaml_str2int(val, val_len);
 }
 
-static bool in_write_weight(const YamlNode* node, uint32_t val, YamlNode::writer_func wf, void* opaque)
+static bool in_write_weight(const YamlNode* node, uint32_t val, yaml_writer_func wf, void* opaque)
 {
     int32_t sval = yaml_to_signed(val,node->size);
     

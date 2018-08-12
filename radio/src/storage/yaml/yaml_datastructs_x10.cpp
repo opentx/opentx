@@ -695,3 +695,17 @@ static const struct YamlNode struct_ModelData[] = {
 };
 
 #define MAX_RADIODATA_MODELDATA_STR_LEN 24
+
+static const struct YamlNode __RadioData_root_node = YAML_ROOT( struct_RadioData );
+
+const YamlNode* get_radiodata_nodes()
+{
+   return &__RadioData_root_node;
+}
+static const struct YamlNode __ModelData_root_node = YAML_ROOT( struct_ModelData );
+
+const YamlNode* get_modeldata_nodes()
+{
+   return &__ModelData_root_node;
+}
+

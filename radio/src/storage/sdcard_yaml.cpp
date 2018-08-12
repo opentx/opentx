@@ -24,17 +24,9 @@
 
 #include "modelslist.h"
 
-#include "yaml/yaml_node.h"
-#include "yaml/yaml_bits.h"
-
-#include "yaml/yaml_datastructs_funcs.cpp"
-#if defined(PCBX10)
-#include "yaml/yaml_datastructs_x10.cpp"
-#elif defined(PCBX12S)
-#include "yaml/yaml_datastructs_x12s.cpp"
-#else
-#error "Board not supported by YAML storage"
-#endif
+#include "yaml/yaml_tree_walker.h"
+#include "yaml/yaml_parser.h"
+#include "yaml/yaml_datastructs.h"
 
 const char * readYamlFile(const char* fullpath, const YamlParserCalls* calls, void* parser_ctx)
 {
@@ -81,7 +73,6 @@ void storageCreateModelsList()
 // SDCARD storage interface
 //
 
-static const struct YamlNode radioDataNode = YAML_ROOT( struct_RadioData );
 
 const char * loadRadioSettingsSettings()
 {
@@ -89,9 +80,9 @@ const char * loadRadioSettingsSettings()
     TRACE("YAML radio settings reader");
 
     YamlTreeWalker tree;
-    tree.reset(&radioDataNode, (uint8_t*)&g_eeGeneral);
+    tree.reset(get_radiodata_nodes(), (uint8_t*)&g_eeGeneral);
 
-    return readYamlFile(RADIO_SETTINGS_YAML_PATH, &YamlTreeWalkerCalls, &tree);
+    return readYamlFile(RADIO_SETTINGS_YAML_PATH, YamlTreeWalker::get_parser_calls(), &tree);
 }
 
 struct yaml_writer_ctx {
@@ -123,7 +114,7 @@ const char * writeGeneralSettings()
     }
       
     YamlTreeWalker tree;
-    tree.reset(&radioDataNode, (uint8_t*)&g_eeGeneral);
+    tree.reset(get_radiodata_nodes(), (uint8_t*)&g_eeGeneral);
 
     yaml_writer_ctx ctx;
     ctx.file = &file;
@@ -140,7 +131,6 @@ const char * writeGeneralSettings()
     return NULL;
 }
 
-static const struct YamlNode modelDataNode = YAML_ROOT( struct_ModelData );
 
 const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
 {
@@ -151,12 +141,12 @@ const char * readModel(const char * filename, uint8_t * buffer, uint32_t size)
     getModelPath(path, filename);
 
     YamlTreeWalker tree;
-    tree.reset(&modelDataNode, buffer);
+    tree.reset(get_modeldata_nodes(), buffer);
 
     // wipe memory before reading YAML
     memset(buffer,0,size);
 
-    return readYamlFile(path, &YamlTreeWalkerCalls, &tree);
+    return readYamlFile(path, YamlTreeWalker::get_parser_calls(), &tree);
 }
 
 const char * writeModel()
@@ -175,7 +165,7 @@ const char * writeModel()
     }
       
     YamlTreeWalker tree;
-    tree.reset(&modelDataNode, (uint8_t*)&g_model);
+    tree.reset(get_modeldata_nodes(), (uint8_t*)&g_model);
 
     yaml_writer_ctx ctx;
     ctx.file = &file;

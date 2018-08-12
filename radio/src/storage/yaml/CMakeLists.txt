@@ -1,9 +1,10 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
-set(SRC ${SRC} storage/yaml/yaml_node.cpp
+set(SRC ${SRC} storage/yaml/yaml_tree_walker.cpp
                storage/yaml/yaml_parser.cpp
                storage/yaml/yaml_bits.cpp
-               storage/yaml/yaml_modelslist.cpp)
+               storage/yaml/yaml_modelslist.cpp
+               storage/yaml/yaml_datastructs.cpp)
 
 if(PCB STREQUAL X12S)
   set(YAML_GEN_OUTPUT storage/yaml/yaml_datastructs_x12s.cpp)
