@@ -40,8 +40,10 @@ YamlParser::parse(const char* buffer, unsigned int size)
     {                                           \
         if(s_len < MAX_STR)                     \
             s[s_len++] = c;                     \
-        else                                    \
+        else {                                  \
+            TRACE("STRING_OVERFLOW");           \
             return STRING_OVERFLOW;             \
+        }                                       \
     }
 
     const char* c   = buffer;
@@ -155,9 +157,66 @@ YamlParser::parse(const char* buffer, unsigned int size)
             }
             state = ps_Val;
             scratch_len = 0;
+            if (*c == '\"') {
+                state = ps_ValQuo;
+                break;
+            }
             CONCAT_STR(scratch_buf, scratch_len, *c);
             break;
 
+        case ps_ValQuo:
+            if (*c == '\"') {
+                state = ps_Val;
+                break;
+            }
+            if (*c == '\\') {
+                state = ps_ValEsc1;
+                break;
+            }
+            CONCAT_STR(scratch_buf, scratch_len, *c);
+            break;
+
+        case ps_ValEsc1:
+            if (*c == 'x') {
+                state = ps_ValEsc2;
+                break;
+            }
+            //TODO: more escapes needed???
+            TRACE("unknown escape char '%c'",*c);
+            return DONE_PARSING;
+
+        case ps_ValEsc2:
+            if(scratch_len >= MAX_STR) {
+                TRACE("STRING_OVERFLOW");
+                return STRING_OVERFLOW;
+            }
+            else if (*c >= '0' && *c <= '9') {
+                scratch_buf[scratch_len] = (*c - '0') << 4;
+                state = ps_ValEsc3;
+                break;
+            }
+            else if (*c >= 'A' && *c <= 'F') {
+                scratch_buf[scratch_len] = (*c - 'A' + 10) << 4;
+                state = ps_ValEsc3;
+                break;
+            }
+            TRACE("wrong hex digit '%c'",*c);
+            return DONE_PARSING;
+
+        case ps_ValEsc3:
+            if (*c >= '0' && *c <= '9') {
+                scratch_buf[scratch_len++] |= (*c - '0');
+                state = ps_ValQuo;
+                break;
+            }
+            else if (*c >= 'A' && *c <= 'F') {
+                scratch_buf[scratch_len++] |= (*c - 'A' + 10);
+                state = ps_ValQuo;
+                break;
+            }
+            TRACE("wrong hex digit '%c'",*c);
+            return DONE_PARSING;
+            
         case ps_Val:
             if (*c == ' ' || *c == '\r' || *c == '\n') {
                 // set attribute
@@ -175,6 +234,10 @@ YamlParser::parse(const char* buffer, unsigned int size)
                 }
                 state = ps_CRLF;
                 continue;
+            }
+            if (*c == '\"') {
+                state = ps_ValQuo;
+                break;
             }
             CONCAT_STR(scratch_buf, scratch_len, *c);
             break;
