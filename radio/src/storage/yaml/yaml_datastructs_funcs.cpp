@@ -59,7 +59,7 @@ static bool in_write_weight(const YamlNode* node, uint32_t val, yaml_writer_func
 
 static uint8_t select_zov(uint8_t* data)
 {
-    data -= sizeof(ZoneOptionValue::type);
-    ZoneOptionValueType* p_zovt = (ZoneOptionValueType*)data;
+    data -= sizeof(ZoneOptionValueEnum);
+    ZoneOptionValueEnum* p_zovt = (ZoneOptionValueEnum*)data;
     return *p_zovt;
 }

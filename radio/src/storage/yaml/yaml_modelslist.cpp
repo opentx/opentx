@@ -132,12 +132,12 @@ static void set_attr(void* ctx, char* buf, uint8_t len)
 }
 
 static const YamlParserCalls modelslistCalls = {
-    .to_parent=to_parent,
-    .to_child=to_child,
-    .to_next_elmt=to_next_elmt,
-    .get_level=get_level,
-    .find_node=find_node,
-    .set_attr=set_attr
+    to_parent,
+    to_child,
+    to_next_elmt,
+    get_level,
+    find_node,
+    set_attr
 };
 
 const YamlParserCalls* get_modelslist_parser_calls()

@@ -45,12 +45,18 @@ const ZoneOption TextWidget::options[] = {
 
 void TextWidget::refresh()
 {
-  lcdSetColor(persistentData->options[1].unsignedValue);
-  LcdFlags fontsize = FONTSIZE(persistentData->options[2].unsignedValue << 8);
-  if(persistentData->options[3].boolValue) {
-    lcdDrawSizedText(zone.x+1, zone.y+1, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|BLACK);
+  lcdSetColor(persistentData->options[1].value.unsignedValue);
+  LcdFlags fontsize = FONTSIZE(persistentData->options[2].value.unsignedValue << 8);
+  if(persistentData->options[3].value.boolValue) {
+    lcdDrawSizedText(zone.x+1, zone.y+1,
+                     persistentData->options[0].value.stringValue,
+                     sizeof(persistentData->options[0].value.stringValue),
+                     ZCHAR|fontsize|BLACK);
   }
-  lcdDrawSizedText(zone.x, zone.y, persistentData->options[0].stringValue, sizeof(persistentData->options[0].stringValue), ZCHAR|fontsize|CUSTOM_COLOR);
+  lcdDrawSizedText(zone.x, zone.y,
+                   persistentData->options[0].value.stringValue,
+                   sizeof(persistentData->options[0].value.stringValue),
+                   ZCHAR|fontsize|CUSTOM_COLOR);
 }
 
 BaseWidgetFactory<TextWidget> textWidget("Text", TextWidget::options);

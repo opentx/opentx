@@ -40,7 +40,7 @@ class Layout2x2: public Layout
     virtual void create()
     {
       Layout::create();
-      persistentData->options[0] = OPTION_VALUE_BOOL(true);
+      persistentData->options[0] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
     }
 
     virtual unsigned int getZonesCount() const
@@ -53,7 +53,7 @@ class Layout2x2: public Layout
       Zone zone;
       zone.w = (LCD_W-3*10) / 2;
       zone.x = (index & 1) ? 20 + zone.w : 10;
-      if (persistentData->options[0].boolValue) {
+      if (persistentData->options[0].value.boolValue) {
         zone.h = (LCD_H-MENU_HEADER_HEIGHT-3*10) / 2;
         zone.y = MENU_HEADER_HEIGHT + 10;
       }
@@ -74,7 +74,7 @@ void Layout2x2::refresh()
 {
   theme->drawBackground();
 
-  if (persistentData->options[0].boolValue) {
+  if (persistentData->options[0].value.boolValue) {
     drawTopBar();
   }
 

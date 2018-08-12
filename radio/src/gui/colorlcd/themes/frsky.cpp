@@ -285,8 +285,8 @@ class FrskyTheme: public Theme
     {
       TRACE("TODO THEME::UPDATE()");
 #if 0
-      uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
-      uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
+      uint32_t color = g_eeGeneral.themeData.options[1].value.unsignedValue;
+      uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].value.unsignedValue;
 
       lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
@@ -313,7 +313,7 @@ class FrskyTheme: public Theme
         dc->drawBitmap(0, 0, backgroundBitmap);
       }
       else {
-        lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
+        lcdSetColor(g_eeGeneral.themeData.options[0].value.unsignedValue);
         dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
       }
     }

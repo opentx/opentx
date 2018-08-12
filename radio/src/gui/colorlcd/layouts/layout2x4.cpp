@@ -47,14 +47,14 @@ class Layout2x4: public Layout
     virtual void create()
     {
       Layout::create();
-      persistentData->options[0] = OPTION_VALUE_BOOL(true);
-      persistentData->options[1] = OPTION_VALUE_BOOL(true);
-      persistentData->options[2] = OPTION_VALUE_BOOL(true);
-      persistentData->options[3] = OPTION_VALUE_BOOL(true);
-      persistentData->options[4] = OPTION_VALUE_BOOL(true);
-      persistentData->options[5] = OPTION_VALUE_UNSIGNED( RGB(77, 112, 203) );
-      persistentData->options[6] = OPTION_VALUE_BOOL(true);
-      persistentData->options[7] = OPTION_VALUE_UNSIGNED( RGB(77, 112, 203) );
+      persistentData->options[0] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[1] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[2] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[3] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[4] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[5] = { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
+      persistentData->options[6] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[7] = { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
     }
 
     virtual unsigned int getZonesCount() const
@@ -79,11 +79,11 @@ void Layout2x4::refresh()
 {
   theme->drawBackground();
 
-  if (persistentData->options[0].boolValue) {
+  if (persistentData->options[0].value.boolValue) {
     drawTopBar();
   }
 
-  if (persistentData->options[1].boolValue) {
+  if (persistentData->options[1].value.boolValue) {
     // Flight mode
     lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
                                               sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
@@ -93,23 +93,23 @@ void Layout2x4::refresh()
                      sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
   }
 
-  if (persistentData->options[2].boolValue) {
+  if (persistentData->options[2].value.boolValue) {
     // Pots and rear sliders positions
     drawMainPots();
   }
 
-  if (persistentData->options[3].boolValue) {
+  if (persistentData->options[3].value.boolValue) {
     // Trims
     drawTrims(mixerCurrentFlightMode);
   }
 
-  if (persistentData->options[4].boolValue) {
-    lcdSetColor(persistentData->options[5].unsignedValue);
+  if (persistentData->options[4].value.boolValue) {
+    lcdSetColor(persistentData->options[5].value.unsignedValue);
     lcdDrawSolidFilledRect(50, 50, 180, 170, CUSTOM_COLOR);
   }
 
-  if (persistentData->options[6].boolValue) {
-    lcdSetColor(persistentData->options[7].unsignedValue);
+  if (persistentData->options[6].value.boolValue) {
+    lcdSetColor(persistentData->options[7].value.unsignedValue);
     lcdDrawSolidFilledRect(250, 50, 180, 170, CUSTOM_COLOR);
   }
 
