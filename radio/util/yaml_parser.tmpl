@@ -40,7 +40,7 @@ static const struct YamlNode {{ struct.name }}[] = {
     {% elif elmt.type == 'struct' %}
   YAML_STRUCT("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}, {{ elmt.func }}),
     {% elif elmt.type == 'union' %}
-  YAML_UNION("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}_elmts, NULL),
+  YAML_UNION("{{ max_len(elmt.name) }}", {{elmt.bits}}, {{elmt.var_type}}_elmts, {{ elmt.func}}),
     {% elif elmt.type == 'array' %}
   YAML_ARRAY("{{ max_len(elmt.name) }}", {{elmt.bits // elmt.length}}, {{elmt.length}}, {{elmt.var_type}}, NULL),
     {% else %}
@@ -52,7 +52,7 @@ static const struct YamlNode {{ struct.name }}[] = {
 {% if struct.name.startswith('union_') and struct.used_in_arrays %}
 static const struct YamlNode {{ struct.name }}[] = {
   YAML_IDX,
-  YAML_UNION("u", {{ max_bits(struct) }}, {{ struct.name }}_elmts, NULL),
+  YAML_UNION("u", {{ max_bits(struct) }}, {{ struct.name }}_elmts, {{ struct.func }}),
   YAML_END
 };
 {% endif %}

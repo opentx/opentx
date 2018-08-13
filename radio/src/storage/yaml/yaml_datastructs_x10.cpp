@@ -231,7 +231,7 @@ static const struct YamlNode struct_CustomFunctionData[] = {
   YAML_IDX,
   YAML_SIGNED( "swtch", 9 ),
   YAML_ENUM("func", 7, enum_Functions),
-  YAML_UNION("fp", 48, union_anonymous_0_elmts, NULL),
+  YAML_UNION("fp", 48, union_anonymous_0_elmts, select_custom_fn),
   YAML_UNSIGNED( "active", 8 ),
   YAML_END
 };
@@ -536,7 +536,7 @@ static const struct YamlNode struct_ModuleData[] = {
   YAML_UNSIGNED( "subType", 3 ),
   YAML_UNSIGNED( "invertedSerial", 1 ),
   YAML_ARRAY("failsafeChannels", 16, 32, struct_signed_16, NULL),
-  YAML_UNION("mod", 16, union_anonymous_4_elmts, NULL),
+  YAML_UNION("mod", 16, union_anonymous_4_elmts, select_mod_type),
   YAML_END
 };
 static const struct YamlNode union_ScriptDataInput_elmts[] = {
@@ -546,7 +546,7 @@ static const struct YamlNode union_ScriptDataInput_elmts[] = {
 };
 static const struct YamlNode union_ScriptDataInput[] = {
   YAML_IDX,
-  YAML_UNION("u", 16, union_ScriptDataInput_elmts, NULL),
+  YAML_UNION("u", 16, union_ScriptDataInput_elmts, select_script_input),
   YAML_END
 };
 static const struct YamlNode struct_ScriptData[] = {
@@ -608,8 +608,8 @@ static const struct YamlNode union_anonymous_11_elmts[] = {
 };
 static const struct YamlNode struct_TelemetrySensor[] = {
   YAML_IDX,
-  YAML_UNION("id1", 16, union_anonymous_9_elmts, NULL),
-  YAML_UNION("id2", 8, union_anonymous_10_elmts, NULL),
+  YAML_UNION("id1", 16, union_anonymous_9_elmts, select_id1),
+  YAML_UNION("id2", 8, union_anonymous_10_elmts, select_id2),
   YAML_STRING("label", 4),
   YAML_UNSIGNED( "type", 1 ),
   YAML_UNSIGNED( "unit", 5 ),
@@ -620,7 +620,7 @@ static const struct YamlNode struct_TelemetrySensor[] = {
   YAML_UNSIGNED( "persistent", 1 ),
   YAML_UNSIGNED( "onlyPositive", 1 ),
   YAML_UNSIGNED( "subId", 3 ),
-  YAML_UNION("cfg", 32, union_anonymous_11_elmts, NULL),
+  YAML_UNION("cfg", 32, union_anonymous_11_elmts, select_sensor_cfg),
   YAML_END
 };
 static const struct YamlNode struct_Widget__PersistentData[] = {
