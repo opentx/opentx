@@ -33,12 +33,9 @@ struct modelslist_iter
         Model=2
     };
 
-    ModelsList*                       root;
-    // list<ModelsCategory *>::iterator  cat_iter;
-    // ModelsCategory::iterator          cell_iter;
-
-    uint8_t level;
-    char    current_attr[16]; // set after find_node()
+    ModelsList* root;
+    uint8_t     level;
+    char        current_attr[16]; // set after find_node()
 };
 
 static modelslist_iter __modelslist_iter_inst;
@@ -79,12 +76,6 @@ static bool to_next_elmt(void* ctx)
         return false;
     }
     return true;
-}
-
-static int get_level(void* ctx)
-{
-    modelslist_iter* mi = (modelslist_iter*)ctx;
-    return mi->level;
 }
 
 static bool find_node(void* ctx, char* buf, uint8_t len)
@@ -135,7 +126,6 @@ static const YamlParserCalls modelslistCalls = {
     to_parent,
     to_child,
     to_next_elmt,
-    get_level,
     find_node,
     set_attr
 };

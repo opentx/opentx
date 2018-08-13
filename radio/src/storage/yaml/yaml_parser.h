@@ -11,7 +11,6 @@ struct YamlParserCalls
     bool (*to_parent)    (void* ctx);
     bool (*to_child)     (void* ctx);
     bool (*to_next_elmt) (void* ctx);
-    int  (*get_level)    (void* ctx);
     bool (*find_node)    (void* ctx, char* buf, uint8_t len);
     void (*set_attr)     (void* ctx, char* buf, uint8_t len);
 };
@@ -38,6 +37,9 @@ class YamlParser
     // current indent
     uint8_t indent;
 
+    // current level
+    uint8_t level;
+
     // parser state
     uint8_t state;
 
@@ -55,6 +57,8 @@ class YamlParser
     // Reset parser state for next line
     void reset();
 
+    bool    toChild();
+    bool    toParent();
     uint8_t getLastIndent();
 
 public:

@@ -12,6 +12,7 @@ YamlParser::YamlParser()
 void YamlParser::init(const YamlParserCalls* parser_calls, void* parser_ctx)
 {
     indent = 0;
+    level  = 0;
     memset(indents, 0, sizeof(indents));
 
     calls = parser_calls;
@@ -22,14 +23,31 @@ void YamlParser::init(const YamlParserCalls* parser_calls, void* parser_ctx)
 void YamlParser::reset()
 {
     state = ps_Indent;
-    indents[calls->get_level(ctx) - 1] = indent;
+    indents[level] = indent;
     indent = scratch_len  = 0;
     node_found = false;
 }
 
+bool YamlParser::toChild()
+{
+    bool ret = calls->to_child(ctx);
+    if (ret) level++;
+    return ret;
+}
+
+bool YamlParser::toParent()
+{
+    if (!level)
+        return false;
+    
+    bool ret = calls->to_parent(ctx);
+    if (ret) level--;
+    return ret;
+}
+
 uint8_t YamlParser::getLastIndent()
 {
-    return indents[calls->get_level(ctx) - 1];
+    return indents[level];
 }
 
 YamlParser::YamlResult
@@ -69,7 +87,7 @@ YamlParser::parse(const char* buffer, unsigned int size)
             if (indent < getLastIndent()) {
                 // go up as many levels as necessary
                 do {
-                    if (!calls->to_parent(ctx)) {
+                    if (!toParent()) {
                         TRACE("STOP (no parent)!\n");
                         return DONE_PARSING;
                     }
@@ -83,13 +101,8 @@ YamlParser::parse(const char* buffer, unsigned int size)
             }
             // go down one level
             else if (indent > getLastIndent()) {
-                if (!calls->to_child(ctx)) {
+                if (!toChild()) {
                     TRACE("STOP (stack full)!\n");
-                    return DONE_PARSING; // ERROR
-                }
-
-                if (calls->get_level(ctx) > MAX_DEPTH) {
-                    TRACE("STOP (indent stack full)!\n");
                     return DONE_PARSING; // ERROR
                 }
             }
@@ -146,12 +159,6 @@ YamlParser::parse(const char* buffer, unsigned int size)
             if (*c == ' ')
                 break;
             if (*c == '\r' || *c == '\n'){
-                // WTF???: set attribute val=NULL
-                // if (node_found) {
-                //     calls->set_attr(ctx, NULL, 0);
-                //     // yaml_set_attr(data, walker.getBitOffset(), walker.getAttr(), NULL, 0);
-                //     // //walker.dump_stack();
-                // }
                 state = ps_CRLF;
                 continue;
             }
@@ -222,15 +229,6 @@ YamlParser::parse(const char* buffer, unsigned int size)
                 // set attribute
                 if (node_found) {
                     calls->set_attr(ctx, scratch_buf, scratch_len);
-                    // if (walker.getAttr()->type == YDT_IDX) {
-                    //     uint32_t i = str2uint(scratch_buf, scratch_len);
-                    //     while ((i > walker.getElmts()) && walker.toNextElmt());
-                    // }
-                    // else {
-                    //     yaml_set_attr(data, walker.getBitOffset(), walker.getAttr(),
-                    //                   scratch_buf, scratch_len);
-                    //     //walker.dump_stack();
-                    // }
                 }
                 state = ps_CRLF;
                 continue;
