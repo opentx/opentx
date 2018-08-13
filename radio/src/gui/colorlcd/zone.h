@@ -3,6 +3,7 @@
 #define _ZONE_H_
 
 #include <inttypes.h>
+#include "storage/yaml/yaml_defs.h"
 
 #define LEN_ZONE_OPTION_STRING         8
 
@@ -62,7 +63,7 @@ struct ZoneOption
 struct ZoneOptionValueTyped
 {
   ZoneOptionValueEnum type;
-  ZoneOptionValue     value;
+  ZoneOptionValue     value FUNC(select_zov);
 };
 
 

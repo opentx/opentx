@@ -55,30 +55,7 @@
   #define NOBACKUP(...)                __VA_ARGS__
 #endif
 
-#if defined(YAML_GENERATOR)
-
-/* private definitions */
-#define _yaml_note(label) #label
-#define _yaml_attribute(attr) __attribute__((annotate(attr)))
-
-/* public definitions */
-#define ENUM(label) _yaml_attribute("enum:" _yaml_note(label))
-#define USE_IDX     _yaml_attribute("idx:true")
-#define FUNC(name)  _yaml_attribute("func:" _yaml_note(name))
-#define NAME(label) _yaml_attribute("name:" _yaml_note(label))
-#define CUST(read,write)                        \
-  _yaml_attribute("read:" _yaml_note(read))     \
-  _yaml_attribute("write:" _yaml_note(write))
-
-#else
-
-#define ENUM(label)
-#define USE_IDX
-#define FUNC(name)
-#define NAME(label)
-#define CUST(read,write)
-
-#endif
+#include "storage/yaml/yaml_defs.h"
 
 #if defined(PCBFRSKY)
 typedef uint16_t source_t;
@@ -195,7 +172,7 @@ PACK(struct CustomFunctionData {
       int32_t val1;
       NOBACKUP(CFN_SPARE_TYPE val2);
     }) clear);
-  }) NAME(fp);
+  }) NAME(fp) FUNC(select_custom_fn);
   uint8_t active;
 });
 
@@ -280,7 +257,7 @@ PACK(struct SwashRingData {
 union ScriptDataInput {
   int16_t value;
   source_t source;
-};
+} FUNC(select_script_input);
 
 PACK(struct ScriptData {
   char            file[LEN_SCRIPT_FILENAME];
@@ -352,7 +329,7 @@ PACK(struct TelemetrySensor {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
     NOBACKUP(uint16_t persistentValue);
-  } NAME(id1);
+  } NAME(id1) FUNC(select_id1);
   union {
     PACK(struct {
       uint8_t physID:5;
@@ -360,7 +337,7 @@ PACK(struct TelemetrySensor {
     }) frskyInstance;
     uint8_t instance;
     NOBACKUP(uint8_t formula);
-  } NAME(id2);
+  } NAME(id2) FUNC(select_id2);
   char     label[TELEM_LABEL_LEN]; // user defined label
   uint8_t  subId;
   uint8_t  type:1; // 0=custom / 1=calculated // user can choose what unit to display each value in
@@ -396,7 +373,7 @@ PACK(struct TelemetrySensor {
       uint16_t spare;
     }) dist);
     uint32_t param;
-  } NAME(cfg);
+  } NAME(cfg) FUNC(select_sensor_cfg);
   NOBACKUP(
     void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
     void init(uint16_t id);
@@ -500,7 +477,7 @@ PACK(struct ModuleData {
       uint8_t rx_freq[2];
     } flysky);
 #endif
-  } NAME(mod);
+  } NAME(mod) FUNC(select_mod_type);
 
   // Helper functions to set both of the rfProto protocol at the same time
   NOBACKUP(inline uint8_t getMultiProtocol(bool returnCustom) {

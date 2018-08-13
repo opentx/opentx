@@ -143,6 +143,7 @@ class StructAST(AST_Element):
         else:
             name = self.name_prefix() + name
 
+        self.func = 'NULL'
         super(StructAST, self).__init__(name, cursor)
 
     def name_prefix(self):
@@ -246,6 +247,13 @@ def parse_union(ast, node):
 
     for c in node.get_children():
         parse_field(st,c)
+
+
+    ann = get_annotations(node)
+    if len(ann) > 0:
+        for a in ann:
+            if a['type'] == 'func':
+                st.func = a['val']
 
     if st is not ast:
         ast.append(st)
@@ -377,8 +385,8 @@ def parse_enum(ast,node):
     st = EnumAST(node.spelling or node.displayname, node)
     for c in node.get_children():
         parse_enum_field(st,c)
-    ast.append(st)
 
+    ast.append(st)
     return st
 
 def parse_node(ast,node,alt_name=''):

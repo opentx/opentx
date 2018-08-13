@@ -63,3 +63,39 @@ static uint8_t select_zov(uint8_t* data)
     ZoneOptionValueEnum* p_zovt = (ZoneOptionValueEnum*)data;
     return *p_zovt;
 }
+
+static uint8_t select_mod_type(uint8_t* data)
+{
+    //TODO: check ModuleData::type
+    return 0;
+}
+
+static uint8_t select_custom_fn(uint8_t* data)
+{
+    // always use 'all'
+    return 1;
+}
+
+static uint8_t select_script_input(uint8_t* data)
+{
+    // always use 'value'
+    return 0;
+}
+
+static uint8_t select_id1(uint8_t* data)
+{
+    // always use 'id'
+    return 0;
+}
+
+static uint8_t select_id2(uint8_t* data)
+{
+    // always use 'instance'
+    return 0;
+}
+
+static uint8_t select_sensor_cfg(uint8_t* data)
+{
+    // always use 'param'
+    return 5;
+}
