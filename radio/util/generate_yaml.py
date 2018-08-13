@@ -392,7 +392,7 @@ def parse_enum(ast,node):
 def parse_node(ast,node,alt_name=''):
     st = None
 
-    if node.kind == CursorKind.STRUCT_DECL:
+    if node.kind in [CursorKind.STRUCT_DECL,CursorKind.CLASS_DECL]:
         st = parse_struct(ast,node,alt_name)
     elif node.kind == CursorKind.UNION_DECL:
         st = parse_union(ast,node)
@@ -412,7 +412,7 @@ def get_top_node(name):
     for c in node.get_children():
         if c.spelling == name:
             # struct found
-            return c
+            return c.get_definition()
 
     bail_out(f"'{name}' not found")
 
