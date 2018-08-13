@@ -563,11 +563,6 @@ static bool to_next_elmt(void* ctx)
     return ((YamlTreeWalker*)ctx)->toNextElmt();
 }
 
-static int get_level(void* ctx)
-{
-    return ((YamlTreeWalker*)ctx)->getLevel();
-}
-
 static bool find_node(void* ctx, char* buf, uint8_t len)
 {
     return ((YamlTreeWalker*)ctx)->findNode(buf,len);
@@ -579,17 +574,10 @@ static void set_attr(void* ctx, char* buf, uint8_t len)
 }
 
 const YamlParserCalls YamlTreeWalkerCalls = {
-    // .to_parent=
     to_parent,
-    // .to_child=
     to_child,
-    // .to_next_elmt=
     to_next_elmt,
-    // .get_level=
-    get_level,
-    // .find_node=
     find_node,
-    // .set_attr=
     set_attr
 };
 
