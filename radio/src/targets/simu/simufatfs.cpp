@@ -132,7 +132,12 @@ bool redirectToSettingsDirectory(const std::string & path)
       return true;
     }
 #endif
-    if (startsWith(path, "/MODELS") && endsWith(path, MODELS_EXT)) {
+    if (startsWith(path, "/MODELS")
+        && (endsWith(path, MODELS_EXT)
+#if defined(SDCARD_YAML)
+            || endsWith(path, YAML_EXT)
+#endif
+            )) {
       return true;
     }
   }
