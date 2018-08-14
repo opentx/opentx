@@ -38,4 +38,10 @@ void eeLoadModelHeaders();
 void storageReadRadioSettings();
 void storageReadCurrentModel();
 
+#if defined(EEPROM_RLC)
+#include "eeprom_rlc.h"
+#else
+#include "eeprom_raw.h"
+#endif
+
 #endif
