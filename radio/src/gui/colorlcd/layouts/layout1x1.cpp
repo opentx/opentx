@@ -41,8 +41,8 @@ class Layout1x1: public Layout
     virtual void create()
     {
       Layout::create();
-      persistentData->options[0] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[1] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
     }
 
     virtual unsigned int getZonesCount() const

@@ -47,14 +47,14 @@ class Layout2x4: public Layout
     virtual void create()
     {
       Layout::create();
-      persistentData->options[0] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[1] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[2] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[3] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[4] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[5] = { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
-      persistentData->options[6] = { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[7] = { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
+      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[2] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[3] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[4] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[5] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
+      persistentData->options[6] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[7] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
     }
 
     virtual unsigned int getZonesCount() const
