@@ -368,7 +368,8 @@ int OpenTxEepromInterface::getSize(const ModelData &model)
   QByteArray tmp(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
   efile->EeFsCreate((uint8_t *) tmp.data(), Boards::getEEpromSize(Board::BOARD_UNKNOWN), board, 255/*version max*/);
 
-  OpenTxModelData open9xModel((ModelData &) model, board, 255/*version max*/, getCurrentFirmware()->getVariantNumber());
+  ModelData srcCopy(model); // work on a copy of model data, because Export() may modify it!
+  OpenTxModelData open9xModel(srcCopy, board, 255/*version max*/, getCurrentFirmware()->getVariantNumber());
 
   QByteArray eeprom;
   open9xModel.Export(eeprom);
@@ -387,7 +388,8 @@ int OpenTxEepromInterface::getSize(const GeneralSettings &settings)
   QByteArray tmp(Boards::getEEpromSize(Board::BOARD_UNKNOWN), 0);
   efile->EeFsCreate((uint8_t *) tmp.data(), Boards::getEEpromSize(Board::BOARD_UNKNOWN), board, 255);
 
-  OpenTxGeneralData open9xGeneral((GeneralSettings &) settings, board, 255, getCurrentFirmware()->getVariantNumber());
+  GeneralSettings srcCopy(settings); // work on a copy of settings data, because Export() may modify it!
+  OpenTxGeneralData open9xGeneral(srcCopy, board, 255, getCurrentFirmware()->getVariantNumber());
   // open9xGeneral.Dump();
 
   QByteArray eeprom;
