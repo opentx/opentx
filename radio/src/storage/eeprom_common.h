@@ -39,4 +39,10 @@ void storageClearRadioSetting();
 void storageReadRadioSettings(bool allowConversion);
 void storageReadCurrentModel();
 
+#if defined(EEPROM_RLC)
+#include "eeprom_rlc.h"
+#else
+#include "eeprom_raw.h"
+#endif
+
 #endif
