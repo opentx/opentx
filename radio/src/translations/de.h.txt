@@ -101,6 +101,9 @@
 #define LEN_USBMODES           TR("\006", "\010")
 #define TR_USBMODES            TR("Fragen""Joyst\0""SDCard""Serial", "Fragen\0 ""Joystick""Speicher""Seriell\0")
 
+#define LEN_JACKMODES                  "\007"
+#define TR_JACKMODES                   "Popup\0 ""Audio\0 ""Trainer"
+
 #define LEN_TARANIS_PROTOCOLS  "\004"
 #define TR_TARANIS_PROTOCOLS   "AUS\0""PPM\0""XJT\0""DSM?""CRSF""MULT""R9M\0""SBUS"
 
@@ -932,6 +935,7 @@
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Landescode"
 #define TR_USBMODE             "USB Modus"
+#define TR_JACKMODE                    "Jack Mode"
 #define TR_VOICELANG           "Sprach-Ansagen"
 #define TR_UNITSSYSTEM         "Einheiten"
 #define TR_EDIT                "Zeile Editieren"

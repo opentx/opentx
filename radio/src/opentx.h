@@ -211,6 +211,12 @@
 
 #include "board.h"
 
+#if defined(JACK_DETECT_GPIO)
+#define CASE_JACK_DETECT(x) x,
+#else
+#define CASE_JACK_DETECT(x)
+#endif
+
 #if defined(DISK_CACHE)
   #include "disk_cache.h"
 #endif
@@ -1288,6 +1294,15 @@ extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
 
 #if defined(BLUETOOTH)
   #include "bluetooth.h"
+#endif
+
+#if defined(JACK_DETECT_GPIO)
+enum JackMode {
+  JACK_UNSELECTED_MODE,
+  JACK_HEADPHONE_MODE,
+  JACK_TRAINER_MODE,
+  JACK_MAX_MODE = JACK_TRAINER_MODE
+};
 #endif
 
 #endif // _OPENTX_H_

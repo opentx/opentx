@@ -358,7 +358,7 @@ enum SwitchSources {
 
   SWSRC_FIRST_SWITCH,
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBTARANIS)
   SWSRC_SA0 = SWSRC_FIRST_SWITCH,
   SWSRC_SA1,
   SWSRC_SA2,
@@ -371,22 +371,22 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
 #endif
-#if !defined(PCBXLITE)
+#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
 #endif
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if defined(PCBHORUS) || defined(PCBX9)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
 #endif
-#if !defined(PCBXLITE)
+#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7)
   SWSRC_SH0,
   SWSRC_SH1,
   SWSRC_SH2,
@@ -423,15 +423,11 @@ enum SwitchSources {
   SWSRC_SR1,
   SWSRC_SR2,
 #endif
-#if defined(PCBX9E)
+  SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + NUM_SWITCHES_POSITIONS - 1,
+#if NUM_SWITCHES >= 8
   SWSRC_TRAINER = SWSRC_SH2,
-  SWSRC_LAST_SWITCH = SWSRC_SR2,
-#elif defined(PCBXLITE)
-  SWSRC_TRAINER = SWSRC_SD2,
-  SWSRC_LAST_SWITCH = SWSRC_SD2,
 #else
-  SWSRC_TRAINER = SWSRC_SH2,
-  SWSRC_LAST_SWITCH = SWSRC_SH2,
+  SWSRC_TRAINER = SWSRC_LAST_SWITCH,
 #endif
 #else // neither Taranis nor Horus
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
@@ -607,25 +603,23 @@ enum MixSources {
 
   MIXSRC_FIRST_SWITCH,
 
-#if defined(PCBXLITE)
+#if defined(PCBHORUS) || defined(PCBTARANIS)
   MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-  MIXSRC_LAST_SWITCH = MIXSRC_SD,
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
-  MIXSRC_SA = MIXSRC_FIRST_SWITCH,  LUA_EXPORT("sa", "Switch A")
-  MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
-  MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
-  MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-#if !defined(PCBX7)
+#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
 #endif
+#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
-#if !defined(PCBX7)
+#endif
+#if defined(PCBHORUS) || defined(PCBX9)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
 #endif
+#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
+#endif
 #if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
   MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
@@ -637,9 +631,6 @@ enum MixSources {
   MIXSRC_SP,                        LUA_EXPORT("sp", "Switch P")
   MIXSRC_SQ,                        LUA_EXPORT("sq", "Switch Q")
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
-  MIXSRC_LAST_SWITCH = MIXSRC_SR,
-#else
-  MIXSRC_LAST_SWITCH = MIXSRC_SH,
 #endif
 #else
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
@@ -649,7 +640,6 @@ enum MixSources {
   MIXSRC_AIL,
   MIXSRC_GEA,
   MIXSRC_TRN,
-  MIXSRC_LAST_SWITCH = MIXSRC_TRN,
 #endif
   MIXSRC_FIRST_LOGICAL_SWITCH,
   MIXSRC_SW1 = MIXSRC_FIRST_LOGICAL_SWITCH, LUA_EXPORT_MULTIPLE("ls", "Logical switch L%d", MAX_LOGICAL_SWITCHES)
@@ -703,10 +693,11 @@ enum MixSources {
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 };
 
-#define MIXSRC_FIRST   (MIXSRC_NONE+1)
-#define MIXSRC_LAST    MIXSRC_LAST_CH
-#define INPUTSRC_FIRST MIXSRC_Rud
-#define INPUTSRC_LAST  MIXSRC_LAST_TELEM
+#define MIXSRC_FIRST        (MIXSRC_NONE + 1)
+#define MIXSRC_LAST         MIXSRC_LAST_CH
+#define MIXSRC_LAST_SWITCH  (MIXSRC_FIRST_SWITCH + NUM_SWITCHES - 1)
+#define INPUTSRC_FIRST      MIXSRC_Rud
+#define INPUTSRC_LAST       MIXSRC_LAST_TELEM
 
 enum BacklightMode {
   e_backlight_mode_off  = 0,

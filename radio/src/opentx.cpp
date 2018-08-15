@@ -248,7 +248,9 @@ void generalDefault()
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
 
-#if defined(PCBXLITE)
+#if defined(PCBXLITES)
+  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
+#elif defined(PCBXLITE)
   g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
 #elif defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE

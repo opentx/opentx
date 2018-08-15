@@ -313,22 +313,22 @@ enum EnumSwitchesPositions
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if defined(PCBX9) || defined(PCBXLITES)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
-#if !defined(PCBXLITE)
+#if defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
   SW_SF0,
   SW_SF1,
   SW_SF2,
 #endif
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if defined(PCBX9)
   SW_SG0,
   SW_SG1,
   SW_SG2,
 #endif
-#if !defined(PCBXLITE)
+#if defined(PCBX9) || defined(PCBX7)
   SW_SH0,
   SW_SH1,
   SW_SH2,
@@ -365,8 +365,11 @@ enum EnumSwitchesPositions
   SW_SR1,
   SW_SR2,
 #endif
+  NUM_SWITCHES_POSITIONS
 };
-#if defined(PCBXLITE)
+#if defined(PCBXLITES)
+  #define NUM_SWITCHES                  6
+#elif defined(PCBXLITE)
   #define NUM_SWITCHES                  4
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  6
@@ -604,6 +607,28 @@ void setSampleRate(uint32_t frequency);
 void setScaledVolume(uint8_t volume);
 void setVolume(uint8_t volume);
 int32_t getVolume(void);
+#endif
+#if defined(AUDIO_SPEAKER_ENABLE_GPIO)
+void initSpeakerEnable(void);
+void enableSpeaker();
+void disableSpeaker();
+#else
+static inline void initSpeakerEnable(void) { }
+static inline void enableSpeaker(void) { }
+static inline void disableSpeaker(void) { }
+#endif
+#if defined(HEADPHONE_TRAINER_SWITCH_GPIO)
+void initHeadphoneTrainerSwitch(void);
+void enableHeadphone(void);
+void enableTrainer(void);
+#else
+static inline void initHeadphoneTrainerSwitch(void) { }
+static inline void enableHeadphone(void) { }
+static inline void enableTrainer(void) { }
+#endif
+#if defined(AUDIO_JACK_DETECT_GPIO)
+void initJackDetect(void);
+bool isJackPlugged();
 #endif
 void audioConsumeCurrentBuffer();
 #define audioDisableIrq()               __disable_irq()

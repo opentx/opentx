@@ -280,6 +280,7 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
+  NUM_SWITCHES_POSITIONS
 };
 void keysInit(void);
 uint8_t keyState(uint8_t index);

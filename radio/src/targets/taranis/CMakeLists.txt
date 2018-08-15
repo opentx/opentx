@@ -98,9 +98,27 @@ elseif(PCB STREQUAL XLITE)
   set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
+elseif(PCB STREQUAL XLITES)
+  set(PXX_FREQUENCY "HIGH" CACHE STRING "PXX frequency (LOW / HIGH)")
+  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+  set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
+  set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+  set(HAPTIC YES)
+  set(LUA_EXPORT lua_export_xlite)
+  set(FLAVOUR xlites)
+  add_definitions(-DPCBXLITES -DPCBXLITE -DSOFTWARE_VOLUME)
+  add_definitions(-DEEPROM_VARIANT=0x2000)
+  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+  set(GUI_DIR 128x64)
+  set(NAVIGATION_TYPE xlite)
+  set(BITMAPS_TARGET 9x_bitmaps)
+  set(FONTS_TARGET 9x_fonts_1bit)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
+  set(GVAR_SCREEN model_gvars.cpp)
 endif()
 
-if(PCB STREQUAL XLITE)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
   endif()
@@ -124,7 +142,7 @@ else()
     )
 endif()
 
-if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE)
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -163,7 +181,7 @@ set(GUI_SRC ${GUI_SRC}
   ../screenshot.cpp
   )
 
-if(PCB STREQUAL X7 OR PCB STREQUAL XLITE)
+if(PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   set(LED_DRIVER led_driver.cpp)
 endif()
 
@@ -177,7 +195,7 @@ set(TARGET_SRC
   ../common/arm/stm32/adc_driver.cpp
   )
 
-if(PCB STREQUAL XLITE)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/sticks_pwm_driver.cpp

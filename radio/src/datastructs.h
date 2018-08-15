@@ -626,7 +626,8 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
     NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1); \
     NOBACKUP(uint8_t  USBMode:2); \
-    NOBACKUP(uint8_t  spareExtraArm:3); \
+    NOBACKUP(uint8_t  jackMode:2); \
+    NOBACKUP(uint8_t  spareExtraArm:1); \
     NOBACKUP(char     ttsLanguage[2]); \
     NOBACKUP(int8_t   beepVolume:4); \
     NOBACKUP(int8_t   wavVolume:4); \
@@ -869,7 +870,10 @@ static inline void check_struct()
   CHKSIZE(RssiAlarmData, 2);
   CHKSIZE(TrainerData, 16);
 
-#if defined(PCBXLITE)
+#if defined(PCBXLITES)
+  CHKSIZE(RadioData, 850);
+  CHKSIZE(ModelData, 6025);
+#elif defined(PCBXLITE)
   CHKSIZE(RadioData, 844);
   CHKSIZE(ModelData, 6025);
 #elif defined(PCBX7)

@@ -266,7 +266,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
       else
         *s++ = 'A'+swinfo.quot;
 #else
-      *s++ = 'A'+swinfo.quot;
+      *s++ = 'A' + swinfo.quot;
 #endif
     }
     *s++ = "\300-\301"[swinfo.rem];

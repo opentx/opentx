@@ -272,6 +272,15 @@ void boardInit()
   if (HAS_SPORT_UPDATE_CONNECTOR()) {
     sportUpdateInit();
   }
+
+#if defined(AUDIO_JACK_DETECT_GPIO)
+  initJackDetect(void);
+#endif
+
+  initSpeakerEnable();
+  enableSpeaker();
+
+  initHeadphoneTrainerSwitch();
 #endif // !defined(SIMU)
 }
 
@@ -357,3 +366,51 @@ uint16_t getBatteryVoltage()
   instant_vbat += 20; // add 0.2V because of the diode TODO check if this is needed, but removal will beak existing calibrations!!!
   return (uint16_t)instant_vbat;
 }
+
+#if defined(AUDIO_SPEAKER_ENABLE_GPIO)
+void initSpeakerEnable()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = AUDIO_SPEAKER_ENABLE_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(AUDIO_SPEAKER_ENABLE_GPIO, &GPIO_InitStructure);
+}
+
+void enableSpeaker()
+{
+  GPIO_SetBits(AUDIO_SPEAKER_ENABLE_GPIO, AUDIO_SPEAKER_ENABLE_GPIO_PIN);
+}
+
+void disableSpeaker()
+{
+  GPIO_ResetBits(AUDIO_SPEAKER_ENABLE_GPIO, AUDIO_SPEAKER_ENABLE_GPIO_PIN);
+}
+#endif
+
+#if defined(HEADPHONE_TRAINER_SWITCH_GPIO)
+void initHeadphoneTrainerSwitch()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = HEADPHONE_TRAINER_SWITCH_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(HEADPHONE_TRAINER_SWITCH_GPIO, &GPIO_InitStructure);
+}
+
+void enableHeadphone()
+{
+  GPIO_ResetBits(HEADPHONE_TRAINER_SWITCH_GPIO, HEADPHONE_TRAINER_SWITCH_GPIO_PIN);
+}
+
+void enableTrainer()
+{
+  GPIO_SetBits(HEADPHONE_TRAINER_SWITCH_GPIO, HEADPHONE_TRAINER_SWITCH_GPIO_PIN);
+}
+#endif

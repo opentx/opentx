@@ -74,6 +74,83 @@ void handleUsbConnection()
 #endif // defined(STM32) && !defined(SIMU)
 }
 
+#if defined(JACK_DETECT_GPIO)
+bool isJackPlugged()
+{
+  // debounce
+  static bool debounced_state = 0;
+  static bool last_state = 0;
+
+  if (GPIO_ReadInputDataBit(JACK_DETECT_GPIO, JACK_DETECT_GPIO_PIN)) {
+    if (!last_state) {
+      debounced_state = false;
+    }
+    last_state = false;
+  }
+  else {
+    if (last_state) {
+      debounced_state = true;
+    }
+    last_state = true;
+  }
+  return debounced_state;
+}
+#endif
+
+enum JackState
+{
+  SPEAKER_ACTIVE,
+  HEADPHONE_ACTIVE,
+  TRAINER_ACTIVE,
+};
+
+uint8_t jackState = SPEAKER_ACTIVE;
+
+const char STR_JACK_HEADPHONE[] = "Headphone";
+const char STR_JACK_TRAINER[] = "Trainer";
+
+void onJackConnectMenu(const char * result)
+{
+  if (result == STR_JACK_HEADPHONE) {
+    jackState = HEADPHONE_ACTIVE;
+    disableSpeaker();
+    enableHeadphone();
+  }
+  else if (result == STR_JACK_TRAINER) {
+    jackState = TRAINER_ACTIVE;
+    enableTrainer();
+  }
+}
+
+void handleJackConnection()
+{
+#if defined(JACK_DETECT_GPIO)
+  if (jackState == SPEAKER_ACTIVE && isJackPlugged()) {
+    if (g_eeGeneral.jackMode == JACK_HEADPHONE_MODE) {
+      jackState = HEADPHONE_ACTIVE;
+      disableSpeaker();
+      enableHeadphone();
+    }
+    else if (g_eeGeneral.jackMode == JACK_TRAINER_MODE) {
+      jackState = TRAINER_ACTIVE;
+      enableTrainer();
+    }
+    else if (popupMenuNoItems == 0) {
+      POPUP_MENU_ADD_ITEM(STR_JACK_HEADPHONE);
+      POPUP_MENU_ADD_ITEM(STR_JACK_TRAINER);
+      POPUP_MENU_START(onJackConnectMenu);
+    }
+  }
+  else if (jackState == SPEAKER_ACTIVE && !isJackPlugged() && popupMenuNoItems > 0 && popupMenuHandler == onJackConnectMenu) {
+    popupMenuNoItems = 0;
+  }
+  else if (jackState != SPEAKER_ACTIVE && !isJackPlugged()) {
+    jackState = SPEAKER_ACTIVE;
+    enableSpeaker();
+  }
+#endif
+}
+
 void checkSpeakerVolume()
 {
   if (currentSpeakerVolume != requiredSpeakerVolume) {
@@ -409,6 +486,7 @@ void perMain()
   checkEeprom();
   logsWrite();
   handleUsbConnection();
+  handleJackConnection();
   checkTrainerSettings();
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);

@@ -671,10 +671,10 @@ bool luaLoadTelemetryScript(uint8_t index)
         ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
         sid.reference = SCRIPT_TELEMETRY_FIRST+index;
         sid.state = SCRIPT_NOFILE;
-        char filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)+sizeof(SCRIPT_EXT)] = SCRIPTS_TELEM_PATH "/";
-        strncpy(filename+sizeof(SCRIPTS_TELEM_PATH), script.file, sizeof(script.file));
-        filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)] = '\0';
-        strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPT_EXT);
+        char filename[sizeof(SCRIPTS_TELEM_PATH) + LEN_SCRIPT_FILENAME + sizeof(SCRIPT_EXT)] = SCRIPTS_TELEM_PATH "/";
+        strncpy(filename + sizeof(SCRIPTS_TELEM_PATH), script.file, LEN_SCRIPT_FILENAME);
+        filename[sizeof(SCRIPTS_TELEM_PATH) + LEN_SCRIPT_FILENAME] = '\0';
+        strcat(filename + sizeof(SCRIPTS_TELEM_PATH), SCRIPT_EXT);
         if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
           return false;
         }

@@ -185,7 +185,8 @@ extern const char STR_OPEN9X[];
   #define OFS_VVARIOCENTER      (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
   #define OFS_COUNTRYCODES      (OFS_VVARIOCENTER + sizeof(TR_VVARIOCENTER))
   #define OFS_USBMODES          (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
-  #define OFS_VFAILSAFE         (OFS_USBMODES + sizeof(TR_USBMODES))
+  #define OFS_JACKMODES         (OFS_USBMODES + sizeof(TR_USBMODES))
+  #define OFS_VFAILSAFE         (OFS_JACKMODES + sizeof(TR_JACKMODES))
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
   #define OFS_TARANIS_PROTOCOLS        (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
   #define OFS_R9M_REGION                (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
@@ -290,6 +291,7 @@ extern const char STR_OPEN9X[];
 
   #define STR_COUNTRYCODES      (STR_OPEN9X + OFS_COUNTRYCODES)
   #define STR_USBMODES          (STR_OPEN9X + OFS_USBMODES)
+  #define STR_JACKMODES         (STR_OPEN9X + OFS_JACKMODES)
   #define STR_VFAILSAFE         (STR_OPEN9X + OFS_VFAILSAFE)
 
   #define STR_VTRAINERMODES     (STR_OPEN9X + OFS_VTRAINERMODES)
@@ -579,6 +581,7 @@ extern const char STR_MENUSENSOR[];
 extern const char STR_SENSOR[];
 extern const char STR_COUNTRYCODE[];
 extern const char STR_USBMODE[];
+extern const char STR_JACKMODE[];
 extern const char STR_DISABLE_INTERNAL[];
 
 #if defined(TELEMETRY_FRSKY)
