@@ -588,7 +588,7 @@ bool isTrainerModeAvailable(int mode)
   else
     return true;
 }
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBXLITES)
 bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))

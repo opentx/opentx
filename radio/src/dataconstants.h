@@ -215,7 +215,9 @@ enum BeeperMode {
   };
 #endif
 
-#if defined(BLUETOOTH)
+#if defined(PCBXLITES)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE
+#elif defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
 #elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE

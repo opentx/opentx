@@ -76,7 +76,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_INTERNAL_MODULE_BIND,
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBXLITES)
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
 #endif
@@ -111,7 +111,7 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_TRAINER_CHANNELS,
   ITEM_MODEL_TRAINER_PARAMS,
-#elif defined(PCBXLITE)
+#elif defined(PCBXLITE) || defined(PCBXLITES)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_BLUETOOTH,
@@ -185,6 +185,12 @@ enum MenuModelSetupItems {
 #define TRAINER_CHANNELS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
 #define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
 #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
+#elif defined(PCBXLITES)
+  #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
+  #define TRAINER_BLUETOOTH_ROW
+  #define TRAINER_CHANNELS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
+  #define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
 #elif defined(PCBXLITE)
   #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
   #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
@@ -228,7 +234,7 @@ void onBindMenu(const char * result)
 
 void menuModelSetup(event_t event)
 {
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBXLITES)
   // Switch to external antenna confirmation
   if (warningResult) {
     warningResult = 0;
