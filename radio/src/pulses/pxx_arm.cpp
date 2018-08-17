@@ -412,7 +412,9 @@ inline void setupFramePXX(uint8_t port, uint8_t sendUpperChannels)
   extra_flags |= (g_model.moduleData[port].pxx.receiver_telem_off << 1);
   extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
   if (IS_MODULE_R9M(port)) {
-    extra_flags |= (min(g_model.moduleData[port].pxx.power, IS_MODULE_R9M_FCC(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
+    extra_flags |= (min(g_model.moduleData[port].pxx.power, IS_MODULE_R9M_FCC_VARIANT(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
+    if(IS_MODULE_R9M_EUPLUS(port))
+      extra_flags |= (1 << 6);
   }
 
   // Disable S.PORT if internal module is active
