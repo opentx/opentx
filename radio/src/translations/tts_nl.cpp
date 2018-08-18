@@ -1,8 +1,21 @@
 /*
  * Authors (alphabetical order)
  * - Andre Bernet <bernet.andre@gmail.com>
+ * - Andreas Weitl
  * - Bertrand Songis <bsongis@gmail.com>
- * - Jean-Pierre van Melis
+ * - Bryan J. Rentoul (Gruvin) <gruvin@gmail.com>
+ * - Cameron Weeks <th9xer@gmail.com>
+ * - Erez Raviv
+ * - Gabriel Birkus
+ * - Jean-Pierre Parisy
+ * - Karl Szmutny
+ * - Michael Blandford
+ * - Michal Hlavinka
+ * - Pat Mackenzie
+ * - Philip Moss
+ * - Rob Thomson
+ * - Romolo Manfredini <romolo.manfredini@gmail.com>
+ * - Thomas Husterer
  *
  * opentx is based on code named
  * gruvin9x by Bryan J. Rentoul: http://code.google.com/p/gruvin9x/,
@@ -21,6 +34,8 @@
  *
  */
 
+// NOTE: This file is identical to the EN version
+
 #include "opentx.h"
 
 enum DutchPrompts {
@@ -32,7 +47,7 @@ enum DutchPrompts {
   NL_PROMPT_MINUS = NL_PROMPT_NUMBERS_BASE+111,
   NL_PROMPT_POINT = NL_PROMPT_NUMBERS_BASE+112,
   NL_PROMPT_UNITS_BASE = 113,
-  NL_PROMPT_POINT_BASE = 165, //.0 - .9
+  NL_PROMPT_POINT_BASE = 167, //.0 - .9
 };
 
 #if defined(VOICE)
@@ -43,7 +58,7 @@ enum DutchPrompts {
   #define NL_PUSH_UNIT_PROMPT(u, p) pushUnitPrompt((u), (p))
 #endif
 
-I18N_PLAY_FUNCTION(nl, pushUnitPrompt,  uint8_t unitprompt, int16_t number)
+I18N_PLAY_FUNCTION(nl, pushUnitPrompt, uint8_t unitprompt, int16_t number)
 {
 #if defined(CPUARM)
   if (number == 1)
@@ -91,7 +106,7 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
 #else
     // we assume that we are PREC1
 #endif
-    div_t qr = div(number, 10);
+    div_t qr = div((int)number, 10);
     if (qr.rem) {
       PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(NL_PROMPT_POINT_BASE + qr.rem);
@@ -107,7 +122,6 @@ I18N_PLAY_FUNCTION(nl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   if (number >= 1000) {
     PLAY_NUMBER(number / 1000, 0, 0);
     PUSH_NUMBER_PROMPT(NL_PROMPT_THOUSAND);
-
     number %= 1000;
     if (number == 0)
       number = -1;
@@ -152,11 +166,12 @@ I18N_PLAY_FUNCTION(nl, playDuration, int seconds PLAY_DURATION_ATT)
     if (seconds > 0)
       PUSH_NUMBER_PROMPT(NL_PROMPT_AND);
   }
+
   if (seconds > 0) {
     PLAY_NUMBER(seconds, UNIT_SECONDS, 0);
   }
 }
 
-LANGUAGE_PACK_DECLARE(nl, "Nederlands");
+LANGUAGE_PACK_DECLARE(nl, "Dutch");
 
 #endif

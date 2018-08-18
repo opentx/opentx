@@ -852,17 +852,18 @@ extern const pm_char STR_BLCOLOR[];
   extern uint8_t currentLanguagePackIdx;
 
   extern const LanguagePack czLanguagePack;
+  extern const LanguagePack deLanguagePack;
   extern const LanguagePack enLanguagePack;
   extern const LanguagePack esLanguagePack;
   extern const LanguagePack frLanguagePack;
-  extern const LanguagePack deLanguagePack;
+  extern const LanguagePack huLanguagePack;
   extern const LanguagePack itLanguagePack;
+  extern const LanguagePack nlLanguagePack;
   extern const LanguagePack plLanguagePack;
   extern const LanguagePack ptLanguagePack;
-  extern const LanguagePack skLanguagePack;
-  extern const LanguagePack seLanguagePack;
-  extern const LanguagePack huLanguagePack;
   extern const LanguagePack ruLanguagePack;
+  extern const LanguagePack seLanguagePack;
+  extern const LanguagePack skLanguagePack;
   extern const LanguagePack * const languagePacks[];
   #if defined(LANGUAGE_PACKS_DEFINITION)
   const LanguagePack * const languagePacks[] = {
@@ -874,6 +875,7 @@ extern const pm_char STR_BLCOLOR[];
     &frLanguagePack,
     &huLanguagePack,
     &itLanguagePack,
+    &nlLanguagePack,
     &plLanguagePack,
     &ptLanguagePack,
     &ruLanguagePack,
