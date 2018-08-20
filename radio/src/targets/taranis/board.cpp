@@ -273,7 +273,7 @@ void boardInit()
     sportUpdateInit();
   }
 
-#if defined(AUDIO_JACK_DETECT_GPIO)
+#if defined(JACK_DETECT_GPIO)
   initJackDetect(void);
 #endif
 

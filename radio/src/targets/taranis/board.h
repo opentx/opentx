@@ -626,7 +626,7 @@ static inline void initHeadphoneTrainerSwitch(void) { }
 static inline void enableHeadphone(void) { }
 static inline void enableTrainer(void) { }
 #endif
-#if defined(AUDIO_JACK_DETECT_GPIO)
+#if defined(JACK_DETECT_GPIO)
 void initJackDetect(void);
 bool isJackPlugged();
 #endif
