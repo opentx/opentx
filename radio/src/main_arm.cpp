@@ -74,7 +74,7 @@ void handleUsbConnection()
 #endif // defined(STM32) && !defined(SIMU)
 }
 
-#if defined(JACK_DETECT_GPIO)
+#if defined(JACK_DETECT_GPIO) && !defined(SIMU)
 bool isJackPlugged()
 {
   // debounce

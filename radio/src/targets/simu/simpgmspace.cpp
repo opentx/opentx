@@ -693,6 +693,10 @@ uint32_t isBootloaderStart(const uint8_t * block) { return 1; }
 void LCD_ControlLight(uint16_t dutyCycle) { }
 #endif
 
+#if defined(PCBXLITES)
+bool isJackPlugged() { return false; }
+#endif
+
 void serialPrintf(const char * format, ...) { }
 void serialCrlf() { }
 void serialPutc(char c) { }
