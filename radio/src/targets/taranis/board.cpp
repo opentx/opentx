@@ -274,7 +274,7 @@ void boardInit()
   }
 
 #if defined(JACK_DETECT_GPIO)
-  initJackDetect(void);
+  initJackDetect();
 #endif
 
   initSpeakerEnable();
@@ -412,5 +412,19 @@ void enableHeadphone()
 void enableTrainer()
 {
   GPIO_SetBits(HEADPHONE_TRAINER_SWITCH_GPIO, HEADPHONE_TRAINER_SWITCH_GPIO_PIN);
+}
+#endif
+
+#if defined(JACK_DETECT_GPIO)
+void initJackDetect(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = JACK_DETECT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(JACK_DETECT_GPIO, &GPIO_InitStructure);
 }
 #endif
