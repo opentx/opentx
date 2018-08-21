@@ -713,6 +713,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return id.contains("danger") ? 1 : 0;
     case HasModelCategories:
       return IS_HORUS(board);
+    case HasSwitchableJack:
+      return IS_TARANIS_XLITES(board);
     default:
       return 0;
   }
