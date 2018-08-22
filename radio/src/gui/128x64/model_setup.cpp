@@ -871,8 +871,16 @@ void menuModelSetup(event_t event)
             case 1:
               if (IS_MODULE_DSM2(EXTERNAL_MODULE))
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
-              else if (IS_MODULE_R9M(EXTERNAL_MODULE))
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST);
+              else if (IS_MODULE_R9M(EXTERNAL_MODULE)) {
+                uint8_t newR9MType = checkIncDecModel(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST);
+                if (newR9MType != g_model.moduleData[EXTERNAL_MODULE].subType && newR9MType > MODULE_SUBTYPE_R9M_LBT) {
+                  POPUP_WARNING("Requires non");
+                  const char * w = "certified R9M firm.";
+                  SET_WARNING_INFO(w, strlen(w), 0);
+                }
+                g_model.moduleData[EXTERNAL_MODULE].subType = newR9MType;
+              }
+
 #if defined(MULTIMODULE)
               else if (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE)) {
                 int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MM_RF_PROTO_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
