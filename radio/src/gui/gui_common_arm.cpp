@@ -491,7 +491,7 @@ bool isR9MModeAvailable(int mode)
 #if defined(FLEX_R9M)
   return true;
 #else
-  if(mode > MODULE_SUBTYPE_R9M_LBT)
+  if(mode > MODULE_SUBTYPE_R9M_EU)
     return false;
   else
     return true;

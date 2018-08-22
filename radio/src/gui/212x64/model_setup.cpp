@@ -773,7 +773,7 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
               else if (IS_MODULE_R9M(EXTERNAL_MODULE)) {
                 uint8_t newR9MType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST, EE_MODEL, isR9MModeAvailable);
-                if (newR9MType != g_model.moduleData[EXTERNAL_MODULE].subType && newR9MType > MODULE_SUBTYPE_R9M_LBT) {
+                if (newR9MType != g_model.moduleData[EXTERNAL_MODULE].subType && newR9MType > MODULE_SUBTYPE_R9M_EU) {
                   POPUP_WARNING(STR_R9MFLEXWARN1);
                   const char * w = STR_R9MFLEXWARN2;
                   SET_WARNING_INFO(w, strlen(w), 0);
