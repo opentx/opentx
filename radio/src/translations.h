@@ -942,6 +942,8 @@ extern const pm_char STR_BLCOLOR[];
   extern const pm_char STR_ANTENNASELECTION[];
   extern const pm_char STR_ANTENNACONFIRM1[];
   extern const pm_char STR_ANTENNACONFIRM2[];
+extern const pm_char STR_R9MFLEXWARN1[];
+extern const pm_char STR_R9MFLEXWARN2[];
   extern const pm_char STR_SET[];
   extern const pm_char STR_PREFLIGHT[];
   extern const pm_char STR_CHECKLIST[];

@@ -1075,6 +1075,8 @@
 #define TR_ANTENNASELECTION            TR(INDENT "Antenna", TR(INDENT "Antenna", INDENT "Antenna selection"))
 #define TR_ANTENNACONFIRM1             "Really switch?"
 #define TR_ANTENNACONFIRM2             TR("Check antenna", "Make sure antenna is installed!")
+#define TR_R9MFLEXWARN1                "Requires non"
+#define TR_R9MFLEXWARN2                "certified R9M firm."
 #define TR_LOWALARM                    INDENT "Low alarm"
 #define TR_CRITICALALARM               INDENT "Critical alarm"
 #define TR_RSSIALARM_WARN              "RSSI"

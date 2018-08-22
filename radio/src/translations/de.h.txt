@@ -1083,6 +1083,8 @@
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenne auswählen")
 #define TR_ANTENNACONFIRM1     "Ant. umschalten"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Ist eine externe Antenne installiert?")
+#define TR_R9MFLEXWARN1                "Requires non"
+#define TR_R9MFLEXWARN2                "certified R9M firm."
 #define TR_LOWALARM            INDENT "Warnungsschwelle"
 #define TR_CRITICALALARM       INDENT "Kritischer Alarm"
 #define TR_RSSIALARM_WARN      "Telemetry"

@@ -874,8 +874,8 @@ void menuModelSetup(event_t event)
               else if (IS_MODULE_R9M(EXTERNAL_MODULE)) {
                 uint8_t newR9MType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST, EE_MODEL, isR9MModeAvailable);
                 if (newR9MType != g_model.moduleData[EXTERNAL_MODULE].subType && newR9MType > MODULE_SUBTYPE_R9M_LBT) {
-                  POPUP_WARNING("Requires non");
-                  const char * w = "certified R9M firm.";
+                  POPUP_WARNING(STR_R9MFLEXWARN1);
+                  const char * w = STR_R9MFLEXWARN2;
                   SET_WARNING_INFO(w, strlen(w), 0);
                 }
                 g_model.moduleData[EXTERNAL_MODULE].subType = newR9MType;
