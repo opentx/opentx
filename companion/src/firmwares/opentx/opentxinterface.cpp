@@ -1098,6 +1098,7 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("nogvars", QCoreApplication::translate("Firmware", "Disable Global variables"));
   firmware->addOption("lua", QCoreApplication::translate("Firmware", "Enable Lua custom scripts screen"));
   firmware->addOption("luac", QCoreApplication::translate("Firmware", "Enable Lua compiler"));
+  firmware->addOption("flexr9m", QCoreApplication::translate("Firmware", "Enable non certified firmwares"));
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
