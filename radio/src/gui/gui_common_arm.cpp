@@ -489,12 +489,9 @@ bool isSourceAvailableInResetSpecialFunction(int index)
 bool isR9MModeAvailable(int mode)
 {
 #if defined(FLEX_R9M)
-  return true;
+  return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
 #else
-  if(mode > MODULE_SUBTYPE_R9M_EU)
-    return false;
-  else
-    return true;
+  return mode <= MODULE_SUBTYPE_R9M_EU;
 #endif
 }
 
