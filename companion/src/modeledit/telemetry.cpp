@@ -679,24 +679,24 @@ void TelemetrySensorPanel::update()
     ratioFieldsDisplayed = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
     if (sensor.unit == SensorData::UNIT_RPMS) {
       if (ui->ratio->decimals()) {
+        ui->ratio->setDecimals(0);
         ui->ratio->setMaximum(30000);
         ui->ratio->setMinimum(1);
-        ui->ratio->setDecimals(0);
         ui->ratio->setSingleStep(1);
+        ui->offset->setDecimals(0);
         ui->offset->setMaximum(30000);
         ui->offset->setMinimum(1);
-        ui->offset->setDecimals(0);
         ui->offset->setSingleStep(1);
       }
     }
     else if (ui->ratio->decimals() != 1) {
+      ui->ratio->setDecimals(1);
       ui->ratio->setMaximum(3000);
       ui->ratio->setMinimum(0);
-      ui->ratio->setDecimals(1);
       ui->ratio->setSingleStep(0.1);
+      ui->offset->setDecimals(sensor.prec);
       ui->offset->setMaximum(30000.0f / powf(10.0f, sensor.prec));
       ui->offset->setMinimum(-ui->offset->maximum());
-      ui->offset->setDecimals(sensor.prec);
       ui->offset->setSingleStep(pow(0.1, sensor.prec));
     }
   }
