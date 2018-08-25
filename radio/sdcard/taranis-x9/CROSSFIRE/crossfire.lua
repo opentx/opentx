@@ -87,9 +87,9 @@ local function run(event)
     return 2
   elseif event == EVT_EXIT_BREAK then
     return 2
-  elseif event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT or event == EVT_ROT_LEFT then
+  elseif event == EVT_PLUS_FIRST or event == EVT_PLUS_REPT or event == EVT_ROT_RIGHT then
     selectDevice(1)
-  elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT or event == EVT_ROT_RIGHT then
+  elseif event == EVT_MINUS_FIRST or event == EVT_MINUS_REPT or event == EVT_ROT_LEFT then
     selectDevice(-1)
   end
 
