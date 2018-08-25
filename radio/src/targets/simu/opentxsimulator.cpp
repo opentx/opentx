@@ -481,10 +481,13 @@ void OpenTxSimulator::checkOutputsChanged()
   for (i=0; i < chansDim; i++) {
     if (lastOutputs.chans[i] != channelOutputs[i] || m_resetOutputsData) {
       emit channelOutValueChange(i, channelOutputs[i], (g_model.extendedLimits ? limit * LIMIT_EXT_PERCENT / 100 : limit));
-      emit channelMixValueChange(i, ex_chans[i], limit * 2);
       emit outputValueChange(OUTPUT_SRC_CHAN_OUT, i, channelOutputs[i]);
-      emit outputValueChange(OUTPUT_SRC_CHAN_MIX, i, ex_chans[i]);
       lastOutputs.chans[i] = channelOutputs[i];
+    }
+    if (lastOutputs.ex_chans[i] != ex_chans[i] || m_resetOutputsData) {
+      emit channelMixValueChange(i, ex_chans[i], limit * 2);
+      emit outputValueChange(OUTPUT_SRC_CHAN_MIX, i, ex_chans[i]);
+      lastOutputs.ex_chans[i] = ex_chans[i];
     }
   }
 
