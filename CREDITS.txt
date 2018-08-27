@@ -1428,3 +1428,5 @@ Raymond Henderson
 Clifton Hipsher 
 François Carton
 Olivier Portron
+Didier Hochedez
+Julien Gérard
