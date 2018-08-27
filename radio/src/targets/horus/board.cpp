@@ -69,6 +69,10 @@ void interrupt1ms()
 
   ++pre_scale;
 
+#if defined(DEBUG) && !defined(SIMU)
+  debugCounter1ms++;
+#endif
+
 #if defined(HAPTIC)
   if (pre_scale == 5 || pre_scale == 10) {
     DEBUG_TIMER_START(debugTimerHaptic);
