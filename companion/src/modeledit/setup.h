@@ -85,7 +85,7 @@ class ModulePanel : public ModelPanel
     void on_rxNumber_editingFinished();
     void on_failsafeMode_currentIndexChanged(int value);
     void onMultiProtocolChanged(int index);
-    void on_multiSubType_currentIndexChanged(int index);
+    void onSubTypeChanged();
     void on_autoBind_stateChanged(int state);
     void on_lowPower_stateChanged(int state);
     void on_r9mPower_currentIndexChanged(int index);

@@ -25,6 +25,7 @@
 
 #include <QtCore>
 
+class Firmware;
 class RadioDataConversionState;
 
 enum PulsesProtocol {
@@ -101,8 +102,11 @@ enum TrainerProtocol {
 };
 
 enum R9MSubTypes {
-  R9M_FCC,
-  R9M_LBT
+  MODULE_SUBTYPE_R9M_FCC,
+  MODULE_SUBTYPE_R9M_EU,
+  MODULE_SUBTYPE_R9M_EUPLUS,
+  MODULE_SUBTYPE_R9M_AUPLUS,
+  MODULE_SUBTYPE_R9M_LAST=MODULE_SUBTYPE_R9M_AUPLUS
 };
 
 class ModuleData {
@@ -145,8 +149,14 @@ class ModuleData {
 
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
-    QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); } // TODO ModelPrinter
     void convert(RadioDataConversionState & cstate);
+    QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); }
+    QString rfProtocolToString() const;
+    QString subTypeToString(int type = -1) const;
+    QString powerValueToString(Firmware * fw) const;
+    static QString indexToString(int index, Firmware * fw);
+    static QString protocolToString(unsigned protocol);
+    static QStringList powerValueStrings(int subType, Firmware * fw);
 };
 
 #endif // MODULEDATA_H
