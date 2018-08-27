@@ -45,7 +45,7 @@ QString ModuleData::subTypeToString(int type) const
 {
   static const char * strings[] = {
     "FCC",
-    "LBT(EU)",
+    "EU",
     "EU+",
     "AU+"
   };
