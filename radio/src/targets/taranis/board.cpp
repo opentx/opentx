@@ -73,6 +73,10 @@ void interrupt5ms()
 {
   static uint32_t pre_scale ;       // Used to get 10 Hz counter
 
+#if defined(DEBUG) && !defined(SIMU)
+  debugCounter1ms+=5;
+#endif
+
   AUDIO_HEARTBEAT();
 
 #if defined(HAPTIC)
