@@ -127,3 +127,24 @@ const Multiprotocols::MultiProtocolDefinition & Multiprotocols::getProtocol(int 
   Q_ASSERT(protocols.rbegin()->protocol == 0xfe);
   return *protocols.rbegin();
 }
+
+// static
+QString Multiprotocols::protocolToString(int protocol, bool custom)
+{
+  static const QStringList strings({
+    "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
+    "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS",
+    "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002", "CABELL", "Esky 150", "H8 3D", "Corona", "CFlie", "Hitec"
+  });
+
+  if (protocol == MM_RF_CUSTOM_SELECTED || custom)
+    return tr("Custom - proto %1)").arg(protocol);
+  else
+    return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);
+}
+
+// static
+QString Multiprotocols::subTypeToString(int protocol, unsigned subType)
+{
+  return tr(qPrintable(multiProtocols.getProtocol(protocol).subTypeStrings.value(subType, CPN_STR_UNKNOWN_ITEM)));
+}

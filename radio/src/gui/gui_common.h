@@ -54,6 +54,7 @@ bool isSwitchAvailableInLogicalSwitches(int swtch);
 bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
+bool isR9MModeAvailable(int mode);
 bool isModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
 bool isTelemetryProtocolAvailable(int protocol);
@@ -159,7 +160,7 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #define FAILSAFE_ROWS(x)               ((IS_MODULE_XJT(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || IS_MODULE_R9M(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 
 #define EXTERNAL_MODULE_OPTION_ROW     (IS_MODULE_R9M(EXTERNAL_MODULE) || IS_MODULE_SBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
-#define EXTERNAL_MODULE_POWER_ROW      (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) || IS_MODULE_R9M(EXTERNAL_MODULE)) ? (uint8_t) 0 : HIDDEN_ROW
+#define EXTERNAL_MODULE_POWER_ROW      (IS_MODULE_MULTIMODULE(EXTERNAL_MODULE) || IS_MODULE_R9M(EXTERNAL_MODULE)) ? (IS_MODULE_R9M_FCC_VARIANT(EXTERNAL_MODULE) ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
 

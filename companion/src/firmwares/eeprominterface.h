@@ -107,6 +107,8 @@ enum Capability {
   HasFailsafe,
   HasSoundMixer,
   NumModules,
+  HasModuleR9MFlex,
+  HasModuleR9MMini,
   PPMCenter,
   PPMUnitMicroseconds,
   SYMLimits,
@@ -414,7 +416,7 @@ inline int calcRESXto100(int x)
   return divRoundClosest(x*100, 1024);
 }
 
-#define CHECK_IN_ARRAY(T, index) ((unsigned int)index < DIM(T) ? T[(unsigned int)index] : "???")
+#define CHECK_IN_ARRAY(T, index) ((unsigned int)index < DIM(T) ? T[(unsigned int)index] : CPN_STR_UNKNOWN_ITEM)
 
 extern QList<EEPROMInterface *> eepromInterfaces;
 

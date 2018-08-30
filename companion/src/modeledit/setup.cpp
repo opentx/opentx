@@ -185,9 +185,8 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
 
   ui->setupUi(this);
 
-  QString label;
+  ui->label_module->setText(ModuleData::indexToString(moduleIdx, firmware));
   if (moduleIdx < 0) {
-    label = tr("Trainer Port");
     if (IS_HORUS(firmware->getBoard())) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
@@ -205,25 +204,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   else {
     ui->label_trainerMode->hide();
     ui->trainerMode->hide();
-    if (firmware->getCapability(NumModules) > 1) {
-      if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-        if (moduleIdx == 0)
-          label = tr("Internal Radio System");
-        else
-          label = tr("External Radio Module");
-      }
-      else {
-        if (moduleIdx == 0)
-          label = tr("Radio System");
-        else
-          label = tr("Extra Radio System");
-      }
-    }
-    else {
-      label = tr("Radio System");
-    }
   }
-  ui->label_module->setText(label);
 
   // The protocols available on this board
   for (int i=0; i<PULSES_PROTOCOL_LAST; i++) {
@@ -231,13 +212,13 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
       if (IS_TARANIS_XLITE(firmware->getBoard()) && i == PULSES_PXX_R9M)  //TODO remove when mini are handled as a different module type
         ui->protocol->addItem("FrSky R9M Mini", (QVariant) i);
       else
-        ui->protocol->addItem(ModelPrinter::printModuleProtocol(i), (QVariant) i);
+        ui->protocol->addItem(ModuleData::protocolToString(i), i);
       if (i == module.protocol)
         ui->protocol->setCurrentIndex(ui->protocol->count()-1);
     }
   }
   for (int i=0; i<=MM_RF_PROTO_LAST; i++) {
-    ui->multiProtocol->addItem(ModelPrinter::printMultiRfProtocol(i, false), (QVariant) i);
+    ui->multiProtocol->addItem(Multiprotocols::protocolToString(i), i);
   }
 
   ui->btnGrpValueType->setId(ui->optPercent, FAILSAFE_DISPLAY_PERCENT);
@@ -251,6 +232,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   update();
 
   connect(ui->protocol, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onProtocolChanged);
+  connect(ui->multiSubType, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onSubTypeChanged);
   connect(ui->multiProtocol, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onMultiProtocolChanged);
   connect(this, &ModulePanel::channelsRangeChanged, this, &ModulePanel::setupFailsafes);
   connect(ui->btnGrpValueType, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &ModulePanel::onFailsafesDisplayValueTypeChanged);
@@ -364,8 +346,10 @@ void ModulePanel::setupFailsafes()
 
 void ModulePanel::update()
 {
+  const PulsesProtocol protocol = (PulsesProtocol)module.protocol;
+  const Board::Type board = firmware->getBoard();
+  const Multiprotocols::MultiProtocolDefinition & pdef = multiProtocols.getProtocol(module.multi.rfProtocol);
   unsigned int mask = 0;
-  PulsesProtocol protocol = (PulsesProtocol)module.protocol;
   unsigned int max_rx_num = 63;
 
   if (moduleIdx >= 0) {
@@ -380,7 +364,7 @@ void ModulePanel::update()
         mask |= MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
         if (protocol==PULSES_PXX_XJT_X16 || protocol==PULSES_PXX_XJT_LR12 || protocol==PULSES_PXX_R9M)
           mask |= MASK_RX_NUMBER;
-        if ((IS_HORUS(firmware->getBoard()) || IS_TARANIS_XLITE(firmware->getBoard())) && moduleIdx==0)
+        if ((IS_HORUS(board) || IS_TARANIS_XLITE(board)) && moduleIdx==0)
           mask |= MASK_ANTENNA;
         break;
       case PULSES_LP45:
@@ -396,7 +380,7 @@ void ModulePanel::update()
         break;
       case PULSES_PPM:
         mask |= MASK_PPM_FIELDS | MASK_SBUSPPM_FIELDS| MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT;
-        if (IS_9XRPRO(firmware->getBoard())) {
+        if (IS_9XRPRO(board)) {
           mask |= MASK_OPEN_DRAIN;
         }
         break;
@@ -411,9 +395,9 @@ void ModulePanel::update()
           mask |= MASK_CHANNELS_COUNT;
         else
           module.channelsCount = 16;
-        if (multiProtocols.getProtocol(module.multi.rfProtocol).optionsstr != nullptr)
+        if (pdef.optionsstr != nullptr)
           mask |= MASK_MULTIOPTION;
-        if (multiProtocols.getProtocol(module.multi.rfProtocol).hasFailsafe)
+        if (pdef.hasFailsafe)
           mask |= MASK_FAILSAFES;
         break;
       case PULSES_OFF:
@@ -422,7 +406,7 @@ void ModulePanel::update()
         break;
     }
   }
-  else if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+  else if (IS_HORUS_OR_TARANIS(board)) {
     if (model->trainerMode == TRAINER_SLAVE_JACK) {
       mask |= MASK_PPM_FIELDS | MASK_CHANNELS_RANGE | MASK_CHANNELS_COUNT;
     }
@@ -469,7 +453,7 @@ void ModulePanel::update()
   // Antenna selection on Horus and xlite
   ui->label_antenna->setVisible(mask & MASK_ANTENNA);
   ui->antennaMode->setVisible(mask & MASK_ANTENNA);
-  if IS_HORUS_X12S(firmware->getBoard()) {
+  if IS_HORUS_X12S(board) {
     ui->antennaMode->setItemText(1,tr("Ext. + Int"));
   }
   else {
@@ -480,36 +464,13 @@ void ModulePanel::update()
   // R9M options
   ui->r9mPower->setVisible(mask & MASK_R9M);
   ui->label_r9mPower->setVisible(mask & MASK_R9M);
-  ui->warning_r9mPower->setVisible((mask & MASK_R9M) && module.subType == R9M_LBT);
+  ui->warning_r9mPower->setVisible((mask & MASK_R9M) && module.subType == MODULE_SUBTYPE_R9M_EU);
+  ui->warning_r9mFlex->setVisible((mask & MASK_R9M) && module.subType > MODULE_SUBTYPE_R9M_EU);
 
   if (mask & MASK_R9M) {
     const QSignalBlocker blocker(ui->r9mPower);
     ui->r9mPower->clear();
-    Board::Type board = firmware->getBoard();
-    if (IS_TARANIS_XLITE(board)) {
-      if (module.subType == R9M_FCC) {
-        ui->r9mPower->addItem(tr("100 mW - 16CH"));
-      }
-      else {
-        ui->r9mPower->addItem(tr("25 mW - 8CH"));
-        ui->r9mPower->addItem(tr("25 mW - 16CH"));
-        ui->r9mPower->addItem(tr("100 mW - 16CH, no telemetry"));
-      }
-    }
-    else {
-      if (module.subType == R9M_FCC) {
-        ui->r9mPower->addItem(tr("10 mW - 16CH"));
-        ui->r9mPower->addItem(tr("100 mW - 16CH"));
-        ui->r9mPower->addItem(tr("500 mW - 16CH"));
-        ui->r9mPower->addItem(tr("1000 mW - 16CH"));
-      }
-      else {
-        ui->r9mPower->addItem(tr("25 mW - 8CH"));
-        ui->r9mPower->addItem(tr("25 mW - 16CH"));
-        ui->r9mPower->addItem(tr("200 mW - 16CH"));
-        ui->r9mPower->addItem(tr("500 mW - 16CH"));
-      }
-    }
+    ui->r9mPower->addItems(ModuleData::powerValueStrings(module.subType, firmware));
     ui->r9mPower->setCurrentIndex(module.pxx.power);
   }
 
@@ -518,14 +479,17 @@ void ModulePanel::update()
   ui->multiSubType->setVisible(mask & MASK_SUBTYPES);
   if (mask & MASK_SUBTYPES) {
     unsigned numEntries = 2;  // R9M FCC/EU
+    unsigned i = 0;
     if (mask & MASK_MULTIMODULE)
-      numEntries = (module.multi.customProto ? 8 : multiProtocols.getProtocol(module.multi.rfProtocol).numSubytes());
-
+      numEntries = (module.multi.customProto ? 8 : pdef.numSubTypes());
+    else if (firmware->getCapability(HasModuleR9MFlex))
+      i = 2;
+    numEntries += i;
     const QSignalBlocker blocker(ui->multiSubType);
     ui->multiSubType->clear();
-    for (unsigned i=0; i < numEntries; i++)
-      ui->multiSubType->addItem(ModelPrinter::printModuleSubType(protocol, i, module.multi.rfProtocol, module.multi.customProto), i);
-    ui->multiSubType->setCurrentIndex(module.subType);
+    for ( ; i < numEntries; i++)
+      ui->multiSubType->addItem(module.subTypeToString(i), i);
+    ui->multiSubType->setCurrentIndex(ui->multiSubType->findData(module.subType));
   }
 
   // Multi settings fields
@@ -543,7 +507,6 @@ void ModulePanel::update()
   }
 
   if (mask & MASK_MULTIOPTION) {
-    auto pdef = multiProtocols.getProtocol(module.multi.rfProtocol);
     ui->optionValue->setMinimum(pdef.getOptionMin());
     ui->optionValue->setMaximum(pdef.getOptionMax());
     ui->optionValue->setValue(module.multi.optionValue);
@@ -699,7 +662,7 @@ void ModulePanel::onMultiProtocolChanged(int index)
   if (!lock && module.multi.rfProtocol != (unsigned)index) {
     lock=true;
     module.multi.rfProtocol = (unsigned int) index;
-    unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubytes();
+    unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubTypes();
     if (module.multi.customProto)
       maxSubTypes=8;
     module.subType = std::min(module.subType, maxSubTypes -1);
@@ -717,11 +680,12 @@ void ModulePanel::on_optionValue_editingFinished()
   }
 }
 
-void ModulePanel::on_multiSubType_currentIndexChanged(int index)
+void ModulePanel::onSubTypeChanged()
 {
-  if (!lock && module.subType != (unsigned)index) {
+  const unsigned type = ui->multiSubType->currentData().toUInt();
+  if (!lock && module.subType != type) {
     lock=true;
-    module.subType = index;
+    module.subType = type;
     update();
     emit modified();
     lock =  false;
