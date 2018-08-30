@@ -669,7 +669,7 @@ Return the internal GPS position or nil if no valid hardware found
  * 'speed' (number) internal GPSspeed in 0.1m/s
  * 'heading'  (number) internal GPS ground course estimation in degrees * 10
 
-@status current Introduced in 2.2.2
+@status current Introduced in 2.3.0
 */
 static int luaGetTxGPS(lua_State * L)
 {
@@ -912,7 +912,7 @@ Returns (some of) the general radio settings
  * `gtimer` (number) radio global timer in seconds (does not include current session)
 
 @status current Introduced in 2.0.6, `imperial` added in TODO,
-`language` and `voice` added in 2.2.0, gtimer added in 2.2.2.
+`language` and `voice` added in 2.2.0, gtimer added in 2.3.0.
 
 */
 static int luaGetGeneralSettings(lua_State * L)
@@ -1271,7 +1271,7 @@ static int luaGetUsage(lua_State * L)
 
 Resets the radio global timer to 0.
 
-@status current Introduced in 2.2.2
+@status current Introduced in 2.3.0
 */
 static int luaResetGlobalTimer(lua_State * L)
 {

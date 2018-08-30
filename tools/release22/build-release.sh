@@ -6,7 +6,7 @@ branch=2.2
 docker=release22
 workdir=/home/opentx/release22
 output=/var/www/html/2.2/release
-version=2.2.2
+version=2.3.0
 
 cd ${workdir}
 
@@ -51,7 +51,7 @@ fi
 
 # Update stamps
 cp -f  $workdir/binaries/stamp-opentx.txt ${output}/firmware
-echo "#define VERSION  "'"2.2.2"' > ${output}/companion/companion-windows.stamp
+echo "#define VERSION  "'"2.3.0"' > ${output}/companion/companion-windows.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-macosx.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-linux.stamp
 
