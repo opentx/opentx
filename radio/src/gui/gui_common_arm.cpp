@@ -486,6 +486,14 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
+bool isR9MModeAvailable(int mode)
+{
+#if defined(MODULE_R9M_FLEX_FW)
+  return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
+#else
+  return mode <= MODULE_SUBTYPE_R9M_EU;
+#endif
+}
 
 bool isModuleAvailable(int module)
 {

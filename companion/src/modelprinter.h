@@ -37,7 +37,7 @@ class CurveImage
   public:
     CurveImage();
     void drawCurve(const CurveData & curve, QColor color);
-    const QImage & get() const { return image; };
+    const QImage & get() const { return image; }
 
   protected:
     int size;
@@ -57,11 +57,6 @@ class ModelPrinter: public QObject
     QString printEEpromSize();
     QString printTrimIncrementMode();
     QString printThrottle();
-    static QString printModuleProtocol(unsigned int protocol);
-    static QString printMultiRfProtocol(int rfProtocol, bool custom);
-    QString printR9MPowerValue(unsigned subType, unsigned val, bool telem);
-    static QString printMultiSubType(unsigned rfProtocol, bool custom, unsigned int subType);
-    static QString printModuleSubType(unsigned protocol, unsigned subType, unsigned rfProtocol = 0, bool custom = false);
     QString printFlightModeSwitch(const RawSwitch & swtch);
     QString printFlightModeName(int index);
     QString printFlightModes(unsigned int flightModes);

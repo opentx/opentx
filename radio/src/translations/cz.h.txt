@@ -973,6 +973,8 @@
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Volba antény")
 #define TR_ANTENNACONFIRM1     "Opravdu přepnout?"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Ujisti se že je anténa připojena!")
+#define TR_R9MFLEXWARN1                "Requires non"
+#define TR_R9MFLEXWARN2                "certified R9M firm."
 #define TR_LOWALARM            INDENT "Nízký Alarm"
 #define TR_CRITICALALARM       INDENT "Kritický Alarm"
 #define TR_RSSIALARM_WARN             TR("RSSI","TELEMETRY RSSI")

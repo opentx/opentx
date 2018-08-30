@@ -841,6 +841,8 @@ extern const char STR_BLCOLOR[];
   extern const char STR_ANTENNASELECTION[];
   extern const char STR_ANTENNACONFIRM1[];
   extern const char STR_ANTENNACONFIRM2[];
+  extern const char STR_R9MFLEXWARN1[];
+  extern const char STR_R9MFLEXWARN2[];
   extern const char STR_SET[];
   extern const char STR_PREFLIGHT[];
   extern const char STR_CHECKLIST[];

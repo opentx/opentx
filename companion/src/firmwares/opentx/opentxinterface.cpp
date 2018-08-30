@@ -611,6 +611,10 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return (IS_ARM(board) ? 32 : 0);
     case NumModules:
       return (IS_ARM(board) ? 2 : 1);
+    case HasModuleR9MFlex:
+      return id.contains("flexr9m");
+    case HasModuleR9MMini:
+      return IS_TARANIS_XLITE(board) && !id.contains("stdr9m");
     case HasPPMStart:
       return (IS_ARM(board) ? true : false);
     case HastxCurrentCalibration:
@@ -1083,6 +1087,7 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("nogvars", QCoreApplication::translate("Firmware", "Disable Global variables"));
   firmware->addOption("lua", QCoreApplication::translate("Firmware", "Enable Lua custom scripts screen"));
   firmware->addOption("luac", QCoreApplication::translate("Firmware", "Enable Lua compiler"));
+  firmware->addOption("flexr9m", QCoreApplication::translate("Firmware", "Enable non certified firmwares"));
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)

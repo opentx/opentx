@@ -143,7 +143,7 @@ QString ModelPrinter::printBoolean(const bool val, const int typ)
     case BOOLEAN_ONOFF:
       return (val ? tr("ON") : tr("OFF"));
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -180,94 +180,6 @@ QString ModelPrinter::printTrimIncrementMode()
   }
 }
 
-QString ModelPrinter::printModuleProtocol(unsigned int protocol)
-{
-  static const char * strings[] = {
-    "OFF",
-    "PPM",
-    "Silverlit A", "Silverlit B", "Silverlit C",
-    "CTP1009",
-    "LP45", "DSM2", "DSMX",
-    "PPM16", "PPMsim",
-    "FrSky XJT (D16)", "FrSky XJT (D8)", "FrSky XJT (LR12)", "FrSky DJT",
-    "Crossfire",
-    "DIY Multiprotocol Module",
-    "FrSky R9M Module",
-    "SBUS output at VBat"
-  };
-
-  return CHECK_IN_ARRAY(strings, protocol);
-}
-
-QString ModelPrinter::printMultiRfProtocol(int rfProtocol, bool custom)
-{
-  static const char * strings[] = {
-    "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
-    "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","OLRS",
-    "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002", "CABELL", "Esky 150", "H8 3D", "Corona", "CFlie"
-  };
-  if (custom)
-    return QObject::tr("Custom - proto %1)").arg(QString::number(rfProtocol));
-  else
-    return CHECK_IN_ARRAY(strings, rfProtocol);
-}
-
-QString ModelPrinter::printMultiSubType(unsigned rfProtocol, bool custom, unsigned int subType) {
-  /* custom protocols */
-
-  if (custom)
-    rfProtocol = MM_RF_CUSTOM_SELECTED;
-
-  Multiprotocols::MultiProtocolDefinition pdef = multiProtocols.getProtocol(rfProtocol);
-
-  if (subType < (unsigned int) pdef.subTypeStrings.size())
-    return qApp->translate("Multiprotocols", qPrintable(pdef.subTypeStrings[subType]));
-  else
-    return "???";
-}
-
-QString ModelPrinter::printR9MPowerValue(unsigned subType, unsigned val, bool telem)
-{
-  QStringList strFCC;
-  QStringList strLBT;
-
-  if (IS_TARANIS_XLITE(firmware->getBoard())) {
-    strFCC = QStringList() << tr("100mW - 16CH");
-    strLBT = QStringList() << tr("25mW - 8CH") << tr("25mW - 16CH") << tr("100mW 16CH");
-  }
-  else {
-    strFCC = QStringList() << tr("10mW") << tr("100mW") << tr("500mW") << tr("1W");
-    strLBT = QStringList() << tr("25mW - 8CH") << tr("25mW - 16CH") << tr("200mW 16CH") << tr("500mW 16CH");
-  }
-
-
-  if (subType == R9M_FCC && (int)val < strFCC.size())
-    return strFCC.at(val);
-  else if (subType == R9M_LBT)
-    return (telem ? strLBT.at(0) : strLBT.at(1));
-  else
-    return "???";
-}
-
-QString ModelPrinter::printModuleSubType(unsigned protocol, unsigned subType, unsigned rfProtocol, bool custom)
-{
-  static const char * strings[] = {
-    "FCC",
-    "LBT(EU)"
-  };
-
-  switch (protocol) {
-    case PULSES_MULTIMODULE:
-      return printMultiSubType(rfProtocol, custom, subType);
-
-    case PULSES_PXX_R9M:
-      return CHECK_IN_ARRAY(strings, subType);
-
-    default:
-      return "???";
-  }
-}
-
 QString ModelPrinter::printModule(int idx)
 {
   QStringList str;
@@ -286,7 +198,7 @@ QString ModelPrinter::printModule(int idx)
     result = str.join(" ");
   }
   else {
-    str << printLabelValue(tr("Protocol"), printModuleProtocol(module.protocol));
+    str << printLabelValue(tr("Protocol"), ModuleData::protocolToString(module.protocol));
     if (module.protocol) {
       str << printLabelValue(tr("Channels"), QString("%1-%2").arg(module.channelsStart + 1).arg(module.channelsStart + module.channelsCount));
       if (module.protocol == PULSES_PPM || module.protocol == PULSES_SBUS) {
@@ -300,13 +212,13 @@ QString ModelPrinter::printModule(int idx)
           str << printLabelValue(tr("Receiver"), QString::number(module.modelId));
         }
         if (module.protocol == PULSES_MULTIMODULE) {
-          str << printLabelValue(tr("Radio protocol"), printMultiRfProtocol(module.multi.rfProtocol, module.multi.customProto));
-          str << printLabelValue(tr("Subtype"), printMultiSubType(module.multi.rfProtocol, module.multi.customProto, module.subType));
+          str << printLabelValue(tr("Radio protocol"), module.rfProtocolToString());
+          str << printLabelValue(tr("Subtype"), module.subTypeToString());
           str << printLabelValue(tr("Option value"), QString::number(module.multi.optionValue));
         }
         if (module.protocol == PULSES_PXX_R9M) {
-          str << printLabelValue(tr("Sub Type"), printModuleSubType(module.protocol, module.subType));
-          str << printLabelValue(tr("RF Output Power"), printR9MPowerValue(module.subType, module.pxx.power, module.pxx.sport_out));
+          str << printLabelValue(tr("Sub Type"), module.subTypeToString());
+          str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
           str << printLabelValue(tr("Telemetry"), printBoolean(module.pxx.sport_out, BOOLEAN_ENABLEDISABLE));
         }
       }
@@ -339,7 +251,7 @@ QString ModelPrinter::printTrainerMode()
       result = tr("Master/SBUS in battery compartment");
       break;
     default:
-      result = tr("????");
+      result = CPN_STR_UNKNOWN_ITEM;
   }
   return result;
 }
@@ -358,7 +270,7 @@ QString ModelPrinter::printHeliSwashType ()
       case HELI_SWASH_TYPE_NONE:
         return tr("Off");
       default:
-        return "???";
+        return CPN_STR_UNKNOWN_ITEM;
     }
 }
 
@@ -987,7 +899,7 @@ QString ModelPrinter::printPotsWarningMode()
     case 2:
       return tr("Auto");
     default:
-      return tr("????");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1031,7 +943,7 @@ QString ModelPrinter::printFailsafeMode(unsigned int fsmode)
     case FAILSAFE_RECEIVER:
       return tr("Receiver");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1047,7 +959,7 @@ QString ModelPrinter::printTimerCountdownBeep(unsigned int countdownBeep)
     case TimerData::COUNTDOWN_HAPTIC:
       return tr("Haptic");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1061,7 +973,7 @@ QString ModelPrinter::printTimerPersistent(unsigned int persistent)
     case 2:
       return tr("Manual reset");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1097,26 +1009,13 @@ QString ModelPrinter::printTrimsDisplayMode()
     case 2:
       return tr("Always");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
 QString ModelPrinter::printModuleType(int idx)
 {
-  if (idx < 0)
-    return tr("Trainer Port");
-  else if (firmware->getCapability(NumModules) > 1)
-    if (IS_HORUS_OR_TARANIS(firmware->getBoard()))
-      if (idx == 0)
-        return tr("Internal Radio System");
-      else
-        return tr("External Radio Module");
-    else if (idx == 0)
-      return tr("Radio System");
-    else
-      return tr("Extra Radio System");
-  else
-    return tr("Radio System");
+  return ModuleData::indexToString(idx, firmware);
 }
 
 QString ModelPrinter::printPxxPower(int power)
@@ -1173,7 +1072,7 @@ QString ModelPrinter::printTelemetryProtocol(unsigned int val)
     case 2:
       return tr("FrSky D (cable)");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1207,7 +1106,7 @@ QString ModelPrinter::printVarioSource(unsigned int val)
     case TELEMETRY_VARIO_SOURCE_A2:
       return tr("A2");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1232,7 +1131,7 @@ QString ModelPrinter::printVoltsSource(unsigned int val)
     case TELEMETRY_VOLTS_SOURCE_CELLS:
       return tr("Cells");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1252,7 +1151,7 @@ QString ModelPrinter::printCurrentSource(unsigned int val)
     case TELEMETRY_CURRENT_SOURCE_FAS:
       return tr("FAS");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1274,7 +1173,7 @@ QString ModelPrinter::printSensorType(unsigned int val)
     case SensorData::TELEM_TYPE_CALCULATED:
       return tr("Calculated");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1300,7 +1199,7 @@ QString ModelPrinter::printSensorFormula(unsigned int val)
     case SensorData::TELEM_FORMULA_DIST:
       return tr("Distance");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -1518,7 +1417,7 @@ QString ModelPrinter::printTelemetryScreenType(unsigned int val)
     case TelemetryScreenEnum::TELEMETRY_SCREEN_SCRIPT:
       return tr("Script");
     default:
-      return tr("???");
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
