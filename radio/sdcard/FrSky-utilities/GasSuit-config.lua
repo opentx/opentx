@@ -37,7 +37,7 @@ local thistime = getTime()
 local lastTime = thistime
 local margin = 1
 local spacing = 8
-
+local configFields = {}
 local counter = 0
 
 local function drawScreenTitle(title,page, pages)
@@ -52,8 +52,6 @@ local function drawScreenTitle(title,page, pages)
 	lcd.drawScreenTitle(title, page, pages)
   end
 end
-
-local configFields = {}
 
 local interfaceconfig = {
   {"Sensor group select", VALUE, 0x0d10, nil, 0, 15},
