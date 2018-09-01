@@ -193,7 +193,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
       QLabel *maxLabel = new QLabel(ui->gvGB);
       maxLabel->setText(tr("Max"));
       gvLayout->addWidget(maxLabel, 0, headerCol++, 1, 1);
-
+    }
+    if (IS_TARANIS(board) && phaseIdx == 0) {
       QLabel *popupLabel = new QLabel(ui->gvGB);
       popupLabel->setText(tr("Popup enabled"));
       gvLayout->addWidget(popupLabel, 0, headerCol++, 1, 1);
@@ -260,7 +261,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
         gvMax[i]->setProperty("index", i);
         connect(gvMax[i], SIGNAL(editingFinished()), this, SLOT(phaseGVMax_editingFinished()));
         gvLayout->addWidget(gvMax[i], i+1, col++, 1, 1);
-
+      }
+      if (IS_TARANIS(board) && phaseIdx == 0) {
         // Popups
         gvPopups[i] = new QCheckBox(ui->gvGB);
         gvPopups[i]->setProperty("index", i);
@@ -341,6 +343,8 @@ void FlightModePanel::updateGVar(int index)
     gvPrec[index]->setCurrentIndex(model->gvarData[index].prec);
     setGVSB(gvMin[index], GVAR_MIN_VALUE, model->gvarData[index].getMax(), model->gvarData[index].getMin());
     setGVSB(gvMax[index], model->gvarData[index].getMin(), GVAR_MAX_VALUE, model->gvarData[index].getMax());
+  }
+  if (IS_TARANIS(getCurrentBoard()) && phaseIdx == 0) {
     gvPopups[index]->setChecked(model->gvarData[index].popup);
   }
   lock = false;
