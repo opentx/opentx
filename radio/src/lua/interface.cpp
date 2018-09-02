@@ -401,11 +401,10 @@ static void luaDumpState(lua_State * L, const char * filename, const FILINFO * f
 */
 int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode)
 {
-  if (luaState == INTERPRETER_PANIC) {
+  if (luaState == INTERPRETER_PANIC)
     return SCRIPT_PANIC;
-  } else if (filename == NULL) {
+  else if (filename == NULL)
     return SCRIPT_NOFILE;
-  }
 
   int lstatus;
   char lmode[6] = "bt";
@@ -421,13 +420,17 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   uint8_t extlen;
   char filenameFull[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
   FILINFO fnoLuaS, fnoLuaC;
-  FRESULT frLuaS, frLuaC;
-
+  FRESULT frLuaS = FR_NO_FILE;
+  FRESULT frLuaC = FR_NO_FILE;
   bool scriptNeedsCompile = false;
+  bool needRename = false;
   uint8_t loadFileType = 0;  // 1=text, 2=binary
 
-  memset(&fnoLuaS, 0, sizeof(FILINFO));
-  memset(&fnoLuaC, 0, sizeof(FILINFO));
+  // compile mode flag: 0=default, 1=force, 2=skip
+  const uint8_t cflag = (lmode[1] == '\0' ? 0 : strchr(lmode, 'c') ? 1 : strchr(lmode, 'x') ? 2 : 0);
+  const bool forceText = (cflag == 1 || lmode[0] == 't');
+  const bool forceBinary = (!forceText && !strncmp(lmode, "b", 2));
+  const bool skipBinary = (!forceBinary && !strchr(lmode, 'b'));
 
   fnamelen = strlen(filename);
   // check if file extension is already in the file name and strip it
@@ -439,19 +442,28 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   }
   strncat(filenameFull, filename, fnamelen);
 
-  // check if binary version exists
-  strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
-  frLuaC = f_stat(filenameFull, &fnoLuaC);
+  // can skip bin file chck if: compile is forced or compile is skipped and we're not loading a binary.
+  if (cflag != 1 && !(cflag == 2 && skipBinary)) {
+    // check if binary version exists
+    memset(&fnoLuaC, 0, sizeof(FILINFO));
+    strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
+    frLuaC = f_stat(filenameFull, &fnoLuaC);
+  }
 
-  // check if text version exists
-  strcpy(filenameFull + fnamelen, SCRIPT_EXT);
-  frLuaS = f_stat(filenameFull, &fnoLuaS);
+  // can skip src file check if: mode is "b" or compile is skipped and we're not loading the src version.
+  if (!forceBinary && !(cflag == 2 && !skipBinary)) {
+    // check if text version exists
+    memset(&fnoLuaS, 0, sizeof(FILINFO));
+    strcpy(filenameFull + fnamelen, SCRIPT_EXT);
+    frLuaS = f_stat(filenameFull, &fnoLuaS);
+    needRename = true;
+  }
 
   // decide which version to load, text or binary
   if (frLuaC != FR_OK && frLuaS == FR_OK) {
     // only text version exists
     loadFileType = 1;
-    scriptNeedsCompile = true;
+    scriptNeedsCompile = (cflag != 2);
   }
   else if (frLuaC == FR_OK && frLuaS != FR_OK) {
     // only binary version exists
@@ -459,29 +471,16 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   }
   else if (frLuaS == FR_OK) {
     // both versions exist, compare them
-    if (strchr(lmode, 'c') || (uint32_t)((fnoLuaC.fdate << 16) + fnoLuaC.ftime) < (uint32_t)((fnoLuaS.fdate << 16) + fnoLuaS.ftime)) {
-      // text version is newer than binary or forced by "c" mode flag, rebuild it
-      scriptNeedsCompile = true;
-    }
-    if (scriptNeedsCompile || !strchr(lmode, 'b')) {
-      // text version needs compilation or forced by mode
-      loadFileType = 1;
-    } else {
-      // use binary file
-      loadFileType = 2;
-    }
+    // Recompile if forced by "c" mode flag, or text version is newer than binary and not overriden by "x" flag.
+    scriptNeedsCompile = (cflag == 1 || (!cflag && (uint32_t)((fnoLuaC.fdate << 16) + fnoLuaC.ftime) < (uint32_t)((fnoLuaS.fdate << 16) + fnoLuaS.ftime)));
+    // load text version if it needs compilation or is requested by mode, otherwise use binary file
+    loadFileType = (scriptNeedsCompile || skipBinary) ? 1 : 2;
   }
   // else both versions are missing
 
-  // skip compilation based on mode flags? ("c" overrides "x")
-  if (scriptNeedsCompile && strchr(lmode, 'x') && !strchr(lmode, 'c')) {
-    scriptNeedsCompile = false;
-  }
-
-  if (loadFileType == 2) {
-    // change file extension to binary version
+  // change file extension to binary version if needed
+  if (loadFileType == 2 && needRename)
     strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
-  }
 
 //  TRACE_DEBUG("luaLoadScriptFileToState(%s, %s):\n", filename, lmode);
 //  TRACE_DEBUG("\tldfile='%s'; ldtype=%u; compile=%u;\n", filenameFull, loadFileType, scriptNeedsCompile);
@@ -490,8 +489,8 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 //  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_BIN_EXT, (frLuaC == FR_OK ? "ok" : "nf"), fnoLuaC.fdate, fnoLuaC.ftime,
 //      (fnoLuaC.fdate >> 9) + 1980, (fnoLuaC.fdate >> 5) & 15, fnoLuaC.fdate & 31, fnoLuaC.ftime >> 11, (fnoLuaC.ftime >> 5) & 63, (fnoLuaC.ftime & 31) * 2);
 
-  // final check that file exists and is allowed by mode flags
-  if (!loadFileType || (loadFileType == 1 && !strpbrk(lmode, "tTc")) || (loadFileType == 2 && !strpbrk(lmode, "bT"))) {
+  // final check that file exists
+  if (!loadFileType) {
     TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: file not found.\n", filename, lmode);
     return SCRIPT_NOFILE;
   }
