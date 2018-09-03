@@ -157,27 +157,27 @@ void dumpTraceBuffer();
 
 #else  // #if defined(DEBUG_TRACE_BUFFER)
 
-#define TRACE_EVENT(condition, event, data)  
-#define TRACEI_EVENT(condition, event, data)  
+#define TRACE_EVENT(condition, event, data)
+#define TRACEI_EVENT(condition, event, data)
 
 #endif // #if defined(DEBUG_TRACE_BUFFER)
 
 #if defined(TRACE_SD_CARD)
   #define TRACE_SD_CARD_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
 #else
-  #define TRACE_SD_CARD_EVENT(condition, event, data)  
+  #define TRACE_SD_CARD_EVENT(condition, event, data)
 #endif
 #if defined(TRACE_FATFS)
   #define TRACE_FATFS_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
 #else
-  #define TRACE_FATFS_EVENT(condition, event, data)  
+  #define TRACE_FATFS_EVENT(condition, event, data)
 #endif
 #if defined(TRACE_AUDIO)
   #define TRACE_AUDIO_EVENT(condition, event, data)  TRACE_EVENT(condition, event, data)
   #define TRACEI_AUDIO_EVENT(condition, event, data) TRACEI_EVENT(condition, event, data)
 #else
-  #define TRACE_AUDIO_EVENT(condition, event, data)  
-  #define TRACEI_AUDIO_EVENT(condition, event, data)  
+  #define TRACE_AUDIO_EVENT(condition, event, data)
+  #define TRACEI_AUDIO_EVENT(condition, event, data)
 #endif
 
 
@@ -329,41 +329,50 @@ extern void CoTaskSwitchHook(uint8_t taskID);
 #endif // #if defined(DEBUG_TASKS)
 
 
-#if defined(DEBUG_TIMERS)
-
 #if defined(__cplusplus)
+#if defined(CPUARM)
 typedef uint32_t debug_timer_t;
 
 class DebugTimer
 {
 private:
+  debug_timer_t last;
   debug_timer_t min;
   debug_timer_t max;
-  // debug_timer_t avg;
-  debug_timer_t last;   //unit 1us
+  debug_timer_t ttl;
+  uint32_t iter;
+  uint64_t start_loprec = 0;           // track timer starting times
+  volatile uint32_t start_hiprec = 0;  // volatile because may be used to read register value
 
-  uint16_t _start_hiprec;
-  uint32_t _start_loprec;
-
-  void evalStats() {
-    if (min > last) min = last;
-    if (max < last) max = last;
-    //todo avg
-  }
+  void evalStats();
 
 public:
-  DebugTimer(): min(-1), max(0), /*avg(0),*/ last(0), _start_hiprec(0), _start_loprec(0) {};
+  explicit DebugTimer()
+  {
+    reset();
+  }
 
-  void start();
-  void stop();
-  void sample() { stop(); start(); }
+  void start();                       //!< starts the timer
+  debug_timer_t stop();               //!< stop the timer @returns last run duration (same as calling @c getLast() )
+  inline debug_timer_t sample()       //!< stop and start the timer @returns last run duration (same as calling @c getLast() )
+  {
+    stop();
+    start();
+    return last;
+  }
 
-  void reset() { min = -1;  max = last = 0; }
+  inline void reset()  { min = -1;  max = ttl = last = iter = 0; }
 
-  debug_timer_t getMin() const { return min; }
-  debug_timer_t getMax() const { return max; }
-  debug_timer_t getLast() const { return last; }
+  inline debug_timer_t getLast()  const { return last; }          //!< @returns run duration between start/stop in [us]
+  inline debug_timer_t getMin()   const { return min; }           //!< @returns minimum value from all iterations
+  inline debug_timer_t getMax()   const { return max; }           //!< @returns maximum value from all iterations
+  inline debug_timer_t getTotal() const { return ttl; }           //!< @returns total value over all iterations
+  inline debug_timer_t getAvg()   const { return (ttl / iter); }  //!< @returns average (mean) time of all iterations
+  inline uint32_t iterations()    const { return iter; }          //!< @returns iteration (stops) count
 };
+#endif  // defined(CPUARM)
+
+#if defined(DEBUG_TIMERS)
 
 enum DebugTimers {
   debugTimerIntPulses,
@@ -408,8 +417,6 @@ enum DebugTimers {
 extern DebugTimer debugTimers[DEBUG_TIMERS_COUNT];
 extern const char * const debugTimerNames[DEBUG_TIMERS_COUNT];
 
-#endif // #if defined(__cplusplus)
-
 #define DEBUG_TIMER_START(timer)  debugTimers[timer].start()
 #define DEBUG_TIMER_STOP(timer)   debugTimers[timer].stop()
 #define DEBUG_TIMER_SAMPLE(timer) debugTimers[timer].sample()
@@ -422,6 +429,8 @@ extern const char * const debugTimerNames[DEBUG_TIMERS_COUNT];
 #define DEBUG_TIMER_SAMPLE(timer)
 
 #endif //#if defined(DEBUG_TIMERS)
+
+#endif // #if defined(__cplusplus)
 
 #endif // _DEBUG_H_
 
