@@ -368,7 +368,24 @@ static void luaDumpState(lua_State * L, const char * filename, const FILINFO * f
   } else
     TRACE_ERROR("luaDumpState(%s): Error: Could not open output file.", filename);
 }
-#endif  // LUA_COMPILER
+#endif  // defined(LUA_COMPILER)
+
+#define LDSCRPT_MODE_b        0x01
+#define LDSCRPT_MODE_t        0x02
+#define LDSCRPT_MODE_T        0x04
+//#define LDSCRPT_MODE_s      0x08  // reserved
+#define LDSCRPT_MODE_x        0x10
+#define LDSCRPT_MODE_c        0x20
+#define LDSCRPT_MODE_d        0x40
+#define LDSCRPT_MODE_bt       (LDSCRPT_MODE_b | LDSCRPT_MODE_t)
+#define LDSCRPT_MODE_cx       (LDSCRPT_MODE_c | LDSCRPT_MODE_x)
+#define LDSCRPT_MODE_BMSK     0x0F  // base load mode mask
+
+#define LDSCRPT_OPT_DO_CMPL   0x01  // needs compile
+#define LDSCRPT_OPT_LD_SRC    0x02  // load the source file
+#define LDSCRPT_OPT_LD_BIN    0x04  // load the binary file
+#define LDSCRPT_OPT_NM_BIN    0x10  // current name buffer has binary version
+#define LDSCRPT_OPT_NM_SRC    0x20  // current name buffer has source version
 
 /**
   @fn luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode)
@@ -376,11 +393,9 @@ static void luaDumpState(lua_State * L, const char * filename, const FILINFO * f
   Load a Lua script file into a given lua_State (stack).  May use OpenTx's optional pre-compilation
    feature to save memory and time during load.
 
-  @param L (lua_State) the Lua stack to load into.
-
-  @param filename (string) full path and file name of script.
-
-  @param mode (string) controls whether the file can be text or binary (that is, a pre-compiled file).
+  @param L The Lua stack to load into.
+  @param filename Full path and file name of script.
+  @param mode Controls whether the file can be text or binary (that is, a pre-compiled file).
    Possible values are:
     "b" only binary.
     "t" only text.
@@ -393,22 +408,21 @@ static void luaDumpState(lua_State * L, const char * filename, const FILINFO * f
     Add "d" to keep extra debug info in the compiled binary.
       Eg: "td", "btd", or "tcd" (no effect with just "b" or with "x").
 
-  @retval (int)
-  SCRIPT_OK on success (LUA_OK)
-  SCRIPT_NOFILE if file wasn't found for specified mode or Lua could not open file (LUA_ERRFILE)
-  SCRIPT_SYNTAX_ERROR if Lua returned a syntax error during pre/de-compilation (LUA_ERRSYNTAX)
-  SCRIPT_PANIC for Lua memory errors (LUA_ERRMEM or LUA_ERRGCMM)
+  @return
+    SCRIPT_OK on success (LUA_OK)
+    SCRIPT_NOFILE if file wasn't found for specified mode or Lua could not open file (LUA_ERRFILE)
+    SCRIPT_SYNTAX_ERROR if Lua returned a syntax error during pre/de-compilation (LUA_ERRSYNTAX)
+    SCRIPT_PANIC for Lua memory errors (LUA_ERRMEM or LUA_ERRGCMM)
 */
 int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode)
 {
-  if (luaState == INTERPRETER_PANIC) {
+  if (luaState == INTERPRETER_PANIC)
     return SCRIPT_PANIC;
-  } else if (filename == NULL) {
+  else if (filename == NULL)
     return SCRIPT_NOFILE;
-  }
 
   int lstatus;
-  char lmode[6] = "bt";
+  char lmode[4+1] = "bt";  // "btcd" is valid (tho pointless), so 4 chars max.
   uint8_t ret = SCRIPT_NOFILE;
 
   if (mode != NULL) {
@@ -417,17 +431,45 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   }
 
 #if defined(LUA_COMPILER)
-  uint16_t fnamelen;
+  uint16_t fnamelen = 0;
   uint8_t extlen;
   char filenameFull[LEN_FILE_PATH_MAX + _MAX_LFN + 1] = "\0";
   FILINFO fnoLuaS, fnoLuaC;
-  FRESULT frLuaS, frLuaC;
+  FRESULT frLuaS = FR_NO_FILE;
+  FRESULT frLuaC = FR_NO_FILE;
+  uint8_t modeFlags = 0;
+  uint8_t opFlags = 0;
 
-  bool scriptNeedsCompile = false;
-  uint8_t loadFileType = 0;  // 1=text, 2=binary
-
-  memset(&fnoLuaS, 0, sizeof(FILINFO));
-  memset(&fnoLuaC, 0, sizeof(FILINFO));
+  for (int i = 0, e = sizeof(lmode)-1; i < e && lmode[i] != 0; ++i) {
+    switch (lmode[i]) {
+      case 'b':
+        // prevent "Tb"
+        modeFlags = (modeFlags & ~LDSCRPT_MODE_T) | LDSCRPT_MODE_b;
+        break;
+      case 't':
+        // prevent "Tt"
+        modeFlags = (modeFlags & ~LDSCRPT_MODE_T) | LDSCRPT_MODE_t;
+        break;
+      case 'T':
+        // ignore "T" if "b" or "t" are already set
+        if (!(modeFlags & LDSCRPT_MODE_bt))
+          modeFlags |= LDSCRPT_MODE_T;
+        break;
+      case 'x':
+        // "c" overrides "x"
+        if (!(modeFlags & LDSCRPT_MODE_c))
+          modeFlags |= LDSCRPT_MODE_x;
+        break;
+      case 'c':
+        // "c" forces "t", overrides "x"
+        modeFlags = ((modeFlags & ~(LDSCRPT_MODE_BMSK | LDSCRPT_MODE_x)) | LDSCRPT_MODE_t | LDSCRPT_MODE_c);
+        break;
+      case 'd':
+        // "d" is only used when saving compiled bytecode
+        modeFlags |= LDSCRPT_MODE_d;
+        break;
+    }
+  }
 
   fnamelen = strlen(filename);
   // check if file extension is already in the file name and strip it
@@ -439,59 +481,78 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
   }
   strncat(filenameFull, filename, fnamelen);
 
-  // check if binary version exists
-  strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
-  frLuaC = f_stat(filenameFull, &fnoLuaC);
+  // optimize "tx" mode by skipping src file check altogether (assume it exists, let Lua handle missing file)
+  if (modeFlags == (LDSCRPT_MODE_t | LDSCRPT_MODE_x)) {
+    frLuaS = FR_OK;
+  }
+  // but need src file check unless we're not loading the src version at all
+  // note that "t" has alredy been forced if compile was forced with "c"
+  else if (modeFlags & (LDSCRPT_MODE_t | LDSCRPT_MODE_T)) {
+    // check if text version exists
+    strcpy(filenameFull + fnamelen, SCRIPT_EXT);
+    opFlags |= LDSCRPT_OPT_NM_SRC;
+    // we don't need the full stat info if compile is excluded (saves ~300 cycles)
+    if (modeFlags & LDSCRPT_MODE_x)
+      frLuaS = f_stat(filenameFull, NULL);
+    else
+      frLuaS = f_stat(filenameFull, &fnoLuaS);
+  }
 
-  // check if text version exists
-  strcpy(filenameFull + fnamelen, SCRIPT_EXT);
-  frLuaS = f_stat(filenameFull, &fnoLuaS);
+  // optimize "b" mode by skipping bin file check altogether (assume it exists, let Lua handle missing file)
+  if ((modeFlags & LDSCRPT_MODE_BMSK) == LDSCRPT_MODE_b) {
+    frLuaC = FR_OK;
+  }
+  // but need bin file check if mode specifies "b", we might be compiling, or a src file wasn't found with mode "T"
+  else if ((modeFlags & LDSCRPT_MODE_b) || !(modeFlags & LDSCRPT_MODE_cx) || ((modeFlags & LDSCRPT_MODE_T) && frLuaS != FR_OK)) {
+    // check if binary version exists
+    strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
+    opFlags = (opFlags & ~LDSCRPT_OPT_NM_SRC) | LDSCRPT_OPT_NM_BIN;
+    // we don't need the full stat info if compile is foced/excluded (saves ~300 cycles)
+    if ((modeFlags & LDSCRPT_MODE_cx))
+      frLuaC = f_stat(filenameFull, NULL);
+    else
+      frLuaC = f_stat(filenameFull, &fnoLuaC);
+  }
 
   // decide which version to load, text or binary
   if (frLuaC != FR_OK && frLuaS == FR_OK) {
     // only text version exists
-    loadFileType = 1;
-    scriptNeedsCompile = true;
+    opFlags |= LDSCRPT_OPT_LD_SRC;
+    // compile unless specifically disabled
+    if (!(modeFlags & LDSCRPT_MODE_x))
+      opFlags |= LDSCRPT_OPT_DO_CMPL;
   }
-  else if (frLuaC == FR_OK && frLuaS != FR_OK) {
+  else if (frLuaC == FR_OK && frLuaS != FR_OK && (modeFlags & LDSCRPT_MODE_BMSK) != LDSCRPT_MODE_t) {
     // only binary version exists
-    loadFileType = 2;
+    opFlags |= LDSCRPT_OPT_LD_BIN;
   }
   else if (frLuaS == FR_OK) {
-    // both versions exist, compare them
-    if (strchr(lmode, 'c') || (uint32_t)((fnoLuaC.fdate << 16) + fnoLuaC.ftime) < (uint32_t)((fnoLuaS.fdate << 16) + fnoLuaS.ftime)) {
-      // text version is newer than binary or forced by "c" mode flag, rebuild it
-      scriptNeedsCompile = true;
-    }
-    if (scriptNeedsCompile || !strchr(lmode, 'b')) {
-      // text version needs compilation or forced by mode
-      loadFileType = 1;
-    } else {
-      // use binary file
-      loadFileType = 2;
-    }
+    // both versions exist
+    // Recompile if forced by "c" mode flag, or not e"x"luded and src version is newer than binary.
+    if ((modeFlags & LDSCRPT_MODE_c) || (!(modeFlags & LDSCRPT_MODE_x) && (uint32_t)((fnoLuaC.fdate << 16) + fnoLuaC.ftime) < (uint32_t)((fnoLuaS.fdate << 16) + fnoLuaS.ftime)))
+      opFlags |= (LDSCRPT_OPT_DO_CMPL | LDSCRPT_OPT_LD_SRC);
+    else if (!(modeFlags & LDSCRPT_MODE_b))
+      opFlags |= LDSCRPT_OPT_LD_SRC;
+    else
+      opFlags |= LDSCRPT_OPT_LD_BIN;
   }
   // else both versions are missing
 
-  // skip compilation based on mode flags? ("c" overrides "x")
-  if (scriptNeedsCompile && strchr(lmode, 'x') && !strchr(lmode, 'c')) {
-    scriptNeedsCompile = false;
-  }
-
-  if (loadFileType == 2) {
-    // change file extension to binary version
+  // change or add file extension if needed
+  if ((opFlags & LDSCRPT_OPT_LD_BIN) && !(opFlags & LDSCRPT_OPT_NM_BIN))
     strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
-  }
+  else if ((opFlags & LDSCRPT_OPT_LD_SRC) && !(opFlags & LDSCRPT_OPT_NM_SRC))
+    strcpy(filenameFull + fnamelen, SCRIPT_EXT);
+  // we don't check the flename flags after this, so no need to reset them.
 
-//  TRACE_DEBUG("luaLoadScriptFileToState(%s, %s):\n", filename, lmode);
-//  TRACE_DEBUG("\tldfile='%s'; ldtype=%u; compile=%u;\n", filenameFull, loadFileType, scriptNeedsCompile);
-//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_EXT, (frLuaS == FR_OK ? "ok" : "nf"), fnoLuaS.fdate, fnoLuaS.ftime,
-//      (fnoLuaS.fdate >> 9) + 1980, (fnoLuaS.fdate >> 5) & 15, fnoLuaS.fdate & 31, fnoLuaS.ftime >> 11, (fnoLuaS.ftime >> 5) & 63, (fnoLuaS.ftime & 31) * 2);
-//  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_BIN_EXT, (frLuaC == FR_OK ? "ok" : "nf"), fnoLuaC.fdate, fnoLuaC.ftime,
-//      (fnoLuaC.fdate >> 9) + 1980, (fnoLuaC.fdate >> 5) & 15, fnoLuaC.fdate & 31, fnoLuaC.ftime >> 11, (fnoLuaC.ftime >> 5) & 63, (fnoLuaC.ftime & 31) * 2);
+  //  TRACE_DEBUG("luaLoadScriptFileToState(%s, %s): file='%s'; modeFlags=0x%02X; opFlags=0x%02X;\n", filename, lmode, filenameFull, modeFlags, opFlags);
+  //  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_EXT, (frLuaS == FR_OK ? "ok" : "nf"), fnoLuaS.fdate, fnoLuaS.ftime,
+  //      (fnoLuaS.fdate >> 9) + 1980, (fnoLuaS.fdate >> 5) & 15, fnoLuaS.fdate & 31, fnoLuaS.ftime >> 11, (fnoLuaS.ftime >> 5) & 63, (fnoLuaS.ftime & 31) * 2);
+  //  TRACE_DEBUG("\t%-5s: %s; mtime: %04X%04X = %u/%02u/%02u %02u:%02u:%02u;\n", SCRIPT_BIN_EXT, (frLuaC == FR_OK ? "ok" : "nf"), fnoLuaC.fdate, fnoLuaC.ftime,
+  //      (fnoLuaC.fdate >> 9) + 1980, (fnoLuaC.fdate >> 5) & 15, fnoLuaC.fdate & 31, fnoLuaC.ftime >> 11, (fnoLuaC.ftime >> 5) & 63, (fnoLuaC.ftime & 31) * 2);
 
-  // final check that file exists and is allowed by mode flags
-  if (!loadFileType || (loadFileType == 1 && !strpbrk(lmode, "tTc")) || (loadFileType == 2 && !strpbrk(lmode, "bT"))) {
+  // final check that file exists
+  if (!(opFlags & (LDSCRPT_OPT_LD_BIN | LDSCRPT_OPT_LD_SRC))) {
     TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: file not found.\n", filename, lmode);
     return SCRIPT_NOFILE;
   }
@@ -507,19 +568,19 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
 
   // we don't pass <mode> on to loadfilex() because we want lua to load whatever file we specify, regardless of content
   lstatus = luaL_loadfilex(L, filenameFull, NULL);
+
 #if defined(LUA_COMPILER)
   // Check for bytecode encoding problem, eg. compiled for x64. Unfortunately Lua doesn't provide a unique error code for this. See Lua/src/lundump.c.
-  if (lstatus == LUA_ERRSYNTAX && loadFileType == 2 && frLuaS == FR_OK && strstr(lua_tostring(L, -1), "precompiled")) {
-    loadFileType = 1;
-    scriptNeedsCompile = true;
+  if (lstatus == LUA_ERRSYNTAX && (opFlags & LDSCRPT_OPT_LD_BIN) && frLuaS == FR_OK && strstr(lua_tostring(L, -1), "precompiled")) {
+    opFlags |= (LDSCRPT_OPT_DO_CMPL | LDSCRPT_OPT_LD_SRC);
     strcpy(filenameFull + fnamelen, SCRIPT_EXT);
     TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: %s\n\tRetrying with %s\n", filename, lmode, lua_tostring(L, -1), filenameFull);
     lstatus = luaL_loadfilex(L, filenameFull, NULL);
   }
   if (lstatus == LUA_OK) {
-    if (scriptNeedsCompile && loadFileType == 1) {
+    if ((opFlags & LDSCRPT_OPT_DO_CMPL) && (opFlags & LDSCRPT_OPT_LD_SRC)) {
       strcpy(filenameFull + fnamelen, SCRIPT_BIN_EXT);
-      luaDumpState(L, filenameFull, &fnoLuaS, (strchr(lmode, 'd') ? 0 : 1));
+      luaDumpState(L, filenameFull, &fnoLuaS, ((modeFlags & LDSCRPT_MODE_d) ? 0 : 1));
     }
     ret = SCRIPT_OK;
   }
