@@ -130,6 +130,8 @@ extern "C++" {
     pthread_create(&taskId, nullptr, task, nullptr);
   }
 
+  #define RTOS_SET_TASK_PRIORITY(taskId, priority)    // TODO (only uesd in CLI right now)
+
   #define TASK_RETURN()                 return nullptr
 
   constexpr uint16_t stackAvailable()
@@ -192,6 +194,8 @@ extern "C++" {
 
   #define RTOS_CREATE_TASK(taskId, task, name, stackStruct, stackSize, priority)   \
                                         taskId = CoCreateTask(task, NULL, priority, &stackStruct.stack[stackSize-1], stackSize)
+
+  #define RTOS_SET_TASK_PRIORITY(taskId, priority)   CoSetPriority(taskId, priority)
 
 #ifdef __cplusplus
   static inline void RTOS_CREATE_MUTEX(OS_MutexID &mutex)
