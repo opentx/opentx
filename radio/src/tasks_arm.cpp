@@ -270,12 +270,12 @@ void tasksStart()
   cliStart();
 #endif
 
-  mixerTaskId = CoCreateTask(mixerTask, NULL, 5, &mixerStack.stack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
-  menusTaskId = CoCreateTask(menusTask, NULL, 10, &menusStack.stack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
+  mixerTaskId = CoCreateTask(mixerTask, NULL, MIXER_TASK_PRIO, &mixerStack.stack[MIXER_STACK_SIZE-1], MIXER_STACK_SIZE);
+  menusTaskId = CoCreateTask(menusTask, NULL, MENUS_TASK_PRIO, &menusStack.stack[MENUS_STACK_SIZE-1], MENUS_STACK_SIZE);
 
 #if !defined(SIMU)
   // TODO move the SIMU audio in this task
-  audioTaskId = CoCreateTask(audioTask, NULL, 7, &audioStack.stack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
+  audioTaskId = CoCreateTask(audioTask, NULL, AUDIO_TASK_PRIO, &audioStack.stack[AUDIO_STACK_SIZE-1], AUDIO_STACK_SIZE);
 #endif
 
   audioMutex = CoCreateMutex();

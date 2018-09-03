@@ -1339,5 +1339,5 @@ void cliTask(void * pdata)
 
 void cliStart()
 {
-  cliTaskId = CoCreateTaskEx(cliTask, NULL, 10, &cliStack.stack[CLI_STACK_SIZE-1], CLI_STACK_SIZE, 1, false);
+  cliTaskId = CoCreateTaskEx(cliTask, NULL, CLI_TASK_PRIO, &cliStack.stack[CLI_STACK_SIZE-1], CLI_STACK_SIZE, 1, false);
 }
