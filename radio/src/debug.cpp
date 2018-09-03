@@ -19,8 +19,13 @@
  */
 
 #include "opentx.h"
+#include "rtos.h"
 #include "stamp.h"
 #include <stdarg.h>
+
+#if !defined(SIMU) && (defined(STM32F2) || defined(PCBSKY9X))
+  #include "dwt.h"    // STM32F2 library and SKY9X SAM do not define DWT registers
+#endif
 
 #if defined(SIMU)
 traceCallbackFunc traceCallback = 0;
@@ -138,7 +143,7 @@ void dumpTraceBuffer()
     " notd",  // INT_OTG_FS_RX_NOT_DEVICE,
 #endif // #if defined(DEBUG_USB_INTERRUPTS)
   };
-#elif defined(PCBTARANIS) 
+#elif defined(PCBTARANIS)
   const char * const interruptNames[INT_LAST] = {
     "Tick ",   // INT_TICK,
     "5ms  ",   // INT_5MS,
@@ -202,32 +207,51 @@ void CoTaskSwitchHook(uint8_t taskID)
 
 #endif // #if defined(DEBUG_TASKS)
 
-#if defined(DEBUG_TIMERS)
+
+/*
+   DebugTimer
+*/
+
+#ifdef SIMU
+  #define SYSTEM_GET_TICKS()     (uint32_t)simuTimerMicros()      // returns 1us increments
+  #define SYSTEM_TICKS_1US       (1)
+#else
+  #define SYSTEM_GET_TICKS()     (DWT->CYCCNT)                    // use cycle counter
+  #define SYSTEM_TICKS_1US       (CFG_CPU_FREQ / 1000000)         // number of CPU cycles in 1us
+#endif
+#define SYSTEM_TICKS_MAX_US      (0xFFFFFFFF / SYSTEM_TICKS_1US)  // longest possible time span using systicks (must fit into uint32)
 
 void DebugTimer::start()
 {
-  _start_hiprec = getTmr2MHz();
-  _start_loprec = get_tmr10ms();
+  start_loprec = RTOS_GET_MS();
+  start_hiprec = SYSTEM_GET_TICKS();
 }
 
-void DebugTimer::stop()
+debug_timer_t DebugTimer::stop()
 {
-  // getTmr2MHz is 16 bit timer, resolution 0.5us, max measurable value 32.7675 milli seconds
-  // tmr10ms_t tmr10ms = get_tmr10ms(); 32 bit timer, resolution 10ms, max measurable value: 42949672.95 s = 1.3 years
-  // if time difference is bigger than 30ms, then use low resolution timer
-  // otherwise use high resolution
-  if ((_start_hiprec == 0) && (_start_loprec == 0)) return;
-
-  last = get_tmr10ms() - _start_loprec;  //use low precision timer
-  if (last < 3) {
-    //use high precision
-    last = (uint16_t)(getTmr2MHz() - _start_hiprec) / 2;
-  }
-  else {
-    last *= 10000ul; //adjust unit to 1us
-  }
-  evalStats(); 
+  // The DWT cycle count timer is 32b with a maximum span depending on CPU frequency (eg. ~25.5s on F4 @ 168MHz, ~35.5s on F2 @ 120MHz).
+  // If time difference is larger than that, then we use the lower-resolution 64-bit RTOS timer (currently 2ms per tick, ~99 days total)
+  const uint32_t lpdlta = (RTOS_GET_MS() - start_loprec) * 1000;
+  if (lpdlta > SYSTEM_TICKS_MAX_US)
+    last = lpdlta;
+  else
+    last = (SYSTEM_GET_TICKS() - start_hiprec) / SYSTEM_TICKS_1US;
+  evalStats();
+  return last;
 }
+
+void DebugTimer::evalStats()
+{
+  ++iter;
+  ttl += last;
+  if (min > last)
+    min = last;
+  if (max < last)
+    max = last;
+}
+
+
+#if defined(DEBUG_TIMERS)
 
 DebugTimer debugTimers[DEBUG_TIMERS_COUNT];
 
@@ -266,4 +290,4 @@ const char * const debugTimerNames[DEBUG_TIMERS_COUNT] = {
 
 };
 
-#endif
+#endif  // defined(DEBUG_TIMERS)
