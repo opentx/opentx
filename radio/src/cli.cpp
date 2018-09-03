@@ -23,6 +23,8 @@
 #include <ctype.h>
 #include <malloc.h>
 #include <new>
+#include <unordered_map>
+#include <vector>
 
 #define CLI_COMMAND_MAX_ARGS           8
 #define CLI_COMMAND_MAX_LEN            256
@@ -1115,6 +1117,136 @@ int cliDebugVars(const char ** argv)
   return 0;
 }
 
+//
+// Benchmarking
+//
+
+/*!
+   \brief Loop over a callback function \a cb for \a iter number of times while timing each iteration.
+   \param title A name for the test, printed in the report.
+   \param iter  Number of iterations to perform.
+   \param cb    Callback to execute for the actual test, which returns void and takes one argument of type \a int \e (void (*)(int)).
+   \param args  Vector of argument(s) to pass to callback. One set of iterations is executed for each argument in the list, using each one in turn as the callback argument.
+   \param names Vector of names for tests, corresponding to the arguments list. These are just printed along with status output, they're not passed to the callback.
+   \param delay Number of RTOS ticks to sleep between loops (not counted in statistics). Default is zero (0). (Currently a tick is 2ms.)
+*/
+void cliBenchIterate(const char * title, int iter, void (*cb)(int), const std::vector<int> & args, const std::vector<const char *> & names, uint32_t delay = 0)
+{
+  if (args.size() > names.size()) {
+    serialPrintf("cliBenchIterate() error: args array longer than names array.\n");
+    return;
+  }
+  DebugTimer tmr;
+  std::unordered_map<int, debug_timer_t> iterTimes(args.size());
+  int maxNameLen = 0;
+  int n = 0;
+  serialPrintf("!! Starting: %s  [%d iterations]\n\n", title, iter);
+  CoSetPriority(cliTaskId, 1);  // prevent thread hijack
+  for (const int arg: args) {
+    tmr.reset();
+    for (int i=0; i < iter; ++i) {
+      tmr.start();
+      cb(arg);                 //< the timed part
+      tmr.stop();
+      serialPrintf("++ [%s] iter: %d; elapsed: %lu;\n", names.at(n), i+1, tmr.getLast());
+      if (delay)
+        CoTickDelay(delay);
+    }
+    iterTimes.insert({arg, tmr.getTotal()});
+    int nameLen;
+    serialPrintf("== [%s%n]: iterations: %lu;  avg: %lu;  min: %lu;  max: %lu;  ttl: %lu;\n\n", names.at(n), &nameLen, tmr.iterations(), tmr.getAvg(), tmr.getMin(), tmr.getMax(), tmr.getTotal());
+    ++n;
+    if (nameLen > maxNameLen)
+      maxNameLen = nameLen;
+  }
+  CoSetPriority(cliTaskId, CLI_TASK_PRIO);
+  if (args.size() < 2)
+    return;
+  // show a comparison report if > 1 arguments
+  n = 0;
+  serialPrintf("Comparison report: %s  [%d iterations]\n", title, iter);
+  serialPrintf("  %*s : %8s (%-13s);\t %9s (%-13s);\n", maxNameLen * 2, "test deltas", "avg", "percent  chng", "total", "percent  chng");
+  for (const int arg1: args) {
+    int n2 = 0;
+    for (const int arg2: args) {
+      if (arg2 > arg1) {
+        const debug_timer_t v1 = iterTimes.find(arg1)->second;
+        const debug_timer_t v2 = iterTimes.find(arg2)->second;
+        const int32_t dT = (v2 - v1);  // total delta
+        const int32_t dA = dT / iter;  // avg delta
+        const float dpT = roundf(float(abs(dT)) / float(v2) * 10000.0f) * 0.01f;         // total delta in abs percent
+        const float dpA = roundf(float(abs(dA)) / float(v2 / iter) * 10000.0f) * 0.01f;  // avg delta in abs percent
+        serialPrintf("  [%s] vs [%s] : %8ld (%3lu.%02u%% %s);\t %9ld (%3lu.%02u%% %s);\n", names.at(n2), names.at(n),
+                     dA, uint32_t(dpA), uint16_t((dpA-uint32_t(dpA)) * 100.0f), (dA < 0 ? "bettr" : "worse"),
+                     dT, uint32_t(dpT), uint16_t((dpT-uint32_t(dpT)) * 100.0f), (dT < 0 ? "bettr" : "worse"));
+      }
+      ++n2;
+    }
+    ++n;
+  }
+  serialPrintf("\n");
+}
+
+//! \overload Convenience version of cliBenchIterate() to just run a function callback with one default argument of 0 (zero) and test name of "benchmark".  \sa cliBenchIterate()
+void cliBenchIterate(const char * title, int iter, void (*cb)(int), uint32_t delay = 0)
+{
+  cliBenchIterate(title, iter, cb, std::vector<int>(1, 0), std::vector<const char *>(1, "benchmark"), delay);
+}
+
+//! Benchmarking callback function, left here as an example . \a ver is version of test to execute.  \sa cliBenchIterate()
+//!  Note that everything inside the callback functions is timed, so keep it to a bare minimum of just the bits you want to test.
+void cliBenchFileStat(int ver)
+{
+  //! Important: if we need some place to store return values from function calls, they MUST be volatile,
+  //!   otherwise compiler just optimizes everything out (runs very fast that way though ;-)
+  volatile int r;
+  const char file[] = "/SCRIPTS/WIZARD/plane.lua";
+  switch (ver) {
+    // with FILINFO
+    case 0: {
+      FILINFO fi;
+      r = f_stat(file, &fi);
+      //TRACE_DEBUG("f_stat(%s) returns %d; name %s\n", scrpt, r, fi.fname);
+      break;
+    }
+    // no FILINFO
+    case 1:
+      r = f_stat(file, NULL);
+      //TRACE_DEBUG("f_stat(%s) returns %d; name %s\n", scrpt, r, "no-name");
+      break;
+
+    default:
+      break;
+  }
+  UNUSED(r);  // prevent compiler warnings
+}
+
+//! Main branch point for "bench" commands. Just add yours here in another "if" branch.  Clean up after you're done... ;-)
+int cliBench(const char ** argv)
+{
+  const bool doAll = !strcmp(argv[1], "all");
+  bool ok = false;
+  int iter;
+  if (toInt(argv, 2, &iter) <= 0)
+    iter = 1;
+
+  serialPrintf("\n");
+  if (doAll || !strcmp(argv[1], "fstat")) {
+    const char ttl[] = "f_stat with vs. w/out FILINFO";
+    const std::vector<int> args = {0, 1};
+    const std::vector<const char *> names = {"with ", "w/out"};
+    cliBenchIterate(ttl, iter, &cliBenchFileStat, args, names, 10);
+    ok = true;
+  }
+  if (!ok) {
+    serialPrintf("Invalid argument: %s\n", argv[1]);
+  }
+  return 0;
+}
+
+// Benchmarking end
+
+
 int cliRepeat(const char ** argv)
 {
   int interval = 0;
@@ -1228,6 +1360,7 @@ const CliCommand cliCommands[] = {
   { "help", cliHelp, "[<command>]" },
   { "debugvars", cliDebugVars, "" },
   { "repeat", cliRepeat, "<interval> <command>" },
+  { "bench", cliBench, "(<test name> | all) [<iterations>]  !!! blocks other tasks !!!" },
 #if defined(JITTER_MEASURE)
   { "jitter", cliShowJitter, "" },
 #endif
