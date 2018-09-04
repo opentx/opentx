@@ -2651,7 +2651,7 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1107"/>
         <source>Enable non certified firmwares</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer les firmwares non certifiés</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1223"/>
@@ -8627,7 +8627,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="771"/>
         <source>WARNING: Requires non-certified R9M firmware!</source>
-        <translation type="unfinished"></translation>
+        <translation>ATTENTION: Nécessite un firmware R9M non certifié!</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="797"/>
@@ -8690,75 +8690,75 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="82"/>
         <source>Trainer Port</source>
-        <translation type="unfinished">Port écolage</translation>
+        <translation>Port écolage</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="86"/>
         <source>Internal Radio System</source>
-        <translation type="unfinished">Module HF interne</translation>
+        <translation>Module HF interne</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="86"/>
         <source>External Radio Module</source>
-        <translation type="unfinished">Module HF externe</translation>
+        <translation>Module HF externe</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="88"/>
         <source>Extra Radio System</source>
-        <translation type="unfinished">Module HF supplémentaire</translation>
+        <translation>Module HF supplémentaire</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="90"/>
         <source>Radio System</source>
-        <translation type="unfinished">Module HF</translation>
+        <translation>Module HF</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="117"/>
         <source>10mW - 16CH</source>
-        <translation type="unfinished">25mW - 16 VOIES {10m?} {16C?}</translation>
+        <translation>10mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="117"/>
         <location filename="../firmwares/moduledata.cpp" line="119"/>
         <source>100mW - 16CH</source>
-        <translation type="unfinished">100mW - 16 VOIES</translation>
+        <translation>100mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="117"/>
         <source>500mW - 16CH</source>
-        <translation type="unfinished">25mW - 16 VOIES {500m?} {16C?}</translation>
+        <translation>500mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="117"/>
         <source>1W - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>1W - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="118"/>
         <location filename="../firmwares/moduledata.cpp" line="120"/>
         <source>25mW - 8CH</source>
-        <translation type="unfinished">25mW - 8 VOIES</translation>
+        <translation>25mW - 8 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="118"/>
         <location filename="../firmwares/moduledata.cpp" line="120"/>
         <source>25mW - 16CH</source>
-        <translation type="unfinished">25mW - 16 VOIES</translation>
+        <translation>25mW - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="118"/>
         <source>200mW - 16CH (no telemetry)</source>
-        <translation type="unfinished"></translation>
+        <translation>200mW - 16 VOIES (pas de télémétrie)</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="118"/>
         <source>500mW - 16CH (no telemetry)</source>
-        <translation type="unfinished"></translation>
+        <translation>500mW - 16 VOIES (pas de télémétrie)</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="120"/>
         <source>100mW - 16CH (no telemetry)</source>
-        <translation type="unfinished"></translation>
+        <translation>100mW - 16 VOIES (pas de télémétrie)</translation>
     </message>
 </context>
 <context>
@@ -9268,7 +9268,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="141"/>
         <source>Custom - proto %1)</source>
-        <translation type="unfinished">Personnaliser - proto %1)</translation>
+        <translation>Personnaliser - proto %1)</translation>
     </message>
 </context>
 <context>
