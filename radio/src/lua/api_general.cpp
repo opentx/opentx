@@ -1200,15 +1200,24 @@ then the loaded script (or "chunk") is returned as a function. Otherwise, return
    * Add `d` to keep extra debug info in the compiled binary.
        Eg: "td", "btd", or "tcd" (no effect with just "b" or with "x").
 
-@notice
-  Note that you will get an error if you specify `mode` as "b" or "t" and that specific version of the file does not exist (eg. no .luac file when "b" is used).
-  Also note that `mode` is NOT passed on to Lua's loader function, so unlike with loadfile() the actual file content is not checked (as if no mode or "bt" were passed to loadfile()).
-
 @param env (integer) See documentation for Lua function loadfile().
 
 @retval function The loaded script, or `nil` if there was an error (e.g. file not found or syntax error).
 
 @retval string Error message(s), if any. Blank if no error occurred.
+
+@notice
+  Note that you will get an **error** if you specify `mode` as `b` or `t` and that specific version of the file does not exist (eg. no .luac file when `b` is used).
+
+@notice
+  Mode `b` is **optimized** for the fastest loading time by skipping any file checks and will _not_ check for, or compile, the source version at all.
+  Similarly, `tx` mode is also the fastest way to load the source version.  Both of these are comparible in terms of performance to using `loadfile()` directly.
+
+@notice
+  The `mode` parameter is ignored when `luac` is disabled by firmware build options. Whatever is specified in `file` is loaded directly.
+
+@notice
+  Also note that `mode` is NOT passed on to Lua's loader function, so unlike with `loadfile()` the actual file content is not checked (as if no mode or "bt" were passed to `loadfile()`).
 
 @status current Introduced in 2.2.0
 
