@@ -80,7 +80,7 @@ for s, f, a in [("Inaktivitätsalarm", "inactiv", 486),
                 ("timer eins abgelaufen", "timovr1", NO_ALTERNATE),
                 ("timer zwei abgelaufen", "timovr2", NO_ALTERNATE),
                 ("timer drei abgelaufen", "timovr3", NO_ALTERNATE),
-                ("Sensor veloren", "sensorko", NO_ALTERNATE),
+                ("Sensor verloren", "sensorko", NO_ALTERNATE),
                 ("Willkommen bei open te ix", "hello", 480),
                 ]:
     systemSounds.append((s, filename(f, a)))
