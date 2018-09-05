@@ -31,38 +31,38 @@
 
 FIFOBufferDevice::FIFOBufferDevice(QObject * parent) :
   QBuffer(parent),
-  m_dataBufferMaxSize(20 * 1024),
   m_hasOverflow(false)
 {
+  setDataBufferMaxSize(20 * 1024);
 }
 
-qint64 FIFOBufferDevice::getDataBufferMaxSize() const
+void FIFOBufferDevice::setDataBufferMaxSize(int size)
 {
-  return m_dataBufferMaxSize;
-}
-
-void FIFOBufferDevice::setDataBufferMaxSize(qint64 size)
-{
-  if (m_dataBufferMaxSize > size)
-    trimData(m_dataBufferMaxSize - size);
-
-  m_dataBufferMaxSize = size;
+  QWriteLocker locker(&m_dataRWLock);
+  if (buffer().capacity() > size) {
+    trimData(buffer().capacity() - size);
+    buffer().squeeze();
+  }
+  buffer().reserve(size);
 }
 
 // Remove data from beginning of storage array.
 // NOT thread-safe, lock data before use (this avoids needing a recursive mutex)
-qint64 FIFOBufferDevice::trimData(qint64 len)
+int FIFOBufferDevice::trimData(int len)
 {
-  if (!isWritable())
+  if (!isWritable() || len <= 0)
     return 0;
 
-  qint64 count = 0;
-  if (len > 0) {
-    count = qMin(len, (qint64)buffer().size());
-    buffer().remove(0, count);
-    seek(0);
-  }
-  return count;
+  len = qMin(len, buffer().size());
+  buffer().remove(0, len);
+  QIODevice::seek(0);
+  return len;
+}
+
+int FIFOBufferDevice::nextLineLen() const
+{
+  QReadLocker locker(&m_dataRWLock);
+  return buffer().indexOf('\n', 0) + 1;
 }
 
 qint64 FIFOBufferDevice::writeData(const char * data, qint64 len)
@@ -73,10 +73,10 @@ qint64 FIFOBufferDevice::writeData(const char * data, qint64 len)
   QWriteLocker locker(&m_dataRWLock);
 
   // Handle overflow
-  if (size() + len > m_dataBufferMaxSize) {
+  if (size() + len > getDataBufferMaxSize()) {
     m_hasOverflow = true;
-    qint64 tlen = trimData(size() + len - m_dataBufferMaxSize);
-    emit bufferOverflow(tlen);
+    const int tlen = trimData(size() + len - getDataBufferMaxSize());
+    emit bufferOverflow(qint64(tlen));
   }
   else if (m_hasOverflow) {
     m_hasOverflow = false;
@@ -84,65 +84,62 @@ qint64 FIFOBufferDevice::writeData(const char * data, qint64 len)
   }
 
   // Always write to end of stream.
-  if (!seek(size()))
+  if (!QIODevice::seek(size()))
     return -1;
 
   // Save the data
   len = QBuffer::writeData(data, len);
   // Make sure we're always ready for reading, this makes bytesAvailable() (et.al.) return correct result.
-  seek(0);
+  QIODevice::seek(0);
 
   return len;
 }
 
 qint64 FIFOBufferDevice::readData(char * data, qint64 len)
 {
-  if (!isReadable())
+  len = qMin(len, qint64(buffer().size()));
+  if (!isReadable() || len <= 0)
     return 0;
 
-  // Do not block
-  if (m_dataRWLock.tryLockForRead()) {
-    // Always take data from top
-    if (seek(0)) {
-      len = QBuffer::readData(data, len);
-      trimData(len);
-    }
-    m_dataRWLock.unlock();
+  QWriteLocker locker(&m_dataRWLock);
+  // Always take data from top
+  if (QIODevice::seek(0)) {
+    memcpy(data, buffer().constData(), len);
+    buffer().remove(0, len);
   }
-
+  else {
+    len = -1;
+  }
   return len;
 }
 
 qint64 FIFOBufferDevice::readLine(char * data, qint64 maxSize)
 {
-  m_dataRWLock.lockForRead();
-  qint64 len = buffer().indexOf('\n', 0);
-  m_dataRWLock.unlock();
+  if (maxSize < 2)
+    return -1;
 
-  if (len < 0 || maxSize <= 0)
+  int len = nextLineLen();
+  if (len <= 0)
     return 0;
 
-  ++len;
-  len = qMin(len, maxSize);
-  return readData(data, len);
+  len = qMin(len, int(maxSize));
+  return readData(data, qint64(len));
 }
 
 QByteArray FIFOBufferDevice::readLine(qint64 maxSize)
 {
-  QByteArray ba;
-  m_dataRWLock.lockForRead();
-  qint64 len = buffer().indexOf('\n', 0);
-  m_dataRWLock.unlock();
+  if (maxSize < 0)
+    return QByteArray();
 
-  if (len < 0)
-    return ba;
+  int len = nextLineLen();
+  if (len <= 0)
+    return QByteArray();
 
-  ++len;
-  if (maxSize > 0)
-    len = qMin(len, maxSize);
+  if (maxSize > 1)
+    len = qMin(len, int(maxSize - 1));
 
-  ba.fill(0, len);
-  len = readData(ba.data(), len);
+  QByteArray ba(len, 0);
+  len = int(readData(ba.data(), qint64(len)));
 
   if (len < 0)
     len = 0;
@@ -163,15 +160,12 @@ FilteredTextBuffer::FilteredTextBuffer(QObject * parent) :
   FIFOBufferDevice(parent),
   m_inBuffer(new FIFOBufferDevice(this)),
   m_bufferFlushTimer(new QTimer(this)),
-  m_lineFilter(QRegularExpression()),
-  m_inBuffMaxSize(5 * 1024),
-  m_inBuffFlushTimeout(1500),
   m_lineFilterEnable(false),
   m_lineFilterExclusive(false)
 {
   m_bufferFlushTimer->setSingleShot(true);
-  setInputBufferMaxSize(m_inBuffMaxSize);
-  setInputBufferTimeout(m_inBuffFlushTimeout);
+  setInputBufferMaxSize(5 * 1024);
+  setInputBufferTimeout(1500);
 
   connect(m_inBuffer, &FIFOBufferDevice::readyRead, this, &FilteredTextBuffer::processInputBuffer, Qt::QueuedConnection);
   connect(m_inBuffer, &FIFOBufferDevice::bytesWritten, this, &FilteredTextBuffer::onInputBufferWrite, Qt::QueuedConnection);
@@ -186,44 +180,26 @@ FilteredTextBuffer::~FilteredTextBuffer()
   if (m_bufferFlushTimer) {
     disconnect(m_bufferFlushTimer, 0, this, 0);
     disconnect(this, 0, m_bufferFlushTimer, 0);
-    m_bufferFlushTimer->deleteLater();
-    m_bufferFlushTimer = Q_NULLPTR;
   }
   if (m_inBuffer) {
     closeInputBuffer();
     disconnect(m_inBuffer, 0, this, 0);
-    m_inBuffer->deleteLater();
-    m_inBuffer = Q_NULLPTR;
   }
 }
 
-qint64 FilteredTextBuffer::getInputBufferMaxSize() const
+void FilteredTextBuffer::setInputBufferMaxSize(int size)
 {
-  return m_inBuffMaxSize;
+  m_inBuffer->setDataBufferMaxSize(size);
 }
 
-quint32 FilteredTextBuffer::getInputBufferTimeout() const
+void FilteredTextBuffer::setInputBufferTimeout(int ms)
 {
-  return m_inBuffFlushTimeout;
-}
-
-void FilteredTextBuffer::setInputBufferMaxSize(qint64 size)
-{
-  m_inBuffMaxSize = size;
-  if (m_inBuffer)
-    m_inBuffer->setDataBufferMaxSize(size);
-}
-
-void FilteredTextBuffer::setInputBufferTimeout(quint32 ms)
-{
-  m_inBuffFlushTimeout = ms;
-  if (m_bufferFlushTimer)
-    m_bufferFlushTimer->setInterval(ms);
+  m_bufferFlushTimer->setInterval(ms);
 }
 
 void FilteredTextBuffer::setLineFilterExpr(const QRegularExpression & expr)
 {
-  if (expr.isValid())
+  if (!expr.pattern().isEmpty() && expr.isValid())
     m_lineFilter = expr;
   else
     setLineFilterEnabled(false);
@@ -231,7 +207,9 @@ void FilteredTextBuffer::setLineFilterExpr(const QRegularExpression & expr)
 
 void FilteredTextBuffer::setLineFilterEnabled(bool enable)
 {
-  if (!enable && m_lineFilterEnable)
+  if (enable && !m_inBuffer->isOpen())
+    openInputBuffer();
+  else if (!enable)
     closeInputBuffer();
 
   m_lineFilterEnable = enable;
@@ -251,7 +229,7 @@ void FilteredTextBuffer::setLineFilter(bool enable, bool exclusive, const QRegul
 
 qint64 FilteredTextBuffer::writeDataSuper(const char * data, qint64 len)
 {
-  if (len == -1)
+  if (len < 0)
     len = qstrlen(data);
 
   return FIFOBufferDevice::writeData(data, len);
@@ -259,17 +237,20 @@ qint64 FilteredTextBuffer::writeDataSuper(const char * data, qint64 len)
 
 qint64 FilteredTextBuffer::writeData(const char * data, qint64 len)
 {
-  if (!isWritable())
+  if (!isWritable() || len < 0)
     return -1;
+  if (!len)
+    return 0;
 
+  const qint64 maxSz = qint64(getInputBufferMaxSize());
   // if filter is disabled, invalid, or input buffer failure, write directly to output buffer
-  if (!m_lineFilterEnable || !m_inBuffer || len > m_inBuffMaxSize || (!m_inBuffer->isOpen() && !openInputBuffer()))
+  if (!m_inBuffer->isOpen() || len > maxSz)
     return writeDataSuper(data, len);
 
   // check for input buffer overflow
-  if (m_inBuffer->bytesAvailable() + len > m_inBuffMaxSize) {
+  if (m_inBuffer->bytesAvailable() + len > maxSz) {
     flushInputBuffer();
-    onInputBufferOverflow(m_inBuffer->bytesAvailable() + len - m_inBuffMaxSize);
+    onInputBufferOverflow(m_inBuffer->bytesAvailable() + len - maxSz);
   }
 
   return m_inBuffer->write(data, len);
@@ -278,16 +259,15 @@ qint64 FilteredTextBuffer::writeData(const char * data, qint64 len)
 void FilteredTextBuffer::flushInputBuffer()
 {
   emit timerStop();
-
-  if (m_inBuffer && m_inBuffer->bytesAvailable()) {
-    // qDebug() << "Flushing input buffer.";
-    writeDataSuper(m_inBuffer->readAll().constData());
+  if (m_inBuffer->bytesAvailable()) {
+    const QByteArray text = m_inBuffer->readAll();
+    writeDataSuper(text.constData(), qint64(text.size()));
   }
 }
 
 void FilteredTextBuffer::closeInputBuffer()
 {
-  if (!m_inBuffer || !m_inBuffer->isOpen())
+  if (!m_inBuffer->isOpen())
     return;
 
   flushInputBuffer();
@@ -296,37 +276,33 @@ void FilteredTextBuffer::closeInputBuffer()
 
 bool FilteredTextBuffer::openInputBuffer()
 {
-  if (m_inBuffer && m_inBuffer->isOpen())
+  if (m_inBuffer->isOpen())
     closeInputBuffer();
 
-  return m_inBuffer->open(ReadWrite);
+  return m_inBuffer->open(ReadWrite | Text);
 }
 
 void FilteredTextBuffer::processInputBuffer()
 {
-  if (m_lineFilterEnable && m_inBuffer && m_inBuffer->canReadLine()) {
-    emit timerStop();
-    while (m_inBuffer && m_inBuffer->canReadLine()) {
-      QByteArray text = m_inBuffer->readLine();
-      bool fltMatch = QString(text).contains(m_lineFilter);
-      // check line against filter
-      if ((m_lineFilterExclusive && !fltMatch) || (!m_lineFilterExclusive && fltMatch)) {
-        // Write line to output buffer
-        writeDataSuper(text.constData());
-      }
-    }
-    // restart timer if unread bytes still remain
-    if (m_inBuffer && m_inBuffer->bytesAvailable() > 0)
-      emit timerStart();
+  if (!m_lineFilterEnable) {
+    return closeInputBuffer();
   }
-  else if (!m_lineFilterEnable || !m_inBuffer) {
-    closeInputBuffer();
+  else if (sender() == m_bufferFlushTimer) {
+    return flushInputBuffer();
   }
-  else if (m_bufferFlushTimer && !m_bufferFlushTimer->remainingTime()) {
-    flushInputBuffer();
-    //qDebug() << "Input buffer timeout.";
+
+  emit timerStop();
+  while (m_lineFilterEnable && m_inBuffer->canReadLine()) {
+    const QByteArray text = m_inBuffer->readLine();
+    // If line matches inclusive filter or does not match exclusive filter, write it to output buffer.
+    if (!text.isEmpty() && m_lineFilterExclusive != QString(text).contains(m_lineFilter))
+      writeDataSuper(text.constData(), qint64(text.size()));
   }
+  // restart timer if unread bytes still remain
+  if (m_inBuffer->bytesAvailable() > 0)
+    emit timerStart();
 }
+
 void FilteredTextBuffer::onInputBufferWrite(qint64)
 {
   emit timerStart();
