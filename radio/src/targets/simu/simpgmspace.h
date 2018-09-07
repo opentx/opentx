@@ -227,21 +227,24 @@ extern uint32_t Master_frequency;
 #define __disable_irq()
 #define __enable_irq()
 
-extern uint8_t main_thread_running;
+extern uint8_t simu_start_mode;
 extern char * main_thread_error;
+
+#define OPENTX_START_DEFAULT_ARGS  simu_start_mode
 
 static inline void getADC()
 {
 }
 
-#define SIMU_SLEEP(x) do { if (!main_thread_running) return; sleep(x/*ms*/); } while (0)
-#define SIMU_SLEEP_NORET(x) do { sleep(x/*ms*/); } while (0)
+#define SIMU_SLEEP(x)       simuSleep(x)
 
 uint64_t simuTimerMicros(void);
 
 void simuInit();
 void StartSimu(bool tests=true, const char * sdPath = 0, const char * settingsPath = 0);
 void StopSimu();
+bool simuIsRunning();
+bool simuSleep(uint32_t ms);
 
 void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);
@@ -257,7 +260,7 @@ void StopEepromThread();
   #define StopAudioThread()
 #endif
 
-void * simuMain(void * args = NULL);
+void simuMain();
 
 #define UART_Stop(...)
 #define UART3_Stop(...)

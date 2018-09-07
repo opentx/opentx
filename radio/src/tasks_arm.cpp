@@ -82,20 +82,20 @@ TASK_FUNCTION(mixerTask)
 
   while(1) {
 
-#if defined(SIMU)
-    if (main_thread_running == 0)
-      TASK_RETURN();
-#endif
-
 #if defined(SBUS)
     processSbusInput();
 #endif
 
     RTOS_WAIT_TICKS(1);
 
+#if defined(SIMU)
+    if (pwrCheck() == e_power_off)
+      TASK_RETURN();
+#else
     if (isForcePowerOffRequested()) {
       pwrOff();
     }
+#endif
 
     uint32_t now = RTOS_GET_TIME();
     bool run = false;
@@ -208,11 +208,6 @@ TASK_FUNCTION(menusTask)
     }
 
     resetForcePowerOffRequest();
-
-#if defined(SIMU)
-    if (main_thread_running == 0)
-      break;
-#endif
   }
 
 #if defined(PCBX9E)

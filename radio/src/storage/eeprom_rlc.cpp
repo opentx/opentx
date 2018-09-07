@@ -911,7 +911,8 @@ void eepromBackup()
     eepromReadBlock(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
     drawProgressBar(STR_WRITING, i, EEPROM_SIZE);
-    SIMU_SLEEP(100/*ms*/);
+    if (!SIMU_SLEEP(100/*ms*/))
+      break;
   }
 
   f_close(&file);

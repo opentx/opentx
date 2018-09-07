@@ -86,7 +86,7 @@ QString OpenTxSimulator::name()
 bool OpenTxSimulator::isRunning()
 {
   QMutexLocker lckr(&m_mtxSimuMain);
-  return (bool)main_thread_running;
+  return simuIsRunning();
 }
 
 void OpenTxSimulator::init()

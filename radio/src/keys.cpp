@@ -188,12 +188,7 @@ bool clearKeyEvents()
 #endif
 
   while (keyDown()) {
-
-#if defined(SIMU)
-    SIMU_SLEEP_NORET(1/*ms*/);
-#else
     wdt_reset();
-#endif
 
 #if !defined(BOOT)
     if ((get_tmr10ms() - start) >= 300) {  // wait no more than 3 seconds

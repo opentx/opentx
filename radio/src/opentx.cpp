@@ -1019,29 +1019,26 @@ void alert(const char * title, const char * msg , uint8_t sound)
   while (1) {
     RTOS_WAIT_MS(10);
 
-    if (keyDown()) break; // wait for key release
+    if (keyDown())  // wait for key release
+      break;
 
     doLoopCommonActions();
 
     wdt_reset();
 
-#if defined(PWR_BUTTON_PRESS)
-    uint32_t pwr_check = pwrCheck();
+    const uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
       drawSleepBitmap();
       boardOff();
+      return;   // only happens in SIMU, required for proper shutdown
     }
+#if defined(PWR_BUTTON_PRESS)
     else if (pwr_check == e_power_press) {
       refresh = true;
     }
     else if (pwr_check == e_power_on && refresh) {
       RAISE_ALERT(title, msg, STR_PRESSANYKEY, AU_NONE);
       refresh = false;
-    }
-#else
-    if (pwrCheck() == e_power_off) {
-      drawSleepBitmap();
-      boardOff(); // turn power off now
     }
 #endif
   }
@@ -1506,20 +1503,26 @@ void doMixerCalculations()
   s_mixer_first_run_done = true;
 }
 
-void opentxStart(uint8_t splash=true)
-{
-  TRACE("opentxStart");
 
-#if defined(SIMU)
-  if (main_thread_running == 2) {
+#define OPENTX_START_NO_SPLASH  0x01
+#define OPENTX_START_NO_CHECKS  0x02
+
+#if !defined(OPENTX_START_DEFAULT_ARGS)
+  #define OPENTX_START_DEFAULT_ARGS  0
+#endif
+
+void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
+{
+  TRACE("opentxStart(%u)", startType);
+
+  if (startType & OPENTX_START_NO_CHECKS) {
     return;
   }
-#endif
 
   uint8_t calibration_needed = (g_eeGeneral.chkSum != evalChkSum());
 
 #if defined(GUI)
-  if (!calibration_needed && splash) {
+  if (!calibration_needed && !(startType & OPENTX_START_NO_SPLASH)) {
     doSplash();
   }
 #endif
@@ -1621,7 +1624,7 @@ void opentxResume()
   loadFontCache();
 #endif
 
-  opentxStart(false);
+  opentxStart(OPENTX_START_NO_SPLASH);
 
   referenceSystemAudioFiles();
 
@@ -1907,7 +1910,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 }
 
 #if defined(SIMU)
-void * simuMain(void *)
+void simuMain()
 #else
 int main()
 #endif
@@ -1931,7 +1934,7 @@ int main()
   loadFonts();
 #endif
 
-  
+
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBHORUS)
   // TODO remove this
   lcdInit();
@@ -1970,13 +1973,9 @@ int main()
 #endif
 
   tasksStart();
-
-
-#if defined(SIMU)
-  return NULL;
-#endif
 }
 
+#if !defined(SIMU)
 #if defined(PWR_BUTTON_PRESS)
 uint32_t pwr_press_time = 0;
 
@@ -2102,4 +2101,5 @@ uint32_t pwrCheck()
 
   return e_power_off;
 }
-#endif
+#endif  // defined(PWR_BUTTON_PRESS)
+#endif  // !defined(SIMU)
