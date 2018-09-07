@@ -116,20 +116,20 @@ void mixerTask(void * pdata)
 
   while(1) {
 
-#if defined(SIMU)
-    if (main_thread_running == 0)
-      return;
-#endif
-
 #if defined(SBUS)
     processSbusInput();
 #endif
 
     CoTickDelay(1);
 
+#if defined(SIMU)
+    if (pwrCheck() == e_power_off)
+      return;
+#else
     if (isForcePowerOffRequested()) {
       pwrOff();
     }
+#endif
 
     uint32_t now = CoGetOSTime();
     bool run = false;
@@ -242,11 +242,6 @@ void menusTask(void * pdata)
     }
 
     resetForcePowerOffRequest();
-
-#if defined(SIMU)
-    if (main_thread_running == 0)
-      break;
-#endif
   }
 
 #if defined(PCBX9E)

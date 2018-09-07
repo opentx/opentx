@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -63,16 +63,12 @@ uint8_t eepromWriteBuffer[EEPROM_BUFFER_SIZE] __DMA;
 
 void eepromWaitReadStatus()
 {
-  while (eepromReadStatus() == 0) {
-    SIMU_SLEEP(5/*ms*/);
-  }
+  while (eepromReadStatus() == 0 && SIMU_SLEEP(5/*ms*/)) { }
 }
 
 void eepromWaitTransferComplete()
 {
-  while (!eepromIsTransferComplete()) {
-    SIMU_SLEEP(5/*ms*/);
-  }
+  while (!eepromIsTransferComplete() && SIMU_SLEEP(5/*ms*/)) { }
 }
 
 void eepromEraseBlock(uint32_t address, bool blocking=true)

@@ -123,7 +123,7 @@ void sportProcessUpdatePacket(uint8_t * packet)
 bool sportWaitState(SportUpdateState state, int timeout)
 {
 #if defined(SIMU)
-  SIMU_SLEEP_NORET(1);
+  SIMU_SLEEP(1);
   return true;
 #else
   watchdogSuspend(timeout / 10);

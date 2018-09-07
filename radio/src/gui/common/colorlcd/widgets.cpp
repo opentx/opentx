@@ -82,6 +82,7 @@ void runFatalErrorScreen(const char * message)
       uint32_t pwr_check = pwrCheck();
       if (pwr_check == e_power_off) {
         boardOff();
+        return;  // only happens in SIMU, required for proper shutdown
       }
       else if (pwr_check == e_power_press) {
         refresh = true;
@@ -89,7 +90,6 @@ void runFatalErrorScreen(const char * message)
       else if (pwr_check == e_power_on && refresh) {
         break;
       }
-      SIMU_SLEEP_NORET(1);
     }
   }
 }

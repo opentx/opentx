@@ -993,9 +993,7 @@ void doSplash()
     tmr10ms_t tgtime = get_tmr10ms() + SPLASH_TIMEOUT;
 
     while (tgtime > get_tmr10ms()) {
-#if defined(SIMU)
-      SIMU_SLEEP(1);
-#elif defined(CPUARM)
+#if defined(CPUARM)
       CoTickDelay(1);
 #endif
 
@@ -1144,9 +1142,7 @@ void checkAll()
     showMessageBox(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {
-#if defined(SIMU)
-      SIMU_SLEEP(1);
-#elif defined(CPUARM)
+#if defined(CPUARM)
       CoTickDelay(1);
 #endif
       wdt_reset();
@@ -1266,7 +1262,6 @@ void checkTHR()
 
     wdt_reset();
 
-    SIMU_SLEEP(1);
 #if defined(CPUARM)
     CoTickDelay(10);
 #endif
@@ -1301,34 +1296,32 @@ void alert(const pm_char * title, const pm_char * msg ALERT_SOUND_ARG)
 #endif
 
   while (1) {
-    SIMU_SLEEP(1);
 #if defined(CPUARM)
     CoTickDelay(10);
 #endif
 
-    if (keyDown()) break; // wait for key release
+    if (keyDown())  // wait for key release
+      break;
 
     doLoopCommonActions();
 
     wdt_reset();
 
-#if defined(PWR_BUTTON_PRESS)
-    uint32_t pwr_check = pwrCheck();
+    const uint32_t pwr_check = pwrCheck();
     if (pwr_check == e_power_off) {
+#if defined(CPUARM) || defined(CPUM2560)
       drawSleepBitmap();
+#endif
       boardOff();
+      return;   // only happens in SIMU, required for proper shutdown
     }
+#if defined(PWR_BUTTON_PRESS)
     else if (pwr_check == e_power_press) {
       refresh = true;
     }
     else if (pwr_check == e_power_on && refresh) {
       RAISE_ALERT(title, msg, STR_PRESSANYKEY, AU_NONE);
       refresh = false;
-    }
-#else
-    if (pwrCheck() == e_power_off) {
-      drawSleepBitmap();
-      boardOff(); // turn power off now
     }
 #endif
   }
@@ -1951,28 +1944,25 @@ uint8_t calcStickScroll( uint8_t index )
 }
 #endif
 
-#if defined(CPUARM)
-  #define OPENTX_START_ARGS            uint8_t splash=true
-  #define OPENTX_START_SPLASH_NEEDED() (splash)
-#else
-  #define OPENTX_START_ARGS
-  #define OPENTX_START_SPLASH_NEEDED() true
+#define OPENTX_START_NO_SPLASH  0x01
+#define OPENTX_START_NO_CHECKS  0x02
+
+#if !defined(OPENTX_START_DEFAULT_ARGS)
+  #define OPENTX_START_DEFAULT_ARGS  0
 #endif
 
-void opentxStart(OPENTX_START_ARGS)
+void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
 {
-  TRACE("opentxStart");
+  TRACE("opentxStart(%u)", startType);
 
-#if defined(SIMU)
-  if (main_thread_running == 2) {
+  if (startType & OPENTX_START_NO_CHECKS) {
     return;
   }
-#endif
 
   uint8_t calibration_needed = (g_eeGeneral.chkSum != evalChkSum());
 
 #if defined(GUI)
-  if (!calibration_needed && OPENTX_START_SPLASH_NEEDED()) {
+  if (!calibration_needed && !(startType & OPENTX_START_NO_SPLASH)) {
     doSplash();
   }
 #endif
@@ -2079,7 +2069,7 @@ void opentxResume()
   loadFontCache();
 #endif
 
-  opentxStart(false);
+  opentxStart(OPENTX_START_NO_SPLASH);
 
 #if defined(CPUARM)
   referenceSystemAudioFiles();
@@ -2790,20 +2780,14 @@ int main()
   tasksStart();
 #else
   opentxInit(mcusr);
-#if defined(CPUM2560)
-  uint8_t shutdown_state = 0;
-#endif
 
   while (1) {
-#if defined(CPUM2560)
-    if ((shutdown_state=pwrCheck()) > e_power_trainer)
+#if defined(CPUM2560) || defined(SIMU)
+    if (pwrCheck() > e_power_trainer)
       break;
 #endif
-#if defined(SIMU)
-    sleep(5/*ms*/);
-    if (main_thread_running == 0)
-      return 0;
-#endif
+    if (!SIMU_SLEEP(5/*ms*/))
+      break;
 
     perMain();
 
@@ -2820,14 +2804,17 @@ int main()
   opentxClose();
   boardOff(); // Only turn power off if necessary
   wdt_disable();  // this function is provided by AVR Libc
+#if !defined(SIMU)
   while(1); // never return from main() - there is no code to return back, if any delays occurs in physical power it does dead loop.
 #endif
+#endif  // defined(CPUM2560)
 
 #if defined(SIMU)
   return NULL;
 #endif
 }
 
+#if !defined(SIMU)
 #if defined(PWR_BUTTON_PRESS)
 uint32_t pwr_press_time = 0;
 
@@ -2953,4 +2940,5 @@ uint32_t pwrCheck()
 
   return e_power_off;
 }
-#endif
+#endif  // defined(PWR_BUTTON_PRESS)
+#endif  // !defined(SIMU)

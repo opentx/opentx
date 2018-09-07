@@ -198,12 +198,7 @@ bool clearKeyEvents()
 #endif
 
   while (keyDown()) {
-
-#if defined(SIMU)
-    SIMU_SLEEP_NORET(1/*ms*/);
-#else
     wdt_reset();
-#endif
 
 #if !defined(BOOT)
     if ((get_tmr10ms() - start) >= 300) {  // wait no more than 3 seconds
@@ -222,13 +217,7 @@ void clearKeyEvents()
 {
   // loop until all keys are up
   while (keyDown()) {
-
-#if defined(SIMU)
-    SIMU_SLEEP(1/*ms*/);
-#else
     wdt_reset();
-#endif
-
 #if defined(PCBSTD) && defined(ROTARY_ENCODER_NAVIGATION) && !defined(TELEMETREZ)
     rotencPoll();
 #endif

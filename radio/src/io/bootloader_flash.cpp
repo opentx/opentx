@@ -61,7 +61,8 @@ void bootloaderFlash(const char * filename)
       flashWrite(CONVERT_UINT_PTR(FIRMWARE_ADDRESS+i+j), (uint32_t *)(buffer+j));
     }
     drawProgressBar(STR_WRITING, i, BOOTLOADER_SIZE);
-    SIMU_SLEEP(30/*ms*/);
+    if (!SIMU_SLEEP(30/*ms*/))
+      break;
   }
 
   if (unlocked) {

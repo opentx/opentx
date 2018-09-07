@@ -45,9 +45,15 @@ uint8_t portb, portc, porth=0, dummyport;
 uint16_t dummyport16;
 int g_snapshot_idx = 0;
 
-pthread_t main_thread_pid;
-uint8_t main_thread_running = 0;
+uint8_t simu_start_mode = 0;
 char * main_thread_error = NULL;
+
+bool simu_shutdown = false;
+bool simu_running = false;
+
+#if !defined(CPUARM)
+pthread_t main_thread_pid;
+#endif
 
 #if defined(STM32)
 uint32_t Peri1_frequency, Peri2_frequency;
@@ -135,6 +141,13 @@ void simuInit()
 {
 #if defined(STM32)
   RCC->CSR = 0;
+#endif
+
+  // set power button to "not pressed"
+#if defined(PWR_SWITCH_GPIO)  // STM32
+  GPIO_SetBits(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN);
+#elif defined(PIO_PC17)       // AT91SAM3
+  PIOC->PIO_PDSR &= ~PIO_PC17;
 #endif
 
   for (int i = 0; i <= 17; i++) {
@@ -367,13 +380,14 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
 
 void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
 {
-  if (main_thread_running)
+  if (simu_running)
     return;
 
   s_current_protocol[0] = 255;
   menuLevel = 0;
 
-  main_thread_running = (tests ? 1 : 2); // TODO rename to simu_run_mode with #define
+  simu_start_mode = (tests ? 0 : 0x02 /* OPENTX_START_NO_CHECKS */);
+  simu_shutdown = false;
 
   simuFatfsSetPaths(sdPath, settingsPath);
 
@@ -402,7 +416,13 @@ void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
   try {
 #endif
 
-  pthread_create(&main_thread_pid, NULL, &simuMain, NULL);
+#if defined(CPUARM)
+  simuMain();  // returns after starting tasks
+#else
+  pthread_create(&main_thread_pid, NULL, &simuMain, NULL);  // main program loop
+#endif
+
+  simu_running = true;
 
 #if defined(SIMU_EXCEPTIONS)
   }
@@ -413,16 +433,19 @@ void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
 
 void StopSimu()
 {
-  if (!main_thread_running)
+  if (!simu_running)
     return;
 
-  main_thread_running = 0;
+  simu_shutdown = true;
 
 #if defined(CPUARM)
   pthread_join(mixerTaskId, NULL);
   pthread_join(menusTaskId, NULL);
-#endif
+#else
   pthread_join(main_thread_pid, NULL);
+#endif
+
+  simu_running = false;
 }
 
 #if defined(CPUARM)
@@ -435,6 +458,21 @@ struct SimulatorAudio {
   pthread_t threadPid;
 } simuAudio;
 #endif
+
+bool simuIsRunning()
+{
+  return simu_running;
+}
+
+bool simuSleep(uint32_t ms)
+{
+  for (uint32_t i = 0; i < ms; ++i){
+    if (simu_shutdown || !simu_running)
+      return false;
+    sleep(1);
+  }
+  return true;
+}
 
 void audioConsumeCurrentBuffer()
 {
@@ -635,17 +673,30 @@ int lcdRestoreBackupBuffer()
   return 1;
 }
 
-
 #if defined(CPUARM)
+uint32_t pwrCheck()
+#else
+uint8_t pwrCheck()
+#endif
+{
+  // TODO: ability to simulate shutdown warning for a "soft" simulator restart
+  return simu_shutdown ? e_power_off : e_power_on;
+}
+
 void pwrOff()
 {
 }
+
+#if defined(CPUARM)
 uint32_t pwrPressed()
 {
-#if defined(PWR_BUTTON_PRESS)
-  return false;
+  // TODO: simulate power button
+#if defined(PWR_SWITCH_GPIO)  // STM32
+  return GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
+#elif defined(PIO_PC17)       // AT91SAM3
+  return PIOC->PIO_PDSR & PIO_PC17;
 #else
-  return true;
+  return false;
 #endif
 }
 #endif
@@ -713,9 +764,9 @@ FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return SET; }
 ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 void unlockFlash() { }
 void lockFlash() { }
-void flashWrite(uint32_t *address, uint32_t *buffer) { SIMU_SLEEP(100); }
+void flashWrite(uint32_t *address, uint32_t *buffer) { simuSleep(100); }
 uint32_t isBootloaderStart(const uint8_t * block) { return 1; }
-#endif // defined(PCBTARANIS)
+#endif // defined(STM32)
 
 #if defined(PCBHORUS)
 void LCD_ControlLight(uint16_t dutyCycle) { }
