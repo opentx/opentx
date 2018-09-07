@@ -147,9 +147,10 @@ ISR(USART1_RX_vect)
 }
 #endif
 
+#if !defined(SIMU)
 uint8_t pwrCheck()
 {
-#if !defined(SIMU) && !defined(REV0)
+#if !defined(REV0)
   if ((PING & 0b00000010) && (~PINL & 0b01000000))
     return e_power_off;
 #endif
@@ -162,6 +163,7 @@ void pwrOff()
   PORTL = 0x7f;
 #endif
 }
+#endif // !defined(SIMU)
 
 uint8_t keyDown()
 {

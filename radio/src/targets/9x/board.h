@@ -131,8 +131,13 @@ void boardInit(void);
 #endif
 
 // Power driver (none)
+#if !defined(SIMU)
 #define pwrCheck()                 (e_power_on)
 #define pwrOff()
+#else
+uint8_t pwrCheck();
+void pwrOff();
+#endif
 #define UNEXPECTED_SHUTDOWN()      (mcusr & (1 << WDRF))
 
 // Trainer driver

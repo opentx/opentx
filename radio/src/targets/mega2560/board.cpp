@@ -88,20 +88,19 @@ void boardInit()
 #endif // !SIMU               
 }              
 
-
+#if !defined(SIMU)
 uint8_t pwrCheck()
 {
-#if !defined(SIMU)
   if ((~PINH & 0b00100000) && (~PINH & 0b01000000))
-  return e_power_off;
-#endif          
-  return e_power_on;  
-}      
+    return e_power_off;
+  return e_power_on;
+}
 
 void pwrOff()
 {
   PORTH &= ~0x10;   // PortH-4 set to 0
 }
+#endif // !defined(SIMU)
 
 uint8_t keyDown()
 {
