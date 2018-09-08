@@ -27,9 +27,10 @@
 extern "C++" {
 #endif
 
-#define doNothing()                     do { } while(0)
+#define doNothing()                     do { } while(0)   // seems unused? don't ever use this with SIMU
 
 #if defined(SIMU)
+
   #include <pthread.h>
   #include <semaphore.h>
   #if __GNUC__
@@ -45,6 +46,13 @@ extern "C++" {
       Sleep(x);
     }
   #endif
+
+  typedef pthread_t RTOS_TASK_HANDLE;
+  typedef pthread_mutex_t RTOS_MUTEX_HANDLE;
+  typedef uint32_t RTOS_FLAG_HANDLE;
+  typedef sem_t * RTOS_EVENT_HANDLE;
+
+  extern uint64_t simuTimerMicros(void);
 
   static inline void RTOS_INIT()
   {
@@ -63,11 +71,6 @@ extern "C++" {
   {
     msleep(x * 2);
   }
-
-  typedef pthread_t RTOS_TASK_HANDLE;
-  typedef pthread_mutex_t RTOS_MUTEX_HANDLE;
-  typedef uint32_t RTOS_FLAG_HANDLE;
-  typedef sem_t * RTOS_EVENT_HANDLE;
 
 #ifdef __cplusplus
   static inline void RTOS_CREATE_MUTEX(pthread_mutex_t &mutex)
@@ -133,15 +136,21 @@ extern "C++" {
   {
     return 500;
   }
-#endif
+#endif  // __cplusplus
 
   // return 2ms resolution to match CoOS settings
   static inline uint32_t RTOS_GET_TIME(void)
   {
-    extern uint64_t simuTimerMicros(void);
-    return simuTimerMicros() / 2000;
+    return (uint32_t)(simuTimerMicros() / 2000);
   }
+
+  static inline uint32_t RTOS_GET_MS(void)
+  {
+    return (uint32_t)(simuTimerMicros() / 1000);
+  }
+
 #elif defined(RTOS_COOS)
+
 #ifdef __cplusplus
   extern "C" {
 #endif
@@ -149,6 +158,8 @@ extern "C++" {
 #ifdef __cplusplus
   }
 #endif
+
+  #define RTOS_MS_PER_TICK   (CFG_CPU_FREQ / CFG_SYSTICK_FREQ / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
 
   typedef OS_TID RTOS_TASK_HANDLE;
   typedef OS_MutexID RTOS_MUTEX_HANDLE;
@@ -167,7 +178,11 @@ extern "C++" {
 
   static inline void RTOS_WAIT_MS(unsigned x)
   {
-    CoTickDelay(x / 2);
+    if (!x)
+      return;
+    if ((x = x / RTOS_MS_PER_TICK) < 1)
+      x = 1;
+    CoTickDelay(x);
   }
 
   static inline void RTOS_WAIT_TICKS(unsigned x)
@@ -193,7 +208,7 @@ extern "C++" {
   {
     CoLeaveMutexSection(mutex);
   }
-#endif
+#endif  // __cplusplus
 
   static inline uint16_t getStackAvailable(void * address, uint16_t size)
   {
@@ -252,7 +267,12 @@ extern "C++" {
 
   static inline uint32_t RTOS_GET_TIME(void)
   {
-    return CoGetOSTime();
+    return (uint32_t)CoGetOSTime();
+  }
+
+  static inline uint32_t RTOS_GET_MS(void)
+  {
+    return (RTOS_GET_TIME() * RTOS_MS_PER_TICK);
   }
 
   #define RTOS_DEFINE_STACK(name, size) TaskStack<size> __ALIGNED(8) name // stack must be aligned to 8 bytes otherwise printf for %f does not work!
@@ -272,7 +292,7 @@ extern "C++" {
   static inline void RTOS_WAIT_TICKS(unsigned x)
   {
   }
-#endif
+#endif  // RTOS type
 
 #ifdef __cplusplus
 }
