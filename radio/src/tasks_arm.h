@@ -27,6 +27,7 @@
 #define MENUS_STACK_SIZE       2000
 #define MIXER_STACK_SIZE       512
 #define AUDIO_STACK_SIZE       512
+#define CLI_STACK_SIZE         1000  // only consumed with CLI build option
 
 #define MIXER_TASK_PRIO        5
 #define AUDIO_TASK_PRIO        7
