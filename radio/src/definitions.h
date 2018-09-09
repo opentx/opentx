@@ -61,7 +61,6 @@
   #define CONVERT_PTR_UINT(x) ((uint32_t)(uint64_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t*)(uint64_t)(x))
 #else
-  #define SIMU_SLEEP(x)       true
   #define CONVERT_PTR_UINT(x) ((uint32_t)(x))
   #define CONVERT_UINT_PTR(x) ((uint32_t *)(x))
 #endif

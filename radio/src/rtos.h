@@ -33,19 +33,8 @@ extern "C++" {
 
   #include <pthread.h>
   #include <semaphore.h>
-  #if __GNUC__
-    #include <unistd.h>
-    static inline void msleep(unsigned x)
-    {
-      usleep(1000 * x);
-    }
-  #else
-    #include <windows.h>
-    inline void msleep(unsigned x)
-    {
-      Sleep(x);
-    }
-  #endif
+
+  #define SIMU_SLEEP_OR_EXIT_MS(x)       simuSleep(x)
 
   typedef pthread_t RTOS_TASK_HANDLE;
   typedef pthread_mutex_t RTOS_MUTEX_HANDLE;
@@ -53,6 +42,7 @@ extern "C++" {
   typedef sem_t * RTOS_EVENT_HANDLE;
 
   extern uint64_t simuTimerMicros(void);
+  extern uint8_t simuSleep(uint32_t ms);
 
   static inline void RTOS_INIT()
   {
@@ -62,14 +52,14 @@ extern "C++" {
   {
   }
 
-  static inline void RTOS_WAIT_MS(unsigned x)
+  static inline void RTOS_WAIT_MS(uint32_t x)
   {
-    msleep(x);
+    simuSleep(x);
   }
 
-  static inline void RTOS_WAIT_TICKS(unsigned x)
+  static inline void RTOS_WAIT_TICKS(uint32_t x)
   {
-    msleep(x * 2);
+    RTOS_WAIT_MS(x * 2);
   }
 
 #ifdef __cplusplus
@@ -125,7 +115,7 @@ extern "C++" {
   #define TASK_FUNCTION(task)           void * task(void * pdata)
 
   template<int SIZE>
-  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name, FakeTaskStack<SIZE> &stack, unsigned stackSize, unsigned priority)
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char *, FakeTaskStack<SIZE> &, unsigned, unsigned)
   {
     pthread_create(&taskId, nullptr, task, nullptr);
   }
@@ -159,7 +149,7 @@ extern "C++" {
   }
 #endif
 
-  #define RTOS_MS_PER_TICK   (CFG_CPU_FREQ / CFG_SYSTICK_FREQ / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
+  #define RTOS_MS_PER_TICK              (CFG_CPU_FREQ / CFG_SYSTICK_FREQ / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
 
   typedef OS_TID RTOS_TASK_HANDLE;
   typedef OS_MutexID RTOS_MUTEX_HANDLE;
@@ -176,7 +166,7 @@ extern "C++" {
     CoStartOS();
   }
 
-  static inline void RTOS_WAIT_MS(unsigned x)
+  static inline void RTOS_WAIT_MS(uint32_t x)
   {
     if (!x)
       return;
@@ -185,7 +175,7 @@ extern "C++" {
     CoTickDelay(x);
   }
 
-  static inline void RTOS_WAIT_TICKS(unsigned x)
+  static inline void RTOS_WAIT_TICKS(uint32_t x)
   {
     CoTickDelay(x);
   }

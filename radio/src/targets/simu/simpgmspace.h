@@ -232,11 +232,7 @@ extern char * main_thread_error;
 
 #define OPENTX_START_DEFAULT_ARGS  simu_start_mode
 
-static inline void getADC()
-{
-}
-
-#define SIMU_SLEEP(x)       simuSleep(x)
+static inline void getADC() { }
 
 uint64_t simuTimerMicros(void);
 
@@ -244,7 +240,7 @@ void simuInit();
 void StartSimu(bool tests=true, const char * sdPath = 0, const char * settingsPath = 0);
 void StopSimu();
 bool simuIsRunning();
-bool simuSleep(uint32_t ms);
+uint8_t simuSleep(uint32_t ms);  // returns true if thread shutdown requested
 
 void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);

@@ -398,14 +398,14 @@ bool simuIsRunning()
   return simu_running;
 }
 
-bool simuSleep(uint32_t ms)
+uint8_t simuSleep(uint32_t ms)
 {
   for (uint32_t i = 0; i < ms; ++i){
     if (simu_shutdown || !simu_running)
-      return false;
+      return 1;
     sleep(1);
   }
-  return true;
+  return 0;
 }
 
 void audioConsumeCurrentBuffer()

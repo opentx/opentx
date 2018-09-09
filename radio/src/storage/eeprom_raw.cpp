@@ -63,12 +63,12 @@ uint8_t eepromWriteBuffer[EEPROM_BUFFER_SIZE] __DMA;
 
 void eepromWaitReadStatus()
 {
-  while (eepromReadStatus() == 0 && SIMU_SLEEP(5/*ms*/)) { }
+  while (!eepromReadStatus()) { }
 }
 
 void eepromWaitTransferComplete()
 {
-  while (!eepromIsTransferComplete() && SIMU_SLEEP(5/*ms*/)) { }
+  while (!eepromIsTransferComplete()) { }
 }
 
 void eepromEraseBlock(uint32_t address, bool blocking=true)
