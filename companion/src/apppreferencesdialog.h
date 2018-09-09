@@ -49,26 +49,10 @@ class AppPreferencesDialog : public QDialog
     void firmwareProfileChanged();
     void firmwareProfileAboutToChange(bool saveFiles = true);
 
-  private:
-    QList<QCheckBox *> optionsCheckBoxes;
-    bool updateLock;
-    bool mainWinHasDirtyChild;
-    void showVoice(bool);
-    void showVoice();
-    void hideVoice();
-    void populateLocale();
-    void populateFirmwareOptions(const Firmware *);
-    Firmware * getFirmwareVariant();
-    QCheckBox * voice;
-
-    Ui::AppPreferencesDialog *ui;
-    void initSettings();
-    bool displayImage(const QString & fileName);
-
   protected slots:
     void shrink();
-    void baseFirmwareChanged();
-    void firmwareOptionChanged(bool state);
+    void onBaseFirmwareChanged();
+    void onFirmwareOptionChanged(bool state);
     void toggleAppLogSettings();
 
     void on_libraryPathButton_clicked();
@@ -87,6 +71,18 @@ class AppPreferencesDialog : public QDialog
     void on_joystickChkB_clicked();
     void on_joystickcalButton_clicked();
 #endif
+
+  private:
+    void initSettings();
+    void populateFirmwareOptions(const Firmware *);
+    Firmware * getBaseFirmware() const;
+    Firmware * getFirmwareVariant() const;
+    bool displayImage(const QString & fileName);
+
+    Ui::AppPreferencesDialog *ui;
+    QMap<QString, QCheckBox *> optionsCheckBoxes;
+    bool updateLock;
+    bool mainWinHasDirtyChild;
 };
 
 #endif // _APPPREFERENCESDIALOG_H_

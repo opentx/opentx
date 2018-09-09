@@ -31,15 +31,15 @@
 
 AppPreferencesDialog::AppPreferencesDialog(QWidget * parent) :
   QDialog(parent),
+  ui(new Ui::AppPreferencesDialog),
   updateLock(false),
-  mainWinHasDirtyChild(false),
-  ui(new Ui::AppPreferencesDialog)
+  mainWinHasDirtyChild(false)
 {
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("apppreferences.png"));
 
   initSettings();
-  connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(baseFirmwareChanged()));
+  connect(ui->downloadVerCB, SIGNAL(currentIndexChanged(int)), this, SLOT(onBaseFirmwareChanged()));
   connect(ui->opt_appDebugLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
   connect(ui->opt_fwTraceLog, &QCheckBox::toggled, this, &AppPreferencesDialog::toggleAppLogSettings);
 
@@ -111,7 +111,7 @@ void AppPreferencesDialog::accept()
     profile.name(ui->profileNameLE->text());
 
   bool fwchange = false;
-  Firmware * newFw = getFirmwareVariant();
+  Firmware * newFw = getFirmwareVariant();  // always !null
   // If a new fw type has been choosen, several things need to reset
   if (Firmware::getCurrentVariant()->getId() != newFw->getId()) {
     // check if we're going to be converting to a new radio type and there are unsaved files in the main window
@@ -288,7 +288,7 @@ void AppPreferencesDialog::initSettings()
     }
   }
 
-  baseFirmwareChanged();
+  onBaseFirmwareChanged();
 }
 
 void AppPreferencesDialog::on_libraryPathButton_clicked()
@@ -435,81 +435,47 @@ void AppPreferencesDialog::on_clearImageButton_clicked()
   ui->SplashFileName->clear();
 }
 
-
-void AppPreferencesDialog::showVoice(bool show)
+void AppPreferencesDialog::onBaseFirmwareChanged()
 {
-  ui->voiceLabel->setVisible(show);
-  ui->voiceCombo->setVisible(show);
+  populateFirmwareOptions(getBaseFirmware());
 }
 
-void AppPreferencesDialog::baseFirmwareChanged()
+Firmware *AppPreferencesDialog::getBaseFirmware() const
 {
-  QString selected_firmware = ui->downloadVerCB->currentData().toString();
-
-  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
-    if (firmware->getId() == selected_firmware) {
-      populateFirmwareOptions(firmware);
-      break;
-    }
-  }
+  return Firmware::getFirmwareForId(ui->downloadVerCB->currentData().toString());
 }
 
-Firmware * AppPreferencesDialog::getFirmwareVariant()
+Firmware * AppPreferencesDialog::getFirmwareVariant() const
 {
-  QString selected_firmware = ui->downloadVerCB->currentData().toString();
+  QString id = ui->downloadVerCB->currentData().toString();
 
-  foreach(Firmware * firmware, Firmware::getRegisteredFirmwares()) {
-    QString id = firmware->getId();
-    if (id == selected_firmware) {
-      foreach(QCheckBox *cb, optionsCheckBoxes) {
-        if (cb->isChecked()) {
-          id += "-" + cb->text();
-        }
-      }
-
-      if (voice && voice->isChecked()) {
-        id += "-tts" + ui->voiceCombo->currentText();
-      }
-
-      if (ui->langCombo->count()) {
-        id += "-" + ui->langCombo->currentText();
-      }
-
-      return Firmware::getFirmwareForId(id);
-    }
+  foreach(QCheckBox *cb, optionsCheckBoxes.values()) {
+    if (cb->isChecked())
+      id += "-" + cb->text();
   }
 
-  // Should never occur...
-  return Firmware::getDefaultVariant();
+  if (ui->langCombo->count())
+    id += "-" + ui->langCombo->currentText();
+
+  return Firmware::getFirmwareForId(id);
 }
 
-void AppPreferencesDialog::firmwareOptionChanged(bool state)
+void AppPreferencesDialog::onFirmwareOptionChanged(bool state)
 {
   QCheckBox *cb = qobject_cast<QCheckBox*>(sender());
-  if (cb == voice) {
-    showVoice(voice->isChecked());
-  }
-  Firmware * firmware=NULL;
-  if (cb && state) {
-    QVariant selected_firmware = ui->downloadVerCB->currentData();
-    foreach(firmware, Firmware::getRegisteredFirmwares()) {
-      if (firmware->getId() == selected_firmware) {
-        foreach(QList<Option> opts, firmware->opts) {
-          foreach(Option opt, opts) {
-            if (cb->text() == opt.name) {
-              foreach(Option other, opts) {
-                if (other.name != opt.name) {
-                  foreach(QCheckBox *ocb, optionsCheckBoxes) {
-                    if (ocb->text() == other.name) {
-                      ocb->setChecked(false);
-                    }
-                  }
-                }
-              }
-              return;
-            }
-          }
-        }
+  if (!(cb && state))
+    return;
+
+  // This de-selects any mutually exlusive options (that is, members of the same QList<Option> list).
+  const QList<QList<Option> > & fwOpts = getBaseFirmware()->opts;
+  for (const QList<Option> & opts : fwOpts) {
+    for (const Option & opt : opts) {
+      if (cb->text() == opt.name) {
+        QCheckBox *ocb = nullptr;
+        foreach(const Option & other, opts)
+          if (other.name != opt.name && (ocb = optionsCheckBoxes.value(other.name, nullptr)))
+            ocb->setChecked(false);
+        return;
       }
     }
   }
@@ -525,68 +491,56 @@ void AppPreferencesDialog::toggleAppLogSettings()
 
 void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 {
-  const Firmware * parent = firmware->getFirmwareBase();
+  const Firmware * baseFw = firmware->getFirmwareBase();
+  QStringList currVariant = Firmware::getCurrentVariant()->getId().split('-');
+  const QString currLang = ui->langCombo->count() ? ui->langCombo->currentText() : currVariant.last();
 
   updateLock = true;
 
-  QString id = Firmware::getCurrentVariant()->getId();
   ui->langCombo->clear();
-  foreach(const char *lang, parent->languages) {
+  for (const char *lang : baseFw->languages) {
     ui->langCombo->addItem(lang);
-    if (id.endsWith(lang)) {
+    if (currLang == lang) {
       ui->langCombo->setCurrentIndex(ui->langCombo->count() - 1);
     }
   }
 
-  voice = NULL; // we will search for a voice checkbox
+  if (optionsCheckBoxes.size()) {
+    currVariant.clear();
+    QMutableMapIterator<QString, QCheckBox *> it(optionsCheckBoxes);
+    while (it.hasNext()) {
+      it.next();
+      QCheckBox * cb = it.value();
+      if (cb->isChecked())
+        currVariant.append(it.key());    // keep previous selections
+      ui->optionsLayout->removeWidget(cb);
+      cb->deleteLater();
+      it.remove();
+    }
+  }
 
   int index = 0;
-  QWidget * prevFocus = ui->voiceCombo;
-  foreach(QList<Option> opts, parent->opts) {
-    foreach(Option opt, opts) {
-      if (index >= optionsCheckBoxes.size()) {
-        QCheckBox * checkbox = new QCheckBox(ui->profileTab);
-        ui->optionsLayout->addWidget(checkbox, optionsCheckBoxes.count()/4, optionsCheckBoxes.count()%4, 1, 1);
-        optionsCheckBoxes.push_back(checkbox);
-        connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(firmwareOptionChanged(bool)));
-        if (prevFocus) {
-          QWidget::setTabOrder(prevFocus, checkbox);
-        }
-      }
-
-      QCheckBox *cb = optionsCheckBoxes.at(index++);
-      if (cb) {
-        cb->show();
-        cb->setText(opt.name);
-        cb->setToolTip(opt.tooltip);
-        cb->setCheckState(id.contains(opt.name) ? Qt::Checked : Qt::Unchecked);
-        if (opt.name == QString("voice")) {
-          voice = cb;
-        }
-        prevFocus = cb;
-      }
+  QWidget * prevFocus = ui->langCombo;
+  for (const QList<Option> &opts : qAsConst(baseFw->opts)) {
+    for (const Option &opt : opts) {
+      QCheckBox * cb = new QCheckBox(ui->profileTab);
+      cb->setText(opt.name);
+      cb->setToolTip(opt.tooltip);
+      cb->setChecked(currVariant.contains(opt.name));
+      ui->optionsLayout->addWidget(cb, index / 4, index % 4);
+      QWidget::setTabOrder(prevFocus, cb);
+      // connect to duplicates check handler if this option is part of a group
+      if (opts.size() > 1)
+        connect(cb, &QCheckBox::toggled, this, &AppPreferencesDialog::onFirmwareOptionChanged);
+      optionsCheckBoxes.insert(opt.name, cb);
+      prevFocus = cb;
+      ++index;
     }
   }
-
-  for (; index<optionsCheckBoxes.size(); index++) {
-    QCheckBox *cb = optionsCheckBoxes.at(index);
-    cb->hide();
-    cb->setCheckState(Qt::Unchecked);
-  }
-
-  ui->voiceCombo->clear();
-  foreach(const char *lang, parent->ttslanguages) {
-    ui->voiceCombo->addItem(lang);
-    if (id.contains(QString("-tts%1").arg(lang))) {
-      ui->voiceCombo->setCurrentIndex(ui->voiceCombo->count() - 1);
-    }
-  }
-
-  showVoice(voice && voice->isChecked());
 
   // TODO: Remove once splash replacement supported on Horus
   // NOTE: 480x272 image causes issues on screens <800px high, needs a solution like scrolling once reinstated
-  if (IS_HORUS(parent->getBoard())) {
+  if (IS_HORUS(baseFw->getBoard())) {
     ui->widget_splashImage->hide();
     ui->SplashFileName->setText("");
   }
@@ -597,7 +551,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
   }
 
   updateLock = false;
-  QTimer::singleShot(50, this, SLOT(shrink()));
+  QTimer::singleShot(50, this, &AppPreferencesDialog::shrink);
 }
 
 void AppPreferencesDialog::shrink()
