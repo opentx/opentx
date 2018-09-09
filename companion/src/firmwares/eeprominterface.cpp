@@ -148,6 +148,12 @@ void Firmware::addOption(const char *option, QString tooltip, uint32_t variant)
   addOptions(options);
 }
 
+void Firmware::addOption(const Option & option)
+{
+  Option options[] = { option, { NULL } };
+  addOptions(options);
+}
+
 unsigned int Firmware::getVariantNumber()
 {
   unsigned int result = 0;

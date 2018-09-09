@@ -294,6 +294,8 @@ class Firmware
 
     virtual void addOption(const char *option, QString tooltip="", uint32_t variant=0);
 
+    virtual void addOption(const Option &option);
+
     virtual void addOptions(Option options[]);
 
     virtual QString getStampUrl() = 0;
