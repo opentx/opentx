@@ -1075,21 +1075,23 @@ void addOpenTxCommonOptions(OpenTxFirmware * firmware)
   firmware->addOptions(fai_options);
 }
 
-void addOpenTxArmOptions(OpenTxFirmware * firmware)
+void addFrskyRfOptions(OpenTxFirmware * firmware)
 {
-  firmware->addOption("multimodule", QCoreApplication::translate("Firmware", "Support for the DIY-Multiprotocol-TX-Module"));
-  firmware->addOption("eu", QCoreApplication::translate("Firmware", "Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
+  Option rf_options[] = {{"eu", QCoreApplication::translate("Firmware", "Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015")},
+                         {"flexr9m", QCoreApplication::translate("Firmware", "Enable non certified firmwares")},
+                         {NULL}};
+  firmware->addOptions(rf_options);
 }
 
 void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
 {
   addOpenTxCommonOptions(firmware);
-  addOpenTxArmOptions(firmware);
+  firmware->addOption("multimodule", QCoreApplication::translate("Firmware", "Support for the DIY-Multiprotocol-TX-Module"));
   firmware->addOption("noheli", QCoreApplication::translate("Firmware", "Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", QCoreApplication::translate("Firmware", "Disable Global variables"));
   firmware->addOption("lua", QCoreApplication::translate("Firmware", "Enable Lua custom scripts screen"));
   firmware->addOption("luac", QCoreApplication::translate("Firmware", "Enable Lua compiler"));
-  firmware->addOption("flexr9m", QCoreApplication::translate("Firmware", "Enable non certified firmwares"));
+  addFrskyRfOptions(firmware);
 }
 
 void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
@@ -1212,7 +1214,8 @@ void registerOpenTxFirmwares()
   firmware->addOption("nobold", QCoreApplication::translate("Firmware", "Don't use bold font for highlighting active items"));
 //  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
-  addOpenTxArmOptions(firmware);
+  firmware->addOption("multimodule", QCoreApplication::translate("Firmware", "Support for the DIY-Multiprotocol-TX-Module"));
+  firmware->addOption("eu", QCoreApplication::translate("Firmware", "Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
@@ -1362,7 +1365,8 @@ void registerOpenTxFirmwares()
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
 //  firmware->addOption("rtc", QCoreApplication::translate("Firmware", "Optional RTC added"));
 //  firmware->addOption("volume", QCoreApplication::translate("Firmware", "i2c volume control added"));
-  addOpenTxArmOptions(firmware);
+  firmware->addOption("multimodule", QCoreApplication::translate("Firmware", "Support for the DIY-Multiprotocol-TX-Module"));
+  firmware->addOption("eu", QCoreApplication::translate("Firmware", "Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
@@ -1379,7 +1383,8 @@ void registerOpenTxFirmwares()
   firmware->addOption("nobold", QCoreApplication::translate("Firmware", "Don't use bold font for highlighting active items"));
 //  firmware->addOption("bluetooth", QCoreApplication::translate("Firmware", "Bluetooth interface"));
   firmware->addOption("sqt5font", QCoreApplication::translate("Firmware", "Use alternative SQT5 font"));
-  addOpenTxArmOptions(firmware);
+  firmware->addOption("multimodule", QCoreApplication::translate("Firmware", "Support for the DIY-Multiprotocol-TX-Module"));
+  firmware->addOption("eu", QCoreApplication::translate("Firmware", "Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
   addOpenTxCommonOptions(firmware);
   registerOpenTxFirmware(firmware);
 
