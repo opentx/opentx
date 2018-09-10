@@ -46,8 +46,8 @@ QString ModuleData::subTypeToString(int type) const
   static const char * strings[] = {
     "FCC",
     "EU",
-    "EU+",
-    "AU+"
+    "868MHz",
+    "915MHz"
   };
 
   if (type < 0)
