@@ -467,12 +467,12 @@ void AppPreferencesDialog::onFirmwareOptionChanged(bool state)
     return;
 
   // This de-selects any mutually exlusive options (that is, members of the same QList<Option> list).
-  const QList<QList<Option> > & fwOpts = getBaseFirmware()->opts;
-  for (const QList<Option> & opts : fwOpts) {
-    for (const Option & opt : opts) {
+  const Firmware::OptionsList & fwOpts = getBaseFirmware()->optionGroups();
+  for (const Firmware::OptionsGroup & optGrp : fwOpts) {
+    for (const Firmware::Option & opt : optGrp) {
       if (cb->text() == opt.name) {
         QCheckBox *ocb = nullptr;
-        foreach(const Option & other, opts)
+        foreach(const Firmware::Option & other, optGrp)
           if (other.name != opt.name && (ocb = optionsCheckBoxes.value(other.name, nullptr)))
             ocb->setChecked(false);
         return;
@@ -498,7 +498,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
   updateLock = true;
 
   ui->langCombo->clear();
-  for (const char *lang : baseFw->languages) {
+  for (const char *lang : baseFw->languageList()) {
     ui->langCombo->addItem(lang);
     if (currLang == lang) {
       ui->langCombo->setCurrentIndex(ui->langCombo->count() - 1);
@@ -521,8 +521,8 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
 
   int index = 0;
   QWidget * prevFocus = ui->langCombo;
-  for (const QList<Option> &opts : qAsConst(baseFw->opts)) {
-    for (const Option &opt : opts) {
+  for (const Firmware::OptionsGroup &optGrp : baseFw->optionGroups()) {
+    for (const Firmware::Option &opt : optGrp) {
       QCheckBox * cb = new QCheckBox(ui->profileTab);
       cb->setText(opt.name);
       cb->setToolTip(opt.tooltip);
@@ -530,7 +530,7 @@ void AppPreferencesDialog::populateFirmwareOptions(const Firmware * firmware)
       ui->optionsLayout->addWidget(cb, index / 4, index % 4);
       QWidget::setTabOrder(prevFocus, cb);
       // connect to duplicates check handler if this option is part of a group
-      if (opts.size() > 1)
+      if (optGrp.size() > 1)
         connect(cb, &QCheckBox::toggled, this, &AppPreferencesDialog::onFirmwareOptionChanged);
       optionsCheckBoxes.insert(opt.name, cb);
       prevFocus = cb;

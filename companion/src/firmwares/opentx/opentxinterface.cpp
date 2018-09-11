@@ -41,12 +41,7 @@
 
 using namespace Board;
 
-template<typename T, size_t N>
-inline
-size_t SizeOfArray(T(&)[N])
-{
-  return N;
-}
+QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
 
 OpenTxEepromInterface::OpenTxEepromInterface(OpenTxFirmware * firmware):
   EEPROMInterface(firmware->getBoard()),
@@ -1065,71 +1060,9 @@ QString OpenTxFirmware::getStampUrl()
   return getFirmwareBaseUrl() % QStringLiteral("stamp-opentx.txt");
 }
 
-void addOpenTxCommonOptions(OpenTxFirmware * firmware)
-{
-  firmware->addOption("ppmus", Firmware::tr("Channel values displayed in us"));
-  firmware->addOption("nooverridech", Firmware::tr("No OverrideCH functions available"));
-  Option fai_options[] = {{"faichoice", Firmware::tr("Possibility to enable FAI MODE (no telemetry) at field")},
-                          {"faimode",   Firmware::tr("FAI MODE (no telemetry) always enabled")},
-                          {NULL}};
-  firmware->addOptions(fai_options);
-}
 
-void addOpenTxRfOptions(OpenTxFirmware * firmware, bool mm, bool eu, bool flex)
-{
-  Option opt_eu = {"eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015")};
-  Option opt_fl = {"flexr9m", Firmware::tr("Enable non certified firmwares")};
-  Option opt_mm = {"multimodule", Firmware::tr("Support for the DIY-Multiprotocol-TX-Module")};
-  if (mm)
-    firmware->addOption(opt_mm);
-  if (eu && flex) {
-    Option options[] = { opt_eu, opt_fl, { NULL } };
-    firmware->addOptions(options);
-  }
-  else if (eu) {
-    firmware->addOption(opt_eu);
-  }
-}
-
-void addOpenTxFontOptions(OpenTxFirmware * firmware)
-{
-  firmware->addOption("sqt5font", Firmware::tr("Use alternative SQT5 font"));
-}
-
-void addOpenTxArm9xOptions(OpenTxFirmware * firmware)
-{
-  firmware->addOption("heli", Firmware::tr("Enable HELI menu and cyclic mix support"));
-  firmware->addOption("gvars", Firmware::tr("Global variables"), GVARS_VARIANT);
-  firmware->addOption("potscroll", Firmware::tr("Pots use in menus navigation"));
-  firmware->addOption("autosource", Firmware::tr("In model setup menus automatically set source by moving the control"));
-  firmware->addOption("autoswitch", Firmware::tr("In model setup menus automatically set switch by moving the control"));
-  firmware->addOption("nographics", Firmware::tr("No graphical check boxes and sliders"));
-  firmware->addOption("battgraph", Firmware::tr("Battery graph"));
-  firmware->addOption("nobold", Firmware::tr("Don't use bold font for highlighting active items"));
-  //firmware->addOption("bluetooth", Firmware::tr("Bluetooth interface"));
-  addOpenTxRfOptions(firmware, true, true, false);
-  addOpenTxFontOptions(firmware);
-  addOpenTxCommonOptions(firmware);
-}
-
-void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
-{
-  addOpenTxCommonOptions(firmware);
-  firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
-  firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
-  firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
-  firmware->addOption("luac", Firmware::tr("Enable Lua compiler"));
-  addOpenTxRfOptions(firmware, true, true, true);
-}
-
-void addOpenTxTaranisOptions(OpenTxFirmware * firmware)
-{
-  firmware->addOption("internalppm", Firmware::tr("Support for PPM internal module hack"));
-  addOpenTxFrskyOptions(firmware);
-  addOpenTxFontOptions(firmware);
-}
-
-QList<OpenTxEepromInterface *> opentxEEpromInterfaces;
+// Firmware registrations
+// NOTE: "recognized" build options are defined in /radio/util/fwoptions.py
 
 void registerOpenTxFirmware(OpenTxFirmware * firmware, bool deprecated = false)
 {
@@ -1139,6 +1072,69 @@ void registerOpenTxFirmware(OpenTxFirmware * firmware, bool deprecated = false)
   eepromInterfaces.push_back(eepromInterface);
   if (!deprecated)
     Firmware::addRegisteredFirmware(firmware);
+}
+
+void addOpenTxCommonOptions(OpenTxFirmware * firmware)
+{
+  static const Firmware::OptionsGroup fai_options = {
+    Firmware::Option("faichoice", Firmware::tr("Possibility to enable FAI MODE (no telemetry) at field")),
+    Firmware::Option("faimode",   Firmware::tr("FAI MODE (no telemetry) always enabled"))
+  };
+  firmware->addOption("ppmus", Firmware::tr("Channel values displayed in us"));
+  firmware->addOptionsGroup(fai_options);
+  firmware->addOption("nooverridech", Firmware::tr("No OverrideCH functions available"));
+}
+
+void addOpenTxRfOptions(OpenTxFirmware * firmware, bool flex = true)
+{
+  static const Firmware::Option opt_eu("eu", Firmware::tr("Removes D8 FrSky protocol support which is not legal for use in the EU on radios sold after Jan 1st, 2015"));
+  static const Firmware::Option opt_fl("flexr9m", Firmware::tr("Enable non certified firmwares"));
+  firmware->addOption("multimodule", Firmware::tr("Support for the DIY-Multiprotocol-TX-Module"));
+  if (flex)
+    firmware->addOptionsGroup({opt_eu, opt_fl});
+  else
+    firmware->addOption(opt_eu);
+}
+
+void addOpenTxFontOptions(OpenTxFirmware * firmware)
+{
+  firmware->addOption("sqt5font", Firmware::tr("Use alternative SQT5 font"));
+}
+
+void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
+{
+  addOpenTxCommonOptions(firmware);
+  firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
+  firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
+  firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
+  firmware->addOption("luac", Firmware::tr("Enable Lua compiler"));
+  addOpenTxRfOptions(firmware);
+}
+
+void addOpenTxTaranisOptions(OpenTxFirmware * firmware, bool intppm = true)
+{
+  addOpenTxFrskyOptions(firmware);
+  if (intppm)
+    firmware->addOption("internalppm", Firmware::tr("Support for PPM internal module hack"));
+  addOpenTxFontOptions(firmware);
+}
+
+void addOpenTxArm9xOptions(OpenTxFirmware * firmware, bool dblkeys = true)
+{
+  addOpenTxCommonOptions(firmware);
+  firmware->addOption("heli", Firmware::tr("Enable HELI menu and cyclic mix support"));
+  firmware->addOption("gvars", Firmware::tr("Global variables"), GVARS_VARIANT);
+  firmware->addOption("potscroll", Firmware::tr("Pots use in menus navigation"));
+  firmware->addOption("autosource", Firmware::tr("In model setup menus automatically set source by moving the control"));
+  firmware->addOption("autoswitch", Firmware::tr("In model setup menus automatically set switch by moving the control"));
+  firmware->addOption("nographics", Firmware::tr("No graphical check boxes and sliders"));
+  firmware->addOption("battgraph", Firmware::tr("Battery graph"));
+  firmware->addOption("nobold", Firmware::tr("Don't use bold font for highlighting active items"));
+  //firmware->addOption("bluetooth", Firmware::tr("Bluetooth interface"));
+  if (dblkeys)
+    firmware->addOption("dblkeys", Firmware::tr("Enable resetting values by pressing up and down at the same time"));
+  addOpenTxFontOptions(firmware);
+  addOpenTxRfOptions(firmware, false);
 }
 
 void registerOpenTxFirmwares()
@@ -1166,15 +1162,13 @@ void registerOpenTxFirmwares()
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
-  addOpenTxFrskyOptions(firmware);
-  addOpenTxFontOptions(firmware);
+  addOpenTxTaranisOptions(firmware, false);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", Firmware::tr("FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
   // firmware->addOption("stdr9m", Firmware::tr("Use JR-sized R9M module"));
-  addOpenTxFrskyOptions(firmware);
-  addOpenTxFontOptions(firmware);
+  addOpenTxTaranisOptions(firmware, false);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X10 board */
@@ -1190,13 +1184,12 @@ void registerOpenTxFirmwares()
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
-  addOpenTxArm9xOptions(firmware);
+  addOpenTxArm9xOptions(firmware, false);
   registerOpenTxFirmware(firmware);
 
   /* ar9x board */
   firmware = new OpenTxFirmware("opentx-ar9x", Firmware::tr("9X with AR9X board"), BOARD_AR9X);
   addOpenTxArm9xOptions(firmware);
-  firmware->addOption("dblkeys", Firmware::tr("Enable resetting values by pressing up and down at the same time"));
   //firmware->addOption("rtc", Firmware::tr("Optional RTC added"));
   //firmware->addOption("volume", Firmware::tr("i2c volume control added"));
   registerOpenTxFirmware(firmware);
@@ -1204,7 +1197,6 @@ void registerOpenTxFirmwares()
   /* Sky9x board */
   firmware = new OpenTxFirmware("opentx-sky9x", Firmware::tr("9X with Sky9x board"), BOARD_SKY9X);
   addOpenTxArm9xOptions(firmware);
-  firmware->addOption("dblkeys", Firmware::tr("Enable resetting values by pressing up and down at the same time"));
   registerOpenTxFirmware(firmware);
 
   // These are kept only for import purposes, marked as deprecated to hide from UI.
