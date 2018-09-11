@@ -1388,3 +1388,7 @@
 #define ZSTR_GASSUIT_RPM       "GRPM"
 #define ZSTR_GASSUIT_FLOW      "GFlo"
 #define ZSTR_GASSUIT_CONS      "GFue"
+#define ZSTR_GASSUIT_RES_VOL   "GRVl"
+#define ZSTR_GASSUIT_RES_PERC  "GRPc"
+#define ZSTR_GASSUIT_MAX_FLOW  "GMFl"
+#define ZSTR_GASSUIT_AVG_FLOW  "GAFl"
