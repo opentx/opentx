@@ -69,11 +69,14 @@ const FrSkySportSensor sportSensors[] = {
   { ESC_RPM_CONS_FIRST_ID, ESC_RPM_CONS_LAST_ID, 0, ZSTR_ESC_RPM, UNIT_RPMS, 0 },
   { ESC_RPM_CONS_FIRST_ID, ESC_RPM_CONS_LAST_ID, 1, ZSTR_ESC_CONSUMPTION, UNIT_MAH, 0 },
   { ESC_TEMPERATURE_FIRST_ID, ESC_TEMPERATURE_LAST_ID, 0, ZSTR_ESC_TEMP, UNIT_CELSIUS, 0 },
-  { GASSUIT_TEMP_FIRST_ID, GASSUIT_TEMP_LAST_ID, 0, ZSTR_GASSUIT_TEMP1, UNIT_CELSIUS, 0 },
-  { GASSUIT_TEMP_FIRST_ID, GASSUIT_TEMP_LAST_ID, 1, ZSTR_GASSUIT_TEMP2, UNIT_CELSIUS, 0 },
+  { GASSUIT_TEMP1_FIRST_ID, GASSUIT_TEMP1_LAST_ID, 0, ZSTR_GASSUIT_TEMP1, UNIT_CELSIUS, 0 },
+  { GASSUIT_TEMP2_FIRST_ID, GASSUIT_TEMP2_LAST_ID, 0, ZSTR_GASSUIT_TEMP2, UNIT_CELSIUS, 0 },
   { GASSUIT_SPEED_FIRST_ID, GASSUIT_SPEED_LAST_ID, 0, ZSTR_GASSUIT_RPM, UNIT_RPMS, 0 },
-  { GASSUIT_FUEL_FIRST_ID, GASSUIT_FUEL_LAST_ID, 0, ZSTR_GASSUIT_FLOW, UNIT_MILLILITERS, 0 }, //TODO this needs to be changed to ml/min, but need eeprom conversion
-  { GASSUIT_FUEL_FIRST_ID, GASSUIT_FUEL_LAST_ID, 1, ZSTR_GASSUIT_CONS, UNIT_MILLILITERS, 0 },
+  { GASSUIT_RES_VOL_FIRST_ID, GASSUIT_RES_VOL_LAST_ID, 0, ZSTR_GASSUIT_RES_VOL, UNIT_MILLILITERS, 0 },
+  { GASSUIT_RES_PERC_FIRST_ID, GASSUIT_RES_PERC_LAST_ID, 0, ZSTR_GASSUIT_RES_PERC, UNIT_PERCENT, 0 },
+  { GASSUIT_FLOW_FIRST_ID, GASSUIT_FLOW_LAST_ID, 0, ZSTR_GASSUIT_FLOW, UNIT_MILLILITERS, 0 },             //TODO this needs to be changed to ml/min, but need eeprom conversion
+  { GASSUIT_MAX_FLOW_FIRST_ID, GASSUIT_MAX_FLOW_LAST_ID, 0, ZSTR_GASSUIT_MAX_FLOW, UNIT_MILLILITERS, 0 }, //TODO this needs to be changed to ml/min, but need eeprom conversion
+  { GASSUIT_AVG_FLOW_FIRST_ID, GASSUIT_AVG_FLOW_LAST_ID, 0, ZSTR_GASSUIT_AVG_FLOW, UNIT_MILLILITERS, 0 }, //TODO this needs to be changed to ml/min, but need eeprom conversion
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
 };
 
@@ -231,11 +234,6 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
         }
         else if (id >= ESC_TEMPERATURE_FIRST_ID && id <= ESC_TEMPERATURE_LAST_ID) {
           sportProcessTelemetryPacket(id, 0, instance, data & 0x00ff);
-        }
-        else if (id >= GASSUIT_TEMP_FIRST_ID && id <= GASSUIT_FUEL_LAST_ID) {
-          // 2 GASSUIT sensors
-          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
         }
         else if (id >= DIY_STREAM_FIRST_ID && id <= DIY_STREAM_LAST_ID) {
 #if defined(LUA)
