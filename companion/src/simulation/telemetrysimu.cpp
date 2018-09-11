@@ -688,6 +688,7 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("VFAS(V)", FASV);
   colToFuncMap.insert("Curr(A)", FASC);
   colToFuncMap.insert("Cels(gRe)", CELS_GRE);
+  colToFuncMap.insert("Cels(V)", CELS_GRE);
   colToFuncMap.insert("ASpd(kts)", ASPD_KTS);
   colToFuncMap.insert("ASpd(kmh)", ASPD_KMH);
   colToFuncMap.insert("ASpd(mph)", ASPD_MPH);
