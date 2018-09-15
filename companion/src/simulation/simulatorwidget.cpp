@@ -241,7 +241,7 @@ bool SimulatorWidget::setStartupData(const QByteArray & dataSource, bool fromFil
   }
   // Assume a byte array of radio data was passed, load it.
   else if (!dataSource.isEmpty()) {
-    ret = firmware->getEEpromInterface()->load(simuData, (uint8_t *)dataSource.constData(), getEEpromSize(m_board));
+    ret = firmware->getEEpromInterface()->load(simuData, (uint8_t *)dataSource.constData(), Boards::getEEpromSize(m_board));
     startupData = dataSource;  // save the data for start()
   }
   // we're :-(
@@ -374,7 +374,7 @@ bool SimulatorWidget::saveTempData()
             fh.close();
         }
 
-        if (!firmware->getEEpromInterface()->load(radioData, (uint8_t *)startupData.constData(), getEEpromSize(m_board))) {
+        if (!firmware->getEEpromInterface()->load(radioData, (uint8_t *)startupData.constData(), Boards::getEEpromSize(m_board))) {
           error = tr("Error saving data: could not get data from simulator interface.");
         }
         else {
@@ -489,7 +489,7 @@ void SimulatorWidget::onSimulatorStopped()
   m_heartbeatTimer.invalidate();
 
   if (simulator && !simulator->isRunning() && saveTempRadioData) {
-    startupData.fill(0, getEEpromSize(m_board));
+    startupData.fill(0, Boards::getEEpromSize(m_board));
     simulator->readRadioData(startupData);
   }
 }

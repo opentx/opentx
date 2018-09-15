@@ -179,8 +179,6 @@ class Boards
 
 // temporary aliases for transition period, use Boards class instead.
 #define getBoardCapability(b__, c__)   Boards::getCapability(b__, c__)
-#define getEEpromSize(b__)             Boards::getEEpromSize(b__)
-#define getSwitchInfo(b__, i__)        Boards::getSwitchInfo(b__, i__)
 
 #define IS_9X(board)                   (board==Board::BOARD_STOCK || board==Board::BOARD_M128)
 #define IS_STOCK(board)                (board==Board::BOARD_STOCK)
