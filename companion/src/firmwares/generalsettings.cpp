@@ -245,6 +245,10 @@ void GeneralSettings::setDefaultControlTypes(Board::Type board)
     potConfig[0] = Board::POT_WITHOUT_DETENT;
     potConfig[1] = Board::POT_WITH_DETENT;
   }
+  else if (IS_JUMPER_T12(board)) {
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITH_DETENT;
+  }
   else if (IS_TARANIS(board)) {
     potConfig[0] = Board::POT_WITH_DETENT;
     potConfig[1] = Board::POT_WITH_DETENT;
@@ -310,7 +314,22 @@ void GeneralSettings::convert(RadioDataConversionState & cstate)
       strncpy(switchName[5], switchName[7], sizeof(switchName[0]));
     }
   }
+
   else if (IS_TARANIS_X7(cstate.fromType)) {
+    if (IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) {
+      strncpy(switchName[5], switchName[4], sizeof(switchName[0]));
+      strncpy(switchName[7], switchName[5], sizeof(switchName[0]));
+    }
+  }
+
+  if (IS_JUMPER_T12(cstate.toType)) {
+    if (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType)) {
+      strncpy(switchName[4], switchName[5], sizeof(switchName[0]));
+      strncpy(switchName[5], switchName[7], sizeof(switchName[0]));
+    }
+  }
+
+  else if (IS_JUMPER_T12(cstate.fromType)) {
     if (IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) {
       strncpy(switchName[5], switchName[4], sizeof(switchName[0]));
       strncpy(switchName[7], switchName[5], sizeof(switchName[0]));

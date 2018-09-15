@@ -34,11 +34,18 @@ void menuStatisticsView(event_t event)
 #if defined(PCBX7)
     case EVT_KEY_BREAK(KEY_PAGE):
 #endif
+#if defined(PCBJUMPERT12)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#endif
       chainMenu(menuStatisticsDebug);
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
 #if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
+      killEvents(event);
+      chainMenu(menuStatisticsDebug2);
+#elif defined(PCBJUMPERT12)
     case EVT_KEY_LONG(KEY_PAGE):
       killEvents(event);
       chainMenu(menuStatisticsDebug2);
@@ -165,9 +172,17 @@ void menuStatisticsDebug(event_t event)
       chainMenu(menuStatisticsDebug2);
       return;
 #endif
+#if defined(PCBJUMPERT12)
+    case EVT_KEY_BREAK(KEY_PAGE):
+      chainMenu(menuStatisticsDebug2);
+      return;
+#endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
 #if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
+#endif
+#if defined(PCBJUMPERT12)
     case EVT_KEY_LONG(KEY_PAGE):
 #endif
       killEvents(event);
@@ -292,11 +307,17 @@ void menuStatisticsDebug2(event_t event)
 #if defined(PCBX7)
     case EVT_KEY_BREAK(KEY_PAGE):
 #endif
+#if defined(PCBJUMPERT12)
+    case EVT_KEY_BREAK(KEY_PAGE):
+#endif
       chainMenu(menuStatisticsView);
       return;
 
     case EVT_KEY_FIRST(KEY_DOWN):
 #if defined(PCBX7)
+    case EVT_KEY_LONG(KEY_PAGE):
+#endif
+#if defined(PCBJUMPERT12)
     case EVT_KEY_LONG(KEY_PAGE):
 #endif
       killEvents(event);
@@ -312,6 +333,10 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW1, telemetryErrors, RIGHT);
 
 #if defined(PCBX7)
+  lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "BT status");
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, IS_BLUETOOTH_CHIP_PRESENT(), RIGHT);
+#endif
+#if defined(PCBJUMPERT12)
   lcdDrawTextAlignedLeft(MENU_DEBUG_ROW2, "BT status");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, MENU_DEBUG_ROW2, IS_BLUETOOTH_CHIP_PRESENT(), RIGHT);
 #endif

@@ -615,8 +615,29 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
         index = 5;  // SH to SH
       }
     }
+    else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+      // No SE and SG on X7 board
+      if (index == 4 || index == 6) {
+        index = 3;  // SG and SE to SD
+        evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (index == 5) {
+        index = 4;  // SF to SF
+      }
+      else if (index == 7) {
+        index = 5;  // SH to SH
+      }
+    }
     // Compensate for SE and SG on X9/Horus board if converting from X7
     else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+      if (index == 4) {
+        index = 5;  // SF to SF
+      }
+      else if (index == 5) {
+        index = 7;  // SH to SH
+      }
+    }
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
       if (index == 4) {
         index = 5;  // SF to SF
       }

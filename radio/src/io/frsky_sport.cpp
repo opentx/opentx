@@ -212,6 +212,13 @@ const char * sportUpdatePowerOn(ModuleIndex module)
   else {
     return TR("Module pin no resp", "Module pin not responding");
   }
+#elif defined(PCBJUMPERT12)
+  if (IS_PCBREV_40()) {
+    return TR("Bottom pin no resp", "Bottom pin not responding");
+  }
+  else {
+    return TR("Module pin no resp", "Module pin not responding");
+  }
 #else
   return TR("Not responding", "Module not responding");
 #endif

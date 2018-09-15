@@ -265,6 +265,8 @@ void generalDefault()
   g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
 #elif defined(PCBX7)
   g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
+#elif defined(PCBJUMPERT12)
+  g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
@@ -273,6 +275,8 @@ void generalDefault()
 #if defined(PCBXLITE)
   g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
 #elif defined(PCBX7)
+  g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
+#elif defined(PCBJUMPERT12)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
@@ -2724,6 +2728,10 @@ int main()
   boardInit();
 
 #if defined(PCBX7)
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
+#endif
+
+#if defined(PCBJUMPERT12)
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
 #endif
 

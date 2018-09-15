@@ -76,6 +76,22 @@ elseif(PCB STREQUAL X7)
   set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
+elseif(PCB STREQUAL JUMPERT12)
+  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+  set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
+  set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+  set(HAPTIC YES)
+  set(LUA_EXPORT lua_export_x7)
+  set(FLAVOUR jumpert12)
+  add_definitions(-DPCBJUMPERT12 -DSOFTWARE_VOLUME)
+  add_definitions(-DEEPROM_VARIANT=0x4000)
+  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+  set(GUI_DIR 128x64)
+  set(BITMAPS_TARGET 9x_bitmaps)
+  set(FONTS_TARGET 9x_fonts_1bit)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
+  set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL XLITE)
   set(PXX_FREQUENCY "HIGH" CACHE STRING "PXX frequency (LOW / HIGH)")
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
@@ -119,7 +135,7 @@ else()
     )
 endif()
 
-if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE)
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL JUMPERT12 OR PCB STREQUAL XLITE)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -135,6 +151,8 @@ set(HSE_VALUE 12000000)
 set(SDCARD YES)
 set(EEPROM EEPROM_RLC)
 set(TARGET_DIR taranis)
+
+
 set(PPM_LIMITS_SYMETRICAL YES)
 
 if(SPLASH STREQUAL OFF)
@@ -158,7 +176,7 @@ set(GUI_SRC ${GUI_SRC}
   ../screenshot.cpp
   )
 
-if(PCB STREQUAL X7 OR PCB STREQUAL XLITE)
+if(PCB STREQUAL X7 OR PCB STREQUAL JUMPERT12 OR PCB STREQUAL XLITE)
   set(LED_DRIVER led_driver.cpp)
 endif()
 

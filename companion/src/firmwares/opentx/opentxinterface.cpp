@@ -83,6 +83,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
+    case BOARD_JUMPER_T12:
+      return "OpenTX for Jumper T12";
     case BOARD_TARANIS_XLITE:
       return "OpenTX for FrSky Taranis X-Lite";
     case BOARD_SKY9X:
@@ -325,6 +327,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   }
   else if (IS_TARANIS_X7(board)) {
     variant |= TARANIS_X7_VARIANT;
+  }
+  else if (IS_JUMPER_T12(board)) {
+    variant |= JUMPER_T12_VARIANT;
   }
   else if (IS_TARANIS_XLITE(board)) {
     variant |= TARANIS_XLITE_VARIANT;
@@ -700,6 +705,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return TARANIS_X9E_VARIANT;
       else if (IS_TARANIS_X7(board))
         return TARANIS_X7_VARIANT;
+      else if (IS_JUMPER_T12(board))
+        return JUMPER_T12_VARIANT;
       else if (IS_TARANIS_XLITE(board))
         return TARANIS_XLITE_VARIANT;
       else
@@ -927,6 +934,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
   else if (IS_TARANIS_X7(board)) {
     if (variant != TARANIS_X7_VARIANT) {
+      variantError = true;
+    }
+  }
+  else if (IS_JUMPER_T12(board)) {
+    if (variant != JUMPER_T12_VARIANT) {
       variantError = true;
     }
   }
@@ -1195,6 +1207,11 @@ void registerOpenTxFirmwares()
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", QCoreApplication::translate("Firmware", "FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
+  addOpenTxTaranisOptions(firmware);
+  registerOpenTxFirmware(firmware);
+
+  /* Jumper T12 board */
+  firmware = new OpenTxFirmware("opentx-jumpert12", QCoreApplication::translate("Firmware", "Jumper T12"), BOARD_JUMPER_T12);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 

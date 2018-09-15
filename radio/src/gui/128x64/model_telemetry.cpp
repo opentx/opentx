@@ -504,10 +504,11 @@ void menuModelTelemetryFrsky(event_t event)
   switch (event) {
     case EVT_KEY_BREAK(KEY_DOWN):
     case EVT_KEY_BREAK(KEY_UP):
-#if !defined(PCBX7)
-    case EVT_KEY_BREAK(KEY_LEFT):
-    case EVT_KEY_BREAK(KEY_RIGHT):
+#if !defined(PCBX7) || !defined(PCBJUMPERT12)
+    //case EVT_KEY_BREAK(KEY_LEFT):
+    //case EVT_KEY_BREAK(KEY_RIGHT):
 #endif
+
       if (s_editMode>0 && sub<=ITEM_TELEMETRY_RSSI_ALARM2)
         frskySendAlarms(); // update FrSky module when edit mode exited
       break;

@@ -589,6 +589,8 @@ const int OpenTxSimulator::voltageToAdc(const int volts)
   int ret = 0;
 #if defined(PCBHORUS) || defined(PCBX7)
   ret = (float)volts * 16.2f;
+#elif defined(PCBJUMPERT12)
+  ret = (float)volts * 16.2f;
 #elif defined(PCBTARANIS) || defined(PCBSKY9X)
   ret = (float)volts * 13.3f;
 #elif defined(PCBGRUVIN9X)
@@ -629,6 +631,8 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return Board::BOARD_X10;
 #elif defined(PCBX7)
       return Board::BOARD_TARANIS_X7;
+#elif defined(PCBJUMPERT12)
+      return Board::BOARD_JUMPER_T12;
 #elif defined(PCBTARANIS)
       return Board::BOARD_TARANIS_X9D;
 #else

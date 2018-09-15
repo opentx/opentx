@@ -602,6 +602,20 @@ bool isTrainerModeAvailable(int mode)
   else
     return true;
 }
+#elif defined(PCBJUMPERT12)
+bool isTrainerModeAvailable(int mode)
+{
+  if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
+    return false;
+  else if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return false;
+#if defined(BLUETOOTH)
+  else if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
+    return false;
+#endif
+  else
+    return true;
+}
 #elif defined(PCBXLITE)
 bool isTrainerModeAvailable(int mode)
 {

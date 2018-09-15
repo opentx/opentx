@@ -209,6 +209,12 @@ uint32_t switchState(uint8_t index)
 #elif defined(PCBX7)
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
+#elif defined(PCBJUMPERT12)
+    ADD_2POS_CASE(F);
+    ADD_2POS_CASE(H);
+#elif defined(PCBJUMPERT12)
+    ADD_2POS_CASE(F);
+    ADD_2POS_CASE(H);
 #else
     ADD_3POS_CASE(E, 4);
     ADD_2POS_CASE(F);

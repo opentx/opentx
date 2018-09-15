@@ -200,6 +200,8 @@ void disable_crossfire( uint32_t module_index );
   #define TRAINER_CONNECTED()           (true)
 #elif defined(PCBX7)
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
+#elif defined(PCBJUMPERT12)
+  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #elif defined(PCBXLITE)
   #define TRAINER_CONNECTED()           false // there is no Trainer jack on Taranis X-Lite
 #else
@@ -321,6 +323,14 @@ enum EnumSwitchesPositions
   SW_SE1,
   SW_SE2,
 #endif
+
+#if !defined(PCBJUMPERT12) && !defined(PCBXLITE)
+  SW_SE0,
+  SW_SE1,
+  SW_SE2,
+#endif
+
+
 #if !defined(PCBXLITE)
   SW_SF0,
   SW_SF1,
@@ -331,6 +341,14 @@ enum EnumSwitchesPositions
   SW_SG1,
   SW_SG2,
 #endif
+
+#if !defined(PCBJUMPERT12) && !defined(PCBXLITE)
+  SW_SG0,
+  SW_SG1,
+  SW_SG2,
+#endif
+
+
 #if !defined(PCBXLITE)
   SW_SH0,
   SW_SH1,
@@ -373,6 +391,8 @@ enum EnumSwitchesPositions
   #define NUM_SWITCHES                  4
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  6
+#elif defined(PCBJUMPERT12)
+  #define NUM_SWITCHES                  6
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's a lot!
 #else
@@ -391,6 +411,14 @@ uint32_t readTrims(void);
 #define ROTARY_ENCODER_NAVIGATION
 void checkRotaryEncoder(void);
 #endif
+
+#if defined(PCBJUMPERT12)
+// Rotary Encoder driver
+#define ROTARY_ENCODER_NAVIGATION
+void checkRotaryEncoder(void);
+#endif
+
+
 
 // WDT driver
 #define WDTO_500MS                      500
@@ -417,6 +445,8 @@ enum Analogs {
   POT1 = POT_FIRST,
   POT2,
 #if defined(PCBX7) || defined(PCBXLITE)
+  POT_LAST = POT2,
+#elif defined(PCBJUMPERT12)
   POT_LAST = POT2,
 #elif defined(PCBX9E)
   POT3,
@@ -500,6 +530,8 @@ uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
   #define BATT_SCALE                    131
 #elif defined(PCBX7)
   #define BATT_SCALE                    123
+#elif defined(PCBJUMPERT12)
+  #define BATT_SCALE                    123
 #else
   #define BATT_SCALE                    150
 #endif
@@ -576,6 +608,9 @@ extern uint32_t telemetryErrors;
 #if defined(PCBXLITE)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
+  #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
+  #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
+#elif defined(PCBJUMPERT12)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
 #else

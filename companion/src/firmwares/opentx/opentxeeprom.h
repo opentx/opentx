@@ -32,6 +32,7 @@
 #define M128_VARIANT                   0x8000
 #define TARANIS_X9E_VARIANT            0x8000
 #define TARANIS_X7_VARIANT             0x4000
+#define JUMPER_T12_VARIANT             0x4000
 #define TARANIS_XLITE_VARIANT          0x2000
 
 #define SIMU_STOCK_VARIANTS            (GVARS_VARIANT|FRSKY_VARIANT)

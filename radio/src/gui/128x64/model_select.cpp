@@ -268,6 +268,15 @@ void menuModelSelect(event_t event)
     case EVT_KEY_BREAK(KEY_PAGE):
       chainMenu(menuModelSetup);
       break;
+#elif defined(PCBJUMPERT12)
+    case EVT_KEY_LONG(KEY_PAGE):
+      chainMenu(menuTabModel[DIM(menuTabModel)-1]);
+      killEvents(event);
+      break;
+
+    case EVT_KEY_BREAK(KEY_PAGE):
+      chainMenu(menuModelSetup);
+      break;
 #else
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LEFT:
@@ -292,6 +301,10 @@ void menuModelSelect(event_t event)
 #endif
 
 #if defined(PCBX7)
+    case EVT_ROTARY_LEFT:
+    case EVT_ROTARY_RIGHT:
+#endif
+#if defined(PCBJUMPERT12)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif
@@ -333,6 +346,8 @@ void menuModelSelect(event_t event)
 #endif
 
 #if defined(PCBX7)
+  drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
+#elif defined(PCBJUMPERT12)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_ROTARY_ENCODER_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
