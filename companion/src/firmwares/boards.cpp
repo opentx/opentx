@@ -140,8 +140,11 @@ const int Boards::getFlashSize(Type board)
   }
 }
 
-const SwitchInfo Boards::getSwitchInfo(Board::Type board, unsigned index)
+const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
 {
+  if (index < 0)
+    return {SWITCH_NOT_AVAILABLE, CPN_STR_UNKNOWN_ITEM};
+
   if (IS_TARANIS_XLITE(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
@@ -202,7 +205,7 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, unsigned index)
       return switches[index];
   }
 
-  return {SWITCH_NOT_AVAILABLE, "???"};
+  return {SWITCH_NOT_AVAILABLE, CPN_STR_UNKNOWN_ITEM};
 }
 
 const int Boards::getCapability(Board::Type board, Board::Capability capability)
@@ -301,9 +304,12 @@ const QString Boards::getAxisName(int index)
     return tr("Unknown");
 }
 
-const QString Boards::getAnalogInputName(Board::Type board, unsigned index)
+const QString Boards::getAnalogInputName(Board::Type board, int index)
 {
-  if ((int)index < getBoardCapability(board, Board::Sticks)) {
+  if (index < 0)
+    return CPN_STR_UNKNOWN_ITEM;
+
+  if (index < getBoardCapability(board, Board::Sticks)) {
     const QString sticks[] = {
       tr("Rud"),
       tr("Ele"),
@@ -376,7 +382,7 @@ const QString Boards::getAnalogInputName(Board::Type board, unsigned index)
       return pots[index];
   }
 
-  return "???";
+  return CPN_STR_UNKNOWN_ITEM;
 }
 
 const bool Boards::isBoardCompatible(Type board1, Type board2)

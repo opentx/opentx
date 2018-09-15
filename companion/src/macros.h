@@ -21,17 +21,18 @@
 #ifndef _MACROS_H_
 #define _MACROS_H_
 
+#include "constants.h"
 #include <QDataStream>
 #include <iterator>
 
-// #define DIM(arr) (sizeof((arr))/sizeof((arr)[0]))
-// new way for c++11
-#define DIM(arr__)   ((size_t)(std::end((arr__)) - std::begin((arr__))))
+#define DIM(arr__)   (std::end(arr__) - std::begin(arr__))
 
 #ifndef CONCATENATE
   #define CONCATENATE_IMPL(A, B)   A ## B
   #define CONCATENATE(A, B)        CONCATENATE_IMPL(A, B)
 #endif
+
+#define CHECK_IN_ARRAY(T, index) ((index) >= 0 && int(index) < DIM(T) ? T[(index)] : CPN_STR_UNKNOWN_ITEM)
 
 #define CREATE_ENUM_STREAM_OPS3(functype, type, datatype) \
 	functype QDataStream& operator << (QDataStream &out, type &e) { return out << (datatype&)e; } \
