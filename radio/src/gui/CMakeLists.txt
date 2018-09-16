@@ -10,7 +10,7 @@ set(GUI_SRC
   model_select.cpp
   model_setup.cpp
   model_logical_switches.cpp
-  model_special_functions.cpp
+  special_functions.cpp
   model_telemetry.cpp
   menu_radio.cpp
   radio_setup.cpp
@@ -33,12 +33,16 @@ else()
     )
 endif()
 
+if(NOT GUI_DIR STREQUAL 320x480)
 set(SRC
   ${SRC}
   gui/common/widgets.cpp
   gui/navigation/navigation_${NAVIGATION_TYPE}.cpp
   gui/navigation/common.cpp
   )
+else()
+  include(gui/common/windows/CMakeLists.txt)
+endif()
 
 include_directories(gui gui/${GUI_DIR})
 
