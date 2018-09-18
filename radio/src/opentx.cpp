@@ -2844,12 +2844,6 @@ uint32_t pwrPressedDuration()
 uint32_t pwrCheck()
 {
 
-#if defined(SIMU)
-  if (!main_thread_running) {
-    return e_power_off;
-  }
-#endif
-
   const char * message = NULL;
 
   enum PwrCheckState {
