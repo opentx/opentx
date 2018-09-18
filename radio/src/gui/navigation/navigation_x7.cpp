@@ -257,6 +257,9 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
     int cc = curr;
     switch (event) {
       case EVT_KEY_LONG(KEY_PAGE):
+        if (s_editMode>0)
+          break;
+          
         if (curr > 0)
           cc = curr - 1;
         else
@@ -265,6 +268,9 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         break;
 
       case EVT_KEY_BREAK(KEY_PAGE):
+        if (s_editMode>0)
+          break;
+          
         if (curr < (menuTabSize-1))
           cc = curr + 1;
         else
