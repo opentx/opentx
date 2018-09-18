@@ -357,6 +357,9 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
 #elif defined(PCBX10)
       case EVT_KEY_BREAK(KEY_PGDN):
 #endif
+        if (s_editMode>0)
+          break;
+          
         if (++cc == menuTabSize)
           cc = 0;
         break;
@@ -365,6 +368,9 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
 #if defined(PCBX10)
       case EVT_KEY_LONG(KEY_PGDN):
 #endif
+        if (s_editMode>0)
+          break;
+          
         if (cc-- == 0)
           cc = menuTabSize-1;
         killEvents(event);
