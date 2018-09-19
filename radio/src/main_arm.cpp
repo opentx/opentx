@@ -19,6 +19,9 @@
  */
 
 #include "opentx.h"
+#if defined(TOUCH_UI)
+  #include "mainwindow.h"	
+#endif  
 
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
@@ -53,7 +56,7 @@ void handleUsbConnection()
     if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuNoItems == 0)) {
       POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
       POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
-#if defined(DEBUG)
+#if defined(USB_SERIAL)
       POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
 #endif
       POPUP_MENU_START(onUSBConnectMenu);
@@ -114,7 +117,7 @@ void checkEeprom()
 void checkBatteryAlarms()
 {
   // TRACE("checkBatteryAlarms()");
-  if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
+  if (IS_TXBATT_WARNING() && g_vbat100mV>30) {
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
   }
@@ -182,7 +185,7 @@ void guiMain(event_t evt)
 {
   bool refreshNeeded = false;
 
-#if defined(LUA)
+#if defined(LUA) && !defined(TOUCH_UI)
   uint32_t t0 = get_tmr10ms();
   static uint32_t lastLuaTime = 0;
   uint16_t interval = (lastLuaTime == 0 ? 0 : (t0 - lastLuaTime));
@@ -218,10 +221,13 @@ void guiMain(event_t evt)
   if (t0 > maxLuaDuration) {
     maxLuaDuration = t0;
   }
-#else
+#elif !defined(TOUCH_UI)
   lcdRefreshWait();   // WARNING: make sure no code above this line does any change to the LCD display buffer!
 #endif
 
+#if defined(TOUCH_UI)
+  mainWindow.run();
+#else
   if (!refreshNeeded) {
     DEBUG_TIMER_START(debugTimerMenus);
     while (1) {
@@ -290,6 +296,7 @@ void guiMain(event_t evt)
     lcdRefresh();
     DEBUG_TIMER_STOP(debugTimerLcdRefresh);
   }
+#endif
 }
 #elif defined(GUI)
 
@@ -451,7 +458,9 @@ void perMain()
   if (usbPlugged() && getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
     // disable access to menus
     lcdClear();
+#if !defined(TOUCH_UI)
     menuMainView(0);
+#endif
     lcdRefresh();
     return;
   }

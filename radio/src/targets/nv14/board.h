@@ -24,6 +24,7 @@
 #include "stddef.h"
 #include "stdbool.h"
 #include "opentx_constants.h"
+#include "shutdown_animation.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
