@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>715</width>
-    <height>484</height>
+    <height>538</height>
    </rect>
   </property>
   <property name="font">
@@ -107,8 +107,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>329</width>
-           <height>412</height>
+           <width>343</width>
+           <height>422</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -661,24 +661,6 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="2">
-           <widget class="QSpinBox" name="A3">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="maximum">
-             <number>16777215</number>
-            </property>
-           </widget>
-          </item>
           <item row="7" column="0">
            <widget class="QLabel" name="label_8">
             <property name="sizePolicy">
@@ -805,24 +787,6 @@
             </property>
             <property name="text">
              <string>RSSI</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="2">
-           <widget class="QSpinBox" name="A4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="maximum">
-             <number>16777215</number>
             </property>
            </widget>
           </item>
@@ -1050,7 +1014,7 @@
              </font>
             </property>
             <property name="text">
-             <string>Deg. C</string>
+             <string>°C</string>
             </property>
            </widget>
           </item>
@@ -1170,10 +1134,10 @@
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -1245,10 +1209,10 @@
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -1373,6 +1337,48 @@
             </property>
            </spacer>
           </item>
+          <item row="5" column="2">
+           <widget class="QDoubleSpinBox" name="A3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="minimum">
+             <double>-21474836.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>21474836.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="2">
+           <widget class="QDoubleSpinBox" name="A4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="minimum">
+             <double>-21474836.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>21474836.000000000000000</double>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </widget>
@@ -1402,8 +1408,8 @@
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>330</width>
-           <height>384</height>
+           <width>342</width>
+           <height>422</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -1763,10 +1769,10 @@
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -1790,10 +1796,10 @@
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -1866,10 +1872,10 @@
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -1911,10 +1917,10 @@
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -2104,10 +2110,10 @@ hh:mm:ss</string>
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -2152,10 +2158,10 @@ hh:mm:ss</string>
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -2206,10 +2212,10 @@ hh:mm:ss</string>
              <number>1</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-214748364.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>214748364.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -2288,6 +2294,9 @@ hh:mm:ss</string>
                 <pointsize>8</pointsize>
                </font>
               </property>
+              <property name="maximum">
+               <double>8.190000000000000</double>
+              </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
@@ -2305,6 +2314,9 @@ hh:mm:ss</string>
                <font>
                 <pointsize>8</pointsize>
                </font>
+              </property>
+              <property name="maximum">
+               <double>8.190000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
@@ -2324,6 +2336,9 @@ hh:mm:ss</string>
                 <pointsize>8</pointsize>
                </font>
               </property>
+              <property name="maximum">
+               <double>8.190000000000000</double>
+              </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
@@ -2342,6 +2357,9 @@ hh:mm:ss</string>
                 <pointsize>8</pointsize>
                </font>
               </property>
+              <property name="maximum">
+               <double>8.190000000000000</double>
+              </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
               </property>
@@ -2359,6 +2377,9 @@ hh:mm:ss</string>
                <font>
                 <pointsize>8</pointsize>
                </font>
+              </property>
+              <property name="maximum">
+               <double>8.190000000000000</double>
               </property>
               <property name="singleStep">
                <double>0.100000000000000</double>
@@ -2513,10 +2534,10 @@ hh:mm:ss</string>
              <number>1</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-214748364.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>214748364.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
@@ -2579,10 +2600,10 @@ hh:mm:ss</string>
              <number>2</number>
             </property>
             <property name="minimum">
-             <double>-16777215.000000000000000</double>
+             <double>-21474836.000000000000000</double>
             </property>
             <property name="maximum">
-             <double>16777215.000000000000000</double>
+             <double>21474836.000000000000000</double>
             </property>
             <property name="singleStep">
              <double>0.100000000000000</double>
