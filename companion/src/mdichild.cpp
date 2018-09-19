@@ -80,6 +80,7 @@ MdiChild::MdiChild(QWidget * parent, QWidget * parentWin, Qt::WindowFlags f):
   connect(ui->modelsList, &QTreeView::customContextMenuRequested, this, &MdiChild::showModelsListContextMenu);
   connect(ui->modelsList, &QTreeView::pressed, this, &MdiChild::onItemSelected);
   connect(ui->modelsList->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &MdiChild::onCurrentItemChanged);
+  connect(QGuiApplication::clipboard(), &QClipboard::dataChanged, this, &MdiChild::updateNavigation);
 
   if (!(isMaximized() || isMinimized())) {
     QByteArray geo = g.mdiWinGeo();
@@ -1093,7 +1094,6 @@ void MdiChild::copyGeneralSettings()
   QMimeData * mimeData = modelsListModel->getGeneralMimeData();
   modelsListModel->getHeaderMimeData(mimeData);
   QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
-  updateNavigation();
 }
 
 void MdiChild::pasteGeneralSettings()
@@ -1112,9 +1112,7 @@ void MdiChild::copy()
   QMimeData * mimeData = modelsListModel->getModelsMimeData(ui->modelsList->selectionModel()->selectedRows());
   modelsListModel->getHeaderMimeData(mimeData);
   QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
-
   clearCutList();  // clear the list by default, populate afterwards, eg. in cut().
-  updateNavigation();
 }
 
 void MdiChild::cut()
