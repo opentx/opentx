@@ -2843,6 +2843,7 @@ uint32_t pwrPressedDuration()
 
 uint32_t pwrCheck()
 {
+
   const char * message = NULL;
 
   enum PwrCheckState {
