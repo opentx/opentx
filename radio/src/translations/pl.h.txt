@@ -463,7 +463,7 @@
 
 #define TR_ON_ONE_SWITCHES     "ON\0""One"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBNV14)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #elif defined(PCBSKY9X)

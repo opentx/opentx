@@ -513,9 +513,19 @@ void audioTask(void * pdata)
 
   setSampleRate(AUDIO_SAMPLE_RATE);
 
-#if defined(PCBX12S)
+#if defined(PCBX12S) || defined(PCBNV14)
   // The audio amp needs ~2s to start
   RTOS_WAIT_MS(1000); // 1s
+#endif
+
+#if 0 //defined(PCBNV14) //TODO necessary?
+  /* Audio setting */
+  audioSpiSetSpeed(SPI_SPEED_64);
+  audioHardReset();
+  audioSoftReset();
+  audioSpiSetSpeed(SPI_SPEED_8);
+  delay_01us(10000);
+  audioSendRiffHeader();
 #endif
 
   if (!unexpectedShutdown) {

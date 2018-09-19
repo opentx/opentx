@@ -525,7 +525,7 @@ PACK(struct CustomScreenData {
 // TODO other boards could have their custom screens here as well
 #endif
 
-#if defined(PCBX12S)
+#if defined(PCBX12S) || defined(PCBNV14)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
 #elif defined(PCBX10)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
@@ -637,7 +637,7 @@ PACK(struct TrainerData {
     NOBACKUP(int8_t   varioRepeat); \
     CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
 
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBNV14)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
     NOBACKUP(uint8_t  serial2Mode:4); \
@@ -650,7 +650,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t spare:1); \
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBNV14)
   #if defined(BLUETOOTH)
     #define BLUETOOTH_FIELDS \
       uint8_t spare; \
@@ -826,6 +826,8 @@ static inline void check_struct()
   CHKSIZE(CurveData, 4);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
+#elif defined(PCBNV14)
+  // TODO
 #elif defined(PCBSKY9X)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);

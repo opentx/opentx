@@ -27,7 +27,7 @@ uint8_t logDelay;
 
 void writeHeader();
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBNV14)
   #define GET_2POS_STATE(sw) (switchState(SW_ ## sw ## 0) ? -1 : 1)
 #else
   #define GET_2POS_STATE(sw) (switchState(SW_ ## sw) ? -1 : 1)
@@ -156,7 +156,7 @@ void writeHeader()
   }
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBNV14)
   for (uint8_t i=1; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+1; i++) {
     const char * p = STR_VSRCRAW + i * STR_VSRCRAW[0] + 2;
     for (uint8_t j=0; j<STR_VSRCRAW[0]-1; ++j) {
@@ -288,7 +288,7 @@ void logsWrite()
           GET_2POS_STATE(SH),
           getLogicalSwitchesStates(32),
           getLogicalSwitchesStates(0));
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#elif defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBNV14)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,%d,%d,0x%08X%08X,",
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),
