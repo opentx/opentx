@@ -340,7 +340,7 @@ void checkTrainerSettings()
          break;
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
           serial2SbusInit();
           break;
         }

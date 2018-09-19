@@ -1839,7 +1839,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif  // #if !defined(EEPROM)
 
 #if defined(SERIAL2)
-  serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
+  serial2Init(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
 #endif
 
 #if defined(PCBTARANIS)

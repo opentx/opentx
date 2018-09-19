@@ -50,6 +50,12 @@ enum ModuleFlag
   #define IS_PXX_PROTOCOL(protocol)          (0)
 #endif
 
+#if defined(PCBFLYSKY)
+  #define IS_FLYSKY_PROTOCOL(protocol)       (protocol==PROTO_FLYSKY)
+#else
+  #define IS_FLYSKY_PROTOCOL(protocol)       (0)
+#endif
+
 #if defined(DSM2)
   #define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTO_DSM2_LP45 && protocol<=PROTO_DSM2_DSMX)
 #else

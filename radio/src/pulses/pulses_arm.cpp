@@ -204,7 +204,7 @@ void setupPulses(uint8_t port)
         }
         sportSendBuffer(crossfire, len);
       }
-      scheduleNextMixerCalculation(port, CROSSFIRE_PERIOD);
+      scheduleNextMixerCalculation(port, CROSSFIRE_FRAME_PERIOD);
       break;
 #endif
 

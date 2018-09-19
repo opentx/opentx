@@ -175,7 +175,7 @@ uint8_t telemetryGetByte(uint8_t * byte)
 {
 #if defined(SERIAL2)
   if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
-    if (serial2Mode == UART_MODE_TELEMETRY)
+    if (auxSerialMode == UART_MODE_TELEMETRY)
       return serial2RxFifo.pop(*byte);
     else
       return false;

@@ -560,7 +560,7 @@ void gpsSendByte(uint8_t byte);
 // Second serial port driver
 #define SERIAL2
 #define DEBUG_BAUDRATE                 115200
-extern uint8_t serial2Mode;
+extern uint8_t auxSerialMode;
 void serial2Init(unsigned int mode, unsigned int protocol);
 void serial2Putc(char c);
 #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)

@@ -36,7 +36,7 @@ set(TARGET_SRC
   #../common/arm/stm32/audio_dac_driver.cpp
   audio_spi_driver.cpp
   battery_driver.cpp
-  ../common/arm/stm32/adc_driver.cpp
+  adc_driver.cpp
   )
 
 set(FIRMWARE_TARGET_SRC
@@ -105,7 +105,7 @@ set(TARGET_SRC
   board.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
-  ../common/arm/stm32/intmodule_serial_driver.cpp
+  intmodule_serial_driver.cpp
   )
 
 set(FIRMWARE_TARGET_SRC

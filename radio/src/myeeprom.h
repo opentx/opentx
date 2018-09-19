@@ -45,10 +45,10 @@
 
 #if defined(PCBHORUS)
   #define IS_TRAINER_EXTERNAL_MODULE()    false
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
 #elif defined(PCBTARANIS)
   #define IS_TRAINER_EXTERNAL_MODULE()    (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
+  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
 #else
   #define IS_TRAINER_EXTERNAL_MODULE()    false
 #endif
@@ -307,23 +307,12 @@ enum SwashType {
 
 enum Protocols {
   PROTO_PPM,
-#if defined(PXX) || defined(DSM2) || defined(IRPROTOS)
   PROTO_PXX,
-#endif
-#if defined(DSM2) || defined(IRPROTOS)
+  PROTO_FLYSKY,
   PROTO_DSM2_LP45,
   PROTO_DSM2_DSM2,
   PROTO_DSM2_DSMX,
-#endif
   PROTO_CROSSFIRE,
-#if defined(IRPROTOS)
-  // only used on AVR
-  // we will need 4 bits for proto :(
-  PROTO_SILV,
-  PROTO_TRAC09,
-  PROTO_PICZ,
-  PROTO_SWIFT,
-#endif
   PROTO_MULTIMODULE,
   PROTO_SBUS,
   PROTO_MAX,
@@ -420,6 +409,7 @@ enum ModuleTypes {
   MODULE_TYPE_NONE = 0,
   MODULE_TYPE_PPM,
   MODULE_TYPE_XJT,
+  MODULE_TYPE_FLYSKY, // TODO EEPROM conversion!
   MODULE_TYPE_DSM2,
   MODULE_TYPE_CROSSFIRE,
   MODULE_TYPE_MULTIMODULE,

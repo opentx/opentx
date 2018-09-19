@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-uint8_t serial2Mode = 0;
+uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> serial2TxFifo;
 DMAFifo<32> serial2RxFifo __DMA (SERIAL_DMA_Stream_RX);
 
@@ -85,7 +85,7 @@ void serial2Init(unsigned int mode, unsigned int protocol)
 {
   serial2Stop();
 
-  serial2Mode = mode;
+  auxSerialMode = mode;
 
   switch (mode) {
     case UART_MODE_TELEMETRY_MIRROR:
@@ -134,7 +134,7 @@ void serial2Stop()
 uint8_t serial2TracesEnabled()
 {
 #if defined(DEBUG)
-  return (serial2Mode == UART_MODE_DEBUG);
+  return (auxSerialMode == UART_MODE_DEBUG);
 #else
   return false;
 #endif
@@ -162,7 +162,7 @@ extern "C" void SERIAL_USART_IRQHandler(void)
     while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
       uint8_t data = SERIAL_USART->DR;
       if (!(status & USART_FLAG_ERRORS)) {
-        switch (serial2Mode) {
+        switch (auxSerialMode) {
           case UART_MODE_DEBUG:
             cliRxFifo.push(data);
             break;

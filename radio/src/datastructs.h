@@ -640,7 +640,7 @@ PACK(struct TrainerData {
 #if defined(PCBHORUS) || defined(PCBNV14)
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    NOBACKUP(uint8_t  serial2Mode:4); \
+    NOBACKUP(uint8_t  auxSerialMode:4); \
     uint8_t  slidersConfig:4; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
@@ -660,7 +660,7 @@ PACK(struct TrainerData {
   #endif
   #define EXTRA_GENERAL_FIELDS \
     EXTRA_GENERAL_FIELDS_ARM \
-    uint8_t  serial2Mode:4; \
+    uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
