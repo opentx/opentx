@@ -32,7 +32,7 @@ typedef int16_t safetych_t;
 typedef uint32_t bitfield_channels_t;
 typedef uint16_t event_t;
 typedef int32_t putstime_t;
-typedef int32_t coord_t;
+typedef int coord_t;
 typedef uint32_t LcdFlags;
 typedef uint16_t FlightModesType;
 

@@ -23,7 +23,6 @@
 
 
 #define BOX_WIDTH                      31
-#define coord_t                        int
 #define scoord_t                       int
 #define CENTER                         "\015"
 #define CENTER_OFS                     (7*FW-FW/2)

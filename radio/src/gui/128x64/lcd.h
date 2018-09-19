@@ -24,7 +24,6 @@
 #include <inttypes.h>
 
 #define BOX_WIDTH                      23
-#define coord_t                        uint8_t
 #define scoord_t                       int8_t
 #define CENTER
 #define CENTER_OFS                     0
