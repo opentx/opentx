@@ -37,8 +37,6 @@
 #define USE_STB
 
 // TODO should go to lcd.h again
-typedef int coord_t;
-typedef uint32_t LcdFlags;
 typedef uint16_t display_t;
 
 enum BitmapFormats

@@ -132,7 +132,7 @@ ChannelsMonitorMenu::ChannelsMonitorMenu():
 }
 
 
-const MenuHandlerFunc menuTabMonitors[] PROGMEM = {
+const MenuHandlerFunc menuTabMonitors[] = {
   menuChannelsMonitor<0>,
   menuChannelsMonitor<1>,
   menuChannelsMonitor<2>,
@@ -253,7 +253,7 @@ void drawComboOutputBar(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t chan
     lcdDrawNumber(x + limPos, y + h, chanVal, SMLSIZE | TEXT_COLOR, 0, NULL, "%");
 }
 
-coord_t drawChannelsMonitorLegend(coord_t x, const pm_char * s, int color)
+coord_t drawChannelsMonitorLegend(coord_t x, const char * s, int color)
 {
 #if 1
   lcdDrawSolidFilledRect(x, MENU_FOOTER_TOP + 2, LEG_COLORBOX + 2, LEG_COLORBOX + 2, BARGRAPH_BGCOLOR);

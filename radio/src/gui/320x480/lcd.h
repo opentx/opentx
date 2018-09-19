@@ -45,14 +45,14 @@ int getCharWidth(uint8_t c, const uint16_t * spec);
 
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags=0);
 
-void lcdDrawTextAtIndex(coord_t x, coord_t y, const pm_char * s, uint8_t idx, LcdFlags flags=0);
+void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
 
 inline void lcdClear()
 {
   lcd->clear();
 }
 
-inline void lcdDrawSizedText(coord_t x, coord_t y, const pm_char * s, uint8_t len, LcdFlags attr=0)
+inline void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags attr=0)
 {
   lcd->drawSizedText(x, y, s, len, attr);
 }

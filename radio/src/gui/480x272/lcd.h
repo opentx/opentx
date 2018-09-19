@@ -142,8 +142,6 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t 
 
 #if !defined(BOOT)
 
-#define putstime_t int32_t
-
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
 

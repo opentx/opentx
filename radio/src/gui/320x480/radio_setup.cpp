@@ -87,7 +87,7 @@ class DateTimeWindow : public Window {
       /* TODO dynamic max instead of 31 ...
       int16_t year = TM_YEAR_BASE + t.tm_year;
       int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
-      static const pm_uint8_t dmon[] PROGMEM = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+      static const pm_uint8_t dmon[] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
       dlim += pgm_read_byte(&dmon[t.tm_mon]);*/
       int8_t dlim = 31;
       auto day = new NumberEdit(this, grid.getFieldSlot(3, 2), 1, dlim,

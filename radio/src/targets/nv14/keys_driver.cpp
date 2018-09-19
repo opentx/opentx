@@ -56,7 +56,7 @@ uint8_t trimDown(uint8_t idx)
   return readTrims() & (1 << idx);
 }
 
-uint8_t keyDown()
+bool keyDown()
 {
   return 0;
 }

@@ -110,7 +110,7 @@ enum EnumTabModel {
   MENU_MODEL_INPUTS,
   MENU_MODEL_MIXES,
   MENU_MODEL_OUTPUTS,
-  CASE_CURVES(MENU_MODEL_CURVES)
+  MENU_MODEL_CURVES,
   CASE_GVARS(MENU_MODEL_GVARS)
   MENU_MODEL_LOGICAL_SWITCHES,
   MENU_MODEL_SPECIAL_FUNCTIONS,
@@ -139,7 +139,7 @@ const uint8_t MODEL_ICONS[] = {
   ICON_MODEL_INPUTS,
   ICON_MODEL_MIXER,
   ICON_MODEL_OUTPUTS,
-  CASE_CURVES(ICON_MODEL_CURVES)
+  ICON_MODEL_CURVES,
   CASE_GVARS(ICON_MODEL_GVARS)
   ICON_MODEL_LOGICAL_SWITCHES,
   ICON_MODEL_SPECIAL_FUNCTIONS,
@@ -221,7 +221,7 @@ bool menuStatsDebug(event_t event);
 bool menuStatsAnalogs(event_t event);
 bool menuStatsTraces(event_t event);
 
-static const MenuHandlerFunc menuTabStats[] PROGMEM = {
+static const MenuHandlerFunc menuTabStats[] = {
 
 };
 
@@ -244,7 +244,7 @@ extern void drawSingleMixerBar(coord_t, coord_t, coord_t, coord_t, uint8_t);
 extern void drawSingleOutputBar(coord_t, coord_t, coord_t, coord_t, uint8_t);
 extern void drawComboOutputBar(coord_t, coord_t, coord_t, coord_t, uint8_t);
 
-extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS] PROGMEM;
+extern const MenuHandlerFunc menuTabScreensSetup[1+MAX_CUSTOM_SCREENS];
 
 bool menuFirstCalib(event_t event);
 bool menuMainView(event_t event);
@@ -439,8 +439,8 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
 
 extern uint8_t s_curveChan;
 
-extern const pm_char * warningText;
-extern const pm_char * warningInfoText;
+extern const char * warningText;
+extern const char * warningInfoText;
 extern uint8_t         warningInfoLength;
 extern uint8_t         warningResult;
 extern uint8_t         warningType;

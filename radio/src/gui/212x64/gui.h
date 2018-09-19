@@ -82,8 +82,6 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
 
 void doMainScreenGraphics();
 
-typedef uint16_t FlightModesType;
-
 extern int8_t checkIncDec_Ret;  // global helper vars
 
 #define EDIT_SELECT_MENU               -1

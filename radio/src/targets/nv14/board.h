@@ -268,6 +268,7 @@ uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
 uint32_t readKeys(void);
 uint32_t readTrims(void);
+#define NUM_TRIMS                       NUM_STICKS
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 #define DBLKEYS_PRESSED_RGT_LFT(in)     (false)
@@ -310,6 +311,8 @@ void watchdogInit(unsigned int duration);
 #define NUM_XPOTS                       0 // NUM_POTS
 #define NUM_SLIDERS                     0
 #define NUM_PWMANALOGS                  0
+#define NUM_MOUSE_ANALOGS               0
+#define NUM_DUMMY_ANAS                  0
 
 enum Analogs {
   STICK1,
