@@ -51,7 +51,7 @@ class StaticText : public Window {
       if (flags & CENTERED)
         dc->drawText(rect.w / 2, 3, text.c_str(), flags);
       else
-        dc->drawText(0, (g_eeGeneral.displayLargeLines) ? 9 : 3, text.c_str(), flags);
+        dc->drawText(0, 3, text.c_str(), flags);
     }
 
     void setText(std::string value)

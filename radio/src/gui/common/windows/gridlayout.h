@@ -24,8 +24,8 @@
 #include "window.h"
 
 static constexpr uint8_t lineSpacing = 6;
+static constexpr uint8_t lineHeight = 26;
 static constexpr uint8_t indentWidth = 10;
-#define lineHeight ((g_eeGeneral.displayLargeLines) ? 39 : 26)
 
 class GridLayout {
   public:

@@ -23,9 +23,6 @@
 
 #include "keyboard_base.h"
 #include "textedit.h"
-#include "opentx.h"
-
-extern RadioData g_eeGeneral;
 
 class TextKeyboard : public Keyboard<TextEdit> {
   friend class TextEdit;
@@ -59,19 +56,11 @@ class TextKeyboard : public Keyboard<TextEdit> {
 
     bool onTouchEnd(coord_t x, coord_t y) override;
 
-    void setSize();
-
   protected:
     static TextKeyboard * _instance;
     coord_t cursorPos = 0;
     uint8_t cursorIndex = 0;
     const char * const * layout;
-    coord_t x_space = ((g_eeGeneral.displayLargeLines) ? 30 : 15);
-    coord_t x_spacebar = ((g_eeGeneral.displayLargeLines) ? 160 : 135);
-    coord_t x_special = ((g_eeGeneral.displayLargeLines) ? 50 : 45);
-    coord_t x_regular = ((g_eeGeneral.displayLargeLines) ? 45 : 30);
-    coord_t x_enter = ((g_eeGeneral.displayLargeLines) ? 80 : 80);
-    uint8_t lines = ((g_eeGeneral.displayLargeLines) ? 5 : 4);
 };
 
 #endif // _KEYBOARD_TEXT_H_

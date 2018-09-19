@@ -21,6 +21,7 @@
 #include "textedit.h"
 #include "keyboard_text.h"
 #include "draw_functions.h"
+#include "opentx.h"
 
 void TextEdit::paint(BitmapBuffer * dc)
 {
@@ -32,9 +33,9 @@ void TextEdit::paint(BitmapBuffer * dc)
     lineColor = TEXT_INVERTED_BGCOLOR;
   }
   if (!hasFocus && zlen(value, length) == 0)
-    dc->drawSizedText(3, Y_ENLARGEABLE, "---", length, CURVE_AXIS_COLOR);
+    dc->drawSizedText(3, 2, "---", length, CURVE_AXIS_COLOR);
   else
-    dc->drawSizedText(3, Y_ENLARGEABLE, value, length, ZCHAR | textColor);
+    dc->drawSizedText(3, 2, value, length, ZCHAR | textColor);
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
 
   auto keyboard = TextKeyboard::instance();

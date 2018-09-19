@@ -21,10 +21,6 @@
 #include "numberedit.h"
 #include "draw_functions.h"
 #include "keyboard_number.h"
-#include "opentx.h"
-
-extern RadioData g_eeGeneral;
-
 
 NumberEdit::NumberEdit(Window * parent, const rect_t & rect, int32_t vmin, int32_t vmax, std::function<int32_t()> getValue, std::function<void(int32_t)> setValue, LcdFlags flags):
   BaseNumberEdit(parent, rect, vmin, vmax, std::move(getValue), std::move(setValue), flags)
@@ -48,10 +44,10 @@ void NumberEdit::paint(BitmapBuffer * dc)
     displayFunction(dc, textColor, value);
   }
   else if (value == 0 && !zeroText.empty()) {
-    dc->drawText(3, Y_ENLARGEABLE, zeroText.c_str(), textColor | flags);
+    dc->drawText(3, 2, zeroText.c_str(), textColor | flags);
   }
   else {
-    drawNumber(dc, 3, Y_ENLARGEABLE, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
+    drawNumber(dc, 3, 2, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
   }
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
 }

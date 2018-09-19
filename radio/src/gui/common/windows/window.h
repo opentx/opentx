@@ -28,17 +28,12 @@
 #include <functional>
 #include "bitmapbuffer.h"
 #include "debug.h"
-#include "opentx.h"
-
-extern RadioData g_eeGeneral;
 
 //OPAQUE/TRANSPARENT defined in WinGDI
 #ifndef OPAQUE
  #define OPAQUE 1
  #define TRANSPARENT 2
 #endif
-
-#define Y_ENLARGEABLE   (g_eeGeneral.displayLargeLines) ? 8 : 2
 
 class Window {
   friend class GridLayout;

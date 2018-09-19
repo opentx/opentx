@@ -38,7 +38,7 @@ void TimeEdit::paint(BitmapBuffer * dc)
     lineColor = TEXT_INVERTED_BGCOLOR;
   }
 
-  dc->drawText(3, Y_ENLARGEABLE, getTimerString(_getValue(), (flags & TIMEHOUR) != 0), textColor);
+  dc->drawText(3, 2, getTimerString(_getValue(), (flags & TIMEHOUR) != 0), textColor);
 
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
 }

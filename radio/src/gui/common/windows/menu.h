@@ -27,9 +27,6 @@
 #include <functional>
 #include "mainwindow.h"
 #include <string>
-#include "opentx.h"
-
-extern RadioData g_eeGeneral;
 
 class Menu;
 
@@ -76,15 +73,10 @@ class MenuWindow: public Window {
 
     bool onTouchEnd(coord_t x, coord_t y) override;
 
-    coord_t getLineHeight()
-    {
-      return lineHeight;
-    }
-
   protected:
     std::vector<MenuLine> lines;
     int selectedIndex = -1;
-    uint8_t lineHeight = ((g_eeGeneral.displayLargeLines) ? 50 : 40);
+    static constexpr uint8_t lineHeight = 40;
 };
 
 class Menu : public Window {
