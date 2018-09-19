@@ -696,7 +696,7 @@ void TelemetrySensorPanel::update()
         ui->ratio->setMinimum(0);
         ui->ratio->setSingleStep(0.1);
       }
-      if (ui->offset->decimals() != sensor.prec) {
+      if (ui->offset->decimals() != (int)sensor.prec) {
         ui->offset->setDecimals(sensor.prec);
         ui->offset->setMaximum(30000.0f / powf(10.0f, sensor.prec));
         ui->offset->setMinimum(-ui->offset->maximum());
