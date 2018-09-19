@@ -65,10 +65,6 @@ set(RADIO_BIN_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 configure_file(stamp.h.in stamp.h @ONLY)
 
-add_subdirectory(translations)
-add_subdirectory(bitmaps)
-add_subdirectory(fonts)
-
 set(EEPROM_VARIANT  0)
 set(GVARS_VARIANT   1)
 set(FRSKY_VARIANT   2)
@@ -93,6 +89,10 @@ elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
 else()
   message(FATAL_ERROR "Unknown PCB '${PCB}'")
 endif()
+
+add_subdirectory(translations)
+add_subdirectory(bitmaps)
+add_subdirectory(fonts)
 
 if(NOT PCB STREQUAL 9XRPRO)
   option(DBLKEYS "Double Keys" ON)
