@@ -80,7 +80,7 @@ void readModelNotes()
 
   clearKeyEvents();
   event_t event = EVT_ENTRY;
-  while (event != EVT_KEY_FIRST(KEY_EXIT) && pwrCheck() != e_power_off) {
+  while (event != EVT_KEY_FIRST(KEY_EXIT) && pwrCheck() < e_power_off) {
     lcdRefreshWait();
     lcdClear();
     menuTextView(event);
