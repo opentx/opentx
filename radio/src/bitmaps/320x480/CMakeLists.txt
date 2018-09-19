@@ -9,9 +9,9 @@ add_bitmaps_target(${BITMAP_TARGET_PREFIX}_masks ${RADIO_SRC_DIRECTORY}/bitmaps/
 add_bitmaps_target(${BITMAP_TARGET_PREFIX}_slider_masks "${RADIO_SRC_DIRECTORY}/bitmaps/320x480/slider/*.png" 480 8bits)
 add_bitmaps_target(${BITMAP_TARGET_PREFIX}_layouts_masks "${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.png" 480 8bits)
 add_bitmaps_target(${BITMAP_TARGET_PREFIX}_themes_bitmaps "${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.png" 480 "5/6/5")
-add_bitmaps_target(${BITMAP_TARGET_PREFIX}_fonts ${RADIO_SRC_DIRECTORY}/fonts/320x480/*.png 480 8bits rle)
+add_bitmaps_target(${BITMAP_TARGET_PREFIX}_fonts ${RADIO_SRC_DIRECTORY}/fonts/320x480/*.png 480 8bits)
 add_bitmaps_target(${BITMAP_TARGET_PREFIX}_volume_masks ${RADIO_SRC_DIRECTORY}/bitmaps/320x480/volume/*.png 480 8bits)
-add_bitmaps_target(${BITMAP_TARGET_PREFIX}_bootloader_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/320x480/bootloader/bmp_*.png 480 "5/6/5" rle)
+add_bitmaps_target(${BITMAP_TARGET_PREFIX}_bootloader_bitmaps ${RADIO_SRC_DIRECTORY}/bitmaps/320x480/bootloader/bmp_*.png 480 "5/6/5")
 add_bitmaps_target(${BITMAP_TARGET_PREFIX}_bootloader_icons ${RADIO_SRC_DIRECTORY}/bitmaps/320x480/bootloader/icon_*.png 480 8bits)
 
 add_dependencies(${BITMAP_TARGET_PREFIX}_bitmaps ${BITMAP_TARGET_PREFIX}_calibration_bitmaps ${BITMAP_TARGET_PREFIX}_button_bitmaps ${BITMAP_TARGET_PREFIX}_alpha_bitmaps
