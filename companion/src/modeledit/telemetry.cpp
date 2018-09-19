@@ -689,15 +689,19 @@ void TelemetrySensorPanel::update()
         ui->offset->setSingleStep(1);
       }
     }
-    else if (ui->ratio->decimals() != 1) {
-      ui->ratio->setDecimals(1);
-      ui->ratio->setMaximum(3000);
-      ui->ratio->setMinimum(0);
-      ui->ratio->setSingleStep(0.1);
-      ui->offset->setDecimals(sensor.prec);
-      ui->offset->setMaximum(30000.0f / powf(10.0f, sensor.prec));
-      ui->offset->setMinimum(-ui->offset->maximum());
-      ui->offset->setSingleStep(pow(0.1, sensor.prec));
+    else {
+      if (!ui->ratio->decimals()) {
+        ui->ratio->setDecimals(1);
+        ui->ratio->setMaximum(3000);
+        ui->ratio->setMinimum(0);
+        ui->ratio->setSingleStep(0.1);
+      }
+      if (ui->offset->decimals() != sensor.prec) {
+        ui->offset->setDecimals(sensor.prec);
+        ui->offset->setMaximum(30000.0f / powf(10.0f, sensor.prec));
+        ui->offset->setMinimum(-ui->offset->maximum());
+        ui->offset->setSingleStep(pow(0.1, sensor.prec));
+      }
     }
   }
 
