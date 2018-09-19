@@ -28,6 +28,7 @@
 #include <functional>
 #include "bitmapbuffer.h"
 #include "debug.h"
+#include "opentx.h"
 
 //OPAQUE/TRANSPARENT defined in WinGDI
 #ifndef OPAQUE
