@@ -611,9 +611,11 @@ PACK(struct TrainerData {
 });
 
 #if defined(PCBHORUS)
-  #define SPLASH_MODE uint8_t splashSpares:3
+#define SPLASH_MODE uint8_t splashSpares:3
+#elif defined(FSPLASH)
+#define SPLASH_MODE uint8_t splashMode:3
 #else
-  #define SPLASH_MODE int8_t splashMode:3
+#define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
 #endif
 
   #define EXTRA_GENERAL_FIELDS_ARM \

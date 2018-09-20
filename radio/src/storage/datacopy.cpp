@@ -308,7 +308,14 @@ void copyRadioData(A * dest, B * src)
   }
   dest->stickMode = src->stickMode;
   dest->telemetryBaudrate = src->telemetryBaudrate;
+#if defined(PCBHORUS)
   dest->splashSpares = src->splashSpares;
+#elif defined(FSPLASH)
+  dest->splashMode = src->splashMode;
+#else
+  dest->splashSpares = src->splashSpares;
+  dest->splashMode = src->splashMode;
+#endif
   dest->switchesDelay = src->switchesDelay;
   for (int i=0; i<64; i++) {
     copyCustomFunctionData(&dest->customFn[i], &src->customFn[i]);
