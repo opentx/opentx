@@ -941,6 +941,8 @@
 #define TR_COPY                "Kopieren"
 #define TR_MOVE                "Verplaatsen"
 #define TR_PASTE               "Plakken"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Verwijderen"
 #define TR_INSERT              "Invoegen"
 #define TR_RESET_FLIGHT        "Reset Vliegdata"

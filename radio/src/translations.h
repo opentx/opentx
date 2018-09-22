@@ -126,7 +126,7 @@ extern const char STR_OPEN9X[];
 #define OFS_TRNMODE            (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
 #define OFS_TRNCHN             (OFS_TRNMODE + sizeof(TR_TRNMODE))
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY) || defined(PCBFLYSKY)
   #define OFS_UART3MODES       (OFS_TRNCHN + sizeof(TR_TRNCHN))
   #define OFS_SWTYPES          (OFS_UART3MODES + sizeof(TR_UART3MODES))
   #define OFS_POTTYPES         (OFS_SWTYPES + sizeof(TR_SWTYPES))
@@ -632,6 +632,8 @@ extern const char STR_PERSISTENT_MAH[];
   extern const char STR_COPY[];
   extern const char STR_MOVE[];
   extern const char STR_PASTE[];
+extern const char STR_PASTE_AFTER[];
+extern const char STR_PASTE_BEFORE[];
   extern const char STR_INSERT[];
   extern const char STR_DELETE[];
   extern const char STR_RESET_FLIGHT[];

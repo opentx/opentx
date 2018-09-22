@@ -935,6 +935,8 @@
 #define TR_COPY                "Kopírovat"
 #define TR_MOVE                "Přesunout"
 #define TR_PASTE               "Vložit"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Odstranit"
 #define TR_INSERT              "Přidat"
 #define TR_RESET_FLIGHT        "Let"

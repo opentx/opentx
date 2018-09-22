@@ -945,6 +945,8 @@
 #define TR_COPY                "Copy"
 #define TR_MOVE                "Move"
 #define TR_PASTE               "Paste"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Delete"
 #define TR_INSERT              "Insert"
 #define TR_RESET_FLIGHT        "Reset Flight"

@@ -45,6 +45,31 @@ void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att)
   }
 }
 
+void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curve, LcdFlags att)
+{
+  if (curve.value != 0) {
+    switch (curve.type) {
+      case CURVE_REF_DIFF:
+        dc->drawText(x, y, "D", att);
+        GVAR_MENU_ITEM(x + 13, y+2, curve.value, -100, 100, LEFT|SMLSIZE|att, 0, 0);
+        break;
+
+      case CURVE_REF_EXPO:
+        dc->drawText(x, y, "E", att);
+        GVAR_MENU_ITEM(x + 13, y+2, curve.value, -100, 100, LEFT|SMLSIZE|att, 0, 0);
+        break;
+
+      case CURVE_REF_FUNC:
+        drawTextAtIndex(dc, x, y, STR_VCURVEFUNC, curve.value, att);
+        break;
+
+      case CURVE_REF_CUSTOM:
+        dc->drawText(x, y, getCurveString(curve.value), att);
+        break;
+    }
+  }
+}
+
 void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, LcdFlags flags)
 {
   if (sensor >= MAX_TELEMETRY_SENSORS) {

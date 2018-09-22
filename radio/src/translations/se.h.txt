@@ -952,6 +952,8 @@
 #define TR_COPY                "Kopiera"
 #define TR_MOVE                "Flytta"
 #define TR_PASTE               "Infoga"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Radera"
 #define TR_INSERT              "Addera"
 #define TR_RESET_FLIGHT        "Nollställ Flygning"
