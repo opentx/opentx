@@ -36,6 +36,8 @@ void drawColumnHeader(const char * const * headers, const char * const * descrip
 
 #include "alpha_state_on.lbm"
 #include "alpha_state_off.lbm"
+#include "alpha_button_on.lbm"
+#include "alpha_button_off.lbm"
 
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 {
