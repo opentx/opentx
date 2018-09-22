@@ -674,9 +674,44 @@ uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
 #endif
 
 uint32_t hash(const void * ptr, uint32_t size);
+inline int divRoundClosest(const int n, const int d)
+{
+  if (d == 0)
+    return 0;
+  else
+    return ((n < 0) ^ (d < 0)) ? ((n - d/2)/d) : ((n + d/2)/d);
+}
 
 #define calc100to256_16Bits(x) calc100to256(x)
 #define calc100toRESX_16Bits(x) calc100toRESX(x)
+
+#define calc100to256_16Bits(x) calc100to256(x)
+#define calc100toRESX_16Bits(x) calc100toRESX(x)
+
+inline int calc100to256(int x)
+{
+  return divRoundClosest(x*256, 100);
+}
+
+inline int calc100toRESX(int x)
+{
+  return divRoundClosest(x*RESX, 100);
+}
+
+inline int calc1000toRESX(int x)
+{
+  return divRoundClosest(x*RESX, 1000);
+}
+
+inline int calcRESXto1000(int x)
+{
+  return divRoundClosest(x*1000, RESX);
+}
+
+inline int calcRESXto100(int x)
+{
+  return divRoundClosest(x*100, RESX);
+}
 
 #if defined(COLORLCD)
 extern const char vers_stamp[];
