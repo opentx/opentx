@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "math.h"
 
 void BitmapBuffer::drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color)
 {
@@ -413,7 +414,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   }
 
   uint32_t fontindex = FONTINDEX(flags);
-  const pm_uchar * font = fontsTable[fontindex];
+  const unsigned char * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
 
   if (flags & RIGHT) {

@@ -461,15 +461,15 @@ void RadioSetupPage::build(Window * window)
 
 #if defined(FAI_CHOICE)
   case ITEM_SETUP_FAI:
-    lcdDrawText(MENUS_MARGIN_LEFT, y, PSTR("FAI Mode"));
+    lcdDrawText(MENUS_MARGIN_LEFT, y, "FAI Mode");
     if (g_eeGeneral.fai) {
-      lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, PSTR("Locked in FAI Mode"));
+      lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, "Locked in FAI Mode");
     }
     else {
       g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
       if (attr && checkIncDec_Ret) {
           g_eeGeneral.fai = false;
-          POPUP_CONFIRMATION(PSTR("FAI mode?"));
+          POPUP_CONFIRMATION("FAI mode?");
       }
     }
     break;

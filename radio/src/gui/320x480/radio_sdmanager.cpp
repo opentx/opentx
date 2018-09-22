@@ -45,7 +45,7 @@ char * getFullPath(const std::string & filename)
 {
   static char full_path[_MAX_LFN+1]; // TODO optimize that!
   f_getcwd(full_path, _MAX_LFN);
-  strcat(full_path, PSTR("/"));
+  strcat(full_path, "/");
   strcat(full_path, filename.c_str());
   return full_path;
 }
