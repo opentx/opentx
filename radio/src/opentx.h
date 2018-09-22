@@ -784,6 +784,7 @@ struct point_t
   coord_t y;
 };
 point_t getPoint(uint8_t i);
+point_t getPoint(uint8_t curveIndex, uint8_t index);
 typedef CurveData CurveInfo;
 void loadCurves();
 #define LOAD_MODEL_CURVES() loadCurves()
