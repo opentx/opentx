@@ -62,8 +62,15 @@ void TextButton::paint(BitmapBuffer * dc)
   dc->drawText(rect.w / 2, (rect.h - getFontHeight(flags)) / 2, text.c_str(), CENTERED | (enabled() ? 0 : TEXT_DISABLE_COLOR));
 }
 
+const uint8_t __alpha_button_on[] {
 #include "alpha_button_on.lbm"
+};
+Bitmap ALPHA_BUTTON_ON(BMP_ARGB4444, (const uint16_t*)__alpha_button_on);
+
+const uint8_t __alpha_button_off[] {
 #include "alpha_button_off.lbm"
+};
+Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
 
 void IconButton::paint(BitmapBuffer * dc)
 {

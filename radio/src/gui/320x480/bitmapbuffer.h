@@ -28,6 +28,7 @@
 #include "board.h"
 #include "debug.h"
 #include "opentx_types.h"
+#include "rle.h"
 
 struct rect_t {
   coord_t x, y, w, h;
@@ -119,6 +120,16 @@ class BitmapBufferBase
       return offsetY;
     }
 
+    BitmapBufferBase(uint8_t format, T * data):
+      format(format),
+      data(data),
+      data_end(NULL)
+    {
+      width  = *((uint16_t*)data);
+      height = *(((uint16_t*)data)+1);
+      data_end = data + 4 + (width * height);
+    }
+
     inline uint8_t getFormat() const
     {
       return format;
@@ -168,6 +179,26 @@ class BitmapBufferBase
 };
 
 typedef BitmapBufferBase<const uint16_t> Bitmap;
+
+class RLEBitmap:
+  public BitmapBufferBase<uint16_t>
+{
+  public:
+    RLEBitmap(uint8_t format, const uint8_t* rle_data)
+      : BitmapBufferBase<uint16_t>(format, 0, 0, NULL)
+    {
+      width  = *((uint16_t *)rle_data);
+      height = *(((uint16_t *)rle_data)+1);
+      uint32_t pixels = width * height;
+      data = (uint16_t*)malloc(pixels * sizeof(uint16_t));
+      rle_decode_8bit((uint8_t*)data, pixels * sizeof(uint16_t), rle_data+4);
+      data_end = data + pixels;
+    }
+    ~RLEBitmap()
+    {
+      free(data);
+    }
+};
 
 class BitmapBuffer: public BitmapBufferBase<uint16_t>
 {

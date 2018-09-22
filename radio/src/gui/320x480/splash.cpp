@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -22,7 +22,10 @@
 
 #if defined(SPLASH)
 
+const uint8_t __bmp_splash[] {
 #include "bmp_splash.lbm"
+};
+Bitmap BMP_SPLASH(BMP_RGB565, (const uint16_t*)__bmp_splash);
 
 void drawSplash()
 {
