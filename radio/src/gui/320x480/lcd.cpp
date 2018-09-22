@@ -272,6 +272,13 @@ void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
   lcdDrawText(x, y, s, flags);
 }
 
+void drawCurveName(coord_t x, coord_t y, int8_t idx, LcdFlags flags)
+{
+  char s[8];
+  getCurveString(s, idx);
+  lcdDrawText(x, y, s, flags);
+}
+
 void drawCurveName(BitmapBuffer * dc, coord_t x, coord_t y, int8_t idx, LcdFlags flags)
 {
   char s[8];
