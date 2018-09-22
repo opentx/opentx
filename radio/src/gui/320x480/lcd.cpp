@@ -80,7 +80,7 @@ void lcdPutFontPattern(coord_t x, coord_t y, const uint8_t * font, const uint16_
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags)
 {
   uint32_t fontindex = FONTINDEX(flags);
-  const pm_uchar * font = fontsTable[fontindex];
+  const unsigned char * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
   lcdPutFontPattern(x, y, font, fontspecs, getMappedChar(c), flags);
 }

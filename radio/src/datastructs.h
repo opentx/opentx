@@ -505,9 +505,15 @@ typedef uint8_t swarnenable_t;
 
   #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
 
+#if defined(COLORLCD)
 #if defined(PCBHORUS)
 #include "gui/480x272/layout.h"
 #include "gui/480x272/topbar.h"
+#else
+#include "gui/320x480/layout.h"
+#include "gui/320x480/topbar.h"
+#endif
+
 #define LAYOUT_NAME_LEN 10
 PACK(struct CustomScreenData {
   char layoutName[LAYOUT_NAME_LEN];
@@ -689,7 +695,8 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(COLORLCD)
-  #include "gui/480x272/theme.h"
+
+  #include "theme.h"
   #define THEME_NAME_LEN 8
   #define THEME_DATA \
     NOBACKUP(char themeName[THEME_NAME_LEN]); \

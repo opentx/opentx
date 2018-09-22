@@ -65,9 +65,9 @@ class ModelBitmapWidget: public Widget
 
     virtual void refresh()
     {
-      uint32_t new_hash = MathUtil::hash(g_model.header.bitmap, sizeof(g_model.header.bitmap));
-      new_hash ^= MathUtil::hash(g_model.header.name, sizeof(g_model.header.name));
-      new_hash ^= MathUtil::hash(g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
+      uint32_t new_hash = hash(g_model.header.bitmap, sizeof(g_model.header.bitmap));
+      new_hash ^= hash(g_model.header.name, sizeof(g_model.header.name));
+      new_hash ^= hash(g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));
       if (new_hash != deps_hash) {
         deps_hash = new_hash;
         refreshBuffer();

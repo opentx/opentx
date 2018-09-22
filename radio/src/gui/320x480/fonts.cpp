@@ -26,7 +26,7 @@ const uint16_t font_tinsize_specs[] = {
 #include "font_tinsize.specs"
 };
 
-const pm_uchar font_tinsize[] = {
+const unsigned char font_tinsize[] = {
 #include "font_tinsize.lbm"
 };
 
@@ -34,7 +34,7 @@ const uint16_t font_smlsize_specs[] = {
 #include "font_smlsize.specs"
 };
 
-const pm_uchar font_smlsize[] = {
+const unsigned char font_smlsize[] = {
 #include "font_smlsize.lbm"
 };
 #endif
@@ -43,7 +43,7 @@ const uint16_t font_stdsize_specs[] = {
 #include "font_stdsize.specs"
 };
 
-const pm_uchar font_stdsize[] = {
+const unsigned char font_stdsize[] = {
 #include "font_stdsize.lbm"
 };
 
@@ -52,7 +52,7 @@ const uint16_t font_midsize_specs[] = {
 #include "font_midsize.specs"
 };
 
-const pm_uchar font_midsize[] = {
+const unsigned char font_midsize[] = {
 #include "font_midsize.lbm"
 };
 
@@ -60,7 +60,7 @@ const uint16_t font_dblsize_specs[] = {
 #include "font_dblsize.specs"
 };
 
-const pm_uchar font_dblsize[] = {
+const unsigned char font_dblsize[] = {
 #include "font_dblsize.lbm"
 };
 
@@ -68,7 +68,7 @@ const uint16_t font_xxlsize_specs[] = {
 #include "font_xxlsize.specs"
 };
 
-const pm_uchar font_xxlsize[] = {
+const unsigned char font_xxlsize[] = {
 #include "font_xxlsize.lbm"
 };
 
@@ -76,7 +76,7 @@ const uint16_t font_stdsizebold_specs[] = {
 #include "font_stdsizebold.specs"
 };
 
-const pm_uchar font_stdsizebold[] = {
+const unsigned char font_stdsizebold[] = {
 #include "font_stdsizebold.lbm"
 };
 #endif

@@ -24,6 +24,7 @@
 #define _MAINWINDOW_H_
 
 #include "window.h"
+#include "gui/320x480/bitmapbuffer.h"
 
 class MainWindow: public Window {
   public:
