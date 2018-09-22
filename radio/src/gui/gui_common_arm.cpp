@@ -708,7 +708,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_PROTO_Q303,       3, false,      STR_SUBTYPE_Q303,    nullptr},
   {MM_RF_PROTO_CABELL,     7, false,      STR_SUBTYPE_CABELL,  STR_MULTI_OPTION},
   {MM_RF_PROTO_H83D,       3, false,      STR_SUBTYPE_H83D,    nullptr},
-  {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,  nullptr},
+  {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,  STR_MULTI_RFTUNE},
   {MM_RF_PROTO_HITEC,      2, false,      STR_SUBTYPE_HITEC,   STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,          STR_MULTI_OPTION},
 
