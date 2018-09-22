@@ -28,7 +28,6 @@
 #include "definitions.h"
 #include "opentx_types.h"
 #include "touch.h"
-#include "otx_math.h"
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
@@ -203,6 +202,13 @@
   #define IS_BLUETOOTH_TRAINER()       false
   #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
 #endif
+
+// RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
+#define RESX_SHIFT 10
+#define RESX       1024
+#define RESXu      1024u
+#define RESXul     1024ul
+#define RESXl      1024l
 
 #include "board.h"
 
