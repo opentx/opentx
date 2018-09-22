@@ -46,6 +46,15 @@ void pushMenu(MenuHandlerFunc newMenu)
 {
 
 }
+
+void readModelNotes()
+{
+  LED_ERROR_BEGIN();
+
+  //TODO : modelnotes handling
+
+  LED_ERROR_END();
+}
 /*
 bool menuModelNotes(event_t event)
 {
