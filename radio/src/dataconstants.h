@@ -534,6 +534,7 @@ enum MixSources {
   MIXSRC_Thr,                           LUA_EXPORT("thr", "Throttle")
   MIXSRC_Ail,                           LUA_EXPORT("ail", "Aileron")
 
+  MIXSRC_LAST_STICK = MIXSRC_Ail,
   MIXSRC_FIRST_POT,
 #if defined(PCBHORUS)
   MIXSRC_S1 = MIXSRC_FIRST_POT,         LUA_EXPORT("s1", "Potentiometer S1")
@@ -591,6 +592,7 @@ enum MixSources {
   MIXSRC_CYC1 = MIXSRC_FIRST_HELI,   LUA_EXPORT("cyc1", "Cyclic 1")
   MIXSRC_CYC2,                       LUA_EXPORT("cyc2", "Cyclic 2")
   MIXSRC_CYC3,                       LUA_EXPORT("cyc3", "Cyclic 3")
+  MIXSRC_LAST_HELI = MIXSRC_CYC3,
 
   MIXSRC_FIRST_TRIM,
   MIXSRC_TrimRud = MIXSRC_FIRST_TRIM,  LUA_EXPORT("trim-rud", "Rudder trim")
