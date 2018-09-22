@@ -20,7 +20,6 @@
 
 #include "curve.h"
 #include "lcd.h"
-#include "otx_math.h"
 #include "bitmaps.h"
 #include "strhelpers.h"
 

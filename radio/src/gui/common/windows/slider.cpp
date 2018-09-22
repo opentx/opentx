@@ -19,7 +19,6 @@
  */
 
 #include "slider.h"
-#include "otx_math.h"
 #include "bitmaps.h"
 
 void Slider::paint(BitmapBuffer * dc)

@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if !defined(BOOT)
-const char s_charTab[] PROGMEM = "_-.,";
+const char s_charTab[] = "_-.,";
 
 char hex2zchar(uint8_t hex)
 {
@@ -240,7 +240,7 @@ char * getFlightModeString(char * dest, int8_t idx)
     idx = -idx;
   }
 
-  s = strAppend(s, STR_FP);
+  s = strAppend(s, STR_FM);
   strAppendUnsigned(s, idx - 1);
   return dest;
 }
@@ -339,7 +339,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
     getStringAtIndex(s, STR_VSWITCHES, IDX_ON_IN_STR_VSWITCHES + idx - SWSRC_ON);
   }
   else if (idx <= SWSRC_LAST_FLIGHT_MODE) {
-    strAppendStringWithIndex(s, STR_FP, idx-SWSRC_FIRST_FLIGHT_MODE);
+    strAppendStringWithIndex(s, STR_FM, idx-SWSRC_FIRST_FLIGHT_MODE);
   }
   else if (idx == SWSRC_TELEMETRY_STREAMING) {
     strcpy(s, "Tele");
