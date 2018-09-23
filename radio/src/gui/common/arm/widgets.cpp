@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 
+#if !defined(TOUCHUI)
 void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att)
 {
   if (curve.value != 0) {
@@ -45,6 +46,8 @@ void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags att)
   }
 }
 
+#else
+
 void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curve, LcdFlags att)
 {
   if (curve.value != 0) {
@@ -69,6 +72,7 @@ void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curv
     }
   }
 }
+#endif
 
 void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, LcdFlags flags)
 {
