@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "strhelpers.h"
 
 #if !defined(BOOT)
 const char s_charTab[] = "_-.,";
