@@ -878,7 +878,7 @@ static inline void check_struct()
 
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
-  CHKSIZE(ModuleData,70);
+  CHKSIZE(ModuleData,75);
 
   CHKSIZE(GVarData, 7);
 
