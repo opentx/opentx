@@ -61,7 +61,7 @@ if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
 endif()
 
-include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
+include_directories(${RADIO_SRC_DIRECTORY}/fonts/colorlcd gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
 file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.cpp)
 file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.cpp)
