@@ -166,7 +166,7 @@ end
 local function init()
   thrCH1 = defaultChannel(2)
   rollCH1 = defaultChannel(0)
-  yawCH1 = defaultChannel(4)
+  yawCH1 = defaultChannel(3)
   pitchCH1 = defaultChannel(1)
   local ver, radio, maj, minor, rev = getVersion()
   if string.match(radio, "x7") then
@@ -359,8 +359,8 @@ local function drawConfirmationMenu()
   local x = 72
   local y = 12
   x, y = drawNextSWLine(x, y, "Arm:", armSW1)
-  x, y = drawNextSWLine(x, y, "Beeper:", beeperSW1)
   x, y = drawNextSWLine(x, y, "Mode:", modeSW1)
+  x, y = drawNextSWLine(x, y, "Beeper:", beeperSW1)
   lcd.drawText(0, LCD_H-8, "[Enter Long] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
   fieldsMax = 0
@@ -395,7 +395,7 @@ local function confirmationMenu(event)
     drawConfirmationMenu()
   end
 
-  navigate(event, fieldsMax, YAW_PAGE, page)
+  navigate(event, fieldsMax, BEEPER_PAGE, page)
 
   if event == EVT_EXIT_BREAK then
     return 2
