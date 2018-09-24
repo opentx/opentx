@@ -45,7 +45,7 @@ set(FIRMWARE_TARGET_SRC
   )
 
 set(BITMAPS_TARGET nv14_bitmaps)
-set(FONTS_TARGET x10_fonts)
+set(FONTS_TARGET x12_fonts)
 set(LCD_DRIVER lcd_driver.cpp)
 set(LUA_EXPORT lua_export_x10)
 set(TOUCH_DRIVER touch_driver.cpp)
@@ -63,9 +63,9 @@ endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
-file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/themes/*.cpp)
-file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/layouts/*.cpp)
-file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/widgets/*.cpp)
+file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.cpp)
+file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.cpp)
+file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/widgets/*.cpp)
 set(GUI_SRC
   ${GUI_SRC}
   bitmapbuffer.cpp
