@@ -20,8 +20,8 @@ local ROLL_PAGE = 1
 local PITCH_PAGE = 2
 local YAW_PAGE = 3
 local ARM_PAGE = 4
-local BEEPER_PAGE = 5
-local MODE_PAGE = 6
+local MODE_PAGE = 5
+local BEEPER_PAGE = 6
 local CONFIRMATION_PAGE = 7
 
 -- Navigation variables
@@ -165,8 +165,8 @@ end
 -- Init function
 local function init()
   thrCH1 = defaultChannel(2)
-  rollCH1 = defaultChannel(3)
-  yawCH1 = defaultChannel(0)
+  rollCH1 = defaultChannel(0)
+  yawCH1 = defaultChannel(4)
   pitchCH1 = defaultChannel(1)
   local ver, radio, maj, minor, rev = getVersion()
   if string.match(radio, "x7") then
