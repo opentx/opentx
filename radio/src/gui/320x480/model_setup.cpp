@@ -238,9 +238,9 @@ class ModuleWindow : public Window {
       // Module parameters
       if (isModuleFlysky(moduleIndex)) {
         new Choice(this, grid.getFieldSlot(2, 1), STR_FLYSKY_PROTOCOLS, 0, 3,
-                   GET_DEFAULT(g_model.moduleData[moduleIndex].romData.mode),
+                   GET_DEFAULT(g_model.moduleData[moduleIndex].flysky.mode),
                    [=](int32_t newValue) -> void {
-                     g_model.moduleData[moduleIndex].romData.mode = newValue;
+                     g_model.moduleData[moduleIndex].flysky.mode = newValue;
                      SET_DIRTY();
                      onIntmoduleReceiverSetPulse(INTERNAL_MODULE, newValue);
                    });
@@ -310,11 +310,11 @@ class ModuleWindow : public Window {
       if (isModuleFlysky(moduleIndex)) {
         new StaticText(this, grid.getLabelSlot(true), STR_RXFREQUENCY);
         new NumberEdit(this, grid.getFieldSlot(), 50, 400,
-                       GET_DEFAULT(g_model.moduleData[moduleIndex].romData.rx_freq[0] +
-                                   g_model.moduleData[moduleIndex].romData.rx_freq[1] * 256),
+                       GET_DEFAULT(g_model.moduleData[moduleIndex].flysky.rx_freq[0] +
+                                   g_model.moduleData[moduleIndex].flysky.rx_freq[1] * 256),
                        [=](int32_t newValue) -> void {
-                         g_model.moduleData[moduleIndex].romData.rx_freq[0] = newValue & 0xFF;
-                         g_model.moduleData[moduleIndex].romData.rx_freq[1] = newValue >> 8;
+                         g_model.moduleData[moduleIndex].flysky.rx_freq[0] = newValue & 0xFF;
+                         g_model.moduleData[moduleIndex].flysky.rx_freq[1] = newValue >> 8;
                          SET_DIRTY();
                          onIntmoduleReceiverSetFrequency(INTERNAL_MODULE);
                        });

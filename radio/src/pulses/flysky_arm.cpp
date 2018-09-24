@@ -69,7 +69,7 @@ enum DEBUG_RF_FRAME_PRINT_E {
 #define NUM_OF_NV14_CHANNELS            (14)
 #define VALID_CH_DATA(v)                ((v) > 900 && (v) < 2100)
 
-#define gRomData                        g_model.moduleData[INTERNAL_MODULE].romData
+#define gRomData                        g_model.moduleData[INTERNAL_MODULE].flysky
 #define SET_DIRTY()                     storageDirty(EE_MODEL)
 
 enum FlySkySensorType_E {
@@ -1009,10 +1009,10 @@ void resetPulsesFlySky(uint8_t port)
   modulePulsesData[port].flysky.state_index = 0;
   modulePulsesData[port].flysky.esc_state = 0;
   moduleFlag[port] = MODULE_NORMAL_MODE;
-  uint16_t rx_freq = g_model.moduleData[port].romData.rx_freq[0];
-  rx_freq += (g_model.moduleData[port].romData.rx_freq[1] * 256);
+  uint16_t rx_freq = g_model.moduleData[port].flysky.rx_freq[0];
+  rx_freq += (g_model.moduleData[port].flysky.rx_freq[1] * 256);
   if (50 > rx_freq || 400 < rx_freq) {
-    g_model.moduleData[port].romData.rx_freq[0] = 50;
+    g_model.moduleData[port].flysky.rx_freq[0] = 50;
   }
 }
 

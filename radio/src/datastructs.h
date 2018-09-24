@@ -411,12 +411,12 @@ PACK(struct ModuleData {
   uint8_t invertedSerial:1; // telemetry serial inverted from standard
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   union {
-    struct {
+    NOBACKUP(struct {
       int8_t  delay:6;
       uint8_t pulsePol:1;
       uint8_t outputType:1;    // false = open drain, true = push pull
       int8_t  frameLength;
-    } ppm;
+    } ppm);
     NOBACKUP(struct {
       uint8_t rfProtocolExtra:2;
       uint8_t spare1:3;
@@ -440,6 +440,11 @@ PACK(struct ModuleData {
       uint8_t spare2:1;
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
+    struct {
+      uint8_t rx_id[4];
+      uint8_t mode;
+      uint8_t rx_freq[2];
+    } flysky;
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
