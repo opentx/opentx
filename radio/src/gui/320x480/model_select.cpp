@@ -22,7 +22,7 @@
 #include "model_select.h"
 #include "opentx.h"
 #include "libwindows.h"
-#include "storage/modelslist.h"
+#include "modelslist.h"
 
 #define CATEGORIES_WIDTH               120
 #define MODELS_LEFT                    123

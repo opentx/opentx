@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "storage/modelslist.h"
+#include "modelslist.h"
 
 uint8_t g_moduleIdx;
 

@@ -47,7 +47,19 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 }
 #endif
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(PCBFLYSKY)
+inline bool isModuleFlysky(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_FLYSKY;
+}
+#else
+inline bool isModuleFlysky(uint8_t idx)
+{
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_FLYSKY;
+}
+#endif
+
+#if defined(PCBFRSKY)
 inline bool isModuleXJT(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT;
@@ -74,7 +86,7 @@ inline bool isModuleCrossfire(uint8_t idx)
 #if defined(EXTRA_MODULE)
 inline bool isExtraModule(uint8_t idx)
 {
-  return idx == EXTRA_MODULE);
+  return idx == EXTRA_MODULE;
 }
 #else
 inline bool isExtraModule(uint8_t)
@@ -114,22 +126,6 @@ inline bool isModuleR9M_LBT(uint8_t idx)
   return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
 }
 
-inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
-}
-
-inline bool isModuleR9M_EUPLUS(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EUPLUS;
-}
-
-inline bool isModuleR9M_AU_PLUS(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
-}
-
-
 inline bool isModulePXX(uint8_t idx)
 {
   return isModuleXJT(idx) || isModuleR9M(idx);
@@ -152,9 +148,9 @@ inline bool isModuleDSM2(uint8_t idx)
 }
 #endif
 
-// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, dsm, crossfire, multi, r9m, sbus)
-static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8, 8}; // relative to 8!
-static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
+// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, flysky, dsm, crossfire, multi, r9m, sbus)
+static const int8_t maxChannelsModules_M8[] = {0, 8, 8, 6, -2, 8, 4, 8, 8}; // relative to 8!
+static const int8_t maxChannelsXJT[] = {0, 8, 0, 4}; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
@@ -168,7 +164,7 @@ inline int8_t maxModuleChannels_M8(uint8_t idx)
   else if (isModuleXJT(idx))
     return maxChannelsXJT[1 + g_model.moduleData[idx].rfProtocol];
   else
-    return maxChannelsModules[g_model.moduleData[idx].type];
+    return maxChannelsModules_M8[g_model.moduleData[idx].type];
 }
 
 inline int8_t maxModuleChannels(uint8_t idx)
@@ -192,6 +188,8 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return 0; // 8 channels
   else if (isModuleMultimoduleDSM2(idx))
     return -1; // 7 channels
+  else if (isModuleFlysky(idx))
+    return 6; // 14 channels
   else
     return 8; // 16 channels
 }
@@ -204,6 +202,37 @@ inline int8_t sentModuleChannels(uint8_t idx)
     return 16;
   else
     return 8 + g_model.moduleData[idx].channelsCount;
+}
+
+inline bool isModuleTypeAllowed(uint8_t idx, uint8_t type)
+{
+#if defined(PCBFLYSKY)
+  if (idx == INTERNAL_MODULE) {
+    return (type == MODULE_TYPE_NONE || type == MODULE_TYPE_FLYSKY);
+  }
+  else if (idx == EXTERNAL_MODULE) {
+    return (type == MODULE_TYPE_NONE || type == MODULE_TYPE_PPM
+         || type == MODULE_TYPE_XJT || type == MODULE_TYPE_CROSSFIRE
+         || type == MODULE_TYPE_R9M);
+  }
+#endif
+
+  return true;
+}
+
+inline bool isModuleNeedingReceiverNumber(uint8_t idx)
+{
+  return isModulePXX(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx);
+}
+
+inline bool isModuleNeedingBindRangeButtons(uint8_t idx)
+{
+  return isModulePXX(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx) || isModuleFlysky(idx);
+}
+
+inline bool isModuleNeedingFailsafeButton(uint8_t idx)
+{
+  return isModulePXX(idx) || isModuleR9M(idx) || isModuleFlysky(idx);
 }
 
 #endif // _MODULES_H_

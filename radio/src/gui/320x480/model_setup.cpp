@@ -261,7 +261,7 @@ class ModuleWindow : public Window {
 
       if (isModuleR9M(moduleIndex)) {
         new Choice(this, grid.getFieldSlot(2, 1), STR_R9M_MODES, MODULE_SUBTYPE_R9M_FCC,
-                   MODULE_SUBTYPE_R9M_LBT,
+                   MODULE_SUBTYPE_R9M_EU,
                    GET_DEFAULT(g_model.moduleData[moduleIndex].subType),
                    [=](int32_t newValue) {
                      g_model.moduleData[moduleIndex].subType = newValue;
@@ -856,7 +856,7 @@ case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         if (isModuleDSM2(EXTERNAL_MODULE))
           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
         else if (isModuleR9M(EXTERNAL_MODULE))
-          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LBT);
+          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_EU);
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(EXTERNAL_MODULE)) {
           int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MM_RF_PROTO_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);

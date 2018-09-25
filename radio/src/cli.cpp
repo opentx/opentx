@@ -616,7 +616,7 @@ int cliTestMemorySpeed()
   return 0;
 }
 
-#include "storage/modelslist.h"
+#include "modelslist.h"
 using std::list;
 
 int cliTestModelsList()
