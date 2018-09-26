@@ -235,30 +235,34 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
       PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
 #else
       PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTOS);
-    } 
+    }
     else {
       PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
       PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTO);
 #endif
     }
-    PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
+    if (seconds > 0) {
+      PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
+    }
   }
 
-  if (seconds != 1) {
-    PLAY_NUMBER(seconds, 0, 0);
+  if (seconds > 0) {
+    if (seconds != 1) {
+      PLAY_NUMBER(seconds, 0, 0);
 #if defined(CPUARM)
-    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
-  }
-  else {
-    PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
-    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
+      PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
+    }
+    else {
+      PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
+      PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
 #else
-    PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDOS);
-  }
-  else {
-   PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
-   PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDO);
+      PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDOS);
+    }
+    else {
+     PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
+     PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDO);
 #endif
+    }
   }
 }
 
