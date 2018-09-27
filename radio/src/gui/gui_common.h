@@ -34,6 +34,15 @@
 
 typedef bool (*IsValueAvailable)(int);
 
+enum SwitchContext
+{
+  LogicalSwitchesContext,
+  ModelCustomFunctionsContext,
+  GeneralCustomFunctionsContext,
+  TimersContext,
+  MixesContext
+};
+
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable);
 
@@ -49,6 +58,7 @@ bool isSourceAvailableInGlobalFunctions(int source);
 bool isSourceAvailableInCustomSwitches(int source);
 bool isSourceAvailableInResetSpecialFunction(int index);
 bool isSourceAvailableInGlobalResetSpecialFunction(int index);
+bool isSwitchAvailable(int swtch, SwitchContext context);
 bool isSwitchAvailableInLogicalSwitches(int swtch);
 bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
@@ -58,6 +68,7 @@ bool isModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
 bool isTelemetryProtocolAvailable(int protocol);
 bool isTrainerModeAvailable(int mode);
+bool isAssignableFunctionAvailable(int function, CustomFunctionData * functions);
 
 bool isSensorUnit(int sensor, uint8_t unit);
 bool isCellsSensor(int sensor);

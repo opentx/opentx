@@ -119,3 +119,11 @@ void disable_crossfire(uint32_t port)
     extmoduleStop();
   }
 }
+
+void init_serial(uint32_t module_index, uint32_t baudrate, uint32_t period_half_us)
+{
+}
+
+void disable_serial(uint32_t port)
+{
+}

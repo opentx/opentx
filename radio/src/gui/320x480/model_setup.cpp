@@ -486,7 +486,7 @@ void ModelSetupPage::build(Window * window)
 
     // Timer mode
     new StaticText(window, grid.getLabelSlot(true), STR_MODE);
-    new SwitchChoice(window, grid.getFieldSlot(2, 0), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(timer->swtch));
+    new SwitchChoice(window, grid.getFieldSlot(2, 0), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(timer->mode));
     new Choice(window, grid.getFieldSlot(2, 1), "\006""Simple""Thr.\0 ""Thr.%", 0, TMRMODE_COUNT, GET_SET_DEFAULT(timer->mode));
     grid.nextLine();
 

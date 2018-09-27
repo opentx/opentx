@@ -133,6 +133,9 @@
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Kein\0 Pieps\0StimmeHaptik"
 
+#define LEN_COUNTDOWNVALUES    "\003"
+#define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"
+
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Ton\0  ""Ruhe  "
 
@@ -978,6 +981,8 @@
 #define TR_TELEMETRY_TYPE      TR("Typ", "Telemetrietyp")
 #define TR_TELEMETRY_SENSORS   "Sensoren"
 #define TR_VALUE               "Wert"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Einheit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor hinzufügen ..."

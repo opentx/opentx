@@ -354,6 +354,7 @@ extern const uint8_t modn12x3[];
 #endif
 
 extern uint8_t channel_order(uint8_t x);
+extern uint8_t channel_order(uint8_t setup, uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
@@ -1144,6 +1145,13 @@ union ReusableBuffer
     uint16_t count;
     char originalName[SD_SCREEN_FILE_LENGTH+1];
   } sdmanager;
+#endif
+
+#if defined(STM32)
+  struct
+  {
+    char id[27];
+  } version;
 #endif
 
   struct

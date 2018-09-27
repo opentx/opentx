@@ -55,6 +55,9 @@
 #define LEN_VBEEPMODE          "\005"
 #define TR_VBEEPMODE           "Tyst\0""Alarm""EjKnp""Alla\0"
 
+#define LEN_COUNTDOWNVALUES    "\003"
+#define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"
+
 #define LEN_VBEEPLEN           "\005"
 #define TR_VBEEPLEN            "0====""=0===""==0==""===0=""====0"
 
@@ -995,6 +998,8 @@
 #define TR_TELEMETRY_TYPE      "Telemetrityp"
 #define TR_TELEMETRY_SENSORS   "Sensorer"
 #define TR_VALUE               "Värde"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Enhet"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Lägg till sensor..."

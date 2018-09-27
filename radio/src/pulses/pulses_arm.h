@@ -93,8 +93,22 @@ PACK(struct PxxUartPulsesData {
   uint16_t pcmCrc;
   uint16_t _alignment;
 });
+#if defined(PCBFLYSKY)
+PACK(struct FlySkySerialPulsesData {
+       uint8_t  pulses[64];
+       uint8_t  * ptr;
+       uint8_t  frame_index;
+       uint8_t  crc;
+       uint8_t  state;
+       uint8_t  state_index;
+       uint8_t  esc_state;
+       uint8_t  telemetry[64];
+       uint8_t  telemetry_index;
+     });
+#endif
 #endif
 
+#define PXX_PERIOD_DURATION  9 /* ms */
 #define PPM_PERIOD_HALF_US(module)   ((g_model.moduleData[module].ppm.frameLength * 5 + 225) * 200) /*half us*/
 #define PPM_PERIOD(module)           (PPM_PERIOD_HALF_US(module) / 2000) /*ms*/
 #define DSM2_BAUDRATE                125000
@@ -133,6 +147,9 @@ PACK(struct CrossfirePulsesData {
 union ModulePulsesData {
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   PxxUartPulsesData pxx_uart;
+#if defined(PCBFLYSKY)
+  FlySkySerialPulsesData flysky;
+#endif
 #endif
 #if defined(PPM_PIN_SERIAL)
   PxxSerialPulsesData pxx;

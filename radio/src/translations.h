@@ -182,7 +182,8 @@ extern const char STR_OPEN9X[];
   #define OFS_VLCD              (OFS_VPERSISTENT + sizeof(TR_VPERSISTENT))
   #define OFS_VUNITSSYSTEM      (OFS_VLCD + sizeof(TR_VLCD))
   #define OFS_VBEEPCOUNTDOWN    (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
-  #define OFS_VVARIOCENTER      (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
+  #define OFS_COUNTDOWNVALUES   (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
+  #define OFS_VVARIOCENTER      (OFS_COUNTDOWNVALUES + sizeof(TR_COUNTDOWNVALUES))
   #define OFS_COUNTRYCODES      (OFS_VVARIOCENTER + sizeof(TR_VVARIOCENTER))
   #define OFS_USBMODES          (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
   #define OFS_VFAILSAFE         (OFS_USBMODES + sizeof(TR_USBMODES))
@@ -291,6 +292,7 @@ extern const char STR_OPEN9X[];
   #define STR_VLCD              (STR_OPEN9X + OFS_VLCD)
   #define STR_VUNITSSYSTEM      (STR_OPEN9X + OFS_VUNITSSYSTEM)
   #define STR_VBEEPCOUNTDOWN    (STR_OPEN9X + OFS_VBEEPCOUNTDOWN)
+  #define STR_COUNTDOWNVALUES   (STR_OPEN9X + OFS_COUNTDOWNVALUES)
   #define STR_VVARIOCENTER      (STR_OPEN9X + OFS_VVARIOCENTER)
 
   #define STR_COUNTRYCODES      (STR_OPEN9X + OFS_COUNTRYCODES)
@@ -447,7 +449,7 @@ extern const char STR_BEEPCOUNTDOWN[];
 extern const char STR_PERSISTENT[];
 extern const char STR_BACKLIGHT_LABEL[];
 extern const char STR_BLDELAY[];
-#if defined(PWM_BACKLIGHT) || defined(PCBHORUS)
+#if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 extern const char STR_BLONBRIGHTNESS[];
 extern const char STR_BLOFFBRIGHTNESS[];
 #endif
@@ -868,6 +870,8 @@ extern const char STR_RXFREQUENCY[];
   extern const char STR_TELEMETRY_TYPE[];
   extern const char STR_TELEMETRY_SENSORS[];
   extern const char STR_VALUE[];
+extern const char STR_REPEAT[];
+extern const char STR_ENABLE[];
   extern const char STR_TOPLCDTIMER[];
   extern const char STR_UNIT[] ;
   extern const char STR_TELEMETRY_NEWSENSOR[];

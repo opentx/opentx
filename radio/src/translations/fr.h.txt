@@ -55,6 +55,9 @@
 #define LEN_VBEEPMODE                  "\005"
 #define TR_VBEEPMODE                   "Aucun""Alarm""NoKey""Tout\0"
 
+#define LEN_COUNTDOWNVALUES             "\003"
+#define TR_COUNTDOWNVALUES              "5s\0""10s""20s""30s"
+
 #define LEN_VBEEPLEN                   "\005"
 #define TR_VBEEPLEN                    "0====""=0===""==0==""===0=""====0"
 
@@ -993,6 +996,8 @@
 #define TR_TELEMETRY_TYPE              TR("Type tél.", "Type télémétrie")
 #define TR_TELEMETRY_SENSORS           "Capteurs"
 #define TR_VALUE                       "Valeur"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER                 "Timer LCD haut"
 #define TR_UNIT                        "Unité"
 #define TR_TELEMETRY_NEWSENSOR         TR(INDENT"Nouveau capteur...", INDENT "Ajout d'un nouveau capteur...")

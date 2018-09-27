@@ -256,14 +256,6 @@ bool isInputSourceAvailable(int source)
   return false;
 }
 
-enum SwitchContext
-{
-  LogicalSwitchesContext,
-  ModelCustomFunctionsContext,
-  GeneralCustomFunctionsContext,
-  TimersContext,
-  MixesContext
-};
 
 bool isLogicalSwitchAvailable(int index)
 {
@@ -417,6 +409,44 @@ bool isThrottleSourceAvailable(int source)
 bool isLogicalSwitchFunctionAvailable(int function)
 {
   return function != LS_FUNC_RANGE;
+}
+
+bool isAssignableFunctionAvailable(int function, CustomFunctionData * functions)
+{
+#if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
+  bool modelFunctions = (functions == g_model.customFn);
+#endif
+
+  switch (function) {
+    case FUNC_OVERRIDE_CHANNEL:
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+      return modelFunctions;
+#else
+      return false;
+#endif
+    case FUNC_ADJUST_GVAR:
+#if defined(GVARS)
+      return modelFunctions;
+#else
+      return false;
+#endif
+#if !defined(HAPTIC)
+      case FUNC_HAPTIC:
+#endif
+    case FUNC_RESERVE4:
+#if !defined(DANGEROUS_MODULE_FUNCTIONS)
+    case FUNC_RANGECHECK:
+    case FUNC_BIND:
+#endif
+#if !defined(LUA)
+    case FUNC_PLAY_SCRIPT:
+#endif
+    case FUNC_RESERVE5:
+      return false;
+
+    default:
+      return true;
+  }
 }
 
 bool isAssignableFunctionAvailable(int function)

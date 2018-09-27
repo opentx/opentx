@@ -227,7 +227,7 @@ const char STR_PERSISTENT[]  = TR_PERSISTENT;
 const char STR_BACKLIGHT_LABEL[]  = TR_BACKLIGHT_LABEL;
 const char STR_BLDELAY[]  = TR_BLDELAY;
 
-#if defined(PWM_BACKLIGHT) || defined(PCBHORUS)
+#if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 const char STR_BLONBRIGHTNESS[]  = TR_BLONBRIGHTNESS;
 const char STR_BLOFFBRIGHTNESS[]  = TR_BLOFFBRIGHTNESS;
 #endif
@@ -601,6 +601,8 @@ const char STR_BLCOLOR[]   = TR_BLCOLOR;
   const char STR_TELEMETRY_TYPE[]  = TR_TELEMETRY_TYPE;
   const char STR_TELEMETRY_SENSORS[]  = TR_TELEMETRY_SENSORS;
   const char STR_VALUE[]  = TR_VALUE;
+const char STR_REPEAT[]  = TR_REPEAT;
+const char STR_ENABLE[]  = TR_ENABLE;
   const char STR_TOPLCDTIMER[]  = TR_TOPLCDTIMER;
   const char STR_UNIT[]  = TR_UNIT;
   const char STR_TELEMETRY_NEWSENSOR[]  = TR_TELEMETRY_NEWSENSOR;

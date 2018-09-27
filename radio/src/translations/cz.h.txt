@@ -130,6 +130,9 @@
 #define LEN_VBEEPCOUNTDOWN     "\007"
 #define TR_VBEEPCOUNTDOWN      "Ne\0    ""Zvuk\0  ""Hlas\0  ""Vibrace"
 
+#define LEN_COUNTDOWNVALUES    "\003"
+#define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"
+
 #define LEN_VVARIOCENTER       "\005"
 #define TR_VVARIOCENTER        "Tón\0 ""Ticho"
 
@@ -973,6 +976,8 @@
 #define TR_TELEMETRY_TYPE      TR("Typ", "Typ telemetrie")
 #define TR_TELEMETRY_SENSORS   "Senzory"
 #define TR_VALUE               "Hodnota"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER         "Stopky horního LCD"
 #define TR_UNIT                "Jednotky"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Přidat senzor ručně"
