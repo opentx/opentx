@@ -111,6 +111,11 @@
 #define LEN_XJT_PROTOCOLS      "\004"
 #define TR_XJT_PROTOCOLS       "AUS\0""D16\0""D8\0 ""LR12"
 
+#if defined(PCBFLYSKY)
+#define LEN_FLYSKY_PROTOCOLS           "\006"
+#define TR_FLYSKY_PROTOCOLS            " PWM+i"" PWM+s"" PPM+i"" PPM+s"
+#endif
+
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"  //LP45 =Low Power 4 und 5 Kanal
 
@@ -977,6 +982,7 @@
 #define TR_UNIT                "Einheit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Sensor hinzufügen ..."
 #define TR_CHANNELRANGE        TR(INDENT "Kanäle", INDENT "Ausgangs Kanäle")  //wg 9XR-Pro
+#define TR_RXFREQUENCY         TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", INDENT "Antenne auswählen")
 #define TR_ANTENNACONFIRM1     "Ant. umschalten"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Ist eine externe Antenne installiert?")

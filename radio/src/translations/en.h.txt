@@ -110,6 +110,11 @@
 #define LEN_XJT_PROTOCOLS              "\004"
 #define TR_XJT_PROTOCOLS               "OFF\0""D16\0""D8\0 ""LR12"
 
+#if defined(PCBFLYSKY)
+#define LEN_FLYSKY_PROTOCOLS           "\006"
+#define TR_FLYSKY_PROTOCOLS            " PWM+i"" PWM+s"" PPM+i"" PPM+s"
+#endif
+
 #define LEN_DSM_PROTOCOLS              "\004"
 #define TR_DSM_PROTOCOLS               "LP45""DSM2""DSMX"
 
@@ -980,6 +985,7 @@
 #define TR_UNIT                        "Unit"
 #define TR_TELEMETRY_NEWSENSOR         INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE                TR(INDENT "Ch. Range", INDENT "Channel Range")
+#define TR_RXFREQUENCY                 TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNASELECTION            TR(INDENT "Antenna", TR(INDENT "Antenna", INDENT "Antenna selection"))
 #define TR_ANTENNACONFIRM1             "Really switch?"
 #define TR_ANTENNACONFIRM2             TR("Check antenna", "Make sure antenna is installed!")
