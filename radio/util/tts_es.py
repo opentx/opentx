@@ -20,7 +20,7 @@ systemSounds.append(("setecientos", filename(PROMPT_SYSTEM_BASE + 107)))
 systemSounds.append(("ochocientos", filename(PROMPT_SYSTEM_BASE + 108)))
 systemSounds.append(("nuevecientos", filename(PROMPT_SYSTEM_BASE + 109)))
 systemSounds.append(("mil", filename(PROMPT_SYSTEM_BASE + 110)))
-for i, s in enumerate(["coma", "un", "una", "y", "meno", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
+for i, s in enumerate(["coma", "un", "una", "i", "meno", "hora", "horas", "minuto", "minutos", "segundo", "segundos"]):
     systemSounds.append((s, filename(PROMPT_SYSTEM_BASE + 111 + i)))
 for i, (s, f) in enumerate([("Voltio","volt0"),
                             ("ampério", "amp0"),

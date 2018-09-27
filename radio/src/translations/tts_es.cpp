@@ -87,11 +87,11 @@ enum SpanishPrompts {
 
 };
 
-  #define ES_PUSH_UNIT_PROMPT(u) es_pushUnitPrompt((u), id)
+#define ES_PUSH_UNIT_PROMPT(u) es_pushUnitPrompt((u), id)
 
 I18N_PLAY_FUNCTION(es, pushUnitPrompt, uint8_t unitprompt)
 {
-    PUSH_UNIT_PROMPT(unitprompt, 0);
+  PUSH_UNIT_PROMPT(unitprompt, 0);
 }
 
 I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
@@ -194,16 +194,20 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
       PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
       PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
     }
-    PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
+    if (seconds > 0) {
+      PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
+    }
   }
 
-  if (seconds != 1) {
-    PLAY_NUMBER(seconds, 0, 0);
-    PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
-  }
-  else {
-    PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
-    PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
+  if (seconds > 0) {
+    if (seconds != 1) {
+      PLAY_NUMBER(seconds, 0, 0);
+      PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
+    }
+    else {
+      PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
+      PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
+    }
   }
 }
 
