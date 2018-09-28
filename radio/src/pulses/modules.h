@@ -126,6 +126,21 @@ inline bool isModuleR9M_LBT(uint8_t idx)
   return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
 }
 
+inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
+}
+
+inline bool isModuleR9M_EUPLUS(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EUPLUS;
+}
+
+inline bool isModuleR9M_AU_PLUS(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
+}
+
 inline bool isModulePXX(uint8_t idx)
 {
   return isModuleXJT(idx) || isModuleR9M(idx);
