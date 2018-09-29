@@ -25,7 +25,6 @@
 #include <algorithm>
 #include "sdcard.h"
 
-
 #define MODELCELL_WIDTH                (LCD_W - 40)
 #define MODELCELL_HEIGHT               86
 
