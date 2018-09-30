@@ -135,7 +135,7 @@
 #define TR_VDISPLAYTRIMS       "No\0   ""Cambio""Si\0 "
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "NienteSuoni\0Voce\0 Vibra\0"
+#define TR_VBEEPCOUNTDOWN      "Niente""Suoni\0""Voce\0 ""Vibra\0"
 
 #define LEN_COUNTDOWNVALUES    "\003"
 #define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"

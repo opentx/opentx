@@ -444,7 +444,7 @@ enum Analogs {
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
 #else
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITH_DETENT << 0)
-  #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 0)
+  #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 #endif
 
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
