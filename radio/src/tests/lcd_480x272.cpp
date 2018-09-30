@@ -163,7 +163,7 @@ TEST(Lcd_480x272, fonts)
   lcdDrawText(8, 8, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(4));
   lcdDrawText(5, 5, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|OPACITY(12));
 
-  lcdDrawText(10, 200, "The quick", TEXT_COLOR|VERTICAL|NO_FONTCACHE);
+  lcdDrawText(10, 200, "The quick", TEXT_COLOR|VERTICAL);
   lcdDrawText(30, 200, "The quick brown fox", TEXT_COLOR|VERTICAL);
   // lcdDrawText(50, 200, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|VERTICAL);
 
