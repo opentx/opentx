@@ -217,8 +217,7 @@ extern const char STR_OPEN9X[];
 #else
   #define OFS_VANTENNATYPES     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
 #endif
-  #define OFS_MAVLINK_BAUDS     (OFS_VANTENNATYPES + sizeof(TR_VANTENNATYPES))
-  #define OFS_SPARE		(OFS_MAVLINK_BAUDS)
+  #define OFS_SPARE             (OFS_VANTENNATYPES)
 
 #define STR_OFFON               (STR_OPEN9X + OFS_OFFON)
 #define STR_MMMINV              (STR_OPEN9X + OFS_MMMINV)

@@ -475,13 +475,6 @@ void RadioSetupPage::build(Window * window)
     break;
 #endif
 
-#if defined(TELEMETRY_MAVLINK)
-  // Imperial units
-  new StaticText(window, grid.getLabelSlot(), STR_MAVLINK_BAUD_LABEL);
-  new Choice(window, grid.getFieldSlot(), STR_MAVLINK_BAUDS, 0, 7, GET_SET_DEFAULT(g_eeGeneral.mavbaud));
-  grid.nextLine();
-#endif
-
   // Switches delay
   new StaticText(window, grid.getLabelSlot(), STR_SWITCHES_DELAY);
   edit = new NumberEdit(window, grid.getFieldSlot(2, 0), -15, 100 - 15, GET_SET_VALUE_WITH_OFFSET(g_eeGeneral.switchesDelay, 15));
