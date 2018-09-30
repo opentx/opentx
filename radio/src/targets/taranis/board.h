@@ -369,12 +369,16 @@ enum EnumSwitchesPositions
 };
 #if defined(PCBXLITE)
   #define NUM_SWITCHES                  4
+  #define DEFAULT_SWITCH_CONFIG        (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  6
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's a lot!
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #else
   #define NUM_SWITCHES                  8
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #endif
 void keysInit(void);
 uint8_t keyState(uint8_t index);
@@ -433,6 +437,15 @@ enum Analogs {
   TX_VOLTAGE,
   NUM_ANALOGS
 };
+
+#if defined(PCBXLITE)
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
+#elif defined(PCBX7)
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
+#else
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITH_DETENT << 0)
+  #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 0)
+#endif
 
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
 #define NUM_XPOTS                       NUM_POTS

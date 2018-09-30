@@ -255,6 +255,8 @@ enum EnumSwitches
 };
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
+#define DEFAULT_SWITCH_CONFIG          (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+
 enum EnumSwitchesPositions
 {
   SW_SA0,
@@ -370,6 +372,9 @@ enum Analogs {
   MOUSE2,
   NUM_ANALOGS
 };
+
+#define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+#define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 6) + (SLIDER_WITH_DETENT << 4) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 0)
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
