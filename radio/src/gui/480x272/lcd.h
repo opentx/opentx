@@ -100,7 +100,6 @@ enum FontSizeIndex {
 #define TIMEHOUR                       0x2000
 #define EXPANDED                       0x2000
 #define VERTICAL                       0x4000
-#define NO_FONTCACHE                   0x8000
 
 #include "colors.h"
 

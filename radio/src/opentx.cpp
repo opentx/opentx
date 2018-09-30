@@ -1623,7 +1623,6 @@ void opentxResume()
   storageReadAll();
 #if defined(PCBHORUS)
   loadTheme();
-  loadFontCache();
 #endif
 
   opentxStart(false);

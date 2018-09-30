@@ -97,30 +97,6 @@ const uint16_t * const fontspecsTable[1] = { font_stdsize_specs };
 const uint8_t * fontsTable[1] = { font_stdsize };
 #endif
 
-BitmapBuffer * fontCache[2] = { NULL, NULL };
-
-BitmapBuffer * createFontCache(const uint8_t * font, LcdFlags fg, LcdFlags bg)
-{
-  coord_t width = *((uint16_t *)font);
-  coord_t height = *(((uint16_t *)font)+1);
-
-  BitmapBuffer * buffer = new BitmapBuffer(BMP_RGB565, width, height);
-  if (buffer) {
-    buffer->clear(bg);
-    buffer->drawBitmapPattern(0, 0, font, fg);
-  }
-  return buffer;
-}
-
-void loadFontCache()
-{
-  delete fontCache[0];
-  delete fontCache[1];
-  fontCache[0] = createFontCache(fontsTable[0], TEXT_COLOR, TEXT_BGCOLOR);
-  fontCache[1] = createFontCache(fontsTable[0], TEXT_INVERTED_COLOR, TEXT_INVERTED_BGCOLOR);
-}
-
-
 static uint8_t* decompressFont(const uint8_t* font)
 {
   uint16_t width = *((uint16_t *)font);
