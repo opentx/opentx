@@ -97,7 +97,7 @@ if(DISK_CACHE)
   add_definitions(-DDISK_CACHE)
 endif()
 
-set(SERIAL2_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 
 set(GVAR_SCREEN model_gvars.cpp)
 
