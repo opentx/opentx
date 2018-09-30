@@ -167,7 +167,7 @@ uint32_t isFirmwareStart(const uint8_t * buffer);
 uint32_t isBootloaderStart(const uint8_t * buffer);
 
 // SDRAM driver
-void sdramInit(void);
+void SDRAM_Init(void);
 
 // Pulses driver
 #define INTERNAL_MODULE_OFF()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)

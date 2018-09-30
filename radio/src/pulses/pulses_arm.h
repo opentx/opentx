@@ -93,6 +93,8 @@ PACK(struct PxxUartPulsesData {
   uint16_t pcmCrc;
   uint16_t _alignment;
 });
+#endif
+
 #if defined(PCBFLYSKY)
 PACK(struct FlySkySerialPulsesData {
        uint8_t  pulses[64];
@@ -105,7 +107,6 @@ PACK(struct FlySkySerialPulsesData {
        uint8_t  telemetry[64];
        uint8_t  telemetry_index;
      });
-#endif
 #endif
 
 #define PXX_PERIOD_DURATION  9 /* ms */
@@ -147,9 +148,9 @@ PACK(struct CrossfirePulsesData {
 union ModulePulsesData {
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   PxxUartPulsesData pxx_uart;
+#endif
 #if defined(PCBFLYSKY)
   FlySkySerialPulsesData flysky;
-#endif
 #endif
 #if defined(PPM_PIN_SERIAL)
   PxxSerialPulsesData pxx;

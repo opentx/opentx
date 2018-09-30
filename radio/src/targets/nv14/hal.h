@@ -369,7 +369,7 @@
 #define EXTMODULE_DMA_IRQn              DMA2_Stream1_IRQn
 #define EXTMODULE_DMA_IRQHandler        DMA2_Stream1_IRQHandler
 #define EXTMODULE_DMA_FLAG_TC           DMA_IT_TCIF1
-#define EXTMODULE_USART                 USART6 // TODO
+//#define EXTMODULE_USART                 USART6 // TODO
 
 // Heartbeat (not used)
 #define HEARTBEAT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
