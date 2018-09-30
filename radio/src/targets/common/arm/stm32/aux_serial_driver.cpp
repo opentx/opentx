@@ -23,8 +23,8 @@
 uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> auxSerialTxFifo;
 
-#if defined(SERIAL_DMA_Stream_RX)
-DMAFifo<32> auxSerialRxFifo __DMA (SERIAL_DMA_Stream_RX);
+#if defined(AUX_SERIAL_DMA_Stream_RX)
+DMAFifo<32> auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 #else
 Fifo<uint8_t, 32> auxSerialRxFifo;
 #endif

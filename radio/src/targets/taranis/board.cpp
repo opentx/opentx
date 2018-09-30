@@ -152,14 +152,14 @@ void boardInit()
                          SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph |
                          HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
 
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | ADC_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph | HAPTIC_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
                          SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
-                         TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph |
+                         TELEMETRY_RCC_APB1Periph | AUX_SERIAL_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph | BT_RCC_APB1Periph, ENABLE);
 
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph |
@@ -197,8 +197,8 @@ void boardInit()
   i2cInit();
   usbInit();
 
-#if defined(DEBUG) && defined(SERIAL_GPIO)
-  serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
+#if defined(DEBUG) && defined(AUX_SERIAL_GPIO)
+  auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
   TRACE("\nTaranis board started :)");
 #endif
 
@@ -323,7 +323,7 @@ void checkTrainerSettings()
         break;
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        serial2Stop();
+        auxSerialStop();
 #endif
     }
 
@@ -341,7 +341,7 @@ void checkTrainerSettings()
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
         if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
-          serial2SbusInit();
+          auxSerialSbusInit();
           break;
         }
         // no break

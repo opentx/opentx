@@ -410,8 +410,8 @@ void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 
 // Second UART driver
-void serial2TelemetryInit(unsigned int protocol);
-void serial2Putc(const unsigned char c);
+void auxSerialTelemetryInit(unsigned int protocol);
+void auxSerialPutc(const unsigned char c);
 #if defined(__cplusplus)
 bool telemetrySecondPortReceive(uint8_t & data);
 #endif

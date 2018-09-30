@@ -208,12 +208,12 @@ int main()
   wdt_reset();
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph, ENABLE);
 
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
                          INTERRUPT_xMS_RCC_APB1Periph | I2C_RCC_APB1Periph |
-                         SERIAL_RCC_APB1Periph |
+                         AUX_SERIAL_RCC_APB1Periph |
                          SD_RCC_APB1Periph, ENABLE);
 
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph, ENABLE);
@@ -235,7 +235,7 @@ int main()
   delaysInit(); // needed for lcdInit()
 
 #if defined(DEBUG)
-  serial2Init(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+  auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
   __enable_irq();

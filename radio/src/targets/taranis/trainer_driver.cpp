@@ -266,7 +266,7 @@ int sbusGetByte(uint8_t * byte)
       return heartbeatFifo.pop(*byte);
 #if !defined(PCBX7) && !defined(PCBX9E)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-      return serial2RxFifo.pop(*byte);
+      return auxSerialRxFifo.pop(*byte);
 #endif
     default:
       return false;
