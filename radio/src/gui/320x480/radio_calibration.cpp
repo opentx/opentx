@@ -22,6 +22,8 @@
 #include "opentx.h"
 #include "libwindows.h"
 
+uint8_t menuCalibrationState;
+
 class StickCalibrationWindow: public Window {
   public:
     StickCalibrationWindow(Window * parent, const rect_t & rect, uint8_t stickX, uint8_t stickY):
