@@ -1,5 +1,7 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
+option(FLYSKY_HALL_STICKS "sticks for FlySky hall sticks" ON)
+option(FLYSKY_HALL_STICKS_REVERSE "Reverse sticks for FlySky hall sticks" OFF)
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 
 set(CPU_TYPE STM32F4)

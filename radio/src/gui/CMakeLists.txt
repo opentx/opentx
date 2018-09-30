@@ -36,7 +36,6 @@ endif()
 if(NOT GUI_DIR STREQUAL 320x480)
 set(SRC
   ${SRC}
-  gui/common/widgets.cpp
   gui/navigation/navigation_${NAVIGATION_TYPE}.cpp
   gui/navigation/common.cpp
   )
@@ -53,11 +52,12 @@ endif()
 if(ARCH STREQUAL ARM)
   set(SRC
     ${SRC}
+    gui/common/widgets.cpp
     gui/common/arm/widgets.cpp
     )
 endif()
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10)
+if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL NV14)
   if(HELI)
     set(HELI_SRC gui/common/colorlcd/model_heli.cpp)
   endif()
