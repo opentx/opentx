@@ -175,7 +175,9 @@ void simuSetKey(uint8_t key, bool state)
   // if (state) TRACE_SIMPGMSPACE("simuSetKey(%d, %d)", key, state);
 
   switch (key) {
-#if defined(PCBX12S)
+#if defined(PCBNV14)
+    // No keys
+#elif defined(PCBX12S)
     KEY_CASE(KEY_PGUP, KEYS_GPIO_REG_PGUP, KEYS_GPIO_PIN_PGUP)
     KEY_CASE(KEY_PGDN, KEYS_GPIO_REG_PGDN, KEYS_GPIO_PIN_PGDN)
     KEY_CASE(KEY_ENTER, KEYS_GPIO_REG_ENTER, KEYS_GPIO_PIN_ENTER)
@@ -525,7 +527,7 @@ void StopAudioThread()
 bool simuLcdRefresh = true;
 display_t simuLcdBuf[DISPLAY_BUFFER_SIZE];
 
-#if !defined(PCBHORUS)
+#if !defined(COLORLCD)
 void lcdSetRefVolt(uint8_t val)
 {
 }
