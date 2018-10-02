@@ -45,9 +45,9 @@ for i, (s, f) in enumerate([("Voltio","volt0"),
                             ("radianes ", "rad0"),
                             ("mililitro", "ml0"),
                             ("onzas", "founce0"),
-                            ("horas", "hour0"),
-                            ("minutos", "minute0"),
-                            ("segundos", "second0"),
+                            ("hora", "hour0"), ("horas", "hour1"),
+                            ("minuto", "minute0"), ("minutos", "minute1"),
+                            ("segundo", "second0"), ("segundo", "second1"),
                             ]):
     systemSounds.append((s, filename(f, PROMPT_SYSTEM_BASE + 122 + i)))
 for s, f, a in [("me tienes abandonada", "inactiv", 486),

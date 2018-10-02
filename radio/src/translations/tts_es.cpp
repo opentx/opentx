@@ -203,7 +203,6 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
-    ore = tmp;
     if (tmp > 1) {
       PLAY_NUMBER(tmp, 0, 0);
 #if defined(CPUARM)
@@ -224,14 +223,14 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
 
   tmp = seconds / 60;
   seconds %= 60;
-  if (tmp > 0 || ore >0) {
+  if (tmp > 0) {
     if (tmp != 1) {
       PLAY_NUMBER(tmp, 0, 0);
 #if defined(CPUARM)
       PUSH_UNIT_PROMPT(UNIT_MINUTES, 1);
     }
     else {
-      PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
+      PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
       PUSH_UNIT_PROMPT(UNIT_MINUTES, 0);
 #else
       PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTOS);
@@ -240,9 +239,6 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
       PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
       PUSH_NUMBER_PROMPT(ES_PROMPT_MINUTO);
 #endif
-    }
-    if (seconds > 0) {
-      PUSH_NUMBER_PROMPT(ES_PROMPT_Y);
     }
   }
 
@@ -253,7 +249,7 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
       PUSH_UNIT_PROMPT(UNIT_SECONDS, 1);
     }
     else {
-      PUSH_NUMBER_PROMPT(ES_PROMPT_UNA);
+      PUSH_NUMBER_PROMPT(ES_PROMPT_UN);
       PUSH_UNIT_PROMPT(UNIT_SECONDS, 0);
 #else
       PUSH_NUMBER_PROMPT(ES_PROMPT_SEGUNDOS);
