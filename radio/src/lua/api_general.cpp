@@ -34,7 +34,7 @@
 #elif defined(PCBX7)
   #include "lua/lua_exports_x7.inc"
 #elif defined(PCBJUMPERT12)
-  #include "lua/lua_exports_x7.inc"
+  #include "lua/lua_exports_jumpert12.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
@@ -1348,18 +1348,21 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBJUMPERT12)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
-#if !defined(PCBJUMPERT12) && !defined(PCBXLITE)
-  { "MIXSRC_SE", MIXSRC_SE },
+
+#if defined(PCBJUMPERT12)
   { "MIXSRC_SG", MIXSRC_SG },
+  { "MIXSRC_SH", MIXSRC_SH },
 #endif
-#if !defined(PCBXLITE)
+
+#if !defined(PCBXLITE) && !defined(PCBJUMPERT12)
   { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SH", MIXSRC_SH },
 #endif
+
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
 #if defined(COLORLCD)

@@ -193,7 +193,7 @@ void writeHeader()
 #if defined(PCBX7)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
 #elif defined(PCBJUMPERT12)
-  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
+  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SG,SH"
 #elif defined(PCBXLITE)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD"
 #else
@@ -373,7 +373,7 @@ void logsWrite()
           GET_3POS_STATE(SB),
           GET_3POS_STATE(SC),
           GET_3POS_STATE(SD),
-          GET_2POS_STATE(SF),
+          GET_2POS_STATE(SG),
           GET_2POS_STATE(SH),
           getLogicalSwitchesStates(32),
           getLogicalSwitchesStates(0));

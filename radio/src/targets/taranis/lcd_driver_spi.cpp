@@ -20,7 +20,12 @@
 
 #include "opentx.h"
 
-#define LCD_CONTRAST_OFFSET            160
+#if defined(PCBJUMPERT12)
+ #define LCD_CONTRAST_OFFSET            80
+#else
+ #define LCD_CONTRAST_OFFSET            -10
+#endif
+ 
 #define RESET_WAIT_DELAY_MS            300 // Wait time after LCD reset before first command
 #define WAIT_FOR_DMA_END()             do { } while (lcd_busy)
 
@@ -102,7 +107,20 @@ void lcdHardwareInit()
 
 #if LCD_W == 128
 void lcdStart()
-{
+{ 
+#if defined(PCBJUMPERT12)
+  lcdWriteCommand(0xe2); // (14) Soft reset
+  lcdWriteCommand(0xa0); // Set seg
+  lcdWriteCommand(0xc8); // Set com
+  lcdWriteCommand(0xf8); // Set booster
+  lcdWriteCommand(0x00); // 5x
+  lcdWriteCommand(0xa3); // Set bias=1/6
+  lcdWriteCommand(0x22); // Set internal rb/ra=5.0
+  lcdWriteCommand(0x2f); // All built-in power circuits on
+  lcdWriteCommand(0x85); // Set contrast
+  lcdWriteCommand(0x36); // Set Vop
+  lcdWriteCommand(0xa6); // Set display mode
+#else
   lcdWriteCommand(0xe2); // (14) Soft reset
   lcdWriteCommand(0xa1); // Set seg
   lcdWriteCommand(0xc0); // Set com
@@ -114,6 +132,7 @@ void lcdStart()
   lcdWriteCommand(0x81); // Set contrast
   lcdWriteCommand(0x36); // Set Vop
   lcdWriteCommand(0xa6); // Set display mode
+#endif
 }
 #else
 void lcdStart()
@@ -123,11 +142,17 @@ void lcdStart()
   lcdWriteCommand(0x24); // Temperature compensation
   lcdWriteCommand(0xE9); // Set bias=1/10
   lcdWriteCommand(0x81); // Set Vop
+
 #if defined(BOOT)
+ #if defined(PCBJUMPERT12)
   lcdWriteCommand(LCD_CONTRAST_OFFSET+LCD_CONTRAST_DEFAULT);
+ #else
+  lcdWriteCommand(LCD_CONTRAST_OFFSET+LCD_CONTRAST_DEFAULT); 
+ #endif
 #else
   lcdWriteCommand(LCD_CONTRAST_OFFSET+g_eeGeneral.contrast);
 #endif
+
   lcdWriteCommand(0xA2); // Set line rate: 28KLPS
   lcdWriteCommand(0x28); // Set panel loading
   lcdWriteCommand(0x40); // Scroll line LSB
@@ -181,7 +206,7 @@ void lcdRefresh(bool wait)
   for (uint8_t y=0; y < 8; y++, p+=LCD_W) {
     lcdWriteCommand(0x10); // Column addr 0
     lcdWriteCommand(0xB0 | y); // Page addr y
-    lcdWriteCommand(0x04);
+    //lcdWriteCommand(0x04);
     
     LCD_NCS_LOW();
     LCD_A0_HIGH();

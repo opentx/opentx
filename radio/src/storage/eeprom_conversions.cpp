@@ -649,8 +649,10 @@ int ConvertSwitch_216_to_217(int swtch)
   if (swtch < 0)
     return -ConvertSwitch_216_to_217(-swtch);
 
-  if (swtch > SWSRC_SF0)
-    swtch += 1;
+   #if !defined(PCBJUMPERT12)
+    if (swtch > SWSRC_SF0)
+      swtch += 1;
+   #endif
 
   if (swtch > SWSRC_SH0)
     swtch += 1;

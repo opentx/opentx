@@ -276,6 +276,11 @@ enum EnumKeys
 #elif defined(PCBXLITE)
   #define KEY_PLUS                      KEY_RIGHT
   #define KEY_MINUS                     KEY_LEFT
+#elif defined(PCBJUMPERT12)
+  #define KEY_UP                        KEY_MINUS
+  #define KEY_DOWN                      KEY_PLUS
+  #define KEY_RIGHT                     KEY_PLUS
+  #define KEY_LEFT                      KEY_MINUS
 #else
   #define KEY_UP                        KEY_PLUS
   #define KEY_DOWN                      KEY_MINUS
@@ -318,42 +323,31 @@ enum EnumSwitchesPositions
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if !defined(PCBX7) && !defined(PCBXLITE)
-  SW_SE0,
-  SW_SE1,
-  SW_SE2,
-#endif
-
-#if !defined(PCBJUMPERT12) && !defined(PCBXLITE)
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBJUMPERT12)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
 
 
-#if !defined(PCBXLITE)
+#if !defined(PCBXLITE) && !defined(PCBJUMPERT12)
   SW_SF0,
   SW_SF1,
   SW_SF2,
 #endif
+
 #if !defined(PCBX7) && !defined(PCBXLITE)
   SW_SG0,
   SW_SG1,
   SW_SG2,
 #endif
-
-#if !defined(PCBJUMPERT12) && !defined(PCBXLITE)
-  SW_SG0,
-  SW_SG1,
-  SW_SG2,
-#endif
-
 
 #if !defined(PCBXLITE)
   SW_SH0,
   SW_SH1,
   SW_SH2,
 #endif
+
 #if defined(PCBX9E)
   SW_SI0,
   SW_SI1,
@@ -414,8 +408,8 @@ void checkRotaryEncoder(void);
 
 #if defined(PCBJUMPERT12)
 // Rotary Encoder driver
-#define ROTARY_ENCODER_NAVIGATION
-void checkRotaryEncoder(void);
+  #define ROTARY_ENCODER_NAVIGATION
+  void checkRotaryEncoder(void);
 #endif
 
 
@@ -574,10 +568,17 @@ uint8_t isBacklightEnabled(void);
 #if !defined(SIMU)
   void usbJoystickUpdate();
 #endif
-#define USB_NAME                        "FrSky Taranis"
-#define USB_MANUFACTURER                'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
-#define USB_PRODUCT                     'T', 'a', 'r', 'a', 'n', 'i', 's', ' '  /* 8 Bytes */
 
+#if defined(PCBJUMPERT12)
+ #define USB_NAME                        "Jumper T12   "
+ #define USB_MANUFACTURER                'J', 'u', 'u', 'm', 'p', 'e', 'r', ' '  /* 8 bytes */
+ #define USB_PRODUCT                     'T', '1', '2', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
+#else
+ #define USB_NAME                        "FrSky Taranis"
+ #define USB_MANUFACTURER                'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
+ #define USB_PRODUCT                     'T', 'a', 'r', 'a', 'n', 'i', 's', ' '  /* 8 Bytes */
+#endif
+ 
 #if defined(__cplusplus) && !defined(SIMU)
 }
 #endif
@@ -694,8 +695,8 @@ void ledBlue(void);
 #define LCD_DEPTH                       1
 #define IS_LCD_RESET_NEEDED()           true
 #define LCD_CONTRAST_MIN                10
-#define LCD_CONTRAST_MAX                30
-#define LCD_CONTRAST_DEFAULT            20
+#define LCD_CONTRAST_MAX                40
+#define LCD_CONTRAST_DEFAULT            30
 #else
 #define LCD_W                           212
 #define LCD_H                           64

@@ -176,8 +176,8 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, unsigned index)
       {SWITCH_3POS,   "SB"},
       {SWITCH_3POS,   "SC"},
       {SWITCH_3POS,   "SD"},
-      {SWITCH_2POS,   "SF"},
-      {SWITCH_TOGGLE, "SH"}
+      {SWITCH_2POS,   "SG"},
+      {SWITCH_2POS,   "SH"}
     };
     if (index < DIM(switches))
       return switches[index];

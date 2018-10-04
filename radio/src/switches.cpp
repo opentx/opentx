@@ -143,15 +143,22 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(1, SW_SB);
   CHECK_3POS(2, SW_SC);
   CHECK_3POS(3, SW_SD);
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBJUMPERT12)
   CHECK_3POS(4, SW_SE);
 #endif
-#if !defined(PCBXLITE)
+
+#if !defined(PCBXLITE) && !defined(PCBJUMPERT12)
   CHECK_2POS(SW_SF);
 #endif
-#if !defined(PCBX7) && !defined(PCBXLITE)
+
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBJUMPERT12)
   CHECK_3POS(5, SW_SG);
 #endif
+
+#if defined(PCBJUMPERT12)
+  CHECK_2POS(SW_SG);
+#endif
+
 #if !defined(PCBXLITE)
   CHECK_2POS(SW_SH);
 #endif
