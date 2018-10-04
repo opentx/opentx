@@ -198,8 +198,7 @@ I18N_PLAY_FUNCTION(es, playDuration, int seconds PLAY_DURATION_ATT)
     PUSH_NUMBER_PROMPT(ES_PROMPT_MENO);
     seconds = -seconds;
   }
-
-  uint8_t ore = 0;
+  
   uint8_t tmp = seconds / 3600;
   seconds %= 3600;
   if (tmp > 0 || IS_PLAY_TIME()) {
