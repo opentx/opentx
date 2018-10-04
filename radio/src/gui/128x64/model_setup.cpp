@@ -216,7 +216,7 @@ enum MenuModelSetupItems {
   #define MODEL_SETUP_MAX_LINES          ((IS_PPM_PROTOCOL(protocol)||IS_DSM2_PROTOCOL(protocol)||IS_PXX_PROTOCOL(protocol)) ? HEADER_LINE+ITEM_MODEL_SETUP_MAX : HEADER_LINE+ITEM_MODEL_SETUP_MAX-1)
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
 void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
@@ -1142,13 +1142,15 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
             }
 #endif
-#if defined(PCBTARANIS)
+#if defined(CPUARM)
             if (attr && l_posHorz > 0) {
               if (s_editMode > 0) {
                 if (l_posHorz == 1) {
                   if (IS_MODULE_R9M(moduleIdx) || (IS_MODULE_XJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16)) {
 #if defined(PCBXLITE)
                     if (EVT_KEY_MASK(event) == KEY_ENTER) {
+#elif defined(PCBSKY9X) || defined(AR9X)
+                    if (event ==  EVT_KEY_FIRST(KEY_ENTER)) {
 #else
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
 #endif
@@ -1170,7 +1172,7 @@ void menuModelSetup(event_t event)
                         if (BIND_TELEM_ALLOWED(moduleIdx))
                           POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_ON);
                         POPUP_MENU_ADD_ITEM(STR_BINDING_9_16_TELEM_OFF);
-                        default_selection = g_model.moduleData[INTERNAL_MODULE].pxx.receiver_telem_off + (g_model.moduleData[INTERNAL_MODULE].pxx.receiver_channel_9_16 << 1);
+                        default_selection = g_model.moduleData[moduleIdx].pxx.receiver_telem_off + (g_model.moduleData[moduleIdx].pxx.receiver_channel_9_16 << 1);
                       }
                       POPUP_MENU_SELECT_ITEM(default_selection);
                       POPUP_MENU_START(onBindMenu);
