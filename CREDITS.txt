@@ -1447,3 +1447,4 @@ Jörg Hammer
 Rapid Informatics LLC
 Renaud Perriguey
 Edmond Dufresne
+Jaroslav Gazik
