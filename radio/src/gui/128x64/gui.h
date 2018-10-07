@@ -30,9 +30,6 @@
 #if defined(PCBX7)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
-#elif defined(PCBJUMPERT12)
-  #define HEADER_LINE                  0
-  #define HEADER_LINE_COLUMNS
 #else
   #define HEADER_LINE                  1
   #define HEADER_LINE_COLUMNS          0,
@@ -236,9 +233,6 @@ void title(const pm_char * s);
 #if defined(PCBX7)
   #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
-#elif defined(PCBJUMPERT12)
-  #define MENU_CHECK(tab, menu, lines_count) \
-  check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 #else
   #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, (lines_count)-1)
@@ -250,31 +244,18 @@ void title(const pm_char * s);
   TITLE(title)
 
 #if defined(PCBX7)
-#define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), lines_count);
-#define SUBMENU_NOTITLE(lines_count, ...) { \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  }
-#define SUBMENU(title, lines_count, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  TITLE(title)
-#define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, lines_count);
-#elif defined(PCBJUMPERT12)
-#define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
-  check_simple(event, menu, tab, DIM(tab), lines_count);
-#define SUBMENU_NOTITLE(lines_count, ...) { \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  }
-#define SUBMENU(title, lines_count, ...) \
-  MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  TITLE(title)
-#define SIMPLE_SUBMENU_NOTITLE(lines_count) \
-  check_submenu_simple(event, lines_count);
+  #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
+    check_simple(event, menu, tab, DIM(tab), lines_count);
+  #define SUBMENU_NOTITLE(lines_count, ...) { \
+    MENU_TAB(__VA_ARGS__); \
+    check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
+    }
+  #define SUBMENU(title, lines_count, ...) \
+    MENU_TAB(__VA_ARGS__); \
+    check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
+    TITLE(title)
+  #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
+    check_submenu_simple(event, lines_count);
 #else
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), (lines_count)-1);
@@ -430,11 +411,11 @@ void drawStatusLine();
 
 // TODO enum
 #if defined(PCBX7)
-#define EDIT_MODE_INIT                 0
+ #define EDIT_MODE_INIT                 0
 #elif defined(PCBJUMPERT12)
-#define EDIT_MODE_INIT                 0
+ #define EDIT_MODE_INIT                 0
 #else
-#define EDIT_MODE_INIT                 -1
+ #define EDIT_MODE_INIT                 -1
 #endif
 
 #if defined(CPUM64)

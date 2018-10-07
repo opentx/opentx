@@ -157,7 +157,9 @@ extern uint8_t instructionsPercent;
 
 #if defined(PCBXLITE)
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
-#elif defined(PCBTARANIS)
+#elif defined(PCBJUMPERT12)
+  #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)
+#elif defined(PCBTARANIS) && !defined(PCBJUMPERT12)
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER && ((luaState & INTERPRETER_RUNNING_STANDALONE_SCRIPT) || (key) != KEY_PAGE))
 #elif defined(PCBHORUS)
   #define IS_MASKABLE(key) ((key) != KEY_EXIT && (key) != KEY_ENTER)

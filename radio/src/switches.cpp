@@ -155,13 +155,15 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(5, SW_SG);
 #endif
 
+  // schumixmd to be checked
 #if defined(PCBJUMPERT12)
-  CHECK_2POS(SW_SG);
+  CHECK_3POS(4,SW_SG);
 #endif
 
 #if !defined(PCBXLITE)
   CHECK_2POS(SW_SH);
 #endif
+
 #if defined(PCBX9E)
   CHECK_3POS(6, SW_SI);
   CHECK_3POS(7, SW_SJ);
@@ -587,6 +589,8 @@ swsrc_t getMovedSwitch()
   static tmr10ms_t s_move_last_time = 0;
   swsrc_t result = 0;
 
+
+
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   for (int i=0; i<NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
@@ -739,6 +743,7 @@ void checkSwitches()
       }
       int x = SWITCH_WARNING_LIST_X, y = SWITCH_WARNING_LIST_Y;
       int numWarnings = 0;
+      //schumixmd mark
       for (int i=0; i<NUM_SWITCHES; ++i) {
 #if defined(COLORLCD)
         if (SWITCH_WARNING_ALLOWED(i)) {
@@ -762,6 +767,7 @@ void checkSwitches()
           if (attr) {
             if (++numWarnings < 7) {
               char c = "\300-\301"[(states & mask) >> (i*2)];
+              //schumixmd mark
               drawSource(x, y, MIXSRC_FIRST_SWITCH+i, attr);
               lcdDrawChar(lcdNextPos, y, c, attr);
               x = lcdNextPos + 3;

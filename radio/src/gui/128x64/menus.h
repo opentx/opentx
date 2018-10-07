@@ -23,26 +23,27 @@
 
 #include "keys.h"
 
+
 #if defined(PCBTARANIS)
-typedef int8_t horzpos_t;
-#define NAVIGATION_LINE_BY_LINE        0x40
-#define IS_LINE_SELECTED(sub, k)       ((sub)==(k) && menuHorizontalPosition < 0)
+  typedef int8_t horzpos_t;
+  #define NAVIGATION_LINE_BY_LINE        0x40
+  #define IS_LINE_SELECTED(sub, k)       ((sub)==(k) && menuHorizontalPosition < 0)
 #else
-typedef uint8_t horzpos_t;
-#define NAVIGATION_LINE_BY_LINE        0
-#define IS_LINE_SELECTED(sub, k)       (false)
+  typedef uint8_t horzpos_t;
+  #define NAVIGATION_LINE_BY_LINE        0
+  #define IS_LINE_SELECTED(sub, k)       (false)
 #endif
 
 #if defined(SDCARD)
-typedef uint16_t vertpos_t;
+  typedef uint16_t vertpos_t;
 #else
-typedef uint8_t vertpos_t;
+  typedef uint8_t vertpos_t;
 #endif
 
 typedef void (*MenuHandlerFunc)(event_t event);
 
 #if defined(CPUARM)
-extern tmr10ms_t menuEntryTime;
+  extern tmr10ms_t menuEntryTime;
 #endif
 
 extern vertpos_t menuVerticalPosition;

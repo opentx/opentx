@@ -411,7 +411,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     SWITCH_KEY(F, 4, 2);
     SWITCH_KEY(H, 5, 2);
 #elif defined(PCBJUMPERT12)
-    SWITCH_KEY(F, 4, 2);
+    SWITCH_KEY(G, 4, 2);
     SWITCH_KEY(H, 5, 2);
 #else
     SWITCH_KEY(E, 4, 3);

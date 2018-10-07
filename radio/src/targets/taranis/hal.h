@@ -56,14 +56,26 @@
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_10 // PE.10
 #elif defined(PCBJUMPERT12)
-  #define KEYS_GPIO_REG_PAGE            GPIOD->IDR
-  #define KEYS_GPIO_PIN_PAGE            GPIO_Pin_3  // PD.03
-  #define KEYS_GPIO_REG_MENU            GPIOD->IDR
-  #define KEYS_GPIO_PIN_MENU            GPIO_Pin_7  // PD.07
+  //schumixmd remapping buttons
+  // exit -> exit
+  // enter -> enter
+  // page -> right
+  // menu -> left
+  // up -> encoder ccw (PE.09) ??
+  // down -> encoder cw (PE.11)??
+
   #define KEYS_GPIO_REG_EXIT            GPIOD->IDR
   #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_2  // PD.02
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_10 // PE.10
+  #define KEYS_GPIO_REG_UP              GPIOE->IDR
+  #define KEYS_GPIO_PIN_UP              GPIO_Pin_9 // PE.09
+  #define KEYS_GPIO_REG_DOWN            GPIOE->IDR
+  #define KEYS_GPIO_PIN_DOWN            GPIO_Pin_11 // PE.11
+  #define KEYS_GPIO_REG_LEFT            GPIOD->IDR
+  #define KEYS_GPIO_PIN_LEFT            GPIO_Pin_7 // PD.07
+  #define KEYS_GPIO_REG_RIGHT           GPIOD->IDR
+  #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_3 // PD.03
 #else
   #define KEYS_GPIO_REG_MENU            GPIOD->IDR
   #define KEYS_GPIO_PIN_MENU            GPIO_Pin_7  // PD.07
@@ -90,11 +102,6 @@
   #define ENC_GPIO_PIN_A                GPIO_Pin_9  // PE.09
   #define ENC_GPIO_PIN_B                GPIO_Pin_11 // PE.11
   #define ROTARY_ENCODER_POSITION()     (((ENC_GPIO->IDR >> 10) & 0x02) + ((ENC_GPIO->IDR >> 9) & 0x01))
-#elif defined(PCBJUMPERT12)
-  #define ENC_GPIO                      GPIOE
-  #define ENC_GPIO_PIN_A                GPIO_Pin_9  // PE.09
-  #define ENC_GPIO_PIN_B                GPIO_Pin_11 // PE.11
-  #define ROTARY_ENCODER_POSITION()     (((ENC_GPIO->IDR >> 10) & 0x02) + ((ENC_GPIO->IDR >> 9) & 0x01))
 #endif
 
 // This is for SIMU: reuse rotary encoder pins to map UP and DOWN keyboard keys
@@ -104,14 +111,6 @@
   #define KEYS_GPIO_REG_MINUS           ENC_GPIO->IDR
   #define KEYS_GPIO_PIN_MINUS           ENC_GPIO_PIN_B
 #endif
-
-#if defined(SIMU) && defined(PCBJUMPERT12)
-  #define KEYS_GPIO_REG_PLUS            ENC_GPIO->IDR
-  #define KEYS_GPIO_PIN_PLUS            ENC_GPIO_PIN_A
-  #define KEYS_GPIO_REG_MINUS           ENC_GPIO->IDR
-  #define KEYS_GPIO_PIN_MINUS           ENC_GPIO_PIN_B
-#endif
-
 
 // Trims
 #if defined(PCBX9E)
@@ -332,7 +331,7 @@
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14
 #elif defined(PCBJUMPERT12)
-  // no SFW
+  // no SWF
 #else
   #define SWITCHES_GPIO_REG_F           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_F           GPIO_Pin_14 // PE.14
@@ -449,8 +448,8 @@
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
   #define KEYS_GPIOA_PINS               SWITCHES_GPIO_PIN_B_H
   #define KEYS_GPIOC_PINS               (TRIMS_GPIO_PIN_LHR | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU)
-  #define KEYS_GPIOD_PINS               (TRIMS_GPIO_PIN_LHL | KEYS_GPIO_PIN_MENU | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_PAGE | SWITCHES_GPIO_PIN_C_L | SWITCHES_GPIO_PIN_H)
-  #define KEYS_GPIOE_PINS               (ENC_GPIO_PIN_A | ENC_GPIO_PIN_B | KEYS_GPIO_PIN_ENTER | TRIMS_GPIO_PIN_RHR | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_G)
+  #define KEYS_GPIOD_PINS               (TRIMS_GPIO_PIN_LHL | KEYS_GPIO_PIN_EXIT | KEYS_GPIO_PIN_LEFT | KEYS_GPIO_PIN_RIGHT | SWITCHES_GPIO_PIN_C_L | SWITCHES_GPIO_PIN_H)
+  #define KEYS_GPIOE_PINS               (KEYS_GPIO_PIN_UP  | KEYS_GPIO_PIN_DOWN | KEYS_GPIO_PIN_ENTER | TRIMS_GPIO_PIN_RHR | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_LVD | TRIMS_GPIO_PIN_LVU | SWITCHES_GPIO_PIN_C_H | SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_D_H | SWITCHES_GPIO_PIN_B_L | SWITCHES_GPIO_PIN_A_L | SWITCHES_GPIO_PIN_A_H | SWITCHES_GPIO_PIN_G)
 #else
   #define KEYS_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA|RCC_AHB1Periph_GPIOB|RCC_AHB1Periph_GPIOC|RCC_AHB1Periph_GPIOD|RCC_AHB1Periph_GPIOE)
   #define KEYS_GPIOA_PINS               (SWITCHES_GPIO_PIN_C_L)

@@ -208,6 +208,7 @@ RawSwitch RawSwitch::convert(RadioDataConversionState & cstate)
         delta = 6;  // SH to SH
       }
     }
+    //scumixmd
     else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
       if (srcIdx == 4 || srcIdx == 5) {
         delta = 3;  // SE to SD & SF to SF

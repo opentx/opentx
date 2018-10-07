@@ -434,6 +434,9 @@
 #elif defined(PCBXLITE)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Shift""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
+#elif defined(PCBJUMPERT12)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "\0    ""Exit\0""Menu\0""Up\0  ""Down\0""Left\0""Right"
 #elif defined(PCBTARANIS)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
@@ -481,7 +484,10 @@
 #elif defined(PCBX7)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SF\0""\312SH\0"
-#elif defined(PCBTARANIS)
+#elif defined(PCBJUMPERT12)
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SG\0""\312SH\0"
+#elif defined(PCBTARANIS) || !defined(PCBJUMPERT12)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
 #elif defined(PCBSKY9X)

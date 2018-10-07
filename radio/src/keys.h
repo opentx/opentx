@@ -52,7 +52,8 @@
 #define IS_KEY_REPT(evt)               (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_REPT)
 #define IS_KEY_BREAK(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK)
 
-#if defined(PCBXLITE)
+//schumixmd
+#if (defined(PCBXLITE) || defined(PCBJUMPERT12))
   typedef uint16_t event_t;
   #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)
   #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)

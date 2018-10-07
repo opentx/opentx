@@ -246,7 +246,7 @@ void GeneralSettings::setDefaultControlTypes(Board::Type board)
     potConfig[1] = Board::POT_WITH_DETENT;
   }
   else if (IS_JUMPER_T12(board)) {
-    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[0] = Board::POT_WITH_DETENT;
     potConfig[1] = Board::POT_WITH_DETENT;
   }
   else if (IS_TARANIS(board)) {
