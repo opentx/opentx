@@ -9,6 +9,7 @@ option(USB_SERIAL "Enable USB serial (CDC)" OFF)
 set(ARCH ARM)
 set(STM32USB_DIR ${THIRDPARTY_DIR}/STM32_USB-Host-Device_Lib_V2.2.0/Libraries)
 add_definitions(-DSTM32 -DLUA_INPUTS -DVARIO -DCROSSFIRE)
+
 include_directories(${RADIO_SRC_DIRECTORY}/targets/common/arm/stm32)
 include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc)
@@ -90,12 +91,21 @@ foreach(FILE ${STM32USB_SRC})
     ${STM32USB_DIR}/${FILE}
     )
 endforeach()
+
 set(SRC
   ${SRC}
   telemetry/crossfire.cpp
   io/bootloader_flash.cpp
   )
+
 set(PULSES_SRC
   ${PULSES_SRC}
   crossfire.cpp
   )
+
+if(PXX2)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    pxx2.cpp
+    )
+endif()

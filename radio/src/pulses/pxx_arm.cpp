@@ -19,10 +19,7 @@
  */
 
 #include "opentx.h"
-
-#define PXX_SEND_BIND                      0x01
-#define PXX_SEND_FAILSAFE                  (1 << 4)
-#define PXX_SEND_RANGECHECK                (1 << 5)
+#include "pulses/pxx.h"
 
 const uint16_t CRCTable[]=
 {

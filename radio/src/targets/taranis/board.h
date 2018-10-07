@@ -182,14 +182,16 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #endif
 void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
-void init_ppm( uint32_t module_index );
-void disable_ppm( uint32_t module_index );
-void init_pxx( uint32_t module_index );
-void disable_pxx( uint32_t module_index );
-void init_serial( uint32_t module_index, uint32_t baudrate, uint32_t period );
-void disable_serial( uint32_t module_index );
-void init_crossfire( uint32_t module_index );
-void disable_crossfire( uint32_t module_index );
+void init_ppm( uint32_t module_index);
+void disable_ppm( uint32_t module_index);
+void init_pxx( uint32_t module_index);
+void disable_pxx( uint32_t module_index);
+void init_serial( uint32_t module_index, uint32_t baudrate, uint32_t period);
+void disable_serial( uint32_t module_index);
+void init_crossfire( uint32_t module_index);
+void disable_crossfire( uint32_t module_index);
+void init_pxx2( uint32_t module_index);
+void disable_pxx2( uint32_t module_index);
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerMode == TRAINER_MODE_SLAVE)

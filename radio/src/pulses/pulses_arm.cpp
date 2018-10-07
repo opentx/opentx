@@ -20,6 +20,11 @@
 
 #include "opentx.h"
 
+#if defined(PXX2)
+#include "io/pxx2.h"
+#include "pulses/pxx2.h"
+#endif
+
 uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
 uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
@@ -56,14 +61,13 @@ uint8_t getRequiredProtocol(uint8_t port)
 #endif
 
     default:
-      port = EXTERNAL_MODULE; // ensure it's external module only
       switch (g_model.moduleData[EXTERNAL_MODULE].type) {
         case MODULE_TYPE_PPM:
           required_protocol = PROTO_PPM;
           break;
         case MODULE_TYPE_XJT:
         case MODULE_TYPE_R9M:
-          required_protocol = PROTO_PXX;
+          required_protocol = PROTO_PXX_EXTERNAL_MODULE; // either PXX or PXX2 depending on compilation options
           break;
         case MODULE_TYPE_SBUS:
           required_protocol = PROTO_SBUS;
@@ -146,6 +150,12 @@ void setupPulses(uint8_t port)
         break;
 #endif
 
+#if defined(PXX2)
+      case PROTO_PXX2:
+        disable_pxx2(port);
+        break;
+#endif
+
 #if defined(MULTIMODULE)
       case PROTO_MULTIMODULE:
 #endif
@@ -205,6 +215,16 @@ void setupPulses(uint8_t port)
         sportSendBuffer(crossfire, len);
       }
       scheduleNextMixerCalculation(port, CROSSFIRE_PERIOD);
+      break;
+#endif
+
+#if defined(PXX2)
+    case PROTO_PXX2:
+      if (telemetryProtocol == PROTOCOL_FRSKY_SPORT && !init_needed) {
+        createPXX2ChannelsFrame(port);
+        sportSendBuffer(modulePulsesData[port].pxx_uart.pulses, modulePulsesData[port].pxx_uart.ptr - modulePulsesData[port].pxx_uart.pulses);
+      }
+      scheduleNextMixerCalculation(port, PXX2_PERIOD);
       break;
 #endif
 
