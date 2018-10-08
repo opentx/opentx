@@ -336,8 +336,6 @@ void menuModelSelect(event_t event)
 
 #if defined(PCBX7)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
-//#elif defined(PCBJUMPERT12)
-//  drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_ROTARY_ENCODER_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);
 #else

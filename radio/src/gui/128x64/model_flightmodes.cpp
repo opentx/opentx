@@ -285,10 +285,6 @@ void menuModelFlightModesAll(event_t event)
     case EVT_KEY_FIRST(KEY_RIGHT):
 #endif
 
-#if !defined(PCBJUMPERT12)
-    case EVT_KEY_FIRST(KEY_RIGHT):
-#endif
-
       if (sub >= 0 && sub < MAX_FLIGHT_MODES) {
         s_currIdx = sub;
         pushMenu(menuModelFlightModeOne);
