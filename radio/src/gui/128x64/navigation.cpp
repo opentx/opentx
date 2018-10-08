@@ -54,10 +54,10 @@ int8_t  checkIncDec_Ret;
   #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
   #define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
 #elif defined(PCBJUMPERT12)
-  #define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
-  #define DBLKEYS_PRESSED_UP_DWN(in)     (false)
-  #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
-  #define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
+  #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
+  #define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
+  #define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
+  #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 #else
   #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
   #define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
@@ -1065,6 +1065,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       if (!menuTab || l_posVert>0) {
         if (READ_ONLY_UNLOCKED()) {
           s_editMode = (s_editMode<=0);
+          //s_editMode = EDIT_MODIFY_STRING;
         }
       }
       break;

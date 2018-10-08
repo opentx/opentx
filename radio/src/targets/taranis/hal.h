@@ -61,9 +61,8 @@
   // enter -> enter
   // page -> right
   // menu -> left
-  // up -> encoder ccw (PE.09) ??
-  // down -> encoder cw (PE.11)??
-
+  // encoder ccw (PE.09) -> up
+  // encoder cw (PE.11) -> down
   #define KEYS_GPIO_REG_EXIT            GPIOD->IDR
   #define KEYS_GPIO_PIN_EXIT            GPIO_Pin_2  // PD.02
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
@@ -744,7 +743,6 @@
   #define INTMODULE_DMA_STREAM_IRQHandler DMA2_Stream5_IRQHandler
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF5
   #define INTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
-
 #else
   #define INTMODULE_PULSES
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
@@ -848,10 +846,7 @@
 #endif
 
 // Serial Port
-#if defined(PCBX7) || defined(PCBXLITE)
-  #define SERIAL_RCC_AHB1Periph         0
-  #define SERIAL_RCC_APB1Periph         0
-#elif defined(PCBJUMPERT12) || defined(PCBXLITE)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBJUMPERT12)
   #define SERIAL_RCC_AHB1Periph         0
   #define SERIAL_RCC_APB1Periph         0
 #else

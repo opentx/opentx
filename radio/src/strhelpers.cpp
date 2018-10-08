@@ -269,6 +269,13 @@ char * getSwitchString(char * dest, swsrc_t idx)
         *s++ = 'F';
       else
         *s++ = 'A'+swinfo.quot;
+#elif defined(PCBJUMPERT12) //schumixmd
+      if (swinfo.quot == 5)
+        *s++ = 'H';
+      else if (swinfo.quot == 4)
+        *s++ = 'G';
+      else
+        *s++ = 'A'+swinfo.quot;
 #else
       *s++ = 'A'+swinfo.quot;
 #endif

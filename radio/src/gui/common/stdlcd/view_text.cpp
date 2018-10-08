@@ -97,9 +97,6 @@ void readTextFile(int & lines_count)
 #if defined(PCBX7) || defined(PCBX9E)
   #define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
   #define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
-#elif defined(PCBJUMPERT12)
-  #define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
-  #define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
 #else
   #define EVT_KEY_NEXT_LINE              EVT_KEY_FIRST(KEY_DOWN)
   #define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)

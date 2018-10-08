@@ -278,7 +278,7 @@ enum EnumKeys
   #define KEY_DOWN                      KEY_PLUS
   #define KEY_RIGHT                     KEY_PLUS
   #define KEY_LEFT                      KEY_MINUS
-#elif defined(PCBXLITE) || defined (PCBJUMPERT12)
+#elif defined(PCBXLITE) || defined (PCBJUMPERT12) // schumixmd to return
   #define KEY_PLUS                      KEY_RIGHT
   #define KEY_MINUS                     KEY_LEFT
 #else
@@ -513,9 +513,7 @@ uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 #endif
 #if defined(PCBXLITE)
   #define BATT_SCALE                    131
-#elif defined(PCBX7)
-  #define BATT_SCALE                    123
-#elif defined(PCBJUMPERT12)
+#elif defined(PCBX7) || defined (PCBJUMPERT12)
   #define BATT_SCALE                    123
 #else
   #define BATT_SCALE                    150

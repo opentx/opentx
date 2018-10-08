@@ -568,7 +568,6 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-      //schumixmd
 #if defined(PCBTARANIS)
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_EXISTS(i)) {
@@ -641,7 +640,8 @@ void menuMainView(event_t event)
   }
   else {
     // Timer2
-    drawTimerWithMode(87, 5*FH, 1);
+    // schumixmd Draw timer2 inline with timer1. original value 87.
+    drawTimerWithMode(125, 5*FH, 1);
   }
 
   // And ! in case of unexpected shutdown

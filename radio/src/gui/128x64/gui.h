@@ -230,7 +230,7 @@ void title(const pm_char * s);
   #define MENU_TAB(...) static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBJUMPERT12)
   #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 #else
@@ -243,7 +243,7 @@ void title(const pm_char * s);
   MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBJUMPERT12)
   #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
     check_simple(event, menu, tab, DIM(tab), lines_count);
   #define SUBMENU_NOTITLE(lines_count, ...) { \
@@ -413,7 +413,7 @@ void drawStatusLine();
 #if defined(PCBX7)
  #define EDIT_MODE_INIT                 0
 #elif defined(PCBJUMPERT12)
- #define EDIT_MODE_INIT                 0
+ #define EDIT_MODE_INIT                 0 //schumixmd
 #else
  #define EDIT_MODE_INIT                 -1
 #endif
@@ -477,9 +477,9 @@ void showAlertBox(const pm_char * title, const pm_char * text, const char * acti
 
 #define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
 #if defined(TELEMETRY_FRSKY)
-#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetryFrsky
+  #define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetryFrsky
 #else
-#define IS_TELEMETRY_VIEW_DISPLAYED()  false
+  #define IS_TELEMETRY_VIEW_DISPLAYED()  false
 #endif
 #define IS_OTHER_VIEW_DISPLAYED()      false
 
