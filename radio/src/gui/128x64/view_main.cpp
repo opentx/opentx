@@ -568,6 +568,7 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
+      //schumixmd
 #if defined(PCBTARANIS)
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_EXISTS(i)) {

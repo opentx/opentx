@@ -40,7 +40,7 @@ void menuRadioDiagKeys(event_t event)
 
   lcdDrawText(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
 
-  for (uint8_t i=0; i<9; i++) {
+  for (uint8_t i=0; i<10; i++) {
     coord_t y;
 
     if (i < NUM_TRIMS_KEYS) {
@@ -73,6 +73,7 @@ void menuRadioDiagKeys(event_t event)
 #endif
     }
 
+    //schumixmd
 #if defined(PCBTARANIS)
     if (i < NUM_SWITCHES) {
       if (SWITCH_EXISTS(i)) {

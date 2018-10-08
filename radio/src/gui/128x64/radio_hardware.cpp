@@ -149,7 +149,7 @@ enum MenuRadioHardwareItems {
 #if defined(PCBXLITE)
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #elif defined(PCBJUMPERT12)
-  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SG-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+  #define SWITCH_TYPE_MAX(sw)            (SWITCH_2POS)
 #else
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #endif

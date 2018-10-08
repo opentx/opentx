@@ -31,6 +31,7 @@
 #include "usbd_conf.h"
 #endif
 
+
 #if defined(SIMU)
   #define SWITCH_SIMU(a, b)  (a)
 #else

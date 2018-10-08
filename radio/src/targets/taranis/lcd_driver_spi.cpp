@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if defined(PCBJUMPERT12)
- #define LCD_CONTRAST_OFFSET            -65 //-20 too dark;
+ #define LCD_CONTRAST_OFFSET            -70 //-20 too dark; //65+24=good
 #else
  #define LCD_CONTRAST_OFFSET            -10
 #endif
@@ -117,7 +117,7 @@ void lcdStart()
    lcdWriteCommand(0xa3); // Set bias=1/6
    lcdWriteCommand(0x22); // Set internal rb/ra=5.0
    lcdWriteCommand(0x2f); // All built-in power circuits on
-   lcdWriteCommand(0x23); // Set contrast //schumixmd
+   lcdWriteCommand(0x24); // Set contrast //schumixmd
    lcdWriteCommand(0x36); // Set Vop
    lcdWriteCommand(0xa6); // Set display mode
 #else

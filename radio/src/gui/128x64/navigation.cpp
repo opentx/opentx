@@ -27,12 +27,14 @@ uint8_t menuCalibrationState;
 vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 
+
+
 #if defined(NAVIGATION_POT1)
-int16_t p1valdiff;
+  int16_t p1valdiff;
 #endif
 
-#if defined(NAVIGATION_PYOT2)
-int8_t p2valdiff;
+#if defined(NAVIGATION_POT2)
+  int8_t p2valdiff;
 #endif
 
 int8_t  checkIncDec_Ret;
@@ -52,15 +54,15 @@ int8_t  checkIncDec_Ret;
   #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
   #define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
 #elif defined(PCBJUMPERT12)
+  #define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
+  #define DBLKEYS_PRESSED_UP_DWN(in)     (false)
+  #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
+  #define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
+#else
   #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
   #define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
   #define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
   #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
-#else
-#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
-#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
-#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
-#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 #endif
 
 #if defined(CPUARM)

@@ -436,7 +436,7 @@
   #define TR_VKEYS                     "Shift""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
 #elif defined(PCBJUMPERT12)
   #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "\0    ""Exit\0""Menu\0""Up\0  ""Down\0""Left\0""Right"
+  #define TR_VKEYS                     "\0    ""Exit\0""Menu\0""Down\0""Up\0  ""Right""Left\0"
 #elif defined(PCBTARANIS)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"

@@ -289,11 +289,11 @@ enum EnumKeys
 #endif
 
 #if defined(KEYS_GPIO_PIN_SHIFT)
-#define IS_SHIFT_KEY(index)             (index == KEY_SHIFT)
-#define IS_SHIFT_PRESSED()              (~KEYS_GPIO_REG_SHIFT & KEYS_GPIO_PIN_SHIFT)
+  #define IS_SHIFT_KEY(index)             (index == KEY_SHIFT)
+  #define IS_SHIFT_PRESSED()              (~KEYS_GPIO_REG_SHIFT & KEYS_GPIO_PIN_SHIFT)
 #else
-#define IS_SHIFT_KEY(index)             (false)
-#define IS_SHIFT_PRESSED()              (false)
+  #define IS_SHIFT_KEY(index)             (false)
+  #define IS_SHIFT_PRESSED()              (false)
 #endif
 
 enum EnumSwitches
@@ -323,14 +323,14 @@ enum EnumSwitchesPositions
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBJUMPERT12)
+#if !defined(PCBX7) && !defined(PCBXLITE)  && !defined(PCBJUMPERT12)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
 
 
-#if !defined(PCBXLITE) && !defined(PCBJUMPERT12)
+#if !defined(PCBXLITE)  && !defined(PCBJUMPERT12)
   SW_SF0,
   SW_SF1,
   SW_SF2,
@@ -650,22 +650,22 @@ void hapticOff(void);
 
 // Second serial port driver
 #if defined(SERIAL_GPIO)
-#define DEBUG_BAUDRATE                  115200
-#define SERIAL2
-extern uint8_t serial2Mode;
-void serial2Init(unsigned int mode, unsigned int protocol);
-void serial2Putc(char c);
-#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
-void serial2SbusInit(void);
-void serial2Stop(void);
+  #define DEBUG_BAUDRATE                  115200
+  #define SERIAL2
+  extern uint8_t serial2Mode;
+  void serial2Init(unsigned int mode, unsigned int protocol);
+  void serial2Putc(char c);
+  #define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
+  void serial2SbusInit(void);
+  void serial2Stop(void);
 #endif
 
 // BT driver
 #define BLUETOOTH_DEFAULT_BAUDRATE      115200
 #if defined(PCBX9E) && !defined(USEHORUSBT)
-#define BLUETOOTH_FACTORY_BAUDRATE     9600
+  #define BLUETOOTH_FACTORY_BAUDRATE     9600
 #else
-#define BLUETOOTH_FACTORY_BAUDRATE      57600
+  #define BLUETOOTH_FACTORY_BAUDRATE      57600
 #endif
 void bluetoothInit(uint32_t baudrate);
 void bluetoothWriteWakeup(void);
@@ -681,21 +681,21 @@ void ledBlue(void);
 
 // LCD driver
 #if defined(STATUS_LEDS)
-#define LCD_W                           128
-#define LCD_H                           64
-#define LCD_DEPTH                       1
-#define IS_LCD_RESET_NEEDED()           true
-#define LCD_CONTRAST_MIN                10
-#define LCD_CONTRAST_MAX                40
-#define LCD_CONTRAST_DEFAULT            25 //schumixmd mark
+  #define LCD_W                           128
+  #define LCD_H                           64
+  #define LCD_DEPTH                       1
+  #define IS_LCD_RESET_NEEDED()           true
+  #define LCD_CONTRAST_MIN                10
+  #define LCD_CONTRAST_MAX                40
+  #define LCD_CONTRAST_DEFAULT            25 //schumixmd mark
 #else
-#define LCD_W                           212
-#define LCD_H                           64
-#define LCD_DEPTH                       4
-#define IS_LCD_RESET_NEEDED()           (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
-#define LCD_CONTRAST_MIN                0
-#define LCD_CONTRAST_MAX                45
-#define LCD_CONTRAST_DEFAULT            25
+  #define LCD_W                           212
+  #define LCD_H                           64
+  #define LCD_DEPTH                       4
+  #define IS_LCD_RESET_NEEDED()           (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE())
+  #define LCD_CONTRAST_MIN                0
+  #define LCD_CONTRAST_MAX                45
+  #define LCD_CONTRAST_DEFAULT            25
 #endif
 void lcdInit(void);
 void lcdInitFinish(void);
@@ -703,14 +703,14 @@ void lcdOff(void);
 
 // TODO lcdRefreshWait() stub in simpgmspace and remove LCD_DUAL_BUFFER
 #if defined(LCD_DMA) && !defined(LCD_DUAL_BUFFER) && !defined(SIMU)
-void lcdRefreshWait();
+  void lcdRefreshWait();
 #else
-#define lcdRefreshWait()
+  #define lcdRefreshWait()
 #endif
 #if defined(PCBX9D) || defined(SIMU) || !defined(__cplusplus)
-void lcdRefresh(void);
+  void lcdRefresh(void);
 #else
-void lcdRefresh(bool wait=true); // TODO uint8_t wait to simplify this
+  void lcdRefresh(bool wait=true); // TODO uint8_t wait to simplify this
 #endif
 void lcdSetRefVolt(unsigned char val);
 void lcdSetContrast(void);
@@ -738,9 +738,9 @@ void checkTrainerSettings(void);
 #include "dmafifo.h"
 
 #if defined(CROSSFIRE)
-#define TELEMETRY_FIFO_SIZE             128
+  #define TELEMETRY_FIFO_SIZE             128
 #else
-#define TELEMETRY_FIFO_SIZE             64
+  #define TELEMETRY_FIFO_SIZE             64
 #endif
 
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
