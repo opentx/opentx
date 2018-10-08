@@ -32,7 +32,13 @@ enum FrSkyDataState {
   STATE_DATA_XOR,
 };
 
+#if defined(PXX2)
+#include "io/pxx2.h"
+#define FRSKY_SPORT_BAUDRATE      PXX2_BAUDRATE
+#else
 #define FRSKY_SPORT_BAUDRATE      57600
+#endif
+
 #define FRSKY_D_BAUDRATE          9600
 
 #define FRSKY_SPORT_PACKET_SIZE   9
