@@ -18,4 +18,56 @@
  * GNU General Public License for more details.
  */
 
-void createPXX2ChannelsFrame(uint8_t port);
+#ifndef _PULSES_PXX2_H_
+#define _PULSES_PXX2_H_
+
+#include "pulses/pxx.h"
+
+class Pxx2Transport: public PxxCrcMixin {
+  protected:
+    uint8_t  data[64];
+    uint8_t  * ptr;
+
+    void initFrame()
+    {
+      ptr = data;
+    }
+
+    void addByte(uint8_t byte)
+    {
+      PxxCrcMixin::addToCrc(byte);
+      *ptr++ = byte;
+    }
+
+    void addTail()
+    {
+      // nothing
+    }
+};
+
+
+class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
+  public:
+    void setupFrame(uint8_t port);
+
+    const uint8_t * getData()
+    {
+      return data;
+    }
+
+    uint8_t getSize()
+    {
+      return ptr - data;
+    }
+
+  protected:
+    uint8_t data[64];
+    uint8_t * ptr;
+
+    void initFrame()
+    {
+      ptr = data;
+    }
+};
+
+#endif

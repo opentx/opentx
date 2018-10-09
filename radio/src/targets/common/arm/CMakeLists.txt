@@ -129,7 +129,7 @@ set(PULSES_SRC
   ${PULSES_SRC}
   pulses_arm.cpp
   ppm_arm.cpp
-  pxx_arm.cpp
+  pxx.cpp
   dsm2_arm.cpp
   sbus_arm.cpp
   )

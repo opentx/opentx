@@ -221,8 +221,8 @@ void setupPulses(uint8_t port)
 #if defined(PXX2)
     case PROTO_PXX2:
       if (telemetryProtocol == PROTOCOL_FRSKY_SPORT && !init_needed) {
-        createPXX2ChannelsFrame(port);
-        sportSendBuffer(modulePulsesData[port].pxx_uart.pulses, modulePulsesData[port].pxx_uart.ptr - modulePulsesData[port].pxx_uart.pulses);
+        modulePulsesData[port].pxx2.setupFrame(port);
+        sportSendBuffer(modulePulsesData[port].pxx2.getData(), modulePulsesData[port].pxx2.getSize());
       }
       scheduleNextMixerCalculation(port, PXX2_PERIOD);
       break;

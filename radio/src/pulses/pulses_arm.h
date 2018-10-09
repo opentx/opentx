@@ -54,8 +54,6 @@ template<class T> struct PpmPulsesData {
 #define PXX_PERIOD                    9/*ms*/
 #endif
 
-#define PXX_PERIOD_HALF_US            (PXX_PERIOD * 2000)
-
 #if defined(PPM_PIN_SERIAL)
 PACK(struct PxxSerialPulsesData {
   uint8_t  pulses[64];
@@ -125,19 +123,27 @@ PACK(struct PxxTimerPulsesData {
 });
 #endif
 
+#if !defined(BOOT)
+#include "pulses/pxx2.h"
+#endif
+
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
   uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
 });
 
 union ModulePulsesData {
-#if defined(INTMODULE_USART) || defined(EXTMODULE_USART) || defined(PXX2)
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   PxxUartPulsesData pxx_uart;
 #endif
 #if defined(PPM_PIN_SERIAL)
   PxxSerialPulsesData pxx;
 #elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
   PxxTimerPulsesData pxx;
+#endif
+
+#if defined(PXX2) && !defined(BOOT)
+  Pxx2Pulses pxx2;
 #endif
 
 #if defined(PPM_PIN_SERIAL)

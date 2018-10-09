@@ -138,7 +138,7 @@ void telemetryPortSetDirectionInput()
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
 
-void sportSendBuffer(uint8_t * buffer, uint32_t count)
+void sportSendBuffer(const uint8_t * buffer, uint32_t count)
 {
   telemetryPortSetDirectionOutput();
 
