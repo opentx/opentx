@@ -177,7 +177,7 @@ void setupPulses(uint8_t port)
   // Set up output data here
   switch (required_protocol) {
     case PROTO_PXX:
-      setupPulsesPXX(port);
+      modulePulsesData[port].pxx.setupFrame(port);
       scheduleNextMixerCalculation(port, PXX_PERIOD);
       break;
 

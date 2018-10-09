@@ -21,11 +21,23 @@
 #ifndef _PULSES_PXX_H_
 #define _PULSES_PXX_H_
 
-#include <inttypes.h>
+#include "pulses_common.h"
 
 #define PXX_SEND_BIND                      0x01
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
+
+#if defined(PXX_FREQUENCY_HIGH)
+  #define EXTMODULE_USART_PXX_BAUDRATE     420000
+  #define INTMODULE_USART_PXX_BAUDRATE     450000
+  #define PXX_PERIOD                       4/*ms*/
+#else
+  #define EXTMODULE_USART_PXX_BAUDRATE     115200
+  #define INTMODULE_USART_PXX_BAUDRATE     115200
+  #define PXX_PERIOD                       9/*ms*/
+#endif
+
+#define PXX_PERIOD_HALF_US                 (PXX_PERIOD * 2000)
 
 class PxxCrcMixin {
   protected:
@@ -43,18 +55,16 @@ class PxxCrcMixin {
     static const uint16_t CRCTable[];
 };
 
-
-class SerialPxxBitTransport {
+// Used by the Sky9x family boards
+class SerialPxxBitTransport: public DataBuffer<uint8_t, 64> {
   protected:
-    uint8_t data[64];
-    uint8_t * ptr;
     uint8_t byte;
     uint8_t bits_count;
     uint8_t padding[2];
 
     void initFrame()
     {
-      ptr = data;
+      initBuffer();
       byte = 0;
       bits_count = 0;
     }
@@ -89,28 +99,14 @@ class SerialPxxBitTransport {
     }
 };
 
-// TODO elsewhere !!!
-
-#if defined(PCBX12S) && PCBREV < 13
-  #define pulse_duration_t             uint32_t
-  #define trainer_pulse_duration_t     uint16_t
-#else
-  #define pulse_duration_t             uint16_t
-  #define trainer_pulse_duration_t     uint16_t
-#endif
-
-#define PXX_PERIOD_HALF_US            (PXX_PERIOD * 2000)
-
-class PwmPxxBitTransport {
+class PwmPxxBitTransport: public PulsesBuffer<pulse_duration_t, 200> {
   protected:
-    pulse_duration_t pulses[200];
-    pulse_duration_t * ptr;
     uint16_t rest;
     uint8_t padding[2];
 
     void initFrame()
     {
-      ptr = pulses;
+      initBuffer();
       rest = PXX_PERIOD_HALF_US;
     }
 
@@ -121,7 +117,7 @@ class PwmPxxBitTransport {
       rest -= duration + 1;
     }
 
-    void addTail(uint8_t port)
+    void addTail()
     {
       // rest min value is 18000 - 200 * 48 = 8400 (4.2ms)
       *(ptr - 1) += rest;
@@ -133,6 +129,12 @@ class StandardPxxTransport: public PxxCrcMixin, public BitTransport {
   protected:
     uint8_t ones_count;
     uint8_t padding[3];
+
+    void initFrame()
+    {
+      BitTransport::initBuffer();
+      ones_count = 0;
+    }
 
     void addByte(uint8_t byte)
     {
@@ -162,23 +164,10 @@ class StandardPxxTransport: public PxxCrcMixin, public BitTransport {
         ones_count = 0;
       }
     }
-
-    void initFrame()
-    {
-      ones_count = 0;
-    }
 };
 
-class UartPxxTransport: public PxxCrcMixin {
+class UartPxxTransport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
   protected:
-    uint8_t  data[64];
-    uint8_t  * ptr;
-
-    void initFrame()
-    {
-      ptr = data;
-    }
-
     void addByte(uint8_t byte)
     {
       PxxCrcMixin::addToCrc(byte);
@@ -213,32 +202,5 @@ class PxxPulses: public PxxTransport {
     void addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels);
     void addExtraFlags(uint8_t port);
 };
-
-typedef PxxPulses<UartPxxTransport> UartPxxPulses;
-
-template <class PxxTransport>
-class StandardPxxPulses: public PxxPulses<PxxTransport>
-{
-  public:
-    void setupFrame(uint8_t port);
-
-  protected:
-    void addHead()
-    {
-      // send 7E, do not CRC
-      PxxTransport::addByteWithoutCrc(0x7E);
-    }
-
-    void addCrc()
-    {
-      addByteWithoutCrc(PxxCrcMixin::crc >> 8);
-      addByteWithoutCrc(PxxCrcMixin::crc);
-    }
-
-    void setup8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
-};
-
-typedef StandardPxxPulses<StandardPxxTransport<PwmPxxBitTransport>> PwmPxxPxxPulses;
-
 
 #endif

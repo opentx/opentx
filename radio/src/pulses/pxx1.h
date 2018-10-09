@@ -18,37 +18,35 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _PULSES_PXX2_H_
-#define _PULSES_PXX2_H_
+#ifndef _PULSES_PXX1_H_
+#define _PULSES_PXX1_H_
 
-#include "./pxx.h"
+#include "pxx.h"
 
-class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
-  protected:
-    void addByte(uint8_t byte)
-    {
-      PxxCrcMixin::addToCrc(byte);
-      *ptr++ = byte;
-    }
-
-    void addTail()
-    {
-      // nothing
-    }
-};
-
-class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
+template <class PxxTransport>
+class Pxx1Pulses: public PxxPulses<PxxTransport>
+{
   public:
     void setupFrame(uint8_t port);
 
   protected:
-    uint8_t data[64];
-    uint8_t * ptr;
-
-    void initFrame()
+    void addHead()
     {
-      ptr = data;
+      // send 7E, do not CRC
+      PxxTransport::addByteWithoutCrc(0x7E);
     }
+
+    void addCrc()
+    {
+      PxxTransport::addByteWithoutCrc(PxxCrcMixin::crc >> 8);
+      PxxTransport::addByteWithoutCrc(PxxCrcMixin::crc);
+    }
+
+    void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
 };
+
+typedef Pxx1Pulses<UartPxxTransport> UartPxxPulses;
+typedef Pxx1Pulses<StandardPxxTransport<PwmPxxBitTransport>> PwmPxxPulses;
+typedef Pxx1Pulses<StandardPxxTransport<SerialPxxBitTransport>> SerialPxxPulses;
 
 #endif

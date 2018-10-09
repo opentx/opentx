@@ -19,7 +19,8 @@
  */
 
 #include "opentx.h"
-#include "pulses/pxx.h"
+#include "pulses/pxx1.h"
+#include "pulses/pxx2.h"
 
 const uint16_t PxxCrcMixin::CRCTable[] = {
   0x0000,0x1189,0x2312,0x329b,0x4624,0x57ad,0x6536,0x74bf,
@@ -55,39 +56,6 @@ const uint16_t PxxCrcMixin::CRCTable[] = {
   0xf78f,0xe606,0xd49d,0xc514,0xb1ab,0xa022,0x92b9,0x8330,
   0x7bc7,0x6a4e,0x58d5,0x495c,0x3de3,0x2c6a,0x1ef1,0x0f78
 };
-
-template <class PxxTransport>
-void StandardPxxPulses<PxxTransport>::setup8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels)
-{
-  PxxTransport::initCrc();
-
-  // Sync
-  addHead();
-
-  // RX Number
-  PxxTransport::addByte(g_model.header.modelId[port]);
-
-  // Flag1
-  uint8_t flag1 = PxxPulses<PxxTransport>::addFlag1(port);
-
-  // Flag2
-  PxxTransport::addByte(0);
-
-  // Channels
-  PxxPulses<PxxTransport>::addChannels(port, flag1 & PXX_SEND_FAILSAFE, sendUpperChannels);
-
-  // Extra flags
-  PxxPulses<PxxTransport>::addExtraFlags();
-
-  // CRC
-  addCrc();
-
-  // Sync = HEAD
-  addHead();
-
-  // Tail
-  PxxTransport::addTail();
-}
 
 template <class PxxTransport>
 void PxxPulses<PxxTransport>::addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels)
@@ -209,22 +177,5 @@ void PxxPulses<PxxTransport>::addExtraFlags(uint8_t port)
   PxxTransport::addByte(extra_flags);
 }
 
-template <class PxxTransport>
-void StandardPxxPulses<PxxTransport>::setupFrame(uint8_t port)
-{
-  PxxPulses<PxxTransport>::initFrame();
-
-#if defined(PXX_FREQUENCY_HIGH)
-  setup8ChannelsFrame(port, 0);
-  if (sentModuleChannels(port) > 8) {
-    setup8ChannelsFrame(port, 8);
-  }
-#else
-  static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
-  uint8_t sendUpperChannels = 0;
-  if (pass[port]++ & 0x01) {
-    sendUpperChannels = g_model.moduleData[port].channelsCount;
-  }
-  setup8ChannelsFrame(port, sendUpperChannels);
-#endif
-}
+template class PxxPulses<StandardPxxTransport<PwmPxxBitTransport> >;
+template class PxxPulses<Pxx2Transport>;

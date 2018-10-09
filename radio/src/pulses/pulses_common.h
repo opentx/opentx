@@ -18,37 +18,48 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _PULSES_PXX2_H_
-#define _PULSES_PXX2_H_
+#ifndef _PULSES_COMMON_H_
+#define _PULSES_COMMON_H_
 
-#include "./pxx.h"
+#include <inttypes.h>
 
-class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
-  protected:
-    void addByte(uint8_t byte)
-    {
-      PxxCrcMixin::addToCrc(byte);
-      *ptr++ = byte;
-    }
+#if defined(PCBX12S) && PCBREV < 13
+  #define pulse_duration_t             uint32_t
+  #define trainer_pulse_duration_t     uint16_t
+#else
+  #define pulse_duration_t             uint16_t
+  #define trainer_pulse_duration_t     uint16_t
+#endif
 
-    void addTail()
-    {
-      // nothing
-    }
-};
-
-class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
+template <class T, int SIZE>
+class DataBuffer {
   public:
-    void setupFrame(uint8_t port);
+    const T * getData()
+    {
+      return data;
+    }
+
+    uint8_t getSize()
+    {
+      return ptr - data;
+    }
 
   protected:
-    uint8_t data[64];
-    uint8_t * ptr;
+    T data[SIZE];
+    T * ptr;
 
-    void initFrame()
+    void initBuffer()
     {
       ptr = data;
     }
+};
+
+template <class T, int SIZE>
+class PulsesBuffer: public DataBuffer<T, SIZE> {
+  public:
+    T getLast() {
+        return *(DataBuffer<T, SIZE>::ptr - 1);
+    };
 };
 
 #endif
