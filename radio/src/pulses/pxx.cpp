@@ -178,4 +178,6 @@ void PxxPulses<PxxTransport>::addExtraFlags(uint8_t port)
 }
 
 template class PxxPulses<StandardPxxTransport<PwmPxxBitTransport> >;
+template class PxxPulses<StandardPxxTransport<SerialPxxBitTransport> >;
 template class PxxPulses<Pxx2Transport>;
+template class PxxPulses<UartPxxTransport>;

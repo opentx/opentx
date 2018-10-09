@@ -197,6 +197,7 @@ void init_serial(uint32_t module_index, uint32_t baudrate, uint32_t period_half_
 void disable_serial(uint32_t module_index);
 void init_crossfire(uint32_t module_index);
 void disable_crossfire(uint32_t module_index);
+void disable_pxx2(uint32_t module_index);
 
 // Trainer driver
 void init_trainer_ppm(void);

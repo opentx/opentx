@@ -37,6 +37,17 @@
   #define PXX_PERIOD                       9/*ms*/
 #endif
 
+#if defined(PXX_FREQUENCY_HIGH) && (!defined(INTMODULE_USART) || !defined(EXTMODULE_USART))
+/* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
+/* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
+/* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
+/* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enough */
+/* sbus is 1 byte header, 22 channel bytes (11bit * 16ch) + 1 byte flags */
+
+#error "Pulses array needs to be increased (PXX_FREQUENCY=HIGH)"
+#endif
+
+
 #define PXX_PERIOD_HALF_US                 (PXX_PERIOD * 2000)
 
 class PxxCrcMixin {
@@ -60,7 +71,6 @@ class SerialPxxBitTransport: public DataBuffer<uint8_t, 64> {
   protected:
     uint8_t byte;
     uint8_t bits_count;
-    uint8_t padding[2];
 
     void initFrame()
     {
@@ -102,7 +112,6 @@ class SerialPxxBitTransport: public DataBuffer<uint8_t, 64> {
 class PwmPxxBitTransport: public PulsesBuffer<pulse_duration_t, 200> {
   protected:
     uint16_t rest;
-    uint8_t padding[2];
 
     void initFrame()
     {
@@ -125,10 +134,9 @@ class PwmPxxBitTransport: public PulsesBuffer<pulse_duration_t, 200> {
 };
 
 template <class BitTransport>
-class StandardPxxTransport: public PxxCrcMixin, public BitTransport {
+class StandardPxxTransport: public BitTransport, public PxxCrcMixin {
   protected:
     uint8_t ones_count;
-    uint8_t padding[3];
 
     void initFrame()
     {
@@ -172,6 +180,11 @@ class UartPxxTransport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
     {
       PxxCrcMixin::addToCrc(byte);
       addWithByteStuffing(byte);
+    }
+
+    void addByteWithoutCrc(uint8_t byte)
+    {
+      *ptr++ = byte;
     }
 
     void addWithByteStuffing(uint8_t byte)

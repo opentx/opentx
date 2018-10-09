@@ -102,16 +102,3 @@ set(PULSES_SRC
   ${PULSES_SRC}
   crossfire.cpp
   )
-
-set(PULSES_SRC
-  ${PULSES_SRC}
-  pxx1.cpp
-  )
-
-
-if(PXX2)
-  set(PULSES_SRC
-    ${PULSES_SRC}
-    pxx2.cpp
-    )
-endif()

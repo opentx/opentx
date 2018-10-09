@@ -122,6 +122,20 @@ uint8_t getRequiredProtocol(uint8_t port)
   return required_protocol;
 }
 
+void setupPulsesPXX(uint8_t port)
+{
+#if defined(INTMODULE_USART) && defined(EXTMODULE_USART)
+  modulePulsesData[port].pxx_uart.setupFrame(port);
+#elif !defined(INTMODULE_USART) && !defined(EXTMODULE_USART)
+  modulePulsesData[port].pxx.setupFrame(port);
+#else
+  if (IS_UART_MODULE(port))
+    modulePulsesData[port].pxx_uart.setupFrame(port);
+  else
+    modulePulsesData[port].pxx.setupFrame(port);
+#endif
+}
+
 void setupPulses(uint8_t port)
 {
   bool init_needed = false;
@@ -177,7 +191,7 @@ void setupPulses(uint8_t port)
   // Set up output data here
   switch (required_protocol) {
     case PROTO_PXX:
-      modulePulsesData[port].pxx.setupFrame(port);
+      setupPulsesPXX(port);
       scheduleNextMixerCalculation(port, PXX_PERIOD);
       break;
 

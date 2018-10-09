@@ -125,11 +125,20 @@ set(FIRMWARE_SRC
   ${COOS_DIR}/portable/GCC/port.c
   ${COOS_DIR}/portable/arch.c
   )
+
 set(PULSES_SRC
   ${PULSES_SRC}
   pulses_arm.cpp
   ppm_arm.cpp
   pxx.cpp
+  pxx1.cpp
   dsm2_arm.cpp
   sbus_arm.cpp
   )
+
+if(PXX2)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    pxx2.cpp
+    )
+endif()

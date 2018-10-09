@@ -47,7 +47,7 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void initFrame()
     {
-      ptr = data;
+      Pxx2Transport::initBuffer();
     }
 };
 

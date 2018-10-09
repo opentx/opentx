@@ -107,3 +107,11 @@ void disable_crossfire(uint32_t port)
     extmoduleStop();
   }
 }
+
+
+void disable_pxx2(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    extmoduleStop();
+  }
+}

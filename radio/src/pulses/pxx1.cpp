@@ -57,7 +57,7 @@ void Pxx1Pulses<PxxTransport>::add8ChannelsFrame(uint8_t port, uint8_t sendUpper
 template <class PxxTransport>
 void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t port)
 {
-  PxxPulses<PxxTransport>::initFrame();
+  PxxTransport::initBuffer();
 
 #if defined(PXX_FREQUENCY_HIGH)
   add8ChannelsFrame(port, 0);
@@ -75,3 +75,5 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t port)
 }
 
 template class Pxx1Pulses<StandardPxxTransport<PwmPxxBitTransport> >;
+template class Pxx1Pulses<StandardPxxTransport<SerialPxxBitTransport> >;
+template class Pxx1Pulses<UartPxxTransport>;

@@ -21,18 +21,13 @@
 #ifndef _PULSES_ARM_H_
 #define _PULSES_ARM_H_
 
+#include "pulses/pxx2.h"
+#include "pulses/pxx1.h"
+
 #if NUM_MODULES == 2
   #define MODULES_INIT(...)            __VA_ARGS__, __VA_ARGS__
 #else
   #define MODULES_INIT(...)            __VA_ARGS__
-#endif
-
-#if defined(PCBX12S) && PCBREV < 13
-  #define pulse_duration_t             uint32_t
-  #define trainer_pulse_duration_t     uint16_t
-#else
-  #define pulse_duration_t             uint16_t
-  #define trainer_pulse_duration_t     uint16_t
 #endif
 
 extern uint8_t s_current_protocol[NUM_MODULES];
@@ -43,18 +38,6 @@ template<class T> struct PpmPulsesData {
   T pulses[20];
   T * ptr;
 };
-
-#if defined(PPM_PIN_SERIAL)
-PACK(struct PxxSerialPulsesData {
-  uint8_t  pulses[64];
-  uint8_t  * ptr;
-  uint16_t pcmValue;
-  uint16_t pcmCrc;
-  uint32_t pcmOnesCount;
-  uint16_t serialByte;
-  uint16_t serialBitCount;
-});
-#endif
 
 #if defined(PPM_PIN_SERIAL)
 PACK(struct Dsm2SerialPulsesData {
@@ -74,15 +57,6 @@ PACK(struct Dsm2TimerPulsesData {
 });
 #endif
 
-#if defined(INTMODULE_USART) || defined(EXTMODULE_USART) || defined(PXX2)
-PACK(struct PxxUartPulsesData {
-  uint8_t  pulses[64];
-  uint8_t  * ptr;
-  uint16_t pcmCrc;
-  uint16_t _alignment;
-});
-#endif
-
 #define PPM_PERIOD_HALF_US(module)   ((g_model.moduleData[module].ppm.frameLength * 5 + 225) * 200) /*half us*/
 #define PPM_PERIOD(module)           (PPM_PERIOD_HALF_US(module) / 2000) /*ms*/
 #define DSM2_BAUDRATE                125000
@@ -93,48 +67,22 @@ PACK(struct PxxUartPulsesData {
 #define MULTIMODULE_BAUDRATE         100000
 #define MULTIMODULE_PERIOD           7 /*ms*/
 
-#if !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
-/* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
-/* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */
-/* Multimodule uses 3 bytes header + 22 channel bytes with max 11 changes per byte (8e2) + 16 bits trailer ~= 291 max pulses */
-/* Multimodule reuses some of the DSM2 function and structs since the protocols are similar enough */
-/* sbus is 1 byte header, 22 channel bytes (11bit * 16ch) + 1 byte flags */
-
-#if defined(PXX_FREQUENCY_HIGH)
-#error "Pulses array needs to be increased (PXX_FREQUENCY=HIGH)"
-#endif
-
-PACK(struct PxxTimerPulsesData {
-  pulse_duration_t pulses[200];
-  pulse_duration_t * ptr;
-  uint16_t rest;
-  uint16_t pcmCrc;
-  uint32_t pcmOnesCount;
-});
-#endif
-
-#if !defined(BOOT)
-#include "pulses/pxx2.h"
-#include "pulses/pxx1.h"
-#endif
-
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
   uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
 });
 
 union ModulePulsesData {
-#if defined(INTMODULE_USART) || defined(EXTMODULE_USART) && !defined(BOOT)
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   UartPxxPulses pxx_uart;
 #endif
-#if defined(BOOT)
-#elif defined(PPM_PIN_SERIAL)
+#if defined(PPM_PIN_SERIAL)
   SerialPxxPulses pxx;
 #elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
   PwmPxxPulses pxx;
 #endif
 
-#if defined(PXX2) && !defined(BOOT)
+#if defined(PXX2)
   Pxx2Pulses pxx2;
 #endif
 
