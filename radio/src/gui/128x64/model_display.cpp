@@ -210,7 +210,7 @@ void menuModelDisplay(event_t event)
             }
           }
           else if (attr) {
-            MOVE_CURSOR_FROM_HERE();
+            menuHorizontalPosition = 0;
           }
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
