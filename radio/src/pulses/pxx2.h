@@ -23,11 +23,29 @@
 
 #include "./pxx.h"
 
-class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
+class SportCrcMixin {
+  protected:
+    void initCrc()
+    {
+      crc = 0;
+    }
+
+    void addToCrc(uint8_t byte)
+    {
+      crc += byte; // 0-1FF
+      crc += crc >> 8; // 0-100
+      crc &= 0x00ff;
+    }
+
+    uint16_t crc;
+};
+
+
+class Pxx2Transport: public DataBuffer<uint8_t, 64>, public SportCrcMixin {
   protected:
     void addByte(uint8_t byte)
     {
-      PxxCrcMixin::addToCrc(byte);
+      SportCrcMixin::addToCrc(byte);
       *ptr++ = byte;
     }
 
