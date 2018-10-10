@@ -62,7 +62,7 @@ class PxxCrcMixin {
       crc = (crc << 8) ^ (CRCTable[((crc >> 8) ^ byte) & 0xFF]);
     }
 
-    uint8_t crc;
+    uint16_t crc;
     static const uint16_t CRCTable[];
 };
 
