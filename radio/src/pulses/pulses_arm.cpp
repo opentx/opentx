@@ -160,13 +160,13 @@ void setupPulses(uint8_t port)
 
 #if defined(CROSSFIRE)
       case PROTO_CROSSFIRE:
-        disable_crossfire(port);
+        disable_module_timer(port);
         break;
 #endif
 
 #if defined(PXX2)
       case PROTO_PXX2:
-        disable_pxx2(port);
+        disable_module_timer(port);
         break;
 #endif
 
@@ -277,7 +277,13 @@ void setupPulses(uint8_t port)
 
 #if defined(CROSSFIRE)
       case PROTO_CROSSFIRE:
-        init_crossfire(port);
+        init_module_timer(port, CROSSFIRE_PERIOD, true);
+        break;
+#endif
+
+#if defined(PXX2)
+      case PROTO_PXX2:
+        init_module_timer(port, PXX2_PERIOD, true);
         break;
 #endif
 

@@ -188,10 +188,8 @@ void init_pxx( uint32_t module_index);
 void disable_pxx( uint32_t module_index);
 void init_serial( uint32_t module_index, uint32_t baudrate, uint32_t period);
 void disable_serial( uint32_t module_index);
-void init_crossfire( uint32_t module_index);
-void disable_crossfire( uint32_t module_index);
-void init_pxx2( uint32_t module_index);
-void disable_pxx2( uint32_t module_index);
+void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
+void disable_module_timer( uint32_t module_index);
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerMode == TRAINER_MODE_SLAVE)
