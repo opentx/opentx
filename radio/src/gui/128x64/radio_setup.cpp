@@ -571,9 +571,7 @@ void menuRadioSetup(event_t event)
           resumePulses();
           clearKeyEvents();
         }
-#if defined(ROTARY_ENCODER_NAVIGATION)
         MOVE_CURSOR_FROM_HERE();
-#endif
         break;
     }
   }
