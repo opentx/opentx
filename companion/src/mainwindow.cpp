@@ -53,6 +53,7 @@
 #include <QtGui>
 #include <QFileInfo>
 #include <QDesktopServices>
+#include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkProxyFactory>
 #include <QNetworkReply>
@@ -129,7 +130,10 @@ MainWindow::MainWindow():
   else {
     if (!g.previousVersion().isEmpty())
       g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
-    QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+    if (checkProfileRadioExists(g.sessionId()))
+      QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+    else
+      g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
   }
   QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
 
@@ -195,39 +199,21 @@ void MainWindow::initWindowOptions()
 
 void MainWindow::displayWarnings()
 {
-  using namespace AppMessages;
-  static uint shownMsgs = 0;
-  int showMsgs = g.warningId();
-  int msgId;
-  QString infoTxt;
-
-  if ((showMsgs & MSG_WELCOME) && !(shownMsgs & MSG_WELCOME)) {
-    infoTxt = CPN_STR_MSG_WELCOME.arg(VERSION);
-    msgId = MSG_WELCOME;
+  static int shownMsgs = 0;
+  const int showMsgs = g.warningId();
+  int msgId = 0;
+  for (int i = 1; i < AppMessages::MSG_ENUM_END; i <<= 1) {
+    if ((showMsgs & i) && !(shownMsgs & i)) {
+      msgId = i;
+      break;
+    }
   }
-  else if ((showMsgs & MSG_UPGRADED) && !(shownMsgs & MSG_UPGRADED)) {
-    infoTxt = CPN_STR_MSG_UPGRADED.arg(VERSION);
-    msgId = MSG_UPGRADED;
-  }
-  else {
+  if (!msgId)
     return;
-  }
-
-  QMessageBox msgBox(this);
-  msgBox.setWindowTitle(CPN_STR_APP_NAME);
-  msgBox.setIcon(QMessageBox::Information);
-  msgBox.setStandardButtons(QMessageBox::Ok);
-  msgBox.setInformativeText(infoTxt);
-  QCheckBox * cb = new QCheckBox(tr("Show this message again at next startup?"), &msgBox);
-  msgBox.setCheckBox(cb);
-
-  msgBox.exec();
-
+  AppMessages::displayMessage(msgId, this);
   shownMsgs |= msgId;
-  if (!cb->isChecked())
-    g.warningId(showMsgs & ~msgId);
-
-  displayWarnings();  // in case more warnings need showing
+  if (shownMsgs != showMsgs)
+    displayWarnings();  // in case more warnings need showing
 }
 
 void MainWindow::doAutoUpdates()
@@ -773,12 +759,21 @@ void MainWindow::openRecentFile()
   }
 }
 
+bool MainWindow::checkProfileRadioExists(int profId)
+{
+  const QString profType = g.getProfile(profId).fwType();
+  return (Firmware::getFirmwareForId(profType)->getFirmwareBase()->getId() == profType.section('-', 0, 1));
+}
+
 bool MainWindow::loadProfileId(const unsigned pid)  // TODO Load all variables - Also HW!
 {
   if (pid >= MAX_PROFILES)
     return false;
 
-  Firmware * newFw = Firmware::getFirmwareForId(g.profile[pid].fwType());
+  Firmware * newFw = Firmware::getFirmwareForId(g.getProfile(pid).fwType());
+  // warn if the selected profile doesn't exist
+  if (!checkProfileRadioExists(pid))
+    AppMessages::displayMessage(AppMessages::MSG_NO_RADIO_TYPE, this);
   // warn if we're switching between incompatible board types and any files have been modified
   if (!Boards::isBoardCompatible(Firmware::getCurrentVariant()->getBoard(), newFw->getBoard()) && anyChildrenDirty()) {
     if (QMessageBox::question(this, CPN_STR_APP_NAME,
@@ -1628,6 +1623,7 @@ int MainWindow::newProfile(bool loadProfile)
 
   g.profile[i].init();
   g.profile[i].name(tr("New Radio"));
+  g.profile[i].fwType(Firmware::getDefaultVariant()->getId());
 
   if (loadProfile) {
     if (loadProfileId(i))
