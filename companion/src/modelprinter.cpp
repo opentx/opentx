@@ -277,38 +277,16 @@ QString ModelPrinter::printHeliSwashType ()
 QString ModelPrinter::printCenterBeep()
 {
   QStringList strl;
-  if (model.beepANACenter & 0x01)
-    strl << tr("Rudder");
-  if (model.beepANACenter & 0x02)
-    strl << tr("Elevator");
-  if (model.beepANACenter & 0x04)
-    strl << tr("Throttle");
-  if (model.beepANACenter & 0x08)
-    strl << tr("Aileron");
-  if (IS_HORUS(firmware->getBoard())) {
-    // TODO
-    qDebug() << "ModelPrinter::printCenterBeep() TODO";
+  Board::Type board = firmware->getBoard();
+  int analogs = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders);
+
+  for (int i=0; i < analogs + firmware->getCapability(RotaryEncoders); i++) {
+    RawSource src((i < analogs) ? SOURCE_TYPE_STICK : SOURCE_TYPE_ROTARY_ENCODER, (i < analogs) ? i : analogs - i);
+    if (model.beepANACenter & (0x01 << i)) {
+      strl << src.toString(&model, &generalSettings);
+    }
   }
-  else if (IS_TARANIS(firmware->getBoard())) {
-    if (model.beepANACenter & 0x10)
-      strl << "S1";
-    if (model.beepANACenter & 0x20)
-      strl << "S2";
-    if (model.beepANACenter & 0x40)
-      strl << "S3";
-    if (model.beepANACenter & 0x80)
-      strl << "LS";
-    if (model.beepANACenter & 0x100)
-      strl << "RS";
-  }
-  else {
-    if (model.beepANACenter & 0x10)
-      strl << "P1";
-    if (model.beepANACenter & 0x20)
-      strl << "P2";
-    if (model.beepANACenter & 0x40)
-      strl << "P3";
-  }
+
   return (strl.isEmpty() ? tr("None") : strl.join(" "));
 }
 
