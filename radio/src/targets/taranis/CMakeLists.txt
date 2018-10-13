@@ -82,7 +82,7 @@ elseif(PCB STREQUAL JUMPERT12)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
-  set(LUA_EXPORT lua_export_x7)
+  set(LUA_EXPORT lua_export_jumpert12)
   set(FLAVOUR jumpert12)
   add_definitions(-DPCBJUMPERT12 -DSOFTWARE_VOLUME)
   add_definitions(-DEEPROM_VARIANT=0x4000)
