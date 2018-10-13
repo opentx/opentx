@@ -1123,6 +1123,9 @@
 #elif defined(PCBXLITE)
 #define TR_EEBACKUP                    "\001[ENT. Long]: Backup"
 #define TR_FACTORYRESET                "\001[\300ENT. Long]: Fact. reset"
+#elif defined(PCBJUMPERT12)
+#define TR_EEBACKUP                    TR("\001[ENTER Long]: Backup", "\012[ENTER Long]: EEPROM backup")
+#define TR_FACTORYRESET                TR("\001[UP Long]: Factory reset", "\012[UP Long]: Factory reset")
 #else
 #define TR_EEBACKUP                    TR("\001[ENTER Long]: Backup", "\012[ENTER Long]: EEPROM backup")
 #define TR_FACTORYRESET                TR("\001[MENU Long]: Fact. reset", "\012[MENU Long]: Factory reset")

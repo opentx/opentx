@@ -449,7 +449,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
     checkIncDec_Ret = 0;
   }
 
-#if (defined(PCBXLITE)||defined(PCBJUMPERT12))
+#if (defined(PCBXLITE))
   if (i_flags & INCDEC_SOURCE) {
     if (event == EVT_KEY_LONG(KEY_ENTER) && !IS_SHIFT_PRESSED()) {
       killEvents(event);
@@ -460,19 +460,19 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
           POPUP_MENU_ADD_ITEM(STR_MENU_INPUTS);
         }
       }
-#if defined(LUA_MODEL_SCRIPTS)
+   #if defined(LUA_MODEL_SCRIPTS)
       if (i_min <= MIXSRC_FIRST_LUA && i_max >= MIXSRC_FIRST_LUA) {
         if (getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable) != MIXSRC_NONE) {
           POPUP_MENU_ADD_ITEM(STR_MENU_LUA);
         }
       }
-#endif
+   #endif
       if (i_min <= MIXSRC_FIRST_STICK && i_max >= MIXSRC_FIRST_STICK)      POPUP_MENU_ADD_ITEM(STR_MENU_STICKS);
       if (i_min <= MIXSRC_FIRST_POT && i_max >= MIXSRC_FIRST_POT)          POPUP_MENU_ADD_ITEM(STR_MENU_POTS);
       if (i_min <= MIXSRC_MAX && i_max >= MIXSRC_MAX)                      POPUP_MENU_ADD_ITEM(STR_MENU_MAX);
-#if defined(HELI)
+   #if defined(HELI)
       if (i_min <= MIXSRC_FIRST_HELI && i_max >= MIXSRC_FIRST_HELI)        POPUP_MENU_ADD_ITEM(STR_MENU_HELI);
-#endif
+   #endif
       if (i_min <= MIXSRC_FIRST_TRIM && i_max >= MIXSRC_FIRST_TRIM)        POPUP_MENU_ADD_ITEM(STR_MENU_TRIMS);
       if (i_min <= MIXSRC_FIRST_SWITCH && i_max >= MIXSRC_FIRST_SWITCH)    POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
       if (i_min <= MIXSRC_FIRST_TRAINER && i_max >= MIXSRC_FIRST_TRAINER)  POPUP_MENU_ADD_ITEM(STR_MENU_TRAINER);

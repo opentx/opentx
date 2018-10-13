@@ -58,6 +58,15 @@ void menuRadioVersion(event_t event)
       eepromBackup();
     }
   }
+#elif defined(PCBJUMPERT12)
+  if (event == EVT_KEY_LONG(KEY_UP)) {
+      POPUP_CONFIRMATION(STR_CONFIRMRESET);
+  }
+  else
+  if (event == EVT_KEY_LONG(KEY_ENTER))
+  {
+      eepromBackup();
+  }
 #else
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     eepromBackup();
