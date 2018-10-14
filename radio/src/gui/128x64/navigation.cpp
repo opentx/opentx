@@ -27,14 +27,12 @@ uint8_t menuCalibrationState;
 vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 
-
-
 #if defined(NAVIGATION_POT1)
-  int16_t p1valdiff;
+int16_t p1valdiff;
 #endif
 
 #if defined(NAVIGATION_POT2)
-  int8_t p2valdiff;
+int8_t p2valdiff;
 #endif
 
 int8_t  checkIncDec_Ret;
@@ -49,15 +47,15 @@ int8_t  checkIncDec_Ret;
 // set to min
 #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & ((1<<KEY_SHIFT) + (1<<KEY_LEFT))) == ((1<<KEY_SHIFT) + (1<<KEY_LEFT)))
 #elif defined(PCBX7)
-  #define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
-  #define DBLKEYS_PRESSED_UP_DWN(in)     (false)
-  #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
-  #define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
+#define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
+#define DBLKEYS_PRESSED_UP_DWN(in)     (false)
+#define DBLKEYS_PRESSED_RGT_UP(in)     (false)
+#define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
 #else
-  #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
-  #define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
-  #define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
-  #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
+#define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
+#define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
+#define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
+#define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 #endif
 
 #if defined(CPUARM)
@@ -125,7 +123,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 {
   int newval = val;
 
- #if 0 // TODO ? defined(DBLKEYS)
+#if 0 // TODO ? defined(DBLKEYS)
   uint32_t in = KEYS_PRESSED();
   if (!(i_flags & NO_DBLKEYS) && (EVT_KEY_MASK(event))) {
     bool dblkey = true;
@@ -165,7 +163,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
       event = 0;
     }
   }
- #endif
+#endif
 
   if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
     newval += min<int>(rotencSpeed, i_max-val);
@@ -193,11 +191,11 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
     newval = !val;
   }
 
-  #if defined(AUTOSWITCH)
-    if (i_flags & INCDEC_SWITCH) {
-      newval = checkIncDecMovedSwitch(newval);
-    }
-  #endif
+#if defined(AUTOSWITCH)
+  if (i_flags & INCDEC_SWITCH) {
+    newval = checkIncDecMovedSwitch(newval);
+  }
+#endif
 
   #if defined(AUTOSOURCE)
     if (i_flags & INCDEC_SOURCE) {
@@ -236,21 +234,20 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
           POPUP_MENU_ADD_ITEM(STR_MENU_INPUTS);
         }
       }
-
-    #if defined(LUA_MODEL_SCRIPTS)
+#if defined(LUA_MODEL_SCRIPTS)
       if (i_min <= MIXSRC_FIRST_LUA && i_max >= MIXSRC_FIRST_LUA) {
         if (getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable) != MIXSRC_NONE) {
           POPUP_MENU_ADD_ITEM(STR_MENU_LUA);
         }
       }
-    #endif
+#endif
 
       if (i_min <= MIXSRC_FIRST_STICK && i_max >= MIXSRC_FIRST_STICK)      POPUP_MENU_ADD_ITEM(STR_MENU_STICKS);
       if (i_min <= MIXSRC_FIRST_POT && i_max >= MIXSRC_FIRST_POT)          POPUP_MENU_ADD_ITEM(STR_MENU_POTS);
       if (i_min <= MIXSRC_MAX && i_max >= MIXSRC_MAX)                      POPUP_MENU_ADD_ITEM(STR_MENU_MAX);
-    #if defined(HELI)
+#if defined(HELI)
       if (i_min <= MIXSRC_FIRST_HELI && i_max >= MIXSRC_FIRST_HELI)        POPUP_MENU_ADD_ITEM(STR_MENU_HELI);
-    #endif
+#endif
       if (i_min <= MIXSRC_FIRST_TRIM && i_max >= MIXSRC_FIRST_TRIM)        POPUP_MENU_ADD_ITEM(STR_MENU_TRIMS);
       if (i_min <= MIXSRC_FIRST_SWITCH && i_max >= MIXSRC_FIRST_SWITCH)    POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
       if (i_min <= MIXSRC_FIRST_TRAINER && i_max >= MIXSRC_FIRST_TRAINER)  POPUP_MENU_ADD_ITEM(STR_MENU_TRAINER);
@@ -452,19 +449,19 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
           POPUP_MENU_ADD_ITEM(STR_MENU_INPUTS);
         }
       }
-   #if defined(LUA_MODEL_SCRIPTS)
+#if defined(LUA_MODEL_SCRIPTS)
       if (i_min <= MIXSRC_FIRST_LUA && i_max >= MIXSRC_FIRST_LUA) {
         if (getFirstAvailable(MIXSRC_FIRST_LUA, MIXSRC_LAST_LUA, isSourceAvailable) != MIXSRC_NONE) {
           POPUP_MENU_ADD_ITEM(STR_MENU_LUA);
         }
       }
-   #endif
+#endif
       if (i_min <= MIXSRC_FIRST_STICK && i_max >= MIXSRC_FIRST_STICK)      POPUP_MENU_ADD_ITEM(STR_MENU_STICKS);
       if (i_min <= MIXSRC_FIRST_POT && i_max >= MIXSRC_FIRST_POT)          POPUP_MENU_ADD_ITEM(STR_MENU_POTS);
       if (i_min <= MIXSRC_MAX && i_max >= MIXSRC_MAX)                      POPUP_MENU_ADD_ITEM(STR_MENU_MAX);
-   #if defined(HELI)
+#if defined(HELI)
       if (i_min <= MIXSRC_FIRST_HELI && i_max >= MIXSRC_FIRST_HELI)        POPUP_MENU_ADD_ITEM(STR_MENU_HELI);
-   #endif
+#endif
       if (i_min <= MIXSRC_FIRST_TRIM && i_max >= MIXSRC_FIRST_TRIM)        POPUP_MENU_ADD_ITEM(STR_MENU_TRIMS);
       if (i_min <= MIXSRC_FIRST_SWITCH && i_max >= MIXSRC_FIRST_SWITCH)    POPUP_MENU_ADD_ITEM(STR_MENU_SWITCHES);
       if (i_min <= MIXSRC_FIRST_TRAINER && i_max >= MIXSRC_FIRST_TRAINER)  POPUP_MENU_ADD_ITEM(STR_MENU_TRAINER);
@@ -654,11 +651,11 @@ tmr10ms_t menuEntryTime;
 #endif
 
 #if defined(PCBX7)
-  #define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
-  #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
-  #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-  #define MENU_FIRST_LINE_EDIT           (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
-  #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
+#define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
+#define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
+#define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
+#define MENU_FIRST_LINE_EDIT           (menuTab ? (MAXCOL((uint16_t)0) >= HIDDEN_ROW ? (MAXCOL((uint16_t)1) >= HIDDEN_ROW ? 2 : 1) : 0) : 0)
+#define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 
   void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const pm_uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount)
   {
