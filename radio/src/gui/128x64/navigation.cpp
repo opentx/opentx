@@ -53,11 +53,6 @@ int8_t  checkIncDec_Ret;
   #define DBLKEYS_PRESSED_UP_DWN(in)     (false)
   #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
   #define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
-#elif defined(PCBJUMPERT12)
-  #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
-  #define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
-  #define DBLKEYS_PRESSED_RGT_UP(in)     ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))  == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_UP))
-  #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_LEFT + KEYS_GPIO_PIN_DOWN))
 #else
   #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
   #define DBLKEYS_PRESSED_UP_DWN(in)     ((in & (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN)) == (KEYS_GPIO_PIN_UP + KEYS_GPIO_PIN_DOWN))
@@ -309,9 +304,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   }
   return newval;
 }
-
- // PCBJUMPERT12
- //END PCBJUMPERT12
 
 #else
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
@@ -903,11 +895,8 @@ tmr10ms_t menuEntryTime;
   menuHorizontalPosition = l_posHorz;
 }// end PCBX7
 
- // PCBJUMPERT12
- // end PCBJUMPERT12
 #else
 
-//schumixmd
 #if defined(PCBXLITE) || defined(PCBJUMPERT12)
   #define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
   #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
