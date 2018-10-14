@@ -241,7 +241,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
         }
       }
 #endif
-
       if (i_min <= MIXSRC_FIRST_STICK && i_max >= MIXSRC_FIRST_STICK)      POPUP_MENU_ADD_ITEM(STR_MENU_STICKS);
       if (i_min <= MIXSRC_FIRST_POT && i_max >= MIXSRC_FIRST_POT)          POPUP_MENU_ADD_ITEM(STR_MENU_POTS);
       if (i_min <= MIXSRC_MAX && i_max >= MIXSRC_MAX)                      POPUP_MENU_ADD_ITEM(STR_MENU_MAX);
@@ -301,7 +300,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   }
   return newval;
 }
-
 #else
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
