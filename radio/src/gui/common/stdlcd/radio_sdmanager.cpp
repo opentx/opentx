@@ -205,18 +205,7 @@ void menuRadioSdManager(event_t _event)
       menuVerticalOffset = reusableBuffer.sdmanager.offset;
       break;
 
-#if defined(PCBX9) || defined(PCBX7) // TODO NO_MENU_KEY
-    case EVT_KEY_LONG(KEY_MENU):
-      if (!READ_ONLY() && s_editMode == 0) {
-        killEvents(_event);
-        POPUP_MENU_ADD_ITEM(STR_SD_INFO);
-        POPUP_MENU_ADD_ITEM(STR_SD_FORMAT);
-        POPUP_MENU_START(onSdManagerMenu);
-      }
-      break;
-#endif
-
-#if defined(PCBJUMPERT12) // TODO NO_MENU_KEY
+#if defined(PCBX9) || defined(PCBX7) || defined(PCJUMPERT12) // TODO NO_MENU_KEY
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY() && s_editMode == 0) {
         killEvents(_event);

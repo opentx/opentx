@@ -97,48 +97,7 @@ uint8_t isBacklightEnabled()
 {
   return (BACKLIGHT_TIMER->CCR4 != 0 || BACKLIGHT_TIMER->CCR2 != 0);
 }
-#elif defined(PCBX7) || defined(PCBXLITE)
-void backlightInit()
-{
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = BACKLIGHT_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_NOPULL;
-  GPIO_Init(BACKLIGHT_GPIO, &GPIO_InitStructure);
-  GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource, BACKLIGHT_GPIO_AF);
-#if defined(BACKLIGHT_BDTR) // TODO perhaps it can be always done
-  BACKLIGHT_TIMER->BDTR = BACKLIGHT_BDTR; // Enable outputs
-#endif
-  BACKLIGHT_TIMER->ARR = 100;
-  BACKLIGHT_TIMER->PSC = BACKLIGHT_TIMER_FREQ / 50000 - 1; // 20us * 100 = 2ms => 500Hz
-  #if defined(BACKLIGHT_CCMR1)
-    BACKLIGHT_TIMER->CCMR1 = BACKLIGHT_CCMR1;
-  #elif defined(BACKLIGHT_CCMR2)
-    BACKLIGHT_TIMER->CCMR2 = BACKLIGHT_CCMR2;
-  #endif
-  BACKLIGHT_TIMER->CCER = BACKLIGHT_CCER;
-  BACKLIGHT_COUNTER_REGISTER = 100;
-  BACKLIGHT_TIMER->EGR = 0;
-  BACKLIGHT_TIMER->CR1 = TIM_CR1_CEN; // Counter enable
-}
-
-void backlightEnable(uint8_t level)
-{
-  BACKLIGHT_COUNTER_REGISTER = 100 - level;
-}
-
-void backlightDisable()
-{
-  BACKLIGHT_COUNTER_REGISTER = 0;
-}
-
-uint8_t isBacklightEnabled()
-{
-  return BACKLIGHT_COUNTER_REGISTER != 0;
-}
-#elif defined(PCBJUMPERT12)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBJUMPERT12)
 void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;

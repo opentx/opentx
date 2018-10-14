@@ -520,15 +520,12 @@ void incrTelemetryScreen()
 }
 #endif
 
-#if defined(PCBXLITE)
+#if (defined(PCBXLITE) || defined(PCBJUMPERT12))
   #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_LEFT)
   #define EVT_KEY_NEXT_VIEW              EVT_KEY_LONG(KEY_RIGHT)
 #elif defined(PCBX7)
   #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
   #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
-#elif defined(PCBJUMPERT12)
-  #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_LEFT)
-  #define EVT_KEY_NEXT_VIEW              EVT_KEY_LONG(KEY_RIGHT)
 #else
   #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_FIRST(KEY_UP)
   #define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_DOWN)

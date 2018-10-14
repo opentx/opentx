@@ -1071,22 +1071,7 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
-#if defined(PCBX7) || defined(PCBXLITE)
-  CHKSIZE(MixData, 20);
-  CHKSIZE(ExpoData, 17);
-  CHKSIZE(LimitData, 11);
-  CHKSIZE(LogicalSwitchData, 9);
-  CHKSIZE(CustomFunctionData, 11);
-  CHKSIZE(FlightModeData, 28 + 2*NUM_TRIMS);
-  CHKSIZE(TimerData, 11);
-  CHKSIZE(SwashRingData, 8);
-  CHKSIZE(FrSkyBarData, 6);
-  CHKSIZE(FrSkyLineData, 4);
-  CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 104);
-  CHKSIZE(ModelHeader, 12);
-  CHKSIZE(CurveData, 4);
-#elif defined(PCBJUMPERT12)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBJUMPERT12)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
@@ -1203,10 +1188,7 @@ static inline void check_struct()
 #if defined(PCBXLITE)
   CHKSIZE(RadioData, 844);
   CHKSIZE(ModelData, 6025);
-#elif defined(PCBX7)
-  CHKSIZE(RadioData, 850);
-  CHKSIZE(ModelData, 6025);
-#elif defined(PCBJUMPERT12)
+#elif defined(PCBX7) || defined(PCBJUMPERT12)
   CHKSIZE(RadioData, 850);
   CHKSIZE(ModelData, 6025);
 #elif defined(PCBX9E)

@@ -109,6 +109,7 @@ void lcdHardwareInit()
 void lcdStart()
 { 
 #if defined(PCBJUMPERT12)
+   // Jumper has the screen inverted.
    lcdWriteCommand(0xe2); // (14) Soft reset
    lcdWriteCommand(0xa0); // Set seg
    lcdWriteCommand(0xc8); // Set com

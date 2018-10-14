@@ -413,7 +413,7 @@ void drawStatusLine();
 #if defined(PCBX7)
  #define EDIT_MODE_INIT                 0
 #elif defined(PCBJUMPERT12)
- #define EDIT_MODE_INIT                 0 //schumixmd
+ #define EDIT_MODE_INIT                 0
 #else
  #define EDIT_MODE_INIT                 -1
 #endif

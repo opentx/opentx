@@ -476,23 +476,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
             REPEAT_LAST_CURSOR_MOVE();
           }
 
-#if defined(PCBX7)
-          if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
-            CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
-            if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
-              killEvents(event);
-              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_CONSTANT)
-                POPUP_MENU_ADD_ITEM(STR_CONSTANT);
-              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_SOURCE)
-                POPUP_MENU_ADD_ITEM(STR_MIXSOURCE);
-              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_GVAR)
-                POPUP_MENU_ADD_ITEM(STR_GLOBALVAR);
-              if (CFN_GVAR_MODE(cfn) != FUNC_ADJUST_GVAR_INCDEC)
-                POPUP_MENU_ADD_ITEM(STR_INCDEC);
-              POPUP_MENU_START(onAdjustGvarSourceLongEnterPress);
-              s_editMode = EDIT_MODIFY_FIELD;
-            }
-#elif defined(PCBJUMPERT12)
+#if defined(PCBX7) || defined(PCBJUMPERT12)
           if (active || event==EVT_KEY_LONG(KEY_ENTER)) {
             CFN_PARAM(cfn) = CHECK_INCDEC_PARAM(event, val_displayed, val_min, val_max);
             if (func == FUNC_ADJUST_GVAR && attr && event==EVT_KEY_LONG(KEY_ENTER)) {
@@ -549,12 +533,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           break;
       }
     }
-#if defined(PCBX7)
-    if (sub==k && menuHorizontalPosition<0 && CFN_SWITCH(cfn)) {
-      lcdInvertLine(i+1);
-    }
-#endif
-#if defined(PCBJUMPERT12)
+#if defined(PCBX7) || defined(PCBJUMPERT12)
     if (sub==k && menuHorizontalPosition<0 && CFN_SWITCH(cfn)) {
       lcdInvertLine(i+1);
     }
@@ -564,14 +543,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
 
 void menuModelSpecialFunctions(event_t event)
 {
-#if defined(PCBX7)
-  const CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
-  if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
-    menuHorizontalPosition = 0;
-  }
-#endif
-
-#if defined(PCBJUMPERT12)
+#if defined(PCBX7) || defined(PCBJUMPERT12)
   const CustomFunctionData * cfn = &g_model.customFn[menuVerticalPosition];
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition < 0 && event==EVT_KEY_BREAK(KEY_ENTER)) {
     menuHorizontalPosition = 0;
@@ -583,15 +555,10 @@ void menuModelSpecialFunctions(event_t event)
 
   menuSpecialFunctions(event, g_model.customFn, &modelFunctionsContext);
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBJUMPERT12)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
     menuHorizontalPosition = -1;
   }
 #endif
 
-#if defined(PCBJUMPERT12)
-  if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
-    menuHorizontalPosition = -1;
-  }
-#endif
 }

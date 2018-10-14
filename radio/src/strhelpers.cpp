@@ -269,7 +269,8 @@ char * getSwitchString(char * dest, swsrc_t idx)
         *s++ = 'F';
       else
         *s++ = 'A'+swinfo.quot;
-#elif defined(PCBJUMPERT12) //schumixmd
+#elif defined(PCBJUMPERT12)
+    // Jumper T12 has switches G and H instead of EF, or FH
       if (swinfo.quot == 5)
         *s++ = 'H';
       else if (swinfo.quot == 4)

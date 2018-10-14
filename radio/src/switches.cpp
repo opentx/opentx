@@ -155,7 +155,7 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(5, SW_SG);
 #endif
 
-  // schumixmd to be checked
+  // TODO is this correct?
 #if defined(PCBJUMPERT12)
   CHECK_3POS(4,SW_SG);
 #endif

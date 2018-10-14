@@ -640,8 +640,19 @@ void menuMainView(event_t event)
   }
   else {
     // Timer2
-    // schumixmd Draw timer2 inline with timer1. original value 87.
-    drawTimerWithMode(125, 5*FH, 1);
+
+   // TODO: to have all 3 timers on screen the font has to be smaller
+   #if defined(PCBJUMPERT12)
+     // Draw timer2 inline with timer1.
+        drawTimerWithMode(125, 5*FH, 1);
+
+     // #if TIMERS > 2
+     //    drawTimerWithMode(67, 5*FH, 2);
+     // #endif
+   #else
+
+      drawTimerWithMode(87, 5*FH, 1);
+   #endif
   }
 
   // And ! in case of unexpected shutdown

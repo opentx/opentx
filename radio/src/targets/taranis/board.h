@@ -278,7 +278,7 @@ enum EnumKeys
   #define KEY_DOWN                      KEY_PLUS
   #define KEY_RIGHT                     KEY_PLUS
   #define KEY_LEFT                      KEY_MINUS
-#elif defined(PCBXLITE) || defined (PCBJUMPERT12) // schumixmd to return
+#elif defined(PCBXLITE) || defined (PCBJUMPERT12)
   #define KEY_PLUS                      KEY_RIGHT
   #define KEY_MINUS                     KEY_LEFT
 #else
@@ -431,7 +431,7 @@ enum Analogs {
   POT_FIRST,
   POT1 = POT_FIRST,
   POT2,
-#if defined(PCBX7) || defined(PCBXLITE) || defined (PCBJUMPERT12)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBJUMPERT12)
   POT_LAST = POT2,
 #elif defined(PCBX9E)
   POT3,
@@ -513,7 +513,7 @@ uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
 #endif
 #if defined(PCBXLITE)
   #define BATT_SCALE                    131
-#elif defined(PCBX7) || defined (PCBJUMPERT12)
+#elif defined(PCBX7) || defined(PCBJUMPERT12)
   #define BATT_SCALE                    123
 #else
   #define BATT_SCALE                    150

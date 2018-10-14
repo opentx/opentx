@@ -34,13 +34,7 @@ void menuRadioSpecialFunctions(event_t event)
 
   menuSpecialFunctions(event, g_eeGeneral.customFn, &globalFunctionsContext);
 
-#if defined(PCBX7)
-  if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
-    menuHorizontalPosition = -1;
-  }
-#endif
-
-#if defined(PCBJUMPERT12)
+#if defined(PCBX7) || defined(PCBJUMPERT12)
   if (!CFN_SWITCH(cfn) && menuHorizontalPosition == 0 && s_editMode <= 0) {
     menuHorizontalPosition = -1;
   }

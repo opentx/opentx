@@ -58,8 +58,7 @@ void menuRadioDiagKeys(event_t event)
         displayKeyState(5*FW+4, y, KEY_MENU+(TRM_BASE-1-i));
       }
 #elif defined(PCBJUMPERT12)
-      y = MENU_HEADER_HEIGHT + FH*i;
-        // hide PLUS and MINUS virtual buttons
+        y = MENU_HEADER_HEIGHT + FH*i;
         lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
         displayKeyState(5*FW+2, y, KEY_MENU+(TRM_BASE-1-i));
 #elif defined(PCBXLITE)
@@ -73,7 +72,7 @@ void menuRadioDiagKeys(event_t event)
 #endif
     }
 
-    //schumixmd
+
 #if defined(PCBTARANIS)
     if (i < NUM_SWITCHES) {
       if (SWITCH_EXISTS(i)) {
