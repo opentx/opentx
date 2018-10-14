@@ -29,7 +29,6 @@
 #define EESIZE_M128                    4096
 #define EESIZE_GRUVIN9X                4096
 #define EESIZE_TARANIS                 (32*1024)
-#define EESIZE_JUMPER                  (32*1024)
 #define EESIZE_SKY9X                   (128*4096)
 #define EESIZE_9XRPRO                  (128*4096)
 #define EESIZE_MAX                     EESIZE_9XRPRO
@@ -39,7 +38,6 @@
 #define FSIZE_M128                     (128*1024)
 #define FSIZE_GRUVIN9X                 (256*1024)
 #define FSIZE_TARANIS                  (512*1024)
-#define FSIZE_JUMPER                   (512*1024)
 #define FSIZE_SKY9X                    (256*1024)
 #define FSIZE_9XRPRO                   (512*1024)
 #define FSIZE_HORUS                    (2048*1024)
