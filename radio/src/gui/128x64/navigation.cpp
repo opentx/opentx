@@ -211,10 +211,10 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
             newval = switchToMix(swtch);
           }
         }
-      #endif
+#endif
       }
     }
-  #endif
+#endif
 
   if (newval != val) {
     storageDirty(i_flags & (EE_GENERAL|EE_MODEL));
