@@ -830,6 +830,8 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   if (IS_ARM(firmware->getBoard())) {
+	ui->varioSource->setField(model.frsky.varioSource, this);
+    ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
     ui->A1GB->hide();
     ui->A2GB->hide();
     for (int i=0; i<CPN_MAX_SENSORS; ++i) {
@@ -842,6 +844,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
   else {
     ui->sensorsGB->hide();
+	ui->altimetryGB->hide();
     analogs[0] = new TelemetryAnalog(this, model.frsky.channels[0], model, generalSettings, firmware);
     ui->A1Layout->addWidget(analogs[0]);
     connect(analogs[0], SIGNAL(modified()), this, SLOT(onAnalogModified()));
@@ -849,12 +852,10 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     ui->A2Layout->addWidget(analogs[1]);
     connect(analogs[1], SIGNAL(modified()), this, SLOT(onModified()));
   }
-
-  if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
+  
+  if (IS_TARANIS_X9(firmware->getBoard())) {
     ui->voltsSource->setField(model.frsky.voltsSource, this);
     ui->altitudeSource->setField(model.frsky.altitudeSource, this);
-    ui->varioSource->setField(model.frsky.varioSource, this);
-    ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
   }
   else {
     ui->topbarGB->hide();
