@@ -1080,7 +1080,6 @@ inline void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax,
 inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
 {
   int16_t rng = abs(valMax - valMin);
-  rng = rng > GVAR_MAX ? GVAR_MAX : rng;
   valMin = -rng;
   valMax = rng;
 }
