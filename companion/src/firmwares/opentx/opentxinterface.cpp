@@ -1134,7 +1134,7 @@ void addOpenTxArm9xOptions(OpenTxFirmware * firmware, bool dblkeys = true)
   if (dblkeys)
     firmware->addOption("dblkeys", Firmware::tr("Enable resetting values by pressing up and down at the same time"));
   addOpenTxFontOptions(firmware);
-  addOpenTxRfOptions(firmware, false);
+  addOpenTxRfOptions(firmware, true);
 }
 
 void registerOpenTxFirmwares()
