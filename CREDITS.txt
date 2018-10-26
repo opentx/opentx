@@ -1448,3 +1448,4 @@ Rapid Informatics LLC
 Renaud Perriguey
 Edmond Dufresne
 Jaroslav Gazik
+Philippe Desrichard
