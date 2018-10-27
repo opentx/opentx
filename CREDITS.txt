@@ -1449,3 +1449,4 @@ Renaud Perriguey
 Edmond Dufresne
 Jaroslav Gazik
 Philippe Desrichard
+Vincent Heron
