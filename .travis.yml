@@ -21,24 +21,24 @@ env:
     # - FLAVOR=ALL
     - FLAVOR=DEFAULT
     # - FLAVOR=AVR9X
-    # - FLAVOR=9X
+    - FLAVOR=9X
     # - FLAVOR=GRUVIN9X
     # - FLAVOR=MEGA2560
     # - FLAVOR=ARM9X
     # - FLAVOR=AR9X
     # - FLAVOR=SKY9X
     # - FLAVOR=9XRPRO
-    # - FLAVOR=X7
+    - FLAVOR=X7
     - FLAVOR=JUMPERT12
-    # - FLAVOR=XLITE
-    # - FLAVOR=X9
+    - FLAVOR=XLITE
+    - FLAVOR=X9
     # - FLAVOR=X9D
     # - FLAVOR=X9D+
     # - FLAVOR=X9E
-    # - FLAVOR=HORUS
+    - FLAVOR=HORUS
     - FLAVOR=X10
     # - FLAVOR=X12Sr10
-    # - FLAVOR=X12S
+    - FLAVOR=X12S
 
 before_install:
   - sudo add-apt-repository ppa:ubuntu-sdk-team/ppa --yes
