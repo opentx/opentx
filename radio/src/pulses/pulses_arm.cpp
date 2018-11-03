@@ -20,6 +20,11 @@
 
 #include "opentx.h"
 
+#if defined(PXX2)
+#include "io/pxx2.h"
+#include "pulses/pxx2.h"
+#endif
+
 uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
 uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
@@ -56,14 +61,13 @@ uint8_t getRequiredProtocol(uint8_t port)
 #endif
 
     default:
-      port = EXTERNAL_MODULE; // ensure it's external module only
       switch (g_model.moduleData[EXTERNAL_MODULE].type) {
         case MODULE_TYPE_PPM:
           required_protocol = PROTO_PPM;
           break;
         case MODULE_TYPE_XJT:
         case MODULE_TYPE_R9M:
-          required_protocol = PROTO_PXX;
+          required_protocol = PROTO_PXX_EXTERNAL_MODULE; // either PXX or PXX2 depending on compilation options
           break;
         case MODULE_TYPE_SBUS:
           required_protocol = PROTO_SBUS;
@@ -118,6 +122,20 @@ uint8_t getRequiredProtocol(uint8_t port)
   return required_protocol;
 }
 
+void setupPulsesPXX(uint8_t port)
+{
+#if defined(INTMODULE_USART) && defined(EXTMODULE_USART)
+  modulePulsesData[port].pxx_uart.setupFrame(port);
+#elif !defined(INTMODULE_USART) && !defined(EXTMODULE_USART)
+  modulePulsesData[port].pxx.setupFrame(port);
+#else
+  if (IS_UART_MODULE(port))
+    modulePulsesData[port].pxx_uart.setupFrame(port);
+  else
+    modulePulsesData[port].pxx.setupFrame(port);
+#endif
+}
+
 void setupPulses(uint8_t port)
 {
   bool init_needed = false;
@@ -142,7 +160,13 @@ void setupPulses(uint8_t port)
 
 #if defined(CROSSFIRE)
       case PROTO_CROSSFIRE:
-        disable_crossfire(port);
+        disable_module_timer(port);
+        break;
+#endif
+
+#if defined(PXX2)
+      case PROTO_PXX2:
+        disable_module_timer(port);
         break;
 #endif
 
@@ -208,6 +232,16 @@ void setupPulses(uint8_t port)
       break;
 #endif
 
+#if defined(PXX2)
+    case PROTO_PXX2:
+      if (telemetryProtocol == PROTOCOL_FRSKY_SPORT && !init_needed) {
+        modulePulsesData[port].pxx2.setupFrame(port);
+        sportSendBuffer(modulePulsesData[port].pxx2.getData(), modulePulsesData[port].pxx2.getSize());
+      }
+      scheduleNextMixerCalculation(port, PXX2_PERIOD);
+      break;
+#endif
+
 #if defined(MULTIMODULE)
     case PROTO_MULTIMODULE:
       setupPulsesMultimodule(port);
@@ -243,7 +277,13 @@ void setupPulses(uint8_t port)
 
 #if defined(CROSSFIRE)
       case PROTO_CROSSFIRE:
-        init_crossfire(port);
+        init_module_timer(port, CROSSFIRE_PERIOD, true);
+        break;
+#endif
+
+#if defined(PXX2)
+      case PROTO_PXX2:
+        init_module_timer(port, PXX2_PERIOD, true);
         break;
 #endif
 

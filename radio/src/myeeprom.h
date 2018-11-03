@@ -342,9 +342,15 @@ enum Protocols {
 #endif
   PROTO_MULTIMODULE,
   PROTO_SBUS,
-  PROTO_MAX,
+  PROTO_PXX2,
   PROTO_NONE
 };
+
+#if defined(PXX2)
+#define PROTO_PXX_EXTERNAL_MODULE PROTO_PXX2
+#else
+#define PROTO_PXX_EXTERNAL_MODULE PROTO_PXX
+#endif
 
 enum XJTRFProtocols {
   RF_PROTO_OFF = -1,

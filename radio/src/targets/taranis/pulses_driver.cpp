@@ -29,11 +29,11 @@ void intmodulePxxStart(void);
 void intmodulePpmStart(void);
 #endif
 
-void extmoduleNoneStart(void);
+void extmoduleTimerStart(uint32_t period, uint8_t state);
 void extmodulePpmStart(void);
 void extmodulePxxStart(void);
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
-void extmoduleCrossfireStart(void);
+
 
 void init_pxx(uint32_t port)
 {
@@ -96,7 +96,7 @@ void init_no_pulses(uint32_t port)
   if (port == INTERNAL_MODULE)
     intmoduleNoneStart();
   else
-    extmoduleNoneStart();
+    extmoduleTimerStart(18, false);
 }
 
 void disable_no_pulses(uint32_t port)
@@ -107,14 +107,14 @@ void disable_no_pulses(uint32_t port)
     extmoduleStop();
 }
 
-void init_crossfire(uint32_t port)
+void init_module_timer(uint32_t port, uint32_t period, uint8_t state)
 {
   if (port == EXTERNAL_MODULE) {
-    extmoduleCrossfireStart();
+    extmoduleTimerStart(period, state);
   }
 }
 
-void disable_crossfire(uint32_t port)
+void disable_module_timer(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     extmoduleStop();

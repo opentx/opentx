@@ -47,6 +47,7 @@ option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
 option(MODULE_R9M_FLEX_FW "Add R9M options for non certified firmwwares" OFF)
+option(PXX2 "Enable PXX v2 support" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -313,7 +314,11 @@ if(NIGHTLY_BUILD_WARNING)
 endif(NIGHTLY_BUILD_WARNING)
 
 if(MODULE_R9M_FLEX_FW)
-    add_definitions(-DMODULE_R9M_FLEX_FW)
+  add_definitions(-DMODULE_R9M_FLEX_FW)
+endif()
+
+if(PXX2)
+  add_definitions(-DPXX2)
 endif()
 
 set(SRC
