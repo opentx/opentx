@@ -140,7 +140,7 @@ class StandardPxxTransport: public BitTransport, public PxxCrcMixin {
 
     void initFrame()
     {
-      BitTransport::initBuffer();
+      BitTransport::initFrame();
       ones_count = 0;
     }
 
@@ -176,6 +176,11 @@ class StandardPxxTransport: public BitTransport, public PxxCrcMixin {
 
 class UartPxxTransport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
   protected:
+    void initFrame()
+    {
+      initBuffer();
+    }
+
     void addByte(uint8_t byte)
     {
       PxxCrcMixin::addToCrc(byte);
