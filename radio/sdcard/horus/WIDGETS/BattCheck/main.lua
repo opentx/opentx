@@ -19,9 +19,10 @@
 local shadowed  = 0
 
 local options = {
-  { "Sensor", SOURCE, 0 },
-  { "Color", COLOR, WHITE },
-  { "Shadow", BOOL, 0 }
+  { "Sensor",     SOURCE, 0     },
+  { "Color",      COLOR,  WHITE },
+  { "Shadow",     BOOL,   0     },
+  { "LowestCell", BOOL,   0     }
 }
 
 -- This function is runned once at the creation of the widget
@@ -176,12 +177,29 @@ local function getRangeColor(value, gvalue, rvalue)
   end
 end
 
+local function getMainValue(mySensor, options)
+  if options.LowestCell == 1 then
+    return getCellMin(mySensor)
+  else
+    return getCellSum(mySensor)
+  end
+end
+
+local function getSecondaryValue(mySensor, options)
+  if options.LowestCell == 1 then
+    return getCellSum(mySensor)
+  else
+    return getCellMin(mySensor)
+  end
+end
+
+
 -- This size is for top bar widgets
-local function zoneTiny(zone)
+local function refreshZoneTiny(zone)
   local mySensor = getCels(zone.options.Sensor)
   local isHaveData = (type(mySensor) == "table")
   if isHaveData then
-    local myString = string.format("%2.1fV", getCellMin(mySensor))
+    local myString = string.format("%2.1fV", getMainValue(mySensor, zone.options))
     local percent = getCellPercent(getCellAvg(mySensor))
     lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y, percent.."%", RIGHT + SMLSIZE + CUSTOM_COLOR)
     lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y + 15, myString, RIGHT + SMLSIZE + CUSTOM_COLOR)
@@ -193,8 +211,8 @@ local function zoneTiny(zone)
    end
 end
 
---- Size is 160x30 1/8th
-local function zoneSmall(zone)
+--- Size is 160x32 1/8th
+local function refreshZoneSmall(zone)
   local myBatt = {["x"]=0, ["y"]=0, ["w"]=155, ["h"]=35, ["segments_w"]=25, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
   local mySensor = getCels(zone.options.Sensor)
   local isDataAvailable = (type(mySensor) == "table")
@@ -206,16 +224,13 @@ local function zoneSmall(zone)
   lcd.drawRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y, myBatt.w, myBatt.h, CUSTOM_COLOR, 2)
   lcd.drawFilledRectangle(zone.zone.x + myBatt.x + myBatt.w, zone.zone.y + myBatt.h/2 - myBatt.cath_h/2, myBatt.cath_w, myBatt.cath_h, CUSTOM_COLOR)
 
-  local mainValue =  getCellMin(mySensor)
-  local secondaryValue = getCellSum(mySensor)
-
   -- fils batt
   lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
   lcd.drawGauge(zone.zone.x+2, zone.zone.y+2, myBatt.w-4, zone.zone.h, percent, 100, CUSTOM_COLOR)
   -- write text
   if isDataAvailable then
     lcd.setColor(CUSTOM_COLOR, zone.options.Color)
-    local topLine = string.format("%2.1fV      %2.0f%%", mainValue, percent)
+    local topLine = string.format("%2.1fV      %2.0f%%", getMainValue(mySensor, zone.options), percent)
     lcd.drawText(zone.zone.x + 20, zone.zone.y +2, topLine , MIDSIZE + CUSTOM_COLOR + shadowed)
   else
     lcd.drawText(zone.zone.x + 10, zone.zone.y+10, "No Cells Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR + shadowed)
@@ -225,16 +240,17 @@ local function zoneSmall(zone)
   return
 end
 
---- Size is 180x70 1/4th
-local function zoneMedium(zone)
-  local myBatt = {["x"]=0, ["y"]=0, ["w"]=95, ["h"]=35, ["segments_w"]=15, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
+--- Size is 225x98 1/4th  (no sliders/trim)
+local function refreshZoneMedium(zone)
+  local myBatt = {["x"]=0, ["y"]=0, ["w"]=85, ["h"]=35, ["segments_w"]=15, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
   local mySensor = getCels(zone.options.Sensor)
   local isDataAvailable = (type(mySensor) == "table")
 
   lcd.setColor(CUSTOM_COLOR, zone.options.Color)
   if isDataAvailable then
+    -- draw values
     local percent = getCellPercent(getCellAvg(mySensor))
-    lcd.drawText(zone.zone.x + myBatt.w + 20, zone.zone.y, string.format("%2.1fV", getCellMin(mySensor)) , DBLSIZE + CUSTOM_COLOR + shadowed)
+    lcd.drawText(zone.zone.x + zone.zone.w, zone.zone.y, string.format("%2.1fV", getMainValue(mySensor, zone.options)) , DBLSIZE + CUSTOM_COLOR + RIGHT+ shadowed)
 
     -- fils batt
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
@@ -262,8 +278,8 @@ local function zoneMedium(zone)
   return
 end
 
---- Size is 190x150
-local function zoneLarge(zone)
+--- Size is 192x152 1/2
+local function refreshZoneLarge(zone)
   local myBatt = {["x"]=0, ["y"]=18, ["w"]=76, ["h"]=121, ["segments_h"]=30, ["color"]=WHITE, ["cath_w"]=30, ["cath_h"]=10}
   local mySensor = getCels(zone.options.Sensor)
   local isDataAvailable = (type(mySensor) == "table")
@@ -273,8 +289,8 @@ local function zoneLarge(zone)
     local percent = getCellPercent(getCellAvg(mySensor))
 
     lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y, percent.."%", RIGHT + DBLSIZE + CUSTOM_COLOR + shadowed)
-    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y+30, string.format("%2.1fV", getCellMin(mySensor)), RIGHT + DBLSIZE + CUSTOM_COLOR + shadowed)
-    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y+70, string.format("%2.1fV %2.1fS", getCellSum(mySensor), getCellCount(mySensor)), RIGHT + SMLSIZE + CUSTOM_COLOR + shadowed)
+    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y+30, string.format("%2.1fV", getMainValue(mySensor, zone.options)), RIGHT + DBLSIZE + CUSTOM_COLOR + shadowed)
+    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y+70, string.format("%2.1fV %2.1fS", getSecondaryValue(mySensor, options), getCellCount(mySensor)), RIGHT + SMLSIZE + CUSTOM_COLOR + shadowed)
     -- fils batt
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
     lcd.drawFilledRectangle(zone.zone.x + myBatt.x, zone.zone.y + myBatt.y + myBatt.h + myBatt.cath_h - math.floor(percent/100 * myBatt.h), myBatt.w, math.floor(percent/100 * myBatt.h), CUSTOM_COLOR)
@@ -300,8 +316,9 @@ local function zoneLarge(zone)
   return
 end
 
---- Size is 390x170
-local function zoneXLarge(zone)
+--- Size is 390x172 1/1
+--- Size is 460x252 1/1 (no sliders/trim/topbar)
+local function refreshZoneXLarge(zone)
   local myBatt = {["x"]=10, ["y"]=20, ["w"]=80, ["h"]=121, ["segments_h"]=30, ["color"]=WHITE, ["cath_w"]=30, ["cath_h"]=10}
   local mySensor = getCels(zone.options.Sensor)
   local isDataAvailable = (type(mySensor) == "table")
@@ -316,11 +333,8 @@ local function zoneXLarge(zone)
     lcd.setColor(CUSTOM_COLOR, zone.options.Color)
     lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y, percent.."%", RIGHT + DBLSIZE + CUSTOM_COLOR + shadowed)
 
-    local mainValue =  getCellMin(mySensor)
-    local secondaryValue = getCellSum(mySensor)
-
-    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 30,  string.format("%2.1fV", mainValue), RIGHT + DBLSIZE + CUSTOM_COLOR + shadowed)
-    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 105, string.format("%2.1fV %2.1fS", secondaryValue, getCellCount(mySensor)) , RIGHT + SMLSIZE + CUSTOM_COLOR + shadowed)
+    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 30,  string.format("%2.1fV", getMainValue(mySensor, zone.options)), RIGHT + DBLSIZE + CUSTOM_COLOR + shadowed)
+    lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y + myBatt.y + 105, string.format("%2.1fV %2.1fS", getSecondaryValue(mySensor, zone.options), getCellCount(mySensor)) , RIGHT + SMLSIZE + CUSTOM_COLOR + shadowed)
 
     -- draw cells
     local pos = {{x=111, y=38}, {x=164, y=38}, {x=217, y=38}, {x=111, y=57}, {x=164, y=57}, {x=217, y=57}}
@@ -376,11 +390,11 @@ function refresh(myZone)
   --  lcd.drawText(myZone.zone.x+2, myZone.zone.y+20, "Requires setting a Voltage Sensor", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
   --  return
   --end
-  if     myZone.zone.w  > 380 and myZone.zone.h > 165 then zoneXLarge(myZone)
-  elseif myZone.zone.w  > 180 and myZone.zone.h > 145 then zoneLarge(myZone)
-  elseif myZone.zone.w  > 170 and myZone.zone.h >  65 then zoneMedium(myZone)
-  elseif myZone.zone.w  > 150 and myZone.zone.h >  28 then zoneSmall(myZone)
-  elseif myZone.zone.w  >  65 and myZone.zone.h >  35 then zoneTiny(myZone)
+  if     myZone.zone.w  > 380 and myZone.zone.h > 165 then refreshZoneXLarge(myZone)
+  elseif myZone.zone.w  > 180 and myZone.zone.h > 145 then refreshZoneLarge(myZone)
+  elseif myZone.zone.w  > 170 and myZone.zone.h >  65 then refreshZoneMedium(myZone)
+  elseif myZone.zone.w  > 150 and myZone.zone.h >  28 then refreshZoneSmall(myZone)
+  elseif myZone.zone.w  >  65 and myZone.zone.h >  35 then refreshZoneTiny(myZone)
   end
 end
 
