@@ -197,7 +197,7 @@ end
 local function zoneSmall(zone)
   local myBatt = {["x"]=0, ["y"]=0, ["w"]=155, ["h"]=35, ["segments_w"]=25, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
   local mySensor = getCels(zone.options.Sensor)
-  local isHaveData = (type(mySensor) == "table")
+  local isDataAvailable = (type(mySensor) == "table")
 
   local percent = getCellPercent(getCellAvg(mySensor))
 
@@ -213,7 +213,7 @@ local function zoneSmall(zone)
   lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
   lcd.drawGauge(zone.zone.x+2, zone.zone.y+2, myBatt.w-4, zone.zone.h, percent, 100, CUSTOM_COLOR)
   -- write text
-  if isHaveData then
+  if isDataAvailable then
     lcd.setColor(CUSTOM_COLOR, zone.options.Color)
     local topLine = string.format("%2.1fV      %2.0f%%", mainValue, percent)
     lcd.drawText(zone.zone.x + 20, zone.zone.y +2, topLine , MIDSIZE + CUSTOM_COLOR + shadowed)
@@ -229,10 +229,10 @@ end
 local function zoneMedium(zone)
   local myBatt = {["x"]=0, ["y"]=0, ["w"]=95, ["h"]=35, ["segments_w"]=15, ["color"]=WHITE, ["cath_w"]=6, ["cath_h"]=20}
   local mySensor = getCels(zone.options.Sensor)
-  local isHaveData = (type(mySensor) == "table")
+  local isDataAvailable = (type(mySensor) == "table")
 
   lcd.setColor(CUSTOM_COLOR, zone.options.Color)
-  if isHaveData then
+  if isDataAvailable then
     local percent = getCellPercent(getCellAvg(mySensor))
     lcd.drawText(zone.zone.x + myBatt.w + 20, zone.zone.y, string.format("%2.1fV", getCellMin(mySensor)) , DBLSIZE + CUSTOM_COLOR + shadowed)
 
@@ -266,10 +266,10 @@ end
 local function zoneLarge(zone)
   local myBatt = {["x"]=0, ["y"]=18, ["w"]=76, ["h"]=121, ["segments_h"]=30, ["color"]=WHITE, ["cath_w"]=30, ["cath_h"]=10}
   local mySensor = getCels(zone.options.Sensor)
-  local isHaveData = (type(mySensor) == "table")
+  local isDataAvailable = (type(mySensor) == "table")
 
   lcd.setColor(CUSTOM_COLOR, zone.options.Color)
-  if isHaveData then
+  if isDataAvailable then
     local percent = getCellPercent(getCellAvg(mySensor))
 
     lcd.drawText(zone.zone.x+zone.zone.w, zone.zone.y, percent.."%", RIGHT + DBLSIZE + CUSTOM_COLOR + shadowed)
@@ -304,10 +304,10 @@ end
 local function zoneXLarge(zone)
   local myBatt = {["x"]=10, ["y"]=20, ["w"]=80, ["h"]=121, ["segments_h"]=30, ["color"]=WHITE, ["cath_w"]=30, ["cath_h"]=10}
   local mySensor = getCels(zone.options.Sensor)
-  local isHaveData = (type(mySensor) == "table")
+  local isDataAvailable = (type(mySensor) == "table")
 
   lcd.setColor(CUSTOM_COLOR, zone.options.Color)
-  if isHaveData then
+  if isDataAvailable then
     local percent = getCellPercent(getCellAvg(mySensor))
     -- fils batt
     lcd.setColor(CUSTOM_COLOR, getPercentColor(percent))
