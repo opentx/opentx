@@ -218,7 +218,7 @@ local function zoneSmall(zone)
     local topLine = string.format("%2.1fV      %2.0f%%", mainValue, percent)
     lcd.drawText(zone.zone.x + 20, zone.zone.y +2, topLine , MIDSIZE + CUSTOM_COLOR + shadowed)
   else
-    lcd.drawText(zone.zone.x + 10, zone.zone.y+10, "No Voltage Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR + shadowed)
+    lcd.drawText(zone.zone.x + 10, zone.zone.y+10, "No Cells Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR + shadowed)
   end
 
 
@@ -249,7 +249,7 @@ local function zoneMedium(zone)
       lcd.drawRectangle(zone.zone.x + pos[i].x, zone.zone.y + pos[i].y, 59, 20, CUSTOM_COLOR,1)
     end
   else
-    lcd.drawText(zone.zone.x, zone.zone.y+35, "No Voltage Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(zone.zone.x, zone.zone.y+35, "No Cells Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
   end
   -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
@@ -288,7 +288,7 @@ local function zoneLarge(zone)
       lcd.drawRectangle(zone.zone.x + pos[i].x, zone.zone.y + pos[i].y, 59, 20, CUSTOM_COLOR, 1)
     end
   else
-    lcd.drawText(zone.zone.x+5, zone.zone.y, "No Voltage Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR + shadowed)
+    lcd.drawText(zone.zone.x+5, zone.zone.y, "No Cells Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR + shadowed)
   end
   -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
@@ -341,7 +341,7 @@ local function zoneXLarge(zone)
       lcd.drawText(zone.zone.x + pos[i].x+10, zone.zone.y + pos[i].y, string.format("%.2f", histCellData[i]), CUSTOM_COLOR + shadowed)
     end
   else
-    lcd.drawText(zone.zone.x+5, zone.zone.y, "No Voltage Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
+    lcd.drawText(zone.zone.x+5, zone.zone.y, "No Cells Data", LEFT + SMLSIZE + INVERS + CUSTOM_COLOR)
   end
   -- draws bat
   lcd.setColor(CUSTOM_COLOR, WHITE)
