@@ -1451,3 +1451,5 @@ Jaroslav Gazik
 Philippe Desrichard
 Vincent Heron
 Marcel Schäfer
+Stefano Pascucci
+Frédéric Bourgois
