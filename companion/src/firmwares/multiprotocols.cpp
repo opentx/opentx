@@ -61,6 +61,7 @@ static const QStringList STR_SUBTYPE_CABELL  {"Cabell V3", "Cab V3 Telem", "-", 
 static const QStringList STR_SUBTYPE_H83D    {"H8 Mini 3D", "H20H", "H20 Mini", "H30 Mini"};
 static const QStringList STR_SUBTYPE_CORONA  {"V1", "V2", "Flydream V3"};
 static const QStringList STR_SUBTYPE_HITEC   {"Optima", "Optima Hub Telem", "Minima"};
+static const QStringList STR_SUBTYPE_E01X    {"E012", "E015"};
 
 static const QStringList NO_SUBTYPE          {STR_MULTI_DEFAULT};
 
@@ -95,6 +96,7 @@ const Multiprotocols multiProtocols {
   {MM_RF_PROTO_H83D,       3, false,      STR_SUBTYPE_H83D,    nullptr},
   {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,  STR_MULTI_RFTUNE},
   {MM_RF_PROTO_HITEC,      2, false,      STR_SUBTYPE_HITEC,   STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_E01X,       1, false,      STR_SUBTYPE_E01X,    nullptr},
   {MM_RF_CUSTOM_SELECTED,  7, true,       STR_SUBTYPE_CUSTOM,  STR_MULTI_OPTION},
   
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -136,7 +138,7 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "FlySky", "Hubsan", "FrSky", "Hisky", "V2x2", "DSM", "Devo", "YD717", "KN", "SymaX", "SLT", "CX10", "CG023",
     "Bayang", "ESky", "MT99XX", "MJXQ", "Shenqi", "FY326", "SFHSS", "J6 PRO","FQ777","Assan","Hontai","Open LRS",
     "FlySky AFHDS2A", "Q2x2", "Walkera", "Q303", "GW008", "DM002", "Cabell", "ESky 150", "H8 3D", "Corona", "CFlie",
-    "Hitec", "Wfly", "Bugs"
+    "Hitec", "Wfly", "Bugs", "Bugs Mini", "Traxxas", "NCC-1701-A", "E01X", "V911S", "GD00X"
   });
 
   if (protocol == MM_RF_CUSTOM_SELECTED || custom)
