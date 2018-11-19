@@ -38,7 +38,7 @@ void Pxx2Pulses::setupFrame(uint8_t port)
   // Flag1
   uint8_t flag1 = addFlag1(port);
 
-  // Extra flags
+  // Flag2 = Extra flags
   addExtraFlags(port);
 
   // Channels
