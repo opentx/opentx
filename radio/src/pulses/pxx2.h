@@ -23,6 +23,7 @@
 
 #include "./pxx.h"
 
+// should not be used anymore
 class SportCrcMixin {
   protected:
     void initCrc()
@@ -58,10 +59,6 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
 class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
   public:
     void setupFrame(uint8_t port);
-
-  protected:
-    uint8_t data[64];
-    uint8_t * ptr;
 
     void addHead()
     {
