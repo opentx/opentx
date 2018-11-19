@@ -53,11 +53,6 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
     {
       *ptr++ = byte;
     }
-
-    void addTail()
-    {
-      // nothing
-    }
 };
 
 class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
