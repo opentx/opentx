@@ -24,7 +24,6 @@
 void Pxx2Pulses::setupFrame(uint8_t port)
 {
   initFrame();
-  initCrc();
 
   static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
   uint8_t sendUpperChannels = 0;
@@ -55,6 +54,5 @@ void Pxx2Pulses::setupFrame(uint8_t port)
   }
 #endif
 
-  // CRC
-  addByte(crc); // TODO need to check the CRC chosen algorithm
+  endFrame();
 }
