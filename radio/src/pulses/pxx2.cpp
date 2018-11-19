@@ -38,22 +38,14 @@ void Pxx2Pulses::setupFrame(uint8_t port)
   // Flag1
   uint8_t flag1 = addFlag1(port);
 
-  // Flag2
-  addByte(0);
+  // Extra flags
+  addExtraFlags(port);
 
   // Channels
   addChannels(port, flag1 & PXX_SEND_FAILSAFE, sendUpperChannels);
 
-  // Extra flags
-  addExtraFlags(port);
-
-  // Flag3, reserved
-  addByte(0);
-
 #if defined(LUA)
   if (outputTelemetryBufferTrigger != 0x00 && outputTelemetryBufferSize > 0) {
-    // CMD/Resp
-    addByte(1);
     // primID (1 byte) + dataID (2 bytes) + value (4 bytes)
     for (uint8_t i=0; i<7; i++) {
       addByte(outputTelemetryBuffer[i]);
@@ -61,13 +53,6 @@ void Pxx2Pulses::setupFrame(uint8_t port)
     outputTelemetryBufferTrigger = 0x00;
     outputTelemetryBufferSize = 0;
   }
-  else {
-    // CMD/Resp
-    addByte(0);
-  }
-#else
-  // CMD/Resp
-  addByte(0);
 #endif
 
   // CRC
