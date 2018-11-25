@@ -20,6 +20,42 @@
 
 #include "opentx.h"
 
+#if defined(PXX2)
+void processFrskyTelemetryData(uint8_t data)
+{
+  static uint8_t dataState = STATE_DATA_IDLE;
+
+  switch (dataState) {
+    case STATE_DATA_IDLE:
+      if (data == START_STOP) {
+        telemetryRxBufferCount = 0;
+        dataState = STATE_DATA_START;
+      }
+      break;
+
+    case STATE_DATA_START:
+      if (telemetryRxBufferCount == 0 && data > 0x0C) {
+        // wrong length
+        telemetryRxBufferCount = 0;
+        dataState = STATE_DATA_IDLE;
+      }
+      else if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
+        telemetryRxBuffer[telemetryRxBufferCount++] = data;
+        if (telemetryRxBuffer[0] + 2 == telemetryRxBufferCount) {
+          sportProcessPacket(telemetryRxBuffer + 2);
+          telemetryRxBufferCount = 0;
+          dataState = STATE_DATA_IDLE;
+        }
+      }
+      else {
+        // overflow guard
+        telemetryRxBufferCount = 0;
+        dataState = STATE_DATA_IDLE;
+      }
+      break;
+  }
+}
+#else
 void processFrskyTelemetryData(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
@@ -101,4 +137,4 @@ void processFrskyTelemetryData(uint8_t data)
   }
 #endif
 }
-
+#endif
