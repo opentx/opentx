@@ -19,11 +19,8 @@
  */
 
 #include "opentx.h"
-
-#if defined(PXX2)
 #include "io/pxx2.h"
 #include "pulses/pxx2.h"
-#endif
 
 uint8_t s_pulses_paused = 0;
 uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
@@ -47,14 +44,14 @@ uint8_t getRequiredProtocol(uint8_t port)
       switch (g_model.moduleData[INTERNAL_MODULE].type) {
 #if defined(TARANIS_INTERNAL_PPM)
         case MODULE_TYPE_PPM:
-          required_protocol = PROTO_PPM;
+          required_protocol = PROTOCOL_CHANNELS_PPM;
           break;
 #endif
         case MODULE_TYPE_XJT:
-          required_protocol = PROTO_PXX;
+          required_protocol = PROTOCOL_CHANNELS_PXX;
           break;
         default:
-          required_protocol = PROTO_NONE;
+          required_protocol = PROTOCOL_CHANNELS_NONE;
           break;
       }
       break;
@@ -63,30 +60,32 @@ uint8_t getRequiredProtocol(uint8_t port)
     default:
       switch (g_model.moduleData[EXTERNAL_MODULE].type) {
         case MODULE_TYPE_PPM:
-          required_protocol = PROTO_PPM;
+          required_protocol = PROTOCOL_CHANNELS_PPM;
           break;
         case MODULE_TYPE_XJT:
+          required_protocol = PROTOCOL_CHANNELS_PXX;
+          break;
         case MODULE_TYPE_R9M:
-          required_protocol = PROTO_PXX_EXTERNAL_MODULE; // either PXX or PXX2 depending on compilation options
+          required_protocol = PROTOCOL_CHANNELS_PXX2;
           break;
         case MODULE_TYPE_SBUS:
-          required_protocol = PROTO_SBUS;
+          required_protocol = PROTOCOL_CHANNELS_SBUS;
           break;
 #if defined(MULTIMODULE)
         case MODULE_TYPE_MULTIMODULE:
-          required_protocol = PROTO_MULTIMODULE;
+          required_protocol = PROTOCOL_CHANNELS_MULTIMODULE;
           break;
 #endif
 #if defined(DSM2)
         case MODULE_TYPE_DSM2:
-          required_protocol = limit<uint8_t>(PROTO_DSM2_LP45, PROTO_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, PROTO_DSM2_DSMX);
+          required_protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, PROTOCOL_CHANNELS_DSM2_DSMX);
           // The module is set to OFF during one second before BIND start
           {
             static tmr10ms_t bindStartTime = 0;
             if (moduleFlag[EXTERNAL_MODULE] == MODULE_BIND) {
               if (bindStartTime == 0) bindStartTime = get_tmr10ms();
               if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
-                required_protocol = PROTO_NONE;
+                required_protocol = PROTOCOL_CHANNELS_NONE;
                 break;
               }
             }
@@ -98,24 +97,24 @@ uint8_t getRequiredProtocol(uint8_t port)
 #endif
 #if defined(CROSSFIRE)
         case MODULE_TYPE_CROSSFIRE:
-          required_protocol = PROTO_CROSSFIRE;
+          required_protocol = PROTOCOL_CHANNELS_CROSSFIRE;
           break;
 #endif
         default:
-          required_protocol = PROTO_NONE;
+          required_protocol = PROTOCOL_CHANNELS_NONE;
           break;
       }
       break;
   }
 
   if (s_pulses_paused) {
-    required_protocol = PROTO_NONE;
+    required_protocol = PROTOCOL_CHANNELS_NONE;
   }
 
 #if 0
   // will need an EEPROM conversion
   if (moduleFlag[port] == MODULE_OFF) {
-    required_protocol = PROTO_NONE;
+    required_protocol = PROTOCOL_CHANNELS_NONE;
   }
 #endif
 
@@ -146,38 +145,36 @@ void setupPulses(uint8_t port)
   if (s_current_protocol[port] != required_protocol) {
     init_needed = true;
     switch (s_current_protocol[port]) { // stop existing protocol hardware
-      case PROTO_PXX:
+      case PROTOCOL_CHANNELS_PXX:
         disable_pxx(port);
         break;
 
 #if defined(DSM2)
-      case PROTO_DSM2_LP45:
-      case PROTO_DSM2_DSM2:
-      case PROTO_DSM2_DSMX:
+      case PROTOCOL_CHANNELS_DSM2_LP45:
+      case PROTOCOL_CHANNELS_DSM2_DSM2:
+      case PROTOCOL_CHANNELS_DSM2_DSMX:
         disable_serial(port);
         break;
 #endif
 
 #if defined(CROSSFIRE)
-      case PROTO_CROSSFIRE:
+      case PROTOCOL_CHANNELS_CROSSFIRE:
         disable_module_timer(port);
         break;
 #endif
 
-#if defined(PXX2)
-      case PROTO_PXX2:
+      case PROTOCOL_CHANNELS_PXX2:
         disable_module_timer(port);
         break;
-#endif
 
 #if defined(MULTIMODULE)
-      case PROTO_MULTIMODULE:
+      case PROTOCOL_CHANNELS_MULTIMODULE:
 #endif
-      case PROTO_SBUS:
+      case PROTOCOL_CHANNELS_SBUS:
         disable_serial(port);
         break;
 
-      case PROTO_PPM:
+      case PROTOCOL_CHANNELS_PPM:
         disable_ppm(port);
         break;
 
@@ -190,28 +187,28 @@ void setupPulses(uint8_t port)
 
   // Set up output data here
   switch (required_protocol) {
-    case PROTO_PXX:
+    case PROTOCOL_CHANNELS_PXX:
       setupPulsesPXX(port);
       scheduleNextMixerCalculation(port, PXX_PERIOD);
       break;
 
-    case PROTO_SBUS:
+    case PROTOCOL_CHANNELS_SBUS:
       setupPulsesSbus(port);
       scheduleNextMixerCalculation(port, SBUS_PERIOD);
       break;
 
 #if defined(DSM2)
-    case PROTO_DSM2_LP45:
-    case PROTO_DSM2_DSM2:
-    case PROTO_DSM2_DSMX:
+    case PROTOCOL_CHANNELS_DSM2_LP45:
+    case PROTOCOL_CHANNELS_DSM2_DSM2:
+    case PROTOCOL_CHANNELS_DSM2_DSMX:
       setupPulsesDSM2(port);
       scheduleNextMixerCalculation(port, DSM2_PERIOD);
       break;
 #endif
 
 #if defined(CROSSFIRE)
-    case PROTO_CROSSFIRE:
-      if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE && !init_needed) {
+    case PROTOCOL_CHANNELS_CROSSFIRE:
+      if (telemetryProtocol == PROTOCOL_TELEMETRY_CROSSFIRE && !init_needed) {
         uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
         uint8_t len;
 #if defined(LUA)
@@ -232,26 +229,25 @@ void setupPulses(uint8_t port)
       break;
 #endif
 
-#if defined(PXX2)
-    case PROTO_PXX2:
-      if (telemetryProtocol == PROTOCOL_FRSKY_SPORT && !init_needed) {
+    case PROTOCOL_CHANNELS_PXX2:
+      // here we have to wait that telemetryInit() is called, hence this test
+      if (telemetryProtocol == PROTOCOL_TELEMETRY_PXX2 && !init_needed) {
         modulePulsesData[port].pxx2.setupFrame(port);
         sportSendBuffer(modulePulsesData[port].pxx2.getData(), modulePulsesData[port].pxx2.getSize());
       }
       scheduleNextMixerCalculation(port, PXX2_PERIOD);
       break;
-#endif
 
 #if defined(MULTIMODULE)
-    case PROTO_MULTIMODULE:
+    case PROTOCOL_CHANNELS_MULTIMODULE:
       setupPulsesMultimodule(port);
       scheduleNextMixerCalculation(port, MULTIMODULE_PERIOD);
       break;
 #endif
 
-    case PROTO_PPM:
+    case PROTOCOL_CHANNELS_PPM:
 #if defined(PCBSKY9X)
-    case PROTO_NONE:
+    case PROTOCOL_CHANNELS_NONE:
 #endif
       setupPulsesPPMModule(port);
       scheduleNextMixerCalculation(port, PPM_PERIOD(port));
@@ -263,41 +259,39 @@ void setupPulses(uint8_t port)
 
   if (init_needed) {
     switch (required_protocol) { // Start new protocol hardware here
-      case PROTO_PXX:
+      case PROTOCOL_CHANNELS_PXX:
         init_pxx(port);
         break;
 
 #if defined(DSM2)
-      case PROTO_DSM2_LP45:
-      case PROTO_DSM2_DSM2:
-      case PROTO_DSM2_DSMX:
+      case PROTOCOL_CHANNELS_DSM2_LP45:
+      case PROTOCOL_CHANNELS_DSM2_DSM2:
+      case PROTOCOL_CHANNELS_DSM2_DSMX:
         init_serial(port, DSM2_BAUDRATE, DSM2_PERIOD * 2000);
         break;
 #endif
 
 #if defined(CROSSFIRE)
-      case PROTO_CROSSFIRE:
+      case PROTOCOL_CHANNELS_CROSSFIRE:
         init_module_timer(port, CROSSFIRE_PERIOD, true);
         break;
 #endif
 
-#if defined(PXX2)
-      case PROTO_PXX2:
+      case PROTOCOL_CHANNELS_PXX2:
         init_module_timer(port, PXX2_PERIOD, true);
         break;
-#endif
 
 #if defined(MULTIMODULE)
-      case PROTO_MULTIMODULE:
+      case PROTOCOL_CHANNELS_MULTIMODULE:
         init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000);
         break;
 #endif
 
-      case PROTO_SBUS:
+      case PROTOCOL_CHANNELS_SBUS:
         init_serial(port, SBUS_BAUDRATE, SBUS_PERIOD_HALF_US);
         break;
 
-      case PROTO_PPM:
+      case PROTOCOL_CHANNELS_PPM:
         init_ppm(port);
         break;
 

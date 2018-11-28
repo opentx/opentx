@@ -23,6 +23,7 @@
 
 #include "../definitions.h"
 #include "telemetry_holders.h"
+#include "io/pxx2.h"
 
 // Receive buffer state machine state enum
 enum FrSkyDataState {
@@ -32,12 +33,7 @@ enum FrSkyDataState {
   STATE_DATA_XOR,
 };
 
-#if defined(PXX2)
-#include "io/pxx2.h"
-#define FRSKY_SPORT_BAUDRATE      PXX2_BAUDRATE
-#else
 #define FRSKY_SPORT_BAUDRATE      57600
-#endif
 
 #define FRSKY_D_BAUDRATE          9600
 

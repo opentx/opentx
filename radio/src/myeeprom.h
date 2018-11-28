@@ -23,20 +23,8 @@
 
 #include "datastructs.h"
 
-#define WARN_THR_BIT  0x01
-#define WARN_BEP_BIT  0x80
-#define WARN_SW_BIT   0x02
-#define WARN_MEM_BIT  0x04
-#define WARN_BVAL_BIT 0x38
-
-#define WARN_THR     (!(g_eeGeneral.warnOpts & WARN_THR_BIT))
-#define WARN_BEP     (!(g_eeGeneral.warnOpts & WARN_BEP_BIT))
-#define WARN_SW      (!(g_eeGeneral.warnOpts & WARN_SW_BIT))
-#define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
-#define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
-
-  #define EEPROM_VER             218
-  #define FIRST_CONV_EEPROM_VER  216
+#define EEPROM_VER             218
+#define FIRST_CONV_EEPROM_VER  216
 
 #define GET_PPM_POLARITY(idx)             g_model.moduleData[idx].ppm.pulsePol
 #define GET_SBUS_POLARITY(idx)            g_model.moduleData[idx].sbus.noninverted
@@ -53,10 +41,7 @@
   #define IS_TRAINER_EXTERNAL_MODULE()    false
 #endif
 
-  #define IS_PLAY_FUNC(func)           ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
-
-  #define IS_PLAY_BOTH_FUNC(func)      (0)
-  #define IS_VOLUME_FUNC(func)         ((func) == FUNC_VOLUME)
+#define IS_PLAY_FUNC(func)           ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
 
 #if defined(GVARS)
   #define IS_ADJUST_GV_FUNC(func)      ((func) == FUNC_ADJUST_GVAR)
@@ -141,21 +126,20 @@ enum CurveRefType {
   CURVE_REF_CUSTOM
 };
 
-
 #define MIN_EXPO_WEIGHT         -100
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 
-  #define limit_min_max_t     int16_t
-  #define LIMIT_EXT_PERCENT   150
-  #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
-  #define PPM_CENTER_MAX      500
-  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->max+1000)
-  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->min-1000)
-  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR_PREC1(lim->offset, -1000, 1000, mixerCurrentFlightMode) : lim->offset)
-  #define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
-  #define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
-  #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
+#define limit_min_max_t     int16_t
+#define LIMIT_EXT_PERCENT   150
+#define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
+#define PPM_CENTER_MAX      500
+#define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->max+1000)
+#define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->min-1000)
+#define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR_PREC1(lim->offset, -1000, 1000, mixerCurrentFlightMode) : lim->offset)
+#define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
+#define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
+#define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
 
 #define TRIM_OFF    (1)
 #define TRIM_ON     (0)
@@ -191,8 +175,6 @@ enum CurveRefType {
 #define MD_OFFSET(md) (md->offset)
 #define MD_OFFSET_TO_UNION(md, var) var.word = md->offset
 #define MD_UNION_TO_OFFSET(var, md) md->offset = var.word
-// #define MD_SETOFFSET(md, val) md->offset = val
-
 
 enum LogicalSwitchesFunctions {
   LS_FUNC_NONE,
@@ -222,14 +204,6 @@ enum LogicalSwitchesFunctions {
 #define MAX_LS_DELAY    250 /*25s*/
 #define MAX_LS_ANDSW    SWSRC_LAST
 
-//#define TELEM_FLAG_TIMEOUT      0x01
-#define TELEM_FLAG_LOG            0x02
-//#define TELEM_FLAG_PERSISTENT   0x04
-//#define TELEM_FLAG_SCALE        0x08
-#define TELEM_FLAG_AUTO_OFFSET    0x10
-#define TELEM_FLAG_FILTER         0x20
-#define TELEM_FLAG_LOSS_ALARM     0x40
-
 enum TelemetrySensorType
 {
   TELEM_TYPE_CUSTOM,
@@ -251,16 +225,10 @@ enum TelemetrySensorFormula
 };
 
 enum VarioSource {
-#if !defined(TELEMETRY_FRSKY_SPORT)
-  VARIO_SOURCE_ALTI,
-  VARIO_SOURCE_ALTI_PLUS,
-#endif
   VARIO_SOURCE_VSPEED,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-#if defined(TELEMETRY_FRSKY_SPORT)
   VARIO_SOURCE_DTE,
-#endif
   VARIO_SOURCE_COUNT,
   VARIO_SOURCE_LAST = VARIO_SOURCE_COUNT-1
 };
@@ -292,8 +260,6 @@ enum FrskyVoltsSource {
   FRSKY_VOLTS_SOURCE_LAST=FRSKY_VOLTS_SOURCE_CELLS
 };
 
-
-
 enum SwashType {
   SWASH_TYPE_NONE,
   SWASH_TYPE_120,
@@ -310,8 +276,8 @@ enum SwashType {
 
 #define ROTARY_ENCODER_MAX  1024
 
-  #define TRIMS_ARRAY_SIZE  8
-    #define TRIM_MODE_NONE  0x1F  // 0b11111
+#define TRIMS_ARRAY_SIZE  8
+#define TRIM_MODE_NONE  0x1F  // 0b11111
 
 #define IS_MANUAL_RESET_TIMER(idx)     (g_model.timers[idx].persistent == 2)
 
@@ -321,36 +287,22 @@ enum SwashType {
 #define TIMER_COUNTDOWN_START(x)       10
 #endif
 
-enum Protocols {
-  PROTO_PPM,
-#if defined(PXX) || defined(DSM2) || defined(IRPROTOS)
-  PROTO_PXX,
+enum ChannelsProtocols {
+  PROTOCOL_CHANNELS_PPM,
+#if defined(PXX) || defined(DSM2)
+  PROTOCOL_CHANNELS_PXX,
 #endif
-#if defined(DSM2) || defined(IRPROTOS)
-  PROTO_DSM2_LP45,
-  PROTO_DSM2_DSM2,
-  PROTO_DSM2_DSMX,
+#if defined(DSM2)
+  PROTOCOL_CHANNELS_DSM2_LP45,
+  PROTOCOL_CHANNELS_DSM2_DSM2,
+  PROTOCOL_CHANNELS_DSM2_DSMX,
 #endif
-  PROTO_CROSSFIRE,
-#if defined(IRPROTOS)
-  // only used on AVR
-  // we will need 4 bits for proto :(
-  PROTO_SILV,
-  PROTO_TRAC09,
-  PROTO_PICZ,
-  PROTO_SWIFT,
-#endif
-  PROTO_MULTIMODULE,
-  PROTO_SBUS,
-  PROTO_PXX2,
-  PROTO_NONE
+  PROTOCOL_CHANNELS_CROSSFIRE,
+  PROTOCOL_CHANNELS_MULTIMODULE,
+  PROTOCOL_CHANNELS_SBUS,
+  PROTOCOL_CHANNELS_PXX2,
+  PROTOCOL_CHANNELS_NONE
 };
-
-#if defined(PXX2)
-#define PROTO_PXX_EXTERNAL_MODULE PROTO_PXX2
-#else
-#define PROTO_PXX_EXTERNAL_MODULE PROTO_PXX
-#endif
 
 enum XJTRFProtocols {
   RF_PROTO_OFF = -1,
@@ -492,17 +444,18 @@ enum ThrottleSources {
   THROTTLE_SOURCE_CH1,
 };
 
-enum TelemetryType
+enum TelemetryProtocols
 {
   PROTOCOL_TELEMETRY_FIRST,
-  PROTOCOL_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
-  PROTOCOL_FRSKY_D,
-  PROTOCOL_FRSKY_D_SECONDARY,
-  PROTOCOL_PULSES_CROSSFIRE,
-  PROTOCOL_SPEKTRUM,
-  PROTOCOL_FLYSKY_IBUS,
-  PROTOCOL_MULTIMODULE,
-  PROTOCOL_TELEMETRY_LAST=PROTOCOL_MULTIMODULE
+  PROTOCOL_TELEMETRY_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
+  PROTOCOL_TELEMETRY_FRSKY_D,
+  PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY,
+  PROTOCOL_TELEMETRY_CROSSFIRE,
+  PROTOCOL_TELEMETRY_SPEKTRUM,
+  PROTOCOL_TELEMETRY_FLYSKY_IBUS,
+  PROTOCOL_TELEMETRY_MULTIMODULE,
+  PROTOCOL_TELEMETRY_LAST=PROTOCOL_TELEMETRY_MULTIMODULE,
+  PROTOCOL_TELEMETRY_PXX2,
 };
 
 enum DisplayTrims
@@ -511,8 +464,6 @@ enum DisplayTrims
   DISPLAY_TRIMS_CHANGE,
   DISPLAY_TRIMS_ALWAYS
 };
-
-#define TOTAL_EEPROM_USAGE (sizeof(ModelData)*MAX_MODELS + sizeof(RadioData))
 
 extern RadioData g_eeGeneral;
 extern ModelData g_model;

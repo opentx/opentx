@@ -215,7 +215,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
 
 void extmoduleSendNextFrame()
 {
-  if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PPM) {
+  if (s_current_protocol[EXTERNAL_MODULE] == PROTOCOL_CHANNELS_PPM) {
 #if defined(PCBX10) || PCBREV >= 13
     EXTMODULE_TIMER->CCR3 = GET_PPM_DELAY(EXTERNAL_MODULE)*2;
     EXTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_PPM_POLARITY(EXTERNAL_MODULE) ? TIM_CCER_CC3P : 0);
@@ -234,7 +234,7 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->NDTR = modulePulsesData[EXTERNAL_MODULE].ppm.ptr - modulePulsesData[EXTERNAL_MODULE].ppm.pulses;
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
-  else if (s_current_protocol[EXTERNAL_MODULE] == PROTO_PXX) {
+  else if (s_current_protocol[EXTERNAL_MODULE] == PROTOCOL_CHANNELS_PXX) {
     EXTMODULE_TIMER->CCR2 = modulePulsesData[EXTERNAL_MODULE].pxx.getLast() - 4000; // 2mS in advance
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
 #if defined(PCBX10) || PCBREV >= 13

@@ -51,7 +51,7 @@ enum ModuleFlag
 #endif
 
 #if defined(DSM2)
-  #define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTO_DSM2_LP45 && protocol<=PROTO_DSM2_DSMX)
+  #define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTOCOL_CHANNELS_DSM2_LP45 && protocol<=PROTOCOL_CHANNELS_DSM2_DSMX)
 #else
   #define IS_DSM2_PROTOCOL(protocol)         (0)
 #endif
@@ -63,7 +63,7 @@ enum ModuleFlag
 #endif
 
 #if defined(MULTIMODULE)
-  #define IS_MULTIMODULE_PROTOCOL(protocol)  (protocol==PROTO_MULTIMODULE)
+  #define IS_MULTIMODULE_PROTOCOL(protocol)  (protocol==PROTOCOL_CHANNELS_MULTIMODULE)
   #if !defined(DSM2)
      #error You need to enable DSM2 = PPM for MULTIMODULE support
   #endif
@@ -71,7 +71,7 @@ enum ModuleFlag
   #define IS_MULTIMODULE_PROTOCOL(protocol)  (0)
 #endif
 
-  #define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTO_SBUS)
+  #define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_SBUS)
 
 
   #include "pulses_arm.h"

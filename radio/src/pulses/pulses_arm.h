@@ -82,9 +82,7 @@ union ModulePulsesData {
   PwmPxxPulses pxx;
 #endif
 
-#if defined(PXX2)
   Pxx2Pulses pxx2;
-#endif
 
 #if defined(PPM_PIN_SERIAL)
   Dsm2SerialPulsesData dsm2;
