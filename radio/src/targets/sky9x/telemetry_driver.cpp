@@ -135,12 +135,11 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) )
 #endif
 }
 
-uint32_t txPdcUsart(uint8_t *buffer, uint32_t size)
+uint32_t txPdcUsart(const uint8_t * buffer, uint32_t size)
 {
-  Usart *pUsart = SECOND_USART;
+  Usart * pUsart = SECOND_USART;
 
-  if ( pUsart->US_TNCR == 0 )
-  {
+  if (pUsart->US_TNCR == 0) {
 #ifndef SIMU
     pUsart->US_TNPR = (uint32_t)buffer ;
 #endif
@@ -174,7 +173,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 #endif
 }
 
-void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size)
+void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size)
 {
   txPdcUsart(buffer, size);
 }

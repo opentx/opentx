@@ -97,7 +97,6 @@ void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();
 int lastUsedTelemetryIndex();
 
-int32_t getTelemetryValue(uint8_t index, uint8_t & prec);
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec);
 
 void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
@@ -107,7 +106,7 @@ void frskyDSetDefault(int index, uint16_t id);
 #define IS_SPEED_UNIT(unit)            ((unit) >= UNIT_KTS && (unit) <= UNIT_MPH)
 
 extern uint8_t telemetryProtocol;
-#define IS_FRSKY_D_PROTOCOL()          (telemetryProtocol == PROTOCOL_FRSKY_D)
+
 #if defined (MULTIMODULE)
 #define IS_D16_MULTI()                 ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
 #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && IS_D16_MULTI()))

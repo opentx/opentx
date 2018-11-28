@@ -38,7 +38,6 @@ uint8_t telemetryProtocol = 255;
 uint8_t serialInversion = 0;
 #endif
 
-
 void processTelemetryData(uint8_t data)
 {
 #if defined(CROSSFIRE)

@@ -129,6 +129,22 @@ void init_no_pulses(uint32_t port)
   }
 }
 
+void init_module_timer(uint32_t port, uint32_t period, uint8_t state)
+{
+  if (port == EXTERNAL_MODULE) {
+    // TODO use period here
+    init_main_ppm(3000, 0);
+  }
+}
+
+void disable_module_timer(uint32_t port)
+{
+  if (port == EXTERNAL_MODULE) {
+    disable_ppm(EXTERNAL_MODULE);
+  }
+}
+
+
 void disable_no_pulses(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {

@@ -261,6 +261,8 @@ void init_pxx(uint32_t port);
 void disable_pxx(uint32_t port);
 void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint32_t port);
+void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
+void disable_module_timer( uint32_t module_index);
 
 // SD driver
 #if defined(SIMU)
@@ -405,8 +407,12 @@ void debugPutc(const char c);
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 uint32_t telemetryTransmitPending();
-void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
+void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
+inline void sportSendBuffer(const uint8_t * buffer, uint32_t size)
+{
+  telemetryTransmitBuffer(buffer, size);
+}
 
 // Second UART driver
 void serial2TelemetryInit(unsigned int protocol);
