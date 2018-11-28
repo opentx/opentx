@@ -46,6 +46,7 @@ void processTelemetryData(uint8_t data)
     return;
   }
 #endif
+
 #if defined(MULTIMODULE)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
     processSpektrumTelemetryData(data);
@@ -60,6 +61,11 @@ void processTelemetryData(uint8_t data)
     return;
   }
 #endif
+
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_PXX2) {
+    processFrskyPXX2Data(data);
+  }
+
   processFrskyTelemetryData(data);
 }
 

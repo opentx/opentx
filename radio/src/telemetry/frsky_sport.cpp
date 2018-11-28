@@ -92,7 +92,7 @@ const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
   return result;
 }
 
-bool checkSportPacket(const uint8_t *packet)
+bool checkSportPacket(const uint8_t * packet)
 {
   short crc = 0;
   for (int i=1; i<FRSKY_SPORT_PACKET_SIZE; ++i) {
@@ -138,16 +138,21 @@ void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, u
 
 void sportProcessTelemetryPacket(const uint8_t * packet)
 {
-  uint8_t physicalId = packet[0] & 0x1F;
-  uint8_t primId = packet[1];
-  uint16_t id = *((uint16_t *)(packet+2));
-  uint32_t data = SPORT_DATA_S32(packet);
-
   if (!checkSportPacket(packet)) {
     TRACE("sportProcessTelemetryPacket(): checksum error ");
     DUMP(packet, FRSKY_SPORT_PACKET_SIZE);
     return;
   }
+
+  sportProcessTelemetryPacketWithoutCrc(packet);
+}
+
+void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
+{
+  uint8_t physicalId = packet[0] & 0x1F;
+  uint8_t primId = packet[1];
+  uint16_t id = *((uint16_t *)(packet+2));
+  uint32_t data = SPORT_DATA_S32(packet);
 
   if (primId == DATA_FRAME) {
     uint8_t instance = physicalId + 1;

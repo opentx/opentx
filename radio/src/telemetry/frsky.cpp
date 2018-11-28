@@ -20,8 +20,16 @@
 
 #include "opentx.h"
 
-#if defined(PXX2)
-void processFrskyTelemetryData(uint8_t data)
+bool checkPXX2PacketCRC(const uint8_t * packet)
+{
+  // TODO ...
+
+  return true;
+  // TRACE("checkPXX2PacketCRC(): checksum error ");
+  // DUMP(packet, FRSKY_SPORT_PACKET_SIZE);
+}
+
+void processFrskyPXX2Data(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
 
@@ -41,8 +49,10 @@ void processFrskyTelemetryData(uint8_t data)
       }
       else if (telemetryRxBufferCount < TELEMETRY_RX_PACKET_SIZE) {
         telemetryRxBuffer[telemetryRxBufferCount++] = data;
-        if (telemetryRxBuffer[0] + 2 == telemetryRxBufferCount) {
-          sportProcessPacket(telemetryRxBuffer + 2);
+        if (telemetryRxBuffer[0] + 3 /* 1 byte for length, 2 bytes for CRC */ == telemetryRxBufferCount) {
+          if (checkPXX2PacketCRC(telemetryRxBuffer)) {
+            sportProcessTelemetryPacketWithoutCrc(telemetryRxBuffer + 6 /* LEN, TYPE, RSSI/BAT, TP/SS/FW_T, FW_VER, Data ID */);
+          }
           telemetryRxBufferCount = 0;
           dataState = STATE_DATA_IDLE;
         }
@@ -55,7 +65,7 @@ void processFrskyTelemetryData(uint8_t data)
       break;
   }
 }
-#else
+
 void processFrskyTelemetryData(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
@@ -137,4 +147,4 @@ void processFrskyTelemetryData(uint8_t data)
   }
 #endif
 }
-#endif
+
