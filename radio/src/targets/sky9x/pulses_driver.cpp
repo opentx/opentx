@@ -261,7 +261,7 @@ extern "C" void PWM_IRQHandler(void)
   if (reason & PWM_ISR1_CHID3) {
     // Use the current protocol, don't switch until set_up_pulses
     switch (s_current_protocol[EXTERNAL_MODULE]) {
-      case PROTO_PXX:
+      case PROTOCOL_CHANNELS_PXX:
         // Alternate periods of 6.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
         if (period == 2500 * 2) {
@@ -284,9 +284,9 @@ extern "C" void PWM_IRQHandler(void)
         }
         break;
 
-      case PROTO_DSM2_LP45:
-      case PROTO_DSM2_DSM2:
-      case PROTO_DSM2_DSMX:
+      case PROTOCOL_CHANNELS_DSM2_LP45:
+      case PROTOCOL_CHANNELS_DSM2_DSM2:
+      case PROTOCOL_CHANNELS_DSM2_DSMX:
         // Alternate periods of 19.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
         if (period == 2500 * 2) {
@@ -309,9 +309,9 @@ extern "C" void PWM_IRQHandler(void)
         break;
 
 #if defined(MULTIMODULE)
-      case PROTO_MULTIMODULE:
+      case PROTOCOL_CHANNELS_MULTIMODULE:
 #endif
-      case PROTO_SBUS:
+      case PROTOCOL_CHANNELS_SBUS:
         // Todo: how to do inverted polarity on this platform?
         // Alternate periods of 5.5mS and 3.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
