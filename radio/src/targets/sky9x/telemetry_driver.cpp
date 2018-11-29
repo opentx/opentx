@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -171,6 +171,11 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   UART2_Configure(baudrate, Master_frequency, mode);
   startPdcUsartReceive();
 #endif
+}
+
+void sportSendBuffer(const uint8_t * buffer, uint32_t size)
+{
+  telemetryTransmitBuffer(buffer, size);
 }
 
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size)
