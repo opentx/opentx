@@ -1181,6 +1181,7 @@
 #define TR_JITTER_FILTER       "ADC Filter"
 
 #define ZSTR_RSSI              "RSSI"
+#define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"
