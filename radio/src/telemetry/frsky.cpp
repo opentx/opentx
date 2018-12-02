@@ -51,6 +51,12 @@ void processFrskyPXX2Data(uint8_t data)
         telemetryRxBuffer[telemetryRxBufferCount++] = data;
         if (telemetryRxBuffer[0] + 3 /* 1 byte for length, 2 bytes for CRC */ == telemetryRxBufferCount) {
           if (checkPXX2PacketCRC(telemetryRxBuffer)) {
+            if (telemetryRxBuffer[2] & 0x80) {
+              telemetryData.rssi.set(telemetryRxBuffer[2] & 0x7f);
+            }
+            else {
+              // TODO : vbat handling
+            }
             sportProcessTelemetryPacketWithoutCrc(telemetryRxBuffer + 6 /* LEN, TYPE, RSSI/BAT, TP/SS/FW_T, FW_VER, Data ID */);
           }
           telemetryRxBufferCount = 0;
