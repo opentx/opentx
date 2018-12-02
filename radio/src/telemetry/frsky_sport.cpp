@@ -154,6 +154,8 @@ void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
   uint16_t id = *((uint16_t *)(packet+2));
   uint32_t data = SPORT_DATA_S32(packet);
 
+  TRACE("%x %x %x %x\n", physicalId, primId, id,SPORT_DATA_U8(packet) );
+
   if (primId == DATA_FRAME) {
     uint8_t instance = physicalId + 1;
     if (id == RSSI_ID && isValidIdAndInstance(RSSI_ID, instance)) {

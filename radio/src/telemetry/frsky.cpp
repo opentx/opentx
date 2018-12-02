@@ -29,6 +29,14 @@ bool checkPXX2PacketCRC(const uint8_t * packet)
   // DUMP(packet, FRSKY_SPORT_PACKET_SIZE);
 }
 
+void createFrSkyPXX2Sensor(uint16_t type, uint8_t value){
+  uint8_t buffer[5] = {0x18, 0x10, 0, 0, 0};
+  buffer[2] = type & 0xF;
+  buffer[3] = type >> 8;
+  buffer[4] = value;
+  sportProcessTelemetryPacketWithoutCrc(buffer);
+}
+
 void processFrskyPXX2Data(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
@@ -52,10 +60,10 @@ void processFrskyPXX2Data(uint8_t data)
         if (telemetryRxBuffer[0] + 3 /* 1 byte for length, 2 bytes for CRC */ == telemetryRxBufferCount) {
           if (checkPXX2PacketCRC(telemetryRxBuffer)) {
             if (telemetryRxBuffer[2] & 0x80) {
-              telemetryData.rssi.set(telemetryRxBuffer[2] & 0x7f);
+              createFrSkyPXX2Sensor(RSSI_ID, telemetryRxBuffer[2] & 0x7f);
             }
             else {
-              // TODO : vbat handling
+              createFrSkyPXX2Sensor(BATT_ID, telemetryRxBuffer[2] & 0x7f);
             }
             sportProcessTelemetryPacketWithoutCrc(telemetryRxBuffer + 6 /* LEN, TYPE, RSSI/BAT, TP/SS/FW_T, FW_VER, Data ID */);
           }
