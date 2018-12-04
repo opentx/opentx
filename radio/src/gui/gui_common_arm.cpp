@@ -486,13 +486,18 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
+bool isR9ModuleRunning(int module)
+{
+#if defined(SIMU)
+  return g_model.moduleData[module].type == MODULE_TYPE_R9M && TELEMETRY_STREAMING(); // Simu uses telemetry simu to activate/desactivate R9
+#else  
+  return g_model.moduleData[module].type == MODULE_TYPE_R9M && R9ModuleStreaming;
+#endif
+}
+
 bool isR9MModeAvailable(int mode)
 {
-#if defined(MODULE_R9M_FLEX_FW)
-  return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
-#else
-  return mode <= MODULE_SUBTYPE_R9M_EU;
-#endif
+  return mode <= MODULE_SUBTYPE_R9M_EUPLUS;
 }
 
 bool isModuleAvailable(int module)
@@ -516,6 +521,9 @@ bool isModuleAvailable(int module)
      return false;
   }
 #endif
+  if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+    return false;
+  }
   return true;
 }
 
@@ -531,6 +539,10 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
+  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
+    return false;
+  }
+
   return true;
 }
 

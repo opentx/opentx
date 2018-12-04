@@ -190,9 +190,10 @@ enum FrSkyDataState {
 #define BATT_ID                   0xf104
 #define RAS_ID                    0xf105
 #define XJT_VERSION_ID            0xf106
+#define R9_PWR_ID                 0xf107
 #define FUEL_QTY_FIRST_ID         0x0a10
 #define FUEL_QTY_LAST_ID          0x0a1f
-#define R9_PWR_ID                 0xf107 // TODO: *CRITICAL* agree on ID with FrSky, this value is just a placeholder
+
 
 
 // Default sensor data IDs (Physical IDs + CRC)

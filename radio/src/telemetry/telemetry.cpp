@@ -21,6 +21,7 @@
 #include "opentx.h"
 
 uint8_t telemetryStreaming = 0;
+uint8_t R9ModuleStreaming = 0;
 uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t telemetryRxBufferCount = 0;
 
@@ -120,7 +121,7 @@ void telemetryWakeup()
     varioWakeup();
   }
 #endif
-  
+
 #define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
 
   static tmr10ms_t alarmsCheckTime = 0;
@@ -202,7 +203,9 @@ void telemetryInterrupt10ms()
     wshhStreaming--;
   }
 #endif
-
+  if (R9ModuleStreaming > 0) {
+    R9ModuleStreaming--;
+  }
   if (telemetryStreaming > 0) {
     telemetryStreaming--;
   }

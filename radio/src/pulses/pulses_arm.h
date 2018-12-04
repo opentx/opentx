@@ -184,8 +184,10 @@ enum R9MLBTPowerValues {
 
 #else
 
-#define LEN_R9M_REGION                 "\006"
-#define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
+#define LEN_R9M_REGION                 "\004"
+#define TR_R9M_REGION                  "FCC\0""EU\0 ""FLEX"
+#define LEN_R9MFLEX_FREQ               "\006"
+#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
 #define LEN_R9M_FCC_POWER_VALUES       "\006"
 #define LEN_R9M_LBT_POWER_VALUES       "\013"
 #define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"

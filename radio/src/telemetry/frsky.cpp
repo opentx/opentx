@@ -59,6 +59,11 @@ void processFrskyPXX2Data(uint8_t data)
         telemetryRxBuffer[telemetryRxBufferCount++] = data;
         if (telemetryRxBuffer[0] + 3 /* 1 byte for length, 2 bytes for CRC */ == telemetryRxBufferCount) {
           if (checkPXX2PacketCRC(telemetryRxBuffer)) {
+            R9ModuleStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
+            uint8_t R9Region = (telemetryRxBuffer[3] & 0x30) >> 4;
+            if (R9Region != 0x04) {
+              BF_SET(g_model.moduleData[EXTERNAL_MODULE].subType, R9Region, 1, 2); // heading bit holds flex frequency
+            }
             if (telemetryRxBuffer[2] & 0x80) {
               createFrSkyPXX2Sensor(RSSI_ID, telemetryRxBuffer[2] & 0x7f);
             }
@@ -68,7 +73,11 @@ void processFrskyPXX2Data(uint8_t data)
             if((telemetryRxBuffer[3] & 0x04) == 0) {
               createFrSkyPXX2Sensor(R9_PWR_ID, (telemetryRxBuffer[3] & 0x03));
             }
-            sportProcessTelemetryPacketWithoutCrc(telemetryRxBuffer + 6 /* LEN, TYPE, RSSI/BAT, TP/SS/FW_T, FW_VER, Data ID */);
+
+            if (telemetryRxBuffer[0] == 0x0c) {
+              sportProcessTelemetryPacketWithoutCrc(telemetryRxBuffer + 5 /* LEN, TYPE, RSSI/BAT, TP/SS/FW_T, FW_VER, Data ID */);
+              TRACE("Got TELEM data");
+            }
           }
           telemetryRxBufferCount = 0;
           dataState = STATE_DATA_IDLE;
