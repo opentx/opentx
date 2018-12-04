@@ -46,6 +46,7 @@ void Pxx2Pulses::setupFrame(uint8_t port)
 #if defined(LUA)
   if (outputTelemetryBufferTrigger != 0x00 && outputTelemetryBufferSize > 0) {
     // primID (1 byte) + dataID (2 bytes) + value (4 bytes)
+    addByte(outputTelemetryBufferTrigger);
     for (uint8_t i=0; i<7; i++) {
       addByte(outputTelemetryBuffer[i]);
     }
