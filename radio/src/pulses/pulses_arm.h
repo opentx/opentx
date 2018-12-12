@@ -166,6 +166,8 @@ void setCustomFailsafe(uint8_t moduleIndex);
 #define LEN_R9M_LBT_POWER_VALUES       "\015"
 #define TR_R9M_FCC_POWER_VALUES        "(100 mW)"
 #define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
+#define LEN_R9MFLEX_FREQ               "\006"
+#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
 
 enum R9MFCCPowerValues {
   R9M_FCC_POWER_100 = 0,

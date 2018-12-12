@@ -490,7 +490,7 @@ bool isR9ModuleRunning(int module)
 {
 #if defined(SIMU)
   return g_model.moduleData[module].type == MODULE_TYPE_R9M && TELEMETRY_STREAMING(); // Simu uses telemetry simu to activate/desactivate R9
-#else  
+#else
   return g_model.moduleData[module].type == MODULE_TYPE_R9M && R9ModuleStreaming;
 #endif
 }
@@ -498,6 +498,11 @@ bool isR9ModuleRunning(int module)
 bool isR9MModeAvailable(int mode)
 {
   return mode <= MODULE_SUBTYPE_R9M_EUPLUS;
+}
+
+bool isR9MMFlex(int module)
+{
+  return g_model.moduleData[module].subType >= MODULE_SUBTYPE_R9M_EUPLUS;
 }
 
 bool isModuleAvailable(int module)
@@ -521,10 +526,14 @@ bool isModuleAvailable(int module)
      return false;
   }
 #endif
+#if !defined(PCBSKY9X)
   if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
+#endif
+
   return true;
+
 }
 
 bool isRfProtocolAvailable(int protocol)
@@ -539,9 +548,11 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
+#if defined(pxx)
   if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
     return false;
   }
+#endif
 
   return true;
 }

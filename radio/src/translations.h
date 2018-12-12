@@ -363,6 +363,7 @@ extern const char STR_PPMFRAME[];
 extern const char STR_REFRESHRATE[];
 extern const char SSTR_WARN_BATTVOLTAGE[];
 extern const char STR_MS[];
+extern const char STR_FREQUENCY[];
 extern const char STR_SWITCH[];
 extern const char STR_TRIMS[];
 extern const char STR_FADEIN[];
