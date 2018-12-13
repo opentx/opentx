@@ -66,7 +66,11 @@ uint8_t getRequiredProtocol(uint8_t port)
           required_protocol = PROTOCOL_CHANNELS_PXX;
           break;
         case MODULE_TYPE_R9M:
+#if defined(PCBXLITE)
+          required_protocol = PROTOCOL_CHANNELS_PXX;
+#else
           required_protocol = PROTOCOL_CHANNELS_PXX2;
+#endif
           break;
         case MODULE_TYPE_SBUS:
           required_protocol = PROTOCOL_CHANNELS_SBUS;
