@@ -106,27 +106,27 @@ inline bool isModuleR9M(uint8_t idx)
 
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_FCC;
 }
 
 inline bool isModuleR9M_LBT(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_EU;
 }
 
 inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region != MODULE_REGION_R9M_EU;
 }
 
 inline bool isModuleR9M_EUPLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EUPLUS;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_FLEX && g_model.moduleData[idx].r9m.freq == 0x00;
 }
 
 inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_FLEX && g_model.moduleData[idx].r9m.freq == 0x01;
 }
 
 
