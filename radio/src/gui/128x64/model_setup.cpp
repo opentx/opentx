@@ -1232,7 +1232,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_FREQ:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        uint8_t frequency = BF_GET(g_model.moduleData[moduleIdx].subType, 2, 1);
+        uint8_t frequency = BF_GET(g_model.moduleData[moduleIdx].r9m.freq, 2, 1);
         lcdDrawTextAlignedLeft(y, STR_FREQUENCY);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9MFLEX_FREQ, frequency, LEFT | attr);
         if (attr)
