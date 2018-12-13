@@ -157,10 +157,16 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 
 #define FAILSAFE_ROWS(x)               ((isModuleXJT(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 
+#if defined(PCBXLITE)
+#define EXTERNAL_MODULE_OPTION_ROW     (isModuleR9M(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
+#else
 #define EXTERNAL_MODULE_OPTION_ROW     (isR9ModuleRunning(EXTERNAL_MODULE) ? HIDDEN_ROW : isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
+#endif
 
 #if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
 #define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (isModuleR9M_FCC_VARIANT(EXTERNAL_MODULE) ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
+#elif defined(PCBXLITE)
+#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (uint8_t) 0 : HIDDEN_ROW
 #else
 #define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isR9ModuleRunning(EXTERNAL_MODULE)) ? (uint8_t) 0 : HIDDEN_ROW
 #endif

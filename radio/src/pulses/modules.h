@@ -99,6 +99,37 @@ inline bool isModulePPM(uint8_t idx)
 }
 #endif
 
+#if defined(PCBXLITE)
+inline bool isModuleR9M(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
+}
+
+inline bool isModuleR9M_FCC(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
+}
+
+inline bool isModuleR9M_LBT(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EU;
+}
+
+inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EU;
+}
+
+inline bool isModuleR9M_EUPLUS(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EUPLUS;
+}
+
+inline bool isModuleR9M_AU_PLUS(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
+}
+#else
 inline bool isModuleR9M(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
@@ -128,7 +159,7 @@ inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_915MHZ;
 }
-
+#endif
 
 inline bool isModulePXX(uint8_t idx)
 {

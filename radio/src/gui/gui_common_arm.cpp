@@ -494,12 +494,22 @@ bool isR9ModuleRunning(int module)
   return g_model.moduleData[module].type == MODULE_TYPE_R9M && R9ModuleStreaming;
 #endif
 }
+#if defined(PCBXLITE)
+bool isR9MModeAvailable(int mode)
+{
+#if defined(MODULE_R9M_FLEX_FW)
+  return mode >= MODULE_SUBTYPE_R9M_EUPLUS;
+#else
+  return mode <= MODULE_SUBTYPE_R9M_EU;
+#endif
+}
 
+#else
 bool isR9MModeAvailable(int mode)
 {
   return mode <= MODULE_SUBTYPE_R9M_EUPLUS;
 }
-
+#endif
 bool isR9MMFlex(int module)
 {
   return g_model.moduleData[module].r9m.region == MODULE_R9M_REGION_FLEX;
