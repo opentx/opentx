@@ -27,7 +27,6 @@
 #include <stdlib.h>
 #include "definitions.h"
 #include "opentx_types.h"
-#include "bitfield.h"
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif

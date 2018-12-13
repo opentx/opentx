@@ -106,27 +106,27 @@ inline bool isModuleR9M(uint8_t idx)
 
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_FCC;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FCC;
 }
 
 inline bool isModuleR9M_LBT(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_EU;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_EU;
 }
 
 inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region != MODULE_REGION_R9M_EU;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region != MODULE_R9M_REGION_EU;
 }
 
 inline bool isModuleR9M_EUPLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_FLEX && g_model.moduleData[idx].r9m.freq == 0x00;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_868MHZ;
 }
 
 inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_REGION_R9M_FLEX && g_model.moduleData[idx].r9m.freq == 0x01;
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_915MHZ;
 }
 
 

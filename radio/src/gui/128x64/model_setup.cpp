@@ -1239,6 +1239,7 @@ void menuModelSetup(event_t event)
           CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].r9m.freq, 1);
         }
       }
+      break;
 
 #if defined(MULTIMODULE)
       case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:

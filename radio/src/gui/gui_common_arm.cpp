@@ -502,7 +502,7 @@ bool isR9MModeAvailable(int mode)
 
 bool isR9MMFlex(int module)
 {
-  return g_model.moduleData[module].r9m.region == 0x02;
+  return g_model.moduleData[module].r9m.region == MODULE_R9M_REGION_FLEX;
 }
 
 bool isModuleAvailable(int module)
@@ -526,7 +526,7 @@ bool isModuleAvailable(int module)
      return false;
   }
 #endif
-#if !defined(PCBSKY9X)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
@@ -548,7 +548,7 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
-#if defined(pxx)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
     return false;
   }

@@ -76,7 +76,6 @@ void processFrskyPXX2Data(uint8_t data)
 
             if (telemetryRxBuffer[0] == 0x0c) {
               sportProcessTelemetryPacketWithoutCrc(telemetryRxBuffer + 5 /* LEN, TYPE, RSSI/BAT, TP/SS/FW_T, FW_VER, Data ID */);
-              TRACE("Got TELEM data");
             }
           }
           telemetryRxBufferCount = 0;
