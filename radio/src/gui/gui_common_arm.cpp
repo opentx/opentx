@@ -502,7 +502,7 @@ bool isR9MModeAvailable(int mode)
 
 bool isR9MMFlex(int module)
 {
-  return g_model.moduleData[module].subType >= MODULE_SUBTYPE_R9M_EUPLUS;
+  return g_model.moduleData[module].r9m.region == 0x02;
 }
 
 bool isModuleAvailable(int module)

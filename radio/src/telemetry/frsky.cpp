@@ -62,7 +62,7 @@ void processFrskyPXX2Data(uint8_t data)
             R9ModuleStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
             uint8_t R9Region = (telemetryRxBuffer[3] & 0x30) >> 4;
             if (R9Region != 0x04) {
-              BF_SET(g_model.moduleData[EXTERNAL_MODULE].subType, R9Region, 0, 2); // heading bit holds flex frequency
+              g_model.moduleData[EXTERNAL_MODULE].r9m.region = R9Region;
             }
             if (telemetryRxBuffer[2] & 0x80) {
               createFrSkyPXX2Sensor(RSSI_ID, telemetryRxBuffer[2] & 0x7f);
