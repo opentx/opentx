@@ -82,6 +82,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_POWER,
+  ITEM_MODEL_EXTERNAL_MODULE_FREQ,
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_LINE1,
@@ -236,7 +237,8 @@ int getSwitchWarningsCount()
 
 #define TIMER_ROWS(x)                     NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 
-#define EXTERNAL_MODULE_MODE_ROWS         (isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : isModuleMultimodule(EXTERNAL_MODULE) ? MULTIMODULE_MODE_ROWS(EXTERNAL_MODULE) : (uint8_t)0
+#define EXTERNAL_MODULE_MODE_ROWS         (isModuleXJT(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+#define EXTRA_MODULE_ROWS                 isR9MMFlex(EXTERNAL_MODULE) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
 
 #if TIMERS == 1
   #define TIMERS_ROWS                     TIMER_ROWS(0)
@@ -285,6 +287,7 @@ bool menuModelSetup(event_t event)
          EXTERNAL_MODULE_OPTION_ROW,
          MULTIMODULE_MODULE_ROWS
          EXTERNAL_MODULE_POWER_ROW,
+         EXTRA_MODULE_ROWS
          LABEL(Trainer),
          0,
          TRAINER_LINE1_ROWS,
@@ -693,8 +696,8 @@ bool menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         else if (isModuleDSM2(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
-        else if (isModuleR9M(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
+        else if (isR9ModuleRunning(EXTERNAL_MODULE))
+          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].r9m.region, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(EXTERNAL_MODULE)) {
           int multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
@@ -728,15 +731,6 @@ bool menuModelSetup(event_t event)
             case 1:
               if (isModuleDSM2(EXTERNAL_MODULE))
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
-              else if (isModuleR9M(EXTERNAL_MODULE)) {
-                uint8_t newR9MType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST, EE_MODEL, isR9MModeAvailable);
-                if (newR9MType != g_model.moduleData[EXTERNAL_MODULE].subType && newR9MType > MODULE_SUBTYPE_R9M_EU) {
-                  POPUP_WARNING(STR_R9MFLEXWARN1);
-                  const char * w = STR_R9MFLEXWARN2;
-                  SET_WARNING_INFO(w, strlen(w), 0);
-                }
-                g_model.moduleData[EXTERNAL_MODULE].subType = newR9MType;
-              }
 #if defined(MULTIMODULE)
               else if (isModuleMultimodule(EXTERNAL_MODULE)) {
                 int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MM_RF_PROTO_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
@@ -1068,16 +1062,7 @@ bool menuModelSetup(event_t event)
           }
         }
 #endif
-        if (isModuleR9M(moduleIdx)) {
-          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE_TELEMETRY);
-          if (IS_TELEMETRY_INTERNAL_MODULE()) {
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
-          }
-          else {
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEM_ON);
-          }
-        }
-        else if (isModuleSBUS(moduleIdx)) {
+        if (isModuleSBUS(moduleIdx)) {
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WARN_BATTVOLTAGE);
           drawValueWithUnit(MODEL_SETUP_4TH_COLUMN, y, getBatteryVoltage(), UNIT_VOLTS, attr|PREC2|LEFT);
         }
@@ -1115,6 +1100,18 @@ bool menuModelSetup(event_t event)
 #endif
       }
       break;
+
+    case ITEM_MODEL_EXTERNAL_MODULE_FREQ:
+    {
+      uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+      lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FREQUENCY);
+      lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9MFLEX_FREQ, g_model.moduleData[moduleIdx].r9m.freq, LEFT | attr);
+      if (attr)
+      {
+        CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].r9m.freq, 1);
+      }
+    }
+    break;
 
 #if defined(MULTIMODULE)
     case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:
