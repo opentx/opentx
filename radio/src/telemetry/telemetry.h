@@ -129,7 +129,11 @@ inline uint8_t modelTelemetryProtocol()
   }
 
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
+#if defined(PCBXLITE)
+    return PROTOCOL_TELEMETRY_FRSKY_SPORT;
+#else
     return PROTOCOL_TELEMETRY_PXX2;
+#endif
   }
 
 #if defined(MULTIMODULE)
