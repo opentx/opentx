@@ -33,12 +33,12 @@ void drawColumnHeader(const char * const * headers, const char * const * descrip
   }
 }
 
-const uint8_t __alpha_button_on[] __DMA = {
+static const uint8_t __alpha_button_on[] __ALIGNED(4) = {
 #include "alpha_button_on.lbm"
 };
 Bitmap ALPHA_BUTTON_ON(BMP_ARGB4444, (const uint16_t*)__alpha_button_on);
 
-const uint8_t __alpha_button_off[] __DMA = {
+static const uint8_t __alpha_button_off[] __ALIGNED(4) = {
 #include "alpha_button_off.lbm"
 };
 Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
