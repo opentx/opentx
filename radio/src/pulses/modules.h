@@ -88,7 +88,7 @@ inline bool isModulePPM(uint8_t idx)
 {
   return idx == TRAINER_MODULE ||
          (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
-         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM));
+         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
 }
 #else
 inline bool isModulePPM(uint8_t idx)
