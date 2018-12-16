@@ -406,9 +406,18 @@ PACK(struct ModuleData {
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode:4;  // only 3 bits used
-  uint8_t subType:3;
-  uint8_t invertedSerial:1; // telemetry serial inverted from standard
+  union {
+    struct {
+      uint8_t failsafeMode:4;  // only 3 bits used
+      uint8_t subType:3;
+      uint8_t invertedSerial:1; // telemetry serial inverted from standard
+    };
+    struct {
+      uint8_t failsafeMode:4;  // only 3 bits used
+      uint8_t freq:2;
+      uint8_t region:2;
+    } r9m;
+  };
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   union {
     struct {

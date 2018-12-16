@@ -36,6 +36,7 @@
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
+extern uint8_t R9ModuleStreaming; // >0 (true) == R9 module is connected and sending data 0 = no data detected for some time
 
 #if defined(WS_HOW_HIGH)
 extern uint8_t wshhStreaming;
@@ -128,9 +129,13 @@ inline uint8_t modelTelemetryProtocol()
   }
 
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
+#if defined(PCBXLITE)
+    return PROTOCOL_TELEMETRY_FRSKY_SPORT;
+#else
     return PROTOCOL_TELEMETRY_PXX2;
+#endif
   }
-  
+
 #if defined(MULTIMODULE)
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;
