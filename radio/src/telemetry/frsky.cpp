@@ -73,8 +73,7 @@ void processFrskyPXX2Data(uint8_t data)
             if((telemetryRxBuffer[3] & 0x04) == 0) {
               createFrSkyPXX2Sensor(R9_PWR_ID, (telemetryRxBuffer[3] & 0x03));
             }
-
-            if (telemetryRxBuffer[0] == 0x0c) {
+            if (telemetryRxBuffer[0] == 0x0C) {
               sportProcessTelemetryPacketWithoutCrc(telemetryRxBuffer + 5 /* LEN, TYPE, RSSI/BAT, TP/SS/FW_T, FW_VER, Data ID */);
             }
           }
