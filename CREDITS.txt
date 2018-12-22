@@ -1471,3 +1471,5 @@ Ken Elder
 Darko Perković
 Martin Krueger
 Jack Lopes
+Huguette Viale
+Didier Christien
