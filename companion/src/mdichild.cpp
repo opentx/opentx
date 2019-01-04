@@ -1260,7 +1260,7 @@ void MdiChild::openModelEditWindow(int row)
   gStopwatch.report("ModelEdit creation");
   ModelEdit * t = new ModelEdit(this, radioData, (row), firmware);
   gStopwatch.report("ModelEdit created");
-  t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + QString(model.name));
+  t->setWindowTitle(tr("Editing model %1: ").arg(row+1) + QString(model.name) + QString("   (%1)").arg(userFriendlyCurrentFile()));
   connect(t, &ModelEdit::modified, this, &MdiChild::setModified);
   gStopwatch.report("STARTING MODEL EDIT");
   t->show();
