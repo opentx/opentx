@@ -181,6 +181,8 @@ enum FrSkyDataState {
 #define GASSUIT_MAX_FLOW_LAST_ID  0x0d6f
 #define GASSUIT_AVG_FLOW_FIRST_ID 0x0d70
 #define GASSUIT_AVG_FLOW_LAST_ID  0x0d7f
+#define SBEC_POWER_FIRST_ID       0x0e50
+#define SBEC_POWER_LAST_ID        0x0e5f
 #define DIY_FIRST_ID              0x5100
 #define DIY_LAST_ID               0x52ff
 #define DIY_STREAM_FIRST_ID       0x5000

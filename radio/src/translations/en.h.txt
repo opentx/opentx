@@ -1283,3 +1283,5 @@
 #define ZSTR_GASSUIT_RES_PERC          "GRPc"
 #define ZSTR_GASSUIT_MAX_FLOW          "GMFl"
 #define ZSTR_GASSUIT_AVG_FLOW          "GAFl"
+#define ZSTR_SBEC_VOLTAGE              "BecV"
+#define ZSTR_SBEC_CURRENT              "BecA"
