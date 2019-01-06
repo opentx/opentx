@@ -96,7 +96,8 @@ local function run(event)
   lcd.clear()
   lcd.drawScreenTitle("CROSSFIRE SETUP", 0, 0)
   if #devices == 0 then
-    lcd.drawText(24, 28, "Waiting for Crossfire devices...")
+    lcd.drawText(36, 24, "Waiting for")
+    lcd.drawText(16, 36, "Crossfire devices...")
   else
     for i=1, #devices do
       local attr = (lineIndex == i and INVERS or 0)
