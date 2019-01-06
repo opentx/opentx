@@ -114,7 +114,7 @@ QString ModuleData::protocolToString(unsigned protocol)
 QStringList ModuleData::powerValueStrings(int subType, Firmware * fw)
 {
   static const QStringList strings[] = {
-    { tr("10mW - 16CH"), tr("100mW - 16CH"), tr("500mW - 16CH"), tr("1W - 16CH") },                                 // full-size FCC
+    { tr("10mW - 16CH"), tr("100mW - 16CH"), tr("500mW - 16CH"), tr("Auto <= 1W - 16CH") },                         // full-size FCC
     { tr("25mW - 8CH"), tr("25mW - 16CH"), tr("200mW - 16CH (no telemetry)"), tr("500mW - 16CH (no telemetry)") },  // full-size EU
     { tr("100mW - 16CH") },                                                                                         // mini FCC
     { tr("25mW - 8CH"), tr("25mW - 16CH"), tr("100mW - 16CH (no telemetry)") }                                      // mini EU
