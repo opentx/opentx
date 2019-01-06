@@ -146,6 +146,7 @@ TreeModel::TreeModel(RadioData * radioData, QObject * parent):
   if (!(IS_HORUS(board) || IS_SKY9X(board))) {
     labels << tr("Size");
   }
+  labels << tr("RX #");
   rootItem = new TreeItem(labels);
   // uniqueId and version for drag/drop operations (see encodeHeaderData())
   mimeHeaderData.instanceId = QUuid::createUuid();
@@ -641,7 +642,7 @@ void TreeModel::refresh()
   Board::Type board = eepromInterface->getBoard();
   TreeItem * defaultCategoryItem = NULL;
   bool hasCategories = getCurrentFirmware()->getCapability(Capability::HasModelCategories);
-  bool hasEepromSizeData = (rootItem->columnCount() > 2);
+  bool hasEepromSizeData = (IS_HORUS(board) ? false : true);
 
   if (hasEepromSizeData) {
     availableEEpromSize = Boards::getEEpromSize(board) - 64; // let's consider fat
@@ -710,10 +711,46 @@ void TreeModel::refresh()
           availableEEpromSize -= size;
         }
       }
+      int protocol;
+      QString rxs;
+      for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
+        protocol = model.moduleData[j].protocol;
+        // These are the only RXs that allow nominating RX # but changing RX or copying models can leave residual configuration which can cause issues
+        // if (protocol == PULSES_PXX_XJT_X16 || protocol == PULSES_PXX_XJT_LR12 || protocol == PULSES_PXX_R9M || protocol == PULSES_DSMX || protocol == PULSES_MULTIMODULE) {
+        if (!protocol == PULSES_OFF && model.moduleData[j].modelId > 0) {
+          if (!rxs.isEmpty()) {
+            rxs.append(", ");
+          }
+          unsigned mdlidx = model.moduleData[j].modelId;
+          rxs.append(QString("%1").arg(uint(mdlidx), 2, 10, QChar('0')));
+          if (!isModelIdUnique(mdlidx)) {
+            rxs.append("+");
+          }
+          ModelData & mdl = radioData->models[mdlidx-1];
+          if (mdl.isEmpty()) {
+            rxs.append("*");
+          }
+        }
+      }
+      current->setData(currentColumn++, rxs);
     }
   }
 
   if (hasEepromSizeData) {
     availableEEpromSize = (availableEEpromSize / 16) * 15;
   }
+}
+
+bool TreeModel::isModelIdUnique(unsigned modelIdx)
+{
+  int cnt = 0;
+  for (unsigned i=0; i<radioData->models.size(); i++) {
+    ModelData & model = radioData->models[i];
+    for (unsigned j=0; j<CPN_MAX_MODULES; j++) {
+      if (!model.moduleData[j].protocol == PULSES_OFF && model.moduleData[j].modelId == modelIdx) {
+        cnt++;
+      }
+    }
+  }
+  return (cnt < 2 ? true : false);
 }

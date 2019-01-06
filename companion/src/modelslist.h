@@ -146,6 +146,7 @@ class TreeModel : public QAbstractItemModel
 
   private:
     TreeItem * getItem(const QModelIndex & index) const;
+    bool isModelIdUnique(unsigned modelId);
 
     TreeItem * rootItem;
     RadioData * radioData;
