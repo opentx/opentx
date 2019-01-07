@@ -8724,7 +8724,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="117"/>
         <source>Auto &lt;= 1W - 16CH</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto &lt;= 1W - 16 VOIES</translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="118"/>
