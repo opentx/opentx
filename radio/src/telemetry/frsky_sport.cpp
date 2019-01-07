@@ -238,8 +238,8 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
           sportProcessTelemetryPacket(id, 0, instance, data & 0x00ff);
         }
         else if (id >= SBEC_POWER_FIRST_ID && id <= SBEC_POWER_LAST_ID) {
-          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
+          sportProcessTelemetryPacket(id, 0, instance, (data & 0xffff) / 10);
+          sportProcessTelemetryPacket(id, 1, instance, (data >> 16) / 10);
         }
         else if (id >= DIY_STREAM_FIRST_ID && id <= DIY_STREAM_LAST_ID) {
 #if defined(LUA)
