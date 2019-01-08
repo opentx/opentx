@@ -414,7 +414,7 @@ local function createModel(event)
   -- motor
   if(MotorFields[1][5] == 1) then
     addMix(MotorFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Motor")
-  elseif (MotorFields[2][5] == 2) then
+  elseif (MotorFields[1][5] == 2) then
     addMix(MotorFields[2][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Motor1")
     addMix(MotorFields[3][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Motor2")
   end
