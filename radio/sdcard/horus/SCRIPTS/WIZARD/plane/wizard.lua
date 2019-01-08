@@ -355,7 +355,7 @@ local function runConfigSummary(event)
   -- motors
   if(MotorFields[1][5] == 1) then
     drawNextLine("Motor chan :", MotorFields[2][5])
-  elseif (MotorFields[2][5] == 2) then
+  elseif (MotorFields[1][5] == 2) then
     drawNextLine("Motor 1 chan :", MotorFields[2][5])
     drawNextLine("Motor 2 chan :", MotorFields[3][5])
   end
