@@ -6,7 +6,7 @@ branch=2.2
 docker=rc22
 workdir=/home/opentx/rc22
 output=/var/www/html/2.2/rc
-version=2.2.3
+version=2.2.4
 
 # Increment RC index
 index=`cat index.txt`
