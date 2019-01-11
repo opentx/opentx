@@ -1535,7 +1535,7 @@ void menuModelSetup(event_t event)
     switch(menuVerticalPosition) {
 #if defined(PCBTARANIS)
     case ITEM_MODEL_INTERNAL_MODULE_BIND:
-      if (menuHorizontalPosition == 0)
+      if (menuHorizontalPosition == 0 && IS_R9M_OR_XJTD16(INTERNAL_MODULE))
         checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
       break;
 #endif
@@ -1547,7 +1547,7 @@ void menuModelSetup(event_t event)
 #endif
 #if defined(CPUARM)
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
-      if (menuHorizontalPosition == 0)
+      if (menuHorizontalPosition == 0  && IS_R9M_OR_XJTD16(EXTERNAL_MODULE))
         checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
       break;
 #endif

@@ -514,7 +514,9 @@ void modelDefault(uint8_t id)
   for (int i=0; i<NUM_MODULES; i++) {
     modelHeaders[id].modelId[i] = g_model.header.modelId[i] = id+1;
   }
-  checkModelIdUnique(id, 0);
+  if (IS_R9M_OR_XJTD16(INTERNAL_MODULE)) {
+    checkModelIdUnique(id, 0);
+  }
 #endif
 
 #if defined(CPUARM) && defined(FLIGHT_MODES) && defined(GVARS)

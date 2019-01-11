@@ -1165,7 +1165,8 @@ bool menuModelSetup(event_t event)
           break;
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         mod_cell->setRfData(&g_model);
-        checkModelIdUnique(INTERNAL_MODULE);
+        if (IS_R9M_OR_XJTD16(INTERNAL_MODULE))
+          checkModelIdUnique(INTERNAL_MODULE);
         break;
 
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
@@ -1173,7 +1174,7 @@ bool menuModelSetup(event_t event)
           break;
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         mod_cell->setRfData(&g_model);
-        if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+        if (IS_R9M_OR_XJTD16(EXTERNAL_MODULE))
           checkModelIdUnique(EXTERNAL_MODULE);
       }
     }
