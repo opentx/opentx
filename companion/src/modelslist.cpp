@@ -25,7 +25,8 @@ TreeItem::TreeItem(const QVector<QVariant> & itemData):
   parentItem(NULL),
   categoryIndex(-1),
   modelIndex(-1),
-  flags(0)
+  flags(0),
+  highlightRX(false)
 {
 }
 
@@ -139,8 +140,9 @@ TreeModel::TreeModel(RadioData * radioData, QObject * parent):
   availableEEpromSize(-1)
 {
   Board::Type board = getCurrentBoard();
+  hasCategories = getCurrentFirmware()->getCapability(Capability::HasModelCategories);
   QVector<QVariant> labels;
-  if (!getCurrentFirmware()->getCapability(Capability::HasModelCategories))
+  if (!hasCategories)
     labels << tr("Index");
   labels << tr("Name");
   if (!(IS_HORUS(board) || IS_SKY9X(board))) {
@@ -186,6 +188,14 @@ QVariant TreeModel::data(const QModelIndex & index, int role) const
 
   if (role == Qt::ForegroundRole && (item->getFlags() & TreeItem::MarkedForCut)) {
     return QPalette().brush(QPalette::Disabled, QPalette::Text);
+  }
+
+  if (role == Qt::ForegroundRole && item->isModel()) {
+    if (index.column() == (item->columnCount() - 1) && item->isHighlightRX()) {
+      QBrush brush;
+      brush.setColor(Qt::red);
+      return brush;
+    }
   }
 
   return QVariant();
@@ -641,7 +651,6 @@ void TreeModel::refresh()
   EEPROMInterface * eepromInterface = getCurrentEEpromInterface();
   Board::Type board = eepromInterface->getBoard();
   TreeItem * defaultCategoryItem = NULL;
-  bool hasCategories = getCurrentFirmware()->getCapability(Capability::HasModelCategories);
   bool hasEepromSizeData = (IS_HORUS(board) ? false : true);
 
   if (hasEepromSizeData) {
@@ -724,11 +733,11 @@ void TreeModel::refresh()
           unsigned mdlidx = model.moduleData[j].modelId;
           rxs.append(QString("%1").arg(uint(mdlidx), 2, 10, QChar('0')));
           if (!isModelIdUnique(mdlidx)) {
-            rxs.append("+");
+            current->setHighlightRX(true);
           }
           ModelData & mdl = radioData->models[mdlidx-1];
           if (mdl.isEmpty()) {
-            rxs.append("*");
+            current->setHighlightRX(true);
           }
         }
       }
