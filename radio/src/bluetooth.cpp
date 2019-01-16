@@ -395,7 +395,7 @@ void bluetoothWakeup()
       bluetoothState = BLUETOOTH_STATE_NAME_SENT;
     }
     else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && (!strncmp(line, "OK+", 3) || !strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-      bluetoothWriteString("AT+TXPW3\r\n");
+      bluetoothWriteString("AT+TXPW\r\n");
       bluetoothState = BLUETOOTH_STATE_POWER_SENT;
     }
     else if (bluetoothState == BLUETOOTH_STATE_POWER_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
