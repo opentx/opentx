@@ -266,7 +266,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
       if (swinfo.quot == 5)
         *s++ = 'H';
       else if (swinfo.quot == 4)
-        *s++ = 'F';
+        *s++ = 'G';
       else
         *s++ = 'A'+swinfo.quot;
 #else
