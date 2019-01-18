@@ -200,6 +200,12 @@ void processCrossfireTelemetryData(uint8_t data)
     telemetryRxBufferCount = 0;
   }
 
+#if defined(SERIAL2)
+  if (g_eeGeneral.serial2Mode == UART_MODE_TELEMETRY_MIRROR) {
+    serial2Putc(data);
+  }
+#endif
+
   if (telemetryRxBufferCount > 4) {
     uint8_t length = telemetryRxBuffer[1];
     if (length + 2 == telemetryRxBufferCount) {
