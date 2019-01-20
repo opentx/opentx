@@ -655,9 +655,9 @@
   #define INTMODULE_RCC_APB1Periph      0
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM1
   #define INTMODULE_PWR_GPIO            GPIOC
-  #define INTMODULE_PWR_GPIO_PIN        GPIO_Pin_6  // PC.06
+  #define INTMODULE_PWR_GPIO_PIN        GPIO_Pin_6  // JUMPER INT PC.06 //X7 INT is PC.06
   #define INTMODULE_TX_GPIO             GPIOA
-  #define INTMODULE_TX_GPIO_PIN         GPIO_Pin_10 // PA.10
+  #define INTMODULE_TX_GPIO_PIN         GPIO_Pin_7  // JUMPER INT PA.07 //X7 INT is PA.10
   #define INTMODULE_TX_GPIO_PinSource   GPIO_PinSource10
   #define INTMODULE_TIMER               TIM1
   #define INTMODULE_TIMER_CC_IRQn       TIM1_CC_IRQn
@@ -721,6 +721,27 @@
   #define EXTMODULE_USART_DMA_STREAM_IRQn       DMA2_Stream6_IRQn
   #define EXTMODULE_USART_DMA_STREAM_IRQHandler DMA2_Stream6_IRQHandler
   #define EXTMODULE_USART_DMA_FLAG_TC           DMA_IT_TCIF6
+#elif defined(PCBJUMPERT12)
+  //Jumper T12v2 external module configured
+  #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
+  #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
+  #define EXTMODULE_PWR_GPIO            GPIOD
+  #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_8   // JUMPER EXT PD.08  // X7 EXT is PD.08
+  #define EXTMODULE_TX_GPIO             GPIOA
+  #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_7   // JUMPER EXT PA.07  // X7 EXT is PA.07
+  #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource7
+  #define EXTMODULE_TIMER               TIM8
+  #define EXTMODULE_TIMER_TX_GPIO_AF          GPIO_AF_TIM8 // TIM8_CH1N
+  #define EXTMODULE_TIMER_CC_IRQn       TIM8_CC_IRQn
+  #define EXTMODULE_TIMER_CC_IRQHandler TIM8_CC_IRQHandler
+  #define EXTMODULE_TIMER_DMA_CHANNEL         DMA_Channel_7
+  #define EXTMODULE_TIMER_DMA_STREAM          DMA2_Stream1
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQn       DMA2_Stream1_IRQn
+  #define EXTMODULE_TIMER_DMA_STREAM_IRQHandler DMA2_Stream1_IRQHandler
+  #define EXTMODULE_TIMER_DMA_FLAG_TC         DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1NE
+  #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1NP
+  #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #else
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
