@@ -46,7 +46,7 @@ int8_t  checkIncDec_Ret;
 #define DBLKEYS_PRESSED_RGT_UP(in)     ((in & ((1<<KEY_SHIFT) + (1<<KEY_RIGHT))) == ((1<<KEY_SHIFT) + (1<<KEY_RIGHT)))
 // set to min
 #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & ((1<<KEY_SHIFT) + (1<<KEY_LEFT))) == ((1<<KEY_SHIFT) + (1<<KEY_LEFT)))
-#elif defined(PCBX7)
+#elif defined(PCBT12)
 #define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
 #define DBLKEYS_PRESSED_UP_DWN(in)     (false)
 #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
@@ -118,7 +118,7 @@ void onSwitchLongEnterPress(const char * result)
 }
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBT12)
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
@@ -165,23 +165,33 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   }
 #endif
 
-  if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
-    newval += min<int>(rotencSpeed, i_max-val);
-    while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
-      newval++;
-    }
+  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
+    do {
+      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+        newval += min(10, i_max-val);
+      }
+      else {
+        newval++;
+      }
+    } while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max);
     if (newval > i_max) {
       newval = val;
+      killEvents(event);
       AUDIO_KEY_ERROR();
     }
   }
-  else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
-    newval -= min<int>(rotencSpeed, val-i_min);
-    while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {
-      newval--;
-    }
+  else if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
+    do {
+      if (IS_KEY_REPT(event) && (i_flags & INCDEC_REP10)) {
+        newval -= min(10, val-i_min);
+      }
+      else {
+        newval--;
+      }
+    } while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min);
     if (newval < i_min) {
       newval = val;
+      killEvents(event);
       AUDIO_KEY_ERROR();
     }
   }
@@ -648,7 +658,7 @@ int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 tmr10ms_t menuEntryTime;
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBT12)
 #define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
@@ -730,7 +740,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
-    case EVT_ROTARY_BREAK:
+    case EVT_KEY_BREAK(KEY_ENTER):
       if (s_editMode > 1) break;
       if (menuHorizontalPosition < 0 && maxcol > 0 && READ_ONLY_UNLOCKED()) {
         l_posHorz = 0;
@@ -772,12 +782,12 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       }
       break;
 
-    case EVT_ROTARY_RIGHT:
+    CASE_EVT_ROTARY_RIGHT
     case EVT_KEY_FIRST(KEY_RIGHT):
       AUDIO_KEY_PRESS();
       // no break
     case EVT_KEY_REPT(KEY_RIGHT):
-      if (s_editMode > 0) break; // TODO it was !=
+      if (s_editMode != 0) break;
       if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
         if (l_posHorz >= 0) {
           INC(l_posHorz, 0, maxcol);
@@ -803,12 +813,12 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
       l_posHorz = POS_HORZ_INIT(l_posVert);
       break;
 
-    case EVT_ROTARY_LEFT:
+    CASE_EVT_ROTARY_LEFT
     case EVT_KEY_FIRST(KEY_LEFT):
       AUDIO_KEY_PRESS();
       // no break
     case EVT_KEY_REPT(KEY_LEFT):
-      if (s_editMode > 0) break; // TODO it was !=
+      if (s_editMode != 0) break;
       if ((COLATTR(l_posVert) & NAVIGATION_LINE_BY_LINE)) {
         if (l_posHorz >= 0) {
           DEC(l_posHorz, 0, maxcol);
@@ -1124,7 +1134,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       break;
 #endif
 
-#if !defined(PCBX7)
+#if !defined(PCBT12)
     case EVT_KEY_REPT(KEY_DOWN):
       if (!IS_ROTARY_RIGHT(event) && l_posVert==maxrow) break;
       // no break
@@ -1169,7 +1179,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       break;
 #endif
 
-#if !defined(PCBX7)
+#if !defined(PCBT12)
     case EVT_KEY_REPT(KEY_UP):
       if (!IS_ROTARY_LEFT(event) && l_posVert==0) break;
       // no break

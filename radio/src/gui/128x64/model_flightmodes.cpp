@@ -281,7 +281,7 @@ void menuModelFlightModesAll(event_t event)
         trimsCheckTimer = 200; // 2 seconds
       }
       // no break
-#if !defined(PCBX7)
+#if !defined(PCBT12)
     case EVT_KEY_FIRST(KEY_RIGHT):
 #endif
       if (sub >= 0 && sub < MAX_FLIGHT_MODES) {

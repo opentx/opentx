@@ -1071,7 +1071,7 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(PCBT12) || defined(PCBXLITE)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
@@ -1188,7 +1188,7 @@ static inline void check_struct()
 #if defined(PCBXLITE)
   CHKSIZE(RadioData, 844);
   CHKSIZE(ModelData, 6025);
-#elif defined(PCBX7)
+#elif defined(PCBT12)
   CHKSIZE(RadioData, 850);
   CHKSIZE(ModelData, 6025);
 #elif defined(PCBX9E)

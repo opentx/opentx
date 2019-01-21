@@ -27,7 +27,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
-#if defined(PCBX7)
+#if defined(PCBT12)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
@@ -230,7 +230,7 @@ void title(const pm_char * s);
   #define MENU_TAB(...) static const pm_uint8_t mstate_tab[] PROGMEM = __VA_ARGS__
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBT12)
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 #else
@@ -243,7 +243,7 @@ void title(const pm_char * s);
   MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
-#if defined(PCBX7)
+#if defined(PCBT12)
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), lines_count);
 #define SUBMENU_NOTITLE(lines_count, ...) { \
@@ -410,7 +410,7 @@ void drawStatusLine();
 #endif
 
 // TODO enum
-#if defined(PCBX7)
+#if defined(PCBT12)
 #define EDIT_MODE_INIT                 0
 #else
 #define EDIT_MODE_INIT                 -1

@@ -253,7 +253,7 @@ enum BeeperMode {
 
 #if defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
-#elif defined(PCBX7) || defined(PCBXLITE)
+#elif defined(PCBT12) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
 #else
   #define TRAINER_MODE_MAX()             HAS_WIRELESS_TRAINER_HARDWARE() ? TRAINER_MODE_MASTER_BATTERY_COMPARTMENT : TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
@@ -529,7 +529,7 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if !defined(PCBT12) && !defined(PCBXLITE)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
@@ -539,7 +539,7 @@ enum SwitchSources {
   SWSRC_SF1,
   SWSRC_SF2,
 #endif
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if !defined(PCBT12) && !defined(PCBXLITE)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
@@ -728,7 +728,7 @@ enum MixSources {
   MIXSRC_SLIDER3,                       LUA_EXPORT("lcs", "Left center slider (X9E only)")
   MIXSRC_SLIDER4,                       LUA_EXPORT("rcs", "Right center slider (X9E only)")
   MIXSRC_LAST_POT = MIXSRC_SLIDER4,
-#elif defined(PCBX7) || defined(PCBXLITE)
+#elif defined(PCBT12) || defined(PCBXLITE)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_LAST_POT = MIXSRC_POT2,
@@ -800,11 +800,11 @@ enum MixSources {
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-#if !defined(PCBX7)
+#if !defined(PCBT12)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
 #endif
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
-#if !defined(PCBX7)
+#if !defined(PCBT12)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
 #endif
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
