@@ -1660,6 +1660,7 @@ extern uint8_t s_frsky_view;
 
 #define EARTH_RADIUSKM ((uint32_t)6371)
 #define EARTH_RADIUS ((uint32_t)111194) // meters * pi / 180°
+#define HALF_EARTH_RADIUS ((uint32_t)55597)
 
 void getGpsPilotPosition();
 void getGpsDistance();
