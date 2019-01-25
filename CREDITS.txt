@@ -1484,3 +1484,5 @@ Ferenc Kunkli
 Stefano Boggia
 Lee Bennett
 Morgantech
+Marek Přikryl
+Peter Scott
