@@ -150,7 +150,7 @@ class StandardPxxTransport: public BitTransport, public PxxCrcMixin {
       addByteWithoutCrc(byte);
     };
 
-    void addRawByteWithoutCrc(uint8_t byte)
+    void addRawByte(uint8_t byte)
     {
       for (uint8_t i = 0; i < 8; i++) {
         if (byte & 0x80)
@@ -198,28 +198,28 @@ class UartPxxTransport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
       addWithByteStuffing(byte);
     }
 
-    void addRawByteWithoutCrc(uint8_t byte)
+    void addRawByte(uint8_t byte)
     {
-      addByteWithoutCrc(byte);
+      *ptr++ = byte;
     }
 
     void addByteWithoutCrc(uint8_t byte)
     {
-      *ptr++ = byte;
+      addWithByteStuffing(byte);
     }
 
     void addWithByteStuffing(uint8_t byte)
     {
       if (0x7E == byte) {
-        *ptr++ = 0x7D;
-        *ptr++ = 0x5E;
+        addRawByte(0x7D);
+        addRawByte(0x5E);
       }
       else if (0x7D == byte) {
-        *ptr++ = 0x7D;
-        *ptr++ = 0x5D;
+        addRawByte(0x7D);
+        addRawByte(0x5D);
       }
       else {
-        *ptr++ = byte;
+        addRawByte(byte);
       }
     }
 
