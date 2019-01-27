@@ -22,6 +22,10 @@
 
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
+struct {
+  int32_t latitude;
+  int32_t longitude;
+} oldGPSPos, oldPilotPos;
 
 bool isFaiForbidden(source_t idx)
 {
@@ -335,6 +339,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
       if (sensor.dist.gps) {
         TelemetryItem gpsItem = telemetryItems[sensor.dist.gps-1];
         TelemetryItem * altItem = NULL;
+
         if (!gpsItem.isAvailable()) {
           return;
         }
@@ -353,9 +358,12 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           }
         }
 
-        if (!gpsItem.isFresh()) {
+        if (!memcmp(&gpsItem.gps, &oldGPSPos, sizeof(oldGPSPos)) && !memcmp(&gpsItem.pilotLongitude, &oldPilotPos, sizeof(oldPilotPos))) {
           return;
         }
+
+        memcpy(&oldGPSPos, &gpsItem.gps, sizeof(oldGPSPos));
+        memcpy(&oldPilotPos, &gpsItem.pilotLongitude, sizeof(oldPilotPos));
 
         uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
         uint32_t dist = ((uint64_t)EARTH_RADIUS * angle) / 1000000;
@@ -373,7 +381,6 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           result = dist*dist + result*result;
           result = isqrt32(result);
         }
-
         setValue(sensor, result, UNIT_METERS);
       }
       break;
