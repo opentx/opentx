@@ -32,7 +32,7 @@
 #elif defined(PCBX9E)
   #include "lua/lua_exports_x9e.inc"
 #elif defined(PCBT12)
-  #include "lua/lua_exports_x7.inc"
+  #include "lua/lua_exports_t12.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
