@@ -166,7 +166,7 @@ void PxxPulses<PxxTransport>::addExtraFlags(uint8_t port)
   extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
   if (isModuleR9M(port)) {
     extra_flags |= (min<uint8_t>(g_model.moduleData[port].pxx.power, isModuleR9M_FCC_VARIANT(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
-    if(isModuleR9M_EUPLUS(port))
+    if (isModuleR9M_EUPLUS(port))
       extra_flags |= (1 << 6);
   }
 

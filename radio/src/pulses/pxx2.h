@@ -23,6 +23,7 @@
 
 #include "./pxx.h"
 
+// should not be used anymore
 class SportCrcMixin {
   protected:
     void initCrc()
@@ -41,17 +42,17 @@ class SportCrcMixin {
 };
 
 
-class Pxx2Transport: public DataBuffer<uint8_t, 64>, public SportCrcMixin {
+class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
   protected:
     void addByte(uint8_t byte)
     {
-      SportCrcMixin::addToCrc(byte);
-      *ptr++ = byte;
-    }
+      PxxCrcMixin::addToCrc(byte);
+      addByteWithoutCrc(byte);
+    };
 
-    void addTail()
+    void addByteWithoutCrc(uint8_t byte)
     {
-      // nothing
+      *ptr++ = byte;
     }
 };
 
@@ -59,13 +60,43 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
   public:
     void setupFrame(uint8_t port);
 
-  protected:
-    uint8_t data[64];
-    uint8_t * ptr;
+    void addHead()
+    {
+      // send 7E, do not CRC
+      Pxx2Transport::addByteWithoutCrc(0x7E);
+
+      // reserve 1 byte for LEN
+      Pxx2Transport::addByteWithoutCrc(0x00);
+
+      // TYPE_C + TYPE_ID
+      Pxx2Transport::addByte(0x26); // This one is CRC-ed on purpose
+    }
+
+    void addCrc()
+    {
+      Pxx2Transport::addByteWithoutCrc(PxxCrcMixin::crc >> 8);
+      Pxx2Transport::addByteWithoutCrc(PxxCrcMixin::crc);
+    }
 
     void initFrame()
     {
+      // init the CRC counter
+      initCrc();
+
+      // reset the frame pointer
       Pxx2Transport::initBuffer();
+
+      // add the frame head
+      addHead();
+    }
+
+    void endFrame()
+    {
+      // update the frame LEN = frame length minus the 2 first bytes
+      data[1] = getSize() - 2;
+
+      // now add the CRC
+      addCrc();
     }
 };
 

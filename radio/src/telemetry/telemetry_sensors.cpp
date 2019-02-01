@@ -33,7 +33,7 @@ bool isFaiForbidden(source_t idx)
 
   switch (telemetryProtocol) {
 
-    case PROTOCOL_FRSKY_SPORT:
+    case PROTOCOL_TELEMETRY_FRSKY_SPORT:
       if (sensor->id == RSSI_ID) {
         return false;
       }
@@ -42,7 +42,7 @@ bool isFaiForbidden(source_t idx)
       }
       break;
 
-    case PROTOCOL_FRSKY_D:
+    case PROTOCOL_TELEMETRY_FRSKY_D:
       if (sensor->id == D_RSSI_ID) {
         return false;
       }
@@ -52,7 +52,7 @@ bool isFaiForbidden(source_t idx)
       break;
 
 #if defined(CROSSFIRE)
-    case PROTOCOL_PULSES_CROSSFIRE:
+    case PROTOCOL_TELEMETRY_CROSSFIRE:
       if (sensor->id == RX_RSSI1_INDEX) {
         return false;
       }

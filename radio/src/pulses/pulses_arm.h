@@ -82,9 +82,7 @@ union ModulePulsesData {
   PwmPxxPulses pxx;
 #endif
 
-#if defined(PXX2)
   Pxx2Pulses pxx2;
-#endif
 
 #if defined(PPM_PIN_SERIAL)
   Dsm2SerialPulsesData dsm2;
@@ -168,6 +166,8 @@ void setCustomFailsafe(uint8_t moduleIndex);
 #define LEN_R9M_LBT_POWER_VALUES       "\015"
 #define TR_R9M_FCC_POWER_VALUES        "(100 mW)"
 #define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
+#define LEN_R9MFLEX_FREQ               "\006"
+#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
 
 enum R9MFCCPowerValues {
   R9M_FCC_POWER_100 = 0,
@@ -186,8 +186,10 @@ enum R9MLBTPowerValues {
 
 #else
 
-#define LEN_R9M_REGION                 "\006"
-#define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
+#define LEN_R9M_REGION                 "\004"
+#define TR_R9M_REGION                  "FCC\0""EU\0 ""FLEX"
+#define LEN_R9MFLEX_FREQ               "\006"
+#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
 #define LEN_R9M_FCC_POWER_VALUES       "\006"
 #define LEN_R9M_LBT_POWER_VALUES       "\013"
 #define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"

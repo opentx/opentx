@@ -125,10 +125,10 @@ void setupPulsesDSM2(uint8_t port)
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
   switch (s_current_protocol[port]) {
-    case PROTO_DSM2_LP45:
+    case PROTOCOL_CHANNELS_DSM2_LP45:
       dsmDat[0] = 0x00;
       break;
-    case PROTO_DSM2_DSM2:
+    case PROTOCOL_CHANNELS_DSM2_DSM2:
       dsmDat[0] = 0x10;
       break;
     default: // DSMX

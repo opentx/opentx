@@ -176,7 +176,7 @@ const char * sportUpdatePowerOn(ModuleIndex module)
   sportUpdateState = SPORT_POWERUP_REQ;
   sportWaitState(SPORT_IDLE, 500); // Clear the fifo
 
-  telemetryInit(PROTOCOL_FRSKY_SPORT);
+  telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE)
@@ -199,7 +199,7 @@ const char * sportUpdatePowerOn(ModuleIndex module)
       return NULL;
   }
 
-  if (telemetryProtocol != PROTOCOL_FRSKY_SPORT) {
+  if (telemetryProtocol != PROTOCOL_TELEMETRY_FRSKY_SPORT) {
     return TR("Not responding", "Not S.Port 1");
   }
 

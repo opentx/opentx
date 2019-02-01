@@ -33,7 +33,7 @@ class Pxx1Pulses: public PxxPulses<PxxTransport>
     void addHead()
     {
       // send 7E, do not CRC
-      PxxTransport::addByteWithoutCrc(0x7E);
+      PxxTransport::addRawByte(0x7E);
     }
 
     void addCrc()
