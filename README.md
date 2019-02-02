@@ -7,6 +7,7 @@ Travis saying about OpenTX master fork: [![Travis build Status](https://travis-c
 OpenTX chat: [![Join the chat at https://chat.open-tx.org](https://camo.githubusercontent.com/3d659054abd6ce21c0e47cf3b83a51bda69ca282/68747470733a2f2f64656d6f2e726f636b65742e636861742f696d616765732f6a6f696e2d636861742e737667)](https://chat.open-tx.org)
 
 <b>Want to donate for my work around Jumper T12 controller? You can PayPal.me</b> https://www.paypal.me/schumixmd
+
 Want to donate for OpenTX development - please visit OpenTX main site http://www.open-tx.org/.
 
 This is just a fork of OpenTX. 
