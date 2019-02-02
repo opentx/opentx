@@ -166,7 +166,7 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
 }
 
-#define MENU_TASK_PERIOD_TICKS      25    // 50ms
+#define MENU_TASK_PERIOD_TICKS      50    // 50ms
 
 #if defined(COLORLCD) && defined(CLI)
 bool perMainEnabled = true;
