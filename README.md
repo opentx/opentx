@@ -14,6 +14,8 @@ This is just a fork of OpenTX.
 I am trying to port the OpenTX to Jumper T12 controller by correcting the navigation and switch assignment. 
 Most probably the development will not be pulled to the original OpenTX firmware, so there will be no future updates. 
 
+
+---- 
 Refer to the [OpenTX wiki](https://github.com/opentx/opentx/wiki) for information about setting up the tool chains for building OpenTX and OpenTX Companion as well as other development related issues.
 
 Useful links:
