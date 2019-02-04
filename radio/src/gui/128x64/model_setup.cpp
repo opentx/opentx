@@ -709,13 +709,13 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, attr);
         if (attr) {
           g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_OFF, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
           if (checkIncDec_Ret) {
-            g_model.moduleData[0].type = MODULE_TYPE_XJT;
-            g_model.moduleData[0].channelsStart = 0;
-            g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
+            g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
+            g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
+            g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
             if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
               g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
