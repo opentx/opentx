@@ -97,6 +97,7 @@ bool isJackPlugged()
 }
 #endif
 
+#if defined(PCBXLITES)
 enum JackState
 {
   SPEAKER_ACTIVE,
@@ -124,7 +125,6 @@ void onJackConnectMenu(const char * result)
 
 void handleJackConnection()
 {
-#if defined(JACK_DETECT_GPIO)
   if (jackState == SPEAKER_ACTIVE && isJackPlugged()) {
     if (g_eeGeneral.jackMode == JACK_HEADPHONE_MODE) {
       jackState = HEADPHONE_ACTIVE;
@@ -148,8 +148,8 @@ void handleJackConnection()
     jackState = SPEAKER_ACTIVE;
     enableSpeaker();
   }
-#endif
 }
+#endif
 
 void checkSpeakerVolume()
 {
@@ -486,7 +486,9 @@ void perMain()
   checkEeprom();
   logsWrite();
   handleUsbConnection();
+#if defined(PCBXLITES)
   handleJackConnection();
+#endif
   checkTrainerSettings();
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);

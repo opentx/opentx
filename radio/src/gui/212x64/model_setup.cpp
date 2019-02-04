@@ -245,8 +245,8 @@ int getSwitchWarningsCount()
 
 #if defined(BLUETOOTH) && defined(USEHORUSBT)
   #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothDistantAddr[0] == 0 || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
-  #define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
+  #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 #else
   #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : HIDDEN_ROW)
   #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
@@ -829,7 +829,7 @@ void menuModelSetup(event_t event)
 
 #if defined(BLUETOOTH) && defined(USEHORUSBT)
     case ITEM_MODEL_TRAINER_LINE1:
-      if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
+      if (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
         if (attr) {
           s_editMode = 0;
         }

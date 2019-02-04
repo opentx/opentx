@@ -191,15 +191,15 @@
 
 #if defined(BLUETOOTH)
 #if defined(X9E) && !defined(USEHORUSBT)
-  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
+  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+  #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #else
   #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
   #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
 #endif
 #else
   #define IS_BLUETOOTH_TRAINER()       false
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
+  #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #endif
 
 // RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations

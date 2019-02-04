@@ -254,8 +254,8 @@ int getSwitchWarningsCount()
 #define SLIDER_WARN_ITEMS()               ((g_model.potsWarnMode) ? uint8_t(NAVIGATION_LINE_BY_LINE|(NUM_SLIDERS-1)) : (uint8_t)0)
 
 #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothDistantAddr[0] == 0 || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
-#define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
-#define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
+#define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
+#define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 
 bool menuModelSetup(event_t event)
 {
@@ -678,7 +678,7 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_TRAINER_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        g_model.trainerMode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, 0, TRAINER_MODE_MAX(), attr, event);
+        g_model.trainerData.mode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerData.mode, 0, TRAINER_MODE_MAX(), attr, event);
         if (attr && checkIncDec_Ret) {
           bluetoothState = BLUETOOTH_STATE_OFF;
           bluetoothDistantAddr[0] = 0;
@@ -784,7 +784,7 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TRAINER_LINE1:
-        if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
+        if (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
           if (attr) {
             s_editMode = 0;
           }
