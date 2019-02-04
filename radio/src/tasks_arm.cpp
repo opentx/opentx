@@ -122,7 +122,7 @@ TASK_FUNCTION(mixerTask)
 
     if (!s_pulses_paused) {
       uint16_t t0 = getTmr2MHz();
-      
+
       DEBUG_TIMER_START(debugTimerMixer);
       RTOS_LOCK_MUTEX(mixerMutex);
       doMixerCalculations();
@@ -162,11 +162,11 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
 {
   // Schedule next mixer calculation time,
   // for now assume mixer calculation takes 2 ms.
-  nextMixerTime[module] = (uint32_t)RTOS_GET_TIME() + period_ms - 1 /*1.2ms before next pulse*/;
+  nextMixerTime[module] = (uint32_t)RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK) - 1 /* 1 tick in advance*/;
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
 }
 
-#define MENU_TASK_PERIOD_TICKS      50    // 50ms
+#define MENU_TASK_PERIOD_TICKS         (50 / RTOS_MS_PER_TICK)    // 50ms
 
 #if defined(COLORLCD) && defined(CLI)
 bool perMainEnabled = true;

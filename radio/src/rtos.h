@@ -27,8 +27,6 @@
 extern "C++" {
 #endif
 
-#define doNothing()                     do { } while(0)   // seems unused? don't ever use this with SIMU
-
 #if defined(SIMU)
 
   #include <pthread.h>
@@ -149,7 +147,7 @@ extern "C++" {
   }
 #endif
 
-  #define RTOS_MS_PER_TICK              (CFG_CPU_FREQ / CFG_SYSTICK_FREQ / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
+  #define RTOS_MS_PER_TICK              ((CFG_CPU_FREQ / CFG_SYSTICK_FREQ) / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
 
   typedef OS_TID RTOS_TASK_HANDLE;
   typedef OS_MutexID RTOS_MUTEX_HANDLE;
