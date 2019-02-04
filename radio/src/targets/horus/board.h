@@ -97,7 +97,7 @@ extern "C" {
 
 extern uint16_t sessionTimer;
 
-#define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#define SLAVE_MODE()                   (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
 #if defined(PCBX10)
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)

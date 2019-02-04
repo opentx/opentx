@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 template<class T>
-void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
+void setupPulsesPPM(PpmPulsesData<T> * ppmPulsesData, uint8_t channelsStart, int8_t channelsCount, int8_t frameLength)
 {
   int16_t PPM_range = g_model.extendedLimits ? (512*LIMIT_EXT_PERCENT/100) * 2 : 512 * 2; // range of 0.7 .. 1.7msec
 
@@ -29,8 +29,8 @@ void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
   // each pulse is 0.7..1.7ms long with a 0.3ms stop tail
   // The pulse ISR is 2mhz that's why everything is multiplied by 2
 
-  uint32_t firstCh = g_model.moduleData[port].channelsStart;
-  uint32_t lastCh = min<unsigned int>(MAX_OUTPUT_CHANNELS, firstCh + 8 + g_model.moduleData[port].channelsCount);
+  uint8_t firstCh = channelsStart;
+  uint8_t lastCh = min<uint8_t>(MAX_OUTPUT_CHANNELS, firstCh + 8 + channelsCount);
 
 #if defined(STM32)
   ppmPulsesData->ptr = ppmPulsesData->pulses;
@@ -40,7 +40,7 @@ void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
 #endif
 
   int32_t rest = 22500u * 2;
-  rest += (int32_t(g_model.moduleData[port].ppm.frameLength)) * 1000;
+  rest += int32_t(frameLength) * 1000;
   for (uint32_t i=firstCh; i<lastCh; i++) {
     int16_t v = limit((int16_t)-PPM_range, channelOutputs[i], (int16_t)PPM_range) + 2*PPM_CH_CENTER(i);
     rest -= v;
@@ -61,10 +61,10 @@ void setupPulsesPPM(uint8_t port, PpmPulsesData<T> * ppmPulsesData)
 
 void setupPulsesPPMModule(uint8_t port)
 {
-  setupPulsesPPM<pulse_duration_t>(port, &modulePulsesData[port].ppm);
+  setupPulsesPPM<pulse_duration_t>(&modulePulsesData[port].ppm, g_model.moduleData[port].channelsStart, g_model.moduleData[port].channelsCount, g_model.moduleData[port].ppm.frameLength);
 }
 
 void setupPulsesPPMTrainer()
 {
-  setupPulsesPPM<trainer_pulse_duration_t>(TRAINER_MODULE, &trainerPulsesData.ppm);
+  setupPulsesPPM<trainer_pulse_duration_t>(&trainerPulsesData.ppm, g_model.trainerData.channelsStart, g_model.trainerData.channelsCount, g_model.trainerData.frameLength);
 }

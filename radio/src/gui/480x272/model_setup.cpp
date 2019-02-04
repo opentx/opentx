@@ -98,7 +98,7 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_SET_FAILSAFE_OFS   100
 #define MODEL_SETUP_SLIDPOT_SPACING    45
 
-#define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
+#define CURRENT_MODULE_EDITED(k)       (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
 
 void checkModelIdUnique(uint8_t moduleIdx)
 {
@@ -858,9 +858,28 @@ bool menuModelSetup(event_t event)
         break;
       }
 
+      case ITEM_MODEL_TRAINER_LINE2:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PPMFRAME);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.trainerData.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT, 0, NULL, STR_MS);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+80, y, (g_model.trainerData.delay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr|LEFT : LEFT, 0, NULL, "us");
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN+160, y, g_model.trainerData.pulsePol ? "+" : "-", (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
+        if (attr && s_editMode>0) {
+          switch (menuHorizontalPosition) {
+            case 0:
+              CHECK_INCDEC_MODELVAR(event, g_model.trainerData.frameLength, -20, 35);
+              break;
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.trainerData.delay, -4, 10);
+              break;
+            case 2:
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.trainerData.pulsePol, 1);
+              break;
+          }
+        }
+        break;
+
       case ITEM_MODEL_INTERNAL_MODULE_BIND:
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
-      case ITEM_MODEL_TRAINER_LINE2:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];

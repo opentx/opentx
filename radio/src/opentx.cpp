@@ -464,7 +464,7 @@ void modelDefault(uint8_t id)
 #endif
 
 #if defined(PCBXLITE)
-  g_model.trainerMode = TRAINER_MODE_MASTER_BLUETOOTH;
+  g_model.trainerData.mode = TRAINER_MODE_MASTER_BLUETOOTH;
 #endif
 
 #if defined(EEPROM)

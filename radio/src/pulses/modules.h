@@ -86,15 +86,13 @@ inline bool isExtraModule(uint8_t)
 #if defined(TARANIS_INTERNAL_PPM)
 inline bool isModulePPM(uint8_t idx)
 {
-  return idx == TRAINER_MODULE ||
-         (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
+  return (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
          (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
 }
 #else
 inline bool isModulePPM(uint8_t idx)
 {
-  return idx == TRAINER_MODULE ||
-         isExtraModule(idx) ||
+  return isExtraModule(idx) ||
          (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
 }
 #endif
@@ -194,25 +192,10 @@ inline int8_t maxModuleChannels_M8(uint8_t idx)
 {
   if (isExtraModule(idx))
     return MAX_EXTRA_MODULE_CHANNELS_M8;
-  else if (idx == TRAINER_MODULE)
-    return MAX_TRAINER_CHANNELS_M8;
   else if (isModuleXJT(idx))
     return maxChannelsXJT[1 + g_model.moduleData[idx].rfProtocol];
   else
     return maxChannelsModules[g_model.moduleData[idx].type];
-}
-
-inline int8_t maxModuleChannels(uint8_t idx)
-{
-  return 8 + maxModuleChannels_M8(idx);
-}
-
-inline int8_t minModuleChannels(uint8_t idx)
-{
-  if (isModuleCrossfire(idx))
-    return 16;
-  else
-    return 1;
 }
 
 inline int8_t defaultModuleChannels_M8(uint8_t idx)

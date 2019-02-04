@@ -35,6 +35,7 @@
 
 #if defined(PCBHORUS)
   #define MAX_MODELS                   60
+  #define MAX_RECEIVERS_PER_MODULE     5
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
@@ -44,10 +45,11 @@
   #define MAX_SCRIPTS                  9
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_TELEMETRY_SENSORS        64
   #define MAX_CUSTOM_SCREENS           5
 #elif defined(PCBTARANIS)
   #define MAX_MODELS                   60
+  #define MAX_RECEIVERS_PER_MODULE     2
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
@@ -60,6 +62,7 @@
   #define MAX_TELEMETRY_SENSORS        32
 #elif defined(PCBSKY9X)
   #define MAX_MODELS                   60
+  #define MAX_RECEIVERS_PER_MODULE     2
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
@@ -70,20 +73,10 @@
   #define MAX_TRAINER_CHANNELS         16
   #define MAX_TELEMETRY_SENSORS        32
 #else
-  #define MAX_MODELS                   16
-  #define MAX_OUTPUT_CHANNELS          16 // number of real output channels CH1-CH16
-  #define MAX_FLIGHT_MODES             5
-  #define MAX_MIXERS                   32
-  #define MAX_EXPOS                    14
-  #define MAX_LOGICAL_SWITCHES         12
-  #define MAX_SPECIAL_FUNCTIONS        16 // number of functions assigned to switches
-  #define MAX_TRAINER_CHANNELS         8
-  #define MAX_TELEMETRY_SENSORS        0
+  #warning "Unknown board!"
 #endif
 
-  #define MAX_TIMERS                   3
-
-#define NUM_CYC                        3
+#define MAX_TIMERS                     3
 #define NUM_CAL_PPM                    4
 
 enum CurveType {
@@ -92,8 +85,7 @@ enum CurveType {
   CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
 };
 
-  #define MIN_POINTS_PER_CURVE         3
-
+#define MIN_POINTS_PER_CURVE           3
 #define MAX_POINTS_PER_CURVE           17
 
 #if defined(PCBHORUS)
@@ -191,7 +183,6 @@ enum BeeperMode {
   enum ModuleIndex {
     INTERNAL_MODULE,
     EXTERNAL_MODULE,
-    TRAINER_MODULE,
     FLASHING_MODULE,
   };
   enum TrainerMode {
@@ -210,8 +201,7 @@ enum BeeperMode {
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
-    EXTRA_MODULE,
-    TRAINER_MODULE
+    EXTRA_MODULE
   };
 #endif
 
@@ -258,7 +248,7 @@ enum UartModes {
   #define LEN_BLUETOOTH_NAME           10
 #endif
 
-#define TELEM_LABEL_LEN           4
+#define TELEM_LABEL_LEN                4
 enum TelemetryUnit {
   UNIT_RAW,
   UNIT_VOLTS,
@@ -795,5 +785,9 @@ enum BluetoothModes {
   BLUETOOTH_TELEMETRY,
   BLUETOOTH_TRAINER,
 };
+
+// PXX2 constants
+#define LEN_REGISTRATION_ID            4
+#define LEN_RX_ID                      4
 
 #endif // _DATACONSTANTS_H_

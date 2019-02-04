@@ -23,25 +23,27 @@
 
 #include "datastructs.h"
 
-#define EEPROM_VER             218
+#define EEPROM_VER             219
 #define FIRST_CONV_EEPROM_VER  216
 
-#define GET_PPM_POLARITY(idx)             g_model.moduleData[idx].ppm.pulsePol
-#define GET_SBUS_POLARITY(idx)            g_model.moduleData[idx].sbus.noninverted
-#define GET_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
-#define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
+#define GET_MODULE_PPM_POLARITY(idx)             g_model.moduleData[idx].ppm.pulsePol
+#define GET_TRAINER_PPM_POLARITY()               g_model.trainerData.pulsePol
+#define GET_SBUS_POLARITY(idx)                   g_model.moduleData[idx].sbus.noninverted
+#define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
+#define GET_TRAINER_PPM_DELAY(idx)               (g_model.trainerData.delay * 50 + 300)
+#define SET_DEFAULT_PPM_FRAME_LENGTH(idx)        g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #if defined(PCBHORUS)
   #define IS_TRAINER_EXTERNAL_MODULE()    false
   #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
 #elif defined(PCBTARANIS)
-  #define IS_TRAINER_EXTERNAL_MODULE()    (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
+  #define IS_TRAINER_EXTERNAL_MODULE()      (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerData.mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+  #define HAS_WIRELESS_TRAINER_HARDWARE()   (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
 #else
   #define IS_TRAINER_EXTERNAL_MODULE()    false
 #endif
 
-#define IS_PLAY_FUNC(func)           ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
+#define IS_PLAY_FUNC(func)             ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
 
 #if defined(GVARS)
   #define IS_ADJUST_GV_FUNC(func)      ((func) == FUNC_ADJUST_GVAR)

@@ -1208,7 +1208,7 @@ void ConvertModel_217_to_218(ModelData & model)
     newModel.moduleData[i] = oldModel.moduleData[i];
   }
 #if defined(PCBTARANIS)
-  newModel.trainerMode = oldModel.trainerMode;
+  newModel.trainerData.mode = oldModel.trainerMode;
   memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
   memcpy(newModel.inputNames, oldModel.inputNames, sizeof(newModel.inputNames));
 #endif

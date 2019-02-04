@@ -192,7 +192,7 @@ void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
 void disable_module_timer( uint32_t module_index);
 
 // Trainer driver
-#define SLAVE_MODE()                    (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #if defined(PCBX9E)
   #define TRAINER_CONNECTED()           (true)
 #elif defined(PCBX7)

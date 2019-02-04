@@ -33,6 +33,7 @@ extern "C++" {
   #include <semaphore.h>
 
   #define SIMU_SLEEP_OR_EXIT_MS(x)       simuSleep(x)
+  #define RTOS_MS_PER_TICK  1
 
   typedef pthread_t RTOS_TASK_HANDLE;
   typedef pthread_mutex_t RTOS_MUTEX_HANDLE;
@@ -57,7 +58,7 @@ extern "C++" {
 
   static inline void RTOS_WAIT_TICKS(uint32_t x)
   {
-    RTOS_WAIT_MS(x * 2);
+    RTOS_WAIT_MS(x * RTOS_MS_PER_TICK);
   }
 
 #ifdef __cplusplus

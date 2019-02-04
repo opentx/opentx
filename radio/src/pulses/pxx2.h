@@ -69,7 +69,13 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
       Pxx2Transport::addByteWithoutCrc(0x00);
 
       // TYPE_C + TYPE_ID
-      Pxx2Transport::addByte(0x26); // This one is CRC-ed on purpose
+      // TODO optimization ? Pxx2Transport::addByte(0x26); // This one is CRC-ed on purpose
+    }
+
+    void addFrameType(uint8_t type_c, uint8_t type_id)
+    {
+      Pxx2Transport::addByte(type_c);
+      Pxx2Transport::addByte(type_id);
     }
 
     void addCrc()
