@@ -68,7 +68,6 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
     }
   }
   else {
-    addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
     Pxx2Transport::addByte(0);
   }
 }
@@ -84,7 +83,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 
   uint8_t mode = moduleSettings[module].mode;
 
-  if (mode == MODULE_MODE_REGISTER)
+  if (mode == MODULE_MODE_BIND)
     setupRegisterFrame(module);
   else if (mode == MODULE_MODE_BIND)
     setupBindFrame(module);
