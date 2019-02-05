@@ -54,12 +54,15 @@ class PxxCrcMixin {
   protected:
     void initCrc()
     {
-      crc = 0;
+      // TODO add a Pxx2CrcMixin  ...
+      crc = 0xFFFF;
     }
 
     void addToCrc(uint8_t byte)
     {
-      crc = (crc << 8) ^ (CRCTable[((crc >> 8) ^ byte) & 0xFF]);
+      // TODO add a Pxx2CrcMixin  ...
+      // crc = (crc << 8) ^ (CRCTable[((crc >> 8) ^ byte) & 0xFF]);
+      crc -= byte;
     }
 
     uint16_t crc;
