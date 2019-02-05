@@ -63,7 +63,7 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
   if (counter == REGISTER_COUNTER_ID_RECEIVED) {
     Pxx2Transport::addByte(0x01);
-    for (uint8_t i=0; i<4; i++) {
+    for (uint8_t i=0; i<LEN_REGISTRATION_ID; i++) {
       Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
     }
   }
@@ -83,7 +83,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 
   uint8_t mode = moduleSettings[module].mode;
 
-  if (mode == MODULE_MODE_BIND)
+  if (mode == MODULE_MODE_REGISTER)
     setupRegisterFrame(module);
   else if (mode == MODULE_MODE_BIND)
     setupBindFrame(module);
