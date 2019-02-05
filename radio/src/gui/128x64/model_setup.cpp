@@ -1086,9 +1086,9 @@ void menuModelSetup(event_t event)
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS, y, STR_DEL_BUTTON, menuHorizontalPosition==1 ? attr : 0);
         if (attr && menuHorizontalPosition == 0) {
           if (s_editMode > 0)
-              moduleFlag[INTERNAL_MODULE] = MODULE_BIND;
+            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_BIND;
           else
-              moduleFlag[INTERNAL_MODULE] = MODULE_NORMAL_MODE;
+            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
         }
         if (attr && menuHorizontalPosition == 1 && s_editMode > 0) {
           if(receiverIdx == 0) {
