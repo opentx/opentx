@@ -73,6 +73,21 @@ bool isForcePowerOffRequested()
   return false;
 }
 
+bool isProtocolSynchronous(uint8_t protocol)
+{
+  return (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_NONE);
+}
+
+void sendSynchronousPulses()
+{
+  for (uint8_t module = 0; module < NUM_MODULES; module++) {
+    uint8_t protocol = s_current_protocol[module];
+    if (isProtocolSynchronous(protocol)) {
+      setupPulses(module);
+    }
+  }
+}
+
 uint32_t nextMixerTime[NUM_MODULES];
 
 TASK_FUNCTION(mixerTask)
@@ -89,8 +104,9 @@ TASK_FUNCTION(mixerTask)
     RTOS_WAIT_TICKS(1);
 
 #if defined(SIMU)
-    if (pwrCheck() == e_power_off)
+    if (pwrCheck() == e_power_off) {
       TASK_RETURN();
+    }
 #else
     if (isForcePowerOffRequested()) {
       pwrOff();
@@ -153,7 +169,9 @@ TASK_FUNCTION(mixerTask)
       }
 
       t0 = getTmr2MHz() - t0;
-      if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
+      if (t0 > maxMixerDuration) maxMixerDuration = t0;
+
+      sendSynchronousPulses();
     }
   }
 }

@@ -28,7 +28,7 @@ extern uint8_t cliTracesEnabled;
 #ifdef __cplusplus
 #include "fifo.h"
 extern Fifo<uint8_t, 256> cliRxFifo;
-#include "tasks_arm.h"
+#include "tasks.h"
 extern RTOS_TASK_HANDLE cliTaskId;
 extern RTOS_DEFINE_STACK(cliStack, CLI_STACK_SIZE);
 #endif

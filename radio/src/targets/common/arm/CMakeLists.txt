@@ -88,9 +88,9 @@ foreach(LANGUAGE ${TTS_LANGUAGES})
 endforeach()
 set(SRC
   ${SRC}
-  main_arm.cpp
-  tasks_arm.cpp
-  audio_arm.cpp
+  main.cpp
+  tasks.cpp
+  audio.cpp
   io/frsky_sport.cpp
   telemetry/telemetry.cpp
   telemetry/telemetry_holders.cpp

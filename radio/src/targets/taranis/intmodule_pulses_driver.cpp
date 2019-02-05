@@ -32,9 +32,14 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
-void intmoduleNoneStart()
+void intmoduleTimerStart(uint32_t period, uint8_t state)
 {
-  INTERNAL_MODULE_OFF();
+  if (state)
+    INTERNAL_MODULE_ON();
+  else
+    INTERNAL_MODULE_OFF();
+
+  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, 0);
 
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = INTMODULE_TX_GPIO_PIN;
@@ -46,9 +51,9 @@ void intmoduleNoneStart()
   GPIO_SetBits(INTMODULE_TX_GPIO, INTMODULE_TX_GPIO_PIN); // Set high
 
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  INTMODULE_TIMER->ARR = 36000; // 18mS
-  INTMODULE_TIMER->CCR2 = 32000; // Update time
+  INTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
+  INTMODULE_TIMER->ARR = (2000 * period);
+  INTMODULE_TIMER->CCR2 = (2000 * period) - 1000;
   INTMODULE_TIMER->EGR = 1; // Restart
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt

@@ -1907,7 +1907,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   init_trainer_capture();
 #endif
 
-
   startPulses();
 
   wdt_enable(WDTO_500MS);

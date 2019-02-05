@@ -65,7 +65,6 @@ void extmoduleTimerStart(uint32_t period, uint8_t state)
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
 }
 
-
 void extmodulePpmStart()
 {
   EXTERNAL_MODULE_ON();
@@ -163,6 +162,11 @@ void extmodulePxxStart()
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
+}
+
+void extmodulePxx2Start()
+{
+  // TODO just enable the S.PORT line (or let telemetry init do it)
 }
 
 #if defined(DSM2)

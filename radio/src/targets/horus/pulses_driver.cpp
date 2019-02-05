@@ -20,23 +20,20 @@
 
 #include "opentx.h"
 
-void intmoduleStop(void);
-void extmoduleStop(void);
+void intmoduleStop();
+void intmoduleTimerStart(uint32_t period, uint8_t state);
+void intmodulePxxStart();
 
-void intmoduleNoneStart(void);
-void intmodulePxxStart(void);
-
+void extmoduleStop();
 void extmoduleTimerStart(uint32_t period, uint8_t state);
-void extmodulePpmStart(void);
-void extmodulePxxStart(void);
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
 
 void init_no_pulses(uint32_t port)
 {
-  if (port == INTERNAL_MODULE)
-    intmoduleNoneStart();
-  else
-    extmoduleTimerStart(18, false);
+  init_module_timer(port, 18, false);
 }
 
 void disable_no_pulses(uint32_t port)
@@ -59,6 +56,14 @@ void disable_ppm(uint32_t port)
   if (port == EXTERNAL_MODULE) {
     extmoduleStop();
   }
+}
+
+void init_pxx2(uint32_t port)
+{
+  if (port == INTERNAL_MODULE)
+    intmodulePxx2Start();
+  else
+    extmodulePxx2Start();
 }
 
 void init_pxx(uint32_t port)
@@ -95,15 +100,17 @@ void disable_serial(uint32_t port)
 
 void init_module_timer(uint32_t port, uint32_t period, uint8_t state)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (port == INTERNAL_MODULE)
+    intmoduleTimerStart(period, state);
+  else
     extmoduleTimerStart(period, state);
-  }
 }
 
 void disable_module_timer(uint32_t port)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (port == INTERNAL_MODULE)
+    intmoduleStop();
+  else
     extmoduleStop();
-  }
 }
 

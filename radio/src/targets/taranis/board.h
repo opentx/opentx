@@ -180,16 +180,19 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #else
   #define IS_UART_MODULE(port)          (false)
 #endif
-void init_no_pulses(uint32_t port);
-void disable_no_pulses(uint32_t port);
-void init_ppm( uint32_t module_index);
-void disable_ppm( uint32_t module_index);
-void init_pxx( uint32_t module_index);
-void disable_pxx( uint32_t module_index);
-void init_serial( uint32_t module_index, uint32_t baudrate, uint32_t period);
-void disable_serial( uint32_t module_index);
-void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
-void disable_module_timer( uint32_t module_index);
+void init_no_pulses(uint8_t module);
+void disable_no_pulses(uint8_t module);
+void init_ppm(uint8_t module);
+void disable_ppm(uint8_t module);
+void intmoduleSendNextFrame();
+void init_pxx2(uint8_t module);
+void disable_pxx2(uint8_t module);
+void init_pxx(uint8_t module);
+void disable_pxx(uint8_t module);
+void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
+void disable_serial(uint8_t module);
+void init_module_timer(uint8_t module, uint32_t period, uint8_t state);
+void disable_module_timer(uint8_t module);
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)

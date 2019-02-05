@@ -200,6 +200,11 @@ void extmodulePxxStart()
 {
   extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
 }
+
+void extmodulePxx2Start()
+{
+  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
+}
 #else
 void extmodulePxxStart()
 {
@@ -233,6 +238,11 @@ void extmodulePxxStart()
   NVIC_SetPriority(EXTMODULE_TIMER_DMA_STREAM_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
+}
+
+void extmodulePxx2Start()
+{
+  // TODO just enable the S.PORT line (or let telemetry init do it)
 }
 #endif
 
