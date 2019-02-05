@@ -74,17 +74,21 @@ int16_t getGVarValue(int8_t gv, int8_t fm)
 int32_t getGVarValuePrec1(int8_t gv, int8_t fm)
 {
   int8_t mul;
-  uint8_t prec = g_model.gvars[abs((int)gv)].prec;    // explicit cast to `int` needed, othervise gv is promoted to double!
+  int8_t idx;
+  idx = gv;
+  if (idx < 0) {
+    idx = -1-idx;
+  }
+  uint8_t prec = g_model.gvars[idx].prec;
   if (prec == 0)
     mul = 10;
   else
     mul = 1;
 
   if (gv < 0) {
-    gv = -1-gv;
     mul = -mul;
   }
-  return GVAR_VALUE(gv, getGVarFlightMode(fm, gv)) * mul;
+  return GVAR_VALUE(idx, getGVarFlightMode(fm, idx)) * mul;
 }
 
 void setGVarValue(uint8_t gv, int16_t value, int8_t fm)
