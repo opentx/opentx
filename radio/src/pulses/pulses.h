@@ -32,7 +32,7 @@
   #define IS_RANGECHECK_ENABLE()             (moduleSettings[0].mode == MODULE_MODE_RANGECHECK)
 #endif
 
-#if defined(DSM2) && !defined(PCBTARANIS)
+#if defined(PCBSKY9X) && defined(DSM2)
   #define DSM2_BIND_TIMEOUT      255         // 255*11ms
   extern uint8_t dsm2BindTimer;
 #endif
@@ -66,34 +66,28 @@
 
 #define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_SBUS)
 
-#if NUM_MODULES == 2
-#define MODULES_INIT(...)            __VA_ARGS__, __VA_ARGS__
-#else
-#define MODULES_INIT(...)            __VA_ARGS__
-#endif
-
 extern uint8_t s_pulses_paused;
 
 enum ModuleSettingsMode
 {
-    MODULE_MODE_NORMAL,
-    MODULE_MODE_RANGECHECK,
-    MODULE_MODE_BIND,
-    MODULE_MODE_REGISTER
+  MODULE_MODE_NORMAL,
+  MODULE_MODE_RANGECHECK,
+  MODULE_MODE_BIND,
+  MODULE_MODE_REGISTER
 };
 
 PACK(struct ModuleSettings {
-         uint8_t protocol:5;
-         uint8_t paused:1;
-         uint8_t mode:2;
-         uint16_t failsafeCounter;
-     });
+  uint8_t protocol:5;
+  uint8_t paused:1;
+  uint8_t mode:2;
+  uint16_t failsafeCounter;
+});
 
 extern ModuleSettings moduleSettings[NUM_MODULES];
 
 template<class T> struct PpmPulsesData {
-    T pulses[20];
-    T * ptr;
+  T pulses[20];
+  T * ptr;
 };
 
 #if defined(PPM_PIN_SERIAL)
@@ -107,11 +101,11 @@ PACK(struct Dsm2SerialPulsesData {
 #else
 #define MAX_PULSES_TRANSITIONS 300
 PACK(struct Dsm2TimerPulsesData {
-         pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
-         pulse_duration_t * ptr;
-         uint16_t rest;
-         uint8_t index;
-     });
+  pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
+  pulse_duration_t * ptr;
+  uint16_t rest;
+  uint8_t index;
+});
 #endif
 
 #define PPM_PERIOD_HALF_US(module)   ((g_model.moduleData[module].ppm.frameLength * 5 + 225) * 200) /*half us*/
@@ -126,29 +120,29 @@ PACK(struct Dsm2TimerPulsesData {
 
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
-         uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
-     });
+  uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
+});
 
 union ModulePulsesData {
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
-    UartPxxPulses pxx_uart;
+  UartPxxPulses pxx_uart;
 #endif
 #if defined(PPM_PIN_SERIAL)
-    SerialPxxPulses pxx;
+  SerialPxxPulses pxx;
 #elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
-    PwmPxxPulses pxx;
+  PwmPxxPulses pxx;
 #endif
 
-    Pxx2Pulses pxx2;
+  Pxx2Pulses pxx2;
 
 #if defined(PPM_PIN_SERIAL)
-    Dsm2SerialPulsesData dsm2;
+  Dsm2SerialPulsesData dsm2;
 #else
-    Dsm2TimerPulsesData dsm2;
+  Dsm2TimerPulsesData dsm2;
 #endif
 
-    PpmPulsesData<pulse_duration_t> ppm;
-    CrossfirePulsesData crossfire;
+  PpmPulsesData<pulse_duration_t> ppm;
+  CrossfirePulsesData crossfire;
 } __ALIGNED(4);
 
 /* The __ALIGNED keyword is required to align the struct inside the modulePulsesData below,
@@ -161,11 +155,10 @@ union ModulePulsesData {
 extern ModulePulsesData modulePulsesData[NUM_MODULES];
 
 union TrainerPulsesData {
-    PpmPulsesData<trainer_pulse_duration_t> ppm;
+  PpmPulsesData<trainer_pulse_duration_t> ppm;
 };
 
 extern TrainerPulsesData trainerPulsesData;
-extern const uint16_t CRCTable[];
 
 void setupPulses(uint8_t port);
 void setupPulsesDSM2(uint8_t port);
@@ -177,7 +170,6 @@ void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
-void sendByteSbus(uint8_t byte);
 
 #if defined(HUBSAN)
 void Hubsan_Init();
@@ -227,15 +219,15 @@ void setCustomFailsafe(uint8_t moduleIndex);
 #define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
 
 enum R9MFCCPowerValues {
-    R9M_FCC_POWER_100 = 0,
-    R9M_FCC_POWER_MAX = R9M_FCC_POWER_100
+  R9M_FCC_POWER_100 = 0,
+  R9M_FCC_POWER_MAX = R9M_FCC_POWER_100
 };
 
 enum R9MLBTPowerValues {
-    R9M_LBT_POWER_25 = 0,
-    R9M_LBT_POWER_25_16,
-    R9M_LBT_POWER_100,
-    R9M_LBT_POWER_MAX = R9M_LBT_POWER_100
+  R9M_LBT_POWER_25 = 0,
+  R9M_LBT_POWER_25_16,
+  R9M_LBT_POWER_100,
+  R9M_LBT_POWER_MAX = R9M_LBT_POWER_100
 };
 
 #define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_100))
@@ -271,6 +263,5 @@ enum R9MLBTPowerValues {
 #define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200))
 #define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
 #endif
-
 
 #endif // _PULSES_H_
