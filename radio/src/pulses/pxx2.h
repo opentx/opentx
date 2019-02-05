@@ -71,7 +71,14 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
 
 class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
   public:
-    void setupFrame(uint8_t port);
+    void setupFrame(uint8_t module);
+
+  protected:
+    void setupRegisterFrame(uint8_t module);
+
+    void setupBindFrame(uint8_t module);
+
+    void setupChannelsFrame(uint8_t module);
 
     void addHead()
     {

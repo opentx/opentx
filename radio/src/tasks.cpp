@@ -81,7 +81,7 @@ bool isProtocolSynchronous(uint8_t protocol)
 void sendSynchronousPulses()
 {
   for (uint8_t module = 0; module < NUM_MODULES; module++) {
-    uint8_t protocol = s_current_protocol[module];
+    uint8_t protocol = moduleSettings[module].protocol;
     if (isProtocolSynchronous(protocol)) {
       setupPulses(module);
     }
@@ -180,7 +180,7 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
 {
   // Schedule next mixer calculation time,
 
-  if (isProtocolSynchronous(s_current_protocol[module])) {
+  if (isProtocolSynchronous(moduleSettings[module].protocol)) {
     nextMixerTime[module] += period_ms / RTOS_MS_PER_TICK;
     if (nextMixerTime[module] < RTOS_GET_TIME()) {
       // we are late ... let's add some small delay

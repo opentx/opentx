@@ -138,7 +138,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleFlag[moduleIdx] = MODULE_BIND;
+  moduleSettings[moduleIdx].bind = 1;;
 }
 
 void onModelSetupBitmapMenu(const char * result)
@@ -298,8 +298,8 @@ bool menuModelSetup(event_t event)
   }
 
   if (menuEvent) {
-    moduleFlag[0] = 0;
-    moduleFlag[1] = 0;
+    moduleSettings[0].mode = 0;
+    moduleSettings[1].mode = 0;
   }
 
   int sub = menuVerticalPosition;
@@ -945,8 +945,8 @@ bool menuModelSetup(event_t event)
                 }
               }
             }
-            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleFlag[moduleIdx] == MODULE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
-            drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleFlag[moduleIdx] == MODULE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
+            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
+            drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleSettings[moduleIdx].mode == MODULE_MODE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (multiBindStatus == MULTI_BIND_FINISHED) {
@@ -982,8 +982,8 @@ bool menuModelSetup(event_t event)
                       POPUP_MENU_START(onBindMenu);
                       continue;
                     }
-                    if (moduleFlag[moduleIdx] == MODULE_BIND) {
-                      newFlag = MODULE_BIND;
+                    if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
+                      newFlag = MODULE_MODE_BIND;
                     }
                     else {
                       if (!popupMenuNoItems) {
@@ -992,17 +992,17 @@ bool menuModelSetup(event_t event)
                     }
                   }
                   else {
-                    newFlag = MODULE_BIND;
+                    newFlag = MODULE_MODE_BIND;
                   }
                 }
                 else if (l_posHorz == 2) {
-                  newFlag = MODULE_RANGECHECK;
+                  newFlag = MODULE_MODE_RANGECHECK;
                 }
               }
             }
-            moduleFlag[moduleIdx] = newFlag;
+            moduleSettings[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
-            if (newFlag == MODULE_BIND)
+            if (newFlag == MODULE_MODE_BIND)
               multiBindStatus = MULTI_BIND_INITIATED;
 #endif
           }

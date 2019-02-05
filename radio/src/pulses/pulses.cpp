@@ -23,10 +23,7 @@
 #include "pulses/pxx2.h"
 
 uint8_t s_pulses_paused = 0;
-uint8_t s_current_protocol[NUM_MODULES] = { MODULES_INIT(255) };
-uint16_t failsafeCounter[NUM_MODULES] = { MODULES_INIT(100) };
-uint8_t moduleFlag[NUM_MODULES] = { 0 };
-
+ModuleSettings moduleSettings[NUM_MODULES];
 ModulePulsesData modulePulsesData[NUM_MODULES] __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
@@ -86,7 +83,7 @@ uint8_t getRequiredProtocol(uint8_t port)
           // The module is set to OFF during one second before BIND start
           {
             static tmr10ms_t bindStartTime = 0;
-            if (moduleFlag[EXTERNAL_MODULE] == MODULE_BIND) {
+            if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
               if (bindStartTime == 0) bindStartTime = get_tmr10ms();
               if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
                 required_protocol = PROTOCOL_CHANNELS_NONE;
@@ -117,7 +114,7 @@ uint8_t getRequiredProtocol(uint8_t port)
 
 #if 0
   // will need an EEPROM conversion
-  if (moduleFlag[port] == MODULE_OFF) {
+  if (moduleSettings[port].mode == MODULE_OFF) {
     required_protocol = PROTOCOL_CHANNELS_NONE;
   }
 #endif
@@ -324,9 +321,9 @@ void setupPulses(uint8_t module)
 
   heartbeat |= (HEART_TIMER_PULSES << module);
 
-  if (s_current_protocol[module] != required_protocol) {
-    disablePulses(module, s_current_protocol[module]);
-    s_current_protocol[module] = required_protocol;
+  if (moduleSettings[module].protocol != required_protocol) {
+    disablePulses(module, moduleSettings[module].protocol);
+    moduleSettings[module].protocol = required_protocol;
     enablePulses(module, required_protocol);
   }
   else {

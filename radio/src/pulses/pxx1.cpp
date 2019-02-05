@@ -22,21 +22,25 @@
 #include "pulses/pxx1.h"
 
 template <class PxxTransport>
-uint8_t Pxx1Pulses<PxxTransport>::addFlag1(uint8_t port)
+uint8_t Pxx1Pulses<PxxTransport>::addFlag1(uint8_t module)
 {
-  uint8_t flag1 = (g_model.moduleData[port].rfProtocol << 6);
-  if (moduleFlag[port] == MODULE_BIND) {
+  uint8_t flag1 = (g_model.moduleData[module].rfProtocol << 6);
+  if (moduleSettings[module].mode == MODULE_MODE_BIND) {
     flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
   }
-  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else if (moduleSettings[module].mode == MODULE_MODE_RANGECHECK) {
     flag1 |= PXX_SEND_RANGECHECK;
   }
-  else if (g_model.moduleData[port].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
-    if (failsafeCounter[port]-- == 0) {
-      failsafeCounter[port] = 1000;
-      flag1 |= PXX_SEND_FAILSAFE;
+  else {
+    bool failsafeNeeded = g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER;
+    if (moduleSettings[module].failsafeCounter-- == 0) {
+      // failsafeCounter is also used for knowing if the frame is odd / even
+      moduleSettings[module].failsafeCounter = 1000;
+      if (failsafeNeeded) {
+        flag1 |= PXX_SEND_FAILSAFE;
+      }
     }
-    if (failsafeCounter[port] == 0 && g_model.moduleData[port].channelsCount > 0) {
+    if (failsafeNeeded && moduleSettings[module].failsafeCounter == 0 && g_model.moduleData[module].channelsCount > 0) {
       flag1 |= PXX_SEND_FAILSAFE;
     }
   }
@@ -45,22 +49,22 @@ uint8_t Pxx1Pulses<PxxTransport>::addFlag1(uint8_t port)
 }
 
 template <class PxxTransport>
-void Pxx1Pulses<PxxTransport>::addExtraFlags(uint8_t port)
+void Pxx1Pulses<PxxTransport>::addExtraFlags(uint8_t module)
 {
   // Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise)
   uint8_t extra_flags = 0;
 
 #if defined(PCBHORUS) || defined(PCBXLITE)
-  if (port == INTERNAL_MODULE) {
-    extra_flags |= (g_model.moduleData[port].pxx.external_antenna << 0);
+  if (module == INTERNAL_MODULE) {
+    extra_flags |= (g_model.moduleData[module].pxx.external_antenna << 0);
   }
 #endif
 
-  extra_flags |= (g_model.moduleData[port].pxx.receiver_telem_off << 1);
-  extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
-  if (isModuleR9M(port)) {
-    extra_flags |= (min<uint8_t>(g_model.moduleData[port].pxx.power, isModuleR9M_FCC_VARIANT(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
-    if (isModuleR9M_EUPLUS(port))
+  extra_flags |= (g_model.moduleData[module].pxx.receiver_telem_off << 1);
+  extra_flags |= (g_model.moduleData[module].pxx.receiver_channel_9_16 << 2);
+  if (isModuleR9M(module)) {
+    extra_flags |= (min<uint8_t>(g_model.moduleData[module].pxx.power, isModuleR9M_FCC_VARIANT(module) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
+    if (isModuleR9M_EUPLUS(module))
       extra_flags |= (1 << 6);
   }
 
@@ -72,7 +76,7 @@ void Pxx1Pulses<PxxTransport>::addExtraFlags(uint8_t port)
 }
 
 template <class PxxTransport>
-void Pxx1Pulses<PxxTransport>::add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels)
+void Pxx1Pulses<PxxTransport>::add8ChannelsFrame(uint8_t module, uint8_t sendUpperChannels)
 {
   PxxTransport::initCrc();
 
@@ -80,19 +84,19 @@ void Pxx1Pulses<PxxTransport>::add8ChannelsFrame(uint8_t port, uint8_t sendUpper
   addHead();
 
   // RX Number
-  PxxTransport::addByte(g_model.header.modelId[port]);
+  PxxTransport::addByte(g_model.header.modelId[module]);
 
   // Flag1
-  uint8_t flag1 = addFlag1(port);
+  uint8_t flag1 = addFlag1(module);
 
   // Flag2
   PxxTransport::addByte(0);
 
   // Channels
-  PxxPulses<PxxTransport>::addChannels(port, flag1 & PXX_SEND_FAILSAFE, sendUpperChannels);
+  PxxPulses<PxxTransport>::addChannels(module, flag1 & PXX_SEND_FAILSAFE, sendUpperChannels);
 
   // Extra flags
-  addExtraFlags(port);
+  addExtraFlags(module);
 
   // CRC
   addCrc();
@@ -105,22 +109,21 @@ void Pxx1Pulses<PxxTransport>::add8ChannelsFrame(uint8_t port, uint8_t sendUpper
 }
 
 template <class PxxTransport>
-void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t port)
+void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
 {
   PxxTransport::initFrame();
 
 #if defined(PXX_FREQUENCY_HIGH)
-  add8ChannelsFrame(port, 0);
-  if (sentModuleChannels(port) > 8) {
-    add8ChannelsFrame(port, 8);
+  add8ChannelsFrame(module, 0);
+  if (sentModuleChannels(module) > 8) {
+    add8ChannelsFrame(module, 8);
   }
 #else
-  static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
   uint8_t sendUpperChannels = 0;
-  if (pass[port]++ & 0x01) {
-    sendUpperChannels = g_model.moduleData[port].channelsCount;
+  if (moduleSettings[module].failsafeCounter & 0x01) {
+    sendUpperChannels = g_model.moduleData[module].channelsCount;
   }
-  add8ChannelsFrame(port, sendUpperChannels);
+  add8ChannelsFrame(module, sendUpperChannels);
 #endif
 }
 

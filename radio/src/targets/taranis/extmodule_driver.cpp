@@ -240,7 +240,7 @@ void extmodulePxx2Start()
 
 void extmoduleSendNextFrame()
 {
-  if (s_current_protocol[EXTERNAL_MODULE] == PROTOCOL_CHANNELS_PPM) {
+  if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PPM) {
     EXTMODULE_TIMER->CCR1 = GET_MODULE_PPM_DELAY(EXTERNAL_MODULE) * 2;
     EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_MODULE_PPM_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); //     // we are using complementary output so logic has to be reversed here
     EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].ppm.ptr - 1) - 4000; // 2mS in advance
@@ -251,7 +251,7 @@ void extmoduleSendNextFrame()
     EXTMODULE_TIMER_DMA_STREAM->NDTR = modulePulsesData[EXTERNAL_MODULE].ppm.ptr - modulePulsesData[EXTERNAL_MODULE].ppm.pulses;
     EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
-  else if (s_current_protocol[EXTERNAL_MODULE] == PROTOCOL_CHANNELS_PXX) {
+  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX) {
 #if defined(EXTMODULE_USART)
     DMA_InitTypeDef DMA_InitStructure;
     DMA_DeInit(EXTMODULE_USART_DMA_STREAM);
@@ -284,8 +284,8 @@ void extmoduleSendNextFrame()
     EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
 #endif
   }
-  else if (IS_DSM2_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_MULTIMODULE_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]) || IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE])) {
-    if (IS_SBUS_PROTOCOL(s_current_protocol[EXTERNAL_MODULE]))
+  else if (IS_DSM2_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_MULTIMODULE_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_SBUS_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol)) {
+    if (IS_SBUS_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol))
       EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); // reverse polarity for Sbus if needed
     EXTMODULE_TIMER->CCR2 = *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) - 4000; // 2mS in advance
     EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA

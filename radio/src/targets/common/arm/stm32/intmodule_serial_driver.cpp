@@ -87,7 +87,7 @@ extern "C" void INTMODULE_DMA_STREAM_IRQHandler(void)
 
 void intmoduleSendNextFrame()
 {
-  if (s_current_protocol[INTERNAL_MODULE] == PROTOCOL_CHANNELS_PXX2) {
+  if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
     DMA_InitTypeDef DMA_InitStructure;
     DMA_DeInit(INTMODULE_DMA_STREAM);
     DMA_InitStructure.DMA_Channel = INTMODULE_DMA_CHANNEL;

@@ -128,11 +128,11 @@ set(FIRMWARE_SRC
 
 set(PULSES_SRC
   ${PULSES_SRC}
-  pulses_arm.cpp
-  ppm_arm.cpp
+  pulses.cpp
+  ppm.cpp
   pxx.cpp
   pxx1.cpp
   pxx2.cpp
-  dsm2_arm.cpp
-  sbus_arm.cpp
+  dsm2.cpp
+  sbus.cpp
   )

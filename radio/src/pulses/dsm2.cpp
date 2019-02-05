@@ -110,7 +110,7 @@ void putDsm2Flush()
 // This is the data stream to send, prepare after 19.5 mS
 // Send after 22.5 mS
 
-void setupPulsesDSM2(uint8_t port)
+void setupPulsesDSM2(uint8_t module)
 {
   uint8_t dsmDat[14];
 
@@ -124,7 +124,7 @@ void setupPulsesDSM2(uint8_t port)
 
   modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
 
-  switch (s_current_protocol[port]) {
+  switch (moduleSettings[module].protocol) {
     case PROTOCOL_CHANNELS_DSM2_LP45:
       dsmDat[0] = 0x00;
       break;
@@ -140,29 +140,29 @@ void setupPulsesDSM2(uint8_t port)
   if (dsm2BindTimer > 0) {
     dsm2BindTimer--;
     if (switchState(SW_DSM2_BIND)) {
-      moduleFlag[port] = MODULE_BIND;
+      moduleSettings[port].mode = MODULE_MODE_BIND;
       dsmDat[0] |= DSM2_SEND_BIND;
     }
   }
-  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else if (moduleSettings[port].mode == MODULE_MODE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
   else {
-    moduleFlag[port] = 0;
+    moduleSettings[port].mode = 0;
   }
 #else
-  if (moduleFlag[port] == MODULE_BIND) {
+  if (moduleSettings[module].mode == MODULE_MODE_BIND) {
     dsmDat[0] |= DSM2_SEND_BIND;
   }
-  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else if (moduleSettings[module].mode == MODULE_MODE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
 #endif
 
-  dsmDat[1] = g_model.header.modelId[port]; // DSM2 Header second byte for model match
+  dsmDat[1] = g_model.header.modelId[module]; // DSM2 Header second byte for model match
 
   for (int i=0; i<DSM2_CHANS; i++) {
-    int channel = g_model.moduleData[port].channelsStart+i;
+    int channel = g_model.moduleData[module].channelsStart+i;
     int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
     uint16_t pulse = limit(0, ((value*13)>>5)+512, 1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);

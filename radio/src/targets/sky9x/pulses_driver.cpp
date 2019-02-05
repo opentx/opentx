@@ -276,7 +276,7 @@ extern "C" void PWM_IRQHandler(void)
 
   if (reason & PWM_ISR1_CHID3) {
     // Use the current protocol, don't switch until set_up_pulses
-    switch (s_current_protocol[EXTERNAL_MODULE]) {
+    switch (moduleSettings[EXTERNAL_MODULE].protocol) {
       case PROTOCOL_CHANNELS_PXX:
         // Alternate periods of 6.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;

@@ -25,8 +25,8 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
   uint8_t flag0 = g_model.header.modelId[module] & 0x3F;
   if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
-    if (failsafeCounter[module]-- == 0) {
-      failsafeCounter[module] = 1000;
+    if (moduleSettings[module].failsafeCounter-- == 0) {
+      moduleSettings[module].failsafeCounter = 1000;
       flag0 |= PXX2_FLAG0_FAILSAFE;
     }
   }
@@ -40,10 +40,8 @@ void Pxx2Pulses::addFlag1(uint8_t module)
   Pxx2Transport::addByte(flag1);
 }
 
-void Pxx2Pulses::setupFrame(uint8_t module)
+void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 {
-  initFrame();
-
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_CHANNELS);
 
   // FLAG0
@@ -55,6 +53,31 @@ void Pxx2Pulses::setupFrame(uint8_t module)
   // Channels
   addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, 0);
   addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, 1);
+}
+
+void Pxx2Pulses::setupRegisterFrame(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
+  Pxx2Transport::addByte(0);
+}
+
+void Pxx2Pulses::setupBindFrame(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
+}
+
+void Pxx2Pulses::setupFrame(uint8_t module)
+{
+  initFrame();
+
+  uint8_t mode = moduleSettings[module].mode;
+
+  if (mode == MODULE_MODE_REGISTER)
+    setupRegisterFrame(module);
+  else if (mode == MODULE_MODE_BIND)
+    setupBindFrame(module);
+  else
+    setupChannelsFrame(module);
 
 #if 0
   // TODO PXX15

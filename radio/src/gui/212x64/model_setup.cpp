@@ -130,7 +130,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleFlag[moduleIdx] = MODULE_BIND;
+  moduleSettings[moduleIdx].bind = 1;;
 }
 
 void copySelection(char * dst, const char * src, uint8_t size)
@@ -309,8 +309,8 @@ void menuModelSetup(event_t event)
 
 #if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
-    moduleFlag[0] = 0;
-    moduleFlag[1] = 0;
+    moduleSettings[0].mode = 0;
+    moduleSettings[1].mode = 0;
   }
 #endif
 
@@ -1061,7 +1061,7 @@ void menuModelSetup(event_t event)
                       POPUP_MENU_START(onBindMenu);
                       continue;
                     }
-                    if (moduleFlag[moduleIdx] == MODULE_BIND) {
+                    if (moduleSettings[moduleIdx].mode == MODULE_BIND) {
                       newFlag = MODULE_BIND;
                     }
                     else {
@@ -1079,7 +1079,7 @@ void menuModelSetup(event_t event)
                 }
               }
             }
-            moduleFlag[moduleIdx] = newFlag;
+            moduleSettings[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
             if (newFlag == MODULE_BIND)
               multiBindStatus = MULTI_BIND_INITIATED;
