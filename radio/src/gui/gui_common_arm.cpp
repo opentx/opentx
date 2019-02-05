@@ -515,6 +515,14 @@ bool isR9MMFlex(int module)
   return g_model.moduleData[module].r9m.region == MODULE_R9M_REGION_FLEX;
 }
 
+bool isInternalModuleAvailable(int module)
+{
+  if (module == MODULE_TYPE_NONE || module == MODULE_TYPE_XJT) {
+    return true;
+  }
+  return false;
+}
+
 bool isModuleAvailable(int module)
 {
 #if defined(CROSSFIRE)
