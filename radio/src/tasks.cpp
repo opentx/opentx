@@ -179,8 +179,19 @@ TASK_FUNCTION(mixerTask)
 void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
 {
   // Schedule next mixer calculation time,
-  // for now assume mixer calculation takes 2 ms.
-  nextMixerTime[module] = (uint32_t)RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK) - 1 /* 1 tick in advance*/;
+
+  if (isProtocolSynchronous(s_current_protocol[module])) {
+    nextMixerTime[module] += period_ms / RTOS_MS_PER_TICK;
+    if (nextMixerTime[module] < RTOS_GET_TIME()) {
+      // we are late ... let's add some small delay
+      nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
+    }
+  }
+  else {
+    // for now assume mixer calculation takes 2 ms.
+    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK) - 1 /* 1 tick in advance*/;
+  }
+
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
 }
 

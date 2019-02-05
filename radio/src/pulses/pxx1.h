@@ -42,6 +42,9 @@ class Pxx1Pulses: public PxxPulses<PxxTransport>
       PxxTransport::addByteWithoutCrc(PxxCrcMixin::crc);
     }
 
+    uint8_t addFlag1(uint8_t port);
+    void addExtraFlags(uint8_t port);
+
     void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
 };
 

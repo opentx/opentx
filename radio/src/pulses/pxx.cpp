@@ -127,56 +127,6 @@ void PxxPulses<PxxTransport>::addChannels(uint8_t port, uint8_t sendFailsafe, ui
   }
 }
 
-template <class PxxTransport>
-uint8_t PxxPulses<PxxTransport>::addFlag1(uint8_t port)
-{
-  uint8_t flag1 = (g_model.moduleData[port].rfProtocol << 6);
-  if (moduleFlag[port] == MODULE_BIND) {
-    flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
-  }
-  else if (moduleFlag[port] == MODULE_RANGECHECK) {
-    flag1 |= PXX_SEND_RANGECHECK;
-  }
-  else if (g_model.moduleData[port].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[port].failsafeMode != FAILSAFE_RECEIVER) {
-    if (failsafeCounter[port]-- == 0) {
-      failsafeCounter[port] = 1000;
-      flag1 |= PXX_SEND_FAILSAFE;
-    }
-    if (failsafeCounter[port] == 0 && g_model.moduleData[port].channelsCount > 0) {
-      flag1 |= PXX_SEND_FAILSAFE;
-    }
-  }
-  PxxTransport::addByte(flag1);
-  return flag1;
-}
-
-template <class PxxTransport>
-void PxxPulses<PxxTransport>::addExtraFlags(uint8_t port)
-{
-  // Ext. flag (holds antenna selection on Horus internal module, 0x00 otherwise)
-  uint8_t extra_flags = 0;
-
-#if defined(PCBHORUS) || defined(PCBXLITE)
-  if (port == INTERNAL_MODULE) {
-    extra_flags |= (g_model.moduleData[port].pxx.external_antenna << 0);
-  }
-#endif
-
-  extra_flags |= (g_model.moduleData[port].pxx.receiver_telem_off << 1);
-  extra_flags |= (g_model.moduleData[port].pxx.receiver_channel_9_16 << 2);
-  if (isModuleR9M(port)) {
-    extra_flags |= (min<uint8_t>(g_model.moduleData[port].pxx.power, isModuleR9M_FCC_VARIANT(port) ? (uint8_t)R9M_FCC_POWER_MAX : (uint8_t)R9M_LBT_POWER_MAX) << 3);
-    if (isModuleR9M_EUPLUS(port))
-      extra_flags |= (1 << 6);
-  }
-
-  // Disable S.PORT if internal module is active
-  if (IS_TELEMETRY_INTERNAL_MODULE()) {
-    extra_flags |= (1 << 5);
-  }
-  PxxTransport::addByte(extra_flags);
-}
-
 template class PxxPulses<StandardPxxTransport<PwmPxxBitTransport> >;
 template class PxxPulses<StandardPxxTransport<SerialPxxBitTransport> >;
 template class PxxPulses<Pxx2Transport>;

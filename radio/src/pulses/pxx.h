@@ -232,9 +232,7 @@ class UartPxxTransport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
 template <class PxxTransport>
 class PxxPulses: public PxxTransport {
   protected:
-    uint8_t addFlag1(uint8_t port);
     void addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels);
-    void addExtraFlags(uint8_t port);
 };
 
 #endif

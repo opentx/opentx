@@ -23,6 +23,19 @@
 
 #include "./pxx.h"
 
+#define PXX2_TYPE_C_MODULE          0x01
+  #define PXX2_TYPE_ID_REGISTER     0x01
+  #define PXX2_TYPE_ID_BIND         0x02
+  #define PXX2_TYPE_ID_CHANNELS     0x03
+  #define PXX2_TYPE_ID_SPORT        0xFE
+
+#define PXX2_TYPE_C_POWER_METER     0x02
+
+#define PXX2_TYPE_C_OTA             0xFE
+
+#define PXX2_FLAG1_FAILSAFE         (1 << 6)
+
+
 // should not be used anymore
 class SportCrcMixin {
   protected:
@@ -67,16 +80,18 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
       // reserve 1 byte for LEN
       Pxx2Transport::addByteWithoutCrc(0x00);
-
-      // TYPE_C + TYPE_ID
-      // TODO optimization ? Pxx2Transport::addByte(0x26); // This one is CRC-ed on purpose
     }
 
     void addFrameType(uint8_t type_c, uint8_t type_id)
     {
+      // TYPE_C + TYPE_ID
+      // TODO optimization ? Pxx2Transport::addByte(0x26); // This one is CRC-ed on purpose
+
       Pxx2Transport::addByte(type_c);
       Pxx2Transport::addByte(type_id);
     }
+
+    uint8_t addFlag1(uint8_t module);
 
     void addCrc()
     {

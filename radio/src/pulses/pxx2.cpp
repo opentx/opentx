@@ -21,29 +21,39 @@
 #include "opentx.h"
 #include "pulses/pxx2.h"
 
-void Pxx2Pulses::setupFrame(uint8_t port)
+uint8_t Pxx2Pulses::addFlag1(uint8_t module)
+{
+  uint8_t flag1 = g_model.header.modelId[module] & 0x3F;
+  if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
+    if (failsafeCounter[module]-- == 0) {
+      failsafeCounter[module] = 1000;
+      flag1 |= PXX2_FLAG1_FAILSAFE;
+    }
+  }
+  Pxx2Transport::addByte(flag1);
+  return flag1;
+}
+
+void Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
 
-  static uint8_t pass[NUM_MODULES] = { MODULES_INIT(0) };
-  uint8_t sendUpperChannels = 0;
-  if (pass[port]++ & 0x01) {
-    sendUpperChannels = g_model.moduleData[port].channelsCount;
-  }
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_CHANNELS);
 
   // Model ID
-  addByte(g_model.header.modelId[port]);
+  // TODO addByte(g_model.header.modelId[port]);
 
   // Flag1
-  uint8_t flag1 = addFlag1(port);
+  uint8_t flag1 = addFlag1(module);
 
   // Flag2 = Extra flags
-  addExtraFlags(port);
+  // TODO addExtraFlags(module);
 
   // Channels
-  addChannels(port, flag1 & PXX_SEND_FAILSAFE, sendUpperChannels);
+  addChannels(module, flag1 & PXX2_FLAG1_FAILSAFE, 0);
+  addChannels(module, flag1 & PXX2_FLAG1_FAILSAFE, 1);
 
-#if defined(LUA)
+#if 0
   if (outputTelemetryBufferTrigger != 0x7E && outputTelemetryBufferSize > 0) {
     // primID (1 byte) + dataID (2 bytes) + value (4 bytes)
     addByte(outputTelemetryBufferTrigger);

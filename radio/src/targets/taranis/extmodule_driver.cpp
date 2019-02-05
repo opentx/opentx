@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-void extmoduleSendNextFrame();
-
 void extmoduleStop()
 {
   NVIC_DisableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
@@ -98,8 +96,6 @@ void extmodulePpmStart()
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE; // PWM mode 1
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
-  extmoduleSendNextFrame();
-
   NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_DMA_STREAM_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
@@ -131,8 +127,6 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  extmoduleSendNextFrame();
 
   NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_DMA_STREAM_IRQn, 7);
@@ -231,8 +225,6 @@ void extmodulePxxStart()
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  extmoduleSendNextFrame();
 
   NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
   NVIC_SetPriority(EXTMODULE_TIMER_DMA_STREAM_IRQn, 7);
