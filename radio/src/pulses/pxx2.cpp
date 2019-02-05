@@ -62,7 +62,7 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
 
   if (counter == REGISTER_COUNTER_ID_RECEIVED) {
-    Pxx2Transport::addByte(1);
+    Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<4; i++) {
       Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
     }

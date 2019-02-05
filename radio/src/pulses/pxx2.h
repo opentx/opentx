@@ -46,7 +46,7 @@ class ModuleFifo : public Fifo<uint8_t, 32> {
         if (isEmpty()) {
           return false;
         }
-        else if (fifo[ridx] != 0xFE) {
+        else if (fifo[ridx] != 0x7E) {
           skip();
         }
         else {
