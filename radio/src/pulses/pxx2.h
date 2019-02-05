@@ -33,7 +33,7 @@
 
 #define PXX2_TYPE_C_OTA             0xFE
 
-#define PXX2_FLAG1_FAILSAFE         (1 << 6)
+#define PXX2_FLAG0_FAILSAFE         (1 << 6)
 
 
 // should not be used anymore
@@ -91,7 +91,9 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
       Pxx2Transport::addByte(type_id);
     }
 
-    uint8_t addFlag1(uint8_t module);
+    uint8_t addFlag0(uint8_t module);
+
+    void addFlag1(uint8_t module);
 
     void addCrc()
     {
