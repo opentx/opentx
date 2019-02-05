@@ -415,8 +415,9 @@ PACK(struct TrainerModuleData {
  */
 
 PACK(struct ReceiverData {
+  uint8_t  enabled:1;
   uint8_t  telemetry:1;
-  uint8_t  spare:7;
+  uint8_t  spare:6;
   uint64_t channelMapping; // each receiver output (16) can be assigned to one of the 16 channels
   uint8_t  rxID[LEN_RX_ID];
 });

@@ -79,6 +79,7 @@ enum MenuModelSetupItems {
 #if defined(PCBXLITE) || defined(PCBXLITES)
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
+  ITEM_MODEL_INTERNAL_MODULE_ADD_RECEIVER,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
@@ -136,6 +137,7 @@ enum MenuModelSetupItems {
 
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
+  #define INTERNAL_MODULE_ADD_RECEIVER_ROW       (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[MAX_RECEIVERS_PER_MODULE-1].enabled ? HIDDEN_ROW : (uint8_t)0)
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
@@ -275,6 +277,7 @@ void menuModelSetup(event_t event)
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),  // Failsafe
     IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Range check
     ANTENNA_ROW
+    INTERNAL_MODULE_ADD_RECEIVER_ROW,
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
@@ -1002,7 +1005,7 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_RANGE:
       {
-        lcdDrawTextAlignedLeft(y, INDENT "Range");
+        lcdDrawTextAlignedLeft(y, STR_RANGE);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, attr);
         if (attr && s_editMode>0) {
           moduleFlag[INTERNAL_MODULE] = MODULE_RANGECHECK;
@@ -1011,9 +1014,14 @@ void menuModelSetup(event_t event)
           moduleFlag[INTERNAL_MODULE] = MODULE_NORMAL_MODE;
         }
       }
-        break;
+      break;
 
-
+      case ITEM_MODEL_INTERNAL_MODULE_ADD_RECEIVER:
+      {
+        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[Add]", attr);
+      }
+      break;
 #endif
 #if defined(PCBSKY9X)
       case ITEM_MODEL_EXTRA_MODULE_BIND:
