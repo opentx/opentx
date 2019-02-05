@@ -60,15 +60,13 @@ class ModuleFifo : public Fifo<uint8_t, 32> {
         return false;
       }
 
-      for (uint32_t i=0; i<len; i++) {
-        next = nextIndex(next);
+      for (uint32_t i=0; i<=len; i++) {
         frame[i] = fifo[next];
+        next = nextIndex(next);
       }
 
       // TODO CRC CHECK
       next = nextIndex(next);
-      next = nextIndex(next);
-
       ridx = nextIndex(next);
       return true;
     }
