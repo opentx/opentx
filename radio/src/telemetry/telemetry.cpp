@@ -71,6 +71,35 @@ void processTelemetryData(uint8_t data)
   processFrskyTelemetryData(data);
 }
 
+void processRegisterFrame(uint8_t module, uint8_t * frame)
+{
+  if (frame[3] == 0x00) {
+    // RX_ID follows, we discard it for now
+    moduleSettings[module].counter = REGISTER_COUNTER_ID_RECEIVED;
+  }
+}
+
+void processRadioFrame(uint8_t module, uint8_t * frame)
+{
+  switch (frame[2]) {
+    case PXX2_TYPE_ID_REGISTER:
+      processRegisterFrame(module, frame);
+      break;
+  }
+}
+
+void processModuleFrame(uint8_t module, uint8_t * frame)
+{
+  switch (frame[1]) {
+    case PXX2_TYPE_C_MODULE:
+      processRadioFrame(module, frame);
+      break;
+
+    default:
+      break;
+  }
+}
+
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
@@ -82,9 +111,16 @@ void telemetryWakeup()
     telemetryInit(requiredTelemetryProtocol);
   }
 #else
-   if (telemetryProtocol != requiredTelemetryProtocol) {
-     telemetryInit(requiredTelemetryProtocol);
-   }
+  if (telemetryProtocol != requiredTelemetryProtocol) {
+    telemetryInit(requiredTelemetryProtocol);
+  }
+#endif
+
+#if defined(INTMODULE_USART)
+  uint8_t frame[32];
+  if (intmoduleFifo.getFrame(frame)) {
+    processModuleFrame(INTERNAL_MODULE, frame);
+  }
 #endif
 
 #if defined(STM32)

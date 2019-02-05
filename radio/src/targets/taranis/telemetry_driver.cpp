@@ -37,12 +37,10 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  USART_InitTypeDef USART_InitStructure;
-  GPIO_InitTypeDef GPIO_InitStructure;
-
-  GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_RX, TELEMETRY_GPIO_AF);
   GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_TX, TELEMETRY_GPIO_AF);
+  GPIO_PinAFConfig(TELEMETRY_GPIO, TELEMETRY_GPIO_PinSource_RX, TELEMETRY_GPIO_AF);
 
+  GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = TELEMETRY_TX_GPIO_PIN | TELEMETRY_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
@@ -56,6 +54,8 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   GPIO_Init(TELEMETRY_DIR_GPIO, &GPIO_InitStructure);
   TELEMETRY_DIR_INPUT();
 
+  USART_DeInit(TELEMETRY_USART);
+  USART_InitTypeDef USART_InitStructure;
   USART_InitStructure.USART_BaudRate = baudrate;
   if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
@@ -70,8 +70,8 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(TELEMETRY_USART, &USART_InitStructure);
-
   USART_Cmd(TELEMETRY_USART, ENABLE);
+
   USART_ITConfig(TELEMETRY_USART, USART_IT_RXNE, ENABLE);
   NVIC_SetPriority(TELEMETRY_USART_IRQn, 6);
   NVIC_EnableIRQ(TELEMETRY_USART_IRQn);

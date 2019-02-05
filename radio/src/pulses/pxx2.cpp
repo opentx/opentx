@@ -25,8 +25,8 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
   uint8_t flag0 = g_model.header.modelId[module] & 0x3F;
   if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
-    if (moduleSettings[module].failsafeCounter-- == 0) {
-      moduleSettings[module].failsafeCounter = 1000;
+    if (moduleSettings[module].counter-- == 0) {
+      moduleSettings[module].counter = 1000;
       flag0 |= PXX2_FLAG0_FAILSAFE;
     }
   }
@@ -57,8 +57,20 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 
 void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 {
+  unsigned counter = moduleSettings[module].counter;
+
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
-  Pxx2Transport::addByte(0);
+
+  if (counter == REGISTER_COUNTER_ID_RECEIVED) {
+    Pxx2Transport::addByte(1);
+    for (uint8_t i=0; i<4; i++) {
+      Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
+    }
+  }
+  else {
+    addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
+    Pxx2Transport::addByte(0);
+  }
 }
 
 void Pxx2Pulses::setupBindFrame(uint8_t module)

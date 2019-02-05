@@ -21,10 +21,13 @@
 #ifndef _PULSES_PXX2_H_
 #define _PULSES_PXX2_H_
 
+#include "fifo.h"
 #include "./pxx.h"
 
 #define PXX2_TYPE_C_MODULE          0x01
   #define PXX2_TYPE_ID_REGISTER     0x01
+    #define REGISTER_COUNTER_ID_RECEIVED        1001
+    #define REGISTER_COUNTER_PASSWORD_RECEIVED  1002
   #define PXX2_TYPE_ID_BIND         0x02
   #define PXX2_TYPE_ID_CHANNELS     0x03
   #define PXX2_TYPE_ID_SPORT        0xFE
@@ -35,6 +38,43 @@
 
 #define PXX2_FLAG0_FAILSAFE         (1 << 6)
 
+class ModuleFifo : public Fifo<uint8_t, 32> {
+  public:
+    bool getFrame(uint8_t * frame)
+    {
+      while (1) {
+        if (isEmpty()) {
+          return false;
+        }
+        else if (fifo[ridx] != 0xFE) {
+          skip();
+        }
+        else {
+          break;
+        }
+      }
+
+      uint32_t next = nextIndex(ridx);
+      uint8_t len = fifo[next];
+      if (size() < unsigned(len + 4 /* 2 bytes header + 2 bytes CRC */)) {
+        return false;
+      }
+
+      for (uint32_t i=0; i<len; i++) {
+        next = nextIndex(next);
+        frame[i] = fifo[next];
+      }
+
+      // TODO CRC CHECK
+      next = nextIndex(next);
+      next = nextIndex(next);
+
+      ridx = nextIndex(next);
+      return true;
+    }
+};
+
+extern ModuleFifo intmoduleFifo;
 
 // should not be used anymore
 class SportCrcMixin {

@@ -33,14 +33,14 @@ uint8_t Pxx1Pulses<PxxTransport>::addFlag1(uint8_t module)
   }
   else {
     bool failsafeNeeded = g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER;
-    if (moduleSettings[module].failsafeCounter-- == 0) {
-      // failsafeCounter is also used for knowing if the frame is odd / even
-      moduleSettings[module].failsafeCounter = 1000;
+    if (moduleSettings[module].counter-- == 0) {
+      // counter is also used for knowing if the frame is odd / even
+      moduleSettings[module].counter = 1000;
       if (failsafeNeeded) {
         flag1 |= PXX_SEND_FAILSAFE;
       }
     }
-    if (failsafeNeeded && moduleSettings[module].failsafeCounter == 0 && g_model.moduleData[module].channelsCount > 0) {
+    if (failsafeNeeded && moduleSettings[module].counter == 0 && g_model.moduleData[module].channelsCount > 0) {
       flag1 |= PXX_SEND_FAILSAFE;
     }
   }
@@ -120,7 +120,7 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
   }
 #else
   uint8_t sendUpperChannels = 0;
-  if (moduleSettings[module].failsafeCounter & 0x01) {
+  if (moduleSettings[module].counter & 0x01) {
     sendUpperChannels = g_model.moduleData[module].channelsCount;
   }
   add8ChannelsFrame(module, sendUpperChannels);

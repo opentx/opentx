@@ -80,7 +80,7 @@ PACK(struct ModuleSettings {
   uint8_t protocol:5;
   uint8_t paused:1;
   uint8_t mode:2;
-  uint16_t failsafeCounter;
+  uint16_t counter;
 });
 
 extern ModuleSettings moduleSettings[NUM_MODULES];
@@ -195,12 +195,12 @@ inline bool pulsesStarted() { return moduleSettings[0].protocol != PROTOCOL_CHAN
 inline void pausePulses() { s_pulses_paused = true; }
 inline void resumePulses() { s_pulses_paused = false; }
 
-#define SEND_FAILSAFE_NOW(idx) moduleSettings[idx].failsafeCounter = 1
+#define SEND_FAILSAFE_NOW(idx) moduleSettings[idx].counter = 1
 
 inline void SEND_FAILSAFE_1S()
 {
   for (int i=0; i<NUM_MODULES; i++) {
-    moduleSettings[i].failsafeCounter = 100;
+    moduleSettings[i].counter = 100;
   }
 }
 
