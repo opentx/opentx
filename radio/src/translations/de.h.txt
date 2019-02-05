@@ -960,6 +960,7 @@
 #define TR_BYTES               "Bytes"
 #define TR_MODULE_BIND         BUTTON(TR("Bnd","Bind"))   //9XR-Pro
 #define TR_MODULE_RANGE        BUTTON(TR("Rng", "Range"))  //9XR-Pro
+#define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           BUTTON("Reset")
 #define TR_SET                 BUTTON("Set")
 #define TR_TRAINER             "DSC Buchse PPM In/Out"

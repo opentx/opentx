@@ -963,6 +963,7 @@ extern const char STR_BLCOLOR[];
 
 #if defined(PCBTARANIS) || defined(DSM2)
   extern const char STR_MODULE_RANGE[];
+extern const char STR_DEL_BUTTON[];
 #endif
 
 

@@ -291,12 +291,12 @@ void menuModelSetup(event_t event)
     IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Number
     IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Range
     IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Telemetry
-    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Bind/Delete
+    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)1),           // Receiver Bind/Delete
     IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Number
     IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Range
     IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Telemetry
-    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Bind/Delete
-    INTERNAL_MODULE_ADD_RECEIVER_ROW,
+    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)1),           // Receiver Bind/Delete
+    IF_INTERNAL_MODULE_ON(INTERNAL_MODULE_ADD_RECEIVER_ROW),
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
@@ -1064,20 +1064,43 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_RANGE:
       {
         lcdDrawTextAlignedLeft(y, TR_CHANNELRANGE);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "Ch 1 - 8",0);
       }
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_TELEM:
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_TELEM:
       {
-        lcdDrawTextAlignedLeft(y, INDENT "Telem");
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry = editCheckBox(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT "Telemetry", attr, event);
       }
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_BIND:
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_BIND:
       {
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+
         lcdDrawTextAlignedLeft(y, INDENT "Receiver");
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS, y, STR_DEL_BUTTON, menuHorizontalPosition==1 ? attr : 0);
+        if (attr && menuHorizontalPosition == 0) {
+          if (s_editMode > 0)
+              moduleFlag[INTERNAL_MODULE] = MODULE_BIND;
+          else
+              moduleFlag[INTERNAL_MODULE] = MODULE_NORMAL_MODE;
+        }
+        if (attr && menuHorizontalPosition == 1 && s_editMode > 0) {
+          if(receiverIdx == 0) {
+            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0], &g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers));
+            memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers));
+            s_editMode = 0;
+          }
+          else {
+            memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx], sizeof(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers));
+            s_editMode = 0;
+          }
+        }
       }
       break;
 #endif

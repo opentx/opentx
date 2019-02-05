@@ -701,6 +701,7 @@ const char STR_BLCOLOR[]   = TR_BLCOLOR;
 
 #if defined(PCBTARANIS) || defined(DSM2)
   const char STR_MODULE_RANGE[]  = TR_MODULE_RANGE;
+const char STR_DEL_BUTTON[]  = TR_DEL_BUTTON;
 #endif
 
 #if defined(BLUETOOTH)
