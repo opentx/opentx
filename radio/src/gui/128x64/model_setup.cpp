@@ -79,6 +79,14 @@ enum MenuModelSetupItems {
 #if defined(PCBXLITE) || defined(PCBXLITES)
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_NUMBER,
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_RANGE,
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_TELEM,
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_BIND,
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER,
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_RANGE,
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_TELEM,
+  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_BIND,
   ITEM_MODEL_INTERNAL_MODULE_ADD_RECEIVER,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
@@ -137,7 +145,10 @@ enum MenuModelSetupItems {
 
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
+  #define CURRENT_RECEIVER_EDITED(k)      (k >= ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER ? 1 : 0)
   #define INTERNAL_MODULE_ADD_RECEIVER_ROW       (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[MAX_RECEIVERS_PER_MODULE-1].enabled ? HIDDEN_ROW : (uint8_t)0)
+  #define IF_INTERNAL_MODULE_RECEIVER_1_ON(x)    (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled ? (uint8_t)(x) : HIDDEN_ROW)
+  #define IF_INTERNAL_MODULE_RECEIVER_2_ON(x)    (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].enabled ? (uint8_t)(x) : HIDDEN_ROW)
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
@@ -277,6 +288,14 @@ void menuModelSetup(event_t event)
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),  // Failsafe
     IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Range check
     ANTENNA_ROW
+    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Number
+    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Range
+    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Telemetry
+    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Bind/Delete
+    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Number
+    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Range
+    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Telemetry
+    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Bind/Delete
     INTERNAL_MODULE_ADD_RECEIVER_ROW,
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
@@ -1018,8 +1037,47 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_ADD_RECEIVER:
       {
-        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+        lcdDrawTextAlignedLeft(y, "Receiver");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[Add]", attr);
+        if (attr && s_editMode>0) {
+          if(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled) {
+            g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].enabled = 0x01;
+          }
+          else {
+            g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled = 0x01;
+          }
+          s_editMode = 0;
+        }
+      }
+      break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_NUMBER:
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER:
+      {
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        lcdDrawTextAlignedLeft(y, "Receiver");
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, receiverIdx+1);
+      }
+      break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_RANGE:
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_RANGE:
+      {
+        lcdDrawTextAlignedLeft(y, TR_CHANNELRANGE);
+      }
+      break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_TELEM:
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_TELEM:
+      {
+        lcdDrawTextAlignedLeft(y, INDENT "Telem");
+      }
+      break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_BIND:
+      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_BIND:
+      {
+        lcdDrawTextAlignedLeft(y, INDENT "Receiver");
       }
       break;
 #endif
