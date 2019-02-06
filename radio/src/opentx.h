@@ -1096,6 +1096,7 @@ void opentxResume();
 #else
 #define SD_SCREEN_FILE_LENGTH          64
 #endif
+
 union ReusableBuffer
 {
   // ARM 334 bytes
@@ -1116,8 +1117,10 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
-    char pxx2_candidate_receivers[5][8];
-    uint8_t pxx2_candidate_receivers_count;
+    uint8_t pxx2_register_or_bind_step;
+    char pxx2_bind_candidate_receivers[5][8];
+    uint8_t pxx2_bind_candidate_receivers_count;
+    uint8_t pxx2_bind_receiver_index;
   } modelsetup;
 
   // 103 bytes
