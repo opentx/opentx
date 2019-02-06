@@ -21,6 +21,9 @@
 #ifndef _KEYS_H_
 #define _KEYS_H_
 
+#include <inttypes.h>
+#include "board.h"
+
 #define EVT_KEY_MASK(e)                ((e) & 0x1f)
 
 #if defined(PCBHORUS)

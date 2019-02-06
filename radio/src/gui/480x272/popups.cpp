@@ -32,7 +32,7 @@ int16_t     warningInputValueMax;
 void        (*popupFunc)(event_t event) = NULL;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     s_menu_item = 0;
-uint16_t    popupMenuNoItems = 0;
+uint16_t    popupMenuItemsCount = 0;
 uint16_t    popupMenuOffset = 0;
 uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 void        (*popupMenuHandler)(const char * result);
@@ -105,7 +105,7 @@ const char * runPopupMenu(event_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min<unsigned int>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  uint8_t display_count = min<unsigned int>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
 
   switch (event) {
     case EVT_ROTARY_LEFT:
@@ -118,18 +118,18 @@ const char * runPopupMenu(event_t event)
       }
       else {
         s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
-        if (popupMenuNoItems > MENU_MAX_DISPLAY_LINES) {
-          popupMenuOffset = popupMenuNoItems - MENU_MAX_DISPLAY_LINES;
+        if (popupMenuItemsCount > MENU_MAX_DISPLAY_LINES) {
+          popupMenuOffset = popupMenuItemsCount - MENU_MAX_DISPLAY_LINES;
           result = STR_UPDATE_LIST;
         }
       }
       break;
 
     case EVT_ROTARY_RIGHT:
-      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
+      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuItemsCount) {
         s_menu_item++;
       }
-      else if (popupMenuNoItems > popupMenuOffset + display_count) {
+      else if (popupMenuItemsCount > popupMenuOffset + display_count) {
         popupMenuOffset++;
         result = STR_UPDATE_LIST;
       }
@@ -147,7 +147,7 @@ const char * runPopupMenu(event_t event)
       // no break
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      popupMenuNoItems = 0;
+      popupMenuItemsCount = 0;
       s_menu_item = 0;
       popupMenuOffset = 0;
       break;
@@ -168,8 +168,8 @@ const char * runPopupMenu(event_t event)
     }
   }
 
-  if (popupMenuNoItems > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  if (popupMenuItemsCount > display_count) {
+    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
   }
 
   return result;

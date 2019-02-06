@@ -26,7 +26,7 @@ void (*popupFunc)(event_t event) = NULL;
 #if defined(NAVIGATION_MENUS)
 const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
-uint16_t popupMenuNoItems = 0;
+uint16_t popupMenuItemsCount = 0;
 uint16_t popupMenuOffset = 0;
 void (*popupMenuHandler)(const char * result);
 
@@ -34,7 +34,7 @@ const char * runPopupMenu(event_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min<uint8_t>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  uint8_t display_count = min<uint8_t>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
   lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
   lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
@@ -44,8 +44,8 @@ const char * runPopupMenu(event_t event)
     if (i == s_menu_item) lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
-  if (popupMenuNoItems > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, display_count);
+  if (popupMenuItemsCount > display_count) {
+    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuItemsCount, display_count);
   }
 
   switch (event) {
@@ -66,8 +66,8 @@ const char * runPopupMenu(event_t event)
       else {
         s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
 #if defined(SDCARD)
-        if (popupMenuNoItems > MENU_MAX_DISPLAY_LINES) {
-          popupMenuOffset = popupMenuNoItems - display_count;
+        if (popupMenuItemsCount > MENU_MAX_DISPLAY_LINES) {
+          popupMenuOffset = popupMenuItemsCount - display_count;
           result = STR_UPDATE_LIST;
         }
 #endif
@@ -79,11 +79,11 @@ const char * runPopupMenu(event_t event)
 #endif
     case EVT_KEY_FIRST(KEY_DOWN):
     case EVT_KEY_REPT(KEY_DOWN):
-      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
+      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuItemsCount) {
         s_menu_item++;
       }
 #if defined(SDCARD)
-      else if (popupMenuNoItems > popupMenuOffset + display_count) {
+      else if (popupMenuItemsCount > popupMenuOffset + display_count) {
         popupMenuOffset++;
         result = STR_UPDATE_LIST;
       }
@@ -113,7 +113,7 @@ const char * runPopupMenu(event_t event)
 #endif
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      popupMenuNoItems = 0;
+      popupMenuItemsCount = 0;
       s_menu_item = 0;
       popupMenuOffset = 0;
       break;

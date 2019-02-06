@@ -50,7 +50,7 @@ void handleUsbConnection()
     }
   }
   if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuNoItems == 0)) {
+    if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuItemsCount == 0)) {
       POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
       POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
 #if defined(DEBUG)
@@ -135,14 +135,14 @@ void handleJackConnection()
       jackState = TRAINER_ACTIVE;
       enableTrainer();
     }
-    else if (popupMenuNoItems == 0) {
+    else if (popupMenuItemsCount == 0) {
       POPUP_MENU_ADD_ITEM(STR_JACK_HEADPHONE);
       POPUP_MENU_ADD_ITEM(STR_JACK_TRAINER);
       POPUP_MENU_START(onJackConnectMenu);
     }
   }
-  else if (jackState == SPEAKER_ACTIVE && !isJackPlugged() && popupMenuNoItems > 0 && popupMenuHandler == onJackConnectMenu) {
-    popupMenuNoItems = 0;
+  else if (jackState == SPEAKER_ACTIVE && !isJackPlugged() && popupMenuItemsCount > 0 && popupMenuHandler == onJackConnectMenu) {
+    popupMenuItemsCount = 0;
   }
   else if (jackState != SPEAKER_ACTIVE && !isJackPlugged()) {
     jackState = SPEAKER_ACTIVE;
@@ -304,7 +304,7 @@ void guiMain(event_t evt)
     while (1) {
       // normal GUI from menus
       const char * warn = warningText;
-      uint8_t menu = popupMenuNoItems;
+      uint8_t menu = popupMenuItemsCount;
 
       static bool popupDisplayed = false;
       if (warn || menu) {
@@ -450,7 +450,7 @@ void guiMain(event_t evt)
     handleGui(0); // suppress events, they are handled by the warning
     DISPLAY_WARNING(evt);
   }
-  else if (popupMenuNoItems > 0) {
+  else if (popupMenuItemsCount > 0) {
     // popup menu is active display it on top of normal menus
     handleGui(0); // suppress events, they are handled by the popup
     if (!inPopupMenu) {

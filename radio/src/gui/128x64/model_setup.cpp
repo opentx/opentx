@@ -1115,12 +1115,19 @@ void menuModelSetup(event_t event)
         if (attr) {
           if (menuHorizontalPosition == 0) {
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-              moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_BIND;
+              reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_START;
               reusableBuffer.modelsetup.pxx2_bind_receiver_index = receiverIdx;
+              reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count = 0;
+              moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_BIND;
             }
             if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_BIND) {
               s_editMode = 1;
-              // TODO the menu here
+              if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_RX_ID_RECEIVED) {
+                for (uint8_t i=0; i<min(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count, (uint8_t)MENU_MAX_DISPLAY_LINES); i++) {
+                  popupMenuItems[i] = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[i];
+                }
+                popupMenuItemsCount = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count;
+              }
             }
             else {
               s_editMode = 0;
@@ -1265,7 +1272,7 @@ void menuModelSetup(event_t event)
                       newFlag = MODULE_MODE_BIND;
                     }
                     else {
-                      if (!popupMenuNoItems) {
+                      if (!popupMenuItemsCount) {
                         s_editMode = 0;  // this is when popup is exited before a choice is made
                       }
                     }
