@@ -26,8 +26,6 @@
 
 #define PXX2_TYPE_C_MODULE          0x01
   #define PXX2_TYPE_ID_REGISTER     0x01
-    #define REGISTER_COUNTER_ID_RECEIVED        1001
-    #define REGISTER_COUNTER_PASSWORD_RECEIVED  1002
   #define PXX2_TYPE_ID_BIND         0x02
   #define PXX2_TYPE_ID_CHANNELS     0x03
   #define PXX2_TYPE_ID_SPORT        0xFE
@@ -38,8 +36,21 @@
 
 #define PXX2_FLAG0_FAILSAFE         (1 << 6)
 
-const uint8_t DEFAULT_CHANNEL_MAPPING[] = {0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-const uint8_t CH9TO16_CHANNEL_MAPPING[] = {0x89, 0xAB, 0xCD, 0xEF, 0x12, 0x23, 0x45, 0x67};
+const uint8_t DEFAULT_CHANNEL_MAPPING[] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+const uint8_t CH9TO16_CHANNEL_MAPPING[] = {0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45, 0x67};
+
+enum PXX2RegisterSteps {
+  REGISTER_START,
+  REGISTER_COUNTER_ID_RECEIVED,
+  REGISTER_OK
+};
+
+enum PXX2BindSteps {
+    BIND_START,
+    BIND_RX_ID_RECEIVED,
+    BIND_RX_ID_SELECTED,
+    BIND_OK
+};
 
 class ModuleFifo : public Fifo<uint8_t, 32> {
   public:

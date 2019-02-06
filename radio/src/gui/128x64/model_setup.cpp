@@ -283,7 +283,7 @@ void menuModelSetup(event_t event)
     POT_WARN_ITEMS(), // Pot warning
     NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
-    4, // Registration ID
+    PXX2_LEN_REGISTRATION_ID - 1, // Registration ID
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
@@ -1013,12 +1013,11 @@ void menuModelSetup(event_t event)
 #if defined(PCBTARANIS)
       case ITEM_MODEL_REGISTRATION_ID:
       {
-        lcdDrawTextAlignedLeft(y, "Regis. ID");
-        for(uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++)
-        {
+        lcdDrawTextAlignedLeft(y, "Reg. ID");
+        for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
           lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos*FW*2,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
           lcdDrawChar(lcdLastRightPos, y, ':');
-          if (attr && menuHorizontalPosition==pos) {
+          if (attr && menuHorizontalPosition == pos) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelRegistrationID[pos], 0xff);
           }
         }
@@ -1027,7 +1026,6 @@ void menuModelSetup(event_t event)
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_MODEL_NUM:
-      {
         lcdDrawTextAlignedLeft(y, STR_RECEIVER_NUM);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[INTERNAL_MODULE], attr | LEADING0|LEFT, 2);
         if (attr) {
@@ -1036,9 +1034,11 @@ void menuModelSetup(event_t event)
             modelHeaders[g_eeGeneral.currModel].modelId[INTERNAL_MODULE] = g_model.header.modelId[INTERNAL_MODULE];
           }
         }
-      }
       break;
 
+      case ITEM_MODEL_INTERNAL_MODULE_RANGE:
+        lcdDrawTextAlignedLeft(y, STR_RANGE);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, attr);
       case ITEM_MODEL_INTERNAL_MODULE_RANGE_REG:
       {
         lcdDrawTextAlignedLeft(y, INDENT "Module");
@@ -1053,11 +1053,9 @@ void menuModelSetup(event_t event)
         if (attr && s_editMode==0) {
           moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
         }
-      }
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_ADD_RECEIVER:
-      {
         lcdDrawTextAlignedLeft(y, "Receiver");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[Add]", attr);
         if (attr && s_editMode>0) {
@@ -1071,8 +1069,7 @@ void menuModelSetup(event_t event)
           }
           s_editMode = 0;
         }
-      }
-      break;
+        break;
 
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_NUMBER:
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER:
@@ -1086,7 +1083,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_RANGE:
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_RANGE:
       {
-        //TODO have a proper channel assignement screen, section bellow is just for tests
+        // TODO have a proper channel assignement screen, section bellow is just for tests
         uint8_t useUpperChannels;
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
 

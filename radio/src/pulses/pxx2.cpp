@@ -57,11 +57,9 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 
 void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 {
-  unsigned counter = moduleSettings[module].counter;
-
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
 
-  if (counter == REGISTER_COUNTER_ID_RECEIVED) {
+  if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == REGISTER_COUNTER_ID_RECEIVED) {
     Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
       Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
@@ -76,9 +74,17 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
-  Pxx2Transport::addByte(0x00);
-  for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-    Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
+  if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_RX_ID_SELECTED) {
+    Pxx2Transport::addByte(0x00);
+    for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
+      Pxx2Transport::addByte(g_model.moduleData[module].pxx2.receivers[reusableBuffer.modelsetup.pxx2_bind_receiver_index].rxID[i]);
+    }
+  }
+  else {
+    Pxx2Transport::addByte(0x00);
+    for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
+      Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
+    }
   }
 }
 
