@@ -1116,8 +1116,15 @@ void menuModelSetup(event_t event)
           if (menuHorizontalPosition == 0) {
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
               moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_BIND;
+              reusableBuffer.modelsetup.pxx2_bind_receiver_index = receiverIdx;
             }
-            s_editMode = (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_BIND);
+            if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_BIND) {
+              s_editMode = 1;
+              // TODO the menu here
+            }
+            else {
+              s_editMode = 0;
+            }
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
             if (receiverIdx == 0) {
