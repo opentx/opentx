@@ -283,7 +283,7 @@ void menuModelSetup(event_t event)
     POT_WARN_ITEMS(), // Pot warning
     NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
-    4, // Registration ID
+    PXX2_LEN_REGISTRATION_ID - 1, // Registration ID
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
@@ -1017,7 +1017,7 @@ void menuModelSetup(event_t event)
         for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
           lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos*FW*2,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
           lcdDrawChar(lcdLastRightPos, y, ':');
-          if (attr && menuHorizontalPosition==pos) {
+          if (attr && menuHorizontalPosition == pos) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelRegistrationID[pos], 0xff);
           }
         }
