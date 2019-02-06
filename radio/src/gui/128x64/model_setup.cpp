@@ -1036,11 +1036,7 @@ void menuModelSetup(event_t event)
         }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_RANGE:
-        lcdDrawTextAlignedLeft(y, STR_RANGE);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, attr);
       case ITEM_MODEL_INTERNAL_MODULE_RANGE_REG:
-      {
         lcdDrawTextAlignedLeft(y, INDENT "Module");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, (menuHorizontalPosition==0 ? attr : 0) );
         lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition==1 ? attr : 0) );
