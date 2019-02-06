@@ -27,7 +27,6 @@ void (*popupFunc)(event_t event) = NULL;
 const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
 uint16_t popupMenuNoItems = 0;
-uint8_t popupMenuFlags = 0;
 uint16_t popupMenuOffset = 0;
 void (*popupMenuHandler)(const char * result);
 
@@ -116,7 +115,6 @@ const char * runPopupMenu(event_t event)
     case EVT_KEY_BREAK(KEY_EXIT):
       popupMenuNoItems = 0;
       s_menu_item = 0;
-      popupMenuFlags = 0;
       popupMenuOffset = 0;
       break;
   }

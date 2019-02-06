@@ -1116,6 +1116,8 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
+    char pxx2_candidate_receivers[5][8];
+    uint8_t pxx2_candidate_receivers_count;
   } modelsetup;
 
   // 103 bytes
