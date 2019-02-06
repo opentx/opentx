@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
+#include <opentx.h>
 
 uint8_t g_moduleIdx;
 void menuModelFailsafe(event_t event);
@@ -1023,7 +1023,6 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, "Reg. ID");
         for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
           lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos*FW*2,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
-          lcdDrawChar(lcdLastRightPos, y, ':');
           if (attr && menuHorizontalPosition == pos) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelRegistrationID[pos], 0xff);
           }
@@ -1088,6 +1087,10 @@ void menuModelSetup(event_t event)
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         lcdDrawTextAlignedLeft(y, "Receiver");
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, receiverIdx+1);
+        lcdDrawChar(lcdLastRightPos, y, ':');
+        for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
+          lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + 10 + pos*FW*2,y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], menuHorizontalPosition==pos ? attr : 0);
+        }
       }
       break;
 
@@ -1147,6 +1150,9 @@ void menuModelSetup(event_t event)
             }
             else {
               s_editMode = 0;
+            }
+            if(reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_OK) {
+              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID, reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_receiver_index], PXX2_LEN_RX_ID);
             }
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
