@@ -1065,8 +1065,21 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_RANGE:
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_RANGE:
       {
-        lcdDrawTextAlignedLeft(y, TR_CHANNELRANGE);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "Ch 1 - 8",0);
+        //TODO have a proper channel assignement screen, section bellow is just for tests
+        uint8_t useUpperChannels;
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+
+        if (memcmp(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t)) == 0)
+          useUpperChannels = 0;
+        else
+          useUpperChannels = 1;
+
+        useUpperChannels = editCheckBox(useUpperChannels, MODEL_SETUP_2ND_COLUMN, y, INDENT "Use CH9-16", attr, event);
+
+        if (useUpperChannels)
+          memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].channelMapping, CH9TO16_CHANNEL_MAPPING, sizeof(uint64_t));
+        else
+          memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
       }
       break;
 
