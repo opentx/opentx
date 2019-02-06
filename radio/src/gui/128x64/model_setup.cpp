@@ -224,6 +224,13 @@ enum MenuModelSetupItems {
 #endif
 
 
+void onPXX2BindMenu(const char * result)
+{
+  reusableBuffer.modelsetup.pxx2_bind_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[0]);
+  reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_SELECTED;
+  TRACE("RECEIVER  SELECTED  : %d", reusableBuffer.modelsetup.pxx2_bind_receiver_index);
+}
+
 void onBindMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
@@ -1135,6 +1142,7 @@ void menuModelSetup(event_t event)
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
                   popupMenuItems[i] = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[i];
                 }
+                POPUP_MENU_START(onPXX2BindMenu);
               }
             }
             else {
