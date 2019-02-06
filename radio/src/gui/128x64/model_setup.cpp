@@ -1131,10 +1131,10 @@ void menuModelSetup(event_t event)
             if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_BIND) {
               s_editMode = 1;
               if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_RX_ID_RECEIVED) {
-                for (uint8_t i=0; i<min(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count, (uint8_t)MENU_MAX_DISPLAY_LINES); i++) {
+                popupMenuItemsCount = min<uint8_t>(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count, PXX2_MAX_RECEIVERS_PER_MODULE);
+                for (uint8_t i=0; i<popupMenuItemsCount; i++) {
                   popupMenuItems[i] = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[i];
                 }
-                popupMenuItemsCount = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count;
               }
             }
             else {
