@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <opentx.h>
 #include "opentx.h"
 
 uint8_t telemetryStreaming = 0;
@@ -79,8 +80,25 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
   }
   else if (frame[3] == 0x01) {
     // PASSWORD follows, we check it is good
-    if (memcmp(&frame[4], g_model.modelRegistrationID, LEN_REGISTRATION_ID) == 0) {
+    if (memcmp(&frame[4], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       moduleSettings[module].counter = REGISTER_COUNTER_PASSWORD_RECEIVED;
+    }
+  }
+}
+
+void processBindFrame(uint8_t module, uint8_t * frame)
+{
+  if (frame[3] == 0x00) {
+    bool found = false;
+    for (uint8_t i=0; i<reusableBuffer.modelsetup.pxx2_candidate_receivers_count; i++) {
+      if (memcmp(reusableBuffer.modelsetup.pxx2_candidate_receivers[i], &frame[4], PXX2_LEN_RX_ID) == 0) {
+        found = true;
+        break;
+      }
+    }
+    if (!found && reusableBuffer.modelsetup.pxx2_candidate_receivers_count < PXX2_MAX_RECEIVERS_PER_MODULE) {
+      memcpy(reusableBuffer.modelsetup.pxx2_candidate_receivers[reusableBuffer.modelsetup.pxx2_candidate_receivers_count], &frame[4], PXX2_LEN_RX_ID);
+      ++reusableBuffer.modelsetup.pxx2_candidate_receivers_count;
     }
   }
 }
@@ -90,6 +108,10 @@ void processRadioFrame(uint8_t module, uint8_t * frame)
   switch (frame[2]) {
     case PXX2_TYPE_ID_REGISTER:
       processRegisterFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_ID_BIND:
+      processBindFrame(module, frame);
       break;
   }
 }

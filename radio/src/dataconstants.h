@@ -787,7 +787,8 @@ enum BluetoothModes {
 };
 
 // PXX2 constants
-#define LEN_REGISTRATION_ID            4
-#define LEN_RX_ID                      4
+#define PXX2_LEN_REGISTRATION_ID            4
+#define PXX2_LEN_RX_ID                      4
+#define PXX2_MAX_RECEIVERS_PER_MODULE       5
 
 #endif // _DATACONSTANTS_H_
