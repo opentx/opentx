@@ -1109,29 +1109,26 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_BIND:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-
         lcdDrawTextAlignedLeft(y, INDENT "Receiver");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS, y, STR_DEL_BUTTON, menuHorizontalPosition==1 ? attr : 0);
-        if (attr && menuHorizontalPosition == 0) {
-          if (s_editMode > 0) {
-            if (BLINK_ON_PHASE)
-              moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_BIND;
-            else
-              moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_REGISTER;
+        if (attr) {
+          if (menuHorizontalPosition == 0) {
+            if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+              moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_BIND;
+            }
+            s_editMode = (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_BIND);
           }
-          else
-            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
-        }
-        if (attr && menuHorizontalPosition == 1 && s_editMode > 0) {
-          if(receiverIdx == 0) {
-            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0], &g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers));
-            memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers));
-            s_editMode = 0;
-          }
-          else {
-            memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx], sizeof(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers));
-            s_editMode = 0;
+          else if (menuHorizontalPosition == 1 && s_editMode > 0) {
+            if (receiverIdx == 0) {
+              memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0],
+                     &g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(ReceiverData));
+              memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(ReceiverData));
+              s_editMode = 0;
+            } else {
+              memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx], sizeof(ReceiverData));
+              s_editMode = 0;
+            }
           }
         }
       }
