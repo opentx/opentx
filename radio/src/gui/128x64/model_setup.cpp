@@ -1042,9 +1042,11 @@ void menuModelSetup(event_t event)
         if (attr && s_editMode>0) {
           if(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled) {
             g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].enabled = 0x01;
+            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].channelMapping, "\x01\x23\x45\x67\x89\xAB\xCD\xEF", 8);  //default map 1-1 16-16
           }
           else {
             g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled = 0x01;
+            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].channelMapping, "\x01\x23\x45\x67\x89\xAB\xCD\xEF", 8);  //default map 1-1 16-16
           }
           s_editMode = 0;
         }
