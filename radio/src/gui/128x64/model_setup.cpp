@@ -226,7 +226,7 @@ enum MenuModelSetupItems {
 
 void onPXX2BindMenu(const char * result)
 {
-  reusableBuffer.modelsetup.pxx2_bind_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]);
+  reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]);
   reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_SELECTED;
   TRACE("RECEIVER  SELECTED  : %d", reusableBuffer.modelsetup.pxx2_bind_receiver_index);
 }
@@ -1134,7 +1134,6 @@ void menuModelSetup(event_t event)
           if (menuHorizontalPosition == 0) {
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
               reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_START;
-              reusableBuffer.modelsetup.pxx2_bind_receiver_index = receiverIdx;
               reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count = 0;
               moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_BIND;
             }
@@ -1151,8 +1150,8 @@ void menuModelSetup(event_t event)
             else {
               s_editMode = 0;
             }
-            if(reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_OK) {
-              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID, reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_receiver_index], PXX2_LEN_RX_ID);
+            if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_OK) {
+              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID, reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], PXX2_LEN_RX_ID);
             }
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
