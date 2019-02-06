@@ -74,6 +74,10 @@ void processTelemetryData(uint8_t data)
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)
 {
+  if (moduleSettings[module].mode != MODULE_MODE_REGISTER) {
+    return;
+  }
+
   if (frame[3] == 0x00) {
     // RX_ID follows, we discard it for now
     reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_COUNTER_ID_RECEIVED;
@@ -89,6 +93,10 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
 
 void processBindFrame(uint8_t module, uint8_t * frame)
 {
+  if (moduleSettings[module].mode != MODULE_MODE_BIND) {
+    return;
+  }
+
   if (frame[3] == 0x00) {
     bool found = false;
     for (uint8_t i=0; i<reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count; i++) {
