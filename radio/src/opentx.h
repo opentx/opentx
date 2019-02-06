@@ -1118,7 +1118,7 @@ union ReusableBuffer
     char msg[64];
     uint8_t r9mPower;
     uint8_t pxx2_register_or_bind_step;
-    char pxx2_bind_candidate_receivers[5][8];
+    char pxx2_bind_candidate_receivers[PXX2_MAX_RECEIVERS_PER_MODULE][8];
     uint8_t pxx2_bind_candidate_receivers_count;
     uint8_t pxx2_bind_receiver_index;
   } modelsetup;
