@@ -428,6 +428,19 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
   }
 }
 
+void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags)
+{
+  x += FWNUM*2;
+  for (int i=0; i<2; i++) {
+    x -= FWNUM;
+    char c = val & 0xf;
+    c = c>9 ? c+'A'-10 : c+'0';
+    lcdDrawChar(x, y, c, flags|(c>='A' ? CONDENSED : 0));
+    val >>= 4;
+  }
+}
+
+
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
 {
   lcdDrawNumber(x, y, val);

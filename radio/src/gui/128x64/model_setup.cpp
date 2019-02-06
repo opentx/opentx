@@ -70,6 +70,7 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_BEEP_CENTER,
   ITEM_MODEL_USE_GLOBAL_FUNCTIONS,
+  ITEM_MODEL_REGISTRATION_ID,
 #if defined(PCBTARANIS)
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_MODE,
@@ -282,6 +283,7 @@ void menuModelSetup(event_t event)
     POT_WARN_ITEMS(), // Pot warning
     NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
+    4, // Registration ID
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
@@ -734,7 +736,7 @@ void menuModelSetup(event_t event)
         if (attr) {
           g_model.moduleData[INTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_XJT, EE_MODEL, isInternalModuleAvailable);
           if (checkIncDec_Ret) {
-            /* ToDo : what needs toi happen on module enable/disable */
+            /* ToDo : what needs to happen on module enable/disable */
           }
         }
         break;
@@ -1009,6 +1011,21 @@ void menuModelSetup(event_t event)
 #endif
 
 #if defined(PCBTARANIS)
+      case ITEM_MODEL_REGISTRATION_ID:
+      {
+        lcdDrawTextAlignedLeft(y, "Regis. ID");
+        for(uint8_t pos=0; pos<LEN_REGISTRATION_ID; pos++)
+        {
+          lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos*FW*2,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
+          lcdDrawChar(lcdLastRightPos, y, ':');
+          if (attr && menuHorizontalPosition==pos) {
+            CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelRegistrationID[pos], 0xff);
+          }
+        }
+      }
+
+      break;
+
       case ITEM_MODEL_INTERNAL_MODULE_MODEL_NUM:
       {
         lcdDrawTextAlignedLeft(y, STR_RECEIVER_NUM);
