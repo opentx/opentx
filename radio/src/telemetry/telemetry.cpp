@@ -101,7 +101,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
       memcpy(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count], &frame[4], PXX2_LEN_RX_ID);
       char * c = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count];
       for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
-        uint8_t byte = frame[i];
+        uint8_t byte = frame[4 + i];
         uint8_t quartet = (byte >> 4);
         *c++ = (quartet >= 10 ? quartet + 'A' - 10 : quartet + '0');
         quartet = (byte & 0x0f);
