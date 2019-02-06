@@ -228,7 +228,6 @@ void onPXX2BindMenu(const char * result)
 {
   reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]);
   reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_SELECTED;
-  TRACE("RECEIVER  SELECTED  : %d", reusableBuffer.modelsetup.pxx2_bind_receiver_index);
 }
 
 void onBindMenu(const char * result)
