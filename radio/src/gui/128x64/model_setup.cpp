@@ -226,7 +226,7 @@ enum MenuModelSetupItems {
 
 void onPXX2BindMenu(const char * result)
 {
-  reusableBuffer.modelsetup.pxx2_bind_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[0]);
+  reusableBuffer.modelsetup.pxx2_bind_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]);
   reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_SELECTED;
   TRACE("RECEIVER  SELECTED  : %d", reusableBuffer.modelsetup.pxx2_bind_receiver_index);
 }
@@ -1140,7 +1140,7 @@ void menuModelSetup(event_t event)
               if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_RX_ID_RECEIVED) {
                 popupMenuItemsCount = min<uint8_t>(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count, PXX2_MAX_RECEIVERS_PER_MODULE);
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
-                  popupMenuItems[i] = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers[i];
+                  popupMenuItems[i] = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[i];
                 }
                 POPUP_MENU_START(onPXX2BindMenu);
               }
