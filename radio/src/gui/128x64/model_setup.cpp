@@ -76,7 +76,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_MODE,
   ITEM_MODEL_INTERNAL_MODULE_MODEL_NUM,
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
-  ITEM_MODEL_INTERNAL_MODULE_RANGE,
+  ITEM_MODEL_INTERNAL_MODULE_RANGE_REG,
 #if defined(PCBXLITE) || defined(PCBXLITES)
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
@@ -288,7 +288,7 @@ void menuModelSetup(event_t event)
     INTERNAL_MODULE_MODE_ROWS,
     IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
     IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),  // Failsafe
-    IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Range check
+    IF_INTERNAL_MODULE_ON((uint8_t)1),                      // Range check and receiver register
     ANTENNA_ROW
     IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Number
     IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Range
@@ -1014,7 +1014,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_REGISTRATION_ID:
       {
         lcdDrawTextAlignedLeft(y, "Regis. ID");
-        for(uint8_t pos=0; pos<LEN_REGISTRATION_ID; pos++)
+        for(uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++)
         {
           lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos*FW*2,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
           lcdDrawChar(lcdLastRightPos, y, ':');
@@ -1039,12 +1039,16 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_RANGE:
+      case ITEM_MODEL_INTERNAL_MODULE_RANGE_REG:
       {
-        lcdDrawTextAlignedLeft(y, STR_RANGE);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, attr);
+        lcdDrawTextAlignedLeft(y, INDENT "Module");
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, (menuHorizontalPosition==0 ? attr : 0) );
+        lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition==1 ? attr : 0) );
         if (attr && s_editMode>0) {
-          moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
+          if (menuHorizontalPosition == 0 )
+            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
+          else
+            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_REGISTER;
         }
         if (attr && s_editMode==0) {
           moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
