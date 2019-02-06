@@ -38,6 +38,8 @@
 
 #define PXX2_FLAG0_FAILSAFE         (1 << 6)
 
+const uint8_t DEFAULT_CHANNEL_MAPPING[] = {0x12, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
+
 class ModuleFifo : public Fifo<uint8_t, 32> {
   public:
     bool getFrame(uint8_t * frame)

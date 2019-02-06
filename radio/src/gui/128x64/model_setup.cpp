@@ -1040,13 +1040,13 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, "Receiver");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[Add]", attr);
         if (attr && s_editMode>0) {
-          if(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled) {
+          if (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled) {
             g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].enabled = 0x01;
-            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].channelMapping, "\x01\x23\x45\x67\x89\xAB\xCD\xEF", 8);  //default map 1-1 16-16
+            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
           }
           else {
             g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled = 0x01;
-            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].channelMapping, "\x01\x23\x45\x67\x89\xAB\xCD\xEF", 8);  //default map 1-1 16-16
+            memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
           }
           s_editMode = 0;
         }

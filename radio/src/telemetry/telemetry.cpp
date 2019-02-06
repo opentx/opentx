@@ -77,6 +77,12 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
     // RX_ID follows, we discard it for now
     moduleSettings[module].counter = REGISTER_COUNTER_ID_RECEIVED;
   }
+  else if (frame[3] == 0x01) {
+    // PASSWORD follows, we check it is good
+    if (memcmp(&frame[4], g_model.modelRegistrationID, LEN_REGISTRATION_ID) == 0) {
+      moduleSettings[module].counter = REGISTER_COUNTER_PASSWORD_RECEIVED;
+    }
+  }
 }
 
 void processRadioFrame(uint8_t module, uint8_t * frame)
