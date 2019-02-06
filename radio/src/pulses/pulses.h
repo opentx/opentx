@@ -73,13 +73,14 @@ enum ModuleSettingsMode
   MODULE_MODE_NORMAL,
   MODULE_MODE_RANGECHECK,
   MODULE_MODE_BIND,
-  MODULE_MODE_REGISTER
+  MODULE_MODE_REGISTER,
+  MODULE_MODE_SPECTRUM,
 };
 
 PACK(struct ModuleSettings {
-  uint8_t protocol:5;
+  uint8_t protocol:4;
   uint8_t paused:1;
-  uint8_t mode:2;
+  uint8_t mode:3;
   uint16_t counter;
 });
 

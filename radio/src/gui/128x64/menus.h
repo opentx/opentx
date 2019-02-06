@@ -79,6 +79,7 @@ enum MenuRadioIndexes
   MENU_RADIO_SWITCHES_TEST,
   MENU_RADIO_ANALOGS_TEST,
   MENU_RADIO_HARDWARE,
+  MENU_RADIO_SPECTRUM,
   MENU_RADIO_CALIBRATION,
   MENU_RADIO_PAGES_COUNT
 };
@@ -91,6 +92,7 @@ void menuRadioVersion(event_t event);
 void menuRadioDiagKeys(event_t event);
 void menuRadioDiagAnalogs(event_t event);
 void menuRadioHardware(event_t event);
+void menuRadioSpectrum(event_t event);
 void menuRadioCalibration(event_t event);
 
 static const MenuHandlerFunc menuTabGeneral[]  = {
@@ -102,6 +104,7 @@ static const MenuHandlerFunc menuTabGeneral[]  = {
   menuRadioDiagKeys,
   menuRadioDiagAnalogs,
   menuRadioHardware,
+  menuRadioSpectrum,
   menuRadioCalibration
 };
 

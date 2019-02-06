@@ -139,8 +139,9 @@ void setupPulsesPXX(uint8_t port)
 void setupPulsesPXX2(uint8_t module)
 {
   if (module == INTERNAL_MODULE) {
-    modulePulsesData[module].pxx2.setupFrame(module);
-    intmoduleSendNextFrame();
+    if (modulePulsesData[module].pxx2.setupFrame(module)) {
+      intmoduleSendNextFrame();
+    }
   }
 
 #if 0
@@ -292,7 +293,7 @@ void sendPulses(uint8_t port, uint8_t protocol)
 
     case PROTOCOL_CHANNELS_PXX2:
       setupPulsesPXX2(port);
-      scheduleNextMixerCalculation(port, PXX2_PERIOD);
+      scheduleNextMixerCalculation(port, moduleSettings[port].mode == MODULE_MODE_SPECTRUM ? 1 : PXX2_PERIOD);
       break;
 
 #if defined(MULTIMODULE)

@@ -175,6 +175,7 @@ set(GUI_SRC ${GUI_SRC}
   radio_diagkeys.cpp
   radio_diaganas.cpp
   radio_hardware.cpp
+  radio_spectrum.cpp
   view_channels.cpp
   view_telemetry.cpp
   view_about.cpp

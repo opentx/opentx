@@ -55,7 +55,7 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, 1);
 }
 
-void Pxx2Pulses::setupRegisterFrame(uint8_t module)
+bool Pxx2Pulses::setupRegisterFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
 
@@ -68,9 +68,11 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
   else {
     Pxx2Transport::addByte(0);
   }
+
+  return true; // TODO not always
 }
 
-void Pxx2Pulses::setupBindFrame(uint8_t module)
+bool Pxx2Pulses::setupBindFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
@@ -87,18 +89,56 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
       Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
     }
   }
+
+  return true; // TODO not always
 }
 
-void Pxx2Pulses::setupFrame(uint8_t module)
+bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
+  Pxx2Transport::addByte(0x00);
+
+  uint32_t fq = 2500000000;
+  Pxx2Transport::addByte(fq);
+  Pxx2Transport::addByte(fq >> 8);
+  Pxx2Transport::addByte(fq >> 16);
+  Pxx2Transport::addByte(fq >> 24);
+
+  uint32_t span = 10000;
+  Pxx2Transport::addByte(span);
+  Pxx2Transport::addByte(span >> 8);
+  Pxx2Transport::addByte(span >> 16);
+  Pxx2Transport::addByte(span >> 24);
+
+  uint32_t bandwidth = 10000;
+  Pxx2Transport::addByte(bandwidth);
+  Pxx2Transport::addByte(bandwidth >> 8);
+  Pxx2Transport::addByte(bandwidth >> 16);
+  Pxx2Transport::addByte(bandwidth >> 24);
+
+  static bool done = false;
+
+  if (done)
+    return false;
+
+  done = true;
+  return true;
+}
+
+
+bool Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
 
+  bool result = true;
   uint8_t mode = moduleSettings[module].mode;
 
   if (mode == MODULE_MODE_REGISTER)
-    setupRegisterFrame(module);
+    result = setupRegisterFrame(module);
   else if (mode == MODULE_MODE_BIND)
-    setupBindFrame(module);
+    result = setupBindFrame(module);
+  else if (mode == MODULE_MODE_SPECTRUM)
+    result = setupSpectrumAnalyser(module);
   else
     setupChannelsFrame(module);
 
@@ -116,4 +156,6 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 #endif
 
   endFrame();
+
+  return result;
 }

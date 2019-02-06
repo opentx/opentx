@@ -31,6 +31,8 @@
   #define PXX2_TYPE_ID_SPORT        0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
+  #define PXX2_TYPE_ID_POWER_METER  0x01
+  #define PXX2_TYPE_ID_SPECTRUM     0x02
 
 #define PXX2_TYPE_C_OTA             0xFE
 
@@ -123,14 +125,16 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
 
 class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
   public:
-    void setupFrame(uint8_t module);
+    bool setupFrame(uint8_t module);
 
   protected:
-    void setupRegisterFrame(uint8_t module);
+    bool setupRegisterFrame(uint8_t module);
 
-    void setupBindFrame(uint8_t module);
+    bool setupBindFrame(uint8_t module);
 
     void setupChannelsFrame(uint8_t module);
+
+    bool setupSpectrumAnalyser(uint8_t module);
 
     void addHead()
     {

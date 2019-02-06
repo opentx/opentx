@@ -1158,6 +1158,11 @@ union ReusableBuffer
     uint8_t stickMode;
   } generalSettings;
 
+  struct
+  {
+    uint8_t bars[128];
+  } spectrum;
+
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
   uint8_t MSC_BOT_Data[MSC_MEDIA_PACKET];
