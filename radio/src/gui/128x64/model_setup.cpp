@@ -1040,14 +1040,22 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, INDENT "Module");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, (menuHorizontalPosition==0 ? attr : 0) );
         lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition==1 ? attr : 0) );
-        if (attr && s_editMode>0) {
-          if (menuHorizontalPosition == 0 )
-            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
-          else
-            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_REGISTER;
+        if (attr && s_editMode>0 && menuHorizontalPosition == 0 ) {
+          moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
+        }
+        if(attr && menuHorizontalPosition == 1) {
+          if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+            moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_REGISTER;
+          }
+          if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_REGISTER) {
+            s_editMode = 1;
+          }
         }
         if (attr && s_editMode==0) {
           moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+        }
+        if (attr && moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL) {
+          s_editMode = 0;
         }
       break;
 
