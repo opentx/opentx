@@ -1161,6 +1161,9 @@ union ReusableBuffer
   struct
   {
     uint8_t bars[128];
+    uint32_t fq;
+    uint32_t span;
+    uint32_t step;
   } spectrum;
 
 #if defined(STM32)

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -32,8 +32,24 @@ void menuRadioSpectrum(event_t event)
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
+  uint8_t peak=1;
+  uint32_t peak_x=0;
   for (uint8_t i=0; i<LCD_W; i++) {
-    uint8_t h = reusableBuffer.spectrum.bars[i] >> 2;
+    uint8_t h = reusableBuffer.spectrum.bars[i];
+    if(h > peak) {
+      peak_x = i;
+      peak=h;
+    }
     lcdDrawSolidVerticalLine(i, LCD_H - h, h);
   }
+  lcdDrawText(1,10, "F:", 0);
+  lcdDrawNumber(lcdLastRightPos, 10, reusableBuffer.spectrum.fq/10000000,PREC2);
+  lcdDrawText(lcdLastRightPos, 10, "GHz");
+  lcdDrawText(1,10+FH, "S:", 0);
+  lcdDrawNumber(lcdLastRightPos, 10+FH, reusableBuffer.spectrum.span/1000000,0);
+  lcdDrawText(lcdLastRightPos, 10+FH, "MHz");
+
+  lcdDrawText(80,10, "P:", 0);
+  lcdDrawNumber(lcdLastRightPos, 10, ((reusableBuffer.spectrum.fq - reusableBuffer.spectrum.span/2) + peak_x * (reusableBuffer.spectrum.span / 128)) / 10000000,PREC2);
+  lcdDrawText(lcdLastRightPos, 10, "GHz");
 }

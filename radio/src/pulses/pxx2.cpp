@@ -104,23 +104,23 @@ bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
   Pxx2Transport::addByte(0x00);
 
-  uint32_t fq = 2440000000;  // 2440MHz
-  Pxx2Transport::addByte(fq);
-  Pxx2Transport::addByte(fq >> 8);
-  Pxx2Transport::addByte(fq >> 16);
-  Pxx2Transport::addByte(fq >> 24);
+  reusableBuffer.spectrum.fq = 2440000000;  // 2440MHz
+  Pxx2Transport::addByte(reusableBuffer.spectrum.fq);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.fq >> 8);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.fq >> 16);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.fq >> 24);
 
-  uint32_t span = 40000000;  // 40MHz
-  Pxx2Transport::addByte(span);
-  Pxx2Transport::addByte(span >> 8);
-  Pxx2Transport::addByte(span >> 16);
-  Pxx2Transport::addByte(span >> 24);
+  reusableBuffer.spectrum.span = 40000000;  // 40MHz
+  Pxx2Transport::addByte(reusableBuffer.spectrum.span);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.span >> 8);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.span >> 16);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.span >> 24);
 
-  uint32_t step = 100000;  // 100KHz
-  Pxx2Transport::addByte(step);
-  Pxx2Transport::addByte(step >> 8);
-  Pxx2Transport::addByte(step >> 16);
-  Pxx2Transport::addByte(step >> 24);
+  reusableBuffer.spectrum.step = 100000;  // 100KHz
+  Pxx2Transport::addByte(reusableBuffer.spectrum.step);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.step >> 8);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.step >> 16);
+  Pxx2Transport::addByte(reusableBuffer.spectrum.step >> 24);
 
   return true;
 }
