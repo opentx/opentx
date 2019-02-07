@@ -21,8 +21,7 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include "stddef.h"
-#include "stdbool.h"
+#include "definitions.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -446,16 +445,31 @@ enum Analogs {
 #define NUM_MOUSE_ANALOGS               0
 #define NUM_DUMMY_ANAS                  0
 
-#if defined(PCBXLITE)
+PACK(typedef struct {
+#if defined(STICKS_PWM)
+  uint8_t sticksPwmDisabled:1;
+#endif
+  uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
+#if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
-  extern bool sticks_pwm_disabled;
-  #define STICKS_PWM_ENABLED()         (sticks_pwm_disabled == false)
+
+  #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
   void sticksPwmInit(void);
   void sticksPwmRead(uint16_t * values);
-  extern volatile uint32_t pwm_interrupt_count;
+  extern volatile uint32_t pwm_interrupt_count; // TODO => reusable buffer (boot section)
   #define NUM_TRIMS_KEYS                4
 #else
   #define NUM_TRIMS_KEYS                8
+#endif
+
+#if defined(PCBXLITES)
+  #define IS_PXX2_ENABLED()            (true)
+#else
+  #define IS_PXX2_ENABLED()            (hardwareOptions.pxx2Enabled)
 #endif
 
 enum CalibratedAnalogs {

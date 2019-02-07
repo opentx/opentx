@@ -29,6 +29,8 @@ extern "C" {
 }
 #endif
 
+HardwareOptions hardwareOptions;
+
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555;      // Unlock registers
@@ -180,7 +182,7 @@ void boardInit()
   sticksPwmInit();
   delay_ms(20);
   if (pwm_interrupt_count < 32) {
-    sticks_pwm_disabled = true;
+    hardwareOptions.sticksPwmDisabled = true;
   }
 #endif
 

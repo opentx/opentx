@@ -77,7 +77,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_MODEL_NUM,
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_INTERNAL_MODULE_RANGE_REG,
-#if defined(PCBXLITE) || defined(PCBXLITES)
+#if defined(EXTERNAL_ANTENNA)
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
   ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_NUMBER,
@@ -110,12 +110,12 @@ enum MenuModelSetupItems {
 #if !defined(PCBXLITE)
   ITEM_MODEL_EXTERNAL_MODULE_FREQ,
 #endif
+  ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
 #if defined(PCBSKY9X) && !defined(REVA)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
   ITEM_MODEL_EXTRA_MODULE_CHANNELS,
   ITEM_MODEL_EXTRA_MODULE_BIND,
 #endif
-  ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
 #if defined(PCBX7)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
@@ -124,7 +124,7 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_TRAINER_CHANNELS,
   ITEM_MODEL_TRAINER_PARAMS,
-#elif defined(PCBXLITE) || defined(PCBXLITES)
+#elif defined(PCBXLITE)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_BLUETOOTH,
@@ -144,6 +144,8 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS     7*FW-2
 
+#define IF_PXX2(x)                       (IS_PXX2_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
+
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
   #define CURRENT_RECEIVER_EDITED(k)      (k >= ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER ? 1 : 0)
@@ -161,30 +163,36 @@ enum MenuModelSetupItems {
 #else
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW)
 #endif
-#if !defined(TARANIS_INTERNAL_PPM)
-  #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
-#else
+
+#if defined(TARANIS_INTERNAL_PPM)
   #define INTERNAL_MODULE_MODE_ROWS       (isModuleXJT(INTERNAL_MODULE) ? (uint8_t)1 : (uint8_t)0) // Module type + RF protocols
+#else
+  #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
 #endif
-  #define IF_INTERNAL_MODULE_ON(x)       (IS_INTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW )
-  #define IF_EXTERNAL_MODULE_ON(x)       (IS_EXTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW)
-  #define EXTERNAL_MODULE_BIND_ROWS()    ((isModuleXJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) || isModuleSBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (isModulePPM(EXTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW
+
+#define IF_INTERNAL_MODULE_ON(x)       (IS_INTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW )
+#define IF_EXTERNAL_MODULE_ON(x)       (IS_EXTERNAL_MODULE_ENABLED()? (uint8_t)(x) : HIDDEN_ROW)
+#define EXTERNAL_MODULE_BIND_ROWS()    ((isModuleXJT(EXTERNAL_MODULE) && IS_D8_RX(EXTERNAL_MODULE)) || isModuleSBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (isModulePPM(EXTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW
 
 #if defined(PCBSKY9X) && defined(REVX)
   #define OUTPUT_TYPE_ROWS()             (isModulePPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW) ,
 #else
   #define OUTPUT_TYPE_ROWS()
 #endif
-  #define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
+
+#define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
+
 #if defined(PCBXLITE)
   #define EXTERNAL_MODULE_MODE_ROWS      (isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
 #else
   #define EXTERNAL_MODULE_MODE_ROWS      (isModuleXJT(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
 #endif
-  #define CURSOR_ON_CELL                 (true)
-  #define MODEL_SETUP_MAX_LINES          (HEADER_LINE+ITEM_MODEL_SETUP_MAX)
-  #define POT_WARN_ITEMS()               ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
-  #define TIMER_ROWS                     2, 0, 0, 0, 0
+
+#define CURSOR_ON_CELL                 (true)
+#define MODEL_SETUP_MAX_LINES          (HEADER_LINE+ITEM_MODEL_SETUP_MAX)
+#define POT_WARN_ITEMS()               ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
+#define TIMER_ROWS                     2, 0, 0, 0, 0
+
 #if defined(PCBSKY9X) && !defined(REVA)
   #define EXTRA_MODULE_ROWS              LABEL(ExtraModule), 1, 2,
 #elif defined(PCBXLITE)
@@ -194,17 +202,17 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PCBX7)
-#define ANTENNA_ROW
-#if defined(BLUETOOTH)
-  #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
-  #define TRAINER_BLUETOOTH_ROW          (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW)),
-#else
-  #define TRAINER_BLUETOOTH_ROW
-#endif
-#define TRAINER_CHANNELS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
-#define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
-#define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
+  #define ANTENNA_ROW
+  #if defined(BLUETOOTH)
+    #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
+    #define TRAINER_BLUETOOTH_S_ROW        (bluetoothDistantAddr[0] == '\0' ? HIDDEN_ROW : LABEL())
+    #define TRAINER_BLUETOOTH_ROW          (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_BLUETOOTH_M_ROW : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? TRAINER_BLUETOOTH_S_ROW : HIDDEN_ROW)),
+  #else
+    #define TRAINER_BLUETOOTH_ROW
+  #endif
+  #define TRAINER_CHANNELS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
+  #define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
 #elif defined(PCBXLITES)
   #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
   #define TRAINER_BLUETOOTH_ROW
@@ -222,7 +230,6 @@ enum MenuModelSetupItems {
 #else
   #define TRAINER_ROWS
 #endif
-
 
 void onPXX2BindMenu(const char * result)
 {
@@ -260,7 +267,7 @@ void onBindMenu(const char * result)
 
 void menuModelSetup(event_t event)
 {
-#if defined(PCBXLITE) || defined(PCBXLITES)
+#if defined(EXTERNAL_ANTENNA)
   // Switch to external antenna confirmation
   if (warningResult) {
     warningResult = 0;
@@ -284,14 +291,17 @@ void menuModelSetup(event_t event)
     0, // Throttle reverse
     0, // Throttle trace source
     0, // Throttle trim
+
     LABEL(PreflightCheck),
       0, // Checklist
       0, // Throttle warning
       SW_WARN_ROWS, // Switch warning
       POT_WARN_ITEMS(), // Pot warning
-      NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
+
+    NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
-    PXX2_LEN_REGISTRATION_ID - 1, // Registration ID
+    IF_PXX2(PXX2_LEN_REGISTRATION_ID - 1), // Registration ID
+
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS,
       IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
@@ -307,6 +317,7 @@ void menuModelSetup(event_t event)
       IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Telemetry
       IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)1),           // Receiver Bind/Delete
       IF_INTERNAL_MODULE_ON(INTERNAL_MODULE_ADD_RECEIVER_ROW),
+
     LABEL(ExternalModule),
       EXTERNAL_MODULE_MODE_ROWS,
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
@@ -317,9 +328,10 @@ void menuModelSetup(event_t event)
       EXTERNAL_MODULE_OPTION_ROW,
       MULTIMODULE_MODULE_ROWS
       EXTERNAL_MODULE_POWER_ROW,
-    EXTRA_MODULE_ROWS
-    FAILSAFE_ROWS(EXTERNAL_MODULE),
-    TRAINER_ROWS });
+      FAILSAFE_ROWS(EXTERNAL_MODULE),
+
+    TRAINER_ROWS
+  });
 #else
   MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, LABEL(PreflightCheck), 0, 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
     LABEL(ExternalModule),
@@ -332,9 +344,10 @@ void menuModelSetup(event_t event)
     EXTERNAL_MODULE_OPTION_ROW,
     MULTIMODULE_MODULE_ROWS
     EXTERNAL_MODULE_POWER_ROW,
-    EXTRA_MODULE_ROWS
     FAILSAFE_ROWS(EXTERNAL_MODULE),
-    TRAINER_ROWS });
+    EXTRA_MODULE_ROWS
+    TRAINER_ROWS
+  });
 #endif
 
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE+MODEL_SETUP_MAX_LINES);
