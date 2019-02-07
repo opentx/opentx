@@ -569,6 +569,7 @@ extern const char STR_SUBTYPE[];
 extern const char STR_RECEIVER_NUM[];
 extern const char STR_RECEIVER[];
 extern const char STR_REBIND[];
+extern const char STR_REG_OK[];
 extern const char STR_BIND_OK[];
 #endif
 
