@@ -44,12 +44,12 @@ void menuRadioSpectrum(event_t event)
   }
   lcdDrawText(1,10, "F:", 0);
   lcdDrawNumber(lcdLastRightPos, 10, reusableBuffer.spectrum.fq/10000000,PREC2);
-  lcdDrawText(lcdLastRightPos, 10, "GHz");
+  lcdDrawText(lcdLastRightPos, 10, "GHz", 0);
   lcdDrawText(1,10+FH, "S:", 0);
-  lcdDrawNumber(lcdLastRightPos, 10+FH, reusableBuffer.spectrum.span/1000000,0);
-  lcdDrawText(lcdLastRightPos, 10+FH, "MHz");
+  lcdDrawNumber(lcdLastRightPos, 10+FH, reusableBuffer.spectrum.span/1000000, 0);
+  lcdDrawText(lcdLastRightPos, 10+FH, "MHz", 0);
 
-  lcdDrawText(80,10, "P:", 0);
-  lcdDrawNumber(lcdLastRightPos, 10, ((reusableBuffer.spectrum.fq - reusableBuffer.spectrum.span/2) + peak_x * (reusableBuffer.spectrum.span / 128)) / 10000000,PREC2);
-  lcdDrawText(lcdLastRightPos, 10, "GHz");
+
+  lcdDrawNumber(min(int(100), (int)peak_x), max((int) 0 , (int)(LCD_H-peak-FH)), ((reusableBuffer.spectrum.fq - reusableBuffer.spectrum.span/2) + peak_x * (reusableBuffer.spectrum.span / 128)) / 10000000,TINSIZE|PREC2);
+  lcdDrawText(lcdLastRightPos, max((int) 0 , (int)(LCD_H-peak-FH)), "GHz", TINSIZE);
 }
