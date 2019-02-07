@@ -139,11 +139,17 @@ void processSpectrumFrame(uint8_t module, uint8_t * frame)
   uint32_t * frequency = (uint32_t *)&frame[4];
   int8_t * power = (int8_t *)&frame[8];
 
-  // center = 2500000000
-  // left = 2500000000 - 5000
-  // span = 10000
+  // center = 2440000000;  // 2440MHz
+  // span = 40000000;  // 40MHz
+  // left = 2440000000 - 20000000
+  // step = 10000
 
-  // reusableBuffer.spectrum.bars[(*frequency - (2500000000 - 5000)) * 128 / 10000] = 127 + *power;
+  int32_t D = *frequency - (2440000000 - 40000000 / 2);
+
+  // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
+  uint8_t x = D * 128 / 40000000;
+
+  reusableBuffer.spectrum.bars[x] = 127 + *power;
 }
 
 void processRadioFrame(uint8_t module, uint8_t * frame)
