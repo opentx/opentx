@@ -94,7 +94,7 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
   }
 }
 
-void intmoduleSendNextFrame()
+void intmoduleSendNextPXX2Frame()
 {
   if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
     DMA_InitTypeDef DMA_InitStructure;

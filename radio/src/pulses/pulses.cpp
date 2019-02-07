@@ -140,7 +140,7 @@ void setupPulsesPXX2(uint8_t module)
 {
   if (module == INTERNAL_MODULE) {
     if (modulePulsesData[module].pxx2.setupFrame(module)) {
-      intmoduleSendNextFrame();
+      intmoduleSendNextPXX2Frame();
     }
   }
 
@@ -246,7 +246,7 @@ void enablePulses(uint8_t port, uint8_t protocol)
   }
 }
 
-void sendPulses(uint8_t port, uint8_t protocol)
+void setupPulses(uint8_t port, uint8_t protocol)
 {
   switch (protocol) {
     case PROTOCOL_CHANNELS_PXX:
@@ -270,23 +270,7 @@ void sendPulses(uint8_t port, uint8_t protocol)
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      if (telemetryProtocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
-        uint8_t * crossfire = modulePulsesData[port].crossfire.pulses;
-        uint8_t len;
-#if defined(LUA)
-        if (outputTelemetryBufferTrigger != 0x00 && outputTelemetryBufferSize > 0) {
-          memcpy(crossfire, outputTelemetryBuffer, outputTelemetryBufferSize);
-          len = outputTelemetryBufferSize;
-          outputTelemetryBufferTrigger = 0x00;
-          outputTelemetryBufferSize = 0;
-        }
-        else
-#endif
-        {
-          len = createCrossfireChannelsFrame(crossfire, &channelOutputs[g_model.moduleData[port].channelsStart]);
-        }
-        sportSendBuffer(crossfire, len);
-      }
+      setupPulsesCrossfire(port);
       scheduleNextMixerCalculation(port, CROSSFIRE_PERIOD);
       break;
 #endif
@@ -328,7 +312,7 @@ void setupPulses(uint8_t module)
     enablePulses(module, required_protocol);
   }
   else {
-    sendPulses(module, required_protocol);
+    setupPulses(module, required_protocol);
   }
 }
 

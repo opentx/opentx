@@ -92,6 +92,16 @@ void intmoduleSendNextFrame()
   }
 }
 
+void intmodulePxx2Start()
+{
+  // TODO
+}
+
+void intmoduleSendNextPXX2Frame()
+{
+  // TODO
+}
+
 void intmodulePxxStart()
 {
   INTERNAL_MODULE_ON();

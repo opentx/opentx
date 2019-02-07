@@ -46,3 +46,24 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
   *buf++ = crc8(crc_start, 23);
   return buf - frame;
 }
+
+void setupPulsesCrossfire(uint8_t module)
+{
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
+    uint8_t * crossfire = modulePulsesData[module].crossfire.pulses;
+    uint8_t len;
+#if defined(LUA)
+    if (outputTelemetryBufferTrigger != 0x00 && outputTelemetryBufferSize > 0) {
+      memcpy(crossfire, outputTelemetryBuffer, outputTelemetryBufferSize);
+      len = outputTelemetryBufferSize;
+      outputTelemetryBufferTrigger = 0x00;
+      outputTelemetryBufferSize = 0;
+    }
+    else
+#endif
+    {
+      len = createCrossfireChannelsFrame(crossfire, &channelOutputs[g_model.moduleData[module].channelsStart]);
+    }
+    sportSendBuffer(crossfire, len);
+  }
+}

@@ -161,12 +161,13 @@ union TrainerPulsesData {
 
 extern TrainerPulsesData trainerPulsesData;
 
-void setupPulses(uint8_t port);
-void setupPulsesDSM2(uint8_t port);
-void setupPulsesMultimodule(uint8_t port);
-void setupPulsesSbus(uint8_t port);
-void setupPulsesPXX(uint8_t port);
-void setupPulsesPPMModule(uint8_t port);
+void setupPulses(uint8_t module);
+void setupPulsesDSM2(uint8_t module);
+void setupPulsesCrossfire(uint8_t module);
+void setupPulsesMultimodule(uint8_t module);
+void setupPulsesSbus(uint8_t module);
+void setupPulsesPXX(uint8_t module);
+void setupPulsesPPMModule(uint8_t module);
 void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();

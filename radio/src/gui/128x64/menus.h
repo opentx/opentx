@@ -79,7 +79,9 @@ enum MenuRadioIndexes
   MENU_RADIO_SWITCHES_TEST,
   MENU_RADIO_ANALOGS_TEST,
   MENU_RADIO_HARDWARE,
+#if defined(RADIO_SPECTRUM)
   MENU_RADIO_SPECTRUM,
+#endif
   MENU_RADIO_CALIBRATION,
   MENU_RADIO_PAGES_COUNT
 };
@@ -104,7 +106,9 @@ static const MenuHandlerFunc menuTabGeneral[]  = {
   menuRadioDiagKeys,
   menuRadioDiagAnalogs,
   menuRadioHardware,
+#if defined(RADIO_SPECTRUM)
   menuRadioSpectrum,
+#endif
   menuRadioCalibration
 };
 
