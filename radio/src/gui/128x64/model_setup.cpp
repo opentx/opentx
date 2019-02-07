@@ -274,7 +274,9 @@ void menuModelSetup(event_t event)
   MENU_TAB({
     HEADER_LINE_COLUMNS
     0,
-    TIMER_ROWS, TIMER_ROWS, TIMER_ROWS,
+    TIMER_ROWS,
+    TIMER_ROWS,
+    TIMER_ROWS,
     0, // Extended limits
     1, // Extended trims
     0, // Show trims
@@ -283,38 +285,38 @@ void menuModelSetup(event_t event)
     0, // Throttle trace source
     0, // Throttle trim
     LABEL(PreflightCheck),
-    0, // Checklist
-    0, // Throttle warning
-    SW_WARN_ROWS, // Switch warning
-    POT_WARN_ITEMS(), // Pot warning
-    NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
+      0, // Checklist
+      0, // Throttle warning
+      SW_WARN_ROWS, // Switch warning
+      POT_WARN_ITEMS(), // Pot warning
+      NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
     PXX2_LEN_REGISTRATION_ID - 1, // Registration ID
     LABEL(InternalModule),
-    INTERNAL_MODULE_MODE_ROWS,
-    IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
-    IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),  // Failsafe
-    IF_INTERNAL_MODULE_ON((uint8_t)1),                      // Range check and receiver register
-    ANTENNA_ROW
-    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Number
-    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Range
-    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Telemetry
-    IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)1),           // Receiver Bind/Delete
-    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Number
-    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Range
-    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Telemetry
-    IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)1),           // Receiver Bind/Delete
-    IF_INTERNAL_MODULE_ON(INTERNAL_MODULE_ADD_RECEIVER_ROW),
+      INTERNAL_MODULE_MODE_ROWS,
+      IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
+      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),  // Failsafe
+      IF_INTERNAL_MODULE_ON((uint8_t)1),                      // Range check and receiver register
+      ANTENNA_ROW
+      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Number
+      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Range
+      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Telemetry
+      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)1),           // Receiver Bind/Delete
+      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Number
+      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Range
+      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Telemetry
+      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)1),           // Receiver Bind/Delete
+      IF_INTERNAL_MODULE_ON(INTERNAL_MODULE_ADD_RECEIVER_ROW),
     LABEL(ExternalModule),
-    EXTERNAL_MODULE_MODE_ROWS,
-    MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-    MULTIMODULE_STATUS_ROWS
-    EXTERNAL_MODULE_CHANNELS_ROWS,
-    EXTERNAL_MODULE_BIND_ROWS(),
-    OUTPUT_TYPE_ROWS()
-    EXTERNAL_MODULE_OPTION_ROW,
-    MULTIMODULE_MODULE_ROWS
-    EXTERNAL_MODULE_POWER_ROW,
+      EXTERNAL_MODULE_MODE_ROWS,
+      MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
+      MULTIMODULE_STATUS_ROWS
+      EXTERNAL_MODULE_CHANNELS_ROWS,
+      EXTERNAL_MODULE_BIND_ROWS(),
+      OUTPUT_TYPE_ROWS()
+      EXTERNAL_MODULE_OPTION_ROW,
+      MULTIMODULE_MODULE_ROWS
+      EXTERNAL_MODULE_POWER_ROW,
     EXTRA_MODULE_ROWS
     FAILSAFE_ROWS(EXTERNAL_MODULE),
     TRAINER_ROWS });
