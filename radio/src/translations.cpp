@@ -116,6 +116,7 @@ const char STR_OPEN9X[]  =
 
 // The 0-terminated-strings
 const char STR_POPUPS[]  = TR_POPUPS;
+const char STR_OK[]  = TR_OK;
 #if !defined(OFS_EXIT)
   const char STR_EXIT[]  = TR_EXIT;
 #endif

@@ -266,6 +266,7 @@ uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint
 #define WARNING_TYPE_ASTERISK          0
 #define WARNING_TYPE_CONFIRM           1
 #define WARNING_TYPE_INPUT             2
+#define WARNING_TYPE_INFO                4
 
 extern const char * warningText;
 extern const char * warningInfoText;
