@@ -25,8 +25,7 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
   uint8_t flag0 = g_model.header.modelId[module] & 0x3F;
   if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
-    if (moduleSettings[module].counter-- == 0) {
-      moduleSettings[module].counter = 1000;
+    if (moduleSettings[module].counter == 0) {
       flag0 |= PXX2_FLAG0_FAILSAFE;
     }
   }
@@ -95,6 +94,13 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
 
 bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
+  if (moduleSettings[module].counter > 1000) {
+    moduleSettings[module].counter = 1002;
+    return false;
+  }
+
+  moduleSettings[module].counter = 1002;
+
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
   Pxx2Transport::addByte(0x00);
 
@@ -116,12 +122,6 @@ bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
   Pxx2Transport::addByte(step >> 16);
   Pxx2Transport::addByte(step >> 24);
 
-  static bool done = false;
-
-  if (done)
-    return false;
-
-  done = true;
   return true;
 }
 
@@ -141,18 +141,9 @@ bool Pxx2Pulses::setupFrame(uint8_t module)
   else
     setupChannelsFrame(module);
 
-#if 0
-  // TODO PXX15
-  if (outputTelemetryBufferTrigger != 0x7E && outputTelemetryBufferSize > 0) {
-    // primID (1 byte) + dataID (2 bytes) + value (4 bytes)
-    addByte(outputTelemetryBufferTrigger);
-    for (uint8_t i=0; i<7; i++) {
-      addByte(outputTelemetryBuffer[i]);
-    }
-    outputTelemetryBufferTrigger = 0x00;
-    outputTelemetryBufferSize = 0;
+  if (moduleSettings[module].counter-- == 0) {
+    moduleSettings[module].counter = 1000;
   }
-#endif
 
   endFrame();
 
