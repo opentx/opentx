@@ -22,7 +22,7 @@
 
 void menuRadioSpectrum(event_t event)
 {
-  MENU("SPECTRUM", menuTabGeneral, MENU_RADIO_SPECTRUM, HEADER_LINE, { HEADER_LINE_COLUMNS });
+  MENU("SPECTRUM ANALYSER", menuTabGeneral, MENU_RADIO_SPECTRUM, HEADER_LINE, { HEADER_LINE_COLUMNS });
 
   if (menuEvent) {
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
