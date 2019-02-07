@@ -111,6 +111,14 @@ class SportCrcMixin {
 
 class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
   protected:
+    void addWord(uint32_t word)
+    {
+      addByte(word);
+      addByte(word >> 8);
+      addByte(word >> 16);
+      addByte(word >> 24);
+    }
+
     void addByte(uint8_t byte)
     {
       PxxCrcMixin::addToCrc(byte);

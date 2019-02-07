@@ -32,24 +32,26 @@ void menuRadioSpectrum(event_t event)
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
-  uint8_t peak=1;
-  uint32_t peak_x=0;
+  uint8_t peak_y = 1;
+  uint8_t peak_x = 0;
   for (uint8_t i=0; i<LCD_W; i++) {
     uint8_t h = reusableBuffer.spectrum.bars[i];
-    if(h > peak) {
+    if (h > peak_y) {
       peak_x = i;
-      peak=h;
+      peak_y = h;
     }
     lcdDrawSolidVerticalLine(i, LCD_H - h, h);
   }
-  lcdDrawText(1,10, "F:", 0);
-  lcdDrawNumber(lcdLastRightPos, 10, reusableBuffer.spectrum.fq/10000000,PREC2);
-  lcdDrawText(lcdLastRightPos, 10, "GHz", 0);
-  lcdDrawText(1,10+FH, "S:", 0);
-  lcdDrawNumber(lcdLastRightPos, 10+FH, reusableBuffer.spectrum.span/1000000, 0);
-  lcdDrawText(lcdLastRightPos, 10+FH, "MHz", 0);
 
+  lcdDrawText(1, 10, "F:", 0);
+  lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrum.fq/10000000,PREC2);
+  lcdDrawText(lcdLastRightPos + 2, 10, "GHz", 0);
 
-  lcdDrawNumber(min(int(100), (int)peak_x), max((int) 0 , (int)(LCD_H-peak-FH)), ((reusableBuffer.spectrum.fq - reusableBuffer.spectrum.span/2) + peak_x * (reusableBuffer.spectrum.span / 128)) / 10000000,TINSIZE|PREC2);
-  lcdDrawText(lcdLastRightPos, max((int) 0 , (int)(LCD_H-peak-FH)), "GHz", TINSIZE);
+  lcdDrawText(1, 10+FH, "S:", 0);
+  lcdDrawNumber(lcdLastRightPos + 2, 10+FH, reusableBuffer.spectrum.span/1000000, 0);
+  lcdDrawText(lcdLastRightPos + 2, 10+FH, "MHz", 0);
+
+  int8_t y = max<int8_t>(FH, LCD_H - peak_y - FH);
+  lcdDrawNumber(min<uint8_t>(100, peak_x), y, ((reusableBuffer.spectrum.fq - reusableBuffer.spectrum.span / 2) + peak_x * (reusableBuffer.spectrum.span / 128)) / 1000000, TINSIZE);
+  lcdDrawText(lcdLastRightPos, y, "M", TINSIZE);
 }

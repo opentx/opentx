@@ -105,22 +105,13 @@ bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
   Pxx2Transport::addByte(0x00);
 
   reusableBuffer.spectrum.fq = 2440000000;  // 2440MHz
-  Pxx2Transport::addByte(reusableBuffer.spectrum.fq);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.fq >> 8);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.fq >> 16);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.fq >> 24);
+  Pxx2Transport::addWord(reusableBuffer.spectrum.fq);
 
   reusableBuffer.spectrum.span = 40000000;  // 40MHz
-  Pxx2Transport::addByte(reusableBuffer.spectrum.span);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.span >> 8);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.span >> 16);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.span >> 24);
+  Pxx2Transport::addWord(reusableBuffer.spectrum.span);
 
   reusableBuffer.spectrum.step = 100000;  // 100KHz
-  Pxx2Transport::addByte(reusableBuffer.spectrum.step);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.step >> 8);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.step >> 16);
-  Pxx2Transport::addByte(reusableBuffer.spectrum.step >> 24);
+  Pxx2Transport::addWord(reusableBuffer.spectrum.step);
 
   return true;
 }
