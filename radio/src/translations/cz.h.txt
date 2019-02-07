@@ -775,6 +775,7 @@
 #define TR_MODULE_WAITFORBIND  "Bind to load protocol"
 #define TR_MODULE_BINDING      TR("Bind...","Binding")
 #define TR_REBIND              "Rebinding required"
+#define TR_BIND_OK                     "Bind successful"
 #define TR_BINDING_CH1_8_TELEM_ON       "Ch1-8 Telem ON"
 #define TR_BINDING_CH1_8_TELEM_OFF       "Ch1-8 Telem OFF"
 #define TR_BINDING_CH9_16_TELEM_ON       "Ch9-16 Telem ON"

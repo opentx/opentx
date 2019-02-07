@@ -19,7 +19,6 @@
  */
 
 #include <opentx.h>
-#include "opentx.h"
 
 uint8_t telemetryStreaming = 0;
 uint8_t R9ModuleStreaming = 0;
@@ -87,6 +86,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
     if (memcmp(&frame[4], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
+      POPUP_WARNING("Registration ok");
     }
   }
 }
@@ -127,6 +127,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], MY_RX_ID /*TODO &frame[4]*/, PXX2_LEN_RX_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
+      POPUP_WARNING(STR_BIND_OK);
     }
   }
 }

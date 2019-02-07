@@ -353,6 +353,7 @@ const char STR_MENUGLOBALVARS[]  = TR_MENUGLOBALVARS;
 const char STR_RECEIVER_NUM[]  = TR_RECEIVER_NUM;
 const char STR_RECEIVER[]  = TR_RECEIVER;
 const char STR_REBIND[]  = TR_REBIND;
+const char STR_BIND_OK[]  = TR_BIND_OK;
 #endif
 
 const char STR_SYNCMENU[]  = TR_SYNCMENU;
