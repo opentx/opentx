@@ -33,8 +33,4 @@ void menuRadioSpectrum(event_t event)
     uint8_t h = reusableBuffer.spectrum.bars[i] >> 2;
     lcdDrawSolidVerticalLine(i, LCD_H - h, h);
   }
-  extern uint32_t FREQUENCY;
-  extern uint8_t POWER;
-  lcdDrawNumber(64, 32, FREQUENCY);
-  lcdDrawNumber(64, 40, POWER);
 }

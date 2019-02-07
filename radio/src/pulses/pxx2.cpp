@@ -81,7 +81,7 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
       Pxx2Transport::addByte(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index][i]);
     }
-    Pxx2Transport::addByte(0x00);
+    Pxx2Transport::addByte(g_model.header.modelId[INTERNAL_MODULE]);
   }
   else {
     Pxx2Transport::addByte(0x00);

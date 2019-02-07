@@ -91,8 +91,6 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-const uint8_t MY_RX_ID[] = { 0x46, 0x17, 0x32, 0x85 };
-
 void processBindFrame(uint8_t module, uint8_t * frame)
 {
   if (moduleSettings[module].mode != MODULE_MODE_BIND) {
@@ -102,13 +100,13 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   if (frame[3] == 0x00) {
     bool found = false;
     for (uint8_t i=0; i<reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count; i++) {
-      if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[i], MY_RX_ID /*TODO &frame[4]*/, PXX2_LEN_RX_ID) == 0) {
+      if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[i], &frame[4], PXX2_LEN_RX_ID) == 0) {
         found = true;
         break;
       }
     }
     if (!found && reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count], MY_RX_ID /*TODO &frame[4]*/, PXX2_LEN_RX_ID);
+      memcpy(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count], &frame[4], PXX2_LEN_RX_ID);
       char * c = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count];
       for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
         uint8_t byte = frame[4 + i];
@@ -124,7 +122,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     }
   }
   else if (frame[3] == 0x01) {
-    if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], MY_RX_ID /*TODO &frame[4]*/, PXX2_LEN_RX_ID) == 0) {
+    if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], &frame[4], PXX2_LEN_RX_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       POPUP_WARNING(STR_BIND_OK);
@@ -132,8 +130,6 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-uint32_t FREQUENCY;
-uint8_t POWER;
 void processSpectrumFrame(uint8_t module, uint8_t * frame)
 {
   if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM) {
@@ -146,10 +142,6 @@ void processSpectrumFrame(uint8_t module, uint8_t * frame)
   // center = 2500000000
   // left = 2500000000 - 5000
   // span = 10000
-
-  FREQUENCY = *frequency;
-  POWER = *power;
-
 
   // reusableBuffer.spectrum.bars[(*frequency - (2500000000 - 5000)) * 128 / 10000] = 127 + *power;
 }
