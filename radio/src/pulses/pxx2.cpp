@@ -136,7 +136,7 @@ bool Pxx2Pulses::setupFrame(uint8_t module)
     result = setupRegisterFrame(module);
   else if (mode == MODULE_MODE_BIND)
     result = setupBindFrame(module);
-  else if (mode == MODULE_MODE_SPECTRUM)
+  else if (mode == MODULE_MODE_SPECTRUM_ANALYSER)
     result = setupSpectrumAnalyser(module);
   else
     setupChannelsFrame(module);

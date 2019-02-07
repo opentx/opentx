@@ -373,7 +373,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
 
     menuCalibrationState = 0;
     drawScreenIndex(curr, menuTabSize, attr);
-
   }
 
   DISPLAY_PROGRESS_BAR(menuTab ? lcdLastRightPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);

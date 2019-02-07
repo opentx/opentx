@@ -167,7 +167,7 @@ void check_submenu_simple(event_t event, uint8_t maxrow);
 void title(const char * s);
 #define TITLE(str) title(str)
 
-  #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
+#define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
 #if defined(PCBX7)
 #define MENU_CHECK(tab, menu, lines_count) \

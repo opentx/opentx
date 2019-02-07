@@ -24,9 +24,12 @@ void menuRadioSpectrum(event_t event)
 {
   MENU("SPECTRUM", menuTabGeneral, MENU_RADIO_SPECTRUM, HEADER_LINE, { HEADER_LINE_COLUMNS });
 
-  if (event == EVT_ENTRY) {
+  if (menuEvent) {
+    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+  }
+  else if (event == EVT_ENTRY) {
     memclear(reusableBuffer.spectrum.bars, sizeof(reusableBuffer.spectrum.bars));
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM;
+    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
   for (uint8_t i=0; i<LCD_W; i++) {

@@ -132,7 +132,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
 void processSpectrumFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM) {
+  if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     return;
   }
 

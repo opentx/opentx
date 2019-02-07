@@ -293,7 +293,7 @@ void sendPulses(uint8_t port, uint8_t protocol)
 
     case PROTOCOL_CHANNELS_PXX2:
       setupPulsesPXX2(port);
-      scheduleNextMixerCalculation(port, moduleSettings[port].mode == MODULE_MODE_SPECTRUM ? 1 : PXX2_PERIOD);
+      scheduleNextMixerCalculation(port, moduleSettings[port].mode == MODULE_MODE_SPECTRUM_ANALYSER ? 1 : PXX2_PERIOD);
       break;
 
 #if defined(MULTIMODULE)
