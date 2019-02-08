@@ -174,8 +174,6 @@ void enablePulses(uint8_t module, uint8_t protocol)
 {
   // start new protocol hardware here
 
-  #warning "CHECK THAT ALL PROTOCOL INIT WON'T SEND A FIRST WRONG FRAME HERE"
-
   switch (protocol) {
     case PROTOCOL_CHANNELS_PXX:
       init_pxx(module);

@@ -187,16 +187,12 @@ void SDRAM_Init(void);
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_UART_MODULE(port)           (port == INTERNAL_MODULE)
 
-void init_no_pulses(uint32_t port);
-void disable_no_pulses(uint32_t port);
 void init_ppm(uint32_t module_index);
 void disable_ppm(uint32_t module_index);
 void init_pxx(uint32_t module_index);
 void disable_pxx(uint32_t module_index);
 void init_serial(uint32_t module_index, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint32_t module_index);
-void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
-void disable_module_timer( uint32_t module_index);
 
 // Trainer driver
 void init_trainer_ppm(void);

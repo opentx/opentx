@@ -31,19 +31,6 @@ void extmodulePxxStart();
 void extmodulePxx2Start();
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
 
-void init_no_pulses(uint32_t port)
-{
-  init_module_timer(port, 18, false);
-}
-
-void disable_no_pulses(uint32_t port)
-{
-  if (port == INTERNAL_MODULE)
-    intmoduleStop();
-  else
-    extmoduleStop();
-}
-
 void init_ppm(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {

@@ -190,8 +190,6 @@ void init_pxx(uint8_t module);
 void disable_pxx(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
 void disable_serial(uint8_t module);
-void init_module_timer(uint8_t module, uint32_t period, uint8_t state);
-void disable_module_timer(uint8_t module);
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
