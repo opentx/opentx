@@ -34,11 +34,6 @@ void intmodulePxxStart()
   // shouldn't be used anymore
 }
 
-void intmoduleTimerStart(uint32_t period, uint8_t state)
-{
-  // shouldn't be used anymore
-}
-
 void intmodulePxx2Start()
 {
   INTERNAL_MODULE_ON();

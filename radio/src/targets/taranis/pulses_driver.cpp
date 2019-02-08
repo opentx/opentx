@@ -106,32 +106,3 @@ void disable_ppm(uint8_t module)
   }
 #endif
 }
-
-void init_no_pulses(uint8_t module)
-{
-  init_module_timer(module, 18, false);
-}
-
-void disable_no_pulses(uint8_t module)
-{
-  if (module == INTERNAL_MODULE)
-    intmoduleStop();
-  else
-    extmoduleStop();
-}
-
-void init_module_timer(uint8_t module, uint32_t period, uint8_t state)
-{
-  if (module == INTERNAL_MODULE)
-    intmoduleTimerStart(period, state);
-  else
-    extmoduleTimerStart(period, state);
-}
-
-void disable_module_timer(uint8_t module)
-{
-  if (module == INTERNAL_MODULE)
-    intmoduleStop();
-  else
-    extmoduleStop();
-}

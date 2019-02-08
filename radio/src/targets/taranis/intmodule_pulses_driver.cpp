@@ -32,37 +32,6 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
-void intmoduleTimerStart(uint32_t period, uint8_t state)
-{
-  if (state)
-    INTERNAL_MODULE_ON();
-  else
-    INTERNAL_MODULE_OFF();
-
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, 0);
-
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = INTMODULE_TX_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(INTMODULE_TX_GPIO, &GPIO_InitStructure);
-  GPIO_SetBits(INTMODULE_TX_GPIO, INTMODULE_TX_GPIO_PIN); // Set high
-
-  INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  INTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  INTMODULE_TIMER->ARR = (2000 * period);
-  INTMODULE_TIMER->CCR2 = (2000 * period) - 1000;
-  INTMODULE_TIMER->EGR = 1; // Restart
-  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
-  INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  NVIC_EnableIRQ(INTMODULE_TIMER_CC_IRQn);
-  NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
-}
-
 void intmoduleSendNextFrame()
 {
   if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX) {
@@ -122,7 +91,7 @@ void intmodulePxxStart()
   INTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2;
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-  INTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  INTMODULE_TIMER->CCR2 = 16000; // The first frame will be sent in 20ms
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 

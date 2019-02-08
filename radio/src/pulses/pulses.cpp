@@ -149,7 +149,7 @@ void disablePulses(uint8_t module, uint8_t protocol)
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      disable_module_timer(module);
+      // TODO disable_module_timer(module);
       break;
 #endif
 
@@ -166,10 +166,6 @@ void disablePulses(uint8_t module, uint8_t protocol)
 
     case PROTOCOL_CHANNELS_PPM:
       disable_ppm(module);
-      break;
-
-    default:
-      disable_no_pulses(module);
       break;
   }
 }
@@ -195,7 +191,7 @@ void enablePulses(uint8_t module, uint8_t protocol)
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      init_module_timer(module, CROSSFIRE_PERIOD, true);
+      // TODO init_module_timer(module, CROSSFIRE_PERIOD, true);
       break;
 #endif
 
@@ -215,10 +211,6 @@ void enablePulses(uint8_t module, uint8_t protocol)
 
     case PROTOCOL_CHANNELS_PPM:
       init_ppm(module);
-      break;
-
-    default:
-      init_no_pulses(module);
       break;
   }
 }
