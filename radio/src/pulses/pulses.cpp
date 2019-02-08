@@ -119,11 +119,7 @@ void setupPulsesPXX(uint8_t module)
 
 void setupPulsesPXX2(uint8_t module)
 {
-  if (module == INTERNAL_MODULE) {
-    if (modulePulsesData[module].pxx2.setupFrame(module)) {
-      intmoduleSendNextPXX2Frame();
-    }
-  }
+  modulePulsesData[module].pxx2.setupFrame(module);
 
 #if 0
   // here we have to wait that telemetryInit() is called, hence this test
@@ -281,7 +277,7 @@ void setupPulses(uint8_t module, uint8_t protocol)
   }
 }
 
-void setupPulses(uint8_t module)
+bool setupPulses(uint8_t module)
 {
   uint8_t required_protocol = getRequiredProtocol(module);
 
@@ -291,9 +287,11 @@ void setupPulses(uint8_t module)
     disablePulses(module, moduleSettings[module].protocol);
     moduleSettings[module].protocol = required_protocol;
     enablePulses(module, required_protocol);
+    return false;
   }
   else {
     setupPulses(module, required_protocol);
+    return true;
   }
 }
 

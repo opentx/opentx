@@ -161,7 +161,7 @@ union TrainerPulsesData {
 
 extern TrainerPulsesData trainerPulsesData;
 
-void setupPulses(uint8_t module);
+bool setupPulses(uint8_t module);
 void setupPulsesDSM2(uint8_t module);
 void setupPulsesCrossfire(uint8_t module);
 void setupPulsesMultimodule(uint8_t module);

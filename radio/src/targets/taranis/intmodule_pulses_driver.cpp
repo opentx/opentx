@@ -97,11 +97,6 @@ void intmodulePxx2Start()
   // TODO
 }
 
-void intmoduleSendNextPXX2Frame()
-{
-  // TODO
-}
-
 void intmodulePxxStart()
 {
   INTERNAL_MODULE_ON();
@@ -186,6 +181,6 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  setupPulses(INTERNAL_MODULE);
-  intmoduleSendNextFrame();
+  if (setupPulses(INTERNAL_MODULE))
+    intmoduleSendNextFrame();
 }

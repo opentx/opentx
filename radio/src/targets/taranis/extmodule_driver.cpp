@@ -94,6 +94,9 @@ void extmodulePpmStart()
   EXTMODULE_TIMER->EGR = 1;
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE;
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC2PE; // PWM mode 1
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
@@ -126,6 +129,9 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
@@ -224,6 +230,9 @@ void extmodulePxxStart()
   EXTMODULE_TIMER->EGR = 1; // Restart
   EXTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2;
+  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  EXTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(EXTMODULE_TIMER_DMA_STREAM_IRQn);
@@ -315,6 +324,7 @@ extern "C" void EXTMODULE_TIMER_CC_IRQHandler()
 {
   EXTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  setupPulses(EXTERNAL_MODULE);
-  extmoduleSendNextFrame();
+  if (setupPulses(EXTERNAL_MODULE)) {
+    extmoduleSendNextFrame();
+  }
 }
