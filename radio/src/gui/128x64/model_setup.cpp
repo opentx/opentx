@@ -1107,10 +1107,8 @@ void menuModelSetup(event_t event)
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         lcdDrawTextAlignedLeft(y, INDENT "Receiver");
-        lcdDrawNumber(lcdLastRightPos, y, receiverIdx + 1);
-        for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
-          lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos * 2 * FW,y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], menuHorizontalPosition==pos ? attr : 0);
-        }
+        lcdDrawNumber(lcdLastRightPos + 3, y, receiverIdx + 1);
+
       }
       break;
 
@@ -1147,7 +1145,9 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        lcdDrawTextAlignedLeft(y, INDENT "Receiver");
+        for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
+          lcdDrawHexChar(8 + pos*FW*2, y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], menuHorizontalPosition==pos ? attr : 0);
+        }
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS, y, STR_DEL_BUTTON, menuHorizontalPosition==1 ? attr : 0);
         if (attr) {
