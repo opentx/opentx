@@ -273,8 +273,13 @@ void extmoduleSendNextFrame()
     EXTMODULE_TIMER_DMA_STREAM->NDTR = modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
     EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
+#if defined(CROSSFIRE)
   else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_CROSSFIRE) {
     sportSendBuffer(modulePulsesData[EXTERNAL_MODULE].crossfire.pulses, modulePulsesData[EXTERNAL_MODULE].crossfire.length);
+  }
+#endif
+  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
+    sportSendBuffer(modulePulsesData[EXTERNAL_MODULE].pxx2.getData(), modulePulsesData[EXTERNAL_MODULE].pxx2.getSize());
   }
   else {
     EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;

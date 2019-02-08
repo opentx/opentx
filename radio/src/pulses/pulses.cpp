@@ -27,10 +27,6 @@ ModuleSettings moduleSettings[NUM_MODULES];
 ModulePulsesData modulePulsesData[NUM_MODULES] __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
-#if defined(CROSSFIRE)
-uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
-#endif
-
 uint8_t getRequiredProtocol(uint8_t module)
 {
   uint8_t required_protocol;
@@ -39,27 +35,26 @@ uint8_t getRequiredProtocol(uint8_t module)
     case MODULE_TYPE_PPM:
       required_protocol = PROTOCOL_CHANNELS_PPM;
       break;
+
     case MODULE_TYPE_XJT:
       required_protocol = PROTOCOL_CHANNELS_PXX;
       break;
+
     case MODULE_TYPE_XJT2:
-      required_protocol = PROTOCOL_CHANNELS_PXX2;
-      break;
     case MODULE_TYPE_R9M:
-#if defined(PCBXLITE)
-      required_protocol = PROTOCOL_CHANNELS_PXX;
-#else
       required_protocol = PROTOCOL_CHANNELS_PXX2;
-#endif
       break;
+
     case MODULE_TYPE_SBUS:
       required_protocol = PROTOCOL_CHANNELS_SBUS;
       break;
+
 #if defined(MULTIMODULE)
     case MODULE_TYPE_MULTIMODULE:
       required_protocol = PROTOCOL_CHANNELS_MULTIMODULE;
       break;
 #endif
+
 #if defined(DSM2)
     case MODULE_TYPE_DSM2:
       required_protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[module].rfProtocol, PROTOCOL_CHANNELS_DSM2_DSMX);
@@ -79,11 +74,13 @@ uint8_t getRequiredProtocol(uint8_t module)
       }
       break;
 #endif
+
 #if defined(CROSSFIRE)
     case MODULE_TYPE_CROSSFIRE:
       required_protocol = PROTOCOL_CHANNELS_CROSSFIRE;
       break;
 #endif
+
     default:
       required_protocol = PROTOCOL_CHANNELS_NONE;
       break;
@@ -120,14 +117,6 @@ void setupPulsesPXX(uint8_t module)
 void setupPulsesPXX2(uint8_t module)
 {
   modulePulsesData[module].pxx2.setupFrame(module);
-
-#if 0
-  // here we have to wait that telemetryInit() is called, hence this test
-  if (telemetryProtocol == PROTOCOL_TELEMETRY_PXX2) {
-    modulePulsesData[module].pxx2.setupFrame(module);
-    sportSendBuffer(modulePulsesData[module].pxx2.getData(), modulePulsesData[module].pxx2.getSize());
-  }
-#endif
 }
 
 void disablePulses(uint8_t module, uint8_t protocol)
