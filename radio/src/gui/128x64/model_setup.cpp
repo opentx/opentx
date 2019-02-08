@@ -1087,7 +1087,7 @@ void menuModelSetup(event_t event)
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER:
-        lcdDrawTextAlignedLeft(y, "Receiver");
+        lcdDrawText(INDENT_WIDTH, y, "Receiver");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[Add]", attr);
         if (attr && s_editMode>0) {
           if (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled) {
@@ -1106,11 +1106,10 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        lcdDrawTextAlignedLeft(y, "Receiver");
-        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, receiverIdx+1);
-        lcdDrawChar(lcdLastRightPos, y, ':');
+        lcdDrawTextAlignedLeft(y, INDENT "Receiver");
+        lcdDrawNumber(lcdLastRightPos, y, receiverIdx + 1);
         for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
-          lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + 10 + pos*FW*2,y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], menuHorizontalPosition==pos ? attr : 0);
+          lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos * 2 * FW,y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], menuHorizontalPosition==pos ? attr : 0);
         }
       }
       break;
@@ -1127,7 +1126,7 @@ void menuModelSetup(event_t event)
         else
           useUpperChannels = 1;
 
-        useUpperChannels = editCheckBox(useUpperChannels, MODEL_SETUP_2ND_COLUMN, y, INDENT "Use CH9-16", attr, event);
+        useUpperChannels = editCheckBox(useUpperChannels, MODEL_SETUP_2ND_COLUMN, y, INDENT INDENT "Use CH9-16", attr, event);
 
         if (useUpperChannels)
           memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].channelMapping, CH9TO16_CHANNEL_MAPPING, sizeof(uint64_t));
@@ -1140,7 +1139,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry = editCheckBox(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT "Telemetry", attr, event);
+        g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry = editCheckBox(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT INDENT "Telemetry", attr, event);
       }
       break;
 
