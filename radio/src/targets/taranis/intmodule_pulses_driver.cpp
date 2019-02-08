@@ -121,10 +121,10 @@ void intmodulePxxStart()
   INTMODULE_TIMER->EGR = 1; // Restart
   INTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2;
-  INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   INTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+  INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(INTMODULE_DMA_STREAM_IRQn);
   NVIC_SetPriority(INTMODULE_DMA_STREAM_IRQn, 7);
@@ -154,10 +154,10 @@ void intmodulePpmStart()
   INTMODULE_TIMER->BDTR = TIM_BDTR_MOE;
   INTMODULE_TIMER->EGR = 1;
   INTMODULE_TIMER->DIER = TIM_DIER_UDE;
-  INTMODULE_TIMER->CR1 = TIM_CR1_CEN;
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
   INTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
   INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+  INTMODULE_TIMER->CR1 = TIM_CR1_CEN;
 
   NVIC_EnableIRQ(INTMODULE_DMA_STREAM_IRQn);
   NVIC_SetPriority(INTMODULE_DMA_STREAM_IRQn, 7);
@@ -181,6 +181,7 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  if (setupPulses(INTERNAL_MODULE))
+  if (setupPulses(INTERNAL_MODULE)) {
     intmoduleSendNextFrame();
+  }
 }
