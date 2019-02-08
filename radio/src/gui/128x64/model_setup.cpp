@@ -311,11 +311,11 @@ void menuModelSetup(event_t event)
       IF_PXX2(0),      // Model Number
       ANTENNA_ROW
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),  // Range check and Register buttons
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, HIDDEN_ROW),           // Receiver Number
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Receiver Bind/Delete
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Number
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver Bind/Delete
