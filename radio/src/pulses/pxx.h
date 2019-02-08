@@ -50,25 +50,6 @@
 
 #define PXX_PERIOD_HALF_US                 (PXX_PERIOD * 2000)
 
-class PxxCrcMixin {
-  protected:
-    void initCrc()
-    {
-      // TODO add a Pxx2CrcMixin  ...
-      crc = 0xFFFF;
-    }
-
-    void addToCrc(uint8_t byte)
-    {
-      // TODO add a Pxx2CrcMixin  ...
-      // crc = (crc << 8) ^ (CRCTable[((crc >> 8) ^ byte) & 0xFF]);
-      crc -= byte;
-    }
-
-    uint16_t crc;
-    static const uint16_t CRCTable[];
-};
-
 // Used by the Sky9x family boards
 class SerialPxxBitTransport: public DataBuffer<uint8_t, 64> {
   protected:
@@ -133,102 +114,6 @@ class PwmPxxBitTransport: public PulsesBuffer<pulse_duration_t, 200> {
     {
       // rest min value is 18000 - 200 * 48 = 8400 (4.2ms)
       *(ptr - 1) += rest;
-    }
-};
-
-template <class BitTransport>
-class StandardPxxTransport: public BitTransport, public PxxCrcMixin {
-  protected:
-    uint8_t ones_count;
-
-    void initFrame()
-    {
-      BitTransport::initFrame();
-      ones_count = 0;
-    }
-
-    void addByte(uint8_t byte)
-    {
-      PxxCrcMixin::addToCrc(byte);
-      addByteWithoutCrc(byte);
-    };
-
-    void addRawByte(uint8_t byte)
-    {
-      for (uint8_t i = 0; i < 8; i++) {
-        if (byte & 0x80)
-          BitTransport::addPart(1);
-        else
-          BitTransport::addPart(0);
-        byte <<= 1;
-      }
-    }
-
-    void addByteWithoutCrc(uint8_t byte)
-    {
-      for (uint8_t i = 0; i < 8; i++) {
-        addBit(byte & 0x80);
-        byte <<= 1;
-      }
-    }
-
-    void addBit(uint8_t bit)
-    {
-      if (bit) {
-        BitTransport::addPart(1);
-        if (++ones_count == 5) {
-          ones_count = 0;
-          BitTransport::addPart(0); // Stuff a 0 bit in
-        }
-      }
-      else {
-        BitTransport::addPart(0);
-        ones_count = 0;
-      }
-    }
-};
-
-class UartPxxTransport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
-  protected:
-    void initFrame()
-    {
-      initBuffer();
-    }
-
-    void addByte(uint8_t byte)
-    {
-      PxxCrcMixin::addToCrc(byte);
-      addWithByteStuffing(byte);
-    }
-
-    void addRawByte(uint8_t byte)
-    {
-      *ptr++ = byte;
-    }
-
-    void addByteWithoutCrc(uint8_t byte)
-    {
-      addWithByteStuffing(byte);
-    }
-
-    void addWithByteStuffing(uint8_t byte)
-    {
-      if (0x7E == byte) {
-        addRawByte(0x7D);
-        addRawByte(0x5E);
-      }
-      else if (0x7D == byte) {
-        addRawByte(0x7D);
-        addRawByte(0x5D);
-      }
-      else {
-        addRawByte(byte);
-      }
-    }
-
-    void addTail()
-    {
-      // nothing
     }
 };
 

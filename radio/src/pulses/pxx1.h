@@ -23,6 +23,118 @@
 
 #include "pxx.h"
 
+class Pxx1CrcMixin {
+  protected:
+    void initCrc()
+    {
+      crc = 0;
+    }
+
+    void addToCrc(uint8_t byte)
+    {
+      crc = (crc << 8) ^ (CRCTable[((crc >> 8) ^ byte) & 0xFF]);
+    }
+
+    uint16_t crc;
+    static const uint16_t CRCTable[];
+};
+
+template <class BitTransport>
+class StandardPxx1Transport: public BitTransport, public Pxx1CrcMixin {
+  protected:
+    uint8_t ones_count;
+
+    void initFrame()
+    {
+      BitTransport::initFrame();
+      ones_count = 0;
+    }
+
+    void addByte(uint8_t byte)
+    {
+      Pxx1CrcMixin::addToCrc(byte);
+      addByteWithoutCrc(byte);
+    };
+
+    void addRawByte(uint8_t byte)
+    {
+      for (uint8_t i = 0; i < 8; i++) {
+        if (byte & 0x80)
+          BitTransport::addPart(1);
+        else
+          BitTransport::addPart(0);
+        byte <<= 1;
+      }
+    }
+
+    void addByteWithoutCrc(uint8_t byte)
+    {
+      for (uint8_t i = 0; i < 8; i++) {
+        addBit(byte & 0x80);
+        byte <<= 1;
+      }
+    }
+
+    void addBit(uint8_t bit)
+    {
+      if (bit) {
+        BitTransport::addPart(1);
+        if (++ones_count == 5) {
+          ones_count = 0;
+          BitTransport::addPart(0); // Stuff a 0 bit in
+        }
+      }
+      else {
+        BitTransport::addPart(0);
+        ones_count = 0;
+      }
+    }
+};
+
+class UartPxx1Transport: public DataBuffer<uint8_t, 64>, public Pxx1CrcMixin {
+  protected:
+    void initFrame()
+    {
+      initBuffer();
+    }
+
+    void addByte(uint8_t byte)
+    {
+      Pxx1CrcMixin::addToCrc(byte);
+      addWithByteStuffing(byte);
+    }
+
+    void addRawByte(uint8_t byte)
+    {
+      *ptr++ = byte;
+    }
+
+    void addByteWithoutCrc(uint8_t byte)
+    {
+      addWithByteStuffing(byte);
+    }
+
+    void addWithByteStuffing(uint8_t byte)
+    {
+      if (0x7E == byte) {
+        addRawByte(0x7D);
+        addRawByte(0x5E);
+      }
+      else if (0x7D == byte) {
+        addRawByte(0x7D);
+        addRawByte(0x5D);
+      }
+      else {
+        addRawByte(byte);
+      }
+    }
+
+    void addTail()
+    {
+      // nothing
+    }
+};
+
 template <class PxxTransport>
 class Pxx1Pulses: public PxxPulses<PxxTransport>
 {
@@ -38,8 +150,8 @@ class Pxx1Pulses: public PxxPulses<PxxTransport>
 
     void addCrc()
     {
-      PxxTransport::addByteWithoutCrc(PxxCrcMixin::crc >> 8);
-      PxxTransport::addByteWithoutCrc(PxxCrcMixin::crc);
+      PxxTransport::addByteWithoutCrc(Pxx1CrcMixin::crc >> 8);
+      PxxTransport::addByteWithoutCrc(Pxx1CrcMixin::crc);
     }
 
     uint8_t addFlag1(uint8_t port);
@@ -48,8 +160,8 @@ class Pxx1Pulses: public PxxPulses<PxxTransport>
     void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
 };
 
-typedef Pxx1Pulses<UartPxxTransport> UartPxxPulses;
-typedef Pxx1Pulses<StandardPxxTransport<PwmPxxBitTransport>> PwmPxxPulses;
-typedef Pxx1Pulses<StandardPxxTransport<SerialPxxBitTransport>> SerialPxxPulses;
+typedef Pxx1Pulses<UartPxx1Transport> UartPxxPulses;
+typedef Pxx1Pulses<StandardPxx1Transport<PwmPxxBitTransport>> PwmPxxPulses;
+typedef Pxx1Pulses<StandardPxx1Transport<SerialPxxBitTransport>> SerialPxxPulses;
 
 #endif

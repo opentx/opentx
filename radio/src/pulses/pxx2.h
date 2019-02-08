@@ -108,8 +108,22 @@ class SportCrcMixin {
     uint16_t crc;
 };
 
+class Pxx2CrcMixin {
+  protected:
+    void initCrc()
+    {
+      crc = 0xFFFF;
+    }
 
-class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
+    void addToCrc(uint8_t byte)
+    {
+      crc -= byte;
+    }
+
+    uint16_t crc;
+};
+
+class Pxx2Transport: public DataBuffer<uint8_t, 64>, public Pxx2CrcMixin {
   protected:
     void addWord(uint32_t word)
     {
@@ -121,7 +135,7 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public PxxCrcMixin {
 
     void addByte(uint8_t byte)
     {
-      PxxCrcMixin::addToCrc(byte);
+      Pxx2CrcMixin::addToCrc(byte);
       addByteWithoutCrc(byte);
     };
 
@@ -168,8 +182,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void addCrc()
     {
-      Pxx2Transport::addByteWithoutCrc(PxxCrcMixin::crc >> 8);
-      Pxx2Transport::addByteWithoutCrc(PxxCrcMixin::crc);
+      Pxx2Transport::addByteWithoutCrc(Pxx2CrcMixin::crc >> 8);
+      Pxx2Transport::addByteWithoutCrc(Pxx2CrcMixin::crc);
     }
 
     void initFrame()

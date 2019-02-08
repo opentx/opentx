@@ -140,3 +140,5 @@ bool Pxx2Pulses::setupFrame(uint8_t module)
 
   return result;
 }
+
+template class PxxPulses<Pxx2Transport>;
