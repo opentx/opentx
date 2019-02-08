@@ -31,80 +31,61 @@ TrainerPulsesData trainerPulsesData __DMA;
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses);
 #endif
 
-uint8_t getRequiredProtocol(uint8_t port)
+uint8_t getRequiredProtocol(uint8_t module)
 {
   uint8_t required_protocol;
 
-  switch (port) {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-    case INTERNAL_MODULE:
-      switch (g_model.moduleData[INTERNAL_MODULE].type) {
-#if defined(TARANIS_INTERNAL_PPM)
-        case MODULE_TYPE_PPM:
-          required_protocol = PROTOCOL_CHANNELS_PPM;
-          break;
+  switch (g_model.moduleData[module].type) {
+    case MODULE_TYPE_PPM:
+      required_protocol = PROTOCOL_CHANNELS_PPM;
+      break;
+    case MODULE_TYPE_XJT:
+      required_protocol = PROTOCOL_CHANNELS_PXX;
+      break;
+    case MODULE_TYPE_XJT2:
+      required_protocol = PROTOCOL_CHANNELS_PXX2;
+      break;
+    case MODULE_TYPE_R9M:
+#if defined(PCBXLITE)
+      required_protocol = PROTOCOL_CHANNELS_PXX;
+#else
+      required_protocol = PROTOCOL_CHANNELS_PXX2;
 #endif
-        case MODULE_TYPE_XJT:
-          required_protocol = PROTOCOL_CHANNELS_PXX2;
-          break;
-        default:
-          required_protocol = PROTOCOL_CHANNELS_NONE;
-          break;
+      break;
+    case MODULE_TYPE_SBUS:
+      required_protocol = PROTOCOL_CHANNELS_SBUS;
+      break;
+#if defined(MULTIMODULE)
+    case MODULE_TYPE_MULTIMODULE:
+      required_protocol = PROTOCOL_CHANNELS_MULTIMODULE;
+      break;
+#endif
+#if defined(DSM2)
+    case MODULE_TYPE_DSM2:
+      required_protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[module].rfProtocol, PROTOCOL_CHANNELS_DSM2_DSMX);
+      // The module is set to OFF during one second before BIND start
+      {
+        static tmr10ms_t bindStartTime = 0;
+        if (moduleSettings[module].mode == MODULE_MODE_BIND) {
+          if (bindStartTime == 0) bindStartTime = get_tmr10ms();
+          if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
+            required_protocol = PROTOCOL_CHANNELS_NONE;
+            break;
+          }
+        }
+        else {
+          bindStartTime = 0;
+        }
       }
       break;
 #endif
-
-    default:
-      switch (g_model.moduleData[EXTERNAL_MODULE].type) {
-        case MODULE_TYPE_PPM:
-          required_protocol = PROTOCOL_CHANNELS_PPM;
-          break;
-        case MODULE_TYPE_XJT:
-          required_protocol = PROTOCOL_CHANNELS_PXX;
-          break;
-        case MODULE_TYPE_R9M:
-#if defined(PCBXLITE)
-          required_protocol = PROTOCOL_CHANNELS_PXX;
-#else
-          required_protocol = PROTOCOL_CHANNELS_PXX2;
-#endif
-          break;
-        case MODULE_TYPE_SBUS:
-          required_protocol = PROTOCOL_CHANNELS_SBUS;
-          break;
-#if defined(MULTIMODULE)
-        case MODULE_TYPE_MULTIMODULE:
-          required_protocol = PROTOCOL_CHANNELS_MULTIMODULE;
-          break;
-#endif
-#if defined(DSM2)
-        case MODULE_TYPE_DSM2:
-          required_protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, PROTOCOL_CHANNELS_DSM2_DSMX);
-          // The module is set to OFF during one second before BIND start
-          {
-            static tmr10ms_t bindStartTime = 0;
-            if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
-              if (bindStartTime == 0) bindStartTime = get_tmr10ms();
-              if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
-                required_protocol = PROTOCOL_CHANNELS_NONE;
-                break;
-              }
-            }
-            else {
-              bindStartTime = 0;
-            }
-          }
-          break;
-#endif
 #if defined(CROSSFIRE)
-        case MODULE_TYPE_CROSSFIRE:
-          required_protocol = PROTOCOL_CHANNELS_CROSSFIRE;
-          break;
+    case MODULE_TYPE_CROSSFIRE:
+      required_protocol = PROTOCOL_CHANNELS_CROSSFIRE;
+      break;
 #endif
-        default:
-          required_protocol = PROTOCOL_CHANNELS_NONE;
-          break;
-      }
+    default:
+      required_protocol = PROTOCOL_CHANNELS_NONE;
       break;
   }
 
@@ -114,7 +95,7 @@ uint8_t getRequiredProtocol(uint8_t port)
 
 #if 0
   // will need an EEPROM conversion
-  if (moduleSettings[port].mode == MODULE_OFF) {
+  if (moduleSettings[module].mode == MODULE_OFF) {
     required_protocol = PROTOCOL_CHANNELS_NONE;
   }
 #endif
@@ -122,17 +103,17 @@ uint8_t getRequiredProtocol(uint8_t port)
   return required_protocol;
 }
 
-void setupPulsesPXX(uint8_t port)
+void setupPulsesPXX(uint8_t module)
 {
 #if defined(INTMODULE_USART) && defined(EXTMODULE_USART)
-  modulePulsesData[port].pxx_uart.setupFrame(port);
+  modulePulsesData[module].pxx_uart.setupFrame(module);
 #elif !defined(INTMODULE_USART) && !defined(EXTMODULE_USART)
-  modulePulsesData[port].pxx.setupFrame(port);
+  modulePulsesData[module].pxx.setupFrame(module);
 #else
-  if (IS_UART_MODULE(port))
-    modulePulsesData[port].pxx_uart.setupFrame(port);
+  if (IS_UART_MODULE(module))
+    modulePulsesData[module].pxx_uart.setupFrame(module);
   else
-    modulePulsesData[port].pxx.setupFrame(port);
+    modulePulsesData[module].pxx.setupFrame(module);
 #endif
 }
 
@@ -147,57 +128,57 @@ void setupPulsesPXX2(uint8_t module)
 #if 0
   // here we have to wait that telemetryInit() is called, hence this test
   if (telemetryProtocol == PROTOCOL_TELEMETRY_PXX2) {
-    modulePulsesData[port].pxx2.setupFrame(port);
-    sportSendBuffer(modulePulsesData[port].pxx2.getData(), modulePulsesData[port].pxx2.getSize());
+    modulePulsesData[module].pxx2.setupFrame(module);
+    sportSendBuffer(modulePulsesData[module].pxx2.getData(), modulePulsesData[module].pxx2.getSize());
   }
 #endif
 }
 
-void disablePulses(uint8_t port, uint8_t protocol)
+void disablePulses(uint8_t module, uint8_t protocol)
 {
   // stop existing protocol hardware
 
   switch (protocol) {
     case PROTOCOL_CHANNELS_PXX:
-      disable_pxx(port);
+      disable_pxx(module);
       break;
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      disable_serial(port);
+      disable_serial(module);
       break;
 #endif
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      disable_module_timer(port);
+      disable_module_timer(module);
       break;
 #endif
 
     case PROTOCOL_CHANNELS_PXX2:
-      disable_pxx2(port);
+      disable_pxx2(module);
       break;
 
 #if defined(MULTIMODULE)
       case PROTOCOL_CHANNELS_MULTIMODULE:
 #endif
     case PROTOCOL_CHANNELS_SBUS:
-      disable_serial(port);
+      disable_serial(module);
       break;
 
     case PROTOCOL_CHANNELS_PPM:
-      disable_ppm(port);
+      disable_ppm(module);
       break;
 
     default:
-      disable_no_pulses(port);
+      disable_no_pulses(module);
       break;
   }
 }
 
-void enablePulses(uint8_t port, uint8_t protocol)
+void enablePulses(uint8_t module, uint8_t protocol)
 {
   // start new protocol hardware here
 
@@ -205,85 +186,85 @@ void enablePulses(uint8_t port, uint8_t protocol)
 
   switch (protocol) {
     case PROTOCOL_CHANNELS_PXX:
-      init_pxx(port);
+      init_pxx(module);
       break;
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      init_serial(port, DSM2_BAUDRATE, DSM2_PERIOD * 2000);
+      init_serial(module, DSM2_BAUDRATE, DSM2_PERIOD * 2000);
       break;
 #endif
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      init_module_timer(port, CROSSFIRE_PERIOD, true);
+      init_module_timer(module, CROSSFIRE_PERIOD, true);
       break;
 #endif
 
     case PROTOCOL_CHANNELS_PXX2:
-      init_pxx2(port);
+      init_pxx2(module);
       break;
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      init_serial(port, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000);
+      init_serial(module, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000);
       break;
 #endif
 
     case PROTOCOL_CHANNELS_SBUS:
-      init_serial(port, SBUS_BAUDRATE, SBUS_PERIOD_HALF_US);
+      init_serial(module, SBUS_BAUDRATE, SBUS_PERIOD_HALF_US);
       break;
 
     case PROTOCOL_CHANNELS_PPM:
-      init_ppm(port);
+      init_ppm(module);
       break;
 
     default:
-      init_no_pulses(port);
+      init_no_pulses(module);
       break;
   }
 }
 
-void setupPulses(uint8_t port, uint8_t protocol)
+void setupPulses(uint8_t module, uint8_t protocol)
 {
   switch (protocol) {
     case PROTOCOL_CHANNELS_PXX:
-      setupPulsesPXX(port);
-      scheduleNextMixerCalculation(port, PXX_PERIOD);
+      setupPulsesPXX(module);
+      scheduleNextMixerCalculation(module, PXX_PERIOD);
       break;
 
     case PROTOCOL_CHANNELS_SBUS:
-      setupPulsesSbus(port);
-      scheduleNextMixerCalculation(port, SBUS_PERIOD);
+      setupPulsesSbus(module);
+      scheduleNextMixerCalculation(module, SBUS_PERIOD);
       break;
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      setupPulsesDSM2(port);
-      scheduleNextMixerCalculation(port, DSM2_PERIOD);
+      setupPulsesDSM2(module);
+      scheduleNextMixerCalculation(module, DSM2_PERIOD);
       break;
 #endif
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      setupPulsesCrossfire(port);
-      scheduleNextMixerCalculation(port, CROSSFIRE_PERIOD);
+      setupPulsesCrossfire(module);
+      scheduleNextMixerCalculation(module, CROSSFIRE_PERIOD);
       break;
 #endif
 
     case PROTOCOL_CHANNELS_PXX2:
-      setupPulsesPXX2(port);
-      scheduleNextMixerCalculation(port, moduleSettings[port].mode == MODULE_MODE_SPECTRUM_ANALYSER ? 1 : PXX2_PERIOD);
+      setupPulsesPXX2(module);
+      scheduleNextMixerCalculation(module, moduleSettings[module].mode == MODULE_MODE_SPECTRUM_ANALYSER ? 1 : PXX2_PERIOD);
       break;
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      setupPulsesMultimodule(port);
-      scheduleNextMixerCalculation(port, MULTIMODULE_PERIOD);
+      setupPulsesMultimodule(module);
+      scheduleNextMixerCalculation(module, MULTIMODULE_PERIOD);
       break;
 #endif
 
@@ -291,8 +272,8 @@ void setupPulses(uint8_t port, uint8_t protocol)
 #if defined(PCBSKY9X)
       case PROTOCOL_CHANNELS_NONE:
 #endif
-      setupPulsesPPMModule(port);
-      scheduleNextMixerCalculation(port, PPM_PERIOD(port));
+      setupPulsesPPMModule(module);
+      scheduleNextMixerCalculation(module, PPM_PERIOD(module));
       break;
 
     default:
