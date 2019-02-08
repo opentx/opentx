@@ -526,7 +526,7 @@ bool isInternalModuleAvailable(int module)
   return false;
 }
 
-bool isModuleAvailable(int module)
+bool isExternalModuleAvailable(int module)
 {
 #if defined(CROSSFIRE)
   if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {

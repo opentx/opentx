@@ -27,44 +27,56 @@ ModuleSettings moduleSettings[NUM_MODULES];
 ModulePulsesData modulePulsesData[NUM_MODULES] __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
 
+uint8_t getModuleType(uint8_t module)
+{
+  uint8_t type = g_model.moduleData[module].type;
+  if (module == INTERNAL_MODULE && isInternalModuleAvailable(type)) {
+    return type;
+  }
+  if (module == EXTERNAL_MODULE && isExternalModuleAvailable(type)) {
+    return type;
+  }
+  return MODULE_TYPE_NONE;
+}
+
 uint8_t getRequiredProtocol(uint8_t module)
 {
-  uint8_t required_protocol;
+  uint8_t protocol;
 
-  switch (g_model.moduleData[module].type) {
+  switch (getModuleType(module)) {
     case MODULE_TYPE_PPM:
-      required_protocol = PROTOCOL_CHANNELS_PPM;
+      protocol = PROTOCOL_CHANNELS_PPM;
       break;
 
     case MODULE_TYPE_XJT:
-      required_protocol = PROTOCOL_CHANNELS_PXX;
+      protocol = PROTOCOL_CHANNELS_PXX;
       break;
 
     case MODULE_TYPE_XJT2:
     case MODULE_TYPE_R9M:
-      required_protocol = PROTOCOL_CHANNELS_PXX2;
+      protocol = PROTOCOL_CHANNELS_PXX2;
       break;
 
     case MODULE_TYPE_SBUS:
-      required_protocol = PROTOCOL_CHANNELS_SBUS;
+      protocol = PROTOCOL_CHANNELS_SBUS;
       break;
 
 #if defined(MULTIMODULE)
     case MODULE_TYPE_MULTIMODULE:
-      required_protocol = PROTOCOL_CHANNELS_MULTIMODULE;
+      protocol = PROTOCOL_CHANNELS_MULTIMODULE;
       break;
 #endif
 
 #if defined(DSM2)
     case MODULE_TYPE_DSM2:
-      required_protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[module].rfProtocol, PROTOCOL_CHANNELS_DSM2_DSMX);
+      protocol = limit<uint8_t>(PROTOCOL_CHANNELS_DSM2_LP45, PROTOCOL_CHANNELS_DSM2_LP45+g_model.moduleData[module].rfProtocol, PROTOCOL_CHANNELS_DSM2_DSMX);
       // The module is set to OFF during one second before BIND start
       {
         static tmr10ms_t bindStartTime = 0;
         if (moduleSettings[module].mode == MODULE_MODE_BIND) {
           if (bindStartTime == 0) bindStartTime = get_tmr10ms();
           if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
-            required_protocol = PROTOCOL_CHANNELS_NONE;
+            protocol = PROTOCOL_CHANNELS_NONE;
             break;
           }
         }
@@ -77,27 +89,27 @@ uint8_t getRequiredProtocol(uint8_t module)
 
 #if defined(CROSSFIRE)
     case MODULE_TYPE_CROSSFIRE:
-      required_protocol = PROTOCOL_CHANNELS_CROSSFIRE;
+      protocol = PROTOCOL_CHANNELS_CROSSFIRE;
       break;
 #endif
 
     default:
-      required_protocol = PROTOCOL_CHANNELS_NONE;
+      protocol = PROTOCOL_CHANNELS_NONE;
       break;
   }
 
   if (s_pulses_paused) {
-    required_protocol = PROTOCOL_CHANNELS_NONE;
+    protocol = PROTOCOL_CHANNELS_NONE;
   }
 
 #if 0
   // will need an EEPROM conversion
   if (moduleSettings[module].mode == MODULE_OFF) {
-    required_protocol = PROTOCOL_CHANNELS_NONE;
+    protocol = PROTOCOL_CHANNELS_NONE;
   }
 #endif
 
-  return required_protocol;
+  return protocol;
 }
 
 void setupPulsesPXX(uint8_t module)
@@ -258,18 +270,18 @@ void setupPulses(uint8_t module, uint8_t protocol)
 
 bool setupPulses(uint8_t module)
 {
-  uint8_t required_protocol = getRequiredProtocol(module);
+  uint8_t protocol = getRequiredProtocol(module);
 
   heartbeat |= (HEART_TIMER_PULSES << module);
 
-  if (moduleSettings[module].protocol != required_protocol) {
+  if (moduleSettings[module].protocol != protocol) {
     disablePulses(module, moduleSettings[module].protocol);
-    moduleSettings[module].protocol = required_protocol;
-    enablePulses(module, required_protocol);
+    moduleSettings[module].protocol = protocol;
+    enablePulses(module, protocol);
     return false;
   }
   else {
-    setupPulses(module, required_protocol);
+    setupPulses(module, protocol);
     return true;
   }
 }
