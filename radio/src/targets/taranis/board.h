@@ -179,11 +179,11 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 #else
   #define IS_UART_MODULE(port)          (false)
 #endif
-void init_no_pulses(uint8_t module);
-void disable_no_pulses(uint8_t module);
+
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
 void intmoduleSendNextFrame();
+void extmoduleSendNextFrame();
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
 void init_pxx(uint8_t module);

@@ -122,6 +122,7 @@ PACK(struct Dsm2TimerPulsesData {
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
   uint8_t pulses[CROSSFIRE_FRAME_MAXLEN];
+  uint8_t length;
 });
 
 union ModulePulsesData {

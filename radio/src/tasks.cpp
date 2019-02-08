@@ -83,12 +83,10 @@ void sendSynchronousPulses()
   for (uint8_t module = 0; module < NUM_MODULES; module++) {
     uint8_t protocol = moduleSettings[module].protocol;
     if (isProtocolSynchronous(protocol) && setupPulses(module)) {
-      if (module == INTERNAL_MODULE) {
+      if (module == INTERNAL_MODULE)
         intmoduleSendNextFrame();
-      }
-      else {
-        // TODO
-      }
+      else
+        extmoduleSendNextFrame();
     }
   }
 }
