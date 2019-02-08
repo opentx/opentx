@@ -47,9 +47,9 @@ void menuRadioSpectrum(event_t event)
   lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrum.fq/10000000,PREC2);
   lcdDrawText(lcdLastRightPos + 2, 10, "GHz", 0);
 
-  lcdDrawText(1, 10+FH, "S:", 0);
-  lcdDrawNumber(lcdLastRightPos + 2, 10+FH, reusableBuffer.spectrum.span/1000000, 0);
-  lcdDrawText(lcdLastRightPos + 2, 10+FH, "MHz", 0);
+  lcdDrawText(lcdLastRightPos + 5, 10, "S:", 0);
+  lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrum.span/1000000, 0);
+  lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
 
   int8_t y = max<int8_t>(FH, LCD_H - peak_y - FH);
   lcdDrawNumber(min<uint8_t>(100, peak_x), y, ((reusableBuffer.spectrum.fq - reusableBuffer.spectrum.span / 2) + peak_x * (reusableBuffer.spectrum.span / 128)) / 1000000, TINSIZE);
