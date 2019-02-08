@@ -52,6 +52,12 @@ inline bool isModuleXJT(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT;
 }
+
+inline bool isModuleXJTVariant(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT || g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
+}
+
 #else
 inline bool isModuleXJT(uint8_t idx)
 {
