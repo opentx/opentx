@@ -456,7 +456,6 @@ extern HardwareOptions hardwareOptions;
 
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
-
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
   void sticksPwmInit(void);
   void sticksPwmRead(uint16_t * values);
@@ -489,7 +488,9 @@ enum CalibratedAnalogs {
 #else
   #define IS_POT(x)                     ((x)>=POT_FIRST && (x)<=POT_LAST)
 #endif
+
 #define IS_SLIDER(x)                    ((x)>POT_LAST && (x)<TX_VOLTAGE)
+
 void adcInit(void);
 void adcRead(void);
 extern uint16_t adcValues[NUM_ANALOGS];

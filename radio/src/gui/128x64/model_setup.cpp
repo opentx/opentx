@@ -74,22 +74,24 @@ enum MenuModelSetupItems {
 #if defined(PCBTARANIS)
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_MODE,
-  ITEM_MODEL_INTERNAL_MODULE_MODEL_NUM,
-  ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
-  ITEM_MODEL_INTERNAL_MODULE_RANGE_REG,
+  ITEM_MODEL_INTERNAL_MODULE_NPXX2_CHANNELS,
+  ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM,
 #if defined(EXTERNAL_ANTENNA)
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_NUMBER,
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_RANGE,
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_TELEM,
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_BIND,
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER,
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_RANGE,
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_TELEM,
-  ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_BIND,
-  ITEM_MODEL_INTERNAL_MODULE_ADD_RECEIVER,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NUMBER,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_RANGE,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_RANGE,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER,
 #endif
+  ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
 #if defined(MULTIMODULE)
@@ -144,14 +146,14 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS     7*FW-2
 
-#define IF_PXX2(x)                       (IS_PXX2_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
+#define IF_PXX2(xxx)                     (IS_PXX2_ENABLED() ? (uint8_t)(xxx) : HIDDEN_ROW)
+#define IF_NOT_PXX2(xxx)                 (IS_PXX2_ENABLED() ? HIDDEN_ROW : (uint8_t)(xxx))
+#define IF_PXX2_RECEIVER_DISPLAYED(module, idx, xxx)   ((IS_PXX2_ENABLED() && g_model.moduleData[module].pxx2.receivers[idx].enabled) ? (uint8_t)(xxx) : HIDDEN_ROW)
 
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
-  #define CURRENT_RECEIVER_EDITED(k)      (k >= ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER ? 1 : 0)
+  #define CURRENT_RECEIVER_EDITED(k)      (k >= ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER ? 1 : 0)
   #define INTERNAL_MODULE_ADD_RECEIVER_ROW       (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[MAX_RECEIVERS_PER_MODULE-1].enabled ? HIDDEN_ROW : (uint8_t)0)
-  #define IF_INTERNAL_MODULE_RECEIVER_1_ON(x)    (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].enabled ? (uint8_t)(x) : HIDDEN_ROW)
-  #define IF_INTERNAL_MODULE_RECEIVER_2_ON(x)    (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1].enabled ? (uint8_t)(x) : HIDDEN_ROW)
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
@@ -184,8 +186,10 @@ enum MenuModelSetupItems {
 
 #if defined(PCBXLITE)
   #define EXTERNAL_MODULE_MODE_ROWS      (isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+  #define EXTERNAL_MODULE_FREQ_ROW
 #else
   #define EXTERNAL_MODULE_MODE_ROWS      (isModuleXJT(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+  #define EXTERNAL_MODULE_FREQ_ROW              isR9MMFlex(EXTERNAL_MODULE) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
 #endif
 
 #define CURSOR_ON_CELL                 (true)
@@ -195,10 +199,8 @@ enum MenuModelSetupItems {
 
 #if defined(PCBSKY9X) && !defined(REVA)
   #define EXTRA_MODULE_ROWS              LABEL(ExtraModule), 1, 2,
-#elif defined(PCBXLITE)
-  #define EXTRA_MODULE_ROWS
 #else
-  #define EXTRA_MODULE_ROWS              isR9MMFlex(EXTERNAL_MODULE) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
+  #define EXTRA_MODULE_ROWS
 #endif
 
 #if defined(PCBX7)
@@ -303,31 +305,34 @@ void menuModelSetup(event_t event)
     IF_PXX2(PXX2_LEN_REGISTRATION_ID - 1), // Registration ID
 
     LABEL(InternalModule),
-      INTERNAL_MODULE_MODE_ROWS,
-      IF_INTERNAL_MODULE_ON((uint8_t)0),                      // Model Number
-      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),  // Failsafe
-      IF_INTERNAL_MODULE_ON((uint8_t)1),                      // Range check and receiver register
+      INTERNAL_MODULE_MODE_ROWS, // module mode (PXX(2) / None)
+      IF_NOT_PXX2(IF_INTERNAL_MODULE_ON(1)), // Channels min and count
+      IF_NOT_PXX2(IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
+      IF_PXX2(0),      // Model Number
       ANTENNA_ROW
-      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Number
-      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Range
-      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)0),           // Receiver Telemetry
-      IF_INTERNAL_MODULE_RECEIVER_1_ON((uint8_t)1),           // Receiver Bind/Delete
-      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Number
-      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Range
-      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)0),           // Receiver Telemetry
-      IF_INTERNAL_MODULE_RECEIVER_2_ON((uint8_t)1),           // Receiver Bind/Delete
-      IF_INTERNAL_MODULE_ON(INTERNAL_MODULE_ADD_RECEIVER_ROW),
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),  // Range check and Register buttons
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Number
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Receiver Bind/Delete
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Number
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Range
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Telemetry
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver Bind/Delete
+      IF_PXX2(INTERNAL_MODULE_ADD_RECEIVER_ROW),
+      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_MODE_ROWS,
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
       MULTIMODULE_STATUS_ROWS
       EXTERNAL_MODULE_CHANNELS_ROWS,
-      EXTERNAL_MODULE_BIND_ROWS(),
+      EXTERNAL_MODULE_BIND_ROWS(), // line reused for PPM: PPM settings
       OUTPUT_TYPE_ROWS()
       EXTERNAL_MODULE_OPTION_ROW,
       MULTIMODULE_MODULE_ROWS
       EXTERNAL_MODULE_POWER_ROW,
+      EXTERNAL_MODULE_FREQ_ROW
       FAILSAFE_ROWS(EXTERNAL_MODULE),
 
     TRAINER_ROWS
@@ -753,12 +758,10 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
+        #warning "TR_TARANIS_PROTOCOLS changes need to be ported to all languages"
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, attr);
         if (attr) {
-          g_model.moduleData[INTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_XJT, EE_MODEL, isInternalModuleAvailable);
-          if (checkIncDec_Ret) {
-            /* ToDo : what needs to happen on module enable/disable */
-          }
+          g_model.moduleData[INTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
         }
         break;
 #endif
@@ -977,6 +980,10 @@ void menuModelSetup(event_t event)
         break;
 
 #endif
+
+#if defined(PCBTARANIS)
+      case ITEM_MODEL_INTERNAL_MODULE_NPXX2_CHANNELS:
+#endif
 #if defined(PCBSKY9X)
       case ITEM_MODEL_EXTRA_MODULE_CHANNELS:
 #endif
@@ -1045,7 +1052,7 @@ void menuModelSetup(event_t event)
 
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_MODEL_NUM:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM:
         lcdDrawTextAlignedLeft(y, STR_RECEIVER_NUM);
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[INTERNAL_MODULE], attr | LEADING0|LEFT, 2);
         if (attr) {
@@ -1056,14 +1063,14 @@ void menuModelSetup(event_t event)
         }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_RANGE_REG:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER:
         lcdDrawTextAlignedLeft(y, INDENT "Module");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, (menuHorizontalPosition==0 ? attr : 0) );
         lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition==1 ? attr : 0) );
         if (attr && s_editMode>0 && menuHorizontalPosition == 0 ) {
           moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
         }
-        if(attr && menuHorizontalPosition == 1) {
+        if (attr && menuHorizontalPosition == 1) {
           if (event == EVT_KEY_BREAK(KEY_ENTER)) {
             moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_REGISTER;
           }
@@ -1079,7 +1086,7 @@ void menuModelSetup(event_t event)
         }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_ADD_RECEIVER:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER:
         lcdDrawTextAlignedLeft(y, "Receiver");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[Add]", attr);
         if (attr && s_editMode>0) {
@@ -1095,8 +1102,8 @@ void menuModelSetup(event_t event)
         }
         break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_NUMBER:
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_NUMBER:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NUMBER:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         lcdDrawTextAlignedLeft(y, "Receiver");
@@ -1108,8 +1115,8 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_RANGE:
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_RANGE:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_RANGE:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_RANGE:
       {
         // TODO have a proper channel assignement screen, section bellow is just for tests
         uint8_t useUpperChannels;
@@ -1129,16 +1136,16 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_TELEM:
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_TELEM:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry = editCheckBox(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT "Telemetry", attr, event);
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_1_BIND:
-      case ITEM_MODEL_INTERNAL_MODULE_RECEIVER_2_BIND:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         lcdDrawTextAlignedLeft(y, INDENT "Receiver");
@@ -1182,6 +1189,10 @@ void menuModelSetup(event_t event)
         }
       }
       break;
+#endif
+
+#if defined(PCBTARANIS)
+      case ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND:
 #endif
 #if defined(PCBSKY9X)
       case ITEM_MODEL_EXTRA_MODULE_BIND:
@@ -1596,7 +1607,7 @@ void menuModelSetup(event_t event)
   if (old_editMode > 0 && s_editMode == 0) {
     switch(menuVerticalPosition) {
 #if defined(PCBTARANIS)
-    case ITEM_MODEL_INTERNAL_MODULE_MODEL_NUM:
+    case ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND:
       if (menuHorizontalPosition == 0)
         checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
       break;
