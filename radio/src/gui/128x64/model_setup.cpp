@@ -219,7 +219,7 @@ enum MenuModelSetupItems {
   #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
   #define TRAINER_BLUETOOTH_ROW
   #define TRAINER_CHANNELS_ROW           (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
-  #define TRAINER_PARAMS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_PARAMS_ROW             (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? (uint8_t)2 : (uint8_t)-1)
   #define TRAINER_ROWS                   LABEL(Trainer), 0, TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
 #elif defined(PCBXLITE)
   #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
@@ -1103,6 +1103,7 @@ void menuModelSetup(event_t event)
             memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
             menuVerticalPosition = ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL + 1;
           }
+          killEvents(event);
           s_editMode = 0;
         }
         break;
@@ -1180,14 +1181,12 @@ void menuModelSetup(event_t event)
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
             if (receiverIdx == 0) {
-              memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0],
-                     &g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(ReceiverData));
-              memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(ReceiverData));
-              s_editMode = 0;
-            } else {
-              memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx], sizeof(ReceiverData));
-              s_editMode = 0;
+              memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0], &g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(ReceiverData));
+              menuVerticalPosition = ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER + 1;
             }
+            memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx], sizeof(ReceiverData));
+            s_editMode = 0;
+            killEvents(event);
           }
         }
       }
