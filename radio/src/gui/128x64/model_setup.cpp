@@ -1064,9 +1064,9 @@ void menuModelSetup(event_t event)
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "CH", attr);
         lcdDrawNumber(lcdLastRightPos, y, g_model.moduleData[moduleIdx].channelsStart+1, attr);
         lcdDrawText(lcdLastRightPos, y, "-");
-        lcdDrawNumber(lcdLastRightPos, y, g_model.moduleData[moduleIdx].channelsStart+16, 0);
+        lcdDrawNumber(lcdLastRightPos, y, g_model.moduleData[moduleIdx].channelsStart+PXX2_MODULE_CHANNELS, 0);
         if (attr) {
-          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].channelsStart, 16); //TODO this needs discussion
+          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].channelsStart, PXX2_MODULE_CHANNELS); //TODO this needs discussion
         }
       }
       break;

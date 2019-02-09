@@ -193,6 +193,7 @@ static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
+constexpr int8_t PXX2_MODULE_CHANNELS=16;
 
 inline int8_t maxModuleChannels_M8(uint8_t idx)
 {
