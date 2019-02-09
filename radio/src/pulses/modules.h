@@ -226,7 +226,7 @@ inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
     return CROSSFIRE_CHANNELS_COUNT;
-  else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
+  else if ((isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx)) || isModuleXJT2(idx))
     return 16;
   else
     return 8 + g_model.moduleData[idx].channelsCount;
