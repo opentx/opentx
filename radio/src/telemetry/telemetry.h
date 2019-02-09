@@ -26,9 +26,7 @@
   #include "frsky.h"
 #endif
 
-#if defined(CROSSFIRE)
-  #include "crossfire.h"
-#endif
+#include "crossfire.h"
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"

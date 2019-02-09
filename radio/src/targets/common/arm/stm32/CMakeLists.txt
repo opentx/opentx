@@ -53,6 +53,7 @@ if(DEBUG OR CLI OR USB_SERIAL)
   )
   add_definitions(-DUSB_SERIAL)
 endif()
+
 set(STM32USB_SRC
   ${STM32USB_SRC}
   STM32_USB_Device_Library/Class/msc/src/usbd_msc_data.c
@@ -60,31 +61,37 @@ set(STM32USB_SRC
   STM32_USB_Device_Library/Class/msc/src/usbd_msc_bot.c
   STM32_USB_Device_Library/Class/msc/src/usbd_msc_core.c
   )
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/usbd_storage_msd.cpp
   )
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/usbd_hid_joystick.c
   )
+
 if(GVARS)
   set(GUI_SRC
     ${GUI_SRC}
     ${GVAR_SCREEN}
     )
 endif()
+
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}
   serial.cpp
   syscalls.c
   )
+
 foreach(FILE ${STM32LIB_SRC})
   set(FIRMWARE_SRC
     ${FIRMWARE_SRC}
     ${STM32LIB_DIR}/${FILE}
     )
 endforeach()
+
 foreach(FILE ${STM32USB_SRC})
   set(FIRMWARE_SRC
     ${FIRMWARE_SRC}
@@ -94,11 +101,5 @@ endforeach()
 
 set(SRC
   ${SRC}
-  telemetry/crossfire.cpp
   io/bootloader_flash.cpp
-  )
-
-set(PULSES_SRC
-  ${PULSES_SRC}
-  crossfire.cpp
   )

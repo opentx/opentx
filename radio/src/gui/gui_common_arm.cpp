@@ -528,6 +528,16 @@ bool isInternalModuleAvailable(int module)
 
 bool isExternalModuleAvailable(int module)
 {
+#if !defined(PXX1)
+  if (module == MODULE_TYPE_XJT) {
+    return false;
+  }
+#endif
+#if !defined(PXX2)
+  if (module == MODULE_TYPE_XJT2) {
+    return false;
+  }
+#endif
 #if defined(CROSSFIRE)
   if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
@@ -554,7 +564,6 @@ bool isExternalModuleAvailable(int module)
 #endif
 
   return true;
-
 }
 
 bool isRfProtocolAvailable(int protocol)

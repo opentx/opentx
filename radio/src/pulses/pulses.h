@@ -23,14 +23,9 @@
 
 #include "definitions.h"
 #include "dataconstants.h"
-
-#if defined(PXX2)
-#include "pulses/pxx2.h"
-#endif
-
-#if defined(PXX1)
+#include "pulses_common.h"
 #include "pulses/pxx1.h"
-#endif
+#include "pulses/pxx2.h"
 
 #if NUM_MODULES > 1
   #define IS_RANGECHECK_ENABLE()             (moduleSettings[0].mode == MODULE_MODE_RANGECHECK || moduleSettings[1].mode == MODULE_MODE_RANGECHECK)

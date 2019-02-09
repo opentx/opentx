@@ -8,6 +8,9 @@ option(TRACE_FATFS "Traces FatFS enabled" OFF)
 option(TRACE_AUDIO "Traces audio enabled" OFF)
 option(DEBUG_TRACE_BUFFER "Debug Trace Screen" OFF)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" OFF)
+option(CROSSFIRE "Crossfire TX Module" OFF)
+option(PXX1 "PXX1 protocol support" OFF)
+option(PXX2 "PXX2 protocol support" ON)
 option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
 option(DEBUG_USB_INTERRUPTS "Count individual USB interrupts" OFF)
@@ -86,10 +89,41 @@ if(HAPTIC)
   set(TARGET_SRC ${TARGET_SRC} haptic_driver.cpp)
 endif()
 
-add_definitions(-DPXX -DPXX1 -DPXX2 -DDSM2 -DSBUS -DCROSSFIRE)
+# Protocols supported
+
+add_definitions(-DDSM2 -DSBUS)
+
+if(PXX1)
+  add_definitions(-DPXX -DPXX1)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    pxx1.cpp
+    )
+endif()
+
+if(PXX2)
+  add_definitions(-DPXX -DPXX2)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    pxx2.cpp
+    )
+endif()
+
 if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
   set(SRC ${SRC} pulses/multi_arm.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/multi.cpp)
+endif()
+
+if(CROSSFIRE)
+  add_definitions(-DCROSSFIRE)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    crossfire.cpp
+    )
+  set(SRC
+    ${SRC}
+    telemetry/crossfire.cpp
+    )
 endif()
 
 add_definitions(-DCPUARM)
@@ -102,6 +136,7 @@ foreach(LANGUAGE ${TTS_LANGUAGES})
   string(TOLOWER ${LANGUAGE} lang_lower)
   set(SRC ${SRC} translations/tts_${lang_lower}.cpp)
 endforeach()
+
 set(SRC
   ${SRC}
   main.cpp
@@ -117,16 +152,19 @@ set(SRC
   crc16.cpp
   vario.cpp
   )
+
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   diskio.cpp
 )
+
 set(TARGET_SRC
   ${TARGET_SRC}
   pulses_driver.cpp
   keys_driver.cpp
   telemetry_driver.cpp
   )
+
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}
   ${COOS_DIR}/kernel/core.c
@@ -147,8 +185,6 @@ set(PULSES_SRC
   pulses.cpp
   ppm.cpp
   pxx.cpp
-  pxx1.cpp
-  pxx2.cpp
   dsm2.cpp
   sbus.cpp
   )

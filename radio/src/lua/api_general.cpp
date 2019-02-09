@@ -434,6 +434,7 @@ static int luaSportTelemetryPush(lua_State * L)
   return 1;
 }
 
+#if defined(CROSSFIRE)
 /*luadoc
 @function crossfireTelemetryPop()
 
@@ -515,6 +516,7 @@ static int luaCrossfireTelemetryPush(lua_State * L)
   }
   return 1;
 }
+#endif
 
 /*luadoc
 @function getFieldInfo(name)

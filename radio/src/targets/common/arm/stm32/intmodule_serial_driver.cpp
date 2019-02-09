@@ -91,6 +91,7 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
 
 void intmoduleSendNextFrame()
 {
+#if defined(PXX2)
   if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
     DMA_InitTypeDef DMA_InitStructure;
     DMA_DeInit(INTMODULE_DMA_STREAM);
@@ -113,5 +114,6 @@ void intmoduleSendNextFrame()
     DMA_Cmd(INTMODULE_DMA_STREAM, ENABLE);
     USART_DMACmd(INTMODULE_USART, USART_DMAReq_Tx, ENABLE);
   }
+#endif
 }
 

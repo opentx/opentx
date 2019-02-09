@@ -284,9 +284,11 @@ void extmoduleSendNextFrame()
     sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
   }
 #endif
+#if defined(PXX2)
   else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
     sportSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
   }
+#endif
   else {
     EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
   }
