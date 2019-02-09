@@ -29,6 +29,8 @@ extern "C" {
 }
 #endif
 
+HardwareOptions hardwareOptions;
+
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555;      // Unlock registers

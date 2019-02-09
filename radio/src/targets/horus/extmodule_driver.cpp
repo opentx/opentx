@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-void extmoduleSendNextFrame();
-
 void extmoduleStop()
 {
   EXTERNAL_MODULE_OFF();
@@ -32,37 +30,6 @@ void extmoduleStop()
   EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
   EXTMODULE_TIMER->DIER &= ~(TIM_DIER_CC2IE | TIM_DIER_UDE);
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-}
-
-void extmoduleTimerStart(uint32_t period, uint8_t state)
-{
-  if (state)
-    EXTERNAL_MODULE_ON();
-  else
-    EXTERNAL_MODULE_OFF();
-
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, 0);
-
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
-  GPIO_SetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN); // Set high
-
-  EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = (2000 * period);
-  EXTMODULE_TIMER->CCR2 = (2000 * period) - 1000;
-  EXTMODULE_TIMER->EGR = 1; // Restart
-  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
-  NVIC_SetPriority(EXTMODULE_TIMER_IRQn, 7);
 }
 
 void extmodulePpmStart()
@@ -238,6 +205,7 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->NDTR = extmodulePulsesData.ppm.ptr - extmodulePulsesData.ppm.pulses;
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
+#if defined(PXX1)
   else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1) {
     EXTMODULE_TIMER->CCR2 = extmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
@@ -251,6 +219,7 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->NDTR = extmodulePulsesData.pxx.getSize();
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
+#endif
   else if (IS_DSM2_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_MULTIMODULE_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_SBUS_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol)) {
     EXTMODULE_TIMER->CCR2 = *(extmodulePulsesData.dsm2.ptr - 1) - 4000; // 2mS in advance
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA

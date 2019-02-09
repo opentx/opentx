@@ -35,7 +35,6 @@ void intmoduleStop()
 void intmoduleSendNextFrame()
 {
   if (0) {
-
   }
 #if defined(PXX1)
   else if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1) {
@@ -68,7 +67,7 @@ void intmoduleSendNextFrame()
 
 void intmodulePxx2Start()
 {
-  // TODO
+  // nothing, the pulses will be sent through telemetry port
 }
 
 void intmodulePxxStart()

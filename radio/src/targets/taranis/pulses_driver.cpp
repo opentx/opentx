@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 void intmoduleStop();
-void intmoduleTimerStart(uint32_t period, uint8_t state);
 void intmodulePxxStart();
 void intmodulePxx2Start();
 #if defined(TARANIS_INTERNAL_PPM)

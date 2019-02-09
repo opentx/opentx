@@ -21,83 +21,75 @@
 #include "opentx.h"
 
 void intmoduleStop();
-void intmoduleTimerStart(uint32_t period, uint8_t state);
 void intmodulePxxStart();
+void intmodulePxx2Start();
 
 void extmoduleStop();
-void extmoduleTimerStart(uint32_t period, uint8_t state);
 void extmodulePpmStart();
 void extmodulePxxStart();
 void extmodulePxx2Start();
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
 
-void init_ppm(uint32_t port)
+
+void init_ppm(uint8_t module)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     extmodulePpmStart();
   }
 }
 
-void disable_ppm(uint32_t port)
+void disable_ppm(uint8_t module)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     extmoduleStop();
   }
 }
 
-void init_pxx2(uint32_t port)
+void init_pxx2(uint8_t module)
 {
-  if (port == INTERNAL_MODULE)
+  if (module == INTERNAL_MODULE)
     intmodulePxx2Start();
   else
     extmodulePxx2Start();
 }
 
-void init_pxx(uint32_t port)
+void disable_pxx2(uint8_t module)
 {
-  if (port == INTERNAL_MODULE)
+  if (module == INTERNAL_MODULE)
+    intmoduleStop();
+  else
+    extmoduleStop();
+}
+
+void init_pxx(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
     intmodulePxxStart();
   else
     extmodulePxxStart();
 }
 
-void disable_pxx(uint32_t port)
+void disable_pxx(uint8_t module)
 {
-  if (port == INTERNAL_MODULE)
+  if (module == INTERNAL_MODULE)
     intmoduleStop();
   else
     extmoduleStop();
 }
 
 #if defined(DSM2)
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us)
+void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     extmoduleSerialStart(baudrate, period_half_us);
   }
 }
 
-void disable_serial(uint32_t port)
+void disable_serial(uint8_t module)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     extmoduleStop();
   }
 }
 #endif
-
-void init_module_timer(uint32_t port, uint32_t period, uint8_t state)
-{
-  if (port == INTERNAL_MODULE)
-    intmoduleTimerStart(period, state);
-  else
-    extmoduleTimerStart(period, state);
-}
-
-void disable_module_timer(uint32_t port)
-{
-  if (port == INTERNAL_MODULE)
-    intmoduleStop();
-  else
-    extmoduleStop();
-}
 

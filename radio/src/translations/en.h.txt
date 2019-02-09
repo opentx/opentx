@@ -532,6 +532,7 @@
 
 #if defined(PCBHORUS)
   #define TR_EXIT                      "[RTN]"
+  #define TR_OK                        TR_ENTER
 #else
   #define TR_EXIT                      "[EXIT]"
 #endif

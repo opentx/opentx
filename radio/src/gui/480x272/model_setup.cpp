@@ -138,7 +138,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleSettings[moduleIdx].bind = 1;;
+  moduleSettings[moduleIdx].mode = MODULE_MODE_BIND;
 }
 
 void onModelSetupBitmapMenu(const char * result)
@@ -232,7 +232,6 @@ int getSwitchWarningsCount()
 #define IF_EXTERNAL_MODULE_ON(x)          (IS_EXTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
 
 #define INTERNAL_MODULE_MODE_ROWS         (uint8_t)0
-#define INTERNAL_MODULE_CHANNELS_ROWS     IF_INTERNAL_MODULE_ON(1)
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
 #define TIMER_ROWS(x)                     NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0

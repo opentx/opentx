@@ -572,7 +572,7 @@ PACK(struct CustomScreenData {
 #if defined(PCBX12S)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:6); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES]; TrainerModuleData trainerData; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
 #elif defined(PCBX10)
-  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
+  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES]; TrainerModuleData trainerData; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
 #elif defined(PCBTARANIS)
   #define MODELDATA_EXTRA   \
      uint8_t spare:6; \

@@ -21,8 +21,7 @@
 #ifndef _BOARD_HORUS_H_
 #define _BOARD_HORUS_H_
 
-#include "stddef.h"
-#include "stdbool.h"
+#include "definitions.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -103,6 +102,14 @@ extern uint16_t sessionTimer;
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
+#endif
+
+#if defined(PCBX10)
+  #define NUM_SLIDERS                  2
+  #define NUM_PWMSTICKS                4
+#else
+  #define NUM_SLIDERS                  4
+  #define NUM_PWMSTICKS                0
 #endif
 
 // Board driver
@@ -186,12 +193,31 @@ void SDRAM_Init(void);
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 
-void init_ppm(uint32_t module_index);
-void disable_ppm(uint32_t module_index);
-void init_pxx(uint32_t module_index);
-void disable_pxx(uint32_t module_index);
-void init_serial(uint32_t module_index, uint32_t baudrate, uint32_t period_half_us);
-void disable_serial(uint32_t module_index);
+PACK(typedef struct {
+#if NUM_PWMSTICKS > 0
+  uint8_t sticksPwmDisabled:1;
+#endif
+  uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
+#if defined(PCBX10)
+  #define IS_PXX2_ENABLED()            (true)
+#else
+  #define IS_PXX2_ENABLED()            (hardwareOptions.pxx2Enabled)
+#endif
+
+void init_ppm(uint8_t module);
+void disable_ppm(uint8_t module);
+void init_pxx(uint8_t module);
+void disable_pxx(uint8_t module);
+void init_pxx2(uint8_t module);
+void disable_pxx2(uint8_t module);
+void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
+void disable_serial(uint8_t module);
+void intmoduleSendNextFrame();
+void extmoduleSendNextFrame();
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -330,13 +356,6 @@ void watchdogInit(unsigned int duration);
 // ADC driver
 #define NUM_POTS                       3
 #define NUM_XPOTS                      NUM_POTS
-#if defined(PCBX10)
-  #define NUM_SLIDERS                  2
-  #define NUM_PWMSTICKS                4
-#else
-  #define NUM_SLIDERS                  4
-  #define NUM_PWMSTICKS                0
-#endif
 enum Analogs {
   STICK1,
   STICK2,
@@ -402,8 +421,7 @@ uint16_t getAnalogValue(uint8_t index);
 #endif
 
 #if NUM_PWMSTICKS > 0
-extern bool sticks_pwm_disabled;
-#define STICKS_PWM_ENABLED()          (sticks_pwm_disabled == false)
+#define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
 void sticksPwmInit(void);
 void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;

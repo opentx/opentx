@@ -100,7 +100,8 @@ TASK_FUNCTION(mixerTask)
 
   while(1) {
 
-#if !defined(PCBXLITE)
+#if defined(PCBX9D) || defined(PCBX7)
+    // SBUS on Hearbeat PIN (which is a serial RX)
     processSbusInput();
 #endif
 
