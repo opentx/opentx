@@ -926,6 +926,7 @@
 #define TR_EXTERNALRF          "Externes HF-Modul"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafe Mode")
 #define TR_FAILSAFESET         "Failsafe setzen"
+#define TR_PINMAPSET                   "Set PIN to CH map"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENSOR"

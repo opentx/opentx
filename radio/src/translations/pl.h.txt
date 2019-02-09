@@ -927,6 +927,7 @@
 #define TR_EXTERNALRF          "Zewn.Moduł RF"
 #define TR_FAILSAFE            TR(INDENT"Failsafe",INDENT"Tryb Failsafe")
 #define TR_FAILSAFESET         "USTAWIENIE FAILSAFE"
+#define TR_PINMAPSET                   "Set PIN to CH map"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "CZUJNIK"

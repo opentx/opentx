@@ -20,8 +20,9 @@
 
 #include <opentx.h>
 
-uint8_t g_moduleIdx;
+uint8_t g_moduleIdx, g_receiverIdx;
 void menuModelFailsafe(event_t event);
+void menuModelPinmap(event_t event);
 
 #if defined(PCBTARANIS)
 uint8_t getSwitchWarningsCount()
@@ -83,11 +84,11 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NUMBER,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_RANGE,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_RANGE,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER,
@@ -1117,24 +1118,19 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_RANGE:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_RANGE:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP:
       {
-        // TODO have a proper channel assignement screen, section bellow is just for tests
-        uint8_t useUpperChannels;
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 
-        if (memcmp(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t)) == 0)
-          useUpperChannels = 0;
-        else
-          useUpperChannels = 1;
-
-        useUpperChannels = editCheckBox(useUpperChannels, MODEL_SETUP_2ND_COLUMN, y, INDENT INDENT "Use CH9-16", attr, event);
-
-        if (useUpperChannels)
-          memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].channelMapping, CH9TO16_CHANNEL_MAPPING, sizeof(uint64_t));
-        else
-          memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
+        lcdDrawTextAlignedLeft(y, INDENT INDENT "PinMap");
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[set]", attr);
+        if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+          g_receiverIdx = receiverIdx;
+          g_moduleIdx = moduleIdx;
+          pushMenu(menuModelPinmap);
+        }
       }
       break;
 
@@ -1742,5 +1738,41 @@ void menuModelFailsafe(event_t event)
   if (menuVerticalPosition >= sentModuleChannels(g_moduleIdx)) {
     // Outputs => Failsafe
     lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
+  }
+}
+
+void menuModelPinmap(event_t event)
+{
+  SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx) + 1);
+
+  lcdDrawTextAlignedCenter(0, PINMAPSET);
+  lcdInvertLine(0);
+
+  //const coord_t x = 1;
+  coord_t y = FH + 1;
+  uint8_t line = (menuVerticalPosition >= sentModuleChannels(g_moduleIdx) ? 2 : 0);
+  uint8_t pin = (menuVerticalPosition >= 8 ? 8 : 0) + line;
+
+  for (; line < 8; line++) {
+    //Pin
+    lcdDrawTextAlignedLeft(y, "Pin");
+    lcdDrawNumber(lcdLastRightPos+5, y, pin);
+    lcdDrawText(lcdLastRightPos+5, y, " -> ");
+
+
+    //Channel
+    LcdFlags flags = SMLSIZE;
+    if (menuVerticalPosition == pin) {
+      flags |= INVERS;
+      if (s_editMode) {
+        flags |= BLINK;
+      }
+    }
+    lcdDrawNumber(lcdLastRightPos+5, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin), flags);
+
+    y += FH;
+
+    if (++pin >= sentModuleChannels(g_moduleIdx))
+      break;
   }
 }

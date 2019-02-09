@@ -581,6 +581,7 @@ extern const char STR_MODULE_TELEMETRY[];
 extern const char STR_MODULE_TELEM_ON[];
 extern const char STR_FAILSAFE[];
 extern const char STR_FAILSAFESET[];
+extern const char STR_PINMAPSET[];
 extern const char STR_HOLD[];
 extern const char STR_NONE[];
 extern const char STR_MENUSENSOR[];

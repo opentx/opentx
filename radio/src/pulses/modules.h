@@ -200,6 +200,11 @@ static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
 
+inline uint8_t getPinOuput(uint8_t receiverIdx, uint8_t moduleIdx, uint8_t pin)
+{
+  return ((g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping >> (pin + ((pin & 0x01) ? -1 : 1 )) * 4) & 0x0F);
+}
+
 inline int8_t maxModuleChannels_M8(uint8_t idx)
 {
   if (isExtraModule(idx))

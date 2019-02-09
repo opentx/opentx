@@ -368,6 +368,7 @@ const char STR_USBMODE[]  = TR_USBMODE;
 const char STR_JACKMODE[]  = TR_JACKMODE;
 const char STR_FAILSAFE[]  = TR_FAILSAFE;
 const char STR_FAILSAFESET[]  = TR_FAILSAFESET;
+const char STR_PINMAPSET[]  = TR_PINMAPSET;
 const char STR_HOLD[]  = TR_HOLD;
 const char STR_NONE[]  = TR_NONE;
 const char STR_MENUSENSOR[]  = TR_MENUSENSOR;
