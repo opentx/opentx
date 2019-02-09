@@ -90,7 +90,7 @@ static void processMultiSyncPacket(const uint8_t *data)
   multiSyncStatus.calcAdjustedRefreshRate(data[0] << 8 | data[1], data[2] << 8 | data[3]);
 
 #if !defined(PPM_PIN_SERIAL)
-  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n", modulePulsesData[EXTERNAL_MODULE].dsm2.rest,
+  TRACE("MP ADJ: rest: %d, lag %04d, diff: %04d  target: %d, interval: %d, Refresh: %d, intAdjRefresh: %d, adjRefresh %d\r\n", extmodulePulsesData.dsm2.rest,
         multiSyncStatus.inputLag, oldlag-multiSyncStatus.inputLag, multiSyncStatus.target, multiSyncStatus.interval, multiSyncStatus.refreshRate, multiSyncStatus.adjustedRefreshRate/50,
         multiSyncStatus.getAdjustedRefreshRate());
 #endif

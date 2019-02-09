@@ -30,10 +30,9 @@
 #define SBUS_FAILSAFE_BIT      3
 
 #define SBUS_CH_BITS           11
-#define SBUS_CH_MASK           ((1<<SBUS_CH_BITS)-1)
+#define SBUS_CH_MASK           ((1<<SBUS_CH_BITS) - 1)
 
 #define SBUS_CH_CENTER         0x3E0
-
 
 // Range for pulses (ppm input) is [-512:+512]
 void processSbusFrame(uint8_t * sbus, int16_t * pulses, uint32_t size)

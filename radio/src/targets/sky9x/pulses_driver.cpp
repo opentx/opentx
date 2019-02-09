@@ -63,8 +63,6 @@ void init_main_ppm(uint32_t period, uint32_t out_enable)
 {
   Pwm * pwmptr;
 
-  setupPulsesPPMModule(EXTERNAL_MODULE);
-
   if (out_enable) {
     module_output_active();
   }
@@ -294,8 +292,8 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           Ssc * sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx.getData());
-          sscptr->SSC_TCR = modulePulsesData[EXTERNAL_MODULE].pxx.getSize();
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(extmodulePulsesData.pxx.getData());
+          sscptr->SSC_TCR = extmodulePulsesData.pxx.getSize();
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN;        // Start transfers
         }
         break;
@@ -318,8 +316,8 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           Ssc * sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].dsm2.pulses);
-          sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(extmodulePulsesData.dsm2.pulses);
+          sscptr->SSC_TCR = (uint8_t *)extmodulePulsesData.dsm2.ptr - (uint8_t *)extmodulePulsesData.dsm2.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN;        // Start transfers
         }
         break;
@@ -344,15 +342,15 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           Ssc * sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].dsm2.pulses);
-          sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(extmodulePulsesData.dsm2.pulses);
+          sscptr->SSC_TCR = (uint8_t *)extmodulePulsesData.dsm2.ptr - (uint8_t *)extmodulePulsesData.dsm2.pulses;
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN;        // Start transfers
         }
         break;
 
       default:
-        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = *modulePulsesData[EXTERNAL_MODULE].ppm.ptr++;
-        if (*modulePulsesData[EXTERNAL_MODULE].ppm.ptr == 0) {
+        pwmptr->PWM_CH_NUM[3].PWM_CPDRUPD = *extmodulePulsesData.ppm.ptr++;
+        if (*extmodulePulsesData.ppm.ptr == 0) {
           setExternalModulePolarity();
           setupPulses(EXTERNAL_MODULE);
         }
@@ -365,7 +363,7 @@ extern "C" void PWM_IRQHandler(void)
   if (reason & PWM_ISR1_CHID1) {
     pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTRA_MODULE].ppm.ptr++;
     if (*modulePulsesData[EXTRA_MODULE].ppm.ptr == 0) {
-      setupPulsesPPMModule(EXTRA_MODULE);
+      setupPulses(EXTRA_MODULE);
       setExtraModulePolarity();
     }
   }

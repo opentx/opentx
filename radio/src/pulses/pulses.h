@@ -23,8 +23,14 @@
 
 #include "definitions.h"
 #include "dataconstants.h"
+
+#if defined(PXX2)
 #include "pulses/pxx2.h"
+#endif
+
+#if defined(PXX1)
 #include "pulses/pxx1.h"
+#endif
 
 #if NUM_MODULES > 1
   #define IS_RANGECHECK_ENABLE()             (moduleSettings[0].mode == MODULE_MODE_RANGECHECK || moduleSettings[1].mode == MODULE_MODE_RANGECHECK)
@@ -99,6 +105,7 @@ PACK(struct Dsm2SerialPulsesData {
   uint8_t  serialBitCount;
   uint16_t _alignment;
 });
+typedef Dsm2SerialPulsesData Dsm2PulsesData;
 #else
 #define MAX_PULSES_TRANSITIONS 300
 PACK(struct Dsm2TimerPulsesData {
@@ -107,6 +114,7 @@ PACK(struct Dsm2TimerPulsesData {
   uint16_t rest;
   uint8_t index;
 });
+typedef Dsm2TimerPulsesData Dsm2PulsesData;
 #endif
 
 #define PPM_PERIOD_HALF_US(module)   ((g_model.moduleData[module].ppm.frameLength * 5 + 225) * 200) /*half us*/
@@ -125,25 +133,49 @@ PACK(struct CrossfirePulsesData {
   uint8_t length;
 });
 
-union ModulePulsesData {
-#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
-  UartPxxPulses pxx_uart;
-#endif
-#if defined(PPM_PIN_SERIAL)
-  SerialPxxPulses pxx;
-#elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
-  PwmPxxPulses pxx;
+union InternalModulePulsesData {
+#if defined(PXX1)
+  #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+    UartPxx1Pulses pxx_uart;
+  #endif
+  #if defined(PPM_PIN_SERIAL)
+    SerialPxx1Pulses pxx;
+  #elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
+    PwmPxx1Pulses pxx;
+  #endif
 #endif
 
+#if defined(PXX2)
   Pxx2Pulses pxx2;
+#endif
 
-#if defined(PPM_PIN_SERIAL)
-  Dsm2SerialPulsesData dsm2;
-#else
-  Dsm2TimerPulsesData dsm2;
+#if defined(TARANIS_INTERNAL_PPM)
+  PpmPulsesData<pulse_duration_t> ppm;
+#endif
+} __ALIGNED(4);
+
+union ExternalModulePulsesData {
+#if defined(PXX1)
+  #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+    UartPxx1Pulses pxx_uart;
+  #endif
+  #if defined(PPM_PIN_SERIAL)
+    SerialPxx1Pulses pxx;
+  #elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
+    PwmPxx1Pulses pxx;
+  #endif
+#endif
+
+#if defined(PXX2)
+  Pxx2Pulses pxx2;
+#endif
+
+#if defined(DSM2) || defined(MULTIMODULE) || defined(SBUS)
+  Dsm2PulsesData dsm2;
 #endif
 
   PpmPulsesData<pulse_duration_t> ppm;
+
   CrossfirePulsesData crossfire;
 } __ALIGNED(4);
 
@@ -153,8 +185,9 @@ union ModulePulsesData {
  * sizeof(ModulePulsesData). __ALIGNED is required for sizeof(ModulePulsesData) to be a multiple of the alignment.
  */
 
-/* TODO: internal pulsedata only needs 200 bytes vs 300 bytes for external, both use 300 byte since we have a common struct */
-extern ModulePulsesData modulePulsesData[NUM_MODULES];
+
+extern InternalModulePulsesData intmodulePulsesData;
+extern ExternalModulePulsesData extmodulePulsesData;
 
 union TrainerPulsesData {
   PpmPulsesData<trainer_pulse_duration_t> ppm;
@@ -163,12 +196,12 @@ union TrainerPulsesData {
 extern TrainerPulsesData trainerPulsesData;
 
 bool setupPulses(uint8_t module);
-void setupPulsesDSM2(uint8_t module);
-void setupPulsesCrossfire(uint8_t module);
-void setupPulsesMultimodule(uint8_t module);
-void setupPulsesSbus(uint8_t module);
-void setupPulsesPXX(uint8_t module);
-void setupPulsesPPMModule(uint8_t module);
+void setupPulsesDSM2();
+void setupPulsesCrossfire();
+void setupPulsesMultimodule();
+void setupPulsesSbus();
+void setupPulsesPPMInternalModule();
+void setupPulsesPPMExternalModule();
 void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
@@ -193,6 +226,24 @@ inline void startPulses()
   Hubsan_Init();
 #endif
 }
+
+enum ChannelsProtocols {
+  PROTOCOL_CHANNELS_UNINITIALIZED,
+  PROTOCOL_CHANNELS_NONE,
+  PROTOCOL_CHANNELS_PPM,
+#if defined(PXX) || defined(DSM2)
+  PROTOCOL_CHANNELS_PXX1,
+#endif
+#if defined(DSM2)
+  PROTOCOL_CHANNELS_DSM2_LP45,
+  PROTOCOL_CHANNELS_DSM2_DSM2,
+  PROTOCOL_CHANNELS_DSM2_DSMX,
+#endif
+  PROTOCOL_CHANNELS_CROSSFIRE,
+  PROTOCOL_CHANNELS_MULTIMODULE,
+  PROTOCOL_CHANNELS_SBUS,
+  PROTOCOL_CHANNELS_PXX2
+};
 
 inline bool pulsesStarted() { return moduleSettings[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
 inline void pausePulses() { s_pulses_paused = true; }

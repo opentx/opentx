@@ -137,7 +137,6 @@ else()
     intmodule_pulses_driver.cpp
     trainer_driver.cpp
     )
-  add_definitions(-DSBUS)
   set(PULSES_SRC
     ${PULSES_SRC}
     ../sbus.cpp

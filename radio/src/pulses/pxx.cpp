@@ -90,7 +90,12 @@ void PxxPulses<PxxTransport>::addChannels(uint8_t port, uint8_t sendFailsafe, ui
   }
 }
 
+#if defined(PXX1)
 template class PxxPulses<StandardPxx1Transport<PwmPxxBitTransport> >;
 template class PxxPulses<StandardPxx1Transport<SerialPxxBitTransport> >;
 template class PxxPulses<UartPxx1Transport>;
+#endif
+
+#if defined(PXX2)
 template class PxxPulses<Pxx2Transport>;
+#endif

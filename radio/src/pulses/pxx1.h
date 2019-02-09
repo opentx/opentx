@@ -160,8 +160,8 @@ class Pxx1Pulses: public PxxPulses<PxxTransport>
     void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
 };
 
-typedef Pxx1Pulses<UartPxx1Transport> UartPxxPulses;
-typedef Pxx1Pulses<StandardPxx1Transport<PwmPxxBitTransport>> PwmPxxPulses;
-typedef Pxx1Pulses<StandardPxx1Transport<SerialPxxBitTransport>> SerialPxxPulses;
+typedef Pxx1Pulses<UartPxx1Transport> UartPxx1Pulses;
+typedef Pxx1Pulses<StandardPxx1Transport<PwmPxxBitTransport>> PwmPxx1Pulses;
+typedef Pxx1Pulses<StandardPxx1Transport<SerialPxxBitTransport>> SerialPxx1Pulses;
 
 #endif

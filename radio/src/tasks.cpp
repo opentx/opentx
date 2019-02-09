@@ -100,7 +100,7 @@ TASK_FUNCTION(mixerTask)
 
   while(1) {
 
-#if defined(SBUS)
+#if !defined(PCBXLITE)
     processSbusInput();
 #endif
 
