@@ -130,12 +130,9 @@ PACK(struct CrossfirePulsesData {
 
 union InternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+  #if defined(INTMODULE_USART)
     UartPxx1Pulses pxx_uart;
-  #endif
-  #if defined(PPM_PIN_SERIAL)
-    SerialPxx1Pulses pxx;
-  #elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
+  #else
     PwmPxx1Pulses pxx;
   #endif
 #endif

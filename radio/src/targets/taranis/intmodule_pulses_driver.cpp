@@ -34,7 +34,11 @@ void intmoduleStop()
 
 void intmoduleSendNextFrame()
 {
-  if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1) {
+  if (0) {
+
+  }
+#if defined(PXX1)
+  else if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1) {
     INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
     INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
@@ -43,6 +47,7 @@ void intmoduleSendNextFrame()
     INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.pxx.getSize();
     INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
+#endif
 #if defined(TARANIS_INTERNAL_PPM)
   else if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PPM) {
     INTMODULE_TIMER->CCR3 = GET_MODULE_PPM_DELAY(INTERNAL_MODULE) * 2;
