@@ -81,7 +81,6 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
-  ITEM_MODEL_INTERNAL_MODULE_CH_RANGE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NUMBER,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_RANGE,
@@ -307,12 +306,11 @@ void menuModelSetup(event_t event)
 
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS, // module mode (PXX(2) / None)
-      IF_NOT_PXX2(IF_INTERNAL_MODULE_ON(1)), // Channels min and count
+      INTERNAL_MODULE_CHANNELS_ROWS, // Channels min and count
       IF_NOT_PXX2(IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
-      IF_PXX2(0),      // Model Number
+      IF_PXX2(0),                                                  // Model Number
       ANTENNA_ROW
-      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),
-      IF_INTERNAL_MODULE_ON(0),                                    // Module start channel
+      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Module start channel (pxx2 always send 16)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Range check and Register buttons
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
@@ -1055,20 +1053,6 @@ void menuModelSetup(event_t event)
         }
       }
 
-      break;
-
-      case ITEM_MODEL_INTERNAL_MODULE_CH_RANGE:
-      {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "CH", attr);
-        lcdDrawNumber(lcdLastRightPos, y, g_model.moduleData[moduleIdx].channelsStart+1, attr);
-        lcdDrawText(lcdLastRightPos, y, "-");
-        lcdDrawNumber(lcdLastRightPos, y, g_model.moduleData[moduleIdx].channelsStart+PXX2_MODULE_CHANNELS, 0);
-        if (attr) {
-          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].channelsStart, PXX2_MODULE_CHANNELS); //TODO this needs discussion
-        }
-      }
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM:
