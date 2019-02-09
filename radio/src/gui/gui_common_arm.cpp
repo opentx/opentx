@@ -724,6 +724,7 @@ const char STR_SUBTYPE_CABELL[] = 	"\007""V3\0    ""V3 Telm""-\0     ""-\0     "
 const char STR_SUBTYPE_H83D[] =   	"\007""Std\0   ""H20H\0  ""H20Mini""H30Mini";
 const char STR_SUBTYPE_CORONA[] = 	"\006"" V1\0  "" V2\0  "" FD V3";
 const char STR_SUBTYPE_HITEC[] =  	"\007""Optima\0""Opt Hub""Minima\0";
+const char STR_SUBTYPE_E01X[] =  	"\004""E012""E015";
 
 const mm_protocol_definition multi_protocols[] = {
 
@@ -754,6 +755,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_PROTO_H83D,       3, false,      STR_SUBTYPE_H83D,    nullptr},
   {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,  STR_MULTI_RFTUNE},
   {MM_RF_PROTO_HITEC,      2, false,      STR_SUBTYPE_HITEC,   STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_E01X,       1, false,      STR_SUBTYPE_E01X,    nullptr},
   {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,          STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)

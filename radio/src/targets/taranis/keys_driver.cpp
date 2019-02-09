@@ -149,7 +149,11 @@ void readKeysAndTrims()
     keys[index++].input(trims_input & i);
   }
 
+#if defined(PWR_BUTTON_PRESS)
   if ((keys_input || trims_input || pwrPressed()) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+#else
+  if ((keys_input || trims_input) && (g_eeGeneral.backlightMode & e_backlight_mode_keys)) {
+#endif
     // on keypress turn the light on
     backlightOn();
   }

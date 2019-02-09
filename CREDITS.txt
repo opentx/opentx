@@ -1457,3 +1457,32 @@ Stefan Hufnagl
 Jean Philippe Bonacci
 Jack Mitchell
 Santiago Iglesias Garcia
+Steve Kurywchak
+Tore Skjefstad
+Sergio Digiandco di Molino
+Xavier Delepine
+Miles Shearman
+Bernard Teyssier
+Entel Consulting BVBA
+Stuart Olson
+Maximilian Wechselberger
+Kenneth Crump
+Ken Elder
+Darko Perković
+Martin Krueger
+Jack Lopes
+Huguette Viale
+Didier Christien
+Pascal Roublot
+Arnaud Sourisse
+Aldo Midali
+Sidney Gates
+Serhiy Semenenko 
+Miguel Esquer Ramiro
+Stefan Grunenberg
+Ferenc Kunkli
+Stefano Boggia
+Lee Bennett
+Morgantech
+Marek Přikryl
+Peter Scott
