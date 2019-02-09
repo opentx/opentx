@@ -90,24 +90,6 @@ class ModuleFifo : public Fifo<uint8_t, 32> {
 
 extern ModuleFifo intmoduleFifo;
 
-// should not be used anymore
-class SportCrcMixin {
-  protected:
-    void initCrc()
-    {
-      crc = 0;
-    }
-
-    void addToCrc(uint8_t byte)
-    {
-      crc += byte; // 0-1FF
-      crc += crc >> 8; // 0-100
-      crc &= 0x00ff;
-    }
-
-    uint16_t crc;
-};
-
 class Pxx2CrcMixin {
   protected:
     void initCrc()
