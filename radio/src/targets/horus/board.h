@@ -22,6 +22,7 @@
 #define _BOARD_HORUS_H_
 
 #include "definitions.h"
+#include "opentx_constants.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -275,6 +276,8 @@ enum EnumSwitches
 };
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
+#define DEFAULT_SWITCH_CONFIG          (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+
 enum EnumSwitchesPositions
 {
   SW_SA0,
@@ -384,6 +387,9 @@ enum Analogs {
   MOUSE2,
   NUM_ANALOGS
 };
+
+#define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+#define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 3) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
@@ -571,14 +577,14 @@ extern uint8_t gpsTraceEnabled;
 void gpsSendByte(uint8_t byte);
 
 // Second serial port driver
-#define SERIAL2
+#define AUX_SERIAL
 #define DEBUG_BAUDRATE                 115200
-extern uint8_t serial2Mode;
-void serial2Init(unsigned int mode, unsigned int protocol);
-void serial2Putc(char c);
-#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
-void serial2SbusInit(void);
-void serial2Stop(void);
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit(void);
+void auxSerialStop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
@@ -596,7 +602,7 @@ void checkTrainerSettings(void);
 #include "fifo.h"
 #include "dmafifo.h"
 extern DMAFifo<512> telemetryFifo;
-extern DMAFifo<32> serial2RxFifo;
+extern DMAFifo<32> auxSerialRxFifo;
 #endif
 
 

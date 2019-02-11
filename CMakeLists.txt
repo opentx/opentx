@@ -28,6 +28,7 @@ endif()
 set(CMAKE_COLOR_MAKEFILE ON)
 
 set(CMAKE_CXX_STANDARD 11)
+add_definitions(-D_GLIBCXX_USE_C99=1) # proper to_string definition
 
 set(RADIO_DIRECTORY ${PROJECT_SOURCE_DIR}/radio)
 set(RADIO_SRC_DIRECTORY ${RADIO_DIRECTORY}/src)

@@ -19,6 +19,11 @@
  */
 
 #include "opentx.h"
+#if defined(PCBNV14)
+#include "libwindows.h"
+#include "shutdown_animation.h"
+#include "radio_calibration.h"
+#endif
 
 RadioData  g_eeGeneral;
 ModelData  g_model;
@@ -54,9 +59,14 @@ const uint8_t bchout_ar[]  = {
     0x87, 0x8D, 0x93, 0x9C, 0xB1, 0xB4,
     0xC6, 0xC9, 0xD2, 0xD8, 0xE1, 0xE4 };
 
+uint8_t channel_order(uint8_t setup, uint8_t x)
+{
+  return ((*(bchout_ar + setup) >> (6 - (x - 1) * 2)) & 3) + 1;
+}
+
 uint8_t channel_order(uint8_t x)
 {
-  return ( ((*(bchout_ar + g_eeGeneral.templateSetup) >> (6-(x-1) * 2)) & 3 ) + 1 );
+  return channel_order(g_eeGeneral.templateSetup, x);
 }
 
 /*
@@ -93,7 +103,9 @@ void per10ms()
 #if defined(GUI)
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
+#if !defined(PCBNV14)
   if (noHighlightCounter) noHighlightCounter--;
+#endif
 #endif
 
   if (trimsCheckTimer) trimsCheckTimer--;
@@ -231,21 +243,16 @@ void generalDefault()
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
-#if defined(PCBHORUS)
-  #if PCBREV >= 13
-    g_eeGeneral.potsConfig = 0x1B;  // S1 = pot, 6P = multipos, S2 = pot with detent
-  #else
-    g_eeGeneral.potsConfig = 0x19;  // S1 = pot without detent, 6P = multipos, S2 = pot with detent
-  #endif
-  g_eeGeneral.slidersConfig = 0x0f; // 4 sliders
-  g_eeGeneral.blOffBright = 20;
-#elif defined(PCBXLITE)
-  g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
-#elif defined(PCBX7)
-  g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
-#elif defined(PCBTARANIS)
-  g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
-  g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
+#if defined(DEFAULT_POTS_CONFIG)
+  g_eeGeneral.potsConfig = DEFAULT_POTS_CONFIG;
+#endif
+
+#if defined(DEFAULT_SWITCH_CONFIG)
+  g_eeGeneral.switchConfig = DEFAULT_SWITCH_CONFIG;
+#endif
+
+#if defined(DEFAULT_SLIDERS_CONFIG)
+  g_eeGeneral.slidersConfig = DEFAULT_SLIDERS_CONFIG;
 #endif
 
 #if defined(PCBXLITES)
@@ -297,7 +304,7 @@ void generalDefault()
   strcpy(g_eeGeneral.currModelFilename, DEFAULT_MODEL_FILENAME);
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   strcpy(g_eeGeneral.themeName, theme->getName());
   theme->init();
 #endif
@@ -458,7 +465,9 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFLYSKY)
+  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_FLYSKY;
+#elif defined(PCBFRSKY)
   g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
 #elif defined(PCBSKY9X)
@@ -499,7 +508,7 @@ void modelDefault(uint8_t id)
   g_model.header.name[6] = '\033' + id%10;
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   extern const LayoutFactory * defaultLayout;
   delete customScreens[0];
   customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
@@ -779,7 +788,7 @@ void doSplash()
 
       getADC();
 
-      if (keyDown() || inputsMoved()) return;
+      if (getEvent() || inputsMoved()) return;
 
 #if defined(PWR_BUTTON_PRESS)
       uint32_t pwr_check = pwrCheck();
@@ -853,7 +862,7 @@ void checkSDVersion()
 }
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY) || defined(PCBFLYSKY)
 void checkFailsafe()
 {
   for (int i=0; i<NUM_MODULES; i++) {
@@ -922,28 +931,43 @@ void checkLowEEPROM()
 }
 #endif
 
+bool isThrottleWarningAlertNeeded()
+{
+  if (g_model.disableThrottleWarning) {
+    return false;
+  }
+
+  uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS+NUM_SLIDERS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
+
+  GET_ADC_IF_MIXER_NOT_RUNNING();
+  evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
+
+  return calibratedAnalogs[thrchn] > THRCHK_DEADBAND - 1024;
+}
+
+#if defined(PCBNV14)
 void checkTHR()
 {
-  uint8_t thrchn = ((g_model.thrTraceSrc==0) || (g_model.thrTraceSrc>NUM_POTS+NUM_SLIDERS)) ? THR_STICK : g_model.thrTraceSrc+NUM_STICKS-1;
+  if (isThrottleWarningAlertNeeded()) {
+    AUDIO_ERROR_MESSAGE(AU_THROTTLE_ALERT);
+    auto dialog = new Dialog(WARNING_TYPE_ALERT, STR_THROTTLEWARN, STR_THROTTLENOTIDLE);
+    dialog->setCloseCondition([]() {
+      return !isThrottleWarningAlertNeeded();
+    });
+    dialog->runForever();
+  }
+}
+#else
+void checkTHR()
+{
   // throttle channel is either the stick according stick mode (already handled in evalInputs)
   // or P1 to P3;
   // in case an output channel is choosen as throttle source (thrTraceSrc>NUM_POTS+NUM_SLIDERS) we assume the throttle stick is the input
   // no other information available at the moment, and good enough to my option (otherwise too much exceptions...)
 
-  if (g_model.disableThrottleWarning) {
+
+  if (!isThrottleWarningAlertNeeded()) {
     return;
-  }
-
-  GET_ADC_IF_MIXER_NOT_RUNNING();
-
-  evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
-
-  int16_t v = calibratedAnalogs[thrchn];
-  if (g_model.thrTraceSrc && g_model.throttleReversed) { //TODO : proper review of THR source definition and handling
-    v = -v;
-  }
-  if (v <= THRCHK_DEADBAND-1024) {
-    return; // prevent warning if throttle input OK
   }
 
   // first - display warning; also deletes inputs if any have been before
@@ -954,15 +978,15 @@ void checkTHR()
   bool refresh = false;
 #endif
 
-  while (1) {
 
-    GET_ADC_IF_MIXER_NOT_RUNNING();
 
-    evalInputs(e_perout_mode_notrainer); // let do evalInputs do the job
+  while (!getEvent()) {
+    if (!isThrottleWarningAlertNeeded()) {
+      return;
 
-    v = calibratedAnalogs[thrchn];
-    if (g_model.thrTraceSrc && g_model.throttleReversed) { //TODO : proper review of THR source definition and handling
-      v = -v;
+
+
+
     }
 
 #if defined(PWR_BUTTON_PRESS)
@@ -983,9 +1007,9 @@ void checkTHR()
     }
 #endif
 
-    if (keyDown() || v <= THRCHK_DEADBAND-1024) {
-      break;
-    }
+
+
+
 
     doLoopCommonActions();
 
@@ -996,6 +1020,7 @@ void checkTHR()
 
   LED_ERROR_END();
 }
+#endif
 
 void checkAlarm() // added by Gohst
 {
@@ -1023,7 +1048,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
   while (1) {
     RTOS_WAIT_MS(10);
 
-    if (keyDown())  // wait for key release
+    if (getEvent())  // wait for key release
       break;
 
     doLoopCommonActions();
@@ -1208,7 +1233,16 @@ void getADC()
   DEBUG_TIMER_STOP(debugTimerAdcRead);
 
   for (uint8_t x=0; x<NUM_ANALOGS; x++) {
-    uint16_t v = getAnalogValue(x) >> (1 - ANALOG_SCALE);
+	  uint16_t v = 0;
+
+#if defined(FLYSKY_HALL_STICKS)
+    if (x < 4)
+      v = get_hall_adc_value(x) >> (1 - ANALOG_SCALE);
+    else
+      v = getAnalogValue(x) >> (1 - ANALOG_SCALE);
+#else
+    v = getAnalogValue(x) >> (1 - ANALOG_SCALE);
+#endif
 
     // Jitter filter:
     //    * pass trough any big change directly
@@ -1397,7 +1431,7 @@ void doMixerCalculations()
       uint8_t ch = g_model.thrTraceSrc-NUM_POTS-NUM_SLIDERS-1;
       val = channelOutputs[ch];
 
-      LimitData * lim = limitAddress(ch);
+      LimitData *lim = limitAddress(ch);
       int16_t gModelMax = LIMIT_MAX_RESX(lim);
       int16_t gModelMin = LIMIT_MIN_RESX(lim);
 
@@ -1547,7 +1581,11 @@ void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
 
 #if defined(GUI)
   if (calibration_needed) {
+#if defined(PCBNV14)
+    startCalibration();
+#else
     chainMenu(menuFirstCalib);
+#endif
   }
   else {
     checkAlarm();
@@ -1570,7 +1608,7 @@ void opentxClose(uint8_t shutdown)
 #endif
 #if defined(LUA)
     luaClose(&lsScripts);
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
     luaClose(&lsWidgets);
 #endif
 #endif
@@ -1619,13 +1657,14 @@ void opentxResume()
 {
   TRACE("opentxResume");
 
+#if !defined(PCBNV14)
   menuHandlers[0] = menuMainView;
+#endif
 
   sdMount();
   storageReadAll();
 #if defined(PCBHORUS)
   loadTheme();
-  loadFontCache();
 #endif
 
   opentxStart(OPENTX_START_NO_SPLASH);
@@ -1769,7 +1808,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 {
   TRACE("opentxInit");
 
-#if defined(GUI)
+#if defined(GUI) && !defined(PCBNV14)
   menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/
     menuHandlers[1] = menuModelSelect;
@@ -1807,7 +1846,7 @@ void opentxInit(OPENTX_INIT_ARGS)
   storageReadCurrentModel();
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   if (!unexpectedShutdown) {
     // g_model.topbarData is still zero here (because it was not yet read from SDCARD),
     // but we only remember the pointer to in in constructor.
@@ -1845,8 +1884,8 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 #endif  // #if !defined(EEPROM)
 
-#if defined(SERIAL2)
-  serial2Init(g_eeGeneral.serial2Mode, modelTelemetryProtocol());
+#if defined(AUX_SERIAL)
+  auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
 #endif
 
 #if defined(PCBTARANIS)
@@ -1878,9 +1917,8 @@ void opentxInit(OPENTX_INIT_ARGS)
   btInit();
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   loadTheme();
-  loadFontCache();
 #endif
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) {
@@ -1933,7 +1971,7 @@ int main()
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBNV14)
   loadFonts();
 #endif
 

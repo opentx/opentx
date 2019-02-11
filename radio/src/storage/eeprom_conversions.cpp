@@ -767,7 +767,7 @@ PACK(typedef struct {
   int8_t   varioRepeat;
   int8_t   backgroundVolume;
  
-  TARANIS_FIELD(uint8_t serial2Mode:6)
+  TARANIS_FIELD(uint8_t auxSerialMode:6)
   TARANIS_FIELD(uint8_t slidersConfig:2)
   TARANIS_FIELD(uint8_t potsConfig)
   TARANIS_FIELD(uint8_t backlightColor)
@@ -838,7 +838,7 @@ void ConvertRadioData_217_to_218(RadioData & settings)
   ConvertSpecialFunctions_217_to_218(settings.customFn, settings_v217.customFn);
 
 #if defined(PCBTARANIS)
-  settings.serial2Mode = settings_v217.serial2Mode;
+  settings.auxSerialMode = settings_v217.auxSerialMode;
   settings.slidersConfig = settings_v217.slidersConfig;
   settings.potsConfig = settings_v217.potsConfig;
   settings.backlightColor = settings_v217.backlightColor;

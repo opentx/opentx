@@ -73,9 +73,9 @@ const BitmapBuffer * ModelCell::getBuffer()
 void ModelCell::loadBitmap()
 {
   PACK(struct {
-    ModelHeader header;
-    TimerData timers[MAX_TIMERS];
-  }) partialmodel;
+         ModelHeader header;
+         TimerData timers[MAX_TIMERS];
+       }) partialmodel;
   const char * error = NULL;
 
   buffer = new BitmapBuffer(BMP_RGB565, MODELCELL_WIDTH, MODELCELL_HEIGHT);
@@ -196,13 +196,13 @@ bool ModelCell::fetchRfData()
     setRfModuleData(i, &modData);
   }
 
-  valid_rfData = true;  
+  valid_rfData = true;
   f_close(&file);
   return true;
-  
- error:
+
+  error:
   f_close(&file);
-  return false;  
+  return false;
 }
 
 ModelsCategory::ModelsCategory(const char * name)
@@ -428,7 +428,7 @@ void ModelsList::moveModel(ModelsCategory * category, ModelCell * model, int8_t 
 }
 
 void ModelsList::moveModel(ModelCell * model, ModelsCategory * previous_category, ModelsCategory * new_category)
-{  
+{
   previous_category->remove(model);
   new_category->push_back(model);
   save();
@@ -513,7 +513,7 @@ uint8_t ModelsList::findNextUnusedModelId(uint8_t moduleIdx)
   // and use 64 bits
   uint8_t usedModelIds[8];
   memset(usedModelIds, 0, sizeof(usedModelIds));
-  
+
   const std::list<ModelsCategory*>& cats = modelslist.getCategories();
   std::list<ModelsCategory*>::const_iterator cat_it = cats.begin();
   for (;cat_it != cats.end(); cat_it++) {

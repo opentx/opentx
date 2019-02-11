@@ -24,6 +24,8 @@ if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Horus")
 endif()
 
+add_definitions(-DPCBFRSKY)
+
 if (PCB STREQUAL X10)
   set(FLAVOUR x10)
   add_definitions(-DPCBX10)
@@ -77,7 +79,7 @@ if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
 endif()
 
-include_directories(${RADIO_SRC_DIRECTORY}/fonts/480x272 gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
+include_directories(${RADIO_SRC_DIRECTORY}/fonts/colorlcd gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
 file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/themes/*.cpp)
 file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/layouts/*.cpp)
@@ -116,7 +118,7 @@ if(INTERNAL_GPS)
   message("Horus: Internal GPS enabled")
 endif()
 
-set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
+set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 
 set(GVAR_SCREEN model_gvars.cpp)
 

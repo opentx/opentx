@@ -126,7 +126,7 @@ extern const char STR_OPEN9X[];
 #define OFS_TRNMODE            (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #endif
 #define OFS_TRNCHN             (OFS_TRNMODE + sizeof(TR_TRNMODE))
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLYSKY)
   #define OFS_UART3MODES       (OFS_TRNCHN + sizeof(TR_TRNCHN))
   #define OFS_SWTYPES          (OFS_UART3MODES + sizeof(TR_UART3MODES))
   #define OFS_POTTYPES         (OFS_SWTYPES + sizeof(TR_SWTYPES))
@@ -182,20 +182,26 @@ extern const char STR_OPEN9X[];
   #define OFS_VLCD              (OFS_VPERSISTENT + sizeof(TR_VPERSISTENT))
   #define OFS_VUNITSSYSTEM      (OFS_VLCD + sizeof(TR_VLCD))
   #define OFS_VBEEPCOUNTDOWN    (OFS_VUNITSSYSTEM + sizeof(TR_VUNITSSYSTEM))
-  #define OFS_VVARIOCENTER      (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
+  #define OFS_COUNTDOWNVALUES   (OFS_VBEEPCOUNTDOWN + sizeof(TR_VBEEPCOUNTDOWN))
+  #define OFS_VVARIOCENTER      (OFS_COUNTDOWNVALUES + sizeof(TR_COUNTDOWNVALUES))
   #define OFS_COUNTRYCODES      (OFS_VVARIOCENTER + sizeof(TR_VVARIOCENTER))
   #define OFS_USBMODES          (OFS_COUNTRYCODES + sizeof(TR_COUNTRYCODES))
   #define OFS_JACKMODES         (OFS_USBMODES + sizeof(TR_USBMODES))
   #define OFS_VFAILSAFE         (OFS_JACKMODES + sizeof(TR_JACKMODES))
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
-  #define OFS_TARANIS_PROTOCOLS        (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
-  #define OFS_R9M_REGION               (OFS_TARANIS_PROTOCOLS + sizeof(TR_TARANIS_PROTOCOLS))
+  #define OFS_MODULE_PROTOCOLS        (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
+  #define OFS_R9M_REGION               (OFS_MODULE_PROTOCOLS + sizeof(TR_MODULE_PROTOCOLS))
   #define OFS_R9MFLEX_FREQ             (OFS_R9M_REGION + sizeof(TR_R9M_REGION))
   #define OFS_R9M_FCC_POWER_VALUES     (OFS_R9MFLEX_FREQ + sizeof(TR_R9MFLEX_FREQ))
   #define OFS_R9M_LBT_POWER_VALUES     (OFS_R9M_FCC_POWER_VALUES + sizeof(TR_R9M_FCC_POWER_VALUES))
   #define OFS_TELEMETRY_PROTOCOLS      (OFS_R9M_LBT_POWER_VALUES + sizeof(TR_R9M_LBT_POWER_VALUES))
   #define OFS_XJT_PROTOCOLS            (OFS_TELEMETRY_PROTOCOLS + sizeof(TR_TELEMETRY_PROTOCOLS))
-  #define OFS_DSM_PROTOCOLS            (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
+#if defined(PCBFLYSKY)
+  #define OFS_FLYSKY_PROTOCOLS  (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
+  #define OFS_DSM_PROTOCOLS     (OFS_FLYSKY_PROTOCOLS + sizeof(TR_FLYSKY_PROTOCOLS))
+#else
+  #define OFS_DSM_PROTOCOLS     (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
+#endif
 #if defined(MULTIMODULE)
   #define OFS_MULTI_PROTOCOLS   (OFS_DSM_PROTOCOLS + sizeof(TR_DSM_PROTOCOLS))
   #define OFS_VOLTSRC           (OFS_MULTI_PROTOCOLS + sizeof(TR_MULTI_PROTOCOLS))
@@ -213,8 +219,7 @@ extern const char STR_OPEN9X[];
 #else
   #define OFS_VANTENNATYPES     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
 #endif
-  #define OFS_MAVLINK_BAUDS     (OFS_VANTENNATYPES + sizeof(TR_VANTENNATYPES))
-  #define OFS_SPARE		(OFS_MAVLINK_BAUDS)
+  #define OFS_SPARE             (OFS_VANTENNATYPES)
 
 #define STR_OFFON               (STR_OPEN9X + OFS_OFFON)
 #define STR_MMMINV              (STR_OPEN9X + OFS_MMMINV)
@@ -288,6 +293,7 @@ extern const char STR_OPEN9X[];
   #define STR_VLCD              (STR_OPEN9X + OFS_VLCD)
   #define STR_VUNITSSYSTEM      (STR_OPEN9X + OFS_VUNITSSYSTEM)
   #define STR_VBEEPCOUNTDOWN    (STR_OPEN9X + OFS_VBEEPCOUNTDOWN)
+  #define STR_COUNTDOWNVALUES   (STR_OPEN9X + OFS_COUNTDOWNVALUES)
   #define STR_VVARIOCENTER      (STR_OPEN9X + OFS_VVARIOCENTER)
 
   #define STR_COUNTRYCODES      (STR_OPEN9X + OFS_COUNTRYCODES)
@@ -296,13 +302,16 @@ extern const char STR_OPEN9X[];
   #define STR_VFAILSAFE         (STR_OPEN9X + OFS_VFAILSAFE)
 
   #define STR_VTRAINERMODES     (STR_OPEN9X + OFS_VTRAINERMODES)
-  #define STR_TARANIS_PROTOCOLS (STR_OPEN9X + OFS_TARANIS_PROTOCOLS)
+  #define STR_MODULE_PROTOCOLS (STR_OPEN9X + OFS_MODULE_PROTOCOLS)
   #define STR_R9M_REGION        (STR_OPEN9X + OFS_R9M_REGION)
   #define STR_R9MFLEX_FREQ             (STR_OPEN9X + OFS_R9MFLEX_FREQ)
   #define STR_R9M_FCC_POWER_VALUES     (STR_OPEN9X + OFS_R9M_FCC_POWER_VALUES)
   #define STR_R9M_LBT_POWER_VALUES     (STR_OPEN9X + OFS_R9M_LBT_POWER_VALUES)
   #define STR_TELEMETRY_PROTOCOLS      (STR_OPEN9X + OFS_TELEMETRY_PROTOCOLS)
   #define STR_XJT_PROTOCOLS     (STR_OPEN9X + OFS_XJT_PROTOCOLS)
+#if defined(PCBFLYSKY)
+  #define STR_FLYSKY_PROTOCOLS  (STR_OPEN9X + OFS_FLYSKY_PROTOCOLS)
+#endif
   #define STR_DSM_PROTOCOLS     (STR_OPEN9X + OFS_DSM_PROTOCOLS)
 #if defined(MULTIMODULE)
   #define STR_MULTI_PROTOCOLS   (STR_OPEN9X + OFS_MULTI_PROTOCOLS)
@@ -445,7 +454,7 @@ extern const char STR_BEEPCOUNTDOWN[];
 extern const char STR_PERSISTENT[];
 extern const char STR_BACKLIGHT_LABEL[];
 extern const char STR_BLDELAY[];
-#if defined(PWM_BACKLIGHT) || defined(PCBHORUS)
+#if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 extern const char STR_BLONBRIGHTNESS[];
 extern const char STR_BLOFFBRIGHTNESS[];
 #endif
@@ -641,6 +650,8 @@ extern const char STR_PERSISTENT_MAH[];
   extern const char STR_COPY[];
   extern const char STR_MOVE[];
   extern const char STR_PASTE[];
+extern const char STR_PASTE_AFTER[];
+extern const char STR_PASTE_BEFORE[];
   extern const char STR_INSERT[];
   extern const char STR_DELETE[];
   extern const char STR_RESET_FLIGHT[];
@@ -847,6 +858,7 @@ extern const char STR_BLCOLOR[];
   extern const char STR_BINDING_9_16_TELEM_ON[];
   extern const char STR_BINDING_9_16_TELEM_OFF[];
   extern const char STR_CHANNELRANGE[];
+extern const char STR_RXFREQUENCY[];
   extern const char STR_ANTENNASELECTION[];
   extern const char STR_ANTENNACONFIRM1[];
   extern const char STR_ANTENNACONFIRM2[];
@@ -866,6 +878,8 @@ extern const char STR_BLCOLOR[];
   extern const char STR_TELEMETRY_TYPE[];
   extern const char STR_TELEMETRY_SENSORS[];
   extern const char STR_VALUE[];
+extern const char STR_REPEAT[];
+extern const char STR_ENABLE[];
   extern const char STR_TOPLCDTIMER[];
   extern const char STR_UNIT[] ;
   extern const char STR_TELEMETRY_NEWSENSOR[];

@@ -291,7 +291,6 @@ class DefaultTheme: public Theme
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
       loadIcons();
       loadThemeBitmaps();
-      loadFontCache();
     }
 
     virtual void drawBackground() const

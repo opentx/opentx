@@ -173,10 +173,10 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 uint8_t telemetryGetByte(uint8_t * byte)
 {
-#if defined(SERIAL2)
+#if defined(AUX_SERIAL)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
-    if (serial2Mode == UART_MODE_TELEMETRY)
-      return serial2RxFifo.pop(*byte);
+    if (auxSerialMode == UART_MODE_TELEMETRY)
+      return auxSerialRxFifo.pop(*byte);
     else
       return false;
   }

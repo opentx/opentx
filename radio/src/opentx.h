@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include "definitions.h"
 #include "opentx_types.h"
+#include "touch.h"
+#include "bitfield.h"
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
@@ -358,6 +360,7 @@ extern const uint8_t modn12x3[];
 #endif
 
 extern uint8_t channel_order(uint8_t x);
+extern uint8_t channel_order(uint8_t setup, uint8_t x);
 
 #define THRCHK_DEADBAND                16
 
@@ -439,7 +442,7 @@ int zchar2str(char *dest, const char *src, int size);
 #include "keys.h"
 #include "pwr.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBNV14)
 div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
@@ -506,7 +509,7 @@ void evalLogicalSwitches(bool isCurrentFlightmode=true);
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
 #define LS_RECURSIVE_EVALUATION_RESET()
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLYSKY)
   void getSwitchesPosition(bool startup);
 #else
   #define getSwitchesPosition(...)
@@ -690,6 +693,9 @@ inline int divRoundClosest(const int n, const int d)
 #define calc100to256_16Bits(x) calc100to256(x)
 #define calc100toRESX_16Bits(x) calc100toRESX(x)
 
+#define calc100to256_16Bits(x) calc100to256(x)
+#define calc100toRESX_16Bits(x) calc100toRESX(x)
+
 inline int calc100to256(int x)
 {
   return divRoundClosest(x*256, 100);
@@ -714,7 +720,6 @@ inline int calcRESXto100(int x)
 {
   return divRoundClosest(x*100, RESX);
 }
-
 
 #if defined(COLORLCD)
 extern const char vers_stamp[];
@@ -822,6 +827,7 @@ struct point_t
   coord_t y;
 };
 point_t getPoint(uint8_t i);
+point_t getPoint(uint8_t curveIndex, uint8_t index);
 typedef CurveData CurveInfo;
 void loadCurves();
 #define LOAD_MODEL_CURVES() loadCurves()
@@ -1151,6 +1157,13 @@ union ReusableBuffer
     uint16_t count;
     char originalName[SD_SCREEN_FILE_LENGTH+1];
   } sdmanager;
+#endif
+
+#if defined(STM32)
+  struct
+  {
+    char id[27];
+  } version;
 #endif
 
   struct

@@ -242,7 +242,9 @@ long Open9xSim::onKeypress(FXObject*,FXSelector,void*v)
 void Open9xSim::updateKeysAndSwitches(bool start)
 {
   static int keys1[] = {
-#if defined(PCBHORUS)
+#if defined(PCBNV14)
+    // no keys
+#elif defined(PCBHORUS)
     KEY_Page_Up,   KEY_PGUP,
     KEY_Page_Down, KEY_PGDN,
     KEY_Return,    KEY_ENTER,

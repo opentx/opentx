@@ -80,24 +80,22 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-  #define FONTSIZE_MASK                0x0700
-  #define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
-  #define TINSIZE                      0x0100
-  #define SMLSIZE                      0x0200
-  #define MIDSIZE                      0x0300
-  #define DBLSIZE                      0x0400
-  #define XXLSIZE                      0x0500
-  #define ERASEBG                      0x8000
-  #define VERTICAL                     0x0800
+#define FONTSIZE_MASK                0x0700
+#define FONTSIZE(x)                  ((x) & FONTSIZE_MASK)
+#define TINSIZE                      0x0100
+#define SMLSIZE                      0x0200
+#define MIDSIZE                      0x0300
+#define DBLSIZE                      0x0400
+#define XXLSIZE                      0x0500
+#define ERASEBG                      0x8000
+#define VERTICAL                     0x0800
 
-  #define TIMEBLINK                    0x1000
-  #define TIMEHOUR                     0x2000
-  #define STREXPANDED                  0x4000
+#define TIMEBLINK                    0x1000
+#define TIMEHOUR                     0x2000
+#define STREXPANDED                  0x4000
 
-  typedef uint32_t LcdFlags;
-
-#define display_t                      uint8_t
-#define DISPLAY_BUFFER_SIZE            (LCD_W*((LCD_H+7)/8))
+#define display_t                    uint8_t
+#define DISPLAY_BUFFER_SIZE          (LCD_W*((LCD_H+7)/8))
 
 extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 
@@ -152,10 +150,6 @@ void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 
 void putsVolts(coord_t x, coord_t y, uint16_t volts, LcdFlags att);
 void putsVBat(coord_t x, coord_t y, LcdFlags att);
-
-
-  #define putstime_t int32_t
-  #define FlightModesType uint16_t
 
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);

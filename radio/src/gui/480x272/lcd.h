@@ -100,7 +100,6 @@ enum FontSizeIndex {
 #define TIMEHOUR                       0x2000
 #define EXPANDED                       0x2000
 #define VERTICAL                       0x4000
-#define NO_FONTCACHE                   0x8000
 
 #include "colors.h"
 
@@ -141,8 +140,6 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
 
 #if !defined(BOOT)
-
-#define putstime_t int32_t
 
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);

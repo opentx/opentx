@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "storage/modelslist.h"
+#include "modelslist.h"
 
 #define CATEGORIES_WIDTH               120
 #define MODELS_LEFT                    123

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLYSKY)
 uint8_t switchToMix(uint8_t source)
 {
   div_t qr = div(source-1, 3);

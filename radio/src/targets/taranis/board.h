@@ -22,6 +22,7 @@
 #define _BOARD_H_
 
 #include "definitions.h"
+#include "opentx_constants.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -364,12 +365,16 @@ enum EnumSwitchesPositions
   #define NUM_SWITCHES                  6
 #elif defined(PCBXLITE)
   #define NUM_SWITCHES                  4
+  #define DEFAULT_SWITCH_CONFIG        (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  6
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's a lot!
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #else
   #define NUM_SWITCHES                  8
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #endif
 void keysInit(void);
 uint8_t keyState(uint8_t index);
@@ -428,6 +433,15 @@ enum Analogs {
   TX_VOLTAGE,
   NUM_ANALOGS
 };
+
+#if defined(PCBXLITE)
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
+#elif defined(PCBX7)
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
+#else
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITH_DETENT << 0)
+  #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
+#endif
 
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
 #define NUM_XPOTS                       NUM_POTS
@@ -653,15 +667,15 @@ void hapticOff(void);
 #endif
 
 // Second serial port driver
-#if defined(SERIAL_GPIO)
+#if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
-#define SERIAL2
-extern uint8_t serial2Mode;
-void serial2Init(unsigned int mode, unsigned int protocol);
-void serial2Putc(char c);
-#define serial2TelemetryInit(protocol) serial2Init(UART_MODE_TELEMETRY, protocol)
-void serial2SbusInit(void);
-void serial2Stop(void);
+#define AUX_SERIAL
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit(void);
+void auxSerialStop(void);
 #endif
 
 // BT driver
@@ -748,7 +762,7 @@ void checkTrainerSettings(void);
 #endif
 
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
-extern DMAFifo<32> serial2RxFifo;
+extern DMAFifo<32> auxSerialRxFifo;
 #endif
 
 #endif // _BOARD_H_

@@ -254,8 +254,6 @@ bool menuMainViewChannelsMonitor(event_t event);
 bool menuTextView(event_t event);
 bool menuScreensTheme(event_t event);
 
-typedef uint16_t FlightModesType;
-
 extern int8_t checkIncDec_Ret;  // global helper vars
 
 #define EDIT_SELECT_MENU   -1

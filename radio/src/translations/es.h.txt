@@ -104,14 +104,24 @@
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
 
-#define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   )"OFF\0""PPM\0""XJT\0""XJT2""DSM2""CRSF""MULT""R9M\0""SBUS"
+#if defined(PCBNV14)
+#define LEN_MODULE_PROTOCOLS   "\006"
+#define TR_MODULE_PROTOCOLS    "Off\0  ""PPM\0  ""XJT\0  ""FlySky""DSM2\0 ""CRSF\0 ""MULT.\0""R9M\0  ""SBUS"
+#else
+#define LEN_MODULE_PROTOCOLS  "\004"
+#define TR_MODULE_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
+#endif
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
 
 #define LEN_XJT_PROTOCOLS      "\004"
 #define TR_XJT_PROTOCOLS       "OFF\0""D16\0""D8\0 ""LR12"
+
+#if defined(PCBFLYSKY)
+#define LEN_FLYSKY_PROTOCOLS           "\006"
+#define TR_FLYSKY_PROTOCOLS            " PWM+i"" PWM+s"" PPM+i"" PPM+s"
+#endif
 
 #define LEN_DSM_PROTOCOLS      "\004"
 #define TR_DSM_PROTOCOLS       "LP45""DSM2""DSMX"
@@ -128,7 +138,10 @@
 #define TR_VDISPLAYTRIMS       "No\0   ""Change""Yes\0"
 
 #define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "SilentBeeps\0Voz\0  Haptic"
+#define TR_VBEEPCOUNTDOWN      "Silent""Beeps\0""Voz\0  ""Haptic"
+
+#define LEN_COUNTDOWNVALUES    "\003"
+#define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"
 
 #define LEN_VVARIOCENTER       "\006"
 #define TR_VVARIOCENTER        "Tone\0 ""Silent"
@@ -456,7 +469,7 @@
 
 #define TR_ON_ONE_SWITCHES     "ON\0""One"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBNV14)
   // only special switches here
   #define TR_VSWITCHES         "---" TR_TRIMS_SWITCHES TR_ON_ONE_SWITCHES
 #elif defined(PCBSKY9X)
@@ -947,6 +960,8 @@
 #define TR_COPY                "Copiar"
 #define TR_MOVE                "Mover"
 #define TR_PASTE               "Pegar"
+#define TR_PASTE_AFTER                 "Paste After"
+#define TR_PASTE_BEFORE                "Paste Before"
 #define TR_DELETE              "Borrar"
 #define TR_INSERT              "Insertar"
 #define TR_RESET_FLIGHT        "Reset Vuelo"
@@ -979,10 +994,13 @@
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetry Type")
 #define TR_TELEMETRY_SENSORS   "Sensors"
 #define TR_VALUE               "Value"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER         "Top LCD Timer"
 #define TR_UNIT                "Unit"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Add a new sensor..."
 #define TR_CHANNELRANGE        INDENT "Gama de canales"
+#define TR_RXFREQUENCY         TR("Rx Freqency", "Rx Servo Frequency")
 #define TR_ANTENNASELECTION    TR(INDENT "Antenna", TR(INDENT "Antenna", INDENT "Antenna selection"))
 #define TR_ANTENNACONFIRM1     "Really switch?"
 #define TR_ANTENNACONFIRM2     TR("Check antenna", "Make sure antenna is installed!")

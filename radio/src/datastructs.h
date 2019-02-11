@@ -449,12 +449,12 @@ PACK(struct ModuleData {
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
 
   union {
-    struct {
+    NOBACKUP(struct {
       int8_t  delay:6;
       uint8_t pulsePol:1;
       uint8_t outputType:1;    // false = open drain, true = push pull
       int8_t  frameLength;
-    } ppm;
+    } ppm);
     NOBACKUP(struct {
       uint8_t rfProtocolExtra:2;
       uint8_t spare1:3;
@@ -484,6 +484,11 @@ PACK(struct ModuleData {
       uint8_t spare:5;
       ReceiverData receivers[MAX_RECEIVERS_PER_MODULE];
     } pxx2);
+    struct {
+      uint8_t rx_id[4];
+      uint8_t mode;
+      uint8_t rx_freq[2];
+    } flysky;
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -549,9 +554,15 @@ typedef uint8_t swarnenable_t;
 
   #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
 
+#if defined(COLORLCD)
 #if defined(PCBHORUS)
 #include "gui/480x272/layout.h"
 #include "gui/480x272/topbar.h"
+#else
+#include "gui/320x480/layout.h"
+#include "gui/320x480/topbar.h"
+#endif
+
 #define LAYOUT_NAME_LEN 10
 PACK(struct CustomScreenData {
   char layoutName[LAYOUT_NAME_LEN];
@@ -569,7 +580,7 @@ PACK(struct CustomScreenData {
 // TODO other boards could have their custom screens here as well
 #endif
 
-#if defined(PCBX12S)
+#if defined(PCBX12S) || defined(PCBNV14)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:6); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES]; TrainerModuleData trainerData; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
 #elif defined(PCBX10)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES]; TrainerModuleData trainerData; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
@@ -664,14 +675,16 @@ PACK(struct TrainerData {
 });
 
 #if defined(PCBHORUS)
-  #define SPLASH_MODE uint8_t splashSpares:3
+#define SPLASH_MODE uint8_t splashSpares:3
+#elif defined(FSPLASH)
+#define SPLASH_MODE uint8_t splashMode:3
 #else
-  #define SPLASH_MODE int8_t splashMode:3
+#define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBHORUS) || defined(PCBNV14)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t  serial2Mode:4); \
+    NOBACKUP(uint8_t  auxSerialMode:4); \
     uint8_t  slidersConfig:4; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
@@ -681,7 +694,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t spare:1); \
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
-#elif defined(PCBTARANIS)
+#elif defined(PCBTARANIS) || defined(PCBNV14)
   #if defined(BLUETOOTH)
     #define BLUETOOTH_FIELDS \
       uint8_t spare; \
@@ -690,7 +703,7 @@ PACK(struct TrainerData {
     #define BLUETOOTH_FIELDS
   #endif
   #define EXTRA_GENERAL_FIELDS \
-    uint8_t  serial2Mode:4; \
+    uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
@@ -715,8 +728,9 @@ PACK(struct TrainerData {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
-#if defined(PCBHORUS)
-  #include "gui/480x272/theme.h"
+#if defined(COLORLCD)
+
+  #include "theme.h"
   #define THEME_NAME_LEN 8
   #define THEME_DATA \
     NOBACKUP(char themeName[THEME_NAME_LEN]); \
@@ -754,7 +768,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t adjustRTC:1);
   NOBACKUP(uint8_t inactivityTimer);
   uint8_t telemetryBaudrate:3;
-  SPLASH_MODE; /* 3bits */
+  NOBACKUP(SPLASH_MODE); /* 3bits */
   NOBACKUP(int8_t hapticMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   int8_t switchesDelay;
   NOBACKUP(uint8_t lightAutoOff);
@@ -878,6 +892,8 @@ static inline void check_struct()
   CHKSIZE(CurveData, 4);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
+#elif defined(PCBNV14)
+  // TODO
 #elif defined(PCBSKY9X)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
@@ -914,7 +930,7 @@ static inline void check_struct()
 
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
-  // TODO CHKSIZE(ModuleData,70);
+  // TODO CHKSIZE(ModuleData,75);
 
   CHKSIZE(GVarData, 7);
 
@@ -926,22 +942,22 @@ static inline void check_struct()
   // TODO CHKSIZE(ModelData, 6025);
 #elif defined(PCBXLITE)
   // TODO CHKSIZE(RadioData, 844);
-  // TODO CHKSIZE(ModelData, 6025);
+  // TODO CHKSIZE(ModelData, 6040);
 #elif defined(PCBX7)
 // TODO  CHKSIZE(RadioData, 850);
-// TODO  CHKSIZE(ModelData, 6025);
+// TODO  CHKSIZE(ModelData, 6040);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 952);
-  CHKSIZE(ModelData, 6520);
+  CHKSIZE(ModelData, 6535);
 #elif defined(PCBX9D)
   // CHKSIZE(RadioData, 872);
-  // CHKSIZE(ModelData, 6507);
+  // CHKSIZE(ModelData, 6522);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 727);
-  CHKSIZE(ModelData, 5188);
+  CHKSIZE(ModelData, 5203);
 #elif defined(PCBHORUS)
 // TODO  CHKSIZE(RadioData, 847);
-// TODO  CHKSIZE(ModelData, 9380);
+// TODO  CHKSIZE(ModelData, 9395);
 #endif
 
 #undef CHKSIZE

@@ -71,6 +71,10 @@ void interrupt1ms()
 
   ++pre_scale;
 
+#if defined(DEBUG) && !defined(SIMU)
+  debugCounter1ms++;
+#endif
+
 #if defined(HAPTIC)
   if (pre_scale == 5 || pre_scale == 10) {
     DEBUG_TIMER_START(debugTimerHaptic);
@@ -142,7 +146,7 @@ void boardInit()
                          AUDIO_RCC_AHB1Periph |
                          KEYS_RCC_AHB1Periph |
                          ADC_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
@@ -158,7 +162,7 @@ void boardInit()
                          ADC_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
-                         SERIAL_RCC_APB1Periph |
+                         AUX_SERIAL_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
                          TRAINER_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
@@ -184,7 +188,7 @@ void boardInit()
   // i2cInit();
 
 #if defined(DEBUG)
-  serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
+  auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
 #endif
 
   __enable_irq();
@@ -264,7 +268,7 @@ void checkTrainerSettings()
         stop_trainer_ppm();
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        serial2Stop();
+        auxSerialStop();
     }
 
     currentTrainerMode = requiredTrainerMode;
@@ -273,8 +277,8 @@ void checkTrainerSettings()
         init_trainer_ppm();
         break;
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        if (g_eeGeneral.serial2Mode == UART_MODE_SBUS_TRAINER) {
-          serial2SbusInit();
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
+          auxSerialSbusInit();
           break;
         }
         // no break

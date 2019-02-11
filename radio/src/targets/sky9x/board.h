@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
+#include "opentx_constants.h"
 
 extern uint16_t ResetReason;
 
@@ -412,8 +413,8 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 void sportSendBuffer(const uint8_t * buffer, uint32_t size);
 
 // Second UART driver
-void serial2TelemetryInit(unsigned int protocol);
-void serial2Putc(const unsigned char c);
+void auxSerialTelemetryInit(unsigned int protocol);
+void auxSerialPutc(const unsigned char c);
 #if defined(__cplusplus)
 bool telemetrySecondPortReceive(uint8_t & data);
 #endif

@@ -34,6 +34,15 @@
 
 typedef bool (*IsValueAvailable)(int);
 
+enum SwitchContext
+{
+  LogicalSwitchesContext,
+  ModelCustomFunctionsContext,
+  GeneralCustomFunctionsContext,
+  TimersContext,
+  MixesContext
+};
+
 int circularIncDec(int current, int inc, int min, int max, IsValueAvailable isValueAvailable=NULL);
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable);
 
@@ -49,6 +58,7 @@ bool isSourceAvailableInGlobalFunctions(int source);
 bool isSourceAvailableInCustomSwitches(int source);
 bool isSourceAvailableInResetSpecialFunction(int index);
 bool isSourceAvailableInGlobalResetSpecialFunction(int index);
+bool isSwitchAvailable(int swtch, SwitchContext context);
 bool isSwitchAvailableInLogicalSwitches(int swtch);
 bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
@@ -61,6 +71,7 @@ bool isInternalModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
 bool isTelemetryProtocolAvailable(int protocol);
 bool isTrainerModeAvailable(int mode);
+bool isAssignableFunctionAvailable(int function, CustomFunctionData * functions);
 
 bool isSensorUnit(int sensor, uint8_t unit);
 bool isCellsSensor(int sensor);
@@ -78,7 +89,7 @@ bool modelHasNotes();
 bool isSwitch2POSWarningStateAvailable(int state);
 #endif
 
-#if defined(GUI)
+#if defined(GUI) && !defined(PCBNV14)
 #define IS_INSTANT_TRIM_ALLOWED()      (IS_MAIN_VIEW_DISPLAYED() || IS_TELEMETRY_VIEW_DISPLAYED() || IS_OTHER_VIEW_DISPLAYED())
 #else
 #define IS_INSTANT_TRIM_ALLOWED()      true
@@ -105,6 +116,7 @@ void drawCurve(coord_t offset=0);
 
 #if defined(COLORLCD)
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags=0, const char * prefix=NULL, const char * suffix=NULL);
+void drawCurveRef(BitmapBuffer * dc, coord_t x, coord_t y, const CurveRef & curve, LcdFlags flags=0);
 int editChoice(coord_t x, coord_t y, const char * values, int value, int min, int max, LcdFlags flags, event_t event);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags flags, event_t event);
 swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags flags, event_t event);

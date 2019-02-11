@@ -19,9 +19,10 @@
  */
 
 #include "opentx.h"
+#include "strhelpers.h"
 
 #if !defined(BOOT)
-const char s_charTab[]  = "_-.,";
+const char s_charTab[] = "_-.,";
 
 char hex2zchar(uint8_t hex)
 {
@@ -226,6 +227,40 @@ char * getGVarString(char * dest, int idx)
   return dest;
 }
 
+char * getFlightModeString(char * dest, int8_t idx)
+{
+  char * s = dest;
+
+  if (idx==0) {
+    strcpy(s, "---");
+    return dest;
+  }
+
+  if (idx < 0) {
+    *s++ = '!';
+    idx = -idx;
+  }
+
+  s = strAppend(s, STR_FM);
+  strAppendUnsigned(s, idx - 1);
+  return dest;
+}
+
+char * getSwitchWarningString(char * dest, swsrc_t idx)
+{
+  char * s = dest;
+  uint8_t state = g_model.switchWarningState >> (3*idx) & 0x07;
+
+  *s++ = 'A' + idx;
+  if (state == 0)
+    *s = '\0';
+  else {
+    *s++ = "x\300-\301"[state];
+    *s = '\0';
+  }
+  return dest;
+}
+
 char * getSwitchString(char * dest, swsrc_t idx)
 {
   if (idx == SWSRC_NONE) {
@@ -248,8 +283,8 @@ char * getSwitchString(char * dest, swsrc_t idx)
     getStringAtIndex(s, STR_VSWITCHES, idx);
   }
 #else
-  #define IDX_TRIMS_IN_STR_VSWITCHES   (1)
-  #define IDX_ON_IN_STR_VSWITCHES      (IDX_TRIMS_IN_STR_VSWITCHES+SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM+1)
+#define IDX_TRIMS_IN_STR_VSWITCHES   (1)
+#define IDX_ON_IN_STR_VSWITCHES      (IDX_TRIMS_IN_STR_VSWITCHES+SWSRC_LAST_TRIM-SWSRC_FIRST_TRIM+1)
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     if (ZEXIST(g_eeGeneral.switchNames[swinfo.quot])) {
@@ -258,6 +293,9 @@ char * getSwitchString(char * dest, swsrc_t idx)
     }
     else {
       *s++ = 'S';
+#if defined(PCBNV14)
+      *s++ = 'W';
+#endif
 #if defined(PCBX7)
       if (swinfo.quot == 5)
         *s++ = 'H';
@@ -275,7 +313,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
 #endif // PCBSKY9X
 
 #if NUM_XPOTS > 0
-  else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
+    else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     div_t swinfo = div(int(idx - SWSRC_FIRST_MULTIPOS_SWITCH), XPOTS_MULTIPOS_COUNT);
     char temp[LEN_ANA_NAME+1];
     getSourceString(temp, MIXSRC_FIRST_POT+swinfo.quot);
@@ -285,7 +323,7 @@ char * getSwitchString(char * dest, swsrc_t idx)
 #endif
 
 #if defined(PCBSKY9X)
-  else if (idx <= SWSRC_REa) {
+    else if (idx <= SWSRC_REa) {
     getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
   }
 #else
@@ -321,13 +359,13 @@ char * getSourceString(char * dest, mixsrc_t idx)
   }
   else if (idx <= MIXSRC_LAST_INPUT) {
     idx -= MIXSRC_FIRST_INPUT;
-    *dest++ = '\314';
+    *dest = '\314';
     if (ZEXIST(g_model.inputNames[idx])) {
-      zchar2str(dest, g_model.inputNames[idx], LEN_INPUT_NAME);
-      dest[LEN_INPUT_NAME] = '\0';
+      zchar2str(dest+1, g_model.inputNames[idx], LEN_INPUT_NAME);
+      dest[LEN_INPUT_NAME+1] = '\0';
     }
     else {
-      strAppendUnsigned(dest, idx+1, 2);
+      strAppendUnsigned(dest+1, idx+1, 2);
     }
   }
 #if defined(LUA_INPUTS)
@@ -511,3 +549,30 @@ char * strAppendDate(char * str, bool time)
   }
 }
 #endif
+
+static char tmpHelpersString[32];
+
+char * getSwitchString(swsrc_t idx)
+{
+  return getSwitchString(tmpHelpersString, idx);
+}
+
+char * getSwitchWarningString(swsrc_t idx)
+{
+  return getSwitchWarningString(tmpHelpersString, idx);
+}
+
+char * getSourceString(mixsrc_t idx)
+{
+  return getSourceString(tmpHelpersString, idx);
+}
+
+char * getCurveString(int idx)
+{
+  return getCurveString(tmpHelpersString, idx);
+}
+
+char * getTimerString(putstime_t tme, uint8_t hours)
+{
+  return getTimerString(tmpHelpersString, tme, hours);
+}

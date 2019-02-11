@@ -37,8 +37,6 @@
 #define USE_STB
 
 // TODO should go to lcd.h again
-typedef int coord_t;
-typedef uint32_t LcdFlags;
 typedef uint16_t display_t;
 
 enum BitmapFormats
@@ -271,9 +269,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     void drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, LcdFlags flags, coord_t offset=0, coord_t width=0);
 
-    uint8_t drawCharWithoutCache(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags);
-
-    uint8_t drawCharWithCache(coord_t x, coord_t y, const BitmapBuffer * font, const uint16_t * spec, int index, LcdFlags flags);
+    uint8_t drawChar(coord_t x, coord_t y, const uint8_t * font, const uint16_t * spec, int index, LcdFlags flags);
 
     void drawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
     {

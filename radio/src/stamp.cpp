@@ -26,7 +26,7 @@
 
   #define EEPROM_STR DEFNUMSTR(EEPROM_VER);
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
 #define TAB "\037\075"
 #endif
 
