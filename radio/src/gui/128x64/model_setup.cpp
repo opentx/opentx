@@ -1124,9 +1124,9 @@ void menuModelSetup(event_t event)
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 
-        lcdDrawTextAlignedLeft(y, INDENT INDENT "PinMap");
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[set]", attr);
-        if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+        lcdDrawTextAlignedLeft(y, INDENT INDENT "Pinmap");
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
+        if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           g_receiverIdx = receiverIdx;
           g_moduleIdx = moduleIdx;
           pushMenu(menuModelPinmap);
@@ -1390,7 +1390,7 @@ void menuModelSetup(event_t event)
                 AUDIO_WARNING1();
                 SEND_FAILSAFE_NOW(moduleIdx);
               }
-              else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+              else if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
                 g_moduleIdx = moduleIdx;
                 pushMenu(menuModelFailsafe);
               }
@@ -1745,7 +1745,7 @@ void menuModelPinmap(event_t event)
 {
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   uint8_t wbar = LCD_W / 2 - 20;
-  SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx) + 1);
+  SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
   lcdDrawTextAlignedLeft(0, STR_PINMAPSET);
   for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
@@ -1762,9 +1762,9 @@ void menuModelPinmap(event_t event)
     const int32_t channelValue = channelOutputs[getPinOuput(g_receiverIdx, g_moduleIdx, pin)];
 
     //Pin
-    lcdDrawTextAlignedLeft(y, "Pin");
-    lcdDrawNumber(lcdLastRightPos+5, y, pin+1);
-    lcdDrawText(lcdLastRightPos+5, y, " -> ");
+    lcdDrawText(0, y, "Pin", SMLSIZE);
+    lcdDrawNumber(lcdLastRightPos+5, y, pin+1, SMLSIZE);
+    lcdDrawText(lcdLastRightPos+5, y, " -> ", SMLSIZE);
 
 
     //Channel
@@ -1787,9 +1787,9 @@ void menuModelPinmap(event_t event)
     lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
     lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
 
-    y += FH;
+    y += FH-1;
 
-    if (++pin >= sentModuleChannels(g_moduleIdx))
+    if (++pin >sentModuleChannels(g_moduleIdx))
       break;
   }
 }
