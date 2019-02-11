@@ -49,9 +49,9 @@ class StaticText : public Window {
     void paint(BitmapBuffer * dc)
     {
       if (flags & CENTERED)
-        dc->drawText(rect.w / 2, 3, text.c_str(), flags);
+        dc->drawText(rect.w / 2, 1, text.c_str(), flags);
       else
-        dc->drawText(0, 3, text.c_str(), flags);
+        dc->drawText(0, 1, text.c_str(), flags);
     }
 
     void setText(std::string value)

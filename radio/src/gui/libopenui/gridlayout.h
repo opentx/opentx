@@ -23,8 +23,8 @@
 
 #include "window.h"
 
-static constexpr uint8_t lineSpacing = 6;
-static constexpr uint8_t lineHeight = 26;
+static constexpr uint8_t lineSpacing = 2;
+static constexpr uint8_t lineHeight = 20;
 static constexpr uint8_t indentWidth = 10;
 
 class GridLayout {
@@ -89,7 +89,7 @@ class GridLayout {
 
   protected:
     coord_t currentY = 0;
-    coord_t labelWidth = 140;
+    coord_t labelWidth = 240;
     coord_t lineMarginLeft = 6;
     coord_t lineMarginRight = 10;
 };

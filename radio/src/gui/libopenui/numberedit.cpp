@@ -47,10 +47,10 @@ void NumberEdit::paint(BitmapBuffer * dc)
     displayFunction(dc, textColor, value);
   }
   else if (value == 0 && !zeroText.empty()) {
-    dc->drawText(3, 2, zeroText.c_str(), textColor | flags);
+    dc->drawText(3, 0, zeroText.c_str(), textColor | flags);
   }
   else {
-    drawNumber(dc, 3, 2, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
+    drawNumber(dc, 3, 0, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
   }
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
 }
