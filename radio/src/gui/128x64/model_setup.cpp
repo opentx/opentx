@@ -1383,7 +1383,8 @@ void menuModelSetup(event_t event)
               CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.failsafeMode, FAILSAFE_LAST);
               if (checkIncDec_Ret) SEND_FAILSAFE_NOW(moduleIdx);
             }
-          } else if (menuHorizontalPosition == 1) {
+          }
+          else if (menuHorizontalPosition == 1) {
             s_editMode = 0;
             if (moduleData.failsafeMode == FAILSAFE_CUSTOM) {
               if (event == EVT_KEY_LONG(KEY_ENTER)) {
@@ -1398,7 +1399,8 @@ void menuModelSetup(event_t event)
                 pushMenu(menuModelFailsafe);
               }
             }
-          } else {
+          }
+          else {
             lcdDrawSolidFilledRect(MODEL_SETUP_2ND_COLUMN, y, LCD_W - MODEL_SETUP_2ND_COLUMN, 8);
           }
         }
@@ -1642,7 +1644,7 @@ void menuModelFailsafe(event_t event)
     event = 0;
 
     if (menuVerticalPosition < sentModuleChannels(g_moduleIdx)) {
-      if (s_editMode) {
+      if (s_editMode > 0) {
         g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
         s_editMode = 0;
       }
@@ -1688,7 +1690,7 @@ void menuModelFailsafe(event_t event)
     LcdFlags flags = TINSIZE;
     if (menuVerticalPosition == ch) {
       flags |= INVERS;
-      if (s_editMode) {
+      if (s_editMode > 0) {
         if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
           s_editMode = 0;
         }
