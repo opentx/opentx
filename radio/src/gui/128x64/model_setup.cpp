@@ -1755,19 +1755,16 @@ void menuModelPinmap(event_t event)
 
   const coord_t x = 1;
   coord_t y = FH + 1;
-  uint8_t line = (menuVerticalPosition >= sentModuleChannels(g_moduleIdx) ? 2 : 0);
-  uint8_t pin = (menuVerticalPosition >= 8 ? 8 : 0) + line;
+  uint8_t pin = (menuVerticalPosition >= 8 ? 8 : 0);
 
-  for (; line < 8; line++) {
+  for (uint8_t line = 0; line < 8; line++) {
     const int32_t channelValue = channelOutputs[getPinOuput(g_receiverIdx, g_moduleIdx, pin)];
 
-    //Pin
+    // Pin
     lcdDrawText(0, y, "Pin", SMLSIZE);
-    lcdDrawNumber(lcdLastRightPos+5, y, pin+1, SMLSIZE);
-    lcdDrawText(lcdLastRightPos+5, y, " -> ", SMLSIZE);
+    lcdDrawNumber(lcdLastRightPos + 1, y, pin+1, SMLSIZE);
 
-
-    //Channel
+    // Channel
     LcdFlags flags = SMLSIZE;
     if (menuVerticalPosition == pin) {
       flags |= INVERS;
@@ -1778,18 +1775,16 @@ void menuModelPinmap(event_t event)
         setPinOuput(g_receiverIdx, g_moduleIdx, pin, channel);
       }
     }
+    putsChn(8*FW, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin)+1, flags);
 
-    //lcdDrawNumber(lcdLastRightPos+5, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin)+1, flags);
-    putsChn(lcdLastRightPos+5, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin)+1, flags);
-
+    // Bargraph
     const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar/2 + lim/2) / lim, wbar/2);
     const coord_t xChannel = (channelValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenChannel;
     lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
     lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
 
     y += FH-1;
-
-    if (++pin >sentModuleChannels(g_moduleIdx))
+    if (++pin > sentModuleChannels(g_moduleIdx))
       break;
   }
 }

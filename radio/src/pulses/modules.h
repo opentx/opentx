@@ -208,7 +208,7 @@ inline uint8_t getPinOuput(uint8_t receiverIdx, uint8_t moduleIdx, uint8_t pin)
 
 inline void setPinOuput(uint8_t receiverIdx, uint8_t moduleIdx, uint8_t pin, uint8_t chan)
 {
-  BF_SET(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping, chan, (pin + ((pin & 0x01) ? -1 : 1 )) * 4, 4);
+  g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping = BF_SET<uint64_t>(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping, chan, (pin + ((pin & 0x01) ? -1 : 1 )) * 4, 4);
 }
 
 inline int8_t maxModuleChannels_M8(uint8_t idx)
