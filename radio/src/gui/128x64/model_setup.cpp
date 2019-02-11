@@ -1743,20 +1743,27 @@ void menuModelFailsafe(event_t event)
 
 void menuModelPinmap(event_t event)
 {
+  const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
+  uint8_t wbar = LCD_W / 2 - 20;
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx) + 1);
 
-  lcdDrawTextAlignedCenter(0, PINMAPSET);
+  lcdDrawTextAlignedLeft(0, STR_PINMAPSET);
+  for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
+    lcdDrawHexChar(50 + pos*FW*2, 0, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[g_receiverIdx].rxID[pos], 0);
+  }
   lcdInvertLine(0);
 
-  //const coord_t x = 1;
+  const coord_t x = 1;
   coord_t y = FH + 1;
   uint8_t line = (menuVerticalPosition >= sentModuleChannels(g_moduleIdx) ? 2 : 0);
   uint8_t pin = (menuVerticalPosition >= 8 ? 8 : 0) + line;
 
   for (; line < 8; line++) {
+    const int32_t channelValue = channelOutputs[getPinOuput(g_receiverIdx, g_moduleIdx, pin)];
+
     //Pin
     lcdDrawTextAlignedLeft(y, "Pin");
-    lcdDrawNumber(lcdLastRightPos+5, y, pin);
+    lcdDrawNumber(lcdLastRightPos+5, y, pin+1);
     lcdDrawText(lcdLastRightPos+5, y, " -> ");
 
 
@@ -1764,11 +1771,21 @@ void menuModelPinmap(event_t event)
     LcdFlags flags = SMLSIZE;
     if (menuVerticalPosition == pin) {
       flags |= INVERS;
-      if (s_editMode) {
+      if (s_editMode > 0) {
+        uint8_t channel = getPinOuput(g_receiverIdx, g_moduleIdx, pin);
         flags |= BLINK;
+        CHECK_INCDEC_MODELVAR(event, channel, 0, sentModuleChannels(g_moduleIdx));
+        setPinOuput(g_receiverIdx, g_moduleIdx, pin, channel);
       }
     }
-    lcdDrawNumber(lcdLastRightPos+5, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin), flags);
+
+    //lcdDrawNumber(lcdLastRightPos+5, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin)+1, flags);
+    putsChn(lcdLastRightPos+5, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin)+1, flags);
+
+    const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar/2 + lim/2) / lim, wbar/2);
+    const coord_t xChannel = (channelValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenChannel;
+    lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
+    lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
 
     y += FH;
 

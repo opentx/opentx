@@ -921,7 +921,7 @@
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            TR("Failsafe", "Mód Failsafe")
 #define TR_FAILSAFESET         "NASTAVENÍ FAILSAFE"
-#define TR_PINMAPSET                   "Set PIN to CH map"
+#define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENZOR"

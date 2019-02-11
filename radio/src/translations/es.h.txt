@@ -932,7 +932,7 @@
 #define TR_EXTERNALRF          "Externa RF"
 #define TR_FAILSAFE            INDENT"Modo sgdad."
 #define TR_FAILSAFESET         "AJUSTES SGDAD."
-#define TR_PINMAPSET                   "Set PIN to CH map"
+#define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENSOR"
