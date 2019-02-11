@@ -23,15 +23,7 @@
 
 #include <inttypes.h>
 
-#if LCD_W >= 480
-#define LCD_COLS                     40
-#else
-#define LCD_COLS                     30
-#endif
-
 #define CENTER
-
-typedef int32_t lcdint_t;
 
 #define BSS                            0x00
 
@@ -99,5 +91,20 @@ enum FontSizeIndex {
 #define TIMEHOUR                       0x2000
 #define EXPANDED                       0x2000
 #define VERTICAL                       0x4000
+
+typedef int32_t coord_t;
+typedef uint32_t LcdFlags;
+
+template<class t> inline t min(t a, t b)
+{
+  return a < b ? a : b;
+}
+
+template<class t> inline t max(t a, t b)
+{
+  return a > b ? a : b;
+}
+
+template<class t> inline t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
 
 #endif // _LCD_TYPES_H_

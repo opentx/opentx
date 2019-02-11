@@ -320,7 +320,7 @@ class DefaultTheme: public Theme
       else
         lcd->drawBitmap(5, 7, menuIconSelected[icon]);
 
-      drawTopbarDatetime();
+//      drawTopbarDatetime();
     }
 
     virtual void drawMenuIcon(uint8_t index, uint8_t position, bool selected) const

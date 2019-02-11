@@ -21,7 +21,7 @@
 #include <algorithm>
 #include "model_select.h"
 #include "opentx.h"
-#include "libwindows.h"
+#include "libopenui.h"
 #include "modelslist.h"
 
 #define CATEGORIES_WIDTH               120

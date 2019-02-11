@@ -126,6 +126,8 @@ if(CROSSFIRE)
     )
 endif()
 
+add_definitions(-g)
+
 add_definitions(-DCPUARM)
 add_definitions(-DTELEMETRY_FRSKY -DTELEMETRY_FRSKY_SPORT -DGPS)
 
@@ -140,6 +142,7 @@ endforeach()
 set(SRC
   ${SRC}
   main.cpp
+  stubs.cpp
   tasks.cpp
   audio.cpp
   io/frsky_sport.cpp

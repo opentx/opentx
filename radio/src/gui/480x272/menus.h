@@ -219,12 +219,12 @@ bool menuStatsAnalogs(event_t event);
 bool menuStatsTraces(event_t event);
 
 static const MenuHandlerFunc menuTabStats[]  = {
-  menuStatsGraph,
-  menuStatsDebug,
-  menuStatsAnalogs,
-#if defined(DEBUG_TRACE_BUFFER)
-  menuStatsTraces,
-#endif
+//  menuStatsGraph,
+//  menuStatsDebug,
+//  menuStatsAnalogs,
+//#if defined(DEBUG_TRACE_BUFFER)
+//  menuStatsTraces,
+//#endif
 };
 
 enum EnumTabMonitors
@@ -420,11 +420,11 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
 
 extern uint8_t s_curveChan;
 
-#define WARNING_TYPE_ALERT     0
+/*#define WARNING_TYPE_ALERT     0
 #define WARNING_TYPE_ASTERISK  1
 #define WARNING_TYPE_CONFIRM   2
 #define WARNING_TYPE_INPUT     3
-#define WARNING_TYPE_INFO      4
+#define WARNING_TYPE_INFO      4*/
 
 extern const char * warningText;
 extern const char * warningInfoText;

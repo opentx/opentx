@@ -18,16 +18,32 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _DRAW_FUNCTIONS_H_
-#define _DRAW_FUNCTIONS_H_
+#ifndef _LIBOPENUI_H_
+#define _LIBOPENUI_H_
 
-#include <stdint.h>
-#include "lcd_types.h"
+#include "window.h"
+#include "mainwindow.h"
+#include "static.h"
+#include "button.h"
+#include "checkbox.h"
+#include "numberedit.h"
+#include "timeedit.h"
+#include "choice.h"
+#include "sourcechoice.h"
+#include "switchchoice.h"
+#include "filechoice.h"
+#include "textedit.h"
+#include "slider.h"
+#include "keyboard_text.h"
+#include "keyboard_number.h"
+#include "keyboard_curve.h"
+#include "tabsgroup.h"
+#include "page.h"
+#include "menu.h"
+#include "dialog.h"
+#include "gridlayout.h"
+#include "getset_helpers.h"
+#include "curveedit.h"
+#include "coloredit.h"
 
-void drawTextAtIndex(BitmapBuffer * dc, coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
-void drawNumber(BitmapBuffer * dc, coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
-void drawSolidRect(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, LcdFlags flags=0);
-void drawSource(BitmapBuffer * dc, coord_t x, coord_t y, mixsrc_t idx, LcdFlags flags=0);
-void drawSwitch(BitmapBuffer * dc, coord_t x, coord_t y, int32_t idx, LcdFlags flags=0);
-
-#endif // _DRAW_FUNCTIONS_H_
+#endif // _LIBOPENUI_H_

@@ -101,5 +101,5 @@ endforeach()
 
 set(SRC
   ${SRC}
-  io/bootloader_flash.cpp
+#  io/bootloader_flash.cpp
   )

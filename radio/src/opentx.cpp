@@ -19,10 +19,12 @@
  */
 
 #include "opentx.h"
-#if defined(PCBNV14)
-#include "libwindows.h"
-#include "shutdown_animation.h"
-#include "radio_calibration.h"
+
+#if defined(LIBOPENUI)
+// #include "libwindows.h"
+// #include "shutdown_animation.h"
+// #include "radio_calibration.h"
+#include "view_main.h"
 #endif
 
 RadioData  g_eeGeneral;
@@ -305,8 +307,8 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
-  strcpy(g_eeGeneral.themeName, theme->getName());
-  theme->init();
+  // strcpy(g_eeGeneral.themeName, theme->getName());
+  // theme->init();
 #endif
 
   g_eeGeneral.chkSum = 0xFFFF;
@@ -508,7 +510,7 @@ void modelDefault(uint8_t id)
   g_model.header.name[6] = '\033' + id%10;
 #endif
 
-#if defined(COLORLCD)
+#if 0 // defined(COLORLCD)
   extern const LayoutFactory * defaultLayout;
   delete customScreens[0];
   customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
@@ -903,9 +905,11 @@ void checkAll()
   checkSDVersion();
 #endif
 
+#if 0
   if (g_model.displayChecklist && modelHasNotes()) {
     readModelNotes();
   }
+#endif
 
   if (!clearKeyEvents()) {
     showMessageBox(STR_KEYSTUCK);
@@ -1584,7 +1588,7 @@ void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
 #if defined(PCBNV14)
     startCalibration();
 #else
-    chainMenu(menuFirstCalib);
+    // chainMenu(menuFirstCalib);
 #endif
   }
   else {
@@ -1657,15 +1661,12 @@ void opentxResume()
 {
   TRACE("opentxResume");
 
-#if !defined(PCBNV14)
+#if !defined(LIBOPENUI)
   menuHandlers[0] = menuMainView;
 #endif
 
   sdMount();
   storageReadAll();
-#if defined(PCBHORUS)
-  loadTheme();
-#endif
 
   opentxStart(OPENTX_START_NO_SPLASH);
 
@@ -1801,14 +1802,14 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 uint8_t rotencSpeed;
 #endif
 
-
-  #define OPENTX_INIT_ARGS
-
-void opentxInit(OPENTX_INIT_ARGS)
+void opentxInit()
 {
   TRACE("opentxInit");
 
-#if defined(GUI) && !defined(PCBNV14)
+#if defined(LIBOPENUI)
+  new ViewMain();
+#elif defined(GUI)
+  // TODO add a function for this (duplicated)
   menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/
     menuHandlers[1] = menuModelSelect;
@@ -1857,7 +1858,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #pragma clang diagnostic push
 #pragma clang diagnostic warning "-Waddress-of-packed-member"
 #endif
-    topbar = new Topbar(&g_model.topbarData);
+    // TODO topbar = new Topbar(&g_model.topbarData);
 #if __clang__
 // Restore warnings
 #pragma clang diagnostic pop
@@ -1918,7 +1919,7 @@ void opentxInit(OPENTX_INIT_ARGS)
 #endif
 
 #if defined(COLORLCD)
-  loadTheme();
+  // loadTheme();
 #endif
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) {

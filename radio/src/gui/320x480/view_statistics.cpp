@@ -21,7 +21,7 @@
 #include "view_statistics.h"
 #include "opentx.h"
 #include "stamp.h"
-#include "libwindows.h"
+#include "libopenui.h"
 
 #define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
 

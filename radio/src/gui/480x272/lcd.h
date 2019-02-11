@@ -60,25 +60,6 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-enum FontSizeIndex {
-  STDSIZE_INDEX,
-  TINSIZE_INDEX,
-  SMLSIZE_INDEX,
-  MIDSIZE_INDEX,
-  DBLSIZE_INDEX,
-  XXLSIZE_INDEX,
-  SPARE6_INDEX,
-  SPARE7_INDEX,
-  STDSIZE_BOLD_INDEX,
-  SPARE9_INDEX,
-  SPAREa_INDEX,
-  SPAREb_INDEX,
-  SPAREc_INDEX,
-  SPAREd_INDEX,
-  SPAREe_INDEX,
-  SPAREf_INDEX,
-};
-
 #define STDSIZE                        (STDSIZE_INDEX << 8)
 #define TINSIZE                        (TINSIZE_INDEX << 8)
 #define SMLSIZE                        (SMLSIZE_INDEX << 8)
@@ -116,6 +97,8 @@ extern display_t displayBuf[DISPLAY_BUFFER_SIZE];
 #define ASSERT_IN_DISPLAY(p)           assert((p) >= displayBuf && (p) < DISPLAY_END)
 
 extern coord_t lcdNextPos;
+void lcdNextLayer();
+
 
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags=0);
 

@@ -555,7 +555,8 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
     return index;
   }
   else {
-    POPUP_WARNING(STR_TELEMETRYFULL);
+#warning "code removed"
+    // POPUP_WARNING(STR_TELEMETRYFULL);
     return -1;
   }
 

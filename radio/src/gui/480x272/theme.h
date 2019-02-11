@@ -22,6 +22,7 @@
 #define _THEME_H_
 
 #include <list>
+#include "zone.h"
 
 class BitmapBuffer;
 
@@ -37,10 +38,10 @@ class Theme
       ZoneOptionValue options[MAX_THEME_OPTIONS];
     };
 
-    Theme(const char * name, const ZoneOption * options=NULL):
+    Theme(const char * name, const ZoneOption * options = nullptr):
       name(name),
       options(options),
-      thumb(NULL)
+      thumb(nullptr)
     {
       registerTheme(this);
     }
@@ -52,7 +53,7 @@ class Theme
 
     const char * getFilePath(const char * filename) const;
 
-    void drawThumb(uint16_t x, uint16_t y, uint32_t flags);
+    void drawThumb(coord_t x, coord_t y, uint32_t flags);
 
     inline const ZoneOption * getOptions() const
     {
@@ -70,6 +71,12 @@ class Theme
     virtual void load() const;
 
     virtual void drawBackground() const;
+
+    virtual const BitmapBuffer * getIconBitmap(uint8_t index, bool selected) const { return nullptr; }
+
+    virtual const BitmapBuffer * getIconMask(uint8_t index) const { return nullptr; }
+
+    virtual void drawIcon(coord_t x, coord_t y, uint8_t index, LcdFlags flags) const { }
 
     virtual void drawTopbarBackground(uint8_t icon) const = 0;
 

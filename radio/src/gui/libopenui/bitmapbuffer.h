@@ -23,7 +23,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "lcd_types.h"
+#include "oui_types.h"
 #include "colors.h"
 #include "board.h"
 #include "debug.h"
@@ -186,6 +186,7 @@ class RLEBitmap:
       rle_decode_8bit((uint8_t*)data, pixels * sizeof(uint16_t), rle_data+4);
       data_end = data + pixels;
     }
+
     ~RLEBitmap()
     {
       free(data);

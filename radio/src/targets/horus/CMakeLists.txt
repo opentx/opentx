@@ -12,7 +12,6 @@ set(NAVIGATION_TYPE horus)
 set(TARGET_DIR horus)
 set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RAMBACKUP YES)
-set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
 SET(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 
@@ -86,26 +85,25 @@ file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DI
 file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/widgets/*.cpp)
 set(GUI_SRC
   ${GUI_SRC}
-  bitmapbuffer.cpp
   curves.cpp
   bitmaps.cpp
-  radio_sdmanager.cpp
-  radio_hardware.cpp
-  model_inputs.cpp
-  model_mixes.cpp
-  model_curves.cpp
-  view_channels.cpp
-  view_logical_switches.cpp
-  view_about.cpp
-  view_text.cpp
-  screens_setup.cpp
+#  radio_sdmanager.cpp
+#  radio_hardware.cpp
+#  model_inputs.cpp
+#  model_mixes.cpp
+#  model_curves.cpp
+#  view_channels.cpp
+#  view_logical_switches.cpp
+#  view_about.cpp
+#  view_text.cpp
+#  screens_setup.cpp
   theme.cpp
-  topbar.cpp
-  layout.cpp
-  widget.cpp
+#  topbar.cpp
+#  layout.cpp
+#  widget.cpp
   ${THEMES_SRC}
-  ${LAYOUTS_SRC}
-  ${WIDGETS_SRC}
+#  ${LAYOUTS_SRC}
+#  ${WIDGETS_SRC}
   rle.cpp
   )
 if(DISK_CACHE)
@@ -120,7 +118,7 @@ endif()
 
 set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
 
-set(GVAR_SCREEN model_gvars.cpp)
+#set(GVAR_SCREEN model_gvars.cpp)
 
 set(TARGET_SRC
   ${TARGET_SRC}

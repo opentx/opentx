@@ -23,7 +23,7 @@
 
 #include "bitmapbuffer.h"
 #include "opentx_types.h"
-#include "lcd_types.h"
+#include "oui_types.h"
 #include "colors.h"
 #include "draw_functions.h"
 

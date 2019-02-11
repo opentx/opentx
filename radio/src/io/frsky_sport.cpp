@@ -323,8 +323,9 @@ void sportFlashDevice(ModuleIndex module, const char * filename)
   if (!result) result = sportUpdateEnd();
 
   if (result) {
-    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
-    SET_WARNING_INFO(result, strlen(result), 0);
+    #warning "code removed"
+    // POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
+    // SET_WARNING_INFO(result, strlen(result), 0);
   }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)

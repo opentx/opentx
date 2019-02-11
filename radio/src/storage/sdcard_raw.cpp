@@ -258,7 +258,7 @@ void storageEraseAll(bool warn)
 
 #if defined(COLORLCD)
   // the theme has not been loaded before
-  theme->load();
+  // theme->load();
 #endif
 
   generalDefault();

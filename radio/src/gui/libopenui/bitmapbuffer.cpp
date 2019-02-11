@@ -39,8 +39,14 @@ void BitmapBuffer::drawAlphaPixel(display_t * p, uint8_t opacity, uint16_t color
 
 void BitmapBuffer::drawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlags att)
 {
-  if (y >= height) return;
-  if (x+w > width) { w = width - x; }
+  APPLY_OFFSET();
+
+  if (y >= height || y >= ymax || y < ymin)
+    return;
+
+  if (x+w > width) {
+    w = width - x;
+  }
 
   display_t * p = getPixelPtr(x, y);
   display_t color = lcdColorTable[COLOR_IDX(att)];
@@ -68,11 +74,27 @@ void BitmapBuffer::drawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t p
 
 void BitmapBuffer::drawVerticalLine(coord_t x, coord_t y, coord_t h, uint8_t pat, LcdFlags att)
 {
-  if (x >= width) return;
-  if (y >= height) return;
-  if (h<0) { y+=h; h=-h; }
-  if (y<0) { h+=y; y=0; if (h<=0) return; }
-  if (y+h > height) { h = height - y; }
+  APPLY_OFFSET();
+
+  if (x < xmin || x >= xmax)
+    return;
+
+  if (h < 0) {
+    y += h;
+    h = -h;
+  }
+
+  if (y < ymin) {
+    h += y-ymin;
+    y = ymin;
+  }
+
+  if (y + h > ymax) {
+    h = ymax - y;
+  }
+
+  if (h <= 0)
+    return;
 
   display_t color = lcdColorTable[COLOR_IDX(att)];
   uint8_t opacity = 0x0F - (att >> 24);
@@ -110,8 +132,60 @@ void BitmapBuffer::drawRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t 
   }
 }
 
+void BitmapBuffer::drawSolidFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, LcdFlags flags)
+{
+  APPLY_OFFSET();
+
+  if (x >= xmax || y >= ymax)
+    return;
+
+  if (h < 0) {
+    y += h;
+    h = -h;
+  }
+  if (y < ymin) {
+    h += y-ymin;
+    y = ymin;
+  }
+  if (x < xmin) {
+    w += x - xmin;
+    x = xmin;
+  }
+  if (y + h > ymax)
+    h = ymax - y;
+  if (x + w > xmax)
+    w = xmax - x;
+
+  if (!data || h<=0 || w<=0)
+    return;
+
+  DMAFillRect(data, width, height, x, y, w, h, lcdColorTable[COLOR_IDX(flags)]);
+}
+
 void BitmapBuffer::drawFilledRect(coord_t x, coord_t y, coord_t w, coord_t h, uint8_t pat, LcdFlags att)
 {
+  APPLY_OFFSET();
+
+  if (x >= xmax || y >= ymax)
+    return;
+
+  if (h < 0) {
+    y += h;
+    h = -h;
+  }
+  if (y < ymin) {
+    h += y-ymin;
+    y = ymin;
+  }
+  if (x < xmin) {
+    w += x - xmin;
+    x = xmin;
+  }
+  if (y + h > ymax)
+    h = ymax - y;
+  if (x + w > xmax)
+    w = xmax - x;
+
   for (coord_t i=y; i<y+h; i++) {
     if ((att & ROUND) && (i==y || i==y+h-1))
       drawHorizontalLine(x+1, i, w-2, pat, att);
@@ -164,8 +238,6 @@ void BitmapBuffer::drawCircle(int x0, int y0, int radius)
 }
 #endif
 
-#define PI 3.14159265f
-
 bool evalSlopes(int * slopes, int startAngle, int endAngle)
 {
   if (startAngle >= 360 || endAngle <= 0)
@@ -176,7 +248,7 @@ bool evalSlopes(int * slopes, int startAngle, int endAngle)
     slopes[2] = -100000;
   }
   else {
-    float angle1 = float(startAngle) * (PI / 180.0f);
+    float angle1 = float(startAngle) * (M_PI / 180.0f);
     if (startAngle >= 180) {
       slopes[1] = -100000;
       slopes[2] = cosf(angle1) * 100 / sinf(angle1);
@@ -192,7 +264,7 @@ bool evalSlopes(int * slopes, int startAngle, int endAngle)
     slopes[3] = 100000;
   }
   else {
-    float angle2 = float(endAngle)  * (PI / 180.0f);
+    float angle2 = float(endAngle)  * (M_PI / 180.0f);
     if (endAngle >= 180) {
       slopes[0] = -100000;
       slopes[3] = -cosf(angle2) * 100 / sinf(angle2);
@@ -233,11 +305,13 @@ void BitmapBuffer::drawPie(int x0, int y0, int radius, int startAngle, int endAn
   }
 }
 
-void BitmapBuffer::drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags flags, coord_t offset, coord_t width)
+void BitmapBuffer::drawMask(coord_t x, coord_t y, const BitmapBuffer * mask, LcdFlags flags, coord_t offset, coord_t width)
 {
-  if (mask == NULL) {
+  if (mask == nullptr) {
     return;
   }
+
+  APPLY_OFFSET();
 
   coord_t w = mask->getWidth();
   coord_t height = mask->getHeight();
@@ -246,15 +320,21 @@ void BitmapBuffer::drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags 
     width = w;
   }
 
-  if (x+width > this->width) {
-    width = this->width-x;
+  if (x + width > xmax) {
+    width = xmax - x;
+  }
+
+  if (y >= ymax || x >= xmax || width <= 0 || x + width < xmin || y + height < ymin) {
+    return;
   }
 
   display_t color = lcdColorTable[COLOR_IDX(flags)];
 
   for (coord_t row=0; row<height; row++) {
+    if (y + row < ymin || y + row >= ymax)
+      continue;
     display_t * p = getPixelPtr(x, y+row);
-    display_t * q = mask->getPixelPtr(offset, row);
+    const display_t * q = mask->getPixelPtr(offset, row);
     for (coord_t col=0; col<width; col++) {
       drawAlphaPixel(p, *((uint8_t *)q), color);
       MOVE_TO_NEXT_RIGHT_PIXEL(p);
@@ -265,6 +345,8 @@ void BitmapBuffer::drawMask(coord_t x, coord_t y, BitmapBuffer * mask, LcdFlags 
 
 void BitmapBuffer::drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, LcdFlags flags, coord_t offset, coord_t width)
 {
+  APPLY_OFFSET();
+
   coord_t w = *((uint16_t *)bmp);
   coord_t height = *(((uint16_t *)bmp)+1);
 
@@ -272,21 +354,35 @@ void BitmapBuffer::drawBitmapPattern(coord_t x, coord_t y, const uint8_t * bmp, 
     width = w;
   }
 
-  if (x+width > this->width) {
-    width = this->width-x;
+  if (x + width > xmax) {
+    width = xmax - x;
+  }
+
+  if (y >= ymax || x >= xmax || width <= 0 || x + width < xmin || y + height < ymin) {
+    return;
   }
 
   display_t color = lcdColorTable[COLOR_IDX(flags)];
 
   for (coord_t row=0; row<height; row++) {
+    if (y + row < ymin || y + row >= ymax)
+      continue;
     const uint8_t * q = bmp + 4 + row*w + offset;
     for (coord_t col=0; col<width; col++) {
-      display_t * p;
-      if (flags & VERTICAL)
-        p = getPixelPtr(x+row, y-col);
-      else
-        p = getPixelPtr(x+col, y+row);
-      drawAlphaPixel(p, *q, color);
+      coord_t xpixel, ypixel;
+      if (flags & VERTICAL) {
+        xpixel = x + row;
+        ypixel = y - col;
+      }
+      else {
+        xpixel = x + col;
+        ypixel = y + row;
+      }
+      if (xpixel >= xmin && xpixel < xmax) {
+        display_t * p = getPixelPtr(xpixel, ypixel);
+        if (p)
+          drawAlphaPixel(p, *q, color);
+      }
       q++;
     }
   }
@@ -296,18 +392,27 @@ uint8_t BitmapBuffer::drawChar(coord_t x, coord_t y, const uint8_t * font, const
 {
   coord_t offset = spec[index];
   coord_t width = spec[index+1] - offset;
-  if (width > 0)
+  if (width > 0) {
     drawBitmapPattern(x, y, font, flags, offset, width);
+  }
   return width;
 }
 
 void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags)
 {
+  MOVE_OFFSET();
+
 #define INCREMENT_POS(delta) \
   do { if (flags & VERTICAL) y -= delta; else x += delta; } while(0)
 
   int width = getTextWidth(s, len, flags);
   int height = getFontHeight(flags);
+
+  if (y + height <= ymin || y >= ymax) {
+    RESTORE_OFFSET();
+    return;
+  }
+
   uint32_t fontindex = FONTINDEX(flags);
   const unsigned char * font = fontsTable[fontindex];
   const uint16_t * fontspecs = fontspecsTable[fontindex];
@@ -320,40 +425,6 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
   }
 
   coord_t & pos = (flags & VERTICAL) ? y : x;
-
-  if ((flags & INVERS) && ((~flags & BLINK) || BLINK_ON_PHASE)) {
-    uint16_t fgColor = lcdColorTable[COLOR_IDX(flags)];
-    if (fgColor == lcdColorTable[TEXT_COLOR_INDEX]) {
-      flags = TEXT_INVERTED_COLOR | (flags & 0x0ffff);
-    }
-    if (fontindex == STDSIZE_INDEX) {
-      if (fgColor == lcdColorTable[TEXT_COLOR_INDEX]) {
-        drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, INVERT_HORZ_MARGIN-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-        drawSolidFilledRect(x+width-1, y, INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      }
-      else {
-        drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN-1, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-      }
-    }
-    else if (fontindex == TINSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN+2, y, width+2*INVERT_HORZ_MARGIN-5, height+2, TEXT_INVERTED_BGCOLOR);
-    }
-    else if (fontindex == SMLSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN-2, height+2, TEXT_INVERTED_BGCOLOR);
-    }
-    else if (fontindex == MIDSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y-1, width+2*INVERT_HORZ_MARGIN-2, height+3, TEXT_INVERTED_BGCOLOR);  // MIDSIZE and DBLSIZE font are missing a pixel on top compared to others
-    }
-    else if (fontindex == DBLSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y-1, width+2*INVERT_HORZ_MARGIN-2, height+3, TEXT_INVERTED_BGCOLOR); // MIDSIZE and DBLSIZE font are missing a pixel on top compared to others
-    }
-    else if (fontindex == XXLSIZE_INDEX) {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN-2, height+2, TEXT_INVERTED_BGCOLOR);
-    }
-    else {
-      drawSolidFilledRect(x-INVERT_HORZ_MARGIN, y, width+2*INVERT_HORZ_MARGIN, INVERT_LINE_HEIGHT, TEXT_INVERTED_BGCOLOR);
-    }
-  }
 
   bool setpos = false;
   const coord_t orig_pos = pos;
@@ -393,7 +464,9 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
     }
     s++;
   }
-  lcdNextPos = pos;
+  lcdNextPos = pos - offsetX;
+
+  RESTORE_OFFSET();
 }
 
 void BitmapBuffer::drawBitmapPie(int x0, int y0, const uint16_t * img, int startAngle, int endAngle)
@@ -462,8 +535,6 @@ void BitmapBuffer::drawBitmapPatternPie(coord_t x0, coord_t y0, const uint8_t * 
   }
 }
 
-#if !defined(BOOT)
-
 BitmapBuffer * BitmapBuffer::load(const char * filename)
 {
   const char * ext = getFileExtension(filename);
@@ -488,8 +559,8 @@ BitmapBuffer * BitmapBuffer::loadMask(const char * filename)
 
 BitmapBuffer * BitmapBuffer::loadMaskOnBackground(const char * filename, LcdFlags foreground, LcdFlags background)
 {
-  BitmapBuffer * result = NULL;
-  BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
+  BitmapBuffer * result = nullptr;
+  BitmapBuffer * mask = nullptr; // TODO BitmapBuffer::loadMask(getThemePath(filename));
   if (mask) {
     result = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
     if (result) {
@@ -805,4 +876,3 @@ BitmapBuffer * BitmapBuffer::load_stb(const char * filename)
   stbi_image_free(img);
   return bmp;
 }
-#endif

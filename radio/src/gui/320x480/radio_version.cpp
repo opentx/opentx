@@ -20,7 +20,7 @@
 
 #include "radio_version.h"
 #include "opentx.h"
-#include "libwindows.h"
+#include "libopenui.h"
 
 RadioVersionPage::RadioVersionPage():
   PageTab(STR_MENUVERSION, ICON_RADIO_VERSION)

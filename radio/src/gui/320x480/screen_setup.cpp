@@ -21,7 +21,7 @@
 #include "screen_setup.h"
 #include "widgets_setup.h"
 #include "opentx.h"
-#include "libwindows.h"
+#include "libopenui.h"
 
 #define SET_DIRTY() storageDirty(EE_MODEL)
 

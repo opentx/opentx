@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include "board.h"
+#include "opentx_types.h"
 
 #define EVT_KEY_MASK(e)                ((e) & 0x1f)
 

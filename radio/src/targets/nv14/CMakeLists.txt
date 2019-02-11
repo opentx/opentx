@@ -70,7 +70,6 @@ file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DI
 file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/widgets/*.cpp)
 set(GUI_SRC
   ${GUI_SRC}
-  bitmapbuffer.cpp
   draw_functions.cpp
   curves.cpp
   bitmaps.cpp

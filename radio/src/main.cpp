@@ -508,10 +508,11 @@ void perMain()
 
   doLoopCommonActions();
 
-  event_t evt = getEvent(false);
+  // event_t evt = getEvent(false);
 
 #if defined(RAMBACKUP)
   if (unexpectedShutdown) {
+    # warning "no fatal error screen"
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
   }
@@ -529,6 +530,7 @@ void perMain()
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
   if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
+    #warning "missing fatal error screen"
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }
@@ -550,7 +552,7 @@ void perMain()
 
 #if defined(GUI)
   DEBUG_TIMER_START(debugTimerGuiMain);
-  guiMain(evt);
+  guiMain(0);
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
 

@@ -86,7 +86,8 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
     if (memcmp(&frame[4], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
-      POPUP_INFORMATION(STR_REG_OK);
+      #warning "code removed"
+      // POPUP_INFORMATION(STR_REG_OK);
     }
   }
 }
@@ -125,7 +126,8 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], &frame[4], PXX2_LEN_RX_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
-      POPUP_INFORMATION(STR_BIND_OK);
+#warning "code removed"
+      //POPUP_INFORMATION(STR_BIND_OK);
     }
   }
 }
@@ -280,7 +282,8 @@ void telemetryWakeup()
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if ((isModulePXX(INTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
       AUDIO_RAS_RED();
-      POPUP_WARNING(STR_WARNING);
+#warning "code removed"
+      // POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;
       SET_WARNING_INFO(w, strlen(w), 0);
       SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);

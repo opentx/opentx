@@ -33,15 +33,15 @@ void drawColumnHeader(const char * const * headers, const char * const * descrip
   }
 }
 
-static const uint8_t __alpha_button_on[] __ALIGNED(4) = {
-#include "alpha_button_on.lbm"
-};
-Bitmap ALPHA_BUTTON_ON(BMP_ARGB4444, (const uint16_t*)__alpha_button_on);
-
-static const uint8_t __alpha_button_off[] __ALIGNED(4) = {
-#include "alpha_button_off.lbm"
-};
-Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
+//static const uint8_t __alpha_button_on[] __ALIGNED(4) = {
+//#include "alpha_button_on.lbm"
+//};
+//Bitmap ALPHA_BUTTON_ON(BMP_ARGB4444, (const uint16_t*)__alpha_button_on);
+//
+//static const uint8_t __alpha_button_off[] __ALIGNED(4) = {
+//#include "alpha_button_off.lbm"
+//};
+//Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
 
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
 {
@@ -58,10 +58,11 @@ void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
     lcdDrawText(x+padding+8, y, label, TEXT_COLOR);
   }
   lcdDrawSolidRect(x-1, y-1, padding+width+18+padding, 21, 1, TEXT_COLOR);
-  if (attr & BUTTON_OFF)
+/*  if (attr & BUTTON_OFF)
     lcd->drawBitmap(x-6, y+3, &ALPHA_BUTTON_OFF);
   else if (attr & BUTTON_ON)
     lcd->drawBitmap(x-6, y+3, &ALPHA_BUTTON_ON);
+    */
 }
 
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
@@ -373,8 +374,8 @@ int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int
 #else
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event)
 {
-  if (attr & INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);
-  lcdDrawNumber(x, y, value, attr, 0, NULL, "%");
+//  if (attr & INVERS) value = checkIncDec(event, value, min, max, EE_MODEL);
+  //lcdDrawNumber(x, y, value, attr, 0, NULL, "%");
   return value;
 }
 #endif

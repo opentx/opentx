@@ -38,10 +38,10 @@ class Theme
       ZoneOptionValue options[MAX_THEME_OPTIONS];
     };
 
-    Theme(const char * name, const ZoneOption * options=NULL):
+    Theme(const char * name, const ZoneOption * options = nullptr):
       name(name),
       options(options),
-      thumb(NULL)
+      thumb(nullptr)
     {
       registerTheme(this);
     }

@@ -204,7 +204,8 @@ void logsWrite()
         if (result != NULL) {
           if (result != error_displayed) {
             error_displayed = result;
-            POPUP_WARNING(result);
+#warning "code removed"
+//            POPUP_WARNING(result);
           }
           return;
         }
@@ -316,7 +317,8 @@ void logsWrite()
 
       if (result<0 && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
-        POPUP_WARNING(STR_SDCARD_ERROR);
+#warning "code removed"
+//        POPUP_WARNING(STR_SDCARD_ERROR);
         logsClose();
       }
     }
