@@ -18,16 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _DRAW_FUNCTIONS_H_
-#define _DRAW_FUNCTIONS_H_
+#include "tabsgroup.h"
 
-#include <stdint.h>
-#include "lcd_types.h"
+class ModelHeliPage: public PageTab {
+  public:
+    ModelHeliPage();
 
-void drawTextAtIndex(BitmapBuffer * dc, coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
-void drawNumber(BitmapBuffer * dc, coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);
-void drawSolidRect(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, uint8_t thickness=1, LcdFlags flags=0);
-void drawSource(BitmapBuffer * dc, coord_t x, coord_t y, mixsrc_t idx, LcdFlags flags=0);
-void drawSwitch(BitmapBuffer * dc, coord_t x, coord_t y, int32_t idx, LcdFlags flags=0);
-
-#endif // _DRAW_FUNCTIONS_H_
+    void build(Window * window);
+};

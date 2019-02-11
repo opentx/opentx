@@ -6,7 +6,8 @@ set(GUI_SRC
 #  popups.cpp
   widgets.cpp
 #  menus.cpp
-#  menu_model.cpp
+  menu_model.cpp
+  model_heli.cpp
 #  model_select.cpp
 #  model_setup.cpp
 #  model_logical_switches.cpp

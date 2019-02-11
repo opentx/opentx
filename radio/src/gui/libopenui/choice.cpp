@@ -58,6 +58,7 @@ void Choice::paint(BitmapBuffer * dc)
   dc->drawBitmapPattern(rect.w - 14, (rect.h - 5) / 2, LBM_DROPDOWN, lineColor);
 }
 
+#if defined(TOUCH_INTERFACE)
 bool Choice::onTouchEnd(coord_t, coord_t)
 {
   auto menu = new Menu();
@@ -91,7 +92,7 @@ bool Choice::onTouchEnd(coord_t, coord_t)
   setFocus();
   return true;
 }
-
+#endif
 
 CustomCurveChoice::CustomCurveChoice(Window * parent, const rect_t &rect, int16_t vmin, int16_t vmax,
                                      std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags) :
@@ -120,6 +121,7 @@ void CustomCurveChoice::paint(BitmapBuffer * dc)
   dc->drawBitmapPattern(rect.w - 14, (rect.h - 5) / 2, LBM_DROPDOWN, lineColor);
 }
 
+#if defined(TOUCH_INTERFACE)
 bool CustomCurveChoice::onTouchEnd(coord_t x, coord_t y)
 {
   auto menu = new Menu();
@@ -146,3 +148,4 @@ bool CustomCurveChoice::onTouchEnd(coord_t x, coord_t y)
   setFocus();
   return true;
 }
+#endif

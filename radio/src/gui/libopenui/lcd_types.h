@@ -93,6 +93,13 @@ enum FontSizeIndex {
 #define VERTICAL                       0x4000
 
 typedef int32_t coord_t;
+
+struct point_t
+{
+  coord_t x;
+  coord_t y;
+};
+
 typedef uint32_t LcdFlags;
 
 template<class t> inline t min(t a, t b)

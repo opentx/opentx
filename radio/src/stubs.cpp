@@ -95,3 +95,8 @@ bool isInternalModuleAvailable(int module)
 {
   return false;
 }
+
+bool isSourceAvailable(int source)
+{
+  return true;
+}

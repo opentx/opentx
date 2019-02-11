@@ -24,6 +24,7 @@
 #include "dataconstants.h"
 #include "lcd.h"
 #include "strhelpers.h"
+#include "draw_functions.h"
 
 class SourceChoiceMenuToolbar : public MenuToolbar<SourceChoice> {
   public:
@@ -92,6 +93,7 @@ void SourceChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
   }
 }
 
+#if defined(TOUCH_INTERFACE)
 bool SourceChoice::onTouchEnd(coord_t, coord_t)
 {
   auto menu = new Menu();
@@ -102,3 +104,4 @@ bool SourceChoice::onTouchEnd(coord_t, coord_t)
   setFocus();
   return true;
 }
+#endif

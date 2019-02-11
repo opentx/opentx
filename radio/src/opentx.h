@@ -821,11 +821,7 @@ enum BaseCurves {
   CURVE_BASE
 };
 int8_t * curveAddress(uint8_t idx);
-struct point_t
-{
-  coord_t x;
-  coord_t y;
-};
+
 point_t getPoint(uint8_t i);
 point_t getPoint(uint8_t curveIndex, uint8_t index);
 typedef CurveData CurveInfo;

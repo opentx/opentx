@@ -20,14 +20,21 @@
 
 #include "tabsgroup.h"
 #include "mainwindow.h"
+
+#if defined(TOUCH_HARDWARE)
 #include "keyboard_number.h"
 #include "keyboard_text.h"
 #include "keyboard_curve.h"
+#endif
+
 #include "opentx.h" // TODO for constants...
+
+#define TOPBAR_BUTTON_WIDTH            60
+#define TOPBAR_MENU_LEFT               (TOPBAR_BUTTON_WIDTH + 3)
 
 TabsGroupHeader::TabsGroupHeader(TabsGroup * parent):
   Window(parent, { 0, 0, LCD_W, MENU_BODY_TOP }, OPAQUE),
-  back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_BACK,
+  back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_OPENTX,
        [=]() -> uint8_t {
          parent->deleteLater();
          return 1;
@@ -69,6 +76,7 @@ void TabsCarousel::paint(BitmapBuffer * dc)
   }
 }
 
+#if defined(TOUCH_HARDWARE)
 bool TabsCarousel::onTouchEnd(coord_t x, coord_t y)
 {
   unsigned index = (x - padding_left) / TOPBAR_BUTTON_WIDTH;
@@ -76,6 +84,7 @@ bool TabsCarousel::onTouchEnd(coord_t x, coord_t y)
   currentPage = index;
   return true;
 }
+#endif
 
 TabsGroup::TabsGroup():
   Window(&mainWindow, { 0, 0, LCD_W, LCD_H }, OPAQUE),
@@ -94,9 +103,11 @@ TabsGroup::~TabsGroup()
 
   body.deleteChildren();
 
+#if defined(TOUCH_HARDWARE)
   TextKeyboard::instance()->disable(false);
   NumberKeyboard::instance()->disable(false);
   CurveKeyboard::instance()->disable(false);
+#endif
 }
 
 void TabsGroup::addTab(PageTab * page)
@@ -122,9 +133,11 @@ void TabsGroup::setCurrentTab(PageTab * tab)
   if (tab != currentTab) {
     clearFocus();
     body.clear();
+#if defined(TOUCH_HARDWARE)
     TextKeyboard::instance()->disable(false);
     NumberKeyboard::instance()->disable(false);
     CurveKeyboard::instance()->disable(false);
+#endif
     currentTab = tab;
     tab->build(&body);
     header.setTitle(tab->title.c_str());
@@ -144,6 +157,7 @@ void TabsGroup::paint(BitmapBuffer * dc)
   dc->clear(TEXT_BGCOLOR);
 }
 
+#if defined(TOUCH_HARDWARE)
 bool TabsGroup::onTouchEnd(coord_t x, coord_t y)
 {
   if (Window::onTouchEnd(x, y))
@@ -154,3 +168,4 @@ bool TabsGroup::onTouchEnd(coord_t x, coord_t y)
   CurveKeyboard::instance()->disable(true);
   return true;
 }
+#endif

@@ -22,7 +22,7 @@
 #define _KEYBOARD_BASE_H_
 
 #include "mainwindow.h"
-#include "oui_types.h"
+#include "lcd_types.h"
 
 class Page;
 class TabsGroup;

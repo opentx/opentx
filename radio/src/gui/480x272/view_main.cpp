@@ -19,7 +19,7 @@
  */
 
 #include "view_main.h"
-// #include "menu_model.h"
+#include "menu_model.h"
 // #include "menu_radio.h"
 // #include "menu_screens.h"
 // #include "model_select.h"
@@ -133,8 +133,7 @@ bool ViewMain::onKeyEvent(event_t event)
 {
   switch (event) {
     case EVT_KEY_LONG(KEY_MODEL):
-      TRACE("ICI NEW MODELMENU ....");
-      // TODO new ModelMenu();
+      new ModelMenu();
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):

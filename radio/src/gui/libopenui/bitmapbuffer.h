@@ -23,7 +23,7 @@
 
 #include <stdint.h>
 #include <stdlib.h>
-#include "oui_types.h"
+#include "lcd_types.h"
 #include "colors.h"
 #include "board.h"
 #include "debug.h"

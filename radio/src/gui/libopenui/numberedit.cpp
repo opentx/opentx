@@ -20,7 +20,10 @@
 
 #include "numberedit.h"
 #include "draw_functions.h"
+
+#if defined(TOUCH_INTERFACE)
 #include "keyboard_number.h"
+#endif
 
 NumberEdit::NumberEdit(Window * parent, const rect_t & rect, int32_t vmin, int32_t vmax, std::function<int32_t()> getValue, std::function<void(int32_t)> setValue, LcdFlags flags):
   BaseNumberEdit(parent, rect, vmin, vmax, std::move(getValue), std::move(setValue), flags)
@@ -52,6 +55,7 @@ void NumberEdit::paint(BitmapBuffer * dc)
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
 }
 
+#if defined(TOUCH_INTERFACE)
 bool NumberEdit::onTouchEnd(coord_t, coord_t)
 {
   if (!enabled) {
@@ -69,8 +73,11 @@ bool NumberEdit::onTouchEnd(coord_t, coord_t)
 
   return true;
 }
+#endif
 
 void NumberEdit::onFocusLost()
 {
+#if defined(TOUCH_INTERFACE)
   NumberKeyboard::instance()->disable(true);
+#endif
 }

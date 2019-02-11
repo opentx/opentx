@@ -46,6 +46,7 @@ class MenuToolbarButton: public Button {
       }
     }
 
+#if defined(TOUCH_INTERFACE)
     bool onTouchEnd(coord_t x, coord_t y) override
     {
       if (hasFocus()) {
@@ -58,6 +59,7 @@ class MenuToolbarButton: public Button {
       onPress();
       return true;
     }
+#endif
 
   protected:
     char picto;
@@ -84,11 +86,13 @@ class MenuToolbar: public Window {
       dc->clear(CURVE_AXIS_COLOR);
     }
 
+#if defined(TOUCH_INTERFACE)
     bool onTouchEnd(coord_t x, coord_t y) override
     {
       Window::onTouchEnd(x, y);
       return true; // = don't close the menu (inverted so that click outside the menu closes it)
     }
+#endif
 
   protected:
     T * choice;
