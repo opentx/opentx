@@ -78,16 +78,14 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
   }
 
   if (frame[3] == 0x00) {
-    // RX_ID follows, we discard it for now
+    // RX_ID follows, we store it for the next step
+    memcpy(reusableBuffer.modelsetup.pxx2_register_rx_id, &frame[4], PXX2_LEN_RX_ID);
     reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_COUNTER_ID_RECEIVED;
   }
   else if (frame[3] == 0x01) {
-    // RX_ID follows, we check it is good
-    if (1) {
-
-    }
-    // PASSWORD follows, we check it is good
-    if (memcmp(&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
+    // RX_ID + PASSWORD follow, we check they are good
+    if (memcmp(&frame[4], reusableBuffer.modelsetup.pxx2_register_rx_id, PXX2_LEN_RX_ID) == 0 &&
+        memcmp(&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       POPUP_INFORMATION(STR_REG_OK);

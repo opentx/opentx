@@ -1118,6 +1118,7 @@ union ReusableBuffer
     char msg[64];
     uint8_t r9mPower;
     uint8_t pxx2_register_or_bind_step;
+    uint8_t pxx2_register_rx_id[PXX2_LEN_RX_ID];
     char pxx2_bind_candidate_receivers_ids[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_ID];
     char pxx2_bind_candidate_receivers_names[PXX2_MAX_RECEIVERS_PER_MODULE][3*PXX2_LEN_RX_ID+1];
     uint8_t pxx2_bind_candidate_receivers_count;
