@@ -280,7 +280,7 @@ class DefaultTheme: public Theme
       mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_COLOR, TEXT_BGCOLOR);
     }
 
-    virtual void load() const
+    void load() const override
     {
       TRACE("Theme default -> load");
       loadColors();
@@ -292,7 +292,7 @@ class DefaultTheme: public Theme
       update();
     }
 
-    virtual void update() const
+    void update() const override
     {
 #if defined(PCBHORUS)
       uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
@@ -317,7 +317,7 @@ class DefaultTheme: public Theme
       loadThemeBitmaps();
     }
 
-    virtual void drawBackground() const
+    void drawBackground() const override
     {
       if (!backgroundBitmap || backgroundBitmap->getFormat() == BMP_ARGB4444 || backgroundBitmap->getWidth() != LCD_W || backgroundBitmap->getHeight() != LCD_H) {
         lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
@@ -328,7 +328,7 @@ class DefaultTheme: public Theme
       }
     }
 
-    virtual bool drawTopbarBackground(uint32_t options) const
+    bool drawTopbarBackground(uint32_t options) const override
     {
       bool result = false;
       if (options & OPTION_TOPBAR_LOGO) {
@@ -346,17 +346,17 @@ class DefaultTheme: public Theme
       return result;
     }
 
-    virtual void drawIcon(coord_t x, coord_t y, uint8_t index, LcdFlags flags) const
+    void drawIcon(coord_t x, coord_t y, uint8_t index, LcdFlags flags) const override
     {
       lcd->drawMask(x, y, iconMask[index], flags);
     }
 
-    virtual const BitmapBuffer * getIconBitmap(uint8_t index, bool selected) const
+    const BitmapBuffer * getIconBitmap(uint8_t index, bool selected) const override
     {
       return selected ? menuIconSelected[index] : menuIconNormal[index];
     }
 
-    virtual const BitmapBuffer * getIconMask(uint8_t index) const
+    virtual const BitmapBuffer * getIconMask(uint8_t index) const override
     {
       return iconMask[index];
     }

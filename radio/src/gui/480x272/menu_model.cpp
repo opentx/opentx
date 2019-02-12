@@ -32,10 +32,14 @@
 //#include "model_telemetry.h"
 
 ModelMenu::ModelMenu():
-  TabsGroup()
+  TabsGroup(ICON_MODEL)
 {
   // addTab(new ModelSetupPage());
 #if defined(HELI)
+  addTab(new ModelHeliPage());
+  addTab(new ModelHeliPage());
+  addTab(new ModelHeliPage());
+  addTab(new ModelHeliPage());
   addTab(new ModelHeliPage());
 #endif
   // addTab(new ModelFlightModesPage());

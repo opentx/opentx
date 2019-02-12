@@ -132,12 +132,12 @@ void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
   lcdDrawSolidVerticalLine(x+w+1, y+2, h, LINE_COLOR);
   lcdDrawSolidHorizontalLine(x+2, y+h+1, w, LINE_COLOR);
 }
-
+#if 0
 void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, uint32_t options)
 {
   coord_t bodyTop, bodyBottom;
 
-  theme->drawTopbarBackground(icons ? icons[0] : icon);
+//  theme->drawMenuBackground(icons ? icons[0] : icon);
 
   // Menu title bar
   if (options & OPTION_MENU_TITLE_BAR) {
@@ -148,6 +148,7 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
     if (title) {
       lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+1, title, MENU_TITLE_COLOR);
     }
+#if 0
     if (icons) {
       for (int i=0; i<menuPageCount; i++) {
         if (menuPageIndex != i) {
@@ -156,6 +157,7 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
       }
       theme->drawMenuIcon(icons[menuPageIndex+1], menuPageIndex, true);
     }
+#endif
   }
   else {
     linesDisplayed = NUM_BODY_LINES + 1;
@@ -182,7 +184,7 @@ void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, u
     drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, bodyTop+3, bodyBottom-bodyTop-6, menuVerticalOffset, linesCount, linesDisplayed);
   }
 }
-
+#endif
 void drawTrimSquare(coord_t x, coord_t y)
 {
   lcdDrawSolidFilledRect(x-2, y, 15, 15, TRIM_BGCOLOR);

@@ -256,4 +256,4 @@ class DarkblueTheme: public Theme
 BitmapBuffer * DarkblueTheme::menuIconNormal[MENUS_ICONS_COUNT] = { NULL };
 BitmapBuffer * DarkblueTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
 
-const DarkblueTheme darkblueTheme;
+// const DarkblueTheme darkblueTheme;

@@ -37,20 +37,6 @@ Zone Topbar::getZone(unsigned int index) const
 
 const char * const STR_MONTHS[] = TR_MONTHS;
 
-void drawTopbarDatetime()
-{
-  lcd->drawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
-
-  struct gtm t;
-  gettime(&t);
-  char str[10];
-  sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
-  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
-
-  getTimerString(str, getValue(MIXSRC_TX_TIME));
-  lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
-}
-
 void drawTopBar()
 {
   theme->drawTopbarBackground(0);

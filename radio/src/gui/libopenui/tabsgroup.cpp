@@ -29,31 +29,30 @@
 
 #include "opentx.h" // TODO for constants...
 
-#define TOPBAR_BUTTON_WIDTH            60
+#define TOPBAR_BUTTON_WIDTH            47 // 60
 #define TOPBAR_MENU_LEFT               (TOPBAR_BUTTON_WIDTH + 3)
 
-TabsGroupHeader::TabsGroupHeader(TabsGroup * parent):
+TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
   Window(parent, { 0, 0, LCD_W, MENU_BODY_TOP }, OPAQUE),
+#if defined(TOUCH_HARDWARE)
   back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_OPENTX,
        [=]() -> uint8_t {
          parent->deleteLater();
          return 1;
        }, BUTTON_NOFOCUS),
+#endif
+  icon(icon),
   carousel(this, parent)
 {
 }
 
 void TabsGroupHeader::paint(BitmapBuffer * dc)
 {
-  dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR); // the white separation line
-  dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
-  if (title) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP, title, MENU_TITLE_COLOR);
-  }
+  theme->drawMenuBackground(dc, icon, title);
 }
 
 TabsCarousel::TabsCarousel(Window * parent, TabsGroup * menu):
-  Window(parent, { TOPBAR_BUTTON_WIDTH, 0, LCD_W - TOPBAR_BUTTON_WIDTH, MENU_HEADER_HEIGHT }, OPAQUE),
+  Window(parent, { TOPBAR_BUTTON_WIDTH, 0, LCD_W - TOPBAR_BUTTON_WIDTH, MENU_HEADER_HEIGHT + 10 }, TRANSPARENT),
   menu(menu)
 {
 }
@@ -65,15 +64,20 @@ void TabsCarousel::updateInnerWidth()
 
 void TabsCarousel::paint(BitmapBuffer * dc)
 {
-  dc->drawSolidFilledRect(0, 0, padding_left, TOPBAR_BUTTON_WIDTH, HEADER_BGCOLOR);
-  for (unsigned i=0; i<menu->tabs.size(); i++) {
-    dc->drawBitmap(padding_left + i*TOPBAR_BUTTON_WIDTH, 0, theme->getIconBitmap(menu->tabs[i]->icon, currentPage == i));
+  for (unsigned index = 0; index < menu->tabs.size(); index++) {
+    if (index != currentPage) {
+      theme->drawMenuIcon(dc, menu->tabs[index]->icon, index, false);
+    }
   }
-  coord_t x = padding_left + TOPBAR_BUTTON_WIDTH * menu->tabs.size();
-  coord_t w = width() - x;
-  if (w > 0) {
-    dc->drawSolidFilledRect(x, 0, w, TOPBAR_BUTTON_WIDTH, HEADER_BGCOLOR);
-  }
+  theme->drawMenuIcon(dc, menu->tabs[currentPage]->icon, currentPage, true);
+
+  // coord_t x = padding_left + TOPBAR_BUTTON_WIDTH * menu->tabs.size();
+  // coord_t w = width() - x;
+  // if (w > 0) {
+  // dc->drawSolidFilledRect(x, 0, w, TOPBAR_BUTTON_WIDTH, HEADER_BGCOLOR);
+  //}
+
+  // theme->drawMenuBackground(dc, menu->tabs, currentPage);
 }
 
 #if defined(TOUCH_HARDWARE)
@@ -86,9 +90,9 @@ bool TabsCarousel::onTouchEnd(coord_t x, coord_t y)
 }
 #endif
 
-TabsGroup::TabsGroup():
+TabsGroup::TabsGroup(uint8_t icon):
   Window(&mainWindow, { 0, 0, LCD_W, LCD_H }, OPAQUE),
-  header(this),
+  header(this, icon),
   body(this, { 0, MENU_BODY_TOP, LCD_W, MENU_BODY_HEIGHT })
 {
 }

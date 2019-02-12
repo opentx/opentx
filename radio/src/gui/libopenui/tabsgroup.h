@@ -96,7 +96,7 @@ class TabsGroupHeader: public Window {
     friend class TabsGroup;
 
   public:
-    TabsGroupHeader(TabsGroup * menu);
+    TabsGroupHeader(TabsGroup * menu, uint8_t icon);
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() override
@@ -113,7 +113,10 @@ class TabsGroupHeader: public Window {
     }
 
   protected:
+#if defined(TOUCH_INTERFACE)
     IconButton back;
+#endif
+    uint8_t icon;
     TabsCarousel carousel;
     const char * title = nullptr;
 };
@@ -122,7 +125,7 @@ class TabsGroup: public Window {
     friend class TabsCarousel;
 
   public:
-    TabsGroup();
+    TabsGroup(uint8_t icon);
 
     ~TabsGroup();
 

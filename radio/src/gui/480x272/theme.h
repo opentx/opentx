@@ -22,9 +22,11 @@
 #define _THEME_H_
 
 #include <list>
+#include <vector>
 #include "zone.h"
 
 class BitmapBuffer;
+class PageTab;
 
 #define MAX_THEME_OPTIONS              5
 
@@ -78,9 +80,12 @@ class Theme
 
     virtual void drawIcon(coord_t x, coord_t y, uint8_t index, LcdFlags flags) const { }
 
-    virtual void drawTopbarBackground(uint8_t icon) const = 0;
+    virtual void drawMenuBackground(BitmapBuffer *dc, uint8_t icon, const char *title) const = 0;
 
-    virtual void drawMenuIcon(uint8_t index, uint8_t position, bool selected) const { }
+    // TODO needed?
+    virtual void drawMenuIcon(BitmapBuffer * dc, uint8_t index, uint8_t position, bool selected) const { }
+
+    virtual void drawMenuBackground(BitmapBuffer * dc, const std::vector<PageTab *> & tabs, uint8_t currentTab) const { }
 
     virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const;
 

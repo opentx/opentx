@@ -1919,7 +1919,7 @@ void opentxInit()
 #endif
 
 #if defined(COLORLCD)
-  // loadTheme();
+  loadTheme();
 #endif
 
   if (g_eeGeneral.backlightMode != e_backlight_mode_off) {

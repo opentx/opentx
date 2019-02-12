@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "tabsgroup.h"
 
 const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(WHITE) },
@@ -37,6 +38,7 @@ class DefaultTheme: public Theme
 
     void loadColors() const
     {
+      TRACE("Load COLORS");
       lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
       lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
       lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
@@ -71,8 +73,10 @@ class DefaultTheme: public Theme
 
     void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_TITLE_COLOR) const
     {
+      TRACE("loadMenuIcon %s", getThemePath(filename));
       BitmapBuffer * mask = BitmapBuffer::loadMask(getThemePath(filename));
       if (mask) {
+        TRACE("OK");
         delete menuIconNormal[index];
         menuIconNormal[index] = new BitmapBuffer(BMP_RGB565, mask->getWidth(), mask->getHeight());
         if (menuIconNormal[index]) {
@@ -272,6 +276,8 @@ class DefaultTheme: public Theme
 
     virtual void update() const
     {
+      TRACE("TODO THEME::UPDATE()");
+#if 0
       uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
       uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
 
@@ -289,6 +295,7 @@ class DefaultTheme: public Theme
       lcdColorTable[HEADER_BGCOLOR_INDEX] = RGB(DARKER(GET_RED(color)), DARKER(GET_GREEN(color)), DARKER(GET_BLUE(color)));
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = color;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = color;
+#endif
       loadIcons();
       loadThemeBitmaps();
     }
@@ -304,34 +311,63 @@ class DefaultTheme: public Theme
       }
     }
 
-    virtual void drawTopbarBackground(uint8_t icon) const
+    virtual void drawMenuBackground(BitmapBuffer *dc, uint8_t icon, const char *title) const
     {
+      dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+
       if (topleftBitmap) {
-        lcd->drawBitmap(0, 0, topleftBitmap);
+        dc->drawBitmap(0, 0, topleftBitmap);
         uint16_t width = topleftBitmap->getWidth();
-        lcd->drawSolidFilledRect(width, 0, LCD_W-width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        dc->drawSolidFilledRect(width, 0, LCD_W-width, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
       }
       else {
-        lcd->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
+        dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
       }
 
       if (icon == ICON_OPENTX)
-        lcd->drawBitmap(4, 10, menuIconSelected[ICON_OPENTX]);
+        dc->drawBitmap(4, 10, menuIconSelected[ICON_OPENTX]);
       else
-        lcd->drawBitmap(5, 7, menuIconSelected[icon]);
+        dc->drawBitmap(5, 7, menuIconSelected[icon]);
 
-//      drawTopbarDatetime();
+      dc->drawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR); // the white separation line
+      dc->drawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR); // the title line background
+      if (title) {
+        lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP + 1, title, MENU_TITLE_COLOR);
+      }
+
+      drawMenuDatetime(dc);
     }
 
-    virtual void drawMenuIcon(uint8_t index, uint8_t position, bool selected) const
+    const BitmapBuffer * getIconBitmap(uint8_t index, bool selected) const override
+    {
+      // TRACE("getIconBitmap %d", index);
+      return selected ? menuIconSelected[index] : menuIconNormal[index];
+    }
+
+    void drawMenuIcon(BitmapBuffer * dc, uint8_t index, uint8_t position, bool selected) const
     {
       if (selected) {
-        lcd->drawBitmap(58+position*MENU_ICONS_SPACING-10, 0, currentMenuBackground);
-        lcd->drawBitmap(50+position*MENU_ICONS_SPACING, 7, menuIconSelected[index], MENU_TITLE_COLOR);
+        dc->drawBitmap(position*MENU_ICONS_SPACING, 0, currentMenuBackground);
+        dc->drawBitmap(position*MENU_ICONS_SPACING + 2, 7, menuIconSelected[index]);
       }
       else {
-        lcd->drawBitmap(50+position*MENU_ICONS_SPACING, 7, menuIconNormal[index], MENU_TITLE_COLOR);
+        lcd->drawBitmap(position*MENU_ICONS_SPACING, 7, menuIconNormal[index]);
       }
+    }
+
+    void drawMenuDatetime(BitmapBuffer * dc) const
+    {
+      dc->drawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, TEXT_INVERTED_COLOR);
+
+      struct gtm t;
+      gettime(&t);
+      char str[10];
+      const char * const STR_MONTHS[] = TR_MONTHS;
+      sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
+      lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE1, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
+
+      getTimerString(str, getValue(MIXSRC_TX_TIME));
+      lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
     }
 
   protected:
