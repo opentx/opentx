@@ -121,6 +121,9 @@ void processBindFrame(uint8_t module, uint8_t * frame)
       *c = '\0';
       ++reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count;
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_RECEIVED;
+      // TDOD BIND DEBUG
+      //reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index = 0;
+      //reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_SELECTED;
     }
   }
   else if (frame[3] == 0x01) {

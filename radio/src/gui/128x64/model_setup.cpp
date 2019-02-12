@@ -87,10 +87,12 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL_RAW2,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL_RAW2,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
@@ -317,10 +319,12 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Receiver Bind/Delete
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver RXID raw 2
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver Bind/Delete
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver RXID raw 2
       IF_PXX2(INTERNAL_MODULE_ADD_RECEIVER_ROW),
 
     LABEL(ExternalModule),
@@ -1146,7 +1150,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        for (uint8_t pos=0; pos<PXX2_LEN_RX_ID; pos++) {
+        for (uint8_t pos=0; pos<PXX2_LEN_RX_ID/2; pos++) {
           lcdDrawHexChar(6 + pos*FW*2, y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], 0);
         }
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
@@ -1184,6 +1188,16 @@ void menuModelSetup(event_t event)
             s_editMode = 0;
             killEvents(event);
           }
+        }
+      }
+      break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL_RAW2:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL_RAW2:
+      {
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        for (uint8_t pos = PXX2_LEN_RX_ID/2; pos < PXX2_LEN_RX_ID; pos++) {
+          lcdDrawHexChar(6 + (pos-PXX2_LEN_RX_ID/2) * FW * 2, y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], 0);
         }
       }
       break;
