@@ -21,11 +21,10 @@
 #ifndef _CHOICE_H_
 #define _CHOICE_H_
 
-#include "window.h"
+#include "formfield.h"
 #include <string>
 
-
-class CustomCurveChoice : public Window {
+class CustomCurveChoice : public FormField {
   public:
     CustomCurveChoice(Window * parent, const rect_t & rect, int16_t vmin, int16_t vmax, std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags = 0);
 
@@ -50,7 +49,7 @@ class CustomCurveChoice : public Window {
     LcdFlags flags;
 };
 
-class Choice : public Window {
+class Choice : public FormField {
   public:
     Choice(Window * parent, const rect_t & rect, const char * values, int16_t vmin, int16_t vmax, std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags = 0);
 

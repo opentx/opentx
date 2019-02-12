@@ -31,7 +31,7 @@ const uint8_t LBM_DROPDOWN[] = {
 
 Choice::Choice(Window * parent, const rect_t &rect, const char * values, int16_t vmin, int16_t vmax,
                std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags) :
-  Window(parent, rect),
+  FormField(parent, rect),
   values(values),
   vmin(vmin),
   vmax(vmax),
@@ -96,7 +96,7 @@ bool Choice::onTouchEnd(coord_t, coord_t)
 
 CustomCurveChoice::CustomCurveChoice(Window * parent, const rect_t &rect, int16_t vmin, int16_t vmax,
                                      std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags) :
-  Window(parent, rect),
+  FormField(parent, rect),
   vmin(vmin),
   vmax(vmax),
   getValue(std::move(getValue)),
