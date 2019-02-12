@@ -1,5 +1,3 @@
-#include <utility>
-
 /*
  * Copyright (C) OpenTX
  *
@@ -24,6 +22,7 @@
 #include "menu.h"
 #include "draw_functions.h"
 #include "strhelpers.h"
+#include "opentx.h"
 
 const uint8_t LBM_DROPDOWN[] = {
 #include "mask_dropdown.lbm"
@@ -58,8 +57,21 @@ void Choice::paint(BitmapBuffer * dc)
   dc->drawBitmapPattern(rect.w - 14, (rect.h - 5) / 2, LBM_DROPDOWN, lineColor);
 }
 
-#if defined(TOUCH_INTERFACE)
-bool Choice::onTouchEnd(coord_t, coord_t)
+void Choice::onKeyEvent(event_t event)
+{
+#if defined(DEBUG_WINDOWS)
+  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
+#endif
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    openMenu();
+  }
+  else {
+    FormField::onKeyEvent(event);
+  }
+}
+
+void Choice::openMenu()
 {
   auto menu = new Menu();
   auto value = getValue();
@@ -71,12 +83,12 @@ bool Choice::onTouchEnd(coord_t, coord_t)
       continue;
     if (textHandler) {
       menu->addLine(textHandler(i), [=]() {
-        setValue(i);
+          setValue(i);
       });
     }
     else {
       menu->addLine(TEXT_AT_INDEX(values, i - vmin), [=]() {
-        setValue(i);
+          setValue(i);
       });
     }
     if (value == i) {
@@ -88,7 +100,12 @@ bool Choice::onTouchEnd(coord_t, coord_t)
   if (current >= 0) {
     menu->select(current);
   }
+}
 
+#if defined(TOUCH_INTERFACE)
+bool Choice::onTouchEnd(coord_t, coord_t)
+{
+  openMenu();
   setFocus();
   return true;
 }

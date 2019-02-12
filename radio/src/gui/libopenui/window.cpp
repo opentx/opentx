@@ -31,8 +31,6 @@ Window::Window(Window * parent, const rect_t & rect, uint8_t flags):
   innerHeight(rect.h),
   windowFlags(flags)
 {
-  focusWindow = this;
-
   if (parent) {
     parent->addChild(this);
     if (!(flags & TRANSPARENT)) {
@@ -239,6 +237,10 @@ void Window::checkEvents()
       // the child asked to be deleted, we can't continue, next children will be checked on next round
       break;
     }
+  }
+
+  if (focusWindow) {
+    TRACE("%s has focus", focusWindow->getWindowDebugString().c_str());
   }
 
   if (this == focusWindow) {

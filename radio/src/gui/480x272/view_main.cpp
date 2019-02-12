@@ -122,6 +122,7 @@ int getMainViewsCount()
 ViewMain::ViewMain(bool icons):
   Window(&mainWindow, { 0, 0, LCD_W, LCD_H })
 {
+  focusWindow = this;
 }
 
 ViewMain::~ViewMain()

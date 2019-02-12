@@ -85,6 +85,8 @@ class Choice : public FormField {
     std::function<bool(int)> isValueAvailable;
     std::function<std::string(int32_t)> textHandler;
     LcdFlags flags;
+    void openMenu();
+    void onKeyEvent(event_t event);
 };
 
 #endif // _CHOICE_H_
