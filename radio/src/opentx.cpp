@@ -302,6 +302,13 @@ void generalDefault()
   theme->init();
 #endif
 
+#if defined(SIMU)
+  uint32_t cpu_uid[3] = { 0x12345678, 0x55AA55AA, 0x87654321};
+#else
+  uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
+#endif
+  memcpy(g_eeGeneral.ownerRegistrationID, &cpu_uid[1], PXX2_LEN_REGISTRATION_ID);
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
