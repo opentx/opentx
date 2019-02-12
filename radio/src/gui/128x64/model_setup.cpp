@@ -1146,7 +1146,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
+        for (uint8_t pos=0; pos<PXX2_LEN_RX_ID; pos++) {
           lcdDrawHexChar(6 + pos*FW*2, y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], 0);
         }
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
@@ -1748,7 +1748,7 @@ void menuModelPinmap(event_t event)
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
   lcdDrawTextAlignedLeft(0, STR_PINMAPSET);
-  for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
+  for (uint8_t pos=0; pos<PXX2_LEN_RX_ID; pos++) {
     lcdDrawHexChar(50 + pos*FW*2, 0, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[g_receiverIdx].rxID[pos], 0);
   }
   lcdInvertLine(0);
