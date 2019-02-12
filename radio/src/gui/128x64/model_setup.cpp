@@ -319,12 +319,12 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Receiver Bind/Delete
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver RXID raw 2
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, -1),           // Receiver RXID raw 2
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver Bind/Delete
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver RXID raw 2
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, -1),           // Receiver RXID raw 2
       IF_PXX2(INTERNAL_MODULE_ADD_RECEIVER_ROW),
 
     LABEL(ExternalModule),
@@ -1050,8 +1050,10 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_REGISTRATION_ID:
       {
         lcdDrawTextAlignedLeft(y, "Reg. ID");
+        uint8_t offset = 40;
         for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
-          lcdDrawHexChar(MODEL_SETUP_2ND_COLUMN + pos*FW*2,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
+          lcdDrawHexChar(offset,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
+          offset+= 2*FWNUM+1;
           if (attr && menuHorizontalPosition == pos) {
             CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelRegistrationID[pos], 0xff);
           }
