@@ -82,8 +82,12 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
     reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_COUNTER_ID_RECEIVED;
   }
   else if (frame[3] == 0x01) {
+    // RX_ID follows, we check it is good
+    if (1) {
+
+    }
     // PASSWORD follows, we check it is good
-    if (memcmp(&frame[4], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
+    if (memcmp(&frame[8], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       POPUP_INFORMATION(STR_REG_OK);
