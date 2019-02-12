@@ -65,11 +65,11 @@ void TabsCarousel::updateInnerWidth()
 void TabsCarousel::paint(BitmapBuffer * dc)
 {
   for (unsigned index = 0; index < menu->tabs.size(); index++) {
-    if (index != currentPage) {
+    if (index != currentIndex) {
       theme->drawMenuIcon(dc, menu->tabs[index]->icon, index, false);
     }
   }
-  theme->drawMenuIcon(dc, menu->tabs[currentPage]->icon, currentPage, true);
+  theme->drawMenuIcon(dc, menu->tabs[currentIndex]->icon, currentIndex, true);
 
   // coord_t x = padding_left + TOPBAR_BUTTON_WIDTH * menu->tabs.size();
   // coord_t w = width() - x;
@@ -77,7 +77,7 @@ void TabsCarousel::paint(BitmapBuffer * dc)
   // dc->drawSolidFilledRect(x, 0, w, TOPBAR_BUTTON_WIDTH, HEADER_BGCOLOR);
   //}
 
-  // theme->drawMenuBackground(dc, menu->tabs, currentPage);
+  // theme->drawMenuBackground(dc, menu->tabs, currentIndex);
 }
 
 #if defined(TOUCH_HARDWARE)
@@ -85,7 +85,7 @@ bool TabsCarousel::onTouchEnd(coord_t x, coord_t y)
 {
   unsigned index = (x - padding_left) / TOPBAR_BUTTON_WIDTH;
   menu->setCurrentTab(index);
-  currentPage = index;
+  setCurrentIndex(index);
   return true;
 }
 #endif
@@ -152,8 +152,23 @@ void TabsGroup::setCurrentTab(PageTab * tab)
 void TabsGroup::checkEvents()
 {
   Window::checkEvents();
-  if (currentTab)
+  if (currentTab) {
     currentTab->checkEvents();
+  }
+}
+
+bool TabsGroup::onKeyEvent(event_t event)
+{
+  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
+  if (event == EVT_KEY_BREAK(KEY_PGDN)) {
+    uint8_t current = header.carousel.getCurrentIndex();
+    setCurrentTab((current + 1) % tabs.size());
+    return true;
+  }
+
+  if (parent) {
+    parent->onKeyEvent(event);
+  }
 }
 
 void TabsGroup::paint(BitmapBuffer * dc)

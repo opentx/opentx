@@ -351,7 +351,7 @@ class DefaultTheme: public Theme
         dc->drawBitmap(position*MENU_ICONS_SPACING + 2, 7, menuIconSelected[index]);
       }
       else {
-        lcd->drawBitmap(position*MENU_ICONS_SPACING, 7, menuIconNormal[index]);
+        lcd->drawBitmap(position*MENU_ICONS_SPACING + 2, 7, menuIconNormal[index]);
       }
     }
 

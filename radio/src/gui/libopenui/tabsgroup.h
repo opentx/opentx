@@ -78,6 +78,16 @@ class TabsCarousel: public Window {
     }
 #endif
 
+    inline void setCurrentIndex(uint8_t index)
+    {
+      currentIndex = index;
+    }
+
+    inline uint8_t getCurrentIndex()
+    {
+      return currentIndex;
+    }
+
     void updateInnerWidth();
 
     void paint(BitmapBuffer * dc) override;
@@ -89,7 +99,7 @@ class TabsCarousel: public Window {
   protected:
     constexpr static uint8_t padding_left = 3;
     TabsGroup * menu;
-    uint8_t currentPage = 0;
+    uint8_t currentIndex = 0;
 };
 
 class TabsGroupHeader: public Window {
@@ -140,16 +150,17 @@ class TabsGroup: public Window {
 
     void removeTab(unsigned index);
 
-    void setCurrentTab(PageTab * tab);
-
     void setCurrentTab(unsigned index)
     {
       if (index < tabs.size()) {
+        header.carousel.setCurrentIndex(index);
         setCurrentTab(tabs[index]);
       }
     }
 
     void checkEvents() override;
+
+    bool onKeyEvent(event_t event) override;
 
     void paint(BitmapBuffer * dc) override;
 
@@ -162,6 +173,7 @@ class TabsGroup: public Window {
     Window body;
     std::vector<PageTab *> tabs;
     PageTab * currentTab = nullptr;
+    void setCurrentTab(PageTab * tab);
 };
 
 #endif

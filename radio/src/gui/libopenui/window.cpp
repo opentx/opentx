@@ -240,14 +240,18 @@ void Window::checkEvents()
   if (this == focusWindow) {
     event_t event = getEvent(false);
     if (event) {
-      onKeyEvent(event);
+      TRACE("Event 0x%x received ...", event);
+      this->onKeyEvent(event);
     }
   }
 }
 
 bool Window::onKeyEvent(event_t event)
 {
-  return false;
+  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
+  if (parent) {
+    parent->onKeyEvent(event);
+  }
 }
 
 #if defined(TOUCH_HARDWARE)
