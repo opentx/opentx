@@ -160,7 +160,7 @@ class TabsGroup: public Window {
 
     void checkEvents() override;
 
-    bool onKeyEvent(event_t event) override;
+    void onKeyEvent(event_t event) override;
 
     void paint(BitmapBuffer * dc) override;
 

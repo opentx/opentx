@@ -80,4 +80,6 @@ void NumberEdit::onFocusLost()
 #if defined(TOUCH_INTERFACE)
   NumberKeyboard::instance()->disable(true);
 #endif
+
+  FormField::onFocusLost();
 }

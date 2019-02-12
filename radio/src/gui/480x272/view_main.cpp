@@ -129,7 +129,7 @@ ViewMain::~ViewMain()
   deleteChildren();
 }
 
-bool ViewMain::onKeyEvent(event_t event)
+void ViewMain::onKeyEvent(event_t event)
 {
   switch (event) {
     case EVT_KEY_LONG(KEY_MODEL):
@@ -173,10 +173,7 @@ bool ViewMain::onKeyEvent(event_t event)
       menu->addLine(STR_ABOUT_US, [=]() {
           // TODO
       });
-      return true;
   }
-
-  return true;
 }
 
 void ViewMain::checkEvents()

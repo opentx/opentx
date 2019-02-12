@@ -114,6 +114,10 @@ void Window::clearFocus()
 
 void Window::setFocus()
 {
+#if defined(DEBUG_WINDOWS)
+  TRACE("%s setFocus()", getWindowDebugString().c_str());
+#endif
+
   if (focusWindow != this) {
     clearFocus();
     focusWindow = this;
@@ -246,7 +250,7 @@ void Window::checkEvents()
   }
 }
 
-bool Window::onKeyEvent(event_t event)
+void Window::onKeyEvent(event_t event)
 {
   TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
   if (parent) {

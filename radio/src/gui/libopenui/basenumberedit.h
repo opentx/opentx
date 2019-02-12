@@ -21,13 +21,13 @@
 #ifndef _BASENUMBEREDIT_H_
 #define _BASENUMBEREDIT_H_
 
-#include "window.h"
+#include "formfield.h"
 
-class BaseNumberEdit : public Window {
+class BaseNumberEdit : public FormField {
   public:
     BaseNumberEdit(Window * parent, const rect_t &rect, int32_t vmin, int32_t vmax,
                    std::function<int32_t()> getValue, std::function<void(int32_t)> setValue = nullptr, LcdFlags flags = 0):
-      Window(parent, rect),
+      FormField(parent, rect),
       vmin(vmin),
       vmax(vmax),
       _getValue(std::move(getValue)),

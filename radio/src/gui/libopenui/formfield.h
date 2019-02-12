@@ -18,30 +18,40 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _VIEW_MAIN_H_
-#define _VIEW_MAIN_H_
+#ifndef _FORMFIELD_H_
+#define _FORMFIELD_H_
 
 #include "window.h"
 
-class ViewMain: public Window {
+class FormField: public Window {
   public:
-    ViewMain(bool icons=true);
-
-    ~ViewMain() override;
-
-#if defined(DEBUG_WINDOWS)
-    virtual std::string getName()
+    FormField(Window * parent, const rect_t & rect) :
+      Window(parent, rect)
     {
-      return "ViewMain";
+      if (current) {
+        setPreviousField(current);
+        current->setNextField(this);
+      }
+
+      current = this;
     }
-#endif
+
+    inline void setNextField(FormField *field)
+    {
+      next = field;
+    }
+
+    inline void setPreviousField(FormField * field)
+    {
+      previous = field;
+    }
+
+  protected:
+    static FormField * current;
+    FormField * next = nullptr;
+    FormField * previous = nullptr;
 
     void onKeyEvent(event_t event) override;
-
-    void paint(BitmapBuffer * dc) override;
-
-    void checkEvents() override;
 };
 
-#endif // _VIEW_MAIN_H_
-
+#endif

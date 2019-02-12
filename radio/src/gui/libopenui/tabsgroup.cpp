@@ -157,16 +157,24 @@ void TabsGroup::checkEvents()
   }
 }
 
-bool TabsGroup::onKeyEvent(event_t event)
+void TabsGroup::onKeyEvent(event_t event)
 {
+#if defined(DEBUG_WINDOWS)
   TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
-  if (event == EVT_KEY_BREAK(KEY_PGDN)) {
-    uint8_t current = header.carousel.getCurrentIndex();
-    setCurrentTab((current + 1) % tabs.size());
-    return true;
-  }
+#endif
 
-  if (parent) {
+  if (event == EVT_KEY_BREAK(KEY_PGDN)) {
+    uint8_t current = header.carousel.getCurrentIndex() + 1;
+    setCurrentTab(current >= tabs.size() ? 0 : current);
+    return;
+  }
+  else if (event == EVT_KEY_LONG(KEY_PGDN)) {
+    killEvents(event);
+    uint8_t current = header.carousel.getCurrentIndex();
+    setCurrentTab(current == 0 ? tabs.size() - 1 : current - 1);
+    return;
+  }
+  else if (parent) {
     parent->onKeyEvent(event);
   }
 }

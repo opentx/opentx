@@ -238,10 +238,13 @@ class Window {
 
     virtual void onFocusLost()
     {
+#if defined(DEBUG_WINDOWS)
+      TRACE("%s onFocusLost()", getWindowDebugString().c_str());
+#endif
       invalidate();
     };
 
-    virtual bool onKeyEvent(event_t event);
+    virtual void onKeyEvent(event_t event);
 
 #if defined(TOUCH_HARDWARE)
     virtual bool onTouchStart(coord_t x, coord_t y);

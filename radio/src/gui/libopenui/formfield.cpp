@@ -18,30 +18,28 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _VIEW_MAIN_H_
-#define _VIEW_MAIN_H_
+#include "formfield.h"
+#include "opentx.h"
 
-#include "window.h"
+FormField * FormField::current = nullptr;
 
-class ViewMain: public Window {
-  public:
-    ViewMain(bool icons=true);
-
-    ~ViewMain() override;
-
+void FormField::onKeyEvent(event_t event)
+{
 #if defined(DEBUG_WINDOWS)
-    virtual std::string getName()
-    {
-      return "ViewMain";
-    }
+  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
 #endif
 
-    void onKeyEvent(event_t event) override;
-
-    void paint(BitmapBuffer * dc) override;
-
-    void checkEvents() override;
-};
-
-#endif // _VIEW_MAIN_H_
-
+  if (event == EVT_KEY_BREAK(KEY_DOWN)) {
+    if (next) {
+      next->setFocus();
+    }
+  }
+  else if (event == EVT_KEY_BREAK(KEY_UP)) {
+    if (previous) {
+      previous->setFocus();
+    }
+  }
+  else {
+    Window::onKeyEvent(event);
+  }
+}
