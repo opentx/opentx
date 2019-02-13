@@ -931,6 +931,7 @@
 #define TR_EXTERNALRF          "External RF"
 #define TR_FAILSAFE            "Failsafe mode"
 #define TR_FAILSAFESET         "FAILSAFE SETTINGS"
+#define TR_REG_ID                      INDENT "Reg. ID"
 #define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"

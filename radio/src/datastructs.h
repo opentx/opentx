@@ -419,7 +419,7 @@ PACK(struct ReceiverData {
   uint8_t  telemetry:1;
   uint8_t  spare:6;
   uint64_t channelMapping; // each receiver output (16) can be assigned to one of the 16 channels
-  uint8_t  rxID[PXX2_LEN_RX_ID];
+  char  rxID[PXX2_LEN_RX_ID];
 });
 
 /*
@@ -632,7 +632,7 @@ PACK(struct ModelData {
 
   CUSTOM_SCREENS_DATA
 
-  uint8_t modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
+  char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
 });
 
 /*

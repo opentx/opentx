@@ -927,6 +927,7 @@
 #define TR_EXTERNALRF          "Zewn.Moduł RF"
 #define TR_FAILSAFE            TR(INDENT"Failsafe",INDENT"Tryb Failsafe")
 #define TR_FAILSAFESET         "USTAWIENIE FAILSAFE"
+#define TR_REG_ID                      INDENT "Reg. ID"
 #define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"

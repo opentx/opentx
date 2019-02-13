@@ -83,16 +83,14 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NUMBER,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_ID,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL_RAW2,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_ID,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL_RAW2,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
@@ -155,7 +153,7 @@ enum MenuModelSetupItems {
 
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
-  #define CURRENT_RECEIVER_EDITED(k)      (k >= ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER ? 1 : 0)
+  #define CURRENT_RECEIVER_EDITED(k)      (k >= ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_ID ? 1 : 0)
   #define INTERNAL_MODULE_ADD_RECEIVER_ROW       (g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[MAX_RECEIVERS_PER_MODULE-1].enabled ? HIDDEN_ROW : (uint8_t)0)
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k>=ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
@@ -319,12 +317,10 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Receiver Bind/Delete
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, -1),           // Receiver RXID raw 2
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver Bind/Delete
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, -1),           // Receiver RXID raw 2
       IF_PXX2(INTERNAL_MODULE_ADD_RECEIVER_ROW),
 
     LABEL(ExternalModule),
@@ -1048,19 +1044,8 @@ void menuModelSetup(event_t event)
 
 #if defined(PCBTARANIS)
       case ITEM_MODEL_REGISTRATION_ID:
-      {
-        lcdDrawTextAlignedLeft(y, "Reg. ID");
-        uint8_t offset = 40;
-        for (uint8_t pos=0; pos<PXX2_LEN_REGISTRATION_ID; pos++) {
-          lcdDrawHexChar(offset,y, g_model.modelRegistrationID[pos], menuHorizontalPosition==pos ? attr : 0);
-          offset+= 2*FWNUM+1;
-          if (attr && menuHorizontalPosition == pos) {
-            CHECK_INCDEC_MODELVAR_ZERO(event, g_model.modelRegistrationID[pos], 0xff);
-          }
-        }
-      }
-
-      break;
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_REG_ID, g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID), event, attr);
+        break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM:
         lcdDrawTextAlignedLeft(y, STR_RECEIVER_NUM);
@@ -1115,12 +1100,14 @@ void menuModelSetup(event_t event)
         }
         break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NUMBER:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NUMBER:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_ID:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_ID:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        lcdDrawTextAlignedLeft(y, INDENT "Receiver");
-        lcdDrawNumber(lcdLastRightPos + 3, y, receiverIdx + 1);
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+
+        lcdDrawTextAlignedLeft(y, STR_REG_ID);
+        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxID, PXX2_LEN_RX_ID, 0);
       }
       break;
 
@@ -1152,9 +1139,9 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        for (uint8_t pos=0; pos<PXX2_LEN_RX_ID/2; pos++) {
-          lcdDrawHexChar(6 + pos*FW*2, y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], 0);
-        }
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+
+        lcdDrawSizedText(6, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxID, PXX2_LEN_RX_ID, 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS, y, STR_DEL_BUTTON, menuHorizontalPosition==1 ? attr : 0);
         if (attr) {
@@ -1194,15 +1181,6 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL_RAW2:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL_RAW2:
-      {
-        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        for (uint8_t pos = PXX2_LEN_RX_ID/2; pos < PXX2_LEN_RX_ID; pos++) {
-          lcdDrawHexChar(6 + (pos-PXX2_LEN_RX_ID/2) * FW * 2, y, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID[pos], 0);
-        }
-      }
-      break;
 #endif
 
 #if defined(PCBTARANIS)
