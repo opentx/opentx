@@ -18,19 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
+#include <inttypes.h>
+
+void getCPUUniqueID(char * s);
+
+#define LEN_CPU_UID                    (3*8+2)
 
 #if defined(SIMU)
-const uint32_t cpu_uid[3] = { 0x12345678, 0x55AA55AA, 0x87654321};
+extern const uint32_t cpu_uid[3];
 #else
-const uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
+extern const uint32_t * cpu_uid;
 #endif
-
-void getCPUUniqueID(char * s)
-{
-  char * tmp = strAppendUnsigned(s, cpu_uid[0], 8, 16);
-  *tmp = ' ';
-  tmp = strAppendUnsigned(tmp+1, cpu_uid[1], 8, 16);
-  *tmp = ' ';
-  strAppendUnsigned(tmp+1, cpu_uid[2], 8, 16);
-}

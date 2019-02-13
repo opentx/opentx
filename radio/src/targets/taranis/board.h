@@ -22,6 +22,7 @@
 #define _BOARD_H_
 
 #include "definitions.h"
+#include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -122,10 +123,6 @@ void delay_ms(uint32_t ms);
 #ifdef __cplusplus
 }
 #endif
-
-// CPU Unique ID
-#define LEN_CPU_UID                     (3*8+2)
-void getCPUUniqueID(char * s);
 
 // SD driver
 #define BLOCK_SIZE                      512 /* Block Size in Bytes */

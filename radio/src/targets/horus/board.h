@@ -22,6 +22,7 @@
 #define _BOARD_HORUS_H_
 
 #include "definitions.h"
+#include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -137,10 +138,6 @@ void delay_ms(uint32_t ms);
 #else
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
-
-// CPU Unique ID
-#define LEN_CPU_UID                    (3*8+2)
-void getCPUUniqueID(char * s);
 
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
