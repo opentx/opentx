@@ -239,7 +239,7 @@ enum MenuModelSetupItems {
 void onPXX2BindMenu(const char * result)
 {
   reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]);
-  reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_SELECTED;
+  reusableBuffer.modelsetup.pxx2_bind_step = BIND_RX_ID_SELECTED;
 }
 
 void onBindMenu(const char * result)
@@ -1160,13 +1160,13 @@ void menuModelSetup(event_t event)
         if (attr) {
           if (menuHorizontalPosition == 0) {
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-              reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_START;
+              reusableBuffer.modelsetup.pxx2_bind_step = BIND_START;
               reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count = 0;
               moduleSettings[INTERNAL_MODULE].mode ^= MODULE_MODE_BIND;
             }
             if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_BIND) {
               s_editMode = 1;
-              if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_RX_ID_RECEIVED) {
+              if (reusableBuffer.modelsetup.pxx2_bind_step == BIND_RX_ID_RECEIVED) {
                 popupMenuItemsCount = min<uint8_t>(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count, PXX2_MAX_RECEIVERS_PER_MODULE);
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
                   popupMenuItems[i] = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[i];
@@ -1177,7 +1177,7 @@ void menuModelSetup(event_t event)
             else {
               s_editMode = 0;
             }
-            if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_OK) {
+            if (reusableBuffer.modelsetup.pxx2_bind_step == BIND_OK) {
               memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID, reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], PXX2_LEN_RX_ID);
             }
           }
