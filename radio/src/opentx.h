@@ -1122,9 +1122,9 @@ union ReusableBuffer
       uint8_t pxx2_bind_step;
     };
     uint32_t pxx2_bind_wait_timeout;
-    uint8_t pxx2_register_rx_id[PXX2_LEN_RX_ID];
-    char pxx2_bind_candidate_receivers_ids[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_ID];
-    char pxx2_bind_candidate_receivers_names[PXX2_MAX_RECEIVERS_PER_MODULE][3*PXX2_LEN_RX_ID+1];
+    uint8_t pxx2_register_rx_id[PXX2_LEN_RX_NAME];
+    char pxx2_bind_candidate_receivers_ids[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
+    char pxx2_bind_candidate_receivers_names[PXX2_MAX_RECEIVERS_PER_MODULE][3*PXX2_LEN_RX_NAME+1];
     uint8_t pxx2_bind_candidate_receivers_count;
     uint8_t pxx2_bind_selected_receiver_index;
   } modelsetup;

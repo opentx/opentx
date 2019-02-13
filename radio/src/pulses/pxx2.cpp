@@ -60,7 +60,7 @@ bool Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
   if (reusableBuffer.modelsetup.pxx2_register_step == REGISTER_COUNTER_ID_RECEIVED) {
     Pxx2Transport::addByte(0x01);
-    for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(0x00);
     }
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
@@ -87,9 +87,9 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
       return false;
     }
   }
-  else if (reusableBuffer.modelsetup.pxx2_bind_step == BIND_RX_ID_SELECTED) {
+  else if (reusableBuffer.modelsetup.pxx2_bind_step == BIND_RX_NAME_SELECTED) {
     Pxx2Transport::addByte(0x01);
-    for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index][i]);
     }
     Pxx2Transport::addByte(g_model.header.modelId[INTERNAL_MODULE]);

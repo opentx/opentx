@@ -237,7 +237,7 @@ enum MenuModelSetupItems {
 void onPXX2BindMenu(const char * result)
 {
   reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index = (result - reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]) / sizeof(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[0]);
-  reusableBuffer.modelsetup.pxx2_bind_step = BIND_RX_ID_SELECTED;
+  reusableBuffer.modelsetup.pxx2_bind_step = BIND_RX_NAME_SELECTED;
 }
 
 void onBindMenu(const char * result)
@@ -303,13 +303,13 @@ void menuModelSetup(event_t event)
 
     NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
-    IF_PXX2(PXX2_LEN_REGISTRATION_ID - 1), // Registration ID
+    IF_PXX2(memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID ) ? (uint8_t)-1: HIDDEN_ROW), // Registration ID
 
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS, // module mode (PXX(2) / None)
       INTERNAL_MODULE_CHANNELS_ROWS, // Channels min and count
       IF_NOT_PXX2(IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
-      IF_PXX2(0),                                                  // Model Number
+      IF_PXX2(0),    // Model Number
       ANTENNA_ROW
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Module start channel (pxx2 always send 16)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Range check and Register buttons
@@ -1106,8 +1106,8 @@ void menuModelSetup(event_t event)
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 
-        lcdDrawTextAlignedLeft(y, STR_REG_ID);
-        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxID, PXX2_LEN_RX_ID, 0);
+        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, 0);
       }
       break;
 
@@ -1141,7 +1141,7 @@ void menuModelSetup(event_t event)
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 
-        lcdDrawSizedText(6, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxID, PXX2_LEN_RX_ID, 0);
+        lcdDrawSizedText(6, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS, y, STR_DEL_BUTTON, menuHorizontalPosition==1 ? attr : 0);
         if (attr) {
@@ -1153,7 +1153,7 @@ void menuModelSetup(event_t event)
             }
             if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_BIND) {
               s_editMode = 1;
-              if (reusableBuffer.modelsetup.pxx2_bind_step == BIND_RX_ID_RECEIVED) {
+              if (reusableBuffer.modelsetup.pxx2_bind_step == BIND_RX_NAME_RECEIVED) {
                 popupMenuItemsCount = min<uint8_t>(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count, PXX2_MAX_RECEIVERS_PER_MODULE);
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
                   popupMenuItems[i] = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[i];
@@ -1165,7 +1165,7 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
             }
             if (reusableBuffer.modelsetup.pxx2_bind_step == BIND_OK) {
-              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxID, reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], PXX2_LEN_RX_ID);
+              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxName, reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], PXX2_LEN_RX_NAME);
             }
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
@@ -1742,8 +1742,8 @@ void menuModelPinmap(event_t event)
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
   lcdDrawTextAlignedLeft(0, STR_PINMAPSET);
-  for (uint8_t pos=0; pos<PXX2_LEN_RX_ID; pos++) {
-    lcdDrawHexChar(50 + pos*FW*2, 0, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[g_receiverIdx].rxID[pos], 0);
+  for (uint8_t pos=0; pos<PXX2_LEN_RX_NAME; pos++) {
+    lcdDrawHexChar(50 + pos*FW*2, 0, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[g_receiverIdx].rxName[pos], 0);
   }
   lcdInvertLine(0);
 

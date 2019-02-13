@@ -49,8 +49,8 @@ enum PXX2RegisterSteps {
 
 enum PXX2BindSteps {
     BIND_START,
-    BIND_RX_ID_RECEIVED,
-    BIND_RX_ID_SELECTED,
+    BIND_RX_NAME_RECEIVED,
+    BIND_RX_NAME_SELECTED,
     BIND_WAIT,
     BIND_OK
 };

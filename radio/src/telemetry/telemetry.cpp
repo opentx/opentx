@@ -78,13 +78,13 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
   }
 
   if (frame[3] == 0x00) {
-    // RX_ID follows, we store it for the next step
-    memcpy(reusableBuffer.modelsetup.pxx2_register_rx_id, &frame[4], PXX2_LEN_RX_ID);
+    // RX_NAME follows, we store it for the next step
+    memcpy(reusableBuffer.modelsetup.pxx2_register_rx_id, &frame[4], PXX2_LEN_RX_NAME);
     reusableBuffer.modelsetup.pxx2_register_step = REGISTER_COUNTER_ID_RECEIVED;
   }
   else if (frame[3] == 0x01) {
-    // RX_ID + PASSWORD follow, we check they are good
-    if (memcmp(&frame[4], reusableBuffer.modelsetup.pxx2_register_rx_id, PXX2_LEN_RX_ID) == 0 &&
+    // RX_NAME + PASSWORD follow, we check they are good
+    if (memcmp(&frame[4], reusableBuffer.modelsetup.pxx2_register_rx_id, PXX2_LEN_RX_NAME) == 0 &&
         memcmp(&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       reusableBuffer.modelsetup.pxx2_register_step = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
@@ -102,15 +102,15 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   if (frame[3] == 0x00) {
     bool found = false;
     for (uint8_t i=0; i<reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count; i++) {
-      if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[i], &frame[4], PXX2_LEN_RX_ID) == 0) {
+      if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
         found = true;
         break;
       }
     }
     if (!found && reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count], &frame[4], PXX2_LEN_RX_ID);
+      memcpy(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count], &frame[4], PXX2_LEN_RX_NAME);
       char * c = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count];
-      for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
+      for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
         uint8_t byte = frame[4 + i];
         uint8_t quartet = (byte >> 4);
         *c++ = (quartet >= 10 ? quartet + 'A' - 10 : quartet + '0');
@@ -120,11 +120,11 @@ void processBindFrame(uint8_t module, uint8_t * frame)
       }
       *c = '\0';
       ++reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count;
-      reusableBuffer.modelsetup.pxx2_bind_step = BIND_RX_ID_RECEIVED;
+      reusableBuffer.modelsetup.pxx2_bind_step = BIND_RX_NAME_RECEIVED;
     }
   }
   else if (frame[3] == 0x01) {
-    if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], &frame[4], PXX2_LEN_RX_ID) == 0) {
+    if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], &frame[4], PXX2_LEN_RX_NAME) == 0) {
       reusableBuffer.modelsetup.pxx2_bind_step = BIND_WAIT;
       reusableBuffer.modelsetup.pxx2_bind_wait_timeout = get_tmr10ms() + 30;
     }

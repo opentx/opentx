@@ -921,7 +921,8 @@
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            TR("Failsafe", "Mód Failsafe")
 #define TR_FAILSAFESET         "NASTAVENÍ FAILSAFE"
-#define TR_REG_ID                      INDENT "Reg. ID"
+#define TR_REG_ID                      TR("Reg. ID", "Registration ID")
+#define TR_OWNER_ID                    "Owner ID"
 #define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"

@@ -583,6 +583,7 @@ extern const char STR_FAILSAFE[];
 extern const char STR_FAILSAFESET[];
 extern const char STR_RECEIVER[];
 extern const char STR_REG_ID[];
+extern const char STR_OWNER_ID[];
 extern const char STR_PINMAPSET[];
 extern const char STR_HOLD[];
 extern const char STR_NONE[];
