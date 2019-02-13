@@ -29,12 +29,12 @@ void FormField::onKeyEvent(event_t event)
   TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
 #endif
 
-  if (event == EVT_KEY_BREAK(KEY_DOWN)) {
+  if (event == EVT_ROTARY_RIGHT/*EVT_KEY_BREAK(KEY_DOWN)*/) {
     if (next) {
       next->setFocus();
     }
   }
-  else if (event == EVT_KEY_BREAK(KEY_UP)) {
+  else if (event == EVT_ROTARY_LEFT/*EVT_KEY_BREAK(KEY_UP)*/) {
     if (previous) {
       previous->setFocus();
     }

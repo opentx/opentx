@@ -36,10 +36,11 @@ class ViewMain: public Window {
     }
 #endif
 
+    static ViewMain * instance;
+
+  protected:
     void onKeyEvent(event_t event) override;
-
     void paint(BitmapBuffer * dc) override;
-
     void checkEvents() override;
 };
 

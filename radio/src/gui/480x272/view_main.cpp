@@ -119,9 +119,12 @@ int getMainViewsCount()
   return MAX_CUSTOM_SCREENS;
 }
 
+ViewMain * ViewMain::instance = nullptr;
+
 ViewMain::ViewMain(bool icons):
   Window(&mainWindow, { 0, 0, LCD_W, LCD_H })
 {
+  instance = this;
   focusWindow = this;
 }
 
@@ -134,6 +137,7 @@ void ViewMain::onKeyEvent(event_t event)
 {
   switch (event) {
     case EVT_KEY_LONG(KEY_MODEL):
+      killEvents(event);
       new ModelMenu();
       break;
 

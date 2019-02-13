@@ -238,11 +238,7 @@ void Window::checkEvents()
       break;
     }
   }
-
-  if (focusWindow) {
-    TRACE("%s has focus", focusWindow->getWindowDebugString().c_str());
-  }
-
+  
   if (this == focusWindow) {
     event_t event = getEvent(false);
     if (event) {
