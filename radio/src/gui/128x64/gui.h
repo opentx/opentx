@@ -72,13 +72,14 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_REP10                   0x40
 #define NO_DBLKEYS                     0x80
 
-  #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
-  #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
-  #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
+#define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+#define INCDEC_SET_FLAG(f)           incdecFlag = (f)
+#define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
+#define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
 // mawrow special values
-#define TITLE_ROW      ((uint8_t)-1)
+#define READONLY_ROW   ((uint8_t)-1)
+#define TITLE_ROW      READONLY_ROW
 #define HIDDEN_ROW     ((uint8_t)-2)
 
 struct CheckIncDecStops {

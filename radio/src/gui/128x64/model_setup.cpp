@@ -308,7 +308,6 @@ void runPopupRegister(event_t event)
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, "Rx Name");
     editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.modelSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
 
-    // lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, STR_POPUPS_ENTER_EXIT);
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
     lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
 
@@ -321,6 +320,11 @@ void runPopupRegister(event_t event)
   menuHorizontalPosition = 1;
   menuVerticalOffset = backupVerticalOffset;
   s_editMode = (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_REGISTER ? EDIT_MODIFY_FIELD : 0);
+}
+
+inline bool isDefaultModelRegistrationID()
+{
+  return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
 }
 
 void menuModelSetup(event_t event)
@@ -358,7 +362,7 @@ void menuModelSetup(event_t event)
 
     NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
-    IF_PXX2(memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID ) ? (uint8_t)-1: HIDDEN_ROW), // Registration ID
+    IF_PXX2(isDefaultModelRegistrationID() ? HIDDEN_ROW : READONLY_ROW), // Registration ID
 
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS, // module mode (PXX(2) / None)
@@ -1121,6 +1125,7 @@ void menuModelSetup(event_t event)
           if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
             if (menuHorizontalPosition == 1) {
               reusableBuffer.modelSetup.pxx2.registerPopupVerticalPosition = 0;
+              reusableBuffer.modelSetup.pxx2.registerPopupHorizontalPosition = 0;
               reusableBuffer.modelSetup.pxx2.registerPopupEditMode = 0;
               s_editMode = 0;
               POPUP_INPUT("", runPopupRegister);
