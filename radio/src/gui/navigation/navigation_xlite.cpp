@@ -292,7 +292,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   return newval;
 }
 
-#define SCROLL_TH      64
 #define SCROLL_POT1_TH 32
 
 #define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
@@ -374,8 +373,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
     menuCalibrationState = 0;
     drawScreenIndex(curr, menuTabSize, attr);
   }
-
-  DISPLAY_PROGRESS_BAR(menuTab ? lcdLastRightPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
 
   switch (event)
   {

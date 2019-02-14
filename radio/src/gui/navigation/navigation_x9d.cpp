@@ -393,8 +393,6 @@ void check(const char * name, event_t event, uint8_t curr, const MenuHandlerFunc
     lcdDrawFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, SOLID, FILL_WHITE|GREY_DEFAULT);
   }
 
-  DISPLAY_PROGRESS_BAR(menuTab ? lcdLastRightPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
-
   switch (event) {
     case EVT_ENTRY:
       menuEntryTime = get_tmr10ms();

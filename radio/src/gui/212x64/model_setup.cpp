@@ -304,7 +304,7 @@ void menuModelSetup(event_t event)
   MENU_CHECK(STR_MENUSETUP, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX);
 
   if (event == EVT_ENTRY) {
-    reusableBuffer.modelsetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    reusableBuffer.modelSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
 #if (defined(DSM2) || defined(PXX))
@@ -1182,10 +1182,10 @@ void menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
           if (attr)
             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_LBT_POWER_MAX);
-          if (attr && s_editMode == 0 && reusableBuffer.modelsetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
-            if((reusableBuffer.modelsetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
+          if (attr && s_editMode == 0 && reusableBuffer.modelSetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
+            if((reusableBuffer.modelSetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
               POPUP_WARNING(STR_REBIND);
-            reusableBuffer.modelsetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+            reusableBuffer.modelSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
           }
         }
       }

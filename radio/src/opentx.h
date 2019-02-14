@@ -1118,20 +1118,26 @@ union ReusableBuffer
     char msg[64];
     uint8_t r9mPower;
     union {
-      uint8_t pxx2_register_step;
-      uint8_t pxx2_bind_step;
+      struct {
+        union {
+          uint8_t registerStep;
+          uint8_t bindStep;
+        };
+        uint32_t bindWaitTimeout;
+        uint8_t registerPopupVerticalPosition;
+        uint8_t registerPopupHorizontalPosition;
+        int8_t registerPopupEditMode;
+        char registerRxName[PXX2_LEN_RX_NAME];
+        char bindCandidateReceiversIds[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
+        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][3*PXX2_LEN_RX_NAME+1];
+        uint8_t bindCandidateReceiversCount;
+        uint8_t bindSelectedReceiverIndex;
+      } pxx2;
     };
-    uint32_t pxx2_bind_wait_timeout;
-    uint8_t pxx2_register_rx_id[PXX2_LEN_RX_NAME];
-    char pxx2_bind_candidate_receivers_ids[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
-    char pxx2_bind_candidate_receivers_names[PXX2_MAX_RECEIVERS_PER_MODULE][3*PXX2_LEN_RX_NAME+1];
-    uint8_t pxx2_bind_candidate_receivers_count;
-    uint8_t pxx2_bind_selected_receiver_index;
-  } modelsetup;
+  } modelSetup;
 
   // 103 bytes
-  struct
-  {
+  struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
@@ -1148,8 +1154,7 @@ union ReusableBuffer
 
 #if defined(SDCARD)
   // 274 bytes
-  struct
-  {
+  struct {
     char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
     uint32_t available;
     uint16_t offset;
@@ -1158,8 +1163,7 @@ union ReusableBuffer
   } sdmanager;
 #endif
 
-  struct
-  {
+  struct {
     uint8_t stickMode;
   } generalSettings;
 

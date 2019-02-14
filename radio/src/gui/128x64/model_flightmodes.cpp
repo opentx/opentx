@@ -126,7 +126,7 @@ void menuModelFlightModeOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
-          if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
+          if (attr && menuHorizontalPosition == t && editMode > 0) {
             int16_t v = flightModeAddress(s_currIdx)->rotaryEncoders[t];
             if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
             v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
@@ -175,7 +175,7 @@ void menuModelFlightModeOne(event_t event)
         else {
           lcdDrawText(9*FW, y, STR_OWN, posHorz==1 ? attr : 0);
         }
-        if (attr && s_currIdx>0 && posHorz==1 && (editMode>0 || p1valdiff)) {
+        if (attr && s_currIdx>0 && posHorz==1 && editMode > 0) {
           if (v < GVAR_MAX) v = GVAR_MAX;
           v = checkIncDec(event, v, GVAR_MAX, GVAR_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
           if (checkIncDec_Ret) {

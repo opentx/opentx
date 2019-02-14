@@ -89,12 +89,6 @@ void menuModelSelect(event_t event)
 
   check_submenu_simple(_event_, MAX_MODELS - HEADER_LINE);
 
-#if defined(NAVIGATION_POT2)
-  if (event==0 && p2valdiff<0) {
-    event = EVT_KEY_FIRST(KEY_RIGHT);
-  }
-#endif
-
   if (s_editMode > 0) s_editMode = 0;
 
 
