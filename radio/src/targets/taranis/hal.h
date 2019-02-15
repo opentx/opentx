@@ -1178,7 +1178,7 @@
   #define BT_RX_GPIO_PinSource         GPIO_PinSource9
   #define BT_USART_IRQHandler          USART6_IRQHandler
 #elif defined(PCBX7) || defined(PCBXLITE)
-  #define BT_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_DMA1)
+  #define BT_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE) // RCC_AHB1Periph_DMA1
   #define BT_RCC_APB1Periph             RCC_APB1Periph_USART3
   #define BT_RCC_APB2Periph             0
   #define BT_EN_GPIO                    GPIOE
@@ -1196,8 +1196,8 @@
   #define BT_USART                      USART3
   #define BT_USART_IRQHandler           USART3_IRQHandler
   #define BT_USART_IRQn                 USART3_IRQn
-  #define BT_DMA_Stream_RX              DMA1_Stream1
-  #define BT_DMA_Channel_RX             DMA_Channel_4
+  // #define BT_DMA_Stream_RX              DMA1_Stream1
+  // #define BT_DMA_Channel_RX             DMA_Channel_4
 #else
   #define BT_RCC_AHB1Periph            0
   #define BT_RCC_APB1Periph            0
