@@ -139,6 +139,10 @@ inline void startPulses()
   setupPulses(EXTERNAL_MODULE);
 #endif
 
+#if defined(PCBSKY9X)
+  init_ppm(EXTRA_MODULE);
+#endif
+    
 #if defined(HUBSAN)
   Hubsan_Init();
 #endif

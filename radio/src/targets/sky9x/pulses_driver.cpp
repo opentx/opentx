@@ -98,15 +98,13 @@ void init_second_ppm(uint32_t period)
   Pwm * pwmptr = PWM;
   configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP);
   pwmptr->PWM_CH_NUM[1].PWM_CMR = 0x0000000B;                          // CLKB
-  if (!GET_PPM_POLARITY(EXTRA_MODULE)) {
-    pwmptr->PWM_CH_NUM[1].PWM_CMR |= 0x00000200;                       // CPOL
-  }
   pwmptr->PWM_CH_NUM[1].PWM_CPDR = period;                             // Period
   pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = period;                          // Period
   pwmptr->PWM_CH_NUM[1].PWM_CDTY = GET_PPM_DELAY(EXTRA_MODULE)*2;      // Duty
-  pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = GET_PPM_DELAY(EXTRA_MODULE)*2;   // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID1;                                     // Enable channel 1
   pwmptr->PWM_IER1 = PWM_IER1_CHID1;
+    
+  setExtraModulePolarity() ;
 #endif
 }
 
