@@ -154,7 +154,22 @@ enum MenuRadioHardwareItems {
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, HEADER_LINE+ITEM_RADIO_HARDWARE_MAX, { HEADER_LINE_COLUMNS LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0/*max bauds*/, BLUETOOTH_ROWS 0/*jitter filter*/ , 0 /*owner id*/ });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, HEADER_LINE+ITEM_RADIO_HARDWARE_MAX, {
+    HEADER_LINE_COLUMNS
+    LABEL(Sticks),
+      0,
+      0,
+      0,
+      0,
+    LABEL(Pots),
+      POTS_ROWS,
+    LABEL(Switches),
+      SWITCHES_ROWS,
+    0 /*max bauds*/,
+    BLUETOOTH_ROWS
+    0 /*jitter filter*/,
+    0 /*owner id*/
+  });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
 
