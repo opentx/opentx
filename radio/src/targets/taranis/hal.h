@@ -288,8 +288,7 @@
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_2  // PE.02
 #elif defined(PCBX3)
-  #define SWITCHES_GPIO_REG_D           GPIOC->IDR
-  #define SWITCHES_GPIO_PIN_D           GPIO_Pin_13 // PC.13
+  // no SWD
 #else
   #define SWITCHES_GPIO_REG_D_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_D_H         GPIO_Pin_7  // PE.07
@@ -305,7 +304,10 @@
 #elif defined(PCBXLITES)
   #define SWITCHES_GPIO_REG_E           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_E           GPIO_Pin_5  // PE.05
-#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#elif defined(PCBX3)
+  #define SWITCHES_GPIO_REG_E           GPIOC->IDR
+  #define SWITCHES_GPIO_PIN_E           GPIO_Pin_13 // PC.13
+#elif defined(PCBX7) || defined(PCBXLITE)
   // no SWE
 #else
   #define SWITCHES_GPIO_REG_E_H         GPIOB->IDR
@@ -338,7 +340,7 @@
   #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_3  // PF.03
   #define SWITCHES_GPIO_REG_G_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_G_L         GPIO_Pin_4  // PF.04
-#elif defined(PCBX7) || defined(PCBXLITE)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
   // no SWG
 #else
   #define SWITCHES_GPIO_REG_G_H         GPIOE->IDR
@@ -353,7 +355,7 @@
 #elif defined(PCBX9DP)
   #define SWITCHES_GPIO_REG_H           GPIOD->IDR
   #define SWITCHES_GPIO_PIN_H           GPIO_Pin_14 // PD.14
-#elif defined(PCBXLITE)
+#elif defined(PCBXLITE) || defined(PCBX3)
   // no SWH
 #elif defined(PCBX7)
   #define SWITCHES_GPIO_REG_H           GPIOD->IDR
