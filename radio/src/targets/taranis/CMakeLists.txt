@@ -90,7 +90,7 @@ elseif(PCB STREQUAL X3)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
-  set(LUA_EXPORT lua_export_x7)
+  set(LUA_EXPORT lua_export_x3)
   set(FLAVOUR x3)
   add_definitions(-DPCBX3 -DSOFTWARE_VOLUME)
   add_definitions(-DEEPROM_VARIANT=0x4000)
