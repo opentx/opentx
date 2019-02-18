@@ -273,10 +273,12 @@ void onBindMenu(const char * result)
 
 void runPopupRegister(event_t event)
 {
+  uint8_t backupVerticalOffset = menuVerticalOffset;
+  int8_t backupEditMode = s_editMode;
+
   menuVerticalPosition = reusableBuffer.modelSetup.pxx2.registerPopupVerticalPosition;
   menuHorizontalPosition = reusableBuffer.modelSetup.pxx2.registerPopupHorizontalPosition;
   s_editMode = reusableBuffer.modelSetup.pxx2.registerPopupEditMode;
-  uint8_t backupVerticalOffset = menuVerticalOffset;
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -323,7 +325,7 @@ void runPopupRegister(event_t event)
   menuVerticalPosition = ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER + HEADER_LINE;
   menuHorizontalPosition = 1;
   menuVerticalOffset = backupVerticalOffset;
-  s_editMode = (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_REGISTER ? EDIT_MODIFY_FIELD : 0);
+  s_editMode = backupEditMode;
 }
 
 inline bool isDefaultModelRegistrationID()
