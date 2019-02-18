@@ -1124,12 +1124,13 @@ void menuModelSetup(event_t event)
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER:
+        TRACE("Phase %d Mode  : %d", reusableBuffer.modelSetup.pxx2.registerStep, moduleSettings[INTERNAL_MODULE].mode);
         lcdDrawTextAlignedLeft(y, INDENT "Module");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, (menuHorizontalPosition==0 ? attr : 0) );
         lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition==1 ? attr : 0) );
         if (attr) {
           if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
-            if (menuHorizontalPosition == 1) {
+            if (menuHorizontalPosition == 1  && reusableBuffer.modelSetup.pxx2.registerStep < REGISTER_RX_NAME_SELECTED) {
               moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_REGISTER;
               reusableBuffer.modelSetup.pxx2.registerPopupVerticalPosition = 0;
               reusableBuffer.modelSetup.pxx2.registerPopupHorizontalPosition = 0;
@@ -1143,10 +1144,6 @@ void menuModelSetup(event_t event)
           }
           if (s_editMode == 0 && !warningText) {
             moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
-          }
-          if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL) {
-            // REGISTER finished
-            s_editMode = 0;
           }
         }
       break;
