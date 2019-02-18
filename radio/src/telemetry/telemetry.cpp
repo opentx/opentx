@@ -102,14 +102,14 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   if (frame[3] == 0x00) {
     bool found = false;
     for (uint8_t i=0; i<reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount; i++) {
-      if (memcmp(reusableBuffer.modelSetup.pxx2.bindCandidateReceiversIds[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+      if (memcmp(reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
         found = true;
         break;
       }
     }
     if (!found && reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(reusableBuffer.modelSetup.pxx2.bindCandidateReceiversIds[reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
-      char * c = reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount];
+      memcpy(reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
+      /*char * c = reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount];
       for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
         uint8_t byte = frame[4 + i];
         uint8_t quartet = (byte >> 4);
@@ -118,13 +118,13 @@ void processBindFrame(uint8_t module, uint8_t * frame)
         *c++ = (quartet >= 10 ? quartet + 'A' - 10 : quartet + '0');
         *c++ = ' ';
       }
-      *c = '\0';
+      *c = '\0';*/
       ++reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount;
       reusableBuffer.modelSetup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
     }
   }
   else if (frame[3] == 0x01) {
-    if (memcmp(reusableBuffer.modelSetup.pxx2.bindCandidateReceiversIds[reusableBuffer.modelSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+    if (memcmp(reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
       reusableBuffer.modelSetup.pxx2.bindStep = BIND_WAIT;
       reusableBuffer.modelSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
     }

@@ -1235,7 +1235,7 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
             }
             if (reusableBuffer.modelSetup.pxx2.bindStep == BIND_OK) {
-              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxName, reusableBuffer.modelSetup.pxx2.bindCandidateReceiversIds[reusableBuffer.modelSetup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
+              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxName, reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
             }
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
