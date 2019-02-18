@@ -288,7 +288,7 @@ void runPopupRegister(event_t event)
       else if (menuHorizontalPosition == 0) {
         // [Enter] pressed
         reusableBuffer.modelSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
-        backupEditMode = EDIT_MODIFY_FIELD;
+        backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
       }
       // no break
 
