@@ -119,7 +119,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTRA_MODULE_CHANNELS,
   ITEM_MODEL_EXTRA_MODULE_BIND,
 #endif
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
   #if defined(BLUETOOTH)
@@ -205,7 +205,7 @@ enum MenuModelSetupItems {
   #define EXTRA_MODULE_ROWS
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
   #define ANTENNA_ROW
   #if defined(BLUETOOTH)
     #define TRAINER_BLUETOOTH_M_ROW        ((bluetoothDistantAddr[0] == '\0' || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
@@ -1083,7 +1083,7 @@ void menuModelSetup(event_t event)
         break;
       }
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
       case ITEM_MODEL_TRAINER_PARAMS:
         lcdDrawTextAlignedLeft(y, STR_PPMFRAME);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN+3*FW, y, STR_MS);
@@ -1781,7 +1781,7 @@ void menuModelFailsafe(event_t event)
     }
 
     // Gauge
-#if !defined(PCBX7)  // X7 LCD doesn't like too many horizontal lines
+#if !defined(PCBX7) && !defined(PCBX3)  // X7 LCD doesn't like too many horizontal lines
     lcdDrawRect(x+LCD_W-3-wbar, y, wbar+1, 6);
 #endif
     const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar/2 + lim/2) / lim, wbar/2);

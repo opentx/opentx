@@ -270,7 +270,15 @@ void logsWrite()
       }
 
 // TODO: use hardware config to populate
-#if defined(PCBXLITE)
+#if defined(PCBX3)
+f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
+          GET_3POS_STATE(SA),
+          GET_3POS_STATE(SB),
+          GET_3POS_STATE(SC),
+          GET_3POS_STATE(SD),
+          getLogicalSwitchesStates(32),
+          getLogicalSwitchesStates(0));
+#elif defined(PCBXLITE)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),

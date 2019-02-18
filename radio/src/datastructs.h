@@ -850,6 +850,8 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 104);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
+#elif defined(PCBX3)
+  // TODO
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);

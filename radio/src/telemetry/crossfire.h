@@ -21,6 +21,9 @@
 #ifndef _CROSSFIRE_H_
 #define _CROSSFIRE_H_
 
+#include <inttypes.h>
+#include "dataconstants.h"
+
 // Device address
 #define BROADCAST_ADDRESS              0x00
 #define RADIO_ADDRESS                  0xEA

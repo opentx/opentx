@@ -249,8 +249,6 @@
 #define PWR_SWITCH_GPIO_REG             PWR_GPIO->IDR
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
-#define PWR_ON_GPIO_MODER               GPIO_MODER_MODER1
-#define PWR_ON_GPIO_MODER_OUT           GPIO_MODER_MODER1_0
 
 // S.Port update connector
 #define SPORT_MAX_BAUDRATE              250000 // < 400000

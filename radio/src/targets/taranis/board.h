@@ -363,6 +363,8 @@ enum EnumSwitchesPositions
   #define NUM_SWITCHES                  4
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  6
+#elif defined(PCBX3)
+  #define NUM_SWITCHES                  4
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's a lot!
 #else
@@ -376,7 +378,7 @@ uint32_t readTrims(void);
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 
-#if defined(PCBX9E) || defined(PCBX7)
+#if defined(PCBX9E) || defined(PCBX7) || defined(PCBX3)
 // Rotary Encoder driver
 #define ROTARY_ENCODER_NAVIGATION
 void checkRotaryEncoder(void);
@@ -672,6 +674,14 @@ void bluetoothInit(uint32_t baudrate);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
 void bluetoothDone(void);
+#if defined(PCBX3)
+  #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
+#elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
+  extern volatile uint8_t btChipPresent;
+  #define IS_BLUETOOTH_CHIP_PRESENT()     (btChipPresent)
+#else
+  #define IS_BLUETOOTH_CHIP_PRESENT()     (true)
+#endif
 
 // LED driver
 void ledInit(void);
