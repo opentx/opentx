@@ -301,7 +301,7 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
         continue;
       }
       if (index < luaMultipleFields[n].count) {
-        if(luaMultipleFields[n].id >= MIXSRC_FIRST_TELEM)
+        if(luaMultipleFields[n].id == MIXSRC_FIRST_TELEM)
           field.id = luaMultipleFields[n].id + index*3;
         else
           field.id = luaMultipleFields[n].id + index;
