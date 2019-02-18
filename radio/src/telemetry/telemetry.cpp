@@ -88,6 +88,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
         memcmp(&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       reusableBuffer.modelSetup.pxx2.registerStep = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
+      s_editMode = 0;
       POPUP_INFORMATION(STR_REG_OK);
     }
   }
