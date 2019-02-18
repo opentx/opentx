@@ -681,10 +681,10 @@
 #endif
 
 // Internal Module
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
-  #if defined(PCBXLITES)
+  #if defined(PCBXLITES) || defined(PCBX3)
     #define INTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
     #define INTMODULE_PWR_GPIO          GPIOA
     #define INTMODULE_PWR_GPIO_PIN      GPIO_Pin_15 // PA.15
@@ -799,16 +799,38 @@
   #define EXTMODULE_TIMER_DMA_STREAM          DMA2_Stream1
   #define EXTMODULE_TIMER_DMA_STREAM_IRQn       DMA2_Stream1_IRQn
   #define EXTMODULE_TIMER_DMA_STREAM_IRQHandler DMA2_Stream1_IRQHandler
-  #define EXTMODULE_TIMER_DMA_FLAG_TC         DMA_IT_TCIF1
+  #define EXTMODULE_TIMER_DMA_FLAG_TC           DMA_IT_TCIF1
   #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1NE
   #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1NP
-  #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
+  #define EXTMODULE_TIMER_FREQ                  (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #endif
 
 // Trainer Port
 #if defined(PCBXLITE)
   #define TRAINER_RCC_AHB1Periph        0
   #define TRAINER_RCC_APB1Periph        0
+#elif defined(PCBX3)
+  #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD)
+  #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM4
+  #define TRAINER_GPIO                  GPIOD
+  #define TRAINER_IN_GPIO_PIN           GPIO_Pin_13 // PD.13
+  #define TRAINER_IN_GPIO_PinSource     GPIO_PinSource13
+  #define TRAINER_OUT_GPIO_PIN          GPIO_Pin_12 // PD.12
+  #define TRAINER_OUT_GPIO_PinSource    GPIO_PinSource12
+  #define TRAINER_DETECT_GPIO           GPIOD
+  #define TRAINER_DETECT_GPIO_PIN       GPIO_Pin_11 // PD.11
+  #define TRAINER_TIMER                 TIM4
+  #define TRAINER_TIMER_IRQn            TIM4_IRQn
+  #define TRAINER_GPIO_AF               GPIO_AF_TIM4
+  #define TRAINER_DMA                   DMA1
+  #define TRAINER_DMA_CHANNEL           DMA_Channel_5
+  #define TRAINER_DMA_STREAM            DMA1_Stream2
+  #define TRAINER_DMA_IRQn              DMA1_Stream2_IRQn
+  #define TRAINER_DMA_IRQHandler        DMA1_Stream2_IRQHandler
+  #define TRAINER_DMA_FLAG_TC           DMA_IT_TCIF2
+  #define TRAINER_TIMER_IRQn            TIM4_IRQn
+  #define TRAINER_TIMER_IRQHandler      TIM4_IRQHandler
+  #define TRAINER_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
 #else
   #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM3
@@ -969,7 +991,7 @@
   #define BACKLIGHT_GPIO_PinSource_2    GPIO_PinSource13
   #define BACKLIGHT_GPIO_AF_1           GPIO_AF_TIM4
   #define BACKLIGHT_GPIO_AF_2           GPIO_AF_TIM4
-#elif defined(PCBXLITES)
+#elif defined(PCBXLITES) || defined(PCBX3)
   #define BACKLIGHT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOA
   #define BACKLIGHT_RCC_APB1Periph      0
   #define BACKLIGHT_RCC_APB2Periph      RCC_APB2Periph_TIM1
@@ -1042,7 +1064,7 @@
   #define LCD_DMA_FLAG_INT              DMA_HIFCR_CTCIF7
   #define LCD_SPI                       SPI3
   #define LCD_GPIO_AF                   GPIO_AF_SPI3
-#elif defined(PCBXLITE)
+#elif defined(PCBXLITE) || defined(PCBX3)
   #define LCD_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
   #define LCD_RCC_APB1Periph            RCC_APB1Periph_SPI3
   #define LCD_SPI_GPIO                  GPIOC
@@ -1063,7 +1085,7 @@
   #define LCD_DMA_FLAG_INT              DMA_HIFCR_CTCIF7
   #define LCD_SPI                       SPI3
   #define LCD_GPIO_AF                   GPIO_AF_SPI3
-#elif defined(PCBX9DP) || defined(PCBX7) || defined(PCBX3)
+#elif defined(PCBX9DP) || defined(PCBX7)
   #define LCD_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)
   #define LCD_RCC_APB1Periph            RCC_APB1Periph_SPI3
   #define LCD_SPI_GPIO                  GPIOC
@@ -1203,7 +1225,7 @@
 #endif
 
 // Haptic
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
   #define HAPTIC_PWM
   #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOB
   #define HAPTIC_RCC_APB1Periph         RCC_APB1Periph_TIM2

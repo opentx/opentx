@@ -143,7 +143,7 @@ elseif(PCB STREQUAL XLITES)
   set(STATUS_LEDS YES)
 endif()
 
-if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X3)
   add_definitions(-DINTERNAL_MODULE_SERIAL)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
@@ -159,11 +159,17 @@ else()
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
-    trainer_driver.cpp
     )
   set(PULSES_SRC
     ${PULSES_SRC}
     ../sbus.cpp
+    )
+endif()
+
+if(NOT PCB STREQUAL XLITE AND NOT PCB STREQUAL XLITES)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    trainer_driver.cpp
     )
 endif()
 

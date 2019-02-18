@@ -366,7 +366,7 @@ enum EnumSwitchesPositions
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  6
 #elif defined(PCBX3)
-  #define NUM_SWITCHES                  4
+  #define NUM_SWITCHES                  5
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's a lot!
 #else
@@ -583,7 +583,7 @@ uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
