@@ -696,7 +696,7 @@ enum MixSources {
 #endif
 
 #if defined(LUA_INPUTS)
-  MIXSRC_FIRST_LUA,
+  MIXSRC_FIRST_LUA,                     LUA_EXPORT_MULTIPLE("lua", "Lua mix output %d", MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
 
