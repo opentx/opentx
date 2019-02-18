@@ -1135,11 +1135,11 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
               POPUP_INPUT("", runPopupRegister);
             }
-            else if (menuHorizontalPosition == 0 && s_editMode > 0) {
+            else if (menuHorizontalPosition == 0) {
               moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
             }
           }
-          if (s_editMode == 0 && warningText == 0) {
+          if (s_editMode == 0 && !warningText) {
             moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
           }
         }
