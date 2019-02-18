@@ -77,12 +77,12 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  if (frame[3] == 0x00) {
+  if (frame[3] == 0x00 && reusableBuffer.modelSetup.pxx2.registerStep == REGISTER_START) {
     // RX_NAME follows, we store it for the next step
     memcpy(reusableBuffer.modelSetup.pxx2.registerRxName, &frame[4], PXX2_LEN_RX_NAME);
-    reusableBuffer.modelSetup.pxx2.registerStep = REGISTER_COUNTER_ID_RECEIVED;
+    reusableBuffer.modelSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
   }
-  else if (frame[3] == 0x01) {
+  else if (frame[3] == 0x01 && reusableBuffer.modelSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
     // RX_NAME + PASSWORD follow, we check they are good
     if (memcmp(&frame[4], reusableBuffer.modelSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) == 0 &&
         memcmp(&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
