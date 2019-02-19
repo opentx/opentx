@@ -56,7 +56,7 @@ inline bool isModuleXJT(uint8_t idx)
 
 inline bool isModuleXJT2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT2 ||  g_model.moduleData[idx].type == MODULE_TYPE_R9M;
 }
 
 
@@ -174,7 +174,12 @@ inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 
 inline bool isModulePXX(uint8_t idx)
 {
-  return isModuleXJT(idx) || isModuleR9M(idx);
+  return isModuleXJT(idx);
+}
+
+inline bool isModulePXX2(uint8_t idx)
+{
+  return isModuleXJT2(idx) || isModuleR9M(idx);
 }
 
 #if defined(DSM2)

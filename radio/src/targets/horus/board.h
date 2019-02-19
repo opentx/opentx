@@ -200,9 +200,9 @@ PACK(typedef struct {
 extern HardwareOptions hardwareOptions;
 
 #if defined(PCBX10)
-  #define IS_PXX2_ENABLED()            (true)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
 #else
-  #define IS_PXX2_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
 #endif
 
 void init_ppm(uint8_t module);

@@ -520,7 +520,7 @@ bool isInternalModuleAvailable(int module)
   if (module == MODULE_TYPE_NONE)
     return true;
 
-  if (module == (IS_PXX2_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT))
+  if (module == (IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT))
     return true;
 
   return false;

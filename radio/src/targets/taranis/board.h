@@ -457,10 +457,10 @@ extern HardwareOptions hardwareOptions;
   #define NUM_TRIMS_KEYS                8
 #endif
 
-#if defined(PCBXLITES)
-  #define IS_PXX2_ENABLED()            (true)
+#if defined(PCBXLITES) || defined(DEBUG)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
 #else
-  #define IS_PXX2_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
 #endif
 
 enum CalibratedAnalogs {
