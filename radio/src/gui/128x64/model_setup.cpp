@@ -231,17 +231,6 @@ enum MenuModelSetupItems {
   #define TRAINER_CHANNELS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
   #define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
   #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
-#define DEF case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NAME:\
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NAME:\
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_NAME:\
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_NAME:\
-      {\
-        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);\
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);\
-\
-        lcdDrawTextAlignedLeft(y, STR_RECEIVER);\
-        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, 0);\
-      }
 #elif defined(PCBXLITES)
   #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
   #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
@@ -1215,6 +1204,19 @@ void menuModelSetup(event_t event)
           killEvents(event);
           s_editMode = 0;
         }
+      }
+      break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NAME:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NAME:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_NAME:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_NAME:
+      {
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+
+        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, 0);
       }
       break;
 
