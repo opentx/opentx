@@ -126,14 +126,13 @@ inline uint8_t modelTelemetryProtocol()
     return g_model.telemetryProtocol;
   }
 
-  if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
-#if defined(PCBXLITE)
-    return PROTOCOL_TELEMETRY_FRSKY_SPORT;
-#else
+  if (!IS_INTERNAL_MODULE_ENABLED() && isModulePXX2(EXTERNAL_MODULE)) {
     return PROTOCOL_TELEMETRY_PXX2;
-#endif
   }
 
+  if (!IS_INTERNAL_MODULE_ENABLED() && isModulePXX(EXTERNAL_MODULE)) {
+    return PROTOCOL_TELEMETRY_FRSKY_SPORT;
+  }
 #if defined(MULTIMODULE)
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;

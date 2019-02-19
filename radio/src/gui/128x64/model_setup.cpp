@@ -159,9 +159,8 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS            4*FW+3
 #define MODEL_SETUP_SET_FAILSAFE_OFS     7*FW-2
 
-#define IS_PXX2_EXTERNAL_ENABLED()       (isModulePXX2(EXTERNAL_MODULE))
-#define IF_PXX2(xxx)                     (IS_PXX2_INTERNAL_ENABLED() ? (uint8_t)(xxx) : HIDDEN_ROW)
-#define IF_NOT_PXX2(xxx)                 (IS_PXX2_INTERNAL_ENABLED() ? HIDDEN_ROW : (uint8_t)(xxx))
+#define IF_PXX2(xxx)                     (isModulePXX2(INTERNAL_MODULE) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#define IF_NOT_PXX2(xxx)                 (isModulePXX2(INTERNAL_MODULE) ? HIDDEN_ROW : (uint8_t)(xxx))
 #define IF_EXTERNAL_PXX2(xxx)            (isModulePXX2(EXTERNAL_MODULE) ? (uint8_t)(xxx) : HIDDEN_ROW)
 #define IF_NOT_EXTERNAL_PXX2(xxx)        (isModulePXX2(EXTERNAL_MODULE) ? HIDDEN_ROW : (uint8_t)(xxx))
 #define IF_PXX2_RECEIVER_DISPLAYED(module, idx, xxx)   ((isModulePXX2(module) && g_model.moduleData[module].pxx2.receivers[idx].enabled) ? (uint8_t)(xxx) : HIDDEN_ROW)
@@ -232,6 +231,17 @@ enum MenuModelSetupItems {
   #define TRAINER_CHANNELS_ROW             (IS_SLAVE_TRAINER() ? (uint8_t)1 : HIDDEN_ROW)
   #define TRAINER_PARAMS_ROW               (IS_SLAVE_TRAINER() ? (uint8_t)2 : HIDDEN_ROW)
   #define TRAINER_ROWS                     LABEL(Trainer), 0, TRAINER_BLUETOOTH_ROW TRAINER_CHANNELS_ROW, TRAINER_PARAMS_ROW
+#define DEF case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NAME:\
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NAME:\
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_NAME:\
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_NAME:\
+      {\
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);\
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);\
+\
+        lcdDrawTextAlignedLeft(y, STR_RECEIVER);\
+        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, 0);\
+      }
 #elif defined(PCBXLITES)
   #define ANTENNA_ROW                    IF_INTERNAL_MODULE_ON(0),
   #define IF_BT_TRAINER_ON(x)            (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER ? (uint8_t)(x) : HIDDEN_ROW)
@@ -1208,17 +1218,7 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_NAME:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NAME:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_NAME:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_NAME:
-      {
-        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-
-        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
-        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, 0);
-      }
+      DEF
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP:

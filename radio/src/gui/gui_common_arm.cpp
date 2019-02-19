@@ -520,7 +520,7 @@ bool isInternalModuleAvailable(int module)
   if (module == MODULE_TYPE_NONE)
     return true;
 
-  if (module == (IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT))
+  if ((module == (IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT)) && !isModulePXX2(EXTERNAL_MODULE))
     return true;
 
   return false;
@@ -561,6 +561,15 @@ bool isExternalModuleAvailable(int module)
   if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
+  if (module == MODULE_TYPE_R9M2 && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+    return false;
+  }
+  if (module == MODULE_TYPE_XJT && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+    return false;
+  }
+  if (module == MODULE_TYPE_XJT2 && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+    return false;
+  }
 #endif
 
   return true;
@@ -580,6 +589,9 @@ bool isRfProtocolAvailable(int protocol)
 #endif
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
+    return false;
+  }
+  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M2) {
     return false;
   }
 #endif

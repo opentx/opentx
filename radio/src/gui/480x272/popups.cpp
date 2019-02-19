@@ -77,7 +77,7 @@ void runPopupWarning(event_t event)
 {
   warningResult = false;
 
-  theme->drawMessageBox(warningText, warningInfoText,  WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT_ENTER_EXIT), warningType);
+  theme->drawMessageBox(warningText, warningInfoText,  WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT), warningType);
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):

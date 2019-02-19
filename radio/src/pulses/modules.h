@@ -56,7 +56,7 @@ inline bool isModuleXJT(uint8_t idx)
 
 inline bool isModuleXJT2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT2 ||  g_model.moduleData[idx].type == MODULE_TYPE_R9M;
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
 }
 
 
@@ -146,6 +146,11 @@ inline bool isModuleR9M(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
 }
 
+inline bool isModuleR9M2(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2;
+}
+
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FCC;
@@ -179,7 +184,7 @@ inline bool isModulePXX(uint8_t idx)
 
 inline bool isModulePXX2(uint8_t idx)
 {
-  return isModuleXJT2(idx) || isModuleR9M(idx);
+  return isModuleXJT2(idx) || isModuleR9M2(idx);
 }
 
 #if defined(DSM2)

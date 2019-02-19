@@ -50,11 +50,12 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 
     case MODULE_TYPE_XJT:
+    case MODULE_TYPE_R9M:
       protocol = PROTOCOL_CHANNELS_PXX1;
       break;
 
     case MODULE_TYPE_XJT2:
-    case MODULE_TYPE_R9M:
+    case MODULE_TYPE_R9M2:
       protocol = PROTOCOL_CHANNELS_PXX2;
       break;
 
