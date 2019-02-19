@@ -1218,9 +1218,6 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      DEF
-      break;
-
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP:
