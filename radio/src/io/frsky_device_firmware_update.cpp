@@ -298,6 +298,9 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
     POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
     SET_WARNING_INFO(result, strlen(result), 0);
   }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   INTERNAL_MODULE_OFF();
