@@ -121,23 +121,17 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  // TX Pin
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_USART_TX_GPIO_AF);
+  // TX + RX Pins
+  GPIO_PinAFConfig(EXTMODULE_USART_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_USART_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_USART_GPIO, EXTMODULE_RX_GPIO_PinSource, EXTMODULE_USART_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN | EXTMODULE_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
-
-#if 0
-  // RX Pin
-  GPIO_PinAFConfig(EXTMODULE_RX_GPIO, EXTMODULE_RX_GPIO_PinSource, EXTMODULE_TX_GPIO_USART_AF);
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_RX_GPIO_PIN;
-  GPIO_Init(EXTMODULE_RX_GPIO, &GPIO_InitStructure);
-#endif
+  GPIO_Init(EXTMODULE_USART_GPIO, &GPIO_InitStructure);
 
   // UART config
   USART_DeInit(EXTMODULE_USART);
