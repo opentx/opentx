@@ -1488,3 +1488,5 @@ Marek Přikryl
 Peter Scott
 Ernst Camenzind
 Steve Robbins
+Jean Noel Berlan
+Walter Szempruch
