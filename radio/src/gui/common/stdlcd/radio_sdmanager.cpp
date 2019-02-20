@@ -171,7 +171,7 @@ void menuRadioSdManager(event_t _event)
     Card_state = SD_ST_DATA;
 #endif
     audioQueue.stopSD();
-    if(sdCardFormat()) {
+    if (sdCardFormat()) {
       f_chdir("/");
       REFRESH_FILES();
     }

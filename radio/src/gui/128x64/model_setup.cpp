@@ -1161,8 +1161,9 @@ void menuModelSetup(event_t event)
         lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition == 1 ? attr : 0));
         if (attr) {
           if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
-            if (menuHorizontalPosition == 1 && reusableBuffer.modelSetup.pxx2.registerStep < REGISTER_RX_NAME_SELECTED) {
+            if (menuHorizontalPosition == 1 && event == EVT_KEY_FIRST(KEY_ENTER)) {
               moduleSettings[moduleIdx].mode = MODULE_MODE_REGISTER;
+              reusableBuffer.modelSetup.pxx2.registerStep = REGISTER_START;
               reusableBuffer.modelSetup.pxx2.registerPopupVerticalPosition = 0;
               reusableBuffer.modelSetup.pxx2.registerPopupHorizontalPosition = 0;
               reusableBuffer.modelSetup.pxx2.registerPopupEditMode = 0;
