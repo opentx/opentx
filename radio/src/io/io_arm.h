@@ -35,7 +35,6 @@ PACK(union SportTelemetryPacket
   uint8_t raw[8];
 });
 
-void sportProcessPacket(uint8_t * packet);
 bool isSportOutputBufferAvailable();
 void sportOutputPushPacket(SportTelemetryPacket * packet);
 void sportFlashDevice(ModuleIndex module, const char * filename);
@@ -45,5 +44,46 @@ void sportFlashDevice(ModuleIndex module, const char * filename);
 bool isBootloader(const char * filename);
 void bootloaderFlash(const char * filename);
 #endif
-  
+
+class DeviceFirmwareUpdate {
+    enum State {
+      SPORT_IDLE,
+      SPORT_POWERUP_REQ,
+      SPORT_POWERUP_ACK,
+      SPORT_VERSION_REQ,
+      SPORT_VERSION_ACK,
+      SPORT_DATA_TRANSFER,
+      SPORT_DATA_REQ,
+      SPORT_COMPLETE,
+      SPORT_FAIL
+    };
+
+  public:
+    DeviceFirmwareUpdate(ModuleIndex module):
+      module(module) {
+    }
+
+    void flashFile(const char * filename);
+
+  protected:
+    uint8_t  state = SPORT_IDLE;
+    uint32_t address = 0;
+    ModuleIndex module;
+    uint8_t frame[12];
+
+    void startup();
+
+    void startFrame(uint8_t command);
+    void sendFrame();
+
+    bool readByte(uint8_t & byte);
+    bool waitState(State state, uint32_t timeout);
+    void processFrame();
+
+    const char * sendPowerOn();
+    const char * sendReqVersion();
+    const char * uploadFile(const char * filename);
+    const char * endTransfer();
+};
+
 #endif // _IO_ARM_H_

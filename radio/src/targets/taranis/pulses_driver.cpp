@@ -20,20 +20,6 @@
 
 #include "opentx.h"
 
-void intmoduleStop();
-void intmodulePxxStart();
-void intmodulePxx2Start();
-#if defined(TARANIS_INTERNAL_PPM)
-void intmodulePpmStart(void);
-#endif
-
-void extmoduleStop();
-void extmoduleTimerStart(uint32_t period, uint8_t state);
-void extmodulePpmStart();
-void extmodulePxxStart();
-void extmodulePxx2Start();
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
-
 void init_pxx(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
@@ -53,7 +39,7 @@ void disable_pxx(uint8_t module)
 void init_pxx2(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
-    intmodulePxx2Start();
+    intmoduleSerialStart(INTMODULE_USART_PXX_BAUDRATE);
   else
     extmodulePxx2Start();
 }

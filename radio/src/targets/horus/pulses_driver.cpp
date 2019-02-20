@@ -22,7 +22,7 @@
 
 void intmoduleStop();
 void intmodulePxxStart();
-void intmodulePxx2Start();
+void intmoduleSerialStart(uint32_t baudrate);
 
 void extmoduleStop();
 void extmodulePpmStart();
@@ -48,7 +48,7 @@ void disable_ppm(uint8_t module)
 void init_pxx2(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
-    intmodulePxx2Start();
+    intmoduleSerialStart(INTMODULE_USART_PXX_BAUDRATE);
   else
     extmodulePxx2Start();
 }

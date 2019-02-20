@@ -172,14 +172,27 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
-void intmoduleSendNextFrame();
-void extmoduleSendNextFrame();
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
 void init_pxx(uint8_t module);
 void disable_pxx(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
 void disable_serial(uint8_t module);
+void intmoduleStop();
+void intmodulePxxStart();
+void intmoduleSerialStart(uint32_t baudrate);
+#if defined(TARANIS_INTERNAL_PPM)
+void intmodulePpmStart(void);
+#endif
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
+void intmoduleSendNextFrame();
+
+void extmoduleStop();
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
+void extmoduleSendNextFrame();
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)

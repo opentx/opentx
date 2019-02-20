@@ -65,7 +65,7 @@ void intmoduleSendNextFrame()
   }
 }
 
-void intmodulePxx2Start()
+void intmoduleSerialStart(uint32_t baudrate)
 {
   // nothing, the pulses will be sent through telemetry port
 }

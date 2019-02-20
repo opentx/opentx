@@ -143,6 +143,7 @@ set(SRC
   tasks.cpp
   audio.cpp
   io/frsky_sport.cpp
+  io/frsky_device_firmware_update.cpp
   telemetry/telemetry.cpp
   telemetry/telemetry_holders.cpp
   telemetry/telemetry_sensors.cpp

@@ -1165,8 +1165,6 @@
   #define I2CX_SCL_GPIO_PinSource       GPIO_PinSource8
   #define I2CX_SDA_GPIO_PinSource       GPIO_PinSource9
   #define I2CX_SPEED                    400000
-  #define I2CX_IMU_INT_GPIO             GPIOC
-  #define I2CX_IMU_INT_GPIO_PIN         GPIO_Pin_8  // PC.08
 #endif
 
 // SD - SPI2
