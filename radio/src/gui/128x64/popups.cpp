@@ -97,6 +97,11 @@ void runPopupWarning(event_t event)
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT));
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
+      if(warningType == WARNING_TYPE_INFO) {
+        warningText = NULL;
+        warningType = WARNING_TYPE_ASTERISK;
+      }
+      // no break
       if (warningType == WARNING_TYPE_ASTERISK)
         break;
       warningResult = true;

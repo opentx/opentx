@@ -759,6 +759,7 @@ extern const char STR_FLASH_EXTERNAL_DEVICE[];
 extern const char STR_FLASH_INTERNAL_MODULE[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];
 extern const char STR_FIRMWARE_UPDATE_ERROR[];
+extern const char STR_FIRMWARE_UPDATE_SUCCESS[];
 extern const char STR_WRITING[];
 extern const char STR_CONFIRM_FORMAT[];
 extern const char STR_EEBACKUP[];
