@@ -72,21 +72,21 @@ void DeviceFirmwareUpdate::startup()
   switch(module) {
     case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
-      return intmoduleSerialStart(57600);
+      intmoduleSerialStart(57600);
+      break;
 #endif
 
     default:
-      return telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
+      telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
+      break;
   }
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE)
     INTERNAL_MODULE_ON();
   else if (module == EXTERNAL_MODULE)
     EXTERNAL_MODULE_ON();
   else
     SPORT_UPDATE_POWER_ON();
-#endif
 
   watchdogSuspend(50);
   RTOS_WAIT_MS(50);
@@ -117,7 +117,7 @@ bool DeviceFirmwareUpdate::waitState(State state, uint32_t timeout)
   uint8_t len = 0;
   while (len < 10) {
     uint32_t elapsed = 0;
-    while (!intmoduleFifo.pop(frame[len])) {
+    while (!readByte(frame[len])) {
       RTOS_WAIT_MS(1);
       if (elapsed++ >= timeout) {
         return false;
@@ -275,9 +275,9 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
 {
   pausePulses();
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
+
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
@@ -285,7 +285,6 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
   /* wait 2s off */
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
-#endif
 
   startup();
 
@@ -302,20 +301,16 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
-#endif
 
   waitState(SPORT_IDLE, 500); // Clear the fifo
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (intPwr)
     INTERNAL_MODULE_ON();
   if (extPwr)
     EXTERNAL_MODULE_ON();
-#endif
 
   state = SPORT_IDLE;
 

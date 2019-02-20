@@ -66,7 +66,7 @@ class DeviceFirmwareUpdate {
     void flashFile(const char * filename);
 
   protected:
-    uint8_t  state = SPORT_IDLE;
+    uint8_t state = SPORT_IDLE;
     uint32_t address = 0;
     ModuleIndex module;
     uint8_t frame[12];
