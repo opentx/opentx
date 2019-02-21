@@ -23,7 +23,7 @@
 
 #include "../definitions.h"
 #include "telemetry_holders.h"
-#include "../io/pxx2.h"
+#include "io/frsky_pxx2.h"
 
 // Receive buffer state machine state enum
 enum FrSkyDataState {
@@ -313,6 +313,7 @@ struct TelemetryData {
 
 extern TelemetryData telemetryData;
 
+bool pushFrskyTelemetryData(uint8_t data); // returns true when end of frame detected
 void processFrskyTelemetryData(uint8_t data);
 void processFrskyPXX2Data(uint8_t data);
 

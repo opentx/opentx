@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "frsky_device_firmware_update.h"
 
 #define PRIM_REQ_POWERUP    0
 #define PRIM_REQ_VERSION    1
@@ -32,10 +33,10 @@
 #define PRIM_END_DOWNLOAD   0x83
 #define PRIM_DATA_CRC_ERR   0x84
 
-void DeviceFirmwareUpdate::processFrame()
+void DeviceFirmwareUpdate::processFrame(const uint8_t * frame)
 {
-  if (frame[1] == 0x5E && frame[2] == 0x50) {
-    switch (frame[3]) {
+  if (frame[0] == 0x5E && frame[1] == 0x50) {
+    switch (frame[2]) {
       case PRIM_ACK_POWERUP :
         if (state == SPORT_POWERUP_REQ) {
           state = SPORT_POWERUP_ACK;
@@ -51,7 +52,7 @@ void DeviceFirmwareUpdate::processFrame()
 
       case PRIM_REQ_DATA_ADDR:
         if (state == SPORT_DATA_TRANSFER) {
-          address = *((uint32_t *)(&frame[4]));
+          address = *((uint32_t *)(&frame[3]));
           state = SPORT_DATA_REQ;
         }
         break;
@@ -76,6 +77,12 @@ void DeviceFirmwareUpdate::startup()
       break;
 #endif
 
+    case EXTERNAL_MODULE:
+#if defined(EXTMODULE_USART)
+      extmoduleInvertedSerialStart(57600);
+      break;
+#endif
+
     default:
       telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
       break;
@@ -87,21 +94,56 @@ void DeviceFirmwareUpdate::startup()
     EXTERNAL_MODULE_ON();
   else
     SPORT_UPDATE_POWER_ON();
-
-  watchdogSuspend(50);
-  RTOS_WAIT_MS(50);
 }
 
-bool DeviceFirmwareUpdate::readByte(uint8_t & byte)
+const uint8_t * DeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
+{
+  uint8_t len = 0;
+  while (len < 10) {
+    uint32_t elapsed = 0;
+    while (!fifo.pop(frame[len])) {
+      RTOS_WAIT_MS(1);
+      if (elapsed++ >= timeout) {
+        return nullptr;
+      }
+    }
+    if (len > 0 || frame[len] == 0x7E) {
+      ++len;
+    }
+  }
+
+  return &frame[1];
+}
+
+const uint8_t * DeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
+{
+  for (int i=timeout; i>=0; i--) {
+    uint8_t byte ;
+    while (telemetryGetByte(&byte)) {
+      if (pushFrskyTelemetryData(byte)) {
+        return telemetryRxBuffer;
+      }
+    }
+    RTOS_WAIT_MS(1);
+  }
+  return nullptr;
+}
+
+const uint8_t * DeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
   switch(module) {
     case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
-      return intmoduleFifo.pop(byte);
+      return readFullDuplexFrame(intmoduleFifo, timeout);
+#endif
+
+    case EXTERNAL_MODULE:
+#if defined(EXTMODULE_USART)
+      return readFullDuplexFrame(extmoduleFifo, timeout);
 #endif
 
     default:
-      return telemetryGetByte(&byte);
+      return readHalfDuplexFrame(timeout);
   }
 }
 
@@ -114,22 +156,12 @@ bool DeviceFirmwareUpdate::waitState(State state, uint32_t timeout)
 #else
   watchdogSuspend(timeout / 10);
 
-  uint8_t len = 0;
-  while (len < 10) {
-    uint32_t elapsed = 0;
-    while (!readByte(frame[len])) {
-      RTOS_WAIT_MS(1);
-      if (elapsed++ >= timeout) {
-        return false;
-      }
-    }
-    if (len > 0 || frame[len] == 0x7E) {
-      ++len;
-    }
+  const uint8_t * frame = readFrame(timeout);
+  if (!frame) {
+    return false;
   }
 
-  processFrame();
-
+  processFrame(&frame[1]);
   return state == state;
 #endif
 }
@@ -164,6 +196,11 @@ void DeviceFirmwareUpdate::sendFrame()
       return intmoduleSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
 #endif
 
+    case EXTERNAL_MODULE:
+#if defined(EXTMODULE_USART)
+      return extmoduleSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
+#endif
+
     default:
       return sportSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
   }
@@ -171,8 +208,8 @@ void DeviceFirmwareUpdate::sendFrame()
 
 const char * DeviceFirmwareUpdate::sendPowerOn()
 {
-  waitState(SPORT_IDLE, 20); // Clear the fifo
   state = SPORT_POWERUP_REQ;
+  waitState(SPORT_IDLE, 50); // Wait 50ms and clear the fifo
   for (int i=0; i<10; i++) {
     // max 10 attempts
     startFrame(PRIM_REQ_POWERUP);

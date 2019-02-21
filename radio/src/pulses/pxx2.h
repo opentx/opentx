@@ -22,6 +22,7 @@
 #define _PULSES_PXX2_H_
 
 #include "fifo.h"
+#include "io/frsky_pxx2.h"
 #include "./pxx.h"
 
 #define PXX2_TYPE_C_MODULE          0x01
@@ -54,42 +55,6 @@ enum PXX2BindSteps {
     BIND_RX_NAME_SELECTED,
     BIND_WAIT,
     BIND_OK
-};
-
-class ModuleFifo : public Fifo<uint8_t, 32> {
-  public:
-    bool getFrame(uint8_t * frame)
-    {
-      while (1) {
-        if (isEmpty()) {
-          return false;
-        }
-        else if (fifo[ridx] != 0x7E) {
-          skip();
-        }
-        else {
-          break;
-        }
-      }
-
-      uint32_t next = nextIndex(ridx);
-      uint8_t len = fifo[next];
-      if (size() < unsigned(len + 4 /* 2 bytes header + 2 bytes CRC */)) {
-        return false;
-      }
-
-      for (uint32_t i=0; i<=len; i++) {
-        frame[i] = fifo[next];
-        next = nextIndex(next);
-      }
-
-      // TODO CRC CHECK
-      next = nextIndex(next);
-      ridx = nextIndex(next);
-      return true;
-    }
-
-    uint32_t errors;
 };
 
 extern ModuleFifo intmoduleFifo;

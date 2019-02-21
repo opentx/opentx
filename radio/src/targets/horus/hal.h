@@ -631,7 +631,7 @@
 #define BT_USART                        USART6
 #define BT_GPIO_AF                      GPIO_AF_USART6
 #define BT_USART_IRQn                   USART6_IRQn
-#define BT_GPIO_TXRX                    GPIOG
+#define BT_USART_GPIO                   GPIOG
 #define BT_TX_GPIO_PIN                  GPIO_Pin_14 // PG.14
 #define BT_RX_GPIO_PIN                  GPIO_Pin_9  // PG.09
 #define BT_TX_GPIO_PinSource            GPIO_PinSource14

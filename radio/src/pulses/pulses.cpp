@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "io/pxx2.h"
+#include "io/frsky_pxx2.h"
 #include "pulses/pxx2.h"
 
 uint8_t s_pulses_paused = 0;

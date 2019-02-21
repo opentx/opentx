@@ -1284,7 +1284,7 @@
   #define BT_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOG)
   #define BT_RCC_APB1Periph            0
   #define BT_RCC_APB2Periph            RCC_APB2Periph_USART6
-  #define BT_GPIO_TXRX                 GPIOG
+  #define BT_USART_GPIO                GPIOG
   #define BT_TX_GPIO_PIN               GPIO_Pin_14 // PG.14
   #define BT_RX_GPIO_PIN               GPIO_Pin_9  // PG.09
   #define BT_EN_GPIO                   GPIOD
@@ -1306,7 +1306,7 @@
   #else
     #define BT_EN_GPIO_PIN              GPIO_Pin_12 // PE.12
   #endif
-  #define BT_GPIO_TXRX                  GPIOB
+  #define BT_USART_GPIO                 GPIOB
   #define BT_TX_GPIO_PIN                GPIO_Pin_10 // PB.10
   #define BT_RX_GPIO_PIN                GPIO_Pin_11 // PB.11
   #define BT_TX_GPIO_PinSource          GPIO_PinSource10

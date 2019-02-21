@@ -18,32 +18,11 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_ARM_H_
-#define _IO_ARM_H_
+#ifndef _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
+#define _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
 
 #include "dataconstants.h"
-
-#if defined(TELEMETRY_FRSKY_SPORT)
-PACK(union SportTelemetryPacket
-{
-  struct {
-    uint8_t physicalId;
-    uint8_t primId;
-    uint16_t dataId;
-    uint32_t value;
-  };
-  uint8_t raw[8];
-});
-
-bool isSportOutputBufferAvailable();
-void sportOutputPushPacket(SportTelemetryPacket * packet);
-void sportFlashDevice(ModuleIndex module, const char * filename);
-#endif
-
-#if defined(STM32)
-bool isBootloader(const char * filename);
-void bootloaderFlash(const char * filename);
-#endif
+#include "frsky_pxx2.h"
 
 class DeviceFirmwareUpdate {
     enum State {
@@ -76,9 +55,11 @@ class DeviceFirmwareUpdate {
     void startFrame(uint8_t command);
     void sendFrame();
 
-    bool readByte(uint8_t & byte);
+    const uint8_t * readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout);
+    const uint8_t * readHalfDuplexFrame(uint32_t timeout);
+    const uint8_t * readFrame(uint32_t timeout);
     bool waitState(State state, uint32_t timeout);
-    void processFrame();
+    void processFrame(const uint8_t * frame);
 
     const char * sendPowerOn();
     const char * sendReqVersion();
@@ -86,4 +67,4 @@ class DeviceFirmwareUpdate {
     const char * endTransfer();
 };
 
-#endif // _IO_ARM_H_
+#endif // _FRSKY_DEVICE_FIRMWARE_UPDATE_H_

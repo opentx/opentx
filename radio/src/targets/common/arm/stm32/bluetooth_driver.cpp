@@ -59,13 +59,13 @@ void bluetoothInit(uint32_t baudrate)
   GPIO_Init(BT_BCTS_GPIO, &GPIO_InitStructure);
 #endif
 
-  GPIO_PinAFConfig(BT_GPIO_TXRX, BT_TX_GPIO_PinSource, BT_GPIO_AF);
-  GPIO_PinAFConfig(BT_GPIO_TXRX, BT_RX_GPIO_PinSource, BT_GPIO_AF);
+  GPIO_PinAFConfig(BT_USART_GPIO, BT_TX_GPIO_PinSource, BT_GPIO_AF);
+  GPIO_PinAFConfig(BT_USART_GPIO, BT_RX_GPIO_PinSource, BT_GPIO_AF);
 
   GPIO_InitStructure.GPIO_Pin = BT_TX_GPIO_PIN | BT_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(BT_GPIO_TXRX, &GPIO_InitStructure);
+  GPIO_Init(BT_USART_GPIO, &GPIO_InitStructure);
 
   USART_DeInit(BT_USART);
   USART_InitTypeDef USART_InitStructure;

@@ -185,7 +185,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
 #endif
 
 #if defined(EXTMODULE_USART)
-void extmoduleSendSerialBuffer(const uint8_t * data, uint8_t size)
+void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
   DMA_InitTypeDef DMA_InitStructure;
   DMA_DeInit(EXTMODULE_DMA_STREAM);

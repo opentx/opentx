@@ -147,12 +147,14 @@ void extmoduleInvertedSerialStart(uint32_t baudrate)
   USART_Init(EXTMODULE_USART, &USART_InitStructure);
   USART_Cmd(EXTMODULE_USART, ENABLE);
 
+  extmoduleFifo.clear();
+
   USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
   NVIC_SetPriority(EXTMODULE_USART_IRQn, 6);
   NVIC_EnableIRQ(EXTMODULE_USART_IRQn);
 }
 
-void extmoduleSendSerialBuffer(const uint8_t * data, uint8_t size)
+void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
   DMA_InitTypeDef DMA_InitStructure;
   DMA_DeInit(EXTMODULE_USART_DMA_STREAM);
@@ -295,7 +297,7 @@ void extmoduleSendNextFrame()
 #if defined(PXX2)
   else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
     #if defined(EXTMODULE_USART)
-      extmoduleSendSerialBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
+      extmoduleSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
     #else
       sportSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
     #endif

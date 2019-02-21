@@ -294,7 +294,7 @@ void memswap(void * a, void * b, uint8_t size);
 #endif
 
 #include "fifo.h"
-#include "io/io_arm.h"
+#include "io/frsky_sport.h"
 
 extern volatile tmr10ms_t g_tmr10ms;
 static inline tmr10ms_t get_tmr10ms()

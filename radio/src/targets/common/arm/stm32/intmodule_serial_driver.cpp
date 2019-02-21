@@ -66,6 +66,8 @@ void intmoduleSerialStart(uint32_t baudrate)
   USART_Init(INTMODULE_USART, &USART_InitStructure);
   USART_Cmd(INTMODULE_USART, ENABLE);
 
+  intmoduleFifo.clear();
+
   USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
   NVIC_SetPriority(INTMODULE_USART_IRQn, 6);
   NVIC_EnableIRQ(INTMODULE_USART_IRQn);
