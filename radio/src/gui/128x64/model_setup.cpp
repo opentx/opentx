@@ -1217,7 +1217,7 @@ void menuModelSetup(event_t event)
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
 
         lcdDrawTextAlignedLeft(y, STR_RECEIVER);
-        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, 0);
+        lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, ZCHAR);
       }
       break;
 
@@ -1281,15 +1281,15 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
             }
             if (reusableBuffer.modelSetup.pxx2.bindStep == BIND_OK) {
-              memcpy(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].rxName, reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
+              str2zchar(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
             }
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
             if (receiverIdx == 0) {
-              memcpy(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[0], &g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[1], sizeof(ReceiverData));
+              memcpy(&g_model.moduleData[moduleIdx].pxx2.receivers[0], &g_model.moduleData[moduleIdx].pxx2.receivers[1], sizeof(ReceiverData));
               menuVerticalPosition = ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER + 1;
             }
-            memclear(&g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx], sizeof(ReceiverData));
+            memclear(&g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx], sizeof(ReceiverData));
             s_editMode = 0;
             killEvents(event);
           }

@@ -81,6 +81,7 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
   if (reusableBuffer.modelSetup.pxx2.bindStep == BIND_WAIT) {
     if (get_tmr10ms() > reusableBuffer.modelSetup.pxx2.bindWaitTimeout) {
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
+      reusableBuffer.modelSetup.pxx2.bindStep = BIND_OK;
       POPUP_INFORMATION(STR_BIND_OK);
     }
     else {
