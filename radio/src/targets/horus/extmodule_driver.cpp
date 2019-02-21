@@ -184,6 +184,32 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
 }
 #endif
 
+#if defined(EXTMODULE_USART)
+void extmoduleSendSerialBuffer(const uint8_t * data, uint8_t size)
+{
+  DMA_InitTypeDef DMA_InitStructure;
+  DMA_DeInit(EXTMODULE_DMA_STREAM);
+  DMA_InitStructure.DMA_Channel = EXTMODULE_DMA_CHANNEL;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&EXTMODULE_USART->DR);
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(data);
+  DMA_InitStructure.DMA_BufferSize = size;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(EXTMODULE_DMA_STREAM, &DMA_InitStructure);
+  DMA_Cmd(EXTMODULE_DMA_STREAM, ENABLE);
+  USART_DMACmd(EXTMODULE_USART, USART_DMAReq_Tx, ENABLE);
+}
+#endif
+
 void extmoduleSendNextFrame()
 {
   if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PPM) {
@@ -218,6 +244,11 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(extmodulePulsesData.pxx.getData());
     EXTMODULE_DMA_STREAM->NDTR = extmodulePulsesData.pxx.getSize();
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+  }
+#endif
+#if defined(PXX2)
+  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
+    // TODO
   }
 #endif
   else if (IS_DSM2_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_MULTIMODULE_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_SBUS_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol)) {
