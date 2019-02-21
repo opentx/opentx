@@ -110,6 +110,8 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
 }
 
 #if defined(EXTMODULE_USART)
+ModuleFifo extmoduleFifo;
+
 void extmoduleInvertedSerialStart(uint32_t baudrate)
 {
   EXTERNAL_MODULE_ON();
@@ -182,10 +184,10 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = EXTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
-      // TODO later extmoduleErrors++;
+      extmoduleFifo.errors++;
     }
     else {
-      // TODO later extmoduleFifo.push(data);
+      extmoduleFifo.push(data);
     }
     status = EXTMODULE_USART->SR;
   }

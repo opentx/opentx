@@ -211,11 +211,20 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(INTMODULE_USART)
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
   uint8_t frame[32];
-  if (intmoduleFifo.getFrame(frame)) {
-    processModuleFrame(INTERNAL_MODULE, frame);
-  }
+
+  #if defined(INTMODULE_USART)
+    if (intmoduleFifo.getFrame(frame)) {
+      processModuleFrame(INTERNAL_MODULE, frame);
+    }
+  #endif
+
+  #if defined(EXTMODULE_USART)
+    if (extmoduleFifo.getFrame(frame)) {
+      processModuleFrame(EXTERNAL_MODULE, frame);
+    }
+  #endif
 #endif
 
 #if defined(STM32)

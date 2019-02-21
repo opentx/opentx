@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 ModuleFifo intmoduleFifo;
-uint8_t intmoduleErrors;
 
 void intmoduleStop()
 {
@@ -80,7 +79,7 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = INTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
-      intmoduleErrors++;
+      intmoduleFifo.errors++;
     }
     else {
       intmoduleFifo.push(data);

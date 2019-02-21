@@ -88,9 +88,12 @@ class ModuleFifo : public Fifo<uint8_t, 32> {
       ridx = nextIndex(next);
       return true;
     }
+
+    uint32_t errors;
 };
 
 extern ModuleFifo intmoduleFifo;
+extern ModuleFifo extmoduleFifo;
 
 class Pxx2CrcMixin {
   protected:
