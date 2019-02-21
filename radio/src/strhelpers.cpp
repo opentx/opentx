@@ -52,7 +52,7 @@ int8_t char2zchar(char c)
 #endif
   if (c >= 'a') return 'a' - c - 1;
   if (c >= 'A') return c - 'A' + 1;
-  if (c >= '0') return c - '0' + 27;
+  if (c >= '0') return -(c - '0' + 27);
   if (c == '-') return 38;
   if (c == '.') return 39;
   if (c == ',') return 40;
