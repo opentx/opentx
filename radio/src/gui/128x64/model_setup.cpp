@@ -326,8 +326,10 @@ void runPopupRegister(event_t event)
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 3, "Reg. ID");
     editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 3, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == 0);
 
-    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, "Rx Name");
-    editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.modelSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
+    if (reusableBuffer.modelSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED) {
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, "Rx Name");
+      editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.modelSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
+    }
 
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
     lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
