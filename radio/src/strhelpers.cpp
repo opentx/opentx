@@ -78,6 +78,16 @@ int zchar2str(char * dest, const char * src, int size)
   return size+1;
 }
 
+int cmpStrWithZchar(char * charString, char * zcharString, int size)
+{
+  for(int i=0; i < size; i++) {
+    if((uint8_t)char2zchar(charString[i]) != (uint8_t)zcharString[i]) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
 unsigned int effectiveLen(const char * str, unsigned int size)
 {
   while (size > 0) {

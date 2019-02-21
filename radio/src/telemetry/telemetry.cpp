@@ -79,13 +79,13 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
 
   if (frame[3] == 0x00 && reusableBuffer.modelSetup.pxx2.registerStep == REGISTER_START) {
     // RX_NAME follows, we store it for the next step
-    memcpy(reusableBuffer.modelSetup.pxx2.registerRxName, &frame[4], PXX2_LEN_RX_NAME);
+    str2zchar(reusableBuffer.modelSetup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
     reusableBuffer.modelSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
   }
   else if (frame[3] == 0x01 && reusableBuffer.modelSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
     // RX_NAME + PASSWORD follow, we check they are good
-    if (memcmp(&frame[4], reusableBuffer.modelSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) == 0 &&
-        memcmp(&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
+    if (cmpStrWithZchar((char *) &frame[4], reusableBuffer.modelSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) == 0 &&
+      cmpStrWithZchar((char *)&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
       reusableBuffer.modelSetup.pxx2.registerStep = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       POPUP_INFORMATION(STR_REG_OK);
@@ -109,16 +109,6 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     }
     if (!found && reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
       memcpy(reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
-      /*char * c = reusableBuffer.modelSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount];
-      for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
-        uint8_t byte = frame[4 + i];
-        uint8_t quartet = (byte >> 4);
-        *c++ = (quartet >= 10 ? quartet + 'A' - 10 : quartet + '0');
-        quartet = (byte & 0x0f);
-        *c++ = (quartet >= 10 ? quartet + 'A' - 10 : quartet + '0');
-        *c++ = ' ';
-      }
-      *c = '\0';*/
       ++reusableBuffer.modelSetup.pxx2.bindCandidateReceiversCount;
       reusableBuffer.modelSetup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
     }
