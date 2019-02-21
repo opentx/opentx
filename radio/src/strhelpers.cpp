@@ -52,7 +52,7 @@ int8_t char2zchar(char c)
 #endif
   if (c >= 'a') return 'a' - c - 1;
   if (c >= 'A') return c - 'A' + 1;
-  if (c >= '0') return -(c - '0' + 27);
+  if (c >= '0') return c - '0' + 27;
   if (c == '-') return 38;
   if (c == '.') return 39;
   if (c == ',') return 40;
@@ -78,14 +78,14 @@ int zchar2str(char * dest, const char * src, int size)
   return size+1;
 }
 
-int cmpStrWithZchar(char * charString, char * zcharString, int size)
+bool cmpStrWithZchar(const char * charString, const char * zcharString, int size)
 {
-  for(int i=0; i < size; i++) {
-    if((uint8_t)char2zchar(charString[i]) != (uint8_t)zcharString[i]) {
-      return 1;
+  for (int i=0; i<size; i++) {
+    if (char2zchar(charString[i]) != (int8_t)zcharString[i]) {
+      return false;
     }
   }
-  return 0;
+  return true;
 }
 
 unsigned int effectiveLen(const char * str, unsigned int size)

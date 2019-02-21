@@ -435,7 +435,7 @@ char zchar2char(int8_t idx);
 int8_t char2zchar(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
-int cmpStrWithZchar(char * charString, char * zcharString, int size);
+bool cmpStrWithZchar(const char * charString, const char * zcharString, int size);
 
 #include "keys.h"
 #include "pwr.h"
