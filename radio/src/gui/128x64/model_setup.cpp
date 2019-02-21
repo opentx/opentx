@@ -408,8 +408,8 @@ void menuModelSetup(event_t event)
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
       MULTIMODULE_STATUS_ROWS
       EXTERNAL_MODULE_CHANNELS_ROWS,
-      IF_NOT_EXTERNAL_PXX2(EXTERNAL_MODULE_BIND_ROWS()),            // line reused for PPM: PPM settings
-      IF_EXTERNAL_PXX2(0),                                          // RxNum
+      IF_NOT_EXTERNAL_PXX2(EXTERNAL_MODULE_BIND_ROWS()),           // line reused for PPM: PPM settings
+      IF_EXTERNAL_PXX2(0),                                         // RxNum
       OUTPUT_TYPE_ROWS()
       IF_NOT_EXTERNAL_PXX2(EXTERNAL_MODULE_OPTION_ROW),
       MULTIMODULE_MODULE_ROWS

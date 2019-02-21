@@ -561,13 +561,7 @@ bool isExternalModuleAvailable(int module)
   if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
-  if (module == MODULE_TYPE_R9M2 && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
-    return false;
-  }
   if (module == MODULE_TYPE_XJT && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
-    return false;
-  }
-  if (module == MODULE_TYPE_XJT2 && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
 #endif
