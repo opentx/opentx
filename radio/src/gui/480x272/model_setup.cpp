@@ -102,14 +102,14 @@ enum MenuModelSetupItems {
 
 void checkModelIdUnique(uint8_t moduleIdx)
 {
-  char* warn_buf = reusableBuffer.modelSetup.msg;
+  char* warn_buf = reusableBuffer.pxx2Setup.msg;
 
   // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
-  size_t warn_buf_len = sizeof(reusableBuffer.modelSetup.msg) - WARNING_LINE_LEN - 2;
+  size_t warn_buf_len = sizeof(reusableBuffer.pxx2Setup.msg) - WARNING_LINE_LEN - 2;
   if (!modelslist.isModelIdUnique(moduleIdx,warn_buf,warn_buf_len)) {
     if (warn_buf[0] != 0) {
       POPUP_WARNING(STR_MODELIDUSED);
-      SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.modelSetup.msg), 0);
+      SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.pxx2Setup.msg), 0);
     }
   }
 }
@@ -293,7 +293,7 @@ bool menuModelSetup(event_t event)
          TRAINER_LINE2_ROWS });
 
   if (event == EVT_ENTRY) {
-    reusableBuffer.modelSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    reusableBuffer.pxx2Setup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
   if (menuEvent) {
@@ -1103,12 +1103,12 @@ bool menuModelSetup(event_t event)
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr)
               CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_LBT_POWER_MAX);
-            if (attr && s_editMode == 0 && reusableBuffer.modelSetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
-              if((reusableBuffer.modelSetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
+            if (attr && s_editMode == 0 && reusableBuffer.pxx2Setup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
+              if((reusableBuffer.pxx2Setup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
                 POPUP_WARNING(STR_WARNING);
                 SET_WARNING_INFO(STR_REBIND, sizeof(TR_REBIND), 0);
               }
-              reusableBuffer.modelSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+              reusableBuffer.pxx2Setup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
             }
           }
         }
