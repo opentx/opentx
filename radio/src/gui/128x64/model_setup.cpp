@@ -329,10 +329,10 @@ void runPopupRegister(event_t event)
     if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED) {
       lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, STR_RX_NAME);
       editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
     }
 
-    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
-    lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
+        lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
 
     reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
     reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = menuHorizontalPosition;
@@ -1159,11 +1159,11 @@ void menuModelSetup(event_t event)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         lcdDrawTextAlignedLeft(y, STR_MODULE);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, (menuHorizontalPosition == 0 ? attr : 0));
-        lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition == 1 ? attr : 0));
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_REGISTER_BUTTON, (menuHorizontalPosition == 0 ? attr : 0));
+        lcdDrawText(lcdLastRightPos + 3, y, STR_MODULE_RANGE, (menuHorizontalPosition == 1 ? attr : 0));
         if (attr) {
           if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
-            if (menuHorizontalPosition == 1 && event == EVT_KEY_FIRST(KEY_ENTER)) {
+            if (menuHorizontalPosition == 0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
               moduleSettings[moduleIdx].mode = MODULE_MODE_REGISTER;
               reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_START;
               memcpy(reusableBuffer.moduleSetup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
@@ -1173,7 +1173,7 @@ void menuModelSetup(event_t event)
               s_editMode = 0;
               POPUP_INPUT("", runPopupRegister);
             }
-            else if (menuHorizontalPosition == 0) {
+            else if (menuHorizontalPosition == 1) {
               moduleSettings[moduleIdx].mode = MODULE_MODE_RANGECHECK;
             }
           }
