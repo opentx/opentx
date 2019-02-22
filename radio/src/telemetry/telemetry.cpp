@@ -121,6 +121,11 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   }
 }
 
+void processTelemetryFrame(uint8_t module, uint8_t * frame)
+{
+  sportProcessTelemetryPacketWithoutCrc(&frame[2]);
+}
+
 void processSpectrumFrame(uint8_t module, uint8_t * frame)
 {
   if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
@@ -152,6 +157,10 @@ void processRadioFrame(uint8_t module, uint8_t * frame)
 
     case PXX2_TYPE_ID_BIND:
       processBindFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_ID_TELEMETRY:
+      processTelemetryFrame(module, frame);
       break;
   }
 }
