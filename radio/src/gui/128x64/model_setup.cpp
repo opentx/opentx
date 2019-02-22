@@ -388,10 +388,10 @@ void menuModelSetup(event_t event)
     IF_PXX2(isDefaultModelRegistrationID() ? HIDDEN_ROW : READONLY_ROW), // Registration ID
 
     LABEL(InternalModule),
-      INTERNAL_MODULE_MODE_ROWS, // module mode (PXX(2) / None)
-      INTERNAL_MODULE_CHANNELS_ROWS, // Channels min and count
+      INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
+      INTERNAL_MODULE_CHANNELS_ROWS,                               // Channels min and count
       IF_NOT_PXX2(IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
-      IF_PXX2(0),    // RxNum
+      IF_PXX2(0),                                                  // RxNum
       ANTENNA_ROW
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Module start channel (pxx2 always send 16)
       IF_PXX2(1),                                                  // Range check and Register buttons
@@ -1099,7 +1099,7 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart));
+                CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), isInternalModuleChannelCountAvailable);
                 if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }

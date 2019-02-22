@@ -515,6 +515,16 @@ bool isR9MMFlex(int module)
   return g_model.moduleData[module].r9m.region == MODULE_R9M_REGION_FLEX;
 }
 
+bool isInternalModuleChannelCountAvailable(int channels)
+{
+  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT2) {
+    if ( channels % 8 != 0)
+      return false;
+  }
+
+  return true;
+}
+
 bool isInternalModuleAvailable(int module)
 {
   if (module == MODULE_TYPE_NONE)
