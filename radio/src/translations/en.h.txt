@@ -965,6 +965,7 @@
 #define TR_BUZZER                      INDENT "Buzzer"
 #define TR_BYTES                       "bytes"
 #define TR_MODULE_BIND                 BUTTON(TR("Bnd", "Bind"))
+#define TR_RXADD_BUTTON                BUTTON("Add")
 #define TR_MODULE_RANGE                BUTTON(TR("Rng", "Range"))
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN                   BUTTON("Reset")
@@ -977,6 +978,7 @@
   #define TR_MODELIDUSED               TR("ID used in:","Receiver ID used in:")
 #endif
 #define TR_MODULE                      INDENT "Module"
+#define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE              TR("Type", "Telemetry type")
 #define TR_TELEMETRY_SENSORS           "Sensors"
 #define TR_VALUE                       "Value"

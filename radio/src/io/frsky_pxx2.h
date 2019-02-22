@@ -21,7 +21,7 @@
 #ifndef _IO_PXX2_H_
 #define _IO_PXX2_H_
 
-#include "fifo.h"
+#include "../fifo.h"
 
 #define PXX2_BAUDRATE            230400
 #define PXX2_PERIOD              4 // 4ms

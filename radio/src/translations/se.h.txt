@@ -980,6 +980,7 @@
 #define TR_BUZZER              INDENT"Summer"
 #define TR_BYTES               "byte"
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
+#define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        TR("[Tst]", "[Testa]")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           "[Nollställ]"
@@ -988,6 +989,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Fel på TX-antennen"
 #define TR_MODELIDUSED         TR("ID finns redan","ModellID används redan")
 #define TR_MODULE              INDENT "Modul"
+#define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE      "Telemetrityp"
 #define TR_TELEMETRY_SENSORS   "Sensorer"
 #define TR_VALUE               "Värde"

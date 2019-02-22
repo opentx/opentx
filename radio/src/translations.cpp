@@ -584,6 +584,7 @@ const char STR_BLCOLOR[]   = TR_BLCOLOR;
 
   const char STR_TRAINER[]  = TR_TRAINER;
   const char STR_MODULE_BIND[]   = TR_MODULE_BIND;
+const char STR_RXADD_BUTTON[]  = TR_RXADD_BUTTON;
   const char STR_BINDING_1_8_TELEM_ON[]  = TR_BINDING_CH1_8_TELEM_ON;
   const char STR_BINDING_1_8_TELEM_OFF[]  = TR_BINDING_CH1_8_TELEM_OFF;
   const char STR_BINDING_9_16_TELEM_ON[]  = TR_BINDING_CH9_16_TELEM_ON;
@@ -652,6 +653,7 @@ const char STR_BLCOLOR[]   = TR_BLCOLOR;
   const char STR_BYTES[]  = TR_BYTES;
   const char STR_ANTENNAPROBLEM[]  = TR_ANTENNAPROBLEM;
   const char STR_MODULE[]  = TR_MODULE;
+const char STR_RX_NAME[]  = TR_RX_NAME;
   const char STR_ENABLE_POPUP[]  = TR_ENABLE_POPUP;
   const char STR_DISABLE_POPUP[]  = TR_DISABLE_POPUP;
   const char STR_POPUP[]  = TR_POPUP;

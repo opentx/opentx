@@ -323,11 +323,11 @@ void runPopupRegister(event_t event)
 
     drawMessageBox();
 
-    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 3, "Reg. ID");
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 3, STR_REG_ID);
     editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 3, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == 0);
 
     if (reusableBuffer.modelSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED) {
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, "Rx Name");
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, STR_RX_NAME);
       editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.modelSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
     }
 
@@ -394,7 +394,7 @@ void menuModelSetup(event_t event)
       IF_PXX2(0),    // RxNum
       ANTENNA_ROW
       IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Module start channel (pxx2 always send 16)
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Range check and Register buttons
+      IF_PXX2(1),                                                  // Range check and Register buttons
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, (uint8_t)-1), // Receiver Name
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
@@ -1158,7 +1158,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RANGE_REGISTER:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        lcdDrawTextAlignedLeft(y, INDENT "Module");
+        lcdDrawTextAlignedLeft(y, STR_MODULE);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_RANGE, (menuHorizontalPosition == 0 ? attr : 0));
         lcdDrawText(lcdLastRightPos, y, "[Reg]", (menuHorizontalPosition == 1 ? attr : 0));
         if (attr) {
@@ -1191,8 +1191,8 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_ADD_RECEIVER:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        lcdDrawText(INDENT_WIDTH, y, "Receiver");
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "[Add]", attr);
+        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_RXADD_BUTTON, attr);
         if (attr && s_editMode > 0) {
           if (g_model.moduleData[moduleIdx].pxx2.receivers[0].enabled) {
             g_model.moduleData[moduleIdx].pxx2.receivers[1].enabled = 0x01;
@@ -1206,6 +1206,7 @@ void menuModelSetup(event_t event)
           }
           killEvents(event);
           s_editMode = 0;
+          storageDirty(EE_MODEL);
         }
       }
       break;
@@ -1294,6 +1295,7 @@ void menuModelSetup(event_t event)
             memclear(&g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx], sizeof(ReceiverData));
             s_editMode = 0;
             killEvents(event);
+            storageDirty(EE_MODEL);
           }
         }
       }

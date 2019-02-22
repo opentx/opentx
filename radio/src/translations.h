@@ -849,6 +849,7 @@ extern const char STR_EXPONAME[];
 
   extern const char STR_TRAINER[];
 extern const char STR_MODULE_BIND[];
+extern const char STR_RXADD_BUTTON[];
 extern const char STR_BINDING_1_8_TELEM_ON[];
 extern const char STR_BINDING_1_8_TELEM_OFF[];
 extern const char STR_BINDING_9_16_TELEM_ON[];
@@ -917,6 +918,7 @@ extern const char STR_MULTI_RFPOWER[];
 extern const char STR_BYTES[];
 extern const char STR_ANTENNAPROBLEM[];
 extern const char STR_MODULE[];
+extern const char STR_RX_NAME[];
 extern const char STR_ENABLE_POPUP[];
 extern const char STR_DISABLE_POPUP[];
 extern const char STR_POPUP[];
