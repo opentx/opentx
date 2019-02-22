@@ -87,10 +87,12 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_SHARE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_NAME,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_SHARE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_ADD_RECEIVER,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
@@ -120,10 +122,12 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_SHARE,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_NAME,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_SHARE,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_ADD_RECEIVER,
 #if defined(PCBSKY9X) && !defined(REVA)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
@@ -399,10 +403,12 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Receiver Bind/Delete
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Transfer
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver Bind/Delete
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver Transfer
       IF_PXX2(INTERNAL_MODULE_ADD_RECEIVER_ROW),
 
     LABEL(ExternalModule),
@@ -423,10 +429,12 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 1),           // Receiver Bind/Delete
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 0),           // Receiver Transfer
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, (uint8_t)-1), // Receiver Number
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver Range
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 1),           // Receiver Bind/Delete
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver Transfer
       IF_EXTERNAL_PXX2(EXTERNAL_MODULE_ADD_RECEIVER_ROW),
 
     TRAINER_ROWS
@@ -1203,7 +1211,7 @@ void menuModelSetup(event_t event)
           else {
             g_model.moduleData[moduleIdx].pxx2.receivers[0].enabled = 0x01;
             memcpy(&g_model.moduleData[moduleIdx].pxx2.receivers[0].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
-            menuVerticalPosition = (moduleIdx ? ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL : ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_BIND_DEL) + 1;
+            menuVerticalPosition = (moduleIdx ? ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL : ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_BIND_DEL) + 1;
           }
           killEvents(event);
           s_editMode = 0;
@@ -1302,6 +1310,23 @@ void menuModelSetup(event_t event)
       }
       break;
 
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_SHARE:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_SHARE:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_SHARE:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_SHARE:
+      {
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_TRANSFER_BUTTON, attr);
+        if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+          moduleSettings[moduleIdx].mode ^= MODULE_MODE_SHARE;
+          reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
+        }
+        if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL)
+          s_editMode = 0;
+      }
+      break;
 #endif
 #if defined(PCBSKY9X)
         case ITEM_MODEL_EXTRA_MODULE_BIND:

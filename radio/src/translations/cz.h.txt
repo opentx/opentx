@@ -961,6 +961,7 @@
 #define TR_BUZZER              INDENT"Pípák"
 #define TR_BYTES               "[B]"
 #define TR_MODULE_BIND         BUTTON(TR("Bnd", "Bind"))
+#define TR_TRANSFER_BUTTON             BUTTON("Transfer")
 #define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        BUTTON(TR("Rng", "Range"))

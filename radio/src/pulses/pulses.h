@@ -76,6 +76,7 @@ enum ModuleSettingsMode
   MODULE_MODE_BIND,
   MODULE_MODE_REGISTER,
   MODULE_MODE_SPECTRUM_ANALYSER,
+  MODULE_MODE_SHARE
 };
 
 PACK(struct ModuleSettings {

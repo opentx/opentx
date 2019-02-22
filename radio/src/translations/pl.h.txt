@@ -967,6 +967,7 @@
 #define TR_BUZZER              INDENT"Brzęczyk"
 #define TR_BYTES               "bajty"
 #define TR_MODULE_BIND         TR("[BND]","[Bind]")
+#define TR_TRANSFER_BUTTON             BUTTON("Transfert)
 #define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        TR("[Zas]","Zasięg")
