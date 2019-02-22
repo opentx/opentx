@@ -1220,13 +1220,12 @@ void menuModelSetup(event_t event)
             if (g_model.moduleData[moduleIdx].pxx2.receivers[0].enabled) {
               g_model.moduleData[moduleIdx].pxx2.receivers[1].enabled = 0x01;
               memcpy(&g_model.moduleData[moduleIdx].pxx2.receivers[1].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
-              menuVerticalPosition += 2;
             }
             else {
               g_model.moduleData[moduleIdx].pxx2.receivers[0].enabled = 0x01;
               memcpy(&g_model.moduleData[moduleIdx].pxx2.receivers[0].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
-              menuVerticalPosition += 2;
             }
+            menuVerticalPosition += 3;
             s_editMode = 0;
             killEvents(event);
             storageDirty(EE_MODEL);
@@ -1296,9 +1295,6 @@ void menuModelSetup(event_t event)
             }
             else {
               s_editMode = 0;
-            }
-            if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_OK) {
-              // str2zchar(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
             }
           }
           else {
