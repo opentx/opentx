@@ -368,16 +368,16 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
 {
   uint8_t modelId = g_model.header.modelId[module];
   uint8_t additionalOnes = 0;
-  char * name = reusableBuffer.pxx2Setup.msg;
+  char * name = reusableBuffer.moduleSetup.msg;
 
-  memset(reusableBuffer.pxx2Setup.msg, 0, sizeof(reusableBuffer.pxx2Setup.msg));
+  memset(reusableBuffer.moduleSetup.msg, 0, sizeof(reusableBuffer.moduleSetup.msg));
 
   if (modelId != 0) {
     for (uint8_t i = 0; i < MAX_MODELS; i++) {
       if (i != index) {
         if (modelId == modelHeaders[i].modelId[module]) {
-          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.pxx2Setup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
-            if (reusableBuffer.pxx2Setup.msg[0] != 0) {
+          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.moduleSetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
+            if (reusableBuffer.moduleSetup.msg[0] != 0) {
               name = strAppend(name, ", ");
             }
             if (modelHeaders[i].name[0] == 0) {
@@ -402,9 +402,9 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
     name = strAppend(name, ")");
   }
 
-  if (reusableBuffer.pxx2Setup.msg[0] != 0) {
+  if (reusableBuffer.moduleSetup.msg[0] != 0) {
     POPUP_WARNING(STR_MODELIDUSED);
-    SET_WARNING_INFO(reusableBuffer.pxx2Setup.msg, sizeof(reusableBuffer.pxx2Setup.msg), 0);
+    SET_WARNING_INFO(reusableBuffer.moduleSetup.msg, sizeof(reusableBuffer.moduleSetup.msg), 0);
   }
 }
 

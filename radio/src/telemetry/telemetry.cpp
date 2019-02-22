@@ -77,16 +77,16 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  if (frame[3] == 0x00 && reusableBuffer.pxx2Setup.pxx2.registerStep == REGISTER_START) {
+  if (frame[3] == 0x00 && reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_START) {
     // RX_NAME follows, we store it for the next step
-    str2zchar(reusableBuffer.pxx2Setup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
-    reusableBuffer.pxx2Setup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
+    str2zchar(reusableBuffer.moduleSetup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
+    reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
   }
-  else if (frame[3] == 0x01 && reusableBuffer.pxx2Setup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
+  else if (frame[3] == 0x01 && reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
     // RX_NAME + PASSWORD follow, we check they are good
-    if (cmpStrWithZchar((char *)&frame[4], reusableBuffer.pxx2Setup.pxx2.registerRxName, PXX2_LEN_RX_NAME) &&
-      cmpStrWithZchar((char *)&frame[12], reusableBuffer.pxx2Setup.pxx2.registrationID, PXX2_LEN_REGISTRATION_ID)) {
-      reusableBuffer.pxx2Setup.pxx2.registerStep = REGISTER_OK;
+    if (cmpStrWithZchar((char *)&frame[4], reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) &&
+      cmpStrWithZchar((char *)&frame[12], reusableBuffer.moduleSetup.pxx2.registrationID, PXX2_LEN_REGISTRATION_ID)) {
+      reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       POPUP_INFORMATION(STR_REG_OK);
     }
@@ -101,22 +101,22 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
   if (frame[3] == 0x00) {
     bool found = false;
-    for (uint8_t i=0; i<reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversCount; i++) {
-      if (memcmp(reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+    for (uint8_t i=0; i<reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount; i++) {
+      if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
         found = true;
         break;
       }
     }
-    if (!found && reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversNames[reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
-      ++reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversCount;
-      reusableBuffer.pxx2Setup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
+    if (!found && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+      memcpy(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
+      ++reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount;
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
     }
   }
   else if (frame[3] == 0x01) {
-    if (memcmp(reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversNames[reusableBuffer.pxx2Setup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-      reusableBuffer.pxx2Setup.pxx2.bindStep = BIND_WAIT;
-      reusableBuffer.pxx2Setup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
+    if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
+      reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
     }
   }
 }

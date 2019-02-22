@@ -1135,7 +1135,7 @@ union ReusableBuffer
         uint8_t bindSelectedReceiverIndex;
       } pxx2;
     };
-  } pxx2Setup;
+  } moduleSetup;
 
   // 103 bytes
   struct {

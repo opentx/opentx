@@ -254,8 +254,8 @@ enum MenuModelSetupItems {
 
 void onPXX2BindMenu(const char * result)
 {
-  reusableBuffer.pxx2Setup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversNames[0]);
-  reusableBuffer.pxx2Setup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
+  reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]);
+  reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
 }
 
 void onBindMenu(const char * result)
@@ -290,9 +290,9 @@ void runPopupRegister(event_t event)
   uint8_t backupVerticalOffset = menuVerticalOffset;
   int8_t backupEditMode = s_editMode;
 
-  menuVerticalPosition = reusableBuffer.pxx2Setup.pxx2.registerPopupVerticalPosition;
-  menuHorizontalPosition = reusableBuffer.pxx2Setup.pxx2.registerPopupHorizontalPosition;
-  s_editMode = reusableBuffer.pxx2Setup.pxx2.registerPopupEditMode;
+  menuVerticalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition;
+  menuHorizontalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition;
+  s_editMode = reusableBuffer.moduleSetup.pxx2.registerPopupEditMode;
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -301,7 +301,7 @@ void runPopupRegister(event_t event)
       }
       else if (menuHorizontalPosition == 0) {
         // [Enter] pressed
-        reusableBuffer.pxx2Setup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
+        reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
         backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
       }
       // no break
@@ -326,17 +326,17 @@ void runPopupRegister(event_t event)
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 3, STR_REG_ID);
     editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 3, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == 0);
 
-    if (reusableBuffer.pxx2Setup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED) {
+    if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED) {
       lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, STR_RX_NAME);
-      editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.pxx2Setup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
+      editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
     }
 
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
     lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
 
-    reusableBuffer.pxx2Setup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
-    reusableBuffer.pxx2Setup.pxx2.registerPopupHorizontalPosition = menuHorizontalPosition;
-    reusableBuffer.pxx2Setup.pxx2.registerPopupEditMode = s_editMode;
+    reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
+    reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = menuHorizontalPosition;
+    reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = s_editMode;
   }
 
   menuVerticalPosition = ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER + HEADER_LINE;
@@ -463,7 +463,7 @@ void menuModelSetup(event_t event)
   TITLE(STR_MENUSETUP);
 
   if (event == EVT_ENTRY) {
-    reusableBuffer.pxx2Setup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -1165,11 +1165,11 @@ void menuModelSetup(event_t event)
           if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
             if (menuHorizontalPosition == 1 && event == EVT_KEY_FIRST(KEY_ENTER)) {
               moduleSettings[moduleIdx].mode = MODULE_MODE_REGISTER;
-              reusableBuffer.pxx2Setup.pxx2.registerStep = REGISTER_START;
-              memcpy(reusableBuffer.pxx2Setup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
-              reusableBuffer.pxx2Setup.pxx2.registerPopupVerticalPosition = 0;
-              reusableBuffer.pxx2Setup.pxx2.registerPopupHorizontalPosition = 0;
-              reusableBuffer.pxx2Setup.pxx2.registerPopupEditMode = 0;
+              reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_START;
+              memcpy(reusableBuffer.moduleSetup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
+              reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = 0;
+              reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = 0;
+              reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = 0;
               s_editMode = 0;
               POPUP_INPUT("", runPopupRegister);
             }
@@ -1267,16 +1267,16 @@ void menuModelSetup(event_t event)
         if (attr) {
           if (menuHorizontalPosition == 0) {
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-              reusableBuffer.pxx2Setup.pxx2.bindStep = BIND_START;
-              reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversCount = 0;
+              reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
+              reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
               moduleSettings[moduleIdx].mode ^= MODULE_MODE_BIND;
             }
             if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
               s_editMode = 1;
-              if (reusableBuffer.pxx2Setup.pxx2.bindStep == BIND_RX_NAME_RECEIVED) {
-                popupMenuItemsCount = min<uint8_t>(reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+              if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_RECEIVED) {
+                popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
-                  popupMenuItems[i] = reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversNames[i];
+                  popupMenuItems[i] = reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i];
                 }
                 POPUP_MENU_START(onPXX2BindMenu);
               }
@@ -1284,8 +1284,8 @@ void menuModelSetup(event_t event)
             else {
               s_editMode = 0;
             }
-            if (reusableBuffer.pxx2Setup.pxx2.bindStep == BIND_OK) {
-              str2zchar(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, reusableBuffer.pxx2Setup.pxx2.bindCandidateReceiversNames[reusableBuffer.pxx2Setup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
+            if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_OK) {
+              str2zchar(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
             }
           }
           else if (menuHorizontalPosition == 1 && s_editMode > 0) {
@@ -1604,11 +1604,11 @@ void menuModelSetup(event_t event)
             if (attr) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_LBT_POWER_MAX);
             }
-            if (attr && editMode == 0 && reusableBuffer.pxx2Setup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
-              if((reusableBuffer.pxx2Setup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
+            if (attr && editMode == 0 && reusableBuffer.moduleSetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
+              if((reusableBuffer.moduleSetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5) { //switching between mode 2 and 3 does not require rebind
                 POPUP_WARNING(STR_REBIND);
               }
-              reusableBuffer.pxx2Setup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+              reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
             }
           }
         }
