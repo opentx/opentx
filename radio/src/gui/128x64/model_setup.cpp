@@ -303,7 +303,7 @@ void runPopupRegister(event_t event)
       if (menuVerticalPosition != 2) {
         break;
       }
-      else if (menuHorizontalPosition == 0) {
+      else if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED && menuHorizontalPosition == 0) {
         // [Enter] pressed
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
         backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
@@ -322,7 +322,7 @@ void runPopupRegister(event_t event)
   }
 
   if (warningText) {
-    const uint8_t dialogRows[] = { 0, 0, 1};
+    const uint8_t dialogRows[] = { 0, uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? READONLY_ROW : 0), uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? 0 : 1)};
     check(event, 0, nullptr, 0, dialogRows, 2, 2);
 
     drawMessageBox();
@@ -330,13 +330,16 @@ void runPopupRegister(event_t event)
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 3, STR_REG_ID);
     editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 3, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == 0);
 
-    if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED) {
+    if (reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED) {
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, "Waiting ...");
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 ? INVERS : 0);
+    }
+    else {
       lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, STR_RX_NAME);
       editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
       lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
+      lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
     }
-
-        lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
 
     reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
     reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = menuHorizontalPosition;
@@ -344,7 +347,7 @@ void runPopupRegister(event_t event)
   }
 
   menuVerticalPosition = ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER + HEADER_LINE;
-  menuHorizontalPosition = 1;
+  menuHorizontalPosition = 0;
   menuVerticalOffset = backupVerticalOffset;
   s_editMode = backupEditMode;
 }
@@ -1172,12 +1175,12 @@ void menuModelSetup(event_t event)
         if (attr) {
           if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
             if (menuHorizontalPosition == 0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
-              moduleSettings[moduleIdx].mode = MODULE_MODE_REGISTER;
               reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_START;
               memcpy(reusableBuffer.moduleSetup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
               reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = 0;
               reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = 0;
               reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = 0;
+              moduleSettings[moduleIdx].mode = MODULE_MODE_REGISTER;
               s_editMode = 0;
               POPUP_INPUT("", runPopupRegister);
             }
@@ -1780,11 +1783,11 @@ void menuModelFailsafe(event_t event)
 
     if (menuVerticalPosition < sentModuleChannels(g_moduleIdx)) {
       if (s_editMode > 0) {
-        g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
+        g_model.failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
         s_editMode = 0;
       }
       else {
-        int16_t & failsafe = g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition];
+        int16_t & failsafe = g_model.failsafeChannels[menuVerticalPosition];
         if (failsafe < FAILSAFE_CHANNEL_HOLD)
           failsafe = FAILSAFE_CHANNEL_HOLD;
         else if (failsafe == FAILSAFE_CHANNEL_HOLD)
@@ -1816,7 +1819,7 @@ void menuModelFailsafe(event_t event)
   // Channels
   for (; line < 8; line++) {
     const int32_t channelValue = channelOutputs[ch+channelStart];
-    int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[ch];
+    int32_t failsafeValue = g_model.failsafeChannels[ch];
 
     //Channel
     putsChn(x+1, y, ch+1, SMLSIZE);
@@ -1831,7 +1834,7 @@ void menuModelFailsafe(event_t event)
         }
         else {
           flags |= BLINK;
-          CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[ch], -lim, +lim);
+          CHECK_INCDEC_MODELVAR(event, g_model.failsafeChannels[ch], -lim, +lim);
         }
       }
     }

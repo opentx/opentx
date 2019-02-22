@@ -156,7 +156,7 @@ class Pxx1Pulses: public PxxPulses<PxxTransport>
 
     uint8_t addFlag1(uint8_t port);
     void addExtraFlags(uint8_t port);
-
+    void addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels);
     void add8ChannelsFrame(uint8_t port, uint8_t sendUpperChannels);
 };
 

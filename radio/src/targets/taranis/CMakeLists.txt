@@ -144,6 +144,8 @@ elseif(PCB STREQUAL XLITES)
 endif()
 
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X3)
+  option(PXX1 "PXX1 protocol support" OFF)
+  option(PXX2 "PXX2 protocol support" ON)
   add_definitions(-DINTERNAL_MODULE_SERIAL)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
@@ -156,6 +158,8 @@ if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X3)
     ../common/arm/stm32/intmodule_serial_driver.cpp
     )
 else()
+  set(PXX1 YES)
+  option(PXX2 "PXX2 protocol support" ON)
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp

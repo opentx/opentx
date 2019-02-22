@@ -9,8 +9,6 @@ option(TRACE_AUDIO "Traces audio enabled" OFF)
 option(DEBUG_TRACE_BUFFER "Debug Trace Screen" OFF)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" OFF)
 option(CROSSFIRE "Crossfire TX Module" OFF)
-option(PXX1 "PXX1 protocol support" OFF)
-option(PXX2 "PXX2 protocol support" ON)
 option(SUPPORT_D16_EU_ONLY "XJT module only supports D16-EU and LR12-EU" OFF) # TODO rename to XJT_EU_ONLY
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
 option(DEBUG_USB_INTERRUPTS "Count individual USB interrupts" OFF)
@@ -185,7 +183,6 @@ set(PULSES_SRC
   ${PULSES_SRC}
   pulses.cpp
   ppm.cpp
-  pxx.cpp
   dsm2.cpp
   sbus.cpp
   )

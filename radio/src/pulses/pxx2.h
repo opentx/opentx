@@ -132,6 +132,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void addFlag1(uint8_t module);
 
+    void addChannels(uint8_t module, uint8_t sendFailsafe, uint8_t firstChannel);
+
     void addCrc()
     {
       Pxx2Transport::addByteWithoutCrc(Pxx2CrcMixin::crc >> 8);

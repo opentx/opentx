@@ -39,6 +39,50 @@ void Pxx2Pulses::addFlag1(uint8_t module)
   Pxx2Transport::addByte(flag1);
 }
 
+void Pxx2Pulses::addChannels(uint8_t module, uint8_t sendFailsafe, uint8_t firstChannel)
+{
+  uint16_t pulseValue = 0;
+  uint16_t pulseValueLow = 0;
+
+  for (int8_t i=0; i<8; i++) {
+    uint8_t channel = firstChannel + i;
+    if (sendFailsafe) {
+      if (g_model.moduleData[module].failsafeMode == FAILSAFE_HOLD) {
+        pulseValue = 2047;
+      }
+      else if (g_model.moduleData[module].failsafeMode == FAILSAFE_NOPULSES) {
+        pulseValue = 0;
+      }
+      else {
+        int16_t failsafeValue = g_model.failsafeChannels[channel];
+        if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
+          pulseValue = 2047;
+        }
+        else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+          pulseValue = 0;
+        }
+        else {
+          failsafeValue += 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+          pulseValue = limit(1, (failsafeValue * 512 / 682) + 1024, 2046);
+        }
+      }
+    }
+    else {
+      int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+      pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+    }
+
+    if (i & 1) {
+      Pxx2Transport::addByte(pulseValueLow); // Low byte of channel
+      Pxx2Transport::addByte(((pulseValueLow >> 8) & 0x0F) | (pulseValue << 4));  // 4 bits each from 2 channels
+      Pxx2Transport::addByte(pulseValue >> 4);  // High byte of channel
+    }
+    else {
+      pulseValueLow = pulseValue;
+    }
+  }
+}
+
 void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_CHANNELS);
@@ -50,8 +94,14 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   addFlag1(module);
 
   // Channels
-  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, 0);
-  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, 1);
+  uint8_t channelsCount = sentModuleChannels(module);
+  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart);
+  if (channelsCount > 8) {
+    addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 8);
+    if (channelsCount > 16) {
+      addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 16);
+    }
+  }
 }
 
 bool Pxx2Pulses::setupRegisterFrame(uint8_t module)
