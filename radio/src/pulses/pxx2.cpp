@@ -179,6 +179,22 @@ bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
   return true;
 }
 
+bool Pxx2Pulses::setupShareMode(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETUP);
+
+  Pxx2Transport::addByte(0xC0);
+
+  Pxx2Transport::addByte(0x40);
+
+  for(uint8_t i=0; i < 24 ; i++) {
+    Pxx2Transport::addByte(i);
+  }
+
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  return true;
+}
+
 bool Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
@@ -192,6 +208,8 @@ bool Pxx2Pulses::setupFrame(uint8_t module)
     result = setupBindFrame(module);
   else if (mode == MODULE_MODE_SPECTRUM_ANALYSER)
     result = setupSpectrumAnalyser(module);
+  else if (mode == MODULE_MODE_SHARE)
+    result = setupShareMode(module);
   else
     setupChannelsFrame(module);
 
