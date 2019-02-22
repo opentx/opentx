@@ -291,6 +291,8 @@ void onBindMenu(const char * result)
 
 void runPopupRegister(event_t event)
 {
+  uint8_t backupVerticalPosition = menuVerticalPosition;
+  uint8_t backupHorizontalPosition = menuHorizontalPosition;
   uint8_t backupVerticalOffset = menuVerticalOffset;
   int8_t backupEditMode = s_editMode;
 
@@ -346,10 +348,22 @@ void runPopupRegister(event_t event)
     reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = s_editMode;
   }
 
-  menuVerticalPosition = ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER + HEADER_LINE;
-  menuHorizontalPosition = 0;
+  menuVerticalPosition = backupVerticalPosition;
+  menuHorizontalPosition = backupHorizontalPosition;
   menuVerticalOffset = backupVerticalOffset;
   s_editMode = backupEditMode;
+}
+
+void startRegisterDialog(uint8_t module)
+{
+  reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_START;
+  memcpy(reusableBuffer.moduleSetup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
+  reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = 0;
+  reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = 0;
+  reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = 0;
+  moduleSettings[module].mode = MODULE_MODE_REGISTER;
+  s_editMode = 0;
+  POPUP_INPUT("", runPopupRegister);
 }
 
 inline bool isDefaultModelRegistrationID()
@@ -1175,14 +1189,7 @@ void menuModelSetup(event_t event)
         if (attr) {
           if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
             if (menuHorizontalPosition == 0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
-              reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_START;
-              memcpy(reusableBuffer.moduleSetup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
-              reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = 0;
-              reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = 0;
-              reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = 0;
-              moduleSettings[moduleIdx].mode = MODULE_MODE_REGISTER;
-              s_editMode = 0;
-              POPUP_INPUT("", runPopupRegister);
+              startRegisterDialog(moduleIdx);
             }
             else if (menuHorizontalPosition == 1) {
               moduleSettings[moduleIdx].mode = MODULE_MODE_RANGECHECK;

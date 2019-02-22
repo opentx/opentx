@@ -158,68 +158,7 @@ enum MenuRadioHardwareItems {
 #define HW_SETTINGS_COLUMN1            30
 #define HW_SETTINGS_COLUMN2            (30 + 5*FW)
 
-void runHWPopupRegister(event_t event)
-{
-  uint8_t backupVerticalOffset = menuVerticalOffset;
-  int8_t backupEditMode = s_editMode;
-
-  menuVerticalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition;
-  menuHorizontalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition;
-  s_editMode = reusableBuffer.moduleSetup.pxx2.registerPopupEditMode;
-
-  switch (event) {
-    case EVT_KEY_BREAK(KEY_ENTER):
-      if (menuVerticalPosition != 2) {
-        break;
-      }
-      else if (menuHorizontalPosition == 0) {
-        // [Enter] pressed
-        reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
-        backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
-      }
-      // no break
-
-    case EVT_KEY_LONG(KEY_EXIT):
-      s_editMode = 0;
-      // no break;
-
-    case EVT_KEY_BREAK(KEY_EXIT):
-      if (s_editMode <= 0) {
-        warningText = NULL;
-      }
-      break;
-  }
-
-  if (warningText) {
-    const uint8_t dialogRows[] = { 0, 0, 1};
-    check(event, 0, nullptr, 0, dialogRows, 2, 2);
-
-    drawMessageBox();
-
-    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 3, STR_REG_ID);
-    editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 3, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == 0);
-
-    if (reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED) {
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, "Waiting for receiver ...");
-    }
-    else {
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, STR_RX_NAME);
-      editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
-    }
-
-    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
-    lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
-
-    reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
-    reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = menuHorizontalPosition;
-    reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = s_editMode;
-  }
-
-  menuVerticalPosition = ITEM_RADIO_OWNER_ID + HEADER_LINE;
-  menuHorizontalPosition = 1;
-  menuVerticalOffset = backupVerticalOffset;
-  s_editMode = backupEditMode;
-}
+void startRegisterDialog(uint8_t module);
 
 void menuRadioHardware(event_t event)
 {
@@ -382,14 +321,7 @@ void menuRadioHardware(event_t event)
         if (attr) {
           if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
             if (event == EVT_KEY_FIRST(KEY_ENTER)) {
-              moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_REGISTER;
-              reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_START;
-              memcpy(reusableBuffer.moduleSetup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
-              reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = 0;
-              reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = 0;
-              reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = 0;
-              s_editMode = 0;
-              POPUP_INPUT("", runHWPopupRegister);
+              startRegisterDialog(INTERNAL_MODULE);
             }
             else if (menuHorizontalPosition == 0) {
               moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
