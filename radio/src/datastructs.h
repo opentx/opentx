@@ -903,7 +903,7 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t  countryCode); \
     NOBACKUP(uint8_t  imperial:1); \
     NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
-    NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1); \
+    uint8_t  disableRssiPoweroffAlarm:1; \
     NOBACKUP(uint8_t  USBMode:2); \
     NOBACKUP(uint8_t  spareExtraArm:3); \
     NOBACKUP(char     ttsLanguage[2]); \

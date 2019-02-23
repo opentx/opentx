@@ -217,8 +217,8 @@ inline void SEND_FAILSAFE_1S()
 void setCustomFailsafe(uint8_t moduleIndex);
 
 #if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
-#define LEN_R9M_REGION                 "\003"
-#define TR_R9M_REGION                  "FCC""EU\0""EU+""AU+"
+#define LEN_R9M_REGION                 "\006"
+#define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
 #define LEN_R9M_FCC_POWER_VALUES       "\010"
 #define LEN_R9M_LBT_POWER_VALUES       "\015"
 #define TR_R9M_FCC_POWER_VALUES        "(100 mW)"
@@ -241,12 +241,12 @@ enum R9MLBTPowerValues {
 
 #else
 
-#define LEN_R9M_REGION                 "\003"
-#define TR_R9M_REGION                  "FCC""EU\0""EU+""AU+"
-#define LEN_R9M_FCC_POWER_VALUES       "\006"
+#define LEN_R9M_REGION                 "\006"
+#define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
+#define LEN_R9M_FCC_POWER_VALUES       "\013"
 #define LEN_R9M_LBT_POWER_VALUES       "\013"
-#define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
-#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 ""25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
+#define TR_R9M_FCC_POWER_VALUES        "10 mW\0     " "100 mW\0    " "500 mW\0    " "Auto <= 1 W"
+#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0 " "25 mW 16ch\0" "200 mW 16ch" "500 mW 16ch"
 
 enum R9MFCCPowerValues {
   R9M_FCC_POWER_10 = 0,

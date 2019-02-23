@@ -149,11 +149,9 @@ void menuModelDisplay(event_t event)
             }
           }
         }
-#if !defined(PCBXLITE)
         else if (attr) {
           MOVE_CURSOR_FROM_HERE();
         }
-#endif
 #endif
         break;
       }

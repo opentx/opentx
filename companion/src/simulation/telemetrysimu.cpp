@@ -306,13 +306,13 @@ void TelemetrySimulator::generateTelemetryFrame()
       break;
 
     case 6:
-      if (ui->A3->value() > 0)
-        generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<uint32_t>(0, ui->A3->value() * 100.0, 0xFFFFFFFF));
+      if (ui->A3->value() != 0)
+        generateSportPacket(buffer, ui->a3_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A3_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->A3->value() * 100.0, 0x7FFFFFFF));
       break;
 
     case 7:
-      if (ui->A4->value() > 0)
-        generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<uint32_t>(0, ui->A4->value() * 100.0, 0xFFFFFFFF));
+      if (ui->A4->value() != 0)
+        generateSportPacket(buffer, ui->a4_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, A4_FIRST_ID, LIMIT<int32_t>(-0x7FFFFFFF, ui->A4->value() * 100.0, 0x7FFFFFFF));
       break;
 
     case 8:
@@ -658,6 +658,7 @@ TelemetrySimulator::LogPlaybackController::LogPlaybackController(Ui::TelemetrySi
   colToFuncMap.insert("VFAS(V)", FASV);
   colToFuncMap.insert("Curr(A)", FASC);
   colToFuncMap.insert("Cels(gRe)", CELS_GRE);
+  colToFuncMap.insert("Cels(V)", CELS_GRE);
   colToFuncMap.insert("ASpd(kts)", ASPD_KTS);
   colToFuncMap.insert("ASpd(kmh)", ASPD_KMH);
   colToFuncMap.insert("ASpd(mph)", ASPD_MPH);

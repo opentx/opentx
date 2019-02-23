@@ -670,57 +670,36 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
 // local strings
 
 const pm_char STR_SUBTYPE_FLYSKY[] PROGMEM =     "\004""Std\0""V9x9""V6x6""V912""CX20";
-
-const pm_char STR_SUBTYPE_AFHDS2A[] PROGMEM =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
-
+const pm_char STR_SUBTYPE_HUBSAN[] PROGMEM =     "\005"" H107"" H301"" H501";
 const pm_char STR_SUBTYPE_FRSKY[] PROGMEM =      "\007""D16\0   ""D8\0    ""D16 8ch""V8\0    ""LBT(EU)""LBT 8ch";
-
-const pm_char STR_SUBTYPE_HISKY[] PROGMEM =      "\005""HiSky""HK310";
-
+const pm_char STR_SUBTYPE_HISKY[] PROGMEM =      "\005""Std\0 ""HK310";
+const pm_char STR_SUBTYPE_V2X2[] PROGMEM =       "\006""Std\0  ""JXD506";
 const pm_char STR_SUBTYPE_DSM[] PROGMEM =        "\006""2 22ms""2 11ms""X 22ms""X 11ms";
-
-const pm_char STR_SUBTYPE_YD717[] PROGMEM =      "\007""YD717\0 ""SKYWLKR""Syma X2""XINXUN\0""NIHUI\0  ";
-
-const pm_char STR_SUBTYPE_SYMAX[] PROGMEM =      "\003""Std""5c\0";
-
-const pm_char STR_SUBTYPE_SLT[] PROGMEM =        "\005""SLT\0 ""Vista";
-
-const pm_char STR_SUBTYPE_CX10[] PROGMEM =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041""Q242\0  ";
-
-const pm_char STR_SUBTYPE_CG023[] PROGMEM =      "\005""CG023""YD829";
-
+const pm_char STR_SUBTYPE_YD717[] PROGMEM =      "\007""Std\0   ""SkyWlkr""Syma X4""XINXUN\0""NIHUI\0 ";
 const pm_char STR_SUBTYPE_KN[] PROGMEM =         "\006""WLtoys""FeiLun";
-
-const pm_char STR_SUBTYPE_MT99[] PROGMEM =       "\005""MT99\0""H7\0  ""YZ\0  ""LS\0  ""FY805";
-
+const pm_char STR_SUBTYPE_SYMAX[] PROGMEM =      "\003""Std""X5C";
+const pm_char STR_SUBTYPE_SLT[] PROGMEM =        "\006""V1_6ch""V2_8ch""Q100\0 ""Q200\0 ""MR100\0";
+const pm_char STR_SUBTYPE_CX10[] PROGMEM =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0     ""JC3015a""JC3015b""MK33041";
+const pm_char STR_SUBTYPE_CG023[] PROGMEM =      "\005""Std\0 ""YD829";
+const pm_char STR_SUBTYPE_BAYANG[] PROGMEM =     "\007"" Std\0  "" H8S3D\0"" X16 AH""IRDrone";
+const pm_char STR_SUBTYPE_MT99[] PROGMEM =       "\006"" MT99\0"" H7\0  "" YZ\0  "" LS\0  "" FY805";
 const pm_char STR_SUBTYPE_MJXQ[] PROGMEM =       "\005""WLH08""X600\0""X800\0""H26D\0""E010\0""H26WH";
-
-const pm_char STR_SUBTYPE_HONTAI[] PROGMEM =     "\007""Std\0   ""JJRC X1""X5C1cln";
-
+const pm_char STR_SUBTYPE_FY326[] PROGMEM =      "\005""Std\0 ""FY319";
+const pm_char STR_SUBTYPE_HONTAI[] PROGMEM =     "\007"" Std\0  ""JJRC X1"" X5C1\0 "" FQ_951";
+const pm_char STR_SUBTYPE_AFHDS2A[] PROGMEM =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
 const pm_char STR_SUBTYPE_Q2X2[] PROGMEM =       "\004""Q222""Q242""Q282";
-
-const pm_char STR_SUBTYPE_Q303[] PROGMEM =       "\006""Q303\0 ""CX35\0 ""CX10D\0""CX10WD";
-
-const pm_char STR_SUBTYPE_WK2x01[] PROGMEM =     "\006""WK2801""WK2401""W6_5_1""W6_6_1""W6_Hel""W6_HeI";
-
-const pm_char STR_SUBTYPE_V2X2[] PROGMEM =       "\006""V2x2\0 ""JXD506";
-
-const pm_char STR_SUBTYPE_BAYANG[] PROGMEM =     "\007""Bayang\0""H8S3D\0 ""X16 AH\0 ""irdrone";
-
-const pm_char STR_SUBTYPE_FY326[] PROGMEM =      "\005""FY326""FY319";
-
-const pm_char STR_SUBTYPE_CABELL[] PROGMEM =     "\006""CAB_V3""C_TELM""-\0    ""-\0    ""-\0    ""-\0    ""F_SAFE""UNBIND";
-
-const pm_char STR_SUBTYPE_H83D[] PROGMEM =       "\006""H8_3D\0""H20H\0 ""H20Mini""H30Mini";
-
-const pm_char STR_SUBTYPE_CORONA[] PROGMEM =     "\005""V1\0  ""V2\0  ""FD V3";
-
-const pm_char STR_SUBTYPE_HITEC[] PROGMEM =      "\006""Optima\0""Minima";
+const pm_char STR_SUBTYPE_WK2x01[] PROGMEM =     "\006""WK2801""WK2401""W6_5_1""W6_6_1""W6_HeL""W6_HeI";
+const pm_char STR_SUBTYPE_Q303[] PROGMEM =       "\006""Std\0  ""CX35\0 ""CX10D\0""CX10WD";
+const pm_char STR_SUBTYPE_CABELL[] PROGMEM =     "\007""V3\0    ""V3 Telm""-\0     ""-\0     ""-\0     ""-\0     ""F-Safe\0""Unbind\0";
+const pm_char STR_SUBTYPE_H83D[] PROGMEM =       "\007""Std\0   ""H20H\0  ""H20Mini""H30Mini";
+const pm_char STR_SUBTYPE_CORONA[] PROGMEM =     "\006"" V1\0  "" V2\0  "" FD V3";
+const pm_char STR_SUBTYPE_HITEC[] PROGMEM =      "\007""Optima\0""Opt Hub""Minima\0";
+const pm_char STR_SUBTYPE_E01X[] PROGMEM =       "\004""E012""E015";
 
 const mm_protocol_definition multi_protocols[] = {
 
   {MM_RF_PROTO_FLYSKY,     4, false,      STR_SUBTYPE_FLYSKY,  nullptr},
-  {MM_RF_PROTO_HUBSAN,     0, false,      NO_SUBTYPE,          STR_MULTI_VIDFREQ},
+  {MM_RF_PROTO_HUBSAN,     2, false,      STR_SUBTYPE_HUBSAN,  STR_MULTI_VIDFREQ},
   {MM_RF_PROTO_FRSKY,      5, false,      STR_SUBTYPE_FRSKY,   STR_MULTI_RFTUNE},
   {MM_RF_PROTO_HISKY,      1, false,      STR_SUBTYPE_HISKY,   nullptr},
   {MM_RF_PROTO_V2X2,       1, false,      STR_SUBTYPE_V2X2,    nullptr},
@@ -728,15 +707,15 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_PROTO_YD717,      4, false,      STR_SUBTYPE_YD717,   nullptr},
   {MM_RF_PROTO_KN,         1, false,      STR_SUBTYPE_KN,      nullptr},
   {MM_RF_PROTO_SYMAX,      1, false,      STR_SUBTYPE_SYMAX,   nullptr},
-  {MM_RF_PROTO_SLT,        1, false,      STR_SUBTYPE_SLT,     nullptr},
-  {MM_RF_PROTO_CX10,       7, false,      STR_SUBTYPE_CX10,    nullptr},
+  {MM_RF_PROTO_SLT,        4, false,      STR_SUBTYPE_SLT,     nullptr},
+  {MM_RF_PROTO_CX10,       6, false,      STR_SUBTYPE_CX10,    nullptr},
   {MM_RF_PROTO_CG023,      1, false,      STR_SUBTYPE_CG023,   nullptr},
   {MM_RF_PROTO_BAYANG,     3, false,      STR_SUBTYPE_BAYANG,  STR_MULTI_TELEMETRY},
   {MM_RF_PROTO_MT99XX,     4, false,      STR_SUBTYPE_MT99,    nullptr},
   {MM_RF_PROTO_MJXQ,       5, false,      STR_SUBTYPE_MJXQ,    nullptr},
   {MM_RF_PROTO_FY326,      1, false,      STR_SUBTYPE_FY326,   nullptr},
   {MM_RF_PROTO_SFHSS,      0, true,       NO_SUBTYPE,          STR_MULTI_RFTUNE},
-  {MM_RF_PROTO_HONTAI,     2, false,      STR_SUBTYPE_HONTAI,  nullptr},
+  {MM_RF_PROTO_HONTAI,     3, false,      STR_SUBTYPE_HONTAI,  nullptr},
   {MM_RF_PROTO_OLRS,       0, false,      NO_SUBTYPE,          STR_MULTI_RFPOWER},
   {MM_RF_PROTO_FS_AFHDS2A, 3, true,       STR_SUBTYPE_AFHDS2A, STR_MULTI_SERVOFREQ},
   {MM_RF_PROTO_Q2X2,       2, false,      STR_SUBTYPE_Q2X2,    nullptr},
@@ -744,8 +723,9 @@ const mm_protocol_definition multi_protocols[] = {
   {MM_RF_PROTO_Q303,       3, false,      STR_SUBTYPE_Q303,    nullptr},
   {MM_RF_PROTO_CABELL,     7, false,      STR_SUBTYPE_CABELL,  STR_MULTI_OPTION},
   {MM_RF_PROTO_H83D,       3, false,      STR_SUBTYPE_H83D,    nullptr},
-  {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,  nullptr},
-  {MM_RF_PROTO_HITEC,      1, false,      STR_SUBTYPE_HITEC,   STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_CORONA,     2, false,      STR_SUBTYPE_CORONA,  STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_HITEC,      2, false,      STR_SUBTYPE_HITEC,   STR_MULTI_RFTUNE},
+  {MM_RF_PROTO_E01X,       1, false,      STR_SUBTYPE_E01X,    nullptr},
   {MM_RF_CUSTOM_SELECTED,  7, true,       NO_SUBTYPE,          STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
