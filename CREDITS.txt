@@ -1493,3 +1493,5 @@ Walter Szempruch
 Petr Kysela
 Gerhard Zdzuj
 Joseph S Robinson
+Zdenek Trojanek
+Fred Page
