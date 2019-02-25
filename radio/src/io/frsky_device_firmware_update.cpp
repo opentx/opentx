@@ -77,12 +77,6 @@ void DeviceFirmwareUpdate::startup()
       break;
 #endif
 
-    case EXTERNAL_MODULE:
-#if defined(EXTMODULE_USART)
-      extmoduleInvertedSerialStart(57600);
-      break;
-#endif
-
     default:
       telemetryInit(PROTOCOL_TELEMETRY_FRSKY_SPORT);
       break;
@@ -137,11 +131,6 @@ const uint8_t * DeviceFirmwareUpdate::readFrame(uint32_t timeout)
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
 
-    case EXTERNAL_MODULE:
-#if defined(EXTMODULE_USART)
-      return readFullDuplexFrame(extmoduleFifo, timeout);
-#endif
-
     default:
       return readHalfDuplexFrame(timeout);
   }
@@ -194,11 +183,6 @@ void DeviceFirmwareUpdate::sendFrame()
     case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
       return intmoduleSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
-#endif
-
-    case EXTERNAL_MODULE:
-#if defined(EXTMODULE_USART)
-      return extmoduleSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
 #endif
 
     default:
