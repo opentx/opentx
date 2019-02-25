@@ -771,7 +771,7 @@
   #define EXTMODULE_USART_GPIO          GPIOC
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PC.06
   #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource6
-  #define EXTMODULE_RX_GPIO_PIN         GPIO_Pin_6  // PC.07
+  #define EXTMODULE_RX_GPIO_PIN         GPIO_Pin_7  // PC.07
   #define EXTMODULE_RX_GPIO_PinSource   GPIO_PinSource7
   #define EXTMODULE_TIMER               TIM8
   #define EXTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
