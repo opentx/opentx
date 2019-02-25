@@ -21,7 +21,7 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include "definitions.h"
+#include "../definitions.h"
 #include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
