@@ -211,7 +211,7 @@ void telemetryWakeup()
 #endif
 
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
-  uint8_t frame[32];
+  uint8_t frame[PXX2_FRAME_MAXLENGTH];
 
   #if defined(INTMODULE_USART)
     if (intmoduleFifo.getFrame(frame)) {

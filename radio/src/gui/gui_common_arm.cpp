@@ -544,7 +544,7 @@ bool isExternalModuleAvailable(int module)
   }
 #endif
 #if !defined(PXX2)
-  if (module == MODULE_TYPE_XJT2) {
+  if (module == MODULE_TYPE_XJT2 || module == MODULE_TYPE_R9M2) {
     return false;
   }
 #endif

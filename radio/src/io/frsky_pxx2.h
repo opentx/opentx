@@ -25,8 +25,9 @@
 
 #define PXX2_BAUDRATE            230400
 #define PXX2_PERIOD              4 // 4ms
+#define PXX2_FRAME_MAXLENGTH     32
 
-class ModuleFifo : public Fifo<uint8_t, 32> {
+class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
   public:
     bool getFrame(uint8_t * frame)
     {
@@ -45,6 +46,7 @@ class ModuleFifo : public Fifo<uint8_t, 32> {
       uint32_t next = nextIndex(ridx);
       uint8_t len = fifo[next];
       if (unsigned(len + 4 /* 2 bytes header + 2 bytes CRC */) > size()) {
+        // frame not fully received
         return false;
       }
 
