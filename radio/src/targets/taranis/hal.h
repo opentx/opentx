@@ -782,11 +782,10 @@
   #define EXTMODULE_USART_GPIO_AF       GPIO_AF_USART6
   #define EXTMODULE_USART               USART6
   #define EXTMODULE_USART_IRQn          USART6_IRQn
+  #define EXTMODULE_USART_IRQHandler    USART6_IRQHandler
   #define EXTMODULE_USART_DMA_CHANNEL           DMA_Channel_5
   #define EXTMODULE_USART_DMA_STREAM            DMA2_Stream6
   #define EXTMODULE_USART_DMA_STREAM_IRQn       DMA2_Stream6_IRQn
-  #define EXTMODULE_USART_DMA_STREAM_IRQHandler DMA2_Stream6_IRQHandler
-  #define EXTMODULE_USART_DMA_FLAG_TC           DMA_IT_TCIF6
 #else
   #define EXTMODULE_PULSES
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
