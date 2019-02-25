@@ -756,11 +756,17 @@
 // External Module
 #define EXTMODULE_PULSES
 
-#if defined(PCBXLITE)
-  #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
+#if defined(PCBXLITE) || defined(PCBX3)
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
-  #define EXTMODULE_PWR_GPIO            GPIOD
-  #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_11 // PD.11
+  #if defined(PCBX3)
+    #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+    #define EXTMODULE_PWR_GPIO            GPIOA
+    #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_8  // PA.08
+  #else
+    #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
+    #define EXTMODULE_PWR_GPIO            GPIOD
+    #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_11 // PD.11
+  #endif
   #define EXTMODULE_TX_GPIO             GPIOC
   #define EXTMODULE_USART_GPIO          GPIOC
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PC.06
