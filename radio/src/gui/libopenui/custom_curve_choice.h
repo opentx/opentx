@@ -24,14 +24,14 @@
 #include "formfield.h"
 #include <string>
 
-class Choice : public FormField {
+class CustomCurveChoice : public FormField {
   public:
-    Choice(Window * parent, const rect_t & rect, const char * values, int16_t vmin, int16_t vmax, std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags = 0);
+    CustomCurveChoice(Window * parent, const rect_t & rect, int16_t vmin, int16_t vmax, std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags = 0);
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() override
     {
-      return "Choice";
+      return "CustomCurveChoice";
     }
 #endif
 
@@ -41,27 +41,12 @@ class Choice : public FormField {
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 
-    void setAvailableHandler(std::function<bool(int)> handler)
-    {
-      isValueAvailable = std::move(handler);
-    }
-
-    void setTextHandler(std::function<std::string(int32_t)> handler)
-    {
-      textHandler = std::move(handler);
-    }
-
   protected:
-    const char * values;
     int16_t vmin;
     int16_t vmax;
     std::function<int16_t()> getValue;
     std::function<void(int16_t)> setValue;
-    std::function<bool(int)> isValueAvailable;
-    std::function<std::string(int32_t)> textHandler;
     LcdFlags flags;
-    void openMenu();
-    void onKeyEvent(event_t event);
 };
 
 #endif // _CHOICE_H_

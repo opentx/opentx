@@ -24,6 +24,7 @@ MenuWindow::MenuWindow(Menu * parent):
   Window(parent, {LCD_W / 2 - 100, LCD_H / 2 - 30 /* to avoid redraw the menus header */, 200, 0}, OPAQUE)
 {
   setScrollbarColor(WARNING_COLOR);
+  setFocus();
 }
 
 void MenuWindow::select(int index)
@@ -31,6 +32,28 @@ void MenuWindow::select(int index)
   selectedIndex = index;
   if (innerHeight > height()) {
     setScrollPositionY(lineHeight * index - 3 * lineHeight);
+  }
+  invalidate();
+}
+
+void MenuWindow::onKeyEvent(event_t event)
+{
+#if defined(DEBUG_WINDOWS)
+  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
+#endif
+
+  if (event == EVT_ROTARY_RIGHT) {
+    select((selectedIndex + 1) % lines.size());
+  }
+  else if (event == EVT_ROTARY_LEFT) {
+    select(selectedIndex == 0 ? lines.size() - 1 : selectedIndex - 1);
+  }
+  else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    lines[selectedIndex].onPress();
+    Window::onKeyEvent(event); // the window above will be closed on event
+  }
+  else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+    Window::onKeyEvent(event);
   }
 }
 
@@ -77,6 +100,11 @@ void Menu::removeLines()
 {
   menuWindow.removeLines();
   updatePosition();
+}
+
+void Menu::onKeyEvent(event_t event)
+{
+  deleteLater();
 }
 
 #if defined(TOUCH_HARDWARE)

@@ -24,14 +24,11 @@
 #include "strhelpers.h"
 #include "opentx.h"
 
-const uint8_t LBM_DROPDOWN[] = {
-#include "mask_dropdown.lbm"
-};
+extern const uint8_t LBM_DROPDOWN[];
 
-Choice::Choice(Window * parent, const rect_t &rect, const char * values, int16_t vmin, int16_t vmax,
-               std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags) :
+CustomCurveChoice::CustomCurveChoice(Window * parent, const rect_t &rect, int16_t vmin, int16_t vmax,
+                                     std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags) :
   FormField(parent, rect),
-  values(values),
   vmin(vmin),
   vmax(vmax),
   getValue(std::move(getValue)),
@@ -40,58 +37,36 @@ Choice::Choice(Window * parent, const rect_t &rect, const char * values, int16_t
 {
 }
 
-void Choice::paint(BitmapBuffer * dc)
+void CustomCurveChoice::paint(BitmapBuffer * dc)
 {
   bool hasFocus = this->hasFocus();
+  char s[8];
+  int16_t value = getValue();
   LcdFlags textColor = 0;
   LcdFlags lineColor = CURVE_AXIS_COLOR;
   if (hasFocus) {
     textColor = TEXT_INVERTED_BGCOLOR;
     lineColor = TEXT_INVERTED_BGCOLOR;
   }
-  if (textHandler)
-    dc->drawText(3, 0, textHandler(getValue()).c_str());
-  else
-    drawTextAtIndex(dc, 3, 0, values, getValue() - vmin, flags | textColor);
+  dc->drawText(3, 2, getCurveString(s, value), flags | textColor);
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
   dc->drawBitmapPattern(rect.w - 14, (rect.h - 5) / 2, LBM_DROPDOWN, lineColor);
 }
 
-void Choice::onKeyEvent(event_t event)
-{
-#if defined(DEBUG_WINDOWS)
-  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
-#endif
-
-  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-    openMenu();
-  }
-  else {
-    FormField::onKeyEvent(event);
-  }
-}
-
-void Choice::openMenu()
+#if defined(TOUCH_INTERFACE)
+bool CustomCurveChoice::onTouchEnd(coord_t x, coord_t y)
 {
   auto menu = new Menu();
   auto value = getValue();
   int count = 0;
   int current = -1;
+  char s[8];
 
   for (int i = vmin; i <= vmax; ++i) {
-    if (isValueAvailable && !isValueAvailable(i))
-      continue;
-    if (textHandler) {
-      menu->addLine(textHandler(i), [=]() {
-          setValue(i);
+      menu->addLine(getCurveString(s, i), [=]() {
+        setValue(i);
       });
-    }
-    else {
-      menu->addLine(TEXT_AT_INDEX(values, i - vmin), [=]() {
-          setValue(i);
-          setFocus();
-      });
-    }
+
     if (value == i) {
       current = count;
     }
@@ -101,12 +76,7 @@ void Choice::openMenu()
   if (current >= 0) {
     menu->select(current);
   }
-}
 
-#if defined(TOUCH_INTERFACE)
-bool Choice::onTouchEnd(coord_t, coord_t)
-{
-  openMenu();
   setFocus();
   return true;
 }

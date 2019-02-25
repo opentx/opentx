@@ -27,6 +27,7 @@
 #include <functional>
 #include "mainwindow.h"
 #include <string>
+#include <keys.h>
 
 class Menu;
 
@@ -70,6 +71,8 @@ class MenuWindow: public Window {
     void select(int index);
 
     void paint(BitmapBuffer * dc) override;
+
+    void onKeyEvent(event_t event) override;
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
@@ -117,6 +120,8 @@ class Menu : public Window {
     {
       menuWindow.select(index);
     }
+
+    void onKeyEvent(event_t event) override;
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchStart(coord_t x, coord_t y) override
