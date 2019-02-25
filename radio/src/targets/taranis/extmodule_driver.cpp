@@ -149,7 +149,7 @@ void extmoduleInvertedSerialStart(uint32_t baudrate)
 
   extmoduleFifo.clear();
 
-  USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
+  USART_ITConfig(EXTMODULE_USART, USART_IT_RXNE, ENABLE);
   NVIC_SetPriority(EXTMODULE_USART_IRQn, 6);
   NVIC_EnableIRQ(EXTMODULE_USART_IRQn);
 }
