@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <keys.h>
 #include "numberedit.h"
 #include "draw_functions.h"
 
@@ -36,7 +37,13 @@ void NumberEdit::paint(BitmapBuffer * dc)
   LcdFlags textColor = CURVE_AXIS_COLOR;
   LcdFlags lineColor = CURVE_AXIS_COLOR;
   if (hasFocus) {
-    textColor = TEXT_INVERTED_BGCOLOR;
+    if (editMode) {
+      dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
+      textColor = TEXT_INVERTED_COLOR;
+    }
+    else {
+      textColor = TEXT_INVERTED_BGCOLOR;
+    }
     lineColor = TEXT_INVERTED_BGCOLOR;
   }
   else if (enabled) {
@@ -52,7 +59,29 @@ void NumberEdit::paint(BitmapBuffer * dc)
   else {
     drawNumber(dc, 3, 0, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
   }
-  drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
+  if (!editMode) {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
+  }
+}
+
+void NumberEdit::onKeyEvent(event_t event)
+{
+#if defined(DEBUG_WINDOWS)
+  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
+#endif
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    editMode = !editMode;
+    invalidate();
+  }
+  else if (editMode) {
+    if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+      editMode = false;
+    }
+  }
+  else {
+    FormField::onKeyEvent(event);
+  }
 }
 
 #if defined(TOUCH_INTERFACE)
