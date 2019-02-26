@@ -25,8 +25,6 @@
 #include "touch_driver.h"
 #endif
 
-void DMACopy(void * src, void * dest, unsigned len);
-
 MainWindow mainWindow;
 
 #if defined(TOUCH_HARDWARE)
@@ -88,7 +86,7 @@ bool MainWindow::refresh()
       TRACE_WINDOWS("Refresh rect: left=%d top=%d width=%d height=%d", invalidatedRect.left(), invalidatedRect.top(), invalidatedRect.w, invalidatedRect.h);
       BitmapBuffer * previous = lcd;
       lcdNextLayer();
-      DMACopy(previous->getData(), lcd->getData(), DISPLAY_BUFFER_SIZE);
+      lcdCopy(lcd->getData(), previous->getData());
     }
     else {
       TRACE_WINDOWS("Refresh full screen");

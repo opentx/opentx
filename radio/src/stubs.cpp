@@ -48,16 +48,6 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
 {
 }
 
-void lcdNextLayer()
-{
-
-}
-
-void DMACopy(void * src, void * dest, unsigned size)
-{
-
-}
-
 void showMessageBox(const char * title)
 {
 

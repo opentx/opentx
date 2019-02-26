@@ -24,7 +24,8 @@ uint8_t LCD_FIRST_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 uint8_t LCD_SECOND_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 uint8_t LCD_BACKUP_FRAME_BUFFER[DISPLAY_BUFFER_SIZE] __SDRAM;
 
-uint32_t CurrentLayer = LCD_FIRST_LAYER;
+uint8_t currentLayer = LCD_FIRST_LAYER;
+
 lcdSpiInitFucPtr lcdSpiInitFuc;
 
 volatile U8 LCD_ReadBuffer[24] = { 0, 0 };
@@ -1433,12 +1434,12 @@ void LCD_SetLayer(uint32_t layer)
   else {
     lcd = &lcdBuffer2;
   }
-  CurrentLayer = layer;
+  currentLayer = layer;
 }
 
 void LCD_SetTransparency(uint8_t transparency)
 {
-  if (CurrentLayer == LCD_FIRST_LAYER) {
+  if (currentLayer == LCD_FIRST_LAYER) {
     LTDC_LayerAlpha(LTDC_Layer1, transparency);
   }
   else {
@@ -1447,7 +1448,7 @@ void LCD_SetTransparency(uint8_t transparency)
   LTDC_ReloadConfig(LTDC_IMReload);
 }
 
-void lcdInit(void)
+void lcdInit()
 {
   /* Configure the LCD SPI+RESET pins */
   lcdSpiConfig();
@@ -1643,7 +1644,7 @@ void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t
   while (DMA2D_GetFlagStatus(DMA2D_FLAG_TC) == RESET);
 }
 
-void DMACopy(void * src, void * dest, unsigned len)
+void lcdCopy(void * dest, void * src)
 {
   DMA2D_DeInit();
 
@@ -1678,18 +1679,18 @@ void DMACopy(void * src, void * dest, unsigned len)
 
 void lcdStoreBackupBuffer()
 {
-  DMACopy(lcd->getData(), LCD_BACKUP_FRAME_BUFFER, DISPLAY_BUFFER_SIZE);
+  lcdCopy(LCD_BACKUP_FRAME_BUFFER, lcd->getData());
 }
 
 int lcdRestoreBackupBuffer()
 {
-  DMACopy(LCD_BACKUP_FRAME_BUFFER, lcd->getData(), DISPLAY_BUFFER_SIZE);
+  lcdCopy(lcd->getData(), LCD_BACKUP_FRAME_BUFFER);
   return 1;
 }
 
 void lcdRefresh()
 {
-  if (CurrentLayer == LCD_FIRST_LAYER) {
+  if (currentLayer == LCD_FIRST_LAYER) {
     LTDC_LayerAlpha(LTDC_Layer1, 255);
     LTDC_LayerAlpha(LTDC_Layer2, 0);
   }
@@ -1702,7 +1703,7 @@ void lcdRefresh()
 
 void lcdNextLayer()
 {
-  if (CurrentLayer == LCD_FIRST_LAYER) {
+  if (currentLayer == LCD_FIRST_LAYER) {
     LCD_SetLayer(LCD_SECOND_LAYER);
   }
   else {
