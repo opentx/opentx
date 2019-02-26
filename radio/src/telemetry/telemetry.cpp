@@ -123,7 +123,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
 {
-  sportProcessTelemetryPacketWithoutCrc(&frame[2]);
+  sportProcessTelemetryPacketWithoutCrc(&frame[3]);
 }
 
 void processSpectrumFrame(uint8_t module, uint8_t * frame)
