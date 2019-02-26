@@ -64,9 +64,7 @@ void Window::detach()
 
 void Window::deleteLater(bool detach)
 {
-#if defined(DEBUG_WINDOWS)
-  TRACE("Delete %s", getWindowDebugString().c_str());
-#endif
+  TRACE_WINDOWS("Delete %s", getWindowDebugString().c_str());
 
   if (focusWindow == this) {
     focusWindow = nullptr;
@@ -112,9 +110,7 @@ void Window::clearFocus()
 
 void Window::setFocus()
 {
-#if defined(DEBUG_WINDOWS)
-  TRACE("%s setFocus()", getWindowDebugString().c_str());
-#endif
+  TRACE_WINDOWS("%s setFocus()", getWindowDebugString().c_str());
 
   if (focusWindow != this) {
     clearFocus();
@@ -161,9 +157,8 @@ void Window::scrollTo(Window * child)
 
 void Window::fullPaint(BitmapBuffer * dc)
 {
-#if defined(DEBUG_WINDOWS)
-  TRACE("%s", getWindowDebugString().c_str());
-#endif
+  TRACE_WINDOWS("%s", getWindowDebugString().c_str());
+
   paint(dc);
   drawVerticalScrollbar(dc);
   paintChildren(dc);
@@ -242,7 +237,7 @@ void Window::checkEvents()
   if (this == focusWindow) {
     event_t event = getEvent(false);
     if (event) {
-      TRACE("Event 0x%x received ...", event);
+      TRACE_WINDOWS("Event 0x%x received ...", event);
       this->onKeyEvent(event);
     }
   }
@@ -250,7 +245,7 @@ void Window::checkEvents()
 
 void Window::onKeyEvent(event_t event)
 {
-  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
   if (parent) {
     parent->onKeyEvent(event);
   }

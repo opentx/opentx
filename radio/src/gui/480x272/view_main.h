@@ -29,7 +29,7 @@ class ViewMain: public Window {
 
     ~ViewMain() override;
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     virtual std::string getName()
     {
       return "ViewMain";

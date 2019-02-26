@@ -43,6 +43,7 @@ option(RAS "RAS (SWR) enabled" ON)
 option(TEMPLATES "Model templates menu" OFF)
 option(TRACE_SIMPGMSPACE "Turn on traces in simpgmspace.cpp" ON)
 option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
+option(TRACE_WINDOWS "Turn on windows traces" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
@@ -297,6 +298,10 @@ endif()
 
 if(TRACE_LUA_INTERNALS)
   add_definitions(-DTRACE_LUA_INTERNALS_ENABLED)
+endif()
+
+if(TRACE_WINDOWS)
+  add_definitions(-DTRACE_WINDOWS_ENABLED)
 endif()
 
 if(FRSKY_STICKS)

@@ -66,6 +66,12 @@ uint8_t auxSerialTracesEnabled();
 #define TRACE_WARNING_WP(...) debugPrintf(__VA_ARGS__)
 #define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
 
+#if defined(TRACE_WINDOWS_ENABLED)
+#define TRACE_WINDOWS(...)    debugPrintf((f_ "\r\n"), ##__VA_ARGS__)
+#else
+#define TRACE_WINDOWS(...)
+#endif
+
 #if defined(TRACE_LUA_INTERNALS_ENABLED)
   #define TRACE_LUA_INTERNALS(f_, ...)     debugPrintf(("[LUA INT] " f_ "\r\n"), ##__VA_ARGS__)
 

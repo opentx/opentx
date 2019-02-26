@@ -38,9 +38,7 @@ void MenuWindow::select(int index)
 
 void MenuWindow::onKeyEvent(event_t event)
 {
-#if defined(DEBUG_WINDOWS)
-  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
-#endif
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
   if (event == EVT_ROTARY_RIGHT) {
     select((selectedIndex + 1) % lines.size());

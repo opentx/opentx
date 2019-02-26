@@ -29,7 +29,7 @@ class NumberEdit : public BaseNumberEdit {
     NumberEdit(Window * parent, const rect_t & rect, int32_t vmin, int32_t vmax,
                std::function<int32_t()> getValue, std::function<void(int32_t)> setValue = nullptr, LcdFlags flags = 0);
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "NumberEdit(" + std::to_string(getValue()) + ")";

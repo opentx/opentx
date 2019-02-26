@@ -33,7 +33,7 @@ class CheckBox : public Window {
     {
     }
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
         return "CheckBox";

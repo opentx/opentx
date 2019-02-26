@@ -22,8 +22,6 @@
 #ifndef _WINDOW_H_
 #define _WINDOW_H_
 
-#define DEBUG_WINDOWS
-
 #include <list>
 #include <string.h>
 #include <utility>
@@ -53,7 +51,7 @@ class Window {
 
     virtual ~Window();
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     virtual std::string getName()
     {
       return "Window";
@@ -62,7 +60,7 @@ class Window {
     std::string getRectString()
     {
       char result[32];
-      sprintf(result, "[%ld, %ld, %ld, %ld]", left(), top(), width(), height());
+      sprintf(result, "[%d, %d, %d, %d]", left(), top(), width(), height());
       return result;
     }
 
@@ -238,9 +236,7 @@ class Window {
 
     virtual void onFocusLost()
     {
-#if defined(DEBUG_WINDOWS)
-      TRACE("%s onFocusLost()", getWindowDebugString().c_str());
-#endif
+      TRACE_WINDOWS("%s onFocusLost()", getWindowDebugString().c_str());
       invalidate();
     };
 

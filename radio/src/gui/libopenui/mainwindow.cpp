@@ -85,13 +85,13 @@ bool MainWindow::refresh()
 {
   if (invalidatedRect.w) {
     if (invalidatedRect.x > 0 || invalidatedRect.y > 0 || invalidatedRect.w < LCD_W || invalidatedRect.h < LCD_H) {
-      TRACE("Refresh rect: left=%d top=%d width=%d height=%d", invalidatedRect.left(), invalidatedRect.top(), invalidatedRect.w, invalidatedRect.h);
+      TRACE_WINDOWS("Refresh rect: left=%d top=%d width=%d height=%d", invalidatedRect.left(), invalidatedRect.top(), invalidatedRect.w, invalidatedRect.h);
       BitmapBuffer * previous = lcd;
       lcdNextLayer();
       DMACopy(previous->getData(), lcd->getData(), DISPLAY_BUFFER_SIZE);
     }
     else {
-      TRACE("Refresh full screen");
+      TRACE_WINDOWS("Refresh full screen");
       lcdNextLayer();
     }
     lcd->setOffset(0, 0);
@@ -101,7 +101,6 @@ bool MainWindow::refresh()
     return true;
   }
   else {
-    TRACE("Nothing to refresh");
     return false;
   }
 }

@@ -27,7 +27,7 @@ class ColorEdit : public Window {
   public:
     ColorEdit(Window * parent, const rect_t & rect, std::function<int32_t()> getValue, std::function<void(int32_t)> setValue = nullptr);
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "ColorEdit";

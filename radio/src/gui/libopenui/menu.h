@@ -97,7 +97,7 @@ class Menu : public Window {
       delete toolbar;
     }
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "Menu";

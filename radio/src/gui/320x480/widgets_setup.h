@@ -27,7 +27,7 @@ class WidgetsSetupPage: public ViewMain {
   public:
     WidgetsSetupPage(uint8_t index);
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "WidgetsSetupPage";

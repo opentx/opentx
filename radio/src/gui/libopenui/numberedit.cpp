@@ -70,9 +70,7 @@ void NumberEdit::paint(BitmapBuffer * dc)
 
 void NumberEdit::onKeyEvent(event_t event)
 {
-#if defined(DEBUG_WINDOWS)
-  TRACE("%s received event 0x%X", getWindowDebugString().c_str(), event);
-#endif
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
     editMode = !editMode;

@@ -41,7 +41,7 @@ class Button : public Window {
     {
     }
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "Button";
@@ -113,7 +113,7 @@ class TextButton : public Button {
       windowFlags = OPAQUE;
     }
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "TextButton \"" + text + "\"";
@@ -142,7 +142,7 @@ class IconButton: public Button {
     {
     }
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "IconButton(" + std::to_string(icon) + ")";
@@ -159,7 +159,7 @@ class FabIconButton: public Button {
   public:
     FabIconButton(Window * parent, coord_t x, coord_t y, uint8_t icon, std::function<uint8_t(void)> onPress, uint8_t flags=0);
 
-#if defined(DEBUG_WINDOWS)
+#if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
       return "FabIconButton(" + std::to_string(icon) + ")";
