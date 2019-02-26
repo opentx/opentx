@@ -30,7 +30,7 @@ uint8_t getFontHeight(LcdFlags flags);
 class MenuToolbarButton: public Button {
   public:
     MenuToolbarButton(Window * window, const rect_t & rect, char picto):
-      Button(window, rect, nullptr, BUTTON_CHECKED_ON_FOCUS),
+      Button(window, rect, nullptr), // TODO NV14 BUTTON_CHECKED_ON_FOCUS
       picto(picto)
     {
     }
@@ -38,11 +38,11 @@ class MenuToolbarButton: public Button {
     void paint(BitmapBuffer * dc) override
     {
       if (checked()) {
-        dc->drawSolidFilledRect(11, 0, 28, 28, HEADER_BGCOLOR);
-        dc->drawSizedText(rect.w / 2, (rect.h - getFontHeight(flags)) / 2, &picto, 1, CENTERED | MENU_TITLE_COLOR);
+        dc->drawSolidFilledRect(3, 3, 24, 24, HEADER_BGCOLOR); // TODO NV14 was 11, 0, 28, 28
+        dc->drawSizedText(9, 6, &picto, 1, MENU_TITLE_COLOR);
       }
       else {
-        dc->drawSizedText(rect.w / 2, (rect.h - getFontHeight(flags)) / 2, &picto, 1, CENTERED | TEXT_COLOR);
+        dc->drawSizedText(9, 6, &picto, 1, TEXT_COLOR);
       }
     }
 
@@ -61,6 +61,11 @@ class MenuToolbarButton: public Button {
     }
 #endif
 
+    void check(bool checked=true) {
+      Button::check(checked);
+      onPress();
+    }
+
   protected:
     char picto;
 };
@@ -68,9 +73,10 @@ class MenuToolbarButton: public Button {
 template <class T>
 class MenuToolbar: public Window {
   friend T;
+
   public:
     MenuToolbar(T * choice, Menu * menu):
-      Window(menu, { 35, 95, 50, 370 }),
+      Window(menu, { 100, 51, 30, 210 }, NO_SCROLLBAR), // TODO NV14 was { 35, 95, 50, 370 }
       choice(choice),
       menu(menu)
     {
@@ -86,6 +92,47 @@ class MenuToolbar: public Window {
       dc->clear(CURVE_AXIS_COLOR);
     }
 
+    void onKeyEvent(event_t event) override
+    {
+      if (event == EVT_KEY_BREAK(KEY_PGDN)) {
+        if (current == children.end()) {
+          current = children.begin();
+        }
+        else {
+          static_cast<MenuToolbarButton *>(*current)->check(false);
+          ++current;
+        }
+        if (current != children.end()) {
+          auto button = static_cast<MenuToolbarButton *>(*current);
+          button->check(true);
+          scrollTo(button);
+        }
+        else {
+          setScrollPositionY(0);
+        }
+      }
+      else if (event == EVT_KEY_LONG(KEY_PGDN)) {
+        killEvents(event);
+        if (current == children.end()) {
+          --current;
+        }
+        else {
+          static_cast<MenuToolbarButton *>(*current)->check(false);
+          if (current == children.begin())
+            current = children.end();
+          else
+            --current;
+        }
+        if (current != children.end()) {
+          auto button = static_cast<MenuToolbarButton *>(*current);
+          button->check(true);
+          scrollTo(button);
+        } else {
+          setScrollPositionY(0);
+        }
+      }
+    }
+
 #if defined(TOUCH_INTERFACE)
     bool onTouchEnd(coord_t x, coord_t y) override
     {
@@ -95,9 +142,10 @@ class MenuToolbar: public Window {
 #endif
 
   protected:
+    std::list<Window *>::iterator current = children.end();
     T * choice;
     Menu * menu;
-    coord_t y = 5;
+    coord_t y = 0; // TODO NV14 was 5;
 
     void addButton(char picto, int16_t filtermin, int16_t filtermax)
     {
@@ -110,9 +158,9 @@ class MenuToolbar: public Window {
       if (choice->isValueAvailable && getFirstAvailable(filtermin, filtermax, choice->isValueAvailable) == 0)
         return;
 
-      auto button = new MenuToolbarButton(this, {0, y, 50, 30}, picto);
+      auto button = new MenuToolbarButton(this, {0, y, 30, 30}, picto); // TODO NV14 was {0, y, 50, 30}
       button->setPressHandler([=]() {
-        if (button->hasFocus()) {
+        if (button->checked()) {
           choice->fillMenu(menu, [=](int16_t index) {
             return index >= filtermin && index <= filtermax;
           });
@@ -124,6 +172,8 @@ class MenuToolbar: public Window {
       });
 
       y += 30;
+
+      setInnerHeight(y);
     }
 };
 

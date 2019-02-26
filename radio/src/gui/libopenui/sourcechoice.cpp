@@ -36,19 +36,19 @@ class SourceChoiceMenuToolbar : public MenuToolbar<SourceChoice> {
       addButton(char('\322'), MIXSRC_LAST_LUA, MIXSRC_FIRST_LUA);
 #endif
       addButton(char('\307'), MIXSRC_FIRST_STICK, MIXSRC_LAST_STICK);
-      addButton(char('\310'), MIXSRC_LAST_POT, MIXSRC_FIRST_POT);
+      addButton(char('\310'), MIXSRC_FIRST_POT, MIXSRC_LAST_POT);
       addButton(char('\315'), MIXSRC_MAX, MIXSRC_MAX);
 #if defined(HELI)
-      addButton(char('\316'), MIXSRC_LAST_HELI, MIXSRC_FIRST_HELI);
+      addButton(char('\316'), MIXSRC_FIRST_HELI, MIXSRC_LAST_HELI);
 #endif
-      addButton(char('\313'), MIXSRC_LAST_TRIM, MIXSRC_FIRST_TRIM);
-      addButton(char('\312'), MIXSRC_LAST_SWITCH, MIXSRC_FIRST_SWITCH);
-      addButton(char('\317'), MIXSRC_LAST_TRAINER, MIXSRC_FIRST_TRAINER);
-      addButton(char('\320'), MIXSRC_LAST_CH, MIXSRC_FIRST_CH);
+      addButton(char('\313'), MIXSRC_FIRST_TRIM, MIXSRC_LAST_TRIM);
+      addButton(char('\312'), MIXSRC_FIRST_SWITCH, MIXSRC_LAST_SWITCH);
+      addButton(char('\317'), MIXSRC_FIRST_TRAINER, MIXSRC_LAST_TRAINER);
+      addButton(char('\320'), MIXSRC_FIRST_CH, MIXSRC_LAST_CH);
 #if defined(GVARS)
       addButton(char('\311'), MIXSRC_LAST_GVAR, MIXSRC_FIRST_GVAR);
 #endif
-      addButton(char('\321'), MIXSRC_LAST_TELEM, MIXSRC_FIRST_TELEM);
+      addButton(char('\321'), MIXSRC_FIRST_TELEM, MIXSRC_LAST_TELEM);
     }
 };
 
@@ -106,7 +106,7 @@ void SourceChoice::openMenu()
 {
   auto menu = new Menu();
   fillMenu(menu);
-  // menu->setToolbar(new SourceChoiceMenuToolbar(this, menu));
+  menu->setToolbar(new SourceChoiceMenuToolbar(this, menu));
   menu->setCloseHandler([=]() {
       editMode = false;
       setFocus();

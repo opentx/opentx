@@ -140,18 +140,19 @@ void Window::setScrollPositionY(coord_t value)
 
 void Window::scrollTo(Window * child)
 {
-  /* TODO if (child->top() < scrollPositionY) {
+  if (child->top() < scrollPositionY) {
     scrollPositionY = child->top();
-  }*/
-
-  coord_t bottom = child->bottom();
-  Window * parent = child->getParent();
-  while (parent && parent != this) {
-    bottom += parent->top();
-    parent = parent->getParent();
   }
-  if (bottom > scrollPositionY + height() - 5) {
-    setScrollPositionY(bottom - height() + 5);
+  else {
+    coord_t bottom = child->bottom();
+    Window * parent = child->getParent();
+    while (parent && parent != this) {
+      bottom += parent->top();
+      parent = parent->getParent();
+    }
+    if (bottom > scrollPositionY + height() - 5) {
+      setScrollPositionY(bottom - height() + 5);
+    }
   }
 }
 
@@ -160,7 +161,9 @@ void Window::fullPaint(BitmapBuffer * dc)
   TRACE_WINDOWS("%s", getWindowDebugString().c_str());
 
   paint(dc);
-  drawVerticalScrollbar(dc);
+  if (!(windowFlags & NO_SCROLLBAR)) {
+    drawVerticalScrollbar(dc);
+  }
   paintChildren(dc);
 }
 

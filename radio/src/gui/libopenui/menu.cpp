@@ -50,7 +50,7 @@ void MenuWindow::onKeyEvent(event_t event)
     lines[selectedIndex].onPress();
     Window::onKeyEvent(event); // the window above will be closed on event
   }
-  else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+  else {
     Window::onKeyEvent(event);
   }
 }
@@ -102,7 +102,12 @@ void Menu::removeLines()
 
 void Menu::onKeyEvent(event_t event)
 {
-  deleteLater();
+  if (toolbar && (event == EVT_KEY_BREAK(KEY_PGDN) || event == EVT_KEY_LONG(KEY_PGDN))) {
+    toolbar->onKeyEvent(event);
+  }
+  else if (event == EVT_KEY_BREAK(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_ENTER)) {
+    deleteLater();
+  }
 }
 
 #if defined(TOUCH_HARDWARE)

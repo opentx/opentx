@@ -35,6 +35,8 @@
  #define TRANSPARENT 2
 #endif
 
+#define NO_SCROLLBAR 4
+
 struct rect_t {
     coord_t x, y, w, h;
     constexpr coord_t left() const { return x; };

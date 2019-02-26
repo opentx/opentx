@@ -108,9 +108,9 @@ class Menu : public Window {
     void setToolbar(Window * window)
     {
       toolbar = window;
-      menuWindow.setLeft(window->right());
-      menuWindow.setTop(window->top());
-      menuWindow.setHeight(window->height());
+      menuWindow.setLeft(toolbar->right());
+      menuWindow.setTop(toolbar->top());
+      menuWindow.setHeight(toolbar->height());
     }
 
     void addLine(const std::string & text, std::function<void()> onPress);
