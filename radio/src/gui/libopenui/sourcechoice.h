@@ -49,6 +49,8 @@ class SourceChoice : public FormField {
 
     void paint(BitmapBuffer * dc) override;
 
+    void onKeyEvent(event_t event) override;
+
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
@@ -61,10 +63,12 @@ class SourceChoice : public FormField {
   protected:
     int16_t vmin;
     int16_t vmax;
+    bool editMode = false;
     std::function<int16_t()> getValue;
     std::function<void(int16_t)> setValue;
     std::function<bool(int)> isValueAvailable = isSourceAvailable;
     void fillMenu(Menu * menu, std::function<bool(int16_t)> condition=nullptr);
+    void openMenu();
 };
 
 #endif // _SOURCECHOICE_H_

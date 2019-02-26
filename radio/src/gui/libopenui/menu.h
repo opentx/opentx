@@ -81,7 +81,8 @@ class MenuWindow: public Window {
   protected:
     std::vector<MenuLine> lines;
     int selectedIndex = -1;
-    static constexpr uint8_t lineHeight = 40;
+    static constexpr uint8_t maxLines = 7; // TODO NV14 was 8
+    static constexpr uint8_t lineHeight = 30; // TODO NV14 was 40
 };
 
 class Menu : public Window {

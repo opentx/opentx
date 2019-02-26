@@ -21,6 +21,7 @@
 #ifndef _GUI_COMMON_H_
 #define _GUI_COMMON_H_
 
+#include <functional>
 #include "lcd.h"
 #include "keys.h"
 
@@ -32,7 +33,7 @@
   #define CASE_EVT_ROTARY_RIGHT
 #endif
 
-typedef bool (*IsValueAvailable)(int);
+typedef std::function<bool(int)> IsValueAvailable;
 
 enum SwitchContext
 {

@@ -21,7 +21,7 @@
 #include "menu.h"
 
 MenuWindow::MenuWindow(Menu * parent):
-  Window(parent, {LCD_W / 2 - 100, LCD_H / 2 - 30 /* to avoid redraw the menus header */, 200, 0}, OPAQUE)
+  Window(parent, {LCD_W / 2 - 100, LCD_H / 2, 200, 0}, OPAQUE)
 {
   setScrollbarColor(WARNING_COLOR);
   setFocus();
@@ -31,7 +31,7 @@ void MenuWindow::select(int index)
 {
   selectedIndex = index;
   if (innerHeight > height()) {
-    setScrollPositionY(lineHeight * index - 3 * lineHeight);
+    setScrollPositionY(lineHeight * index - 3 * lineHeight + 1);
   }
   invalidate();
 }
@@ -69,7 +69,7 @@ void MenuWindow::paint(BitmapBuffer * dc)
   int width = (innerHeight > height() ? 195 : 200);
   dc->clear(HEADER_BGCOLOR);
   for (unsigned i=0; i<lines.size(); i++) {
-    dc->drawText(10, i * lineHeight + (lineHeight - 22) / 2, lines[i].text.data(), selectedIndex == (int)i ? WARNING_COLOR : MENU_TITLE_COLOR);
+    dc->drawText(10, i * lineHeight + (lineHeight - 20) / 2, lines[i].text.data(), selectedIndex == (int)i ? WARNING_COLOR : MENU_TITLE_COLOR);
     if (i > 0) {
       dc->drawSolidHorizontalLine(0, i * lineHeight, width, CURVE_AXIS_COLOR);
     }
@@ -80,12 +80,12 @@ void Menu::updatePosition()
 {
   if (!toolbar) {
     // there is no navigation bar at the left, we may center the window on screen
-    int count = min<int>(8, menuWindow.lines.size());
-    coord_t h = count * MenuWindow::lineHeight;
-    menuWindow.setTop((LCD_H - h) / 2);
+    int count = min<int>(MenuWindow::maxLines, menuWindow.lines.size());
+    coord_t h = count * MenuWindow::lineHeight - 1;
+    menuWindow.setTop((LCD_H - h) / 2 + 20);
     menuWindow.setHeight(h);
   }
-  menuWindow.setInnerHeight(menuWindow.lines.size() * MenuWindow::lineHeight);
+  menuWindow.setInnerHeight(menuWindow.lines.size() * MenuWindow::lineHeight - 1);
 }
 
 void Menu::addLine(const std::string & text, std::function<void()> onPress)

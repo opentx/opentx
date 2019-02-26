@@ -360,13 +360,13 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
   return isSwitchAvailable(swtch, LogicalSwitchesContext);
 }
 
-bool isSwitchAvailableInCustomFunctions(int swtch)
+/* TODO bool isSwitchAvailableInCustomFunctions(int swtch)
 {
   if (menuHandlers[menuLevel] == menuModelSpecialFunctions)
     return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
   else
     return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
-}
+} */
 
 bool isSwitchAvailableInMixes(int swtch)
 {
@@ -452,7 +452,7 @@ bool isAssignableFunctionAvailable(int function, CustomFunctionData * functions)
 bool isAssignableFunctionAvailable(int function)
 {
 #if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
-  bool modelFunctions = (menuHandlers[menuLevel] == menuModelSpecialFunctions);
+  bool modelFunctions = false; // TODO (menuHandlers[menuLevel] == menuModelSpecialFunctions);
 #endif
 
   switch (function) {
@@ -726,6 +726,7 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   }
   return retval;
 }
+
 #if defined(MULTIMODULE)
 // Third row is number of subtypes -1 (max valid subtype)
 #define NO_SUBTYPE  nullptr
@@ -815,11 +816,12 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
 }
 #endif
 
-void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
-{
-  lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
-  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
-    editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
-  else
-    lcdDrawMMM(x, y, flags);
-}
+//
+//void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
+//{
+//  lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
+//  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
+//    editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
+//  else
+//    lcdDrawMMM(x, y, flags);
+//}

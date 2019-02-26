@@ -344,7 +344,7 @@ void Window::drawVerticalScrollbar(BitmapBuffer * dc)
     coord_t x = rect.w - 3;
     coord_t y = scrollPositionY + 3;
     coord_t h = rect.h - 6;
-    lcd->drawSolidFilledRect(x, y, 1, h, LINE_COLOR);
+    // lcd->drawSolidFilledRect(x, y, 1, h, LINE_COLOR);
     coord_t yofs = (h*scrollPositionY + innerHeight/2) / innerHeight;
     coord_t yhgt = (h*rect.h + innerHeight/2) / innerHeight;
     if (yhgt + yofs > h)

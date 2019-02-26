@@ -30,11 +30,6 @@ void drawFatalErrorScreen(const char * message)
 {
 }
 
-bool isTelemetryFieldAvailable(int index)
-{
-  return false;
-}
-
 void loadCustomScreens()
 {
 }
@@ -74,19 +69,4 @@ int menuVerticalOffset;
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags, const char * prefix, const char * suffix)
 {
 
-}
-
-bool isExternalModuleAvailable(int module)
-{
-  return false;
-}
-
-bool isInternalModuleAvailable(int module)
-{
-  return false;
-}
-
-bool isSourceAvailable(int source)
-{
-  return true;
 }

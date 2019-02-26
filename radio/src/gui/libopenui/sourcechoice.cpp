@@ -58,12 +58,21 @@ void SourceChoice::paint(BitmapBuffer * dc)
   unsigned value = getValue();
   LcdFlags textColor = (value == 0 ? CURVE_AXIS_COLOR : 0);
   LcdFlags lineColor = CURVE_AXIS_COLOR;
-  if (hasFocus) {
+  uint8_t lineThickness = 1;
+  if (editMode) {
+    dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
+    textColor = TEXT_INVERTED_COLOR;
+    lineThickness = 0;
+  }
+  else if (hasFocus) {
     textColor = TEXT_INVERTED_BGCOLOR;
+    lineThickness = 2;
     lineColor = TEXT_INVERTED_BGCOLOR;
   }
-  drawSource(dc, 3, 2, value, textColor);
-  drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
+  drawSource(dc, 3, 0, value, textColor);
+  if (lineThickness) {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, lineThickness, lineColor);
+  }
 }
 
 void SourceChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
@@ -93,14 +102,35 @@ void SourceChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
   }
 }
 
-#if defined(TOUCH_INTERFACE)
-bool SourceChoice::onTouchEnd(coord_t, coord_t)
+void SourceChoice::openMenu()
 {
   auto menu = new Menu();
   fillMenu(menu);
+  // menu->setToolbar(new SourceChoiceMenuToolbar(this, menu));
+  menu->setCloseHandler([=]() {
+      editMode = false;
+      setFocus();
+  });
+}
 
-  menu->setToolbar(new SourceChoiceMenuToolbar(this, menu));
+void SourceChoice::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    editMode = true;
+    invalidate();
+    openMenu();
+  }
+  else {
+    FormField::onKeyEvent(event);
+  }
+}
+
+#if defined(TOUCH_INTERFACE)
+bool SourceChoice::onTouchEnd(coord_t, coord_t)
+{
+  openMenu();
   setFocus();
   return true;
 }
