@@ -2004,13 +2004,13 @@ int main()
 
 #if defined(PCBHORUS)
   if (!IS_FIRMWARE_COMPATIBLE_WITH_BOARD()) {
-    runFatalErrorScreen(STR_WRONG_PCBREV);
+    // TODO runFatalErrorScreen(STR_WRONG_PCBREV);
   }
 #endif
 
 #if !defined(EEPROM)
   if (!SD_CARD_PRESENT() && !UNEXPECTED_SHUTDOWN()) {
-    runFatalErrorScreen(STR_NO_SDCARD);
+    // TODO runFatalErrorScreen(STR_NO_SDCARD);
   }
 #endif
 
@@ -2073,7 +2073,7 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcdClear();
 
-          POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN);
+          // TODO POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN);
           SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);

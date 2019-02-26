@@ -29,7 +29,7 @@
 #include <utility>
 #include <functional>
 #include "bitmapbuffer.h"
-// #include "debug.h"
+#include <string>
 
 // OPAQUE/TRANSPARENT defined in WinGDI
 #ifndef OPAQUE
@@ -62,7 +62,7 @@ class Window {
     std::string getRectString()
     {
       char result[32];
-      sprintf(result, "[%d, %d, %d, %d]", left(), top(), width(), height());
+      sprintf(result, "[%ld, %ld, %ld, %ld]", left(), top(), width(), height());
       return result;
     }
 

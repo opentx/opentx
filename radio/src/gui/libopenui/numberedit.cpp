@@ -19,6 +19,7 @@
  */
 
 #include <keys.h>
+#include <opentx.h>
 #include "numberedit.h"
 #include "draw_functions.h"
 
@@ -36,15 +37,18 @@ void NumberEdit::paint(BitmapBuffer * dc)
   bool hasFocus = this->hasFocus();
   LcdFlags textColor = CURVE_AXIS_COLOR;
   LcdFlags lineColor = CURVE_AXIS_COLOR;
+  uint8_t lineThickness = 1;
   if (hasFocus) {
     if (editMode) {
       dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
       textColor = TEXT_INVERTED_COLOR;
+      lineThickness = 0;
     }
     else {
       textColor = TEXT_INVERTED_BGCOLOR;
+      lineThickness = 2;
+      lineColor = TEXT_INVERTED_BGCOLOR;
     }
-    lineColor = TEXT_INVERTED_BGCOLOR;
   }
   else if (enabled) {
     textColor = TEXT_COLOR;
@@ -59,8 +63,8 @@ void NumberEdit::paint(BitmapBuffer * dc)
   else {
     drawNumber(dc, 3, 0, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
   }
-  if (!editMode) {
-    drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
+  if (lineThickness) {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, lineThickness, lineColor);
   }
 }
 
@@ -75,8 +79,15 @@ void NumberEdit::onKeyEvent(event_t event)
     invalidate();
   }
   else if (editMode) {
+    int32_t val = getValue();
     if (event == EVT_KEY_BREAK(KEY_EXIT)) {
       editMode = false;
+    }
+    else if (event == EVT_ROTARY_RIGHT) {
+      setValue(val + rotencSpeed);
+    }
+    else if (event == EVT_ROTARY_LEFT) {
+      setValue(val - rotencSpeed);
     }
   }
   else {

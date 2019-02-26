@@ -44,6 +44,7 @@ endif()
 set(BOOTLOADER_SRC
   ${BOOTLOADER_SRC}
   ../../../../../gui/${GUI_DIR}/lcd.cpp
+  ../../../../../gui/libopenui/bitmapbuffer.cpp
   ../../../../../gui/${GUI_DIR}/fonts.cpp
   ../../../../../keys.cpp
   ../../../../../strhelpers.cpp
