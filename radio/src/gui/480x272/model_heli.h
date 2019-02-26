@@ -24,5 +24,5 @@ class ModelHeliPage: public PageTab {
   public:
     ModelHeliPage();
 
-    void build(Window * window);
+    void build(FormWindow * window);
 };

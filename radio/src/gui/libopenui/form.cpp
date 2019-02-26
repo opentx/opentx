@@ -18,10 +18,22 @@
  * GNU General Public License for more details.
  */
 
-#include "formfield.h"
+#include "form.h"
 #include "opentx.h"
 
 FormField * FormField::current = nullptr;
+
+void FormWindow::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_BREAK(KEY_EXIT) && first && getFocus() != first) {
+    first->setFocus();
+  }
+  else {
+    Window::onKeyEvent(event);
+  }
+}
 
 void FormField::onKeyEvent(event_t event)
 {

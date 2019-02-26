@@ -18,12 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _FORMFIELD_H_
-#define _FORMFIELD_H_
+#ifndef _FORM_H_
+#define _FORM_H_
 
 #include "window.h"
 
 class FormField: public Window {
+  friend class FormWindow;
+
   public:
     FormField(Window * parent, const rect_t & rect) :
       Window(parent, rect)
@@ -51,6 +53,23 @@ class FormField: public Window {
     FormField * next = nullptr;
     FormField * previous = nullptr;
 
+    void onKeyEvent(event_t event) override;
+};
+
+class FormWindow: public Window {
+  public:
+    FormWindow(Window * parent, const rect_t & rect) :
+            Window(parent, rect)
+    {
+    }
+
+    inline void setFirst(FormField * field)
+    {
+      first = field;
+    }
+
+  protected:
+    FormField * first = nullptr;
     void onKeyEvent(event_t event) override;
 };
 

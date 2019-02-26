@@ -22,8 +22,8 @@
 #define _TABSGROUP_H_
 
 #include <vector>
-#include "window.h"
 #include "button.h"
+#include "form.h"
 
 class TabsGroup;
 
@@ -42,7 +42,7 @@ class PageTab {
     {
     }
 
-    virtual void build(Window * window) = 0;
+    virtual void build(FormWindow * window) = 0;
 
     virtual void checkEvents()
     {
@@ -170,7 +170,7 @@ class TabsGroup: public Window {
 
   protected:
     TabsGroupHeader header;
-    Window body;
+    FormWindow body;
     std::vector<PageTab *> tabs;
     PageTab * currentTab = nullptr;
     void setCurrentTab(PageTab * tab);

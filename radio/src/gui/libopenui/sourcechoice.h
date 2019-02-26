@@ -21,7 +21,7 @@
 #ifndef _SOURCECHOICE_H_
 #define _SOURCECHOICE_H_
 
-#include "formfield.h"
+#include "form.h"
 
 class Menu;
 

@@ -21,7 +21,7 @@
 #ifndef _CHOICE_H_
 #define _CHOICE_H_
 
-#include "formfield.h"
+#include "form.h"
 #include <string>
 
 class Choice : public FormField {

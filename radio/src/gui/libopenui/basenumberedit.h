@@ -21,7 +21,7 @@
 #ifndef _BASENUMBEREDIT_H_
 #define _BASENUMBEREDIT_H_
 
-#include "formfield.h"
+#include "form.h"
 
 class BaseNumberEdit : public FormField {
   public:

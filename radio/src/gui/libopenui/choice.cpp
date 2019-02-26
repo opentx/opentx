@@ -100,8 +100,6 @@ void Choice::openMenu()
     else {
       menu->addLine(TEXT_AT_INDEX(values, i - vmin), [=]() {
           setValue(i);
-          editMode = false;
-          setFocus();
       });
     }
     if (value == i) {
@@ -113,6 +111,11 @@ void Choice::openMenu()
   if (current >= 0) {
     menu->select(current);
   }
+
+  menu->setCloseHandler([=]() {
+      editMode = false;
+      setFocus();
+  });
 }
 
 #if defined(TOUCH_INTERFACE)

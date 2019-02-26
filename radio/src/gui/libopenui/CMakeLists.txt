@@ -8,7 +8,7 @@ set(LIBOPENUI_SRC
   # keyboard_number.cpp
   # keyboard_curve.cpp
   checkbox.cpp
-  formfield.cpp
+  form.cpp
   # textedit.cpp
   numberedit.cpp
   # timeedit.cpp
