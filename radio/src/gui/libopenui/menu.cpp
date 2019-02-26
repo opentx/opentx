@@ -31,7 +31,7 @@ void MenuWindow::select(int index)
 {
   selectedIndex = index;
   if (innerHeight > height()) {
-    setScrollPositionY(lineHeight * index - 3 * lineHeight + 1);
+    setScrollPositionY(lineHeight * index - 3 * lineHeight);
   }
   invalidate();
 }
@@ -71,7 +71,7 @@ void MenuWindow::paint(BitmapBuffer * dc)
   for (unsigned i=0; i<lines.size(); i++) {
     dc->drawText(10, i * lineHeight + (lineHeight - 20) / 2, lines[i].text.data(), selectedIndex == (int)i ? WARNING_COLOR : MENU_TITLE_COLOR);
     if (i > 0) {
-      dc->drawSolidHorizontalLine(0, i * lineHeight, width, CURVE_AXIS_COLOR);
+      dc->drawSolidHorizontalLine(0, i * lineHeight - 1, width, CURVE_AXIS_COLOR);
     }
   }
 }

@@ -76,7 +76,7 @@ class MenuToolbar: public Window {
 
   public:
     MenuToolbar(T * choice, Menu * menu):
-      Window(menu, { 100, 51, 30, 210 }, NO_SCROLLBAR), // TODO NV14 was { 35, 95, 50, 370 }
+      Window(menu, { 100, 51, 30, 209 }, NO_SCROLLBAR), // TODO NV14 was { 35, 95, 50, 370 }
       choice(choice),
       menu(menu)
     {
