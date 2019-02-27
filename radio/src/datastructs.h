@@ -888,7 +888,7 @@ static inline void check_struct()
   CHKSIZE(TimerData, 16);
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyTelemetryData, 5);
-  CHKSIZE(ModelHeader, 27);
+//  CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);

@@ -47,15 +47,19 @@ void FileChoice::paint(BitmapBuffer * dc)
 {
   FormField::paint(dc);
 
+  const char * displayedValue = getValue().c_str();
+
   LcdFlags textColor;
   if (editMode)
     textColor = TEXT_INVERTED_COLOR;
   else if (hasFocus())
     textColor = TEXT_INVERTED_BGCOLOR;
+  else if (displayedValue[0] == '\0')
+    textColor = CURVE_AXIS_COLOR;
   else
-    textColor = 0;
+    textColor = TEXT_COLOR;
 
-  dc->drawText(3, 0, getValue().c_str(), textColor);
+  dc->drawText(3, 0, displayedValue[0] == '\0' ? "---" : displayedValue, textColor);
   dc->drawBitmapPattern(rect.w - 20, (rect.h - 11) / 2, LBM_FOLDER, textColor);
 }
 
@@ -95,6 +99,8 @@ void FileChoice::openMenu()
     if (files.size() > 0) {
       // sort files
       files.sort(compare_nocase);
+
+      files.push_front("");
 
       auto menu = new Menu();
       int count = 0;

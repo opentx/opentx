@@ -92,7 +92,7 @@ enum CurveType {
   #define LEN_MODEL_NAME               15
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
-  #define LEN_BITMAP_NAME              10  // TODO next EEPROM change: we need 14 here as we have to store the file extension
+  #define LEN_BITMAP_NAME              14
   #define LEN_EXPOMIX_NAME             6
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
