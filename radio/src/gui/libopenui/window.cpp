@@ -157,7 +157,7 @@ void Window::scrollTo(Window * child)
   coord_t bottom = offsetY + child->bottom();
 
   if (top < scrollPositionY) {
-    setScrollPositionY(top);
+    setScrollPositionY(top - 5);
   }
   else if (bottom > scrollPositionY + height() - 5) {
     setScrollPositionY(bottom - height() + 5);

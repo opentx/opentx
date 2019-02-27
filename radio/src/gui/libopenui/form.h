@@ -66,6 +66,12 @@ class FormWindow: public Window {
     {
     }
 
+    void clear()
+    {
+      Window::clear();
+      FormField::current = nullptr;
+    }
+
     inline void setFirst(FormField * field)
     {
       first = field;
