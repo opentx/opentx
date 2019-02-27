@@ -37,10 +37,6 @@ ModelMenu::ModelMenu():
   // addTab(new ModelSetupPage());
 #if defined(HELI)
   addTab(new ModelHeliPage());
-  addTab(new ModelHeliPage());
-  addTab(new ModelHeliPage());
-  addTab(new ModelHeliPage());
-  addTab(new ModelHeliPage());
 #endif
   // addTab(new ModelFlightModesPage());
   // addTab(new ModelInputsPage());
