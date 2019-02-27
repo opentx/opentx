@@ -28,18 +28,21 @@ void CheckBox::paint(BitmapBuffer * dc)
   uint8_t value = getValue();
   if (hasFocus) {
     dc->drawSolidFilledRect(0, 2, 16, 16, TEXT_INVERTED_BGCOLOR);
-    dc->drawSolidFilledRect(2, 4, 12, 12, TEXT_BGCOLOR);
     if (value) {
-      dc->drawSolidFilledRect(3, 5, 10, 10, TEXT_INVERTED_BGCOLOR);
+      dc->drawSolidFilledRect(2, 4, 12, 12, TEXT_BGCOLOR);
+      dc->drawSolidFilledRect(3, 5, 10, 10, SCROLLBOX_COLOR);
+    }
+    else {
+      dc->drawSolidFilledRect(2, 4, 12, 12, TEXT_BGCOLOR);
     }
   }
   else {
     if (value) {
-      dc->drawSolidFilledRect(2, 5, 10, 10, SCROLLBOX_COLOR);
-      drawSolidRect(dc, 0, 3, 14, 14, 1, LINE_COLOR);
+      dc->drawSolidFilledRect(2, 4, 12, 12, SCROLLBOX_COLOR);
+      drawSolidRect(dc, 0, 2, 16, 16, 1, CURVE_AXIS_COLOR);
     }
     else {
-      drawSolidRect(dc, 0, 3, 14, 14, 1, LINE_COLOR);
+      drawSolidRect(dc, 0, 2, 16, 16, 1, CURVE_AXIS_COLOR);
     }
   }
 }

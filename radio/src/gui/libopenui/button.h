@@ -34,9 +34,9 @@ enum ButtonFlags {
 
 class Button : public FormField {
   public:
-    Button(Window * parent, const rect_t & rect, std::function<uint8_t(void)> onPress=nullptr, uint8_t flags=0):
+    Button(Window * parent, const rect_t & rect, std::function<uint8_t(void)> pressHandler=nullptr, uint8_t flags=0):
       FormField(parent, rect),
-      onPress(onPress),
+      pressHandler(pressHandler),
       flags(flags)
     {
     }
@@ -84,13 +84,15 @@ class Button : public FormField {
 
     void setPressHandler(std::function<uint8_t(void)> handler)
     {
-      onPress = std::move(handler);
+      pressHandler = std::move(handler);
     }
 
     void setCheckHandler(std::function<void(void)> handler)
     {
-      onCheck = std::move(handler);
+      checkHandler = std::move(handler);
     }
+
+    void onKeyEvent(event_t event);
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
@@ -99,15 +101,17 @@ class Button : public FormField {
     void checkEvents() override;
 
   protected:
-    std::function<uint8_t(void)> onPress;
-    std::function<void(void)> onCheck;
+    std::function<uint8_t(void)> pressHandler;
+    std::function<void(void)> checkHandler;
     uint8_t flags;
+
+    void onPress();
 };
 
 class TextButton : public Button {
   public:
-    TextButton(Window * parent, const rect_t & rect, std::string text, std::function<uint8_t(void)> onPress=nullptr, uint8_t flags=BUTTON_BACKGROUND):
-      Button(parent, rect, onPress, flags),
+    TextButton(Window * parent, const rect_t & rect, std::string text, std::function<uint8_t(void)> pressHandler=nullptr, uint8_t flags=BUTTON_BACKGROUND):
+      Button(parent, rect, pressHandler, flags),
       text(std::move(text))
     {
       windowFlags = OPAQUE;
@@ -136,8 +140,8 @@ class TextButton : public Button {
 
 class IconButton: public Button {
   public:
-    IconButton(Window * parent, const rect_t & rect, uint8_t icon, std::function<uint8_t(void)> onPress, uint8_t flags=0):
-      Button(parent, rect, onPress, flags),
+    IconButton(Window * parent, const rect_t & rect, uint8_t icon, std::function<uint8_t(void)> pressHandler, uint8_t flags=0):
+      Button(parent, rect, pressHandler, flags),
       icon(icon)
     {
     }
@@ -157,7 +161,7 @@ class IconButton: public Button {
 
 class FabIconButton: public Button {
   public:
-    FabIconButton(Window * parent, coord_t x, coord_t y, uint8_t icon, std::function<uint8_t(void)> onPress, uint8_t flags=0);
+    FabIconButton(Window * parent, coord_t x, coord_t y, uint8_t icon, std::function<uint8_t(void)> pressHandler, uint8_t flags=0);
 
 #if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
