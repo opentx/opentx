@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 #include "menu_model.h"
-// #include "model_setup.h"
+#include "model_setup.h"
 #include "model_heli.h"
 //#include "model_flightmodes.h"
 //#include "model_mixes.h"
@@ -34,7 +34,7 @@
 ModelMenu::ModelMenu():
   TabsGroup(ICON_MODEL)
 {
-  // addTab(new ModelSetupPage());
+  addTab(new ModelSetupPage());
 #if defined(HELI)
   addTab(new ModelHeliPage());
 #endif

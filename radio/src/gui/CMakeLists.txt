@@ -9,7 +9,7 @@ set(GUI_SRC
   menu_model.cpp
   model_heli.cpp
 #  model_select.cpp
-#  model_setup.cpp
+  model_setup.cpp
 #  model_logical_switches.cpp
 #  special_functions.cpp
 #  model_telemetry.cpp
