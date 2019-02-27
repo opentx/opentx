@@ -417,7 +417,7 @@ void onBindMenu(const char * result)
 void ModelSetupPage::build(FormWindow * window)
 {
   GridLayout grid;
-  grid.spacer(8);
+  grid.spacer(2);
 
   // Model name
   new StaticText(window, grid.getLabelSlot(), STR_MODELNAME);
