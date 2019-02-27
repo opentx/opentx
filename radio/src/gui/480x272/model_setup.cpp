@@ -590,11 +590,9 @@ void ModelSetupPage::build(FormWindow * window)
   }
 
   // Global functions
-  {
-    new StaticText(window, grid.getLabelSlot(), STR_USE_GLOBAL_FUNCS);
-    new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_model.noGlobalFunctions));
-    grid.nextLine();
-  }
+  new StaticText(window, grid.getLabelSlot(), STR_USE_GLOBAL_FUNCS);
+  new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_model.noGlobalFunctions));
+  grid.nextLine();
 
   // Internal module
   {

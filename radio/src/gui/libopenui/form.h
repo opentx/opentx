@@ -48,12 +48,15 @@ class FormField: public Window {
       previous = field;
     }
 
+    void paint(BitmapBuffer * dc) override;
+
+    void onKeyEvent(event_t event) override;
+
   protected:
     static FormField * current;
     FormField * next = nullptr;
     FormField * previous = nullptr;
-
-    void onKeyEvent(event_t event) override;
+    bool editMode = false;
 };
 
 class FormWindow: public Window {

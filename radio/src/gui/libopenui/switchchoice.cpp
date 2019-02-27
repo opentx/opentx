@@ -38,16 +38,19 @@ class SwitchChoiceMenuToolbar : public MenuToolbar<SwitchChoice> {
 
 void SwitchChoice::paint(BitmapBuffer * dc)
 {
-  bool hasFocus = this->hasFocus();
+  FormField::paint(dc);
+
   unsigned value = getValue();
-  LcdFlags textColor = (value == 0 ? CURVE_AXIS_COLOR : 0);
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
-  if (hasFocus) {
+  LcdFlags textColor;
+  if (editMode)
+    textColor = TEXT_INVERTED_COLOR;
+  else if (hasFocus())
     textColor = TEXT_INVERTED_BGCOLOR;
-    lineColor = TEXT_INVERTED_BGCOLOR;
-  }
-  drawSwitch(dc, 3, 2, value, textColor);
-  drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
+  else if (value == 0)
+    textColor = CURVE_AXIS_COLOR;
+  else
+    textColor = 0;
+  drawSwitch(dc, 3, 0, value, textColor);
 }
 
 void SwitchChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
@@ -77,14 +80,35 @@ void SwitchChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
-bool SwitchChoice::onTouchEnd(coord_t, coord_t)
+void SwitchChoice::openMenu()
 {
   auto menu = new Menu();
   fillMenu(menu);
-
   menu->setToolbar(new SwitchChoiceMenuToolbar(this, menu));
+  menu->setCloseHandler([=]() {
+      editMode = false;
+      setFocus();
+  });
+}
 
+void SwitchChoice::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    editMode = true;
+    invalidate();
+    openMenu();
+  }
+  else {
+    FormField::onKeyEvent(event);
+  }
+}
+
+#if defined(TOUCH_HARDWARE)
+bool SwitchChoice::onTouchEnd(coord_t, coord_t)
+{
+  openMenu();
   setFocus();
   return true;
 }

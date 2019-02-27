@@ -34,63 +34,43 @@ NumberEdit::NumberEdit(Window * parent, const rect_t & rect, int32_t vmin, int32
 
 void NumberEdit::paint(BitmapBuffer * dc)
 {
-  bool hasFocus = this->hasFocus();
-  LcdFlags textColor = CURVE_AXIS_COLOR;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
-  uint8_t lineThickness = 1;
-  if (hasFocus) {
-    if (editMode) {
-      dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
-      textColor = TEXT_INVERTED_COLOR;
-      lineThickness = 0;
-    }
-    else {
-      textColor = TEXT_INVERTED_BGCOLOR;
-      lineThickness = 2;
-      lineColor = TEXT_INVERTED_BGCOLOR;
-    }
-  }
-  else if (enabled) {
+  FormField::paint(dc);
+
+  LcdFlags textColor;
+  if (editMode)
+    textColor = TEXT_INVERTED_COLOR;
+  else if (hasFocus())
+    textColor = TEXT_INVERTED_BGCOLOR;
+  else if (enabled)
     textColor = TEXT_COLOR;
-  }
+  else
+    textColor = CURVE_AXIS_COLOR;
+
   int32_t value = _getValue();
-  if (displayFunction) {
+  if (displayFunction)
     displayFunction(dc, textColor, value);
-  }
-  else if (value == 0 && !zeroText.empty()) {
+  else if (value == 0 && !zeroText.empty())
     dc->drawText(3, 0, zeroText.c_str(), textColor | flags);
-  }
-  else {
+  else
     drawNumber(dc, 3, 0, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
-  }
-  if (lineThickness) {
-    drawSolidRect(dc, 0, 0, rect.w, rect.h, lineThickness, lineColor);
-  }
 }
 
 void NumberEdit::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
-  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-    editMode = !editMode;
-    invalidate();
-  }
-  else if (editMode) {
-    int32_t val = getValue();
-    if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-      editMode = false;
-    }
-    else if (event == EVT_ROTARY_RIGHT) {
-      setValue(val + rotencSpeed);
+  if (editMode) {
+    if (event == EVT_ROTARY_RIGHT) {
+      setValue(getValue() + rotencSpeed);
+      return;
     }
     else if (event == EVT_ROTARY_LEFT) {
-      setValue(val - rotencSpeed);
+      setValue(getValue() - rotencSpeed);
+      return;
     }
   }
-  else {
-    FormField::onKeyEvent(event);
-  }
+
+  FormField::onKeyEvent(event);
 }
 
 #if defined(TOUCH_INTERFACE)

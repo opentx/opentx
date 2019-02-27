@@ -42,28 +42,20 @@ Choice::Choice(Window * parent, const rect_t &rect, const char * values, int16_t
 
 void Choice::paint(BitmapBuffer * dc)
 {
-  bool hasFocus = this->hasFocus();
-  LcdFlags textColor = 0;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
-  uint8_t lineThickness = 1;
-  if (editMode) {
-    dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
+  FormField::paint(dc);
+
+  LcdFlags textColor;
+  if (editMode)
     textColor = TEXT_INVERTED_COLOR;
-    lineThickness = 0;
-  }
-  else if (hasFocus) {
+  else if (hasFocus())
     textColor = TEXT_INVERTED_BGCOLOR;
-    lineThickness = 2;
-    lineColor = TEXT_INVERTED_BGCOLOR;
-  }
+  else
+    textColor = 0;
+
   if (textHandler)
     dc->drawText(3, 0, textHandler(getValue()).c_str());
   else
     drawTextAtIndex(dc, 3, 0, values, getValue() - vmin, flags | textColor);
-
-  if (lineThickness) {
-    drawSolidRect(dc, 0, 0, rect.w, rect.h, lineThickness, lineColor);
-  }
 
   dc->drawBitmapPattern(rect.w - 14, (rect.h - 5) / 2, LBM_DROPDOWN, textColor);
 }

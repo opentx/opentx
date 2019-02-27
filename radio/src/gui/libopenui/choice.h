@@ -62,7 +62,6 @@ class Choice : public FormField {
     std::function<bool(int)> isValueAvailable;
     std::function<std::string(int32_t)> textHandler;
     LcdFlags flags;
-    bool editMode = false;
     void openMenu();
 };
 

@@ -30,17 +30,17 @@ TimeEdit::TimeEdit(Window * parent, const rect_t & rect, int32_t vmin, int32_t v
 
 void TimeEdit::paint(BitmapBuffer * dc)
 {
-  bool hasFocus = this->hasFocus();
-  LcdFlags textColor = 0;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
-  if (hasFocus) {
+  FormField::paint(dc);
+
+  LcdFlags textColor;
+  if (editMode)
+    textColor = TEXT_INVERTED_COLOR;
+  else if (hasFocus())
     textColor = TEXT_INVERTED_BGCOLOR;
-    lineColor = TEXT_INVERTED_BGCOLOR;
-  }
+  else
+    textColor = TEXT_COLOR;
 
-  dc->drawText(3, 2, getTimerString(_getValue(), (flags & TIMEHOUR) != 0), textColor);
-
-  drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
+  dc->drawText(3, 0, getTimerString(_getValue(), (flags & TIMEHOUR) != 0), textColor);
 }
 
 #if defined(TOUCH_HARDWARE)
@@ -57,11 +57,9 @@ bool TimeEdit::onTouchEnd(coord_t x, coord_t y)
 
   return true;
 }
-#endif
 
 void TimeEdit::onFocusLost()
 {
-#if defined(TOUCH_HARDWARE)
   NumberKeyboard::instance()->disable(true);
-#endif
 }
+#endif

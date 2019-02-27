@@ -21,17 +21,17 @@
 #ifndef _SWITCHCHOICE_H_
 #define _SWITCHCHOICE_H_
 
-#include "window.h"
+#include "form.h"
 
 class Menu;
 bool isSwitchAvailableInMixes(int swtch);
 
-class SwitchChoice : public Window {
+class SwitchChoice : public FormField {
   template <class T> friend class MenuToolbar;
 
   public:
     SwitchChoice(Window * parent, const rect_t & rect, int vmin, int vmax, std::function<int16_t()> getValue, std::function<void(int16_t)> setValue):
-      Window(parent, rect),
+      FormField(parent, rect),
       vmin(vmin),
       vmax(vmax),
       getValue(std::move(getValue)),
@@ -47,6 +47,8 @@ class SwitchChoice : public Window {
 #endif
 
     void paint(BitmapBuffer * dc) override;
+
+    void onKeyEvent(event_t event) override;
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override ;
@@ -64,6 +66,7 @@ class SwitchChoice : public Window {
     std::function<void(int16_t)> setValue;
     std::function<bool(int)> isValueAvailable = isSwitchAvailableInMixes;
     void fillMenu(Menu * menu, std::function<bool(int16_t)> condition=nullptr);
+    void openMenu();
 };
 
 #endif // _SWITCHCHOICE_H_

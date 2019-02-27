@@ -21,13 +21,13 @@
 #ifndef _CHECKBOX_H_
 #define _CHECKBOX_H_
 
-#include "window.h"
+#include "form.h"
 
-class CheckBox : public Window {
+class CheckBox : public FormField {
   public:
     CheckBox(Window * parent, const rect_t & rect, std::function<uint8_t()> getValue, std::function<void(uint8_t)> setValue,
              LcdFlags flags = 0) :
-      Window(parent, rect),
+      FormField(parent, rect),
       getValue(getValue),
       setValue(setValue)
     {
@@ -36,7 +36,7 @@ class CheckBox : public Window {
 #if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
     {
-        return "CheckBox";
+      return "CheckBox";
     }
 #endif
 

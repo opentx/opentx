@@ -38,9 +38,9 @@ class TimeEdit : public BaseNumberEdit {
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
-#endif
 
     void onFocusLost() override;
+#endif
 };
 
 #endif // _TIMEEDIT_H_

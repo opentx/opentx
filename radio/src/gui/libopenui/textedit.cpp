@@ -25,18 +25,19 @@
 
 void TextEdit::paint(BitmapBuffer * dc)
 {
+  FormField::paint(dc);
+
   bool hasFocus = this->hasFocus();
   LcdFlags textColor = 0;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
-  if (hasFocus) {
+  if (editMode)
+    textColor = TEXT_INVERTED_COLOR;
+  else if (hasFocus)
     textColor = TEXT_INVERTED_BGCOLOR;
-    lineColor = TEXT_INVERTED_BGCOLOR;
-  }
+
   if (!hasFocus && zlen(value, length) == 0)
-    dc->drawSizedText(3, 2, "---", length, CURVE_AXIS_COLOR);
+    dc->drawSizedText(3, 0, "---", length, CURVE_AXIS_COLOR);
   else
-    dc->drawSizedText(3, 2, value, length, ZCHAR | textColor);
-  drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
+    dc->drawSizedText(3, 0, value, length, ZCHAR | textColor);
 
 #if defined(TOUCH_HARDWARE)
   auto keyboard = TextKeyboard::instance();
@@ -65,11 +66,10 @@ bool TextEdit::onTouchEnd(coord_t x, coord_t y)
 }
 #endif
 
+#if defined(TOUCH_HARDWARE)
 void TextEdit::onFocusLost()
 {
-#if defined(TOUCH_HARDWARE)
   TextKeyboard::instance()->disable(true);
-#endif
   storageDirty(EE_MODEL);
 }
-
+#endif

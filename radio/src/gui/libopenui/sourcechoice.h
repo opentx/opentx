@@ -63,7 +63,6 @@ class SourceChoice : public FormField {
   protected:
     int16_t vmin;
     int16_t vmax;
-    bool editMode = false;
     std::function<int16_t()> getValue;
     std::function<void(int16_t)> setValue;
     std::function<bool(int)> isValueAvailable = isSourceAvailable;

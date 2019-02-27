@@ -20,6 +20,7 @@
 
 #include "form.h"
 #include "opentx.h"
+#include "draw_functions.h"
 
 FormField * FormField::current = nullptr;
 
@@ -32,6 +33,19 @@ void FormWindow::onKeyEvent(event_t event)
   }
   else {
     Window::onKeyEvent(event);
+  }
+}
+
+void FormField::paint(BitmapBuffer * dc)
+{
+  if (editMode) {
+    dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
+  }
+  else if (hasFocus()) {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, TEXT_INVERTED_BGCOLOR);
+  }
+  else {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, CURVE_AXIS_COLOR);
   }
 }
 
@@ -48,6 +62,14 @@ void FormField::onKeyEvent(event_t event)
     if (previous) {
       previous->setFocus();
     }
+  }
+  else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    editMode = !editMode;
+    invalidate();
+  }
+  else if (event == EVT_KEY_BREAK(KEY_EXIT) && editMode) {
+    editMode = false;
+    invalidate();
   }
   else {
     Window::onKeyEvent(event);

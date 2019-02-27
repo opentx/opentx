@@ -77,7 +77,6 @@ class NumberEdit : public BaseNumberEdit {
     std::string suffix;
     std::string zeroText;
     bool enabled = true;
-    bool editMode = false;
 };
 
 #endif // _NUMBEREDIT_H_

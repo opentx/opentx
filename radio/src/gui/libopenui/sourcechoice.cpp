@@ -54,25 +54,19 @@ class SourceChoiceMenuToolbar : public MenuToolbar<SourceChoice> {
 
 void SourceChoice::paint(BitmapBuffer * dc)
 {
-  bool hasFocus = this->hasFocus();
+  FormField::paint(dc);
+
   unsigned value = getValue();
-  LcdFlags textColor = (value == 0 ? CURVE_AXIS_COLOR : 0);
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
-  uint8_t lineThickness = 1;
-  if (editMode) {
-    dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
+  LcdFlags textColor;
+  if (editMode)
     textColor = TEXT_INVERTED_COLOR;
-    lineThickness = 0;
-  }
-  else if (hasFocus) {
+  else if (hasFocus())
     textColor = TEXT_INVERTED_BGCOLOR;
-    lineThickness = 2;
-    lineColor = TEXT_INVERTED_BGCOLOR;
-  }
+  else if (value == 0)
+    textColor = CURVE_AXIS_COLOR;
+  else
+    textColor = 0;
   drawSource(dc, 3, 0, value, textColor);
-  if (lineThickness) {
-    drawSolidRect(dc, 0, 0, rect.w, rect.h, lineThickness, lineColor);
-  }
 }
 
 void SourceChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
