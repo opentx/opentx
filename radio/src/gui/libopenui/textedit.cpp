@@ -106,6 +106,7 @@ void TextEdit::onKeyEvent(event_t event)
         break;
 
       case EVT_KEY_BREAK(KEY_EXIT):
+        cursorPos = 0;
         FormField::onKeyEvent(event);
         break;
 
