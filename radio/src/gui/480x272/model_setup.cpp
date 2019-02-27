@@ -166,7 +166,7 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
 class ModuleWindow : public Window {
   public:
     ModuleWindow(Window * parent, const rect_t &rect, uint8_t moduleIndex) :
-      Window(parent, rect),
+      Window(parent, rect, FORWARD_SCROLL),
       moduleIndex(moduleIndex)
     {
       update();

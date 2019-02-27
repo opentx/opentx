@@ -116,6 +116,12 @@ void Window::setFocus()
     clearFocus();
     focusWindow = this;
   }
+
+  Window * parent = this->parent;
+  while (parent->getWindowFlags() & FORWARD_SCROLL) {
+    parent = parent->parent;
+  }
+
   parent->scrollTo(this);
   invalidate();
 }
@@ -140,19 +146,21 @@ void Window::setScrollPositionY(coord_t value)
 
 void Window::scrollTo(Window * child)
 {
-  if (child->top() < scrollPositionY) {
-    scrollPositionY = child->top();
+  coord_t offsetY = 0;
+  Window * parent = child->getParent();
+  while (parent && parent != this) {
+    offsetY += parent->top();
+    parent = parent->getParent();
   }
-  else {
-    coord_t bottom = child->bottom();
-    Window * parent = child->getParent();
-    while (parent && parent != this) {
-      bottom += parent->top();
-      parent = parent->getParent();
-    }
-    if (bottom > scrollPositionY + height() - 5) {
-      setScrollPositionY(bottom - height() + 5);
-    }
+
+  coord_t top = offsetY + child->top();
+  coord_t bottom = offsetY + child->bottom();
+
+  if (top < scrollPositionY) {
+    setScrollPositionY(top);
+  }
+  else if (bottom > scrollPositionY + height() - 5) {
+    setScrollPositionY(bottom - height() + 5);
   }
 }
 
