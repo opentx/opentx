@@ -29,40 +29,41 @@ RadioVersionPage::RadioVersionPage():
 
 void RadioVersionPage::build(FormWindow * window)
 {
-  char id[27];
-
   GridLayout grid;
-  grid.setLabelWidth(150);
+  grid.setLabelWidth(120);
   grid.spacer(2);
 
-  getCPUUniqueID(id);
+  getCPUUniqueID(reusableBuffer.version.id);
 
-  new StaticText(window, grid.getLabelSlot(), "FW Version:");
+  new StaticText(window, grid.getLabelSlot(), "FW Version");
   new StaticText(window, grid.getFieldSlot(), vers_stamp);
   grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(), "FW Date:");
+  new StaticText(window, grid.getLabelSlot(), "FW Date");
   new StaticText(window, grid.getFieldSlot(), date_stamp);
   grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(), "FW Time:");
+  new StaticText(window, grid.getLabelSlot(), "FW Time");
   new StaticText(window, grid.getFieldSlot(), time_stamp);
   grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(), "Data version:");
+  new StaticText(window, grid.getLabelSlot(), "Data version");
   new StaticText(window, grid.getFieldSlot(), eeprom_stamp);
   grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(), "CPU UID:");
-  new StaticText(window, grid.getFieldSlot(), id);
+  new StaticText(window, grid.getLabelSlot(), "CPU UID");
+  new StaticText(window, grid.getFieldSlot(), reusableBuffer.version.id);
   grid.nextLine();
 
-  new TextButton(window, {LCD_W/2-125, window->height() - 50, 250, 30}, STR_FACTORYRESET, [=]() -> int8_t {
-    // TODO not implemented on X12 / X10 today!
-    // POPUP_CONFIRMATION(STR_CONFIRMRESET);
-    // showMessageBox(STR_STORAGE_FORMAT);
-    storageEraseAll(false);
-    NVIC_SystemReset();
-    return 0;
-  });
+  auto button = new TextButton(window, {LCD_W / 2 - 125, window->height() - 50, 250, 30}, STR_FACTORYRESET,
+                               [=]() -> int8_t {
+                                   new Dialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, "", [=]() {
+                                       storageEraseAll(false);
+                                       NVIC_SystemReset();
+                                       return 0;
+                                   });
+                               });
+
+  button->setFocus();
+  window->setFirst(button);
 }

@@ -20,7 +20,7 @@ set(LIBOPENUI_SRC
   filechoice.cpp
   # slider.cpp
   menu.cpp
-  # dialog.cpp
+  dialog.cpp
   # curve.cpp
   # curveedit.cpp
   # coloredit.cpp

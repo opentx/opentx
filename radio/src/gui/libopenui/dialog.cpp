@@ -37,12 +37,12 @@ Dialog::Dialog(uint8_t type, std::string title, std::string message, std::functi
   title(std::move(title)),
   message(std::move(message))
 {
-  new FabIconButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
+/*  new FabIconButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
                     [=]() -> uint8_t {
                       if (onConfirm)
                         onConfirm();
                       return 0;
-                    });
+                    }); */
   bringToTop();
 }
 
@@ -55,12 +55,12 @@ void Dialog::paint(BitmapBuffer * dc)
 {
   theme->drawBackground();
 
-  if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
+/*  if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
     dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->asterisk);
   else if (type == WARNING_TYPE_INFO)
     dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->busy);
   else
-    dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->question);
+    dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->question); */
 
   if (type == WARNING_TYPE_ALERT) {
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
@@ -86,12 +86,14 @@ void Dialog::paint(BitmapBuffer * dc)
 #endif
 }
 
+#if defined(TOUCH_HARDWARE)
 bool Dialog::onTouchEnd(coord_t x, coord_t y)
 {
   Window::onTouchEnd(x, y);
   deleteLater();
   return true;
 }
+#endif
 
 void Dialog::checkEvents()
 {
