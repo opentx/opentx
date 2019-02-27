@@ -146,7 +146,7 @@ class FailSafePage : public PageTab {
     {
     }
 
-    void build(Window * window) override
+    void build(FormWindow * window) override
     {
       new FailSafeBody(window, {0, 0, LCD_W, window->height() - footerHeight}, moduleIndex );
       new FailSafeFooter(window, {0, window->height() - footerHeight, LCD_W, footerHeight});

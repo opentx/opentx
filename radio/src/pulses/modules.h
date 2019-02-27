@@ -222,6 +222,19 @@ inline int8_t maxModuleChannels_M8(uint8_t idx)
     return maxChannelsModules_M8[g_model.moduleData[idx].type];
 }
 
+inline int8_t maxModuleChannels(uint8_t idx)
+{
+  return 8 + maxModuleChannels_M8(idx);
+}
+
+inline int8_t minModuleChannels(uint8_t idx)
+{
+  if (isModuleCrossfire(idx))
+    return 16;
+  else
+    return 1;
+}
+
 inline int8_t defaultModuleChannels_M8(uint8_t idx)
 {
   if (isModulePPM(idx))
