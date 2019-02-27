@@ -42,6 +42,8 @@ class CheckBox : public FormField {
 
     void paint(BitmapBuffer * dc) override;
 
+    void onKeyEvent(event_t event) override;
+
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
