@@ -74,8 +74,8 @@ void ModelHeliPage::build(FormWindow * window)
   // Collective weight
   new StaticText(window, grid.getLabelSlot(), STR_WEIGHT);
   auto last = new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(g_model.swashR.collectiveWeight));
-  last->setNextField(first);
-  first->setPreviousField(last);
+  FormField::link(last, first);
+
   grid.nextLine();
 
   window->setInnerHeight(grid.getWindowHeight());

@@ -180,6 +180,7 @@ class ModuleWindow : public Window {
   protected:
     uint8_t moduleIndex;
     Choice * moduleChoice = nullptr;
+    FormField * lastField = nullptr; // moduleChoice is always the firstField
     TextButton * bindButton = nullptr;
     TextButton * rangeButton = nullptr;
     Choice * failSafeChoice = nullptr;
@@ -215,7 +216,11 @@ class ModuleWindow : public Window {
     {
       GridLayout grid;
 
+      FormField * previousField = moduleChoice ? moduleChoice->getPreviousField() : moduleChoice->getCurrentField();
+      FormField * nextField = lastField ? lastField->getNextField() : nullptr;
+
       clear();
+      FormField::clearCurrentField();
 
       // Module Type
       new StaticText(this, grid.getLabelSlot(true), STR_MODE);
@@ -232,6 +237,7 @@ class ModuleWindow : public Window {
       moduleChoice->setAvailableHandler([=](int8_t moduleType) {
         return isModuleTypeAllowed(moduleIndex, moduleType);
       });
+      FormField::link(previousField, moduleChoice);
 
       // Module parameters
       if (isModuleXJT(moduleIndex)) {
@@ -377,6 +383,10 @@ class ModuleWindow : public Window {
       }
 
       getParent()->moveWindowsTop(top(), adjustHeight());
+
+      lastField = FormField::getCurrentField();
+      if (nextField)
+        FormField::link(lastField, nextField);
     }
 };
 
@@ -607,6 +617,8 @@ void ModelSetupPage::build(FormWindow * window)
     grid.nextLine();
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, EXTERNAL_MODULE));
   }
+
+  FormField::link(FormField::getCurrentField(), first);
 
   grid.nextLine();
 

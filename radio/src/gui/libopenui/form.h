@@ -48,6 +48,32 @@ class FormField: public Window {
       previous = field;
     }
 
+    inline static void clearCurrentField()
+    {
+      current = nullptr;
+    };
+
+    inline static FormField * getCurrentField()
+    {
+      return current;
+    };
+
+    inline FormField * getPreviousField()
+    {
+      return previous;
+    };
+
+    inline FormField * getNextField()
+    {
+      return next;
+    };
+
+    inline static void link(FormField * previous, FormField * next)
+    {
+      previous->setNextField(next);
+      next->setPreviousField(previous);
+    }
+
     void paint(BitmapBuffer * dc) override;
 
     void onKeyEvent(event_t event) override;

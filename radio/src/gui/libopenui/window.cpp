@@ -118,12 +118,14 @@ void Window::setFocus()
   }
 
   Window * parent = this->parent;
-  while (parent->getWindowFlags() & FORWARD_SCROLL) {
+  while (parent && parent->getWindowFlags() & FORWARD_SCROLL) {
     parent = parent->parent;
   }
 
-  parent->scrollTo(this);
-  invalidate();
+  if (parent) {
+    parent->scrollTo(this);
+    invalidate();
+  }
 }
 
 void Window::setScrollPositionX(coord_t value)

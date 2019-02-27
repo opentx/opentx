@@ -47,8 +47,8 @@ void MenuWindow::onKeyEvent(event_t event)
     select(selectedIndex == 0 ? lines.size() - 1 : selectedIndex - 1);
   }
   else if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-    lines[selectedIndex].onPress();
     Window::onKeyEvent(event); // the window above will be closed on event
+    lines[selectedIndex].onPress();
   }
   else {
     Window::onKeyEvent(event);
