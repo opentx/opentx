@@ -27,10 +27,14 @@ const uint8_t LBM_FOLDER[] = {
 #include "mask_folder.lbm"
 };
 
-extern bool compare_nocase (const std::string& first, const std::string& second);
+// comparison, not case sensitive.
+bool compare_nocase(const std::string &first, const std::string &second)
+{
+  return strcasecmp(first.c_str(), second.c_str()) < 0;
+}
 
 FileChoice::FileChoice(Window * parent, const rect_t & rect, std::string folder, const char * extension, int maxlen, std::function<std::string()> getValue, std::function<void(std::string)> setValue):
-  Window(parent, rect),
+  FormField(parent, rect),
   folder(std::move(folder)),
   extension(extension),
   maxlen(maxlen),
@@ -41,20 +45,21 @@ FileChoice::FileChoice(Window * parent, const rect_t & rect, std::string folder,
 
 void FileChoice::paint(BitmapBuffer * dc)
 {
-  bool hasFocus = this->hasFocus();
-  LcdFlags textColor = 0;
-  LcdFlags lineColor = CURVE_AXIS_COLOR;
-  if (hasFocus) {
+  FormField::paint(dc);
+
+  LcdFlags textColor;
+  if (editMode)
+    textColor = TEXT_INVERTED_COLOR;
+  else if (hasFocus())
     textColor = TEXT_INVERTED_BGCOLOR;
-    lineColor = TEXT_INVERTED_BGCOLOR;
-  }
-  dc->drawText(3, 2, getValue().c_str(), textColor);
-  drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
-  dc->drawBitmapPattern(rect.w - 20, (rect.h - 11) / 2, LBM_FOLDER, lineColor);
+  else
+    textColor = 0;
+
+  dc->drawText(3, 0, getValue().c_str(), textColor);
+  dc->drawBitmapPattern(rect.w - 20, (rect.h - 11) / 2, LBM_FOLDER, textColor);
 }
 
-#if defined(TOUCH_HARDWARE)
-bool FileChoice::onTouchEnd(coord_t, coord_t)
+void FileChoice::openMenu()
 {
   FILINFO fno;
   DIR dir;
@@ -87,29 +92,60 @@ bool FileChoice::onTouchEnd(coord_t, coord_t)
       files.emplace_back(fno.fname, fnLen);
     }
 
-    // sort files
-    files.sort(compare_nocase);
+    if (files.size() > 0) {
+      // sort files
+      files.sort(compare_nocase);
 
-    auto menu = new Menu();
-    int count = 0;
-    int current = -1;
-    std::string value = getValue();
-    for (const auto &file: files) {
-      menu->addLine(file, [=]() {
-        setValue(file);
-      });
-      TRACE("%s %d %s %d", value.c_str(), value.size(), file.c_str(), file.size());
-      if (value.compare(file) == 0) {
-        TRACE("OK");
-        current = count;
+      auto menu = new Menu();
+      int count = 0;
+      int current = -1;
+      std::string value = getValue();
+      for (const auto &file: files) {
+        menu->addLine(file, [=]() {
+            setValue(file);
+        });
+        // TRACE("%s %d %s %d", value.c_str(), value.size(), file.c_str(), file.size());
+        if (value.compare(file) == 0) {
+          // TRACE("OK");
+          current = count;
+        }
+        ++count;
       }
-      ++count;
-    }
 
-    if (current >= 0) {
-      menu->select(current);
+      if (current >= 0) {
+        menu->select(current);
+      }
+
+      menu->setCloseHandler([=]() {
+          editMode = false;
+          setFocus();
+      });
+    }
+    else {
+      TRACE("NO FILES !!!!!");
+      // TODO popup "NO FILES"
     }
   }
+}
+
+void FileChoice::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    editMode = true;
+    invalidate();
+    openMenu();
+  }
+  else {
+    FormField::onKeyEvent(event);
+  }
+}
+
+#if defined(TOUCH_HARDWARE)
+bool FileChoice::onTouchEnd(coord_t, coord_t)
+{
+  openMenu();
   setFocus();
   return true;
 }

@@ -21,10 +21,10 @@
 #ifndef _FILECHOICE_H_
 #define _FILECHOICE_H_
 
-#include "window.h"
+#include "form.h"
 #include <string>
 
-class FileChoice: public Window {
+class FileChoice: public FormField {
   public:
     FileChoice(Window * parent, const rect_t & rect, std::string folder, const char * extension, int maxlen, std::function<std::string()> getValue, std::function<void(std::string)> setValue);
 
@@ -37,6 +37,8 @@ class FileChoice: public Window {
 
     void paint(BitmapBuffer * dc) override;
 
+    void onKeyEvent(event_t event) override;
+
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
@@ -47,6 +49,8 @@ class FileChoice: public Window {
     int maxlen;
     std::function<std::string()> getValue;
     std::function<void(std::string)> setValue;
+
+    void openMenu();
 };
 
 #endif // _FILECHOICE_H_
