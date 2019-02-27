@@ -394,7 +394,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       cfn.swtch = RawSwitch(fswtchSwtch[i]->currentData().toInt());
       cfn.func = func;
       cfn.enabled = fswtchEnable[i]->isChecked();
-      cfn.adjustMode = (AssignFunc)fswtchGVmode[i]->currentIndex();
     }
 
     if (!cfn.isEmpty()) {
@@ -428,6 +427,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         int gvidx = func - FuncAdjustGV1;
         if (modified)
           cfn.adjustMode = fswtchGVmode[i]->currentIndex();
+        fswtchGVmode[i]->setCurrentIndex(cfn.adjustMode);
         widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
         if (cfn.adjustMode==FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode==FUNC_ADJUST_GVAR_INCDEC) {
           if (modified)
