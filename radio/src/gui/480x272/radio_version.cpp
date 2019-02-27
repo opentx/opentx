@@ -57,7 +57,7 @@ void RadioVersionPage::build(FormWindow * window)
 
   auto button = new TextButton(window, {LCD_W / 2 - 125, window->height() - 50, 250, 30}, STR_FACTORYRESET,
                                [=]() -> int8_t {
-                                   auto dialog = new Dialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, "", [=]() {
+                                   auto dialog = new Dialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS, [=]() {
                                        storageEraseAll(false);
                                        NVIC_SystemReset();
                                        return 0;
