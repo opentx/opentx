@@ -55,12 +55,12 @@ void Dialog::paint(BitmapBuffer * dc)
 {
   theme->drawBackground();
 
-/*  if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
+  if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
     dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->asterisk);
   else if (type == WARNING_TYPE_INFO)
     dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->busy);
   else
-    dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->question); */
+    dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->question);
 
   if (type == WARNING_TYPE_ALERT) {
 #if defined(TRANSLATIONS_FR) || defined(TRANSLATIONS_IT) || defined(TRANSLATIONS_CZ)
