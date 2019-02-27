@@ -98,9 +98,14 @@ class FormWindow: public Window {
       FormField::current = nullptr;
     }
 
-    inline void setFirst(FormField * field)
+    inline void setFirstField(FormField * field)
     {
       first = field;
+    }
+
+    FormField * getFirstField()
+    {
+      return first;
     }
 
   protected:

@@ -432,7 +432,7 @@ void ModelSetupPage::build(FormWindow * window)
   // Model name
   new StaticText(window, grid.getLabelSlot(), STR_MODELNAME);
   auto first = new TextEdit(window, grid.getFieldSlot(), g_model.header.name, sizeof(g_model.header.name));
-  window->setFirst(first);
+  window->setFirstField(first);
   first->setFocus();
   grid.nextLine();
 

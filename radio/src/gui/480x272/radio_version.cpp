@@ -61,10 +61,12 @@ void RadioVersionPage::build(FormWindow * window)
                                        storageEraseAll(false);
                                        NVIC_SystemReset();
                                        return 0;
+                                   }, [=]() {
+                                     window->getFirstField()->setFocus();
                                    });
                                    dialog->setFocus();
                                });
 
   button->setFocus();
-  window->setFirst(button);
+  window->setFirstField(button);
 }

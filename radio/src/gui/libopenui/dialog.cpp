@@ -31,13 +31,14 @@
 #define ALERT_ACTION_TOP          230
 #define ALERT_BUTTON_TOP          300
 
-Dialog::Dialog(uint8_t type, std::string title, std::string message, std::function<void(void)> confirmHandler):
+Dialog::Dialog(uint8_t type, std::string title, std::string message, std::function<void(void)> confirmHandler, std::function<void(void)> cancelHandler):
   Window(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   type(type),
   title(std::move(title)),
   message(std::move(message)),
 #if !defined(TOUCH_HARDWARE)
-  confirmHandler(confirmHandler)
+  confirmHandler(confirmHandler),
+  cancelHandler(cancelHandler)
 #endif
 {
 #if defined(TOUCH_HARDWARE)
@@ -96,11 +97,14 @@ void Dialog::onKeyEvent(event_t event)
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    deleteLater();
     if (confirmHandler)
       confirmHandler();
   }
   else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
     deleteLater();
+    if (cancelHandler)
+      cancelHandler();
   }
 }
 
