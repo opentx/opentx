@@ -55,6 +55,8 @@ class TextEdit : public FormField {
 
     void paint(BitmapBuffer * dc) override;
 
+    void onKeyEvent(event_t event) override;
+
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
 
@@ -64,6 +66,7 @@ class TextEdit : public FormField {
   protected:
     char * value;
     uint8_t length;
+    uint8_t cursorPos = 0;
 };
 
 #endif // _TEXTEDIT_H_

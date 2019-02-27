@@ -25,19 +25,32 @@
 
 void TextEdit::paint(BitmapBuffer * dc)
 {
+  LcdFlags flags = ZCHAR;
+
   FormField::paint(dc);
 
-  bool hasFocus = this->hasFocus();
-  LcdFlags textColor = 0;
-  if (editMode)
-    textColor = TEXT_INVERTED_COLOR;
-  else if (hasFocus)
-    textColor = TEXT_INVERTED_BGCOLOR;
-
-  if (!hasFocus && zlen(value, length) == 0)
-    dc->drawSizedText(3, 0, "---", length, CURVE_AXIS_COLOR);
-  else
-    dc->drawSizedText(3, 0, value, length, ZCHAR | textColor);
+  if (editMode) {
+    dc->drawSizedText(3, 0, value, length, TEXT_INVERTED_COLOR | flags);
+    coord_t left = (cursorPos == 0 ? 0 : getTextWidth(value, cursorPos, flags));
+    char s[] = { (flags & ZCHAR) ? idx2char(value[cursorPos]) : value[cursorPos], '\0' };
+    dc->drawSolidFilledRect(3+left-1, 1, getTextWidth(s, 1) + 1, height() - 2, TEXT_INVERTED_COLOR);
+    dc->drawText(3+left, 0, s, TEXT_COLOR);
+  }
+  else {
+    const char * displayedValue = value;
+    LcdFlags textColor;
+    if (zlen(value, length) == 0) {
+      displayedValue = "---";
+      textColor = hasFocus() ? TEXT_INVERTED_BGCOLOR : CURVE_AXIS_COLOR;
+    }
+    else if (hasFocus()) {
+      textColor = TEXT_INVERTED_BGCOLOR | ZCHAR;
+    }
+    else {
+      textColor = TEXT_COLOR | ZCHAR;
+    }
+    dc->drawSizedText(3, 0, displayedValue, length, textColor);
+  }
 
 #if defined(TOUCH_HARDWARE)
   auto keyboard = TextKeyboard::instance();
@@ -46,6 +59,88 @@ void TextEdit::paint(BitmapBuffer * dc)
     dc->drawSolidFilledRect(cursorPos + 2, 2, 2, 21, 0); // TEXT_INVERTED_BGCOLOR);
   }
 #endif
+}
+
+void TextEdit::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  LcdFlags flags = ZCHAR;
+
+  if (editMode) {
+    int8_t c = value[cursorPos];
+    if (!(flags & ZCHAR)) {
+      c = char2idx(c);
+    }
+    int8_t v = c;
+
+    switch (event) {
+      case EVT_ROTARY_RIGHT:
+      case EVT_ROTARY_LEFT:
+        v = limit(0, abs(v) + (event == EVT_ROTARY_RIGHT ? +rotencSpeed : -rotencSpeed), ZCHAR_MAX);
+        if (c <= 0) v = -v;
+        break;
+
+      case EVT_KEY_BREAK(KEY_LEFT):
+        if (cursorPos > 0) {
+          cursorPos--;
+          invalidate();
+        }
+        break;
+
+      case EVT_KEY_BREAK(KEY_RIGHT):
+        if (cursorPos < length - 1) {
+          cursorPos++;
+          invalidate();
+        }
+        break;
+
+      case EVT_KEY_BREAK(KEY_ENTER):
+        if (cursorPos < length - 1) {
+          cursorPos++;
+          invalidate();
+        }
+        else {
+          FormField::onKeyEvent(event);
+        }
+        break;
+
+      case EVT_KEY_BREAK(KEY_EXIT):
+        FormField::onKeyEvent(event);
+        break;
+
+      case EVT_KEY_LONG(KEY_ENTER):
+        if (v == 0) {
+          killEvents(event);
+          FormField::onKeyEvent(EVT_KEY_BREAK(KEY_ENTER));
+          break;
+        }
+        // no break
+
+      case EVT_KEY_LONG(KEY_LEFT):
+      case EVT_KEY_LONG(KEY_RIGHT):
+        if (v >= -26 && v <= 26) {
+          v = -v; // toggle case
+          if (event == EVT_KEY_LONG(KEY_LEFT)) {
+            killEvents(KEY_LEFT);
+          }
+        }
+        break;
+    }
+
+    if (c != v) {
+      if (!(flags & ZCHAR)) {
+        if (v != '\0' || value[cursorPos+1] != '\0')
+          v = idx2char(v);
+      }
+      value[cursorPos] = v;
+      invalidate();
+      // TODO storageDirty(...);
+    }
+  }
+  else {
+    FormField::onKeyEvent(event);
+  }
 }
 
 #if defined(TOUCH_HARDWARE)
@@ -70,6 +165,6 @@ bool TextEdit::onTouchEnd(coord_t x, coord_t y)
 void TextEdit::onFocusLost()
 {
   TextKeyboard::instance()->disable(true);
-  storageDirty(EE_MODEL);
+  storageDirty(...);
 }
 #endif
