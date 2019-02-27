@@ -16,7 +16,7 @@ set(GUI_SRC
   menu_radio.cpp
 #  radio_setup.cpp
 #  radio_trainer.cpp
-#  radio_version.cpp
+  radio_version.cpp
 #  radio_calibration.cpp
   view_main.cpp
 #  view_statistics.cpp
