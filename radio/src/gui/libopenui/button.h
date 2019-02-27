@@ -21,7 +21,7 @@
 #ifndef _BUTTON_H_
 #define _BUTTON_H_
 
-#include "window.h"
+#include "form.h"
 #include <string>
 
 enum ButtonFlags {
@@ -32,10 +32,10 @@ enum ButtonFlags {
   BUTTON_DISABLED = 16,
 };
 
-class Button : public Window {
+class Button : public FormField {
   public:
     Button(Window * parent, const rect_t & rect, std::function<uint8_t(void)> onPress=nullptr, uint8_t flags=0):
-      Window(parent, rect),
+      FormField(parent, rect),
       onPress(onPress),
       flags(flags)
     {

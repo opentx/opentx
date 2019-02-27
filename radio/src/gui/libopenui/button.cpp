@@ -49,19 +49,29 @@ void Button::checkEvents()
 
 void TextButton::paint(BitmapBuffer * dc)
 {
+  FormField::paint(dc);
+
   if (checked()) {
     drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, SCROLLBOX_COLOR);
     if (flags & BUTTON_BACKGROUND)
       dc->drawSolidFilledRect(2, 2, rect.w-4, rect.h-4, CURVE_AXIS_COLOR);
   }
   else {
-    if (flags & BUTTON_BACKGROUND)
-      dc->drawSolidFilledRect(0, 0, rect.w, rect.h, CURVE_AXIS_COLOR);
-    else
+    if (flags & BUTTON_BACKGROUND) {
+      if (hasFocus()) {
+        drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, TEXT_INVERTED_BGCOLOR);
+        dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, CURVE_AXIS_COLOR);
+      }
+      else {
+        dc->drawSolidFilledRect(0, 0, rect.w, rect.h, CURVE_AXIS_COLOR);
+      }
+    }
+    else {
       drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, CURVE_AXIS_COLOR);
+    }
   }
 
-  dc->drawText(rect.w / 2, (rect.h - getFontHeight(flags)) / 2, text.c_str(), CENTERED | (enabled() ? 0 : TEXT_DISABLE_COLOR));
+  dc->drawText(rect.w / 2, 0 /* TODO should work (rect.h - getFontHeight(flags)) / 2*/, text.c_str(), CENTERED | (enabled() ? 0 : TEXT_DISABLE_COLOR));
 }
 
 const uint8_t __alpha_button_on[] {
