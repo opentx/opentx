@@ -221,6 +221,7 @@ void telemetryWakeup()
 
   #if defined(EXTMODULE_USART)
     if (extmoduleFifo.getFrame(frame)) {
+      TRACE("EXT Frame");
       processModuleFrame(EXTERNAL_MODULE, frame);
     }
   #endif
