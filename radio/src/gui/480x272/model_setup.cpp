@@ -421,7 +421,9 @@ void ModelSetupPage::build(FormWindow * window)
 
   // Model name
   new StaticText(window, grid.getLabelSlot(), STR_MODELNAME);
-  new TextEdit(window, grid.getFieldSlot(), g_model.header.name, sizeof(g_model.header.name));
+  auto first = new TextEdit(window, grid.getFieldSlot(), g_model.header.name, sizeof(g_model.header.name));
+  window->setFirst(first);
+  first->setFocus();
   grid.nextLine();
 
   // Bitmap
