@@ -29,33 +29,32 @@ RadioVersionPage::RadioVersionPage():
 
 void RadioVersionPage::build(FormWindow * window)
 {
+  char id[27];
+
   GridLayout grid;
-  //grid.setLabelWidth(60);
+  grid.setLabelWidth(150);
   grid.spacer(2);
 
-  getCPUUniqueID(reusableBuffer.version.id);
+  getCPUUniqueID(id);
 
-  new StaticText(window, grid.getLabelSlot(), "FW Version :");
-  grid.nextLine(12);
-  new StaticText(window, {6, grid.getWindowHeight(), LCD_W - 6, 26}, vers_stamp);
+  new StaticText(window, grid.getLabelSlot(), "FW Version:");
+  new StaticText(window, grid.getFieldSlot(), vers_stamp);
   grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(), "Data version");
-  new StaticText(window, grid.getFieldSlot(), eeprom_stamp);
-  grid.nextLine();
-
-  new StaticText(window, grid.getLabelSlot(), "Date");
+  new StaticText(window, grid.getLabelSlot(), "FW Date:");
   new StaticText(window, grid.getFieldSlot(), date_stamp);
   grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(), "Time");
+  new StaticText(window, grid.getLabelSlot(), "FW Time:");
   new StaticText(window, grid.getFieldSlot(), time_stamp);
   grid.nextLine();
 
+  new StaticText(window, grid.getLabelSlot(), "Data version:");
+  new StaticText(window, grid.getFieldSlot(), eeprom_stamp);
+  grid.nextLine();
 
-  new StaticText(window, grid.getLabelSlot(), "CPU UID :");
-  grid.nextLine(12);
-  new StaticText(window, {6, grid.getWindowHeight(), LCD_W - 6, 26}, reusableBuffer.version.id);
+  new StaticText(window, grid.getLabelSlot(), "CPU UID:");
+  new StaticText(window, grid.getFieldSlot(), id);
   grid.nextLine();
 
   new TextButton(window, {LCD_W/2-125, window->height() - 50, 250, 30}, STR_FACTORYRESET, [=]() -> int8_t {
