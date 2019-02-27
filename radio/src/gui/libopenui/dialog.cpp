@@ -31,18 +31,23 @@
 #define ALERT_ACTION_TOP          230
 #define ALERT_BUTTON_TOP          300
 
-Dialog::Dialog(uint8_t type, std::string title, std::string message, std::function<void(void)> onConfirm):
+Dialog::Dialog(uint8_t type, std::string title, std::string message, std::function<void(void)> confirmHandler):
   Window(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   type(type),
   title(std::move(title)),
-  message(std::move(message))
+  message(std::move(message)),
+#if !defined(TOUCH_HARDWARE)
+  confirmHandler(confirmHandler)
+#endif
 {
-/*  new FabIconButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
+#if defined(TOUCH_HARDWARE)
+  new FabIconButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
                     [=]() -> uint8_t {
-                      if (onConfirm)
-                        onConfirm();
+                      if (confirmHandler)
+                        confirmHandler();
                       return 0;
-                    }); */
+                    });
+#endif
   bringToTop();
 }
 
@@ -84,6 +89,19 @@ void Dialog::paint(BitmapBuffer * dc)
    // dc->drawText(ALERT_FRAME_PADDING+5, ALERT_ACTION_TOP, action);
   }
 #endif
+}
+
+void Dialog::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    if (confirmHandler)
+      confirmHandler();
+  }
+  else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+    deleteLater();
+  }
 }
 
 #if defined(TOUCH_HARDWARE)

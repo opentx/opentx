@@ -33,7 +33,7 @@ enum DialogType {
 
 class Dialog : public Window {
   public:
-    Dialog(uint8_t type, std::string title, std::string message="", std::function<void(void)> onConfirm=nullptr);
+    Dialog(uint8_t type, std::string title, std::string message="", std::function<void(void)> confirmHandler=nullptr);
 
     ~Dialog() override;
 
@@ -45,6 +45,8 @@ class Dialog : public Window {
 #endif
 
     void paint(BitmapBuffer * dc) override;
+
+    void onKeyEvent(event_t event) override;
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
@@ -67,6 +69,7 @@ class Dialog : public Window {
     std::string message;
     bool running = false;
     std::function<bool(void)> closeCondition;
+    std::function<void(void)> confirmHandler;
 };
 
 #endif // _CONFIRMATION_H_
