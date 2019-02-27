@@ -158,7 +158,7 @@ class FailSafePage : public PageTab {
 };
 
 FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
-  TabsGroup()
+  TabsGroup(ICON_MODEL)
 {
   addTab(new FailSafePage(moduleIndex));
 }
