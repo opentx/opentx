@@ -54,8 +54,9 @@ void RadioVersionPage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), "CPU UID");
   new StaticText(window, grid.getFieldSlot(), reusableBuffer.version.id);
   grid.nextLine();
+  grid.nextLine();
 
-  auto button = new TextButton(window, {LCD_W / 2 - 125, window->height() - 50, 250, 30}, STR_FACTORYRESET,
+  auto button = new TextButton(window, grid.getLineSlot(250), STR_FACTORYRESET,
                                [=]() -> int8_t {
                                    auto dialog = new Dialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS, [=]() {
                                        storageEraseAll(false);

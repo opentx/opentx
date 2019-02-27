@@ -48,9 +48,9 @@ class GridLayout {
       lineMarginRight = value;
     }
 
-    rect_t getLineSlot()
+    rect_t getLineSlot(coord_t width = LCD_W ) const
     {
-      return { lineMarginLeft, currentY, LCD_W - lineMarginRight - lineMarginLeft, lineHeight };
+      return { lineMarginLeft + (LCD_W - width)/2, currentY, min(width, LCD_W - lineMarginRight - lineMarginLeft), lineHeight };
     }
 
     rect_t getLabelSlot(bool indent = false) const
