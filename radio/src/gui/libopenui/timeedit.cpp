@@ -19,7 +19,7 @@
  */
 
 #include "timeedit.h"
-#include "keyboard_number.h"
+// #include "keyboard_number.h"
 #include "draw_functions.h"
 #include "strhelpers.h"
 
@@ -43,6 +43,7 @@ void TimeEdit::paint(BitmapBuffer * dc)
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
 }
 
+#if defined(TOUCH_HARDWARE)
 bool TimeEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
@@ -56,8 +57,11 @@ bool TimeEdit::onTouchEnd(coord_t x, coord_t y)
 
   return true;
 }
+#endif
 
 void TimeEdit::onFocusLost()
 {
+#if defined(TOUCH_HARDWARE)
   NumberKeyboard::instance()->disable(true);
+#endif
 }

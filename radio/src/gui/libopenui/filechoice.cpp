@@ -53,6 +53,7 @@ void FileChoice::paint(BitmapBuffer * dc)
   dc->drawBitmapPattern(rect.w - 20, (rect.h - 11) / 2, LBM_FOLDER, lineColor);
 }
 
+#if defined(TOUCH_HARDWARE)
 bool FileChoice::onTouchEnd(coord_t, coord_t)
 {
   FILINFO fno;
@@ -112,3 +113,4 @@ bool FileChoice::onTouchEnd(coord_t, coord_t)
   setFocus();
   return true;
 }
+#endif

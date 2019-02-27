@@ -9,15 +9,15 @@ set(LIBOPENUI_SRC
   # keyboard_curve.cpp
   checkbox.cpp
   form.cpp
-  # textedit.cpp
+  textedit.cpp
   numberedit.cpp
-  # timeedit.cpp
+  timeedit.cpp
   choice.cpp
   tabsgroup.cpp
   # page.cpp
   sourcechoice.cpp
-  # switchchoice.cpp
-  # filechoice.cpp
+  switchchoice.cpp
+  filechoice.cpp
   # slider.cpp
   menu.cpp
   # dialog.cpp

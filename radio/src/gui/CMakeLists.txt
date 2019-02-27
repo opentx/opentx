@@ -13,7 +13,7 @@ set(GUI_SRC
 #  model_logical_switches.cpp
 #  special_functions.cpp
 #  model_telemetry.cpp
-#  menu_radio.cpp
+  menu_radio.cpp
 #  radio_setup.cpp
 #  radio_trainer.cpp
 #  radio_version.cpp

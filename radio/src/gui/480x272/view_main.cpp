@@ -20,7 +20,7 @@
 
 #include "view_main.h"
 #include "menu_model.h"
-// #include "menu_radio.h"
+#include "menu_radio.h"
 // #include "menu_screens.h"
 // #include "model_select.h"
 // #include "view_channels.h"
@@ -139,6 +139,11 @@ void ViewMain::onKeyEvent(event_t event)
     case EVT_KEY_LONG(KEY_MODEL):
       killEvents(event);
       new ModelMenu();
+      break;
+
+    case EVT_KEY_LONG(KEY_RADIO):
+      killEvents(event);
+      new RadioMenu();
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):

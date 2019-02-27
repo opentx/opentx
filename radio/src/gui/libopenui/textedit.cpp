@@ -19,7 +19,7 @@
  */
 
 #include "textedit.h"
-#include "keyboard_text.h"
+// #include "keyboard_text.h"
 #include "draw_functions.h"
 #include "opentx.h"
 
@@ -38,13 +38,16 @@ void TextEdit::paint(BitmapBuffer * dc)
     dc->drawSizedText(3, 2, value, length, ZCHAR | textColor);
   drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, lineColor);
 
+#if defined(TOUCH_HARDWARE)
   auto keyboard = TextKeyboard::instance();
   if (hasFocus && keyboard->getField() == this) {
     coord_t cursorPos = keyboard->getCursorPos();
     dc->drawSolidFilledRect(cursorPos + 2, 2, 2, 21, 0); // TEXT_INVERTED_BGCOLOR);
   }
+#endif
 }
 
+#if defined(TOUCH_HARDWARE)
 bool TextEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
@@ -60,10 +63,13 @@ bool TextEdit::onTouchEnd(coord_t x, coord_t y)
 
   return true;
 }
+#endif
 
 void TextEdit::onFocusLost()
 {
+#if defined(TOUCH_HARDWARE)
   TextKeyboard::instance()->disable(true);
+#endif
   storageDirty(EE_MODEL);
 }
 

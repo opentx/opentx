@@ -77,6 +77,7 @@ void SwitchChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
   }
 }
 
+#if defined(TOUCH_HARDWARE)
 bool SwitchChoice::onTouchEnd(coord_t, coord_t)
 {
   auto menu = new Menu();
@@ -87,3 +88,4 @@ bool SwitchChoice::onTouchEnd(coord_t, coord_t)
   setFocus();
   return true;
 }
+#endif
