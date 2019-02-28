@@ -41,7 +41,7 @@ class MainWindow: public Window {
     }
 #endif
 
-    void checkEvents() override;
+    void checkEvents(bool trash=true);
 
     void invalidate()
     {
@@ -52,7 +52,7 @@ class MainWindow: public Window {
 
     bool refresh();
 
-    void run();
+    void run(bool trash=true);
 
   protected:
     void emptyTrash();

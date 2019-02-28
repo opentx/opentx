@@ -437,7 +437,7 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
       }
       if (!CFN_EMPTY(cfn) && CFN_EMPTY(&functions[MAX_SPECIAL_FUNCTIONS - 1])) {
         menu->addLine(STR_INSERT, [=]() {
-          memmove(cfn + 1, cfn, (MAX_SPECIAL_FUNCTIONS - menuVerticalPosition - 1) * sizeof(CustomFunctionData));
+          memmove(cfn + 1, cfn, (MAX_SPECIAL_FUNCTIONS - i - 1) * sizeof(CustomFunctionData));
           memset(cfn, 0, sizeof(CustomFunctionData));
           SET_DIRTY();
           rebuild(window, i);

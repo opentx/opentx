@@ -14,7 +14,7 @@ set(LIBOPENUI_SRC
   timeedit.cpp
   choice.cpp
   tabsgroup.cpp
-  # page.cpp
+  page.cpp
   sourcechoice.cpp
   switchchoice.cpp
   filechoice.cpp

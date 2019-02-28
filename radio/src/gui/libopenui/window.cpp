@@ -41,6 +41,7 @@ Window::Window(Window * parent, const rect_t & rect, uint8_t flags):
 
 Window::~Window()
 {
+  TRACE_WINDOWS("Destroy %p %s", this, getWindowDebugString().c_str());
   if (focusWindow == this) {
     focusWindow = nullptr;
   }
@@ -64,7 +65,7 @@ void Window::detach()
 
 void Window::deleteLater(bool detach)
 {
-  TRACE_WINDOWS("Delete %s", getWindowDebugString().c_str());
+  TRACE_WINDOWS("Delete %p %s", this, getWindowDebugString().c_str());
 
   if (focusWindow == this) {
     focusWindow = nullptr;

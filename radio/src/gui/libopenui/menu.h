@@ -56,6 +56,13 @@ class MenuWindow: public Window {
   public:
     MenuWindow(Menu * parent);
 
+#if defined(TRACE_WINDOWS_ENABLED)
+    std::string getName() override
+    {
+      return "MenuWindow";
+    }
+#endif
+
     void addLine(const std::string & text, std::function<void()> onPress)
     {
       lines.emplace_back(text, onPress);

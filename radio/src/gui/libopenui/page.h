@@ -33,7 +33,9 @@ class PageHeader: public Window {
     virtual void paint(BitmapBuffer * dc) override;
 
   protected:
+#if defined(TOUCH_HARDWARE)
     IconButton back;
+#endif
 };
 
 class Page: public Window {

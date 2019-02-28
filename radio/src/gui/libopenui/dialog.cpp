@@ -150,7 +150,7 @@ void Dialog::runForever()
     wdt_reset();
 
     RTOS_WAIT_MS(20);
-    mainWindow.run();
+    mainWindow.run(false);
   }
 
   Window::deleteLater();

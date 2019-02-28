@@ -25,13 +25,19 @@
 #include "keyboard_curve.h"
 #include "opentx.h" // TODO for constants
 
+// TODO duplicated
+#define TOPBAR_BUTTON_WIDTH            47 // 60
+
+
 PageHeader::PageHeader(Page * parent, const rect_t & rect):
-  Window(parent, rect, OPAQUE),
-  back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_BACK,
+  Window(parent, rect, OPAQUE)
+#if defined(TOUCH_HARDWARE)
+  , back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_BACK,
        [=]() -> uint8_t {
          parent->deleteLater();
          return 0;
        }, BUTTON_NOFOCUS)
+#endif
 {
 }
 
@@ -50,9 +56,11 @@ Page::Page():
 Page::~Page()
 {
   clearFocus();
+#if defined(TOUCH_HARDWARE)
   TextKeyboard::instance()->disable(false);
   NumberKeyboard::instance()->disable(false);
   CurveKeyboard::instance()->disable(false);
+#endif
 }
 
 void Page::paint(BitmapBuffer * dc)
@@ -60,6 +68,7 @@ void Page::paint(BitmapBuffer * dc)
   dc->clear(TEXT_BGCOLOR);
 }
 
+#if defined(TOUCH_HARDWARE)
 bool Page::onTouchEnd(coord_t x, coord_t y)
 {
   if (Window::onTouchEnd(x, y))
@@ -70,3 +79,4 @@ bool Page::onTouchEnd(coord_t x, coord_t y)
   CurveKeyboard::instance()->disable(true);
   return true;
 }
+#endif

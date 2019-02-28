@@ -450,8 +450,8 @@ void RadioSetupPage::build(FormWindow * window)
                       [=](uint8_t newValue) {
                         pausePulses();
                         g_eeGeneral.stickMode = newValue;
-                        #warning "checkTHR()"
-                        // checkTHR();
+                        #warning SET_DIRTY();
+                        checkTHR();
                         resumePulses();
                       });
   choice->setTextHandler([](uint8_t value) {

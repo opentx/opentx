@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if defined(LIBOPENUI)
-// #include "libwindows.h"
+#include "libopenui.h"
 // #include "shutdown_animation.h"
 // #include "radio_calibration.h"
 #include "view_main.h"
@@ -949,7 +949,7 @@ bool isThrottleWarningAlertNeeded()
   return calibratedAnalogs[thrchn] > THRCHK_DEADBAND - 1024;
 }
 
-#if defined(PCBNV14)
+#if defined(LIBOPENUI)
 void checkTHR()
 {
   if (isThrottleWarningAlertNeeded()) {
