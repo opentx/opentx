@@ -18,7 +18,7 @@ set(LIBOPENUI_SRC
   sourcechoice.cpp
   switchchoice.cpp
   filechoice.cpp
-  # slider.cpp
+  slider.cpp
   menu.cpp
   dialog.cpp
   # curve.cpp

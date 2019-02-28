@@ -20,6 +20,7 @@
 
 #include "slider.h"
 #include "bitmaps.h"
+#include "opentx.h" // TODO remove this
 
 void Slider::paint(BitmapBuffer * dc)
 {
@@ -42,6 +43,7 @@ int Slider::value(coord_t x) const
   return vmin + ((vmax - vmin) * x + (rect.w / 2)) / rect.w;
 }
 
+#if defined(TOUCH_HARDWARE)
 bool Slider::onTouchStart(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
@@ -69,3 +71,4 @@ bool Slider::onTouchSlide(coord_t x, coord_t y, coord_t startX, coord_t startY, 
   }
   return true;
 }
+#endif
