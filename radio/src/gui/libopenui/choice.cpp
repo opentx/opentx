@@ -53,7 +53,7 @@ void Choice::paint(BitmapBuffer * dc)
     textColor = 0;
 
   if (textHandler)
-    dc->drawText(3, 0, textHandler(getValue()).c_str());
+    dc->drawText(3, 0, textHandler(getValue()).c_str(), textColor);
   else
     drawTextAtIndex(dc, 3, 0, values, getValue() - vmin, flags | textColor);
 
