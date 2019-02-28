@@ -34,11 +34,6 @@ void loadCustomScreens()
 {
 }
 
-const LanguagePack * const languagePacks[] = {
-  // alphabetical order
-  NULL
-};
-
 void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound)
 {
 }
