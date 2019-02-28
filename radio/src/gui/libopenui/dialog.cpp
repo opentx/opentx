@@ -38,7 +38,8 @@ Dialog::Dialog(uint8_t type, std::string title, std::string message, std::functi
   message(std::move(message)),
 #if !defined(TOUCH_HARDWARE)
   confirmHandler(confirmHandler),
-  cancelHandler(cancelHandler)
+  cancelHandler(cancelHandler),
+  previousFocus(focusWindow)
 #endif
 {
 #if defined(TOUCH_HARDWARE)
@@ -50,6 +51,7 @@ Dialog::Dialog(uint8_t type, std::string title, std::string message, std::functi
                     });
 #endif
   bringToTop();
+  setFocus();
 }
 
 Dialog::~Dialog()
@@ -120,16 +122,24 @@ bool Dialog::onTouchEnd(coord_t x, coord_t y)
 void Dialog::checkEvents()
 {
   Window::checkEvents();
-  if (closeCondition && closeCondition())
+  if (closeCondition && closeCondition()) {
     deleteLater();
+    if (cancelHandler)
+      cancelHandler();
+  }
 }
 
 void Dialog::deleteLater()
 {
-  if (running)
+  if (previousFocus) {
+    previousFocus->setFocus();
+  }
+  if (running) {
     running = false;
-  else
+  }
+  else {
     Window::deleteLater();
+  }
 }
 
 void Dialog::runForever()

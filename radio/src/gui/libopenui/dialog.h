@@ -71,6 +71,7 @@ class Dialog : public Window {
     std::function<bool(void)> closeCondition;
     std::function<void(void)> confirmHandler;
     std::function<void(void)> cancelHandler;
+    Window * previousFocus;
 };
 
 #endif // _CONFIRMATION_H_

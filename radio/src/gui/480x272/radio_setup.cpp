@@ -450,7 +450,7 @@ void RadioSetupPage::build(FormWindow * window)
                       [=](uint8_t newValue) {
                         pausePulses();
                         g_eeGeneral.stickMode = newValue;
-                        #warning SET_DIRTY();
+                        SET_DIRTY();
                         checkTHR();
                         resumePulses();
                       });

@@ -58,14 +58,11 @@ void RadioVersionPage::build(FormWindow * window)
 
   auto button = new TextButton(window, grid.getCenteredSlot(250), STR_FACTORYRESET,
                                [=]() -> int8_t {
-                                   auto dialog = new Dialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS, [=]() {
+                                   new Dialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS, [=]() {
                                        storageEraseAll(false);
                                        NVIC_SystemReset();
                                        return 0;
-                                   }, [=]() {
-                                     window->getFirstField()->setFocus();
                                    });
-                                   dialog->setFocus();
                                    return 0;
                                });
 
