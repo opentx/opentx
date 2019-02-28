@@ -167,7 +167,7 @@ RadioSetupPage::RadioSetupPage():
 {
 }
 
-void RadioSetupPage::build(Window * window)
+void RadioSetupPage::build(FormWindow * window)
 {
   GridLayout grid;
   grid.spacer(8);
