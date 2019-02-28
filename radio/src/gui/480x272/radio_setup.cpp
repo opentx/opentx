@@ -522,5 +522,6 @@ void RadioSetupPage::build(FormWindow * window)
   grid.nextLine();
   grid.nextLine();
 
+  FormField::link(FormField::getCurrentField(), timeWindow->getFirstField());
   window->setInnerHeight(grid.getWindowHeight());
 }
