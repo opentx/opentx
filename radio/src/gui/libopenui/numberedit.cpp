@@ -61,11 +61,11 @@ void NumberEdit::onKeyEvent(event_t event)
 
   if (editMode) {
     if (event == EVT_ROTARY_RIGHT) {
-      setValue(getValue() + rotencSpeed);
+      setValue(getValue() + (rotencSpeed * step));
       return;
     }
     else if (event == EVT_ROTARY_LEFT) {
-      setValue(getValue() - rotencSpeed);
+      setValue(getValue() - (rotencSpeed * step));
       return;
     }
   }
