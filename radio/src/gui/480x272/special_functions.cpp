@@ -263,6 +263,7 @@ class SpecialFunctionButton : public Button {
 
     void checkEvents() override
     {
+      Button::checkEvents();
       if (active != isActive()) {
         invalidate();
         active = !active;
@@ -400,7 +401,7 @@ void SpecialFunctionsPage::editSpecialFunction(FormWindow * window, uint8_t inde
 void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
 {
   GridLayout grid;
-  grid.spacer(8);
+  grid.spacer(2);
   grid.setLabelWidth(66);
 
   Window::clearFocus();
@@ -415,11 +416,12 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
     CustomFunctionData * cfn = &functions[i];
 
     strAppendUnsigned(&s[2], i);
-    auto textButton = new TextButton(window, grid.getLabelSlot(), s);
-    if (i == 0)
-      first = textButton;
+    new TextButton(window, grid.getLabelSlot(), s);
 
     Button * button = new SpecialFunctionButton(window, grid.getFieldSlot(), functions, i);
+    if (i == 0)
+      first = button;
+
     if (focusIndex == i)
       button->setFocus();
     button->setPressHandler([=]() -> uint8_t {
