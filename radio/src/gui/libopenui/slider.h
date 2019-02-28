@@ -30,7 +30,7 @@ class Slider : public FormField {
       vmin(vmin),
       vmax(vmax),
       getValue(std::move(getValue)),
-      setValue(std::move(setValue))
+      _setValue(std::move(setValue))
     {
     }
 
@@ -41,7 +41,15 @@ class Slider : public FormField {
     }
 #endif
 
+    void setValue(int32_t value)
+    {
+      _setValue(limit(vmin, value, vmax));
+      invalidate();
+    }
+
     void paint(BitmapBuffer * dc) override;
+
+    void onKeyEvent(event_t event) override;
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchStart(coord_t x, coord_t y) override;
@@ -57,7 +65,7 @@ class Slider : public FormField {
     int32_t vmax;
     bool sliding = false;
     std::function<int32_t()> getValue;
-    std::function<void(int32_t)> setValue;
+    std::function<void(int32_t)> _setValue;
 };
 
 #endif

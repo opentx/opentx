@@ -30,7 +30,7 @@ class BaseNumberEdit : public FormField {
       FormField(parent, rect),
       vmin(vmin),
       vmax(vmax),
-      _getValue(std::move(getValue)),
+      getValue(std::move(getValue)),
       _setValue(std::move(setValue)),
       flags(flags)
     {
@@ -82,11 +82,6 @@ class BaseNumberEdit : public FormField {
       invalidate();
     }
 
-    int32_t getValue() const
-    {
-      return _getValue();
-    }
-
     void setSetValueHandler(std::function<void(int32_t)> handler)
     {
       _setValue = handler;
@@ -97,7 +92,7 @@ class BaseNumberEdit : public FormField {
     int32_t vmin;
     int32_t vmax;
     int32_t step = 1;
-    std::function<int32_t()> _getValue;
+    std::function<int32_t()> getValue;
     std::function<void(int32_t)> _setValue;
     LcdFlags flags;
 };

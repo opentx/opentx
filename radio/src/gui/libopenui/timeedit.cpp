@@ -40,7 +40,7 @@ void TimeEdit::paint(BitmapBuffer * dc)
   else
     textColor = TEXT_COLOR;
 
-  dc->drawText(3, 0, getTimerString(_getValue(), (flags & TIMEHOUR) != 0), textColor);
+  dc->drawText(3, 0, getTimerString(getValue(), (flags & TIMEHOUR) != 0), textColor);
 }
 
 #if defined(TOUCH_HARDWARE)

@@ -27,20 +27,46 @@ void Slider::paint(BitmapBuffer * dc)
   int val = limit(vmin, getValue(), vmax);
   int w = divRoundClosest((rect.w - 16) * (val - vmin), vmax - vmin);
 
-  dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
-  dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, LINE_COLOR);
-  dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
+  if (editMode) {
+    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, TEXT_INVERTED_BGCOLOR);
+    dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, TEXT_INVERTED_BGCOLOR);
+    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, TEXT_INVERTED_BGCOLOR);
+  }
+  else {
+    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
+    dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, LINE_COLOR);
+    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
+  }
 
   dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_OUT, TEXT_COLOR);
   dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_MID, TEXT_BGCOLOR);
   // if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
-  if (hasFocus())
+  if (hasFocus()) {
     dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_IN, TEXT_INVERTED_BGCOLOR);
+  }
 }
 
 int Slider::value(coord_t x) const
 {
   return vmin + ((vmax - vmin) * x + (rect.w / 2)) / rect.w;
+}
+
+void Slider::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (editMode) {
+    if (event == EVT_ROTARY_RIGHT) {
+      setValue(getValue() + rotencSpeed);
+      return;
+    }
+    else if (event == EVT_ROTARY_LEFT) {
+      setValue(getValue() - rotencSpeed);
+      return;
+    }
+  }
+
+  FormField::onKeyEvent(event);
 }
 
 #if defined(TOUCH_HARDWARE)

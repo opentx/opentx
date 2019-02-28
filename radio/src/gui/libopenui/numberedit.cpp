@@ -46,7 +46,7 @@ void NumberEdit::paint(BitmapBuffer * dc)
   else
     textColor = CURVE_AXIS_COLOR;
 
-  int32_t value = _getValue();
+  int32_t value = getValue();
   if (displayFunction)
     displayFunction(dc, textColor, value);
   else if (value == 0 && !zeroText.empty())

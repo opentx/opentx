@@ -357,6 +357,7 @@ void RadioSetupPage::build(FormWindow * window)
   }
 #endif
 
+  // Alarms
   {
     new Subtitle(window, grid.getLabelSlot(), STR_ALARMS_LABEL);
     grid.nextLine();
@@ -384,6 +385,7 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
   }
 
+  // Backlight
   {
     new Subtitle(window, grid.getLabelSlot(), STR_BACKLIGHT_LABEL);
     grid.nextLine();
@@ -424,6 +426,7 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
   }
 
+  // GPS
   {
     new Subtitle(window, grid.getLabelSlot(), STR_GPS);
     grid.nextLine();
@@ -513,7 +516,7 @@ void RadioSetupPage::build(FormWindow * window)
                       [=](uint8_t newValue) {
                         pausePulses();
                         g_eeGeneral.stickMode = newValue;
-                        #warning "checkTHR"
+                        #warning "checkTHR()"
                         // checkTHR();
                         resumePulses();
                       });
