@@ -416,7 +416,7 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
     CustomFunctionData * cfn = &functions[i];
 
     strAppendUnsigned(&s[2], i);
-    new TextButton(window, grid.getLabelSlot(), s);
+    new StaticText(window, grid.getLabelSlot(), s, BUTTON_BACKGROUND | CENTERED);
 
     Button * button = new SpecialFunctionButton(window, grid.getFieldSlot(), functions, i);
     if (i == 0)
