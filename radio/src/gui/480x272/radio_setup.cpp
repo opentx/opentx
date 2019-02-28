@@ -47,8 +47,13 @@ class DateTimeWindow : public Window {
       }
     }
 
+    FormField * getFirstField() {
+      return firstField;
+    }
+
   protected:
     tmr10ms_t lastRefresh = 0;
+    FormField * firstField = nullptr;
 
     void build()
     {
@@ -56,7 +61,7 @@ class DateTimeWindow : public Window {
 
       // Date
       new StaticText(this, grid.getLabelSlot(), STR_DATE);
-      new NumberEdit(this, grid.getFieldSlot(3, 0), 2018, 2100,
+      firstField = new NumberEdit(this, grid.getFieldSlot(3, 0), 2018, 2100,
                      [=]() -> int32_t {
                        struct gtm t;
                        gettime(&t);
@@ -173,9 +178,9 @@ void RadioSetupPage::build(FormWindow * window)
   grid.spacer(8);
 
   // Date and Time
-  {
-    grid.addWindow(new DateTimeWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}));
-  }
+  auto timeWindow = new DateTimeWindow(window, {0, grid.getWindowHeight(), LCD_W, 0});
+  grid.addWindow(timeWindow);
+  window->setFirstField(timeWindow->getFirstField());
 
   // Batt meter range - Range 3.0v to 16v
   new StaticText(window, grid.getLabelSlot(), STR_BATTERY_RANGE);
