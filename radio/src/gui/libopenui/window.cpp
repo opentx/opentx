@@ -240,12 +240,9 @@ void Window::paintChildren(BitmapBuffer * dc)
 
 void Window::checkEvents()
 {
-  for (auto child: children) {
+  auto copy = children;
+  for (auto child: copy) {
     child->checkEvents();
-    if (child->getParent() != this) {
-      // the child asked to be deleted, we can't continue, next children will be checked on next round
-      break;
-    }
   }
   
   if (this == focusWindow) {
