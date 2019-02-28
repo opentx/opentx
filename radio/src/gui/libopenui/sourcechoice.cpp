@@ -73,7 +73,11 @@ void SourceChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
 {
   auto value = getValue();
   int count = 0;
+#if defined(TOUCH_HARDWARE)
   int current = -1;
+#else
+  int current = 0;
+#endif
 
   menu->removeLines();
 

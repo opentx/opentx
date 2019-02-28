@@ -61,9 +61,11 @@ class MenuToolbarButton: public Button {
     }
 #endif
 
-    void check(bool checked=true) {
+    void check(bool checked=true)
+    {
       Button::check(checked);
       onPress();
+      Button::check(checked);
     }
 
   protected:
@@ -128,7 +130,8 @@ class MenuToolbar: public Window {
           auto button = static_cast<MenuToolbarButton *>(*current);
           button->check(true);
           scrollTo(button);
-        } else {
+        }
+        else {
           setScrollPositionY(0);
         }
       }
