@@ -41,6 +41,8 @@ class DateTimeWindow : public Window {
 
     void checkEvents() override
     {
+      Window::checkEvents();
+
       if (get_tmr10ms() - lastRefresh > 100) {
         invalidate();
         lastRefresh = get_tmr10ms();
@@ -73,6 +75,7 @@ class DateTimeWindow : public Window {
                        t.tm_year = newValue - TM_YEAR_BASE;
                        SET_LOAD_DATETIME(&t);
                      });
+      firstField->setFocus();
       auto month = new NumberEdit(this, grid.getFieldSlot(3, 1), 1, 12,
                                   [=]() -> int32_t {
                                     struct gtm t;
