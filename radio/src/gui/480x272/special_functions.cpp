@@ -404,15 +404,21 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
   grid.setLabelWidth(66);
 
   Window::clearFocus();
+
   char s[5] = "SF";
   if (functions == g_eeGeneral.customFn)
     s[0] = 'G';
+
+  FormField * first = nullptr;
 
   for (uint8_t i = 0; i < MAX_SPECIAL_FUNCTIONS; i++) {
     CustomFunctionData * cfn = &functions[i];
 
     strAppendUnsigned(&s[2], i);
-    new TextButton(window, grid.getLabelSlot(), s);
+    auto textButton = new TextButton(window, grid.getLabelSlot(), s);
+    if (i == 0)
+      first = textButton;
+
     Button * button = new SpecialFunctionButton(window, grid.getFieldSlot(), functions, i);
     if (focusIndex == i)
       button->setFocus();
@@ -465,6 +471,8 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
 
     grid.spacer(button->height() + 5);
   }
+
+  FormField::link(FormField::getCurrentField(), first);
 
   grid.nextLine();
 
