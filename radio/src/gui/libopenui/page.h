@@ -71,7 +71,7 @@ class Page: public Window {
 
   protected:
     PageHeader header;
-    Window body;
+    FormWindow body;
     static constexpr coord_t headerHeight = 60;
 };
 

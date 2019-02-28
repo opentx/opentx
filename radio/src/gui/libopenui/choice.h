@@ -26,7 +26,7 @@
 
 class Choice : public FormField {
   public:
-    Choice(Window * parent, const rect_t & rect, const char * values, int16_t vmin, int16_t vmax, std::function<int16_t()> getValue, std::function<void(int16_t)> setValue, LcdFlags flags = 0);
+    Choice(Window * parent, const rect_t & rect, const char * values, int16_t vmin, int16_t vmax, std::function<int16_t()> getValue, std::function<void(int16_t)> setValue = nullptr, LcdFlags flags = 0);
 
 #if defined(TRACE_WINDOWS_ENABLED)
     std::string getName() override
@@ -42,6 +42,11 @@ class Choice : public FormField {
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
+
+    void setSetValueHandler(std::function<void(int16_t)> handler)
+    {
+      setValue = std::move(handler);
+    }
 
     void setAvailableHandler(std::function<bool(int)> handler)
     {

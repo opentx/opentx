@@ -32,13 +32,13 @@ class SpecialFunctionEditWindow : public Page {
       index(index)
     {
       buildBody(&body);
-      buildHeader((FormWindow *) &header);
+      buildHeader(&header);
     }
 
   protected:
     CustomFunctionData * functions;
     uint8_t index;
-    FormWindow * specialFunctionOneWindow = nullptr;
+    Window * specialFunctionOneWindow = nullptr;
     StaticText * headerSF = nullptr;
     bool active = false;
 
@@ -48,6 +48,8 @@ class SpecialFunctionEditWindow : public Page {
 
     void checkEvents() override
     {
+      Page::checkEvents();
+
       if (active != isActive()) {
         invalidate();
         headerSF->setFlags(isActive() ? BOLD|WARNING_COLOR : MENU_TITLE_COLOR);
@@ -55,13 +57,13 @@ class SpecialFunctionEditWindow : public Page {
       }
     }
 
-    void buildHeader(FormWindow * window)
+    void buildHeader(Window * window)
     {
       new StaticText(window, {70, 4, 200, 20}, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, MENU_TITLE_COLOR);
       headerSF = new StaticText(window, {70, 28, 100, 20}, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), MENU_TITLE_COLOR);
     }
 
-    void updateSpecialFunctionOneWindow()
+    void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
     {
       // SF.one variable part
       GridLayout grid;
@@ -69,6 +71,8 @@ class SpecialFunctionEditWindow : public Page {
 
       CustomFunctionData * cfn = &functions[index];
       uint8_t func = CFN_FUNC(cfn);
+
+      FormField::setCurrentField(previousField);
 
       // Func param
       switch (func) {
@@ -196,9 +200,11 @@ class SpecialFunctionEditWindow : public Page {
             drawNumber(dc, 2, 2, value * CFN_PLAY_REPEAT_MUL, flags, 0, nullptr, "s");
         });
       }
+
+      FormField::link(FormField::getCurrentField(), nextField);
     }
 
-    void buildBody(Window * window)
+    void buildBody(FormWindow * window)
     {
       // SF.one
       GridLayout grid;
@@ -208,29 +214,32 @@ class SpecialFunctionEditWindow : public Page {
 
       // Switch
       new StaticText(window, grid.getLabelSlot(), STR_SWITCH);
-      auto swicthchoice = new SwitchChoice(window, grid.getFieldSlot(), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(CFN_SWITCH(cfn)));
-      swicthchoice->setAvailableHandler([=](int value) {
-        return (functions == g_model.customFn ? isSwitchAvailable(value, ModelCustomFunctionsContext) : isSwitchAvailable(value,
-                                                                                                                          GeneralCustomFunctionsContext));
+      auto switchChoice = new SwitchChoice(window, grid.getFieldSlot(), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(CFN_SWITCH(cfn)));
+      switchChoice->setAvailableHandler([=](int value) {
+          return (functions == g_model.customFn ? isSwitchAvailable(value, ModelCustomFunctionsContext)
+                                                : isSwitchAvailable(value,
+                                                                    GeneralCustomFunctionsContext));
       });
+      window->setFirstField(switchChoice);
+      switchChoice->setFocus();
       grid.nextLine();
 
       // Function
       new StaticText(window, grid.getLabelSlot(), STR_FUNC);
-      auto choice = new Choice(window, grid.getFieldSlot(), STR_VFSWFUNC, 0, FUNC_MAX - 1, GET_DEFAULT(CFN_FUNC(cfn)),
-                               [=](int32_t newValue) {
-                                 CFN_FUNC(cfn) = newValue;
-                                 CFN_RESET(cfn);
-                                 SET_DIRTY();
-                                 updateSpecialFunctionOneWindow();
-                               });
-      choice->setAvailableHandler([=](int value) {
+      Choice * functionChoice = new Choice(window, grid.getFieldSlot(), STR_VFSWFUNC, 0, FUNC_MAX - 1, GET_DEFAULT(CFN_FUNC(cfn)));
+      functionChoice->setSetValueHandler([=](int32_t newValue) {
+          CFN_FUNC(cfn) = newValue;
+          CFN_RESET(cfn);
+          SET_DIRTY();
+          updateSpecialFunctionOneWindow(functionChoice, switchChoice);
+                                           });
+      functionChoice->setAvailableHandler([=](int value) {
         return isAssignableFunctionAvailable(value, functions);
       });
       grid.nextLine();
 
-      specialFunctionOneWindow = new FormWindow(window, {0, grid.getWindowHeight(), LCD_W, 0});
-      updateSpecialFunctionOneWindow();
+      specialFunctionOneWindow = new Window(window, {0, grid.getWindowHeight(), LCD_W, 0});
+      updateSpecialFunctionOneWindow(functionChoice, switchChoice);
       grid.addWindow(specialFunctionOneWindow);
     }
 };

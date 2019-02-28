@@ -48,9 +48,14 @@ class FormField: public Window {
       previous = field;
     }
 
+    inline static void setCurrentField(FormField * field)
+    {
+      current = field;
+    }
+
     inline static void clearCurrentField()
     {
-      current = nullptr;
+      setCurrentField(nullptr);
     };
 
     inline static FormField * getCurrentField()
@@ -90,6 +95,7 @@ class FormWindow: public Window {
     FormWindow(Window * parent, const rect_t & rect) :
             Window(parent, rect)
     {
+      FormField::current = nullptr;
     }
 
     void clear()
