@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 #include "menu_radio.h"
-//#include "radio_setup.h"
+#include "radio_setup.h"
 //#include "radio_sdmanager.h"
 //#include "special_functions.h"
 //#include "radio_calibration.h"
@@ -31,7 +31,7 @@
 RadioMenu::RadioMenu():
   TabsGroup(ICON_RADIO)
 {
-//  addTab(new RadioSetupPage());
+  addTab(new RadioSetupPage());
 //  addTab(new RadioSdManagerPage());
 //  addTab(new SpecialFunctionsPage(g_eeGeneral.customFn));
   // TODO trainer
