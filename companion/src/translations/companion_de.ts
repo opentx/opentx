@@ -62,7 +62,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="20"/>
         <source>Edit Settings</source>
-        <translation>Editiere Einstellungen </translation>
+        <translation>Editiere Einstellungen</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
@@ -339,7 +339,7 @@ Mode 4:
     <message>
         <location filename="../apppreferencesdialog.ui" line="678"/>
         <source>Append version number to FW file name</source>
-        <translation>Versionsnummer zum Firmware-File mit anhängen</translation>
+        <translation>Versionsnummer an die Bezeichnung des Firmware-Files anhängen</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="691"/>
@@ -397,7 +397,7 @@ die kann von der Menüsprache abweichen</translation>
         <location filename="../apppreferencesdialog.ui" line="417"/>
         <location filename="../apppreferencesdialog.ui" line="1047"/>
         <source>Enable automatic backup before writing firmware</source>
-        <translation>Ermöglicht automatisches Sichern bevor die Firmware in den Sender geschrieben wird</translation>
+        <translation>Erstelle automatische Backups, bevor neue Firmware in den Sender geschrieben wird</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="774"/>
@@ -452,22 +452,22 @@ die kann von der Menüsprache abweichen</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="801"/>
         <source>Use releases (stable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nur Releases (stable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="806"/>
         <source>Use releases and release candidates (testing)</source>
-        <translation type="unfinished"></translation>
+        <translation>Releases und Release Candidates (testing)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="811"/>
         <source>Use nightly builds (unstable)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nightly Builds (unstable)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="848"/>
         <source>most recently used files</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt verwendete Dateien</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="863"/>
@@ -477,7 +477,7 @@ die kann von der Menüsprache abweichen</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="909"/>
         <source>Remember</source>
-        <translation type="unfinished"></translation>
+        <translation>Merke</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="983"/>
@@ -492,7 +492,7 @@ die kann von der Menüsprache abweichen</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1000"/>
         <source>Remove empty model slots when deleting models (only applies for radios w/out categories)</source>
-        <translation type="unfinished"></translation>
+        <translation>Leere Speicherplätze beim Löschen eines Modells entfernen (gilt nur für Sender ohne Kategorien)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1009"/>
@@ -507,7 +507,7 @@ die kann von der Menüsprache abweichen</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1029"/>
         <source>Just create the model</source>
-        <translation type="unfinished"></translation>
+        <translation>Leeres Modell erzeugen</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1060"/>
@@ -522,7 +522,7 @@ die kann von der Menüsprache abweichen</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1151"/>
         <source>Application (Companion/Simulator)</source>
-        <translation type="unfinished"></translation>
+        <translation>Anwendung (Companion/Simulator)</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1158"/>
@@ -537,7 +537,7 @@ die kann von der Menüsprache abweichen</translation>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1209"/>
         <source>Action on New Model</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktion die beim Anlegen eines neuen Modells ausgeführt werden soll</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1268"/>
@@ -639,7 +639,7 @@ die kann von der Menüsprache abweichen</translation>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="329"/>
         <source>Select a folder for application logs</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Verzeichnis für Anwendungs-Logs</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="337"/>
@@ -1027,7 +1027,7 @@ Do you want to import them?</source>
     <message>
         <location filename="../helpers.cpp" line="633"/>
         <source>Error occurred while starting simulator.</source>
-        <translation type="unfinished">Fehler während  Simulatorstart.</translation>
+        <translation>Beim Starten des Simulators ist ein Fehler aufgetreten.</translation>
     </message>
     <message>
         <location filename="../warnings.h" line="24"/>
@@ -1119,12 +1119,13 @@ Do you want to import them?</source>
     <message>
         <location filename="../creditsdialog.cpp" line="32"/>
         <source>OpenTX Contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>OpenTX Mitwirkende</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="50"/>
         <source>Honors go to Rafal Tomczak (RadioClone), Thomas Husterer (th9x) and Erez Raviv (er9x and eePe)</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Mir ist hier keine bessere Übersetzung für honors eingefallen</translatorcomment>
+        <translation>Besondere Danksagungen gehen an Rafal Tomczak (RadioClone), Thomas Husterer (th9x) und Erez Raviv (er9x und eePe)</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="58"/>
@@ -1134,32 +1135,32 @@ Do you want to import them?</source>
     <message>
         <location filename="../creditsdialog.cpp" line="95"/>
         <source>Main developers</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptentwickler</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="97"/>
         <source>Translators</source>
-        <translation type="unfinished"></translation>
+        <translation>Übersetzer</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="99"/>
         <source>Companies and projects who have donated to OpenTX</source>
-        <translation type="unfinished"></translation>
+        <translation>Firmen und Projekte die für OpenTX gespendet haben</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="101"/>
         <source>People who have donated to OpenTX</source>
-        <translation type="unfinished"></translation>
+        <translation>Personen die für OpenTX gespendet haben</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="103"/>
         <source>Other contributors</source>
-        <translation type="unfinished"></translation>
+        <translation>Weitere Mitwirkende</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="122"/>
         <source>monthly</source>
-        <translation type="unfinished"></translation>
+        <translation>Monatlich</translation>
     </message>
 </context>
 <context>
@@ -5603,7 +5604,7 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../logsdialog.cpp" line="133"/>
         <source>Plot Title Change</source>
-        <translation>Diagramtitel ändern</translation>
+        <translation type="unfinished">Diagramtitel ändern</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="133"/>
@@ -5794,8 +5795,7 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="333"/>
         <source>A new version of Companion is available (version %1)&lt;br&gt;Would you like to download it?</source>
-        <translation>Eine neue Version von Companion ist verfügbar (version%1)&lt;br&gt;Wollen Sie die jetzt Donwloaden?
-</translation>
+        <translation>Eine neue Version von Companion ist verfügbar (Version%1)&lt;br&gt;Wollen Sie die neu Version jetzt herunterladen?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="395"/>
@@ -5805,7 +5805,7 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="410"/>
         <source>Unknown server failure, try later</source>
-        <translation>Unbekannter Server Fehler, Bitte später nochmal versuchen</translation>
+        <translation>Unbekannter Serverfehler, bitte später nochmal versuchen</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="464"/>
@@ -5930,7 +5930,7 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="209"/>
         <source>Show this message again at next startup?</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Naxchricht beim nächsten Starten wieder anzeigen?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
@@ -6592,7 +6592,7 @@ We recommend you view the release notes using the button below to learn about an
     <message>
         <location filename="../mainwindow.cpp" line="1381"/>
         <source>Contributors...</source>
-        <translation>Vergleichen...</translation>
+        <translation>Mitwirkende...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1381"/>
@@ -10828,7 +10828,7 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../simulator.cpp" line="63"/>
         <source>OpenTx Simulator</source>
-        <translation type="unfinished"></translation>
+        <translation>Open Tx SimulierTier</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="72"/>
@@ -12105,7 +12105,7 @@ The default is configured in the chosen Radio Profile.</source>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="181"/>
         <source>Cells Sensor :</source>
-        <translation>Zellen Sensor:</translation>
+        <translation>Zellensensor:</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="195"/>
@@ -12122,12 +12122,12 @@ The default is configured in the chosen Radio Profile.</source>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="219"/>
         <source>GPS Sensor :</source>
-        <translation>GPS Sensor:</translation>
+        <translation>GPS-Sensor:</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="247"/>
         <source>Alt. Sensor :</source>
-        <translation>Höhen Sensor:</translation>
+        <translation>Höhensensor:</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_sensor.ui" line="275"/>
@@ -12498,7 +12498,7 @@ Timestamp</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1380"/>
         <source>Deg. C</source>
-        <translation type="unfinished"></translation>
+        <translation>Grad Celsius</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="1434"/>
@@ -12557,7 +12557,7 @@ Timestamp</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2018"/>
         <source>GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>GPS</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2144"/>
@@ -12584,7 +12584,7 @@ hh:mm:ss</source>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2377"/>
         <source>Amps</source>
-        <translation type="unfinished"></translation>
+        <translation>Ampere</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2413"/>
@@ -12600,12 +12600,12 @@ hh:mm:ss</source>
         <location filename="../simulation/telemetrysimu.ui" line="2560"/>
         <location filename="../simulation/telemetrysimu.ui" line="2759"/>
         <source>Volts</source>
-        <translation type="unfinished"></translation>
+        <translation>Volt</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2581"/>
         <source>Cels</source>
-        <translation type="unfinished"></translation>
+        <translation>Zellen</translation>
     </message>
     <message>
         <location filename="../simulation/telemetrysimu.ui" line="2714"/>
@@ -13441,7 +13441,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="109"/>
         <source>Select the tail type of your plane.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wählen Sie den Leitwerkstyp Ihres Flugzeugs.</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="112"/>
@@ -13452,7 +13452,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="122"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wählen Sie den Kanal für das  Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
