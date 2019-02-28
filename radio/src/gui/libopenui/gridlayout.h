@@ -48,7 +48,12 @@ class GridLayout {
       lineMarginRight = value;
     }
 
-    rect_t getLineSlot(coord_t width = LCD_W ) const
+    rect_t getLineSlot()
+    {
+      return { lineMarginLeft, currentY, LCD_W - lineMarginRight - lineMarginLeft, lineHeight };
+    }
+
+    rect_t getCenteredSlot(coord_t width = LCD_W ) const
     {
       return { lineMarginLeft + (LCD_W - width)/2, currentY, min(width, LCD_W - lineMarginRight - lineMarginLeft), lineHeight };
     }

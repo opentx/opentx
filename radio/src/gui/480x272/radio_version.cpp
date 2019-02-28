@@ -56,7 +56,7 @@ void RadioVersionPage::build(FormWindow * window)
   grid.nextLine();
   grid.nextLine();
 
-  auto button = new TextButton(window, grid.getLineSlot(250), STR_FACTORYRESET,
+  auto button = new TextButton(window, grid.getCenteredSlot(250), STR_FACTORYRESET,
                                [=]() -> int8_t {
                                    auto dialog = new Dialog(WARNING_TYPE_CONFIRM, STR_CONFIRMRESET, STR_POPUPS, [=]() {
                                        storageEraseAll(false);
