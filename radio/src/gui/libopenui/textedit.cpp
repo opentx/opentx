@@ -34,7 +34,7 @@ void TextEdit::paint(BitmapBuffer * dc)
     coord_t left = (cursorPos == 0 ? 0 : getTextWidth(value, cursorPos, flags));
     char s[] = { (flags & ZCHAR) ? idx2char(value[cursorPos]) : value[cursorPos], '\0' };
     dc->drawSolidFilledRect(3+left-1, 1, getTextWidth(s, 1) + 1, height() - 2, TEXT_INVERTED_COLOR);
-    dc->drawText(3+left, 0, s, TEXT_COLOR);
+    dc->drawText(3 + left, 0, s, TEXT_COLOR);
   }
   else {
     const char * displayedValue = value;
