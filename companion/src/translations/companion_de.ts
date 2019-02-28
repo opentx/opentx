@@ -1150,7 +1150,7 @@ Do you want to import them?</source>
     <message>
         <location filename="../creditsdialog.cpp" line="101"/>
         <source>People who have donated to OpenTX</source>
-        <translation>Personen die für OpenTX gespendet haben</translation>
+        <translation>Personen, die für OpenTX gespendet haben</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="103"/>
