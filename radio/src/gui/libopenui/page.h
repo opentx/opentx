@@ -51,6 +51,8 @@ class Page: public Window {
     }
 #endif
 
+    void onKeyEvent(event_t event) override;
+
 #if defined(TOUCH_HARDWARE)
     bool onTouchStart(coord_t x, coord_t y) override
     {

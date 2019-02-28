@@ -55,7 +55,6 @@ Page::Page():
 
 Page::~Page()
 {
-  clearFocus();
 #if defined(TOUCH_HARDWARE)
   TextKeyboard::instance()->disable(false);
   NumberKeyboard::instance()->disable(false);
@@ -66,6 +65,16 @@ Page::~Page()
 void Page::paint(BitmapBuffer * dc)
 {
   dc->clear(TEXT_BGCOLOR);
+}
+
+void Page::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_LONG(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
+    killEvents(event);
+    deleteLater();
+  }
 }
 
 #if defined(TOUCH_HARDWARE)

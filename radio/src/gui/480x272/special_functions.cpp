@@ -31,8 +31,8 @@ class SpecialFunctionEditWindow : public Page {
       functions(functions),
       index(index)
     {
-      buildBody(&body);
       buildHeader(&header);
+      buildBody(&body);
     }
 
   protected:
@@ -42,14 +42,14 @@ class SpecialFunctionEditWindow : public Page {
     StaticText * headerSF = nullptr;
     bool active = false;
 
-    bool isActive() {
+    bool isActive()
+    {
       return ((functions == g_model.customFn ? modelFunctionsContext.activeSwitches : globalFunctionsContext.activeSwitches) & ((MASK_CFN_TYPE)1 << index) ? 1 : 0);
     }
 
     void checkEvents() override
     {
       Page::checkEvents();
-
       if (active != isActive()) {
         invalidate();
         headerSF->setFlags(isActive() ? BOLD|WARNING_COLOR : MENU_TITLE_COLOR);
@@ -59,8 +59,8 @@ class SpecialFunctionEditWindow : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {70, 4, 200, 20}, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, MENU_TITLE_COLOR);
-      headerSF = new StaticText(window, {70, 28, 100, 20}, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), MENU_TITLE_COLOR);
+      new StaticText(window, {70, 2, 200, 20}, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, MENU_TITLE_COLOR);
+      headerSF = new StaticText(window, {70, 22, 100, 20}, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), MENU_TITLE_COLOR);
     }
 
     void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
@@ -193,11 +193,11 @@ class SpecialFunctionEditWindow : public Page {
         auto repeat = new NumberEdit(specialFunctionOneWindow, grid.getFieldSlot(2, 1), -1, 60/CFN_PLAY_REPEAT_MUL, GET_SET_DEFAULT(CFN_PLAY_REPEAT(cfn)));
         repeat->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
           if (value == 0)
-            lcdDrawText(2, 2, "1x", flags);
+            lcdDrawText(3, 0, "1x", flags);
           else if (value == CFN_PLAY_REPEAT_NOSTART)
-            lcdDrawText(2, 2, "!1x", flags);
+            lcdDrawText(3, 0, "!1x", flags);
           else
-            drawNumber(dc, 2, 2, value * CFN_PLAY_REPEAT_MUL, flags, 0, nullptr, "s");
+            drawNumber(dc, 3, 0, value * CFN_PLAY_REPEAT_MUL, flags, 0, nullptr, "s");
         });
       }
 
@@ -245,7 +245,7 @@ class SpecialFunctionEditWindow : public Page {
 };
 
 static constexpr coord_t line1 = 0;
-static constexpr coord_t line2 = 22;
+static constexpr coord_t line2 = 20;
 static constexpr coord_t col1 = 20;
 static constexpr coord_t col2 = (LCD_W - 100) / 3 + col1;
 static constexpr coord_t col3 = ((LCD_W - 100) / 3) * 2 + col1 + 20;
@@ -264,6 +264,13 @@ class SpecialFunctionButton : public Button {
         setHeight(getHeight() + 20);
       }
     }
+
+#if defined(TRACE_WINDOWS_ENABLED)
+    std::string getName() override
+    {
+      return "SpecialFunctionButton";
+    }
+#endif
 
     bool isActive()
     {
