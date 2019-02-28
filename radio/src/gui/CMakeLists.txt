@@ -14,7 +14,7 @@ set(GUI_SRC
 #  special_functions.cpp
 #  model_telemetry.cpp
   menu_radio.cpp
-#  radio_setup.cpp
+  radio_setup.cpp
 #  radio_trainer.cpp
   radio_version.cpp
 #  radio_calibration.cpp
