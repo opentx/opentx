@@ -1145,7 +1145,7 @@ Do you want to import them?</source>
     <message>
         <location filename="../creditsdialog.cpp" line="99"/>
         <source>Companies and projects who have donated to OpenTX</source>
-        <translation>Firmen und Projekte die für OpenTX gespendet haben</translation>
+        <translation>Firmen und Projekte, die für OpenTX gespendet haben</translation>
     </message>
     <message>
         <location filename="../creditsdialog.cpp" line="101"/>
@@ -5604,7 +5604,7 @@ Sind Sie sicher?</translation>
     <message>
         <location filename="../logsdialog.cpp" line="133"/>
         <source>Plot Title Change</source>
-        <translation type="unfinished">Diagramtitel ändern</translation>
+        <translation>Diagrammtitel ändern</translation>
     </message>
     <message>
         <location filename="../logsdialog.cpp" line="133"/>
@@ -5930,7 +5930,7 @@ Die Spalten für Höhe &quot;GAlt&quot; und für Geschwindigkeit &quot;GSpd&quot
     <message>
         <location filename="../mainwindow.cpp" line="209"/>
         <source>Show this message again at next startup?</source>
-        <translation>Diese Naxchricht beim nächsten Starten wieder anzeigen?</translation>
+        <translation>Diese Nachricht beim nächsten Starten wieder anzeigen?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="350"/>
@@ -10828,7 +10828,7 @@ umgedreht und ist dann vorne.
     <message>
         <location filename="../simulator.cpp" line="63"/>
         <source>OpenTx Simulator</source>
-        <translation>Open Tx SimulierTier</translation>
+        <translation>OpenTX Simulator</translation>
     </message>
     <message>
         <location filename="../simulator.cpp" line="72"/>
@@ -13452,7 +13452,7 @@ CTRL + scroll or PAGE UP/DOWN keys to change time in larger steps.</source>
     <message>
         <location filename="../wizarddialog.cpp" line="122"/>
         <source>Select the Elevator channel.&lt;br&gt;&lt;br&gt;Elevator - Spektrum: CH3, Futaba: CH2</source>
-        <translation type="unfinished">Wählen Sie den Kanal für das  Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
+        <translation>Wählen Sie den Kanal für das Höhenleitwerk.&lt;br&gt;&lt;br&gt;Höhenleitwerk - Spektrum: CH3, Futaba: CH2</translation>
     </message>
     <message>
         <location filename="../wizarddialog.cpp" line="126"/>
