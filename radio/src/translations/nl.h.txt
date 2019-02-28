@@ -660,6 +660,7 @@
 #define TR_PERSISTENT          TR(INDENT "Vasth.", INDENT "Vasthouden")
 #define TR_BACKLIGHT_LABEL     "LCD-Verlichting"
 #define TR_BLDELAY             INDENT "Duur"
+#define TR_BL_MODE_DUR                 INDENT "Mode-Duration"
 #define TR_BLONBRIGHTNESS      INDENT "Aan-Helderheid"
 #define TR_BLOFFBRIGHTNESS     INDENT "Uit-Helderheid"
 #define TR_BLCOLOR             INDENT "Kleur"

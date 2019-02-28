@@ -205,59 +205,6 @@ void RadioSetupPage::build(FormWindow * window)
   });
   grid.nextLine();
 
-#if 0
-  case ITEM_SETUP_TIME:
-      {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TIME);
-        LcdFlags flags = 0;
-        if (attr && menuHorizontalPosition < 0) {
-          flags |= INVERS;
-        }
-        for (uint8_t j=0; j<3; j++) {
-          uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
-          switch (j) {
-            case 0:
-              if (rowattr && s_editMode>0) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
-              lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, t.tm_hour, flags|rowattr|LEADING0, 2);
-              lcdDrawText(lcdNextPos+3, y, ":", flags);
-              break;
-            case 1:
-              if (rowattr && s_editMode>0) t.tm_min = checkIncDec(event, t.tm_min, 0, 59, 0);
-              lcdDrawNumber(lcdNextPos+3, y, t.tm_min, flags|rowattr|LEADING0, 2);
-              lcdDrawText(lcdNextPos+3, y, ":", flags);
-              break;
-            case 2:
-              if (rowattr && s_editMode>0) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
-              lcdDrawNumber(lcdNextPos+3, y, t.tm_sec, flags|rowattr|LEADING0, 2);
-              break;
-          }
-        }
-        if (attr && checkIncDec_Ret)
-          g_rtcTime = gmktime(&t); // update local timestamp and get wday calculated
-        break;
-      }
-
-      case ITEM_SETUP_BATT_RANGE:
-      {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BATTERY_RANGE);
-        LcdFlags flags = 0;
-        if (attr && menuHorizontalPosition < 0) {
-          flags |= INVERS;
-        }
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 90+g_eeGeneral.vBatMin, flags|(menuHorizontalPosition==0 ? attr : 0)|PREC1|LEFT);
-        lcdDrawText(lcdNextPos+3, y, "-", flags);
-        lcdDrawNumber(lcdNextPos+3, y, 120+g_eeGeneral.vBatMax, flags|(menuHorizontalPosition>0 ? attr : 0)|PREC1|LEFT);
-        lcdDrawText(lcdNextPos+1, y, "V", flags);
-        if (attr && s_editMode>0) {
-          if (menuHorizontalPosition==0)
-            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
-          else
-            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMax, g_eeGeneral.vBatMin-29, +40); // max=16.0V
-        }
-        break;
-      }
-#endif
-
   new Subtitle(window, grid.getLabelSlot(), STR_SOUND_LABEL);
   grid.nextLine();
 
@@ -321,18 +268,6 @@ void RadioSetupPage::build(FormWindow * window)
   edit->setSuffix("Hz");
   grid.nextLine();
 
-/*
-  case ITEM_SETUP_VARIO_RANGE:
-    lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PITCH_AT_MAX);
-    lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_FREQUENCY_ZERO+(g_eeGeneral.varioPitch*10)+VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10), attr|LEFT, 0, NULL, "Hz");
-    if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRange, -80, 80);
-    break;
-  case ITEM_SETUP_VARIO_REPEAT:
-    lcdDrawText(MENUS_MARGIN_LEFT, y, STR_REPEAT_AT_ZERO);
-    lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10), attr|LEFT, 0, NULL, STR_MS);
-    if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.varioRepeat, -30, 50);
-    break;
-*/
 #endif
 
 #if defined(HAPTIC)
@@ -391,13 +326,12 @@ void RadioSetupPage::build(FormWindow * window)
     grid.nextLine();
 
     // Backlight mode
-    new StaticText(window, grid.getLabelSlot(true), STR_MODE);
-    new Choice(window, grid.getFieldSlot(), STR_VBLMODE, e_backlight_mode_off, e_backlight_mode_on, GET_SET_DEFAULT(g_eeGeneral.backlightMode));
-    grid.nextLine();
+    new StaticText(window, grid.getLabelSlot(true), STR_BL_MODE_DUR);
+    new Choice(window, grid.getFieldSlot(2,0), STR_VBLMODE, e_backlight_mode_off, e_backlight_mode_on, GET_SET_DEFAULT(g_eeGeneral.backlightMode));
+    //grid.nextLine();
 
     // Delay
-    new StaticText(window, grid.getLabelSlot(true), STR_BLDELAY);
-    auto edit = new NumberEdit(window, grid.getFieldSlot(2, 0), 0, 600,
+    auto edit = new NumberEdit(window, grid.getFieldSlot(2, 1), 0, 600,
                                GET_DEFAULT(g_eeGeneral.lightAutoOff * 5),
                                SET_VALUE(g_eeGeneral.lightAutoOff, newValue / 5));
     edit->setStep(5);

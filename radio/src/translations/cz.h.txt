@@ -653,6 +653,7 @@
 #define TR_PERSISTENT          INDENT"Trvalé"
 #define TR_BACKLIGHT_LABEL     "Podsvětlení"
 #define TR_BLDELAY             INDENT"Zhasnout po"
+#define TR_BL_MODE_DUR                 INDENT "Mode-Duration"
 #define TR_BLONBRIGHTNESS      TR3(INDENT"Jas Zap.", INDENT"Jas Zap.", INDENT"Jas zapnutého LCD")
 #define TR_BLOFFBRIGHTNESS     TR3(INDENT"Jas Vyp.", INDENT"Jas Vyp.", INDENT"Jas vypnutého LCD")
 #define TR_BLCOLOR             INDENT "Barva"

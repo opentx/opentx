@@ -11,7 +11,7 @@ set(GUI_SRC
 #  model_select.cpp
   model_setup.cpp
 #  model_logical_switches.cpp
-#  special_functions.cpp
+  special_functions.cpp
 #  model_telemetry.cpp
   menu_radio.cpp
   radio_setup.cpp

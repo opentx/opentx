@@ -18,24 +18,27 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
-#include "menu_radio.h"
-#include "radio_setup.h"
-//#include "radio_sdmanager.h"
-#include "special_functions.h"
-//#include "radio_calibration.h"
-#include "radio_version.h"
-//#include "radio_hardware.h"
-#include "myeeprom.h"
+#ifndef _SPECIAL_FUNCTIONS_H
+#define _SPECIAL_FUNCTIONS_H
 
-RadioMenu::RadioMenu():
-  TabsGroup(ICON_RADIO)
-{
-  addTab(new RadioSetupPage());
-//  addTab(new RadioSdManagerPage());
-  addTab(new SpecialFunctionsPage(g_eeGeneral.customFn));
-  // TODO trainer
-//  addTab(new RadioHardwarePage());
-//  addTab(new RadioCalibrationPage());
-  addTab(new RadioVersionPage());
-}
+#include "tabsgroup.h"
+
+struct CustomFunctionData;
+
+class SpecialFunctionsPage: public PageTab {
+  public:
+    SpecialFunctionsPage(CustomFunctionData * functions);
+
+    void build(FormWindow * window) override
+    {
+      build(window, -1);
+    }
+
+  protected:
+    CustomFunctionData * functions;
+    void build(FormWindow * window, int8_t focusSpecialFunctionIndex);
+    void rebuild(FormWindow * window, int8_t focusSpecialFunctionIndex);
+    void editSpecialFunction(FormWindow * window, uint8_t index);
+};
+
+#endif //_SPECIAL_FUNCTIONS_H

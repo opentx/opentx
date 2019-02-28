@@ -657,6 +657,7 @@
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistent")
 #define TR_BACKLIGHT_LABEL             "Backlight"
 #define TR_BLDELAY                     INDENT "Duration"
+#define TR_BL_MODE_DUR                 INDENT "Mode-Duration"
 #define TR_BLONBRIGHTNESS              INDENT "ON brightness"
 #define TR_BLOFFBRIGHTNESS             INDENT "OFF brightness"
 #define TR_BLCOLOR                     INDENT "Color"
