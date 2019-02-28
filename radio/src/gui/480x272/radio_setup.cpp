@@ -402,7 +402,7 @@ void RadioSetupPage::build(FormWindow * window)
     edit->setSuffix("s");
     grid.nextLine();
 
-    // BRIGHT
+    // Backlight ON bright
     new StaticText(window, grid.getLabelSlot(true), STR_BLONBRIGHTNESS);
     new Slider(window, grid.getFieldSlot(), BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX,
                [=]() -> int32_t {
@@ -413,7 +413,7 @@ void RadioSetupPage::build(FormWindow * window)
                });
     grid.nextLine();
 
-    // DIM
+    // Backlight OFF bright
     new StaticText(window, grid.getLabelSlot(true), STR_BLOFFBRIGHTNESS);
     new Slider(window, grid.getFieldSlot(), BACKLIGHT_LEVEL_MIN, BACKLIGHT_LEVEL_MAX, GET_SET_DEFAULT(g_eeGeneral.blOffBright));
     grid.nextLine();
@@ -513,7 +513,8 @@ void RadioSetupPage::build(FormWindow * window)
                       [=](uint8_t newValue) {
                         pausePulses();
                         g_eeGeneral.stickMode = newValue;
-                        checkTHR();
+                        #warning "checkTHR"
+                        // checkTHR();
                         resumePulses();
                       });
   choice->setTextHandler([](uint8_t value) {
