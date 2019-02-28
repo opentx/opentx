@@ -29,7 +29,7 @@
 class DateTimeWindow : public Window {
   public:
     DateTimeWindow(Window * parent, const rect_t &rect) :
-      Window(parent, rect)
+      Window(parent, rect, FORWARD_SCROLL)
     {
       build();
     }
