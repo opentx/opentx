@@ -80,6 +80,7 @@ class MenuToolbar: public Window {
       choice(choice),
       menu(menu)
     {
+      FormField::clearCurrentField();
     }
 
     ~MenuToolbar() override
