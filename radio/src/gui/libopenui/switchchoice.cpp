@@ -30,6 +30,7 @@ class SwitchChoiceMenuToolbar : public MenuToolbar<SwitchChoice> {
     SwitchChoiceMenuToolbar(SwitchChoice * choice, Menu * menu):
       MenuToolbar<SwitchChoice>(choice, menu)
     {
+      FormField::clearCurrentField();
       addButton(char('\312'), SWSRC_FIRST_SWITCH, SWSRC_LAST_SWITCH);
       addButton(char('\313'), SWSRC_FIRST_TRIM, SWSRC_LAST_TRIM);
       addButton(char('\312'), SWSRC_FIRST_LOGICAL_SWITCH, SWSRC_LAST_LOGICAL_SWITCH);

@@ -226,13 +226,13 @@ class SpecialFunctionEditWindow : public Page {
 
       // Function
       new StaticText(window, grid.getLabelSlot(), STR_FUNC);
-      Choice * functionChoice = new Choice(window, grid.getFieldSlot(), STR_VFSWFUNC, 0, FUNC_MAX - 1, GET_DEFAULT(CFN_FUNC(cfn)));
+      auto functionChoice = new Choice(window, grid.getFieldSlot(), STR_VFSWFUNC, 0, FUNC_MAX - 1, GET_DEFAULT(CFN_FUNC(cfn)));
       functionChoice->setSetValueHandler([=](int32_t newValue) {
           CFN_FUNC(cfn) = newValue;
           CFN_RESET(cfn);
           SET_DIRTY();
           updateSpecialFunctionOneWindow(functionChoice, switchChoice);
-                                           });
+      });
       functionChoice->setAvailableHandler([=](int value) {
         return isAssignableFunctionAvailable(value, functions);
       });
