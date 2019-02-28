@@ -34,7 +34,7 @@
 #define MENU_TITLE_HEIGHT              21
 #define MENU_BODY_TOP                  (MENU_TITLE_TOP+MENU_TITLE_HEIGHT)
 #define MENU_CONTENT_TOP               (MENU_BODY_TOP+1)
-#define MENU_FOOTER_HEIGHT             21
+#define MENU_FOOTER_HEIGHT             0
 #define MENU_FOOTER_TOP                (LCD_H-MENU_FOOTER_HEIGHT)
 #define MENU_BODY_HEIGHT               (MENU_FOOTER_TOP-MENU_BODY_TOP)
 #define MENUS_MARGIN_LEFT              6

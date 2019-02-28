@@ -66,6 +66,7 @@ void RadioVersionPage::build(FormWindow * window)
                                      window->getFirstField()->setFocus();
                                    });
                                    dialog->setFocus();
+                                   return 0;
                                });
 
   button->setFocus();

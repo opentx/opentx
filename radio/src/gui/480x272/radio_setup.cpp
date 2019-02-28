@@ -178,7 +178,7 @@ RadioSetupPage::RadioSetupPage():
 void RadioSetupPage::build(FormWindow * window)
 {
   GridLayout grid;
-  grid.spacer(8);
+  grid.spacer(2);
 
   // Date and Time
   auto timeWindow = new DateTimeWindow(window, {0, grid.getWindowHeight(), LCD_W, 0});
@@ -523,7 +523,6 @@ void RadioSetupPage::build(FormWindow * window)
   choice->setTextHandler([](uint8_t value) {
     return std::to_string(1 + value) + ": left=" + std::string(&getSourceString(MIXSRC_Rud + modn12x3[4 * value])[1]) + "+" + std::string(&getSourceString(MIXSRC_Rud + modn12x3[4 * value + 1])[1]);
   });
-  grid.nextLine();
   grid.nextLine();
 
   FormField::link(FormField::getCurrentField(), timeWindow->getFirstField());
