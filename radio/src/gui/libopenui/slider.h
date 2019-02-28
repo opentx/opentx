@@ -21,12 +21,12 @@
 #ifndef _SLIDER_H_
 #define _SLIDER_H_
 
-#include "window.h"
+#include "form.h"
 
-class Slider : public Window {
+class Slider : public FormField {
   public:
     Slider(Window * parent, const rect_t & rect, int32_t vmin, int32_t vmax, std::function<int32_t()> getValue, std::function<void(int32_t)> setValue):
-      Window(parent, rect),
+      FormField(parent, rect),
       vmin(vmin),
       vmax(vmax),
       getValue(std::move(getValue)),
