@@ -28,7 +28,7 @@
 #define PXX_SEND_RANGECHECK                (1 << 5)
 
 #if defined(PXX_FREQUENCY_HIGH)
-  #define EXTMODULE_USART_PXX_BAUDRATE     420000
+  #define EXTMODULE_USART_PXX_BAUDRATE     450000
   #define INTMODULE_USART_PXX_BAUDRATE     450000
   #define PXX_PERIOD                       4/*ms*/
 #else
