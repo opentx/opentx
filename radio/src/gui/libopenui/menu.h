@@ -87,7 +87,11 @@ class MenuWindow: public Window {
 
   protected:
     std::vector<MenuLine> lines;
+#if defined(TOUCH_HARDWARE)
     int selectedIndex = -1;
+#else
+    int selectedIndex = 0;
+#endif
     static constexpr uint8_t maxLines = 7; // TODO NV14 was 8
     static constexpr uint8_t lineHeight = 30; // TODO NV14 was 40
 };

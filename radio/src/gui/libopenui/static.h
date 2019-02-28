@@ -23,6 +23,7 @@
 
 #include <string>
 #include "window.h"
+#include "button.h" // TODO just for BUTTON_BACKGROUND
 
 class StaticText : public Window {
   public:
@@ -48,6 +49,8 @@ class StaticText : public Window {
 
     void paint(BitmapBuffer * dc)
     {
+      if (flags & BUTTON_BACKGROUND)
+        dc->drawSolidFilledRect(0, 0, rect.w, rect.h, CURVE_AXIS_COLOR);
       if (flags & CENTERED)
         dc->drawText(rect.w / 2, 1, text.c_str(), flags);
       else

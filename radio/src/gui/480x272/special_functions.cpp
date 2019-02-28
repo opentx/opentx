@@ -424,8 +424,9 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
 
     if (focusIndex == i)
       button->setFocus();
+
     button->setPressHandler([=]() -> uint8_t {
-      button->bringToTop();
+      // TODO button->bringToTop();
       Menu * menu = new Menu();
       menu->addLine(STR_EDIT, [=]() {
         editSpecialFunction(window, i);
