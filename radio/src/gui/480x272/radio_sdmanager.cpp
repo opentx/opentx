@@ -83,7 +83,6 @@ class FilePreview: public Window {
       if (bitmap) {
         coord_t bitmapHeight = min<coord_t>(h, bitmap->getHeight());
         coord_t bitmapWidth = min<coord_t>(width(), bitmap->getWidth());
-        TRACE("X=%d", (width() - bitmapWidth) / 2);
         dc->drawScaledBitmap(bitmap, (width() - bitmapWidth) / 2, y + (h - bitmapHeight) / 2, bitmapWidth, bitmapHeight);
       }
     }
