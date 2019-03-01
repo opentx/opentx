@@ -518,16 +518,6 @@ void audioTask(void * pdata)
   RTOS_WAIT_MS(1000); // 1s
 #endif
 
-#if 0 //defined(PCBNV14) //TODO necessary?
-  /* Audio setting */
-  audioSpiSetSpeed(SPI_SPEED_64);
-  audioHardReset();
-  audioSoftReset();
-  audioSpiSetSpeed(SPI_SPEED_8);
-  delay_01us(10000);
-  audioSendRiffHeader();
-#endif
-
   if (!unexpectedShutdown) {
     AUDIO_HELLO();
   }

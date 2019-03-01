@@ -66,7 +66,7 @@ static const QStringList STR_SUBTYPE_E01X    {"E012", "E015"};
 static const QStringList NO_SUBTYPE          {STR_MULTI_DEFAULT};
 
 
-// Table is designed to be shared with gui_common_arm.cpp
+// Table is designed to be shared with gui_common.cpp
 
 const Multiprotocols multiProtocols {
   {MM_RF_PROTO_FLYSKY,     4, false,      STR_SUBTYPE_FLYSKY,  nullptr},
