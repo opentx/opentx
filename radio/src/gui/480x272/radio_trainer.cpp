@@ -31,7 +31,7 @@ RadioTrainerPage::RadioTrainerPage():
 
 void RadioTrainerPage::build(FormWindow * window)
 {
-#define TRAINER_LABEL_WIDTH  100
+#define TRAINER_LABEL_WIDTH  180
   GridLayout grid;
   grid.setLabelWidth(TRAINER_LABEL_WIDTH);
   grid.nextLine();
@@ -41,6 +41,15 @@ void RadioTrainerPage::build(FormWindow * window)
     TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
 
     new StaticText(window, grid.getLabelSlot(), TEXT_AT_INDEX(STR_VSRCRAW, (i + 1)));
+    auto mode = new Choice(window, grid.getFieldSlot(3,0), STR_TRNMODE, 0, 2, GET_SET_DEFAULT(td->mode));
+    if(i == 0) {
+
+      window->setFirstField(mode);
+      mode->setFocus();
+    }
+    auto perc = new NumberEdit(window, grid.getFieldSlot(3, 1), -125, 125, GET_SET_DEFAULT(td->studWeight));
+    perc->setSuffix("%");
+    new Choice(window, grid.getFieldSlot(3,2), STR_TRNCHN, 0, 3, GET_SET_DEFAULT(td->srcChn));
     grid.nextLine();
   }
   grid.nextLine();
@@ -51,18 +60,20 @@ void RadioTrainerPage::build(FormWindow * window)
   multiplier->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
     drawNumber(dc, 3, 0, value+10, flags | PREC1, 0);
   });
-  multiplier->setFocus();
   grid.nextLine();
   grid.nextLine();
 
   // Trainer calibration
   new StaticText(window, grid.getLabelSlot(), STR_CAL);
   for (int i=0; i<4; i++) {
-#if defined (PPM_UNIT_PERCENT_PREC1)
-    lcdDrawNumber(TRAINER_LABEL_WIDTH+i*40, grid.getWindowHeight(), (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, LEFT|PREC1);
+    #if defined (PPM_UNIT_PERCENT_PREC1)
+    auto calib = new NumberEdit(window, grid.getFieldSlot(4,i), 0 , 0, [=]() {  return (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2; }, nullptr, LEFT|PREC1);
 #else
-    lcdDrawNumber(TRAINER_LABEL_WIDTH+i*40, grid.getWindowHeight(), (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, LEFT);
+    auto calib = new NumberEdit(window, grid.getFieldSlot(4,i), 0 , 0, [=]() {  return (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5; }, nullptr, LEFT);
 #endif
+    calib->setWindowFlags(REFRESH_ALWAYS);
+
+    FormField::link(multiplier, window->getFirstField());
   }
 }
 
