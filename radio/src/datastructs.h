@@ -481,11 +481,11 @@ PACK(struct ModuleData {
       uint8_t spare:5;
       ReceiverData receivers[MAX_RECEIVERS_PER_MODULE];
     } pxx2);
-    struct {
+    NOBACKUP(struct {
       uint8_t rx_id[4];
       uint8_t mode;
       uint8_t rx_freq[2];
-    } flysky;
+    } flysky);
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -662,12 +662,10 @@ PACK(struct TrainerData {
   NOBACKUP(TrainerMix mix[4]);
 });
 
-#if defined(PCBHORUS)
-#define SPLASH_MODE uint8_t splashSpares:3
-#elif defined(FSPLASH)
-#define SPLASH_MODE uint8_t splashMode:3
+#if defined(COLORLCD)
+  #define SPLASH_MODE uint8_t splashSpares:3
 #else
-#define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
+  #define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
 #endif
 
 #if defined(PCBHORUS) || defined(PCBNV14)

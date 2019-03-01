@@ -105,7 +105,7 @@ void per10ms()
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
 #if !defined(LIBOPENUI)
-  // TODO remove noHighlightCounter
+  #warning "TODO remove noHighlightCounter on LIBOPENUI"
   if (noHighlightCounter) noHighlightCounter--;
 #endif
 #endif
@@ -307,6 +307,7 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
+  #warning "missing theme init"
   // strcpy(g_eeGeneral.themeName, theme->getName());
   // theme->init();
 #endif
@@ -512,6 +513,7 @@ void modelDefault(uint8_t id)
   g_model.header.name[6] = '\033' + id%10;
 #endif
 
+  #warning "missing widgets init"
 #if 0 // defined(COLORLCD)
   extern const LayoutFactory * defaultLayout;
   delete customScreens[0];
@@ -908,6 +910,7 @@ void checkAll()
 #endif
 
 #if 0
+  #warning "TODO re-add model notes"
   if (g_model.displayChecklist && modelHasNotes()) {
     readModelNotes();
   }
@@ -989,10 +992,6 @@ void checkTHR()
   while (!getEvent()) {
     if (!isThrottleWarningAlertNeeded()) {
       return;
-
-
-
-
     }
 
 #if defined(PWR_BUTTON_PRESS)
@@ -1012,10 +1011,6 @@ void checkTHR()
       break;
     }
 #endif
-
-
-
-
 
     doLoopCommonActions();
 
@@ -1239,7 +1234,7 @@ void getADC()
   DEBUG_TIMER_STOP(debugTimerAdcRead);
 
   for (uint8_t x=0; x<NUM_ANALOGS; x++) {
-	  uint16_t v = 0;
+    uint16_t v = 0;
 
 #if defined(FLYSKY_HALL_STICKS)
     if (x < 4)
@@ -1437,7 +1432,7 @@ void doMixerCalculations()
       uint8_t ch = g_model.thrTraceSrc-NUM_POTS-NUM_SLIDERS-1;
       val = channelOutputs[ch];
 
-      LimitData *lim = limitAddress(ch);
+      LimitData * lim = limitAddress(ch);
       int16_t gModelMax = LIMIT_MAX_RESX(lim);
       int16_t gModelMin = LIMIT_MIN_RESX(lim);
 
@@ -1587,10 +1582,11 @@ void opentxStart(const uint8_t startType = OPENTX_START_DEFAULT_ARGS)
 
 #if defined(GUI)
   if (calibration_needed) {
-#if defined(PCBNV14)
-    startCalibration();
+#if defined(LIBOPENUI)
+    #warning "TODO add a startCalibration function"
+    // startCalibration();
 #else
-    // chainMenu(menuFirstCalib);
+    chainMenu(menuFirstCalib);
 #endif
   }
   else {
@@ -1669,6 +1665,11 @@ void opentxResume()
 
   sdMount();
   storageReadAll();
+
+#if defined(COLORLCD)
+  #warning "TODO call loadTheme (not sure, it has been removed in some earlier commit)"
+  // loadTheme();
+#endif
 
   opentxStart(OPENTX_START_NO_SPLASH);
 
@@ -1860,6 +1861,7 @@ void opentxInit()
 #pragma clang diagnostic push
 #pragma clang diagnostic warning "-Waddress-of-packed-member"
 #endif
+    #warning "TODO add the topbar"
     // TODO topbar = new Topbar(&g_model.topbarData);
 #if __clang__
 // Restore warnings
@@ -2001,12 +2003,14 @@ int main()
 
 #if defined(PCBHORUS)
   if (!IS_FIRMWARE_COMPATIBLE_WITH_BOARD()) {
+    #warning "TODO wrong PCBREV alert"
     // TODO runFatalErrorScreen(STR_WRONG_PCBREV);
   }
 #endif
 
 #if !defined(EEPROM)
   if (!SD_CARD_PRESENT() && !UNEXPECTED_SHUTDOWN()) {
+    #warning "TODO no SD alert"
     // TODO runFatalErrorScreen(STR_NO_SDCARD);
   }
 #endif
@@ -2070,6 +2074,7 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcdClear();
 
+          #warning "TODO shutdown confirmation"
           // TODO POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN);
           SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
           event_t evt = getEvent(false);

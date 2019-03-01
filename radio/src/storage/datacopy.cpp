@@ -204,7 +204,7 @@ void copyModuleData(A * dest, B * src)
   dest->subType = src->subType;
   dest->invertedSerial = src->invertedSerial;
   // TODO memcpy(dest->failsafeChannels, src->failsafeChannels, sizeof(dest->failsafeChannels));
-  copyModuleData_flysky(&dest->flysky, &src->flysky);
+  // TODO copyModuleData_flysky(&dest->flysky, &src->flysky);
 }
 
 template <class A, class B>

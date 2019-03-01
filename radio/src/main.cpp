@@ -194,7 +194,8 @@ void checkEeprom()
 void checkBatteryAlarms()
 {
   // TRACE("checkBatteryAlarms()");
-  if (IS_TXBATT_WARNING() && g_vbat100mV>30) {
+  #warning "TODO check why it was changed from 5V to 3V"
+  if (IS_TXBATT_WARNING() && g_vbat100mV > 30) {
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
   }
@@ -508,11 +509,13 @@ void perMain()
 
   doLoopCommonActions();
 
-  // event_t evt = getEvent(false);
+#if !defined(LIBOPENUI)
+  event_t evt = getEvent(false);
+#endif
 
 #if defined(RAMBACKUP)
   if (unexpectedShutdown) {
-    # warning "no fatal error screen"
+    # warning "TODO emergency mode"
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
   }
@@ -530,7 +533,7 @@ void perMain()
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
   if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
-    #warning "missing fatal error screen"
+    #warning "TODO no SD alert"
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }
@@ -539,7 +542,7 @@ void perMain()
 #if defined(STM32)
   if (usbPlugged() && getSelectedUsbMode() == USB_MASS_STORAGE_MODE) {
 #if defined(LIBOPENUI)
-    // TODO
+    #warning "TODO USB plugged view"
 #else
     // disable access to menus
     lcdClear();
@@ -552,7 +555,11 @@ void perMain()
 
 #if defined(GUI)
   DEBUG_TIMER_START(debugTimerGuiMain);
+#if defined(LIBOPENUI)
   guiMain(0);
+#else
+  guiMain(evt);
+#endif
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif
 
