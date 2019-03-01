@@ -164,9 +164,19 @@ void RadioSdManagerPage::build(FormWindow * window)
             });
           }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
-            menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
-              DeviceFirmwareUpdate device(EXTERNAL_MODULE);
-              device.flashFile(getFullPath(name));
+            if (HAS_SPORT_UPDATE_CONNECTOR()) {
+              menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
+                  DeviceFirmwareUpdate device(FLASHING_MODULE);
+                  device.flashFile(getFullPath(name));
+              });
+            }
+            menu->addLine(STR_FLASH_INTERNAL_MODULE, [=]() {
+                DeviceFirmwareUpdate device(INTERNAL_MODULE);
+                device.flashFile(getFullPath(name));
+            });
+            menu->addLine(STR_FLASH_EXTERNAL_MODULE, [=]() {
+                DeviceFirmwareUpdate device(EXTERNAL_MODULE);
+                device.flashFile(getFullPath(name));
             });
           }
 #if defined(LUA)
