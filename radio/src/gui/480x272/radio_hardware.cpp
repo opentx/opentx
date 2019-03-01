@@ -23,7 +23,11 @@
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
 
+#if defined(PCBHORUS)
+#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#else
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SB-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_3POS : SWITCH_2POS)
+#endif
 
 class SwitchDynamicLabel : public StaticText {
   public:
@@ -108,7 +112,15 @@ void RadioHardwarePage::build(FormWindow * window)
   for(int i=0; i < NUM_SWITCHES; i++) {
     new SwitchDynamicLabel(window, grid.getLabelSlot(true), i);
     new TextEdit(window, grid.getFieldSlot(2, 0), g_eeGeneral.switchNames[i], LEN_SWITCH_NAME);
-    new Choice(window, grid.getFieldSlot(2, 1), STR_SWTYPES, SWITCH_NONE, SWITCH_TYPE_MAX(i), GET_SET_BF(g_eeGeneral.switchConfig, 2 * i, 2));
+    new Choice(window, grid.getFieldSlot(2, 1), STR_SWTYPES, SWITCH_NONE, SWITCH_TYPE_MAX(i),
+               [=]() -> int {
+                 return SWITCH_CONFIG(i);
+               },
+               [=](int newValue) {
+                 swconfig_t mask = (swconfig_t)0x03 << (2*i);
+                 g_eeGeneral.switchConfig = (g_eeGeneral.switchConfig & ~mask) | ((swconfig_t(newValue) & 0x03) << (2*i));
+                 SET_DIRTY();
+               });
     grid.nextLine();
   }
 
