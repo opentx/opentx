@@ -18,13 +18,55 @@
  * GNU General Public License for more details.
  */
 
+#include "radio_trainer.h"
 #include "opentx.h"
+#include "libopenui.h"
 
-#define TRAINER_COLUMN_WIDTH   60
-#define TRAINER_COLUMN_1       MENUS_MARGIN_LEFT+100
-#define TRAINER_COLUMN_2       TRAINER_COLUMN_1+TRAINER_COLUMN_WIDTH
-#define TRAINER_COLUMN_3       TRAINER_COLUMN_2+TRAINER_COLUMN_WIDTH
+#define SET_DIRTY()     storageDirty(EE_GENERAL)
 
+RadioTrainerPage::RadioTrainerPage():
+  PageTab(STR_MENUTRAINER, ICON_RADIO_TRAINER)
+{
+}
+
+void RadioTrainerPage::build(FormWindow * window)
+{
+#define TRAINER_LABEL_WIDTH  100
+  GridLayout grid;
+  grid.setLabelWidth(TRAINER_LABEL_WIDTH);
+  grid.nextLine();
+
+  for (uint8_t i=0; i<NUM_STICKS; i++) {
+    uint8_t chan = channel_order(i+1);
+    TrainerMix * td = &g_eeGeneral.trainer.mix[chan-1];
+
+    new StaticText(window, grid.getLabelSlot(), TEXT_AT_INDEX(STR_VSRCRAW, (i + 1)));
+    grid.nextLine();
+  }
+  grid.nextLine();
+
+  // Trainer multiplier
+  new StaticText(window, grid.getLabelSlot(), STR_MULTIPLIER);
+  auto multiplier = new NumberEdit(window, grid.getFieldSlot(3, 0), -10, 40, GET_SET_DEFAULT(g_eeGeneral.PPM_Multiplier));
+  multiplier->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
+    drawNumber(dc, 3, 0, value+10, flags | PREC1, 0);
+  });
+  multiplier->setFocus();
+  grid.nextLine();
+  grid.nextLine();
+
+  // Trainer calibration
+  new StaticText(window, grid.getLabelSlot(), STR_CAL);
+  for (int i=0; i<4; i++) {
+#if defined (PPM_UNIT_PERCENT_PREC1)
+    lcdDrawNumber(TRAINER_LABEL_WIDTH+i*40, grid.getWindowHeight(), (ppmInput[i]-g_eeGeneral.trainer.calib[i])*2, LEFT|PREC1);
+#else
+    lcdDrawNumber(TRAINER_LABEL_WIDTH+i*40, grid.getWindowHeight(), (ppmInput[i]-g_eeGeneral.trainer.calib[i])/5, LEFT);
+#endif
+  }
+}
+
+#if 0
 bool menuRadioTrainer(event_t event)
 {
   uint8_t y;
@@ -103,3 +145,4 @@ bool menuRadioTrainer(event_t event)
 
   return true;
 }
+#endif
