@@ -303,12 +303,12 @@ if(FRSKY_STICKS)
   add_definitions(-DFRSKY_STICKS)
 endif()
 
-if (FLYSKY_HALL_STICKS)
+if(FLYSKY_HALL_STICKS)
   add_definitions(-DFLYSKY_HALL_STICKS)
 endif()
 
-if (FLYSKY_HALL_STICKS_REVERSE)
- add_definitions(-DFLYSKY_HALL_STICKS_REVERSE)
+if(FLYSKY_HALL_STICKS_REVERSE)
+  add_definitions(-DFLYSKY_HALL_STICKS_REVERSE)
 endif()
 
 if(NOT FONT STREQUAL "")
@@ -324,7 +324,7 @@ if(NIGHTLY_BUILD_WARNING)
 endif(NIGHTLY_BUILD_WARNING)
 
 if(MODULE_R9M_FLEX_FW)
-    add_definitions(-DMODULE_R9M_FLEX_FW)
+  add_definitions(-DMODULE_R9M_FLEX_FW)
 endif()
 
 if(BOOTLOADER)
