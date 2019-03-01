@@ -100,6 +100,9 @@ class Menu : public Window {
   public:
     Menu() :
       Window(&mainWindow, {0, 0, LCD_W, LCD_H}, TRANSPARENT),
+#if !defined(TOUCH_HARDWARE)
+      previousFocus(focusWindow),
+#endif
       menuWindow(this)
     {
     }
@@ -107,6 +110,14 @@ class Menu : public Window {
     ~Menu()
     {
       delete toolbar;
+    }
+
+    void deleteLater()
+    {
+      if (previousFocus) {
+        previousFocus->setFocus();
+      }
+      Window::deleteLater();
     }
 
 #if defined(TRACE_WINDOWS_ENABLED)
@@ -147,6 +158,7 @@ class Menu : public Window {
 #endif
 
   protected:
+    Window * previousFocus;
     MenuWindow menuWindow;
     Window * toolbar = nullptr;
     void updatePosition();

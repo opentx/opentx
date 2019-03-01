@@ -33,7 +33,7 @@ enum DialogType {
 
 class Dialog : public Window {
   public:
-    Dialog(uint8_t type, std::string title, std::string message="", std::function<void(void)> confirmHandler=nullptr, std::function<void(void)> cancelHandler=nullptr);
+    Dialog(uint8_t type, std::string title, std::string message="", std::function<void(void)> confirmHandler=nullptr);
 
     ~Dialog() override;
 
@@ -70,7 +70,6 @@ class Dialog : public Window {
     bool running = false;
     std::function<bool(void)> closeCondition;
     std::function<void(void)> confirmHandler;
-    std::function<void(void)> cancelHandler;
     Window * previousFocus;
 };
 

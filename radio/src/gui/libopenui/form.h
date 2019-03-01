@@ -101,6 +101,7 @@ class FormWindow: public Window {
     void clear()
     {
       Window::clear();
+      first = nullptr;
       FormField::current = nullptr;
     }
 

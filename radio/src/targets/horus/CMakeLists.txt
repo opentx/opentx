@@ -87,7 +87,7 @@ set(GUI_SRC
   ${GUI_SRC}
   curves.cpp
   bitmaps.cpp
-#  radio_sdmanager.cpp
+  radio_sdmanager.cpp
 #  radio_hardware.cpp
 #  model_inputs.cpp
 #  model_mixes.cpp

@@ -18,25 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
-#include "menu_radio.h"
-#include "radio_setup.h"
-#include "radio_sdmanager.h"
-#include "special_functions.h"
-//#include "radio_calibration.h"
-#include "radio_trainer.h"
-#include "radio_version.h"
-//#include "radio_hardware.h"
-#include "myeeprom.h"
+#include "tabsgroup.h"
 
-RadioMenu::RadioMenu():
-  TabsGroup(ICON_RADIO)
-{
-  addTab(new RadioSetupPage());
-  addTab(new RadioSdManagerPage());
-  addTab(new SpecialFunctionsPage(g_eeGeneral.customFn));
-  addTab(new RadioTrainerPage());
-//  addTab(new RadioHardwarePage());
-//  addTab(new RadioCalibrationPage());
-  addTab(new RadioVersionPage());
-}
+class RadioSdManagerPage: public PageTab {
+  public:
+    RadioSdManagerPage();
+
+    void build(FormWindow * window) override;
+
+  protected:
+    void rebuild(FormWindow * window);
+};
