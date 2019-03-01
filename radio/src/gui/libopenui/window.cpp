@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include <keys.h>
 #include "window.h"
+#include "keys.h"
 
 Window * Window::focusWindow = nullptr;
 std::list<Window *> Window::trash;

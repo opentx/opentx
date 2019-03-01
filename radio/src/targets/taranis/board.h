@@ -21,9 +21,8 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include "definitions.h"
-#include "opentx_constants.h"
 #include "../definitions.h"
+#include "../opentx_constants.h"
 #include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
