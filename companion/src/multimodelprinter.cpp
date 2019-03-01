@@ -287,6 +287,8 @@ QString MultiModelPrinter::print(QTextDocument * document)
   if (firmware->getCapability(Gvars) && !firmware->getCapability(GvarsFlightModes))
     str.append(printGvars());
   str.append(printLogicalSwitches());
+  if (firmware->getCapability(GlobalFunctions))
+    str.append(printGlobalFunctions());
   str.append(printSpecialFunctions());
   if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY) {
     str.append(printTelemetry());
@@ -914,6 +916,44 @@ QString MultiModelPrinter::printTelemetryScreens()
   if (count > 0) {
     str.append(printTitle(tr("Telemetry Screens")));
     str.append(columns.print());
+  }
+  return str;
+}
+
+QString MultiModelPrinter::printGlobalFunctions()
+{
+  QString str;
+  QString txt;
+  int idx;
+  MultiColumns columns(modelPrinterMap.size());
+  int count = 0;
+  columns.appendSectionTableStart();
+
+  bool gfUsed = false;
+  for (int k=0; k < modelPrinterMap.size(); k++) {
+    if (!modelPrinterMap.value(k).first->noGlobalFunctions) {
+      idx = k;
+      gfUsed = true;
+      break;
+    }
+  }
+
+  if (gfUsed) {
+    ModelPrinter * modelPrinter = modelPrinterMap.value(idx).second;
+    (void)(modelPrinter);
+
+    for (int i=0; i < firmware->getCapability(GlobalFunctions); i++) {
+      txt = modelPrinter->printCustomFunctionLine(i, true);
+      if (!txt.isEmpty()) {
+        count++;
+        ROWLABELCOMPARECELL(QString("GF%1").arg(i+1), 20, modelPrinter->printCustomFunctionLine(i, true), 80);
+      }
+    }
+    columns.appendTableEnd();
+    if (count > 0) {
+      str.append(printTitle(tr("Global Functions")));
+      str.append(columns.print());
+    }
   }
   return str;
 }
