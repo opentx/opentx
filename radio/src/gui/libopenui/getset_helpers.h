@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _WINDOWS_HELPERS_H_
-#define _WINDOWS_HELPERS_H_
+#ifndef _GETSET_HELPERS_H_
+#define _GETSET_HELPERS_H_
 
 #define GET_VALUE(value)                        [=] { return value; }
 #define GET_DEFAULT(value)                      [=] { return value; }
@@ -31,7 +31,7 @@
 #define SET_DEFAULT(value)                      [=](int32_t newValue) { value = newValue; SET_DIRTY(); }
 #define SET_INVERTED(value)                     [=](uint8_t newValue) { value = !newValue; SET_DIRTY(); }
 #define SET_VALUE_WITH_OFFSET(value, offset)    [=](int32_t newValue) { value = newValue - offset; SET_DIRTY(); }
-#define SET_VALUE_WITH_BF(value, offset, bits)  [=](uint16_t newValue) { BF_SET(value, newValue, offset, bits); SET_DIRTY(); }
+#define SET_VALUE_WITH_BF(value, offset, bits)  [=](uint16_t newValue) { BF_SET<uint16_t>(value, newValue, offset, bits); SET_DIRTY(); }
 
 #define GET_SET_DEFAULT(value)  GET_DEFAULT(value), SET_DEFAULT(value)
 #define GET_SET_INVERTED(value) GET_INVERTED(value), SET_INVERTED(value)
@@ -39,5 +39,5 @@
 #define GET_SET_WITH_OFFSET(value, offset) GET_VALUE_WITH_OFFSET(value, offset), SET_VALUE_WITH_OFFSET(value, offset)
 #define GET_SET_BF(value, offset, bits)  GET_VALUE_WITH_BF(value, offset, bits), SET_VALUE_WITH_BF(value, offset, bits)
 
-#endif // _WINDOWS_HELPERS_H_
+#endif // _GETSET_HELPERS_H_
 
