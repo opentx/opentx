@@ -94,7 +94,7 @@ TEST(getSwitch, inputWithTrim)
 }
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
 TEST(evalLogicalSwitches, playFile)
 {
   SYSTEM_RESET();

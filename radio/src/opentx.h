@@ -235,7 +235,7 @@
 
 #include "debug.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   #define SWSRC_THR                    SWSRC_SB2
   #define SWSRC_GEA                    SWSRC_SG2
   #define SWSRC_ID0                    SWSRC_SA0
@@ -407,7 +407,7 @@ extern uint8_t channel_order(uint8_t setup, uint8_t x);
 
 #define HEART_TIMER_10MS               1
 #define HEART_TIMER_PULSES             2 // when multiple modules this is the first one
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
 #define HEART_WDT_CHECK                (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
 #else
 #define HEART_WDT_CHECK                (HEART_TIMER_10MS + HEART_TIMER_PULSES)
@@ -449,7 +449,7 @@ bool cmpStrWithZchar(const char * charString, const char * zcharString, int size
 #include "keys.h"
 #include "pwr.h"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBNV14)
+#if defined(PCBFRSKY) || defined(PCBNV14)
 div_t switchInfo(int switchPosition);
 extern uint8_t potsPos[NUM_XPOTS];
 #endif
@@ -516,7 +516,7 @@ void evalLogicalSwitches(bool isCurrentFlightmode=true);
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
 #define LS_RECURSIVE_EVALUATION_RESET()
 
-#if defined(PCBTARANIS) || defined(PCBHORUS) || defined(PCBFLYSKY)
+#if defined(PCBFRSKY) || defined(PCBFLYSKY)
   void getSwitchesPosition(bool startup);
 #else
   #define getSwitchesPosition(...)
@@ -990,7 +990,7 @@ enum AUDIO_SOUNDS {
   AU_STICK2_MIDDLE,
   AU_STICK3_MIDDLE,
   AU_STICK4_MIDDLE,
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   AU_POT1_MIDDLE,
   AU_POT2_MIDDLE,
 #if defined(PCBX9E)
@@ -1143,7 +1143,7 @@ union ReusableBuffer
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     uint8_t state;
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
     struct {
       uint8_t stepsCount;
       int16_t steps[XPOTS_MULTIPOS_COUNT];

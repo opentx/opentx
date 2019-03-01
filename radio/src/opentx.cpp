@@ -263,7 +263,7 @@ void generalDefault()
   g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
 #elif defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#elif defined(PCBFRSKY)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
 
@@ -1987,7 +1987,7 @@ int main()
   // lcdSetRefVolt(25);
 #endif
 
-#if defined(SPLASH) && (defined(PCBTARANIS) || defined(PCBHORUS))
+#if defined(SPLASH) && defined(PCBFRSKY)
   drawSplash();
 #endif
 

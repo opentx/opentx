@@ -605,7 +605,7 @@ bool isExternalModuleAvailable(int module)
     return false;
   }
 #endif
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
@@ -629,7 +629,7 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
     return false;
   }

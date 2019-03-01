@@ -287,7 +287,7 @@ void telemetryWakeup()
       audioEvent(AU_SENSOR_LOST);
     }
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
     if ((isModulePXX(INTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
       AUDIO_RAS_RED();
 #warning "code removed"

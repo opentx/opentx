@@ -54,7 +54,7 @@
   #define NOBACKUP(...)                __VA_ARGS__
 #endif
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
 typedef uint16_t source_t;
 #else
 typedef uint8_t source_t;
@@ -552,13 +552,8 @@ typedef uint8_t swarnenable_t;
   #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
 
 #if defined(COLORLCD)
-#if defined(PCBHORUS)
-#include "gui/480x272/layout.h"
-#include "gui/480x272/topbar.h"
-#else
-#include "gui/320x480/layout.h"
-#include "gui/320x480/topbar.h"
-#endif
+#include "layout.h"
+#include "topbar.h"
 
 #define LAYOUT_NAME_LEN 10
 PACK(struct CustomScreenData {

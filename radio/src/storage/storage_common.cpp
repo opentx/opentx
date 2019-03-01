@@ -53,7 +53,7 @@ void preModelLoad()
 
   pauseMixerCalculations();
 }
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
 static void fixUpModel()
 {
   // Ensure that when rfProtocol is RF_PROTO_OFF the type of the module is MODULE_TYPE_NONE
@@ -64,7 +64,7 @@ static void fixUpModel()
 
 void postModelLoad(bool alarms)
 {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
   fixUpModel();
 #endif
   AUDIO_FLUSH();

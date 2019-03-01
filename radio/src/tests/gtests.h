@@ -35,7 +35,7 @@ extern uint16_t anaInValues[NUM_STICKS+NUM_POTS+NUM_SLIDERS];
 
 void doMixerCalculations();
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(PCBFRSKY)
 #define RADIO_RESET() \
   g_eeGeneral.switchConfig = 0x00007bff
 #else

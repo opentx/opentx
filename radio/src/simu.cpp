@@ -335,7 +335,7 @@ void Open9xSim::updateKeysAndSwitches(bool start)
   SWITCH_KEY(P, 15, 3);
   SWITCH_KEY(Q, 16, 3);
   SWITCH_KEY(R, 17, 3);
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#elif defined(PCBFRSKY)
   SWITCH_KEY(A, 0, 3);
   SWITCH_KEY(B, 1, 3);
   SWITCH_KEY(C, 2, 3);
@@ -404,7 +404,7 @@ long Open9xSim::onTimeout(FXObject*, FXSelector, void*)
     SWITCH_KEY(P, 15, 3);
     SWITCH_KEY(Q, 16, 3);
     SWITCH_KEY(R, 17, 3);
-#elif defined(PCBTARANIS) || defined(PCBHORUS)
+#elif defined(PCBFRSKY)
     SWITCH_KEY(A, 0, 3);
     SWITCH_KEY(B, 1, 3);
     SWITCH_KEY(C, 2, 3);
