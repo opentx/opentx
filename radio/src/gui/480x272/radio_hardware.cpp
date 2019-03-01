@@ -124,7 +124,7 @@ void RadioHardwarePage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_BATT_CALIB);
   auto batCal = new NumberEdit(window, grid.getFieldSlot(), -127, 127, GET_SET_DEFAULT(g_eeGeneral.txVoltageCalibration));
   batCal->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
-    drawNumber(dc, 2, 2, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
+    drawNumber(dc, 2, 0, getBatteryVoltage(), flags | PREC2, 0, nullptr, "V");
   });
   batCal->setWindowFlags(REFRESH_ALWAYS);
   grid.nextLine();
