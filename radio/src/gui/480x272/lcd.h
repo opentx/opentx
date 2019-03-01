@@ -60,23 +60,6 @@
 /* telemetry flags */
 #define NO_UNIT                        0x40
 
-#define STDSIZE                        (STDSIZE_INDEX << 8)
-#define TINSIZE                        (TINSIZE_INDEX << 8)
-#define SMLSIZE                        (SMLSIZE_INDEX << 8)
-#define MIDSIZE                        (MIDSIZE_INDEX << 8)
-#define DBLSIZE                        (DBLSIZE_INDEX << 8)
-#define XXLSIZE                        (XXLSIZE_INDEX << 8)
-#define BOLD                           (STDSIZE_BOLD_INDEX << 8)
-#define FONTSIZE_MASK                  0x0f00
-
-#if !defined(BOOT)
-#define FONTSIZE(flags)                ((flags) & FONTSIZE_MASK)
-#define FONTINDEX(flags)               (FONTSIZE(flags) >> 8)
-#else
-#define FONTSIZE(flags)                STDSIZE
-#define FONTINDEX(flags)               STDSIZE_INDEX
-#endif
-
 #define TIMEBLINK                      0x1000
 #define TIMEHOUR                       0x2000
 #define EXPANDED                       0x2000

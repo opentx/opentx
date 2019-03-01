@@ -20,6 +20,8 @@
 
 #include "radio_calibration.h"
 #include "opentx.h"
+
+#warning "remove all other libopenui.h"
 #include "libopenui.h"
 
 uint8_t menuCalibrationState;

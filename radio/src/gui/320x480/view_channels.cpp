@@ -20,7 +20,6 @@
 
 #include "view_channels.h"
 #include "opentx.h"
-#include "libopenui.h"
 
 #define RECT_OFFSET                    80
 #define ROW_HEIGHT                     42

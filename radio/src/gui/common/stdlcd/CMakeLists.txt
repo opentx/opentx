@@ -4,10 +4,6 @@ set(GUI_SRC
   ../common/stdlcd/popups.cpp
   )
 
-if(HELI)
-  set(GUI_SRC ${GUI_SRC} ../common/stdlcd/model_heli.cpp)
-endif()
-
 add_definitions(-DGRAPHICS)
 set(GUI_SRC
  ${GUI_SRC}
@@ -17,12 +13,17 @@ set(GUI_SRC
 )
 set(CURVE_EDIT_SRC )
 
-
 set(GUI_SRC
   ${GUI_SRC}
   ../common/stdlcd/model_curves.cpp
   model_curve_edit.cpp
   )
+
+if(HELI)
+  set(GUI_SRC
+    ${GUI_SRC}
+    ../common/stdlcd/model_heli.cpp)
+endif()
 
 if(SDCARD)
   set(GUI_SRC

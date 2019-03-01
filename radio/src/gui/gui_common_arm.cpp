@@ -360,14 +360,6 @@ bool isSwitchAvailableInLogicalSwitches(int swtch)
   return isSwitchAvailable(swtch, LogicalSwitchesContext);
 }
 
-/* TODO bool isSwitchAvailableInCustomFunctions(int swtch)
-{
-  if (menuHandlers[menuLevel] == menuModelSpecialFunctions)
-    return isSwitchAvailable(swtch, ModelCustomFunctionsContext);
-  else
-    return isSwitchAvailable(swtch, GeneralCustomFunctionsContext);
-} */
-
 bool isSwitchAvailableInMixes(int swtch)
 {
   return isSwitchAvailable(swtch, MixesContext);
@@ -841,13 +833,3 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
   return pdef;
 }
 #endif
-
-//
-//void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags)
-//{
-//  lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, idx+1, 0);
-//  if (ZEXIST(g_eeGeneral.anaNames[idx]) || (flags && s_editMode > 0))
-//    editName(x, y, g_eeGeneral.anaNames[idx], LEN_ANA_NAME, event, flags);
-//  else
-//    lcdDrawMMM(x, y, flags);
-//}

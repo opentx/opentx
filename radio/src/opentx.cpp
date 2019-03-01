@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 #if defined(LIBOPENUI)
-#include "libopenui.h"
 // #include "shutdown_animation.h"
 // #include "radio_calibration.h"
 #include "view_main.h"

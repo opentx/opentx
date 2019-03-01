@@ -22,7 +22,7 @@
 #define _DRAW_FUNCTIONS_H_
 
 #include <stdint.h>
-#include "lcd_types.h"
+#include "libopenui_types.h"
 
 void drawTextAtIndex(BitmapBuffer * dc, coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags=0);
 void drawNumber(BitmapBuffer * dc, coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t len=0, const char * prefix=NULL, const char * suffix=NULL);

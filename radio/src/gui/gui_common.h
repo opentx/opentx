@@ -33,7 +33,11 @@
   #define CASE_EVT_ROTARY_RIGHT
 #endif
 
+#if defined(LIBOPENUI)
 typedef std::function<bool(int)> IsValueAvailable;
+#else
+typedef bool (*IsValueAvailable)(int);
+#endif
 
 enum SwitchContext
 {

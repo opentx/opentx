@@ -18,21 +18,26 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _OTXTYPES_H_
-#define _OTXTYPES_H_
+#ifndef _OPENTX_HELPERS_H_
+#define _OPENTX_HELPERS_H_
 
-#include <inttypes.h>
-#include "libopenui/libopenui_types.h"
+#include "libopenui/libopenui_helpers.h"
 
-typedef uint32_t tmr10ms_t;
-typedef int32_t rotenc_t;
-typedef int32_t getvalue_t;
-typedef uint32_t mixsrc_t;
-typedef int32_t swsrc_t;
-typedef int16_t safetych_t;
-typedef uint32_t bitfield_channels_t;
-typedef uint16_t event_t;
-typedef int32_t putstime_t;
-typedef uint16_t FlightModesType;
+/// returns the number of elements of an array
+#define DIM(arr) (sizeof((arr)) / sizeof((arr)[0]))
 
-#endif // _OTXTYPES_H_
+template<class T>
+inline T sgn(T a)
+{
+  return a > 0 ? 1 : (a < 0 ? -1 : 0);
+}
+
+template<class T>
+inline void SWAP(T & a, T & b)
+{
+  T tmp = b;
+  b = a;
+  a = tmp;
+}
+
+#endif

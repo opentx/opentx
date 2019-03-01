@@ -551,10 +551,10 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
   y = (y & 0x07);
   if (y) {
     ASSERT_IN_DISPLAY(p);
-    uint8_t msk = ~(BITMASK(y)-1);
+    uint8_t msk = ~(BF_BITMASK<uint8_t>(y));
     h -= 8-y;
     if (h < 0)
-      msk -= ~(BITMASK(8+h)-1);
+      msk -= ~(BF_BITMASK<uint8_t>(8 + h));
     lcdMaskPoint(p, msk & pat, att);
     p += LCD_W;
   }
@@ -566,7 +566,7 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
   }
   if (h > 0) {
     ASSERT_IN_DISPLAY(p);
-    lcdMaskPoint(p, (BITMASK(h)-1) & pat, att);
+    lcdMaskPoint(p, (BF_BITMASK<uint8_t>(h)) & pat, att);
   }
 }
 
@@ -984,7 +984,7 @@ void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
 {
   uint8_t * p = &displayBuf[ y / 8 * LCD_W + x ];
   if (p < DISPLAY_END) {
-    lcdMaskPoint(p, BITMASK(y % 8), att);
+    lcdMaskPoint(p, BF_BIT<uint8_t>(y % 8), att);
   }
 }
 
@@ -1006,7 +1006,7 @@ void lcdDrawHorizontalLine(coord_t x, coord_t y, coord_t w, uint8_t pat, LcdFlag
   if (x+w > LCD_W) { w = LCD_W - x; }
 
   uint8_t *p  = &displayBuf[ y / 8 * LCD_W + x ];
-  uint8_t msk = BITMASK(y%8);
+  uint8_t msk = BF_BIT<uint8_t>(y % 8);
   while (w--) {
     if(pat&1) {
       lcdMaskPoint(p, msk, att);

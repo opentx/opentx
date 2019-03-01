@@ -18,21 +18,25 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _OTXTYPES_H_
-#define _OTXTYPES_H_
+#ifndef _LIBOPEUI_HELPERS_H_
+#define _LIBOPEUI_HELPERS_H_
 
-#include <inttypes.h>
-#include "libopenui/libopenui_types.h"
+template<class T>
+inline T min(T a, T b)
+{
+  return a < b ? a : b;
+}
 
-typedef uint32_t tmr10ms_t;
-typedef int32_t rotenc_t;
-typedef int32_t getvalue_t;
-typedef uint32_t mixsrc_t;
-typedef int32_t swsrc_t;
-typedef int16_t safetych_t;
-typedef uint32_t bitfield_channels_t;
-typedef uint16_t event_t;
-typedef int32_t putstime_t;
-typedef uint16_t FlightModesType;
+template<class T>
+inline T max(T a, T b)
+{
+  return a > b ? a : b;
+}
 
-#endif // _OTXTYPES_H_
+template<class T>
+inline T limit(T vmin, T x, T vmax)
+{
+  return min(max(vmin, x), vmax);
+}
+
+#endif

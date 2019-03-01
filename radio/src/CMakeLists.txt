@@ -127,7 +127,7 @@ endforeach()
 set(SRC ${SRC} debug.cpp)
 
 if(${EEPROM} STREQUAL SDCARD)
-  set(SRC ${SRC} storage/storage_common.cpp storage/sdcard_raw.cpp gui/${GUI_DIR}/modelslist.cpp)
+  set(SRC ${SRC} storage/storage_common.cpp storage/sdcard_raw.cpp)
 elseif(${EEPROM} STREQUAL EEPROM_RLC)
   set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp)
   add_definitions(-DEEPROM -DEEPROM_RLC)
@@ -170,18 +170,14 @@ if(NOT LUA STREQUAL NO)
   set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${LUA_EXPORT})
   if(LUA STREQUAL YES)
     add_definitions(-DLUA_MODEL_SCRIPTS)
-#    set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
   endif()
-#  set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
-  if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL NV14)
-#    set(SRC ${SRC} lua/widgets.cpp)
-  endif()
+  set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
   set(LUA_SRC lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c lmem.c lobject.c lopcodes.c lparser.c
     lstate.c lstring.c ltable.c lrotable.c ltm.c lundump.c lvm.c lzio.c linit.c
     lbaselib.c lmathlib.c lbitlib.c loadlib.c lauxlib.c ltablib.c lcorolib.c liolib.c lstrlib.c
     )
   foreach(FILE ${LUA_SRC})
-    # set(SRC ${SRC} ${LUA_DIR}/${FILE})
+    set(SRC ${SRC} ${LUA_DIR}/${FILE})
   endforeach()
   if(MSVC)
     # silence lots of warnings regarding "insecure" use of functions (sprintf, strcpy, etc) from Lua code
@@ -195,7 +191,6 @@ endif()
 
 if(FLIGHT_MODES)
   add_definitions(-DFLIGHT_MODES)
-#  set(GUI_SRC ${GUI_SRC} model_flightmodes.cpp)
 endif()
 
 if(CURVES)

@@ -26,7 +26,6 @@
 // #include "view_channels.h"
 // #include "view_statistics.h"
 #include "opentx.h"
-#include "libopenui.h"
 
 #define TRIM_WIDTH                     121
 #define TRIM_LH_X                      10

@@ -18,10 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _LCD_TYPES_H_
-#define _LCD_TYPES_H_
-
-#include <inttypes.h>
+#ifndef _LIBOPEUI_DEFINES_H_
+#define _LIBOPEUI_DEFINES_H_
 
 #define CENTER
 
@@ -52,22 +50,22 @@
 #define NO_UNIT                        0x40
 
 enum FontSizeIndex {
-  STDSIZE_INDEX,
-  TINSIZE_INDEX,
-  SMLSIZE_INDEX,
-  MIDSIZE_INDEX,
-  DBLSIZE_INDEX,
-  XXLSIZE_INDEX,
-  SPARE6_INDEX,
-  SPARE7_INDEX,
-  STDSIZE_BOLD_INDEX,
-  SPARE9_INDEX,
-  SPAREa_INDEX,
-  SPAREb_INDEX,
-  SPAREc_INDEX,
-  SPAREd_INDEX,
-  SPAREe_INDEX,
-  SPAREf_INDEX,
+    STDSIZE_INDEX,
+    TINSIZE_INDEX,
+    SMLSIZE_INDEX,
+    MIDSIZE_INDEX,
+    DBLSIZE_INDEX,
+    XXLSIZE_INDEX,
+    SPARE6_INDEX,
+    SPARE7_INDEX,
+    STDSIZE_BOLD_INDEX,
+    SPARE9_INDEX,
+    SPAREa_INDEX,
+    SPAREb_INDEX,
+    SPAREc_INDEX,
+    SPAREd_INDEX,
+    SPAREe_INDEX,
+    SPAREf_INDEX,
 };
 
 #define STDSIZE                        (STDSIZE_INDEX << 8)
@@ -92,26 +90,4 @@ enum FontSizeIndex {
 #define EXPANDED                       0x2000
 #define VERTICAL                       0x4000
 
-typedef int32_t coord_t;
-
-struct point_t
-{
-  coord_t x;
-  coord_t y;
-};
-
-typedef uint32_t LcdFlags;
-
-template<class t> inline t min(t a, t b)
-{
-  return a < b ? a : b;
-}
-
-template<class t> inline t max(t a, t b)
-{
-  return a > b ? a : b;
-}
-
-template<class t> inline t limit(t mi, t x, t ma) { return min(max(mi,x),ma); }
-
-#endif // _LCD_TYPES_H_
+#endif

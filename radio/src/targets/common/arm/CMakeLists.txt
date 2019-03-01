@@ -140,7 +140,6 @@ endforeach()
 set(SRC
   ${SRC}
   main.cpp
-  stubs.cpp
   tasks.cpp
   audio.cpp
   io/frsky_sport.cpp

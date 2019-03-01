@@ -1,4 +1,4 @@
-#include <utility>
+
 
 /*
  * Copyright (C) OpenTX
@@ -23,6 +23,7 @@
 #ifndef _MAINWINDOW_H_
 #define _MAINWINDOW_H_
 
+#include <utility>
 #include "window.h"
 #include "bitmapbuffer.h"
 

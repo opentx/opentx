@@ -26,8 +26,10 @@
 #include <string.h>
 #include <utility>
 #include <functional>
-#include "bitmapbuffer.h"
 #include <string>
+#include "bitmapbuffer.h"
+#include "libopenui_defines.h"
+#include "libopenui_helpers.h"
 
 // OPAQUE/TRANSPARENT defined in WinGDI
 #ifndef OPAQUE

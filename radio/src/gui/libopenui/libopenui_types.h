@@ -18,21 +18,19 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _OTXTYPES_H_
-#define _OTXTYPES_H_
+#ifndef _LIBOPEUI_TYPES_H_
+#define _LIBOPEUI_TYPES_H_
 
 #include <inttypes.h>
-#include "libopenui/libopenui_types.h"
 
-typedef uint32_t tmr10ms_t;
-typedef int32_t rotenc_t;
-typedef int32_t getvalue_t;
-typedef uint32_t mixsrc_t;
-typedef int32_t swsrc_t;
-typedef int16_t safetych_t;
-typedef uint32_t bitfield_channels_t;
-typedef uint16_t event_t;
-typedef int32_t putstime_t;
-typedef uint16_t FlightModesType;
+typedef int32_t coord_t;
 
-#endif // _OTXTYPES_H_
+struct point_t
+{
+  coord_t x;
+  coord_t y;
+};
+
+typedef uint32_t LcdFlags;
+
+#endif // _LIBOPEUI_TYPES_H_
