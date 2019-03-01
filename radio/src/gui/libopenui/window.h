@@ -95,6 +95,11 @@ class Window {
       return windowFlags;
     }
 
+    void setWindowFlags(uint8_t flags)
+    {
+      windowFlags = flags;
+    }
+
     void setCloseHandler(std::function<void()> handler)
     {
       closeHandler = std::move(handler);
