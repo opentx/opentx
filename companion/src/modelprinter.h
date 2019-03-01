@@ -131,6 +131,7 @@ class ModelPrinter: public QObject
     QString printSensorDetails(unsigned int idx);
     QString printTelemetryScreenType(unsigned int val);
     QString printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width);
+    QString printChecklist();
 
   private:
     Firmware * firmware;
