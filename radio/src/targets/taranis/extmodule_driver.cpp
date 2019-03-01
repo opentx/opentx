@@ -110,7 +110,9 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
 }
 
 #if defined(EXTMODULE_USART)
-void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
+ModuleFifo extmoduleFifo;
+
+void extmoduleInvertedSerialStart(uint32_t baudrate)
 {
   EXTERNAL_MODULE_ON();
 
@@ -121,23 +123,17 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
   NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
   NVIC_Init(&NVIC_InitStructure);
 
-  // TX Pin
-  GPIO_PinAFConfig(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_USART_TX_GPIO_AF);
+  // TX + RX Pins
+  GPIO_PinAFConfig(EXTMODULE_USART_GPIO, EXTMODULE_TX_GPIO_PinSource, EXTMODULE_USART_GPIO_AF);
+  GPIO_PinAFConfig(EXTMODULE_USART_GPIO, EXTMODULE_RX_GPIO_PinSource, EXTMODULE_USART_GPIO_AF);
 
   GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN | EXTMODULE_RX_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_Init(EXTMODULE_TX_GPIO, &GPIO_InitStructure);
-
-#if 0
-  // RX Pin
-  GPIO_PinAFConfig(EXTMODULE_RX_GPIO, EXTMODULE_RX_GPIO_PinSource, EXTMODULE_TX_GPIO_USART_AF);
-  GPIO_InitStructure.GPIO_Pin = EXTMODULE_RX_GPIO_PIN;
-  GPIO_Init(EXTMODULE_RX_GPIO, &GPIO_InitStructure);
-#endif
+  GPIO_Init(EXTMODULE_USART_GPIO, &GPIO_InitStructure);
 
   // UART config
   USART_DeInit(EXTMODULE_USART);
@@ -147,32 +143,66 @@ void extmoduleInvertedSerialStart(uint32_t baudrate, uint32_t period_half_us)
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
-  USART_InitStructure.USART_Mode = USART_Mode_Rx | USART_Mode_Tx;
+  USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(EXTMODULE_USART, &USART_InitStructure);
   USART_Cmd(EXTMODULE_USART, ENABLE);
 
-  // Timer
-  EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  EXTMODULE_TIMER->ARR = period_half_us;
-  EXTMODULE_TIMER->CCR2 = period_half_us - 2000; // Update time
-  EXTMODULE_TIMER->EGR = 1; // Restart
-  EXTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
-  EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
+  extmoduleFifo.clear();
 
-  NVIC_EnableIRQ(EXTMODULE_TIMER_CC_IRQn);
-  NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
+  USART_ITConfig(EXTMODULE_USART, USART_IT_RXNE, ENABLE);
+  NVIC_SetPriority(EXTMODULE_USART_IRQn, 6);
+  NVIC_EnableIRQ(EXTMODULE_USART_IRQn);
+}
+
+void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
+{
+  DMA_InitTypeDef DMA_InitStructure;
+  DMA_DeInit(EXTMODULE_USART_DMA_STREAM);
+  DMA_InitStructure.DMA_Channel = EXTMODULE_USART_DMA_CHANNEL;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&EXTMODULE_USART->DR);
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(data);
+  DMA_InitStructure.DMA_BufferSize = size;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(EXTMODULE_USART_DMA_STREAM, &DMA_InitStructure);
+  DMA_Cmd(EXTMODULE_USART_DMA_STREAM, ENABLE);
+  USART_DMACmd(EXTMODULE_USART, USART_DMAReq_Tx, ENABLE);
+}
+
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
+extern "C" void EXTMODULE_USART_IRQHandler(void)
+{
+  uint32_t status = EXTMODULE_USART->SR;
+
+  while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
+    uint8_t data = EXTMODULE_USART->DR;
+    if (status & USART_FLAG_ERRORS) {
+      extmoduleFifo.errors++;
+    }
+    else {
+      extmoduleFifo.push(data);
+    }
+    status = EXTMODULE_USART->SR;
+  }
 }
 
 void extmodulePxxStart()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
+  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE);
 }
 
 void extmodulePxx2Start()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE, PXX_PERIOD_HALF_US);
+  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE);
 }
 #else
 void extmodulePxxStart()
@@ -264,7 +294,15 @@ void extmoduleSendNextFrame()
 #endif
   }
 #endif
-
+#if defined(PXX2)
+  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
+    #if defined(EXTMODULE_USART)
+      extmoduleSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
+    #else
+      sportSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
+    #endif
+  }
+#endif
 #if defined(DSM2)
   else if (IS_DSM2_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_MULTIMODULE_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol) || IS_SBUS_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol)) {
     if (IS_SBUS_PROTOCOL(moduleSettings[EXTERNAL_MODULE].protocol))
@@ -278,15 +316,9 @@ void extmoduleSendNextFrame()
     EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
 #endif
-
 #if defined(CROSSFIRE)
   else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_CROSSFIRE) {
     sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
-  }
-#endif
-#if defined(PXX2)
-  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
-    sportSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
   }
 #endif
   else {

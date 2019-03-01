@@ -113,7 +113,7 @@ void menuModelLimitsOne(event_t event)
     coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
     uint8_t i = k + menuVerticalOffset;
     uint8_t attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-    uint8_t active = (attr && (s_editMode>0 || p1valdiff)) ;
+    uint8_t active = (attr && s_editMode > 0) ;
     int limit = (g_model.extendedLimits ? LIMIT_EXT_MAX : 1000);
 
     switch (i) {

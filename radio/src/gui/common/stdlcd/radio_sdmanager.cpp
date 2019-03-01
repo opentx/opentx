@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "io/frsky_device_firmware_update.h"
 
 #define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; menuVerticalPosition = 0; } while(0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
@@ -141,16 +142,19 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    sportFlashDevice(INTERNAL_MODULE, lfn);
+    DeviceFirmwareUpdate device(INTERNAL_MODULE);
+    device.flashFile(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
-    sportFlashDevice(EXTERNAL_MODULE, lfn);
+    DeviceFirmwareUpdate device(EXTERNAL_MODULE);
+    device.flashFile(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    sportFlashDevice(FLASHING_MODULE, lfn);
+    DeviceFirmwareUpdate device(FLASHING_MODULE);
+    device.flashFile(lfn);
   }
 #endif
 #if defined(LUA)
@@ -171,7 +175,7 @@ void menuRadioSdManager(event_t _event)
     Card_state = SD_ST_DATA;
 #endif
     audioQueue.stopSD();
-    if(sdCardFormat()) {
+    if (sdCardFormat()) {
       f_chdir("/");
       REFRESH_FILES();
     }
@@ -197,7 +201,7 @@ void menuRadioSdManager(event_t _event)
       menuVerticalOffset = reusableBuffer.sdmanager.offset;
       break;
 
-#if defined(PCBX9) || defined(PCBX7) // TODO NO_MENU_KEY
+#if defined(PCBX9) || defined(PCBX7) || defined(PCBX3) // TODO NO_MENU_KEY
     case EVT_KEY_LONG(KEY_MENU):
       if (!READ_ONLY() && s_editMode == 0) {
         killEvents(_event);
@@ -234,7 +238,7 @@ void menuRadioSdManager(event_t _event)
       break;
 
     case EVT_KEY_LONG(KEY_ENTER):
-#if !defined(PCBX9) && !defined(PCBX7) // TODO NO_HEADER_LINE
+#if !defined(PCBX9) && !defined(PCBX7) && !defined(PCBX3)// TODO NO_HEADER_LINE
       if (menuVerticalPosition < HEADER_LINE) {
         killEvents(_event);
         POPUP_MENU_ADD_ITEM(STR_SD_INFO);

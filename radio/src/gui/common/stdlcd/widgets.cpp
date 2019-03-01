@@ -160,7 +160,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
       }
       
       if (attr == ZCHAR) {
-        lcdDrawChar(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
+        lcdDrawChar(x+editNameCursorPos*FW, y, zchar2char(v), ERASEBG|INVERS|FIXEDWIDTH);
       }
       else {
         lcdDrawChar(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);

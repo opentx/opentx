@@ -26,9 +26,6 @@ uint8_t     warningInfoLength;
 uint8_t     warningType;
 uint8_t     warningResult = 0;
 uint8_t     warningInfoFlags = ZCHAR;
-int16_t     warningInputValue;
-int16_t     warningInputValueMin;
-int16_t     warningInputValueMax;
 void        (*popupFunc)(event_t event) = NULL;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     s_menu_item = 0;
@@ -80,23 +77,19 @@ void runPopupWarning(event_t event)
 {
   warningResult = false;
 
-  theme->drawMessageBox(warningText, warningInfoText,  WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS), warningType);
+  theme->drawMessageBox(warningText, warningInfoText,  WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT), warningType);
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      warningResult = true;
+      if (warningType != WARNING_TYPE_INFO)
+        warningResult = true;
       // no break
+
     case EVT_KEY_BREAK(KEY_EXIT):
       warningText = NULL;
       warningType = WARNING_TYPE_ASTERISK;
-      break;
-    default:
-      if (warningType != WARNING_TYPE_INPUT) break;
-      s_editMode = EDIT_MODIFY_FIELD;
-      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
-      s_editMode = EDIT_SELECT_FIELD;
       break;
   }
 }

@@ -27,14 +27,6 @@ uint8_t menuCalibrationState;
 vertpos_t menuVerticalPosition;
 horzpos_t menuHorizontalPosition;
 
-#if defined(NAVIGATION_POT1)
-int16_t p1valdiff;
-#endif
-
-#if defined(NAVIGATION_POT2)
-int8_t p2valdiff;
-#endif
-
 int8_t  checkIncDec_Ret;
 
 #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT)) == (KEYS_GPIO_PIN_RIGHT + KEYS_GPIO_PIN_LEFT))
@@ -126,12 +118,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
     newval = !val;
   }
 
-#if defined(NAVIGATION_POT1)
-  // change values based on P1
-  newval -= p1valdiff;
-  p1valdiff = 0;
-#endif
-
 #if defined(AUTOSWITCH)
   if (i_flags & INCDEC_SWITCH) {
     newval = checkIncDecMovedSwitch(newval);
@@ -172,7 +158,6 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
   return newval;
 }
 
-#define SCROLL_TH      64
 #define SCROLL_POT1_TH 32
 
 #define CURSOR_NOT_ALLOWED_IN_ROW(row) ((int8_t)MAXCOL(row) < 0)
@@ -192,36 +177,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
 
   uint8_t maxcol = MAXCOL(l_posVert);
 
-#if defined(NAVIGATION_POT1)
-  // check pot 1 - if changed -> scroll values
-  static int16_t p1val;
-  static int16_t p1valprev;
-  p1valdiff = (p1val-calibratedAnalogs[CALIBRATED_POT1]) / SCROLL_POT1_TH;
-  if (p1valdiff) {
-    p1valdiff = (p1valprev-calibratedAnalogs[CALIBRATED_POT1]) / 2;
-    p1val = calibratedAnalogs[CALIBRATED_POT1];
-  }
-  p1valprev = calibratedAnalogs[CALIBRATED_POT1];
-#endif
-
-#if defined(NAVIGATION_POT2)
-  // check pot 2 - if changed -> scroll menu
-  static int16_t p2valprev;
-  p2valdiff = (p2valprev-calibratedAnalogs[CALIBRATED_POT2]) / SCROLL_TH;
-  if (p2valdiff) p2valprev = calibratedAnalogs[CALIBRATED_POT2];
-#endif
-
-#if defined(NAVIGATION_POT3)
-  // check pot 3 if changed -> cursor down/up
-  static int16_t p3valprev;
-  int8_t scrollUD = (p3valprev-calibratedAnalogs[CALIBRATED_POT3]) / SCROLL_TH;
-  if (scrollUD) p3valprev = calibratedAnalogs[CALIBRATED_POT3];
-#else
-  #define scrollUD 0
-#endif
-
-  if (p2valdiff || scrollUD || p1valdiff) backlightOn(); // on keypress turn the light on
-
   if (menuTab) {
     uint8_t attr = 0;
 
@@ -229,10 +184,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       attr = INVERS;
 
       int8_t cc = curr;
-
-      if (p2valdiff) {
-        cc = limit((int8_t)0, (int8_t)(cc - p2valdiff), (int8_t)(menuTabSize-1));
-      }
 
       switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -287,19 +238,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
     menuCalibrationState = 0;
     drawScreenIndex(curr, menuTabSize, attr);
 
-  }
-
-  DISPLAY_PROGRESS_BAR(menuTab ? lcdLastRightPos-2*FW-((curr+1)/10*FWNUM)-2 : 20*FW+1);
-
-  if (s_editMode<=0) {
-    if (scrollUD) {
-      l_posVert = limit((int8_t)0, (int8_t)(l_posVert - scrollUD), (int8_t)maxrow);
-      l_posHorz = min((uint8_t)l_posHorz, MAXCOL(l_posVert));
-    }
-
-    if (p2valdiff && l_posVert>0) {
-      l_posHorz = limit((int8_t)0, (int8_t)((uint8_t)l_posHorz - p2valdiff), (int8_t)maxcol);
-    }
   }
 
   switch (event)

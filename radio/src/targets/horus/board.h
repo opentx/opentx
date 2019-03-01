@@ -23,6 +23,7 @@
 
 #include "definitions.h"
 #include "opentx_constants.h"
+#include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -139,10 +140,6 @@ void delay_ms(uint32_t ms);
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
 
-// CPU Unique ID
-#define LEN_CPU_UID                    (3*8+2)
-void getCPUUniqueID(char * s);
-
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
@@ -204,9 +201,9 @@ PACK(typedef struct {
 extern HardwareOptions hardwareOptions;
 
 #if defined(PCBX10)
-  #define IS_PXX2_ENABLED()            (true)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
 #else
-  #define IS_PXX2_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
 #endif
 
 void init_ppm(uint8_t module);
@@ -219,6 +216,8 @@ void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint8_t module);
 void intmoduleSendNextFrame();
 void extmoduleSendNextFrame();
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
+void intmoduleSerialStart(uint32_t baudrate);
 
 // Trainer driver
 void init_trainer_ppm(void);

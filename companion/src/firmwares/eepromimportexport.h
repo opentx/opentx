@@ -387,7 +387,7 @@ class CharField: public DataField {
 };
 
 static const char specialCharsTab[] = "_-.,";
-static inline int8_t char2idx(char c)
+static inline int8_t char2zchar(char c)
 {
   if (c==' ') return 0;
   if (c>='A' && c<='Z') return 1+c-'A';
@@ -401,7 +401,7 @@ static inline int8_t char2idx(char c)
 }
 
 #define ZCHAR_MAX 40
-static inline char idx2char(int8_t idx)
+static inline char zchar2char(int8_t idx)
 {
   if (idx == 0) return ' ';
   if (idx < 0) {
@@ -429,7 +429,7 @@ class ZCharField: public DataField {
       int b = 0;
       int len = strlen(field);
       for (int i=0; i<N; i++) {
-        int idx = i>=len ? 0 : char2idx(field[i]);
+        int idx = i>=len ? 0 : char2zchar(field[i]);
         for (int j=0; j<8; j++, b++) {
           if (idx & (1<<j))
             output.setBit(b);
@@ -446,7 +446,7 @@ class ZCharField: public DataField {
           if (input[b++])
             idx |= (1<<j);
         }
-        field[i] = idx2char(idx);
+        field[i] = zchar2char(idx);
       }
 
       field[N] = '\0';

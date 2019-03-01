@@ -22,6 +22,7 @@
 #define _MODULES_H_
 
 #include "myeeprom.h"
+#include "bitfield.h"
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
@@ -121,12 +122,17 @@ inline bool isModulePPM(uint8_t idx)
 }
 #endif
 
-#if defined(PCBXLITE)
 inline bool isModuleR9M(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
 }
 
+inline bool isModuleR9M2(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2;
+}
+
+#if defined(PCBXLITE)
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
@@ -152,11 +158,6 @@ inline bool isModuleR9M_AU_PLUS(uint8_t idx)
   return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
 }
 #else
-inline bool isModuleR9M(uint8_t idx)
-{
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
-}
-
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FCC;
@@ -185,7 +186,12 @@ inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 
 inline bool isModulePXX(uint8_t idx)
 {
-  return isModuleXJT(idx) || isModuleR9M(idx);
+  return isModuleXJT(idx);
+}
+
+inline bool isModulePXX2(uint8_t idx)
+{
+  return isModuleXJT2(idx) || isModuleR9M2(idx);
 }
 
 #if defined(DSM2)
@@ -205,12 +211,22 @@ inline bool isModuleDSM2(uint8_t idx)
 }
 #endif
 
-// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, flysky, dsm, crossfire, multi, r9m, sbus)
-static const int8_t maxChannelsModules_M8[] = {0, 8, 8, 6, -2, 8, 4, 8, 8}; // relative to 8!
-static const int8_t maxChannelsXJT[] = {0, 8, 0, 4}; // relative to 8!
+// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
+static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
+static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
+
+inline uint8_t getPinOuput(uint8_t receiverIdx, uint8_t moduleIdx, uint8_t pin)
+{
+  return ((g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping >> (pin + ((pin & 0x01) ? -1 : 1 )) * 4) & 0x0F);
+}
+
+inline void setPinOuput(uint8_t receiverIdx, uint8_t moduleIdx, uint8_t pin, uint8_t chan)
+{
+  g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping = BF_SET<uint64_t>(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping, chan, (pin + ((pin & 0x01) ? -1 : 1 )) * 4, 4);
+}
 
 inline int8_t maxModuleChannels_M8(uint8_t idx)
 {
@@ -253,7 +269,7 @@ inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
     return CROSSFIRE_CHANNELS_COUNT;
-  else if ((isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx)) || isModuleXJT2(idx))
+  else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
     return 16;
   else
     return 8 + g_model.moduleData[idx].channelsCount;

@@ -22,13 +22,15 @@
 #define _PULSES_PXX2_H_
 
 #include "fifo.h"
+#include "io/frsky_pxx2.h"
 #include "./pxx.h"
 
 #define PXX2_TYPE_C_MODULE          0x01
   #define PXX2_TYPE_ID_REGISTER     0x01
   #define PXX2_TYPE_ID_BIND         0x02
   #define PXX2_TYPE_ID_CHANNELS     0x03
-  #define PXX2_TYPE_ID_SPORT        0xFE
+  #define PXX2_TYPE_ID_RX_SETUP     0x05
+  #define PXX2_TYPE_ID_TELEMETRY    0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
   #define PXX2_TYPE_ID_POWER_METER  0x01
@@ -43,52 +45,21 @@ const uint8_t CH9TO16_CHANNEL_MAPPING[] = {0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23, 0
 
 enum PXX2RegisterSteps {
   REGISTER_START,
-  REGISTER_COUNTER_ID_RECEIVED,
+  REGISTER_RX_NAME_RECEIVED,
+  REGISTER_RX_NAME_SELECTED,
   REGISTER_OK
 };
 
 enum PXX2BindSteps {
     BIND_START,
-    BIND_RX_ID_RECEIVED,
-    BIND_RX_ID_SELECTED,
+    BIND_RX_NAME_RECEIVED,
+    BIND_RX_NAME_SELECTED,
+    BIND_WAIT,
     BIND_OK
 };
 
-class ModuleFifo : public Fifo<uint8_t, 32> {
-  public:
-    bool getFrame(uint8_t * frame)
-    {
-      while (1) {
-        if (isEmpty()) {
-          return false;
-        }
-        else if (fifo[ridx] != 0x7E) {
-          skip();
-        }
-        else {
-          break;
-        }
-      }
-
-      uint32_t next = nextIndex(ridx);
-      uint8_t len = fifo[next];
-      if (size() < unsigned(len + 4 /* 2 bytes header + 2 bytes CRC */)) {
-        return false;
-      }
-
-      for (uint32_t i=0; i<=len; i++) {
-        frame[i] = fifo[next];
-        next = nextIndex(next);
-      }
-
-      // TODO CRC CHECK
-      next = nextIndex(next);
-      ridx = nextIndex(next);
-      return true;
-    }
-};
-
 extern ModuleFifo intmoduleFifo;
+extern ModuleFifo extmoduleFifo;
 
 class Pxx2CrcMixin {
   protected:
@@ -136,6 +107,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     bool setupBindFrame(uint8_t module);
 
+    bool setupShareMode(uint8_t module);
+
     void setupChannelsFrame(uint8_t module);
 
     bool setupSpectrumAnalyser(uint8_t module);
@@ -161,6 +134,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
     uint8_t addFlag0(uint8_t module);
 
     void addFlag1(uint8_t module);
+
+    void addChannels(uint8_t module, uint8_t sendFailsafe, uint8_t firstChannel);
 
     void addCrc()
     {

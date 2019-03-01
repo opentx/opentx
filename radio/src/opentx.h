@@ -192,13 +192,13 @@
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && isFaiForbidden(idx))
 
 #if defined(BLUETOOTH)
-#if defined(X9E) && !defined(USEHORUSBT)
-  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
-  #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
-#else
-  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
-  #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
-#endif
+  #if defined(X9E) && !defined(USEHORUSBT)
+    #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
+  #else
+    #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+  #endif
 #else
   #define IS_BLUETOOTH_TRAINER()       false
   #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
@@ -296,7 +296,7 @@ void memswap(void * a, void * b, uint8_t size);
 #endif
 
 #include "fifo.h"
-#include "io/io_arm.h"
+#include "io/frsky_sport.h"
 
 extern volatile tmr10ms_t g_tmr10ms;
 static inline tmr10ms_t get_tmr10ms()
@@ -434,10 +434,11 @@ extern struct t_inactivity inactivity;
 #endif
 
 char hex2zchar(uint8_t hex);
-char idx2char(int8_t idx);
-int8_t char2idx(char c);
+char zchar2char(int8_t idx);
+int8_t char2zchar(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
+bool cmpStrWithZchar(const char * charString, const char * zcharString, int size);
 
 #include "keys.h"
 #include "pwr.h"
@@ -1119,16 +1120,30 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
-    uint8_t pxx2_register_or_bind_step;
-    char pxx2_bind_candidate_receivers_ids[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_ID];
-    char pxx2_bind_candidate_receivers_names[PXX2_MAX_RECEIVERS_PER_MODULE][3*PXX2_LEN_RX_ID+1];
-    uint8_t pxx2_bind_candidate_receivers_count;
-    uint8_t pxx2_bind_selected_receiver_index;
-  } modelsetup;
+    union {
+      struct {
+        union {
+          uint8_t registerStep;
+          uint8_t bindStep;
+        };
+        uint32_t bindWaitTimeout;
+        uint8_t registerPopupVerticalPosition;
+        uint8_t registerPopupHorizontalPosition;
+        int8_t registerPopupEditMode;
+        char registerRxName[PXX2_LEN_RX_NAME];
+        char registrationID[PXX2_LEN_REGISTRATION_ID];
+        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
+        uint8_t bindCandidateReceiversCount;
+        union {
+          uint8_t bindSelectedReceiverIndex;
+          uint8_t shareReceiverIndex;
+        };
+      } pxx2;
+    };
+  } moduleSetup;
 
   // 103 bytes
-  struct
-  {
+  struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
@@ -1145,8 +1160,7 @@ union ReusableBuffer
 
 #if defined(SDCARD)
   // 274 bytes
-  struct
-  {
+  struct {
     char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
     uint32_t available;
     uint16_t offset;
@@ -1162,8 +1176,7 @@ union ReusableBuffer
   } version;
 #endif
 
-  struct
-  {
+  struct {
     uint8_t stickMode;
   } generalSettings;
 
@@ -1174,6 +1187,11 @@ union ReusableBuffer
     uint32_t span;
     uint32_t step;
   } spectrum;
+
+  struct
+  {
+    int8_t preset;
+  } curveEdit;
 
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed

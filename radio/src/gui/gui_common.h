@@ -67,6 +67,7 @@ bool isSwitchAvailableInTimers(int swtch);
 bool isR9MModeAvailable(int mode);
 bool isR9ModuleRunning(int module);
 bool isR9MMFlex(int module);
+bool isInternalModuleChannelCountAvailable(int module);
 bool isExternalModuleAvailable(int module);
 bool isInternalModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
@@ -129,7 +130,7 @@ void runFatalErrorScreen(const char * message);
 void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 
 // model_setup Defines that are used in all uis in the same way
-#define INTERNAL_MODULE_CHANNELS_ROWS   IF_INTERNAL_MODULE_ON((isModuleXJT2(INTERNAL_MODULE) ? (uint8_t)0 : (uint8_t)1))
+#define INTERNAL_MODULE_CHANNELS_ROWS   IF_INTERNAL_MODULE_ON((uint8_t)1)
 #define EXTERNAL_MODULE_CHANNELS_ROWS   IF_EXTERNAL_MODULE_ON((isModuleXJT2(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleCrossfire(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE) || (isModuleMultimodule(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) != MM_RF_PROTO_DSM2)) ? (uint8_t)0 : (uint8_t)1)
 
 
@@ -170,7 +171,7 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
 #define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== RF_PROTO_X16) || isModuleR9M(x))
 
-#define FAILSAFE_ROWS(x)               ((isModuleXJTVariant(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
+#define FAILSAFE_ROWS(x)               ((isModuleXJTVariant(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x) || isModuleR9M2(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 
 #if defined(PCBXLITE)
   #define EXTERNAL_MODULE_OPTION_ROW     (isModuleR9M(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)

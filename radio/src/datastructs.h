@@ -419,7 +419,6 @@ PACK(struct ReceiverData {
   uint8_t  telemetry:1;
   uint8_t  spare:6;
   uint64_t channelMapping; // each receiver output (16) can be assigned to one of the 16 channels
-  uint8_t  rxID[PXX2_LEN_RX_ID];
 });
 
 /*
@@ -445,8 +444,6 @@ PACK(struct ModuleData {
       uint8_t region:2;
     } r9m;
   };
-
-  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
 
   union {
     NOBACKUP(struct {
@@ -580,24 +577,10 @@ PACK(struct CustomScreenData {
 // TODO other boards could have their custom screens here as well
 #endif
 
-#if defined(PCBX12S) || defined(PCBNV14)
-  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:6); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES]; TrainerModuleData trainerData; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
-#elif defined(PCBX10)
-  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES]; TrainerModuleData trainerData; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
-#elif defined(PCBTARANIS)
-  #define MODELDATA_EXTRA   \
-     uint8_t spare:6; \
-     uint8_t potsWarnMode:2; \
-     ModuleData moduleData[NUM_MODULES]; \
-     TrainerModuleData trainerData; \
-     ScriptData scriptsData[MAX_SCRIPTS]; \
-     char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
-     uint8_t potsWarnEnabled; \
-     int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
-#elif defined(PCBSKY9X)
-  #define MODELDATA_EXTRA   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+#if defined(PCBHORUS)  || defined(PCBTARANIS)
+  #define SCRIPTS_DATA  NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
 #else
-  #define MODELDATA_EXTRA
+  #define SCRIPTS_DATA
 #endif
 
 PACK(struct ModelData {
@@ -635,7 +618,17 @@ PACK(struct ModelData {
 
   TELEMETRY_DATA
 
-  MODELDATA_EXTRA
+  NOBACKUP(uint8_t spare:6);
+  NOBACKUP(uint8_t potsWarnMode:2);
+  ModuleData moduleData[NUM_MODULES];
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
+  TrainerModuleData trainerData;
+
+  SCRIPTS_DATA
+
+  NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
+  NOBACKUP(uint8_t potsWarnEnabled);
+  NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS]);
 
   NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];)
 
@@ -643,7 +636,7 @@ PACK(struct ModelData {
 
   CUSTOM_SCREENS_DATA
 
-  uint8_t modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
+  char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
 });
 
 /*
@@ -812,13 +805,13 @@ PACK(struct RadioData {
 
   THEME_DATA
 
-  uint8_t ownerRegistrationID[PXX2_LEN_REGISTRATION_ID];
+  char ownerRegistrationID[PXX2_LEN_REGISTRATION_ID];
 });
 
 #undef SWITCHES_WARNING_DATA
 #undef MODEL_GVARS_DATA
 #undef TELEMETRY_DATA
-#undef MODELDATA_EXTRA
+#undef SCRIPTS_DATA
 #undef CUSTOM_SCREENS_DATA
 #undef SPLASH_MODE
 #undef EXTRA_GENERAL_FIELDS
@@ -864,6 +857,8 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 104);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
+#elif defined(PCBX3)
+  // TODO
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);

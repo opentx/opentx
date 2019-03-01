@@ -113,7 +113,9 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SH,
 #endif
+#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
+#endif
 #if defined(BLUETOOTH)
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
@@ -122,6 +124,8 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
+  ITEM_RADIO_OWNER_ID,
+  ITEM_RADIO_REGISTER_RECEIVER,
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -134,26 +138,48 @@ enum MenuRadioHardwareItems {
 #endif
 
 #if defined(PCBTARANIS)
-#define BLUETOOTH_ROWS                 uint8_t(IS_BLUETOOTH_CHIP_PRESENT() ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? -1 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
+  #define BLUETOOTH_ROWS                 uint8_t(IS_BLUETOOTH_CHIP_PRESENT() ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? -1 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #elif defined(BLUETOOTH)
-#define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
+  #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : READONLY_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
 #else
-#define BLUETOOTH_ROWS
+  #define BLUETOOTH_ROWS
 #endif
-#if defined(PCBXLITES)
-#define SWITCH_TYPE_MAX(sw)            (sw >= MIXSRC_SE-MIXSRC_FIRST_SWITCH ? SWITCH_2POS : SWITCH_3POS)
+
+#if defined(PCBX3)
+  #define SWITCH_TYPE_MAX(sw)            (sw == MIXSRC_SD-MIXSRC_FIRST_SWITCH ? SWITCH_2POS : SWITCH_3POS)
+#elif defined(PCBXLITES)
+  #define SWITCH_TYPE_MAX(sw)            (sw >= MIXSRC_SE-MIXSRC_FIRST_SWITCH ? SWITCH_2POS : SWITCH_3POS)
 #elif defined(PCBXLITE)
-#define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
+  #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #else
-#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #endif
 
 #define HW_SETTINGS_COLUMN1            30
 #define HW_SETTINGS_COLUMN2            (30 + 5*FW)
 
+void startRegisterDialog(uint8_t module);
+
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, HEADER_LINE+ITEM_RADIO_HARDWARE_MAX, { HEADER_LINE_COLUMNS LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, 0/*max bauds*/, BLUETOOTH_ROWS 0/*jitter filter*/ });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, HEADER_LINE+ITEM_RADIO_HARDWARE_MAX, {
+    HEADER_LINE_COLUMNS
+    LABEL(Sticks),
+      0,
+      0,
+      0,
+      0,
+    LABEL(Pots),
+      POTS_ROWS,
+    LABEL(Switches),
+      SWITCHES_ROWS,
+#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+    0 /*max bauds*/,
+#endif
+    BLUETOOTH_ROWS
+    0 /*jitter filter*/,
+    0 /*owner id*/
+  });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
 
@@ -228,6 +254,7 @@ void menuRadioHardware(event_t event)
         break;
       }
 
+#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
         lcdDrawTextAlignedLeft(y, STR_MAXBAUDRATE);
         lcdDrawNumber(HW_SETTINGS_COLUMN2, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
@@ -245,6 +272,7 @@ void menuRadioHardware(event_t event)
           }
         }
         break;
+#endif
 
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
@@ -282,6 +310,33 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:
         g_eeGeneral.jitterFilter = 1 - editCheckBox(1 - g_eeGeneral.jitterFilter, HW_SETTINGS_COLUMN2, y, STR_JITTER_FILTER, attr, event);
         break;
+
+      case ITEM_RADIO_OWNER_ID:
+        editSingleName(HW_SETTINGS_COLUMN2, y, STR_OWNER_ID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);
+        break;
+
+      case ITEM_RADIO_REGISTER_RECEIVER:
+        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_RECEIVER));
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, "[Register]", attr );
+        if (attr) {
+          if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
+            if (event == EVT_KEY_FIRST(KEY_ENTER)) {
+              startRegisterDialog(INTERNAL_MODULE);
+            }
+            else if (menuHorizontalPosition == 0) {
+              moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
+            }
+          }
+          if (s_editMode == 0 && !warningText) {
+            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+          }
+          if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL) {
+            // REGISTER finished
+            s_editMode = 0;
+          }
+        }
+        break;
+
     }
   }
 }

@@ -50,7 +50,7 @@ class ChannelFailsafeBargraph: public Window {
 
     void paint(BitmapBuffer * dc) override
     {
-      int32_t failsafeValue = g_model.moduleData[moduleIndex].failsafeChannels[channel];
+      int32_t failsafeValue = g_model.failsafeChannels[channel];
       int32_t channelValue = channelOutputs[channel];
 
       const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
@@ -102,8 +102,8 @@ class FailSafeBody : public Window {
 
         // Channel numeric value
         new NumberEdit(this, grid.getFieldSlot(3, 0), -lim, lim,
-                       GET_DEFAULT(calcRESXto1000(g_model.moduleData[moduleIndex].failsafeChannels[ch])),
-                       SET_VALUE(g_model.moduleData[moduleIndex].failsafeChannels[ch], newValue),
+                       GET_DEFAULT(calcRESXto1000(g_model.failsafeChannels[ch])),
+                       SET_VALUE(g_model.failsafeChannels[ch], newValue),
                        PREC1);
 
         // Channel bargraph
@@ -566,7 +566,7 @@ void ModelSetupPage::build(FormWindow * window)
       auto button = new TextButton(window, grid.getFieldSlot(3, i % 3), getSwitchWarningString(s, i), nullptr,
                                    (BF_GET(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
       button->setPressHandler([button, i] {
-        uint8_t newstate = BF_GET(g_model.switchWarningState, 3 * i, 3);
+        swarnstate_t newstate = BF_GET(g_model.switchWarningState, 3 * i, 3);
         if (newstate == 1 && SWITCH_CONFIG(i) != SWITCH_3POS)
           newstate = 3;
         else
@@ -590,9 +590,9 @@ void ModelSetupPage::build(FormWindow * window)
 
       new TextButton(window, grid.getFieldSlot(3, i % 3), getStringAtIndex(s, STR_RETA123, i),
                      [=]() -> uint8_t {
-                       BF_BIT_FLIP(g_model.beepANACenter, BF_BIT(i));
+                       BF_BIT_FLIP(g_model.beepANACenter, BF_BIT<BeepANACenter>(i));
                        SET_DIRTY();
-                       return BF_SINGLE_BIT_GET(g_model.beepANACenter, i);
+                       return BF_SINGLE_BIT_GET<BeepANACenter>(g_model.beepANACenter, i);
                      },
                      BF_SINGLE_BIT_GET(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
     }

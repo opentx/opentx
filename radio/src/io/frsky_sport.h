@@ -18,10 +18,31 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_PXX2_H_
-#define _IO_PXX2_H_
+#ifndef _IO_FRSKY_SPORT_H_
+#define _IO_FRSKY_SPORT_H_
 
-#define PXX2_BAUDRATE            230400
-#define PXX2_PERIOD              4 // 4ms
+#include "dataconstants.h"
 
+#if defined(TELEMETRY_FRSKY_SPORT)
+PACK(union SportTelemetryPacket
+{
+  struct {
+    uint8_t physicalId;
+    uint8_t primId;
+    uint16_t dataId;
+    uint32_t value;
+  };
+  uint8_t raw[8];
+});
+
+bool isSportOutputBufferAvailable();
+void sportOutputPushPacket(SportTelemetryPacket * packet);
+void sportFlashDevice(ModuleIndex module, const char * filename);
 #endif
+
+#if defined(STM32)
+bool isBootloader(const char * filename);
+void bootloaderFlash(const char * filename);
+#endif
+
+#endif // _IO_FRSKY_SPORT_H_

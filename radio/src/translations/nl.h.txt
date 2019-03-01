@@ -106,13 +106,8 @@
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Popup\0 ""Audio\0 ""Trainer"
 
-#if defined(PCBNV14)
-#define LEN_MODULE_PROTOCOLS   "\006"
-#define TR_MODULE_PROTOCOLS    "Off\0  ""PPM\0  ""XJT\0  ""FlySky""DSM2\0 ""CRSF\0 ""MULT.\0""R9M\0  ""SBUS"
-#else
-#define LEN_MODULE_PROTOCOLS  "\004"
-#define TR_MODULE_PROTOCOLS   "OFF\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
-#endif
+#define LEN_MODULE_PROTOCOLS   "\004"
+#define TR_MODULE_PROTOCOLS    "UIT\0""PPM\0""XJT\0""XJT2""DSM2""CRSF""MULT""R9M\0""R9M2""SBUS"
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -547,10 +542,10 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_POPUPS            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
+  #define TR_POPUPS_ENTER_EXIT            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
   #define TR_OK                TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #else
-  #define TR_POPUPS            TR_ENTER "\010" TR_EXIT
+  #define TR_POPUPS_ENTER_EXIT            TR_ENTER "\010" TR_EXIT
   #define OFS_EXIT             sizeof(TR_ENTER)
 #endif
 
@@ -935,12 +930,16 @@
 #define TR_FLASH_INTERNAL_MODULE "Flash interne XJT-Module"
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
+#define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
 #define TR_WRITING             "\032Schrijven..."
 #define TR_CONFIRM_FORMAT      "Formatteren bevestigen?"
 #define TR_INTERNALRF          "Interne RF"
 #define TR_EXTERNALRF          "Externe RF"
 #define TR_FAILSAFE            TR(INDENT "Failsafe", INDENT "Failsafe Modus")
 #define TR_FAILSAFESET         "Failsafe instellen"
+#define TR_REG_ID                      TR("Reg. ID", "Registration ID")
+#define TR_OWNER_ID                    "Owner ID"
+#define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENSOR"
@@ -979,6 +978,9 @@
 #define TR_BUZZER              INDENT "Zoemer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
+#define TR_TRANSFER_BUTTON             BUTTON("Transfer")
+#define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
+#define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        TR("[Rng]", "[Range]")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           "[Reset]"
@@ -987,6 +989,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "TX-Antenneprobleem!"
 #define TR_MODELIDUSED         TR("ID al gebruikt", "Model-ID al gebruikt")
 #define TR_MODULE              INDENT "Module-Type"
+#define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE      TR("Type", "Telemetrietype")
 #define TR_TELEMETRY_SENSORS   "Sensoren"
 #define TR_VALUE               "Waarde"

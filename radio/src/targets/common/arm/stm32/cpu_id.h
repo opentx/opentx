@@ -18,32 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_ARM_H_
-#define _IO_ARM_H_
+#include <inttypes.h>
 
-#include "dataconstants.h"
+void getCPUUniqueID(char * s);
 
-#if defined(TELEMETRY_FRSKY_SPORT)
-PACK(union SportTelemetryPacket
-{
-  struct {
-    uint8_t physicalId;
-    uint8_t primId;
-    uint16_t dataId;
-    uint32_t value;
-  };
-  uint8_t raw[8];
-});
+#define LEN_CPU_UID                    (3*8+2)
 
-void sportProcessPacket(uint8_t * packet);
-bool isSportOutputBufferAvailable();
-void sportOutputPushPacket(SportTelemetryPacket * packet);
-void sportFlashDevice(ModuleIndex module, const char * filename);
+#if defined(SIMU)
+extern const uint32_t cpu_uid[3];
+#else
+extern const uint32_t * cpu_uid;
 #endif
-
-#if defined(STM32)
-bool isBootloader(const char * filename);
-void bootloaderFlash(const char * filename);
-#endif
-  
-#endif // _IO_ARM_H_

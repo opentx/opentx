@@ -186,7 +186,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
     uint8_t func = CFN_FUNC(cfn);
     for (uint8_t j=0; j<5; j++) {
       uint8_t attr = ((sub==k && menuHorizontalPosition==j) ? ((s_editMode>0) ? BLINK|INVERS : INVERS) : 0);
-      uint8_t active = (attr && (s_editMode>0 || p1valdiff));
+      uint8_t active = (attr && s_editMode > 0);
       switch (j) {
         case 0:
           if (sub==k && menuHorizontalPosition < 1 && CFN_SWITCH(cfn) == SWSRC_NONE) {
