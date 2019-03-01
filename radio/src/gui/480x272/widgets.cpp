@@ -33,38 +33,6 @@ void drawColumnHeader(const char * const * headers, const char * const * descrip
   }
 }
 
-//static const uint8_t __alpha_button_on[] __ALIGNED(4) = {
-//#include "alpha_button_on.lbm"
-//};
-//Bitmap ALPHA_BUTTON_ON(BMP_ARGB4444, (const uint16_t*)__alpha_button_on);
-//
-//static const uint8_t __alpha_button_off[] __ALIGNED(4) = {
-//#include "alpha_button_off.lbm"
-//};
-//Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
-
-void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
-{
-  int width = getTextWidth(label, 0, 0);
-  int padding = 0;
-  if (attr & (BUTTON_OFF|BUTTON_ON)) {
-    padding = 5;
-  }
-  if (attr & INVERS) {
-    lcdDrawSolidFilledRect(x, y, padding+width+16+padding, 19, TEXT_INVERTED_BGCOLOR);
-    lcdDrawText(x+padding+8, y, label, TEXT_INVERTED_COLOR);
-  }
-  else {
-    lcdDrawText(x+padding+8, y, label, TEXT_COLOR);
-  }
-  lcdDrawSolidRect(x-1, y-1, padding+width+18+padding, 21, 1, TEXT_COLOR);
-/*  if (attr & BUTTON_OFF)
-    lcd->drawBitmap(x-6, y+3, &ALPHA_BUTTON_OFF);
-  else if (attr & BUTTON_ON)
-    lcd->drawBitmap(x-6, y+3, &ALPHA_BUTTON_ON);
-    */
-}
-
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
   if (attr) {
@@ -97,18 +65,6 @@ void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uin
   }
 }
 
-void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, uint16_t count, uint8_t visible)
-{
-  if (visible < count) {
-    lcdDrawSolidHorizontalLine(x, y, w, LINE_COLOR);
-    coord_t xofs = (w*offset + count/2) / count;
-    coord_t xhgt = (w*visible + count/2) / count;
-    if (xhgt + xofs > w)
-      xhgt = w - xofs;
-    lcdDrawSolidFilledRect(x+xofs, y-1, xhgt, 3, SCROLLBOX_COLOR);
-  }
-}
-
 void drawProgressBar(const char * label, int num, int den)
 {
   lcdClear();
@@ -125,66 +81,6 @@ void drawProgressBar(const char * label, int num, int den)
   lcdRefresh();
 }
 
-void drawShadow(coord_t x, coord_t y, coord_t w, coord_t h)
-{
-  lcdDrawSolidVerticalLine(x+w, y+1, h, TEXT_COLOR);
-  lcdDrawSolidHorizontalLine(x+1, y+h, w, TEXT_COLOR);
-  lcdDrawSolidVerticalLine(x+w+1, y+2, h, LINE_COLOR);
-  lcdDrawSolidHorizontalLine(x+2, y+h+1, w, LINE_COLOR);
-}
-#if 0
-void drawMenuTemplate(const char * title, uint8_t icon, const uint8_t * icons, uint32_t options)
-{
-  coord_t bodyTop, bodyBottom;
-
-//  theme->drawMenuBackground(icons ? icons[0] : icon);
-
-  // Menu title bar
-  if (options & OPTION_MENU_TITLE_BAR) {
-    linesDisplayed = NUM_BODY_LINES;
-    bodyTop = MENU_BODY_TOP;
-    lcdDrawSolidFilledRect(0, MENU_HEADER_HEIGHT, LCD_W, MENU_TITLE_TOP - MENU_HEADER_HEIGHT, TEXT_BGCOLOR);
-    lcdDrawSolidFilledRect(0, MENU_TITLE_TOP, LCD_W, MENU_TITLE_HEIGHT, TITLE_BGCOLOR);
-    if (title) {
-      lcdDrawText(MENUS_MARGIN_LEFT, MENU_TITLE_TOP+1, title, MENU_TITLE_COLOR);
-    }
-#if 0
-    if (icons) {
-      for (int i=0; i<menuPageCount; i++) {
-        if (menuPageIndex != i) {
-          theme->drawMenuIcon(icons[i+1], i, false);
-        }
-      }
-      theme->drawMenuIcon(icons[menuPageIndex+1], menuPageIndex, true);
-    }
-#endif
-  }
-  else {
-    linesDisplayed = NUM_BODY_LINES + 1;
-    bodyTop = MENU_HEADER_HEIGHT;
-    if (title) {
-      lcdDrawText(50, 3, title, MENU_TITLE_COLOR);
-    }
-  }
-
-  // Footer
-  if (options & OPTION_MENU_NO_FOOTER) {
-    bodyBottom = LCD_H;
-  }
-  else {
-    bodyBottom = MENU_FOOTER_TOP;
-    lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, LCD_W, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
-  }
-
-  // Body
-  lcdDrawSolidFilledRect(0, bodyTop, LCD_W, bodyBottom-bodyTop, TEXT_BGCOLOR);
-
-  // Scrollbar
-  if (!(options & OPTION_MENU_NO_SCROLLBAR) && linesCount>linesDisplayed) {
-    drawVerticalScrollbar(DEFAULT_SCROLLBAR_X, bodyTop+3, bodyBottom-bodyTop-6, menuVerticalOffset, linesCount, linesDisplayed);
-  }
-}
-#endif
 void drawTrimSquare(coord_t x, coord_t y)
 {
   lcdDrawSolidFilledRect(x-2, y, 15, 15, TRIM_BGCOLOR);
@@ -401,7 +297,7 @@ void drawShutdownAnimation(uint32_t index, const char * message)
 
   if (shutdown) {
     if (index < last_index) {
-      theme->drawBackground();
+      theme->drawBackground(lcd);
       lcd->drawBitmap((LCD_W-shutdown->getWidth())/2, (LCD_H-shutdown->getHeight())/2, shutdown);
       lcdStoreBackupBuffer();
     }

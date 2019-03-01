@@ -195,10 +195,10 @@ void ViewMain::checkEvents()
 
 void ViewMain::paint(BitmapBuffer * dc)
 {
-  theme->drawBackground();
+  TRACE("Theme name %s", theme->getName());
 
-  lcdSetColor(ALARM_COLOR_INDEX);
-  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
+
+  theme->drawBackground(dc);
 
   drawMainPots();
 

@@ -71,14 +71,6 @@ void TabsCarousel::paint(BitmapBuffer * dc)
     }
   }
   theme->drawMenuIcon(dc, menu->tabs[currentIndex]->icon, currentIndex, true);
-
-  // coord_t x = padding_left + TOPBAR_BUTTON_WIDTH * menu->tabs.size();
-  // coord_t w = width() - x;
-  // if (w > 0) {
-  // dc->drawSolidFilledRect(x, 0, w, TOPBAR_BUTTON_WIDTH, HEADER_BGCOLOR);
-  //}
-
-  // theme->drawMenuBackground(dc, menu->tabs, currentIndex);
 }
 
 #if defined(TOUCH_HARDWARE)

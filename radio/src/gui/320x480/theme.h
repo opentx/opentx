@@ -78,8 +78,6 @@ class Theme
 
     virtual bool drawTopbarBackground(uint32_t options=0) const = 0;
 
-    virtual void drawIcon(coord_t x, coord_t y, uint8_t index, LcdFlags flags) const { }
-
     virtual bool drawMenuIcon(uint8_t index, uint8_t position, bool selected) const { return false; }
 
     virtual void drawMessageBox(const char * title, const char * text, const char * action, uint32_t flags) const;

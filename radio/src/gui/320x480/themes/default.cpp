@@ -346,11 +346,6 @@ class DefaultTheme: public Theme
       return result;
     }
 
-    void drawIcon(coord_t x, coord_t y, uint8_t index, LcdFlags flags) const override
-    {
-      lcd->drawMask(x, y, iconMask[index], flags);
-    }
-
     const BitmapBuffer * getIconBitmap(uint8_t index, bool selected) const override
     {
       return selected ? menuIconSelected[index] : menuIconNormal[index];

@@ -65,20 +65,6 @@ void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr)
     lcd->drawBitmap(x-6, y+3, &ALPHA_STATE_ON);
 }
 
-
-
-void drawIconButton(coord_t x, coord_t y, uint8_t index, LcdFlags flags)
-{
-  // 68x68
-//  if (flags & BUTTON_OFF)
-  //  lcd->drawBitmap(x, y, &ALPHA_BUTTON_OFF);
-  // else if (flags & BUTTON_ON)
-   // lcd->drawBitmap(x, y, &ALPHA_BUTTON_ON);
-
-  // 36x36
-  theme->drawIcon(x+(68-36)/2, y+(68-36)/2, index, TEXT_BGCOLOR);
-}
-
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr)
 {
   if (attr) {

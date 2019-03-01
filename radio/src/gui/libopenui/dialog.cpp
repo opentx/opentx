@@ -60,7 +60,7 @@ Dialog::~Dialog()
 
 void Dialog::paint(BitmapBuffer * dc)
 {
-  theme->drawBackground();
+  theme->drawBackground(dc);
 
   if (type == WARNING_TYPE_ALERT || type == WARNING_TYPE_ASTERISK)
     dc->drawBitmap(ALERT_BITMAP_PADDING, ALERT_FRAME_TOP + ALERT_BITMAP_PADDING, theme->asterisk);

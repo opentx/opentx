@@ -83,9 +83,9 @@ void Theme::drawThumb(coord_t x, coord_t y, uint32_t flags)
   }
 }
 
-void Theme::drawBackground() const
+void Theme::drawBackground(BitmapBuffer * dc) const
 {
-  lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
+  dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
 }
 
 void Theme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const

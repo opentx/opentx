@@ -307,9 +307,8 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
-  #warning "missing theme init"
-  // strcpy(g_eeGeneral.themeName, theme->getName());
-  // theme->init();
+  strcpy(g_eeGeneral.themeName, theme->getName());
+  theme->init();
 #endif
 
   for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {

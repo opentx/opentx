@@ -38,7 +38,7 @@ class DefaultTheme: public Theme
 
     void loadColors() const
     {
-      TRACE("Load COLORS");
+      TRACE("Load theme colors");
       lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
       lcdColorTable[TEXT_BGCOLOR_INDEX] = WHITE;
       lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
@@ -48,8 +48,7 @@ class DefaultTheme: public Theme
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
-      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] =
-          RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
       lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
       lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
@@ -264,7 +263,7 @@ class DefaultTheme: public Theme
       mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_COLOR, TEXT_BGCOLOR);
     }
 
-    virtual void load() const
+    virtual void load() const override
     {
       loadColors();
       Theme::load();
@@ -274,7 +273,7 @@ class DefaultTheme: public Theme
       update();
     }
 
-    virtual void update() const
+    virtual void update() const override
     {
       TRACE("TODO THEME::UPDATE()");
 #if 0
@@ -300,18 +299,18 @@ class DefaultTheme: public Theme
       loadThemeBitmaps();
     }
 
-    virtual void drawBackground() const
+    virtual void drawBackground(BitmapBuffer * dc) const override
     {
       if (backgroundBitmap) {
-        lcd->drawBitmap(0, 0, backgroundBitmap);
+        dc->drawBitmap(0, 0, backgroundBitmap);
       }
       else {
         lcdSetColor(g_eeGeneral.themeData.options[0].unsignedValue);
-        lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
+        dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
       }
     }
 
-    virtual void drawMenuBackground(BitmapBuffer *dc, uint8_t icon, const char *title) const
+    virtual void drawMenuBackground(BitmapBuffer * dc, uint8_t icon, const char * title) const override
     {
       dc->drawSolidFilledRect(0, 0, LCD_W, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
 
@@ -344,7 +343,7 @@ class DefaultTheme: public Theme
       return selected ? menuIconSelected[index] : menuIconNormal[index];
     }
 
-    void drawMenuIcon(BitmapBuffer * dc, uint8_t index, uint8_t position, bool selected) const
+    void drawMenuIcon(BitmapBuffer * dc, uint8_t index, uint8_t position, bool selected) const override
     {
       if (selected) {
         dc->drawBitmap(position*MENU_ICONS_SPACING, 0, currentMenuBackground);

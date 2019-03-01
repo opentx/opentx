@@ -49,7 +49,6 @@ void drawTopbarDatetime();
 #define BUTTON_ON   0x10
 #define BUTTON_OFF  0x20
 void drawButton(coord_t x, coord_t y, const char * label, LcdFlags attr);
-void drawIconButton(coord_t x, coord_t y, uint8_t index, LcdFlags attr);
 bool handleIconButton(coord_t x, coord_t y, uint8_t index, LcdFlags flags);
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint16_t visible);
