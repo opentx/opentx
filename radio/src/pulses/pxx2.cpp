@@ -39,6 +39,50 @@ void Pxx2Pulses::addFlag1(uint8_t module)
   Pxx2Transport::addByte(flag1);
 }
 
+void Pxx2Pulses::addChannels(uint8_t module, uint8_t sendFailsafe, uint8_t firstChannel)
+{
+  uint16_t pulseValue = 0;
+  uint16_t pulseValueLow = 0;
+
+  for (int8_t i=0; i<8; i++) {
+    uint8_t channel = firstChannel + i;
+    if (sendFailsafe) {
+      if (g_model.moduleData[module].failsafeMode == FAILSAFE_HOLD) {
+        pulseValue = 2047;
+      }
+      else if (g_model.moduleData[module].failsafeMode == FAILSAFE_NOPULSES) {
+        pulseValue = 0;
+      }
+      else {
+        int16_t failsafeValue = g_model.failsafeChannels[channel];
+        if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
+          pulseValue = 2047;
+        }
+        else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
+          pulseValue = 0;
+        }
+        else {
+          failsafeValue += 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+          pulseValue = limit(1, (failsafeValue * 512 / 682) + 1024, 2046);
+        }
+      }
+    }
+    else {
+      int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+      pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+    }
+
+    if (i & 1) {
+      Pxx2Transport::addByte(pulseValueLow); // Low byte of channel
+      Pxx2Transport::addByte(((pulseValueLow >> 8) & 0x0F) | (pulseValue << 4));  // 4 bits each from 2 channels
+      Pxx2Transport::addByte(pulseValue >> 4);  // High byte of channel
+    }
+    else {
+      pulseValueLow = pulseValue;
+    }
+  }
+}
+
 void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_CHANNELS);
@@ -50,18 +94,27 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   addFlag1(module);
 
   // Channels
-  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, 0);
-  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, 1);
+  uint8_t channelsCount = sentModuleChannels(module);
+  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart);
+  if (channelsCount > 8) {
+    addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 8);
+    if (channelsCount > 16) {
+      addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 16);
+    }
+  }
 }
 
 bool Pxx2Pulses::setupRegisterFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
 
-  if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == REGISTER_COUNTER_ID_RECEIVED) {
+  if (reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
     Pxx2Transport::addByte(0x01);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registerRxName[i]));
+    }
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
+      Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registrationID[i]));
     }
   }
   else {
@@ -75,17 +128,27 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
-  if (reusableBuffer.modelsetup.pxx2_register_or_bind_step == BIND_RX_ID_SELECTED) {
+  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_WAIT) {
+    if (get_tmr10ms() > reusableBuffer.moduleSetup.pxx2.bindWaitTimeout) {
+      moduleSettings[module].mode = MODULE_MODE_NORMAL;
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
+      POPUP_INFORMATION(STR_BIND_OK);
+    }
+    else {
+      return false;
+    }
+  }
+  else if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
     Pxx2Transport::addByte(0x01);
-    for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
-      Pxx2Transport::addByte(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index][i]);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
     }
     Pxx2Transport::addByte(g_model.header.modelId[INTERNAL_MODULE]);
   }
   else {
     Pxx2Transport::addByte(0x00);
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(g_model.modelRegistrationID[i]);
+      Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registrationID[i]));
     }
   }
 
@@ -116,6 +179,22 @@ bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
   return true;
 }
 
+bool Pxx2Pulses::setupShareMode(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETUP);
+
+  Pxx2Transport::addByte(0xC0);
+
+  Pxx2Transport::addByte(0x40);
+
+  for(uint8_t i=0; i < 24 ; i++) {
+    Pxx2Transport::addByte(i);
+  }
+
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  return true;
+}
+
 bool Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
@@ -129,6 +208,8 @@ bool Pxx2Pulses::setupFrame(uint8_t module)
     result = setupBindFrame(module);
   else if (mode == MODULE_MODE_SPECTRUM_ANALYSER)
     result = setupSpectrumAnalyser(module);
+  else if (mode == MODULE_MODE_SHARE)
+    result = setupShareMode(module);
   else
     setupChannelsFrame(module);
 

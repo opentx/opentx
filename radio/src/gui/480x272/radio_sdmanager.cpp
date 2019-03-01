@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <io/frsky_device_firmware_update.h>
 #include "radio_sdmanager.h"
 #include "opentx.h"
 #include "libopenui.h"
@@ -164,7 +165,8 @@ void RadioSdManagerPage::build(FormWindow * window)
           }
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
             menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
-              sportFlashDevice(EXTERNAL_MODULE, getFullPath(name));
+              DeviceFirmwareUpdate device(EXTERNAL_MODULE);
+              device.flashFile(getFullPath(name));
             });
           }
 #if defined(LUA)

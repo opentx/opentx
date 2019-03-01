@@ -467,7 +467,7 @@ const char * eeBackupModel(uint8_t i_fileSrc)
       len = i+1;
     if (len) {
       if (buf[i])
-        buf[i] = idx2char(buf[i]);
+        buf[i] = zchar2char(buf[i]);
       else
         buf[i] = '_';
     }
@@ -615,9 +615,6 @@ void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_l
   m_rlc_buf = buf;
   m_rlc_len = i_len;
   m_cur_rlc_len = 0;
-#if defined (EEPROM_PROGRESS_BAR)
-  m_ratio = (typ == FILE_TYP_MODEL ? 100 : 10);
-#endif
 
   do {
     nextRlcWriteStep();
@@ -741,17 +738,6 @@ void RlcFile::flush()
 
   ENABLE_SYNC_WRITE(false);
 }
-
-#if defined (EEPROM_PROGRESS_BAR)
-void RlcFile::drawProgressBar(uint8_t x)
-{
-  if (storageDirtyMsk || isWriting() || eeprom_buffer_size) {
-    uint8_t len = storageDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
-    lcdDrawFilledRect(x+1, 0, 5, FH, SOLID, ERASE);
-    lcdDrawFilledRect(x+2, 7-len, 3, len);
-  }
-}
-#endif
 
 // For conversions ...
 uint16_t eeLoadGeneralSettingsData()

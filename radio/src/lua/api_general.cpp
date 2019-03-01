@@ -33,6 +33,8 @@
   #include "lua/lua_exports_x9e.inc"
 #elif defined(PCBX7)
   #include "lua/lua_exports_x7.inc"
+#elif defined(PCBX3)
+  #include "lua/lua_exports_x3.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
@@ -301,7 +303,10 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
         continue;
       }
       if (index < luaMultipleFields[n].count) {
-        field.id = luaMultipleFields[n].id + index;
+        if(luaMultipleFields[n].id == MIXSRC_FIRST_TELEM)
+          field.id = luaMultipleFields[n].id + index*3;
+        else
+          field.id = luaMultipleFields[n].id + index;
         if (flags & FIND_FIELD_DESC) {
           snprintf(field.desc, sizeof(field.desc)-1, luaMultipleFields[n].desc, index+1);
           field.desc[sizeof(field.desc)-1] = '\0';
@@ -931,55 +936,6 @@ static int luaGetGeneralSettings(lua_State * L)
 }
 
 /*luadoc
-@function popupInput(title, event, input, min, max)
-
-Raises a pop-up on screen that allows uses input
-
-@param title (string) text to display
-
-@param event (number) the event variable that is passed in from the
-Run function (key pressed)
-
-@param input (number) value that can be adjusted by the +/­- keys
-
-@param min  (number) min value that input can reach (by pressing the -­ key)
-
-@param max  (number) max value that input can reach
-
-@retval number result of the input adjustment
-
-@retval "OK" user pushed ENT key
-
-@retval "CANCEL" user pushed EXIT key
-
-@notice Use only from stand-alone and telemetry scripts.
-
-@status current Introduced in 2.0.0
-*/
-static int luaPopupInput(lua_State * L)
-{
-  event_t event = luaL_checkinteger(L, 2);
-  warningInputValue = luaL_checkinteger(L, 3);
-  warningInputValueMin = luaL_checkinteger(L, 4);
-  warningInputValueMax = luaL_checkinteger(L, 5);
-  warningText = luaL_checkstring(L, 1);
-  warningType = WARNING_TYPE_INPUT;
-  runPopupWarning(event);
-  if (warningResult) {
-    warningResult = 0;
-    lua_pushstring(L, "OK");
-  }
-  else if (!warningText) {
-    lua_pushstring(L, "CANCEL");
-  }
-  else {
-    lua_pushinteger(L, warningInputValue);
-  }
-  warningText = NULL;
-  return 1;
-}
-
-/*luadoc
 @function popupWarning(title, event)
 
 Raises a pop-up on screen that shows a warning
@@ -1338,7 +1294,7 @@ const luaL_Reg opentxLib[] = {
   { "playDuration", luaPlayDuration },
   { "playTone", luaPlayTone },
   { "playHaptic", luaPlayHaptic },
-  { "popupInput", luaPopupInput },
+  // { "popupInput", luaPopupInput },
   { "popupWarning", luaPopupWarning },
   { "popupConfirmation", luaPopupConfirmation },
   { "defaultStick", luaDefaultStick },
@@ -1387,11 +1343,11 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBX3)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
-#if !defined(PCBXLITE)
+#if !defined(PCBXLITE) && !defined(PCBX3)
   { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SH", MIXSRC_SH },
 #endif

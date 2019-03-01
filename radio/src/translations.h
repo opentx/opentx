@@ -337,11 +337,11 @@ extern const char STR_BLUETOOTH_LOCAL_ADDR[];
 // The 0-terminated-strings
 #define NO_INDENT(x) (x)+LEN_INDENT
 
-extern const char STR_POPUPS[];
+extern const char STR_POPUPS_ENTER_EXIT[];
 extern const char STR_OK[];
 
 #if defined(OFS_EXIT)
-  #define STR_EXIT (STR_POPUPS + OFS_EXIT)
+  #define STR_EXIT (STR_POPUPS_ENTER_EXIT + OFS_EXIT)
 #else
   extern const char STR_EXIT[];
 #endif
@@ -591,6 +591,10 @@ extern const char STR_MODULE_TELEMETRY[];
 extern const char STR_MODULE_TELEM_ON[];
 extern const char STR_FAILSAFE[];
 extern const char STR_FAILSAFESET[];
+extern const char STR_RECEIVER[];
+extern const char STR_REG_ID[];
+extern const char STR_OWNER_ID[];
+extern const char STR_PINMAPSET[];
 extern const char STR_HOLD[];
 extern const char STR_NONE[];
 extern const char STR_MENUSENSOR[];
@@ -699,7 +703,6 @@ extern const char STR_NIGHTLY_NOTSAFE[];
 extern const char STR_WRONG_SDCARDVERSION[];
 extern const char STR_WRONG_PCBREV[];
 extern const char STR_EMERGENCY_MODE[];
-extern const char STR_PCBREV_ERROR[];
 extern const char STR_NO_FAILSAFE[];
 extern const char STR_KEYSTUCK[];
 
@@ -768,6 +771,7 @@ extern const char STR_FLASH_EXTERNAL_DEVICE[];
 extern const char STR_FLASH_INTERNAL_MODULE[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];
 extern const char STR_FIRMWARE_UPDATE_ERROR[];
+extern const char STR_FIRMWARE_UPDATE_SUCCESS[];
 extern const char STR_WRITING[];
 extern const char STR_CONFIRM_FORMAT[];
 extern const char STR_EEBACKUP[];
@@ -776,63 +780,66 @@ extern const char STR_CONFIRMRESET[];
 extern const char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const char STR_BLCOLOR[];
 
-  struct LanguagePack {
-    const char * id;
-    const char * name;
-    void (*playNumber)(getvalue_t number, uint8_t unit, uint8_t flags, uint8_t id);
-    void (*playDuration)(int seconds, uint8_t flags, uint8_t id);
-  };
+struct LanguagePack {
+  const char * id;
+  const char * name;
+  void (*playNumber)(getvalue_t number, uint8_t unit, uint8_t flags, uint8_t id);
+  void (*playDuration)(int seconds, uint8_t flags, uint8_t id);
+};
 
-  extern const LanguagePack * currentLanguagePack;
-  extern uint8_t currentLanguagePackIdx;
+extern const LanguagePack * currentLanguagePack;
+extern uint8_t currentLanguagePackIdx;
 
-  extern const LanguagePack czLanguagePack;
-  extern const LanguagePack deLanguagePack;
-  extern const LanguagePack enLanguagePack;
-  extern const LanguagePack esLanguagePack;
-  extern const LanguagePack frLanguagePack;
-  extern const LanguagePack huLanguagePack;
-  extern const LanguagePack itLanguagePack;
-  extern const LanguagePack nlLanguagePack;
-  extern const LanguagePack plLanguagePack;
-  extern const LanguagePack ptLanguagePack;
-  extern const LanguagePack ruLanguagePack;
-  extern const LanguagePack seLanguagePack;
-  extern const LanguagePack skLanguagePack;
-  extern const LanguagePack * const languagePacks[];
-  #if defined(LANGUAGE_PACKS_DEFINITION)
-  const LanguagePack * const languagePacks[] = {
-    // alphabetical order
-    &czLanguagePack,
-    &deLanguagePack,
-    &enLanguagePack,
-    &esLanguagePack,
-    &frLanguagePack,
-    &huLanguagePack,
-    &itLanguagePack,
-    &nlLanguagePack,
-    &plLanguagePack,
-    &ptLanguagePack,
-    &ruLanguagePack,
-    &seLanguagePack,
-    &skLanguagePack,
-    NULL
-  };
-  #endif
+extern const LanguagePack czLanguagePack;
+extern const LanguagePack deLanguagePack;
+extern const LanguagePack enLanguagePack;
+extern const LanguagePack esLanguagePack;
+extern const LanguagePack frLanguagePack;
+extern const LanguagePack huLanguagePack;
+extern const LanguagePack itLanguagePack;
+extern const LanguagePack nlLanguagePack;
+extern const LanguagePack plLanguagePack;
+extern const LanguagePack ptLanguagePack;
+extern const LanguagePack ruLanguagePack;
+extern const LanguagePack seLanguagePack;
+extern const LanguagePack skLanguagePack;
+extern const LanguagePack * const languagePacks[];
+
+#if defined(LANGUAGE_PACKS_DEFINITION)
+const LanguagePack * const languagePacks[] = {
+  // alphabetical order
+  &czLanguagePack,
+  &deLanguagePack,
+  &enLanguagePack,
+  &esLanguagePack,
+  &frLanguagePack,
+  &huLanguagePack,
+  &itLanguagePack,
+  &nlLanguagePack,
+  &plLanguagePack,
+  &ptLanguagePack,
+  &ruLanguagePack,
+  &seLanguagePack,
+  &skLanguagePack,
+  NULL
+};
+#endif
+
 #if defined(SIMU)
   #define LANGUAGE_PACK_DECLARE(lng, name) const LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
 #else
   #define LANGUAGE_PACK_DECLARE(lng, name) extern const LanguagePack lng ## LanguagePack = { #lng, name, lng ## _ ## playNumber, lng ## _ ## playDuration }
 #endif
-  #define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); const LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
-  inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags) { currentLanguagePack->playNumber(number, unit, flags, id); }
-  inline PLAY_FUNCTION(playDuration, int seconds, uint8_t flags) { currentLanguagePack->playDuration(seconds, flags, id); }
 
-  extern const char STR_MODELNAME[];
-  extern const char STR_PHASENAME[];
-  extern const char STR_MIXNAME[];
-  extern const char STR_INPUTNAME[];
-  extern const char STR_EXPONAME[];
+#define LANGUAGE_PACK_DECLARE_DEFAULT(lng, name) LANGUAGE_PACK_DECLARE(lng, name); const LanguagePack * currentLanguagePack = & lng ## LanguagePack; uint8_t currentLanguagePackIdx
+inline PLAY_FUNCTION(playNumber, getvalue_t number, uint8_t unit, uint8_t flags) { currentLanguagePack->playNumber(number, unit, flags, id); }
+inline PLAY_FUNCTION(playDuration, int seconds, uint8_t flags) { currentLanguagePack->playDuration(seconds, flags, id); }
+
+extern const char STR_MODELNAME[];
+extern const char STR_PHASENAME[];
+extern const char STR_MIXNAME[];
+extern const char STR_INPUTNAME[];
+extern const char STR_EXPONAME[];
 
 #if defined(COLORLCD)
   #define TR_PHASES_HEADERS { TR_PHASES_HEADERS_NAME, TR_PHASES_HEADERS_SW, TR_PHASES_HEADERS_RUD_TRIM, TR_PHASES_HEADERS_ELE_TRIM, TR_PHASES_HEADERS_THT_TRIM, TR_PHASES_HEADERS_AIL_TRIM, TR_PHASES_HEADERS_CH5_TRIM, TR_PHASES_HEADERS_CH6_TRIM, TR_PHASES_HEADERS_FAD_IN, TR_PHASES_HEADERS_FAD_OUT }
@@ -853,126 +860,129 @@ extern const char STR_BLCOLOR[];
 #endif
 
   extern const char STR_TRAINER[];
-  extern const char STR_MODULE_BIND[];
-  extern const char STR_BINDING_1_8_TELEM_ON[];
-  extern const char STR_BINDING_1_8_TELEM_OFF[];
-  extern const char STR_BINDING_9_16_TELEM_ON[];
-  extern const char STR_BINDING_9_16_TELEM_OFF[];
-  extern const char STR_CHANNELRANGE[];
+extern const char STR_MODULE_BIND[];
+extern const char STR_TRANSFER_BUTTON[];
+extern const char STR_REGISTER_BUTTON[];
+extern const char STR_RXADD_BUTTON[];
+extern const char STR_BINDING_1_8_TELEM_ON[];
+extern const char STR_BINDING_1_8_TELEM_OFF[];
+extern const char STR_BINDING_9_16_TELEM_ON[];
+extern const char STR_BINDING_9_16_TELEM_OFF[];
+extern const char STR_CHANNELRANGE[];
 extern const char STR_RXFREQUENCY[];
-  extern const char STR_ANTENNASELECTION[];
-  extern const char STR_ANTENNACONFIRM1[];
-  extern const char STR_ANTENNACONFIRM2[];
-  extern const char STR_R9MFLEXWARN1[];
-  extern const char STR_R9MFLEXWARN2[];
-  extern const char STR_SET[];
-  extern const char STR_PREFLIGHT[];
-  extern const char STR_CHECKLIST[];
-  extern const char STR_VIEW_NOTES[];
-  extern const char STR_MODEL_SELECT[];
-  extern const char STR_RESET_SUBMENU[];
-  extern const char STR_LOWALARM[];
-  extern const char STR_CRITICALALARM[];
-  extern const char STR_RSSIALARM_WARN[];
-  extern const char STR_NO_RSSIALARM[];
-  extern const char STR_DISABLE_ALARM[];
-  extern const char STR_TELEMETRY_TYPE[];
-  extern const char STR_TELEMETRY_SENSORS[];
-  extern const char STR_VALUE[];
+extern const char STR_ANTENNASELECTION[];
+extern const char STR_ANTENNACONFIRM1[];
+extern const char STR_ANTENNACONFIRM2[];
+extern const char STR_R9MFLEXWARN1[];
+extern const char STR_R9MFLEXWARN2[];
+extern const char STR_SET[];
+extern const char STR_PREFLIGHT[];
+extern const char STR_CHECKLIST[];
+extern const char STR_VIEW_NOTES[];
+extern const char STR_MODEL_SELECT[];
+extern const char STR_RESET_SUBMENU[];
+extern const char STR_LOWALARM[];
+extern const char STR_CRITICALALARM[];
+extern const char STR_RSSIALARM_WARN[];
+extern const char STR_NO_RSSIALARM[];
+extern const char STR_DISABLE_ALARM[];
+extern const char STR_TELEMETRY_TYPE[];
+extern const char STR_TELEMETRY_SENSORS[];
+extern const char STR_VALUE[];
 extern const char STR_REPEAT[];
 extern const char STR_ENABLE[];
-  extern const char STR_TOPLCDTIMER[];
-  extern const char STR_UNIT[] ;
-  extern const char STR_TELEMETRY_NEWSENSOR[];
-  extern const char STR_ID[];
-  extern const char STR_PRECISION[];
-  extern const char STR_RATIO[];
-  extern const char STR_FORMULA[];
-  extern const char STR_CELLINDEX[];
-  extern const char STR_LOGS[];
-  extern const char STR_OPTIONS[];
-  extern const char STR_ALTSENSOR[];
-  extern const char STR_CELLSENSOR[];
-  extern const char STR_GPSSENSOR[];
-  extern const char STR_CURRENTSENSOR[];
-  extern const char STR_AUTOOFFSET[];
-  extern const char STR_ONLYPOSITIVE[];
-  extern const char STR_FILTER[];
-  extern const char STR_TELEMETRYFULL[];
-  extern const char STR_SERVOS_OK[];
-  extern const char STR_SERVOS_KO[];
-  extern const char STR_INVERTED_SERIAL[];
-  extern const char STR_IGNORE_INSTANCE[];
-  extern const char STR_DISCOVER_SENSORS[];
-  extern const char STR_STOP_DISCOVER_SENSORS[];
-  extern const char STR_DELETE_ALL_SENSORS[];
-  extern const char STR_CONFIRMDELETE[];
-  extern const char STR_SELECT_WIDGET[];
-  extern const char STR_REMOVE_WIDGET[];
-  extern const char STR_WIDGET_SETTINGS[];
-  extern const char STR_REMOVE_SCREEN[];
-  extern const char STR_SETUP_WIDGETS[];
-  extern const char STR_USER_INTERFACE[];
-  extern const char STR_THEME[];
-  extern const char STR_SETUP[];
-  extern const char STR_MAINVIEWX[];
-  extern const char STR_LAYOUT[];
-  extern const char STR_ADDMAINVIEW[];
-  extern const char STR_BACKGROUND_COLOR[];
-  extern const char STR_MAIN_COLOR[];
-  extern const char STR_TEXT_VIEWER[];
-  extern const char STR_MULTI_RFPOWER[];
+extern const char STR_TOPLCDTIMER[];
+extern const char STR_UNIT[] ;
+extern const char STR_TELEMETRY_NEWSENSOR[];
+extern const char STR_ID[];
+extern const char STR_PRECISION[];
+extern const char STR_RATIO[];
+extern const char STR_FORMULA[];
+extern const char STR_CELLINDEX[];
+extern const char STR_LOGS[];
+extern const char STR_OPTIONS[];
+extern const char STR_ALTSENSOR[];
+extern const char STR_CELLSENSOR[];
+extern const char STR_GPSSENSOR[];
+extern const char STR_CURRENTSENSOR[];
+extern const char STR_AUTOOFFSET[];
+extern const char STR_ONLYPOSITIVE[];
+extern const char STR_FILTER[];
+extern const char STR_TELEMETRYFULL[];
+extern const char STR_SERVOS_OK[];
+extern const char STR_SERVOS_KO[];
+extern const char STR_INVERTED_SERIAL[];
+extern const char STR_IGNORE_INSTANCE[];
+extern const char STR_DISCOVER_SENSORS[];
+extern const char STR_STOP_DISCOVER_SENSORS[];
+extern const char STR_DELETE_ALL_SENSORS[];
+extern const char STR_CONFIRMDELETE[];
+extern const char STR_SELECT_WIDGET[];
+extern const char STR_REMOVE_WIDGET[];
+extern const char STR_WIDGET_SETTINGS[];
+extern const char STR_REMOVE_SCREEN[];
+extern const char STR_SETUP_WIDGETS[];
+extern const char STR_USER_INTERFACE[];
+extern const char STR_THEME[];
+extern const char STR_SETUP[];
+extern const char STR_LAYOUT[];
+extern const char STR_ADDMAINVIEW[];
+extern const char STR_BACKGROUND_COLOR[];
+extern const char STR_MAIN_COLOR[];
+extern const char STR_TEXT_VIEWER[];
+extern const char STR_MULTI_RFPOWER[];
 
-  extern const char STR_BYTES[];
-  extern const char STR_ANTENNAPROBLEM[];
-  extern const char STR_MODULE[];
-  extern const char STR_ENABLE_POPUP[];
-  extern const char STR_DISABLE_POPUP[];
-  extern const char STR_POPUP[];
-  extern const char STR_MIN[];
-  extern const char STR_MAX[];
-  extern const char STR_CURVE_PRESET[];
-  extern const char STR_PRESET[];
-  extern const char STR_MIRROR[];
-  extern const char STR_CLEAR[];
-  extern const char STR_RESET[];
-  extern const char STR_COUNT[];
-  extern const char STR_PT[];
-  extern const char STR_PTS[];
-  extern const char STR_SMOOTH[];
-  extern const char STR_COPY_STICKS_TO_OFS[];
-  extern const char STR_COPY_TRIMS_TO_OFS[];
-  extern const char STR_INCDEC[];
-  extern const char STR_GLOBALVAR[];
-  extern const char STR_MIXSOURCE[];
-  extern const char STR_CONSTANT[];
-  extern const char STR_TOP_BAR[];
-  extern const char STR_ALTITUDE[];
-  extern const char STR_SCALE[];
-  extern const char STR_VIEW_CHANNELS[];
-  extern const char STR_POTWARNING[];
-  extern const char STR_UART3MODE[];
-  extern const char STR_THROTTLE_LABEL[];
-  extern const char STR_SCRIPT[];
-  extern const char STR_INPUTS[];
-  extern const char STR_OUTPUTS[];
-  extern const char STR_MENU_INPUTS[];
-  extern const char STR_MENU_LUA[];
-  extern const char STR_MENU_STICKS[];
-  extern const char STR_MENU_POTS[];
-  extern const char STR_MENU_MAX[];
-  extern const char STR_MENU_HELI[];
-  extern const char STR_MENU_TRIMS[];
-  extern const char STR_MENU_SWITCHES[];
-  extern const char STR_MENU_LOGICAL_SWITCHES[];
-  extern const char STR_MENU_TRAINER[];
-  extern const char STR_MENU_CHANNELS[];
-  extern const char STR_MENU_GVARS[];
-  extern const char STR_MENU_TELEMETRY[];
-  extern const char STR_MENU_DISPLAY[];
-  extern const char STR_MENU_OTHER[];
-  extern const char STR_MENU_INVERT[];
-  extern const char STR_JITTER_FILTER[];
+extern const char STR_BYTES[];
+extern const char STR_ANTENNAPROBLEM[];
+extern const char STR_MODULE[];
+extern const char STR_RX_NAME[];
+extern const char STR_ENABLE_POPUP[];
+extern const char STR_DISABLE_POPUP[];
+extern const char STR_POPUP[];
+extern const char STR_MIN[];
+extern const char STR_MAX[];
+extern const char STR_CURVE_PRESET[];
+extern const char STR_PRESET[];
+extern const char STR_MIRROR[];
+extern const char STR_CLEAR[];
+extern const char STR_RESET[];
+extern const char STR_COUNT[];
+extern const char STR_PT[];
+extern const char STR_PTS[];
+extern const char STR_SMOOTH[];
+extern const char STR_COPY_STICKS_TO_OFS[];
+extern const char STR_COPY_TRIMS_TO_OFS[];
+extern const char STR_INCDEC[];
+extern const char STR_GLOBALVAR[];
+extern const char STR_MIXSOURCE[];
+extern const char STR_CONSTANT[];
+extern const char STR_TOP_BAR[];
+extern const char STR_ALTITUDE[];
+extern const char STR_SCALE[];
+extern const char STR_VIEW_CHANNELS[];
+extern const char STR_POTWARNING[];
+extern const char STR_UART3MODE[];
+extern const char STR_THROTTLE_LABEL[];
+extern const char STR_SCRIPT[];
+extern const char STR_INPUTS[];
+extern const char STR_OUTPUTS[];
+extern const char STR_MENU_INPUTS[];
+extern const char STR_MENU_LUA[];
+extern const char STR_MENU_STICKS[];
+extern const char STR_MENU_POTS[];
+extern const char STR_MENU_MAX[];
+extern const char STR_MENU_HELI[];
+extern const char STR_MENU_TRIMS[];
+extern const char STR_MENU_SWITCHES[];
+extern const char STR_MENU_LOGICAL_SWITCHES[];
+extern const char STR_MENU_TRAINER[];
+extern const char STR_MENU_CHANNELS[];
+extern const char STR_MENU_GVARS[];
+extern const char STR_MENU_TELEMETRY[];
+extern const char STR_MENU_DISPLAY[];
+extern const char STR_MENU_OTHER[];
+extern const char STR_MENU_INVERT[];
+extern const char STR_JITTER_FILTER[];
 
 #if MENUS_LOCK == 1
   extern const char STR_UNLOCKED[];
@@ -981,57 +991,53 @@ extern const char STR_ENABLE[];
 
 #if defined(PCBTARANIS) || defined(DSM2)
   extern const char STR_MODULE_RANGE[];
-extern const char STR_DEL_BUTTON[];
+  extern const char STR_DEL_BUTTON[];
 #endif
 
+extern const char STR_ABOUTUS[];
+extern const char STR_ABOUT_OPENTX_1[];
+extern const char STR_ABOUT_OPENTX_2[];
+extern const char STR_ABOUT_OPENTX_3[];
+extern const char STR_ABOUT_OPENTX_4[];
+extern const char STR_ABOUT_OPENTX_5[];
 
-  extern const char STR_ABOUTUS[];
-  extern const char STR_ABOUT_OPENTX_1[];
-  extern const char STR_ABOUT_OPENTX_2[];
-  extern const char STR_ABOUT_OPENTX_3[];
-  extern const char STR_ABOUT_OPENTX_4[];
-  extern const char STR_ABOUT_OPENTX_5[];
+extern const char STR_ABOUT_BERTRAND_1[];
+extern const char STR_ABOUT_BERTRAND_2[];
+extern const char STR_ABOUT_BERTRAND_3[];
 
-  extern const char STR_ABOUT_BERTRAND_1[];
-  extern const char STR_ABOUT_BERTRAND_2[];
-  extern const char STR_ABOUT_BERTRAND_3[];
+extern const char STR_ABOUT_MIKE_1[];
+extern const char STR_ABOUT_MIKE_2[];
+extern const char STR_ABOUT_MIKE_3[];
+extern const char STR_ABOUT_MIKE_4[];
 
-  extern const char STR_ABOUT_MIKE_1[];
-  extern const char STR_ABOUT_MIKE_2[];
-  extern const char STR_ABOUT_MIKE_3[];
-  extern const char STR_ABOUT_MIKE_4[];
+extern const char STR_ABOUT_ROMOLO_1[];
+extern const char STR_ABOUT_ROMOLO_2[];
+extern const char STR_ABOUT_ROMOLO_3[];
 
-  extern const char STR_ABOUT_ROMOLO_1[];
-  extern const char STR_ABOUT_ROMOLO_2[];
-  extern const char STR_ABOUT_ROMOLO_3[];
+extern const char STR_ABOUT_ANDRE_1[];
+extern const char STR_ABOUT_ANDRE_2[];
+extern const char STR_ABOUT_ANDRE_3[];
 
-  extern const char STR_ABOUT_ANDRE_1[];
-  extern const char STR_ABOUT_ANDRE_2[];
-  extern const char STR_ABOUT_ANDRE_3[];
+extern const char STR_ABOUT_ROB_1[];
+extern const char STR_ABOUT_ROB_2[];
 
-  extern const char STR_ABOUT_ROB_1[];
-  extern const char STR_ABOUT_ROB_2[];
+extern const char STR_ABOUT_MARTIN_1[];
+extern const char STR_ABOUT_MARTIN_2[];
 
-  extern const char STR_ABOUT_MARTIN_1[];
-  extern const char STR_ABOUT_MARTIN_2[];
+extern const char STR_ABOUT_KJELL_1[];
+extern const char STR_ABOUT_KJELL_2[];
+extern const char STR_ABOUT_KJELL_3[];
+extern const char STR_ABOUT_KJELL_4[];
 
-  extern const char STR_ABOUT_KJELL_1[];
-  extern const char STR_ABOUT_KJELL_2[];
-  extern const char STR_ABOUT_KJELL_3[];
-  extern const char STR_ABOUT_KJELL_4[];
+extern const char STR_ABOUT_HARDWARE_1[];
+extern const char STR_ABOUT_HARDWARE_2[];
+extern const char STR_ABOUT_HARDWARE_3[];
 
-  extern const char STR_ABOUT_HARDWARE_1[];
-  extern const char STR_ABOUT_HARDWARE_2[];
-  extern const char STR_ABOUT_HARDWARE_3[];
+extern const char STR_ABOUT_PARENTS_1[];
+extern const char STR_ABOUT_PARENTS_2[];
+extern const char STR_ABOUT_PARENTS_3[];
+extern const char STR_ABOUT_PARENTS_4[];
 
-  extern const char STR_ABOUT_PARENTS_1[];
-  extern const char STR_ABOUT_PARENTS_2[];
-  extern const char STR_ABOUT_PARENTS_3[];
-  extern const char STR_ABOUT_PARENTS_4[];
-
-#define CHR_SHORT  TR_CHR_SHORT
-#define CHR_LONG   TR_CHR_LONG
-#define CHR_TOGGLE TR_CHR_TOGGLE
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT
 

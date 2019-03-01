@@ -23,6 +23,8 @@
 
 #include "definitions.h"
 #include "opentx_constants.h"
+#include "../definitions.h"
+#include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -124,10 +126,6 @@ void delay_ms(uint32_t ms);
 }
 #endif
 
-// CPU Unique ID
-#define LEN_CPU_UID                     (3*8+2)
-void getCPUUniqueID(char * s);
-
 // SD driver
 #define BLOCK_SIZE                      512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
@@ -176,14 +174,29 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
-void intmoduleSendNextFrame();
-void extmoduleSendNextFrame();
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
 void init_pxx(uint8_t module);
 void disable_pxx(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
 void disable_serial(uint8_t module);
+void intmoduleStop();
+void intmodulePxxStart();
+void intmoduleSerialStart(uint32_t baudrate);
+#if defined(TARANIS_INTERNAL_PPM)
+void intmodulePpmStart(void);
+#endif
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
+void intmoduleSendNextFrame();
+
+void extmoduleStop();
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
+void extmoduleInvertedSerialStart(uint32_t baudrate);
+void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
+void extmoduleSendNextFrame();
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
@@ -304,15 +317,17 @@ enum EnumSwitchesPositions
   SW_SC0,
   SW_SC1,
   SW_SC2,
+#if !defined(PCBX3)
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if defined(PCBX9) || defined(PCBXLITES)
+#endif
+#if defined(PCBX9) || defined(PCBXLITES) || defined(PCBX3)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX3)
   SW_SF0,
   SW_SF1,
   SW_SF2,
@@ -369,6 +384,9 @@ enum EnumSwitchesPositions
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  6
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+#elif defined(PCBX3)
+  #define NUM_SWITCHES                  5
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's a lot!
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
@@ -384,7 +402,7 @@ uint32_t readTrims(void);
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 
-#if defined(PCBX9E) || defined(PCBX7)
+#if defined(PCBX9E) || defined(PCBX7) || defined(PCBX3)
 // Rotary Encoder driver
 #define ROTARY_ENCODER_NAVIGATION
 void checkRotaryEncoder(void);
@@ -470,10 +488,10 @@ extern HardwareOptions hardwareOptions;
   #define NUM_TRIMS_KEYS                8
 #endif
 
-#if defined(PCBXLITES)
-  #define IS_PXX2_ENABLED()            (true)
+#if defined(PCBXLITES) || defined(DEBUG)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
 #else
-  #define IS_PXX2_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
 #endif
 
 enum CalibratedAnalogs {
@@ -596,7 +614,7 @@ uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
@@ -689,6 +707,14 @@ void bluetoothInit(uint32_t baudrate);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
 void bluetoothDone(void);
+#if defined(PCBX3)
+  #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
+#elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
+  extern volatile uint8_t btChipPresent;
+  #define IS_BLUETOOTH_CHIP_PRESENT()     (btChipPresent)
+#else
+  #define IS_BLUETOOTH_CHIP_PRESENT()     (true)
+#endif
 
 // LED driver
 void ledInit(void);

@@ -132,10 +132,12 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(0, SW_SA);
   CHECK_3POS(1, SW_SB);
   CHECK_3POS(2, SW_SC);
+#if !defined(PCBX3)
   CHECK_3POS(3, SW_SD);
-#if defined(PCBXLITES)
+#endif
+#if defined(PCBXLITES) || defined(PCBX3)
   CHECK_2POS(SW_SE);
-#elif defined(PCBX7) || defined(PCBXLITE)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
   // No SE
 #else
   CHECK_3POS(4, SW_SE);
@@ -145,12 +147,12 @@ void getSwitchesPosition(bool startup)
 #else
   CHECK_2POS(SW_SF);
 #endif
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
   // No SG
 #else
   CHECK_3POS(5, SW_SG);
 #endif
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
   // No SH
 #else
   CHECK_2POS(SW_SH);

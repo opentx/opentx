@@ -130,7 +130,7 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   for (int i=0; len==0 || i<len; ++i) {
 
 #if !defined(BOOT)
-    char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
 #else
     char c = *s;
 #endif

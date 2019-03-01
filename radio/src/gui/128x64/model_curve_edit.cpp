@@ -20,17 +20,39 @@
 
 #include "opentx.h"
 
-void displayPresetChoice(event_t event)
+void runPopupCurvePreset(event_t event)
 {
-  runPopupWarning(event);
-  lcdDrawNumber(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45*warningInputValue/4, LEFT|INVERS);
+  warningResult = false;
+
+  drawMessageBox();
+
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, STR_POPUPS_ENTER_EXIT);
+
+  switch (event) {
+    case EVT_KEY_BREAK(KEY_ENTER):
+      warningResult = true;
+      // no break
+
+    case EVT_KEY_BREAK(KEY_EXIT):
+      warningText = NULL;
+      warningType = WARNING_TYPE_ASTERISK;
+      break;
+
+    default:
+      s_editMode = EDIT_MODIFY_FIELD;
+      reusableBuffer.curveEdit.preset = checkIncDec(event, reusableBuffer.curveEdit.preset, -4, 4);
+      s_editMode = EDIT_SELECT_FIELD;
+      break;
+  }
+
+  lcdDrawNumber(WARNING_LINE_X+FW*7, WARNING_LINE_Y, 45 * reusableBuffer.curveEdit.preset / 4, LEFT|INVERS);
   lcdDrawChar(lcdLastRightPos, WARNING_LINE_Y, '@', INVERS);
 
   if (warningResult) {
     warningResult = 0;
     CurveInfo & crv = g_model.curves[s_curveChan];
     int8_t * points = curveAddress(s_curveChan);
-    int k = 25 * warningInputValue;
+    int k = 25 * reusableBuffer.curveEdit.preset;
     int dx = 2000 / (5+crv.points-1);
     for (uint8_t i=0; i<5+crv.points; i++) {
       int x = -1000 + i * dx;
@@ -45,7 +67,8 @@ void displayPresetChoice(event_t event)
 void onCurveOneMenu(const char * result)
 {
   if (result == STR_CURVE_PRESET) {
-    POPUP_INPUT(STR_PRESET, displayPresetChoice, 0, -4, 4);
+    reusableBuffer.curveEdit.preset = 4; // 45°
+    POPUP_INPUT(STR_PRESET, runPopupCurvePreset);
   }
   else if (result == STR_MIRROR) {
     CurveInfo & crv = g_model.curves[s_curveChan];

@@ -44,7 +44,7 @@ int getSelectedUsbMode()
 
 void setSelectedUsbMode(int mode)
 {
-  selectedUsbMode = usbMode (mode);
+  selectedUsbMode = usbMode(mode);
 }
 
 int usbPlugged()

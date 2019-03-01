@@ -72,31 +72,49 @@ char * bluetoothReadline(bool error_reset)
 #if defined(PCBX9E) && !defined(USEHORUSBT)     // X9E BT module can get unresponsive
       TRACE("NO RESPONSE FROM BT MODULE");
 #endif
+      return nullptr;
+    }
+
+    TRACE_NOCRLF("%02X ", byte);
+
+#if 0
+    if (error_reset && byte == 'R' && bluetoothBufferIndex == 4 && memcmp(bluetoothBuffer, "ERRO", 4)) {
+#if defined(PCBX9E)  // X9E enter BT reset loop if following code is implemented
+      TRACE("BT Error...");
+#else
+      TRACE("BT Reset...");
+      bluetoothBufferIndex = 0;
+      bluetoothDone();
+      bluetoothState = BLUETOOTH_STATE_OFF;
+      bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
+#endif
       return NULL;
     }
-    TRACE_NOCRLF("%02X ", byte);
+    else
+#endif
+
     if (byte == '\n') {
       if (bluetoothBufferIndex > 2 && bluetoothBuffer[bluetoothBufferIndex-1] == '\r') {
         bluetoothBuffer[bluetoothBufferIndex-1] = '\0';
         bluetoothBufferIndex = 0;
         TRACE("BT< %s", bluetoothBuffer);
         if (error_reset && !strcmp((char *)bluetoothBuffer, "ERROR")) {
-#if defined(PCBX9E)                           // X9E enter BT reset loop if following code is implemented
-          TRACE("BT error...");
+#if defined(PCBX9E) // X9E enter BT reset loop if following code is implemented
+          TRACE("BT Error...");
 #else
           TRACE("BT Reset...");
           bluetoothDone();
           bluetoothState = BLUETOOTH_STATE_OFF;
           bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
 #endif
-          return NULL;
+          return nullptr;
         }
         else {
-          if (!strncmp((char *)bluetoothBuffer, "Central:", 8))
-            strcpy(bluetoothLocalAddr, (char *)bluetoothBuffer+8);
-          else if (!strncmp((char *)bluetoothBuffer, "Peripheral:", 11))
-            strcpy(bluetoothLocalAddr, (char *)bluetoothBuffer+11);
-          return (char *)bluetoothBuffer;
+          if (!memcmp(bluetoothBuffer, "Central:", 8))
+            strcpy(bluetoothLocalAddr, (char *) bluetoothBuffer + 8);
+          else if (!memcmp(bluetoothBuffer, "Peripheral:", 11))
+            strcpy(bluetoothLocalAddr, (char *) bluetoothBuffer + 11);
+          return (char *) bluetoothBuffer;
         }
       }
       else {
@@ -280,7 +298,7 @@ void bluetoothWakeup(void)
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
         if (len > 0) {
           for (int i = 0; i < len; i++) {
-            *cur++ = idx2char(g_eeGeneral.bluetoothName[i]);
+            *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
           }
         }
         else {
@@ -374,20 +392,23 @@ void bluetoothWakeup()
   }
   else {
     char * line = bluetoothReadline();
+    if (line) {
+      TRACE("BT %s", line);
+    }
     if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_INIT) {
       char command[32];
       char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
       uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
       if (len > 0) {
         for (int i = 0; i < len; i++) {
-          *cur++ = idx2char(g_eeGeneral.bluetoothName[i]);
+          *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
         }
       }
       else {
 #if defined(PCBHORUS)
         cur = strAppend(cur, "Horus");
 #else
-        cur = strAppend(cur, "Taranis");
+        cur = strAppend(cur, "taranis"); // TODO capital letter once allowed by BT module
 #endif
       }
       strAppend(cur, "\r\n");

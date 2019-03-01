@@ -203,7 +203,7 @@ void copyModuleData(A * dest, B * src)
   dest->failsafeMode = src->failsafeMode;
   dest->subType = src->subType;
   dest->invertedSerial = src->invertedSerial;
-  memcpy(dest->failsafeChannels, src->failsafeChannels, sizeof(dest->failsafeChannels));
+  // TODO memcpy(dest->failsafeChannels, src->failsafeChannels, sizeof(dest->failsafeChannels));
   copyModuleData_flysky(&dest->flysky, &src->flysky);
 }
 

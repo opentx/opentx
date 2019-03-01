@@ -21,6 +21,8 @@
 #ifndef _DATACONSTANTS_H_
 #define _DATACONSTANTS_H_
 
+#include "board.h"
+
 #define NUM_STICKS                     4
 
 #if defined(EXPORT)
@@ -205,9 +207,7 @@ enum BeeperMode {
   };
 #endif
 
-#if defined(PCBXLITES)
-  #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE
-#elif defined(BLUETOOTH)
+#if defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
 #elif defined(PCBX7) || defined(PCBXLITE)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE
@@ -512,7 +512,7 @@ enum MixSources {
   MIXSRC_LAST_INPUT = MIXSRC_FIRST_INPUT+MAX_INPUTS-1,
 
 #if defined(LUA_INPUTS)
-  MIXSRC_FIRST_LUA,
+  MIXSRC_FIRST_LUA,                     LUA_EXPORT_MULTIPLE("lua", "Lua mix output %d", MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)
   MIXSRC_LAST_LUA = MIXSRC_FIRST_LUA+(MAX_SCRIPTS*MAX_SCRIPT_OUTPUTS)-1,
 #endif
 
@@ -683,7 +683,7 @@ enum MixSources {
   MIXSRC_TIMER3,                            LUA_EXPORT("timer3", "Timer 3 value [seconds]")
   MIXSRC_LAST_TIMER = MIXSRC_TIMER3,
 
-  MIXSRC_FIRST_TELEM,
+  MIXSRC_FIRST_TELEM,                       LUA_EXPORT_MULTIPLE("telem", "Telemetry sensor %d", MAX_TELEMETRY_SENSORS)
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 };
 
@@ -789,8 +789,8 @@ enum BluetoothModes {
 };
 
 // PXX2 constants
-#define PXX2_LEN_REGISTRATION_ID            4
-#define PXX2_LEN_RX_ID                      4
+#define PXX2_LEN_REGISTRATION_ID            8
+#define PXX2_LEN_RX_NAME                      8
 #define PXX2_MAX_RECEIVERS_PER_MODULE       5
 
 #endif // _DATACONSTANTS_H_

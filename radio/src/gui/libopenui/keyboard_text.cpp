@@ -23,9 +23,6 @@
 #include "fonts.h"
 #include "lcd.h"
 
-int8_t char2idx(char c);
-char idx2char(int8_t idx);
-
 constexpr coord_t KEYBOARD_HEIGHT = 160;
 
 TextKeyboard * TextKeyboard::_instance = nullptr;
@@ -113,7 +110,7 @@ void TextKeyboard::setCursorPos(coord_t x)
     if (data[cursorIndex] == '\0')
       break;
     char c = data[cursorIndex];
-    c = idx2char(c);
+    c = zchar2char(c);
     uint8_t w = getCharWidth(c, fontspecsTable[0]);
     if (rest < w)
       break;
@@ -197,7 +194,7 @@ bool TextKeyboard::onTouchEnd(coord_t x, coord_t y)
         if (specialKey == 128) {
           // backspace
           if (cursorIndex > 0) {
-            char c = idx2char(data[cursorIndex - 1]);
+            char c = zchar2char(data[cursorIndex - 1]);
             memmove(data + cursorIndex - 1, data + cursorIndex, size - cursorIndex);
             data[size - 1] = '\0';
             cursorPos -= getCharWidth(c, fontspecsTable[0]);
@@ -224,7 +221,7 @@ bool TextKeyboard::onTouchEnd(coord_t x, coord_t y)
 
   if (c && zlen(data, size) < size) {
     memmove(data + cursorIndex + 1, data + cursorIndex, size - cursorIndex - 1);
-    data[cursorIndex++] = char2idx(c);
+    data[cursorIndex++] = char2zchar(c);
     cursorPos += getCharWidth(c, fontspecsTable[0]);
   }
 

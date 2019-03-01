@@ -23,29 +23,67 @@
 #ifndef BITFIELD_H
 #define BITFIELD_H
 
+#include <inttypes.h>
+
 // A set of bitfield handling macros
-#define BF_BIT(n)                  ( 1<<(n) )
-#define BF_BIT_GET(y, mask)        ( y & (mask) )
+
+template <typename T>
+inline T BF_BIT(uint8_t n)
+{
+  return T(1) << n;
+}
+
 #define BF_BIT_SET(y, mask)        ( y |=  (mask) )
 #define BF_BIT_CLEAR(y, mask)      ( y &= ~(mask) )
 #define BF_BIT_FLIP(y, mask)       ( y ^=  (mask) )
-#define BF_SINGLE_BIT_GET(y, i)    BF_BIT_GET(y, BF_BIT(i))
+
 #define BF_SINGLE_BIT_SET(y, i)    BF_BIT_SET(y, BF_BIT(i))
 
 //! Create a bitmask of length 'len'.
-#define BF_BITMASK(len)           ( BF_BIT(len)-1 )
+template <typename T>
+inline T BF_BITMASK(uint8_t len)
+{
+  return BF_BIT<T>(len) - 1;
+}
 
 //! Create a bitfield mask of length 'len' starting at bit 'start'.
-#define BF_MASK(start, len)     ( BF_BITMASK(len)<<(start) )
+template <typename T>
+inline T BF_MASK(uint8_t start, uint8_t len)
+{
+  return BF_BITMASK<T>(len) << start;
+}
 
 //! Prepare a bitmask for insertion or combining.
-#define BF_PREP(x, start, len)  ( ((x)&BF_BITMASK(len)) << (start) )
+template <typename T>
+inline T BF_PREP(T x, uint8_t start, uint8_t len)
+{
+  return (x & BF_BITMASK<T>(len)) << start;
+}
 
-//! Extract a bitfield of length 'len' starting at bit 'start' from  'y'.
-#define BF_GET(y, start, len)   ( ((y)>>(start)) & BF_BITMASK(len) )
+//! Extract a bitfield of length 'len' starting at bit 'start' from 'y'.
+template <class T>
+inline T BF_GET(T y, uint8_t start, uint8_t len)
+{
+  return ( ((y) >> (start)) & BF_BITMASK<T>(len) );
+}
 
-//! Insert 'len' bits of 'x 'into 'y', starting at bit 'start' from  'y'.
-#define BF_SET(y, x, start, len)    \
-    ( y= ((y) &~ BF_MASK(start, len)) | BF_PREP(x, start, len) )
+//! Insert 'len' bits of 'x 'into 'y', starting at bit 'start' from 'y'.
+template <class T>
+inline T BF_SET(T to, T from, uint8_t start, uint8_t len)
+{
+  return (to & ~BF_MASK<T>(start, len)) | BF_PREP<T>(from, start, len);
+}
+
+template <class T>
+inline T BF_BIT_GET(T y, T mask)
+{
+  return (y & mask);
+}
+
+template <class T>
+inline T BF_SINGLE_BIT_GET(T y, uint8_t i)
+{
+  return BF_BIT_GET(y, BF_BIT<T>(i));
+}
 
 #endif //BITFIELD_H

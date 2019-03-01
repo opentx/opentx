@@ -27,7 +27,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
@@ -53,20 +53,7 @@ extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
 #define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
-
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
-
-#if defined(NAVIGATION_POT1)
-extern int16_t p1valdiff;
-#else
-  #define p1valdiff 0
-#endif
-
-#if defined(NAVIGATION_POT2)
-extern int8_t p2valdiff;
-#else
-  #define p2valdiff 0
-#endif
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
@@ -85,13 +72,14 @@ extern int8_t s_editMode;       // global editmode
 #define INCDEC_REP10                   0x40
 #define NO_DBLKEYS                     0x80
 
-  #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
-  #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
-  #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
+#define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+#define INCDEC_SET_FLAG(f)           incdecFlag = (f)
+#define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
+#define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
 // mawrow special values
-#define TITLE_ROW      ((uint8_t)-1)
+#define READONLY_ROW   ((uint8_t)-1)
+#define TITLE_ROW      READONLY_ROW
 #define HIDDEN_ROW     ((uint8_t)-2)
 
 struct CheckIncDecStops {
@@ -169,7 +157,7 @@ void title(const char * s);
 
 #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 #else
@@ -182,7 +170,7 @@ void title(const char * s);
   MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), lines_count);
 #define SUBMENU_NOTITLE(lines_count, ...) { \
@@ -265,8 +253,7 @@ uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint
 
 #define WARNING_TYPE_ASTERISK          0
 #define WARNING_TYPE_CONFIRM           1
-#define WARNING_TYPE_INPUT             2
-#define WARNING_TYPE_INFO              4
+#define WARNING_TYPE_INFO              2
 
 extern const char * warningText;
 extern const char * warningInfoText;
@@ -336,7 +323,7 @@ void drawStatusLine();
 #endif
 
 // TODO enum
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
 #define EDIT_MODE_INIT                 0
 #else
 #define EDIT_MODE_INIT                 -1

@@ -7,9 +7,9 @@ set(GUI_SRC
   widgets.cpp
 #  menus.cpp
   menu_model.cpp
-  model_heli.cpp
 #  model_select.cpp
   model_setup.cpp
+  model_heli.cpp
 #  model_logical_switches.cpp
   special_functions.cpp
 #  model_telemetry.cpp
@@ -67,10 +67,6 @@ if(ARCH STREQUAL ARM)
 endif()
 
 if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL NV14)
-  if(HELI)
-#    set(HELI_SRC gui/common/colorlcd/model_heli.cpp)
-  endif()
-
   set(SRC
     ${SRC}
     # gui/common/colorlcd/widgets.cpp

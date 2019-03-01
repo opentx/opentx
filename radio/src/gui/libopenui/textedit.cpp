@@ -32,7 +32,7 @@ void TextEdit::paint(BitmapBuffer * dc)
   if (editMode) {
     dc->drawSizedText(3, 0, value, length, TEXT_INVERTED_COLOR | flags);
     coord_t left = (cursorPos == 0 ? 0 : getTextWidth(value, cursorPos, flags));
-    char s[] = { (flags & ZCHAR) ? idx2char(value[cursorPos]) : value[cursorPos], '\0' };
+    char s[] = { (flags & ZCHAR) ? zchar2char(value[cursorPos]) : value[cursorPos], '\0' };
     dc->drawSolidFilledRect(3+left-1, 1, getTextWidth(s, 1) + 1, height() - 2, TEXT_INVERTED_COLOR);
     dc->drawText(3 + left, 0, s, TEXT_COLOR);
   }
@@ -70,7 +70,7 @@ void TextEdit::onKeyEvent(event_t event)
   if (editMode) {
     int8_t c = value[cursorPos];
     if (!(flags & ZCHAR)) {
-      c = char2idx(c);
+      c = char2zchar(c);
     }
     int8_t v = c;
 
@@ -132,7 +132,7 @@ void TextEdit::onKeyEvent(event_t event)
     if (c != v) {
       if (!(flags & ZCHAR)) {
         if (v != '\0' || value[cursorPos+1] != '\0')
-          v = idx2char(v);
+          v = zchar2char(v);
       }
       value[cursorPos] = v;
       invalidate();

@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 ModuleFifo intmoduleFifo;
-uint8_t intmoduleErrors;
 
 void intmoduleStop()
 {
@@ -34,7 +33,7 @@ void intmodulePxxStart()
   // shouldn't be used anymore
 }
 
-void intmodulePxx2Start()
+void intmoduleSerialStart(uint32_t baudrate)
 {
   INTERNAL_MODULE_ON();
 
@@ -58,7 +57,7 @@ void intmodulePxx2Start()
 
   USART_DeInit(INTMODULE_USART);
   USART_InitTypeDef USART_InitStructure;
-  USART_InitStructure.USART_BaudRate = INTMODULE_USART_PXX_BAUDRATE;
+  USART_InitStructure.USART_BaudRate = baudrate;
   USART_InitStructure.USART_Parity = USART_Parity_No;
   USART_InitStructure.USART_StopBits = USART_StopBits_1;
   USART_InitStructure.USART_WordLength = USART_WordLength_8b;
@@ -66,6 +65,8 @@ void intmodulePxx2Start()
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(INTMODULE_USART, &USART_InitStructure);
   USART_Cmd(INTMODULE_USART, ENABLE);
+
+  intmoduleFifo.clear();
 
   USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
   NVIC_SetPriority(INTMODULE_USART_IRQn, 6);
@@ -80,7 +81,7 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = INTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
-      intmoduleErrors++;
+      intmoduleFifo.errors++;
     }
     else {
       intmoduleFifo.push(data);
@@ -89,30 +90,35 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
   }
 }
 
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
+{
+  DMA_InitTypeDef DMA_InitStructure;
+  DMA_DeInit(INTMODULE_DMA_STREAM);
+  DMA_InitStructure.DMA_Channel = INTMODULE_DMA_CHANNEL;
+  DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&INTMODULE_USART->DR);
+  DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
+  DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(data);
+  DMA_InitStructure.DMA_BufferSize = size;
+  DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+  DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+  DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
+  DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
+  DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+  DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
+  DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
+  DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
+  DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
+  DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
+  DMA_Init(INTMODULE_DMA_STREAM, &DMA_InitStructure);
+  DMA_Cmd(INTMODULE_DMA_STREAM, ENABLE);
+  USART_DMACmd(INTMODULE_USART, USART_DMAReq_Tx, ENABLE);
+}
+
 void intmoduleSendNextFrame()
 {
 #if defined(PXX2)
   if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
-    DMA_InitTypeDef DMA_InitStructure;
-    DMA_DeInit(INTMODULE_DMA_STREAM);
-    DMA_InitStructure.DMA_Channel = INTMODULE_DMA_CHANNEL;
-    DMA_InitStructure.DMA_PeripheralBaseAddr = CONVERT_PTR_UINT(&INTMODULE_USART->DR);
-    DMA_InitStructure.DMA_DIR = DMA_DIR_MemoryToPeripheral;
-    DMA_InitStructure.DMA_Memory0BaseAddr = CONVERT_PTR_UINT(intmodulePulsesData.pxx2.getData());
-    DMA_InitStructure.DMA_BufferSize = intmodulePulsesData.pxx2.getSize();
-    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
-    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
-    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_Byte;
-    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_Byte;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
-    DMA_InitStructure.DMA_Priority = DMA_Priority_VeryHigh;
-    DMA_InitStructure.DMA_FIFOMode = DMA_FIFOMode_Disable;
-    DMA_InitStructure.DMA_FIFOThreshold = DMA_FIFOThreshold_Full;
-    DMA_InitStructure.DMA_MemoryBurst = DMA_MemoryBurst_Single;
-    DMA_InitStructure.DMA_PeripheralBurst = DMA_PeripheralBurst_Single;
-    DMA_Init(INTMODULE_DMA_STREAM, &DMA_InitStructure);
-    DMA_Cmd(INTMODULE_DMA_STREAM, ENABLE);
-    USART_DMACmd(INTMODULE_USART, USART_DMAReq_Tx, ENABLE);
+    intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
   }
 #endif
 }

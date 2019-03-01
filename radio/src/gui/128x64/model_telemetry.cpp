@@ -423,7 +423,7 @@ void menuModelTelemetryFrsky(event_t event)
   switch (event) {
     case EVT_KEY_BREAK(KEY_DOWN):
     case EVT_KEY_BREAK(KEY_UP):
-#if !defined(PCBX7)
+#if !defined(PCBX7) && !defined(PCBX3)
     case EVT_KEY_BREAK(KEY_LEFT):
     case EVT_KEY_BREAK(KEY_RIGHT):
 #endif
@@ -588,7 +588,7 @@ void menuModelTelemetryFrsky(event_t event)
         }
         lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|LEFT);
         lcdDrawNumber(TELEM_COL2+4*FW, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|LEFT);
-        if (attr && (s_editMode>0 || p1valdiff)) {
+        if (attr && s_editMode > 0) {
           switch (menuHorizontalPosition) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
@@ -605,7 +605,7 @@ void menuModelTelemetryFrsky(event_t event)
         lcdDrawNumber(TELEM_COL2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|PREC1|LEFT);
         lcdDrawNumber(TELEM_COL2+4*FW, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1|LEFT);
         lcdDrawTextAtIndex(TELEM_COL2+8*FW, y, STR_VVARIOCENTER, g_model.frsky.varioCenterSilent, (menuHorizontalPosition==2 ? attr : 0));
-        if (attr && (s_editMode>0 || p1valdiff)) {
+        if (attr && s_editMode > 0) {
           switch (menuHorizontalPosition) {
             case 0:
               CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -16, 5+min<int8_t>(10, g_model.frsky.varioCenterMax+5));

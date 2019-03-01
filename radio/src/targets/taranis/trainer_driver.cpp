@@ -264,7 +264,7 @@ int sbusGetByte(uint8_t * byte)
   switch (currentTrainerMode) {
     case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
       return heartbeatFifo.pop(*byte);
-#if !defined(PCBX7) && !defined(PCBX9E)
+#if !defined(PCBX7) && !defined(PCBX9E) && !defined(PCBX3)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
       return auxSerialRxFifo.pop(*byte);
 #endif

@@ -486,6 +486,34 @@ PACK(typedef struct {
   uint8_t ppmPulsePol;
 }) ModuleData_v216;
 
+PACK(typedef struct {
+    uint8_t type:4;
+    int8_t  rfProtocol:4;
+    uint8_t channelsStart;
+    int8_t  channelsCount; // 0=8 channels
+    union {
+      struct {
+        uint8_t failsafeMode:4;  // only 3 bits used
+        uint8_t subType:3;
+        uint8_t invertedSerial:1; // telemetry serial inverted from standard
+      };
+      struct {
+        uint8_t failsafeMode:4;  // only 3 bits used
+        uint8_t freq:2;
+        uint8_t region:2;
+      } r9m;
+    };
+    int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
+    union {
+      struct {
+        int8_t  delay:6;
+        uint8_t pulsePol:1;
+        uint8_t outputType:1;    // false = open drain, true = push pull
+        int8_t  frameLength;
+      } ppm;
+    };
+}) ModuleData_v217;
+
 #if defined(PCBTARANIS)
 #define MODELDATA_EXTRA_216 \
   uint8_t externalModule; \
@@ -511,7 +539,7 @@ PACK(typedef struct {
   uint8_t spare:3; \
   uint8_t trainerMode:3; \
   uint8_t potsWarnMode:2; \
-  ModuleData moduleData[NUM_MODULES+1]; \
+  ModuleData_v217 moduleData[NUM_MODULES+1]; \
   char curveNames[MAX_CURVES][6]; \
   ScriptData scriptsData[MAX_SCRIPTS]; \
   char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
@@ -1205,7 +1233,8 @@ void ConvertModel_217_to_218(ModelData & model)
     }
   }
   for (int i=0; i<NUM_MODULES+1; i++) {
-    newModel.moduleData[i] = oldModel.moduleData[i];
+    // newModel.moduleData[i] = oldModel.moduleData[i];
+    #warning "Conversion from v217 to v218 is broken"
   }
 #if defined(PCBTARANIS)
   newModel.trainerData.mode = oldModel.trainerMode;

@@ -169,6 +169,10 @@ void boardInit()
                          EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph |
                          BT_RCC_APB2Periph, ENABLE);
 
+#if defined(BLUETOOTH)
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+#endif
+
 #if !defined(PCBX9E)
   // some X9E boards need that the pwrInit() is moved a little bit later
   pwrInit();
@@ -206,10 +210,6 @@ void boardInit()
 
 #if defined(HAPTIC)
   hapticInit();
-#endif
-
-#if defined(BLUETOOTH)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
 #if defined(DEBUG)

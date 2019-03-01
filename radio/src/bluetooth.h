@@ -44,13 +44,6 @@ enum BluetoothStates {
 
 #define LEN_BLUETOOTH_ADDR              16
 
-#if (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
-extern uint8_t btChipPresent;
-#define IS_BLUETOOTH_CHIP_PRESENT()     (btChipPresent)
-#else
-#define IS_BLUETOOTH_CHIP_PRESENT()     (true)
-#endif
-
 extern volatile uint8_t bluetoothState;
 extern char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
 extern char bluetoothDistantAddr[LEN_BLUETOOTH_ADDR+1];

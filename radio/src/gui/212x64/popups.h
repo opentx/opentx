@@ -34,16 +34,13 @@ void runPopupWarning(event_t event);
 #define DRAW_MESSAGE_BOX(title)        drawMessageBox(title)
 
 extern void (*popupFunc)(event_t event);
-extern int16_t warningInputValue;
-extern int16_t warningInputValueMin;
-extern int16_t warningInputValueMax;
 extern uint8_t warningInfoFlags;
 
 #define DISPLAY_WARNING                (*popupFunc)
 #define POPUP_INFORMATION(s)           (warningText = s, warningType = WARNING_TYPE_INFO, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_WARNING(s)               (warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_CONFIRMATION(s)          (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = runPopupWarning)
-#define POPUP_INPUT(s, func, start, min, max) (warningText = s, warningType = WARNING_TYPE_INPUT, popupFunc = func, warningInputValue = start, warningInputValueMin = min, warningInputValueMax = max)
+#define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)
 #define WARNING_INFO_FLAGS             warningInfoFlags
 #define SET_WARNING_INFO(info, len, flags) (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
 

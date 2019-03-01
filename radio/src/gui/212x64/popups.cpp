@@ -26,9 +26,6 @@ uint8_t      warningInfoLength;
 uint8_t      warningType;
 uint8_t      warningResult = 0;
 uint8_t      warningInfoFlags = ZCHAR;
-int16_t      warningInputValue;
-int16_t      warningInputValueMin;
-int16_t      warningInputValueMax;
 
 void drawMessageBox(const char * title)
 {
@@ -94,23 +91,18 @@ void runPopupWarning(event_t event)
   if (warningInfoText) {
     lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH,  WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS));
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT));
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      warningResult = true;
+      if (warningType != WARNING_TYPE_INFO)
+        warningResult = true;
       // no break
+
     case EVT_KEY_BREAK(KEY_EXIT):
       warningText = NULL;
       warningType = WARNING_TYPE_ASTERISK;
-      break;
-    default:
-      if (warningType == WARNING_TYPE_INPUT) {
-        s_editMode = EDIT_MODIFY_FIELD;
-        warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
-        s_editMode = EDIT_SELECT_FIELD;
-      }
       break;
   }
 }

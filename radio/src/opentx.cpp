@@ -105,7 +105,8 @@ void per10ms()
 #if defined(GUI)
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
-#if !defined(PCBNV14)
+#if !defined(LIBOPENUI)
+  // TODO remove noHighlightCounter
   if (noHighlightCounter) noHighlightCounter--;
 #endif
 #endif
@@ -311,6 +312,10 @@ void generalDefault()
   // theme->init();
 #endif
 
+  for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
+    g_eeGeneral.ownerRegistrationID[i] = (cpu_uid[1 + i] & 0x3f) - 26;
+  }
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
@@ -342,11 +347,11 @@ void defaultInputs()
     expo->mode = 3; // TODO constant
 #if defined(TRANSLATIONS_CZ)
     for (int c=0; c<4; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+4*(stick_index-1)+c]);
+      g_model.inputNames[i][c] = char2zchar(STR_INPUTNAMES[1+4*(stick_index-1)+c]);
     }
 #else
     for (int c=0; c<3; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[2+4*stick_index+c]);
+      g_model.inputNames[i][c] = char2zchar(STR_VSRCRAW[2 + 4 * stick_index + c]);
     }
 #if LEN_INPUT_NAME > 3
     g_model.inputNames[i][3] = '\0';
@@ -373,16 +378,16 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
 {
   uint8_t modelId = g_model.header.modelId[module];
   uint8_t additionalOnes = 0;
-  char * name = reusableBuffer.modelsetup.msg;
+  char * name = reusableBuffer.moduleSetup.msg;
 
-  memset(reusableBuffer.modelsetup.msg, 0, sizeof(reusableBuffer.modelsetup.msg));
+  memset(reusableBuffer.moduleSetup.msg, 0, sizeof(reusableBuffer.moduleSetup.msg));
 
   if (modelId != 0) {
     for (uint8_t i = 0; i < MAX_MODELS; i++) {
       if (i != index) {
         if (modelId == modelHeaders[i].modelId[module]) {
-          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.modelsetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
-            if (reusableBuffer.modelsetup.msg[0] != 0) {
+          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.moduleSetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
+            if (reusableBuffer.moduleSetup.msg[0] != 0) {
               name = strAppend(name, ", ");
             }
             if (modelHeaders[i].name[0] == 0) {
@@ -407,9 +412,9 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
     name = strAppend(name, ")");
   }
 
-  if (reusableBuffer.modelsetup.msg[0] != 0) {
+  if (reusableBuffer.moduleSetup.msg[0] != 0) {
     POPUP_WARNING(STR_MODELIDUSED);
-    SET_WARNING_INFO(reusableBuffer.modelsetup.msg, sizeof(reusableBuffer.modelsetup.msg), 0);
+    SET_WARNING_INFO(reusableBuffer.moduleSetup.msg, sizeof(reusableBuffer.moduleSetup.msg), 0);
   }
 }
 
@@ -467,10 +472,8 @@ void modelDefault(uint8_t id)
   }
 #endif
 
-#if defined(PCBFLYSKY)
-  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_FLYSKY;
-#elif defined(PCBFRSKY)
-  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT;
+#if defined(PCBFRSKY)
+  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
 #elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
@@ -1968,14 +1971,9 @@ int main()
 
   boardInit();
 
-#if defined(PCBX7)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
-#endif
-
-#if defined(PCBHORUS) || defined(PCBNV14)
+#if defined(PCBHORUS)
   loadFonts();
 #endif
-
 
 #if defined(GUI) && !defined(PCBTARANIS) && !defined(PCBHORUS)
   // TODO remove this

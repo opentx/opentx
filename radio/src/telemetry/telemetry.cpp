@@ -77,14 +77,16 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  if (frame[3] == 0x00) {
-    // RX_ID follows, we discard it for now
-    reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_COUNTER_ID_RECEIVED;
+  if (frame[3] == 0x00 && reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_START) {
+    // RX_NAME follows, we store it for the next step
+    str2zchar(reusableBuffer.moduleSetup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
+    reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
   }
-  else if (frame[3] == 0x01) {
-    // PASSWORD follows, we check it is good
-    if (memcmp(&frame[4], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0) {
-      reusableBuffer.modelsetup.pxx2_register_or_bind_step = REGISTER_OK;
+  else if (frame[3] == 0x01 && reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
+    // RX_NAME + PASSWORD follow, we check they are good
+    if (cmpStrWithZchar((char *)&frame[4], reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) &&
+      cmpStrWithZchar((char *)&frame[12], reusableBuffer.moduleSetup.pxx2.registrationID, PXX2_LEN_REGISTRATION_ID)) {
+      reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       #warning "code removed"
       // POPUP_INFORMATION(STR_REG_OK);
@@ -100,36 +102,29 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
   if (frame[3] == 0x00) {
     bool found = false;
-    for (uint8_t i=0; i<reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count; i++) {
-      if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[i], &frame[4], PXX2_LEN_RX_ID) == 0) {
+    for (uint8_t i=0; i<reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount; i++) {
+      if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
         found = true;
         break;
       }
     }
-    if (!found && reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count], &frame[4], PXX2_LEN_RX_ID);
-      char * c = reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_names[reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count];
-      for (uint8_t i=0; i<PXX2_LEN_RX_ID; i++) {
-        uint8_t byte = frame[4 + i];
-        uint8_t quartet = (byte >> 4);
-        *c++ = (quartet >= 10 ? quartet + 'A' - 10 : quartet + '0');
-        quartet = (byte & 0x0f);
-        *c++ = (quartet >= 10 ? quartet + 'A' - 10 : quartet + '0');
-        *c++ = ' ';
-      }
-      *c = '\0';
-      ++reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_count;
-      reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_RX_ID_RECEIVED;
+    if (!found && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+      memcpy(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
+      ++reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount;
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
     }
   }
   else if (frame[3] == 0x01) {
-    if (memcmp(reusableBuffer.modelsetup.pxx2_bind_candidate_receivers_ids[reusableBuffer.modelsetup.pxx2_bind_selected_receiver_index], &frame[4], PXX2_LEN_RX_ID) == 0) {
-      reusableBuffer.modelsetup.pxx2_register_or_bind_step = BIND_OK;
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
-#warning "code removed"
-      //POPUP_INFORMATION(STR_BIND_OK);
+    if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
+      reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
     }
   }
+}
+
+void processTelemetryFrame(uint8_t module, uint8_t * frame)
+{
+  sportProcessTelemetryPacketWithoutCrc(&frame[2]);
 }
 
 void processSpectrumFrame(uint8_t module, uint8_t * frame)
@@ -163,6 +158,10 @@ void processRadioFrame(uint8_t module, uint8_t * frame)
 
     case PXX2_TYPE_ID_BIND:
       processBindFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_ID_TELEMETRY:
+      processTelemetryFrame(module, frame);
       break;
   }
 }
@@ -212,11 +211,20 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(INTMODULE_USART)
-  uint8_t frame[32];
-  if (intmoduleFifo.getFrame(frame)) {
-    processModuleFrame(INTERNAL_MODULE, frame);
-  }
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+  uint8_t frame[PXX2_FRAME_MAXLENGTH];
+
+  #if defined(INTMODULE_USART)
+    if (intmoduleFifo.getFrame(frame)) {
+      processModuleFrame(INTERNAL_MODULE, frame);
+    }
+  #endif
+
+  #if defined(EXTMODULE_USART)
+    if (extmoduleFifo.getFrame(frame)) {
+      processModuleFrame(EXTERNAL_MODULE, frame);
+    }
+  #endif
 #endif
 
 #if defined(STM32)
