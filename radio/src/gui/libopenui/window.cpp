@@ -76,8 +76,8 @@ void Window::deleteLater(bool detach)
   else
     parent = nullptr;
 
-  if (onClose) {
-    onClose();
+  if (closeHandler) {
+    closeHandler();
   }
 
   trash.push_back(this);
@@ -116,6 +116,9 @@ void Window::setFocus()
   if (focusWindow != this) {
     clearFocus();
     focusWindow = this;
+    if (focusHandler) {
+      focusHandler();
+    }
   }
 
   Window * parent = this->parent;
@@ -251,6 +254,10 @@ void Window::checkEvents()
       TRACE_WINDOWS("Event 0x%x received ...", event);
       this->onKeyEvent(event);
     }
+  }
+
+  if (windowFlags & REFRESH_ALWAYS) {
+    invalidate();
   }
 }
 

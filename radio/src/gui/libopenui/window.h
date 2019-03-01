@@ -35,8 +35,9 @@
  #define TRANSPARENT    2
 #endif
 
-#define NO_SCROLLBAR    4
-#define FORWARD_SCROLL  8
+#define NO_SCROLLBAR      4
+#define FORWARD_SCROLL    8
+#define REFRESH_ALWAYS    16
 
 struct rect_t {
     coord_t x, y, w, h;
@@ -96,7 +97,12 @@ class Window {
 
     void setCloseHandler(std::function<void()> handler)
     {
-      onClose = std::move(handler);
+      closeHandler = std::move(handler);
+    }
+
+    void setFocusHandler(std::function<void()> handler)
+    {
+      focusHandler = std::move(handler);
     }
 
     void deleteLater(bool detach=true);
@@ -285,7 +291,8 @@ class Window {
     static Window * focusWindow;
     static std::list<Window *> trash;
 
-    std::function<void()> onClose;
+    std::function<void()> closeHandler;
+    std::function<void()> focusHandler;
 
     void  attach(Window * window);
 
