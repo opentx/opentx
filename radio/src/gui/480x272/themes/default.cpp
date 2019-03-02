@@ -368,6 +368,15 @@ class DefaultTheme: public Theme
       lcdDrawText(DATETIME_MIDDLE, DATETIME_LINE2, str, SMLSIZE|TEXT_INVERTED_COLOR|CENTERED);
     }
 
+    void drawProgressBar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t w, coord_t h, int value) const override
+    {
+      drawSolidRect(dc, x, y, w, h, 1, TEXT_COLOR);
+      if (value > 0) {
+        int width = (w * value) / 100;
+        dc->drawSolidFilledRect(x + 2, y + 2, width - 4, h - 4, SCROLLBOX_COLOR);
+      }
+    }
+
   protected:
     static const BitmapBuffer * backgroundBitmap;
     static BitmapBuffer * topleftBitmap;

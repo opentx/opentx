@@ -18,34 +18,35 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _LIBOPENUI_H_
-#define _LIBOPENUI_H_
+#ifndef _PROGRESS_H_
+#define _PROGRESS_H_
 
 #include "window.h"
-#include "mainwindow.h"
-#include "static.h"
-#include "button.h"
-#include "checkbox.h"
-#include "numberedit.h"
-#include "timeedit.h"
-#include "choice.h"
-#include "sourcechoice.h"
-#include "switchchoice.h"
-#include "filechoice.h"
-#include "textedit.h"
-#include "slider.h"
-#include "progress.h"
-#include "keyboard_text.h"
-#include "keyboard_number.h"
-#include "keyboard_curve.h"
-#include "tabsgroup.h"
-#include "page.h"
-#include "menu.h"
-#include "dialog.h"
-#include "gridlayout.h"
-#include "getset_helpers.h"
-#include "curveedit.h"
-#include "coloredit.h"
-#include "draw_functions.h"
 
-#endif // _LIBOPENUI_H_
+class Progress : public Window {
+  public:
+    Progress(Window * parent, const rect_t & rect):
+      Window(parent, rect)
+    {
+    }
+
+#if defined(TRACE_WINDOWS_ENABLED)
+    std::string getName() override
+    {
+      return "Progress";
+    }
+#endif
+
+    void setValue(int value)
+    {
+      this->value = value;
+      invalidate();
+    }
+
+    void paint(BitmapBuffer * dc) override;
+
+  protected:
+    int value;
+};
+
+#endif

@@ -19,6 +19,7 @@ set(LIBOPENUI_SRC
   switchchoice.cpp
   filechoice.cpp
   slider.cpp
+  progress.cpp
   menu.cpp
   dialog.cpp
   # curve.cpp

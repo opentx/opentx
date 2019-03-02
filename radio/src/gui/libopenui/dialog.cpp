@@ -55,7 +55,6 @@ Dialog::Dialog(uint8_t type, std::string title, std::string message, std::functi
 
 Dialog::~Dialog()
 {
-  deleteChildren();
 }
 
 void Dialog::paint(BitmapBuffer * dc)
@@ -165,5 +164,11 @@ void raiseAlert(const char * title, const char * msg, const char * info, uint8_t
 {
   AUDIO_ERROR_MESSAGE(sound);
   auto dialog = new Dialog(WARNING_TYPE_ALERT, title, msg);
+  dialog->runForever();
+}
+
+void showPopup(uint8_t type, const char * title, const char * msg, const char * info)
+{
+  auto dialog = new Dialog(type, title, msg);
   dialog->runForever();
 }

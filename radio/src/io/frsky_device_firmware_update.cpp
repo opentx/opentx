@@ -288,11 +288,11 @@ const char * DeviceFirmwareUpdate::uploadFile(const char * filename, ProgressHan
 const char * DeviceFirmwareUpdate::endTransfer()
 {
   if (!waitState(SPORT_DATA_REQ, 2000))
-    return "Module refused data";
+    return "Device refused data";
   startFrame(PRIM_DATA_EOF);
   sendFrame();
   if (!waitState(SPORT_COMPLETE, 2000)) {
-    return "Module rejected firmware";
+    return "Device rejected firmware";
   }
   return nullptr;
 }
@@ -303,6 +303,8 @@ void DeviceFirmwareUpdate::flashFile(const char * filename, ProgressHandler prog
 
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
+
+  progressHandler("Device reset...", 0, 100);
 
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();

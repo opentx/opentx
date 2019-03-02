@@ -95,16 +95,30 @@ class FilePreview : public Window
     BitmapBuffer *bitmap = nullptr;
 };
 
-void flashModule(uint8_t module, const char *filename)
+class FlashModuleDialog: public Dialog
 {
-  auto dialog = new Dialog(WARNING_TYPE_ALERT, STR_THROTTLEWARN, STR_THROTTLENOTIDLE);
-  DeviceFirmwareUpdate device(INTERNAL_MODULE);
-  device.flashFile(filename, [=](const char *message, int count, int total) -> void {
-      TRACE("PROGRESS %d/%d", count, total);
-  });
-  dialog->runForever();
-}
+  public:
+    FlashModuleDialog(ModuleIndex module):
+      Dialog(WARNING_TYPE_INFO, "Flash device"),
+      device(module),
+      progress(this, {100, 100, 100, 15})
+    {
+    }
 
+    void flash(const char * filename)
+    {
+      device.flashFile(filename, [=](const char *message, int count, int total) -> void {
+          setMessage(message);
+          progress.setValue(total > 0 ? count * 100 / total : 0);
+          mainWindow.run(false);
+      });
+      deleteLater();
+    }
+
+  protected:
+    DeviceFirmwareUpdate device;
+    Progress progress;
+};
 
 void RadioSdManagerPage::build(FormWindow *window)
 {
@@ -179,14 +193,17 @@ void RadioSdManagerPage::build(FormWindow *window)
             else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
               if (HAS_SPORT_UPDATE_CONNECTOR()) {
                 menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
-                    flashModule(FLASHING_MODULE, getFullPath(name));
+                    auto dialog = new FlashModuleDialog(FLASHING_MODULE);
+                    dialog->flash(getFullPath(name));
                 });
               }
               menu->addLine(STR_FLASH_INTERNAL_MODULE, [=]() {
-                  flashModule(INTERNAL_MODULE, getFullPath(name));
+                  auto dialog = new FlashModuleDialog(INTERNAL_MODULE);
+                  dialog->flash(getFullPath(name));
               });
               menu->addLine(STR_FLASH_EXTERNAL_MODULE, [=]() {
-                  flashModule(EXTERNAL_MODULE, getFullPath(name));
+                  auto dialog = new FlashModuleDialog(EXTERNAL_MODULE);
+                  dialog->flash(getFullPath(name));
               });
             }
 #if defined(LUA)

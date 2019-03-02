@@ -44,6 +44,12 @@ class Dialog : public Window {
     }
 #endif
 
+    void setMessage(std::string text)
+    {
+      message = std::move(text);
+      invalidate();
+    }
+
     void paint(BitmapBuffer * dc) override;
 
     void onKeyEvent(event_t event) override;

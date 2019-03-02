@@ -470,10 +470,12 @@ void runPopupWarning(event_t event);
 extern void (* popupFunc)(event_t event);
 extern uint8_t warningInfoFlags;
 
+void showPopup(uint8_t type, const char * title, const char * msg = nullptr, const char * info = nullptr);
+
 #define DISPLAY_WARNING                (*popupFunc)
 
-#define POPUP_INFORMATION(s)           TRACE("TODO POPUP_INFORMATION %s", s) // (warningText = s, warningType = WARNING_TYPE_INFO, warningInfoText = 0, popupFunc = runPopupWarning)
-#define POPUP_WARNING(s)               TRACE("TODO POPUP_WARNING %s", s) // (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
+#define POPUP_INFORMATION(s)           showPopup(WARNING_TYPE_INFO, s, STR_OK)
+#define POPUP_WARNING(s)               showPopup(WARNING_TYPE_ASTERISK, s, STR_EXIT)
 #define POPUP_CONFIRMATION(s)          (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)
 #define WARNING_INFO_FLAGS             warningInfoFlags
