@@ -53,7 +53,6 @@ void drawAlertBox(const char * title, const char * text, const char * action)
 
 }
 
-uint8_t menuCalibrationState;
 uint8_t menuLevel;
 uint8_t menuPageCount;
 uint8_t menuPageIndex;
