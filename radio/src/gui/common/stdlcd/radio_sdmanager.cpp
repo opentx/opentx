@@ -143,18 +143,18 @@ void onSdManagerMenu(const char * result)
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
     DeviceFirmwareUpdate device(INTERNAL_MODULE);
-    device.flashFile(lfn);
+    device.flashFile(lfn, drawProgressBar);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
     DeviceFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashFile(lfn);
+    device.flashFile(lfn, drawProgressBar);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
     DeviceFirmwareUpdate device(FLASHING_MODULE);
-    device.flashFile(lfn);
+    device.flashFile(lfn, drawProgressBar);
   }
 #endif
 #if defined(LUA)

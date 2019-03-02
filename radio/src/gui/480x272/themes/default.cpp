@@ -339,7 +339,6 @@ class DefaultTheme: public Theme
 
     const BitmapBuffer * getIconBitmap(uint8_t index, bool selected) const override
     {
-      // TRACE("getIconBitmap %d", index);
       return selected ? menuIconSelected[index] : menuIconNormal[index];
     }
 

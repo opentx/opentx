@@ -21,8 +21,15 @@
 #ifndef _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
 #define _FRSKY_DEVICE_FIRMWARE_UPDATE_H_
 
+#include <functional>
 #include "dataconstants.h"
 #include "frsky_pxx2.h"
+
+#if defined(LIBOPENUI)
+typedef std::function<void(const char *, int, int)> ProgressHandler;
+#else
+typedef void (*ProgressHandler)(const char *, int, int);
+#endif
 
 class DeviceFirmwareUpdate {
     enum State {
@@ -42,7 +49,7 @@ class DeviceFirmwareUpdate {
       module(module) {
     }
 
-    void flashFile(const char * filename);
+    void flashFile(const char * filename, ProgressHandler progressHandler);
 
   protected:
     uint8_t state = SPORT_IDLE;
@@ -63,7 +70,7 @@ class DeviceFirmwareUpdate {
 
     const char * sendPowerOn();
     const char * sendReqVersion();
-    const char * uploadFile(const char * filename);
+    const char * uploadFile(const char * filename, ProgressHandler progressHandler);
     const char * endTransfer();
 };
 

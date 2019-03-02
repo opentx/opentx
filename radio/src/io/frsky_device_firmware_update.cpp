@@ -141,6 +141,11 @@ bool DeviceFirmwareUpdate::waitState(State state, uint32_t timeout)
 #if defined(SIMU)
   UNUSED(state);
   UNUSED(timeout);
+  static uint8_t pass = 0;
+  if (++pass == 10) {
+    pass = 0;
+    RTOS_WAIT_MS(1);
+  }
   return true;
 #else
   watchdogSuspend(timeout / 10);
@@ -235,7 +240,7 @@ const char * DeviceFirmwareUpdate::sendReqVersion()
   return "Version request failed";
 }
 
-const char * DeviceFirmwareUpdate::uploadFile(const char *filename)
+const char * DeviceFirmwareUpdate::uploadFile(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
   uint32_t buffer[1024 / sizeof(uint32_t)];
@@ -269,7 +274,7 @@ const char * DeviceFirmwareUpdate::uploadFile(const char *filename)
       state = SPORT_DATA_TRANSFER,
       sendFrame();
       if (i == 0) {
-        drawProgressBar(STR_WRITING, file.fptr, file.obj.objsize);
+        progressHandler(STR_WRITING, file.fptr, file.obj.objsize);
       }
     }
 
@@ -292,7 +297,7 @@ const char * DeviceFirmwareUpdate::endTransfer()
   return nullptr;
 }
 
-void DeviceFirmwareUpdate::flashFile(const char * filename)
+void DeviceFirmwareUpdate::flashFile(const char * filename, ProgressHandler progressHandler)
 {
   pausePulses();
 
@@ -311,7 +316,7 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
 
   const char * result = sendPowerOn();
   if (!result) result = sendReqVersion();
-  if (!result) result = uploadFile(filename);
+  if (!result) result = uploadFile(filename, progressHandler);
   if (!result) result = endTransfer();
 
   if (result) {
