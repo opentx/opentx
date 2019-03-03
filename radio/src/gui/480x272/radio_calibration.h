@@ -18,15 +18,13 @@
  * GNU General Public License for more details.
  */
 
-#include "tabsgroup.h"
+#include "page.h"
 
 class StaticText;
 
-class RadioCalibrationPage: public PageTab {
+class RadioCalibrationPage: public Page {
   public:
     RadioCalibrationPage(bool initial=false);
-
-    void build(FormWindow * window) override;
 
     void checkEvents() override;
 
@@ -35,6 +33,7 @@ class RadioCalibrationPage: public PageTab {
     TextButton * button = nullptr;
     bool initial;
     void nextStep();
+    void build(FormWindow * window);
 };
 
 void startCalibration();

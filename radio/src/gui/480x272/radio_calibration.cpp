@@ -106,9 +106,10 @@ class PotCalibrationWindow: public Window {
 };
 
 RadioCalibrationPage::RadioCalibrationPage(bool initial):
-  PageTab(STR_MENUCALIBRATION, ICON_RADIO_CALIBRATION),
+  Page(ICON_RADIO_CALIBRATION),
   initial(initial)
 {
+  build(&body);
 }
 
 void RadioCalibrationPage::build(FormWindow * window)
@@ -128,7 +129,6 @@ void RadioCalibrationPage::build(FormWindow * window)
   new PotCalibrationWindow(window, {0, window->height()-25, 150, 20}, POT1);
   new MultiPosCalibrationWindow(window, {LCD_W/2-25,window->height()-25, 50, 20}, POT2);
   new PotCalibrationWindow(window, {LCD_W-150, window->height()-25, 150, 20}, POT3);
-
 #endif
 
   button = new TextButton(window, {LCD_W/2-200, window->height() - 50, 400, FH+2}, "START", [=]() -> int8_t {
@@ -270,11 +270,12 @@ class FirstCalibrationMenu: public TabsGroup {
     FirstCalibrationMenu():
       TabsGroup(ICON_MODEL)
     {
-      addTab(new RadioCalibrationPage(true));
+//      addTab(new RadioCalibrationPage(true));
     }
 };
 
 void startCalibration()
 {
-  new FirstCalibrationMenu();
+  auto editPage = new RadioCalibrationPage();
+  // new FirstCalibrationMenu();
 }

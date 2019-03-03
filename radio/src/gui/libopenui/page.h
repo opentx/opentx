@@ -28,11 +28,12 @@ class Page;
 
 class PageHeader: public Window {
   public:
-    PageHeader(Page * parent, const rect_t & rect);
+    PageHeader(Page * parent, uint8_t icon);
 
-    virtual void paint(BitmapBuffer * dc) override;
+    void paint(BitmapBuffer * dc) override;
 
   protected:
+    uint8_t icon;
 #if defined(TOUCH_HARDWARE)
     IconButton back;
 #endif
@@ -40,7 +41,7 @@ class PageHeader: public Window {
 
 class Page: public Window {
   public:
-    Page();
+    Page(unsigned icon);
 
     ~Page() override;
 
@@ -74,7 +75,6 @@ class Page: public Window {
   protected:
     PageHeader header;
     FormWindow body;
-    static constexpr coord_t headerHeight = 60;
 };
 
 #endif // _PAGE_H_

@@ -23,10 +23,10 @@
 
 #define SET_DIRTY()     storageDirty(functions == g_model.customFn ? EE_MODEL : EE_GENERAL)
 
-class SpecialFunctionEditWindow : public Page {
+class SpecialFunctionEditPage : public Page {
   public:
-    SpecialFunctionEditWindow(CustomFunctionData * functions, uint8_t index) :
-      Page(),
+    SpecialFunctionEditPage(CustomFunctionData * functions, uint8_t index) :
+      Page(functions == g_model.customFn ? ICON_MODEL_SPECIAL_FUNCTIONS : ICON_RADIO_GLOBAL_FUNCTIONS),
       functions(functions),
       index(index)
     {
@@ -58,8 +58,8 @@ class SpecialFunctionEditWindow : public Page {
 
     void buildHeader(Window * window)
     {
-      new StaticText(window, {70, 2, 200, 20}, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, MENU_TITLE_COLOR);
-      headerSF = new StaticText(window, {70, 22, 100, 20}, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), MENU_TITLE_COLOR);
+      new StaticText(window, { 60, 2, 200, 20 }, functions == g_model.customFn ? STR_MENUCUSTOMFUNC : STR_MENUSPECIALFUNCS, MENU_TITLE_COLOR);
+      headerSF = new StaticText(window, { 60, 22, 100, 20 }, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), MENU_TITLE_COLOR);
     }
 
     void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
@@ -371,7 +371,7 @@ class SpecialFunctionButton : public Button {
           lcdDrawText(col3, line2, "!1x", 0);
         }
         else {
-          lcdDrawNumber(col3 + 12, line2, CFN_PLAY_REPEAT(cfn) * CFN_PLAY_REPEAT_MUL, 0 | RIGHT, 0, NULL, "s");
+          lcdDrawNumber(col3 + 12, line2, CFN_PLAY_REPEAT(cfn) * CFN_PLAY_REPEAT_MUL, 0 | RIGHT, 0, nullptr, "s");
         }
       }
     }
@@ -407,8 +407,8 @@ void SpecialFunctionsPage::rebuild(FormWindow * window, int8_t focusSpecialFunct
 
 void SpecialFunctionsPage::editSpecialFunction(FormWindow * window, uint8_t index)
 {
-  Window * editWindow = new SpecialFunctionEditWindow(functions, index);
-  editWindow->setCloseHandler([=]() {
+  auto editPage = new SpecialFunctionEditPage(functions, index);
+  editPage->setCloseHandler([=]() {
     rebuild(window, index);
   });
 }
@@ -443,6 +443,7 @@ void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
     button->setPressHandler([=]() -> uint8_t {
       button->bringToTop();
       Menu * menu = new Menu();
+      #warning "TODO When only EDIT available => directy open the edit window without the menu"
       menu->addLine(STR_EDIT, [=]() {
         editSpecialFunction(window, i);
       });

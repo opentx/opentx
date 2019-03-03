@@ -25,12 +25,9 @@
 #include "keyboard_curve.h"
 #include "opentx.h" // TODO for constants
 
-// TODO duplicated
-#define TOPBAR_BUTTON_WIDTH            47 // 60
-
-
-PageHeader::PageHeader(Page * parent, const rect_t & rect):
-  Window(parent, rect, OPAQUE)
+PageHeader::PageHeader(Page * parent, uint8_t icon):
+  Window(parent, { 0, 0, LCD_W, MENU_HEADER_HEIGHT }, OPAQUE),
+  icon(icon)
 #if defined(TOUCH_HARDWARE)
   , back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_BACK,
        [=]() -> uint8_t {
@@ -43,13 +40,14 @@ PageHeader::PageHeader(Page * parent, const rect_t & rect):
 
 void PageHeader::paint(BitmapBuffer * dc)
 {
-  dc->drawSolidFilledRect(TOPBAR_BUTTON_WIDTH, 0, LCD_W - TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH, HEADER_BGCOLOR);
+  theme->drawMenuBackground(dc, icon, "");
+  dc->drawSolidFilledRect(MENU_HEADER_HEIGHT, 0, LCD_W - MENU_HEADER_HEIGHT, MENU_HEADER_HEIGHT, HEADER_BGCOLOR);
 }
 
-Page::Page():
+Page::Page(unsigned icon):
   Window(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
-  header(this, {0, 0, LCD_W, headerHeight}),
-  body(this, {0, headerHeight, LCD_W, LCD_H - headerHeight})
+  header(this, icon),
+  body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT })
 {
 }
 

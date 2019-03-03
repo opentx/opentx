@@ -19,6 +19,7 @@
  */
 
 #include "radio_hardware.h"
+#include "radio_calibration.h"
 #include "opentx.h"
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
@@ -88,8 +89,8 @@ void RadioHardwarePage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_INPUTS, BOLD);
   auto calib = new TextButton(window, grid.getFieldSlot(), STR_CALIBRATION,
                                   [=]() -> uint8_t {
-                                    //TODO launch calib window
-                                    return 1;
+                                      startCalibration();
+                                      return 1;
                                   });
   window->setFirstField(calib);
   calib->setFocus();
