@@ -37,6 +37,5 @@ RadioMenu::RadioMenu():
   addTab(new SpecialFunctionsPage(g_eeGeneral.customFn));
   addTab(new RadioTrainerPage());
   addTab(new RadioHardwarePage());
-  addTab(new RadioCalibrationPage());
   addTab(new RadioVersionPage());
 }

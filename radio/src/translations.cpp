@@ -263,6 +263,7 @@ const char STR_SLAVE[]  = TR_SLAVE;
 const char STR_MODESRC[]  = TR_MODESRC;
 const char STR_MULTIPLIER[]  = TR_MULTIPLIER;
 const char STR_CAL[]  = TR_CAL;
+const char STR_CALIBRATION[]  = TR_CALIBRATION;
 const char STR_VTRIM[]  = TR_VTRIM;
 const char STR_BG[]  = TR_BG;
 const char STR_MENUTOSTART[]  = TR_MENUTOSTART;

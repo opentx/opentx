@@ -82,17 +82,25 @@ void RadioHardwarePage::build(FormWindow * window)
 {
   GridLayout grid;
   grid.setLabelWidth(130);
+  grid.spacer(6);
+
+  // Calibration
+  new StaticText(window, grid.getLabelSlot(), STR_INPUTS, BOLD);
+  auto calib = new TextButton(window, grid.getFieldSlot(), STR_CALIBRATION,
+                                  [=]() -> uint8_t {
+                                    //TODO launch calib window
+                                    return 1;
+                                  });
+  window->setFirstField(calib);
+  calib->setFocus();
+  grid.nextLine();
 
   // Sticks
   new Subtitle(window, grid.getLineSlot(), STR_STICKS);
   grid.nextLine();
   for(int i=0; i < NUM_STICKS; i++){
     new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + 1)));
-    auto name = new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i], LEN_ANA_NAME);
-    if(i == 0) {
-      window->setFirstField(name);
-      name->setFocus();
-    }
+    new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i], LEN_ANA_NAME);
     grid.nextLine();
   }
 

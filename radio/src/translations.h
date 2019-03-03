@@ -483,6 +483,7 @@ extern const char STR_MODESRC[];
 extern const char STR_MULTIPLIER[];
 #define LEN_MULTIPLIER PSIZE(TR_MULTIPLIER)
 extern const char STR_CAL[];
+extern const char STR_CALIBRATION[];
 extern const char STR_VTRIM[];
 extern const char STR_BG[];
 extern const char STR_MENUTOSTART[];

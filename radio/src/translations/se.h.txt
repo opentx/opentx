@@ -694,6 +694,7 @@
 #define TR_MODESRC             " Läge\004% Källa"
 #define TR_MULTIPLIER          "Styrka"
 #define TR_CAL                 "Kalib."
+#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
 #if defined(PCBHORUS)

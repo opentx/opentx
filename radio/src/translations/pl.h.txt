@@ -682,6 +682,7 @@
 #define TR_MODESRC             " Tryb\006% Źródło"
 #define TR_MULTIPLIER          "Mnożnik"
 #define TR_CAL                 "Kal."
+#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM               "Trym- +"
 #define TR_BG                  "BG:"
 #if defined(PCBHORUS)
