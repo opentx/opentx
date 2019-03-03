@@ -87,11 +87,14 @@ void RadioHardwarePage::build(FormWindow * window)
 
   // Calibration
   new StaticText(window, grid.getLabelSlot(), STR_INPUTS, BOLD);
-  auto calib = new TextButton(window, grid.getFieldSlot(), STR_CALIBRATION,
-                                  [=]() -> uint8_t {
-                                      startCalibration();
-                                      return 1;
-                                  });
+  auto calib = new TextButton(window, grid.getFieldSlot(), STR_CALIBRATION);
+  calib->setPressHandler([=]() -> uint8_t {
+      auto calibrationPage = new RadioCalibrationPage();
+      calibrationPage->setCloseHandler([=]() {
+          calib->setFocus();
+      });
+      return 0;
+  });
   window->setFirstField(calib);
   calib->setFocus();
   grid.nextLine();
