@@ -29,16 +29,10 @@ uint8_t menuCalibrationState;
 class StickCalibrationWindow: public Window {
   public:
     StickCalibrationWindow(Window * parent, const rect_t & rect, uint8_t stickX, uint8_t stickY):
-      Window(parent, rect),
+      Window(parent, rect, REFRESH_ALWAYS),
       stickX(stickX),
       stickY(stickY)
     {
-    }
-
-    void checkEvents() override
-    {
-      // will always force a full window refresh
-      invalidate();
     }
 
     void paint(BitmapBuffer * dc) override
@@ -140,6 +134,8 @@ void RadioCalibrationPage::build(FormWindow * window)
 
 void RadioCalibrationPage::checkEvents()
 {
+  Page::checkEvents();
+
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) { // get low and high vals for sticks and trims
     int16_t vt = i<TX_VOLTAGE ? anaIn(i) : anaIn(i+1);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
