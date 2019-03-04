@@ -33,7 +33,8 @@ class RadioCalibrationPage: public Page {
     TextButton * button = nullptr;
     bool initial;
     void nextStep();
-    void build(FormWindow * window);
+    void buildHeader(Window * window);
+    void buildBody(FormWindow * window);
 };
 
 void startCalibration();

@@ -103,10 +103,16 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
   Page(ICON_RADIO_CALIBRATION),
   initial(initial)
 {
-  build(&body);
+  buildHeader(&header);
+  buildBody(&body);
 }
 
-void RadioCalibrationPage::build(FormWindow * window)
+void RadioCalibrationPage::buildHeader(Window * window)
+{
+  // TODO
+}
+
+void RadioCalibrationPage::buildBody(FormWindow * window)
 {
   menuCalibrationState = CALIB_START;
 
