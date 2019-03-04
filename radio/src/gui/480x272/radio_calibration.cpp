@@ -109,7 +109,8 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
 
 void RadioCalibrationPage::buildHeader(Window * window)
 {
-  // TODO
+  new StaticText(window, { 55, 0, 300, 20 }, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
+  text = new StaticText(window, { 55, FH+2, LCD_W-55, 20 }, "Press [Enter] to start", MENU_TITLE_COLOR);
 }
 
 void RadioCalibrationPage::buildBody(FormWindow * window)
@@ -134,7 +135,7 @@ void RadioCalibrationPage::buildBody(FormWindow * window)
   new PotCalibrationWindow(window, {LCD_W-150, window->height()-25, 150, 20}, POT3);
 #endif
 
-  button = new TextButton(window, {LCD_W/2-200, window->height() - 50, 400, FH+2}, "START", [=]() -> int8_t {
+  button = new TextButton(window, {0,0,0,0}, "", [=]() -> int8_t {
     nextStep();
     return 0;
   });
@@ -247,24 +248,24 @@ void RadioCalibrationPage::nextStep()
 
   switch (menuCalibrationState) {
     case CALIB_SET_MIDPOINT:
-      button->setText(STR_SETMIDPOINT);
+      text->setText(STR_SETMIDPOINT);
       break;
 
     case CALIB_MOVE_STICKS:
-      button->setText(STR_MOVESTICKSPOTS);
+      text->setText(STR_MOVESTICKSPOTS);
       break;
 
     case CALIB_STORE:
-      button->setText("Done!");
+      text->setText("Done!");
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
       menuCalibrationState = CALIB_FINISHED;
       if (initial)
-        button->getParent()->getParent()->deleteLater();
+        text->getParent()->getParent()->deleteLater();
       break;
 
     default:
-      button->setText("START");
+      text->setText("START");
       menuCalibrationState = CALIB_START;
       break;
   }
