@@ -264,7 +264,7 @@ enum MenuModelSetupItems {
 
 void onPXX2BindMenu(const char * result)
 {
-  reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]);
+  reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / PXX2_LEN_RX_NAME;
   reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
 }
 
@@ -1344,6 +1344,7 @@ void menuModelSetup(event_t event)
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
               reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
               reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
+              reusableBuffer.moduleSetup.pxx2.bindReceiverSlot = receiverSlot;
               moduleSettings[moduleIdx].mode ^= MODULE_MODE_BIND;
             }
             if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
@@ -1863,7 +1864,7 @@ void menuModelFailsafe(event_t event)
     const int32_t channelValue = channelOutputs[ch+channelStart];
     int32_t failsafeValue = g_model.failsafeChannels[ch];
 
-    //Channel
+    // Channel
     putsChn(x+1, y, ch+1, SMLSIZE);
 
     // Value

@@ -143,8 +143,8 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte(1); // TODO RX_UID
-    Pxx2Transport::addByte(g_model.header.modelId[INTERNAL_MODULE]);
+    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverSlot); // RX_UID is the slot index (which is unique and never moved)
+    Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
     Pxx2Transport::addByte(0x00);
