@@ -134,9 +134,7 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
       reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
       POPUP_INFORMATION(STR_BIND_OK);
     }
-    else {
-      return false;
-    }
+    return false;
   }
   else if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
     Pxx2Transport::addByte(0x01);
