@@ -21,8 +21,8 @@
 #ifndef _BOARD_HORUS_H_
 #define _BOARD_HORUS_H_
 
-#include "definitions.h"
-#include "opentx_constants.h"
+#include "../definitions.h"
+#include "../opentx_constants.h"
 #include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
