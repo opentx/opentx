@@ -25,6 +25,7 @@
 #include "board.h"
 #include "dataconstants.h"
 #include "definitions.h"
+#include "bitfield.h"
 
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
@@ -415,10 +416,13 @@ PACK(struct TrainerModuleData {
  */
 
 PACK(struct ReceiverData {
-  uint8_t  enabled:1;
+  uint8_t  used:1;
   uint8_t  telemetry:1;
-  uint8_t  spare:6;
-  uint64_t channelMapping; // each receiver output (16) can be assigned to one of the 16 channels
+  uint8_t  spare:2;
+  // 5 bits per receiver output (24) as it can be assigned to one of the 24 channels
+  uint64_t channelMapping0:60;
+  uint64_t channelMapping1:64;
+  char     name[8];
 });
 
 /*
@@ -478,8 +482,24 @@ PACK(struct ModuleData {
     NOBACKUP(struct {
       uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
       uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
+#if defined(PCBHORUS)
       uint8_t spare:5;
-      ReceiverData receivers[MAX_RECEIVERS_PER_MODULE];
+      uint32_t receivers;               // max 5 receivers per module and 10 receivers in total (4bits per receiver with 0 = unused)
+#else
+      uint8_t spare:1;
+      uint16_t receivers:12;            // max 4 receivers per module and 4 receivers in total (3bits per receiver with 0 = unused)
+#endif
+      NOBACKUP(inline uint8_t getReceiverSlot(uint8_t receiver) {
+        return (receivers >> (3 * receiver)) & 0b111;
+      })
+
+      NOBACKUP(inline void setReceiverSlot(uint8_t receiver, uint8_t slot) {
+        receivers = BF_SET<uint16_t>(receivers, slot, 3 * receiver, 3);
+      })
+
+      NOBACKUP(inline void clearReceiverSlot(uint8_t receiver) {
+        setReceiverSlot(receiver, 0);
+      })
     } pxx2);
   };
 
@@ -490,12 +510,10 @@ PACK(struct ModuleData {
     return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
   })
 
-  NOBACKUP(inline void setMultiProtocol(uint8_t proto)
-  {
+  NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
     rfProtocol = (uint8_t) (proto & 0x0f);
     multi.rfProtocolExtra = (proto & 0x30) >> 4;
   })
-
 });
 
 /*
@@ -610,6 +628,7 @@ PACK(struct ModelData {
   NOBACKUP(uint8_t spare:6);
   NOBACKUP(uint8_t potsWarnMode:2);
   ModuleData moduleData[NUM_MODULES];
+  ReceiverData receiverData[NUM_RECEIVERS];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 

@@ -208,12 +208,12 @@ constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
 
 inline uint8_t getPinOuput(uint8_t receiverIdx, uint8_t moduleIdx, uint8_t pin)
 {
-  return ((g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping >> (pin + ((pin & 0x01) ? -1 : 1 )) * 4) & 0x0F);
+  // TODO return ((g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping >> (pin + ((pin & 0x01) ? -1 : 1 )) * 4) & 0x0F);
 }
 
 inline void setPinOuput(uint8_t receiverIdx, uint8_t moduleIdx, uint8_t pin, uint8_t chan)
 {
-  g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping = BF_SET<uint64_t>(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping, chan, (pin + ((pin & 0x01) ? -1 : 1 )) * 4, 4);
+  // TODO g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping = BF_SET<uint64_t>(g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].channelMapping, chan, (pin + ((pin & 0x01) ? -1 : 1 )) * 4, 4);
 }
 
 inline int8_t maxModuleChannels_M8(uint8_t idx)

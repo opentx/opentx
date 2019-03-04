@@ -37,7 +37,6 @@
 
 #if defined(PCBHORUS)
   #define MAX_MODELS                   60
-  #define MAX_RECEIVERS_PER_MODULE     5
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
@@ -51,7 +50,6 @@
   #define MAX_CUSTOM_SCREENS           5
 #elif defined(PCBTARANIS)
   #define MAX_MODELS                   60
-  #define MAX_RECEIVERS_PER_MODULE     2
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
@@ -64,7 +62,6 @@
   #define MAX_TELEMETRY_SENSORS        32
 #elif defined(PCBSKY9X)
   #define MAX_MODELS                   60
-  #define MAX_RECEIVERS_PER_MODULE     2
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
   #define MAX_MIXERS                   64
@@ -125,6 +122,14 @@ enum CurveType {
   #define LEN_FUNCTION_NAME            6
   #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
   #define MAX_CURVE_POINTS             512
+#endif
+
+#if defined(PCBHORUS)
+  #define NUM_RECEIVERS                10
+  #define MAX_RECEIVERS_PER_MODULE     5
+#else
+  #define NUM_RECEIVERS                4
+  #define MAX_RECEIVERS_PER_MODULE     4
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
