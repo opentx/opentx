@@ -110,6 +110,9 @@ void RadioCalibrationPage::build(FormWindow * window)
 {
   menuCalibrationState = CALIB_START;
 
+  // Background radio image
+  new StaticBitmap(window, {LCD_W/2 -calibHorus->getWidth()/2, 5, calibHorus->getHeight(), calibHorus->getWidth()}, calibHorus);
+
   // The two sticks
   new StickCalibrationWindow(window, {20, 20, 90, 90}, STICK1, STICK2);
   new StickCalibrationWindow(window, {LCD_W-110, 20, 90, 90}, STICK4, STICK3);
