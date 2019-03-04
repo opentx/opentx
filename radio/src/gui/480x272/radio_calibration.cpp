@@ -134,12 +134,6 @@ void RadioCalibrationPage::buildBody(FormWindow * window)
   new MultiPosCalibrationWindow(window, {LCD_W/2-25,window->height()-25, 50, 20}, POT2);
   new PotCalibrationWindow(window, {LCD_W-150, window->height()-25, 150, 20}, POT3);
 #endif
-
-  button = new TextButton(window, {0,0,0,0}, "", [=]() -> int8_t {
-    nextStep();
-    return 0;
-  });
-  button->setFocus();
 }
 
 void RadioCalibrationPage::checkEvents()
@@ -239,6 +233,18 @@ void RadioCalibrationPage::checkEvents()
       }
     }
 #endif
+  }
+}
+
+void RadioCalibrationPage::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    nextStep();
+  }
+  else {
+    Page::onKeyEvent(event);
   }
 }
 

@@ -28,6 +28,8 @@ class RadioCalibrationPage: public Page {
 
     void checkEvents() override;
 
+    void onKeyEvent(event_t event) override;
+
   protected:
     StaticText * text = nullptr;
     TextButton * button = nullptr;

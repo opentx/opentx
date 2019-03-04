@@ -49,6 +49,7 @@ Page::Page(unsigned icon):
   header(this, icon),
   body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT })
 {
+  setFocus();
 }
 
 Page::~Page()
