@@ -110,7 +110,7 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
 void RadioCalibrationPage::buildHeader(Window * window)
 {
   new StaticText(window, { 55, 0, 300, 20 }, STR_MENUCALIBRATION, MENU_TITLE_COLOR);
-  text = new StaticText(window, { 55, FH+2, LCD_W-55, 20 }, "Press [Enter] to start", MENU_TITLE_COLOR);
+  text = new StaticText(window, { 55, FH+2, LCD_W-55, 20 }, STR_MENUTOSTART, MENU_TITLE_COLOR);
 }
 
 void RadioCalibrationPage::buildBody(FormWindow * window)
@@ -243,6 +243,12 @@ void RadioCalibrationPage::onKeyEvent(event_t event)
   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
     nextStep();
   }
+  else if (event == EVT_KEY_BREAK(KEY_EXIT) && menuCalibrationState != CALIB_START)
+  {
+    menuCalibrationState = CALIB_START;
+    text->setText(STR_MENUTOSTART);
+
+  }
   else {
     Page::onKeyEvent(event);
   }
@@ -262,7 +268,7 @@ void RadioCalibrationPage::nextStep()
       break;
 
     case CALIB_STORE:
-      text->setText("Done!");
+      text->setText(STR_CALIB_DONE);
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
       menuCalibrationState = CALIB_FINISHED;
@@ -271,23 +277,13 @@ void RadioCalibrationPage::nextStep()
       break;
 
     default:
-      text->setText("START");
+      text->setText(STR_MENUTOSTART);
       menuCalibrationState = CALIB_START;
       break;
   }
 }
 
-class FirstCalibrationMenu: public TabsGroup {
-  public:
-    FirstCalibrationMenu():
-      TabsGroup(ICON_MODEL)
-    {
-//      addTab(new RadioCalibrationPage(true));
-    }
-};
-
 void startCalibration()
 {
-  auto editPage = new RadioCalibrationPage();
-  // new FirstCalibrationMenu();
+  new RadioCalibrationPage();
 }

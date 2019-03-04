@@ -687,6 +687,7 @@
   #define TR_MENUTOSTART       "Drücke [Enter] zum Start"
   #define TR_SETMIDPOINT       "Knüppel/Potis/Sliders auf Mitte [Enter]"
   #define TR_MOVESTICKSPOTS    "Knüppel/Potis/Sliders bewegen [Enter]"
+#define TR_CALIB_DONE                  "Calibration completed"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " Zum Start"
   #define TR_SETMIDPOINT       "STICKS/SLIDERS/POTIS auf Mitte"

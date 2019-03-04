@@ -269,6 +269,7 @@ const char STR_BG[]  = TR_BG;
 const char STR_MENUTOSTART[]  = TR_MENUTOSTART;
 const char STR_SETMIDPOINT[]  = TR_SETMIDPOINT;
 const char STR_MOVESTICKSPOTS[]  = TR_MOVESTICKSPOTS;
+const char STR_CALIB_DONE[]  = TR_CALIB_DONE;
 const char STR_RXBATT[]  = TR_RXBATT;
 const char STR_TX[]  = TR_TXnRX;
 const char STR_ACCEL[]  = TR_ACCEL;

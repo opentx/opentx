@@ -699,6 +699,7 @@
   #define TR_MENUTOSTART               "Presser [Enter] pour commencer"
   #define TR_SETMIDPOINT               "Centrer manches/pots/sliders puis [Enter]"
   #define TR_MOVESTICKSPOTS            "Bouger manches/pots/sliders puis [Enter]"
+#define TR_CALIB_DONE                  "Calibration completed"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART               TR_ENTER " POUR DEBUT"
   #define TR_SETMIDPOINT               "REGLER NEUTRES"

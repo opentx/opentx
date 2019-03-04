@@ -689,6 +689,7 @@
   #define TR_MENUTOSTART       "Press [Enter] to start"
   #define TR_SETMIDPOINT       "Center sticks/pots/sliders and press [Enter]"
   #define TR_MOVESTICKSPOTS    "Move sticks, pots and sliders and press [Enter]"
+#define TR_CALIB_DONE                  "Calibration completed"
 #else
   #define TR_MENUTOSTART       CENTER"\011" TR_ENTER " INICIAR"
   #define TR_SETMIDPOINT       TR(CENTER"\005CENTRAR STICK/POT",CENTER"\006CENTRAR STICK/POT")

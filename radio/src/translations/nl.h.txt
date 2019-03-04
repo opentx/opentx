@@ -684,6 +684,7 @@
   #define TR_MENUTOSTART       "Geef [Enter] om te starten"
   #define TR_SETMIDPOINT       "Centreer sticks/pots/schuiven en geef [Enter]"
   #define TR_MOVESTICKSPOTS    "Beweeg sticks/pots/schuiven en geef [Enter]"
+#define TR_CALIB_DONE                  "Calibration completed"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " VOOR START"
   #define TR_SETMIDPOINT       "CENTREER STICKS/SLIDERS"

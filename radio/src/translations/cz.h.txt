@@ -682,6 +682,7 @@
   #define TR_MENUTOSTART       "Stickem [Enter] začneme"
   #define TR_SETMIDPOINT       "Vycentruj páky/poty/slidery a stiskni [Enter]"
   #define TR_MOVESTICKSPOTS    "Hýbej pákami/poty/slidery pak stiskni [Enter]"
+#define TR_CALIB_DONE                  "Calibration completed"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " = START"
   #define TR_SETMIDPOINT       "Nastav páky na střed"

@@ -689,6 +689,7 @@
   #define TR_MENUTOSTART       "Press [Enter] to start"
   #define TR_SETMIDPOINT       "Center sticks/pots/sliders and press [Enter]"
   #define TR_MOVESTICKSPOTS    "Move sticks, pots and sliders and press [Enter]"
+#define TR_CALIB_DONE                  "Calibration completed"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART       TR_ENTER " KALIBRUJ"
   #define TR_SETMIDPOINT       "Centruj drażki/potencj"

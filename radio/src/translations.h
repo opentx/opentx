@@ -489,6 +489,7 @@ extern const char STR_BG[];
 extern const char STR_MENUTOSTART[];
 extern const char STR_SETMIDPOINT[];
 extern const char STR_MOVESTICKSPOTS[];
+extern const char STR_CALIB_DONE[];
 extern const char STR_RXBATT[];
 extern const char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
