@@ -220,7 +220,6 @@ class SpecialFunctionEditPage : public Page {
                                                                     GeneralCustomFunctionsContext));
       });
       window->setFirstField(switchChoice);
-      switchChoice->setFocus();
       grid.nextLine();
 
       // Function

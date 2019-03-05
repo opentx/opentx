@@ -38,7 +38,6 @@ void ModelHeliPage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_SWASHTYPE);
   auto first = new Choice(window, grid.getFieldSlot(), STR_VSWASHTYPE, 0, SWASH_TYPE_MAX, GET_SET_DEFAULT(g_model.swashR.type));
   window->setFirstField(first);
-  first->setFocus();
   grid.nextLine();
 
   // Swash ring

@@ -51,7 +51,7 @@ void FormField::paint(BitmapBuffer * dc)
 
 void FormField::onKeyEvent(event_t event)
 {
-  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+  TRACE_WINDOWS("%s received event 0x%X", FormField::getWindowDebugString().c_str(), event);
 
   if (event == EVT_ROTARY_RIGHT/*EVT_KEY_BREAK(KEY_DOWN)*/) {
     if (next) {
@@ -73,5 +73,32 @@ void FormField::onKeyEvent(event_t event)
   }
   else {
     Window::onKeyEvent(event);
+  }
+}
+
+void FormGroup::onKeyEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    editMode = true;
+    first->setFocus();
+  }
+  else if (event == EVT_KEY_BREAK(KEY_EXIT) && editMode) {
+    editMode = false;
+    setFocus();
+  }
+  else {
+    FormField::onKeyEvent(event);
+  }
+}
+
+void FormGroup::paint(BitmapBuffer * dc)
+{
+  if (!editMode && hasFocus()) {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, TEXT_INVERTED_BGCOLOR);
+  }
+  else {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, CURVE_AXIS_COLOR);
   }
 }

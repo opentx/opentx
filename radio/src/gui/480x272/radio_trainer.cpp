@@ -43,7 +43,6 @@ void RadioTrainerPage::build(FormWindow * window)
     auto mode = new Choice(window, grid.getFieldSlot(3,0), STR_TRNMODE, 0, 2, GET_SET_DEFAULT(td->mode));
     if(i == 0) {
       window->setFirstField(mode);
-      mode->setFocus();
     }
     auto perc = new NumberEdit(window, grid.getFieldSlot(3, 1), -125, 125, GET_SET_DEFAULT(td->studWeight));
     perc->setSuffix("%");

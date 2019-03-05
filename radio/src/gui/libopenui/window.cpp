@@ -263,7 +263,7 @@ void Window::checkEvents()
 
 void Window::onKeyEvent(event_t event)
 {
-  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+  TRACE_WINDOWS("%s received event 0x%X", Window::getWindowDebugString().c_str(), event);
   if (parent) {
     parent->onKeyEvent(event);
   }

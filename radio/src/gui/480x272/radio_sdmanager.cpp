@@ -166,7 +166,6 @@ void RadioSdManagerPage::build(FormWindow *window)
       }, 0);
       if (!window->getFirstField()) {
         window->setFirstField(button);
-        button->setFocus();
       }
       grid.nextLine();
     }
@@ -240,7 +239,6 @@ void RadioSdManagerPage::build(FormWindow *window)
       });
       if (!window->getFirstField()) {
         window->setFirstField(button);
-        button->setFocus();
       }
       grid.nextLine();
     }

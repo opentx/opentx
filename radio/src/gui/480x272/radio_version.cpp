@@ -66,6 +66,5 @@ void RadioVersionPage::build(FormWindow * window)
                                    return 0;
                                });
 
-  button->setFocus();
   window->setFirstField(button);
 }

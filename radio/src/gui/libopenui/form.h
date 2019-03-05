@@ -90,13 +90,20 @@ class FormField: public Window {
     bool editMode = false;
 };
 
-class FormWindow: public Window {
+class FormGroup: public FormField {
   public:
-    FormWindow(Window * parent, const rect_t & rect) :
-            Window(parent, rect)
+    FormGroup(Window * parent, const rect_t & rect) :
+      FormField(parent, rect)
     {
       FormField::current = nullptr;
     }
+
+#if defined(TRACE_WINDOWS_ENABLED)
+    std::string getName() override
+    {
+      return "FormGroup";
+    }
+#endif
 
     void clear()
     {
@@ -110,6 +117,12 @@ class FormWindow: public Window {
       first = field;
     }
 
+    inline void setLastField(FormField * field)
+    {
+      FormField::link(field, first);
+      FormField::setCurrentField(this);
+    }
+
     FormField * getFirstField()
     {
       return first;
@@ -118,6 +131,35 @@ class FormWindow: public Window {
   protected:
     FormField * first = nullptr;
     void onKeyEvent(event_t event) override;
+    void paint(BitmapBuffer * dc) override;
+};
+
+class FormWindow: public FormGroup {
+  public:
+    FormWindow(Window * parent, const rect_t & rect) :
+      FormGroup(parent, rect)
+    {
+    }
+
+#if defined(TRACE_WINDOWS_ENABLED)
+    std::string getName() override
+    {
+      return "FormWindow";
+    }
+#endif
+
+    inline void setFirstField(FormField * field)
+    {
+      FormGroup::setFirstField(field);
+      field->setFocus();
+    }
+
+  protected:
+    void onKeyEvent(event_t event) override;
+
+    void paint(BitmapBuffer * dc) override
+    {
+    }
 };
 
 #endif

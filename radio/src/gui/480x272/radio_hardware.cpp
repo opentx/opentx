@@ -96,7 +96,6 @@ void RadioHardwarePage::build(FormWindow * window)
       return 0;
   });
   window->setFirstField(calib);
-  calib->setFocus();
   grid.nextLine();
 
   // Sticks
