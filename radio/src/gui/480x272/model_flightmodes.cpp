@@ -33,12 +33,44 @@ bool isTrimModeAvailable(int mode)
   return (mode < 0 || (mode%2) == 0 || (mode/2) != 0); //ToDo menuVerticalPosition
 }
 
+class FlightModeGroup: public FormGroup
+{
+  public:
+    FlightModeGroup(Window * parent, uint8_t index, const rect_t & rect) :
+      FormGroup(parent, rect),
+      index(index)
+    {
+    }
+
+    void checkEvents()
+    {
+      FormGroup::checkEvents();
+      bool newActive = (getFlightMode() == index);
+      if (newActive != active) {
+        active = newActive;
+        invalidate();
+      }
+    }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      if (index == getFlightMode()) {
+        dc->drawSolidFilledRect(0, 0, width(), height(), WARNING_COLOR);
+      }
+      FormGroup::paint(dc);
+    }
+
+  protected:
+    uint8_t index;
+    bool active = false;
+};
+
 void ModelFlightModesPage::build(FormWindow * window)
 {
   coord_t y = 2;
 
   for (int i = 0; i < MAX_FLIGHT_MODES; i++) {
-    auto group = new FormGroup(window, { 2, y, LCD_W - 10, 0 });
+    auto group = new FlightModeGroup(window, i, { 2, y, LCD_W - 10, 0 });
     // TODO the group could have a yellow background if it is the current flight mode
     if (i == 0) {
       window->setFirstField(group);
