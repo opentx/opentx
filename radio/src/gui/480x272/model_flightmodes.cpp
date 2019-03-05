@@ -71,7 +71,6 @@ void ModelFlightModesPage::build(FormWindow * window)
 
   for (int i = 0; i < MAX_FLIGHT_MODES; i++) {
     auto group = new FlightModeGroup(window, i, { 2, y, LCD_W - 10, 0 });
-    // TODO the group could have a yellow background if it is the current flight mode
     if (i == 0) {
       window->setFirstField(group);
     }
@@ -83,7 +82,7 @@ void ModelFlightModesPage::build(FormWindow * window)
 
     char label[16];
     getFlightModeString(label, i+1);
-    new Subtitle(group, grid.getLabelSlot(), label); // TODO (getFlightMode()==k ? BOLD : 0)
+    new Subtitle(group, grid.getLabelSlot(), label);
     grid.nextLine();
 
     // Flight mode name
