@@ -101,13 +101,6 @@ bool isJackPlugged()
 #endif
 
 #if defined(PCBXLITES)
-enum JackState
-{
-  SPEAKER_ACTIVE,
-  HEADPHONE_ACTIVE,
-  TRAINER_ACTIVE,
-};
-
 uint8_t jackState = SPEAKER_ACTIVE;
 
 const char STR_JACK_HEADPHONE[] = "Headphone";

@@ -155,7 +155,7 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
 
-#define TELEMETRY_OUTPUT_FIFO_SIZE 16
+#define TELEMETRY_OUTPUT_FIFO_SIZE 20
 extern uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
 extern uint8_t outputTelemetryBufferSize;
 extern uint8_t outputTelemetryBufferTrigger;

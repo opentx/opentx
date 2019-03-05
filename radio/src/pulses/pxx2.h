@@ -100,18 +100,18 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public Pxx2CrcMixin {
 
 class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
   public:
-    bool setupFrame(uint8_t module);
+    void setupFrame(uint8_t module);
 
   protected:
-    bool setupRegisterFrame(uint8_t module);
+    void setupRegisterFrame(uint8_t module);
 
-    bool setupBindFrame(uint8_t module);
+    void setupBindFrame(uint8_t module);
 
-    bool setupShareMode(uint8_t module);
+    void setupShareMode(uint8_t module);
 
     void setupChannelsFrame(uint8_t module);
 
-    bool setupSpectrumAnalyser(uint8_t module);
+    void setupSpectrumAnalyser(uint8_t module);
 
     void addHead()
     {
@@ -157,11 +157,18 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void endFrame()
     {
-      // update the frame LEN = frame length minus the 2 first bytes
-      data[1] = getSize() - 2;
+      uint8_t size = getSize() - 2;
 
-      // now add the CRC
-      addCrc();
+      if (size > 0) {
+        // update the frame LEN = frame length minus the 2 first bytes
+        data[1] = getSize() - 2;
+
+        // now add the CRC
+        addCrc();
+      }
+      else {
+        Pxx2Transport::initBuffer();
+      }
     }
 };
 

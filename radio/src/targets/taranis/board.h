@@ -201,8 +201,17 @@ void extmoduleSendNextFrame();
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #if defined(PCBX9E)
   #define TRAINER_CONNECTED()           (true)
-#elif defined(PCBX7)
+#elif defined(PCBX7) || defined(PCBX3)
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
+#elif defined(PCBXLITES)
+  enum JackState
+  {
+    SPEAKER_ACTIVE,
+    HEADPHONE_ACTIVE,
+    TRAINER_ACTIVE,
+  };
+  extern uint8_t jackState;
+  #define TRAINER_CONNECTED()           (jackState == TRAINER_ACTIVE)
 #elif defined(PCBXLITE)
   #define TRAINER_CONNECTED()           false // there is no Trainer jack on Taranis X-Lite
 #else

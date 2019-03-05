@@ -103,19 +103,19 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   if (frame[3] == 0x00) {
     bool found = false;
     for (uint8_t i=0; i<reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount; i++) {
-      if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+      if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
         found = true;
         break;
       }
     }
     if (!found && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
+      memcpy(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
       ++reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount;
       reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
     }
   }
   else if (frame[3] == 0x01) {
-    if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+    if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
       reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
       reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
     }
@@ -124,7 +124,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
 {
-  sportProcessTelemetryPacketWithoutCrc(&frame[2]);
+  sportProcessTelemetryPacketWithoutCrc(&frame[3]);
 }
 
 void processSpectrumFrame(uint8_t module, uint8_t * frame)

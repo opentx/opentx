@@ -136,7 +136,7 @@ const uint8_t * DeviceFirmwareUpdate::readFrame(uint32_t timeout)
   }
 }
 
-bool DeviceFirmwareUpdate::waitState(State state, uint32_t timeout)
+bool DeviceFirmwareUpdate::waitState(State newState, uint32_t timeout)
 {
 #if defined(SIMU)
   UNUSED(state);
@@ -155,8 +155,8 @@ bool DeviceFirmwareUpdate::waitState(State state, uint32_t timeout)
     return false;
   }
 
-  processFrame(&frame[1]);
-  return state == state;
+  processFrame(frame);
+  return state == newState;
 #endif
 }
 
@@ -263,11 +263,11 @@ const char * DeviceFirmwareUpdate::uploadFile(const char * filename, ProgressHan
 
     count >>= 2;
 
-    for (UINT i=0; i<count; i++) {
+    for (uint32_t i=0; i<count; i++) {
       if (!waitState(SPORT_DATA_REQ, 2000)) {
         return "Module refused data";
       }
-      startFrame(PRIM_DATA_WORD) ;
+      startFrame(PRIM_DATA_WORD);
       uint32_t offset = (address & 1023) >> 2; // 32 bit word offset into buffer
       *((uint32_t *)(frame + 2)) = buffer[offset];
       frame[6] = address & 0x000000FF;
@@ -310,9 +310,9 @@ void DeviceFirmwareUpdate::flashFile(const char * filename, ProgressHandler prog
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
-  /* wait 2s off */
-  watchdogSuspend(2000);
-  RTOS_WAIT_MS(2000);
+  /* wait 1s off */
+  watchdogSuspend(1000);
+  RTOS_WAIT_MS(1000);
 
   startup();
 
@@ -334,6 +334,10 @@ void DeviceFirmwareUpdate::flashFile(const char * filename, ProgressHandler prog
   SPORT_UPDATE_POWER_OFF();
 
   waitState(SPORT_IDLE, 500); // Clear the fifo
+
+  /* wait 1s off */
+  watchdogSuspend(1000);
+  RTOS_WAIT_MS(1000);
 
   if (intPwr)
     INTERNAL_MODULE_ON();

@@ -172,7 +172,7 @@ else()
     )
 endif()
 
-if(NOT PCB STREQUAL XLITE AND NOT PCB STREQUAL XLITES)
+if(NOT PCB STREQUAL XLITE)
   set(TARGET_SRC
     ${TARGET_SRC}
     trainer_driver.cpp
