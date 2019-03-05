@@ -53,6 +53,7 @@ void setupPulsesPPM(PpmPulsesData<T> * ppmPulsesData, uint8_t channelsStart, int
   rest = limit<int32_t>(9000, rest, 65535); /* avoids that CCR2 is bigger than ARR which would cause reboot */
 #if defined(STM32)
   *ppmPulsesData->ptr++ = rest;
+  *ppmPulsesData->ptr = 0; // it's needed in case PPM is sent without DMA (we stop when we reach this 0)
 #else
   *ptr = rest;
   *(ptr + 1) = 0;
