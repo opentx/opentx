@@ -303,9 +303,9 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
   EXTERNAL_MODULE_OFF();
   SPORT_UPDATE_POWER_OFF();
 
-  /* wait 2s off */
-  watchdogSuspend(2000);
-  RTOS_WAIT_MS(2000);
+  /* wait 1s off */
+  watchdogSuspend(1000);
+  RTOS_WAIT_MS(1000);
 
   startup();
 
@@ -327,6 +327,10 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
   SPORT_UPDATE_POWER_OFF();
 
   waitState(SPORT_IDLE, 500); // Clear the fifo
+
+  /* wait 1s off */
+  watchdogSuspend(1000);
+  RTOS_WAIT_MS(1000);
 
   if (intPwr)
     INTERNAL_MODULE_ON();
