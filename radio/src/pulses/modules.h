@@ -286,6 +286,10 @@ inline bool isModuleTypeAllowed(uint8_t idx, uint8_t type)
          || type == MODULE_TYPE_XJT || type == MODULE_TYPE_CROSSFIRE
          || type == MODULE_TYPE_R9M);
   }
+#else
+  if(idx == INTERNAL_MODULE) {
+    return (type == MODULE_TYPE_NONE || type == MODULE_TYPE_XJT || type == MODULE_TYPE_XJT2);
+  }
 #endif
 
   return true;

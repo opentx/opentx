@@ -22,7 +22,7 @@
 #include "menu_model.h"
 #include "model_setup.h"
 #include "model_heli.h"
-//#include "model_flightmodes.h"
+#include "model_flightmodes.h"
 //#include "model_mixes.h"
 //#include "model_inputs.h"
 //#include "model_outputs.h"
@@ -38,7 +38,7 @@ ModelMenu::ModelMenu():
 #if defined(HELI)
   addTab(new ModelHeliPage());
 #endif
-  // addTab(new ModelFlightModesPage());
+  addTab(new ModelFlightModesPage());
   // addTab(new ModelInputsPage());
   // addTab(new ModelMixesPage());
   // addTab(new ModelOutputsPage());
