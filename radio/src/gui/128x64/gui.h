@@ -199,8 +199,6 @@ void title(const char * s);
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
   check_submenu_simple(event, (lines_count)-1);
 
-
-
 #endif
 
 #define SIMPLE_MENU(title, tab, menu, lines_count) \

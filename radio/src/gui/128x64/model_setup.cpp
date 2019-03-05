@@ -91,6 +91,14 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_LABEL,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_TELEM,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_LABEL,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_TELEM,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
@@ -123,6 +131,14 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_LABEL,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_TELEM,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_LABEL,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_TELEM,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE,
 #if defined(PCBSKY9X) && !defined(REVA)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
   ITEM_MODEL_EXTRA_MODULE_CHANNELS,
@@ -159,11 +175,11 @@ enum MenuModelSetupItems {
 
 #define IF_PXX2_MODULE(module, xxx)      (isModulePXX2(module) ? (uint8_t)(xxx) : HIDDEN_ROW)
 #define IF_NOT_PXX2_MODULE(module, xxx)  (isModulePXX2(module) ? HIDDEN_ROW : (uint8_t)(xxx))
-#define IF_PXX2_RECEIVER_DISPLAYED(module, idx, xxx)   ((isModulePXX2(module) && g_model.moduleData[module].pxx2.receivers[idx].enabled) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#define IF_PXX2_RECEIVER_DISPLAYED(module, idx, xxx)   ((isModulePXX2(module) && g_model.moduleData[module].pxx2.getReceiverSlot(idx)) ? (uint8_t)(xxx) : HIDDEN_ROW)
 
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
-  #define CURRENT_RECEIVER_EDITED(k)      (k >= (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_LABEL : ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_LABEL) ? 1 : 0)
+  #define CURRENT_RECEIVER_EDITED(k)      ((k - (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_LABEL : ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_LABEL)) / 4)
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k >= ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
@@ -248,7 +264,7 @@ enum MenuModelSetupItems {
 
 void onPXX2BindMenu(const char * result)
 {
-  reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]);
+  reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / PXX2_LEN_RX_NAME;
   reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
 }
 
@@ -361,6 +377,16 @@ inline bool isDefaultModelRegistrationID()
   return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
 }
 
+uint8_t findEmptyReceiverSlot()
+{
+  for (uint8_t slot=0; slot<NUM_RECEIVERS; slot++) {
+    if (!g_model.receiverData[slot].used) {
+      return slot + 1;
+    }
+  }
+  return 0;
+}
+
 void menuModelSetup(event_t event)
 {
 #if defined(EXTERNAL_ANTENNA)
@@ -415,6 +441,14 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver2 Pinmap
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver2 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver2 Bind/Share
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver3 Name + Add/Del buttons
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver3 Pinmap
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver3 Telemetry
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 1),           // Receiver3 Bind/Share
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver4 Name + Add/Del buttons
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 0),           // Receiver4 Pinmap
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 0),           // Receiver4 Telemetry
+      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 1),           // Receiver4 Bind/Share
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_MODE_ROWS,
@@ -438,6 +472,14 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver2 Range
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver2 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 1),           // Receiver2 Bind/Share
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver3 Name + Add/Del buttons
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver3 Pinmap
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver3 Telemetry
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 1),           // Receiver3 Bind/Share
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver4 Name + Add/Del buttons
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 0),           // Receiver4 Pinmap
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 0),           // Receiver4 Telemetry
+      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 1),           // Receiver4 Bind/Share
 
     TRAINER_ROWS
   });
@@ -1193,22 +1235,26 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_LABEL:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_LABEL:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_LABEL:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_LABEL:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_LABEL:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_LABEL:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_LABEL:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_LABEL:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+        uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx);
+
         lcdDrawTextAlignedLeft(y, STR_RECEIVER);
         lcdDrawNumber(lcdLastRightPos + 1, y, receiverIdx + 1);
         // lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, ZCHAR);
 
-        if (g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].enabled) {
+        if (receiverSlot) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DEL_BUTTON, attr);
           if (attr && s_editMode > 0) {
-            if (receiverIdx == 0) {
-              memcpy(&g_model.moduleData[moduleIdx].pxx2.receivers[0], &g_model.moduleData[moduleIdx].pxx2.receivers[1], sizeof(ReceiverData));
-            }
-            memclear(&g_model.moduleData[moduleIdx].pxx2.receivers[1], sizeof(ReceiverData)); // we always remove the second receiver data
+            g_model.moduleData[moduleIdx].pxx2.receivers = (g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIdx * 3)) | ((g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>((receiverIdx + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIdx) * 3)) >> 3);
+            memclear(&g_model.receiverData[receiverSlot], sizeof(ReceiverData));
             s_editMode = 0;
             killEvents(event);
             storageDirty(EE_MODEL);
@@ -1217,18 +1263,18 @@ void menuModelSetup(event_t event)
         else {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_RXADD_BUTTON, attr);
           if (attr && s_editMode > 0) {
-            if (g_model.moduleData[moduleIdx].pxx2.receivers[0].enabled) {
-              g_model.moduleData[moduleIdx].pxx2.receivers[1].enabled = 0x01;
-              memcpy(&g_model.moduleData[moduleIdx].pxx2.receivers[1].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
-            }
-            else {
-              g_model.moduleData[moduleIdx].pxx2.receivers[0].enabled = 0x01;
-              memcpy(&g_model.moduleData[moduleIdx].pxx2.receivers[0].channelMapping, DEFAULT_CHANNEL_MAPPING, sizeof(uint64_t));
-            }
-            menuVerticalPosition += 3;
             s_editMode = 0;
             killEvents(event);
-            storageDirty(EE_MODEL);
+            uint8_t slot = findEmptyReceiverSlot();
+            if (slot > 0) {
+              g_model.moduleData[moduleIdx].pxx2.receivers |= (slot << (receiverIdx * 3));
+              --slot;
+              g_model.receiverData[slot].used = 1;
+              #warning "USE 32bits copy"
+              g_model.receiverData[slot].channelMapping0 = (0 << 0) + (1 << 5) + (2 << 10) + (3 << 15) + (4 << 20) + (5 << 25) + ((uint64_t)6 << 30) + ((uint64_t)7 << 35) + ((uint64_t)8 << 40) + ((uint64_t)9 << 45) + ((uint64_t)10 << 50) + ((uint64_t)11 << 55);
+              g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
+              storageDirty(EE_MODEL);
+            }
           }
         }
       }
@@ -1236,17 +1282,19 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP:
       {
-        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-
         lcdDrawTextAlignedLeft(y, INDENT INDENT "Pinmap");
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
-          g_receiverIdx = receiverIdx;
-          g_moduleIdx = moduleIdx;
+          uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+          uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+          g_receiverIdx = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
           pushMenu(menuModelPinmap);
         }
       }
@@ -1254,24 +1302,39 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_TELEM:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_TELEM:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_TELEM:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_TELEM:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_TELEM:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_TELEM:
       {
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry = editCheckBox(g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[receiverIdx].telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT INDENT "Telemetry", attr, event);
+        uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
+        g_model.receiverData[receiverSlot].telemetry = editCheckBox(g_model.receiverData[receiverSlot].telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT INDENT "Telemetry", attr, event);
+        break;
       }
-      break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE:
       {
-        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
 
-        lcdDrawTextAlignedLeft(y, INDENT INDENT "---");
-        // TODO later once first telemetry frame received => the RX name
+        if (zexist(g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME)) {
+          lcdDrawSizedText(INDENT_WIDTH * 2, y, g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME);
+        }
+        else {
+          lcdDrawTextAlignedLeft(y, INDENT INDENT "---");
+        }
 
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
         lcdDrawText(lcdLastRightPos + FW/2, y, BUTTON("Share"), menuHorizontalPosition==1 ? attr : 0);
@@ -1281,6 +1344,7 @@ void menuModelSetup(event_t event)
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
               reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
               reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
+              reusableBuffer.moduleSetup.pxx2.bindReceiverSlot = receiverSlot;
               moduleSettings[moduleIdx].mode ^= MODULE_MODE_BIND;
             }
             if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
@@ -1800,7 +1864,7 @@ void menuModelFailsafe(event_t event)
     const int32_t channelValue = channelOutputs[ch+channelStart];
     int32_t failsafeValue = g_model.failsafeChannels[ch];
 
-    //Channel
+    // Channel
     putsChn(x+1, y, ch+1, SMLSIZE);
 
     // Value
@@ -1838,7 +1902,7 @@ void menuModelFailsafe(event_t event)
     }
 
     // Gauge
-#if !defined(PCBX7) && !defined(PCBX3)  // X7 LCD doesn't like too many horizontal lines
+#if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
     lcdDrawRect(x+LCD_W-3-wbar, y, wbar+1, 6);
 #endif
     const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar/2 + lim/2) / lim, wbar/2);
@@ -1869,43 +1933,38 @@ void menuModelPinmap(event_t event)
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
   lcdDrawTextAlignedLeft(0, STR_PINMAPSET);
-  // for (uint8_t pos=0; pos<PXX2_LEN_RX_NAME; pos++) {
-    // lcdDrawHexChar(50 + pos*FW*2, 0, g_model.moduleData[INTERNAL_MODULE].pxx2.receivers[g_receiverIdx].rxName[pos], 0);
-  // }
+  // TODO write receiver name here
   lcdInvertLine(0);
 
-  const coord_t x = 1;
-  coord_t y = FH + 1;
-  uint8_t pin = (menuVerticalPosition >= 8 ? 8 : 0);
-
-  for (uint8_t line = 0; line < 8; line++) {
-    const int32_t channelValue = channelOutputs[getPinOuput(g_receiverIdx, g_moduleIdx, pin)];
+  for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
+    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
+    uint8_t pin = menuVerticalOffset + i;
+    const int32_t channelValue = channelOutputs[getPinOuput(g_receiverIdx, pin)];
 
     // Pin
-    lcdDrawText(0, y, "Pin", SMLSIZE);
-    lcdDrawNumber(lcdLastRightPos + 1, y, pin+1, SMLSIZE);
+    lcdDrawText(0, y, "Pin");
+    lcdDrawNumber(lcdLastRightPos + 1, y, pin+1);
 
     // Channel
-    LcdFlags flags = SMLSIZE;
+    LcdFlags flags = 0;
     if (menuVerticalPosition == pin) {
       flags |= INVERS;
       if (s_editMode > 0) {
-        uint8_t channel = getPinOuput(g_receiverIdx, g_moduleIdx, pin);
+        uint8_t channel = getPinOuput(g_receiverIdx, pin);
         flags |= BLINK;
         CHECK_INCDEC_MODELVAR(event, channel, 0, sentModuleChannels(g_moduleIdx));
-        setPinOuput(g_receiverIdx, g_moduleIdx, pin, channel);
+        setPinOuput(g_receiverIdx, pin, channel);
       }
     }
-    putsChn(8*FW, y, getPinOuput(g_receiverIdx, g_moduleIdx, pin)+1, flags);
+    putsChn(7*FW, y, getPinOuput(g_receiverIdx, pin)+1, flags);
 
     // Bargraph
+#if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
+    lcdDrawRect(LCD_W-3-wbar, y + 1, wbar+1, 4);
+#endif
     const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar/2 + lim/2) / lim, wbar/2);
-    const coord_t xChannel = (channelValue>0) ? x+LCD_W-3-wbar/2 : x+LCD_W-2-wbar/2-lenChannel;
-    lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
-    lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
-
-    y += FH-1;
-    if (++pin > sentModuleChannels(g_moduleIdx))
-      break;
+    const coord_t xChannel = (channelValue>0) ? LCD_W-3-wbar/2 : LCD_W-2-wbar/2-lenChannel;
+    lcdDrawHorizontalLine(xChannel, y+2, lenChannel, SOLID, 0);
+    lcdDrawHorizontalLine(xChannel, y+3, lenChannel, SOLID, 0);
   }
 }

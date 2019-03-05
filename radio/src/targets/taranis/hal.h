@@ -816,33 +816,42 @@
 #endif
 
 // Trainer Port
-#if defined(PCBXLITE)
-  #define TRAINER_RCC_AHB1Periph        0
-  #define TRAINER_RCC_APB1Periph        0
-#elif defined(PCBX3)
-  #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD)
+#if defined(PCBXLITES) || defined(PCBX3)
+  // on these 2 radios the trainer port already uses DMA1_Stream6, we won't use the DMA
+  #define TRAINER_RCC_AHB1Periph        RCC_AHB1Periph_GPIOD
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM4
   #define TRAINER_GPIO                  GPIOD
   #define TRAINER_IN_GPIO_PIN           GPIO_Pin_13 // PD.13
   #define TRAINER_IN_GPIO_PinSource     GPIO_PinSource13
   #define TRAINER_OUT_GPIO_PIN          GPIO_Pin_12 // PD.12
   #define TRAINER_OUT_GPIO_PinSource    GPIO_PinSource12
+#if defined(PCBX3)
   #define TRAINER_DETECT_GPIO           GPIOD
   #define TRAINER_DETECT_GPIO_PIN       GPIO_Pin_11 // PD.11
+#endif
   #define TRAINER_TIMER                 TIM4
   #define TRAINER_TIMER_IRQn            TIM4_IRQn
-  #define TRAINER_GPIO_AF               GPIO_AF_TIM4
-  #define TRAINER_DMA                   DMA1
-  #define TRAINER_DMA_CHANNEL           DMA_Channel_5
-  #define TRAINER_DMA_STREAM            DMA1_Stream2
-  #define TRAINER_DMA_IRQn              DMA1_Stream2_IRQn
-  #define TRAINER_DMA_IRQHandler        DMA1_Stream2_IRQHandler
-  #define TRAINER_DMA_FLAG_TC           DMA_IT_TCIF2
+  #define TRAINER_GPIO_AF               GPIO_AF_TIM4 // TIM4_CH1 (Out) + TIM4_CH2 (In)
   #define TRAINER_TIMER_IRQn            TIM4_IRQn
   #define TRAINER_TIMER_IRQHandler      TIM4_IRQHandler
   #define TRAINER_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
+  #define TRAINER_OUT_CCMR1             TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1PE;
+  #define TRAINER_IN_CCMR1              TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0;
+  #define TRAINER_OUT_COUNTER_REGISTER  TRAINER_TIMER->CCR1
+  #define TRAINER_IN_COUNTER_REGISTER   TRAINER_TIMER->CCR2
+  #define TRAINER_SETUP_REGISTER        TRAINER_TIMER->CCR3
+  #define TRAINER_OUT_INTERRUPT_FLAG    TIM_SR_CC3IF
+  #define TRAINER_OUT_INTERRUPT_ENABLE  TIM_DIER_CC3IE
+  #define TRAINER_IN_INTERRUPT_ENABLE   TIM_DIER_CC2IE
+  #define TRAINER_IN_INTERRUPT_FLAG     TIM_SR_CC2IF
+  #define TRAINER_OUT_CCER              TIM_CCER_CC1E
+  #define TRAINER_CCER_POLARYTY         TIM_CCER_CC1P
+  #define TRAINER_IN_CCER               TIM_CCER_CC2E
+#elif defined(PCBXLITE)
+  #define TRAINER_RCC_AHB1Periph        0
+  #define TRAINER_RCC_APB1Periph        0
 #else
-  #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
+  #define TRAINER_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA1)
   #define TRAINER_RCC_APB1Periph        RCC_APB1Periph_TIM3
   #define TRAINER_GPIO                  GPIOC
   #define TRAINER_IN_GPIO_PIN           GPIO_Pin_8  // PC.08
@@ -863,6 +872,18 @@
   #define TRAINER_TIMER_IRQn            TIM3_IRQn
   #define TRAINER_TIMER_IRQHandler      TIM3_IRQHandler
   #define TRAINER_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
+  #define TRAINER_OUT_CCMR2             TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4PE;
+  #define TRAINER_IN_CCMR2              TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1 | TIM_CCMR2_CC3S_0;
+  #define TRAINER_OUT_COUNTER_REGISTER  TRAINER_TIMER->CCR4
+  #define TRAINER_IN_COUNTER_REGISTER   TRAINER_TIMER->CCR3
+  #define TRAINER_SETUP_REGISTER        TRAINER_TIMER->CCR1
+  #define TRAINER_OUT_INTERRUPT_FLAG    TIM_SR_CC1IF
+  #define TRAINER_OUT_INTERRUPT_ENABLE  TIM_DIER_CC1IE
+  #define TRAINER_IN_INTERRUPT_ENABLE   TIM_DIER_CC3IE
+  #define TRAINER_IN_INTERRUPT_FLAG     TIM_SR_CC3IF
+  #define TRAINER_OUT_CCER              TIM_CCER_CC4E
+  #define TRAINER_IN_CCER               TIM_CCER_CC3E
+  #define TRAINER_CCER_POLARYTY         TIM_CCER_CC4P
 #endif
 
 // Serial Port
@@ -1181,7 +1202,7 @@
 #define SD_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
 #define SD_RCC_APB1Periph               RCC_APB1Periph_SPI2
 #define SD_GPIO_PRESENT_GPIO            GPIOD
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
   #define SD_GPIO_PRESENT_GPIO_PIN      GPIO_Pin_10 // PD.10
 #else
   #define SD_GPIO_PRESENT_GPIO_PIN      GPIO_Pin_9  // PD.09
@@ -1226,8 +1247,8 @@
   #define JACK_DETECT_GPIO_PIN          GPIO_Pin_13 // PC.13
   #define AUDIO_SPEAKER_ENABLE_GPIO     GPIOD
   #define AUDIO_SPEAKER_ENABLE_GPIO_PIN GPIO_Pin_14 // PD.14
-  #define HEADPHONE_TRAINER_SWITCH_GPIO     GPIOD
-  #define HEADPHONE_TRAINER_SWITCH_GPIO_PIN GPIO_Pin_13 // PD.13
+  #define HEADPHONE_TRAINER_SWITCH_GPIO      GPIOD
+  #define HEADPHONE_TRAINER_SWITCH_GPIO_PIN  GPIO_Pin_9 // PD.09
 #else
   #define AUDIO_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
 #endif

@@ -1132,6 +1132,7 @@ union ReusableBuffer
         char registrationID[PXX2_LEN_REGISTRATION_ID];
         char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
         uint8_t bindCandidateReceiversCount;
+        uint8_t bindReceiverSlot;
         union {
           uint8_t bindSelectedReceiverIndex;
           uint8_t shareReceiverIndex;
