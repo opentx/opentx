@@ -136,7 +136,7 @@ const uint8_t * DeviceFirmwareUpdate::readFrame(uint32_t timeout)
   }
 }
 
-bool DeviceFirmwareUpdate::waitState(State state, uint32_t timeout)
+bool DeviceFirmwareUpdate::waitState(State newState, uint32_t timeout)
 {
 #if defined(SIMU)
   UNUSED(state);
@@ -150,8 +150,8 @@ bool DeviceFirmwareUpdate::waitState(State state, uint32_t timeout)
     return false;
   }
 
-  processFrame(&frame[1]);
-  return state == state;
+  processFrame(frame);
+  return state == newState;
 #endif
 }
 
@@ -258,11 +258,11 @@ const char * DeviceFirmwareUpdate::uploadFile(const char *filename)
 
     count >>= 2;
 
-    for (UINT i=0; i<count; i++) {
+    for (uint32_t i=0; i<count; i++) {
       if (!waitState(SPORT_DATA_REQ, 2000)) {
         return "Module refused data";
       }
-      startFrame(PRIM_DATA_WORD) ;
+      startFrame(PRIM_DATA_WORD);
       uint32_t offset = (address & 1023) >> 2; // 32 bit word offset into buffer
       *((uint32_t *)(frame + 2)) = buffer[offset];
       frame[6] = address & 0x000000FF;
