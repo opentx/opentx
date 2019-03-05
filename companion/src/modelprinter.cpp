@@ -1484,12 +1484,7 @@ QString ModelPrinter::printChecklist()
   if (!model.displayChecklist)
     return "";
   QString str = tr("Error: Unable to open or read file!");
-  QString filepath = g.profile[g.id()].sdPath() + "/MODELS/";
-  QString name = model.name;
-  name.replace(" ", "_");
-  filepath = QDir::toNativeSeparators(filepath + name + ".txt");
-
-  QFile file(filepath);
+  QFile file(Helpers::getChecklistFilePath(&model));
   if (file.open(QFile::ReadOnly | QFile::Text)) {
     QTextStream in(&file);
     if (in.status() == QTextStream::Ok) {

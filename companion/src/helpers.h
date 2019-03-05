@@ -143,6 +143,9 @@ namespace Helpers
 
   void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
   void getFileComboBoxValue(QComboBox * b, char * dest, int length);
+  QString getChecklistsPath();
+  QString getChecklistFilename(const ModelData * model);
+  QString getChecklistFilePath(const ModelData * model);
 }  // namespace Helpers
 
 // TODO : move globals to Helpers namespace
