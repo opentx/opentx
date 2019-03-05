@@ -147,7 +147,7 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
   else {
     Pxx2Transport::addByte(0x00);
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registrationID[i]));
+      Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
   }
 
