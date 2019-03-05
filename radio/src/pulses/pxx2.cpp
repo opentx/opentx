@@ -104,7 +104,7 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   }
 }
 
-bool Pxx2Pulses::setupRegisterFrame(uint8_t module)
+void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
 
@@ -120,23 +120,22 @@ bool Pxx2Pulses::setupRegisterFrame(uint8_t module)
   else {
     Pxx2Transport::addByte(0);
   }
-
-  return true; // TODO not always
 }
 
-bool Pxx2Pulses::setupBindFrame(uint8_t module)
+void Pxx2Pulses::setupBindFrame(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
-
   if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_WAIT) {
     if (get_tmr10ms() > reusableBuffer.moduleSetup.pxx2.bindWaitTimeout) {
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
       POPUP_INFORMATION(STR_BIND_OK);
     }
-    return false;
+    return;
   }
-  else if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
+
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
+
+  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
     Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
@@ -150,15 +149,13 @@ bool Pxx2Pulses::setupBindFrame(uint8_t module)
       Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
   }
-
-  return true; // TODO not always
 }
 
-bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
+void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
   if (moduleSettings[module].counter > 1000) {
     moduleSettings[module].counter = 1002;
-    return false;
+    return;
   }
 
   moduleSettings[module].counter = 1002;
@@ -174,11 +171,9 @@ bool Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
   reusableBuffer.spectrum.step = 100000;  // 100KHz
   Pxx2Transport::addWord(reusableBuffer.spectrum.step);
-
-  return true;
 }
 
-bool Pxx2Pulses::setupShareMode(uint8_t module)
+void Pxx2Pulses::setupShareMode(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETUP);
 
@@ -191,24 +186,22 @@ bool Pxx2Pulses::setupShareMode(uint8_t module)
   }
 
   moduleSettings[module].mode = MODULE_MODE_NORMAL;
-  return true;
 }
 
-bool Pxx2Pulses::setupFrame(uint8_t module)
+void Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
 
-  bool result = true;
   uint8_t mode = moduleSettings[module].mode;
 
   if (mode == MODULE_MODE_REGISTER)
-    result = setupRegisterFrame(module);
+    setupRegisterFrame(module);
   else if (mode == MODULE_MODE_BIND)
-    result = setupBindFrame(module);
+    setupBindFrame(module);
   else if (mode == MODULE_MODE_SPECTRUM_ANALYSER)
-    result = setupSpectrumAnalyser(module);
+    setupSpectrumAnalyser(module);
   else if (mode == MODULE_MODE_SHARE)
-    result = setupShareMode(module);
+    setupShareMode(module);
   else
     setupChannelsFrame(module);
 
@@ -217,8 +210,6 @@ bool Pxx2Pulses::setupFrame(uint8_t module)
   }
 
   endFrame();
-
-  return result;
 }
 
 template class PxxPulses<Pxx2Transport>;

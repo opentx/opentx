@@ -92,6 +92,9 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
 
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
+  if (size == 0)
+    return;
+
   DMA_InitTypeDef DMA_InitStructure;
   DMA_DeInit(INTMODULE_DMA_STREAM);
   DMA_InitStructure.DMA_Channel = INTMODULE_DMA_CHANNEL;
