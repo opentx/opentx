@@ -390,11 +390,11 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
   ExpoData * line = g_model.expoData;
   for (uint8_t input=0; input<NUM_INPUTS; input++) {
     if (index < MAX_EXPOS && line->chn == input && EXPO_VALID(line)) {
-      auto label = new TextButton(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input));
-      if (!window->getFirstField())
-        window->setFirstField(label);
+      new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input));
       while (index < MAX_EXPOS && line->chn == input && EXPO_VALID(line)) {
         Button * button = new InputLineButton(window, grid.getFieldSlot(), index);
+        if (!window->getFirstField())
+          window->setFirstField(button);
         if (focusIndex == index)
           button->setFocus();
         button->setPressHandler([=]() -> uint8_t {
@@ -455,7 +455,8 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
       grid.spacer(7);
     }
     else {
-      auto button = new TextButton(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input));
+      new StaticText(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input));
+      Button * button = new InputLineButton(window, grid.getFieldSlot(), index);
       if (focusIndex == index)
         button->setFocus();
       button->setPressHandler([=]() -> uint8_t {
