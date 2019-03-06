@@ -19,7 +19,7 @@
  */
 
 #include "timeedit.h"
-// #include "keyboard_number.h"
+#include "keyboard_number.h"
 #include "draw_functions.h"
 #include "strhelpers.h"
 
