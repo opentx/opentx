@@ -18,18 +18,94 @@
  * GNU General Public License for more details.
  */
 
+#include <opentx.h>
 #include "opentx.h"
+
+// TODO duplicated code
+#if defined(PCBX7) || defined(PCBX9E)
+#define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
+#define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
+#else
+#define EVT_KEY_NEXT_LINE              EVT_KEY_FIRST(KEY_DOWN)
+#define EVT_KEY_PREVIOUS_LINE          EVT_KEY_FIRST(KEY_UP)
+#endif
+
+#define MENU_BODY_TOP    (FH + 1)
+#define MENU_BODY_BOTTOM (LCD_H)
 
 #if defined(PXX2)
 void menuRadioModulesVersion(event_t event)
 {
+  TITLE("MODULES / RX VERSION");
+
   if (event == EVT_ENTRY) {
+    menuVerticalOffset = 0;
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+    memclear(&reusableBuffer.hardware.modules, sizeof(reusableBuffer.hardware.modules));
     reusableBuffer.hardware.modules[INTERNAL_MODULE].step = -1;
-    reusableBuffer.hardware.modules[INTERNAL_MODULE].timeout = 0;
   }
 
-  SIMPLE_SUBMENU("MODULES / RX VERSION", 0);
+  coord_t y = (FH + 1) - menuVerticalOffset * FH;
+
+  for (uint8_t module=0; module<NUM_MODULES; module++) {
+    // Label
+    if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
+      if (module == INTERNAL_MODULE)
+        lcdDrawTextAlignedLeft(y, "Internal module");
+      else if (module == EXTERNAL_MODULE)
+        lcdDrawTextAlignedLeft(y, "External module");
+    }
+    y += FH;
+
+    // Module version
+    if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
+      lcdDrawText(INDENT_WIDTH, y, "Version");
+      if (reusableBuffer.hardware.modules[module].hw_version) {
+        lcdDrawNumber(10 * FW, y, reusableBuffer.hardware.modules[module].hw_version);
+        lcdDrawText(lcdLastRightPos, y, "/");
+        lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].sw_version);
+      }
+    }
+    y += FH;
+
+    // RX versions
+    for (uint8_t receiver=0; receiver<PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
+      if (reusableBuffer.hardware.modules[module].receivers[receiver].hw_version) {
+        if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
+          lcdDrawText(INDENT_WIDTH, y, "Receiver");
+          lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
+          lcdDrawNumber(10 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].hw_version);
+          lcdDrawText(lcdLastRightPos, y, "/");
+          lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].receivers[receiver].sw_version);
+        }
+        y += FH;
+      }
+    }
+  }
+
+  uint8_t lines = (y - (FH + 1)) / FH + menuVerticalOffset;
+  if (lines > NUM_BODY_LINES) {
+    drawVerticalScrollbar(LCD_W-1, FH, LCD_H-FH, menuVerticalOffset, lines, NUM_BODY_LINES);
+  }
+
+  switch(event) {
+    case EVT_KEY_PREVIOUS_LINE:
+      if (menuVerticalOffset-- == 0)
+        menuVerticalOffset = lines - 1;
+      break;
+
+    case EVT_KEY_NEXT_LINE:
+      if (++menuVerticalOffset + NUM_BODY_LINES > lines)
+        menuVerticalOffset = 0;
+      break;
+
+    case EVT_KEY_BREAK(KEY_EXIT):
+      if (menuVerticalOffset != 0)
+        menuVerticalOffset = 0;
+      else
+        popMenu();
+      break;
+  }
 }
 #endif
 
