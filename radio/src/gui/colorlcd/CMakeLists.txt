@@ -1,12 +1,12 @@
 include_directories(
-  ${RADIO_SRC_DIRECTORY}/gui/480x272
-  ${RADIO_SRC_DIRECTORY}/gui/480x272/layouts
+  ${RADIO_SRC_DIRECTORY}/gui/colorlcd
+  ${RADIO_SRC_DIRECTORY}/gui/colorlcd/layouts
   ${RADIO_SRC_DIRECTORY}/fonts/colorlcd
 )
 
-file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/themes/*.cpp)
-file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/layouts/*.cpp)
-file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/480x272/widgets/*.cpp)
+file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/themes/*.cpp)
+file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/layouts/*.cpp)
+file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/widgets/*.cpp)
 
 set(GUI_SRC
   ${GUI_SRC}

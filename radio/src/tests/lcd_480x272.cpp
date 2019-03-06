@@ -32,7 +32,7 @@
 
 #if defined(COLORLCD)
 
-void doPaint_480x272(QPainter & p)
+void doPaint_colorlcd(QPainter & p)
 {
   QRgb rgb = qRgb(0, 0, 0);
   p.setBackground(QBrush(rgb));
@@ -60,12 +60,12 @@ void doPaint_480x272(QPainter & p)
   }
 }
 
-bool checkScreenshot_480x272(const QString & test)
+bool checkScreenshot_colorlcd(const QString & test)
 {
   lcdRefresh();
   QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);
   QPainter p(&buffer);
-  doPaint_480x272(p);
+  doPaint_colorlcd(p);
   QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
   QImage reference(TESTS_PATH "/tests/" + filename);
 
@@ -80,17 +80,17 @@ bool checkScreenshot_480x272(const QString & test)
 }
 
 
-TEST(Lcd_480x272, vline)
+TEST(Lcd_colorlcd, vline)
 {
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
   for (int x=0; x<100; x+=2) {
     lcdDrawSolidVerticalLine(x, x/2, 12, TEXT_COLOR);
   }
-  EXPECT_TRUE(checkScreenshot_480x272("vline"));
+  EXPECT_TRUE(checkScreenshot_colorlcd("vline"));
 }
 
-TEST(Lcd_480x272, primitives)
+TEST(Lcd_colorlcd, primitives)
 {
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
@@ -115,10 +115,10 @@ TEST(Lcd_480x272, primitives)
   lcdDrawHorizontalLine(30, 85,  70, SOLID, TEXT_COLOR);
 
 
-  EXPECT_TRUE(checkScreenshot_480x272("primitives"));
+  EXPECT_TRUE(checkScreenshot_colorlcd("primitives"));
 }
 
-TEST(Lcd_480x272, transparency)
+TEST(Lcd_colorlcd, transparency)
 {
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
@@ -152,10 +152,10 @@ TEST(Lcd_480x272, transparency)
 
   }
 
-  EXPECT_TRUE(checkScreenshot_480x272("transparency"));
+  EXPECT_TRUE(checkScreenshot_colorlcd("transparency"));
 }
 
-TEST(Lcd_480x272, fonts)
+TEST(Lcd_colorlcd, fonts)
 {
   loadFonts();
   lcd->clear(TEXT_BGCOLOR);
@@ -170,7 +170,7 @@ TEST(Lcd_480x272, fonts)
   lcdDrawText(8, 208, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(4));
   lcdDrawText(5, 205, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(12));
 
-  EXPECT_TRUE(checkScreenshot_480x272("fonts"));
+  EXPECT_TRUE(checkScreenshot_colorlcd("fonts"));
 }
 
 

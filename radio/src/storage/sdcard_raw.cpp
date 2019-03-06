@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "gui/480x272/modelslist.h"
+#include "gui/colorlcd/modelslist.h"
 
 void getModelPath(char * path, const char * filename)
 {

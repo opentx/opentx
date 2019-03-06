@@ -9,7 +9,7 @@ set(HSE_VALUE 12000000)
 set(SDCARD YES)
 set(EEPROM SDCARD)
 set(HAPTIC YES)
-set(GUI_DIR 480x272)
+set(GUI_DIR colorlcd)
 # set(NAVIGATION_TYPE touch)
 set(TARGET_DIR nv14)
 
@@ -65,9 +65,9 @@ endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/colorlcd gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
-file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.cpp)
-file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.cpp)
-file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/320x480/widgets/*.cpp)
+file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.cpp)
+file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.cpp)
+file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/320x480/widgets/*.cpp)
 set(GUI_SRC
   ${GUI_SRC}
   curves.cpp
