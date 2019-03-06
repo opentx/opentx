@@ -148,7 +148,7 @@ void FileChoice::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool FileChoice::onTouchEnd(coord_t, coord_t)
 {
   openMenu();

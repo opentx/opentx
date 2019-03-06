@@ -23,7 +23,7 @@
 #include "numberedit.h"
 #include "draw_functions.h"
 
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
 #include "keyboard_number.h"
 #endif
 
@@ -73,7 +73,7 @@ void NumberEdit::onKeyEvent(event_t event)
   FormField::onKeyEvent(event);
 }
 
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
 bool NumberEdit::onTouchEnd(coord_t, coord_t)
 {
   if (!enabled) {
@@ -95,7 +95,7 @@ bool NumberEdit::onTouchEnd(coord_t, coord_t)
 
 void NumberEdit::onFocusLost()
 {
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
   NumberKeyboard::instance()->disable(true);
 #endif
 

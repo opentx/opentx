@@ -60,7 +60,7 @@ void CheckBox::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool CheckBox::onTouchEnd(coord_t x, coord_t y)
 {
   setValue(!getValue());

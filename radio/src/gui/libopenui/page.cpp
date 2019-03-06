@@ -28,7 +28,7 @@
 PageHeader::PageHeader(Page * parent, uint8_t icon):
   Window(parent, { 0, 0, LCD_W, MENU_HEADER_HEIGHT }, OPAQUE),
   icon(icon)
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
   , back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_BACK,
        [=]() -> uint8_t {
          parent->deleteLater();
@@ -54,7 +54,7 @@ Page::Page(unsigned icon):
 
 Page::~Page()
 {
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
   TextKeyboard::instance()->disable(false);
   NumberKeyboard::instance()->disable(false);
   CurveKeyboard::instance()->disable(false);
@@ -76,7 +76,7 @@ void Page::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool Page::onTouchEnd(coord_t x, coord_t y)
 {
   if (Window::onTouchEnd(x, y))

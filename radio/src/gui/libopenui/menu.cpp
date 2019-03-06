@@ -55,7 +55,7 @@ void MenuWindow::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool MenuWindow::onTouchEnd(coord_t x, coord_t y)
 {
   int index = y / lineHeight;
@@ -111,7 +111,7 @@ void Menu::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool Menu::onTouchEnd(coord_t x, coord_t y)
 {
   if (!Window::onTouchEnd(x, y)) {

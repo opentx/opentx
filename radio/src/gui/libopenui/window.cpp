@@ -269,7 +269,7 @@ void Window::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool Window::onTouchStart(coord_t x, coord_t y)
 {
   for (auto it = children.rbegin(); it != children.rend(); ++it) {

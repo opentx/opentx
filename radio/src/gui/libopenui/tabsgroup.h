@@ -92,7 +92,7 @@ class TabsCarousel: public Window {
 
     void paint(BitmapBuffer * dc) override;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 
@@ -123,7 +123,7 @@ class TabsGroupHeader: public Window {
     }
 
   protected:
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
     IconButton back;
 #endif
     uint8_t icon;
@@ -164,7 +164,7 @@ class TabsGroup: public Window {
 
     void paint(BitmapBuffer * dc) override;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 

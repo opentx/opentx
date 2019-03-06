@@ -81,13 +81,13 @@ class MenuWindow: public Window {
 
     void onKeyEvent(event_t event) override;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 
   protected:
     std::vector<MenuLine> lines;
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     int selectedIndex = -1;
 #else
     int selectedIndex = 0;
@@ -100,7 +100,7 @@ class Menu : public Window {
   public:
     Menu() :
       Window(&mainWindow, {0, 0, LCD_W, LCD_H}, TRANSPARENT),
-#if !defined(TOUCH_HARDWARE)
+#if !defined(HARDWARE_TOUCH)
       previousFocus(focusWindow),
 #endif
       menuWindow(this)
@@ -146,7 +146,7 @@ class Menu : public Window {
 
     void onKeyEvent(event_t event) override;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchStart(coord_t x, coord_t y) override
     {
       return true;

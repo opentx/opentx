@@ -37,7 +37,7 @@ class CustomCurveChoice : public FormField {
 
     void paint(BitmapBuffer * dc) override;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 

@@ -36,12 +36,12 @@ Dialog::Dialog(uint8_t type, std::string title, std::string message, std::functi
   type(type),
   title(std::move(title)),
   message(std::move(message)),
-#if !defined(TOUCH_HARDWARE)
+#if !defined(HARDWARE_TOUCH)
   confirmHandler(confirmHandler),
   previousFocus(focusWindow)
 #endif
 {
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
   new FabIconButton(this, LCD_W - 50, ALERT_BUTTON_TOP, ICON_NEXT,
                     [=]() -> uint8_t {
                       if (confirmHandler)
@@ -106,7 +106,7 @@ void Dialog::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool Dialog::onTouchEnd(coord_t x, coord_t y)
 {
   Window::onTouchEnd(x, y);

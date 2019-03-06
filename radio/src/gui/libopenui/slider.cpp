@@ -69,7 +69,7 @@ void Slider::onKeyEvent(event_t event)
   FormField::onKeyEvent(event);
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool Slider::onTouchStart(coord_t x, coord_t y)
 {
   if (!hasFocus()) {

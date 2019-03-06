@@ -53,7 +53,7 @@ void CustomCurveChoice::paint(BitmapBuffer * dc)
   dc->drawBitmapPattern(rect.w - 14, (rect.h - 5) / 2, LBM_DROPDOWN, lineColor);
 }
 
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
 bool CustomCurveChoice::onTouchEnd(coord_t x, coord_t y)
 {
   auto menu = new Menu();

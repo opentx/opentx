@@ -21,13 +21,13 @@
 #include "lcd.h"
 #include "mainwindow.h"
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 #include "touch_driver.h"
 #endif
 
 MainWindow mainWindow;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 STRUCT_TOUCH touchState;
 #endif
 
@@ -42,7 +42,7 @@ void MainWindow::emptyTrash()
 
 void MainWindow::checkEvents(bool trash)
 {
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
   if (touchState.Event == TE_DOWN) {
     onTouchStart(touchState.X + scrollPositionX, touchState.Y + scrollPositionY);
     // touchState.Event = TE_NONE;

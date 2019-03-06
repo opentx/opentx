@@ -21,7 +21,7 @@
 #include "tabsgroup.h"
 #include "mainwindow.h"
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 #include "keyboard_number.h"
 #include "keyboard_text.h"
 #include "keyboard_curve.h"
@@ -35,7 +35,7 @@
 
 TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
   Window(parent, { 0, 0, LCD_W, MENU_BODY_TOP }, OPAQUE),
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
   back(this, { 0, 0, TOPBAR_BUTTON_WIDTH, TOPBAR_BUTTON_WIDTH }, ICON_OPENTX,
        [=]() -> uint8_t {
          parent->deleteLater();
@@ -73,7 +73,7 @@ void TabsCarousel::paint(BitmapBuffer * dc)
   theme->drawMenuIcon(dc, menu->tabs[currentIndex]->icon, currentIndex, true);
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool TabsCarousel::onTouchEnd(coord_t x, coord_t y)
 {
   unsigned index = (x - padding_left) / TOPBAR_BUTTON_WIDTH;
@@ -98,7 +98,7 @@ TabsGroup::~TabsGroup()
 
   body.deleteChildren();
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
   TextKeyboard::instance()->disable(false);
   NumberKeyboard::instance()->disable(false);
   CurveKeyboard::instance()->disable(false);
@@ -128,7 +128,7 @@ void TabsGroup::setCurrentTab(PageTab * tab)
   if (tab != currentTab) {
     clearFocus();
     body.clear();
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     TextKeyboard::instance()->disable(false);
     NumberKeyboard::instance()->disable(false);
     CurveKeyboard::instance()->disable(false);
@@ -176,7 +176,7 @@ void TabsGroup::paint(BitmapBuffer * dc)
   dc->clear(TEXT_BGCOLOR);
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool TabsGroup::onTouchEnd(coord_t x, coord_t y)
 {
   if (Window::onTouchEnd(x, y))

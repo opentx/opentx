@@ -110,7 +110,7 @@ void Choice::openMenu()
   });
 }
 
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
 bool Choice::onTouchEnd(coord_t, coord_t)
 {
   openMenu();

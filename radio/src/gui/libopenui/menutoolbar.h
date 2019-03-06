@@ -46,7 +46,7 @@ class MenuToolbarButton: public Button {
       }
     }
 
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override
     {
       if (hasFocus()) {
@@ -137,7 +137,7 @@ class MenuToolbar: public Window {
       }
     }
 
-#if defined(TOUCH_INTERFACE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override
     {
       Window::onTouchEnd(x, y);

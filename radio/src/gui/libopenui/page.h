@@ -34,7 +34,7 @@ class PageHeader: public Window {
 
   protected:
     uint8_t icon;
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     IconButton back;
 #endif
 };
@@ -54,7 +54,7 @@ class Page: public Window {
 
     void onKeyEvent(event_t event) override;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchStart(coord_t x, coord_t y) override
     {
       Window::onTouchStart(x, y);

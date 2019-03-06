@@ -52,7 +52,7 @@ void TextEdit::paint(BitmapBuffer * dc)
     dc->drawSizedText(3, 0, displayedValue, length, textColor);
   }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
   auto keyboard = TextKeyboard::instance();
   if (hasFocus && keyboard->getField() == this) {
     coord_t cursorPos = keyboard->getCursorPos();
@@ -144,7 +144,7 @@ void TextEdit::onKeyEvent(event_t event)
   }
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool TextEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
@@ -162,7 +162,7 @@ bool TextEdit::onTouchEnd(coord_t x, coord_t y)
 }
 #endif
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 void TextEdit::onFocusLost()
 {
   TextKeyboard::instance()->disable(true);

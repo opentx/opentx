@@ -259,7 +259,7 @@ class Window {
 
     virtual void onKeyEvent(event_t event);
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     virtual bool onTouchStart(coord_t x, coord_t y);
 
     virtual bool onTouchEnd(coord_t x, coord_t y);

@@ -49,7 +49,7 @@ void CurveEdit::update()
   invalidate();
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool CurveEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {

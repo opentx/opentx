@@ -57,7 +57,7 @@ class TextEdit : public FormField {
 
     void onKeyEvent(event_t event) override;
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override;
 
     void onFocusLost() override;

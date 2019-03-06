@@ -43,7 +43,7 @@ void TimeEdit::paint(BitmapBuffer * dc)
   dc->drawText(3, 0, getTimerString(getValue(), (flags & TIMEHOUR) != 0), textColor);
 }
 
-#if defined(TOUCH_HARDWARE)
+#if defined(HARDWARE_TOUCH)
 bool TimeEdit::onTouchEnd(coord_t x, coord_t y)
 {
   if (!hasFocus()) {
