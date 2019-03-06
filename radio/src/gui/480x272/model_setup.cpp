@@ -155,7 +155,7 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
 
 class ReceiverWindow : public Window {
   public:
-    ReceiverWindow(Window * parent, const rect_t &rect, uint8_t moduleIndex, uint8_t receiverIndex) :
+    ReceiverWindow(Window * parent, const rect_t &rect, uint8_t moduleIndex, uint8_t receiverIndex):
       Window(parent, rect, FORWARD_SCROLL),
       receiverIndex(receiverIndex)
     {
@@ -457,7 +457,7 @@ class ModuleWindow : public Window {
         uint8_t receiverCount = 0;
         while (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
           if (g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)) {
-            grid.addWindow(new ReceiverWindow(this, {0, grid.getWindowHeight(), LCD_W, 0}, moduleIndex, g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)));
+            grid.addWindow(new ReceiverWindow(this, {0, grid.getWindowHeight(), LCD_W, 0}, moduleIndex, receiverCount));
             receiverCount++;
           }
           else
