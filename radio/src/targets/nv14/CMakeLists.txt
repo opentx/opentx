@@ -54,7 +54,7 @@ set(TOUCH_DRIVER touch_driver.cpp)
 
 set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} ${BITMAPS_TARGET})
 
-add_definitions(-DSTM32F429_439xx -DSDRAM -DCOLORLCD -DLIBOPENUI)
+add_definitions(-DSTM32F429_439xx -DSDRAM -DCOLORLCD -DLIBOPENUI -DHARDWARE_TOUCH)
 add_definitions(-DEEPROM_VARIANT=0 -DAUDIO -DVOICE -DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
 add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
@@ -65,9 +65,9 @@ endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/colorlcd gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
-file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.cpp)
-file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.cpp)
-file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/320x480/widgets/*.cpp)
+file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/themes/*.cpp)
+file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/layouts/*.cpp)
+file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/colorlcd ${RADIO_SRC_DIRECTORY}/gui/colorlcd/widgets/*.cpp)
 set(GUI_SRC
   ${GUI_SRC}
   curves.cpp
@@ -128,7 +128,7 @@ endif()
 
 set(PULSES_SRC
   ${PULSES_SRC}
-  flysky_arm.cpp
+  flysky.cpp
   )
 
 set(STM32LIB_SRC
