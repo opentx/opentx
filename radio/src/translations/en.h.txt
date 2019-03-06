@@ -538,7 +538,7 @@
   #define TR_ENTER                     "[MENU]"
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   #define TR_EXIT                      "[RTN]"
   #define TR_OK                        TR_ENTER
 #else

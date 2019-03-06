@@ -148,6 +148,7 @@
 #define SPORT_UPDATE_RCC_AHB1Periph     RCC_AHB1Periph_GPIOH
 #define SPORT_UPDATE_PWR_GPIO           GPIOH
 #define SPORT_UPDATE_PWR_GPIO_PIN       GPIO_Pin_13  // PH.13
+#define HAS_SPORT_UPDATE_CONNECTOR()    (false)
 
 // Led
 // #define STATUS_LEDS
