@@ -157,6 +157,7 @@ class ReceiverWindow : public Window {
   public:
     ReceiverWindow(Window * parent, const rect_t &rect, uint8_t moduleIndex, uint8_t receiverIndex):
       Window(parent, rect, FORWARD_SCROLL),
+      moduleIndex(moduleIndex),
       receiverIndex(receiverIndex)
     {
       update();
@@ -168,14 +169,14 @@ class ReceiverWindow : public Window {
     }
 
   protected:
-    uint8_t receiverIndex;
     uint8_t moduleIndex;
+    uint8_t receiverIndex;
 
     void update()
     {
       GridLayout grid;
 
-      new Subtitle(this, grid.getLabelSlot(true), STR_RECEIVER); //TODO put receiver number
+      new Subtitle(this, grid.getLabelSlot(true), STR_RECEIVER); // TODO put receiver number
       auto deleteButton = new TextButton(this, grid.getFieldSlot(), STR_DEL_BUTTON);
       deleteButton->setPressHandler([=]() {
         pxx2DeleteReceiver(moduleIndex, receiverIndex);
