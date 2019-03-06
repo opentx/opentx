@@ -30,9 +30,6 @@
 #include "opentx.h" // TODO for constants...
 #include "view_main.h"
 
-#define TOPBAR_BUTTON_WIDTH            47 // 60
-#define TOPBAR_MENU_LEFT               (TOPBAR_BUTTON_WIDTH + 3)
-
 TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
   Window(parent, { 0, 0, LCD_W, MENU_BODY_TOP }, OPAQUE),
 #if defined(HARDWARE_TOUCH)
