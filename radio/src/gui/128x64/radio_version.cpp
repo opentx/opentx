@@ -20,6 +20,32 @@
 
 #include "opentx.h"
 
+#if defined(PXX2)
+void menuRadioModulesVersion(event_t event)
+{
+  if (event == EVT_ENTRY) {
+    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+    reusableBuffer.hardware.modules[INTERNAL_MODULE].step = -1;
+    reusableBuffer.hardware.modules[INTERNAL_MODULE].timeout = 0;
+  }
+
+  SIMPLE_SUBMENU("MODULES / RX VERSION", 0);
+}
+#endif
+
+enum MenuRadioVersionItems
+{
+  ITEM_RADIO_VERSION_FIRST = HEADER_LINE - 1,
+#if defined(PXX2)
+  ITEM_RADIO_MODULES_VERSION,
+#endif
+#if defined(EEPROM_RLC)
+  ITEM_RADIO_BACKUP_EEPROM,
+  ITEM_RADIO_FACTORY_RESET,
+#endif
+  ITEM_RADIO_VERSION_COUNT
+};
+
 void menuRadioVersion(event_t event)
 {
 #if defined(EEPROM_RLC)
@@ -31,40 +57,46 @@ void menuRadioVersion(event_t event)
   }
 #endif
 
-  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, 1);
+  SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, ITEM_RADIO_VERSION_COUNT);
 
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+FH, vers_stamp);
+  coord_t y = MENU_HEADER_HEIGHT + 1;
+  lcdDrawTextAlignedLeft(y, vers_stamp);
+  y += 4*FH;
+  // TODO this was good on AVR radios, but horrible now ...
 
 #if defined(COPROCESSOR)
   if (Coproc_valid == 1) {
-     lcdDrawTextAlignedLeft(6*FH, "CoPr:");
-     lcdDraw8bitsNumber(10*FW, 6*FH, Coproc_read);
+    lcdDrawTextAlignedLeft(y, "CoPr:");
+    lcdDraw8bitsNumber(10*FW, y, Coproc_read);
   }
   else {
-     lcdDrawTextAlignedLeft(6*FH, "CoPr: ---");
+    lcdDrawTextAlignedLeft(y, "CoPr: ---");
   }
-#elif defined(EEPROM_RLC)
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);
-  lcdDrawFilledRect(0, MENU_HEADER_HEIGHT+5*FH, LCD_W, 2*FH+1, SOLID);
+  y += FH;
+#endif
 
-#if defined(PCBXLITE)
-  if (event == EVT_KEY_LONG(KEY_ENTER)) {
-    killEvents(KEY_ENTER);
-    if (IS_SHIFT_PRESSED()) {
-      POPUP_CONFIRMATION(STR_CONFIRMRESET);
-    }
-    else {
-      eepromBackup();
-    }
-  }
-#else
-  if (event == EVT_KEY_LONG(KEY_ENTER)) {
-    eepromBackup();
-  }
-  else if (event == EVT_KEY_LONG(KEY_MENU)) {
-    POPUP_CONFIRMATION(STR_CONFIRMRESET);
+#if defined(PXX2)
+  lcdDrawText(0, y, BUTTON("Modules / RX version"), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
+  y += FH;
+  if (menuVerticalPosition == ITEM_RADIO_MODULES_VERSION && event == EVT_KEY_BREAK(KEY_ENTER)) {
+    s_editMode = EDIT_SELECT_FIELD;
+    pushMenu(menuRadioModulesVersion);
   }
 #endif
+
+#if defined(EEPROM_RLC)
+  lcdDrawText(0, y, BUTTON(TR_EEBACKUP), menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM ? INVERS : 0);
+  y += FH;
+  if (menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM && event == EVT_KEY_BREAK(KEY_ENTER)) {
+    s_editMode = EDIT_SELECT_FIELD;
+    eepromBackup();
+  }
+
+  lcdDrawText(0, y, BUTTON(TR_FACTORYRESET), menuVerticalPosition == ITEM_RADIO_FACTORY_RESET ? INVERS : 0);
+  // y += FH;
+  if (menuVerticalPosition == ITEM_RADIO_FACTORY_RESET && event == EVT_KEY_BREAK(KEY_ENTER)) {
+    s_editMode = EDIT_SELECT_FIELD;
+    POPUP_CONFIRMATION(STR_CONFIRMRESET);
+  }
 #endif
 }

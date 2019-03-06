@@ -104,6 +104,24 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   }
 }
 
+void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
+{
+  if (reusableBuffer.hardware.modules[module].step >= -1 && reusableBuffer.hardware.modules[module].step < PXX2_MAX_RECEIVERS_PER_MODULE) {
+    if (reusableBuffer.hardware.modules[module].timeout == 0) {
+      addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
+      Pxx2Transport::addByte(reusableBuffer.hardware.modules[module].step);
+      reusableBuffer.hardware.modules[module].timeout = 20;
+      reusableBuffer.hardware.modules[module].step++;
+    }
+    else {
+      reusableBuffer.hardware.modules[module].timeout--;
+    }
+  }
+  else {
+    moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  }
+}
+
 void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
@@ -194,7 +212,9 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 
   uint8_t mode = moduleSettings[module].mode;
 
-  if (mode == MODULE_MODE_REGISTER)
+  if (mode == MODULE_MODE_GET_HARDWARE_INFO)
+    setupHardwareInfoFrame(module);
+  else if (mode == MODULE_MODE_REGISTER)
     setupRegisterFrame(module);
   else if (mode == MODULE_MODE_BIND)
     setupBindFrame(module);

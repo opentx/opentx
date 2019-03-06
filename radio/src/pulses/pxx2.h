@@ -30,6 +30,7 @@
   #define PXX2_TYPE_ID_BIND         0x02
   #define PXX2_TYPE_ID_CHANNELS     0x03
   #define PXX2_TYPE_ID_RX_SETUP     0x05
+  #define PXX2_TYPE_ID_HW_INFO      0x06
   #define PXX2_TYPE_ID_TELEMETRY    0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
@@ -103,6 +104,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
     void setupFrame(uint8_t module);
 
   protected:
+    void setupHardwareInfoFrame(uint8_t module);
+
     void setupRegisterFrame(uint8_t module);
 
     void setupBindFrame(uint8_t module);

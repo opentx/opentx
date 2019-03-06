@@ -1169,6 +1169,13 @@ union ReusableBuffer
 #endif
 
   struct {
+    struct {
+      int8_t step;
+      uint8_t timeout;
+    } modules[NUM_MODULES];
+  } hardware;
+
+  struct {
     uint8_t stickMode;
   } generalSettings;
 
