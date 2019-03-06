@@ -162,7 +162,8 @@ class InputEditWindow: public Page {
       }
     }
 
-    void buildBody(FormWindow * window) {
+    void buildBody(FormWindow * window)
+    {
       NumberEdit * edit;
 
       GridLayout grid;
@@ -288,7 +289,8 @@ class InputLineButton : public Button {
       }
     }
 
-    bool isActive() {
+    bool isActive()
+    {
       return isExpoActive(index);
     }
 
@@ -302,7 +304,8 @@ class InputLineButton : public Button {
       Button::checkEvents();
     }
 
-    void paintFlightModes(BitmapBuffer * dc, FlightModesType value) {
+    void paintFlightModes(BitmapBuffer * dc, FlightModesType value)
+    {
       dc->drawBitmap(146, 24, mixerSetupFlightmodeBitmap);
       coord_t x = 166;
       for (int i=0; i<MAX_FLIGHT_MODES; i++) {
@@ -319,7 +322,8 @@ class InputLineButton : public Button {
       }
     }
 
-    void paintInputLine(BitmapBuffer * dc) {
+    void paintInputLine(BitmapBuffer * dc)
+    {
       const ExpoData & line = g_model.expoData[index];
 
       // first line ...
@@ -350,7 +354,8 @@ class InputLineButton : public Button {
       }
     }
 
-    virtual void paint(BitmapBuffer * dc) override {
+    virtual void paint(BitmapBuffer * dc) override
+    {
       if (active)
         dc->drawSolidFilledRect(2, 2, rect.w - 4, rect.h - 4, WARNING_COLOR);
       paintInputLine(dc);

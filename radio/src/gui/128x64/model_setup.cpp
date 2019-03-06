@@ -175,7 +175,7 @@ enum MenuModelSetupItems {
 
 #define IF_PXX2_MODULE(module, xxx)      (isModulePXX2(module) ? (uint8_t)(xxx) : HIDDEN_ROW)
 #define IF_NOT_PXX2_MODULE(module, xxx)  (isModulePXX2(module) ? HIDDEN_ROW : (uint8_t)(xxx))
-#define IF_PXX2_RECEIVER_DISPLAYED(module, idx, xxx)   ((isModulePXX2(module) && g_model.moduleData[module].pxx2.getReceiverSlot(idx)) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#define IF_PXX2_RECEIVER_DISPLAYED(module, receiver, xxx)   ((isModulePXX2(module) && g_model.moduleData[module].pxx2.getReceiverSlot(receiver)) ? (uint8_t)(xxx) : HIDDEN_ROW)
 
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
