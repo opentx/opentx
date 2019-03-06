@@ -11,6 +11,7 @@ set(GUI_SRC
   model_setup.cpp
   model_heli.cpp
   model_flightmodes.cpp
+  model_inputs.cpp
   #  model_logical_switches.cpp
   special_functions.cpp
   #  model_telemetry.cpp

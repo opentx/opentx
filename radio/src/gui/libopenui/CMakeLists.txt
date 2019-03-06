@@ -22,7 +22,7 @@ set(LIBOPENUI_SRC
   progress.cpp
   menu.cpp
   dialog.cpp
-  # curve.cpp
-  # curveedit.cpp
+  curve.cpp
+  curveedit.cpp
   # coloredit.cpp
   )
