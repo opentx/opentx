@@ -267,7 +267,7 @@ class ModuleWindow : public Window {
 
       // Channel Range
       if (g_model.moduleData[moduleIndex].type != MODULE_TYPE_NONE) {
-        addChannelRange(grid, moduleIndex);
+        addChannelRange(grid, moduleIndex); //TODO XJT2 should only set channel count of 8/16/24
         grid.nextLine();
       }
 

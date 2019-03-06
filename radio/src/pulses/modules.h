@@ -309,17 +309,17 @@ inline bool isModuleTypeAllowed(uint8_t idx, uint8_t type)
 
 inline bool isModuleNeedingReceiverNumber(uint8_t idx)
 {
-  return isModulePXX(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx);
+  return isModulePXX(idx) || isModulePXX2(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx);
 }
 
 inline bool isModuleNeedingBindRangeButtons(uint8_t idx)
 {
-  return isModulePXX(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx) || isModuleFlysky(idx);
+  return isModulePXX(idx) || isModulePXX2(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx) || isModuleFlysky(idx);
 }
 
 inline bool isModuleNeedingFailsafeButton(uint8_t idx)
 {
-  return isModulePXX(idx) || isModuleR9M(idx) || isModuleFlysky(idx);
+  return isModulePXX(idx) || isModulePXX2(idx) || isModuleR9M(idx) || isModuleFlysky(idx);
 }
 
 #endif // _MODULES_H_
