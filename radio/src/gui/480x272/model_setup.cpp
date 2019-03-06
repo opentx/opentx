@@ -24,6 +24,17 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
+uint8_t findEmptyReceiverSlot()
+{
+  for (uint8_t slot=0; slot<NUM_RECEIVERS; slot++) {
+    if (!g_model.receiverData[slot].used) {
+      return slot + 1;
+    }
+  }
+  return 0;
+}
+
+
 void resetModuleSettings(uint8_t module)
 {
   g_model.moduleData[module].channelsStart = 0;
@@ -162,6 +173,33 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
 {
   addTab(new FailSafePage(moduleIndex));
 }
+
+
+class ReceiverWindow : public Window {
+  public:
+    ReceiverWindow(Window * parent, const rect_t &rect, uint8_t receiverIndex) :
+      Window(parent, rect, FORWARD_SCROLL),
+      receiverIndex(receiverIndex)
+    {
+      update();
+    }
+
+    ~ReceiverWindow()
+    {
+      deleteChildren();
+    }
+
+  protected:
+    uint8_t receiverIndex;
+
+    void update()
+    {
+      GridLayout grid;
+
+
+      new StaticText(this, grid.getLabelSlot(), "BLABLA BLABLA");
+    }
+};
 
 class ModuleWindow : public Window {
   public:
@@ -655,6 +693,35 @@ void ModelSetupPage::build(FormWindow * window)
     new Subtitle(window, grid.getLineSlot(), STR_INTERNALRF);
     grid.nextLine();
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, INTERNAL_MODULE));
+  }
+
+  // Internal module receivers
+  if(isModulePXX2(INTERNAL_MODULE)) {
+    uint8_t receiverCount=0;
+    for(uint8_t idx=0; idx<PXX2_MAX_RECEIVERS_PER_MODULE; idx++){
+      if(g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(idx)) {
+        receiverCount++;
+        grid.addWindow(new ReceiverWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(idx)));
+      }
+    }
+    if(receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+      new StaticText(window, grid.getLabelSlot(true),STR_RECEIVER);
+      auto AddReceiver = new TextButton(window, grid.getFieldSlot(), STR_RXADD_BUTTON);
+      AddReceiver->setPressHandler([=]() {
+        uint8_t slot = findEmptyReceiverSlot();
+        if (slot > 0) {
+          g_model.moduleData[INTERNAL_MODULE].pxx2.receivers |= (slot << (receiverIdx * 3));
+          --slot;
+          g_model.receiverData[slot].used = 1;
+          #warning "USE 32bits copy"
+          g_model.receiverData[slot].channelMapping0 = (0 << 0) + (1 << 5) + (2 << 10) + (3 << 15) + (4 << 20) + (5 << 25) + ((uint64_t)6 << 30) + ((uint64_t)7 << 35) + ((uint64_t)8 << 40) + ((uint64_t)9 << 45) + ((uint64_t)10 << 50) + ((uint64_t)11 << 55);
+          g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
+          storageDirty(EE_MODEL);
+        }
+        return 0;
+      });
+      grid.nextLine();
+    }
   }
 
   // External module
