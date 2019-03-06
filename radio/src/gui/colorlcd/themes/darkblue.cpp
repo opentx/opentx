@@ -81,6 +81,10 @@ class DarkblueTheme: public Theme
     void loadMenusIcons() const
     {
       loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
+#if defined(HARDWARE_TOUCH)
+      loadMenuIcon(ICON_NEXT, "mask_next.png");
+      loadMenuIcon(ICON_BACK, "mask_back.png");
+#endif
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
       loadMenuIcon(ICON_RADIO_SETUP, "mask_radio_setup.png");
       loadMenuIcon(ICON_RADIO_SD_BROWSER, "mask_radio_sd_browser.png");

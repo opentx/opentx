@@ -35,8 +35,9 @@ Dialog::Dialog(uint8_t type, std::string title, std::string message, std::functi
   Window(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   type(type),
   title(std::move(title)),
-  message(std::move(message)),
+  message(std::move(message))
 #if !defined(HARDWARE_TOUCH)
+  ,
   confirmHandler(confirmHandler),
   previousFocus(focusWindow)
 #endif

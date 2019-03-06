@@ -24,6 +24,7 @@
 #include "stddef.h"
 #include "stdbool.h"
 #include "opentx_constants.h"
+#include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
