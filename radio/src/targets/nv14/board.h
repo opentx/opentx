@@ -423,6 +423,8 @@ void lcdSetContrast();
 #define lcdOff()                        backlightEnable(0) /* just disable the backlight */
 #define lcdSetRefVolt(...)
 #define lcdRefreshWait(...)
+void lcdStoreBackupBuffer(void);
+int lcdRestoreBackupBuffer(void);
 
 // Backlight driver
 void backlightInit(void);

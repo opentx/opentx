@@ -27,7 +27,7 @@
 #if defined(PCBHORUS)
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #else
-#define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SB-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_3POS : SWITCH_2POS)
+#define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #endif
 
 class SwitchDynamicLabel : public StaticText {
