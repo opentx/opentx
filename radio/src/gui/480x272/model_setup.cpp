@@ -177,7 +177,7 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
 
 class ReceiverWindow : public Window {
   public:
-    ReceiverWindow(Window * parent, const rect_t &rect,  uint8_t moduleIndex, uint8_t receiverIndex) :
+    ReceiverWindow(Window * parent, const rect_t &rect, uint8_t moduleIndex, uint8_t receiverIndex) :
       Window(parent, rect, FORWARD_SCROLL),
       receiverIndex(receiverIndex)
     {
@@ -198,14 +198,15 @@ class ReceiverWindow : public Window {
       GridLayout grid;
 
       new Subtitle(this, grid.getLabelSlot(true), STR_RECEIVER); //TODO put receiver number
-      auto DelReceiver = new TextButton(this, grid.getFieldSlot(), STR_DEL_BUTTON);
-      DelReceiver->setPressHandler([=]() {
+      auto deleteButton = new TextButton(this, grid.getFieldSlot(), STR_DEL_BUTTON);
+      deleteButton->setPressHandler([=]() {
+        uint8_t receiverSlot = g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverIndex) - 1;
         g_model.moduleData[moduleIndex].pxx2.receivers = (g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIndex * 3)) | ((g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>((receiverIndex + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIndex) * 3)) >> 3);
-        memclear(&g_model.receiverData[receiverIndex], sizeof(ReceiverData));
+        memclear(&g_model.receiverData[receiverSlot], sizeof(ReceiverData));
         update();
         return 0;
       });
-      DelReceiver->setFocus();
+      deleteButton->setFocus();
     }
 };
 
