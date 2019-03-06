@@ -89,6 +89,7 @@ void deleteExpo(uint8_t idx)
   storageDirty(EE_MODEL);
 }
 
+// ONE
 class InputEditWindow: public Page {
   public:
     InputEditWindow(int8_t input, uint8_t index):
@@ -119,8 +120,8 @@ class InputEditWindow: public Page {
     Choice * curveTypeChoice = nullptr;
 
     void buildHeader(Window * window) {
-      new StaticText(window, { 70, 4, 100, 20 }, STR_MENUINPUTS, MENU_TITLE_COLOR);
-      new StaticText(window, { 70, 28, 100, 20 }, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_TITLE_COLOR);
+      new StaticText(window, { 70,0, 100, 20 }, STR_MENUINPUTS, MENU_TITLE_COLOR);
+      new StaticText(window, { 70, FH+2, 100, 20 }, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_TITLE_COLOR);
     }
 
     void updateCurves() {
@@ -161,7 +162,7 @@ class InputEditWindow: public Page {
       }
     }
 
-    void buildBody(Window * window) {
+    void buildBody(FormWindow * window) {
       NumberEdit * edit;
 
       GridLayout grid;
@@ -174,7 +175,8 @@ class InputEditWindow: public Page {
 
       // Input Name
       new StaticText(window, grid.getLabelSlot(), STR_INPUTNAME);
-      new TextEdit(window, grid.getFieldSlot(), g_model.inputNames[line->chn], sizeof(g_model.inputNames[line->chn]));
+      auto name = new TextEdit(window, grid.getFieldSlot(), g_model.inputNames[line->chn], sizeof(g_model.inputNames[line->chn]));
+      window->setFirstField(name);
       grid.nextLine();
 
       // Switch
@@ -256,11 +258,12 @@ class InputEditWindow: public Page {
 
       // Flight modes
       new StaticText(window, grid.getLabelSlot(), STR_FLMODE);
+      TextButton * flightmode = nullptr;
       for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
         char fm[2] = { char('0' + i), '\0' };
         if (i > 0 && (i % 4) == 0)
           grid.nextLine();
-        new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
+        flightmode = new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
                        [=]() -> uint8_t {
                          BF_BIT_FLIP(line->flightModes, BF_BIT<uint32_t>(i));
                          SET_DIRTY();
@@ -268,6 +271,8 @@ class InputEditWindow: public Page {
                        },
                        BF_SINGLE_BIT_GET(line->flightModes, i) ? 0 : BUTTON_CHECKED);
       }
+      window->setLastField(flightmode);
+      window->setInnerHeight(grid.getWindowHeight());
     }
 };
 
