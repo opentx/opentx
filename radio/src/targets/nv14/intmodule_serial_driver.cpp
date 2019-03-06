@@ -184,19 +184,19 @@ extern "C" void INTMODULE_TX_DMA_Stream_IRQHandler(void)
 
 uint8_t intmoduleGetByte(uint8_t * byte)
 {
-    if (intmodule_hal_inited == 0) {
-        return 0; // incase of call before initialization
-    }
+  if (intmodule_hal_inited == 0) {
+      return 0; // incase of call before initialization
+  }
 #ifdef INTMODULE_RX_INT
-    return intmoduleRxFifo.pop(*byte);
+  return intmoduleRxFifo.pop(*byte);
 #else
-    return intmoduleDMAFifo.pop(*byte);
+  return intmoduleDMAFifo.pop(*byte);
 #endif
 }
 
 void intmoduleSendBufferDMA(uint8_t * data, uint8_t size)
 {
-  if (IS_PXX_PROTOCOL(s_current_protocol[INTERNAL_MODULE]) || IS_FLYSKY_PROTOCOL(s_current_protocol[INTERNAL_MODULE])) {
+  if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1 || moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_FLYSKY) {
     if (size) {
 #if !defined(SIMU)
       if (data[0] == 0x55 || data[3] == 0x0C) { // Firmware update printf
@@ -230,9 +230,9 @@ void intmoduleSendBufferDMA(uint8_t * data, uint8_t size)
 
 void intmoduleSendNextFrame()
 {
-    uint8_t * data = modulePulsesData[INTERNAL_MODULE].pxx_uart.pulses;
-    uint8_t size = modulePulsesData[INTERNAL_MODULE].pxx_uart.ptr - data;
-    intmoduleSendBufferDMA(data, size);
+//    uint8_t * data = modulePulsesData[INTERNAL_MODULE].pxx_uart.pulses;
+//    uint8_t size = modulePulsesData[INTERNAL_MODULE].pxx_uart.ptr - data;
+//    intmoduleSendBufferDMA(data, size);
 }
 
 extern "C" void INTMODULE_TIMER_IRQHandler()

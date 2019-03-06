@@ -2,7 +2,7 @@
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-if(PCB STREQUAL X12S OR PCB STREQUAL X10)
+if(PCB STREQUAL X12S OR PCB STREQUAL X10 OR PCB STREQUAL NV14)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../f4/system_stm32f4xx.c
@@ -78,7 +78,7 @@ set(BOOTLOADER_SRC
   bin_files.cpp
   )
 
-if(PCB STREQUAL X10 OR PCB STREQUAL X12S)
+if(PCB STREQUAL X10 OR PCB STREQUAL X12S OR PCB STREQUAL NV14)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../gui/libopenui/bitmapbuffer.cpp
@@ -116,7 +116,6 @@ add_definitions(-DBOOT)
 set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC_DIRECTORY}/targets/${TARGET_DIR}/stm32_ramboot.ld -Wl,-Map=bootloader.map,--cref,--no-warn-mismatch,--gc-sections")
 # use smaller nano libc
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs")
-
 
 add_executable(bootloader ${BOOTLOADER_SRC})
 add_dependencies(bootloader ${BITMAPS_TARGET} firmware_translations)

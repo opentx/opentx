@@ -24,7 +24,6 @@
 #include "stddef.h"
 #include "stdbool.h"
 #include "opentx_constants.h"
-#include "shutdown_animation.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -194,6 +193,10 @@ void init_sbusOut(uint32_t module_index);
 void disable_sbusOut(uint32_t module_index);
 void init_serial(uint32_t module_index, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint32_t port);
+void intmoduleSendNextFrame();
+void extmoduleSendNextFrame();
+void intmoduleSerialStart(uint32_t baudrate);
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -266,6 +269,7 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
+  NUM_SWITCHES_POSITIONS
 };
 
 void monitorInit(void);

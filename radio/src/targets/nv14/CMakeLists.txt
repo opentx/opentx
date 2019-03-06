@@ -9,7 +9,7 @@ set(HSE_VALUE 12000000)
 set(SDCARD YES)
 set(EEPROM SDCARD)
 set(HAPTIC YES)
-set(GUI_DIR 320x480)
+set(GUI_DIR 480x272)
 # set(NAVIGATION_TYPE touch)
 set(TARGET_DIR nv14)
 
@@ -30,7 +30,7 @@ set(RF_BAUD_RATE 921600 230400 115200 57600 38400 19200 9600 4800 2400 1200)
 set(PCB_RF_BAUD 921600 CACHE STRING "INTERNAL_MODULE_BAUDRATE: ${RF_BAUD_RATE}")
 set_property(CACHE PCB_RF_BAUD PROPERTY STRINGS ${RF_BAUD_RATE})
 
-set(FLAVOUR NV14)
+set(FLAVOUR nv14)
 add_definitions(-DPCBNV14 -DPCBFLYSKY -DINTERNAL_MODULE_BAUDRATE=${PCB_RF_BAUD})
 #add_definitions(-DSOFTWARE_VOLUME)
 set(TARGET_SRC
@@ -65,32 +65,30 @@ endif()
 
 include_directories(${RADIO_SRC_DIRECTORY}/fonts/colorlcd gui/${GUI_DIR} gui/${GUI_DIR}/layouts)
 
-file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.cpp)
-file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.cpp)
-file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/320x480 ${RADIO_SRC_DIRECTORY}/gui/320x480/widgets/*.cpp)
+file(GLOB THEMES_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/320x480/themes/*.cpp)
+file(GLOB LAYOUTS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/320x480/layouts/*.cpp)
+file(GLOB WIDGETS_SRC RELATIVE ${RADIO_SRC_DIRECTORY}/gui/480x272 ${RADIO_SRC_DIRECTORY}/gui/320x480/widgets/*.cpp)
 set(GUI_SRC
   ${GUI_SRC}
-  draw_functions.cpp
   curves.cpp
   bitmaps.cpp
   radio_sdmanager.cpp
-  radio_hardware.cpp
-  model_inputs.cpp
-  model_mixes.cpp
-  model_curves.cpp
-  view_channels.cpp
-  view_logical_switches.cpp
-  view_about.cpp
-  view_text.cpp
-  screens_setup.cpp
-  shutdown_animation.cpp
+  #  radio_hardware.cpp
+  #  model_inputs.cpp
+  #  model_mixes.cpp
+  #  model_curves.cpp
+  #  view_channels.cpp
+  #  view_logical_switches.cpp
+  #  view_about.cpp
+  #  view_text.cpp
+  #  screens_setup.cpp
   theme.cpp
-  topbar.cpp
-  layout.cpp
-  widget.cpp
+  #  topbar.cpp
+  #  layout.cpp
+  #  widget.cpp
   ${THEMES_SRC}
-  ${LAYOUTS_SRC}
-  ${WIDGETS_SRC}
+  #  ${LAYOUTS_SRC}
+  #  ${WIDGETS_SRC}
   rle.cpp
   )
 if(DISK_CACHE)
