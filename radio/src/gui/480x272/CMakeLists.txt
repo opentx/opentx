@@ -53,7 +53,7 @@ macro(add_gui_src src)
     )
 endmacro(add_gui_src)
 
-if(HELI STREQUAL YES)
+if(HELI)
   add_gui_src(model_heli.cpp)
 endif()
 

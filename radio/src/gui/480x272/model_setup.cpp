@@ -174,6 +174,12 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
   addTab(new FailSafePage(moduleIndex));
 }
 
+void deleteReceiver(uint8_t moduleIndex, uint8_t receiverIndex)
+{
+  uint8_t receiverSlot = g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverIndex) - 1;
+  g_model.moduleData[moduleIndex].pxx2.receivers = (g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIndex * 3)) | ((g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>((receiverIndex + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIndex) * 3)) >> 3);
+  memclear(&g_model.receiverData[receiverSlot], sizeof(ReceiverData));
+}
 
 class ReceiverWindow : public Window {
   public:
@@ -200,9 +206,7 @@ class ReceiverWindow : public Window {
       new Subtitle(this, grid.getLabelSlot(true), STR_RECEIVER); //TODO put receiver number
       auto deleteButton = new TextButton(this, grid.getFieldSlot(), STR_DEL_BUTTON);
       deleteButton->setPressHandler([=]() {
-        uint8_t receiverSlot = g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverIndex) - 1;
-        g_model.moduleData[moduleIndex].pxx2.receivers = (g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIndex * 3)) | ((g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>((receiverIndex + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIndex) * 3)) >> 3);
-        memclear(&g_model.receiverData[receiverSlot], sizeof(ReceiverData));
+        deleteReceiver(moduleIndex, receiverIndex);
         update();
         return 0;
       });
