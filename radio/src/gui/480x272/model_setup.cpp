@@ -467,6 +467,37 @@ class ModuleWindow : public Window {
                    SET_DEFAULT(g_model.moduleData[moduleIndex].pxx.power));
       }
 
+      // Internal module receivers
+      if (isModulePXX2(moduleIndex)) {
+        uint8_t receiverCount = 0;
+        while (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+          if (g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)) {
+            grid.addWindow(new ReceiverWindow(this, {0, grid.getWindowHeight(), LCD_W, 0}, g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)));
+            receiverCount++;
+          }
+          else
+            break;
+        }
+        if (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+          new StaticText(this, grid.getLabelSlot(true),STR_RECEIVER);
+          auto AddReceiver = new TextButton(this, grid.getFieldSlot(), STR_RXADD_BUTTON);
+          AddReceiver->setPressHandler([=]() {
+            uint8_t slot = findEmptyReceiverSlot();
+            if (slot > 0) {
+              g_model.moduleData[moduleIndex].pxx2.receivers |= (slot << (receiverCount * 3));
+              --slot;
+              g_model.receiverData[slot].used = 1;
+              #warning "USE 32bits copy"
+              g_model.receiverData[slot].channelMapping0 = (0 << 0) + (1 << 5) + (2 << 10) + (3 << 15) + (4 << 20) + (5 << 25) + ((uint64_t)6 << 30) + ((uint64_t)7 << 35) + ((uint64_t)8 << 40) + ((uint64_t)9 << 45) + ((uint64_t)10 << 50) + ((uint64_t)11 << 55);
+              g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
+              storageDirty(EE_MODEL);
+            }
+            return 0;
+          });
+          grid.nextLine();
+        }
+      }
+
       getParent()->moveWindowsTop(top(), adjustHeight());
 
       lastField = FormField::getCurrentField();
@@ -693,35 +724,6 @@ void ModelSetupPage::build(FormWindow * window)
     new Subtitle(window, grid.getLineSlot(), STR_INTERNALRF);
     grid.nextLine();
     grid.addWindow(new ModuleWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, INTERNAL_MODULE));
-  }
-
-  // Internal module receivers
-  if (isModulePXX2(INTERNAL_MODULE)) {
-    uint8_t receiverCount = 0;
-    while (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      if (g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(receiverCount)) {
-        grid.addWindow(new ReceiverWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(receiverCount)));
-        receiverCount++;
-      }
-    }
-    if (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      new StaticText(window, grid.getLabelSlot(true),STR_RECEIVER);
-      auto AddReceiver = new TextButton(window, grid.getFieldSlot(), STR_RXADD_BUTTON);
-      AddReceiver->setPressHandler([=]() {
-        uint8_t slot = findEmptyReceiverSlot();
-        if (slot > 0) {
-          g_model.moduleData[INTERNAL_MODULE].pxx2.receivers |= (slot << (receiverCount * 3));
-          --slot;
-          g_model.receiverData[slot].used = 1;
-          #warning "USE 32bits copy"
-          g_model.receiverData[slot].channelMapping0 = (0 << 0) + (1 << 5) + (2 << 10) + (3 << 15) + (4 << 20) + (5 << 25) + ((uint64_t)6 << 30) + ((uint64_t)7 << 35) + ((uint64_t)8 << 40) + ((uint64_t)9 << 45) + ((uint64_t)10 << 50) + ((uint64_t)11 << 55);
-          g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
-          storageDirty(EE_MODEL);
-        }
-        return 0;
-      });
-      grid.nextLine();
-    }
   }
 
   // External module
