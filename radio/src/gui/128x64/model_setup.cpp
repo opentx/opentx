@@ -377,16 +377,6 @@ inline bool isDefaultModelRegistrationID()
   return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
 }
 
-uint8_t findEmptyReceiverSlot()
-{
-  for (uint8_t slot=0; slot<NUM_RECEIVERS; slot++) {
-    if (!g_model.receiverData[slot].used) {
-      return slot + 1;
-    }
-  }
-  return 0;
-}
-
 void menuModelSetup(event_t event)
 {
 #if defined(EXTERNAL_ANTENNA)
@@ -1253,11 +1243,9 @@ void menuModelSetup(event_t event)
         if (receiverSlot) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DEL_BUTTON, attr);
           if (attr && s_editMode > 0) {
-            g_model.moduleData[moduleIdx].pxx2.receivers = (g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIdx * 3)) | ((g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>((receiverIdx + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIdx) * 3)) >> 3);
-            memclear(&g_model.receiverData[receiverSlot], sizeof(ReceiverData));
             s_editMode = 0;
             killEvents(event);
-            storageDirty(EE_MODEL);
+            pxx2DeleteReceiver(moduleIdx, receiverIdx);
           }
         }
         else {
@@ -1265,16 +1253,7 @@ void menuModelSetup(event_t event)
           if (attr && s_editMode > 0) {
             s_editMode = 0;
             killEvents(event);
-            uint8_t slot = findEmptyReceiverSlot();
-            if (slot > 0) {
-              g_model.moduleData[moduleIdx].pxx2.receivers |= (slot << (receiverIdx * 3));
-              --slot;
-              g_model.receiverData[slot].used = 1;
-              #warning "USE 32bits copy"
-              g_model.receiverData[slot].channelMapping0 = (0 << 0) + (1 << 5) + (2 << 10) + (3 << 15) + (4 << 20) + (5 << 25) + ((uint64_t)6 << 30) + ((uint64_t)7 << 35) + ((uint64_t)8 << 40) + ((uint64_t)9 << 45) + ((uint64_t)10 << 50) + ((uint64_t)11 << 55);
-              g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
-              storageDirty(EE_MODEL);
-            }
+            pxx2AddReceiver(moduleIdx, receiverIdx);
           }
         }
       }

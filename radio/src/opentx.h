@@ -1342,4 +1342,6 @@ enum JackMode {
 };
 #endif
 
+#include "module.h"
+
 #endif // _OPENTX_H_

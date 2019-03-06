@@ -337,6 +337,7 @@ set(SRC
   functions.cpp
   strhelpers.cpp
   switches.cpp
+  module.cpp
   mixer.cpp
   stamp.cpp
   timers.cpp
