@@ -247,16 +247,16 @@ void Window::checkEvents()
   for (auto child: copy) {
     child->checkEvents();
   }
-  
+
+#if defined(HARDWARE_KEYS)
   if (this == focusWindow) {
     event_t event = getEvent(false);
     if (event) {
       TRACE_WINDOWS("Event 0x%x received ...", event);
-#if defined(HARDWARE_KEYS)
       this->onKeyEvent(event);
-#endif
     }
   }
+#endif
 
   if (windowFlags & REFRESH_ALWAYS) {
     invalidate();
