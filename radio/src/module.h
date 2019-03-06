@@ -21,8 +21,9 @@
 #ifndef _MODULE_H_
 #define _MODULE_H_
 
+#include <inttypes.h>
+
 void resetModuleSettings(uint8_t module);
-uint8_t pxx2FindEmptyReceiverSlot();
 void pxx2AddReceiver(uint8_t moduleIndex, uint8_t receiverIndex);
 void pxx2DeleteReceiver(uint8_t moduleIndex, uint8_t receiverIndex);
 
