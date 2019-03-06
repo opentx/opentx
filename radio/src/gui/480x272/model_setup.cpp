@@ -177,7 +177,7 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
 
 class ReceiverWindow : public Window {
   public:
-    ReceiverWindow(Window * parent, const rect_t &rect, uint8_t receiverIndex) :
+    ReceiverWindow(Window * parent, const rect_t &rect,  uint8_t moduleIndex, uint8_t receiverIndex) :
       Window(parent, rect, FORWARD_SCROLL),
       receiverIndex(receiverIndex)
     {
@@ -191,13 +191,21 @@ class ReceiverWindow : public Window {
 
   protected:
     uint8_t receiverIndex;
+    uint8_t moduleIndex;
 
     void update()
     {
       GridLayout grid;
 
-
-      new StaticText(this, grid.getLabelSlot(), "BLABLA BLABLA");
+      new Subtitle(this, grid.getLabelSlot(true), STR_RECEIVER); //TODO put receiver number
+      auto DelReceiver = new TextButton(this, grid.getFieldSlot(), STR_DEL_BUTTON);
+      DelReceiver->setPressHandler([=]() {
+        g_model.moduleData[moduleIndex].pxx2.receivers = (g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIndex * 3)) | ((g_model.moduleData[moduleIndex].pxx2.receivers & BF_MASK<uint16_t>((receiverIndex + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIndex) * 3)) >> 3);
+        memclear(&g_model.receiverData[receiverIndex], sizeof(ReceiverData));
+        update();
+        return 0;
+      });
+      DelReceiver->setFocus();
     }
 };
 
@@ -472,7 +480,7 @@ class ModuleWindow : public Window {
         uint8_t receiverCount = 0;
         while (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
           if (g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)) {
-            grid.addWindow(new ReceiverWindow(this, {0, grid.getWindowHeight(), LCD_W, 0}, g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)));
+            grid.addWindow(new ReceiverWindow(this, {0, grid.getWindowHeight(), LCD_W, 0}, moduleIndex, g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)));
             receiverCount++;
           }
           else
@@ -492,6 +500,7 @@ class ModuleWindow : public Window {
               g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
               storageDirty(EE_MODEL);
             }
+            update();
             return 0;
           });
           grid.nextLine();
