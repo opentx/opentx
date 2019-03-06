@@ -26,7 +26,10 @@ void resetModuleSettings(uint8_t module)
   g_model.moduleData[module].channelsCount = defaultModuleChannels_M8(module);
   g_model.moduleData[module].rfProtocol = 0;
   if (isModulePPM(module)) {
-    SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
+    SET_DEFAULT_PPM_FRAME_LENGTH(module);
+  }
+  else if (isModuleSBUS(module)) {
+    g_model.moduleData[module].sbus.refreshRate = -31;
   }
 }
 

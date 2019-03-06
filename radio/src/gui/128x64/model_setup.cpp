@@ -943,13 +943,7 @@ void menuModelSetup(event_t event)
                                                                      MODULE_TYPE_COUNT - 1, EE_MODEL,
                                                                      isExternalModuleAvailable);
               if (checkIncDec_Ret) {
-                g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
-                g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
-                if (isModuleSBUS(EXTERNAL_MODULE))
-                  g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
-                if (isModulePPM(EXTERNAL_MODULE))
-                  SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
+                resetModuleSettings(EXTERNAL_MODULE);
               }
               break;
             case 1:
