@@ -314,7 +314,18 @@ inline bool isModuleNeedingReceiverNumber(uint8_t idx)
 
 inline bool isModuleNeedingBindRangeButtons(uint8_t idx)
 {
-  return isModulePXX(idx) || isModulePXX2(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx) || isModuleFlysky(idx);
+  return isModulePXX(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx) || isModuleFlysky(idx);
+}
+
+inline bool isModuleNeedingRegisterRangeButtons(uint8_t idx)
+{
+  return isModulePXX2(idx);
+}
+
+
+inline bool isModuleNeedingRangeButton(uint8_t idx)
+{
+  return isModulePXX2(idx) || isModulePXX(idx) || isModuleDSM2(idx) || isModuleMultimodule(idx) || isModuleFlysky(idx);
 }
 
 inline bool isModuleNeedingFailsafeButton(uint8_t idx)

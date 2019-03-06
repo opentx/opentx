@@ -978,6 +978,7 @@
 #define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        BUTTON(TR("Rng", "Range"))
+#define TR_MODULE_REGISTER             "Register"
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           BUTTON("Reset")
 #define TR_SET                 BUTTON("Volby")

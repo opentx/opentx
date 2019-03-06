@@ -183,6 +183,7 @@ class ModuleWindow : public Window {
     FormField * lastField = nullptr; // moduleChoice is always the firstField
     TextButton * bindButton = nullptr;
     TextButton * rangeButton = nullptr;
+    TextButton * registerButton = nullptr;
     Choice * failSafeChoice = nullptr;
 
     void addChannelRange(GridLayout &grid, uint8_t moduleIndex)
@@ -332,6 +333,52 @@ class ModuleWindow : public Window {
           if (moduleSettings[moduleIndex].mode == MODULE_MODE_BIND) {
             bindButton->setText(STR_MODULE_BIND);
             bindButton->check(false);
+            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+          }
+          if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
+            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+            return 0;
+          }
+          else {
+            moduleSettings[moduleIndex].mode = MODULE_MODE_RANGECHECK;
+            return 1;
+          }
+        });
+
+        grid.nextLine();
+      }
+
+
+      // Register and Range buttons
+      if (isModuleNeedingRegisterRangeButtons(moduleIndex)) {
+        registerButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_REGISTER);
+        registerButton->setPressHandler([=]() -> uint8_t {
+          if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
+            rangeButton->check(false);
+          }
+          if (moduleSettings[moduleIndex].mode == MODULE_MODE_REGISTER) {
+            registerButton->setText(STR_MODULE_REGISTER);
+            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+            return 0;
+          }
+          else {
+            registerButton->setText(STR_MODULE_REGISTER);
+            moduleSettings[moduleIndex].mode = MODULE_MODE_REGISTER;
+            return 1;
+          }
+        });
+        registerButton->setCheckHandler([=]() {
+          if (moduleSettings[moduleIndex].mode != MODULE_MODE_REGISTER) {
+            registerButton->setText(STR_MODULE_REGISTER);
+            registerButton->check(false);
+          }
+        });
+
+        rangeButton = new TextButton(this, grid.getFieldSlot(2, 1), STR_MODULE_RANGE);
+        rangeButton->setPressHandler([=]() -> uint8_t {
+          if (moduleSettings[moduleIndex].mode == MODULE_MODE_REGISTER) {
+            registerButton->setText(STR_MODULE_REGISTER);
+            registerButton->check(false);
             moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
           }
           if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
