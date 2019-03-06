@@ -293,6 +293,8 @@ class InputLineButton : public Button {
         invalidate();
         active = !active;
       }
+
+      Button::checkEvents();
     }
 
     void paintFlightModes(BitmapBuffer * dc, FlightModesType value) {
@@ -316,14 +318,14 @@ class InputLineButton : public Button {
       const ExpoData & line = g_model.expoData[index];
 
       // first line ...
-      drawNumber(dc, 3, 2, line.weight, 0, 0, nullptr, "%");
+      drawNumber(dc, 3, 0, line.weight, 0, 0, nullptr, "%");
       // TODO gvarWeightItem(MIX_LINE_WEIGHT_POS, y, md, RIGHT | attr | (isMixActive(i) ? BOLD : 0), event);
 
-      drawSource(dc, 60, 2, line.srcRaw);
+      drawSource(dc, 60, 0, line.srcRaw);
 
       if (line.name[0]) {
         dc->drawBitmap(146, 4, mixerSetupLabelBitmap);
-        dc->drawSizedText(166, 2, line.name, sizeof(line.name), ZCHAR);
+        dc->drawSizedText(166, 0, line.name, sizeof(line.name), ZCHAR);
       }
 
       // second line ...
@@ -388,7 +390,9 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
   ExpoData * line = g_model.expoData;
   for (uint8_t input=0; input<NUM_INPUTS; input++) {
     if (index < MAX_EXPOS && line->chn == input && EXPO_VALID(line)) {
-      new TextButton(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input));
+      auto label = new TextButton(window, grid.getLabelSlot(), getSourceString(MIXSRC_FIRST_INPUT + input));
+      if (!window->getFirstField())
+        window->setFirstField(label);
       while (index < MAX_EXPOS && line->chn == input && EXPO_VALID(line)) {
         Button * button = new InputLineButton(window, grid.getFieldSlot(), index);
         if (focusIndex == index)

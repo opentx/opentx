@@ -29,7 +29,7 @@ class ModelInputsPage: public PageTab {
 
     void build(FormWindow * window) override
     {
-      build(window, -1);
+      build(window, 0);
     }
 
   protected:
