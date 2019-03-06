@@ -153,40 +153,6 @@ FailSafeMenu::FailSafeMenu(uint8_t moduleIndex) :
   addTab(new FailSafePage(moduleIndex));
 }
 
-class ReceiverWindow : public Window {
-  public:
-    ReceiverWindow(Window * parent, const rect_t &rect, uint8_t moduleIndex, uint8_t receiverIndex):
-      Window(parent, rect, FORWARD_SCROLL),
-      moduleIndex(moduleIndex),
-      receiverIndex(receiverIndex)
-    {
-      update();
-    }
-
-    ~ReceiverWindow()
-    {
-      deleteChildren();
-    }
-
-  protected:
-    uint8_t moduleIndex;
-    uint8_t receiverIndex;
-
-    void update()
-    {
-      GridLayout grid;
-
-      new Subtitle(this, grid.getLabelSlot(true), STR_RECEIVER); // TODO put receiver number
-      auto deleteButton = new TextButton(this, grid.getFieldSlot(), STR_DEL_BUTTON);
-      deleteButton->setPressHandler([=]() {
-        pxx2DeleteReceiver(moduleIndex, receiverIndex);
-        update();
-        return 0;
-      });
-      deleteButton->setFocus();
-    }
-};
-
 class ModuleWindow : public Window {
   public:
     ModuleWindow(Window * parent, const rect_t &rect, uint8_t moduleIndex) :
@@ -372,7 +338,6 @@ class ModuleWindow : public Window {
         grid.nextLine();
       }
 
-
       // Register and Range buttons
       if (isModuleNeedingRegisterRangeButtons(moduleIndex)) {
         registerButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_REGISTER);
@@ -453,23 +418,61 @@ class ModuleWindow : public Window {
                    SET_DEFAULT(g_model.moduleData[moduleIndex].pxx.power));
       }
 
-      // Internal module receivers
+      // Receivers
       if (isModulePXX2(moduleIndex)) {
         uint8_t receiverCount = 0;
         while (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-          if (g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount)) {
-            grid.addWindow(new ReceiverWindow(this, {0, grid.getWindowHeight(), LCD_W, 0}, moduleIndex, receiverCount));
+          uint8_t receiverSlot = g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount);
+          if (receiverSlot--) {
+            // Label + Delete and set pinmap buttons
+            char label[] = "Receiver X";
+            label[sizeof(label) - 2] = '1' + receiverCount;
+            new Subtitle(this, grid.getLabelSlot(true), label);
+            new TextButton(this, grid.getFieldSlot(2, 0), "Pin map", [=]() {
+                // TODO PINMAP SCREEN
+                return 0;
+            });
+            new TextButton(this, grid.getFieldSlot(2, 1), STR_DEL_BUTTON, [=]() {
+                pxx2DeleteReceiver(moduleIndex, receiverCount);
+                update();
+                failSafeChoice->setFocus(); // TODO lazy
+                return 0;
+            });
+            grid.nextLine();
+
+            // Telemetry
+            new StaticText(this, grid.getLabelSlot(true), " Telemetry");
+            new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.receiverData[receiverSlot].telemetry));
+            grid.nextLine();
+
+            // Receiver name + Bind and share buttons
+            // TODO new StaticText(this, grid.getLabelSlot(true), " Telemetry");
+            new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_BIND, [=]() {
+                reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
+                reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
+                reusableBuffer.moduleSetup.pxx2.bindReceiverSlot = receiverSlot;
+                moduleSettings[moduleIndex].mode ^= MODULE_MODE_BIND;
+                return 0;
+            });
+            new TextButton(this, grid.getFieldSlot(2, 1), "Share", [=]() {
+                // TODO
+                return 0;
+            });
+            grid.nextLine();
             receiverCount++;
           }
           else
             break;
         }
         if (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-          new StaticText(this, grid.getLabelSlot(true),STR_RECEIVER);
+          char label[] = "Receiver X";
+          label[sizeof(label) - 2] = '1' + receiverCount;
+          new Subtitle(this, grid.getLabelSlot(true), label);
           auto addButton = new TextButton(this, grid.getFieldSlot(), STR_RXADD_BUTTON);
           addButton->setPressHandler([=]() {
             pxx2AddReceiver(moduleIndex, receiverCount);
             update();
+            failSafeChoice->setFocus(); // TODO lazy
             return 0;
           });
           grid.nextLine();
@@ -477,6 +480,7 @@ class ModuleWindow : public Window {
       }
 
       getParent()->moveWindowsTop(top(), adjustHeight());
+      getParent()->invalidate(); // TODO should be automatically done
 
       lastField = FormField::getCurrentField();
       if (nextField)

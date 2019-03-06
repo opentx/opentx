@@ -119,8 +119,7 @@ Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
 
 void IconButton::paint(BitmapBuffer * dc)
 {
-#warning "pas d'icon button ..."
-//  dc->drawBitmap(0, 0, theme->getIconBitmap(icon, checked()));
+  dc->drawBitmap(0, 0, theme->getIconBitmap(icon, checked()));
 }
 
 FabIconButton::FabIconButton(Window * parent, coord_t x, coord_t y, uint8_t icon, std::function<uint8_t(void)> pressHandler, uint8_t flags):
