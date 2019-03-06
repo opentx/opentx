@@ -95,6 +95,7 @@ class MenuToolbar: public Window {
       dc->clear(CURVE_AXIS_COLOR);
     }
 
+#if defined(HARDWARE_KEYS)
     void onKeyEvent(event_t event) override
     {
       if (event == EVT_KEY_BREAK(KEY_PGDN)) {
@@ -136,6 +137,7 @@ class MenuToolbar: public Window {
         }
       }
     }
+#endif
 
 #if defined(HARDWARE_TOUCH)
     bool onTouchEnd(coord_t x, coord_t y) override

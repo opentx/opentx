@@ -61,6 +61,7 @@ void TextEdit::paint(BitmapBuffer * dc)
 #endif
 }
 
+#if defined(HARDWARE_KEYS)
 void TextEdit::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -143,6 +144,7 @@ void TextEdit::onKeyEvent(event_t event)
     FormField::onKeyEvent(event);
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool TextEdit::onTouchEnd(coord_t x, coord_t y)

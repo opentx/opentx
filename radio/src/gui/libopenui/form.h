@@ -81,7 +81,9 @@ class FormField: public Window {
 
     void paint(BitmapBuffer * dc) override;
 
+#if defined(HARDWARE_KEYS)
     void onKeyEvent(event_t event) override;
+#endif
 
   protected:
     static FormField * current;
@@ -130,7 +132,11 @@ class FormGroup: public FormField {
 
   protected:
     FormField * first = nullptr;
+
+#if defined(HARDWARE_KEYS)
     void onKeyEvent(event_t event) override;
+#endif
+
     void paint(BitmapBuffer * dc) override;
 };
 
@@ -155,7 +161,10 @@ class FormWindow: public FormGroup {
     }
 
   protected:
+
+#if defined(HARDWARE_KEYS)
     void onKeyEvent(event_t event) override;
+#endif
 
     void paint(BitmapBuffer * dc) override
     {

@@ -66,6 +66,7 @@ void Page::paint(BitmapBuffer * dc)
   dc->clear(TEXT_BGCOLOR);
 }
 
+#if defined(HARDWARE_KEYS)
 void Page::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -75,6 +76,7 @@ void Page::onKeyEvent(event_t event)
     deleteLater();
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool Page::onTouchEnd(coord_t x, coord_t y)

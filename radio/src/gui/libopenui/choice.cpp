@@ -60,6 +60,7 @@ void Choice::paint(BitmapBuffer * dc)
   dc->drawBitmapPattern(rect.w - 14, (rect.h - 5) / 2, LBM_DROPDOWN, textColor);
 }
 
+#if defined(HARDWARE_KEYS)
 void Choice::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -73,6 +74,7 @@ void Choice::onKeyEvent(event_t event)
     FormField::onKeyEvent(event);
   }
 }
+#endif
 
 void Choice::openMenu()
 {

@@ -28,7 +28,9 @@ class RadioCalibrationPage: public Page {
 
     void checkEvents() override;
 
+#if defined(HARDWARE_KEYS)
     void onKeyEvent(event_t event) override;
+#endif
 
   protected:
     StaticText * text = nullptr;

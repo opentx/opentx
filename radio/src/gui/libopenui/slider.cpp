@@ -51,6 +51,7 @@ int Slider::value(coord_t x) const
   return vmin + ((vmax - vmin) * x + (rect.w / 2)) / rect.w;
 }
 
+#if defined(HARDWARE_KEYS)
 void Slider::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -68,6 +69,7 @@ void Slider::onKeyEvent(event_t event)
 
   FormField::onKeyEvent(event);
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool Slider::onTouchStart(coord_t x, coord_t y)

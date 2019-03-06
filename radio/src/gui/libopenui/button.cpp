@@ -33,6 +33,7 @@ void Button::onPress()
   }
 }
 
+#if defined(HARDWARE_KEYS)
 void Button::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -44,6 +45,7 @@ void Button::onKeyEvent(event_t event)
     FormField::onKeyEvent(event);
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool Button::onTouchEnd(coord_t x, coord_t y)

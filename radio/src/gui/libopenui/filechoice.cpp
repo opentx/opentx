@@ -134,6 +134,7 @@ void FileChoice::openMenu()
   }
 }
 
+#if defined(HARDWARE_KEYS)
 void FileChoice::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -147,6 +148,7 @@ void FileChoice::onKeyEvent(event_t event)
     FormField::onKeyEvent(event);
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool FileChoice::onTouchEnd(coord_t, coord_t)

@@ -132,6 +132,7 @@ ViewMain::~ViewMain()
   deleteChildren();
 }
 
+#if defined(HARDWARE_KEYS)
 void ViewMain::onKeyEvent(event_t event)
 {
   switch (event) {
@@ -184,6 +185,7 @@ void ViewMain::onKeyEvent(event_t event)
       });
   }
 }
+#endif
 
 void ViewMain::checkEvents()
 {

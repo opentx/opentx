@@ -55,6 +55,7 @@ void NumberEdit::paint(BitmapBuffer * dc)
     drawNumber(dc, 3, 0, value, textColor | flags, 0, prefix.c_str(), suffix.c_str());
 }
 
+#if defined(HARDWARE_KEYS)
 void NumberEdit::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -72,6 +73,7 @@ void NumberEdit::onKeyEvent(event_t event)
 
   FormField::onKeyEvent(event);
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool NumberEdit::onTouchEnd(coord_t, coord_t)

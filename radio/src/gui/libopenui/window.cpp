@@ -252,7 +252,9 @@ void Window::checkEvents()
     event_t event = getEvent(false);
     if (event) {
       TRACE_WINDOWS("Event 0x%x received ...", event);
+#if defined(HARDWARE_KEYS)
       this->onKeyEvent(event);
+#endif
     }
   }
 
@@ -261,6 +263,7 @@ void Window::checkEvents()
   }
 }
 
+#if defined(HARDWARE_KEYS)
 void Window::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", Window::getWindowDebugString().c_str(), event);
@@ -268,6 +271,7 @@ void Window::onKeyEvent(event_t event)
     parent->onKeyEvent(event);
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool Window::onTouchStart(coord_t x, coord_t y)

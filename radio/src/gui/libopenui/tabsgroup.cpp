@@ -148,6 +148,7 @@ void TabsGroup::checkEvents()
   }
 }
 
+#if defined(HARDWARE_KEYS)
 void TabsGroup::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -170,6 +171,7 @@ void TabsGroup::onKeyEvent(event_t event)
     parent->onKeyEvent(event);
   }
 }
+#endif
 
 void TabsGroup::paint(BitmapBuffer * dc)
 {

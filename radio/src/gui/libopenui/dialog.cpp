@@ -92,6 +92,7 @@ void Dialog::paint(BitmapBuffer * dc)
 #endif
 }
 
+#if defined(HARDWARE_KEYS)
 void Dialog::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -105,6 +106,7 @@ void Dialog::onKeyEvent(event_t event)
     deleteLater();
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool Dialog::onTouchEnd(coord_t x, coord_t y)

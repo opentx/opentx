@@ -47,6 +47,7 @@ void CheckBox::paint(BitmapBuffer * dc)
   }
 }
 
+#if defined(HARDWARE_KEYS)
 void CheckBox::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -59,6 +60,7 @@ void CheckBox::onKeyEvent(event_t event)
     FormField::onKeyEvent(event);
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool CheckBox::onTouchEnd(coord_t x, coord_t y)

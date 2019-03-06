@@ -36,6 +36,7 @@ void MenuWindow::select(int index)
   invalidate();
 }
 
+#if defined(HARDWARE_KEYS)
 void MenuWindow::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -54,6 +55,7 @@ void MenuWindow::onKeyEvent(event_t event)
     Window::onKeyEvent(event);
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool MenuWindow::onTouchEnd(coord_t x, coord_t y)
@@ -101,6 +103,7 @@ void Menu::removeLines()
   updatePosition();
 }
 
+#if defined(HARDWARE_KEYS)
 void Menu::onKeyEvent(event_t event)
 {
   if (toolbar && (event == EVT_KEY_BREAK(KEY_PGDN) || event == EVT_KEY_LONG(KEY_PGDN))) {
@@ -110,6 +113,7 @@ void Menu::onKeyEvent(event_t event)
     deleteLater();
   }
 }
+#endif
 
 #if defined(HARDWARE_TOUCH)
 bool Menu::onTouchEnd(coord_t x, coord_t y)

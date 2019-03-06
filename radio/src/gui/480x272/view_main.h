@@ -39,7 +39,9 @@ class ViewMain: public Window {
     static ViewMain * instance;
 
   protected:
+#if defined(HARDWARE_KEYS)
     void onKeyEvent(event_t event) override;
+#endif
     void paint(BitmapBuffer * dc) override;
     void checkEvents() override;
 };

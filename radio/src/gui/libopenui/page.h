@@ -52,7 +52,9 @@ class Page: public Window {
     }
 #endif
 
+#if defined(HARDWARE_KEYS)
     void onKeyEvent(event_t event) override;
+#endif
 
 #if defined(HARDWARE_TOUCH)
     bool onTouchStart(coord_t x, coord_t y) override

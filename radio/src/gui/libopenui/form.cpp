@@ -24,6 +24,7 @@
 
 FormField * FormField::current = nullptr;
 
+#if defined(HARDWARE_KEYS)
 void FormWindow::onKeyEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -33,19 +34,6 @@ void FormWindow::onKeyEvent(event_t event)
   }
   else {
     Window::onKeyEvent(event);
-  }
-}
-
-void FormField::paint(BitmapBuffer * dc)
-{
-  if (editMode) {
-    dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
-  }
-  else if (hasFocus()) {
-    drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, TEXT_INVERTED_BGCOLOR);
-  }
-  else {
-    drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, CURVE_AXIS_COLOR);
   }
 }
 
@@ -90,6 +78,20 @@ void FormGroup::onKeyEvent(event_t event)
   }
   else {
     FormField::onKeyEvent(event);
+  }
+}
+#endif
+
+void FormField::paint(BitmapBuffer * dc)
+{
+  if (editMode) {
+    dc->drawSolidFilledRect(0, 0, rect.w, rect.h, TEXT_INVERTED_BGCOLOR);
+  }
+  else if (hasFocus()) {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, TEXT_INVERTED_BGCOLOR);
+  }
+  else {
+    drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, CURVE_AXIS_COLOR);
   }
 }
 
