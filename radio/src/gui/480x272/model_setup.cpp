@@ -696,21 +696,21 @@ void ModelSetupPage::build(FormWindow * window)
   }
 
   // Internal module receivers
-  if(isModulePXX2(INTERNAL_MODULE)) {
-    uint8_t receiverCount=0;
-    for(uint8_t idx=0; idx<PXX2_MAX_RECEIVERS_PER_MODULE; idx++){
-      if(g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(idx)) {
+  if (isModulePXX2(INTERNAL_MODULE)) {
+    uint8_t receiverCount = 0;
+    while (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+      if (g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(receiverCount)) {
+        grid.addWindow(new ReceiverWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(receiverCount)));
         receiverCount++;
-        grid.addWindow(new ReceiverWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}, g_model.moduleData[INTERNAL_MODULE].pxx2.getReceiverSlot(idx)));
       }
     }
-    if(receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+    if (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
       new StaticText(window, grid.getLabelSlot(true),STR_RECEIVER);
       auto AddReceiver = new TextButton(window, grid.getFieldSlot(), STR_RXADD_BUTTON);
       AddReceiver->setPressHandler([=]() {
         uint8_t slot = findEmptyReceiverSlot();
         if (slot > 0) {
-          g_model.moduleData[INTERNAL_MODULE].pxx2.receivers |= (slot << (receiverIdx * 3));
+          g_model.moduleData[INTERNAL_MODULE].pxx2.receivers |= (slot << (receiverCount * 3));
           --slot;
           g_model.receiverData[slot].used = 1;
           #warning "USE 32bits copy"
