@@ -126,7 +126,7 @@ class InputEditWindow: public Page {
 
     void updateCurves() {
       GridLayout grid;
-      grid.setLabelWidth(80);
+      grid.setLabelWidth(120);
 
       updateCurvesWindow->clear();
 
@@ -166,7 +166,7 @@ class InputEditWindow: public Page {
       NumberEdit * edit;
 
       GridLayout grid;
-      grid.setLabelWidth(80);
+      grid.setLabelWidth(120);
       grid.spacer(8);
 
       ExpoData * line = expoAddress(index) ;
@@ -204,7 +204,7 @@ class InputEditWindow: public Page {
       grid.nextLine();
 
       // Source
-      new StaticText(window, grid.getLabelSlot(), STR_SOURCE);
+      new StaticText(window, grid.getLabelSlot(), NO_INDENT(STR_SOURCE));
       new SourceChoice(window, grid.getFieldSlot(), INPUTSRC_FIRST, INPUTSRC_LAST,
                        GET_DEFAULT(line->srcRaw),
                        [=] (int32_t newValue) {
@@ -236,7 +236,7 @@ class InputEditWindow: public Page {
       grid.nextLine();
 
       // Offset
-      new StaticText(window, grid.getLabelSlot(), STR_OFFSET);
+      new StaticText(window, grid.getLabelSlot(), NO_INDENT(STR_OFFSET));
       edit = new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(line->offset));
       edit->setSuffix("%");
       grid.nextLine();
