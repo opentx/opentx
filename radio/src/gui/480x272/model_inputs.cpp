@@ -155,7 +155,8 @@ class InputEditWindow: public Page {
           new Choice(updateCurvesWindow, grid.getFieldSlot(2, 1), STR_VCURVEFUNC, 0, CURVE_BASE-1, GET_SET_DEFAULT(line->curve.value));
           break;
         case CURVE_REF_CUSTOM:
-          new CustomCurveChoice(updateCurvesWindow, grid.getFieldSlot(2, 1), -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
+          #warning "TODO Custom Curve Choice"
+          // new CustomCurveChoice(updateCurvesWindow, grid.getFieldSlot(2, 1), -MAX_CURVES, MAX_CURVES, GET_SET_DEFAULT(line->curve.value));
           break;
       }
     }
@@ -261,7 +262,7 @@ class InputEditWindow: public Page {
           grid.nextLine();
         new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
                        [=]() -> uint8_t {
-                         BF_BIT_FLIP(line->flightModes, BF_BIT(i));
+                         BF_BIT_FLIP(line->flightModes, BF_BIT<uint32_t>(i));
                          SET_DIRTY();
                          return !(BF_SINGLE_BIT_GET(line->flightModes, i));
                        },
@@ -333,7 +334,8 @@ class InputLineButton : public Button {
 
       if (line.curve.value != 0 ) {
         dc->drawBitmap(60, 24, mixerSetupCurveBitmap);
-        drawCurveRef(dc, 80, 22, line.curve);
+        #warning "TODO drawCurveRef"
+        // drawCurveRef(dc, 80, 22, line.curve);
       }
 
       if (line.flightModes) {
@@ -358,7 +360,7 @@ ModelInputsPage::ModelInputsPage():
 {
 }
 
-void ModelInputsPage::rebuild(Window * window, int8_t focusIndex)
+void ModelInputsPage::rebuild(FormWindow * window, int8_t focusIndex)
 {
   coord_t scrollPosition = window->getScrollPositionY();
   window->clear();
@@ -366,7 +368,7 @@ void ModelInputsPage::rebuild(Window * window, int8_t focusIndex)
   window->setScrollPositionY(scrollPosition);
 }
 
-void ModelInputsPage::editInput(Window * window, uint8_t input, uint8_t index)
+void ModelInputsPage::editInput(FormWindow * window, uint8_t input, uint8_t index)
 {
   Window * editWindow = new InputEditWindow(input, index);
   editWindow->setCloseHandler([=]() {
@@ -374,7 +376,7 @@ void ModelInputsPage::editInput(Window * window, uint8_t input, uint8_t index)
   });
 }
 
-void ModelInputsPage::build(Window * window, int8_t focusIndex)
+void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
 {
   GridLayout grid;
   grid.spacer(8);

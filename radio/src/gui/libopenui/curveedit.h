@@ -38,9 +38,9 @@ class CurveEdit: public Curve {
 
 #if defined(TOUCH_HARDWARE)
     bool onTouchEnd(coord_t x, coord_t y) override;
-#endif
 
     void onFocusLost() override;
+#endif
 
   protected:
     uint8_t index;
