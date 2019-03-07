@@ -700,21 +700,27 @@ void ModelSetupPage::build(FormWindow * window)
 
   // Center beeps
   {
-    new StaticText(window, grid.getLabelSlot(), STR_BEEPCTR);
+    new StaticText(window, grid.getLabelSlot(true), STR_BEEPCTR);
+    auto group = new FormGroup(window, grid.getFieldSlot(), BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
+    GridLayout centerGrid(group);
     for (int i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS; i++) {
       char s[2];
       if (i > 0 && (i % 3) == 0)
-        grid.nextLine();
+        centerGrid.nextLine();
 
-      new TextButton(window, grid.getFieldSlot(3, i % 3), getStringAtIndex(s, STR_RETA123, i),
+      auto button = new TextButton(group, centerGrid.getSlot(3, i % 3), getStringAtIndex(s, STR_RETA123, i),
                      [=]() -> uint8_t {
                        BF_BIT_FLIP(g_model.beepANACenter, BF_BIT<BeepANACenter>(i));
                        SET_DIRTY();
                        return BF_SINGLE_BIT_GET<BeepANACenter>(g_model.beepANACenter, i);
                      },
                      BF_SINGLE_BIT_GET(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
+      if (i == 0)
+        group->setFirstField(button);
+      else if (i == NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1)
+        group->setLastField(button);
     }
-    grid.nextLine();
+    grid.addWindow(group);
   }
 
   // Global functions
