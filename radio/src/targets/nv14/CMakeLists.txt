@@ -128,7 +128,7 @@ endif()
 
 set(PULSES_SRC
   ${PULSES_SRC}
-  flysky.cpp
+  #flysky.cpp
   )
 
 set(STM32LIB_SRC

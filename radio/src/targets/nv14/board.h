@@ -187,6 +187,8 @@ void init_ppm(uint32_t module_index);
 void disable_ppm(uint32_t module_index);
 void init_pxx(uint32_t module_index);
 void disable_pxx(uint32_t module_index);
+void init_pxx2(uint8_t module);
+void disable_pxx2(uint8_t module);
 void init_dsm2(uint32_t module_index);
 void disable_dsm2(uint32_t module_index);
 void init_crossfire(uint32_t module_index);
