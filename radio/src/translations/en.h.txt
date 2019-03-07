@@ -558,7 +558,7 @@
 #define TR_COPYINGMODEL                "Copying model..."
 #define TR_MOVINGMODEL                 "Moving model..."
 #define TR_LOADINGMODEL                "Loading model..."
-#define TR_NAME                        "Name"
+#define STR_NAME                       "Name"
 #define TR_MODELNAME                   "Model name"
 #define TR_PHASENAME                   "Mode name"
 #define TR_MIXNAME                     "Mix name"
@@ -651,8 +651,7 @@
 #define TR_RENAVIG                     "RotEnc Navig"
 #define TR_THROTTLE_LABEL              "Throttle"
 #define TR_THROTTLEREVERSE             TR("T-Reverse", INDENT "Reverse")
-#define TR_TIMER_NAME                  INDENT "Name"
-#define TR_MINUTEBEEP                  TR(INDENT "Minute", INDENT "Minute call")
+#define STR_MINUTEBEEP                 TR("Minute", "Minute call")
 #define TR_BEEPCOUNTDOWN               INDENT "Countdown"
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistent")
 #define TR_BACKLIGHT_LABEL             "Backlight"

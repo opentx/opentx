@@ -559,7 +559,7 @@
 #define TR_COPYINGMODEL        "Kopiere Modell"
 #define TR_MOVINGMODEL         "Schiebe Modell"
 #define TR_LOADINGMODEL        "Lade Modell..."
-#define TR_NAME                "Name"
+#define STR_NAME                "Name"
 #define TR_MODELNAME           "Modellname"
 #define TR_PHASENAME           "Phase-Name"
 #define TR_MIXNAME             "Mix-Name"
@@ -652,8 +652,7 @@
 #define TR_RENAVIG             "Drehgeb. Navig."
 #define TR_THROTTLE_LABEL      "Gas-Kontrolle"
 #define TR_THROTTLEREVERSE     TR("Gas invers", INDENT "Vollgas hinten?") //Änderung wg TH9x, Taranis
-#define TR_TIMER_NAME          INDENT "Name"
-#define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
+#define STR_MINUTEBEEP         TR("Min-Alarm", "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
 #define TR_PERSISTENT          TR(INDENT "Permanent", INDENT "Permanent")
 #define TR_BACKLIGHT_LABEL     "LCD-Beleuchtung"

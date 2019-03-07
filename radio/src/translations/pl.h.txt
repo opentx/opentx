@@ -561,7 +561,7 @@
 #define TR_COPYINGMODEL        "Kopiuj model.."
 #define TR_MOVINGMODEL         "Przenieś model."
 #define TR_LOADINGMODEL        "Załaduj model.."
-#define TR_NAME                "Nazwa"
+#define STR_NAME                "Nazwa"
 #define TR_MODELNAME           "Nazwa modelu"
 #define TR_PHASENAME           "Nazwa Fazy"
 #define TR_MIXNAME             "Nazwa Mix"
@@ -654,8 +654,7 @@
 #define TR_RENAVIG             "Nawigacja potencjometrem"
 #define TR_THROTTLE_LABEL      "Gaz    "
 #define TR_THROTTLEREVERSE     TR("OdwrGaz", INDENT "OdwrGaz")
-#define TR_TIMER_NAME          INDENT "Nazwa"
-#define TR_MINUTEBEEP          TR(INDENT "Minuta", INDENT "PikCoMinutę")
+#define STR_MINUTEBEEP         TR("Minuta", "PikCoMinutę")
 #define TR_BEEPCOUNTDOWN       INDENT "Odliczanie"
 #define TR_PERSISTENT          TR(INDENT "Dokł.", INDENT "Dokładny")
 #define TR_BACKLIGHT_LABEL     "Podświetl"

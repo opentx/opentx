@@ -554,7 +554,7 @@
 #define TR_COPYINGMODEL        "Kopieer Model"
 #define TR_MOVINGMODEL         "Verplaats Model"
 #define TR_LOADINGMODEL        "Laad Model..."
-#define TR_NAME                "Naam"
+#define STR_NAME                "Naam"
 #define TR_MODELNAME           "Modelnaam"
 #define TR_PHASENAME           "Modus"
 #define TR_MIXNAME             "Mix Naam"
@@ -649,8 +649,7 @@
 #define TR_RENAVIG             "Stappenschakelaar"
 #define TR_THROTTLE_LABEL      "Gas"
 #define TR_THROTTLEREVERSE     TR("Reverse", INDENT "Omgekeerd")
-#define TR_TIMER_NAME          INDENT "Naam"
-#define TR_MINUTEBEEP          TR(INDENT "Min-Alarm", INDENT "Minuten-Alarm")
+#define STR_MINUTEBEEP         TR("Min-Alarm", "Minuten-Alarm")
 #define TR_BEEPCOUNTDOWN       INDENT "Countdown"
 #define TR_PERSISTENT          TR(INDENT "Vasth.", INDENT "Vasthouden")
 #define TR_BACKLIGHT_LABEL     "LCD-Verlichting"

@@ -582,7 +582,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_TIMER3_NAME:
       {
         TimerData * timer = &g_model.timers[k>=ITEM_MODEL_TIMER3 ? 2 : (k>=ITEM_MODEL_TIMER2 ? 1 : 0)];
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, timer->name, sizeof(timer->name), event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT STR_NAME, timer->name, sizeof(timer->name), event, attr);
         break;
       }
 

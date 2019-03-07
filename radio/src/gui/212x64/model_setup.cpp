@@ -355,7 +355,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER1_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT STR_NAME, g_model.timers[0].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER1_MINUTE_BEEP:
@@ -376,7 +376,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER2_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT STR_NAME, g_model.timers[1].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER2_MINUTE_BEEP:
@@ -398,7 +398,7 @@ void menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_TIMER3_NAME:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_TIMER_NAME, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
+        editSingleName(MODEL_SETUP_2ND_COLUMN, y, INDENT STR_NAME, g_model.timers[2].name, LEN_TIMER_NAME, event, attr);
         break;
 
       case ITEM_MODEL_TIMER3_MINUTE_BEEP:

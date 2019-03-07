@@ -560,7 +560,7 @@ void ModelSetupPage::build(FormWindow * window)
     GridLayout timerGrid(group);
 
     // Timer name
-    new StaticText(window, grid.getLabelSlot(true), STR_TIMER_NAME);
+    new StaticText(window, grid.getLabelSlot(true), STR_NAME);
     grid.nextLine();
     auto nameEdit = new TextEdit(group, timerGrid.getSlot(), timer->name, LEN_TIMER_NAME);
     group->setFirstField(nameEdit);

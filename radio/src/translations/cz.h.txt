@@ -554,7 +554,7 @@
 #define TR_COPYINGMODEL        "Kopíruji model.."
 #define TR_MOVINGMODEL         "Přesouvám model."
 #define TR_LOADINGMODEL        "Aktivuji model.."
-#define TR_NAME                "Název"
+#define STR_NAME                "Název"
 #define TR_MODELNAME           TR("Model", "Název modelu")
 #define TR_PHASENAME           "Název"
 #define TR_MIXNAME             "Název"
@@ -647,8 +647,7 @@
 #define TR_RENAVIG             "Navig. RotEnc"
 #define TR_THROTTLE_LABEL      "Plyn"
 #define TR_THROTTLEREVERSE     TR("ReversPlyn", INDENT"Revers plynu")
-#define TR_TIMER_NAME          INDENT "Název"
-#define TR_MINUTEBEEP          TR(INDENT"Minuta", INDENT"Oznamovat minuty")
+#define STR_MINUTEBEEP         TR("Minuta", "Oznamovat minuty")
 #define TR_BEEPCOUNTDOWN       INDENT"Odpočet"
 #define TR_PERSISTENT          INDENT"Trvalé"
 #define TR_BACKLIGHT_LABEL     "Podsvětlení"

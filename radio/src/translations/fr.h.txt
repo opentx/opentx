@@ -571,7 +571,7 @@
 #define TR_COPYINGMODEL                "Copie..."
 #define TR_MOVINGMODEL                 "Déplacement..."
 #define TR_LOADINGMODEL                "Chargement..."
-#define TR_NAME                        "Nom"
+#define STR_NAME                        "Nom"
 #define TR_MODELNAME                   TR("Nom modèle", "Nom du modèle")
 #define TR_PHASENAME                   "Nom phase"
 #define TR_MIXNAME                     TR("Nom ligne", "Nom du mixeur")
@@ -664,8 +664,7 @@
 #define TR_RENAVIG                     "Navig EncRot"
 #define TR_THROTTLE_LABEL              "Gaz"
 #define TR_THROTTLEREVERSE             TR("Inv. gaz", INDENT "Inversion gaz")
-#define TR_TIMER_NAME                  INDENT "Nom"
-#define TR_MINUTEBEEP                  TR(INDENT "Bip min.", INDENT "Annonces minutes")
+#define STR_MINUTEBEEP                  TR("Bip min.", "Annonces minutes")
 #define TR_BEEPCOUNTDOWN               TR(INDENT "Bip fin", INDENT "Compte à rebours")
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistant")
 #define TR_BACKLIGHT_LABEL             "Rétroéclairage"
