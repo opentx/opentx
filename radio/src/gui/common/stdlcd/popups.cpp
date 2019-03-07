@@ -28,7 +28,8 @@ const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t s_menu_item = 0;
 uint16_t popupMenuItemsCount = 0;
 uint16_t popupMenuOffset = 0;
-void (*popupMenuHandler)(const char * result);
+void (* popupMenuHandler)(const char * result);
+const char * popupMenuTitle = nullptr;
 
 const char * runPopupMenu(event_t event)
 {
@@ -36,14 +37,29 @@ const char * runPopupMenu(event_t event)
 
   uint8_t display_count = min<uint8_t>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
   uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
-  lcdDrawFilledRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2, SOLID, ERASE);
-  lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH+1) + 2);
+  if (popupMenuTitle) {
+    y += FH / 2;
+  }
 
+  // white background
+  lcdDrawFilledRect(MENU_X - 1, popupMenuTitle ? y - FH - 3 : y, MENU_W + 2, display_count * (FH + 1) + (popupMenuTitle ? FH + 6 : 3), SOLID, ERASE);
+
+  // title
+  if (popupMenuTitle) {
+    lcdDrawText(MENU_X + 2, y - FH, popupMenuTitle, BOLD);
+    lcdDrawRect(MENU_X, y - FH - 2, lcdLastRightPos - MENU_X + 3, FH + 3);
+  }
+
+  // border
+  lcdDrawRect(MENU_X, y, MENU_W, display_count * (FH + 1) + 2, SOLID, FORCE);
+
+  // items
   for (uint8_t i=0; i<display_count; i++) {
     lcdDrawText(MENU_X+6, i*(FH+1) + y + 2, popupMenuItems[i+(popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)], 0);
     if (i == s_menu_item) lcdDrawSolidFilledRect(MENU_X+1, i*(FH+1) + y + 1, MENU_W-2, 9);
   }
 
+  // scrollbar
   if (popupMenuItemsCount > display_count) {
     drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuItemsCount, display_count);
   }
@@ -116,6 +132,7 @@ const char * runPopupMenu(event_t event)
       popupMenuItemsCount = 0;
       s_menu_item = 0;
       popupMenuOffset = 0;
+      popupMenuTitle = nullptr;
       break;
   }
 

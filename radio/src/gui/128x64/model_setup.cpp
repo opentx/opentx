@@ -1326,12 +1326,10 @@ void menuModelSetup(event_t event)
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
 
-        if (zexist(g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME)) {
+        if (g_model.receiverData[receiverSlot].name[0] != '\0')
           lcdDrawSizedText(INDENT_WIDTH * 2, y, g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME);
-        }
-        else {
+        else
           lcdDrawTextAlignedLeft(y, INDENT INDENT "---");
-        }
 
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
         lcdDrawText(lcdLastRightPos + FW/2, y, BUTTON("Share"), menuHorizontalPosition==1 ? attr : 0);
@@ -1351,6 +1349,7 @@ void menuModelSetup(event_t event)
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
                   popupMenuItems[i] = reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i];
                 }
+                popupMenuTitle = "Select RX...";
                 POPUP_MENU_START(onPXX2BindMenu);
               }
             }

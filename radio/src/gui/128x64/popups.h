@@ -84,6 +84,7 @@ extern uint8_t warningInfoFlags;
   extern uint16_t popupMenuItemsCount;
   const char * runPopupMenu(event_t event);
   extern void (*popupMenuHandler)(const char * result);
+  extern const char * popupMenuTitle;
 #endif
 
 #endif // _POPUPS_H_
