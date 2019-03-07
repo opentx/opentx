@@ -20,7 +20,9 @@
 
 #include <opentx.h>
 
-uint8_t g_moduleIdx, g_receiverIdx;
+#warning "TODO remove it"
+uint8_t g_moduleIdx;
+
 void menuModelFailsafe(event_t event);
 void menuModelPinmap(event_t event);
 
@@ -1267,9 +1269,6 @@ void menuModelSetup(event_t event)
               g_model.moduleData[moduleIdx].pxx2.receivers |= (slot << (receiverIdx * 3));
               --slot;
               g_model.receiverData[slot].used = 1;
-              #warning "USE 32bits copy"
-              g_model.receiverData[slot].channelMapping0 = (0 << 0) + (1 << 5) + (2 << 10) + (3 << 15) + (4 << 20) + (5 << 25) + ((uint64_t)6 << 30) + ((uint64_t)7 << 35) + ((uint64_t)8 << 40) + ((uint64_t)9 << 45) + ((uint64_t)10 << 50) + ((uint64_t)11 << 55);
-              g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
               storageDirty(EE_MODEL);
             }
           }
@@ -1291,7 +1290,11 @@ void menuModelSetup(event_t event)
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
           uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-          g_receiverIdx = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
+          uint8_t receiverSlot = g_model.moduleData[g_moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
+          memclear(&reusableBuffer.receiverSetup, sizeof(reusableBuffer.receiverSetup));
+          reusableBuffer.receiverSetup.moduleIdx = moduleIdx;
+          reusableBuffer.receiverSetup.receiverId = receiverSlot;
+          moduleSettings[moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
           pushMenu(menuModelPinmap);
         }
       }
@@ -1932,35 +1935,45 @@ void menuModelPinmap(event_t event)
   // TODO write receiver name here
   lcdInvertLine(0);
 
-  for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
-    coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
-    uint8_t pin = menuVerticalOffset + i;
-    const int32_t channelValue = channelOutputs[getPinOuput(g_receiverIdx, pin)];
+  if (reusableBuffer.receiverSetup.state > 0) {
+    for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
+      coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
+      uint8_t pin = menuVerticalOffset + i;
+      uint8_t channel = reusableBuffer.receiverSetup.channelMapping[pin];
+      int32_t channelValue = channelOutputs[channel];
 
-    // Pin
-    lcdDrawText(0, y, "Pin");
-    lcdDrawNumber(lcdLastRightPos + 1, y, pin+1);
+      // Pin
+      lcdDrawText(0, y, "Pin");
+      lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
 
-    // Channel
-    LcdFlags flags = 0;
-    if (menuVerticalPosition == pin) {
-      flags |= INVERS;
-      if (s_editMode > 0) {
-        uint8_t channel = getPinOuput(g_receiverIdx, pin);
-        flags |= BLINK;
-        CHECK_INCDEC_MODELVAR(event, channel, 0, sentModuleChannels(g_moduleIdx));
-        setPinOuput(g_receiverIdx, pin, channel);
+      // Channel
+      LcdFlags flags = 0;
+      if (menuVerticalPosition == pin) {
+        flags |= INVERS;
+        if (s_editMode > 0) {
+          flags |= BLINK;
+          #warning "Not a MODELVAR"
+          CHECK_INCDEC_MODELVAR(event, channel, 0, sentModuleChannels(g_moduleIdx));
+          if (checkIncDec_Ret) {
+            reusableBuffer.receiverSetup.channelMapping[pin] = channel;
+            reusableBuffer.receiverSetup.state = 0x40;
+            moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+          }
+        }
       }
-    }
-    putsChn(7*FW, y, getPinOuput(g_receiverIdx, pin)+1, flags);
+      putsChn(7 * FW, y, channel + 1, flags);
 
-    // Bargraph
+      // Bargraph
 #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-    lcdDrawRect(LCD_W-3-wbar, y + 1, wbar+1, 4);
+      lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
 #endif
-    const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar/2 + lim/2) / lim, wbar/2);
-    const coord_t xChannel = (channelValue>0) ? LCD_W-3-wbar/2 : LCD_W-2-wbar/2-lenChannel;
-    lcdDrawHorizontalLine(xChannel, y+2, lenChannel, SOLID, 0);
-    lcdDrawHorizontalLine(xChannel, y+3, lenChannel, SOLID, 0);
+      const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
+      const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
+      lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
+      lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+    }
+  }
+  else {
+    lcdDrawText(4*FW, 4*FH, "Waiting for RX...");
   }
 }

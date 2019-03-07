@@ -206,30 +206,6 @@ static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
 
-inline uint8_t getPinOuput(uint8_t receiverIdx, uint8_t pin)
-{
-  if (pin < 12) {
-    return ((g_model.receiverData[receiverIdx].channelMapping0 >> (pin * 5)) & 0x1F);
-  }
-  else {
-    pin -= 12;
-    return ((g_model.receiverData[receiverIdx].channelMapping1 >> (pin * 5)) & 0x1F);
-  }
-}
-
-inline void setPinOuput(uint8_t receiverIdx, uint8_t pin, uint8_t chan)
-{
-  if (pin < 12) {
-    g_model.receiverData[receiverIdx].channelMapping0 = BF_SET<uint64_t>(g_model.receiverData[receiverIdx].channelMapping0, chan, pin * 5, 5);
-  }
-  else {
-    pin -= 12;
-    g_model.receiverData[receiverIdx].channelMapping1 = BF_SET<uint64_t>(g_model.receiverData[receiverIdx].channelMapping1, chan, pin * 5, 5);
-  }
-  g_model.receiverData[receiverIdx].dirty = 1;
-  storageDirty(EE_MODEL);
-}
-
 inline int8_t maxModuleChannels_M8(uint8_t idx)
 {
   if (isExtraModule(idx))

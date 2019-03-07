@@ -1141,6 +1141,13 @@ union ReusableBuffer
     };
   } moduleSetup;
 
+  struct {
+    uint8_t state;  // 0x00 = READ 0x40 = WRITE
+    uint8_t moduleIdx;
+    uint8_t receiverId;
+    uint8_t channelMapping[24];
+  } receiverSetup;
+
   // 103 bytes
   struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];

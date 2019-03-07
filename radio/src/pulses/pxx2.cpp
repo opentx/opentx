@@ -140,9 +140,15 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
   }
 }
 
-void Pxx2Pulses::setupSetRxParamsFrame(uint8_t module, uint8_t receiverSlot)
+void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 {
-
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
+  Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
+  Pxx2Transport::addByte(0x0);
+  for (int i=0; i<24; i++) {
+    Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
+  }
+  // TODO moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void Pxx2Pulses::setupBindFrame(uint8_t module)
@@ -151,7 +157,6 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
     if (get_tmr10ms() > reusableBuffer.moduleSetup.pxx2.bindWaitTimeout) {
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
-      setupSetRxParamsFrame(module, reusableBuffer.moduleSetup.pxx2.bindReceiverSlot);
       POPUP_INFORMATION(STR_BIND_OK);
     }
     return;
@@ -199,7 +204,7 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
 void Pxx2Pulses::setupShareMode(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETUP);
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
 
   Pxx2Transport::addByte(0xC0);
 
@@ -220,6 +225,8 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 
   if (mode == MODULE_MODE_GET_HARDWARE_INFO)
     setupHardwareInfoFrame(module);
+  else if (mode == MODULE_MODE_RECEIVER_SETTINGS)
+    setupReceiverSettingsFrame(module);
   else if (mode == MODULE_MODE_REGISTER)
     setupRegisterFrame(module);
   else if (mode == MODULE_MODE_BIND)

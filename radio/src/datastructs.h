@@ -416,13 +416,9 @@ PACK(struct TrainerModuleData {
  */
 
 PACK(struct ReceiverData {
-  // 5 bits per receiver output (24) as it can be assigned to one of the 24 channels
-  uint64_t channelMapping0; // 12 first channels (4 bits spare)
-  uint64_t channelMapping1:60; // 12 last channels
   uint8_t  used:1;
   uint8_t  telemetry:1;
-  uint8_t  dirty:1;
-  uint8_t  spare:1;
+  uint8_t  dirty:6;
   char     name[PXX2_LEN_RX_NAME];
 });
 
