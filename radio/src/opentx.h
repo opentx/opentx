@@ -1179,6 +1179,7 @@ union ReusableBuffer
         uint32_t sw_version;
       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
     } modules[NUM_MODULES];
+    uint32_t updateTime;
   } hardware;
 
   struct {

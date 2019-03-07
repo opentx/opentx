@@ -38,7 +38,7 @@ void menuRadioModulesVersion(event_t event)
 {
   TITLE("MODULES / RX VERSION");
 
-  if (event == EVT_ENTRY) {
+  if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardware.updateTime) {
     menuVerticalOffset = 0;
 
     memclear(&reusableBuffer.hardware.modules, sizeof(reusableBuffer.hardware.modules));
@@ -50,6 +50,8 @@ void menuRadioModulesVersion(event_t event)
     #warning "Only do this if external module is ON"
     moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
     reusableBuffer.hardware.modules[EXTERNAL_MODULE].step = -1;
+
+    reusableBuffer.hardware.updateTime = get_tmr10ms() + 1000 /* 10s*/;
   }
 
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
@@ -68,9 +70,9 @@ void menuRadioModulesVersion(event_t event)
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Version");
       if (reusableBuffer.hardware.modules[module].hw_version) {
-        lcdDrawNumber(10 * FW, y, reusableBuffer.hardware.modules[module].hw_version);
+        lcdDrawNumber(12 * FW, y, reusableBuffer.hardware.modules[module].hw_version, LEADING0, 3);
         lcdDrawText(lcdLastRightPos, y, "/");
-        lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].sw_version);
+        lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].sw_version, LEADING0, 3);
       }
     }
     y += FH;
@@ -81,9 +83,9 @@ void menuRadioModulesVersion(event_t event)
         if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
-          lcdDrawNumber(10 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].hw_version);
+          lcdDrawNumber(12 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].hw_version, LEADING0, 3);
           lcdDrawText(lcdLastRightPos, y, "/");
-          lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].receivers[receiver].sw_version);
+          lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].receivers[receiver].sw_version, LEADING0, 3);
         }
         y += FH;
       }
