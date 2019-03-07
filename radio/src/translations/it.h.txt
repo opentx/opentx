@@ -603,7 +603,7 @@
 #define TR_ELEDIRECTION        TR("Direzione ELE","Direzione Long. cyc.")
 #define TR_AILDIRECTION        TR("Direzione AIL","Direzione Lateral cyc.")
 #define TR_COLDIRECTION        TR("Direzione PIT","Direzione Coll. Passo")
-#define TR_MODE                INDENT"Modo"
+#define STR_MODE               "Modo"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expo pieni!"
 #define TR_NOFREEMIXER         "Mixer pieni!"

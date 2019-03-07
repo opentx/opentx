@@ -165,7 +165,7 @@ const char STR_ELEDIRECTION[]  = TR_ELEDIRECTION;
 const char STR_AILDIRECTION[]  = TR_AILDIRECTION;
 const char STR_COLDIRECTION[]  = TR_COLDIRECTION;
 #endif
-const char STR_MODE[]  = TR_MODE;
+
 #if defined(AUDIO) && defined(BUZZER)
 const char STR_SPEAKER[]  = TR_SPEAKER;
 const char STR_BUZZER[]  = TR_BUZZER;

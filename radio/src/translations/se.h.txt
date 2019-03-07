@@ -613,7 +613,7 @@
 #define TR_ELEDIRECTION        "HöJD Riktning"
 #define TR_AILDIRECTION        "SKEV Riktning"
 #define TR_COLDIRECTION        "PITCH Riktn. "
-#define TR_MODE                INDENT"Läge"
+#define STR_MODE               "Läge"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "Expo saknas!"
 #define TR_NOFREEMIXER         "Mixer saknas!"

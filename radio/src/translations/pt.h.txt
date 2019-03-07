@@ -601,7 +601,7 @@
 #define TR_ELEDIRECTION        "PFD Sentido"
 #define TR_AILDIRECTION        "AIL Sentido"
 #define TR_COLDIRECTION        "COL Sentido"
-#define TR_MODE                INDENT"Modo"
+#define STR_MODE               "Modo"
 #define TR_SUBTYPE             INDENT "Subtype"
 #define TR_NOFREEEXPO          "No free expo!"
 #define TR_NOFREEMIXER         "No free mixer!"

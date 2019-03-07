@@ -390,7 +390,6 @@ extern const char STR_SWASHRING[];
 extern const char STR_ELEDIRECTION[];
 extern const char STR_AILDIRECTION[];
 extern const char STR_COLDIRECTION[];
-extern const char STR_MODE[];
 #if defined(AUDIO) && defined(BUZZER)
 extern const char STR_SPEAKER[];
 extern const char STR_BUZZER[];
