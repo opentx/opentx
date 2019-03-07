@@ -40,9 +40,16 @@ void menuRadioModulesVersion(event_t event)
 
   if (event == EVT_ENTRY) {
     menuVerticalOffset = 0;
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+
     memclear(&reusableBuffer.hardware.modules, sizeof(reusableBuffer.hardware.modules));
+
+    #warning "Only do this if internal module is ON"
+    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
     reusableBuffer.hardware.modules[INTERNAL_MODULE].step = -1;
+
+    #warning "Only do this if external module is ON"
+    moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+    reusableBuffer.hardware.modules[EXTERNAL_MODULE].step = -1;
   }
 
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
@@ -87,16 +94,23 @@ void menuRadioModulesVersion(event_t event)
   if (lines > NUM_BODY_LINES) {
     drawVerticalScrollbar(LCD_W-1, FH, LCD_H-FH, menuVerticalOffset, lines, NUM_BODY_LINES);
   }
+  else {
+    menuVerticalOffset = 0;
+  }
 
   switch(event) {
     case EVT_KEY_PREVIOUS_LINE:
-      if (menuVerticalOffset-- == 0)
-        menuVerticalOffset = lines - 1;
+      if (lines > NUM_BODY_LINES) {
+        if (menuVerticalOffset-- == 0)
+          menuVerticalOffset = lines - 1;
+      }
       break;
 
     case EVT_KEY_NEXT_LINE:
-      if (++menuVerticalOffset + NUM_BODY_LINES > lines)
-        menuVerticalOffset = 0;
+      if (lines > NUM_BODY_LINES) {
+        if (++menuVerticalOffset + NUM_BODY_LINES > lines)
+          menuVerticalOffset = 0;
+      }
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):

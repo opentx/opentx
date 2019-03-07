@@ -79,12 +79,12 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 
   uint8_t index = frame[3];
   if (index == 0xFF) {
-    reusableBuffer.hardware.modules[module].hw_version = *((uint32_t *)&frame[4]);
-    reusableBuffer.hardware.modules[module].sw_version = *((uint32_t *)&frame[8]);
+    reusableBuffer.hardware.modules[module].hw_version = *((uint16_t *)&frame[4]);
+    reusableBuffer.hardware.modules[module].sw_version = *((uint16_t *)&frame[6]);
   }
   else if (index < PXX2_MAX_RECEIVERS_PER_MODULE){
-    reusableBuffer.hardware.modules[module].receivers[index].hw_version = *((uint32_t *)&frame[4]);
-    reusableBuffer.hardware.modules[module].receivers[index].sw_version = *((uint32_t *)&frame[8]);
+    reusableBuffer.hardware.modules[module].receivers[index].hw_version = *((uint16_t *)&frame[4]);
+    reusableBuffer.hardware.modules[module].receivers[index].sw_version = *((uint16_t *)&frame[6]);
   }
 }
 
