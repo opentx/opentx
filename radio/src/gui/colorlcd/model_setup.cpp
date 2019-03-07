@@ -550,43 +550,52 @@ void ModelSetupPage::build(FormWindow * window)
   for (uint8_t i = 0; i < TIMERS; i++) {
     TimerData * timer = &g_model.timers[i];
 
+    auto group = new FormGroup(window, grid.getLineSlot(), PAINT_CHILDREN_FIRST);
+    FormGridLayout timerGrid;
+
     // Timer label
     char timerLabel[8];
     strAppendStringWithIndex(timerLabel, STR_TIMER, i + 1);
-    new Subtitle(window, grid.getLineSlot(), timerLabel);
-    grid.nextLine();
+    new Subtitle(group, timerGrid.getLineSlot(), timerLabel);
+    timerGrid.nextLine();
 
     // Timer name
-    new StaticText(window, grid.getLabelSlot(true), STR_TIMER_NAME);
-    new TextEdit(window, grid.getFieldSlot(), timer->name, LEN_TIMER_NAME);
-    grid.nextLine();
+    new StaticText(group, timerGrid.getLabelSlot(true), STR_TIMER_NAME);
+    auto nameEdit = new TextEdit(group, timerGrid.getFieldSlot(), timer->name, LEN_TIMER_NAME);
+    group->setFirstField(nameEdit);
+    timerGrid.nextLine();
 
     // Timer mode
-    new StaticText(window, grid.getLabelSlot(true), STR_MODE);
-    new SwitchChoice(window, grid.getFieldSlot(2, 0), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(timer->mode));
-    new Choice(window, grid.getFieldSlot(2, 1), "\006""Simple""Thr.\0 ""Thr.%", 0, TMRMODE_COUNT, GET_SET_DEFAULT(timer->mode));
-    grid.nextLine();
+    new StaticText(group, timerGrid.getLabelSlot(true), STR_MODE);
+    new SwitchChoice(group, timerGrid.getFieldSlot(2, 0), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(timer->mode));
+    new Choice(group, timerGrid.getFieldSlot(2, 1), "\006""Simple""Thr.\0 ""Thr.%", 0, TMRMODE_COUNT, GET_SET_DEFAULT(timer->mode));
+    timerGrid.nextLine();
 
     // Timer start value
-    new StaticText(window, grid.getLabelSlot(true), "Start");
-    new TimeEdit(window, grid.getFieldSlot(), 0, TIMER_MAX, GET_SET_DEFAULT(timer->start));
-    grid.nextLine();
+    new StaticText(group, timerGrid.getLabelSlot(true), "Start");
+    new TimeEdit(group, timerGrid.getFieldSlot(), 0, TIMER_MAX, GET_SET_DEFAULT(timer->start));
+    timerGrid.nextLine();
 
     // Timer minute beep
-    new StaticText(window, grid.getLabelSlot(true), STR_MINUTEBEEP);
-    new CheckBox(window, grid.getFieldSlot(), GET_SET_DEFAULT(timer->minuteBeep));
-    grid.nextLine();
+    new StaticText(group, timerGrid.getLabelSlot(true), STR_MINUTEBEEP);
+    new CheckBox(group, timerGrid.getFieldSlot(), GET_SET_DEFAULT(timer->minuteBeep));
+    timerGrid.nextLine();
 
     // Timer countdown
-    new StaticText(window, grid.getLabelSlot(true), STR_BEEPCOUNTDOWN);
-    new Choice(window, grid.getFieldSlot(2, 0), STR_VBEEPCOUNTDOWN, COUNTDOWN_SILENT, COUNTDOWN_COUNT - 1, GET_SET_DEFAULT(timer->countdownBeep));
-    new Choice(window, grid.getFieldSlot(2, 1), STR_COUNTDOWNVALUES, 0, 3, GET_SET_WITH_OFFSET(timer->countdownStart, 2));
-    grid.nextLine();
+    new StaticText(group, timerGrid.getLabelSlot(true), STR_BEEPCOUNTDOWN);
+    new Choice(group, timerGrid.getFieldSlot(2, 0), STR_VBEEPCOUNTDOWN, COUNTDOWN_SILENT, COUNTDOWN_COUNT - 1, GET_SET_DEFAULT(timer->countdownBeep));
+    new Choice(group, timerGrid.getFieldSlot(2, 1), STR_COUNTDOWNVALUES, 0, 3, GET_SET_WITH_OFFSET(timer->countdownStart, 2));
+    timerGrid.nextLine();
 
     // Timer persistent
-    new StaticText(window, grid.getLabelSlot(true), STR_PERSISTENT);
-    new Choice(window, grid.getFieldSlot(), STR_VPERSISTENT, 0, 2, GET_SET_DEFAULT(timer->persistent));
-    grid.nextLine();
+    new StaticText(group, timerGrid.getLabelSlot(true), STR_PERSISTENT);
+    auto persistentChoice = new Choice(group, timerGrid.getFieldSlot(), STR_VPERSISTENT, 0, 2, GET_SET_DEFAULT(timer->persistent));
+    group->setLastField(persistentChoice);
+    timerGrid.nextLine();
+
+    coord_t height = timerGrid.getWindowHeight();
+    group->setHeight(height);
+    grid.addWindow(group);
   }
 
   // Extended limits
