@@ -34,13 +34,15 @@
 
 // OPAQUE/TRANSPARENT defined in WinGDI
 #ifndef OPAQUE
- #define OPAQUE         1
- #define TRANSPARENT    2
+ #define OPAQUE               1
+ #define TRANSPARENT          2
 #endif
 
-#define NO_SCROLLBAR      4
-#define FORWARD_SCROLL    8
-#define REFRESH_ALWAYS    16
+#define NO_SCROLLBAR          4
+#define FORWARD_SCROLL        8
+#define REFRESH_ALWAYS        16
+#define BORDER_FOCUS_ONLY     32
+#define PAINT_CHILDREN_FIRST  64
 
 struct rect_t {
     coord_t x, y, w, h;

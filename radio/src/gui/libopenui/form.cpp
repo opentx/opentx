@@ -90,7 +90,7 @@ void FormField::paint(BitmapBuffer * dc)
   else if (hasFocus()) {
     drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, TEXT_INVERTED_BGCOLOR);
   }
-  else {
+  else if (!(windowFlags & BORDER_FOCUS_ONLY)) {
     drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, CURVE_AXIS_COLOR);
   }
 }
@@ -100,7 +100,7 @@ void FormGroup::paint(BitmapBuffer * dc)
   if (!editMode && hasFocus()) {
     drawSolidRect(dc, 0, 0, rect.w, rect.h, 2, TEXT_INVERTED_BGCOLOR);
   }
-  else {
+  else if (!(windowFlags & BORDER_FOCUS_ONLY)) {
     drawSolidRect(dc, 0, 0, rect.w, rect.h, 1, CURVE_AXIS_COLOR);
   }
 }

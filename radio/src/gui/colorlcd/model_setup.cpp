@@ -657,7 +657,7 @@ void ModelSetupPage::build(FormWindow * window)
 
     // Switches warning
     new StaticText(window, grid.getLabelSlot(true), STR_SWITCHWARNING);
-    auto group = new FormGroup(window, grid.getFieldSlot());
+    auto group = new FormGroup(window, grid.getFieldSlot(), BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
     GridLayout switchesGrid(group);
     for (int i = 0; i < NUM_SWITCHES; i++) {
       char s[SWITCH_WARNING_STR_SIZE];

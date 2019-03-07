@@ -27,8 +27,8 @@ class FormField: public Window {
   friend class FormWindow;
 
   public:
-    FormField(Window * parent, const rect_t & rect) :
-      Window(parent, rect)
+    FormField(Window * parent, const rect_t & rect, uint8_t flags=0) :
+      Window(parent, rect, flags)
     {
       if (current) {
         setPreviousField(current);
@@ -94,8 +94,8 @@ class FormField: public Window {
 
 class FormGroup: public FormField {
   public:
-    FormGroup(Window * parent, const rect_t & rect) :
-      FormField(parent, rect)
+    FormGroup(Window * parent, const rect_t & rect, uint8_t flags=0) :
+      FormField(parent, rect, flags)
     {
       FormField::current = nullptr;
     }

@@ -174,11 +174,25 @@ void Window::fullPaint(BitmapBuffer * dc)
 {
   TRACE_WINDOWS("%s", getWindowDebugString().c_str());
 
+  if (windowFlags & PAINT_CHILDREN_FIRST) {
+    coord_t xmin, xmax, ymin, ymax;
+    coord_t x = dc->getOffsetX();
+    coord_t y = dc->getOffsetY();
+    dc->getClippingRect(xmin, xmax, ymin, ymax);
+    paintChildren(dc);
+    dc->setOffset(x, y);
+    dc->setClippingRect(xmin, xmax, ymin, ymax);
+  }
+
   paint(dc);
+
   if (!(windowFlags & NO_SCROLLBAR)) {
     drawVerticalScrollbar(dc);
   }
-  paintChildren(dc);
+
+  if (!(windowFlags & PAINT_CHILDREN_FIRST)) {
+    paintChildren(dc);
+  }
 }
 
 bool Window::isChildFullSize(Window * child)
