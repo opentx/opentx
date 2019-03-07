@@ -277,7 +277,7 @@ void OpenTxSimulator::rotaryEncoderEvent(int steps)
     key = KEY_DOWN;
   else if (steps < 0)
     key = KEY_UP;
-#elif !defined(HARDWARE_TOUCH)
+#elif defined(HARDWARE_KEYS)
   if (steps > 0)
     key = KEY_MINUS;
   else if (steps < 0)
