@@ -550,52 +550,57 @@ void ModelSetupPage::build(FormWindow * window)
   for (uint8_t i = 0; i < TIMERS; i++) {
     TimerData * timer = &g_model.timers[i];
 
-    auto group = new FormGroup(window, grid.getLineSlot(), PAINT_CHILDREN_FIRST);
-    FormGridLayout timerGrid;
-
     // Timer label
     char timerLabel[8];
     strAppendStringWithIndex(timerLabel, STR_TIMER, i + 1);
-    new Subtitle(group, timerGrid.getLineSlot(), timerLabel);
-    timerGrid.nextLine();
+    new Subtitle(window, grid.getLineSlot(), timerLabel);
+    grid.nextLine();
+
+    auto group = new FormGroup(window, grid.getFieldSlot(), BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);
+    GridLayout timerGrid(group);
 
     // Timer name
-    new StaticText(group, timerGrid.getLabelSlot(true), STR_TIMER_NAME);
-    auto nameEdit = new TextEdit(group, timerGrid.getFieldSlot(), timer->name, LEN_TIMER_NAME);
+    new StaticText(window, grid.getLabelSlot(true), STR_TIMER_NAME);
+    grid.nextLine();
+    auto nameEdit = new TextEdit(group, timerGrid.getSlot(), timer->name, LEN_TIMER_NAME);
     group->setFirstField(nameEdit);
     timerGrid.nextLine();
 
     // Timer mode
-    new StaticText(group, timerGrid.getLabelSlot(true), STR_MODE);
-    new SwitchChoice(group, timerGrid.getFieldSlot(2, 0), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(timer->mode));
-    new Choice(group, timerGrid.getFieldSlot(2, 1), "\006""Simple""Thr.\0 ""Thr.%", 0, TMRMODE_COUNT, GET_SET_DEFAULT(timer->mode));
+    new StaticText(window, grid.getLabelSlot(true), STR_MODE);
+    grid.nextLine();
+    new SwitchChoice(group, timerGrid.getSlot(2, 0), SWSRC_FIRST, SWSRC_LAST, GET_SET_DEFAULT(timer->mode));
+    new Choice(group, timerGrid.getSlot(2, 1), "\006""Simple""Thr.\0 ""Thr.%", 0, TMRMODE_COUNT, GET_SET_DEFAULT(timer->mode));
     timerGrid.nextLine();
 
     // Timer start value
-    new StaticText(group, timerGrid.getLabelSlot(true), "Start");
-    new TimeEdit(group, timerGrid.getFieldSlot(), 0, TIMER_MAX, GET_SET_DEFAULT(timer->start));
+    new StaticText(window, grid.getLabelSlot(true), "Start");
+    grid.nextLine();
+    new TimeEdit(group, timerGrid.getSlot(), 0, TIMER_MAX, GET_SET_DEFAULT(timer->start));
     timerGrid.nextLine();
 
     // Timer minute beep
-    new StaticText(group, timerGrid.getLabelSlot(true), STR_MINUTEBEEP);
-    new CheckBox(group, timerGrid.getFieldSlot(), GET_SET_DEFAULT(timer->minuteBeep));
+    new StaticText(window, grid.getLabelSlot(true), STR_MINUTEBEEP);
+    grid.nextLine();
+    new CheckBox(group, timerGrid.getSlot(), GET_SET_DEFAULT(timer->minuteBeep));
     timerGrid.nextLine();
 
     // Timer countdown
-    new StaticText(group, timerGrid.getLabelSlot(true), STR_BEEPCOUNTDOWN);
-    new Choice(group, timerGrid.getFieldSlot(2, 0), STR_VBEEPCOUNTDOWN, COUNTDOWN_SILENT, COUNTDOWN_COUNT - 1, GET_SET_DEFAULT(timer->countdownBeep));
-    new Choice(group, timerGrid.getFieldSlot(2, 1), STR_COUNTDOWNVALUES, 0, 3, GET_SET_WITH_OFFSET(timer->countdownStart, 2));
+    new StaticText(window, grid.getLabelSlot(true), STR_BEEPCOUNTDOWN);
+    grid.nextLine();
+    new Choice(group, timerGrid.getSlot(2, 0), STR_VBEEPCOUNTDOWN, COUNTDOWN_SILENT, COUNTDOWN_COUNT - 1, GET_SET_DEFAULT(timer->countdownBeep));
+    new Choice(group, timerGrid.getSlot(2, 1), STR_COUNTDOWNVALUES, 0, 3, GET_SET_WITH_OFFSET(timer->countdownStart, 2));
     timerGrid.nextLine();
 
     // Timer persistent
-    new StaticText(group, timerGrid.getLabelSlot(true), STR_PERSISTENT);
-    auto persistentChoice = new Choice(group, timerGrid.getFieldSlot(), STR_VPERSISTENT, 0, 2, GET_SET_DEFAULT(timer->persistent));
+    new StaticText(window, grid.getLabelSlot(true), STR_PERSISTENT);
+    grid.nextLine();
+    auto persistentChoice = new Choice(group, timerGrid.getSlot(), STR_VPERSISTENT, 0, 2, GET_SET_DEFAULT(timer->persistent));
     group->setLastField(persistentChoice);
     timerGrid.nextLine();
 
-    coord_t height = timerGrid.getWindowHeight();
+    coord_t height = timerGrid.getWindowHeight() - 1;
     group->setHeight(height);
-    grid.addWindow(group);
   }
 
   // Extended limits
