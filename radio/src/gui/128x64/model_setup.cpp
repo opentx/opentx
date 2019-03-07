@@ -362,11 +362,8 @@ void runPopupRegister(event_t event)
 
 void startRegisterDialog(uint8_t module)
 {
-  reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_START;
+  memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
   memcpy(reusableBuffer.moduleSetup.pxx2.registrationID, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
-  reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = 0;
-  reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = 0;
-  reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = 0;
   moduleSettings[module].mode = MODULE_MODE_REGISTER;
   s_editMode = 0;
   POPUP_INPUT("", runPopupRegister);
@@ -1342,8 +1339,8 @@ void menuModelSetup(event_t event)
         if (attr) {
           if (menuHorizontalPosition == 0) {
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-              reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
-              reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
+              // TODO this will go to module.cpp
+              memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
               reusableBuffer.moduleSetup.pxx2.bindReceiverSlot = receiverSlot;
               moduleSettings[moduleIdx].mode ^= MODULE_MODE_BIND;
             }
