@@ -29,7 +29,7 @@ RadioVersionPage::RadioVersionPage():
 
 void RadioVersionPage::build(FormWindow * window)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.setLabelWidth(120);
   grid.spacer(2);
 

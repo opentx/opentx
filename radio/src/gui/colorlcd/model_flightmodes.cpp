@@ -75,7 +75,7 @@ void ModelFlightModesPage::build(FormWindow * window)
       window->setFirstField(group);
     }
 
-    GridLayout grid;
+    FormGridLayout grid;
     grid.setMarginRight(15);
     grid.spacer();
     grid.setLabelWidth(180);

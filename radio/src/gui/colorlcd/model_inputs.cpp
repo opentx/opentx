@@ -125,7 +125,7 @@ class InputEditWindow: public Page {
     }
 
     void updateCurves() {
-      GridLayout grid;
+      FormGridLayout grid;
       grid.setLabelWidth(120);
 
       updateCurvesWindow->clear();
@@ -166,7 +166,7 @@ class InputEditWindow: public Page {
     {
       NumberEdit * edit;
 
-      GridLayout grid;
+      FormGridLayout grid;
       grid.setLabelWidth(120);
       grid.spacer(8);
 
@@ -390,7 +390,7 @@ void ModelInputsPage::editInput(FormWindow * window, uint8_t input, uint8_t inde
 
 void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.spacer(8);
   grid.setLabelWidth(66);
 

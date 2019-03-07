@@ -79,7 +79,7 @@ class FailSafeBody : public Window {
 
     void build()
     {
-      GridLayout grid;
+      FormGridLayout grid;
       grid.setLabelWidth(60);
       grid.spacer(8);
 
@@ -176,7 +176,7 @@ class ModuleWindow : public Window {
     TextButton * registerButton = nullptr;
     Choice * failSafeChoice = nullptr;
 
-    void addChannelRange(GridLayout &grid, uint8_t moduleIndex)
+    void addChannelRange(FormGridLayout &grid, uint8_t moduleIndex)
     {
       new StaticText(this, grid.getLabelSlot(true), STR_CHANNELRANGE);
       auto channelStart = new NumberEdit(this, grid.getFieldSlot(2, 0), 1,
@@ -205,7 +205,7 @@ class ModuleWindow : public Window {
 
     void update()
     {
-      GridLayout grid;
+      FormGridLayout grid;
 
       FormField * previousField = moduleChoice ? moduleChoice->getPreviousField() : moduleChoice->getCurrentField();
       FormField * nextField = lastField ? lastField->getNextField() : nullptr;
@@ -526,7 +526,7 @@ void onBindMenu(const char * result)
 
 void ModelSetupPage::build(FormWindow * window)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.spacer(2);
 
   // Model name
@@ -657,12 +657,13 @@ void ModelSetupPage::build(FormWindow * window)
 
     // Switches warning
     new StaticText(window, grid.getLabelSlot(true), STR_SWITCHWARNING);
+    auto group = new FormGroup(window, grid.getFieldSlot());
+    GridLayout switchesGrid(group);
     for (int i = 0; i < NUM_SWITCHES; i++) {
-      char s[3];
+      char s[SWITCH_WARNING_STR_SIZE];
       if (i > 0 && (i % 3) == 0)
-        grid.nextLine();
-
-      auto button = new TextButton(window, grid.getFieldSlot(3, i % 3), getSwitchWarningString(s, i), nullptr,
+        switchesGrid.nextLine();
+      auto button = new TextButton(group, switchesGrid.getSlot(3, i % 3), getSwitchWarningString(s, i), nullptr,
                                    (BF_GET(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
       button->setPressHandler([button, i] {
         swarnstate_t newstate = BF_GET(g_model.switchWarningState, 3 * i, 3);
@@ -675,8 +676,12 @@ void ModelSetupPage::build(FormWindow * window)
         button->setText(getSwitchWarningString(i));
         return newstate > 0;
       });
+      if (i == 0)
+        group->setFirstField(button);
+      else if (i == NUM_SWITCHES - 1)
+        group->setLastField(button);
     }
-    grid.nextLine();
+    grid.addWindow(group);
   }
 
   // Center beeps

@@ -31,7 +31,7 @@ ModelHeliPage::ModelHeliPage():
 
 void ModelHeliPage::build(FormWindow * window)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.spacer(2);
 
   // Swash type

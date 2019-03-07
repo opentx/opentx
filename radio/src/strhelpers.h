@@ -43,6 +43,8 @@ char * getSourceString(char * dest, mixsrc_t idx);
 char * getTimerString(char * dest, int32_t tme, uint8_t hours=0);
 char * getCurveString(char * dest, int idx);
 char * getGVarString(char * dest, int idx);
+
+#define SWITCH_WARNING_STR_SIZE 3
 char * getSwitchWarningString(char * dest, swsrc_t idx);
 char * getSwitchString(char * dest, swsrc_t idx);
 

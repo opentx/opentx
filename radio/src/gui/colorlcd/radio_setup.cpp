@@ -58,7 +58,7 @@ class DateTimeWindow : public Window {
 
     void build()
     {
-      GridLayout grid;
+      FormGridLayout grid;
 
       // Date
       new StaticText(this, grid.getLabelSlot(), STR_DATE);
@@ -175,7 +175,7 @@ RadioSetupPage::RadioSetupPage():
 
 void RadioSetupPage::build(FormWindow * window)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.spacer(2);
 
   // Date and Time

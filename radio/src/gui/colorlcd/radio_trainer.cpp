@@ -31,7 +31,7 @@ RadioTrainerPage::RadioTrainerPage():
 void RadioTrainerPage::build(FormWindow * window)
 {
 #define TRAINER_LABEL_WIDTH  180
-  GridLayout grid;
+  FormGridLayout grid;
   grid.setLabelWidth(TRAINER_LABEL_WIDTH);
   grid.nextLine();
 

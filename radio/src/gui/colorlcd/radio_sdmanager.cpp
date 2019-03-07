@@ -122,7 +122,7 @@ class FlashModuleDialog: public Dialog
 
 void RadioSdManagerPage::build(FormWindow *window)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.spacer(2);
 
   FILINFO fno;

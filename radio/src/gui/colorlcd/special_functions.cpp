@@ -65,7 +65,7 @@ class SpecialFunctionEditPage : public Page {
     void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
     {
       // SF.one variable part
-      GridLayout grid;
+      FormGridLayout grid;
       specialFunctionOneWindow->clear();
 
       CustomFunctionData * cfn = &functions[index];
@@ -206,7 +206,7 @@ class SpecialFunctionEditPage : public Page {
     void buildBody(FormWindow * window)
     {
       // SF.one
-      GridLayout grid;
+      FormGridLayout grid;
       grid.spacer(8);
 
       CustomFunctionData * cfn = &functions[index];
@@ -414,7 +414,7 @@ void SpecialFunctionsPage::editSpecialFunction(FormWindow * window, uint8_t inde
 
 void SpecialFunctionsPage::build(FormWindow * window, int8_t focusIndex)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.spacer(2);
   grid.setLabelWidth(66);
 

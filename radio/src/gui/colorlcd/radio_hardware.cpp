@@ -81,7 +81,7 @@ RadioHardwarePage::RadioHardwarePage():
 
 void RadioHardwarePage::build(FormWindow * window)
 {
-  GridLayout grid;
+  FormGridLayout grid;
   grid.setLabelWidth(130);
   grid.spacer(6);
 

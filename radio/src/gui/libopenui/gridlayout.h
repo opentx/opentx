@@ -29,7 +29,53 @@ static constexpr uint8_t indentWidth = 10;
 
 class GridLayout {
   public:
-    GridLayout()
+    GridLayout(coord_t width):
+      width(width)
+    {
+    }
+
+    GridLayout(Window * window):
+      width(window->width())
+    {
+    }
+
+    rect_t getSlot(uint8_t count = 1, uint8_t index = 0) const
+    {
+      coord_t width = (this->width - (count - 1) * lineSpacing) / count;
+      coord_t left = (width + lineSpacing) * index;
+      return {left, currentY, width, lineHeight};
+    }
+
+    void spacer(coord_t height=lineSpacing)
+    {
+      currentY += height;
+    }
+
+    void nextLine(coord_t height=lineHeight)
+    {
+      spacer(height + lineSpacing);
+    }
+
+    void addWindow(Window * window)
+    {
+      window->adjustHeight();
+      currentY += window->rect.h + lineSpacing;
+    }
+
+    coord_t getWindowHeight() const
+    {
+      return currentY;
+    }
+
+  protected:
+    coord_t width;
+    coord_t currentY = 0;
+};
+
+class FormGridLayout: public GridLayout {
+  public:
+    FormGridLayout():
+      GridLayout(LCD_W)
     {
     }
 
@@ -71,29 +117,7 @@ class GridLayout {
       return {left, currentY, width, lineHeight};
     }
 
-    void addWindow(Window * window)
-    {
-      window->adjustHeight();
-      currentY += window->rect.h + lineSpacing;
-    }
-
-    void spacer(coord_t height=lineSpacing)
-    {
-      currentY += height;
-    }
-
-    void nextLine(coord_t height=lineHeight)
-    {
-      spacer(height + lineSpacing);
-    }
-
-    coord_t getWindowHeight() const
-    {
-      return currentY;
-    }
-
   protected:
-    coord_t currentY = 0;
     coord_t labelWidth = 240;
     coord_t lineMarginLeft = 6;
     coord_t lineMarginRight = 10;
