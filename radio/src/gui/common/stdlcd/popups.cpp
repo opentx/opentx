@@ -36,18 +36,15 @@ const char * runPopupMenu(event_t event)
   const char * result = NULL;
 
   uint8_t display_count = min<uint8_t>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
-  uint8_t y = (display_count >= 5 ? MENU_Y - FH - 1 : MENU_Y);
-  if (popupMenuTitle) {
-    y += FH / 2;
-  }
+  uint8_t y = LCD_H / 2 - (popupMenuTitle ? 0 : 3) - (display_count * FH / 2);
 
   // white background
-  lcdDrawFilledRect(MENU_X - 1, popupMenuTitle ? y - FH - 3 : y, MENU_W + 2, display_count * (FH + 1) + (popupMenuTitle ? FH + 6 : 3), SOLID, ERASE);
+  lcdDrawFilledRect(MENU_X - 1, popupMenuTitle ? y - FH - 3 : y - 1, MENU_W + 2, display_count * (FH + 1) + (popupMenuTitle ? FH + 6 : 4), SOLID, ERASE);
 
   // title
   if (popupMenuTitle) {
     lcdDrawText(MENU_X + 2, y - FH, popupMenuTitle, BOLD);
-    lcdDrawRect(MENU_X, y - FH - 2, lcdLastRightPos - MENU_X + 3, FH + 3);
+    lcdDrawRect(MENU_X, y - FH - 2, lcdLastRightPos - MENU_X + 2, FH + 3);
   }
 
   // border
