@@ -43,13 +43,15 @@ void menuRadioModulesVersion(event_t event)
 
     memclear(&reusableBuffer.hardware.modules, sizeof(reusableBuffer.hardware.modules));
 
-    #warning "Only do this if internal module is ON"
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
-    reusableBuffer.hardware.modules[INTERNAL_MODULE].step = -1;
+    if(isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
+      moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+      reusableBuffer.hardware.modules[INTERNAL_MODULE].step = -1;
+    }
 
-    #warning "Only do this if external module is ON"
-    moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
-    reusableBuffer.hardware.modules[EXTERNAL_MODULE].step = -1;
+    if(isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
+      moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+      reusableBuffer.hardware.modules[EXTERNAL_MODULE].step = -1;
+    }
 
     reusableBuffer.hardware.updateTime = get_tmr10ms() + 1000 /* 10s*/;
   }
