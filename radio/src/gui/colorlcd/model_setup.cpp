@@ -425,7 +425,9 @@ class ModuleWindow : public Window {
           uint8_t receiverSlot = g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount);
           if (receiverSlot--) {
             // Label + Delete and set pinmap buttons
-            char label[] = "Receiver X";
+            char label[sizeof(TR_RECEIVER) + 2] = "";
+            memcpy(label, STR_RECEIVER, sizeof(TR_RECEIVER));
+            label[sizeof(label) - 3] = ' ';
             label[sizeof(label) - 2] = '1' + receiverCount;
             new Subtitle(this, grid.getLabelSlot(true), label);
             new TextButton(this, grid.getFieldSlot(2, 0), "Pin map", [=]() {
@@ -440,10 +442,10 @@ class ModuleWindow : public Window {
             });
             grid.nextLine();
 
-            // Telemetry
+            /*// Telemetry
             new StaticText(this, grid.getLabelSlot(true), " Telemetry");
             new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.receiverData[receiverSlot].telemetry));
-            grid.nextLine();
+            grid.nextLine();*/
 
             // Receiver name + Bind and share buttons
             // TODO new StaticText(this, grid.getLabelSlot(true), " Telemetry");
