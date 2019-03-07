@@ -421,7 +421,8 @@ PACK(struct ReceiverData {
   uint64_t channelMapping1:60; // 12 last channels
   uint8_t  used:1;
   uint8_t  telemetry:1;
-  uint8_t  spare:2;
+  uint8_t  dirty:1;
+  uint8_t  spare:1;
   char     name[PXX2_LEN_RX_NAME];
 });
 

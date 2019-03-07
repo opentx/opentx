@@ -140,12 +140,18 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
   }
 }
 
+void Pxx2Pulses::setupSetRxParamsFrame(uint8_t module, uint8_t receiverSlot)
+{
+
+}
+
 void Pxx2Pulses::setupBindFrame(uint8_t module)
 {
   if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_WAIT) {
     if (get_tmr10ms() > reusableBuffer.moduleSetup.pxx2.bindWaitTimeout) {
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
       reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
+      setupSetRxParamsFrame(module, reusableBuffer.moduleSetup.pxx2.bindReceiverSlot);
       POPUP_INFORMATION(STR_BIND_OK);
     }
     return;

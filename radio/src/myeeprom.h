@@ -485,4 +485,7 @@ PACK(union u_int8int16_t {
   int16_t word;
 });
 
+#define EE_GENERAL                     0x01
+#define EE_MODEL                       0x02
+
 #endif // _MYEEPROM_H_

@@ -226,6 +226,8 @@ inline void setPinOuput(uint8_t receiverIdx, uint8_t pin, uint8_t chan)
     pin -= 12;
     g_model.receiverData[receiverIdx].channelMapping1 = BF_SET<uint64_t>(g_model.receiverData[receiverIdx].channelMapping1, chan, pin * 5, 5);
   }
+  g_model.receiverData[receiverIdx].dirty = 1;
+  storageDirty(EE_MODEL);
 }
 
 inline int8_t maxModuleChannels_M8(uint8_t idx)

@@ -112,6 +112,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void setupShareMode(uint8_t module);
 
+    void setupSetRxParamsFrame(uint8_t module, uint8_t receiverSlot);
+
     void setupChannelsFrame(uint8_t module);
 
     void setupSpectrumAnalyser(uint8_t module);
