@@ -313,7 +313,7 @@ void guiMain(event_t evt)
           if (warn) DISPLAY_WARNING(evt);
           if (menu) {
             const char * result = runPopupMenu(evt);
-            if (result) {
+            if (popupMenuItemsCount == 0) {
               popupMenuHandler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
@@ -451,7 +451,7 @@ void guiMain(event_t evt)
       inPopupMenu = true;
     }
     const char * result = runPopupMenu(evt);
-    if (result) {
+    if (popupMenuItemsCount == 0) {
       TRACE("popupMenuHandler(%s)", result);
       popupMenuHandler(result);
     }

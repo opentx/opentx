@@ -25,6 +25,7 @@ uint8_t g_moduleIdx;
 
 void drawReceiverName(uint8_t x, uint8_t y, uint8_t receiverSlot)
 {
+  TRACE("receiverSlot=%d", receiverSlot);
   if (g_model.receiverData[receiverSlot].name[0] != '\0')
     lcdDrawSizedText(x, y, g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME);
   else
@@ -92,7 +93,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
 #endif
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_REGISTER_RANGE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE,
@@ -181,7 +182,7 @@ enum MenuModelSetupItems {
 
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
-  #define CURRENT_RECEIVER_EDITED(k)      ((k - (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_LABEL : ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_LABEL)) / 4)
+  #define CURRENT_RECEIVER_EDITED(k)      ((k - (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_LABEL : ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_LABEL)) / 3)
 #elif defined(PCBSKY9X) && !defined(REVA)
   #define CURRENT_MODULE_EDITED(k)       (k >= ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
@@ -266,8 +267,15 @@ enum MenuModelSetupItems {
 
 void onPXX2BindMenu(const char * result)
 {
-  reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / PXX2_LEN_RX_NAME;
-  reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
+  if (result) {
+    reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]);
+    reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
+  }
+  else {
+    // the user pressed [Exit]
+    uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition);
+    moduleSettings[moduleIdx].mode = MODULE_MODE_NORMAL;
+  }
 }
 
 void onBindMenu(const char * result)
@@ -434,19 +442,15 @@ void menuModelSetup(event_t event)
       IF_PXX2_MODULE(INTERNAL_MODULE, 1),                          // Range check and Register buttons
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 1),           // Receiver Bind/Share
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 0, 0),           // Receiver2 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver2 Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver2 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 1),           // Receiver2 Bind/Share
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver3 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver3 Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver3 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 1),           // Receiver3 Bind/Share
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver4 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 0),           // Receiver4 Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 0),           // Receiver4 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 1),           // Receiver4 Bind/Share
 
     LABEL(ExternalModule),
@@ -465,19 +469,15 @@ void menuModelSetup(event_t event)
       IF_PXX2_MODULE(EXTERNAL_MODULE, 1),                          // Range check and Register buttons
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                          // Receiver Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 0),           // Receiver Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 0),           // Receiver Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 1),           // Receiver Bind/Share
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 0, 0),           // Receiver2 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver2 Range
-      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver2 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 1),           // Receiver2 Bind/Share
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver3 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver3 Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver3 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 1),           // Receiver3 Bind/Share
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver4 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 0),           // Receiver4 Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 0),           // Receiver4 Telemetry
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 1),           // Receiver4 Bind/Share
 
     TRAINER_ROWS
@@ -1205,7 +1205,7 @@ void menuModelSetup(event_t event)
       }
       break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_REGISTER_RANGE:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_REGISTER_RANGE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
@@ -1252,7 +1252,7 @@ void menuModelSetup(event_t event)
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DEL_BUTTON, attr);
           if (attr && s_editMode > 0) {
             g_model.moduleData[moduleIdx].pxx2.receivers = (g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIdx * 3)) | ((g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>((receiverIdx + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIdx) * 3)) >> 3);
-            memclear(&g_model.receiverData[receiverSlot], sizeof(ReceiverData));
+            memclear(&g_model.receiverData[receiverSlot - 1], sizeof(ReceiverData));
             s_editMode = 0;
             killEvents(event);
             storageDirty(EE_MODEL);
@@ -1320,12 +1320,12 @@ void menuModelSetup(event_t event)
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
               // TODO this will go to module.cpp
               memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
-              reusableBuffer.moduleSetup.pxx2.bindReceiverSlot = receiverSlot;
+              reusableBuffer.moduleSetup.pxx2.bindReceiverId = receiverSlot;
               moduleSettings[moduleIdx].mode ^= MODULE_MODE_BIND;
             }
             if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
               s_editMode = 1;
-              if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_RECEIVED) {
+              if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_START && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount > 0) {
                 popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
                   popupMenuItems[i] = reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i];

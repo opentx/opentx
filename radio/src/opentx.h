@@ -1130,9 +1130,9 @@ union ReusableBuffer
         int8_t registerPopupEditMode;
         char registerRxName[PXX2_LEN_RX_NAME];
         char registrationID[PXX2_LEN_REGISTRATION_ID];
-        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
+        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
         uint8_t bindCandidateReceiversCount;
-        uint8_t bindReceiverSlot;
+        uint8_t bindReceiverId;
         union {
           uint8_t bindSelectedReceiverIndex;
           uint8_t shareReceiverIndex;

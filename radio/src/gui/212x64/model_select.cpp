@@ -55,7 +55,7 @@ void onModelSelectMenu(const char * result)
     POPUP_CONFIRMATION(STR_DELETEMODEL);
     SET_WARNING_INFO(nametmp, sizeof(g_model.header.name), 0);
   }
-  else {
+  else if (result) {
     // The user choosed a file on SD to restore
     storageCheck(true);
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));

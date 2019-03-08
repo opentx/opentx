@@ -62,7 +62,7 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
       POPUP_MENU_UNSET_BSS_FLAG();
     }
   }
-  else {
+  else if (result) {
     // The user choosed a file in the list
     memcpy(cfn->play.name, result, sizeof(cfn->play.name));
     storageDirty(eeFlags);
@@ -96,7 +96,7 @@ void onAdjustGvarSourceLongEnterPress(const char * result)
     CFN_PARAM(cfn) = 0;
     storageDirty(EE_MODEL);
   }
-  else {
+  else if (result) {
     onSourceLongEnterPress(result);
   }
 }

@@ -57,7 +57,7 @@ void onModelSelectMenu(const char * result)
     SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
   }
 #if defined(SDCARD)
-  else {
+  else if (result) {
     // The user choosed a file on SD to restore
     storageCheck(true);
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));

@@ -130,26 +130,32 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  if (frame[3] == 0x00) {
-    bool found = false;
-    for (uint8_t i=0; i<reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount; i++) {
-      if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-        found = true;
-        break;
+  switch(frame[3]) {
+    case 0x00:
+      if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_START) {
+        bool found = false;
+        for (uint8_t i=0; i<reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount; i++) {
+          if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+            found = true;
+            break;
+          }
+        }
+        if (!found && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+          memcpy(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount++], &frame[4], PXX2_LEN_RX_NAME);
+        }
       }
-    }
-    if (!found && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
-      ++reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount;
-      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
-    }
-  }
-  else if (frame[3] == 0x01) {
-    if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-      memcpy(&g_model.receiverData[reusableBuffer.moduleSetup.pxx2.bindReceiverSlot].name, &frame[4], PXX2_LEN_RX_NAME);
-      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
-      reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
-    }
+      break;
+
+    case 0x01:
+      if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
+        if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+          TRACE("SET SLOT %d name", reusableBuffer.moduleSetup.pxx2.bindReceiverId);
+          memcpy(g_model.receiverData[reusableBuffer.moduleSetup.pxx2.bindReceiverId].name, &frame[4], PXX2_LEN_RX_NAME);
+          reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
+          reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
+        }
+      }
+      break;
   }
 }
 

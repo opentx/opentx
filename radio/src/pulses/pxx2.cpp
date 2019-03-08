@@ -180,7 +180,7 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverSlot); // RX_UID is the slot index (which is unique and never moved)
+    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverId); // RX_UID is the slot index (which is unique and never moved)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
@@ -232,22 +232,29 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
 
-  uint8_t mode = moduleSettings[module].mode;
-
-  if (mode == MODULE_MODE_GET_HARDWARE_INFO)
-    setupHardwareInfoFrame(module);
-  else if (mode == MODULE_MODE_RECEIVER_SETTINGS)
-    setupReceiverSettingsFrame(module);
-  else if (mode == MODULE_MODE_REGISTER)
-    setupRegisterFrame(module);
-  else if (mode == MODULE_MODE_BIND)
-    setupBindFrame(module);
-  else if (mode == MODULE_MODE_SPECTRUM_ANALYSER)
-    setupSpectrumAnalyser(module);
-  else if (mode == MODULE_MODE_SHARE)
-    setupShareMode(module);
-  else
-    setupChannelsFrame(module);
+  switch (moduleSettings[module].mode) {
+    case MODULE_MODE_GET_HARDWARE_INFO:
+      setupHardwareInfoFrame(module);
+      break;
+    case MODULE_MODE_RECEIVER_SETTINGS:
+      setupReceiverSettingsFrame(module);
+      break;
+    case MODULE_MODE_REGISTER:
+      setupRegisterFrame(module);
+      break;
+    case MODULE_MODE_BIND:
+      setupBindFrame(module);
+      break;
+    case MODULE_MODE_SPECTRUM_ANALYSER:
+      setupSpectrumAnalyser(module);
+      break;
+    case MODULE_MODE_SHARE:
+      setupShareMode(module);
+      break;
+    default:
+      setupChannelsFrame(module);
+      break;
+  }
 
   if (moduleSettings[module].counter-- == 0) {
     moduleSettings[module].counter = 1000;

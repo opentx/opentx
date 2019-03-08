@@ -234,8 +234,7 @@ void onLogicalSwitchesMenu(const char *result)
     s_currIdx = sub;
     pushMenu(menuModelLogicalSwitchOne);
   }
-
-  if (result == STR_COPY) {
+  else if (result == STR_COPY) {
     clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
     clipboard.data.csw = *cs;
   }
