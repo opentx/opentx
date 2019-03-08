@@ -25,7 +25,6 @@ uint8_t g_moduleIdx;
 
 void drawReceiverName(uint8_t x, uint8_t y, uint8_t receiverSlot)
 {
-  TRACE("receiverSlot=%d", receiverSlot);
   if (g_model.receiverData[receiverSlot].name[0] != '\0')
     lcdDrawSizedText(x, y, g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME);
   else
@@ -1284,7 +1283,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP:
       {
-        lcdDrawText(3, y, STR_OPTIONS);
+        lcdDrawText(INDENT_WIDTH * 2, y, STR_OPTIONS);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
@@ -1923,7 +1922,7 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.receiverSetup.timeout = 0;
     moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
-  reusableBuffer.receiverSetup.state = 0xFF; //Todo REMOVE ME
+
   if (reusableBuffer.receiverSetup.state != 0) {
     for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
