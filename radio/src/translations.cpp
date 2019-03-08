@@ -702,6 +702,7 @@ const char STR_RX_NAME[]  = TR_RX_NAME;
   const char STR_MENU_OTHER[]  = TR_MENU_OTHER;
   const char STR_MENU_INVERT[]  = TR_MENU_INVERT;
   const char STR_JITTER_FILTER[]  = TR_JITTER_FILTER;
+  const char STR_BUTTON_SHARE[]  = TR_BUTTON_SHARE;
 
 #if MENUS_LOCK == 1
   const char STR_UNLOCKED[]  = TR_UNLOCKED;

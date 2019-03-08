@@ -968,6 +968,7 @@ extern const char STR_MENU_DISPLAY[];
 extern const char STR_MENU_OTHER[];
 extern const char STR_MENU_INVERT[];
 extern const char STR_JITTER_FILTER[];
+extern const char STR_BUTTON_SHARE[];
 
 #if MENUS_LOCK == 1
   extern const char STR_UNLOCKED[];
@@ -975,7 +976,7 @@ extern const char STR_JITTER_FILTER[];
 #endif
 
 #if defined(PCBTARANIS) || defined(DSM2)
-  extern const char STR_MODULE_RANGE[];
+extern const char STR_MODULE_RANGE[];
 extern const char STR_RECEIVER_OPTIONS[];
   extern const char STR_DEL_BUTTON[];
 #endif

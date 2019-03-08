@@ -32,7 +32,7 @@ void drawReceiverName(uint8_t x, uint8_t y, uint8_t receiverSlot)
 }
 
 void menuModelFailsafe(event_t event);
-void menuModelPinmap(event_t event);
+void menuModelReceiverOptions(event_t event);
 
 #if defined(PCBTARANIS)
 uint8_t getSwitchWarningsCount()
@@ -95,19 +95,15 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RANGE_REGISTER,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_TELEM,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
@@ -135,19 +131,15 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_REGISTER_RANGE,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_PINMAP,
-  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_TELEM,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_PINMAP,
-  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_TELEM,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP,
-  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_TELEM,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP,
-  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_TELEM,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE,
 #if defined(PCBSKY9X) && !defined(REVA)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
@@ -1292,7 +1284,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_PINMAP:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_PINMAP:
       {
-        lcdDrawTextAlignedLeft(y, INDENT INDENT "Pinmap");
+        lcdDrawText(3, y, STR_OPTIONS);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
@@ -1301,26 +1293,10 @@ void menuModelSetup(event_t event)
           memclear(&reusableBuffer.receiverSetup, sizeof(reusableBuffer.receiverSetup));
           reusableBuffer.receiverSetup.moduleIdx = moduleIdx;
           reusableBuffer.receiverSetup.receiverId = receiverSlot;
-          pushMenu(menuModelPinmap);
+          pushMenu(menuModelReceiverOptions);
         }
       }
       break;
-
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_TELEM:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_TELEM:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_TELEM:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_TELEM:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_TELEM:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_TELEM:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_TELEM:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_TELEM:
-      {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-        uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
-        g_model.receiverData[receiverSlot].telemetry = editCheckBox(g_model.receiverData[receiverSlot].telemetry, MODEL_SETUP_2ND_COLUMN, y, INDENT INDENT "Telemetry", attr, event);
-        break;
-      }
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE:
@@ -1337,7 +1313,7 @@ void menuModelSetup(event_t event)
 
         drawReceiverName(INDENT_WIDTH * 2, y, receiverSlot);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
-        lcdDrawText(lcdLastRightPos + FW/2, y, BUTTON("Share"), menuHorizontalPosition==1 ? attr : 0);
+        lcdDrawText(lcdLastRightPos + FW/2, y, STR_BUTTON_SHARE, menuHorizontalPosition==1 ? attr : 0);
 
         if (attr) {
           if (menuHorizontalPosition == 0) {
@@ -1927,7 +1903,7 @@ void menuModelFailsafe(event_t event)
   }
 }
 
-void menuModelPinmap(event_t event)
+void menuModelReceiverOptions(event_t event)
 {
   if (menuEvent) {
     moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_NORMAL;
@@ -1938,8 +1914,8 @@ void menuModelPinmap(event_t event)
   uint8_t wbar = LCD_W / 2 - 20;
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
-  lcdDrawTextAlignedLeft(0, STR_PINMAPSET);
-  drawReceiverName(FW * 10, 0, reusableBuffer.receiverSetup.receiverId);
+  lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
+  drawReceiverName(FW * 13, 0, reusableBuffer.receiverSetup.receiverId);
   lcdInvertLine(0);
 
   if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == 0x00 && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
@@ -1947,7 +1923,7 @@ void menuModelPinmap(event_t event)
     reusableBuffer.receiverSetup.timeout = 0;
     moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
-
+  reusableBuffer.receiverSetup.state = 0xFF; //Todo REMOVE ME
   if (reusableBuffer.receiverSetup.state != 0) {
     for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
