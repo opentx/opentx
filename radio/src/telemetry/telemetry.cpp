@@ -149,7 +149,6 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     case 0x01:
       if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
         if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-          TRACE("SET SLOT %d name", reusableBuffer.moduleSetup.pxx2.bindReceiverId);
           memcpy(g_model.receiverData[reusableBuffer.moduleSetup.pxx2.bindReceiverId].name, &frame[4], PXX2_LEN_RX_NAME);
           reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
           reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
