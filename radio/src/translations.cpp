@@ -710,6 +710,7 @@ const char STR_RX_NAME[]  = TR_RX_NAME;
 
 #if defined(PCBTARANIS) || defined(DSM2)
   const char STR_MODULE_RANGE[]  = TR_MODULE_RANGE;
+const char STR_RECEIVER_OPTIONS[]  = TR_RECEIVER_OPTIONS;
 const char STR_DEL_BUTTON[]  = TR_DEL_BUTTON;
 #endif
 

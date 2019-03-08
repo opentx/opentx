@@ -1943,7 +1943,7 @@ void menuModelPinmap(event_t event)
   lcdInvertLine(0);
 
   if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == 0x00 && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
-    reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 100/*1s*/;
+    reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 500/*5s*/;
     reusableBuffer.receiverSetup.timeout = 0;
     moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }

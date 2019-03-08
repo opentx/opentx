@@ -149,8 +149,7 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
       reusableBuffer.receiverSetup.timeout = 0;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
     }
-    #warning "TODO send channels during the timeout"
-    //setupChannelsFrame(module);
+    setupChannelsFrame(module);
   }
   else {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
@@ -159,7 +158,7 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
     for (int i = 0; i < 24; i++) {
       Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
     }
-    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 10/*100ms*/;
+    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
   }
 }
 

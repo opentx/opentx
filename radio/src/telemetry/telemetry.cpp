@@ -99,6 +99,7 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
   }
 
   reusableBuffer.receiverSetup.state = 0xFF;
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)

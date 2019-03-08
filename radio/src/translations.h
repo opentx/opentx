@@ -976,6 +976,7 @@ extern const char STR_JITTER_FILTER[];
 
 #if defined(PCBTARANIS) || defined(DSM2)
   extern const char STR_MODULE_RANGE[];
+extern const char STR_RECEIVER_OPTIONS[];
   extern const char STR_DEL_BUTTON[];
 #endif
 
