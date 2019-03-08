@@ -90,17 +90,15 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 
 void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
 {
-  #warning "TODO This will be needed to ensure we are in the right menu"
-  //  if (moduleSettings[module].mode != MODULE_MODE_GET_HARDWARE_INFO) {
-  //    return;
-  //  }
+  if (moduleSettings[module].mode != MODULE_MODE_RECEIVER_SETTINGS) {
+    return;
+  }
 
   for (uint8_t pin=0; pin<24; pin++) {
     reusableBuffer.receiverSetup.channelMapping[pin] = frame[5 + pin];
   }
 
   reusableBuffer.receiverSetup.state = 0xFF;
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)

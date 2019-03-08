@@ -115,10 +115,12 @@ void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
     }
     else {
       reusableBuffer.hardware.modules[module].timeout--;
+      setupChannelsFrame(module);
     }
   }
   else {
     moduleSettings[module].mode = MODULE_MODE_NORMAL;
+    setupChannelsFrame(module);
   }
 }
 
@@ -142,13 +144,23 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
 void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
-  Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
-  Pxx2Transport::addByte(0x0);
-  for (int i=0; i<24; i++) {
-    Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
+  if (reusableBuffer.receiverSetup.timeout) {
+    if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
+      reusableBuffer.receiverSetup.timeout = 0;
+      moduleSettings[module].mode = MODULE_MODE_NORMAL;
+    }
+    #warning "TODO send channels during the timeout"
+    //setupChannelsFrame(module);
   }
-  // TODO moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  else {
+    addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
+    Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
+    Pxx2Transport::addByte(0x0);
+    for (int i = 0; i < 24; i++) {
+      Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
+    }
+    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 10/*100ms*/;
+  }
 }
 
 void Pxx2Pulses::setupBindFrame(uint8_t module)

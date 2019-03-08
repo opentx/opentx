@@ -36,6 +36,12 @@
 #if defined(PXX2)
 void menuRadioModulesVersion(event_t event)
 {
+  if (menuEvent) {
+    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    return;
+  }
+
   TITLE("MODULES / RX VERSION");
 
   if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardware.updateTime) {

@@ -23,6 +23,14 @@
 #warning "TODO remove it"
 uint8_t g_moduleIdx;
 
+void drawReceiverName(uint8_t x, uint8_t y, uint8_t receiverSlot)
+{
+  if (g_model.receiverData[receiverSlot].name[0] != '\0')
+    lcdDrawSizedText(x, y, g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME);
+  else
+    lcdDrawText(x, y, "---");
+}
+
 void menuModelFailsafe(event_t event);
 void menuModelPinmap(event_t event);
 
@@ -1247,7 +1255,6 @@ void menuModelSetup(event_t event)
 
         lcdDrawTextAlignedLeft(y, STR_RECEIVER);
         lcdDrawNumber(lcdLastRightPos + 1, y, receiverIdx + 1);
-        // lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.moduleData[moduleIdx].pxx2.receivers[receiverIdx].rxName, PXX2_LEN_RX_NAME, ZCHAR);
 
         if (receiverSlot) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DEL_BUTTON, attr);
@@ -1294,7 +1301,6 @@ void menuModelSetup(event_t event)
           memclear(&reusableBuffer.receiverSetup, sizeof(reusableBuffer.receiverSetup));
           reusableBuffer.receiverSetup.moduleIdx = moduleIdx;
           reusableBuffer.receiverSetup.receiverId = receiverSlot;
-          moduleSettings[moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
           pushMenu(menuModelPinmap);
         }
       }
@@ -1329,11 +1335,7 @@ void menuModelSetup(event_t event)
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
 
-        if (g_model.receiverData[receiverSlot].name[0] != '\0')
-          lcdDrawSizedText(INDENT_WIDTH * 2, y, g_model.receiverData[receiverSlot].name, PXX2_LEN_RX_NAME);
-        else
-          lcdDrawTextAlignedLeft(y, INDENT INDENT "---");
-
+        drawReceiverName(INDENT_WIDTH * 2, y, receiverSlot);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND, menuHorizontalPosition==0 ? attr : 0);
         lcdDrawText(lcdLastRightPos + FW/2, y, BUTTON("Share"), menuHorizontalPosition==1 ? attr : 0);
 
@@ -1927,15 +1929,26 @@ void menuModelFailsafe(event_t event)
 
 void menuModelPinmap(event_t event)
 {
+  if (menuEvent) {
+    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_NORMAL;
+    return;
+  }
+
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   uint8_t wbar = LCD_W / 2 - 20;
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
   lcdDrawTextAlignedLeft(0, STR_PINMAPSET);
-  // TODO write receiver name here
+  drawReceiverName(FW * 10, 0, reusableBuffer.receiverSetup.receiverId);
   lcdInvertLine(0);
 
-  if (reusableBuffer.receiverSetup.state > 0) {
+  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == 0x00 && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
+    reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 100/*1s*/;
+    reusableBuffer.receiverSetup.timeout = 0;
+    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+
+  if (reusableBuffer.receiverSetup.state != 0) {
     for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
       uint8_t pin = menuVerticalOffset + i;
@@ -1952,8 +1965,7 @@ void menuModelPinmap(event_t event)
         flags |= INVERS;
         if (s_editMode > 0) {
           flags |= BLINK;
-          #warning "Not a MODELVAR"
-          CHECK_INCDEC_MODELVAR(event, channel, 0, sentModuleChannels(g_moduleIdx));
+          channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx));
           if (checkIncDec_Ret) {
             reusableBuffer.receiverSetup.channelMapping[pin] = channel;
             reusableBuffer.receiverSetup.state = 0x40;
