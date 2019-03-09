@@ -37,6 +37,10 @@ ChecklistDialog::ChecklistDialog(QWidget *parent, const ModelData * model):
   mModelChecklist = Helpers::getChecklistFilePath(model);
   ui->file->setText("File: " + mModelChecklist);
   ui->pteCheck->setPlainText(readFile(mModelChecklist, QFile::exists(mModelChecklist)));
+
+  QFont f("Courier", 12, QFont::Normal);    // fixed width font
+  ui->pteCheck->setFont(f);
+
   connect(ui->pteCheck, SIGNAL(textChanged()), this, SLOT(changed()));
   connect(ui->pteCheck, SIGNAL(cursorPositionChanged()), this, SLOT(cursorChanged()));
   connect(ui->pbImport, SIGNAL(clicked()), this, SLOT(import()));
