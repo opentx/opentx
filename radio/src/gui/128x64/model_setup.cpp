@@ -1908,7 +1908,7 @@ void menuModelFailsafe(event_t event)
 enum MenuModelReceiverOptions {
   ITEM_RECEIVER_TELEMETRY,
   ITEM_RECEIVER_PWM_RATE,
-  ITEM_RECEIVER_PINMAP
+  ITEM_RECEIVER_PINMAP_FIRST
 };
 
 #define RECEIVER_OPTIONS_2ND_COLUMN 80
@@ -1925,7 +1925,7 @@ void menuModelReceiverOptions(event_t event)
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   uint8_t wbar = LCD_W / 2 - 20;
 
-  SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx) + ITEM_RECEIVER_PINMAP, {IF_TELEM_DISPLAYED(0), IF_PWM_RATE_DISPLAYED(0)});
+  SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx) + ITEM_RECEIVER_PINMAP_FIRST, {IF_TELEM_DISPLAYED(0), IF_PWM_RATE_DISPLAYED(0)});
   int8_t sub = menuVerticalPosition;
 
 
@@ -1942,12 +1942,13 @@ void menuModelReceiverOptions(event_t event)
 #if defined(SIMU)
   reusableBuffer.receiverSetup.state = 0xFF;
 #endif
+
   if (reusableBuffer.receiverSetup.state != 0) {
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
       LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-      uint8_t pin = i - ITEM_RECEIVER_PINMAP;
+      uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
       uint8_t channel = reusableBuffer.receiverSetup.channelMapping[pin];
       int32_t channelValue = channelOutputs[channel];
 
@@ -1960,33 +1961,32 @@ void menuModelReceiverOptions(event_t event)
           break;
 
         default:
+          // Pin
+          lcdDrawText(0, y, "Pin");
+          lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
 
-        // Pin
-        lcdDrawText(0, y, "Pin");
-        lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
-
-        // Channel
-        if (menuVerticalPosition == pin) {
-          if (s_editMode > 0) {
-            channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx));
-            if (checkIncDec_Ret) {
-              reusableBuffer.receiverSetup.channelMapping[pin] = channel;
-              reusableBuffer.receiverSetup.state = 0x40;
-              moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+          // Channel
+          if (menuVerticalPosition == pin) {
+            if (s_editMode > 0) {
+              channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx));
+              if (checkIncDec_Ret) {
+                reusableBuffer.receiverSetup.channelMapping[pin] = channel;
+                reusableBuffer.receiverSetup.state = 0x40;
+                moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+              }
             }
           }
-        }
-        putsChn(7 * FW, y, channel + 1, attr);
+          putsChn(7 * FW, y, channel + 1, attr);
 
-        // Bargraph
-#if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-        lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
-#endif
-        const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-        const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
-        lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
-        lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
-        break;
+          // Bargraph
+  #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
+          lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
+  #endif
+          const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
+          const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
+          lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
+          lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+          break;
       }
     }
   }
