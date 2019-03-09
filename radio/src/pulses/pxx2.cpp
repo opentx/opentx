@@ -134,7 +134,7 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
       Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registerRxName[i]));
     }
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registrationID[i]));
+      Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
   }
   else {
