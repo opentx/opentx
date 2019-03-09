@@ -1966,7 +1966,7 @@ void menuModelReceiverOptions(event_t event)
           lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
 
           // Channel
-          if (menuVerticalPosition == pin) {
+          if ((menuVerticalPosition - ITEM_RECEIVER_PINMAP_FIRST)== pin) {
             if (s_editMode > 0) {
               channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx));
               if (checkIncDec_Ret) {
