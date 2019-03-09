@@ -442,11 +442,6 @@ class ModuleWindow : public Window {
             });
             grid.nextLine();
 
-            /*// Telemetry
-            new StaticText(this, grid.getLabelSlot(true), " Telemetry");
-            new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.receiverData[receiverSlot].telemetry));
-            grid.nextLine();*/
-
             // Receiver name + Bind and share buttons
             // TODO new StaticText(this, grid.getLabelSlot(true), " Telemetry");
             new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_BIND, [=]() {
