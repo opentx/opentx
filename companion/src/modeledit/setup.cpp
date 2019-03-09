@@ -1349,6 +1349,6 @@ void SetupPanel::onBeepCenterToggled(bool checked)
 
 void SetupPanel::on_editText_clicked()
 {
-  ChecklistDialog *g = new ChecklistDialog(this, ui->name->text());
+  ChecklistDialog *g = new ChecklistDialog(this, model);
   g->exec();
 }

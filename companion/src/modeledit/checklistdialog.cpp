@@ -20,16 +20,12 @@
 
 #include "checklistdialog.h"
 #include "ui_checklistdialog.h"
-
-#include "appdata.h"
 #include "helpers.h"
 
 #include <QFile>
 #include <QTextStream>
 
-extern AppData g;
-
-ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
+ChecklistDialog::ChecklistDialog(QWidget *parent, const ModelData * model):
   QDialog(parent),
   ui(new Ui::ChecklistDialog),
   mDirty(false)
@@ -37,17 +33,17 @@ ChecklistDialog::ChecklistDialog(QWidget *parent, const QString modelName):
   ui->setupUi(this);
   setWindowIcon(CompanionIcon("edit.png"));
 
-  mChecklistFolder = g.profile[g.id()].sdPath() + "/MODELS/";
-  QString name = modelName;
-  name.replace(" ", "_");
-  mModelChecklist = QDir::toNativeSeparators(mChecklistFolder + name + ".txt");
+  mChecklistFolder = Helpers::getChecklistsPath();
+  mModelChecklist = Helpers::getChecklistFilePath(model);
   ui->file->setText("File: " + mModelChecklist);
-  ui->pteCheck->setPlainText(readFile(mModelChecklist,QFile::exists(mModelChecklist)));
-
+  ui->pteCheck->setPlainText(readFile(mModelChecklist, QFile::exists(mModelChecklist)));
   connect(ui->pteCheck, SIGNAL(textChanged()), this, SLOT(changed()));
+  connect(ui->pteCheck, SIGNAL(cursorPositionChanged()), this, SLOT(cursorChanged()));
   connect(ui->pbImport, SIGNAL(clicked()), this, SLOT(import()));
   connect(ui->pbCancel, SIGNAL(clicked()), this, SLOT(reject()));
   connect(ui->pbOK, SIGNAL(clicked()), this, SLOT(update()));
+
+  cursorChanged();  // force label to update
 }
 
 ChecklistDialog::~ChecklistDialog()
@@ -115,4 +111,10 @@ QString ChecklistDialog::readFile(const QString & filepath, const bool exists)
     file.close();
   }
   return data;
+}
+
+void ChecklistDialog::cursorChanged()
+{
+  QTextCursor tc = ui->pteCheck->textCursor();
+  ui->lblCursorPos->setText(tr("Line %1, Col %2").arg(tc.blockNumber() + 1).arg(tc.positionInBlock() + 1));
 }
