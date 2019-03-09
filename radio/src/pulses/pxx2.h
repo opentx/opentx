@@ -29,7 +29,9 @@
   #define PXX2_TYPE_ID_REGISTER     0x01
   #define PXX2_TYPE_ID_BIND         0x02
   #define PXX2_TYPE_ID_CHANNELS     0x03
-  #define PXX2_TYPE_ID_RX_SETUP     0x05
+  #define PXX2_TYPE_ID_TX_SETTINGS  0x04
+  #define PXX2_TYPE_ID_RX_SETTINGS  0x05
+  #define PXX2_TYPE_ID_HW_INFO      0x06
   #define PXX2_TYPE_ID_TELEMETRY    0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
@@ -52,7 +54,6 @@ enum PXX2RegisterSteps {
 
 enum PXX2BindSteps {
     BIND_START,
-    BIND_RX_NAME_RECEIVED,
     BIND_RX_NAME_SELECTED,
     BIND_WAIT,
     BIND_OK
@@ -103,11 +104,15 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
     void setupFrame(uint8_t module);
 
   protected:
+    void setupHardwareInfoFrame(uint8_t module);
+
     void setupRegisterFrame(uint8_t module);
 
     void setupBindFrame(uint8_t module);
 
     void setupShareMode(uint8_t module);
+
+    void setupReceiverSettingsFrame(uint8_t module);
 
     void setupChannelsFrame(uint8_t module);
 

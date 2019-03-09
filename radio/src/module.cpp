@@ -49,10 +49,8 @@ void pxx2AddReceiver(uint8_t moduleIndex, uint8_t receiverIndex)
   if (slot > 0) {
     g_model.moduleData[moduleIndex].pxx2.receivers |= (slot << (receiverIndex * 3));
     --slot;
+    memclear(&g_model.receiverData[slot], sizeof(ReceiverData));
     g_model.receiverData[slot].used = 1;
-#warning "USE 32bits copy"
-    g_model.receiverData[slot].channelMapping0 = (0 << 0) + (1 << 5) + (2 << 10) + (3 << 15) + (4 << 20) + (5 << 25) + ((uint64_t)6 << 30) + ((uint64_t)7 << 35) + ((uint64_t)8 << 40) + ((uint64_t)9 << 45) + ((uint64_t)10 << 50) + ((uint64_t)11 << 55);
-    g_model.receiverData[slot].channelMapping1 = (12 << 0) + (13 << 5) + (14 << 10) + (15 << 15) + (16 << 20) + (17 << 25) + ((uint64_t)18 << 30) + ((uint64_t)19 << 35) + ((uint64_t)20 << 40) + ((uint64_t)21 << 45) + ((uint64_t)22 << 50) + ((uint64_t)23 << 55);
     storageDirty(EE_MODEL);
   }
 }

@@ -135,7 +135,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
             v = zchar2char(v);
         }
         name[editNameCursorPos] = v;
-        storageDirty(menuVerticalPositions[0] == 0 ? EE_MODEL : EE_GENERAL);
+        storageDirty(isModelMenuDisplayed() ? EE_MODEL : EE_GENERAL);
       }
 
       lcdDrawSizedText(x, y, name, size, flags);

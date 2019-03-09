@@ -57,6 +57,16 @@ void chainMenu(MenuHandlerFunc newMenu);
 void pushMenu(MenuHandlerFunc newMenu);
 void popMenu();
 
+inline bool isRadioMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 1;
+}
+
+inline bool isModelMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 0;
+}
+
 inline MenuHandlerFunc lastPopMenu()
 {
   return menuHandlers[menuLevel+1];

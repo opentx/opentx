@@ -1126,10 +1126,9 @@ union ReusableBuffer
         uint8_t registerPopupHorizontalPosition;
         int8_t registerPopupEditMode;
         char registerRxName[PXX2_LEN_RX_NAME];
-        char registrationID[PXX2_LEN_REGISTRATION_ID];
-        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
+        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
         uint8_t bindCandidateReceiversCount;
-        uint8_t bindReceiverSlot;
+        uint8_t bindReceiverId;
         union {
           uint8_t bindSelectedReceiverIndex;
           uint8_t shareReceiverIndex;
@@ -1137,6 +1136,17 @@ union ReusableBuffer
       } pxx2;
     };
   } moduleSetup;
+
+  struct {
+    uint8_t state;  // 0x00 = READ 0x40 = WRITE
+    tmr10ms_t timeout;
+    tmr10ms_t updateTime;
+    uint8_t moduleIdx;
+    uint8_t receiverId;
+    uint8_t channelMapping[24];
+    uint8_t telemetryEnabled;
+    uint8_t pwmRate;
+  } receiverSetup;
 
   // 103 bytes
   struct {
@@ -1171,6 +1181,20 @@ union ReusableBuffer
     char id[27];
   } version;
 #endif
+
+  struct {
+    struct {
+      int8_t step;
+      uint8_t timeout;
+      uint32_t hw_version;
+      uint32_t sw_version;
+      struct {
+        uint32_t hw_version;
+        uint32_t sw_version;
+      } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
+    } modules[NUM_MODULES];
+    uint32_t updateTime;
+  } hardware;
 
   struct {
     uint8_t stickMode;

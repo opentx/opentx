@@ -64,8 +64,8 @@ extern int8_t checkIncDec_Ret;  // global helper vars
 extern int8_t s_editMode;       // global editmode
 
 // checkIncDec flags
-#define EE_GENERAL                     0x01
-#define EE_MODEL                       0x02
+
+// we leave room for EE_MODEL and EE_GENERAL
 #define NO_INCDEC_MARKS                0x04
 #define INCDEC_SWITCH                  0x08
 #define INCDEC_SOURCE                  0x10
@@ -281,11 +281,11 @@ void drawStatusLine();
 #endif
 
 #define TEXT_FILENAME_MAXLEN         40
-  extern char s_text_file[TEXT_FILENAME_MAXLEN];
-  void menuTextView(event_t event);
-  void pushMenuTextView(const char *filename);
-  void pushModelNotes();
-  void readModelNotes();
+extern char s_text_file[TEXT_FILENAME_MAXLEN];
+void menuTextView(event_t event);
+void pushMenuTextView(const char *filename);
+void pushModelNotes();
+void readModelNotes();
 
 #define LABEL(...)                     (uint8_t)-1
 

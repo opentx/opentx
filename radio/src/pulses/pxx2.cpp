@@ -104,6 +104,26 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   }
 }
 
+void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
+{
+  if (reusableBuffer.hardware.modules[module].step >= -1 && reusableBuffer.hardware.modules[module].step < PXX2_MAX_RECEIVERS_PER_MODULE) {
+    if (reusableBuffer.hardware.modules[module].timeout == 0) {
+      addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
+      Pxx2Transport::addByte(reusableBuffer.hardware.modules[module].step);
+      reusableBuffer.hardware.modules[module].timeout = 20;
+      reusableBuffer.hardware.modules[module].step++;
+    }
+    else {
+      reusableBuffer.hardware.modules[module].timeout--;
+      setupChannelsFrame(module);
+    }
+  }
+  else {
+    moduleSettings[module].mode = MODULE_MODE_NORMAL;
+    setupChannelsFrame(module);
+  }
+}
+
 void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_REGISTER);
@@ -114,11 +134,34 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
       Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registerRxName[i]));
     }
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registrationID[i]));
+      Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
   }
   else {
     Pxx2Transport::addByte(0);
+  }
+}
+
+void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
+{
+  if (reusableBuffer.receiverSetup.timeout) {
+    if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
+      reusableBuffer.receiverSetup.timeout = 0;
+      moduleSettings[module].mode = MODULE_MODE_NORMAL;
+    }
+    setupChannelsFrame(module);
+  }
+  else {
+    addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
+    Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
+    uint8_t flag1 = 0;
+    if (reusableBuffer.receiverSetup.pwmRate)
+      flag1 |= 0x10;
+    Pxx2Transport::addByte(flag1);
+    for (int i = 0; i < 24; i++) {
+      Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
+    }
+    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
   }
 }
 
@@ -140,7 +183,7 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverSlot); // RX_UID is the slot index (which is unique and never moved)
+    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverId); // RX_UID is the slot index (which is unique and never moved)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
@@ -175,7 +218,7 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
 void Pxx2Pulses::setupShareMode(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETUP);
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
 
   Pxx2Transport::addByte(0xC0);
 
@@ -192,18 +235,29 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
 
-  uint8_t mode = moduleSettings[module].mode;
-
-  if (mode == MODULE_MODE_REGISTER)
-    setupRegisterFrame(module);
-  else if (mode == MODULE_MODE_BIND)
-    setupBindFrame(module);
-  else if (mode == MODULE_MODE_SPECTRUM_ANALYSER)
-    setupSpectrumAnalyser(module);
-  else if (mode == MODULE_MODE_SHARE)
-    setupShareMode(module);
-  else
-    setupChannelsFrame(module);
+  switch (moduleSettings[module].mode) {
+    case MODULE_MODE_GET_HARDWARE_INFO:
+      setupHardwareInfoFrame(module);
+      break;
+    case MODULE_MODE_RECEIVER_SETTINGS:
+      setupReceiverSettingsFrame(module);
+      break;
+    case MODULE_MODE_REGISTER:
+      setupRegisterFrame(module);
+      break;
+    case MODULE_MODE_BIND:
+      setupBindFrame(module);
+      break;
+    case MODULE_MODE_SPECTRUM_ANALYSER:
+      setupSpectrumAnalyser(module);
+      break;
+    case MODULE_MODE_SHARE:
+      setupShareMode(module);
+      break;
+    default:
+      setupChannelsFrame(module);
+      break;
+  }
 
   if (moduleSettings[module].counter-- == 0) {
     moduleSettings[module].counter = 1000;

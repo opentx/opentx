@@ -203,33 +203,11 @@ inline bool isModuleDSM2(uint8_t idx)
 #endif
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
-static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
+static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 8, -2, 8, 4, 8, 16, 8}; // relative to 8!
 static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
-
-inline uint8_t getPinOuput(uint8_t receiverIdx, uint8_t pin)
-{
-  if (pin < 12) {
-    return ((g_model.receiverData[receiverIdx].channelMapping0 >> (pin * 5)) & 0x1F);
-  }
-  else {
-    pin -= 12;
-    return ((g_model.receiverData[receiverIdx].channelMapping1 >> (pin * 5)) & 0x1F);
-  }
-}
-
-inline void setPinOuput(uint8_t receiverIdx, uint8_t pin, uint8_t chan)
-{
-  if (pin < 12) {
-    g_model.receiverData[receiverIdx].channelMapping0 = BF_SET<uint64_t>(g_model.receiverData[receiverIdx].channelMapping0, chan, pin * 5, 5);
-  }
-  else {
-    pin -= 12;
-    g_model.receiverData[receiverIdx].channelMapping1 = BF_SET<uint64_t>(g_model.receiverData[receiverIdx].channelMapping1, chan, pin * 5, 5);
-  }
-}
 
 inline int8_t maxModuleChannels_M8(uint8_t idx)
 {

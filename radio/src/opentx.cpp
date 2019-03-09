@@ -1524,7 +1524,7 @@ void doMixerCalculations()
 #if defined(MULTIMODULE)
       if ((moduleSettings[i].mode != MODULE_MODE_NORMAL && moduleSettings[i].mode != MODULE_MODE_SPECTRUM_ANALYSER)  || (i == EXTERNAL_MODULE && multiModuleStatus.isBinding())) {
 #else
-      if (moduleSettings[i].mode != MODULE_MODE_NORMAL && moduleSettings[i].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
+      if (moduleSettings[i].mode >= MODULE_MODE_BEEP_FIRST) {
 #endif
         if (++countRangecheck >= 250) {
           countRangecheck = 0;

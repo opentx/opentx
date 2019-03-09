@@ -148,7 +148,7 @@ void onModelSetupBitmapMenu(const char * result)
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
     }
   }
-  else {
+  else if (result) {
     // The user choosed a bmp file in the list
     copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
     storageDirty(EE_MODEL);

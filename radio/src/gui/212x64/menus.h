@@ -43,6 +43,16 @@ void chainMenu(MenuHandlerFunc newMenu);
 void pushMenu(MenuHandlerFunc newMenu);
 void popMenu();
 
+inline bool isRadioMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 1;
+}
+
+inline bool isModelMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 0;
+}
+
 void onMainViewMenu(const char * result);
 
 void menuFirstCalib(event_t event);

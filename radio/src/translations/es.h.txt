@@ -989,6 +989,8 @@
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        "[Limites]"
 #define TR_MODULE_REGISTER             "Register"
+#define TR_BUTTON_SHARE              BUTTON("Share")
+#define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           "[Reset]"
 #define TR_SET                 "[Ajuste]"

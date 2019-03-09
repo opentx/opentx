@@ -48,12 +48,19 @@ extern uint8_t menuVerticalPositions[4];
 extern uint8_t menuLevel;
 extern event_t menuEvent;
 
-/// goto given Menu, but substitute current menu in menuStack
 void chainMenu(MenuHandlerFunc newMenu);
-/// goto given Menu, store current menu in menuStack
 void pushMenu(MenuHandlerFunc newMenu);
-/// return to last menu in menuStack
 void popMenu();
+
+inline bool isRadioMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 1;
+}
+
+inline bool isModelMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 0;
+}
 
 enum MenuIcons {
   ICON_OPENTX,

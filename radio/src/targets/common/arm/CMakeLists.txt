@@ -148,8 +148,9 @@ set(SRC
   telemetry/telemetry_holders.cpp
   telemetry/telemetry_sensors.cpp
   telemetry/frsky.cpp
-  telemetry/frsky_d_arm.cpp
+  telemetry/frsky_d.cpp
   telemetry/frsky_sport.cpp
+  telemetry/frsky_pxx2.cpp
   crc16.cpp
   vario.cpp
   )

@@ -88,8 +88,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
       cmpStrWithZchar((char *)&frame[12], reusableBuffer.moduleSetup.pxx2.registrationID, PXX2_LEN_REGISTRATION_ID)) {
       reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
-      #warning "code removed"
-      // POPUP_INFORMATION(STR_REG_OK);
+      POPUP_INFORMATION(STR_REG_OK);
     }
   }
 }
@@ -216,13 +215,13 @@ void telemetryWakeup()
 
   #if defined(INTMODULE_USART)
     if (intmoduleFifo.getFrame(frame)) {
-      processModuleFrame(INTERNAL_MODULE, frame);
+      processPXX2TelemetryFrame(INTERNAL_MODULE, frame);
     }
   #endif
 
   #if defined(EXTMODULE_USART)
     if (extmoduleFifo.getFrame(frame)) {
-      processModuleFrame(EXTERNAL_MODULE, frame);
+      processPXX2TelemetryFrame(EXTERNAL_MODULE, frame);
     }
   #endif
 #endif

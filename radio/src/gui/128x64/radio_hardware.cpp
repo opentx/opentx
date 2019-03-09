@@ -125,7 +125,6 @@ enum MenuRadioHardwareItems {
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_OWNER_ID,
-  ITEM_RADIO_REGISTER_RECEIVER,
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -157,8 +156,6 @@ enum MenuRadioHardwareItems {
 
 #define HW_SETTINGS_COLUMN1            30
 #define HW_SETTINGS_COLUMN2            (30 + 5*FW)
-
-void startRegisterDialog(uint8_t module);
 
 void menuRadioHardware(event_t event)
 {
@@ -314,29 +311,6 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_OWNER_ID:
         editSingleName(HW_SETTINGS_COLUMN2, y, STR_OWNER_ID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);
         break;
-
-      case ITEM_RADIO_REGISTER_RECEIVER:
-        lcdDrawTextAlignedLeft(y, NO_INDENT(STR_RECEIVER));
-        lcdDrawText(HW_SETTINGS_COLUMN2, y, "[Register]", attr );
-        if (attr) {
-          if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
-            if (event == EVT_KEY_FIRST(KEY_ENTER)) {
-              startRegisterDialog(INTERNAL_MODULE);
-            }
-            else if (menuHorizontalPosition == 0) {
-              moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_RANGECHECK;
-            }
-          }
-          if (s_editMode == 0 && !warningText) {
-            moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
-          }
-          if (moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_NORMAL) {
-            // REGISTER finished
-            s_editMode = 0;
-          }
-        }
-        break;
-
     }
   }
 }
