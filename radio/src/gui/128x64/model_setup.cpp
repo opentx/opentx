@@ -428,7 +428,7 @@ void menuModelSetup(event_t event)
     NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
 
-    READONLY_ROW, // Registration ID
+    uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
 
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
