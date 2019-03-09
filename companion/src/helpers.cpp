@@ -888,3 +888,31 @@ QString Helpers::getChecklistFilePath(const ModelData * model)
 {
   return getChecklistsPath() + getChecklistFilename(model);
 }
+
+QString Helpers::removeAccents(const QString & str)
+{
+  QString result = str;
+
+  // UTF-8 ASCII Table
+  const QString tA[] = { "á", "â", "ã", "à", "ä" };
+  const QString tE[] = { "é", "è", "ê", "ě" };
+  const QString tI[] = { "í" };
+  const QString tO[] = { "ó", "ô", "õ", "ö" };
+  const QString tU[] = { "ú", "ü" };
+  const QString tC[] = { "ç" };
+  const QString tY[] = { "ý" };
+  const QString tS[] = { "š" };
+  const QString tR[] = { "ř" };
+
+  for (unsigned int i = 0; i < DIM(tA); i++) result.replace(tA[i], "a");
+  for (unsigned int i = 0; i < DIM(tE); i++) result.replace(tE[i], "e");
+  for (unsigned int i = 0; i < DIM(tI); i++) result.replace(tI[i], "i");
+  for (unsigned int i = 0; i < DIM(tO); i++) result.replace(tO[i], "o");
+  for (unsigned int i = 0; i < DIM(tU); i++) result.replace(tU[i], "u");
+  for (unsigned int i = 0; i < DIM(tC); i++) result.replace(tC[i], "c");
+  for (unsigned int i = 0; i < DIM(tY); i++) result.replace(tY[i], "y");
+  for (unsigned int i = 0; i < DIM(tS); i++) result.replace(tS[i], "s");
+  for (unsigned int i = 0; i < DIM(tR); i++) result.replace(tR[i], "r");
+
+  return result;
+}
