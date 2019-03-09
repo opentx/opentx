@@ -428,7 +428,7 @@ void menuModelSetup(event_t event)
     NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
     0, // Global functions
 
-    isDefaultModelRegistrationID() ? HIDDEN_ROW : READONLY_ROW,    // Registration ID
+    READONLY_ROW, // Registration ID
 
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
@@ -1185,7 +1185,11 @@ void menuModelSetup(event_t event)
 
 #if defined(PCBTARANIS)
       case ITEM_MODEL_REGISTRATION_ID:
-        editSingleName(MODEL_SETUP_2ND_COLUMN, y, STR_REG_ID, g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID), event, attr);
+        lcdDrawTextAlignedLeft(y, STR_REG_ID);
+        if (isDefaultModelRegistrationID())
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "<default>");
+        else
+          lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID), ZCHAR);
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM:

@@ -281,11 +281,11 @@ void drawStatusLine();
 #endif
 
 #define TEXT_FILENAME_MAXLEN         40
-  extern char s_text_file[TEXT_FILENAME_MAXLEN];
-  void menuTextView(event_t event);
-  void pushMenuTextView(const char *filename);
-  void pushModelNotes();
-  void readModelNotes();
+extern char s_text_file[TEXT_FILENAME_MAXLEN];
+void menuTextView(event_t event);
+void pushMenuTextView(const char *filename);
+void pushModelNotes();
+void readModelNotes();
 
 #define LABEL(...)                     (uint8_t)-1
 
