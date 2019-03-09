@@ -452,7 +452,7 @@ class ModuleWindow : public Window {
             new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_BIND, [=]() {
                 reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
                 reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
-                reusableBuffer.moduleSetup.pxx2.bindReceiverSlot = receiverSlot;
+                reusableBuffer.moduleSetup.pxx2.bindReceiverId = receiverSlot;
                 moduleSettings[moduleIndex].mode ^= MODULE_MODE_BIND;
                 return 0;
             });

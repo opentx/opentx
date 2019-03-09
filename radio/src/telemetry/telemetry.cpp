@@ -71,129 +71,6 @@ void processTelemetryData(uint8_t data)
   processFrskyTelemetryData(data);
 }
 
-void processRegisterFrame(uint8_t module, uint8_t * frame)
-{
-  if (moduleSettings[module].mode != MODULE_MODE_REGISTER) {
-    return;
-  }
-
-  if (frame[3] == 0x00 && reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_START) {
-    // RX_NAME follows, we store it for the next step
-    str2zchar(reusableBuffer.moduleSetup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
-    reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
-  }
-  else if (frame[3] == 0x01 && reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
-    // RX_NAME + PASSWORD follow, we check they are good
-    if (cmpStrWithZchar((char *)&frame[4], reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) &&
-      cmpStrWithZchar((char *)&frame[12], reusableBuffer.moduleSetup.pxx2.registrationID, PXX2_LEN_REGISTRATION_ID)) {
-      reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
-      POPUP_INFORMATION(STR_REG_OK);
-    }
-  }
-}
-
-void processBindFrame(uint8_t module, uint8_t * frame)
-{
-  if (moduleSettings[module].mode != MODULE_MODE_BIND) {
-    return;
-  }
-
-  if (frame[3] == 0x00) {
-    bool found = false;
-    for (uint8_t i=0; i<reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount; i++) {
-      if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-        found = true;
-        break;
-      }
-    }
-    if (!found && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-      memcpy(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount], &frame[4], PXX2_LEN_RX_NAME);
-      ++reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount;
-      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_RECEIVED;
-    }
-  }
-  else if (frame[3] == 0x01) {
-    if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
-      reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
-    }
-  }
-}
-
-void processTelemetryFrame(uint8_t module, uint8_t * frame)
-{
-  sportProcessTelemetryPacketWithoutCrc(&frame[3]);
-}
-
-void processSpectrumFrame(uint8_t module, uint8_t * frame)
-{
-  if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
-    return;
-  }
-
-  uint32_t * frequency = (uint32_t *)&frame[4];
-  int8_t * power = (int8_t *)&frame[8];
-
-  // center = 2440000000;  // 2440MHz
-  // span = 40000000;  // 40MHz
-  // left = 2440000000 - 20000000
-  // step = 10000
-
-  int32_t D = *frequency - (2440000000 - 40000000 / 2);
-
-  // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
-  uint8_t x = D * 128 / 40000000;
-
-  reusableBuffer.spectrum.bars[x] = 127 + *power;
-}
-
-void processRadioFrame(uint8_t module, uint8_t * frame)
-{
-  switch (frame[2]) {
-    case PXX2_TYPE_ID_REGISTER:
-      processRegisterFrame(module, frame);
-      break;
-
-    case PXX2_TYPE_ID_BIND:
-      processBindFrame(module, frame);
-      break;
-
-    case PXX2_TYPE_ID_TELEMETRY:
-      processTelemetryFrame(module, frame);
-      break;
-  }
-}
-
-void processPowerMeterFrame(uint8_t module, uint8_t * frame)
-{
-  switch (frame[2]) {
-    case PXX2_TYPE_ID_POWER_METER:
-      // TODO
-      break;
-
-    case PXX2_TYPE_ID_SPECTRUM:
-      processSpectrumFrame(module, frame);
-      break;
-  }
-}
-
-void processModuleFrame(uint8_t module, uint8_t * frame)
-{
-  switch (frame[1]) {
-    case PXX2_TYPE_C_MODULE:
-      processRadioFrame(module, frame);
-      break;
-
-    case PXX2_TYPE_C_POWER_METER:
-      processPowerMeterFrame(module, frame);
-      break;
-
-    default:
-      break;
-  }
-}
-
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
@@ -289,7 +166,7 @@ void telemetryWakeup()
 #if defined(PCBFRSKY)
     if ((isModulePXX(INTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
       AUDIO_RAS_RED();
-#warning "code removed"
+      #warning "code removed"
       // POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;
       SET_WARNING_INFO(w, strlen(w), 0);
