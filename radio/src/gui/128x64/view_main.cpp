@@ -150,7 +150,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir), TINSIZE|VERTICAL);
         }
       }
 #endif
@@ -176,7 +176,7 @@ void displayTrims(uint8_t phase)
 #if defined(CPUARM)
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir), TINSIZE);
         }
       }
 #endif
