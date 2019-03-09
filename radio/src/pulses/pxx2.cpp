@@ -154,7 +154,10 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
   else {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
     Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
-    Pxx2Transport::addByte(0x0);
+    uint8_t flag1 = 0;
+    if(reusableBuffer.receiverSetup.pwmRate)
+      flag1 ^= 0x30;
+    Pxx2Transport::addByte(flag1);
     for (int i = 0; i < 24; i++) {
       Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
     }

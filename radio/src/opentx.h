@@ -1147,6 +1147,8 @@ union ReusableBuffer
     uint8_t moduleIdx;
     uint8_t receiverId;
     uint8_t channelMapping[24];
+    uint8_t telemetryEnabled;
+    uint8_t pwmRate;
   } receiverSetup;
 
   // 103 bytes

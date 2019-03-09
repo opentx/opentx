@@ -69,6 +69,8 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
     reusableBuffer.receiverSetup.channelMapping[pin] = frame[5 + pin];
   }
 
+  reusableBuffer.receiverSetup.pwmRate = frame[4] & 0x30;
+
   reusableBuffer.receiverSetup.state = 0xFF;
   moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
