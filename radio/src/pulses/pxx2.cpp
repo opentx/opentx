@@ -147,11 +147,13 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
   if (reusableBuffer.receiverSetup.timeout) {
     if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
       reusableBuffer.receiverSetup.timeout = 0;
+      reusableBuffer.receiverSetup.state = 0xFF;
       moduleSettings[module].mode = MODULE_MODE_NORMAL;
     }
     setupChannelsFrame(module);
   }
   else {
+    TRACE("Frame is %d", reusableBuffer.receiverSetup.state);
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
     Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
     uint8_t flag1 = 0;

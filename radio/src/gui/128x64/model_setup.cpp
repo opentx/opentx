@@ -1933,10 +1933,12 @@ void menuModelReceiverOptions(event_t event)
   drawReceiverName(FW * 13, 0, reusableBuffer.receiverSetup.receiverId);
   lcdInvertLine(0);
 
-  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == 0x00 && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
+  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == 0xFF && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
     reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 500/*5s*/;
     reusableBuffer.receiverSetup.timeout = 0;
+    reusableBuffer.receiverSetup.state = 0x00; // Get options
     moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    TRACE("GET polling");
   }
 
 #if defined(SIMU)
@@ -1944,7 +1946,9 @@ void menuModelReceiverOptions(event_t event)
 #endif
 
   if (reusableBuffer.receiverSetup.state != 0) {
+    bool changed = false;
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
+      uint8_t previousValue = 0;
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
       LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
@@ -1954,10 +1958,19 @@ void menuModelReceiverOptions(event_t event)
 
       switch (i) {
         case ITEM_RECEIVER_TELEMETRY:
-          reusableBuffer.receiverSetup.telemetryEnabled = editCheckBox(reusableBuffer.receiverSetup.telemetryEnabled , RECEIVER_OPTIONS_2ND_COLUMN, y, "Telemetry", attr, event);
+          previousValue = reusableBuffer.receiverSetup.telemetryEnabled;
+          reusableBuffer.receiverSetup.telemetryEnabled = editCheckBox(reusableBuffer.receiverSetup.telemetryEnabled, RECEIVER_OPTIONS_2ND_COLUMN, y,
+                                                                       "Telemetry", attr, event);
+          if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled)
+            changed = true;
           break;
+
+
         case ITEM_RECEIVER_PWM_RATE:
-          reusableBuffer.receiverSetup.pwmRate = editCheckBox(reusableBuffer.receiverSetup.pwmRate , RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
+          previousValue = reusableBuffer.receiverSetup.pwmRate;
+          reusableBuffer.receiverSetup.pwmRate = editCheckBox(reusableBuffer.receiverSetup.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
+          if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled)
+            changed = true;
           break;
 
         default:
@@ -1971,8 +1984,7 @@ void menuModelReceiverOptions(event_t event)
               channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx));
               if (checkIncDec_Ret) {
                 reusableBuffer.receiverSetup.channelMapping[pin] = channel;
-                reusableBuffer.receiverSetup.state = 0x40;
-                moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+                changed = true;
               }
             }
           }
@@ -1988,6 +2000,12 @@ void menuModelReceiverOptions(event_t event)
           lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
           break;
       }
+    }
+    if (changed) {
+      reusableBuffer.receiverSetup.state = 0x40;  // Set options
+      reusableBuffer.receiverSetup.timeout = 0;
+      moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+      TRACE("CHange detected, sending SET");
     }
   }
   else {
