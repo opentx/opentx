@@ -62,20 +62,16 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 
 void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_RECEIVER_SETTINGS) {
-    return;
-  }
-  TRACE("Processing Frame");
-  if (reusableBuffer.receiverSetup.state == 0x00) {
-    TRACE("Frame is GET");
+  if (reusableBuffer.receiverSetup.state == RECEIVER_WAITING_RESPONSE) {
     for (uint8_t pin = 0; pin < 24; pin++) {
       reusableBuffer.receiverSetup.channelMapping[pin] = frame[5 + pin];
     }
     reusableBuffer.receiverSetup.pwmRate = frame[4] & 0x30;
+    reusableBuffer.receiverSetup.state = RECEIVER_OK;
+    reusableBuffer.receiverSetup.timeout = 0;
+    moduleSettings[module].mode = MODULE_MODE_NORMAL;
   }
-  reusableBuffer.receiverSetup.state = 0xFF;
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
-}
+ }
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)
 {

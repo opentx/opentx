@@ -1933,19 +1933,16 @@ void menuModelReceiverOptions(event_t event)
   drawReceiverName(FW * 13, 0, reusableBuffer.receiverSetup.receiverId);
   lcdInvertLine(0);
 
-  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == 0xFF && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
+  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == RECEIVER_OK && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
     reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 500/*5s*/;
-    reusableBuffer.receiverSetup.timeout = 0;
-    reusableBuffer.receiverSetup.state = 0x00; // Get options
-    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
-    TRACE("GET polling");
+    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_GET_SETTINGS;
   }
 
 #if defined(SIMU)
   reusableBuffer.receiverSetup.state = 0xFF;
 #endif
 
-  if (reusableBuffer.receiverSetup.state != 0) {
+  if (reusableBuffer.receiverSetup.state != RECEIVER_WAITING_RESPONSE) {
     bool changed = false;
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
       uint8_t previousValue = 0;
@@ -2002,10 +1999,8 @@ void menuModelReceiverOptions(event_t event)
       }
     }
     if (changed) {
-      reusableBuffer.receiverSetup.state = 0x40;  // Set options
       reusableBuffer.receiverSetup.timeout = 0;
-      moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
-      TRACE("CHange detected, sending SET");
+      moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SET_SETTINGS;
     }
   }
   else {

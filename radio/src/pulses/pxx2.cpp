@@ -142,29 +142,37 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
   }
 }
 
-void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
+void Pxx2Pulses::setupReceiverSetSettingsFrame(uint8_t module)
 {
-  if (reusableBuffer.receiverSetup.timeout) {
-    if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
-      reusableBuffer.receiverSetup.timeout = 0;
-      reusableBuffer.receiverSetup.state = 0xFF;
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
-    }
-    setupChannelsFrame(module);
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
+  Pxx2Transport::addByte(0x40 + reusableBuffer.receiverSetup.receiverId);
+  uint8_t flag1 = 0;
+  if (reusableBuffer.receiverSetup.pwmRate)
+    flag1 |= 0x10;
+  Pxx2Transport::addByte(flag1);
+  for (int i = 0; i < 24; i++) {
+    Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
   }
-  else {
-    TRACE("Frame is %d", reusableBuffer.receiverSetup.state);
-    addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
-    Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
-    uint8_t flag1 = 0;
-    if (reusableBuffer.receiverSetup.pwmRate)
-      flag1 |= 0x10;
-    Pxx2Transport::addByte(flag1);
-    for (int i = 0; i < 24; i++) {
-      Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
-    }
-    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
+  reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
+  reusableBuffer.receiverSetup.state = RECEIVER_WAITING_RESPONSE;  // module will be confirming changes
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+}
+
+
+void Pxx2Pulses::setupReceiverGetSettingsFrame(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
+  Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
+  uint8_t flag1 = 0;
+  if (reusableBuffer.receiverSetup.pwmRate)
+    flag1 |= 0x10;
+  Pxx2Transport::addByte(flag1);
+  for (int i = 0; i < 24; i++) {
+    Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
   }
+  reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
+  reusableBuffer.receiverSetup.state = RECEIVER_WAITING_RESPONSE;
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void Pxx2Pulses::setupBindFrame(uint8_t module)
@@ -241,8 +249,11 @@ void Pxx2Pulses::setupFrame(uint8_t module)
     case MODULE_MODE_GET_HARDWARE_INFO:
       setupHardwareInfoFrame(module);
       break;
-    case MODULE_MODE_RECEIVER_SETTINGS:
-      setupReceiverSettingsFrame(module);
+    case MODULE_MODE_RECEIVER_GET_SETTINGS:
+      setupReceiverGetSettingsFrame(module);
+      break;
+    case MODULE_MODE_RECEIVER_SET_SETTINGS:
+      setupReceiverSetSettingsFrame(module);
       break;
     case MODULE_MODE_REGISTER:
       setupRegisterFrame(module);

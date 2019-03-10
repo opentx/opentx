@@ -59,6 +59,10 @@ enum PXX2BindSteps {
     BIND_OK
 };
 
+enum PXX2ReceiverStatus {
+  RECEIVER_WAITING_RESPONSE,
+  RECEIVER_OK
+};
 extern ModuleFifo intmoduleFifo;
 extern ModuleFifo extmoduleFifo;
 
@@ -112,7 +116,9 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void setupShareMode(uint8_t module);
 
-    void setupReceiverSettingsFrame(uint8_t module);
+    void setupReceiverSetSettingsFrame(uint8_t module);
+
+    void setupReceiverGetSettingsFrame(uint8_t module);
 
     void setupChannelsFrame(uint8_t module);
 
