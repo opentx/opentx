@@ -147,6 +147,7 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
 void Pxx2Pulses::setupReceiverSetSettingsFrame(uint8_t module)
 {
+  TRACE("Sending SET frame");
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
   Pxx2Transport::addByte(0x40 + reusableBuffer.receiverSetup.receiverId);
   uint8_t flag1 = 0;
@@ -166,14 +167,12 @@ void Pxx2Pulses::setupReceiverSetSettingsFrame(uint8_t module)
 
 void Pxx2Pulses::setupReceiverGetSettingsFrame(uint8_t module)
 {
+  TRACE("Sending GET frame");
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
   Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
-  uint8_t flag1 = 0;
-  if (reusableBuffer.receiverSetup.pwmRate)
-    flag1 |= 0x10;
-  Pxx2Transport::addByte(flag1);
+  Pxx2Transport::addByte(0x00);
   for (int i = 0; i < 24; i++) {
-    Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
+    Pxx2Transport::addByte(0x00);
   }
   reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
   reusableBuffer.receiverSetup.state = RECEIVER_WAITING_RESPONSE;

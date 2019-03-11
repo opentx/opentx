@@ -1957,17 +1957,22 @@ void menuModelReceiverOptions(event_t event)
         case ITEM_RECEIVER_TELEMETRY:
           previousValue = reusableBuffer.receiverSetup.telemetryEnabled;
           reusableBuffer.receiverSetup.telemetryEnabled = editCheckBox(reusableBuffer.receiverSetup.telemetryEnabled, RECEIVER_OPTIONS_2ND_COLUMN, y,
-                                                                       "Telemetry", attr, event) & PXX2_RECV_OPTION_MASK_TELEMETRY;
-          if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled)
+                                                                       "Telemetry", attr, event);
+          if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled) {
             changed = true;
+            TRACE("TELEM CHANGED (%d , %d)", previousValue, reusableBuffer.receiverSetup.telemetryEnabled);
+          }
           break;
 
 
         case ITEM_RECEIVER_PWM_RATE:
           previousValue = reusableBuffer.receiverSetup.pwmRate;
-          reusableBuffer.receiverSetup.pwmRate = editCheckBox(reusableBuffer.receiverSetup.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event) & PXX2_RECV_OPTION_MASK_FASTPWM;
-          if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled)
+          reusableBuffer.receiverSetup.pwmRate = editCheckBox(reusableBuffer.receiverSetup.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
+          TRACE("pwmRate : %d", reusableBuffer.receiverSetup.pwmRate);
+          if (previousValue != reusableBuffer.receiverSetup.pwmRate) {
             changed = true;
+            TRACE("pwmRate CHANGED (%d , %d)", previousValue, reusableBuffer.receiverSetup.pwmRate);
+          }
           break;
 
         default:
@@ -2001,6 +2006,7 @@ void menuModelReceiverOptions(event_t event)
     if (changed) {
       reusableBuffer.receiverSetup.timeout = 0;
       moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SET_SETTINGS;
+      TRACE("Change detected");
     }
   }
   else {
