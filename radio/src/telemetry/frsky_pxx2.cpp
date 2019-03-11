@@ -62,14 +62,14 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 
 void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
 {
-  TRACE("Got Option frame");
-  for (uint8_t pin = 0; pin < 24; pin++) {
+  uint8_t channelsCount = sentModuleChannels(module);
+  for (uint8_t pin = 0; pin < channelsCount; pin++) {
     reusableBuffer.receiverSetup.channelMapping[pin] = frame[5 + pin];
   }
-  if(frame[4] & PXX2_RECV_OPTION_MASK_FASTPWM)
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
     reusableBuffer.receiverSetup.pwmRate = 1;
-  if(frame[4] & PXX2_RECV_OPTION_MASK_TELEMETRY)
-    reusableBuffer.receiverSetup.telemetryEnabled = 1;
+//  if (frame[4] & PXX2_RECV_OPTION_MASK_TELEMETRY)
+//    reusableBuffer.receiverSetup.telemetryEnabled = 1;
   reusableBuffer.receiverSetup.state = RECEIVER_OK;
   reusableBuffer.receiverSetup.timeout = 0;
   moduleSettings[module].mode = MODULE_MODE_NORMAL;

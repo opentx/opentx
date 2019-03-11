@@ -145,34 +145,17 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
   }
 }
 
-void Pxx2Pulses::setupReceiverSetSettingsFrame(uint8_t module)
+void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 {
-  TRACE("Sending SET frame");
-  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
-  Pxx2Transport::addByte(0x40 + reusableBuffer.receiverSetup.receiverId);
-  uint8_t flag1 = 0;
-  if (reusableBuffer.receiverSetup.pwmRate)
-    flag1 |= PXX2_RECV_OPTION_MASK_FASTPWM;
-  if (reusableBuffer.receiverSetup.telemetryEnabled)
-    flag1 |= PXX2_RECV_OPTION_MASK_TELEMETRY;
-  Pxx2Transport::addByte(flag1);
-  for (int i = 0; i < 24; i++) {
-    Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
-  }
-  reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
-  reusableBuffer.receiverSetup.state = RECEIVER_WAITING_RESPONSE;  // module will be confirming changes
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
-}
-
-
-void Pxx2Pulses::setupReceiverGetSettingsFrame(uint8_t module)
-{
-  TRACE("Sending GET frame");
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
   Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
-  Pxx2Transport::addByte(0x00);
-  for (int i = 0; i < 24; i++) {
-    Pxx2Transport::addByte(0x00);
+  uint8_t flag1 = 0;
+  if (reusableBuffer.receiverSetup.pwmRate)
+    flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
+  Pxx2Transport::addByte(flag1);
+  uint8_t channelsCount = sentModuleChannels(module);
+  for (int i = 0; i < channelsCount; i++) {
+    Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
   }
   reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
   reusableBuffer.receiverSetup.state = RECEIVER_WAITING_RESPONSE;
@@ -253,11 +236,8 @@ void Pxx2Pulses::setupFrame(uint8_t module)
     case MODULE_MODE_GET_HARDWARE_INFO:
       setupHardwareInfoFrame(module);
       break;
-    case MODULE_MODE_RECEIVER_GET_SETTINGS:
-      setupReceiverGetSettingsFrame(module);
-      break;
-    case MODULE_MODE_RECEIVER_SET_SETTINGS:
-      setupReceiverSetSettingsFrame(module);
+    case MODULE_MODE_RECEIVER_SETTINGS:
+      setupReceiverSettingsFrame(module);
       break;
     case MODULE_MODE_REGISTER:
       setupRegisterFrame(module);

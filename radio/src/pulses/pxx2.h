@@ -43,11 +43,9 @@
 #define PXX2_CHANNELS_FLAG0_FAILSAFE         (1 << 6)
 #define PXX2_CHANNELS_FLAG0_RANGECHECK       (1 << 7)
 
-#define PXX2_RECV_OPTION_MASK_FASTPWM       0x10
-#define PXX2_RECV_OPTION_MASK_TELEMETRY     0x00 // Todo : update when defined
+#define PXX2_RX_SETTINGS_FLAG1_FASTPWM       (1 << 4)
+#define PXX2_RECV_OPTION_MASK_TELEMETRY      0x00 // TODO : update when defined
 
-const uint8_t DEFAULT_CHANNEL_MAPPING[] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-const uint8_t CH9TO16_CHANNEL_MAPPING[] = {0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45, 0x67};
 
 enum PXX2RegisterSteps {
   REGISTER_START,
@@ -120,9 +118,7 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void setupShareMode(uint8_t module);
 
-    void setupReceiverSetSettingsFrame(uint8_t module);
-
-    void setupReceiverGetSettingsFrame(uint8_t module);
+    void setupReceiverSettingsFrame(uint8_t module);
 
     void setupChannelsFrame(uint8_t module);
 

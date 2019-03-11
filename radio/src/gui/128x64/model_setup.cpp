@@ -1928,14 +1928,13 @@ void menuModelReceiverOptions(event_t event)
   SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + sentModuleChannels(g_moduleIdx), {IF_TELEM_DISPLAYED(0), IF_PWM_RATE_DISPLAYED(0)});
   int8_t sub = menuVerticalPosition;
 
-
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
   drawReceiverName(FW * 13, 0, reusableBuffer.receiverSetup.receiverId);
   lcdInvertLine(0);
 
   if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == RECEIVER_OK && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
     reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 500/*5s*/;
-    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_GET_SETTINGS;
+    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
 #if defined(SIMU)
@@ -2005,8 +2004,7 @@ void menuModelReceiverOptions(event_t event)
     }
     if (changed) {
       reusableBuffer.receiverSetup.timeout = 0;
-      moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SET_SETTINGS;
-      TRACE("Change detected");
+      moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
     }
   }
   else {
