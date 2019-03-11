@@ -123,8 +123,8 @@ const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t ext
 #if defined(PCBX12S)
   #define OTX_FOURCC 0x3478746F // otx for X12S
   #define O9X_FOURCC 0x3178396F // we forgot it in 2.2 RC ..
-#elif defined(PCBX10)
-  #define OTX_FOURCC 0x3778746F // otx for X10
+#elif defined(PCBT16)
+  #define OTX_FOURCC 0x3778746F // otx for T16
   #define O9X_FOURCC 0x3478746F // match X12S, we forgot OTX_FOURCC before 2.2.1 RC2
 #elif defined(PCBX9E)
   #define OTX_FOURCC 0x3578746F // otx for Taranis X9E
@@ -132,9 +132,9 @@ const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t ext
 #elif defined(PCBXLITE)
   #define OTX_FOURCC 0x3978746F // otx for Taranis X-Lite
   #define O9X_FOURCC 0x3978396F // o9x for Taranis X-Lite
-#elif defined(PCBT12)
-  #define OTX_FOURCC 0x3678746F // otx for Jumper T12
-  #define O9X_FOURCC 0x3378396F // o9x for Jumper T12
+#elif defined(PCBX7)
+  #define OTX_FOURCC 0x3678746F // otx for Taranis X7
+  #define O9X_FOURCC 0x3378396F // o9x for Taranis X7
 #elif defined(PCBX9D) || defined(PCBX9DP)
   #define OTX_FOURCC 0x3378746F // otx for Taranis X9D
   #define O9X_FOURCC 0x3378396F // o9x for Taranis X9D

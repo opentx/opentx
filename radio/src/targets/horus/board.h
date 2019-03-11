@@ -52,7 +52,7 @@ extern "C" {
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_dma2d.h"
 
-#if defined(PCBX10)
+#if defined(PCBT16)
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
 #endif
 
@@ -102,7 +102,7 @@ extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
 
-#if defined(PCBX10)
+#if defined(PCBT16)
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
@@ -126,7 +126,7 @@ void delay_ms(uint32_t ms);
 
 // PCBREV driver
 #define IS_HORUS_PROD()                GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN)
-#if defined(SIMU) || defined(PCBX10)
+#if defined(SIMU) || defined(PCBT16)
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() true
 #elif PCBREV >= 13
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() IS_HORUS_PROD()
@@ -337,7 +337,7 @@ void watchdogInit(unsigned int duration);
 // ADC driver
 #define NUM_POTS                       3
 #define NUM_XPOTS                      NUM_POTS
-#if defined(PCBX10)
+#if defined(PCBT16)
   #define NUM_SLIDERS                  2
   #define NUM_PWMSTICKS                4
 #else
@@ -402,7 +402,7 @@ void adcInit(void);
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
 #define NUM_MOUSE_ANALOGS              2
-#if defined(PCBX10)
+#if defined(PCBT16)
   #define NUM_DUMMY_ANAS               2
 #else
   #define NUM_DUMMY_ANAS               0
@@ -417,7 +417,7 @@ extern volatile uint32_t pwm_interrupt_count;
 #endif
 
 // Battery driver
-#if defined(PCBX10)
+#if defined(PCBT16)
   // Lipo 2S
   #define BATTERY_WARN      66 // 6.6V
   #define BATTERY_MIN       67 // 6.7V
@@ -454,7 +454,7 @@ void ledInit(void);
 void ledOff(void);
 void ledRed(void);
 void ledBlue(void);
-#if defined(PCBX10)
+#if defined(PCBT16)
   void ledGreen();
 #endif
 
@@ -499,10 +499,10 @@ void usbJoystickUpdate();
   #define USB_NAME                     "FrSky Horus"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'H', 'o', 'r', 'u', 's', ' ', ' ', ' '  /* 8 Bytes */
-#elif defined(PCBX10)
-  #define USB_NAME                     "FrSky X10"
-  #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
-  #define USB_PRODUCT                  'X', '1', '0', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(PCBT16)
+  #define USB_NAME                     "Jumper T16"
+  #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'T', '1', '6', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
 #endif
 
 #if defined(__cplusplus) && !defined(SIMU)
@@ -534,7 +534,7 @@ uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
 // Sport update driver
-#if defined(PCBX10)
+#if defined(PCBT16)
 void sportUpdatePowerOn(void);
 void sportUpdatePowerOff(void);
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()

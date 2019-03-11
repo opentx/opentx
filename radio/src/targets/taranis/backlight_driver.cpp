@@ -97,7 +97,7 @@ uint8_t isBacklightEnabled()
 {
   return (BACKLIGHT_TIMER->CCR4 != 0 || BACKLIGHT_TIMER->CCR2 != 0);
 }
-#elif defined(PCBT12) || defined(PCBXLITE)
+#elif defined(PCBX7) || defined(PCBXLITE)
 void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;

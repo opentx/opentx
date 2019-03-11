@@ -205,7 +205,7 @@ const char * sportUpdatePowerOn(ModuleIndex module)
   if (!IS_FRSKY_SPORT_PROTOCOL()) {
     return TR("Not responding", "Not S.Port 2");
   }
-#if defined(PCBT12)
+#if defined(PCBX7)
   if (IS_PCBREV_40()) {
     return TR("Bottom pin no resp", "Bottom pin not responding");
   }

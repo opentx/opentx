@@ -158,7 +158,7 @@ bool isSourceAvailable(int source)
   }
 #endif
 
-#if defined(PCBX10)
+#if defined(PCBT16)
   if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
     return false;
 #endif
@@ -588,7 +588,7 @@ bool isTrainerModeAvailable(int mode)
   else
     return true;
 }
-#elif defined(PCBT12)
+#elif defined(PCBX7)
 bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))

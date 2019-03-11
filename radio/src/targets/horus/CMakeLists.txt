@@ -21,9 +21,9 @@ if(SPLASH STREQUAL OFF)
   message(FATAL_ERROR "Option SPLASH=OFF not supported on Horus")
 endif()
 
-if (PCB STREQUAL X10)
-  set(FLAVOUR x10)
-  add_definitions(-DPCBX10)
+if (PCB STREQUAL T16)
+  set(FLAVOUR t16)
+  add_definitions(-DPCBT16)
   add_definitions(-DSOFTWARE_VOLUME)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -32,10 +32,10 @@ if (PCB STREQUAL X10)
     ../common/arm/stm32/sticks_pwm_driver.cpp
     )
 
-  set(BITMAPS_TARGET x10_bitmaps)
-  set(FONTS_TARGET x10_fonts)
+  set(BITMAPS_TARGET t16_bitmaps)
+  set(FONTS_TARGET t16_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
-  set(LUA_EXPORT lua_export_x10)
+  set(LUA_EXPORT lua_export_t16)
 elseif (PCB STREQUAL X12S)
   set(FLAVOUR x12s)
   set(PCBREV "13" CACHE STRING "PCB Revision")
@@ -155,7 +155,7 @@ set(STM32LIB_SRC
 if(PYTHONINTERP_FOUND)
   add_custom_target(datacopy
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DCOLORLCD -DBACKUP -DVIRTUAL_INPUTS -Itargets/horus > storage/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBT16 -DCPUARM -DCOLORLCD -DBACKUP -DVIRTUAL_INPUTS -Itargets/horus > storage/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
 endif()

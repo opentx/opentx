@@ -28,14 +28,14 @@ env:
     # - FLAVOR=AR9X
     # - FLAVOR=SKY9X
     # - FLAVOR=9XRPRO
-    - FLAVOR=T12
+    - FLAVOR=X7
     - FLAVOR=XLITE
     - FLAVOR=X9
     # - FLAVOR=X9D
     # - FLAVOR=X9D+
     # - FLAVOR=X9E
     - FLAVOR=HORUS
-    # - FLAVOR=X10
+    # - FLAVOR=T16
     # - FLAVOR=X12Sr10
     # - FLAVOR=X12S
 

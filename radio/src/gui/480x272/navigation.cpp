@@ -354,7 +354,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
     switch (event) {
 #if defined(PCBX12S)
       case EVT_KEY_FIRST(KEY_PGDN):
-#elif defined(PCBX10)
+#elif defined(PCBT16)
       case EVT_KEY_BREAK(KEY_PGDN):
 #endif
         if (s_editMode>0)
@@ -365,7 +365,7 @@ bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         break;
 
       case EVT_KEY_FIRST(KEY_PGUP):
-#if defined(PCBX10)
+#if defined(PCBT16)
       case EVT_KEY_LONG(KEY_PGDN):
 #endif
         if (s_editMode>0)

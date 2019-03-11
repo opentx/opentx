@@ -175,10 +175,10 @@ if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ " X10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on X10 boards
+if [[ " T16 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
+  # OpenTX on T16 boards
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X10 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=T16 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}

@@ -53,7 +53,7 @@ void backlightInit()
     BACKLIGHT_TIMER->CR1 |= TIM_CR1_CEN; // Counter enable
     BACKLIGHT_TIMER->BDTR |= TIM_BDTR_MOE;
   }
-#elif defined(PCBX10)
+#elif defined(PCBT16)
   BACKLIGHT_TIMER->ARR = 100;
   BACKLIGHT_TIMER->PSC = BACKLIGHT_TIMER_FREQ / 1000000 - 1; // 10kHz (same as FrOS)
   BACKLIGHT_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3PE; // PWM mode 1
@@ -74,7 +74,7 @@ void backlightEnable(uint8_t dutyCycle)
   else {
     BACKLIGHT_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX - dutyCycle;
   }
-#elif defined(PCBX10)
+#elif defined(PCBT16)
   BACKLIGHT_TIMER->CCR3 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #endif
 

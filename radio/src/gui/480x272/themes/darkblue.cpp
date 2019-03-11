@@ -135,12 +135,12 @@ class DarkblueTheme: public Theme
       calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
 
       delete calibHorus;
-#if defined(PCBX10)
+#if defined(PCBT16)
       if(STICKS_PWM_ENABLED()) {
-        calibHorus = BitmapBuffer::load(getThemePath("X10S.bmp"));
+        calibHorus = BitmapBuffer::load(getThemePath("T16.bmp"));
       }
       else {
-        calibHorus = BitmapBuffer::load(getThemePath("X10.bmp"));
+        calibHorus = BitmapBuffer::load(getThemePath("T16.bmp"));
       }
 #else
       calibHorus = BitmapBuffer::load(getThemePath("horus.bmp"));
