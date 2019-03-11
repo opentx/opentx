@@ -40,7 +40,8 @@
 
 #define PXX2_TYPE_C_OTA             0xFE
 
-#define PXX2_FLAG0_FAILSAFE         (1 << 6)
+#define PXX2_CHANNELS_FLAG0_FAILSAFE         (1 << 6)
+#define PXX2_CHANNELS_FLAG0_RANGECHECK       (1 << 7)
 
 #define PXX2_RECV_OPTION_MASK_FASTPWM       0x10
 #define PXX2_RECV_OPTION_MASK_TELEMETRY     0x00 // Todo : update when defined

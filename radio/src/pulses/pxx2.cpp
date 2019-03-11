@@ -26,8 +26,11 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
   uint8_t flag0 = g_model.header.modelId[module] & 0x3F;
   if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
     if (moduleSettings[module].counter == 0) {
-      flag0 |= PXX2_FLAG0_FAILSAFE;
+      flag0 |= PXX2_CHANNELS_FLAG0_FAILSAFE;
     }
+  }
+  if (moduleSettings[module].mode == MODULE_MODE_RANGECHECK) {
+    flag0 |= PXX2_CHANNELS_FLAG0_RANGECHECK;
   }
   Pxx2Transport::addByte(flag0);
   return flag0;
@@ -95,11 +98,11 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 
   // Channels
   uint8_t channelsCount = sentModuleChannels(module);
-  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart);
+  addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart);
   if (channelsCount > 8) {
-    addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 8);
+    addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 8);
     if (channelsCount > 16) {
-      addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 16);
+      addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 16);
     }
   }
 }
