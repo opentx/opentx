@@ -1957,7 +1957,7 @@ void menuModelReceiverOptions(event_t event)
         case ITEM_RECEIVER_TELEMETRY:
           previousValue = reusableBuffer.receiverSetup.telemetryEnabled;
           reusableBuffer.receiverSetup.telemetryEnabled = editCheckBox(reusableBuffer.receiverSetup.telemetryEnabled, RECEIVER_OPTIONS_2ND_COLUMN, y,
-                                                                       "Telemetry", attr, event);
+                                                                       "Telemetry", attr, event) & PXX2_RECV_OPTION_MASK_TELEMETRY;
           if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled)
             changed = true;
           break;
@@ -1965,7 +1965,7 @@ void menuModelReceiverOptions(event_t event)
 
         case ITEM_RECEIVER_PWM_RATE:
           previousValue = reusableBuffer.receiverSetup.pwmRate;
-          reusableBuffer.receiverSetup.pwmRate = editCheckBox(reusableBuffer.receiverSetup.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
+          reusableBuffer.receiverSetup.pwmRate = editCheckBox(reusableBuffer.receiverSetup.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event) & PXX2_RECV_OPTION_MASK_FASTPWM;
           if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled)
             changed = true;
           break;

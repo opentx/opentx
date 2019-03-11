@@ -148,7 +148,9 @@ void Pxx2Pulses::setupReceiverSetSettingsFrame(uint8_t module)
   Pxx2Transport::addByte(0x40 + reusableBuffer.receiverSetup.receiverId);
   uint8_t flag1 = 0;
   if (reusableBuffer.receiverSetup.pwmRate)
-    flag1 |= 0x10;
+    flag1 |= PXX2_RECV_OPTION_MASK_FASTPWM;
+  if (reusableBuffer.receiverSetup.telemetryEnabled)
+    flag1 |= PXX2_RECV_OPTION_MASK_TELEMETRY;
   Pxx2Transport::addByte(flag1);
   for (int i = 0; i < 24; i++) {
     Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
