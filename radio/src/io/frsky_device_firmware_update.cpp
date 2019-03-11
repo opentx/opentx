@@ -93,19 +93,31 @@ void DeviceFirmwareUpdate::startup()
 const uint8_t * DeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
 {
   uint8_t len = 0;
+  bool bytestuff = false;
   while (len < 10) {
     uint32_t elapsed = 0;
-    while (!fifo.pop(frame[len])) {
+    uint8_t byte;
+    while (!fifo.pop(byte)) {
       RTOS_WAIT_MS(1);
       if (elapsed++ >= timeout) {
         return nullptr;
       }
     }
-    if (len > 0 || frame[len] == 0x7E) {
+    if (byte == 0x7D) {
+      bytestuff = true;
+      continue;
+    }
+    if (bytestuff) {
+      frame[len] = 0x20 ^ byte;
+      bytestuff = false;
+    }
+    else {
+      frame[len] = byte;
+    }
+    if (len > 0 || byte == 0x7E) {
       ++len;
     }
   }
-
   return &frame[1];
 }
 
