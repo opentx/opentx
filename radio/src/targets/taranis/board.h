@@ -475,9 +475,9 @@ enum Analogs {
 
 PACK(typedef struct {
 #if NUM_PWMSTICKS > 0
-    uint8_t sticksPwmDisabled:1;
+  uint8_t sticksPwmDisabled:1;
 #endif
-    uint8_t pxx2Enabled:1;
+  uint8_t pxx2Enabled:1;
 }) HardwareOptions;
 
 extern HardwareOptions hardwareOptions;
