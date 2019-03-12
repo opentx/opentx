@@ -672,10 +672,10 @@
   #define STATUS_LEDS
   #define GPIO_LED_GPIO_ON              GPIO_SetBits
   #define GPIO_LED_GPIO_OFF             GPIO_ResetBits
-  #define LED_GREEN_GPIO                GPIOE
-  #define LED_GREEN_GPIO_PIN            GPIO_Pin_5  // PE.05
   #define LED_RED_GPIO                  GPIOE
-  #define LED_RED_GPIO_PIN              GPIO_Pin_4  // PE.04
+  #define LED_RED_GPIO_PIN              GPIO_Pin_5  // PE.05
+  #define LED_GREEN_GPIO                GPIOE
+  #define LED_GREEN_GPIO_PIN            GPIO_Pin_4  // PE.04
   #define LED_BLUE_GPIO                 GPIOE
   #define LED_BLUE_GPIO_PIN             GPIO_Pin_6  // PE.06
 #endif
@@ -944,14 +944,7 @@
 #endif
 
 // S.Port update connector
-#if defined(PCBX3)
-  #define SPORT_MAX_BAUDRATE            250000 // not tested
-  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOE
-  #define SPORT_UPDATE_PWR_GPIO         GPIOE
-  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15 // PE.15
-  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
-  #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
-#elif defined(PCBXLITE)
+#if defined(PCBXLITE)
   #define SPORT_MAX_BAUDRATE            250000 // not tested
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
   #define SPORT_UPDATE_PWR_GPIO         GPIOD
@@ -963,6 +956,13 @@
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOB
   #define SPORT_UPDATE_PWR_GPIO         GPIOB
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_2  // PB.02
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
+#elif defined(PCBX3)
+  #define SPORT_MAX_BAUDRATE            250000 // not tested
+  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOE
+  #define SPORT_UPDATE_PWR_GPIO         GPIOE
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15 // PE.15
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #else
