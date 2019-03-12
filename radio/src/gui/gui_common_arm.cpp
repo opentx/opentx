@@ -530,8 +530,15 @@ bool isInternalModuleAvailable(int module)
   if (module == MODULE_TYPE_NONE)
     return true;
 
-  if ((module == (IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT)) && !isModulePXX2(EXTERNAL_MODULE))
+#if defined(PXX1)
+  if (module == MODULE_TYPE_XJT)
+    return !isModulePXX(EXTERNAL_MODULE);
+#endif
+
+#if defined(PXX2)
+  if (module == MODULE_TYPE_XJT2)
     return true;
+#endif
 
   return false;
 }
@@ -539,7 +546,7 @@ bool isInternalModuleAvailable(int module)
 bool isExternalModuleAvailable(int module)
 {
 #if !defined(PXX1)
-  if (module == MODULE_TYPE_XJT) {
+  if (module == MODULE_TYPE_XJT || module == MODULE_TYPE_R9M) {
     return false;
   }
 #endif
@@ -568,10 +575,10 @@ bool isExternalModuleAvailable(int module)
   }
 #endif
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+  if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) {
     return false;
   }
-  if (module == MODULE_TYPE_XJT && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+  if (module == MODULE_TYPE_XJT && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) {
     return false;
   }
 #endif

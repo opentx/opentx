@@ -174,7 +174,7 @@ inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 
 inline bool isModulePXX(uint8_t idx)
 {
-  return isModuleXJT(idx);
+  return isModuleXJT(idx) || isModuleR9M(idx);
 }
 
 inline bool isModulePXX2(uint8_t idx)
