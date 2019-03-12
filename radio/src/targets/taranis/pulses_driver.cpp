@@ -22,10 +22,12 @@
 
 void init_pxx(uint8_t module)
 {
+#if defined(PXX1)
   if (module == INTERNAL_MODULE)
     intmodulePxxStart();
   else
     extmodulePxxStart();
+#endif
 }
 
 void disable_pxx(uint8_t module)
