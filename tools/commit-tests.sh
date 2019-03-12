@@ -130,10 +130,10 @@ if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ " X7 ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on X7
+if [[ " T12 ALL " =~ " ${FLAVOR} " ]] ; then
+  # JumperTX on T12
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X7 -DHELI=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=T12 -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
