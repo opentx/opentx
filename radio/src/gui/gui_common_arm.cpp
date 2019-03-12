@@ -532,12 +532,12 @@ bool isInternalModuleAvailable(int module)
 
 #if defined(PXX1)
   if (module == MODULE_TYPE_XJT)
-    return !isModulePXX(EXTERNAL_MODULE);
+    return !IS_PXX2_INTERNAL_ENABLED() && !isModulePXX(EXTERNAL_MODULE);
 #endif
 
 #if defined(PXX2)
   if (module == MODULE_TYPE_XJT2)
-    return true;
+    return IS_PXX2_INTERNAL_ENABLED();
 #endif
 
   return false;

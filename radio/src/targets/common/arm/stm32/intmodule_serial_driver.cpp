@@ -85,6 +85,7 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
       intmoduleFifo.errors++;
     }
     else {
+      hardwareOptions.pxx2Enabled = true;
       intmoduleFifo.push(data);
     }
     status = INTMODULE_USART->SR;

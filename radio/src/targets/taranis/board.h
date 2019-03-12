@@ -462,15 +462,6 @@ enum Analogs {
 #define NUM_MOUSE_ANALOGS               0
 #define NUM_DUMMY_ANAS                  0
 
-PACK(typedef struct {
-#if defined(STICKS_PWM)
-  uint8_t sticksPwmDisabled:1;
-#endif
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-
-extern HardwareOptions hardwareOptions;
-
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
@@ -482,10 +473,21 @@ extern HardwareOptions hardwareOptions;
   #define NUM_TRIMS_KEYS                8
 #endif
 
-#if defined(PCBXLITES) || defined(DEBUG)
+PACK(typedef struct {
+#if NUM_PWMSTICKS > 0
+    uint8_t sticksPwmDisabled:1;
+#endif
+    uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
+#if !defined(PXX2)
+  #define IS_PXX2_INTERNAL_ENABLED()            (false)
+#elif defined(PCBXLITES) || defined(PCBX3) || defined(SIMU)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
 #else
-  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()         (hardwareOptions.pxx2Enabled)
 #endif
 
 enum CalibratedAnalogs {
