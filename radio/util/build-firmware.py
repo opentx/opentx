@@ -100,8 +100,8 @@ elif options[optcount] == "ar9x":
     maxsize = 65536 * 4
     board = BOARD_SKY9X
     board_family = BOARD_FAMILY_ARM
-elif options[optcount] == "x7":
-    command_options["PCB"] = "X7"
+elif options[optcount] == "t12":
+    command_options["PCB"] = "T12"
     firmware_options = options_taranisplus
     maxsize = 65536 * 8
     board = BOARD_TARANIS
@@ -130,9 +130,9 @@ elif options[optcount] == "x9e":
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
-elif options[optcount] == "x10":
-    command_options["PCB"] = "X10"
-    firmware_options = options_x10
+elif options[optcount] == "t16":
+    command_options["PCB"] = "T16"
+    firmware_options = options_t16
     maxsize = 2 * 1024 * 1024
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM

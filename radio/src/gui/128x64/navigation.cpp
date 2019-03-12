@@ -46,7 +46,7 @@ int8_t  checkIncDec_Ret;
 #define DBLKEYS_PRESSED_RGT_UP(in)     ((in & ((1<<KEY_SHIFT) + (1<<KEY_RIGHT))) == ((1<<KEY_SHIFT) + (1<<KEY_RIGHT)))
 // set to min
 #define DBLKEYS_PRESSED_LFT_DWN(in)    ((in & ((1<<KEY_SHIFT) + (1<<KEY_LEFT))) == ((1<<KEY_SHIFT) + (1<<KEY_LEFT)))
-#elif defined(PCBX7)
+#elif defined(PCBT12)
 #define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
 #define DBLKEYS_PRESSED_UP_DWN(in)     (false)
 #define DBLKEYS_PRESSED_RGT_UP(in)     (false)
@@ -118,7 +118,7 @@ void onSwitchLongEnterPress(const char * result)
 }
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBT12)
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
@@ -648,7 +648,7 @@ int8_t checkIncDecGen(event_t event, int8_t i_val, int8_t i_min, int8_t i_max)
 tmr10ms_t menuEntryTime;
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBT12)
 #define MAXCOL_RAW(row)                (horTab ? pgm_read_byte(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
@@ -1124,7 +1124,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       break;
 #endif
 
-#if !defined(PCBX7)
+#if !defined(PCBT12)
     case EVT_KEY_REPT(KEY_DOWN):
       if (!IS_ROTARY_RIGHT(event) && l_posVert==maxrow) break;
       // no break
@@ -1169,7 +1169,7 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t 
       break;
 #endif
 
-#if !defined(PCBX7)
+#if !defined(PCBT12)
     case EVT_KEY_REPT(KEY_UP):
       if (!IS_ROTARY_LEFT(event) && l_posVert==0) break;
       // no break

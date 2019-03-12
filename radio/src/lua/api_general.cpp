@@ -31,8 +31,8 @@
   #include "lua/lua_exports_t16.inc"
 #elif defined(PCBX9E)
   #include "lua/lua_exports_x9e.inc"
-#elif defined(PCBX7)
-  #include "lua/lua_exports_x7.inc"
+#elif defined(PCBT12)
+  #include "lua/lua_exports_t12.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
@@ -1346,7 +1346,7 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if !defined(PCBT12) && !defined(PCBXLITE)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif

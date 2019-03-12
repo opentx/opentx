@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(PCBHORUS) || defined(PCBX7) || defined(PCBXLITE) || defined(USEHORUSBT)
+#if defined(PCBHORUS) || defined(PCBT12) || defined(PCBXLITE) || defined(USEHORUSBT)
 #define BLUETOOTH_COMMAND_NAME         "AT+NAME"
 #define BLUETOOTH_ANSWER_NAME          "OK+"
 #define BLUETOOTH_COMMAND_BAUD_115200  "AT+BAUD115200"

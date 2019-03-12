@@ -190,7 +190,7 @@ void writeHeader()
     }
     f_putc(',', &g_oLogFile);
   }
-#if defined(PCBX7)
+#if defined(PCBT12)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
 #elif defined(PCBXLITE)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD"
@@ -355,7 +355,7 @@ void logsWrite()
           GET_3POS_STATE(SD),
           getLogicalSwitchesStates(32),
           getLogicalSwitchesStates(0));
-#elif defined(PCBX7)
+#elif defined(PCBT12)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,%d,%d,0x%08X%08X,",
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),

@@ -823,7 +823,7 @@ bool eeLoadGeneral()
     }
   }
 
-#if defined(PCBX7)
+#if defined(PCBT12)
   if (g_eeGeneral.variant == 0) {
     TRACE("Pre release EEPROM detected, variant %d instead of %d for X7 radio. Loading anyway", g_eeGeneral.variant, EEPROM_VARIANT);
     g_eeGeneral.variant = EEPROM_VARIANT;
