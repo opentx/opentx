@@ -971,7 +971,7 @@
 #endif
 
 // Heartbeat
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
   #define HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
   #define HEARTBEAT_RCC_APB2Periph      0
   #define HEARTBEAT_GPIO                GPIOD
