@@ -1,0 +1,244 @@
+SOUNDS/it/SYSTEM;0000.wav;0
+SOUNDS/it/SYSTEM;0001.wav;1
+SOUNDS/it/SYSTEM;0002.wav;2
+SOUNDS/it/SYSTEM;0003.wav;3
+SOUNDS/it/SYSTEM;0004.wav;4
+SOUNDS/it/SYSTEM;0005.wav;5
+SOUNDS/it/SYSTEM;0006.wav;6
+SOUNDS/it/SYSTEM;0007.wav;7
+SOUNDS/it/SYSTEM;0008.wav;8
+SOUNDS/it/SYSTEM;0009.wav;9
+SOUNDS/it/SYSTEM;0010.wav;10
+SOUNDS/it/SYSTEM;0011.wav;11
+SOUNDS/it/SYSTEM;0012.wav;12
+SOUNDS/it/SYSTEM;0013.wav;13
+SOUNDS/it/SYSTEM;0014.wav;14
+SOUNDS/it/SYSTEM;0015.wav;15
+SOUNDS/it/SYSTEM;0016.wav;16
+SOUNDS/it/SYSTEM;0017.wav;17
+SOUNDS/it/SYSTEM;0018.wav;18
+SOUNDS/it/SYSTEM;0019.wav;19
+SOUNDS/it/SYSTEM;0020.wav;20
+SOUNDS/it/SYSTEM;0021.wav;21
+SOUNDS/it/SYSTEM;0022.wav;22
+SOUNDS/it/SYSTEM;0023.wav;23
+SOUNDS/it/SYSTEM;0024.wav;24
+SOUNDS/it/SYSTEM;0025.wav;25
+SOUNDS/it/SYSTEM;0026.wav;26
+SOUNDS/it/SYSTEM;0027.wav;27
+SOUNDS/it/SYSTEM;0028.wav;28
+SOUNDS/it/SYSTEM;0029.wav;29
+SOUNDS/it/SYSTEM;0030.wav;30
+SOUNDS/it/SYSTEM;0031.wav;31
+SOUNDS/it/SYSTEM;0032.wav;32
+SOUNDS/it/SYSTEM;0033.wav;33
+SOUNDS/it/SYSTEM;0034.wav;34
+SOUNDS/it/SYSTEM;0035.wav;35
+SOUNDS/it/SYSTEM;0036.wav;36
+SOUNDS/it/SYSTEM;0037.wav;37
+SOUNDS/it/SYSTEM;0038.wav;38
+SOUNDS/it/SYSTEM;0039.wav;39
+SOUNDS/it/SYSTEM;0040.wav;40
+SOUNDS/it/SYSTEM;0041.wav;41
+SOUNDS/it/SYSTEM;0042.wav;42
+SOUNDS/it/SYSTEM;0043.wav;43
+SOUNDS/it/SYSTEM;0044.wav;44
+SOUNDS/it/SYSTEM;0045.wav;45
+SOUNDS/it/SYSTEM;0046.wav;46
+SOUNDS/it/SYSTEM;0047.wav;47
+SOUNDS/it/SYSTEM;0048.wav;48
+SOUNDS/it/SYSTEM;0049.wav;49
+SOUNDS/it/SYSTEM;0050.wav;50
+SOUNDS/it/SYSTEM;0051.wav;51
+SOUNDS/it/SYSTEM;0052.wav;52
+SOUNDS/it/SYSTEM;0053.wav;53
+SOUNDS/it/SYSTEM;0054.wav;54
+SOUNDS/it/SYSTEM;0055.wav;55
+SOUNDS/it/SYSTEM;0056.wav;56
+SOUNDS/it/SYSTEM;0057.wav;57
+SOUNDS/it/SYSTEM;0058.wav;58
+SOUNDS/it/SYSTEM;0059.wav;59
+SOUNDS/it/SYSTEM;0060.wav;60
+SOUNDS/it/SYSTEM;0061.wav;61
+SOUNDS/it/SYSTEM;0062.wav;62
+SOUNDS/it/SYSTEM;0063.wav;63
+SOUNDS/it/SYSTEM;0064.wav;64
+SOUNDS/it/SYSTEM;0065.wav;65
+SOUNDS/it/SYSTEM;0066.wav;66
+SOUNDS/it/SYSTEM;0067.wav;67
+SOUNDS/it/SYSTEM;0068.wav;68
+SOUNDS/it/SYSTEM;0069.wav;69
+SOUNDS/it/SYSTEM;0070.wav;70
+SOUNDS/it/SYSTEM;0071.wav;71
+SOUNDS/it/SYSTEM;0072.wav;72
+SOUNDS/it/SYSTEM;0073.wav;73
+SOUNDS/it/SYSTEM;0074.wav;74
+SOUNDS/it/SYSTEM;0075.wav;75
+SOUNDS/it/SYSTEM;0076.wav;76
+SOUNDS/it/SYSTEM;0077.wav;77
+SOUNDS/it/SYSTEM;0078.wav;78
+SOUNDS/it/SYSTEM;0079.wav;79
+SOUNDS/it/SYSTEM;0080.wav;80
+SOUNDS/it/SYSTEM;0081.wav;81
+SOUNDS/it/SYSTEM;0082.wav;82
+SOUNDS/it/SYSTEM;0083.wav;83
+SOUNDS/it/SYSTEM;0084.wav;84
+SOUNDS/it/SYSTEM;0085.wav;85
+SOUNDS/it/SYSTEM;0086.wav;86
+SOUNDS/it/SYSTEM;0087.wav;87
+SOUNDS/it/SYSTEM;0088.wav;88
+SOUNDS/it/SYSTEM;0089.wav;89
+SOUNDS/it/SYSTEM;0090.wav;90
+SOUNDS/it/SYSTEM;0091.wav;91
+SOUNDS/it/SYSTEM;0092.wav;92
+SOUNDS/it/SYSTEM;0093.wav;93
+SOUNDS/it/SYSTEM;0094.wav;94
+SOUNDS/it/SYSTEM;0095.wav;95
+SOUNDS/it/SYSTEM;0096.wav;96
+SOUNDS/it/SYSTEM;0097.wav;97
+SOUNDS/it/SYSTEM;0098.wav;98
+SOUNDS/it/SYSTEM;0099.wav;99
+SOUNDS/it/SYSTEM;0100.wav;100
+SOUNDS/it/SYSTEM;0101.wav;mila
+SOUNDS/it/SYSTEM;0102.wav;mille
+SOUNDS/it/SYSTEM;0103.wav;virgola
+SOUNDS/it/SYSTEM;0104.wav;un
+SOUNDS/it/SYSTEM;0105.wav;e
+SOUNDS/it/SYSTEM;0106.wav;meno
+SOUNDS/it/SYSTEM;0107.wav;ora
+SOUNDS/it/SYSTEM;0108.wav;ore
+SOUNDS/it/SYSTEM;0109.wav;minuto
+SOUNDS/it/SYSTEM;0110.wav;minuti
+SOUNDS/it/SYSTEM;0111.wav;secondo
+SOUNDS/it/SYSTEM;0112.wav;secondi
+SOUNDS/it/SYSTEM;volt0.wav;volt
+SOUNDS/it/SYSTEM;amp0.wav;ampere
+SOUNDS/it/SYSTEM;mamp0.wav;milliampers
+SOUNDS/it/SYSTEM;knot0.wav;nodo
+SOUNDS/it/SYSTEM;knot1.wav;nodi
+SOUNDS/it/SYSTEM;mps0.wav;metro al secondo
+SOUNDS/it/SYSTEM;msp1.wav;metri al secondo
+SOUNDS/it/SYSTEM;fps0.wav;piede al secondo
+SOUNDS/it/SYSTEM;fps1.wav;piedi al secondo
+SOUNDS/it/SYSTEM;kph0.wav;chilometro ora
+SOUNDS/it/SYSTEM;kph1.wav;chilometri orari
+SOUNDS/it/SYSTEM;mph0.wav;miglio per ora
+SOUNDS/it/SYSTEM;mph1.wav;miglia per ora
+SOUNDS/it/SYSTEM;meter0.wav;metro
+SOUNDS/it/SYSTEM;meter1.wav;metri
+SOUNDS/it/SYSTEM;foot0.wav;piede
+SOUNDS/it/SYSTEM;foot1.wav;piedi
+SOUNDS/it/SYSTEM;celsius0.wav;grado celsius
+SOUNDS/it/SYSTEM;celsius1.wav;gradi celsius
+SOUNDS/it/SYSTEM;fahr0.wav;grado fahrenheit
+SOUNDS/it/SYSTEM;fahr1.wav;gradi fahrenheit
+SOUNDS/it/SYSTEM;percent0.wav;percento
+SOUNDS/it/SYSTEM;percent1.wav;percento
+SOUNDS/it/SYSTEM;mamph0.wav;milliampere ora
+SOUNDS/it/SYSTEM;mamph1.wav;milliampere ora
+SOUNDS/it/SYSTEM;watt0.wav;watt
+SOUNDS/it/SYSTEM;watt1.wav;watt
+SOUNDS/it/SYSTEM;mwatt0.wav;milli-watt
+SOUNDS/it/SYSTEM;mwatt1.wav;milli-watt
+SOUNDS/it/SYSTEM;db0.wav;d b
+SOUNDS/it/SYSTEM;db1.wav;d b
+SOUNDS/it/SYSTEM;rpm0.wav;r p m
+SOUNDS/it/SYSTEM;rpm1.wav;r p m
+SOUNDS/it/SYSTEM;g0.wav;g
+SOUNDS/it/SYSTEM;g1.wav;g
+SOUNDS/it/SYSTEM;degree0.wav;grado
+SOUNDS/it/SYSTEM;degree1.wav;gradi
+SOUNDS/it/SYSTEM;rad0.wav;radian
+SOUNDS/it/SYSTEM;rad1.wav;radians
+SOUNDS/it/SYSTEM;m10.wav;millilitro
+SOUNDS/it/SYSTEM;m11.wav;millilitri
+SOUNDS/it/SYSTEM;founce0.wav;oncia
+SOUNDS/it/SYSTEM;founce1.wav;once
+SOUNDS/it/SYSTEM;hour0.wav;ora
+SOUNDS/it/SYSTEM;hour1.wav;ore
+SOUNDS/it/SYSTEM;minute0.wav;minuto
+SOUNDS/it/SYSTEM;minute1.wav;minuti
+SOUNDS/it/SYSTEM;second0.wav;secondo
+SOUNDS/it/SYSTEM;second1.wav;secondi
+SOUNDS/it/SYSTEM;inactiv.wav;radio inattiva controllare
+SOUNDS/it/SYSTEM;lowbatt.wav;batteria della radio scarica
+SOUNDS/it/SYSTEM;thralert.wav;controllo motore non in posizione, verificare
+SOUNDS/it/SYSTEM;swalert.wav;interruttori non in posizione, verificare
+SOUNDS/it/SYSTEM;eebad.wav;eeprom corrotta
+SOUNDS/it/SYSTEM;eeformat.wav;formattazzione eeprom in corso
+SOUNDS/it/SYSTEM;error.wav;errore
+SOUNDS/it/SYSTEM;midtrim.wav;trim centrato
+SOUNDS/it/SYSTEM;midpot.wav;potenziometro centrato
+SOUNDS/it/SYSTEM;maxtrim.wav;massimo trim raggiunto
+SOUNDS/it/SYSTEM;mintrim.wav;minimo trim raggiunto
+SOUNDS/it/SYSTEM;timer20.wav;venti secondi
+SOUNDS/it/SYSTEM;timer30.wav;trenta secondi
+SOUNDS/it/SYSTEM;highmah.wav;assorbimento elevato
+SOUNDS/it/SYSTEM;hightemp.wav;temperatura elevata
+SOUNDS/it/SYSTEM;a1_org.wav;A1 in allarme
+SOUNDS/it/SYSTEM;a1_red.wav;A1 critico
+SOUNDS/it/SYSTEM;a2_org.wav;A2 in allarme
+SOUNDS/it/SYSTEM;a2_red.wav;A2 critico
+SOUNDS/it/SYSTEM;a3_org.wav;A3 in allarme
+SOUNDS/it/SYSTEM;a3_red.wav;A3 critico
+SOUNDS/it/SYSTEM;a4_org.wav;A4 in allarme
+SOUNDS/it/SYSTEM;a4_red.wav;A4 critico
+SOUNDS/it/SYSTEM;rssi_org.wav;Segnale radio basso
+SOUNDS/it/SYSTEM;rssi_red.wav;Segnale radio critico
+SOUNDS/it/SYSTEM;swr_red.wav;Problema all'antenna della radio
+SOUNDS/it/SYSTEM;telemko.wav;Telemetria assente
+SOUNDS/it/SYSTEM;telemok.wav;Telemetria disponibile
+SOUNDS/it/SYSTEM;servoko.wav;servo overload
+SOUNDS/it/SYSTEM;rxko.wav;power overload
+SOUNDS/it/SYSTEM;modelpwr.wav;receiver still connected
+SOUNDS/it/SYSTEM;0135.wav;timer
+SOUNDS/it/SYSTEM;0137.wav;tensione
+SOUNDS/it/SYSTEM;0138.wav;tensione
+SOUNDS/it/SYSTEM;0139.wav;trasmissione
+SOUNDS/it/SYSTEM;0140.wav;ricezione
+SOUNDS/it/SYSTEM;0141.wav;altitudine
+SOUNDS/it/SYSTEM;0142.wav;motore
+SOUNDS/it/SYSTEM;0143.wav;carburante
+SOUNDS/it/SYSTEM;0144.wav;temperatura
+SOUNDS/it/SYSTEM;0145.wav;temperatura
+SOUNDS/it/SYSTEM;0146.wav;velocità
+SOUNDS/it/SYSTEM;0147.wav;distanza
+SOUNDS/it/SYSTEM;0148.wav;altitudine
+SOUNDS/it/SYSTEM;0149.wav;cella lipo
+SOUNDS/it/SYSTEM;0150.wav;totale lipo
+SOUNDS/it/SYSTEM;0151.wav;tensione
+SOUNDS/it/SYSTEM;0152.wav;corrente
+SOUNDS/it/SYSTEM;0153.wav;consumo
+SOUNDS/it/SYSTEM;0154.wav;potenza
+SOUNDS/it/SYSTEM;0155.wav;accellerazione X
+SOUNDS/it/SYSTEM;0156.wav;accellerazione Y
+SOUNDS/it/SYSTEM;0157.wav;accellerazione Z
+SOUNDS/it/SYSTEM;0158.wav;direzione
+SOUNDS/it/SYSTEM;0159.wav;variometro
+SOUNDS/it/SYSTEM;0160.wav;minimo
+SOUNDS/it/SYSTEM;0161.wav;massimo
+SOUNDS/it;gearup.wav;carrello chiuso
+SOUNDS/it;geardn.wav;carrello aperto
+SOUNDS/it;flapup.wav;flap rientrati
+SOUNDS/it;flapdn.wav;flap estesi
+SOUNDS/it;attero.wav;atterraggio
+SOUNDS/it;trnon.wav;modalità maestro attiva
+SOUNDS/it;trnoff.wav;modalità maestro disattiva
+SOUNDS/it;engoff.wav;motore spento
+SOUNDS/it;tohigh.wav;troppo alto
+SOUNDS/it;tolow.wav;troppo basso
+SOUNDS/it;lowbat.wav;batteria scarica
+SOUNDS/it;crowon.wav;crow on
+SOUNDS/it;crowof.wav;crow off
+SOUNDS/it;spdmod.wav;modo velocità
+SOUNDS/it;thmmod.wav;modo termica
+SOUNDS/it;nrmmod.wav;modo volo normale
+SOUNDS/it;fltmd1.wav;fase di volo 1
+SOUNDS/it;fltmd2.wav;fase di volo 2
+SOUNDS/it;fltmd3.wav;fase di volo 3
+SOUNDS/it;fltmd4.wav;fase di volo 4
+SOUNDS/it;fltmd5.wav;fase di volo 5
+SOUNDS/it;fltmd6.wav;fase di volo 6
+SOUNDS/it;fltmd7.wav;fase di volo 7
+SOUNDS/it;fltmd8.wav;fase di volo 8
+SOUNDS/it;fltmd9.wav;fase di volo 9

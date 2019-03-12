@@ -1,0 +1,321 @@
+SYSTEM|0000|0
+SYSTEM|0001|1
+SYSTEM|0002|2
+SYSTEM|0003|3
+SYSTEM|0004|4
+SYSTEM|0005|5
+SYSTEM|0006|6
+SYSTEM|0007|7
+SYSTEM|0008|8
+SYSTEM|0009|9
+SYSTEM|0010|10
+SYSTEM|0011|11
+SYSTEM|0012|12
+SYSTEM|0013|13
+SYSTEM|0014|14
+SYSTEM|0015|15
+SYSTEM|0016|16
+SYSTEM|0017|17
+SYSTEM|0018|18
+SYSTEM|0019|19
+SYSTEM|0020|20
+SYSTEM|0021|21
+SYSTEM|0022|22
+SYSTEM|0023|23
+SYSTEM|0024|24
+SYSTEM|0025|25
+SYSTEM|0026|26
+SYSTEM|0027|27
+SYSTEM|0028|28
+SYSTEM|0029|29
+SYSTEM|0030|30
+SYSTEM|0031|31
+SYSTEM|0032|32
+SYSTEM|0033|33
+SYSTEM|0034|34
+SYSTEM|0035|35
+SYSTEM|0036|36
+SYSTEM|0037|37
+SYSTEM|0038|38
+SYSTEM|0039|39
+SYSTEM|0040|40
+SYSTEM|0041|41
+SYSTEM|0042|42
+SYSTEM|0043|43
+SYSTEM|0044|44
+SYSTEM|0045|45
+SYSTEM|0046|46
+SYSTEM|0047|47
+SYSTEM|0048|48
+SYSTEM|0049|49
+SYSTEM|0050|50
+SYSTEM|0051|51
+SYSTEM|0052|52
+SYSTEM|0053|53
+SYSTEM|0054|54
+SYSTEM|0055|55
+SYSTEM|0056|56
+SYSTEM|0057|57
+SYSTEM|0058|58
+SYSTEM|0059|59
+SYSTEM|0060|60
+SYSTEM|0061|61
+SYSTEM|0062|62
+SYSTEM|0063|63
+SYSTEM|0064|64
+SYSTEM|0065|65
+SYSTEM|0066|66
+SYSTEM|0067|67
+SYSTEM|0068|68
+SYSTEM|0069|69
+SYSTEM|0070|70
+SYSTEM|0071|71
+SYSTEM|0072|72
+SYSTEM|0073|73
+SYSTEM|0074|74
+SYSTEM|0075|75
+SYSTEM|0076|76
+SYSTEM|0077|77
+SYSTEM|0078|78
+SYSTEM|0079|79
+SYSTEM|0080|80
+SYSTEM|0081|81
+SYSTEM|0082|82
+SYSTEM|0083|83
+SYSTEM|0084|84
+SYSTEM|0085|85
+SYSTEM|0086|86
+SYSTEM|0087|87
+SYSTEM|0088|88
+SYSTEM|0089|89
+SYSTEM|0090|90
+SYSTEM|0091|91
+SYSTEM|0092|92
+SYSTEM|0093|93
+SYSTEM|0094|94
+SYSTEM|0095|95
+SYSTEM|0096|96
+SYSTEM|0097|97
+SYSTEM|0098|98
+SYSTEM|0099|99
+SYSTEM|0100|100
+SYSTEM|0101|200
+SYSTEM|0102|300
+SYSTEM|0103|400
+SYSTEM|0104|500
+SYSTEM|0105|600
+SYSTEM|0106|700
+SYSTEM|0107|800
+SYSTEM|0108|900
+SYSTEM|0109|тысяча
+SYSTEM|0110|и
+SYSTEM|0111|минус
+SYSTEM|0200|тысяча
+SYSTEM|0201|тысячи
+SYSTEM|0202|тысяч
+SYSTEM|0165|ровно
+SYSTEM|0166|и одна десятая
+SYSTEM|0167|и две десятых
+SYSTEM|0168|и три десятых
+SYSTEM|0169|и четыре десятых
+SYSTEM|0170|и пять десятых
+SYSTEM|0171|и шесть десятых
+SYSTEM|0172|и семь десятых
+SYSTEM|0173|и восемь десятых
+SYSTEM|0174|и девять десятых
+SYSTEM|0180|одна
+SYSTEM|0181|одиннадцать
+SYSTEM|0182|двадцать одна
+SYSTEM|0183|тридцать одна
+SYSTEM|0184|сорок одна
+SYSTEM|0185|пятьдесят одна
+SYSTEM|0186|шестьдесят одна
+SYSTEM|0187|семьдесят одна
+SYSTEM|0188|восемьдесят одна
+SYSTEM|0189|девяносто одна
+SYSTEM|0190|две
+SYSTEM|0191|двенадцать
+SYSTEM|0192|двадцать две
+SYSTEM|0193|тридцать две
+SYSTEM|0194|сорок две
+SYSTEM|0195|пятьдесят две
+SYSTEM|0196|шестьдесят две
+SYSTEM|0197|семьдесят две
+SYSTEM|0198|восемьдесят две
+SYSTEM|0199|девяносто две
+SYSTEM|volt0|вольт
+SYSTEM|volt1|вольт
+SYSTEM|volt2|вольта
+SYSTEM|volt5|вольт
+SYSTEM|amp0|ампер
+SYSTEM|amp1|ампер
+SYSTEM|amp2|ампера
+SYSTEM|amp5|ампер
+SYSTEM|mamp0|миллиампер
+SYSTEM|mamp1|миллиампер
+SYSTEM|mamp2|миллиампера
+SYSTEM|mamp5|миллиампер
+SYSTEM|knot0|узлов
+SYSTEM|knot1|узел
+SYSTEM|knot2|узла
+SYSTEM|knot5|узлов
+SYSTEM|mps0|метров в секунду
+SYSTEM|mps1|метр в секунду
+SYSTEM|mps2|метра в секунду
+SYSTEM|mps5|метров в секунду
+SYSTEM|fps0|футов в секунду
+SYSTEM|fps1|фут в секунду
+SYSTEM|fps2|фута в секунду
+SYSTEM|fps5|футов в секунду
+SYSTEM|kph0|километров в час
+SYSTEM|kph1|километр в час
+SYSTEM|kph2|километра в час
+SYSTEM|kph5|километров в час
+SYSTEM|mph0|миль в час
+SYSTEM|mph1|миля в час
+SYSTEM|mph2|мили в час
+SYSTEM|mph5|миль в час
+SYSTEM|meter0|метров
+SYSTEM|meter1|метр
+SYSTEM|meter2|метра
+SYSTEM|meter5|метров
+SYSTEM|foot0|футов
+SYSTEM|foot1|фут
+SYSTEM|foot2|фута
+SYSTEM|foot5|футов
+SYSTEM|celsius0|градусов
+SYSTEM|celsius1|градус
+SYSTEM|celsius2|градуса
+SYSTEM|celsius5|градусов
+SYSTEM|fahr0|градусов по фаренгейту
+SYSTEM|fahr1|градус по фаренгейту
+SYSTEM|fahr2|градуса по фаренгейту
+SYSTEM|fahr5|градусов по фаренгейту
+SYSTEM|percent0|процентов
+SYSTEM|percent1|процент
+SYSTEM|percent2|процента
+SYSTEM|percent5|процентов
+SYSTEM|mamph0|миллиампер в час
+SYSTEM|mamph1|миллиампер в час
+SYSTEM|mamph2|миллиампера в час
+SYSTEM|mamph5|миллиампер в час
+SYSTEM|watt0|ватт
+SYSTEM|watt1|ватт
+SYSTEM|watt2|ватта
+SYSTEM|watt5|ватт
+SYSTEM|mwatt0|милливатт
+SYSTEM|mwatt1|милливатт
+SYSTEM|mwatt2|милливатта
+SYSTEM|mwatt5|милливатт
+SYSTEM|db0|децибел
+SYSTEM|db1|децибел
+SYSTEM|db2|децибела
+SYSTEM|db5|децибел
+SYSTEM|rpm0|оборотов в минуту
+SYSTEM|rpm1|оборот в минуту
+SYSTEM|rpm2|оборота в минуту
+SYSTEM|rpm5|оборотов в минуту
+SYSTEM|g0|джи
+SYSTEM|g1|джи
+SYSTEM|g2|джи
+SYSTEM|g5|джи
+SYSTEM|degree0|градусов
+SYSTEM|degree1|градус
+SYSTEM|degree2|градуса
+SYSTEM|degree5|градусов
+SYSTEM|rad0|радиан
+SYSTEM|rad1|радиан
+SYSTEM|rad2|радиана
+SYSTEM|rad5|радиан
+SYSTEM|ml0|миллилитров
+SYSTEM|ml1|миллилитр
+SYSTEM|ml2|миллилитра
+SYSTEM|ml5|миллилитров
+SYSTEM|founce0|унций
+SYSTEM|founce1|унция
+SYSTEM|founce2|унции
+SYSTEM|founce5|унций
+SYSTEM|hour0|часов
+SYSTEM|hour1|час
+SYSTEM|hour2|часа
+SYSTEM|hour5|часов
+SYSTEM|minute0|минут
+SYSTEM|minute1|минута
+SYSTEM|minute2|минуты
+SYSTEM|minute5|минут
+SYSTEM|second0|секунд
+SYSTEM|second1|секунда
+SYSTEM|second2|секунды
+SYSTEM|second5|секунд
+SYSTEM|midtrim|Триммер по центру
+SYSTEM|maxtrim|Триммер максимум
+SYSTEM|mintrim|Триммер минимум
+SYSTEM|timovr1|Таймер 1. Время вышло
+SYSTEM|timovr2|Таймер 2. Время вышло
+SYSTEM|timovr3|Таймер 3. Время вышло
+SYSTEM|lowbatt|Аккумулятор садится!
+SYSTEM|inactiv|Внимание, пульт не выключен!
+SYSTEM|thralert|Проверь газ!
+SYSTEM|swalert|Проверь, тумблеры!
+SYSTEM|eebad|Ошибка памяти
+SYSTEM|hello|Опен тэ, икс приветствует вас!
+SYSTEM|rssi_org|Слабый сигнал!
+SYSTEM|rssi_red|Очень слабый сигнал!
+SYSTEM|swr_red|Проблема с антэнной!
+SYSTEM|telemko|Телеметрия потеряна
+SYSTEM|telemok|Телеметрия восстановлена
+SYSTEM|trainko|Тренерский сигнал потерян
+SYSTEM|trainok|Тренерский сигнал восстановлен
+SYSTEM|sensorko|Сенсор отключен
+SYSTEM|servoko|Серва перегружена
+SYSTEM|rxko|Перегрузка
+SYSTEM|modelpwr|Приемник всё ещё подключен!
+|lowbat|Аккумулятор садится!
+|gearup|Шасси, убраны'
+|geardn|Шасси, выпущены
+|flapup|Закрылки убраны'
+|flapdn|Закрылки выпущены
+|splrup|Спойлеры выпущены
+|splrdn|Спойлеры - убраны'
+|trnon|Тренер: подключен
+|trnoff|Тренер: отключен
+|armed|Двигатели запущены!
+|disarm|Двигатели выключены
+|tohigh|Слишком высоко
+|tolow|Слишком низко
+|siglow|Низкий уровень сигнала
+|sigcrt|Критически низкий уровень сигнала
+|fm-1|Полетный режим один
+|fm-2|Полетный режим два
+|fm-3|Полетный режим три
+|fm-4|Полетный режим четыре
+|fm-5|Полетный режим пять
+|fm-6|Полетный режим шесть
+|fm-7|Полетный режим семь
+|fm-8|Полетный режим восемь
+|fm-acr|Режим,акро
+|fm-crs|Режим круиза
+|fm-lch|Режим взлета
+|fm-lnd|Режим посадки
+|fm-nrm|Нормальный режим
+|fm-man|Ручной режим
+|fm-stb|Стабилизация
+|fm-hld|Удержание позиции
+|fm-rth|Возврат в точку старта
+|fm-hor|Горизонт
+|fm-ang|Стабилизация
+|airmon|аирмод включен
+|airmof|аирмод выключен
+|alt|Высота
+|althld|Удержание высоты
+|batcrt|Критический разряд!
+|flttm|Время полета
+|fsoff|Аварийный режим выключен
+|fson|Аварийный режим включен
+|gps|ДжиПи Эс
+|hirate|Высокие расходы
+|lorate|Низкие расходы
+|satfix|Спутники найдены!
+|satlst|Спутники потеряны!
+|ledoff|Бортовые огни выключены
+|ledon|Бортовые огни включены

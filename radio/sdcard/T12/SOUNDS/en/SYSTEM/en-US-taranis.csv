@@ -1,0 +1,243 @@
+SOUNDS/en/SYSTEM;0000.wav;0
+SOUNDS/en/SYSTEM;0001.wav;1
+SOUNDS/en/SYSTEM;0002.wav;2
+SOUNDS/en/SYSTEM;0003.wav;3
+SOUNDS/en/SYSTEM;0004.wav;4
+SOUNDS/en/SYSTEM;0005.wav;5
+SOUNDS/en/SYSTEM;0006.wav;6
+SOUNDS/en/SYSTEM;0007.wav;7
+SOUNDS/en/SYSTEM;0008.wav;8
+SOUNDS/en/SYSTEM;0009.wav;9
+SOUNDS/en/SYSTEM;0010.wav;10
+SOUNDS/en/SYSTEM;0011.wav;11
+SOUNDS/en/SYSTEM;0012.wav;12
+SOUNDS/en/SYSTEM;0013.wav;13
+SOUNDS/en/SYSTEM;0014.wav;14
+SOUNDS/en/SYSTEM;0015.wav;15
+SOUNDS/en/SYSTEM;0016.wav;16
+SOUNDS/en/SYSTEM;0017.wav;17
+SOUNDS/en/SYSTEM;0018.wav;18
+SOUNDS/en/SYSTEM;0019.wav;19
+SOUNDS/en/SYSTEM;0020.wav;20
+SOUNDS/en/SYSTEM;0021.wav;21
+SOUNDS/en/SYSTEM;0022.wav;22
+SOUNDS/en/SYSTEM;0023.wav;23
+SOUNDS/en/SYSTEM;0024.wav;24
+SOUNDS/en/SYSTEM;0025.wav;25
+SOUNDS/en/SYSTEM;0026.wav;26
+SOUNDS/en/SYSTEM;0027.wav;27
+SOUNDS/en/SYSTEM;0028.wav;28
+SOUNDS/en/SYSTEM;0029.wav;29
+SOUNDS/en/SYSTEM;0030.wav;30
+SOUNDS/en/SYSTEM;0031.wav;31
+SOUNDS/en/SYSTEM;0032.wav;32
+SOUNDS/en/SYSTEM;0033.wav;33
+SOUNDS/en/SYSTEM;0034.wav;34
+SOUNDS/en/SYSTEM;0035.wav;35
+SOUNDS/en/SYSTEM;0036.wav;36
+SOUNDS/en/SYSTEM;0037.wav;37
+SOUNDS/en/SYSTEM;0038.wav;38
+SOUNDS/en/SYSTEM;0039.wav;39
+SOUNDS/en/SYSTEM;0040.wav;40
+SOUNDS/en/SYSTEM;0041.wav;41
+SOUNDS/en/SYSTEM;0042.wav;42
+SOUNDS/en/SYSTEM;0043.wav;43
+SOUNDS/en/SYSTEM;0044.wav;44
+SOUNDS/en/SYSTEM;0045.wav;45
+SOUNDS/en/SYSTEM;0046.wav;46
+SOUNDS/en/SYSTEM;0047.wav;47
+SOUNDS/en/SYSTEM;0048.wav;48
+SOUNDS/en/SYSTEM;0049.wav;49
+SOUNDS/en/SYSTEM;0050.wav;50
+SOUNDS/en/SYSTEM;0051.wav;51
+SOUNDS/en/SYSTEM;0052.wav;52
+SOUNDS/en/SYSTEM;0053.wav;53
+SOUNDS/en/SYSTEM;0054.wav;54
+SOUNDS/en/SYSTEM;0055.wav;55
+SOUNDS/en/SYSTEM;0056.wav;56
+SOUNDS/en/SYSTEM;0057.wav;57
+SOUNDS/en/SYSTEM;0058.wav;58
+SOUNDS/en/SYSTEM;0059.wav;59
+SOUNDS/en/SYSTEM;0060.wav;60
+SOUNDS/en/SYSTEM;0061.wav;61
+SOUNDS/en/SYSTEM;0062.wav;62
+SOUNDS/en/SYSTEM;0063.wav;63
+SOUNDS/en/SYSTEM;0064.wav;64
+SOUNDS/en/SYSTEM;0065.wav;65
+SOUNDS/en/SYSTEM;0066.wav;66
+SOUNDS/en/SYSTEM;0067.wav;67
+SOUNDS/en/SYSTEM;0068.wav;68
+SOUNDS/en/SYSTEM;0069.wav;69
+SOUNDS/en/SYSTEM;0070.wav;70
+SOUNDS/en/SYSTEM;0071.wav;71
+SOUNDS/en/SYSTEM;0072.wav;72
+SOUNDS/en/SYSTEM;0073.wav;73
+SOUNDS/en/SYSTEM;0074.wav;74
+SOUNDS/en/SYSTEM;0075.wav;75
+SOUNDS/en/SYSTEM;0076.wav;76
+SOUNDS/en/SYSTEM;0077.wav;77
+SOUNDS/en/SYSTEM;0078.wav;78
+SOUNDS/en/SYSTEM;0079.wav;79
+SOUNDS/en/SYSTEM;0080.wav;80
+SOUNDS/en/SYSTEM;0081.wav;81
+SOUNDS/en/SYSTEM;0082.wav;82
+SOUNDS/en/SYSTEM;0083.wav;83
+SOUNDS/en/SYSTEM;0084.wav;84
+SOUNDS/en/SYSTEM;0085.wav;85
+SOUNDS/en/SYSTEM;0086.wav;86
+SOUNDS/en/SYSTEM;0087.wav;87
+SOUNDS/en/SYSTEM;0088.wav;88
+SOUNDS/en/SYSTEM;0089.wav;89
+SOUNDS/en/SYSTEM;0090.wav;90
+SOUNDS/en/SYSTEM;0091.wav;91
+SOUNDS/en/SYSTEM;0092.wav;92
+SOUNDS/en/SYSTEM;0093.wav;93
+SOUNDS/en/SYSTEM;0094.wav;94
+SOUNDS/en/SYSTEM;0095.wav;95
+SOUNDS/en/SYSTEM;0096.wav;96
+SOUNDS/en/SYSTEM;0097.wav;97
+SOUNDS/en/SYSTEM;0098.wav;98
+SOUNDS/en/SYSTEM;0099.wav;99
+SOUNDS/en/SYSTEM;0100.wav;100
+SOUNDS/en/SYSTEM;0101.wav;200
+SOUNDS/en/SYSTEM;0102.wav;300
+SOUNDS/en/SYSTEM;0103.wav;400
+SOUNDS/en/SYSTEM;0104.wav;500
+SOUNDS/en/SYSTEM;0105.wav;600
+SOUNDS/en/SYSTEM;0106.wav;700
+SOUNDS/en/SYSTEM;0107.wav;800
+SOUNDS/en/SYSTEM;0108.wav;900
+SOUNDS/en/SYSTEM;0109.wav;thousand
+SOUNDS/en/SYSTEM;0110.wav;and
+SOUNDS/en/SYSTEM;0111.wav;minus
+SOUNDS/en/SYSTEM;0112.wav;point
+SOUNDS/en/SYSTEM;volt0.wav;volt
+SOUNDS/en/SYSTEM;volt1.wav;volts
+SOUNDS/en/SYSTEM;amp0.wav;amp
+SOUNDS/en/SYSTEM;amp1.wav;amps
+SOUNDS/en/SYSTEM;mamp0.wav;milliamp
+SOUNDS/en/SYSTEM;mamp1.wav;milliamps
+SOUNDS/en/SYSTEM;knot0.wav;knot
+SOUNDS/en/SYSTEM;knot1.wav;knots
+SOUNDS/en/SYSTEM;mps0.wav;meter per second
+SOUNDS/en/SYSTEM;mps1.wav;meters per second
+SOUNDS/en/SYSTEM;fps0.wav;foot per second
+SOUNDS/en/SYSTEM;fps1.wav;feet per second
+SOUNDS/en/SYSTEM;kph0.wav;kilometer per hour
+SOUNDS/en/SYSTEM;kph1.wav;kilometers per hour
+SOUNDS/en/SYSTEM;mph0.wav;mile per hour
+SOUNDS/en/SYSTEM;mph1.wav;miles per hour
+SOUNDS/en/SYSTEM;meter0.wav;meter
+SOUNDS/en/SYSTEM;meter1.wav;meters
+SOUNDS/en/SYSTEM;foot0.wav;foot
+SOUNDS/en/SYSTEM;foot1.wav;feet
+SOUNDS/en/SYSTEM;celsius0.wav;degree celsius
+SOUNDS/en/SYSTEM;celsius1.wav;degrees celsius
+SOUNDS/en/SYSTEM;fahr0.wav;degree fahrenheit
+SOUNDS/en/SYSTEM;fahr1.wav;degrees fahrenheit
+SOUNDS/en/SYSTEM;percent0.wav;percent
+SOUNDS/en/SYSTEM;percent1.wav;percent
+SOUNDS/en/SYSTEM;mamph0.wav;milliamp-hour
+SOUNDS/en/SYSTEM;mamph1.wav;milliamp-hours
+SOUNDS/en/SYSTEM;watt0.wav;watt
+SOUNDS/en/SYSTEM;watt1.wav;watts
+SOUNDS/en/SYSTEM;mwatt0.wav;milli-watt
+SOUNDS/en/SYSTEM;mwatt1.wav;milli-watts
+SOUNDS/en/SYSTEM;db0.wav;D B
+SOUNDS/en/SYSTEM;db1.wav;D B
+SOUNDS/en/SYSTEM;rpm0.wav;r p m
+SOUNDS/en/SYSTEM;rpm1.wav;r p m
+SOUNDS/en/SYSTEM;g0.wav;g
+SOUNDS/en/SYSTEM;g1.wav;g
+SOUNDS/en/SYSTEM;degree0.wav;degree
+SOUNDS/en/SYSTEM;degree1.wav;degrees
+SOUNDS/en/SYSTEM;rad0.wav;radian
+SOUNDS/en/SYSTEM;rad1.wav;radians
+SOUNDS/en/SYSTEM;ml0.wav;milliliter
+SOUNDS/en/SYSTEM;ml1.wav;milliliters
+SOUNDS/en/SYSTEM;founce0.wav;fluid ounce
+SOUNDS/en/SYSTEM;founce1.wav;fluid ounces
+SOUNDS/en/SYSTEM;hour0.wav;hour
+SOUNDS/en/SYSTEM;hour1.wav;hours
+SOUNDS/en/SYSTEM;minute0.wav;minute
+SOUNDS/en/SYSTEM;minute1.wav;minutes
+SOUNDS/en/SYSTEM;second0.wav;second
+SOUNDS/en/SYSTEM;second1.wav;seconds
+SOUNDS/en/SYSTEM;0167.wav;point zero
+SOUNDS/en/SYSTEM;0168.wav;point one
+SOUNDS/en/SYSTEM;0169.wav;point two
+SOUNDS/en/SYSTEM;0170.wav;point three
+SOUNDS/en/SYSTEM;0171.wav;point four
+SOUNDS/en/SYSTEM;0172.wav;point five
+SOUNDS/en/SYSTEM;0173.wav;point six
+SOUNDS/en/SYSTEM;0174.wav;point seven
+SOUNDS/en/SYSTEM;0175.wav;point eight
+SOUNDS/en/SYSTEM;0176.wav;point nine
+SOUNDS/en/SYSTEM;midtrim.wav;trim center
+SOUNDS/en/SYSTEM;maxtrim.wav;maximum trim reached
+SOUNDS/en/SYSTEM;mintrim.wav;minimum trim reached
+SOUNDS/en/SYSTEM;timovr1.wav;timer 1 elapsed
+SOUNDS/en/SYSTEM;timovr2.wav;timer 2 elapsed
+SOUNDS/en/SYSTEM;timovr3.wav;timer 3 elapsed
+SOUNDS/en/SYSTEM;lowbatt.wav;transmitter battery low
+SOUNDS/en/SYSTEM;inactiv.wav;inactivity alarm
+SOUNDS/en/SYSTEM;thralert.wav;throttle warning
+SOUNDS/en/SYSTEM;swalert.wav;switch warning
+SOUNDS/en/SYSTEM;eebad.wav;bad eeprom
+SOUNDS/en/SYSTEM;hello.wav;Welcome to open tea ex!
+SOUNDS/en/SYSTEM;rssi_org.wav;RF signal, low
+SOUNDS/en/SYSTEM;rssi_red.wav;RF signal, critical
+SOUNDS/en/SYSTEM;swr_red.wav;radio antenna defective
+SOUNDS/en/SYSTEM;telemko.wav;telemetry lost
+SOUNDS/en/SYSTEM;telemok.wav;telemetry recovered
+SOUNDS/en/SYSTEM;trainko.wav;trainer signal lost
+SOUNDS/en/SYSTEM;trainok.wav;trainer signal recovered
+SOUNDS/en/SYSTEM;sensorko.wav;sensor lost
+SOUNDS/en/SYSTEM;servoko.wav;servo overload
+SOUNDS/en/SYSTEM;rxko.wav;power overload
+SOUNDS/en/SYSTEM;modelpwr.wav;receiver still connected
+SOUNDS/en;gearup.wav;gear!, up!
+SOUNDS/en;geardn.wav;gear!, down!
+SOUNDS/en;flapup.wav;flaps!, up!
+SOUNDS/en;flapdn.wav;flaps!, down!
+SOUNDS/en;splrup.wav;spoiler!, up!
+SOUNDS/en;splrdn.wav;spoiler!, down!
+SOUNDS/en;trnon.wav;trainer!, on!
+SOUNDS/en;trnoff.wav;trainer!, off!
+SOUNDS/en;engoff.wav;engine!, off!
+SOUNDS/en;tohigh.wav;too. high!
+SOUNDS/en;tolow.wav;too. low!
+SOUNDS/en;lowbat.wav;low. battery!
+SOUNDS/en;crowon.wav;crow!, on!
+SOUNDS/en;crowof.wav;crow!, off!
+SOUNDS/en;siglow.wav;rf. signal!, low!
+SOUNDS/en;sigcrt.wav;rf. signal!, critical!
+SOUNDS/en;spdmod.wav;high. speed. mode!, active
+SOUNDS/en;thmmod.wav;thermal. mode!, on
+SOUNDS/en;nrmmod.wav;normal. mode!, on
+SOUNDS/en;lnding.wav;landing. mode!, on
+SOUNDS/en;acro.wav;acro. mode!, on
+SOUNDS/en;fm-1.wav;flight mode one
+SOUNDS/en;fm-2.wav;flight mode two
+SOUNDS/en;fm-3.wav;flight mode three
+SOUNDS/en;fm-4.wav;flight mode four
+SOUNDS/en;fm-5.wav;flight mode five
+SOUNDS/en;fm-6.wav;flight mode six
+SOUNDS/en;fm-7.wav;flight mode seven
+SOUNDS/en;fm-8.wav;flight mode eight
+SOUNDS/en;vrion.wav;vario!, on
+SOUNDS/en;vrioff.wav;vario!, off
+SOUNDS/en;fm-pwr.wav;flight mode power
+SOUNDS/en;fm-lnd.wav;flight mode land
+SOUNDS/en;fm-flt.wav;flight mode float
+SOUNDS/en;fm-spd.wav;flight mode speed
+SOUNDS/en;fm-fst.wav;flight mode fast
+SOUNDS/en;fm-nrm.wav;flight mode normal
+SOUNDS/en;fm-crs.wav;flight mode cruise
+SOUNDS/en;fm-acr.wav;flight mode acro
+SOUNDS/en;fm-rce.wav;flight mode race
+SOUNDS/en;fm-lch.wav;flight mode launch
+SOUNDS/en;fm-png.wav;flight mode ping
+SOUNDS/en;fm-thm.wav;flight mode thermal
+SOUNDS/en;fm-thl.wav;flight mode thermal left
+SOUNDS/en;fm-thr.wav;flight mode thermal right
