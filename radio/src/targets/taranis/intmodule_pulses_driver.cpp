@@ -65,7 +65,7 @@ void intmoduleSendNextFrame()
   }
 }
 
-void intmoduleSerialStart(uint32_t baudrate)
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
 {
   // nothing, the pulses will be sent through telemetry port
 }

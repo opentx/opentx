@@ -1670,6 +1670,7 @@ void menuModelSetup(event_t event)
 
       }
       break;
+
 #if !defined(PCBXLITE)
       case ITEM_MODEL_EXTERNAL_MODULE_FREQ:
       {

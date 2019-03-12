@@ -209,11 +209,7 @@ void setupPulsesPXXInternalModule()
 
 void setupPulsesPXXExternalModule()
 {
-#if defined(EXTMODULE_USART)
-  extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
-#elif !defined(INTMODULE_USART) && !defined(EXTMODULE_USART)
   extmodulePulsesData.pxx.setupFrame(EXTERNAL_MODULE);
-#endif
 }
 #endif
 

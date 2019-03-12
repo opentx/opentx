@@ -39,7 +39,7 @@ void disable_pxx(uint8_t module)
 void init_pxx2(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
-    intmoduleSerialStart(INTMODULE_USART_PXX_BAUDRATE);
+    intmoduleSerialStart(INTMODULE_USART_PXX_BAUDRATE, true);
   else
     extmodulePxx2Start();
 }

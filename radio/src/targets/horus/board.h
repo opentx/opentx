@@ -212,6 +212,7 @@ void disable_pxx(uint8_t module);
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void disable_serial(uint8_t module);
 void intmoduleSendNextFrame();
 void extmoduleSendNextFrame();

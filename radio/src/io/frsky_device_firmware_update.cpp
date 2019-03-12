@@ -73,7 +73,7 @@ void DeviceFirmwareUpdate::startup()
   switch(module) {
     case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
-      intmoduleSerialStart(57600);
+      intmoduleSerialStart(57600, true);
       break;
 #endif
 

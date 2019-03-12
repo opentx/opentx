@@ -73,16 +73,22 @@ bool isForcePowerOffRequested()
   return false;
 }
 
-bool isProtocolSynchronous(uint8_t protocol)
+bool isModuleSynchronous(uint8_t module)
 {
-  return (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE);
+  uint8_t protocol = moduleSettings[module].protocol;
+  if (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
+    return true;
+#if defined(INTMODULE_USART)
+  if (protocol == PROTOCOL_CHANNELS_PXX1 && module == INTERNAL_MODULE)
+    return true;
+#endif
+  return false;
 }
 
 void sendSynchronousPulses()
 {
   for (uint8_t module = 0; module < NUM_MODULES; module++) {
-    uint8_t protocol = moduleSettings[module].protocol;
-    if (isProtocolSynchronous(protocol) && setupPulses(module)) {
+    if (isModuleSynchronous(module) && setupPulses(module)) {
       if (module == INTERNAL_MODULE)
         intmoduleSendNextFrame();
       else
@@ -184,7 +190,7 @@ void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
 {
   // Schedule next mixer calculation time,
 
-  if (isProtocolSynchronous(moduleSettings[module].protocol)) {
+  if (isModuleSynchronous(module)) {
     nextMixerTime[module] += period_ms / RTOS_MS_PER_TICK;
     if (nextMixerTime[module] < RTOS_GET_TIME()) {
       // we are late ... let's add some small delay

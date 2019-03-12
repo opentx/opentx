@@ -21,6 +21,7 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
+#include <inttypes.h>
 #include "../definitions.h"
 #include "cpu_id.h"
 
@@ -180,7 +181,7 @@ void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
 void disable_serial(uint8_t module);
 void intmoduleStop();
 void intmodulePxxStart();
-void intmoduleSerialStart(uint32_t baudrate);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 #if defined(TARANIS_INTERNAL_PPM)
 void intmodulePpmStart(void);
 #endif
