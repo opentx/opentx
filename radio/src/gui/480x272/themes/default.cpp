@@ -94,7 +94,7 @@ class DefaultTheme: public Theme
 #if defined(LOG_TELEMETRY) || defined(WATCHDOG_DISABLED)
       loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
 #else
-      loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
+      loadMenuIcon(ICON_OPENTX, "mask_jumpertx.png");
 #endif
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
       loadMenuIcon(ICON_RADIO_SETUP, "mask_radio_setup.png");
