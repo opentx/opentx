@@ -944,19 +944,26 @@
 #endif
 
 // S.Port update connector
-#if defined(PCBXLITE)
+#if defined(PCBX3)
+  #define SPORT_MAX_BAUDRATE            250000 // not tested
+  #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOE
+  #define SPORT_UPDATE_PWR_GPIO         GPIOE
+  #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_15 // PE.15
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
+#elif defined(PCBXLITE)
   #define SPORT_MAX_BAUDRATE            250000 // not tested
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOD
   #define SPORT_UPDATE_PWR_GPIO         GPIOD
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_8  // PD.08
-  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON GPIO_SetBits
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #elif defined(PCBX7)
   #define SPORT_MAX_BAUDRATE            250000 // < 400000
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOB
   #define SPORT_UPDATE_PWR_GPIO         GPIOB
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_2  // PB.02
-  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON GPIO_SetBits
+  #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
 #else
   #define SPORT_MAX_BAUDRATE            400000
