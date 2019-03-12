@@ -55,16 +55,18 @@ enum PXX2RegisterSteps {
 };
 
 enum PXX2BindSteps {
-    BIND_START,
-    BIND_RX_NAME_SELECTED,
-    BIND_WAIT,
-    BIND_OK
+  BIND_START,
+  BIND_RX_NAME_SELECTED,
+  BIND_WAIT,
+  BIND_OK
 };
 
 enum PXX2ReceiverStatus {
-  RECEIVER_WAITING_RESPONSE,
-  RECEIVER_OK
+  RECEIVER_SETTINGS_READ = 0x00,
+  RECEIVER_SETTINGS_OK,
+  RECEIVER_SETTINGS_WRITE = 0x40
 };
+
 extern ModuleFifo intmoduleFifo;
 extern ModuleFifo extmoduleFifo;
 

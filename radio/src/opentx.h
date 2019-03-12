@@ -1149,6 +1149,7 @@ union ReusableBuffer
     uint8_t channelMapping[24];
     uint8_t telemetryEnabled;
     uint8_t pwmRate;
+    uint8_t dirty;
   } receiverSetup;
 
   // 103 bytes

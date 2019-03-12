@@ -1932,8 +1932,16 @@ void menuModelReceiverOptions(event_t event)
   drawReceiverName(FW * 13, 0, reusableBuffer.receiverSetup.receiverId);
   lcdInvertLine(0);
 
-  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == RECEIVER_OK && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
+  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_READ && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
     reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 500/*5s*/;
+    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+
+  if (!s_editMode && reusableBuffer.receiverSetup.dirty && (reusableBuffer.receiverSetup.state != RECEIVER_SETTINGS_WRITE || get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
+    reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_WRITE;
+    reusableBuffer.receiverSetup.dirty = 0;
+    reusableBuffer.receiverSetup.timeout = 0;
+    reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 100/*1s*/;
     moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
@@ -1941,70 +1949,57 @@ void menuModelReceiverOptions(event_t event)
   reusableBuffer.receiverSetup.state = 0xFF;
 #endif
 
-  if (reusableBuffer.receiverSetup.state != RECEIVER_WAITING_RESPONSE) {
-    bool changed = false;
+  if (reusableBuffer.receiverSetup.state > RECEIVER_SETTINGS_READ) {
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
-      uint8_t previousValue = 0;
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
       LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-      uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
-      uint8_t channel = reusableBuffer.receiverSetup.channelMapping[pin];
-      int32_t channelValue = channelOutputs[channel];
 
       switch (i) {
         case ITEM_RECEIVER_TELEMETRY:
-          previousValue = reusableBuffer.receiverSetup.telemetryEnabled;
-          reusableBuffer.receiverSetup.telemetryEnabled = editCheckBox(reusableBuffer.receiverSetup.telemetryEnabled, RECEIVER_OPTIONS_2ND_COLUMN, y,
-                                                                       "Telemetry", attr, event);
-          if (previousValue != reusableBuffer.receiverSetup.telemetryEnabled) {
-            changed = true;
-            TRACE("TELEM CHANGED (%d , %d)", previousValue, reusableBuffer.receiverSetup.telemetryEnabled);
+          reusableBuffer.receiverSetup.telemetryEnabled = editCheckBox(reusableBuffer.receiverSetup.telemetryEnabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telemetry", attr, event);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.receiverSetup.dirty = true;
           }
           break;
 
-
         case ITEM_RECEIVER_PWM_RATE:
-          previousValue = reusableBuffer.receiverSetup.pwmRate;
           reusableBuffer.receiverSetup.pwmRate = editCheckBox(reusableBuffer.receiverSetup.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
-          TRACE("pwmRate : %d", reusableBuffer.receiverSetup.pwmRate);
-          if (previousValue != reusableBuffer.receiverSetup.pwmRate) {
-            changed = true;
-            TRACE("pwmRate CHANGED (%d , %d)", previousValue, reusableBuffer.receiverSetup.pwmRate);
+          if (attr && checkIncDec_Ret) {
+            reusableBuffer.receiverSetup.dirty = true;
           }
           break;
 
         default:
           // Pin
-          lcdDrawText(0, y, "Pin");
-          lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
+          {
+            uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
+            uint8_t channel = reusableBuffer.receiverSetup.channelMapping[pin];
+            int32_t channelValue = channelOutputs[channel];
+            lcdDrawText(0, y, "Pin");
+            lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
+            putsChn(7 * FW, y, channel + 1, attr);
 
-          // Channel
-          if ((menuVerticalPosition - ITEM_RECEIVER_PINMAP_FIRST)== pin) {
-            if (s_editMode > 0) {
-              channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx));
+            // Channel
+            if (attr) {
+              channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
               if (checkIncDec_Ret) {
                 reusableBuffer.receiverSetup.channelMapping[pin] = channel;
-                changed = true;
+                reusableBuffer.receiverSetup.dirty = true;
               }
             }
-          }
-          putsChn(7 * FW, y, channel + 1, attr);
 
-          // Bargraph
+            // Bargraph
   #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-          lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
+            lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
   #endif
-          const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-          const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
-          lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
-          lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
-          break;
+            const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
+            const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
+            lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
+            lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+            break;
+          }
       }
-    }
-    if (changed) {
-      reusableBuffer.receiverSetup.timeout = 0;
-      moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
     }
   }
   else {
