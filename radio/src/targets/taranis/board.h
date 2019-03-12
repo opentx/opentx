@@ -487,7 +487,7 @@ extern HardwareOptions hardwareOptions;
 #elif defined(PCBXLITES) || defined(PCBX3) || defined(SIMU)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
 #else
-  #define IS_PXX2_INTERNAL_ENABLED()         (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
 #endif
 
 enum CalibratedAnalogs {
