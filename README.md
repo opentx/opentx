@@ -1,4 +1,4 @@
-## JumperTX is firmware for the Jumper.xyz T12 Radio based on the OpenTX project and independantly maintained by Jumper.xyz. 
+## JumperTX is firmware for the Jumper Technology Radios forked from the OpenTX project and independantly maintained by Jumper Technology. 
 OpenTX are not affiliated with the JumperTX fork.
 
 
