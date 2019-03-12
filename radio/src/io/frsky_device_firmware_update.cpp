@@ -326,6 +326,9 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
   if (!result) result = uploadFile(filename);
   if (!result) result = endTransfer();
 
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  BACKLIGHT_ENABLE();
+
   if (result) {
     POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
     SET_WARNING_INFO(result, strlen(result), 0);
