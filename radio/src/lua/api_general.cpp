@@ -1061,6 +1061,77 @@ static int luaGetGeneralSettings(lua_State * L)
 }
 
 /*luadoc
+@function getSystemTimers()
+
+Returns radio timers
+
+@retval table with elements:
+* `gtimer` (number) radio global timer in seconds
+* `ttimer` (number) radio throttle timer in seconds
+* `tptimer` (number) radio throttle percent timer in seconds
+
+@status current Introduced added in 2.3.0.
+
+*/
+static int luaGetSystemTimers(lua_State * L)
+{
+  lua_newtable(L);
+  lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer + sessionTimer);
+  lua_pushtableinteger(L, "ttimer", s_timeCumThr);
+  lua_pushtableinteger(L, "tptimer", s_timeCum16ThrP/16);
+  return 1;
+}
+
+/*luadoc
+@function popupInput(title, event, input, min, max)
+
+Raises a pop-up on screen that allows uses input
+
+@param title (string) text to display
+
+@param event (number) the event variable that is passed in from the
+Run function (key pressed)
+
+@param input (number) value that can be adjusted by the +/­- keys
+
+@param min  (number) min value that input can reach (by pressing the -­ key)
+
+@param max  (number) max value that input can reach
+
+@retval number result of the input adjustment
+
+@retval "OK" user pushed ENT key
+
+@retval "CANCEL" user pushed EXIT key
+
+@notice Use only from stand-alone and telemetry scripts.
+
+@status current Introduced in 2.0.0
+*/
+static int luaPopupInput(lua_State * L)
+{
+  event_t event = luaL_checkinteger(L, 2);
+  warningInputValue = luaL_checkinteger(L, 3);
+  warningInputValueMin = luaL_checkinteger(L, 4);
+  warningInputValueMax = luaL_checkinteger(L, 5);
+  warningText = luaL_checkstring(L, 1);
+  warningType = WARNING_TYPE_INPUT;
+  runPopupWarning(event);
+  if (warningResult) {
+    warningResult = 0;
+    lua_pushstring(L, "OK");
+  }
+  else if (!warningText) {
+    lua_pushstring(L, "CANCEL");
+  }
+  else {
+    lua_pushinteger(L, warningInputValue);
+  }
+  warningText = NULL;
+  return 1;
+}
+
+/*luadoc
 @function popupWarning(title, event)
 
 Raises a pop-up on screen that shows a warning
@@ -1411,6 +1482,7 @@ const luaL_Reg opentxLib[] = {
 #endif
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
+  { "getSystemTimers", luaGetSystemTimers },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
