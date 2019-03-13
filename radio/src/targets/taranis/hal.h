@@ -150,22 +150,22 @@
   #define TRIMS_GPIO_REG_RHR            GPIOE->IDR
   #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_4  // PE.04
 #elif defined(PCBX3)
-  #define TRIMS_GPIO_REG_LHL            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PC.04
   #define TRIMS_GPIO_REG_LHR            GPIOC->IDR
-  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_5  // PC.05
-  #define TRIMS_GPIO_REG_LVD            GPIOB->IDR
-  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_0  // PB.00
+  #define TRIMS_GPIO_PIN_LHR            GPIO_Pin_4  // PC.04
+  #define TRIMS_GPIO_REG_LHL            GPIOC->IDR
+  #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_5  // PC.05
   #define TRIMS_GPIO_REG_LVU            GPIOB->IDR
-  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_1  // PB.01
-  #define TRIMS_GPIO_REG_RVD            GPIOE->IDR
-  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_13 // PE.13
-  #define TRIMS_GPIO_REG_RHL            GPIOE->IDR
-  #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_14 // PE.14
-  #define TRIMS_GPIO_REG_RVU            GPIOD->IDR
-  #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_8  // PD.08
-  #define TRIMS_GPIO_REG_RHR            GPIOD->IDR
-  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_9  // PD.09
+  #define TRIMS_GPIO_PIN_LVU            GPIO_Pin_0  // PB.00
+  #define TRIMS_GPIO_REG_LVD            GPIOB->IDR
+  #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_1  // PB.01
+  #define TRIMS_GPIO_REG_RVU            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_13 // PE.13
+  #define TRIMS_GPIO_REG_RVD            GPIOD->IDR
+  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_8  // PD.08
+  #define TRIMS_GPIO_REG_RHR            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_14 // PE.14
+  #define TRIMS_GPIO_REG_RHL            GPIOD->IDR
+  #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_9  // PD.09
 #else
   #define TRIMS_GPIO_REG_LHL            GPIOE->IDR
   #define TRIMS_GPIO_PIN_LHL            GPIO_Pin_4  // PE.04

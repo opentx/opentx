@@ -243,17 +243,21 @@ void generalDefault()
   g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
 #elif defined(PCBX7)
   g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
+#elif defined(PCBX3)
+  g_eeGeneral.potsConfig = 0x01;    // S1 = pot without detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
 
 #if defined(PCBXLITES)
-  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
+  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBXLITE)
-  g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
+  g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
+#elif defined(PCBX3)
+  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif

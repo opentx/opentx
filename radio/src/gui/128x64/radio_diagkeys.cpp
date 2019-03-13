@@ -50,7 +50,7 @@ void menuRadioDiagKeys(event_t event)
     }
 
     if (i < TRM_BASE) {
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       if (i >= 2) {
         // hide PLUS and MINUS virtual buttons
