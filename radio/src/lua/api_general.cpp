@@ -1434,7 +1434,8 @@ Resets the radio global timer to 0.
 static int luaResetGlobalTimer(lua_State * L)
 {
   g_eeGeneral.globalTimer = 0;
-  const char *option luaL_optlstring(L,1);
+  size_t lenght;
+  const char *option = luaL_optlstring(L, 1, "", &lenght);
   if(!strcmp(option, "ALL")) {
     s_timeCumThr = 0;
     s_timeCum16ThrP = 0;
