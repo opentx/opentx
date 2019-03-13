@@ -236,7 +236,7 @@ class DarkblueTheme: public Theme
       lcdDrawSolidFilledRect(0, 0, 41, MENU_HEADER_HEIGHT, HEADER_ICON_BGCOLOR);
 
       if (icon == ICON_OPENTX) {
-        static BitmapBuffer * thumb = BitmapBuffer::load(getFilePath("topmenu_opentx.bmp"));
+        static BitmapBuffer * thumb = BitmapBuffer::load(getFilePath("topmenu_jumpertx.png"));
         lcd->drawBitmap(5, 7, thumb);
       }
       else {
