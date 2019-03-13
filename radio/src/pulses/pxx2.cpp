@@ -224,13 +224,8 @@ void Pxx2Pulses::setupShareMode(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
 
-  Pxx2Transport::addByte(0xC0);
-
-  Pxx2Transport::addByte(0x40);
-
-  for(uint8_t i=0; i < 24 ; i++) {
-    Pxx2Transport::addByte(i);
-  }
+  Pxx2Transport::addByte(PXX2_RX_SETTINGS_FLAG0_WRITE + reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
+  Pxx2Transport::addByte(PXX2_RX_SETTINGS_FLAG1_SHARE);
 
   moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }

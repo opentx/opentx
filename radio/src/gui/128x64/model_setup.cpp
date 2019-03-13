@@ -1361,11 +1361,10 @@ void menuModelSetup(event_t event)
           }
           else {
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-              moduleSettings[moduleIdx].mode ^= MODULE_MODE_SHARE;
+              moduleSettings[moduleIdx].mode = MODULE_MODE_SHARE;
               reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
-            }
-            if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL) {
               s_editMode = 0;
+              POPUP_INFORMATION("Model shared");
             }
           }
         }
@@ -1373,7 +1372,7 @@ void menuModelSetup(event_t event)
       break;
 #endif
 #if defined(PCBSKY9X)
-        case ITEM_MODEL_EXTRA_MODULE_BIND:
+      case ITEM_MODEL_EXTRA_MODULE_BIND:
 #endif
 #if defined(PCBTARANIS)
       case ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND:

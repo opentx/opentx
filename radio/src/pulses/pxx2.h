@@ -43,9 +43,10 @@
 #define PXX2_CHANNELS_FLAG0_FAILSAFE         (1 << 6)
 #define PXX2_CHANNELS_FLAG0_RANGECHECK       (1 << 7)
 
+#define PXX2_RX_SETTINGS_FLAG0_WRITE         (1 << 6)
+#define PXX2_RX_SETTINGS_FLAG1_SHARE         (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM       (1 << 4)
 #define PXX2_RECV_OPTION_MASK_TELEMETRY      0x00 // TODO : update when defined
-
 
 enum PXX2RegisterSteps {
   REGISTER_START,
@@ -64,7 +65,7 @@ enum PXX2BindSteps {
 enum PXX2ReceiverStatus {
   RECEIVER_SETTINGS_READ = 0x00,
   RECEIVER_SETTINGS_OK,
-  RECEIVER_SETTINGS_WRITE = 0x40
+  RECEIVER_SETTINGS_WRITE = PXX2_RX_SETTINGS_FLAG0_WRITE
 };
 
 extern ModuleFifo intmoduleFifo;
