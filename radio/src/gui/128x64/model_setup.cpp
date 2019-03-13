@@ -1341,8 +1341,7 @@ void menuModelSetup(event_t event)
               reusableBuffer.moduleSetup.pxx2.bindReceiverId = receiverSlot;
               moduleSettings[moduleIdx].mode ^= MODULE_MODE_BIND;
             }
-            if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
-              s_editMode = 1;
+            if (s_editMode) {
               if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_START && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount > 0) {
                 popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
                 for (uint8_t i=0; i<popupMenuItemsCount; i++) {
@@ -1353,7 +1352,7 @@ void menuModelSetup(event_t event)
               }
             }
             else {
-              s_editMode = 0;
+              moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL;
             }
           }
           else {
