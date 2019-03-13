@@ -20,6 +20,13 @@
 
 #include <opentx.h>
 
+// TODO find why we need this (for REGISTER at least)
+#if defined(PCBXLITE)
+  #define EVT_BUTTON_PRESSED() EVT_KEY_FIRST(KEY_ENTER)
+#else
+  #define EVT_BUTTON_PRESSED() EVT_KEY_BREAK(KEY_ENTER)
+#endif
+
 #warning "TODO remove it"
 uint8_t g_moduleIdx;
 
@@ -340,7 +347,7 @@ void runPopupRegister(event_t event)
 
   if (warningText) {
     const uint8_t dialogRows[] = { 0, uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? READONLY_ROW : 0), uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? 0 : 1)};
-    check(event, 0, nullptr, 0, dialogRows, 2, 2);
+    check(event, 0, nullptr, 0, dialogRows, 2, 3 - HEADER_LINE); // TODO add a comment for 3 - HEADER_LINE once understood
 
     drawMessageBox();
 
@@ -1216,7 +1223,7 @@ void menuModelSetup(event_t event)
         lcdDrawText(lcdLastRightPos + 3, y, STR_MODULE_RANGE, (menuHorizontalPosition == 1 ? attr : 0));
         if (attr) {
           if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
-            if (menuHorizontalPosition == 0 && event == EVT_KEY_FIRST(KEY_ENTER)) {
+            if (menuHorizontalPosition == 0 && event == EVT_BUTTON_PRESSED()) {
               startRegisterDialog(moduleIdx);
             }
             else if (menuHorizontalPosition == 1) {
