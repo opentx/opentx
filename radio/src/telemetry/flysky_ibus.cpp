@@ -1,5 +1,5 @@
 /*
- * Copyright (C) OpenTX
+ * Copyright (C) JumperTX
  *
  * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
