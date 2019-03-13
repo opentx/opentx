@@ -85,6 +85,7 @@ elseif(PCB STREQUAL X7)
   set(GVAR_SCREEN model_gvars.cpp)
   set(STATUS_LEDS YES)
 elseif(PCB STREQUAL X3)
+  set(PXX_FREQUENCY "HIGH")
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
@@ -103,7 +104,7 @@ elseif(PCB STREQUAL X3)
   set(GVAR_SCREEN model_gvars.cpp)
   set(STATUS_LEDS YES)
 elseif(PCB STREQUAL XLITE)
-  set(PXX_FREQUENCY "HIGH" CACHE STRING "PXX frequency (LOW / HIGH)")
+  set(PXX_FREQUENCY "HIGH" CACHE STRING "PXX frequency (LOW / HIGH)") # always use HIGH except on some prototype boards
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
