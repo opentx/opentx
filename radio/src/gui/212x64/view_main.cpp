@@ -96,10 +96,10 @@ void displayTrims(uint8_t phase)
     int32_t trim = getTrimValue(phase, i);
     int32_t val = trim;
     bool exttrim = false;
-    
+
     if(getRawTrimValue(phase, i).mode == TRIM_MODE_NONE)
       continue;
-    
+
     if (val < TRIM_MIN || val > TRIM_MAX) {
       exttrim = true;
     }
@@ -234,7 +234,7 @@ void displayTopBar()
     }
 
     /* Altitude */
-    if (g_model.frsky.altitudeSource) {
+    if (g_model.frsky.altitudeSource && !IS_FAI_ENABLED()) {
       uint8_t item = g_model.frsky.altitudeSource-1;
       if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & altitudeItem = telemetryItems[item];
