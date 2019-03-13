@@ -288,7 +288,7 @@ void telemetryInit(uint8_t protocol)
 #endif
 
   else if (protocol == PROTOCOL_TELEMETRY_PXX2) {
-    telemetryPortInit(PXX2_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
+    telemetryPortInit(PXX2_ON_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
     outputTelemetryBufferSize = 0;
     outputTelemetryBufferTrigger = 0x7E;

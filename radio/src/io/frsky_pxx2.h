@@ -23,10 +23,6 @@
 
 #include "../fifo.h"
 
-#define PXX2_BAUDRATE            230400
-#define PXX2_PERIOD              4 // 4ms
-#define PXX2_FRAME_MAXLENGTH     64
-
 class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
   public:
     bool getFrame(uint8_t * frame)

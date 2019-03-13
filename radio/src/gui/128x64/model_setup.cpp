@@ -910,7 +910,13 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, attr);
         if (attr) {
-          g_model.moduleData[INTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
+          uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
+          if (checkIncDec_Ret) {
+            // TODO this code should be common, in module.h (X10_new_UI branch)
+            memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
+            g_model.moduleData[INTERNAL_MODULE].type = moduleType;
+            g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
+          }
         }
         break;
 #endif
@@ -951,19 +957,22 @@ void menuModelSetup(event_t event)
         if (attr && editMode > 0) {
           switch (menuHorizontalPosition) {
             case 0:
-              g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type,
-                                                                     MODULE_TYPE_NONE,
-                                                                     IS_TRAINER_EXTERNAL_MODULE() ? MODULE_TYPE_NONE :
-                                                                     MODULE_TYPE_COUNT - 1, EE_MODEL,
-                                                                     isExternalModuleAvailable);
-              if (checkIncDec_Ret) {
-                g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
-                g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
-                g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
-                if (isModuleSBUS(EXTERNAL_MODULE))
-                  g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
-                if (isModulePPM(EXTERNAL_MODULE))
-                  SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
+              {
+                uint8_t moduleType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type,
+                                                 MODULE_TYPE_NONE,
+                                                 IS_TRAINER_EXTERNAL_MODULE() ? MODULE_TYPE_NONE :
+                                                 MODULE_TYPE_COUNT - 1, EE_MODEL,
+                                                 isExternalModuleAvailable);
+                if (checkIncDec_Ret) {
+                  // TODO this code should be common, in module.h (X10_new_UI branch)
+                  memclear(&g_model.moduleData[EXTERNAL_MODULE], sizeof(ModuleData));
+                  g_model.moduleData[EXTERNAL_MODULE].type = moduleType;
+                  g_model.moduleData[EXTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(EXTERNAL_MODULE);
+                  if (isModuleSBUS(EXTERNAL_MODULE))
+                    g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate = -31;
+                  if (isModulePPM(EXTERNAL_MODULE))
+                    SET_DEFAULT_PPM_FRAME_LENGTH(EXTERNAL_MODULE);
+                }
               }
               break;
             case 1:

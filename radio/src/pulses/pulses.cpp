@@ -219,7 +219,7 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1:
       setupPulsesPXXInternalModule();
-      scheduleNextMixerCalculation(INTERNAL_MODULE, PXX_PERIOD);
+      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX_PERIOD);
       break;
 #endif
 
@@ -248,7 +248,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1:
       setupPulsesPXXExternalModule();
-      scheduleNextMixerCalculation(EXTERNAL_MODULE, PXX_PERIOD);
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX_PERIOD);
       break;
 #endif
 

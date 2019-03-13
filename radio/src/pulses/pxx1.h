@@ -44,9 +44,9 @@ class StandardPxx1Transport: public BitTransport, public Pxx1CrcMixin {
   protected:
     uint8_t ones_count;
 
-    void initFrame()
+    void initFrame(uint32_t period)
     {
-      BitTransport::initFrame();
+      BitTransport::initFrame(period);
       ones_count = 0;
     }
 
@@ -93,7 +93,7 @@ class StandardPxx1Transport: public BitTransport, public Pxx1CrcMixin {
 
 class UartPxx1Transport: public DataBuffer<uint8_t, 64>, public Pxx1CrcMixin {
   protected:
-    void initFrame()
+    void initFrame(uint32_t period)
     {
       initBuffer();
     }

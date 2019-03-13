@@ -197,7 +197,7 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmodulePxx2Start()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX_BAUDRATE);
+  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX2_BAUDRATE);
 }
 #else
 void extmodulePxx2Start()
@@ -223,7 +223,7 @@ void extmodulePxxStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = PXX_PERIOD_HALF_US;
+  EXTMODULE_TIMER->ARR = EXTMODULE_PXX_PERIOD * 2000; // 0.5uS (2Mhz)
   EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY; // polarity, default low
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 18;

@@ -216,20 +216,24 @@ void Pxx1Pulses<PxxTransport>::add8ChannelsFrame(uint8_t module, uint8_t sendUpp
 template <class PxxTransport>
 void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
 {
-  PxxTransport::initFrame();
+  PxxTransport::initFrame(module == INTERNAL_MODULE ? INTMODULE_PXX_PERIOD : EXTMODULE_PXX_PERIOD);
 
 #if defined(PXX_FREQUENCY_HIGH)
-  add8ChannelsFrame(module, 0);
-  if (sentModuleChannels(module) > 8) {
-    add8ChannelsFrame(module, 8);
+  if (module == INTERNAL_MODULE) {
+    add8ChannelsFrame(module, 0);
+    if (sentModuleChannels(module) > 8) {
+      add8ChannelsFrame(module, 8);
+    }
+    return;
   }
-#else
+#endif
+
   uint8_t sendUpperChannels = 0;
   if (moduleSettings[module].counter & 0x01) {
     sendUpperChannels = g_model.moduleData[module].channelsCount;
   }
+
   add8ChannelsFrame(module, sendUpperChannels);
-#endif
 }
 
 template class Pxx1Pulses<StandardPxx1Transport<PwmPxxBitTransport> >;
