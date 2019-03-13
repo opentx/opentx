@@ -912,7 +912,6 @@ Returns (some of) the general radio settings
  IMPERIAL units
  * `language` (string) radio language (used for menus)
  * `voice` (string) voice language (used for speech)
- * `gtimer` (number) radio global timer in seconds (does not include current session)
 
 @status current Introduced in 2.0.6, `imperial` added in TODO,
 `language` and `voice` added in 2.2.0, gtimer added in 2.2.2.
@@ -927,7 +926,6 @@ static int luaGetGeneralSettings(lua_State * L)
   lua_pushtableinteger(L, "imperial", g_eeGeneral.imperial);
   lua_pushtablestring(L, "language", TRANSLATIONS);
   lua_pushtablestring(L, "voice", currentLanguagePack->id);
-  lua_pushtableinteger(L, "gtimer", g_eeGeneral.globalTimer);
   return 1;
 }
 
@@ -1270,16 +1268,75 @@ static int luaGetUsage(lua_State * L)
 }
 
 /*luadoc
-@function resetGlobalTimer()
+@function getGlobalTimer([which])
 
-Resets the radio global timer to 0.
+Returns one of the radio global timers (as opposed to model timer).
+
+@param which (integer) (optional) Which timer value to return. Options are:
+  * `0` Session timer (DEFAULT)
+  * `1` Global (TOT) timer
+  * `2` Throttle time
+  * `3` Throttle percent timer
+
+@retval (integer) Elapsed time in seconds
+
+@status current Introduced in 2.2.2
+*/
+static int luaGetGlobalTimer(lua_State * L)
+{
+  uint32_t retVal;
+  switch (luaL_optinteger(L, 1, 0))
+  {
+    case 0:
+      retVal = sessionTimer;
+      break;
+    case 1:
+      retVal = g_eeGeneral.globalTimer + sessionTimer;
+      break;
+    case 2: // throttle timer
+      retVal = s_timeCumThr;
+      break;
+    case 3: // throttle percent timer
+      retVal = s_timeCum16ThrP/16;
+      break;
+    default:
+      return 0;  // return nil
+  }
+  lua_pushinteger(L, retVal);
+  return 1;
+}
+
+/*luadoc
+@function resetGlobalTimer([which])
+
+Resets a radio global timer to 0.
+
+@param which (integer) (optional) Which timer value to reset. Options are:
+  * `0` Session timer (DEFAULT)
+  * `1` Global (TOT) timer
+  * `2` Throttle time
+  * `3` Throttle percent timer
 
 @status current Introduced in 2.2.2
 */
 static int luaResetGlobalTimer(lua_State * L)
 {
-  g_eeGeneral.globalTimer = 0;
-  storageDirty(EE_GENERAL);
+  switch (luaL_optinteger(L, 1, 0))
+  {
+    case 0:
+      sessionTimer = 0;
+      break;
+    case 1:
+      g_eeGeneral.globalTimer = 0;
+      storageDirty(EE_GENERAL);
+      break;
+    case 2: // throttle timer
+      s_timeCumThr = 0;
+      break;
+    case 3: // throttle percent timer
+      s_timeCum16ThrP = 0;
+      break;
+  }
   return 0;
 }
 
@@ -1310,6 +1367,7 @@ const luaL_Reg opentxLib[] = {
   { "killEvents", luaKillEvents },
   { "loadScript", luaLoadScript },
   { "getUsage", luaGetUsage },
+  { "getGlobalTimer", luaGetGlobalTimer },
   { "resetGlobalTimer", luaResetGlobalTimer },
 #if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
