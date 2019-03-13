@@ -1307,7 +1307,7 @@ void menuModelSetup(event_t event)
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
           uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-          uint8_t receiverSlot = g_model.moduleData[g_moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
+          uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
           memclear(&reusableBuffer.receiverSetup, sizeof(reusableBuffer.receiverSetup));
           reusableBuffer.receiverSetup.moduleIdx = moduleIdx;
           reusableBuffer.receiverSetup.receiverId = receiverSlot;
