@@ -6,17 +6,17 @@ branch=2.2
 workdir=/home/opentx/nightly22
 output=/var/www/html/2.2/nightlies
 
-# Handle opentx.sdcard.version
+# Handle jumpertx.sdcard.version
 sdcard_version="2.2V"$(grep 'set(SDCARD_REVISION' ${workdir}/code/CMakeLists.txt | grep -o '".*"' | sed 's/"//g')
-echo ${sdcard_version} > ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version
-echo ${sdcard_version} > ${workdir}/code/radio/sdcard/taranis-x9/opentx.sdcard.version
-echo ${sdcard_version} > ${workdir}/code/radio/sdcard/taranis-x7/opentx.sdcard.version
+echo ${sdcard_version} > ${workdir}/code/radio/sdcard/horus/jumpertx.sdcard.version
+echo ${sdcard_version} > ${workdir}/code/radio/sdcard/taranis-x9/jumpertx.sdcard.version
+echo ${sdcard_version} > ${workdir}/code/radio/sdcard/taranis-x7/jumpertx.sdcard.version
 
-if cmp --silent ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}/opentx.sdcard.version
+if cmp --silent ${workdir}/code/radio/sdcard/horus/jumpertx.sdcard.version ${workdir}/jumpertx.sdcard.version
 then
   exit
 else
-  cp -r ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}
+  cp -r ${workdir}/code/radio/sdcard/horus/jumpertx.sdcard.version ${workdir}
   cd ${workdir}
 
   # Copy git sdcard data

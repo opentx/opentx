@@ -1,9 +1,9 @@
-project(OpenTX)
+project(JumperTX)
 
 set(VERSION_MAJOR "2")
 set(VERSION_MINOR "2")
 set(VERSION_REVISION "3")
-set(VERSION_SUFFIX $ENV{OPENTX_VERSION_SUFFIX})
+set(VERSION_SUFFIX $ENV{JUMPERTX_VERSION_SUFFIX})
 set(VERSION_FAMILY ${VERSION_MAJOR}.${VERSION_MINOR})
 set(VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_REVISION}${VERSION_SUFFIX})
 set(SDCARD_REVISION "0018")
@@ -43,7 +43,7 @@ today(DATE)
 now(TIME)
 git_id(GIT_STR)
 
-message(STATUS "OpenTX ${VERSION} @${GIT_STR}")
+message(STATUS "JumperTX ${VERSION} @${GIT_STR}")
 
 # options shared by all targets
 
@@ -147,7 +147,7 @@ if(Qt5Core_FOUND OR FOX_FOUND)
   if(SDL_FOUND)
     message(STATUS "SDL Lib: ${SDL_LIBRARY}; Headers: ${SDL_INCLUDE_DIR}; Version: ${SDL_VERSION_STRING}")
     if (NOT ${SDL_VERSION_STRING} VERSION_LESS "2.0")
-      message(FATAL_ERROR "OpenTX requires SDL 1.x, not 2.x")
+      message(FATAL_ERROR "JumperTX requires SDL 1.x, not 2.x")
     endif()
   else()
     message(STATUS "SDL not found! Simulator audio, and joystick inputs, will not work.")
@@ -155,9 +155,9 @@ if(Qt5Core_FOUND OR FOX_FOUND)
 endif()
 endif()
 
-# Check for a file that is typically left from a OpenTX 2.1 build and abort if found
+# Check for a file that is typically left from a JumperTX 2.1 build and abort if found
 if (EXISTS ${RADIO_SRC_DIRECTORY}/stamp.h OR EXISTS ${RADIO_SRC_DIRECTORY}/translations/en.h)
-   message(FATAL_ERROR "Source directory contains files leftover from a OpenTX 2.1 build. Please run `git clean -f` in source directory (Careful: Will remove any extra files) or do a new clean git checkout")
+   message(FATAL_ERROR "Source directory contains files leftover from a JumperTX 2.1 build. Please run `git clean -f` in source directory (Careful: Will remove any extra files) or do a new clean git checkout")
 endif()
 
 # Windows-specific includes and libs shared by sub-projects
