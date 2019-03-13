@@ -438,8 +438,10 @@ enum Analogs {
   STICK4,
   POT_FIRST,
   POT1 = POT_FIRST,
+#if defined(PCBX3)
+  POT_LAST = POT1,
+#elif defined(PCBXLITE) || defined(PCBX7)
   POT2,
-#if defined(PCBX7) || defined(PCBXLITE)
   POT_LAST = POT2,
 #elif defined(PCBX9E)
   POT3,
