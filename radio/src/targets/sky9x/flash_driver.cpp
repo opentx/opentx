@@ -1,5 +1,5 @@
 /*
- * Copyright (C) OpenTX
+ * Copyright (C) JumperTX
  *
  * Based on code named
  *   th9x - http://code.google.com/p/th9x 
