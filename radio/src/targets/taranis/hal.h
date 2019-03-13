@@ -94,7 +94,7 @@
   #define ENC_GPIO                      GPIOE
   #define ENC_GPIO_PIN_A                GPIO_Pin_10 // PE.10
   #define ENC_GPIO_PIN_B                GPIO_Pin_12 // PE.12
-  #define ROTARY_ENCODER_POSITION()     (((ENC_GPIO->IDR >> 11) & 0x02) + ((ENC_GPIO->IDR >> 10) & 0x01))
+  #define ROTARY_ENCODER_POSITION()     (((ENC_GPIO->IDR >> 12) & 0x01) + ((ENC_GPIO->IDR >> 9) & 0x02))
 #endif
 
 // This is for SIMU: reuse rotary encoder pins to map UP and DOWN keyboard keys
