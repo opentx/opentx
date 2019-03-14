@@ -1,3 +1,0 @@
- * X12S ne compile pas ?
- * Revoir tous les check EEPROM size
- * Sur X-Lite ModelSetup / Trainer params, scroll bizarre, ligne sans curseur ...
