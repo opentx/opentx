@@ -1305,11 +1305,10 @@ void menuModelSetup(event_t event)
         lcdDrawText(INDENT_WIDTH * 2, y, STR_OPTIONS);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
-          uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+          g_moduleIdx = CURRENT_MODULE_EDITED(k);
           uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
-          uint8_t receiverSlot = g_model.moduleData[moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
+          uint8_t receiverSlot = g_model.moduleData[g_moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
           memclear(&reusableBuffer.receiverSetup, sizeof(reusableBuffer.receiverSetup));
-          reusableBuffer.receiverSetup.moduleIdx = moduleIdx;
           reusableBuffer.receiverSetup.receiverId = receiverSlot;
           pushMenu(menuModelReceiverOptions);
         }
@@ -1937,7 +1936,7 @@ enum MenuModelReceiverOptions {
 void menuModelReceiverOptions(event_t event)
 {
   if (menuEvent) {
-    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     return;
   }
 
@@ -1953,7 +1952,7 @@ void menuModelReceiverOptions(event_t event)
 
   if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_READ && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
     reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 500/*5s*/;
-    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
   if (!s_editMode && reusableBuffer.receiverSetup.dirty && (reusableBuffer.receiverSetup.state != RECEIVER_SETTINGS_WRITE || get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
@@ -1961,7 +1960,7 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.receiverSetup.dirty = 0;
     reusableBuffer.receiverSetup.timeout = 0;
     reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 100/*1s*/;
-    moduleSettings[reusableBuffer.receiverSetup.moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
 #if defined(SIMU)
