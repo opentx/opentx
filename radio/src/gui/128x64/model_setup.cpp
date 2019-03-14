@@ -329,6 +329,7 @@ void runPopupRegister(event_t event)
       }
       else if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED && menuHorizontalPosition == 0) {
         // [Enter] pressed
+        reusableBuffer.moduleSetup.pxx2.registerLoopIndex = get_tmr10ms();
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
         backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
       }
@@ -1363,7 +1364,7 @@ void menuModelSetup(event_t event)
               moduleSettings[moduleIdx].mode = MODULE_MODE_SHARE;
               reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
               s_editMode = 0;
-              POPUP_INFORMATION("Model shared");
+              POPUP_INFORMATION("Receiver shared");
             }
           }
         }
