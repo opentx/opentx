@@ -34,34 +34,36 @@ void intmoduleStop()
 
 void intmoduleSendNextFrame()
 {
-  if (0) {
-  }
+  switch (moduleSettings[INTERNAL_MODULE].protocol) {
 #if defined(PXX1)
-  else if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1) {
-    INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
-    INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
-    INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
-    INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
-    INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(intmodulePulsesData.pxx.getData());
-    INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.pxx.getSize();
-    INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
-  }
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
+      INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
+      INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+      INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
+      INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
+      INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(intmodulePulsesData.pxx.getData());
+      INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.pxx.getSize();
+      INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+      break;
 #endif
+
 #if defined(TARANIS_INTERNAL_PPM)
-  else if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PPM) {
-    INTMODULE_TIMER->CCR3 = GET_MODULE_PPM_DELAY(INTERNAL_MODULE) * 2;
-    INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_MODULE_PPM_POLARITY(INTERNAL_MODULE) ? 0 : TIM_CCER_CC3P);
-    INTMODULE_TIMER->CCR2 = *(intmodulePulsesData.ppm.ptr - 1) - 4000; // 2mS in advance
-    INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
-    INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
-    INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
-    INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(intmodulePulsesData.ppm.pulses);
-    INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.ppm.ptr - intmodulePulsesData.ppm.pulses;
-    INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
-  }
+    case PROTOCOL_CHANNELS_PPM:
+      INTMODULE_TIMER->CCR3 = GET_MODULE_PPM_DELAY(INTERNAL_MODULE) * 2;
+      INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_MODULE_PPM_POLARITY(INTERNAL_MODULE) ? 0 : TIM_CCER_CC3P);
+      INTMODULE_TIMER->CCR2 = *(intmodulePulsesData.ppm.ptr - 1) - 4000; // 2mS in advance
+      INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+      INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
+      INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
+      INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(intmodulePulsesData.ppm.pulses);
+      INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.ppm.ptr - intmodulePulsesData.ppm.pulses;
+      INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+      break;
 #endif
-  else {
-    INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+
+    default:
+      INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+      break;
   }
 }
 

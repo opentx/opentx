@@ -27,21 +27,23 @@
 #define PXX_SEND_FAILSAFE                  (1 << 4)
 #define PXX_SEND_RANGECHECK                (1 << 5)
 
-#define PXX2_ON_SPORT_BAUDRATE   230400
-#define PXX2_PERIOD              4 // 4ms
-#define PXX2_FRAME_MAXLENGTH     64
+#define PXX2_ON_SPORT_BAUDRATE             230400
+#define PXX2_PERIOD                        4 // 4ms
+#define PXX2_FRAME_MAXLENGTH               64
 
-#define EXTMODULE_PXX_PERIOD     9/*ms*/
+#define PXX_PULSES_PERIOD                  9/*ms*/
+#define EXTMODULE_PXX_SERIAL_PERIOD        4/*ms*/
+#define EXTMODULE_PXX_SERIAL_BAUDRATE      420000
 
 #if defined(PXX_FREQUENCY_HIGH)
-  #define INTMODULE_USART_PXX_BAUDRATE     450000
+  #define INTMODULE_PXX_BAUDRATE           450000
   #define INTMODULE_PXX_PERIOD             4/*ms*/
 #else
-  #define INTMODULE_USART_PXX_BAUDRATE     115200
+  #define INTMODULE_PXX_BAUDRATE           115200
   #define INTMODULE_PXX_PERIOD             9/*ms*/
 #endif
 
-#define EXTMODULE_USART_PXX2_BAUDRATE     450000
+#define EXTMODULE_USART_PXX2_BAUDRATE      450000
 
 #if defined(PXX_FREQUENCY_HIGH) && (!defined(INTMODULE_USART) || !defined(EXTMODULE_USART))
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
@@ -52,9 +54,6 @@
 
 #error "Pulses array needs to be increased (PXX_FREQUENCY=HIGH)"
 #endif
-
-
-#define PXX_PERIOD_HALF_US                 (PXX_PERIOD * 2000)
 
 // Used by the Sky9x family boards
 class SerialPxxBitTransport: public DataBuffer<uint8_t, 64> {

@@ -41,7 +41,7 @@ void intmoduleStop()
 
 void intmodulePxxStart()
 {
-  intmoduleSerialStart(INTMODULE_USART_PXX_BAUDRATE, false);
+  intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, false);
 }
 
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
@@ -138,8 +138,9 @@ void intmoduleSendNextFrame()
       intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
       break;
 #endif
+
 #if defined(PXX1)
-    case PROTOCOL_CHANNELS_PXX1:
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
       intmoduleSendBuffer(intmodulePulsesData.pxx_uart.getData(), intmodulePulsesData.pxx_uart.getSize());
       break;
 #endif

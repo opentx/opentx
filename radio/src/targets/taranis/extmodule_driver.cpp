@@ -207,7 +207,7 @@ void extmodulePxx2Start()
 #endif
 
 #if defined(PXX1)
-void extmodulePxxStart()
+void extmodulePxxPulsesStart()
 {
   EXTERNAL_MODULE_ON();
 
@@ -223,7 +223,7 @@ void extmodulePxxStart()
 
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  EXTMODULE_TIMER->ARR = EXTMODULE_PXX_PERIOD * 2000; // 0.5uS (2Mhz)
+  EXTMODULE_TIMER->ARR = PXX_PULSES_PERIOD * 2000; // 0.5uS (2Mhz)
   EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY; // polarity, default low
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 18;
@@ -243,6 +243,13 @@ void extmodulePxxStart()
 }
 #endif
 
+#if defined(PXX1) && defined(EXTMODULE_USART)
+void extmodulePxxSerialStart()
+{
+  extmoduleInvertedSerialStart(EXTMODULE_PXX_SERIAL_BAUDRATE);
+}
+#endif
+
 void extmoduleSendNextFrame()
 {
   switch(moduleSettings[EXTERNAL_MODULE].protocol) {
@@ -259,7 +266,7 @@ void extmoduleSendNextFrame()
       break;
 
 #if defined(PXX1)
-    case PROTOCOL_CHANNELS_PXX1:
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
       EXTMODULE_TIMER->CCR2 = extmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
       EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
@@ -267,6 +274,10 @@ void extmoduleSendNextFrame()
       EXTMODULE_TIMER_DMA_STREAM->M0AR = CONVERT_PTR_UINT(extmodulePulsesData.pxx.getData());
       EXTMODULE_TIMER_DMA_STREAM->NDTR = extmodulePulsesData.pxx.getSize();
       EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+      break;
+
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
+      extmoduleSendBuffer(extmodulePulsesData.pxx_uart.getData(), extmodulePulsesData.pxx_uart.getSize());
       break;
 #endif
 

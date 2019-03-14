@@ -209,8 +209,8 @@ extern HardwareOptions hardwareOptions;
 
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
-void init_pxx(uint8_t module);
-void disable_pxx(uint8_t module);
+void init_pxx1_pulses(uint8_t module);
+void disable_pxx1_pulses(uint8_t module);
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);

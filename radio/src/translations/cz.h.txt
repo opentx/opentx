@@ -99,11 +99,11 @@
 #define LEN_USBMODES           TR("\006", "\010")
 #define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
 
-#define LEN_JACKMODES                  "\007"
-#define TR_JACKMODES                   "Popup\0 ""Audio\0 ""Trainer"
+#define LEN_JACKMODES          "\007"
+#define TR_JACKMODES           "Popup\0 ""Audio\0 ""Trainer"
 
-#define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   "Vyp\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""R9M2""SBUS"
+#define LEN_TARANIS_PROTOCOLS       "\005"
+#define TR_TARANIS_PROTOCOLS         "Vyp\0 ""PPM\0 ""XJT\0 ""XJT2\0""DSM2\0""CRSF\0""MULT\0""R9M\0 ""R9M2\0""R9LT\0""R9LT2""R9LP2""SBUS\0"
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  FrSky D\0       FrSky D (kabel)Spektrum\0      "

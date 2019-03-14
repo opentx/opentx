@@ -78,8 +78,8 @@ bool isModuleSynchronous(uint8_t module)
   uint8_t protocol = moduleSettings[module].protocol;
   if (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
     return true;
-#if defined(INTMODULE_USART)
-  if (protocol == PROTOCOL_CHANNELS_PXX1 && module == INTERNAL_MODULE)
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+  if (protocol == PROTOCOL_CHANNELS_PXX1_SERIAL)
     return true;
 #endif
   return false;

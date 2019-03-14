@@ -232,7 +232,7 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
 #if defined(PXX1)
-  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1) {
+  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_PULSES) {
     EXTMODULE_TIMER->CCR2 = extmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
     EXTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
 #if defined(PCBX10) || PCBREV >= 13
@@ -244,6 +244,9 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(extmodulePulsesData.pxx.getData());
     EXTMODULE_DMA_STREAM->NDTR = extmodulePulsesData.pxx.getSize();
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+  }
+  else if (moduleSettings[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) {
+    #warning "Take it from 2.2"
   }
 #endif
 #if defined(PXX2)

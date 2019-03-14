@@ -152,6 +152,9 @@ union InternalModulePulsesData {
 
 union ExternalModulePulsesData {
 #if defined(PXX1)
+  #if defined(EXTMODULE_USART)
+    UartPxx1Pulses pxx_uart;
+  #endif
   #if defined(PPM_PIN_SERIAL)
     SerialPxx1Pulses pxx;
   #else
@@ -225,7 +228,8 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_NONE,
   PROTOCOL_CHANNELS_PPM,
 #if defined(PXX) || defined(DSM2)
-  PROTOCOL_CHANNELS_PXX1,
+  PROTOCOL_CHANNELS_PXX1_PULSES,
+  PROTOCOL_CHANNELS_PXX1_SERIAL,
 #endif
 #if defined(DSM2)
   PROTOCOL_CHANNELS_DSM2_LP45,

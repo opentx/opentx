@@ -50,12 +50,26 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 
     case MODULE_TYPE_XJT:
+#if defined(INTMODULE_USART)
+      if (module == INTERNAL_MODULE) {
+        protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
+        break;
+      }
+#endif
+      // no break
+
     case MODULE_TYPE_R9M:
-      protocol = PROTOCOL_CHANNELS_PXX1;
+      protocol = PROTOCOL_CHANNELS_PXX1_PULSES;
+      break;
+
+    case MODULE_TYPE_R9M_LITE:
+      protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
       break;
 
     case MODULE_TYPE_XJT2:
     case MODULE_TYPE_R9M2:
+    case MODULE_TYPE_R9M_LITE2:
+    case MODULE_TYPE_R9M_LITE_PRO2:
       protocol = PROTOCOL_CHANNELS_PXX2;
       break;
 
@@ -119,9 +133,17 @@ void disablePulses(uint8_t module, uint8_t protocol)
   // stop existing protocol hardware
 
   switch (protocol) {
-    case PROTOCOL_CHANNELS_PXX1:
-      disable_pxx(module);
+#if defined(PXX1)
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
+      disable_pxx1_pulses(module);
       break;
+
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
+      disable_pxx1_serial(module);
+      break;
+#endif
+#endif
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_DSM2_LP45:
@@ -137,9 +159,11 @@ void disablePulses(uint8_t module, uint8_t protocol)
       break;
 #endif
 
+#if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2:
       disable_pxx2(module);
       break;
+#endif
 
 #if defined(MULTIMODULE)
       case PROTOCOL_CHANNELS_MULTIMODULE:
@@ -159,9 +183,17 @@ void enablePulses(uint8_t module, uint8_t protocol)
   // start new protocol hardware here
 
   switch (protocol) {
-    case PROTOCOL_CHANNELS_PXX1:
-      init_pxx(module);
+#if defined(PXX1)
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
+      init_pxx1_pulses(module);
       break;
+
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
+      init_pxx1_serial(module);
+      break;
+#endif
+#endif
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_DSM2_LP45:
@@ -177,9 +209,11 @@ void enablePulses(uint8_t module, uint8_t protocol)
       break;
 #endif
 
+#if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2:
       init_pxx2(module);
       break;
+#endif
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
@@ -197,28 +231,19 @@ void enablePulses(uint8_t module, uint8_t protocol)
   }
 }
 
-#if defined(PXX1)
-void setupPulsesPXXInternalModule()
-{
-#if defined(INTMODULE_USART)
-  intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
-#else
-  intmodulePulsesData.pxx.setupFrame(INTERNAL_MODULE);
-#endif
-}
-
-void setupPulsesPXXExternalModule()
-{
-  extmodulePulsesData.pxx.setupFrame(EXTERNAL_MODULE);
-}
-#endif
-
 void setupPulsesInternalModule(uint8_t protocol)
 {
   switch (protocol) {
-#if defined(PXX1)
-    case PROTOCOL_CHANNELS_PXX1:
-      setupPulsesPXXInternalModule();
+#if defined(PXX1) && !defined(INTMODULE_USART)
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
+      intmodulePulsesData.pxx.setupFrame(INTERNAL_MODULE);
+      scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX_PERIOD);
+      break;
+#endif
+
+#if defined(PXX1) && defined(INTMODULE_USART)
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
+      intmodulePulsesData.pxx_uart.setupFrame(INTERNAL_MODULE);
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX_PERIOD);
       break;
 #endif
@@ -246,9 +271,14 @@ void setupPulsesExternalModule(uint8_t protocol)
 {
   switch (protocol) {
 #if defined(PXX1)
-    case PROTOCOL_CHANNELS_PXX1:
-      setupPulsesPXXExternalModule();
-      scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX_PERIOD);
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
+      extmodulePulsesData.pxx.setupFrame(EXTERNAL_MODULE);
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, PXX_PULSES_PERIOD);
+      break;
+
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
+      extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX_SERIAL_PERIOD);
       break;
 #endif
 

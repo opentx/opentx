@@ -59,7 +59,6 @@ inline bool isModuleXJT2(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
 }
 
-
 inline bool isModuleXJTVariant(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT || g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
@@ -112,12 +111,12 @@ inline bool isModulePPM(uint8_t idx)
 
 inline bool isModuleR9M(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE;
 }
 
 inline bool isModuleR9M2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO2;
 }
 
 #if defined(PCBXLITE)
