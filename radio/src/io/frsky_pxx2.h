@@ -22,6 +22,7 @@
 #define _IO_PXX2_H_
 
 #include "../fifo.h"
+#include "../pulses/pxx.h"
 
 class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
   public:
