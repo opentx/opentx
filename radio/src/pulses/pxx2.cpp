@@ -222,10 +222,9 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
 void Pxx2Pulses::setupShareMode(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_SHARE);
 
-  Pxx2Transport::addByte(PXX2_RX_SETTINGS_FLAG0_WRITE + reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
-  Pxx2Transport::addByte(PXX2_RX_SETTINGS_FLAG1_SHARE);
+  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
 
   moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }

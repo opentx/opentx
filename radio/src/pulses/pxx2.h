@@ -32,6 +32,7 @@
   #define PXX2_TYPE_ID_TX_SETTINGS  0x04
   #define PXX2_TYPE_ID_RX_SETTINGS  0x05
   #define PXX2_TYPE_ID_HW_INFO      0x06
+  #define PXX2_TYPE_ID_SHARE        0x07
   #define PXX2_TYPE_ID_TELEMETRY    0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
@@ -44,7 +45,6 @@
 #define PXX2_CHANNELS_FLAG0_RANGECHECK       (1 << 7)
 
 #define PXX2_RX_SETTINGS_FLAG0_WRITE         (1 << 6)
-#define PXX2_RX_SETTINGS_FLAG1_SHARE         (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM       (1 << 4)
 #define PXX2_RECV_OPTION_MASK_TELEMETRY      0x00 // TODO : update when defined
 
