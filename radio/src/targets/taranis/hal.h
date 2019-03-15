@@ -160,10 +160,10 @@
   #define TRIMS_GPIO_PIN_LVD            GPIO_Pin_1  // PB.01
   #define TRIMS_GPIO_REG_RVU            GPIOE->IDR
   #define TRIMS_GPIO_PIN_RVU            GPIO_Pin_13 // PE.13
-  #define TRIMS_GPIO_REG_RVD            GPIOD->IDR
-  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_8  // PD.08
-  #define TRIMS_GPIO_REG_RHR            GPIOE->IDR
-  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_14 // PE.14
+  #define TRIMS_GPIO_REG_RHR            GPIOD->IDR
+  #define TRIMS_GPIO_PIN_RHR            GPIO_Pin_8  // PD.08
+  #define TRIMS_GPIO_REG_RVD            GPIOE->IDR
+  #define TRIMS_GPIO_PIN_RVD            GPIO_Pin_14 // PE.14
   #define TRIMS_GPIO_REG_RHL            GPIOD->IDR
   #define TRIMS_GPIO_PIN_RHL            GPIO_Pin_9  // PD.09
 #else
