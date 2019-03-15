@@ -242,9 +242,9 @@ void generalDefault()
 #elif defined(PCBXLITE)
   g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
 #elif defined(PCBX7)
-  g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
+  g_eeGeneral.potsConfig = (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBX3)
-  g_eeGeneral.potsConfig = 0x01;    // S1 = pot without detent
+  g_eeGeneral.potsConfig = (POT_WITH_DETENT << 0); // S1 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
