@@ -30,8 +30,8 @@ uint8_t         warningInfoFlags = ZCHAR;
 
 void drawMessageBox()
 {
-  lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
-  lcdDrawRect(10, 16, LCD_W-20, 40);
+  lcdDrawFilledRect(10, 16, LCD_W-19, 40, SOLID, ERASE);
+  lcdDrawRect(10, 16, LCD_W-19, 40);
   lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, warningText, WARNING_LINE_LEN);
   // could be a place for a warningInfoText
 }
