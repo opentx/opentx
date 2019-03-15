@@ -557,9 +557,9 @@ typedef uint8_t swarnenable_t;
     swarnenable_t switchWarningEnable;
 #endif
 
-  #define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
+#define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
 
-  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
+#define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
 
 #if defined(PCBHORUS)
 #include "gui/480x272/layout.h"
