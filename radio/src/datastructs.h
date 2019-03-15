@@ -416,10 +416,10 @@ PACK(struct TrainerModuleData {
  */
 
 PACK(struct ReceiverData {
-  uint8_t  used:1;
-  uint8_t  telemetry:1;
-  uint8_t  dirty:6;
-  char     name[PXX2_LEN_RX_NAME];
+  uint8_t used:1;
+  uint8_t telemetry:1;
+  uint8_t dirty:6;
+  char    name[PXX2_LEN_RX_NAME];
 });
 
 /*

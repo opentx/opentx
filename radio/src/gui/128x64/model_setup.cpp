@@ -311,6 +311,13 @@ void onBindMenu(const char * result)
   moduleSettings[moduleIdx].mode = MODULE_MODE_BIND;
 }
 
+enum PopupRegisterItems {
+  ITEM_REGISTER_PASSWORD,
+  ITEM_REGISTER_MODULE_INDEX,
+  ITEM_REGISTER_RECEIVER_NAME,
+  ITEM_REGISTER_BUTTONS
+};
+
 void runPopupRegister(event_t event)
 {
   uint8_t backupVerticalPosition = menuVerticalPosition;
@@ -324,12 +331,11 @@ void runPopupRegister(event_t event)
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
-      if (menuVerticalPosition != 2) {
+      if (menuVerticalPosition != ITEM_REGISTER_BUTTONS) {
         break;
       }
       else if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED && menuHorizontalPosition == 0) {
         // [Enter] pressed
-        reusableBuffer.moduleSetup.pxx2.registerLoopIndex = get_tmr10ms();
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
         backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
       }
@@ -347,23 +353,32 @@ void runPopupRegister(event_t event)
   }
 
   if (warningText) {
-    const uint8_t dialogRows[] = { 0, uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? READONLY_ROW : 0), uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? 0 : 1)};
-    check(event, 0, nullptr, 0, dialogRows, 2, 3 - HEADER_LINE); // TODO add a comment for 3 - HEADER_LINE once understood
+    const uint8_t dialogRows[] = { 0, 0, uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? READONLY_ROW : 0), uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? 0 : 1)};
+    check(event, 0, nullptr, 0, dialogRows, 3, 4 - HEADER_LINE); // TODO add a comment for 3 - HEADER_LINE once understood
 
     drawMessageBox();
 
-    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 3, STR_REG_ID);
-    editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 3, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == 0);
+    // registration password
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4, STR_REG_ID);
+    editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == ITEM_REGISTER_PASSWORD);
 
+    // module index
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + FH, "UID");
+    lcdDrawNumber(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4 + FH, reusableBuffer.moduleSetup.pxx2.registerModuleIndex, menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX ? (s_editMode ? INVERS + BLINK : INVERS) : 0);
+    if (menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX && s_editMode) {
+      CHECK_INCDEC_MODELVAR_ZERO(event, reusableBuffer.moduleSetup.pxx2.registerModuleIndex, 7);
+    }
+
+    // RX name
     if (reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED) {
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, "Waiting ...");
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 ? INVERS : 0);
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + 2 * FH, "Waiting ...");
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + 3 * FH, TR_EXIT, menuVerticalPosition == ITEM_REGISTER_BUTTONS ? INVERS : 0);
     }
     else {
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + FH, STR_RX_NAME);
-      editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + FH, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == 1);
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH + 2, TR_ENTER, menuVerticalPosition == 2 && menuHorizontalPosition == 0 ? INVERS : 0);
-      lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y+2*FH + 2, TR_EXIT, menuVerticalPosition == 2 && menuHorizontalPosition == 1 ? INVERS : 0);
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + 2 * FH, STR_RX_NAME);
+      editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4 + 2 * FH, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == ITEM_REGISTER_RECEIVER_NAME);
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + 3 * FH, TR_ENTER, menuVerticalPosition == ITEM_REGISTER_BUTTONS && menuHorizontalPosition == 0 ? INVERS : 0);
+      lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + 3 * FH, TR_EXIT, menuVerticalPosition == ITEM_REGISTER_BUTTONS && menuHorizontalPosition == 1 ? INVERS : 0);
     }
 
     reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
