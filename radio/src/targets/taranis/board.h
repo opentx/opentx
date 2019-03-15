@@ -445,6 +445,7 @@ enum Analogs {
   POT2,
   POT_LAST = POT2,
 #elif defined(PCBX9E)
+  POT2,
   POT3,
   POT4,
   POT_LAST = POT4,
@@ -453,6 +454,7 @@ enum Analogs {
   SLIDER3,
   SLIDER4,
 #else
+  POT2,
   POT3,
   POT_LAST = POT3,
   SLIDER1,
