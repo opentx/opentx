@@ -27,7 +27,7 @@
   #define EVT_BUTTON_PRESSED() EVT_KEY_BREAK(KEY_ENTER)
 #endif
 
-#warning "TODO remove it"
+// TODO can be moved to reusableBuffer
 uint8_t g_moduleIdx;
 
 void drawReceiverName(uint8_t x, uint8_t y, uint8_t receiverSlot)
