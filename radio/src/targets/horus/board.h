@@ -205,7 +205,19 @@ PACK(typedef struct {
 
 extern HardwareOptions hardwareOptions;
 
-#define IS_PXX2_INTERNAL_ENABLED()     (hardwareOptions.pxx2Enabled)
+#if !defined(PXX2)
+  #define IS_PXX2_INTERNAL_ENABLED()            (false)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#elif !defined(PXX1)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (false)
+#else
+  // TODO #define PXX2_PROBE
+  // TODO #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#endif
+
 
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);

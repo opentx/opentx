@@ -169,11 +169,6 @@ void boardInit()
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
 #endif
 
-#if !defined(PCBXLITES) && !defined(PCBX3) && defined(PXX2)
-  #warning "PXX2 probe is not implemented"
-  hardwareOptions.pxx2Enabled = true;
-#endif
-
 #if !defined(PCBX9E)
   // some X9E boards need that the pwrInit() is moved a little bit later
   pwrInit();
@@ -211,6 +206,10 @@ void boardInit()
 
 #if defined(HAPTIC)
   hapticInit();
+#endif
+
+#if defined(PXX2_PROBE)
+  intmodulePxx2Probe();
 #endif
 
 #if defined(DEBUG)

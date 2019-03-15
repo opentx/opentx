@@ -493,10 +493,15 @@ extern HardwareOptions hardwareOptions;
 
 #if !defined(PXX2)
   #define IS_PXX2_INTERNAL_ENABLED()            (false)
-#elif defined(PCBXLITES) || defined(PCBX3) || defined(SIMU)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#elif !defined(PXX1) || defined(PCBXLITES) || defined(PCBX3)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (false)
 #else
-  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  // TODO #define PXX2_PROBE
+  // TODO #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #endif
 
 enum CalibratedAnalogs {
