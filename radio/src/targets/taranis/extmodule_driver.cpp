@@ -275,7 +275,9 @@ void extmoduleSendNextFrame()
       EXTMODULE_TIMER_DMA_STREAM->NDTR = extmodulePulsesData.pxx.getSize();
       EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
       break;
+#endif
 
+#if defined(PXX1) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmoduleSendBuffer(extmodulePulsesData.pxx_uart.getData(), extmodulePulsesData.pxx_uart.getSize());
       break;

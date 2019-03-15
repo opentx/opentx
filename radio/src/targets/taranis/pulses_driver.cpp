@@ -33,8 +33,10 @@ void init_pxx1_serial(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
     intmodulePxxStart();
+#if defined(EXTMODULE_USART)
   else
     extmodulePxxSerialStart();
+#endif
 }
 
 void disable_pxx1_pulses(uint8_t module)

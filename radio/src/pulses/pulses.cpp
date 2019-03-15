@@ -275,7 +275,9 @@ void setupPulsesExternalModule(uint8_t protocol)
       extmodulePulsesData.pxx.setupFrame(EXTERNAL_MODULE);
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PXX_PULSES_PERIOD);
       break;
+#endif
 
+#if defined(PXX1) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
       scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX_SERIAL_PERIOD);

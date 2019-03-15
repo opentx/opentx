@@ -844,7 +844,7 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
@@ -859,8 +859,6 @@ static inline void check_struct()
   CHKSIZE(FrSkyTelemetryData, 104);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
-#elif defined(PCBX3)
-  // TODO
 #elif defined(PCBTARANIS)
   CHKSIZE(MixData, 22);
   CHKSIZE(ExpoData, 19);
@@ -925,7 +923,7 @@ static inline void check_struct()
 
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
-  // TODO CHKSIZE(ModuleData,70);
+  CHKSIZE(ModuleData, 6);
 
   CHKSIZE(GVarData, 7);
 
@@ -933,26 +931,26 @@ static inline void check_struct()
   CHKSIZE(TrainerData, 16);
 
 #if defined(PCBXLITES)
-  // TODO CHKSIZE(RadioData, 850);
-  // TODO CHKSIZE(ModelData, 6025);
+  CHKSIZE(RadioData, 858);
+  CHKSIZE(ModelData, 5940);
 #elif defined(PCBXLITE)
-  // TODO CHKSIZE(RadioData, 844);
-  // TODO CHKSIZE(ModelData, 6025);
+  CHKSIZE(RadioData, 852);
+  CHKSIZE(ModelData, 5940);
 #elif defined(PCBX7)
-// TODO  CHKSIZE(RadioData, 850);
-// TODO  CHKSIZE(ModelData, 6025);
+  CHKSIZE(RadioData, 858);
+  CHKSIZE(ModelData, 5940);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 952);
   CHKSIZE(ModelData, 6520);
 #elif defined(PCBX9D)
-  // CHKSIZE(RadioData, 872);
-  // CHKSIZE(ModelData, 6507);
+  CHKSIZE(RadioData, 880);
+  CHKSIZE(ModelData, 6422);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 727);
   CHKSIZE(ModelData, 5188);
 #elif defined(PCBHORUS)
-// TODO  CHKSIZE(RadioData, 847);
-// TODO  CHKSIZE(ModelData, 9380);
+  CHKSIZE(RadioData, 847);
+  CHKSIZE(ModelData, 9380);
 #endif
 
 #undef CHKSIZE
