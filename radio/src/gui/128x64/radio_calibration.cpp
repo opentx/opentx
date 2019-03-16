@@ -172,7 +172,7 @@ void menuCommonCalib(event_t event)
 
 void menuRadioCalibration(event_t event)
 {
-  check_simple(event, MENU_RADIO_CALIBRATION, menuTabGeneral, DIM(menuTabGeneral), 0);
+  check_submenu_simple(event, 0);
   TITLE(STR_MENUCALIBRATION);
   menuCommonCalib(READ_ONLY() ? 0 : event);
   if (menuEvent) {

@@ -463,6 +463,10 @@ const char STR_SUBTYPE[]  = TR_SUBTYPE;
 #endif
 
 const char STR_RESET_BTN[]  = TR_RESET_BTN;
+const char STR_DEBUG[]  = TR_DEBUG;
+const char STR_SWITCHES_BTN[]  = TR_SWITCHES_BTN;
+const char STR_ANALOGS_BTN[]  = TR_ANALOGS_BTN;
+const char STR_CALIB_BTN[]  = TR_CALIB_BTN;
 
 #if defined(SDCARD)
 const char STR_BACKUP_MODEL[]  = TR_BACKUP_MODEL;

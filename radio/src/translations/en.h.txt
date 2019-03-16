@@ -976,6 +976,10 @@
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN                   BUTTON("Reset")
+#define TR_DEBUG                       "Debug"
+#define TR_SWITCHES_BTN                BUTTON(TR("SW","Switches"))
+#define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
+#define TR_CALIB_BTN                   BUTTON("Calibration")
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"

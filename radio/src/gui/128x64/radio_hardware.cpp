@@ -129,6 +129,7 @@ enum MenuRadioHardwareItems {
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_OWNER_ID,
+  ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -181,11 +182,12 @@ void menuRadioHardware(event_t event)
     LABEL(Switches),
       SWITCHES_ROWS,
 #if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
-    0 /*max bauds*/,
+    0 /* max bauds */,
 #endif
     BLUETOOTH_ROWS
-    0 /*jitter filter*/,
-    0 /*owner id*/
+    0 /* jitter filter */,
+    0 /* owner id */,
+    1 /* debugs */
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -203,6 +205,10 @@ void menuRadioHardware(event_t event)
     switch(k) {
       case ITEM_RADIO_HARDWARE_LABEL_STICKS:
         lcdDrawTextAlignedLeft(y, STR_STICKS);
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, STR_CALIB_BTN, attr);
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+          pushMenu(menuRadioCalibration);
+        }
         break;
       case ITEM_RADIO_HARDWARE_STICK1:
       case ITEM_RADIO_HARDWARE_STICK2:
@@ -324,6 +330,18 @@ void menuRadioHardware(event_t event)
 
       case ITEM_RADIO_OWNER_ID:
         editSingleName(HW_SETTINGS_COLUMN2, y, STR_OWNER_ID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);
+        break;
+
+      case ITEM_RADIO_HARDWARE_DEBUG:
+        lcdDrawTextAlignedLeft(y, STR_DEBUG);
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
+        lcdDrawText(lcdLastRightPos + 2, y, STR_SWITCHES_BTN, menuHorizontalPosition == 1 ? attr : 0);
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+          if (menuHorizontalPosition == 0)
+            pushMenu(menuRadioDiagAnalogs);
+          else
+            pushMenu(menuRadioDiagKeys);
+        }
         break;
     }
   }
