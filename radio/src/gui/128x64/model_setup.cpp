@@ -844,6 +844,7 @@ void menuModelSetup(event_t event)
 #endif
         break;
       }
+
 #if defined(PCBTARANIS)
       case ITEM_MODEL_POTS_WARNING:
         lcdDrawTextAlignedLeft(y, STR_POTWARNING);
@@ -1959,7 +1960,7 @@ void menuModelReceiverOptions(event_t event)
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   uint8_t wbar = LCD_W / 2 - 20;
 
-  SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + sentModuleChannels(g_moduleIdx), {IF_TELEM_DISPLAYED(0), IF_PWM_RATE_DISPLAYED(0)});
+  SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + sentModuleChannels(g_moduleIdx));
   int8_t sub = menuVerticalPosition;
 
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
