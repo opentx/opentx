@@ -976,8 +976,8 @@
 #define TR_MODULE_RANGE        TR("[Tst]", "[Testa]")
 #define TR_RESET_BTN           "[Nollställ]"
 #define TR_DEBUG                       "Debug"
-#define TR_SWITCHES_BTN                BUTTON("SW")
-#define TR_ANALOGS_BTN                 BUTTON("Ana")
+#define TR_SWITCHES_BTN                BUTTON(TR("SW","Switches"))
+#define TR_ANALOGS_BTN                 BUTTON(TR("Ana","Analogs"))
 #define TR_CALIB_BTN                   BUTTON("Calibration")
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
