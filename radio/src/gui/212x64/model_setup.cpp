@@ -1081,7 +1081,7 @@ void menuModelSetup(event_t event)
             }
             moduleSettings[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
-            if (newFlag == MODULE_BIND)
+            if (newFlag == MODULE_MODE_BIND)
               multiBindStatus = MULTI_BIND_INITIATED;
 #endif
           }

@@ -545,6 +545,11 @@ bool isInternalModuleAvailable(int module)
 
 bool isExternalModuleAvailable(int module)
 {
+#if !defined(PCBXLITE)
+  if (module == MODULE_TYPE_R9M_LITE || module == MODULE_TYPE_R9M_LITE2 || module == MODULE_TYPE_R9M_LITE_PRO2) {
+    return false;
+  }
+#endif
 #if !defined(PXX1)
   if (module == MODULE_TYPE_XJT || module == MODULE_TYPE_R9M || module == MODULE_TYPE_R9M_LITE) {
     return false;
