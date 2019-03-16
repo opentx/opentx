@@ -67,48 +67,6 @@ void menuRadioDiagAnalogs(event_t event)
   }
 #endif
 
-
-#if defined(PCBTARANIS)
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, STR_BATT_CALIB);
-  putsVolts(LEN_CALIB_FIELDS*FW+FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 2, getBatteryVoltage(), (menuVerticalPosition==HEADER_LINE ? INVERS | (s_editMode > 0 ? BLINK : 0) : 0) | PREC2 | LEFT);
-#elif defined(PCBSKY9X)
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+1+4*FH, STR_BATT_CALIB);
-  static int32_t adcBatt;
-  // TODO board.cpp
-  adcBatt = ((adcBatt * 7) + anaIn(TX_VOLTAGE)) / 8;
-  uint32_t batCalV = (adcBatt + adcBatt*(g_eeGeneral.txVoltageCalibration)/128) * 4191;
-  batCalV /= 55296;
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT+1+4*FH, batCalV, (menuVerticalPosition==HEADER_LINE ? INVERS : 0));
-#else
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH, STR_BATT_CALIB);
-  putsVolts(LEN_CALIB_FIELDS*FW+4*FW, MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH, g_vbat100mV, (menuVerticalPosition==HEADER_LINE ? INVERS : 0));
-#endif
-
-  if (menuVerticalPosition == HEADER_LINE) {
-    CHECK_INCDEC_GENVAR(event, g_eeGeneral.txVoltageCalibration, -127, 127);
-  }
-
-#if defined(TX_CAPACITY_MEASUREMENT)
-  lcdDrawTextAlignedLeft(6*FH+1, STR_CURRENT_CALIB);
-  drawValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, 6*FH+1, getCurrent(), UNIT_MILLIAMPS, (menuVerticalPosition==2 ? INVERS : 0)) ;
-  if (menuVerticalPosition==2) CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
-#endif
-
-#if defined(PCBSKY9X)
-  #if defined(TX_CAPACITY_MEASUREMENT)
-    #define TEMP_CALIB_POS 7*FH+1
-    #define TEMP_CALIB_MENU_POS 3
-  #else
-    #define TEMP_CALIB_POS 6*FH+1
-    #define TEMP_CALIB_MENU_POS 2
-  #endif
-
-  lcdDrawTextAlignedLeft(TEMP_CALIB_POS, STR_TEMP_CALIB);
-  drawValueWithUnit(LEN_CALIB_FIELDS*FW+4*FW, TEMP_CALIB_POS, getTemperature(), UNIT_TEMPERATURE, (menuVerticalPosition==TEMP_CALIB_MENU_POS ? INVERS : 0)) ;
-  if (menuVerticalPosition==TEMP_CALIB_MENU_POS)
-    CHECK_INCDEC_GENVAR(event, g_eeGeneral.temperatureCalib, -100, 100);
-#endif
-
 #if (NUM_PWMSTICKS > 0) && !defined(SIMU)
   lcdDrawTextAlignedLeft(7*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
 #endif

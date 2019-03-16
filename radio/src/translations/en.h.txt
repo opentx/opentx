@@ -806,7 +806,7 @@
 #define TR_POWEROFF                    "\027Power OFF..."
 #define TR_SHUTDOWN                    "SHUTTING DOWN"
 #define TR_SAVEMODEL                   "Saving model settings"
-#define TR_BATT_CALIB                  TR("Battery calib", "Battery calibration")
+#define TR_BATT_CALIB                  TR("Batt. calib", "Battery calibration")
 #define TR_CURRENT_CALIB               "Current calib"
 #define TR_VOLTAGE                     TR(INDENT "Voltage", INDENT "Voltage source")
 #define TR_CURRENT                     TR(INDENT "Current", INDENT "Current source")
@@ -972,13 +972,13 @@
 #define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
 #define TR_RXADD_BUTTON                BUTTON("Add")
 #define TR_MODULE_RANGE                BUTTON(TR("Rng", "Range"))
-#define TR_BUTTON_SHARE              BUTTON("Share")
+#define TR_BUTTON_SHARE                BUTTON("Share")
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN                   BUTTON("Reset")
 #define TR_DEBUG                       "Debug"
-#define TR_SWITCHES_BTN                BUTTON(TR("SW","Switches"))
-#define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
+#define TR_KEYS_BTN                    BUTTON(TR("Keys", "Switches"))
+#define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
 #define TR_CALIB_BTN                   BUTTON("Calibration")
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer"

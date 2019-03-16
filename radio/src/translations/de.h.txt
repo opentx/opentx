@@ -978,7 +978,7 @@
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           BUTTON("Reset")
 #define TR_DEBUG                       "Debug"
-#define TR_SWITCHES_BTN                BUTTON(TR("SW","Switches"))
+#define TR_KEYS_BTN                BUTTON(TR("SW","Switches"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
 #define TR_CALIB_BTN                   BUTTON("Calibration")
 #define TR_SET                 BUTTON("Set")

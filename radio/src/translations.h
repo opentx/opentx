@@ -663,7 +663,7 @@ extern const char STR_PERSISTENT_MAH[];
 
 extern const char STR_RESET_BTN[];
 extern const char STR_DEBUG[];
-extern const char STR_SWITCHES_BTN[];
+extern const char STR_KEYS_BTN[];
 extern const char STR_ANALOGS_BTN[];
 extern const char STR_CALIB_BTN[];
 
