@@ -36,7 +36,7 @@ void displaySwitchState(uint8_t x, uint8_t y, uint8_t sw)
 
 void menuRadioDiagKeys(event_t event)
 {
-  SIMPLE_MENU(STR_MENU_RADIO_SWITCHES, menuTabGeneral, MENU_RADIO_SWITCHES_TEST, 1);
+  SIMPLE_SUBMENU(STR_MENU_RADIO_SWITCHES, 1);
 
   lcdDrawText(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
 

@@ -76,10 +76,7 @@ enum MenuRadioIndexes
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_VERSION,
-  MENU_RADIO_SWITCHES_TEST,
-  MENU_RADIO_ANALOGS_TEST,
   MENU_RADIO_HARDWARE,
-  MENU_RADIO_CALIBRATION,
   MENU_RADIO_PAGES_COUNT
 };
 
@@ -99,10 +96,7 @@ static const MenuHandlerFunc menuTabGeneral[]  = {
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioVersion,
-  menuRadioDiagKeys,
-  menuRadioDiagAnalogs,
-  menuRadioHardware,
-  menuRadioCalibration
+  menuRadioHardware
 };
 
 enum MenuModelIndexes {

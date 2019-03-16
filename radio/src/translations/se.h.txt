@@ -975,6 +975,10 @@
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
 #define TR_MODULE_RANGE        TR("[Tst]", "[Testa]")
 #define TR_RESET_BTN           "[Nollställ]"
+#define TR_DEBUG                       "Debug"
+#define TR_SWITCHES_BTN                BUTTON("SW")
+#define TR_ANALOGS_BTN                 BUTTON("Ana")
+#define TR_CALIB_BTN                   BUTTON("Calibration")
 #define TR_SET                 "[Spara]"
 #define TR_TRAINER             "Trainer"
 #define TR_ANTENNAPROBLEM      CENTER "Fel på TX-antennen"

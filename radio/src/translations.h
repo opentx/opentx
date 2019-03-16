@@ -649,6 +649,10 @@ extern const char STR_PERSISTENT_MAH[];
 #endif
 
 extern const char STR_RESET_BTN[];
+extern const char STR_DEBUG[];
+extern const char STR_SWITCHES_BTN[];
+extern const char STR_ANALOGS_BTN[];
+extern const char STR_CALIB_BTN[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];
