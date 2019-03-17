@@ -162,7 +162,7 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
     for (int i = 0; i < channelsCount; i++) {
       Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
     }
-    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 30/*next try in 300ms*/;
+    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 100/*next try in 1s*/;
   }
   else {
     setupChannelsFrame(module);
