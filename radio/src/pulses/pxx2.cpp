@@ -148,16 +148,12 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
 void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 {
-  if (reusableBuffer.receiverSetup.timeout) {
-    if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
-      reusableBuffer.receiverSetup.timeout = 0;
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
-    }
-    setupChannelsFrame(module);
-  }
-  else {
+  if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
-    Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
+    uint8_t flag0 = reusableBuffer.receiverSetup.receiverId;
+    if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_WRITE)
+      flag0 |= PXX2_RX_SETTINGS_FLAG0_WRITE;
+    Pxx2Transport::addByte(flag0);
     uint8_t flag1 = 0;
     if (reusableBuffer.receiverSetup.pwmRate)
       flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
@@ -166,7 +162,10 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
     for (int i = 0; i < channelsCount; i++) {
       Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
     }
-    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 30/*300ms*/;
+    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 30/*next try in 300ms*/;
+  }
+  else {
+    setupChannelsFrame(module);
   }
 }
 
@@ -224,10 +223,7 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 void Pxx2Pulses::setupShareMode(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_SHARE);
-
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
-
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void Pxx2Pulses::setupFrame(uint8_t module)

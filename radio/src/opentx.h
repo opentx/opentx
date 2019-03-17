@@ -1144,6 +1144,7 @@ union ReusableBuffer
   struct {
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
     tmr10ms_t timeout;
+    tmr10ms_t dirtyTimeout;
     tmr10ms_t updateTime;
     uint8_t receiverId;
     uint8_t channelMapping[24];

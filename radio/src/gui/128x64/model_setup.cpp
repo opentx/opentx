@@ -1376,11 +1376,13 @@ void menuModelSetup(event_t event)
             }
           }
           else {
+            // for now we will send the SHARE frame indefinitely (until the user manually stops it)
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-              moduleSettings[moduleIdx].mode = MODULE_MODE_SHARE;
+              moduleSettings[moduleIdx].mode ^= MODULE_MODE_SHARE;
               reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
-              s_editMode = 0;
-              POPUP_INFORMATION("Receiver shared");
+            }
+            else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+              moduleSettings[moduleIdx].mode &= ~MODULE_MODE_SHARE;
             }
           }
         }
@@ -1947,8 +1949,6 @@ enum MenuModelReceiverOptions {
 };
 
 #define RECEIVER_OPTIONS_2ND_COLUMN 80
-#define IF_TELEM_DISPLAYED(x)      (g_model.moduleData[g_moduleIdx].pxx.receiver_telem_off ? (uint8_t)(x) : HIDDEN_ROW) //Todo need capabilities
-#define IF_PWM_RATE_DISPLAYED(x)   (g_model.moduleData[g_moduleIdx].pxx.receiver_telem_off ? (uint8_t)(x) : HIDDEN_ROW) //Todo need capabilities
 
 void menuModelReceiverOptions(event_t event)
 {
@@ -1967,16 +1967,15 @@ void menuModelReceiverOptions(event_t event)
   drawReceiverName(FW * 13, 0, reusableBuffer.receiverSetup.receiverId);
   lcdInvertLine(0);
 
-  if (event == EVT_ENTRY || (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_READ && get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
-    reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 500/*5s*/;
+  if (event == EVT_ENTRY) {
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
-  if (!s_editMode && reusableBuffer.receiverSetup.dirty && (reusableBuffer.receiverSetup.state != RECEIVER_SETTINGS_WRITE || get_tmr10ms() >= reusableBuffer.receiverSetup.updateTime)) {
+  if (!s_editMode && reusableBuffer.receiverSetup.dirty && reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_OK) {
     reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_WRITE;
     reusableBuffer.receiverSetup.dirty = 0;
     reusableBuffer.receiverSetup.timeout = 0;
-    reusableBuffer.receiverSetup.updateTime = get_tmr10ms() + 100/*1s*/;
+    reusableBuffer.receiverSetup.dirtyTimeout = get_tmr10ms() + 300/*3s*/;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
@@ -1984,7 +1983,7 @@ void menuModelReceiverOptions(event_t event)
   reusableBuffer.receiverSetup.state = 0xFF;
 #endif
 
-  if (reusableBuffer.receiverSetup.state > RECEIVER_SETTINGS_READ) {
+  if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_OK || get_tmr10ms() < reusableBuffer.receiverSetup.dirtyTimeout) {
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
