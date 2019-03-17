@@ -1975,7 +1975,7 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_WRITE;
     reusableBuffer.receiverSetup.dirty = 0;
     reusableBuffer.receiverSetup.timeout = 0;
-    reusableBuffer.receiverSetup.dirtyTimeout = get_tmr10ms() + 300/*3s*/;
+    reusableBuffer.receiverSetup.dirtyTimeout = get_tmr10ms() + 500/*5s*/;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
