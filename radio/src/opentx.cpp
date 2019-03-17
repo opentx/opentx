@@ -405,6 +405,9 @@ void applyDefaultTemplate()
 #if defined(CPUARM) && defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
+  if(IS_MODULE_XJT(module) && IS_D8_RX(module))
+    return;
+
   uint8_t modelId = g_model.header.modelId[module];
   uint8_t additionalOnes = 0;
   char * name = reusableBuffer.modelsetup.msg;
