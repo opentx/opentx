@@ -85,11 +85,11 @@ enum MenuRadioIndexes
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
-  MENU_RADIO_VERSION,
-  MENU_RADIO_HARDWARE,
 #if defined(RADIO_SPECTRUM)
   MENU_RADIO_SPECTRUM,
 #endif
+  MENU_RADIO_HARDWARE,
+  MENU_RADIO_VERSION,
   MENU_RADIO_PAGES_COUNT
 };
 
@@ -109,11 +109,11 @@ static const MenuHandlerFunc menuTabGeneral[]  = {
   CASE_SDCARD(menuRadioSdManager)
   menuRadioSpecialFunctions,
   menuRadioTrainer,
-  menuRadioVersion,
-  menuRadioHardware,
 #if defined(RADIO_SPECTRUM)
   menuRadioSpectrum,
 #endif
+  menuRadioHardware,
+  menuRadioVersion
 };
 
 enum MenuModelIndexes {
