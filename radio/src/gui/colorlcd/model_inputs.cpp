@@ -120,8 +120,8 @@ class InputEditWindow: public Page {
     Choice * curveTypeChoice = nullptr;
 
     void buildHeader(Window * window) {
-      new StaticText(window, { 70,0, 100, 20 }, STR_MENUINPUTS, MENU_TITLE_COLOR);
-      new StaticText(window, { 70, FH+2, 100, 20 }, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_TITLE_COLOR);
+      new StaticText(window, { 50, 0, 100, 20 }, STR_MENUINPUTS, MENU_TITLE_COLOR);
+      new StaticText(window, { 50, FH+2, 100, 20 }, getSourceString(MIXSRC_FIRST_INPUT + input), MENU_TITLE_COLOR);
     }
 
     void updateCurves() {
@@ -168,7 +168,7 @@ class InputEditWindow: public Page {
 
       FormGridLayout grid;
       grid.setLabelWidth(120);
-      grid.spacer(8);
+      grid.spacer(2);
 
       ExpoData * line = expoAddress(index) ;
 
@@ -250,10 +250,10 @@ class InputEditWindow: public Page {
       });
       grid.nextLine();
 
-      grid.setMarginRight(10);
+      // grid.setMarginRight(10);
 
       // Curve
-      updateCurvesWindow = new Window(window, { 0, grid.getWindowHeight(), LCD_W, 0 });
+      updateCurvesWindow = new Window(window, { 0, grid.getWindowHeight(), LCD_W - 162, 0 });
       updateCurves();
       grid.addWindow(updateCurvesWindow);
 
