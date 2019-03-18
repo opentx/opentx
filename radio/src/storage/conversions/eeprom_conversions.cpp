@@ -1080,8 +1080,8 @@ void ConvertModel_217_to_218(ModelData & model)
 
   ModelData_v217 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));
-  ModelData_v218 & newModel = model;
-  memset(&newModel, 0, sizeof(ModelData));
+  ModelData_v218 & newModel = (ModelData_v218 &) model;
+  memset(&newModel, 0, sizeof(ModelData_v218));
 
   char name[LEN_MODEL_NAME+1];
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
@@ -1175,7 +1175,7 @@ void ConvertModel_217_to_218(ModelData & model)
   }
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
   for (int i=0; i<32; i++) {
-    LogicalSwitchData & sw = newModel.logicalSw[i];
+    LogicalSwitchData_v218 & sw = newModel.logicalSw[i];
     sw.func = oldModel.logicalSw[i].func;
     sw.v1 = oldModel.logicalSw[i].v1;
     sw.v2 = oldModel.logicalSw[i].v2;
