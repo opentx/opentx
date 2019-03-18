@@ -131,15 +131,17 @@ PACK(typedef struct {
   uint32_t spare:4;
 }) GVarData_v218;
 
-#define MODELDATA_EXTRA_218 \
-uint8_t spare:3; \
-uint8_t trainerMode:3; \
-uint8_t potsWarnMode:2; \
-ModuleData moduleData[NUM_MODULES+1]; \
-ScriptData scriptsData[MAX_SCRIPTS]; \
-char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; \
-uint8_t potsWarnEnabled; \
-int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
+#if defined(PCBX12S)
+#define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS];char inputNames[MAX_INPUTS][LEN_INPUT_NAME];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
+#elif defined(PCBX10)
+#define MODELDATA_EXTRA_218  uint8_t spare:3;;uint8_t trainerMode:3;;uint8_t potsWarnMode:2;; ModuleData moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS];;char inputNames[MAX_INPUTS][LEN_INPUT_NAME];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;uint8_t potsWarnSpares[NUM_DUMMY_ANAS];;
+#elif defined(PCBTARANIS)
+#define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
+#elif defined(PCBSKY9X)
+#define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+#else
+  #define MODELDATA_EXTRA_218
+#endif
 
 PACK(typedef struct {
   ModelHeader header;
@@ -185,68 +187,122 @@ PACK(typedef struct {
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v218;
 
-#if defined(BUZZER)
-#define BUZZER_FIELD int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+#define EXTRA_GENERAL_FIELDS_GENERAL_218 \
+    uint8_t  backlightBright; \
+    uint32_t globalTimer; \
+    uint8_t  bluetoothBaudrate:4; \
+    uint8_t  bluetoothMode:4; \
+    uint8_t  countryCode; \
+    uint8_t  imperial:1; \
+    uint8_t  jitterFilter:1; /* 0 - active */\
+    uint8_t  disableRssiPoweroffAlarm:1; \
+    uint8_t  USBMode:2; \
+    uint8_t  spareExtraArm:3; \
+    char     ttsLanguage[2]; \
+    int8_t   beepVolume:4; \
+    int8_t   wavVolume:4; \
+    int8_t   varioVolume:4; \
+    int8_t   backgroundVolume:4; \
+    int8_t   varioPitch; \
+    int8_t   varioRange; \
+    int8_t   varioRepeat; \
+    CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
+
+#if defined(PCBHORUS)
+#define EXTRA_GENERAL_FIELDS_218 \
+    EXTRA_GENERAL_FIELDS_GENERAL_218 \
+    uint8_t  serial2Mode:4; \
+    uint8_t  slidersConfig:4; \
+    uint32_t switchConfig; \
+    uint8_t  potsConfig; /* two bits per pot */ \
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME]; \
+    char currModelFilename[LEN_MODEL_FILENAME+1]; \
+    uint8_t spare:1; \
+    uint8_t blOffBright:7; \
+    char bluetoothName[LEN_BLUETOOTH_NAME];
+#elif defined(PCBTARANIS)
+#if defined(BLUETOOTH)
+#define BLUETOOTH_FIELDS_218 \
+      uint8_t spare; \
+      char bluetoothName[LEN_BLUETOOTH_NAME];
 #else
-#define BUZZER_FIELD int8_t spareRadio:2;
+#define BLUETOOTH_FIELDS
+#endif
+#define EXTRA_GENERAL_FIELDS_218 \
+    EXTRA_GENERAL_FIELDS_GENERAL_218 \
+    uint8_t  serial2Mode:4; \
+    uint8_t  slidersConfig:4; \
+    uint8_t  potsConfig; /* two bits per pot */\
+    uint8_t  backlightColor; \
+    swarnstate_t switchUnlockStates; \
+    swconfig_t switchConfig; \
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]; \
+    BLUETOOTH_FIELDS
+#elif defined(PCBSKY9X)
+#define EXTRA_GENERAL_FIELDS_218 \
+    EXTRA_GENERAL_FIELDS_GENERAL_218 \
+    int8_t   txCurrentCalibration; \
+    int8_t   temperatureWarn; \
+    uint8_t  mAhWarn; \
+    uint16_t mAhUsed; \
+    int8_t   temperatureCalib; \
+    uint8_t  optrexDisplay; \
+    uint8_t  sticksGain; \
+    uint8_t  rotarySteps; \
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
+#elif defined(CPUARM)
+  #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
+#elif defined(PXX)
+  #define EXTRA_GENERAL_FIELDS_218 uint8_t countryCode;
+#else
+  #define EXTRA_GENERAL_FIELDS_218
 #endif
 
-
 PACK(typedef struct {
-  uint8_t version;
-  uint16_t variant;
-  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
-  uint16_t chkSum;
-  uint8_t vBatWarn;
-  int8_t txVoltageCalibration;
-  int8_t backlightMode;
-  TrainerData trainer;
-  uint8_t view;            // index of view in main screen
-  BUZZER_FIELD
-  uint8_t fai:1;
-  int8_t beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  uint8_t alarmsFlash:1;
-  uint8_t disableMemoryWarning:1;
-  uint8_t disableAlarmWarning:1;
-  uint8_t stickMode:2;
-  int8_t timezone:5;
-  uint8_t adjustRTC:1;
-  uint8_t inactivityTimer;
-  uint8_t telemetryBaudrate:3;
-  int8_t splashMode:3;
-  int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-  int8_t switchesDelay;
-  uint8_t lightAutoOff;
-  uint8_t templateSetup;   // RETA order for receiver channels
-  int8_t PPM_Multiplier;
-  int8_t hapticLength;
-  int8_t beepLength:3);
-  int8_t hapticStrength:3;
-  uint8_t gpsFormat:1;
-  uint8_t unexpectedShutdown:1;
-  uint8_t speakerPitch;
-  int8_t speakerVolume;
-  int8_t vBatMin;
-  int8_t vBatMax;
-  uint8_t  backlightBright;
-  uint32_t globalTimer;
-  uint8_t  bluetoothBaudrate:4;
-  uint8_t  bluetoothMode:4;
-  uint8_t  countryCode;
-  uint8_t  imperial:1;
-  uint8_t  jitterFilter:1; /* 0 - active */
-  uint8_t  disableRssiPoweroffAlarm:1;
-  uint8_t  USBMode:2;
-  uint8_t  spareExtraArm:3;
-  char     ttsLanguage[2];
-  int8_t   beepVolume:4;
-  int8_t   wavVolume:4;
-  int8_t   varioVolume:4;
-  int8_t   backgroundVolume:4;
-  int8_t   varioPitch;
-  int8_t   varioRange;
-  int8_t   varioRepeat;
-  CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS];
+ uint8_t version;
+ uint16_t variant;
+ CalibData_v218 calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+ uint16_t chkSum;
+  N_HORUS_FIELD(int8_t currModel);
+  N_HORUS_FIELD(uint8_t contrast);
+ uint8_t vBatWarn;
+ int8_t txVoltageCalibration;
+ int8_t backlightMode;
+ TrainerData_v218 trainer;
+ uint8_t view;            // index of view in main screen
+ BUZZER_FIELD
+ uint8_t fai:1;
+ int8_t beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
+ uint8_t alarmsFlash:1;
+ uint8_t disableMemoryWarning:1;
+ uint8_t disableAlarmWarning:1;
+ uint8_t stickMode:2;
+ int8_t timezone:5;
+ uint8_t adjustRTC:1;
+ uint8_t inactivityTimer;
+ SPLASH_MODE; /* 3bits */
+ int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+   uint8_t lightAutoOff;
+ uint8_t templateSetup;   // RETA order for receiver channels
+ int8_t PPM_Multiplier;
+ int8_t hapticLength;
+  N_HORUS_FIELD(N_TARANIS_FIELD(N_PCBSTD_FIELD(uint8_t reNavigation)));
+  N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t stickReverse));
+ int8_t beepLength:3;
+ int8_t hapticStrength:3;
+ uint8_t gpsFormat:1;
+ uint8_t unexpectedShutdown:1;
+ uint8_t speakerPitch;
+ int8_t speakerVolume;
+ int8_t vBatMin;
+ int8_t vBatMax;
+
+  EXTRA_GENERAL_FIELDS_218
+
+  THEME_DATA
 }) RadioData_v218;
 
 #endif //OPENTX_DATASTRUCTS_218_H
