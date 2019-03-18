@@ -1980,7 +1980,7 @@ void menuModelReceiverOptions(event_t event)
   }
 
 #if defined(SIMU)
-  reusableBuffer.receiverSetup.state = 0xFF;
+  reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
 #endif
 
   if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_OK || get_tmr10ms() < reusableBuffer.receiverSetup.dirtyTimeout) {
@@ -1991,7 +1991,7 @@ void menuModelReceiverOptions(event_t event)
 
       switch (i) {
         case ITEM_RECEIVER_TELEMETRY:
-          reusableBuffer.receiverSetup.telemetryEnabled = editCheckBox(reusableBuffer.receiverSetup.telemetryEnabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telemetry", attr, event);
+          reusableBuffer.receiverSetup.telemetryDisabled = editCheckBox(reusableBuffer.receiverSetup.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telem. disabled", attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.receiverSetup.dirty = true;
           }

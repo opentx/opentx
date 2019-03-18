@@ -155,6 +155,8 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
       flag0 |= PXX2_RX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
     uint8_t flag1 = 0;
+    if (reusableBuffer.receiverSetup.telemetryDisabled)
+      flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED;
     if (reusableBuffer.receiverSetup.pwmRate)
       flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
     Pxx2Transport::addByte(flag1);

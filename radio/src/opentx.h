@@ -1148,7 +1148,7 @@ union ReusableBuffer
     tmr10ms_t updateTime;
     uint8_t receiverId;
     uint8_t channelMapping[24];
-    uint8_t telemetryEnabled;
+    uint8_t telemetryDisabled;
     uint8_t pwmRate;
     uint8_t dirty;
   } receiverSetup;

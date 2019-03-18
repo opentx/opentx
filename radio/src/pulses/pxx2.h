@@ -44,9 +44,11 @@
 #define PXX2_CHANNELS_FLAG0_FAILSAFE         (1 << 6)
 #define PXX2_CHANNELS_FLAG0_RANGECHECK       (1 << 7)
 
-#define PXX2_RX_SETTINGS_FLAG0_WRITE         (1 << 6)
-#define PXX2_RX_SETTINGS_FLAG1_FASTPWM       (1 << 4)
-#define PXX2_RECV_OPTION_MASK_TELEMETRY      0x00 // TODO : update when defined
+#define PXX2_RX_SETTINGS_FLAG0_WRITE               (1 << 6)
+
+#define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED  (1 << 7)
+#define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
+#define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
 
 enum PXX2RegisterSteps {
   REGISTER_START,
