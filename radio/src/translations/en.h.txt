@@ -1195,7 +1195,7 @@
 // About screen
 #define TR_ABOUTUS                     TR(" ABOUT ", "ABOUT")
 
-#define TR_ABOUT_OPENTX_1              TR("OpenTX\001is\001open\001source,\001non", "OpenTX is open source, non-")
+#define TR_ABOUT_OPENTX_1              TR("JumperTX\001is\001open\001source,\001non", "JumperTX is open source, non-")
 #define TR_ABOUT_OPENTX_2              TR("commercial,\001wo\001warranties.", "commercial and comes with no")
 #define TR_ABOUT_OPENTX_3              TR("It\001was\001developed\001for\001free.", "warranties. It was developed")
 #define TR_ABOUT_OPENTX_4              TR("Support through donations", "for free. Support through")

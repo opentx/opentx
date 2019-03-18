@@ -1184,7 +1184,7 @@
 // Taranis About screen
 #define TR_ABOUTUS             TR("  O nás   ", "O nás")
 
-#define TR_ABOUT_OPENTX_1      TR3("OpenTX je nekomerční,", "OpenTX\001je\001open-source,", "OpenTX je open-source,")
+#define TR_ABOUT_OPENTX_1      TR3("JumperTX je nekomerční,", "JumperTX\001je\001open-source,", "JumperTX je open-source,")
 #define TR_ABOUT_OPENTX_2      TR3("opensource bez záruky.", "nekomerční a bez\001záruky.", "nekomerční a bez záruky.")
 #define TR_ABOUT_OPENTX_3      TR3("Vytvořen ve volném čase.", "Byl\001vytvořen\001nadšenými\001modeláři", "Byl vytvořen nadšenými modeláři")
 #define TR_ABOUT_OPENTX_4      TR3("Podpora vývoje pomocí", "Podpora\001vývoje\001pomocí", "Podpora vývoje pomocí")
