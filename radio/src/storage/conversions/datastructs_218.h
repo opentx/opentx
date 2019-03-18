@@ -185,4 +185,68 @@ PACK(typedef struct {
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v218;
 
+#if defined(BUZZER)
+#define BUZZER_FIELD int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+#else
+#define BUZZER_FIELD int8_t spareRadio:2;
+#endif
+
+
+PACK(typedef struct {
+  uint8_t version;
+  uint16_t variant;
+  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+  uint16_t chkSum;
+  uint8_t vBatWarn;
+  int8_t txVoltageCalibration;
+  int8_t backlightMode;
+  TrainerData trainer;
+  uint8_t view;            // index of view in main screen
+  BUZZER_FIELD
+  uint8_t fai:1;
+  int8_t beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t alarmsFlash:1;
+  uint8_t disableMemoryWarning:1;
+  uint8_t disableAlarmWarning:1;
+  uint8_t stickMode:2;
+  int8_t timezone:5;
+  uint8_t adjustRTC:1;
+  uint8_t inactivityTimer;
+  uint8_t telemetryBaudrate:3;
+  int8_t splashMode:3;
+  int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  int8_t switchesDelay;
+  uint8_t lightAutoOff;
+  uint8_t templateSetup;   // RETA order for receiver channels
+  int8_t PPM_Multiplier;
+  int8_t hapticLength;
+  int8_t beepLength:3);
+  int8_t hapticStrength:3;
+  uint8_t gpsFormat:1;
+  uint8_t unexpectedShutdown:1;
+  uint8_t speakerPitch;
+  int8_t speakerVolume;
+  int8_t vBatMin;
+  int8_t vBatMax;
+  uint8_t  backlightBright;
+  uint32_t globalTimer;
+  uint8_t  bluetoothBaudrate:4;
+  uint8_t  bluetoothMode:4;
+  uint8_t  countryCode;
+  uint8_t  imperial:1;
+  uint8_t  jitterFilter:1; /* 0 - active */
+  uint8_t  disableRssiPoweroffAlarm:1;
+  uint8_t  USBMode:2;
+  uint8_t  spareExtraArm:3;
+  char     ttsLanguage[2];
+  int8_t   beepVolume:4;
+  int8_t   wavVolume:4;
+  int8_t   varioVolume:4;
+  int8_t   backgroundVolume:4;
+  int8_t   varioPitch;
+  int8_t   varioRange;
+  int8_t   varioRepeat;
+  CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS];
+}) RadioData_v218;
+
 #endif //OPENTX_DATASTRUCTS_218_H

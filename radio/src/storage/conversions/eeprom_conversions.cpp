@@ -821,11 +821,11 @@ void ConvertRadioData_216_to_217(RadioData & settings)
 #endif
 }
 
-void ConvertSpecialFunctions_217_to_218(CustomFunctionData * cf218, CustomFunctionData_v216 * cf216)
+void ConvertSpecialFunctions_217_to_218(CustomFunctionData_v218 * cf218, CustomFunctionData_v216 * cf216)
 {
   for (int i=0; i<MAX_SPECIAL_FUNCTIONS; i++) {
-    CustomFunctionData & cf = cf218[i];
-    memcpy(&cf, &cf216[i], sizeof(CustomFunctionData));
+    CustomFunctionData_v218 & cf = cf218[i];
+    memcpy(&cf, &cf216[i], sizeof(CustomFunctionData_v218));
     cf.swtch = ConvertSwitch_217_to_218(cf216[i].swtch);
     cf.func = cf216[i].func;
     if (cf.func == FUNC_PLAY_VALUE || cf.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(cf.func) && cf.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
@@ -834,7 +834,7 @@ void ConvertSpecialFunctions_217_to_218(CustomFunctionData * cf218, CustomFuncti
   }
 }
 
-void ConvertRadioData_217_to_218(RadioData & settings)
+void ConvertRadioData_217_to_218(RadioData_v218 & settings)
 {
   RadioData_v216 settings_v217 = (RadioData_v216 &)settings;
 
