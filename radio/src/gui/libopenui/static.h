@@ -52,9 +52,9 @@ class StaticText : public Window {
       if (flags & BUTTON_BACKGROUND)
         dc->drawSolidFilledRect(0, 0, rect.w, rect.h, CURVE_AXIS_COLOR);
       if (flags & CENTERED)
-        dc->drawText(rect.w / 2, 1, text.c_str(), flags);
+        dc->drawText(rect.w / 2, 0, text.c_str(), flags);
       else
-        dc->drawText(0, 1, text.c_str(), flags);
+        dc->drawText(0, 0, text.c_str(), flags);
     }
 
     void setText(std::string value)

@@ -208,8 +208,8 @@ class DarkblueTheme: public Theme
       delete mixerSetupCurveBitmap;
       mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR);
 
-      delete mixerSetupSwitchBitmap;
-      mixerSetupSwitchBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_switch.png", TEXT_COLOR, TEXT_BGCOLOR);
+      delete mixerSetupSwitchIcon;
+      mixerSetupSwitchIcon = BitmapBuffer::loadMask("mask_textline_switch.png");
 
       delete mixerSetupSlowBitmap;
       mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", TEXT_COLOR, TEXT_BGCOLOR);
@@ -220,8 +220,8 @@ class DarkblueTheme: public Theme
       delete mixerSetupDelaySlowBitmap;
       mixerSetupDelaySlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_delayslow.png", TEXT_COLOR, TEXT_BGCOLOR);
 
-      delete mixerSetupFlightmodeBitmap;
-      mixerSetupFlightmodeBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_fm.png", TEXT_COLOR, TEXT_BGCOLOR);
+      delete mixerSetupFlightmodeIcon;
+      mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getThemePath("mask_textline_fm.png"));
     }
 
     virtual void load() const

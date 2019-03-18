@@ -197,15 +197,13 @@ class InputEditWindow: public Page {
                  });
       grid.nextLine();
 
-      grid.setMarginRight(10);
-
       // Name
       new StaticText(window, grid.getLabelSlot(), STR_EXPONAME);
       new TextEdit(window, grid.getFieldSlot(), line->name, sizeof(line->name));
       grid.nextLine();
 
       // Source
-      new StaticText(window, grid.getLabelSlot(), NO_INDENT(STR_SOURCE));
+      new StaticText(window, grid.getLabelSlot(), STR_SOURCE);
       new SourceChoice(window, grid.getFieldSlot(), INPUTSRC_FIRST, INPUTSRC_LAST,
                        GET_DEFAULT(line->srcRaw),
                        [=] (int32_t newValue) {
@@ -237,7 +235,7 @@ class InputEditWindow: public Page {
       grid.nextLine();
 
       // Offset
-      new StaticText(window, grid.getLabelSlot(), NO_INDENT(STR_OFFSET));
+      new StaticText(window, grid.getLabelSlot(), STR_OFFSET);
       edit = new NumberEdit(window, grid.getFieldSlot(), -100, 100, GET_SET_DEFAULT(line->offset));
       edit->setSuffix("%");
       grid.nextLine();
@@ -251,6 +249,8 @@ class InputEditWindow: public Page {
         return value != TRIM_ON || line->srcRaw <= MIXSRC_Ail;
       });
       grid.nextLine();
+
+      grid.setMarginRight(10);
 
       // Curve
       updateCurvesWindow = new Window(window, { 0, grid.getWindowHeight(), LCD_W, 0 });
@@ -272,6 +272,7 @@ class InputEditWindow: public Page {
                        },
                        BF_SINGLE_BIT_GET(line->flightModes, i) ? 0 : BUTTON_CHECKED);
       }
+      grid.nextLine();
       window->setLastField(flightmode);
       window->setInnerHeight(grid.getWindowHeight());
     }
@@ -287,6 +288,9 @@ class InputLineButton : public Button {
       if (line.swtch || line.curve.value != 0 || line.flightModes) {
         setHeight(getHeight() + 20);
       }
+      setFocusHandler([=]() {
+          bringToTop();
+      });
     }
 
     bool isActive()
@@ -306,17 +310,17 @@ class InputLineButton : public Button {
 
     void paintFlightModes(BitmapBuffer * dc, FlightModesType value)
     {
-      dc->drawBitmap(146, 24, mixerSetupFlightmodeBitmap);
+      dc->drawMask(146, 20, mixerSetupFlightmodeIcon, TEXT_COLOR);
       coord_t x = 166;
       for (int i=0; i<MAX_FLIGHT_MODES; i++) {
         char s[] = " ";
         s[0] = '0' + i;
         if (value & (1 << i)) {
-          dc->drawText(x, 23, s, SMLSIZE | TEXT_DISABLE_COLOR);
+          dc->drawText(x, 21, s, SMLSIZE | TEXT_DISABLE_COLOR);
         }
         else {
           dc->drawSolidFilledRect(x, 40, 8, 3, SCROLLBOX_COLOR);
-          dc->drawText(x, 23, s, SMLSIZE);
+          dc->drawText(x, 21, s, SMLSIZE);
         }
         x += 8;
       }
@@ -339,12 +343,12 @@ class InputLineButton : public Button {
 
       // second line ...
       if (line.swtch) {
-        dc->drawBitmap(3, 24, mixerSetupSwitchBitmap);
-        drawSwitch(21, 22, line.swtch);
+        dc->drawMask(3, 20, mixerSetupSwitchIcon, TEXT_COLOR);
+        drawSwitch(21, 20, line.swtch);
       }
 
       if (line.curve.value != 0 ) {
-        dc->drawBitmap(60, 24, mixerSetupCurveBitmap);
+        dc->drawBitmap(60, 22, mixerSetupCurveBitmap);
         #warning "TODO drawCurveRef"
         // drawCurveRef(dc, 80, 22, line.curve);
       }
@@ -391,7 +395,7 @@ void ModelInputsPage::editInput(FormWindow * window, uint8_t input, uint8_t inde
 void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
 {
   FormGridLayout grid;
-  grid.spacer(8);
+  grid.spacer(2);
   grid.setLabelWidth(66);
 
   Window::clearFocus();
@@ -429,7 +433,7 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
             if (s_copyMode != 0) {
               menu->addLine(STR_PASTE_BEFORE, [=]() {
                 copyExpo(s_copySrcIdx, index, PASTE_BEFORE);
-                if(s_copyMode == MOVE_MODE) {
+                if (s_copyMode == MOVE_MODE) {
                   deleteExpo((s_copySrcIdx > index) ? s_copySrcIdx+1 : s_copySrcIdx);
                   s_copyMode = 0;
                 }
@@ -437,7 +441,7 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
               });
               menu->addLine(STR_PASTE_AFTER, [=]() {
                 copyExpo(s_copySrcIdx, index, PASTE_AFTER);
-                if(s_copyMode == MOVE_MODE) {
+                if (s_copyMode == MOVE_MODE) {
                   deleteExpo((s_copySrcIdx > index) ? s_copySrcIdx+1 : s_copySrcIdx);
                   s_copyMode = 0;
                 }

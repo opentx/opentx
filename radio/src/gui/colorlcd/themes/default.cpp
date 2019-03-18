@@ -251,11 +251,11 @@ class DefaultTheme: public Theme
       delete mixerSetupCurveBitmap;
       mixerSetupCurveBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_curve.png", TEXT_COLOR, TEXT_BGCOLOR);
 
-      delete mixerSetupSwitchBitmap;
-      mixerSetupSwitchBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_switch.png", TEXT_COLOR, TEXT_BGCOLOR);
+      delete mixerSetupSwitchIcon;
+      mixerSetupSwitchIcon = BitmapBuffer::loadMask(getThemePath("mask_textline_switch.png"));
 
-      delete mixerSetupFlightmodeBitmap;
-      mixerSetupFlightmodeBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_fm.png", TEXT_COLOR, TEXT_BGCOLOR);
+      delete mixerSetupFlightmodeIcon;
+      mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getThemePath("mask_textline_fm.png"));
 
       delete mixerSetupSlowBitmap;
       mixerSetupSlowBitmap = BitmapBuffer::loadMaskOnBackground("mask_textline_slow.png", TEXT_COLOR, TEXT_BGCOLOR);

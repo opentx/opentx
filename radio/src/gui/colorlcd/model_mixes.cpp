@@ -340,7 +340,7 @@ void displayMixInfos(coord_t y, MixData *md)
   drawCurveRef(MIX_LINE_CURVE_POS, y, md->curve);
 
   if (md->swtch) {
-    lcd->drawBitmap(MIX_LINE_SWITCH_ICON, y + 2, mixerSetupSwitchBitmap);
+    lcd->drawMask(MIX_LINE_SWITCH_ICON, y + 2, mixerSetupSwitchIcon);
     drawSwitch(MIX_LINE_SWITCH_POS, y, md->swtch);
   }
 }
@@ -360,7 +360,7 @@ void displayMixLine(coord_t y, MixData *md)
 {
   if (md->name[0] && md->flightModes) {
     if (SLOW_BLINK_ON_PHASE) {
-      lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
+      lcd->drawMask(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeIcon, TEXT_COLOR);
       displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
     }
     else {
@@ -373,7 +373,7 @@ void displayMixLine(coord_t y, MixData *md)
     lcdDrawSizedText(MIX_LINE_NAME_FM_POS, y, md->name, sizeof(md->name), ZCHAR);
   }
   else if (md->flightModes) {
-    lcd->drawBitmap(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeBitmap);
+    lcd->drawMask(MIX_LINE_NAME_FM_ICON, y + 2, mixerSetupFlightmodeIcon, TEXT_COLOR);
     displayMixSmallFlightModes(MIX_LINE_NAME_FM_POS, y + 2, md->flightModes);
   }
   displayMixInfos(y, md);
