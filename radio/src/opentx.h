@@ -1135,7 +1135,7 @@ union ReusableBuffer
         uint8_t bindReceiverId;
         union {
           uint8_t bindSelectedReceiverIndex;
-          uint8_t shareReceiverIndex;
+          uint8_t shareReceiverId;
         };
       } pxx2;
     };

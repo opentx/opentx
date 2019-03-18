@@ -1379,7 +1379,7 @@ void menuModelSetup(event_t event)
             // for now we will send the SHARE frame indefinitely (until the user manually stops it)
             if (event == EVT_KEY_BREAK(KEY_ENTER)) {
               moduleSettings[moduleIdx].mode ^= MODULE_MODE_SHARE;
-              reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
+              reusableBuffer.moduleSetup.pxx2.shareReceiverId = receiverSlot;
             }
             else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
               moduleSettings[moduleIdx].mode &= ~MODULE_MODE_SHARE;

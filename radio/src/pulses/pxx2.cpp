@@ -225,7 +225,7 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 void Pxx2Pulses::setupShareMode(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_SHARE);
-  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
+  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverId);
 }
 
 void Pxx2Pulses::setupFrame(uint8_t module)

@@ -74,8 +74,8 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
     reusableBuffer.receiverSetup.pwmRate = 1;
 
-//  if (frame[4] & PXX2_RECV_OPTION_MASK_TELEMETRY)
-//    reusableBuffer.receiverSetup.telemetryEnabled = 1;
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED)
+    reusableBuffer.receiverSetup.telemetryDisabled = 1;
 
   reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
   reusableBuffer.receiverSetup.timeout = 0;
