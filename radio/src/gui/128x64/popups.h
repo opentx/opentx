@@ -25,7 +25,7 @@
 
 #define MENU_X                         10
 #define MENU_Y                         16
-#define MENU_W                         LCD_W-(2*MENU_X)
+#define MENU_W                         LCD_W - 19
 #define WARNING_LINE_LEN               20
 #define WARNING_LINE_X                 16
 #define WARNING_LINE_Y                 3*FH

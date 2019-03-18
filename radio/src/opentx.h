@@ -1126,12 +1126,13 @@ union ReusableBuffer
         uint8_t registerPopupHorizontalPosition;
         int8_t registerPopupEditMode;
         char registerRxName[PXX2_LEN_RX_NAME];
+        uint8_t registerModuleIndex;
         char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
         uint8_t bindCandidateReceiversCount;
         uint8_t bindReceiverId;
         union {
           uint8_t bindSelectedReceiverIndex;
-          uint8_t shareReceiverIndex;
+          uint8_t shareReceiverId;
         };
       } pxx2;
     };
@@ -1140,12 +1141,13 @@ union ReusableBuffer
   struct {
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
     tmr10ms_t timeout;
+    tmr10ms_t dirtyTimeout;
     tmr10ms_t updateTime;
-    uint8_t moduleIdx;
     uint8_t receiverId;
     uint8_t channelMapping[24];
-    uint8_t telemetryEnabled;
+    uint8_t telemetryDisabled;
     uint8_t pwmRate;
+    uint8_t dirty;
   } receiverSetup;
 
   // 103 bytes

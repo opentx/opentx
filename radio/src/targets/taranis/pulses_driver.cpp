@@ -20,15 +20,26 @@
 
 #include "opentx.h"
 
-void init_pxx(uint8_t module)
+#if defined(PXX1)
+void init_pxx1_pulses(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
     intmodulePxxStart();
   else
-    extmodulePxxStart();
+    extmodulePxxPulsesStart();
 }
 
-void disable_pxx(uint8_t module)
+void init_pxx1_serial(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
+    intmodulePxxStart();
+#if defined(EXTMODULE_USART)
+  else
+    extmodulePxxSerialStart();
+#endif
+}
+
+void disable_pxx1_pulses(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
     intmoduleStop();
@@ -36,10 +47,19 @@ void disable_pxx(uint8_t module)
     extmoduleStop();
 }
 
+void disable_pxx1_serial(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
+    intmoduleStop();
+  else
+    extmoduleStop();
+}
+#endif
+
 void init_pxx2(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
-    intmoduleSerialStart(INTMODULE_USART_PXX_BAUDRATE);
+    intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, true);
   else
     extmodulePxx2Start();
 }

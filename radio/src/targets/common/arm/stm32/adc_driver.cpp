@@ -38,12 +38,12 @@
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  1,1,-1,  1,1,  1};
 #elif defined(PCBX7)
   const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
+#elif defined(PCBX3)
+  const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1};
 #elif defined(PCBXLITE)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,-1,1,  -1,1,  1};
 #elif defined(REV4a)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  1,-1,0,  1,1,  1};
-#else
-  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1};
 #endif
 
 #if NUM_PWMSTICKS > 0
@@ -53,9 +53,6 @@
   #define FIRST_ANALOG_ADC             0
   #define NUM_ANALOGS_ADC              10
   #define NUM_ANALOGS_ADC_EXT          (NUM_ANALOGS - 10)
-#elif defined(PCBX3)
-  #define FIRST_ANALOG_ADC             0
-  #define NUM_ANALOGS_ADC              NUM_ANALOGS
 #else
   #define FIRST_ANALOG_ADC             0
   #define NUM_ANALOGS_ADC              NUM_ANALOGS
@@ -93,7 +90,7 @@ void adcInit()
 
   ADC_MAIN->CR1 = ADC_CR1_SCAN;
   ADC_MAIN->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC-1) << 20; // bits 23:20 = number of conversions
+  ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC - 1) << 20; // bits 23:20 = number of conversions
 
 #if defined(PCBX10)
   if (STICKS_PWM_ENABLED()) {

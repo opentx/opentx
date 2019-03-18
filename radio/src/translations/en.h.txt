@@ -104,8 +104,8 @@
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
 
-#define LEN_MODULE_PROTOCOLS          "\004"
-#define TR_MODULE_PROTOCOLS           "OFF\0""PPM\0""XJT\0""XJT2""DSM2""CRSF""MULT""R9M\0""R9M2""SBUS"
+#define LEN_MODULE_PROTOCOLS                "\005"
+#define TR_MODULE_PROTOCOLS                "OFF\0 ""PPM\0 ""XJT\0 ""XJT2\0""DSM2\0""CRSF\0""MULT\0""R9M\0 ""R9M2\0""R9LT\0""R9LT2""R9LP2""SBUS\0"
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -429,6 +429,9 @@
 #elif defined(PCBX7)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SF\0""\312SH\0"
+#elif defined(PCBX3)
+  #define TR_POTS_VSRCRAW              "\310S1\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0"
 #elif defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
@@ -546,10 +549,10 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_POPUPS_ENTER_EXIT                    TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
+  #define TR_POPUPS_ENTER_EXIT         TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
   #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #else
-  #define TR_POPUPS_ENTER_EXIT                    TR_ENTER "\010" TR_EXIT
+  #define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
   #define OFS_EXIT                     sizeof(TR_ENTER)
 #endif
 
@@ -813,7 +816,7 @@
 #define TR_POWEROFF                    "\027Power OFF..."
 #define TR_SHUTDOWN                    "SHUTTING DOWN"
 #define TR_SAVEMODEL                   "Saving model settings"
-#define TR_BATT_CALIB                  TR("Battery calib", "Battery calibration")
+#define TR_BATT_CALIB                  TR("Batt. calib", "Battery calibration")
 #define TR_CURRENT_CALIB               "Current calib"
 #define TR_VOLTAGE                     TR(INDENT "Voltage", INDENT "Voltage source")
 #define TR_CURRENT                     TR(INDENT "Current", INDENT "Current source")
@@ -981,11 +984,14 @@
 #define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
 #define TR_RXADD_BUTTON                BUTTON("Add")
 #define TR_MODULE_RANGE                BUTTON(TR("Rng", "Range"))
-#define TR_MODULE_REGISTER             "Register"
-#define TR_BUTTON_SHARE              BUTTON("Share")
+#define TR_BUTTON_SHARE                BUTTON("Share")
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN                   BUTTON("Reset")
+#define TR_DEBUG                       "Debug"
+#define TR_KEYS_BTN                    BUTTON(TR("Keys", "Switches"))
+#define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
+#define TR_CALIB_BTN                   BUTTON("Calibration")
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"

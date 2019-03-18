@@ -158,12 +158,12 @@ union InternalModulePulsesData {
 
 union ExternalModulePulsesData {
 #if defined(PXX1)
-  #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+  #if defined(EXTMODULE_USART)
     UartPxx1Pulses pxx_uart;
   #endif
   #if defined(PPM_PIN_SERIAL)
     SerialPxx1Pulses pxx;
-  #elif !defined(INTMODULE_USART) || !defined(EXTMODULE_USART)
+  #else
     PwmPxx1Pulses pxx;
   #endif
 #endif
@@ -208,6 +208,7 @@ void setupPulsesPPMTrainer();
 void sendByteDsm2(uint8_t b);
 void putDsm2Flush();
 void putDsm2SerialBit(uint8_t bit);
+void sendByteSbus(uint8_t b);
 
 #if defined(HUBSAN)
 void Hubsan_Init();
@@ -234,7 +235,8 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_NONE,
   PROTOCOL_CHANNELS_PPM,
 #if defined(PXX) || defined(DSM2)
-  PROTOCOL_CHANNELS_PXX1,
+  PROTOCOL_CHANNELS_PXX1_PULSES,
+  PROTOCOL_CHANNELS_PXX1_SERIAL,
 #endif
 #if defined(DSM2)
   PROTOCOL_CHANNELS_DSM2_LP45,

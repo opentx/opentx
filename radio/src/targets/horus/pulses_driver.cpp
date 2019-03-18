@@ -22,7 +22,7 @@
 
 void intmoduleStop();
 void intmodulePxxStart();
-void intmoduleSerialStart(uint32_t baudrate);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 
 void extmoduleStop();
 void extmodulePpmStart();
@@ -48,7 +48,7 @@ void disable_ppm(uint8_t module)
 void init_pxx2(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
-    intmoduleSerialStart(INTMODULE_USART_PXX_BAUDRATE);
+    intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, true);
   else
     extmodulePxx2Start();
 }
@@ -61,7 +61,7 @@ void disable_pxx2(uint8_t module)
     extmoduleStop();
 }
 
-void init_pxx(uint8_t module)
+void init_pxx1_pulses(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
     intmodulePxxStart();
@@ -69,7 +69,7 @@ void init_pxx(uint8_t module)
     extmodulePxxStart();
 }
 
-void disable_pxx(uint8_t module)
+void disable_pxx1_pulses(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
     intmoduleStop();

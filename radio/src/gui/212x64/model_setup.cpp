@@ -1074,7 +1074,7 @@ void menuModelSetup(event_t event)
             }
             moduleSettings[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
-            if (newFlag == MODULE_BIND)
+            if (newFlag == MODULE_MODE_BIND)
               multiBindStatus = MULTI_BIND_INITIATED;
 #endif
           }
@@ -1273,11 +1273,11 @@ void menuModelFailsafe(event_t event)
 
     if (menuVerticalPosition < sentModuleChannels(g_moduleIdx)) {
       if (s_editMode) {
-        g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
+        g_model.failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
         s_editMode = 0;
       }
       else {
-        int16_t & failsafe = g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition];
+        int16_t & failsafe = g_model.failsafeChannels[menuVerticalPosition];
         if (failsafe < FAILSAFE_CHANNEL_HOLD)
           failsafe = FAILSAFE_CHANNEL_HOLD;
         else if (failsafe == FAILSAFE_CHANNEL_HOLD)
@@ -1323,7 +1323,7 @@ void menuModelFailsafe(event_t event)
 
     for (; line < 8; line++) {
       const int32_t channelValue = channelOutputs[ch+channelStart];
-      int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
+      int32_t failsafeValue = g_model.failsafeChannels[8*col+line];
       uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
       uint8_t barW = colW - FW * maxNameLen - FWNUM * 3;  // default bar width
 
@@ -1352,7 +1352,7 @@ void menuModelFailsafe(event_t event)
           }
           else {
             flags |= BLINK;
-            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line], -lim, +lim);
+            CHECK_INCDEC_MODELVAR(event, g_model.failsafeChannels[8*col+line], -lim, +lim);
           }
         }
       }

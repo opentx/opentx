@@ -499,7 +499,17 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-#if defined(PCBTARANIS)
+#if defined(PCBX3)
+      static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
+      static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
+      for (int i=0; i<NUM_SWITCHES; ++i) {
+        if (SWITCH_EXISTS(i)) {
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+          drawSwitch(x[i], y[i], sw, 0);
+        }
+      }
+#elif defined(PCBTARANIS)
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_EXISTS(i)) {
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;

@@ -73,7 +73,7 @@ void DeviceFirmwareUpdate::startup()
   switch(module) {
     case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
-      intmoduleSerialStart(57600);
+      intmoduleSerialStart(57600, true);
       break;
 #endif
 
@@ -93,19 +93,31 @@ void DeviceFirmwareUpdate::startup()
 const uint8_t * DeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo, uint32_t timeout)
 {
   uint8_t len = 0;
+  bool bytestuff = false;
   while (len < 10) {
     uint32_t elapsed = 0;
-    while (!fifo.pop(frame[len])) {
+    uint8_t byte;
+    while (!fifo.pop(byte)) {
       RTOS_WAIT_MS(1);
       if (elapsed++ >= timeout) {
         return nullptr;
       }
     }
-    if (len > 0 || frame[len] == 0x7E) {
+    if (byte == 0x7D) {
+      bytestuff = true;
+      continue;
+    }
+    if (bytestuff) {
+      frame[len] = 0x20 ^ byte;
+      bytestuff = false;
+    }
+    else {
+      frame[len] = byte;
+    }
+    if (len > 0 || byte == 0x7E) {
       ++len;
     }
   }
-
   return &frame[1];
 }
 
@@ -320,6 +332,9 @@ void DeviceFirmwareUpdate::flashFile(const char * filename, ProgressHandler prog
   if (!result) result = sendReqVersion();
   if (!result) result = uploadFile(filename, progressHandler);
   if (!result) result = endTransfer();
+
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  BACKLIGHT_ENABLE();
 
   if (result) {
     POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);

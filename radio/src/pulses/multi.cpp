@@ -57,7 +57,7 @@ static void sendFailsafeChannels(uint8_t port)
   uint8_t bitsavailable = 0;
 
   for (int i = 0; i < MULTI_CHANS; i++) {
-    int16_t failsafeValue = g_model.moduleData[port].failsafeChannels[i];
+    int16_t failsafeValue = g_model.failsafeChannels[i];
     int pulseValue;
     if (g_model.moduleData[port].failsafeMode == FAILSAFE_HOLD)
       failsafeValue = FAILSAFE_CHANNEL_HOLD;
@@ -106,7 +106,7 @@ void setupPulsesMultimodule()
     sendSetupFrame();
   } else if (counter % 1000 == 0 && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_RECEIVER) {
     sendFrameProtocolHeader(EXTERNAL_MODULE, true);
-    sendFailsafeChannels(port);
+    sendFailsafeChannels(EXTERNAL_MODULE);
   } else {
     // Normal Frame
     sendFrameProtocolHeader(EXTERNAL_MODULE, false);
@@ -152,16 +152,16 @@ void sendFrameProtocolHeader(uint8_t port, bool failsafe)
   int8_t optionValue = g_model.moduleData[port].multi.optionValue;
 
   uint8_t protoByte = 0;
-  if (moduleSettings[port].mode == MODULE_BIND)
+  if (moduleSettings[port].mode == MODULE_MODE_BIND)
     protoByte |= MULTI_SEND_BIND;
-  else if (moduleSettings[port].mode == MODULE_RANGECHECK)
+  else if (moduleSettings[port].mode ==  MODULE_MODE_RANGECHECK)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
   if (g_model.moduleData[port].getMultiProtocol(true) == MM_RF_PROTO_DSM2) {
 
     // Autobinding should always be done in DSMX 11ms
-    if (g_model.moduleData[port].multi.autoBindMode && moduleSettings[port].mode == MODULE_BIND)
+    if (g_model.moduleData[port].multi.autoBindMode && moduleSettings[port].mode == MODULE_MODE_BIND)
       subtype = MM_RF_DSM2_SUBTYPE_AUTO;
 
     // Multi module in DSM mode wants the number of channels to be used as option value

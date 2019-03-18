@@ -21,6 +21,7 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
+#include <inttypes.h>
 #include "../definitions.h"
 #include "../opentx_constants.h"
 #include "cpu_id.h"
@@ -165,23 +166,27 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()            GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define INTERNAL_MODULE_OFF()           GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define EXTERNAL_MODULE_ON()            GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-#define EXTERNAL_MODULE_OFF()           GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+#if defined(INTMODULE_USART)
+  #define INTERNAL_MODULE_OFF()         intmoduleStop()
+#else
+  #define INTERNAL_MODULE_OFF()         GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#endif
+
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#define IS_EXTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
-void init_pxx(uint8_t module);
-void disable_pxx(uint8_t module);
+void init_pxx1_pulses(uint8_t module);
+void init_pxx1_serial(uint8_t module);
+void disable_pxx1_pulses(uint8_t module);
+void disable_pxx1_serial(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
 void disable_serial(uint8_t module);
 void intmoduleStop();
 void intmodulePxxStart();
-void intmoduleSerialStart(uint32_t baudrate);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 #if defined(TARANIS_INTERNAL_PPM)
 void intmodulePpmStart(void);
 #endif
@@ -190,7 +195,8 @@ void intmoduleSendNextFrame();
 
 void extmoduleStop();
 void extmodulePpmStart();
-void extmodulePxxStart();
+void extmodulePxxPulsesStart();
+void extmodulePxxSerialStart();
 void extmodulePxx2Start();
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
 void extmoduleInvertedSerialStart(uint32_t baudrate);
@@ -402,6 +408,8 @@ enum EnumSwitchesPositions
   #define NUM_SWITCHES                  8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_2POS << 12) + (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #endif
+
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
@@ -439,10 +447,13 @@ enum Analogs {
   STICK4,
   POT_FIRST,
   POT1 = POT_FIRST,
+#if defined(PCBX3)
+  POT_LAST = POT1,
+#elif defined(PCBXLITE) || defined(PCBX7)
   POT2,
-#if defined(PCBX7) || defined(PCBXLITE)
   POT_LAST = POT2,
 #elif defined(PCBX9E)
+  POT2,
   POT3,
   POT4,
   POT_LAST = POT4,
@@ -451,6 +462,7 @@ enum Analogs {
   SLIDER3,
   SLIDER4,
 #else
+  POT2,
   POT3,
   POT_LAST = POT3,
   SLIDER1,
@@ -464,6 +476,8 @@ enum Analogs {
   #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
 #elif defined(PCBX7)
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
+#elif defined(PCBX3)
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0)
 #else
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 2) + (POT_WITH_DETENT << 0)
   #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
@@ -476,15 +490,6 @@ enum Analogs {
 #define NUM_MOUSE_ANALOGS               0
 #define NUM_DUMMY_ANAS                  0
 
-PACK(typedef struct {
-#if defined(STICKS_PWM)
-  uint8_t sticksPwmDisabled:1;
-#endif
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-
-extern HardwareOptions hardwareOptions;
-
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
@@ -496,10 +501,26 @@ extern HardwareOptions hardwareOptions;
   #define NUM_TRIMS_KEYS                8
 #endif
 
-#if defined(PCBXLITES) || defined(DEBUG)
+PACK(typedef struct {
+#if NUM_PWMSTICKS > 0
+  uint8_t sticksPwmDisabled:1;
+#endif
+  uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
+#if !defined(PXX2)
+  #define IS_PXX2_INTERNAL_ENABLED()            (false)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#elif !defined(PXX1) || defined(PCBXLITES) || defined(PCBX3)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (false)
 #else
-  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  // TODO #define PXX2_PROBE
+  // TODO #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #endif
 
 enum CalibratedAnalogs {
@@ -549,6 +570,8 @@ uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
   #define BATT_SCALE                    131
 #elif defined(PCBX7)
   #define BATT_SCALE                    123
+#elif defined(PCBX3)
+  #define BATT_SCALE                    117
 #else
   #define BATT_SCALE                    150
 #endif

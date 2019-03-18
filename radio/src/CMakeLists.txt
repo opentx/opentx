@@ -139,6 +139,7 @@ endif()
 if(ARCH STREQUAL ARM AND NOT PCB STREQUAL X12S AND NOT PCB STREQUAL X10 AND NOT PCB STREQUAL XLITE AND NOT PCB STREQUAL XLITES AND NOT PCB STREQUAL X3 AND NOT PCB STREQUAL NV14)
   add_definitions(-DEEPROM_CONVERSIONS)
   set(SRC ${SRC} storage/eeprom_conversions.cpp)
+  # set(SRC ${SRC} storage/conversions/conversions_216_217.cpp)
 endif()
 
 add_definitions(-DFLAVOUR="${FLAVOUR}")

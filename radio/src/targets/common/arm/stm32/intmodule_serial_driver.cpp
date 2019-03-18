@@ -24,16 +24,27 @@ ModuleFifo intmoduleFifo;
 
 void intmoduleStop()
 {
-  INTERNAL_MODULE_OFF();
+  GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
+
   INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(INTMODULE_GPIO, &GPIO_InitStructure);
+
+  GPIO_ResetBits(INTMODULE_GPIO, INTMODULE_TX_GPIO_PIN | INTMODULE_RX_GPIO_PIN);
 }
 
 void intmodulePxxStart()
 {
-  // shouldn't be used anymore
+  intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, false);
 }
 
-void intmoduleSerialStart(uint32_t baudrate)
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
 {
   INTERNAL_MODULE_ON();
 
@@ -66,11 +77,12 @@ void intmoduleSerialStart(uint32_t baudrate)
   USART_Init(INTMODULE_USART, &USART_InitStructure);
   USART_Cmd(INTMODULE_USART, ENABLE);
 
-  intmoduleFifo.clear();
-
-  USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
-  NVIC_SetPriority(INTMODULE_USART_IRQn, 6);
-  NVIC_EnableIRQ(INTMODULE_USART_IRQn);
+  if (rxEnable) {
+    intmoduleFifo.clear();
+    USART_ITConfig(INTMODULE_USART, USART_IT_RXNE, ENABLE);
+    NVIC_SetPriority(INTMODULE_USART_IRQn, 6);
+    NVIC_EnableIRQ(INTMODULE_USART_IRQn);
+  }
 }
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
@@ -84,6 +96,7 @@ extern "C" void INTMODULE_USART_IRQHandler(void)
       intmoduleFifo.errors++;
     }
     else {
+      hardwareOptions.pxx2Enabled = true;
       intmoduleFifo.push(data);
     }
     status = INTMODULE_USART->SR;
@@ -119,10 +132,17 @@ void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
 
 void intmoduleSendNextFrame()
 {
+  switch(moduleSettings[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
-  if (moduleSettings[INTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
-    intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
-  }
+    case PROTOCOL_CHANNELS_PXX2:
+      intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
+      break;
 #endif
-}
 
+#if defined(PXX1)
+    case PROTOCOL_CHANNELS_PXX1_SERIAL:
+      intmoduleSendBuffer(intmodulePulsesData.pxx_uart.getData(), intmodulePulsesData.pxx_uart.getSize());
+      break;
+#endif
+  }
+}

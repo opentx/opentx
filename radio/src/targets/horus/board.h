@@ -185,7 +185,13 @@ void SDRAM_Init(void);
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define INTERNAL_MODULE_OFF()          GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+
+#if defined(INTMODULE_USART)
+  #define INTERNAL_MODULE_OFF()        intmoduleStop()
+#else
+  #define INTERNAL_MODULE_OFF()        GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#endif
+
 #define EXTERNAL_MODULE_ON()           GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
@@ -200,19 +206,28 @@ PACK(typedef struct {
 
 extern HardwareOptions hardwareOptions;
 
-#if defined(PCBX10)
+#if !defined(PXX2)
+  #define IS_PXX2_INTERNAL_ENABLED()            (false)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#elif !defined(PXX1)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (false)
 #else
-  #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  // TODO #define PXX2_PROBE
+  // TODO #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #endif
+
 
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
-void init_pxx(uint8_t module);
-void disable_pxx(uint8_t module);
+void init_pxx1_pulses(uint8_t module);
+void disable_pxx1_pulses(uint8_t module);
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void disable_serial(uint8_t module);
 void intmoduleSendNextFrame();
 void extmoduleSendNextFrame();

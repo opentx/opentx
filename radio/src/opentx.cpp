@@ -257,16 +257,6 @@ void generalDefault()
   g_eeGeneral.slidersConfig = DEFAULT_SLIDERS_CONFIG;
 #endif
 
-#if defined(PCBXLITES)
-  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
-#elif defined(PCBXLITE)
-  g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
-#elif defined(PCBX7)
-  g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
-#elif defined(PCBFRSKY)
-  g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
-#endif
-
   // vBatWarn is voltage in 100mV, vBatMin is in 100mV but with -9V offset, vBatMax has a -12V offset
   g_eeGeneral.vBatWarn = BATTERY_WARN;
   if (BATTERY_MIN != 90)
@@ -375,6 +365,9 @@ void applyDefaultTemplate()
 #if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
+  if(isModulePXX(module) && IS_D8_RX(module))
+    return;
+
   uint8_t modelId = g_model.header.modelId[module];
   uint8_t additionalOnes = 0;
   char * name = reusableBuffer.moduleSetup.msg;
@@ -720,7 +713,6 @@ void checkBacklight()
 {
   static uint8_t tmr10ms ;
 
-
   uint8_t x = g_blinkTmr10ms;
   if (tmr10ms != x) {
     tmr10ms = x;
@@ -731,13 +723,12 @@ void checkBacklight()
       }
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNCTION_BACKLIGHT));
+    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) || isFunctionActive(FUNCTION_BACKLIGHT));
     if (flashCounter) backlightOn = !backlightOn;
     if (backlightOn)
       BACKLIGHT_ENABLE();
     else
       BACKLIGHT_DISABLE();
-
   }
 }
 

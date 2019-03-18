@@ -26,8 +26,11 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
   uint8_t flag0 = g_model.header.modelId[module] & 0x3F;
   if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
     if (moduleSettings[module].counter == 0) {
-      flag0 |= PXX2_FLAG0_FAILSAFE;
+      flag0 |= PXX2_CHANNELS_FLAG0_FAILSAFE;
     }
+  }
+  if (moduleSettings[module].mode == MODULE_MODE_RANGECHECK) {
+    flag0 |= PXX2_CHANNELS_FLAG0_RANGECHECK;
   }
   Pxx2Transport::addByte(flag0);
   return flag0;
@@ -95,11 +98,11 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 
   // Channels
   uint8_t channelsCount = sentModuleChannels(module);
-  addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart);
+  addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart);
   if (channelsCount > 8) {
-    addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 8);
+    addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 8);
     if (channelsCount > 16) {
-      addChannels(module, flag0 & PXX2_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 16);
+      addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 16);
     }
   }
 }
@@ -136,6 +139,7 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
       Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
+    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.registerModuleIndex);
   }
   else {
     Pxx2Transport::addByte(0);
@@ -144,24 +148,26 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
 void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 {
-  if (reusableBuffer.receiverSetup.timeout) {
-    if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
-      reusableBuffer.receiverSetup.timeout = 0;
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
-    }
-    setupChannelsFrame(module);
-  }
-  else {
+  if (get_tmr10ms() > reusableBuffer.receiverSetup.timeout) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
-    Pxx2Transport::addByte(reusableBuffer.receiverSetup.state + reusableBuffer.receiverSetup.receiverId);
+    uint8_t flag0 = reusableBuffer.receiverSetup.receiverId;
+    if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_WRITE)
+      flag0 |= PXX2_RX_SETTINGS_FLAG0_WRITE;
+    Pxx2Transport::addByte(flag0);
     uint8_t flag1 = 0;
+    if (reusableBuffer.receiverSetup.telemetryDisabled)
+      flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED;
     if (reusableBuffer.receiverSetup.pwmRate)
-      flag1 |= 0x10;
+      flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
     Pxx2Transport::addByte(flag1);
-    for (int i = 0; i < 24; i++) {
+    uint8_t channelsCount = sentModuleChannels(module);
+    for (int i = 0; i < channelsCount; i++) {
       Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
     }
-    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 20/*200ms*/;
+    reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 200/*next try in 2s*/;
+  }
+  else {
+    setupChannelsFrame(module);
   }
 }
 
@@ -218,17 +224,8 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
 void Pxx2Pulses::setupShareMode(uint8_t module)
 {
-  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
-
-  Pxx2Transport::addByte(0xC0);
-
-  Pxx2Transport::addByte(0x40);
-
-  for(uint8_t i=0; i < 24 ; i++) {
-    Pxx2Transport::addByte(i);
-  }
-
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_SHARE);
+  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverId);
 }
 
 void Pxx2Pulses::setupFrame(uint8_t module)

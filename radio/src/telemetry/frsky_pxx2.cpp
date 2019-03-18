@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <opentx.h>
 #include "opentx.h"
 
 class Pxx2Telemetry
@@ -65,15 +66,21 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  for (uint8_t pin=0; pin<24; pin++) {
+  uint8_t channelsCount = sentModuleChannels(module);
+  for (uint8_t pin = 0; pin < channelsCount; pin++) {
     reusableBuffer.receiverSetup.channelMapping[pin] = frame[5 + pin];
   }
 
-  reusableBuffer.receiverSetup.pwmRate = frame[4] & 0x30;
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
+    reusableBuffer.receiverSetup.pwmRate = 1;
 
-  reusableBuffer.receiverSetup.state = 0xFF;
+  if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED)
+    reusableBuffer.receiverSetup.telemetryDisabled = 1;
+
+  reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
+  reusableBuffer.receiverSetup.timeout = 0;
   moduleSettings[module].mode = MODULE_MODE_NORMAL;
-}
+ }
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)
 {

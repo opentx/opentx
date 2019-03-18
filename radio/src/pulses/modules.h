@@ -115,12 +115,12 @@ inline bool isModulePPM(uint8_t idx)
 
 inline bool isModuleR9M(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE;
 }
 
 inline bool isModuleR9M2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO2;
 }
 
 #if defined(PCBXLITE)
@@ -177,7 +177,7 @@ inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 
 inline bool isModulePXX(uint8_t idx)
 {
-  return isModuleXJT(idx);
+  return isModuleXJT(idx) || isModuleR9M(idx);
 }
 
 inline bool isModulePXX2(uint8_t idx)
@@ -203,7 +203,7 @@ inline bool isModuleDSM2(uint8_t idx)
 #endif
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
-static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 8, -2, 8, 4, 8, 16, 8}; // relative to 8!
+static const int8_t maxChannelsModules[] = { 0, 8, 8, 8, -2, 8, 4, 8, 8, 8}; // relative to 8!
 static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;

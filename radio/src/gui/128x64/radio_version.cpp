@@ -22,7 +22,7 @@
 #include "opentx.h"
 
 // TODO duplicated code
-#if defined(PCBX7) || defined(PCBX9E)
+#if defined(PCBX7) || defined(PCBX9E) || defined(PCBX3)
 #define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
 #define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
 #else

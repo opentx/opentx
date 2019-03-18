@@ -32,6 +32,7 @@
   #define PXX2_TYPE_ID_TX_SETTINGS  0x04
   #define PXX2_TYPE_ID_RX_SETTINGS  0x05
   #define PXX2_TYPE_ID_HW_INFO      0x06
+  #define PXX2_TYPE_ID_SHARE        0x07
   #define PXX2_TYPE_ID_TELEMETRY    0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
@@ -40,10 +41,14 @@
 
 #define PXX2_TYPE_C_OTA             0xFE
 
-#define PXX2_FLAG0_FAILSAFE         (1 << 6)
+#define PXX2_CHANNELS_FLAG0_FAILSAFE         (1 << 6)
+#define PXX2_CHANNELS_FLAG0_RANGECHECK       (1 << 7)
 
-const uint8_t DEFAULT_CHANNEL_MAPPING[] = {0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF};
-const uint8_t CH9TO16_CHANNEL_MAPPING[] = {0x89, 0xAB, 0xCD, 0xEF, 0x01, 0x23, 0x45, 0x67};
+#define PXX2_RX_SETTINGS_FLAG0_WRITE               (1 << 6)
+
+#define PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED  (1 << 7)
+#define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
+#define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
 
 enum PXX2RegisterSteps {
   REGISTER_START,
@@ -53,10 +58,16 @@ enum PXX2RegisterSteps {
 };
 
 enum PXX2BindSteps {
-    BIND_START,
-    BIND_RX_NAME_SELECTED,
-    BIND_WAIT,
-    BIND_OK
+  BIND_START,
+  BIND_RX_NAME_SELECTED,
+  BIND_WAIT,
+  BIND_OK
+};
+
+enum PXX2ReceiverStatus {
+  RECEIVER_SETTINGS_READ,
+  RECEIVER_SETTINGS_WRITE,
+  RECEIVER_SETTINGS_OK
 };
 
 extern ModuleFifo intmoduleFifo;

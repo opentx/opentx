@@ -186,9 +186,6 @@ void boardInit()
   pwrInit();
   delaysInit();
 
-  // FrSky removed the volume chip in latest board, that's why it doesn't answer!
-  // i2cInit();
-
 #if defined(DEBUG)
   auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
 #endif
@@ -197,6 +194,11 @@ void boardInit()
 
   TRACE("\nHorus board started :)");
   TRACE("RCC->CSR = %08x", RCC->CSR);
+
+#if defined(PXX2)
+  #warning "PXX2 probe is not implemented"
+  hardwareOptions.pxx2Enabled = true;
+#endif
 
   audioInit();
 
