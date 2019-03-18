@@ -1,3 +1,223 @@
+#include "definitions.h"
+#include "board.h"
+
+#define NUM_STICKS                     4
+
+#define XPOTS_MULTIPOS_COUNT 6
+
+#define MAX_SCRIPT_INPUTS  10
+#define MAX_SCRIPT_OUTPUTS 6
+#define MAX_GVARS 9
+
+#if defined(PCBHORUS)
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    64
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS                  9
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_CUSTOM_SCREENS           5
+#elif defined(PCBTARANIS)
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    64
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS                  7
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        32
+#else
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    32
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        32
+#endif
+
+
+#if defined(PCBHORUS)
+  #define LEN_SWITCH_NAME              3
+  #define LEN_ANA_NAME                 3
+  #define LEN_MODEL_FILENAME           16
+  #define LEN_BLUETOOTH_NAME           10
+#else
+  #define LEN_SWITCH_NAME              3
+  #define LEN_ANA_NAME                 3
+  #define LEN_BLUETOOTH_NAME           10
+#endif
+
+#if defined(PCBHORUS)
+  #define LEN_MODEL_NAME               15
+  #define LEN_TIMER_NAME               8
+  #define LEN_FLIGHT_MODE_NAME         10
+  #define LEN_BITMAP_NAME              10  // TODO next EEPROM change: we need 14 here as we have to store the file extension
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             6
+  #define LEN_INPUT_NAME               4
+  #define LEN_CURVE_NAME               3
+  #define LEN_FUNCTION_NAME            6
+  #define MAX_CURVES                   32
+  #define MAX_CURVE_POINTS             512
+#elif LCD_W == 212
+  #define LEN_MODEL_NAME               12
+  #define LEN_TIMER_NAME               8
+  #define LEN_FLIGHT_MODE_NAME         10
+  #define LEN_BITMAP_NAME              10
+  #define LEN_EXPOMIX_NAME             8   // TODO next EEPROM change: 6 seem enough
+  #define LEN_CHANNEL_NAME             6
+  #define LEN_INPUT_NAME               4
+  #define LEN_CURVE_NAME               3
+  #define LEN_FUNCTION_NAME            8
+  #define MAX_CURVES                   32
+  #define MAX_CURVE_POINTS             512
+#else
+  #define LEN_MODEL_NAME               10
+  #define LEN_TIMER_NAME               3
+  #define LEN_FLIGHT_MODE_NAME         6
+  #define LEN_EXPOMIX_NAME             6
+  #define LEN_CHANNEL_NAME             4
+  #define LEN_INPUT_NAME               3
+  #define LEN_CURVE_NAME               3
+  #define LEN_FUNCTION_NAME            6
+  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
+  #define MAX_CURVE_POINTS             512
+#endif
+
+enum TelemetrySource {
+    TELEM_NONE,
+    TELEM_TX_VOLTAGE,
+    TELEM_TX_TIME,
+    TELEM_RESERVE1,
+    TELEM_RESERVE2,
+    TELEM_RESERVE3,
+    TELEM_RESERVE4,
+    TELEM_RESERVE5,
+    TELEM_TIMER1,
+    TELEM_TIMER2,
+    TELEM_SWR,
+    TELEM_RSSI_TX,
+    TELEM_RSSI_RX,
+    TELEM_RESERVE0,
+    TELEM_A_FIRST,
+    TELEM_A1=TELEM_A_FIRST,
+    TELEM_A2,
+    TELEM_A3,
+    TELEM_A4,
+    TELEM_A_LAST=TELEM_A4,
+    TELEM_ALT,
+    TELEM_RPM,
+    TELEM_FUEL,
+    TELEM_T1,
+    TELEM_T2,
+    TELEM_SPEED,
+    TELEM_DIST,
+    TELEM_GPSALT,
+    TELEM_CELL,
+    TELEM_CELLS_SUM,
+    TELEM_VFAS,
+    TELEM_CURRENT,
+    TELEM_CONSUMPTION,
+    TELEM_POWER,
+    TELEM_ACCx,
+    TELEM_ACCy,
+    TELEM_ACCz,
+    TELEM_HDG,
+    TELEM_VSPEED,
+    TELEM_ASPEED,
+    TELEM_DTE,
+    TELEM_RESERVE6,
+    TELEM_RESERVE7,
+    TELEM_RESERVE8,
+    TELEM_RESERVE9,
+    TELEM_RESERVE10,
+    TELEM_MIN_A_FIRST,
+    TELEM_MIN_A1=TELEM_MIN_A_FIRST,
+    TELEM_MIN_A2,
+    TELEM_MIN_A3,
+    TELEM_MIN_A4,
+    TELEM_MIN_A_LAST=TELEM_MIN_A4,
+    // TODO: add A1-4 MAX
+            TELEM_MIN_ALT,
+    TELEM_MAX_ALT,
+    TELEM_MAX_RPM,
+    TELEM_MAX_T1,
+    TELEM_MAX_T2,
+    TELEM_MAX_SPEED,
+    TELEM_MAX_DIST,
+    TELEM_MAX_ASPEED,
+    TELEM_MIN_CELL,
+    TELEM_MIN_CELLS_SUM,
+    TELEM_MIN_VFAS,
+    TELEM_MAX_CURRENT,
+    TELEM_MAX_POWER,
+    TELEM_RESERVE11,
+    TELEM_RESERVE12,
+    TELEM_RESERVE13,
+    TELEM_RESERVE14,
+    TELEM_RESERVE15,
+    TELEM_ACC,
+    TELEM_GPS_TIME,
+    TELEM_CSW_MAX = TELEM_MAX_POWER,
+    TELEM_NOUSR_MAX = TELEM_A2,
+    TELEM_DISPLAY_MAX = TELEM_MAX_POWER,
+    TELEM_STATUS_MAX = TELEM_GPS_TIME,
+    TELEM_FIRST_STREAMED_VALUE = TELEM_RSSI_TX,
+};
+
+#define NUM_TELEMETRY      TELEM_CSW_MAX
+
+#if defined(PCBTARANIS)
+enum CurveType {
+    CURVE_TYPE_STANDARD,
+    CURVE_TYPE_CUSTOM,
+    CURVE_TYPE_LAST = CURVE_TYPE_CUSTOM
+};
+PACK(typedef struct {
+    uint8_t type:3;
+    uint8_t smooth:1;
+    uint8_t spare:4;
+    int8_t  points;
+}) CurveInfo;
+#define NUM_POINTS         512
+#define CURVDATA           CurveInfo
+#else
+#define LEN_MODEL_NAME     10
+  #define LEN_EXPOMIX_NAME   6
+  #define LEN_FP_NAME        6
+  #define NUM_POINTS         512
+  #define CURVDATA           int16_t
+#endif
+
+#if defined(PCBTARANIS)
+enum CurveRefType {
+    CURVE_REF_DIFF,
+    CURVE_REF_EXPO,
+    CURVE_REF_FUNC,
+    CURVE_REF_CUSTOM
+};
+PACK(typedef struct {
+    uint8_t type;
+    int8_t  value;
+}) CurveRef;
+#else
+#define MODE_DIFFERENTIAL  0
+  #define MODE_EXPO          0
+  #define MODE_CURVE         1
+#endif
+
 #if defined(PCBTARANIS)
 PACK(typedef struct {
     uint8_t  srcRaw;
@@ -120,7 +340,7 @@ PACK(typedef struct {
   uint8_t fadeIn;
   uint8_t fadeOut;
   int16_t rotaryEncoders[1];
-  gvar_t gvars[9];
+  int16_t gvars[9];
 }) FlightModeData_v216;
 
 PACK(typedef struct { // Logical Switches data
@@ -187,6 +407,13 @@ PACK(typedef struct {
   uint8_t    barMin;           // minimum for bar display
   uint8_t    barMax;           // ditto for max display (would usually = ratio)
 }) FrSkyBarData_v216;
+
+
+#if LCD_W >= 212
+#define NUM_LINE_ITEMS 3
+#else
+#define NUM_LINE_ITEMS 2
+#endif
 
 PACK(typedef struct {
   uint8_t    sources[NUM_LINE_ITEMS];
@@ -263,6 +490,16 @@ PACK(typedef struct {
 }) ModelHeader_v216;
 #endif
 
+PACK(struct GVarData {
+  char name[3];
+  uint32_t min:12;
+  uint32_t max:12;
+  uint32_t popup:1;
+  uint32_t prec:1;
+  uint32_t unit:2;
+  uint32_t spare:4;
+});
+
 PACK(typedef struct {
   ModelHeader_v216 header;
   TimerData_v216 timers[2];
@@ -275,7 +512,7 @@ PACK(typedef struct {
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
-  BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
+  uint16_t beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData_v216 mixData[MAX_MIXERS];
   LimitData_v216 limitData[MAX_OUTPUT_CHANNELS];
   ExpoData_v216  expoData[MAX_EXPOS];
@@ -299,11 +536,11 @@ PACK(typedef struct {
 
   uint8_t externalModule;
 
-if defined(PCBTARANIS)
+#if defined(PCBTARANIS)
   uint8_t trainerMode;
 #endif
 
-  ModuleData_v216 moduleData[NUM_MODULES+1];
+  ModuleData_v216 moduleData[2 + 1];
 
 #if defined(PCBTARANIS)
   char curveNames[MAX_CURVES][6];
@@ -316,6 +553,41 @@ if defined(PCBTARANIS)
   uint8_t rxBattAlarms[2];
 }) ModelData_v216;
 
+
+PACK(struct CalibData {
+  int16_t mid;
+  int16_t spanNeg;
+  int16_t spanPos;
+});
+
+
+PACK(struct TrainerMix {
+         uint8_t srcChn:6; // 0-7 = ch1-8
+         uint8_t mode:2;   // off,add-mode,subst-mode
+         int8_t  studWeight;
+     });
+
+
+PACK(struct TrainerData {
+  int16_t        calib[4];
+  TrainerMix mix[4];
+});
+
+#if defined(COLORLCD)
+typedef uint16_t swconfig_t;
+typedef uint32_t swarnstate_t;
+#elif defined(PCBX9E)
+typedef uint64_t swconfig_t;
+typedef uint64_t swarnstate_t;
+typedef uint32_t swarnenable_t;
+#elif defined(PCBTARANIS)
+typedef uint16_t swconfig_t;
+typedef uint16_t swarnstate_t;
+typedef uint8_t swarnenable_t;
+#else
+typedef uint8_t swarnstate_t;
+typedef uint8_t swarnenable_t;
+#endif
 
 PACK(typedef struct {
     uint8_t   version;
@@ -348,7 +620,9 @@ PACK(typedef struct {
     int8_t    PPM_Multiplier;
     int8_t    hapticLength;
     uint8_t   reNavigation;
-    N_TARANIS_FIELD(uint8_t stickReverse)
+#if !defined(PCBTARANIS)
+    uint8_t   stickReverse;
+#endif
     int8_t    beepLength:3;
     int8_t    hapticStrength:3;
     uint8_t   gpsFormat:1;
@@ -380,17 +654,22 @@ PACK(typedef struct {
     int8_t   varioRepeat;
     int8_t   backgroundVolume;
 
-    TARANIS_FIELD(uint8_t serial2Mode:6)
-    TARANIS_FIELD(uint8_t slidersConfig:2)
-    TARANIS_FIELD(uint8_t potsConfig)
-    TARANIS_FIELD(uint8_t backlightColor)
-    TARANIS_FIELD(swarnstate_t switchUnlockStates)
-    TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS])
-    TARANIS_FIELD(swconfig_t switchConfig)
-    TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
-    TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME])
-    N_TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS])
+#if defined(PCBTARANIS)
+    uint8_t serial2Mode:6;
+    uint8_t slidersConfig:2;
+    uint8_t potsConfig;
+    uint8_t backlightColor;
+    swarnstate_t switchUnlockStates;
+    CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS];
+    swconfig_t switchConfig;
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME];
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
+#else
+    CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS];
+#endif
 
-    TARANIS_PCBX9E_FIELD(uint8_t bluetoothEnable)
-    TARANIS_PCBX9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME])
+#if defined(PCBX9E)
+    uint8_t bluetoothEnable;
+    char bluetoothName[LEN_BLUETOOTH_NAME];
+#endif
 }) RadioData_v216;
