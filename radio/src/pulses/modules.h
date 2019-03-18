@@ -203,8 +203,8 @@ inline bool isModuleDSM2(uint8_t idx)
 #endif
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
-static const int8_t maxChannelsModules[] = { 0, 8, 8, 8, -2, 8, 4, 8, 8, 8}; // relative to 8!
-static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
+static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 8, -2, 8, 4, 8, 8, 8}; // relative to 8!
+static const int8_t maxChannelsXJT_M8[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
 constexpr int8_t MAX_EXTRA_MODULE_CHANNELS_M8 = 8; // only 16ch PPM
@@ -214,7 +214,7 @@ inline int8_t maxModuleChannels_M8(uint8_t idx)
   if (isExtraModule(idx))
     return MAX_EXTRA_MODULE_CHANNELS_M8;
   else if (isModuleXJT(idx))
-    return maxChannelsXJT[1 + g_model.moduleData[idx].rfProtocol];
+    return maxChannelsXJT_M8[1 + g_model.moduleData[idx].rfProtocol];
   else
     return maxChannelsModules_M8[g_model.moduleData[idx].type];
 }
@@ -290,7 +290,6 @@ inline bool isModuleNeedingRegisterRangeButtons(uint8_t idx)
 {
   return isModulePXX2(idx);
 }
-
 
 inline bool isModuleNeedingRangeButton(uint8_t idx)
 {

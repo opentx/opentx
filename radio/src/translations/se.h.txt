@@ -996,7 +996,7 @@
 #define TR_BYTES               "byte"
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
 #define TR_TRANSFER_BUTTON             BUTTON("Transfer")
-#define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
+#define STR_REGISTER            TR("Reg", "Register")
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        TR("[Tst]", "[Testa]")
 #define TR_MODULE_REGISTER             "Register"

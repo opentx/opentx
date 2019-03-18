@@ -340,25 +340,22 @@ class ModuleWindow : public Window {
 
       // Register and Range buttons
       if (isModuleNeedingRegisterRangeButtons(moduleIndex)) {
-        registerButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_REGISTER);
+        registerButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_REGISTER);
         registerButton->setPressHandler([=]() -> uint8_t {
           if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
             rangeButton->check(false);
           }
           if (moduleSettings[moduleIndex].mode == MODULE_MODE_REGISTER) {
-            registerButton->setText(STR_MODULE_REGISTER);
             moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
             return 0;
           }
           else {
-            registerButton->setText(STR_MODULE_REGISTER);
             moduleSettings[moduleIndex].mode = MODULE_MODE_REGISTER;
             return 1;
           }
         });
         registerButton->setCheckHandler([=]() {
           if (moduleSettings[moduleIndex].mode != MODULE_MODE_REGISTER) {
-            registerButton->setText(STR_MODULE_REGISTER);
             registerButton->check(false);
           }
         });
@@ -366,7 +363,6 @@ class ModuleWindow : public Window {
         rangeButton = new TextButton(this, grid.getFieldSlot(2, 1), STR_MODULE_RANGE);
         rangeButton->setPressHandler([=]() -> uint8_t {
           if (moduleSettings[moduleIndex].mode == MODULE_MODE_REGISTER) {
-            registerButton->setText(STR_MODULE_REGISTER);
             registerButton->check(false);
             moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
           }

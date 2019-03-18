@@ -864,7 +864,6 @@ extern const char STR_EXPONAME[];
   extern const char STR_TRAINER[];
 extern const char STR_MODULE_BIND[];
 extern const char STR_TRANSFER_BUTTON[];
-extern const char STR_REGISTER_BUTTON[];
 extern const char STR_RXADD_BUTTON[];
 extern const char STR_BINDING_1_8_TELEM_ON[];
 extern const char STR_BINDING_1_8_TELEM_OFF[];
@@ -994,7 +993,6 @@ extern const char STR_BUTTON_SHARE[];
 
 #if defined(PCBTARANIS) || defined(DSM2)
 extern const char STR_MODULE_RANGE[];
-extern const char STR_MODULE_REGISTER[];
 extern const char STR_RECEIVER_OPTIONS[];
   extern const char STR_DEL_BUTTON[];
 #endif
