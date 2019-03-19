@@ -298,7 +298,7 @@ void bluetoothWakeup(void)
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
         if (len > 0) {
           for (int i = 0; i < len; i++) {
-            *cur++ = idx2char(g_eeGeneral.bluetoothName[i]);
+            *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
           }
         }
         else {
