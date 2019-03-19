@@ -50,8 +50,11 @@ void convertModelData_218_to_219(ModelData &model)
     memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], sizeof(ModuleData));
   }
 
-  #warning "Here we have to merge the failsafe values properly"
-  memcpy(newModel.failsafeChannels, oldModel.moduleData[0].failsafeChannels, sizeof(newModel.failsafeChannels));
+  for (uint8_t module=0; module<2; module++) {
+    if (oldModel.moduleData[module].failsafeMode == FAILSAFE_CUSTOM) {
+      memcpy(newModel.failsafeChannels, oldModel.moduleData[module].failsafeChannels, sizeof(newModel.failsafeChannels));
+    }
+  }
 
   newModel.trainerData.mode = oldModel.trainerMode;
   newModel.trainerData.channelsStart = oldModel.moduleData[NUM_MODULES].channelsStart;
