@@ -151,42 +151,29 @@ PACK(typedef struct {
       int8_t  frameLength;
     } ppm;
     struct {
-               uint8_t rfProtocolExtra:2;
-               uint8_t spare1:3;
-               uint8_t customProto:1;
-               uint8_t autoBindMode:1;
-               uint8_t lowPowerMode:1;
-               int8_t optionValue;
-             } multi;
+      uint8_t rfProtocolExtra:2;
+      uint8_t spare1:3;
+      uint8_t customProto:1;
+      uint8_t autoBindMode:1;
+      uint8_t lowPowerMode:1;
+      int8_t optionValue;
+    } multi;
     struct {
-               uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
-               uint8_t spare1:2;
-               uint8_t receiver_telem_off:1;     // false = receiver telem enabled
-               uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
-               uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
-               uint8_t fast:1;                   // TODO: to be used later by external module (fast means serial @ high speed)
-               uint8_t spare2;
-             } pxx;
+      uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
+      uint8_t spare1:2;
+      uint8_t receiver_telem_off:1;     // false = receiver telem enabled
+      uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
+      uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
+      uint8_t fast:1;                   // TODO: to be used later by external module (fast means serial @ high speed)
+      uint8_t spare2;
+    } pxx;
     struct {
-               uint8_t spare1:6;
-               uint8_t noninverted:1;
-               uint8_t spare2:1;
-               int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
-             } sbus;
+      uint8_t spare1:6;
+      uint8_t noninverted:1;
+      uint8_t spare2:1;
+      int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
+    } sbus;
   };
-
-  // Helper functions to set both of the rfProto protocol at the same time
-  inline uint8_t getMultiProtocol(bool returnCustom) {
-    if (returnCustom && multi.customProto)
-      return MM_RF_CUSTOM_SELECTED;
-    return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
-  }
-
-  inline void setMultiProtocol(uint8_t proto)
-  {
-    rfProtocol = (uint8_t) (proto & 0x0f);
-    multi.rfProtocolExtra = (proto & 0x30) >> 4;
-  }
 }) ModuleData_v218;
 
 PACK(typedef struct {
@@ -310,7 +297,7 @@ PACK(typedef struct {
 #elif defined(PCBTARANIS)
 #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
 #elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+#define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
 #else
   #define MODELDATA_EXTRA_218
 #endif
@@ -354,7 +341,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA_218
 
-    TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
+  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v218;

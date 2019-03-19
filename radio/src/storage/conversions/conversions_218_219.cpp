@@ -56,9 +56,9 @@ void convertModelData_218_to_219(ModelData &model)
   newModel.trainerData.mode = oldModel.trainerMode;
   newModel.trainerData.channelsStart = oldModel.moduleData[NUM_MODULES].channelsStart;
   newModel.trainerData.channelsCount = oldModel.moduleData[NUM_MODULES].channelsCount;
-  newModel.trainerData.frameLength = oldModel.moduleData[NUM_MODULES].frameLength;
-  newModel.trainerData.delay = oldModel.moduleData[NUM_MODULES].delay;
-  newModel.trainerData.pulsePol = oldModel.moduleData[NUM_MODULES].pulsePol;
+  newModel.trainerData.frameLength = oldModel.moduleData[NUM_MODULES].ppm.frameLength;
+  newModel.trainerData.delay = oldModel.moduleData[NUM_MODULES].ppm.delay;
+  newModel.trainerData.pulsePol = oldModel.moduleData[NUM_MODULES].ppm.pulsePol;
 
   memcpy(newModel.scriptsData, oldModel.scriptsData,
          sizeof(newModel.scriptsData) +

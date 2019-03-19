@@ -1234,8 +1234,7 @@ void convertModelData_217_to_218(ModelData &model)
     }
   }
   for (int i=0; i<NUM_MODULES+1; i++) {
-    // newModel.moduleData[i] = oldModel.moduleData[i];
-#warning "Conversion from v217 to v218 is broken"
+    memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], sizeof(ModuleData_v218));
   }
 #if defined(PCBTARANIS)
   newModel.trainerMode = oldModel.trainerMode;
