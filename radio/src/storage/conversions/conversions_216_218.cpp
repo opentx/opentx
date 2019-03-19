@@ -666,7 +666,7 @@ int ConvertTelemetrySource_216_to_217(int source)
   return source;
 }
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) && !defined(PCBXLITE)
 int ConvertSwitch_216_to_217(int swtch)
 {
   if (swtch < 0)
