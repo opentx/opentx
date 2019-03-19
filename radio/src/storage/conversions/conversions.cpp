@@ -18,17 +18,20 @@
  * GNU General Public License for more details.
  */
 
-void ConvertModel(int id, int version)
+#include "opentx.h"
+#include "conversions.h"
+
+void convertModelData(int id, int version)
 {
   eeLoadModelData(id);
 
   if (version == 216) {
     version = 217;
-    ConvertModel_216_to_217(g_model);
+    convertModelData_216_to_217(g_model);
   }
   if (version == 217) {
     version = 218;
-    ConvertModel_217_to_218(g_model);
+    convertModelData_217_to_218(g_model);
   }
 
   uint8_t currModel = g_eeGeneral.currModel;
@@ -71,11 +74,11 @@ bool eeConvert()
   int version = conversionVersionStart;
   if (version == 216) {
     version = 217;
-    ConvertRadioData_216_to_217(g_eeGeneral);
+    convertRadioData_216_to_217(g_eeGeneral);
   }
   if (version == 217) {
     version = 218;
-    ConvertRadioData_217_to_218(g_eeGeneral);
+    convertRadioData_217_to_218(g_eeGeneral);
   }
   storageDirty(EE_GENERAL);
   storageCheck(true);
@@ -97,7 +100,7 @@ bool eeConvert()
 #endif
     lcdRefresh();
     if (eeModelExists(id)) {
-      ConvertModel(id, conversionVersionStart);
+      convertModelData(id, conversionVersionStart);
     }
 
   }

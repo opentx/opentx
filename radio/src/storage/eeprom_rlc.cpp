@@ -22,6 +22,7 @@
 #include <string.h>
 #include "opentx.h"
 #include "timers.h"
+#include "conversions/conversions.h"
 
 uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
@@ -596,7 +597,7 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 #if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
     storageCheck(true);
-    ConvertModel(i_fileDst, version);
+    convertModelData(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);
   }
 #endif

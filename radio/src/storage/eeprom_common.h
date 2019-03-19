@@ -25,8 +25,6 @@ uint16_t eeLoadGeneralSettingsData();
 
 bool eeModelExists(uint8_t id);
 void eeLoadModel(uint8_t id);
-bool eeConvert();
-void ConvertModel(int id, int version);
 uint8_t eeFindEmptyModel(uint8_t id, bool down);
 void selectModel(uint8_t sub);
 
