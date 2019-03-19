@@ -22,6 +22,106 @@
 #ifndef OPENTX_DATASTRUCTS_218_H
 #define OPENTX_DATASTRUCTS_218_H
 
+#define MAX_TIMERS_218                     3
+#define MAX_GVARS_218                      9
+
+#if defined(BUZZER)
+#define BUZZER_FIELD_218 int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+#else
+#define BUZZER_FIELD_218 int8_t spareRadio:2;
+#endif
+
+#if defined(PCBHORUS)
+  #define LEN_SWITCH_NAME_218              3
+  #define LEN_ANA_NAME_218                 3
+  #define LEN_MODEL_FILENAME_218           16
+  #define LEN_BLUETOOTH_NAME_218           10
+#else
+  #define LEN_SWITCH_NAME_218              3
+  #define LEN_ANA_NAME_218                 3
+  #define LEN_BLUETOOTH_NAME_218           10
+#endif
+
+#if defined(PCBHORUS)
+  #define LEN_MODEL_NAME_218               15
+  #define LEN_TIMER_NAME_218               8
+  #define LEN_FLIGHT_MODE_NAME_218         10
+  #define LEN_BITMAP_NAME_218              10  // TODO next EEPROM change: we need 14 here as we have to store the file extension
+  #define LEN_EXPOMIX_NAME_218             6
+  #define LEN_CHANNEL_NAME_218             6
+  #define LEN_INPUT_NAME_218               4
+  #define LEN_CURVE_NAME_218               3
+  #define LEN_FUNCTION_NAME_218            6
+  #define MAX_CURVES_218                   32
+  #define MAX_CURVE_POINTS_218             512
+#elif LCD_W == 212
+  #define LEN_MODEL_NAME_218               12
+  #define LEN_TIMER_NAME_218               8
+  #define LEN_FLIGHT_MODE_NAME_218         10
+  #define LEN_BITMAP_NAME_218              10
+  #define LEN_EXPOMIX_NAME_218             8   // TODO next EEPROM change: 6 seem enough
+  #define LEN_CHANNEL_NAME_218             6
+  #define LEN_INPUT_NAME_218               4
+  #define LEN_CURVE_NAME_218               3
+  #define LEN_FUNCTION_NAME_218            8
+  #define MAX_CURVES_218                   32
+  #define MAX_CURVE_POINTS_218             512
+#elif defined(CPUARM)
+  #define LEN_MODEL_NAME_218               10
+  #define LEN_TIMER_NAME_218               3
+  #define LEN_FLIGHT_MODE_NAME_218         6
+  #define LEN_EXPOMIX_NAME_218             6
+  #define LEN_CHANNEL_NAME_218             4
+  #define LEN_INPUT_NAME_218               3
+  #define LEN_CURVE_NAME_218               3
+  #define LEN_FUNCTION_NAME_218            6
+  #define MAX_CURVES_218                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
+  #define MAX_CURVE_POINTS_218             512
+#else
+  #define LEN_MODEL_NAME_218               10
+  #define LEN_FLIGHT_MODE_NAME_218         6
+  #define MAX_CURVES_218                   8
+  #define MAX_CURVE_POINTS_218             (112-MAX_CURVES_218)
+#endif
+
+#if defined(PCBHORUS)
+  #define MAX_MODELS_218                   60
+  #define MAX_OUTPUT_CHANNELS_218          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES_218             9
+  #define MAX_MIXERS_218                   64
+  #define MAX_EXPOS_218                    64
+  #define MAX_LOGICAL_SWITCHES_218         64
+  #define MAX_SPECIAL_FUNCTIONS_218        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS_218                  9
+  #define MAX_INPUTS_218                   32
+  #define MAX_TRAINER_CHANNELS_218         16
+  #define MAX_TELEMETRY_SENSORS_218        32
+  #define MAX_CUSTOM_SCREENS_218           5
+#elif defined(PCBTARANIS)
+  #define MAX_MODELS_218                   60
+  #define MAX_OUTPUT_CHANNELS_218          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES_218             9
+  #define MAX_MIXERS_218                   64
+  #define MAX_EXPOS_218                    64
+  #define MAX_LOGICAL_SWITCHES_218         64
+  #define MAX_SPECIAL_FUNCTIONS_218        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS_218                  7
+  #define MAX_INPUTS_218                   32
+  #define MAX_TRAINER_CHANNELS_218         16
+  #define MAX_TELEMETRY_SENSORS_218        32
+#elif defined(PCBSKY9X)
+  #define MAX_MODELS_218                   60
+  #define MAX_OUTPUT_CHANNELS_218          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES_218             9
+  #define MAX_MIXERS_218                   64
+  #define MAX_EXPOS_218                    32
+  #define MAX_LOGICAL_SWITCHES_218         64
+  #define MAX_SPECIAL_FUNCTIONS_218        64 // number of functions assigned to switches
+  #define MAX_INPUTS_218                   32
+  #define MAX_TRAINER_CHANNELS_218         16
+  #define MAX_TELEMETRY_SENSORS_218        32
+#endif
+
 PACK(typedef struct {
   int32_t  mode:9;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
   uint32_t start:23;
@@ -31,12 +131,12 @@ PACK(typedef struct {
   uint32_t persistent:2;
   int32_t  countdownStart:2;
   uint32_t direction:1;
-  char     name[LEN_TIMER_NAME];
+  char     name[LEN_TIMER_NAME_218];
 }) TimerData_v218;
 
 PACK(typedef struct {
   trim_t trim[NUM_STICKS];
-  char name[LEN_FLIGHT_MODE_NAME];
+  char name[LEN_FLIGHT_MODE_NAME_218];
   int16_t swtch:9;       // swtch of phase[0] is not used
   int16_t spare:7;
   uint8_t fadeIn;
@@ -61,7 +161,7 @@ PACK(typedef struct {
   uint8_t  delayDown;
   uint8_t  speedUp;
   uint8_t  speedDown;
-  char     name[LEN_EXPOMIX_NAME];
+  char     name[LEN_EXPOMIX_NAME_218];
 }) MixData_v218;
 
 PACK(typedef struct {
@@ -74,7 +174,7 @@ PACK(typedef struct {
   uint32_t flightModes:9;
   int32_t  weight:8;
   int32_t  spare:1;
-  char     name[LEN_EXPOMIX_NAME];
+  char     name[LEN_EXPOMIX_NAME_218];
   int8_t   offset;
   CurveRef curve;
 }) ExpoData_v218;
@@ -83,7 +183,7 @@ PACK(typedef struct {
   uint8_t type:1;
   uint8_t smooth:1;
   int8_t  points:6;   // describes number of points - 5
-  char name[LEN_CURVE_NAME];
+  char name[LEN_CURVE_NAME_218];
 }) CurveData_v218;
 
 PACK(typedef struct {
@@ -137,20 +237,20 @@ PACK(typedef struct {
 }) GVarData_v218;
 
 #if defined(PCBX12S)
-#define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS];char inputNames[MAX_INPUTS][LEN_INPUT_NAME];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
+#define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
 #elif defined(PCBX10)
-#define MODELDATA_EXTRA_218  uint8_t spare:3;;uint8_t trainerMode:3;;uint8_t potsWarnMode:2;; ModuleData moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS];;char inputNames[MAX_INPUTS][LEN_INPUT_NAME];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;uint8_t potsWarnSpares[NUM_DUMMY_ANAS];;
+#define MODELDATA_EXTRA_218  uint8_t spare:3;;uint8_t trainerMode:3;;uint8_t potsWarnMode:2;; ModuleData moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];;char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;uint8_t potsWarnSpares[NUM_DUMMY_ANAS];;
 #elif defined(PCBTARANIS)
-#define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
+#define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
 #elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+#define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
 #else
   #define MODELDATA_EXTRA_218
 #endif
 
 PACK(typedef struct {
   ModelHeader header;
-  TimerData_v218 timers[MAX_TIMERS];
+  TimerData_v218 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   uint8_t   noGlobalFunctions:1;
@@ -163,31 +263,31 @@ PACK(typedef struct {
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
   BeepANACenter beepANACenter;
-  MixData_v218 mixData[MAX_MIXERS];
-  LimitData limitData[MAX_OUTPUT_CHANNELS];
-  ExpoData_v218  expoData[MAX_EXPOS];
+  MixData_v218 mixData[MAX_MIXERS_218];
+  LimitData limitData[MAX_OUTPUT_CHANNELS_218];
+  ExpoData_v218  expoData[MAX_EXPOS_218];
 
-  CurveData_v218 curves[MAX_CURVES];
-  int8_t    points[MAX_CURVE_POINTS];
+  CurveData_v218 curves[MAX_CURVES_218];
+  int8_t    points[MAX_CURVE_POINTS_218];
 
   LogicalSwitchData_v218 logicalSw[32];
-  CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS];
+  CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS_218];
   SwashRingData swashR;
-  FlightModeData_v218 flightModeData[MAX_FLIGHT_MODES];
+  FlightModeData_v218 flightModeData[MAX_FLIGHT_MODES_218];
 
   uint8_t thrTraceSrc;
 
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 
-  GVarData_v218 gvars[MAX_GVARS];
+  GVarData_v218 gvars[MAX_GVARS_218];
 
   FrSkyTelemetryData frsky;
   RssiAlarmData rssiAlarms;
 
   MODELDATA_EXTRA_218
 
-    TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];
+    TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v218;
@@ -211,7 +311,7 @@ PACK(typedef struct {
     int8_t   varioPitch; \
     int8_t   varioRange; \
     int8_t   varioRepeat; \
-    CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS];
+    CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS_218];
 
 #if defined(PCBHORUS)
 #define EXTRA_GENERAL_FIELDS_218 \
@@ -220,17 +320,17 @@ PACK(typedef struct {
     uint8_t  slidersConfig:4; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
-    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME]; \
-    char currModelFilename[LEN_MODEL_FILENAME+1]; \
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME_218]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME_218]; \
+    char currModelFilename[LEN_MODEL_FILENAME_218+1]; \
     uint8_t spare:1; \
     uint8_t blOffBright:7; \
-    char bluetoothName[LEN_BLUETOOTH_NAME];
+    char bluetoothName[LEN_BLUETOOTH_NAME_218];
 #elif defined(PCBTARANIS)
 #if defined(BLUETOOTH)
 #define BLUETOOTH_FIELDS_218 \
       uint8_t spare; \
-      char bluetoothName[LEN_BLUETOOTH_NAME];
+      char bluetoothName[LEN_BLUETOOTH_NAME_218];
 #else
 #define BLUETOOTH_FIELDS
 #endif
@@ -242,8 +342,8 @@ PACK(typedef struct {
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
     swconfig_t switchConfig; \
-    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME]; \
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME_218]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218]; \
     BLUETOOTH_FIELDS
 #elif defined(PCBSKY9X)
 #define EXTRA_GENERAL_FIELDS_218 \
@@ -256,8 +356,8 @@ PACK(typedef struct {
     uint8_t  optrexDisplay; \
     uint8_t  sticksGain; \
     uint8_t  rotarySteps; \
-    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
+    char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME_218]; \
+    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218];
 #elif defined(CPUARM)
   #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
 #elif defined(PXX)
@@ -267,51 +367,51 @@ PACK(typedef struct {
 #endif
 
 #if defined(PCBHORUS)
-#define SPLASH_MODE uint8_t splashSpares:3
+#define SPLASH_MODE_218 uint8_t splashSpares:3
 #elif defined(FSPLASH)
-#define SPLASH_MODE uint8_t splashMode:3
+#define SPLASH_MODE_218 uint8_t splashMode:3
 #else
-#define SPLASH_MODE int8_t splashMode:3
+#define SPLASH_MODE_218 int8_t splashMode:3
 #endif
 
 PACK(typedef struct {
- uint8_t version;
- uint16_t variant;
- CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
- uint16_t chkSum;
+  uint8_t version;
+  uint16_t variant;
+  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+  uint16_t chkSum;
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
- uint8_t vBatWarn;
- int8_t txVoltageCalibration;
- int8_t backlightMode;
- TrainerData_v218 trainer;
- uint8_t view;            // index of view in main screen
- BUZZER_FIELD
- uint8_t fai:1;
- int8_t beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
- uint8_t alarmsFlash:1;
- uint8_t disableMemoryWarning:1;
- uint8_t disableAlarmWarning:1;
- uint8_t stickMode:2;
- int8_t timezone:5;
- uint8_t adjustRTC:1;
- uint8_t inactivityTimer;
- SPLASH_MODE; /* 3bits */
- int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
- uint8_t lightAutoOff;
- uint8_t templateSetup;   // RETA order for receiver channels
- int8_t PPM_Multiplier;
- int8_t hapticLength;
+  uint8_t vBatWarn;
+  int8_t txVoltageCalibration;
+  int8_t backlightMode;
+  TrainerData_v218 trainer;
+  uint8_t view;            // index of view in main screen
+  BUZZER_FIELD_218
+  uint8_t fai:1;
+  int8_t beepMode:2;      // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t alarmsFlash:1;
+  uint8_t disableMemoryWarning:1;
+  uint8_t disableAlarmWarning:1;
+  uint8_t stickMode:2;
+  int8_t timezone:5;
+  uint8_t adjustRTC:1;
+  uint8_t inactivityTimer;
+  SPLASH_MODE_218; /* 3bits */
+  int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  uint8_t lightAutoOff;
+  uint8_t templateSetup;   // RETA order for receiver channels
+  int8_t PPM_Multiplier;
+  int8_t hapticLength;
   N_HORUS_FIELD(N_TARANIS_FIELD(N_PCBSTD_FIELD(uint8_t reNavigation)));
   N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t stickReverse));
- int8_t beepLength:3;
- int8_t hapticStrength:3;
- uint8_t gpsFormat:1;
- uint8_t unexpectedShutdown:1;
- uint8_t speakerPitch;
- int8_t speakerVolume;
- int8_t vBatMin;
- int8_t vBatMax;
+  int8_t beepLength:3;
+  int8_t hapticStrength:3;
+  uint8_t gpsFormat:1;
+  uint8_t unexpectedShutdown:1;
+  uint8_t speakerPitch;
+  int8_t speakerVolume;
+  int8_t vBatMin;
+  int8_t vBatMax;
 
   EXTRA_GENERAL_FIELDS_218
 
