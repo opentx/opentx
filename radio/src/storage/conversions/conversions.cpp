@@ -102,7 +102,6 @@ bool eeConvert()
     if (eeModelExists(id)) {
       convertModelData(id, conversionVersionStart);
     }
-
   }
 
   return true;
