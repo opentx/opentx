@@ -1215,11 +1215,11 @@ bool menuModelFailsafe(event_t event)
 
     if (menuVerticalPosition < sentModuleChannels(g_moduleIdx)) {
       if (s_editMode) {
-        g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
+        g_model.failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
         s_editMode = 0;
       }
       else {
-        int16_t & failsafe = g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition];
+        int16_t & failsafe = g_model.failsafeChannels[menuVerticalPosition];
         if (failsafe < FAILSAFE_CHANNEL_HOLD)
           failsafe = FAILSAFE_CHANNEL_HOLD;
         else if (failsafe == FAILSAFE_CHANNEL_HOLD)
@@ -1246,7 +1246,7 @@ bool menuModelFailsafe(event_t event)
       coord_t x = col*(LCD_W/2);
       const coord_t y = MENU_CONTENT_TOP - FH + line*(FH+2);
       const int32_t channelValue = channelOutputs[ch+channelStart];
-      int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
+      int32_t failsafeValue = g_model.failsafeChannels[8*col+line];
 
       // Channel name if present, number if not
       if (g_model.limitData[ch+channelStart].name[0] != '\0') {
@@ -1267,7 +1267,7 @@ bool menuModelFailsafe(event_t event)
           }
           else {
             flags |= BLINK;
-            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line], -lim, +lim);
+            CHECK_INCDEC_MODELVAR(event, g_model.failsafeChannels[8*col+line], -lim, +lim);
           }
         }
       }

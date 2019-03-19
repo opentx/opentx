@@ -387,7 +387,7 @@ void BitmapBuffer::drawSizedText(coord_t x, coord_t y, const char * s, uint8_t l
 #if defined(BOOT)
     unsigned char c = *s;
 #else
-    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    unsigned char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
 #endif
     if (setpos) {
       pos = c;

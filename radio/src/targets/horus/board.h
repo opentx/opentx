@@ -139,6 +139,16 @@ void delay_ms(uint32_t ms);
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
 
+// Hardware options
+PACK(typedef struct {
+#if NUM_PWMSTICKS > 0
+    uint8_t sticksPwmDisabled:1;
+#endif
+    uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
@@ -196,15 +206,6 @@ void SDRAM_Init(void);
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 
-PACK(typedef struct {
-#if NUM_PWMSTICKS > 0
-  uint8_t sticksPwmDisabled:1;
-#endif
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-
-extern HardwareOptions hardwareOptions;
-
 #if !defined(PXX2)
   #define IS_PXX2_INTERNAL_ENABLED()            (false)
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
@@ -218,7 +219,6 @@ extern HardwareOptions hardwareOptions;
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #endif
 
-
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
 void init_pxx1_pulses(uint8_t module);
@@ -228,6 +228,8 @@ void disable_pxx2(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void disable_serial(uint8_t module);
+void intmoduleStop();
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 void extmoduleSendNextFrame();
 

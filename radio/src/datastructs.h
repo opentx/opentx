@@ -476,7 +476,7 @@ PACK(struct ModuleData {
       uint8_t spare2:1;
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
-    NOBACKUP(struct {
+    NOBACKUP(PACK(struct {
       uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
       uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
 #if defined(PCBHORUS)
@@ -497,7 +497,7 @@ PACK(struct ModuleData {
       NOBACKUP(inline void clearReceiverSlot(uint8_t receiver) {
         setReceiverSlot(receiver, 0);
       })
-    } pxx2);
+    }) pxx2);
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -916,7 +916,12 @@ static inline void check_struct()
 
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
-  CHKSIZE(ModuleData, 12);
+
+#if defined(PCBHORUS)
+  CHKSIZE(ModuleData, 9);
+#else
+  CHKSIZE(ModuleData, 6);
+#endif
 
   CHKSIZE(GVarData, 7);
 
@@ -943,7 +948,7 @@ static inline void check_struct()
   CHKSIZE(ModelData, 5188);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9777);
+  CHKSIZE(ModelData, 9771);
 #endif
 
 #undef CHKSIZE

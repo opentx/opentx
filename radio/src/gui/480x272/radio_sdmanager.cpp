@@ -19,6 +19,7 @@
  */
 
 #include <stdio.h>
+#include <io/frsky_device_firmware_update.h>
 #include "opentx.h"
 #include "storage/modelslist.h"
 
@@ -141,15 +142,18 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    sportFlashDevice(INTERNAL_MODULE, lfn);
+    DeviceFirmwareUpdate device(INTERNAL_MODULE);
+    device.flashFile(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     getSelectionFullPath(lfn);
-    sportFlashDevice(EXTERNAL_MODULE, lfn);
+    DeviceFirmwareUpdate device(EXTERNAL_MODULE);
+    device.flashFile(lfn);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    sportFlashDevice(FLASHING_MODULE, lfn);
+    DeviceFirmwareUpdate device(FLASHING_MODULE);
+    device.flashFile(lfn);
   }
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {

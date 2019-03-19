@@ -22,7 +22,7 @@
 
 void menuRadioSpectrum(event_t event)
 {
-  SIMPLE_MENU("SPECTRUM ANALYSER", menuTabGeneral, MENU_RADIO_SPECTRUM, 1);
+  SIMPLE_SUBMENU("SPECTRUM ANALYSER", 1);
 
   if (menuEvent) {
     INTERNAL_MODULE_OFF();

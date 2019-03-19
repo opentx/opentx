@@ -18,30 +18,25 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_FRSKY_SPORT_H_
-#define _IO_FRSKY_SPORT_H_
+#include "opentx.h"
 
-#include "dataconstants.h"
-
-#if defined(TELEMETRY_FRSKY_SPORT)
-PACK(union SportTelemetryPacket
+void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t event), event_t event)
 {
-  struct {
-    uint8_t physicalId;
-    uint8_t primId;
-    uint16_t dataId;
-    uint32_t value;
-  };
-  uint8_t raw[8];
-});
+  int8_t sub = menuVerticalPosition - HEADER_LINE;
+  LcdFlags attr = (sub == index ? INVERS : 0);
+  coord_t y = MENU_HEADER_HEIGHT + 1 + index * FH;
+  lcdDrawNumber(3, y, index + 1, LEADING0|LEFT, 2);
+  lcdDrawText(3*FW, y, label, (sub == index ? INVERS  : 0));
+  if (attr && s_editMode > 0) {
+    s_editMode = 0;
+    pushMenu(tool);
+  }
+}
 
-bool isSportOutputBufferAvailable();
-void sportOutputPushPacket(SportTelemetryPacket * packet);
-#endif
+void menuRadioTools(event_t event)
+{
+  SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + 1);
 
-#if defined(STM32)
-bool isBootloader(const char * filename);
-void bootloaderFlash(const char * filename);
-#endif
+  addRadioTool(0, "Spectrum Analyser", menuRadioSpectrum, event);
 
-#endif // _IO_FRSKY_SPORT_H_
+}
