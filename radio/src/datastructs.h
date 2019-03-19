@@ -557,10 +557,6 @@ typedef uint8_t swarnenable_t;
     swarnenable_t switchWarningEnable;
 #endif
 
-#define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
-
-#define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
-
 #if defined(PCBHORUS)
 #include "gui/480x272/layout.h"
 #include "gui/480x272/topbar.h"
@@ -574,17 +570,11 @@ PACK(struct CustomScreenData {
   NOBACKUP(Topbar::PersistentData topbarData); \
   NOBACKUP(uint8_t view);
 #elif defined(PCBTARANIS)
-#define CUSTOM_SCREENS_DATA \
+  #define CUSTOM_SCREENS_DATA \
   NOBACKUP(uint8_t view);
 #else
-#define CUSTOM_SCREENS_DATA
-// TODO other boards could have their custom screens here as well
-#endif
-
-#if defined(PCBHORUS)  || defined(PCBTARANIS)
-  #define SCRIPTS_DATA  NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
-#else
-  #define SCRIPTS_DATA
+  #define CUSTOM_SCREENS_DATA
+  // TODO other boards could have their custom screens here as well
 #endif
 
 PACK(struct ModelData {
@@ -618,9 +608,10 @@ PACK(struct ModelData {
 
   SWITCHES_WARNING_DATA
 
-  MODEL_GVARS_DATA
+  GVarData gvars[MAX_GVARS];
 
-  TELEMETRY_DATA
+  NOBACKUP(FrSkyTelemetryData frsky);
+  NOBACKUP(RssiAlarmData rssiAlarms);
 
   NOBACKUP(uint8_t spare:6);
   NOBACKUP(uint8_t potsWarnMode:2);
@@ -629,7 +620,9 @@ PACK(struct ModelData {
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 
-  SCRIPTS_DATA
+#if defined(PCBHORUS)  || defined(PCBTARANIS)
+  NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
+#endif
 
   NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
   NOBACKUP(uint8_t potsWarnEnabled);

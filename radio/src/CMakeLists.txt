@@ -131,11 +131,7 @@ else()
   add_definitions(-DEEPROM -DEEPROM_RAW)
 endif()
 
-if(ARCH STREQUAL ARM AND NOT PCB STREQUAL X12S AND NOT PCB STREQUAL X10 AND NOT PCB STREQUAL XLITE AND NOT PCB STREQUAL XLITES AND NOT PCB STREQUAL X3)
-  add_definitions(-DEEPROM_CONVERSIONS)
-  set(SRC ${SRC} storage/conversions/conversions.cpp)
-  set(SRC ${SRC} storage/conversions/conversions_216_218.cpp)
-endif()
+include(storage/conversions/CMakeLists.txt)
 
 add_definitions(-DFLAVOUR="${FLAVOUR}")
 

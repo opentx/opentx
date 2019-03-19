@@ -29,9 +29,15 @@ void convertModelData(int id, int version)
     version = 217;
     convertModelData_216_to_217(g_model);
   }
+
   if (version == 217) {
     version = 218;
     convertModelData_217_to_218(g_model);
+  }
+
+  if (version == 218) {
+    version = 219;
+    convertModelData_218_to_219(g_model);
   }
 
   uint8_t currModel = g_eeGeneral.currModel;
