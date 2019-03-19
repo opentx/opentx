@@ -834,7 +834,7 @@ void ConvertSpecialFunctions_217_to_218(CustomFunctionData_v218 * cf218, CustomF
   }
 }
 
-void ConvertRadioData_217_to_218(RadioData_v218 & settings)
+void ConvertRadioData_217_to_218(RadioData & settings)
 {
   RadioData_v216 settings_v217 = (RadioData_v216 &)settings;
 
@@ -864,7 +864,7 @@ void ConvertRadioData_217_to_218(RadioData_v218 & settings)
   settings.varioPitch = settings_v217.varioPitch;
   settings.varioRange = settings_v217.varioRange;
   settings.varioRepeat = settings_v217.varioRepeat;
-  ConvertSpecialFunctions_217_to_218(settings.customFn, settings_v217.customFn);
+  ConvertSpecialFunctions_217_to_218((CustomFunctionData_v218 *)settings.customFn, settings_v217.customFn);
 
 #if defined(PCBTARANIS)
   settings.serial2Mode = settings_v217.serial2Mode;
@@ -1238,7 +1238,7 @@ void ConvertModel_217_to_218(ModelData & model)
 #warning "Conversion from v217 to v218 is broken"
   }
 #if defined(PCBTARANIS)
-  newModel.trainerData.mode = oldModel.trainerMode;
+  newModel.trainerMode = oldModel.trainerMode;
   memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
   memcpy(newModel.inputNames, oldModel.inputNames, sizeof(newModel.inputNames));
 #endif

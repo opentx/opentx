@@ -735,9 +735,9 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(BUZZER)
-  #define BUZZER_FIELD NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+  #define BUZZER_FIELD int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
 #else
-  #define BUZZER_FIELD NOBACKUP(int8_t spareRadio:2);
+  #define BUZZER_FIELD int8_t spareRadio:2;
 #endif
 
 PACK(struct RadioData {

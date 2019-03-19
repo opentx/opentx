@@ -86,6 +86,11 @@ PACK(typedef struct {
   char name[LEN_CURVE_NAME];
 }) CurveData_v218;
 
+PACK(typedef struct {
+  int16_t        calib[4];
+  TrainerMix mix[4];
+}) TrainerData_v218;
+
 PACK(typedef struct { // Logical Switches data
   uint8_t  func;
   int32_t  v1:10;
@@ -206,7 +211,7 @@ PACK(typedef struct {
     int8_t   varioPitch; \
     int8_t   varioRange; \
     int8_t   varioRepeat; \
-    CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
+    CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS];
 
 #if defined(PCBHORUS)
 #define EXTRA_GENERAL_FIELDS_218 \
@@ -261,10 +266,18 @@ PACK(typedef struct {
   #define EXTRA_GENERAL_FIELDS_218
 #endif
 
+#if defined(PCBHORUS)
+#define SPLASH_MODE uint8_t splashSpares:3
+#elif defined(FSPLASH)
+#define SPLASH_MODE uint8_t splashMode:3
+#else
+#define SPLASH_MODE int8_t splashMode:3
+#endif
+
 PACK(typedef struct {
  uint8_t version;
  uint16_t variant;
- CalibData_v218 calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+ CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
  uint16_t chkSum;
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);
@@ -285,7 +298,7 @@ PACK(typedef struct {
  uint8_t inactivityTimer;
  SPLASH_MODE; /* 3bits */
  int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
-   uint8_t lightAutoOff;
+ uint8_t lightAutoOff;
  uint8_t templateSetup;   // RETA order for receiver channels
  int8_t PPM_Multiplier;
  int8_t hapticLength;
