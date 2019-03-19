@@ -1952,15 +1952,16 @@ enum MenuModelReceiverOptions {
 
 void menuModelReceiverOptions(event_t event)
 {
+  const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
+  uint8_t wbar = LCD_W / 2 - 20;
+
+  SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + sentModuleChannels(g_moduleIdx));
+
   if (menuEvent) {
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     return;
   }
 
-  const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
-  uint8_t wbar = LCD_W / 2 - 20;
-
-  SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + sentModuleChannels(g_moduleIdx));
   int8_t sub = menuVerticalPosition;
 
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
