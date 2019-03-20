@@ -1363,6 +1363,10 @@ const luaL_Reg opentxLib[] = {
   { "sportTelemetryPop", luaSportTelemetryPop },
   { "sportTelemetryPush", luaSportTelemetryPush },
   { "setTelemetryValue", luaSetTelemetryValue },
+#if defined(PXX2)
+  { "sportTelemetryPop", luaSportTelemetryPop },
+  { "pxx2TelemetryPush", luaPXX2TelemetryPush },
+#endif
 #if defined(CROSSFIRE)
   { "crossfireTelemetryPop", luaCrossfireTelemetryPop },
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
