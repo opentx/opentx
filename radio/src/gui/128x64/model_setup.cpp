@@ -918,7 +918,7 @@ void menuModelSetup(event_t event)
         if (attr) g_model.noGlobalFunctions = !checkIncDecModel(event, !g_model.noGlobalFunctions, 0, 1);
         break;
 
-#if defined(PCBTARANIS)
+#if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_INTERNAL_MODULE_LABEL:
         lcdDrawTextAlignedLeft(y, TR_INTERNALRF);
         break;

@@ -520,6 +520,7 @@ bool isPXX2ChannelsCountAllowed(int channels)
   return (channels % 8 == 0);
 }
 
+#if defined(HARDWARE_INTERNAL_MODULE)
 bool isInternalModuleAvailable(int module)
 {
   if (module == MODULE_TYPE_NONE)
@@ -537,6 +538,7 @@ bool isInternalModuleAvailable(int module)
 
   return false;
 }
+#endif
 
 bool isExternalModuleAvailable(int module)
 {
