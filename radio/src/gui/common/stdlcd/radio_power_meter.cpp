@@ -40,7 +40,7 @@ void menuRadioPowerMeter(event_t event)
   }
 
   coord_t y = MENU_HEADER_HEIGHT + 1 + FH;
-  LcdFlags attr = (menuVerticalPosition - HEADER_LINE == 0 ? INVERS : 0);
+  LcdFlags attr = (menuVerticalPosition == 0 ? INVERS : 0);
   lcdDrawText(0, y, "Freq.");
   lcdDrawNumber(8*FW, y, reusableBuffer.powerMeter.freq, LEFT|attr|(s_editMode > 0 ? BLINK : 0));
   lcdDrawText(lcdNextPos, y, "MHz");
