@@ -25,12 +25,12 @@ void menuRadioSpectrumAnalyser(event_t event)
   SIMPLE_SUBMENU("SPECTRUM ANALYSER", 1);
 
   if (menuEvent) {
-    INTERNAL_MODULE_OFF();
+    pausePulses();
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
     /* wait 500ms off */
     watchdogSuspend(500);
     RTOS_WAIT_MS(500);
-    INTERNAL_MODULE_ON();
+    resumePulses();
   }
   else if (event == EVT_ENTRY) {
     memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
