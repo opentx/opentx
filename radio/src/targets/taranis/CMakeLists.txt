@@ -140,7 +140,6 @@ elseif(PCB STREQUAL XLITES)
   set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
-  set(RADIO_SPECTRUM YES)
   set(STATUS_LEDS YES)
 endif()
 
@@ -211,21 +210,12 @@ set(GUI_SRC
   radio_diagkeys.cpp
   radio_diaganas.cpp
   radio_hardware.cpp
-  radio_tools.cpp
   view_channels.cpp
   view_telemetry.cpp
   view_about.cpp
   bmp.cpp
   ../screenshot.cpp
   )
-
-if(RADIO_SPECTRUM)
-  add_definitions(-DRADIO_SPECTRUM)
-  set(GUI_SRC
-    ${GUI_SRC}
-    radio_spectrum.cpp
-    )
-endif()
 
 if(STATUS_LEDS)
   set(LED_DRIVER led_driver.cpp)

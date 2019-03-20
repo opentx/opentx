@@ -1200,11 +1200,18 @@ union ReusableBuffer
 
   struct
   {
-    uint8_t bars[128];
-    uint32_t fq;
+    uint8_t bars[LCD_W];
+    uint32_t freq;
     uint32_t span;
     uint32_t step;
-  } spectrum;
+  } spectrumAnalyser;
+
+  struct
+  {
+    uint32_t freq;
+    uint32_t power;
+    uint32_t peak;
+  } powerMeter;
 
   struct
   {

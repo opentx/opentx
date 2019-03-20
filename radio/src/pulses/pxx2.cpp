@@ -212,14 +212,30 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
   Pxx2Transport::addByte(0x00);
 
-  reusableBuffer.spectrum.fq = 2440000000;  // 2440MHz
-  Pxx2Transport::addWord(reusableBuffer.spectrum.fq);
+  reusableBuffer.spectrumAnalyser.freq = 2440000000;  // 2440MHz
+  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
 
-  reusableBuffer.spectrum.span = 40000000;  // 40MHz
-  Pxx2Transport::addWord(reusableBuffer.spectrum.span);
+  reusableBuffer.spectrumAnalyser.span = 40000000;  // 40MHz
+  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.span);
 
-  reusableBuffer.spectrum.step = 100000;  // 100KHz
-  Pxx2Transport::addWord(reusableBuffer.spectrum.step);
+  reusableBuffer.spectrumAnalyser.step = 100000;  // 100KHz
+  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.step);
+}
+
+
+void Pxx2Pulses::setupPowerMeter(uint8_t module)
+{
+  if (moduleSettings[module].counter > 1000) {
+    moduleSettings[module].counter = 1002;
+    return;
+  }
+
+  moduleSettings[module].counter = 1002;
+
+  addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_POWER_METER);
+  Pxx2Transport::addByte(0x00);
+
+  Pxx2Transport::addWord(reusableBuffer.powerMeter.freq);
 }
 
 void Pxx2Pulses::setupShareMode(uint8_t module)
@@ -247,6 +263,9 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       break;
     case MODULE_MODE_SPECTRUM_ANALYSER:
       setupSpectrumAnalyser(module);
+      break;
+    case MODULE_MODE_POWER_METER:
+      setupPowerMeter(module);
       break;
     case MODULE_MODE_SHARE:
       setupShareMode(module);

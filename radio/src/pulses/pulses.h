@@ -38,12 +38,6 @@
   extern uint8_t dsm2BindTimer;
 #endif
 
-#if defined(PXX)
-  #define IS_PXX_PROTOCOL(protocol)          (protocol==PROTO_PXX)
-#else
-  #define IS_PXX_PROTOCOL(protocol)          (0)
-#endif
-
 #if defined(DSM2)
   #define IS_DSM2_PROTOCOL(protocol)         (protocol>=PROTOCOL_CHANNELS_DSM2_LP45 && protocol<=PROTOCOL_CHANNELS_DSM2_DSMX)
 #else
@@ -73,6 +67,7 @@ enum ModuleSettingsMode
 {
   MODULE_MODE_NORMAL,
   MODULE_MODE_SPECTRUM_ANALYSER,
+  MODULE_MODE_POWER_METER,
   MODULE_MODE_GET_HARDWARE_INFO,
   MODULE_MODE_RECEIVER_SETTINGS,
   MODULE_MODE_BEEP_FIRST,
@@ -84,8 +79,9 @@ enum ModuleSettingsMode
 
 PACK(struct ModuleSettings {
   uint8_t protocol:4;
+  uint8_t mode:4;
   uint8_t paused:1;
-  uint8_t mode:3;
+  uint8_t spare:7;
   uint16_t counter;
 });
 

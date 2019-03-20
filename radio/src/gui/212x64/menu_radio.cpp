@@ -23,6 +23,7 @@
 const MenuHandlerFunc menuTabGeneral[] = {
   menuRadioSetup,
   menuRadioSdManager,
+  menuRadioTools,
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioVersion,

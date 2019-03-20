@@ -35,8 +35,8 @@ void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t event
 
 void menuRadioTools(event_t event)
 {
-  SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + 1);
+  SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + 2);
 
-  addRadioTool(0, "Spectrum Analyser", menuRadioSpectrum, event);
-
+  addRadioTool(0, "Spectrum Analyser", menuRadioSpectrumAnalyser, event);
+  addRadioTool(1, "Power Meter", menuRadioPowerMeter, event);
 }

@@ -73,6 +73,7 @@ void menuTraceBuffer(event_t event);
 enum MenuRadioIndexes {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
+  MENU_RADIO_TOOLS,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_VERSION,
@@ -88,7 +89,10 @@ void menuRadioVersion(event_t event);
 void menuRadioDiagKeys(event_t event);
 void menuRadioDiagAnalogs(event_t event);
 void menuRadioHardware(event_t event);
+void menuRadioTools(event_t event);
 void menuRadioCalibration(event_t event);
+void menuRadioSpectrumAnalyser(event_t event);
+void menuRadioPowerMeter(event_t event);
 
 extern const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT];
 

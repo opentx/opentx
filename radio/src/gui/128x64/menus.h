@@ -99,7 +99,8 @@ void menuRadioDiagKeys(event_t event);
 void menuRadioDiagAnalogs(event_t event);
 void menuRadioHardware(event_t event);
 void menuRadioTools(event_t event);
-void menuRadioSpectrum(event_t event);
+void menuRadioSpectrumAnalyser(event_t event);
+void menuRadioPowerMeter(event_t event);
 void menuRadioCalibration(event_t event);
 
 static const MenuHandlerFunc menuTabGeneral[]  = {

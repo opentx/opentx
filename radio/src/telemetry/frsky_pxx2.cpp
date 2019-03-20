@@ -151,7 +151,7 @@ void processTelemetryFrame(uint8_t module, uint8_t * frame)
   sportProcessTelemetryPacketWithoutCrc(&frame[3]);
 }
 
-void processSpectrumFrame(uint8_t module, uint8_t * frame)
+void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
 {
   if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     return;
@@ -170,10 +170,22 @@ void processSpectrumFrame(uint8_t module, uint8_t * frame)
   // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
   uint8_t x = D * 128 / 40000000;
 
-  reusableBuffer.spectrum.bars[x] = 127 + *power;
+  reusableBuffer.spectrumAnalyser.bars[x] = 127 + *power;
 }
 
-void processRadioFrame(uint8_t module, uint8_t * frame)
+void processPowerMeterFrame(uint8_t module, uint8_t * frame)
+{
+  if (moduleSettings[module].mode != MODULE_MODE_POWER_METER) {
+    return;
+  }
+
+  reusableBuffer.powerMeter.power = *((uint16_t *)&frame[8]);
+  if (reusableBuffer.powerMeter.power > reusableBuffer.powerMeter.peak) {
+    reusableBuffer.powerMeter.peak = reusableBuffer.powerMeter.power;
+  }
+}
+
+void processModuleFrame(uint8_t module, uint8_t *frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_HW_INFO:
@@ -198,15 +210,15 @@ void processRadioFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processPowerMeterFrame(uint8_t module, uint8_t * frame)
+void processToolsFrame(uint8_t module, uint8_t * frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_POWER_METER:
-      // TODO
+      processPowerMeterFrame(module, frame);
       break;
 
     case PXX2_TYPE_ID_SPECTRUM:
-      processSpectrumFrame(module, frame);
+      processSpectrumAnalyserFrame(module, frame);
       break;
   }
 }
@@ -215,11 +227,11 @@ void processPXX2TelemetryFrame(uint8_t module, uint8_t * frame)
 {
   switch (frame[1]) {
     case PXX2_TYPE_C_MODULE:
-      processRadioFrame(module, frame);
+      processModuleFrame(module, frame);
       break;
 
     case PXX2_TYPE_C_POWER_METER:
-      processPowerMeterFrame(module, frame);
+      processToolsFrame(module, frame);
       break;
 
     default:

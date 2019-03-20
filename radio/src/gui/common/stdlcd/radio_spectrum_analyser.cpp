@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuRadioSpectrum(event_t event)
+void menuRadioSpectrumAnalyser(event_t event)
 {
   SIMPLE_SUBMENU("SPECTRUM ANALYSER", 1);
 
@@ -33,14 +33,14 @@ void menuRadioSpectrum(event_t event)
     INTERNAL_MODULE_ON();
   }
   else if (event == EVT_ENTRY) {
-    memclear(reusableBuffer.spectrum.bars, sizeof(reusableBuffer.spectrum.bars));
+    memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
   uint8_t peak_y = 1;
   uint8_t peak_x = 0;
   for (uint8_t i=0; i<LCD_W; i++) {
-    uint8_t h = min<uint8_t >(reusableBuffer.spectrum.bars[i] >> 1, 128);
+    uint8_t h = min<uint8_t >(reusableBuffer.spectrumAnalyser.bars[i] >> 1, 128);
     if (h > peak_y) {
       peak_x = i;
       peak_y = h;
@@ -49,14 +49,14 @@ void menuRadioSpectrum(event_t event)
   }
 
   lcdDrawText(1, 10, "F:", 0);
-  lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrum.fq/10000000,PREC2);
+  lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.freq / 10000000, PREC2);
   lcdDrawText(lcdLastRightPos + 2, 10, "GHz", 0);
 
   lcdDrawText(lcdLastRightPos + 5, 10, "S:", 0);
-  lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrum.span/1000000, 0);
+  lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.span/1000000, 0);
   lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
 
   int8_t y = max<int8_t>(FH, LCD_H - peak_y - FH);
-  lcdDrawNumber(min<uint8_t>(100, peak_x), y, ((reusableBuffer.spectrum.fq - reusableBuffer.spectrum.span / 2) + peak_x * (reusableBuffer.spectrum.span / 128)) / 1000000, TINSIZE);
+  lcdDrawNumber(min<uint8_t>(100, peak_x), y, ((reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2) + peak_x * (reusableBuffer.spectrumAnalyser.span / 128)) / 1000000, TINSIZE);
   lcdDrawText(lcdLastRightPos, y, "M", TINSIZE);
 }

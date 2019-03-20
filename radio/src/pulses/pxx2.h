@@ -129,6 +129,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void setupSpectrumAnalyser(uint8_t module);
 
+    void setupPowerMeter(uint8_t module);
+
     void addHead()
     {
       // send 7E, do not CRC
