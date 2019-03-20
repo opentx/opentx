@@ -238,3 +238,16 @@ void processPXX2TelemetryFrame(uint8_t module, uint8_t * frame)
       break;
   }
 }
+
+void pushPXX2TelemetryPacket(uint8_t module, uint8_t rx_uid, SportTelemetryPacket * packet)
+{
+  // Flag0
+  outputTelemetryBuffer.push(rx_uid);
+
+  for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
+    uint8_t byte = packet->raw[i];
+    outputTelemetryBuffer.push(byte);
+  }
+
+  outputTelemetryBuffer.setDestination(module);
+}

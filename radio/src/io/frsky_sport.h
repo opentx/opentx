@@ -35,7 +35,7 @@ PACK(union SportTelemetryPacket
   uint8_t raw[8];
 });
 
-bool isSportOutputBufferAvailable();
+bool isTelemetryOutputBufferAvailable();
 void sportOutputPushPacket(SportTelemetryPacket * packet);
 #endif
 

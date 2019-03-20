@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-bool isSportOutputBufferAvailable()
+bool isTelemetryOutputBufferAvailable()
 {
   return (outputTelemetryBuffer.size == 0 && outputTelemetryBuffer.trigger == 0x7E);
 }
@@ -36,7 +36,6 @@ void sportOutputPushByte(uint8_t byte)
   }
 }
 
-// TODO merge it with S.PORT update function when finished
 void sportOutputPushPacket(SportTelemetryPacket * packet)
 {
   uint16_t crc = 0;
