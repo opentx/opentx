@@ -334,7 +334,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 void setupPulses(uint8_t module, uint8_t protocol)
 {
   switch (module) {
-#if defined(PCBTARANIS) && defined(PCBHORUS)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
     case INTERNAL_MODULE:
       setupPulsesInternalModule(protocol);
       break;
