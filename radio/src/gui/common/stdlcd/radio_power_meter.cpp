@@ -54,11 +54,15 @@ void menuRadioPowerMeter(event_t event)
 
   y += FH + 1;
   lcdDrawText(0, y, "Power");
-  lcdDrawNumber(8*FW, y, reusableBuffer.powerMeter.power, LEFT);
-  lcdDrawText(lcdNextPos, y, "dBm");
+  if (reusableBuffer.powerMeter.power) {
+    lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.power, LEFT | PREC2);
+    lcdDrawText(lcdNextPos, y, "dBm");
+  }
 
   y += FH + 1;
   lcdDrawText(0, y, "Peak");
-  lcdDrawNumber(8*FW, y, reusableBuffer.powerMeter.peak, LEFT);
-  lcdDrawText(lcdNextPos, y, "dBm");
+  if (reusableBuffer.powerMeter.peak) {
+    lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.peak, LEFT | PREC2);
+    lcdDrawText(lcdNextPos, y, "dBm");
+  }
 }

@@ -91,13 +91,13 @@ void telemetryWakeup()
   uint8_t frame[PXX2_FRAME_MAXLENGTH];
 
   #if defined(INTMODULE_USART)
-    if (intmoduleFifo.getFrame(frame)) {
+    while (intmoduleFifo.getFrame(frame)) {
       processPXX2TelemetryFrame(INTERNAL_MODULE, frame);
     }
   #endif
 
   #if defined(EXTMODULE_USART)
-    if (extmoduleFifo.getFrame(frame)) {
+    while (extmoduleFifo.getFrame(frame)) {
       processPXX2TelemetryFrame(EXTERNAL_MODULE, frame);
     }
   #endif

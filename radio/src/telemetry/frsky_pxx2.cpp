@@ -179,8 +179,8 @@ void processPowerMeterFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  reusableBuffer.powerMeter.power = *((uint16_t *)&frame[8]);
-  if (reusableBuffer.powerMeter.power > reusableBuffer.powerMeter.peak) {
+  reusableBuffer.powerMeter.power = *((int16_t *)&frame[8]);
+  if (!reusableBuffer.powerMeter.peak || reusableBuffer.powerMeter.power > reusableBuffer.powerMeter.peak) {
     reusableBuffer.powerMeter.peak = reusableBuffer.powerMeter.power;
   }
 }
