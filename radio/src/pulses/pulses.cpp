@@ -239,7 +239,7 @@ void enablePulses(uint8_t module, uint8_t protocol)
 void setupPulsesInternalModule(uint8_t protocol)
 {
   switch (protocol) {
-#if defined(PXX1) && !defined(INTMODULE_USART)
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       intmodulePulsesData.pxx.setupFrame(INTERNAL_MODULE);
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX_PERIOD);

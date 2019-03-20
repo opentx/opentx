@@ -214,7 +214,7 @@ void disable_ssc()
   sscptr->SSC_CR = SSC_CR_TXDIS;
 }
 
-void init_pxx(uint32_t port)
+void init_pxx1_pulses(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     init_main_ppm(2500 * 2, 0);
