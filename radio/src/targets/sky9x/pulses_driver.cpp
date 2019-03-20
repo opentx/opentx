@@ -225,7 +225,7 @@ void init_pxx(uint32_t port)
   }
 }
 
-void disable_pxx(uint32_t port)
+void disable_pxx1_pulses(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
     disable_ssc();
