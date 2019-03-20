@@ -37,6 +37,8 @@ void menuRadioTools(event_t event)
 {
   SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + 2);
 
+#if defined(PXX2)
   addRadioTool(0, "Spectrum Analyser", menuRadioSpectrumAnalyser, event);
   addRadioTool(1, "Power Meter", menuRadioPowerMeter, event);
+#endif
 }

@@ -56,19 +56,23 @@ void convertModelData_218_to_219(ModelData &model)
     }
   }
 
+#if !defined(PCBSKY9X)
   newModel.trainerData.mode = oldModel.trainerMode;
+#endif
   newModel.trainerData.channelsStart = oldModel.moduleData[NUM_MODULES].channelsStart;
   newModel.trainerData.channelsCount = oldModel.moduleData[NUM_MODULES].channelsCount;
   newModel.trainerData.frameLength = oldModel.moduleData[NUM_MODULES].ppm.frameLength;
   newModel.trainerData.delay = oldModel.moduleData[NUM_MODULES].ppm.delay;
   newModel.trainerData.pulsePol = oldModel.moduleData[NUM_MODULES].ppm.pulsePol;
 
+#if !defined(PCBSKY9X)
   memcpy(newModel.scriptsData, oldModel.scriptsData,
          sizeof(newModel.scriptsData) +
          sizeof(newModel.inputNames) +
          sizeof(newModel.potsWarnEnabled) +
          sizeof(newModel.potsWarnPosition) +
          sizeof(oldModel.telemetrySensors));
+#endif
 
 #if defined(PCBX9E)
   newModel.toplcdTimer = oldModel.toplcdTimer;

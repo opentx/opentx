@@ -152,7 +152,7 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(FLASHING_MODULE);
+    DeviceFirmwareUpdate device(SPORT_MODULE);
     device.flashFile(lfn);
   }
 #if defined(LUA)

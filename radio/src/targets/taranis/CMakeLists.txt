@@ -202,6 +202,11 @@ endif()
 add_definitions(-DPCBTARANIS)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
 
+set(SRC
+  ${SRC}
+  io/frsky_device_firmware_update.cpp
+  )
+
 set(GUI_SRC
   ${GUI_SRC}
   model_input_edit.cpp

@@ -135,6 +135,12 @@ void intmoduleSendNextFrame()
   switch(moduleSettings[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2:
+#if defined(LUA)
+      if (outputTelemetryBuffer.size > 0 && outputTelemetryBuffer.destination == INTERNAL_MODULE) {
+        intmoduleSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
+        break;
+      }
+#endif
       intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
       break;
 #endif

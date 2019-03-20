@@ -48,7 +48,6 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 }
 #endif
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
 inline bool isModuleXJT(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT;
@@ -64,12 +63,6 @@ inline bool isModuleXJTVariant(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT || g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
 }
 
-#else
-inline bool isModuleXJT(uint8_t idx)
-{
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT;
-}
-#endif
 
 #if defined(CROSSFIRE)
 inline bool isModuleCrossfire(uint8_t idx)

@@ -23,6 +23,7 @@
 #include <string.h>
 #include "opentx.h"
 #include "timers.h"
+#include "conversions/conversions.h"
 
 #define EEPROM_MARK           0x84697771 /* thanks ;) */
 #define EEPROM_ZONE_SIZE      (8*1024)
@@ -584,7 +585,7 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 
 #if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
-    convertModel(i_fileDst, version);
+    convertModelData(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);
   }
 #endif

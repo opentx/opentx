@@ -71,8 +71,8 @@ void DeviceFirmwareUpdate::processFrame(const uint8_t * frame)
 void DeviceFirmwareUpdate::startup()
 {
   switch(module) {
-    case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
+    case INTERNAL_MODULE:
       intmoduleSerialStart(57600, true);
       break;
 #endif
@@ -138,8 +138,8 @@ const uint8_t * DeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
 const uint8_t * DeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
   switch(module) {
-    case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
+    case INTERNAL_MODULE:
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
 
@@ -177,7 +177,7 @@ void DeviceFirmwareUpdate::startFrame(uint8_t command)
 // TODO merge this function
 void DeviceFirmwareUpdate::sendFrame()
 {
-  uint8_t * ptr = outputTelemetryBuffer;
+  uint8_t * ptr = outputTelemetryBuffer.data;
   *ptr++ = 0x7E;
   *ptr++ = 0xFF;
   frame[7] = crc16(frame, 7);
@@ -192,13 +192,13 @@ void DeviceFirmwareUpdate::sendFrame()
   }
 
   switch(module) {
-    case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
-      return intmoduleSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
+    case INTERNAL_MODULE:
+      return intmoduleSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
 #endif
 
     default:
-      return sportSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
+      return sportSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
   }
 }
 

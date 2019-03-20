@@ -143,7 +143,7 @@ inline uint8_t modelTelemetryProtocol()
   return PROTOCOL_TELEMETRY_FRSKY_SPORT;
 }
 
-  #include "telemetry_sensors.h"
+#include "telemetry_sensors.h"
 
 #if defined(LOG_TELEMETRY) && !defined(SIMU)
 void logTelemetryWriteStart();
@@ -156,19 +156,34 @@ void logTelemetryWriteByte(uint8_t data);
 #endif
 
 #define TELEMETRY_OUTPUT_FIFO_SIZE 20
-extern uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
-extern uint8_t outputTelemetryBufferSize;
-extern uint8_t outputTelemetryBufferTrigger;
 
-inline void telemetryOutputPushByte(uint8_t byte)
-{
-  outputTelemetryBuffer[outputTelemetryBufferSize++] = byte;
-}
+class OutputTelemetryBuffer {
+  public:
+    void push(uint8_t byte) {
+      data[size++] = byte;
+    }
 
-inline void telemetryOutputSetTrigger(uint8_t byte)
-{
-  outputTelemetryBufferTrigger = byte;
-}
+    void setTrigger(uint8_t byte) {
+      trigger = byte;
+    }
+
+    void setDestination(uint8_t module) {
+      destination = module;
+    }
+
+    void reset() {
+      size = 0;
+      trigger = 0x7E;
+    }
+
+  public:
+    uint8_t data[TELEMETRY_OUTPUT_FIFO_SIZE];
+    uint8_t size;
+    uint8_t trigger;
+    uint8_t destination;
+};
+
+extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 
 #if defined(LUA)
 #define LUA_TELEMETRY_INPUT_FIFO_SIZE  256

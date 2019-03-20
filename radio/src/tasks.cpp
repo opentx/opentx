@@ -89,9 +89,11 @@ void sendSynchronousPulses()
 {
   for (uint8_t module = 0; module < NUM_MODULES; module++) {
     if (isModuleSynchronous(module) && setupPulses(module)) {
+#if defined(PCBHORUS) || defined(PCBTARAHIS)
       if (module == INTERNAL_MODULE)
         intmoduleSendNextFrame();
-      else
+#endif
+      if (module == EXTERNAL_MODULE)
         extmoduleSendNextFrame();
     }
   }

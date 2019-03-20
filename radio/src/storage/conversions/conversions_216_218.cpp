@@ -550,7 +550,7 @@ PACK(typedef struct {
 #define MODELDATA_EXTRA_217 \
   uint8_t spare:6; \
   uint8_t potsWarnMode:2; \
-  ModuleData moduleData[NUM_MODULES+1]; \
+  ModuleData_v217 moduleData[NUM_MODULES+1]; \
   uint8_t potsWarnEnabled; \
   int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t rxBattAlarms[2];
@@ -652,7 +652,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA_217
 
-    TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];
+  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v217;

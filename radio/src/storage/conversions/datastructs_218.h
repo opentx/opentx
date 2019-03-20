@@ -456,7 +456,7 @@ PACK(typedef struct {
   uint8_t templateSetup;   // RETA order for receiver channels
   int8_t PPM_Multiplier;
   int8_t hapticLength;
-  N_HORUS_FIELD(N_TARANIS_FIELD(N_PCBSTD_FIELD(uint8_t reNavigation)));
+  N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t reNavigation));
   N_HORUS_FIELD(N_TARANIS_FIELD(uint8_t stickReverse));
   int8_t beepLength:3;
   int8_t hapticStrength:3;

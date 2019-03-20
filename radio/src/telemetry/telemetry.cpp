@@ -290,15 +290,13 @@ void telemetryInit(uint8_t protocol)
   else if (protocol == PROTOCOL_TELEMETRY_PXX2) {
     telemetryPortInit(PXX2_ON_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0x7E;
+    outputTelemetryBuffer.reset();
 #endif
   }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0x7E;
+    outputTelemetryBuffer.reset();
 #endif
   }
 
@@ -333,9 +331,7 @@ void logTelemetryWriteByte(uint8_t data)
 }
 #endif
 
-uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
-uint8_t outputTelemetryBufferSize = 0;
-uint8_t outputTelemetryBufferTrigger = 0;
+OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 
 #if defined(LUA)
 Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo = NULL;

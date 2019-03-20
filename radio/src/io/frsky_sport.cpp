@@ -22,17 +22,17 @@
 
 bool isSportOutputBufferAvailable()
 {
-  return (outputTelemetryBufferSize == 0 && outputTelemetryBufferTrigger == 0x7E);
+  return (outputTelemetryBuffer.size == 0 && outputTelemetryBuffer.trigger == 0x7E);
 }
 
 void sportOutputPushByte(uint8_t byte)
 {
   if (byte == 0x7E || byte == 0x7D) {
-    telemetryOutputPushByte(0x7D);
-    telemetryOutputPushByte(0x20 ^ byte);
+    outputTelemetryBuffer.push(0x7D);
+    outputTelemetryBuffer.push(0x20 ^ byte);
   }
   else {
-    telemetryOutputPushByte(byte);
+    outputTelemetryBuffer.push(byte);
   }
 }
 
@@ -49,6 +49,7 @@ void sportOutputPushPacket(SportTelemetryPacket * packet)
     crc &= 0x00ff;
   }
 
-  telemetryOutputPushByte(0xFF-crc);
-  telemetryOutputSetTrigger(packet->raw[0]); // physicalId
+  outputTelemetryBuffer.push(0xFF - crc);
+  outputTelemetryBuffer.setTrigger(packet->raw[0]); // physicalId
+  outputTelemetryBuffer.setDestination(SPORT_MODULE);
 }

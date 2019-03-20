@@ -265,6 +265,10 @@ void disable_serial(uint32_t port)
   }
 }
 
+void extmoduleSendNextFrame()
+{
+
+}
 #if !defined(SIMU)
 extern "C" void PWM_IRQHandler(void)
 {

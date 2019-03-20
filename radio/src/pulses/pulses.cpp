@@ -31,9 +31,11 @@ TrainerPulsesData trainerPulsesData __DMA;
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (module == INTERNAL_MODULE && isInternalModuleAvailable(type)) {
     return type;
   }
+#endif
   if (module == EXTERNAL_MODULE && isExternalModuleAvailable(type)) {
     return type;
   }
@@ -255,7 +257,7 @@ void setupPulsesInternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(PCBSKY9X) || defined(TARANIS_INTERNAL_PPM)
+#if defined(PCBTARANIS) && defined(TARANIS_INTERNAL_PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPM(&extmodulePulsesData.ppm, g_model.moduleData[INTERNAL_MODULE].channelsStart, g_model.moduleData[INTERNAL_MODULE].channelsCount, g_model.moduleData[INTERNAL_MODULE].ppm.frameLength);
       scheduleNextMixerCalculation(INTERNAL_MODULE, PPM_PERIOD(INTERNAL_MODULE));
@@ -332,9 +334,11 @@ void setupPulsesExternalModule(uint8_t protocol)
 void setupPulses(uint8_t module, uint8_t protocol)
 {
   switch (module) {
+#if defined(PCBTARANIS) && defined(PCBHORUS)
     case INTERNAL_MODULE:
       setupPulsesInternalModule(protocol);
       break;
+#endif
 
     case EXTERNAL_MODULE:
       setupPulsesExternalModule(protocol);

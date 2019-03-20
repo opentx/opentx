@@ -190,7 +190,7 @@ enum BeeperMode {
   enum ModuleIndex {
     INTERNAL_MODULE,
     EXTERNAL_MODULE,
-    FLASHING_MODULE,
+    SPORT_MODULE,
   };
   enum TrainerMode {
     TRAINER_MODE_MASTER_TRAINER_JACK,
@@ -208,7 +208,8 @@ enum BeeperMode {
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
-    EXTRA_MODULE
+    EXTRA_MODULE,
+    SPORT_MODULE
   };
 #endif
 

@@ -29,7 +29,14 @@ if(SDCARD)
     ${GUI_SRC}
     ../common/stdlcd/radio_sdmanager.cpp
     ../common/stdlcd/radio_tools.cpp
+    )
+endif()
+
+if(PXX2)
+  set(GUI_SRC
+    ${GUI_SRC}
     ../common/stdlcd/radio_spectrum_analyser.cpp
     ../common/stdlcd/radio_power_meter.cpp
     )
 endif()
+

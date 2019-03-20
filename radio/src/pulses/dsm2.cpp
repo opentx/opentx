@@ -148,7 +148,7 @@ void setupPulsesDSM2()
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
   else {
-    moduleSettings[port].mode = 0;
+    moduleSettings[EXTERNAL_MODULE].mode = 0;
   }
 #else
   if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
