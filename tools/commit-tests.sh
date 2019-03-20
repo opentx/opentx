@@ -176,7 +176,7 @@ if [[ " X9E X9 ALL " =~ " ${FLAVOR} " ]] ; then
 fi
 
 if [[ " T16 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on T16 boards
+  # JumperTX on T16 boards
   rm -rf *
   cmake ${COMMON_OPTIONS} -DPCB=T16 -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}

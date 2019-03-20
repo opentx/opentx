@@ -1,5 +1,5 @@
 /*
- * Copyright (C) OpenTX
+ * Copyright (C) JumperTX
  *
  * Based on code named
  *   th9x - http://code.google.com/p/th9x
@@ -1184,14 +1184,14 @@
 // Taranis About screen
 #define TR_ABOUTUS             TR("  O nás   ", "O nás")
 
-#define TR_ABOUT_OPENTX_1      TR3("JumperTX je nekomerční,", "JumperTX\001je\001open-source,", "JumperTX je open-source,")
-#define TR_ABOUT_OPENTX_2      TR3("opensource bez záruky.", "nekomerční a bez\001záruky.", "nekomerční a bez záruky.")
-#define TR_ABOUT_OPENTX_3      TR3("Vytvořen ve volném čase.", "Byl\001vytvořen\001nadšenými\001modeláři", "Byl vytvořen nadšenými modeláři")
-#define TR_ABOUT_OPENTX_4      TR3("Podpora vývoje pomocí", "Podpora\001vývoje\001pomocí", "Podpora vývoje pomocí")
-#define TR_ABOUT_OPENTX_5      TR3("finančního daru je vítána!", "drobného\001daru\001je\001vítána!", "drobného daru je vítána!")
+#define TR_ABOUT_JUMPERTX_1      TR3("JumperTX je nekomerční,", "JumperTX\001je\001open-source,", "JumperTX je open-source,")
+#define TR_ABOUT_JUMPERTX_2      TR3("opensource bez záruky.", "nekomerční a bez\001záruky.", "nekomerční a bez záruky.")
+#define TR_ABOUT_JUMPERTX_3      TR3("Vytvořen ve volném čase.", "Byl\001vytvořen\001nadšenými\001modeláři", "Byl vytvořen nadšenými modeláři")
+#define TR_ABOUT_JUMPERTX_4      TR3("Podpora vývoje pomocí", "Podpora\001vývoje\001pomocí", "Podpora vývoje pomocí")
+#define TR_ABOUT_JUMPERTX_5      TR3("finančního daru je vítána!", "drobného\001daru\001je\001vítána!", "drobného daru je vítána!")
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "Hlavní vývojář OpenTX"
+#define TR_ABOUT_BERTRAND_2    "Hlavní vývojář JumperTX"
 #define TR_ABOUT_BERTRAND_3    "Spoluautor Companion"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
@@ -1212,7 +1212,7 @@
 
 #define TR_ABOUT_KJELL_1       "Kjell Kernen"
 #define TR_ABOUT_KJELL_2       "autor www.open-tx.org"
-#define TR_ABOUT_KJELL_3       "autor OpenTX Recorder"
+#define TR_ABOUT_KJELL_3       "autor JumperTX Recorder"
 #define TR_ABOUT_KJELL_4       "Spoluautor Companion"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotař"

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) OpenTX
+ * Copyright (C) JumperTX
  *
  * Based on code named
  *   th9x - http://code.google.com/p/th9x
@@ -20,7 +20,7 @@
  */
 
 // DE translations author: Helmut Renz
-// German checked 01.07.2016 r122 opentx V2.2.0 für X12S,X9E, X9D+,X9D,Th9,9XR,9XR-Pro
+// German checked 01.07.2016 r122 jumpertx V2.2.0 für X12S,X9E, X9D+,X9D,Th9,9XR,9XR-Pro
 /*
  * !!!!! DO NOT EDIT de.h - EDIT de.h.txt INSTEAD !!!!!!!
  *
@@ -1195,14 +1195,14 @@
 //Taranis About screen
 #define TR_ABOUTUS             "Über JumperTx"
 
-#define TR_ABOUT_OPENTX_1      "OpenTX ist Open Source,"
-#define TR_ABOUT_OPENTX_2      "nicht kommerziell, ohne"
-#define TR_ABOUT_OPENTX_3      "Funktionsgarantie, frei"
-#define TR_ABOUT_OPENTX_4      "verfügbar. Unterstützung"
-#define TR_ABOUT_OPENTX_5      "durch Spenden willkommen"
+#define TR_ABOUT_JUMPERTX_1      "JumperTX ist Open Source,"
+#define TR_ABOUT_JUMPERTX_2      "nicht kommerziell, ohne"
+#define TR_ABOUT_JUMPERTX_3      "Funktionsgarantie, frei"
+#define TR_ABOUT_JUMPERTX_4      "verfügbar. Unterstützung"
+#define TR_ABOUT_JUMPERTX_5      "durch Spenden willkommen"
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "OpenTX Hauptauthor"
+#define TR_ABOUT_BERTRAND_2    "JumperTX Hauptauthor"
 #define TR_ABOUT_BERTRAND_3    "Companion-Mitentwickler"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
@@ -1223,7 +1223,7 @@
 
 #define TR_ABOUT_KJELL_1       "Kjell Kernen"
 #define TR_ABOUT_KJELL_2       "www.open-tx.org Hauptautor"
-#define TR_ABOUT_KJELL_3       "Author von OpenTX Recorder"
+#define TR_ABOUT_KJELL_3       "Author von JumperTX Recorder"
 #define TR_ABOUT_KJELL_4       "Companion contributor"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"

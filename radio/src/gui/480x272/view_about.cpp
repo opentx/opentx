@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 enum AboutScreens {
-  ABOUT_OPENTX,
+  ABOUT_JUMPERTX,
   ABOUT_HARDWARE,
   ABOUT_BERTRAND,
   ABOUT_ANDRE,
@@ -53,14 +53,14 @@ bool menuAboutView(event_t event)
 #elif defined(PCBT16)
     case EVT_KEY_BREAK(KEY_PGDN):
 #endif
-      screenIndex < ABOUT_PARENTS ? screenIndex++ : screenIndex = ABOUT_OPENTX;
+      screenIndex < ABOUT_PARENTS ? screenIndex++ : screenIndex = ABOUT_JUMPERTX;
       greyIndex = 0;
       break;
     case EVT_KEY_FIRST(KEY_PGUP):
 #if defined(PCBT16)
     case EVT_KEY_LONG(KEY_PGDN):
 #endif
-      screenIndex > ABOUT_OPENTX ? screenIndex-- : screenIndex = ABOUT_PARENTS;
+      screenIndex > ABOUT_JUMPERTX ? screenIndex-- : screenIndex = ABOUT_PARENTS;
       greyIndex = 0;
       killEvents(event);
       break;
@@ -75,13 +75,13 @@ bool menuAboutView(event_t event)
   uint8_t screenDuration = 150;
 
   switch (screenIndex) {
-    case ABOUT_OPENTX:
+    case ABOUT_JUMPERTX:
     case ABOUT_END:
-      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP, STR_ABOUT_OPENTX_1);
-      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + FH, STR_ABOUT_OPENTX_2);
-      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + 2*FH, STR_ABOUT_OPENTX_3);
-      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + 3*FH, STR_ABOUT_OPENTX_4);
-      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + 4*FH, STR_ABOUT_OPENTX_5);
+      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP, STR_ABOUT_JUMPERTX_1);
+      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + FH, STR_ABOUT_JUMPERTX_2);
+      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + 2*FH, STR_ABOUT_JUMPERTX_3);
+      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + 3*FH, STR_ABOUT_JUMPERTX_4);
+      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP + 4*FH, STR_ABOUT_JUMPERTX_5);
       screenDuration = 255;
       break;
 

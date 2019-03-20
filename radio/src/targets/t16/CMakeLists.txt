@@ -8,8 +8,8 @@ set(SDCARD YES)
 set(EEPROM SDCARD)
 set(HAPTIC YES)
 set(GUI_DIR 480x272)
-set(TARGET_DIR horus)
-set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
+set(TARGET_DIR t16)
+set(LINKER_SCRIPT targets/t16/stm32f4_flash.ld)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
@@ -155,7 +155,7 @@ set(STM32LIB_SRC
 if(PYTHONINTERP_FOUND)
   add_custom_target(datacopy
     WORKING_DIRECTORY ${RADIO_DIRECTORY}/src
-    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBT16 -DCPUARM -DCOLORLCD -DBACKUP -DVIRTUAL_INPUTS -Itargets/horus > storage/datacopy.cpp
+    COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBT16 -DCPUARM -DCOLORLCD -DBACKUP -DVIRTUAL_INPUTS -Itargets/t16 > storage/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
   )
 endif()

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) OpenTX
+ * Copyright (C) JumperTX
  *
  * Based on code named
  *   th9x - http://code.google.com/p/th9x
@@ -1211,14 +1211,14 @@
 // Taranis About screen
 #define TR_ABOUTUS                     TR(" A PROPOS ", "A PROPOS")
 
-#define TR_ABOUT_OPENTX_1              TR("OpenTX\001est\001libre,\001non-", "OpenTX est libre, non-")
-#define TR_ABOUT_OPENTX_2              TR("commercial,\001et\001offert\001sans", "commercial et n'offre aucune")
-#define TR_ABOUT_OPENTX_3              TR("garantie.\001Il\001est\001développé", "garantie. Il a été développé")
-#define TR_ABOUT_OPENTX_4              TR("gratuitement.\001Donations", "gratuitement. Vos donations")
-#define TR_ABOUT_OPENTX_5              TR("bienvenues!", "sont bienvenues!")
+#define TR_ABOUT_JUMPERTX_1              TR("JumperTX\001est\001libre,\001non-", "JumperTX est libre, non-")
+#define TR_ABOUT_JUMPERTX_2              TR("commercial,\001et\001offert\001sans", "commercial et n'offre aucune")
+#define TR_ABOUT_JUMPERTX_3              TR("garantie.\001Il\001est\001développé", "garantie. Il a été développé")
+#define TR_ABOUT_JUMPERTX_4              TR("gratuitement.\001Donations", "gratuitement. Vos donations")
+#define TR_ABOUT_JUMPERTX_5              TR("bienvenues!", "sont bienvenues!")
 
 #define TR_ABOUT_BERTRAND_1            "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2            TR("Auteur\001principal\001d'OpenTX", "Auteur principal d'OpenTX")
+#define TR_ABOUT_BERTRAND_2            TR("Auteur\001principal\001d'JumperTX", "Auteur principal d'JumperTX")
 #define TR_ABOUT_BERTRAND_3            TR("Codéveloppeur\001de\001C9X", "Codéveloppeur de Companion")
 
 #define TR_ABOUT_MIKE_1                "Mike Blandford"
@@ -1228,7 +1228,7 @@
 
 #define TR_ABOUT_ROMOLO_1              "Romolo Manfredini"
 #define TR_ABOUT_ROMOLO_2              "Développeur principal de"
-#define TR_ABOUT_ROMOLO_3              "OpenTX Companion"
+#define TR_ABOUT_ROMOLO_3              "JumperTX Companion"
 
 #define TR_ABOUT_ANDRE_1               "André Bernet"
 #define TR_ABOUT_ANDRE_2               TR("Fonctionsé,\001usabilité,","Fonctionnalités, usabilité,")
@@ -1239,7 +1239,7 @@
 
 #define TR_ABOUT_KJELL_1               "Kjell Kernen"
 #define TR_ABOUT_KJELL_2               "Auteur de www.open-tx.org"
-#define TR_ABOUT_KJELL_3               "Auteur de OpenTX Recorder"
+#define TR_ABOUT_KJELL_3               "Auteur de JumperTX Recorder"
 #define TR_ABOUT_KJELL_4               "Développeur Companion"
 
 #define TR_ABOUT_MARTIN_1              "Martin Hotar"

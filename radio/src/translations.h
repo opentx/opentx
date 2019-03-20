@@ -1093,11 +1093,11 @@ extern const pm_char STR_R9MFLEXWARN2[];
 
 #if !defined(CPUM64)
   extern const pm_char STR_ABOUTUS[];
-  extern const pm_char STR_ABOUT_OPENTX_1[];
-  extern const pm_char STR_ABOUT_OPENTX_2[];
-  extern const pm_char STR_ABOUT_OPENTX_3[];
-  extern const pm_char STR_ABOUT_OPENTX_4[];
-  extern const pm_char STR_ABOUT_OPENTX_5[];
+  extern const pm_char STR_ABOUT_JUMPERTX_1[];
+  extern const pm_char STR_ABOUT_JUMPERTX_2[];
+  extern const pm_char STR_ABOUT_JUMPERTX_3[];
+  extern const pm_char STR_ABOUT_JUMPERTX_4[];
+  extern const pm_char STR_ABOUT_JUMPERTX_5[];
 
   extern const pm_char STR_ABOUT_BERTRAND_1[];
   extern const pm_char STR_ABOUT_BERTRAND_2[];

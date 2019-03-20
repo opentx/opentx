@@ -1,5 +1,5 @@
 /*
- * Copyright (C) OpenTX
+ * Copyright (C) JumperTX
  *
  * Based on code named
  *   th9x - http://code.google.com/p/th9x
@@ -1201,14 +1201,14 @@
 // About screen
 #define TR_ABOUTUS             "Om Oss"
 
-#define TR_ABOUT_OPENTX_1      "OpenTX är icke-kommersiell,"
-#define TR_ABOUT_OPENTX_2      "öppen programvara utan"
-#define TR_ABOUT_OPENTX_3      "garantier som uvecklas helt"
-#define TR_ABOUT_OPENTX_4      "ideellt. Stöd i form av"
-#define TR_ABOUT_OPENTX_5      "donationer välkomnas!"
+#define TR_ABOUT_JUMPERTX_1      "JumperTX är icke-kommersiell,"
+#define TR_ABOUT_JUMPERTX_2      "öppen programvara utan"
+#define TR_ABOUT_JUMPERTX_3      "garantier som uvecklas helt"
+#define TR_ABOUT_JUMPERTX_4      "ideellt. Stöd i form av"
+#define TR_ABOUT_JUMPERTX_5      "donationer välkomnas!"
 
 #define TR_ABOUT_BERTRAND_1    "Bertrand Songis"
-#define TR_ABOUT_BERTRAND_2    "Chefsutvecklare av OpenTX"
+#define TR_ABOUT_BERTRAND_2    "Chefsutvecklare av JumperTX"
 #define TR_ABOUT_BERTRAND_3    "Hjälputvecklare av Companion"
 
 #define TR_ABOUT_MIKE_1        "Mike Blandford"
@@ -1229,7 +1229,7 @@
 
 #define TR_ABOUT_KJELL_1       "Kjell Kernen"
 #define TR_ABOUT_KJELL_2       "Utvecklare av www.open-tx.org"
-#define TR_ABOUT_KJELL_3       "Utvecklare av OpenTX Recorder"
+#define TR_ABOUT_KJELL_3       "Utvecklare av JumperTX Recorder"
 #define TR_ABOUT_KJELL_4       "Hjälputvecklare av Companion"
 
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"

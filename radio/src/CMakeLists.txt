@@ -82,8 +82,8 @@ set(FATFS_SRC
   ${FATFS_DIR}/option/ccsbcs.c
 )
 
-if(PCB STREQUAL X12S OR PCB STREQUAL T16)
-  include(targets/horus/CMakeLists.txt)
+if(PCB STREQUAL T16)
+  include(targets/t16/CMakeLists.txt)
 elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL T12 OR PCB STREQUAL XLITE)
   include(targets/taranis/CMakeLists.txt)
 elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
