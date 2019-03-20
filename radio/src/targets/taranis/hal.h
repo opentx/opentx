@@ -669,6 +669,7 @@
 #endif
 
 // Internal Module
+#define HARDWARE_INTERNAL_MODULE
 #if defined(PCBXLITE) || defined(PCBX3)
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1

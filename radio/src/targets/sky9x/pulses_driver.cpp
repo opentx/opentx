@@ -279,7 +279,7 @@ extern "C" void PWM_IRQHandler(void)
   if (reason & PWM_ISR1_CHID3) {
     // Use the current protocol, don't switch until set_up_pulses
     switch (moduleSettings[EXTERNAL_MODULE].protocol) {
-      case PROTOCOL_CHANNELS_PXX:
+      case PROTOCOL_CHANNELS_PXX1_PULSES:
         // Alternate periods of 6.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;
         if (period == 2500 * 2) {
@@ -365,11 +365,12 @@ extern "C" void PWM_IRQHandler(void)
 
 #if !defined(REVA)
   if (reason & PWM_ISR1_CHID1) {
-    pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTRA_MODULE].ppm.ptr++;
+    // TODO EXTRA_MODULE will be broken
+    /*pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTRA_MODULE].ppm.ptr++;
     if (*modulePulsesData[EXTRA_MODULE].ppm.ptr == 0) {
       setupPulses(EXTRA_MODULE);
       setExtraModulePolarity();
-    }
+    }*/
   }
 #endif
 }

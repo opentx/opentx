@@ -574,7 +574,7 @@ bool isExternalModuleAvailable(int module)
      return false;
   }
 #endif
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) {
     return false;
   }

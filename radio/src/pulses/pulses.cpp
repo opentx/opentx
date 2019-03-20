@@ -31,14 +31,17 @@ TrainerPulsesData trainerPulsesData __DMA;
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (module == INTERNAL_MODULE && isInternalModuleAvailable(type)) {
     return type;
   }
 #endif
+
   if (module == EXTERNAL_MODULE && isExternalModuleAvailable(type)) {
     return type;
   }
+
   return MODULE_TYPE_NONE;
 }
 
@@ -334,7 +337,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 void setupPulses(uint8_t module, uint8_t protocol)
 {
   switch (module) {
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(HARDWARE_INTERNAL_MODULE)
     case INTERNAL_MODULE:
       setupPulsesInternalModule(protocol);
       break;
