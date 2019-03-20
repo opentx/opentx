@@ -25,21 +25,21 @@ void convertModelData(int id, int version)
 {
   eeLoadModelData(id);
 
-#if EEPROM_CONVERSIONS >= 216
+#if EEPROM_CONVERSIONS < 217
   if (version == 216) {
     version = 217;
     convertModelData_216_to_217(g_model);
   }
 #endif
 
-#if EEPROM_CONVERSIONS >= 217
+#if EEPROM_CONVERSIONS < 218
   if (version == 217) {
     version = 218;
     convertModelData_217_to_218(g_model);
   }
 #endif
 
-#if EEPROM_CONVERSIONS >= 218
+#if EEPROM_CONVERSIONS < 219
   if (version == 218) {
     version = 219;
     convertModelData_218_to_219(g_model);
@@ -89,21 +89,21 @@ bool eeConvert()
   eeLoadGeneralSettingsData();
   int version = conversionVersionStart;
 
-#if EEPROM_CONVERSIONS >= 216
+#if EEPROM_CONVERSIONS < 217
   if (version == 216) {
     version = 217;
     convertRadioData_216_to_217(g_eeGeneral);
   }
 #endif
 
-#if EEPROM_CONVERSIONS >= 217
+#if EEPROM_CONVERSIONS < 218
   if (version == 217) {
     version = 218;
     convertRadioData_217_to_218(g_eeGeneral);
   }
 #endif
 
-#if EEPROM_CONVERSIONS >= 218
+#if EEPROM_CONVERSIONS < 219
   if (version == 218) {
     version = 219;
     // no conversion needed for now

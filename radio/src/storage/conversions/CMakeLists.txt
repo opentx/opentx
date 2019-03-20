@@ -18,14 +18,14 @@ if(EEPROM_CONVERSIONS)
     )
 endif()
 
-if(EEPROM_CONVERSIONS GREATER 215)
+if(EEPROM_CONVERSIONS LESS 218)
   set(SRC
     ${SRC}
     storage/conversions/conversions_216_218.cpp
     )
 endif()
 
-if(EEPROM_CONVERSIONS GREATER 217)
+if(EEPROM_CONVERSIONS LESS 219)
   set(SRC
     ${SRC}
     storage/conversions/conversions_218_219.cpp
