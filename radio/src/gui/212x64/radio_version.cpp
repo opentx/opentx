@@ -46,6 +46,6 @@ void menuRadioVersion(event_t event)
     eepromBackup();
   }
   else if (event == EVT_KEY_LONG(KEY_MENU)) {
-    POPUP_CONFIRMATION(STR_CONFIRMRESET);
+    POPUP_CONFIRMATION(STR_CONFIRMRESET, nullptr);
   }
 }

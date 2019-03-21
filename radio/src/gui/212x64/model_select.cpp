@@ -52,7 +52,7 @@ void onModelSelectMenu(const char * result)
   else if (result == STR_DELETE_MODEL) {
     char * nametmp =  reusableBuffer.modelsel.mainname;
     strcat_modelname (nametmp, sub);
-    POPUP_CONFIRMATION(STR_DELETEMODEL);
+    POPUP_CONFIRMATION(STR_DELETEMODEL, nullptr);
     SET_WARNING_INFO(nametmp, sizeof(g_model.header.name), 0);
   }
   else if (result) {
@@ -102,7 +102,7 @@ void menuModelSelect(event_t event)
         if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
           char * nametmp =  reusableBuffer.modelsel.mainname;
           strcat_modelname (nametmp, sub);
-          POPUP_CONFIRMATION(STR_DELETEMODEL);
+          POPUP_CONFIRMATION(STR_DELETEMODEL, nullptr);
           SET_WARNING_INFO(nametmp, sizeof(g_model.header.name), 0);
           killEvents(event);
           break;

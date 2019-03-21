@@ -82,7 +82,7 @@ void onSdManagerMenu(const char * result)
     pushMenu(menuRadioSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
-    POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
+    POPUP_CONFIRMATION(STR_CONFIRM_FORMAT, nullptr);
   }
   else if (result == STR_COPY_FILE) {
     clipboard.type = CLIPBOARD_TYPE_SD_FILE;

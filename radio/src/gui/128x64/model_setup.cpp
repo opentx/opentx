@@ -1608,7 +1608,7 @@ void menuModelSetup(event_t event)
       {
         uint8_t newAntennaSel = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_ANTENNASELECTION, STR_VANTENNATYPES, g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna, 0, 1, attr, event);
         if (newAntennaSel != g_model.moduleData[INTERNAL_MODULE].pxx.external_antenna && newAntennaSel == XJT_EXTERNAL_ANTENNA) {
-          POPUP_CONFIRMATION(STR_ANTENNACONFIRM1);
+          POPUP_CONFIRMATION(STR_ANTENNACONFIRM1, nullptr);
           const char * w = STR_ANTENNACONFIRM2;
           SET_WARNING_INFO(w, strlen(w), 0);
         }
@@ -1950,16 +1950,37 @@ enum MenuModelReceiverOptions {
 
 #define RECEIVER_OPTIONS_2ND_COLUMN 80
 
+void onRxOptionsUpdateConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_WRITE;
+    reusableBuffer.receiverSetup.dirty = 0;
+    reusableBuffer.receiverSetup.timeout = 0;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+  else {
+    reusableBuffer.receiverSetup.dirty = 0;
+    popMenu();
+  }
+}
+
 void menuModelReceiverOptions(event_t event)
 {
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   uint8_t wbar = LCD_W / 2 - 20;
+  uint8_t outputsCount = min<uint8_t>(16, reusableBuffer.receiverSetup.outputsCount);
 
-  SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + sentModuleChannels(g_moduleIdx));
+  SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + outputsCount);
 
   if (menuEvent) {
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    return;
+    if (reusableBuffer.receiverSetup.dirty) {
+      pushMenu(menuModelReceiverOptions);
+      POPUP_CONFIRMATION("Update RX options?", onRxOptionsUpdateConfirm);
+    }
+    else {
+      return;
+    }
   }
 
   int8_t sub = menuVerticalPosition;
@@ -1969,22 +1990,15 @@ void menuModelReceiverOptions(event_t event)
   lcdInvertLine(0);
 
   if (event == EVT_ENTRY) {
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
-  }
-
-  if (!s_editMode && reusableBuffer.receiverSetup.dirty && reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_OK) {
-    reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_WRITE;
-    reusableBuffer.receiverSetup.dirty = 0;
-    reusableBuffer.receiverSetup.timeout = 0;
-    reusableBuffer.receiverSetup.dirtyTimeout = get_tmr10ms() + 500/*5s*/;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
-  }
-
 #if defined(SIMU)
-  reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
+    reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
+    reusableBuffer.receiverSetup.outputsCount = 8;
+#else
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
 #endif
+  }
 
-  if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_OK || get_tmr10ms() < reusableBuffer.receiverSetup.dirtyTimeout) {
+  if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_OK) {
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
@@ -2009,7 +2023,7 @@ void menuModelReceiverOptions(event_t event)
           // Pin
           {
             uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
-            uint8_t channel = reusableBuffer.receiverSetup.channelMapping[pin];
+            uint8_t channel = reusableBuffer.receiverSetup.outputsMapping[pin];
             int32_t channelValue = channelOutputs[channel];
             lcdDrawText(0, y, "Pin");
             lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
@@ -2019,7 +2033,7 @@ void menuModelReceiverOptions(event_t event)
             if (attr) {
               channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
               if (checkIncDec_Ret) {
-                reusableBuffer.receiverSetup.channelMapping[pin] = channel;
+                reusableBuffer.receiverSetup.outputsMapping[pin] = channel;
                 reusableBuffer.receiverSetup.dirty = true;
               }
             }

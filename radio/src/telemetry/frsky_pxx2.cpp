@@ -66,16 +66,17 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  uint8_t channelsCount = sentModuleChannels(module);
-  for (uint8_t pin = 0; pin < channelsCount; pin++) {
-    reusableBuffer.receiverSetup.channelMapping[pin] = frame[5 + pin];
-  }
-
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
     reusableBuffer.receiverSetup.pwmRate = 1;
 
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED)
     reusableBuffer.receiverSetup.telemetryDisabled = 1;
+
+  uint8_t outputsCount = min<uint8_t>(16, frame[0] - 4);
+  reusableBuffer.receiverSetup.outputsCount = outputsCount;
+  for (uint8_t pin = 0; pin < outputsCount; pin++) {
+    reusableBuffer.receiverSetup.outputsMapping[pin] = frame[5 + pin];
+  }
 
   reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
   reusableBuffer.receiverSetup.timeout = 0;

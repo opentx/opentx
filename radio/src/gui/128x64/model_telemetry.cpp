@@ -531,7 +531,7 @@ void menuModelTelemetryFrsky(event_t event)
           s_editMode = 0;
           if (event==EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(KEY_ENTER);
-            POPUP_CONFIRMATION(STR_CONFIRMDELETE);
+            POPUP_CONFIRMATION(STR_CONFIRMDELETE, nullptr);
           }
         }
         break;

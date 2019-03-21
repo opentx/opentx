@@ -2041,7 +2041,7 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcdClear();
 
-          POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN);
+          POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN, nullptr);
           SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);

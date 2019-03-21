@@ -196,7 +196,7 @@ void menuRadioVersion(event_t event)
   // y += FH;
   if (menuVerticalPosition == ITEM_RADIO_FACTORY_RESET && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
-    POPUP_CONFIRMATION(STR_CONFIRMRESET);
+    POPUP_CONFIRMATION(STR_CONFIRMRESET, nullptr);
   }
 #endif
 }

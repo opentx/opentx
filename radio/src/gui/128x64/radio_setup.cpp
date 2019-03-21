@@ -553,7 +553,7 @@ void menuRadioSetup(event_t event)
           if (g_eeGeneral.fai)
             POPUP_WARNING("FAI\001mode blocked!");
           else
-            POPUP_CONFIRMATION("FAI mode?");
+            POPUP_CONFIRMATION("FAI mode?", nullptr);
         }
         break;
 #endif

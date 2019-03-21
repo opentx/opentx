@@ -162,15 +162,17 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
     if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_WRITE)
       flag0 |= PXX2_RX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
-    uint8_t flag1 = 0;
-    if (reusableBuffer.receiverSetup.telemetryDisabled)
-      flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED;
-    if (reusableBuffer.receiverSetup.pwmRate)
-      flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
-    Pxx2Transport::addByte(flag1);
-    uint8_t channelsCount = sentModuleChannels(module);
-    for (int i = 0; i < channelsCount; i++) {
-      Pxx2Transport::addByte(reusableBuffer.receiverSetup.channelMapping[i]);
+    if (reusableBuffer.receiverSetup.state == RECEIVER_SETTINGS_WRITE) {
+      uint8_t flag1 = 0;
+      if (reusableBuffer.receiverSetup.telemetryDisabled)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED;
+      if (reusableBuffer.receiverSetup.pwmRate)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
+      Pxx2Transport::addByte(flag1);
+      uint8_t outputsCount = min<uint8_t>(16, reusableBuffer.receiverSetup.outputsCount);
+      for (int i = 0; i < outputsCount; i++) {
+        Pxx2Transport::addByte(reusableBuffer.receiverSetup.outputsMapping[i]);
+      }
     }
     reusableBuffer.receiverSetup.timeout = get_tmr10ms() + 200/*next try in 2s*/;
   }

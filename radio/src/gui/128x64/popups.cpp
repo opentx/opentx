@@ -89,20 +89,37 @@ void showAlertBox(const char * title, const char * text, const char * action , u
 void runPopupWarning(event_t event)
 {
   warningResult = false;
+
   drawMessageBox();
+
   if (warningInfoText) {
     lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
+
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT));
+
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
+        // key ignored, the user has to press [EXIT]
         break;
-      if (warningType != WARNING_TYPE_INFO)
+
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        warningType = WARNING_TYPE_ASTERISK;
+        warningText = nullptr;
         warningResult = true;
+        if (popupMenuHandler)
+          popupMenuHandler(STR_OK);
+        break;
+      }
       // no break
+
     case EVT_KEY_BREAK(KEY_EXIT):
-      warningText = NULL;
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        if (popupMenuHandler)
+          popupMenuHandler(STR_EXIT);
+      }
+      warningText = nullptr;
       warningType = WARNING_TYPE_ASTERISK;
       break;
   }

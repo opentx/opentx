@@ -86,6 +86,8 @@ void showAlertBox(const char * title, const char * text, const char * action, ui
 
 void runPopupWarning(event_t event)
 {
+  warningResult = false;
+
   drawMessageBox(warningText);
 
   if (warningInfoText) {
@@ -99,12 +101,22 @@ void runPopupWarning(event_t event)
       if (warningType == WARNING_TYPE_ASTERISK)
         break;
 
-      if (warningType != WARNING_TYPE_INFO)
-        popupMenuHandler(STR_OK);
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        warningType = WARNING_TYPE_ASTERISK;
+        warningText = nullptr;
+        warningResult = true;
+        if (popupMenuHandler)
+          popupMenuHandler(STR_OK);
+        break;
+      }
       // no break
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      warningText = NULL;
+      if (warningType == WARNING_TYPE_CONFIRM) {
+        if (popupMenuHandler)
+          popupMenuHandler(STR_EXIT);
+      }
+      warningText = nullptr;
       warningType = WARNING_TYPE_ASTERISK;
       break;
   }
