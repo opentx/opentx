@@ -51,13 +51,34 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 
   uint8_t index = frame[3];
   if (index == 0xFF) {
-    reusableBuffer.hardware.modules[module].hw_version = *((uint16_t *)&frame[4]);
-    reusableBuffer.hardware.modules[module].sw_version = *((uint16_t *)&frame[6]);
+    reusableBuffer.hardware.modules[module].modelID = frame[4];
+    reusableBuffer.hardware.modules[module].hwVersion.data = *((uint16_t *)&frame[5]);
+    reusableBuffer.hardware.modules[module].swVersion.data = *((uint16_t *)&frame[7]);
   }
-  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE){
-    reusableBuffer.hardware.modules[module].receivers[index].hw_version = *((uint16_t *)&frame[4]);
-    reusableBuffer.hardware.modules[module].receivers[index].sw_version = *((uint16_t *)&frame[6]);
+  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE) {
+    reusableBuffer.hardware.modules[module].receivers[index].modelID = frame[4];
+    reusableBuffer.hardware.modules[module].receivers[index].hwVersion.data = *((uint16_t *)&frame[5]);
+    reusableBuffer.hardware.modules[module].receivers[index].swVersion.data = *((uint16_t *)&frame[7]);
   }
+}
+
+void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
+{
+  if (moduleSettings[module].mode != MODULE_MODE_MODULE_SETTINGS) {
+    return;
+  }
+
+  // Flag1
+  reusableBuffer.moduleSettings.txPower = frame[4] >> 4;
+  if (frame[4] & PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA)
+    reusableBuffer.moduleSettings.externalAntenna = 1;
+
+  // Power
+  reusableBuffer.moduleSettings.txPower = frame[5];
+
+  reusableBuffer.moduleSettings.state = PXX2_SETTINGS_OK;
+  reusableBuffer.moduleSettings.timeout = 0;
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
@@ -67,21 +88,21 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
   }
 
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
-    reusableBuffer.receiverSetup.pwmRate = 1;
+    reusableBuffer.receiverSettings.pwmRate = 1;
 
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED)
-    reusableBuffer.receiverSetup.telemetryDisabled = 1;
+    reusableBuffer.receiverSettings.telemetryDisabled = 1;
 
   uint8_t outputsCount = min<uint8_t>(16, frame[0] - 4);
-  reusableBuffer.receiverSetup.outputsCount = outputsCount;
+  reusableBuffer.receiverSettings.outputsCount = outputsCount;
   for (uint8_t pin = 0; pin < outputsCount; pin++) {
-    reusableBuffer.receiverSetup.outputsMapping[pin] = frame[5 + pin];
+    reusableBuffer.receiverSettings.outputsMapping[pin] = frame[5 + pin];
   }
 
-  reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
-  reusableBuffer.receiverSetup.timeout = 0;
+  reusableBuffer.receiverSettings.state = PXX2_SETTINGS_OK;
+  reusableBuffer.receiverSettings.timeout = 0;
   moduleSettings[module].mode = MODULE_MODE_NORMAL;
- }
+}
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)
 {
@@ -191,6 +212,10 @@ void processModuleFrame(uint8_t module, uint8_t *frame)
   switch (frame[2]) {
     case PXX2_TYPE_ID_HW_INFO:
       processGetHardwareInfoFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_ID_TX_SETTINGS:
+      processModuleSettingsFrame(module, frame);
       break;
 
     case PXX2_TYPE_ID_RX_SETTINGS:

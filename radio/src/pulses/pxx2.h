@@ -50,6 +50,9 @@
 #define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
 
+#define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
+#define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)
+
 enum PXX2RegisterSteps {
   REGISTER_START,
   REGISTER_RX_NAME_RECEIVED,
@@ -65,9 +68,9 @@ enum PXX2BindSteps {
 };
 
 enum PXX2ReceiverStatus {
-  RECEIVER_SETTINGS_READ,
-  RECEIVER_SETTINGS_WRITE,
-  RECEIVER_SETTINGS_OK
+  PXX2_SETTINGS_READ,
+  PXX2_SETTINGS_WRITE,
+  PXX2_SETTINGS_OK
 };
 
 extern ModuleFifo intmoduleFifo;
@@ -122,6 +125,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
     void setupBindFrame(uint8_t module);
 
     void setupShareMode(uint8_t module);
+
+    void setupModuleSettingsFrame(uint8_t module);
 
     void setupReceiverSettingsFrame(uint8_t module);
 
@@ -190,6 +195,16 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
         Pxx2Transport::initBuffer();
       }
     }
+};
+
+union PXX2Version
+{
+  uint16_t data;
+  struct {
+    uint8_t major;
+    uint8_t minor:4;
+    uint8_t revision:4;
+  };
 };
 
 #endif

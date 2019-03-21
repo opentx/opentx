@@ -980,7 +980,7 @@ extern const char STR_BUTTON_SHARE[];
 #if defined(PCBTARANIS) || defined(DSM2)
 extern const char STR_MODULE_RANGE[];
 extern const char STR_RECEIVER_OPTIONS[];
-  extern const char STR_DEL_BUTTON[];
+extern const char STR_DEL_BUTTON[];
 #endif
 
 extern const char STR_ABOUTUS[];

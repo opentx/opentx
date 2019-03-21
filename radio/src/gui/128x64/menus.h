@@ -56,6 +56,7 @@ extern uint8_t menuEvent;
 void chainMenu(MenuHandlerFunc newMenu);
 void pushMenu(MenuHandlerFunc newMenu);
 void popMenu();
+void abortPopMenu();
 
 inline bool isRadioMenuDisplayed()
 {

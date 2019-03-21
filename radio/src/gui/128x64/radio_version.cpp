@@ -34,6 +34,61 @@
 #define MENU_BODY_BOTTOM (LCD_H)
 
 #if defined(PXX2)
+void drawPXX2Version(coord_t x, coord_t y, PXX2Version version)
+{
+  lcdDrawNumber(x, y, version.major, LEFT);
+  lcdDrawChar(lcdNextPos, y, '.');
+  lcdDrawNumber(lcdNextPos, y, version.minor, LEFT);
+  lcdDrawChar(lcdNextPos, y, '.');
+  lcdDrawNumber(lcdNextPos, y, version.revision, LEFT);
+}
+
+void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Version swVersion)
+{
+  drawPXX2Version(x, y, hwVersion);
+  lcdDrawText(lcdNextPos, y, "/");
+  drawPXX2Version(lcdNextPos, y, swVersion);
+}
+
+static const char * const modulesModels[] = {
+  "---",
+  "XJT",
+  "IXJT",
+  "IXJT-PRO",
+  "IXJT-S",
+  "R9M",
+  "R9MLite",
+  "R9MLite-PRO",
+};
+
+static const char * const receiversModels[] = {
+  "---",
+  "X8R",
+  "RX8R",
+  "RX8R-PRO",
+  "RX6R",
+  "RX4R",
+  "G-RX8",
+  "G-RX6",
+  "X6R",
+  "X4R",
+  "X4R-SB",
+  "XSR",
+  "XSR-M",
+  "RXSR",
+  "S6R",
+  "S8R",
+  "XM",
+  "XM+",
+  "XMR",
+  "R9",
+  "R9-SLIM",
+  "R9-SLIM+",
+  "R9-MINI",
+  "R9-MM",
+  "R9-STAB",
+};
+
 void menuRadioModulesVersion(event_t event)
 {
   if (menuEvent) {
@@ -74,26 +129,35 @@ void menuRadioModulesVersion(event_t event)
     }
     y += FH;
 
+    // Module model
+    if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
+      lcdDrawText(INDENT_WIDTH, y, "Model");
+      lcdDrawText(12 * FW, y, modulesModels[reusableBuffer.hardware.modules[module].modelID]);
+    }
+    y += FH;
+
     // Module version
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Version");
-      if (reusableBuffer.hardware.modules[module].hw_version) {
-        lcdDrawNumber(12 * FW, y, reusableBuffer.hardware.modules[module].hw_version, LEADING0, 3);
-        lcdDrawText(lcdLastRightPos, y, "/");
-        lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].sw_version, LEADING0, 3);
+      if (reusableBuffer.hardware.modules[module].hwVersion.data) {
+        drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].hwVersion, reusableBuffer.hardware.modules[module].swVersion);
       }
     }
     y += FH;
 
-    // RX versions
     for (uint8_t receiver=0; receiver<PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
-      if (reusableBuffer.hardware.modules[module].receivers[receiver].hw_version) {
+      if (reusableBuffer.hardware.modules[module].receivers[receiver].modelID) {
+        // Receiver model
         if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
-          lcdDrawNumber(12 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].hw_version, LEADING0, 3);
-          lcdDrawText(lcdLastRightPos, y, "/");
-          lcdDrawNumber(lcdLastRightPos, y, reusableBuffer.hardware.modules[module].receivers[receiver].sw_version, LEADING0, 3);
+          lcdDrawText(12 * FW, y, receiversModels[reusableBuffer.hardware.modules[module].receivers[receiver].modelID]);
+        }
+        y += FH;
+
+        // Receiver version
+        if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
+          drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].hwVersion, reusableBuffer.hardware.modules[module].receivers[receiver].swVersion);
         }
         y += FH;
       }
@@ -176,7 +240,7 @@ void menuRadioVersion(event_t event)
 #endif
 
 #if defined(PXX2)
-  lcdDrawText(0, y, BUTTON("Modules / RX version"), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
+  lcdDrawText(INDENT_WIDTH, y, BUTTON("Modules / RX version"), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
   y += FH;
   if (menuVerticalPosition == ITEM_RADIO_MODULES_VERSION && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
@@ -185,14 +249,14 @@ void menuRadioVersion(event_t event)
 #endif
 
 #if defined(EEPROM_RLC)
-  lcdDrawText(0, y, BUTTON(TR_EEBACKUP), menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM ? INVERS : 0);
+  lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_EEBACKUP), menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM ? INVERS : 0);
   y += FH;
   if (menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
     eepromBackup();
   }
 
-  lcdDrawText(0, y, BUTTON(TR_FACTORYRESET), menuVerticalPosition == ITEM_RADIO_FACTORY_RESET ? INVERS : 0);
+  lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_FACTORYRESET), menuVerticalPosition == ITEM_RADIO_FACTORY_RESET ? INVERS : 0);
   // y += FH;
   if (menuVerticalPosition == ITEM_RADIO_FACTORY_RESET && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;

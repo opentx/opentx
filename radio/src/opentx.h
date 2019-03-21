@@ -1045,10 +1045,6 @@ enum AUDIO_SOUNDS {
 #endif
 
 #include "buzzer.h"
-
-
-
-
 #include "translations.h"
 #include "fonts.h"
 
@@ -1142,16 +1138,24 @@ union ReusableBuffer
   } moduleSetup;
 
   struct {
+      uint8_t state;  // 0x00 = READ 0x40 = WRITE
+      tmr10ms_t timeout;
+      uint8_t dirty;
+      uint8_t rfProtocol;
+      uint8_t externalAntenna;
+      int8_t  txPower;
+  } moduleSettings;
+
+  struct {
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
     tmr10ms_t timeout;
-    tmr10ms_t updateTime;
     uint8_t receiverId;
-    uint8_t outputsCount;
-    uint8_t outputsMapping[24];
+    uint8_t dirty;
     uint8_t telemetryDisabled;
     uint8_t pwmRate;
-    uint8_t dirty;
-  } receiverSetup;
+    uint8_t outputsCount;
+    uint8_t outputsMapping[24];
+  } receiverSettings;
 
   // 103 bytes
   struct {
@@ -1184,11 +1188,13 @@ union ReusableBuffer
     struct {
       int8_t step;
       uint8_t timeout;
-      uint32_t hw_version;
-      uint32_t sw_version;
+      uint8_t modelID;
+      PXX2Version hwVersion;
+      PXX2Version swVersion;
       struct {
-        uint32_t hw_version;
-        uint32_t sw_version;
+        uint8_t modelID;
+        PXX2Version hwVersion;
+        PXX2Version swVersion;
       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
     } modules[NUM_MODULES];
     uint32_t updateTime;
