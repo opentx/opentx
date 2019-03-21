@@ -223,7 +223,7 @@ void processToolsFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processPXX2TelemetryFrame(uint8_t module, uint8_t * frame)
+void processPXX2Frame(uint8_t module, uint8_t *frame)
 {
   switch (frame[1]) {
     case PXX2_TYPE_C_MODULE:

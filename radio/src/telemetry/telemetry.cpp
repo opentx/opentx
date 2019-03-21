@@ -92,13 +92,13 @@ void telemetryWakeup()
 
   #if defined(INTMODULE_USART)
     while (intmoduleFifo.getFrame(frame)) {
-      processPXX2TelemetryFrame(INTERNAL_MODULE, frame);
+      processPXX2Frame(INTERNAL_MODULE, frame);
     }
   #endif
 
   #if defined(EXTMODULE_USART)
     while (extmoduleFifo.getFrame(frame)) {
-      processPXX2TelemetryFrame(EXTERNAL_MODULE, frame);
+      processPXX2Frame(EXTERNAL_MODULE, frame);
     }
   #endif
 #endif

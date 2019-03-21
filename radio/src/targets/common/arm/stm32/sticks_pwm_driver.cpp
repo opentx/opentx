@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 
-bool sticks_pwm_disabled = false;
 volatile uint32_t pwm_interrupt_count;
 volatile uint16_t timer_capture_values[NUM_PWMSTICKS];
 

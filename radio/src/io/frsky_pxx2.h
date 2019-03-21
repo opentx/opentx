@@ -47,7 +47,7 @@ class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
         return false;
       }
 
-      for (uint32_t i=0; i<=len; i++) {
+      for (uint32_t i = 0; i <= len; i++) {
         frame[i] = fifo[next];
         next = nextIndex(next);
       }

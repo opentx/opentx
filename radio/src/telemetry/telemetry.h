@@ -196,7 +196,7 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #define IS_TELEMETRY_INTERNAL_MODULE() (false)
 #endif
 
-void processPXX2TelemetryFrame(uint8_t module, uint8_t * frame);
+void processPXX2Frame(uint8_t module, uint8_t *frame);
 void pushPXX2TelemetryPacket(uint8_t module, uint8_t rx_uid, SportTelemetryPacket * packet);
 
 #endif // _TELEMETRY_H_
