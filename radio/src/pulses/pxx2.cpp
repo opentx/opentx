@@ -107,6 +107,14 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
   }
 }
 
+void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TELEMETRY);
+  for (uint8_t i = 0; i < outputTelemetryBuffer.size; i++) {
+    Pxx2Transport::addByte(outputTelemetryBuffer.data[i]);
+  }
+}
+
 void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
 {
   if (reusableBuffer.hardware.modules[module].step >= -1 && reusableBuffer.hardware.modules[module].step < PXX2_MAX_RECEIVERS_PER_MODULE) {
@@ -271,7 +279,12 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupShareMode(module);
       break;
     default:
-      setupChannelsFrame(module);
+      if (outputTelemetryBuffer.size > 0 && outputTelemetryBuffer.destination == module) {
+        setupTelemetryFrame(module);
+      }
+      else {
+        setupChannelsFrame(module);
+      }
       break;
   }
 

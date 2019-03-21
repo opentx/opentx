@@ -43,7 +43,7 @@
   #define INTMODULE_PXX_PERIOD             9/*ms*/
 #endif
 
-#define EXTMODULE_USART_PXX2_BAUDRATE      450000
+#define EXTMODULE_USART_PXX2_BAUDRATE      400000
 
 #if defined(PXX_FREQUENCY_HIGH) && (!defined(INTMODULE_USART) || !defined(EXTMODULE_USART))
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */

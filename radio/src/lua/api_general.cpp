@@ -480,6 +480,7 @@ static int luaPXX2TelemetryPush(lua_State * L)
       packet.primId = luaL_checkunsigned(L, 4);
       packet.dataId = luaL_checkunsigned(L, 5);
       packet.value = luaL_checkunsigned(L, 6);
+      // TODO we could avoid this new copy
       pushPXX2TelemetryPacket(module, rx_uid - 1, &packet);
       lua_pushboolean(L, true);
     }

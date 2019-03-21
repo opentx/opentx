@@ -127,6 +127,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void setupChannelsFrame(uint8_t module);
 
+    void setupTelemetryFrame(uint8_t module);
+
     void setupSpectrumAnalyser(uint8_t module);
 
     void setupPowerMeter(uint8_t module);
