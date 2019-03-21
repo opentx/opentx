@@ -258,7 +258,6 @@ void displayVoltageOrAlarm()
 #define EVT_KEY_STATISTICS             EVT_KEY_LONG(KEY_UP)
 #endif
 
-#if defined(NAVIGATION_MENUS)
 void onMainViewMenu(const char *result)
 {
   if (result == STR_RESET_TIMER1) {
@@ -299,7 +298,6 @@ void onMainViewMenu(const char *result)
     chainMenu(menuAboutView);
   }
 }
-#endif
 
 void menuMainView(event_t event)
 {
@@ -334,7 +332,6 @@ void menuMainView(event_t event)
       }
       break;
 
-#if defined(NAVIGATION_MENUS)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
 
@@ -348,7 +345,6 @@ void menuMainView(event_t event)
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
       POPUP_MENU_START(onMainViewMenu);
       break;
-#endif
 
 #if MENUS_LOCK != 2 /*no menus*/
 #if defined(EVT_KEY_LAST_MENU)
@@ -408,18 +404,7 @@ void menuMainView(event_t event)
         gvarDisplayTimer = 0;
       }
 #endif
-#if !defined(NAVIGATION_MENUS)
-      if (view == VIEW_TIMER2) {
-        timerReset(1);
-      }
-#endif
       break;
-
-#if !defined(NAVIGATION_MENUS)
-    case EVT_KEY_LONG(KEY_EXIT):
-      flightReset();
-      break;
-#endif
   }
 
   {

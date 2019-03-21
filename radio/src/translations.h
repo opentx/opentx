@@ -629,7 +629,6 @@ extern const char STR_PERSISTENT_MAH[];
 #define LEN_CALIB_FIELDS               PSIZE(TR_BATT_CALIB)
 #endif
 
-#if defined(NAVIGATION_MENUS)
   extern const char STR_SELECT_MODEL[];
   extern const char STR_CREATE_CATEGORY[];
   extern const char STR_RENAME_CATEGORY[];
@@ -659,7 +658,6 @@ extern const char STR_PERSISTENT_MAH[];
   extern const char STR_USB_SERIAL[];
   extern const char STR_SETUP_SCREENS[];
   extern const char STR_MONITOR_SCREENS[];
-#endif
 
 extern const char STR_RESET_BTN[];
 extern const char STR_DEBUG[];
