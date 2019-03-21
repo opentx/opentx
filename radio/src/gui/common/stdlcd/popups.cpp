@@ -139,7 +139,7 @@ void runPopupWarning(event_t event)
 {
   warningResult = false;
 
-  drawMessageBox();
+  drawMessageBox(warningText);
 
   if (warningInfoText) {
     lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
@@ -172,6 +172,12 @@ void runPopupWarning(event_t event)
       warningType = WARNING_TYPE_ASTERISK;
       break;
   }
+}
+
+void showMessageBox(const char * str)
+{
+  drawMessageBox(str);
+  lcdRefresh();
 }
 
 void showAlertBox(const char * title, const char * text, const char * action , uint8_t sound)

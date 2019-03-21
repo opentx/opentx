@@ -399,7 +399,7 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
       if (gvarDisplayTimer > 0) {
         gvarDisplayTimer = 0;
       }
@@ -551,11 +551,11 @@ void menuMainView(event_t event)
   }
 #endif
 
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
   if (gvarDisplayTimer > 0) {
     gvarDisplayTimer--;
     warningText = STR_GLOBAL_VAR;
-    drawMessageBox();
+    drawMessageBox(warningText);
     lcdDrawSizedText(16, 5*FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(16+6*FW, 5*FH, "[", BOLD);
     drawGVarValue(lcdLastRightPos, 5*FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);

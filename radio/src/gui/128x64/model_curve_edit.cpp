@@ -24,7 +24,7 @@ void runPopupCurvePreset(event_t event)
 {
   warningResult = false;
 
-  drawMessageBox();
+  drawMessageBox(warningText);
 
   lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, STR_POPUPS_ENTER_EXIT);
 

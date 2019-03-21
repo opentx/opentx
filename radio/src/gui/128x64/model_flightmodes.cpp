@@ -39,7 +39,7 @@ enum MenuModelFlightModeItems {
   IF_ROTARY_ENCODERS(ITEM_MODEL_FLIGHT_MODE_ROTARY_ENCODERS)
   ITEM_MODEL_FLIGHT_MODE_FADE_IN,
   ITEM_MODEL_FLIGHT_MODE_FADE_OUT,
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
   ITEM_MODEL_FLIGHT_MODE_GVARS_LABEL,
   ITEM_MODEL_FLIGHT_MODE_GV1,
   ITEM_MODEL_FLIGHT_MODE_GV2,
@@ -87,7 +87,7 @@ void menuModelFlightModeOne(event_t event)
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
 
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
   if (s_currIdx == 0 && sub>=ITEM_MODEL_FLIGHT_MODE_SWITCH) sub += VERTICAL_SHIFT;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
@@ -147,7 +147,7 @@ void menuModelFlightModeOne(event_t event)
         fm->fadeOut = EDIT_DELAY(0, y, event, attr, STR_FADEOUT, fm->fadeOut);
         break;
 
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
       case ITEM_MODEL_FLIGHT_MODE_GVARS_LABEL:
         lcdDrawTextAlignedLeft(y, STR_GLOBAL_VARS);
         break;

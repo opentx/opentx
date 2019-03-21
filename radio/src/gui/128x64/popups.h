@@ -30,11 +30,9 @@
 #define WARNING_LINE_X                 16
 #define WARNING_LINE_Y                 3*FH
 
-void drawMessageBox();
+void drawMessageBox(const char * title);
 void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
-
-#define DRAW_MESSAGE_BOX(title)        (warningText = title, drawMessageBox(), warningText = NULL)
 
 extern void (*popupFunc)(event_t event);
 extern uint8_t warningInfoFlags;

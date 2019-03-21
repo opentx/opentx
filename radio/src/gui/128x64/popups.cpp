@@ -27,20 +27,12 @@ uint8_t         warningType;
 uint8_t         warningResult = 0;
 uint8_t         warningInfoFlags = ZCHAR;
 
-void drawMessageBox()
+void drawMessageBox(const char * title)
 {
   lcdDrawFilledRect(MENU_X, MENU_Y, MENU_W, 40, SOLID, ERASE);
   lcdDrawRect(MENU_X, MENU_Y, MENU_W, 40);
-  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, warningText, WARNING_LINE_LEN);
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
   // could be a place for a warningInfoText
-}
-
-void showMessageBox(const char * str)
-{
-  warningText = str;
-  drawMessageBox();
-  warningText = NULL;
-  lcdRefresh();
 }
 
 const unsigned char ASTERISK_BITMAP[]  = {

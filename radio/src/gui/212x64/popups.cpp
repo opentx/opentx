@@ -35,12 +35,6 @@ void drawMessageBox(const char * title)
   // could be a place for a warningInfoText
 }
 
-void showMessageBox(const char * title)
-{
-  drawMessageBox(title);
-  lcdRefresh();
-}
-
 const unsigned char ASTERISK_BITMAP[]  = {
 #include "asterisk.lbm"
 };

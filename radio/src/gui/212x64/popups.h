@@ -31,7 +31,6 @@
 void drawMessageBox(const char * title);
 void showMessageBox(const char * title);
 void runPopupWarning(event_t event);
-#define DRAW_MESSAGE_BOX(title)        drawMessageBox(title)
 
 extern void (*popupFunc)(event_t event);
 extern uint8_t warningInfoFlags;

@@ -350,7 +350,7 @@ void runPopupRegister(event_t event)
 
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_editMode <= 0) {
-        warningText = NULL;
+        warningText = nullptr;
       }
       break;
   }
@@ -359,7 +359,7 @@ void runPopupRegister(event_t event)
     const uint8_t dialogRows[] = { 0, 0, uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? READONLY_ROW : 0), uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? 0 : 1)};
     check(event, 0, nullptr, 0, dialogRows, 3, 4 - HEADER_LINE); // TODO add a comment for 3 - HEADER_LINE once understood
 
-    drawMessageBox();
+    drawMessageBox(warningText);
 
     // registration password
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4, STR_REG_ID);
