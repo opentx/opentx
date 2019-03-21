@@ -1962,12 +1962,11 @@ void onTxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
     reusableBuffer.moduleSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.moduleSettings.dirty = 0;
+    reusableBuffer.moduleSettings.dirty = 2;
     reusableBuffer.moduleSettings.timeout = 0;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
   }
   else {
-    reusableBuffer.moduleSettings.dirty = 0;
     popMenu();
   }
 }
@@ -1992,6 +1991,10 @@ void menuModelModuleOptions(event_t event)
     else {
       return;
     }
+  }
+
+  if (reusableBuffer.moduleSettings.dirty == 2 && reusableBuffer.moduleSettings.state == PXX2_SETTINGS_OK) {
+    popMenu();
   }
 
   int8_t sub = menuVerticalPosition;
@@ -2055,12 +2058,11 @@ void onRxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
     reusableBuffer.receiverSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.receiverSettings.dirty = 0;
+    reusableBuffer.receiverSettings.dirty = 2;
     reusableBuffer.receiverSettings.timeout = 0;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
   else {
-    reusableBuffer.receiverSettings.dirty = 0;
     popMenu();
   }
 }
@@ -2088,6 +2090,10 @@ void menuModelReceiverOptions(event_t event)
     else {
       return;
     }
+  }
+
+  if (reusableBuffer.moduleSettings.dirty == 2 && reusableBuffer.receiverSettings.state == PXX2_SETTINGS_OK) {
+    popMenu();
   }
 
   int8_t sub = menuVerticalPosition;
