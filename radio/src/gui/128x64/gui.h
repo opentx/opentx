@@ -361,10 +361,7 @@ void drawSleepBitmap();
 
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 
-#if defined(PCBTARANIS)
 void drawAlertBox(const char * title, const char * text, const char * action);
-#endif
-
 void showAlertBox(const char * title, const char * text, const char * action , uint8_t sound);
 
 #define SET_SCROLLBAR_X(x)
