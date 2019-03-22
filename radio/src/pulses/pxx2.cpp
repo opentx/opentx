@@ -113,6 +113,7 @@ void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
   for (uint8_t i = 0; i < outputTelemetryBuffer.size; i++) {
     Pxx2Transport::addByte(outputTelemetryBuffer.data[i]);
   }
+  outputTelemetryBuffer.reset();
 }
 
 void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)

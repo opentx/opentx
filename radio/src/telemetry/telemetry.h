@@ -159,6 +159,10 @@ void logTelemetryWriteByte(uint8_t data);
 
 class OutputTelemetryBuffer {
   public:
+    OutputTelemetryBuffer() {
+      reset();
+    }
+
     void push(uint8_t byte) {
       data[size++] = byte;
     }
@@ -174,6 +178,7 @@ class OutputTelemetryBuffer {
     void reset() {
       size = 0;
       trigger = 0x7E;
+      destination = 0xFF;
     }
 
   public:
