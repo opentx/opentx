@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-uint16_t adcValues[NUM_ANALOGS] __DMA;
+uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/] __DMA;
 
 #define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
 #define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
