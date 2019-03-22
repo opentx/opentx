@@ -191,9 +191,9 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
       if (reusableBuffer.receiverSettings.pwmRate)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
       Pxx2Transport::addByte(flag1);
-      uint8_t outputsCount = min<uint8_t>(16, reusableBuffer.receiverSettings.outputsCount);
+      uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.receiverSettings.outputsCount);
       for (int i = 0; i < outputsCount; i++) {
-        Pxx2Transport::addByte(reusableBuffer.receiverSettings.outputsMapping[i]);
+        Pxx2Transport::addByte(min<uint8_t>(23, reusableBuffer.receiverSettings.outputsMapping[i]));
       }
     }
     reusableBuffer.receiverSettings.timeout = get_tmr10ms() + 200/*next try in 2s*/;

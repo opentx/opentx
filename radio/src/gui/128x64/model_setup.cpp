@@ -2067,7 +2067,7 @@ void onRxOptionsUpdateConfirm(const char * result)
   }
 }
 
-enum MenuModelReceiverOptionsItems {
+enum {
   ITEM_RECEIVER_TELEMETRY,
   ITEM_RECEIVER_PWM_RATE,
   ITEM_RECEIVER_PINMAP_FIRST
@@ -2092,7 +2092,7 @@ void menuModelReceiverOptions(event_t event)
     }
   }
 
-  if (reusableBuffer.moduleSettings.dirty == 2 && reusableBuffer.receiverSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.receiverSettings.dirty == 2 && reusableBuffer.receiverSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
   }
 

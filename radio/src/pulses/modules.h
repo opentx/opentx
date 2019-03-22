@@ -192,7 +192,7 @@ inline bool isModuleDSM2(uint8_t idx)
 #endif
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
-static const int8_t maxChannelsModules[] = { 0, 8, 8, 8, -2, 8, 4, 8, 8, 8}; // relative to 8!
+static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
 static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
@@ -216,6 +216,8 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return 0; // 8 channels
   else if (isModuleMultimoduleDSM2(idx))
     return -1; // 7 channels
+  else if (isModulePXX2(idx))
+    return 8; // 16 channels
   else
     return maxModuleChannels_M8(idx);
 }

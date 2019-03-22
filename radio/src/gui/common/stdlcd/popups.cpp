@@ -156,9 +156,10 @@ void runPopupWarning(event_t event)
       if (warningType == WARNING_TYPE_CONFIRM) {
         warningType = WARNING_TYPE_ASTERISK;
         warningText = nullptr;
-        warningResult = true;
         if (popupMenuHandler)
           popupMenuHandler(STR_OK);
+        else
+          warningResult = true;
         break;
       }
       // no break

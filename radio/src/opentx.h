@@ -1138,12 +1138,12 @@ union ReusableBuffer
   } moduleSetup;
 
   struct {
-      uint8_t state;  // 0x00 = READ 0x40 = WRITE
-      tmr10ms_t timeout;
-      uint8_t dirty;
-      uint8_t rfProtocol;
-      uint8_t externalAntenna;
-      int8_t  txPower;
+    uint8_t state;  // 0x00 = READ 0x40 = WRITE
+    tmr10ms_t timeout;
+    uint8_t dirty;
+    uint8_t rfProtocol;
+    uint8_t externalAntenna;
+    int8_t  txPower;
   } moduleSettings;
 
   struct {

@@ -132,7 +132,10 @@ void menuRadioModulesVersion(event_t event)
     // Module model
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Model");
-      lcdDrawText(12 * FW, y, modulesModels[reusableBuffer.hardware.modules[module].modelID]);
+      uint8_t modelId = reusableBuffer.hardware.modules[module].modelID;
+      if (modelId >= DIM(modulesModels))
+        modelId = 0;
+      lcdDrawText(12 * FW, y, modulesModels[modelId]);
     }
     y += FH;
 
@@ -151,7 +154,10 @@ void menuRadioModulesVersion(event_t event)
         if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
-          lcdDrawText(12 * FW, y, receiversModels[reusableBuffer.hardware.modules[module].receivers[receiver].modelID]);
+          uint8_t modelId = reusableBuffer.hardware.modules[module].receivers[receiver].modelID;
+          if (modelId >= DIM(receiversModels))
+            modelId = 0;
+          lcdDrawText(12 * FW, y, receiversModels[modelId]);
         }
         y += FH;
 
