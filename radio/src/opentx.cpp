@@ -27,13 +27,12 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-
 uint8_t unexpectedShutdown = 0;
 
-/* AVR: mixer duration in 1/16ms */
+uint16_t vbattRTC;
+
 /* ARM: mixer duration in 0.5us */
 uint16_t maxMixerDuration;
-
 
 uint8_t heartbeat;
 

@@ -287,6 +287,8 @@ void boardInit()
   enableSpeaker();
 
   initHeadphoneTrainerSwitch();
+
+  vbattRTC = getRTCBattVoltage();
 #endif // !defined(SIMU)
 }
 

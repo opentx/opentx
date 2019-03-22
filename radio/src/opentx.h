@@ -572,6 +572,8 @@ void flightReset(uint8_t check=true);
 
 extern uint8_t unexpectedShutdown;
 
+extern uint16_t vbattRTC;
+
 extern uint16_t maxMixerDuration;
 
 #define DURATION_MS_PREC2(x) ((x)/20)

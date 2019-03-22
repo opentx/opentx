@@ -394,9 +394,10 @@ enum Analogs {
 #endif
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
-  MOUSE1,
+  MOUSE1, // TODO why after voltage?
   MOUSE2,
-  NUM_ANALOGS
+  NUM_ANALOGS,
+  TX_RTC = NUM_ANALOGS
 };
 
 enum CalibratedAnalogs {
@@ -423,9 +424,10 @@ enum CalibratedAnalogs {
 
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
-extern uint16_t adcValues[NUM_ANALOGS];
+extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
 void adcInit(void);
 void adcRead(void);
+uint16_t getRTCBattVoltage();
 uint16_t getAnalogValue(uint8_t index);
 #define NUM_MOUSE_ANALOGS              2
 #if defined(PCBX10)

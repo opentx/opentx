@@ -461,7 +461,8 @@ enum Analogs {
   SLIDER2,
 #endif
   TX_VOLTAGE,
-  NUM_ANALOGS
+  NUM_ANALOGS,
+  TX_RTC = NUM_ANALOGS
 };
 
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
@@ -526,8 +527,9 @@ enum CalibratedAnalogs {
 
 void adcInit(void);
 void adcRead(void);
-extern uint16_t adcValues[NUM_ANALOGS];
+extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
 uint16_t getAnalogValue(uint8_t index);
+uint16_t getRTCBattVoltage();
 
 // Battery driver
 uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps

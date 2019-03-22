@@ -118,6 +118,9 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SH,
 #endif
   ITEM_RADIO_HARDWARE_BATTERY_CALIB,
+#if defined(STM32)
+  ITEM_RADIO_HARDWARE_RTC_BATTERY,
+#endif
 #if defined(TX_CAPACITY_MEASUREMENT)
   ITEM_RADIO_HARDWARE_CAPACITY_CALIB,
 #endif
@@ -190,6 +193,9 @@ void menuRadioHardware(event_t event)
     LABEL(Switches),
       SWITCHES_ROWS,
     0 /* battery calib */,
+#if defined(STM32)
+    READONLY_ROW,
+#endif
 #if defined(TX_CAPACITY_MEASUREMENT)
     0,
 #endif
@@ -307,10 +313,17 @@ void menuRadioHardware(event_t event)
         }
         break;
 
+#if defined(STM32)
+      case ITEM_RADIO_HARDWARE_RTC_BATTERY:
+        lcdDrawTextAlignedLeft(y, "RTC Batt");
+        putsVolts(HW_SETTINGS_COLUMN2, y, vbattRTC, PREC2|LEFT);
+        break;
+#endif
+
 #if defined(TX_CAPACITY_MEASUREMENT)
-      case ITEM_RADIO_HARDWARE_BATTERY_CALIB:
+      case ITEM_RADIO_HARDWARE_CAPACITY_CALIB:
         lcdDrawTextAlignedLeft(y, STR_CURRENT_CALIB);
-        drawValueWithUnit(HW_SETTINGS_COLUMN2, y, getCurrent(), UNIT_MILLIAMPS, attr) ;
+        drawValueWithUnit(HW_SETTINGS_COLUMN2, y, getCurrent(), UNIT_MILLIAMPS, attr);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
         }

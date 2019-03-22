@@ -60,7 +60,7 @@
   #define NUM_ANALOGS_ADC              NUM_ANALOGS
 #endif
 
-uint16_t adcValues[NUM_ANALOGS] __DMA;
+uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/] __DMA;
 
 void adcInit()
 {
@@ -92,7 +92,7 @@ void adcInit()
 
   ADC_MAIN->CR1 = ADC_CR1_SCAN;
   ADC_MAIN->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC - 1) << 20; // bits 23:20 = number of conversions
+  ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC + 1/*RTC*/ - 1) << 20; // bits 23:20 = number of conversions
 
 #if defined(PCBX10)
   if (STICKS_PWM_ENABLED()) {
@@ -104,25 +104,26 @@ void adcInit()
     ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
   }
 #elif defined(PCBX9E)
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT4<<0) + (ADC_CHANNEL_SLIDER3<<5) + (ADC_CHANNEL_SLIDER4<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_CHANNEL_RTC<<20); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT2<<20) + (ADC_CHANNEL_POT3<<25); // conversions 1 to 6
 #elif defined(PCBXLITE)
   if (STICKS_PWM_ENABLED()) {
     ADC_MAIN->SQR2 = 0;
-    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_POT2<<5) + (ADC_CHANNEL_BATT<<10);
+    ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_POT2<<5) + (ADC_CHANNEL_BATT<<10) + (ADC_CHANNEL_RTC<<15);
   }
   else {
-    ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0);
+    ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0) + (ADC_CHANNEL_RTC<<5);
     ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
   }
 #elif defined(PCBX7)
   // TODO why do we invert POT1 and POT2 here?
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0); // conversions 7 and more
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0) + (ADC_CHANNEL_RTC<<5); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
 #elif defined(PCBX3)
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_RTC<<0); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_BATT<<25); // conversions 1 to 6
 #else
-  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15); // conversions 7 and more
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_POT3<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10) + (ADC_CHANNEL_BATT<<15) + (ADC_CHANNEL_RTC<<20); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_POT2<<25); // conversions 1 to 6
 #endif
 
@@ -134,13 +135,13 @@ void adcInit()
   ADC_DMA_Stream->CR = DMA_SxCR_PL | ADC_DMA_SxCR_CHSEL | DMA_SxCR_MSIZE_0 | DMA_SxCR_PSIZE_0 | DMA_SxCR_MINC;
   ADC_DMA_Stream->PAR = CONVERT_PTR_UINT(&ADC_MAIN->DR);
   ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[FIRST_ANALOG_ADC]);
-  ADC_DMA_Stream->NDTR = NUM_ANALOGS_ADC;
+  ADC_DMA_Stream->NDTR = NUM_ANALOGS_ADC + 1/*RTC*/;
   ADC_DMA_Stream->FCR = DMA_SxFCR_DMDIS | DMA_SxFCR_FTH_0;
 
 #if defined(PCBX9E)
   ADC_EXT->CR1 = ADC_CR1_SCAN;
   ADC_EXT->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC_EXT->SQR1 = (NUM_ANALOGS_ADC_EXT-1) << 20;
+  ADC_EXT->SQR1 = (NUM_ANALOGS_ADC_EXT - 1) << 20;
   ADC_EXT->SQR2 = 0;
   ADC_EXT->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_SLIDER1<<5) + (ADC_CHANNEL_SLIDER2<<10); // conversions 1 to 3
   ADC_EXT->SMPR1 = 0;
@@ -225,6 +226,14 @@ void adcRead()
 // TODO
 void adcStop()
 {
+}
+
+uint16_t getRTCBattVoltage()
+{
+  ADC->CCR |= ADC_CCR_VBATE;
+  adcSingleRead();
+  ADC->CCR &= ADC_CCR_VBATE;
+  return adcValues[TX_RTC] * 330 / 2048;
 }
 
 #if !defined(SIMU)

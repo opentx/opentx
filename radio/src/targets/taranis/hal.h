@@ -549,6 +549,7 @@
   #define ADC_CHANNEL_POT1              ADC_Channel_11 // ADC1_IN11
   #define ADC_CHANNEL_POT2              ADC_Channel_12 // ADC1_IN12
   #define ADC_CHANNEL_BATT              ADC_Channel_10 // ADC1_IN10
+  #define ADC_CHANNEL_RTC               ADC_Channel_18 // ADC1_IN18
 #elif defined(PCBX7)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            0

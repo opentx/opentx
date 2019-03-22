@@ -234,6 +234,7 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_5   // ADC3_IN5
   #define ADC_CHANNEL_EXT1              ADC_Channel_6   // ADC3_IN6
   #define ADC_CHANNEL_EXT2              ADC_Channel_7   // ADC3_IN7
+  #define ADC_CHANNEL_RTC               0 // TODO later ... ADC1_IN18
   #define ADC_MAIN                      ADC3
   #define ADC_SAMPTIME                  3
   #define ADC_DMA                       DMA2
