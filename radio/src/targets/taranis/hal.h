@@ -456,6 +456,7 @@
 #define ADC_SET_DMA_FLAGS()             ADC_DMA->HIFCR = (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
 #define ADC_TRANSFER_COMPLETE()         (ADC_DMA->HISR & DMA_HISR_TCIF4)
 #define ADC_SAMPTIME                    2   // sample time = 28 cycles
+#define ADC_CHANNEL_RTC                 ADC_Channel_18 // ADC1_IN18
 #if defined(PCBX9E)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            0
@@ -549,7 +550,6 @@
   #define ADC_CHANNEL_POT1              ADC_Channel_11 // ADC1_IN11
   #define ADC_CHANNEL_POT2              ADC_Channel_12 // ADC1_IN12
   #define ADC_CHANNEL_BATT              ADC_Channel_10 // ADC1_IN10
-  #define ADC_CHANNEL_RTC               ADC_Channel_18 // ADC1_IN18
 #elif defined(PCBX7)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            0
