@@ -262,8 +262,6 @@ const char * DeviceFirmwareUpdate::uploadFile(const char *filename)
   startFrame(PRIM_CMD_DOWNLOAD);
   sendFrame();
 
-  lcdDrawText(LCD_W/2, LCD_H/4, filename);
-
   while (1) {
     if (f_read(&file, buffer, 1024, &count) != FR_OK) {
       f_close(&file);
