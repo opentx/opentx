@@ -160,9 +160,9 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
 
     case FrskySportPolling:
       #if defined(LUA)
-      if (len >= 1 && outputTelemetryBufferSize > 0 && data[0] == outputTelemetryBufferTrigger) {
+      if (len >= 1 && outputTelemetryBuffer.size > 0 && data[0] == outputTelemetryBuffer.trigger) {
         TRACE("MP Sending sport data out.");
-        sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
+        sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
       }
       #endif
       break;
