@@ -118,6 +118,7 @@ inline const char * SDCARD_ERROR(FRESULT result)
 
 // NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
 const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL);
+const char * removePath(const char * filename);
 
 // TODO REMOVE THE O9X FOURCC in 2.3
 #if defined(PCBX12S)

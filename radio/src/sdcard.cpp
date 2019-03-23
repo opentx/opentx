@@ -194,6 +194,18 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
   }
 }
 
+const char * removePath(const char * filename)
+{
+  if(filename) {
+    for (uint8_t i = strlen(filename); i > 0; i--) {
+      if (filename[i] == '/') {
+        return filename + i + 1;
+      }
+    }
+  }
+  return filename;
+}
+
 const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMaxLen, uint8_t *fnlen, uint8_t *extlen)
 {
   int len = size;

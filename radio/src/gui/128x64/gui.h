@@ -343,7 +343,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawPotsBars();
 void doMainScreenGraphics();
 
-void drawProgressBar(const char * label, int num, int den);
+void drawProgressBar(const char * filename, const char * label, int num, int den);
 void drawSleepBitmap();
 
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);

@@ -230,9 +230,12 @@ void drawStatusLine()
 }
 #endif
 
-void drawProgressBar(const char * label, int num, int den)
+void drawProgressBar(const char * filename,  const char * label, int num, int den)
 {
   lcdClear();
+  if(filename) {
+    lcdDrawText(LCD_W/2-strlen(removePath(filename))/2*FW, LCD_H/4, removePath(filename), 0);
+  }
   if (label) {
     lcdDrawTextAlignedLeft(4*FH, label);
   }
