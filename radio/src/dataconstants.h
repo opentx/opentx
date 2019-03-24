@@ -798,6 +798,6 @@ enum BluetoothModes {
 // PXX2 constants
 #define PXX2_LEN_REGISTRATION_ID            8
 #define PXX2_LEN_RX_NAME                    8
-#define PXX2_MAX_RECEIVERS_PER_MODULE       5
+#define PXX2_MAX_RECEIVERS_PER_MODULE       3
 
 #endif // _DATACONSTANTS_H_
