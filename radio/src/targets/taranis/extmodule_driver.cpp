@@ -154,8 +154,17 @@ void extmoduleInvertedSerialStart(uint32_t baudrate)
   NVIC_EnableIRQ(EXTMODULE_USART_IRQn);
 }
 
+// TODO remove this when we have adaptative speed
+uint32_t externalModuleBaudrate = 230400;
+uint32_t currentExternalModuleBaudrate = 230400;
+
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
+  // TODO remove this when we have adaptative speed
+  if (externalModuleBaudrate != currentExternalModuleBaudrate) {
+    extmodulePxx2Start();
+  }
+
   DMA_InitTypeDef DMA_InitStructure;
   DMA_DeInit(EXTMODULE_USART_DMA_STREAM);
   DMA_InitStructure.DMA_Channel = EXTMODULE_USART_DMA_CHANNEL;
@@ -178,6 +187,10 @@ void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
   USART_DMACmd(EXTMODULE_USART, USART_DMAReq_Tx, ENABLE);
 }
 
+// TODO remove this when we have adaptative speed
+uint8_t counter = 0;
+#include <stdio.h>
+
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void EXTMODULE_USART_IRQHandler(void)
 {
@@ -187,6 +200,9 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
     uint8_t data = EXTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
       extmoduleFifo.errors++;
+      if (!counter++) {
+        TRACE_NOCRLF("%02X ", (uint8_t)status);
+      }
     }
     else {
       extmoduleFifo.push(data);
@@ -197,7 +213,11 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmodulePxx2Start()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX2_BAUDRATE);
+  // TODO remove this when we have adaptative speed
+  currentExternalModuleBaudrate = externalModuleBaudrate;
+  extmoduleInvertedSerialStart(externalModuleBaudrate);
+
+  // extmoduleInvertedSerialStart(EXTMODULE_USART_PXX2_BAUDRATE);
 }
 #else
 void extmodulePxx2Start()

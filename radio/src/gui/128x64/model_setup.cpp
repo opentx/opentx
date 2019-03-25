@@ -122,6 +122,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_EXTERNAL_MODULE_SYNCSTATUS,
 #endif
+  ITEM_MODEL_EXTERNAL_MODULE_BAUDRATE,  // TODO remove this when we have adaptative speed
   ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_EXTERNAL_MODULE_NPXX2_BIND,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_MODEL_NUM,
@@ -482,6 +483,7 @@ void menuModelSetup(event_t event)
       EXTERNAL_MODULE_MODE_ROWS,
       MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
       MULTIMODULE_STATUS_ROWS
+      IF_PXX2_MODULE(EXTERNAL_MODULE, 0),  // TODO remove this when we have adaptative speed
       EXTERNAL_MODULE_CHANNELS_ROWS,
       IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, EXTERNAL_MODULE_BIND_ROWS()),      // line reused for PPM: PPM settings
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                                    // RxNum
@@ -1163,6 +1165,15 @@ void menuModelSetup(event_t event)
         }
         break;
 #endif
+
+      case ITEM_MODEL_EXTERNAL_MODULE_BAUDRATE:
+        extern uint32_t externalModuleBaudrate;
+        lcdDrawTextAlignedLeft(y, INDENT "Baudrate");
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, externalModuleBaudrate, attr | LEFT);
+        if (attr) {
+          externalModuleBaudrate = checkIncDec(event, externalModuleBaudrate / 200, 576, 2100) * 200;
+        }
+        break;
 
 #if defined(PCBTARANIS)
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
