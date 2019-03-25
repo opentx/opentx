@@ -154,17 +154,8 @@ void extmoduleInvertedSerialStart(uint32_t baudrate)
   NVIC_EnableIRQ(EXTMODULE_USART_IRQn);
 }
 
-// TODO remove this when we have adaptative speed
-uint32_t externalModuleBaudrate = 230400;
-uint32_t currentExternalModuleBaudrate = 230400;
-
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
 {
-  // TODO remove this when we have adaptative speed
-  if (externalModuleBaudrate != currentExternalModuleBaudrate) {
-    extmodulePxx2Start();
-  }
-
   DMA_InitTypeDef DMA_InitStructure;
   DMA_DeInit(EXTMODULE_USART_DMA_STREAM);
   DMA_InitStructure.DMA_Channel = EXTMODULE_USART_DMA_CHANNEL;
@@ -213,11 +204,7 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmodulePxx2Start()
 {
-  // TODO remove this when we have adaptative speed
-  currentExternalModuleBaudrate = externalModuleBaudrate;
-  extmoduleInvertedSerialStart(externalModuleBaudrate);
-
-  // extmoduleInvertedSerialStart(EXTMODULE_USART_PXX2_BAUDRATE);
+  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX2_BAUDRATE);
 }
 #else
 void extmodulePxx2Start()
