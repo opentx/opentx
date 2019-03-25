@@ -265,7 +265,6 @@ typedef uint16_t FlightModesType;
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU   -1
 #define EDIT_SELECT_FIELD  0
 #define EDIT_MODIFY_FIELD  1
 #define EDIT_MODIFY_STRING 2

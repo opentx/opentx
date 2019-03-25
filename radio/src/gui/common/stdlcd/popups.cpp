@@ -20,15 +20,48 @@
 
 #include "opentx.h"
 
-uint8_t popupMenuOffsetType = MENU_OFFSET_INTERNAL;
-void (*popupFunc)(event_t event) = NULL;
+const char * warningText = NULL;
+const char * warningInfoText;
+uint8_t      warningInfoLength;
+uint8_t      warningType;
+uint8_t      warningResult = 0;
+uint8_t      warningInfoFlags = ZCHAR;
+
+uint8_t      popupMenuOffsetType = MENU_OFFSET_INTERNAL;
+void         (* popupFunc)(event_t event) = NULL;
 
 const char * popupMenuItems[POPUP_MENU_MAX_LINES];
-uint8_t s_menu_item = 0;
-uint16_t popupMenuItemsCount = 0;
-uint16_t popupMenuOffset = 0;
-void (* popupMenuHandler)(const char * result);
+uint8_t      s_menu_item = 0;
+uint16_t     popupMenuItemsCount = 0;
+uint16_t     popupMenuOffset = 0;
+void         (* popupMenuHandler)(const char * result);
 const char * popupMenuTitle = nullptr;
+
+void drawMessageBoxBackground(coord_t top, coord_t height)
+{
+  // white background
+  lcdDrawFilledRect(MESSAGEBOX_X - 1, top - 1, MESSAGEBOX_W + 2, height + 2, SOLID, ERASE);
+
+  // border
+  lcdDrawRect(MESSAGEBOX_X, top, MESSAGEBOX_W, height, SOLID, FORCE);
+}
+
+void drawMessageBox(const char * title)
+{
+  // background + border
+  drawMessageBoxBackground(MESSAGEBOX_Y, 40);
+
+  // title
+  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
+
+  // could be a place for a warningInfoText
+}
+
+void showMessageBox(const char * title)
+{
+  drawMessageBox(title);
+  lcdRefresh();
+}
 
 const char * runPopupMenu(event_t event)
 {
@@ -175,12 +208,6 @@ void runPopupWarning(event_t event)
   }
 }
 
-void showMessageBox(const char * str)
-{
-  drawMessageBox(str);
-  lcdRefresh();
-}
-
 void showAlertBox(const char * title, const char * text, const char * action , uint8_t sound)
 {
   drawAlertBox(title, text, action);
@@ -190,4 +217,23 @@ void showAlertBox(const char * title, const char * text, const char * action , u
   clearKeyEvents();
   backlightOn();
   checkBacklight();
+}
+
+void drawProgressScreen(const char * title, const char * message, int num, int den)
+{
+  lcdClear();
+  if (title) {
+    lcdDrawText(LCD_W / 2 - getTextWidth(title) / 2, 2*FH, title);
+  }
+  if (message) {
+    lcdDrawText(4, 5*FH, message);
+  }
+  lcdDrawRect(4, 6*FH+4, LCD_W-8, 7);
+  if (num > 0 && den > 0) {
+    int width = ((LCD_W-12)*num)/den;
+    lcdDrawSolidHorizontalLine(6, 6*FH+6, width, FORCE);
+    lcdDrawSolidHorizontalLine(6, 6*FH+7, width, FORCE);
+    lcdDrawSolidHorizontalLine(6, 6*FH+8, width, FORCE);
+  }
+  lcdRefresh();
 }

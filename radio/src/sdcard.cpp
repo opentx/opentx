@@ -194,6 +194,16 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
   }
 }
 
+const char * getBasename(const char * path)
+{
+  for (int8_t i = strlen(path) - 1; i >= 0; i--) {
+    if (path[i] == '/') {
+      return &path[i + 1];
+    }
+  }
+  return path;
+}
+
 const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMaxLen, uint8_t *fnlen, uint8_t *extlen)
 {
   int len = size;

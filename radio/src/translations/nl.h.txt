@@ -1035,11 +1035,11 @@
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
 #if defined(COLORLCD)
-#define TR_EEBACKUP            "EEPROM backup"
-#define TR_FACTORYRESET        "Factory reset"
+#define STR_EEBACKUP            "EEPROM backup"
+#define STR_FACTORYRESET        "Factory reset"
 #else
-#define TR_EEBACKUP            TR("\001[ENTER Lang]: Backup", "\012[ENTER Lang]: EEPROM backup => SD")
-#define TR_FACTORYRESET        TR("\001[MENU Lang]: Fact. reset", "\012[MENU Lang]: Factory reset")
+#define STR_EEBACKUP            TR("Backup", "EEPROM backup => SD")
+#define STR_FACTORYRESET        TR("Fact. reset", "Factory reset")
 
 #endif
 #define TR_CONFIRMRESET        TR("Wis Alles?", "Wis ALLE modellen en instellingen?")

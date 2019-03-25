@@ -1825,7 +1825,7 @@ void menuModelSetup(event_t event)
 #if defined(PXX)
   if (IS_RANGECHECK_ENABLE()) {
     showMessageBox("RSSI: ");
-    lcdDrawNumber(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
+    lcdDrawNumber(WARNING_LINE_X, 5*FH, TELEMETRY_RSSI(), BOLD);
   }
 #endif
 

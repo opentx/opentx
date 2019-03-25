@@ -930,7 +930,7 @@
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING             "\032Writing..."
+#define STR_WRITING             "Writing..."
 #define TR_CONFIRM_FORMAT      "Confirm Format?"
 #define TR_INTERNALRF          "Interna RF"
 #define TR_EXTERNALRF          "Externa RF"
@@ -1039,8 +1039,8 @@
 #define TR_SCRIPT              "Script"
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
-#define TR_EEBACKUP            "\004[ENTER Long] to backup the EEPROM"
-#define TR_FACTORYRESET        "\012[MENU Long]: Factory reset"
+#define STR_EEBACKUP           "Backup the EEPROM"
+#define STR_FACTORYRESET       "Factory reset"
 #define TR_CONFIRMRESET        "Erase ALL models and settings?"
 #define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 

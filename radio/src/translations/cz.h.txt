@@ -1029,16 +1029,14 @@
 #define TR_INPUTS              "Vstupy"
 #define TR_OUTPUTS             "Výstupy"
 #if defined(COLORLCD)
-#define TR_EEBACKUP            "Záloha EEPROM"
-#define TR_FACTORYRESET        "Factory reset"
+#define STR_EEBACKUP           "Záloha EEPROM"
+#define STR_FACTORYRESET       "Factory reset"
 #else
-#define TR_EEBACKUP            TR("[dlouze ENTER]: Záloha", "\010[dlouze ENTER] zálohuje EEPROM")
-#define TR_FACTORYRESET        TR("[dlouze MENU]: Fact.reset", "\012[dlouze MENU]: Factory reset")
+#define STR_EEBACKUP           TR("Záloha", "Zálohuje EEPROM")
+#define STR_FACTORYRESET       TR("Fact.reset", "Factory reset")
 #endif
-#define TR_CONFIRMRESET        "Smazat modely a nastavení?"
-#define TR_TO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
-
-
+#define STR_CONFIRMRESET        "Smazat modely a nastavení?"
+#define STR_TO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Název"

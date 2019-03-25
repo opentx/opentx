@@ -153,6 +153,11 @@ bool DeviceFirmwareUpdate::waitState(State newState, uint32_t timeout)
 #if defined(SIMU)
   UNUSED(state);
   UNUSED(timeout);
+  static uint8_t pass = 0;
+  if (++pass == 10) {
+    pass = 0;
+    RTOS_WAIT_MS(1);
+  }
   return true;
 #else
   watchdogSuspend(timeout / 10);
@@ -226,10 +231,10 @@ const char * DeviceFirmwareUpdate::sendPowerOn()
     return TR("Bottom pin no resp", "Bottom pin not responding");
   }
   else {
-    return TR("Module pin no resp", "Module pin not responding");
+    return TR("Device pin no resp", "Device pin not responding");
   }
 #else
-  return TR("Not responding", "Module not responding");
+  return TR("Not responding", "Device not responding");
 #endif
 }
 
@@ -272,7 +277,7 @@ const char * DeviceFirmwareUpdate::uploadFile(const char *filename)
 
     for (uint32_t i=0; i<count; i++) {
       if (!waitState(SPORT_DATA_REQ, 2000)) {
-        return "Module refused data";
+        return "Device refused data";
       }
       startFrame(PRIM_DATA_WORD);
       uint32_t offset = (address & 1023) >> 2; // 32 bit word offset into buffer
@@ -281,7 +286,7 @@ const char * DeviceFirmwareUpdate::uploadFile(const char *filename)
       state = SPORT_DATA_TRANSFER,
       sendFrame();
       if (i == 0) {
-        drawProgressBar(STR_WRITING, file.fptr, file.obj.objsize);
+        drawProgressScreen(getBasename(filename), STR_WRITING, file.fptr, file.obj.objsize);
       }
     }
 
@@ -295,11 +300,11 @@ const char * DeviceFirmwareUpdate::uploadFile(const char *filename)
 const char * DeviceFirmwareUpdate::endTransfer()
 {
   if (!waitState(SPORT_DATA_REQ, 2000))
-    return "Module refused data";
+    return "Device refused data";
   startFrame(PRIM_DATA_EOF);
   sendFrame();
   if (!waitState(SPORT_COMPLETE, 2000)) {
-    return "Module rejected firmware";
+    return "Device rejected firmware";
   }
   return nullptr;
 }
@@ -310,6 +315,8 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
 
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
+
+  drawProgressScreen(getBasename(filename), "Device reset...", 0, 0);
 
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();

@@ -20,21 +20,6 @@
 
 #include "opentx.h"
 
-const char * warningText = NULL;
-const char * warningInfoText;
-uint8_t      warningInfoLength;
-uint8_t      warningType;
-uint8_t      warningResult = 0;
-uint8_t      warningInfoFlags = ZCHAR;
-
-void drawMessageBox(const char * title)
-{
-  lcdDrawFilledRect(10, 16, LCD_W-20, 40, SOLID, ERASE);
-  lcdDrawRect(10, 16, LCD_W-20, 40);
-  lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y, title, WARNING_LINE_LEN);
-  // could be a place for a warningInfoText
-}
-
 const unsigned char ASTERISK_BITMAP[]  = {
 #include "asterisk.lbm"
 };

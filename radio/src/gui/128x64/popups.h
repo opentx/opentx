@@ -23,19 +23,17 @@
 
 #include <keys.h>
 
-#define MENU_X                         10
-#define MENU_Y                         16
-#define MENU_W                         LCD_W - 19
+#define MESSAGEBOX_X                   10
+#define MESSAGEBOX_Y                   16
+#define MESSAGEBOX_W                   (LCD_W - 19)
+
+#define MENU_X                         MESSAGEBOX_X
+#define MENU_Y                         MESSAGEBOX_Y
+#define MENU_W                         MESSAGEBOX_W
+
 #define WARNING_LINE_LEN               20
 #define WARNING_LINE_X                 16
 #define WARNING_LINE_Y                 3*FH
-
-void drawMessageBox(const char * title);
-void showMessageBox(const char * title);
-void runPopupWarning(event_t event);
-
-extern void (*popupFunc)(event_t event);
-extern uint8_t warningInfoFlags;
 
 #if !defined(GUI)
   #define DISPLAY_WARNING(...)
@@ -60,26 +58,19 @@ extern uint8_t warningInfoFlags;
   #define POPUP_MENU_ADD_SD_ITEM(s)
 #endif
 
-  #define POPUP_MENU_ADD_ITEM(s)       do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuItemsCount < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuItemsCount++] = s; } while (0)
-  #define POPUP_MENU_SELECT_ITEM(s)    s_menu_item =  (s > 0 ? (s < popupMenuItemsCount ? s : popupMenuItemsCount) : 0)
-  #define POPUP_MENU_START(func)       do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while (0)
-  #define POPUP_MENU_MAX_LINES         12
-  #define MENU_MAX_DISPLAY_LINES       6
-  #define MENU_LINE_LENGTH             (LEN_MODEL_NAME+12)
-  #define POPUP_MENU_SET_BSS_FLAG()
-  #define POPUP_MENU_UNSET_BSS_FLAG()
-  enum {
-    MENU_OFFSET_INTERNAL,
-    MENU_OFFSET_EXTERNAL
-  };
-  extern uint8_t popupMenuOffsetType;
-  extern uint8_t s_menu_item;
+#define POPUP_MENU_ADD_ITEM(s)       do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuItemsCount < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuItemsCount++] = s; } while (0)
+#define POPUP_MENU_SELECT_ITEM(s)    s_menu_item =  (s > 0 ? (s < popupMenuItemsCount ? s : popupMenuItemsCount) : 0)
+#define POPUP_MENU_START(func)       do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while (0)
+#define POPUP_MENU_MAX_LINES         12
+#define MENU_MAX_DISPLAY_LINES       6
+#define MENU_LINE_LENGTH             (LEN_MODEL_NAME+12)
+#define POPUP_MENU_SET_BSS_FLAG()
+#define POPUP_MENU_UNSET_BSS_FLAG()
+enum {
+  MENU_OFFSET_INTERNAL,
+  MENU_OFFSET_EXTERNAL
+};
 
-  extern uint16_t popupMenuOffset;
-  extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
-  extern uint16_t popupMenuItemsCount;
-  const char * runPopupMenu(event_t event);
-  extern void (*popupMenuHandler)(const char * result);
-  extern const char * popupMenuTitle;
+#include "../common/stdlcd/popups.h"
 
 #endif // _POPUPS_H_

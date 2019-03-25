@@ -40,7 +40,6 @@
 
 #define NUM_BODY_LINES                 (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT             FH
-#define MENU_INIT_VPOS                 0
 
 #define CURVE_SIDE_WIDTH               (LCD_H/2)
 #define CURVE_CENTER_X                 (LCD_W-CURVE_SIDE_WIDTH-2)
@@ -57,7 +56,6 @@ void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU               -1
 #define EDIT_SELECT_FIELD              0
 #define EDIT_MODIFY_FIELD              1
 #define EDIT_MODIFY_STRING             2
@@ -242,12 +240,6 @@ uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint
 #define WARNING_TYPE_CONFIRM           1
 #define WARNING_TYPE_INFO              2
 
-extern const char * warningText;
-extern const char * warningInfoText;
-extern uint8_t         warningInfoLength;
-extern uint8_t         warningResult;
-extern uint8_t         warningType;
-
 #define COPY_MODE                      1
 #define MOVE_MODE                      2
 extern uint8_t s_copyMode;
@@ -343,7 +335,7 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawPotsBars();
 void doMainScreenGraphics();
 
-void drawProgressBar(const char * label, int num, int den);
+void drawProgressScreen(const char * title, const char * message, int num, int den);
 void drawSleepBitmap();
 
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);

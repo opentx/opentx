@@ -255,14 +255,14 @@ void menuRadioVersion(event_t event)
 #endif
 
 #if defined(EEPROM_RLC)
-  lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_EEBACKUP), menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM ? INVERS : 0);
+  lcdDrawText(INDENT_WIDTH, y, BUTTON(STR_EEBACKUP), menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM ? INVERS : 0);
   y += FH;
   if (menuVerticalPosition == ITEM_RADIO_BACKUP_EEPROM && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
     eepromBackup();
   }
 
-  lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_FACTORYRESET), menuVerticalPosition == ITEM_RADIO_FACTORY_RESET ? INVERS : 0);
+  lcdDrawText(INDENT_WIDTH, y, BUTTON(STR_FACTORYRESET), menuVerticalPosition == ITEM_RADIO_FACTORY_RESET ? INVERS : 0);
   // y += FH;
   if (menuVerticalPosition == ITEM_RADIO_FACTORY_RESET && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
