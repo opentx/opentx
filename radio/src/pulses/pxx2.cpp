@@ -36,53 +36,69 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
   return flag0;
 }
 
-void Pxx2Pulses::addFlag1(uint8_t module)
+void Pxx2Pulses::addFlag1()
 {
   uint8_t flag1 = 0;
   Pxx2Transport::addByte(flag1);
 }
 
-void Pxx2Pulses::addChannels(uint8_t module, uint8_t sendFailsafe, uint8_t firstChannel)
+void Pxx2Pulses::addPulsesValues(uint16_t low, uint16_t high)
+{
+  Pxx2Transport::addByte(low); // Low byte of channel
+  Pxx2Transport::addByte(((low >> 8) & 0x0F) | (high << 4));  // 4 bits each from 2 channels
+  Pxx2Transport::addByte(high >> 4);  // High byte of channel
+}
+
+void Pxx2Pulses::addChannels(uint8_t module)
 {
   uint16_t pulseValue = 0;
   uint16_t pulseValueLow = 0;
 
-  for (int8_t i=0; i<8; i++) {
-    uint8_t channel = firstChannel + i;
-    if (sendFailsafe) {
-      if (g_model.moduleData[module].failsafeMode == FAILSAFE_HOLD) {
+  uint8_t channel = g_model.moduleData[module].channelsStart;
+  uint8_t count = sentModuleChannels(module);
+
+  for (int8_t i = 0; i < count; i++, channel++) {
+    int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+    pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+    if (i & 1)
+      addPulsesValues(pulseValueLow, pulseValue);
+    else
+      pulseValueLow = pulseValue;
+  }
+}
+
+void Pxx2Pulses::addFailsafe(uint8_t module)
+{
+  uint16_t pulseValue = 0;
+  uint16_t pulseValueLow = 0;
+
+  uint8_t channel = g_model.moduleData[module].channelsStart;
+  uint8_t count = sentModuleChannels(module);
+
+  for (int8_t i = 0; i < count; i++, channel++) {
+    if (g_model.moduleData[module].failsafeMode == FAILSAFE_HOLD) {
+      pulseValue = 2047;
+    }
+    else if (g_model.moduleData[module].failsafeMode == FAILSAFE_NOPULSES) {
+      pulseValue = 0;
+    }
+    else {
+      int16_t failsafeValue = g_model.failsafeChannels[channel];
+      if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
         pulseValue = 2047;
       }
-      else if (g_model.moduleData[module].failsafeMode == FAILSAFE_NOPULSES) {
+      else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
         pulseValue = 0;
       }
       else {
-        int16_t failsafeValue = g_model.failsafeChannels[channel];
-        if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-          pulseValue = 2047;
-        }
-        else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-          pulseValue = 0;
-        }
-        else {
-          failsafeValue += 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
-          pulseValue = limit(1, (failsafeValue * 512 / 682) + 1024, 2046);
-        }
+        failsafeValue += 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+        pulseValue = limit(1, (failsafeValue * 512 / 682) + 1024, 2046);
       }
     }
-    else {
-      int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
-      pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
-    }
-
-    if (i & 1) {
-      Pxx2Transport::addByte(pulseValueLow); // Low byte of channel
-      Pxx2Transport::addByte(((pulseValueLow >> 8) & 0x0F) | (pulseValue << 4));  // 4 bits each from 2 channels
-      Pxx2Transport::addByte(pulseValue >> 4);  // High byte of channel
-    }
-    else {
+    if (i & 1)
+      addPulsesValues(pulseValueLow, pulseValue);
+    else
       pulseValueLow = pulseValue;
-    }
   }
 }
 
@@ -90,21 +106,17 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_CHANNELS);
 
-  // FLAG0
+  // Flag0
   uint8_t flag0 = addFlag0(module);
 
-  // FLAG1
-  addFlag1(module);
+  // Flag1
+  addFlag1();
 
-  // Channels
-  uint8_t channelsCount = sentModuleChannels(module);
-  addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart);
-  if (channelsCount > 8) {
-    addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 8);
-    if (channelsCount > 16) {
-      addChannels(module, flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE, g_model.moduleData[module].channelsStart + 16);
-    }
-  }
+  // Failsafe / Channels
+  if (flag0 & PXX2_CHANNELS_FLAG0_FAILSAFE)
+    addFailsafe(module);
+  else
+    addChannels(module);
 }
 
 void Pxx2Pulses::setupTelemetryFrame(uint8_t module)

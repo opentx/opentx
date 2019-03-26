@@ -65,7 +65,7 @@ void showMessageBox(const char * title)
 
 const char * runPopupMenu(event_t event)
 {
-  const char * result = NULL;
+  const char * result = nullptr;
 
   uint8_t display_count = min<uint8_t>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
   uint8_t y = LCD_H / 2 - (popupMenuTitle ? 0 : 3) - (display_count * FH / 2);
@@ -149,7 +149,11 @@ const char * runPopupMenu(event_t event)
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
       result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
-      // no break
+      popupMenuItemsCount = 0;
+      s_menu_item = 0;
+      popupMenuOffset = 0;
+      popupMenuTitle = nullptr;
+      break;
 
 #if defined(CASE_EVT_ROTARY_LONG)
     CASE_EVT_ROTARY_LONG
@@ -158,6 +162,7 @@ const char * runPopupMenu(event_t event)
 #endif
 
     case EVT_KEY_BREAK(KEY_EXIT):
+      result = STR_EXIT;
       popupMenuItemsCount = 0;
       s_menu_item = 0;
       popupMenuOffset = 0;

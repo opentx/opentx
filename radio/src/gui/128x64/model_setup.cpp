@@ -276,7 +276,7 @@ enum MenuModelSetupItems {
 
 void onPXX2BindMenu(const char * result)
 {
-  if (result) {
+  if (result != STR_EXIT) {
     reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]);
     reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
   }

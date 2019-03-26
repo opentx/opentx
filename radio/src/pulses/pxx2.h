@@ -158,9 +158,13 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     uint8_t addFlag0(uint8_t module);
 
-    void addFlag1(uint8_t module);
+    void addFlag1();
 
-    void addChannels(uint8_t module, uint8_t sendFailsafe, uint8_t firstChannel);
+    void addPulsesValues(uint16_t low, uint16_t high);
+
+    void addChannels(uint8_t module);
+
+    void addFailsafe(uint8_t module);
 
     void addCrc()
     {
