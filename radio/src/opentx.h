@@ -1139,26 +1139,6 @@ union ReusableBuffer
     };
   } moduleSetup;
 
-  struct {
-    uint8_t state;  // 0x00 = READ 0x40 = WRITE
-    tmr10ms_t timeout;
-    uint8_t dirty;
-    uint8_t rfProtocol;
-    uint8_t externalAntenna;
-    int8_t  txPower;
-  } moduleSettings;
-
-  struct {
-    uint8_t state;  // 0x00 = READ 0x40 = WRITE
-    tmr10ms_t timeout;
-    uint8_t receiverId;
-    uint8_t dirty;
-    uint8_t telemetryDisabled;
-    uint8_t pwmRate;
-    uint8_t outputsCount;
-    uint8_t outputsMapping[24];
-  } receiverSettings;
-
   // 103 bytes
   struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
@@ -1196,8 +1176,32 @@ union ReusableBuffer
         PXX2HardwareInformation information;
       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
     } modules[NUM_MODULES];
+
     uint32_t updateTime;
-  } hardware;
+
+    union {
+      struct {
+        uint8_t state;  // 0x00 = READ 0x40 = WRITE
+        tmr10ms_t timeout;
+        uint8_t dirty;
+        uint8_t rfProtocol;
+        uint8_t externalAntenna;
+        int8_t txPower;
+      } moduleSettings;
+
+      struct {
+        uint8_t state;  // 0x00 = READ 0x40 = WRITE
+        tmr10ms_t timeout;
+        uint8_t receiverId;
+        uint8_t dirty;
+        uint8_t telemetryDisabled;
+        uint8_t pwmRate;
+        uint8_t outputsCount;
+        uint8_t outputsMapping[24];
+      } receiverSettings;
+    };
+
+  } hardwareAndSettings;
 
   struct {
     uint8_t stickMode;

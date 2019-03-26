@@ -99,24 +99,24 @@ void menuRadioModulesVersion(event_t event)
 
   TITLE("MODULES / RX VERSION");
 
-  if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardware.updateTime) {
+  if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardwareAndSettings.updateTime) {
     // menuVerticalOffset = 0;
 
-    memclear(&reusableBuffer.hardware.modules, sizeof(reusableBuffer.hardware.modules));
+    memclear(&reusableBuffer.hardwareAndSettings.modules, sizeof(reusableBuffer.hardwareAndSettings.modules));
 
     if (isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
       moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
-      reusableBuffer.hardware.modules[INTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
-      reusableBuffer.hardware.modules[INTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
+      reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
+      reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
     }
 
     if (isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
       moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
-      reusableBuffer.hardware.modules[EXTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
-      reusableBuffer.hardware.modules[EXTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
+      reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
+      reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
     }
 
-    reusableBuffer.hardware.updateTime = get_tmr10ms() + 1000 /* 10s*/;
+    reusableBuffer.hardwareAndSettings.updateTime = get_tmr10ms() + 1000 /* 10s*/;
   }
 
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
@@ -145,7 +145,7 @@ void menuRadioModulesVersion(event_t event)
     // Module model
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Model");
-      uint8_t modelId = reusableBuffer.hardware.modules[module].information.modelID;
+      uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
       if (modelId >= DIM(modulesModels))
         modelId = 0;
       lcdDrawText(12 * FW, y, modulesModels[modelId]);
@@ -155,19 +155,19 @@ void menuRadioModulesVersion(event_t event)
     // Module version
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Version");
-      if (reusableBuffer.hardware.modules[module].information.modelID) {
-        drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].information.hwVersion, reusableBuffer.hardware.modules[module].information.swVersion);
+      if (reusableBuffer.hardwareAndSettings.modules[module].information.modelID) {
+        drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardwareAndSettings.modules[module].information.hwVersion, reusableBuffer.hardwareAndSettings.modules[module].information.swVersion);
       }
     }
     y += FH;
 
     for (uint8_t receiver=0; receiver<PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
-      if (reusableBuffer.hardware.modules[module].receivers[receiver].information.modelID) {
+      if (reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.modelID) {
         // Receiver model
         if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
-          uint8_t modelId = reusableBuffer.hardware.modules[module].receivers[receiver].information.modelID;
+          uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.modelID;
           if (modelId >= DIM(receiversModels))
             modelId = 0;
           lcdDrawText(12 * FW, y, receiversModels[modelId]);
@@ -176,7 +176,7 @@ void menuRadioModulesVersion(event_t event)
 
         // Receiver version
         if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
-          drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].information.hwVersion, reusableBuffer.hardware.modules[module].receivers[receiver].information.swVersion);
+          drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.hwVersion, reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.swVersion);
         }
         y += FH;
       }

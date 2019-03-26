@@ -130,15 +130,15 @@ void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
 
 void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
 {
-  if (reusableBuffer.hardware.modules[module].current <= reusableBuffer.hardware.modules[module].maximum) {
-    if (reusableBuffer.hardware.modules[module].timeout == 0) {
+  if (reusableBuffer.hardwareAndSettings.modules[module].current <= reusableBuffer.hardwareAndSettings.modules[module].maximum) {
+    if (reusableBuffer.hardwareAndSettings.modules[module].timeout == 0) {
       addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
-      Pxx2Transport::addByte(reusableBuffer.hardware.modules[module].current);
-      reusableBuffer.hardware.modules[module].timeout = 20;
-      reusableBuffer.hardware.modules[module].current++;
+      Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.modules[module].current);
+      reusableBuffer.hardwareAndSettings.modules[module].timeout = 20;
+      reusableBuffer.hardwareAndSettings.modules[module].current++;
     }
     else {
-      reusableBuffer.hardware.modules[module].timeout--;
+      reusableBuffer.hardwareAndSettings.modules[module].timeout--;
       setupChannelsFrame(module);
     }
   }
@@ -169,20 +169,20 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
 void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
 {
-  if (get_tmr10ms() > reusableBuffer.moduleSettings.timeout) {
+  if (get_tmr10ms() > reusableBuffer.hardwareAndSettings.moduleSettings.timeout) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TX_SETTINGS);
     uint8_t flag0 = 0;
-    if (reusableBuffer.moduleSettings.state == PXX2_SETTINGS_WRITE)
+    if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_WRITE)
       flag0 |= PXX2_TX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
-    if (reusableBuffer.moduleSettings.state == PXX2_SETTINGS_WRITE) {
-      uint8_t flag1 = reusableBuffer.moduleSettings.rfProtocol << 4;
-      if (reusableBuffer.moduleSettings.externalAntenna)
+    if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_WRITE) {
+      uint8_t flag1 = reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol << 4;
+      if (reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna)
         flag1 |= PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA;
       Pxx2Transport::addByte(flag1);
-      Pxx2Transport::addByte(reusableBuffer.moduleSettings.txPower);
+      Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
     }
-    reusableBuffer.moduleSettings.timeout = get_tmr10ms() + 200/*next try in 2s*/;
+    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = get_tmr10ms() + 200/*next try in 2s*/;
   }
   else {
     setupChannelsFrame(module);
@@ -191,25 +191,25 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
 
 void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 {
-  if (get_tmr10ms() > reusableBuffer.receiverSettings.timeout) {
+  if (get_tmr10ms() > reusableBuffer.hardwareAndSettings.receiverSettings.timeout) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RX_SETTINGS);
-    uint8_t flag0 = reusableBuffer.receiverSettings.receiverId;
-    if (reusableBuffer.receiverSettings.state == PXX2_SETTINGS_WRITE)
+    uint8_t flag0 = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
+    if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_WRITE)
       flag0 |= PXX2_RX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
-    if (reusableBuffer.receiverSettings.state == PXX2_SETTINGS_WRITE) {
+    if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_WRITE) {
       uint8_t flag1 = 0;
-      if (reusableBuffer.receiverSettings.telemetryDisabled)
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED;
-      if (reusableBuffer.receiverSettings.pwmRate)
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_FASTPWM;
       Pxx2Transport::addByte(flag1);
-      uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.receiverSettings.outputsCount);
+      uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
       for (int i = 0; i < outputsCount; i++) {
-        Pxx2Transport::addByte(min<uint8_t>(23, reusableBuffer.receiverSettings.outputsMapping[i]));
+        Pxx2Transport::addByte(min<uint8_t>(23, reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[i]));
       }
     }
-    reusableBuffer.receiverSettings.timeout = get_tmr10ms() + 200/*next try in 2s*/;
+    reusableBuffer.hardwareAndSettings.receiverSettings.timeout = get_tmr10ms() + 200/*next try in 2s*/;
   }
   else {
     setupChannelsFrame(module);

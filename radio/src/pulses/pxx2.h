@@ -70,6 +70,7 @@ enum PXX2BindSteps {
 };
 
 enum PXX2ReceiverStatus {
+  PXX2_HARDWARE_INFO,
   PXX2_SETTINGS_READ,
   PXX2_SETTINGS_WRITE,
   PXX2_SETTINGS_OK

@@ -111,9 +111,6 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_OPTIONS,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_LABEL,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_OPTIONS,
-  ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_MODE,
@@ -148,9 +145,6 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_LABEL,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_OPTIONS,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE,
-  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_LABEL,
-  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_OPTIONS,
-  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE,
 #if defined(PCBSKY9X) && !defined(REVA)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
   ITEM_MODEL_EXTRA_MODULE_CHANNELS,
@@ -474,9 +468,6 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 1, 0),           // Receiver3 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver3 Pinmap
       IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 1),           // Receiver3 Bind/Share
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 2, 0),           // Receiver4 Name + Add/Del buttons
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 0),           // Receiver4 Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(INTERNAL_MODULE, 3, 1),           // Receiver4 Bind/Share
 
     LABEL(ExternalModule),
       EXTERNAL_MODULE_MODE_ROWS,
@@ -502,9 +493,6 @@ void menuModelSetup(event_t event)
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 1, 0),           // Receiver3 Name + Add/Del buttons
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver3 Pinmap
       IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 1),           // Receiver3 Bind/Share
-      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 2, 0),           // Receiver4 Name + Add/Del buttons
-      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 0),           // Receiver4 Pinmap
-      IF_PXX2_RECEIVER_DISPLAYED(EXTERNAL_MODULE, 3, 1),           // Receiver4 Bind/Share
 
     TRAINER_ROWS
   });
@@ -1275,11 +1263,9 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_LABEL:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_LABEL:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_LABEL:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_LABEL:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_LABEL:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_LABEL:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_LABEL:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_LABEL:
       {
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
@@ -1321,7 +1307,7 @@ void menuModelSetup(event_t event)
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           g_moduleIdx = CURRENT_MODULE_EDITED(k);
-          memclear(&reusableBuffer.moduleSettings, sizeof(reusableBuffer.moduleSettings));
+          memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
           pushMenu(menuModelModuleOptions);
         }
         break;
@@ -1329,19 +1315,17 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_OPTIONS:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_OPTIONS:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_OPTIONS:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_OPTIONS:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_OPTIONS:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_OPTIONS:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_OPTIONS:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_OPTIONS:
         lcdDrawText(INDENT_WIDTH * 2, y, STR_OPTIONS);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           g_moduleIdx = CURRENT_MODULE_EDITED(k);
           uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
           uint8_t receiverSlot = g_model.moduleData[g_moduleIdx].pxx2.getReceiverSlot(receiverIdx) - 1;
-          memclear(&reusableBuffer.receiverSettings, sizeof(reusableBuffer.receiverSettings));
-          reusableBuffer.receiverSettings.receiverId = receiverSlot;
+          memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
+          reusableBuffer.hardwareAndSettings.receiverSettings.receiverId = receiverSlot;
           pushMenu(menuModelReceiverOptions);
         }
         break;
@@ -1349,11 +1333,9 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE:
-      case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1_BIND_SHARE:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2_BIND_SHARE:
       case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3_BIND_SHARE:
-      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_4_BIND_SHARE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
@@ -1961,9 +1943,9 @@ void menuModelFailsafe(event_t event)
 void onTxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
-    reusableBuffer.moduleSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.moduleSettings.dirty = 2;
-    reusableBuffer.moduleSettings.timeout = 0;
+    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_WRITE;
+    reusableBuffer.hardwareAndSettings.moduleSettings.dirty = 2;
+    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = 0;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
   }
   else {
@@ -1984,7 +1966,7 @@ void menuModelModuleOptions(event_t event)
 
   if (menuEvent) {
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    if (reusableBuffer.moduleSettings.dirty) {
+    if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION("Update TX options?", onTxOptionsUpdateConfirm);
     }
@@ -1993,7 +1975,7 @@ void menuModelModuleOptions(event_t event)
     }
   }
 
-  if (reusableBuffer.moduleSettings.dirty == 2 && reusableBuffer.moduleSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
   }
 
@@ -2004,13 +1986,13 @@ void menuModelModuleOptions(event_t event)
 
   if (event == EVT_ENTRY) {
 #if defined(SIMU)
-    reusableBuffer.moduleSettings.state = PXX2_SETTINGS_OK;
+    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
 #else
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
 #endif
   }
 
-  if (reusableBuffer.moduleSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
@@ -2019,30 +2001,30 @@ void menuModelModuleOptions(event_t event)
       switch (i) {
         case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
           lcdDrawText(0, y, "RF Protocol");
-          lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.moduleSettings.rfProtocol + 1, attr);
+          lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
           if (attr) {
-            reusableBuffer.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
+            reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
             if (checkIncDec_Ret) {
-              reusableBuffer.moduleSettings.dirty = true;
+              reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
             }
           }
           break;
 
         case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
-          reusableBuffer.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
+          reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.moduleSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
           }
           break;
 
         case ITEM_MODULE_SETTINGS_POWER:
           lcdDrawText(0, y, "Power");
-          lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.moduleSettings.txPower, attr);
+          lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
           lcdDrawText(lcdNextPos, y, "dBm");
           if (attr) {
-            reusableBuffer.moduleSettings.txPower = checkIncDec(event, reusableBuffer.moduleSettings.txPower, -127, 127);
+            reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, -127, 127);
             if (checkIncDec_Ret) {
-              reusableBuffer.moduleSettings.dirty = true;
+              reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
             }
           }
           break;
@@ -2057,9 +2039,9 @@ void menuModelModuleOptions(event_t event)
 void onRxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
-    reusableBuffer.receiverSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.receiverSettings.dirty = 2;
-    reusableBuffer.receiverSettings.timeout = 0;
+    reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
+    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 2;
+    reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
   else {
@@ -2077,13 +2059,28 @@ void menuModelReceiverOptions(event_t event)
 {
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
   uint8_t wbar = LCD_W / 2 - 20;
-  uint8_t outputsCount = min<uint8_t>(16, reusableBuffer.receiverSettings.outputsCount);
+  auto outputsCount = min<uint8_t>(16, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
 
   SIMPLE_SUBMENU_NOTITLE(ITEM_RECEIVER_PINMAP_FIRST + outputsCount);
 
+  if (event == EVT_ENTRY) {
+#if defined(SIMU)
+    reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_OK;
+    reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
+#else
+    // no need to initialize reusableBuffer.hardwareAndSettings.receiverSettings.state to PXX2_HARDWARE_INFO
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_GET_HARDWARE_INFO;
+#endif
+  }
+
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleSettings[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
+    reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_READ;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+  }
+
   if (menuEvent) {
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    if (reusableBuffer.receiverSettings.dirty) {
+    if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION("Update RX options?", onRxOptionsUpdateConfirm);
     }
@@ -2092,34 +2089,26 @@ void menuModelReceiverOptions(event_t event)
     }
   }
 
-  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.receiverSettings.dirty) {
+  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
     killEvents(event);
-    reusableBuffer.receiverSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.receiverSettings.dirty = 0;
-    reusableBuffer.receiverSettings.timeout = 0;
+    reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
+    reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 0;
+    reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
-  if (reusableBuffer.receiverSettings.dirty == 2 && reusableBuffer.receiverSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
+    return;
   }
 
   int8_t sub = menuVerticalPosition;
 
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
-  drawReceiverName(FW * 13, 0, reusableBuffer.receiverSettings.receiverId);
+  drawReceiverName(FW * 13, 0, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
   lcdInvertLine(0);
 
-  if (event == EVT_ENTRY) {
-#if defined(SIMU)
-    reusableBuffer.receiverSettings.state = PXX2_SETTINGS_OK;
-    reusableBuffer.receiverSettings.outputsCount = 8;
-#else
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
-#endif
-  }
-
-  if (reusableBuffer.receiverSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
     for (uint8_t k=0; k<LCD_LINES-1; k++) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
       uint8_t i = k + menuVerticalOffset;
@@ -2127,16 +2116,16 @@ void menuModelReceiverOptions(event_t event)
 
       switch (i) {
         case ITEM_RECEIVER_TELEMETRY:
-          reusableBuffer.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telem. disabled", attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled, RECEIVER_OPTIONS_2ND_COLUMN, y, "Telem. disabled", attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.receiverSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
           break;
 
         case ITEM_RECEIVER_PWM_RATE:
-          reusableBuffer.receiverSettings.pwmRate = editCheckBox(reusableBuffer.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.receiverSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
           break;
 
@@ -2144,7 +2133,7 @@ void menuModelReceiverOptions(event_t event)
           // Pin
           {
             uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
-            uint8_t channel = reusableBuffer.receiverSettings.outputsMapping[pin];
+            uint8_t channel = reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
             int32_t channelValue = channelOutputs[channel];
             lcdDrawText(0, y, "Pin");
             lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
@@ -2154,8 +2143,8 @@ void menuModelReceiverOptions(event_t event)
             if (attr) {
               channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
               if (checkIncDec_Ret) {
-                reusableBuffer.receiverSettings.outputsMapping[pin] = channel;
-                reusableBuffer.receiverSettings.dirty = true;
+                reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = channel;
+                reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
               }
             }
 
