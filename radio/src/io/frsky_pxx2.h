@@ -42,7 +42,13 @@ class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
 
       uint32_t next = nextIndex(ridx);
       uint8_t len = fifo[next];
-      if (unsigned(len + 4 /* 2 bytes header + 2 bytes CRC */) > size()) {
+
+      if (len > 40) {
+        clear();
+        return false;
+      }
+
+      if (size() < unsigned(len + 4 /* 2 bytes header + 2 bytes CRC */)) {
         // frame not fully received
         return false;
       }
