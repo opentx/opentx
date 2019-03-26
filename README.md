@@ -1,14 +1,5 @@
- _____                                                   ______    __   __     
-/\___ \                                                 /\__  _\  /\ \ /\ \    
-\/__/\ \   __  __    ___ ___     _____      __    _ __  \/_/\ \/  \ `\`\/'/'   
-   _\ \ \ /\ \/\ \ /' __` __`\  /\ '__`\  /'__`\ /\`'__\   \ \ \   `\/ > <     
-  /\ \_\ \\ \ \_\ \/\ \/\ \/\ \ \ \ \L\ \/\  __/ \ \ \/     \ \ \     \/'/\`\  
-  \ \____/ \ \____/\ \_\ \_\ \_\ \ \ ,__/\ \____\ \ \_\      \ \_\    /\_\\ \_\
-   \/___/   \/___/  \/_/\/_/\/_/  \ \ \/  \/____/  \/_/       \/_/    \/_/ \/_/
-                                   \ \_\                                       
-                                    \/_/                                       
+                                 
                                     
-
 ## JumperTX is firmware for the Jumper Technology Radios forked from the OpenTX project and independantly maintained by Jumper Technology. 
 OpenTX are not affiliated with the JumperTX fork.
 
