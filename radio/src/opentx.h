@@ -1193,10 +1193,12 @@ union ReusableBuffer
       uint8_t modelID;
       PXX2Version hwVersion;
       PXX2Version swVersion;
+      uint8_t variant;
       struct {
         uint8_t modelID;
         PXX2Version hwVersion;
         PXX2Version swVersion;
+        uint8_t variant;
       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
     } modules[NUM_MODULES];
     uint32_t updateTime;
