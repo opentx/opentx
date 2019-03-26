@@ -50,18 +50,10 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
   }
 
   uint8_t index = frame[3];
-  if (index == 0xFF) {
-    reusableBuffer.hardware.modules[module].modelID = frame[4];
-    reusableBuffer.hardware.modules[module].hwVersion.data = *((uint16_t *)&frame[5]);
-    reusableBuffer.hardware.modules[module].swVersion.data = *((uint16_t *)&frame[7]);
-    reusableBuffer.hardware.modules[module].variant = frame[9];
-  }
-  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE) {
-    reusableBuffer.hardware.modules[module].receivers[index].modelID = frame[4];
-    reusableBuffer.hardware.modules[module].receivers[index].hwVersion.data = *((uint16_t *)&frame[5]);
-    reusableBuffer.hardware.modules[module].receivers[index].swVersion.data = *((uint16_t *)&frame[7]);
-    reusableBuffer.hardware.modules[module].receivers[index].variant = frame[9];
-  }
+  if (index == 0xFF)
+    memcpy(&reusableBuffer.hardware.modules[module].information, &frame[4], sizeof(PXX2HardwareInformation));
+  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE)
+    memcpy(&reusableBuffer.hardware.modules[module].receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
 }
 
 void processModuleSettingsFrame(uint8_t module, uint8_t * frame)

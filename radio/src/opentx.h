@@ -1190,15 +1190,9 @@ union ReusableBuffer
     struct {
       int8_t step;
       uint8_t timeout;
-      uint8_t modelID;
-      PXX2Version hwVersion;
-      PXX2Version swVersion;
-      uint8_t variant;
+      PXX2HardwareInformation information;
       struct {
-        uint8_t modelID;
-        PXX2Version hwVersion;
-        PXX2Version swVersion;
-        uint8_t variant;
+        PXX2HardwareInformation information;
       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
     } modules[NUM_MODULES];
     uint32_t updateTime;

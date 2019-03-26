@@ -143,7 +143,7 @@ void menuRadioModulesVersion(event_t event)
     // Module model
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Model");
-      uint8_t modelId = reusableBuffer.hardware.modules[module].modelID;
+      uint8_t modelId = reusableBuffer.hardware.modules[module].information.modelID;
       if (modelId >= DIM(modulesModels))
         modelId = 0;
       lcdDrawText(12 * FW, y, modulesModels[modelId]);
@@ -153,19 +153,19 @@ void menuRadioModulesVersion(event_t event)
     // Module version
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Version");
-      if (reusableBuffer.hardware.modules[module].hwVersion.data) {
-        drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].hwVersion, reusableBuffer.hardware.modules[module].swVersion);
+      if (reusableBuffer.hardware.modules[module].information.modelID) {
+        drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].information.hwVersion, reusableBuffer.hardware.modules[module].information.swVersion);
       }
     }
     y += FH;
 
     for (uint8_t receiver=0; receiver<PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
-      if (reusableBuffer.hardware.modules[module].receivers[receiver].modelID) {
+      if (reusableBuffer.hardware.modules[module].receivers[receiver].information.modelID) {
         // Receiver model
         if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
-          uint8_t modelId = reusableBuffer.hardware.modules[module].receivers[receiver].modelID;
+          uint8_t modelId = reusableBuffer.hardware.modules[module].receivers[receiver].information.modelID;
           if (modelId >= DIM(receiversModels))
             modelId = 0;
           lcdDrawText(12 * FW, y, receiversModels[modelId]);
@@ -174,7 +174,7 @@ void menuRadioModulesVersion(event_t event)
 
         // Receiver version
         if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
-          drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].hwVersion, reusableBuffer.hardware.modules[module].receivers[receiver].swVersion);
+          drawPXX2FullVersion(12 * FW, y, reusableBuffer.hardware.modules[module].receivers[receiver].information.hwVersion, reusableBuffer.hardware.modules[module].receivers[receiver].information.swVersion);
         }
         y += FH;
       }

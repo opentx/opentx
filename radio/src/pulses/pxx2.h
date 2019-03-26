@@ -203,12 +203,17 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
 union PXX2Version
 {
-  uint16_t data;
-  struct {
-    uint8_t major;
-    uint8_t minor:4;
-    uint8_t revision:4;
-  };
+  uint8_t major;
+  uint8_t minor:4;
+  uint8_t revision:4;
+};
+
+struct PXX2HardwareInformation
+{
+  uint8_t modelID;
+  PXX2Version hwVersion;
+  PXX2Version swVersion;
+  uint8_t variant;
 };
 
 #endif
