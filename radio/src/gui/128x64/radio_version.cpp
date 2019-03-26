@@ -100,16 +100,16 @@ void menuRadioModulesVersion(event_t event)
   TITLE("MODULES / RX VERSION");
 
   if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardware.updateTime) {
-    menuVerticalOffset = 0;
+    // menuVerticalOffset = 0;
 
     memclear(&reusableBuffer.hardware.modules, sizeof(reusableBuffer.hardware.modules));
 
-    if(isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
+    if (isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
       moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
       reusableBuffer.hardware.modules[INTERNAL_MODULE].step = -1;
     }
 
-    if(isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
+    if (isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
       moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
       reusableBuffer.hardware.modules[EXTERNAL_MODULE].step = -1;
     }
@@ -120,6 +120,17 @@ void menuRadioModulesVersion(event_t event)
   coord_t y = (FH + 1) - menuVerticalOffset * FH;
 
   for (uint8_t module=0; module<NUM_MODULES; module++) {
+    if (module == INTERNAL_MODULE) {
+      if (!isModulePXX2(INTERNAL_MODULE) || !IS_INTERNAL_MODULE_ON()) {
+        continue;
+      }
+    }
+    else if (module == EXTERNAL_MODULE) {
+      if (!isModulePXX2(EXTERNAL_MODULE) || !IS_EXTERNAL_MODULE_ON()) {
+        continue;
+      }
+    }
+
     // Label
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       if (module == INTERNAL_MODULE)
