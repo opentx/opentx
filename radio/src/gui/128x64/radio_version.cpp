@@ -106,12 +106,14 @@ void menuRadioModulesVersion(event_t event)
 
     if (isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
       moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
-      reusableBuffer.hardware.modules[INTERNAL_MODULE].step = -1;
+      reusableBuffer.hardware.modules[INTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
+      reusableBuffer.hardware.modules[INTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
     }
 
     if (isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
       moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
-      reusableBuffer.hardware.modules[EXTERNAL_MODULE].step = -1;
+      reusableBuffer.hardware.modules[EXTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
+      reusableBuffer.hardware.modules[EXTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
     }
 
     reusableBuffer.hardware.updateTime = get_tmr10ms() + 1000 /* 10s*/;

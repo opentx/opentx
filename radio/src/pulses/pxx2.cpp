@@ -130,12 +130,12 @@ void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
 
 void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
 {
-  if (reusableBuffer.hardware.modules[module].step >= -1 && reusableBuffer.hardware.modules[module].step < PXX2_MAX_RECEIVERS_PER_MODULE) {
+  if (reusableBuffer.hardware.modules[module].current <= reusableBuffer.hardware.modules[module].maximum) {
     if (reusableBuffer.hardware.modules[module].timeout == 0) {
       addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
-      Pxx2Transport::addByte(reusableBuffer.hardware.modules[module].step);
+      Pxx2Transport::addByte(reusableBuffer.hardware.modules[module].current);
       reusableBuffer.hardware.modules[module].timeout = 20;
-      reusableBuffer.hardware.modules[module].step++;
+      reusableBuffer.hardware.modules[module].current++;
     }
     else {
       reusableBuffer.hardware.modules[module].timeout--;

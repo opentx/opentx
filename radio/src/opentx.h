@@ -1188,7 +1188,8 @@ union ReusableBuffer
 
   struct {
     struct {
-      int8_t step;
+      int8_t current;
+      int8_t maximum;
       uint8_t timeout;
       PXX2HardwareInformation information;
       struct {

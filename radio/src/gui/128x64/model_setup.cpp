@@ -2092,9 +2092,10 @@ void menuModelReceiverOptions(event_t event)
     }
   }
 
-  if (event == EVT_KEY_LONG(KEY_ENTER)) {
+  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.receiverSettings.dirty) {
+    killEvents(event);
     reusableBuffer.receiverSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.receiverSettings.dirty = 2;
+    reusableBuffer.receiverSettings.dirty = 0;
     reusableBuffer.receiverSettings.timeout = 0;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }

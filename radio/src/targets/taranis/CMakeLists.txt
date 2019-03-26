@@ -143,6 +143,14 @@ elseif(PCB STREQUAL XLITES)
   set(STATUS_LEDS YES)
 endif()
 
+#if(PCB STREQUAL XLITES)
+#  add_definitions(-DGYRO)
+#  set(TARGET_SRC
+#    ${TARGET_SRC}
+#    ../common/arm/stm32/lsm6ds3_driver.cpp
+#    )
+#endif()
+
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X3)
   option(PXX1 "PXX1 protocol support" OFF)
   option(PXX2 "PXX2 protocol support" ON)
