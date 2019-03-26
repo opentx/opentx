@@ -529,6 +529,12 @@ void menuModelSetup(event_t event)
 
   if (event == EVT_ENTRY) {
     reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+
+    extern void gyroInit();
+    gyroInit();
+
+
+
   }
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;

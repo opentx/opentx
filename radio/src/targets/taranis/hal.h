@@ -1191,8 +1191,8 @@
 
 // Second I2C Bus: IMU
 #if defined(PCBXLITES)
-  #define I2CX_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
-  #define I2CX_RCC_APB1Periph           RCC_APB1Periph_I2C3
+  #define GYRO_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
+  #define GYRO_RCC_APB1Periph           RCC_APB1Periph_I2C3
   #define I2CX                          I2C3
   #define I2CX_SCL_GPIO                 GPIOA
   #define I2CX_SCL_GPIO_PIN             GPIO_Pin_8  // PA.08
@@ -1202,6 +1202,9 @@
   #define I2CX_SCL_GPIO_PinSource       GPIO_PinSource8
   #define I2CX_SDA_GPIO_PinSource       GPIO_PinSource9
   #define I2CX_SPEED                    400000
+#else
+  #define GYRO_RCC_AHB1Periph           0
+  #define GYRO_RCC_APB1Periph           0
 #endif
 
 // SD - SPI2

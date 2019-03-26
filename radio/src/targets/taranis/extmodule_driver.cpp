@@ -179,8 +179,8 @@ void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
 }
 
 // TODO remove this when we have adaptative speed
-uint8_t counter = 0;
-#include <stdio.h>
+//uint8_t counter = 0;
+//#include <stdio.h>
 
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void EXTMODULE_USART_IRQHandler(void)
@@ -191,9 +191,9 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
     uint8_t data = EXTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
       extmoduleFifo.errors++;
-      if (!counter++) {
-        TRACE_NOCRLF("%02X ", (uint8_t)status);
-      }
+//      if (!counter++) {
+//        TRACE_NOCRLF("%02X ", (uint8_t)status);
+//      }
     }
     else {
       extmoduleFifo.push(data);

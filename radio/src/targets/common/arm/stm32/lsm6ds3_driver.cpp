@@ -180,7 +180,8 @@
 #define LSM6DS3_RESET_ADDR                        0x12
 #define LSM6DS3_RESET_MASK                        0x01
 
-#define LSM6DS3_ADDRESS                           0xD4
+#define LSM6DS3_ADDRESS                           0xD6
+#define LSM6DSLTR_ID                              0x6A
 
 static const char configure[][2] =
         {
@@ -194,84 +195,143 @@ static const char configure[][2] =
 
 volatile int lsm6ds3_state = 1;
 
-int lsm6ds3Init()
+static void i2c2Init()
 {
-  int i;
-  char cmd[2];
+  I2C_DeInit(I2CX);
 
-  I2C_transfer_block i2c_block[2];
+  I2C_InitTypeDef I2C_InitStructure;
+  I2C_InitStructure.I2C_ClockSpeed = I2CX_SPEED;
+  I2C_InitStructure.I2C_DutyCycle = I2C_DutyCycle_2;
+  I2C_InitStructure.I2C_OwnAddress1 = 0x00;
+  I2C_InitStructure.I2C_Mode = I2C_Mode_I2C;
+  I2C_InitStructure.I2C_Ack = I2C_Ack_Enable;
+  I2C_InitStructure.I2C_AcknowledgedAddress = I2C_AcknowledgedAddress_7bit;
+  I2C_Init(I2CX, &I2C_InitStructure);
+  I2C_Cmd(I2CX, ENABLE);
 
-  EXTILine_Config();
+  GPIO_PinAFConfig(I2CX_SCL_GPIO, I2CX_SCL_GPIO_PinSource, I2CX_GPIO_AF);
+  GPIO_PinAFConfig(I2CX_SDA_GPIO, I2CX_SDA_GPIO_PinSource, I2CX_GPIO_AF);
 
-  cmd[0] = LSM6DS3_WHO_AM_I;
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = I2CX_SCL_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_OD;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(I2CX_SCL_GPIO, &GPIO_InitStructure);
 
-  i2c_block[0].addr = LSM6DS3_ADDRESS;
-  i2c_block[0].rw = I2C_WRITE;
-  i2c_block[0].stop_mode = I2C_WRITE_BYPASS_STOP;
-  i2c_block[0].ack_mode = I2C_READ_RESPOND_ACK;
-  i2c_block[0].len = 1;
-  i2c_block[0].buf = cmd;
+  GPIO_InitStructure.GPIO_Pin = I2CX_SDA_GPIO_PIN;
+  GPIO_Init(I2CX_SDA_GPIO, &GPIO_InitStructure);
+}
 
-  i2c_block[1].addr = LSM6DS3_ADDRESS;
-  i2c_block[1].rw = I2C_READ;
-  i2c_block[1].stop_mode = I2C_WRITE_APPEND_STOP;
-  i2c_block[1].ack_mode = I2C_READ_RESPOND_ACK;
-  i2c_block[1].len = 2;
-  i2c_block[1].buf = cmd;
+#define I2C_TIMEOUT_MAX 10000
+bool I2C2_WaitEvent(uint32_t event)
+{
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (!I2C_CheckEvent(I2CX, event)) {
+    if ((timeout--) == 0) return false;
+  }
+  return true;
+}
 
-  i2c_dma_transfer(i2c_block, 2);
+bool I2C2_WaitEventCleared(uint32_t event)
+{
+  uint32_t timeout = I2C_TIMEOUT_MAX;
+  while (I2C_CheckEvent(I2CX, event)) {
+    if ((timeout--) == 0) return false;
+  }
+  return true;
+}
 
-  if (cmd[0] != LSM6DS3_WHO_AM_I_DEF) {
+int setGyroRegister(uint8_t address, uint8_t value)
+{
+  if (!I2C2_WaitEventCleared(I2C_FLAG_BUSY))
     return -1;
-  }
 
-  cmd[0] = 0x12;
-  cmd[1] = 0x5;
-  i2c_block[0].addr = LSM6DS3_ADDRESS;
-  i2c_block[0].rw = I2C_WRITE;
-  i2c_block[0].stop_mode = I2C_WRITE_APPEND_STOP;
+  I2C_GenerateSTART(I2CX, ENABLE);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return -1;
 
-  i2c_block[0].ack_mode = I2C_READ_RESPOND_ACK;
+  I2C_Send7bitAddress(I2CX, LSM6DS3_ADDRESS, I2C_Direction_Transmitter);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+    return -1;
 
-  i2c_block[0].len = 2;
-  i2c_block[0].buf = cmd;
+  I2C_SendData(I2CX, address);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED)) // TODO TRANSMITTING
+    return -1;
 
-  i2c_dma_transfer(i2c_block, 1);
+  I2C_SendData(I2CX, value);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return -1;
 
-  delay_ms(1);
-
-  cmd[0] = 0x12;
-  cmd[1] = 0x4;
-  i2c_block[0].addr = LSM6DS3_ADDRESS;
-  i2c_block[0].rw = I2C_WRITE;
-  i2c_block[0].stop_mode = I2C_WRITE_APPEND_STOP;
-
-  i2c_block[0].ack_mode = I2C_READ_RESPOND_ACK;
-
-  i2c_block[0].len = 2;
-  i2c_block[0].buf = cmd;
-
-  i2c_dma_transfer(i2c_block, 1);
-
-  delay_ms(1);
-
-  for (i = 0; i < sizeof(configure) / sizeof(configure[0]); i++) {
-    i2c_block[0].addr = LSM6DS3_ADDRESS;
-    i2c_block[0].rw = I2C_WRITE;
-    i2c_block[0].stop_mode = I2C_WRITE_APPEND_STOP;
-
-    i2c_block[0].ack_mode = I2C_READ_RESPOND_ACK;
-
-    i2c_block[0].len = 2;
-    i2c_block[0].buf = (char *) configure[i];
-
-    i2c_dma_transfer(i2c_block, 1);
-  }
+  I2C_GenerateSTOP(I2CX, ENABLE);
 
   return 0;
 }
 
-int lsm6ds3Read(void *buffer, int len, OFFSET offset1)
+int readGyroRegister(uint8_t address)
+{
+  if (!I2C2_WaitEventCleared(I2C_FLAG_BUSY))
+    return -1;
+
+  I2C_GenerateSTART(I2CX, ENABLE);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return -1;
+
+  I2C_Send7bitAddress(I2CX, LSM6DS3_ADDRESS, I2C_Direction_Transmitter);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_TRANSMITTER_MODE_SELECTED))
+    return -1;
+
+  I2C_SendData(I2CX, address);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_BYTE_TRANSMITTED))
+    return -1;
+
+  I2C_GenerateSTART(I2CX, ENABLE);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_MODE_SELECT))
+    return -1;
+
+  I2C_Send7bitAddress(I2CX, LSM6DS3_ADDRESS, I2C_Direction_Receiver);
+
+  I2C_AcknowledgeConfig(I2CX, DISABLE);
+  if (!I2C2_WaitEvent(I2C_EVENT_MASTER_BYTE_RECEIVED))
+    return -1;
+
+  uint8_t value = I2C_ReceiveData(I2CX);
+
+  I2C_GenerateSTOP(I2CX, ENABLE);
+
+  return value;
+}
+
+int gyroInit()
+{
+  i2c2Init();
+
+  uint8_t id = readGyroRegister(LSM6DS3_WHO_AM_I);
+  if (id != LSM6DSLTR_ID) {
+    return -1;
+  }
+
+  TRACE("OK");
+
+  setGyroRegister(0x12, 0x05);
+  delay_ms(1);
+  setGyroRegister(0x12, 0x04);
+  delay_ms(1);
+
+  TRACE("OK2");
+
+  for (uint8_t i = 0; i < DIM(configure); i++) {
+    setGyroRegister(configure[i][0], configure[i][1]);
+  }
+
+  TRACE("OK4");
+
+  return 0;
+}
+
+#if 0
+int gyroRead(void *buffer, int len, OFFSET offset1)
 {
   char t_char[10];
   short t_short[7];
@@ -311,3 +371,5 @@ int lsm6ds3Read(void *buffer, int len, OFFSET offset1)
 
   return len;
 }
+
+#endif
