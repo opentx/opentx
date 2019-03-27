@@ -61,18 +61,6 @@ static const char * const modulesModels[] = {
   "R9MLite-PRO",
 };
 
-/* order: RF Protocol, External antenna, Power */
-uint8_t moduleOptions[] = {
-  0b00000010, // None
-  0b11111011, // XJT
-  0b11111011, // IXJT
-  0b11111011, // IXJT-PRO
-  0b11111011, // IXJT-S
-  0b11111100, // R9M
-  0b11111100, // R9MLite
-  0b11111100, // R9MLite-PRO
-};
-
 static const char * const receiversModels[] = {
   "---",
   "X8R",

@@ -44,7 +44,17 @@ enum {
   ITEM_MODULE_SETTINGS_COUNT
 };
 
-extern uint8_t moduleOptions[];
+/* order: RF Protocol, External antenna, Power */
+const uint8_t moduleOptions[] = {
+  0b00000000, // None
+  0b11111011, // XJT
+  0b11111011, // IXJT
+  0b11111011, // IXJT-PRO
+  0b11111011, // IXJT-S
+  0b11111100, // R9M
+  0b11111100, // R9MLite
+  0b11111100, // R9MLite-PRO
+};
 
 #define IF_MODULE_OPTIONS(option, count) uint8_t((moduleOptions[modelId] & (1 << option)) ? count : HIDDEN_ROW)
 
@@ -95,6 +105,12 @@ void menuModelModuleOptions(event_t event)
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
+  }
+
+  if (menuVerticalPosition == 0) {
+    while (mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
+      ++menuVerticalPosition;
+    }
   }
 
   int8_t sub = menuVerticalPosition;
