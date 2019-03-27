@@ -2,9 +2,9 @@
 
 set -e
 
-branch=2.2
-workdir=/home/opentx/nightly22
-output=/var/www/html/2.2/nightly
+branch=2.3
+workdir=/home/opentx/nightly23
+output=/var/www/html/2.3/nightly
 
 cd ${workdir}
 
@@ -17,7 +17,7 @@ mkdir -p ${workdir}/sdcard/horus/IMAGES
 cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
 # Request sound pack generation
-wget -qO- http://winbox.open-tx.org/voice-builds/compile22.php?branch=${branch}
+wget -qO- http://winbox.open-tx.org/voice-builds/compile23.php?branch=${branch}
 
 # Get sounds
 cd sdcard
