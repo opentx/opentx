@@ -99,6 +99,7 @@ const int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X3:
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
@@ -128,6 +129,7 @@ const int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_XLITES:
     case BOARD_TARANIS_XLITE:
     case BOARD_TARANIS_X7:
+    case BOARD_TARANIS_X3:
     case BOARD_TARANIS_X9D:
     case BOARD_TARANIS_X9DP:
     case BOARD_TARANIS_X9E:
@@ -429,6 +431,8 @@ const QString Boards::getBoardName(Board::Type board)
       return "Taranis X9D+";
     case BOARD_TARANIS_X9E:
       return "Taranis X9E";
+    case BOARD_TARANIS_X3:
+      return "Taranis X3";
     case BOARD_SKY9X:
       return "Sky9x";
     case BOARD_9XRPRO:
