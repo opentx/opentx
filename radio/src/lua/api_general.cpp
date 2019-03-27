@@ -33,6 +33,8 @@
   #include "lua/lua_exports_x9e.inc"
 #elif defined(PCBX7)
   #include "lua/lua_exports_x7.inc"
+#elif defined(PCBX3)
+  #include "lua/lua_exports_x3.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
@@ -420,9 +422,9 @@ When called without parameters, it will only return the status of the output buf
 static int luaSportTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
-    lua_pushboolean(L, isSportOutputBufferAvailable());
+    lua_pushboolean(L, isTelemetryOutputBufferAvailable());
   }
-  else if (isSportOutputBufferAvailable()) {
+  else if (isTelemetryOutputBufferAvailable()) {
     SportTelemetryPacket packet;
     packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
     packet.primId = luaL_checkunsigned(L, 2);
@@ -437,6 +439,63 @@ static int luaSportTelemetryPush(lua_State * L)
   return 1;
 }
 
+#if defined(PXX2)
+/*luadoc
+@function pxx2TelemetryPush()
+
+This functions allows for sending SPORT telemetry data toward the receiver,
+and more generally, to anything connected SPORT bus on the receiver or transmitter.
+
+When called without parameters, it will only return the status of the output buffer without sending anything.
+
+@param module    module index
+
+@param receiver  receiver index
+
+@param sensorId  physical sensor ID
+
+@param frameId   frame ID
+
+@param dataId    data ID
+
+@param value     value
+
+@retval boolean  data queued in output buffer or not.
+
+@status current Introduced in 2.3.0
+*/
+static int luaPXX2TelemetryPush(lua_State * L)
+{
+  if (lua_gettop(L) == 0) {
+    lua_pushboolean(L, isTelemetryOutputBufferAvailable());
+  }
+  else if (isTelemetryOutputBufferAvailable()) {
+    SportTelemetryPacket packet;
+    uint8_t module = getDataId(luaL_checkunsigned(L, 1));
+    uint8_t receiver = getDataId(luaL_checkunsigned(L, 2));
+    uint8_t rx_uid = g_model.moduleData[module].pxx2.getReceiverSlot(receiver);
+    if (rx_uid > 0) {
+      // TODO add more controls (module started, module = PXX2, etc.)
+      packet.physicalId = getDataId(luaL_checkunsigned(L, 3));
+      packet.primId = luaL_checkunsigned(L, 4);
+      packet.dataId = luaL_checkunsigned(L, 5);
+      packet.value = luaL_checkunsigned(L, 6);
+      // TODO we could avoid this new copy
+      pushPXX2TelemetryPacket(module, rx_uid - 1, &packet);
+      lua_pushboolean(L, true);
+    }
+    else {
+      lua_pushboolean(L, false);
+    }
+  }
+  else {
+    lua_pushboolean(L, false);
+  }
+  return 1;
+}
+#endif
+
+#if defined(CROSSFIRE)
 /*luadoc
 @function crossfireTelemetryPop()
 
@@ -518,6 +577,7 @@ static int luaCrossfireTelemetryPush(lua_State * L)
   }
   return 1;
 }
+#endif
 
 /*luadoc
 @function getFieldInfo(name)
@@ -932,55 +992,6 @@ static int luaGetGeneralSettings(lua_State * L)
 }
 
 /*luadoc
-@function popupInput(title, event, input, min, max)
-
-Raises a pop-up on screen that allows uses input
-
-@param title (string) text to display
-
-@param event (number) the event variable that is passed in from the
-Run function (key pressed)
-
-@param input (number) value that can be adjusted by the +/­- keys
-
-@param min  (number) min value that input can reach (by pressing the -­ key)
-
-@param max  (number) max value that input can reach
-
-@retval number result of the input adjustment
-
-@retval "OK" user pushed ENT key
-
-@retval "CANCEL" user pushed EXIT key
-
-@notice Use only from stand-alone and telemetry scripts.
-
-@status current Introduced in 2.0.0
-*/
-static int luaPopupInput(lua_State * L)
-{
-  event_t event = luaL_checkinteger(L, 2);
-  warningInputValue = luaL_checkinteger(L, 3);
-  warningInputValueMin = luaL_checkinteger(L, 4);
-  warningInputValueMax = luaL_checkinteger(L, 5);
-  warningText = luaL_checkstring(L, 1);
-  warningType = WARNING_TYPE_INPUT;
-  runPopupWarning(event);
-  if (warningResult) {
-    warningResult = 0;
-    lua_pushstring(L, "OK");
-  }
-  else if (!warningText) {
-    lua_pushstring(L, "CANCEL");
-  }
-  else {
-    lua_pushinteger(L, warningInputValue);
-  }
-  warningText = NULL;
-  return 1;
-}
-
-/*luadoc
 @function popupWarning(title, event)
 
 Raises a pop-up on screen that shows a warning
@@ -1339,7 +1350,7 @@ const luaL_Reg opentxLib[] = {
   { "playDuration", luaPlayDuration },
   { "playTone", luaPlayTone },
   { "playHaptic", luaPlayHaptic },
-  { "popupInput", luaPopupInput },
+  // { "popupInput", luaPopupInput },
   { "popupWarning", luaPopupWarning },
   { "popupConfirmation", luaPopupConfirmation },
   { "defaultStick", luaDefaultStick },
@@ -1355,6 +1366,10 @@ const luaL_Reg opentxLib[] = {
   { "sportTelemetryPop", luaSportTelemetryPop },
   { "sportTelemetryPush", luaSportTelemetryPush },
   { "setTelemetryValue", luaSetTelemetryValue },
+#if defined(PXX2)
+  { "sportTelemetryPop", luaSportTelemetryPop },
+  { "pxx2TelemetryPush", luaPXX2TelemetryPush },
+#endif
 #if defined(CROSSFIRE)
   { "crossfireTelemetryPop", luaCrossfireTelemetryPop },
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
@@ -1388,11 +1403,11 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7) && !defined(PCBXLITE)
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBX3)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
-#if !defined(PCBXLITE)
+#if !defined(PCBXLITE) && !defined(PCBX3)
   { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SH", MIXSRC_SH },
 #endif

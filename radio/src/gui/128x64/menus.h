@@ -56,6 +56,17 @@ extern uint8_t menuEvent;
 void chainMenu(MenuHandlerFunc newMenu);
 void pushMenu(MenuHandlerFunc newMenu);
 void popMenu();
+void abortPopMenu();
+
+inline bool isRadioMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 1;
+}
+
+inline bool isModelMenuDisplayed()
+{
+  return menuVerticalPositions[0] == 0;
+}
 
 inline MenuHandlerFunc lastPopMenu()
 {
@@ -63,7 +74,6 @@ inline MenuHandlerFunc lastPopMenu()
 }
 
 void onMainViewMenu(const char * result);
-
 void menuFirstCalib(event_t event);
 void menuMainView(event_t event);
 void menuViewTelemetryFrsky(event_t event);
@@ -73,10 +83,11 @@ enum MenuRadioIndexes
 {
   MENU_RADIO_SETUP,
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
+  MENU_RADIO_TOOLS,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
-  MENU_RADIO_VERSION,
   MENU_RADIO_HARDWARE,
+  MENU_RADIO_VERSION,
   MENU_RADIO_PAGES_COUNT
 };
 
@@ -88,15 +99,19 @@ void menuRadioVersion(event_t event);
 void menuRadioDiagKeys(event_t event);
 void menuRadioDiagAnalogs(event_t event);
 void menuRadioHardware(event_t event);
+void menuRadioTools(event_t event);
+void menuRadioSpectrumAnalyser(event_t event);
+void menuRadioPowerMeter(event_t event);
 void menuRadioCalibration(event_t event);
 
 static const MenuHandlerFunc menuTabGeneral[]  = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
+  menuRadioTools,
   menuRadioSpecialFunctions,
   menuRadioTrainer,
-  menuRadioVersion,
-  menuRadioHardware
+  menuRadioHardware,
+  menuRadioVersion
 };
 
 enum MenuModelIndexes {
@@ -120,6 +135,9 @@ enum MenuModelIndexes {
 
 void menuModelSelect(event_t event);
 void menuModelSetup(event_t event);
+void menuModelFailsafe(event_t event);
+void menuModelModuleOptions(event_t event);
+void menuModelReceiverOptions(event_t event);
 void menuModelHeli(event_t event);
 void menuModelFlightModesAll(event_t event);
 void menuModelExpoOne(event_t event);

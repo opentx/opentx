@@ -26,13 +26,10 @@ uint8_t     warningInfoLength;
 uint8_t     warningType;
 uint8_t     warningResult = 0;
 uint8_t     warningInfoFlags = ZCHAR;
-int16_t     warningInputValue;
-int16_t     warningInputValueMin;
-int16_t     warningInputValueMax;
 void        (*popupFunc)(event_t event) = NULL;
 const char *popupMenuItems[POPUP_MENU_MAX_LINES];
 uint8_t     s_menu_item = 0;
-uint16_t    popupMenuNoItems = 0;
+uint16_t    popupMenuItemsCount = 0;
 uint16_t    popupMenuOffset = 0;
 uint8_t     popupMenuOffsetType = MENU_OFFSET_INTERNAL;
 void        (*popupMenuHandler)(const char * result);
@@ -80,23 +77,19 @@ void runPopupWarning(event_t event)
 {
   warningResult = false;
 
-  theme->drawMessageBox(warningText, warningInfoText, warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS, warningType);
+  theme->drawMessageBox(warningText, warningInfoText,  WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT), warningType);
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
       if (warningType == WARNING_TYPE_ASTERISK)
         break;
-      warningResult = true;
+      if (warningType != WARNING_TYPE_INFO)
+        warningResult = true;
       // no break
+
     case EVT_KEY_BREAK(KEY_EXIT):
       warningText = NULL;
       warningType = WARNING_TYPE_ASTERISK;
-      break;
-    default:
-      if (warningType != WARNING_TYPE_INPUT) break;
-      s_editMode = EDIT_MODIFY_FIELD;
-      warningInputValue = checkIncDec(event, warningInputValue, warningInputValueMin, warningInputValueMax);
-      s_editMode = EDIT_SELECT_FIELD;
       break;
   }
 }
@@ -105,7 +98,7 @@ const char * runPopupMenu(event_t event)
 {
   const char * result = NULL;
 
-  uint8_t display_count = min<unsigned int>(popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  uint8_t display_count = min<unsigned int>(popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
 
   switch (event) {
     case EVT_ROTARY_LEFT:
@@ -118,18 +111,18 @@ const char * runPopupMenu(event_t event)
       }
       else {
         s_menu_item = min<uint8_t>(display_count, MENU_MAX_DISPLAY_LINES) - 1;
-        if (popupMenuNoItems > MENU_MAX_DISPLAY_LINES) {
-          popupMenuOffset = popupMenuNoItems - MENU_MAX_DISPLAY_LINES;
+        if (popupMenuItemsCount > MENU_MAX_DISPLAY_LINES) {
+          popupMenuOffset = popupMenuItemsCount - MENU_MAX_DISPLAY_LINES;
           result = STR_UPDATE_LIST;
         }
       }
       break;
 
     case EVT_ROTARY_RIGHT:
-      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuNoItems) {
+      if (s_menu_item < display_count - 1 && popupMenuOffset + s_menu_item + 1 < popupMenuItemsCount) {
         s_menu_item++;
       }
-      else if (popupMenuNoItems > popupMenuOffset + display_count) {
+      else if (popupMenuItemsCount > popupMenuOffset + display_count) {
         popupMenuOffset++;
         result = STR_UPDATE_LIST;
       }
@@ -147,7 +140,7 @@ const char * runPopupMenu(event_t event)
       // no break
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      popupMenuNoItems = 0;
+      popupMenuItemsCount = 0;
       s_menu_item = 0;
       popupMenuOffset = 0;
       break;
@@ -168,8 +161,8 @@ const char * runPopupMenu(event_t event)
     }
   }
 
-  if (popupMenuNoItems > display_count) {
-    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuNoItems, MENU_MAX_DISPLAY_LINES);
+  if (popupMenuItemsCount > display_count) {
+    drawVerticalScrollbar(MENU_X+MENU_W-1, y+1, MENU_MAX_DISPLAY_LINES * (FH+1), popupMenuOffset, popupMenuItemsCount, MENU_MAX_DISPLAY_LINES);
   }
 
   return result;

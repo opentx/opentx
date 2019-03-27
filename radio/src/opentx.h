@@ -190,16 +190,16 @@
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && isFaiForbidden(idx))
 
 #if defined(BLUETOOTH)
-#if defined(X9E) && !defined(USEHORUSBT)
-  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
-#else
-  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
-#endif
+  #if defined(X9E) && !defined(USEHORUSBT)
+    #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
+  #else
+    #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+  #endif
 #else
   #define IS_BLUETOOTH_TRAINER()       false
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
+  #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #endif
 
 // RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
@@ -210,6 +210,12 @@
 #define RESXl      1024l
 
 #include "board.h"
+
+#if defined(JACK_DETECT_GPIO)
+#define CASE_JACK_DETECT(x) x,
+#else
+#define CASE_JACK_DETECT(x)
+#endif
 
 #if defined(DISK_CACHE)
   #include "disk_cache.h"
@@ -288,7 +294,7 @@ void memswap(void * a, void * b, uint8_t size);
 #endif
 
 #include "fifo.h"
-#include "io/io_arm.h"
+#include "io/frsky_sport.h"
 
 extern volatile tmr10ms_t g_tmr10ms;
 static inline tmr10ms_t get_tmr10ms()
@@ -425,10 +431,11 @@ extern struct t_inactivity inactivity;
 #endif
 
 char hex2zchar(uint8_t hex);
-char idx2char(int8_t idx);
-int8_t char2idx(char c);
+char zchar2char(int8_t idx);
+int8_t char2zchar(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
+bool cmpStrWithZchar(const char * charString, const char * zcharString, int size);
 
 #include "keys.h"
 #include "pwr.h"
@@ -565,6 +572,8 @@ void flightReset(uint8_t check=true);
 
 extern uint8_t unexpectedShutdown;
 
+extern uint16_t vbattRTC;
+
 extern uint16_t maxMixerDuration;
 
 #define DURATION_MS_PREC2(x) ((x)/20)
@@ -651,7 +660,7 @@ uint16_t isqrt32(uint32_t n);
 #define pauseMixerCalculations()
 #define resumeMixerCalculations()
 #else
-#include "tasks_arm.h"
+#include "tasks.h"
 extern RTOS_MUTEX_HANDLE mixerMutex;
 inline void pauseMixerCalculations()
 {
@@ -1034,14 +1043,10 @@ enum AUDIO_SOUNDS {
 };
 
 #if defined(AUDIO)
-#include "audio_arm.h"
+#include "audio.h"
 #endif
 
 #include "buzzer.h"
-
-
-
-
 #include "translations.h"
 #include "fonts.h"
 
@@ -1090,6 +1095,7 @@ void opentxResume();
 #else
 #define SD_SCREEN_FILE_LENGTH          64
 #endif
+
 union ReusableBuffer
 {
   // ARM 334 bytes
@@ -1110,11 +1116,31 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
-  } modelsetup;
+    union {
+      struct {
+        union {
+          uint8_t registerStep;
+          uint8_t bindStep;
+        };
+        uint32_t bindWaitTimeout;
+        uint8_t registerPopupVerticalPosition;
+        uint8_t registerPopupHorizontalPosition;
+        int8_t registerPopupEditMode;
+        char registerRxName[PXX2_LEN_RX_NAME];
+        uint8_t registerModuleIndex;
+        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
+        uint8_t bindCandidateReceiversCount;
+        uint8_t bindReceiverId;
+        union {
+          uint8_t bindSelectedReceiverIndex;
+          uint8_t shareReceiverId;
+        };
+      } pxx2;
+    };
+  } moduleSetup;
 
   // 103 bytes
-  struct
-  {
+  struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
@@ -1131,8 +1157,7 @@ union ReusableBuffer
 
 #if defined(SDCARD)
   // 274 bytes
-  struct
-  {
+  struct {
     char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
     uint32_t available;
     uint16_t offset;
@@ -1141,10 +1166,66 @@ union ReusableBuffer
   } sdmanager;
 #endif
 
-  struct
-  {
+  struct {
+    struct {
+      int8_t current;
+      int8_t maximum;
+      uint8_t timeout;
+      PXX2HardwareInformation information;
+      struct {
+        PXX2HardwareInformation information;
+      } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
+    } modules[NUM_MODULES];
+
+    uint32_t updateTime;
+
+    union {
+      struct {
+        uint8_t state;  // 0x00 = READ 0x40 = WRITE
+        tmr10ms_t timeout;
+        uint8_t dirty;
+        uint8_t rfProtocol;
+        uint8_t externalAntenna;
+        int8_t txPower;
+      } moduleSettings;
+
+      struct {
+        uint8_t state;  // 0x00 = READ 0x40 = WRITE
+        tmr10ms_t timeout;
+        uint8_t receiverId;
+        uint8_t dirty;
+        uint8_t telemetryDisabled;
+        uint8_t pwmRate;
+        uint8_t outputsCount;
+        uint8_t outputsMapping[24];
+      } receiverSettings;
+    };
+
+  } hardwareAndSettings;
+
+  struct {
     uint8_t stickMode;
   } generalSettings;
+
+  struct
+  {
+    uint8_t bars[LCD_W];
+    uint32_t freq;
+    uint32_t span;
+    uint32_t step;
+  } spectrumAnalyser;
+
+  struct
+  {
+    uint32_t freq;
+    int16_t power;
+    int16_t peak;
+  } powerMeter;
+
+  struct
+  {
+    int8_t preset;
+  } curveEdit;
 
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
@@ -1288,6 +1369,15 @@ extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
 
 #if defined(BLUETOOTH)
   #include "bluetooth.h"
+#endif
+
+#if defined(JACK_DETECT_GPIO)
+enum JackMode {
+  JACK_UNSELECTED_MODE,
+  JACK_HEADPHONE_MODE,
+  JACK_TRAINER_MODE,
+  JACK_MAX_MODE = JACK_TRAINER_MODE
+};
 #endif
 
 #endif // _OPENTX_H_

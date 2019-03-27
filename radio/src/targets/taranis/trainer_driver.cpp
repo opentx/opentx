@@ -20,7 +20,9 @@
 
 #include "opentx.h"
 
+#if defined(HEARTBEAT_USART)
 DMAFifo<32> heartbeatFifo __DMA (HEARTBEAT_DMA_Stream);
+#endif
 
 void trainerSendNextFrame();
 
@@ -39,7 +41,11 @@ void init_trainer_ppm()
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN;
   TRAINER_TIMER->PSC = TRAINER_TIMER_FREQ / 2000000 - 1; // 0.5uS
   TRAINER_TIMER->ARR = 45000;
-  TRAINER_TIMER->CCMR2 = TIM_CCMR2_OC4M_1 | TIM_CCMR2_OC4M_2 | TIM_CCMR2_OC4PE; // PWM mode 1
+#if defined(TRAINER_OUT_CCMR1)
+  TRAINER_TIMER->CCMR1 = TRAINER_OUT_CCMR1;
+#elif defined(TRAINER_OUT_CCMR2)
+  TRAINER_TIMER->CCMR2 = TRAINER_OUT_CCMR2;
+#endif
   TRAINER_TIMER->BDTR = TIM_BDTR_MOE;
   TRAINER_TIMER->EGR = 1;
   TRAINER_TIMER->DIER |= TIM_DIER_UDE;
@@ -48,18 +54,23 @@ void init_trainer_ppm()
   setupPulsesPPMTrainer();
   trainerSendNextFrame();
 
+#if defined(TRAINER_DMA_STREAM)
   NVIC_EnableIRQ(TRAINER_DMA_IRQn);
   NVIC_SetPriority(TRAINER_DMA_IRQn, 7);
+#endif
+
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
   NVIC_SetPriority(TRAINER_TIMER_IRQn, 7);
 }
 
 void stop_trainer_ppm()
 {
+#if defined(TRAINER_DMA_STREAM)
   NVIC_DisableIRQ(TRAINER_DMA_IRQn);
-  NVIC_DisableIRQ(TRAINER_TIMER_IRQn);
-
   TRAINER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+#endif
+
+  NVIC_DisableIRQ(TRAINER_TIMER_IRQn);
   TRAINER_TIMER->DIER = 0;
   TRAINER_TIMER->CR1 &= ~TIM_CR1_CEN; // Stop counter
 }
@@ -79,10 +90,14 @@ void init_trainer_capture()
   TRAINER_TIMER->ARR = 0xFFFF;
   TRAINER_TIMER->PSC = (PERI1_FREQUENCY * TIMER_MULT_APB1) / 2000000 - 1; // 0.5uS
   TRAINER_TIMER->CR2 = 0;
-  TRAINER_TIMER->CCMR2 = TIM_CCMR2_IC3F_0 | TIM_CCMR2_IC3F_1 | TIM_CCMR2_CC3S_0;
-  TRAINER_TIMER->CCER = TIM_CCER_CC3E;
+#if defined(TRAINER_IN_CCMR1)
+  TRAINER_TIMER->CCMR1 = TRAINER_IN_CCMR1;
+#elif defined(TRAINER_IN_CCMR2)
+  TRAINER_TIMER->CCMR2 = TRAINER_IN_CCMR2;
+#endif
+  TRAINER_TIMER->CCER = TRAINER_IN_CCER;
   TRAINER_TIMER->SR &= ~TIM_SR_CC3IF & ~TIM_SR_CC2IF & ~TIM_SR_UIF; // Clear flags
-  TRAINER_TIMER->DIER |= TIM_DIER_CC3IE;
+  TRAINER_TIMER->DIER |= TRAINER_IN_INTERRUPT_ENABLE;
   TRAINER_TIMER->CR1 = TIM_CR1_CEN;
 
   NVIC_EnableIRQ(TRAINER_TIMER_IRQn);
@@ -98,18 +113,26 @@ void stop_trainer_capture()
 
 void trainerSendNextFrame()
 {
-  TRAINER_TIMER->CCR4 = GET_PPM_DELAY(TRAINER_MODULE)*2;
-  TRAINER_TIMER->CCER = TIM_CCER_CC4E | (GET_PPM_POLARITY(TRAINER_MODULE) ? 0 : TIM_CCER_CC4P);
-  TRAINER_TIMER->CCR1 = *(trainerPulsesData.ppm.ptr - 1) - 4000; // 2mS in advance
+  TRAINER_OUT_COUNTER_REGISTER = GET_TRAINER_PPM_DELAY() * 2;
+  TRAINER_TIMER->CCER = TRAINER_OUT_CCER | (GET_TRAINER_PPM_POLARITY() ? 0 : TRAINER_CCER_POLARYTY);
+  TRAINER_SETUP_REGISTER = *(trainerPulsesData.ppm.ptr - 1) - 4000; // 2mS in advance
 
+#if defined(TRAINER_DMA_STREAM)
   TRAINER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
   TRAINER_DMA_STREAM->CR |= TRAINER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
   TRAINER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&TRAINER_TIMER->ARR);
   TRAINER_DMA_STREAM->M0AR = CONVERT_PTR_UINT(trainerPulsesData.ppm.pulses);
   TRAINER_DMA_STREAM->NDTR = trainerPulsesData.ppm.ptr - trainerPulsesData.ppm.pulses;
   TRAINER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+#else
+  trainerPulsesData.ppm.ptr = trainerPulsesData.ppm.pulses;
+  TRAINER_TIMER->DIER |= TIM_DIER_UDE;
+  TRAINER_TIMER->SR &= ~TIM_SR_UIF; // Clear this flag
+  TRAINER_TIMER->DIER |= TIM_DIER_UIE; // Enable this interrupt
+#endif
 }
 
+#if defined(TRAINER_DMA_STREAM)
 extern "C" void TRAINER_DMA_IRQHandler()
 {
   if (!DMA_GetITStatus(TRAINER_DMA_STREAM, TRAINER_DMA_FLAG_TC))
@@ -117,9 +140,10 @@ extern "C" void TRAINER_DMA_IRQHandler()
 
   DMA_ClearITPendingBit(TRAINER_DMA_STREAM, TRAINER_DMA_FLAG_TC);
 
-  TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear flag
-  TRAINER_TIMER->DIER |= TIM_DIER_CC1IE; // Enable this interrupt
+  TRAINER_TIMER->SR &= ~TRAINER_OUT_INTERRUPT_FLAG; // Clear flag
+  TRAINER_TIMER->DIER |= TRAINER_OUT_INTERRUPT_ENABLE; // Enable this interrupt
 }
+#endif
 
 extern "C" void TRAINER_TIMER_IRQHandler()
 {
@@ -129,14 +153,15 @@ extern "C" void TRAINER_TIMER_IRQHandler()
   bool doCapture = false;
 
   // What mode? in or out?
-  if ((TRAINER_TIMER->DIER & TIM_DIER_CC3IE) && (TRAINER_TIMER->SR & TIM_SR_CC3IF)) {
+  if ((TRAINER_TIMER->DIER & TRAINER_IN_INTERRUPT_ENABLE) && (TRAINER_TIMER->SR & TRAINER_IN_INTERRUPT_FLAG)) {
     // capture mode on trainer jack
-    capture = TRAINER_TIMER->CCR3;
+    capture = TRAINER_IN_COUNTER_REGISTER;
     if (TRAINER_CONNECTED() && currentTrainerMode == TRAINER_MODE_MASTER_TRAINER_JACK) {
       doCapture = true;
     }
   }
 
+#if defined(TRAINER_MODULE_HEARTBEAT)
   if ((TRAINER_TIMER->DIER & TIM_DIER_CC2IE) && (TRAINER_TIMER->SR & TIM_SR_CC2IF)) {
     // capture mode on heartbeat pin (external module)
     capture = TRAINER_TIMER->CCR2;
@@ -144,22 +169,36 @@ extern "C" void TRAINER_TIMER_IRQHandler()
       doCapture = true;
     }
   }
+#endif
 
   if (doCapture) {
     captureTrainerPulses(capture);
   }
 
   // PPM out compare interrupt
-  if ((TRAINER_TIMER->DIER & TIM_DIER_CC1IE) && (TRAINER_TIMER->SR & TIM_SR_CC1IF)) {
+  if ((TRAINER_TIMER->DIER & TRAINER_OUT_INTERRUPT_ENABLE) && (TRAINER_TIMER->SR & TRAINER_OUT_INTERRUPT_FLAG)) {
     // compare interrupt
-    TRAINER_TIMER->DIER &= ~TIM_DIER_CC1IE; // stop this interrupt
-    TRAINER_TIMER->SR &= ~TIM_SR_CC1IF; // Clear flag
+    TRAINER_TIMER->DIER &= ~TRAINER_OUT_INTERRUPT_ENABLE; // stop this interrupt
+    TRAINER_TIMER->SR &= ~TRAINER_OUT_INTERRUPT_FLAG; // Clear flag
     setupPulsesPPMTrainer();
     trainerSendNextFrame();
   }
+
+#if !defined(TRAINER_DMA_STREAM)
+  // PPM out update interrupt
+  if ((TRAINER_TIMER->DIER & TIM_DIER_UIE) && (TRAINER_TIMER->SR & TIM_SR_UIF)) {
+    TRAINER_TIMER->SR &= ~TIM_SR_UIF; // Clear flag
+    TRAINER_TIMER->ARR = *trainerPulsesData.ppm.ptr++;
+    if (*trainerPulsesData.ppm.ptr == 0) {
+      TRAINER_TIMER->SR &= ~TRAINER_OUT_INTERRUPT_FLAG; // Clear this flag
+      TRAINER_TIMER->DIER |= TRAINER_OUT_INTERRUPT_ENABLE; // Enable this interrupt
+    }
+  }
+#endif
 }
 
-void init_cppm_on_heartbeat_capture(void)
+#if defined(TRAINER_MODULE_HEARTBEAT)
+void init_cppm_on_heartbeat_capture()
 {
   EXTERNAL_MODULE_ON();
 
@@ -196,7 +235,9 @@ void stop_cppm_on_heartbeat_capture()
     EXTERNAL_MODULE_OFF();
   }
 }
+#endif
 
+#if defined(HEARTBEAT_USART)
 void init_sbus_on_heartbeat_capture()
 {
   EXTERNAL_MODULE_ON();
@@ -258,13 +299,16 @@ void stop_sbus_on_heartbeat_capture()
     EXTERNAL_MODULE_OFF();
   }
 }
+#endif
 
 int sbusGetByte(uint8_t * byte)
 {
   switch (currentTrainerMode) {
+#if defined(HEARTBEAT_USART)
     case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
       return heartbeatFifo.pop(*byte);
-#if !defined(PCBX7) && !defined(PCBX9E)
+#endif
+#if !defined(PCBX7) && !defined(PCBX9E) && !defined(PCBX3) && !defined(PCBXLITE)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
       return serial2RxFifo.pop(*byte);
 #endif

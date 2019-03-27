@@ -146,7 +146,8 @@ enum Capability {
   HasMixerExpo,
   HasBatMeterRange,
   DangerousFunctions,
-  HasModelCategories
+  HasModelCategories,
+  HasSwitchableJack
 };
 
 class EEPROMInterface

@@ -108,12 +108,12 @@ void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, u
   }
 }
 
-void drawProgressBar(const char * label, int num, int den)
+void drawProgressScreen(const char * title, const char * message, int num, int den)
 {
   lcdClear();
   lcdSetColor(WHITE);
-  if (label) {
-    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, label, CUSTOM_COLOR);
+  if (message) {
+    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, message, CUSTOM_COLOR);
   }
   lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H-22, LCD_W-2*MENUS_MARGIN_LEFT, 15, 1, SOLID, CUSTOM_COLOR);
   lcdSetColor(RED);

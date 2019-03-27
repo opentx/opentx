@@ -403,10 +403,12 @@ bool menuRadioSetup(event_t event)
         g_eeGeneral.gpsFormat = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_GPSFORMAT, g_eeGeneral.gpsFormat, 0, 1, attr, event);
         break;
 
+#if defined(PXX)
       case ITEM_SETUP_COUNTRYCODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_COUNTRYCODE);
         g_eeGeneral.countryCode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_COUNTRYCODES, g_eeGeneral.countryCode, 0, 2, attr, event);
         break;
+#endif
 
       case ITEM_SETUP_LANGUAGE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_VOICELANG);

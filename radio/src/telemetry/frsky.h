@@ -23,6 +23,7 @@
 
 #include "../definitions.h"
 #include "telemetry_holders.h"
+#include "../io/frsky_pxx2.h"
 
 // Receive buffer state machine state enum
 enum FrSkyDataState {
@@ -32,12 +33,7 @@ enum FrSkyDataState {
   STATE_DATA_XOR,
 };
 
-#if defined(PXX2)
-#include "io/pxx2.h"
-#define FRSKY_SPORT_BAUDRATE      PXX2_BAUDRATE
-#else
 #define FRSKY_SPORT_BAUDRATE      57600
-#endif
 
 #define FRSKY_D_BAUDRATE          9600
 
@@ -196,8 +192,11 @@ enum FrSkyDataState {
 #define BATT_ID                   0xf104
 #define RAS_ID                    0xf105
 #define XJT_VERSION_ID            0xf106
+#define R9_PWR_ID                 0xf107
 #define FUEL_QTY_FIRST_ID         0x0a10
 #define FUEL_QTY_LAST_ID          0x0a1f
+
+
 
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO             0x00 // 0
@@ -207,7 +206,6 @@ enum FrSkyDataState {
 #define DATA_ID_RPM               0xE4 // 4
 #define DATA_ID_SP2UH             0x45 // 5
 #define DATA_ID_SP2UR             0xC6 // 6
-
 
 #if defined(NO_RAS)
   #define IS_RAS_VALUE_VALID()            (false)
@@ -220,13 +218,6 @@ enum FrSkyDataState {
 #endif
 
 #define IS_HIDDEN_TELEMETRY_VALUE(id)     ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == RAS_ID) || (id == FACT_TEST_ID))
-
-enum AlarmLevel {
-  alarm_off = 0,
-  alarm_yellow = 1,
-  alarm_orange = 2,
-  alarm_red = 3
-};
 
 #define ALARM_GREATER(channel, alarm)     ((g_model.frsky.channels[channel].alarms_greater >> alarm) & 1)
 #define ALARM_LEVEL(channel, alarm)       ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
@@ -289,11 +280,11 @@ typedef enum {
 
 // FrSky D Telemetry Protocol
 void processHubPacket(uint8_t id, int16_t value);
-void frskyDSendNextAlarm();
 void frskyDProcessPacket(const uint8_t *packet);
 
 // FrSky S.PORT Telemetry Protocol
 void sportProcessTelemetryPacket(const uint8_t * packet);
+void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet);
 
 void telemetryWakeup();
 void telemetryReset();
@@ -313,14 +304,6 @@ enum TelemetryProtocol
   TELEM_PROTO_FLYSKY_IBUS,
 };
 
-enum TelemAnas {
-  TELEM_ANA_A1,
-  TELEM_ANA_A2,
-  TELEM_ANA_A3,
-  TELEM_ANA_A4,
-  TELEM_ANA_COUNT
-};
-
 struct TelemetryData {
   TelemetryValueWithMin swr;          // TODO Min not needed
   TelemetryValueWithMin rssi;         // TODO Min not needed
@@ -330,12 +313,8 @@ struct TelemetryData {
 
 extern TelemetryData telemetryData;
 
-  typedef uint16_t frskyCellVoltage_t;
-
-void frskySetCellsCount(uint8_t cellscount);
-void frskySetCellVoltage(uint8_t battnumber, frskyCellVoltage_t cellVolts);
-void frskyUpdateCells();
-
+bool pushFrskyTelemetryData(uint8_t data); // returns true when end of frame detected
 void processFrskyTelemetryData(uint8_t data);
+void processFrskyPXX2Data(uint8_t data);
 
 #endif // _FRSKY_H_

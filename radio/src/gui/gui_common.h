@@ -54,7 +54,11 @@ bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
 bool isSwitchAvailableInTimers(int swtch);
 bool isR9MModeAvailable(int mode);
-bool isModuleAvailable(int module);
+bool isR9ModuleRunning(int module);
+bool isR9MMFlex(int module);
+bool isPXX2ChannelsCountAllowed(int channels);
+bool isExternalModuleAvailable(int module);
+bool isInternalModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
 bool isTelemetryProtocolAvailable(int protocol);
 bool isTrainerModeAvailable(int mode);
@@ -112,6 +116,7 @@ void runFatalErrorScreen(const char * message);
 void lcdDrawMMM(coord_t x, coord_t y, LcdFlags flags=0);
 
 // model_setup Defines that are used in all uis in the same way
+#define INTERNAL_MODULE_CHANNELS_ROWS   IF_INTERNAL_MODULE_ON((uint8_t)1)
 #define EXTERNAL_MODULE_CHANNELS_ROWS   IF_EXTERNAL_MODULE_ON((isModuleDSM2(EXTERNAL_MODULE) || isModuleCrossfire(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE) || (isModuleMultimodule(EXTERNAL_MODULE) && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) != MM_RF_PROTO_DSM2)) ? (uint8_t)0 : (uint8_t)1)
 
 
@@ -148,23 +153,26 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 #define MULTIMODULE_OPTIONS_ROW         HIDDEN_ROW
 #endif
 
-
 #define MAX_RX_NUM(x)                  (isModuleDSM2(x) ? 20 : isModuleMultimodule(x) ? MULTI_MAX_RX_NUM(x) : 63)
 #define IS_D8_RX(x)                    (g_model.moduleData[x].rfProtocol == RF_PROTO_D8)
 #define IS_R9M_OR_XJTD16(x)            ((isModuleXJT(x) && g_model.moduleData[x].rfProtocol== RF_PROTO_X16) || isModuleR9M(x))
 
-#define FAILSAFE_ROWS(x)               ((isModuleXJT(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
+#define FAILSAFE_ROWS(x)               ((isModuleXJTVariant(x) && HAS_RF_PROTOCOL_FAILSAFE(g_model.moduleData[x].rfProtocol)) || MULTIMODULE_HASFAILSAFE(x) || isModuleR9M(x) || isModuleR9M2(x))  ? (g_model.moduleData[x].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
 
-#define EXTERNAL_MODULE_OPTION_ROW     (isModuleR9M(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
+#if defined(PCBXLITE)
+  #define EXTERNAL_MODULE_OPTION_ROW     (isModuleR9M(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
+#else
+  #define EXTERNAL_MODULE_OPTION_ROW     (isR9ModuleRunning(EXTERNAL_MODULE) ? HIDDEN_ROW : isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
+#endif
 
 #if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
-#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (isModuleR9M_FCC_VARIANT(EXTERNAL_MODULE) ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
+  #define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (isModuleR9M_FCC_VARIANT(EXTERNAL_MODULE) ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
+#elif defined(PCBXLITE)
+  #define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (uint8_t) 0 : HIDDEN_ROW
 #else
-#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (uint8_t) 0 : HIDDEN_ROW
+  #define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isR9ModuleRunning(EXTERNAL_MODULE)) ? (uint8_t) 0 : HIDDEN_ROW
 #endif
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
-
-
 
 #endif // _GUI_COMMON_H_

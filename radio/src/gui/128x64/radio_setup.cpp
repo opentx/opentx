@@ -26,9 +26,9 @@ const unsigned char sticks[]  = {
 #include "sticks.lbm"
 };
 
-#define RADIO_SETUP_2ND_COLUMN  (LCD_W-6*FW-3)
+#define RADIO_SETUP_2ND_COLUMN  (LCD_W-7*FW-3)
 #define RADIO_SETUP_DATE_COLUMN (FW*15+7)
-#define RADIO_SETUP_TIME_COLUMN (FW*15+9)
+#define RADIO_SETUP_TIME_COLUMN (RADIO_SETUP_2ND_COLUMN + 2 * FWNUM)
 
   #define SLIDER_5POS(y, value, label, event, attr) { \
     int8_t tmp = value; \
@@ -88,6 +88,9 @@ enum MenuRadioSetupItems {
   CASE_PWM_BACKLIGHT(ITEM_SETUP_BACKLIGHT_BRIGHTNESS_ON)
   ITEM_SETUP_FLASH_BEEP,
   CASE_SPLASH_PARAM(ITEM_SETUP_DISABLE_SPLASH)
+#if defined(PXX2)
+  ITEM_RADIO_OWNER_ID,
+#endif
   CASE_GPS(ITEM_SETUP_TIMEZONE)
   ITEM_SETUP_ADJUST_RTC,
   CASE_GPS(ITEM_SETUP_GPSFORMAT)
@@ -97,6 +100,7 @@ enum MenuRadioSetupItems {
   IF_FAI_CHOICE(ITEM_SETUP_FAI)
   ITEM_SETUP_SWITCHES_DELAY,
   CASE_STM32(ITEM_SETUP_USB_MODE)
+  CASE_JACK_DETECT(ITEM_SETUP_JACK_MODE)
   ITEM_SETUP_RX_CHANNEL_ORD,
   ITEM_SETUP_STICK_MODE_LABELS,
   ITEM_SETUP_STICK_MODE,
@@ -131,7 +135,38 @@ void menuRadioSetup(event_t event)
   }
 #endif
 
-  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, HEADER_LINE+ITEM_SETUP_MAX, { HEADER_LINE_COLUMNS CASE_RTCLOCK(2) CASE_RTCLOCK(2) CASE_BATTGRAPH(1) LABEL(SOUND), CASE_AUDIO(0) CASE_BUZZER(0) 0, 0, 0, 0, 0, CASE_AUDIO(0) CASE_VARIO(LABEL(VARIO)) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_VARIO(0) CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0) 0, LABEL(ALARMS), 0, CASE_CAPACITY(0) CASE_PCBSKY9X(0) 0, 0, 0, 0, IF_ROTARY_ENCODERS(0) LABEL(BACKLIGHT), 0, 0, 0, CASE_PWM_BACKLIGHT(0) CASE_PWM_BACKLIGHT(0) 0, CASE_SPLASH_PARAM(0) CASE_GPS(0) 0, CASE_GPS(0) CASE_PXX(0) 0, 0, IF_FAI_CHOICE(0) 0, CASE_STM32(0) 0, COL_TX_MODE, 0, 1/*to force edit mode*/});
+  MENU(STR_MENURADIOSETUP, menuTabGeneral, MENU_RADIO_SETUP, HEADER_LINE+ITEM_SETUP_MAX, {
+    HEADER_LINE_COLUMNS CASE_RTCLOCK(2) CASE_RTCLOCK(2) CASE_BATTGRAPH(1)
+    LABEL(SOUND), CASE_AUDIO(0)
+    CASE_BUZZER(0)
+    0, 0, 0, 0, 0, CASE_AUDIO(0)
+    CASE_VARIO(LABEL(VARIO))
+    CASE_VARIO(0)
+    CASE_VARIO(0)
+    CASE_VARIO(0)
+    CASE_VARIO(0)
+    CASE_HAPTIC(LABEL(HAPTIC))
+    CASE_HAPTIC(0)
+    CASE_HAPTIC(0)
+    CASE_HAPTIC(0)
+    0, LABEL(ALARMS), 0, CASE_CAPACITY(0)
+    CASE_PCBSKY9X(0)
+    0, 0, 0, 0, IF_ROTARY_ENCODERS(0)
+    LABEL(BACKLIGHT), 0, 0, 0, CASE_PWM_BACKLIGHT(0)
+    CASE_PWM_BACKLIGHT(0)
+    0,
+    CASE_SPLASH_PARAM(0)
+#if defined(PXX2)
+    0 /* owner registration ID */,
+#endif
+    CASE_GPS(0)
+    0, CASE_GPS(0)
+    CASE_PXX(0)
+    0, 0, IF_FAI_CHOICE(0)
+    0,
+    CASE_STM32(0) // USB mode
+    CASE_JACK_DETECT(0) // Jack mode
+    0, COL_TX_MODE, 0, 1/*to force edit mode*/});
 
   if (event == EVT_ENTRY) {
     reusableBuffer.generalSettings.stickMode = g_eeGeneral.stickMode;
@@ -156,11 +191,11 @@ void menuRadioSetup(event_t event)
           switch (j) {
             case 0:
               lcdDrawNumber(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+TM_YEAR_BASE, rowattr|RIGHT);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
+              if (rowattr && s_editMode > 0) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
               lcdDrawNumber(RADIO_SETUP_DATE_COLUMN+3*FW-2, y, t.tm_mon+1, rowattr|LEADING0|RIGHT, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
+              if (rowattr && s_editMode > 0) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
               break;
             case 2:
             {
@@ -169,7 +204,7 @@ void menuRadioSetup(event_t event)
               static const uint8_t dmon[]  = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
               dlim += dmon[t.tm_mon];
               lcdDrawNumber(RADIO_SETUP_DATE_COLUMN+6*FW-4, y, t.tm_mday, rowattr|LEADING0|RIGHT, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
+              if (rowattr && s_editMode > 0) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
             }
           }
@@ -187,15 +222,15 @@ void menuRadioSetup(event_t event)
           switch (j) {
             case 0:
               lcdDrawNumber(RADIO_SETUP_TIME_COLUMN, y, t.tm_hour, rowattr|LEADING0|RIGHT, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
+              if (rowattr && s_editMode > 0) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
               break;
             case 1:
               lcdDrawNumber(RADIO_SETUP_TIME_COLUMN+3*FWNUM, y, t.tm_min, rowattr|LEADING0|RIGHT, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_min = checkIncDec(event, t.tm_min, 0, 59, 0);
+              if (rowattr && s_editMode > 0) t.tm_min = checkIncDec(event, t.tm_min, 0, 59, 0);
               break;
             case 2:
               lcdDrawNumber(RADIO_SETUP_TIME_COLUMN+6*FWNUM, y, t.tm_sec, rowattr|LEADING0|RIGHT, 2);
-              if (rowattr && (s_editMode>0 || p1valdiff)) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
+              if (rowattr && s_editMode > 0) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
               break;
           }
         }
@@ -467,6 +502,12 @@ void menuRadioSetup(event_t event)
       }
 #endif
 
+#if defined(PXX2)
+      case ITEM_RADIO_OWNER_ID:
+        editSingleName(RADIO_SETUP_2ND_COLUMN, y, STR_OWNER_ID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);
+        break;
+#endif
+
 #if defined(TELEMETRY_FRSKY) && defined(GPS)
       case ITEM_SETUP_TIMEZONE:
         lcdDrawTextAlignedLeft(y, STR_TIMEZONE);
@@ -512,7 +553,7 @@ void menuRadioSetup(event_t event)
           if (g_eeGeneral.fai)
             POPUP_WARNING("FAI\001mode blocked!");
           else
-            POPUP_CONFIRMATION("FAI mode?");
+            POPUP_CONFIRMATION("FAI mode?", nullptr);
         }
         break;
 #endif
@@ -524,11 +565,19 @@ void menuRadioSetup(event_t event)
         lcdDrawText(lcdLastRightPos, y, STR_MS, attr);
         if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.switchesDelay, -15, 100-15);
         break;
+
 #if defined(STM32)
       case ITEM_SETUP_USB_MODE:
         g_eeGeneral.USBMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_USBMODE, STR_USBMODES, g_eeGeneral.USBMode, USB_UNSELECTED_MODE, USB_MAX_MODE, attr, event);
         break;
 #endif
+
+#if defined(JACK_DETECT_GPIO)
+      case ITEM_SETUP_JACK_MODE:
+        g_eeGeneral.jackMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_JACKMODE, STR_JACKMODES, g_eeGeneral.jackMode, JACK_UNSELECTED_MODE, JACK_MAX_MODE, attr, event);
+        break;
+#endif
+
       case ITEM_SETUP_RX_CHANNEL_ORD:
         lcdDrawTextAlignedLeft(y, STR_RXCHANNELORD); // RAET->AETR
         for (uint8_t i=1; i<=4; i++) {

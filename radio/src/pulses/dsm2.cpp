@@ -38,13 +38,13 @@ uint8_t  dsm2BindTimer = DSM2_BIND_TIMEOUT;
 #if defined(PPM_PIN_SERIAL)
 void putDsm2SerialBit(uint8_t bit)
 {
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte >>= 1;
+  extmodulePulsesData.dsm2.serialByte >>= 1;
   if (bit & 1) {
-    modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte |= 0x80;
+    extmodulePulsesData.dsm2.serialByte |= 0x80;
   }
-  if (++modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount >= 8) {
-    *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte;
-    modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
+  if (++extmodulePulsesData.dsm2.serialBitCount >= 8) {
+    *extmodulePulsesData.dsm2.ptr++ = extmodulePulsesData.dsm2.serialByte;
+    extmodulePulsesData.dsm2.serialBitCount = 0;
   }
 }
 
@@ -69,14 +69,14 @@ void putDsm2Flush()
 #else
 void _send_1(uint8_t v)
 {
-  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
+  if (extmodulePulsesData.dsm2.index & 1)
     v += 2;
   else
     v -= 2;
 
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v - 1;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index += 1;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest -= v;
+  *extmodulePulsesData.dsm2.ptr++ = v - 1;
+  extmodulePulsesData.dsm2.index += 1;
+  extmodulePulsesData.dsm2.rest -= v;
 }
 
 void sendByteDsm2(uint8_t b) // max 10 changes 0 10 10 10 10 1
@@ -100,35 +100,35 @@ void sendByteDsm2(uint8_t b) // max 10 changes 0 10 10 10 10 1
 
 void putDsm2Flush()
 {
-  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
-    *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;
+  if (extmodulePulsesData.dsm2.index & 1)
+    *extmodulePulsesData.dsm2.ptr++ = extmodulePulsesData.dsm2.rest;
   else
-    *(modulePulsesData[EXTERNAL_MODULE].dsm2.ptr - 1) = modulePulsesData[EXTERNAL_MODULE].dsm2.rest;      
+    *(extmodulePulsesData.dsm2.ptr - 1) = extmodulePulsesData.dsm2.rest;
 }
 #endif
 
 // This is the data stream to send, prepare after 19.5 mS
 // Send after 22.5 mS
 
-void setupPulsesDSM2(uint8_t port)
+void setupPulsesDSM2()
 {
   uint8_t dsmDat[14];
 
 #if defined(PPM_PIN_SERIAL)
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0 ;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0 ;
+  extmodulePulsesData.dsm2.serialByte = 0 ;
+  extmodulePulsesData.dsm2.serialBitCount = 0 ;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = DSM2_PERIOD * 2000;
+  extmodulePulsesData.dsm2.index = 0;
+  extmodulePulsesData.dsm2.rest = DSM2_PERIOD * 2000;
 #endif
 
-  modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
+  extmodulePulsesData.dsm2.ptr = extmodulePulsesData.dsm2.pulses;
 
-  switch (s_current_protocol[port]) {
-    case PROTO_DSM2_LP45:
+  switch (moduleSettings[EXTERNAL_MODULE].protocol) {
+    case PROTOCOL_CHANNELS_DSM2_LP45:
       dsmDat[0] = 0x00;
       break;
-    case PROTO_DSM2_DSM2:
+    case PROTOCOL_CHANNELS_DSM2_DSM2:
       dsmDat[0] = 0x10;
       break;
     default: // DSMX
@@ -140,29 +140,29 @@ void setupPulsesDSM2(uint8_t port)
   if (dsm2BindTimer > 0) {
     dsm2BindTimer--;
     if (switchState(SW_DSM2_BIND)) {
-      moduleFlag[port] = MODULE_BIND;
+      moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_BIND;
       dsmDat[0] |= DSM2_SEND_BIND;
     }
   }
-  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
   else {
-    moduleFlag[port] = 0;
+    moduleSettings[EXTERNAL_MODULE].mode = 0;
   }
 #else
-  if (moduleFlag[port] == MODULE_BIND) {
+  if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
     dsmDat[0] |= DSM2_SEND_BIND;
   }
-  else if (moduleFlag[port] == MODULE_RANGECHECK) {
+  else if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
 #endif
 
-  dsmDat[1] = g_model.header.modelId[port]; // DSM2 Header second byte for model match
+  dsmDat[1] = g_model.header.modelId[EXTERNAL_MODULE]; // DSM2 Header second byte for model match
 
   for (int i=0; i<DSM2_CHANS; i++) {
-    int channel = g_model.moduleData[port].channelsStart+i;
+    int channel = g_model.moduleData[EXTERNAL_MODULE].channelsStart+i;
     int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
     uint16_t pulse = limit(0, ((value*13)>>5)+512, 1023);
     dsmDat[2+2*i] = (i<<2) | ((pulse>>8)&0x03);

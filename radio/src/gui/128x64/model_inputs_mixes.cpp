@@ -524,7 +524,6 @@ void menuModelMixOne(event_t event)
   #define MIX_LINE_SWITCH_POS  16*FW
   #define MIX_LINE_DELAY_POS   19*FW+7
 
-#if defined(NAVIGATION_MENUS)
 void onExpoMixMenu(const char *result)
 {
   bool expo = (menuHandlers[menuLevel] == menuModelExposAll);
@@ -551,7 +550,6 @@ void onExpoMixMenu(const char *result)
     deleteExpoMix(expo, s_currIdx);
   }
 }
-#endif
 
 void displayMixInfos(coord_t y, MixData *md)
 {
@@ -672,7 +670,6 @@ void menuModelExpoMix(uint8_t expo, event_t event)
         }
         else {
           if (s_copyMode) s_currCh = 0;
-#if defined(NAVIGATION_MENUS)
           if (s_currCh) {
             if (reachExpoMixCountLimit(expo)) break;
             insertExpoMix(expo, s_currIdx);
@@ -691,15 +688,6 @@ void menuModelExpoMix(uint8_t expo, event_t event)
             POPUP_MENU_ADD_ITEM(STR_DELETE);
             POPUP_MENU_START(onExpoMixMenu);
           }
-#else
-          if (s_currCh) {
-            if (reachExpoMixCountLimit(expo)) break;
-            insertExpoMix(expo, s_currIdx);
-          }
-          pushMenu(expo ? menuModelExpoOne : menuModelMixOne);
-          s_copyMode = 0;
-          return;
-#endif
         }
       }
       break;

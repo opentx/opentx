@@ -173,14 +173,14 @@ const SpektrumSensor spektrumSensors[] = {
   {I2C_CELLS,        8,  uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
   {I2C_CELLS,        10, uint16,    ZSTR_CELLS,             UNIT_VOLTS,                  2},
   {I2C_CELLS,        12, uint16,    ZSTR_TEMP2,             UNIT_CELSIUS,                2},
-  
+
   // Vario-S
   {0x40,             0,  int16,     ZSTR_ALT,               UNIT_METERS,                 1},
   {0x40,             2,  int16,     ZSTR_VSPD,              UNIT_METERS_PER_SECOND,      1},
 
   // 0x50-0x56 custom 3rd party sensors
   //{0x50, 0, int16, ZSTR_}
-  
+
   // 0x7d are transmitter channels frame data [7], probably only available on the Spektrum
   // telemetry bus on the model itself
 
@@ -333,7 +333,7 @@ void processSpektrumPacket(const uint8_t *packet)
         }
         telemetryStreaming = TELEMETRY_TIMEOUT10ms;
       }
-      
+
       uint16_t pseudoId = (sensor->i2caddress << 8 | sensor->startByte);
       setTelemetryValue(TELEM_PROTO_SPEKTRUM, pseudoId, 0, instance, value, sensor->unit, sensor->precision);
     }
@@ -400,8 +400,7 @@ void processDSMBindPacket(const uint8_t *packet)
   setTelemetryValue(TELEM_PROTO_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 4, 0, 0, debugval, UNIT_RAW, 0);
 
   /* Finally stop binding as the rx just told us that it is bound */
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2
-    && moduleFlag[EXTERNAL_MODULE] == MODULE_BIND) {
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(true) == MM_RF_PROTO_DSM2 && moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
     multiBindStatus=MULTI_BIND_FINISHED;
   }
 }

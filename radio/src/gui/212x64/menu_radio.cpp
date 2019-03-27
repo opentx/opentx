@@ -23,10 +23,11 @@
 const MenuHandlerFunc menuTabGeneral[] = {
   menuRadioSetup,
   menuRadioSdManager,
+  menuRadioTools,
   menuRadioSpecialFunctions,
   menuRadioTrainer,
-  menuRadioVersion,
-  menuRadioHardware
+  menuRadioHardware,
+  menuRadioVersion
 };
 
 void menuRadioSpecialFunctions(event_t event)

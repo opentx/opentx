@@ -22,6 +22,7 @@
 #define _MODULES_H_
 
 #include "myeeprom.h"
+#include "bitfield.h"
 
 #define CROSSFIRE_CHANNELS_COUNT        16
 
@@ -47,17 +48,21 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 }
 #endif
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
 inline bool isModuleXJT(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT;
 }
-#else
-inline bool isModuleXJT(uint8_t idx)
+
+inline bool isModuleXJT2(uint8_t idx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_XJT;
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
 }
-#endif
+
+inline bool isModuleXJTVariant(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT || g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
+}
+
 
 #if defined(CROSSFIRE)
 inline bool isModuleCrossfire(uint8_t idx)
@@ -86,24 +91,28 @@ inline bool isExtraModule(uint8_t)
 #if defined(TARANIS_INTERNAL_PPM)
 inline bool isModulePPM(uint8_t idx)
 {
-  return idx == TRAINER_MODULE ||
-         (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
-         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM));
+  return (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
+         (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
 }
 #else
 inline bool isModulePPM(uint8_t idx)
 {
-  return idx == TRAINER_MODULE ||
-         isExtraModule(idx) ||
+  return isExtraModule(idx) ||
          (idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM);
 }
 #endif
 
 inline bool isModuleR9M(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M;
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE;
 }
 
+inline bool isModuleR9M2(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO2;
+}
+
+#if defined(PCBXLITE)
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
@@ -128,11 +137,41 @@ inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
 }
+#else
+inline bool isModuleR9M_FCC(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FCC;
+}
 
+inline bool isModuleR9M_LBT(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_EU;
+}
+
+inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region != MODULE_R9M_REGION_EU;
+}
+
+inline bool isModuleR9M_EUPLUS(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_868MHZ;
+}
+
+inline bool isModuleR9M_AU_PLUS(uint8_t idx)
+{
+  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_915MHZ;
+}
+#endif
 
 inline bool isModulePXX(uint8_t idx)
 {
   return isModuleXJT(idx) || isModuleR9M(idx);
+}
+
+inline bool isModulePXX2(uint8_t idx)
+{
+  return isModuleXJT2(idx) || isModuleR9M2(idx);
 }
 
 #if defined(DSM2)
@@ -152,8 +191,8 @@ inline bool isModuleDSM2(uint8_t idx)
 }
 #endif
 
-// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, dsm, crossfire, multi, r9m, sbus)
-static const int8_t maxChannelsModules[] = { 0, 8, 8, -2, 8, 4, 8, 8}; // relative to 8!
+// order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
+static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
 static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
@@ -163,25 +202,10 @@ inline int8_t maxModuleChannels_M8(uint8_t idx)
 {
   if (isExtraModule(idx))
     return MAX_EXTRA_MODULE_CHANNELS_M8;
-  else if (idx == TRAINER_MODULE)
-    return MAX_TRAINER_CHANNELS_M8;
   else if (isModuleXJT(idx))
     return maxChannelsXJT[1 + g_model.moduleData[idx].rfProtocol];
   else
     return maxChannelsModules[g_model.moduleData[idx].type];
-}
-
-inline int8_t maxModuleChannels(uint8_t idx)
-{
-  return 8 + maxModuleChannels_M8(idx);
-}
-
-inline int8_t minModuleChannels(uint8_t idx)
-{
-  if (isModuleCrossfire(idx))
-    return 16;
-  else
-    return 1;
 }
 
 inline int8_t defaultModuleChannels_M8(uint8_t idx)
@@ -192,6 +216,8 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return 0; // 8 channels
   else if (isModuleMultimoduleDSM2(idx))
     return -1; // 7 channels
+  else if (isModulePXX2(idx))
+    return 8; // 16 channels
   else
     return maxModuleChannels_M8(idx);
 }

@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_ARM_H_
-#define _IO_ARM_H_
+#ifndef _IO_FRSKY_SPORT_H_
+#define _IO_FRSKY_SPORT_H_
 
 #include "dataconstants.h"
 
@@ -35,15 +35,13 @@ PACK(union SportTelemetryPacket
   uint8_t raw[8];
 });
 
-void sportProcessPacket(uint8_t * packet);
-bool isSportOutputBufferAvailable();
+bool isTelemetryOutputBufferAvailable();
 void sportOutputPushPacket(SportTelemetryPacket * packet);
-void sportFlashDevice(ModuleIndex module, const char * filename);
 #endif
 
 #if defined(STM32)
 bool isBootloader(const char * filename);
 void bootloaderFlash(const char * filename);
 #endif
-  
-#endif // _IO_ARM_H_
+
+#endif // _IO_FRSKY_SPORT_H_

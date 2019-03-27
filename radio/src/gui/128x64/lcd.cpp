@@ -292,7 +292,7 @@ uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
   for (int i=0; len==0 || i<len; ++i) {
-    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    unsigned char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
     if (!c) {
       break;
     }
@@ -327,7 +327,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
         break;
 #if !defined(BOOT)
       case ZCHAR:
-        c = idx2char(*s);
+        c = zchar2char(*s);
         break;
 #endif
       default:
@@ -427,6 +427,19 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
     val >>= 4;
   }
 }
+
+void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags)
+{
+  x += FWNUM*2;
+  for (int i=0; i<2; i++) {
+    x -= FWNUM;
+    char c = val & 0xf;
+    c = c>9 ? c+'A'-10 : c+'0';
+    lcdDrawChar(x, y, c, flags|(c>='A' ? CONDENSED : 0));
+    val >>= 4;
+  }
+}
+
 
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
 {

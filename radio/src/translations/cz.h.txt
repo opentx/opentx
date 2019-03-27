@@ -99,8 +99,11 @@
 #define LEN_USBMODES           TR("\006", "\010")
 #define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
 
-#define LEN_TARANIS_PROTOCOLS  "\004"
-#define TR_TARANIS_PROTOCOLS   "Vyp\0""PPM\0""XJT\0""DSM2""CRSF""MULT""R9M\0""SBUS"
+#define LEN_JACKMODES          "\007"
+#define TR_JACKMODES           "Popup\0 ""Audio\0 ""Trainer"
+
+#define LEN_TARANIS_PROTOCOLS       "\005"
+#define TR_TARANIS_PROTOCOLS         "Vyp\0 ""PPM\0 ""XJT\0 ""XJT2\0""DSM2\0""CRSF\0""MULT\0""R9M\0 ""R9M2\0""R9LT\0""R9LT2""R9LP2""SBUS\0"
 
 #define LEN_TELEMETRY_PROTOCOLS "\017"
 #define TR_TELEMETRY_PROTOCOLS "FrSky S.PORT\0  FrSky D\0       FrSky D (kabel)Spektrum\0      "
@@ -149,7 +152,7 @@
 
 #if defined(PXX)
   #define TR_PXX              "PXX\0  "
-#elif defined(DSM2) || defined(IRPROTOS)
+#elif defined(DSM2)
   #define TR_PXX             "[PXX]\0"
 #else
   #define TR_PXX
@@ -157,21 +160,11 @@
 
 #if defined(DSM2)
   #define TR_DSM2            "LP45\0 ""DSM2\0 ""DSMX\0 "
-#elif defined(IRPROTOS)
-  #define TR_DSM2            "[LP45]""[DSM2]""[DSMX]"
 #else
   #define TR_DSM2
 #endif
 
-#if defined(IRPROTOS)
-  #define TR_IRPROTOS          "SILV  TRAC09PICZ  SWIFT\0"
-#else
-  #define TR_IRPROTOS
-#endif
-
-  #define TR_XPPM
-
-#define TR_VPROTOS             "PPM\0  " TR_XPPM TR_PXX TR_DSM2 TR_IRPROTOS
+#define TR_VPROTOS             "PPM\0  " TR_PXX TR_DSM2
 
 #define LEN_POSNEG             "\003"
 #define TR_POSNEG              "POZ""NEG"
@@ -415,12 +408,18 @@
 #elif defined(PCBX9E)
   #define TR_POTS_VSRCRAW              "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
+#elif defined(PCBXLITES)
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0"
 #elif defined(PCBXLITE)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0"
 #elif defined(PCBX7)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SF\0""\312SH\0"
+#elif defined(PCBX3)
+  #define TR_POTS_VSRCRAW              "\310S1\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0"
 #elif defined(PCBTARANIS)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0""\310S3\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
@@ -537,9 +536,10 @@
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_POPUPS            TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
+  #define TR_POPUPS_ENTER_EXIT            TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
+  #define TR_OK                TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #else
-  #define TR_POPUPS            TR_ENTER "\010" TR_EXIT
+  #define TR_POPUPS_ENTER_EXIT            TR_ENTER "\010" TR_EXIT
   #define OFS_EXIT             sizeof(TR_ENTER)
 #endif
 
@@ -573,6 +573,7 @@
 #define TR_REFRESHRATE         TR(INDENT "Refresh", INDENT "Refresh rate")
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #define TR_MS                  "ms"
+#define TR_FREQUENCY                   INDENT "Frequency"
 #define TR_SWITCH              "Spínač"
 #define TR_TRIMS               "Trimy"
 #define TR_FADEIN              "Přechod Zap"
@@ -778,6 +779,8 @@
 #define TR_MODULE_WAITFORBIND  "Bind to load protocol"
 #define TR_MODULE_BINDING      TR("Bind...","Binding")
 #define TR_REBIND              "Rebinding required"
+#define TR_REG_OK                      "Registration ok"
+#define TR_BIND_OK                     "Bind successful"
 #define TR_BINDING_CH1_8_TELEM_ON       "Ch1-8 Telem ON"
 #define TR_BINDING_CH1_8_TELEM_OFF       "Ch1-8 Telem OFF"
 #define TR_BINDING_CH9_16_TELEM_ON       "Ch9-16 Telem ON"
@@ -915,18 +918,23 @@
 #define TR_FLASH_INTERNAL_MODULE TR("Flash vnitř. modulu", "Flash vnitřního modulu")
 #define TR_FLASH_EXTERNAL_MODULE TR("Flash ext. modulu", "Flash externího zařízení")
 #define TR_FIRMWARE_UPDATE_ERROR TR("Chyba zápisu FW", "Chyba zápisu firmware")
+#define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
 #define TR_WRITING             TR3("\14Zapisuji..", "\032Zapisuji..", "Zapisuji..")
 #define TR_CONFIRM_FORMAT      "Provést Formát?"
 #define TR_INTERNALRF          "Vnitřní RF modul"
 #define TR_EXTERNALRF          "Externí RF modul"
 #define TR_FAILSAFE            TR("Failsafe", "Mód Failsafe")
 #define TR_FAILSAFESET         "NASTAVENÍ FAILSAFE"
+#define TR_REG_ID                      TR("Reg. ID", "Registration ID")
+#define TR_OWNER_ID                    "Owner ID"
+#define TR_PINMAPSET                   "PINMAP"
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENZOR"
 #define TR_SENSOR              "SENZOR"
 #define TR_COUNTRYCODE         "Kód regionu"
 #define TR_USBMODE             "USB Mode"
+#define TR_JACKMODE                    "Jack Mode"
 #define TR_VOICELANG           "Jazyk hlasu"
 #define TR_UNITSSYSTEM         "Jednotky"
 #define TR_EDIT                "Upravit"
@@ -956,10 +964,16 @@
 #define TR_BUZZER              INDENT"Pípák"
 #define TR_BYTES               "[B]"
 #define TR_MODULE_BIND         BUTTON(TR("Bnd", "Bind"))
+#define TR_TRANSFER_BUTTON             BUTTON("Transfer")
+#define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
+#define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        BUTTON(TR("Rng", "Range"))
+#define TR_BUTTON_SHARE              BUTTON("Share")
+#define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
+#define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           BUTTON("Reset")
 #define TR_DEBUG                       "Debug"
-#define TR_SWITCHES_BTN                BUTTON(TR("SW","Switches"))
+#define TR_KEYS_BTN                BUTTON(TR("SW","Switches"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
 #define TR_CALIB_BTN                   BUTTON("Calibration")
 #define TR_SET                 BUTTON("Volby")
@@ -967,6 +981,7 @@
 #define TR_ANTENNAPROBLEM      CENTER "Problém s TX anténou!"
 #define TR_MODELIDUSED         TR("ID již použito","ID modelu je již použito")
 #define TR_MODULE              INDENT "Modul"
+#define TR_RX_NAME                     "Rx Name"
 #define TR_TELEMETRY_TYPE      TR("Typ", "Typ telemetrie")
 #define TR_TELEMETRY_SENSORS   "Senzory"
 #define TR_VALUE               "Hodnota"
@@ -1014,16 +1029,14 @@
 #define TR_INPUTS              "Vstupy"
 #define TR_OUTPUTS             "Výstupy"
 #if defined(COLORLCD)
-#define TR_EEBACKUP            "Záloha EEPROM"
-#define TR_FACTORYRESET        "Factory reset"
+#define STR_EEBACKUP           "Záloha EEPROM"
+#define STR_FACTORYRESET       "Factory reset"
 #else
-#define TR_EEBACKUP            TR("[dlouze ENTER]: Záloha", "\010[dlouze ENTER] zálohuje EEPROM")
-#define TR_FACTORYRESET        TR("[dlouze MENU]: Fact.reset", "\012[dlouze MENU]: Factory reset")
+#define STR_EEBACKUP           TR("Záloha", "Zálohuje EEPROM")
+#define STR_FACTORYRESET       TR("Fact.reset", "Factory reset")
 #endif
-#define TR_CONFIRMRESET        "Smazat modely a nastavení?"
-#define TR_TO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
-
-
+#define STR_CONFIRMRESET        "Smazat modely a nastavení?"
+#define STR_TO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Název"
@@ -1196,6 +1209,7 @@
 #define TR_JITTER_FILTER       "ADC Filtr"
 
 #define ZSTR_RSSI              "RSSI"
+#define ZSTR_R9PW                      "R9PW"
 #define ZSTR_RAS               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"

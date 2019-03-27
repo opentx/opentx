@@ -48,17 +48,17 @@ static void _send_level(uint8_t v)
 {
   /* Copied over from DSM, this looks doubious and in my logic analyzer
      output the low->high is about 2 ns late */
-  if (modulePulsesData[EXTERNAL_MODULE].dsm2.index & 1)
+  if (extmodulePulsesData.dsm2.index & 1)
     v += 2;
   else
     v -= 2;
 
-  *modulePulsesData[EXTERNAL_MODULE].dsm2.ptr++ = v - 1;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index+=1;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest -=v;
+  *extmodulePulsesData.dsm2.ptr++ = v - 1;
+  extmodulePulsesData.dsm2.index+=1;
+  extmodulePulsesData.dsm2.rest -=v;
 }
 
-void sendByteSbus(uint8_t b) //max 11 changes 0 10 10 10 10 P 1
+void sendByteSbus(uint8_t b) // max 11 changes 0 10 10 10 10 P 1
 {
   bool    lev = 0;
   uint8_t parity = 1;
@@ -107,17 +107,17 @@ inline int getChannelValue(uint8_t port, int channel)
   return channelOutputs[ch] + 2 * PPM_CH_CENTER(ch) - 2*PPM_CENTER;
 }
 
-void setupPulsesSbus(uint8_t port)
+void setupPulsesSbus()
 {
 #if defined(PPM_PIN_SERIAL)
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialByte = 0;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.serialBitCount = 0;
+  extmodulePulsesData.dsm2.serialByte = 0;
+  extmodulePulsesData.dsm2.serialBitCount = 0;
 #else
-  modulePulsesData[EXTERNAL_MODULE].dsm2.rest = SBUS_PERIOD_HALF_US;
-  modulePulsesData[EXTERNAL_MODULE].dsm2.index = 0;
+  extmodulePulsesData.dsm2.rest = SBUS_PERIOD_HALF_US;
+  extmodulePulsesData.dsm2.index = 0;
 #endif
 
-  modulePulsesData[EXTERNAL_MODULE].dsm2.ptr = modulePulsesData[EXTERNAL_MODULE].dsm2.pulses;
+  extmodulePulsesData.dsm2.ptr = extmodulePulsesData.dsm2.pulses;
 
   // Sync Byte
   sendByteSbus(SBUS_FRAME_BEGIN_BYTE);
@@ -127,7 +127,7 @@ void setupPulsesSbus(uint8_t port)
 
   // byte 1-22, channels 0..2047, limits not really clear (B
   for (int i=0; i<SBUS_NORMAL_CHANS; i++) {
-    int value = getChannelValue(port, i);
+    int value = getChannelValue(EXTERNAL_MODULE, i);
 
     value =  value*8/10 + SBUS_CHAN_CENTER;
     bits |= limit(0, value, 2047) << bitsavailable;
@@ -141,9 +141,9 @@ void setupPulsesSbus(uint8_t port)
 
   // flags
   uint8_t flags=0;
-  if (getChannelValue(port, 16) > 0)
+  if (getChannelValue(EXTERNAL_MODULE, 16) > 0)
     flags |=SBUS_FLAG_CHANNEL_17;
-  if (getChannelValue(port, 17) > 0)
+  if (getChannelValue(EXTERNAL_MODULE, 17) > 0)
     flags |=SBUS_FLAG_CHANNEL_18;
 
   sendByteSbus(flags);

@@ -267,12 +267,19 @@ void simuSetSwitch(uint8_t swtch, int8_t state)
   #endif
   #if defined(SWITCHES_GPIO_REG_C_L)
     SWITCH_3_CASE(2,  SWITCHES_GPIO_REG_C_L, SWITCHES_GPIO_REG_C_H, SWITCHES_GPIO_PIN_C_L, SWITCHES_GPIO_PIN_C_H)
+  #endif
+  #if defined(SWITCHES_GPIO_REG_D_L)
     SWITCH_3_CASE(3,  SWITCHES_GPIO_REG_D_L, SWITCHES_GPIO_REG_D_H, SWITCHES_GPIO_PIN_D_L, SWITCHES_GPIO_PIN_D_H)
+  #elif defined(SWITCHES_GPIO_REG_D)
+    SWITCH_CASE  (3,  SWITCHES_GPIO_REG_D, SWITCHES_GPIO_PIN_D)
   #endif
   #if defined(PCBX7)
     SWITCH_CASE  (4,  SWITCHES_GPIO_REG_F, SWITCHES_GPIO_PIN_F)
     SWITCH_CASE  (5,  SWITCHES_GPIO_REG_H, SWITCHES_GPIO_PIN_H)
-  #elif !defined(PCBXLITE)
+  #elif defined(PCBXLITES)
+    SWITCH_CASE  (4,  SWITCHES_GPIO_REG_E, SWITCHES_GPIO_PIN_E)
+    SWITCH_CASE  (5,  SWITCHES_GPIO_REG_F, SWITCHES_GPIO_PIN_F)
+  #elif !defined(PCBXLITE) && !defined(PCBX3)
     SWITCH_3_CASE(4,  SWITCHES_GPIO_REG_E_L, SWITCHES_GPIO_REG_E_H, SWITCHES_GPIO_PIN_E_L, SWITCHES_GPIO_PIN_E_H)
     SWITCH_CASE  (5,  SWITCHES_GPIO_REG_F, SWITCHES_GPIO_PIN_F)
     SWITCH_3_CASE(6,  SWITCHES_GPIO_REG_G_L, SWITCHES_GPIO_REG_G_H, SWITCHES_GPIO_PIN_G_L, SWITCHES_GPIO_PIN_G_H)
@@ -327,7 +334,7 @@ void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
   if (simu_running)
     return;
 
-  s_current_protocol[0] = 255;
+  moduleSettings[0].protocol = PROTOCOL_CHANNELS_UNINITIALIZED;
   menuLevel = 0;
 
   simu_start_mode = (tests ? 0 : 0x02 /* OPENTX_START_NO_CHECKS */);
@@ -691,6 +698,10 @@ uint32_t isBootloaderStart(const uint8_t * block) { return 1; }
 
 #if defined(PCBHORUS)
 void LCD_ControlLight(uint16_t dutyCycle) { }
+#endif
+
+#if defined(PCBXLITES)
+bool isJackPlugged() { return false; }
 #endif
 
 void serialPrintf(const char * format, ...) { }

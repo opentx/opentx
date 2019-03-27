@@ -33,6 +33,13 @@ void popMenu()
   TRACE("popMenu(%d)", menuLevel);
 }
 
+void abortPopMenu()
+{
+  menuLevel = menuLevel + 1;
+  menuEvent = 0;
+  TRACE("popMenu(%d) aborted", menuLevel);
+}
+
 void chainMenu(MenuHandlerFunc newMenu)
 {
   menuHandlers[menuLevel] = newMenu;

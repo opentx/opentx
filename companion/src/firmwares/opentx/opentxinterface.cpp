@@ -317,6 +317,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_TARANIS_X7(board)) {
     variant |= TARANIS_X7_VARIANT;
   }
+  else if (IS_TARANIS_XLITES(board)) {
+    variant |= TARANIS_XLITES_VARIANT;
+  }
   else if (IS_TARANIS_XLITE(board)) {
     variant |= TARANIS_XLITE_VARIANT;
   }
@@ -691,6 +694,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return TARANIS_X9E_VARIANT;
       else if (IS_TARANIS_X7(board))
         return TARANIS_X7_VARIANT;
+      else if (IS_TARANIS_XLITES(board))
+        return TARANIS_XLITES_VARIANT;
       else if (IS_TARANIS_XLITE(board))
         return TARANIS_XLITE_VARIANT;
       else
@@ -708,6 +713,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return id.contains("danger") ? 1 : 0;
     case HasModelCategories:
       return IS_HORUS(board);
+    case HasSwitchableJack:
+      return IS_TARANIS_XLITES(board);
     default:
       return 0;
   }
@@ -918,6 +925,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
   else if (IS_TARANIS_X7(board)) {
     if (variant != TARANIS_X7_VARIANT) {
+      variantError = true;
+    }
+  }
+  else if (IS_TARANIS_XLITES(board)) {
+    if (variant != TARANIS_XLITES_VARIANT) {
       variantError = true;
     }
   }
@@ -1163,6 +1175,12 @@ void registerOpenTxFirmwares()
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
   addOpenTxTaranisOptions(firmware, false);
+  registerOpenTxFirmware(firmware);
+
+  /* FrSky X-Lite S board */
+  firmware = new OpenTxFirmware("opentx-xlites", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite S"), BOARD_TARANIS_XLITES);
+  // firmware->addOption("stdr9m", QCoreApplication::translate("Firmware", "Use JR-sized R9M module"));
+  addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite board */

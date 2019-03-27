@@ -20,90 +20,76 @@
 
 #include "opentx.h"
 
-void intmoduleStop(void);
-void extmoduleStop(void);
+void intmoduleStop();
+void intmodulePxxStart();
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 
-void intmoduleNoneStart(void);
-void intmodulePxxStart(void);
-
-void extmoduleTimerStart(uint32_t period, uint8_t state);
-void extmodulePpmStart(void);
-void extmodulePxxStart(void);
+void extmoduleStop();
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
 void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
 
-void init_no_pulses(uint32_t port)
+
+void init_ppm(uint8_t module)
 {
-  if (port == INTERNAL_MODULE)
-    intmoduleNoneStart();
-  else
-    extmoduleTimerStart(18, false);
+  if (module == EXTERNAL_MODULE) {
+    extmodulePpmStart();
+  }
 }
 
-void disable_no_pulses(uint32_t port)
+void disable_ppm(uint8_t module)
 {
-  if (port == INTERNAL_MODULE)
+  if (module == EXTERNAL_MODULE) {
+    extmoduleStop();
+  }
+}
+
+void init_pxx2(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
+    intmoduleSerialStart(INTMODULE_PXX_BAUDRATE, true);
+  else
+    extmodulePxx2Start();
+}
+
+void disable_pxx2(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
     intmoduleStop();
   else
     extmoduleStop();
 }
 
-void init_ppm(uint32_t port)
+void init_pxx1_pulses(uint8_t module)
 {
-  if (port == EXTERNAL_MODULE) {
-    extmodulePpmStart();
-  }
-}
-
-void disable_ppm(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    extmoduleStop();
-  }
-}
-
-void init_pxx(uint32_t port)
-{
-  if (port == INTERNAL_MODULE)
+  if (module == INTERNAL_MODULE)
     intmodulePxxStart();
   else
     extmodulePxxStart();
 }
 
-void disable_pxx(uint32_t port)
+void disable_pxx1_pulses(uint8_t module)
 {
-  if (port == INTERNAL_MODULE)
+  if (module == INTERNAL_MODULE)
     intmoduleStop();
   else
     extmoduleStop();
 }
 
 #if defined(DSM2)
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us)
+void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     extmoduleSerialStart(baudrate, period_half_us);
   }
 }
 
-void disable_serial(uint32_t port)
+void disable_serial(uint8_t module)
 {
-  if (port == EXTERNAL_MODULE) {
+  if (module == EXTERNAL_MODULE) {
     extmoduleStop();
   }
 }
 #endif
-
-void init_module_timer(uint32_t port, uint32_t period, uint8_t state)
-{
-  if (port == EXTERNAL_MODULE) {
-    extmoduleTimerStart(period, state);
-  }
-}
-
-void disable_module_timer(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    extmoduleStop();
-  }
-}
 

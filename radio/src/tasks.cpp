@@ -73,6 +73,32 @@ bool isForcePowerOffRequested()
   return false;
 }
 
+bool isModuleSynchronous(uint8_t module)
+{
+  uint8_t protocol = moduleSettings[module].protocol;
+  if (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
+    return true;
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+  if (protocol == PROTOCOL_CHANNELS_PXX1_SERIAL)
+    return true;
+#endif
+  return false;
+}
+
+void sendSynchronousPulses()
+{
+  for (uint8_t module = 0; module < NUM_MODULES; module++) {
+    if (isModuleSynchronous(module) && setupPulses(module)) {
+#if defined(HARDWARE_INTERNAL_MODULE)
+      if (module == INTERNAL_MODULE)
+        intmoduleSendNextFrame();
+#endif
+      if (module == EXTERNAL_MODULE)
+        extmoduleSendNextFrame();
+    }
+  }
+}
+
 uint32_t nextMixerTime[NUM_MODULES];
 
 TASK_FUNCTION(mixerTask)
@@ -82,15 +108,17 @@ TASK_FUNCTION(mixerTask)
 
   while(1) {
 
-#if defined(SBUS)
+#if defined(PCBX9D) || defined(PCBX7)
+    // SBUS on Hearbeat PIN (which is a serial RX)
     processSbusInput();
 #endif
 
     RTOS_WAIT_TICKS(1);
 
 #if defined(SIMU)
-    if (pwrCheck() == e_power_off)
+    if (pwrCheck() == e_power_off) {
       TASK_RETURN();
+    }
 #else
     if (isForcePowerOffRequested()) {
       pwrOff();
@@ -153,7 +181,9 @@ TASK_FUNCTION(mixerTask)
       }
 
       t0 = getTmr2MHz() - t0;
-      if (t0 > maxMixerDuration) maxMixerDuration = t0 ;
+      if (t0 > maxMixerDuration) maxMixerDuration = t0;
+
+      sendSynchronousPulses();
     }
   }
 }
@@ -161,12 +191,23 @@ TASK_FUNCTION(mixerTask)
 void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms)
 {
   // Schedule next mixer calculation time,
-  // for now assume mixer calculation takes 2 ms.
-  nextMixerTime[module] = (uint32_t)RTOS_GET_TIME() + period_ms / 2 - 1/*2ms*/;
+
+  if (isModuleSynchronous(module)) {
+    nextMixerTime[module] += period_ms / RTOS_MS_PER_TICK;
+    if (nextMixerTime[module] < RTOS_GET_TIME()) {
+      // we are late ... let's add some small delay
+      nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
+    }
+  }
+  else {
+    // for now assume mixer calculation takes 2 ms.
+    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK) - 1 /* 1 tick in advance*/;
+  }
+
   DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
 }
 
-#define MENU_TASK_PERIOD_TICKS      25    // 50ms
+#define MENU_TASK_PERIOD_TICKS         (50 / RTOS_MS_PER_TICK)    // 50ms
 
 #if defined(COLORLCD) && defined(CLI)
 bool perMainEnabled = true;

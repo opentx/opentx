@@ -18,10 +18,17 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_PXX2_H_
-#define _IO_PXX2_H_
+bool eeConvert();
+void convertModelData(int id, int version);
 
-#define PXX2_BAUDRATE            230400
-#define PXX2_PERIOD              4 // 4ms
+// Conversions 216 to 217
+void convertModelData_216_to_217(ModelData &model);
+void convertRadioData_216_to_217(RadioData &settings);
 
-#endif
+// Conversions 217 to 218
+void convertModelData_217_to_218(ModelData &model);
+void convertRadioData_217_to_218(RadioData &settings);
+
+// Conversions 218 to 219
+void convertModelData_218_to_219(ModelData &model);
+void convertRadioData_218_to_219(RadioData &settings);

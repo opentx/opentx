@@ -69,7 +69,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
     else
       mode = FIXEDWIDTH;
   }
-  
+
   lcdDrawSizedText(x, y, name, size, attr | mode);
   coord_t backupNextPos = lcdNextPos;
   
@@ -156,11 +156,11 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
       
       if (c != v) {
         name[cur] = v;
-        storageDirty(menuVerticalPositions[0] == 0 ? EE_MODEL : EE_GENERAL);
+        storageDirty(isModelMenuDisplayed() ? EE_MODEL : EE_GENERAL);
       }
       
       if (attr == ZCHAR) {
-        lcdDrawChar(x+editNameCursorPos*FW, y, idx2char(v), ERASEBG|INVERS|FIXEDWIDTH);
+        lcdDrawChar(x+editNameCursorPos*FW, y, zchar2char(v), ERASEBG|INVERS|FIXEDWIDTH);
       }
       else {
         lcdDrawChar(x+editNameCursorPos*FW, y, v, ERASEBG|INVERS|FIXEDWIDTH);

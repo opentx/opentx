@@ -22,6 +22,7 @@
 #include <string.h>
 #include "opentx.h"
 #include "timers.h"
+#include "conversions/conversions.h"
 
 uint8_t   s_write_err = 0;    // error reasons
 RlcFile   theFile;  //used for any file operation
@@ -467,7 +468,7 @@ const char * eeBackupModel(uint8_t i_fileSrc)
       len = i+1;
     if (len) {
       if (buf[i])
-        buf[i] = idx2char(buf[i]);
+        buf[i] = zchar2char(buf[i]);
       else
         buf[i] = '_';
     }
@@ -596,7 +597,7 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 #if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
     storageCheck(true);
-    ConvertModel(i_fileDst, version);
+    convertModelData(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);
   }
 #endif
@@ -615,9 +616,6 @@ void RlcFile::writeRlc(uint8_t i_fileId, uint8_t typ, uint8_t *buf, uint16_t i_l
   m_rlc_buf = buf;
   m_rlc_len = i_len;
   m_cur_rlc_len = 0;
-#if defined (EEPROM_PROGRESS_BAR)
-  m_ratio = (typ == FILE_TYP_MODEL ? 100 : 10);
-#endif
 
   do {
     nextRlcWriteStep();
@@ -741,17 +739,6 @@ void RlcFile::flush()
 
   ENABLE_SYNC_WRITE(false);
 }
-
-#if defined (EEPROM_PROGRESS_BAR)
-void RlcFile::drawProgressBar(uint8_t x)
-{
-  if (storageDirtyMsk || isWriting() || eeprom_buffer_size) {
-    uint8_t len = storageDirtyMsk ? 1 : limit((uint8_t)1, (uint8_t)(7 - (m_rlc_len/m_ratio)), (uint8_t)7);
-    lcdDrawFilledRect(x+1, 0, 5, FH, SOLID, ERASE);
-    lcdDrawFilledRect(x+2, 7-len, 3, len);
-  }
-}
-#endif
 
 // For conversions ...
 uint16_t eeLoadGeneralSettingsData()
@@ -880,7 +867,7 @@ void eeDeleteModel(uint8_t idx)
 #if defined(SDCARD)
 void eepromBackup()
 {
-  char filename[60];
+  char path[60];
   uint8_t buffer[1024];
   FIL file;
 
@@ -897,20 +884,20 @@ void eepromBackup()
   }
 
   // prepare the filename...
-  char * tmp = strAppend(filename, EEPROMS_PATH "/eeprom");
+  char * tmp = strAppend(path, EEPROMS_PATH "/eeprom");
 #if defined(RTCLOCK)
   tmp = strAppendDate(tmp, true);
 #endif
   strAppend(tmp, EEPROM_EXT);
 
   // open the file for writing...
-  f_open(&file, filename, FA_WRITE | FA_CREATE_ALWAYS);
+  f_open(&file, path, FA_WRITE | FA_CREATE_ALWAYS);
 
   for (int i=0; i<EEPROM_SIZE; i+=1024) {
     UINT count;
     eepromReadBlock(buffer, i, 1024);
     f_write(&file, buffer, 1024, &count);
-    drawProgressBar(STR_WRITING, i, EEPROM_SIZE);
+    drawProgressScreen("EEPROM Backup", STR_WRITING, i, EEPROM_SIZE);
 #if defined(SIMU)
     // add an artificial delay and check for simu quit
     if (SIMU_SLEEP_OR_EXIT_MS(100))

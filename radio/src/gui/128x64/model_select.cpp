@@ -22,7 +22,6 @@
 
 #define MODELSEL_W                     LCD_W
 
-#if defined(NAVIGATION_MENUS)
 void onModelSelectMenu(const char * result)
 {
   int8_t sub = menuVerticalPosition;
@@ -53,11 +52,11 @@ void onModelSelectMenu(const char * result)
   }
 #endif
   else if (result == STR_DELETE_MODEL) {
-    POPUP_CONFIRMATION(STR_DELETEMODEL);
+    POPUP_CONFIRMATION(STR_DELETEMODEL, nullptr);
     SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
   }
 #if defined(SDCARD)
-  else {
+  else if (result != STR_EXIT) {
     // The user choosed a file on SD to restore
     storageCheck(true);
     POPUP_WARNING(eeRestoreModel(sub, (char *)result));
@@ -67,7 +66,6 @@ void onModelSelectMenu(const char * result)
   }
 #endif
 }
-#endif
 
 void menuModelSelect(event_t event)
 {
@@ -89,12 +87,6 @@ void menuModelSelect(event_t event)
 
   check_submenu_simple(_event_, MAX_MODELS - HEADER_LINE);
 
-#if defined(NAVIGATION_POT2)
-  if (event==0 && p2valdiff<0) {
-    event = EVT_KEY_FIRST(KEY_RIGHT);
-  }
-#endif
-
   if (s_editMode > 0) s_editMode = 0;
 
 
@@ -112,7 +104,7 @@ void menuModelSelect(event_t event)
     case EVT_KEY_LONG(KEY_EXIT):
       killEvents(event);
       if (s_copyMode && s_copyTgtOfs == 0 && g_eeGeneral.currModel != sub && eeModelExists(sub)) {
-        POPUP_CONFIRMATION(STR_DELETEMODEL);
+        POPUP_CONFIRMATION(STR_DELETEMODEL, nullptr);
         SET_WARNING_INFO(modelHeaders[sub].name, sizeof(g_model.header.name), ZCHAR);
       }
       else {
@@ -200,7 +192,6 @@ void menuModelSelect(event_t event)
       else if (event == EVT_KEY_LONG(KEY_ENTER) || IS_ROTARY_BREAK(event)) {
         s_copyMode = 0;
         killEvents(event);
-#if defined(NAVIGATION_MENUS)
         if (g_eeGeneral.currModel != sub) {
           if (eeModelExists(sub)) {
             POPUP_MENU_ADD_ITEM(STR_SELECT_MODEL);
@@ -224,11 +215,6 @@ void menuModelSelect(event_t event)
           POPUP_MENU_ADD_ITEM(STR_MOVE_MODEL);
         }
         POPUP_MENU_START(onModelSelectMenu);
-#else
-        if (g_eeGeneral.currModel != sub) {
-          selectModel(sub);
-        }
-#endif
       }
       else if (eeModelExists(sub)) {
         s_copyMode = (s_copyMode == COPY_MODE ? MOVE_MODE : COPY_MODE);
@@ -237,7 +223,7 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
     case EVT_KEY_LONG(KEY_PAGE):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);
@@ -269,7 +255,7 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif
@@ -310,7 +296,7 @@ void menuModelSelect(event_t event)
   lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, RIGHT);
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_ROTARY_ENCODER_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);

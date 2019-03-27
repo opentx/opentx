@@ -25,6 +25,7 @@
 #include "board.h"
 #include "dataconstants.h"
 #include "definitions.h"
+#include "bitfield.h"
 
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
@@ -385,14 +386,40 @@ PACK(struct TelemetrySensor {
     uint32_t param;
   };
   NOBACKUP(
-  void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
-  void init(uint16_t id);
-  bool isAvailable() const;
-  int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
-  bool isConfigurable() const;
-  bool isPrecConfigurable() const;
-  int32_t getPrecMultiplier() const;
-  int32_t getPrecDivisor() const);
+    void init(const char *label, uint8_t unit=UNIT_RAW, uint8_t prec=0);
+    void init(uint16_t id);
+    bool isAvailable() const;
+    int32_t getValue(int32_t value, uint8_t unit, uint8_t prec) const;
+    bool isConfigurable() const;
+    bool isPrecConfigurable() const;
+    int32_t getPrecMultiplier() const;
+    int32_t getPrecDivisor() const;
+  );
+});
+
+/*
+ * Trainer module structure
+ */
+
+PACK(struct TrainerModuleData {
+  uint8_t mode:3;
+  uint8_t spare:5;
+  uint8_t channelsStart;
+  int8_t  channelsCount; // 0=8 channels
+  int8_t frameLength;
+  int8_t  delay:6;
+  uint8_t pulsePol:1;
+});
+
+/*
+ * Receiver structure
+ */
+
+PACK(struct ReceiverData {
+  uint8_t used:1;
+  uint8_t telemetry:1;
+  uint8_t dirty:6;
+  char    name[PXX2_LEN_RX_NAME];
 });
 
 /*
@@ -406,10 +433,19 @@ PACK(struct ModuleData {
   int8_t  rfProtocol:4;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
-  uint8_t failsafeMode:4;  // only 3 bits used
-  uint8_t subType:3;
-  uint8_t invertedSerial:1; // telemetry serial inverted from standard
-  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
+  union {
+    struct {
+      uint8_t failsafeMode:4;  // only 3 bits used
+      uint8_t subType:3;
+      uint8_t invertedSerial:1; // telemetry serial inverted from standard
+    };
+    struct {
+      uint8_t failsafeMode:4;  // only 3 bits used
+      uint8_t freq:2;
+      uint8_t region:2;
+    } r9m;
+  };
+
   union {
     struct {
       int8_t  delay:6;
@@ -440,6 +476,28 @@ PACK(struct ModuleData {
       uint8_t spare2:1;
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
+    NOBACKUP(PACK(struct {
+      uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
+      uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
+#if defined(PCBHORUS)
+      uint8_t spare:5;
+      uint32_t receivers;               // max 5 receivers per module and 10 receivers in total (4bits per receiver with 0 = unused)
+#else
+      uint8_t spare:1;
+      uint16_t receivers:12;            // max 4 receivers per module and 4 receivers in total (3bits per receiver with 0 = unused)
+#endif
+      NOBACKUP(inline uint8_t getReceiverSlot(uint8_t receiver) {
+        return (receivers >> (3 * receiver)) & 0b111;
+      })
+
+      NOBACKUP(inline void setReceiverSlot(uint8_t receiver, uint8_t slot) {
+        receivers = BF_SET<uint16_t>(receivers, slot, 3 * receiver, 3);
+      })
+
+      NOBACKUP(inline void clearReceiverSlot(uint8_t receiver) {
+        setReceiverSlot(receiver, 0);
+      })
+    }) pxx2);
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -449,12 +507,10 @@ PACK(struct ModuleData {
     return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
   })
 
-  NOBACKUP(inline void setMultiProtocol(uint8_t proto)
-  {
+  NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
     rfProtocol = (uint8_t) (proto & 0x0f);
     multi.rfProtocolExtra = (proto & 0x30) >> 4;
   })
-
 });
 
 /*
@@ -501,10 +557,6 @@ typedef uint8_t swarnenable_t;
     swarnenable_t switchWarningEnable;
 #endif
 
-  #define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
-
-  #define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
-
 #if defined(PCBHORUS)
 #include "gui/480x272/layout.h"
 #include "gui/480x272/topbar.h"
@@ -518,23 +570,11 @@ PACK(struct CustomScreenData {
   NOBACKUP(Topbar::PersistentData topbarData); \
   NOBACKUP(uint8_t view);
 #elif defined(PCBTARANIS)
-#define CUSTOM_SCREENS_DATA \
+  #define CUSTOM_SCREENS_DATA \
   NOBACKUP(uint8_t view);
 #else
-#define CUSTOM_SCREENS_DATA
-// TODO other boards could have their custom screens here as well
-#endif
-
-#if defined(PCBX12S)
-  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
-#elif defined(PCBX10)
-  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
-#elif defined(PCBTARANIS)
-  #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
-#elif defined(PCBSKY9X)
-  #define MODELDATA_EXTRA   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
-#else
-  #define MODELDATA_EXTRA
+  #define CUSTOM_SCREENS_DATA
+  // TODO other boards could have their custom screens here as well
 #endif
 
 PACK(struct ModelData {
@@ -568,11 +608,25 @@ PACK(struct ModelData {
 
   SWITCHES_WARNING_DATA
 
-  MODEL_GVARS_DATA
+  GVarData gvars[MAX_GVARS];
 
-  TELEMETRY_DATA
+  NOBACKUP(FrSkyTelemetryData frsky);
+  NOBACKUP(RssiAlarmData rssiAlarms);
 
-  MODELDATA_EXTRA
+  NOBACKUP(uint8_t spare:6);
+  NOBACKUP(uint8_t potsWarnMode:2);
+  ModuleData moduleData[NUM_MODULES];
+  ReceiverData receiverData[NUM_RECEIVERS];
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
+  TrainerModuleData trainerData;
+
+#if defined(PCBHORUS)  || defined(PCBTARANIS)
+  NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
+#endif
+
+  NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
+  NOBACKUP(uint8_t potsWarnEnabled);
+  NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS]);
 
   NOBACKUP(TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];)
 
@@ -580,6 +634,7 @@ PACK(struct ModelData {
 
   CUSTOM_SCREENS_DATA
 
+  char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
 });
 
 /*
@@ -616,30 +671,8 @@ PACK(struct TrainerData {
   #define SPLASH_MODE int8_t splashMode:3
 #endif
 
-  #define EXTRA_GENERAL_FIELDS_ARM \
-    NOBACKUP(uint8_t  backlightBright); \
-    NOBACKUP(uint32_t globalTimer); \
-    NOBACKUP(uint8_t  bluetoothBaudrate:4); \
-    NOBACKUP(uint8_t  bluetoothMode:4); \
-    NOBACKUP(uint8_t  countryCode); \
-    NOBACKUP(uint8_t  imperial:1); \
-    NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */\
-    NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1); \
-    NOBACKUP(uint8_t  USBMode:2); \
-    NOBACKUP(uint8_t  spareExtraArm:3); \
-    NOBACKUP(char     ttsLanguage[2]); \
-    NOBACKUP(int8_t   beepVolume:4); \
-    NOBACKUP(int8_t   wavVolume:4); \
-    NOBACKUP(int8_t   varioVolume:4); \
-    NOBACKUP(int8_t   backgroundVolume:4); \
-    NOBACKUP(int8_t   varioPitch); \
-    NOBACKUP(int8_t   varioRange); \
-    NOBACKUP(int8_t   varioRepeat); \
-    CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
-
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
-    EXTRA_GENERAL_FIELDS_ARM \
     NOBACKUP(uint8_t  serial2Mode:4); \
     uint8_t  slidersConfig:4; \
     uint32_t switchConfig; \
@@ -659,7 +692,6 @@ PACK(struct TrainerData {
     #define BLUETOOTH_FIELDS
   #endif
   #define EXTRA_GENERAL_FIELDS \
-    EXTRA_GENERAL_FIELDS_ARM \
     uint8_t  serial2Mode:4; \
     uint8_t  slidersConfig:4; \
     uint8_t  potsConfig; /* two bits per pot */\
@@ -671,7 +703,6 @@ PACK(struct TrainerData {
     BLUETOOTH_FIELDS
 #elif defined(PCBSKY9X)
   #define EXTRA_GENERAL_FIELDS \
-    EXTRA_GENERAL_FIELDS_ARM \
     int8_t   txCurrentCalibration; \
     int8_t   temperatureWarn; \
     uint8_t  mAhWarn; \
@@ -683,7 +714,7 @@ PACK(struct TrainerData {
     char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME];
 #else
-  #define EXTRA_GENERAL_FIELDS  EXTRA_GENERAL_FIELDS_ARM
+  #define EXTRA_GENERAL_FIELDS
 #endif
 
 #if defined(PCBHORUS)
@@ -697,9 +728,9 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(BUZZER)
-  #define BUZZER_FIELD NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+  #define BUZZER_FIELD int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
 #else
-  #define BUZZER_FIELD NOBACKUP(int8_t spareRadio:2);
+  #define BUZZER_FIELD int8_t spareRadio:2;
 #endif
 
 PACK(struct RadioData {
@@ -743,16 +774,39 @@ PACK(struct RadioData {
   NOBACKUP(int8_t vBatMin);
   NOBACKUP(int8_t vBatMax);
 
+  NOBACKUP(uint8_t  backlightBright);
+  NOBACKUP(uint32_t globalTimer);
+  NOBACKUP(uint8_t  bluetoothBaudrate:4);
+  NOBACKUP(uint8_t  bluetoothMode:4);
+  NOBACKUP(uint8_t  countryCode);
+  NOBACKUP(uint8_t  imperial:1);
+  NOBACKUP(uint8_t  jitterFilter:1); /* 0 - active */
+  NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1);
+  NOBACKUP(uint8_t  USBMode:2);
+  NOBACKUP(uint8_t  jackMode:2);
+  NOBACKUP(uint8_t  spareExtraArm:1);
+  NOBACKUP(char     ttsLanguage[2]);
+  NOBACKUP(int8_t   beepVolume:4);
+  NOBACKUP(int8_t   wavVolume:4);
+  NOBACKUP(int8_t   varioVolume:4);
+  NOBACKUP(int8_t   backgroundVolume:4);
+  NOBACKUP(int8_t   varioPitch);
+  NOBACKUP(int8_t   varioRange);
+  NOBACKUP(int8_t   varioRepeat);
+
+  CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
+
   EXTRA_GENERAL_FIELDS
 
   THEME_DATA
 
+  char ownerRegistrationID[PXX2_LEN_REGISTRATION_ID];
 });
 
 #undef SWITCHES_WARNING_DATA
 #undef MODEL_GVARS_DATA
 #undef TELEMETRY_DATA
-#undef MODELDATA_EXTRA
+#undef SCRIPTS_DATA
 #undef CUSTOM_SCREENS_DATA
 #undef SPLASH_MODE
 #undef EXTRA_GENERAL_FIELDS
@@ -783,7 +837,7 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
-#if defined(PCBX7) || defined(PCBXLITE)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
@@ -862,31 +916,39 @@ static inline void check_struct()
 
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
-  CHKSIZE(ModuleData,70);
+
+#if defined(PCBHORUS)
+  CHKSIZE(ModuleData, 9);
+#else
+  CHKSIZE(ModuleData, 6);
+#endif
 
   CHKSIZE(GVarData, 7);
 
   CHKSIZE(RssiAlarmData, 2);
   CHKSIZE(TrainerData, 16);
 
-#if defined(PCBXLITE)
-  CHKSIZE(RadioData, 844);
-  CHKSIZE(ModelData, 6025);
+#if defined(PCBXLITES)
+  CHKSIZE(RadioData, 858);
+  CHKSIZE(ModelData, 5940);
+#elif defined(PCBXLITE)
+  CHKSIZE(RadioData, 852);
+  CHKSIZE(ModelData, 5940);
 #elif defined(PCBX7)
-  CHKSIZE(RadioData, 850);
-  CHKSIZE(ModelData, 6025);
+  CHKSIZE(RadioData, 858);
+  CHKSIZE(ModelData, 5940);
 #elif defined(PCBX9E)
-  CHKSIZE(RadioData, 952);
-  CHKSIZE(ModelData, 6520);
+  CHKSIZE(RadioData, 960);
+  CHKSIZE(ModelData, 6435);
 #elif defined(PCBX9D)
-  CHKSIZE(RadioData, 872);
-  CHKSIZE(ModelData, 6507);
+  CHKSIZE(RadioData, 880);
+  CHKSIZE(ModelData, 6422);
 #elif defined(PCBSKY9X)
-  CHKSIZE(RadioData, 727);
-  CHKSIZE(ModelData, 5188);
+  CHKSIZE(RadioData, 735);
+  CHKSIZE(ModelData, 5101);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 847);
-  CHKSIZE(ModelData, 9380);
+  CHKSIZE(RadioData, 855);
+  CHKSIZE(ModelData, 9771);
 #endif
 
 #undef CHKSIZE

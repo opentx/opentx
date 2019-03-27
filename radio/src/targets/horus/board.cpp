@@ -29,6 +29,8 @@ extern "C" {
 }
 #endif
 
+HardwareOptions hardwareOptions;
+
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555;      // Unlock registers
@@ -178,9 +180,6 @@ void boardInit()
   pwrInit();
   delaysInit();
 
-  // FrSky removed the volume chip in latest board, that's why it doesn't answer!
-  // i2cInit();
-
 #if defined(DEBUG)
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
 #endif
@@ -190,9 +189,14 @@ void boardInit()
   TRACE("\nHorus board started :)");
   TRACE("RCC->CSR = %08x", RCC->CSR);
 
+#if defined(PXX2)
+  #warning "PXX2 probe is not implemented"
+  hardwareOptions.pxx2Enabled = true;
+#endif
+
   audioInit();
 
-  // we need to initialize g_FATFS_Obj here, because it is in .ram section (because of DMA access) 
+  // we need to initialize g_FATFS_Obj here, because it is in .ram section (because of DMA access)
   // and this section is un-initialized
   memset(&g_FATFS_Obj, 0, sizeof(g_FATFS_Obj));
 
@@ -202,7 +206,7 @@ void boardInit()
   sticksPwmInit();
   delay_ms(20);
   if (pwm_interrupt_count < 32) {
-    sticks_pwm_disabled = true;
+    hardwareOptions.sticksPwmDisabled = true;
   }
 #endif
 
@@ -252,7 +256,7 @@ uint8_t currentTrainerMode = 0xff;
 
 void checkTrainerSettings()
 {
-  uint8_t requiredTrainerMode = g_model.trainerMode;
+  uint8_t requiredTrainerMode = g_model.trainerData.mode;
   if (requiredTrainerMode != currentTrainerMode) {
     switch (currentTrainerMode) {
       case TRAINER_MODE_MASTER_TRAINER_JACK:

@@ -88,6 +88,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
 #endif
   ITEM_MODEL_EXTERNAL_MODULE_POWER,
+  ITEM_MODEL_EXTERNAL_MODULE_FREQ,
   ITEM_MODEL_TRAINER_LABEL,
   ITEM_MODEL_TRAINER_MODE,
   ITEM_MODEL_TRAINER_LINE1,
@@ -103,7 +104,7 @@ enum MenuModelSetupItems {
 #define MODEL_SETUP_RANGE_OFS         7*FW
 #define MODEL_SETUP_SET_FAILSAFE_OFS  10*FW-2
 
-#define CURRENT_MODULE_EDITED(k)         (k>=ITEM_MODEL_TRAINER_LABEL ? TRAINER_MODULE : (k>=ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE))
+#define CURRENT_MODULE_EDITED(k)      (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
 
 void onBindMenu(const char * result)
 {
@@ -129,7 +130,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleFlag[moduleIdx] = MODULE_BIND;
+  moduleSettings[moduleIdx].mode = MODULE_MODE_BIND;
 }
 
 void copySelection(char * dst, const char * src, uint8_t size)
@@ -147,7 +148,7 @@ void onModelSetupBitmapMenu(const char * result)
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
     }
   }
-  else {
+  else if (result != STR_EXIT) {
     // The user choosed a bmp file in the list
     copySelection(g_model.header.bitmap, result, sizeof(g_model.header.bitmap));
     memcpy(modelHeaders[g_eeGeneral.currModel].bitmap, g_model.header.bitmap, sizeof(g_model.header.bitmap));
@@ -239,21 +240,22 @@ int getSwitchWarningsCount()
   #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
 #endif
 #define IF_EXTERNAL_MODULE_ON(x)          (IS_EXTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
-#define INTERNAL_MODULE_CHANNELS_ROWS     IF_INTERNAL_MODULE_ON(1)
+
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
 #if defined(BLUETOOTH) && defined(USEHORUSBT)
   #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothDistantAddr[0] == 0 || bluetoothState == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
-  #define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
-  #define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
+  #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 #else
-  #define TRAINER_LINE1_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)1 : HIDDEN_ROW)
-  #define TRAINER_LINE2_ROWS                (g_model.trainerMode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
+  #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : HIDDEN_ROW)
+  #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 #endif
 
 #define TIMER_ROWS(x)                     2|NAVIGATION_LINE_BY_LINE, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
 
-#define EXTERNAL_MODULE_MODE_ROWS         (isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE)) ? (uint8_t)1 : isModuleMultimodule(EXTERNAL_MODULE) ? MULTIMODULE_MODE_ROWS(EXTERNAL_MODULE) : (uint8_t)0
+#define EXTERNAL_MODULE_MODE_ROWS         (isModuleXJT(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
+#define EXTRA_MODULE_ROWS                 isR9MMFlex(EXTERNAL_MODULE) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
 
 #if TIMERS == 1
   #define TIMERS_ROWS                     TIMER_ROWS(0)
@@ -296,18 +298,19 @@ void menuModelSetup(event_t event)
     EXTERNAL_MODULE_OPTION_ROW,
     MULTIMODULE_MODULE_ROWS
     EXTERNAL_MODULE_POWER_ROW,
+    EXTRA_MODULE_ROWS
     LABEL(Trainer), 0, TRAINER_LINE1_ROWS, TRAINER_LINE2_ROWS});
 
   MENU_CHECK(STR_MENUSETUP, menuTabModel, MENU_MODEL_SETUP, ITEM_MODEL_SETUP_MAX);
 
   if (event == EVT_ENTRY) {
-    reusableBuffer.modelsetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
+    reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[EXTERNAL_MODULE].pxx.power;
   }
 
 #if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
-    moduleFlag[0] = 0;
-    moduleFlag[1] = 0;
+    moduleSettings[0].mode = 0;
+    moduleSettings[1].mode = 0;
   }
 #endif
 
@@ -710,9 +713,9 @@ void menuModelSetup(event_t event)
 #endif
       case ITEM_MODEL_TRAINER_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerMode, attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerData.mode, attr);
         if (attr) {
-          g_model.trainerMode = checkIncDec(event, g_model.trainerMode, 0, TRAINER_MODE_MAX(), EE_MODEL, isTrainerModeAvailable);
+          g_model.trainerData.mode = checkIncDec(event, g_model.trainerData.mode, 0, TRAINER_MODE_MAX(), EE_MODEL, isTrainerModeAvailable);
         }
 #if defined(BLUETOOTH) && defined(USEHORUSBT)
         if (attr && checkIncDec_Ret) {
@@ -733,8 +736,8 @@ void menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleDSM2(EXTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
-        else if (isModuleR9M(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
+        else if (isR9ModuleRunning(EXTERNAL_MODULE))
+          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].r9m.region, (menuHorizontalPosition==1 ? attr : 0));
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(EXTERNAL_MODULE)) {
           uint8_t multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
@@ -757,7 +760,7 @@ void menuModelSetup(event_t event)
         if (attr && s_editMode>0) {
           switch (menuHorizontalPosition) {
             case 0:
-              g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, IS_TRAINER_EXTERNAL_MODULE() ? MODULE_TYPE_NONE : MODULE_TYPE_COUNT-1, EE_MODEL, isModuleAvailable);
+              g_model.moduleData[EXTERNAL_MODULE].type = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].type, MODULE_TYPE_NONE, IS_TRAINER_EXTERNAL_MODULE() ? MODULE_TYPE_NONE : MODULE_TYPE_COUNT-1, EE_MODEL, isExternalModuleAvailable);
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].rfProtocol = 0;
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
@@ -771,15 +774,6 @@ void menuModelSetup(event_t event)
             case 1:
               if (isModuleDSM2(EXTERNAL_MODULE))
                 CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, DSM2_PROTO_LP45, DSM2_PROTO_DSMX);
-              else if (isModuleR9M(EXTERNAL_MODULE)) {
-                uint8_t newR9MType = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].subType, MODULE_SUBTYPE_R9M_FCC, MODULE_SUBTYPE_R9M_LAST, EE_MODEL, isR9MModeAvailable);
-                if (newR9MType != g_model.moduleData[EXTERNAL_MODULE].subType && newR9MType > MODULE_SUBTYPE_R9M_EU) {
-                  POPUP_WARNING(STR_R9MFLEXWARN1);
-                  const char * w = STR_R9MFLEXWARN2;
-                  SET_WARNING_INFO(w, strlen(w), 0);
-                }
-                g_model.moduleData[EXTERNAL_MODULE].subType = newR9MType;
-              }
 #if defined(MULTIMODULE)
               else if (isModuleMultimodule(EXTERNAL_MODULE)) {
                 int multiRfProto = g_model.moduleData[EXTERNAL_MODULE].multi.customProto == 1 ? MM_RF_PROTO_CUSTOM : g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
@@ -835,7 +829,7 @@ void menuModelSetup(event_t event)
 
 #if defined(BLUETOOTH) && defined(USEHORUSBT)
     case ITEM_MODEL_TRAINER_LINE1:
-      if (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH) {
+      if (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
         if (attr) {
           s_editMode = 0;
         }
@@ -876,7 +870,24 @@ void menuModelSetup(event_t event)
       // no break
 #else
       case ITEM_MODEL_TRAINER_LINE1:
+        lcdDrawTextAlignedLeft(y, STR_CHANNELRANGE);
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_CH, menuHorizontalPosition==0 ? attr : 0);
+        lcdDrawNumber(lcdLastRightPos, y, g_model.trainerData.channelsStart+1, LEFT | (menuHorizontalPosition==0 ? attr : 0));
+        lcdDrawChar(lcdLastRightPos, y, '-');
+        lcdDrawNumber(lcdLastRightPos + FW+1, y, g_model.trainerData.channelsStart+8+g_model.trainerData.channelsCount, LEFT | (menuHorizontalPosition==1 ? attr : 0));
+        if (attr && s_editMode>0) {
+          switch (menuHorizontalPosition) {
+            case 0:
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.trainerData.channelsStart, 32-8-g_model.trainerData.channelsCount);
+              break;
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.trainerData.channelsCount, -4, min<int8_t>(MAX_TRAINER_CHANNELS_M8, 32-8-g_model.trainerData.channelsStart));
+              break;
+          }
+        }
+        break;
 #endif
+
       case ITEM_MODEL_INTERNAL_MODULE_CHANNELS:
       case ITEM_MODEL_EXTERNAL_MODULE_CHANNELS:
       {
@@ -917,9 +928,30 @@ void menuModelSetup(event_t event)
         break;
       }
 
+      case ITEM_MODEL_TRAINER_LINE2:
+        lcdDrawTextAlignedLeft(y, STR_PPMFRAME);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.trainerData.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
+        lcdDrawText(lcdLastRightPos, y, STR_MS);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN+6*FW, y, (g_model.trainerData.delay*50)+300, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+        lcdDrawChar(lcdLastRightPos, y, 'u');
+        lcdDrawChar(MODEL_SETUP_2ND_COLUMN+12*FW, y, g_model.trainerData.pulsePol ? '+' : '-', (CURSOR_ON_LINE() || menuHorizontalPosition==2) ? attr : 0);
+        if (attr && s_editMode>0) {
+          switch (menuHorizontalPosition) {
+            case 0:
+              CHECK_INCDEC_MODELVAR(event, g_model.trainerData.frameLength, -20, 35);
+              break;
+            case 1:
+              CHECK_INCDEC_MODELVAR(event, g_model.trainerData.delay, -4, 10);
+              break;
+            case 2:
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.trainerData.pulsePol, 1);
+              break;
+          }
+        }
+        break;
+
       case ITEM_MODEL_INTERNAL_MODULE_BIND:
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
-      case ITEM_MODEL_TRAINER_LINE2:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -1029,27 +1061,27 @@ void menuModelSetup(event_t event)
                       POPUP_MENU_START(onBindMenu);
                       continue;
                     }
-                    if (moduleFlag[moduleIdx] == MODULE_BIND) {
-                      newFlag = MODULE_BIND;
+                    if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
+                      newFlag = MODULE_MODE_BIND;
                     }
                     else {
-                      if (!popupMenuNoItems) {
+                      if (!popupMenuItemsCount) {
                         s_editMode = 0;  // this is when popup is exited before a choice is made
                       }
                     }
                   }
                   else {
-                    newFlag = MODULE_BIND;
+                    newFlag = MODULE_MODE_BIND;
                   }
                 }
                 else if (l_posHorz == 2) {
-                  newFlag = MODULE_RANGECHECK;
+                  newFlag = MODULE_MODE_RANGECHECK;
                 }
               }
             }
-            moduleFlag[moduleIdx] = newFlag;
+            moduleSettings[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
-            if (newFlag == MODULE_BIND)
+            if (newFlag == MODULE_MODE_BIND)
               multiBindStatus = MULTI_BIND_INITIATED;
 #endif
           }
@@ -1129,16 +1161,7 @@ void menuModelSetup(event_t event)
          }
        }
 #endif
-       if (isModuleR9M(moduleIdx)) {
-         lcdDrawTextAlignedLeft(y, STR_MODULE_TELEMETRY);
-         if (IS_TELEMETRY_INTERNAL_MODULE()) {
-           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DISABLE_INTERNAL);
-         }
-         else {
-           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_TELEM_ON);
-         }
-       }
-       else if (isModuleSBUS(moduleIdx)) {
+       if (isModuleSBUS(moduleIdx)) {
          lcdDrawTextAlignedLeft(y, STR_WARN_BATTVOLTAGE);
          putsVolts(lcdLastRightPos, y, getBatteryVoltage(), attr | PREC2 | LEFT);
        }
@@ -1159,10 +1182,10 @@ void menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
           if (attr)
             CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].pxx.power, 0, R9M_LBT_POWER_MAX);
-          if (attr && s_editMode == 0 && reusableBuffer.modelsetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
-            if((reusableBuffer.modelsetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
+          if (attr && s_editMode == 0 && reusableBuffer.moduleSetup.r9mPower != g_model.moduleData[moduleIdx].pxx.power) {
+            if((reusableBuffer.moduleSetup.r9mPower + g_model.moduleData[moduleIdx].pxx.power) < 5)  //switching between mode 2 and 3 does not require rebind
               POPUP_WARNING(STR_REBIND);
-            reusableBuffer.modelsetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
+            reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
           }
         }
       }
@@ -1173,6 +1196,18 @@ void menuModelSetup(event_t event)
 #endif
       break;
     }
+
+    case ITEM_MODEL_EXTERNAL_MODULE_FREQ:
+    {
+      uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+      lcdDrawTextAlignedLeft(y, STR_FREQUENCY);
+      lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9MFLEX_FREQ, g_model.moduleData[moduleIdx].r9m.freq, LEFT | attr);
+      if (attr)
+      {
+        CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].r9m.freq, 1);
+      }
+    }
+    break;
 
 #if defined (MULTIMODULE)
     case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:
@@ -1205,7 +1240,7 @@ void menuModelSetup(event_t event)
 #if defined(PXX)
   if (IS_RANGECHECK_ENABLE()) {
     showMessageBox("RSSI: ");
-    lcdDrawNumber(16+4*FW, 5*FH, TELEMETRY_RSSI(), BOLD);
+    lcdDrawNumber(WARNING_LINE_X, 5*FH, TELEMETRY_RSSI(), BOLD | LEFT);
   }
 #endif
 
@@ -1221,159 +1256,5 @@ void menuModelSetup(event_t event)
         checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
       break;
     }
-  }
-}
-
-void menuModelFailsafe(event_t event)
-{
-  static uint8_t maxNameLen = 4;
-  static int8_t lastModel = g_eeGeneral.currModel;
-  const coord_t barH = (LCD_H - FH) / 8 - 1;
-  const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
-  const uint8_t channelStart = g_model.moduleData[g_moduleIdx].channelsStart;
-  uint8_t cols = 1;
-  uint8_t colW = LCD_W;
-
-  if (lastModel != g_eeGeneral.currModel) {
-    lastModel = g_eeGeneral.currModel;
-    maxNameLen = 4;
-  }
-
-  if (event == EVT_KEY_LONG(KEY_ENTER)) {
-    killEvents(event);
-    event = 0;
-
-    if (menuVerticalPosition < sentModuleChannels(g_moduleIdx)) {
-      if (s_editMode) {
-        g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition] = channelOutputs[menuVerticalPosition+channelStart];
-        s_editMode = 0;
-      }
-      else {
-        int16_t & failsafe = g_model.moduleData[g_moduleIdx].failsafeChannels[menuVerticalPosition];
-        if (failsafe < FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_HOLD;
-        else if (failsafe == FAILSAFE_CHANNEL_HOLD)
-          failsafe = FAILSAFE_CHANNEL_NOPULSE;
-        else
-          failsafe = 0;
-      }
-    }
-    else {
-      // "Outputs => Failsafe" menu item
-      setCustomFailsafe(g_moduleIdx);
-    }
-
-    storageDirty(EE_MODEL);
-    AUDIO_WARNING1();
-    SEND_FAILSAFE_NOW(g_moduleIdx);
-  }
-
-  SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx)+1);
-  SET_SCROLLBAR_X(0);
-
-  if (sentModuleChannels(g_moduleIdx) > 8) {
-    cols = 2;
-    colW = LCD_W / cols - 1;
-    // Column separator
-    if (menuVerticalPosition >= sentModuleChannels(g_moduleIdx)) {
-      lcdDrawSolidVerticalLine(colW, FH, LCD_H - (FH*2 + FH/2 + 2));
-    }
-    else {
-      lcdDrawSolidVerticalLine(colW, FH, LCD_H - FH);
-    }
-  }
-
-  lcdDrawTextAlignedCenter(0, FAILSAFESET);
-  lcdInvertLine(0);
-
-  coord_t x = colW;
-  for (uint8_t col = 0; col < cols; col++) {
-
-    coord_t y = FH + 1;
-    uint8_t line = (menuVerticalPosition >= sentModuleChannels(g_moduleIdx) ? 2 : 0);
-    uint8_t ch = line + col*8;
-
-    for (; line < 8; line++) {
-      const int32_t channelValue = channelOutputs[ch+channelStart];
-      int32_t failsafeValue = g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line];
-      uint8_t lenLabel = ZLEN(g_model.limitData[ch+channelStart].name);
-      uint8_t barW = colW - FW * maxNameLen - FWNUM * 3;  // default bar width
-
-#if defined(PPM_UNIT_PERCENT_PREC1)
-      barW -= FWNUM + 1;
-#endif
-      barW += (barW % 2);
-
-      // Channel name if present, number if not
-      if (lenLabel > 0) {
-        if (lenLabel > maxNameLen)
-          maxNameLen = lenLabel;
-        lcdDrawSizedText(x - colW, y, g_model.limitData[ch+channelStart].name, sizeof(g_model.limitData[ch+channelStart].name), ZCHAR | SMLSIZE);
-      }
-      else {
-        putsChn(x - colW, y, ch+1, SMLSIZE);
-      }
-
-      // Value
-      LcdFlags flags = TINSIZE;
-      if (menuVerticalPosition == ch) {
-        flags |= INVERS;
-        if (s_editMode) {
-          if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-            s_editMode = 0;
-          }
-          else {
-            flags |= BLINK;
-            CHECK_INCDEC_MODELVAR(event, g_model.moduleData[g_moduleIdx].failsafeChannels[8*col+line], -lim, +lim);
-          }
-        }
-      }
-
-      const coord_t xValue = x - barW;
-      if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-        lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
-        failsafeValue = 0;
-      }
-      else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-        lcdDrawText(xValue, y, STR_NONE, RIGHT|flags);
-        failsafeValue = 0;
-      }
-      else {
-#if defined(PPM_UNIT_US)
-        lcdDrawNumber(xValue, y, PPM_CH_CENTER(ch)+failsafeValue/2, RIGHT|flags);
-#elif defined(PPM_UNIT_PERCENT_PREC1)
-        lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue), RIGHT|PREC1|flags);
-#else
-        lcdDrawNumber(xValue, y, calcRESXto1000(failsafeValue)/10, RIGHT|flags);
-#endif
-      }
-
-      // Gauge
-      lcdDrawRect(x - barW, y, barW - 1, barH);
-      barW = barW / 2 - 1;
-      const coord_t lenChannel  = limit<uint8_t>(1, (abs(channelValue)  * barW + lim / 2) / lim, barW);
-      const coord_t lenFailsafe = limit<uint8_t>(1, (abs(failsafeValue) * barW + lim / 2) / lim, barW);
-      const coord_t barX = x - barW - 2;
-      const coord_t xChannel  = (channelValue >= 0) ? barX : barX - lenChannel + 1;
-      const coord_t xFailsafe = (failsafeValue > 0) ? barX : barX - lenFailsafe + 1;
-      lcdDrawHorizontalLine(xChannel, y+1, lenChannel, DOTTED, 0);
-      lcdDrawHorizontalLine(xChannel, y+2, lenChannel, DOTTED, 0);
-      lcdDrawSolidHorizontalLine(xFailsafe, y+3, lenFailsafe);
-      lcdDrawSolidHorizontalLine(xFailsafe, y+4, lenFailsafe);
-
-      if (++ch >= sentModuleChannels(g_moduleIdx))
-        break;
-
-      y += barH + 1;
-
-    }  // channels
-
-    x += colW + 2;
-
-  }  // columns
-
-  if (menuVerticalPosition >= sentModuleChannels(g_moduleIdx)) {
-    // Outputs => Failsafe
-    lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
   }
 }

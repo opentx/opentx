@@ -74,7 +74,7 @@ choice_t editChoice(coord_t x, coord_t y, const char * label, const char *values
 {
   drawFieldLabel(x, y, label);
   if (values) lcdDrawTextAtIndex(x, y, values, value-min, attr);
-  if (attr & (~RIGHT)) value = checkIncDec(event, value, min, max, (menuVerticalPositions[0] == 0) ? EE_MODEL : EE_GENERAL);
+  if (attr & (~RIGHT)) value = checkIncDec(event, value, min, max, (isModelMenuDisplayed()) ? EE_MODEL : EE_GENERAL);
   return value;
 }
 
@@ -229,22 +229,6 @@ void drawStatusLine()
   }
 }
 #endif
-
-void drawProgressBar(const char * label, int num, int den)
-{
-  lcdClear();
-  if (label) {
-    lcdDrawTextAlignedLeft(4*FH, label);
-  }
-  lcdDrawRect(4, 6*FH+4, LCD_W-8, 7);
-  if (num > 0 && den > 0) {
-    int width = ((LCD_W-12)*num)/den;
-    lcdDrawSolidHorizontalLine(6, 6*FH+6, width, FORCE);
-    lcdDrawSolidHorizontalLine(6, 6*FH+7, width, FORCE);
-    lcdDrawSolidHorizontalLine(6, 6*FH+8, width, FORCE);
-  }
-  lcdRefresh();
-}
 
 const unsigned char SLEEP_BITMAP[]  = {
 #include "sleep.lbm"

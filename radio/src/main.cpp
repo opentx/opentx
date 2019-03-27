@@ -50,7 +50,7 @@ void handleUsbConnection()
     }
   }
   if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuNoItems == 0)) {
+    if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuItemsCount == 0)) {
       POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
       POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
 #if defined(DEBUG)
@@ -73,6 +73,76 @@ void handleUsbConnection()
   }
 #endif // defined(STM32) && !defined(SIMU)
 }
+
+#if defined(JACK_DETECT_GPIO) && !defined(SIMU)
+bool isJackPlugged()
+{
+  // debounce
+  static bool debounced_state = 0;
+  static bool last_state = 0;
+
+  if (GPIO_ReadInputDataBit(JACK_DETECT_GPIO, JACK_DETECT_GPIO_PIN)) {
+    if (!last_state) {
+      debounced_state = false;
+    }
+    last_state = false;
+  }
+  else {
+    if (last_state) {
+      debounced_state = true;
+    }
+    last_state = true;
+  }
+  return debounced_state;
+}
+#endif
+
+#if defined(PCBXLITES)
+uint8_t jackState = SPEAKER_ACTIVE;
+
+const char STR_JACK_HEADPHONE[] = "Headphone";
+const char STR_JACK_TRAINER[] = "Trainer";
+
+void onJackConnectMenu(const char * result)
+{
+  if (result == STR_JACK_HEADPHONE) {
+    jackState = HEADPHONE_ACTIVE;
+    disableSpeaker();
+    enableHeadphone();
+  }
+  else if (result == STR_JACK_TRAINER) {
+    jackState = TRAINER_ACTIVE;
+    enableTrainer();
+  }
+}
+
+void handleJackConnection()
+{
+  if (jackState == SPEAKER_ACTIVE && isJackPlugged()) {
+    if (g_eeGeneral.jackMode == JACK_HEADPHONE_MODE) {
+      jackState = HEADPHONE_ACTIVE;
+      disableSpeaker();
+      enableHeadphone();
+    }
+    else if (g_eeGeneral.jackMode == JACK_TRAINER_MODE) {
+      jackState = TRAINER_ACTIVE;
+      enableTrainer();
+    }
+    else if (popupMenuItemsCount == 0) {
+      POPUP_MENU_ADD_ITEM(STR_JACK_HEADPHONE);
+      POPUP_MENU_ADD_ITEM(STR_JACK_TRAINER);
+      POPUP_MENU_START(onJackConnectMenu);
+    }
+  }
+  else if (jackState == SPEAKER_ACTIVE && !isJackPlugged() && popupMenuItemsCount > 0 && popupMenuHandler == onJackConnectMenu) {
+    popupMenuItemsCount = 0;
+  }
+  else if (jackState != SPEAKER_ACTIVE && !isJackPlugged()) {
+    jackState = SPEAKER_ACTIVE;
+    enableSpeaker();
+  }
+}
+#endif
 
 void checkSpeakerVolume()
 {
@@ -227,7 +297,7 @@ void guiMain(event_t evt)
     while (1) {
       // normal GUI from menus
       const char * warn = warningText;
-      uint8_t menu = popupMenuNoItems;
+      uint8_t menu = popupMenuItemsCount;
 
       static bool popupDisplayed = false;
       if (warn || menu) {
@@ -243,7 +313,7 @@ void guiMain(event_t evt)
           if (warn) DISPLAY_WARNING(evt);
           if (menu) {
             const char * result = runPopupMenu(evt);
-            if (result) {
+            if (popupMenuItemsCount == 0) {
               popupMenuHandler(result);
               if (menuEvent == 0) {
                 evt = EVT_REFRESH;
@@ -330,8 +400,6 @@ void handleGui(event_t event) {
   }
 }
 
-bool inPopupMenu = false;
-
 void guiMain(event_t evt)
 {
 #if defined(LUA)
@@ -373,13 +441,9 @@ void guiMain(event_t evt)
     handleGui(0); // suppress events, they are handled by the warning
     DISPLAY_WARNING(evt);
   }
-  else if (popupMenuNoItems > 0) {
+  else if (popupMenuItemsCount > 0) {
     // popup menu is active display it on top of normal menus
     handleGui(0); // suppress events, they are handled by the popup
-    if (!inPopupMenu) {
-      TRACE("Popup Menu started");
-      inPopupMenu = true;
-    }
     const char * result = runPopupMenu(evt);
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
@@ -388,10 +452,6 @@ void guiMain(event_t evt)
   }
   else {
     // normal menus
-    if (inPopupMenu) {
-      TRACE("Popup Menu ended");
-      inPopupMenu = false;
-    }
     handleGui(evt);
   }
 
@@ -409,6 +469,9 @@ void perMain()
   checkEeprom();
   logsWrite();
   handleUsbConnection();
+#if defined(PCBXLITES)
+  handleJackConnection();
+#endif
   checkTrainerSettings();
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);

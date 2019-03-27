@@ -21,6 +21,9 @@
 #ifndef _CROSSFIRE_H_
 #define _CROSSFIRE_H_
 
+#include <inttypes.h>
+#include "dataconstants.h"
+
 // Device address
 #define BROADCAST_ADDRESS              0x00
 #define RADIO_ADDRESS                  0xEA
@@ -86,10 +89,10 @@ const uint8_t CROSSFIRE_PERIODS[] = {
   4,
   16,
 };
-#define CROSSFIRE_BAUDRATE             CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
+#define CROSSFIRE_BAUDRATE       CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
 #define CROSSFIRE_PERIOD         CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate]
 #else
-#define CROSSFIRE_BAUDRATE             400000
+#define CROSSFIRE_BAUDRATE       400000
 #define CROSSFIRE_PERIOD         4 // 4ms
 #endif
 

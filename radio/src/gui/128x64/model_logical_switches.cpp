@@ -234,8 +234,7 @@ void onLogicalSwitchesMenu(const char *result)
     s_currIdx = sub;
     pushMenu(menuModelLogicalSwitchOne);
   }
-
-  if (result == STR_COPY) {
+  else if (result == STR_COPY) {
     clipboard.type = CLIPBOARD_TYPE_CUSTOM_SWITCH;
     clipboard.data.csw = *cs;
   }
@@ -269,8 +268,8 @@ void menuModelLogicalSwitches(event_t event)
       POPUP_MENU_ADD_ITEM(STR_PASTE);
     if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
       POPUP_MENU_ADD_ITEM(STR_CLEAR);
-    if(popupMenuNoItems == 1) {
-      popupMenuNoItems = 0;
+    if(popupMenuItemsCount == 1) {
+      popupMenuItemsCount = 0;
       s_currIdx = sub;
       pushMenu(menuModelLogicalSwitchOne);
     }

@@ -36,6 +36,7 @@ const FrSkySportSensor sportSensors[] = {
   { A3_FIRST_ID, A3_LAST_ID, 0, ZSTR_A3, UNIT_VOLTS, 2 },
   { A4_FIRST_ID, A4_LAST_ID, 0, ZSTR_A4, UNIT_VOLTS, 2 },
   { BATT_ID, BATT_ID, 0, ZSTR_BATT, UNIT_VOLTS, 1 },
+  { R9_PWR_ID, R9_PWR_ID, 0, ZSTR_R9PW, UNIT_MILLIWATTS, 0 },
   { T1_FIRST_ID, T1_LAST_ID, 0, ZSTR_TEMP1, UNIT_CELSIUS, 0 },
   { T2_FIRST_ID, T2_LAST_ID, 0, ZSTR_TEMP2, UNIT_CELSIUS, 0 },
   { RPM_FIRST_ID, RPM_LAST_ID, 0, ZSTR_RPM, UNIT_RPMS, 0 },
@@ -94,7 +95,7 @@ const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
   return result;
 }
 
-bool checkSportPacket(const uint8_t *packet)
+bool checkSportPacket(const uint8_t * packet)
 {
   short crc = 0;
   for (int i=1; i<FRSKY_SPORT_PACKET_SIZE; ++i) {
@@ -140,16 +141,21 @@ void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, u
 
 void sportProcessTelemetryPacket(const uint8_t * packet)
 {
-  uint8_t physicalId = packet[0] & 0x1F;
-  uint8_t primId = packet[1];
-  uint16_t id = *((uint16_t *)(packet+2));
-  uint32_t data = SPORT_DATA_S32(packet);
-
   if (!checkSportPacket(packet)) {
     TRACE("sportProcessTelemetryPacket(): checksum error ");
     DUMP(packet, FRSKY_SPORT_PACKET_SIZE);
     return;
   }
+
+  sportProcessTelemetryPacketWithoutCrc(packet);
+}
+
+void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
+{
+  uint8_t physicalId = packet[0] & 0x1F;
+  uint8_t primId = packet[1];
+  uint16_t id = *((uint16_t *)(packet+2));
+  uint32_t data = SPORT_DATA_S32(packet);
 
   if (primId == DATA_FRAME) {
     uint8_t instance = physicalId + 1;
@@ -160,6 +166,10 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
         telemetryData.rssi.reset();
       else
         telemetryData.rssi.set(data);
+    }
+    else if (id == R9_PWR_ID) {
+      uint32_t r9pwr[] = {100, 200, 500, 1000};
+      data = r9pwr[SPORT_DATA_U8(packet) & 0x03];
     }
     else if (id == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);

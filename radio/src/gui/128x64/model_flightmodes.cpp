@@ -39,7 +39,7 @@ enum MenuModelFlightModeItems {
   IF_ROTARY_ENCODERS(ITEM_MODEL_FLIGHT_MODE_ROTARY_ENCODERS)
   ITEM_MODEL_FLIGHT_MODE_FADE_IN,
   ITEM_MODEL_FLIGHT_MODE_FADE_OUT,
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
   ITEM_MODEL_FLIGHT_MODE_GVARS_LABEL,
   ITEM_MODEL_FLIGHT_MODE_GV1,
   ITEM_MODEL_FLIGHT_MODE_GV2,
@@ -87,7 +87,7 @@ void menuModelFlightModeOne(event_t event)
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
 
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
   if (s_currIdx == 0 && sub>=ITEM_MODEL_FLIGHT_MODE_SWITCH) sub += VERTICAL_SHIFT;
 
   for (uint8_t k=0; k<LCD_LINES-1; k++) {
@@ -126,7 +126,7 @@ void menuModelFlightModeOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_ROTARY_ENCODER);
         for (uint8_t t=0; t<NUM_ROTARY_ENCODERS; t++) {
           putsRotaryEncoderMode(MIXES_2ND_COLUMN+(t*FW), y, s_currIdx, t, menuHorizontalPosition==t ? attr : 0);
-          if (attr && menuHorizontalPosition==t && ((editMode>0) || p1valdiff)) {
+          if (attr && menuHorizontalPosition == t && editMode > 0) {
             int16_t v = flightModeAddress(s_currIdx)->rotaryEncoders[t];
             if (v < ROTARY_ENCODER_MAX) v = ROTARY_ENCODER_MAX;
             v = checkIncDec(event, v, ROTARY_ENCODER_MAX, ROTARY_ENCODER_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
@@ -147,7 +147,7 @@ void menuModelFlightModeOne(event_t event)
         fm->fadeOut = EDIT_DELAY(0, y, event, attr, STR_FADEOUT, fm->fadeOut);
         break;
 
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
       case ITEM_MODEL_FLIGHT_MODE_GVARS_LABEL:
         lcdDrawTextAlignedLeft(y, STR_GLOBAL_VARS);
         break;
@@ -175,7 +175,7 @@ void menuModelFlightModeOne(event_t event)
         else {
           lcdDrawText(9*FW, y, STR_OWN, posHorz==1 ? attr : 0);
         }
-        if (attr && s_currIdx>0 && posHorz==1 && (editMode>0 || p1valdiff)) {
+        if (attr && s_currIdx>0 && posHorz==1 && editMode > 0) {
           if (v < GVAR_MAX) v = GVAR_MAX;
           v = checkIncDec(event, v, GVAR_MAX, GVAR_MAX+MAX_FLIGHT_MODES-1, EE_MODEL);
           if (checkIncDec_Ret) {

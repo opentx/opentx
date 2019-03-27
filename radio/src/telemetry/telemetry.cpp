@@ -18,9 +18,10 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
+#include <opentx.h>
 
 uint8_t telemetryStreaming = 0;
+uint8_t R9ModuleStreaming = 0;
 uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];   // Receive buffer. 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 uint8_t telemetryRxBufferCount = 0;
 
@@ -38,44 +39,69 @@ uint8_t telemetryProtocol = 255;
 uint8_t serialInversion = 0;
 #endif
 
-
 void processTelemetryData(uint8_t data)
 {
 #if defined(CROSSFIRE)
-  if (telemetryProtocol == PROTOCOL_PULSES_CROSSFIRE) {
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
     processCrossfireTelemetryData(data);
     return;
   }
 #endif
+
 #if defined(MULTIMODULE)
-  if (telemetryProtocol == PROTOCOL_SPEKTRUM) {
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
     processSpektrumTelemetryData(data);
     return;
   }
-  if (telemetryProtocol == PROTOCOL_FLYSKY_IBUS) {
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS) {
     processFlySkyTelemetryData(data);
     return;
   }
-  if (telemetryProtocol == PROTOCOL_MULTIMODULE) {
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
     processMultiTelemetryData(data);
     return;
   }
 #endif
+
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_PXX2) {
+    processFrskyPXX2Data(data);
+    return;
+  }
+
   processFrskyTelemetryData(data);
 }
 
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
+
 #if defined(REVX)
   uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
   if (telemetryProtocol != requiredTelemetryProtocol || serialInversion != requiredSerialInversion) {
     serialInversion = requiredSerialInversion;
-#else
-   if (telemetryProtocol != requiredTelemetryProtocol) {
-#endif
     telemetryInit(requiredTelemetryProtocol);
   }
+#else
+  if (telemetryProtocol != requiredTelemetryProtocol) {
+    telemetryInit(requiredTelemetryProtocol);
+  }
+#endif
+
+#if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
+  uint8_t frame[PXX2_FRAME_MAXLENGTH];
+
+  #if defined(INTMODULE_USART)
+    while (intmoduleFifo.getFrame(frame)) {
+      processPXX2Frame(INTERNAL_MODULE, frame);
+    }
+  #endif
+
+  #if defined(EXTMODULE_USART)
+    while (extmoduleFifo.getFrame(frame)) {
+      processPXX2Frame(EXTERNAL_MODULE, frame);
+    }
+  #endif
+#endif
 
 #if defined(STM32)
   uint8_t data;
@@ -87,7 +113,7 @@ void telemetryWakeup()
     } while (telemetryGetByte(&data));
   }
 #elif defined(PCBSKY9X)
-  if (telemetryProtocol == PROTOCOL_FRSKY_D_SECONDARY) {
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     uint8_t data;
     while (telemetrySecondPortReceive(data)) {
       processTelemetryData(data);
@@ -98,7 +124,6 @@ void telemetryWakeup()
     rxPdcUsart(processTelemetryData);
   }
 #endif
-
 
   for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
     const TelemetrySensor & sensor = g_model.telemetrySensors[i];
@@ -112,7 +137,7 @@ void telemetryWakeup()
     varioWakeup();
   }
 #endif
-  
+
 #define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
 
   static tmr10ms_t alarmsCheckTime = 0;
@@ -194,7 +219,9 @@ void telemetryInterrupt10ms()
     wshhStreaming--;
   }
 #endif
-
+  if (R9ModuleStreaming > 0) {
+    R9ModuleStreaming--;
+  }
   if (telemetryStreaming > 0) {
     telemetryStreaming--;
   }
@@ -223,27 +250,27 @@ void telemetryInit(uint8_t protocol)
 {
   telemetryProtocol = protocol;
 
-  if (protocol == PROTOCOL_FRSKY_D) {
+  if (protocol == PROTOCOL_TELEMETRY_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }
 
 #if defined(MULTIMODULE)
-  else if (protocol == PROTOCOL_MULTIMODULE || protocol == PROTOCOL_FLYSKY_IBUS) {
+  else if (protocol == PROTOCOL_TELEMETRY_MULTIMODULE || protocol == PROTOCOL_TELEMETRY_FLYSKY_IBUS) {
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0x7E;
+    outputTelemetryBuffer.size = 0;
+    outputTelemetryBuffer.trigger = 0x7E;
 #endif
   }
-  else if (protocol == PROTOCOL_SPEKTRUM) {
+  else if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
     // Spektrum's own small race RX (SPM4648) uses 125000 8N1, use the same since there is no real standard
     telemetryPortInit(125000, TELEMETRY_SERIAL_DEFAULT);
   }
 #endif
 
 #if defined(CROSSFIRE)
-  else if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
+  else if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
 #if defined(LUA)
     outputTelemetryBufferSize = 0;
@@ -254,17 +281,22 @@ void telemetryInit(uint8_t protocol)
 #endif
 
 #if defined(SERIAL2) || defined(PCBSKY9X)
-  else if (protocol == PROTOCOL_FRSKY_D_SECONDARY) {
+  else if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     telemetryPortInit(0, TELEMETRY_SERIAL_DEFAULT);
-    serial2TelemetryInit(PROTOCOL_FRSKY_D_SECONDARY);
+    serial2TelemetryInit(PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY);
   }
 #endif
 
+  else if (protocol == PROTOCOL_TELEMETRY_PXX2) {
+    telemetryPortInit(PXX2_ON_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
+#if defined(LUA)
+    outputTelemetryBuffer.reset();
+#endif
+  }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0x7E;
+    outputTelemetryBuffer.reset();
 #endif
   }
 
@@ -299,9 +331,7 @@ void logTelemetryWriteByte(uint8_t data)
 }
 #endif
 
-uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
-uint8_t outputTelemetryBufferSize = 0;
-uint8_t outputTelemetryBufferTrigger = 0;
+OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 
 #if defined(LUA)
 Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo = NULL;

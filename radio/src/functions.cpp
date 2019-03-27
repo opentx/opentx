@@ -155,8 +155,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
         active &= (bool)CFN_ACTIVE(cfn);
       }
 
-      if (active || IS_PLAY_BOTH_FUNC(CFN_FUNC(cfn))) {
-
+      if (active) {
         switch (CFN_FUNC(cfn)) {
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
@@ -233,7 +232,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
           {
             unsigned int moduleIndex = CFN_PARAM(cfn);
             if (moduleIndex < NUM_MODULES) {
-              moduleFlag[moduleIndex] = 1 + CFN_FUNC(cfn) - FUNC_RANGECHECK;
+              moduleSettings[moduleIndex].mode = 1 + CFN_FUNC(cfn) - FUNC_RANGECHECK;
             }
             break;
           }
@@ -404,7 +403,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             {
               unsigned int moduleIndex = CFN_PARAM(cfn);
               if (moduleIndex < NUM_MODULES) {
-                moduleFlag[moduleIndex] = 0;
+                moduleSettings[moduleIndex].mode = 0;
               }
               break;
             }

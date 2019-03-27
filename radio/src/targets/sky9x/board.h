@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -60,7 +60,7 @@ enum EnumKeys
   KEY_PLUS = KEY_UP,
   KEY_RIGHT,
   KEY_LEFT,
-  
+
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
@@ -257,10 +257,13 @@ void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
-void init_pxx(uint32_t port);
-void disable_pxx(uint32_t port);
+void init_pxx1_pulses(uint32_t port);
+void disable_pxx1_pulses(uint32_t port);
 void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint32_t port);
+void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
+void disable_module_timer( uint32_t module_index);
+void extmoduleSendNextFrame();
 
 // SD driver
 #if defined(SIMU)
@@ -405,8 +408,9 @@ void debugPutc(const char c);
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 uint32_t telemetryTransmitPending();
-void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
+void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
+void sportSendBuffer(const uint8_t * buffer, uint32_t size);
 
 // Second UART driver
 void serial2TelemetryInit(unsigned int protocol);

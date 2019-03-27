@@ -243,7 +243,7 @@ void menuRadioHardware(event_t event)
         lcdDrawTextAlignedLeft(y, STR_DEBUG);
         lcdDrawText(HW_SETTINGS_COLUMN
           , y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
-        lcdDrawText(lcdLastRightPos + 2, y, STR_SWITCHES_BTN, menuHorizontalPosition == 1 ? attr : 0);
+        lcdDrawText(lcdLastRightPos + 2, y, STR_KEYS_BTN, menuHorizontalPosition == 1 ? attr : 0);
         if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
           if (menuHorizontalPosition == 0)
             pushMenu(menuRadioDiagAnalogs);
