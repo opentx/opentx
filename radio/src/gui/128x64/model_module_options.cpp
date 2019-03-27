@@ -89,10 +89,23 @@ void drawPower(coord_t x, coord_t y, int8_t dBm)
   }
 }
 
-void menuModelModuleOptions(event_t event)
+bool isPowerAvailable(int value)
 {
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
   uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
+
+  return (value == 10 /* 10 mW */ ||
+          value == 14 /* 25 mW */ ||
+          value == 20 /* 100 mW */ ||
+          value == 23 /* 200 mW */ ||
+          value == 27 /* 500 mW */ ||
+          value == 30 /* 1000 mW */);
+}
+
+void menuModelModuleOptions(event_t event)
+{
+  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
+  // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
     IF_MODULE_OPTIONS(0, 0),
@@ -187,7 +200,7 @@ void menuModelModuleOptions(event_t event)
           drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
           lcdDrawText(lcdNextPos, y, ")");
           if (attr) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30);
+            reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
             if (checkIncDec_Ret) {
               reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
             }
