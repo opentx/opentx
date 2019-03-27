@@ -20,7 +20,7 @@
 
 #include <opentx.h>
 
-#define RECEIVER_OPTIONS_2ND_COLUMN 60
+#define RECEIVER_OPTIONS_2ND_COLUMN  (11*FW)
 
 extern uint8_t g_moduleIdx;
 
@@ -62,8 +62,30 @@ const uint8_t moduleOptions[] = {
 
 #define IF_MODULE_OPTIONS(option, count) uint8_t((moduleOptions[modelId] & (1 << option)) ? count : HIDDEN_ROW)
 
-int16_t convertDBMtoMW(int8_t dBm) {
-  return pow( 10.0, (dBm - 30.0) / 10.0) * 1000;
+void drawPower(coord_t x, coord_t y, int8_t dBm)
+{
+  float power_W_PREC1 = pow(10.0, (dBm - 30.0) / 10.0) * 10;
+  if (dBm >= 30) {
+    lcdDrawNumber(x, y, power_W_PREC1, PREC1);
+    lcdDrawText(lcdNextPos, y, "W");
+  }
+  else if (dBm < 10) {
+    uint16_t power_MW_PREC1 = round(power_W_PREC1 * 1000);
+    lcdDrawNumber(x, y, power_MW_PREC1, PREC1);
+    lcdDrawText(lcdNextPos, y, "mW");
+  }
+  else {
+    uint16_t power_MW = round(power_W_PREC1 * 100);
+    if (power_MW >= 50) {
+      power_MW = (power_MW / 5) * 5;
+      lcdDrawNumber(x, y, power_MW);
+      lcdDrawText(lcdNextPos, y, "mW");
+    }
+    else {
+      lcdDrawNumber(x, y, power_MW);
+      lcdDrawText(lcdNextPos, y, "mW");
+    }
+  }
 }
 
 void menuModelModuleOptions(event_t event)
@@ -161,8 +183,8 @@ void menuModelModuleOptions(event_t event)
           lcdDrawText(0, y, "Power");
           lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
           lcdDrawText(lcdNextPos, y, "dBm(");
-          lcdDrawNumber(lcdNextPos, y, convertDBMtoMW(reusableBuffer.hardwareAndSettings.moduleSettings.txPower), 0);
-          lcdDrawText(lcdNextPos, y, "mW)");
+          drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
+          lcdDrawText(lcdNextPos, y, ")");
           if (attr) {
             reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, -127, 127);
             if (checkIncDec_Ret) {
