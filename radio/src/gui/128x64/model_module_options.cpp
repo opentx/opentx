@@ -187,7 +187,7 @@ void menuModelModuleOptions(event_t event)
           drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
           lcdDrawText(lcdNextPos, y, ")");
           if (attr) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, -127, 127);
+            reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30);
             if (checkIncDec_Ret) {
               reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
             }
