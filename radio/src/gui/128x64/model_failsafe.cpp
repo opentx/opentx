@@ -93,7 +93,7 @@ void menuModelFailsafe(event_t event)
       }
     }
 
-    uint8_t xValue = x+LCD_W-4-wbar;
+    const coord_t xValue = x+LCD_W-4-wbar;
     if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
       lcdDrawText(xValue, y, STR_HOLD, RIGHT|flags);
       failsafeValue = 0;
