@@ -50,7 +50,7 @@ enum {
  * - Power
  */
 const uint8_t moduleOptions[] = {
-  0b00000000, // None
+  0b11111111, // None = display all options
   0b11111011, // XJT
   0b11111011, // IXJT
   0b11111011, // IXJT-PRO
@@ -112,8 +112,9 @@ void menuModelModuleOptions(event_t event)
     popMenu();
   }
 
-  if (menuVerticalPosition == 0) {
-    while (mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
+  if (modelId != 0 && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
+    menuVerticalPosition = 0;
+    while (menuVerticalPosition < ITEM_MODULE_SETTINGS_COUNT && mstate_tab[menuVerticalPosition] == HIDDEN_ROW) {
       ++menuVerticalPosition;
     }
   }
