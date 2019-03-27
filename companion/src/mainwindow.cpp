@@ -341,7 +341,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
   QString version = seekCodeString(qba, "VERSION");
   if (version.isNull())
-    return onUpdatesError(tr("Companion update check failed, new version informaion not found."));
+    return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
   int webVersion = version2index(version);
 
