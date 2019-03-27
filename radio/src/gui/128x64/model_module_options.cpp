@@ -44,7 +44,11 @@ enum {
   ITEM_MODULE_SETTINGS_COUNT
 };
 
-/* order: RF Protocol, External antenna, Power */
+/* Options order:
+ * - RF Protocol
+ * - External antenna
+ * - Power
+ */
 const uint8_t moduleOptions[] = {
   0b00000000, // None
   0b11111011, // XJT
