@@ -61,6 +61,18 @@ static const char * const modulesModels[] = {
   "R9MLite-PRO",
 };
 
+/* order: RF Protocol, External antenna, Power */
+uint8_t moduleOptions[] = {
+  0b00000010, // None
+  0b11111011, // XJT
+  0b11111011, // IXJT
+  0b11111011, // IXJT-PRO
+  0b11111011, // IXJT-S
+  0b11111100, // R9M
+  0b11111100, // R9MLite
+  0b11111100, // R9MLite-PRO
+};
+
 static const char * const receiversModels[] = {
   "---",
   "X8R",
@@ -105,15 +117,15 @@ void menuRadioModulesVersion(event_t event)
     memclear(&reusableBuffer.hardwareAndSettings.modules, sizeof(reusableBuffer.hardwareAndSettings.modules));
 
     if (isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
-      moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
       reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
       reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
+      moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
     }
 
     if (isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
-      moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
       reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
       reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].maximum = MAX_RECEIVERS_PER_MODULE - 1;
+      moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
     }
 
     reusableBuffer.hardwareAndSettings.updateTime = get_tmr10ms() + 1000 /* 10s*/;

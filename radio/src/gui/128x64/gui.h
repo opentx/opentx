@@ -171,10 +171,9 @@ void title(const char * s);
 #if defined(PCBX7) || defined(PCBX3)
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), lines_count);
-#define SUBMENU_NOTITLE(lines_count, ...) { \
+#define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  }
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count);
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
@@ -184,10 +183,9 @@ void title(const char * s);
 #else
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), (lines_count)-1);
-#define SUBMENU_NOTITLE(lines_count, ...) { \
+#define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
-  }
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1);
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \

@@ -39,9 +39,9 @@ void onRxOptionsUpdateConfirm(const char * result)
 }
 
 enum {
-    ITEM_RECEIVER_TELEMETRY,
-    ITEM_RECEIVER_PWM_RATE,
-    ITEM_RECEIVER_PINMAP_FIRST
+  ITEM_RECEIVER_TELEMETRY,
+  ITEM_RECEIVER_PWM_RATE,
+  ITEM_RECEIVER_PINMAP_FIRST
 };
 
 void menuModelReceiverOptions(event_t event)
@@ -58,6 +58,8 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
 #else
     // no need to initialize reusableBuffer.hardwareAndSettings.receiverSettings.state to PXX2_HARDWARE_INFO
+    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].current = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
+    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].maximum = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_GET_HARDWARE_INFO;
 #endif
   }
@@ -92,7 +94,6 @@ void menuModelReceiverOptions(event_t event)
   }
 
   int8_t sub = menuVerticalPosition;
-
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
   drawReceiverName(FW * 13, 0, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
   lcdInvertLine(0);
