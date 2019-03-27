@@ -55,6 +55,63 @@
 
 #define PXX2_HW_INFO_TX_ID                         0xFF
 
+static const char * const PXX2modulesModels[] = {
+  "---",
+  "XJT",
+  "IXJT",
+  "IXJT-PRO",
+  "IXJT-S",
+  "R9M",
+  "R9MLite",
+  "R9MLite-PRO",
+};
+
+static const char * const PXX2receiversModels[] = {
+  "---",
+  "X8R",
+  "RX8R",
+  "RX8R-PRO",
+  "RX6R",
+  "RX4R",
+  "G-RX8",
+  "G-RX6",
+  "X6R",
+  "X4R",
+  "X4R-SB",
+  "XSR",
+  "XSR-M",
+  "RXSR",
+  "S6R",
+  "S8R",
+  "XM",
+  "XM+",
+  "XMR",
+  "R9",
+  "R9-SLIM",
+  "R9-SLIM+",
+  "R9-MINI",
+  "R9-MM",
+  "R9-STAB",
+};
+
+enum PXX2ModuleModelID {
+  PXX2_MODULE_NONE,
+  PXX2_MODULE_XJT,
+  PXX2_MODULE_IXJT,
+  PXX2_MODULE_IXJT_PRO,
+  PXX2_MODULE_IXJT_S,
+  PXX2_MODULE_R9M,
+  PXX2_MODULE_R9M_LITE,
+  PXX2_MODULE_R9M_LITE_PRO,
+};
+
+enum PXX2Variant {
+  PXX2_VARIANT_NONE,
+  PXX2_VARIANT_FCC,
+  PXX2_VARIANT_EU,
+  PXX2_VARIANT_FLEX
+};
+
 enum PXX2RegisterSteps {
   REGISTER_START,
   REGISTER_RX_NAME_RECEIVED,

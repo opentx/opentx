@@ -50,45 +50,6 @@ void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Versio
   drawPXX2Version(lcdNextPos, y, swVersion);
 }
 
-static const char * const modulesModels[] = {
-  "---",
-  "XJT",
-  "IXJT",
-  "IXJT-PRO",
-  "IXJT-S",
-  "R9M",
-  "R9MLite",
-  "R9MLite-PRO",
-};
-
-static const char * const receiversModels[] = {
-  "---",
-  "X8R",
-  "RX8R",
-  "RX8R-PRO",
-  "RX6R",
-  "RX4R",
-  "G-RX8",
-  "G-RX6",
-  "X6R",
-  "X4R",
-  "X4R-SB",
-  "XSR",
-  "XSR-M",
-  "RXSR",
-  "S6R",
-  "S8R",
-  "XM",
-  "XM+",
-  "XMR",
-  "R9",
-  "R9-SLIM",
-  "R9-SLIM+",
-  "R9-MINI",
-  "R9-MM",
-  "R9-STAB",
-};
-
 void menuRadioModulesVersion(event_t event)
 {
   if (menuEvent) {
@@ -146,9 +107,9 @@ void menuRadioModulesVersion(event_t event)
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Model");
       uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
-      if (modelId >= DIM(modulesModels))
+      if (modelId >= DIM(PXX2modulesModels))
         modelId = 0;
-      lcdDrawText(12 * FW, y, modulesModels[modelId]);
+      lcdDrawText(12 * FW, y, PXX2modulesModels[modelId]);
     }
     y += FH;
 
@@ -168,9 +129,9 @@ void menuRadioModulesVersion(event_t event)
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
           uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.modelID;
-          if (modelId >= DIM(receiversModels))
+          if (modelId >= DIM(PXX2receiversModels))
             modelId = 0;
-          lcdDrawText(12 * FW, y, receiversModels[modelId]);
+          lcdDrawText(12 * FW, y, PXX2receiversModels[modelId]);
         }
         y += FH;
 

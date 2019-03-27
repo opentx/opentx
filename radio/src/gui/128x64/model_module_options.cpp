@@ -91,10 +91,28 @@ void drawPower(coord_t x, coord_t y, int8_t dBm)
 
 bool isPowerAvailable(int value)
 {
-//  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
-//  uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
+  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
+  uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
-  return (value == 10 /* 10 mW */ ||
+  if (modelId == PXX2_MODULE_R9M_LITE) {
+    if (variant == PXX2_VARIANT_EU)
+      return (value == 14 /* 25 mW */ || value == 20 /* 100 mW */);
+    else
+      return value == 20; /* 100 mW */
+  }
+  else if (modelId == PXX2_MODULE_R9M_LITE_PRO) {
+      if (variant == PXX2_VARIANT_EU)
+        return (value == 14 /* 25 mW */ ||
+          value == 23 /* 200 mW */ ||
+          value == 27 /* 500 mW */);
+      else
+        return (value == 10 /* 10 mW */ ||
+                value == 20 /* 100 mW */ ||
+                value == 27 /* 500 mW */ ||
+                value == 30 /* 1000 mW */);
+  }
+  else
+    return (value == 10 /* 10 mW */ ||
           value == 14 /* 25 mW */ ||
           value == 20 /* 100 mW */ ||
           value == 23 /* 200 mW */ ||
@@ -161,6 +179,7 @@ void menuModelModuleOptions(event_t event)
 
   int8_t sub = menuVerticalPosition;
   lcdDrawTextAlignedLeft(0, "Module options");
+  lcdDrawText(lcdLastRightPos+ 3, 0, PXX2modulesModels[modelId] );
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
