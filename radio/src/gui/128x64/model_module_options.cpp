@@ -19,6 +19,7 @@
  */
 
 #include <opentx.h>
+#include <math.h>
 
 #define RECEIVER_OPTIONS_2ND_COLUMN  (11*FW)
 
