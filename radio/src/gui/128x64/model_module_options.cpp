@@ -91,8 +91,8 @@ void drawPower(coord_t x, coord_t y, int8_t dBm)
 
 bool isPowerAvailable(int value)
 {
-  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
-  uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
+//  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
+//  uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
   return (value == 10 /* 10 mW */ ||
           value == 14 /* 25 mW */ ||
