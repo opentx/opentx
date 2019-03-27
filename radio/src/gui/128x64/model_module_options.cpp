@@ -65,6 +65,7 @@ const uint8_t moduleOptions[] = {
 void menuModelModuleOptions(event_t event)
 {
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
+  uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
     IF_MODULE_OPTIONS(0, 0),
