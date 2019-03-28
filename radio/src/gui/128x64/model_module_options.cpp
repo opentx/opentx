@@ -46,9 +46,9 @@ enum {
 };
 
 /* Options order:
- * - RF Protocol
- * - External antenna
- * - Power
+ * - RF Protocol (0x01)
+ * - External antenna (0x02)
+ * - Power (0x04)
  */
 const uint8_t moduleOptions[] = {
   0b11111111, // None = display all options
