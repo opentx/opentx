@@ -400,9 +400,23 @@ inline bool isDefaultModelRegistrationID()
 
 uint8_t findEmptyReceiverSlot()
 {
-  for (uint8_t slot=0; slot<NUM_RECEIVERS; slot++) {
-    if (!g_model.receiverData[slot].used) {
-      return slot + 1;
+  for (uint8_t slot = 1; slot <= NUM_RECEIVERS; slot++) {
+    bool used = false;
+    for (uint8_t module = 0; module < NUM_MODULES; module++) {
+      if (isModulePXX2(module)) {
+        for (uint8_t receiver = 0; receiver < PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
+          if (g_model.moduleData[module].pxx2.getReceiverSlot(receiver) == slot) {
+            used = true;
+            break;
+          }
+        }
+        if (used) {
+          break;
+        }
+      }
+    }
+    if (!used) {
+      return slot;
     }
   }
   return 0;
@@ -1273,7 +1287,7 @@ void menuModelSetup(event_t event)
         if (receiverSlot) {
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_DEL_BUTTON, attr);
           if (attr && s_editMode > 0) {
-            g_model.moduleData[moduleIdx].pxx2.receivers = (g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIdx * 3)) | ((g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>((receiverIdx + 1) * 3, (MAX_RECEIVERS_PER_MODULE - 1 - receiverIdx) * 3)) >> 3);
+            g_model.moduleData[moduleIdx].pxx2.receivers = (g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>(0, receiverIdx * 3)) | ((g_model.moduleData[moduleIdx].pxx2.receivers & BF_MASK<uint16_t>((receiverIdx + 1) * 3, (PXX2_MAX_RECEIVERS_PER_MODULE - 1 - receiverIdx) * 3)) >> 3);
             memclear(&g_model.receiverData[receiverSlot - 1], sizeof(ReceiverData));
             s_editMode = 0;
             killEvents(event);
@@ -1288,8 +1302,6 @@ void menuModelSetup(event_t event)
             uint8_t slot = findEmptyReceiverSlot();
             if (slot > 0) {
               g_model.moduleData[moduleIdx].pxx2.receivers |= (slot << (receiverIdx * 3));
-              --slot;
-              g_model.receiverData[slot].used = 1;
               storageDirty(EE_MODEL);
             }
           }

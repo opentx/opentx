@@ -416,10 +416,7 @@ PACK(struct TrainerModuleData {
  */
 
 PACK(struct ReceiverData {
-  uint8_t used:1;
-  uint8_t telemetry:1;
-  uint8_t dirty:6;
-  char    name[PXX2_LEN_RX_NAME];
+  char name[PXX2_LEN_RX_NAME];
 });
 
 /*
@@ -930,25 +927,25 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 5940);
+  CHKSIZE(ModelData, 5936);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
-  CHKSIZE(ModelData, 5940);
+  CHKSIZE(ModelData, 5936);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 5940);
+  CHKSIZE(ModelData, 5936);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6435);
-#elif defined(PCBX9D)
+  CHKSIZE(ModelData, 6431);
+#elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6422);
+  CHKSIZE(ModelData, 6418);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5101);
+  CHKSIZE(ModelData, 5097);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9771);
+  CHKSIZE(ModelData, 9761);
 #endif
 
 #undef CHKSIZE

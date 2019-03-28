@@ -126,10 +126,8 @@ enum CurveType {
 
 #if defined(PCBHORUS)
   #define NUM_RECEIVERS                10
-  #define MAX_RECEIVERS_PER_MODULE     5
 #else
   #define NUM_RECEIVERS                4
-  #define MAX_RECEIVERS_PER_MODULE     4
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBSKY9X) || defined(PCBHORUS)
