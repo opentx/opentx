@@ -100,7 +100,7 @@ bool isPowerAvailable(int value)
     else
       return value == 20; /* 100 mW */
   }
-  else if (modelId == PXX2_MODULE_R9M_LITE_PRO) {
+  else if (modelId == PXX2_MODULE_R9M || modelId == PXX2_MODULE_R9M_LITE_PRO) {
       if (variant == PXX2_VARIANT_EU)
         return (value == 14 /* 25 mW */ ||
           value == 23 /* 200 mW */ ||
@@ -112,12 +112,7 @@ bool isPowerAvailable(int value)
                 value == 30 /* 1000 mW */);
   }
   else
-    return (value == 10 /* 10 mW */ ||
-          value == 14 /* 25 mW */ ||
-          value == 20 /* 100 mW */ ||
-          value == 23 /* 200 mW */ ||
-          value == 27 /* 500 mW */ ||
-          value == 30 /* 1000 mW */);
+    return (value <= 20); /* 100 mW max for XJTs */
 }
 
 void menuModelModuleOptions(event_t event)
