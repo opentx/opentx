@@ -471,8 +471,8 @@ static int luaPXX2TelemetryPush(lua_State * L)
   }
   else if (isTelemetryOutputBufferAvailable()) {
     SportTelemetryPacket packet;
-    uint8_t module = getDataId(luaL_checkunsigned(L, 1));
-    uint8_t receiver = getDataId(luaL_checkunsigned(L, 2));
+    uint8_t module = luaL_checkunsigned(L, 1);
+    uint8_t receiver = luaL_checkunsigned(L, 2);
     uint8_t rx_uid = g_model.moduleData[module].pxx2.getReceiverSlot(receiver);
     if (rx_uid > 0) {
       // TODO add more controls (module started, module = PXX2, etc.)
