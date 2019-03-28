@@ -34,9 +34,6 @@ PACK(union SportTelemetryPacket
   };
   uint8_t raw[8];
 });
-
-bool isTelemetryOutputBufferAvailable();
-void sportOutputPushPacket(SportTelemetryPacket * packet);
 #endif
 
 #if defined(STM32)

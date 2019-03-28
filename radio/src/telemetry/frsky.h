@@ -284,7 +284,7 @@ void frskyDProcessPacket(const uint8_t *packet);
 
 // FrSky S.PORT Telemetry Protocol
 void sportProcessTelemetryPacket(const uint8_t * packet);
-void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet);
+void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packet);
 
 void telemetryWakeup();
 void telemetryReset();
@@ -315,6 +315,5 @@ extern TelemetryData telemetryData;
 
 bool pushFrskyTelemetryData(uint8_t data); // returns true when end of frame detected
 void processFrskyTelemetryData(uint8_t data);
-void processFrskyPXX2Data(uint8_t data);
 
 #endif // _FRSKY_H_

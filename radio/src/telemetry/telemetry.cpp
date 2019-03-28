@@ -63,11 +63,6 @@ void processTelemetryData(uint8_t data)
   }
 #endif
 
-  if (telemetryProtocol == PROTOCOL_TELEMETRY_PXX2) {
-    processFrskyPXX2Data(data);
-    return;
-  }
-
   processFrskyTelemetryData(data);
 }
 

@@ -122,28 +122,28 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TELEMETRY);
-  for (uint8_t i = 0; i < outputTelemetryBuffer.size; i++) {
+  Pxx2Transport::addByte(outputTelemetryBuffer.destination.rxUid);
+  for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
     Pxx2Transport::addByte(outputTelemetryBuffer.data[i]);
   }
-  outputTelemetryBuffer.reset();
 }
 
 void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
 {
-  if (reusableBuffer.hardwareAndSettings.modules[module].current <= reusableBuffer.hardwareAndSettings.modules[module].maximum) {
-    if (reusableBuffer.hardwareAndSettings.modules[module].timeout == 0) {
+  if (reusableBuffer.hardwareAndSettings.modules[module].timeout == 0) {
+    if (reusableBuffer.hardwareAndSettings.modules[module].current <= reusableBuffer.hardwareAndSettings.modules[module].maximum) {
       addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
       Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.modules[module].current);
       reusableBuffer.hardwareAndSettings.modules[module].timeout = 20;
       reusableBuffer.hardwareAndSettings.modules[module].current++;
     }
     else {
-      reusableBuffer.hardwareAndSettings.modules[module].timeout--;
+      moduleSettings[module].mode = MODULE_MODE_NORMAL;
       setupChannelsFrame(module);
     }
   }
   else {
-    moduleSettings[module].mode = MODULE_MODE_NORMAL;
+    reusableBuffer.hardwareAndSettings.modules[module].timeout--;
     setupChannelsFrame(module);
   }
 }
@@ -319,8 +319,9 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupShareMode(module);
       break;
     default:
-      if (outputTelemetryBuffer.size > 0 && outputTelemetryBuffer.destination == module) {
+      if (outputTelemetryBuffer.destination.module == module) {
         setupTelemetryFrame(module);
+        outputTelemetryBuffer.reset();
       }
       else {
         setupChannelsFrame(module);

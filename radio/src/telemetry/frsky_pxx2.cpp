@@ -166,7 +166,10 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
 {
-  sportProcessTelemetryPacketWithoutCrc(&frame[4]);
+  TelemetryEndpoint origin;
+  origin.module = module;
+  origin.rxUid = frame[3] & 0x0F;
+  sportProcessTelemetryPacketWithoutCrc(origin.value, &frame[4]);
 }
 
 void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
@@ -259,17 +262,4 @@ void processPXX2Frame(uint8_t module, uint8_t *frame)
     default:
       break;
   }
-}
-
-void pushPXX2TelemetryPacket(uint8_t module, uint8_t rx_uid, SportTelemetryPacket * packet)
-{
-  // Flag0
-  outputTelemetryBuffer.push(rx_uid);
-
-  for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
-    uint8_t byte = packet->raw[i];
-    outputTelemetryBuffer.push(byte);
-  }
-
-  outputTelemetryBuffer.setDestination(module);
 }

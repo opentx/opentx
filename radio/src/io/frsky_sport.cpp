@@ -20,12 +20,9 @@
 
 #include "opentx.h"
 
-bool isTelemetryOutputBufferAvailable()
-{
-  return (outputTelemetryBuffer.size == 0 && outputTelemetryBuffer.trigger == 0x7E);
-}
+#warning "This need to be adapted"
 
-void sportOutputPushByte(uint8_t byte)
+/*void sportOutputPushByte(uint8_t byte)
 {
   if (byte == 0x7E || byte == 0x7D) {
     outputTelemetryBuffer.push(0x7D);
@@ -52,3 +49,4 @@ void sportOutputPushPacket(SportTelemetryPacket * packet)
   outputTelemetryBuffer.setTrigger(packet->raw[0]); // physicalId
   outputTelemetryBuffer.setDestination(SPORT_MODULE);
 }
+*/

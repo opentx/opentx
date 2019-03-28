@@ -147,19 +147,23 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
     return;
   }
 
-  sportProcessTelemetryPacketWithoutCrc(packet);
+  sportProcessTelemetryPacketWithoutCrc(TELEMETRY_ENDPOINT_SPORT, packet);
 }
 
-void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
+void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packet)
 {
   uint8_t physicalId = packet[0] & 0x1F;
   uint8_t primId = packet[1];
-  uint16_t id = *((uint16_t *)(packet+2));
+  uint16_t dataId = *((uint16_t *)(packet+2));
   uint32_t data = SPORT_DATA_S32(packet);
 
   if (primId == DATA_FRAME) {
+    if (outputTelemetryBuffer.destination.value == TELEMETRY_ENDPOINT_ANY && dataId == outputTelemetryBuffer.sport.dataId) {
+      outputTelemetryBuffer.sport.physicalId = packet[0];
+      outputTelemetryBuffer.destination.value = origin;
+    }
     uint8_t instance = physicalId + 1;
-    if (id == RSSI_ID && isValidIdAndInstance(RSSI_ID, instance)) {
+    if (dataId == RSSI_ID && isValidIdAndInstance(RSSI_ID, instance)) {
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
       if (data == 0)
@@ -167,17 +171,17 @@ void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
       else
         telemetryData.rssi.set(data);
     }
-    else if (id == R9_PWR_ID) {
+    else if (dataId == R9_PWR_ID) {
       uint32_t r9pwr[] = {100, 200, 500, 1000};
       data = r9pwr[SPORT_DATA_U8(packet) & 0x03];
     }
-    else if (id == XJT_VERSION_ID) {
+    else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
       if (!IS_RAS_VALUE_VALID()) {
         telemetryData.swr.set(0x00);
       }
     }
-    else if (id == RAS_ID) {
+    else if (dataId == RAS_ID) {
       if (IS_RAS_VALUE_VALID())
         telemetryData.swr.set(SPORT_DATA_U8(packet));
       else
@@ -185,33 +189,33 @@ void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
     }
 
     if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {
-      if ((id >> 8) == 0) {
+      if ((dataId >> 8) == 0) {
         // The old FrSky IDs
-        processHubPacket(id, HUB_DATA_U16(packet));
+        processHubPacket(dataId, HUB_DATA_U16(packet));
       }
-      else if (!IS_HIDDEN_TELEMETRY_VALUE(id)) {
-        if (id == ADC1_ID || id == ADC2_ID || id == BATT_ID || id == RAS_ID) {
+      else if (!IS_HIDDEN_TELEMETRY_VALUE(dataId)) {
+        if (dataId == ADC1_ID || dataId == ADC2_ID || dataId == BATT_ID || dataId == RAS_ID) {
           data = SPORT_DATA_U8(packet);
         }
-        if (id >= GPS_LONG_LATI_FIRST_ID && id <= GPS_LONG_LATI_LAST_ID) {
+        if (dataId >= GPS_LONG_LATI_FIRST_ID && dataId <= GPS_LONG_LATI_LAST_ID) {
           int32_t value = (data & 0x3fffffff);
           if (data & (1 << 30))
             value = -value;
           value = (value * 5) / 3; // min/10000 => deg/1000000
           if (data & (1 << 31))
-            sportProcessTelemetryPacket(id, 0, instance, value, UNIT_GPS_LONGITUDE);
+            sportProcessTelemetryPacket(dataId, 0, instance, value, UNIT_GPS_LONGITUDE);
           else
-            sportProcessTelemetryPacket(id, 0, instance, value, UNIT_GPS_LATITUDE);
+            sportProcessTelemetryPacket(dataId, 0, instance, value, UNIT_GPS_LATITUDE);
         }
-        else if (id >= RBOX_BATT1_FIRST_ID && id <= RBOX_BATT2_LAST_ID) {
-          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
+        else if (dataId >= RBOX_BATT1_FIRST_ID && dataId <= RBOX_BATT2_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
         }
-        else if (id >= RBOX_CNSP_FIRST_ID && id <= RBOX_CNSP_LAST_ID) {
-          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
+        else if (dataId >= RBOX_CNSP_FIRST_ID && dataId <= RBOX_CNSP_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
         }
-        else if (id >= RBOX_STATE_FIRST_ID && id <= RBOX_STATE_LAST_ID) {
+        else if (dataId >= RBOX_STATE_FIRST_ID && dataId <= RBOX_STATE_LAST_ID) {
           bool static isRB10 = false;
           uint16_t newServosState;
 
@@ -233,31 +237,31 @@ void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
           }
           servosState = newServosState;
           rboxState = newRboxState;
-          sportProcessTelemetryPacket(id, 0, instance, servosState);
-          sportProcessTelemetryPacket(id, 1, instance, rboxState);
+          sportProcessTelemetryPacket(dataId, 0, instance, servosState);
+          sportProcessTelemetryPacket(dataId, 1, instance, rboxState);
         }
-        else if (id >= ESC_POWER_FIRST_ID && id <= ESC_POWER_LAST_ID) {
-          sportProcessTelemetryPacket(id, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
+        else if (dataId >= ESC_POWER_FIRST_ID && dataId <= ESC_POWER_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
         }
-        else if (id >= ESC_RPM_CONS_FIRST_ID && id <= ESC_RPM_CONS_LAST_ID) {
-          sportProcessTelemetryPacket(id, 0, instance, 100 * (data & 0xffff));
-          sportProcessTelemetryPacket(id, 1, instance, data >> 16);
+        else if (dataId >= ESC_RPM_CONS_FIRST_ID && dataId <= ESC_RPM_CONS_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, 100 * (data & 0xffff));
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
         }
-        else if (id >= ESC_TEMPERATURE_FIRST_ID && id <= ESC_TEMPERATURE_LAST_ID) {
-          sportProcessTelemetryPacket(id, 0, instance, data & 0x00ff);
+        else if (dataId >= ESC_TEMPERATURE_FIRST_ID && dataId <= ESC_TEMPERATURE_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0x00ff);
         }
-        else if (id >= SBEC_POWER_FIRST_ID && id <= SBEC_POWER_LAST_ID) {
-          sportProcessTelemetryPacket(id, 0, instance, (data & 0xffff) / 10);
-          sportProcessTelemetryPacket(id, 1, instance, (data >> 16) / 10);
+        else if (dataId >= SBEC_POWER_FIRST_ID && dataId <= SBEC_POWER_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, (data & 0xffff) / 10);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) / 10);
         }
-        else if (id >= DIY_STREAM_FIRST_ID && id <= DIY_STREAM_LAST_ID) {
+        else if (dataId >= DIY_STREAM_FIRST_ID && dataId <= DIY_STREAM_LAST_ID) {
 #if defined(LUA)
           if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(sizeof(SportTelemetryPacket))) {
             SportTelemetryPacket luaPacket;
             luaPacket.physicalId = physicalId;
             luaPacket.primId = primId;
-            luaPacket.dataId = id;
+            luaPacket.dataId = dataId;
             luaPacket.value = data;
             for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
               luaInputTelemetryFifo->push(luaPacket.raw[i]);
@@ -266,7 +270,7 @@ void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
 #endif
         }
         else {
-          sportProcessTelemetryPacket(id, 0, instance, data);
+          sportProcessTelemetryPacket(dataId, 0, instance, data);
         }
       }
     }
@@ -277,7 +281,7 @@ void sportProcessTelemetryPacketWithoutCrc(const uint8_t * packet)
       SportTelemetryPacket luaPacket;
       luaPacket.physicalId = physicalId;
       luaPacket.primId = primId;
-      luaPacket.dataId = id;
+      luaPacket.dataId = dataId;
       luaPacket.value = data;
       for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
         luaInputTelemetryFifo->push(luaPacket.raw[i]);

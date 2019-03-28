@@ -422,15 +422,14 @@ When called without parameters, it will only return the status of the output buf
 static int luaSportTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
-    lua_pushboolean(L, isTelemetryOutputBufferAvailable());
+    lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
   }
-  else if (isTelemetryOutputBufferAvailable()) {
-    SportTelemetryPacket packet;
-    packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
-    packet.primId = luaL_checkunsigned(L, 2);
-    packet.dataId = luaL_checkunsigned(L, 3);
-    packet.value = luaL_checkunsigned(L, 4);
-    sportOutputPushPacket(&packet);
+  else if (outputTelemetryBuffer.isAvailable()) {
+    outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 1)); // ignored
+    outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 2);
+    outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 3);
+    outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 4);
+    outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_ANY);
     lua_pushboolean(L, true);
   }
   else {
@@ -438,62 +437,6 @@ static int luaSportTelemetryPush(lua_State * L)
   }
   return 1;
 }
-
-#if defined(PXX2)
-/*luadoc
-@function pxx2TelemetryPush()
-
-This functions allows for sending SPORT telemetry data toward the receiver,
-and more generally, to anything connected SPORT bus on the receiver or transmitter.
-
-When called without parameters, it will only return the status of the output buffer without sending anything.
-
-@param module    module index
-
-@param receiver  receiver index
-
-@param sensorId  physical sensor ID
-
-@param frameId   frame ID
-
-@param dataId    data ID
-
-@param value     value
-
-@retval boolean  data queued in output buffer or not.
-
-@status current Introduced in 2.3.0
-*/
-static int luaPXX2TelemetryPush(lua_State * L)
-{
-  if (lua_gettop(L) == 0) {
-    lua_pushboolean(L, isTelemetryOutputBufferAvailable());
-  }
-  else if (isTelemetryOutputBufferAvailable()) {
-    SportTelemetryPacket packet;
-    uint8_t module = luaL_checkunsigned(L, 1);
-    uint8_t receiver = luaL_checkunsigned(L, 2);
-    uint8_t rx_uid = g_model.moduleData[module].pxx2.getReceiverSlot(receiver);
-    if (rx_uid > 0) {
-      // TODO add more controls (module started, module = PXX2, etc.)
-      packet.physicalId = getDataId(luaL_checkunsigned(L, 3));
-      packet.primId = luaL_checkunsigned(L, 4);
-      packet.dataId = luaL_checkunsigned(L, 5);
-      packet.value = luaL_checkunsigned(L, 6);
-      // TODO we could avoid this new copy
-      pushPXX2TelemetryPacket(module, rx_uid - 1, &packet);
-      lua_pushboolean(L, true);
-    }
-    else {
-      lua_pushboolean(L, false);
-    }
-  }
-  else {
-    lua_pushboolean(L, false);
-  }
-  return 1;
-}
-#endif
 
 #if defined(CROSSFIRE)
 /*luadoc
@@ -1366,10 +1309,6 @@ const luaL_Reg opentxLib[] = {
   { "sportTelemetryPop", luaSportTelemetryPop },
   { "sportTelemetryPush", luaSportTelemetryPush },
   { "setTelemetryValue", luaSetTelemetryValue },
-#if defined(PXX2)
-  { "sportTelemetryPop", luaSportTelemetryPop },
-  { "pxx2TelemetryPush", luaPXX2TelemetryPush },
-#endif
 #if defined(CROSSFIRE)
   { "crossfireTelemetryPop", luaCrossfireTelemetryPop },
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },

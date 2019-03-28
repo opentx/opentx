@@ -155,7 +155,17 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
 
-#define TELEMETRY_OUTPUT_FIFO_SIZE 20
+#define TELEMETRY_ENDPOINT_ANY     0xFF
+#define TELEMETRY_ENDPOINT_NONE    0xFE
+#define TELEMETRY_ENDPOINT_SPORT   0xFD
+
+union TelemetryEndpoint {
+  PACK(struct {
+    uint8_t module:4;
+    uint8_t rxUid:4;
+  });
+  uint8_t value;
+};
 
 class OutputTelemetryBuffer {
   public:
@@ -163,29 +173,24 @@ class OutputTelemetryBuffer {
       reset();
     }
 
-    void push(uint8_t byte) {
-      data[size++] = byte;
-    }
-
-    void setTrigger(uint8_t byte) {
-      trigger = byte;
-    }
-
-    void setDestination(uint8_t module) {
-      destination = module;
+    void setDestination(uint8_t value) {
+      destination.value = value;
     }
 
     void reset() {
-      size = 0;
-      trigger = 0x7E;
-      destination = 0xFF;
+      destination.value = TELEMETRY_ENDPOINT_NONE;
+    }
+
+    bool isAvailable() {
+      return destination.value == TELEMETRY_ENDPOINT_NONE;
     }
 
   public:
-    uint8_t data[TELEMETRY_OUTPUT_FIFO_SIZE];
-    uint8_t size;
-    uint8_t trigger;
-    uint8_t destination;
+    union {
+      SportTelemetryPacket sport;
+      uint8_t data[16];
+    };
+    TelemetryEndpoint destination;
 };
 
 extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
@@ -202,6 +207,5 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
 void processPXX2Frame(uint8_t module, uint8_t *frame);
-void pushPXX2TelemetryPacket(uint8_t module, uint8_t rx_uid, SportTelemetryPacket * packet);
 
 #endif // _TELEMETRY_H_

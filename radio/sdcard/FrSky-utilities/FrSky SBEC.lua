@@ -55,9 +55,9 @@ end
 
 local settingsFields = {
   {"SBEC OUTPUT (V)", VALUE, 0x80, nil, 50, 84 },
-  --{"Physical ID", VALUE, 0x01, nil, 0, 26 },
-  --{"Application IDgroup", VALUE, 0x0D, nil, 0, 15 },
-  --{"Data rate(*100ms)", VALUE, 0x22, nil, 1, 255 },
+  {"Physical ID", VALUE, 0x01, nil, 0, 26 },
+  {"Application IDgroup", VALUE, 0x0D, nil, 0, 15 },
+  {"Data rate(*100ms)", VALUE, 0x22, nil, 1, 255 },
 }
 
 -- Change display attribute to current field
@@ -156,19 +156,19 @@ local function redrawFieldsPage()
 end
 
 local function telemetryRead(fieldx)
-  return sportTelemetryPush(0x08, 0x30, 0x0e50, fieldx)
+  return sportTelemetryPush(0, 0x30, 0x0e50, fieldx)
 end
 
 local function telemetryIdle(field)
-  return sportTelemetryPush(0x08,0x21,0x0e50,field)
+  return sportTelemetryPush(0, 0x21, 0x0e50, field)
 end
 
 local function telemetryUnIdle(field)
-  return sportTelemetryPush(0x08,0x20,0x0e50,field)
+  return sportTelemetryPush(0, 0x20, 0x0e50, field)
 end
 
 local function telemetryWrite(fieldx, valuex)
-  return sportTelemetryPush(0x08, 0x31, 0x0e50, fieldx + valuex*256)
+  return sportTelemetryPush(0, 0x31, 0x0e50, fieldx + valuex*256)
 end
 
 local telemetryPopTimeout = 0
@@ -188,7 +188,7 @@ local function refreshNext()
     end
   elseif refreshState == 1 then
     local physicalId, primId, dataId, value = sportTelemetryPop()
-    if  primId == 0x32 and dataId >= 0x0e50 and dataId <= 0x0e5f then
+    if primId == 0x32 and dataId >= 0x0e50 and dataId <= 0x0e5f then
       local fieldId = value % 256
       local field = fields[refreshIndex + 1]
       if fieldId == field[3] then
