@@ -409,6 +409,7 @@ void onSensorMenu(const char * result)
 
 void menuModelTelemetryFrsky(event_t event)
 {
+  // TODO rather an handler for this
   if (warningResult) {
     warningResult = 0;
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
@@ -529,7 +530,7 @@ void menuModelTelemetryFrsky(event_t event)
         lcdDrawText(0, y, STR_DELETE_ALL_SENSORS, attr);
         if (attr) {
           s_editMode = 0;
-          if (event==EVT_KEY_LONG(KEY_ENTER)) {
+          if (event == EVT_KEY_LONG(KEY_ENTER)) {
             killEvents(KEY_ENTER);
             POPUP_CONFIRMATION(STR_CONFIRMDELETE, nullptr);
           }

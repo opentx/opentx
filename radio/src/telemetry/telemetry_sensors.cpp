@@ -485,8 +485,7 @@ bool isValidIdAndInstance(uint16_t id, uint8_t instance)
 
   for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id)
-    {
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id) {
       sensorFound = true;
       if (telemetrySensor.instance == instance || g_model.ignoreSensorIds)
         return true;
