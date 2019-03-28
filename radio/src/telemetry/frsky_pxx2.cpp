@@ -166,7 +166,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
 {
-  sportProcessTelemetryPacketWithoutCrc(&frame[3]);
+  sportProcessTelemetryPacketWithoutCrc(&frame[4]);
 }
 
 void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
@@ -266,7 +266,7 @@ void pushPXX2TelemetryPacket(uint8_t module, uint8_t rx_uid, SportTelemetryPacke
   // Flag0
   outputTelemetryBuffer.push(rx_uid);
 
-  for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
+  for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
     uint8_t byte = packet->raw[i];
     outputTelemetryBuffer.push(byte);
   }
