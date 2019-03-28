@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-# This script is a modified version to support Linux TTS fiel genration using PicoTTS
+# This script is a modified version to support Linux TTS file generation using PicoTTS
 
 # Sound pack maintainers (incomplete list) by language alphabetical order
 # Czech      : Martin Hotar
@@ -21,6 +21,8 @@ import subprocess
 import zipfile
 from gtts import gTTS
 from tts_common import *
+
+
 board = "taranis"
 
 reload(sys)
