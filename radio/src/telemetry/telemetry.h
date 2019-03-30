@@ -190,6 +190,7 @@ class OutputTelemetryBuffer {
       SportTelemetryPacket sport;
       uint8_t data[16];
     };
+    uint8_t size;
     TelemetryEndpoint destination;
 };
 

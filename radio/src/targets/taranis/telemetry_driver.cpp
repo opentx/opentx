@@ -159,8 +159,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
       if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
         static uint8_t prevdata;
         if (prevdata == 0x7E && outputTelemetryBuffer.destination.value == TELEMETRY_ENDPOINT_SPORT && data == outputTelemetryBuffer.sport.physicalId) {
-          #warning "bytestuffing + buffer send"
-          // sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
+          sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
         }
         prevdata = data;
       }

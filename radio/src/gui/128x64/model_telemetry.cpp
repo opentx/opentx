@@ -102,21 +102,17 @@ enum MenuModelTelemetryFrskyItems {
 
   #define VARIO_ROWS             LABEL(Vario), 0, 1, 2,
 
-
 #if defined (PCBTARANIS)
   #define TELEMETRY_TYPE_SHOW_TELEMETRY  (! IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
 #else
   #define TELEMETRY_TYPE_SHOW_TELEMETRY  (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) ? (uint8_t)0 : HIDDEN_ROW
 #endif
 
-
 #if defined(REVX)
   #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY, TELEMETRY_TYPE_SHOW_TELEMETRY,
 #else
   #define TELEMETRY_TYPE_ROWS          TELEMETRY_TYPE_SHOW_TELEMETRY,
 #endif
-
-  #define TELEMETRY_SCREENS_ROWS
 
 enum SensorFields {
   SENSOR_FIELD_NAME,
@@ -137,28 +133,34 @@ enum SensorFields {
   SENSOR_FIELD_MAX
 };
 
-#define SENSOR_2ND_COLUMN (12*FW)
-#define SENSOR_3RD_COLUMN (18*FW)
-
-#define SENSOR_UNIT_ROWS       ((sensor->type == TELEM_TYPE_CALCULATED && (sensor->formula == TELEM_FORMULA_DIST)) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSOR_PREC_ROWS       (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSOR_PARAM1_ROWS     (sensor->unit >= UNIT_FIRST_VIRTUAL ? HIDDEN_ROW : (uint8_t)0)
-#define SENSOR_PARAM2_ROWS     (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && (sensor->formula==TELEM_FORMULA_CONSUMPTION || sensor->formula==TELEM_FORMULA_TOTALIZE)) ? HIDDEN_ROW : (uint8_t)0)
-#define SENSOR_PARAM3_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
-#define SENSOR_PARAM4_ROWS     (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW
-#define SENSOR_AUTOOFFSET_ROWS (sensor->unit != UNIT_RPMS && sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSOR_ONLYPOS_ROWS    (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSOR_FILTER_ROWS     (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW)
-#define SENSOR_PERSISTENT_ROWS (sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : HIDDEN_ROW)
+constexpr coord_t SENSOR_2ND_COLUMN  = 12 * FW;
+constexpr coord_t SENSOR_3RD_COLUMN = 18 * FW;
 
 void menuModelSensor(event_t event)
 {
   TelemetrySensor * sensor = & g_model.telemetrySensors[s_currIdx];
 
-  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, {0, 0, sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, SENSOR_UNIT_ROWS, SENSOR_PREC_ROWS, SENSOR_PARAM1_ROWS, SENSOR_PARAM2_ROWS, SENSOR_PARAM3_ROWS, SENSOR_PARAM4_ROWS, SENSOR_AUTOOFFSET_ROWS, SENSOR_ONLYPOS_ROWS, SENSOR_FILTER_ROWS, SENSOR_PERSISTENT_ROWS, 0 });
+  SUBMENU(STR_MENUSENSOR, SENSOR_FIELD_MAX, {
+    0, // Name
+    0, // Type
+    sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, // ID / Formula
+    ((sensor->type == TELEM_TYPE_CALCULATED && (sensor->formula == TELEM_FORMULA_DIST)) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW), // Unit
+    (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW), // Precision
+    (sensor->unit >= UNIT_FIRST_VIRTUAL ? HIDDEN_ROW : (uint8_t)0), // Param1
+    (sensor->unit == UNIT_GPS || sensor->unit == UNIT_DATETIME || sensor->unit == UNIT_CELLS || (sensor->type==TELEM_TYPE_CALCULATED && (sensor->formula==TELEM_FORMULA_CONSUMPTION || sensor->formula==TELEM_FORMULA_TOTALIZE)) ? HIDDEN_ROW : (uint8_t)0), // Param2
+    (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW, // Param3
+    (sensor->type == TELEM_TYPE_CALCULATED && sensor->formula < TELEM_FORMULA_MULTIPLY) ? (uint8_t)0 : HIDDEN_ROW, // Param4
+    (sensor->unit != UNIT_RPMS && sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW), // Auto offset
+    (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW), // Only positive
+    (sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW), // Filter
+    (sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : HIDDEN_ROW), // Persistent
+    0 // Logs
+  });
+
   lcdDrawNumber(PSIZE(TR_MENUSENSOR)*FW+1, 0, s_currIdx+1, INVERS|LEFT);
 
-  if (!isGPSSensor(s_currIdx+1)) drawSensorCustomValue(SENSOR_2ND_COLUMN, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), LEFT);
+  if (!isGPSSensor(s_currIdx+1))
+    drawSensorCustomValue(SENSOR_2ND_COLUMN, 0, s_currIdx, getValue(MIXSRC_FIRST_TELEM+3*s_currIdx), LEFT);
 
   int8_t sub = menuVerticalPosition;
 
@@ -417,7 +419,7 @@ void menuModelTelemetryFrsky(event_t event)
     }
   }
 
-  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS VARIO_ROWS TELEMETRY_SCREENS_ROWS });
+  MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS VARIO_ROWS});
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
 

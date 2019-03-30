@@ -140,7 +140,6 @@ set(SRC
   main.cpp
   tasks.cpp
   audio.cpp
-  io/frsky_sport.cpp
   telemetry/telemetry.cpp
   telemetry/telemetry_holders.cpp
   telemetry/telemetry_sensors.cpp

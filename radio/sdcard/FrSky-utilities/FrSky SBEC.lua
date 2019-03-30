@@ -156,19 +156,19 @@ local function redrawFieldsPage()
 end
 
 local function telemetryRead(fieldx)
-  return sportTelemetryPush(0, 0x30, 0x0e50, fieldx)
+  return sportTelemetryPush(0x17, 0x30, 0x0e50, fieldx)
 end
 
 local function telemetryIdle(field)
-  return sportTelemetryPush(0, 0x21, 0x0e50, field)
+  return sportTelemetryPush(0x17, 0x21, 0x0e50, field)
 end
 
 local function telemetryUnIdle(field)
-  return sportTelemetryPush(0, 0x20, 0x0e50, field)
+  return sportTelemetryPush(0x17, 0x20, 0x0e50, field)
 end
 
 local function telemetryWrite(fieldx, valuex)
-  return sportTelemetryPush(0, 0x31, 0x0e50, fieldx + valuex*256)
+  return sportTelemetryPush(0x17, 0x31, 0x0e50, fieldx + valuex*256)
 end
 
 local telemetryPopTimeout = 0

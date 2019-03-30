@@ -150,6 +150,27 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
   sportProcessTelemetryPacketWithoutCrc(TELEMETRY_ENDPOINT_SPORT, packet);
 }
 
+void sportOutputByteStuffAndCrc()
+{
+  uint16_t crc = 0;
+
+  uint8_t count = sizeof(SportTelemetryPacket);
+  for (uint8_t i = 1/*no bytestuffing for the physicalID*/; i < count; i++) {
+    uint8_t byte = outputTelemetryBuffer.data[i];
+    if (byte == 0x7E || byte == 0x7D) {
+      memmove(&outputTelemetryBuffer.data[i + 2], &outputTelemetryBuffer.data[i + 1], sizeof(SportTelemetryPacket) - i - 1);
+      outputTelemetryBuffer.data[i] = 0x7D;
+      outputTelemetryBuffer.data[i + 1] = 0x20 ^ byte;
+      i += 1, count += 1;
+    }
+    crc += byte; // 0-1FF
+    crc += crc >> 8; // 0-100
+    crc &= 0x00ff;
+  }
+  outputTelemetryBuffer.data[count] = 0xFF - crc;
+  outputTelemetryBuffer.size = count + 1;
+}
+
 void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packet)
 {
   uint8_t physicalId = packet[0] & 0x1F;
@@ -159,8 +180,10 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 
   if (primId == DATA_FRAME) {
     if (outputTelemetryBuffer.destination.value == TELEMETRY_ENDPOINT_ANY && dataId == outputTelemetryBuffer.sport.dataId) {
-      outputTelemetryBuffer.sport.physicalId = packet[0];
-      outputTelemetryBuffer.destination.value = origin;
+      // outputTelemetryBuffer.sport.physicalId = packet[0];
+      if (origin == SPORT_MODULE)
+        sportOutputByteStuffAndCrc();
+      outputTelemetryBuffer.setDestination(origin);
     }
     uint8_t instance = physicalId + 1;
     if (dataId == RSSI_ID && isValidIdAndInstance(RSSI_ID, instance)) {
