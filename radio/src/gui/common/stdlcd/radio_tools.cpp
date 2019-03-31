@@ -27,7 +27,7 @@ void pxx2ModuleRequiredScreen(event_t event)
   lcdDrawCenteredText(30, "ACCESS UPGRADE ON");
   lcdDrawCenteredText(45, "YOUR INTERNAL MODULE");
 
-  if(event == EVT_KEY_FIRST(KEY_EXIT)) {
+  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
     killEvents(event);
     popMenu();
   }
@@ -50,7 +50,7 @@ void menuRadioTools(event_t event)
 {
   SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + 2);
 
-#if defined(PXX2) && !(defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || (defined(PCBXLITE) && !defined(PCBXLITES)))
+#if defined(PXX2) && (defined(PCBXLITES) || defined(PCBX3))
   addRadioTool(0, "Spectrum Analyser", menuRadioSpectrumAnalyser, event);
   addRadioTool(1, "Power Meter", menuRadioPowerMeter, event);
 #endif

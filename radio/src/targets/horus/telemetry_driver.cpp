@@ -206,7 +206,7 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
 #if defined(LUA)
       if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
         static uint8_t prevdata;
-        if (prevdata == 0x7E && outputTelemetryBuffer.size > 0 && data == outputTelemetryBuffer.trigger && outputTelemetryBuffer.destination == SPORT_MODULE) {
+        if (prevdata == 0x7E && outputTelemetryBuffer.size > 0 && outputTelemetryBuffer.destination.value == TELEMETRY_ENDPOINT_SPORT && data == outputTelemetryBuffer.sport.physicalId) {
           sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
         }
         prevdata = data;

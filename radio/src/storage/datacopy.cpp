@@ -208,9 +208,6 @@ void copyTrainerModuleData(A * dest, B * src)
 template <class A, class B>
 void copyReceiverData(A * dest, B * src)
 {
-  dest->used = src->used;
-  dest->telemetry = src->telemetry;
-  dest->dirty = src->dirty;
   memcpy(dest->name, src->name, sizeof(dest->name));
 }
 

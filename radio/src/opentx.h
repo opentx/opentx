@@ -1220,7 +1220,6 @@ union ReusableBuffer
     uint32_t freq;
     int16_t power;
     int16_t peak;
-    uint8_t freqBand;
   } powerMeter;
 
   struct

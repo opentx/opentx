@@ -24,12 +24,12 @@ extern void pxx2ModuleRequiredScreen(event_t event);
 
 void menuRadioSpectrumAnalyser(event_t event)
 {
-  if(!isModulePXX2(INTERNAL_MODULE)) {
+  if (!isModulePXX2(INTERNAL_MODULE)) {
     pxx2ModuleRequiredScreen(event);
     return;
   }
 
-  if(TELEMETRY_STREAMING()) {
+  if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(15, "Turn off receiver");
     return;
   }
@@ -45,7 +45,8 @@ void menuRadioSpectrumAnalyser(event_t event)
     resumePulses();
     return;
   }
-  else if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
+
+  if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
