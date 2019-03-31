@@ -48,18 +48,21 @@ void menuRadioPowerMeter(event_t event)
   }
   else if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_POWER_METER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
-    reusableBuffer.powerMeter.freq = 2400;
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_POWER_METER;
   }
 
   coord_t y = MENU_HEADER_HEIGHT + 1 + FH;
   LcdFlags attr = (menuVerticalPosition == 0 ? INVERS : 0);
   lcdDrawText(0, y, "Freq.");
-  lcdDrawNumber(8*FW, y, reusableBuffer.powerMeter.freq, LEFT|attr|(s_editMode > 0 ? BLINK : 0));
-  lcdDrawText(lcdNextPos, y, "MHz");
+  lcdDrawNumber(8*FW, y, reusableBuffer.powerMeter.freqBand ? 900: 2400, LEFT|attr|(s_editMode > 0 ? BLINK : 0));
+  lcdDrawText(lcdNextPos, y, " MHz band");
   if (attr) {
-    CHECK_INCDEC_MODELVAR(event, reusableBuffer.powerMeter.freq, 2300, 2500);
+    CHECK_INCDEC_MODELVAR(event, reusableBuffer.powerMeter.freqBand, 0, 1);
     if (checkIncDec_Ret) {
+      if(reusableBuffer.powerMeter.freqBand == 0)
+        reusableBuffer.powerMeter.freq = 900; //TODO fine tune to region ? (866/900/915)
+      else
+        reusableBuffer.powerMeter.freq = 2400;
       reusableBuffer.powerMeter.power = 0;
       reusableBuffer.powerMeter.peak = 0;
     }
