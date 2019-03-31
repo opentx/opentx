@@ -46,7 +46,7 @@ void menuRadioPowerMeter(event_t event)
     resumePulses();
     return;
   }
-  else if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
+  else if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_POWER_METER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400;
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_POWER_METER;
