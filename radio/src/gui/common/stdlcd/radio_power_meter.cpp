@@ -21,8 +21,20 @@
 #include <opentx.h>
 #include "opentx.h"
 
+void pxx2ModuleRequiredScreen(event_t event);
+
 void menuRadioPowerMeter(event_t event)
 {
+  if(!isModulePXX2(INTERNAL_MODULE)) {
+    pxx2ModuleRequiredScreen(event);
+    return;
+  }
+
+  if(TELEMETRY_STREAMING()) {
+    lcdDrawCenteredText(LCD_H/2, "Turn off receiver");
+    return;
+  }
+
   SIMPLE_SUBMENU("POWER METER", 1);
 
   if (menuEvent) {
@@ -32,8 +44,9 @@ void menuRadioPowerMeter(event_t event)
     watchdogSuspend(500);
     RTOS_WAIT_MS(500);
     resumePulses();
+    return;
   }
-  else if (event == EVT_ENTRY) {
+  else if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400;
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_POWER_METER;

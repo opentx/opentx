@@ -20,6 +20,19 @@
 
 #include "opentx.h"
 
+void pxx2ModuleRequiredScreen(event_t event)
+{
+  lcdClear();
+  lcdDrawCenteredText(15, "THIS FEATURE REQUIRES");
+  lcdDrawCenteredText(30, "ACCESS UPGRADE ON");
+  lcdDrawCenteredText(45, "YOUR INTERNAL MODULE");
+
+  if(event == EVT_KEY_FIRST(KEY_EXIT)) {
+    killEvents(event);
+    popMenu();
+  }
+}
+
 void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t event), event_t event)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -37,7 +50,7 @@ void menuRadioTools(event_t event)
 {
   SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + 2);
 
-#if defined(PXX2)
+#if defined(PXX2) && !(defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || (defined(PCBXLITE) && !defined(PCBXLITES)))
   addRadioTool(0, "Spectrum Analyser", menuRadioSpectrumAnalyser, event);
   addRadioTool(1, "Power Meter", menuRadioPowerMeter, event);
 #endif

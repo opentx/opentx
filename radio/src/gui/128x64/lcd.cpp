@@ -398,6 +398,12 @@ void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
   lcdDrawSizedText(x, y, s, 255, flags);
 }
 
+void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags)
+{
+  coord_t x = (LCD_W - FW * strlen(s)) / 2;
+  lcdDrawText(x, y, s, flags);
+}
+
 void lcdDrawText(coord_t x, coord_t y, const char * s)
 {
   lcdDrawText(x, y, s, 0);

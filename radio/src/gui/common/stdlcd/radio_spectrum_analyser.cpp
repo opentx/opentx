@@ -20,8 +20,20 @@
 
 #include "opentx.h"
 
+extern void pxx2ModuleRequiredScreen(event_t event);
+
 void menuRadioSpectrumAnalyser(event_t event)
 {
+  if(!isModulePXX2(INTERNAL_MODULE)) {
+    pxx2ModuleRequiredScreen(event);
+    return;
+  }
+
+  if(TELEMETRY_STREAMING()) {
+    lcdDrawCenteredText(15, "Turn off receiver");
+    return;
+  }
+
   SIMPLE_SUBMENU("SPECTRUM ANALYSER", 1);
 
   if (menuEvent) {
@@ -31,8 +43,9 @@ void menuRadioSpectrumAnalyser(event_t event)
     watchdogSuspend(500);
     RTOS_WAIT_MS(500);
     resumePulses();
+    return;
   }
-  else if (event == EVT_ENTRY) {
+  else if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
     moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
