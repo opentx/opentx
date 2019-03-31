@@ -32,7 +32,13 @@ enum FrSkyDataState {
   STATE_DATA_XOR,
 };
 
+#if defined(PXX2)
+#include "io/pxx2.h"
+#define FRSKY_SPORT_BAUDRATE      PXX2_BAUDRATE
+#else
 #define FRSKY_SPORT_BAUDRATE      57600
+#endif
+
 #define FRSKY_D_BAUDRATE          9600
 
 #define FRSKY_SPORT_PACKET_SIZE   9
@@ -175,7 +181,9 @@ enum FrSkyDataState {
 #define GASSUIT_MAX_FLOW_LAST_ID  0x0d6f
 #define GASSUIT_AVG_FLOW_FIRST_ID 0x0d70
 #define GASSUIT_AVG_FLOW_LAST_ID  0x0d7f
-#define DIY_FIRST_ID              0x5000
+#define SBEC_POWER_FIRST_ID       0x0e50
+#define SBEC_POWER_LAST_ID        0x0e5f
+#define DIY_FIRST_ID              0x5100
 #define DIY_LAST_ID               0x52ff
 #define DIY_STREAM_FIRST_ID       0x5000
 #define DIY_STREAM_LAST_ID        0x50ff

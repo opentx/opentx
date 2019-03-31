@@ -278,8 +278,8 @@ extern "C" void PWM_IRQHandler(void)
         else {
           // Kick off serial output here
           Ssc * sscptr = SSC;
-          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx.pulses);
-          sscptr->SSC_TCR = (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.ptr - (uint8_t *)modulePulsesData[EXTERNAL_MODULE].pxx.pulses;
+          sscptr->SSC_TPR = CONVERT_PTR_UINT(modulePulsesData[EXTERNAL_MODULE].pxx.getData());
+          sscptr->SSC_TCR = modulePulsesData[EXTERNAL_MODULE].pxx.getSize();
           sscptr->SSC_PTCR = SSC_PTCR_TXTEN;        // Start transfers
         }
         break;

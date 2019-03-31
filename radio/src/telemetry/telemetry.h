@@ -41,8 +41,6 @@ extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no 
 extern uint8_t wshhStreaming;
 #endif
 
-extern uint8_t link_counter;
-
 enum TelemetryStates {
   TELEMETRY_INIT,
   TELEMETRY_OK,

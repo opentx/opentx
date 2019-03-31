@@ -193,7 +193,7 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
   else if (isModuleMultimoduleDSM2(idx))
     return -1; // 7 channels
   else
-    return 8; // 16 channels
+    return maxModuleChannels_M8(idx);
 }
 
 inline int8_t sentModuleChannels(uint8_t idx)

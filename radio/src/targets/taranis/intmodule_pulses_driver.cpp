@@ -61,12 +61,12 @@ void intmoduleNoneStart()
 void intmoduleSendNextFrame()
 {
   if (s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
-    INTMODULE_TIMER->CCR2 = *(modulePulsesData[INTERNAL_MODULE].pxx.ptr - 1) - 4000; // 2mS in advance
+    INTMODULE_TIMER->CCR2 = modulePulsesData[INTERNAL_MODULE].pxx.getLast() - 4000; // 2mS in advance
     INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
     INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
     INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
-    INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(modulePulsesData[INTERNAL_MODULE].pxx.pulses);
-    INTMODULE_DMA_STREAM->NDTR = modulePulsesData[INTERNAL_MODULE].pxx.ptr - modulePulsesData[INTERNAL_MODULE].pxx.pulses;
+    INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(modulePulsesData[INTERNAL_MODULE].pxx.getData());
+    INTMODULE_DMA_STREAM->NDTR = modulePulsesData[INTERNAL_MODULE].pxx.getSize();
     INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
 #if defined(TARANIS_INTERNAL_PPM)

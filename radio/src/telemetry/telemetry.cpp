@@ -28,8 +28,6 @@ uint8_t telemetryRxBufferCount = 0;
 uint8_t wshhStreaming = 0;
 #endif
 
-uint8_t link_counter = 0;
-
 uint8_t telemetryState = TELEMETRY_INIT;
 
 TelemetryData telemetryData;
@@ -216,11 +214,8 @@ void telemetryReset()
   }
 
   telemetryStreaming = 0; // reset counter only if valid frsky packets are being detected
-  link_counter = 0;
 
   telemetryState = TELEMETRY_INIT;
-
-
 }
 
 // we don't reset the telemetry here as we would also reset the consumption after model load

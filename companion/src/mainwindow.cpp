@@ -863,16 +863,8 @@ void MainWindow::sdsync()
 
 void MainWindow::changelog()
 {
-  Firmware * firmware = getCurrentFirmware();
-  QString url = firmware->getReleaseNotesUrl();
-  if (url.isEmpty()) {
-    QMessageBox::information(this, tr("Release notes"), tr("Cannot retrieve release notes from the server."));
-  }
-  else {
-    ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, url);
-    dialog->exec();
-    dialog->deleteLater();
-  }
+  QString link = "http://www.open-tx.org";
+  QDesktopServices::openUrl(QUrl(link));
 }
 
 void MainWindow::customizeSplash()

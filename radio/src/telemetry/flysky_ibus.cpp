@@ -103,6 +103,9 @@ static void processFlySkySensor(const uint8_t *packet)
       else if (id == FS_ID_TEMP)
         // Temperature sensors have 40 degree offset
         value -= 400;
+      else if (sensor->unit == UNIT_VOLTS)
+        // Voltage types are signed 16bit integers
+        value = (int16_t)value;
       setTelemetryValue(TELEM_PROTO_FLYSKY_IBUS, id, 0, instance, value, sensor->unit, sensor->precision);
       return;
     }
