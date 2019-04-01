@@ -54,6 +54,8 @@
   #define LEN_BLUETOOTH_NAME_218           10
 #endif
 
+#define LEN_GVAR_NAME_218                  3
+
 #if defined(PCBHORUS)
   #define LEN_MODEL_NAME_218               15
   #define LEN_TIMER_NAME_218               8
@@ -195,8 +197,7 @@ PACK(typedef struct {
   int16_t spare:7;
   uint8_t fadeIn;
   uint8_t fadeOut;
-  int16_t rotaryEncoders[1];
-  gvar_t gvars[9];
+  gvar_t gvars[MAX_GVARS_218];
 }) FlightModeData_v218;
 
 PACK(typedef struct {
@@ -281,7 +282,7 @@ PACK(typedef struct {
 }) CustomFunctionData_v218;
 
 PACK(typedef struct {
-  char    name[6];
+  char    name[LEN_GVAR_NAME_218];
   uint32_t min:12;
   uint32_t max:12;
   uint32_t popup:1;
@@ -324,7 +325,7 @@ PACK(typedef struct {
   CurveData_v218 curves[MAX_CURVES_218];
   int8_t    points[MAX_CURVE_POINTS_218];
 
-  LogicalSwitchData_v218 logicalSw[32];
+  LogicalSwitchData_v218 logicalSw[MAX_LOGICAL_SWITCHES_218];
   CustomFunctionData_v218 customFn[MAX_SPECIAL_FUNCTIONS_218];
   SwashRingData swashR;
   FlightModeData_v218 flightModeData[MAX_FLIGHT_MODES_218];

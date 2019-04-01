@@ -340,9 +340,9 @@ enum PotsWarnMode {
   POTS_WARN_AUTO
 };
 
-  #define LEN_GVAR_NAME                3
-  #define GVAR_MAX                     1024
-  #define GVAR_MIN                     -GVAR_MAX
+#define LEN_GVAR_NAME                3
+#define GVAR_MAX                     1024
+#define GVAR_MIN                     -GVAR_MAX
 
 #define RESERVE_RANGE_FOR_GVARS        10
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
