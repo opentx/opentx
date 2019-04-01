@@ -1314,6 +1314,50 @@ static int luaModelSetGlobalVariable(lua_State *L)
   return 0;
 }
 
+/*luadoc
+@function model.getSensor(sensor)
+
+Get Telemetry Sensor parameters
+
+@param sensor (unsigned number) sensor number (use 0 for sensor 1)
+
+@retval nil requested logical switch does not exist
+
+@retval table logical switch data:
+ * `func` (number) function index
+ * `v1` (number) V1 value (index)
+ * `v2` (number) V2 value (index or value)
+ * `v3` (number) V3 value (index or value)
+ * `and` (number) AND switch index
+ * `delay` (number) delay (time in 1/10 s)
+ * `duration` (number) duration (time in 1/10 s)
+
+@status current Introduced in 2.3.0
+*/
+static int luaModelGetSensor(lua_State *L)
+{
+  unsigned int idx = luaL_checkunsigned(L, 1);
+  if (idx < MAX_TELEMETRY_SENSORS) {
+    TelemetrySensor & sensor = g_model.telemetrySensors[idx];
+    lua_newtable(L);
+    lua_pushtableinteger(L, "type", sensor.type);
+    lua_pushtablezstring(L, "name", sensor.label);
+    lua_pushtableinteger(L, "unit", sensor.unit);
+    lua_pushtableinteger(L, "prec", sensor.prec);
+    if (sensor.type == TELEM_TYPE_CUSTOM) {
+      lua_pushtableinteger(L, "id", sensor.id);
+      lua_pushtableinteger(L, "instance", sensor.instance);
+    }
+    else {
+      lua_pushtableinteger(L, "formula", sensor.formula);
+    }
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
 const luaL_Reg modelLib[] = {
   { "getInfo", luaModelGetInfo },
   { "setInfo", luaModelSetInfo },
@@ -1343,5 +1387,6 @@ const luaL_Reg modelLib[] = {
   { "setOutput", luaModelSetOutput },
   { "getGlobalVariable", luaModelGetGlobalVariable },
   { "setGlobalVariable", luaModelSetGlobalVariable },
+  { "getSensor", luaModelGetSensor },
   { NULL, NULL }  /* sentinel */
 };

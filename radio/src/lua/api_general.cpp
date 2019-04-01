@@ -1096,7 +1096,8 @@ static int luaSetTelemetryValue(lua_State * L)
   const char* name = luaL_optstring(L, 7, NULL);
   if (name != NULL && strlen(name) > 0) {
     str2zchar(zname, name, 4);
-  } else {
+  }
+  else {
     zname[0] = hex2zchar((id & 0xf000) >> 12);
     zname[1] = hex2zchar((id & 0x0f00) >> 8);
     zname[2] = hex2zchar((id & 0x00f0) >> 4);
@@ -1111,7 +1112,8 @@ static int luaSetTelemetryValue(lua_State * L)
       telemetrySensor.instance = instance;
       telemetrySensor.init(zname, unit, prec);
       lua_pushboolean(L, true);
-    } else {
+    }
+    else {
       lua_pushboolean(L, false);
     }
     return 1;

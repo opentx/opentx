@@ -20,25 +20,19 @@ local version = "v1.2"
 
 local VALUE = 0
 local COMBO = 1
-local FLPOI = 2
-
 
 local edit = false
 local page = 1
 local current = 1  --row
 local refreshState = 0
 local refreshIndex = 0
-local refreshIndex3 = 0
 local pageOffset = 0
 local pages = {}
 local fields = {}
 local modifications = {}
-local thistime = getTime()
-local lastTime = thistime
 local margin = 1
 local spacing = 8
-local configFields = {}
-local counter = 0
+local appId = 0
 
 local function drawScreenTitle(title,page, pages)
   if math.fmod(math.floor(getTime()/100),10) == 0 then
@@ -156,19 +150,19 @@ local function redrawFieldsPage()
 end
 
 local function telemetryRead(fieldx)
-  return sportTelemetryPush(0x17, 0x30, 0x0e50, fieldx)
+  return sportTelemetryPush(0x17, 0x30, appId, fieldx)
 end
 
 local function telemetryIdle(field)
-  return sportTelemetryPush(0x17, 0x21, 0x0e50, field)
+  return sportTelemetryPush(0x17, 0x21, appId, field)
 end
 
 local function telemetryUnIdle(field)
-  return sportTelemetryPush(0x17, 0x20, 0x0e50, field)
+  return sportTelemetryPush(0x17, 0x20, appId, field)
 end
 
 local function telemetryWrite(fieldx, valuex)
-  return sportTelemetryPush(0x17, 0x31, 0x0e50, fieldx + valuex*256)
+  return sportTelemetryPush(0x17, 0x31, appId, fieldx + valuex*256)
 end
 
 local telemetryPopTimeout = 0
@@ -188,7 +182,7 @@ local function refreshNext()
     end
   elseif refreshState == 1 then
     local physicalId, primId, dataId, value = sportTelemetryPop()
-    if primId == 0x32 and dataId >= 0x0e50 and dataId <= 0x0e5f then
+    if primId == 0x32 and dataId == appId then
       local fieldId = value % 256
       local field = fields[refreshIndex + 1]
       if fieldId == field[3] then
@@ -260,6 +254,18 @@ local function init()
   pages = {
     runSettingsPage,
   }
+
+  for index = 1, 40, 1 do
+    local sensor = model.getSensor(index)
+    if sensor ~= nil and sensor.id >= 0x0e50 and sensor.id <= 0x0e5f then
+      appId = sensor.id
+      break
+    end
+  end
+
+  if appId == 0 then
+    error("No SBEC sensor in this model!")
+  end
 
   telemetryIdle(0x80)
 end
