@@ -59,7 +59,7 @@
   #define MAX_SCRIPTS                  7
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_TELEMETRY_SENSORS        40
 #elif defined(PCBSKY9X)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
@@ -70,7 +70,7 @@
   #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_TELEMETRY_SENSORS        40
 #else
   #warning "Unknown board!"
 #endif

@@ -197,6 +197,9 @@ PACK(typedef struct {
   int16_t spare:7;
   uint8_t fadeIn;
   uint8_t fadeOut;
+#if defined(PCBSKY9X)
+  int16_t rotaryEncoders[1];
+#endif
   gvar_t gvars[MAX_GVARS_218];
 }) FlightModeData_v218;
 
@@ -345,6 +348,12 @@ PACK(typedef struct {
   TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
+
+#if defined(PCBHORUS)
+  // TODO conversion for custom screens?
+#else
+  uint8_t view;
+#endif
 }) ModelData_v218;
 
 #define EXTRA_GENERAL_FIELDS_GENERAL_218 \

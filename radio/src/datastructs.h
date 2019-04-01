@@ -927,22 +927,22 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 5936);
+  CHKSIZE(ModelData, 6040);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
-  CHKSIZE(ModelData, 5936);
+  CHKSIZE(ModelData, 6040);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 5936);
+  CHKSIZE(ModelData, 6040);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
   CHKSIZE(ModelData, 6431);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6418);
+  CHKSIZE(ModelData, 6522);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5097);
+  CHKSIZE(ModelData, 5201);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
   CHKSIZE(ModelData, 9761);
