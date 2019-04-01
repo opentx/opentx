@@ -155,9 +155,8 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
 
-#define TELEMETRY_ENDPOINT_ANY     0xFF
-#define TELEMETRY_ENDPOINT_NONE    0xFE
-#define TELEMETRY_ENDPOINT_SPORT   0xFD
+#define TELEMETRY_ENDPOINT_NONE    0xFF
+#define TELEMETRY_ENDPOINT_SPORT   0x07
 
 union TelemetryEndpoint {
   PACK(struct {
@@ -169,20 +168,54 @@ union TelemetryEndpoint {
 
 class OutputTelemetryBuffer {
   public:
-    OutputTelemetryBuffer() {
+    OutputTelemetryBuffer()
+    {
       reset();
     }
 
-    void setDestination(uint8_t value) {
+    void setDestination(uint8_t value)
+    {
       destination.value = value;
     }
 
-    void reset() {
+    void reset()
+    {
       destination.value = TELEMETRY_ENDPOINT_NONE;
     }
 
-    bool isAvailable() {
+    bool isAvailable()
+    {
       return destination.value == TELEMETRY_ENDPOINT_NONE;
+    }
+
+    void pushByte(uint8_t byte)
+    {
+      data[size++] = byte;
+    }
+
+    void pushByteWithBytestuffing(uint8_t byte)
+    {
+      if (byte == 0x7E || byte == 0x7D) {
+        pushByte(0x7D);
+        pushByte(0x20 ^ byte);
+      }
+      else {
+        pushByte(byte);
+      }
+    }
+
+    void pushSportPacketWithBytestuffing(SportTelemetryPacket & packet)
+    {
+      uint16_t crc = 0;
+      sport.physicalId = packet.physicalId; // no bytestuffing, no CRC
+      for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
+        uint8_t byte = packet.raw[i];
+        pushByteWithBytestuffing(byte);
+        crc += byte; // 0-1FF
+        crc += crc >> 8; // 0-100
+        crc &= 0x00ff;
+      }
+      pushByte(0xFF - crc);
     }
 
   public:

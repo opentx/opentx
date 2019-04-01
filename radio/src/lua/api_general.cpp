@@ -419,22 +419,61 @@ When called without parameters, it will only return the status of the output buf
 
 @status current Introduced in 2.2.0
 */
+
+TelemetryEndpoint getTelemetryEndpoint(uint8_t receiverIndex)
+{
+  TelemetryEndpoint result;
+
+  for (uint8_t module=0; module<NUM_MODULES; module++) {
+    for (uint8_t receiver=0; receiver<PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
+      uint8_t candidateIndex = g_model.moduleData[module].pxx2.getReceiverSlot(receiver) - 1;
+      if (candidateIndex == receiverIndex) {
+        result.module = module;
+        result.rxUid = candidateIndex;
+        return result;
+      }
+    }
+  }
+
+  result.value = TELEMETRY_ENDPOINT_NONE;
+  return result;
+}
+
 static int luaSportTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
     lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+    return 1;
   }
-  else if (outputTelemetryBuffer.isAvailable()) {
-    outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 1)); // ignored
-    outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 2);
-    outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 3);
-    outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 4);
-    outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_ANY);
-    lua_pushboolean(L, true);
+
+  if (outputTelemetryBuffer.isAvailable()) {
+    for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+      TelemetrySensor & sensor = g_model.telemetrySensors[i];
+      if (sensor.id == outputTelemetryBuffer.sport.dataId) {
+        if (sensor.frskyInstance.rxIndex == TELEMETRY_ENDPOINT_SPORT) {
+          SportTelemetryPacket packet;
+          packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
+          packet.primId = luaL_checkunsigned(L, 2);
+          packet.dataId = luaL_checkunsigned(L, 3);
+          packet.value = luaL_checkunsigned(L, 4);
+          outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+          outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+        }
+        else {
+          outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 1));
+          outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 2);
+          outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 3);
+          outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 4);
+          TelemetryEndpoint destination = getTelemetryEndpoint(sensor.frskyInstance.rxIndex);
+          outputTelemetryBuffer.setDestination(destination.value);
+        }
+        lua_pushboolean(L, true);
+        return 1;
+      }
+    }
   }
-  else {
-    lua_pushboolean(L, false);
-  }
+
+  lua_pushboolean(L, false);
   return 1;
 }
 

@@ -350,8 +350,7 @@ PACK(struct TelemetrySensor {
   union {
     PACK(struct {
       uint8_t physID:5;            // instance ID to allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
-      uint8_t module:1;
-      uint8_t rx_uid:2;
+      uint8_t rxIndex:3;
     }) frskyInstance;
     uint8_t instance;
     NOBACKUP(uint8_t formula);

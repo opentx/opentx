@@ -244,7 +244,6 @@ local function runFieldsPage(event)
   return 0
 end
 
-
 local function runSettingsPage(event)
   fields = settingsFields
   return runFieldsPage(event)
