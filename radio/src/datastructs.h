@@ -610,14 +610,14 @@ PACK(struct ModelData {
   NOBACKUP(FrSkyTelemetryData frsky);
   NOBACKUP(RssiAlarmData rssiAlarms);
 
-  NOBACKUP(uint8_t spare:6);
+  NOBACKUP(uint8_t spare1:6);
   NOBACKUP(uint8_t potsWarnMode:2);
   ModuleData moduleData[NUM_MODULES];
   ReceiverData receiverData[NUM_RECEIVERS];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 
-#if defined(PCBHORUS)  || defined(PCBTARANIS)
+#if defined(PCBHORUS) || defined(PCBTARANIS)
   NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
 #endif
 

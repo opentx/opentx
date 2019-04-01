@@ -48,7 +48,12 @@ void convertModelData_218_to_219(ModelData &model)
   TRACE("Model %s conversion from v218 to v219", name);
 
   for (int i=0; i<NUM_MODULES; i++) {
-    memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], sizeof(ModuleData));
+    memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], 4);
+    memcpy(&newModel.moduleData[i] + 4, &oldModel.moduleData[i] + 64 + 4, 2);
+    if (newModel.moduleData[i].type >= MODULE_TYPE_XJT2)
+      newModel.moduleData[i].type += 1;
+    if (newModel.moduleData[i].type >= MODULE_TYPE_R9M2)
+      newModel.moduleData[i].type += 4;
   }
 
   for (uint8_t module=0; module<2; module++) {
@@ -66,9 +71,15 @@ void convertModelData_218_to_219(ModelData &model)
   newModel.trainerData.delay = oldModel.moduleData[NUM_MODULES].ppm.delay;
   newModel.trainerData.pulsePol = oldModel.moduleData[NUM_MODULES].ppm.pulsePol;
 
-#if !defined(PCBSKY9X)
+#if defined(PCBHORUS) || defined(PCBTARANIS)
   memcpy(newModel.scriptsData, oldModel.scriptsData,
          sizeof(newModel.scriptsData) +
+         sizeof(newModel.inputNames) +
+         sizeof(newModel.potsWarnEnabled) +
+         sizeof(newModel.potsWarnPosition) +
+         sizeof(oldModel.telemetrySensors));
+#else
+  memcpy(newModel.inputNames, oldModel.inputNames,
          sizeof(newModel.inputNames) +
          sizeof(newModel.potsWarnEnabled) +
          sizeof(newModel.potsWarnPosition) +
