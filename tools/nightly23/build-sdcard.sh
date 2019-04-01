@@ -27,6 +27,11 @@ else
   mkdir -p ${workdir}/sdcard/horus/IMAGES
   cp /home/opentx/horus-bitmaps/* ${workdir}/sdcard/horus/IMAGES/
 
+  # Get FrSky utilities
+  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/horus/
+  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/taranis-x7/
+  cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/taranis-x9/
+
   # Request sound pack generation
   ${workdir}/code/tools/nightly23/tts.py en csv files
   ${workdir}/code/tools/nightly23/tts.py fr csv files
@@ -46,5 +51,11 @@ else
   cd ${workdir}/sdcard/horus && zip -r ${output}/sdcard/sdcard-horus-${sdcard_version}.zip *
   cd ${workdir}/sdcard/taranis-x9 && zip -r ${output}/sdcard/sdcard-taranis-x9-${sdcard_version}.zip *
   cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-taranis-x7-${sdcard_version}.zip *
+
+  # remove LUA stuff for 9x platform
+  rm -Rf ${workdir}/sdcard/taranis-x7/SCRIPTS
+  rm -Rf ${workdir}/sdcard/taranis-x7/FrSky-utilities
+  cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-9xarm-${sdcard_version}.zip *
+
   rm -Rf ${workdir}/sdcard
 fi
