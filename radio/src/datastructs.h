@@ -348,7 +348,12 @@ PACK(struct TelemetrySensor {
     NOBACKUP(uint16_t persistentValue);
   };
   union {
-    uint8_t instance;              // instance ID to allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
+    PACK(struct {
+      uint8_t physID:5;            // instance ID to allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
+      uint8_t module:1;
+      uint8_t rx_uid:2;
+    }) frskyInstance;
+    uint8_t instance;
     NOBACKUP(uint8_t formula);
   };
   char     label[TELEM_LABEL_LEN]; // user defined label
@@ -936,7 +941,7 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6040);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6435);
+  CHKSIZE(ModelData, 6535);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
   CHKSIZE(ModelData, 6522);
