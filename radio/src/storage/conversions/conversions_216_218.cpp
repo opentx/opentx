@@ -238,7 +238,7 @@ PACK(typedef struct {
   int8_t   swtch;
   uint16_t flightModes;
   int8_t   weight;
-  char     name[LEN_EXPOMIX_NAME];
+  char     name[LEN_EXPOMIX_NAME_218];
   int8_t   curveParam;
 }) ExpoData_v216;
 typedef ExpoData_v216 ExpoData_v217;
@@ -316,7 +316,7 @@ PACK(typedef struct {
   uint8_t  speedDown;
   uint8_t  srcRaw;
   int16_t  offset;
-  char     name[LEN_EXPOMIX_NAME];
+  char     name[LEN_EXPOMIX_NAME_218];
 }) MixData_v216;
 typedef MixData MixData_v217;
 #endif
@@ -339,13 +339,13 @@ PACK(typedef struct {
   uint32_t minuteBeep:1;
   uint32_t persistent:2;
   uint32_t spare:3;
-  char     name[LEN_TIMER_NAME];
+  char     name[LEN_TIMER_NAME_218];
 }) TimerData_v217;
 
 PACK(typedef struct {
   int16_t trim[NUM_STICKS];
   int8_t swtch;       // swtch of phase[0] is not used
-  char name[LEN_FLIGHT_MODE_NAME];
+  char name[LEN_FLIGHT_MODE_NAME_218];
   uint8_t fadeIn;
   uint8_t fadeOut;
   int16_t rotaryEncoders[1];
@@ -481,7 +481,7 @@ PACK(typedef struct {
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   uint8_t failsafeMode;
-  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS_218];
   int8_t  ppmDelay;
   int8_t  ppmFrameLength;
   uint8_t ppmPulsePol;
@@ -504,7 +504,7 @@ PACK(typedef struct {
       uint8_t region:2;
     } r9m;
   };
-  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS_218];
   union {
     struct {
       int8_t  delay:6;
@@ -564,7 +564,7 @@ PACK(typedef struct {
 }) ModelHeader_v216;
 #else
 PACK(typedef struct {
-  char      name[LEN_MODEL_NAME];
+  char      name[LEN_MODEL_NAME_218];
   uint8_t   modelId;
 }) ModelHeader_v216;
 #endif
@@ -583,16 +583,16 @@ PACK(typedef struct {
   uint8_t   throttleReversed:1;
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData_v216 mixData[MAX_MIXERS];
-  LimitData_v216 limitData[MAX_OUTPUT_CHANNELS];
-  ExpoData_v216  expoData[MAX_EXPOS];
+  LimitData_v216 limitData[MAX_OUTPUT_CHANNELS_218];
+  ExpoData_v216  expoData[MAX_EXPOS_218];
 
-  CurveData_v216 curves[MAX_CURVES];
-  int8_t    points[MAX_CURVE_POINTS];
+  CurveData_v216 curves[MAX_CURVES_218];
+  int8_t    points[MAX_CURVE_POINTS_218];
 
   LogicalSwitchData_v216 logicalSw[32];
-  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS];
+  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218];
   SwashRingData_v216 swashR;
-  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES];
+  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES_218];
 
   uint8_t   thrTraceSrc;
 
@@ -615,7 +615,7 @@ PACK(typedef struct {
 
 PACK(typedef struct {
   ModelHeader header;
-  TimerData_v217 timers[MAX_TIMERS];
+  TimerData_v217 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   uint8_t   noGlobalFunctions:1;
@@ -623,36 +623,36 @@ PACK(typedef struct {
   uint8_t   ignoreSensorIds:1;
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  uint8_t displayChecklist:1;
+  uint8_t   displayChecklist:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
   BeepANACenter beepANACenter;
-  MixData_v217 mixData[MAX_MIXERS];
-  LimitData limitData[MAX_OUTPUT_CHANNELS];
-  ExpoData_v217  expoData[MAX_EXPOS];
+  MixData_v217 mixData[MAX_MIXERS_218];
+  LimitData limitData[MAX_OUTPUT_CHANNELS_218];
+  ExpoData_v217  expoData[MAX_EXPOS_218];
 
-  CurveData_v216 curves[MAX_CURVES];
-  int8_t    points[MAX_CURVE_POINTS];
+  CurveData_v216 curves[MAX_CURVES_218];
+  int8_t    points[MAX_CURVE_POINTS_218];
 
-  LogicalSwitchData_v217 logicalSw[32];
-  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS];
+  LogicalSwitchData_v217 logicalSw[MAX_LOGICAL_SWITCHES_218];
+  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218];
   SwashRingData swashR;
-  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES];
+  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES_218];
 
   uint8_t thrTraceSrc;
 
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 
-  GVarData_v217 gvars[MAX_GVARS];
+  GVarData_v217 gvars[MAX_GVARS_218];
 
   FrSkyTelemetryData frsky;
   RssiAlarmData rssiAlarms;
 
   MODELDATA_EXTRA_217
 
-  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];
+  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v217;
@@ -801,14 +801,14 @@ PACK(typedef struct {
   TARANIS_FIELD(uint8_t potsConfig)
   TARANIS_FIELD(uint8_t backlightColor)
   TARANIS_FIELD(swarnstate_t switchUnlockStates)
-  TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS])
+  TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218])
   TARANIS_FIELD(swconfig_t switchConfig)
-  TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
-  TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME])
-  N_TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS])
+  TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME_218])
+  TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218])
+  N_TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218])
 
   TARANIS_PCBX9E_FIELD(uint8_t bluetoothEnable)
-  TARANIS_PCBX9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME])
+  TARANIS_PCBX9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME_218])
 }) RadioData_v216;
 
 void convertRadioData_216_to_217(RadioData &settings)
@@ -1244,7 +1244,7 @@ void convertModelData_217_to_218(ModelData &model)
   newModel.potsWarnMode = oldModel.potsWarnMode;
   newModel.potsWarnEnabled = oldModel.potsWarnEnabled;
   memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
-  for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+  for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
     newModel.telemetrySensors[i] = oldModel.telemetrySensors[i];
     if (newModel.telemetrySensors[i].unit > UNIT_WATTS)
       newModel.telemetrySensors[i].unit += 1;
