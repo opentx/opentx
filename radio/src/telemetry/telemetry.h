@@ -176,11 +176,22 @@ class OutputTelemetryBuffer {
     void setDestination(uint8_t value)
     {
       destination.value = value;
+      timeout = 200; /* 2s */
+    }
+
+    void per10ms()
+    {
+      if (timeout > 0) {
+        if (--timeout == 0)
+          reset();
+      }
     }
 
     void reset()
     {
       destination.value = TELEMETRY_ENDPOINT_NONE;
+      size = 0;
+      timeout = 0;
     }
 
     bool isAvailable()
@@ -224,6 +235,7 @@ class OutputTelemetryBuffer {
       uint8_t data[16];
     };
     uint8_t size;
+    uint8_t timeout;
     TelemetryEndpoint destination;
 };
 

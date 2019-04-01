@@ -183,6 +183,8 @@ void per10ms()
   sdPoll10ms();
 #endif
 
+  outputTelemetryBuffer.per10ms();
+
   heartbeat |= HEART_TIMER_10MS;
 }
 
