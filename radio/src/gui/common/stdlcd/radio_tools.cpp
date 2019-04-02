@@ -64,14 +64,18 @@ void menuRadioTools(event_t event)
 
   SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spektrum_modules + power_modules);
 
-  uint8_t menu_index = 0;
 #if defined(PXX2)
+  uint8_t menu_index = 0;
+
   if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
     addRadioTool(menu_index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE, event);
+
   if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_POWER_METER))
     addRadioTool(menu_index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE, event);
+
   if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
     addRadioTool(menu_index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE, event);
+
   if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_POWER_METER))
     addRadioTool(menu_index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE, event);
 #endif
