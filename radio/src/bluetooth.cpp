@@ -341,6 +341,13 @@ void bluetoothWakeup(void)
 #else // PCBX9E
 void bluetoothWakeup()
 {
+  if (bluetoothState != BLUETOOTH_STATE_OFF) {
+    bluetoothWriteWakeup();
+    if (bluetoothIsWriting()) {
+      return;
+    }
+  }
+
   tmr10ms_t now = get_tmr10ms();
 
   if (now < bluetoothWakeupTime)
@@ -358,13 +365,6 @@ void bluetoothWakeup()
   else if (bluetoothState == BLUETOOTH_STATE_OFF) {
     bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
     bluetoothState = BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT;
-  }
-
-  if (bluetoothState != BLUETOOTH_STATE_OFF) {
-    bluetoothWriteWakeup();
-    if (bluetoothIsWriting()) {
-      return;
-    }
   }
 
   if (bluetoothState == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
