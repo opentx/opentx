@@ -27,6 +27,10 @@ void menuRadioSpectrumAnalyser(event_t event)
 {
   if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(15, "Turn off receiver");
+    if(event == EVT_KEY_FIRST(KEY_EXIT)) {
+      killEvents(event);
+      popMenu();
+    }
     return;
   }
 
