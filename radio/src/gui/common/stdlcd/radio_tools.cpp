@@ -76,6 +76,7 @@ void menuRadioTools(event_t event)
 
   if(event == EVT_ENTRY  || event == EVT_ENTRY_UP) {
     memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
+#if defined(PXX2)
     for (uint8_t idx=0; idx < NUM_MODULES; idx++) {
       if (isModulePXX2(idx) && (idx == INTERNAL_MODULE ? IS_INTERNAL_MODULE_ON() : IS_EXTERNAL_MODULE_ON())) {
         reusableBuffer.hardwareAndSettings.modules[idx].current = PXX2_HW_INFO_TX_ID;
@@ -83,6 +84,7 @@ void menuRadioTools(event_t event)
         moduleSettings[idx].mode = MODULE_MODE_GET_HARDWARE_INFO;
       }
     }
+#endif
   }
 
   for (uint8_t idx=0; idx < NUM_MODULES; idx++) {
@@ -97,6 +99,7 @@ void menuRadioTools(event_t event)
   SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spektrum_modules + power_modules);
 
   uint8_t menu_index=0;
+#if defined(PXX2)
   if(hasSpektrumAnalyserCapability(INTERNAL_MODULE))
     addRadioTool(menu_index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE, event);
   if(hasPowerMeterCapablity(INTERNAL_MODULE))
@@ -105,4 +108,5 @@ void menuRadioTools(event_t event)
     addRadioTool(menu_index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE, event);
   if(hasPowerMeterCapablity(EXTERNAL_MODULE))
     addRadioTool(menu_index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE, event);
+#endif
 }
