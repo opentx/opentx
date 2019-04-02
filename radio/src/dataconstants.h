@@ -566,13 +566,18 @@ enum MixSources {
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
-    MIXSRC_P3,
-    MIXSRC_LAST_POT = MIXSRC_P3,
+  MIXSRC_P3,
+  MIXSRC_LAST_POT = MIXSRC_P3,
 #endif
 
 #if defined(PCBHORUS)
   MIXSRC_MOUSE1,                        LUA_EXPORT("jsx", "Joystick X")
   MIXSRC_MOUSE2,                        LUA_EXPORT("jsy", "Joystick Y")
+#endif
+
+#if defined(GYRO)
+  MIXSRC_GYRO1,                         LUA_EXPORT("gyr1", "Gyro X")
+  MIXSRC_GYRO2,                         LUA_EXPORT("gyr2", "Gyro Y")
 #endif
 
 #if defined(PCBSKY9X)

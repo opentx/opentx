@@ -22,19 +22,6 @@
 
 extern uint8_t g_moduleIdx;
 
-void pxx2ModuleRequiredScreen(event_t event)
-{
-  lcdClear();
-  lcdDrawCenteredText(15, "THIS FEATURE REQUIRES");
-  lcdDrawCenteredText(30, "ACCESS UPGRADE ON");
-  lcdDrawCenteredText(45, "YOUR INTERNAL MODULE");
-
-  if (event == EVT_KEY_FIRST(KEY_EXIT)) {
-    killEvents(event);
-    popMenu();
-  }
-}
-
 void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t event), uint8_t module, event_t event)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -49,64 +36,43 @@ void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t event
   }
 }
 
-bool hasSpektrumAnalyserCapability(uint8_t module)
-{
-#if defined(SIMU)
-  return true;
-#else
-  return (reusableBuffer.hardwareAndSettings.modules[module].information.modelID == PXX2_MODULE_IXJT_S ||
-          reusableBuffer.hardwareAndSettings.modules[module].information.modelID == PXX2_MODULE_IXJT_PRO  ||
-          reusableBuffer.hardwareAndSettings.modules[module].information.modelID >= PXX2_MODULE_R9M_LITE_PRO);
-#endif
-}
-
-bool hasPowerMeterCapablity(uint8_t module)
-{
-#if defined(SIMU)
-  return true;
-#else
-  return (reusableBuffer.hardwareAndSettings.modules[module].information.modelID == PXX2_MODULE_IXJT_PRO  ||
-         reusableBuffer.hardwareAndSettings.modules[module].information.modelID == PXX2_MODULE_R9M_LITE_PRO);
-#endif
-}
-
 void menuRadioTools(event_t event)
 {
   uint8_t spektrum_modules = 0, power_modules = 0;
 
-  if(event == EVT_ENTRY  || event == EVT_ENTRY_UP) {
+  if (event == EVT_ENTRY  || event == EVT_ENTRY_UP) {
     memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
 #if defined(PXX2)
-    for (uint8_t idx=0; idx < NUM_MODULES; idx++) {
-      if (isModulePXX2(idx) && (idx == INTERNAL_MODULE ? IS_INTERNAL_MODULE_ON() : IS_EXTERNAL_MODULE_ON())) {
-        reusableBuffer.hardwareAndSettings.modules[idx].current = PXX2_HW_INFO_TX_ID;
-        reusableBuffer.hardwareAndSettings.modules[idx].maximum = PXX2_HW_INFO_TX_ID;
-        moduleSettings[idx].mode = MODULE_MODE_GET_HARDWARE_INFO;
+    for (uint8_t module = 0; module < NUM_MODULES; module++) {
+      if (isModulePXX2(module) && (module == INTERNAL_MODULE ? IS_INTERNAL_MODULE_ON() : IS_EXTERNAL_MODULE_ON())) {
+        reusableBuffer.hardwareAndSettings.modules[module].current = PXX2_HW_INFO_TX_ID;
+        reusableBuffer.hardwareAndSettings.modules[module].maximum = PXX2_HW_INFO_TX_ID;
+        moduleSettings[module].mode = MODULE_MODE_GET_HARDWARE_INFO;
       }
     }
 #endif
   }
 
-  for (uint8_t idx=0; idx < NUM_MODULES; idx++) {
-    if(hasSpektrumAnalyserCapability(idx)) {
+  for (uint8_t module = 0; module < NUM_MODULES; module++) {
+    if (isModuleOptionAvailable(module, MODULE_OPTION_SPEKTRUM_ANALYSER)) {
       spektrum_modules++;
     }
-    if(hasPowerMeterCapablity(idx)) {
+    if (isModuleOptionAvailable(module, MODULE_OPTION_POWER_METER)) {
       power_modules++;
     }
   }
 
   SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spektrum_modules + power_modules);
 
-  uint8_t menu_index=0;
+  uint8_t menu_index = 0;
 #if defined(PXX2)
-  if(hasSpektrumAnalyserCapability(INTERNAL_MODULE))
+  if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
     addRadioTool(menu_index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE, event);
-  if(hasPowerMeterCapablity(INTERNAL_MODULE))
+  if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_POWER_METER))
     addRadioTool(menu_index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE, event);
-  if(hasSpektrumAnalyserCapability(EXTERNAL_MODULE))
+  if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
     addRadioTool(menu_index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE, event);
-  if(hasPowerMeterCapablity(EXTERNAL_MODULE))
+  if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_POWER_METER))
     addRadioTool(menu_index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE, event);
 #endif
 }

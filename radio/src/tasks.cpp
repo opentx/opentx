@@ -106,11 +106,19 @@ TASK_FUNCTION(mixerTask)
   static uint32_t lastRunTime;
   s_pulses_paused = true;
 
-  while(1) {
+  while (1) {
 
 #if defined(PCBX9D) || defined(PCBX7)
     // SBUS on Hearbeat PIN (which is a serial RX)
     processSbusInput();
+#endif
+
+#if defined(GYRO)
+    gyro.wakeup();
+#endif
+
+#if defined(BLUETOOTH)
+    bluetoothWakeup();
 #endif
 
     RTOS_WAIT_TICKS(1);
@@ -169,10 +177,6 @@ TASK_FUNCTION(mixerTask)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
-#endif
-
-#if defined(BLUETOOTH)
-      bluetoothWakeup();
 #endif
 
       if (heartbeat == HEART_WDT_CHECK) {

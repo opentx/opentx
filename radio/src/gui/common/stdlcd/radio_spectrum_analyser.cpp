@@ -20,14 +20,13 @@
 
 #include "opentx.h"
 
-extern void pxx2ModuleRequiredScreen(event_t event);
 extern uint8_t g_moduleIdx;
 
 void menuRadioSpectrumAnalyser(event_t event)
 {
   if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(15, "Turn off receiver");
-    if(event == EVT_KEY_FIRST(KEY_EXIT)) {
+    if (event == EVT_KEY_FIRST(KEY_EXIT)) {
       killEvents(event);
       popMenu();
     }

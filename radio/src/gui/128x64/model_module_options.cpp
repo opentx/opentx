@@ -45,23 +45,7 @@ enum {
   ITEM_MODULE_SETTINGS_COUNT
 };
 
-/* Options order:
- * - RF Protocol (0x01)
- * - External antenna (0x02)
- * - Power (0x04)
- */
-const uint8_t moduleOptions[] = {
-  0b11111111, // None = display all options
-  0b11111011, // XJT
-  0b11111011, // IXJT
-  0b11111011, // IXJT-PRO
-  0b11111011, // IXJT-S
-  0b11111100, // R9M
-  0b11111100, // R9MLite
-  0b11111100, // R9MLite-PRO
-};
-
-#define IF_MODULE_OPTIONS(option, count) uint8_t((moduleOptions[modelId] & (1 << option)) ? count : HIDDEN_ROW)
+#define IF_MODULE_OPTIONS(option, count) uint8_t(isModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
 
 void drawPower(coord_t x, coord_t y, int8_t dBm)
 {
@@ -123,9 +107,9 @@ void menuModelModuleOptions(event_t event)
   // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
-    IF_MODULE_OPTIONS(0, 0),
-    IF_MODULE_OPTIONS(1, 0),
-    IF_MODULE_OPTIONS(2, 0),
+    IF_MODULE_OPTIONS(MODULE_OPTION_RF_PROTOCOL, 0),
+    IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
+    IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
   });
 
   if (event == EVT_ENTRY) {

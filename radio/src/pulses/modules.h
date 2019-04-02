@@ -232,4 +232,35 @@ inline int8_t sentModuleChannels(uint8_t idx)
     return 8 + g_model.moduleData[idx].channelsCount;
 }
 
+enum {
+  MODULE_OPTION_RF_PROTOCOL,
+  MODULE_OPTION_EXTERNAL_ANTENNA,
+  MODULE_OPTION_POWER,
+  MODULE_OPTION_SPEKTRUM_ANALYSER,
+  MODULE_OPTION_POWER_METER,
+};
+
+/* Options order:
+ * - RF Protocol (0x01)
+ * - External antenna (0x02)
+ * - Power (0x04)
+ * - Spektrum analyser (0x08)
+ * - Power meter (0x10)
+ */
+static const uint8_t moduleOptions[] = {
+  0b11111111, // None = display all options
+  0b11100011, // XJT
+  0b11100011, // IXJT
+  0b11111011, // IXJT-PRO
+  0b11101011, // IXJT-S
+  0b11100100, // R9M
+  0b11100100, // R9MLite
+  0b11111100, // R9MLite-PRO
+};
+
+inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
+{
+  return moduleOptions[modelId] & (1 << option);
+}
+
 #endif // _MODULES_H_

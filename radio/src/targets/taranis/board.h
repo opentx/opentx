@@ -805,4 +805,10 @@ extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 #endif
 
+// Gyro driver
+#define GYRO_VALUES_COUNT               6
+#define GYRO_BUFFER_LENGTH              (GYRO_VALUES_COUNT * sizeof(int16_t))
+int gyroInit();
+int gyroRead(uint8_t buffer[GYRO_BUFFER_LENGTH]);
+
 #endif // _BOARD_H_

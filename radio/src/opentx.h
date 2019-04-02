@@ -1380,4 +1380,8 @@ enum JackMode {
 };
 #endif
 
+#if defined(GYRO)
+#include "gyro.h"
+#endif
+
 #endif // _OPENTX_H_

@@ -224,32 +224,36 @@ bool isSourceAvailableInCustomSwitches(int source)
 
 bool isInputSourceAvailable(int source)
 {
-  if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
+  if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT)
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
-  }
 
-  if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
+#if defined(GYRO)
+  if (source >= MIXSRC_GYRO1 && source <= MIXSRC_GYRO2)
+    return true;
+#endif
+
+  if (source >= MIXSRC_Rud && source <= MIXSRC_MAX)
     return true;
 
-  if (source>=MIXSRC_FIRST_TRIM && source<=MIXSRC_LAST_TRIM)
+  if (source >= MIXSRC_FIRST_TRIM && source <= MIXSRC_LAST_TRIM)
     return true;
 
-  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH)
-     return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  if (source >= MIXSRC_FIRST_SWITCH && source <= MIXSRC_LAST_SWITCH)
+     return SWITCH_EXISTS(source - MIXSRC_FIRST_SWITCH);
 
-  if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
+  if (source >= MIXSRC_FIRST_CH && source <= MIXSRC_LAST_CH)
     return true;
 
-  if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
+  if (source >= MIXSRC_FIRST_LOGICAL_SWITCH && source <= MIXSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = lswAddress(source - MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
   }
 
-  if (source>=MIXSRC_FIRST_TRAINER && source<=MIXSRC_LAST_TRAINER)
+  if (source >= MIXSRC_FIRST_TRAINER && source <= MIXSRC_LAST_TRAINER)
     return true;
 
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
-    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+  if (source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
+    div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     return isTelemetryFieldAvailable(qr.quot) && isTelemetryFieldComparisonAvailable(qr.quot);
   }
 

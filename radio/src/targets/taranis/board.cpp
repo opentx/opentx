@@ -290,6 +290,11 @@ void boardInit()
   initHeadphoneTrainerSwitch();
 
   vbattRTC = getRTCBattVoltage();
+
+#if defined(GYRO)
+  gyroInit();
+#endif
+
 #endif // !defined(SIMU)
 }
 
