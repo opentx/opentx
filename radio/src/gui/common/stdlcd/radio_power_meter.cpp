@@ -22,14 +22,10 @@
 #include "opentx.h"
 
 void pxx2ModuleRequiredScreen(event_t event);
+extern uint8_t g_moduleIdx;
 
 void menuRadioPowerMeter(event_t event)
 {
-  if (!isModulePXX2(INTERNAL_MODULE)) {
-    pxx2ModuleRequiredScreen(event);
-    return;
-  }
-
   if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(LCD_H/2, "Turn off receiver");
     return;
@@ -39,18 +35,21 @@ void menuRadioPowerMeter(event_t event)
 
   if (menuEvent) {
     pausePulses();
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     /* wait 500ms off */
     watchdogSuspend(500);
     RTOS_WAIT_MS(500);
     resumePulses();
+    /* wait 500ms to resume normal operation before leaving */
+    watchdogSuspend(500);
+    RTOS_WAIT_MS(500);
     return;
   }
 
-  if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_POWER_METER) {
+  if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_POWER_METER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400;
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_POWER_METER;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
   coord_t y = MENU_HEADER_HEIGHT + 1 + FH;

@@ -21,14 +21,10 @@
 #include "opentx.h"
 
 extern void pxx2ModuleRequiredScreen(event_t event);
+extern uint8_t g_moduleIdx;
 
 void menuRadioSpectrumAnalyser(event_t event)
 {
-  if (!isModulePXX2(INTERNAL_MODULE)) {
-    pxx2ModuleRequiredScreen(event);
-    return;
-  }
-
   if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(15, "Turn off receiver");
     return;
@@ -38,17 +34,23 @@ void menuRadioSpectrumAnalyser(event_t event)
 
   if (menuEvent) {
     pausePulses();
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     /* wait 500ms off */
     watchdogSuspend(500);
     RTOS_WAIT_MS(500);
     resumePulses();
+    /* wait 500ms to resume normal operation before leaving */
+    watchdogSuspend(500);
+    RTOS_WAIT_MS(500);
     return;
   }
 
-  if (moduleSettings[INTERNAL_MODULE].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
+  if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+    reusableBuffer.spectrumAnalyser.span = 40000000;  // 40MHz
+    reusableBuffer.spectrumAnalyser.freq = 2440000000;  // 2440MHz
+    reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
+    moduleSettings[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
   uint8_t peak_y = 1;

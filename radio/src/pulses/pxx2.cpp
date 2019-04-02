@@ -256,14 +256,8 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
   Pxx2Transport::addByte(0x00);
-
-  reusableBuffer.spectrumAnalyser.freq = 2440000000;  // 2440MHz
   Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
-
-  reusableBuffer.spectrumAnalyser.span = 40000000;  // 40MHz
   Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.span);
-
-  reusableBuffer.spectrumAnalyser.step = 100000;  // 100KHz
   Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.step);
 }
 
