@@ -35,7 +35,7 @@ class GyroBuffer {
     uint8_t index;
 
   public:
-    void read(int32_t values[GYRO_SAMPLES_COUNT]);
+    void read(int32_t values[GYRO_VALUES_COUNT]);
 };
 
 class Gyro {

@@ -24,19 +24,19 @@
 
 Gyro gyro;
 
-void GyroBuffer::read(int32_t values[GYRO_SAMPLES_COUNT])
+void GyroBuffer::read(int32_t values[GYRO_VALUES_COUNT])
 {
-  for (uint8_t i = 0; i < GYRO_VALUES_COUNT; i++) {
-    sums[index] -= samples[index].values[i];
-  }
-
   index = (index + 1) & (GYRO_SAMPLES_COUNT - 1);
+
+  for (uint8_t i = 0; i < GYRO_VALUES_COUNT; i++) {
+    sums[i] -= samples[index].values[i];
+  }
 
   gyroRead(samples[index].raw);
 
   for (uint8_t i = 0; i < GYRO_VALUES_COUNT; i++) {
-    sums[index] += samples[index].values[i];
-    values[i] = sums[index] >> GYRO_SAMPLES_EXPONENT;
+    sums[i] += samples[index].values[i];
+    values[i] = sums[i] >> GYRO_SAMPLES_EXPONENT;
   }
 }
 
