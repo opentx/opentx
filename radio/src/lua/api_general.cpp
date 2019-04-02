@@ -446,15 +446,17 @@ static int luaSportTelemetryPush(lua_State * L)
     return 1;
   }
 
+  uint16_t dataId = luaL_checkunsigned(L, 3);
+
   if (outputTelemetryBuffer.isAvailable()) {
     for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       TelemetrySensor & sensor = g_model.telemetrySensors[i];
-      if (sensor.id == outputTelemetryBuffer.sport.dataId) {
+      if (sensor.id == dataId) {
         if (sensor.frskyInstance.rxIndex == TELEMETRY_ENDPOINT_SPORT) {
           SportTelemetryPacket packet;
           packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
           packet.primId = luaL_checkunsigned(L, 2);
-          packet.dataId = luaL_checkunsigned(L, 3);
+          packet.dataId = dataId;
           packet.value = luaL_checkunsigned(L, 4);
           outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
           outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
@@ -462,7 +464,7 @@ static int luaSportTelemetryPush(lua_State * L)
         else {
           outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 1));
           outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 2);
-          outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 3);
+          outputTelemetryBuffer.sport.dataId = dataId;
           outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 4);
           TelemetryEndpoint destination = getTelemetryEndpoint(sensor.frskyInstance.rxIndex);
           outputTelemetryBuffer.setDestination(destination.value);
