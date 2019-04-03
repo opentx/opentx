@@ -70,6 +70,9 @@ enum MenuRadioSetupItems {
   CASE_HAPTIC(ITEM_SETUP_HAPTIC_MODE)
   CASE_HAPTIC(ITEM_SETUP_HAPTIC_LENGTH)
   CASE_HAPTIC(ITEM_SETUP_HAPTIC_STRENGTH)
+  CASE_GYRO(ITEM_SETUP_GYRO_LABEL)
+  CASE_GYRO(ITEM_SETUP_GYRO_MAX)
+  CASE_GYRO(ITEM_SETUP_GYRO_OFFSET)
   ITEM_SETUP_CONTRAST,
   ITEM_SETUP_ALARMS_LABEL,
   ITEM_SETUP_BATTERY_WARNING,
@@ -149,6 +152,9 @@ void menuRadioSetup(event_t event)
     CASE_HAPTIC(0)
     CASE_HAPTIC(0)
     CASE_HAPTIC(0)
+    CASE_GYRO(LABEL(GYRO))
+    CASE_GYRO(0)
+    CASE_GYRO(0)
     0, LABEL(ALARMS), 0, CASE_CAPACITY(0)
     CASE_PCBSKY9X(0)
     0, 0, 0, 0, IF_ROTARY_ENCODERS(0)
@@ -370,7 +376,35 @@ void menuRadioSetup(event_t event)
         SLIDER_5POS(y, g_eeGeneral.hapticStrength, STR_HAPTICSTRENGTH, event, attr);
         break;
 #endif
+#if defined(GYRO)
+      case ITEM_SETUP_GYRO_LABEL:
+        lcdDrawTextAlignedLeft(y, STR_GYRO_LABEL);
+        break;
 
+      case ITEM_SETUP_GYRO_MAX:
+        lcdDrawTextAlignedLeft(y, STR_GYRO_MAX);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 30 + g_eeGeneral.gyroMax, attr|LEFT);
+        lcdDrawChar(lcdLastRightPos, y, '@', attr);
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.gyroMax, -20, 60);
+          lcdDrawText(LCD_W-4*FW, y, "(");
+          lcdDrawNumber(lcdLastRightPos, y, max(abs(gyro.outputs[0]), abs(gyro.outputs[1])) * 180 / 1024);
+          lcdDrawText(lcdLastRightPos, y, ")");
+        }
+        break;
+
+      case ITEM_SETUP_GYRO_OFFSET:
+        lcdDrawTextAlignedLeft(y, STR_GYRO_OFFSET);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.gyroOffset, attr|LEFT);
+        lcdDrawChar(lcdLastRightPos, y, '@', attr);
+        if (attr) {
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.gyroOffset, 10, 90);
+          lcdDrawText(LCD_W-4*FW, y, "(");
+          lcdDrawNumber(lcdLastRightPos, y, gyro.outputs[0] * 180 / 1024);
+          lcdDrawText(lcdLastRightPos, y, ")");
+        }
+        break;
+#endif
       case ITEM_SETUP_CONTRAST:
         lcdDrawTextAlignedLeft(y, STR_CONTRAST);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);

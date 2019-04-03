@@ -638,6 +638,9 @@
 #define TR_SPKRPITCH           INDENT"Dźwięk"
 #define TR_HAPTIC_LABEL        "Wibracja"
 #define TR_HAPTICSTRENGTH      INDENT"Siła"
+#define TR_GYRO_LABEL                  "Gyro"
+#define TR_GYRO_OFFSET                 INDENT "Offset"
+#define TR_GYRO_MAX                    INDENT "Max"
 #define TR_CONTRAST            "Kontrast"
 #define TR_ALARMS_LABEL        "Alarmy"
 #define TR_BATTERY_RANGE       TR("PokażPasBat.", "Pokaż pasek bateri")

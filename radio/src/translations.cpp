@@ -208,6 +208,9 @@ const char STR_SPKRPITCH[]  = TR_SPKRPITCH;
 #if defined(HAPTIC)
 const char STR_HAPTIC_LABEL[]  = TR_HAPTIC_LABEL;
 const char STR_HAPTICSTRENGTH[]  = TR_HAPTICSTRENGTH;
+const char STR_GYRO_LABEL[]  = TR_GYRO_LABEL;
+const char STR_GYRO_OFFSET[]  = TR_GYRO_OFFSET;
+const char STR_GYRO_MAX[]  = TR_GYRO_MAX;
 #endif
 const char STR_CONTRAST[]  = TR_CONTRAST;
 const char STR_ALARMS_LABEL[]  = TR_ALARMS_LABEL;

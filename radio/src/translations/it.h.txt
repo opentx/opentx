@@ -637,6 +637,9 @@
 #define TR_SPKRPITCH           INDENT"Tono"
 #define TR_HAPTIC_LABEL        "Vibraz"
 #define TR_HAPTICSTRENGTH      INDENT"Forza"
+#define TR_GYRO_LABEL                  "Gyro"
+#define TR_GYRO_OFFSET                 INDENT "Offset"
+#define TR_GYRO_MAX                    INDENT "Max"
 #define TR_CONTRAST            "Contrasto"
 #define TR_ALARMS_LABEL        "Allarmi"
 #define TR_BATTERY_RANGE       TR("Interv. Batt", "Intervallo batteria")

@@ -636,6 +636,9 @@
 #define TR_SPKRPITCH           INDENT "Beep-Freq. +/-"
 #define TR_HAPTIC_LABEL        "Haptik"
 #define TR_HAPTICSTRENGTH      INDENT "Stärke"
+#define TR_GYRO_LABEL                  "Gyro"
+#define TR_GYRO_OFFSET                 INDENT "Offset"
+#define TR_GYRO_MAX                    INDENT "Max"
 #define TR_CONTRAST            "LCD-Kontrast"
 #define TR_ALARMS_LABEL        "Alarme"
 #define TR_BATTERY_RANGE       TR("Akku Bereich", "Akku Spgannungsbereich") // Symbol Akku Ladezustand

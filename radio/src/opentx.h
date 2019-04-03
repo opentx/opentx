@@ -57,6 +57,12 @@
   #define CASE_VARIO(x)
 #endif
 
+#if defined(GYRO)
+#define CASE_GYRO(x) x,
+#else
+#define CASE_GYRO(x)
+#endif
+
 #if defined(LUA)
   #define CASE_LUA(x) x,
 #else
