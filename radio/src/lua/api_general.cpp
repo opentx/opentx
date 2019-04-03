@@ -420,25 +420,6 @@ When called without parameters, it will only return the status of the output buf
 @status current Introduced in 2.2.0
 */
 
-TelemetryEndpoint getTelemetryEndpoint(uint8_t receiverIndex)
-{
-  TelemetryEndpoint result;
-
-  for (uint8_t module=0; module<NUM_MODULES; module++) {
-    for (uint8_t receiver=0; receiver<PXX2_MAX_RECEIVERS_PER_MODULE; receiver++) {
-      uint8_t candidateIndex = g_model.moduleData[module].pxx2.getReceiverSlot(receiver) - 1;
-      if (candidateIndex == receiverIndex) {
-        result.module = module;
-        result.rxUid = candidateIndex;
-        return result;
-      }
-    }
-  }
-
-  result.value = TELEMETRY_ENDPOINT_NONE;
-  return result;
-}
-
 static int luaSportTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
@@ -459,16 +440,14 @@ static int luaSportTelemetryPush(lua_State * L)
           packet.dataId = dataId;
           packet.value = luaL_checkunsigned(L, 4);
           outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
-          outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
         }
         else {
           outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 1));
           outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 2);
           outputTelemetryBuffer.sport.dataId = dataId;
           outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 4);
-          TelemetryEndpoint destination = getTelemetryEndpoint(sensor.frskyInstance.rxIndex);
-          outputTelemetryBuffer.setDestination(destination.value);
         }
+        outputTelemetryBuffer.setDestination(sensor.frskyInstance.rxIndex);
         lua_pushboolean(L, true);
         return 1;
       }

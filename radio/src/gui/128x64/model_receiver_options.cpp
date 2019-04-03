@@ -23,7 +23,7 @@
 #define RECEIVER_OPTIONS_2ND_COLUMN 80
 
 extern uint8_t g_moduleIdx;
-extern void drawReceiverName(uint8_t x, uint8_t y, uint8_t receiverSlot);
+extern void drawReceiverName(uint8_t x, uint8_t y, uint8_t moduleIndex, uint8_t receiverIndex, LcdFlags flags=0);
 
 void onRxOptionsUpdateConfirm(const char * result)
 {
@@ -95,7 +95,7 @@ void menuModelReceiverOptions(event_t event)
 
   int8_t sub = menuVerticalPosition;
   lcdDrawTextAlignedLeft(0, STR_RECEIVER_OPTIONS);
-  drawReceiverName(FW * 13, 0, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
+  drawReceiverName(FW * 13, 0, g_moduleIdx, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {

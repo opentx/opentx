@@ -133,13 +133,9 @@ TASK_FUNCTION(mixerTask)
     }
 #endif
 
-    uint32_t now = RTOS_GET_TIME();
+    uint32_t now = RTOS_GET_MS();
     bool run = false;
-#if !defined(SIMU) && defined(STM32)
-    if ((now - lastRunTime) >= (usbStarted() ? 5 : 10)) {     // run at least every 20ms (every 10ms if USB is active)
-#else
-    if ((now - lastRunTime) >= 10) {     // run at least every 20ms
-#endif
+    if ((now - lastRunTime) >= 10) {     // run at least every 10ms
       run = true;
     }
     else if (now == nextMixerTime[0]) {

@@ -150,16 +150,15 @@ void sportProcessTelemetryPacket(const uint8_t * packet)
   sportProcessTelemetryPacketWithoutCrc(TELEMETRY_ENDPOINT_SPORT, packet);
 }
 
-void sportProcessTelemetryPacketWithoutCrc(uint8_t originValue, const uint8_t * packet)
+void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packet)
 {
-  TelemetryEndpoint & origin = (TelemetryEndpoint &)originValue;
   uint8_t physicalId = packet[0] & 0x1F;
   uint8_t primId = packet[1];
   uint16_t dataId = *((uint16_t *)(packet+2));
   uint32_t data = SPORT_DATA_S32(packet);
 
   if (primId == DATA_FRAME) {
-    uint8_t instance = physicalId + (origin.rxUid << 5);
+    uint8_t instance = physicalId + (origin << 5);
     if (dataId == RSSI_ID && isValidIdAndInstance(RSSI_ID, instance)) {
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);

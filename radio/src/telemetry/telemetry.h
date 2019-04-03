@@ -158,14 +158,6 @@ void logTelemetryWriteByte(uint8_t data);
 #define TELEMETRY_ENDPOINT_NONE    0xFF
 #define TELEMETRY_ENDPOINT_SPORT   0x07
 
-union TelemetryEndpoint {
-  PACK(struct {
-    uint8_t module:4;
-    uint8_t rxUid:4;
-  });
-  uint8_t value;
-};
-
 class OutputTelemetryBuffer {
   public:
     OutputTelemetryBuffer()
@@ -175,7 +167,7 @@ class OutputTelemetryBuffer {
 
     void setDestination(uint8_t value)
     {
-      destination.value = value;
+      destination = value;
       timeout = 200; /* 2s */
     }
 
@@ -189,14 +181,14 @@ class OutputTelemetryBuffer {
 
     void reset()
     {
-      destination.value = TELEMETRY_ENDPOINT_NONE;
+      destination = TELEMETRY_ENDPOINT_NONE;
       size = 0;
       timeout = 0;
     }
 
     bool isAvailable()
     {
-      return destination.value == TELEMETRY_ENDPOINT_NONE;
+      return destination == TELEMETRY_ENDPOINT_NONE;
     }
 
     void pushByte(uint8_t byte)
@@ -237,7 +229,7 @@ class OutputTelemetryBuffer {
     };
     uint8_t size;
     uint8_t timeout;
-    TelemetryEndpoint destination;
+    uint8_t destination;
 };
 
 extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;

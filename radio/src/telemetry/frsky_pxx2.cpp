@@ -154,7 +154,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     case 0x01:
       if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
         if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-          memcpy(g_model.receiverData[reusableBuffer.moduleSetup.pxx2.bindReceiverId].name, &frame[4], PXX2_LEN_RX_NAME);
+          memcpy(g_model.moduleData[module].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.bindReceiverIndex], &frame[4], PXX2_LEN_RX_NAME);
           storageDirty(EE_MODEL);
           reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
           reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
@@ -166,10 +166,8 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
 {
-  TelemetryEndpoint origin;
-  origin.module = module;
-  origin.rxUid = frame[3] & 0x0F;
-  sportProcessTelemetryPacketWithoutCrc(origin.value, &frame[4]);
+  uint8_t origin = (module << 2) + (frame[3] & 0x03);
+  sportProcessTelemetryPacketWithoutCrc(origin, &frame[4]);
 }
 
 void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)

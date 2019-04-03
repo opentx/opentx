@@ -122,7 +122,7 @@ void Pxx2Pulses::setupChannelsFrame(uint8_t module)
 void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TELEMETRY);
-  Pxx2Transport::addByte(outputTelemetryBuffer.destination.rxUid);
+  Pxx2Transport::addByte(outputTelemetryBuffer.destination & 0x03);
   for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
     Pxx2Transport::addByte(outputTelemetryBuffer.data[i]);
   }
@@ -234,7 +234,7 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverId); // RX_UID is the slot index (which is unique and never moved)
+    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverIndex); // RX_UID is the slot index (which is unique and never moved)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
@@ -280,7 +280,7 @@ void Pxx2Pulses::setupPowerMeter(uint8_t module)
 void Pxx2Pulses::setupShareMode(uint8_t module)
 {
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_SHARE);
-  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverId);
+  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
 }
 
 void Pxx2Pulses::setupFrame(uint8_t module)
@@ -313,7 +313,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupShareMode(module);
       break;
     default:
-      if (outputTelemetryBuffer.destination.module == module) {
+      if (outputTelemetryBuffer.destination == module) {
         setupTelemetryFrame(module);
         outputTelemetryBuffer.reset();
       }

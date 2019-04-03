@@ -416,14 +416,6 @@ PACK(struct TrainerModuleData {
 });
 
 /*
- * Receiver structure
- */
-
-PACK(struct ReceiverData {
-  char name[PXX2_LEN_RX_NAME];
-});
-
-/*
  * Module structure
  */
 
@@ -478,26 +470,8 @@ PACK(struct ModuleData {
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
     NOBACKUP(PACK(struct {
-      uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
-      uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
-#if defined(PCBHORUS)
-      uint8_t spare:5;
-      uint32_t receivers;               // max 5 receivers per module and 10 receivers in total (4bits per receiver with 0 = unused)
-#else
-      uint8_t spare:1;
-      uint16_t receivers:12;            // max 4 receivers per module and 4 receivers in total (3bits per receiver with 0 = unused)
-#endif
-      NOBACKUP(inline uint8_t getReceiverSlot(uint8_t receiver) {
-        return (receivers >> (3 * receiver)) & 0b111;
-      })
-
-      NOBACKUP(inline void setReceiverSlot(uint8_t receiver, uint8_t slot) {
-        receivers = BF_SET<uint16_t>(receivers, slot, 3 * receiver, 3);
-      })
-
-      NOBACKUP(inline void clearReceiverSlot(uint8_t receiver) {
-        setReceiverSlot(receiver, 0);
-      })
+      uint8_t receivers; // 5 bits spare
+      char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
     }) pxx2);
   };
 
@@ -617,7 +591,6 @@ PACK(struct ModelData {
   NOBACKUP(uint8_t spare1:6);
   NOBACKUP(uint8_t potsWarnMode:2);
   ModuleData moduleData[NUM_MODULES];
-  ReceiverData receiverData[NUM_RECEIVERS];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 
@@ -802,7 +775,6 @@ PACK(struct RadioData {
   NOBACKUP(int8_t   varioPitch);
   NOBACKUP(int8_t   varioRange);
   NOBACKUP(int8_t   varioRepeat);
-
   CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
 
   EXTRA_GENERAL_FIELDS
@@ -931,7 +903,7 @@ static inline void check_struct()
 #if defined(PCBHORUS)
   CHKSIZE(ModuleData, 9);
 #else
-  CHKSIZE(ModuleData, 6);
+  CHKSIZE(ModuleData, 29);
 #endif
 
   CHKSIZE(GVarData, 7);
@@ -941,7 +913,7 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 860);
-  CHKSIZE(ModelData, 6040);
+  CHKSIZE(ModelData, 6054);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
   CHKSIZE(ModelData, 6040);

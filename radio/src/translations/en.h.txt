@@ -775,7 +775,7 @@
 #define TR_MONITOR_OUTPUT_DESC         "Outputs"
 #define TR_MONITOR_MIXER_DESC          "Mixers"
   #define TR_RECEIVER_NUM              TR(INDENT "RxNum", INDENT "Receiver No.")
-  #define TR_RECEIVER                  INDENT "Receiver"
+  #define TR_RECEIVER                  "Receiver"
 #define TR_MULTI_RFTUNE                TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Vid. freq.", INDENT "Video frequency")
