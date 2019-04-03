@@ -527,7 +527,7 @@
 #define TR_VANTENNATYPES               "Interne""Ext+Int\0"
 #endif
 
-gyrY#define LEN_GYROS                      "\004"
+#define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
 // ZERO TERMINATED STRINGS
