@@ -275,6 +275,7 @@ void onPXX2ReceiverMenu(const char * result)
   if (result == STR_OPTIONS) {
     memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
     reusableBuffer.hardwareAndSettings.receiverSettings.receiverId = receiverIdx;
+    g_moduleIdx = moduleIdx;
     pushMenu(menuModelReceiverOptions);
   }
   else if (result == STR_BIND) {
