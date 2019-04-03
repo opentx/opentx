@@ -921,7 +921,7 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6536);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5201);
+  CHKSIZE(ModelData, 5215);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
   CHKSIZE(ModelData, 9721);

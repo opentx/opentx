@@ -250,6 +250,7 @@ enum MenuModelSetupItems {
   #define TRAINER_ROWS
 #endif
 
+#if defined(PXX2)
 void onPXX2BindMenu(const char * result)
 {
   if (result != STR_EXIT) {
@@ -293,6 +294,7 @@ void onPXX2ReceiverMenu(const char * result)
     storageDirty(EE_MODEL);
   }
 }
+#endif
 
 void onBindMenu(const char * result)
 {
