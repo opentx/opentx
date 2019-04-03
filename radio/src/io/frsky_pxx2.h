@@ -53,15 +53,24 @@ class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
         return false;
       }
 
-      for (uint32_t i = 0; i <= len; i++) {
+      // we keep the length in frame[0]
+      frame[0] = fifo[next];
+      next = nextIndex(next);
+
+      uint16_t crc = 0xFFFF;
+
+      for (uint32_t i = 1; i <= len; i++) {
         frame[i] = fifo[next];
+        crc -= frame[i];
         next = nextIndex(next);
       }
 
-      // TODO CRC CHECK
+      uint8_t crcLow = fifo[next];
       next = nextIndex(next);
+      uint8_t crcHigh = fifo[next];
       ridx = nextIndex(next);
-      return true;
+
+      return ((crc >> 8) == crcLow) && ((crc & 0xFF) == crcHigh);
     }
 
     uint32_t errors;
