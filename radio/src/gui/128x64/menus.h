@@ -152,6 +152,7 @@ void menuModelLogicalSwitches(event_t event);
 void menuModelSpecialFunctions(event_t event);
 void menuModelCustomScripts(event_t event);
 void menuModelTelemetryFrsky(event_t event);
+void menuModelSensor(event_t event);
 void menuModelDisplay(event_t event);
 void menuModelTemplates(event_t event);
 void menuModelGVarOne(event_t event);

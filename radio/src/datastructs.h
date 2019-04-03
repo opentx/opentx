@@ -899,15 +899,8 @@ static inline void check_struct()
 
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(TelemetrySensor, 13);
-
-#if defined(PCBHORUS)
-  CHKSIZE(ModuleData, 9);
-#else
   CHKSIZE(ModuleData, 29);
-#endif
-
   CHKSIZE(GVarData, 7);
-
   CHKSIZE(RssiAlarmData, 2);
   CHKSIZE(TrainerData, 16);
 
@@ -922,16 +915,16 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6040);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6535);
+  CHKSIZE(ModelData, 6549);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6522);
+  CHKSIZE(ModelData, 6536);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5201);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9761);
+  CHKSIZE(ModelData, 9721);
 #endif
 
 #undef CHKSIZE

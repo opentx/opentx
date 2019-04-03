@@ -135,6 +135,7 @@ void menuModelLogicalSwitches(event_t event);
 void menuModelSpecialFunctions(event_t event);
 void menuModelCustomScripts(event_t event);
 void menuModelTelemetryFrsky(event_t event);
+void menuModelSensor(event_t event);
 void menuModelDisplay(event_t event);
 
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
