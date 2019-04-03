@@ -43,7 +43,7 @@ class Gyro {
     GyroBuffer gyroBuffer;
 
   public:
-    int32_t outputs[2];
+    int16_t outputs[2];
     void wakeup();
 };
 

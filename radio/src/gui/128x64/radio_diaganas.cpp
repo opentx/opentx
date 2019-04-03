@@ -33,41 +33,55 @@ void menuRadioDiagAnalogs(event_t event)
 
   SIMPLE_SUBMENU(STR_MENU_RADIO_ANALOGS, HEADER_LINE+ANAS_ITEMS_COUNT);
 
+  coord_t y = MENU_HEADER_HEIGHT + 1;
+
+  lcdDrawTextAlignedLeft(y, STICKS_PWM_ENABLED() ? "PWM Sticks/Pots/Sliders" : "Sticks/Pots/Sliders");
+
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
-#if (NUM_STICKS+NUM_POTS+NUM_SLIDERS) > 9
-    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/3)*FH;
-    const uint8_t x_coord[] = {0, 70, 154};
-    uint8_t x = x_coord[i%3];
-    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2);
-    lcdDrawChar(x+2*FW-2, y, ':');
-#else
-    coord_t y = MENU_HEADER_HEIGHT + 1 + (i/2)*FH;
-    uint8_t x = (i & 1) ? LCD_W/2+FW : 0;
+    uint8_t x;
+    if (i & 1) {
+      x = LCD_W/2 + INDENT_WIDTH;
+    }
+    else {
+      x = INDENT_WIDTH;
+      y += FH;
+    }
     drawStringWithIndex(x, y, "A", i+1);
     lcdDrawChar(lcdNextPos, y, ':');
-#endif
     lcdDrawHexNumber(x+3*FW-1, y, anaIn(i));
     lcdDrawNumber(x+10*FW-1, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256, RIGHT);
   }
 
+#if defined(GYRO)
+  y += FH;
+  lcdDrawTextAlignedLeft(y, "Gyro");
+  y += FH;
+  uint8_t x = INDENT_WIDTH;
+  lcdDrawText(x, y, "X:");
+  lcdDrawNumber(x+3*FW-1, y, gyro.outputs[0] * 180 / 1024);
+  lcdDrawChar(lcdNextPos, y, '@');
+  lcdDrawNumber(x+10*FW-1, y, gyro.outputs[0], RIGHT);
+  x = LCD_W/2 + INDENT_WIDTH;
+  lcdDrawText(x, y, "Y:");
+  lcdDrawNumber(x+3*FW-1, y, gyro.outputs[1] * 180 / 1024);
+  lcdDrawChar(lcdNextPos, y, '@');
+  lcdDrawNumber(x+10*FW-1, y, gyro.outputs[1], RIGHT);
+#endif
+
   // RAS
 #if defined(PCBTARANIS)
   if (isModuleXJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
-    coord_t y = MENU_HEADER_HEIGHT + 1 + (NUM_STICKS+NUM_POTS+NUM_SLIDERS+1)/2 * FH + 1 * FH + 2;
+    y += FH;
     lcdDrawText(1, y, "RAS:");
     lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
   }
 #else
   if (isModuleXJT(EXTERNAL_MODULE)) {
-    coord_t y = MENU_HEADER_HEIGHT + 1 + ((NUM_STICKS+NUM_POTS+NUM_SLIDERS)/2)*FH;
+    y += FH;
     uint8_t x = ((NUM_STICKS+NUM_POTS+NUM_SLIDERS) & 1) ? (LCD_W/2)+FW : 0;
 
     lcdDrawText(x, y, "RAS:");
     lcdDrawNumber(x + 4*FW, y, telemetryData.swr.value, LEFT);
   }
-#endif
-
-#if (NUM_PWMSTICKS > 0) && !defined(SIMU)
-  lcdDrawTextAlignedLeft(7*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
 #endif
 }
