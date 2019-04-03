@@ -376,17 +376,18 @@ void menuRadioSetup(event_t event)
         SLIDER_5POS(y, g_eeGeneral.hapticStrength, STR_HAPTICSTRENGTH, event, attr);
         break;
 #endif
+        
 #if defined(GYRO)
       case ITEM_SETUP_GYRO_LABEL:
         lcdDrawTextAlignedLeft(y, STR_GYRO_LABEL);
         break;
 
       case ITEM_SETUP_GYRO_MAX:
-        lcdDrawTextAlignedLeft(y, STR_GYRO_MAX);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, 30 + g_eeGeneral.gyroMax, attr|LEFT);
+        lcdDrawText(INDENT_WIDTH, y, STR_GYRO_MAX);
+        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, GYRO_MAX_DEFAULT + g_eeGeneral.gyroMax, attr|LEFT);
         lcdDrawChar(lcdLastRightPos, y, '@', attr);
         if (attr) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.gyroMax, -20, 60);
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.gyroMax, GYRO_MAX_DEFAULT - GYRO_MAX_RANGE, GYRO_MAX_DEFAULT + GYRO_MAX_RANGE);
           lcdDrawText(LCD_W-4*FW, y, "(");
           lcdDrawNumber(lcdLastRightPos, y, max(abs(gyro.outputs[0]), abs(gyro.outputs[1])) * 180 / 1024);
           lcdDrawText(lcdLastRightPos, y, ")");
@@ -394,17 +395,18 @@ void menuRadioSetup(event_t event)
         break;
 
       case ITEM_SETUP_GYRO_OFFSET:
-        lcdDrawTextAlignedLeft(y, STR_GYRO_OFFSET);
+        lcdDrawText(INDENT_WIDTH, y, STR_GYRO_OFFSET);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.gyroOffset, attr|LEFT);
         lcdDrawChar(lcdLastRightPos, y, '@', attr);
         if (attr) {
-          CHECK_INCDEC_GENVAR(event, g_eeGeneral.gyroOffset, 10, 90);
+          CHECK_INCDEC_GENVAR(event, g_eeGeneral.gyroOffset, GYRO_OFFSET_MIN, GYRO_OFFSET_MAX);
           lcdDrawText(LCD_W-4*FW, y, "(");
           lcdDrawNumber(lcdLastRightPos, y, gyro.outputs[0] * 180 / 1024);
           lcdDrawText(lcdLastRightPos, y, ")");
         }
         break;
 #endif
+        
       case ITEM_SETUP_CONTRAST:
         lcdDrawTextAlignedLeft(y, STR_CONTRAST);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.contrast, attr|LEFT);

@@ -640,8 +640,8 @@
 #define TR_HAPTIC_LABEL        "Tactil"
 #define TR_HAPTICSTRENGTH      INDENT"Intensidad"
 #define TR_GYRO_LABEL                  "Gyro"
-#define TR_GYRO_OFFSET                 INDENT "Offset"
-#define TR_GYRO_MAX                    INDENT "Max"
+#define TR_GYRO_OFFSET                 "Offset"
+#define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST            "Contraste"
 #define TR_ALARMS_LABEL        "Alarmas"
 #define TR_BATTERY_RANGE       TR("Rango bateria","Rango medidor Bater")

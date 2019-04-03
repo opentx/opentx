@@ -811,5 +811,9 @@ extern DMAFifo<32> serial2RxFifo;
 #define GYRO_BUFFER_LENGTH              (GYRO_VALUES_COUNT * sizeof(int16_t))
 int gyroInit();
 int gyroRead(uint8_t buffer[GYRO_BUFFER_LENGTH]);
+#define GYRO_MAX_DEFAULT                30
+#define GYRO_MAX_RANGE                  60
+#define GYRO_OFFSET_MIN                 10
+#define GYRO_OFFSET_MAX                 90
 
 #endif // _BOARD_H_
