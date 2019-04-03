@@ -723,11 +723,6 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
       lcdDrawTextAtIndex(x, y, STR_VSRCRAW, idx + 1, att);
     }
   }
-#if defined(GYRO)
-  else if (idx <= MIXSRC_GYRO2) {
-    lcdDrawTextAtIndex(x, y, STR_GYROS, idx - MIXSRC_GYRO1, att);
-  }
-#endif
   else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {
     idx = idx-MIXSRC_FIRST_SWITCH;
     if (ZEXIST(g_eeGeneral.switchNames[idx])) {

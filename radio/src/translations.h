@@ -213,8 +213,7 @@ extern const char STR_OPEN9X[];
 #else
   #define OFS_VANTENNATYPES     (OFS_VCELLINDEX + sizeof(TR_VCELLINDEX))
 #endif
-  #define OFS_GYROS             (OFS_VANTENNATYPES + sizeof(TR_VANTENNATYPES))
-  #define OFS_MAVLINK_BAUDS     (OFS_GYROS + sizeof(TR_GYROS))
+  #define OFS_MAVLINK_BAUDS     (OFS_VANTENNATYPES + sizeof(TR_VANTENNATYPES))
   #define OFS_SPARE		(OFS_MAVLINK_BAUDS)
 
 #define STR_OFFON               (STR_OPEN9X + OFS_OFFON)
@@ -314,7 +313,6 @@ extern const char STR_OPEN9X[];
   #define STR_VPREC             (STR_OPEN9X + OFS_VPREC)
   #define STR_VCELLINDEX        (STR_OPEN9X + OFS_VCELLINDEX)
   #define STR_VANTENNATYPES     (STR_OPEN9X + OFS_VANTENNATYPES)
-  #define STR_GYROS             (STR_OPEN9X + OFS_GYROS)
 
 #if defined(BLUETOOTH)
   extern const char STR_BLUETOOTH[];
