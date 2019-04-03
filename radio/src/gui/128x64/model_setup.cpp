@@ -1310,8 +1310,8 @@ void menuModelSetup(event_t event)
 
         if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
           killEvents(event);
-          POPUP_MENU_ADD_ITEM(STR_OPTIONS);
           POPUP_MENU_ADD_ITEM(STR_BIND);
+          POPUP_MENU_ADD_ITEM(STR_OPTIONS);
           POPUP_MENU_ADD_ITEM(STR_SHARE);
           POPUP_MENU_ADD_ITEM(STR_DELETE);
           POPUP_MENU_START(onPXX2ReceiverMenu);
