@@ -672,6 +672,14 @@ PACK(struct TrainerData {
   #define SPLASH_MODE int8_t splashMode:3
 #endif
 
+#if defined(GYRO)
+  #define GYRO_FIELDS \
+    int8_t   gyroMax; \
+    int8_t   gyroOffset;
+#else
+  #define GYRO_FIELDS
+#endif
+
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
     NOBACKUP(uint8_t  serial2Mode:4); \
@@ -802,6 +810,8 @@ PACK(struct RadioData {
   THEME_DATA
 
   char ownerRegistrationID[PXX2_LEN_REGISTRATION_ID];
+
+  GYRO_FIELDS
 });
 
 #undef SWITCHES_WARNING_DATA
@@ -930,7 +940,7 @@ static inline void check_struct()
   CHKSIZE(TrainerData, 16);
 
 #if defined(PCBXLITES)
-  CHKSIZE(RadioData, 858);
+  CHKSIZE(RadioData, 860);
   CHKSIZE(ModelData, 6040);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
