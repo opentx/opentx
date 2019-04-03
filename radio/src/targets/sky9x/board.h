@@ -336,6 +336,7 @@ enum CalibratedAnalogs {
 };
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   false
+#define STICKS_PWM_ENABLED()           false
 void adcInit();
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);

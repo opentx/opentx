@@ -441,6 +441,8 @@ uint16_t getAnalogValue(uint8_t index);
 void sticksPwmInit(void);
 void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;
+#else
+#define STICKS_PWM_ENABLED()          (false)
 #endif
 
 // Battery driver

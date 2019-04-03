@@ -481,6 +481,7 @@ enum Analogs {
   #define NUM_TRIMS_KEYS                4
 #else
   #define NUM_TRIMS_KEYS                8
+  #define STICKS_PWM_ENABLED()          false
 #endif
 
 PACK(typedef struct {

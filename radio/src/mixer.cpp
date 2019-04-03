@@ -323,7 +323,11 @@ getvalue_t getValue(mixsrc_t i)
 
 #if defined(PCBSKY9X)
   else if (i <= MIXSRC_LAST_ROTARY_ENCODER) {
+#if ROTARY_ENCODERS > 0
     return getRotaryEncoder(i - MIXSRC_REa);
+#else
+    return 0;
+#endif
   }
 #endif
 
