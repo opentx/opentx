@@ -725,7 +725,7 @@ void drawSource(coord_t x, coord_t y, uint32_t idx, LcdFlags att)
   }
 #if defined(GYRO)
   else if (idx <= MIXSRC_GYRO2) {
-    drawStringWithIndex(x, y, "Gyr", idx - MIXSRC_GYRO1 + 1, att);
+    lcdDrawTextAtIndex(x, y, STR_GYROS, idx - MIXSRC_GYRO1, att);
   }
 #endif
   else if (idx >= MIXSRC_FIRST_SWITCH && idx <= MIXSRC_LAST_SWITCH) {

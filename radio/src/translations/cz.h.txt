@@ -510,6 +510,9 @@
 #define TR_VANTENNATYPES        "Interní""Ext+Int"
 #endif
 
+gyrY#define LEN_GYROS                      "\004"
+#define TR_GYROS                       "GyrX""GyrY"
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT               "\007"

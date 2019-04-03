@@ -576,8 +576,8 @@ enum MixSources {
 #endif
 
 #if defined(GYRO)
-  MIXSRC_GYRO1,                         LUA_EXPORT("gyr1", "Gyro X")
-  MIXSRC_GYRO2,                         LUA_EXPORT("gyr2", "Gyro Y")
+  MIXSRC_GYRO1,                         LUA_EXPORT("gyrx", "Gyro X")
+  MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
 #if defined(PCBSKY9X)

@@ -520,6 +520,9 @@
 #define LEN_VANTENNATYPES      "\014"
 #define TR_VANTENNATYPES       "Int. Antenne""Ext. + Int.\0"  // Antennenauswahl
 
+gyrY#define LEN_GYROS                      "\004"
+#define TR_GYROS                       "GyrX""GyrY"
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT               "\007"

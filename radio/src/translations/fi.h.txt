@@ -514,6 +514,9 @@
 #define TR_VANTENNATYPES       "Internal""Ext+Int\0"
 #endif
 
+gyrY#define LEN_GYROS                      "\004"
+#define TR_GYROS                       "GyrX""GyrY"
+
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
 #define LEN_INDENT             1

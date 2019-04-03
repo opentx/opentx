@@ -112,6 +112,7 @@ const char STR_OPEN9X[]  =
     ISTR(BLUETOOTH_MODES)
 #endif
     ISTR(VANTENNATYPES)
+    ISTR(GYROS)
     ;
 
 // The 0-terminated-strings
