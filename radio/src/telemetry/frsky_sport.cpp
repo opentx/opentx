@@ -159,7 +159,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 
   if (primId == DATA_FRAME) {
     uint8_t instance = physicalId + (origin << 5);
-    if (dataId == RSSI_ID && isValidIdAndInstance(RSSI_ID, instance)) {
+    if (dataId == RSSI_ID) {
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
       if (data == 0)
