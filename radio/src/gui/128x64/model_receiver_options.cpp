@@ -23,7 +23,6 @@
 #define RECEIVER_OPTIONS_2ND_COLUMN 80
 
 extern uint8_t g_moduleIdx;
-extern void drawReceiverName(uint8_t x, uint8_t y, uint8_t moduleIndex, uint8_t receiverIndex, LcdFlags flags=0);
 
 void onRxOptionsUpdateConfirm(const char * result)
 {

@@ -25,6 +25,7 @@ enum SensorFields {
   SENSOR_FIELD_TYPE,
   SENSOR_FIELD_ID,
   SENSOR_FIELD_FORMULA=SENSOR_FIELD_ID,
+  SENSOR_FILED_RECEIVER_NAME,
   SENSOR_FIELD_UNIT,
   SENSOR_FIELD_PRECISION,
   SENSOR_FIELD_PARAM1,
@@ -50,6 +51,7 @@ void menuModelSensor(event_t event)
     0, // Name
     0, // Type
     sensor->type == TELEM_TYPE_CALCULATED ? (uint8_t)0 : (uint8_t)1, // ID / Formula
+    sensor->type == TELEM_TYPE_CALCULATED ? HIDDEN_ROW : LABEL(Receiver), // Receiver name
     ((sensor->type == TELEM_TYPE_CALCULATED && (sensor->formula == TELEM_FORMULA_DIST)) || sensor->isConfigurable() ? (uint8_t)0 : HIDDEN_ROW), // Unit
     (sensor->isPrecConfigurable() && sensor->unit != UNIT_FAHRENHEIT  ? (uint8_t)0 : HIDDEN_ROW), // Precision
     (sensor->unit >= UNIT_FIRST_VIRTUAL ? HIDDEN_ROW : (uint8_t)0), // Param1
@@ -103,7 +105,7 @@ void menuModelSensor(event_t event)
         if (sensor->type == TELEM_TYPE_CUSTOM) {
           lcdDrawTextAlignedLeft(y, STR_ID);
           lcdDrawHexNumber(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(menuHorizontalPosition==0 ? attr : 0));
-          lcdDrawNumber(SENSOR_3RD_COLUMN, y, sensor->instance, LEFT|(menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawHexChar(SENSOR_3RD_COLUMN, y, sensor->instance & 0x1f, LEFT|(menuHorizontalPosition==1 ? attr : 0));
           if (attr) {
             switch (menuHorizontalPosition) {
               case 0:
@@ -111,7 +113,11 @@ void menuModelSensor(event_t event)
                 break;
 
               case 1:
-                CHECK_INCDEC_MODELVAR_ZERO(event, sensor->instance, 0xff);
+                uint8_t instance = sensor->instance & 0x1f;
+                CHECK_INCDEC_MODELVAR_ZERO(event, instance, 0x1b);
+                if (checkIncDec_Ret) {
+                  sensor->instance = (sensor->instance & 0x01f) + instance;
+                }
                 break;
             }
           }
@@ -135,6 +141,12 @@ void menuModelSensor(event_t event)
           }
         }
         break;
+
+      case SENSOR_FILED_RECEIVER_NAME:
+        lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+        drawReceiverName(SENSOR_2ND_COLUMN, y, (sensor->instance >> 7) & 0x01, (sensor->instance >> 5) & 0x03, 0);
+        break;
+
 
       case SENSOR_FIELD_UNIT:
         lcdDrawTextAlignedLeft(y, "Unit");

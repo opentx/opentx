@@ -160,6 +160,7 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags=0);
 inline void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
 {
   drawTimer(x, y, tme, att, att);
