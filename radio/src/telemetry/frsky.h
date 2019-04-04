@@ -196,8 +196,6 @@ enum FrSkyDataState {
 #define FUEL_QTY_FIRST_ID         0x0a10
 #define FUEL_QTY_LAST_ID          0x0a1f
 
-
-
 // Default sensor data IDs (Physical IDs + CRC)
 #define DATA_ID_VARIO             0x00 // 0
 #define DATA_ID_FLVSS             0xA1 // 1
