@@ -317,7 +317,7 @@ getvalue_t getValue(mixsrc_t i)
 
 #if defined(GYRO)
   else if (i <= MIXSRC_GYRO2) {
-    return gyro.outputs[i - MIXSRC_GYRO1];
+    return gyro.scaled_outputs[i - MIXSRC_GYRO1];
   }
 #endif
 

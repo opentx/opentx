@@ -44,6 +44,7 @@ class Gyro {
 
   public:
     int16_t outputs[2];
+    int16_t scaled_outputs[2];
     void wakeup();
 };
 

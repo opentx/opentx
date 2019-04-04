@@ -813,7 +813,7 @@ int gyroInit();
 int gyroRead(uint8_t buffer[GYRO_BUFFER_LENGTH]);
 #define GYRO_MAX_DEFAULT                30
 #define GYRO_MAX_RANGE                  60
-#define GYRO_OFFSET_MIN                 10
-#define GYRO_OFFSET_MAX                 90
+#define GYRO_OFFSET_MIN                 -30
+#define GYRO_OFFSET_MAX                 10
 
 #endif // _BOARD_H_

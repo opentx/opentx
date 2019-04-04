@@ -60,12 +60,12 @@ void menuRadioDiagAnalogs(event_t event)
   lcdDrawText(x, y, "X:");
   lcdDrawNumber(x+3*FW-1, y, gyro.outputs[0] * 180 / 1024);
   lcdDrawChar(lcdNextPos, y, '@');
-  lcdDrawNumber(x+10*FW-1, y, gyro.outputs[0], RIGHT);
+  lcdDrawNumber(x+10*FW-1, y, gyro.scaled_outputs[0], RIGHT);
   x = LCD_W/2 + INDENT_WIDTH;
   lcdDrawText(x, y, "Y:");
   lcdDrawNumber(x+3*FW-1, y, gyro.outputs[1] * 180 / 1024);
   lcdDrawChar(lcdNextPos, y, '@');
-  lcdDrawNumber(x+10*FW-1, y, gyro.outputs[1], RIGHT);
+  lcdDrawNumber(x+10*FW-1, y, gyro.scaled_outputs[1], RIGHT);
 #endif
 
   // RAS
