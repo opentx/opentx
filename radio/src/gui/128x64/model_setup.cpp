@@ -80,6 +80,7 @@ enum MenuModelSetupItems {
 #if defined(PCBTARANIS)
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_MODE,
+  ITEM_MODEL_INTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND,
   ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM,
@@ -450,6 +451,7 @@ void menuModelSetup(event_t event)
 
     LABEL(InternalModule),
       INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
+      IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(0)),  // XJT protocols
       INTERNAL_MODULE_CHANNELS_ROWS,                               // Channels min and count
       IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // RxNum
@@ -914,6 +916,19 @@ void menuModelSetup(event_t event)
           }
         }
         break;
+
+        case ITEM_MODEL_INTERNAL_MODULE_PROTOCOL:
+          lcdDrawTextAlignedLeft(y, STR_PROTO);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
+          if (attr) {
+            g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+            if (checkIncDec_Ret) {
+              g_model.moduleData[0].type = MODULE_TYPE_XJT;
+              g_model.moduleData[0].channelsStart = 0;
+              //g_model.moduleData[0].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+            }
+          }
+          break;
 #endif
 
 #if defined(PCBSKY9X)
@@ -1368,7 +1383,7 @@ void menuModelSetup(event_t event)
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
           if (isModuleXJT(moduleIdx) && IS_D8_RX(moduleIdx)) {
             xOffsetBind = 0;
-            lcdDrawTextAlignedLeft(y, STR_RECEIVER);
+            lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
           }
           else {
