@@ -134,7 +134,7 @@ void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
     if (reusableBuffer.hardwareAndSettings.modules[module].current <= reusableBuffer.hardwareAndSettings.modules[module].maximum) {
       addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
       Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.modules[module].current);
-      reusableBuffer.hardwareAndSettings.modules[module].timeout = 50; /* 200ms */
+      reusableBuffer.hardwareAndSettings.modules[module].timeout = 60; /* 300ms */
       reusableBuffer.hardwareAndSettings.modules[module].current++;
     }
     else {

@@ -244,6 +244,16 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PXX2)
+const char * STR_BIND = "Bind";
+const char * STR_SHARE = "Share";
+
+void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  if (is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME)) {
+    g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
+  }
+}
+
 void onPXX2BindMenu(const char * result)
 {
   if (result != STR_EXIT) {
@@ -253,12 +263,11 @@ void onPXX2BindMenu(const char * result)
   else {
     // the user pressed [Exit]
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
+    uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
     moduleSettings[moduleIdx].mode = MODULE_MODE_NORMAL;
+    removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
   }
 }
-
-const char * STR_BIND = "Bind";
-const char * STR_SHARE = "Share";
 
 void onPXX2ReceiverMenu(const char * result)
 {
@@ -286,6 +295,9 @@ void onPXX2ReceiverMenu(const char * result)
     g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
     memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
     storageDirty(EE_MODEL);
+  }
+  else {
+    removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
   }
 }
 #endif
@@ -1209,7 +1221,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(PXX2)
       case ITEM_MODEL_REGISTRATION_ID:
         lcdDrawTextAlignedLeft(y, STR_REG_ID);
         if (isDefaultModelRegistrationID())
@@ -1289,6 +1301,7 @@ void menuModelSetup(event_t event)
             s_editMode = 0;
             killEvents(event);
             g_model.moduleData[moduleIdx].pxx2.receivers |= (1 << receiverIdx);
+            memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
             storageDirty(EE_MODEL);
           }
           else {
@@ -1301,6 +1314,7 @@ void menuModelSetup(event_t event)
         if (attr && (moduleSettings[moduleIdx].mode == 0 || s_editMode == 0)) {
           if (moduleSettings[moduleIdx].mode) {
             moduleSettings[moduleIdx].mode = 0;
+            removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
             killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
             event = 0;
           }
