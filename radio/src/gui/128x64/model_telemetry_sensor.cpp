@@ -113,10 +113,10 @@ void menuModelSensor(event_t event)
                 break;
 
               case 1:
-                uint8_t instance = sensor->instance & 0x1f;
-                CHECK_INCDEC_MODELVAR_ZERO(event, instance, 0x1b);
+                uint8_t physID = sensor->instance & 0x1f;
+                CHECK_INCDEC_MODELVAR_ZERO(event, physID, 0x1b);
                 if (checkIncDec_Ret) {
-                  sensor->instance = (sensor->instance & 0x01f) + instance;
+                  sensor->instance = (sensor->instance & ~0x01f) + physID;
                 }
                 break;
             }
