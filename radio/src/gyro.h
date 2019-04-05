@@ -44,8 +44,17 @@ class Gyro {
 
   public:
     int16_t outputs[2];
-    int16_t scaled_outputs[2];
     void wakeup();
+
+    int16_t scaledX()
+    {
+      return limit(-RESX, (int)(outputs[0] - g_eeGeneral.gyroOffset * RESX/180) * (180 / (GYRO_MAX_DEFAULT + g_eeGeneral.gyroMax)), RESX);
+    }
+
+    int16_t scaledY()
+    {
+      return limit(-RESX, outputs[1] * (180 / (GYRO_MAX_DEFAULT + g_eeGeneral.gyroMax)), RESX);
+    }
 };
 
 extern Gyro gyro;

@@ -67,8 +67,5 @@ void Gyro::wakeup()
   outputs[0] = rad2RESX(atan2f(accValues[1], accValues[2]));
   outputs[1] = rad2RESX(atan2f(-accValues[0], accValues[2]));
 
-  scaled_outputs[0] = limit(-RESX, (int)(outputs[0] - g_eeGeneral.gyroOffset * RESX/180) * (180 / (GYRO_MAX_DEFAULT + g_eeGeneral.gyroMax)), RESX);
-  scaled_outputs[1] = limit(-RESX, outputs[1] * (180 / (GYRO_MAX_DEFAULT + g_eeGeneral.gyroMax)), RESX);
-
   // TRACE("%d %d", values[0], values[1]);
 }
