@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include <math.h>
 
 #define ACC_LSB_VALUE	0.000488  // 0.488 mg/LSB
 
