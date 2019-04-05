@@ -249,10 +249,10 @@ enum {
  */
 static const uint8_t moduleOptions[] = {
   0b11111111, // None = display all options
-  0b11100011, // XJT
-  0b11100011, // IXJT
-  0b11111011, // IXJT-PRO
-  0b11101011, // IXJT-S
+  0b11100010, // XJT
+  0b11100010, // IXJT
+  0b11111010, // IXJT-PRO
+  0b11101010, // IXJT-S
   0b11100100, // R9M
   0b11100100, // R9MLite
   0b11111100, // R9MLite-PRO
