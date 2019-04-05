@@ -937,7 +937,7 @@ void menuModelSetup(event_t event)
             if (checkIncDec_Ret) {
               g_model.moduleData[0].type = MODULE_TYPE_XJT;
               g_model.moduleData[0].channelsStart = 0;
-              //g_model.moduleData[0].channelsCount = DEFAULT_CHANNELS(INTERNAL_MODULE);
+              g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
             }
           }
           break;
