@@ -335,6 +335,7 @@ PACK(struct FrSkyTelemetryData {
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
+  uint8_t rssiSource;
 });
 #endif
 
@@ -832,7 +833,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 4);
   CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 104);
+  CHKSIZE(FrSkyTelemetryData, 105);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
 #elif defined(PCBTARANIS)
@@ -906,25 +907,25 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 860);
-  CHKSIZE(ModelData, 6054);
+  CHKSIZE(ModelData, 6055);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
-  CHKSIZE(ModelData, 6054);
+  CHKSIZE(ModelData, 6055);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 6054);
+  CHKSIZE(ModelData, 6055);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6549);
+  CHKSIZE(ModelData, 6550);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6536);
+  CHKSIZE(ModelData, 6537);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5215);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9721);
+  CHKSIZE(ModelData, 9722);
 #endif
 
 #undef CHKSIZE

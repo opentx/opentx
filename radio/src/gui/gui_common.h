@@ -72,6 +72,7 @@ bool isCurrentSensor(int sensor);
 bool isTelemetryFieldAvailable(int index);
 bool isTelemetryFieldComparisonAvailable(int index);
 bool isSensorAvailable(int sensor);
+bool isRssiSensorAvailable(int sensor);
 
 bool modelHasNotes();
 
