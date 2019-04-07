@@ -147,7 +147,7 @@ if(PCB STREQUAL XLITES)
   add_definitions(-DGYRO)
   set(TARGET_SRC
     ${TARGET_SRC}
-    ../common/arm/stm32/lsm6ds3_driver.cpp
+    ../common/arm/stm32/lsm6ds_driver.cpp
     )
   set(SRC
     ${SRC}
