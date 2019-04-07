@@ -22,7 +22,7 @@
 
 extern uint8_t g_moduleIdx;
 
-void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t event), uint8_t module, event_t event)
+void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t), uint8_t module)
 {
   int8_t sub = menuVerticalPosition - HEADER_LINE;
   LcdFlags attr = (sub == index ? INVERS : 0);
@@ -68,15 +68,15 @@ void menuRadioTools(event_t event)
   uint8_t menu_index = 0;
 
   if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
-    addRadioTool(menu_index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE, event);
+    addRadioTool(menu_index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 
   if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_POWER_METER))
-    addRadioTool(menu_index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE, event);
+    addRadioTool(menu_index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE);
 
   if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
-    addRadioTool(menu_index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE, event);
+    addRadioTool(menu_index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
 
   if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_POWER_METER))
-    addRadioTool(menu_index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE, event);
+    addRadioTool(menu_index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE);
 #endif
 }

@@ -19,6 +19,7 @@
  */
 
 #include <inttypes.h>
+#include "myeeprom.h"
 
 #define GYRO_SAMPLES_EXPONENT  3
 #define GYRO_SAMPLES_COUNT     (2 ^ GYRO_SAMPLES_EXPONENT)

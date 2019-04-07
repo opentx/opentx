@@ -18,7 +18,6 @@
  * GNU General Public License for more details.
  */
 
-#include <opentx.h>
 #include "opentx.h"
 
 extern uint8_t g_moduleIdx;
