@@ -22,8 +22,8 @@
 
 #if defined(SIMU)
   // not needed
-#elif defined(PCBX10)
-  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,1,-1, 1,-1, 1, 1,1};
+#elif defined(PCBT16)
+  const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  1,1,1, -1,1, 1, 1,1};
 #elif defined(PCBX9E)
 #if defined(HORUS_STICKS)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,-1,1, -1,1,-1,-1,  -1};
@@ -92,7 +92,7 @@ void adcInit()
   ADC_MAIN->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
   ADC_MAIN->SQR1 = (NUM_ANALOGS_ADC-1) << 20; // bits 23:20 = number of conversions
 
-#if defined(PCBX10)
+#if defined(PCBT16)
   if (STICKS_PWM_ENABLED()) {
     ADC_MAIN->SQR2 = (ADC_CHANNEL_EXT1<<0) + (ADC_CHANNEL_EXT2<<5); // conversions 7 and more
     ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1<<0) + (ADC_CHANNEL_POT2<<5) + (ADC_CHANNEL_POT3<<10) + (ADC_CHANNEL_SLIDER1<<15) + (ADC_CHANNEL_SLIDER2<<20) + (ADC_CHANNEL_BATT<<25); // conversions 1 to 6
