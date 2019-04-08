@@ -50,17 +50,17 @@ void menuRadioPowerMeter(event_t event)
 
   if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_POWER_METER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
-    reusableBuffer.powerMeter.freq = 2400;
+    reusableBuffer.powerMeter.freq = 2400000000;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
   coord_t y = MENU_HEADER_HEIGHT + 1 + FH;
   LcdFlags attr = (menuVerticalPosition == 0 ? INVERS : 0);
   lcdDrawText(0, y, "Freq.");
-  lcdDrawNumber(8*FW, y, reusableBuffer.powerMeter.freq, LEFT|attr|(s_editMode > 0 ? BLINK : 0));
+  lcdDrawNumber(8*FW, y, reusableBuffer.powerMeter.freq / 1000000, LEFT|attr|(s_editMode > 0 ? BLINK : 0));
   lcdDrawText(lcdNextPos, y, " MHz band");
   if (attr) {
-    reusableBuffer.powerMeter.freq = checkIncDec(event, reusableBuffer.powerMeter.freq == 900, 0, 1) ? 900 : 2400;
+    reusableBuffer.powerMeter.freq = checkIncDec(event, reusableBuffer.powerMeter.freq == 900000000, 0, 1) ? 900000000 : 2400000000;
     if (checkIncDec_Ret) {
       reusableBuffer.powerMeter.power = 0;
       reusableBuffer.powerMeter.peak = 0;
