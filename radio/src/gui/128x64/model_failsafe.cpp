@@ -68,12 +68,18 @@ void menuModelFailsafe(event_t event)
   const coord_t x = 1;
   coord_t y = FH + 1;
   uint8_t line = (menuVerticalPosition >= sentModuleChannels(g_moduleIdx) ? 2 : 0);
-  uint8_t ch = (menuVerticalPosition >= 8 ? 8 : 0) + line;
+  uint8_t ch = (menuVerticalPosition >= 16 ? 16 : (menuVerticalPosition >= 8 ? 8 : 0)) + line;
 
   // Channels
   for (; line < 8; line++) {
     const int32_t channelValue = channelOutputs[ch+channelStart];
     int32_t failsafeValue = g_model.failsafeChannels[ch];
+
+    if (menuVerticalPosition >= sentModuleChannels(g_moduleIdx)) {
+      // Outputs => Failsafe
+      lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
+      break;
+    }
 
     // Channel
     putsChn(x+1, y, ch+1, SMLSIZE);
@@ -129,10 +135,5 @@ void menuModelFailsafe(event_t event)
 
     if (++ch >= sentModuleChannels(g_moduleIdx))
       break;
-  }
-
-  if (menuVerticalPosition >= sentModuleChannels(g_moduleIdx)) {
-    // Outputs => Failsafe
-    lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
   }
 }
