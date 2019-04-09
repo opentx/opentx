@@ -264,8 +264,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 PACK(struct PXX2Version
 {
   uint8_t major;
-  uint8_t minor:4;
   uint8_t revision:4;
+  uint8_t minor:4;
 });
 
 PACK(struct PXX2HardwareInformation
