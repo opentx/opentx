@@ -23,9 +23,9 @@
 extern uint8_t g_moduleIdx;
 
 enum SpektrumFields {
-  SPEKTRUM_FREQUENCY,
-  SPEKTRUM_SPAN,
-  SPEKTRUM_FIELDS_MAX
+  SPECTRUM_FREQUENCY,
+  SPECTRUM_SPAN,
+  SPECTRUM_FIELDS_MAX
 };
 
 void menuRadioSpectrumAnalyser(event_t event)
@@ -62,11 +62,11 @@ void menuRadioSpectrumAnalyser(event_t event)
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
-  for (uint8_t i=0; i<SPEKTRUM_FIELDS_MAX+1; i++) {
+  for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX+1; i++) {
     uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
 
     switch (i) {
-      case SPEKTRUM_FREQUENCY: {
+      case SPECTRUM_FREQUENCY: {
         uint16_t frequency = reusableBuffer.spectrumAnalyser.freq / 1000000;
         lcdDrawText(1, 10, "F:", 0);
         lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, ((menuHorizontalPosition == 0 && s_editMode) ? blink : 0));
@@ -77,7 +77,7 @@ void menuRadioSpectrumAnalyser(event_t event)
         break;
       }
 
-      case SPEKTRUM_SPAN:
+      case SPECTRUM_SPAN:
         uint8_t span = reusableBuffer.spectrumAnalyser.span / 1000000;
         lcdDrawText(lcdLastRightPos + 5, 10, "S:", 0);
         lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.span/1000000, (menuHorizontalPosition==1 ? blink : 0));

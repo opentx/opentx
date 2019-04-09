@@ -38,7 +38,7 @@ void addRadioTool(uint8_t index, const char * label, void (* tool)(event_t), uin
 
 void menuRadioTools(event_t event)
 {
-  uint8_t spektrum_modules = 0, power_modules = 0;
+  uint8_t spectrum_modules = 0, power_modules = 0;
 
   if (event == EVT_ENTRY  || event == EVT_ENTRY_UP) {
     memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
@@ -54,26 +54,26 @@ void menuRadioTools(event_t event)
   }
 
   for (uint8_t module = 0; module < NUM_MODULES; module++) {
-    if (isModuleOptionAvailable(module, MODULE_OPTION_SPEKTRUM_ANALYSER)) {
-      spektrum_modules++;
+    if (isModuleOptionAvailable(module, MODULE_OPTION_SPECTRUM_ANALYSER)) {
+      spectrum_modules++;
     }
     if (isModuleOptionAvailable(module, MODULE_OPTION_POWER_METER)) {
       power_modules++;
     }
   }
 
-  SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spektrum_modules + power_modules);
+  SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spectrum_modules + power_modules);
 
 #if defined(PXX2)
   uint8_t menu_index = 0;
 
-  if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
+  if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_SPECTRUM_ANALYSER))
     addRadioTool(menu_index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 
   if (isModuleOptionAvailable(INTERNAL_MODULE, MODULE_OPTION_POWER_METER))
     addRadioTool(menu_index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE);
 
-  if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_SPEKTRUM_ANALYSER))
+  if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_SPECTRUM_ANALYSER))
     addRadioTool(menu_index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
 
   if (isModuleOptionAvailable(EXTERNAL_MODULE, MODULE_OPTION_POWER_METER))
