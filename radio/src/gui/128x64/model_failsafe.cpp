@@ -68,7 +68,7 @@ void menuModelFailsafe(event_t event)
   const coord_t x = 1;
   coord_t y = FH + 1;
   uint8_t line = (menuVerticalPosition >= sentModuleChannels(g_moduleIdx) ? 2 : 0);
-  uint8_t ch = (menuVerticalPosition >= 16 ? 16 : (menuVerticalPosition >= 8 ? 8 : 0)) + line;
+  uint8_t ch = (menuVerticalPosition & ~0x07) + + line;
 
   // Channels
   for (; line < 8; line++) {
