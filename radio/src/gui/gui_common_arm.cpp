@@ -46,6 +46,17 @@ bool isInputAvailable(int input)
   return false;
 }
 
+bool isRssiSensorAvailable(int sensor)
+{
+  if (sensor == 0)
+    return true;
+  else {
+    TelemetrySensor &telemSensor = g_model.telemetrySensors[abs(sensor) - 1];
+    return (telemSensor.isAvailable() && telemSensor.id == RSSI_ID);
+  }
+}
+
+
 bool isSensorAvailable(int sensor)
 {
   if (sensor == 0)

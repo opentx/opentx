@@ -162,8 +162,11 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     if (dataId == RSSI_ID) {
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
-      if (data == 0)
-        telemetryData.rssi.reset();
+      if(g_model.frsky.rssiSource) {
+        TelemetrySensor * sensor = & g_model.telemetrySensors[g_model.frsky.rssiSource];
+        if(sensor->instance == instance)
+          telemetryData.rssi.set(data);
+      }
       else
         telemetryData.rssi.set(data);
     }

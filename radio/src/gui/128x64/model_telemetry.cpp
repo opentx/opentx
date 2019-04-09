@@ -26,6 +26,7 @@ enum MenuModelTelemetryFrskyItems {
   ITEM_TELEMETRY_INVERTED_SERIAL,
 #endif
   ITEM_TELEMETRY_RSSI_LABEL,
+  ITEM_TELEMETRY_RSSI_SOURCE,
   ITEM_TELEMETRY_RSSI_ALARM1,
   ITEM_TELEMETRY_RSSI_ALARM2,
   ITEM_TELEMETRY_DISABLE_ALARMS,
@@ -57,7 +58,7 @@ enum MenuModelTelemetryFrskyItems {
 
 #define USRDATA_ROWS
 
-#define RSSI_ROWS                    LABEL(RSSI), 0, 0, 1,
+#define RSSI_ROWS                    LABEL(RSSI), 0, 0, 0, 1,
 
 #define SCREEN_TYPE_ROWS             0
 
@@ -253,6 +254,19 @@ void menuModelTelemetryFrsky(event_t event)
 #endif
         lcdDrawTextAlignedLeft(y, "RSSI");
         break;
+
+      case ITEM_TELEMETRY_RSSI_SOURCE: {
+        lcdDrawTextAlignedLeft(y, STR_SOURCE);
+        drawSource(TELEM_COL2, y, g_model.frsky.rssiSource ? MIXSRC_FIRST_TELEM + 3 * (g_model.frsky.rssiSource - 1) : 0, attr);
+        if (g_model.frsky.rssiSource) {
+          TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.frsky.rssiSource];
+          drawReceiverName(TELEM_COL2 + 5 * FW, y, (sensor->instance >> 7) & 0x01, (sensor->instance >> 5) & 0x03, 0);
+        }
+        if (attr) {
+          g_model.frsky.rssiSource = checkIncDec(event, g_model.frsky.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
+        }
+        break;
+      }
 
       case ITEM_TELEMETRY_RSSI_ALARM1:
       case ITEM_TELEMETRY_RSSI_ALARM2: {

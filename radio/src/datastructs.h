@@ -321,6 +321,7 @@ PACK(struct FrSkyTelemetryData {  // TODO EEPROM change, rename to VarioData
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
+  uint8_t rssiSource;
 });
 #else
 // TODO remove this also on Taranis
@@ -335,6 +336,7 @@ PACK(struct FrSkyTelemetryData {
   int8_t  varioCenterMin;
   int8_t  varioMin;
   int8_t  varioMax;
+  uint8_t rssiSource;
 });
 #endif
 
@@ -832,7 +834,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 4);
   CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 104);
+  CHKSIZE(FrSkyTelemetryData, 105);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
 #elif defined(PCBTARANIS)
@@ -847,7 +849,7 @@ static inline void check_struct()
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 6);
   CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 104);
+  CHKSIZE(FrSkyTelemetryData, 105);
   CHKSIZE(ModelHeader, 24);
   CHKSIZE(CurveData, 4);
 #elif defined(PCBHORUS)
@@ -858,7 +860,7 @@ static inline void check_struct()
   CHKSIZE(FlightModeData, 44);
   CHKSIZE(TimerData, 16);
   CHKSIZE(SwashRingData, 8);
-  CHKSIZE(FrSkyTelemetryData, 5);
+  CHKSIZE(FrSkyTelemetryData, 6);
   CHKSIZE(ModelHeader, 27);
   CHKSIZE(CurveData, 4);
   CHKSIZE(CustomScreenData, 610);
@@ -873,7 +875,7 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 5);
   CHKSIZE(FrSkyLineData, 2);
-  CHKSIZE(FrSkyTelemetryData, 88);
+  CHKSIZE(FrSkyTelemetryData, 89);
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
 #else
@@ -906,25 +908,25 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 860);
-  CHKSIZE(ModelData, 6054);
+  CHKSIZE(ModelData, 6055);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
-  CHKSIZE(ModelData, 6054);
+  CHKSIZE(ModelData, 6055);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 6054);
+  CHKSIZE(ModelData, 6055);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6549);
+  CHKSIZE(ModelData, 6550);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6536);
+  CHKSIZE(ModelData, 6537);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5215);
+  CHKSIZE(ModelData, 5216);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9721);
+  CHKSIZE(ModelData, 9722);
 #endif
 
 #undef CHKSIZE
