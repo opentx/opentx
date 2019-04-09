@@ -33,7 +33,7 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
-  EXTERNAL_MODULE_OFF();
+  EXTERNAL_MODULE_PWR_OFF();
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 
@@ -47,11 +47,17 @@ void pwrInit()
 #endif
 
 #if defined(PCBREV_GPIO_PIN)
-  // Init PCBREV PIN
   GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
   GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+#endif
+
+#if defined(INTMODULE_BOOTCMD_GPIO)
+  GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = INTMODULE_BOOTCMD_GPIO_PIN;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  GPIO_Init(INTMODULE_BOOTCMD_GPIO, &GPIO_InitStructure);
 #endif
 
   pwrOn();

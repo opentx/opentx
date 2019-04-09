@@ -233,6 +233,11 @@ void enablePulses(uint8_t module, uint8_t protocol)
     case PROTOCOL_CHANNELS_PPM:
       init_ppm(module);
       break;
+
+    default:
+      // TODO some reworking needed here ...
+      disable_pxx2(module);
+      break;
   }
 }
 
