@@ -70,7 +70,12 @@ void menuRadioDiagAnalogs(event_t event)
 
   // RAS
 #if defined(PCBTARANIS)
-  if (isModuleXJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
+  if (isModuleXJT2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
+    y += FH;
+    lcdDrawText(1, y, "RAS:");
+    lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
+  }
+  else if (isModuleXJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
     y += FH;
     lcdDrawText(1, y, "RAS:");
     lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
