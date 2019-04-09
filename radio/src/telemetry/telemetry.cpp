@@ -159,7 +159,7 @@ void telemetryWakeup()
     }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-    if ((isModulePXX(INTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
+    if ((isModulePXX2(INTERNAL_MODULE) || isModulePXX(INTERNAL_MODULE) || isModulePXX2(EXTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
       AUDIO_RAS_RED();
       POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;
