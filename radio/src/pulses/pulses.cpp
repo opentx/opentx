@@ -236,7 +236,9 @@ void enablePulses(uint8_t module, uint8_t protocol)
 
     default:
       // TODO some reworking needed here ...
+#if defined(PXX2)
       disable_pxx2(module);
+#endif
       break;
   }
 }
