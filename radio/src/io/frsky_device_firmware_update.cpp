@@ -354,12 +354,15 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
 
-  if (intPwr)
+  if (intPwr) {
     INTERNAL_MODULE_ON();
-  if (extPwr)
+    setupPulses(INTERNAL_MODULE);
+  }
+  if (extPwr) {
     EXTERNAL_MODULE_ON();
+    setupPulses(EXTERNAL_MODULE);
+  }
 
   state = SPORT_IDLE;
-
   resumePulses();
 }
