@@ -380,11 +380,11 @@ void runPopupRegister(event_t event)
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4, STR_REG_ID);
     editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == ITEM_REGISTER_PASSWORD);
 
-    // module index
+    // loop index (will be removed in future)
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + FH, "UID");
-    lcdDrawNumber(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4 + FH, reusableBuffer.moduleSetup.pxx2.registerModuleIndex, menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX ? (s_editMode ? INVERS + BLINK : INVERS) : 0);
+    lcdDrawNumber(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4 + FH, reusableBuffer.moduleSetup.pxx2.registerLoopIndex, menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX ? (s_editMode ? INVERS + BLINK : INVERS) : 0);
     if (menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX && s_editMode) {
-      CHECK_INCDEC_MODELVAR_ZERO(event, reusableBuffer.moduleSetup.pxx2.registerModuleIndex, 7);
+      CHECK_INCDEC_MODELVAR_ZERO(event, reusableBuffer.moduleSetup.pxx2.registerLoopIndex, 7);
     }
 
     // RX name

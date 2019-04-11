@@ -160,7 +160,7 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
       Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
-    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.registerModuleIndex);
+    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.registerLoopIndex);
   }
   else {
     Pxx2Transport::addByte(0);

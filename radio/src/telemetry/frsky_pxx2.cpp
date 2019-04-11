@@ -109,6 +109,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
       if (reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_START) {
         // RX_NAME follows, we store it for the next step
         str2zchar(reusableBuffer.moduleSetup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
+        reusableBuffer.moduleSetup.pxx2.registerLoopIndex = frame[12];
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
       }
       break;
