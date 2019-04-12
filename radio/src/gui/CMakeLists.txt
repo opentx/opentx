@@ -60,7 +60,7 @@ if(ARCH STREQUAL ARM)
     )
 endif()
 
-if(PCB STREQUAL X12S OR PCB STREQUAL T16)
+if(PCB STREQUAL X12S OR PCB STREQUAL T16 OR PCB STREQUAL T16HD)
   if(HELI)
     set(HELI_SRC gui/common/colorlcd/model_heli.cpp)
   endif()

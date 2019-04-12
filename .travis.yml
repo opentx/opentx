@@ -36,6 +36,7 @@ env:
     # - FLAVOR=X9E
     - FLAVOR=HORUS
     # - FLAVOR=T16
+    # - FLAVOR=T16HD
     # - FLAVOR=X12Sr10
     # - FLAVOR=X12S
 

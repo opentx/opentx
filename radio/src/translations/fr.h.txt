@@ -493,6 +493,9 @@
 #elif defined(PCBT16)
   #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\311LS\0""\311RS\0""Rien""Rien""\310EX1""\310EX2"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
+#elif defined(PCBT16HD)
+  #define TR_POTS_VSRCRAW              "\310S1\0""\3106P\0""\310S2\0""\311LS\0""\311RS\0""Rien""Rien""\310EX1""\310EX2"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0"
 #elif defined(PCBX9E)
   #define TR_POTS_VSRCRAW              "\310F1\0""\310F2\0""\310F3\0""\310F4\0""\311S1\0""\311S2\0""\311LS\0""\311RS\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0""\312SK\0""\312SL\0""\312SM\0""\312SN\0""\312SO\0""\312SP\0""\312SQ\0""\312SR\0"
@@ -604,7 +607,7 @@
 #define LEN_VCELLINDEX                 "\007"
 #define TR_VCELLINDEX                  "Mini.\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Maxi.\0 ""Diff.\0 "
 
-#if defined(PCBT16) || defined(PCBXLITE)
+#if defined(PCBT16) || defined(PCBT16HD) || defined(PCBXLITE)
 #define LEN_VANTENNATYPES              "\007"
 #define TR_VANTENNATYPES               "Interne""Externe"
 #else
@@ -866,10 +869,14 @@
 #define TR_MENUTEMPLATES               "GABARITS"
 #define TR_MENUSTAT                    TR("STATS", "STATISTIQUES")
 #define TR_MENUDEBUG                   "DEBUG"
+#if defined(PCBT16HD)
+#define TR_MONITOR_CHANNELS1           "VOIES 1-32"
+#else  
 #define TR_MONITOR_CHANNELS1           "VOIES 1-8"
 #define TR_MONITOR_CHANNELS2           "VOIES 9-16"
 #define TR_MONITOR_CHANNELS3           "VOIES 17-24"
 #define TR_MONITOR_CHANNELS4           "VOIES 25-32"
+#endif
 #define TR_MONITOR_SWITCHES            "INTERS LOGIQUES"
 #define TR_MONITOR_OUTPUT_DESC         "Sorties"
 #define TR_MONITOR_MIXER_DESC          "Mixeurs"
@@ -1245,7 +1252,11 @@
 #define TR_ABOUT_MARTIN_1              "Martin Hotar"
 #define TR_ABOUT_MARTIN_2              "Design graphique"
 
-#if defined(PCBTARANIS)
+#if defined(PCBT16)||defined(PCBT16HD)
+  #define TR_ABOUT_HARDWARE_1          "JumperTX"
+  #define TR_ABOUT_HARDWARE_2          "Développeur/fabricant"
+  #define TR_ABOUT_HARDWARE_3          "du matériel"
+#elif defined(PCBTARANIS)
   #define TR_ABOUT_HARDWARE_1          "FrSky"
   #define TR_ABOUT_HARDWARE_2          "Développeur/fabricant"
   #define TR_ABOUT_HARDWARE_3          "du matériel"

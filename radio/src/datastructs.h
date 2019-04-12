@@ -773,8 +773,18 @@ typedef uint8_t swarnenable_t;
 #else
   #define TELEMETRY_DATA
 #endif
-
-#if defined(PCBHORUS)
+#if defined(PCBT16HD)
+#include "gui/800x480/layout.h"
+#include "gui/800x480/topbar.h"
+PACK(struct CustomScreenData {
+  char layoutName[10];
+  Layout::PersistentData layoutData;
+});
+#define CUSTOM_SCREENS_DATA \
+  NOBACKUP(CustomScreenData screenData[MAX_CUSTOM_SCREENS]); \
+  NOBACKUP(Topbar::PersistentData topbarData); \
+  NOBACKUP(uint8_t view);
+#elif defined(PCBHORUS)
 #include "gui/480x272/layout.h"
 #include "gui/480x272/topbar.h"
 PACK(struct CustomScreenData {
@@ -796,6 +806,8 @@ PACK(struct CustomScreenData {
 #if defined(PCBX12S)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]);
 #elif defined(PCBT16)
+  #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
+#elif defined(PCBT16HD)
   #define MODELDATA_EXTRA   NOBACKUP(uint8_t spare:3); NOBACKUP(uint8_t trainerMode:3); NOBACKUP(uint8_t potsWarnMode:2); ModuleData moduleData[NUM_MODULES+1]; NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]); NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]); NOBACKUP(uint8_t potsWarnEnabled); NOBACKUP(int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]); NOBACKUP(uint8_t potsWarnSpares[NUM_DUMMY_ANAS]);
 #elif defined(PCBTARANIS)
   #define MODELDATA_EXTRA   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS]; char inputNames[MAX_INPUTS][LEN_INPUT_NAME]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
@@ -970,7 +982,12 @@ PACK(struct TrainerData {
   #define EXTRA_GENERAL_FIELDS
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBT16HD)
+  #include "gui/800x480/theme.h"
+  #define THEME_DATA \
+    NOBACKUP(char themeName[8]); \
+    NOBACKUP(Theme::PersistentData themeData);
+#elif defined(PCBHORUS)
   #include "gui/480x272/theme.h"
   #define THEME_DATA \
     NOBACKUP(char themeName[8]); \

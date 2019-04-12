@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB_TYPES T12 XLITE X9D X9D+ X9E T16 X12S 9X 9XR 9X128 9XR128 9X2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO AR9X)
+set(PCB_TYPES T12 XLITE X9D X9D+ X9E T16 T16HD X12S 9X 9XR 9X128 9XR128 9X2561 GRUVIN9X MEGA2560 SKY9X 9XRPRO AR9X)
 set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL)
 set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL RU)
 
@@ -84,6 +84,8 @@ set(FATFS_SRC
 
 if(PCB STREQUAL T16)
   include(targets/t16/CMakeLists.txt)
+elseif(PCB STREQUAL T16HD)
+  include(targets/t16hd/CMakeLists.txt)
 elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL T12 OR PCB STREQUAL XLITE)
   include(targets/taranis/CMakeLists.txt)
 elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
@@ -167,7 +169,7 @@ else()
   add_definitions(-DEEPROM -DEEPROM_RAW)
 endif()
 
-if(ARCH STREQUAL ARM AND NOT PCB STREQUAL X12S AND NOT PCB STREQUAL T16 AND NOT PCB STREQUAL XLITE)
+if(ARCH STREQUAL ARM AND NOT PCB STREQUAL X12S AND NOT PCB STREQUAL T16 AND NOT PCB STREQUAL T16HD AND NOT PCB STREQUAL XLITE)
   add_definitions(-DEEPROM_CONVERSIONS)
   set(SRC ${SRC} storage/eeprom_conversions.cpp)
 endif()
@@ -210,7 +212,7 @@ if(NOT LUA STREQUAL NO)
     set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
   endif()
   set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
-  if(PCB STREQUAL X12S OR PCB STREQUAL T16)
+  if(PCB STREQUAL X12S OR PCB STREQUAL T16 OR PCB STREQUAL T16HD)
     set(SRC ${SRC} lua/widgets.cpp)
   endif()
   set(LUA_SRC lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c lmem.c lobject.c lopcodes.c lparser.c
@@ -497,7 +499,7 @@ if(NOT MSVC)
     endif()
 
 
-    if(PCB STREQUAL XLITE OR PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL T12 OR PCB STREQUAL T16 OR PCB STREQUAL X12S)
+    if(PCB STREQUAL XLITE OR PCB STREQUAL X9D OR PCB STREQUAL X9D+ OR PCB STREQUAL X9E OR PCB STREQUAL T12 OR PCB STREQUAL T16 OR PCB STREQUAL T16HD OR PCB STREQUAL X12S)
       add_subdirectory(targets/common/arm/stm32/bootloader)
       include_directories(${CMAKE_CURRENT_BINARY_DIR}/targets/common/arm/stm32/bootloader)
       set(FIRMWARE_DEPENDENCIES ${FIRMWARE_DEPENDENCIES} bootloader)

@@ -163,6 +163,11 @@ bool isSourceAvailable(int source)
     return false;
 #endif
 
+#if defined(PCBT16HD)
+  if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
+    return false;
+#endif
+
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
      return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
   }

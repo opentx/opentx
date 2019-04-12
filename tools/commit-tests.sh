@@ -184,6 +184,15 @@ if [[ " T16 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
+if [[ " T16HD HORUS ALL " =~ " ${FLAVOR} " ]] ; then
+  # JumperTX on T16HD boards
+  rm -rf *
+  cmake ${COMMON_OPTIONS} -DPCB=T16HD -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  make -j${CORES} ${FIRMARE_TARGET}
+  make -j${CORES} libsimulator
+  make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
+fi
+
 if [[ " X12Sr10 HORUS ALL " =~ " ${FLAVOR} " ]] ; then
   # OpenTX on Horus beta boards
   rm -rf *

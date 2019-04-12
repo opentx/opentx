@@ -136,6 +136,12 @@ elif options[optcount] == "t16":
     maxsize = 2 * 1024 * 1024
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "t16hd":
+    command_options["PCB"] = "T16HD"
+    firmware_options = options_t16hd
+    maxsize = 2 * 1024 * 1024
+    board = BOARD_HORUS
+    board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x12s":
     command_options["PCB"] = "X12S"
     firmware_options = options_x12s

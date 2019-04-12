@@ -29,6 +29,8 @@
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
 #elif defined(PCBT16)
   #include "lua/lua_exports_t16.inc"
+#elif defined(PCBT16HD)
+  #include "lua/lua_exports_t16hd.inc"
 #elif defined(PCBX9E)
   #include "lua/lua_exports_x9e.inc"
 #elif defined(PCBT12)

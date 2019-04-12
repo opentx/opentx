@@ -83,6 +83,9 @@ make -j${JOBS} libsimulator
 cmake ${COMMON_OPTIONS} -DPCB=T16 ${SRCDIR}
 make -j${JOBS} libsimulator
 
+cmake ${COMMON_OPTIONS} -DPCB=T16HD ${SRCDIR}
+make -j${JOBS} libsimulator
+
 cmake ${COMMON_OPTIONS} -DPCB=X12S ${SRCDIR}
 make -j${JOBS} libsimulator
 
