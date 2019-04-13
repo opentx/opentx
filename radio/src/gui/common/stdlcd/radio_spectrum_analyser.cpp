@@ -69,7 +69,7 @@ void menuRadioSpectrumAnalyser(event_t event)
       case SPECTRUM_FREQUENCY: {
         uint16_t frequency = reusableBuffer.spectrumAnalyser.freq / 1000000;
         lcdDrawText(1, 10, "F:", 0);
-        lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, ((menuHorizontalPosition == 0 && s_editMode) ? blink : 0));
+        lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, (menuHorizontalPosition == 0 ? blink : 0));
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
         if (menuHorizontalPosition == 0) {
           reusableBuffer.spectrumAnalyser.freq = checkIncDec(event, frequency, 2400, 2485, 0) * 1000000;
