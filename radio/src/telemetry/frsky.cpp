@@ -33,16 +33,11 @@ void processFrskyTelemetryData(uint8_t data)
   }
 #endif
 
-#if defined(BLUETOOTH)
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetoothState == BLUETOOTH_STATE_CONNECTED) {
-    bluetoothForwardTelemetry(data);
-  }
-#endif
-
   if (pushFrskyTelemetryData(data)) {
     if (IS_FRSKY_SPORT_PROTOCOL()) {
       sportProcessTelemetryPacket(telemetryRxBuffer);
-    } else {
+    }
+    else {
       frskyDProcessPacket(telemetryRxBuffer);
     }
   }

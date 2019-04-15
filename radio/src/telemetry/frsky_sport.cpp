@@ -157,6 +157,14 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
   uint16_t dataId = *((uint16_t *)(packet+2));
   uint32_t data = SPORT_DATA_S32(packet);
 
+#if defined(BLUETOOTH)
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetoothState == BLUETOOTH_STATE_CONNECTED) {
+    for (uint8_t i = 0; i < sizeof(SportTelemetryPacket); i++) {
+      bluetoothForwardTelemetry(packet[i]);
+    }
+  }
+#endif
+
   if (primId == DATA_FRAME) {
     uint8_t instance = physicalId + (origin << 5);
     if (dataId == RSSI_ID) {
