@@ -63,16 +63,16 @@ void menuRadioSpectrumAnalyser(event_t event)
   }
 
   for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX+1; i++) {
-    uint8_t blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags attr = (menuHorizontalPosition == i ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
 
     switch (i) {
       case SPECTRUM_FREQUENCY: {
         uint16_t frequency = reusableBuffer.spectrumAnalyser.freq / 1000000;
         lcdDrawText(1, 10, "F:", 0);
-        lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, (menuHorizontalPosition == 0 ? blink : 0));
+        lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, attr);
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
-        if (menuHorizontalPosition == 0) {
-          reusableBuffer.spectrumAnalyser.freq = checkIncDec(event, frequency, 2400, 2485, 0) * 1000000;
+        if (attr) {
+          reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, 2400, 2485, 0)) * 1000000;
         }
         break;
       }
@@ -80,14 +80,15 @@ void menuRadioSpectrumAnalyser(event_t event)
       case SPECTRUM_SPAN:
         uint8_t span = reusableBuffer.spectrumAnalyser.span / 1000000;
         lcdDrawText(lcdLastRightPos + 5, 10, "S:", 0);
-        lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.span/1000000, (menuHorizontalPosition==1 ? blink : 0));
+        lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.span/1000000, attr);
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
-        if (menuHorizontalPosition == 1) {
+        if (attr) {
           reusableBuffer.spectrumAnalyser.span = checkIncDec(event, span, 1, 80, 0) * 1000000;
         }
         break;
     }
   }
+
   uint8_t peak_y = 1;
   uint8_t peak_x = 0;
   for (uint8_t i=0; i<LCD_W; i++) {

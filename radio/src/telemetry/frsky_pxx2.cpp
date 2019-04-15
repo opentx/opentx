@@ -185,12 +185,13 @@ void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
   // left = 2440000000 - 20000000
   // step = 10000
 
-  int32_t D = *frequency - (2440000000 - 40000000 / 2);
-
   // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
-  uint8_t x = D * 128 / 40000000;
 
-  reusableBuffer.spectrumAnalyser.bars[x] = 127 + *power;
+  int32_t position = *frequency - reusableBuffer.spectrumAnalyser.freq - (reusableBuffer.spectrumAnalyser.span / 2);
+  uint8_t x = (position * LCD_W) / reusableBuffer.spectrumAnalyser.span;
+  if (x < LCD_W) {
+    reusableBuffer.spectrumAnalyser.bars[x] = 127 + *power;
+  }
 }
 
 void processPowerMeterFrame(uint8_t module, uint8_t * frame)
