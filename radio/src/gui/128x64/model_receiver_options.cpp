@@ -122,8 +122,7 @@ void menuModelReceiverOptions(event_t event)
           // Pin
         {
           uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
-          uint8_t lastChan = g_model.moduleData[g_moduleIdx].channelsStart + 8 + g_model.moduleData[g_moduleIdx].channelsCount - 1;
-          uint8_t channel = limit(g_model.moduleData[g_moduleIdx].channelsStart, reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin], lastChan);
+          uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
           int32_t channelValue = channelOutputs[channel];
           lcdDrawText(0, y, "Pin");
           lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
@@ -131,7 +130,7 @@ void menuModelReceiverOptions(event_t event)
 
           // Channel
           if (attr) {
-            channel = checkIncDec(event, channel, g_model.moduleData[g_moduleIdx].channelsStart, g_model.moduleData[g_moduleIdx].channelsStart + 8 + g_model.moduleData[g_moduleIdx].channelsCount - 1);
+            channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
             if (checkIncDec_Ret) {
               reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = channel;
               reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
