@@ -26,15 +26,13 @@ const unsigned char sticks[]  = {
 #include "sticks.lbm"
 };
 
-#define RADIO_SETUP_2ND_COLUMN  (LCD_W-7*FW-3)
-#define RADIO_SETUP_DATE_COLUMN (FW*15+7)
-#define RADIO_SETUP_TIME_COLUMN (RADIO_SETUP_2ND_COLUMN + 2 * FWNUM)
+#define RADIO_SETUP_2ND_COLUMN  79
 
-  #define SLIDER_5POS(y, value, label, event, attr) { \
-    int8_t tmp = value; \
-    drawSlider(RADIO_SETUP_2ND_COLUMN, y, 2+tmp, 4, attr); \
-    value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
-  }
+#define SLIDER_5POS(y, value, label, event, attr) { \
+  int8_t tmp = value; \
+  drawSlider(RADIO_SETUP_2ND_COLUMN, y, LCD_W - 2 - RADIO_SETUP_2ND_COLUMN, 2+tmp, 4, attr); \
+  value = editChoice(RADIO_SETUP_2ND_COLUMN, y, label, NULL, tmp, -2, +2, attr, event); \
+}
 
 #if defined(SPLASH)
   #define CASE_SPLASH_PARAM(x) x,
@@ -190,17 +188,17 @@ void menuRadioSetup(event_t event)
 #if defined(RTCLOCK)
       case ITEM_SETUP_DATE:
         lcdDrawTextAlignedLeft(y, STR_DATE);
-        lcdDrawChar(RADIO_SETUP_DATE_COLUMN, y, '-');
-        lcdDrawChar(RADIO_SETUP_DATE_COLUMN+3*FW-2, y, '-');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
-              lcdDrawNumber(RADIO_SETUP_DATE_COLUMN, y, t.tm_year+TM_YEAR_BASE, rowattr|RIGHT);
+              lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, t.tm_year+TM_YEAR_BASE, rowattr);
+              lcdDrawChar(lcdNextPos, y, '-');
               if (rowattr && s_editMode > 0) t.tm_year = checkIncDec(event, t.tm_year, 112, 200, 0);
               break;
             case 1:
-              lcdDrawNumber(RADIO_SETUP_DATE_COLUMN+3*FW-2, y, t.tm_mon+1, rowattr|LEADING0|RIGHT, 2);
+              lcdDrawNumber(lcdNextPos, y, t.tm_mon+1, rowattr|LEADING0, 2);
+              lcdDrawChar(lcdNextPos, y, '-');
               if (rowattr && s_editMode > 0) t.tm_mon = checkIncDec(event, t.tm_mon, 0, 11, 0);
               break;
             case 2:
@@ -209,7 +207,7 @@ void menuRadioSetup(event_t event)
               int8_t dlim = (((((year%4==0) && (year%100!=0)) || (year%400==0)) && (t.tm_mon==1)) ? 1 : 0);
               static const uint8_t dmon[]  = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
               dlim += dmon[t.tm_mon];
-              lcdDrawNumber(RADIO_SETUP_DATE_COLUMN+6*FW-4, y, t.tm_mday, rowattr|LEADING0|RIGHT, 2);
+              lcdDrawNumber(lcdNextPos, y, t.tm_mday, rowattr|LEADING0, 2);
               if (rowattr && s_editMode > 0) t.tm_mday = checkIncDec(event, t.tm_mday, 1, dlim, 0);
               break;
             }
@@ -222,20 +220,21 @@ void menuRadioSetup(event_t event)
 
       case ITEM_SETUP_TIME:
         lcdDrawTextAlignedLeft(y, STR_TIME);
-        lcdDrawChar(RADIO_SETUP_TIME_COLUMN+1, y, ':'); lcdDrawChar(RADIO_SETUP_TIME_COLUMN+3*FW-2, y, ':');
         for (uint8_t j=0; j<3; j++) {
           uint8_t rowattr = (menuHorizontalPosition==j ? attr : 0);
           switch (j) {
             case 0:
-              lcdDrawNumber(RADIO_SETUP_TIME_COLUMN, y, t.tm_hour, rowattr|LEADING0|RIGHT, 2);
+              lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, t.tm_hour, rowattr|LEADING0, 2);
+              lcdDrawChar(lcdNextPos + 1, y, ':');
               if (rowattr && s_editMode > 0) t.tm_hour = checkIncDec(event, t.tm_hour, 0, 23, 0);
               break;
             case 1:
-              lcdDrawNumber(RADIO_SETUP_TIME_COLUMN+3*FWNUM, y, t.tm_min, rowattr|LEADING0|RIGHT, 2);
+              lcdDrawNumber(lcdNextPos + 1, y, t.tm_min, rowattr|LEADING0, 2);
+              lcdDrawChar(lcdNextPos + 1, y, ':');
               if (rowattr && s_editMode > 0) t.tm_min = checkIncDec(event, t.tm_min, 0, 59, 0);
               break;
             case 2:
-              lcdDrawNumber(RADIO_SETUP_TIME_COLUMN+6*FWNUM, y, t.tm_sec, rowattr|LEADING0|RIGHT, 2);
+              lcdDrawNumber(lcdNextPos + 1, y, t.tm_sec, rowattr|LEADING0, 2);
               if (rowattr && s_editMode > 0) t.tm_sec = checkIncDec(event, t.tm_sec, 0, 59, 0);
               break;
           }
@@ -295,7 +294,7 @@ void menuRadioSetup(event_t event)
       {
         lcdDrawTextAlignedLeft(y, STR_SPEAKER_VOLUME);
         uint8_t b = g_eeGeneral.speakerVolume+VOLUME_LEVEL_DEF;
-        drawSlider(RADIO_SETUP_2ND_COLUMN, y, b, VOLUME_LEVEL_MAX, attr);
+        drawSlider(RADIO_SETUP_2ND_COLUMN, y, LCD_W - 2 - RADIO_SETUP_2ND_COLUMN, b, VOLUME_LEVEL_MAX, attr);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, b, 0, VOLUME_LEVEL_MAX);
           if (checkIncDec_Ret) {

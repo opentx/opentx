@@ -647,7 +647,7 @@
 #define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST                    "Contrast"
 #define TR_ALARMS_LABEL                "Alarms"
-#define TR_BATTERY_RANGE               TR("Battery range", "Battery meter range")
+#define TR_BATTERY_RANGE               TR("Batt. range", "Battery meter range")
 #define TR_BATTERYWARNING              INDENT "Battery low"
 #define TR_INACTIVITYALARM             INDENT "Inactivity"
 #define TR_MEMORYWARNING               INDENT "Memory low"
@@ -813,9 +813,9 @@
 #define TR_LONGITUDE                   "Longitude"
 #define TR_GPSCOORD                    TR("GPS Coords", INDENT "Coordinate format")
 #define TR_VARIO                       TR("Vario", "Variometer")
-#define TR_PITCH_AT_ZERO               INDENT "Pitch at zero"
-#define TR_PITCH_AT_MAX                INDENT "Pitch at max"
-#define TR_REPEAT_AT_ZERO              INDENT "Repeat at zero"
+#define TR_PITCH_AT_ZERO               INDENT "Pitch zero"
+#define TR_PITCH_AT_MAX                INDENT "Pitch max"
+#define TR_REPEAT_AT_ZERO              INDENT "Repeat zero"
 #define TR_POWEROFF                    "\027Power OFF..."
 #define TR_SHUTDOWN                    "SHUTTING DOWN"
 #define TR_SAVEMODEL                   "Saving model settings"

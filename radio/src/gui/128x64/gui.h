@@ -52,6 +52,7 @@ extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
 #define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
+void drawSlider(coord_t x, coord_t y, uint8_t width, uint8_t value, uint8_t max, uint8_t attr);
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
 
 extern int8_t checkIncDec_Ret;  // global helper vars

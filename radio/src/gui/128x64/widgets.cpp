@@ -96,13 +96,19 @@ int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t eve
   return value;
 }
 
-void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
+void drawSlider(coord_t x, coord_t y, uint8_t width, uint8_t value, uint8_t max, uint8_t attr)
 {
-  lcdDrawChar(x+(value*4*FW)/max, y, '$');
-  lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, FORCE);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawSolidFilledRect(x, y, 5*FW-1, FH-1);
+  lcdDrawChar(x + (value * (width - FWNUM)) / max, y, '$');
+  lcdDrawSolidHorizontalLine(x, y + 3, width, FORCE);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) {
+    lcdDrawSolidFilledRect(x, y, width, FH - 1);
+  }
 }
 
+void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
+{
+  drawSlider(x, y, 5*FW - 1, value, max, attr);
+}
 
 #if defined(GVARS)
 void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)
