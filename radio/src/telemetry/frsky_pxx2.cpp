@@ -187,8 +187,8 @@ void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
 
   // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
 
-  int32_t position = *frequency - reusableBuffer.spectrumAnalyser.freq + (reusableBuffer.spectrumAnalyser.span / 2);
-  unsigned x = (position * LCD_W) / reusableBuffer.spectrumAnalyser.span;
+  int32_t position = *frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+  int32_t x = (position * LCD_W / 8) / (reusableBuffer.spectrumAnalyser.span / 8);
   if (x < LCD_W) {
     reusableBuffer.spectrumAnalyser.bars[x] = 127 + *power;
   }
