@@ -42,6 +42,9 @@ void menuRadioSpectrumAnalyser(event_t event)
   SUBMENU("SPECTRUM ANALYSER", 1, {1});
 
   if (menuEvent) {
+    const char * message = "Stopping...";
+    lcdDrawText(LCD_W / 2 - getTextWidth(message) / 2, 4*FH, message);
+    lcdRefresh();
     pausePulses();
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     /* wait 500ms off */
