@@ -303,8 +303,8 @@ enum TelemetryProtocol
 };
 
 struct TelemetryData {
-  TelemetryValueWithMin swr;          // TODO Min not needed
-  TelemetryValueWithMin rssi;         // TODO Min not needed
+  TelemetryValue swr;
+  FilteredTelemetryValue rssi;
   uint16_t xjtVersion;
   bool varioHighPrecision;
 };

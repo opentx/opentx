@@ -245,6 +245,13 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
   }
 }
 
+void Pxx2Pulses::setupResetFrame(uint8_t module)
+{
+  addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RESET);
+  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverIndex);
+  Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverFlags);
+}
+
 void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
   if (moduleSettings[module].counter > 1000) {
@@ -260,7 +267,6 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
   Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.span);
   Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.step);
 }
-
 
 void Pxx2Pulses::setupPowerMeter(uint8_t module)
 {
@@ -302,6 +308,9 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       break;
     case MODULE_MODE_BIND:
       setupBindFrame(module);
+      break;
+    case MODULE_MODE_RESET:
+      setupRegisterFrame(module);
       break;
     case MODULE_MODE_SPECTRUM_ANALYSER:
       setupSpectrumAnalyser(module);

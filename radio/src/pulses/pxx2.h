@@ -33,6 +33,7 @@
   #define PXX2_TYPE_ID_RX_SETTINGS  0x05
   #define PXX2_TYPE_ID_HW_INFO      0x06
   #define PXX2_TYPE_ID_SHARE        0x07
+  #define PXX2_TYPE_ID_RESET        0x08
   #define PXX2_TYPE_ID_TELEMETRY    0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
@@ -126,6 +127,11 @@ enum PXX2BindSteps {
   BIND_OK
 };
 
+enum PXX2ResetSteps {
+  RESET_START,
+  RESET_OK
+};
+
 enum PXX2ReceiverStatus {
   PXX2_HARDWARE_INFO,
   PXX2_SETTINGS_READ,
@@ -183,6 +189,8 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
     void setupRegisterFrame(uint8_t module);
 
     void setupBindFrame(uint8_t module);
+
+    void setupResetFrame(uint8_t module);
 
     void setupShareMode(uint8_t module);
 

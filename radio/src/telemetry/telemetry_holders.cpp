@@ -20,12 +20,12 @@
 
 #include "opentx.h"
 
-void TelemetryValueWithMin::reset()
+void FilteredTelemetryValue::reset()
 {
   memclear(this, sizeof(*this));
 }
 
-void TelemetryValueWithMin::set(uint8_t value)
+void FilteredTelemetryValue::set(uint8_t value)
 {
   if (this->value == 0) {
     memset(values, value, TELEMETRY_AVERAGE_COUNT);
@@ -44,19 +44,17 @@ void TelemetryValueWithMin::set(uint8_t value)
     sum += value;
     this->value = sum/(TELEMETRY_AVERAGE_COUNT+1);
   }
-
-  if (!min || value < min) {
-    min = value;
-  }
 }
 
-void TelemetryValueWithMinMax::set(uint8_t value, uint8_t unit)
+void TelemetryValueWithMin::reset()
 {
-  TelemetryValueWithMin::set(value);
-  if (unit != UNIT_VOLTS) {
-    this->value = value;
-  }
-  if (!max || value > max) {
-    max = value;
+  memclear(this, sizeof(*this));
+}
+
+void TelemetryValueWithMin::set(uint8_t value)
+{
+  FilteredTelemetryValue::set(value);
+  if (!min || value < min) {
+    min = value;
   }
 }

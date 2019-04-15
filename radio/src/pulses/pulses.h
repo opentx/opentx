@@ -76,6 +76,7 @@ enum ModuleSettingsMode
   MODULE_MODE_BIND,
   MODULE_MODE_SHARE,
   MODULE_MODE_RANGECHECK,
+  MODULE_MODE_RESET
 };
 
 PACK(struct ModuleSettings {

@@ -122,7 +122,8 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
           reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
           moduleSettings[module].mode = MODULE_MODE_NORMAL;
           POPUP_INFORMATION(STR_REG_OK);
-        } else {
+        }
+        else {
           TRACE("KO %s %s", &frame[4], reusableBuffer.moduleSetup.pxx2.registerRxName);
         }
       }
@@ -163,6 +164,19 @@ void processBindFrame(uint8_t module, uint8_t * frame)
       }
       break;
   }
+}
+
+void processResetFrame(uint8_t module, uint8_t * frame)
+{
+  if (moduleSettings[module].mode != MODULE_MODE_RESET) {
+    return;
+  }
+
+  if (reusableBuffer.moduleSetup.pxx2.resetReceiverIndex == frame[3]) {
+    memclear(g_model.moduleData[module].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.resetReceiverIndex], PXX2_LEN_RX_NAME);
+  }
+
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
@@ -231,6 +245,10 @@ void processModuleFrame(uint8_t module, uint8_t *frame)
 
     case PXX2_TYPE_ID_TELEMETRY:
       processTelemetryFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_ID_RESET:
+      processResetFrame(module, frame);
       break;
   }
 }

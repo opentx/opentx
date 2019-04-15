@@ -1136,6 +1136,7 @@ union ReusableBuffer
         union {
           uint8_t registerStep;
           uint8_t bindStep;
+          uint8_t resetStep;
         };
         uint32_t bindWaitTimeout;
         uint8_t registerPopupVerticalPosition;
@@ -1149,7 +1150,9 @@ union ReusableBuffer
         union {
           uint8_t bindSelectedReceiverIndex;
           uint8_t shareReceiverIndex;
+          uint8_t resetReceiverIndex;
         };
+        uint8_t resetReceiverFlags;
       } pxx2;
     };
   } moduleSetup;

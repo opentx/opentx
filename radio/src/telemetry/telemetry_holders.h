@@ -25,19 +25,34 @@
 
 #define TELEMETRY_AVERAGE_COUNT   3     // we actually average one more reading!
 #define RAW_FRSKY_MINMAX(v)       v.values[TELEMETRY_AVERAGE_COUNT-1]
-class TelemetryValueWithMin {
+
+class TelemetryValue {
   public:
-    uint8_t value;      // fitered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
-    uint8_t min;
+    uint8_t value;
+    void set(uint8_t value)
+    {
+      this->value = value;
+    }
+
+    void reset()
+    {
+      this->value = 0;
+    };
+};
+
+class FilteredTelemetryValue: public TelemetryValue {
+  public:
+    uint8_t value;      // filtered value (average of last TELEMETRY_AVERAGE_COUNT+1 values)
     uint8_t values[TELEMETRY_AVERAGE_COUNT];
     void set(uint8_t value);
     void reset();
 };
 
-class TelemetryValueWithMinMax: public TelemetryValueWithMin {
+class TelemetryValueWithMin: public FilteredTelemetryValue {
   public:
-    uint8_t max;
-    void set(uint8_t value, uint8_t unit);
+    uint8_t min;
+    void set(uint8_t value);
+    void reset();
 };
 
 #endif // _TELEMETRY_HOLDERS_H_
