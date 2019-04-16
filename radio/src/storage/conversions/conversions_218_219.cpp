@@ -22,12 +22,12 @@
 #include "datastructs_218.h"
 
 /*
- * PCBHORUS: 64 telemetry sensors instead of 32
+ * 60 (Horus / X9) / 40 (others) telemetry sensors instead of 32
  * ALL: ReceiverData array added
  * ALL: registrationId added
  * ALL: failsafeChannels moved from ModuleData to ModelData
  * ALL: ModuleData / TrainerModuleData modified
- *
+ * PCBX9 : 6 chars for expos / mixes names instead of 8
  */
 
 typedef ModelData ModelData_v219;
@@ -40,11 +40,72 @@ void convertModelData_218_to_219(ModelData &model)
   memcpy(&oldModel, &model, sizeof(oldModel));
   ModelData_v219 & newModel = (ModelData_v219 &) model;
 
-  memset(&newModel.rssiAlarms + sizeof(RssiAlarmData), 0, sizeof(ModelData_v219) - offsetof(ModelData_v219, rssiAlarms) - sizeof(RssiAlarmData));
+  memclear(newModel.mixData, sizeof(ModelData_v219) - offsetof(ModelData_v219, mixData));
 
   char name[LEN_MODEL_NAME+1];
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
   TRACE("Model %s conversion from v218 to v219", name);
+
+  for (uint8_t i=0; i<MAX_MIXERS_218; i++) {
+    memmove(&newModel.mixData[i], &oldModel.mixData[i], sizeof(MixData_v218));
+  }
+
+  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS_218; i++) {
+    memmove(&newModel.limitData[i], &oldModel.limitData[i], sizeof(LimitData));
+  }
+
+  for (uint8_t i=0; i<MAX_EXPOS_218; i++) {
+    memmove(&newModel.expoData[i], &oldModel.expoData[i], sizeof(ExpoData_v218));
+    newModel.expoData[i].offset = oldModel.expoData[i].offset;
+    newModel.expoData[i].curve = oldModel.expoData[i].curve;
+  }
+
+  for (uint8_t i=0; i<MAX_CURVES_218; i++) {
+    memmove(&newModel.curves[i], &oldModel.curves[i], sizeof(CurveData_v218));
+  }
+
+  for (uint32_t i=0; i<MAX_CURVE_POINTS_218; i++) {
+    newModel.points[i] = oldModel.points[i];
+  }
+
+  for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES_218; i++) {
+    memmove(&newModel.logicalSw[i], &oldModel.logicalSw[i], sizeof(LogicalSwitchData_v218));
+  }
+
+  for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
+    memmove(&newModel.customFn[i], &oldModel.customFn[i], sizeof(CustomFunctionData_v218));
+  }
+
+  newModel.swashR = oldModel.swashR;
+
+  for (uint8_t i=0; i<MAX_FLIGHT_MODES_218; i++) {
+    memmove(&newModel.flightModeData[i], &oldModel.flightModeData[i], sizeof(FlightModeData_v218));
+  }
+
+  newModel.thrTraceSrc = oldModel.thrTraceSrc;
+  newModel.switchWarningState = oldModel.switchWarningState;
+#if !defined(COLORLCD)
+  newModel.switchWarningEnable = oldModel.switchWarningEnable;
+#endif
+
+  for (uint8_t i=0; i<MAX_GVARS_218; i++) {
+    memmove(&newModel.gvars[i], &oldModel.gvars[i], sizeof(GVarData_v218));
+  }
+
+  newModel.varioData.source = oldModel.frsky.varioSource;
+  newModel.varioData.centerSilent = oldModel.frsky.varioCenterSilent;
+  newModel.varioData.centerMax = oldModel.frsky.varioCenterMax;
+  newModel.varioData.centerMin = oldModel.frsky.varioCenterMin;
+  newModel.varioData.min = oldModel.frsky.varioMin;
+  newModel.varioData.max = oldModel.frsky.varioMax;
+
+#if defined(PCBX9)
+  newModel.voltsSource = oldModel.frsky.voltsSource;
+  newModel.altitudeSource = oldModel.frsky.altitudeSource;
+#endif
+
+  newModel.rssiAlarms = oldModel.rssiAlarms;
+  newModel.potsWarnMode = oldModel.potsWarnMode;
 
   for (int i=0; i<NUM_MODULES; i++) {
     memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], 4);
