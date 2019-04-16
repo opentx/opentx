@@ -246,7 +246,6 @@ enum MenuModelSetupItems {
 #if defined(PXX2)
 const char * STR_BIND = "Bind";
 const char * STR_SHARE = "Share";
-const char * STR_ERASE = "Erase";
 
 bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
 {
@@ -304,10 +303,10 @@ void onPXX2ReceiverMenu(const char * result)
     moduleSettings[moduleIdx].mode = MODULE_MODE_SHARE;
     s_editMode = 1;
   }
-  else if (result == STR_DELETE || result == STR_ERASE) {
+  else if (result == STR_DELETE || result == STR_RESET) {
     memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
     reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
-    reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = (result == STR_ERASE ? 0xFF : 0x01);
+    reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = (result == STR_RESET ? 0xFF : 0x01);
     moduleSettings[moduleIdx].mode = MODULE_MODE_RESET;
     removePXX2Receiver(moduleIdx, receiverIdx);
   }
