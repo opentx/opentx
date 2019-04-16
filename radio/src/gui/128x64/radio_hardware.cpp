@@ -401,12 +401,12 @@ void menuRadioHardware(event_t event)
 
       case ITEM_RADIO_HARDWARE_RAS:
         lcdDrawTextAlignedLeft(y, "RAS");
-        if (telemetryData.swrInternal.value)
+        if (telemetryData.swrInternal.isFresh())
           lcdDrawNumber(HW_SETTINGS_COLUMN2, y, telemetryData.swrInternal.value);
         else
           lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
         lcdDrawText(lcdNextPos, y, "/");
-        if (telemetryData.swrExternal.value)
+        if (telemetryData.swrExternal.isFresh())
           lcdDrawNumber(lcdNextPos, y, telemetryData.swrExternal.value);
         else
           lcdDrawText(lcdNextPos, y, "---");
