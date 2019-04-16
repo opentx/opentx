@@ -69,13 +69,13 @@ void onTelemetryScriptFileSelectionMenu(const char *result)
   int screenIndex = TELEMETRY_CURRENT_SCREEN(menuVerticalPosition - HEADER_LINE);
 
   if (result == STR_UPDATE_LIST) {
-    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), NULL)) {
+    if (!sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.screens[screenIndex].script.file), NULL)) {
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
     }
   }
   else if (result != STR_EXIT) {
     // The user choosed a file in the list
-    memcpy(g_model.frsky.screens[screenIndex].script.file, result, sizeof(g_model.frsky.screens[screenIndex].script.file));
+    memcpy(g_model.screens[screenIndex].script.file, result, sizeof(g_model.screens[screenIndex].script.file));
     storageDirty(EE_MODEL);
     LUA_LOAD_MODEL_SCRIPTS();
   }
@@ -125,12 +125,12 @@ void menuModelDisplay(event_t event)
         TelemetryScreenType oldScreenType = TELEMETRY_SCREEN_TYPE(screenIndex);
         TelemetryScreenType newScreenType = (TelemetryScreenType)editChoice(DISPLAY_COL2, y, "", STR_VTELEMSCREENTYPE, oldScreenType, 0, TELEMETRY_SCREEN_TYPE_MAX, (menuHorizontalPosition==0 ? attr : 0), event);
         if (newScreenType != oldScreenType) {
-          g_model.frsky.screensType = (g_model.frsky.screensType & (~(0x03 << (2*screenIndex)))) | (newScreenType << (2*screenIndex));
-          memset(&g_model.frsky.screens[screenIndex], 0, sizeof(g_model.frsky.screens[screenIndex]));
+          g_model.screensType = (g_model.screensType & (~(0x03 << (2*screenIndex)))) | (newScreenType << (2*screenIndex));
+          memset(&g_model.screens[screenIndex], 0, sizeof(g_model.screens[screenIndex]));
         }
 #if defined(LUA)
         if (newScreenType == TELEMETRY_SCREEN_TYPE_SCRIPT) {
-          TelemetryScriptData & scriptData = g_model.frsky.screens[screenIndex].script;
+          TelemetryScriptData & scriptData = g_model.screens[screenIndex].script;
 
           // TODO better function name for ---
           // TODO function for these lines
@@ -141,7 +141,7 @@ void menuModelDisplay(event_t event)
 
           if (menuHorizontalPosition==1 && attr && event==EVT_KEY_BREAK(KEY_ENTER) && READ_ONLY_UNLOCKED()) {
             s_editMode = 0;
-            if (sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.frsky.screens[screenIndex].script.file), g_model.frsky.screens[screenIndex].script.file)) {
+            if (sdListFiles(SCRIPTS_TELEM_PATH, SCRIPTS_EXT, sizeof(g_model.screens[screenIndex].script.file), g_model.screens[screenIndex].script.file)) {
               POPUP_MENU_START(onTelemetryScriptFileSelectionMenu);
             }
             else {
@@ -192,7 +192,7 @@ void menuModelDisplay(event_t event)
         }
 
         if (IS_BARS_SCREEN(screenIndex)) {
-          FrSkyBarData & bar = g_model.frsky.screens[screenIndex].bars[lineIndex];
+          FrSkyBarData & bar = g_model.screens[screenIndex].bars[lineIndex];
           drawSource(DISPLAY_COL1, y, bar.source, menuHorizontalPosition==0 ? attr : 0);
           int16_t barMax, barMin;
           LcdFlags lf = LEFT;
@@ -237,7 +237,7 @@ void menuModelDisplay(event_t event)
         else {
           for (int c=0; c<NUM_LINE_ITEMS; c++) {
             LcdFlags cellAttr = (menuHorizontalPosition==c ? attr : 0);
-            source_t & value = g_model.frsky.screens[screenIndex].lines[lineIndex].sources[c];
+            source_t & value = g_model.screens[screenIndex].lines[lineIndex].sources[c];
             const coord_t pos[] = {DISPLAY_COL1, DISPLAY_COL2, DISPLAY_COL3};
             drawSource(pos[c], y, value, cellAttr);
             if (cellAttr && s_editMode>0) {

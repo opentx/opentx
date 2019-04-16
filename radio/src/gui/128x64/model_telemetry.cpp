@@ -250,14 +250,14 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_RSSI_SOURCE: {
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
-        drawSource(TELEM_COL2, y, g_model.frsky.rssiSource ? MIXSRC_FIRST_TELEM + 3 * (g_model.frsky.rssiSource - 1) : 0, attr);
-        if (g_model.frsky.rssiSource) {
-          TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.frsky.rssiSource];
+        drawSource(TELEM_COL2, y, g_model.rssiSource ? MIXSRC_FIRST_TELEM + 3 * (g_model.rssiSource - 1) : 0, attr);
+        if (g_model.rssiSource) {
+          TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource];
           lcdDrawText(lcdNextPos, y, " ", attr);
           drawReceiverName(lcdNextPos, y, (sensor->instance >> 7) & 0x01, (sensor->instance >> 5) & 0x03, attr);
         }
         if (attr) {
-          g_model.frsky.rssiSource = checkIncDec(event, g_model.frsky.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
+          g_model.rssiSource = checkIncDec(event, g_model.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
         }
         break;
       }
@@ -288,9 +288,9 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_VARIO_SOURCE:
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
-        drawSource(TELEM_COL2, y, g_model.frsky.varioSource ? MIXSRC_FIRST_TELEM+3*(g_model.frsky.varioSource-1) : 0, attr);
+        drawSource(TELEM_COL2, y, g_model.varioData.source ? MIXSRC_FIRST_TELEM+3*(g_model.varioData.source-1) : 0, attr);
         if (attr) {
-          g_model.frsky.varioSource = checkIncDec(event, g_model.frsky.varioSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+          g_model.varioData.source = checkIncDec(event, g_model.varioData.source, 0, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
         }
         break;
 
@@ -299,15 +299,15 @@ void menuModelTelemetryFrsky(event_t event)
         if (attr && CURSOR_ON_LINE()) {
           lcdDrawSolidFilledRect(TELEM_COL2-1, y-1, LCD_W-TELEM_COL2+1, FH+1);
         }
-        lcdDrawNumber(TELEM_COL2, y, -10+g_model.frsky.varioMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|LEFT);
-        lcdDrawNumber(TELEM_COL2+4*FW, y, 10+g_model.frsky.varioMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|LEFT);
+        lcdDrawNumber(TELEM_COL2, y, -10+g_model.varioData.min, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|LEFT);
+        lcdDrawNumber(TELEM_COL2+4*FW, y, 10+g_model.varioData.max, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|LEFT);
         if (attr && s_editMode > 0) {
           switch (menuHorizontalPosition) {
             case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMin, -7, 7);
+              CHECK_INCDEC_MODELVAR(event, g_model.varioData.min, -7, 7);
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioMax, -7, 7);
+              CHECK_INCDEC_MODELVAR(event, g_model.varioData.max, -7, 7);
               break;
           }
         }
@@ -315,19 +315,19 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_VARIO_CENTER:
         lcdDrawTextAlignedLeft(y, STR_CENTER);
-        lcdDrawNumber(TELEM_COL2, y, -5+g_model.frsky.varioCenterMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|PREC1|LEFT);
-        lcdDrawNumber(TELEM_COL2+4*FW, y, 5+g_model.frsky.varioCenterMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1|LEFT);
-        lcdDrawTextAtIndex(TELEM_COL2+8*FW, y, STR_VVARIOCENTER, g_model.frsky.varioCenterSilent, (menuHorizontalPosition==2 ? attr : 0));
+        lcdDrawNumber(TELEM_COL2, y, -5+g_model.varioData.centerMin, ((CURSOR_ON_LINE() || menuHorizontalPosition==0) ? attr : 0)|PREC1|LEFT);
+        lcdDrawNumber(TELEM_COL2+4*FW, y, 5+g_model.varioData.centerMax, ((CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0)|PREC1|LEFT);
+        lcdDrawTextAtIndex(TELEM_COL2+8*FW, y, STR_VVARIOCENTER, g_model.varioData.centerSilent, (menuHorizontalPosition==2 ? attr : 0));
         if (attr && s_editMode > 0) {
           switch (menuHorizontalPosition) {
             case 0:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMin, -16, 5+min<int8_t>(10, g_model.frsky.varioCenterMax+5));
+              CHECK_INCDEC_MODELVAR(event, g_model.varioData.centerMin, -16, 5+min<int8_t>(10, g_model.varioData.centerMax+5));
               break;
             case 1:
-              CHECK_INCDEC_MODELVAR(event, g_model.frsky.varioCenterMax, -5+max<int8_t>(-10, g_model.frsky.varioCenterMin-5), +15);
+              CHECK_INCDEC_MODELVAR(event, g_model.varioData.centerMax, -5+max<int8_t>(-10, g_model.varioData.centerMin-5), +15);
               break;
             case 2:
-              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.frsky.varioCenterSilent, 1);
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.varioData.centerSilent, 1);
               break;
           }
         }

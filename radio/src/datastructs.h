@@ -304,7 +304,7 @@ PACK(struct TelemetryScriptData {
 });
 #endif
 
-union FrSkyScreenData {
+union TelemetryScreenData {
   FrSkyBarData  bars[4];
   FrSkyLineData lines[4];
 #if defined(PCBTARANIS)
@@ -313,32 +313,14 @@ union FrSkyScreenData {
 };
 #endif
 
-#if defined(COLORLCD)
-PACK(struct FrSkyTelemetryData {  // TODO EEPROM change, rename to VarioData
-  uint8_t varioSource:7;
-  uint8_t varioCenterSilent:1;
-  int8_t  varioCenterMax;
-  int8_t  varioCenterMin;
-  int8_t  varioMin;
-  int8_t  varioMax;
-  uint8_t rssiSource;
+PACK(struct VarioData {
+  uint8_t source:7;
+  uint8_t centerSilent:1;
+  int8_t  centerMax;
+  int8_t  centerMin;
+  int8_t  min;
+  int8_t  max;
 });
-#else
-// TODO remove this also on Taranis
-PACK(struct FrSkyTelemetryData {
-  uint8_t voltsSource;
-  uint8_t altitudeSource;
-  uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
-  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS]; // TODO EEPROM change should not be here anymore
-  uint8_t varioSource:7;
-  uint8_t varioCenterSilent:1;
-  int8_t  varioCenterMax;
-  int8_t  varioCenterMin;
-  int8_t  varioMin;
-  int8_t  varioMax;
-  uint8_t rssiSource;
-});
-#endif
 
 /*
  * Telemetry Sensor structure
@@ -561,12 +543,11 @@ PACK(struct CustomScreenData {
   NOBACKUP(CustomScreenData screenData[MAX_CUSTOM_SCREENS]); \
   NOBACKUP(Topbar::PersistentData topbarData); \
   NOBACKUP(uint8_t view);
-#elif defined(PCBTARANIS)
-  #define CUSTOM_SCREENS_DATA \
-  NOBACKUP(uint8_t view);
 #else
-  #define CUSTOM_SCREENS_DATA
-  // TODO other boards could have their custom screens here as well
+#define CUSTOM_SCREENS_DATA \
+  uint8_t screensType; /* 2bits per screen (None/Gauges/Numbers/Script) */ \
+  TelemetryScreenData screens[MAX_TELEMETRY_SCREENS]; \
+  uint8_t view;
 #endif
 
 PACK(struct ModelData {
@@ -602,7 +583,12 @@ PACK(struct ModelData {
 
   GVarData gvars[MAX_GVARS];
 
-  NOBACKUP(FrSkyTelemetryData frsky);
+  NOBACKUP(VarioData varioData);
+  NOBACKUP(uint8_t rssiSource);
+#if defined(PCBX9)
+  NOBACKUP(uint8_t voltsSource);
+  NOBACKUP(uint8_t altitudeSource);
+#endif
   NOBACKUP(RssiAlarmData rssiAlarms);
 
   NOBACKUP(uint8_t spare1:6);
@@ -837,6 +823,8 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
+  CHKSIZE(VarioData, 5);
+
 #if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
@@ -848,13 +836,12 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 4);
-  CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 105);
+  CHKTYPE(union TelemetryScreenData, 24);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
 #elif defined(PCBTARANIS)
-  CHKSIZE(MixData, 22);
-  CHKSIZE(ExpoData, 19);
+  CHKSIZE(MixData, 20);
+  CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 13);
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(CustomFunctionData, 11);
@@ -863,8 +850,7 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 6);
-  CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 105);
+  CHKTYPE(union TelemetryScreenData, 24);
   CHKSIZE(ModelHeader, 24);
   CHKSIZE(CurveData, 4);
 #elif defined(PCBHORUS)
@@ -875,8 +861,7 @@ static inline void check_struct()
   CHKSIZE(FlightModeData, 44);
   CHKSIZE(TimerData, 16);
   CHKSIZE(SwashRingData, 8);
-  CHKSIZE(FrSkyTelemetryData, 6);
-  CHKSIZE(ModelHeader, 27);
+  CHKSIZE(ModelHeader, 31);
   CHKSIZE(CurveData, 4);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
@@ -890,7 +875,6 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 5);
   CHKSIZE(FrSkyLineData, 2);
-  CHKSIZE(FrSkyTelemetryData, 89);
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
 #else
@@ -899,7 +883,6 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 3);
   CHKSIZE(FrSkyBarData, 3);
   CHKSIZE(FrSkyLineData, 2);
-  CHKSIZE(FrSkyTelemetryData, 43);
   CHKSIZE(ModelHeader, 11);
   CHKTYPE(CurveData, 1);
 
@@ -923,25 +906,25 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 860);
-  CHKSIZE(ModelData, 6055);
+  CHKSIZE(ModelData, 6117);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
-  CHKSIZE(ModelData, 6055);
+  CHKSIZE(ModelData, 6117);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 6055);
+  CHKSIZE(ModelData, 6117);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
   CHKSIZE(ModelData, 6550);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6537);
+  CHKSIZE(ModelData, 6281);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5216);
+  CHKSIZE(ModelData, 5279);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9722);
+  CHKSIZE(ModelData, 9726);
 #endif
 
 #undef CHKSIZE

@@ -91,7 +91,7 @@ enum CurveType {
   #define LEN_MODEL_NAME               15
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
-  #define LEN_BITMAP_NAME              10  // TODO next EEPROM change: we need 14 here as we have to store the file extension
+  #define LEN_BITMAP_NAME              14
   #define LEN_EXPOMIX_NAME             6
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
@@ -104,7 +104,7 @@ enum CurveType {
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
   #define LEN_BITMAP_NAME              10
-  #define LEN_EXPOMIX_NAME             8   // TODO next EEPROM change: 6 seem enough
+  #define LEN_EXPOMIX_NAME             6
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
@@ -327,7 +327,7 @@ enum TelemetryScreenType {
 #endif
 };
 #define MAX_TELEMETRY_SCREENS 4
-#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.frsky.screensType >> (2*(screenIndex))) & 0x03)
+#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
 
 #define FAILSAFE_CHANNEL_HOLD          2000

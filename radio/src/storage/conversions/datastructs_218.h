@@ -340,7 +340,7 @@ PACK(typedef struct {
 
   GVarData_v218 gvars[MAX_GVARS_218];
 
-  FrSkyTelemetryData frsky;
+  VarioData frsky;
   RssiAlarmData rssiAlarms;
 
   MODELDATA_EXTRA_218

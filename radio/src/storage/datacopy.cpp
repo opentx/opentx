@@ -165,7 +165,7 @@ void copyRssiAlarmData(A * dest, B * src)
 }
 
 template <class A, class B>
-void copyFrSkyTelemetryData(A * dest, B * src)
+void copyVarioData(A * dest, B * src)
 {
   dest->varioSource = src->varioSource;
   dest->varioCenterSilent = src->varioCenterSilent;
