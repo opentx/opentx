@@ -44,7 +44,7 @@ TEST(FrSky, TelemetryValueWithMinAveraging)
   uint8_t expected[] = { 10, 12, 17, 25, 35, 45, 55, 65, 75, 85, 92, 97, 100, 100, 100, 100, 100};
   int testPos = 0;
   //test of averaging
-  TelemetryValueWithMin testVal;
+  TelemetryMinDecorator<TelemetryFilterDecorator<TelemetryValue>> testVal;
   testVal.value = 0;
   testVal.set(10);
   EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 10);
