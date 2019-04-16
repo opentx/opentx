@@ -311,12 +311,6 @@ void memswap(void * a, void * b, uint8_t size);
 #include "fifo.h"
 #include "io/frsky_sport.h"
 
-extern volatile tmr10ms_t g_tmr10ms;
-static inline tmr10ms_t get_tmr10ms()
-{
-  return g_tmr10ms;
-}
-
 #if defined(CLI)
 #include "cli.h"
 #endif

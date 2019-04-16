@@ -290,10 +290,10 @@ class TelemetryData {
 
     void setSwr(uint8_t module, uint8_t value)
     {
-      if (module == EXTERNAL_MODULE)
-        swrExternal.set(value);
-      else
+      if (module == 0)
         swrInternal.set(value);
+      else
+        swrExternal.set(value);
     }
 };
 

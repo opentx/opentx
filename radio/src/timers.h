@@ -21,6 +21,8 @@
 #ifndef _TIMERS_H_
 #define _TIMERS_H_
 
+#include "opentx_types.h"
+
 #define TMR_OFF      0
 #define TMR_RUNNING  1
 #define TMR_NEGATIVE 2
@@ -41,15 +43,23 @@ struct TimerState {
   uint8_t  val_10ms;
 };
 
+#if defined(TIMERS)
 extern TimerState timersStates[TIMERS];
+#endif
 
 void timerReset(uint8_t idx);
 
 void timerSet(int idx, int val);
 
-  void saveTimers();
-  void restoreTimers();
+void saveTimers();
+void restoreTimers();
 
 void evalTimers(int16_t throttle, uint8_t tick10ms);
+
+extern volatile tmr10ms_t g_tmr10ms;
+static inline tmr10ms_t get_tmr10ms()
+{
+  return g_tmr10ms;
+}
 
 #endif // _TIMERS_H_

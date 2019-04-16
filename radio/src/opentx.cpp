@@ -70,8 +70,6 @@ const uint8_t modn12x3[]  = {
     3, 1, 2, 0,
     3, 2, 1, 0 };
 
-volatile tmr10ms_t g_tmr10ms;
-
 volatile uint8_t rtc_count = 0;
 uint32_t watchdogTimeout = 0;
 
