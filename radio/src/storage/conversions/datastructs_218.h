@@ -389,15 +389,15 @@ PACK(typedef struct {
 }) ModelData_v218;
 
 #if defined(PCBHORUS)
-static_assert(sizeof(ModelData_v218) == 9380);
+static_assert(sizeof(ModelData_v218) == 9380, "ModelData size changed");
 #elif defined(PCBX9E)
-static_assert(sizeof(ModelData_v218) == 6520);
+static_assert(sizeof(ModelData_v218) == 6520, "ModelData size changed");
 #elif defined(PCBX9D)
-static_assert(sizeof(ModelData_v218) == 6507);
+static_assert(sizeof(ModelData_v218) == 6507, "ModelData size changed");
 #elif defined(PCBXLITE) || defined(PCBX7)
-static_assert(sizeof(ModelData_v218) == 6025);
+static_assert(sizeof(ModelData_v218) == 6025, "ModelData size changed");
 #elif defined(PCBSKY9X)
-static_assert(sizeof(ModelData_v218) == 5188);
+static_assert(sizeof(ModelData_v218) == 5188, "ModelData size changed");
 #endif
 
 #define EXTRA_GENERAL_FIELDS_GENERAL_218 \
