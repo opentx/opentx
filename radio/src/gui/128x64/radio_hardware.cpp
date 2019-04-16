@@ -406,8 +406,8 @@ void menuRadioHardware(event_t event)
         else
           lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
         lcdDrawText(lcdNextPos, y, "/");
-        if (telemetryData.swrInternal.value)
-          lcdDrawNumber(lcdNextPos, y, telemetryData.swrInternal.value);
+        if (telemetryData.swrExternal.value)
+          lcdDrawNumber(lcdNextPos, y, telemetryData.swrExternal.value);
         else
           lcdDrawText(lcdNextPos, y, "---");
         break;
