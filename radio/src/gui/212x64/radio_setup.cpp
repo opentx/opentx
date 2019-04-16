@@ -217,9 +217,6 @@ void menuRadioSetup(event_t event)
 
       case ITEM_SETUP_BEEP_MODE:
         g_eeGeneral.beepMode = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_SPEAKER, STR_VBEEPMODE, g_eeGeneral.beepMode, -2, 1, attr, event);
-#if defined(TELEMETRY_FRSKY)
-        if (attr && checkIncDec_Ret) frskySendAlarms();
-#endif
         break;
 
       case ITEM_SETUP_GENERAL_VOLUME:

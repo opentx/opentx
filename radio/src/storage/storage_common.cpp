@@ -95,10 +95,6 @@ void postModelLoad(bool alarms)
     resumePulses();
   }
 
-#if defined(TELEMETRY_FRSKY)
-  frskySendAlarms();
-#endif
-
 #if defined(SDCARD)
   referenceModelAudioFiles();
 #endif
