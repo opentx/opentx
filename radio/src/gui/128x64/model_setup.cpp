@@ -317,7 +317,7 @@ void onPXX2ReceiverMenu(const char * result)
     memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
     reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
     reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = (result == STR_RESET ? 0xFF : 0x01);
-    POPUP_CONFIRMATION(result == STR_RESET ? "Reset to factory settings?" : "Delete the receiver?", onResetReceiverConfirm);
+    POPUP_CONFIRMATION(result == STR_RESET ? "Reset receiver?" : "Delete receiver?", onResetReceiverConfirm);
   }
   else {
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
@@ -1319,7 +1319,7 @@ void menuModelSetup(event_t event)
         drawStringWithIndex(INDENT_WIDTH, y, STR_RECEIVER, receiverIdx + 1);
 
         if (!(g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx))) {
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Add"), attr);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), attr);
           if (attr && s_editMode > 0) {
             s_editMode = 0;
             killEvents(event);
@@ -1357,8 +1357,11 @@ void menuModelSetup(event_t event)
 
         if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
           killEvents(event);
-          POPUP_MENU_ADD_ITEM(STR_BIND);
-          if (!isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+          if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+            onPXX2ReceiverMenu(STR_BIND);
+          }
+          else {
+            POPUP_MENU_ADD_ITEM(STR_BIND);
             POPUP_MENU_ADD_ITEM(STR_OPTIONS);
             POPUP_MENU_ADD_ITEM(STR_SHARE);
             POPUP_MENU_ADD_ITEM(STR_DELETE);
