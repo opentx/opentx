@@ -292,16 +292,6 @@ void telemetryInit(uint8_t protocol);
 
 void telemetryInterrupt10ms();
 
-enum TelemetryProtocol
-{
-  TELEM_PROTO_FRSKY_D,
-  TELEM_PROTO_FRSKY_SPORT,
-  TELEM_PROTO_CROSSFIRE,
-  TELEM_PROTO_SPEKTRUM,
-  TELEM_PROTO_LUA,
-  TELEM_PROTO_FLYSKY_IBUS,
-};
-
 struct TelemetryData {
   TelemetryValue swr;
   FilteredTelemetryValue rssi;

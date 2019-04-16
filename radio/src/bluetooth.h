@@ -50,5 +50,5 @@ extern char bluetoothDistantAddr[LEN_BLUETOOTH_ADDR+1];
 
 char * bluetoothReadline(bool error_reset=true);
 void bluetoothWriteString(const char * command);
-void bluetoothForwardTelemetry(uint8_t data);
+void bluetoothForwardTelemetry(const uint8_t * packet);
 void bluetoothWakeup();

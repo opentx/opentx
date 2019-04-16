@@ -253,13 +253,19 @@ void bluetoothSendTrainer()
   bluetoothBufferIndex = 0;
 }
 
-void bluetoothForwardTelemetry(uint8_t data)
+void bluetoothForwardTelemetry(const uint8_t * packet)
 {
-  bluetoothBuffer[bluetoothBufferIndex++] = data;
-  if (data == START_STOP && bluetoothBufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
-    bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
-    bluetoothBufferIndex = 0;
+  bluetoothBufferIndex = 0;
+  bluetoothCrc = 0x00;
+
+  bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // start byte
+  for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
+    bluetoothPushByte(packet[i]);
   }
+  bluetoothBuffer[bluetoothBufferIndex++] = bluetoothCrc;
+  bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // end byte
+  bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
+  bluetoothBufferIndex = 0;
 }
 
 void bluetoothReceiveTrainer()

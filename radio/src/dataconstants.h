@@ -246,6 +246,16 @@ enum UartModes {
   #define LEN_BLUETOOTH_NAME           10
 #endif
 
+enum TelemetryProtocol
+{
+  TELEM_PROTO_FRSKY_D,
+  TELEM_PROTO_FRSKY_SPORT,
+  TELEM_PROTO_CROSSFIRE,
+  TELEM_PROTO_SPEKTRUM,
+  TELEM_PROTO_LUA,
+  TELEM_PROTO_FLYSKY_IBUS,
+};
+
 #define TELEM_LABEL_LEN                4
 enum TelemetryUnit {
   UNIT_RAW,
