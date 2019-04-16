@@ -142,7 +142,7 @@ void menuModelTelemetryFrsky(event_t event)
     LcdFlags attr = (sub == k ? blink : 0);
 
 
-    if (k >= ITEM_TELEMETRY_SENSOR_FIRST && k < ITEM_TELEMETRY_SENSOR_FIRST + MAX_TELEMETRY_SENSORS) {
+    if (k >= ITEM_TELEMETRY_SENSOR_FIRST && k <= ITEM_TELEMETRY_SENSOR_LAST) {
       int index = k - ITEM_TELEMETRY_SENSOR_FIRST;
       lcdDrawNumber(INDENT_WIDTH, y, index+1, LEFT|attr);
       lcdDrawChar(lcdLastRightPos, y, ':', attr);
