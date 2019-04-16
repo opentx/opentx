@@ -205,68 +205,56 @@ enum FrSkyDataState {
 #define DATA_ID_SP2UH             0x45 // 5
 #define DATA_ID_SP2UR             0xC6 // 6
 
-#if defined(NO_RAS)
-  #define IS_RAS_VALUE_VALID()            (false)
-#elif defined(PCBX10)
-  #define IS_RAS_VALUE_VALID()            (false)
-#elif defined(PCBX9DP) || defined(PCBX9E)
-  #define IS_RAS_VALUE_VALID()            (telemetryData.xjtVersion != 0 && telemetryData.xjtVersion != 0xff)
-#else
-  #define IS_RAS_VALUE_VALID()            (true)
-#endif
-
 #define IS_HIDDEN_TELEMETRY_VALUE(id)     ((id == SP2UART_A_ID) || (id == SP2UART_B_ID) || (id == XJT_VERSION_ID) || (id == RAS_ID) || (id == FACT_TEST_ID))
 
 #define ALARM_GREATER(channel, alarm)     ((g_model.frsky.channels[channel].alarms_greater >> alarm) & 1)
 #define ALARM_LEVEL(channel, alarm)       ((g_model.frsky.channels[channel].alarms_level >> (2*alarm)) & 3)
 
-  #define TELEMETRY_STREAMING()           (telemetryData.rssi.value > 0)
-  #define TELEMETRY_RSSI()                (telemetryData.rssi.value)
-  #define TELEMETRY_RSSI_MIN()            (telemetryData.rssi.min)
+#define TELEMETRY_STREAMING()           (telemetryData.rssi.value > 0)
+#define TELEMETRY_RSSI()                (telemetryData.rssi.value)
+#define TELEMETRY_RSSI_MIN()            (telemetryData.rssi.min)
 
-  #define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  1
+#define TELEMETRY_CELL_VOLTAGE_MUTLIPLIER  1
 
-  #define TELEMETRY_GPS_SPEED_BP          telemetryData.hub.gpsSpeed_bp
-  #define TELEMETRY_GPS_SPEED_AP          telemetryData.hub.gpsSpeed_ap
+#define TELEMETRY_GPS_SPEED_BP          telemetryData.hub.gpsSpeed_bp
+#define TELEMETRY_GPS_SPEED_AP          telemetryData.hub.gpsSpeed_ap
 
-  #define TELEMETRY_ABSOLUTE_GPS_ALT      (telemetryData.hub.gpsAltitude)
-  #define TELEMETRY_RELATIVE_GPS_ALT      (telemetryData.hub.gpsAltitude + telemetryData.hub.gpsAltitudeOffset)
-  #define TELEMETRY_RELATIVE_GPS_ALT_BP   (TELEMETRY_RELATIVE_GPS_ALT / 100)
+#define TELEMETRY_ABSOLUTE_GPS_ALT      (telemetryData.hub.gpsAltitude)
+#define TELEMETRY_RELATIVE_GPS_ALT      (telemetryData.hub.gpsAltitude + telemetryData.hub.gpsAltitudeOffset)
+#define TELEMETRY_RELATIVE_GPS_ALT_BP   (TELEMETRY_RELATIVE_GPS_ALT / 100)
 
-  #define TELEMETRY_RELATIVE_BARO_ALT_BP  (telemetryData.hub.baroAltitude / 100)
-  #define TELEMETRY_RELATIVE_BARO_ALT_AP  (telemetryData.hub.baroAltitude % 100)
+#define TELEMETRY_RELATIVE_BARO_ALT_BP  (telemetryData.hub.baroAltitude / 100)
+#define TELEMETRY_RELATIVE_BARO_ALT_AP  (telemetryData.hub.baroAltitude % 100)
 
-  #define TELEMETRY_BARO_ALT_PREPARE()    div_t baroAltitudeDivision = div(getConvertedTelemetryValue(telemetryData.hub.baroAltitude, UNIT_DIST), 100)
-  #define TELEMETRY_BARO_ALT_FORMAT       "%c%d.%02d,"
-  #define TELEMETRY_BARO_ALT_ARGS         telemetryData.hub.baroAltitude < 0 ? '-' : ' ', abs(baroAltitudeDivision.quot), abs(baroAltitudeDivision.rem),
-  #define TELEMETRY_GPS_ALT_FORMAT        "%c%d.%02d,"
-  #define TELEMETRY_GPS_ALT_ARGS          telemetryData.hub.gpsAltitude < 0 ? '-' : ' ', abs(telemetryData.hub.gpsAltitude / 100), abs(telemetryData.hub.gpsAltitude % 100),
-  #define TELEMETRY_SPEED_UNIT            (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
-  #define TELEMETRY_GPS_SPEED_FORMAT      "%d,"
-  #define TELEMETRY_GPS_SPEED_ARGS        telemetryData.hub.gpsSpeed_bp,
+#define TELEMETRY_BARO_ALT_PREPARE()    div_t baroAltitudeDivision = div(getConvertedTelemetryValue(telemetryData.hub.baroAltitude, UNIT_DIST), 100)
+#define TELEMETRY_BARO_ALT_FORMAT       "%c%d.%02d,"
+#define TELEMETRY_BARO_ALT_ARGS         telemetryData.hub.baroAltitude < 0 ? '-' : ' ', abs(baroAltitudeDivision.quot), abs(baroAltitudeDivision.rem),
+#define TELEMETRY_GPS_ALT_FORMAT        "%c%d.%02d,"
+#define TELEMETRY_GPS_ALT_ARGS          telemetryData.hub.gpsAltitude < 0 ? '-' : ' ', abs(telemetryData.hub.gpsAltitude / 100), abs(telemetryData.hub.gpsAltitude % 100),
+#define TELEMETRY_SPEED_UNIT            (IS_IMPERIAL_ENABLE() ? SPEED_UNIT_IMP : SPEED_UNIT_METR)
+#define TELEMETRY_GPS_SPEED_FORMAT      "%d,"
+#define TELEMETRY_GPS_SPEED_ARGS        telemetryData.hub.gpsSpeed_bp,
 
-  #define TELEMETRY_CELLS_ARGS          telemetryData.hub.cellsSum / 10, telemetryData.hub.cellsSum % 10, TELEMETRY_CELL_VOLTAGE(0)/100, TELEMETRY_CELL_VOLTAGE(0)%100, TELEMETRY_CELL_VOLTAGE(1)/100, TELEMETRY_CELL_VOLTAGE(1)%100, TELEMETRY_CELL_VOLTAGE(2)/100, TELEMETRY_CELL_VOLTAGE(2)%100, TELEMETRY_CELL_VOLTAGE(3)/100, TELEMETRY_CELL_VOLTAGE(3)%100, TELEMETRY_CELL_VOLTAGE(4)/100, TELEMETRY_CELL_VOLTAGE(4)%100, TELEMETRY_CELL_VOLTAGE(5)/100, TELEMETRY_CELL_VOLTAGE(5)%100, TELEMETRY_CELL_VOLTAGE(6)/100, TELEMETRY_CELL_VOLTAGE(6)%100, TELEMETRY_CELL_VOLTAGE(7)/100, TELEMETRY_CELL_VOLTAGE(7)%100, TELEMETRY_CELL_VOLTAGE(8)/100, TELEMETRY_CELL_VOLTAGE(8)%100, TELEMETRY_CELL_VOLTAGE(9)/100, TELEMETRY_CELL_VOLTAGE(9)%100, TELEMETRY_CELL_VOLTAGE(10)/100, TELEMETRY_CELL_VOLTAGE(10)%100, TELEMETRY_CELL_VOLTAGE(11)/100, TELEMETRY_CELL_VOLTAGE(11)%100,
-  #define TELEMETRY_CELLS_FORMAT        "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
-  #define TELEMETRY_CELLS_LABEL         "Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Cell 7,Cell 8,Cell 9,Cell 10,Cell 11,Cell 12,"
+#define TELEMETRY_CELLS_ARGS          telemetryData.hub.cellsSum / 10, telemetryData.hub.cellsSum % 10, TELEMETRY_CELL_VOLTAGE(0)/100, TELEMETRY_CELL_VOLTAGE(0)%100, TELEMETRY_CELL_VOLTAGE(1)/100, TELEMETRY_CELL_VOLTAGE(1)%100, TELEMETRY_CELL_VOLTAGE(2)/100, TELEMETRY_CELL_VOLTAGE(2)%100, TELEMETRY_CELL_VOLTAGE(3)/100, TELEMETRY_CELL_VOLTAGE(3)%100, TELEMETRY_CELL_VOLTAGE(4)/100, TELEMETRY_CELL_VOLTAGE(4)%100, TELEMETRY_CELL_VOLTAGE(5)/100, TELEMETRY_CELL_VOLTAGE(5)%100, TELEMETRY_CELL_VOLTAGE(6)/100, TELEMETRY_CELL_VOLTAGE(6)%100, TELEMETRY_CELL_VOLTAGE(7)/100, TELEMETRY_CELL_VOLTAGE(7)%100, TELEMETRY_CELL_VOLTAGE(8)/100, TELEMETRY_CELL_VOLTAGE(8)%100, TELEMETRY_CELL_VOLTAGE(9)/100, TELEMETRY_CELL_VOLTAGE(9)%100, TELEMETRY_CELL_VOLTAGE(10)/100, TELEMETRY_CELL_VOLTAGE(10)%100, TELEMETRY_CELL_VOLTAGE(11)/100, TELEMETRY_CELL_VOLTAGE(11)%100,
+#define TELEMETRY_CELLS_FORMAT        "%d.%d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,%d.%02d,"
+#define TELEMETRY_CELLS_LABEL         "Cell volts,Cell 1,Cell 2,Cell 3,Cell 4,Cell 5,Cell 6,Cell 7,Cell 8,Cell 9,Cell 10,Cell 11,Cell 12,"
 
-  #define TELEMETRY_CURRENT_FORMAT        "%d.%d,"
-  #define TELEMETRY_CURRENT_ARGS          telemetryData.hub.current / 10, telemetryData.hub.current % 10,
-  #define TELEMETRY_VFAS_FORMAT           "%d.%d,"
-  #define TELEMETRY_VFAS_ARGS             telemetryData.hub.vfas / 10, telemetryData.hub.vfas % 10,
-  #define TELEMETRY_VSPEED_FORMAT         "%c%d.%02d,"
-  #define TELEMETRY_VSPEED_ARGS           telemetryData.hub.varioSpeed < 0 ? '-' : ' ', abs(telemetryData.hub.varioSpeed / 100), abs(telemetryData.hub.varioSpeed % 100),
-  #define TELEMETRY_ASPEED_FORMAT         "%d.%d,"
-  #define TELEMETRY_ASPEED_ARGS           telemetryData.hub.airSpeed / 10, telemetryData.hub.airSpeed % 10,
-  #define TELEMETRY_OPENXSENSOR()         (0)
+#define TELEMETRY_CURRENT_FORMAT        "%d.%d,"
+#define TELEMETRY_CURRENT_ARGS          telemetryData.hub.current / 10, telemetryData.hub.current % 10,
+#define TELEMETRY_VFAS_FORMAT           "%d.%d,"
+#define TELEMETRY_VFAS_ARGS             telemetryData.hub.vfas / 10, telemetryData.hub.vfas % 10,
+#define TELEMETRY_VSPEED_FORMAT         "%c%d.%02d,"
+#define TELEMETRY_VSPEED_ARGS           telemetryData.hub.varioSpeed < 0 ? '-' : ' ', abs(telemetryData.hub.varioSpeed / 100), abs(telemetryData.hub.varioSpeed % 100),
+#define TELEMETRY_ASPEED_FORMAT         "%d.%d,"
+#define TELEMETRY_ASPEED_ARGS           telemetryData.hub.airSpeed / 10, telemetryData.hub.airSpeed % 10,
+#define TELEMETRY_OPENXSENSOR()         (0)
 
 #define TELEMETRY_CELL_VOLTAGE(k)         (telemetryData.hub.cellVolts[k] * TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
 #define TELEMETRY_MIN_CELL_VOLTAGE        (telemetryData.hub.minCellVolts * TELEMETRY_CELL_VOLTAGE_MUTLIPLIER)
 
-#define START_STOP                        0x7e
-#define BYTESTUFF                         0x7d
+#define START_STOP                        0x7E
+#define BYTESTUFF                         0x7D
 #define STUFF_MASK                        0x20
-
-#define frskySendAlarms()
 
 typedef enum {
   TS_IDLE = 0,  // waiting for 0x5e frame marker
@@ -292,16 +280,31 @@ void telemetryInit(uint8_t protocol);
 
 void telemetryInterrupt10ms();
 
-struct TelemetryData {
-  TelemetryValue swr;
-  FilteredTelemetryValue rssi;
-  uint16_t xjtVersion;
-  bool varioHighPrecision;
+class TelemetryData {
+  public:
+    TelemetryExpiringDecorator<TelemetryValue> swrInternal;
+    TelemetryExpiringDecorator<TelemetryValue> swrExternal;
+    TelemetryFilterDecorator<TelemetryValue> rssi;
+    uint16_t xjtVersion;
+    bool varioHighPrecision;
+
+    void setSwr(uint8_t origin, uint8_t value)
+    {
+      if (origin & 0x80)
+        swrExternal.set(0x00);
+      else
+        swrInternal.set(0x00);
+    }
 };
 
 extern TelemetryData telemetryData;
 
 bool pushFrskyTelemetryData(uint8_t data); // returns true when end of frame detected
 void processFrskyTelemetryData(uint8_t data);
+
+inline bool IS_RAS_VALUE_VALID(uint16_t version)
+{
+  return version != 0x0000 && version != 0x00ff;
+}
 
 #endif // _FRSKY_H_

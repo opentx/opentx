@@ -66,6 +66,69 @@ void processTelemetryData(uint8_t data)
   processFrskyTelemetryData(data);
 }
 
+#if defined(NO_RAS)
+inline bool IS_INTERNAL_RAS_VALUE_VALID()
+{
+  return false;
+}
+
+inline bool IS_EXTERNAL_RAS_VALUE_VALID()
+{
+  return false;
+}
+#elif defined(PXX2)
+inline bool IS_INTERNAL_RAS_VALUE_VALID()
+{
+  return get_tmr10ms() < telemetryData.swrInternal.expirationTime;
+}
+
+inline bool IS_EXTERNAL_RAS_VALUE_VALID()
+{
+  return get_tmr10ms() < telemetryData.swrExternal.expirationTime;
+}
+#elif defined(PCBX10)
+inline bool IS_INTERNAL_RAS_VALUE_VALID()
+{
+  return false;
+}
+
+inline bool IS_EXTERNAL_RAS_VALUE_VALID()
+{
+  return false;
+}
+#elif defined(PCBX9DP) || defined(PCBX9E)
+inline bool IS_INTERNAL_RAS_VALUE_VALID()
+{
+  return IS_RAS_VALUE_VALID(telemetryData.xjtVersion);
+}
+
+inline bool IS_EXTERNAL_RAS_VALUE_VALID()
+{
+  return IS_RAS_VALUE_VALID(telemetryData.xjtVersion);
+}
+#else
+inline bool IS_INTERNAL_RAS_VALUE_VALID()
+{
+  return false;
+}
+
+inline bool IS_EXTERNAL_RAS_VALUE_VALID()
+{
+  return false;
+}
+#endif
+
+inline bool isBadAntennaDetected()
+{
+  if (IS_INTERNAL_RAS_VALUE_VALID() && telemetryData.swrInternal.value > 0x33)
+    return true;
+
+  if (IS_EXTERNAL_RAS_VALUE_VALID() && telemetryData.swrExternal.value > 0x33)
+    return true;
+
+  return false;
+}
+
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
@@ -133,8 +196,6 @@ void telemetryWakeup()
   }
 #endif
 
-#define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
-
   static tmr10ms_t alarmsCheckTime = 0;
   #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
@@ -159,7 +220,7 @@ void telemetryWakeup()
     }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-    if ((/*isModulePXX2(INTERNAL_MODULE) || */isModulePXX(INTERNAL_MODULE)/* || isModulePXX2(EXTERNAL_MODULE)*/ || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
+    if (isBadAntennaDetected()) {
       AUDIO_RAS_RED();
       POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;

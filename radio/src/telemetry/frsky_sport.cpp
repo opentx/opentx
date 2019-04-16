@@ -184,15 +184,14 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     }
     else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
-      if (!IS_RAS_VALUE_VALID()) {
-        telemetryData.swr.set(0x00);
+      if (!IS_RAS_VALUE_VALID(telemetryData.xjtVersion)) {
+        telemetryData.setSwr(origin, 0);
       }
     }
     else if (dataId == RAS_ID) {
-      if (IS_RAS_VALUE_VALID())
-        telemetryData.swr.set(SPORT_DATA_U8(packet));
-      else
-        telemetryData.swr.set(0x00);
+      if (!IS_RAS_VALUE_VALID(telemetryData.xjtVersion)) {
+        telemetryData.setSwr(origin, SPORT_DATA_U8(packet));
+      }
     }
 
     if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {

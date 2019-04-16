@@ -141,7 +141,6 @@ set(SRC
   tasks.cpp
   audio.cpp
   telemetry/telemetry.cpp
-  telemetry/telemetry_holders.cpp
   telemetry/telemetry_sensors.cpp
   telemetry/frsky.cpp
   telemetry/frsky_d.cpp
