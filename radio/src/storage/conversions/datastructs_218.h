@@ -80,7 +80,7 @@
   #define LEN_FUNCTION_NAME_218            8
   #define MAX_CURVES_218                   32
   #define MAX_CURVE_POINTS_218             512
-#elif defined(CPUARM)
+#else
   #define LEN_MODEL_NAME_218               10
   #define LEN_TIMER_NAME_218               3
   #define LEN_FLIGHT_MODE_NAME_218         6
@@ -91,11 +91,6 @@
   #define LEN_FUNCTION_NAME_218            6
   #define MAX_CURVES_218                   16
   #define MAX_CURVE_POINTS_218             512
-#else
-  #define LEN_MODEL_NAME_218               10
-  #define LEN_FLIGHT_MODE_NAME_218         6
-  #define MAX_CURVES_218                   8
-  #define MAX_CURVE_POINTS_218             (112-MAX_CURVES_218)
 #endif
 
 #if defined(PCBHORUS)
@@ -261,26 +256,32 @@ PACK(typedef struct { // Logical Switches data
   uint8_t  duration;
 }) LogicalSwitchData_v218;
 
+#if defined(PCBTARANIS)
+#define CFN_SPARE_TYPE               int32_t
+#else
+#define CFN_SPARE_TYPE               int16_t
+#endif
+
 PACK(typedef struct {
   int16_t  swtch:9;
   uint16_t func:7;
   PACK(union {
-         PACK(struct {
-                char name[8];
-              }) play;
+    PACK(struct {
+      char name[LEN_FUNCTION_NAME_218];
+    }) play;
 
-         PACK(struct {
-                int16_t val;
-                uint8_t mode;
-                uint8_t param;
-                int32_t spare2;
-              }) all;
+    PACK(struct {
+      int16_t val;
+      uint8_t mode;
+      uint8_t param;
+      CFN_SPARE_TYPE spare2;
+    }) all;
 
-         PACK(struct {
-                int32_t val1;
-                int32_t val2;
-              }) clear;
-       });
+    PACK(struct {
+      int32_t val1;
+      CFN_SPARE_TYPE val2;
+    }) clear;
+  });
   uint8_t active;
 }) CustomFunctionData_v218;
 
@@ -305,10 +306,10 @@ PACK(struct FrSkyTelemetryData_v217 {
 });
 #else
 union FrSkyScreenData {
-    FrSkyBarData  bars[4];
-    FrSkyLineData lines[4];
+  FrSkyBarData  bars[4];
+  FrSkyLineData lines[4];
 #if defined(PCBTARANIS)
-    TelemetryScriptData script;
+  TelemetryScriptData script;
 #endif
 };
 PACK(struct FrSkyTelemetryData_v217 {
@@ -326,13 +327,13 @@ PACK(struct FrSkyTelemetryData_v217 {
 #endif
 
 #if defined(PCBX12S)
-#define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
+  #define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
 #elif defined(PCBX10)
-#define MODELDATA_EXTRA_218  uint8_t spare:3;;uint8_t trainerMode:3;;uint8_t potsWarnMode:2;; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];;char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;uint8_t potsWarnSpares[NUM_DUMMY_ANAS];;
+  #define MODELDATA_EXTRA_218  uint8_t spare:3;;uint8_t trainerMode:3;;uint8_t potsWarnMode:2;; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];;char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;uint8_t potsWarnSpares[NUM_DUMMY_ANAS];;
 #elif defined(PCBTARANIS)
-#define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
 #elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+  #define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
 #else
   #define MODELDATA_EXTRA_218
 #endif
@@ -382,10 +383,22 @@ PACK(typedef struct {
 
 #if defined(PCBHORUS)
   // TODO conversion for custom screens?
-#else
+#elif defined(PCBTARANIS)
   uint8_t view;
 #endif
 }) ModelData_v218;
+
+#if defined(PCBHORUS)
+static_assert(sizeof(ModelData_v218) == 9380);
+#elif defined(PCBX9E)
+static_assert(sizeof(ModelData_v218) == 6520);
+#elif defined(PCBX9D)
+static_assert(sizeof(ModelData_v218) == 6507);
+#elif defined(PCBXLITE) || defined(PCBX7)
+static_assert(sizeof(ModelData_v218) == 6025);
+#elif defined(PCBSKY9X)
+static_assert(sizeof(ModelData_v218) == 5188);
+#endif
 
 #define EXTRA_GENERAL_FIELDS_GENERAL_218 \
     uint8_t  backlightBright; \
@@ -453,12 +466,8 @@ PACK(typedef struct {
     uint8_t  rotarySteps; \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218];
-#elif defined(CPUARM)
-  #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
-#elif defined(PXX)
-  #define EXTRA_GENERAL_FIELDS_218 uint8_t countryCode;
 #else
-  #define EXTRA_GENERAL_FIELDS_218
+  #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
 #endif
 
 #if defined(PCBHORUS)

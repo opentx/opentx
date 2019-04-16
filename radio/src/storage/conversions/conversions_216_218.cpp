@@ -901,7 +901,7 @@ void convertModelData_216_to_217(ModelData &model)
   // PPM center range
   // Telemetry custom screens
 
-  assert(sizeof(ModelData_v216) <= sizeof(ModelData));
+  static_assert(sizeof(ModelData_v216) <= sizeof(ModelData));
 
   ModelData_v216 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));
@@ -1076,7 +1076,7 @@ void convertModelData_216_to_217(ModelData &model)
 
 void convertModelData_217_to_218(ModelData &model)
 {
-  assert(sizeof(ModelData_v217) <= sizeof(ModelData));
+  static_assert(sizeof(ModelData_v217) <= sizeof(ModelData));
 
   ModelData_v217 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));

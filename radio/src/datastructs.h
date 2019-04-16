@@ -915,16 +915,16 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6117);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6550);
+  CHKSIZE(ModelData, 6554);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6281);
+  CHKSIZE(ModelData, 6541);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5279);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9726);
+  CHKSIZE(ModelData, 9674);
 #endif
 
 #undef CHKSIZE
