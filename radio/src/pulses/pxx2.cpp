@@ -250,6 +250,7 @@ void Pxx2Pulses::setupResetFrame(uint8_t module)
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RESET);
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverIndex);
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverFlags);
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
@@ -310,7 +311,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupBindFrame(module);
       break;
     case MODULE_MODE_RESET:
-      setupRegisterFrame(module);
+      setupResetFrame(module);
       break;
     case MODULE_MODE_SPECTRUM_ANALYSER:
       setupSpectrumAnalyser(module);

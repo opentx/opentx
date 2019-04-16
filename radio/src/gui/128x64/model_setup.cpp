@@ -246,14 +246,24 @@ enum MenuModelSetupItems {
 #if defined(PXX2)
 const char * STR_BIND = "Bind";
 const char * STR_SHARE = "Share";
-const char * STR_UNBIND = "Unbind";
 const char * STR_ERASE = "Erase";
+
+bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  return is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
+}
+
+void removePXX2Receiver(uint8_t moduleIdx, uint8_t receiverIdx)
+{
+  memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
+  g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
+  storageDirty(EE_MODEL);
+}
 
 void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
 {
-  if (is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME)) {
-    g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
-    storageDirty(EE_MODEL);
+  if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+    removePXX2Receiver(moduleIdx, receiverIdx);
   }
 }
 
@@ -294,17 +304,12 @@ void onPXX2ReceiverMenu(const char * result)
     moduleSettings[moduleIdx].mode = MODULE_MODE_SHARE;
     s_editMode = 1;
   }
-  else if (result == STR_DELETE) {
-    g_model.moduleData[moduleIdx].pxx2.receivers &= ~(1 << receiverIdx);
-    memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
-    storageDirty(EE_MODEL);
-  }
-  else if (result == STR_UNBIND || result == STR_ERASE) {
+  else if (result == STR_DELETE || result == STR_ERASE) {
     memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
     reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
     reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = (result == STR_ERASE ? 0xFF : 0x01);
     moduleSettings[moduleIdx].mode = MODULE_MODE_RESET;
-    s_editMode = 1;
+    removePXX2Receiver(moduleIdx, receiverIdx);
   }
   else {
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
@@ -1345,11 +1350,12 @@ void menuModelSetup(event_t event)
         if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
           killEvents(event);
           POPUP_MENU_ADD_ITEM(STR_BIND);
-          POPUP_MENU_ADD_ITEM(STR_OPTIONS);
-          POPUP_MENU_ADD_ITEM(STR_SHARE);
-          POPUP_MENU_ADD_ITEM(STR_DELETE);
-          POPUP_MENU_ADD_ITEM(STR_UNBIND);
-          POPUP_MENU_ADD_ITEM(STR_RESET);
+          if (!isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+            POPUP_MENU_ADD_ITEM(STR_OPTIONS);
+            POPUP_MENU_ADD_ITEM(STR_SHARE);
+            POPUP_MENU_ADD_ITEM(STR_DELETE);
+            POPUP_MENU_ADD_ITEM(STR_RESET);
+          }
           POPUP_MENU_START(onPXX2ReceiverMenu);
         }
       }
