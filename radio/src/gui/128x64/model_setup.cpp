@@ -281,6 +281,16 @@ void onPXX2BindMenu(const char * result)
   }
 }
 
+void onResetReceiverConfirm(const char * result)
+{
+  if (result == STR_OK) {
+    uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
+    uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
+    moduleSettings[moduleIdx].mode = MODULE_MODE_RESET;
+    removePXX2Receiver(moduleIdx, receiverIdx);
+  }
+}
+
 void onPXX2ReceiverMenu(const char * result)
 {
   uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
@@ -307,8 +317,7 @@ void onPXX2ReceiverMenu(const char * result)
     memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
     reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
     reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = (result == STR_RESET ? 0xFF : 0x01);
-    moduleSettings[moduleIdx].mode = MODULE_MODE_RESET;
-    removePXX2Receiver(moduleIdx, receiverIdx);
+    POPUP_CONFIRMATION(result == STR_RESET ? "Reset to factory settings?" : "Delete the receiver?", onResetReceiverConfirm);
   }
   else {
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
