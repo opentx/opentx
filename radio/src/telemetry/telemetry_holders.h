@@ -77,7 +77,7 @@ class TelemetryExpiringDecorator: public T {
     void set(uint8_t value)
     {
       T::set(value);
-      expirationTime = get_tmr10ms();
+      expirationTime = get_tmr10ms() + 1000/*10s*/;
     }
     void reset()
     {

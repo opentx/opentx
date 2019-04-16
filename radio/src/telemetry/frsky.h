@@ -288,9 +288,9 @@ class TelemetryData {
     uint16_t xjtVersion;
     bool varioHighPrecision;
 
-    void setSwr(uint8_t origin, uint8_t value)
+    void setSwr(uint8_t module, uint8_t value)
     {
-      if (origin & 0x80)
+      if (module == EXTERNAL_MODULE)
         swrExternal.set(value);
       else
         swrInternal.set(value);
