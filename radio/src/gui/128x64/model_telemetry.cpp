@@ -52,6 +52,8 @@ enum MenuModelTelemetryFrskyItems {
   #define TELEM_COL2                 (8*FW)
 #endif
 
+#define TELEM_COL3                   (17 * FW)
+
 #define CHANNELS_ROWS
 #define SENSOR_ROWS(x)               (isTelemetryFieldAvailable(x) ? (uint8_t)0 : HIDDEN_ROW)
 #define SENSORS_ROWS                 LABEL(Sensors), SENSOR_ROWS(0), SENSOR_ROWS(1), SENSOR_ROWS(2), SENSOR_ROWS(3), SENSOR_ROWS(4), SENSOR_ROWS(5), SENSOR_ROWS(6), SENSOR_ROWS(7), SENSOR_ROWS(8), SENSOR_ROWS(9), SENSOR_ROWS(10), SENSOR_ROWS(11), SENSOR_ROWS(12), SENSOR_ROWS(13), SENSOR_ROWS(14), SENSOR_ROWS(15), SENSOR_ROWS(16), SENSOR_ROWS(17), SENSOR_ROWS(18), SENSOR_ROWS(19), SENSOR_ROWS(20), SENSOR_ROWS(21), SENSOR_ROWS(22), SENSOR_ROWS(23), SENSOR_ROWS(24), SENSOR_ROWS(25), SENSOR_ROWS(26), SENSOR_ROWS(27), SENSOR_ROWS(28), SENSOR_ROWS(29), SENSOR_ROWS(30), SENSOR_ROWS(31), SENSOR_ROWS(32), SENSOR_ROWS(33), SENSOR_ROWS(34), SENSOR_ROWS(35), SENSOR_ROWS(36), SENSOR_ROWS(37), SENSOR_ROWS(38), SENSOR_ROWS(39), 0, 0, 0, 0,
@@ -110,31 +112,20 @@ void onSensorMenu(const char * result)
   }
 }
 
-void menuModelTelemetryFrsky(event_t event)
+void onDeleteAllSensorsConfirm(const char * result)
 {
-  // TODO rather an handler for this
-  if (warningResult) {
-    warningResult = 0;
+  if (result == STR_OK) {
     for (int i=0; i<MAX_TELEMETRY_SENSORS; i++) {
       delTelemetryIndex(i);
     }
   }
+}
 
+void menuModelTelemetryFrsky(event_t event)
+{
   MENU(STR_MENUTELEMETRY, menuTabModel, MENU_MODEL_TELEMETRY_FRSKY, HEADER_LINE+ITEM_TELEMETRY_MAX, { HEADER_LINE_COLUMNS TELEMETRY_TYPE_ROWS CHANNELS_ROWS RSSI_ROWS SENSORS_ROWS USRDATA_ROWS VARIO_ROWS});
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
-
-  switch (event) {
-    case EVT_KEY_BREAK(KEY_DOWN):
-    case EVT_KEY_BREAK(KEY_UP):
-#if !defined(PCBX7) && !defined(PCBX3)
-    case EVT_KEY_BREAK(KEY_LEFT):
-    case EVT_KEY_BREAK(KEY_RIGHT):
-#endif
-      if (s_editMode>0 && sub<=ITEM_TELEMETRY_RSSI_ALARM2)
-        frskySendAlarms(); // update FrSky module when edit mode exited
-      break;
-  }
 
   for (uint8_t i=0; i<LCD_LINES-1; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i*FH;
@@ -157,15 +148,17 @@ void menuModelTelemetryFrsky(event_t event)
       lcdDrawChar(lcdLastRightPos, y, ':', attr);
       lcdDrawSizedText(3*FW, y, g_model.telemetrySensors[index].label, TELEM_LABEL_LEN, ZCHAR);
       if (telemetryItems[index].isFresh()) {
-        lcdDrawChar(17*FW, y, '*');
+        lcdDrawChar(TELEM_COL3, y, '*');
       }
       TelemetryItem & telemetryItem = telemetryItems[index];
       if (telemetryItem.isAvailable()) {
         bool isOld = telemetryItem.isOld();
         lcdNextPos = TELEM_COL2;
-        if (isOld) lcdDrawChar(lcdNextPos, y, '[');
+        if (isOld)
+          lcdDrawChar(lcdNextPos, y, '[');
         drawSensorCustomValue(lcdNextPos, y, index, getValue(MIXSRC_FIRST_TELEM+3*index), LEFT);
-        if (isOld) lcdDrawChar(lcdLastRightPos, y, ']');
+        if (isOld)
+          lcdDrawChar(lcdLastRightPos, y, ']');
       }
       else {
         lcdDrawText(TELEM_COL2, y, "---", 0); // TODO shortcut
@@ -233,9 +226,9 @@ void menuModelTelemetryFrsky(event_t event)
         lcdDrawText(0, y, STR_DELETE_ALL_SENSORS, attr);
         if (attr) {
           s_editMode = 0;
-          if (event == EVT_KEY_LONG(KEY_ENTER)) {
+          if (event == EVT_KEY_BREAK(KEY_ENTER)) {
             killEvents(KEY_ENTER);
-            POPUP_CONFIRMATION(STR_CONFIRMDELETE, nullptr);
+            POPUP_CONFIRMATION(STR_CONFIRMDELETE, onDeleteAllSensorsConfirm);
           }
         }
         break;
@@ -260,7 +253,8 @@ void menuModelTelemetryFrsky(event_t event)
         drawSource(TELEM_COL2, y, g_model.frsky.rssiSource ? MIXSRC_FIRST_TELEM + 3 * (g_model.frsky.rssiSource - 1) : 0, attr);
         if (g_model.frsky.rssiSource) {
           TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.frsky.rssiSource];
-          drawReceiverName(TELEM_COL2 + 5 * FW, y, (sensor->instance >> 7) & 0x01, (sensor->instance >> 5) & 0x03, 0);
+          lcdDrawText(lcdNextPos, y, " ", attr);
+          drawReceiverName(lcdNextPos, y, (sensor->instance >> 7) & 0x01, (sensor->instance >> 5) & 0x03, attr);
         }
         if (attr) {
           g_model.frsky.rssiSource = checkIncDec(event, g_model.frsky.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
@@ -269,20 +263,22 @@ void menuModelTelemetryFrsky(event_t event)
       }
 
       case ITEM_TELEMETRY_RSSI_ALARM1:
-      case ITEM_TELEMETRY_RSSI_ALARM2: {
+      case ITEM_TELEMETRY_RSSI_ALARM2:
+      {
         bool warning = (k==ITEM_TELEMETRY_RSSI_ALARM1);
         lcdDrawTextAlignedLeft(y, (warning ? STR_LOWALARM : STR_CRITICALALARM));
-        lcdDrawNumber(LCD_W, y, warning? g_model.rssiAlarms.getWarningRssi() : g_model.rssiAlarms.getCriticalRssi(), RIGHT | attr, 3);
+        lcdDrawNumber(TELEM_COL3, y, warning? g_model.rssiAlarms.getWarningRssi() : g_model.rssiAlarms.getCriticalRssi(), attr, 3);
         if (attr && s_editMode>0) {
           if (warning)
             CHECK_INCDEC_MODELVAR(event, g_model.rssiAlarms.warning, -30, 30);
           else
             CHECK_INCDEC_MODELVAR(event, g_model.rssiAlarms.critical, -30, 30);
-     }
+        }
         break;
       }
+
       case ITEM_TELEMETRY_DISABLE_ALARMS:
-        g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, LCD_W - 10, y, STR_DISABLE_ALARM, attr, event);
+        g_model.rssiAlarms.disabled = editCheckBox(g_model.rssiAlarms.disabled, TELEM_COL3, y, STR_DISABLE_ALARM, attr, event);
         break;
 
 #if defined(VARIO)
