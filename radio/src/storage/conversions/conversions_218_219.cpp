@@ -34,7 +34,7 @@ typedef ModelData ModelData_v219;
 
 void convertModelData_218_to_219(ModelData &model)
 {
-  static_assert(sizeof(ModelData_v218) <= sizeof(ModelData));
+  static_assert(sizeof(ModelData_v218) <= sizeof(ModelData), "ModelData size has been reduced");
 
   ModelData_v218 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));
