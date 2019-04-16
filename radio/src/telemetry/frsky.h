@@ -187,12 +187,12 @@ enum FrSkyDataState {
 #define RSSI_ID                   0xf101
 #define ADC1_ID                   0xf102
 #define ADC2_ID                   0xf103
-#define SP2UART_A_ID              0xfd00
-#define SP2UART_B_ID              0xfd01
 #define BATT_ID                   0xf104
 #define RAS_ID                    0xf105
 #define XJT_VERSION_ID            0xf106
 #define R9_PWR_ID                 0xf107
+#define SP2UART_A_ID              0xfd00
+#define SP2UART_B_ID              0xfd01
 #define FUEL_QTY_FIRST_ID         0x0a10
 #define FUEL_QTY_LAST_ID          0x0a1f
 
@@ -291,9 +291,9 @@ class TelemetryData {
     void setSwr(uint8_t origin, uint8_t value)
     {
       if (origin & 0x80)
-        swrExternal.set(0x00);
+        swrExternal.set(value);
       else
-        swrInternal.set(0x00);
+        swrInternal.set(value);
     }
 };
 
@@ -302,9 +302,33 @@ extern TelemetryData telemetryData;
 bool pushFrskyTelemetryData(uint8_t data); // returns true when end of frame detected
 void processFrskyTelemetryData(uint8_t data);
 
-inline bool IS_RAS_VALUE_VALID(uint16_t version)
+#if defined(NO_RAS)
+inline bool isRasValueValid()
 {
-  return version != 0x0000 && version != 0x00ff;
+  return false;
 }
+#elif defined(PXX2)
+inline bool isRasValueValid()
+{
+  return true;
+}
+#elif defined(PCBX10)
+inline bool isRasValueValid()
+{
+  return false;
+}
+#elif defined(PCBX9DP) || defined(PCBX9E)
+inline bool isRasValueValid()
+{
+  return telemetryData.xjtVersion != 0x0000 && telemetryData.xjtVersion != 0x00ff;
+}
+#else
+inline bool isRasValueValid()
+{
+  return false;
+}
+#endif
+
+constexpr uint8_t FRSKY_BAD_ANTENNA_THRESHOLD = 0x33;
 
 #endif // _FRSKY_H_

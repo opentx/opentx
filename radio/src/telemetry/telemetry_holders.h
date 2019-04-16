@@ -83,6 +83,10 @@ class TelemetryExpiringDecorator: public T {
     {
       memclear(this, sizeof(*this));
     }
+    bool isFresh()
+    {
+      return get_tmr10ms() < expirationTime;
+    }
 };
 
 template <class T>

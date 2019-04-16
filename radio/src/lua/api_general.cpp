@@ -672,7 +672,7 @@ This is just a hardware pass/fail measure and does not represent the quality of 
 */
 static int luaGetRAS(lua_State * L)
 {
-  if (!IS_RAS_VALUE_VALID(telemetryData.xjtVersion)) {
+  if (isRasValueValid()) {
     lua_pushinteger(L, telemetryData.swrInternal.value);
   }
   else {

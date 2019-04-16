@@ -184,12 +184,12 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     }
     else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
-      if (!IS_RAS_VALUE_VALID(telemetryData.xjtVersion)) {
+      if (!isRasValueValid()) {
         telemetryData.setSwr(origin, 0);
       }
     }
     else if (dataId == RAS_ID) {
-      if (!IS_RAS_VALUE_VALID(telemetryData.xjtVersion)) {
+      if (isRasValueValid()) {
         telemetryData.setSwr(origin, SPORT_DATA_U8(packet));
       }
     }

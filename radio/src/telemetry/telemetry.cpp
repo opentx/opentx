@@ -66,64 +66,15 @@ void processTelemetryData(uint8_t data)
   processFrskyTelemetryData(data);
 }
 
-#if defined(NO_RAS)
-inline bool IS_INTERNAL_RAS_VALUE_VALID()
-{
-  return false;
-}
-
-inline bool IS_EXTERNAL_RAS_VALUE_VALID()
-{
-  return false;
-}
-#elif defined(PXX2)
-inline bool IS_INTERNAL_RAS_VALUE_VALID()
-{
-  return get_tmr10ms() < telemetryData.swrInternal.expirationTime;
-}
-
-inline bool IS_EXTERNAL_RAS_VALUE_VALID()
-{
-  return get_tmr10ms() < telemetryData.swrExternal.expirationTime;
-}
-#elif defined(PCBX10)
-inline bool IS_INTERNAL_RAS_VALUE_VALID()
-{
-  return false;
-}
-
-inline bool IS_EXTERNAL_RAS_VALUE_VALID()
-{
-  return false;
-}
-#elif defined(PCBX9DP) || defined(PCBX9E)
-inline bool IS_INTERNAL_RAS_VALUE_VALID()
-{
-  return IS_RAS_VALUE_VALID(telemetryData.xjtVersion);
-}
-
-inline bool IS_EXTERNAL_RAS_VALUE_VALID()
-{
-  return IS_RAS_VALUE_VALID(telemetryData.xjtVersion);
-}
-#else
-inline bool IS_INTERNAL_RAS_VALUE_VALID()
-{
-  return false;
-}
-
-inline bool IS_EXTERNAL_RAS_VALUE_VALID()
-{
-  return false;
-}
-#endif
-
 inline bool isBadAntennaDetected()
 {
-  if (IS_INTERNAL_RAS_VALUE_VALID() && telemetryData.swrInternal.value > 0x33)
+  if (!isRasValueValid())
+    return false;
+
+  if (telemetryData.swrInternal.isFresh() && telemetryData.swrInternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
     return true;
 
-  if (IS_EXTERNAL_RAS_VALUE_VALID() && telemetryData.swrExternal.value > 0x33)
+  if (telemetryData.swrExternal.isFresh() && telemetryData.swrExternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
     return true;
 
   return false;
