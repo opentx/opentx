@@ -310,8 +310,8 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   //display test
   lcdClear();
 
-#if !defined(COLORLCD)
-  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+#if defined(PCBX9)
+  g_model.voltsSource = FRSKY_VOLTS_SOURCE_A1;
 #endif
 }
 
@@ -390,8 +390,8 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   //display test
   lcdClear();
 
-#if !defined(COLORLCD)
-  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+#if defined(PCBX9)
+  g_model.voltsSource = FRSKY_VOLTS_SOURCE_A1;
 #endif
 }
 
