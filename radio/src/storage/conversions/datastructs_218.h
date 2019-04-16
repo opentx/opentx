@@ -60,7 +60,7 @@
   #define LEN_MODEL_NAME_218               15
   #define LEN_TIMER_NAME_218               8
   #define LEN_FLIGHT_MODE_NAME_218         10
-  #define LEN_BITMAP_NAME_218              10  // TODO next EEPROM change: we need 14 here as we have to store the file extension
+  #define LEN_BITMAP_NAME_218              10
   #define LEN_EXPOMIX_NAME_218             6
   #define LEN_CHANNEL_NAME_218             6
   #define LEN_INPUT_NAME_218               4
@@ -73,7 +73,7 @@
   #define LEN_TIMER_NAME_218               8
   #define LEN_FLIGHT_MODE_NAME_218         10
   #define LEN_BITMAP_NAME_218              10
-  #define LEN_EXPOMIX_NAME_218             8   // TODO next EEPROM change: 6 seem enough
+  #define LEN_EXPOMIX_NAME_218             8
   #define LEN_CHANNEL_NAME_218             6
   #define LEN_INPUT_NAME_218               4
   #define LEN_CURVE_NAME_218               3
@@ -89,7 +89,7 @@
   #define LEN_INPUT_NAME_218               3
   #define LEN_CURVE_NAME_218               3
   #define LEN_FUNCTION_NAME_218            6
-  #define MAX_CURVES_218                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
+  #define MAX_CURVES_218                   16
   #define MAX_CURVE_POINTS_218             512
 #else
   #define LEN_MODEL_NAME_218               10
@@ -166,7 +166,7 @@ PACK(typedef struct {
       uint8_t receiver_telem_off:1;     // false = receiver telem enabled
       uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
       uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
-      uint8_t fast:1;                   // TODO: to be used later by external module (fast means serial @ high speed)
+      uint8_t fast:1;
       uint8_t spare2;
     } pxx;
     struct {
@@ -294,6 +294,37 @@ PACK(typedef struct {
   uint32_t spare:4;
 }) GVarData_v218;
 
+#if defined(COLORLCD)
+PACK(struct FrSkyTelemetryData_v217 {
+  uint8_t varioSource:7;
+  uint8_t varioCenterSilent:1;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+});
+#else
+union FrSkyScreenData {
+    FrSkyBarData  bars[4];
+    FrSkyLineData lines[4];
+#if defined(PCBTARANIS)
+    TelemetryScriptData script;
+#endif
+};
+PACK(struct FrSkyTelemetryData_v217 {
+  uint8_t voltsSource;
+  uint8_t altitudeSource;
+  uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
+  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
+  uint8_t varioSource:7;
+  uint8_t varioCenterSilent:1;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+});
+#endif
+
 #if defined(PCBX12S)
 #define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
 #elif defined(PCBX10)
@@ -316,7 +347,7 @@ PACK(typedef struct {
   uint8_t   ignoreSensorIds:1;
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  uint8_t displayChecklist:1;
+  uint8_t   displayChecklist:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
@@ -340,7 +371,7 @@ PACK(typedef struct {
 
   GVarData_v218 gvars[MAX_GVARS_218];
 
-  VarioData frsky;
+  FrSkyTelemetryData_v217 frsky;
   RssiAlarmData rssiAlarms;
 
   MODELDATA_EXTRA_218
