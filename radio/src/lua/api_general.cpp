@@ -1374,6 +1374,7 @@ const luaR_value_entry opentxConstants[] = {
 #endif
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
+  { "MAX_SENSORS", MAX_TELEMETRY_SENSORS },
 #if defined(COLORLCD)
   { "SHADOWED", SHADOWED },
   { "COLOR", ZoneOption::Color },
