@@ -22,7 +22,7 @@
 
 extern uint8_t g_moduleIdx;
 
-enum SpektrumFields {
+enum SpectrumFields {
   SPECTRUM_FREQUENCY,
   SPECTRUM_SPAN,
   SPECTRUM_FIELDS_MAX
@@ -64,7 +64,7 @@ void menuRadioSpectrumAnalyser(event_t event)
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
-  for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX+1; i++) {
+  for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX; i++) {
     LcdFlags attr = (menuHorizontalPosition == i ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
 
     switch (i) {
