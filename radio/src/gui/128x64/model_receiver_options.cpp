@@ -151,6 +151,6 @@ void menuModelReceiverOptions(event_t event)
     }
   }
   else {
-    lcdDrawText(4 * FW, 4 * FH, "Waiting for RX...");
+    lcdDrawCenteredText(LCD_H/2, "Waiting for RX...");
   }
 }

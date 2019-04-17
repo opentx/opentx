@@ -210,6 +210,6 @@ void menuModelModuleOptions(event_t event)
     }
   }
   else {
-    lcdDrawText(4 * FW, 4 * FH, "Waiting for TX...");
+    lcdDrawCenteredText(LCD_H/2, "Waiting for TX...");
   }
 }

@@ -24,6 +24,8 @@ extern uint8_t g_moduleIdx;
 
 void menuRadioPowerMeter(event_t event)
 {
+  SIMPLE_SUBMENU("POWER METER", 1);
+
   if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(LCD_H/2, "Turn off receiver");
     if (event == EVT_KEY_FIRST(KEY_EXIT)) {
@@ -33,11 +35,8 @@ void menuRadioPowerMeter(event_t event)
     return;
   }
 
-  SIMPLE_SUBMENU("POWER METER", 1);
-
   if (menuEvent) {
-    const char * message = "Stopping...";
-    lcdDrawText(LCD_W / 2 - getTextWidth(message) / 2, 4*FH, message);
+    lcdDrawCenteredText(LCD_H/2, "Stopping...");
     lcdRefresh();
     pausePulses();
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
