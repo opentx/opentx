@@ -22,7 +22,7 @@
 
 extern uint8_t g_moduleIdx;
 
-enum SpektrumFields {
+enum SpectrumFields {
   SPECTRUM_FREQUENCY,
   SPECTRUM_SPAN,
   SPECTRUM_FIELDS_MAX
