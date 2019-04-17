@@ -85,18 +85,20 @@ void menuRadioPowerMeter(event_t event)
         break;
 
       case POWER_METER_FREQ_ATTENUATOR:
+      {
         lcdDrawText(0, y, "Attn");
-        lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.attn, LEFT | attr);
+        lcdDrawNumber(8 * FW, y, -10 * reusableBuffer.powerMeter.attn, LEFT | attr);
         lcdDrawText(lcdNextPos, y, " dB");
         if (attr) {
-          reusableBuffer.powerMeter.attn = checkIncDec(event, reusableBuffer.powerMeter.attn, -50, 0, 10);
+          reusableBuffer.powerMeter.attn = checkIncDec(event, reusableBuffer.powerMeter.attn, 0, 5, 0);
         }
         break;
+      }
 
       case POWER_METER_FREQ_POWER:
         lcdDrawText(0, y, "Power");
         if (reusableBuffer.powerMeter.power) {
-          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.power, LEFT | PREC2);
+          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.power + reusableBuffer.powerMeter.attn * 10, LEFT | PREC2);
           lcdDrawText(lcdNextPos, y, "dBm");
         }
         break;
@@ -104,7 +106,7 @@ void menuRadioPowerMeter(event_t event)
       case POWER_METER_FREQ_PEAK:
         lcdDrawText(0, y, "Peak");
         if (reusableBuffer.powerMeter.peak) {
-          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.peak, LEFT | PREC2);
+          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.peak + reusableBuffer.powerMeter.attn * 10, LEFT | PREC2);
           lcdDrawText(lcdNextPos, y, "dBm");
         }
         break;
