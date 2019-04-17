@@ -255,7 +255,6 @@ void bluetoothSendTrainer()
 
 void bluetoothForwardTelemetry(const uint8_t * packet)
 {
-  bluetoothBufferIndex = 0;
   bluetoothCrc = 0x00;
 
   bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // start byte
@@ -264,8 +263,11 @@ void bluetoothForwardTelemetry(const uint8_t * packet)
   }
   bluetoothBuffer[bluetoothBufferIndex++] = bluetoothCrc;
   bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // end byte
-  bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
-  bluetoothBufferIndex = 0;
+
+  if (bluetoothBufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
+    bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
+    bluetoothBufferIndex = 0;
+  }
 }
 
 void bluetoothReceiveTrainer()

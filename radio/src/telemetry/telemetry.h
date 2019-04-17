@@ -171,6 +171,11 @@ class OutputTelemetryBuffer {
       timeout = 200; /* 2s */
     }
 
+    bool isModuleDestination(uint8_t module)
+    {
+      return destination != TELEMETRY_ENDPOINT_NONE && destination != TELEMETRY_ENDPOINT_SPORT && (destination >> 2) == module;
+    }
+
     void per10ms()
     {
       if (timeout > 0) {

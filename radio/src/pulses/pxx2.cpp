@@ -323,7 +323,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupShareMode(module);
       break;
     default:
-      if (outputTelemetryBuffer.destination == module) {
+      if (outputTelemetryBuffer.isModuleDestination(module)) {
         setupTelemetryFrame(module);
         outputTelemetryBuffer.reset();
       }
