@@ -24,9 +24,10 @@ extern uint8_t g_moduleIdx;
 
 enum PowerMeterFields {
   POWER_METER_FREQ_RANGE,
-  POWER_METER_FREQ_ATTENUATOR,
-  POWER_METER_FREQ_POWER,
-  POWER_METER_FREQ_PEAK,
+  POWER_METER_ATTENUATOR,
+  POWER_METER_POWER,
+  POWER_METER_PEAK,
+  POWER_METER_WARNING,
   POWER_METER_FIELDS_MAX
 };
 
@@ -84,7 +85,7 @@ void menuRadioPowerMeter(event_t event)
         }
         break;
 
-      case POWER_METER_FREQ_ATTENUATOR:
+      case POWER_METER_ATTENUATOR:
       {
         lcdDrawText(0, y, "Attn");
         lcdDrawNumber(8 * FW, y, -10 * reusableBuffer.powerMeter.attn, LEFT | attr);
@@ -95,7 +96,7 @@ void menuRadioPowerMeter(event_t event)
         break;
       }
 
-      case POWER_METER_FREQ_POWER:
+      case POWER_METER_POWER:
         lcdDrawText(0, y, "Power");
         if (reusableBuffer.powerMeter.power) {
           lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.power + reusableBuffer.powerMeter.attn * 1000, LEFT | PREC2);
@@ -103,12 +104,18 @@ void menuRadioPowerMeter(event_t event)
         }
         break;
 
-      case POWER_METER_FREQ_PEAK:
+      case POWER_METER_PEAK:
         lcdDrawText(0, y, "Peak");
         if (reusableBuffer.powerMeter.peak) {
           lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.peak + reusableBuffer.powerMeter.attn * 1000, LEFT | PREC2);
           lcdDrawText(lcdNextPos, y, "dBm");
         }
+        break;
+
+      case POWER_METER_WARNING:
+        lcdDrawText(0, y, "WARNING : Max ");
+        lcdDrawNumber(lcdNextPos, y, -10 + 10 * reusableBuffer.powerMeter.attn, LEFT | BOLD);
+        lcdDrawText(lcdNextPos+3, y, "dBm", BOLD);
         break;
     }
   }
