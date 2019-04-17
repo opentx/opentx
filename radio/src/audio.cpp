@@ -157,6 +157,7 @@ const char * const unitsFilenames[] = {
   "radian",
   "ml",
   "founce",
+  "mlpm",
   "hour",
   "minute",
   "second",
