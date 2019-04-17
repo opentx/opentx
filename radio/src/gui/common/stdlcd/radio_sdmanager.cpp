@@ -435,6 +435,6 @@ void menuRadioSdManager(event_t _event)
 #endif
   }
   else {
-    lcdDrawText(6*FW+3, 4*FH, STR_NO_SDCARD);
+    lcdDrawCenteredText(LCD_H/2, STR_NO_SDCARD);
   }
 }
