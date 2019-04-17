@@ -33,6 +33,9 @@ void testFunc()
 #ifdef SIMU
   printf("testFunc\n"); fflush(stdout);
 #endif
+
+  // for testing the WD reset uncomment the following line
+  // while (1);
 }
 #endif
 

@@ -190,17 +190,19 @@ enum MenuRadioVersionItems
   ITEM_RADIO_VERSION_COUNT
 };
 
-void menuRadioVersion(event_t event)
-{
 #if defined(EEPROM_RLC)
-  if (warningResult) {
-    warningResult = 0;
+void onFactoryResetConfirm(const char * result)
+{
+  if (result == STR_OK) {
     showMessageBox(STR_STORAGE_FORMAT);
     storageEraseAll(false);
     NVIC_SystemReset();
   }
+}
 #endif
 
+void menuRadioVersion(event_t event)
+{
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, ITEM_RADIO_VERSION_COUNT);
 
   coord_t y = MENU_HEADER_HEIGHT + 1;
@@ -240,7 +242,7 @@ void menuRadioVersion(event_t event)
   // y += FH;
   if (menuVerticalPosition == ITEM_RADIO_FACTORY_RESET && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
-    POPUP_CONFIRMATION(STR_CONFIRMRESET, nullptr);
+    POPUP_CONFIRMATION(STR_CONFIRMRESET, onFactoryResetConfirm);
   }
 #endif
 }
