@@ -98,7 +98,7 @@ void menuRadioPowerMeter(event_t event)
       case POWER_METER_FREQ_POWER:
         lcdDrawText(0, y, "Power");
         if (reusableBuffer.powerMeter.power) {
-          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.power + reusableBuffer.powerMeter.attn * 10, LEFT | PREC2);
+          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.power + reusableBuffer.powerMeter.attn * 1000, LEFT | PREC2);
           lcdDrawText(lcdNextPos, y, "dBm");
         }
         break;
@@ -106,7 +106,7 @@ void menuRadioPowerMeter(event_t event)
       case POWER_METER_FREQ_PEAK:
         lcdDrawText(0, y, "Peak");
         if (reusableBuffer.powerMeter.peak) {
-          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.peak + reusableBuffer.powerMeter.attn * 10, LEFT | PREC2);
+          lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.peak + reusableBuffer.powerMeter.attn * 1000, LEFT | PREC2);
           lcdDrawText(lcdNextPos, y, "dBm");
         }
         break;
