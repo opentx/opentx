@@ -134,7 +134,6 @@ bool menuModelSensor(event_t event)
 
       case SENSOR_FIELD_UNIT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_UNIT);
-        // TODO flash saving with editChoice where I copied those 2 lines?
         lcdDrawTextAtIndex(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, sensor->unit, UNIT_MAX);

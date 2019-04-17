@@ -132,19 +132,33 @@ void convertModelData_218_to_219(ModelData &model)
   newModel.trainerData.pulsePol = oldModel.moduleData[NUM_MODULES].ppm.pulsePol;
 
 #if defined(PCBHORUS) || defined(PCBTARANIS)
-  memcpy(newModel.scriptsData, oldModel.scriptsData,
+  memmove(newModel.scriptsData, oldModel.scriptsData,
          sizeof(newModel.scriptsData) +
          sizeof(newModel.inputNames) +
          sizeof(newModel.potsWarnEnabled) +
-         sizeof(newModel.potsWarnPosition) +
-         sizeof(oldModel.telemetrySensors));
+         sizeof(newModel.potsWarnPosition));
 #else
-  memcpy(newModel.inputNames, oldModel.inputNames,
+  memmove(newModel.inputNames, oldModel.inputNames,
          sizeof(newModel.inputNames) +
          sizeof(newModel.potsWarnEnabled) +
-         sizeof(newModel.potsWarnPosition) +
-         sizeof(oldModel.telemetrySensors));
+         sizeof(newModel.potsWarnPosition));
 #endif
+
+  for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
+    memmove(&newModel.telemetrySensors[i], &oldModel.telemetrySensors[i], 7);
+    newModel.telemetrySensors[i].subId = oldModel.telemetrySensors[i].subId;
+    newModel.telemetrySensors[i].type = oldModel.telemetrySensors[i].type;
+    newModel.telemetrySensors[i].unit = oldModel.telemetrySensors[i].unit;
+    if (newModel.telemetrySensors[i].unit >= UNIT_MILLILITERS_PER_MINUTE)
+      newModel.telemetrySensors[i].unit += 11;
+    newModel.telemetrySensors[i].prec = oldModel.telemetrySensors[i].prec;
+    newModel.telemetrySensors[i].autoOffset = oldModel.telemetrySensors[i].autoOffset;
+    newModel.telemetrySensors[i].filter = oldModel.telemetrySensors[i].filter;
+    newModel.telemetrySensors[i].logs = oldModel.telemetrySensors[i].logs;
+    newModel.telemetrySensors[i].persistent = oldModel.telemetrySensors[i].persistent;
+    newModel.telemetrySensors[i].onlyPositive = oldModel.telemetrySensors[i].onlyPositive;
+    memmove(((uint8_t *)&newModel.telemetrySensors[i]) + 10, ((uint8_t *)&oldModel.telemetrySensors[i]) + 9, 4);
+  }
 
 #if defined(PCBX9E)
   newModel.toplcdTimer = oldModel.toplcdTimer;

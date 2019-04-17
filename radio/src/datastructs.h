@@ -340,15 +340,16 @@ PACK(struct TelemetrySensor {
     NOBACKUP(uint8_t formula);
   };
   char     label[TELEM_LABEL_LEN]; // user defined label
-  uint8_t  type:1;                 // 0=custom / 1=calculated
-  uint8_t  unit:5;                 // user can choose what unit to display each value in
+  uint8_t  subId;
+  uint8_t  type:2;                   // 0=custom / 1=calculated// user can choose what unit to display each value in
+  uint8_t  unit:6;
   uint8_t  prec:2;
   uint8_t  autoOffset:1;
   uint8_t  filter:1;
   uint8_t  logs:1;
   uint8_t  persistent:1;
   uint8_t  onlyPositive:1;
-  uint8_t  subId:3;
+  uint8_t  spare:1;
   union {
     NOBACKUP(PACK(struct {
       uint16_t ratio;
@@ -898,7 +899,7 @@ static inline void check_struct()
 #endif /* board specific ifdefs*/
 
   CHKSIZE(LogicalSwitchData, 9);
-  CHKSIZE(TelemetrySensor, 13);
+  CHKSIZE(TelemetrySensor, 14);
   CHKSIZE(ModuleData, 29);
   CHKSIZE(GVarData, 7);
   CHKSIZE(RssiAlarmData, 2);
@@ -906,25 +907,25 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 860);
-  CHKSIZE(ModelData, 6117);
+  CHKSIZE(ModelData, 6157);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
-  CHKSIZE(ModelData, 6117);
+  CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 6117);
+  CHKSIZE(ModelData, 6157);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6554);
+  CHKSIZE(ModelData, 6614);
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6541);
+  CHKSIZE(ModelData, 6601);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5279);
+  CHKSIZE(ModelData, 5319);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9674);
+  CHKSIZE(ModelData, 9734);
 #endif
 
 #undef CHKSIZE

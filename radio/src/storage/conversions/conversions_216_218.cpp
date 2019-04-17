@@ -652,7 +652,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA_217
 
-  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
+  TelemetrySensor_218 telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v217;

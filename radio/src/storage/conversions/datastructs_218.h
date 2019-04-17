@@ -338,6 +338,55 @@ PACK(struct FrSkyTelemetryData_v217 {
   #define MODELDATA_EXTRA_218
 #endif
 
+PACK(struct TelemetrySensor_218 {
+  union {
+    uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
+    uint16_t persistentValue;
+  };
+  union {
+    PACK(struct {
+      uint8_t physID:5;
+      uint8_t rxIndex:3; // 1 bit for module index, 2 bits for receiver index
+    }) frskyInstance;
+    uint8_t instance;
+    uint8_t formula;
+  };
+  char     label[TELEM_LABEL_LEN]; // user defined label
+  uint8_t  type:1;                 // 0=custom / 1=calculated
+  uint8_t  unit:5;                 // user can choose what unit to display each value in
+  uint8_t  prec:2;
+  uint8_t  autoOffset:1;
+  uint8_t  filter:1;
+  uint8_t  logs:1;
+  uint8_t  persistent:1;
+  uint8_t  onlyPositive:1;
+  uint8_t  subId:3;
+  union {
+    PACK(struct {
+      uint16_t ratio;
+      int16_t  offset;
+    }) custom;
+    PACK(struct {
+      uint8_t source;
+      uint8_t index;
+      uint16_t spare;
+    }) cell;
+    PACK(struct {
+      int8_t sources[4];
+    }) calc;
+    PACK(struct {
+      uint8_t source;
+      uint8_t spare[3];
+    }) consumption;
+    PACK(struct {
+      uint8_t gps;
+      uint8_t alt;
+      uint16_t spare;
+    }) dist;
+    uint32_t param;
+  };
+});
+
 PACK(typedef struct {
   ModelHeader header;
   TimerData_v218 timers[MAX_TIMERS_218];
@@ -377,7 +426,7 @@ PACK(typedef struct {
 
   MODELDATA_EXTRA_218
 
-  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
+  TelemetrySensor_218 telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
