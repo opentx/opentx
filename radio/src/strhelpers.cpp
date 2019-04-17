@@ -81,7 +81,7 @@ int zchar2str(char * dest, const char * src, int size)
 bool cmpStrWithZchar(const char * charString, const char * zcharString, int size)
 {
   for (int i=0; i<size; i++) {
-    if (char2zchar(charString[i]) != (int8_t)zcharString[i]) {
+    if (charString[i] != zchar2char(zcharString[i])) {
       return false;
     }
   }

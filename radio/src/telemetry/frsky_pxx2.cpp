@@ -123,9 +123,6 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
           moduleSettings[module].mode = MODULE_MODE_NORMAL;
           POPUP_INFORMATION(STR_REG_OK);
         }
-        else {
-          TRACE("KO %s %s", &frame[4], reusableBuffer.moduleSetup.pxx2.registerRxName);
-        }
       }
       break;
   }
