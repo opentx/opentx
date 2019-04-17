@@ -35,8 +35,8 @@ enum PowerMeterFields {
 void menuRadioPowerMeter(event_t event)
 {
 
-  SUBMENU("POWER METER", POWER_METER_FIELDS_MAX-1, {0, 0, READONLY_ROW, READONLY_ROW});
-  
+  SUBMENU("POWER METER", POWER_METER_FIELDS_MAX-1, {0, 0, READONLY_ROW, READONLY_ROW, READONLY_ROW});
+
   if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(LCD_H/2, "Turn off receiver");
     if (event == EVT_KEY_FIRST(KEY_EXIT)) {
