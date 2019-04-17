@@ -42,7 +42,7 @@ void menuRadioPowerMeter(event_t event)
     return;
   }
 
-  SUBMENU("POWER METER", 2, {0, 0, READONLY_ROW, READONLY_ROW});
+  SUBMENU("POWER METER", POWER_METER_FIELDS_MAX-1, {0, 0, READONLY_ROW, READONLY_ROW});
 
   if (menuEvent) {
     const char * message = "Stopping...";
@@ -66,14 +66,14 @@ void menuRadioPowerMeter(event_t event)
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
-  for (uint8_t i=0; i<POWER_METER_FIELDS_MAX+1; i++) {
+  for (uint8_t i=0; i<POWER_METER_FIELDS_MAX; i++) {
     LcdFlags attr = (menuVerticalPosition == i ? (s_editMode > 0 ? INVERS | BLINK : INVERS) : 0);
     coord_t y = MENU_HEADER_HEIGHT + FH + i * FH;
 
     switch (i) {
       case POWER_METER_FREQ_RANGE:
         lcdDrawText(0, y, "Freq.");
-        lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.freq / 1000000, LEFT | attr | (s_editMode > 0 ? BLINK : 0));
+        lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.freq / 1000000, LEFT | attr);
         lcdDrawText(lcdNextPos, y, " MHz band");
         if (attr) {
           reusableBuffer.powerMeter.freq = checkIncDec(event, reusableBuffer.powerMeter.freq == 900000000, 0, 1) ? 900000000 : 2400000000;
@@ -86,6 +86,11 @@ void menuRadioPowerMeter(event_t event)
 
       case POWER_METER_FREQ_ATTENUATOR:
         lcdDrawText(0, y, "Attn");
+        lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.attn, LEFT | attr);
+        lcdDrawText(lcdNextPos, y, " dB");
+        if (attr) {
+          reusableBuffer.powerMeter.attn = checkIncDec(event, reusableBuffer.powerMeter.attn, -50, 0, 10);
+        }
         break;
 
       case POWER_METER_FREQ_POWER:
