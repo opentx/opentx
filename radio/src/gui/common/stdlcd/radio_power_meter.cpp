@@ -34,7 +34,6 @@ enum PowerMeterFields {
 
 void menuRadioPowerMeter(event_t event)
 {
-
   SUBMENU("POWER METER", POWER_METER_FIELDS_MAX-1, {0, 0, READONLY_ROW, READONLY_ROW, READONLY_ROW});
 
   if (TELEMETRY_STREAMING()) {
@@ -86,7 +85,6 @@ void menuRadioPowerMeter(event_t event)
         break;
 
       case POWER_METER_ATTENUATOR:
-      {
         lcdDrawText(0, y, "Attn");
         lcdDrawNumber(8 * FW, y, -10 * reusableBuffer.powerMeter.attn, LEFT | attr);
         lcdDrawText(lcdNextPos, y, " dB");
@@ -94,7 +92,6 @@ void menuRadioPowerMeter(event_t event)
           reusableBuffer.powerMeter.attn = checkIncDec(event, reusableBuffer.powerMeter.attn, 0, 5, 0);
         }
         break;
-      }
 
       case POWER_METER_POWER:
         lcdDrawText(0, y, "Power");
