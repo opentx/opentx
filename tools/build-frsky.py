@@ -21,7 +21,7 @@ options = {
 }
 
 def timestamp():
-    return datetime.datetime.now().strftime("%Y-%m-%d-%H%M")
+    return datetime.datetime.now().strftime("%y%m%d")
 
 
 def build(board, srcdir):

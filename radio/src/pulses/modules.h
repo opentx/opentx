@@ -268,4 +268,14 @@ inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
   return moduleOptions[modelId] & (1 << option);
 }
 
+inline bool isDefaultModelRegistrationID()
+{
+  return is_memclear(g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
+}
+
+inline const char * currentRegistrationID()
+{
+  return isDefaultModelRegistrationID() ? g_eeGeneral.ownerRegistrationID : g_model.modelRegistrationID;
+}
+
 #endif // _MODULES_H_

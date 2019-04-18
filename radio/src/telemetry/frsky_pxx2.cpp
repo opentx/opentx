@@ -118,7 +118,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
       if (reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_RX_NAME_SELECTED) {
         // RX_NAME + PASSWORD follow, we check they are good
         if (cmpStrWithZchar((char *)&frame[4], reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) &&
-            cmpStrWithZchar((char *)&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID)) {
+            cmpStrWithZchar((char *)&frame[12], currentRegistrationID(), PXX2_LEN_REGISTRATION_ID)) {
           reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
           moduleSettings[module].mode = MODULE_MODE_NORMAL;
           POPUP_INFORMATION(STR_REG_OK);

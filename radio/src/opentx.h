@@ -1132,6 +1132,7 @@ union ReusableBuffer
           uint8_t bindStep;
           uint8_t resetStep;
         };
+        char registrationId[PXX2_LEN_REGISTRATION_ID];
         uint32_t bindWaitTimeout;
         uint8_t registerPopupVerticalPosition;
         uint8_t registerPopupHorizontalPosition;

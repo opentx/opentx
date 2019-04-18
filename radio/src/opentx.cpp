@@ -461,8 +461,6 @@ void modelDefault(uint8_t id)
 
   applyDefaultTemplate();
 
-  memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
-
 #if defined(LUA) && defined(PCBTARANIS) //Horus uses menuModelWizard() for wizard
   if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
     f_chdir(WIZARD_PATH);

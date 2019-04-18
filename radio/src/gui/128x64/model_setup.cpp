@@ -377,6 +377,10 @@ void runPopupRegister(event_t event)
       }
       else if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED && menuHorizontalPosition == 0) {
         // [Enter] pressed
+        if (memcmp(reusableBuffer.moduleSetup.pxx2.registrationId, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0)
+          memclear(g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
+        else
+          memcpy(g_model.modelRegistrationID, reusableBuffer.moduleSetup.pxx2.registrationId, PXX2_LEN_REGISTRATION_ID);
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
         backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
       }
@@ -401,7 +405,7 @@ void runPopupRegister(event_t event)
 
     // registration password
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4, STR_REG_ID);
-    editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == ITEM_REGISTER_PASSWORD);
+    editName(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 4, reusableBuffer.moduleSetup.pxx2.registrationId, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == ITEM_REGISTER_PASSWORD);
 
     // loop index (will be removed in future)
     lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + FH, "UID");
@@ -436,15 +440,13 @@ void runPopupRegister(event_t event)
 void startRegisterDialog(uint8_t module)
 {
   memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
+  memcpy(reusableBuffer.moduleSetup.pxx2.registrationId, currentRegistrationID(), PXX2_LEN_REGISTRATION_ID);
   moduleSettings[module].mode = MODULE_MODE_REGISTER;
   s_editMode = 0;
   POPUP_INPUT("", runPopupRegister);
 }
 
-inline bool isDefaultModelRegistrationID()
-{
-  return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
-}
+
 
 void menuModelSetup(event_t event)
 {
@@ -1250,7 +1252,7 @@ void menuModelSetup(event_t event)
         if (isDefaultModelRegistrationID())
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "<default>");
         else
-          lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.modelRegistrationID, sizeof(g_model.modelRegistrationID), ZCHAR);
+          lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, ZCHAR);
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM:
