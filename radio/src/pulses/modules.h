@@ -248,7 +248,11 @@ enum {
  * - Power meter (0x10)
  */
 static const uint8_t moduleOptions[] = {
-  0b11111111, // None = display all options
+#if defined(SIMU)
+  0b11111111, // None = display all options on SIMU
+#else
+  0b00000000, // None = display all options on SIMU
+#endif
   0b11100010, // XJT
   0b11100010, // ISRM
   0b11111010, // ISRM-PRO
