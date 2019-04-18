@@ -270,12 +270,7 @@ inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
 
 inline bool isDefaultModelRegistrationID()
 {
-  return is_memclear(g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID);
-}
-
-inline const char * currentRegistrationID()
-{
-  return isDefaultModelRegistrationID() ? g_eeGeneral.ownerRegistrationID : g_model.modelRegistrationID;
+  return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
 }
 
 #endif // _MODULES_H_
