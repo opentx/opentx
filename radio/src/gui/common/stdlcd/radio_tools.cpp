@@ -54,10 +54,10 @@ void menuRadioTools(event_t event)
   }
 
   for (uint8_t module = 0; module < NUM_MODULES; module++) {
-    if (isModuleOptionAvailable(module, MODULE_OPTION_SPECTRUM_ANALYSER)) {
+    if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[module].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
       spectrum_modules++;
     }
-    if (isModuleOptionAvailable(module, MODULE_OPTION_POWER_METER)) {
+    if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[module].information.modelID, MODULE_OPTION_POWER_METER)) {
       power_modules++;
     }
   }
