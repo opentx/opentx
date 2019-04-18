@@ -458,6 +458,7 @@ static int luaSportTelemetryPush(lua_State * L)
   return 1;
 }
 
+#if defined(PXX2)
 /*luadoc
 @function accessTelemetryPush()
 
@@ -508,6 +509,7 @@ static int luaAccessTelemetryPush(lua_State * L)
   lua_pushboolean(L, false);
   return 1;
 }
+#endif
 
 #if defined(CROSSFIRE)
 /*luadoc
