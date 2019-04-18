@@ -441,6 +441,7 @@ void startRegisterDialog(uint8_t module)
   POPUP_INPUT("", runPopupRegister);
 }
 
+#if defined(BLUETOOTH)
 void onBluetoothConnectMenu(const char * result)
 {
   if (result != STR_EXIT) {
@@ -453,6 +454,7 @@ void onBluetoothConnectMenu(const char * result)
     bluetoothState = BLUETOOTH_STATE_DISCOVER_END;
   }
 }
+#endif
 
 void menuModelSetup(event_t event)
 {

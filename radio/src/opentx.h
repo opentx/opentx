@@ -1150,10 +1150,12 @@ union ReusableBuffer
       };
       uint8_t resetReceiverFlags;
     } pxx2;
+#if defined(BLUETOOTH)
     struct {
       char devices[MAX_BLUETOOTH_DISTANT_ADDR][LEN_BLUETOOTH_ADDR+1];
       uint8_t devicesCount;
     } bt;
+#endif
   } moduleSetup;
 
   // 103 bytes
