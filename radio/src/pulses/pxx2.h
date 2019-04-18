@@ -60,11 +60,13 @@ static const char * const PXX2modulesModels[] = {
   "---",
   "XJT",
   "IXJT",
-  "IXJT-PRO",
-  "IXJT-S",
+  "ISRM-PRO",
+  "ISRM-S",
   "R9M",
   "R9MLite",
   "R9MLite-PRO",
+  "---",
+  "ISRM-N"
 };
 
 static const char * const PXX2receiversModels[] = {

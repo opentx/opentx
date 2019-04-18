@@ -104,8 +104,13 @@
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
 
-#define LEN_TARANIS_PROTOCOLS                "\005"
-#define TR_TARANIS_PROTOCOLS                "OFF\0 ""PPM\0 ""XJT\0 ""XJT2\0""DSM2\0""CRSF\0""MULT\0""R9M\0 ""R9M2\0""R9LT\0""R9LT2""R9LP2""SBUS\0"
+#if defined(PCBXLITES) || defined(PCBX3)
+#define LEN_MODULE_PROTOCOLS           "\006"
+#define TR_MODULE_PROTOCOLS            "OFF\0  ""PPM\0  ""XJT\0  ""ISRM\0 ""DSM2\0 ""CRSF\0 ""MULT\0 ""R9M\0  ""R9M-A\0""R9MLit""R9ML-A""R9MP-A""SBUS\0"
+#else
+#define LEN_MODULE_PROTOCOLS           "\006"
+#define TR_MODULE_PROTOCOLS            "OFF\0  ""PPM\0  ""XJT\0  ""XJT-A\0""DSM2\0 ""CRSF\0 ""MULT\0 ""R9M\0  ""R9M-A\0""R9MLit""R9ML-A""R9MP-A""SBUS\0"
+#endif
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"

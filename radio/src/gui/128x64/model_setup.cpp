@@ -940,7 +940,7 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, attr);
         if (attr) {
           uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
           if (checkIncDec_Ret) {
@@ -952,18 +952,18 @@ void menuModelSetup(event_t event)
         }
         break;
 
-        case ITEM_MODEL_INTERNAL_MODULE_PROTOCOL:
-          lcdDrawTextAlignedLeft(y, STR_PROTO);
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
-          if (attr) {
-            g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
-            if (checkIncDec_Ret) {
-              g_model.moduleData[0].type = MODULE_TYPE_XJT;
-              g_model.moduleData[0].channelsStart = 0;
-              g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-            }
+      case ITEM_MODEL_INTERNAL_MODULE_PROTOCOL:
+        lcdDrawTextAlignedLeft(y, STR_PROTO);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
+        if (attr) {
+          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+          if (checkIncDec_Ret) {
+            g_model.moduleData[0].type = MODULE_TYPE_XJT;
+            g_model.moduleData[0].channelsStart = 0;
+            g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
           }
-          break;
+        }
+        break;
 #endif
 
 #if defined(PCBSKY9X)
@@ -978,25 +978,25 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_EXTERNAL_MODULE_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_TARANIS_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+6*FW, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleDSM2(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+6*FW, y, STR_DSM_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
 #if defined(PCBXLITE)
         else if (isModuleR9M(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+6*FW, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].subType, (menuHorizontalPosition==1 ? attr : 0));
 #else
         else if (isR9ModuleRunning(EXTERNAL_MODULE))
-          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].r9m.region, (menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+6*FW, y, STR_R9M_REGION, g_model.moduleData[EXTERNAL_MODULE].r9m.region, (menuHorizontalPosition==1 ? attr : 0));
 #endif
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(EXTERNAL_MODULE)) {
           int multi_rfProto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false);
           if (g_model.moduleData[EXTERNAL_MODULE].multi.customProto)
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_MULTI_CUSTOM, menuHorizontalPosition==1 ? attr : 0);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN+6*FW, y, STR_MULTI_CUSTOM, menuHorizontalPosition==1 ? attr : 0);
           else
-            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+5*FW, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN+6*FW, y, STR_MULTI_PROTOCOLS, multi_rfProto, menuHorizontalPosition==1 ? attr : 0);
         }
 #endif
         if (attr && editMode > 0) {
