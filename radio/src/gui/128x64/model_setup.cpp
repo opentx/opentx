@@ -446,7 +446,18 @@ void startRegisterDialog(uint8_t module)
   POPUP_INPUT("", runPopupRegister);
 }
 
-
+void onBluetoothConnectMenu(const char * result)
+{
+  if (result != STR_EXIT) {
+    uint8_t index = (result - reusableBuffer.moduleSetup.bt.devices[0]) / sizeof(reusableBuffer.moduleSetup.bt.devices[0]);
+    strncpy(bluetoothDistantAddr, reusableBuffer.moduleSetup.bt.devices[index], LEN_BLUETOOTH_ADDR);
+    bluetoothState = BLUETOOTH_STATE_BIND_REQUESTED;
+  }
+  else {
+    reusableBuffer.moduleSetup.bt.devicesCount = 0;
+    bluetoothState = BLUETOOTH_STATE_DISCOVER_END;
+  }
+}
 
 void menuModelSetup(event_t event)
 {
@@ -1128,21 +1139,10 @@ void menuModelSetup(event_t event)
           }
           if (bluetoothDistantAddr[0]) {
             lcdDrawText(INDENT_WIDTH, y+1, bluetoothDistantAddr, TINSIZE);
-            if (bluetoothState != BLUETOOTH_STATE_CONNECTED) {
-              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), menuHorizontalPosition == 0 ? attr : 0);
-              lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW, y, BUTTON("Clear"), menuHorizontalPosition == 1 ? attr : 0);
-            }
-            else {
-              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Clear"), attr);
-            }
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Clear"), attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
-              if (bluetoothState == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
-                bluetoothState = BLUETOOTH_STATE_OFF;
-                bluetoothDistantAddr[0] = 0;
-              }
-              else {
-                bluetoothState = BLUETOOTH_STATE_BIND_REQUESTED;
-              }
+              bluetoothState = BLUETOOTH_STATE_OFF;
+              memclear(bluetoothDistantAddr, sizeof(bluetoothDistantAddr));
             }
           }
           else {
@@ -1152,10 +1152,22 @@ void menuModelSetup(event_t event)
             else
               lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Discover"), attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
-              if (bluetoothState < BLUETOOTH_STATE_IDLE)
+              if (bluetoothState < BLUETOOTH_STATE_IDLE) {
                 bluetoothState = BLUETOOTH_STATE_OFF;
-              else
+              }
+              else {
+                reusableBuffer.moduleSetup.bt.devicesCount = 0;
                 bluetoothState = BLUETOOTH_STATE_DISCOVER_REQUESTED;
+              }
+            }
+
+            if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && reusableBuffer.moduleSetup.bt.devicesCount > 0) {
+              popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bt.devicesCount, 6);
+              for (uint8_t i=0; i<popupMenuItemsCount; i++) {
+                popupMenuItems[i] = reusableBuffer.moduleSetup.bt.devices[i];
+              }
+              popupMenuTitle = "Select device...";
+              POPUP_MENU_START(onBluetoothConnectMenu);
             }
           }
         }

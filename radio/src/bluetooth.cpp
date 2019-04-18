@@ -34,7 +34,7 @@
 #define BLUETOOTH_LINE_LENGTH          32
 
 extern Fifo<uint8_t, 64> btTxFifo;
-extern Fifo<uint8_t, 64> btRxFifo;
+extern Fifo<uint8_t, 128> btRxFifo;
 
 volatile uint8_t bluetoothState;
 char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
@@ -442,11 +442,14 @@ void bluetoothWakeup()
       bluetoothState = BLUETOOTH_STATE_DISCOVER_START;
     }
     else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strncmp(line, "OK+DISC:", 8)) {
-      strcpy(bluetoothDistantAddr, &line[8]); // TODO quick & dirty
+      if (strlen(line) < 8 + LEN_BLUETOOTH_ADDR && reusableBuffer.moduleSetup.bt.devicesCount < MAX_BLUETOOTH_DISTANT_ADDR) {
+        strncpy(reusableBuffer.moduleSetup.bt.devices[reusableBuffer.moduleSetup.bt.devicesCount], &line[8], LEN_BLUETOOTH_ADDR);
+        ++reusableBuffer.moduleSetup.bt.devicesCount;
+      }
     }
-    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
+    /* else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
       bluetoothState = BLUETOOTH_STATE_DISCOVER_END;
-    }
+    } */
     else if (bluetoothState == BLUETOOTH_STATE_BIND_REQUESTED) {
       char command[32];
       strAppend(strAppend(strAppend(command, "AT+CON"), bluetoothDistantAddr), "\r\n");

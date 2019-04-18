@@ -1105,6 +1105,10 @@ void opentxResume();
 #define SD_SCREEN_FILE_LENGTH          64
 #endif
 
+#if defined(BLUETOOTH)
+#include "bluetooth.h"
+#endif
+
 union ReusableBuffer
 {
   // ARM 334 bytes
@@ -1121,35 +1125,36 @@ union ReusableBuffer
 #endif
   } modelsel;
 
-  // 65 bytes
   struct {
     char msg[64];
     uint8_t r9mPower;
-    union {
-      struct {
-        union {
-          uint8_t registerStep;
-          uint8_t bindStep;
-          uint8_t resetStep;
-        };
-        char registrationId[PXX2_LEN_REGISTRATION_ID];
-        uint32_t bindWaitTimeout;
-        uint8_t registerPopupVerticalPosition;
-        uint8_t registerPopupHorizontalPosition;
-        int8_t registerPopupEditMode;
-        char registerRxName[PXX2_LEN_RX_NAME];
-        uint8_t registerLoopIndex; // will be removed later
-        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
-        uint8_t bindCandidateReceiversCount;
-        uint8_t bindReceiverIndex;
-        union {
-          uint8_t bindSelectedReceiverIndex;
-          uint8_t shareReceiverIndex;
-          uint8_t resetReceiverIndex;
-        };
-        uint8_t resetReceiverFlags;
-      } pxx2;
-    };
+    struct {
+      union {
+        uint8_t registerStep;
+        uint8_t bindStep;
+        uint8_t resetStep;
+      };
+      char registrationId[PXX2_LEN_REGISTRATION_ID];
+      uint32_t bindWaitTimeout;
+      uint8_t registerPopupVerticalPosition;
+      uint8_t registerPopupHorizontalPosition;
+      int8_t registerPopupEditMode;
+      char registerRxName[PXX2_LEN_RX_NAME];
+      uint8_t registerLoopIndex; // will be removed later
+      char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
+      uint8_t bindCandidateReceiversCount;
+      uint8_t bindReceiverIndex;
+      union {
+        uint8_t bindSelectedReceiverIndex;
+        uint8_t shareReceiverIndex;
+        uint8_t resetReceiverIndex;
+      };
+      uint8_t resetReceiverFlags;
+    } pxx2;
+    struct {
+      char devices[MAX_BLUETOOTH_DISTANT_ADDR][LEN_BLUETOOTH_ADDR+1];
+      uint8_t devicesCount;
+    } bt;
   } moduleSetup;
 
   // 103 bytes
@@ -1379,10 +1384,6 @@ extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
 
 #if defined(INTERNAL_GPS)
   #include "gps.h"
-#endif
-
-#if defined(BLUETOOTH)
-  #include "bluetooth.h"
 #endif
 
 #if defined(JACK_DETECT_GPIO)

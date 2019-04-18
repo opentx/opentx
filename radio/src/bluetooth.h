@@ -43,6 +43,7 @@ enum BluetoothStates {
 };
 
 #define LEN_BLUETOOTH_ADDR              16
+#define MAX_BLUETOOTH_DISTANT_ADDR      6
 
 extern volatile uint8_t bluetoothState;
 extern char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
