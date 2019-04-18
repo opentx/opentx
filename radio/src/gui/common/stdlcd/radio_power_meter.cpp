@@ -48,15 +48,10 @@ void menuRadioPowerMeter(event_t event)
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H/2, "Stopping...");
     lcdRefresh();
-    pausePulses();
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    /* wait 500ms off */
-    watchdogSuspend(500);
-    RTOS_WAIT_MS(500);
-    resumePulses();
-    /* wait 500ms to resume normal operation before leaving */
-    watchdogSuspend(500);
-    RTOS_WAIT_MS(500);
+    /* wait 1s to resume normal operation before leaving */
+    watchdogSuspend(1000);
+    RTOS_WAIT_MS(1000);
     return;
   }
 
