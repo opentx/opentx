@@ -157,9 +157,8 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(zchar2char(reusableBuffer.moduleSetup.pxx2.registerRxName[i]));
     }
-    const char * registrationID = currentRegistrationID();
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(zchar2char(registrationID[i]));
+      Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
     Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.registerLoopIndex);
   }
@@ -240,9 +239,8 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
   }
   else {
     Pxx2Transport::addByte(0x00);
-    const char * registrationID = currentRegistrationID();
     for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
-      Pxx2Transport::addByte(zchar2char(registrationID[i]));
+      Pxx2Transport::addByte(zchar2char(g_model.modelRegistrationID[i]));
     }
   }
 }
