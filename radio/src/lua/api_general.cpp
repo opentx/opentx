@@ -458,6 +458,57 @@ static int luaSportTelemetryPush(lua_State * L)
   return 1;
 }
 
+/*luadoc
+@function accessTelemetryPush()
+
+This functions allows for sending SPORT / ACCESS telemetry data toward the receiver,
+and more generally, to anything connected SPORT bus on the receiver or transmitter.
+
+When called without parameters, it will only return the status of the output buffer without sending anything.
+
+@param module    module index (0 = internal, 1 = external)
+
+@param rxUid     receiver index
+
+@param sensorId  physical sensor ID
+
+@param frameId   frame ID
+
+@param dataId    data ID
+
+@param value     value
+
+@retval boolean  data queued in output buffer or not.
+
+@status current Introduced in 2.2.0
+*/
+
+static int luaAccessTelemetryPush(lua_State * L)
+{
+  if (lua_gettop(L) == 0) {
+    lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+    return 1;
+  }
+
+  if (outputTelemetryBuffer.isAvailable()) {
+    uint8_t module = luaL_checkunsigned(L, 1);
+    uint8_t rxUid = luaL_checkunsigned(L, 2);
+
+    SportTelemetryPacket packet;
+    packet.physicalId = getDataId(luaL_checkunsigned(L, 3));
+    packet.primId = luaL_checkunsigned(L, 4);
+    packet.dataId = luaL_checkunsigned(L, 5);
+    packet.value = luaL_checkunsigned(L, 6);
+    outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+    outputTelemetryBuffer.setDestination((module << 2) + rxUid);
+    lua_pushboolean(L, true);
+    return 1;
+  }
+
+  lua_pushboolean(L, false);
+  return 1;
+}
+
 #if defined(CROSSFIRE)
 /*luadoc
 @function crossfireTelemetryPop()
@@ -1327,6 +1378,9 @@ const luaL_Reg opentxLib[] = {
   { "resetGlobalTimer", luaResetGlobalTimer },
 #if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
+#endif
+#if defined(PXX2)
+  { "accessTelemetryPush", luaAccessTelemetryPush },
 #endif
   { "sportTelemetryPop", luaSportTelemetryPop },
   { "sportTelemetryPush", luaSportTelemetryPush },
