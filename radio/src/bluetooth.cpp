@@ -400,9 +400,6 @@ void bluetoothWakeup()
   }
   else {
     char * line = bluetoothReadline();
-    if (line) {
-      TRACE("BT %s", line);
-    }
     if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_INIT) {
       char command[32];
       char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
