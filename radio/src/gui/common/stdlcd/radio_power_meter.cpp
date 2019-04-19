@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <opentx.h>
 #include "opentx.h"
 
 extern uint8_t g_moduleIdx;
@@ -27,14 +28,13 @@ enum PowerMeterFields {
   POWER_METER_ATTENUATOR,
   POWER_METER_POWER,
   POWER_METER_PEAK,
-  POWER_METER_WARNING,
   POWER_METER_FIELDS_MAX
 };
 
 
 void menuRadioPowerMeter(event_t event)
 {
-  SUBMENU("POWER METER", POWER_METER_FIELDS_MAX-1, {0, 0, READONLY_ROW, READONLY_ROW, READONLY_ROW});
+  SUBMENU("POWER METER", POWER_METER_FIELDS_MAX-1, {0, 0, READONLY_ROW, READONLY_ROW});
 
   if (TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(LCD_H/2, "Turn off receiver");
@@ -58,12 +58,18 @@ void menuRadioPowerMeter(event_t event)
   if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_POWER_METER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400000000;
+    reusableBuffer.powerMeter.attn = 4;
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
+  // The warning
+  char warning[20];
+  strAppend(strAppendSigned(strAppend(warning, "Max "), -10 + 10 * reusableBuffer.powerMeter.attn), "dBm");
+  lcdDrawCenteredText(FH + 3, warning, BOLD);
+
   for (uint8_t i=0; i<POWER_METER_FIELDS_MAX; i++) {
     LcdFlags attr = (menuVerticalPosition == i ? (s_editMode > 0 ? INVERS | BLINK : INVERS) : 0);
-    coord_t y = MENU_HEADER_HEIGHT + FH + i * FH;
+    coord_t y = MENU_HEADER_HEIGHT + 2 * FH + i * FH;
 
     switch (i) {
       case POWER_METER_FREQ_RANGE:
@@ -102,12 +108,6 @@ void menuRadioPowerMeter(event_t event)
           lcdDrawNumber(8 * FW, y, reusableBuffer.powerMeter.peak + reusableBuffer.powerMeter.attn * 1000, LEFT | PREC2);
           lcdDrawText(lcdNextPos, y, "dBm");
         }
-        break;
-
-      case POWER_METER_WARNING:
-        lcdDrawText(0, y, "WARNING : Max ");
-        lcdDrawNumber(lcdNextPos, y, -10 + 10 * reusableBuffer.powerMeter.attn, LEFT | BOLD);
-        lcdDrawText(lcdNextPos+3, y, "dBm", BOLD);
         break;
     }
   }
