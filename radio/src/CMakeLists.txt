@@ -275,9 +275,7 @@ if(DANGEROUS_MODULE_FUNCTIONS)
   add_definitions(-DDANGEROUS_MODULE_FUNCTIONS)
 endif()
 
-if(SPLASH STREQUAL FRSKY)
-  add_definitions(-DSPLASH -DFRSKY_RELEASE)
-elseif(NOT SPLASH STREQUAL OFF)
+if(NOT SPLASH STREQUAL OFF)
   add_definitions(-DSPLASH)
 endif()
 
@@ -307,11 +305,11 @@ endif()
 
 if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
-endif(NIGHTLY_BUILD_WARNING)
+endif()
 
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
-endif(FRSKY_RELEASE)
+endif()
 
 set(SRC
   ${SRC}
