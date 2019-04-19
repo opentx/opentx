@@ -335,8 +335,6 @@ if(GUI)
   foreach(FILE ${GUI_SRC})
     set(SRC ${SRC} gui/${GUI_DIR}/${FILE})
   endforeach()
-  set(SRC ${SRC} gui/gui_common_arm.cpp
-      )
 endif()
 
 foreach(FILE ${TARGET_SRC})
