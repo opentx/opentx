@@ -36,11 +36,16 @@
 #if defined(PXX2)
 void drawPXX2Version(coord_t x, coord_t y, PXX2Version version)
 {
-  lcdDrawNumber(x, y, version.major, LEFT);
-  lcdDrawChar(lcdNextPos, y, '.');
-  lcdDrawNumber(lcdNextPos, y, version.minor, LEFT);
-  lcdDrawChar(lcdNextPos, y, '.');
-  lcdDrawNumber(lcdNextPos, y, version.revision, LEFT);
+  if (version.major == 0xFF && version.minor == 0x0F && version.revision == 0x0F) {
+    lcdDrawText(x, y, "---");
+  }
+  else {
+    lcdDrawNumber(x, y, 1 + version.major, LEFT);
+    lcdDrawChar(lcdNextPos, y, '.');
+    lcdDrawNumber(lcdNextPos, y, version.minor, LEFT);
+    lcdDrawChar(lcdNextPos, y, '.');
+    lcdDrawNumber(lcdNextPos, y, version.revision, LEFT);
+  }
 }
 
 void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Version swVersion)
