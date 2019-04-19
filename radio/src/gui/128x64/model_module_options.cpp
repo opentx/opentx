@@ -47,32 +47,6 @@ enum {
 
 #define IF_MODULE_OPTIONS(option, count) uint8_t(isModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
 
-void drawPower(coord_t x, coord_t y, int8_t dBm)
-{
-  float power_W_PREC1 = pow(10.0, (dBm - 30.0) / 10.0) * 10;
-  if (dBm >= 30) {
-    lcdDrawNumber(x, y, power_W_PREC1, PREC1);
-    lcdDrawText(lcdNextPos, y, "W");
-  }
-  else if (dBm < 10) {
-    uint16_t power_MW_PREC1 = round(power_W_PREC1 * 1000);
-    lcdDrawNumber(x, y, power_MW_PREC1, PREC1);
-    lcdDrawText(lcdNextPos, y, "mW");
-  }
-  else {
-    uint16_t power_MW = round(power_W_PREC1 * 100);
-    if (power_MW >= 50) {
-      power_MW = (power_MW / 5) * 5;
-      lcdDrawNumber(x, y, power_MW);
-      lcdDrawText(lcdNextPos, y, "mW");
-    }
-    else {
-      lcdDrawNumber(x, y, power_MW);
-      lcdDrawText(lcdNextPos, y, "mW");
-    }
-  }
-}
-
 bool isPowerAvailable(int value)
 {
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;

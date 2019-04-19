@@ -793,6 +793,32 @@ void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att)
   }
 }
 
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att)
+{
+  float power_W_PREC1 = pow(10.0, (dBm - 30.0) / 10.0) * 10;
+  if (dBm >= 30) {
+    lcdDrawNumber(x, y, power_W_PREC1, PREC1 | att);
+    lcdDrawText(lcdNextPos, y, "W", att);
+  }
+  else if (dBm < 10) {
+    uint16_t power_MW_PREC1 = round(power_W_PREC1 * 1000);
+    lcdDrawNumber(x, y, power_MW_PREC1, PREC1 | att);
+    lcdDrawText(lcdNextPos, y, "mW", att);
+  }
+  else {
+    uint16_t power_MW = round(power_W_PREC1 * 100);
+    if (power_MW >= 50) {
+      power_MW = (power_MW / 5) * 5;
+      lcdDrawNumber(x, y, power_MW, att);
+      lcdDrawText(lcdNextPos, y, "mW", att);
+    }
+    else {
+      lcdDrawNumber(x, y, power_MW, att);
+      lcdDrawText(lcdNextPos, y, "mW", att);
+    }
+  }
+}
+
 void drawSwitch(coord_t x, coord_t y, swsrc_t idx, LcdFlags flags)
 {
   char s[8];

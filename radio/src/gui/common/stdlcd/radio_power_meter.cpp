@@ -63,9 +63,12 @@ void menuRadioPowerMeter(event_t event)
   }
 
   // The warning
-  char warning[20];
-  strAppend(strAppendSigned(strAppend(warning, "Max "), -10 + 10 * reusableBuffer.powerMeter.attn), "dBm");
-  lcdDrawCenteredText(FH + 3, warning, BOLD);
+  lcdDrawText(10, FH + 3, "Max : ", BOLD );
+  lcdDrawNumber(lcdLastRightPos, FH + 3, -10 + 10 * reusableBuffer.powerMeter.attn, BOLD);
+  lcdDrawText(lcdLastRightPos, FH + 3, "dBm ", BOLD );
+  lcdDrawText(lcdLastRightPos, FH + 3, "(",BOLD );
+  drawPower(lcdLastRightPos, FH + 3, -10 + 10 * reusableBuffer.powerMeter.attn, BOLD);
+  lcdDrawText(lcdLastRightPos, FH + 3, ")", BOLD);
 
   for (uint8_t i=0; i<POWER_METER_FIELDS_MAX; i++) {
     LcdFlags attr = (menuVerticalPosition == i ? (s_editMode > 0 ? INVERS | BLINK : INVERS) : 0);

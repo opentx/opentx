@@ -134,6 +134,7 @@ void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att = 0);
 #if !defined(BOOT) // TODO not here ...
 void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
