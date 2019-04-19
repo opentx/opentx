@@ -494,13 +494,10 @@ static int luaAccessTelemetryPush(lua_State * L)
   if (outputTelemetryBuffer.isAvailable()) {
     uint8_t module = luaL_checkunsigned(L, 1);
     uint8_t rxUid = luaL_checkunsigned(L, 2);
-
-    SportTelemetryPacket packet;
-    packet.physicalId = getDataId(luaL_checkunsigned(L, 3));
-    packet.primId = luaL_checkunsigned(L, 4);
-    packet.dataId = luaL_checkunsigned(L, 5);
-    packet.value = luaL_checkunsigned(L, 6);
-    outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+    outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 3));
+    outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 4);
+    outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 5);
+    outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 6);
     outputTelemetryBuffer.setDestination((module << 2) + rxUid);
     lua_pushboolean(L, true);
     return 1;
