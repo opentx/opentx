@@ -237,6 +237,8 @@ void boardInit()
 #endif
 
   ledBlue();
+
+  vbattRTC = getRTCBattVoltage();
 #endif
 }
 

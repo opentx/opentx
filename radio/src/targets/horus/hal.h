@@ -192,8 +192,8 @@
   #define ADC_GPIO_PIN_MOUSE1           GPIO_Pin_8 // PF.08 ADC3_IN6 J5 MOUSE_X
   #define ADC_GPIO_PIN_MOUSE2           GPIO_Pin_9 // PF.09 ADC3_IN7 J6 MOUSE_Y
   #define ADC_GPIO_MOUSE                GPIOF
-  #define ADC_IN_MOUSE1                 6
-  #define ADC_IN_MOUSE2                 7
+  #define ADC_CHANNEL_MOUSE1            6
+  #define ADC_CHANNEL_MOUSE2            7
   #define ADC_DMA                       DMA2
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SAMPTIME                  3

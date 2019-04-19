@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-  #define SIMPGMSPC_USE_QT    0
+#define SIMPGMSPC_USE_QT    0
 
 #include "opentx.h"
 #include <errno.h>
@@ -65,6 +65,8 @@ Usart Usart0;
 Dacc dacc;
 Adc Adc0;
 #endif
+
+FATFS g_FATFS_Obj;
 
 void lcdInit()
 {

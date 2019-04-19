@@ -103,7 +103,7 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 }
 #endif
 
-#if defined(PWR_BUTTON_PRESS) && !defined(SIMU)
+#if defined(PWR_BUTTON_PRESS)
   #define PWR_PRESS_DURATION_MIN        100 // 1s
   #define PWR_PRESS_DURATION_MAX        500 // 5s
 #endif
