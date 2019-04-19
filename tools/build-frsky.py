@@ -27,14 +27,21 @@ def timestamp():
 def build(board, srcdir):
     cmake_options = " ".join(["-D%s=%s" % (key, value) for key, value in options[board].items()])
     shutil.rmtree("build", ignore_errors=True)
-    shutil.rmtree("output", ignore_errors=True)
     os.mkdir("build")
-    os.mkdir("output")
+    if not os.path.exists("output"):
+        os.mkdir("output")
     os.chdir("build")
     os.system("cmake -DPCB=%s %s %s" % (board, cmake_options, srcdir))
     os.system("make firmware -j6")
     os.chdir("..")
-    os.rename("build/firmware.bin", "output/firmware_%s_%s.bin" % (board.lower(), timestamp()))
+    index = 0
+    while 1:
+        suffix = "" if index == 0 else "_%d" % index
+        filename = "output/firmware_%s_%s%s.bin" % (board.lower(), timestamp(), suffix)
+        if not os.path.exists(filename):
+            os.rename("build/firmware.bin", "output/firmware_%s_%s.bin" % (board.lower(), timestamp()))
+            break
+        index += 1
     shutil.rmtree("build")
 
 
