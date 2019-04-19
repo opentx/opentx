@@ -386,7 +386,6 @@ const char STR_TURN_OFF_RECEIVER          []  = TR_TURN_OFF_RECEIVER          ;
 const char STR_STOPPING              []  = TR_STOPPING              ;
 const char STR_MENU_SPECTRUM_ANALYSER[]  = TR_MENU_SPECTRUM_ANALYSER;
 const char STR_MENU_POWER_METER[]  = TR_MENU_POWER_METER;
-const char STR_MENUTOOLS[]  = TR_MENUTOOLS;
 const char STR_SENSOR[]  = TR_SENSOR;
 const char STR_DISABLE_INTERNAL[]  = TR_DISABLE_INTERNAL;
 
