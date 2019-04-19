@@ -63,10 +63,10 @@ void menuRadioPowerMeter(event_t event)
   }
 
   // The warning
-  lcdDrawText(10, FH + 3, "Max : ", BOLD );
+  lcdDrawText(3 * FW, FH + 3, "Max: ", BOLD);
   lcdDrawNumber(lcdLastRightPos, FH + 3, -10 + 10 * reusableBuffer.powerMeter.attn, BOLD);
-  lcdDrawText(lcdLastRightPos, FH + 3, "dBm ", BOLD );
-  lcdDrawText(lcdLastRightPos, FH + 3, "(",BOLD );
+  lcdDrawText(lcdLastRightPos, FH + 3, "dBm ", BOLD);
+  lcdDrawText(lcdLastRightPos, FH + 3, "(", BOLD);
   drawPower(lcdLastRightPos, FH + 3, -10 + 10 * reusableBuffer.powerMeter.attn, BOLD);
   lcdDrawText(lcdLastRightPos, FH + 3, ")", BOLD);
 
