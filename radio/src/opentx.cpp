@@ -704,6 +704,10 @@ bool inputsMoved()
     sum += anaIn(i) >> INAC_STICKS_SHIFT;
   for (uint8_t i=0; i<NUM_SWITCHES; i++)
     sum += getValue(MIXSRC_FIRST_SWITCH+i) >> INAC_SWITCHES_SHIFT;
+#if defined(GYRO)
+  for (uint8_t i=0; i<2; i++)
+    sum += getValue(MIXSRC_GYRO1+i) >> INAC_STICKS_SHIFT;
+#endif
 
   if (abs((int8_t)(sum-inactivity.sum)) > 1) {
     inactivity.sum = sum;
