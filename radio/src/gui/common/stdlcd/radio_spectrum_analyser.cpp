@@ -30,10 +30,10 @@ enum SpectrumFields {
 
 void menuRadioSpectrumAnalyser(event_t event)
 {
-  SUBMENU("SPECTRUM ANALYSER", 1, {1});
+  SUBMENU(STR_MENU_SPECTRUM_ANALYSER, 1, {1});
 
   if (TELEMETRY_STREAMING()) {
-    lcdDrawCenteredText(LCD_H/2, "Turn off receiver");
+    lcdDrawCenteredText(LCD_H/2, STR_TURN_OFF_RECEIVER          );
     if (event == EVT_KEY_FIRST(KEY_EXIT)) {
       killEvents(event);
       popMenu();
@@ -42,7 +42,7 @@ void menuRadioSpectrumAnalyser(event_t event)
   }
 
   if (menuEvent) {
-    lcdDrawCenteredText(LCD_H/2, "Stopping...");
+    lcdDrawCenteredText(LCD_H/2, STR_STOPPING              );
     lcdRefresh();
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     /* wait 1s to resume normal operation before leaving */

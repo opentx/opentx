@@ -62,7 +62,7 @@ void menuRadioTools(event_t event)
     }
   }
 
-  SIMPLE_MENU("TOOLS", menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spectrum_modules + power_modules);
+  SIMPLE_MENU(STR_MENUTOOLS, menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spectrum_modules + power_modules);
 
 #if defined(PXX2)
   uint8_t menu_index = 0;
