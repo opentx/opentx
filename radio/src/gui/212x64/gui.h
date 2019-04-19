@@ -233,6 +233,8 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att);
+
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
 extern uint8_t s_curveChan;
