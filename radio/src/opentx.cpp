@@ -813,7 +813,7 @@ void doSplash()
       }
 #endif
 
-#if defined(SPLASH_FRSKY)
+#if defined(FRSKY_RELEASE)
       static uint8_t secondSplash = false;
       if (!secondSplash && get_tmr10ms() >= tgtime-200) {
         secondSplash = true;

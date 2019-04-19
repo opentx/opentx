@@ -46,6 +46,7 @@ option(TRACE_LUA_INTERNALS "Turn on traces for Lua internals" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
+option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -275,7 +276,7 @@ if(DANGEROUS_MODULE_FUNCTIONS)
 endif()
 
 if(SPLASH STREQUAL FRSKY)
-  add_definitions(-DSPLASH -DSPLASH_FRSKY)
+  add_definitions(-DSPLASH -DFRSKY_RELEASE)
 elseif(NOT SPLASH STREQUAL OFF)
   add_definitions(-DSPLASH)
 endif()
@@ -307,6 +308,10 @@ endif()
 if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
 endif(NIGHTLY_BUILD_WARNING)
+
+if(FRSKY_RELEASE)
+  add_definitions(-DFRSKY_RELEASE)
+endif(FRSKY_RELEASE)
 
 set(SRC
   ${SRC}

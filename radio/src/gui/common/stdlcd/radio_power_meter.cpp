@@ -58,7 +58,9 @@ void menuRadioPowerMeter(event_t event)
   if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_POWER_METER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400000000;
+#if defined(FRSKY_RELEASE)
     reusableBuffer.powerMeter.attn = 4;
+#endif
     moduleSettings[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
