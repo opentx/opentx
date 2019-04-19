@@ -39,7 +39,7 @@ def build(board, srcdir):
         suffix = "" if index == 0 else "_%d" % index
         filename = "output/firmware_%s_%s%s.bin" % (board.lower(), timestamp(), suffix)
         if not os.path.exists(filename):
-            os.rename("build/firmware.bin", "output/firmware_%s_%s.bin" % (board.lower(), timestamp()))
+            os.rename("build/firmware.bin", filename)
             break
         index += 1
     shutil.rmtree("build")
