@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "datastructs_218.h"
 
 enum Mix216Sources {
   MIXSRC216_NONE,
@@ -237,7 +238,7 @@ PACK(typedef struct {
   int8_t   swtch;
   uint16_t flightModes;
   int8_t   weight;
-  char     name[LEN_EXPOMIX_NAME];
+  char     name[LEN_EXPOMIX_NAME_218];
   int8_t   curveParam;
 }) ExpoData_v216;
 typedef ExpoData_v216 ExpoData_v217;
@@ -315,7 +316,7 @@ PACK(typedef struct {
   uint8_t  speedDown;
   uint8_t  srcRaw;
   int16_t  offset;
-  char     name[LEN_EXPOMIX_NAME];
+  char     name[LEN_EXPOMIX_NAME_218];
 }) MixData_v216;
 typedef MixData MixData_v217;
 #endif
@@ -338,13 +339,13 @@ PACK(typedef struct {
   uint32_t minuteBeep:1;
   uint32_t persistent:2;
   uint32_t spare:3;
-  char     name[LEN_TIMER_NAME];
+  char     name[LEN_TIMER_NAME_218];
 }) TimerData_v217;
 
 PACK(typedef struct {
   int16_t trim[NUM_STICKS];
   int8_t swtch;       // swtch of phase[0] is not used
-  char name[LEN_FLIGHT_MODE_NAME];
+  char name[LEN_FLIGHT_MODE_NAME_218];
   uint8_t fadeIn;
   uint8_t fadeOut;
   int16_t rotaryEncoders[1];
@@ -376,22 +377,22 @@ PACK(typedef struct {
   int8_t  swtch;
   uint8_t func;
   PACK(union {
-    PACK(struct {
-      char name[8];
-    }) play;
+         PACK(struct {
+                char name[8];
+              }) play;
 
-    PACK(struct {
-      int16_t val;
-      uint8_t mode;
-      uint8_t param;
-      int32_t spare2;
-    }) all;
+         PACK(struct {
+                int16_t val;
+                uint8_t mode;
+                uint8_t param;
+                int32_t spare2;
+              }) all;
 
-    PACK(struct {
-      int32_t val1;
-      int32_t val2;
-    }) clear;
-  });
+         PACK(struct {
+                int32_t val1;
+                int32_t val2;
+              }) clear;
+       });
   uint8_t active;
 }) CustomFunctionData_v216;
 #else
@@ -436,8 +437,8 @@ typedef union {
 
 
 PACK(struct FrSkyChannelData_v216 {
-  uint8_t unused[7];
-});
+       uint8_t unused[7];
+     });
 
 
 PACK(typedef struct {
@@ -480,38 +481,38 @@ PACK(typedef struct {
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   uint8_t failsafeMode;
-  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS_218];
   int8_t  ppmDelay;
   int8_t  ppmFrameLength;
   uint8_t ppmPulsePol;
 }) ModuleData_v216;
 
 PACK(typedef struct {
-    uint8_t type:4;
-    int8_t  rfProtocol:4;
-    uint8_t channelsStart;
-    int8_t  channelsCount; // 0=8 channels
-    union {
-      struct {
-        uint8_t failsafeMode:4;  // only 3 bits used
-        uint8_t subType:3;
-        uint8_t invertedSerial:1; // telemetry serial inverted from standard
-      };
-      struct {
-        uint8_t failsafeMode:4;  // only 3 bits used
-        uint8_t freq:2;
-        uint8_t region:2;
-      } r9m;
+  uint8_t type:4;
+  int8_t  rfProtocol:4;
+  uint8_t channelsStart;
+  int8_t  channelsCount; // 0=8 channels
+  union {
+    struct {
+      uint8_t failsafeMode:4;  // only 3 bits used
+      uint8_t subType:3;
+      uint8_t invertedSerial:1; // telemetry serial inverted from standard
     };
-    int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
-    union {
-      struct {
-        int8_t  delay:6;
-        uint8_t pulsePol:1;
-        uint8_t outputType:1;    // false = open drain, true = push pull
-        int8_t  frameLength;
-      } ppm;
-    };
+    struct {
+      uint8_t failsafeMode:4;  // only 3 bits used
+      uint8_t freq:2;
+      uint8_t region:2;
+    } r9m;
+  };
+  int16_t failsafeChannels[MAX_OUTPUT_CHANNELS_218];
+  union {
+    struct {
+      int8_t  delay:6;
+      uint8_t pulsePol:1;
+      uint8_t outputType:1;    // false = open drain, true = push pull
+      int8_t  frameLength;
+    } ppm;
+  };
 }) ModuleData_v217;
 
 #if defined(PCBTARANIS)
@@ -549,7 +550,7 @@ PACK(typedef struct {
 #define MODELDATA_EXTRA_217 \
   uint8_t spare:6; \
   uint8_t potsWarnMode:2; \
-  ModuleData moduleData[NUM_MODULES+1]; \
+  ModuleData_v217 moduleData[NUM_MODULES+1]; \
   uint8_t potsWarnEnabled; \
   int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; \
   uint8_t rxBattAlarms[2];
@@ -563,7 +564,7 @@ PACK(typedef struct {
 }) ModelHeader_v216;
 #else
 PACK(typedef struct {
-  char      name[LEN_MODEL_NAME];
+  char      name[LEN_MODEL_NAME_218];
   uint8_t   modelId;
 }) ModelHeader_v216;
 #endif
@@ -582,16 +583,16 @@ PACK(typedef struct {
   uint8_t   throttleReversed:1;
   BeepANACenter beepANACenter;        // 1<<0->A1.. 1<<6->A7
   MixData_v216 mixData[MAX_MIXERS];
-  LimitData_v216 limitData[MAX_OUTPUT_CHANNELS];
-  ExpoData_v216  expoData[MAX_EXPOS];
+  LimitData_v216 limitData[MAX_OUTPUT_CHANNELS_218];
+  ExpoData_v216  expoData[MAX_EXPOS_218];
 
-  CurveData_v216 curves[MAX_CURVES];
-  int8_t    points[MAX_CURVE_POINTS];
+  CurveData_v216 curves[MAX_CURVES_218];
+  int8_t    points[MAX_CURVE_POINTS_218];
 
   LogicalSwitchData_v216 logicalSw[32];
-  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS];
+  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218];
   SwashRingData_v216 swashR;
-  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES];
+  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES_218];
 
   uint8_t   thrTraceSrc;
 
@@ -614,7 +615,7 @@ PACK(typedef struct {
 
 PACK(typedef struct {
   ModelHeader header;
-  TimerData_v217 timers[MAX_TIMERS];
+  TimerData_v217 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
   uint8_t   noGlobalFunctions:1;
@@ -622,36 +623,36 @@ PACK(typedef struct {
   uint8_t   ignoreSensorIds:1;
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  uint8_t displayChecklist:1;
+  uint8_t   displayChecklist:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
   BeepANACenter beepANACenter;
-  MixData_v217 mixData[MAX_MIXERS];
-  LimitData limitData[MAX_OUTPUT_CHANNELS];
-  ExpoData_v217  expoData[MAX_EXPOS];
+  MixData_v217 mixData[MAX_MIXERS_218];
+  LimitData limitData[MAX_OUTPUT_CHANNELS_218];
+  ExpoData_v217  expoData[MAX_EXPOS_218];
 
-  CurveData_v216 curves[MAX_CURVES];
-  int8_t    points[MAX_CURVE_POINTS];
+  CurveData_v216 curves[MAX_CURVES_218];
+  int8_t    points[MAX_CURVE_POINTS_218];
 
-  LogicalSwitchData_v217 logicalSw[32];
-  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS];
+  LogicalSwitchData_v217 logicalSw[MAX_LOGICAL_SWITCHES_218];
+  CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218];
   SwashRingData swashR;
-  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES];
+  FlightModeData_v216 flightModeData[MAX_FLIGHT_MODES_218];
 
   uint8_t thrTraceSrc;
 
   swarnstate_t  switchWarningState;
   swarnenable_t switchWarningEnable;
 
-  GVarData_v217 gvars[MAX_GVARS];
+  GVarData_v217 gvars[MAX_GVARS_218];
 
-  FrSkyTelemetryData frsky;
+  FrSkyTelemetryData_v217 frsky;
   RssiAlarmData rssiAlarms;
 
   MODELDATA_EXTRA_217
 
-  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS];
+  TelemetrySensor_218 telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 }) ModelData_v217;
@@ -794,23 +795,23 @@ PACK(typedef struct {
   int8_t   varioRange;
   int8_t   varioRepeat;
   int8_t   backgroundVolume;
- 
+
   TARANIS_FIELD(uint8_t auxSerialMode:6)
   TARANIS_FIELD(uint8_t slidersConfig:2)
   TARANIS_FIELD(uint8_t potsConfig)
   TARANIS_FIELD(uint8_t backlightColor)
   TARANIS_FIELD(swarnstate_t switchUnlockStates)
-  TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS])
+  TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218])
   TARANIS_FIELD(swconfig_t switchConfig)
-  TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME])
-  TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME])
-  N_TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS])
+  TARANIS_FIELD(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME_218])
+  TARANIS_FIELD(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218])
+  N_TARANIS_FIELD(CustomFunctionData_v216 customFn[MAX_SPECIAL_FUNCTIONS_218])
 
   TARANIS_PCBX9E_FIELD(uint8_t bluetoothEnable)
-  TARANIS_PCBX9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME])
+  TARANIS_PCBX9E_FIELD(char bluetoothName[LEN_BLUETOOTH_NAME_218])
 }) RadioData_v216;
 
-void ConvertRadioData_216_to_217(RadioData & settings)
+void convertRadioData_216_to_217(RadioData &settings)
 {
   RadioData_v216 * settings_v216 = (RadioData_v216 *)&settings;
   settings_v216->version = 217;
@@ -820,11 +821,11 @@ void ConvertRadioData_216_to_217(RadioData & settings)
 #endif
 }
 
-void ConvertSpecialFunctions_217_to_218(CustomFunctionData * cf218, CustomFunctionData_v216 * cf216)
+void ConvertSpecialFunctions_217_to_218(CustomFunctionData_v218 * cf218, CustomFunctionData_v216 * cf216)
 {
   for (int i=0; i<MAX_SPECIAL_FUNCTIONS; i++) {
-    CustomFunctionData & cf = cf218[i];
-    memcpy(&cf, &cf216[i], sizeof(CustomFunctionData));
+    CustomFunctionData_v218 & cf = cf218[i];
+    memcpy(&cf, &cf216[i], sizeof(CustomFunctionData_v218));
     cf.swtch = ConvertSwitch_217_to_218(cf216[i].swtch);
     cf.func = cf216[i].func;
     if (cf.func == FUNC_PLAY_VALUE || cf.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(cf.func) && cf.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
@@ -833,10 +834,10 @@ void ConvertSpecialFunctions_217_to_218(CustomFunctionData * cf218, CustomFuncti
   }
 }
 
-void ConvertRadioData_217_to_218(RadioData & settings)
+void convertRadioData_217_to_218(RadioData &settings)
 {
   RadioData_v216 settings_v217 = (RadioData_v216 &)settings;
-  
+
   settings.version = 218;
 #if !defined(PCBTARANIS)
   settings.stickReverse = settings_v217.stickReverse;
@@ -863,7 +864,7 @@ void ConvertRadioData_217_to_218(RadioData & settings)
   settings.varioPitch = settings_v217.varioPitch;
   settings.varioRange = settings_v217.varioRange;
   settings.varioRepeat = settings_v217.varioRepeat;
-  ConvertSpecialFunctions_217_to_218(settings.customFn, settings_v217.customFn);
+  ConvertSpecialFunctions_217_to_218((CustomFunctionData_v218 *)settings.customFn, settings_v217.customFn);
 
 #if defined(PCBTARANIS)
   settings.auxSerialMode = settings_v217.auxSerialMode;
@@ -892,7 +893,7 @@ void ConvertRadioData_217_to_218(RadioData & settings)
 #endif
 }
 
-void ConvertModel_216_to_217(ModelData & model)
+void convertModelData_216_to_217(ModelData &model)
 {
   // Timer3 added
   // 32bits Timers
@@ -900,7 +901,7 @@ void ConvertModel_216_to_217(ModelData & model)
   // PPM center range
   // Telemetry custom screens
 
-  assert(sizeof(ModelData_v216) <= sizeof(ModelData));
+  static_assert(sizeof(ModelData_v216) <= sizeof(ModelData), "ModelData size has been reduced");
 
   ModelData_v216 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));
@@ -1073,14 +1074,14 @@ void ConvertModel_216_to_217(ModelData & model)
   memcpy(newModel.potsWarnPosition, oldModel.potPosition, sizeof(newModel.potsWarnPosition));
 }
 
-void ConvertModel_217_to_218(ModelData & model)
+void convertModelData_217_to_218(ModelData &model)
 {
-  assert(sizeof(ModelData_v217) <= sizeof(ModelData));
+  static_assert(sizeof(ModelData_v217) <= sizeof(ModelData), "ModelData size has been reduced");
 
   ModelData_v217 oldModel;
   memcpy(&oldModel, &model, sizeof(oldModel));
-  ModelData & newModel = model;
-  memset(&newModel, 0, sizeof(ModelData));
+  ModelData_v218 & newModel = (ModelData_v218 &) model;
+  memset(&newModel, 0, sizeof(ModelData_v218));
 
   char name[LEN_MODEL_NAME+1];
   zchar2str(name, oldModel.header.name, LEN_MODEL_NAME);
@@ -1174,7 +1175,7 @@ void ConvertModel_217_to_218(ModelData & model)
   }
   memcpy(newModel.points, oldModel.points, sizeof(newModel.points));
   for (int i=0; i<32; i++) {
-    LogicalSwitchData & sw = newModel.logicalSw[i];
+    LogicalSwitchData_v218 & sw = newModel.logicalSw[i];
     sw.func = oldModel.logicalSw[i].func;
     sw.v1 = oldModel.logicalSw[i].v1;
     sw.v2 = oldModel.logicalSw[i].v2;
@@ -1233,18 +1234,17 @@ void ConvertModel_217_to_218(ModelData & model)
     }
   }
   for (int i=0; i<NUM_MODULES+1; i++) {
-    // newModel.moduleData[i] = oldModel.moduleData[i];
-    #warning "Conversion from v217 to v218 is broken"
+    memcpy(&newModel.moduleData[i], &oldModel.moduleData[i], sizeof(ModuleData_v218));
   }
 #if defined(PCBTARANIS)
-  newModel.trainerData.mode = oldModel.trainerMode;
+  newModel.trainerMode = oldModel.trainerMode;
   memcpy(newModel.scriptsData, oldModel.scriptsData, sizeof(newModel.scriptsData));
   memcpy(newModel.inputNames, oldModel.inputNames, sizeof(newModel.inputNames));
 #endif
   newModel.potsWarnMode = oldModel.potsWarnMode;
   newModel.potsWarnEnabled = oldModel.potsWarnEnabled;
   memcpy(newModel.potsWarnPosition, oldModel.potsWarnPosition, sizeof(newModel.potsWarnPosition));
-  for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS; i++) {
+  for (uint8_t i=0; i<MAX_TELEMETRY_SENSORS_218; i++) {
     newModel.telemetrySensors[i] = oldModel.telemetrySensors[i];
     if (newModel.telemetrySensors[i].unit > UNIT_WATTS)
       newModel.telemetrySensors[i].unit += 1;
@@ -1252,91 +1252,4 @@ void ConvertModel_217_to_218(ModelData & model)
 #if defined(PCBX9E)
   newModel.toplcdTimer = oldModel.toplcdTimer;
 #endif
-}
-
-void ConvertModel(int id, int version)
-{
-  eeLoadModelData(id);
-
-  if (version == 216) {
-    version = 217;
-    ConvertModel_216_to_217(g_model);
-  }
-  if (version == 217) {
-    version = 218;
-    ConvertModel_217_to_218(g_model);
-  }
-
-  uint8_t currModel = g_eeGeneral.currModel;
-  g_eeGeneral.currModel = id;
-  storageDirty(EE_MODEL);
-  storageCheck(true);
-  g_eeGeneral.currModel = currModel;
-}
-
-bool eeConvert()
-{
-  const char *msg = NULL;
-
-  if (g_eeGeneral.version == 216) {
-    msg = "EEprom Data v216";
-  }
-  else if (g_eeGeneral.version == 217) {
-    msg = "EEprom Data v217";
-  }
-  else {
-    return false;
-  }
-
-  int conversionVersionStart = g_eeGeneral.version;
-
-  // Information to the user and wait for key press
-#if defined(PCBSKY9X)
-  g_eeGeneral.optrexDisplay = 0;
-#endif
-  g_eeGeneral.backlightMode = e_backlight_mode_on;
-  g_eeGeneral.backlightBright = 0;
-  g_eeGeneral.contrast = 25;
-
-  ALERT(STR_STORAGE_WARNING, msg, AU_BAD_RADIODATA);
-
-  RAISE_ALERT(STR_STORAGE_WARNING, STR_EEPROM_CONVERTING, NULL, AU_NONE);
-
-  // General Settings conversion
-  eeLoadGeneralSettingsData();
-  int version = conversionVersionStart;
-  if (version == 216) {
-    version = 217;
-    ConvertRadioData_216_to_217(g_eeGeneral);
-  }
-  if (version == 217) {
-    version = 218;
-    ConvertRadioData_217_to_218(g_eeGeneral);
-  }
-  storageDirty(EE_GENERAL);
-  storageCheck(true);
-
-#if defined(COLORLCD)
-#elif LCD_W >= 212
-  lcdDrawRect(60, 6*FH+4, 132, 3);
-#else
-  lcdDrawRect(10, 6*FH+4, 102, 3);
-#endif
-
-  // Models conversion
-  for (uint8_t id=0; id<MAX_MODELS; id++) {
-#if defined(COLORLCD)
-#elif LCD_W >= 212
-    lcdDrawSolidHorizontalLine(61, 6*FH+5, 10+id*2, FORCE);
-#else
-    lcdDrawSolidHorizontalLine(11, 6*FH+5, 10+(id*3)/2, FORCE);
-#endif
-    lcdRefresh();
-    if (eeModelExists(id)) {
-      ConvertModel(id, conversionVersionStart);
-    }
-
-  }
-
-  return true;
 }

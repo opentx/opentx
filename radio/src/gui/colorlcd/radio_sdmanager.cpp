@@ -107,7 +107,7 @@ class FlashModuleDialog: public Dialog
 
     void flash(const char * filename)
     {
-      device.flashFile(filename, [=](const char *message, int count, int total) -> void {
+      device.flashFile(filename, [=](const char * title, const char * message, int count, int total) -> void {
           setMessage(message);
           progress.setValue(total > 0 ? count * 100 / total : 0);
           mainWindow.run(false);
@@ -192,7 +192,7 @@ void RadioSdManagerPage::build(FormWindow *window)
             else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
               if (HAS_SPORT_UPDATE_CONNECTOR()) {
                 menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
-                    auto dialog = new FlashModuleDialog(FLASHING_MODULE);
+                    auto dialog = new FlashModuleDialog(SPORT_MODULE);
                     dialog->flash(getFullPath(name));
                 });
               }

@@ -113,6 +113,7 @@ extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c);
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags);
+void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags = 0);
 void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len, LcdFlags flags);
@@ -131,6 +132,7 @@ void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att = 0);
 #if !defined(BOOT) // TODO not here ...
 void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
@@ -153,6 +155,7 @@ void putsVBat(coord_t x, coord_t y, LcdFlags att);
 
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2);
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags=0);
 inline void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att)
 {
   drawTimer(x, y, tme, att, att);

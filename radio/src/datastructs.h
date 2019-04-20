@@ -304,7 +304,7 @@ PACK(struct TelemetryScriptData {
 });
 #endif
 
-union FrSkyScreenData {
+union TelemetryScreenData {
   FrSkyBarData  bars[4];
   FrSkyLineData lines[4];
 #if defined(PCBTARANIS)
@@ -313,30 +313,14 @@ union FrSkyScreenData {
 };
 #endif
 
-#if defined(COLORLCD)
-PACK(struct FrSkyTelemetryData {  // TODO EEPROM change, rename to VarioData
-  uint8_t varioSource:7;
-  uint8_t varioCenterSilent:1;
-  int8_t  varioCenterMax;
-  int8_t  varioCenterMin;
-  int8_t  varioMin;
-  int8_t  varioMax;
+PACK(struct VarioData {
+  uint8_t source:7;
+  uint8_t centerSilent:1;
+  int8_t  centerMax;
+  int8_t  centerMin;
+  int8_t  min;
+  int8_t  max;
 });
-#else
-// TODO remove this also on Taranis
-PACK(struct FrSkyTelemetryData {
-  uint8_t voltsSource;
-  uint8_t altitudeSource;
-  uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
-  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS]; // TODO EEPROM change should not be here anymore
-  uint8_t varioSource:7;
-  uint8_t varioCenterSilent:1;
-  int8_t  varioCenterMax;
-  int8_t  varioCenterMin;
-  int8_t  varioMin;
-  int8_t  varioMax;
-});
-#endif
 
 /*
  * Telemetry Sensor structure
@@ -348,19 +332,24 @@ PACK(struct TelemetrySensor {
     NOBACKUP(uint16_t persistentValue);
   };
   union {
-    uint8_t instance;              // instance ID to allow handling multiple instances of same value type, for FrSky can be the physical ID of the sensor
+    PACK(struct {
+      uint8_t physID:5;
+      uint8_t rxIndex:3; // 1 bit for module index, 2 bits for receiver index
+    }) frskyInstance;
+    uint8_t instance;
     NOBACKUP(uint8_t formula);
   };
   char     label[TELEM_LABEL_LEN]; // user defined label
-  uint8_t  type:1;                 // 0=custom / 1=calculated
-  uint8_t  unit:5;                 // user can choose what unit to display each value in
+  uint8_t  subId;
+  uint8_t  type:2;                   // 0=custom / 1=calculated// user can choose what unit to display each value in
+  uint8_t  unit:6;
   uint8_t  prec:2;
   uint8_t  autoOffset:1;
   uint8_t  filter:1;
   uint8_t  logs:1;
   uint8_t  persistent:1;
   uint8_t  onlyPositive:1;
-  uint8_t  subId:3;
+  uint8_t  spare:1;
   union {
     NOBACKUP(PACK(struct {
       uint16_t ratio;
@@ -394,6 +383,21 @@ PACK(struct TelemetrySensor {
     bool isPrecConfigurable() const;
     int32_t getPrecMultiplier() const;
     int32_t getPrecDivisor() const;
+    bool isSameInstance(TelemetryProtocol protocol, uint8_t instance)
+    {
+      if (protocol == TELEM_PROTO_FRSKY_SPORT) {
+        if (((this->instance ^ instance) & 0x9F) == 0) {
+          this->instance = instance; // update the instance in case we had telemetry switching
+          return true;
+        }
+        else {
+          return false;
+        }
+      }
+      else {
+        return this->instance == instance;
+      }
+    }
   );
 });
 
@@ -409,17 +413,6 @@ PACK(struct TrainerModuleData {
   int8_t frameLength;
   int8_t  delay:6;
   uint8_t pulsePol:1;
-});
-
-/*
- * Receiver structure
- */
-
-PACK(struct ReceiverData {
-  uint8_t used:1;
-  uint8_t telemetry:1;
-  uint8_t dirty:6;
-  char    name[PXX2_LEN_RX_NAME];
 });
 
 /*
@@ -447,6 +440,7 @@ PACK(struct ModuleData {
   };
 
   union {
+    uint8_t raw[PXX2_MAX_RECEIVERS_PER_MODULE * PXX2_LEN_RX_NAME + 1];
     NOBACKUP(struct {
       int8_t  delay:6;
       uint8_t pulsePol:1;
@@ -476,33 +470,17 @@ PACK(struct ModuleData {
       uint8_t spare2:1;
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
-    NOBACKUP(struct {
-      uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
-      uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
-#if defined(PCBHORUS)
-      uint8_t spare:5;
-      uint32_t receivers;               // max 5 receivers per module and 10 receivers in total (4bits per receiver with 0 = unused)
-#else
-      uint8_t spare:1;
-      uint16_t receivers:12;            // max 4 receivers per module and 4 receivers in total (3bits per receiver with 0 = unused)
-#endif
-      NOBACKUP(inline uint8_t getReceiverSlot(uint8_t receiver) {
-        return (receivers >> (3 * receiver)) & 0b111;
-      })
-
-      NOBACKUP(inline void setReceiverSlot(uint8_t receiver, uint8_t slot) {
-        receivers = BF_SET<uint16_t>(receivers, slot, 3 * receiver, 3);
-      })
-
-      NOBACKUP(inline void clearReceiverSlot(uint8_t receiver) {
-        setReceiverSlot(receiver, 0);
-      })
-    } pxx2);
+    NOBACKUP(PACK(struct {
+      uint8_t receivers; // 5 bits spare
+      char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
+    }) pxx2);
+#if defined(PCBFLYSKY)
     NOBACKUP(struct {
       uint8_t rx_id[4];
       uint8_t mode;
       uint8_t rx_freq[2];
     } flysky);
+#endif
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -562,14 +540,9 @@ typedef uint8_t swarnenable_t;
     swarnenable_t switchWarningEnable;
 #endif
 
-#define MODEL_GVARS_DATA GVarData gvars[MAX_GVARS];
-
-#define TELEMETRY_DATA NOBACKUP(FrSkyTelemetryData frsky); NOBACKUP(RssiAlarmData rssiAlarms);
-
 #if defined(COLORLCD)
-#include "layout.h"
-#include "topbar.h"
-
+#include "gui/colorlcd/layout.h"
+#include "gui/colorlcd/topbar.h"
 #define LAYOUT_NAME_LEN 10
 PACK(struct CustomScreenData {
   char layoutName[LAYOUT_NAME_LEN];
@@ -579,18 +552,11 @@ PACK(struct CustomScreenData {
   NOBACKUP(CustomScreenData screenData[MAX_CUSTOM_SCREENS]); \
   NOBACKUP(Topbar::PersistentData topbarData); \
   NOBACKUP(uint8_t view);
-#elif defined(PCBTARANIS)
+#else
 #define CUSTOM_SCREENS_DATA \
-  NOBACKUP(uint8_t view);
-#else
-#define CUSTOM_SCREENS_DATA
-// TODO other boards could have their custom screens here as well
-#endif
-
-#if defined(PCBHORUS)  || defined(PCBTARANIS)
-  #define SCRIPTS_DATA  NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
-#else
-  #define SCRIPTS_DATA
+  uint8_t screensType; /* 2bits per screen (None/Gauges/Numbers/Script) */ \
+  TelemetryScreenData screens[MAX_TELEMETRY_SCREENS]; \
+  uint8_t view;
 #endif
 
 PACK(struct ModelData {
@@ -624,18 +590,25 @@ PACK(struct ModelData {
 
   SWITCHES_WARNING_DATA
 
-  MODEL_GVARS_DATA
+  GVarData gvars[MAX_GVARS];
 
-  TELEMETRY_DATA
+  NOBACKUP(VarioData varioData);
+  NOBACKUP(uint8_t rssiSource);
+#if defined(PCBX9)
+  NOBACKUP(uint8_t voltsSource);
+  NOBACKUP(uint8_t altitudeSource);
+#endif
+  NOBACKUP(RssiAlarmData rssiAlarms);
 
-  NOBACKUP(uint8_t spare:6);
+  NOBACKUP(uint8_t spare1:6);
   NOBACKUP(uint8_t potsWarnMode:2);
   ModuleData moduleData[NUM_MODULES];
-  ReceiverData receiverData[NUM_RECEIVERS];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 
-  SCRIPTS_DATA
+#if defined(PCBHORUS) || defined(PCBTARANIS)
+  NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
+#endif
 
   NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
   NOBACKUP(uint8_t potsWarnEnabled);
@@ -682,6 +655,14 @@ PACK(struct TrainerData {
   #define SPLASH_MODE uint8_t splashSpares:3
 #else
   #define SPLASH_MODE uint8_t splashMode:1; uint8_t splashSpare:2
+#endif
+
+#if defined(GYRO)
+  #define GYRO_FIELDS \
+    int8_t   gyroMax; \
+    int8_t   gyroOffset;
+#else
+  #define GYRO_FIELDS
 #endif
 
 #if defined(PCBHORUS) || defined(PCBNV14)
@@ -742,9 +723,9 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(BUZZER)
-  #define BUZZER_FIELD NOBACKUP(int8_t buzzerMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+  #define BUZZER_FIELD int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
 #else
-  #define BUZZER_FIELD NOBACKUP(int8_t spareRadio:2);
+  #define BUZZER_FIELD int8_t spareRadio:2;
 #endif
 
 PACK(struct RadioData {
@@ -807,7 +788,6 @@ PACK(struct RadioData {
   NOBACKUP(int8_t   varioPitch);
   NOBACKUP(int8_t   varioRange);
   NOBACKUP(int8_t   varioRepeat);
-
   CustomFunctionData customFn[MAX_SPECIAL_FUNCTIONS];
 
   EXTRA_GENERAL_FIELDS
@@ -815,6 +795,8 @@ PACK(struct RadioData {
   THEME_DATA
 
   char ownerRegistrationID[PXX2_LEN_REGISTRATION_ID];
+
+  GYRO_FIELDS
 });
 
 #undef SWITCHES_WARNING_DATA
@@ -851,6 +833,8 @@ static inline void check_struct()
   /* Difference between Taranis/Horus is LEN_EXPOMIX_NAME */
   /* LEN_FUNCTION_NAME is the difference in CustomFunctionData */
 
+  CHKSIZE(VarioData, 5);
+
 #if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
@@ -862,13 +846,12 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 4);
-  CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 104);
+  CHKTYPE(union TelemetryScreenData, 24);
   CHKSIZE(ModelHeader, 12);
   CHKSIZE(CurveData, 4);
 #elif defined(PCBTARANIS)
-  CHKSIZE(MixData, 22);
-  CHKSIZE(ExpoData, 19);
+  CHKSIZE(MixData, 20);
+  CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 13);
   CHKSIZE(LogicalSwitchData, 9);
   CHKSIZE(CustomFunctionData, 11);
@@ -877,8 +860,7 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 6);
   CHKSIZE(FrSkyLineData, 6);
-  CHKTYPE(union FrSkyScreenData, 24);
-  CHKSIZE(FrSkyTelemetryData, 104);
+  CHKTYPE(union TelemetryScreenData, 24);
   CHKSIZE(ModelHeader, 24);
   CHKSIZE(CurveData, 4);
 #elif defined(PCBHORUS)
@@ -889,8 +871,7 @@ static inline void check_struct()
   CHKSIZE(FlightModeData, 44);
   CHKSIZE(TimerData, 16);
   CHKSIZE(SwashRingData, 8);
-  CHKSIZE(FrSkyTelemetryData, 5);
-//  CHKSIZE(ModelHeader, 27);
+  CHKSIZE(ModelHeader, 31);
   CHKSIZE(CurveData, 4);
   CHKSIZE(CustomScreenData, 610);
   CHKSIZE(Topbar::PersistentData, 216);
@@ -906,7 +887,6 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 5);
   CHKSIZE(FrSkyLineData, 2);
-  CHKSIZE(FrSkyTelemetryData, 88);
   CHKSIZE(ModelHeader, 12);
   CHKTYPE(CurveData, 4);
 #else
@@ -915,7 +895,6 @@ static inline void check_struct()
   CHKSIZE(SwashRingData, 3);
   CHKSIZE(FrSkyBarData, 3);
   CHKSIZE(FrSkyLineData, 2);
-  CHKSIZE(FrSkyTelemetryData, 43);
   CHKSIZE(ModelHeader, 11);
   CHKTYPE(CurveData, 1);
 
@@ -931,35 +910,33 @@ static inline void check_struct()
 #endif /* board specific ifdefs*/
 
   CHKSIZE(LogicalSwitchData, 9);
-  CHKSIZE(TelemetrySensor, 13);
-  CHKSIZE(ModuleData, 12);
-
+  CHKSIZE(TelemetrySensor, 14);
+  CHKSIZE(ModuleData, 29);
   CHKSIZE(GVarData, 7);
-
   CHKSIZE(RssiAlarmData, 2);
   CHKSIZE(TrainerData, 16);
 
 #if defined(PCBXLITES)
-  CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 5940);
+  CHKSIZE(RadioData, 860);
+  CHKSIZE(ModelData, 6157);
 #elif defined(PCBXLITE)
   CHKSIZE(RadioData, 852);
-  CHKSIZE(ModelData, 5940);
+  CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 858);
-  CHKSIZE(ModelData, 5940);
+  CHKSIZE(ModelData, 6157);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
-  CHKSIZE(ModelData, 6435);
-#elif defined(PCBX9D)
+  CHKSIZE(ModelData, 6614);
+#elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
-  CHKSIZE(ModelData, 6422);
+  CHKSIZE(ModelData, 6601);
 #elif defined(PCBSKY9X)
-  CHKSIZE(RadioData, 727);
-  CHKSIZE(ModelData, 5203);
+  CHKSIZE(RadioData, 735);
+  CHKSIZE(ModelData, 5319);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
-  CHKSIZE(ModelData, 9781);
+  CHKSIZE(ModelData, 9734);
 #endif
 
 #undef CHKSIZE

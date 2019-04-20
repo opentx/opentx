@@ -519,6 +519,9 @@
 #define TR_VANTENNATYPES       "Internal""Ext+Int\0"
 #endif
 
+#define LEN_GYROS                      "\004"
+#define TR_GYROS                       "GyrX""GyrY"
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT
@@ -637,6 +640,9 @@
 #define TR_SPKRPITCH           INDENT "Piep-Freq. +/-"
 #define TR_HAPTIC_LABEL        "Haptic"
 #define TR_HAPTICSTRENGTH      INDENT "Sterkte"
+#define TR_GYRO_LABEL                  "Gyro"
+#define TR_GYRO_OFFSET                 "Offset"
+#define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST            "LCD-Kontrast"
 #define TR_ALARMS_LABEL        "Alarm"
 #define TR_BATTERY_RANGE       TR("Accu Bereik", "Accu Spngs-Bereik") // Symbol Akku Ladezustand
@@ -947,6 +953,16 @@
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENSOR"
+#define TR_POWERMETER_PEAK             "Peak"
+#define TR_POWERMETER_POWER            "Power"
+#define TR_POWERMETER_ATTN             "Attn"
+#define TR_POWERMETER_FREQ             "Freq."
+#define TR_MENUTOOLS                   "TOOLS"
+#define TR_TURN_OFF_RECEIVER           "Turn off receiver"
+#define TR_STOPPING                    "Stopping..."
+#define TR_MENU_SPECTRUM_ANALYSER      "SPECTRUM ANALYSER"
+#define TR_MENU_POWER_METER            "POWER METER"
+#define TR_MENUTOOLS                   "TOOLS"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Landcode"
 #define TR_USBMODE             "USB Mode"
@@ -982,6 +998,17 @@
 #define TR_BUZZER              INDENT "Zoemer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         TR("[Bnd]", "[Bind]")
+#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_DEFAULT                "<default>"
+#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BUTTON_DISCOVER             BUTTON("Discover")
+#define TR_BUTTON_INIT                 BUTTON("Init")
+#define TR_BUTTON_CLEAR                BUTTON("clear")
+#define TR_WAITING                     "Waiting..."
+#define TR_RECEIVER_DELETE             "Delete receiver?"
+#define TR_RECEIVER_RESET              "Reset receiver?"
+#define TR_SHARE                       "Share"
+#define TR_BIND                        "Bind"
 #define TR_TRANSFER_BUTTON             BUTTON("Transfer")
 #define STR_REGISTER            TR("Reg", "Register")
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
@@ -1051,11 +1078,11 @@
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
 #if defined(COLORLCD)
-#define TR_EEBACKUP            "EEPROM backup"
-#define TR_FACTORYRESET        "Factory reset"
+#define STR_EEBACKUP            "EEPROM backup"
+#define STR_FACTORYRESET        "Factory reset"
 #else
-#define TR_EEBACKUP            TR("\001[ENTER Lang]: Backup", "\012[ENTER Lang]: EEPROM backup => SD")
-#define TR_FACTORYRESET        TR("\001[MENU Lang]: Fact. reset", "\012[MENU Lang]: Factory reset")
+#define STR_EEBACKUP            TR("Backup", "EEPROM backup => SD")
+#define STR_FACTORYRESET        TR("Fact. reset", "Factory reset")
 
 #endif
 #define TR_CONFIRMRESET        TR("Wis Alles?", "Wis ALLE modellen en instellingen?")

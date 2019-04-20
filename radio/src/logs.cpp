@@ -208,8 +208,7 @@ void logsWrite()
         if (result != NULL) {
           if (result != error_displayed) {
             error_displayed = result;
-#warning "code removed"
-//            POPUP_WARNING(result);
+            POPUP_WARNING(result);
           }
           return;
         }
@@ -330,8 +329,7 @@ f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
 
       if (result<0 && !error_displayed) {
         error_displayed = STR_SDCARD_ERROR;
-#warning "code removed"
-//        POPUP_WARNING(STR_SDCARD_ERROR);
+        POPUP_WARNING(STR_SDCARD_ERROR);
         logsClose();
       }
     }

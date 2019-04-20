@@ -109,10 +109,12 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       if (len >= 5)
         processMultiStatusPacket(data);
       break;
+
     case DSMBindPacket:
       if (len >= 10)
         processDSMBindPacket(data);
       break;
+
     case SpektrumTelemetry:
       // processSpektrumPacket expects data[0] to be the telemetry indicator 0xAA but does not check it,
       // just send one byte of our header instead
@@ -121,41 +123,50 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       else
         TRACE("[MP] Received spektrum telemetry len %d < 17", len);
       break;
+
     case FlyskyIBusTelemetry:
       if (len >= 28)
         processFlySkyPacket(data);
       else
         TRACE("[MP] Received IBUS telemetry len %d < 28", len);
       break;
+
     case FrSkyHubTelemetry:
       if (len >= 4)
         frskyDProcessPacket(data);
       else
         TRACE("[MP] Received Frsky HUB telemetry len %d < 4", len);
       break;
+
+#if defined(MULTI_SPORT)
     case FrSkySportTelemtry:
       if (len >= 4)
         sportProcessTelemetryPacket(data);
       else
         TRACE("[MP] Received sport telemetry len %d < 4", len);
       break;
+#endif
+
     case InputSync:
       if (len >= 6)
         processMultiSyncPacket(data);
       else
         TRACE("[MP] Received input sync len %d < 6", len);
       break;
+
     case ConfigCommand:
       // Just an ack to our command, ignore for now
       break;
+
     case FrskySportPolling:
       #if defined(LUA)
-      if (len >= 1 && outputTelemetryBufferSize > 0 && data[0] == outputTelemetryBufferTrigger) {
+      if (len >= 1 && outputTelemetryBuffer.size > 0 && data[0] == outputTelemetryBuffer.trigger) {
         TRACE("MP Sending sport data out.");
-        sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
+        sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
       }
       #endif
       break;
+
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);
       break;

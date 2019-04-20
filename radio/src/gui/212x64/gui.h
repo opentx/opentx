@@ -32,7 +32,6 @@
 #define DEFAULT_SCROLLBAR_X            (LCD_W-1)
 #define NUM_BODY_LINES                 (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT             FH
-#define MENU_INIT_VPOS                 0
 
 #define MODEL_BITMAP_WIDTH             64
 #define MODEL_BITMAP_HEIGHT            32
@@ -55,11 +54,6 @@ inline void drawFieldLabel(coord_t x, coord_t y, const char * str)
 extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 bool loadModelBitmap(char * name, uint8_t * bitmap);
 
-struct MenuItem {
-  const char * name;
-  const MenuHandlerFunc action;
-};
-
 // Temporary no highlight
 extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
@@ -71,8 +65,6 @@ void drawSplash();
 void drawSecondSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-void displayMenuBar(const MenuItem * menu, int index);
-void drawProgressBar(const char * label, int num, int den);
 void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
 void drawColumnHeader(const char * const * headers, uint8_t index);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
@@ -84,7 +76,6 @@ void doMainScreenGraphics();
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU               -1
 #define EDIT_SELECT_FIELD              0
 #define EDIT_MODIFY_FIELD              1
 #define EDIT_MODIFY_STRING             2
@@ -240,6 +231,8 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att);
+
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
 extern uint8_t s_curveChan;
@@ -258,12 +251,6 @@ uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint
 #define WARNING_TYPE_INFO              4
 
 void copySelection(char * dst, const char * src, uint8_t size);
-
-extern const char * warningText;
-extern const char * warningInfoText;
-extern uint8_t         warningInfoLength;
-extern uint8_t         warningResult;
-extern uint8_t         warningType;
 
 #define COPY_MODE 1
 #define MOVE_MODE 2

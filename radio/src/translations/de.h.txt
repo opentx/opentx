@@ -528,6 +528,9 @@
 #define LEN_VANTENNATYPES      "\014"
 #define TR_VANTENNATYPES       "Int. Antenne""Ext. + Int.\0"  // Antennenauswahl
 
+#define LEN_GYROS                      "\004"
+#define TR_GYROS                       "GyrX""GyrY"
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT               "\007"
@@ -641,6 +644,9 @@
 #define TR_SPKRPITCH           INDENT "Beep-Freq. +/-"
 #define TR_HAPTIC_LABEL        "Haptik"
 #define TR_HAPTICSTRENGTH      INDENT "Stärke"
+#define TR_GYRO_LABEL                  "Gyro"
+#define TR_GYRO_OFFSET                 "Offset"
+#define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST            "LCD-Kontrast"
 #define TR_ALARMS_LABEL        "Alarme"
 #define TR_BATTERY_RANGE       TR("Akku Bereich", "Akku Spgannungsbereich") // Symbol Akku Ladezustand
@@ -934,7 +940,7 @@
 #define TR_FLASH_EXTERNAL_MODULE TR("Flash ext. mod","Flash extern module")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING               "\032Writing..."        //
+#define STR_WRITING             "Writing..."
 #define TR_CONFIRM_FORMAT      "Formatieren bestätigen?"
 #define TR_INTERNALRF          "Internes HF-Modul"
 #define TR_EXTERNALRF          "Externes HF-Modul"
@@ -946,6 +952,16 @@
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENSOR"
+#define TR_POWERMETER_PEAK             "Peak"
+#define TR_POWERMETER_POWER            "Power"
+#define TR_POWERMETER_ATTN             "Attn"
+#define TR_POWERMETER_FREQ             "Freq."
+#define TR_MENUTOOLS                   "TOOLS"
+#define TR_TURN_OFF_RECEIVER           "Turn off receiver"
+#define TR_STOPPING                    "Stopping..."
+#define TR_MENU_SPECTRUM_ANALYSER      "SPECTRUM ANALYSER"
+#define TR_MENU_POWER_METER            "POWER METER"
+#define TR_MENUTOOLS                   "TOOLS"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Landescode"
 #define TR_USBMODE             "USB Modus"
@@ -981,6 +997,17 @@
 #define TR_BUZZER              INDENT "Summer"
 #define TR_BYTES               "Bytes"
 #define TR_MODULE_BIND         BUTTON(TR("Bnd","Bind"))   //9XR-Pro
+#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_DEFAULT                "<default>"
+#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BUTTON_DISCOVER             BUTTON("Discover")
+#define TR_BUTTON_INIT                 BUTTON("Init")
+#define TR_BUTTON_CLEAR                BUTTON("clear")
+#define TR_WAITING                     "Waiting..."
+#define TR_RECEIVER_DELETE             "Delete receiver?"
+#define TR_RECEIVER_RESET              "Reset receiver?"
+#define TR_SHARE                       "Share"
+#define TR_BIND                        "Bind"
 #define TR_TRANSFER_BUTTON             BUTTON("Transfer")
 #define STR_REGISTER            TR("Reg", "Register")
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
@@ -1049,8 +1076,8 @@
 #define TR_SCRIPT              "Lua-Skript"
 #define TR_INPUTS              "Eingaben"
 #define TR_OUTPUTS             "Ausgaben"
-#define TR_EEBACKUP            TR("[ENTER Long] EEPROM->SD"," [ENTER Long] Backup EEPROM->SD-Karte")
-#define TR_FACTORYRESET        TR("[MENU Long] Werksreset","  [MENU Long] Auf Werkseinstellungen")
+#define STR_EEBACKUP           TR("EEPROM->SD", "Backup EEPROM->SD-Karte")
+#define STR_FACTORYRESET       TR("Werksreset", "Auf Werkseinstellungen")
 #define TR_CONFIRMRESET        TR("Alles löschen? ","ALLE Modelle+Einst. löschen?")
 #define TR_TO_MANY_LUA_SCRIPTS "Zu viele Lua-Skripte!"
 

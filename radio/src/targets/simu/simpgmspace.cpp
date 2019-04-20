@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-  #define SIMPGMSPC_USE_QT    0
+#define SIMPGMSPC_USE_QT    0
 
 #include "opentx.h"
 #include <errno.h>
@@ -65,6 +65,8 @@ Usart Usart0;
 Dacc dacc;
 Adc Adc0;
 #endif
+
+FATFS g_FATFS_Obj;
 
 void lcdInit()
 {
@@ -646,7 +648,67 @@ void pwrInit() { }
 int usbPlugged() { return false; }
 int getSelectedUsbMode() { return USB_JOYSTICK_MODE; }
 void setSelectedUsbMode(int mode) {}
+void delay_ms(uint32_t ms) { }
+
+// GPIO fake functions
+void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
+
+// PWR fake functions
+void PWR_BackupAccessCmd(FunctionalState NewState) { }
+void PWR_BackupRegulatorCmd(FunctionalState NewState) { }
+
+// USART fake functions
 void USART_DeInit(USART_TypeDef* ) { }
+void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
+void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
+void USART_ClearITPendingBit(USART_TypeDef*, unsigned short) { }
+void USART_SendData(USART_TypeDef* USARTx, uint16_t Data) { }
+uint16_t USART_ReceiveData(USART_TypeDef*) { return 0; }
+void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
+void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
+FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { return SET; }
+
+// TIM fake functions
+void TIM_DMAConfig(TIM_TypeDef* TIMx, uint16_t TIM_DMABase, uint16_t TIM_DMABurstLength) { }
+void TIM_DMACmd(TIM_TypeDef* TIMx, uint16_t TIM_DMASource, FunctionalState NewState) { }
+void TIM_CtrlPWMOutputs(TIM_TypeDef* TIMx, FunctionalState NewState) { }
+
+// I2C fake functions
+void I2C_DeInit(I2C_TypeDef*) { }
+void I2C_Init(I2C_TypeDef*, I2C_InitTypeDef*) { }
+void I2C_Cmd(I2C_TypeDef*, FunctionalState) { }
+void I2C_Send7bitAddress(I2C_TypeDef*, unsigned char, unsigned char) { }
+void I2C_SendData(I2C_TypeDef*, unsigned char) { }
+void I2C_GenerateSTART(I2C_TypeDef*, FunctionalState) { }
+void I2C_GenerateSTOP(I2C_TypeDef*, FunctionalState) { }
+void I2C_AcknowledgeConfig(I2C_TypeDef*, FunctionalState) { }
+uint8_t I2C_ReceiveData(I2C_TypeDef*) { return 0; }
+ErrorStatus I2C_CheckEvent(I2C_TypeDef*, unsigned int) { return ERROR; }
+
+// I2S fake functions
+void I2S_Init(SPI_TypeDef* SPIx, I2S_InitTypeDef* I2S_InitStruct) { }
+void I2S_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
+
+// SPI fake functions
+void SPI_I2S_DeInit(SPI_TypeDef* SPIx) { }
+void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState NewState) { }
+
+// RCC fake functions
+void RCC_RTCCLKConfig(uint32_t RCC_RTCCLKSource) { }
+void RCC_APB1PeriphClockCmd(uint32_t RCC_APB1Periph, FunctionalState NewState) { }
+void RCC_RTCCLKCmd(FunctionalState NewState) { }
+void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR) { }
+void RCC_PLLI2SCmd(FunctionalState NewState) { }
+void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource) { }
+void RCC_LSEConfig(uint8_t RCC_LSE) { }
+void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks) { };
+FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return SET; }
+
+// RTC fake functions
+ErrorStatus RTC_Init(RTC_InitTypeDef* RTC_InitStruct) { return SUCCESS; }
+void RTC_TimeStructInit(RTC_TimeTypeDef* RTC_TimeStruct) { }
+void RTC_DateStructInit(RTC_DateTypeDef* RTC_DateStruct) { }
+ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
 ErrorStatus RTC_SetTime(uint32_t RTC_Format, RTC_TimeTypeDef* RTC_TimeStruct) { return SUCCESS; }
 ErrorStatus RTC_SetDate(uint32_t RTC_Format, RTC_DateTypeDef* RTC_DateStruct) { return SUCCESS; }
 void RTC_GetTime(uint32_t RTC_Format, RTC_TimeTypeDef * RTC_TimeStruct)
@@ -669,39 +731,7 @@ void RTC_GetDate(uint32_t RTC_Format, RTC_DateTypeDef * RTC_DateStruct)
   RTC_DateStruct->RTC_Date = timeinfo->tm_mday;
 }
 
-void RTC_TimeStructInit(RTC_TimeTypeDef* RTC_TimeStruct) { }
-void RTC_DateStructInit(RTC_DateTypeDef* RTC_DateStruct) { }
-void PWR_BackupAccessCmd(FunctionalState NewState) { }
-void PWR_BackupRegulatorCmd(FunctionalState NewState) { }
-void RCC_RTCCLKConfig(uint32_t RCC_RTCCLKSource) { }
-void RCC_APB1PeriphClockCmd(uint32_t RCC_APB1Periph, FunctionalState NewState) { }
-void RCC_RTCCLKCmd(FunctionalState NewState) { }
-ErrorStatus RTC_Init(RTC_InitTypeDef* RTC_InitStruct) { return SUCCESS; }
-void USART_SendData(USART_TypeDef* USARTx, uint16_t Data) { }
-FlagStatus USART_GetFlagStatus(USART_TypeDef* USARTx, uint16_t USART_FLAG) { return SET; }
-void GPIO_PinAFConfig(GPIO_TypeDef* GPIOx, uint16_t GPIO_PinSource, uint8_t GPIO_AF) { }
-void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
-void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
-void USART_ClearITPendingBit(USART_TypeDef*, unsigned short) { }
-uint16_t USART_ReceiveData(USART_TypeDef*) { return 0; }
-void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
-void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
-// void TIM_TimeBaseInit(TIM_TypeDef* TIMx, TIM_TimeBaseInitTypeDef* TIM_TimeBaseInitStruct) { }
-// void TIM_OC1Init(TIM_TypeDef* TIMx, TIM_OCInitTypeDef* TIM_OCInitStruct) { }
-void TIM_DMAConfig(TIM_TypeDef* TIMx, uint16_t TIM_DMABase, uint16_t TIM_DMABurstLength) { }
-void TIM_DMACmd(TIM_TypeDef* TIMx, uint16_t TIM_DMASource, FunctionalState NewState) { }
-void TIM_CtrlPWMOutputs(TIM_TypeDef* TIMx, FunctionalState NewState) { }
-void RCC_PLLI2SConfig(uint32_t PLLI2SN, uint32_t PLLI2SR) { }
-void RCC_PLLI2SCmd(FunctionalState NewState) { }
-void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource) { }
-void SPI_I2S_DeInit(SPI_TypeDef* SPIx) { }
-void I2S_Init(SPI_TypeDef* SPIx, I2S_InitTypeDef* I2S_InitStruct) { }
-void I2S_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
-void SPI_I2S_ITConfig(SPI_TypeDef* SPIx, uint8_t SPI_I2S_IT, FunctionalState NewState) { }
-void RCC_LSEConfig(uint8_t RCC_LSE) { }
-void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks) { };
-FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return SET; }
-ErrorStatus RTC_WaitForSynchro(void) { return SUCCESS; }
+
 void unlockFlash() { }
 void lockFlash() { }
 void flashWrite(uint32_t *address, uint32_t *buffer) { simuSleep(100); }

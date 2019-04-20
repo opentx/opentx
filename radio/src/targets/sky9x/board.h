@@ -258,12 +258,13 @@ void init_no_pulses(uint32_t port);
 void disable_no_pulses(uint32_t port);
 void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
-void init_pxx(uint32_t port);
-void disable_pxx(uint32_t port);
+void init_pxx1_pulses(uint32_t port);
+void disable_pxx1_pulses(uint32_t port);
 void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint32_t port);
 void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
 void disable_module_timer( uint32_t module_index);
+void extmoduleSendNextFrame();
 
 // SD driver
 #if defined(SIMU)
@@ -336,6 +337,7 @@ enum CalibratedAnalogs {
 };
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   false
+#define STICKS_PWM_ENABLED()           false
 void adcInit();
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);

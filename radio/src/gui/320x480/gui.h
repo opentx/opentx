@@ -68,7 +68,6 @@
 #define DATETIME_MIDDLE                (LCD_W+DATETIME_SEPARATOR_X+4)/2
 
 #define MENU_TITLE_NEXT_POS            (lcdNextPos + 10)
-#define MENU_INIT_VPOS                 -1
 
 #if defined(HELI) && defined(GVARS) && defined(LUA_MODEL_SCRIPTS)
 #define MENU_ICONS_SPACING             31

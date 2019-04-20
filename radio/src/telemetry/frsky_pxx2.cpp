@@ -50,14 +50,29 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
   }
 
   uint8_t index = frame[3];
-  if (index == 0xFF) {
-    reusableBuffer.hardware.modules[module].hw_version = *((uint16_t *)&frame[4]);
-    reusableBuffer.hardware.modules[module].sw_version = *((uint16_t *)&frame[6]);
+  if (index == 0xFF)
+    memcpy(&reusableBuffer.hardwareAndSettings.modules[module].information, &frame[4], sizeof(PXX2HardwareInformation));
+  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE)
+    memcpy(&reusableBuffer.hardwareAndSettings.modules[module].receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
+}
+
+void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
+{
+  if (moduleSettings[module].mode != MODULE_MODE_MODULE_SETTINGS) {
+    return;
   }
-  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE){
-    reusableBuffer.hardware.modules[module].receivers[index].hw_version = *((uint16_t *)&frame[4]);
-    reusableBuffer.hardware.modules[module].receivers[index].sw_version = *((uint16_t *)&frame[6]);
-  }
+
+  // Flag1
+  reusableBuffer.hardwareAndSettings.moduleSettings.txPower = frame[4] >> 4;
+  if (frame[4] & PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA)
+    reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = 1;
+
+  // Power
+  reusableBuffer.hardwareAndSettings.moduleSettings.txPower = frame[5];
+
+  reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
+  reusableBuffer.hardwareAndSettings.moduleSettings.timeout = 0;
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
@@ -66,21 +81,22 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
-  uint8_t channelsCount = sentModuleChannels(module);
-  for (uint8_t pin = 0; pin < channelsCount; pin++) {
-    reusableBuffer.receiverSetup.channelMapping[pin] = frame[5 + pin];
-  }
-
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_FASTPWM)
-    reusableBuffer.receiverSetup.pwmRate = 1;
+    reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = 1;
 
   if (frame[4] & PXX2_RX_SETTINGS_FLAG1_TELEMETRY_DISABLED)
-    reusableBuffer.receiverSetup.telemetryDisabled = 1;
+    reusableBuffer.hardwareAndSettings.receiverSettings.telemetryDisabled = 1;
 
-  reusableBuffer.receiverSetup.state = RECEIVER_SETTINGS_OK;
-  reusableBuffer.receiverSetup.timeout = 0;
+  uint8_t outputsCount = min<uint8_t>(16, frame[0] - 4);
+  reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = outputsCount;
+  for (uint8_t pin = 0; pin < outputsCount; pin++) {
+    reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = frame[5 + pin];
+  }
+
+  reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_OK;
+  reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
   moduleSettings[module].mode = MODULE_MODE_NORMAL;
- }
+}
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)
 {
@@ -93,6 +109,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
       if (reusableBuffer.moduleSetup.pxx2.registerStep == REGISTER_START) {
         // RX_NAME follows, we store it for the next step
         str2zchar(reusableBuffer.moduleSetup.pxx2.registerRxName, (const char *)&frame[4], PXX2_LEN_RX_NAME);
+        reusableBuffer.moduleSetup.pxx2.registerLoopIndex = frame[12];
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
       }
       break;
@@ -136,7 +153,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     case 0x01:
       if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
         if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-          memcpy(g_model.receiverData[reusableBuffer.moduleSetup.pxx2.bindReceiverId].name, &frame[4], PXX2_LEN_RX_NAME);
+          memcpy(g_model.moduleData[module].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.bindReceiverIndex], &frame[4], PXX2_LEN_RX_NAME);
           storageDirty(EE_MODEL);
           reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
           reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
@@ -146,12 +163,26 @@ void processBindFrame(uint8_t module, uint8_t * frame)
   }
 }
 
-void processTelemetryFrame(uint8_t module, uint8_t * frame)
+void processResetFrame(uint8_t module, uint8_t * frame)
 {
-  sportProcessTelemetryPacketWithoutCrc(&frame[3]);
+  if (moduleSettings[module].mode != MODULE_MODE_RESET) {
+    return;
+  }
+
+  if (reusableBuffer.moduleSetup.pxx2.resetReceiverIndex == frame[3]) {
+    memclear(g_model.moduleData[module].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.resetReceiverIndex], PXX2_LEN_RX_NAME);
+  }
+
+  moduleSettings[module].mode = MODULE_MODE_NORMAL;
 }
 
-void processSpectrumFrame(uint8_t module, uint8_t * frame)
+void processTelemetryFrame(uint8_t module, uint8_t * frame)
+{
+  uint8_t origin = (module << 2) + (frame[3] & 0x03);
+  sportProcessTelemetryPacketWithoutCrc(origin, &frame[4]);
+}
+
+void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
 {
   if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     return;
@@ -165,19 +196,36 @@ void processSpectrumFrame(uint8_t module, uint8_t * frame)
   // left = 2440000000 - 20000000
   // step = 10000
 
-  int32_t D = *frequency - (2440000000 - 40000000 / 2);
-
   // TRACE("Fq=%u, Pw=%d, X=%d, Y=%d", *frequency, int32_t(*power), D * 128 / 40000000, int32_t(127 + *power));
-  uint8_t x = D * 128 / 40000000;
 
-  reusableBuffer.spectrum.bars[x] = 127 + *power;
+  int32_t position = *frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
+  int32_t x = (position * LCD_W / 8) / (reusableBuffer.spectrumAnalyser.span / 8);
+  if (x < LCD_W) {
+    reusableBuffer.spectrumAnalyser.bars[x] = 127 + *power;
+  }
 }
 
-void processRadioFrame(uint8_t module, uint8_t * frame)
+void processPowerMeterFrame(uint8_t module, uint8_t * frame)
+{
+  if (moduleSettings[module].mode != MODULE_MODE_POWER_METER) {
+    return;
+  }
+
+  reusableBuffer.powerMeter.power = *((int16_t *)&frame[8]);
+  if (!reusableBuffer.powerMeter.peak || reusableBuffer.powerMeter.power > reusableBuffer.powerMeter.peak) {
+    reusableBuffer.powerMeter.peak = reusableBuffer.powerMeter.power;
+  }
+}
+
+void processModuleFrame(uint8_t module, uint8_t *frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_HW_INFO:
       processGetHardwareInfoFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_ID_TX_SETTINGS:
+      processModuleSettingsFrame(module, frame);
       break;
 
     case PXX2_TYPE_ID_RX_SETTINGS:
@@ -195,31 +243,35 @@ void processRadioFrame(uint8_t module, uint8_t * frame)
     case PXX2_TYPE_ID_TELEMETRY:
       processTelemetryFrame(module, frame);
       break;
+
+    case PXX2_TYPE_ID_RESET:
+      processResetFrame(module, frame);
+      break;
   }
 }
 
-void processPowerMeterFrame(uint8_t module, uint8_t * frame)
+void processToolsFrame(uint8_t module, uint8_t * frame)
 {
   switch (frame[2]) {
     case PXX2_TYPE_ID_POWER_METER:
-      // TODO
+      processPowerMeterFrame(module, frame);
       break;
 
     case PXX2_TYPE_ID_SPECTRUM:
-      processSpectrumFrame(module, frame);
+      processSpectrumAnalyserFrame(module, frame);
       break;
   }
 }
 
-void processPXX2TelemetryFrame(uint8_t module, uint8_t * frame)
+void processPXX2Frame(uint8_t module, uint8_t *frame)
 {
   switch (frame[1]) {
     case PXX2_TYPE_C_MODULE:
-      processRadioFrame(module, frame);
+      processModuleFrame(module, frame);
       break;
 
     case PXX2_TYPE_C_POWER_METER:
-      processPowerMeterFrame(module, frame);
+      processToolsFrame(module, frame);
       break;
 
     default:

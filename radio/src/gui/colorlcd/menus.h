@@ -190,6 +190,7 @@ bool menuModelLogicalSwitches(event_t event);
 bool menuModelSpecialFunctions(event_t event);
 bool menuModelCustomScripts(event_t event);
 bool menuModelTelemetryFrsky(event_t event);
+bool menuModelSensor(event_t event);
 bool menuModelExpoOne(event_t event);
 
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
@@ -267,7 +268,6 @@ bool menuScreensTheme(event_t event);
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU   -1
 #define EDIT_SELECT_FIELD  0
 #define EDIT_MODIFY_FIELD  1
 #define EDIT_MODIFY_STRING 2
@@ -485,14 +485,12 @@ void showPopup(uint8_t type, const char * title, const char * msg = nullptr, con
 
 #define DISPLAY_WARNING                (*popupFunc)
 
-#define POPUP_INFORMATION(s)           showPopup(WARNING_TYPE_INFO, s, STR_OK)
-#define POPUP_WARNING(s)               showPopup(WARNING_TYPE_ASTERISK, s, STR_EXIT)
-#define POPUP_CONFIRMATION(s)          (warningText = s, warningType = WARNING_TYPE_CONFIRM, warningInfoText = 0, popupFunc = runPopupWarning)
+#define POPUP_INFORMATION(s)           (warningText = s, warningType = WARNING_TYPE_INFO, warningInfoText = 0, popupFunc = runPopupWarning)
+#define POPUP_WARNING(s)               (warningType = WARNING_TYPE_ASTERISK, warningText = s, warningInfoText = 0, popupFunc = runPopupWarning)
 #define POPUP_INPUT(s, func)           (warningText = s, popupFunc = func)
 #define WARNING_INFO_FLAGS             warningInfoFlags
 #define SET_WARNING_INFO(info, len, flags)    (warningInfoText = info, warningInfoLength = len, warningInfoFlags = flags)
 
-#define NAVIGATION_MENUS
 #define POPUP_MENU_ADD_ITEM(s)         do { popupMenuOffsetType = MENU_OFFSET_INTERNAL; if (popupMenuItemsCount < POPUP_MENU_MAX_LINES) popupMenuItems[popupMenuItemsCount++] = s; } while (0)
 #define POPUP_MENU_SELECT_ITEM(s)      s_menu_item =  (s > 0 ? (s < popupMenuItemsCount ? s : popupMenuItemsCount) : 0)
 #define POPUP_MENU_START(func)         do { popupMenuHandler = (func); AUDIO_KEY_PRESS(); } while(0)
@@ -511,6 +509,15 @@ extern uint8_t popupMenuOffsetType;
 extern uint8_t s_menu_item;
 const char * runPopupMenu(event_t event);
 extern void (*popupMenuHandler)(const char * result);
+
+inline void POPUP_CONFIRMATION(const char *s, void (* confirmHandler)(const char *) = nullptr)
+{
+  warningText = s;
+  warningType = WARNING_TYPE_CONFIRM;
+  warningInfoText = nullptr;
+  popupFunc = runPopupWarning;
+  popupMenuHandler = confirmHandler;
+}
 
 #define TEXT_FILENAME_MAXLEN           40
 extern char s_text_file[TEXT_FILENAME_MAXLEN];

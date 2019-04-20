@@ -30,32 +30,25 @@ bool sdCardFormat()
     case FR_OK :
       return true;
     case FR_DISK_ERR:
-#warning "code removed"
-      //POPUP_WARNING("Format error");
+      POPUP_WARNING("Format error");
       return false;
     case FR_NOT_READY:
-#warning "code removed"
-      // POPUP_WARNING("SDCard not ready");
+      POPUP_WARNING("SDCard not ready");
       return false;
     case FR_WRITE_PROTECTED:
-#warning "code removed"
-      // POPUP_WARNING("SDCard write protected");
+      POPUP_WARNING("SDCard write protected");
       return false;
     case FR_INVALID_PARAMETER:
-#warning "code removed"
-//      POPUP_WARNING("Format param invalid");
+      POPUP_WARNING("Format param invalid");
       return false;
     case FR_INVALID_DRIVE:
-#warning "code removed"
-//      POPUP_WARNING("Invalid drive");
+      POPUP_WARNING("Invalid drive");
       return false;
     case FR_MKFS_ABORTED:
-#warning "code removed"
-//      POPUP_WARNING("Format aborted");
+      POPUP_WARNING("Format aborted");
       return false;
     default:
-#warning "code removed"
-//      POPUP_WARNING(STR_SDCARD_ERROR);
+      POPUP_WARNING(STR_SDCARD_ERROR);
       return false;
   }
 }
@@ -199,6 +192,16 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
       return index;
     }
   }
+}
+
+const char * getBasename(const char * path)
+{
+  for (int8_t i = strlen(path) - 1; i >= 0; i--) {
+    if (path[i] == '/') {
+      return &path[i + 1];
+    }
+  }
+  return path;
 }
 
 const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMaxLen, uint8_t *fnlen, uint8_t *extlen)

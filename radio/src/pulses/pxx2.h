@@ -33,6 +33,7 @@
   #define PXX2_TYPE_ID_RX_SETTINGS  0x05
   #define PXX2_TYPE_ID_HW_INFO      0x06
   #define PXX2_TYPE_ID_SHARE        0x07
+  #define PXX2_TYPE_ID_RESET        0x08
   #define PXX2_TYPE_ID_TELEMETRY    0xFE
 
 #define PXX2_TYPE_C_POWER_METER     0x02
@@ -50,6 +51,69 @@
 #define PXX2_RX_SETTINGS_FLAG1_READONLY            (1 << 6)
 #define PXX2_RX_SETTINGS_FLAG1_FASTPWM             (1 << 4)
 
+#define PXX2_TX_SETTINGS_FLAG0_WRITE               (1 << 6)
+#define PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA    (1 << 3)
+
+#define PXX2_HW_INFO_TX_ID                         0xFF
+
+static const char * const PXX2modulesModels[] = {
+  "---",
+  "XJT",
+  "ISRM",
+  "ISRM-PRO",
+  "ISRM-S",
+  "R9M",
+  "R9MLite",
+  "R9MLite-PRO",
+  "ISRM-N"
+};
+
+static const char * const PXX2receiversModels[] = {
+  "---",
+  "X8R",
+  "RX8R",
+  "RX8R-PRO",
+  "RX6R",
+  "RX4R",
+  "G-RX8",
+  "G-RX6",
+  "X6R",
+  "X4R",
+  "X4R-SB",
+  "XSR",
+  "XSR-M",
+  "RXSR",
+  "S6R",
+  "S8R",
+  "XM",
+  "XM+",
+  "XMR",
+  "R9",
+  "R9-SLIM",
+  "R9-SLIM+",
+  "R9-MINI",
+  "R9-MM",
+  "R9-STAB",
+};
+
+enum PXX2ModuleModelID {
+  PXX2_MODULE_NONE,
+  PXX2_MODULE_XJT,
+  PXX2_MODULE_IXJT,
+  PXX2_MODULE_IXJT_PRO,
+  PXX2_MODULE_IXJT_S,
+  PXX2_MODULE_R9M,
+  PXX2_MODULE_R9M_LITE,
+  PXX2_MODULE_R9M_LITE_PRO,
+};
+
+enum PXX2Variant {
+  PXX2_VARIANT_NONE,
+  PXX2_VARIANT_FCC,
+  PXX2_VARIANT_EU,
+  PXX2_VARIANT_FLEX
+};
+
 enum PXX2RegisterSteps {
   REGISTER_START,
   REGISTER_RX_NAME_RECEIVED,
@@ -64,10 +128,16 @@ enum PXX2BindSteps {
   BIND_OK
 };
 
+enum PXX2ResetSteps {
+  RESET_START,
+  RESET_OK
+};
+
 enum PXX2ReceiverStatus {
-  RECEIVER_SETTINGS_READ,
-  RECEIVER_SETTINGS_WRITE,
-  RECEIVER_SETTINGS_OK
+  PXX2_HARDWARE_INFO,
+  PXX2_SETTINGS_READ,
+  PXX2_SETTINGS_WRITE,
+  PXX2_SETTINGS_OK
 };
 
 extern ModuleFifo intmoduleFifo;
@@ -121,13 +191,21 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     void setupBindFrame(uint8_t module);
 
+    void setupResetFrame(uint8_t module);
+
     void setupShareMode(uint8_t module);
+
+    void setupModuleSettingsFrame(uint8_t module);
 
     void setupReceiverSettingsFrame(uint8_t module);
 
     void setupChannelsFrame(uint8_t module);
 
+    void setupTelemetryFrame(uint8_t module);
+
     void setupSpectrumAnalyser(uint8_t module);
+
+    void setupPowerMeter(uint8_t module);
 
     void addHead()
     {
@@ -149,9 +227,13 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
 
     uint8_t addFlag0(uint8_t module);
 
-    void addFlag1(uint8_t module);
+    void addFlag1();
 
-    void addChannels(uint8_t module, uint8_t sendFailsafe, uint8_t firstChannel);
+    void addPulsesValues(uint16_t low, uint16_t high);
+
+    void addChannels(uint8_t module);
+
+    void addFailsafe(uint8_t module);
 
     void addCrc()
     {
@@ -187,5 +269,20 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
       }
     }
 };
+
+PACK(struct PXX2Version
+{
+  uint8_t major;
+  uint8_t revision:4;
+  uint8_t minor:4;
+});
+
+PACK(struct PXX2HardwareInformation
+{
+  uint8_t modelID;
+  PXX2Version hwVersion;
+  PXX2Version swVersion;
+  uint8_t variant;
+});
 
 #endif

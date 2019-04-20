@@ -26,9 +26,9 @@
 #include "frsky_pxx2.h"
 
 #if defined(LIBOPENUI)
-typedef std::function<void(const char *, int, int)> ProgressHandler;
+typedef std::function<void(const char *, const char *, int, int)> ProgressHandler;
 #else
-typedef void (*ProgressHandler)(const char *, int, int);
+typedef void (*ProgressHandler)(const char *, const char *, int, int);
 #endif
 
 class DeviceFirmwareUpdate {

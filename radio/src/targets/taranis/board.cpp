@@ -107,7 +107,7 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 }
 #endif
 
-#if defined(PWR_BUTTON_PRESS) && !defined(SIMU)
+#if defined(PWR_BUTTON_PRESS)
   #define PWR_PRESS_DURATION_MIN        100 // 1s
   #define PWR_PRESS_DURATION_MAX        500 // 5s
 #endif
@@ -155,14 +155,15 @@ void boardInit()
                          INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph |
                          AUX_SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph |
-                         HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
+                         HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph | GYRO_RCC_AHB1Periph,
+                         ENABLE);
 
   RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | ADC_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph | HAPTIC_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
                          TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
                          SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph | AUX_SERIAL_RCC_APB1Periph |
-                         INTMODULE_RCC_APB1Periph | BT_RCC_APB1Periph, ENABLE);
+                         INTMODULE_RCC_APB1Periph | BT_RCC_APB1Periph | GYRO_RCC_APB1Periph, ENABLE);
 
   RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph |
@@ -291,6 +292,13 @@ void boardInit()
   enableSpeaker();
 
   initHeadphoneTrainerSwitch();
+
+  vbattRTC = getRTCBattVoltage();
+
+#if defined(GYRO)
+  gyroInit();
+#endif
+
 #endif // !defined(SIMU)
 }
 

@@ -104,8 +104,13 @@
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
 
-#define LEN_MODULE_PROTOCOLS                "\005"
-#define TR_MODULE_PROTOCOLS                "OFF\0 ""PPM\0 ""XJT\0 ""XJT2\0""DSM2\0""CRSF\0""MULT\0""R9M\0 ""R9M2\0""R9LT\0""R9LT2""R9LP2""SBUS\0"
+#if defined(PCBXLITES) || defined(PCBX3)
+#define LEN_MODULE_PROTOCOLS           "\006"
+#define TR_MODULE_PROTOCOLS            "OFF\0  ""PPM\0  ""XJT\0  ""ISRM\0 ""DSM2\0 ""CRSF\0 ""MULT\0 ""R9M\0  ""R9M-A\0""R9MLit""R9ML-A""R9MP-A""SBUS\0"
+#else
+#define LEN_MODULE_PROTOCOLS           "\006"
+#define TR_MODULE_PROTOCOLS            "OFF\0  ""PPM\0  ""XJT\0  ""XJT-A\0""DSM2\0 ""CRSF\0 ""MULT\0 ""R9M\0  ""R9M-A\0""R9MLit""R9ML-A""R9MP-A""SBUS\0"
+#endif
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
@@ -330,10 +335,10 @@
 #define LENGTH_UNIT_METR               "m\0 "
 #define SPEED_UNIT_METR                "kmh"
 
-  #define LEN_VUNITSSYSTEM             TR("\006", "\010")
-  #define TR_VUNITSSYSTEM              TR("Metric""Imper.", "Metric\0 ""Imperial")
-  #define LEN_VTELEMUNIT               "\003"
-  #define TR_VTELEMUNIT                "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz"
+#define LEN_VUNITSSYSTEM               TR("\006", "\010")
+#define TR_VUNITSSYSTEM                TR("Metric""Imper.", "Metric\0 ""Imperial")
+#define LEN_VTELEMUNIT                 "\003"
+#define TR_VTELEMUNIT                  "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm"
 
 #define STR_V                          (STR_VTELEMUNIT+1)
 #define STR_A                          (STR_VTELEMUNIT+4)
@@ -347,10 +352,10 @@
 #define LEN_VTELPROTO                  "\007"
 #define TR_VTELPROTO                   "None\0  ""Hub\0   ""WSHHigh"
 
-  #define LEN_AMPSRC                   TR("\003", "\005")
-  #define TR_AMPSRC                    TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0 ""A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
-  #define LEN_VOLTSRC                  TR("\003", "\005")
-  #define TR_VOLTSRC                   TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
+#define LEN_AMPSRC                     TR("\003", "\005")
+#define TR_AMPSRC                      TR("---""A1\0""A2\0""A3\0""A4\0""FAS""Cel", "---\0 ""A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
+#define LEN_VOLTSRC                    TR("\003", "\005")
+#define TR_VOLTSRC                     TR("A1\0""A2\0""A3\0""A4\0""FAS""Cel", "A1\0  ""A2\0  ""A3\0  ""A4\0  ""FAS\0 ""Cells")
 
 #define LEN_VARIOSRC                   "\004"
 #if defined(TELEMETRY_FRSKY_SPORT)
@@ -476,6 +481,12 @@
   #define TR_VSWITCHES                 "---" TR_9X_3POS_SWITCHES TR_2POS_SWITCHES TR_TRIMS_SWITCHES TR_ROTENC_SWITCHES TR_LOGICALSW TR_ON_ONE_SWITCHES
 #endif
 
+#if defined(GYRO)
+  #define TR_GYR_VSRCRAW               "GyrX""GyrY"
+#else
+  #define TR_GYR_VSRCRAW
+#endif
+
 #if defined(HELI)
   #define TR_CYC_VSRCRAW               "CYC1""CYC2""CYC3"
 #else
@@ -485,7 +496,7 @@
   #define TR_RESERVE_VSRCRAW           "[--]"
   #define TR_EXTRA_VSRCRAW             "Batt""Time""GPS\0" TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW TR_RESERVE_VSRCRAW "Tmr1""Tmr2""Tmr3"
 
-#define TR_VSRCRAW                     "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
+#define TR_VSRCRAW                     "---\0" TR_STICKS_VSRCRAW TR_POTS_VSRCRAW TR_ROTARY_ENCODERS TR_GYR_VSRCRAW "MAX\0" TR_CYC_VSRCRAW TR_TRIMS_VSRCRAW TR_SW_VSRCRAW TR_EXTRA_VSRCRAW
 
 #define LEN_VTMRMODES                  "\003"
 #define TR_VTMRMODES                   "OFF""ON\0""THs""TH%""THt"
@@ -522,6 +533,9 @@
 #define TR_VANTENNATYPES               "Internal""Ext+Int\0"
 #endif
 
+#define LEN_GYROS                      "\004"
+#define TR_GYROS                       "GyrX""GyrY"
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT
@@ -546,11 +560,12 @@
   #define TR_OK                        TR_ENTER
 #else
   #define TR_EXIT                      "[EXIT]"
+  #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #endif
 
 #if defined(PCBTARANIS)
   #define TR_POPUPS_ENTER_EXIT         TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
-  #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
+
 #else
   #define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
   #define OFS_EXIT                     sizeof(TR_ENTER)
@@ -640,9 +655,12 @@
 #define TR_SPKRPITCH                   INDENT "Beep pitch"
 #define TR_HAPTIC_LABEL                "Haptic"
 #define TR_HAPTICSTRENGTH              INDENT "Strength"
+#define TR_GYRO_LABEL                  "Gyro"
+#define TR_GYRO_OFFSET                 "Offset"
+#define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST                    "Contrast"
 #define TR_ALARMS_LABEL                "Alarms"
-#define TR_BATTERY_RANGE               TR("Battery range", "Battery meter range")
+#define TR_BATTERY_RANGE               TR("Batt. range", "Battery meter range")
 #define TR_BATTERYWARNING              INDENT "Battery low"
 #define TR_INACTIVITYALARM             INDENT "Inactivity"
 #define TR_MEMORYWARNING               INDENT "Memory low"
@@ -775,7 +793,7 @@
 #define TR_MONITOR_OUTPUT_DESC         "Outputs"
 #define TR_MONITOR_MIXER_DESC          "Mixers"
   #define TR_RECEIVER_NUM              TR(INDENT "RxNum", INDENT "Receiver No.")
-  #define TR_RECEIVER                  INDENT "Receiver"
+  #define TR_RECEIVER                  "Receiver"
 #define TR_MULTI_RFTUNE                TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Vid. freq.", INDENT "Video frequency")
@@ -810,9 +828,9 @@
 #define TR_LONGITUDE                   "Longitude"
 #define TR_GPSCOORD                    TR("GPS Coords", INDENT "Coordinate format")
 #define TR_VARIO                       TR("Vario", "Variometer")
-#define TR_PITCH_AT_ZERO               INDENT "Pitch at zero"
-#define TR_PITCH_AT_MAX                INDENT "Pitch at max"
-#define TR_REPEAT_AT_ZERO              INDENT "Repeat at zero"
+#define TR_PITCH_AT_ZERO               INDENT "Pitch zero"
+#define TR_PITCH_AT_MAX                INDENT "Pitch max"
+#define TR_REPEAT_AT_ZERO              INDENT "Repeat zero"
 #define TR_POWEROFF                    "\027Power OFF..."
 #define TR_SHUTDOWN                    "SHUTTING DOWN"
 #define TR_SAVEMODEL                   "Saving model settings"
@@ -933,7 +951,7 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. module", "Flash external module")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("FW update error", "Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING                     TR3("\14Writing...", "\032Writing...", "Writing...")
+#define STR_WRITING                    "Writing..."
 #define TR_CONFIRM_FORMAT              "Confirm Format?"
 #define TR_INTERNALRF                  "Internal RF"
 #define TR_EXTERNALRF                  "External RF"
@@ -945,6 +963,16 @@
 #define TR_HOLD                        "HOLD"
 #define TR_NONE                        "NONE"
 #define TR_MENUSENSOR                  "SENSOR"
+#define TR_POWERMETER_PEAK             "Peak"
+#define TR_POWERMETER_POWER            "Power"
+#define TR_POWERMETER_ATTN             "Attn"
+#define TR_POWERMETER_FREQ             "Freq."
+#define TR_MENUTOOLS                   "TOOLS"
+#define TR_TURN_OFF_RECEIVER           "Turn off receiver"
+#define TR_STOPPING                    "Stopping..."
+#define TR_MENU_SPECTRUM_ANALYSER      "SPECTRUM ANALYSER"
+#define TR_MENU_POWER_METER            "POWER METER"
+#define TR_MENUTOOLS                   "TOOLS"
 #define TR_SENSOR                      "SENSOR"
 #define TR_COUNTRYCODE                 "Country code"
 #define TR_USBMODE                     "USB Mode"
@@ -980,6 +1008,17 @@
 #define TR_BUZZER                      INDENT "Buzzer"
 #define TR_BYTES                       "bytes"
 #define TR_MODULE_BIND                 BUTTON(TR("Bnd", "Bind"))
+#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_DEFAULT                "<default>"
+#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BUTTON_DISCOVER             BUTTON("Discover")
+#define TR_BUTTON_INIT                 BUTTON("Init")
+#define TR_BUTTON_CLEAR                BUTTON("clear")
+#define TR_WAITING                     "Waiting..."
+#define TR_RECEIVER_DELETE             "Delete receiver?"
+#define TR_RECEIVER_RESET              "Reset receiver?"
+#define TR_SHARE                       "Share"
+#define TR_BIND                        "Bind"
 #define TR_TRANSFER_BUTTON             BUTTON("Transfer")
 #define STR_REGISTER            TR("Reg", "Register")
 #define TR_RXADD_BUTTON                BUTTON("Add")
@@ -1051,8 +1090,8 @@
 #define TR_SCRIPT                      "Script"
 #define TR_INPUTS                      "Inputs"
 #define TR_OUTPUTS                     "Outputs"
-#define TR_EEBACKUP                    "EEPROM backup"
-#define TR_FACTORYRESET                "Factory reset"
+#define STR_EEBACKUP                   "EEPROM backup"
+#define STR_FACTORYRESET               "Factory reset"
 #define TR_CONFIRMRESET                TR("Erase ALL", "Erase ALL models and settings?")
 #define TR_TO_MANY_LUA_SCRIPTS         "Too many Lua scripts!"
 

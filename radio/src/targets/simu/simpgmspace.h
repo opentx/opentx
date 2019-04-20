@@ -232,7 +232,7 @@ extern char * main_thread_error;
 
 #define OPENTX_START_DEFAULT_ARGS  simu_start_mode
 
-static inline void getADC() { }
+inline void getADC() { }
 
 uint64_t simuTimerMicros(void);
 

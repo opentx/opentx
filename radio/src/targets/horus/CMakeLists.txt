@@ -117,6 +117,7 @@ add_definitions(-DBLUETOOTH)
 set(SRC
   ${SRC}
   bluetooth.cpp
+  io/frsky_device_firmware_update.cpp
   )
 
 set(STM32LIB_SRC

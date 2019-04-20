@@ -456,6 +456,7 @@
 #define ADC_SET_DMA_FLAGS()             ADC_DMA->HIFCR = (DMA_HIFCR_CTCIF4 | DMA_HIFCR_CHTIF4 | DMA_HIFCR_CTEIF4 | DMA_HIFCR_CDMEIF4 | DMA_HIFCR_CFEIF4)
 #define ADC_TRANSFER_COMPLETE()         (ADC_DMA->HISR & DMA_HISR_TCIF4)
 #define ADC_SAMPTIME                    2   // sample time = 28 cycles
+#define ADC_CHANNEL_RTC                 ADC_Channel_18 // ADC1_IN18
 #if defined(PCBX9E)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            0
@@ -669,6 +670,7 @@
 #endif
 
 // Internal Module
+#define HARDWARE_INTERNAL_MODULE
 #if defined(PCBXLITE) || defined(PCBX3)
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
@@ -695,6 +697,10 @@
   #define INTMODULE_DMA_STREAM_IRQHandler  DMA2_Stream7_IRQHandler
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
   #define INTMODULE_DMA_CHANNEL         DMA_Channel_4
+  #if defined(PCBXLITES)
+    #define INTMODULE_BOOTCMD_GPIO        GPIOC
+    #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_8  // PC.08
+  #endif
   // #define INTMODULE_TIMER               TIM3
   // #define INTMODULE_TIMER_IRQn          TIM3_IRQn
   // #define INTMODULE_TIMER_IRQHandler    TIM3_IRQHandler
@@ -747,20 +753,17 @@
 #if defined(PCBXLITE) || defined(PCBX3)
   #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
   #if defined(PCBX3)
-    #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
-    #define EXTMODULE_PWR_GPIO            GPIOA
-    #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_8  // PA.08
-    #define EXTERNAL_MODULE_ON()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-    #define EXTERNAL_MODULE_OFF()         GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-    #define IS_EXTERNAL_MODULE_ON()       (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_RESET)
+    #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
+    #define EXTMODULE_PWR_GPIO          GPIOA
+    #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_8  // PA.08
   #else
-    #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
-    #define EXTMODULE_PWR_GPIO            GPIOD
-    #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_11 // PD.11
-    #define EXTERNAL_MODULE_ON()          GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-    #define EXTERNAL_MODULE_OFF()         GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-    #define IS_EXTERNAL_MODULE_ON()       (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
+    #define EXTMODULE_RCC_AHB1Periph    (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
+    #define EXTMODULE_PWR_GPIO          GPIOD
+    #define EXTMODULE_PWR_GPIO_PIN      GPIO_Pin_11 // PD.11
   #endif
+  #define EXTERNAL_MODULE_PWR_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+  #define EXTERNAL_MODULE_PWR_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+  #define IS_EXTERNAL_MODULE_ON()       (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
   #define EXTMODULE_TX_GPIO             GPIOC
   #define EXTMODULE_USART_GPIO          GPIOC
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PC.06
@@ -792,8 +795,8 @@
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
   #define EXTMODULE_PWR_GPIO            GPIOD
   #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_8  // PD.08
-  #define EXTERNAL_MODULE_ON()          GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-  #define EXTERNAL_MODULE_OFF()         GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+  #define EXTERNAL_MODULE_PWR_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
+  #define EXTERNAL_MODULE_PWR_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
   #define IS_EXTERNAL_MODULE_ON()       (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
   #define EXTMODULE_TX_GPIO             GPIOA
   #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_7  // PA.07
@@ -909,7 +912,7 @@
 #define TELEMETRY_RCC_APB1Periph        RCC_APB1Periph_USART2
 #define TELEMETRY_DIR_GPIO              GPIOD
 #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
-#if defined(PCBXLITE)
+#if defined(PCBXLITE) || defined(PCBX3)
 #define TELEMETRY_DIR_OUTPUT()          TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN
 #define TELEMETRY_DIR_INPUT()           TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN
 #else
@@ -1189,8 +1192,8 @@
 
 // Second I2C Bus: IMU
 #if defined(PCBXLITES)
-  #define I2CX_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
-  #define I2CX_RCC_APB1Periph           RCC_APB1Periph_I2C3
+  #define GYRO_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC)
+  #define GYRO_RCC_APB1Periph           RCC_APB1Periph_I2C3
   #define I2CX                          I2C3
   #define I2CX_SCL_GPIO                 GPIOA
   #define I2CX_SCL_GPIO_PIN             GPIO_Pin_8  // PA.08
@@ -1200,6 +1203,9 @@
   #define I2CX_SCL_GPIO_PinSource       GPIO_PinSource8
   #define I2CX_SDA_GPIO_PinSource       GPIO_PinSource9
   #define I2CX_SPEED                    400000
+#else
+  #define GYRO_RCC_AHB1Periph           0
+  #define GYRO_RCC_APB1Periph           0
 #endif
 
 // SD - SPI2

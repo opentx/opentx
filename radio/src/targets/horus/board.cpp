@@ -29,8 +29,6 @@ extern "C" {
 }
 #endif
 
-extern bool sticks_pwm_disabled;
-
 HardwareOptions hardwareOptions;
 
 void watchdogInit(unsigned int duration)
@@ -243,6 +241,8 @@ void boardInit()
 #endif
 
   ledBlue();
+
+  vbattRTC = getRTCBattVoltage();
 #endif
 }
 

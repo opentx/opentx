@@ -172,6 +172,14 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
   #define INTERNAL_MODULE_OFF()         GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #endif
 
+#define EXTERNAL_MODULE_ON()            EXTERNAL_MODULE_PWR_ON()
+
+#if defined(EXTMODULE_USART)
+#define EXTERNAL_MODULE_OFF()         extmoduleStop()
+#else
+#define EXTERNAL_MODULE_OFF()         EXTERNAL_MODULE_PWR_OFF()
+#endif
+
 #define IS_INTERNAL_MODULE_ON()         (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 
 void init_ppm(uint8_t module);
@@ -469,7 +477,8 @@ enum Analogs {
   SLIDER2,
 #endif
   TX_VOLTAGE,
-  NUM_ANALOGS
+  NUM_ANALOGS,
+  TX_RTC = NUM_ANALOGS
 };
 
 #if defined(PCBXLITE)
@@ -499,6 +508,7 @@ enum Analogs {
   #define NUM_TRIMS_KEYS                4
 #else
   #define NUM_TRIMS_KEYS                8
+  #define STICKS_PWM_ENABLED()          false
 #endif
 
 PACK(typedef struct {
@@ -545,8 +555,9 @@ enum CalibratedAnalogs {
 
 void adcInit(void);
 void adcRead(void);
-extern uint16_t adcValues[NUM_ANALOGS];
+extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
 uint16_t getAnalogValue(uint8_t index);
+uint16_t getRTCBattVoltage();
 
 // Battery driver
 uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
@@ -821,5 +832,15 @@ void checkTrainerSettings(void);
 extern Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryFifo;
 extern DMAFifo<32> auxSerialRxFifo;
 #endif
+
+// Gyro driver
+#define GYRO_VALUES_COUNT               6
+#define GYRO_BUFFER_LENGTH              (GYRO_VALUES_COUNT * sizeof(int16_t))
+int gyroInit();
+int gyroRead(uint8_t buffer[GYRO_BUFFER_LENGTH]);
+#define GYRO_MAX_DEFAULT                30
+#define GYRO_MAX_RANGE                  60
+#define GYRO_OFFSET_MIN                 -30
+#define GYRO_OFFSET_MAX                 10
 
 #endif // _BOARD_H_

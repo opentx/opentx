@@ -29,13 +29,23 @@ void extmoduleStop()
 #if defined(EXTMODULE_USART)
   NVIC_DisableIRQ(EXTMODULE_USART_DMA_STREAM_IRQn);
   EXTMODULE_USART_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = EXTMODULE_TX_GPIO_PIN | EXTMODULE_RX_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(EXTMODULE_USART_GPIO, &GPIO_InitStructure);
+
+  GPIO_ResetBits(EXTMODULE_USART_GPIO, EXTMODULE_TX_GPIO_PIN | EXTMODULE_RX_GPIO_PIN);
 #endif
 
   EXTMODULE_TIMER->DIER &= ~(TIM_DIER_CC2IE | TIM_DIER_UDE);
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 
   if (!IS_TRAINER_EXTERNAL_MODULE()) {
-    EXTERNAL_MODULE_OFF();
+    EXTERNAL_MODULE_PWR_OFF();
   }
 }
 
@@ -178,6 +188,10 @@ void extmoduleSendBuffer(const uint8_t * data, uint8_t size)
   USART_DMACmd(EXTMODULE_USART, USART_DMAReq_Tx, ENABLE);
 }
 
+// TODO remove this when we have adaptative speed
+//uint8_t counter = 0;
+//#include <stdio.h>
+
 #define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void EXTMODULE_USART_IRQHandler(void)
 {
@@ -187,6 +201,9 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
     uint8_t data = EXTMODULE_USART->DR;
     if (status & USART_FLAG_ERRORS) {
       extmoduleFifo.errors++;
+//      if (!counter++) {
+//        TRACE_NOCRLF("%02X ", (uint8_t)status);
+//      }
     }
     else {
       extmoduleFifo.push(data);

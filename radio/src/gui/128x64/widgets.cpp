@@ -96,13 +96,19 @@ int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t eve
   return value;
 }
 
-void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
+void drawSlider(coord_t x, coord_t y, uint8_t width, uint8_t value, uint8_t max, uint8_t attr)
 {
-  lcdDrawChar(x+(value*4*FW)/max, y, '$');
-  lcdDrawSolidHorizontalLine(x, y+3, 5*FW-1, FORCE);
-  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) lcdDrawSolidFilledRect(x, y, 5*FW-1, FH-1);
+  lcdDrawChar(x + (value * (width - FWNUM)) / max, y, '$');
+  lcdDrawSolidHorizontalLine(x, y + 3, width, FORCE);
+  if (attr && (!(attr & BLINK) || !BLINK_ON_PHASE)) {
+    lcdDrawSolidFilledRect(x, y, width, FH - 1);
+  }
 }
 
+void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr)
+{
+  drawSlider(x, y, 5*FW - 1, value, max, attr);
+}
 
 #if defined(GVARS)
 void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)
@@ -229,22 +235,6 @@ void drawStatusLine()
   }
 }
 #endif
-
-void drawProgressBar(const char * label, int num, int den)
-{
-  lcdClear();
-  if (label) {
-    lcdDrawTextAlignedLeft(4*FH, label);
-  }
-  lcdDrawRect(4, 6*FH+4, LCD_W-8, 7);
-  if (num > 0 && den > 0) {
-    int width = ((LCD_W-12)*num)/den;
-    lcdDrawSolidHorizontalLine(6, 6*FH+6, width, FORCE);
-    lcdDrawSolidHorizontalLine(6, 6*FH+7, width, FORCE);
-    lcdDrawSolidHorizontalLine(6, 6*FH+8, width, FORCE);
-  }
-  lcdRefresh();
-}
 
 const unsigned char SLEEP_BITMAP[]  = {
 #include "sleep.lbm"

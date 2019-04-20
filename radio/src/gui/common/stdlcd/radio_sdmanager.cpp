@@ -82,7 +82,7 @@ void onSdManagerMenu(const char * result)
     pushMenu(menuRadioSdManagerInfo);
   }
   else if (result == STR_SD_FORMAT) {
-    POPUP_CONFIRMATION(STR_CONFIRM_FORMAT);
+    POPUP_CONFIRMATION(STR_CONFIRM_FORMAT, nullptr);
   }
   else if (result == STR_COPY_FILE) {
     clipboard.type = CLIPBOARD_TYPE_SD_FILE;
@@ -143,18 +143,18 @@ void onSdManagerMenu(const char * result)
   else if (result == STR_FLASH_INTERNAL_MODULE) {
     getSelectionFullPath(lfn);
     DeviceFirmwareUpdate device(INTERNAL_MODULE);
-    device.flashFile(lfn, drawProgressBar);
+    device.flashFile(lfn, drawProgressScreen);
   }
   else if (result == STR_FLASH_EXTERNAL_MODULE) {
     // needed on X-Lite (as the R9M needs 2S while the external device flashing port only provides 5V)
     getSelectionFullPath(lfn);
     DeviceFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashFile(lfn, drawProgressBar);
+    device.flashFile(lfn, drawProgressScreen);
   }
   else if (result == STR_FLASH_EXTERNAL_DEVICE) {
     getSelectionFullPath(lfn);
-    DeviceFirmwareUpdate device(FLASHING_MODULE);
-    device.flashFile(lfn, drawProgressBar);
+    DeviceFirmwareUpdate device(SPORT_MODULE);
+    device.flashFile(lfn, drawProgressScreen);
   }
 #endif
 #if defined(LUA)
@@ -435,6 +435,6 @@ void menuRadioSdManager(event_t _event)
 #endif
   }
   else {
-    lcdDrawText(6*FW+3, 4*FH, STR_NO_SDCARD);
+    lcdDrawCenteredText(LCD_H/2, STR_NO_SDCARD);
   }
 }

@@ -187,8 +187,7 @@ void checkEeprom()
 void checkBatteryAlarms()
 {
   // TRACE("checkBatteryAlarms()");
-  #warning "TODO check why it was changed from 5V to 3V"
-  if (IS_TXBATT_WARNING() && g_vbat100mV > 30) {
+  if (IS_TXBATT_WARNING() && g_vbat100mV>50) {
     AUDIO_TX_BATTERY_LOW();
     // TRACE("checkBatteryAlarms(): battery low");
   }
@@ -408,8 +407,6 @@ void handleGui(event_t event) {
   }
 }
 
-bool inPopupMenu = false;
-
 void guiMain(event_t evt)
 {
 #if defined(LUA)
@@ -454,22 +451,14 @@ void guiMain(event_t evt)
   else if (popupMenuItemsCount > 0) {
     // popup menu is active display it on top of normal menus
     handleGui(0); // suppress events, they are handled by the popup
-    if (!inPopupMenu) {
-      TRACE("Popup Menu started");
-      inPopupMenu = true;
-    }
     const char * result = runPopupMenu(evt);
-    if (popupMenuItemsCount == 0) {
+    if (result) {
       TRACE("popupMenuHandler(%s)", result);
       popupMenuHandler(result);
     }
   }
   else {
     // normal menus
-    if (inPopupMenu) {
-      TRACE("Popup Menu ended");
-      inPopupMenu = false;
-    }
     handleGui(evt);
   }
 
@@ -508,7 +497,6 @@ void perMain()
 
 #if defined(RAMBACKUP)
   if (unexpectedShutdown) {
-    # warning "TODO emergency mode"
     drawFatalErrorScreen(STR_EMERGENCY_MODE);
     return;
   }
@@ -526,7 +514,6 @@ void perMain()
 #if !defined(EEPROM)
   // In case the SD card is removed during the session
   if (!SD_CARD_PRESENT() && !unexpectedShutdown) {
-    #warning "TODO no SD alert"
     drawFatalErrorScreen(STR_NO_SDCARD);
     return;
   }

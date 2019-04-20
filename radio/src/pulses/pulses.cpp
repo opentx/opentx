@@ -31,12 +31,17 @@ TrainerPulsesData trainerPulsesData __DMA;
 uint8_t getModuleType(uint8_t module)
 {
   uint8_t type = g_model.moduleData[module].type;
+
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (module == INTERNAL_MODULE && isInternalModuleAvailable(type)) {
     return type;
   }
+#endif
+
   if (module == EXTERNAL_MODULE && isExternalModuleAvailable(type)) {
     return type;
   }
+
   return MODULE_TYPE_NONE;
 }
 
@@ -228,13 +233,20 @@ void enablePulses(uint8_t module, uint8_t protocol)
     case PROTOCOL_CHANNELS_PPM:
       init_ppm(module);
       break;
+
+    default:
+      // TODO some reworking needed here ...
+#if defined(PXX2)
+      disable_pxx2(module);
+#endif
+      break;
   }
 }
 
 void setupPulsesInternalModule(uint8_t protocol)
 {
   switch (protocol) {
-#if defined(PXX1) && !defined(INTMODULE_USART)
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(PXX1) && !defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       intmodulePulsesData.pxx.setupFrame(INTERNAL_MODULE);
       scheduleNextMixerCalculation(INTERNAL_MODULE, INTMODULE_PXX_PERIOD);
@@ -251,11 +263,11 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2:
       intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
-      scheduleNextMixerCalculation(INTERNAL_MODULE, moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER ? 1 : PXX2_PERIOD);
+      scheduleNextMixerCalculation(INTERNAL_MODULE, moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER ? 1 : PXX2_PERIOD);
       break;
 #endif
 
-#if defined(PCBSKY9X) || defined(TARANIS_INTERNAL_PPM)
+#if defined(PCBTARANIS) && defined(TARANIS_INTERNAL_PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPM(&extmodulePulsesData.ppm, g_model.moduleData[INTERNAL_MODULE].channelsStart, g_model.moduleData[INTERNAL_MODULE].channelsCount, g_model.moduleData[INTERNAL_MODULE].ppm.frameLength);
       scheduleNextMixerCalculation(INTERNAL_MODULE, PPM_PERIOD(INTERNAL_MODULE));
@@ -332,9 +344,11 @@ void setupPulsesExternalModule(uint8_t protocol)
 void setupPulses(uint8_t module, uint8_t protocol)
 {
   switch (module) {
+#if defined(HARDWARE_INTERNAL_MODULE)
     case INTERNAL_MODULE:
       setupPulsesInternalModule(protocol);
       break;
+#endif
 
     case EXTERNAL_MODULE:
       setupPulsesExternalModule(protocol);

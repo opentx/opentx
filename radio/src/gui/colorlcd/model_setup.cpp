@@ -221,7 +221,7 @@ class ModuleWindow : public Window {
                                 [=](int32_t newValue) {
                                   g_model.moduleData[moduleIndex].type = newValue;
                                   SET_DIRTY();
-                                  resetModuleSettings(moduleIndex);
+                                  // TODO resetModuleSettings(moduleIndex);
                                   update();
                                   moduleChoice->setFocus();
                                 });
@@ -418,7 +418,7 @@ class ModuleWindow : public Window {
       if (isModulePXX2(moduleIndex)) {
         uint8_t receiverCount = 0;
         while (receiverCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-          uint8_t receiverSlot = g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount);
+          uint8_t receiverSlot = 0; // g_model.moduleData[moduleIndex].pxx2.getReceiverSlot(receiverCount);
           if (receiverSlot--) {
             // Label + Delete and set pinmap buttons
             char label[sizeof(TR_RECEIVER) + 2] = "";
@@ -431,7 +431,7 @@ class ModuleWindow : public Window {
                 return 0;
             });
             new TextButton(this, grid.getFieldSlot(2, 1), STR_DEL_BUTTON, [=]() {
-                pxx2DeleteReceiver(moduleIndex, receiverCount);
+                // TODO pxx2DeleteReceiver(moduleIndex, receiverCount);
                 update();
                 failSafeChoice->setFocus(); // TODO lazy
                 return 0;
@@ -443,7 +443,7 @@ class ModuleWindow : public Window {
             new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_BIND, [=]() {
                 reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
                 reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
-                reusableBuffer.moduleSetup.pxx2.bindReceiverId = receiverSlot;
+                // TODO reusableBuffer.moduleSetup.pxx2.bindReceiverId = receiverSlot;
                 moduleSettings[moduleIndex].mode ^= MODULE_MODE_BIND;
                 return 0;
             });
@@ -463,7 +463,7 @@ class ModuleWindow : public Window {
           new Subtitle(this, grid.getLabelSlot(true), label);
           auto addButton = new TextButton(this, grid.getFieldSlot(), STR_RXADD_BUTTON);
           addButton->setPressHandler([=]() {
-            pxx2AddReceiver(moduleIndex, receiverCount);
+            // TODO pxx2AddReceiver(moduleIndex, receiverCount);
             update();
             failSafeChoice->setFocus(); // TODO lazy
             return 0;

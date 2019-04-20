@@ -522,6 +522,9 @@
 #define TR_VANTENNATYPES       "Internal""Ext+Int\0"
 #endif
 
+#define LEN_GYROS                      "\004"
+#define TR_GYROS                       "GyrX""GyrY"
+
 // ZERO TERMINATED STRINGS
 #define INDENT                 "\001"
 #define LEN_INDENT             1
@@ -636,6 +639,9 @@
 #define TR_SPKRPITCH           INDENT"Pitch"
 #define TR_HAPTIC_LABEL        "Haptic"
 #define TR_HAPTICSTRENGTH      INDENT"Strength"
+#define TR_GYRO_LABEL                  "Gyro"
+#define TR_GYRO_OFFSET                 "Offset"
+#define TR_GYRO_MAX                    "Max"
 #define TR_CONTRAST            "Contrast"
 #define TR_ALARMS_LABEL        "Alarms"
 #define TR_BATTERY_RANGE       TR("Battery range","Battery meter range")
@@ -933,7 +939,7 @@
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define TR_WRITING             "\032Writing..."
+#define TR_WRITING             "Writing..."
 #define TR_CONFIRM_FORMAT      "Confirm Format?"
 #define TR_INTERNALRF          "Internal RF"
 #define TR_EXTERNALRF          "External RF"
@@ -945,6 +951,16 @@
 #define TR_HOLD                "HOLD"
 #define TR_NONE                "NONE"
 #define TR_MENUSENSOR          "SENSOR"
+#define TR_POWERMETER_PEAK             "Peak"
+#define TR_POWERMETER_POWER            "Power"
+#define TR_POWERMETER_ATTN             "Attn"
+#define TR_POWERMETER_FREQ             "Freq."
+#define TR_MENUTOOLS                   "TOOLS"
+#define TR_TURN_OFF_RECEIVER           "Turn off receiver"
+#define TR_STOPPING                    "Stopping..."
+#define TR_MENU_SPECTRUM_ANALYSER      "SPECTRUM ANALYSER"
+#define TR_MENU_POWER_METER            "POWER METER"
+#define TR_MENUTOOLS                   "TOOLS"
 #define TR_SENSOR              "SENSOR"
 #define TR_COUNTRYCODE         "Country Code"
 #define TR_USBMODE             "USB Mode"
@@ -980,6 +996,17 @@
 #define TR_BUZZER              INDENT"Buzzer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
+#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_DEFAULT                "<default>"
+#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BUTTON_DISCOVER             BUTTON("Discover")
+#define TR_BUTTON_INIT                 BUTTON("Init")
+#define TR_BUTTON_CLEAR                BUTTON("clear")
+#define TR_WAITING                     "Waiting..."
+#define TR_RECEIVER_DELETE             "Delete receiver?"
+#define TR_RECEIVER_RESET              "Reset receiver?"
+#define TR_SHARE                       "Share"
+#define TR_BIND                        "Bind"
 #define TR_TRANSFER_BUTTON             BUTTON("Transfer")
 #define STR_REGISTER           TR("Reg", "Register")
 #define TR_RXADD_BUTTON                "BUTTON(Add)"
@@ -1048,8 +1075,8 @@
 #define TR_SCRIPT              "Script"
 #define TR_INPUTS              "Inputs"
 #define TR_OUTPUTS             "Outputs"
-#define TR_EEBACKUP            "\004[ENTER Long] to backup the EEPROM"
-#define TR_FACTORYRESET        "\012[MENU Long]: Factory reset"
+#define STR_EEBACKUP            "Backup the EEPROM"
+#define STR_FACTORYRESET        "Factory reset"
 #define TR_CONFIRMRESET        "Erase ALL models and settings?"
 #define TR_TO_MANY_LUA_SCRIPTS "Too many Lua scripts!"
 

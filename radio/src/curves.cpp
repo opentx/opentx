@@ -53,8 +53,7 @@ void loadCurves()
 
   }
   if (showWarning) {
-#warning "code removed"
-    // POPUP_WARNING("Invalid curve data repaired");
+    POPUP_WARNING("Invalid curve data repaired");
     const char * w = "check your curves, logic switches";
     SET_WARNING_INFO(w, strlen(w), 0);
   }

@@ -43,6 +43,7 @@ enum BluetoothStates {
 };
 
 #define LEN_BLUETOOTH_ADDR              16
+#define MAX_BLUETOOTH_DISTANT_ADDR      6
 
 extern volatile uint8_t bluetoothState;
 extern char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
@@ -50,5 +51,5 @@ extern char bluetoothDistantAddr[LEN_BLUETOOTH_ADDR+1];
 
 char * bluetoothReadline(bool error_reset=true);
 void bluetoothWriteString(const char * command);
-void bluetoothForwardTelemetry(uint8_t data);
+void bluetoothForwardTelemetry(const uint8_t * packet);
 void bluetoothWakeup();

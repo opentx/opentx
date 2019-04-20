@@ -433,6 +433,9 @@ extern const char STR_BEEP_LENGTH[];
 extern const char STR_SPKRPITCH[];
 extern const char STR_HAPTIC_LABEL[];
 extern const char STR_HAPTICSTRENGTH[];
+extern const char STR_GYRO_LABEL[];
+extern const char STR_GYRO_OFFSET[];
+extern const char STR_GYRO_MAX[];
 extern const char STR_CONTRAST[];
 extern const char STR_ALARMS_LABEL[];
 extern const char STR_BATTERY_RANGE[];
@@ -596,6 +599,16 @@ extern const char STR_PINMAPSET[];
 extern const char STR_HOLD[];
 extern const char STR_NONE[];
 extern const char STR_MENUSENSOR[];
+extern const char STR_POWERMETER_PEAK[];
+extern const char STR_POWERMETER_POWER[];
+extern const char STR_POWERMETER_ATTN[];
+extern const char STR_POWERMETER_FREQ[];
+extern const char STR_MENUTOOLS[];
+extern const char STR_TURN_OFF_RECEIVER          [];
+extern const char STR_STOPPING              [];
+extern const char STR_MENU_SPECTRUM_ANALYSER[];
+extern const char STR_MENU_POWER_METER[];
+extern const char STR_MENUTOOLS[];
 extern const char STR_SENSOR[];
 extern const char STR_COUNTRYCODE[];
 extern const char STR_USBMODE[];
@@ -637,7 +650,6 @@ extern const char STR_PERSISTENT_MAH[];
 #define LEN_CALIB_FIELDS               PSIZE(TR_BATT_CALIB)
 #endif
 
-#if defined(NAVIGATION_MENUS)
   extern const char STR_SELECT_MODEL[];
   extern const char STR_CREATE_CATEGORY[];
   extern const char STR_RENAME_CATEGORY[];
@@ -669,7 +681,6 @@ extern const char STR_PASTE_BEFORE[];
   extern const char STR_USB_SERIAL[];
   extern const char STR_SETUP_SCREENS[];
   extern const char STR_MONITOR_SCREENS[];
-#endif
 
 extern const char STR_RESET_BTN[];
 extern const char STR_DEBUG[];
@@ -774,10 +785,7 @@ extern const char STR_FLASH_INTERNAL_MODULE[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];
 extern const char STR_FIRMWARE_UPDATE_ERROR[];
 extern const char STR_FIRMWARE_UPDATE_SUCCESS[];
-extern const char STR_WRITING[];
 extern const char STR_CONFIRM_FORMAT[];
-extern const char STR_EEBACKUP[];
-extern const char STR_FACTORYRESET[];
 extern const char STR_CONFIRMRESET[];
 extern const char STR_TOO_MANY_LUA_SCRIPTS[];
 extern const char STR_BLCOLOR[];
@@ -863,6 +871,17 @@ extern const char STR_EXPONAME[];
 
   extern const char STR_TRAINER[];
 extern const char STR_MODULE_BIND[];
+extern const char STR_PXX2_SELECT_RX[];
+extern const char STR_PXX2_DEFAULT[];
+extern const char STR_BT_SELECT_DEVICE[];
+extern const char STR_BUTTON_DISCOVER[];
+extern const char STR_BUTTON_INIT[];
+extern const char STR_BUTTON_CLEAR[];
+extern const char STR_WAITING[];
+extern const char STR_RECEIVER_DELETE[];
+extern const char STR_RECEIVER_RESET[];
+extern const char STR_SHARE[];
+extern const char STR_BIND[];
 extern const char STR_TRANSFER_BUTTON[];
 extern const char STR_RXADD_BUTTON[];
 extern const char STR_BINDING_1_8_TELEM_ON[];
@@ -994,7 +1013,7 @@ extern const char STR_BUTTON_SHARE[];
 #if defined(PCBTARANIS) || defined(DSM2)
 extern const char STR_MODULE_RANGE[];
 extern const char STR_RECEIVER_OPTIONS[];
-  extern const char STR_DEL_BUTTON[];
+extern const char STR_DEL_BUTTON[];
 #endif
 
 extern const char STR_ABOUTUS[];

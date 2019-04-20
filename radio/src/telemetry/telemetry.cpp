@@ -63,12 +63,21 @@ void processTelemetryData(uint8_t data)
   }
 #endif
 
-  if (telemetryProtocol == PROTOCOL_TELEMETRY_PXX2) {
-    processFrskyPXX2Data(data);
-    return;
-  }
-
   processFrskyTelemetryData(data);
+}
+
+inline bool isBadAntennaDetected()
+{
+  if (!isRasValueValid())
+    return false;
+
+  if (telemetryData.swrInternal.isFresh() && telemetryData.swrInternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+    return true;
+
+  if (telemetryData.swrExternal.isFresh() && telemetryData.swrExternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+    return true;
+
+  return false;
 }
 
 void telemetryWakeup()
@@ -91,14 +100,14 @@ void telemetryWakeup()
   uint8_t frame[PXX2_FRAME_MAXLENGTH];
 
   #if defined(INTMODULE_USART)
-    if (intmoduleFifo.getFrame(frame)) {
-      processPXX2TelemetryFrame(INTERNAL_MODULE, frame);
+    while (intmoduleFifo.getFrame(frame)) {
+      processPXX2Frame(INTERNAL_MODULE, frame);
     }
   #endif
 
   #if defined(EXTMODULE_USART)
-    if (extmoduleFifo.getFrame(frame)) {
-      processPXX2TelemetryFrame(EXTERNAL_MODULE, frame);
+    while (extmoduleFifo.getFrame(frame)) {
+      processPXX2Frame(EXTERNAL_MODULE, frame);
     }
   #endif
 #endif
@@ -138,8 +147,6 @@ void telemetryWakeup()
   }
 #endif
 
-#define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
-
   static tmr10ms_t alarmsCheckTime = 0;
   #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
@@ -164,10 +171,9 @@ void telemetryWakeup()
     }
 
 #if defined(PCBFRSKY)
-    if ((isModulePXX(INTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
+    if (isBadAntennaDetected()) {
       AUDIO_RAS_RED();
-      #warning "code removed"
-      // POPUP_WARNING(STR_WARNING);
+      POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;
       SET_WARNING_INFO(w, strlen(w), 0);
       SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
@@ -260,8 +266,8 @@ void telemetryInit(uint8_t protocol)
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0x7E;
+    outputTelemetryBuffer.size = 0;
+    outputTelemetryBuffer.trigger = 0x7E;
 #endif
   }
   else if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
@@ -291,15 +297,13 @@ void telemetryInit(uint8_t protocol)
   else if (protocol == PROTOCOL_TELEMETRY_PXX2) {
     telemetryPortInit(PXX2_ON_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0x7E;
+    outputTelemetryBuffer.reset();
 #endif
   }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0x7E;
+    outputTelemetryBuffer.reset();
 #endif
   }
 
@@ -334,9 +338,7 @@ void logTelemetryWriteByte(uint8_t data)
 }
 #endif
 
-uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
-uint8_t outputTelemetryBufferSize = 0;
-uint8_t outputTelemetryBufferTrigger = 0;
+OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 
 #if defined(LUA)
 Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo = NULL;

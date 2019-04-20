@@ -48,18 +48,6 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 }
 #endif
 
-#if defined(PCBFLYSKY)
-inline bool isModuleFlysky(uint8_t idx)
-{
-  return g_model.moduleData[idx].type == MODULE_TYPE_FLYSKY;
-}
-#else
-inline bool isModuleFlysky(uint8_t idx)
-{
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_FLYSKY;
-}
-#endif
-
 inline bool isModuleXJT(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT;
@@ -74,6 +62,18 @@ inline bool isModuleXJTVariant(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_XJT || g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
 }
+
+#if defined(PCBFLYSKY)
+inline bool isModuleFlysky(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_FLYSKY;
+}
+#else
+inline bool isModuleFlysky(uint8_t idx)
+{
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_FLYSKY;
+}
+#endif
 
 #if defined(CROSSFIRE)
 inline bool isModuleCrossfire(uint8_t idx)
@@ -203,7 +203,7 @@ inline bool isModuleDSM2(uint8_t idx)
 #endif
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
-static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 8, -2, 8, 4, 8, 8, 8}; // relative to 8!
+static const int8_t maxChannelsModules_M8[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
 static const int8_t maxChannelsXJT_M8[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
@@ -240,6 +240,8 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return 0; // 8 channels
   else if (isModuleMultimoduleDSM2(idx))
     return -1; // 7 channels
+  else if (isModulePXX2(idx))
+    return 8; // 16 channels
   else if (isModuleFlysky(idx))
     return 6; // 14 channels
   else
@@ -254,6 +256,47 @@ inline int8_t sentModuleChannels(uint8_t idx)
     return 16;
   else
     return 8 + g_model.moduleData[idx].channelsCount;
+}
+
+enum {
+  MODULE_OPTION_RF_PROTOCOL,
+  MODULE_OPTION_EXTERNAL_ANTENNA,
+  MODULE_OPTION_POWER,
+  MODULE_OPTION_SPECTRUM_ANALYSER,
+  MODULE_OPTION_POWER_METER,
+};
+
+/* Options order:
+ * - RF Protocol (0x01)
+ * - External antenna (0x02)
+ * - Power (0x04)
+ * - Spektrum analyser (0x08)
+ * - Power meter (0x10)
+ */
+static const uint8_t moduleOptions[] = {
+#if defined(SIMU)
+  0b11111111, // None = display all options on SIMU
+#else
+  0b00000000, // None = display all options on SIMU
+#endif
+  0b11100010, // XJT
+  0b11100010, // ISRM
+  0b11111010, // ISRM-PRO
+  0b11101010, // ISRM-S
+  0b11100100, // R9M
+  0b11100100, // R9MLite
+  0b11111100, // R9MLite-PRO
+  0b11101000, // ISRM-N
+};
+
+inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
+{
+  return moduleOptions[modelId] & (1 << option);
+}
+
+inline bool isDefaultModelRegistrationID()
+{
+  return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
 }
 
 inline bool isModuleTypeAllowed(uint8_t idx, uint8_t type)

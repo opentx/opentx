@@ -18,18 +18,33 @@
  * GNU General Public License for more details.
  */
 
-void ConvertModel(int id, int version)
+#include "opentx.h"
+#include "conversions.h"
+
+void convertModelData(int id, int version)
 {
   eeLoadModelData(id);
 
+#if EEPROM_CONVERSIONS < 217
   if (version == 216) {
     version = 217;
-    ConvertModel_216_to_217(g_model);
+    convertModelData_216_to_217(g_model);
   }
+#endif
+
+#if EEPROM_CONVERSIONS < 218
   if (version == 217) {
     version = 218;
-    ConvertModel_217_to_218(g_model);
+    convertModelData_217_to_218(g_model);
   }
+#endif
+
+#if EEPROM_CONVERSIONS < 219
+  if (version == 218) {
+    version = 219;
+    convertModelData_218_to_219(g_model);
+  }
+#endif
 
   uint8_t currModel = g_eeGeneral.currModel;
   g_eeGeneral.currModel = id;
@@ -42,14 +57,18 @@ bool eeConvert()
 {
   const char *msg = NULL;
 
-  if (g_eeGeneral.version == 216) {
-    msg = "EEprom Data v216";
-  }
-  else if (g_eeGeneral.version == 217) {
-    msg = "EEprom Data v217";
-  }
-  else {
-    return false;
+  switch (g_eeGeneral.version) {
+    case 216:
+      msg = "EEprom Data v216";
+      break;
+    case 217:
+      msg = "EEprom Data v217";
+      break;
+    case 218:
+      msg = "EEprom Data v218";
+      break;
+    default:
+      return false;
   }
 
   int conversionVersionStart = g_eeGeneral.version;
@@ -69,14 +88,28 @@ bool eeConvert()
   // General Settings conversion
   eeLoadGeneralSettingsData();
   int version = conversionVersionStart;
+
+#if EEPROM_CONVERSIONS < 217
   if (version == 216) {
     version = 217;
-    ConvertRadioData_216_to_217(g_eeGeneral);
+    convertRadioData_216_to_217(g_eeGeneral);
   }
+#endif
+
+#if EEPROM_CONVERSIONS < 218
   if (version == 217) {
     version = 218;
-    ConvertRadioData_217_to_218(g_eeGeneral);
+    convertRadioData_217_to_218(g_eeGeneral);
   }
+#endif
+
+#if EEPROM_CONVERSIONS < 219
+  if (version == 218) {
+    version = 219;
+    // no conversion needed for now
+  }
+#endif
+
   storageDirty(EE_GENERAL);
   storageCheck(true);
 
@@ -97,9 +130,8 @@ bool eeConvert()
 #endif
     lcdRefresh();
     if (eeModelExists(id)) {
-      ConvertModel(id, conversionVersionStart);
+      convertModelData(id, conversionVersionStart);
     }
-
   }
 
   return true;

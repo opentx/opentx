@@ -62,6 +62,17 @@ bool isInputAvailable(int input)
   return false;
 }
 
+bool isRssiSensorAvailable(int sensor)
+{
+  if (sensor == 0)
+    return true;
+  else {
+    TelemetrySensor &telemSensor = g_model.telemetrySensors[abs(sensor) - 1];
+    return (telemSensor.isAvailable() && telemSensor.id == RSSI_ID);
+  }
+}
+
+
 bool isSensorAvailable(int sensor)
 {
   if (sensor == 0)
@@ -240,38 +251,41 @@ bool isSourceAvailableInCustomSwitches(int source)
 
 bool isInputSourceAvailable(int source)
 {
-  if (source>=MIXSRC_FIRST_POT && source<=MIXSRC_LAST_POT) {
+  if (source >= MIXSRC_FIRST_POT && source <= MIXSRC_LAST_POT)
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
-  }
 
-  if (source>=MIXSRC_Rud && source<=MIXSRC_MAX)
+#if defined(GYRO)
+  if (source >= MIXSRC_GYRO1 && source <= MIXSRC_GYRO2)
+    return true;
+#endif
+
+  if (source >= MIXSRC_Rud && source <= MIXSRC_MAX)
     return true;
 
-  if (source>=MIXSRC_FIRST_TRIM && source<=MIXSRC_LAST_TRIM)
+  if (source >= MIXSRC_FIRST_TRIM && source <= MIXSRC_LAST_TRIM)
     return true;
 
-  if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH)
-    return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
+  if (source >= MIXSRC_FIRST_SWITCH && source <= MIXSRC_LAST_SWITCH)
+    return SWITCH_EXISTS(source - MIXSRC_FIRST_SWITCH);
 
-  if (source>=MIXSRC_FIRST_CH && source<=MIXSRC_LAST_CH)
+  if (source >= MIXSRC_FIRST_CH && source <= MIXSRC_LAST_CH)
     return true;
 
-  if (source>=MIXSRC_FIRST_LOGICAL_SWITCH && source<=MIXSRC_LAST_LOGICAL_SWITCH) {
-    LogicalSwitchData * cs = lswAddress(source-MIXSRC_SW1);
+  if (source >= MIXSRC_FIRST_LOGICAL_SWITCH && source <= MIXSRC_LAST_LOGICAL_SWITCH) {
+    LogicalSwitchData * cs = lswAddress(source - MIXSRC_SW1);
     return (cs->func != LS_FUNC_NONE);
   }
 
-  if (source>=MIXSRC_FIRST_TRAINER && source<=MIXSRC_LAST_TRAINER)
+  if (source >= MIXSRC_FIRST_TRAINER && source <= MIXSRC_LAST_TRAINER)
     return true;
 
-  if (source>=MIXSRC_FIRST_TELEM && source<=MIXSRC_LAST_TELEM) {
-    div_t qr = div(source-MIXSRC_FIRST_TELEM, 3);
+  if (source >= MIXSRC_FIRST_TELEM && source <= MIXSRC_LAST_TELEM) {
+    div_t qr = div(source - MIXSRC_FIRST_TELEM, 3);
     return isTelemetryFieldAvailable(qr.quot) && isTelemetryFieldComparisonAvailable(qr.quot);
   }
 
   return false;
 }
-
 
 bool isLogicalSwitchAvailable(int index)
 {
@@ -457,43 +471,12 @@ bool isAssignableFunctionAvailable(int function, CustomFunctionData * functions)
   }
 }
 
+#if !defined(COLORLCD)
 bool isAssignableFunctionAvailable(int function)
 {
-#if defined(OVERRIDE_CHANNEL_FUNCTION) || defined(GVARS)
-  bool modelFunctions = false; // TODO (menuHandlers[menuLevel] == menuModelSpecialFunctions);
-#endif
-
-  switch (function) {
-    case FUNC_OVERRIDE_CHANNEL:
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-      return modelFunctions;
-#else
-      return false;
-#endif
-    case FUNC_ADJUST_GVAR:
-#if defined(GVARS)
-      return modelFunctions;
-#else
-      return false;
-#endif
-#if !defined(HAPTIC)
-      case FUNC_HAPTIC:
-#endif
-    case FUNC_RESERVE4:
-#if !defined(DANGEROUS_MODULE_FUNCTIONS)
-    case FUNC_RANGECHECK:
-    case FUNC_BIND:
-#endif
-#if !defined(LUA)
-    case FUNC_PLAY_SCRIPT:
-#endif
-    case FUNC_RESERVE5:
-      return false;
-
-    default:
-      return true;
-  }
+  return isAssignableFunctionAvailable(function, menuHandlers[menuLevel] == menuModelSpecialFunctions ? g_model.customFn : g_eeGeneral.customFn);
 }
+#endif
 
 bool isSourceAvailableInGlobalResetSpecialFunction(int index)
 {
@@ -553,36 +536,45 @@ bool isR9MMFlex(int module)
   return g_model.moduleData[module].r9m.region == MODULE_R9M_REGION_FLEX;
 }
 
-bool isInternalModuleChannelCountAvailable(int channels)
+bool isPXX2ChannelsCountAllowed(int channels)
 {
-  if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT2) {
-    if ( channels % 8 != 0)
-      return false;
-  }
-
-  return true;
+  return (channels % 8 == 0);
 }
 
+#if defined(HARDWARE_INTERNAL_MODULE)
 bool isInternalModuleAvailable(int module)
 {
   if (module == MODULE_TYPE_NONE)
     return true;
 
-  if ((module == (IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT)) && !isModulePXX2(EXTERNAL_MODULE))
-    return true;
+#if defined(PXX1)
+  if (module == MODULE_TYPE_XJT)
+    return IS_PXX1_INTERNAL_ENABLED() && !isModulePXX(EXTERNAL_MODULE);
+#endif
+
+#if defined(PXX2)
+  if (module == MODULE_TYPE_XJT2)
+    return IS_PXX2_INTERNAL_ENABLED();
+#endif
 
   return false;
 }
+#endif
 
 bool isExternalModuleAvailable(int module)
 {
+#if !defined(PCBXLITE)
+  if (module == MODULE_TYPE_R9M_LITE || module == MODULE_TYPE_R9M_LITE2 || module == MODULE_TYPE_R9M_LITE_PRO2) {
+    return false;
+  }
+#endif
 #if !defined(PXX1)
-  if (module == MODULE_TYPE_XJT) {
+  if (module == MODULE_TYPE_XJT || module == MODULE_TYPE_R9M || module == MODULE_TYPE_R9M_LITE) {
     return false;
   }
 #endif
 #if !defined(PXX2)
-  if (module == MODULE_TYPE_XJT2 || module == MODULE_TYPE_R9M2) {
+  if (module == MODULE_TYPE_XJT2 || module == MODULE_TYPE_R9M2 || module == MODULE_TYPE_R9M_LITE2 || module == MODULE_TYPE_R9M_LITE_PRO2) {
     return false;
   }
 #endif
@@ -605,11 +597,11 @@ bool isExternalModuleAvailable(int module)
     return false;
   }
 #endif
-#if defined(PCBFRSKY)
-  if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+#if defined(HARDWARE_INTERNAL_MODULE)
+  if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) {
     return false;
   }
-  if (module == MODULE_TYPE_XJT && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+  if (module == MODULE_TYPE_XJT && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) {
     return false;
   }
 #endif
@@ -629,7 +621,7 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
-#if defined(PCBFRSKY)
+#if defined(PCBTARANIS) || defined(PCBHORUS)
   if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
     return false;
   }
@@ -760,7 +752,6 @@ int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
   }
   return retval;
 }
-
 #if defined(MULTIMODULE)
 // Third row is number of subtypes -1 (max valid subtype)
 #define NO_SUBTYPE  nullptr
@@ -849,4 +840,3 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol)
   return pdef;
 }
 #endif
-

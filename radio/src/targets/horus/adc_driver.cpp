@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-uint16_t adcValues[NUM_ANALOGS] __DMA;
+uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/] __DMA;
 
 #define ADC_CS_HIGH()                  (ADC_SPI_GPIO->BSRRL = ADC_SPI_PIN_CS)
 #define ADC_CS_LOW()                   (ADC_SPI_GPIO->BSRRH = ADC_SPI_PIN_CS)
@@ -113,13 +113,22 @@ void adcInit()
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
   GPIO_Init(ADC_GPIO_MOUSE, &GPIO_InitStructure);
 
+  // RTC battery
+  ADC1->CR1 = ADC_CR1_SCAN;
+  ADC1->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
+  ADC1->SQR1 = (1 - 1) << 20;
+  ADC1->SQR3 = ADC_CHANNEL_RTC;
+  ADC1->SMPR1 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24);
+  ADC1->SMPR2 = SAMPTIME + (SAMPTIME<<3) + (SAMPTIME<<6) + (SAMPTIME<<9) + (SAMPTIME<<12) + (SAMPTIME<<15) + (SAMPTIME<<18) + (SAMPTIME<<21) + (SAMPTIME<<24) + (SAMPTIME<<27);
+
+  // Track pad
   ADC3->CR1 = ADC_CR1_SCAN;
   ADC3->CR2 = ADC_CR2_ADON | ADC_CR2_DMA | ADC_CR2_DDS;
-  ADC3->SQR1 = (2-1) << 20;
+  ADC3->SQR1 = (2 - 1) << 20;
   ADC3->SQR2 = 0;
-  ADC3->SQR3 = ADC_IN_MOUSE1 + (ADC_IN_MOUSE2<<5);
+  ADC3->SQR3 = ADC_CHANNEL_MOUSE1 + (ADC_CHANNEL_MOUSE2<<5);
   ADC3->SMPR1 = 0;
-  ADC3->SMPR2 = (ADC_SAMPTIME<<(3*ADC_IN_MOUSE1)) + (ADC_SAMPTIME<<(3*ADC_IN_MOUSE2));
+  ADC3->SMPR2 = (ADC_SAMPTIME<<(3*ADC_CHANNEL_MOUSE1)) + (ADC_SAMPTIME<<(3*ADC_CHANNEL_MOUSE2));
   ADC->CCR = 0;
 
   // Enable the DMA channel here, DMA2 stream 1, channel 2
@@ -197,12 +206,14 @@ uint32_t adcReadNextSPIChannel(uint8_t index)
 void adcOnChipReadStart()
 {
   ADC_DMA_Stream->CR &= ~DMA_SxCR_EN;           // Disable DMA
+  ADC1->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC3->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC_DMA->LIFCR = DMA_LIFCR_CTCIF0 | DMA_LIFCR_CHTIF0 | DMA_LIFCR_CTEIF0 | DMA_LIFCR_CDMEIF0 | DMA_LIFCR_CFEIF0; // Write ones to clear bits
   ADC_DMA_Stream->M0AR = CONVERT_PTR_UINT(&adcValues[MOUSE1]);
   ADC_DMA_Stream->NDTR = 2;
   ADC_DMA_Stream->CR |= DMA_SxCR_EN;            // Enable DMA
   ADC3->CR2 |= (uint32_t)ADC_CR2_SWSTART;
+  ADC1->CR2 |= (uint32_t)ADC_CR2_SWSTART;
 }
 
 bool adcOnChipReadFinished()
@@ -245,6 +256,14 @@ void adcRead()
   for (uint8_t x=0; x<NUM_ANALOGS-MOUSE1; x++) {
     adcValues[MOUSE1+x] = temp[x] >> 2;
   }
+}
+
+uint16_t getRTCBattVoltage()
+{
+  ADC->CCR |= ADC_CCR_VBATE;
+  adcRead();
+  ADC->CCR &= ADC_CCR_VBATE;
+  return ADC1->DR * 330 / 2048;
 }
 
 #if !defined(SIMU)

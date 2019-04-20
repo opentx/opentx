@@ -38,12 +38,6 @@
   extern uint8_t dsm2BindTimer;
 #endif
 
-#if defined(PXX)
-  #define IS_PXX_PROTOCOL(protocol)          (protocol==PROTO_PXX)
-#else
-  #define IS_PXX_PROTOCOL(protocol)          (0)
-#endif
-
 #if defined(PCBFLYSKY)
   #define IS_FLYSKY_PROTOCOL(protocol)       (protocol==PROTO_FLYSKY)
 #else
@@ -79,19 +73,23 @@ enum ModuleSettingsMode
 {
   MODULE_MODE_NORMAL,
   MODULE_MODE_SPECTRUM_ANALYSER,
+  MODULE_MODE_POWER_METER,
   MODULE_MODE_GET_HARDWARE_INFO,
+  MODULE_MODE_MODULE_SETTINGS,
   MODULE_MODE_RECEIVER_SETTINGS,
   MODULE_MODE_BEEP_FIRST,
   MODULE_MODE_REGISTER = MODULE_MODE_BEEP_FIRST,
   MODULE_MODE_BIND,
   MODULE_MODE_SHARE,
   MODULE_MODE_RANGECHECK,
+  MODULE_MODE_RESET
 };
 
 PACK(struct ModuleSettings {
   uint8_t protocol:4;
+  uint8_t mode:4;
   uint8_t paused:1;
-  uint8_t mode:3;
+  uint8_t spare:7;
   uint16_t counter;
 });
 

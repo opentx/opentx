@@ -47,7 +47,7 @@ option(TRACE_WINDOWS "Turn on windows traces" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
-option(MODULE_R9M_FLEX_FW "Add R9M options for non certified firmwwares" OFF)
+option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(BOOTLOADER "Include Bootloader" ON)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
@@ -136,11 +136,7 @@ else()
   add_definitions(-DEEPROM -DEEPROM_RAW)
 endif()
 
-if(ARCH STREQUAL ARM AND NOT PCB STREQUAL X12S AND NOT PCB STREQUAL X10 AND NOT PCB STREQUAL XLITE AND NOT PCB STREQUAL XLITES AND NOT PCB STREQUAL X3 AND NOT PCB STREQUAL NV14)
-  add_definitions(-DEEPROM_CONVERSIONS)
-  set(SRC ${SRC} storage/eeprom_conversions.cpp)
-  # set(SRC ${SRC} storage/conversions/conversions_216_217.cpp)
-endif()
+include(storage/conversions/CMakeLists.txt)
 
 add_definitions(-DFLAVOUR="${FLAVOUR}")
 
@@ -278,9 +274,7 @@ if(DANGEROUS_MODULE_FUNCTIONS)
   add_definitions(-DDANGEROUS_MODULE_FUNCTIONS)
 endif()
 
-if(SPLASH STREQUAL FRSKY)
-  add_definitions(-DSPLASH -DSPLASH_FRSKY)
-elseif(NOT SPLASH STREQUAL OFF)
+if(NOT SPLASH STREQUAL OFF)
   add_definitions(-DSPLASH)
 endif()
 
@@ -322,7 +316,11 @@ endif()
 
 if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
-endif(NIGHTLY_BUILD_WARNING)
+endif()
+
+if(FRSKY_RELEASE)
+  add_definitions(-DFRSKY_RELEASE)
+endif()
 
 if(MODULE_R9M_FLEX_FW)
   add_definitions(-DMODULE_R9M_FLEX_FW)
@@ -338,7 +336,6 @@ set(SRC
   functions.cpp
   strhelpers.cpp
   switches.cpp
-  module.cpp
   mixer.cpp
   stamp.cpp
   timers.cpp

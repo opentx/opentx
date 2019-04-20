@@ -179,7 +179,7 @@ uint8_t eepromIsTransferComplete()
   * @param  NumByteToWrite : number of bytes to write to the EEPROM.
   * @retval None
   */
-bool I2C_EE_PageWrite(uint8_t* pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
+bool I2C_EE_PageWrite(uint8_t * pBuffer, uint16_t WriteAddr, uint8_t NumByteToWrite)
 {
   if (!I2C_WaitEventCleared(I2C_FLAG_BUSY))
     return false;

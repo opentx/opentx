@@ -140,6 +140,16 @@ void delay_ms(uint32_t ms);
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
 
+// Hardware options
+PACK(typedef struct {
+#if NUM_PWMSTICKS > 0
+    uint8_t sticksPwmDisabled:1;
+#endif
+    uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
+
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
 #if !defined(SIMU) || defined(SIMU_DISKIO)
@@ -198,15 +208,6 @@ void SDRAM_Init(void);
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
 
-PACK(typedef struct {
-#if NUM_PWMSTICKS > 0
-  uint8_t sticksPwmDisabled:1;
-#endif
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-
-extern HardwareOptions hardwareOptions;
-
 #if !defined(PXX2)
   #define IS_PXX2_INTERNAL_ENABLED()            (false)
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
@@ -220,7 +221,6 @@ extern HardwareOptions hardwareOptions;
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
 #endif
 
-
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
 void init_pxx1_pulses(uint8_t module);
@@ -230,6 +230,8 @@ void disable_pxx2(uint8_t module);
 void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void disable_serial(uint8_t module);
+void intmoduleStop();
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 void extmoduleSendNextFrame();
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
@@ -398,9 +400,10 @@ enum Analogs {
 #endif
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
-  MOUSE1,
+  MOUSE1, // TODO why after voltage?
   MOUSE2,
-  NUM_ANALOGS
+  NUM_ANALOGS,
+  TX_RTC = NUM_ANALOGS
 };
 
 #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
@@ -430,9 +433,10 @@ enum CalibratedAnalogs {
 
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
-extern uint16_t adcValues[NUM_ANALOGS];
+extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
 void adcInit(void);
 void adcRead(void);
+uint16_t getRTCBattVoltage();
 uint16_t getAnalogValue(uint8_t index);
 #define NUM_MOUSE_ANALOGS              2
 #if defined(PCBX10)
@@ -446,6 +450,8 @@ uint16_t getAnalogValue(uint8_t index);
 void sticksPwmInit(void);
 void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;
+#else
+#define STICKS_PWM_ENABLED()          (false)
 #endif
 
 // Battery driver

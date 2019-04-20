@@ -71,8 +71,8 @@ void DeviceFirmwareUpdate::processFrame(const uint8_t * frame)
 void DeviceFirmwareUpdate::startup()
 {
   switch(module) {
-    case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
+    case INTERNAL_MODULE:
       intmoduleSerialStart(57600, true);
       break;
 #endif
@@ -138,8 +138,8 @@ const uint8_t * DeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
 const uint8_t * DeviceFirmwareUpdate::readFrame(uint32_t timeout)
 {
   switch(module) {
-    case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
+    case INTERNAL_MODULE:
       return readFullDuplexFrame(intmoduleFifo, timeout);
 #endif
 
@@ -182,7 +182,7 @@ void DeviceFirmwareUpdate::startFrame(uint8_t command)
 // TODO merge this function
 void DeviceFirmwareUpdate::sendFrame()
 {
-  uint8_t * ptr = outputTelemetryBuffer;
+  uint8_t * ptr = outputTelemetryBuffer.data;
   *ptr++ = 0x7E;
   *ptr++ = 0xFF;
   frame[7] = crc16(frame, 7);
@@ -197,13 +197,13 @@ void DeviceFirmwareUpdate::sendFrame()
   }
 
   switch(module) {
-    case INTERNAL_MODULE:
 #if defined(INTMODULE_USART)
-      return intmoduleSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
+    case INTERNAL_MODULE:
+      return intmoduleSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
 #endif
 
     default:
-      return sportSendBuffer(outputTelemetryBuffer, ptr-outputTelemetryBuffer);
+      return sportSendBuffer(outputTelemetryBuffer.data, ptr - outputTelemetryBuffer.data);
   }
 }
 
@@ -231,10 +231,10 @@ const char * DeviceFirmwareUpdate::sendPowerOn()
     return TR("Bottom pin no resp", "Bottom pin not responding");
   }
   else {
-    return TR("Module pin no resp", "Module pin not responding");
+    return TR("Device pin no resp", "Device pin not responding");
   }
 #else
-  return TR("Not responding", "Module not responding");
+  return TR("Not responding", "Device not responding");
 #endif
 }
 
@@ -277,7 +277,7 @@ const char * DeviceFirmwareUpdate::uploadFile(const char * filename, ProgressHan
 
     for (uint32_t i=0; i<count; i++) {
       if (!waitState(SPORT_DATA_REQ, 2000)) {
-        return "Module refused data";
+        return "Device refused data";
       }
       startFrame(PRIM_DATA_WORD);
       uint32_t offset = (address & 1023) >> 2; // 32 bit word offset into buffer
@@ -286,7 +286,7 @@ const char * DeviceFirmwareUpdate::uploadFile(const char * filename, ProgressHan
       state = SPORT_DATA_TRANSFER,
       sendFrame();
       if (i == 0) {
-        progressHandler(STR_WRITING, file.fptr, file.obj.objsize);
+        progressHandler(getBasename(filename), STR_WRITING, file.fptr, file.obj.objsize);
       }
     }
 
@@ -316,7 +316,7 @@ void DeviceFirmwareUpdate::flashFile(const char * filename, ProgressHandler prog
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
 
-  progressHandler("Device reset...", 0, 100);
+  progressHandler(getBasename(filename), "Device reset...", 0, 0);
 
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();
@@ -354,12 +354,15 @@ void DeviceFirmwareUpdate::flashFile(const char * filename, ProgressHandler prog
   watchdogSuspend(2000);
   RTOS_WAIT_MS(2000);
 
-  if (intPwr)
+  if (intPwr) {
     INTERNAL_MODULE_ON();
-  if (extPwr)
+    setupPulses(INTERNAL_MODULE);
+  }
+  if (extPwr) {
     EXTERNAL_MODULE_ON();
+    setupPulses(EXTERNAL_MODULE);
+  }
 
   state = SPORT_IDLE;
-
   resumePulses();
 }

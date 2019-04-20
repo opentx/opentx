@@ -97,6 +97,11 @@ inline void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags attr=0)
   lcd->drawText(x, y, s, attr);
 }
 
+inline void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags attr=0)
+{
+  lcd->drawText(LCD_W/2, y, s, attr | CENTERED);
+}
+
 inline void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags attr=0)
 {
   lcd->drawSizedText(x, y, s, len, attr);

@@ -118,6 +118,9 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SH,
 #endif
   ITEM_RADIO_HARDWARE_BATTERY_CALIB,
+#if defined(STM32)
+  ITEM_RADIO_HARDWARE_RTC_BATTERY,
+#endif
 #if defined(TX_CAPACITY_MEASUREMENT)
   ITEM_RADIO_HARDWARE_CAPACITY_CALIB,
 #endif
@@ -135,6 +138,7 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_BLUETOOTH_NAME,
 #endif
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
+  ITEM_RADIO_HARDWARE_RAS,
   ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
@@ -190,6 +194,9 @@ void menuRadioHardware(event_t event)
     LABEL(Switches),
       SWITCHES_ROWS,
     0 /* battery calib */,
+#if defined(STM32)
+    READONLY_ROW,
+#endif
 #if defined(TX_CAPACITY_MEASUREMENT)
     0,
 #endif
@@ -201,6 +208,7 @@ void menuRadioHardware(event_t event)
 #endif
     BLUETOOTH_ROWS
     0 /* jitter filter */,
+    READONLY_ROW,
     1 /* debugs */,
   });
 
@@ -307,10 +315,17 @@ void menuRadioHardware(event_t event)
         }
         break;
 
+#if defined(STM32)
+      case ITEM_RADIO_HARDWARE_RTC_BATTERY:
+        lcdDrawTextAlignedLeft(y, "RTC Batt");
+        putsVolts(HW_SETTINGS_COLUMN2, y, vbattRTC, PREC2|LEFT);
+        break;
+#endif
+
 #if defined(TX_CAPACITY_MEASUREMENT)
-      case ITEM_RADIO_HARDWARE_BATTERY_CALIB:
+      case ITEM_RADIO_HARDWARE_CAPACITY_CALIB:
         lcdDrawTextAlignedLeft(y, STR_CURRENT_CALIB);
-        drawValueWithUnit(HW_SETTINGS_COLUMN2, y, getCurrent(), UNIT_MILLIAMPS, attr) ;
+        drawValueWithUnit(HW_SETTINGS_COLUMN2, y, getCurrent(), UNIT_MILLIAMPS, attr);
         if (attr) {
           CHECK_INCDEC_GENVAR(event, g_eeGeneral.txCurrentCalibration, -49, 49);
         }
@@ -382,6 +397,19 @@ void menuRadioHardware(event_t event)
 
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:
         g_eeGeneral.jitterFilter = 1 - editCheckBox(1 - g_eeGeneral.jitterFilter, HW_SETTINGS_COLUMN2, y, STR_JITTER_FILTER, attr, event);
+        break;
+
+      case ITEM_RADIO_HARDWARE_RAS:
+        lcdDrawTextAlignedLeft(y, "RAS");
+        if (telemetryData.swrInternal.isFresh())
+          lcdDrawNumber(HW_SETTINGS_COLUMN2, y, telemetryData.swrInternal.value);
+        else
+          lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
+        lcdDrawText(lcdNextPos, y, "/");
+        if (telemetryData.swrExternal.isFresh())
+          lcdDrawNumber(lcdNextPos, y, telemetryData.swrExternal.value);
+        else
+          lcdDrawText(lcdNextPos, y, "---");
         break;
 
       case ITEM_RADIO_HARDWARE_DEBUG:

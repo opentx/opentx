@@ -22,7 +22,7 @@
 #include "bin_files.h"
 
 #if defined(PCBXLITE)
-#define BOOTLOADER_KEYS                 0x0f
+#define BOOTLOADER_KEYS                 0x0F
 #else
 #define BOOTLOADER_KEYS                 0x42
 #endif
@@ -206,6 +206,7 @@ int main()
   uint32_t nameCount = 0;
 
   wdt_reset();
+
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
                          AUX_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
@@ -227,8 +228,8 @@ int main()
 
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
-      // Start main application
-      jumpTo(APP_START_ADDRESS);
+    // Start main application
+    jumpTo(APP_START_ADDRESS);
   }
 
   pwrInit();

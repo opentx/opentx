@@ -33,13 +33,12 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-
 uint8_t unexpectedShutdown = 0;
 
-/* AVR: mixer duration in 1/16ms */
+uint16_t vbattRTC;
+
 /* ARM: mixer duration in 0.5us */
 uint16_t maxMixerDuration;
-
 
 uint8_t heartbeat;
 
@@ -82,8 +81,6 @@ const uint8_t modn12x3[]  = {
     3, 1, 2, 0,
     3, 2, 1, 0 };
 
-volatile tmr10ms_t g_tmr10ms;
-
 volatile uint8_t rtc_count = 0;
 uint32_t watchdogTimeout = 0;
 
@@ -104,8 +101,9 @@ void per10ms()
 #if defined(GUI)
   if (lightOffCounter) lightOffCounter--;
   if (flashCounter) flashCounter--;
-#if !defined(LIBOPENUI)
+#if defined(LIBOPENUI)
   #warning "TODO remove noHighlightCounter on LIBOPENUI"
+#else
   if (noHighlightCounter) noHighlightCounter--;
 #endif
 #endif
@@ -197,6 +195,8 @@ void per10ms()
 #if defined(SDCARD)
   sdPoll10ms();
 #endif
+
+  outputTelemetryBuffer.per10ms();
 
   heartbeat |= HEART_TIMER_10MS;
 }
@@ -301,9 +301,11 @@ void generalDefault()
   theme->init();
 #endif
 
+#if defined(PXX2)
   for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
     g_eeGeneral.ownerRegistrationID[i] = (cpu_uid[1 + i] & 0x3f) - 26;
   }
+#endif
 
   g_eeGeneral.chkSum = 0xFFFF;
 }
@@ -505,18 +507,19 @@ void modelDefault(uint8_t id)
   g_model.header.name[6] = '\033' + id%10;
 #endif
 
-  #warning "missing widgets init"
-#if 0 // defined(COLORLCD)
+
+#if defined(COLORLCD)
+  #warning "Initialization missing"
   extern const LayoutFactory * defaultLayout;
-  delete customScreens[0];
-  customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
-  strcpy(g_model.screenData[0].layoutName, "Layout2P1");
-  extern const WidgetFactory * defaultWidget;
-  customScreens[0]->createWidget(0, defaultWidget);
-  // enable switch warnings
-  for (int i=0; i<NUM_SWITCHES; i++) {
-    g_model.switchWarningState |= (1 << (3*i));
-  }
+//  delete customScreens[0];
+//  customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
+//  strcpy(g_model.screenData[0].layoutName, "Layout2P1");
+//  extern const WidgetFactory * defaultWidget;
+//  customScreens[0]->createWidget(0, defaultWidget);
+//  // enable switch warnings
+//  for (int i=0; i<NUM_SWITCHES; i++) {
+//    g_model.switchWarningState |= (1 << (3*i));
+//  }
 #endif
 }
 
@@ -699,6 +702,10 @@ bool inputsMoved()
     sum += anaIn(i) >> INAC_STICKS_SHIFT;
   for (uint8_t i=0; i<NUM_SWITCHES; i++)
     sum += getValue(MIXSRC_FIRST_SWITCH+i) >> INAC_SWITCHES_SHIFT;
+#if defined(GYRO)
+  for (uint8_t i=0; i<2; i++)
+    sum += getValue(MIXSRC_GYRO1+i) >> INAC_STICKS_SHIFT;
+#endif
 
   if (abs((int8_t)(sum-inactivity.sum)) > 1) {
     inactivity.sum = sum;
@@ -784,7 +791,8 @@ void doSplash()
 
       getADC();
 
-      if (getEvent() || inputsMoved()) return;
+      if (getEvent() || inputsMoved())
+        return;
 
 #if defined(PWR_BUTTON_PRESS)
       uint32_t pwr_check = pwrCheck();
@@ -804,7 +812,7 @@ void doSplash()
       }
 #endif
 
-#if defined(SPLASH_FRSKY)
+#if defined(FRSKY_RELEASE)
       static uint8_t secondSplash = false;
       if (!secondSplash && get_tmr10ms() >= tgtime-200) {
         secondSplash = true;
@@ -899,8 +907,9 @@ void checkAll()
   checkSDVersion();
 #endif
 
-#if 0
-  #warning "TODO re-add model notes"
+#if defined(COLORLCD)
+#warning "Model notes missing"
+#else
   if (g_model.displayChecklist && modelHasNotes()) {
     readModelNotes();
   }
@@ -976,8 +985,6 @@ void checkTHR()
 #if defined(PWR_BUTTON_PRESS)
   bool refresh = false;
 #endif
-
-
 
   while (!getEvent()) {
     if (!isThrottleWarningAlertNeeded()) {
@@ -1224,7 +1231,7 @@ void getADC()
   DEBUG_TIMER_STOP(debugTimerAdcRead);
 
   for (uint8_t x=0; x<NUM_ANALOGS; x++) {
-    uint16_t v = 0;
+    uint16_t v;
 
 #if defined(FLYSKY_HALL_STICKS)
     if (x < 4)
@@ -1993,15 +2000,13 @@ int main()
 
 #if defined(PCBHORUS)
   if (!IS_FIRMWARE_COMPATIBLE_WITH_BOARD()) {
-    #warning "TODO wrong PCBREV alert"
-    // TODO runFatalErrorScreen(STR_WRONG_PCBREV);
+    runFatalErrorScreen(STR_WRONG_PCBREV);
   }
 #endif
 
 #if !defined(EEPROM)
   if (!SD_CARD_PRESENT() && !UNEXPECTED_SHUTDOWN()) {
-    #warning "TODO no SD alert"
-    // TODO runFatalErrorScreen(STR_NO_SDCARD);
+    runFatalErrorScreen(STR_NO_SDCARD);
   }
 #endif
 
@@ -2064,8 +2069,7 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcdClear();
 
-          #warning "TODO shutdown confirmation"
-          // TODO POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN);
+          POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN, nullptr);
           SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);

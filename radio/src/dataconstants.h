@@ -46,8 +46,20 @@
   #define MAX_SCRIPTS                  9
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        64
+  #define MAX_TELEMETRY_SENSORS        60
   #define MAX_CUSTOM_SCREENS           5
+#elif defined(PCBX9)
+  #define MAX_MODELS                   60
+  #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
+  #define MAX_FLIGHT_MODES             9
+  #define MAX_MIXERS                   64
+  #define MAX_EXPOS                    64
+  #define MAX_LOGICAL_SWITCHES         64
+  #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
+  #define MAX_SCRIPTS                  7
+  #define MAX_INPUTS                   32
+  #define MAX_TRAINER_CHANNELS         16
+  #define MAX_TELEMETRY_SENSORS        60
 #elif defined(PCBTARANIS)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
@@ -59,7 +71,7 @@
   #define MAX_SCRIPTS                  7
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_TELEMETRY_SENSORS        40
 #elif defined(PCBSKY9X)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
@@ -70,7 +82,7 @@
   #define MAX_SPECIAL_FUNCTIONS        64 // number of functions assigned to switches
   #define MAX_INPUTS                   32
   #define MAX_TRAINER_CHANNELS         16
-  #define MAX_TELEMETRY_SENSORS        32
+  #define MAX_TELEMETRY_SENSORS        40
 #else
   #warning "Unknown board!"
 #endif
@@ -104,7 +116,7 @@ enum CurveType {
   #define LEN_TIMER_NAME               8
   #define LEN_FLIGHT_MODE_NAME         10
   #define LEN_BITMAP_NAME              10
-  #define LEN_EXPOMIX_NAME             8   // TODO next EEPROM change: 6 seem enough
+  #define LEN_EXPOMIX_NAME             6
   #define LEN_CHANNEL_NAME             6
   #define LEN_INPUT_NAME               4
   #define LEN_CURVE_NAME               3
@@ -120,16 +132,8 @@ enum CurveType {
   #define LEN_INPUT_NAME               3
   #define LEN_CURVE_NAME               3
   #define LEN_FUNCTION_NAME            6
-  #define MAX_CURVES                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
+  #define MAX_CURVES                   32
   #define MAX_CURVE_POINTS             512
-#endif
-
-#if defined(PCBHORUS)
-  #define NUM_RECEIVERS                10
-  #define MAX_RECEIVERS_PER_MODULE     5
-#else
-  #define NUM_RECEIVERS                4
-  #define MAX_RECEIVERS_PER_MODULE     4
 #endif
 
 #if defined(PCBFRSKY) || defined(PCBSKY9X) || defined(PCBNV14)
@@ -190,7 +194,7 @@ enum BeeperMode {
   enum ModuleIndex {
     INTERNAL_MODULE,
     EXTERNAL_MODULE,
-    FLASHING_MODULE,
+    SPORT_MODULE,
   };
   enum TrainerMode {
     TRAINER_MODE_MASTER_TRAINER_JACK,
@@ -208,7 +212,8 @@ enum BeeperMode {
 #elif defined(PCBSKY9X)
   enum ModuleIndex {
     EXTERNAL_MODULE,
-    EXTRA_MODULE
+    EXTRA_MODULE,
+    SPORT_MODULE
   };
 #endif
 
@@ -253,6 +258,16 @@ enum UartModes {
   #define LEN_BLUETOOTH_NAME           10
 #endif
 
+enum TelemetryProtocol
+{
+  TELEM_PROTO_FRSKY_D,
+  TELEM_PROTO_FRSKY_SPORT,
+  TELEM_PROTO_CROSSFIRE,
+  TELEM_PROTO_SPEKTRUM,
+  TELEM_PROTO_LUA,
+  TELEM_PROTO_FLYSKY_IBUS,
+};
+
 #define TELEM_LABEL_LEN                4
 enum TelemetryUnit {
   UNIT_RAW,
@@ -263,10 +278,13 @@ enum TelemetryUnit {
   UNIT_METERS_PER_SECOND,
   UNIT_FEET_PER_SECOND,
   UNIT_KMH,
+  UNIT_SPEED = UNIT_KMH,
   UNIT_MPH,
   UNIT_METERS,
+  UNIT_DIST = UNIT_METERS,
   UNIT_FEET,
   UNIT_CELSIUS,
+  UNIT_TEMPERATURE = UNIT_CELSIUS,
   UNIT_FAHRENHEIT,
   UNIT_PERCENT,
   UNIT_MAH,
@@ -279,6 +297,18 @@ enum TelemetryUnit {
   UNIT_RADIANS,
   UNIT_MILLILITERS,
   UNIT_FLOZ,
+  UNIT_MILLILITERS_PER_MINUTE,
+  UNIT_MAX = UNIT_MILLILITERS_PER_MINUTE,
+  UNIT_SPARE1,
+  UNIT_SPARE2,
+  UNIT_SPARE3,
+  UNIT_SPARE4,
+  UNIT_SPARE5,
+  UNIT_SPARE6,
+  UNIT_SPARE7,
+  UNIT_SPARE8,
+  UNIT_SPARE9,
+  UNIT_SPARE10,
   UNIT_HOURS,
   UNIT_MINUTES,
   UNIT_SECONDS,
@@ -297,10 +327,6 @@ enum TelemetryUnit {
   UNIT_DATETIME_HOUR_MIN,
   UNIT_DATETIME_SEC
 };
-#define UNIT_MAX UNIT_FLOZ
-#define UNIT_DIST UNIT_METERS
-#define UNIT_TEMPERATURE UNIT_CELSIUS
-#define UNIT_SPEED UNIT_KMH
 
 #if LCD_W >= 212
   #define NUM_LINE_ITEMS 3
@@ -324,7 +350,7 @@ enum TelemetryScreenType {
 #endif
 };
 #define MAX_TELEMETRY_SCREENS 4
-#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.frsky.screensType >> (2*(screenIndex))) & 0x03)
+#define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
 
 #define FAILSAFE_CHANNEL_HOLD          2000
@@ -341,9 +367,9 @@ enum PotsWarnMode {
   POTS_WARN_AUTO
 };
 
-  #define LEN_GVAR_NAME                3
-  #define GVAR_MAX                     1024
-  #define GVAR_MIN                     -GVAR_MAX
+#define LEN_GVAR_NAME                3
+#define GVAR_MAX                     1024
+#define GVAR_MIN                     -GVAR_MAX
 
 #define RESERVE_RANGE_FOR_GVARS        10
 // even we do not spend space in EEPROM for 10 GVARS, we reserve the space inside the range of values, like offset, weight, etc.
@@ -568,13 +594,18 @@ enum MixSources {
 #else
   MIXSRC_P1 = MIXSRC_FIRST_POT,
   MIXSRC_P2,
-    MIXSRC_P3,
-    MIXSRC_LAST_POT = MIXSRC_P3,
+  MIXSRC_P3,
+  MIXSRC_LAST_POT = MIXSRC_P3,
 #endif
 
 #if defined(PCBHORUS)
   MIXSRC_MOUSE1,                        LUA_EXPORT("jsx", "Joystick X")
   MIXSRC_MOUSE2,                        LUA_EXPORT("jsy", "Joystick Y")
+#endif
+
+#if defined(GYRO)
+  MIXSRC_GYRO1,                         LUA_EXPORT("gyrx", "Gyro X")
+  MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
 #if defined(PCBSKY9X)
@@ -585,9 +616,9 @@ enum MixSources {
   MIXSRC_MAX,
 
   MIXSRC_FIRST_HELI,
-  MIXSRC_CYC1 = MIXSRC_FIRST_HELI,   LUA_EXPORT("cyc1", "Cyclic 1")
-  MIXSRC_CYC2,                       LUA_EXPORT("cyc2", "Cyclic 2")
-  MIXSRC_CYC3,                       LUA_EXPORT("cyc3", "Cyclic 3")
+  MIXSRC_CYC1 = MIXSRC_FIRST_HELI,     LUA_EXPORT("cyc1", "Cyclic 1")
+  MIXSRC_CYC2,                         LUA_EXPORT("cyc2", "Cyclic 2")
+  MIXSRC_CYC3,                         LUA_EXPORT("cyc3", "Cyclic 3")
   MIXSRC_LAST_HELI = MIXSRC_CYC3,
 
   MIXSRC_FIRST_TRIM,
@@ -799,6 +830,6 @@ enum BluetoothModes {
 // PXX2 constants
 #define PXX2_LEN_REGISTRATION_ID            8
 #define PXX2_LEN_RX_NAME                    8
-#define PXX2_MAX_RECEIVERS_PER_MODULE       5
+#define PXX2_MAX_RECEIVERS_PER_MODULE       3
 
 #endif // _DATACONSTANTS_H_

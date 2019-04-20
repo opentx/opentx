@@ -271,7 +271,7 @@ uint8_t OpenTxEepromInterface::getLastDataVersion(Board::Type board)
     case BOARD_M128:
       return 217;
     default:
-      return 218;
+      return 219;
   }
 }
 

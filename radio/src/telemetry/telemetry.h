@@ -143,7 +143,7 @@ inline uint8_t modelTelemetryProtocol()
   return PROTOCOL_TELEMETRY_FRSKY_SPORT;
 }
 
-  #include "telemetry_sensors.h"
+#include "telemetry_sensors.h"
 
 #if defined(LOG_TELEMETRY) && !defined(SIMU)
 void logTelemetryWriteStart();
@@ -155,20 +155,89 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
 
-#define TELEMETRY_OUTPUT_FIFO_SIZE 20
-extern uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
-extern uint8_t outputTelemetryBufferSize;
-extern uint8_t outputTelemetryBufferTrigger;
+#define TELEMETRY_ENDPOINT_NONE    0xFF
+#define TELEMETRY_ENDPOINT_SPORT   0x07
 
-inline void telemetryOutputPushByte(uint8_t byte)
-{
-  outputTelemetryBuffer[outputTelemetryBufferSize++] = byte;
-}
+class OutputTelemetryBuffer {
+  public:
+    OutputTelemetryBuffer()
+    {
+      reset();
+    }
 
-inline void telemetryOutputSetTrigger(uint8_t byte)
-{
-  outputTelemetryBufferTrigger = byte;
-}
+    void setDestination(uint8_t value)
+    {
+      destination = value;
+      timeout = 200; /* 2s */
+    }
+
+    bool isModuleDestination(uint8_t module)
+    {
+      return destination != TELEMETRY_ENDPOINT_NONE && destination != TELEMETRY_ENDPOINT_SPORT && (destination >> 2) == module;
+    }
+
+    void per10ms()
+    {
+      if (timeout > 0) {
+        if (--timeout == 0)
+          reset();
+      }
+    }
+
+    void reset()
+    {
+      destination = TELEMETRY_ENDPOINT_NONE;
+      size = 0;
+      timeout = 0;
+    }
+
+    bool isAvailable()
+    {
+      return destination == TELEMETRY_ENDPOINT_NONE;
+    }
+
+    void pushByte(uint8_t byte)
+    {
+      data[size++] = byte;
+    }
+
+    void pushByteWithBytestuffing(uint8_t byte)
+    {
+      if (byte == 0x7E || byte == 0x7D) {
+        pushByte(0x7D);
+        pushByte(0x20 ^ byte);
+      }
+      else {
+        pushByte(byte);
+      }
+    }
+
+    void pushSportPacketWithBytestuffing(SportTelemetryPacket & packet)
+    {
+      size = 0;
+      uint16_t crc = 0;
+      sport.physicalId = packet.physicalId; // no bytestuffing, no CRC
+      for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
+        uint8_t byte = packet.raw[i];
+        pushByteWithBytestuffing(byte);
+        crc += byte; // 0-1FF
+        crc += crc >> 8; // 0-100
+        crc &= 0x00ff;
+      }
+      pushByte(0xFF - crc);
+    }
+
+  public:
+    union {
+      SportTelemetryPacket sport;
+      uint8_t data[16];
+    };
+    uint8_t size;
+    uint8_t timeout;
+    uint8_t destination;
+};
+
+extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 
 #if defined(LUA)
 #define LUA_TELEMETRY_INPUT_FIFO_SIZE  256
@@ -181,7 +250,6 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #define IS_TELEMETRY_INTERNAL_MODULE() (false)
 #endif
 
-void processPXX2TelemetryFrame(uint8_t module, uint8_t * frame);
+void processPXX2Frame(uint8_t module, uint8_t *frame);
 
 #endif // _TELEMETRY_H_
-

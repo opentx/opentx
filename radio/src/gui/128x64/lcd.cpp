@@ -398,6 +398,12 @@ void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
   lcdDrawSizedText(x, y, s, 255, flags);
 }
 
+void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags)
+{
+  coord_t x = (LCD_W - getTextWidth(s, flags)) / 2;
+  lcdDrawText(x, y, s, flags);
+}
+
 void lcdDrawText(coord_t x, coord_t y, const char * s)
 {
   lcdDrawText(x, y, s, 0);
@@ -568,6 +574,14 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
     ASSERT_IN_DISPLAY(p);
     lcdMaskPoint(p, (BF_BITMASK<uint8_t>(h)) & pat, att);
   }
+}
+
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags)
+{
+  if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] != '\0')
+    lcdDrawSizedText(x, y, g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], effectiveLen(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME), flags);
+  else
+    lcdDrawText(x, y, "---", flags);
 }
 
 void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)

@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 Fifo<uint8_t, 64> btTxFifo;
-Fifo<uint8_t, 64> btRxFifo;
+Fifo<uint8_t, 128> btRxFifo;
 
 #if defined(PCBX7) || defined(PCBXLITE)
 volatile uint8_t btChipPresent = 0;

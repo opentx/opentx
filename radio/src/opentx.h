@@ -65,6 +65,12 @@
   #define CASE_VARIO(x)
 #endif
 
+#if defined(GYRO)
+#define CASE_GYRO(x) x,
+#else
+#define CASE_GYRO(x)
+#endif
+
 #if defined(LUA)
   #define CASE_LUA(x) x,
 #else
@@ -250,7 +256,16 @@
 
 #include "myeeprom.h"
 
-#define memclear(p, s)                 memset(p, 0, s)
+inline void memclear(void * p, size_t size)
+{
+  memset(p, 0, size);
+}
+
+inline bool is_memclear(void * p, size_t size)
+{
+  uint8_t * buf = (uint8_t *)p;
+  return buf[0] == 0 && !memcmp(buf, buf + 1, size - 1);
+}
 
 void memswap(void * a, void * b, uint8_t size);
 
@@ -303,12 +318,6 @@ void memswap(void * a, void * b, uint8_t size);
 
 #include "fifo.h"
 #include "io/frsky_sport.h"
-
-extern volatile tmr10ms_t g_tmr10ms;
-static inline tmr10ms_t get_tmr10ms()
-{
-  return g_tmr10ms;
-}
 
 #if defined(CLI)
 #include "cli.h"
@@ -580,6 +589,8 @@ extern uint8_t trimsDisplayMask;
 void flightReset(uint8_t check=true);
 
 extern uint8_t unexpectedShutdown;
+
+extern uint16_t vbattRTC;
 
 extern uint16_t maxMixerDuration;
 
@@ -1042,10 +1053,6 @@ enum AUDIO_SOUNDS {
 #endif
 
 #include "buzzer.h"
-
-
-
-
 #include "translations.h"
 #include "fonts.h"
 
@@ -1095,6 +1102,10 @@ void opentxResume();
 #define SD_SCREEN_FILE_LENGTH          64
 #endif
 
+#if defined(BLUETOOTH)
+#include "bluetooth.h"
+#endif
+
 union ReusableBuffer
 {
   // ARM 334 bytes
@@ -1111,44 +1122,38 @@ union ReusableBuffer
 #endif
   } modelsel;
 
-  // 65 bytes
   struct {
     char msg[64];
     uint8_t r9mPower;
-    union {
-      struct {
-        union {
-          uint8_t registerStep;
-          uint8_t bindStep;
-        };
-        uint32_t bindWaitTimeout;
-        uint8_t registerPopupVerticalPosition;
-        uint8_t registerPopupHorizontalPosition;
-        int8_t registerPopupEditMode;
-        char registerRxName[PXX2_LEN_RX_NAME];
-        uint8_t registerModuleIndex;
-        char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
-        uint8_t bindCandidateReceiversCount;
-        uint8_t bindReceiverId;
-        union {
-          uint8_t bindSelectedReceiverIndex;
-          uint8_t shareReceiverId;
-        };
-      } pxx2;
-    };
+    struct {
+      union {
+        uint8_t registerStep;
+        uint8_t bindStep;
+        uint8_t resetStep;
+      };
+      uint32_t bindWaitTimeout;
+      uint8_t registerPopupVerticalPosition;
+      uint8_t registerPopupHorizontalPosition;
+      int8_t registerPopupEditMode;
+      char registerRxName[PXX2_LEN_RX_NAME];
+      uint8_t registerLoopIndex; // will be removed later
+      char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
+      uint8_t bindCandidateReceiversCount;
+      uint8_t bindReceiverIndex;
+      union {
+        uint8_t bindSelectedReceiverIndex;
+        uint8_t shareReceiverIndex;
+        uint8_t resetReceiverIndex;
+      };
+      uint8_t resetReceiverFlags;
+    } pxx2;
+#if defined(BLUETOOTH)
+    struct {
+      char devices[MAX_BLUETOOTH_DISTANT_ADDR][LEN_BLUETOOTH_ADDR+1];
+      uint8_t devicesCount;
+    } bt;
+#endif
   } moduleSetup;
-
-  struct {
-    uint8_t state;  // 0x00 = READ 0x40 = WRITE
-    tmr10ms_t timeout;
-    tmr10ms_t dirtyTimeout;
-    tmr10ms_t updateTime;
-    uint8_t receiverId;
-    uint8_t channelMapping[24];
-    uint8_t telemetryDisabled;
-    uint8_t pwmRate;
-    uint8_t dirty;
-  } receiverSetup;
 
   // 103 bytes
   struct {
@@ -1186,17 +1191,40 @@ union ReusableBuffer
 
   struct {
     struct {
-      int8_t step;
+      int8_t current;
+      int8_t maximum;
       uint8_t timeout;
-      uint32_t hw_version;
-      uint32_t sw_version;
+      PXX2HardwareInformation information;
       struct {
-        uint32_t hw_version;
-        uint32_t sw_version;
+        PXX2HardwareInformation information;
       } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
     } modules[NUM_MODULES];
+
     uint32_t updateTime;
-  } hardware;
+
+    union {
+      struct {
+        uint8_t state;  // 0x00 = READ 0x40 = WRITE
+        tmr10ms_t timeout;
+        uint8_t dirty;
+        uint8_t rfProtocol;
+        uint8_t externalAntenna;
+        int8_t txPower;
+      } moduleSettings;
+
+      struct {
+        uint8_t state;  // 0x00 = READ 0x40 = WRITE
+        tmr10ms_t timeout;
+        uint8_t receiverId;
+        uint8_t dirty;
+        uint8_t telemetryDisabled;
+        uint8_t pwmRate;
+        uint8_t outputsCount;
+        uint8_t outputsMapping[24];
+      } receiverSettings;
+    };
+
+  } hardwareAndSettings;
 
   struct {
     uint8_t stickMode;
@@ -1204,11 +1232,19 @@ union ReusableBuffer
 
   struct
   {
-    uint8_t bars[128];
-    uint32_t fq;
+    uint8_t bars[LCD_W];
+    uint32_t freq;
     uint32_t span;
     uint32_t step;
-  } spectrum;
+  } spectrumAnalyser;
+
+  struct
+  {
+    uint32_t freq;
+    int16_t power;
+    int16_t peak;
+    uint8_t attn;
+  } powerMeter;
 
   struct
   {
@@ -1355,10 +1391,6 @@ extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
   #include "gps.h"
 #endif
 
-#if defined(BLUETOOTH)
-  #include "bluetooth.h"
-#endif
-
 #if defined(JACK_DETECT_GPIO)
 enum JackMode {
   JACK_UNSELECTED_MODE,
@@ -1366,6 +1398,10 @@ enum JackMode {
   JACK_TRAINER_MODE,
   JACK_MAX_MODE = JACK_TRAINER_MODE
 };
+#endif
+
+#if defined(GYRO)
+#include "gyro.h"
 #endif
 
 #include "module.h"

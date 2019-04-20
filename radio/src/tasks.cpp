@@ -89,9 +89,11 @@ void sendSynchronousPulses()
 {
   for (uint8_t module = 0; module < NUM_MODULES; module++) {
     if (isModuleSynchronous(module) && setupPulses(module)) {
+#if defined(HARDWARE_INTERNAL_MODULE)
       if (module == INTERNAL_MODULE)
         intmoduleSendNextFrame();
-      else
+#endif
+      if (module == EXTERNAL_MODULE)
         extmoduleSendNextFrame();
     }
   }
@@ -104,11 +106,19 @@ TASK_FUNCTION(mixerTask)
   static uint32_t lastRunTime;
   s_pulses_paused = true;
 
-  while(1) {
+  while (1) {
 
 #if defined(PCBX9D) || defined(PCBX7)
     // SBUS on Hearbeat PIN (which is a serial RX)
     processSbusInput();
+#endif
+
+#if defined(GYRO)
+    gyro.wakeup();
+#endif
+
+#if defined(BLUETOOTH)
+    bluetoothWakeup();
 #endif
 
     RTOS_WAIT_TICKS(1);
@@ -123,13 +133,9 @@ TASK_FUNCTION(mixerTask)
     }
 #endif
 
-    uint32_t now = RTOS_GET_TIME();
+    uint32_t now = RTOS_GET_MS();
     bool run = false;
-#if !defined(SIMU) && defined(STM32)
-    if ((now - lastRunTime) >= (usbStarted() ? 5 : 10)) {     // run at least every 20ms (every 10ms if USB is active)
-#else
-    if ((now - lastRunTime) >= 10) {     // run at least every 20ms
-#endif
+    if ((now - lastRunTime) >= 10) {     // run at least every 10ms
       run = true;
     }
     else if (now == nextMixerTime[0]) {
@@ -167,10 +173,6 @@ TASK_FUNCTION(mixerTask)
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
-#endif
-
-#if defined(BLUETOOTH)
-      bluetoothWakeup();
 #endif
 
       if (heartbeat == HEART_WDT_CHECK) {

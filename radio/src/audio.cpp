@@ -157,6 +157,7 @@ const char * const unitsFilenames[] = {
   "radian",
   "ml",
   "founce",
+  "mlpm",
   "hour",
   "minute",
   "second",
@@ -895,8 +896,7 @@ void AudioQueue::playFile(const char * filename, uint8_t flags, uint8_t id)
     return;
 
   if (strlen(filename) > AUDIO_FILENAME_MAXLEN) {
-    #warning "TODO code removed"
-    // POPUP_WARNING(STR_PATH_TOO_LONG);
+    POPUP_WARNING(STR_PATH_TOO_LONG);
     return;
   }
 
