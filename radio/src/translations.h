@@ -866,7 +866,6 @@ extern const char STR_PXX2_DEFAULT[];
 extern const char STR_BT_SELECT_DEVICE[];
 extern const char STR_BUTTON_DISCOVER[];
 extern const char STR_BUTTON_INIT[];
-extern const char STR_BUTTON_CLEAR[];
 extern const char STR_WAITING[];
 extern const char STR_RECEIVER_DELETE[];
 extern const char STR_RECEIVER_RESET[];
