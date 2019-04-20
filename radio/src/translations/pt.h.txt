@@ -990,6 +990,17 @@
 #define TR_BUZZER              INDENT"Buzzer"
 #define TR_BYTES               "bytes"
 #define TR_MODULE_BIND         "[Bind]"
+#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_DEFAULT                "<default>"
+#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BUTTON_DISCOVER             BUTTON("Discover")
+#define TR_BUTTON_INIT                 BUTTON("Init")
+#define TR_BUTTON_CLEAR                BUTTON("clear")
+#define TR_WAITING                     "Waiting..."
+#define TR_RECEIVER_DELETE             "Delete receiver?"
+#define TR_RECEIVER_RESET              "Reset receiver?"
+#define TR_SHARE                       "Share"
+#define TR_BIND                        "Bind"
 #define TR_TRANSFER_BUTTON             BUTTON("Transfer")
 #define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
 #define TR_RXADD_BUTTON                "BUTTON(Add)"

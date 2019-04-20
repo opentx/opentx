@@ -861,6 +861,17 @@ extern const char STR_EXPONAME[];
 
   extern const char STR_TRAINER[];
 extern const char STR_MODULE_BIND[];
+extern const char STR_PXX2_SELECT_RX[];
+extern const char STR_PXX2_DEFAULT[];
+extern const char STR_BT_SELECT_DEVICE[];
+extern const char STR_BUTTON_DISCOVER[];
+extern const char STR_BUTTON_INIT[];
+extern const char STR_BUTTON_CLEAR[];
+extern const char STR_WAITING[];
+extern const char STR_RECEIVER_DELETE[];
+extern const char STR_RECEIVER_RESET[];
+extern const char STR_SHARE[];
+extern const char STR_BIND[];
 extern const char STR_TRANSFER_BUTTON[];
 extern const char STR_REGISTER_BUTTON[];
 extern const char STR_RXADD_BUTTON[];

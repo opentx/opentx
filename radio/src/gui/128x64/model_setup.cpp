@@ -244,8 +244,6 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PXX2)
-const char * STR_BIND = "Bind";
-const char * STR_SHARE = "Share";
 
 bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
 {
@@ -317,7 +315,7 @@ void onPXX2ReceiverMenu(const char * result)
     memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
     reusableBuffer.moduleSetup.pxx2.resetReceiverIndex = receiverIdx;
     reusableBuffer.moduleSetup.pxx2.resetReceiverFlags = (result == STR_RESET ? 0xFF : 0x01);
-    POPUP_CONFIRMATION(result == STR_RESET ? "Reset receiver?" : "Delete receiver?", onResetReceiverConfirm);
+    POPUP_CONFIRMATION(result == STR_RESET ? STR_RECEIVER_RESET : STR_RECEIVER_DELETE, onResetReceiverConfirm);
   }
   else {
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
@@ -412,7 +410,7 @@ void runPopupRegister(event_t event)
 
     // RX name
     if (reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED) {
-      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + 2 * FH, "Waiting ...");
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + 2 * FH, STR_WAITING);
       lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + 3 * FH, TR_EXIT, menuVerticalPosition == ITEM_REGISTER_BUTTONS ? INVERS : 0);
     }
     else {
@@ -1136,7 +1134,7 @@ void menuModelSetup(event_t event)
           }
           if (bluetoothDistantAddr[0]) {
             lcdDrawText(INDENT_WIDTH, y+1, bluetoothDistantAddr, TINSIZE);
-            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Clear"), attr);
+            lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BUTTON_CLEAR, attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
               bluetoothState = BLUETOOTH_STATE_OFF;
               memclear(bluetoothDistantAddr, sizeof(bluetoothDistantAddr));
@@ -1145,9 +1143,9 @@ void menuModelSetup(event_t event)
           else {
             lcdDrawText(INDENT_WIDTH, y, "---");
             if (bluetoothState < BLUETOOTH_STATE_IDLE)
-              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Init"), attr);
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BUTTON_INIT, attr);
             else
-              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Discover"), attr);
+              lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BUTTON_DISCOVER, attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
               if (bluetoothState < BLUETOOTH_STATE_IDLE) {
                 bluetoothState = BLUETOOTH_STATE_OFF;
@@ -1163,7 +1161,7 @@ void menuModelSetup(event_t event)
               for (uint8_t i=0; i<popupMenuItemsCount; i++) {
                 popupMenuItems[i] = reusableBuffer.moduleSetup.bt.devices[i];
               }
-              popupMenuTitle = "Select device...";
+              popupMenuTitle = STR_BT_SELECT_DEVICE;
               POPUP_MENU_START(onBluetoothConnectMenu);
             }
           }
@@ -1259,7 +1257,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_REGISTRATION_ID:
         lcdDrawTextAlignedLeft(y, STR_REG_ID);
         if (isDefaultModelRegistrationID())
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "<default>");
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_PXX2_DEFAULT);
         else
           lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, ZCHAR);
         break;
@@ -1330,7 +1328,7 @@ void menuModelSetup(event_t event)
         drawStringWithIndex(INDENT_WIDTH, y, STR_RECEIVER, receiverIdx + 1);
 
         if (!(g_model.moduleData[moduleIdx].pxx2.receivers & (1 << receiverIdx))) {
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), attr);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_BIND), attr);
           if (attr && s_editMode > 0) {
             s_editMode = 0;
             killEvents(event);
@@ -1361,7 +1359,7 @@ void menuModelSetup(event_t event)
             for (uint8_t i=0; i<popupMenuItemsCount; i++) {
               popupMenuItems[i] = reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i];
             }
-            popupMenuTitle = "Select RX...";
+            popupMenuTitle = STR_PXX2_SELECT_RX;
             POPUP_MENU_START(onPXX2BindMenu);
           }
         }
