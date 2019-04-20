@@ -1003,7 +1003,6 @@
 #define TR_BT_SELECT_DEVICE            "Select device..."
 #define TR_BUTTON_DISCOVER             BUTTON("Discover")
 #define TR_BUTTON_INIT                 BUTTON("Init")
-#define TR_BUTTON_CLEAR                BUTTON("clear")
 #define TR_WAITING                     "Waiting..."
 #define TR_RECEIVER_DELETE             "Delete receiver?"
 #define TR_RECEIVER_RESET              "Reset receiver?"
