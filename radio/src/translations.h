@@ -861,6 +861,7 @@ extern const char STR_EXPONAME[];
 
   extern const char STR_TRAINER[];
 extern const char STR_MODULE_BIND[];
+extern const char STR_POWERMETER_ATTN_NEEDED[];
 extern const char STR_PXX2_SELECT_RX[];
 extern const char STR_PXX2_DEFAULT[];
 extern const char STR_BT_SELECT_DEVICE[];
