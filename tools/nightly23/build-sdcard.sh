@@ -32,13 +32,27 @@ else
   cp  -r ${workdir}/code/radio/sdcard/FrSky-utilities ${workdir}/sdcard/taranis-x9/
 
   # Request sound pack generation
-  ${workdir}/code/tools/nightly23/tts.py en csv files
-  ${workdir}/code/tools/nightly23/tts.py fr csv files
-  ${workdir}/code/tools/nightly23/tts.py es csv files
-  ${workdir}/code/tools/nightly23/tts.py it csv files
-  ${workdir}/code/tools/nightly23/tts.py de csv files
-  ${workdir}/code/tools/nightly23/tts.py cz csv files
-  ${workdir}/code/tools/nightly23/tts.py pt csv files
+  if [[ ! -d /tmp/SOUNDS/fr ]];then
+    ${workdir}/code/tools/nightly23/tts.py en csv files
+  fi
+  if [[ ! -d /tmp/SOUNDS/es ]];then
+    ${workdir}/code/tools/nightly23/tts.py fr csv files
+  fi
+  if [[ ! -d /tmp/SOUNDS/it ]];then
+    ${workdir}/code/tools/nightly23/tts.py es csv files
+  fi
+  if [[ ! -d /tmp/SOUNDS/de ]];then
+    ${workdir}/code/tools/nightly23/tts.py it csv files
+  fi
+  if [[ ! -d /tmp/SOUNDS/cz ]];then
+    ${workdir}/code/tools/nightly23/tts.py de csv files
+  fi
+  if [[ ! -d /tmp/SOUNDS/pl ]];then
+    ${workdir}/code/tools/nightly23/tts.py cz csv files
+  fi
+  if [[ ! -d /tmp/SOUNDS/ru ]];then
+    ${workdir}/code/tools/nightly23/tts.py pt csv files
+  fi
   ${workdir}/code/tools/nightly23/tts.py ru csv psv files
 
   # Create sdcards.zips for supported platforms
