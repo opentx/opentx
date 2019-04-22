@@ -16,7 +16,6 @@ if cmp --silent ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workd
 then
   exit
 else
-  cp -r ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}
   cd ${workdir}
 
   # Copy git sdcard data
@@ -58,4 +57,5 @@ else
   cd ${workdir}/sdcard/taranis-x7 && zip -r ${output}/sdcard/sdcard-9xarm-${sdcard_version}.zip *
 
   rm -Rf ${workdir}/sdcard
+  cp -r ${workdir}/code/radio/sdcard/horus/opentx.sdcard.version ${workdir}
 fi
