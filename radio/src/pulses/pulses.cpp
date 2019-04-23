@@ -204,7 +204,7 @@ void enablePulses(uint8_t module, uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      init_serial(module, DSM2_BAUDRATE, DSM2_PERIOD * 2000, false);
+      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2000, false);
       break;
 #endif
 
@@ -222,12 +222,12 @@ void enablePulses(uint8_t module, uint8_t protocol)
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      init_serial(module, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true);
+      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true);
       break;
 #endif
 
     case PROTOCOL_CHANNELS_SBUS:
-      init_serial(module, SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
+      extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
       break;
 
     case PROTOCOL_CHANNELS_PPM:

@@ -189,7 +189,6 @@ void init_pxx1_pulses(uint8_t module);
 void init_pxx1_serial(uint8_t module);
 void disable_pxx1_pulses(uint8_t module);
 void disable_pxx1_serial(uint8_t module);
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period, bool inverted);
 void disable_serial(uint8_t module);
 void intmoduleStop();
 void intmodulePxxStart();

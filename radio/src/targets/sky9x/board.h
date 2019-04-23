@@ -259,7 +259,6 @@ void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
 void init_pxx1_pulses(uint32_t port);
 void disable_pxx1_pulses(uint32_t port);
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void disable_serial(uint32_t port);
 void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
 void disable_module_timer( uint32_t module_index);

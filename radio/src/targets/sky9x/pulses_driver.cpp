@@ -236,21 +236,16 @@ void disable_pxx1_pulses(uint32_t port)
   }
 }
 
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us, bool inverted)
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted)
 {
-  if (port == EXTERNAL_MODULE) {
-    if (baudrate == 125000) {
-      // TODO init_main_ppm could take the period as parameter?
-      init_main_ppm(2500 * 2, 0);
-      init_ssc(125);
-    }
-    else {
-      init_main_ppm(3500 * 2, 0);
-      init_ssc(100);
-    }
-    }
+  if (baudrate == 125000) {
+    // TODO init_main_ppm could take the period as parameter?
+    init_main_ppm(2500 * 2, 0);
+    init_ssc(125);
+  }
   else {
-    // TODO
+    init_main_ppm(3500 * 2, 0);
+    init_ssc(100);
   }
 }
 
