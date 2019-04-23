@@ -28,7 +28,7 @@ void extmoduleStop();
 void extmodulePpmStart();
 void extmodulePxxStart();
 void extmodulePxx2Start();
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 
 
 void init_ppm(uint8_t module)
@@ -78,10 +78,10 @@ void disable_pxx1_pulses(uint8_t module)
 }
 
 #if defined(DSM2)
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us)
+void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us, bool inverted)
 {
   if (module == EXTERNAL_MODULE) {
-    extmoduleSerialStart(baudrate, period_half_us);
+    extmoduleSerialStart(baudrate, period_half_us, inverted);
   }
 }
 

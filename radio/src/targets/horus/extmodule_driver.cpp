@@ -137,7 +137,7 @@ void extmodulePxx2Start()
 }
 
 #if defined(DSM2)
-void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
 {
   EXTERNAL_MODULE_ON();
 

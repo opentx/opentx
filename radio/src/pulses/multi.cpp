@@ -102,12 +102,14 @@ void setupPulsesMultimodule()
 
   // Every 1000 cycles (=9s) send a config packet that configures the multimodule (inversion, telemetry type)
   counter++;
-  if (counter  % 1000== 500) {
+  if (counter % 1000== 500) {
     sendSetupFrame();
-  } else if (counter % 1000 == 0 && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_RECEIVER) {
+  }
+  else if (counter % 1000 == 0 && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[EXTERNAL_MODULE].failsafeMode != FAILSAFE_RECEIVER) {
     sendFrameProtocolHeader(EXTERNAL_MODULE, true);
     sendFailsafeChannels(EXTERNAL_MODULE);
-  } else {
+  }
+  else {
     // Normal Frame
     sendFrameProtocolHeader(EXTERNAL_MODULE, false);
     sendChannels(EXTERNAL_MODULE);

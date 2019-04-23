@@ -84,7 +84,7 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 
-void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
 {
   EXTERNAL_MODULE_ON();
 
@@ -101,7 +101,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
   EXTMODULE_TIMER->ARR = period_half_us;
-  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE;
+  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (inverted ? 0 : EXTMODULE_TIMER_OUTPUT_POLARITY);
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 0;
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high

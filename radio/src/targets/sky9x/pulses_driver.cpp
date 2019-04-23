@@ -236,7 +236,7 @@ void disable_pxx1_pulses(uint32_t port)
   }
 }
 
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us)
+void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us, bool inverted)
 {
   if (port == EXTERNAL_MODULE) {
     if (baudrate == 125000) {
