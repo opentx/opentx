@@ -1358,7 +1358,7 @@ void menuModelSetup(event_t event)
 
         if (attr && EVT_KEY_MASK(event) == KEY_ENTER) {
           killEvents(event);
-          if (isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
+          if (!isSimu() && isPXX2ReceiverEmpty(moduleIdx, receiverIdx)) {
             onPXX2ReceiverMenu(STR_BIND);
           }
           else {

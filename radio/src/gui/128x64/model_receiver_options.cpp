@@ -122,29 +122,31 @@ void menuModelReceiverOptions(event_t event)
           // Pin
         {
           uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
-          uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
-          int32_t channelValue = channelOutputs[channel];
-          lcdDrawText(0, y, "Pin");
-          lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
-          putsChn(7 * FW, y, channel + 1, attr);
+          if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
+            uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
+            int32_t channelValue = channelOutputs[channel];
+            lcdDrawText(0, y, "Pin");
+            lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
+            putsChn(7 * FW, y, channel + 1, attr);
 
-          // Channel
-          if (attr) {
-            channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
-            if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = channel;
-              reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+            // Channel
+            if (attr) {
+              channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
+              if (checkIncDec_Ret) {
+                reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = channel;
+                reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+              }
             }
-          }
 
-          // Bargraph
+            // Bargraph
 #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-          lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
+            lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
 #endif
-          const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-          const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
-          lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
-          lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+            const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
+            const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
+            lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
+            lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+          }
           break;
         }
       }

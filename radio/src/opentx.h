@@ -1400,4 +1400,13 @@ enum JackMode {
 #include "gyro.h"
 #endif
 
+inline bool isSimu()
+{
+#if defined(SIMU)
+  return true;
+#else
+  return false;
+#endif
+}
+
 #endif // _OPENTX_H_
