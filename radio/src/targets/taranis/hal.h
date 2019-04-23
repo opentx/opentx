@@ -782,10 +782,10 @@
   #define EXTMODULE_TIMER_DMA_FLAG_TC           DMA_IT_TCIF1
   #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC1E
   #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC1P
-  #define EXTMODULE_USART_GPIO_AF       GPIO_AF_USART6
-  #define EXTMODULE_USART               USART6
-  #define EXTMODULE_USART_IRQn          USART6_IRQn
-  #define EXTMODULE_USART_IRQHandler    USART6_IRQHandler
+  #define EXTMODULE_USART_GPIO_AF               GPIO_AF_USART6
+  #define EXTMODULE_USART                       USART6
+  #define EXTMODULE_USART_IRQn                  USART6_IRQn
+  #define EXTMODULE_USART_IRQHandler            USART6_IRQHandler
   #define EXTMODULE_USART_DMA_CHANNEL           DMA_Channel_5
   #define EXTMODULE_USART_DMA_STREAM            DMA2_Stream6
   #define EXTMODULE_USART_DMA_STREAM_IRQn       DMA2_Stream6_IRQn

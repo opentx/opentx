@@ -669,7 +669,7 @@
 #define TR_INACTIVITYALARM             INDENT "Inactivité"
 #define TR_MEMORYWARNING               INDENT "Mémoire pleine"
 #define TR_ALARMWARNING                TR(INDENT "Silence", INDENT "Sons désactivés")
-#define TR_RSSISHUTDOWNALARM           TR(INDENT "RSSI extinction", INDENT "Vérif RSSI à l'extinction")
+#define TR_RSSISHUTDOWNALARM           TR(INDENT "RSSI extinct.", INDENT "Vérif RSSI à l'extinction")
 #define TR_MODEL_STILL_POWERED         TR("Modèle allumé", "Modèle encore allumé")
 #define TR_MODEL_SHUTDOWN              "Eteindre ?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Presser [Enter] pour confirmer"
@@ -698,7 +698,7 @@
 #define TR_STICKS                      "Manches"
 #define TR_POTS                        "Potentiomètres"
 #define TR_SWITCHES                    "Inters"
-#define TR_SWITCHES_DELAY              "Délai inters son"
+#define TR_SWITCHES_DELAY              "Délai inter son"
 #define TR_SLAVE                       "Elève"
 #define TR_MODESRC                     "Mode\006% Source"
 #define TR_MULTIPLIER                  "Multiplieur"
@@ -829,9 +829,9 @@
 #define TR_LONGITUDE                   "Longitude"
 #define TR_GPSCOORD                    TR("Coordonnées", "Coordonnées GPS")
 #define TR_VARIO                       TR("Vario", "Variomètre")
-#define TR_PITCH_AT_ZERO               INDENT "Tonalité au zéro"
-#define TR_PITCH_AT_MAX                INDENT "Tonalité au max"
-#define TR_REPEAT_AT_ZERO              TR(INDENT "Interv. au zéro", INDENT "Intervalle au zéro")
+#define TR_PITCH_AT_ZERO               INDENT "Tonalité zéro"
+#define TR_PITCH_AT_MAX                INDENT "Tonalité max"
+#define TR_REPEAT_AT_ZERO              TR(INDENT "Interv. zéro", INDENT "Intervalle au zéro")
 #define TR_POWEROFF                    "\037\120ARRET..."
 #define TR_SHUTDOWN                    "ARRET EN COURS"
 #define TR_SAVEMODEL                   "Sauvegarde modèle..."
