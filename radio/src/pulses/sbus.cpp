@@ -149,7 +149,7 @@ void setupPulsesSbus()
   sendByteSbus(flags);
 
   // last byte, always 0x0
-  sendByteSbus(0x0);
+  sendByteSbus(0x00);
 
   putDsm2Flush();
 
