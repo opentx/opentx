@@ -936,7 +936,7 @@
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
-#define STR_WRITING             "Writing..."
+#define TR_WRITING             "Writing..."
 #define TR_CONFIRM_FORMAT      "Confirm Format?"
 #define TR_INTERNALRF          "Interna RF"
 #define TR_EXTERNALRF          "Externa RF"
