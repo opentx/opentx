@@ -43,8 +43,6 @@
   #define INTMODULE_PXX_PERIOD             9/*ms*/
 #endif
 
-#define EXTMODULE_USART_PXX2_BAUDRATE      230400
-
 #if defined(PXX_FREQUENCY_HIGH) && (!defined(INTMODULE_USART) || !defined(EXTMODULE_USART))
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
 /* DSM2 uses 2 header + 12 channel bytes, with max 10 changes (8n2) per byte + 16 bits trailer ~= 156 max pulses */

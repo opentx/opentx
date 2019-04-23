@@ -214,7 +214,7 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmodulePxx2Start()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX2_BAUDRATE);
+  extmoduleInvertedSerialStart(g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PRO2 ? 450000 : 230400);
 }
 #else
 void extmodulePxx2Start()

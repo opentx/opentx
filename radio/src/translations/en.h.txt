@@ -105,11 +105,11 @@
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
 
 #if defined(PCBXLITES) || defined(PCBX3)
-#define LEN_MODULE_PROTOCOLS           "\006"
-#define TR_MODULE_PROTOCOLS            "OFF\0  ""PPM\0  ""XJT\0  ""ISRM\0 ""DSM2\0 ""CRSF\0 ""MULT\0 ""R9M\0  ""R9M-A\0""R9MLit""R9ML-A""R9MP-A""SBUS\0"
+#define LEN_MODULE_PROTOCOLS           "\014"
+#define TR_MODULE_PROTOCOLS            "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS\0"
 #else
-#define LEN_MODULE_PROTOCOLS           "\013"
-#define TR_MODULE_PROTOCOLS            "OFF\0       ""PPM\0       ""XJT\0       ""XJT ACCESS\0""DSM2\0      ""CRSF\0      ""MULT\0      ""R9M\0       ""R9M ACCESS\0""R9MLite\0   ""R9ML ACCESS""R9MP ACCESS""SBUS\0"
+#define LEN_MODULE_PROTOCOLS           "\014"
+#define TR_MODULE_PROTOCOLS            "OFF\0        ""PPM\0        ""XJT\0        ""XJT ACCESS\0 ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS\0"
 #endif
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
