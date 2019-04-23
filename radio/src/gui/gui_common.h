@@ -57,7 +57,7 @@ bool isR9MModeAvailable(int mode);
 bool isR9ModuleRunning(int module);
 bool isR9MMFlex(int module);
 bool isPXX2ChannelsCountAllowed(int channels);
-bool isExternalModuleAvailable(int module);
+bool isExternalModuleAvailable(int moduleType);
 bool isInternalModuleAvailable(int module);
 bool isRfProtocolAvailable(int protocol);
 bool isTelemetryProtocolAvailable(int protocol);
