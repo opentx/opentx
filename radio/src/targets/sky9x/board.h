@@ -21,6 +21,7 @@
 #ifndef _BOARD_SKY9X_H_
 #define _BOARD_SKY9X_H_
 
+#include <inttypes.h>
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
