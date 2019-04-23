@@ -600,7 +600,6 @@ extern const char STR_TURN_OFF_RECEIVER          [];
 extern const char STR_STOPPING              [];
 extern const char STR_MENU_SPECTRUM_ANALYSER[];
 extern const char STR_MENU_POWER_METER[];
-extern const char STR_MENUTOOLS[];
 extern const char STR_SENSOR[];
 extern const char STR_COUNTRYCODE[];
 extern const char STR_USBMODE[];
