@@ -266,8 +266,7 @@ void telemetryInit(uint8_t protocol)
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
 #if defined(LUA)
-    outputTelemetryBuffer.size = 0;
-    outputTelemetryBuffer.trigger = 0x7E;
+    outputTelemetryBuffer.reset();
 #endif
   }
   else if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
@@ -280,8 +279,7 @@ void telemetryInit(uint8_t protocol)
   else if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0;
+    outputTelemetryBuffer.reset();
 #endif
     telemetryPortSetDirectionOutput();
   }

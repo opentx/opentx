@@ -52,11 +52,10 @@ void setupPulsesCrossfire()
   if (telemetryProtocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
     uint8_t * pulses = extmodulePulsesData.crossfire.pulses;
 #if defined(LUA)
-    if (outputTelemetryBufferTrigger != 0x00 && outputTelemetryBufferSize > 0) {
-      memcpy(pulses, outputTelemetryBuffer, outputTelemetryBufferSize);
-      extmodulePulsesData.crossfire.length = outputTelemetryBufferSize;
-      outputTelemetryBufferTrigger = 0x00;
-      outputTelemetryBufferSize = 0;
+    if (outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT) {
+      memcpy(pulses, outputTelemetryBuffer.data, outputTelemetryBuffer.size);
+      extmodulePulsesData.crossfire.length = outputTelemetryBuffer.size;
+      outputTelemetryBuffer.reset();
     }
     else
 #endif

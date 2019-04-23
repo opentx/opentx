@@ -158,14 +158,14 @@ static void processMultiTelemetryPaket(const uint8_t *packet)
       // Just an ack to our command, ignore for now
       break;
 
+#if defined(MULTI_SPORT) && defined(LUA)
     case FrskySportPolling:
-      #if defined(LUA)
-      if (len >= 1 && outputTelemetryBuffer.size > 0 && data[0] == outputTelemetryBuffer.trigger) {
+      if (len >= 1 && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data[0] == outputTelemetryBuffer.sport.physicalId) {
         TRACE("MP Sending sport data out.");
         sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
       }
-      #endif
       break;
+#endif
 
     default:
       TRACE("[MP] Unkown multi packet type 0x%02X, len %d", type, len);

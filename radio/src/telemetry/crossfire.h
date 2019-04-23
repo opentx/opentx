@@ -78,7 +78,6 @@ enum CrossfireSensorIndexes {
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
-bool isCrossfireOutputBufferAvailable();
 
 #if SPORT_MAX_BAUDRATE < 400000
 const uint32_t CROSSFIRE_BAUDRATES[] = {
