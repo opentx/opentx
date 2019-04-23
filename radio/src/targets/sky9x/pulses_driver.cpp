@@ -142,17 +142,6 @@ void disable_module_timer(uint32_t port)
   }
 }
 
-
-void disable_no_pulses(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    disable_ppm(EXTERNAL_MODULE);
-  }
-  else {
-    // TODO
-  }
-}
-
 void init_ppm(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {

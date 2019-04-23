@@ -254,7 +254,6 @@ uint32_t readTrims(void);
 
 // Pulses driver
 void init_no_pulses(uint32_t port);
-void disable_no_pulses(uint32_t port);
 void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
 void init_pxx1_pulses(uint32_t port);
