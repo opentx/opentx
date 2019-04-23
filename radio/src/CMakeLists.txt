@@ -309,7 +309,7 @@ if(NIGHTLY_BUILD_WARNING)
 endif()
 
 if(MODULE_R9M_FLEX_FW)
-    add_definitions(-DMODULE_R9M_FLEX_FW)
+  add_definitions(-DMODULE_R9M_FLEX_FW)
 endif()
 
 if(FRSKY_RELEASE)
