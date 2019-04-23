@@ -112,7 +112,7 @@ void menuModelReceiverOptions(event_t event)
           break;
 
         case ITEM_RECEIVER_PWM_RATE:
-          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9M2(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
