@@ -176,8 +176,8 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_RECEIVER_OTA) {
     getSelectionFullPath(lfn);
-    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_BIND;
-    // TODO
+    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaInformation);
+
   }
 #endif
 #if defined(LUA)

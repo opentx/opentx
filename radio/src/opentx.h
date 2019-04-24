@@ -1178,12 +1178,7 @@ union ReusableBuffer
     uint16_t offset;
     uint16_t count;
     char originalName[SD_SCREEN_FILE_LENGTH+1];
-    struct {
-      uint8_t step;
-      char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
-      uint8_t candidateReceiversCount;
-      uint8_t receiverIndex;
-    } otaUpdate;
+    BindInformation otaInformation;
   } sdManager;
 #endif
 
