@@ -1932,6 +1932,7 @@ void simuMain()
 int main()
 #endif
 {
+#if defined(STM32)
   TRACE("reusableBuffer: modelSel=%d, moduleSetup=%d, calib=%d, sdManager=%d, hardwareAndSettings=%d, spectrumAnalyser=%d, usb=%d",
         sizeof(reusableBuffer.modelsel),
         sizeof(reusableBuffer.moduleSetup),
@@ -1940,6 +1941,7 @@ int main()
         sizeof(reusableBuffer.hardwareAndSettings),
         sizeof(reusableBuffer.spectrumAnalyser),
         sizeof(reusableBuffer.MSC_BOT_Data));
+#endif
 
   // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
   // important to disable it before commencing with system initialisation (or
