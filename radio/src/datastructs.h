@@ -432,10 +432,6 @@ PACK(struct ModuleData {
       uint8_t subType:3;
       uint8_t invertedSerial:1; // telemetry serial inverted from standard
     };
-    struct {
-      uint8_t failsafeMode:4;  // only 3 bits used
-      uint8_t freq:2;
-    } r9m;
   };
 
   union {
