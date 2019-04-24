@@ -77,8 +77,6 @@ void extmodulePpmStart()
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN; // Start timer
 #endif
 
-  extmoduleSendNextFrame();
-
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
