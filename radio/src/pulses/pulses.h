@@ -122,6 +122,17 @@ struct ReceiverSettings {
   uint8_t outputsMapping[24];
 };
 
+struct BindInformation {
+  uint8_t step;
+  uint32_t timeout;
+  char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
+  uint8_t candidateReceiversCount;
+  uint8_t selectedReceiverIndex;
+  uint8_t rxUid;
+  uint8_t lbtMode;
+  uint8_t flexMode;
+};
+
 PACK(struct ModuleState {
   uint8_t protocol:4;
   uint8_t mode:4;
@@ -131,7 +142,18 @@ PACK(struct ModuleState {
   union {
     ModuleInformation * moduleInformation;
     ModuleSettings * moduleSettings;
+    BindInformation * bindInformation;
   };
+  void startBind(BindInformation * destination)
+  {
+    bindInformation = destination;
+    mode = MODULE_MODE_BIND;
+#if defined(SIMU)
+    bindInformation->candidateReceiversCount = 2;
+    strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1");
+    strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2");
+#endif
+  }
   void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
   {
     moduleInformation = destination;

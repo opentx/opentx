@@ -137,29 +137,31 @@ void processBindFrame(uint8_t module, uint8_t * frame)
     return;
   }
 
+  BindInformation * destination = moduleState[module].bindInformation;
+
   switch(frame[3]) {
     case 0x00:
-      if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_START) {
+      if (destination->step == BIND_START) {
         bool found = false;
-        for (uint8_t i=0; i<reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount; i++) {
-          if (memcmp(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+        for (uint8_t i=0; i<destination->candidateReceiversCount; i++) {
+          if (memcmp(destination->candidateReceiversNames[i], &frame[4], PXX2_LEN_RX_NAME) == 0) {
             found = true;
             break;
           }
         }
-        if (!found && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
-          memcpy(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount++], &frame[4], PXX2_LEN_RX_NAME);
+        if (!found && destination->candidateReceiversCount < PXX2_MAX_RECEIVERS_PER_MODULE) {
+          memcpy(destination->candidateReceiversNames[destination->candidateReceiversCount++], &frame[4], PXX2_LEN_RX_NAME);
         }
       }
       break;
 
     case 0x01:
-      if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_OPTIONS_SELECTED) {
-        if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
-          memcpy(g_model.moduleData[module].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.bindReceiverIndex], &frame[4], PXX2_LEN_RX_NAME);
+      if (destination->step == BIND_OPTIONS_SELECTED) {
+        if (memcmp(&destination->candidateReceiversNames[destination->selectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+          memcpy(g_model.moduleData[module].pxx2.receiverName[destination->rxUid], &frame[4], PXX2_LEN_RX_NAME);
           storageDirty(EE_MODEL);
-          reusableBuffer.moduleSetup.pxx2.bindStep = BIND_WAIT;
-          reusableBuffer.moduleSetup.pxx2.bindWaitTimeout = get_tmr10ms() + 30;
+          destination->step = BIND_WAIT;
+          destination->timeout = get_tmr10ms() + 30;
         }
       }
       break;

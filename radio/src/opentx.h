@@ -1128,25 +1128,18 @@ union ReusableBuffer
   struct {
     char msg[64];
     uint8_t r9mPower;
+    BindInformation bindInformation;
     struct {
       union {
         uint8_t registerStep;
-        uint8_t bindStep;
         uint8_t resetStep;
       };
-      uint32_t bindWaitTimeout;
       uint8_t registerPopupVerticalPosition;
       uint8_t registerPopupHorizontalPosition;
       int8_t registerPopupEditMode;
       char registerRxName[PXX2_LEN_RX_NAME];
       uint8_t registerLoopIndex; // will be removed later
-      char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
-      uint8_t bindCandidateReceiversCount;
-      uint8_t bindReceiverIndex;
-      uint8_t bindLbtMode;
-      uint8_t bindFlexMode;
       union {
-        uint8_t bindSelectedReceiverIndex;
         uint8_t shareReceiverIndex;
         uint8_t resetReceiverIndex;
       };
@@ -1185,7 +1178,13 @@ union ReusableBuffer
     uint16_t offset;
     uint16_t count;
     char originalName[SD_SCREEN_FILE_LENGTH+1];
-  } sdmanager;
+    struct {
+      uint8_t step;
+      char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
+      uint8_t candidateReceiversCount;
+      uint8_t receiverIndex;
+    } otaUpdate;
+  } sdManager;
 #endif
 
   struct {

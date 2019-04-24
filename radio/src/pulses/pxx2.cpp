@@ -222,10 +222,12 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 
 void Pxx2Pulses::setupBindFrame(uint8_t module)
 {
-  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_WAIT) {
-    if (get_tmr10ms() > reusableBuffer.moduleSetup.pxx2.bindWaitTimeout) {
+  BindInformation * destination = moduleState[module].bindInformation;
+
+  if (destination->step == BIND_WAIT) {
+    if (get_tmr10ms() > destination->timeout) {
       moduleState[module].mode = MODULE_MODE_NORMAL;
-      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
+      destination->step = BIND_OK;
       POPUP_INFORMATION(STR_BIND_OK);
     }
     return;
@@ -233,12 +235,12 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
 
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
-  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_OPTIONS_SELECTED) {
+  if (destination->step == BIND_OPTIONS_SELECTED) {
     Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
-      Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
+      Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte((reusableBuffer.moduleSetup.pxx2.bindLbtMode << 6) + (reusableBuffer.moduleSetup.pxx2.bindFlexMode << 4) + reusableBuffer.moduleSetup.pxx2.bindReceiverIndex); // RX_UID is the slot index (which is unique and never moved)
+    Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
