@@ -254,7 +254,6 @@ int getSwitchWarningsCount()
 #define TIMER_ROWS(x)                     2|NAVIGATION_LINE_BY_LINE, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
 
 #define EXTERNAL_MODULE_MODE_ROWS         (isModuleXJT(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
-#define EXTRA_MODULE_ROWS                 (isModuleR9M_EUPLUS(EXTERNAL_MODULE) || isModuleR9M_AU_PLUS(EXTERNAL_MODULE)) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
 
 #if TIMERS == 1
   #define TIMERS_ROWS                     TIMER_ROWS(0)
