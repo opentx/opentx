@@ -20,17 +20,6 @@
 
 #include "opentx.h"
 
-void intmoduleStop();
-void intmodulePxxStart();
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-
-void extmoduleStop();
-void extmodulePpmStart();
-void extmodulePxxStart();
-void extmodulePxx2Start();
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
-
-
 void init_ppm(uint8_t module)
 {
   if (module == EXTERNAL_MODULE) {

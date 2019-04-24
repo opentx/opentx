@@ -225,12 +225,20 @@ void init_pxx1_pulses(uint8_t module);
 void disable_pxx1_pulses(uint8_t module);
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void disable_serial(uint8_t module);
+
 void intmoduleStop();
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmodulePxxStart();
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
+
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
+void extmoduleStop();
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
 
 // Trainer driver
 void init_trainer_ppm(void);
