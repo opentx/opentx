@@ -517,14 +517,6 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
-bool isR9ModuleRunning(int module)
-{
-#if defined(SIMU)
-  return g_model.moduleData[module].type == MODULE_TYPE_R9M && TELEMETRY_STREAMING(); // Simu uses telemetry simu to activate/desactivate R9
-#else
-  return g_model.moduleData[module].type == MODULE_TYPE_R9M && R9ModuleStreaming;
-#endif
-}
 #if defined(PCBXLITE)
 bool isR9MModeAvailable(int mode)
 {
