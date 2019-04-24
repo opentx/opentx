@@ -115,23 +115,19 @@ enum PXX2Variant {
 };
 
 enum PXX2RegisterSteps {
-  REGISTER_START,
+  REGISTER_INIT,
   REGISTER_RX_NAME_RECEIVED,
   REGISTER_RX_NAME_SELECTED,
   REGISTER_OK
 };
 
 enum PXX2BindSteps {
-  BIND_START,
+  BIND_INIT,
   BIND_RX_NAME_SELECTED,
-  BIND_OPTIONS_SELECTED,
+  BIND_INFO_REQUEST,
+  BIND_START,
   BIND_WAIT,
   BIND_OK
-};
-
-enum PXX2ResetSteps {
-  RESET_START,
-  RESET_OK
 };
 
 enum PXX2ReceiverStatus {
@@ -220,8 +216,6 @@ class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
     void addFrameType(uint8_t type_c, uint8_t type_id)
     {
       // TYPE_C + TYPE_ID
-      // TODO optimization ? Pxx2Transport::addByte(0x26); // This one is CRC-ed on purpose
-
       Pxx2Transport::addByte(type_c);
       Pxx2Transport::addByte(type_id);
     }

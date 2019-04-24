@@ -87,6 +87,24 @@ void onSdFormatConfirm(const char * result)
   }
 }
 
+void onUpdateConfirmation(const char * result)
+{
+  if (result == STR_OK) {
+    // TODO OTA Update
+  }
+  else {
+    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+  }
+}
+
+void onBindStateChanged()
+{
+  if (reusableBuffer.sdManager.otaInformation.step == BIND_INFO_REQUEST) {
+    POPUP_CONFIRMATION(PXX2receiversModels[reusableBuffer.sdManager.otaInformation.receiverInformation.modelID], onUpdateConfirmation);
+    // SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
+  }
+}
+
 void onSdManagerMenu(const char * result)
 {
   TCHAR lfn[_MAX_LFN+1];
@@ -176,8 +194,7 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_RECEIVER_OTA) {
     getSelectionFullPath(lfn);
-    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaInformation);
-
+    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaInformation, onBindStateChanged);
   }
 #endif
 #if defined(LUA)
@@ -186,6 +203,22 @@ void onSdManagerMenu(const char * result)
     luaExec(lfn);
   }
 #endif
+}
+
+void onUpdateReceiverSelection(const char * result)
+{
+  if (result != STR_EXIT) {
+    reusableBuffer.sdManager.otaInformation.selectedReceiverIndex = (result - reusableBuffer.sdManager.otaInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.sdManager.otaInformation.candidateReceiversNames[0]);
+    reusableBuffer.sdManager.otaInformation.step = BIND_INFO_REQUEST;
+#if defined(SIMU)
+    reusableBuffer.sdManager.otaInformation.receiverInformation.modelID = 0x01;
+    onBindStateChanged();
+#endif
+  }
+  else {
+    // the user pressed [Exit]
+    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+  }
 }
 
 void menuRadioSdManager(event_t _event)
@@ -431,6 +464,17 @@ void menuRadioSdManager(event_t _event)
         if (IS_DIRECTORY(reusableBuffer.sdManager.lines[i])) {
           lcdDrawChar(lcdNextPos, y, ']', s_editMode == EDIT_MODIFY_STRING ? 0 : attr);
         }
+      }
+    }
+
+    if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
+      if (reusableBuffer.sdManager.otaInformation.step == BIND_INIT && reusableBuffer.sdManager.otaInformation.candidateReceiversCount > 0) {
+        popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+        for (uint8_t i=0; i<popupMenuItemsCount; i++) {
+          popupMenuItems[i] = reusableBuffer.sdManager.otaInformation.candidateReceiversNames[i];
+        }
+        popupMenuTitle = STR_PXX2_SELECT_RX;
+        POPUP_MENU_START(onUpdateReceiverSelection);
       }
     }
 

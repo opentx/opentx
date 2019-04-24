@@ -228,14 +228,20 @@ void Pxx2Pulses::setupBindFrame(uint8_t module)
     if (get_tmr10ms() > destination->timeout) {
       moduleState[module].mode = MODULE_MODE_NORMAL;
       destination->step = BIND_OK;
-      POPUP_INFORMATION(STR_BIND_OK);
+      POPUP_INFORMATION(STR_BIND_OK); // TODO rather use the new callback
     }
     return;
   }
 
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
-  if (destination->step == BIND_OPTIONS_SELECTED) {
+  if (destination->step == BIND_INFO_REQUEST) {
+    Pxx2Transport::addByte(0x02);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
+    }
+  }
+  else if (destination->step == BIND_START) {
     Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
       Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);

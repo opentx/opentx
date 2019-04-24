@@ -292,7 +292,7 @@ void onPXX2R9MBindModeMenu(const char * result)
   reusableBuffer.moduleSetup.bindInformation.step = BIND_OK;
   POPUP_INFORMATION(STR_BIND_OK);
 #else
-  reusableBuffer.moduleSetup.bindInformation.step = BIND_OPTIONS_SELECTED;
+  reusableBuffer.moduleSetup.bindInformation.step = BIND_START;
 #endif
 }
 
@@ -323,7 +323,7 @@ void onPXX2BindMenu(const char * result)
       reusableBuffer.moduleSetup.bindInformation.step = BIND_OK;
       POPUP_INFORMATION(STR_BIND_OK);
 #else
-      reusableBuffer.moduleSetup.bindInformation.step = BIND_OPTIONS_SELECTED;
+      reusableBuffer.moduleSetup.bindInformation.step = BIND_START;
 #endif
     }
   }
@@ -1419,7 +1419,7 @@ void menuModelSetup(event_t event)
         }
 
         if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_START && reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
+          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT && reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
             popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
             for (uint8_t i=0; i<popupMenuItemsCount; i++) {
               popupMenuItems[i] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[i];

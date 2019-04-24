@@ -131,7 +131,10 @@ struct BindInformation {
   uint8_t rxUid;
   uint8_t lbtMode;
   uint8_t flexMode;
+  PXX2HardwareInformation receiverInformation;
 };
+
+typedef void (* ModuleCallback)();
 
 PACK(struct ModuleState {
   uint8_t protocol:4;
@@ -144,9 +147,12 @@ PACK(struct ModuleState {
     ModuleSettings * moduleSettings;
     BindInformation * bindInformation;
   };
-  void startBind(BindInformation * destination)
+  ModuleCallback callback;
+
+  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr)
   {
     bindInformation = destination;
+    callback = bindCallback;
     mode = MODULE_MODE_BIND;
 #if defined(SIMU)
     bindInformation->candidateReceiversCount = 2;
