@@ -45,9 +45,7 @@ void menuRadioTools(event_t event)
 #if defined(PXX2)
     for (uint8_t module = 0; module < NUM_MODULES; module++) {
       if (isModulePXX2(module) && (module == INTERNAL_MODULE ? IS_INTERNAL_MODULE_ON() : IS_EXTERNAL_MODULE_ON())) {
-        reusableBuffer.hardwareAndSettings.modules[module].current = PXX2_HW_INFO_TX_ID;
-        reusableBuffer.hardwareAndSettings.modules[module].maximum = PXX2_HW_INFO_TX_ID;
-        moduleSettings[module].mode = MODULE_MODE_GET_HARDWARE_INFO;
+        moduleState[module].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[module], PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
       }
     }
 #endif

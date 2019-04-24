@@ -269,7 +269,7 @@ void extmodulePxxSerialStart()
 
 void extmoduleSendNextFrame()
 {
-  switch(moduleSettings[EXTERNAL_MODULE].protocol) {
+  switch(moduleState[EXTERNAL_MODULE].protocol) {
     case PROTOCOL_CHANNELS_PPM:
       EXTMODULE_TIMER->CCR1 = GET_MODULE_PPM_DELAY(EXTERNAL_MODULE) * 2;
       EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_MODULE_PPM_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); //     // we are using complementary output so logic has to be reversed here

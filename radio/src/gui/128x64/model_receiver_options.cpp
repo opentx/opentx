@@ -30,7 +30,7 @@ void onRxOptionsUpdateConfirm(const char * result)
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
     reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 2;
     reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
   else {
     popMenu();
@@ -57,19 +57,17 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
 #else
     // no need to initialize reusableBuffer.hardwareAndSettings.receiverSettings.state to PXX2_HARDWARE_INFO
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].current = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].maximum = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_GET_HARDWARE_INFO;
+    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], reusableBuffer.hardwareAndSettings.receiverSettings.receiverId, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
 #endif
   }
 
-  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleSettings[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_READ;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
   if (menuEvent) {
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION("Update RX options?", onRxOptionsUpdateConfirm);
@@ -84,7 +82,7 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
     reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 0;
     reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {

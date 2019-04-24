@@ -141,7 +141,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleSettings[moduleIdx].mode = MODULE_MODE_BIND;
+  moduleState[moduleIdx].mode = MODULE_MODE_BIND;
 }
 
 void onModelSetupBitmapMenu(const char * result)
@@ -300,8 +300,8 @@ bool menuModelSetup(event_t event)
   }
 
   if (menuEvent) {
-    moduleSettings[0].mode = 0;
-    moduleSettings[1].mode = 0;
+    moduleState[0].mode = 0;
+    moduleState[1].mode = 0;
   }
 
   int sub = menuVerticalPosition;
@@ -949,8 +949,8 @@ bool menuModelSetup(event_t event)
                 }
               }
             }
-            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
-            drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleSettings[moduleIdx].mode == MODULE_MODE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
+            drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleState[moduleIdx].mode == MODULE_MODE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
+            drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
             uint8_t newFlag = 0;
 #if defined(MULTIMODULE)
             if (multiBindStatus == MULTI_BIND_FINISHED) {
@@ -986,7 +986,7 @@ bool menuModelSetup(event_t event)
                       POPUP_MENU_START(onBindMenu);
                       continue;
                     }
-                    if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
+                    if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
                       newFlag = MODULE_MODE_BIND;
                     }
                     else {
@@ -1004,7 +1004,7 @@ bool menuModelSetup(event_t event)
                 }
               }
             }
-            moduleSettings[moduleIdx].mode = newFlag;
+            moduleState[moduleIdx].mode = newFlag;
 #if defined(MULTIMODULE)
             if (newFlag == MODULE_MODE_BIND)
               multiBindStatus = MULTI_BIND_INITIATED;

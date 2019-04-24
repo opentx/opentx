@@ -45,39 +45,42 @@ class Pxx2Telemetry
 
 void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_GET_HARDWARE_INFO) {
+  if (moduleState[module].mode != MODULE_MODE_GET_HARDWARE_INFO) {
     return;
   }
 
+  ModuleInformation * destination = moduleState[module].moduleInformation;
+
   uint8_t index = frame[3];
   if (index == 0xFF)
-    memcpy(&reusableBuffer.hardwareAndSettings.modules[module].information, &frame[4], sizeof(PXX2HardwareInformation));
+    memcpy(&destination->information, &frame[4], sizeof(PXX2HardwareInformation));
   else if (index < PXX2_MAX_RECEIVERS_PER_MODULE)
-    memcpy(&reusableBuffer.hardwareAndSettings.modules[module].receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
+    memcpy(&destination->receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
 }
 
 void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_MODULE_SETTINGS) {
+  if (moduleState[module].mode != MODULE_MODE_MODULE_SETTINGS) {
     return;
   }
 
+  ModuleSettings * destination = moduleState[module].moduleSettings;
+
   // Flag1
-  reusableBuffer.hardwareAndSettings.moduleSettings.txPower = frame[4] >> 4;
   if (frame[4] & PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA)
-    reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = 1;
+    destination->externalAntenna = 1;
 
   // Power
-  reusableBuffer.hardwareAndSettings.moduleSettings.txPower = frame[5];
+  destination->txPower = frame[5];
 
-  reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
-  reusableBuffer.hardwareAndSettings.moduleSettings.timeout = 0;
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  destination->state = PXX2_SETTINGS_OK;
+  destination->retryTime = 0;
+  moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_RECEIVER_SETTINGS) {
+  if (moduleState[module].mode != MODULE_MODE_RECEIVER_SETTINGS) {
     return;
   }
 
@@ -95,12 +98,12 @@ void processReceiverSettingsFrame(uint8_t module, uint8_t * frame)
 
   reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_OK;
   reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processRegisterFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_REGISTER) {
+  if (moduleState[module].mode != MODULE_MODE_REGISTER) {
     return;
   }
 
@@ -120,7 +123,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
         if (cmpStrWithZchar((char *)&frame[4], reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME) &&
             cmpStrWithZchar((char *)&frame[12], g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID)) {
           reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_OK;
-          moduleSettings[module].mode = MODULE_MODE_NORMAL;
+          moduleState[module].mode = MODULE_MODE_NORMAL;
           POPUP_INFORMATION(STR_REG_OK);
         }
       }
@@ -130,7 +133,7 @@ void processRegisterFrame(uint8_t module, uint8_t * frame)
 
 void processBindFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_BIND) {
+  if (moduleState[module].mode != MODULE_MODE_BIND) {
     return;
   }
 
@@ -151,7 +154,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
       break;
 
     case 0x01:
-      if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
+      if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_OPTIONS_SELECTED) {
         if (memcmp(&reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
           memcpy(g_model.moduleData[module].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.bindReceiverIndex], &frame[4], PXX2_LEN_RX_NAME);
           storageDirty(EE_MODEL);
@@ -165,7 +168,7 @@ void processBindFrame(uint8_t module, uint8_t * frame)
 
 void processResetFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_RESET) {
+  if (moduleState[module].mode != MODULE_MODE_RESET) {
     return;
   }
 
@@ -173,7 +176,7 @@ void processResetFrame(uint8_t module, uint8_t * frame)
     memclear(g_model.moduleData[module].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.resetReceiverIndex], PXX2_LEN_RX_NAME);
   }
 
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
 void processTelemetryFrame(uint8_t module, uint8_t * frame)
@@ -184,7 +187,7 @@ void processTelemetryFrame(uint8_t module, uint8_t * frame)
 
 void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
+  if (moduleState[module].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     return;
   }
 
@@ -207,7 +210,7 @@ void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
 
 void processPowerMeterFrame(uint8_t module, uint8_t * frame)
 {
-  if (moduleSettings[module].mode != MODULE_MODE_POWER_METER) {
+  if (moduleState[module].mode != MODULE_MODE_POWER_METER) {
     return;
   }
 

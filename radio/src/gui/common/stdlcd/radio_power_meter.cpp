@@ -49,18 +49,18 @@ void menuRadioPowerMeter(event_t event)
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H/2, STR_STOPPING);
     lcdRefresh();
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(1000);
     RTOS_WAIT_MS(1000);
     return;
   }
 
-  if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_POWER_METER) {
+  if (moduleState[g_moduleIdx].mode != MODULE_MODE_POWER_METER) {
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400000000;
     reusableBuffer.powerMeter.attn = 4;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
   // The warning

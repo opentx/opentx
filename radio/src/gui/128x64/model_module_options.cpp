@@ -27,15 +27,10 @@ extern uint8_t g_moduleIdx;
 
 void onTxOptionsUpdateConfirm(const char * result)
 {
-  if (result == STR_OK) {
-    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.hardwareAndSettings.moduleSettings.dirty = 2;
-    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
-  }
-  else {
+  if (result == STR_OK)
+    moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
+  else
     popMenu();
-  }
 }
 
 enum {
@@ -90,21 +85,18 @@ void menuModelModuleOptions(event_t event)
 #if defined(SIMU)
     reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
 #else
-    // no need to initialize reusableBuffer.hardwareAndSettings.moduleSettings.state to PXX2_HARDWARE_INFO
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].current = PXX2_HW_INFO_TX_ID;
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].maximum = PXX2_HW_INFO_TX_ID;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_GET_HARDWARE_INFO;
+    // no need to initialize reusableBuffer.hardwareAndSettings.moduleState.state to PXX2_HARDWARE_INFO
+    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
 #endif
   }
 
-  if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleSettings[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
-    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_READ;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
+  if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
+    moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
   }
 
   if (menuEvent) {
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
+    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
       abortPopMenu();
       POPUP_CONFIRMATION("Update TX options?", onTxOptionsUpdateConfirm);
     }
@@ -113,15 +105,13 @@ void menuModelModuleOptions(event_t event)
     }
   }
 
-  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
+  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
     killEvents(event);
-    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.hardwareAndSettings.moduleSettings.dirty = 0;
-    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
+    reusableBuffer.hardwareAndSettings.moduleSettingsDirty = 0;
+    moduleState[g_moduleIdx].writeModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
   }
 
-  if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty == 2 && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
   }
 
@@ -155,7 +145,7 @@ void menuModelModuleOptions(event_t event)
           if (attr) {
             reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
             if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
+              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
             }
           }
           break;
@@ -163,7 +153,7 @@ void menuModelModuleOptions(event_t event)
         case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
           reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
           if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
+            reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
           }
           break;
 
@@ -176,7 +166,7 @@ void menuModelModuleOptions(event_t event)
           if (attr) {
             reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
             if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
+              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
             }
           }
           break;

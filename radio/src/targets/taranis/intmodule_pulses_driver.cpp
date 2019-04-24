@@ -34,7 +34,7 @@ void intmoduleStop()
 
 void intmoduleSendNextFrame()
 {
-  switch (moduleSettings[INTERNAL_MODULE].protocol) {
+  switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance

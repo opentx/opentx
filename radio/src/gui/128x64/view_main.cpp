@@ -568,7 +568,7 @@ void menuMainView(event_t event)
 #endif
 
 #if defined(DSM2)
-  if (moduleSettings[0].mode == MODULE_MODE_BIND) {
+  if (moduleState[0].mode == MODULE_MODE_BIND) {
     // Issue 98
     lcdDrawText(15*FW, 0, "BIND", 0);
   }

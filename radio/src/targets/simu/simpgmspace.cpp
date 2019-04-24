@@ -336,7 +336,7 @@ void StartSimu(bool tests, const char * sdPath, const char * settingsPath)
   if (simu_running)
     return;
 
-  moduleSettings[0].protocol = PROTOCOL_CHANNELS_UNINITIALIZED;
+  moduleState[0].protocol = PROTOCOL_CHANNELS_UNINITIALIZED;
   menuLevel = 0;
 
   simu_start_mode = (tests ? 0 : 0x02 /* OPENTX_START_NO_CHECKS */);

@@ -28,9 +28,9 @@
 #include "pulses/pxx2.h"
 
 #if NUM_MODULES > 1
-  #define IS_RANGECHECK_ENABLE()             (moduleSettings[0].mode == MODULE_MODE_RANGECHECK || moduleSettings[1].mode == MODULE_MODE_RANGECHECK)
+  #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK || moduleState[1].mode == MODULE_MODE_RANGECHECK)
 #else
-  #define IS_RANGECHECK_ENABLE()             (moduleSettings[0].mode == MODULE_MODE_RANGECHECK)
+  #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK)
 #endif
 
 #if defined(PCBSKY9X) && defined(DSM2)
@@ -79,15 +79,82 @@ enum ModuleSettingsMode
   MODULE_MODE_RESET
 };
 
-PACK(struct ModuleSettings {
+
+PACK(struct PXX2Version {
+  uint8_t major;
+  uint8_t revision:4;
+  uint8_t minor:4;
+});
+
+PACK(struct PXX2HardwareInformation {
+  uint8_t modelID;
+  PXX2Version hwVersion;
+  PXX2Version swVersion;
+  uint8_t variant;
+});
+
+PACK(struct ModuleInformation {
+  int8_t current;
+  int8_t maximum;
+  uint8_t timeout;
+  PXX2HardwareInformation information;
+  struct {
+    PXX2HardwareInformation information;
+  } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
+});
+
+struct ModuleSettings {
+  uint8_t state;  // 0x00 = READ 0x40 = WRITE
+  tmr10ms_t retryTime;
+  uint8_t rfProtocol;
+  uint8_t externalAntenna;
+  int8_t txPower;
+};
+
+struct ReceiverSettings {
+  uint8_t state;  // 0x00 = READ 0x40 = WRITE
+  tmr10ms_t timeout;
+  uint8_t receiverId;
+  uint8_t dirty;
+  uint8_t telemetryDisabled;
+  uint8_t pwmRate;
+  uint8_t outputsCount;
+  uint8_t outputsMapping[24];
+};
+
+PACK(struct ModuleState {
   uint8_t protocol:4;
   uint8_t mode:4;
   uint8_t paused:1;
   uint8_t spare:7;
   uint16_t counter;
+  union {
+    ModuleInformation * moduleInformation;
+    ModuleSettings * moduleSettings;
+  };
+  void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
+  {
+    moduleInformation = destination;
+    moduleInformation->current = first;
+    moduleInformation->maximum = last;
+    mode = MODULE_MODE_GET_HARDWARE_INFO;
+  }
+  void readModuleSettings(ModuleSettings * destination)
+  {
+    moduleSettings = destination;
+    moduleSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+  void writeModuleSettings(ModuleSettings * source)
+  {
+    moduleSettings = source;
+    moduleSettings->state = PXX2_SETTINGS_WRITE;
+    moduleSettings->retryTime = 0;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
 });
 
-extern ModuleSettings moduleSettings[NUM_MODULES];
+extern ModuleState moduleState[NUM_MODULES];
 
 template<class T> struct PpmPulsesData {
   T pulses[20];
@@ -241,16 +308,16 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_PXX2
 };
 
-inline bool pulsesStarted() { return moduleSettings[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
+inline bool pulsesStarted() { return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
 inline void pausePulses() { s_pulses_paused = true; }
 inline void resumePulses() { s_pulses_paused = false; }
 
-#define SEND_FAILSAFE_NOW(idx) moduleSettings[idx].counter = 1
+#define SEND_FAILSAFE_NOW(idx) moduleState[idx].counter = 1
 
 inline void SEND_FAILSAFE_1S()
 {
   for (int i=0; i<NUM_MODULES; i++) {
-    moduleSettings[i].counter = 100;
+    moduleState[i].counter = 100;
   }
 }
 

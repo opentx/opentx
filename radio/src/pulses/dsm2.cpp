@@ -124,7 +124,7 @@ void setupPulsesDSM2()
 
   extmodulePulsesData.dsm2.ptr = extmodulePulsesData.dsm2.pulses;
 
-  switch (moduleSettings[EXTERNAL_MODULE].protocol) {
+  switch (moduleState[EXTERNAL_MODULE].protocol) {
     case PROTOCOL_CHANNELS_DSM2_LP45:
       dsmDat[0] = 0x00;
       break;
@@ -140,21 +140,21 @@ void setupPulsesDSM2()
   if (dsm2BindTimer > 0) {
     dsm2BindTimer--;
     if (switchState(SW_DSM2_BIND)) {
-      moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_BIND;
+      moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_BIND;
       dsmDat[0] |= DSM2_SEND_BIND;
     }
   }
-  else if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_RANGECHECK) {
+  else if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
   else {
-    moduleSettings[EXTERNAL_MODULE].mode = 0;
+    moduleState[EXTERNAL_MODULE].mode = 0;
   }
 #else
-  if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
+  if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
     dsmDat[0] |= DSM2_SEND_BIND;
   }
-  else if (moduleSettings[EXTERNAL_MODULE].mode == MODULE_MODE_RANGECHECK) {
+  else if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_RANGECHECK) {
     dsmDat[0] |= DSM2_SEND_RANGECHECK;
   }
 #endif

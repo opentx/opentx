@@ -238,7 +238,6 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PXX2)
-
 bool isPXX2ReceiverEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
 {
   return is_memclear(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME);
@@ -258,17 +257,85 @@ void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
   }
 }
 
-void onPXX2BindMenu(const char * result)
+const char * STR_BIND_8CH_WITH_TELEM = TR("8CH with telem.", "8CH with telemetry");
+const char * STR_BIND_16CH_WITH_TELEM = TR("16CH with telem.", "16CH with telemetry");
+const char * STR_BIND_16CH_WITHOUT_TELEM = TR("16CH without telem.", "16CH without telemetry");
+const char * STR_BIND_FLEX_868 = "Flex 868MHz";
+const char * STR_BIND_FLEX_915 = "Flex 915MHz";
+
+void onPXX2R9MBindModeMenu(const char * result)
 {
-  if (result != STR_EXIT) {
-    reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]);
-    reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
+  if (result == STR_BIND_8CH_WITH_TELEM) {
+    reusableBuffer.moduleSetup.pxx2.bindLbtMode = 0;
+  }
+  else if (result == STR_BIND_16CH_WITH_TELEM) {
+    reusableBuffer.moduleSetup.pxx2.bindLbtMode = 1;
+  }
+  else if (result == STR_BIND_16CH_WITHOUT_TELEM) {
+    reusableBuffer.moduleSetup.pxx2.bindLbtMode = 2;
+  }
+  else if (result == STR_BIND_FLEX_868) {
+    reusableBuffer.moduleSetup.pxx2.bindFlexMode = 0;
+  }
+  else if (result == STR_BIND_FLEX_915) {
+    reusableBuffer.moduleSetup.pxx2.bindFlexMode = 1;
   }
   else {
     // the user pressed [Exit]
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
-    moduleSettings[moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+    removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
+    return;
+  }
+
+#if defined(SIMU)
+  uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
+  memcpy(g_model.moduleData[moduleIdx].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.bindReceiverIndex], reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex], PXX2_LEN_RX_NAME);
+  storageDirty(EE_MODEL);
+  moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+  reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
+  POPUP_INFORMATION(STR_BIND_OK);
+#else
+  reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OPTIONS_SELECTED;
+#endif
+}
+
+void onPXX2BindMenu(const char * result)
+{
+  if (result != STR_EXIT) {
+    uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
+    reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex = (result - reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0]);
+    if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_EU) {
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
+      POPUP_MENU_ADD_ITEM(STR_BIND_8CH_WITH_TELEM);
+      POPUP_MENU_ADD_ITEM(STR_BIND_16CH_WITH_TELEM);
+      POPUP_MENU_ADD_ITEM(STR_BIND_16CH_WITHOUT_TELEM);
+      POPUP_MENU_START(onPXX2R9MBindModeMenu);
+    }
+    else if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_FLEX) {
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_RX_NAME_SELECTED;
+      POPUP_MENU_ADD_ITEM(STR_BIND_FLEX_868);
+      POPUP_MENU_ADD_ITEM(STR_BIND_FLEX_915);
+      POPUP_MENU_START(onPXX2R9MBindModeMenu);
+    }
+    else {
+#if defined(SIMU)
+      memcpy(g_model.moduleData[moduleIdx].pxx2.receiverName[reusableBuffer.moduleSetup.pxx2.bindReceiverIndex], result, PXX2_LEN_RX_NAME);
+      storageDirty(EE_MODEL);
+      moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
+      POPUP_INFORMATION(STR_BIND_OK);
+#else
+      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OPTIONS_SELECTED;
+#endif
+    }
+  }
+  else {
+    // the user pressed [Exit]
+    uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
+    uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
+    moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
     removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
   }
 }
@@ -278,7 +345,7 @@ void onResetReceiverConfirm(const char * result)
   if (result == STR_OK) {
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(menuVerticalPosition - HEADER_LINE);
     uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(menuVerticalPosition - HEADER_LINE);
-    moduleSettings[moduleIdx].mode = MODULE_MODE_RESET;
+    moduleState[moduleIdx].mode = MODULE_MODE_RESET;
     removePXX2Receiver(moduleIdx, receiverIdx);
   }
 }
@@ -297,12 +364,27 @@ void onPXX2ReceiverMenu(const char * result)
   else if (result == STR_BIND) {
     memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
     reusableBuffer.moduleSetup.pxx2.bindReceiverIndex = receiverIdx;
-    moduleSettings[moduleIdx].mode = MODULE_MODE_BIND;
+#if defined(SIMU)
+    reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 2;
+    strcpy(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[0], "SimuRX1");
+    strcpy(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[1], "SimuRX2");
+#endif
+    if (isModuleR9M2(moduleIdx)) {
+#if defined(SIMU)
+      reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID = 1;
+      reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant = 2;
+#else
+      moduleState[moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+#endif
+    }
+    else {
+      moduleState[moduleIdx].mode = MODULE_MODE_BIND;
+    }
     s_editMode = 1;
   }
   else if (result == STR_SHARE) {
     reusableBuffer.moduleSetup.pxx2.shareReceiverIndex = receiverIdx;
-    moduleSettings[moduleIdx].mode = MODULE_MODE_SHARE;
+    moduleState[moduleIdx].mode = MODULE_MODE_SHARE;
     s_editMode = 1;
   }
   else if (result == STR_DELETE || result == STR_RESET) {
@@ -341,7 +423,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleSettings[moduleIdx].mode = MODULE_MODE_BIND;
+  moduleState[moduleIdx].mode = MODULE_MODE_BIND;
 }
 
 enum PopupRegisterItems {
@@ -428,7 +510,7 @@ void runPopupRegister(event_t event)
 void startRegisterDialog(uint8_t module)
 {
   memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
-  moduleSettings[module].mode = MODULE_MODE_REGISTER;
+  moduleState[module].mode = MODULE_MODE_REGISTER;
   s_editMode = 0;
   POPUP_INPUT("", runPopupRegister);
 }
@@ -541,9 +623,9 @@ void menuModelSetup(event_t event)
 
 #if (defined(DSM2) || defined(PXX))
   if (menuEvent) {
-    moduleSettings[0].mode = 0;
+    moduleState[0].mode = 0;
 #if NUM_MODULES > 1
-    moduleSettings[1].mode = 0;
+    moduleState[1].mode = 0;
 #endif
   }
 #endif
@@ -1277,18 +1359,18 @@ void menuModelSetup(event_t event)
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_REGISTER_BUTTON, (menuHorizontalPosition == 0 ? attr : 0));
         lcdDrawText(lcdLastRightPos + 3, y, STR_MODULE_RANGE, (menuHorizontalPosition == 1 ? attr : 0));
         if (attr) {
-          if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
+          if (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
             if (menuHorizontalPosition == 0 && event == EVT_BUTTON_PRESSED()) {
               startRegisterDialog(moduleIdx);
             }
             else if (menuHorizontalPosition == 1) {
-              moduleSettings[moduleIdx].mode = MODULE_MODE_RANGECHECK;
+              moduleState[moduleIdx].mode = MODULE_MODE_RANGECHECK;
             }
           }
           if (s_editMode == 0 && !warningText) {
-            moduleSettings[moduleIdx].mode = MODULE_MODE_NORMAL;
+            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
           }
-          if (moduleSettings[moduleIdx].mode == MODULE_MODE_NORMAL) {
+          if (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL) {
             // REGISTER finished
             s_editMode = 0;
           }
@@ -1335,9 +1417,14 @@ void menuModelSetup(event_t event)
 
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
-        if (attr && (moduleSettings[moduleIdx].mode == 0 || s_editMode == 0)) {
-          if (moduleSettings[moduleIdx].mode) {
-            moduleSettings[moduleIdx].mode = 0;
+        if (s_editMode && isModuleR9M2(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID) {
+          reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID = 0;
+          moduleState[moduleIdx].mode = MODULE_MODE_BIND;
+        }
+
+        if (attr && (moduleState[moduleIdx].mode == 0 || s_editMode == 0)) {
+          if (moduleState[moduleIdx].mode) {
+            moduleState[moduleIdx].mode = 0;
             removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
             killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
             event = 0;
@@ -1345,7 +1432,7 @@ void menuModelSetup(event_t event)
           s_editMode = 0;
         }
 
-        if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
+        if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
           if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_START && reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount > 0) {
             popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
             for (uint8_t i=0; i<popupMenuItemsCount; i++) {
@@ -1497,7 +1584,7 @@ void menuModelSetup(event_t event)
                       POPUP_MENU_START(onBindMenu);
                       continue;
                     }
-                    if (moduleSettings[moduleIdx].mode == MODULE_MODE_BIND) {
+                    if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
                       newFlag = MODULE_MODE_BIND;
                     }
                     else {
@@ -1523,7 +1610,7 @@ void menuModelSetup(event_t event)
                 newFlag = MODULE_MODE_RANGECHECK;
             }
 #endif
-            moduleSettings[moduleIdx].mode = newFlag;
+            moduleState[moduleIdx].mode = newFlag;
 
 #if defined(MULTIMODULE)
             if (newFlag == MODULE_MODE_BIND) {

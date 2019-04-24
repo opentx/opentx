@@ -44,19 +44,19 @@ void menuRadioSpectrumAnalyser(event_t event)
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H/2, STR_STOPPING              );
     lcdRefresh();
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(1000);
     RTOS_WAIT_MS(1000);
     return;
   }
 
-  if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
+  if (moduleState[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
     reusableBuffer.spectrumAnalyser.span = 40000000;  // 40MHz
     reusableBuffer.spectrumAnalyser.freq = 2440000000;  // 2440MHz
     reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
   for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX; i++) {

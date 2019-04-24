@@ -1143,12 +1143,15 @@ union ReusableBuffer
       char bindCandidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
       uint8_t bindCandidateReceiversCount;
       uint8_t bindReceiverIndex;
+      uint8_t bindLbtMode;
+      uint8_t bindFlexMode;
       union {
         uint8_t bindSelectedReceiverIndex;
         uint8_t shareReceiverIndex;
         uint8_t resetReceiverIndex;
       };
       uint8_t resetReceiverFlags;
+      ModuleInformation moduleInformation;
     } pxx2;
 #if defined(BLUETOOTH)
     struct {
@@ -1186,39 +1189,15 @@ union ReusableBuffer
 #endif
 
   struct {
-    struct {
-      int8_t current;
-      int8_t maximum;
-      uint8_t timeout;
-      PXX2HardwareInformation information;
-      struct {
-        PXX2HardwareInformation information;
-      } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
-    } modules[NUM_MODULES];
-
+    ModuleInformation modules[NUM_MODULES];
     uint32_t updateTime;
 
     union {
-      struct {
-        uint8_t state;  // 0x00 = READ 0x40 = WRITE
-        tmr10ms_t timeout;
-        uint8_t dirty;
-        uint8_t rfProtocol;
-        uint8_t externalAntenna;
-        int8_t txPower;
-      } moduleSettings;
-
-      struct {
-        uint8_t state;  // 0x00 = READ 0x40 = WRITE
-        tmr10ms_t timeout;
-        uint8_t receiverId;
-        uint8_t dirty;
-        uint8_t telemetryDisabled;
-        uint8_t pwmRate;
-        uint8_t outputsCount;
-        uint8_t outputsMapping[24];
-      } receiverSettings;
+      ModuleSettings moduleSettings;
+      ReceiverSettings receiverSettings;
     };
+
+    uint8_t moduleSettingsDirty;
 
   } hardwareAndSettings;
 
