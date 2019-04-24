@@ -187,7 +187,7 @@ enum MenuModelSetupItems {
 
 
 #define EXTERNAL_MODULE_MODE_ROWS      (isModuleXJT(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
-#define EXTERNAL_MODULE_FREQ_ROW        isR9MMFlex(EXTERNAL_MODULE) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
+#define EXTERNAL_MODULE_FREQ_ROW       (isModuleR9M_EUPLUS(EXTERNAL_MODULE) || isModuleR9M_AU_PLUS(EXTERNAL_MODULE)) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
 
 
 #define CURSOR_ON_CELL                 (true)

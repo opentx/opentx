@@ -530,13 +530,13 @@ bool isR9MModeAvailable(int mode)
 #else
 bool isR9MModeAvailable(int mode)
 {
-  return mode <= MODULE_SUBTYPE_R9M_EUPLUS;
+#if defined(MODULE_R9M_FLEX_FW)
+  return mode < MODULE_SUBTYPE_R9M_EUPLUS;
+#else
+  return true;
+#endif
 }
 #endif
-bool isR9MMFlex(int module)
-{
-  return g_model.moduleData[module].r9m.region == MODULE_R9M_REGION_FLEX;
-}
 
 bool isPXX2ChannelsCountAllowed(int channels)
 {

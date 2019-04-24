@@ -112,7 +112,7 @@ inline bool isModuleR9M2(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_R9M2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO2;
 }
 
-#if defined(PCBXLITE)
+
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
@@ -130,39 +130,13 @@ inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
 
 inline bool isModuleR9M_EUPLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EUPLUS;
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EUPLUS;
 }
 
 inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_AUPLUS;
 }
-#else
-inline bool isModuleR9M_FCC(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FCC;
-}
-
-inline bool isModuleR9M_LBT(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_EU;
-}
-
-inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region != MODULE_R9M_REGION_EU;
-}
-
-inline bool isModuleR9M_EUPLUS(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_868MHZ;
-}
-
-inline bool isModuleR9M_AU_PLUS(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_915MHZ;
-}
-#endif
 
 inline bool isModulePXX(uint8_t idx)
 {

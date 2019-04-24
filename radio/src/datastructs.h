@@ -435,7 +435,6 @@ PACK(struct ModuleData {
     struct {
       uint8_t failsafeMode:4;  // only 3 bits used
       uint8_t freq:2;
-      uint8_t region:2;
     } r9m;
   };
 
