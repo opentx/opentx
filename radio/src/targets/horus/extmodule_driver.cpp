@@ -121,8 +121,6 @@ void extmodulePxxStart()
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 #endif
 
-  extmoduleSendNextFrame();
-
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
   NVIC_EnableIRQ(EXTMODULE_TIMER_IRQn);
@@ -172,8 +170,6 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool i
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_1 | TIM_CCMR1_OC1M_0;
   EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 #endif
-
-  extmoduleSendNextFrame();
 
   NVIC_EnableIRQ(EXTMODULE_DMA_IRQn);
   NVIC_SetPriority(EXTMODULE_DMA_IRQn, 7);
