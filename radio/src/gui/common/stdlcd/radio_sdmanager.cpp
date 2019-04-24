@@ -69,8 +69,6 @@ void getSelectionFullPath(char * lfn)
   strcat(lfn, reusableBuffer.sdManager.lines[menuVerticalPosition - HEADER_LINE - menuVerticalOffset]);
 }
 
-const char * STR_FLASH_RECEIVER_OTA = "Flash receiver OTA";
-
 void onSdFormatConfirm(const char * result)
 {
   if (result == STR_OK) {
@@ -101,7 +99,13 @@ void onBindStateChanged()
 {
   if (reusableBuffer.sdManager.otaInformation.step == BIND_INFO_REQUEST) {
     POPUP_CONFIRMATION(PXX2receiversModels[reusableBuffer.sdManager.otaInformation.receiverInformation.modelID], onUpdateConfirmation);
-    // SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
+    char * tmp = strAppend(reusableBuffer.sdManager.otaReceiverVersion, TR_CURRENT_VERSION);
+    tmp = strAppendUnsigned(tmp, 1 + reusableBuffer.sdManager.otaInformation.receiverInformation.swVersion.major);
+    *tmp++ = '.';
+    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaInformation.receiverInformation.swVersion.minor);
+    *tmp++ = '.';
+    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaInformation.receiverInformation.swVersion.revision);
+    SET_WARNING_INFO(reusableBuffer.sdManager.otaReceiverVersion, tmp - reusableBuffer.sdManager.otaReceiverVersion, 0);
   }
 }
 

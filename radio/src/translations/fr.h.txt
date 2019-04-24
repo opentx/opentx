@@ -947,6 +947,8 @@
 #define TR_VIEW_TEXT                   "Voir texte"
 #define TR_FLASH_BOOTLOADER            "Flasher BootLoader"
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flasher S.Port", "Flasher S.Port externe")
+#define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
+#define TR_CURRENT_VERSION             "Version courante :"
 #define TR_FLASH_INTERNAL_MODULE       TR("Flasher module int.", "Flasher module interne")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flasher module ext.", "Flasher module externe")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Erreur màj FW","Erreur de mise à jour")

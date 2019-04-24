@@ -1179,6 +1179,7 @@ union ReusableBuffer
     uint16_t count;
     char originalName[SD_SCREEN_FILE_LENGTH+1];
     BindInformation otaInformation;
+    char otaReceiverVersion[sizeof(TR_CURRENT_VERSION) + 12];
   } sdManager;
 #endif
 

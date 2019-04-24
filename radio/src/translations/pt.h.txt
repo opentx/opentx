@@ -942,6 +942,8 @@
 #define TR_VIEW_TEXT           "View text"
 #define TR_FLASH_BOOTLOADER    "Flash BootLoader"
 #define TR_FLASH_EXTERNAL_DEVICE "Flash External Device"
+#define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
+#define TR_CURRENT_VERSION             TR("Current vers. ", "Current version: ")
 #define TR_FLASH_INTERNAL_MODULE "Flash Internal Module"
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")

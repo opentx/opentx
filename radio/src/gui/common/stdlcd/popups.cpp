@@ -183,7 +183,7 @@ void runPopupWarning(event_t event)
     lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
 
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT));
+  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT));
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):
