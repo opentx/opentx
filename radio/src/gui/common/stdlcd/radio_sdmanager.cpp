@@ -95,7 +95,7 @@ void onUpdateConfirmation(const char * result)
   }
 }
 
-void onBindStateChanged()
+void onUpdateStateChanged()
 {
   if (reusableBuffer.sdManager.otaInformation.step == BIND_INFO_REQUEST) {
     POPUP_CONFIRMATION(PXX2receiversModels[reusableBuffer.sdManager.otaInformation.receiverInformation.modelID], onUpdateConfirmation);
@@ -198,7 +198,7 @@ void onSdManagerMenu(const char * result)
   }
   else if (result == STR_FLASH_RECEIVER_OTA) {
     getSelectionFullPath(lfn);
-    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaInformation, onBindStateChanged);
+    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaInformation, onUpdateStateChanged);
   }
 #endif
 #if defined(LUA)
@@ -216,7 +216,7 @@ void onUpdateReceiverSelection(const char * result)
     reusableBuffer.sdManager.otaInformation.step = BIND_INFO_REQUEST;
 #if defined(SIMU)
     reusableBuffer.sdManager.otaInformation.receiverInformation.modelID = 0x01;
-    onBindStateChanged();
+    onUpdateStateChanged();
 #endif
   }
   else {
