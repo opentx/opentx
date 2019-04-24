@@ -185,10 +185,7 @@ enum MenuModelSetupItems {
 
 #define PORT_CHANNELS_ROWS(x)          (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 0)
 
-
 #define EXTERNAL_MODULE_MODE_ROWS      (isModuleXJT(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)1 : (uint8_t)0
-#define EXTERNAL_MODULE_FREQ_ROW       (isModuleR9M_EUPLUS(EXTERNAL_MODULE) || isModuleR9M_AU_PLUS(EXTERNAL_MODULE)) ? (uint8_t)1: (uint8_t)HIDDEN_ROW,
-
 
 #define CURSOR_ON_CELL                 (true)
 #define MODEL_SETUP_MAX_LINES          (HEADER_LINE+ITEM_MODEL_SETUP_MAX)
@@ -589,7 +586,6 @@ void menuModelSetup(event_t event)
       IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, EXTERNAL_MODULE_OPTION_ROW),
       MULTIMODULE_MODULE_ROWS
       EXTERNAL_MODULE_POWER_ROW,
-      EXTERNAL_MODULE_FREQ_ROW
       FAILSAFE_ROWS(EXTERNAL_MODULE),
       IF_PXX2_MODULE(EXTERNAL_MODULE, 1),                          // Range check and Register buttons
       IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                          // Module options
@@ -1765,20 +1761,6 @@ void menuModelSetup(event_t event)
 
       }
       break;
-
-#if !defined(PCBXLITE)
-      case ITEM_MODEL_EXTERNAL_MODULE_FREQ:
-      {
-        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-        lcdDrawTextAlignedLeft(y, STR_FREQUENCY);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9MFLEX_FREQ, g_model.moduleData[moduleIdx].r9m.freq, LEFT | attr);
-        if (attr)
-        {
-          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].r9m.freq, 1);
-        }
-      }
-      break;
-#endif
 
 #if defined(MULTIMODULE)
       case ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND:
