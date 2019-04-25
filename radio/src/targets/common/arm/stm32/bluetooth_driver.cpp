@@ -30,7 +30,9 @@ volatile uint8_t btChipPresent = 0;
 enum BluetoothWriteState
 {
   BLUETOOTH_WRITE_IDLE,
+#if defined(BT_BRTS_GPIO_PIN)
   BLUETOOTH_WRITE_INIT,
+#endif
   BLUETOOTH_WRITING,
   BLUETOOTH_WRITE_DONE
 };
@@ -123,20 +125,25 @@ extern "C" void BT_USART_IRQHandler(void)
   }
 }
 
-void bluetoothWriteWakeup(void)
+void bluetoothWriteWakeup()
 {
   if (bluetoothWriteState == BLUETOOTH_WRITE_IDLE) {
     if (!btTxFifo.isEmpty()) {
-      bluetoothWriteState = BLUETOOTH_WRITE_INIT;
 #if defined(BT_BRTS_GPIO_PIN)
+      bluetoothWriteState = BLUETOOTH_WRITE_INIT;
       GPIO_ResetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
+#else
+      bluetoothWriteState = BLUETOOTH_WRITING;
+      USART_ITConfig(BT_USART, USART_IT_TXE, ENABLE);
 #endif
     }
   }
+#if defined(BT_BRTS_GPIO_PIN)
   else if (bluetoothWriteState == BLUETOOTH_WRITE_INIT) {
     bluetoothWriteState = BLUETOOTH_WRITING;
     USART_ITConfig(BT_USART, USART_IT_TXE, ENABLE);
   }
+#endif
   else if (bluetoothWriteState == BLUETOOTH_WRITE_DONE) {
     bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 #if defined(BT_BRTS_GPIO_PIN)
