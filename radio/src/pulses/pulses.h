@@ -26,6 +26,7 @@
 #include "pulses_common.h"
 #include "pulses/pxx1.h"
 #include "pulses/pxx2.h"
+#include "modules.h"
 
 #if NUM_MODULES > 1
   #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK || moduleState[1].mode == MODULE_MODE_RANGECHECK)
@@ -353,37 +354,25 @@ inline void SEND_FAILSAFE_1S()
 // for channels not set previously to HOLD or NOPULSE
 void setCustomFailsafe(uint8_t moduleIndex);
 
-#if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
 #define LEN_R9M_REGION                 "\006"
 #define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
-#define LEN_R9M_FCC_POWER_VALUES       "\010"
-#define LEN_R9M_LBT_POWER_VALUES       "\015"
-#define TR_R9M_FCC_POWER_VALUES        "(100 mW)"
-#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
-#define LEN_R9MFLEX_FREQ               "\006"
-#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
+#define LEN_R9M_LITE_FCC_POWER_VALUES       "\010"
+#define LEN_R9M_LITE_LBT_POWER_VALUES       "\015"
+#define TR_R9M_LITE_FCC_POWER_VALUES        "(100 mW)"
+#define TR_R9M_LITE_LBT_POWER_VALUES        "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
 
-enum R9MFCCPowerValues {
-  R9M_FCC_POWER_100 = 0,
-  R9M_FCC_POWER_MAX = R9M_FCC_POWER_100
+enum R9MLiteFCCPowerValues {
+  R9M_LITE_FCC_POWER_100 = 0,
+  R9M_LITE_FCC_POWER_MAX = R9M_LITE_FCC_POWER_100
 };
 
-enum R9MLBTPowerValues {
-  R9M_LBT_POWER_25 = 0,
-  R9M_LBT_POWER_25_16,
-  R9M_LBT_POWER_100,
-  R9M_LBT_POWER_MAX = R9M_LBT_POWER_100
+enum R9MLiteLBTPowerValues {
+  R9M_LITE_LBT_POWER_25 = 0,
+  R9M_LITE_LBT_POWER_25_16,
+  R9M_LITE_LBT_POWER_100,
+  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100
 };
 
-#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_100))
-#define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-
-#else
-
-#define LEN_R9M_REGION                 "\006"
-#define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
-#define LEN_R9MFLEX_FREQ               "\006"
-#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
 #define LEN_R9M_FCC_POWER_VALUES       "\006"
 #define LEN_R9M_LBT_POWER_VALUES       "\013"
 #define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
@@ -405,8 +394,6 @@ enum R9MLBTPowerValues {
   R9M_LBT_POWER_MAX = R9M_LBT_POWER_500
 };
 
-#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200))
 #define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#endif
-
+#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
 #endif // _PULSES_H_
