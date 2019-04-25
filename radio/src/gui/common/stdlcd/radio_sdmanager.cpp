@@ -196,6 +196,10 @@ void onSdManagerMenu(const char * result)
     DeviceFirmwareUpdate device(SPORT_MODULE);
     device.flashFile(lfn);
   }
+  else if (result == STR_FLASH_BLUETOOTH_MODULE) {
+    getSelectionFullPath(lfn);
+    bluetooth.flashFirmware(lfn);
+  }
   else if (result == STR_FLASH_RECEIVER_OTA) {
     getSelectionFullPath(lfn);
     moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaInformation, onUpdateStateChanged);
@@ -336,6 +340,11 @@ void menuRadioSdManager(event_t _event)
 #if defined(PXX2)
             POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA);
 #endif
+          }
+#endif
+#if defined(PCBXLITES)
+          else if (!READ_ONLY() && !strcasecmp(ext, BLUETOOTH_FIRMWARE_EXT)) {
+            POPUP_MENU_ADD_ITEM(STR_FLASH_BLUETOOTH_MODULE);
           }
 #endif
         }
