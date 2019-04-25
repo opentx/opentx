@@ -1164,9 +1164,7 @@ int cliBlueTooth(const char ** argv)
 {
   int baudrate = 0;
   if (!strncmp(argv[1], "AT", 2) || !strncmp(argv[1], "TTM", 3)) {
-    char command[32];
-    strAppend(strAppend(command, argv[1]), "\r\n");
-    bluetooth.writeString(command);
+    bluetooth.writeString(argv[1]);
     char * line = bluetooth.readline();
     serialPrint("<BT %s", line);
   }

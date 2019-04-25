@@ -52,6 +52,8 @@ void Bluetooth::writeString(const char * str)
   while (*str != 0) {
     btTxFifo.push(*str++);
   }
+  btTxFifo.push('\r');
+  btTxFifo.push('\n');
   bluetoothWriteWakeup();
 }
 
@@ -298,11 +300,11 @@ void Bluetooth::wakeup(void)
           for (int i = 0; i < len; i++) {
             *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
           }
+          *cur = '\0';
         }
         else {
           cur = strAppend(cur, "Taranis-X9E");
         }
-        strAppend(cur, "\r\n");
         writeString(command);
         state = BLUETOOTH_WAIT_TTM;
         waitEnd = get_tmr10ms() + 25; // 250ms
@@ -366,7 +368,7 @@ void Bluetooth::wakeup()
   }
 
   if (state == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
-    writeString("AT+BAUD4\r\n");
+    writeString("AT+BAUD4");
     state = BLUETOOTH_STATE_BAUDRATE_SENT;
     wakeupTime = now + 10; /* 100ms */
   }
@@ -398,34 +400,34 @@ void Bluetooth::wakeup()
         for (int i = 0; i < len; i++) {
           *cur++ = zchar2char(g_eeGeneral.bluetoothName[i]);
         }
+        *cur = '\0';
       }
       else {
 #if defined(PCBHORUS)
         cur = strAppend(cur, "Horus");
 #else
-        cur = strAppend(cur, "taranis"); // TODO capital letter once allowed by BT module
+        cur = strAppend(cur, "Taranis");
 #endif
       }
-      strAppend(cur, "\r\n");
       writeString(command);
       state = BLUETOOTH_STATE_NAME_SENT;
     }
     else if (state == BLUETOOTH_STATE_NAME_SENT && (!strncmp(line, "OK+", 3) || !strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-      writeString("AT+TXPW0\r\n");
+      writeString("AT+TXPW0");
       state = BLUETOOTH_STATE_POWER_SENT;
     }
     else if (state == BLUETOOTH_STATE_POWER_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH)
-        writeString("AT+ROLE1\r\n");
+        writeString("AT+ROLE1");
       else
-        writeString("AT+ROLE0\r\n");
+        writeString("AT+ROLE0");
       state = BLUETOOTH_STATE_ROLE_SENT;
     }
     else if (state == BLUETOOTH_STATE_ROLE_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
       state = BLUETOOTH_STATE_IDLE;
     }
     else if (state == BLUETOOTH_STATE_DISCOVER_REQUESTED) {
-      writeString("AT+DISC?\r\n");
+      writeString("AT+DISC?");
       state = BLUETOOTH_STATE_DISCOVER_SENT;
     }
     else if (state == BLUETOOTH_STATE_DISCOVER_SENT && !strcmp(line, "OK+DISCS")) {
@@ -442,7 +444,7 @@ void Bluetooth::wakeup()
     } */
     else if (state == BLUETOOTH_STATE_BIND_REQUESTED) {
       char command[32];
-      strAppend(strAppend(strAppend(command, "AT+CON"), distantAddr), "\r\n");
+      strAppend(strAppend(command, "AT+CON"), distantAddr);
       writeString(command);
       state = BLUETOOTH_STATE_CONNECT_SENT;
     }
@@ -455,7 +457,7 @@ void Bluetooth::wakeup()
     }
     else if (state == BLUETOOTH_STATE_DISCONNECTED && !line) {
       char command[32];
-      strAppend(strAppend(strAppend(command, "AT+CON"), distantAddr), "\r\n");
+      strAppend(strAppend(command, "AT+CON"), distantAddr);
       writeString(command);
       wakeupTime = now + 200; /* 2s */
     }
