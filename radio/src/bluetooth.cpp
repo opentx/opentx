@@ -545,7 +545,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   result = waitBootloaderCommandResponse();
   if (result)
     return result;
-  uint8_t id[4];
+  // uint8_t id[4];
 
 
   return result;
