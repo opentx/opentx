@@ -89,7 +89,10 @@ void bluetoothInit(uint32_t baudrate, bool enable)
   bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 
   if (enable) {
-    GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // open bluetooth
+    GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN);
+  }
+  else {
+    GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN);
   }
 }
 

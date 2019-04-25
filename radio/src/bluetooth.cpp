@@ -490,6 +490,8 @@ void Bluetooth::sendBootloaderCommand(uint8_t command, const uint8_t * data, uin
 
 uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint32_t timeout)
 {
+  watchdogSuspend(timeout / 10);
+
   uint8_t len = 0;
   while (len < size) {
     uint32_t elapsed = 0;
@@ -500,6 +502,7 @@ uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint32_t timeout)
         return len;
       }
     }
+    data[len++] = byte;
   }
   return len;
 }
@@ -528,8 +531,7 @@ void Bluetooth::flashFirmware(const char * filename)
 
   pausePulses();
 
-  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, true);
-  bluetoothDisable();  /* go to bootloader mode */
+  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, false); /* go to bootloader mode */
 
   drawProgressScreen(getBasename(filename), "Bluetooth reset...", 0, 0);
 
