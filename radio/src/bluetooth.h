@@ -51,17 +51,10 @@ enum BluetoothStates {
 class Bluetooth
 {
   public:
-    void write(const uint8_t * data, uint8_t length);
     void writeString(const char * str);
     char * readline(bool error_reset = true);
 
-    void processTrainerFrame(const uint8_t * buffer);
-    void appendTrainerByte(uint8_t data);
-    void processTrainerByte(uint8_t data);
-    void pushByte(uint8_t byte);
-    void sendTrainer();
     void forwardTelemetry(const uint8_t * packet);
-    void receiveTrainer();
     void wakeup();
     void flashFirmware(const char * filename);
 
@@ -70,6 +63,19 @@ class Bluetooth
     char distantAddr[LEN_BLUETOOTH_ADDR+1];
 
   protected:
+    void pushByte(uint8_t byte);
+    uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
+    void write(const uint8_t * data, uint8_t length);
+    void appendTrainerByte(uint8_t data);
+    void processTrainerFrame(const uint8_t * buffer);
+    void processTrainerByte(uint8_t data);
+    void sendTrainer();
+    void receiveTrainer();
+
+    uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
+    void sendBootloaderCommand(uint8_t command, const uint8_t * data = nullptr, uint8_t size = 0);
+    const char * waitBootloaderResponse();
+
     uint8_t buffer[BLUETOOTH_LINE_LENGTH+1];
     uint8_t bufferIndex = 0;
     tmr10ms_t wakeupTime = 0;

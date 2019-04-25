@@ -78,7 +78,7 @@ char * Bluetooth::readline(bool error_reset)
 #else
       TRACE("BT Reset...");
       bufferIndex = 0;
-      bluetoothDone();
+      bluetoothDisable();
       state = BLUETOOTH_STATE_OFF;
       wakeupTime = get_tmr10ms() + 100; /* 1s */
 #endif
@@ -97,7 +97,7 @@ char * Bluetooth::readline(bool error_reset)
           TRACE("BT Error...");
 #else
           TRACE("BT Reset...");
-          bluetoothDone();
+          bluetoothDisable();
           state = BLUETOOTH_STATE_OFF;
           wakeupTime = get_tmr10ms() + 100; /* 1s */
 #endif
@@ -284,7 +284,7 @@ void Bluetooth::wakeup(void)
 #if !defined(SIMU)
   if (!g_eeGeneral.bluetoothMode) {
     if (state != BLUETOOTH_INIT) {
-      bluetoothDone();
+      bluetoothDisable();
       state = BLUETOOTH_INIT;
     }
   }
@@ -356,7 +356,7 @@ void Bluetooth::wakeup()
 
   if (g_eeGeneral.bluetoothMode == BLUETOOTH_OFF || (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && !IS_BLUETOOTH_TRAINER())) {
     if (state != BLUETOOTH_STATE_OFF) {
-      bluetoothDone();
+      bluetoothDisable();
       state = BLUETOOTH_STATE_OFF;
     }
     wakeupTime = now + 10; /* 100ms */
@@ -464,22 +464,77 @@ void Bluetooth::wakeup()
 }
 #endif
 
+uint8_t Bluetooth::bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size)
+{
+  uint8_t sum = command;
+  for (uint8_t i = 0; i < size; i++) {
+    sum += data[i];
+  }
+  return sum;
+}
+
+void Bluetooth::sendBootloaderCommand(uint8_t command, const uint8_t * data, uint8_t size)
+{
+  uint8_t packet[3] = {
+    uint8_t(3 + size),
+    bootloaderChecksum(command, data, size),
+    command
+  };
+
+  write(packet, sizeof(packet));
+
+  if (size > 0) {
+    write(data, size);
+  }
+}
+
+uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint32_t timeout)
+{
+  uint8_t len = 0;
+  while (len < size) {
+    uint32_t elapsed = 0;
+    uint8_t byte;
+    while (!btRxFifo.pop(byte)) {
+      RTOS_WAIT_MS(1);
+      if (elapsed++ >= timeout) {
+        return len;
+      }
+    }
+  }
+  return len;
+}
+
+const char * Bluetooth::waitBootloaderResponse()
+{
+  uint8_t response[2];
+  if (read(response, 2) != 2) {
+    return "Bluetooth timeout";
+  }
+
+  if (response[0] != 0x00) {
+    return "Bluetooth error";
+  }
+
+  if (response[1] == 0xCC || response[1] == 0x33) {
+    return nullptr;
+  }
+
+  return "Bluetooth error";
+}
+
 void Bluetooth::flashFirmware(const char * filename)
 {
   state = BLUETOOTH_STATE_FLASH_FIRMWARE;
 
   pausePulses();
 
-  /* go to bootloader mode */
-  bluetoothDone();
+  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE);
+  bluetoothDisable();  /* go to bootloader mode */
 
-  drawProgressScreen(getBasename(filename), "Device reset...", 0, 0);
+  drawProgressScreen(getBasename(filename), "Bluetooth reset...", 0, 0);
 
-  /* wait 100ms */
-  watchdogSuspend(100);
-  RTOS_WAIT_MS(100);
-
-  const char * result = nullptr;
+  sendBootloaderCommand(0);
+  const char * result = waitBootloaderResponse();
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();
@@ -492,9 +547,9 @@ void Bluetooth::flashFirmware(const char * filename)
     POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
   }
 
-  /* wait 2s off */
-  watchdogSuspend(2000);
-  RTOS_WAIT_MS(2000);
+  /* wait 1s off */
+  watchdogSuspend(1000);
+  RTOS_WAIT_MS(1000);
 
   state = BLUETOOTH_STATE_OFF;
   resumePulses();

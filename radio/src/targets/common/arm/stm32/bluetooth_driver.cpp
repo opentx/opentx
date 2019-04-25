@@ -39,7 +39,7 @@ enum BluetoothWriteState
 
 volatile uint8_t bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 
-void bluetoothInit(uint32_t baudrate)
+void bluetoothInit(uint32_t baudrate, bool enable)
 {
   GPIO_InitTypeDef GPIO_InitStructure;
   GPIO_InitStructure.GPIO_Pin = BT_EN_GPIO_PIN;
@@ -88,10 +88,12 @@ void bluetoothInit(uint32_t baudrate)
   btTxFifo.clear();
   bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 
-  GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // open bluetooth
+  if (enable) {
+    GPIO_ResetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // open bluetooth
+  }
 }
 
-void bluetoothDone()
+void bluetoothDisable()
 {
   GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth (recent modules will go to bootloader mode)
 }
@@ -107,7 +109,7 @@ extern "C" void BT_USART_IRQHandler(void)
     if (!btChipPresent) {
       // This is to differentiate X7 and X7S and X-Lite with/without BT
       btChipPresent = 1;
-      bluetoothDone();
+      bluetoothDisable();
     }
 #endif
   }

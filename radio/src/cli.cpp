@@ -1175,7 +1175,7 @@ int cliBlueTooth(const char ** argv)
       serialPrint("<BT %s", line);
     }
     else {
-      bluetoothDone();
+      bluetoothDisable();
       serialPrint("BT turned off");
     }
   }

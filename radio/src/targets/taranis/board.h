@@ -719,16 +719,17 @@ void serial2Stop(void);
 #endif
 
 // BT driver
+#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_DEFAULT_BAUDRATE      115200
 #if defined(PCBX9E) && !defined(USEHORUSBT)
-#define BLUETOOTH_FACTORY_BAUDRATE     9600
+#define BLUETOOTH_FACTORY_BAUDRATE      9600
 #else
 #define BLUETOOTH_FACTORY_BAUDRATE      57600
 #endif
-void bluetoothInit(uint32_t baudrate);
+void bluetoothInit(uint32_t baudrate, bool enable = true);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
+void bluetoothDisable(void);
 #if defined(PCBX3)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
 #elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)

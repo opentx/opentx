@@ -609,12 +609,13 @@ void serial2Stop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
+#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
-void bluetoothInit(uint32_t baudrate);
+void bluetoothInit(uint32_t baudrate, bool enable = true);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
+void bluetoothDisable(void);
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
