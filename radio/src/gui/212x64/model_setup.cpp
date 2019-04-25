@@ -243,7 +243,7 @@ int getSwitchWarningsCount()
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
 #if defined(BLUETOOTH) && defined(USEHORUSBT)
-  #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothDistantAddr[0] == 0 || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
+  #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetooth.distantAddr[0] == 0 || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
   #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
   #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 #else
@@ -718,7 +718,7 @@ void menuModelSetup(event_t event)
 #if defined(BLUETOOTH) && defined(USEHORUSBT)
         if (attr && checkIncDec_Ret) {
           bluetooth.state = BLUETOOTH_STATE_OFF;
-          bluetoothDistantAddr[0] = 0;
+          bluetooth.distantAddr[0] = 0;
         }
 #endif
         break;
@@ -840,8 +840,8 @@ void menuModelSetup(event_t event)
         if (attr) {
           s_editMode = 0;
         }
-        if (bluetoothDistantAddr[0]) {
-          lcdDrawText(INDENT_WIDTH, y+1, bluetoothDistantAddr, TINSIZE);
+        if (bluetooth.distantAddr[0]) {
+          lcdDrawText(INDENT_WIDTH, y+1, bluetooth.distantAddr, TINSIZE);
           if (bluetooth.state != BLUETOOTH_STATE_CONNECTED) {
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON("Bind"), menuHorizontalPosition == 0 ? attr : 0);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW, y, BUTTON("Clear"), menuHorizontalPosition == 1 ? attr : 0);
@@ -852,7 +852,7 @@ void menuModelSetup(event_t event)
           if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
             if (bluetooth.state == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
               bluetooth.state = BLUETOOTH_STATE_OFF;
-              bluetoothDistantAddr[0] = 0;
+              bluetooth.distantAddr[0] = 0;
             }
             else {
               bluetooth.state = BLUETOOTH_STATE_BIND_REQUESTED;

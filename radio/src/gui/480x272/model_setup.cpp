@@ -253,7 +253,7 @@ int getSwitchWarningsCount()
 #define POT_WARN_ITEMS()                  ((g_model.potsWarnMode) ? uint8_t(NAVIGATION_LINE_BY_LINE|(NUM_POTS-1)) : (uint8_t)0)
 #define SLIDER_WARN_ITEMS()               ((g_model.potsWarnMode) ? uint8_t(NAVIGATION_LINE_BY_LINE|(NUM_SLIDERS-1)) : (uint8_t)0)
 
-#define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetoothDistantAddr[0] == 0 || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
+#define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetooth.distantAddr[0] == 0 || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
 #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
 #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 
@@ -680,7 +680,7 @@ bool menuModelSetup(event_t event)
         g_model.trainerData.mode = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_VTRAINERMODES, g_model.trainerData.mode, 0, TRAINER_MODE_MAX(), attr, event);
         if (attr && checkIncDec_Ret) {
           bluetooth.state = BLUETOOTH_STATE_OFF;
-          bluetoothDistantAddr[0] = 0;
+          bluetooth.distantAddr[0] = 0;
         }
         break;
 
@@ -798,8 +798,8 @@ bool menuModelSetup(event_t event)
           if (attr) {
             s_editMode = 0;
           }
-          if (bluetoothDistantAddr[0]) {
-            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, bluetoothDistantAddr);
+          if (bluetooth.distantAddr[0]) {
+            lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, bluetooth.distantAddr);
             if (bluetooth.state != BLUETOOTH_STATE_CONNECTED) {
               drawButton(MODEL_SETUP_2ND_COLUMN, y, "Bind", menuHorizontalPosition == 0 ? attr : 0);
               drawButton(MODEL_SETUP_2ND_COLUMN+60, y, "Clear", menuHorizontalPosition == 1 ? attr : 0);
@@ -810,7 +810,7 @@ bool menuModelSetup(event_t event)
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
               if (bluetooth.state == BLUETOOTH_STATE_CONNECTED || menuHorizontalPosition == 1) {
                 bluetooth.state = BLUETOOTH_STATE_OFF;
-                bluetoothDistantAddr[0] = 0;
+                bluetooth.distantAddr[0] = 0;
               }
               else {
                 bluetooth.state = BLUETOOTH_STATE_BIND_REQUESTED;
