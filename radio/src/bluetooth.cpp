@@ -507,7 +507,7 @@ uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint32_t timeout)
   return len;
 }
 
-const char * Bluetooth::waitBootloaderResponse()
+const char * Bluetooth::waitBootloaderCommandResponse()
 {
   uint8_t response[2];
   if (read(response, 2) != 2) {
@@ -525,18 +525,43 @@ const char * Bluetooth::waitBootloaderResponse()
   return "Bluetooth error";
 }
 
+enum
+{
+  CMD_GET_CHIP_ID = 0x28,
+};
+
+const char * Bluetooth::doFlashFirmware(const char * filename)
+{
+  const char * result;
+
+  // Dummy command
+  sendBootloaderCommand(0);
+  result = waitBootloaderCommandResponse();
+  if (result)
+    return result;
+
+  // Get chip ID
+  sendBootloaderCommand(CMD_GET_CHIP_ID);
+  result = waitBootloaderCommandResponse();
+  if (result)
+    return result;
+  uint8_t id[4];
+
+
+  return result;
+}
+
 void Bluetooth::flashFirmware(const char * filename)
 {
+  drawProgressScreen(getBasename(filename), "Bluetooth reset...", 0, 0);
+
   state = BLUETOOTH_STATE_FLASH_FIRMWARE;
 
   pausePulses();
 
-  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, false); /* go to bootloader mode */
+  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, false); // bootloader mode
 
-  drawProgressScreen(getBasename(filename), "Bluetooth reset...", 0, 0);
-
-  sendBootloaderCommand(0);
-  const char * result = waitBootloaderResponse();
+  const char * result = doFlashFirmware(filename);
 
   AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
   BACKLIGHT_ENABLE();

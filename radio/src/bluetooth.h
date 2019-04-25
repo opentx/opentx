@@ -64,7 +64,7 @@ class Bluetooth
 
   protected:
     void pushByte(uint8_t byte);
-    uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=1000/*ms*/);
+    uint8_t read(uint8_t * data, uint8_t size, uint32_t timeout=100/*ms*/);
     void write(const uint8_t * data, uint8_t length);
     void appendTrainerByte(uint8_t data);
     void processTrainerFrame(const uint8_t * buffer);
@@ -74,7 +74,9 @@ class Bluetooth
 
     uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
     void sendBootloaderCommand(uint8_t command, const uint8_t * data = nullptr, uint8_t size = 0);
-    const char * waitBootloaderResponse();
+    const char * waitBootloaderCommandResponse();
+
+    const char * doFlashFirmware(const char * filename);
 
     uint8_t buffer[BLUETOOTH_LINE_LENGTH+1];
     uint8_t bufferIndex = 0;
