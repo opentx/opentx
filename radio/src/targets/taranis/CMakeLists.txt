@@ -6,7 +6,6 @@ option(MODULE_R9M_FULLSIZE "xlite option to use full size R9M instead of mini" O
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" ON)
 
-
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(STICKS "STANDARD" CACHE STRING "Sticks type (STANDARD/HORUS)")

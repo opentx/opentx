@@ -58,7 +58,23 @@ void init_pxx1_pulses(uint8_t module)
     extmodulePxxStart();
 }
 
+void init_pxx1_serial(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
+    intmodulePxxStart();
+  else
+    extmodulePxxStart();
+}
+
 void disable_pxx1_pulses(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
+    intmoduleStop();
+  else
+    extmoduleStop();
+}
+
+void disable_pxx1_serial(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
     intmoduleStop();

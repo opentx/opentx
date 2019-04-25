@@ -1,7 +1,9 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
-set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+option(PXX1 "PXX1 protocol support" ON)
+option(PXX2 "PXX2 protocol support" ON)
 
+set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
 set(SDCARD YES)
@@ -14,7 +16,7 @@ set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
-SET(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
+set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 
 # for size report script
 set(CPU_TYPE_FULL STM32F429xI)
