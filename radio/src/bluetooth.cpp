@@ -463,3 +463,36 @@ void Bluetooth::wakeup()
   }
 }
 #endif
+
+void Bluetooth::flashFirmware(const char * filename)
+{
+  state = BLUETOOTH_STATE_FLASH_FIRMWARE;
+
+  pausePulses();
+
+  drawProgressScreen(getBasename(filename), "Device reset...", 0, 0);
+
+  /* wait 2s off */
+  watchdogSuspend(2000);
+  RTOS_WAIT_MS(2000);
+
+  const char * result = nullptr;
+
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  BACKLIGHT_ENABLE();
+
+  if (result) {
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
+    SET_WARNING_INFO(result, strlen(result), 0);
+  }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
+
+  /* wait 2s off */
+  watchdogSuspend(2000);
+  RTOS_WAIT_MS(2000);
+
+  state = BLUETOOTH_STATE_OFF;
+  resumePulses();
+}

@@ -1166,14 +1166,14 @@ int cliBlueTooth(const char ** argv)
   if (!strncmp(argv[1], "AT", 2) || !strncmp(argv[1], "TTM", 3)) {
     char command[32];
     strAppend(strAppend(command, argv[1]), "\r\n");
-    bluetoothWriteString(command);
-    char * line = bluetoothReadline();
+    bluetooth.writeString(command);
+    char * line = bluetooth.readline();
     serialPrint("<BT %s", line);
   }
   else if (toInt(argv, 1, &baudrate) > 0) {
     if (baudrate > 0) {
       bluetoothInit(baudrate);
-      char * line = bluetoothReadline();
+      char * line = bluetooth.readline();
       serialPrint("<BT %s", line);
     }
     else {

@@ -40,7 +40,7 @@ enum BluetoothStates {
   BLUETOOTH_STATE_CONNECT_SENT,
   BLUETOOTH_STATE_CONNECTED,
   BLUETOOTH_STATE_DISCONNECTED,
-  BLUETOOTH_STATE_FIRMWARE_UGRADE
+  BLUETOOTH_STATE_FLASH_FIRMWARE
 };
 
 #define LEN_BLUETOOTH_ADDR              16
@@ -63,6 +63,7 @@ class Bluetooth
     void forwardTelemetry(const uint8_t * packet);
     void receiveTrainer();
     void wakeup();
+    void flashFirmware(const char * filename);
 
     volatile uint8_t state;
     char localAddr[LEN_BLUETOOTH_ADDR+1];
