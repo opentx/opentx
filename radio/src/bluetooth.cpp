@@ -317,8 +317,7 @@ void Bluetooth::wakeup(void)
           }
           else {
             bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
-            const char btMessage[] = "TTM:BPS-115200";
-            writeString(btMessage);
+            writeString("TTM:BPS-115200");
             state = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
             waitEnd = get_tmr10ms() + 250; // 2.5s
           }
