@@ -540,24 +540,26 @@
   #define BREAKSPACE                   " "
 #endif
 
-#if defined(PCBTARANIS)
-  #define TR_ENTER             "[ENTER]"
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+  #define TR_ENTER                     "[ENTER]"
 #else
-  #define TR_ENTER             "[MENU]"
+  #define TR_ENTER                     "[MENU]"
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_EXIT              "[RTN]"
+  #define TR_EXIT                      "[RTN]"
+  #define TR_OK                        TR_ENTER
 #else
-  #define TR_EXIT              "[EXIT]"
+  #define TR_EXIT                      "[EXIT]"
+  #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
 #endif
 
 #if defined(PCBTARANIS)
-  #define TR_POPUPS_ENTER_EXIT            TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER
-  #define TR_OK                TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
+  #define TR_POPUPS_ENTER_EXIT         TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
+
 #else
-  #define TR_POPUPS_ENTER_EXIT            TR_ENTER "\010" TR_EXIT
-  #define OFS_EXIT             sizeof(TR_ENTER)
+  #define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
+  #define OFS_EXIT                     sizeof(TR_ENTER)
 #endif
 
 #define TR_MENUWHENDONE      CENTER"\006" TR_ENTER "QDO PRONTO"
