@@ -239,13 +239,10 @@ void extmoduleSendNextFrame()
     EXTMODULE_DMA_STREAM->NDTR = extmodulePulsesData.pxx.getSize();
     EXTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
   }
-  else if (moduleState[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) {
-    #warning "Take it from 2.2"
-  }
 #endif
 #if defined(PXX2)
   else if (moduleState[EXTERNAL_MODULE].protocol == PROTOCOL_CHANNELS_PXX2) {
-    // TODO
+    sportSendBuffer(extmodulePulsesData.pxx2.getData(), extmodulePulsesData.pxx2.getSize());
   }
 #endif
   else if (IS_DSM2_PROTOCOL(moduleState[EXTERNAL_MODULE].protocol) || IS_MULTIMODULE_PROTOCOL(moduleState[EXTERNAL_MODULE].protocol) || IS_SBUS_PROTOCOL(moduleState[EXTERNAL_MODULE].protocol)) {
