@@ -292,7 +292,7 @@ void Bluetooth::wakeup(void)
     static tmr10ms_t waitEnd = 0;
     if (state != BLUETOOTH_STATE_IDLE) {
       if (state == BLUETOOTH_INIT) {
-        bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+        bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
         char command[32];
         char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
         uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
@@ -316,7 +316,7 @@ void Bluetooth::wakeup(void)
             state = BLUETOOTH_STATE_IDLE;
           }
           else {
-            bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+            bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE, true);
             writeString("TTM:BPS-115200");
             state = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
             waitEnd = get_tmr10ms() + 250; // 2.5s
@@ -362,7 +362,7 @@ void Bluetooth::wakeup()
     wakeupTime = now + 10; /* 100ms */
   }
   else if (state == BLUETOOTH_STATE_OFF) {
-    bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
+    bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE, true);
     state = BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT;
   }
 
@@ -372,7 +372,7 @@ void Bluetooth::wakeup()
     wakeupTime = now + 10; /* 100ms */
   }
   else if (state == BLUETOOTH_STATE_BAUDRATE_SENT) {
-    bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+    bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
     state = BLUETOOTH_STATE_BAUDRATE_INIT;
     readline(false);
     wakeupTime = now + 10; /* 100ms */
@@ -528,7 +528,7 @@ void Bluetooth::flashFirmware(const char * filename)
 
   pausePulses();
 
-  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE);
+  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, true);
   bluetoothDisable();  /* go to bootloader mode */
 
   drawProgressScreen(getBasename(filename), "Bluetooth reset...", 0, 0);

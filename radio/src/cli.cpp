@@ -1170,7 +1170,7 @@ int cliBlueTooth(const char ** argv)
   }
   else if (toInt(argv, 1, &baudrate) > 0) {
     if (baudrate > 0) {
-      bluetoothInit(baudrate);
+      bluetoothInit(baudrate, true);
       char * line = bluetooth.readline();
       serialPrint("<BT %s", line);
     }

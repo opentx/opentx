@@ -215,7 +215,7 @@ void boardInit()
   hapticInit();
 
 #if defined(BLUETOOTH)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 
 #if defined(INTERNAL_GPS)

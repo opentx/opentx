@@ -612,7 +612,7 @@ void serial2Stop(void);
 #define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
-void bluetoothInit(uint32_t baudrate, bool enable = true);
+void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
 void bluetoothDisable(void);
@@ -626,6 +626,5 @@ void checkTrainerSettings(void);
 extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 #endif
-
 
 #endif // _BOARD_HORUS_H_

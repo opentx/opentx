@@ -167,7 +167,7 @@ void boardInit()
                          BT_RCC_APB2Periph, ENABLE);
 
 #if defined(BLUETOOTH)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 
 #if !defined(PCBX9E)
