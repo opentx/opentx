@@ -107,7 +107,6 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   while (1) {
-
 #if defined(PCBX9D) || defined(PCBX7)
     // SBUS on Hearbeat PIN (which is a serial RX)
     processSbusInput();
@@ -118,7 +117,7 @@ TASK_FUNCTION(mixerTask)
 #endif
 
 #if defined(BLUETOOTH)
-    bluetoothWakeup();
+    bluetooth.wakeup();
 #endif
 
     RTOS_WAIT_TICKS(1);

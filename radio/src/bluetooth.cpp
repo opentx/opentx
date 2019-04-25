@@ -30,20 +30,12 @@
 #define BLUETOOTH_COMMAND_BAUD_115200  "TTM:BPS-115200"
 #endif
 
-#define BLUETOOTH_PACKET_SIZE          14
-#define BLUETOOTH_LINE_LENGTH          32
-
 extern Fifo<uint8_t, 64> btTxFifo;
 extern Fifo<uint8_t, 128> btRxFifo;
 
-volatile uint8_t bluetoothState;
-char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
-char bluetoothDistantAddr[LEN_BLUETOOTH_ADDR+1];
-uint8_t bluetoothBuffer[BLUETOOTH_LINE_LENGTH+1];
-uint8_t bluetoothBufferIndex = 0;
-tmr10ms_t bluetoothWakeupTime = 0;
+Bluetooth bluetooth;
 
-void bluetoothWrite(const uint8_t * data, uint8_t length)
+void Bluetooth::write(const uint8_t * data, uint8_t length)
 {
   TRACE_NOCRLF("BT>");
   for (int i=0; i<length; i++) {
@@ -54,7 +46,7 @@ void bluetoothWrite(const uint8_t * data, uint8_t length)
   bluetoothWriteWakeup();
 }
 
-void bluetoothWriteString(const char * str)
+void Bluetooth::writeString(const char * str)
 {
   TRACE("BT> %s", str);
   while (*str != 0) {
@@ -63,7 +55,7 @@ void bluetoothWriteString(const char * str)
   bluetoothWriteWakeup();
 }
 
-char * bluetoothReadline(bool error_reset)
+char * Bluetooth::readline(bool error_reset)
 {
   uint8_t byte;
 
@@ -78,15 +70,15 @@ char * bluetoothReadline(bool error_reset)
     TRACE_NOCRLF("%02X ", byte);
 
 #if 0
-    if (error_reset && byte == 'R' && bluetoothBufferIndex == 4 && memcmp(bluetoothBuffer, "ERRO", 4)) {
+    if (error_reset && byte == 'R' && bufferIndex == 4 && memcmp(buffer, "ERRO", 4)) {
 #if defined(PCBX9E)  // X9E enter BT reset loop if following code is implemented
       TRACE("BT Error...");
 #else
       TRACE("BT Reset...");
-      bluetoothBufferIndex = 0;
+      bufferIndex = 0;
       bluetoothDone();
-      bluetoothState = BLUETOOTH_STATE_OFF;
-      bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
+      state = BLUETOOTH_STATE_OFF;
+      wakeupTime = get_tmr10ms() + 100; /* 1s */
 #endif
       return NULL;
     }
@@ -94,70 +86,70 @@ char * bluetoothReadline(bool error_reset)
 #endif
 
     if (byte == '\n') {
-      if (bluetoothBufferIndex > 2 && bluetoothBuffer[bluetoothBufferIndex-1] == '\r') {
-        bluetoothBuffer[bluetoothBufferIndex-1] = '\0';
-        bluetoothBufferIndex = 0;
-        TRACE("BT< %s", bluetoothBuffer);
-        if (error_reset && !strcmp((char *)bluetoothBuffer, "ERROR")) {
+      if (bufferIndex > 2 && buffer[bufferIndex-1] == '\r') {
+        buffer[bufferIndex-1] = '\0';
+        bufferIndex = 0;
+        TRACE("BT< %s", buffer);
+        if (error_reset && !strcmp((char *)buffer, "ERROR")) {
 #if defined(PCBX9E) // X9E enter BT reset loop if following code is implemented
           TRACE("BT Error...");
 #else
           TRACE("BT Reset...");
           bluetoothDone();
-          bluetoothState = BLUETOOTH_STATE_OFF;
-          bluetoothWakeupTime = get_tmr10ms() + 100; /* 1s */
+          state = BLUETOOTH_STATE_OFF;
+          wakeupTime = get_tmr10ms() + 100; /* 1s */
 #endif
           return nullptr;
         }
         else {
-          if (!memcmp(bluetoothBuffer, "Central:", 8))
-            strcpy(bluetoothLocalAddr, (char *) bluetoothBuffer + 8);
-          else if (!memcmp(bluetoothBuffer, "Peripheral:", 11))
-            strcpy(bluetoothLocalAddr, (char *) bluetoothBuffer + 11);
-          return (char *) bluetoothBuffer;
+          if (!memcmp(buffer, "Central:", 8))
+            strcpy(localAddr, (char *) buffer + 8);
+          else if (!memcmp(buffer, "Peripheral:", 11))
+            strcpy(localAddr, (char *) buffer + 11);
+          return (char *) buffer;
         }
       }
       else {
-        bluetoothBufferIndex = 0;
+        bufferIndex = 0;
       }
     }
     else {
-      bluetoothBuffer[bluetoothBufferIndex++] = byte;
-      bluetoothBufferIndex &= (BLUETOOTH_LINE_LENGTH-1);
+      buffer[bufferIndex++] = byte;
+      bufferIndex &= (BLUETOOTH_LINE_LENGTH-1);
     }
   }
 }
 
-void bluetoothProcessTrainerFrame(const uint8_t * bluetoothBuffer)
+void Bluetooth::processTrainerFrame(const uint8_t * buffer)
 {
   TRACE("");
 
   for (uint8_t channel=0, i=1; channel<8; channel+=2, i+=3) {
     // +-500 != 512, but close enough.
-    ppmInput[channel] = bluetoothBuffer[i] + ((bluetoothBuffer[i+1] & 0xf0) << 4) - 1500;
-    ppmInput[channel+1] = ((bluetoothBuffer[i+1] & 0x0f) << 4) + ((bluetoothBuffer[i+2] & 0xf0) >> 4) + ((bluetoothBuffer[i+2] & 0x0f) << 8) - 1500;
+    ppmInput[channel] = buffer[i] + ((buffer[i+1] & 0xf0) << 4) - 1500;
+    ppmInput[channel+1] = ((buffer[i+1] & 0x0f) << 4) + ((buffer[i+2] & 0xf0) >> 4) + ((buffer[i+2] & 0x0f) << 8) - 1500;
   }
 
   ppmInputValidityTimer = PPM_IN_VALID_TIMEOUT;
 }
 
-void bluetoothAppendTrainerByte(uint8_t data)
+void Bluetooth::appendTrainerByte(uint8_t data)
 {
-  if (bluetoothBufferIndex < BLUETOOTH_LINE_LENGTH) {
-    bluetoothBuffer[bluetoothBufferIndex++] = data;
+  if (bufferIndex < BLUETOOTH_LINE_LENGTH) {
+    buffer[bufferIndex++] = data;
     // we check for "DisConnected", but the first byte could be altered (if received in state STATE_DATA_XOR)
     if (data == '\n') {
-      if (!strncmp((char *)&bluetoothBuffer[bluetoothBufferIndex-13], "isConnected", 11)) {
+      if (!strncmp((char *)&buffer[bufferIndex-13], "isConnected", 11)) {
         TRACE("BT< DisConnected");
-        bluetoothState = BLUETOOTH_STATE_DISCONNECTED;
-        bluetoothBufferIndex = 0;
-        bluetoothWakeupTime += 200; // 1s
+        state = BLUETOOTH_STATE_DISCONNECTED;
+        bufferIndex = 0;
+        wakeupTime += 200; // 1s
       }
     }
   }
 }
 
-void bluetoothProcessTrainerByte(uint8_t data)
+void Bluetooth::processTrainerByte(uint8_t data)
 {
   static uint8_t dataState = STATE_DATA_IDLE;
 
@@ -165,10 +157,10 @@ void bluetoothProcessTrainerByte(uint8_t data)
     case STATE_DATA_START:
       if (data == START_STOP) {
         dataState = STATE_DATA_IN_FRAME ;
-        bluetoothBufferIndex = 0;
+        bufferIndex = 0;
       }
       else {
-        bluetoothAppendTrainerByte(data);
+        appendTrainerByte(data);
       }
       break;
 
@@ -178,99 +170,98 @@ void bluetoothProcessTrainerByte(uint8_t data)
       }
       else if (data == START_STOP) {
         dataState = STATE_DATA_IN_FRAME ;
-        bluetoothBufferIndex = 0;
+        bufferIndex = 0;
       }
       else {
-        bluetoothAppendTrainerByte(data);
+        appendTrainerByte(data);
       }
       break;
 
     case STATE_DATA_XOR:
-      bluetoothAppendTrainerByte(data ^ STUFF_MASK);
+      appendTrainerByte(data ^ STUFF_MASK);
       dataState = STATE_DATA_IN_FRAME;
       break;
 
     case STATE_DATA_IDLE:
       if (data == START_STOP) {
-        bluetoothBufferIndex = 0;
+        bufferIndex = 0;
         dataState = STATE_DATA_START;
       }
       else {
-        bluetoothAppendTrainerByte(data);
+        appendTrainerByte(data);
       }
       break;
   }
 
-  if (bluetoothBufferIndex >= BLUETOOTH_PACKET_SIZE) {
+  if (bufferIndex >= BLUETOOTH_PACKET_SIZE) {
     uint8_t crc = 0x00;
     for (int i=0; i<13; i++) {
-      crc ^= bluetoothBuffer[i];
+      crc ^= buffer[i];
     }
-    if (crc == bluetoothBuffer[13]) {
-      if (bluetoothBuffer[0] == 0x80) {
-        bluetoothProcessTrainerFrame(bluetoothBuffer);
+    if (crc == buffer[13]) {
+      if (buffer[0] == 0x80) {
+        processTrainerFrame(buffer);
       }
     }
     dataState = STATE_DATA_IDLE;
   }
 }
 
-uint8_t bluetoothCrc;
-void bluetoothPushByte(uint8_t byte)
+void Bluetooth::pushByte(uint8_t byte)
 {
-  bluetoothCrc ^= byte;
+  crc ^= byte;
   if (byte == START_STOP || byte == BYTESTUFF) {
-    bluetoothBuffer[bluetoothBufferIndex++] = 0x7d;
+    buffer[bufferIndex++] = 0x7d;
     byte ^= STUFF_MASK;
   }
-  bluetoothBuffer[bluetoothBufferIndex++] = byte;
+  buffer[bufferIndex++] = byte;
 }
 
-void bluetoothSendTrainer()
+void Bluetooth::sendTrainer()
 {
   int16_t PPM_range = g_model.extendedLimits ? 640*2 : 512*2;
 
   int firstCh = g_model.trainerData.channelsStart;
   int lastCh = firstCh + 8;
 
-  uint8_t * cur = bluetoothBuffer;
-  bluetoothBufferIndex = 0;
-  bluetoothCrc = 0x00;
+  uint8_t * cur = buffer;
+  bufferIndex = 0;
+  crc = 0x00;
 
-  bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // start byte
-  bluetoothPushByte(0x80); // trainer frame type?
+  buffer[bufferIndex++] = START_STOP; // start byte
+  pushByte(0x80); // trainer frame type?
   for (int channel=0; channel<lastCh; channel+=2, cur+=3) {
     uint16_t channelValue1 = PPM_CH_CENTER(channel) + limit((int16_t)-PPM_range, channelOutputs[channel], (int16_t)PPM_range) / 2;
     uint16_t channelValue2 = PPM_CH_CENTER(channel+1) + limit((int16_t)-PPM_range, channelOutputs[channel+1], (int16_t)PPM_range) / 2;
-    bluetoothPushByte(channelValue1 & 0x00ff);
-    bluetoothPushByte(((channelValue1 & 0x0f00) >> 4) + ((channelValue2 & 0x00f0) >> 4));
-    bluetoothPushByte(((channelValue2 & 0x000f) << 4) + ((channelValue2 & 0x0f00) >> 8));
+    pushByte(channelValue1 & 0x00ff);
+    pushByte(((channelValue1 & 0x0f00) >> 4) + ((channelValue2 & 0x00f0) >> 4));
+    pushByte(((channelValue2 & 0x000f) << 4) + ((channelValue2 & 0x0f00) >> 8));
   }
-  bluetoothBuffer[bluetoothBufferIndex++] = bluetoothCrc;
-  bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // end byte
+  buffer[bufferIndex++] = crc;
+  buffer[bufferIndex++] = START_STOP; // end byte
 
-  bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
-  bluetoothBufferIndex = 0;
+  write(buffer, bufferIndex);
+  bufferIndex = 0;
 }
 
-void bluetoothForwardTelemetry(const uint8_t * packet)
+void Bluetooth::forwardTelemetry(const uint8_t * packet)
 {
-  bluetoothCrc = 0x00;
+  crc = 0x00;
 
-  bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // start byte
+  buffer[bufferIndex++] = START_STOP; // start byte
   for (uint8_t i=0; i<sizeof(SportTelemetryPacket); i++) {
-    bluetoothPushByte(packet[i]);
+    pushByte(packet[i]);
   }
-  bluetoothBuffer[bluetoothBufferIndex++] = bluetoothCrc;
-  bluetoothBuffer[bluetoothBufferIndex++] = START_STOP; // end byte
+  buffer[bufferIndex++] = crc;
+  buffer[bufferIndex++] = START_STOP; // end byte
 
-  if (bluetoothBufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
-    bluetoothWrite(bluetoothBuffer, bluetoothBufferIndex);
-    bluetoothBufferIndex = 0;
+  if (bufferIndex >= 2*FRSKY_SPORT_PACKET_SIZE) {
+    write(buffer, bufferIndex);
+    bufferIndex = 0;
   }
 }
 
-void bluetoothReceiveTrainer()
+void Bluetooth::receiveTrainer()
 {
   uint8_t byte;
 
@@ -281,25 +272,25 @@ void bluetoothReceiveTrainer()
 
     TRACE_NOCRLF("%02X ", byte);
 
-    bluetoothProcessTrainerByte(byte);
+    processTrainerByte(byte);
   }
 }
 
 #if defined(PCBX9E) && !defined(USEHORUSBT)
-void bluetoothWakeup(void)
+void Bluetooth::wakeup(void)
 {
 #if !defined(SIMU)
   if (!g_eeGeneral.bluetoothMode) {
-    if (bluetoothState != BLUETOOTH_INIT) {
+    if (state != BLUETOOTH_INIT) {
       bluetoothDone();
-      bluetoothState = BLUETOOTH_INIT;
+      state = BLUETOOTH_INIT;
     }
   }
   else {
     static tmr10ms_t waitEnd = 0;
-    if (bluetoothState != BLUETOOTH_STATE_IDLE) {
+    if (state != BLUETOOTH_STATE_IDLE) {
 
-      if (bluetoothState == BLUETOOTH_INIT) {
+      if (state == BLUETOOTH_INIT) {
         bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
         char command[32];
         char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
@@ -313,43 +304,43 @@ void bluetoothWakeup(void)
           cur = strAppend(cur, "Taranis-X9E");
         }
         strAppend(cur, "\r\n");
-        bluetoothWriteString(command);
-        bluetoothState = BLUETOOTH_WAIT_TTM;
+        writeString(command);
+        state = BLUETOOTH_WAIT_TTM;
         waitEnd = get_tmr10ms() + 25; // 250ms
       }
-      else if (bluetoothState == BLUETOOTH_WAIT_TTM) {
+      else if (state == BLUETOOTH_WAIT_TTM) {
         if (get_tmr10ms() > waitEnd) {
-            char * line = bluetoothReadline();
+            char * line = readline();
             if (strncmp(line, "OK+", 3)) {
-            bluetoothState = BLUETOOTH_STATE_IDLE;
+            state = BLUETOOTH_STATE_IDLE;
             }
             else {
               bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
               const char btMessage[] = "TTM:BPS-115200";
-              bluetoothWriteString(btMessage);
-              bluetoothState = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
+              writeString(btMessage);
+              state = BLUETOOTH_WAIT_BAUDRATE_CHANGE;
               waitEnd = get_tmr10ms() + 250; // 2.5s
             }
           }
         }
-      else if (bluetoothState == BLUETOOTH_WAIT_BAUDRATE_CHANGE) {
+      else if (state == BLUETOOTH_WAIT_BAUDRATE_CHANGE) {
         if (get_tmr10ms() > waitEnd) {
-          bluetoothState = BLUETOOTH_INIT;
+          state = BLUETOOTH_INIT;
         }
       }
     }
     else if (IS_BLUETOOTH_TRAINER()){
-      bluetoothState = BLUETOOTH_STATE_CONNECTED;
+      state = BLUETOOTH_STATE_CONNECTED;
       bluetoothWriteWakeup();
-      bluetoothSendTrainer();
+      sendTrainer();
     }
   }
 #endif
 }
 #else // PCBX9E
-void bluetoothWakeup()
+void Bluetooth::wakeup()
 {
-  if (bluetoothState != BLUETOOTH_STATE_OFF) {
+  if (state != BLUETOOTH_STATE_OFF) {
     bluetoothWriteWakeup();
     if (bluetoothIsWriting()) {
       return;
@@ -358,49 +349,49 @@ void bluetoothWakeup()
 
   tmr10ms_t now = get_tmr10ms();
 
-  if (now < bluetoothWakeupTime)
+  if (now < wakeupTime)
     return;
 
-  bluetoothWakeupTime = now + 5; /* 50ms default */
+  wakeupTime = now + 5; /* 50ms default */
 
   if (g_eeGeneral.bluetoothMode == BLUETOOTH_OFF || (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && !IS_BLUETOOTH_TRAINER())) {
-    if (bluetoothState != BLUETOOTH_STATE_OFF) {
+    if (state != BLUETOOTH_STATE_OFF) {
       bluetoothDone();
-      bluetoothState = BLUETOOTH_STATE_OFF;
+      state = BLUETOOTH_STATE_OFF;
     }
-    bluetoothWakeupTime = now + 10; /* 100ms */
+    wakeupTime = now + 10; /* 100ms */
   }
-  else if (bluetoothState == BLUETOOTH_STATE_OFF) {
+  else if (state == BLUETOOTH_STATE_OFF) {
     bluetoothInit(BLUETOOTH_FACTORY_BAUDRATE);
-    bluetoothState = BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT;
+    state = BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT;
   }
 
-  if (bluetoothState == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
-    bluetoothWriteString("AT+BAUD4\r\n");
-    bluetoothState = BLUETOOTH_STATE_BAUDRATE_SENT;
-    bluetoothWakeupTime = now + 10; /* 100ms */
+  if (state == BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT) {
+    writeString("AT+BAUD4\r\n");
+    state = BLUETOOTH_STATE_BAUDRATE_SENT;
+    wakeupTime = now + 10; /* 100ms */
   }
-  else if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_SENT) {
+  else if (state == BLUETOOTH_STATE_BAUDRATE_SENT) {
     bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
-    bluetoothState = BLUETOOTH_STATE_BAUDRATE_INIT;
-    bluetoothReadline(false);
-    bluetoothWakeupTime = now + 10; /* 100ms */
+    state = BLUETOOTH_STATE_BAUDRATE_INIT;
+    readline(false);
+    wakeupTime = now + 10; /* 100ms */
   }
-  else if (bluetoothState == BLUETOOTH_STATE_CONNECTED) {
+  else if (state == BLUETOOTH_STATE_CONNECTED) {
     if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH) {
-      bluetoothReceiveTrainer();
+      receiveTrainer();
     }
     else {
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH) {
-        bluetoothSendTrainer();
-        bluetoothWakeupTime = now + 2; /* 20ms */
+        sendTrainer();
+        wakeupTime = now + 2; /* 20ms */
       }
-      bluetoothReadline(); // to deal with "ERROR"
+      readline(); // to deal with "ERROR"
     }
   }
   else {
-    char * line = bluetoothReadline();
-    if (bluetoothState == BLUETOOTH_STATE_BAUDRATE_INIT) {
+    char * line = readline();
+    if (state == BLUETOOTH_STATE_BAUDRATE_INIT) {
       char command[32];
       char * cur = strAppend(command, BLUETOOTH_COMMAND_NAME);
       uint8_t len = ZLEN(g_eeGeneral.bluetoothName);
@@ -417,57 +408,57 @@ void bluetoothWakeup()
 #endif
       }
       strAppend(cur, "\r\n");
-      bluetoothWriteString(command);
-      bluetoothState = BLUETOOTH_STATE_NAME_SENT;
+      writeString(command);
+      state = BLUETOOTH_STATE_NAME_SENT;
     }
-    else if (bluetoothState == BLUETOOTH_STATE_NAME_SENT && (!strncmp(line, "OK+", 3) || !strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-      bluetoothWriteString("AT+TXPW0\r\n");
-      bluetoothState = BLUETOOTH_STATE_POWER_SENT;
+    else if (state == BLUETOOTH_STATE_NAME_SENT && (!strncmp(line, "OK+", 3) || !strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
+      writeString("AT+TXPW0\r\n");
+      state = BLUETOOTH_STATE_POWER_SENT;
     }
-    else if (bluetoothState == BLUETOOTH_STATE_POWER_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
+    else if (state == BLUETOOTH_STATE_POWER_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TRAINER && g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH)
-        bluetoothWriteString("AT+ROLE1\r\n");
+        writeString("AT+ROLE1\r\n");
       else
-        bluetoothWriteString("AT+ROLE0\r\n");
-      bluetoothState = BLUETOOTH_STATE_ROLE_SENT;
+        writeString("AT+ROLE0\r\n");
+      state = BLUETOOTH_STATE_ROLE_SENT;
     }
-    else if (bluetoothState == BLUETOOTH_STATE_ROLE_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
-      bluetoothState = BLUETOOTH_STATE_IDLE;
+    else if (state == BLUETOOTH_STATE_ROLE_SENT && (!strncmp(line, "Central:", 8) || !strncmp(line, "Peripheral:", 11))) {
+      state = BLUETOOTH_STATE_IDLE;
     }
-    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_REQUESTED) {
-      bluetoothWriteString("AT+DISC?\r\n");
-      bluetoothState = BLUETOOTH_STATE_DISCOVER_SENT;
+    else if (state == BLUETOOTH_STATE_DISCOVER_REQUESTED) {
+      writeString("AT+DISC?\r\n");
+      state = BLUETOOTH_STATE_DISCOVER_SENT;
     }
-    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_SENT && !strcmp(line, "OK+DISCS")) {
-      bluetoothState = BLUETOOTH_STATE_DISCOVER_START;
+    else if (state == BLUETOOTH_STATE_DISCOVER_SENT && !strcmp(line, "OK+DISCS")) {
+      state = BLUETOOTH_STATE_DISCOVER_START;
     }
-    else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strncmp(line, "OK+DISC:", 8)) {
+    else if (state == BLUETOOTH_STATE_DISCOVER_START && !strncmp(line, "OK+DISC:", 8)) {
       if (strlen(line) < 8 + LEN_BLUETOOTH_ADDR && reusableBuffer.moduleSetup.bt.devicesCount < MAX_BLUETOOTH_DISTANT_ADDR) {
         strncpy(reusableBuffer.moduleSetup.bt.devices[reusableBuffer.moduleSetup.bt.devicesCount], &line[8], LEN_BLUETOOTH_ADDR);
         ++reusableBuffer.moduleSetup.bt.devicesCount;
       }
     }
-    /* else if (bluetoothState == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
-      bluetoothState = BLUETOOTH_STATE_DISCOVER_END;
+    /* else if (state == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
+      state = BLUETOOTH_STATE_DISCOVER_END;
     } */
-    else if (bluetoothState == BLUETOOTH_STATE_BIND_REQUESTED) {
+    else if (state == BLUETOOTH_STATE_BIND_REQUESTED) {
       char command[32];
-      strAppend(strAppend(strAppend(command, "AT+CON"), bluetoothDistantAddr), "\r\n");
-      bluetoothWriteString(command);
-      bluetoothState = BLUETOOTH_STATE_CONNECT_SENT;
+      strAppend(strAppend(strAppend(command, "AT+CON"), distantAddr), "\r\n");
+      writeString(command);
+      state = BLUETOOTH_STATE_CONNECT_SENT;
     }
-    else if ((bluetoothState == BLUETOOTH_STATE_IDLE || bluetoothState == BLUETOOTH_STATE_DISCONNECTED || bluetoothState == BLUETOOTH_STATE_CONNECT_SENT) && !strncmp(line, "Connected:", 10)) {
-      strcpy(bluetoothDistantAddr, &line[10]); // TODO quick & dirty
-      bluetoothState = BLUETOOTH_STATE_CONNECTED;
+    else if ((state == BLUETOOTH_STATE_IDLE || state == BLUETOOTH_STATE_DISCONNECTED || state == BLUETOOTH_STATE_CONNECT_SENT) && !strncmp(line, "Connected:", 10)) {
+      strcpy(distantAddr, &line[10]); // TODO quick & dirty
+      state = BLUETOOTH_STATE_CONNECTED;
       if (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH) {
-        bluetoothWakeupTime += 500; // it seems a 5s delay is needed before sending the 1st frame
+        wakeupTime += 500; // it seems a 5s delay is needed before sending the 1st frame
       }
     }
-    else if (bluetoothState == BLUETOOTH_STATE_DISCONNECTED && !line) {
+    else if (state == BLUETOOTH_STATE_DISCONNECTED && !line) {
       char command[32];
-      strAppend(strAppend(strAppend(command, "AT+CON"), bluetoothDistantAddr), "\r\n");
-      bluetoothWriteString(command);
-      bluetoothWakeupTime = now + 200; /* 2s */
+      strAppend(strAppend(strAppend(command, "AT+CON"), distantAddr), "\r\n");
+      writeString(command);
+      wakeupTime = now + 200; /* 2s */
     }
   }
 }
