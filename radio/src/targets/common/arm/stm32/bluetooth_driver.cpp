@@ -93,7 +93,7 @@ void bluetoothInit(uint32_t baudrate)
 
 void bluetoothDone()
 {
-  GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth
+  GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN); // close bluetooth (recent modules will go to bootloader mode)
 }
 
 extern "C" void BT_USART_IRQHandler(void)
