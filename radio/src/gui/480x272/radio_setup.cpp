@@ -66,6 +66,7 @@ enum menuRadioSetupItems {
   ITEM_SETUP_BRIGHTNESS,
   ITEM_SETUP_DIM_LEVEL,
   ITEM_SETUP_FLASH_BEEP,
+  ITEM_RADIO_OWNER_ID,
   CASE_GPS(ITEM_SETUP_LABEL_GPS)
   CASE_GPS(ITEM_SETUP_TIMEZONE)
   CASE_GPS(ITEM_SETUP_ADJUST_RTC)
@@ -114,6 +115,7 @@ bool menuRadioSetup(event_t event)
     CASE_HAPTIC(LABEL(HAPTIC)) CASE_HAPTIC(0) CASE_HAPTIC(0) CASE_HAPTIC(0)
     LABEL(ALARMS), 0, 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, 0, 0,
+    0 /* owner registration ID */,
     CASE_GPS(LABEL(GPS)) CASE_GPS(0) CASE_GPS(0) CASE_GPS(0)
     CASE_PXX(0) 0, 0, FAI_CHOICE_ROW 0, 0, 0, 0, 1/*to force edit mode*/ }); // Country code - Voice Language - Units - Fai choice - Play delay - USB mode - Chan order - Mode (1 to 4)
 
@@ -362,6 +364,11 @@ bool menuRadioSetup(event_t event)
       case ITEM_SETUP_FLASH_BEEP:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ALARM);
         g_eeGeneral.alarmsFlash = editCheckBox(g_eeGeneral.alarmsFlash, RADIO_SETUP_2ND_COLUMN, y, attr, event ) ;
+        break;
+
+      case ITEM_RADIO_OWNER_ID:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_OWNER_ID);
+        editName(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID, event, attr);
         break;
 
       case ITEM_SETUP_BACKLIGHT_DELAY:

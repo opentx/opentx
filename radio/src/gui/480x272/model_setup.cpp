@@ -62,6 +62,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SLIDERS_WARNING,
   ITEM_MODEL_BEEP_CENTER,
   ITEM_MODEL_USE_GLOBAL_FUNCTIONS,
+  ITEM_MODEL_REGISTRATION_ID,
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_MODE,
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
@@ -230,6 +231,89 @@ int getSwitchWarningsCount()
   return count;
 }
 
+enum PopupRegisterItems {
+  ITEM_REGISTER_PASSWORD,
+  ITEM_REGISTER_MODULE_INDEX,
+  ITEM_REGISTER_RECEIVER_NAME,
+  ITEM_REGISTER_BUTTONS
+};
+
+#define REGISTER_POPUP_MARGIN 80
+
+void runPopupRegister(event_t event)
+{
+  uint8_t backupVerticalPosition = menuVerticalPosition;
+  uint8_t backupHorizontalPosition = menuHorizontalPosition;
+  uint8_t backupVerticalOffset = menuVerticalOffset;
+  int8_t backupEditMode = s_editMode;
+
+  menuVerticalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition;
+  menuHorizontalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition;
+  s_editMode = reusableBuffer.moduleSetup.pxx2.registerPopupEditMode;
+
+  switch (event) {
+    case EVT_KEY_BREAK(KEY_ENTER):
+      if (menuVerticalPosition != ITEM_REGISTER_BUTTONS) {
+        break;
+      }
+      else if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED && menuHorizontalPosition == 0) {
+        // [Enter] pressed
+        reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
+        backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
+      }
+      // no break
+
+    case EVT_KEY_LONG(KEY_EXIT):
+      s_editMode = 0;
+      // no break;
+
+    case EVT_KEY_BREAK(KEY_EXIT):
+      if (s_editMode <= 0) {
+        warningText = nullptr;
+      }
+      break;
+  }
+
+  if (warningText) {
+    const uint8_t dialogRows[] = { 0, 0, uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? READONLY_ROW : 0), uint8_t(reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED ? 0 : 1)};
+    check(event, 0, nullptr, 0, dialogRows, 3, 4); // TODO add a comment for 3 - HEADER_LINE once understood
+
+    showMessageBox(warningText);
+
+    // registration password
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4, STR_REG_ID);
+    editName(WARNING_LINE_X + REGISTER_POPUP_MARGIN, WARNING_LINE_Y - 4, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, event, menuVerticalPosition == ITEM_REGISTER_PASSWORD);
+
+    // loop index (will be removed in future)
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + FH, "UID");
+    lcdDrawNumber(WARNING_LINE_X + REGISTER_POPUP_MARGIN, WARNING_LINE_Y - 4 + FH, reusableBuffer.moduleSetup.pxx2.registerLoopIndex, menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX ? (s_editMode ? INVERS + BLINK : INVERS) : 0);
+    if (menuVerticalPosition == ITEM_REGISTER_MODULE_INDEX && s_editMode) {
+      CHECK_INCDEC_MODELVAR_ZERO(event, reusableBuffer.moduleSetup.pxx2.registerLoopIndex, 2);
+    }
+
+    // RX name
+    if (reusableBuffer.moduleSetup.pxx2.registerStep < REGISTER_RX_NAME_RECEIVED) {
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + 2 * FH, STR_WAITING);
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + 3 * FH, TR_EXIT, menuVerticalPosition == ITEM_REGISTER_BUTTONS ? INVERS : 0);
+    }
+    else {
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4 + 2 * FH, STR_RX_NAME);
+      editName(WARNING_LINE_X + REGISTER_POPUP_MARGIN, WARNING_LINE_Y - 4 + 2 * FH, reusableBuffer.moduleSetup.pxx2.registerRxName, PXX2_LEN_RX_NAME, event, menuVerticalPosition == ITEM_REGISTER_RECEIVER_NAME);
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + 3 * FH, TR_ENTER, menuVerticalPosition == ITEM_REGISTER_BUTTONS && menuHorizontalPosition == 0 ? INVERS : 0);
+      lcdDrawText(WARNING_LINE_X + REGISTER_POPUP_MARGIN, WARNING_LINE_Y - 2 + 3 * FH, TR_EXIT, menuVerticalPosition == ITEM_REGISTER_BUTTONS && menuHorizontalPosition == 1 ? INVERS : 0);
+    }
+
+    reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
+    reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = menuHorizontalPosition;
+    reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = s_editMode;
+  }
+
+  menuVerticalPosition = backupVerticalPosition;
+  menuHorizontalPosition = backupHorizontalPosition;
+  menuVerticalOffset = backupVerticalOffset;
+  s_editMode = backupEditMode;
+}
+
 #define IF_INTERNAL_MODULE_ON(x)          (IS_INTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
 #define IF_EXTERNAL_MODULE_ON(x)          (IS_EXTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
 
@@ -272,6 +356,7 @@ bool menuModelSetup(event_t event)
        { 0, 0, TIMERS_ROWS, 0, 1, 0, 0,
          LABEL(Throttle), 0, 0, 0,
          LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ROWS, (g_model.potsWarnMode ? POT_WARN_ITEMS() : HIDDEN_ROW), (g_model.potsWarnMode ? SLIDER_WARN_ITEMS() : HIDDEN_ROW), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
+         uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
          LABEL(InternalModule),
          INTERNAL_MODULE_MODE_ROWS,
          INTERNAL_MODULE_CHANNELS_ROWS,
@@ -658,6 +743,14 @@ bool menuModelSetup(event_t event)
               g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
         }
+        break;
+
+      case ITEM_MODEL_REGISTRATION_ID:
+        lcdDrawText(MENUS_MARGIN_LEFT,y, STR_REG_ID);
+        if (isDefaultModelRegistrationID())
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_PXX2_DEFAULT);
+        else
+          lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, ZCHAR);
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
