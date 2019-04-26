@@ -194,6 +194,7 @@ extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 enum EnumTabRadio {
   MENU_RADIO_SETUP,
   MENU_RADIO_SD_MANAGER,
+  MENU_RADIO_TOOLS,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -203,6 +204,7 @@ enum EnumTabRadio {
 
 bool menuRadioSetup(event_t event);
 bool menuRadioSdManager(event_t event);
+bool menuRadioTools(event_t event);
 bool menuRadioSpecialFunctions(event_t event);
 bool menuRadioTrainer(event_t event);
 bool menuRadioVersion(event_t event);
@@ -261,6 +263,8 @@ bool menuAboutView(event_t event);
 bool menuMainViewChannelsMonitor(event_t event);
 bool menuTextView(event_t event);
 bool menuScreensTheme(event_t event);
+bool menuRadioSpectrumAnalyser(event_t event);
+bool menuRadioPowerMeter(event_t event);
 
 typedef uint16_t FlightModesType;
 

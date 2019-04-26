@@ -91,6 +91,9 @@ set(GUI_SRC
   bitmaps.cpp
   radio_sdmanager.cpp
   radio_hardware.cpp
+  radio_power_meter.cpp
+  radio_spectrum_analyser.cpp
+  radio_tools.cpp
   model_inputs.cpp
   model_mixes.cpp
   model_curves.cpp
