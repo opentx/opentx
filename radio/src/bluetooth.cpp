@@ -492,6 +492,9 @@ uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint8_t timeout)
   return len;
 }
 
+#define BLUETOOTH_ACK   0xCC
+#define BLUETOOTH_NACK  0x33
+
 const char * Bluetooth::waitBootloaderCommandResponse()
 {
   uint8_t response[2];
@@ -503,11 +506,36 @@ const char * Bluetooth::waitBootloaderCommandResponse()
     return "Bluetooth error";
   }
 
-  if (response[1] == 0xCC || response[1] == 0x33) {
+  if (response[1] == BLUETOOTH_ACK || response[1] == BLUETOOTH_NACK) {
     return nullptr;
   }
 
   return "Bluetooth error";
+}
+
+const char * Bluetooth::waitBootloaderResponseData(uint8_t * data, uint8_t size)
+{
+  uint8_t header[2];
+  if (read(header, 2) != 2) {
+    return "Bluetooth timeout";
+  }
+
+  uint8_t len = header[0] - 2;
+  uint8_t checksum = header[1];
+
+  if (len > size) {
+    return "Bluetooth error";
+  }
+
+  if (read(data, len) != len) {
+    return "Bluetooth timeout";
+  }
+
+  if (bootloaderChecksum(0, data, len) != checksum) {
+    return "Bluetooth CRC error";
+  }
+
+  return nullptr;
 }
 
 const char * Bluetooth::sendBootloaderAutoBaud()
@@ -535,6 +563,14 @@ void Bluetooth::sendBootloaderCommand(uint8_t command, const uint8_t *data, uint
   }
 }
 
+void Bluetooth::sendBootloaderCommandResponse(uint8_t response)
+{
+  uint8_t packet[2] = {
+    0x00, response
+  };
+  write(packet, sizeof(packet));
+}
+
 enum
 {
   CMD_GET_CHIP_ID = 0x28,
@@ -557,8 +593,9 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   result = waitBootloaderCommandResponse();
   if (result)
     return result;
-  // uint8_t id[4];
-
+  uint8_t id[4];
+  result = waitBootloaderResponseData(id, 4);
+  sendBootloaderCommandResponse(result == nullptr ? BLUETOOTH_ACK : BLUETOOTH_NACK);
 
   return result;
 }
@@ -571,6 +608,8 @@ void Bluetooth::flashFirmware(const char * filename)
 
   pausePulses();
 
+  bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, true); // normal mode
+  RTOS_WAIT_MS(500);
   bluetoothInit(BLUETOOTH_BOOTLOADER_BAUDRATE, false); // bootloader mode
 
   const char * result = doFlashFirmware(filename);

@@ -74,7 +74,9 @@ class Bluetooth
 
     uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
     void sendBootloaderCommand(uint8_t command, const uint8_t * data = nullptr, uint8_t size = 0);
+    void sendBootloaderCommandResponse(uint8_t response);
     const char * waitBootloaderCommandResponse();
+    const char * waitBootloaderResponseData(uint8_t * data, uint8_t size);
     const char * sendBootloaderAutoBaud();
 
     const char * doFlashFirmware(const char * filename);
