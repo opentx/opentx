@@ -34,7 +34,11 @@ enum BluetoothWriteState
   BLUETOOTH_WRITE_INIT,
 #endif
   BLUETOOTH_WRITING,
+#if defined(BT_BRTS_GPIO_PIN)
   BLUETOOTH_WRITE_DONE
+#else
+  BLUETOOTH_WRITE_DONE = BLUETOOTH_WRITE_IDLE
+#endif
 };
 
 volatile uint8_t bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
@@ -84,8 +88,6 @@ void bluetoothInit(uint32_t baudrate, bool enable)
   NVIC_SetPriority(BT_USART_IRQn, 6);
   NVIC_EnableIRQ(BT_USART_IRQn);
 
-  btRxFifo.clear();
-  btTxFifo.clear();
   bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
 
   if (enable) {
@@ -94,6 +96,9 @@ void bluetoothInit(uint32_t baudrate, bool enable)
   else {
     GPIO_SetBits(BT_EN_GPIO, BT_EN_GPIO_PIN);
   }
+
+  btRxFifo.clear();
+  btTxFifo.clear();
 }
 
 void bluetoothDisable()
@@ -108,6 +113,7 @@ extern "C" void BT_USART_IRQHandler(void)
     USART_ClearITPendingBit(BT_USART, USART_IT_RXNE);
     uint8_t byte = USART_ReceiveData(BT_USART);
     btRxFifo.push(byte);
+    TRACE("BT %02X", byte);
 #if defined(PCBX7) || defined(PCBXLITE)
     if (!btChipPresent) {
       // This is to differentiate X7 and X7S and X-Lite with/without BT
@@ -148,13 +154,11 @@ void bluetoothWriteWakeup()
     bluetoothWriteState = BLUETOOTH_WRITING;
     USART_ITConfig(BT_USART, USART_IT_TXE, ENABLE);
   }
-#endif
   else if (bluetoothWriteState == BLUETOOTH_WRITE_DONE) {
     bluetoothWriteState = BLUETOOTH_WRITE_IDLE;
-#if defined(BT_BRTS_GPIO_PIN)
     GPIO_SetBits(BT_BRTS_GPIO, BT_BRTS_GPIO_PIN);
-#endif
   }
+#endif
 }
 
 uint8_t bluetoothIsWriting(void)

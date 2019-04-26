@@ -473,28 +473,13 @@ uint8_t Bluetooth::bootloaderChecksum(uint8_t command, const uint8_t * data, uin
   return sum;
 }
 
-void Bluetooth::sendBootloaderCommand(uint8_t command, const uint8_t * data, uint8_t size)
-{
-  uint8_t packet[3] = {
-    uint8_t(3 + size),
-    bootloaderChecksum(command, data, size),
-    command
-  };
-
-  write(packet, sizeof(packet));
-
-  if (size > 0) {
-    write(data, size);
-  }
-}
-
-uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint32_t timeout)
+uint8_t Bluetooth::read(uint8_t * data, uint8_t size, uint8_t timeout)
 {
   watchdogSuspend(timeout / 10);
 
   uint8_t len = 0;
   while (len < size) {
-    uint32_t elapsed = 0;
+    uint8_t elapsed = 0;
     uint8_t byte;
     while (!btRxFifo.pop(byte)) {
       RTOS_WAIT_MS(1);
@@ -525,6 +510,31 @@ const char * Bluetooth::waitBootloaderCommandResponse()
   return "Bluetooth error";
 }
 
+const char * Bluetooth::sendBootloaderAutoBaud()
+{
+  uint8_t packet[2] = {
+          0x55, 0x55
+  };
+
+  write(packet, sizeof(packet));
+  return waitBootloaderCommandResponse();
+}
+
+void Bluetooth::sendBootloaderCommand(uint8_t command, const uint8_t *data, uint8_t size)
+{
+  uint8_t packet[3] = {
+          uint8_t(3 + size),
+          bootloaderChecksum(command, data, size),
+          command
+  };
+
+  write(packet, sizeof(packet));
+
+  if (size > 0) {
+    write(data, size);
+  }
+}
+
 enum
 {
   CMD_GET_CHIP_ID = 0x28,
@@ -537,6 +547,8 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   // Dummy command
   sendBootloaderCommand(0);
   result = waitBootloaderCommandResponse();
+  if (result)
+    result = sendBootloaderAutoBaud();
   if (result)
     return result;
 
