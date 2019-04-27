@@ -66,7 +66,8 @@ enum MenuModelSetupItems {
   ITEM_MODEL_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_INTERNAL_MODULE_MODE,
   ITEM_MODEL_INTERNAL_MODULE_CHANNELS,
-  ITEM_MODEL_INTERNAL_MODULE_BIND,
+  ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND,
+  ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM,
   ITEM_MODEL_INTERNAL_MODULE_FAILSAFE,
   ITEM_MODEL_INTERNAL_MODULE_ANTENNA,
   ITEM_MODEL_EXTERNAL_MODULE_LABEL,
@@ -341,6 +342,9 @@ void runPopupRegister(event_t event)
 #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
 #define TRAINER_LINE2_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 
+#define IF_PXX2_MODULE(module, xxx)      (isModulePXX2(module) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#define IF_NOT_PXX2_MODULE(module, xxx)  (isModulePXX2(module) ? HIDDEN_ROW : (uint8_t)(xxx))
+
 bool menuModelSetup(event_t event)
 {
   bool CURSOR_ON_CELL = (menuHorizontalPosition >= 0);
@@ -360,9 +364,11 @@ bool menuModelSetup(event_t event)
          LABEL(InternalModule),
          INTERNAL_MODULE_MODE_ROWS,
          INTERNAL_MODULE_CHANNELS_ROWS,
-         IF_INTERNAL_MODULE_ON(isModuleXJT(INTERNAL_MODULE) ? (HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1) : (isModulePPM(INTERNAL_MODULE) ? (uint8_t)1 : HIDDEN_ROW)),
+         IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),  // RxNum + Bind
+         IF_PXX2_MODULE(INTERNAL_MODULE, 0),    // RxNum
          IF_INTERNAL_MODULE_ON((isModuleXJT(INTERNAL_MODULE)) ? FAILSAFE_ROWS(INTERNAL_MODULE) : HIDDEN_ROW),
          IF_INTERNAL_MODULE_ON(0),
+
          LABEL(ExternalModule),
          EXTERNAL_MODULE_MODE_ROWS,
          MULTIMODULE_STATUS_ROWS
@@ -732,15 +738,26 @@ bool menuModelSetup(event_t event)
 
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODE);
-        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
+        if (isModuleXJT(INTERNAL_MODULE))
+          lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_PROTOCOLS, 1+g_model.moduleData[INTERNAL_MODULE].rfProtocol, menuHorizontalPosition==1 ? attr : 0);
         if (attr) {
-          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_OFF, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
-          if (checkIncDec_Ret) {
-            g_model.moduleData[0].type = MODULE_TYPE_XJT;
-            g_model.moduleData[0].channelsStart = 0;
-            g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-            if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
-              g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
+          if (menuHorizontalPosition == 0) {
+            uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
+            if (checkIncDec_Ret) {
+              // TODO this code should be common, in module.h (X10_new_UI branch)
+              memclear(&g_model.moduleData[INTERNAL_MODULE], sizeof(ModuleData));
+              g_model.moduleData[INTERNAL_MODULE].type = moduleType;
+              g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
+            }
+          }
+          else if (isModuleXJT(INTERNAL_MODULE)) {
+            g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+            if (checkIncDec_Ret) {
+              g_model.moduleData[0].type = MODULE_TYPE_XJT;
+              g_model.moduleData[0].channelsStart = 0;
+              g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
+            }
           }
         }
         break;
@@ -751,6 +768,25 @@ bool menuModelSetup(event_t event)
           lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_PXX2_DEFAULT);
         else
           lcdDrawSizedText(MODEL_SETUP_2ND_COLUMN, y, g_model.modelRegistrationID, PXX2_LEN_REGISTRATION_ID, ZCHAR);
+        break;
+
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM:
+      {
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RECEIVER_NUM);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], attr | LEADING0 | LEFT, 2);
+        if (attr) {
+          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], MAX_RX_NUM(moduleIdx));
+          if (event == EVT_KEY_LONG(KEY_ENTER)) {
+            killEvents(event);
+            uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);
+            if (newVal != g_model.header.modelId[moduleIdx]) {
+              g_model.header.modelId[moduleIdx] = newVal;
+              storageDirty(EE_MODEL);
+            }
+          }
+        }
+      }
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_ANTENNA:
@@ -981,7 +1017,7 @@ bool menuModelSetup(event_t event)
         }
         break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_BIND:
+      case ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND:
       case ITEM_MODEL_EXTERNAL_MODULE_BIND:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
@@ -1266,7 +1302,7 @@ bool menuModelSetup(event_t event)
         mod_cell->setModelName(g_model.header.name);
         break;
 
-      case ITEM_MODEL_INTERNAL_MODULE_BIND:
+      case ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND:
         if (menuHorizontalPosition != 0)
           break;
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
