@@ -565,7 +565,7 @@ void menuModelSetup(event_t event)
       IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // RxNum
       ANTENNA_ROW
-      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Module start channel
+      IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Failsafe
       IF_PXX2_MODULE(INTERNAL_MODULE, 1),                          // Range check and Register buttons
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Module options
       IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 1
