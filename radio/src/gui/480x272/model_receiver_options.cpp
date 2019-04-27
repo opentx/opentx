@@ -20,7 +20,7 @@
 
 #include <opentx.h>
 
-#define RECEIVER_OPTIONS_2ND_COLUMN 80
+#define RECEIVER_OPTIONS_2ND_COLUMN 200
 
 extern uint8_t g_moduleIdx;
 
@@ -123,7 +123,7 @@ bool menuModelReceiverOptions(event_t event)
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
             uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
             int32_t channelValue = channelOutputs[channel];
-            lcdDrawText(0, y, "Pin");
+            lcdDrawText(MENUS_MARGIN_LEFT, y, "Pin");
             lcdDrawNumber(lcdNextPos + 1, y, pin + 1);
             putsChn(80, y, channel + 1, attr);
 
@@ -153,4 +153,5 @@ bool menuModelReceiverOptions(event_t event)
   else {
     lcdDrawCenteredText(LCD_H/2, "Waiting for RX...");
   }
+  return true;
 }

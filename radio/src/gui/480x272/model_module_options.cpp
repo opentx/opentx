@@ -138,7 +138,7 @@ bool menuModelModuleOptions(event_t event)
 
       switch (i) {
         case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
-          lcdDrawText(0, y, "RF Protocol");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "RF Protocol");
           lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
           if (attr) {
             reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
@@ -149,7 +149,7 @@ bool menuModelModuleOptions(event_t event)
           break;
 
         case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
-          lcdDrawText(0, y, "Ext. antenna");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "Ext. antenna");
           reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
@@ -157,7 +157,7 @@ bool menuModelModuleOptions(event_t event)
           break;
 
         case ITEM_MODULE_SETTINGS_POWER:
-          lcdDrawText(0, y, "Power");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "Power");
           lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
           lcdDrawText(lcdNextPos, y, "dBm(");
           drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
