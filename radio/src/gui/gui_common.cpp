@@ -576,7 +576,7 @@ bool isInternalModuleAvailable(int moduleType)
 
 #if defined(PXX1)
   if (moduleType == MODULE_TYPE_XJT)
-#if defined(PCBXLITES)
+#if defined(INTMODULE_NO_PXX1)
     return false;
 #else
     return (!isModuleUSingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type));
