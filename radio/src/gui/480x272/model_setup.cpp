@@ -91,7 +91,11 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_EXTERNAL_MODULE_BIND,
   ITEM_MODEL_EXTERNAL_MODULE_FAILSAFE,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_REGISTER_RANGE,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_OPTIONS,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2,
+  ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3,
   ITEM_MODEL_EXTERNAL_MODULE_OPTIONS,
 #if defined(MULTIMODULE)
   ITEM_MODEL_EXTERNAL_MODULE_AUTOBIND,
@@ -497,7 +501,7 @@ int getSwitchWarningsCount()
 #define IF_INTERNAL_MODULE_ON(x)          (IS_INTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
 #define IF_EXTERNAL_MODULE_ON(x)          (IS_EXTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
 
-#define INTERNAL_MODULE_MODE_ROWS         (uint8_t)0
+#define INTERNAL_MODULE_MODE_ROWS         isModulePXX2(INTERNAL_MODULE) ? (uint8_t)0 : (uint8_t)1
 #define PORT_CHANNELS_ROWS(x)             (x==INTERNAL_MODULE ? INTERNAL_MODULE_CHANNELS_ROWS : (x==EXTERNAL_MODULE ? EXTERNAL_MODULE_CHANNELS_ROWS : 1))
 
 #define TIMER_ROWS(x)                     NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
@@ -516,8 +520,6 @@ int getSwitchWarningsCount()
 #define POT_WARN_ROWS                     (uint8_t)0
 #define POT_WARN_ITEMS()                  ((g_model.potsWarnMode) ? uint8_t(NAVIGATION_LINE_BY_LINE|(NUM_POTS-1)) : (uint8_t)0)
 #define SLIDER_WARN_ITEMS()               ((g_model.potsWarnMode) ? uint8_t(NAVIGATION_LINE_BY_LINE|(NUM_SLIDERS-1)) : (uint8_t)0)
-
-#define ANTENNA_ROW                    IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(0)),
 
 #define TRAINER_LINE1_BLUETOOTH_M_ROWS    ((bluetooth.distantAddr[0] == 0 || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
 #define TRAINER_LINE1_ROWS                (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)1 : (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH ? TRAINER_LINE1_BLUETOOTH_M_ROWS : (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH ? (uint8_t)1 : HIDDEN_ROW)))
@@ -542,29 +544,35 @@ bool menuModelSetup(event_t event)
          LABEL(Throttle), 0, 0, 0,
          LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ROWS, (g_model.potsWarnMode ? POT_WARN_ITEMS() : HIDDEN_ROW), (g_model.potsWarnMode ? SLIDER_WARN_ITEMS() : HIDDEN_ROW), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
          uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
+
          LABEL(InternalModule),
-         INTERNAL_MODULE_MODE_ROWS,                                   // module mode (PXX(2) / None)
-         INTERNAL_MODULE_CHANNELS_ROWS,                               // Channels min and count
+         INTERNAL_MODULE_MODE_ROWS,                                       // module mode (PXX(2) / None)
+         INTERNAL_MODULE_CHANNELS_ROWS,                                   // Channels min and count
          IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[INTERNAL_MODULE].rfProtocol) ? (uint8_t)2 : (uint8_t)1)),  // RxNum + Bind
-         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // RxNum
-         IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Failsafe
-         ANTENNA_ROW                                                  // Antenna (pxx1 only)
-         IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),       // Failsafe
-         IF_PXX2_MODULE(INTERNAL_MODULE, 1),                          // Range check and Register buttons
-         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Module options
-         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 1
-         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 2
-         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                          // Receiver 3
+         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                              // RxNum
+         IF_INTERNAL_MODULE_ON(FAILSAFE_ROWS(INTERNAL_MODULE)),           // Failsafe
+         IF_NOT_PXX2_MODULE(INTERNAL_MODULE, IF_INTERNAL_MODULE_ON(0)),   // Antenna
+         IF_PXX2_MODULE(INTERNAL_MODULE, 1),                              // Range check and Register buttons
+         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                              // Module options
+         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                              // Receiver 1
+         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                              // Receiver 2
+         IF_PXX2_MODULE(INTERNAL_MODULE, 0),                              // Receiver 3
 
          LABEL(ExternalModule),
-         EXTERNAL_MODULE_MODE_ROWS,
+         EXTERNAL_MODULE_MODE_ROWS,                                       // module mode (PXX(2) / None)
          MULTIMODULE_STATUS_ROWS
-         EXTERNAL_MODULE_CHANNELS_ROWS,
-         ((isModuleXJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) || isModuleSBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (isModulePPM(EXTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW,
+         EXTERNAL_MODULE_CHANNELS_ROWS,                                   // Channels min and count
+         ((isModuleXJT(EXTERNAL_MODULE) && !HAS_RF_PROTOCOL_MODELINDEX(g_model.moduleData[EXTERNAL_MODULE].rfProtocol)) || isModuleSBUS(EXTERNAL_MODULE)) ? (uint8_t)1 : (isModulePPM(EXTERNAL_MODULE) || isModulePXX(EXTERNAL_MODULE) || isModuleDSM2(EXTERNAL_MODULE) || isModuleMultimodule(EXTERNAL_MODULE)) ? (uint8_t)2 : HIDDEN_ROW, // RxNum + Bind
          FAILSAFE_ROWS(EXTERNAL_MODULE),
+         IF_PXX2_MODULE(EXTERNAL_MODULE, 1),                              // Range check and Register buttons
+         IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                              // Module options
+         IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                              // Receiver 1
+         IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                              // Receiver 2
+         IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                              // Receiver 3
          EXTERNAL_MODULE_OPTION_ROW,
          MULTIMODULE_MODULE_ROWS
          EXTERNAL_MODULE_POWER_ROW,
+
          LABEL(Trainer),
          0,
          TRAINER_LINE1_ROWS,
@@ -977,7 +985,7 @@ bool menuModelSetup(event_t event)
       break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_REGISTER_RANGE:
-
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_REGISTER_RANGE:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE);
@@ -1004,7 +1012,7 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_OPTIONS:
-
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_OPTIONS:
         lcdDrawText(INDENT_WIDTH, y, STR_OPTIONS);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
@@ -1017,7 +1025,9 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_2:
       case ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_3:
-
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3:
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
