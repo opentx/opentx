@@ -73,12 +73,17 @@ class Bluetooth
     void receiveTrainer();
 
     uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
-    void sendBootloaderCommand(uint8_t command, const uint8_t * data = nullptr, uint8_t size = 0);
-    void sendBootloaderCommandResponse(uint8_t response);
-    const char * waitBootloaderCommandResponse();
-    const char * waitBootloaderResponseData(uint8_t * data, uint8_t size);
-    const char * sendBootloaderAutoBaud();
-
+    void bootloaderSendCommand(uint8_t command, const void *data = nullptr, uint8_t size = 0);
+    void bootloaderSendCommandResponse(uint8_t response);
+    const char * bootloaderWaitCommandResponse(uint8_t timeout=100/*ms*/);
+    const char * bootloaderWaitResponseData(uint8_t *data, uint8_t size);
+    const char * bootloaderSetAutoBaud();
+    const char * bootloaderReadStatus(uint8_t &status);
+    const char * bootloaderCheckStatus();
+    const char * bootloaderSendData(const uint8_t * data, uint8_t size);
+    const char * bootloaderEraseFlash(uint32_t start, uint32_t size);
+    const char * bootloaderStartWriteFlash(uint32_t start, uint32_t size);
+    const char * bootloaderWriteFlash(const uint8_t * data, uint32_t size);
     const char * doFlashFirmware(const char * filename);
 
     uint8_t buffer[BLUETOOTH_LINE_LENGTH+1];
