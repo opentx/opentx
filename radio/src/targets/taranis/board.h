@@ -726,6 +726,8 @@ void serial2Stop(void);
 #else
 #define BLUETOOTH_FACTORY_BAUDRATE      57600
 #endif
+#define BT_TX_FIFO_SIZE    64
+#define BT_RX_FIFO_SIZE    128
 void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
