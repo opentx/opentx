@@ -1366,7 +1366,6 @@ void menuModelSetup(event_t event)
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_SET, attr);
         if (event == EVT_KEY_BREAK(KEY_ENTER) && attr) {
           g_moduleIdx = CURRENT_MODULE_EDITED(k);
-          memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
           pushMenu(menuModelModuleOptions);
         }
         break;

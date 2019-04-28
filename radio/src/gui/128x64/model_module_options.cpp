@@ -72,16 +72,8 @@ bool isPowerAvailable(int value)
 
 void menuModelModuleOptions(event_t event)
 {
-  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
-  // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
-
-  SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
-    IF_MODULE_OPTIONS(MODULE_OPTION_RF_PROTOCOL, 0),
-    IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
-    IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
-  });
-
   if (event == EVT_ENTRY) {
+    memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
 #if defined(SIMU)
     reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
 #else
@@ -89,6 +81,17 @@ void menuModelModuleOptions(event_t event)
     moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
 #endif
   }
+
+  uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
+  // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
+
+  uint8_t optionsAvailable = moduleOptions[g_moduleIdx] & ((1 << MODULE_OPTION_RF_PROTOCOL) | (1 << MODULE_OPTION_RF_PROTOCOL) | (1 << MODULE_OPTION_RF_PROTOCOL));
+
+  SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
+    !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_RF_PROTOCOL, 0),
+    IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
+    IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
+  });
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
     moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
@@ -124,56 +127,63 @@ void menuModelModuleOptions(event_t event)
 
   int8_t sub = menuVerticalPosition;
   lcdDrawTextAlignedLeft(0, "Module options");
-  lcdDrawText(lcdLastRightPos+ 3, 0, PXX2modulesModels[modelId] );
+  lcdDrawText(lcdLastRightPos + 3, 0, PXX2modulesModels[modelId]);
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
-    for (uint8_t k=0; k<LCD_LINES-1; k++) {
-      coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-      uint8_t i = k + menuVerticalOffset;
-      for (int j=0; j<=i; ++j) {
-        if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
-          ++i;
+    if (optionsAvailable) {
+      for (uint8_t k=0; k<LCD_LINES-1; k++) {
+        coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
+        uint8_t i = k + menuVerticalOffset;
+        for (int j=0; j<=i; ++j) {
+          if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
+            ++i;
+          }
+        }
+        LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+
+        switch (i) {
+          case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
+            lcdDrawText(0, y, "RF Protocol");
+            lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
+            if (attr) {
+              reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
+              if (checkIncDec_Ret) {
+                reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+              }
+            }
+            break;
+
+          case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
+            reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
+            if (attr && checkIncDec_Ret) {
+              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+            }
+            break;
+
+          case ITEM_MODULE_SETTINGS_POWER:
+            lcdDrawText(0, y, "Power");
+            lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
+            lcdDrawText(lcdNextPos, y, "dBm(");
+            drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
+            lcdDrawText(lcdNextPos, y, ")");
+            if (attr) {
+              reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
+              if (checkIncDec_Ret) {
+                reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+              }
+            }
+            break;
         }
       }
-      LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-
-      switch (i) {
-        case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
-          lcdDrawText(0, y, "RF Protocol");
-          lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
-          if (attr) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
-            if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
-            }
-          }
-          break;
-
-        case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
-          reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
-          if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
-          }
-          break;
-
-        case ITEM_MODULE_SETTINGS_POWER:
-          lcdDrawText(0, y, "Power");
-          lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
-          lcdDrawText(lcdNextPos, y, "dBm(");
-          drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
-          lcdDrawText(lcdNextPos, y, ")");
-          if (attr) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
-            if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
-            }
-          }
-          break;
-      }
+    }
+    else {
+      lcdDrawCenteredText(LCD_H/2, "No TX options");
+      s_editMode = 0;
     }
   }
   else {
     lcdDrawCenteredText(LCD_H/2, "Waiting for TX...");
+    s_editMode = 0;
   }
 }
