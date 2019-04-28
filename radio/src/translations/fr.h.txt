@@ -856,6 +856,7 @@
 #define TR_CAT_NOT_EMPTY               "Categorie non vide"
 #define TR_SDCARD_ERROR                "Erreur carte SD"
 #define TR_NO_SDCARD                   "Carte SD indisponible"
+#define TR_NO_TOOLS                    "No tools available"
 #define TR_SDCARD_FULL                 "Carte SD pleine"
 #define TR_INCOMPATIBLE                "Incompatible"
 #define TR_WARNING                     "ALERTE"

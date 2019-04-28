@@ -846,6 +846,7 @@ TR_GYR_VSRCRAW
 #define TR_CAT_NOT_EMPTY       "Categorie is niet leeg"
 #define TR_SDCARD_ERROR        "SD-Kaart fout"
 #define TR_NO_SDCARD           "Geen SD-Kaart"
+#define TR_NO_TOOLS                    "No tools available"
 #define TR_SDCARD_FULL         "SD-Kaart vol"
 #define TR_INCOMPATIBLE        "Niet compatibel"
 #define TR_WARNING             "MELDING"
