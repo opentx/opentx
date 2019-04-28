@@ -507,5 +507,6 @@ void menuRadioSdManager(event_t _event)
   }
   else {
     lcdDrawCenteredText(LCD_H/2, STR_NO_SDCARD);
+    REFRESH_FILES();
   }
 }
