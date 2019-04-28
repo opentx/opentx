@@ -30,8 +30,8 @@
 #define BLUETOOTH_COMMAND_BAUD_115200  "TTM:BPS-115200"
 #endif
 
-extern Fifo<uint8_t, 64> btTxFifo;
-extern Fifo<uint8_t, 128> btRxFifo;
+extern Fifo<uint8_t, BT_TX_FIFO_SIZE> btTxFifo;
+extern Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
 Bluetooth bluetooth;
 

@@ -49,7 +49,7 @@ void menuRadioPowerMeter(event_t event)
   if (menuEvent) {
     lcdDrawCenteredText(LCD_H/2, STR_STOPPING);
     lcdRefresh();
-    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
     /* wait 1s to resume normal operation before leaving */
     watchdogSuspend(1000);
     RTOS_WAIT_MS(1000);
