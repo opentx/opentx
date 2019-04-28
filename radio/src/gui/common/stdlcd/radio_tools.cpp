@@ -63,18 +63,22 @@ void menuRadioTools(event_t event)
   SIMPLE_MENU(STR_MENUTOOLS, menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spectrum_modules + power_modules);
 
 #if defined(PXX2)
-  uint8_t menu_index = 0;
+  uint8_t index = 0;
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
-    addRadioTool(menu_index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE);
+    addRadioTool(index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-    addRadioTool(menu_index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE);
+    addRadioTool(index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE);
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
-    addRadioTool(menu_index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
+    addRadioTool(index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-    addRadioTool(menu_index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE);
+    addRadioTool(index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE);
 #endif
+
+  if (index == 0) {
+    lcdDrawCenteredText(LCD_H/2, STR_NO_TOOLS);
+  }
 }
