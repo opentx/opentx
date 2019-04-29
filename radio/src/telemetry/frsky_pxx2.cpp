@@ -52,10 +52,13 @@ void processGetHardwareInfoFrame(uint8_t module, uint8_t * frame)
   ModuleInformation * destination = moduleState[module].moduleInformation;
 
   uint8_t index = frame[3];
-  if (index == 0xFF)
+  uint8_t modelId = frame[4];
+  if (index == PXX2_HW_INFO_TX_ID && modelId < DIM(PXX2modulesModels)) {
     memcpy(&destination->information, &frame[4], sizeof(PXX2HardwareInformation));
-  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE)
+  }
+  else if (index < PXX2_MAX_RECEIVERS_PER_MODULE && modelId < DIM(PXX2receiversModels)) {
     memcpy(&destination->receivers[index].information, &frame[4], sizeof(PXX2HardwareInformation));
+  }
 }
 
 void processModuleSettingsFrame(uint8_t module, uint8_t * frame)
