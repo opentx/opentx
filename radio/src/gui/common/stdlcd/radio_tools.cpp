@@ -62,9 +62,9 @@ void menuRadioTools(event_t event)
 
   SIMPLE_MENU(STR_MENUTOOLS, menuTabGeneral, MENU_RADIO_TOOLS, HEADER_LINE + spectrum_modules + power_modules);
 
-#if defined(PXX2)
   uint8_t index = 0;
 
+#if defined(PXX2)
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
     addRadioTool(index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 

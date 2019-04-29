@@ -23,7 +23,9 @@
 const MenuHandlerFunc menuTabGeneral[] = {
   menuRadioSetup,
   menuRadioSdManager,
+#if defined(PXX2)
   menuRadioTools,
+#endif
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,
