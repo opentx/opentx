@@ -220,7 +220,7 @@ void processSpectrumAnalyserFrame(uint8_t module, uint8_t * frame)
   int32_t position = *frequency - (reusableBuffer.spectrumAnalyser.freq - reusableBuffer.spectrumAnalyser.span / 2);
   uint32_t x = (position * LCD_W / 8) / (reusableBuffer.spectrumAnalyser.span / 8);
   if (x < LCD_W) {
-    reusableBuffer.spectrumAnalyser.bars[x] = 127 + *power;
+    reusableBuffer.spectrumAnalyser.bars[x] = 0x80 + *power;
   }
 }
 
