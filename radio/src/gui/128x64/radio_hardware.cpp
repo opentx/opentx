@@ -400,12 +400,17 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_RAS:
+#if defined(PCBX3)
+        lcdDrawTextAlignedLeft(y, "Ext. RAS");
+        lcdNextPos = HW_SETTINGS_COLUMN2;
+#else
         lcdDrawTextAlignedLeft(y, "RAS");
         if (telemetryData.swrInternal.isFresh())
           lcdDrawNumber(HW_SETTINGS_COLUMN2, y, telemetryData.swrInternal.value);
         else
           lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
         lcdDrawText(lcdNextPos, y, "/");
+#endif
         if (telemetryData.swrExternal.isFresh())
           lcdDrawNumber(lcdNextPos, y, telemetryData.swrExternal.value);
         else
