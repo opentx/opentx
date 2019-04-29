@@ -263,7 +263,7 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2:
       intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
-      scheduleNextMixerCalculation(INTERNAL_MODULE, moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER ? 1 : PXX2_PERIOD);
+      scheduleNextMixerCalculation(INTERNAL_MODULE, moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER ? PXX2_TOOLS_PERIOD : PXX2_PERIOD);
       break;
 #endif
 

@@ -170,7 +170,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
       data = SPORT_DATA_U8(packet);
       if (g_model.rssiSource) {
         TelemetrySensor * sensor = & g_model.telemetrySensors[g_model.rssiSource];
-        if (sensor->instance == instance) {
+        if (sensor->isSameInstance(TELEM_PROTO_FRSKY_SPORT, instance)) {
           telemetryData.rssi.set(data);
         }
       }

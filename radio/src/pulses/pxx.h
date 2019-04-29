@@ -29,6 +29,7 @@
 
 #define PXX2_ON_SPORT_BAUDRATE             230400
 #define PXX2_PERIOD                        4 // 4ms
+#define PXX2_TOOLS_PERIOD                  1 // 1ms
 #define PXX2_FRAME_MAXLENGTH               64
 
 #define PXX_PULSES_PERIOD                  9/*ms*/
