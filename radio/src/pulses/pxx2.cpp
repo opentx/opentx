@@ -331,7 +331,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
   }
 
   if (moduleState[module].counter-- == 0) {
-    moduleState[module].counter = 1000;
+    moduleState[module].counter = 2500;
   }
 
   endFrame();
