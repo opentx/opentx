@@ -1192,7 +1192,7 @@ void menuModelSetup(event_t event)
             lcdDrawText(INDENT_WIDTH, y+1, bluetooth.distantAddr, TINSIZE);
             lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON(TR_CLEAR), attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
-              bluetooth.state = BLUETOOTH_STATE_OFF;
+              bluetooth.state = BLUETOOTH_STATE_CLEAR_REQUESTED;
               memclear(bluetooth.distantAddr, sizeof(bluetooth.distantAddr));
             }
           }
@@ -1203,6 +1203,7 @@ void menuModelSetup(event_t event)
             else
               lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_BUTTON_DISCOVER, attr);
             if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+              killEvents(KEY_ENTER);
               if (bluetooth.state < BLUETOOTH_STATE_IDLE) {
                 bluetooth.state = BLUETOOTH_STATE_OFF;
               }

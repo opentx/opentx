@@ -450,6 +450,11 @@ void Bluetooth::wakeup()
     /* else if (state == BLUETOOTH_STATE_DISCOVER_START && !strcmp(line, "OK+DISCE")) {
       state = BLUETOOTH_STATE_DISCOVER_END;
     } */
+    else if (state == BLUETOOTH_STATE_CLEAR_REQUESTED) {
+      char command[] = "AT+CLEAR";
+      writeString(command);
+      state = BLUETOOTH_STATE_IDLE;
+    }
     else if (state == BLUETOOTH_STATE_BIND_REQUESTED) {
       char command[32];
       strAppend(strAppend(command, "AT+CON"), distantAddr);
