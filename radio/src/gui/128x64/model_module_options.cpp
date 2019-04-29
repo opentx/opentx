@@ -27,10 +27,13 @@ extern uint8_t g_moduleIdx;
 
 void onTxOptionsUpdateConfirm(const char * result)
 {
-  if (result == STR_OK)
-    moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
-  else
+  if (result == STR_OK) {
+    reusableBuffer.hardwareAndSettings.moduleSettingsDirty = 2;
+    moduleState[g_moduleIdx].writeModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
+  }
+  else {
     popMenu();
+  }
 }
 
 enum {
