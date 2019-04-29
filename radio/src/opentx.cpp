@@ -371,7 +371,7 @@ void applyDefaultTemplate()
 #if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
-  if(isModulePXX(module) && IS_D8_RX(module))
+  if (isModulePXX(module) && IS_D8_RX(module))
     return;
 
   uint8_t modelId = g_model.header.modelId[module];
@@ -385,12 +385,12 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
       if (i != index) {
         if (modelId == modelHeaders[i].modelId[module]) {
           if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.moduleSetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
-            if (reusableBuffer.moduleSetup.msg[0] != 0) {
+            if (reusableBuffer.moduleSetup.msg[0] != '\0') {
               name = strAppend(name, ", ");
             }
             if (modelHeaders[i].name[0] == 0) {
               name = strAppend(name, STR_MODEL);
-              name = strAppendUnsigned(name+strlen(name),i, 2);
+              name = strAppendUnsigned(name+strlen(name), i + 1, 2);
             }
             else {
               name += zchar2str(name, modelHeaders[i].name, LEN_MODEL_NAME);
@@ -407,10 +407,10 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
   if (additionalOnes) {
     name = strAppend(name, " (+");
     name = strAppendUnsigned(name, additionalOnes);
-    name = strAppend(name, ")");
+    strAppend(name, ")");
   }
 
-  if (reusableBuffer.moduleSetup.msg[0] != 0) {
+  if (reusableBuffer.moduleSetup.msg[0] != '\0') {
     POPUP_WARNING(STR_MODELIDUSED);
     SET_WARNING_INFO(reusableBuffer.moduleSetup.msg, sizeof(reusableBuffer.moduleSetup.msg), 0);
   }
