@@ -1858,6 +1858,7 @@ void menuModelSetup(event_t event)
     switch(menuVerticalPosition) {
 #if defined(PCBTARANIS)
       case ITEM_MODEL_INTERNAL_MODULE_NPXX2_BIND:
+      case ITEM_MODEL_INTERNAL_MODULE_PXX2_MODEL_NUM:
         if (menuHorizontalPosition == 0)
           checkModelIdUnique(g_eeGeneral.currModel, INTERNAL_MODULE);
         break;
@@ -1869,6 +1870,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
       case ITEM_MODEL_EXTERNAL_MODULE_NPXX2_BIND:
+      case ITEM_MODEL_EXTERNAL_MODULE_PXX2_MODEL_NUM:
         if (menuHorizontalPosition == 0)
           checkModelIdUnique(g_eeGeneral.currModel, EXTERNAL_MODULE);
         break;
