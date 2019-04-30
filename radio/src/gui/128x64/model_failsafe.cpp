@@ -37,7 +37,7 @@ void onFailsafeMenu(const char *result)
   else if (result == STR_CHANNEL2FAILSAFE) {
     failsafe = channelValue;
   }
-  else if (result == STR_OUTPUTS2FAILSAFE) {
+  else if (result == STR_CHANNELS2FAILSAFE) {
     setCustomFailsafe(g_moduleIdx);
   }
   s_editMode = 0;
@@ -69,7 +69,7 @@ void menuModelFailsafe(event_t event)
       POPUP_MENU_ADD_ITEM(STR_NONE);
       POPUP_MENU_ADD_ITEM(STR_HOLD);
       POPUP_MENU_ADD_ITEM(STR_CHANNEL2FAILSAFE);
-      POPUP_MENU_ADD_ITEM(STR_OUTPUTS2FAILSAFE);
+      POPUP_MENU_ADD_ITEM(STR_CHANNELS2FAILSAFE);
       POPUP_MENU_START(onFailsafeMenu);
     }
 

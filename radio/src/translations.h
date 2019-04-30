@@ -511,7 +511,7 @@ extern const char STR_BAD_RADIO_DATA[];
 extern const char STR_STORAGE_FORMAT[];
 extern const char STR_EEPROMOVERFLOW[];
 extern const char STR_TRIMS2OFFSETS[];
-extern const char STR_OUTPUTS2FAILSAFE[];
+extern const char STR_CHANNELS2FAILSAFE[];
 extern const char STR_CHANNEL2FAILSAFE[];
 extern const char STR_MENURADIOSETUP[];
 extern const char STR_MENUDATEANDTIME[];

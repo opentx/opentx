@@ -128,7 +128,7 @@ bool menuModelFailsafe(event_t event)
 
         // draw that menu at the bottom center
         flags = CENTERED | (menuVerticalPosition == ch ? INVERS : 0);
-        lcdDrawSizedText(LCD_W/2, MENU_CONTENT_TOP - FH + 8*(FH+2), STR_OUTPUTS2FAILSAFE, 20, flags);
+        lcdDrawSizedText(LCD_W/2, MENU_CONTENT_TOP - FH + 8*(FH+2), STR_CHANNELS2FAILSAFE, 20, flags);
         break;
       }
     }

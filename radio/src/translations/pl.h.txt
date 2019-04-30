@@ -755,10 +755,10 @@
   #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
 #endif
 #if defined(COLORLCD)
-  #define TR_OUTPUTS2FAILSAFE  "Outputs=>Failsafe"
+  #define TR_CHANNELS2FAILSAFE  "Channels=>Failsafe"
 #define TR_CHANNEL2FAILSAFE            "Channel=>Failsafe"
 #else
-  #define TR_OUTPUTS2FAILSAFE  "\006Outputs => Failsafe"
+  #define TR_CHANNELS2FAILSAFE  "\006Outputs => Failsafe"
 #endif
 #define TR_MENUMODELSEL        TR("WYB.MODEL","WYBÓR MODELU")
 #define TR_MENUSETUP           TR("USTAW","USTAW MODELU")

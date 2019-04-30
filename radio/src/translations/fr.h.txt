@@ -764,7 +764,7 @@
 #else
   #define TR_TRIMS2OFFSETS             "\006Trims => Subtrims"
 #endif
-#define TR_OUTPUTS2FAILSAFE          "Outputs=>Failsafe"
+#define TR_CHANNELS2FAILSAFE          "Channels=>Failsafe"
 #define TR_CHANNEL2FAILSAFE            "Channel=>Failsafe"
 #define TR_MENUMODELSEL                "MODELES"
 #define TR_MENUSETUP                   TR("CONF. MODELE", "CONFIGURATION")
