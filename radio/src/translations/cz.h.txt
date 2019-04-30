@@ -748,7 +748,8 @@
 #define TR_TRIMS2OFFSETS       "\006Trimy => Subtrimy"
 #endif
 #if defined(COLORLCD)
-#define TR_OUTPUTS2FAILSAFE    "Outputs => Failsafe"
+#define TR_OUTPUTS2FAILSAFE    "Outputs=>Failsafe"
+#define TR_CHANNEL2FAILSAFE            "Channel=>Failsafe"
 #else
 #define TR_OUTPUTS2FAILSAFE    "\006Outputs => Failsafe"
 #endif

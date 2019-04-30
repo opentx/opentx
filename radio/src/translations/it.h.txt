@@ -754,7 +754,8 @@
   #define TR_TRIMS2OFFSETS     "\006Trim  => Offset "
 #endif
 #if defined(COLORLCD)
-  #define TR_OUTPUTS2FAILSAFE  "Outputs => Failsafe"
+  #define TR_OUTPUTS2FAILSAFE  "Outputs=>Failsafe"
+#define TR_CHANNEL2FAILSAFE            "Channel=>Failsafe"
 #else
   #define TR_OUTPUTS2FAILSAFE  "\006Outputs => Failsafe"
 #endif

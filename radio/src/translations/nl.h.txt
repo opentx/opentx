@@ -473,7 +473,7 @@
 #else
   #define TR_GYR_VSRCRAW
 #endif
-TR_GYR_VSRCRAW 
+TR_GYR_VSRCRAW
 #if defined(HELI)
   #define TR_CYC_VSRCRAW       "CYC1""CYC2""CYC3"
 #else
@@ -755,7 +755,8 @@ TR_GYR_VSRCRAW
   #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
 #endif
 #if defined(COLORLCD)
-  #define TR_OUTPUTS2FAILSAFE  "Outputs => Failsafe"
+  #define TR_OUTPUTS2FAILSAFE  "Outputs=>Failsafe"
+#define TR_CHANNEL2FAILSAFE            "Channel=>Failsafe"
 #else
   #define TR_OUTPUTS2FAILSAFE  "\006Outputs => Failsafe"
 #endif
