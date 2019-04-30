@@ -145,10 +145,6 @@ void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
 void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 void drawShortTrimMode(coord_t x, coord_t y, uint8_t mode, uint8_t idx, LcdFlags att);
 
-#if defined(ROTARY_ENCODERS)
-  void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
-#endif
-
 #define putsChn(x, y, idx, att) drawSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);
 

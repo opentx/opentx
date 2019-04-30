@@ -29,14 +29,13 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_STICK_LH_GAIN,
   ITEM_RADIO_HARDWARE_STICK_RV_GAIN,
   ITEM_RADIO_HARDWARE_STICK_RH_GAIN,
-  IF_ROTARY_ENCODERS(ITEM_RADIO_HARDWARE_ROTARY_ENCODER)
   CASE_BLUETOOTH(ITEM_RADIO_HARDWARE_BT_BAUDRATE)
   ITEM_RADIO_HARDWARE_MAX
 };
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, IF_ROTARY_ENCODERS(0) CASE_BLUETOOTH(0)});
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX+1, {0, 0, (uint8_t)-1, 0, 0, 0, CASE_BLUETOOTH(0)});
 
   uint8_t sub = menuVerticalPosition - 1;
 
@@ -74,12 +73,6 @@ void menuRadioHardware(event_t event)
         }
         break;
       }
-
-#if defined(ROTARY_ENCODERS)
-      case ITEM_RADIO_HARDWARE_ROTARY_ENCODER:
-        g_eeGeneral.rotarySteps = editChoice(HW_SETTINGS_COLUMN, y, "Rotary Encoder", "\0062steps4steps", g_eeGeneral.rotarySteps, 0, 1, attr, event);
-        break;
-#endif
 
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BT_BAUDRATE:

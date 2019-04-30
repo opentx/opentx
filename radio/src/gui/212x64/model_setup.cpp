@@ -281,7 +281,7 @@ void menuModelSetup(event_t event)
   int8_t old_editMode = s_editMode;
   MENU_TAB({ 0, 0, TIMERS_ROWS, TOPLCD_ROWS 0, 1, 0, 0,
     LABEL(Throttle), 0, 0, 0,
-    LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1), 0,
+    LABEL(PreflightCheck), 0, 0, SW_WARN_ITEMS(), POT_WARN_ITEMS(), NAVIGATION_LINE_BY_LINE|(NUM_STICKS+NUM_POTS+NUM_SLIDERS-1), 0,
     LABEL(InternalModule),
     INTERNAL_MODULE_MODE_ROWS,
     INTERNAL_MODULE_CHANNELS_ROWS,
@@ -636,7 +636,7 @@ void menuModelSetup(event_t event)
       {
         lcdDrawTextAlignedLeft(y, STR_BEEPCTR);
         coord_t x = MODEL_SETUP_2ND_COLUMN;
-        for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS; i++) {
+        for (int i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
           if (i>=POT1 && i<POT1+NUM_XPOTS && !IS_POT_SLIDER_AVAILABLE(i)) {
             if (attr && menuHorizontalPosition == i) REPEAT_LAST_CURSOR_MOVE();
             continue;

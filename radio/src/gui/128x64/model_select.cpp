@@ -113,21 +113,6 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(ROTARY_ENCODERS)
-    case EVT_ROTARY_LONG:
-      killEvents(event);
-      if (s_editMode < 0) {
-        popMenu();
-        break;
-      }
-      else if (!s_copyMode) {
-        menuVerticalPosition = sub = g_eeGeneral.currModel;
-        s_copyMode = 0;
-        s_editMode = EDIT_MODE_INIT;
-      }
-      // no break
-#endif
-
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_copyMode) {
         sub = menuVerticalPosition = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
@@ -140,15 +125,6 @@ void menuModelSelect(event_t event)
         popMenu();
       }
       break;
-
-#if defined(ROTARY_ENCODERS)
-    case EVT_ROTARY_BREAK:
-      if (s_editMode == -1) {
-        s_editMode = 0;
-        break;
-      }
-      // no break;
-#endif
 
     case EVT_KEY_LONG(KEY_ENTER):
     case EVT_KEY_BREAK(KEY_ENTER):

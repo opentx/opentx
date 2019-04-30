@@ -150,9 +150,8 @@ void simuInit()
   for (int i = 0; i < 2*NUM_TRIMS; i++)
     simuSetTrim(i, false);
 
-#if defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION)
-  for (uint8_t i=0; i < DIM(rotencValue); i++)
-    rotencValue[i] = 0;
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotencValue = 0;
 #endif
 }
 
@@ -225,9 +224,6 @@ void simuSetKey(uint8_t key, bool state)
     KEY_CASE(KEY_LEFT, KEYS_GPIO_REG_LEFT, KEYS_GPIO_PIN_LEFT)
     KEY_CASE(KEY_UP, KEYS_GPIO_REG_UP, KEYS_GPIO_PIN_UP)
     KEY_CASE(KEY_DOWN, KEYS_GPIO_REG_DOWN, KEYS_GPIO_PIN_DOWN)
-#endif
-#if defined(PCBSKY9X) && !defined(REVX) && !defined(AR9X) && defined(ROTARY_ENCODERS)
-    KEY_CASE(BTN_REa, PIOB->PIO_PDSR, 0x40)
 #endif
   }
 }
@@ -691,6 +687,13 @@ void RCC_I2SCLKConfig(uint32_t RCC_I2SCLKSource) { }
 void RCC_LSEConfig(uint8_t RCC_LSE) { }
 void RCC_GetClocksFreq(RCC_ClocksTypeDef* RCC_Clocks) { };
 FlagStatus RCC_GetFlagStatus(uint8_t RCC_FLAG) { return SET; }
+
+// EXTI fake functions
+void SYSCFG_EXTILineConfig(uint8_t EXTI_PortSourceGPIOx, uint8_t EXTI_PinSourcex) { }
+void EXTI_StructInit(EXTI_InitTypeDef* EXTI_InitStruct) { }
+ITStatus EXTI_GetITStatus(uint32_t EXTI_Line) { return RESET; }
+void EXTI_Init(EXTI_InitTypeDef* EXTI_InitStruct) { }
+void EXTI_ClearITPendingBit(uint32_t EXTI_Line) { }
 
 // RTC fake functions
 ErrorStatus RTC_Init(RTC_InitTypeDef* RTC_InitStruct) { return SUCCESS; }

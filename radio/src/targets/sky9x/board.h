@@ -38,11 +38,10 @@ void boardInit(void);
 #define boardOff()  pwrOff()
 
 // Rotary Encoder driver
-void rotencInit();
-void rotencEnd();
+void rotaryEncoderInit();
+void rotaryEncoderEnd();
 
 #if !defined(REVX) && !defined(AR9X)
-  #define ROTARY_ENCODERS              1
   #define ROTARY_ENCODER_NAVIGATION
   #define REA_DOWN()                   (!(PIOB->PIO_PDSR & 0x40))
 #else
@@ -73,10 +72,6 @@ enum EnumKeys
   TRM_RH_DWN,
   TRM_RH_UP,
   TRM_LAST = TRM_RH_UP,
-
-#if defined(ROTARY_ENCODERS)
-  BTN_REa,
-#endif
 
   NUM_KEYS
 };

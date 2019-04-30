@@ -270,7 +270,6 @@ void menuRadioSdManager(event_t _event)
       break;
 
 #if !defined(PCBTARANIS)
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_FIRST(KEY_RIGHT):
 #endif
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -484,13 +483,18 @@ void menuRadioSdManager(event_t _event)
     }
 
     if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
-      if (reusableBuffer.sdManager.otaInformation.step == BIND_INIT && reusableBuffer.sdManager.otaInformation.candidateReceiversCount > 0) {
-        popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
-        for (uint8_t i=0; i<popupMenuItemsCount; i++) {
-          popupMenuItems[i] = reusableBuffer.sdManager.otaInformation.candidateReceiversNames[i];
+      if (reusableBuffer.sdManager.otaInformation.step == BIND_INIT) {
+        if (reusableBuffer.sdManager.otaInformation.candidateReceiversCount > 0) {
+          popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+          for (uint8_t i=0; i<popupMenuItemsCount; i++) {
+            popupMenuItems[i] = reusableBuffer.sdManager.otaInformation.candidateReceiversNames[i];
+          }
+          popupMenuTitle = STR_PXX2_SELECT_RX;
+          POPUP_MENU_START(onUpdateReceiverSelection);
         }
-        popupMenuTitle = STR_PXX2_SELECT_RX;
-        POPUP_MENU_START(onUpdateReceiverSelection);
+        else {
+          drawMessageBox("Waiting for RX...");
+        }
       }
     }
 

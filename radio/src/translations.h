@@ -115,11 +115,7 @@ extern const char STR_OPEN9X[];
 #define OFS_VBEEPLEN           (OFS_NCHANNELS + sizeof(TR_NCHANNELS))
 #define OFS_VBEEPMODE          (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
 #endif
-#if defined(ROTARY_ENCODERS)
-#define OFS_VRENAVIG           (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
-#define OFS_VRENCODERS         (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
-#define OFS_TRNMODE            (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
-#elif defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 #define OFS_VRENCODERS         (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #define OFS_TRNMODE            (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
 #else
@@ -274,10 +270,6 @@ extern const char STR_OPEN9X[];
 #define STR_INPUTNAMES          (STR_OPEN9X + OFS_INPUTNAMES)
 #endif
 #define STR_VTMRMODES           (STR_OPEN9X + OFS_VTMRMODES)
-
-#if defined(ROTARY_ENCODERS)
-  #define STR_VRENAVIG          (STR_OPEN9X + OFS_VRENAVIG)
-#endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   #define STR_VRENCODERS        (STR_OPEN9X + OFS_VRENCODERS)

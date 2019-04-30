@@ -50,7 +50,7 @@ const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
 { 'B', 'O', 'O', 'T', '1', '0' };
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-volatile rotenc_t rotencValue[1] = {0};
+volatile rotenc_t rotencValue = 0;
 #endif
 
 /*----------------------------------------------------------------------------
@@ -86,18 +86,12 @@ void interrupt10ms(void)
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  checkRotaryEncoder();
   static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (rotencValue[0] / ROTARY_ENCODER_GRANULARITY);
+  rotenc_t reNewValue = (rotencValue / ROTARY_ENCODER_GRANULARITY);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;
-    if (scrollRE < 0) {
-        putEvent(EVT_KEY_FIRST(KEY_UP)); //EVT_ROTARY_LEFT
-    }
-    else {
-        putEvent(EVT_KEY_FIRST(KEY_DOWN)); //EVT_ROTARY_RIGHT
-    }
+    putEvent(scrollRE < 0 ? EVT_KEY_FIRST(KEY_UP) : EVT_KEY_FIRST(KEY_DOWN));
   }
 #endif
 }
@@ -220,6 +214,10 @@ int main()
   RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph | BACKLIGHT_RCC_APB2Periph, ENABLE);
 
   keysInit();
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotaryEncoderInit();
+#endif
 
   // wait for inputs to stabilize
   for (uint32_t i = 0; i < 50000; i += 1) {

@@ -178,10 +178,6 @@
   #define CASE_CAPACITY(x)
 #endif
 
-#if ROTARY_ENCODERS > 0
-  #define ROTARY_ENCODER_NAVIGATION
-#endif
-
 #if defined(FAI)
   #define IS_FAI_ENABLED() true
   #define IF_FAI_CHOICE(x)
@@ -294,12 +290,6 @@ void memswap(void * a, void * b, uint8_t size);
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)           g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)
 
-#if ROTARY_ENCODERS > 0
-  #define IF_ROTARY_ENCODERS(x) x,
-#else
-  #define IF_ROTARY_ENCODERS(x)
-#endif
-
 #define PPM_CENTER                     1500
 
 #if defined(PPM_CENTER_ADJUSTABLE)
@@ -386,17 +376,10 @@ extern uint8_t channel_order(uint8_t x);
   #define SPLASH_TIMEOUT               (4*100)  // 4 seconds
 #endif
 
-#if defined(ROTARY_ENCODERS)
-  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  g_eeGeneral.reNavigation
-  extern volatile rotenc_t rotencValue[ROTARY_ENCODERS];
-  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[g_eeGeneral.reNavigation - 1]
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
-  extern volatile rotenc_t rotencValue[1];
-  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[0]
-#endif
-
 #if defined(ROTARY_ENCODER_NAVIGATION)
+  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
+  extern volatile rotenc_t rotencValue;
+  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue
   extern uint8_t rotencSpeed;
   #define ROTENC_LOWSPEED              1
   #define ROTENC_MIDSPEED              5
@@ -549,12 +532,7 @@ int getTrimValue(uint8_t phase, uint8_t idx);
 
 bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
-#if defined(ROTARY_ENCODERS)
-  int16_t getRotaryEncoder(uint8_t idx);
-  void incRotaryEncoder(uint8_t idx, int8_t inc);
-#endif
-
-#if   defined(PCBSKY9X)
+#if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
 #elif defined(PCBHORUS)
   #define ROTARY_ENCODER_GRANULARITY (1)

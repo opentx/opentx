@@ -185,12 +185,6 @@ PACK(struct trim_t {
 
 typedef int16_t gvar_t;
 
-#if MAX_ROTARY_ENCODERS > 0
-  #define FLIGHT_MODE_ROTARY_ENCODERS_FIELD int16_t rotaryEncoders[MAX_ROTARY_ENCODERS];
-#else
-  #define FLIGHT_MODE_ROTARY_ENCODERS_FIELD
-#endif
-
 PACK(struct FlightModeData {
   trim_t trim[NUM_TRIMS];
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
@@ -198,7 +192,6 @@ PACK(struct FlightModeData {
   int16_t spare:7;
   uint8_t fadeIn;
   uint8_t fadeOut;
-  FLIGHT_MODE_ROTARY_ENCODERS_FIELD
   gvar_t gvars[MAX_GVARS];
 });
 
@@ -866,7 +859,7 @@ static inline void check_struct()
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
   CHKSIZE(CustomFunctionData, 9);
-  CHKSIZE(FlightModeData, 38);
+  CHKSIZE(FlightModeData, 36);
   CHKSIZE(TimerData, 11);
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 5);
@@ -917,7 +910,7 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6601);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5319);
+  CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
   CHKSIZE(ModelData, 9734);

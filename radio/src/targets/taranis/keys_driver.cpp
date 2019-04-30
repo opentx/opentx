@@ -20,10 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-uint32_t rotencPosition;
-#endif
-
 uint32_t readKeys()
 {
   uint32_t result = 0;
@@ -113,27 +109,6 @@ bool keyDown()
 {
   return readKeys() || readTrims();
 }
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-void checkRotaryEncoder()
-{
-  uint32_t newpos = ROTARY_ENCODER_POSITION();
-  if (newpos != rotencPosition && !keyState(KEY_ENTER)) {
-    if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
-      --rotencValue[0];
-    }
-    else {
-      ++rotencValue[0];
-    }
-    rotencPosition = newpos;
-#if !defined(BOOT)
-    if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
-      backlightOn();
-    }
-#endif
-  }
-}
-#endif
 
 /* TODO common to ARM */
 void readKeysAndTrims()
@@ -288,9 +263,5 @@ void keysInit()
 #if defined(KEYS_GPIOG_PINS)
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
   GPIO_Init(GPIOG, &GPIO_InitStructure);
-#endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  rotencPosition = ROTARY_ENCODER_POSITION();
 #endif
 }

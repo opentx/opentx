@@ -86,10 +86,6 @@ void interrupt1ms()
     per10ms();
     DEBUG_TIMER_STOP(debugTimerPer10ms);
   }
-
-  DEBUG_TIMER_START(debugTimerRotEnc);
-  checkRotaryEncoder();
-  DEBUG_TIMER_STOP(debugTimerRotEnc);
 }
 
 extern "C" void INTERRUPT_xMS_IRQHandler()
@@ -168,7 +164,8 @@ void boardInit()
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);
 
-  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG |
+                         LCD_RCC_APB2Periph |
                          ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
@@ -196,6 +193,7 @@ void boardInit()
   memset(&g_FATFS_Obj, 0, sizeof(g_FATFS_Obj));
 
   keysInit();
+  rotaryEncoderInit();
 
 #if NUM_PWMSTICKS > 0
   sticksPwmInit();

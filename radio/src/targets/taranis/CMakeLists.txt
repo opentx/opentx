@@ -188,6 +188,13 @@ if(NOT PCB STREQUAL XLITE)
     )
 endif()
 
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X3)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/rotary_encoder_driver.cpp
+    )
+endif()
+
 if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC

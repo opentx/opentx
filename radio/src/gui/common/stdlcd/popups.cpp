@@ -144,9 +144,6 @@ const char * runPopupMenu(event_t event)
       }
       break;
 
-#if defined(CASE_EVT_ROTARY_BREAK)
-    CASE_EVT_ROTARY_BREAK
-#endif
     case EVT_KEY_BREAK(KEY_ENTER):
       result = popupMenuItems[s_menu_item + (popupMenuOffsetType == MENU_OFFSET_INTERNAL ? popupMenuOffset : 0)];
       popupMenuItemsCount = 0;
@@ -154,12 +151,6 @@ const char * runPopupMenu(event_t event)
       popupMenuOffset = 0;
       popupMenuTitle = nullptr;
       break;
-
-#if defined(CASE_EVT_ROTARY_LONG)
-    CASE_EVT_ROTARY_LONG
-      killEvents(event);
-      // no break
-#endif
 
     case EVT_KEY_BREAK(KEY_EXIT):
       result = STR_EXIT;
@@ -183,7 +174,20 @@ void runPopupWarning(event_t event)
     lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
   }
 
-  lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, warningType == WARNING_TYPE_INFO ? STR_OK : (warningType == WARNING_TYPE_ASTERISK ? STR_EXIT : STR_POPUPS_ENTER_EXIT));
+  switch (warningType) {
+    case WARNING_TYPE_INFO:
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, STR_OK);
+      break;
+
+    case WARNING_TYPE_ASTERISK:
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, STR_EXIT);
+      break;
+
+    default:
+      lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, STR_POPUPS_ENTER_EXIT);
+      break;
+  }
+
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):

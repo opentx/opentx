@@ -475,10 +475,7 @@ void boardInit()
 
   eepromInit();
 
-#if defined(ROTARY_ENCODERS)
-  rotencInit();
-#endif
-
+  rotaryEncoderInit();
   init_SDcard();
 }
 #else

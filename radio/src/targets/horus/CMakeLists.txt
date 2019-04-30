@@ -36,7 +36,6 @@ if (PCB STREQUAL X10)
     ../common/arm/stm32/adc_driver.cpp
     ../common/arm/stm32/sticks_pwm_driver.cpp
     )
-
   set(BITMAPS_TARGET x10_bitmaps)
   set(FONTS_TARGET x10_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
@@ -133,6 +132,7 @@ set(TARGET_SRC
   trainer_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/bluetooth_driver.cpp
+  ../common/arm/stm32/rotary_encoder_driver.cpp
   )
 
 set(FIRMWARE_TARGET_SRC

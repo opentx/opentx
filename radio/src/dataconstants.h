@@ -144,17 +144,6 @@ enum CurveType {
 
 #define XPOTS_MULTIPOS_COUNT           6
 
-#if defined(PCBSKY9X) && defined(REVX)
-  #define MAX_ROTARY_ENCODERS          1
-  #define NUM_ROTARY_ENCODERS          0
-#elif defined(PCBSKY9X)
-  #define MAX_ROTARY_ENCODERS          1
-  #define NUM_ROTARY_ENCODERS          1
-#else
-  #define MAX_ROTARY_ENCODERS          0
-  #define NUM_ROTARY_ENCODERS          0
-#endif
-
 #if defined(COLORLCD)
 enum MainViews {
   VIEW_BLANK,
@@ -607,11 +596,6 @@ enum MixSources {
   MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
-#if defined(PCBSKY9X)
-  MIXSRC_REa,
-  MIXSRC_LAST_ROTARY_ENCODER = MIXSRC_REa,
-#endif
-
   MIXSRC_MAX,
 
   MIXSRC_FIRST_HELI,
@@ -799,12 +783,6 @@ enum ResetFunctionParam {
   FUNC_RESET_FLIGHT,
 #if defined(TELEMETRY_FRSKY)
   FUNC_RESET_TELEMETRY,
-#endif
-#if ROTARY_ENCODERS > 0
-  FUNC_RESET_ROTENC1,
-#endif
-#if ROTARY_ENCODERS > 1
-  FUNC_RESET_ROTENC2,
 #endif
   FUNC_RESET_PARAM_FIRST_TELEM,
   FUNC_RESET_PARAM_LAST_TELEM = FUNC_RESET_PARAM_FIRST_TELEM + MAX_TELEMETRY_SENSORS,

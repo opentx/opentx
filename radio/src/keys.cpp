@@ -163,13 +163,6 @@ void pauseEvents(event_t event)
 // Disables any further event generation (BREAK and REPEAT) for this key, until the key is released
 void killEvents(event_t event)
 {
-#if defined(ROTARY_ENCODERS)
-  if (event == EVT_ROTARY_LONG) {
-    killEvents(BTN_REa + g_eeGeneral.reNavigation - 1);
-    return;
-  }
-#endif
-
   event = EVT_KEY_MASK(event);
   if (event < (int)DIM(keys)) {
     keys[event].killEvents();

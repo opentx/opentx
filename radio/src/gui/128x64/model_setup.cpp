@@ -551,7 +551,7 @@ void menuModelSetup(event_t event)
       SW_WARN_ROWS, // Switch warning
       POT_WARN_ITEMS(), // Pot warning
 
-    NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_ROTARY_ENCODERS - 1, // Center beeps
+    NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1, // Center beeps
     0, // Global functions
 
     uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW), // Registration ID
@@ -588,7 +588,7 @@ void menuModelSetup(event_t event)
     TRAINER_ROWS
   });
 #else
-  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, LABEL(PreflightCheck), 0, 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS-1, 0,
+  MENU_TAB({ HEADER_LINE_COLUMNS 0, TIMER_ROWS, TIMER_ROWS, TIMER_ROWS, 0, 1, 0, 0, 0, 0, 0, LABEL(PreflightCheck), 0, 0, NUM_SWITCHES-1, NUM_STICKS+NUM_POTS+NUM_SLIDERS-1, 0,
     LABEL(ExternalModule),
     EXTERNAL_MODULE_MODE_ROWS,
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
@@ -882,7 +882,6 @@ void menuModelSetup(event_t event)
           s_editMode = 0;
           if (!READ_ONLY()) {
             switch (event) {
-              CASE_EVT_ROTARY_BREAK
               case EVT_KEY_BREAK(KEY_ENTER):
                 if (menuHorizontalPosition < NUM_SWITCHES-1) {
                   g_model.switchWarningEnable ^= (1 << menuHorizontalPosition);
@@ -980,7 +979,7 @@ void menuModelSetup(event_t event)
 
       case ITEM_MODEL_BEEP_CENTER:
         lcdDrawTextAlignedLeft(y, STR_BEEPCTR);
-        for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_ROTARY_ENCODERS; i++) {
+        for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
           // TODO flash saving, \001 not needed in STR_RETA123
           coord_t x = MODEL_SETUP_2ND_COLUMN+i*FW;
           lcdDrawTextAtIndex(x, y, STR_RETA123, i, ((menuHorizontalPosition==i) && attr) ? BLINK|INVERS : (((g_model.beepANACenter & ((BeepANACenter)1<<i)) || (attr && CURSOR_ON_LINE())) ? INVERS : 0 ) );
@@ -1379,6 +1378,7 @@ void menuModelSetup(event_t event)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         uint8_t receiverIdx = CURRENT_RECEIVER_EDITED(k);
+        ModuleInformation & moduleInformation = reusableBuffer.moduleSetup.pxx2.moduleInformation;
 
         drawStringWithIndex(INDENT_WIDTH, y, STR_RECEIVER, receiverIdx + 1);
 
@@ -1398,8 +1398,8 @@ void menuModelSetup(event_t event)
 
         drawReceiverName(MODEL_SETUP_2ND_COLUMN, y, moduleIdx, receiverIdx, attr);
 
-        if (s_editMode && isModuleR9M2(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID) {
-          reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID = 0;
+        if (s_editMode && isModuleR9M2(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && moduleInformation.information.modelID) {
+          moduleInformation.information.modelID = 0;
           moduleState[moduleIdx].startBind(&reusableBuffer.moduleSetup.bindInformation);
         }
 
@@ -1414,13 +1414,18 @@ void menuModelSetup(event_t event)
         }
 
         if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT && reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
-            popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
-            for (uint8_t i=0; i<popupMenuItemsCount; i++) {
-              popupMenuItems[i] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[i];
+          if (reusableBuffer.moduleSetup.bindInformation.step == BIND_INIT) {
+            if (reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount > 0) {
+              popupMenuItemsCount = min<uint8_t>(reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+              for (uint8_t i = 0; i < popupMenuItemsCount; i++) {
+                popupMenuItems[i] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[i];
+              }
+              popupMenuTitle = STR_PXX2_SELECT_RX;
+              POPUP_MENU_START(onPXX2BindMenu);
             }
-            popupMenuTitle = STR_PXX2_SELECT_RX;
-            POPUP_MENU_START(onPXX2BindMenu);
+            else {
+              drawMessageBox("Waiting for RX...");
+            }
           }
         }
 

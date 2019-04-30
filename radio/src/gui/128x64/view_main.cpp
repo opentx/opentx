@@ -354,13 +354,11 @@ void menuMainView(event_t event)
       break;
 #endif
 
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
       killEvents(event);
       break;
 
-    CASE_EVT_ROTARY_LONG
     case EVT_KEY_GENERAL_MENU:
       pushMenu(menuRadioSetup);
       killEvents(event);

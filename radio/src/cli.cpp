@@ -963,7 +963,7 @@ int cliDisplay(const char ** argv)
       serialPrint("[%s] = %s", name, keyState(i) ? "on" : "off");
     }
 #if defined(ROTARY_ENCODER_NAVIGATION)
-    serialPrint("[Enc.] = %d", rotencValue[0] / ROTARY_ENCODER_GRANULARITY);
+    serialPrint("[Enc.] = %d", rotencValue / ROTARY_ENCODER_GRANULARITY);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
       serialPrint("[Trim%d] = %s", i-TRM_BASE, keyState(i) ? "on" : "off");
