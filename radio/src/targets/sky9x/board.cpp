@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(AR9X)
+#if defined(PCBAR9X)
 #include "i2c_driver.h"
 #endif
 
@@ -371,7 +371,7 @@ void opentxBootloader();
 
 // Set up for volume control (TWI0)
 // Need PA3 and PA4 set to peripheral A
-#if !defined(AR9X)
+#if !defined(PCBAR9X)
 void i2cInit()
 {
   Pio *pioptr;
@@ -475,7 +475,10 @@ void boardInit()
 
   eepromInit();
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
   rotaryEncoderInit();
+#endif
+
   init_SDcard();
 }
 #else

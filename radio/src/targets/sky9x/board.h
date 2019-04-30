@@ -41,7 +41,7 @@ void boardInit(void);
 void rotaryEncoderInit();
 void rotaryEncoderEnd();
 
-#if !defined(REVX) && !defined(AR9X)
+#if !defined(REVX) && !defined(PCBAR9X)
   #define ROTARY_ENCODER_NAVIGATION
   #define REA_DOWN()                   (!(PIOB->PIO_PDSR & 0x40))
 #else

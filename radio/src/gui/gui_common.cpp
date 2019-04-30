@@ -179,12 +179,6 @@ bool isSourceAvailable(int source)
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
-#if defined(PCBSKY9X) && defined(REVX)
-  if (source == MIXSRC_REa) {
-    return false;
-  }
-#endif
-
 #if defined(PCBX10)
   if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
     return false;
