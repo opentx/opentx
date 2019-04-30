@@ -25,19 +25,22 @@ extern uint8_t g_moduleIdx;
 void onFailsafeMenu(const char *result)
 {
   uint8_t sub = menuVerticalPosition + HEADER_LINE;
+  int16_t & failsafe = g_model.failsafeChannels[sub];
+  int32_t channelValue = channelOutputs[sub];
 
   if (result == STR_NONE) {
-
+    failsafe = FAILSAFE_CHANNEL_NOPULSE;
   }
   else if (result == STR_HOLD) {
-
+    failsafe = FAILSAFE_CHANNEL_HOLD;
   }
   else if (result == STR_CHANNEL2FAILSAFE) {
-
+    failsafe = channelValue;
   }
   else if (result == STR_OUTPUTS2FAILSAFE) {
-
+    setCustomFailsafe(g_moduleIdx);
   }
+  s_editMode = 0;
 }
 
 void menuModelFailsafe(event_t event)
@@ -61,7 +64,7 @@ void menuModelFailsafe(event_t event)
     wbar -= 6;
 #endif
 
-    if (sub==k && event==EVT_KEY_FIRST(KEY_ENTER) && !READ_ONLY()) {
+    if (sub==k && event==EVT_KEY_LONG(KEY_ENTER) && !READ_ONLY()) {
       killEvents(event);
       POPUP_MENU_ADD_ITEM(STR_NONE);
       POPUP_MENU_ADD_ITEM(STR_HOLD);
@@ -81,13 +84,11 @@ void menuModelFailsafe(event_t event)
     if (attr) {
       flags |= INVERS;
       if (s_editMode > 0) {
-        if (failsafeValue == FAILSAFE_CHANNEL_HOLD || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-          s_editMode = 0;
+        flags |= BLINK;
+        if (g_model.failsafeChannels[k] > +lim && g_model.failsafeChannels[k] < FAILSAFE_CHANNEL_HOLD) {
+          g_model.failsafeChannels[k] = 0; // switching from HOLD/NOPULSE to value edit
         }
-        else {
-          flags |= BLINK;
-          CHECK_INCDEC_MODELVAR(event, g_model.failsafeChannels[k], -lim, +lim);
-        }
+        CHECK_INCDEC_MODELVAR(event, g_model.failsafeChannels[k], -lim, +lim);
       }
     }
 
