@@ -1184,6 +1184,11 @@ union ReusableBuffer
     uint32_t freq;
     uint32_t span;
     uint32_t step;
+    uint8_t spanDefault;
+    uint8_t spanMax;
+    uint16_t freqDefault;
+    uint16_t freqMax;
+    uint16_t freqMin;
   } spectrumAnalyser;
 
   struct

@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <opentx.h>
 #include "opentx.h"
 
 extern uint8_t g_moduleIdx;
@@ -51,10 +52,26 @@ void menuRadioSpectrumAnalyser(event_t event)
     return;
   }
 
+  if (isModuleR9M2(g_moduleIdx)) {
+    reusableBuffer.spectrumAnalyser.spanDefault = 20;
+    reusableBuffer.spectrumAnalyser.spanMax = 40;
+    reusableBuffer.spectrumAnalyser.freqDefault = 890;
+    reusableBuffer.spectrumAnalyser.freqMin = 850;
+    reusableBuffer.spectrumAnalyser.freqMax = 930;
+  }
+  else {
+    reusableBuffer.spectrumAnalyser.spanDefault = 40;  // 40MHz
+    reusableBuffer.spectrumAnalyser.spanMax = 80;
+    reusableBuffer.spectrumAnalyser.freqDefault = 2440; // 2440MHz
+    reusableBuffer.spectrumAnalyser.freqMin = 2400;
+    reusableBuffer.spectrumAnalyser.freqMax = 2485;
+  }
+
+
   if (moduleState[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
-    reusableBuffer.spectrumAnalyser.span = 40000000;  // 40MHz
-    reusableBuffer.spectrumAnalyser.freq = 2440000000;  // 2440MHz
+    reusableBuffer.spectrumAnalyser.span = reusableBuffer.spectrumAnalyser.spanDefault * 1000000;
+    reusableBuffer.spectrumAnalyser.freq = reusableBuffer.spectrumAnalyser.freqDefault * 1000000;
     reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
     moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
@@ -69,7 +86,7 @@ void menuRadioSpectrumAnalyser(event_t event)
         lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, attr);
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
         if (attr) {
-          reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, 2400, 2485, 0)) * 1000000;
+          reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, reusableBuffer.spectrumAnalyser.freqMin, reusableBuffer.spectrumAnalyser.freqMax, 0)) * 1000000;
         }
         break;
       }
@@ -80,7 +97,7 @@ void menuRadioSpectrumAnalyser(event_t event)
         lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.span/1000000, attr);
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
         if (attr) {
-          reusableBuffer.spectrumAnalyser.span = checkIncDec(event, span, 1, 80, 0) * 1000000;
+          reusableBuffer.spectrumAnalyser.span = checkIncDec(event, span, 1, reusableBuffer.spectrumAnalyser.spanMax, 0) * 1000000;
         }
         break;
     }
