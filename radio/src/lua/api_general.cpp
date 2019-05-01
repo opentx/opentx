@@ -35,6 +35,8 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(PCBX3)
   #include "lua/lua_exports_x3.inc"
+#elif defined(PCBXLITES)
+  #include "lua/lua_exports_xlites.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)

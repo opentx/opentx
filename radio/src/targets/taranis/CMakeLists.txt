@@ -132,7 +132,7 @@ elseif(PCB STREQUAL XLITES)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
-  set(LUA_EXPORT lua_export_xlite)
+  set(LUA_EXPORT lua_export_xlites)
   set(FLAVOUR xlites)
   add_definitions(-DPCBXLITES -DPCBXLITE -DSOFTWARE_VOLUME -DEXTERNAL_ANTENNA -DSTICKS_PWM)
   add_definitions(-DEEPROM_VARIANT=0x1000)
