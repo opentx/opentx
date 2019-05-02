@@ -660,21 +660,24 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   qr = div((int)tme, 60);
 
   char separator = ':';
-  if (tme >= 3600) {
-    qr = div(qr.quot, 60);
-    separator = CHR_HOUR;
-  }
-  if(qr.quot < 100) {
-    lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
-  }
-  else {
-    lcdDrawNumber(x, y, qr.quot, att|LEFT);
+  if (att & TIMEHOUR) {
+    div_t qr2 = div(qr.quot, 60);
+    if (qr2.quot < 100) {
+      lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
+    }
+    else {
+      lcdDrawNumber(x, y, qr2.quot, att|LEFT);
+    }
+    lcdDrawChar(lcdNextPos, y, separator, att);
+    qr.quot = qr2.rem;
+    x = lcdNextPos;
   }
   if (FONTSIZE(att) == MIDSIZE) {
     lcdLastRightPos--;
   }
   if (separator == CHR_HOUR)
     att &= ~DBLSIZE;
+  lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(RTCLOCK)
   if (att & TIMEBLINK)
     lcdDrawChar(lcdLastRightPos, y, separator, BLINK);
