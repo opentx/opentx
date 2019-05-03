@@ -1009,7 +1009,7 @@
 #define TR_WAITING                     "Attente..."
 #define TR_RECEIVER_DELETE             "Suppr récept.?"
 #define TR_RECEIVER_RESET              "Reset récept.?"
-#define TR_SHARE                       "Partg"
+#define TR_SHARE                       "Partager"
 #define TR_BIND                        "Bind"
 #define TR_TRANSFER_BUTTON             BUTTON("Transfert")
 #define TR_REGISTER_BUTTON             BUTTON(TR("Enr", "Enregistr."))
