@@ -261,7 +261,7 @@ void menuModelLogicalSwitches(event_t event)
     LogicalSwitchData * cs = lswAddress(sub);
     if (cs->func)
       s_currIdx = sub;
-      POPUP_MENU_ADD_ITEM(STR_EDIT);
+    POPUP_MENU_ADD_ITEM(STR_EDIT);
     if (cs->func || cs->v1 || cs->v2 || cs->delay || cs->duration || cs->andsw)
       POPUP_MENU_ADD_ITEM(STR_COPY);
     if (clipboard.type == CLIPBOARD_TYPE_CUSTOM_SWITCH)
