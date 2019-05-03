@@ -1076,7 +1076,7 @@
 #define STR_EEBACKUP           TR("EEPROM->SD", "Backup EEPROM->SD-Karte")
 #define STR_FACTORYRESET       TR("Werksreset", "Auf Werkseinstellungen")
 #define TR_CONFIRMRESET        TR("Alles löschen? ","ALLE Modelle+Einst. löschen?")
-#define TR_TO_MANY_LUA_SCRIPTS "Zu viele Lua-Skripte!"
+#define TR_TOO_MANY_LUA_SCRIPTS "Zu viele Lua-Skripte!"
 
 
 // Horus and Taranis specific column headers

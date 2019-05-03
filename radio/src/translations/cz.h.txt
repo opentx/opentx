@@ -739,12 +739,8 @@
 #else
 #define TR_TRIMS2OFFSETS       "\006Trimy => Subtrimy"
 #endif
-#if defined(COLORLCD)
-#define TR_CHANNELS2FAILSAFE    "Channels=>Failsafe"
-#define TR_CHANNEL2FAILSAFE            "Channel=>Failsafe"
-#else
-#define TR_CHANNELS2FAILSAFE    "\006Outputs => Failsafe"
-#endif
+#define TR_CHANNELS2FAILSAFE   "Channels=>Failsafe"
+#define TR_CHANNEL2FAILSAFE    "Channel=>Failsafe"
 #define TR_MENUMODELSEL        "MODEL"
 #define TR_MENUSETUP           "NASTAVENÍ"
 #define TR_MENUFLIGHTMODE      "LETOVÝ REŽIM"
@@ -772,8 +768,8 @@
 #define TR_MONITOR_CHANNELS4   "MONITOR KANÁLŮ 25/32"
 #define TR_MONITOR_OUTPUT_DESC "Výstupy"
 #define TR_MONITOR_MIXER_DESC  "Mixy"
-  #define TR_RECEIVER_NUM      TR(INDENT "RX číslo", INDENT "Číslo přijímače")
-#define TR_RECEIVER            INDENT "Přijímač"
+#define TR_RECEIVER_NUM        TR(INDENT "RX číslo", INDENT "Číslo přijímače")
+#define TR_RECEIVER            "Přijímač"
 #define TR_MULTI_RFTUNE        TR(INDENT "Freq tune",INDENT "RF Freq. fine tune")
 #define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR(INDENT "Vid. freq.", INDENT "Video frequency")
@@ -1071,8 +1067,8 @@
 #define STR_EEBACKUP           TR("Záloha", "Zálohuje EEPROM")
 #define STR_FACTORYRESET       TR("Fact.reset", "Factory reset")
 #endif
-#define STR_CONFIRMRESET        "Smazat modely a nastavení?"
-#define STR_TO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
+#define TR_CONFIRMRESET        "Smazat modely a nastavení?"
+#define TR_TOO_MANY_LUA_SCRIPTS "Příliš mnoho skriptů!"
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Název"

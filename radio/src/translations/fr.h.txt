@@ -1086,7 +1086,7 @@
 #define STR_FACTORYRESET               "RAZ d'usine"
 #endif
 #define TR_CONFIRMRESET                TR("Effacer TOUT?","Effacer TOUS modèles/réglages?")
-#define TR_TO_MANY_LUA_SCRIPTS         "Trop de scripts lua!"
+#define TR_TOO_MANY_LUA_SCRIPTS         "Trop de scripts lua!"
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Nom"

@@ -1073,7 +1073,7 @@
 #define STR_EEBACKUP            "Backup EEPROMu"
 #define STR_FACTORYRESET        "Ustaw.Fabrycz"
 #define TR_CONFIRMRESET        "WYkasować wszytkie modele?    "
-#define TR_TO_MANY_LUA_SCRIPTS "Za dużo skryptów Lua!"
+#define TR_TOO_MANY_LUA_SCRIPTS "Za dużo skryptów Lua!"
 
 
 // Horus and Taranis column headers
