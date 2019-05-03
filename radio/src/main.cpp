@@ -310,7 +310,9 @@ void guiMain(event_t evt)
         }
         if (popupDisplayed == false || evt) {
           popupDisplayed = lcdRestoreBackupBuffer();
-          if (warn) DISPLAY_WARNING(evt);
+          if (warn) {
+            DISPLAY_WARNING(evt);
+          }
           if (menu) {
             const char * result = runPopupMenu(evt);
             if (popupMenuItemsCount == 0) {
@@ -462,6 +464,7 @@ void guiMain(event_t evt)
 void perMain()
 {
   DEBUG_TIMER_START(debugTimerPerMain1);
+
 #if defined(PCBSKY9X) && !defined(REVA)
   calcConsumption();
 #endif

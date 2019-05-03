@@ -502,7 +502,7 @@ extern uint8_t warningInfoFlags;
 #define POPUP_MENU_MAX_LINES           12
 #define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
-#define POPUP_MENU_SET_BSS_FLAG()
+
 extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 extern uint16_t popupMenuItemsCount;
 extern uint16_t popupMenuOffset;

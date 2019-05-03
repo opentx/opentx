@@ -62,7 +62,6 @@ bool menuRadioTools(event_t event)
 
   MENU(STR_MENUTOOLS, RADIO_ICONS, menuTabGeneral, MENU_RADIO_TOOLS, spectrum_modules + power_modules, {0,0,0,0});
 
-
   uint8_t menu_index = 0;
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))

@@ -59,7 +59,6 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
     }
     if (!sdListFiles(directory, func==FUNC_PLAY_SCRIPT ? SCRIPTS_EXT : SOUNDS_EXT, sizeof(cfn->play.name), nullptr)) {
       POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-      POPUP_MENU_UNSET_BSS_FLAG();
     }
   }
   else if (result != STR_EXIT) {
@@ -317,7 +316,6 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               }
               else {
                 POPUP_WARNING(func==FUNC_PLAY_SCRIPT ? STR_NO_SCRIPTS_ON_SD : STR_NO_SOUNDS_ON_SD);
-                POPUP_MENU_UNSET_BSS_FLAG();
               }
             }
             break;
