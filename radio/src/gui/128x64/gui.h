@@ -235,12 +235,6 @@ void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
-enum {
-  WARNING_TYPE_ASTERISK,
-  WARNING_TYPE_CONFIRM,
-  WARNING_TYPE_INFO,
-};
-
 #define COPY_MODE                      1
 #define MOVE_MODE                      2
 extern uint8_t s_copyMode;

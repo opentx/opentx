@@ -171,10 +171,13 @@ void runPopupWarning(event_t event)
   drawMessageBox(warningText);
 
   if (warningInfoText) {
-    lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, WARNING_INFO_FLAGS);
+    lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH, warningInfoText, warningInfoLength, warningInfoFlags);
   }
 
   switch (warningType) {
+    case WARNING_TYPE_WAIT:
+      return;
+
     case WARNING_TYPE_INFO:
       lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, STR_OK);
       break;

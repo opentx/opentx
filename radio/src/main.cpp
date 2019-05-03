@@ -438,23 +438,19 @@ void guiMain(event_t evt)
     menuEvent = 0;
   }
 
+  handleGui(isEventCaughtByPopup() ? 0 : evt);
+
   if (warningText) {
     // show warning on top of the normal menus
-    handleGui(0); // suppress events, they are handled by the warning
     DISPLAY_WARNING(evt);
   }
   else if (popupMenuItemsCount > 0) {
-    // popup menu is active display it on top of normal menus
-    handleGui(0); // suppress events, they are handled by the popup
+    // show popup menu on top of the normal menus
     const char * result = runPopupMenu(evt);
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
       popupMenuHandler(result);
     }
-  }
-  else {
-    // normal menus
-    handleGui(evt);
   }
 
   lcdRefresh();
