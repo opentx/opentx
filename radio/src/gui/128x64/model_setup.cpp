@@ -164,7 +164,7 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PCBXLITE)
-  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW) // X-Lite needs an additional column for full line selection (<])
+  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 4 ? TITLE_ROW : HIDDEN_ROW) // X-Lite needs an additional column for full line selection (<])
 #else
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > 5 ? TITLE_ROW : HIDDEN_ROW)
 #endif
@@ -803,10 +803,11 @@ void menuModelSetup(event_t event)
 #if defined(PCBTARANIS)
         {
           #define FIRSTSW_STR   STR_VSRCRAW+(MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1)*length
+          uint8_t switchWarningsCount = getSwitchWarningsCount();
           uint8_t length = STR_VSRCRAW[0];
           horzpos_t l_posHorz = menuHorizontalPosition;
 
-          if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 5*(NUM_BODY_LINES-i)) {
+          if (i>=NUM_BODY_LINES-2 && getSwitchWarningsCount() > 4*(NUM_BODY_LINES-i)) {
             if (CURSOR_MOVED_LEFT(event))
               menuVerticalOffset--;
             else
@@ -821,10 +822,10 @@ void menuModelSetup(event_t event)
 #if defined(PCBXLITE)
           lcdDrawText(LCD_W, y, "<]", RIGHT);
           if (attr) {
-            if (menuHorizontalPosition > NUM_SWITCHES)
-              menuHorizontalPosition = NUM_SWITCHES;
+            if (menuHorizontalPosition > switchWarningsCount)
+              menuHorizontalPosition = switchWarningsCount;
           }
-          if (attr && menuHorizontalPosition == NUM_SWITCHES) {
+          if (attr && menuHorizontalPosition == switchWarningsCount) {
 #else
           if (attr) {
 #endif
@@ -835,7 +836,7 @@ void menuModelSetup(event_t event)
                   break;
 
                 case EVT_KEY_LONG(KEY_ENTER):
-                  if (menuHorizontalPosition < 0 || menuHorizontalPosition >= NUM_SWITCHES) {
+                  if (menuHorizontalPosition < 0 || menuHorizontalPosition >= switchWarningsCount) {
                     START_NO_HIGHLIGHT();
                     getMovedSwitch();
                     g_model.switchWarningState = switches_states;
@@ -851,9 +852,9 @@ void menuModelSetup(event_t event)
           LcdFlags line = attr;
 
           int current = 0;
-          for (int i=0; i<NUM_SWITCHES; i++) {
+          for (int i=0; i<switchWarningsCount; i++) {
             if (SWITCH_WARNING_ALLOWED(i)) {
-              div_t qr = div(current, 5);
+              div_t qr = div(current, 4);
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && line && l_posHorz==current && old_editMode) {
                 g_model.switchWarningEnable ^= (1 << i);
                 storageDirty(EE_MODEL);
@@ -870,7 +871,7 @@ void menuModelSetup(event_t event)
             }
             states >>= 2;
           }
-          if (attr && ((menuHorizontalPosition < 0) || menuHorizontalPosition >= NUM_SWITCHES)) {
+          if (attr && ((menuHorizontalPosition < 0) || menuHorizontalPosition >= switchWarningsCount)) {
             lcdDrawFilledRect(MODEL_SETUP_2ND_COLUMN-1, y-1, 8*(2*FW+1), 1+FH*((current+4)/5));
           }
 #else // PCBTARANIS
