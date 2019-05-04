@@ -41,7 +41,7 @@ extern uint16_t     popupMenuItemsCount;
 typedef void         (* PopupMenuHandler)(const char * result);
 extern PopupMenuHandler popupMenuHandler;
 extern const char * popupMenuTitle;
-extern uint8_t      s_menu_item;
+extern uint8_t      popupMenuSelectedItem;
 
 // Message box
 void drawMessageBoxBackground(coord_t top, coord_t height);
@@ -156,7 +156,7 @@ inline void POPUP_MENU_ADD_ITEM(const char * s)
 
 inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
 {
-  s_menu_item =  (index > 0 ? (index < popupMenuItemsCount ? index : popupMenuItemsCount) : 0);
+  popupMenuSelectedItem =  (index > 0 ? (index < popupMenuItemsCount ? index : popupMenuItemsCount) : 0);
 }
 
 inline void POPUP_MENU_START(PopupMenuHandler handler)
