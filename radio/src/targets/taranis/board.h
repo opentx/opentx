@@ -496,12 +496,16 @@ enum Analogs {
   #define STICKS_PWM_ENABLED()          false
 #endif
 
-PACK(typedef struct {
 #if NUM_PWMSTICKS > 0
+PACK(typedef struct {
   uint8_t sticksPwmDisabled:1;
-#endif
   uint8_t pxx2Enabled:1;
 }) HardwareOptions;
+#else
+PACK(typedef struct {
+  uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+#endif
 
 extern HardwareOptions hardwareOptions;
 
