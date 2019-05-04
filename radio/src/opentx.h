@@ -25,8 +25,10 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <math.h>
 #include "definitions.h"
 #include "opentx_types.h"
+
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
@@ -1268,8 +1270,7 @@ enum TelemetryViews {
 extern uint8_t s_frsky_view;
 #endif
 
-#define EARTH_RADIUSKM ((uint32_t)6371)
-#define EARTH_RADIUS ((uint32_t)111194) // meters * pi / 180°
+constexpr uint32_t EARTH_RADIUS = 6371009;
 
 void getGpsPilotPosition();
 void getGpsDistance();
