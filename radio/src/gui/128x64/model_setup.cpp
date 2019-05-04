@@ -1410,8 +1410,8 @@ void menuModelSetup(event_t event)
             removePXX2ReceiverIfEmpty(moduleIdx, receiverIdx);
             killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
             event = 0;
+            CLEAR_POPUP();
           }
-          CLEAR_POPUP();
           s_editMode = 0;
         }
 
@@ -1423,6 +1423,7 @@ void menuModelSetup(event_t event)
                 popupMenuItems[i] = reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[i];
               }
               popupMenuTitle = STR_PXX2_SELECT_RX;
+              CLEAR_POPUP();
               POPUP_MENU_START(onPXX2BindMenu);
             }
             else {
