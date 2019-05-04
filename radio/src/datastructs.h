@@ -541,7 +541,7 @@ PACK(struct CustomScreenData {
 
 #if defined(PCBX9)
   #define TOPBAR_DATA \
-    NOBACKUP(uint8_t voltsSource);
+    NOBACKUP(uint8_t voltsSource); \
     NOBACKUP(uint8_t altitudeSource);
 #else
   #define TOPBAR_DATA
