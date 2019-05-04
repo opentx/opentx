@@ -19,6 +19,8 @@
  */
 
 #include "opentx.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;

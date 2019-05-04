@@ -30,6 +30,12 @@
 #define BLUETOOTH_COMMAND_BAUD_115200  "TTM:BPS-115200"
 #endif
 
+#if defined(_MSC_VER)
+  #define SWAP32(val)      (_byteswap_ulong(val))
+#elif defined(__GNUC__ )
+  #define SWAP32(val)      (__builtin_bswap32(val))
+#endif
+
 extern Fifo<uint8_t, BT_TX_FIFO_SIZE> btTxFifo;
 extern Fifo<uint8_t, BT_RX_FIFO_SIZE> btRxFifo;
 
@@ -633,7 +639,7 @@ const char * Bluetooth::bootloaderEraseFlash(uint32_t start, uint32_t size)
   uint32_t address = start;
   uint32_t end = start + size;
   while (address < end) {
-    uint32_t addressBigEndian = __builtin_bswap32(address);
+    uint32_t addressBigEndian = SWAP32(address);
     bootloaderSendCommand(CMD_SECTOR_ERASE, &addressBigEndian, sizeof(addressBigEndian));
     const char * result = bootloaderWaitCommandResponse();
     if (result)
@@ -649,8 +655,8 @@ const char * Bluetooth::bootloaderEraseFlash(uint32_t start, uint32_t size)
 const char * Bluetooth::bootloaderStartWriteFlash(uint32_t start, uint32_t size)
 {
   uint32_t cmdArgs[2] = {
-    __builtin_bswap32(start),
-    __builtin_bswap32(size),
+    SWAP32(start),
+    SWAP32(size),
   };
   bootloaderSendCommand(CMD_DOWNLOAD, cmdArgs, sizeof(cmdArgs));
   const char * result = bootloaderWaitCommandResponse();
