@@ -76,6 +76,11 @@ enum
   inline void SET_WARNING_INFO(const char * info, uint8_t length, uint8_t flags) { }
 #else
   #define DISPLAY_WARNING              (*popupFunc)
+  inline void CLEAR_POPUP()
+  {
+    warningText = nullptr;
+  }
+
   inline void POPUP_WAIT(const char * s)
   {
     warningText = s;
