@@ -38,7 +38,9 @@ extern "C" {
 
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"
@@ -224,18 +226,25 @@ void SDRAM_Init(void);
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
 void init_pxx1_pulses(uint8_t module);
+void init_pxx1_serial(uint8_t module);
 void disable_pxx1_pulses(uint8_t module);
+void disable_pxx1_serial(uint8_t module);
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void disable_serial(uint8_t module);
+
 void intmoduleStop();
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmodulePxxStart();
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
+
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
-void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
-void intmoduleSerialStart(uint32_t baudrate);
+void extmoduleStop();
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -341,7 +350,8 @@ uint32_t readTrims(void);
 
 // Rotary encoder driver
 #define ROTARY_ENCODER_NAVIGATION
-void checkRotaryEncoder(void);
+void rotaryEncoderInit(void);
+void rotaryEncoderCheck(void);
 
 // WDT driver
 #define WDTO_500MS                              500
@@ -610,12 +620,15 @@ void auxSerialStop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
+#define BT_TX_FIFO_SIZE    64
+#define BT_RX_FIFO_SIZE    128
+#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
-void bluetoothInit(uint32_t baudrate);
+void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
+void bluetoothDisable(void);
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
@@ -626,6 +639,5 @@ void checkTrainerSettings(void);
 extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> auxSerialRxFifo;
 #endif
-
 
 #endif // _BOARD_HORUS_H_

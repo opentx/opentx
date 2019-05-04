@@ -127,7 +127,7 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
   if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
     TELEMETRY_USART->CR1 |= USART_CR1_TCIE;
-    if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || telemetryProtocol == PROTOCOL_TELEMETRY_PXX2) {
+    if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
       outputTelemetryBuffer.reset();
     }
   }

@@ -23,7 +23,7 @@
 #include "opentx.h"
 #include "modelslist.h"
 
-#define REFRESH_FILES()        do { reusableBuffer.sdmanager.offset = 65535; currentBitmapIndex = -1; } while (0)
+#define REFRESH_FILES()        do { reusableBuffer.sdManager.offset = 65535; currentBitmapIndex = -1; } while (0)
 #define NODE_TYPE(fname)       fname[SD_SCREEN_FILE_LENGTH+1]
 #define IS_DIRECTORY(fname)    ((bool)(!NODE_TYPE(fname)))
 #define IS_FILE(fname)         ((bool)(NODE_TYPE(fname)))
@@ -69,7 +69,7 @@ void getSelectionFullPath(char * lfn)
 {
   f_getcwd(lfn, _MAX_LFN);
   strcat(lfn, "/");
-  strcat(lfn, reusableBuffer.sdmanager.lines[menuVerticalPosition - menuVerticalOffset]);
+  strcat(lfn, reusableBuffer.sdManager.lines[menuVerticalPosition - menuVerticalOffset]);
 }
 
 void onSdManagerMenu(const char * result)
@@ -79,7 +79,7 @@ void onSdManagerMenu(const char * result)
   // TODO possible buffer overflows here!
 
   uint8_t index = menuVerticalPosition-menuVerticalOffset;
-  char *line = reusableBuffer.sdmanager.lines[index];
+  char *line = reusableBuffer.sdManager.lines[index];
 
   if (result == STR_SD_INFO) {
     pushMenu(menuRadioSdManagerInfo);
@@ -105,7 +105,7 @@ void onSdManagerMenu(const char * result)
     }
   }
   else if (result == STR_RENAME_FILE) {
-    memcpy(reusableBuffer.sdmanager.originalName, line, sizeof(reusableBuffer.sdmanager.originalName));
+    memcpy(reusableBuffer.sdManager.originalName, line, sizeof(reusableBuffer.sdManager.originalName));
     uint8_t fnlen = 0, extlen = 0;
     getFileExtension(line, 0, LEN_FILE_EXTENSION_MAX, &fnlen, &extlen);
     // write spaces to allow extending the length of a filename
@@ -177,7 +177,7 @@ bool menuRadioSdManager(event_t _event)
   }
 
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
-  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SD_MANAGER, reusableBuffer.sdmanager.count);
+  SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, RADIO_ICONS, menuTabGeneral, MENU_RADIO_SD_MANAGER, reusableBuffer.sdManager.count);
 
   int index = menuVerticalPosition-menuVerticalOffset;
 
@@ -208,8 +208,8 @@ bool menuRadioSdManager(event_t _event)
         break;
       }
       else {
-        if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[index])) {
-          f_chdir(reusableBuffer.sdmanager.lines[index]);
+        if (IS_DIRECTORY(reusableBuffer.sdManager.lines[index])) {
+          f_chdir(reusableBuffer.sdManager.lines[index]);
           menuVerticalOffset = 0;
           menuVerticalPosition = 1;
           index = 1;
@@ -223,7 +223,7 @@ bool menuRadioSdManager(event_t _event)
     case EVT_KEY_LONG(KEY_ENTER):
       if (s_editMode == 0) {
         killEvents(_event);
-        char * line = reusableBuffer.sdmanager.lines[index];
+        char * line = reusableBuffer.sdManager.lines[index];
         if (!strcmp(line, "..")) {
           break; // no menu for parent dir
         }
@@ -269,29 +269,29 @@ bool menuRadioSdManager(event_t _event)
       break;
   }
 
-  if (reusableBuffer.sdmanager.offset != menuVerticalOffset) {
+  if (reusableBuffer.sdManager.offset != menuVerticalOffset) {
     FILINFO fno;
     DIR dir;
 
     if (menuVerticalOffset == 0) {
-      reusableBuffer.sdmanager.offset = 0;
-      memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));
+      reusableBuffer.sdManager.offset = 0;
+      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
     }
-    else if (menuVerticalOffset == reusableBuffer.sdmanager.count-NUM_BODY_LINES) {
-      reusableBuffer.sdmanager.offset = menuVerticalOffset;
-      memset(reusableBuffer.sdmanager.lines, 0, sizeof(reusableBuffer.sdmanager.lines));
+    else if (menuVerticalOffset == reusableBuffer.sdManager.count-NUM_BODY_LINES) {
+      reusableBuffer.sdManager.offset = menuVerticalOffset;
+      memset(reusableBuffer.sdManager.lines, 0, sizeof(reusableBuffer.sdManager.lines));
     }
-    else if (menuVerticalOffset > reusableBuffer.sdmanager.offset) {
-      memmove(reusableBuffer.sdmanager.lines[0], reusableBuffer.sdmanager.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdmanager.lines[0]));
-      memset(reusableBuffer.sdmanager.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
-      NODE_TYPE(reusableBuffer.sdmanager.lines[NUM_BODY_LINES-1]) = 1;
+    else if (menuVerticalOffset > reusableBuffer.sdManager.offset) {
+      memmove(reusableBuffer.sdManager.lines[0], reusableBuffer.sdManager.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
+      memset(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
+      NODE_TYPE(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1]) = 1;
     }
     else {
-      memmove(reusableBuffer.sdmanager.lines[1], reusableBuffer.sdmanager.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdmanager.lines[0]));
-      memset(reusableBuffer.sdmanager.lines[0], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
+      memmove(reusableBuffer.sdManager.lines[1], reusableBuffer.sdManager.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.sdManager.lines[0]));
+      memset(reusableBuffer.sdManager.lines[0], 0, sizeof(reusableBuffer.sdManager.lines[0]));
     }
 
-    reusableBuffer.sdmanager.count = 0;
+    reusableBuffer.sdManager.count = 0;
 
     FRESULT res = f_opendir(&dir, "."); // Open the directory
     if (res == FR_OK) {
@@ -303,46 +303,46 @@ bool menuRadioSdManager(event_t _event)
         if (fno.fattrib & AM_HID) continue;                        /* Ignore Windows hidden files */
         if (fno.fname[0] == '.' && fno.fname[1] != '.') continue;  /* Ignore UNIX hidden files, but not .. */
 
-        reusableBuffer.sdmanager.count++;
+        reusableBuffer.sdManager.count++;
 
         bool isfile = !(fno.fattrib & AM_DIR);
 
         if (menuVerticalOffset == 0) {
           for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
-            char * line = reusableBuffer.sdmanager.lines[i];
+            char * line = reusableBuffer.sdManager.lines[i];
             if (line[0] == '\0' || isFilenameLower(isfile, fno.fname, line)) {
-              if (i < NUM_BODY_LINES-1) memmove(reusableBuffer.sdmanager.lines[i+1], line, sizeof(reusableBuffer.sdmanager.lines[i]) * (NUM_BODY_LINES-1-i));
-              memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[0]));
+              if (i < NUM_BODY_LINES-1) memmove(reusableBuffer.sdManager.lines[i+1], line, sizeof(reusableBuffer.sdManager.lines[i]) * (NUM_BODY_LINES-1-i));
+              memset(line, 0, sizeof(reusableBuffer.sdManager.lines[0]));
               strcpy(line, fno.fname);
               NODE_TYPE(line) = isfile;
               break;
             }
           }
         }
-        else if (reusableBuffer.sdmanager.offset == menuVerticalOffset) {
+        else if (reusableBuffer.sdManager.offset == menuVerticalOffset) {
           for (int8_t i=NUM_BODY_LINES-1; i>=0; i--) {
-            char *line = reusableBuffer.sdmanager.lines[i];
+            char *line = reusableBuffer.sdManager.lines[i];
             if (line[0] == '\0' || isFilenameGreater(isfile, fno.fname, line)) {
-              if (i > 0) memmove(reusableBuffer.sdmanager.lines[0], reusableBuffer.sdmanager.lines[1], sizeof(reusableBuffer.sdmanager.lines[0]) * i);
-              memset(line, 0, sizeof(reusableBuffer.sdmanager.lines[0]));
+              if (i > 0) memmove(reusableBuffer.sdManager.lines[0], reusableBuffer.sdManager.lines[1], sizeof(reusableBuffer.sdManager.lines[0]) * i);
+              memset(line, 0, sizeof(reusableBuffer.sdManager.lines[0]));
               strcpy(line, fno.fname);
               NODE_TYPE(line) = isfile;
               break;
             }
           }
         }
-        else if (menuVerticalOffset > reusableBuffer.sdmanager.offset) {
-          if (isFilenameGreater(isfile, fno.fname, reusableBuffer.sdmanager.lines[NUM_BODY_LINES-2]) && isFilenameLower(isfile, fno.fname, reusableBuffer.sdmanager.lines[NUM_BODY_LINES-1])) {
-            memset(reusableBuffer.sdmanager.lines[NUM_BODY_LINES-1], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
-            strcpy(reusableBuffer.sdmanager.lines[NUM_BODY_LINES-1], fno.fname);
-            NODE_TYPE(reusableBuffer.sdmanager.lines[NUM_BODY_LINES-1]) = isfile;
+        else if (menuVerticalOffset > reusableBuffer.sdManager.offset) {
+          if (isFilenameGreater(isfile, fno.fname, reusableBuffer.sdManager.lines[NUM_BODY_LINES-2]) && isFilenameLower(isfile, fno.fname, reusableBuffer.sdManager.lines[NUM_BODY_LINES-1])) {
+            memset(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1], 0, sizeof(reusableBuffer.sdManager.lines[0]));
+            strcpy(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1], fno.fname);
+            NODE_TYPE(reusableBuffer.sdManager.lines[NUM_BODY_LINES-1]) = isfile;
           }
         }
         else {
-          if (isFilenameLower(isfile, fno.fname, reusableBuffer.sdmanager.lines[1]) && isFilenameGreater(isfile, fno.fname, reusableBuffer.sdmanager.lines[0])) {
-            memset(reusableBuffer.sdmanager.lines[0], 0, sizeof(reusableBuffer.sdmanager.lines[0]));
-            strcpy(reusableBuffer.sdmanager.lines[0], fno.fname);
-            NODE_TYPE(reusableBuffer.sdmanager.lines[0]) = isfile;
+          if (isFilenameLower(isfile, fno.fname, reusableBuffer.sdManager.lines[1]) && isFilenameGreater(isfile, fno.fname, reusableBuffer.sdManager.lines[0])) {
+            memset(reusableBuffer.sdManager.lines[0], 0, sizeof(reusableBuffer.sdManager.lines[0]));
+            strcpy(reusableBuffer.sdManager.lines[0], fno.fname);
+            NODE_TYPE(reusableBuffer.sdManager.lines[0]) = isfile;
           }
         }
       }
@@ -350,49 +350,49 @@ bool menuRadioSdManager(event_t _event)
     }
   }
 
-  reusableBuffer.sdmanager.offset = menuVerticalOffset;
+  reusableBuffer.sdManager.offset = menuVerticalOffset;
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     LcdFlags attr = (index == i ? INVERS : 0);
-    if (reusableBuffer.sdmanager.lines[i][0]) {
+    if (reusableBuffer.sdManager.lines[i][0]) {
       if (s_editMode == EDIT_MODIFY_STRING && attr) {
         uint8_t extlen, efflen;
-        const char * ext = getFileExtension(reusableBuffer.sdmanager.originalName, 0, 0, NULL, &extlen);
-        editName(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH - extlen, _event, attr, 0);
-        efflen = effectiveLen(reusableBuffer.sdmanager.lines[i], SD_SCREEN_FILE_LENGTH - extlen);
+        const char * ext = getFileExtension(reusableBuffer.sdManager.originalName, 0, 0, NULL, &extlen);
+        editName(MENUS_MARGIN_LEFT, y, reusableBuffer.sdManager.lines[i], SD_SCREEN_FILE_LENGTH - extlen, _event, attr, 0);
+        efflen = effectiveLen(reusableBuffer.sdManager.lines[i], SD_SCREEN_FILE_LENGTH - extlen);
         if (s_editMode == 0) {
           if (ext) {
-            strAppend(&reusableBuffer.sdmanager.lines[i][efflen], ext);
+            strAppend(&reusableBuffer.sdManager.lines[i][efflen], ext);
           }
           else {
-            reusableBuffer.sdmanager.lines[i][efflen] = 0;
+            reusableBuffer.sdManager.lines[i][efflen] = 0;
           }
-          f_rename(reusableBuffer.sdmanager.originalName, reusableBuffer.sdmanager.lines[i]);
+          f_rename(reusableBuffer.sdManager.originalName, reusableBuffer.sdManager.lines[i]);
           REFRESH_FILES();
         }
       }
-      else if (IS_DIRECTORY(reusableBuffer.sdmanager.lines[i])) {
-        char s[sizeof(reusableBuffer.sdmanager.lines[0])+2];
+      else if (IS_DIRECTORY(reusableBuffer.sdManager.lines[i])) {
+        char s[sizeof(reusableBuffer.sdManager.lines[0])+2];
         char * ptr = s;
         *ptr++ = '[';
-        ptr = strAppend(ptr, reusableBuffer.sdmanager.lines[i]);
+        ptr = strAppend(ptr, reusableBuffer.sdManager.lines[i]);
         *ptr++ = ']';
         *ptr = '\0';
         lcdDrawText(MENUS_MARGIN_LEFT, y, s, attr);
       }
       else {
-        lcdDrawText(MENUS_MARGIN_LEFT, y, reusableBuffer.sdmanager.lines[i], attr);
+        lcdDrawText(MENUS_MARGIN_LEFT, y, reusableBuffer.sdManager.lines[i], attr);
       }
     }
   }
 
-  const char * ext = getFileExtension(reusableBuffer.sdmanager.lines[index]);
+  const char * ext = getFileExtension(reusableBuffer.sdManager.lines[index]);
   if (ext && isExtensionMatching(ext, BITMAPS_EXT)) {
     if (currentBitmapIndex != menuVerticalPosition) {
       currentBitmapIndex = menuVerticalPosition;
       delete currentBitmap;
-      currentBitmap = BitmapBuffer::load(reusableBuffer.sdmanager.lines[index]);
+      currentBitmap = BitmapBuffer::load(reusableBuffer.sdManager.lines[index]);
     }
     if (currentBitmap) {
       uint16_t height = currentBitmap->getHeight();

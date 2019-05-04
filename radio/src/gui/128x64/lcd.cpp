@@ -578,10 +578,20 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
 
 void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags)
 {
-  if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] != '\0')
-    lcdDrawSizedText(x, y, g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], effectiveLen(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME), flags);
-  else
-    lcdDrawText(x, y, "---", flags);
+  if (isModulePXX2(moduleIdx)) {
+    if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] != '\0')
+      lcdDrawSizedText(x, y, g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], effectiveLen(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME), flags);
+    else
+      lcdDrawText(x, y, "---", flags);
+  }
+#if defined(HARDWARE_INTERNAL_MODULE)
+  else if (moduleIdx == INTERNAL_MODULE) {
+    lcdDrawText(x, y, "Internal", flags);
+  }
+#endif
+  else {
+    lcdDrawText(x, y, "External", flags);
+  }
 }
 
 void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
@@ -650,21 +660,24 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   qr = div((int)tme, 60);
 
   char separator = ':';
-  if (tme >= 3600) {
-    qr = div(qr.quot, 60);
-    separator = CHR_HOUR;
-  }
-  if(qr.quot < 100) {
-    lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
-  }
-  else {
-    lcdDrawNumber(x, y, qr.quot, att|LEFT);
+  if (att & TIMEHOUR) {
+    div_t qr2 = div(qr.quot, 60);
+    if (qr2.quot < 100) {
+      lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
+    }
+    else {
+      lcdDrawNumber(x, y, qr2.quot, att|LEFT);
+    }
+    lcdDrawChar(lcdNextPos, y, separator, att);
+    qr.quot = qr2.rem;
+    x = lcdNextPos;
   }
   if (FONTSIZE(att) == MIDSIZE) {
     lcdLastRightPos--;
   }
   if (separator == CHR_HOUR)
     att &= ~DBLSIZE;
+  lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(RTCLOCK)
   if (att & TIMEBLINK)
     lcdDrawChar(lcdLastRightPos, y, separator, BLINK);
@@ -845,22 +858,6 @@ void drawShortTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags a
     lcdDrawChar(x, y, '0'+p, att);
   }
 }
-
-#if ROTARY_ENCODERS > 0
-void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
-{
-  int16_t v = flightModeAddress(phase)->rotaryEncoders[idx];
-
-  if (v > ROTARY_ENCODER_MAX) {
-    uint8_t p = v - ROTARY_ENCODER_MAX - 1;
-    if (p >= phase) p++;
-    lcdDrawChar(x, y, '0'+p, att);
-  }
-  else {
-    lcdDrawChar(x, y, 'a'+idx, att);
-  }
-}
-#endif
 
 void drawValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {

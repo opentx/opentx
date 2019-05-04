@@ -21,6 +21,8 @@
 #ifndef _BOARD_SKY9X_H_
 #define _BOARD_SKY9X_H_
 
+#include <inttypes.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
@@ -37,11 +39,10 @@ void boardInit(void);
 #define boardOff()  pwrOff()
 
 // Rotary Encoder driver
-void rotencInit();
-void rotencEnd();
+void rotaryEncoderInit();
+void rotaryEncoderEnd();
 
-#if !defined(REVX) && !defined(AR9X)
-  #define ROTARY_ENCODERS              1
+#if !defined(REVX) && !defined(PCBAR9X)
   #define ROTARY_ENCODER_NAVIGATION
   #define REA_DOWN()                   (!(PIOB->PIO_PDSR & 0x40))
 #else
@@ -72,10 +73,6 @@ enum EnumKeys
   TRM_RH_DWN,
   TRM_RH_UP,
   TRM_LAST = TRM_RH_UP,
-
-#if defined(ROTARY_ENCODERS)
-  BTN_REa,
-#endif
 
   NUM_KEYS
 };
@@ -255,15 +252,14 @@ uint32_t readTrims(void);
 
 // Pulses driver
 void init_no_pulses(uint32_t port);
-void disable_no_pulses(uint32_t port);
 void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
 void init_pxx1_pulses(uint32_t port);
 void disable_pxx1_pulses(uint32_t port);
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us);
 void disable_serial(uint32_t port);
 void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
 void disable_module_timer( uint32_t module_index);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
 
 // SD driver

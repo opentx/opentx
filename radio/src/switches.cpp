@@ -452,16 +452,6 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
     idx = (CONVERT_MODE_TRIMS(idx/2) << 1) + (idx & 1);
     result = trimDown(idx);
   }
-#if ROTARY_ENCODERS > 0
-  else if (cs_idx == SWSRC_REa) {
-    result = REA_DOWN();
-  }
-#endif
-#if ROTARY_ENCODERS > 1
-  else if (cs_idx == SWSRC_REb) {
-    result = REB_DOWN();
-  }
-#endif
   else if (cs_idx >= SWSRC_FIRST_SENSOR) {
     result = !telemetryItems[cs_idx-SWSRC_FIRST_SENSOR].isOld();
   }

@@ -80,7 +80,6 @@ enum MenuRadioSetupItems {
   ITEM_SETUP_MEMORY_WARNING,
   ITEM_SETUP_ALARM_WARNING,
   ITEM_SETUP_RSSI_POWEROFF_ALARM,
-  IF_ROTARY_ENCODERS(ITEM_SETUP_RE_NAVIGATION)
   ITEM_SETUP_BACKLIGHT_LABEL,
   ITEM_SETUP_BACKLIGHT_MODE,
   ITEM_SETUP_BACKLIGHT_DELAY,
@@ -155,14 +154,14 @@ void menuRadioSetup(event_t event)
     CASE_GYRO(0)
     0, LABEL(ALARMS), 0, CASE_CAPACITY(0)
     CASE_PCBSKY9X(0)
-    0, 0, 0, 0, IF_ROTARY_ENCODERS(0)
+    0, 0, 0, 0,
     LABEL(BACKLIGHT), 0, 0, 0, CASE_PWM_BACKLIGHT(0)
     CASE_PWM_BACKLIGHT(0)
     0,
     CASE_SPLASH_PARAM(0)
-#if defined(PXX2)
-    0 /* owner registration ID */,
-#endif
+
+    CASE_PXX2(0) /* owner registration ID */
+
     CASE_GPS(0)
     0, CASE_GPS(0)
     CASE_PXX(0)
@@ -459,15 +458,6 @@ void menuRadioSetup(event_t event)
         lcdDrawChar(lcdLastRightPos, y, 'm');
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
-
-#if defined(ROTARY_ENCODERS)
-      case ITEM_SETUP_RE_NAVIGATION:
-        g_eeGeneral.reNavigation = editChoice(RADIO_SETUP_2ND_COLUMN, y, STR_RENAVIG, STR_VRENAVIG, g_eeGeneral.reNavigation, 0, NUM_ROTARY_ENCODERS, attr, event);
-        if (attr && checkIncDec_Ret) {
-          ROTARY_ENCODER_NAVIGATION_VALUE = 0;
-        }
-        break;
-#endif
 
       case ITEM_SETUP_BACKLIGHT_LABEL:
         lcdDrawTextAlignedLeft(y, STR_BACKLIGHT_LABEL);

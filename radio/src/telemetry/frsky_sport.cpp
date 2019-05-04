@@ -158,8 +158,8 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
   uint32_t data = SPORT_DATA_S32(packet);
 
 #if defined(BLUETOOTH)
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetoothState == BLUETOOTH_STATE_CONNECTED) {
-    bluetoothForwardTelemetry(packet);
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+    bluetooth.forwardTelemetry(packet);
   }
 #endif
 
@@ -169,8 +169,8 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
       if (g_model.rssiSource) {
-        TelemetrySensor * sensor = & g_model.telemetrySensors[g_model.rssiSource];
-        if (sensor->instance == instance) {
+        TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource - 1];
+        if (sensor->isSameInstance(TELEM_PROTO_FRSKY_SPORT, instance)) {
           telemetryData.rssi.set(data);
         }
       }

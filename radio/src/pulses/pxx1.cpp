@@ -60,22 +60,22 @@ template <class PxxTransport>
 uint8_t Pxx1Pulses<PxxTransport>::addFlag1(uint8_t module)
 {
   uint8_t flag1 = (g_model.moduleData[module].rfProtocol << 6);
-  if (moduleSettings[module].mode == MODULE_MODE_BIND) {
+  if (moduleState[module].mode == MODULE_MODE_BIND) {
     flag1 |= (g_eeGeneral.countryCode << 1) | PXX_SEND_BIND;
   }
-  else if (moduleSettings[module].mode == MODULE_MODE_RANGECHECK) {
+  else if (moduleState[module].mode == MODULE_MODE_RANGECHECK) {
     flag1 |= PXX_SEND_RANGECHECK;
   }
   else {
     bool failsafeNeeded = g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER;
-    if (moduleSettings[module].counter-- == 0) {
+    if (moduleState[module].counter-- == 0) {
       // counter is also used for knowing if the frame is odd / even
-      moduleSettings[module].counter = 1000;
+      moduleState[module].counter = 1000;
       if (failsafeNeeded) {
         flag1 |= PXX_SEND_FAILSAFE;
       }
     }
-    if (failsafeNeeded && moduleSettings[module].counter == 0 && g_model.moduleData[module].channelsCount > 0) {
+    if (failsafeNeeded && moduleState[module].counter == 0 && g_model.moduleData[module].channelsCount > 0) {
       flag1 |= PXX_SEND_FAILSAFE;
     }
   }
@@ -219,7 +219,7 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
   PxxTransport::initFrame(PXX_PULSES_PERIOD);
 
 #if defined(PXX_FREQUENCY_HIGH)
-  if (moduleSettings[module].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) {
+  if (moduleState[module].protocol == PROTOCOL_CHANNELS_PXX1_SERIAL) {
     add8ChannelsFrame(module, 0);
     if (sentModuleChannels(module) > 8) {
       add8ChannelsFrame(module, 8);
@@ -229,7 +229,7 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
 #endif
 
   uint8_t sendUpperChannels = 0;
-  if (moduleSettings[module].counter & 0x01) {
+  if (moduleState[module].counter & 0x01) {
     sendUpperChannels = g_model.moduleData[module].channelsCount;
   }
 

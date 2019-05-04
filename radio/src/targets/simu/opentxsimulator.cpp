@@ -362,9 +362,6 @@ const int OpenTxSimulator::getCapability(Capability cap)
       break;
 
     case CAP_ROTARY_ENC :
-      #ifdef ROTARY_ENCODERS
-        ret = ROTARY_ENCODERS;
-      #endif
       break;
 
     case CAP_ROTARY_ENC_NAV :

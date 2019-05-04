@@ -367,7 +367,7 @@ void applyDefaultTemplate()
 #if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
-  if(isModulePXX(module) && IS_D8_RX(module))
+  if (isModulePXX(module) && IS_D8_RX(module))
     return;
 
   uint8_t modelId = g_model.header.modelId[module];
@@ -381,12 +381,12 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
       if (i != index) {
         if (modelId == modelHeaders[i].modelId[module]) {
           if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.moduleSetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
-            if (reusableBuffer.moduleSetup.msg[0] != 0) {
+            if (reusableBuffer.moduleSetup.msg[0] != '\0') {
               name = strAppend(name, ", ");
             }
             if (modelHeaders[i].name[0] == 0) {
               name = strAppend(name, STR_MODEL);
-              name = strAppendUnsigned(name+strlen(name),i, 2);
+              name = strAppendUnsigned(name+strlen(name), i + 1, 2);
             }
             else {
               name += zchar2str(name, modelHeaders[i].name, LEN_MODEL_NAME);
@@ -403,10 +403,10 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
   if (additionalOnes) {
     name = strAppend(name, " (+");
     name = strAppendUnsigned(name, additionalOnes);
-    name = strAppend(name, ")");
+    strAppend(name, ")");
   }
 
-  if (reusableBuffer.moduleSetup.msg[0] != 0) {
+  if (reusableBuffer.moduleSetup.msg[0] != '\0') {
     POPUP_WARNING(STR_MODELIDUSED);
     SET_WARNING_INFO(reusableBuffer.moduleSetup.msg, sizeof(reusableBuffer.moduleSetup.msg), 0);
   }
@@ -491,15 +491,6 @@ void modelDefault(uint8_t id)
     }
   }
 #endif
-
-#if defined(FLIGHT_MODES) && defined(ROTARY_ENCODERS)
-  for (int p=1; p<MAX_FLIGHT_MODES; p++) {
-    for (int i=0; i<ROTARY_ENCODERS; i++) {
-      g_model.flightModeData[p].rotaryEncoders[i] = ROTARY_ENCODER_MAX+1;
-    }
-  }
-#endif
-
 
 #if !defined(EEPROM)
   strcpy(g_model.header.name, "\015\361\374\373\364");
@@ -645,36 +636,6 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
   storageDirty(EE_MODEL);
   return true;
 }
-
-
-#if defined(ROTARY_ENCODERS)
-uint8_t getRotaryEncoderFlightMode(uint8_t idx)
-{
-  uint8_t phase = mixerCurrentFlightMode;
-  for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-    if (phase == 0) return 0;
-    int16_t value = flightModeAddress(phase)->rotaryEncoders[idx];
-    if (value <= ROTARY_ENCODER_MAX) return phase;
-    uint8_t result = value-ROTARY_ENCODER_MAX-1;
-    if (result >= phase) result++;
-    phase = result;
-  }
-  return 0;
-}
-
-int16_t getRotaryEncoder(uint8_t idx)
-{
-  return flightModeAddress(getRotaryEncoderFlightMode(idx))->rotaryEncoders[idx];
-}
-
-void incRotaryEncoder(uint8_t idx, int8_t inc)
-{
-  rotencValue[idx] += inc;
-  int16_t *value = &(flightModeAddress(getRotaryEncoderFlightMode(idx))->rotaryEncoders[idx]);
-  *value = limit((int16_t)-RESX, (int16_t)(*value + (inc * 8)), (int16_t)+RESX);
-  storageDirty(EE_MODEL);
-}
-#endif
 
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
 {
@@ -1384,10 +1345,6 @@ void evalTrims()
   }
 }
 
-uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
-#define CFN_PRESSLONG_DURATION   100
-
-
 uint8_t s_mixer_first_run_done = false;
 
 void doMixerCalculations()
@@ -1520,9 +1477,9 @@ void doMixerCalculations()
     static uint8_t countRangecheck = 0;
     for (uint8_t i=0; i<NUM_MODULES; ++i) {
 #if defined(MULTIMODULE)
-      if ((moduleSettings[i].mode != MODULE_MODE_NORMAL && moduleSettings[i].mode != MODULE_MODE_SPECTRUM_ANALYSER)  || (i == EXTERNAL_MODULE && multiModuleStatus.isBinding())) {
+      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || multiModuleStatus.isBinding()) {
 #else
-      if (moduleSettings[i].mode >= MODULE_MODE_BEEP_FIRST) {
+      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST) {
 #endif
         if (++countRangecheck >= 250) {
           countRangecheck = 0;
@@ -1792,14 +1749,9 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   AUDIO_WARNING2();
 }
 
-#if defined(ROTARY_ENCODERS)
-  volatile rotenc_t rotencValue[ROTARY_ENCODERS] = {0};
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-  volatile rotenc_t rotencValue[1] = {0};
-#endif
-
 #if defined(ROTARY_ENCODER_NAVIGATION)
-uint8_t rotencSpeed;
+  volatile rotenc_t rotencValue = 0;
+  uint8_t rotencSpeed;
 #endif
 
 void opentxInit()
@@ -1958,6 +1910,17 @@ void simuMain()
 int main()
 #endif
 {
+#if defined(STM32)
+  TRACE("reusableBuffer: modelSel=%d, moduleSetup=%d, calib=%d, sdManager=%d, hardwareAndSettings=%d, spectrumAnalyser=%d, usb=%d",
+        sizeof(reusableBuffer.modelsel),
+        sizeof(reusableBuffer.moduleSetup),
+        sizeof(reusableBuffer.calib),
+        sizeof(reusableBuffer.sdManager),
+        sizeof(reusableBuffer.hardwareAndSettings),
+        sizeof(reusableBuffer.spectrumAnalyser),
+        sizeof(reusableBuffer.MSC_BOT_Data));
+#endif
+
   // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more wdt_reset()s in. But I don't like that approach

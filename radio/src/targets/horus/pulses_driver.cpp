@@ -20,17 +20,6 @@
 
 #include "opentx.h"
 
-void intmoduleStop();
-void intmodulePxxStart();
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-
-void extmoduleStop();
-void extmodulePpmStart();
-void extmodulePxxStart();
-void extmodulePxx2Start();
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
-
-
 void init_ppm(uint8_t module)
 {
   if (module == EXTERNAL_MODULE) {
@@ -69,6 +58,14 @@ void init_pxx1_pulses(uint8_t module)
     extmodulePxxStart();
 }
 
+void init_pxx1_serial(uint8_t module)
+{
+  if (module == INTERNAL_MODULE)
+    intmodulePxxStart();
+  else
+    extmodulePxxStart();
+}
+
 void disable_pxx1_pulses(uint8_t module)
 {
   if (module == INTERNAL_MODULE)
@@ -77,14 +74,15 @@ void disable_pxx1_pulses(uint8_t module)
     extmoduleStop();
 }
 
-#if defined(DSM2)
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us)
+void disable_pxx1_serial(uint8_t module)
 {
-  if (module == EXTERNAL_MODULE) {
-    extmoduleSerialStart(baudrate, period_half_us);
-  }
+  if (module == INTERNAL_MODULE)
+    intmoduleStop();
+  else
+    extmoduleStop();
 }
 
+#if defined(DSM2)
 void disable_serial(uint8_t module)
 {
   if (module == EXTERNAL_MODULE) {

@@ -40,7 +40,9 @@ extern "C" {
 #if defined(STM32F4)
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
@@ -55,7 +57,9 @@ extern "C" {
 #else
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rcc.h"
+  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_syscfg.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
+  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_exti.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_tim.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_adc.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_spi.h"
@@ -190,7 +194,6 @@ void init_pxx1_pulses(uint8_t module);
 void init_pxx1_serial(uint8_t module);
 void disable_pxx1_pulses(uint8_t module);
 void disable_pxx1_serial(uint8_t module);
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
 void disable_serial(uint8_t module);
 void intmoduleStop();
 void intmodulePxxStart();
@@ -206,7 +209,7 @@ void extmodulePpmStart();
 void extmodulePxxPulsesStart();
 void extmodulePxxSerialStart();
 void extmodulePxx2Start();
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
@@ -429,7 +432,8 @@ uint32_t readTrims(void);
 #if defined(PCBX9E) || defined(PCBX7) || defined(PCBX3)
 // Rotary Encoder driver
 #define ROTARY_ENCODER_NAVIGATION
-void checkRotaryEncoder(void);
+void rotaryEncoderInit(void);
+void rotaryEncoderCheck(void);
 #endif
 
 // WDT driver
@@ -511,12 +515,16 @@ enum Analogs {
   #define STICKS_PWM_ENABLED()          false
 #endif
 
-PACK(typedef struct {
 #if NUM_PWMSTICKS > 0
+PACK(typedef struct {
   uint8_t sticksPwmDisabled:1;
-#endif
   uint8_t pxx2Enabled:1;
 }) HardwareOptions;
+#else
+PACK(typedef struct {
+  uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+#endif
 
 extern HardwareOptions hardwareOptions;
 
@@ -739,16 +747,19 @@ void auxSerialStop(void);
 #endif
 
 // BT driver
+#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_DEFAULT_BAUDRATE      115200
 #if defined(PCBX9E) && !defined(USEHORUSBT)
-#define BLUETOOTH_FACTORY_BAUDRATE     9600
+#define BLUETOOTH_FACTORY_BAUDRATE      9600
 #else
 #define BLUETOOTH_FACTORY_BAUDRATE      57600
 #endif
-void bluetoothInit(uint32_t baudrate);
+#define BT_TX_FIFO_SIZE    64
+#define BT_RX_FIFO_SIZE    128
+void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
+void bluetoothDisable(void);
 #if defined(PCBX3)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
 #elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)

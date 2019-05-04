@@ -136,7 +136,7 @@ class UartPxx1Transport: public DataBuffer<uint8_t, 64>, public Pxx1CrcMixin {
 };
 
 template <class PxxTransport>
-class Pxx1Pulses: public PxxPulses<PxxTransport>
+class Pxx1Pulses: public PxxTransport
 {
   public:
     void setupFrame(uint8_t port);

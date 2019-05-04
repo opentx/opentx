@@ -172,6 +172,6 @@ void menuModelFailsafe(event_t event)
 
   if (menuVerticalPosition >= sentModuleChannels(g_moduleIdx)) {
     // Outputs => Failsafe
-    lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_OUTPUTS2FAILSAFE, INVERS);
+    lcdDrawText(CENTER_OFS, LCD_H - (FH + 1), STR_CHANNELS2FAILSAFE, INVERS);
   }
 }

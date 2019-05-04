@@ -23,7 +23,7 @@
 #include "pulses/pxx2.h"
 
 uint8_t s_pulses_paused = 0;
-ModuleSettings moduleSettings[NUM_MODULES];
+ModuleState moduleState[NUM_MODULES];
 InternalModulePulsesData intmodulePulsesData __DMA;
 ExternalModulePulsesData extmodulePulsesData __DMA;
 TrainerPulsesData trainerPulsesData __DMA;
@@ -94,7 +94,7 @@ uint8_t getRequiredProtocol(uint8_t module)
       // The module is set to OFF during one second before BIND start
       {
         static tmr10ms_t bindStartTime = 0;
-        if (moduleSettings[module].mode == MODULE_MODE_BIND) {
+        if (moduleState[module].mode == MODULE_MODE_BIND) {
           if (bindStartTime == 0) bindStartTime = get_tmr10ms();
           if ((tmr10ms_t)(get_tmr10ms() - bindStartTime) < 100) {
             protocol = PROTOCOL_CHANNELS_NONE;
@@ -125,7 +125,7 @@ uint8_t getRequiredProtocol(uint8_t module)
 
 #if 0
   // will need an EEPROM conversion
-  if (moduleSettings[module].mode == MODULE_OFF) {
+  if (moduleState[module].mode == MODULE_OFF) {
     protocol = PROTOCOL_CHANNELS_NONE;
   }
 #endif
@@ -171,7 +171,7 @@ void disablePulses(uint8_t module, uint8_t protocol)
 #endif
 
 #if defined(MULTIMODULE)
-      case PROTOCOL_CHANNELS_MULTIMODULE:
+    case PROTOCOL_CHANNELS_MULTIMODULE:
 #endif
     case PROTOCOL_CHANNELS_SBUS:
       disable_serial(module);
@@ -204,7 +204,7 @@ void enablePulses(uint8_t module, uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
-      init_serial(module, DSM2_BAUDRATE, DSM2_PERIOD * 2000);
+      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2000, false);
       break;
 #endif
 
@@ -222,12 +222,12 @@ void enablePulses(uint8_t module, uint8_t protocol)
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      init_serial(module, MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000);
+      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true);
       break;
 #endif
 
     case PROTOCOL_CHANNELS_SBUS:
-      init_serial(module, SBUS_BAUDRATE, SBUS_PERIOD_HALF_US);
+      extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
       break;
 
     case PROTOCOL_CHANNELS_PPM:
@@ -263,7 +263,7 @@ void setupPulsesInternalModule(uint8_t protocol)
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2:
       intmodulePulsesData.pxx2.setupFrame(INTERNAL_MODULE);
-      scheduleNextMixerCalculation(INTERNAL_MODULE, moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleSettings[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER ? 1 : PXX2_PERIOD);
+      scheduleNextMixerCalculation(INTERNAL_MODULE, moduleState[INTERNAL_MODULE].mode == MODULE_MODE_SPECTRUM_ANALYSER || moduleState[INTERNAL_MODULE].mode == MODULE_MODE_POWER_METER ? PXX2_TOOLS_PERIOD : PXX2_PERIOD);
       break;
 #endif
 
@@ -320,7 +320,7 @@ void setupPulsesExternalModule(uint8_t protocol)
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       setupPulsesCrossfire();
-      scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_FRAME_PERIOD);
       break;
 #endif
 
@@ -362,9 +362,9 @@ bool setupPulses(uint8_t module)
 
   heartbeat |= (HEART_TIMER_PULSES << module);
 
-  if (moduleSettings[module].protocol != protocol) {
-    disablePulses(module, moduleSettings[module].protocol);
-    moduleSettings[module].protocol = protocol;
+  if (moduleState[module].protocol != protocol) {
+    disablePulses(module, moduleState[module].protocol);
+    moduleState[module].protocol = protocol;
     enablePulses(module, protocol);
     return false;
   }

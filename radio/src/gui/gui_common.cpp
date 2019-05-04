@@ -179,12 +179,6 @@ bool isSourceAvailable(int source)
     return IS_POT_SLIDER_AVAILABLE(POT1+source-MIXSRC_FIRST_POT);
   }
 
-#if defined(PCBSKY9X) && defined(REVX)
-  if (source == MIXSRC_REa) {
-    return false;
-  }
-#endif
-
 #if defined(PCBX10)
   if ((source>=MIXSRC_S3 && source<=MIXSRC_S4) || (source>=MIXSRC_MOUSE1 && source<=MIXSRC_MOUSE2))
     return false;
@@ -507,14 +501,6 @@ bool isSourceAvailableInResetSpecialFunction(int index)
   }
 }
 
-bool isR9ModuleRunning(int module)
-{
-#if defined(SIMU)
-  return g_model.moduleData[module].type == MODULE_TYPE_R9M && TELEMETRY_STREAMING(); // Simu uses telemetry simu to activate/desactivate R9
-#else
-  return g_model.moduleData[module].type == MODULE_TYPE_R9M && R9ModuleStreaming;
-#endif
-}
 #if defined(PCBXLITE)
 bool isR9MModeAvailable(int mode)
 {
@@ -528,82 +514,111 @@ bool isR9MModeAvailable(int mode)
 #else
 bool isR9MModeAvailable(int mode)
 {
-  return mode <= MODULE_SUBTYPE_R9M_EUPLUS;
+#if defined(MODULE_R9M_FLEX_FW)
+  return mode < MODULE_SUBTYPE_R9M_EUPLUS;
+#else
+  return true;
+#endif
 }
 #endif
-bool isR9MMFlex(int module)
-{
-  return g_model.moduleData[module].r9m.region == MODULE_R9M_REGION_FLEX;
-}
 
 bool isPXX2ChannelsCountAllowed(int channels)
 {
   return (channels % 8 == 0);
 }
 
-#if defined(HARDWARE_INTERNAL_MODULE)
-bool isInternalModuleAvailable(int module)
+bool isModuleUSingSport(uint8_t moduleBay, uint8_t moduleType)
 {
-  if (module == MODULE_TYPE_NONE)
+  switch(moduleType) {
+    case MODULE_TYPE_NONE:
+    case MODULE_TYPE_SBUS:
+    case MODULE_TYPE_PPM:
+    case MODULE_TYPE_DSM2:
+    case MODULE_TYPE_MULTIMODULE:
+    case MODULE_TYPE_R9M_LITE2:
+    case MODULE_TYPE_R9M_LITE_PRO2:
+      return false;
+
+    case MODULE_TYPE_XJT2:
+      if (moduleBay == EXTERNAL_MODULE)
+        return false;
+
+#if defined(INTMODULE_USART)
+      return false;
+#endif
+
+    default:
+      return true;
+  }
+}
+
+#if defined(HARDWARE_INTERNAL_MODULE)
+bool isInternalModuleAvailable(int moduleType)
+{
+  if (moduleType == MODULE_TYPE_NONE)
     return true;
 
 #if defined(PXX1)
-  if (module == MODULE_TYPE_XJT)
-    return IS_PXX1_INTERNAL_ENABLED() && !isModulePXX(EXTERNAL_MODULE);
+  if (moduleType == MODULE_TYPE_XJT)
+#if defined(INTMODULE_NO_PXX1)
+    return false;
+#else
+    return (!isModuleUSingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type));
+#endif
 #endif
 
 #if defined(PXX2)
-  if (module == MODULE_TYPE_XJT2)
-    return IS_PXX2_INTERNAL_ENABLED();
+  if (moduleType == MODULE_TYPE_XJT2)
+#if defined(INTMODULE_USART)
+    return true;
+#else
+    return (!isModuleUSingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type));
+#endif
 #endif
 
   return false;
 }
 #endif
 
-bool isExternalModuleAvailable(int module)
+bool isExternalModuleAvailable(int moduleType)
 {
 #if !defined(PCBXLITE)
-  if (module == MODULE_TYPE_R9M_LITE || module == MODULE_TYPE_R9M_LITE2 || module == MODULE_TYPE_R9M_LITE_PRO2) {
+  if (moduleType == MODULE_TYPE_R9M_LITE || moduleType == MODULE_TYPE_R9M_LITE2 || moduleType == MODULE_TYPE_R9M_LITE_PRO2) {
     return false;
   }
 #endif
 #if !defined(PXX1)
-  if (module == MODULE_TYPE_XJT || module == MODULE_TYPE_R9M || module == MODULE_TYPE_R9M_LITE) {
+  if (moduleType == MODULE_TYPE_XJT || moduleType == MODULE_TYPE_R9M || moduleType == MODULE_TYPE_R9M_LITE) {
     return false;
   }
 #endif
 #if !defined(PXX2)
-  if (module == MODULE_TYPE_XJT2 || module == MODULE_TYPE_R9M2 || module == MODULE_TYPE_R9M_LITE2 || module == MODULE_TYPE_R9M_LITE_PRO2) {
+  if (moduleType == MODULE_TYPE_XJT2 || moduleType == MODULE_TYPE_R9M2 || moduleType == MODULE_TYPE_R9M_LITE2 || moduleType == MODULE_TYPE_R9M_LITE_PRO2) {
     return false;
   }
 #endif
 #if defined(CROSSFIRE)
-  if (module == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+  if (moduleType == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
     return false;
   }
 #else
-  if (module == MODULE_TYPE_CROSSFIRE) {
+  if (moduleType == MODULE_TYPE_CROSSFIRE) {
     return false;
   }
 #endif
 #if !defined(DSM2)
-  if (module == MODULE_TYPE_DSM2) {
+  if (moduleType == MODULE_TYPE_DSM2) {
      return false;
   }
 #endif
 #if !defined(MULTIMODULE)
-  if (module == MODULE_TYPE_MULTIMODULE) {
+  if (moduleType == MODULE_TYPE_MULTIMODULE) {
     return false;
   }
 #endif
 #if defined(HARDWARE_INTERNAL_MODULE)
-  if (module == MODULE_TYPE_R9M && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) {
+  if (isModuleUSingSport(EXTERNAL_MODULE, moduleType) && isModuleUSingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
     return false;
-  }
-  if (module == MODULE_TYPE_XJT && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT) {
-    return false;
-  }
 #endif
 
   return true;

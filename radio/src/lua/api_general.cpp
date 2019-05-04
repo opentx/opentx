@@ -35,6 +35,8 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(PCBX3)
   #include "lua/lua_exports_x3.inc"
+#elif defined(PCBXLITES)
+  #include "lua/lua_exports_xlites.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
@@ -568,21 +570,21 @@ When called without parameters, it will only return the status of the output buf
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
-    lua_pushboolean(L, isCrossfireOutputBufferAvailable());
+    lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
   }
-  else if (isCrossfireOutputBufferAvailable()) {
+  else if (outputTelemetryBuffer.isAvailable()) {
     uint8_t command = luaL_checkunsigned(L, 1);
     luaL_checktype(L, 2, LUA_TTABLE);
     uint8_t length = luaL_len(L, 2);
-    telemetryOutputPushByte(MODULE_ADDRESS);
-    telemetryOutputPushByte(2 + length); // 1(COMMAND) + data length + 1(CRC)
-    telemetryOutputPushByte(command); // COMMAND
+    outputTelemetryBuffer.pushByte(MODULE_ADDRESS);
+    outputTelemetryBuffer.pushByte(2 + length); // 1(COMMAND) + data length + 1(CRC)
+    outputTelemetryBuffer.pushByte(command); // COMMAND
     for (int i=0; i<length; i++) {
       lua_rawgeti(L, 2, i+1);
-      telemetryOutputPushByte(luaL_checkunsigned(L, -1));
+      outputTelemetryBuffer.pushByte(luaL_checkunsigned(L, -1));
     }
-    telemetryOutputPushByte(crc8(outputTelemetryBuffer+2, 1 + length));
-    telemetryOutputSetTrigger(command);
+    outputTelemetryBuffer.pushByte(crc8(outputTelemetryBuffer.data+2, 1 + length));
+    outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
     lua_pushboolean(L, true);
   }
   else {

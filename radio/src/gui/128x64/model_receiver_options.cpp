@@ -30,7 +30,7 @@ void onRxOptionsUpdateConfirm(const char * result)
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
     reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 2;
     reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
   else {
     popMenu();
@@ -57,19 +57,17 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount = 8;
 #else
     // no need to initialize reusableBuffer.hardwareAndSettings.receiverSettings.state to PXX2_HARDWARE_INFO
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].current = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].maximum = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_GET_HARDWARE_INFO;
+    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], reusableBuffer.hardwareAndSettings.receiverSettings.receiverId, reusableBuffer.hardwareAndSettings.receiverSettings.receiverId);
 #endif
   }
 
-  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleSettings[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
+  if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_READ;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
   if (menuEvent) {
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
       abortPopMenu();
       POPUP_CONFIRMATION("Update RX options?", onRxOptionsUpdateConfirm);
@@ -84,7 +82,7 @@ void menuModelReceiverOptions(event_t event)
     reusableBuffer.hardwareAndSettings.receiverSettings.state = PXX2_SETTINGS_WRITE;
     reusableBuffer.hardwareAndSettings.receiverSettings.dirty = 0;
     reusableBuffer.hardwareAndSettings.receiverSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_RECEIVER_SETTINGS;
   }
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
@@ -112,7 +110,7 @@ void menuModelReceiverOptions(event_t event)
           break;
 
         case ITEM_RECEIVER_PWM_RATE:
-          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, "9ms PWM", attr, event);
+          reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.pwmRate, RECEIVER_OPTIONS_2ND_COLUMN, y, isModuleR9M2(g_moduleIdx) ? "6.67ms PWM": "9ms PWM", attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
           }
@@ -122,29 +120,31 @@ void menuModelReceiverOptions(event_t event)
           // Pin
         {
           uint8_t pin = i - ITEM_RECEIVER_PINMAP_FIRST;
-          uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
-          int32_t channelValue = channelOutputs[channel];
-          lcdDrawText(0, y, "Pin");
-          lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
-          putsChn(7 * FW, y, channel + 1, attr);
+          if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
+            uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
+            int32_t channelValue = channelOutputs[channel];
+            lcdDrawText(0, y, "Pin");
+            lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
+            putsChn(7 * FW, y, channel + 1, attr);
 
-          // Channel
-          if (attr) {
-            channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
-            if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = channel;
-              reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+            // Channel
+            if (attr) {
+              channel = checkIncDec(event, channel, 0, sentModuleChannels(g_moduleIdx) - 1);
+              if (checkIncDec_Ret) {
+                reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = channel;
+                reusableBuffer.hardwareAndSettings.receiverSettings.dirty = true;
+              }
             }
-          }
 
-          // Bargraph
+            // Bargraph
 #if !defined(PCBX7) // X7 LCD doesn't like too many horizontal lines
-          lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
+            lcdDrawRect(LCD_W - 3 - wbar, y + 1, wbar + 1, 4);
 #endif
-          const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
-          const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
-          lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
-          lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+            const uint8_t lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
+            const coord_t xChannel = (channelValue > 0) ? LCD_W - 3 - wbar / 2 : LCD_W - 2 - wbar / 2 - lenChannel;
+            lcdDrawHorizontalLine(xChannel, y + 2, lenChannel, SOLID, 0);
+            lcdDrawHorizontalLine(xChannel, y + 3, lenChannel, SOLID, 0);
+          }
           break;
         }
       }

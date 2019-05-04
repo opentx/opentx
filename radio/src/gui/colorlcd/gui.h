@@ -24,6 +24,7 @@
 #include "gui_common.h"
 #include "lcd.h"
 #include "menus.h"
+#include "popups.h"
 #include "widgets.h"
 #include "bitmaps.h"
 #include "theme.h"

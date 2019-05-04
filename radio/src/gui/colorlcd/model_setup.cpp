@@ -101,7 +101,7 @@ class FailSafeBody : public Window {
         grid.nextLine();
       }
 
-      auto out2fail = new TextButton(this, grid.getLineSlot(), STR_OUTPUTS2FAILSAFE);
+      auto out2fail = new TextButton(this, grid.getLineSlot(), STR_CHANNELS2FAILSAFE);
       out2fail->setPressHandler([=]() {
         setCustomFailsafe(moduleIndex);
         storageDirty(EE_MODEL);
@@ -297,22 +297,22 @@ class ModuleWindow : public Window {
       if (isModuleNeedingBindRangeButtons(moduleIndex)) {
         bindButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_BIND);
         bindButton->setPressHandler([=]() -> uint8_t {
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
+          if (moduleState[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
             rangeButton->check(false);
           }
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_BIND) {
+          if (moduleState[moduleIndex].mode == MODULE_MODE_BIND) {
             bindButton->setText(STR_MODULE_BIND);
-            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+            moduleState[moduleIndex].mode = MODULE_MODE_NORMAL;
             return 0;
           }
           else {
             bindButton->setText(STR_MODULE_BIND);
-            moduleSettings[moduleIndex].mode = MODULE_MODE_BIND;
+            moduleState[moduleIndex].mode = MODULE_MODE_BIND;
             return 1;
           }
         });
         bindButton->setCheckHandler([=]() {
-          if (moduleSettings[moduleIndex].mode != MODULE_MODE_BIND) {
+          if (moduleState[moduleIndex].mode != MODULE_MODE_BIND) {
             bindButton->setText(STR_MODULE_BIND);
             bindButton->check(false);
           }
@@ -320,17 +320,17 @@ class ModuleWindow : public Window {
 
         rangeButton = new TextButton(this, grid.getFieldSlot(2, 1), STR_MODULE_RANGE);
         rangeButton->setPressHandler([=]() -> uint8_t {
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_BIND) {
+          if (moduleState[moduleIndex].mode == MODULE_MODE_BIND) {
             bindButton->setText(STR_MODULE_BIND);
             bindButton->check(false);
-            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+            moduleState[moduleIndex].mode = MODULE_MODE_NORMAL;
           }
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
-            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+          if (moduleState[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
+            moduleState[moduleIndex].mode = MODULE_MODE_NORMAL;
             return 0;
           }
           else {
-            moduleSettings[moduleIndex].mode = MODULE_MODE_RANGECHECK;
+            moduleState[moduleIndex].mode = MODULE_MODE_RANGECHECK;
             return 1;
           }
         });
@@ -342,36 +342,36 @@ class ModuleWindow : public Window {
       if (isModuleNeedingRegisterRangeButtons(moduleIndex)) {
         registerButton = new TextButton(this, grid.getFieldSlot(2, 0), STR_REGISTER);
         registerButton->setPressHandler([=]() -> uint8_t {
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
+          if (moduleState[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
             rangeButton->check(false);
           }
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_REGISTER) {
-            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+          if (moduleState[moduleIndex].mode == MODULE_MODE_REGISTER) {
+            moduleState[moduleIndex].mode = MODULE_MODE_NORMAL;
             return 0;
           }
           else {
-            moduleSettings[moduleIndex].mode = MODULE_MODE_REGISTER;
+            moduleState[moduleIndex].mode = MODULE_MODE_REGISTER;
             return 1;
           }
         });
         registerButton->setCheckHandler([=]() {
-          if (moduleSettings[moduleIndex].mode != MODULE_MODE_REGISTER) {
+          if (moduleState[moduleIndex].mode != MODULE_MODE_REGISTER) {
             registerButton->check(false);
           }
         });
 
         rangeButton = new TextButton(this, grid.getFieldSlot(2, 1), STR_MODULE_RANGE);
         rangeButton->setPressHandler([=]() -> uint8_t {
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_REGISTER) {
+          if (moduleState[moduleIndex].mode == MODULE_MODE_REGISTER) {
             registerButton->check(false);
-            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+            moduleState[moduleIndex].mode = MODULE_MODE_NORMAL;
           }
-          if (moduleSettings[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
-            moduleSettings[moduleIndex].mode = MODULE_MODE_NORMAL;
+          if (moduleState[moduleIndex].mode == MODULE_MODE_RANGECHECK) {
+            moduleState[moduleIndex].mode = MODULE_MODE_NORMAL;
             return 0;
           }
           else {
-            moduleSettings[moduleIndex].mode = MODULE_MODE_RANGECHECK;
+            moduleState[moduleIndex].mode = MODULE_MODE_RANGECHECK;
             return 1;
           }
         });
@@ -441,10 +441,10 @@ class ModuleWindow : public Window {
             // Receiver name + Bind and share buttons
             // TODO new StaticText(this, grid.getLabelSlot(true), " Telemetry");
             new TextButton(this, grid.getFieldSlot(2, 0), STR_MODULE_BIND, [=]() {
-                reusableBuffer.moduleSetup.pxx2.bindStep = BIND_START;
-                reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversCount = 0;
+                reusableBuffer.moduleSetup.bindInformation.step = BIND_START;
+                reusableBuffer.moduleSetup.bindInformation.candidateReceiversCount = 0;
                 // TODO reusableBuffer.moduleSetup.pxx2.bindReceiverId = receiverSlot;
-                moduleSettings[moduleIndex].mode ^= MODULE_MODE_BIND;
+                moduleState[moduleIndex].mode ^= MODULE_MODE_BIND;
                 return 0;
             });
             new TextButton(this, grid.getFieldSlot(2, 1), "Share", [=]() {
@@ -512,7 +512,7 @@ void onBindMenu(const char * result)
     return;
   }
 
-  moduleSettings[moduleIdx].mode  = MODULE_MODE_BIND;
+  moduleState[moduleIdx].mode  = MODULE_MODE_BIND;
 }
 
 void ModelSetupPage::build(FormWindow * window)

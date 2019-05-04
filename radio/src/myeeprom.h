@@ -30,7 +30,7 @@
 #define GET_TRAINER_PPM_POLARITY()               g_model.trainerData.pulsePol
 #define GET_SBUS_POLARITY(idx)                   g_model.moduleData[idx].sbus.noninverted
 #define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
-#define GET_TRAINER_PPM_DELAY(idx)               (g_model.trainerData.delay * 50 + 300)
+#define GET_TRAINER_PPM_DELAY()                  (g_model.trainerData.delay * 50 + 300)
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx)        g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #if defined(PCBHORUS)
@@ -451,8 +451,7 @@ enum TelemetryProtocols
   PROTOCOL_TELEMETRY_SPEKTRUM,
   PROTOCOL_TELEMETRY_FLYSKY_IBUS,
   PROTOCOL_TELEMETRY_MULTIMODULE,
-  PROTOCOL_TELEMETRY_LAST=PROTOCOL_TELEMETRY_MULTIMODULE,
-  PROTOCOL_TELEMETRY_PXX2,
+  PROTOCOL_TELEMETRY_LAST=PROTOCOL_TELEMETRY_MULTIMODULE
 };
 
 enum DisplayTrims

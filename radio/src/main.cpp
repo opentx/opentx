@@ -53,7 +53,7 @@ void handleUsbConnection()
     }
   }
   if (!usbStarted() && usbPlugged() && getSelectedUsbMode() == USB_UNSELECTED_MODE) {
-    if((g_eeGeneral.USBMode == USB_UNSELECTED_MODE) && (popupMenuItemsCount == 0)) {
+    if (g_eeGeneral.USBMode == USB_UNSELECTED_MODE && popupMenuItemsCount == 0) {
       POPUP_MENU_ADD_ITEM(STR_USB_JOYSTICK);
       POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
 #if defined(USB_SERIAL)
@@ -316,7 +316,9 @@ void guiMain(event_t evt)
         }
         if (popupDisplayed == false || evt) {
           popupDisplayed = lcdRestoreBackupBuffer();
-          if (warn) DISPLAY_WARNING(evt);
+          if (warn) {
+            DISPLAY_WARNING(evt);
+          }
           if (menu) {
             const char * result = runPopupMenu(evt);
             if (popupMenuItemsCount == 0) {
@@ -443,23 +445,19 @@ void guiMain(event_t evt)
     menuEvent = 0;
   }
 
+  handleGui(isEventCaughtByPopup() ? 0 : evt);
+
   if (warningText) {
     // show warning on top of the normal menus
-    handleGui(0); // suppress events, they are handled by the warning
     DISPLAY_WARNING(evt);
   }
   else if (popupMenuItemsCount > 0) {
-    // popup menu is active display it on top of normal menus
-    handleGui(0); // suppress events, they are handled by the popup
+    // show popup menu on top of the normal menus
     const char * result = runPopupMenu(evt);
     if (result) {
       TRACE("popupMenuHandler(%s)", result);
       popupMenuHandler(result);
     }
-  }
-  else {
-    // normal menus
-    handleGui(evt);
   }
 
   lcdRefresh();
@@ -469,6 +467,7 @@ void guiMain(event_t evt)
 void perMain()
 {
   DEBUG_TIMER_START(debugTimerPerMain1);
+
 #if defined(PCBSKY9X) && !defined(REVA)
   calcConsumption();
 #endif

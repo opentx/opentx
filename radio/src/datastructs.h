@@ -185,12 +185,6 @@ PACK(struct trim_t {
 
 typedef int16_t gvar_t;
 
-#if MAX_ROTARY_ENCODERS > 0
-  #define FLIGHT_MODE_ROTARY_ENCODERS_FIELD int16_t rotaryEncoders[MAX_ROTARY_ENCODERS];
-#else
-  #define FLIGHT_MODE_ROTARY_ENCODERS_FIELD
-#endif
-
 PACK(struct FlightModeData {
   trim_t trim[NUM_TRIMS];
   NOBACKUP(char name[LEN_FLIGHT_MODE_NAME]);
@@ -198,7 +192,6 @@ PACK(struct FlightModeData {
   int16_t spare:7;
   uint8_t fadeIn;
   uint8_t fadeOut;
-  FLIGHT_MODE_ROTARY_ENCODERS_FIELD
   gvar_t gvars[MAX_GVARS];
 });
 
@@ -432,11 +425,6 @@ PACK(struct ModuleData {
       uint8_t subType:3;
       uint8_t invertedSerial:1; // telemetry serial inverted from standard
     };
-    struct {
-      uint8_t failsafeMode:4;  // only 3 bits used
-      uint8_t freq:2;
-      uint8_t region:2;
-    } r9m;
   };
 
   union {
@@ -559,6 +547,21 @@ PACK(struct CustomScreenData {
   uint8_t view;
 #endif
 
+#if defined(PCBX9)
+  #define TOPBAR_DATA \
+    NOBACKUP(uint8_t voltsSource); \
+    NOBACKUP(uint8_t altitudeSource);
+#else
+  #define TOPBAR_DATA
+#endif
+
+#if defined(PCBHORUS) || defined(PCBTARANIS)
+  #define SCRIPT_DATA \
+    NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
+#else
+  #define SCRIPT_DATA
+#endif
+
 PACK(struct ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
@@ -594,10 +597,9 @@ PACK(struct ModelData {
 
   NOBACKUP(VarioData varioData);
   NOBACKUP(uint8_t rssiSource);
-#if defined(PCBX9)
-  NOBACKUP(uint8_t voltsSource);
-  NOBACKUP(uint8_t altitudeSource);
-#endif
+
+  TOPBAR_DATA;
+
   NOBACKUP(RssiAlarmData rssiAlarms);
 
   NOBACKUP(uint8_t spare1:6);
@@ -606,9 +608,7 @@ PACK(struct ModelData {
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
-  NOBACKUP(ScriptData scriptsData[MAX_SCRIPTS]);
-#endif
+  SCRIPT_DATA;
 
   NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
   NOBACKUP(uint8_t potsWarnEnabled);
@@ -882,7 +882,7 @@ static inline void check_struct()
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
   CHKSIZE(CustomFunctionData, 9);
-  CHKSIZE(FlightModeData, 38);
+  CHKSIZE(FlightModeData, 36);
   CHKSIZE(TimerData, 11);
   CHKSIZE(SwashRingData, 8);
   CHKSIZE(FrSkyBarData, 5);
@@ -933,7 +933,7 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6601);
 #elif defined(PCBSKY9X)
   CHKSIZE(RadioData, 735);
-  CHKSIZE(ModelData, 5319);
+  CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
   CHKSIZE(RadioData, 855);
   CHKSIZE(ModelData, 9734);

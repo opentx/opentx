@@ -115,11 +115,7 @@ extern const char STR_OPEN9X[];
 #define OFS_VBEEPLEN           (OFS_NCHANNELS + sizeof(TR_NCHANNELS))
 #define OFS_VBEEPMODE          (OFS_VBEEPLEN + sizeof(TR_VBEEPLEN))
 #endif
-#if defined(ROTARY_ENCODERS)
-#define OFS_VRENAVIG           (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
-#define OFS_VRENCODERS         (OFS_VRENAVIG + sizeof(TR_VRENAVIG))
-#define OFS_TRNMODE            (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
-#elif defined(ROTARY_ENCODER_NAVIGATION)
+#if defined(ROTARY_ENCODER_NAVIGATION)
 #define OFS_VRENCODERS         (OFS_VBEEPMODE + sizeof(TR_VBEEPMODE))
 #define OFS_TRNMODE            (OFS_VRENCODERS + sizeof(TR_VRENCODERS))
 #else
@@ -191,10 +187,11 @@ extern const char STR_OPEN9X[];
   #define OFS_VTRAINERMODES     (OFS_VFAILSAFE + sizeof(TR_VFAILSAFE))
   #define OFS_MODULE_PROTOCOLS        (OFS_VTRAINERMODES + sizeof(TR_VTRAINERMODES))
   #define OFS_R9M_REGION               (OFS_MODULE_PROTOCOLS + sizeof(TR_MODULE_PROTOCOLS))
-  #define OFS_R9MFLEX_FREQ             (OFS_R9M_REGION + sizeof(TR_R9M_REGION))
-  #define OFS_R9M_FCC_POWER_VALUES     (OFS_R9MFLEX_FREQ + sizeof(TR_R9MFLEX_FREQ))
+  #define OFS_R9M_FCC_POWER_VALUES     (OFS_R9M_REGION + sizeof(TR_R9M_REGION))
   #define OFS_R9M_LBT_POWER_VALUES     (OFS_R9M_FCC_POWER_VALUES + sizeof(TR_R9M_FCC_POWER_VALUES))
-  #define OFS_TELEMETRY_PROTOCOLS      (OFS_R9M_LBT_POWER_VALUES + sizeof(TR_R9M_LBT_POWER_VALUES))
+  #define OFS_R9M_LITE_FCC_POWER_VALUES     (OFS_R9M_LBT_POWER_VALUES + sizeof(TR_R9M_LBT_POWER_VALUES))
+  #define OFS_R9M_LITE_LBT_POWER_VALUES     (OFS_R9M_LITE_FCC_POWER_VALUES + sizeof(TR_R9M_LITE_FCC_POWER_VALUES))
+  #define OFS_TELEMETRY_PROTOCOLS      (OFS_R9M_LITE_LBT_POWER_VALUES + sizeof(TR_R9M_LITE_LBT_POWER_VALUES))
   #define OFS_XJT_PROTOCOLS            (OFS_TELEMETRY_PROTOCOLS + sizeof(TR_TELEMETRY_PROTOCOLS))
 #if defined(PCBFLYSKY)
   #define OFS_FLYSKY_PROTOCOLS  (OFS_XJT_PROTOCOLS + sizeof(TR_XJT_PROTOCOLS))
@@ -279,10 +276,6 @@ extern const char STR_OPEN9X[];
 #endif
 #define STR_VTMRMODES           (STR_OPEN9X + OFS_VTMRMODES)
 
-#if defined(ROTARY_ENCODERS)
-  #define STR_VRENAVIG          (STR_OPEN9X + OFS_VRENAVIG)
-#endif
-
 #if defined(ROTARY_ENCODER_NAVIGATION)
   #define STR_VRENCODERS        (STR_OPEN9X + OFS_VRENCODERS)
 #endif
@@ -304,9 +297,10 @@ extern const char STR_OPEN9X[];
   #define STR_VTRAINERMODES     (STR_OPEN9X + OFS_VTRAINERMODES)
   #define STR_MODULE_PROTOCOLS (STR_OPEN9X + OFS_MODULE_PROTOCOLS)
   #define STR_R9M_REGION        (STR_OPEN9X + OFS_R9M_REGION)
-  #define STR_R9MFLEX_FREQ             (STR_OPEN9X + OFS_R9MFLEX_FREQ)
   #define STR_R9M_FCC_POWER_VALUES     (STR_OPEN9X + OFS_R9M_FCC_POWER_VALUES)
   #define STR_R9M_LBT_POWER_VALUES     (STR_OPEN9X + OFS_R9M_LBT_POWER_VALUES)
+  #define STR_R9M_LITE_FCC_POWER_VALUES     (STR_OPEN9X + OFS_R9M_LITE_FCC_POWER_VALUES)
+  #define STR_R9M_LITE_LBT_POWER_VALUES     (STR_OPEN9X + OFS_R9M_LITE_LBT_POWER_VALUES)
   #define STR_TELEMETRY_PROTOCOLS      (STR_OPEN9X + OFS_TELEMETRY_PROTOCOLS)
   #define STR_XJT_PROTOCOLS     (STR_OPEN9X + OFS_XJT_PROTOCOLS)
 #if defined(PCBFLYSKY)
@@ -517,7 +511,8 @@ extern const char STR_BAD_RADIO_DATA[];
 extern const char STR_STORAGE_FORMAT[];
 extern const char STR_EEPROMOVERFLOW[];
 extern const char STR_TRIMS2OFFSETS[];
-extern const char STR_OUTPUTS2FAILSAFE[];
+extern const char STR_CHANNELS2FAILSAFE[];
+extern const char STR_CHANNEL2FAILSAFE[];
 extern const char STR_MENURADIOSETUP[];
 extern const char STR_MENUDATEANDTIME[];
 extern const char STR_MENUTRAINER[];
@@ -608,7 +603,6 @@ extern const char STR_TURN_OFF_RECEIVER          [];
 extern const char STR_STOPPING              [];
 extern const char STR_MENU_SPECTRUM_ANALYSER[];
 extern const char STR_MENU_POWER_METER[];
-extern const char STR_MENUTOOLS[];
 extern const char STR_SENSOR[];
 extern const char STR_COUNTRYCODE[];
 extern const char STR_USBMODE[];
@@ -687,6 +681,9 @@ extern const char STR_DEBUG[];
 extern const char STR_KEYS_BTN[];
 extern const char STR_ANALOGS_BTN[];
 extern const char STR_CALIB_BTN[];
+
+extern const char STR_NO_TOOLS[];
+extern const char STR_WAITING_FOR_RX[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];
@@ -781,10 +778,14 @@ extern const char STR_PATH_TOO_LONG[];
 extern const char STR_VIEW_TEXT[];
 extern const char STR_FLASH_BOOTLOADER[];
 extern const char STR_FLASH_EXTERNAL_DEVICE[];
+extern const char STR_FLASH_RECEIVER_OTA[];
+extern const char STR_FLASH_BLUETOOTH_MODULE[];
+extern const char STR_CURRENT_VERSION[];
 extern const char STR_FLASH_INTERNAL_MODULE[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];
 extern const char STR_FIRMWARE_UPDATE_ERROR[];
 extern const char STR_FIRMWARE_UPDATE_SUCCESS[];
+extern const char STR_WRITING[];
 extern const char STR_CONFIRM_FORMAT[];
 extern const char STR_CONFIRMRESET[];
 extern const char STR_TOO_MANY_LUA_SCRIPTS[];
@@ -871,6 +872,7 @@ extern const char STR_EXPONAME[];
 
   extern const char STR_TRAINER[];
 extern const char STR_MODULE_BIND[];
+extern const char STR_POWERMETER_ATTN_NEEDED[];
 extern const char STR_PXX2_SELECT_RX[];
 extern const char STR_PXX2_DEFAULT[];
 extern const char STR_BT_SELECT_DEVICE[];

@@ -26,11 +26,12 @@
 #include "pulses_common.h"
 #include "pulses/pxx1.h"
 #include "pulses/pxx2.h"
+#include "modules.h"
 
 #if NUM_MODULES > 1
-  #define IS_RANGECHECK_ENABLE()             (moduleSettings[0].mode == MODULE_MODE_RANGECHECK || moduleSettings[1].mode == MODULE_MODE_RANGECHECK)
+  #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK || moduleState[1].mode == MODULE_MODE_RANGECHECK)
 #else
-  #define IS_RANGECHECK_ENABLE()             (moduleSettings[0].mode == MODULE_MODE_RANGECHECK)
+  #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK)
 #endif
 
 #if defined(PCBSKY9X) && defined(DSM2)
@@ -85,15 +86,115 @@ enum ModuleSettingsMode
   MODULE_MODE_RESET
 };
 
-PACK(struct ModuleSettings {
+
+PACK(struct PXX2Version {
+  uint8_t major;
+  uint8_t revision:4;
+  uint8_t minor:4;
+});
+
+PACK(struct PXX2HardwareInformation {
+  uint8_t modelID;
+  PXX2Version hwVersion;
+  PXX2Version swVersion;
+  uint8_t variant;
+});
+
+PACK(struct ModuleInformation {
+  int8_t current;
+  int8_t maximum;
+  uint8_t timeout;
+  PXX2HardwareInformation information;
+  struct {
+    PXX2HardwareInformation information;
+  } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
+});
+
+struct ModuleSettings {
+  uint8_t state;  // 0x00 = READ 0x40 = WRITE
+  tmr10ms_t retryTime;
+  uint8_t rfProtocol;
+  uint8_t externalAntenna;
+  int8_t txPower;
+};
+
+struct ReceiverSettings {
+  uint8_t state;  // 0x00 = READ 0x40 = WRITE
+  tmr10ms_t timeout;
+  uint8_t receiverId;
+  uint8_t dirty;
+  uint8_t telemetryDisabled;
+  uint8_t pwmRate;
+  uint8_t outputsCount;
+  uint8_t outputsMapping[24];
+};
+
+struct BindInformation {
+  uint8_t step;
+  uint32_t timeout;
+  char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
+  uint8_t candidateReceiversCount;
+  uint8_t selectedReceiverIndex;
+  uint8_t rxUid;
+  uint8_t lbtMode;
+  uint8_t flexMode;
+  PXX2HardwareInformation receiverInformation;
+};
+
+typedef void (* ModuleCallback)();
+
+#if defined(SIMU)
+  #define BIND_INFO \
+    bindInformation->candidateReceiversCount = 2; \
+    strcpy(bindInformation->candidateReceiversNames[0], "SimuRX1"); \
+    strcpy(bindInformation->candidateReceiversNames[1], "SimuRX2"); 
+#else
+  #define BIND_INFO
+#endif
+
+PACK(struct ModuleState {
   uint8_t protocol:4;
   uint8_t mode:4;
   uint8_t paused:1;
   uint8_t spare:7;
   uint16_t counter;
+  union {
+    ModuleInformation * moduleInformation;
+    ModuleSettings * moduleSettings;
+    BindInformation * bindInformation;
+  };
+  ModuleCallback callback;
+
+  void startBind(BindInformation * destination, ModuleCallback bindCallback = nullptr)
+  {
+    bindInformation = destination;
+    callback = bindCallback;
+    mode = MODULE_MODE_BIND;
+    BIND_INFO;
+  }
+  void readModuleInformation(ModuleInformation * destination, int8_t first, int8_t last)
+  {
+    moduleInformation = destination;
+    moduleInformation->current = first;
+    moduleInformation->maximum = last;
+    mode = MODULE_MODE_GET_HARDWARE_INFO;
+  }
+  void readModuleSettings(ModuleSettings * destination)
+  {
+    moduleSettings = destination;
+    moduleSettings->state = PXX2_SETTINGS_READ;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
+  void writeModuleSettings(ModuleSettings * source)
+  {
+    moduleSettings = source;
+    moduleSettings->state = PXX2_SETTINGS_WRITE;
+    moduleSettings->retryTime = 0;
+    mode = MODULE_MODE_MODULE_SETTINGS;
+  }
 });
 
-extern ModuleSettings moduleSettings[NUM_MODULES];
+extern ModuleState moduleState[NUM_MODULES];
 
 template<class T> struct PpmPulsesData {
   T pulses[20];
@@ -248,16 +349,16 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_FLYSKY
 };
 
-inline bool pulsesStarted() { return moduleSettings[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
+inline bool pulsesStarted() { return moduleState[0].protocol != PROTOCOL_CHANNELS_UNINITIALIZED; }
 inline void pausePulses() { s_pulses_paused = true; }
 inline void resumePulses() { s_pulses_paused = false; }
 
-#define SEND_FAILSAFE_NOW(idx) moduleSettings[idx].counter = 1
+#define SEND_FAILSAFE_NOW(idx) moduleState[idx].counter = 1
 
 inline void SEND_FAILSAFE_1S()
 {
   for (int i=0; i<NUM_MODULES; i++) {
-    moduleSettings[i].counter = 100;
+    moduleState[i].counter = 100;
   }
 }
 
@@ -265,37 +366,25 @@ inline void SEND_FAILSAFE_1S()
 // for channels not set previously to HOLD or NOPULSE
 void setCustomFailsafe(uint8_t moduleIndex);
 
-#if defined(PCBXLITE) && !defined(MODULE_R9M_FULLSIZE)
 #define LEN_R9M_REGION                 "\006"
 #define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
-#define LEN_R9M_FCC_POWER_VALUES       "\010"
-#define LEN_R9M_LBT_POWER_VALUES       "\015"
-#define TR_R9M_FCC_POWER_VALUES        "(100 mW)"
-#define TR_R9M_LBT_POWER_VALUES        "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
-#define LEN_R9MFLEX_FREQ               "\006"
-#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
+#define LEN_R9M_LITE_FCC_POWER_VALUES       "\010"
+#define LEN_R9M_LITE_LBT_POWER_VALUES       "\015"
+#define TR_R9M_LITE_FCC_POWER_VALUES        "(100 mW)"
+#define TR_R9M_LITE_LBT_POWER_VALUES        "25 mW 8ch\0   ""25 mW 16ch\0  ""100mW no tele"
 
-enum R9MFCCPowerValues {
-  R9M_FCC_POWER_100 = 0,
-  R9M_FCC_POWER_MAX = R9M_FCC_POWER_100
+enum R9MLiteFCCPowerValues {
+  R9M_LITE_FCC_POWER_100 = 0,
+  R9M_LITE_FCC_POWER_MAX = R9M_LITE_FCC_POWER_100
 };
 
-enum R9MLBTPowerValues {
-  R9M_LBT_POWER_25 = 0,
-  R9M_LBT_POWER_25_16,
-  R9M_LBT_POWER_100,
-  R9M_LBT_POWER_MAX = R9M_LBT_POWER_100
+enum R9MLiteLBTPowerValues {
+  R9M_LITE_LBT_POWER_25 = 0,
+  R9M_LITE_LBT_POWER_25_16,
+  R9M_LITE_LBT_POWER_100,
+  R9M_LITE_LBT_POWER_MAX = R9M_LITE_LBT_POWER_100
 };
 
-#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_100))
-#define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-
-#else
-
-#define LEN_R9M_REGION                 "\004"
-#define TR_R9M_REGION                  "FCC\0""EU\0 ""FLEX"
-#define LEN_R9MFLEX_FREQ               "\006"
-#define TR_R9MFLEX_FREQ                "868Mhz""915Mhz"
 #define LEN_R9M_FCC_POWER_VALUES       "\006"
 #define LEN_R9M_LBT_POWER_VALUES       "\013"
 #define TR_R9M_FCC_POWER_VALUES        "10 mW\0" "100 mW" "500 mW" "1 W\0"
@@ -317,8 +406,6 @@ enum R9MLBTPowerValues {
   R9M_LBT_POWER_MAX = R9M_LBT_POWER_500
 };
 
-#define BIND_TELEM_ALLOWED(idx)      (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200))
 #define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#endif
-
+#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
 #endif // _PULSES_H_

@@ -75,7 +75,7 @@ bool isForcePowerOffRequested()
 
 bool isModuleSynchronous(uint8_t module)
 {
-  uint8_t protocol = moduleSettings[module].protocol;
+  uint8_t protocol = moduleState[module].protocol;
   if (protocol == PROTOCOL_CHANNELS_PXX2 || protocol == PROTOCOL_CHANNELS_CROSSFIRE || protocol == PROTOCOL_CHANNELS_NONE)
     return true;
 #if defined(INTMODULE_USART) || defined(EXTMODULE_USART)
@@ -107,7 +107,6 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   while (1) {
-
 #if defined(PCBX9D) || defined(PCBX7)
     // SBUS on Hearbeat PIN (which is a serial RX)
     processSbusInput();
@@ -118,7 +117,7 @@ TASK_FUNCTION(mixerTask)
 #endif
 
 #if defined(BLUETOOTH)
-    bluetoothWakeup();
+    bluetooth.wakeup();
 #endif
 
     RTOS_WAIT_TICKS(1);

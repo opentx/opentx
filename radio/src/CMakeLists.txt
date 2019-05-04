@@ -47,6 +47,7 @@ option(TRACE_WINDOWS "Turn on windows traces" OFF)
 option(FRSKY_STICKS "Reverse sticks for FrSky sticks" OFF)
 option(NANO "Use nano newlib and binalloc")
 option(NIGHTLY_BUILD_WARNING "Warn this is a nightly build" OFF)
+option(MODULE_R9M_FLEX_FW "Add R9M options for non certified firmwwares" OFF)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(BOOTLOADER "Include Bootloader" ON)
 
@@ -316,6 +317,10 @@ endif()
 
 if(NIGHTLY_BUILD_WARNING)
   add_definitions(-DNIGHTLY_BUILD_WARNING)
+endif()
+
+if(MODULE_R9M_FLEX_FW)
+  add_definitions(-DMODULE_R9M_FLEX_FW)
 endif()
 
 if(FRSKY_RELEASE)

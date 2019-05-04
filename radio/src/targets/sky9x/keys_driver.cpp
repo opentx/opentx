@@ -109,10 +109,6 @@ void readKeysAndTrims()
 {
   uint32_t i;
 
-#if ROTARY_ENCODERS > 0
-  keys[BTN_REa].input(REA_DOWN());
-#endif
-
   uint8_t index = 0;
   uint8_t keys_input = readKeys();
   for (i = 1; i < 7; i++) {

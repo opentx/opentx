@@ -25,11 +25,11 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
   uint8_t flag0 = g_model.header.modelId[module] & 0x3F;
   if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
-    if (moduleSettings[module].counter == 0) {
+    if (moduleState[module].counter == 0) {
       flag0 |= PXX2_CHANNELS_FLAG0_FAILSAFE;
     }
   }
-  if (moduleSettings[module].mode == MODULE_MODE_RANGECHECK) {
+  if (moduleState[module].mode == MODULE_MODE_RANGECHECK) {
     flag0 |= PXX2_CHANNELS_FLAG0_RANGECHECK;
   }
   Pxx2Transport::addByte(flag0);
@@ -130,20 +130,22 @@ void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
 
 void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
 {
-  if (reusableBuffer.hardwareAndSettings.modules[module].timeout == 0) {
-    if (reusableBuffer.hardwareAndSettings.modules[module].current <= reusableBuffer.hardwareAndSettings.modules[module].maximum) {
+  ModuleInformation * destination = moduleState[module].moduleInformation;
+
+  if (destination->timeout == 0) {
+    if (destination->current <= destination->maximum) {
       addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
-      Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.modules[module].current);
-      reusableBuffer.hardwareAndSettings.modules[module].timeout = 60; /* 300ms */
-      reusableBuffer.hardwareAndSettings.modules[module].current++;
+      Pxx2Transport::addByte(destination->current);
+      destination->timeout = 60; /* 300ms */
+      destination->current++;
     }
     else {
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
+      moduleState[module].mode = MODULE_MODE_NORMAL;
       setupChannelsFrame(module);
     }
   }
   else {
-    reusableBuffer.hardwareAndSettings.modules[module].timeout--;
+    destination->timeout--;
     setupChannelsFrame(module);
   }
 }
@@ -169,20 +171,22 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
 void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
 {
-  if (get_tmr10ms() > reusableBuffer.hardwareAndSettings.moduleSettings.timeout) {
+  ModuleSettings * destination = moduleState[module].moduleSettings;
+
+  if (get_tmr10ms() > destination->retryTime) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TX_SETTINGS);
     uint8_t flag0 = 0;
-    if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_WRITE)
+    if (destination->state == PXX2_SETTINGS_WRITE)
       flag0 |= PXX2_TX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
-    if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_WRITE) {
-      uint8_t flag1 = reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol << 4;
-      if (reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna)
+    if (destination->state == PXX2_SETTINGS_WRITE) {
+      uint8_t flag1 = destination->rfProtocol << 4;
+      if (destination->externalAntenna)
         flag1 |= PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA;
       Pxx2Transport::addByte(flag1);
-      Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
+      Pxx2Transport::addByte(destination->txPower);
     }
-    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = get_tmr10ms() + 200/*next try in 2s*/;
+    destination->retryTime = get_tmr10ms() + 200/*next try in 2s*/;
   }
   else {
     setupChannelsFrame(module);
@@ -218,23 +222,31 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 
 void Pxx2Pulses::setupBindFrame(uint8_t module)
 {
-  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_WAIT) {
-    if (get_tmr10ms() > reusableBuffer.moduleSetup.pxx2.bindWaitTimeout) {
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
-      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
-      POPUP_INFORMATION(STR_BIND_OK);
+  BindInformation * destination = moduleState[module].bindInformation;
+
+  if (destination->step == BIND_WAIT) {
+    if (get_tmr10ms() > destination->timeout) {
+      moduleState[module].mode = MODULE_MODE_NORMAL;
+      destination->step = BIND_OK;
+      POPUP_INFORMATION(STR_BIND_OK); // TODO rather use the new callback
     }
     return;
   }
 
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
-  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
+  if (destination->step == BIND_INFO_REQUEST) {
+    Pxx2Transport::addByte(0x02);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
+    }
+  }
+  else if (destination->step == BIND_START) {
     Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
-      Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
+      Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverIndex); // RX_UID is the slot index (which is unique and never moved)
+    Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
@@ -250,18 +262,11 @@ void Pxx2Pulses::setupResetFrame(uint8_t module)
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RESET);
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverIndex);
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverFlags);
-  moduleSettings[module].mode = MODULE_MODE_NORMAL;
+  moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
 void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
-  if (moduleSettings[module].counter > 1000) {
-    moduleSettings[module].counter = 1002;
-    return;
-  }
-
-  moduleSettings[module].counter = 1002;
-
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
   Pxx2Transport::addByte(0x00);
   Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
@@ -271,16 +276,8 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
 void Pxx2Pulses::setupPowerMeter(uint8_t module)
 {
-  if (moduleSettings[module].counter > 1000) {
-    moduleSettings[module].counter = 1002;
-    return;
-  }
-
-  moduleSettings[module].counter = 1002;
-
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_POWER_METER);
   Pxx2Transport::addByte(0x00);
-
   Pxx2Transport::addWord(reusableBuffer.powerMeter.freq);
 }
 
@@ -294,7 +291,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 {
   initFrame();
 
-  switch (moduleSettings[module].mode) {
+  switch (moduleState[module].mode) {
     case MODULE_MODE_GET_HARDWARE_INFO:
       setupHardwareInfoFrame(module);
       break;
@@ -333,11 +330,9 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       break;
   }
 
-  if (moduleSettings[module].counter-- == 0) {
-    moduleSettings[module].counter = 1000;
+  if (moduleState[module].counter-- == 0) {
+    moduleState[module].counter = 2500;
   }
 
   endFrame();
 }
-
-template class PxxPulses<Pxx2Transport>;

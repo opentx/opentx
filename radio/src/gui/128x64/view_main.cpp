@@ -354,13 +354,11 @@ void menuMainView(event_t event)
       break;
 #endif
 
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
       killEvents(event);
       break;
 
-    CASE_EVT_ROTARY_LONG
     case EVT_KEY_GENERAL_MENU:
       pushMenu(menuRadioSetup);
       killEvents(event);
@@ -568,7 +566,7 @@ void menuMainView(event_t event)
 #endif
 
 #if defined(DSM2)
-  if (moduleSettings[0].mode == MODULE_MODE_BIND) {
+  if (moduleState[0].mode == MODULE_MODE_BIND) {
     // Issue 98
     lcdDrawText(15*FW, 0, "BIND", 0);
   }

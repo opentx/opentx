@@ -58,8 +58,8 @@ void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Versio
 void menuRadioModulesVersion(event_t event)
 {
   if (menuEvent) {
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
-    moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleState[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
     return;
   }
 
@@ -71,15 +71,11 @@ void menuRadioModulesVersion(event_t event)
     memclear(&reusableBuffer.hardwareAndSettings.modules, sizeof(reusableBuffer.hardwareAndSettings.modules));
 
     if (isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
-      reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
-      reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].maximum = PXX2_MAX_RECEIVERS_PER_MODULE - 1;
-      moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+      moduleState[INTERNAL_MODULE].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE], PXX2_HW_INFO_TX_ID, PXX2_MAX_RECEIVERS_PER_MODULE - 1);
     }
 
     if (isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
-      reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
-      reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].maximum = PXX2_MAX_RECEIVERS_PER_MODULE - 1;
-      moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+      moduleState[EXTERNAL_MODULE].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE], PXX2_HW_INFO_TX_ID, PXX2_MAX_RECEIVERS_PER_MODULE - 1);
     }
 
     reusableBuffer.hardwareAndSettings.updateTime = get_tmr10ms() + 1000 /* 10s*/;
@@ -112,8 +108,6 @@ void menuRadioModulesVersion(event_t event)
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Model");
       uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
-      if (modelId >= DIM(PXX2modulesModels))
-        modelId = 0;
       lcdDrawText(12 * FW, y, PXX2modulesModels[modelId]);
     }
     y += FH;
@@ -134,8 +128,6 @@ void menuRadioModulesVersion(event_t event)
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
           uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.modelID;
-          if (modelId >= DIM(PXX2receiversModels))
-            modelId = 0;
           lcdDrawText(12 * FW, y, PXX2receiversModels[modelId]);
         }
         y += FH;

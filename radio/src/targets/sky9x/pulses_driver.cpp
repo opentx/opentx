@@ -142,17 +142,6 @@ void disable_module_timer(uint32_t port)
   }
 }
 
-
-void disable_no_pulses(uint32_t port)
-{
-  if (port == EXTERNAL_MODULE) {
-    disable_ppm(EXTERNAL_MODULE);
-  }
-  else {
-    // TODO
-  }
-}
-
 void init_ppm(uint32_t port)
 {
   if (port == EXTERNAL_MODULE) {
@@ -236,21 +225,16 @@ void disable_pxx1_pulses(uint32_t port)
   }
 }
 
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us)
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted)
 {
-  if (port == EXTERNAL_MODULE) {
-    if (baudrate == 125000) {
-      // TODO init_main_ppm could take the period as parameter?
-      init_main_ppm(2500 * 2, 0);
-      init_ssc(125);
-    }
-    else {
-      init_main_ppm(3500 * 2, 0);
-      init_ssc(100);
-    }
-    }
+  if (baudrate == 125000) {
+    // TODO init_main_ppm could take the period as parameter?
+    init_main_ppm(2500 * 2, 0);
+    init_ssc(125);
+  }
   else {
-    // TODO
+    init_main_ppm(3500 * 2, 0);
+    init_ssc(100);
   }
 }
 
@@ -278,7 +262,7 @@ extern "C" void PWM_IRQHandler(void)
 
   if (reason & PWM_ISR1_CHID3) {
     // Use the current protocol, don't switch until set_up_pulses
-    switch (moduleSettings[EXTERNAL_MODULE].protocol) {
+    switch (moduleState[EXTERNAL_MODULE].protocol) {
       case PROTOCOL_CHANNELS_PXX1_PULSES:
         // Alternate periods of 6.5mS and 2.5 mS
         period = pwmptr->PWM_CH_NUM[3].PWM_CPDR;

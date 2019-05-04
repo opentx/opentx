@@ -78,7 +78,6 @@ enum CrossfireSensorIndexes {
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
-bool isCrossfireOutputBufferAvailable();
 
 #if SPORT_MAX_BAUDRATE < 400000
 const uint32_t CROSSFIRE_BAUDRATES[] = {
@@ -90,10 +89,10 @@ const uint8_t CROSSFIRE_FRAME_PERIODS[] = {
   16,
 };
 #define CROSSFIRE_BAUDRATE       CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
-#define CROSSFIRE_FRAME_PERIOD         CROSSFIRE_FRAME_PERIODS[g_eeGeneral.telemetryBaudrate]
+#define CROSSFIRE_FRAME_PERIOD   CROSSFIRE_FRAME_PERIODS[g_eeGeneral.telemetryBaudrate]
 #else
 #define CROSSFIRE_BAUDRATE       400000
-#define CROSSFIRE_FRAME_PERIOD         4 // 4ms
+#define CROSSFIRE_FRAME_PERIOD   4 // 4ms
 #endif
 
 

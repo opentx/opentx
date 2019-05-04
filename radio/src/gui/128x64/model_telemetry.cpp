@@ -240,21 +240,22 @@ void menuModelTelemetryFrsky(event_t event)
 
       case ITEM_TELEMETRY_RSSI_LABEL:
 #if defined(MULTIMODULE)
-        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE &&
-          g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
+        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FS_AFHDS2A)
           lcdDrawTextAlignedLeft(y, "RSNR");
         else
-#endif
+          lcdDrawTextAlignedLeft(y, "RSSI");
+#else
         lcdDrawTextAlignedLeft(y, "RSSI");
+#endif
         break;
 
       case ITEM_TELEMETRY_RSSI_SOURCE: {
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
         drawSource(TELEM_COL2, y, g_model.rssiSource ? MIXSRC_FIRST_TELEM + 3 * (g_model.rssiSource - 1) : 0, attr);
         if (g_model.rssiSource) {
-          TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource];
+          TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource - 1];
           lcdDrawText(lcdNextPos, y, " ", attr);
-          drawReceiverName(lcdNextPos, y, (sensor->instance >> 7) & 0x01, (sensor->instance >> 5) & 0x03, attr);
+          drawReceiverName(lcdNextPos, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, attr);
         }
         if (attr) {
           g_model.rssiSource = checkIncDec(event, g_model.rssiSource, 0, MAX_TELEMETRY_SENSORS, EE_MODEL | NO_INCDEC_MARKS, isRssiSensorAvailable);
