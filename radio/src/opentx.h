@@ -131,6 +131,12 @@
   #define CASE_PXX(x)
 #endif
 
+#if defined(PXX2)
+  #define CASE_PXX2(x) x,
+#else
+  #define CASE_PXX2(x)
+#endif
+
 #if defined(SDCARD)
   #define CASE_SDCARD(x) x,
 #else

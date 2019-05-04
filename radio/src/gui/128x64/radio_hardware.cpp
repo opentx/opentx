@@ -170,6 +170,30 @@ enum MenuRadioHardwareItems {
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #endif
 
+#if defined(STM32)
+  #define RTC_BATT_ROWS                  READONLY_ROW,
+#else
+  #define RTC_BATT_ROWS
+#endif
+
+#if defined(TX_CAPACITY_MEASUREMENT)
+  #define TX_CAPACITY_MEASUREMENT_ROWS   0,
+#else 
+  #define TX_CAPACITY_MEASUREMENT_ROWS
+#endif
+
+#if defined(PCBSKY9X)
+  #define TEMPERATURE_CALIB_ROWS         0,
+#else
+  #define TEMPERATURE_CALIB_ROWS
+#endif
+
+#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+  #define MAX_BAUD_ROWS                  0,
+#else
+  #define MAX_BAUD_ROWS
+#endif
+
 #define HW_SETTINGS_COLUMN1            30
 #define HW_SETTINGS_COLUMN2            (30 + 5*FW)
 
@@ -187,18 +211,15 @@ void menuRadioHardware(event_t event)
     LABEL(Switches),
       SWITCHES_ROWS,
     0 /* battery calib */,
-#if defined(STM32)
-    READONLY_ROW,
-#endif
-#if defined(TX_CAPACITY_MEASUREMENT)
-    0,
-#endif
-#if defined(PCBSKY9X)
-    0,
-#endif
-#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
-    0 /* max bauds */,
-#endif
+
+    RTC_BATT_ROWS
+
+    TX_CAPACITY_MEASUREMENT_ROWS
+
+    TEMPERATURE_CALIB_ROWS
+
+    MAX_BAUD_ROWS
+
     BLUETOOTH_ROWS
     0 /* jitter filter */,
     READONLY_ROW,
