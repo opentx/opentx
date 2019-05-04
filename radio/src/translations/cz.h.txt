@@ -830,6 +830,7 @@
 #define TR_CAT_NOT_EMPTY               "Kategorie není prázdná"
 #define TR_SDCARD_ERROR                "Chyba SD karty"
 #define TR_NO_SDCARD                   "Není SD karta"
+#define TR_WAITING_FOR_RX              "Waiting for RX..."
 #define TR_NO_TOOLS                    "Žádné nástroje k dispozici"
 #define TR_SDCARD_FULL                 "Plná SD karta"
 #define TR_INCOMPATIBLE                "Nekompatibilní"

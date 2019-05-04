@@ -1411,6 +1411,7 @@ void menuModelSetup(event_t event)
             killEvents(event); // we stopped BIND / SHARE, we don't want to re-open the menu
             event = 0;
           }
+          CLEAR_POPUP();
           s_editMode = 0;
         }
 
@@ -1425,7 +1426,7 @@ void menuModelSetup(event_t event)
               POPUP_MENU_START(onPXX2BindMenu);
             }
             else {
-              drawMessageBox("Waiting for RX...");
+              POPUP_WAIT(STR_WAITING_FOR_RX);
             }
           }
         }

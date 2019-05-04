@@ -673,6 +673,7 @@ extern const char STR_ANALOGS_BTN[];
 extern const char STR_CALIB_BTN[];
 
 extern const char STR_NO_TOOLS[];
+extern const char STR_WAITING_FOR_RX[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];

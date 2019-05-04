@@ -843,6 +843,7 @@
 #define TR_CAT_NOT_EMPTY       "Category is not empty"
 #define TR_SDCARD_ERROR        "SDCARD Erro"
 #define TR_NO_SDCARD           "Sem SDCARD"
+#define TR_WAITING_FOR_RX              "Waiting for RX..."
 #define TR_NO_TOOLS                    "No tools available"
 #define TR_SDCARD_FULL         "SD Card Full"
 #define TR_INCOMPATIBLE        "Incompativel"

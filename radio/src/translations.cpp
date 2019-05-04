@@ -475,6 +475,7 @@ const char STR_ANALOGS_BTN[]  = TR_ANALOGS_BTN;
 const char STR_CALIB_BTN[]  = TR_CALIB_BTN;
 
 const char STR_NO_TOOLS[]  = TR_NO_TOOLS;
+const char STR_WAITING_FOR_RX[]  = TR_WAITING_FOR_RX;
 
 #if defined(SDCARD)
 const char STR_BACKUP_MODEL[]  = TR_BACKUP_MODEL;
