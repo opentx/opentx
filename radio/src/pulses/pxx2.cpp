@@ -336,5 +336,3 @@ void Pxx2Pulses::setupFrame(uint8_t module)
 
   endFrame();
 }
-
-template class PxxPulses<Pxx2Transport>;

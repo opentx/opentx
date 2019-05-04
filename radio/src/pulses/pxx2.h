@@ -177,7 +177,7 @@ class Pxx2Transport: public DataBuffer<uint8_t, 64>, public Pxx2CrcMixin {
     }
 };
 
-class Pxx2Pulses: public PxxPulses<Pxx2Transport> {
+class Pxx2Pulses: public Pxx2Transport {
   public:
     void setupFrame(uint8_t module);
 

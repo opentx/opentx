@@ -121,10 +121,4 @@ class PwmPxxBitTransport: public PulsesBuffer<pulse_duration_t, 200> {
     }
 };
 
-template <class PxxTransport>
-class PxxPulses: public PxxTransport {
-  protected:
-    void addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels);
-};
-
 #endif
