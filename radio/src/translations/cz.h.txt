@@ -98,10 +98,10 @@
 #define TR_COUNTRYCODES                TR("US""JP""EU", "Amerika\0""Japonsko""Evropa\0 ")
 
 #define LEN_USBMODES                   TR("\007", "\011")
-#define TR_USBMODES                    TR("ZeptatS""Joyst\0 ""SDkarta""Serial\0", "Zeptat se""Joystick\0""Disk\0    ""Serial\0  ")
+#define TR_USBMODES                    TR("Zeptat\0""Joyst\0 ""SDkarta""Serial\0", "Zeptat se""Joystick\0""Úložiště\0""Serial\0  ")
 
 #define LEN_JACKMODES                  "\007"
-#define TR_JACKMODES                   "Popup\0 ""Audio\0 ""Trenér"
+#define TR_JACKMODES                   "Zeptat\0""Audio\0 ""Trenér"
 
 #if defined(PCBXLITES) || defined(PCBX3)
 #define LEN_MODULE_PROTOCOLS           "\014"
@@ -580,7 +580,7 @@
 #define TR_PROTO                       INDENT "Protokol"
 #define TR_PPMFRAME                    INDENT "PPM modulace"
 #define TR_REFRESHRATE                 TR(INDENT "Obnovit", INDENT "Obn. frekv.")
-#define STR_WARN_BATTVOLTAGE           TR(INDENT "Výstup je VBAT: ", INDENT "Varování: výstupní hodnota je VBAT: ")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Výstup VBAT: ", INDENT "Varování: výstupní hodnota VBAT: ")
 #define TR_MS                          "ms"
 #define TR_FREQUENCY                   INDENT "Frequence"
 #define TR_SWITCH                      "Spínač"
@@ -643,7 +643,7 @@
 #define TR_CONTRAST                    "Kontrast LCD"
 #define TR_ALARMS_LABEL                "Alarmy"
 #define TR_BATTERY_RANGE               TR("Ukazatel bat.", "Ukazatel baterie")
-#define TR_BATTERYWARNING              INDENT"Vybitá baterie"
+#define TR_BATTERYWARNING              INDENT "Vybitá bat."
 #define TR_INACTIVITYALARM             TR(INDENT "Nečinnost", INDENT "Nečinnost rádia")
 #define TR_MEMORYWARNING               INDENT"Plná pamět'"
 #define TR_ALARMWARNING                TR3(INDENT "Vypnutý zvuk", INDENT "Upozornit na vypnutý zvuk", INDENT "Upozornit na vyp. zvuk")
@@ -771,7 +771,7 @@
 #define TR_MONITOR_MIXER_DESC          "Mixy"
 #define TR_RECEIVER_NUM                TR(INDENT "RX číslo", INDENT "Číslo přijímače")
 #define TR_RECEIVER                    "Přijímač"
-#define TR_MULTI_RFTUNE                TR(INDENT "Ladění freq", INDENT "Jemné ladění freq. RF")
+#define TR_MULTI_RFTUNE                TR(INDENT "Ladění frek", INDENT "Jemné ladění frek. RF")
 #define TR_MULTI_TELEMETRY             "Telemetrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Freq. videa", INDENT "Frekvence videa")
 #define TR_MULTI_RFPOWER               INDENT "Výkon RF"
@@ -811,7 +811,7 @@
 #define TR_POWEROFF                    "\027Vypínám..."
 #define TR_SHUTDOWN                    "Vypínání.."
 #define TR_SAVEMODEL                   "Ukládám nastavení modelu"
-#define TR_BATT_CALIB                  "Kalib. baterie"
+#define TR_BATT_CALIB                  "Kalib. bat."
 #define TR_CURRENT_CALIB               " +=\006Proud"
 #define TR_VOLTAGE                     INDENT"Napětí"
 #define TR_CURRENT                     INDENT"Proud"
@@ -830,7 +830,7 @@
 #define TR_CAT_NOT_EMPTY               "Kategorie není prázdná"
 #define TR_SDCARD_ERROR                "Chyba SD karty"
 #define TR_NO_SDCARD                   "Není SD karta"
-#define TR_WAITING_FOR_RX              "Waiting for RX..."
+#define TR_WAITING_FOR_RX              "čekám na RX..."
 #define TR_NO_TOOLS                    "Žádné nástroje k dispozici"
 #define TR_SDCARD_FULL                 "Plná SD karta"
 #define TR_INCOMPATIBLE                "Nekompatibilní"
@@ -987,7 +987,7 @@
 #define TR_BUZZER                      INDENT"Pípák"
 #define TR_BYTES                       "[B]"
 #define TR_MODULE_BIND                 BUTTON(TR("Bnd", "Bind"))
-#define TR_POWERMETER_ATTN_NEEDED      "Nutno použít tlumící člen"
+#define TR_POWERMETER_ATTN_NEEDED      "Útlumový člen nutný!"
 #define TR_PXX2_SELECT_RX              "Vyber RX..."
 #define TR_PXX2_DEFAULT                "<výchozí>"
 #define TR_BT_SELECT_DEVICE            "Vyberte zařízení..."
@@ -1010,7 +1010,7 @@
 #define TR_KEYS_BTN                    BUTTON(TR("SW","Přepínače"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogy"))
 #define TR_CALIB_BTN                   BUTTON("Kalibrace")
-#define TR_SET                         BUTTON("Volby")
+#define TR_SET                         BUTTON("Nast")
 #define TR_TRAINER                     "Trenér"
 #define TR_ANTENNAPROBLEM              CENTER "Problém s TX anténou!"
 #define TR_MODELIDUSED                 TR("ID již použito","ID modelu je již použito")
@@ -1067,7 +1067,7 @@
 #define STR_FACTORYRESET               "Factory reset"
 #else
 #define STR_EEBACKUP                   TR("Záloha", "Zálohuje EEPROM")
-#define STR_FACTORYRESET               TR("Fact.reset", "Factory reset")
+#define STR_FACTORYRESET               TR("Tovární reset", "Tovární reset")
 #endif
 #define TR_CONFIRMRESET                "Smazat modely a nastavení?"
 #define TR_TOO_MANY_LUA_SCRIPTS        "Příliš mnoho skriptů!"
@@ -1190,7 +1190,7 @@
 #define TR_FORMULA                     "Operace"
 #define TR_CELLINDEX                   "Článek"
 #define TR_LOGS                        "Logovat"
-#define TR_OPTIONS                     "Volby"
+#define TR_OPTIONS                     "Možnosti"
 
 #define TR_ALTSENSOR                   "Senzor výšky"
 #define TR_CELLSENSOR                  "Senzor článků"
