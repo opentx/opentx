@@ -590,7 +590,7 @@ PACK(struct ModelData {
   NOBACKUP(VarioData varioData);
   NOBACKUP(uint8_t rssiSource);
 
-  TOPBAR_DATA;
+  TOPBAR_DATA
 
   NOBACKUP(RssiAlarmData rssiAlarms);
 
@@ -600,7 +600,7 @@ PACK(struct ModelData {
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 
-  SCRIPT_DATA;
+  SCRIPT_DATA
 
   NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
   NOBACKUP(uint8_t potsWarnEnabled);
