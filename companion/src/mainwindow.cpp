@@ -341,7 +341,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
   QString version = seekCodeString(qba, "VERSION");
   if (version.isNull())
-    return onUpdatesError(tr("Companion update check failed, new version informaion not found."));
+    return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
   int webVersion = version2index(version);
 
@@ -863,16 +863,8 @@ void MainWindow::sdsync()
 
 void MainWindow::changelog()
 {
-  Firmware * firmware = getCurrentFirmware();
-  QString url = firmware->getReleaseNotesUrl();
-  if (url.isEmpty()) {
-    QMessageBox::information(this, tr("Release notes"), tr("Cannot retrieve release notes from the server."));
-  }
-  else {
-    ReleaseNotesFirmwareDialog * dialog = new ReleaseNotesFirmwareDialog(this, url);
-    dialog->exec();
-    dialog->deleteLater();
-  }
+  QString link = "http://www.open-tx.org";
+  QDesktopServices::openUrl(QUrl(link));
 }
 
 void MainWindow::customizeSplash()
@@ -1019,7 +1011,7 @@ void MainWindow::about()
   aboutStr.append("<br/><br/>");
   aboutStr.append(QString("Version %1, %2").arg(VERSION).arg(__DATE__));
   aboutStr.append("<br/><br/>");
-  aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2017<br/>");
+  aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2019<br/>");
   QMessageBox msgBox(this);
   msgBox.setWindowIcon(CompanionIcon("information.png"));
   msgBox.setWindowTitle(tr("About Companion"));

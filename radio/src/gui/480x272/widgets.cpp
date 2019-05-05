@@ -33,12 +33,12 @@ void drawColumnHeader(const char * const * headers, const char * const * descrip
   }
 }
 
-const uint8_t __alpha_button_on[] {
+static const uint8_t __alpha_button_on[] __ALIGNED(4) = {
 #include "alpha_button_on.lbm"
 };
 Bitmap ALPHA_BUTTON_ON(BMP_ARGB4444, (const uint16_t*)__alpha_button_on);
 
-const uint8_t __alpha_button_off[] {
+static const uint8_t __alpha_button_off[] __ALIGNED(4) = {
 #include "alpha_button_off.lbm"
 };
 Bitmap ALPHA_BUTTON_OFF(BMP_ARGB4444, (const uint16_t*)__alpha_button_off);
@@ -108,12 +108,12 @@ void drawHorizontalScrollbar(coord_t x, coord_t y, coord_t w, uint16_t offset, u
   }
 }
 
-void drawProgressBar(const char * label, int num, int den)
+void drawProgressScreen(const char * title, const char * message, int num, int den)
 {
   lcdClear();
   lcdSetColor(WHITE);
-  if (label) {
-    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, label, CUSTOM_COLOR);
+  if (message) {
+    lcdDrawText(MENUS_MARGIN_LEFT, LCD_H-42, message, CUSTOM_COLOR);
   }
   lcdDrawRect(MENUS_MARGIN_LEFT, LCD_H-22, LCD_W-2*MENUS_MARGIN_LEFT, 15, 1, SOLID, CUSTOM_COLOR);
   lcdSetColor(RED);

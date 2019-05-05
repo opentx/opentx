@@ -1450,3 +1450,67 @@ Edmond Dufresne
 Jaroslav Gazik
 Philippe Desrichard
 Vincent Heron
+Marcel Schäfer
+Stefano Pascucci
+Frédéric Bourgois
+Stefan Hufnagl
+Jean Philippe Bonacci
+Jack Mitchell
+Santiago Iglesias Garcia
+Steve Kurywchak
+Tore Skjefstad
+Sergio Digiandco di Molino
+Xavier Delepine
+Miles Shearman
+Bernard Teyssier
+Entel Consulting BVBA
+Stuart Olson
+Maximilian Wechselberger
+Kenneth Crump
+Ken Elder
+Darko Perković
+Martin Krueger
+Jack Lopes
+Huguette Viale
+Didier Christien
+Pascal Roublot
+Arnaud Sourisse
+Aldo Midali
+Sidney Gates
+Serhiy Semenenko 
+Miguel Esquer Ramiro
+Stefan Grunenberg
+Ferenc Kunkli
+Stefano Boggia
+Lee Bennett
+Morgantech
+Marek Přikryl
+Peter Scott
+Ernst Camenzind
+Steve Robbins
+Jean Noel Berlan
+Walter Szempruch
+Petr Kysela
+Gerhard Zdzuj
+Joseph S Robinson
+Zdenek Trojanek
+Fred Page
+Burt Pickard-Richardson
+Eric Destrebecq
+Derek Quigley
+Lionel Lunan
+Paul Dittman
+Justin Delaire
+Damir Pooshs
+Alvin Burke
+Pete Rathbun
+Christophe Molliex
+Ulf Hedlund
+Damian Niegowski
+Michae St Cyr
+Ivan Pik
+Rothermann, Kurt
+Antinoro Ferdinando
+Sam Day
+Roman Rychtarik
+Pierre Malriq

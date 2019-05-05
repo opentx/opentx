@@ -1,7 +1,9 @@
 option(DISK_CACHE "Enable SD card disk cache" YES)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" YES)
-set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+option(PXX1 "PXX1 protocol support" ON)
+option(PXX2 "PXX2 protocol support" ON)
 
+set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
 set(HSE_VALUE 12000000)
 set(SDCARD YES)
@@ -14,7 +16,7 @@ set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RAMBACKUP YES)
 set(LUA YES)
 set(PPM_LIMITS_SYMETRICAL YES)
-SET(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
+set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 
 # for size report script
 set(CPU_TYPE_FULL STM32F429xI)
@@ -34,7 +36,6 @@ if (PCB STREQUAL X10)
     ../common/arm/stm32/adc_driver.cpp
     ../common/arm/stm32/sticks_pwm_driver.cpp
     )
-
   set(BITMAPS_TARGET x10_bitmaps)
   set(FONTS_TARGET x10_fonts)
   set(LCD_DRIVER lcd_driver.cpp)
@@ -89,6 +90,9 @@ set(GUI_SRC
   bitmaps.cpp
   radio_sdmanager.cpp
   radio_hardware.cpp
+  radio_power_meter.cpp
+  radio_spectrum_analyser.cpp
+  radio_tools.cpp
   model_inputs.cpp
   model_mixes.cpp
   model_curves.cpp
@@ -128,6 +132,7 @@ set(TARGET_SRC
   trainer_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/bluetooth_driver.cpp
+  ../common/arm/stm32/rotary_encoder_driver.cpp
   )
 
 set(FIRMWARE_TARGET_SRC
@@ -146,6 +151,7 @@ add_definitions(-DBLUETOOTH)
 set(SRC
   ${SRC}
   bluetooth.cpp
+  io/frsky_device_firmware_update.cpp
   )
 
 set(STM32LIB_SRC

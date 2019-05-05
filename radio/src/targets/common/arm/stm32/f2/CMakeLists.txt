@@ -11,8 +11,10 @@ set(STM32LIB_SRC
   CMSIS/Device/ST/STM32F2xx/Source/Templates/gcc_ride7/startup_stm32f2xx.s
   STM32F2xx_StdPeriph_Driver/src/misc.c
   STM32F2xx_StdPeriph_Driver/src/stm32f2xx_gpio.c
+  STM32F2xx_StdPeriph_Driver/src/stm32f2xx_exti.c
   STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dbgmcu.c
   STM32F2xx_StdPeriph_Driver/src/stm32f2xx_rcc.c
+  STM32F2xx_StdPeriph_Driver/src/stm32f2xx_syscfg.c
   STM32F2xx_StdPeriph_Driver/src/stm32f2xx_spi.c
   STM32F2xx_StdPeriph_Driver/src/stm32f2xx_i2c.c
   STM32F2xx_StdPeriph_Driver/src/stm32f2xx_dma.c

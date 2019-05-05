@@ -26,9 +26,7 @@
   #include "frsky.h"
 #endif
 
-#if defined(CROSSFIRE)
-  #include "crossfire.h"
-#endif
+#include "crossfire.h"
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "flysky_ibus.h"
@@ -36,12 +34,11 @@
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
+extern uint8_t R9ModuleStreaming; // >0 (true) == R9 module is connected and sending data 0 = no data detected for some time
 
 #if defined(WS_HOW_HIGH)
 extern uint8_t wshhStreaming;
 #endif
-
-extern uint8_t link_counter;
 
 enum TelemetryStates {
   TELEMETRY_INIT,
@@ -99,7 +96,6 @@ void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();
 int lastUsedTelemetryIndex();
 
-int32_t getTelemetryValue(uint8_t index, uint8_t & prec);
 int32_t convertTelemetryValue(int32_t value, uint8_t unit, uint8_t prec, uint8_t destUnit, uint8_t destPrec);
 
 void frskySportSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
@@ -109,38 +105,38 @@ void frskyDSetDefault(int index, uint16_t id);
 #define IS_SPEED_UNIT(unit)            ((unit) >= UNIT_KTS && (unit) <= UNIT_MPH)
 
 extern uint8_t telemetryProtocol;
-#define IS_FRSKY_D_PROTOCOL()          (telemetryProtocol == PROTOCOL_FRSKY_D)
+
 #if defined (MULTIMODULE)
 #define IS_D16_MULTI()                 ((g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol(false) == MM_RF_PROTO_FRSKY) && (g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16 || g_model.moduleData[EXTERNAL_MODULE].subType == MM_RF_FRSKY_SUBTYPE_D16_8CH))
-#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_MULTIMODULE && IS_D16_MULTI()))
+#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT || (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && IS_D16_MULTI()))
 #else
-#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_FRSKY_SPORT)
+#define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT)
 #endif
-#define IS_SPEKTRUM_PROTOCOL()         (telemetryProtocol == PROTOCOL_SPEKTRUM)
+#define IS_SPEKTRUM_PROTOCOL()         (telemetryProtocol == PROTOCOL_TELEMETRY_SPEKTRUM)
 
 inline uint8_t modelTelemetryProtocol()
 {
 #if defined(CROSSFIRE)
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
-    return PROTOCOL_PULSES_CROSSFIRE;
+    return PROTOCOL_TELEMETRY_CROSSFIRE;
   }
 #endif
-     
+
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) {
     return g_model.telemetryProtocol;
   }
-  
+
 #if defined(MULTIMODULE)
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
-    return PROTOCOL_MULTIMODULE;
+    return PROTOCOL_TELEMETRY_MULTIMODULE;
   }
 #endif
 
   // default choice
-  return PROTOCOL_FRSKY_SPORT;
+  return PROTOCOL_TELEMETRY_FRSKY_SPORT;
 }
 
-  #include "telemetry_sensors.h"
+#include "telemetry_sensors.h"
 
 #if defined(LOG_TELEMETRY) && !defined(SIMU)
 void logTelemetryWriteStart();
@@ -152,20 +148,89 @@ void logTelemetryWriteByte(uint8_t data);
 #define LOG_TELEMETRY_WRITE_BYTE(data)
 #endif
 
-#define TELEMETRY_OUTPUT_FIFO_SIZE 16
-extern uint8_t outputTelemetryBuffer[TELEMETRY_OUTPUT_FIFO_SIZE] __DMA;
-extern uint8_t outputTelemetryBufferSize;
-extern uint8_t outputTelemetryBufferTrigger;
+#define TELEMETRY_ENDPOINT_NONE    0xFF
+#define TELEMETRY_ENDPOINT_SPORT   0x07
 
-inline void telemetryOutputPushByte(uint8_t byte)
-{
-  outputTelemetryBuffer[outputTelemetryBufferSize++] = byte;
-}
+class OutputTelemetryBuffer {
+  public:
+    OutputTelemetryBuffer()
+    {
+      reset();
+    }
 
-inline void telemetryOutputSetTrigger(uint8_t byte)
-{
-  outputTelemetryBufferTrigger = byte;
-}
+    void setDestination(uint8_t value)
+    {
+      destination = value;
+      timeout = 200; /* 2s */
+    }
+
+    bool isModuleDestination(uint8_t module)
+    {
+      return destination != TELEMETRY_ENDPOINT_NONE && destination != TELEMETRY_ENDPOINT_SPORT && (destination >> 2) == module;
+    }
+
+    void per10ms()
+    {
+      if (timeout > 0) {
+        if (--timeout == 0)
+          reset();
+      }
+    }
+
+    void reset()
+    {
+      destination = TELEMETRY_ENDPOINT_NONE;
+      size = 0;
+      timeout = 0;
+    }
+
+    bool isAvailable()
+    {
+      return destination == TELEMETRY_ENDPOINT_NONE;
+    }
+
+    void pushByte(uint8_t byte)
+    {
+      data[size++] = byte;
+    }
+
+    void pushByteWithBytestuffing(uint8_t byte)
+    {
+      if (byte == 0x7E || byte == 0x7D) {
+        pushByte(0x7D);
+        pushByte(0x20 ^ byte);
+      }
+      else {
+        pushByte(byte);
+      }
+    }
+
+    void pushSportPacketWithBytestuffing(SportTelemetryPacket & packet)
+    {
+      size = 0;
+      uint16_t crc = 0;
+      sport.physicalId = packet.physicalId; // no bytestuffing, no CRC
+      for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
+        uint8_t byte = packet.raw[i];
+        pushByteWithBytestuffing(byte);
+        crc += byte; // 0-1FF
+        crc += crc >> 8; // 0-100
+        crc &= 0x00ff;
+      }
+      pushByte(0xFF - crc);
+    }
+
+  public:
+    union {
+      SportTelemetryPacket sport;
+      uint8_t data[16];
+    };
+    uint8_t size;
+    uint8_t timeout;
+    uint8_t destination;
+};
+
+extern OutputTelemetryBuffer outputTelemetryBuffer __DMA;
 
 #if defined(LUA)
 #define LUA_TELEMETRY_INPUT_FIFO_SIZE  256
@@ -178,5 +243,6 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #define IS_TELEMETRY_INTERNAL_MODULE() (false)
 #endif
 
-#endif // _TELEMETRY_H_
+void processPXX2Frame(uint8_t module, uint8_t *frame);
 
+#endif // _TELEMETRY_H_

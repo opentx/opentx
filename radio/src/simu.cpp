@@ -274,9 +274,6 @@ void Open9xSim::updateKeysAndSwitches(bool start)
     KEY_Left,      KEY_LEFT,
     KEY_Up,        KEY_UP,
     KEY_Down,      KEY_DOWN,
-#if defined(ROTARY_ENCODER_NAVIGATION)
-    KEY_F,         BTN_REa,
-#endif
 #endif
   };
 

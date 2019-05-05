@@ -292,7 +292,7 @@ uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
   for (int i=0; len==0 || i<len; ++i) {
-    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    unsigned char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
     if (!c) {
       break;
     }
@@ -327,7 +327,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
         break;
 #if !defined(BOOT)
       case ZCHAR:
-        c = idx2char(*s);
+        c = zchar2char(*s);
         break;
 #endif
       default:
@@ -398,6 +398,12 @@ void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags)
   lcdDrawSizedText(x, y, s, 255, flags);
 }
 
+void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags)
+{
+  coord_t x = (LCD_W - getTextWidth(s, flags)) / 2;
+  lcdDrawText(x, y, s, flags);
+}
+
 void lcdDrawText(coord_t x, coord_t y, const char * s)
 {
   lcdDrawText(x, y, s, 0);
@@ -427,6 +433,19 @@ void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags flags)
     val >>= 4;
   }
 }
+
+void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags)
+{
+  x += FWNUM*2;
+  for (int i=0; i<2; i++) {
+    x -= FWNUM;
+    char c = val & 0xf;
+    c = c>9 ? c+'A'-10 : c+'0';
+    lcdDrawChar(x, y, c, flags|(c>='A' ? CONDENSED : 0));
+    val >>= 4;
+  }
+}
+
 
 void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val)
 {
@@ -557,6 +576,24 @@ void lcdDrawVerticalLine(coord_t x, scoord_t y, scoord_t h, uint8_t pat, LcdFlag
   }
 }
 
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags)
+{
+  if (isModulePXX2(moduleIdx)) {
+    if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] != '\0')
+      lcdDrawSizedText(x, y, g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], effectiveLen(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME), flags);
+    else
+      lcdDrawText(x, y, "---", flags);
+  }
+#if defined(HARDWARE_INTERNAL_MODULE)
+  else if (moduleIdx == INTERNAL_MODULE) {
+    lcdDrawText(x, y, "Internal", flags);
+  }
+#endif
+  else {
+    lcdDrawText(x, y, "External", flags);
+  }
+}
+
 void lcdDrawSolidVerticalLine(coord_t x, scoord_t y, scoord_t h, LcdFlags att)
 {
   lcdDrawVerticalLine(x, y, h, SOLID, att);
@@ -623,21 +660,24 @@ void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att, LcdFlags att2
   qr = div((int)tme, 60);
 
   char separator = ':';
-  if (tme >= 3600) {
-    qr = div(qr.quot, 60);
-    separator = CHR_HOUR;
-  }
-  if(qr.quot < 100) {
-    lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
-  }
-  else {
-    lcdDrawNumber(x, y, qr.quot, att|LEFT);
+  if (att & TIMEHOUR) {
+    div_t qr2 = div(qr.quot, 60);
+    if (qr2.quot < 100) {
+      lcdDrawNumber(x, y, qr2.quot, att|LEADING0|LEFT, 2);
+    }
+    else {
+      lcdDrawNumber(x, y, qr2.quot, att|LEFT);
+    }
+    lcdDrawChar(lcdNextPos, y, separator, att);
+    qr.quot = qr2.rem;
+    x = lcdNextPos;
   }
   if (FONTSIZE(att) == MIDSIZE) {
     lcdLastRightPos--;
   }
   if (separator == CHR_HOUR)
     att &= ~DBLSIZE;
+  lcdDrawNumber(x, y, qr.quot, att|LEADING0|LEFT, 2);
 #if defined(RTCLOCK)
   if (att & TIMEBLINK)
     lcdDrawChar(lcdLastRightPos, y, separator, BLINK);
@@ -818,22 +858,6 @@ void drawShortTrimMode(coord_t x, coord_t y, uint8_t fm, uint8_t idx, LcdFlags a
     lcdDrawChar(x, y, '0'+p, att);
   }
 }
-
-#if ROTARY_ENCODERS > 0
-void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att)
-{
-  int16_t v = flightModeAddress(phase)->rotaryEncoders[idx];
-
-  if (v > ROTARY_ENCODER_MAX) {
-    uint8_t p = v - ROTARY_ENCODER_MAX - 1;
-    if (p >= phase) p++;
-    lcdDrawChar(x, y, '0'+p, att);
-  }
-  else {
-    lcdDrawChar(x, y, 'a'+idx, att);
-  }
-}
-#endif
 
 void drawValueWithUnit(coord_t x, coord_t y, lcdint_t val, uint8_t unit, LcdFlags att)
 {

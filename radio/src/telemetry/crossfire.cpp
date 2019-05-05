@@ -174,11 +174,6 @@ void processCrossfireTelemetryFrame()
   }
 }
 
-bool isCrossfireOutputBufferAvailable()
-{
-  return outputTelemetryBufferSize == 0;
-}
-
 void processCrossfireTelemetryData(uint8_t data)
 {
   if (telemetryRxBufferCount == 0 && data != RADIO_ADDRESS) {

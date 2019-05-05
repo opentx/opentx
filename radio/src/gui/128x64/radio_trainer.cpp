@@ -28,7 +28,7 @@ void menuRadioTrainer(event_t event)
   MENU(STR_MENUTRAINER, menuTabGeneral, MENU_RADIO_TRAINER, (slave ? HEADER_LINE : HEADER_LINE+6), { HEADER_LINE_COLUMNS 2, 2, 2, 2, 0/*, 0*/ });
 
   if (slave) {
-    lcdDrawText(7*FW, 4*FH, STR_SLAVE);
+    lcdDrawCenteredText(LCD_H/2, STR_SLAVE);
   }
   else {
     uint8_t attr;

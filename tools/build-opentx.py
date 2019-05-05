@@ -25,7 +25,7 @@ def main():
     print ("""<!DOCTYPE html>
     <html>
     <body>
-    <h1>OpenTX 2.2 Companion build...</h1>
+    <h1>OpenTX 2.3 Companion build...</h1>
     """)
 
     form = cgi.FieldStorage()

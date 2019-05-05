@@ -149,7 +149,7 @@ void menuStatisticsDebug(event_t event)
 #if defined(WATCHDOG_TEST)
     case EVT_KEY_LONG(KEY_MENU):
       {
-        POPUP_CONFIRMATION("Test the watchdog?");
+        POPUP_CONFIRMATION("Test the watchdog?", nullptr);
         const char * w = "The radio will reset!";
         SET_WARNING_INFO(w, strlen(w), 0);
       }

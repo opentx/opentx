@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -23,6 +23,9 @@
 const MenuHandlerFunc menuTabGeneral[] = {
   menuRadioSetup,
   menuRadioSdManager,
+#if defined(PXX2)
+  menuRadioTools,
+#endif
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,

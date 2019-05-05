@@ -85,7 +85,11 @@ System frequency (Hz).
 /*!< 
 systick frequency (Hz).	                         
 */
+#if defined(STM32)
+#define CFG_SYSTICK_FREQ        (1000)
+#else
 #define CFG_SYSTICK_FREQ        (500)
+#endif
 
 /*!< 
 max systerm api call num in ISR.	                         

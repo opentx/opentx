@@ -21,8 +21,8 @@
 #ifndef _BOARD_HORUS_H_
 #define _BOARD_HORUS_H_
 
-#include "stddef.h"
-#include "stdbool.h"
+#include "../definitions.h"
+#include "cpu_id.h"
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -37,7 +37,9 @@ extern "C" {
 
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"
@@ -97,12 +99,20 @@ extern "C" {
 
 extern uint16_t sessionTimer;
 
-#define SLAVE_MODE()                   (g_model.trainerMode == TRAINER_MODE_SLAVE)
+#define SLAVE_MODE()                   (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
 #if defined(PCBX10)
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
+#endif
+
+#if defined(PCBX10)
+  #define NUM_SLIDERS                  2
+  #define NUM_PWMSTICKS                4
+#else
+  #define NUM_SLIDERS                  4
+  #define NUM_PWMSTICKS                0
 #endif
 
 // Board driver
@@ -131,9 +141,15 @@ void delay_ms(uint32_t ms);
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
 
-// CPU Unique ID
-#define LEN_CPU_UID                    (3*8+2)
-void getCPUUniqueID(char * s);
+// Hardware options
+PACK(typedef struct {
+#if NUM_PWMSTICKS > 0
+    uint8_t sticksPwmDisabled:1;
+#endif
+    uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+
+extern HardwareOptions hardwareOptions;
 
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
@@ -180,23 +196,53 @@ void SDRAM_Init(void);
 
 // Pulses driver
 #define INTERNAL_MODULE_ON()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
-#define INTERNAL_MODULE_OFF()          GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+
+#if defined(INTMODULE_USART)
+  #define INTERNAL_MODULE_OFF()        intmoduleStop()
+#else
+  #define INTERNAL_MODULE_OFF()        GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
+#endif
+
 #define EXTERNAL_MODULE_ON()           GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define EXTERNAL_MODULE_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
 #define IS_INTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN) == Bit_SET)
 #define IS_EXTERNAL_MODULE_ON()        (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-#define IS_UART_MODULE(port)           (port == INTERNAL_MODULE)
 
-void init_no_pulses(uint32_t port);
-void disable_no_pulses(uint32_t port);
-void init_ppm(uint32_t module_index);
-void disable_ppm(uint32_t module_index);
-void init_pxx(uint32_t module_index);
-void disable_pxx(uint32_t module_index);
-void init_serial(uint32_t module_index, uint32_t baudrate, uint32_t period_half_us);
-void disable_serial(uint32_t module_index);
-void init_crossfire(uint32_t module_index);
-void disable_crossfire(uint32_t module_index);
+#if !defined(PXX2)
+  #define IS_PXX2_INTERNAL_ENABLED()            (false)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#elif !defined(PXX1)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (false)
+#else
+  // TODO #define PXX2_PROBE
+  // TODO #define IS_PXX2_INTERNAL_ENABLED()            (hardwareOptions.pxx2Enabled)
+  #define IS_PXX2_INTERNAL_ENABLED()            (true)
+  #define IS_PXX1_INTERNAL_ENABLED()            (true)
+#endif
+
+void init_ppm(uint8_t module);
+void disable_ppm(uint8_t module);
+void init_pxx1_pulses(uint8_t module);
+void init_pxx1_serial(uint8_t module);
+void disable_pxx1_pulses(uint8_t module);
+void disable_pxx1_serial(uint8_t module);
+void init_pxx2(uint8_t module);
+void disable_pxx2(uint8_t module);
+void disable_serial(uint8_t module);
+
+void intmoduleStop();
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmodulePxxStart();
+void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
+void intmoduleSendNextFrame();
+
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleSendNextFrame();
+void extmoduleStop();
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -280,6 +326,7 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
+  NUM_SWITCHES_POSITIONS
 };
 void keysInit(void);
 uint8_t keyState(uint8_t index);
@@ -299,7 +346,8 @@ uint32_t readTrims(void);
 
 // Rotary encoder driver
 #define ROTARY_ENCODER_NAVIGATION
-void checkRotaryEncoder(void);
+void rotaryEncoderInit(void);
+void rotaryEncoderCheck(void);
 
 // WDT driver
 #define WDTO_500MS                              500
@@ -334,13 +382,6 @@ void watchdogInit(unsigned int duration);
 // ADC driver
 #define NUM_POTS                       3
 #define NUM_XPOTS                      NUM_POTS
-#if defined(PCBX10)
-  #define NUM_SLIDERS                  2
-  #define NUM_PWMSTICKS                4
-#else
-  #define NUM_SLIDERS                  4
-  #define NUM_PWMSTICKS                0
-#endif
 enum Analogs {
   STICK1,
   STICK2,
@@ -365,9 +406,10 @@ enum Analogs {
 #endif
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
-  MOUSE1,
+  MOUSE1, // TODO why after voltage?
   MOUSE2,
-  NUM_ANALOGS
+  NUM_ANALOGS,
+  TX_RTC = NUM_ANALOGS
 };
 
 enum CalibratedAnalogs {
@@ -394,9 +436,10 @@ enum CalibratedAnalogs {
 
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   ((x)>=SLIDER_FIRST && (x)<=SLIDER_LAST)
-extern uint16_t adcValues[NUM_ANALOGS];
+extern uint16_t adcValues[NUM_ANALOGS + 1/*RTC*/];
 void adcInit(void);
 void adcRead(void);
+uint16_t getRTCBattVoltage();
 uint16_t getAnalogValue(uint8_t index);
 #define NUM_MOUSE_ANALOGS              2
 #if defined(PCBX10)
@@ -406,11 +449,12 @@ uint16_t getAnalogValue(uint8_t index);
 #endif
 
 #if NUM_PWMSTICKS > 0
-extern bool sticks_pwm_disabled;
-#define STICKS_PWM_ENABLED()          (sticks_pwm_disabled == false)
+#define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
 void sticksPwmInit(void);
 void sticksPwmRead(uint16_t * values);
 extern volatile uint32_t pwm_interrupt_count;
+#else
+#define STICKS_PWM_ENABLED()          (false)
 #endif
 
 // Battery driver
@@ -526,7 +570,7 @@ int32_t getVolume(void);
 #define TELEMETRY_FIFO_SIZE            512
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 void telemetryPortSetDirectionOutput(void);
-void sportSendBuffer(uint8_t * buffer, uint32_t count);
+void sportSendBuffer(const uint8_t * buffer, uint32_t count);
 uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
@@ -568,12 +612,15 @@ void serial2Stop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
+#define BT_TX_FIFO_SIZE    64
+#define BT_RX_FIFO_SIZE    128
+#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
-void bluetoothInit(uint32_t baudrate);
+void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
+void bluetoothDisable(void);
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
@@ -584,6 +631,5 @@ void checkTrainerSettings(void);
 extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 #endif
-
 
 #endif // _BOARD_HORUS_H_

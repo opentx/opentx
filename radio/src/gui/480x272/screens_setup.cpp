@@ -53,7 +53,7 @@ void onZoneOptionFileSelectionMenu(const char * result)
       POPUP_WARNING(STR_NO_BITMAPS_ON_SD);
     }
   }
-  else {
+  else if (result != STR_EXIT) {
     fileSelectionDone = true;
     memcpy(fileSelection, result, sizeof(fileSelection));
   }

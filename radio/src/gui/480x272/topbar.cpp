@@ -98,8 +98,8 @@ void drawTopBar()
   // lcdDrawSolidVerticalLine(batt_icon_x+FW+13, BAR_Y+2, 5);
 
   // Rx battery
-  if (g_model.frsky.voltsSource) { // TODO should not be in frsky struct
-    TelemetryItem & item = telemetryItems[g_model.frsky.voltsSource-1];
+  if (g_model.voltsSource) {
+    TelemetryItem & item = telemetryItems[g_model.voltsSource-1];
     if (item.isAvailable()) {
       int32_t value = item.value;
       TelemetrySensor & sensor = g_model.telemetrySensors[g_model.frsky.altitudeSource-1];

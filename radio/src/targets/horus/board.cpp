@@ -29,6 +29,8 @@ extern "C" {
 }
 #endif
 
+HardwareOptions hardwareOptions;
+
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555;      // Unlock registers
@@ -84,10 +86,6 @@ void interrupt1ms()
     per10ms();
     DEBUG_TIMER_STOP(debugTimerPer10ms);
   }
-
-  DEBUG_TIMER_START(debugTimerRotEnc);
-  checkRotaryEncoder();
-  DEBUG_TIMER_STOP(debugTimerRotEnc);
 }
 
 extern "C" void INTERRUPT_xMS_IRQHandler()
@@ -166,7 +164,8 @@ void boardInit()
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);
 
-  RCC_APB2PeriphClockCmd(LCD_RCC_APB2Periph |
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG |
+                         LCD_RCC_APB2Periph |
                          ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
                          INTMODULE_RCC_APB2Periph |
@@ -177,9 +176,6 @@ void boardInit()
 
   pwrInit();
   delaysInit();
-
-  // FrSky removed the volume chip in latest board, that's why it doesn't answer!
-  // i2cInit();
 
 #if defined(DEBUG)
   serial2Init(0, 0); // default serial mode (None if DEBUG not defined)
@@ -192,17 +188,18 @@ void boardInit()
 
   audioInit();
 
-  // we need to initialize g_FATFS_Obj here, because it is in .ram section (because of DMA access) 
+  // we need to initialize g_FATFS_Obj here, because it is in .ram section (because of DMA access)
   // and this section is un-initialized
   memset(&g_FATFS_Obj, 0, sizeof(g_FATFS_Obj));
 
   keysInit();
+  rotaryEncoderInit();
 
 #if NUM_PWMSTICKS > 0
   sticksPwmInit();
   delay_ms(20);
   if (pwm_interrupt_count < 32) {
-    sticks_pwm_disabled = true;
+    hardwareOptions.sticksPwmDisabled = true;
   }
 #endif
 
@@ -216,7 +213,7 @@ void boardInit()
   hapticInit();
 
 #if defined(BLUETOOTH)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 
 #if defined(INTERNAL_GPS)
@@ -233,6 +230,8 @@ void boardInit()
 #endif
 
   ledBlue();
+
+  vbattRTC = getRTCBattVoltage();
 #endif
 }
 
@@ -252,7 +251,7 @@ uint8_t currentTrainerMode = 0xff;
 
 void checkTrainerSettings()
 {
-  uint8_t requiredTrainerMode = g_model.trainerMode;
+  uint8_t requiredTrainerMode = g_model.trainerData.mode;
   if (requiredTrainerMode != currentTrainerMode) {
     switch (currentTrainerMode) {
       case TRAINER_MODE_MASTER_TRAINER_JACK:

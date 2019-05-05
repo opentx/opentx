@@ -138,7 +138,7 @@ void telemetryPortSetDirectionInput()
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
 
-void sportSendBuffer(uint8_t * buffer, uint32_t count)
+void sportSendBuffer(const uint8_t * buffer, uint32_t count)
 {
   telemetryPortSetDirectionOutput();
 
@@ -175,9 +175,8 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
   if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
     TELEMETRY_USART->CR1 |= USART_CR1_TCIE;
-    if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
-      outputTelemetryBufferSize = 0;
-      outputTelemetryBufferTrigger = 0x7E;
+    if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+      outputTelemetryBuffer.reset();
     }
   }
 }
@@ -205,10 +204,10 @@ extern "C" void TELEMETRY_USART_IRQHandler(void)
     else {
       telemetryNoDMAFifo.push(data);
 #if defined(LUA)
-      if (telemetryProtocol == PROTOCOL_FRSKY_SPORT) {
+      if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
         static uint8_t prevdata;
-        if (prevdata == 0x7E && outputTelemetryBufferSize > 0 && data == outputTelemetryBufferTrigger) {
-          sportSendBuffer(outputTelemetryBuffer, outputTelemetryBufferSize);
+        if (prevdata == 0x7E && outputTelemetryBuffer.size > 0 && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && data == outputTelemetryBuffer.sport.physicalId) {
+          sportSendBuffer(outputTelemetryBuffer.data, outputTelemetryBuffer.size);
         }
         prevdata = data;
       }

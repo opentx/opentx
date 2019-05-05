@@ -122,9 +122,6 @@ class RlcFile: public EFile
     uint8_t m_write1_byte;
     uint8_t m_write_len;
     uint8_t * m_write_buf;
-#if defined (EEPROM_PROGRESS_BAR)
-    uint8_t m_ratio;
-#endif
 
   public:
 
@@ -147,10 +144,6 @@ class RlcFile: public EFile
 
     // read from opened file and decode rlc-coded data
     uint16_t readRlc(uint8_t *buf, uint16_t i_len);
-
-#if defined (EEPROM_PROGRESS_BAR)
-    void drawProgressBar(uint8_t x);
-#endif
 };
 
 extern RlcFile theFile;  //used for any file operation
@@ -171,12 +164,6 @@ inline void eepromWriteProcess()
 {
   theFile.nextWriteStep();
 }
-
-#if defined (EEPROM_PROGRESS_BAR)
-#define DISPLAY_PROGRESS_BAR(x) theFile.drawProgressBar(x)
-#else
-#define DISPLAY_PROGRESS_BAR(x)
-#endif
 
 bool eeCopyModel(uint8_t dst, uint8_t src);
 void eeSwapModels(uint8_t id1, uint8_t id2);

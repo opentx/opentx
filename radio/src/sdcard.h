@@ -68,6 +68,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
+#define BLUETOOTH_FIRMWARE_EXT  ".bin"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
@@ -118,6 +119,7 @@ inline const char * SDCARD_ERROR(FRESULT result)
 
 // NOTE: 'size' must = 0 or be a valid character position within 'filename' array -- it is NOT validated
 const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t extMaxLen=0, uint8_t *fnlen=NULL, uint8_t *extlen=NULL);
+const char * getBasename(const char * path);
 
 // TODO REMOVE THE O9X FOURCC in 2.3
 #if defined(PCBX12S)
@@ -129,12 +131,18 @@ const char * getFileExtension(const char * filename, uint8_t size=0, uint8_t ext
 #elif defined(PCBX9E)
   #define OTX_FOURCC 0x3578746F // otx for Taranis X9E
   #define O9X_FOURCC 0x3378396F // o9x for Taranis X9E
+#elif defined(PCBXLITES)
+  #define OTX_FOURCC 0x3B78746F // otx for Taranis X-Lite S
+  #define O9X_FOURCC 0x3B78396F // o9x for Taranis X-Lite S
 #elif defined(PCBXLITE)
   #define OTX_FOURCC 0x3978746F // otx for Taranis X-Lite
   #define O9X_FOURCC 0x3978396F // o9x for Taranis X-Lite
 #elif defined(PCBX7)
   #define OTX_FOURCC 0x3678746F // otx for Taranis X7
   #define O9X_FOURCC 0x3378396F // o9x for Taranis X7
+#elif defined(PCBX3)
+  #define OTX_FOURCC 0x3C78746F // otx for Taranis X3
+  #define O9X_FOURCC 0x3C78396F // o9x for Taranis X3
 #elif defined(PCBX9D) || defined(PCBX9DP)
   #define OTX_FOURCC 0x3378746F // otx for Taranis X9D
   #define O9X_FOURCC 0x3378396F // o9x for Taranis X9D

@@ -20,13 +20,14 @@
 
 #include "opentx.h"
 
+#if defined(SIMU)
+const uint32_t cpu_uid[3] = { 0x12345678, 0x55AA55AA, 0x87654321};
+#else
+const uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
+#endif
+
 void getCPUUniqueID(char * s)
 {
-#if defined(SIMU)
-  uint32_t cpu_uid[3] = { 0x12345678, 0x55AA55AA, 0x87654321};
-#else
-  uint32_t * cpu_uid = (uint32_t *)0x1FFF7A10;
-#endif
   char * tmp = strAppendUnsigned(s, cpu_uid[0], 8, 16);
   *tmp = ' ';
   tmp = strAppendUnsigned(tmp+1, cpu_uid[1], 8, 16);

@@ -23,40 +23,27 @@
 
 #include "datastructs.h"
 
-#define WARN_THR_BIT  0x01
-#define WARN_BEP_BIT  0x80
-#define WARN_SW_BIT   0x02
-#define WARN_MEM_BIT  0x04
-#define WARN_BVAL_BIT 0x38
+#define EEPROM_VER             219
+#define FIRST_CONV_EEPROM_VER  216
 
-#define WARN_THR     (!(g_eeGeneral.warnOpts & WARN_THR_BIT))
-#define WARN_BEP     (!(g_eeGeneral.warnOpts & WARN_BEP_BIT))
-#define WARN_SW      (!(g_eeGeneral.warnOpts & WARN_SW_BIT))
-#define WARN_MEM     (!(g_eeGeneral.warnOpts & WARN_MEM_BIT))
-#define BEEP_VAL     ( (g_eeGeneral.warnOpts & WARN_BVAL_BIT) >>3 )
-
-  #define EEPROM_VER             218
-  #define FIRST_CONV_EEPROM_VER  216
-
-#define GET_PPM_POLARITY(idx)             g_model.moduleData[idx].ppm.pulsePol
-#define GET_SBUS_POLARITY(idx)            g_model.moduleData[idx].sbus.noninverted
-#define GET_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
-#define SET_DEFAULT_PPM_FRAME_LENGTH(idx) g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
+#define GET_MODULE_PPM_POLARITY(idx)             g_model.moduleData[idx].ppm.pulsePol
+#define GET_TRAINER_PPM_POLARITY()               g_model.trainerData.pulsePol
+#define GET_SBUS_POLARITY(idx)                   g_model.moduleData[idx].sbus.noninverted
+#define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
+#define GET_TRAINER_PPM_DELAY()                  (g_model.trainerData.delay * 50 + 300)
+#define SET_DEFAULT_PPM_FRAME_LENGTH(idx)        g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #if defined(PCBHORUS)
   #define IS_TRAINER_EXTERNAL_MODULE()    false
   #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
 #elif defined(PCBTARANIS)
-  #define IS_TRAINER_EXTERNAL_MODULE()    (g_model.trainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerMode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
-  #define HAS_WIRELESS_TRAINER_HARDWARE() (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
+  #define IS_TRAINER_EXTERNAL_MODULE()      (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || g_model.trainerData.mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
+  #define HAS_WIRELESS_TRAINER_HARDWARE()   (g_eeGeneral.serial2Mode==UART_MODE_SBUS_TRAINER)
 #else
   #define IS_TRAINER_EXTERNAL_MODULE()    false
 #endif
 
-  #define IS_PLAY_FUNC(func)           ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
-
-  #define IS_PLAY_BOTH_FUNC(func)      (0)
-  #define IS_VOLUME_FUNC(func)         ((func) == FUNC_VOLUME)
+#define IS_PLAY_FUNC(func)             ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
 
 #if defined(GVARS)
   #define IS_ADJUST_GV_FUNC(func)      ((func) == FUNC_ADJUST_GVAR)
@@ -141,21 +128,20 @@ enum CurveRefType {
   CURVE_REF_CUSTOM
 };
 
-
 #define MIN_EXPO_WEIGHT         -100
 #define EXPO_VALID(ed)          ((ed)->mode)
 #define EXPO_MODE_ENABLE(ed, v) (((v)<0 && ((ed)->mode&1)) || ((v)>=0 && ((ed)->mode&2)))
 
-  #define limit_min_max_t     int16_t
-  #define LIMIT_EXT_PERCENT   150
-  #define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
-  #define PPM_CENTER_MAX      500
-  #define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->max+1000)
-  #define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->min-1000)
-  #define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR_PREC1(lim->offset, -1000, 1000, mixerCurrentFlightMode) : lim->offset)
-  #define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
-  #define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
-  #define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
+#define limit_min_max_t     int16_t
+#define LIMIT_EXT_PERCENT   150
+#define LIMIT_EXT_MAX       (LIMIT_EXT_PERCENT*10)
+#define PPM_CENTER_MAX      500
+#define LIMIT_MAX(lim)      (GV_IS_GV_VALUE(lim->max, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->max, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->max+1000)
+#define LIMIT_MIN(lim)      (GV_IS_GV_VALUE(lim->min, -GV_RANGELARGE, GV_RANGELARGE) ? GET_GVAR_PREC1(lim->min, -LIMIT_EXT_MAX, LIMIT_EXT_MAX, mixerCurrentFlightMode) : lim->min-1000)
+#define LIMIT_OFS(lim)      (GV_IS_GV_VALUE(lim->offset, -1000, 1000) ? GET_GVAR_PREC1(lim->offset, -1000, 1000, mixerCurrentFlightMode) : lim->offset)
+#define LIMIT_MAX_RESX(lim) calc1000toRESX(LIMIT_MAX(lim))
+#define LIMIT_MIN_RESX(lim) calc1000toRESX(LIMIT_MIN(lim))
+#define LIMIT_OFS_RESX(lim) calc1000toRESX(LIMIT_OFS(lim))
 
 #define TRIM_OFF    (1)
 #define TRIM_ON     (0)
@@ -191,8 +177,6 @@ enum CurveRefType {
 #define MD_OFFSET(md) (md->offset)
 #define MD_OFFSET_TO_UNION(md, var) var.word = md->offset
 #define MD_UNION_TO_OFFSET(var, md) md->offset = var.word
-// #define MD_SETOFFSET(md, val) md->offset = val
-
 
 enum LogicalSwitchesFunctions {
   LS_FUNC_NONE,
@@ -222,14 +206,6 @@ enum LogicalSwitchesFunctions {
 #define MAX_LS_DELAY    250 /*25s*/
 #define MAX_LS_ANDSW    SWSRC_LAST
 
-//#define TELEM_FLAG_TIMEOUT      0x01
-#define TELEM_FLAG_LOG            0x02
-//#define TELEM_FLAG_PERSISTENT   0x04
-//#define TELEM_FLAG_SCALE        0x08
-#define TELEM_FLAG_AUTO_OFFSET    0x10
-#define TELEM_FLAG_FILTER         0x20
-#define TELEM_FLAG_LOSS_ALARM     0x40
-
 enum TelemetrySensorType
 {
   TELEM_TYPE_CUSTOM,
@@ -251,16 +227,10 @@ enum TelemetrySensorFormula
 };
 
 enum VarioSource {
-#if !defined(TELEMETRY_FRSKY_SPORT)
-  VARIO_SOURCE_ALTI,
-  VARIO_SOURCE_ALTI_PLUS,
-#endif
   VARIO_SOURCE_VSPEED,
   VARIO_SOURCE_A1,
   VARIO_SOURCE_A2,
-#if defined(TELEMETRY_FRSKY_SPORT)
   VARIO_SOURCE_DTE,
-#endif
   VARIO_SOURCE_COUNT,
   VARIO_SOURCE_LAST = VARIO_SOURCE_COUNT-1
 };
@@ -292,8 +262,6 @@ enum FrskyVoltsSource {
   FRSKY_VOLTS_SOURCE_LAST=FRSKY_VOLTS_SOURCE_CELLS
 };
 
-
-
 enum SwashType {
   SWASH_TYPE_NONE,
   SWASH_TYPE_120,
@@ -310,8 +278,8 @@ enum SwashType {
 
 #define ROTARY_ENCODER_MAX  1024
 
-  #define TRIMS_ARRAY_SIZE  8
-    #define TRIM_MODE_NONE  0x1F  // 0b11111
+#define TRIMS_ARRAY_SIZE  8
+#define TRIM_MODE_NONE  0x1F  // 0b11111
 
 #define IS_MANUAL_RESET_TIMER(idx)     (g_model.timers[idx].persistent == 2)
 
@@ -320,31 +288,6 @@ enum SwashType {
 #else
 #define TIMER_COUNTDOWN_START(x)       10
 #endif
-
-enum Protocols {
-  PROTO_PPM,
-#if defined(PXX) || defined(DSM2) || defined(IRPROTOS)
-  PROTO_PXX,
-#endif
-#if defined(DSM2) || defined(IRPROTOS)
-  PROTO_DSM2_LP45,
-  PROTO_DSM2_DSM2,
-  PROTO_DSM2_DSMX,
-#endif
-  PROTO_CROSSFIRE,
-#if defined(IRPROTOS)
-  // only used on AVR
-  // we will need 4 bits for proto :(
-  PROTO_SILV,
-  PROTO_TRAC09,
-  PROTO_PICZ,
-  PROTO_SWIFT,
-#endif
-  PROTO_MULTIMODULE,
-  PROTO_SBUS,
-  PROTO_MAX,
-  PROTO_NONE
-};
 
 enum XJTRFProtocols {
   RF_PROTO_OFF = -1,
@@ -361,6 +304,21 @@ enum R9MSubTypes
   MODULE_SUBTYPE_R9M_EUPLUS,
   MODULE_SUBTYPE_R9M_AUPLUS,
   MODULE_SUBTYPE_R9M_LAST=MODULE_SUBTYPE_R9M_AUPLUS
+};
+
+enum R9MRegion
+{
+  MODULE_R9M_REGION_FCC,
+  MODULE_R9M_REGION_EU,
+  MODULE_R9M_REGION_FLEX,
+  MODULE_R9M_REGION_LAST=MODULE_R9M_REGION_FLEX
+};
+
+enum R9MFrenquency
+{
+  MODULE_R9M_FREQ_868MHZ,
+  MODULE_R9M_FREQ_915MHZ,
+  MODULE_R9M_FREQ_LAST=MODULE_R9M_FREQ_915MHZ
 };
 
 enum MultiModuleRFProtocols {
@@ -405,7 +363,13 @@ enum MultiModuleRFProtocols {
   MM_RF_PROTO_HITEC,
   MM_RF_PROTO_WFLY,
   MM_RF_PROTO_BUGS,
-  MM_RF_PROTO_LAST= MM_RF_PROTO_BUGS
+  MM_RF_PROTO_BUGS_MINI,
+  MM_RF_PROTO_TRAXXAS,
+  MM_RF_PROTO_NCC1701,
+  MM_RF_PROTO_E01X,
+  MM_RF_PROTO_V911S,
+  MM_RF_PROTO_GD00X,
+  MM_RF_PROTO_LAST = MM_RF_PROTO_GD00X
 };
 
 enum MMDSM2Subtypes {
@@ -438,11 +402,17 @@ enum ModuleTypes {
   MODULE_TYPE_NONE = 0,
   MODULE_TYPE_PPM,
   MODULE_TYPE_XJT,
+  MODULE_TYPE_XJT2,
   MODULE_TYPE_DSM2,
   MODULE_TYPE_CROSSFIRE,
   MODULE_TYPE_MULTIMODULE,
   MODULE_TYPE_R9M,
+  MODULE_TYPE_R9M2,
+  MODULE_TYPE_R9M_LITE,
+  MODULE_TYPE_R9M_LITE2,
+  MODULE_TYPE_R9M_LITE_PRO2,
   MODULE_TYPE_SBUS,
+  MODULE_TYPE_MAX = MODULE_TYPE_SBUS,
   MODULE_TYPE_COUNT
 };
 
@@ -486,17 +456,17 @@ enum ThrottleSources {
   THROTTLE_SOURCE_CH1,
 };
 
-enum TelemetryType
+enum TelemetryProtocols
 {
   PROTOCOL_TELEMETRY_FIRST,
-  PROTOCOL_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
-  PROTOCOL_FRSKY_D,
-  PROTOCOL_FRSKY_D_SECONDARY,
-  PROTOCOL_PULSES_CROSSFIRE,
-  PROTOCOL_SPEKTRUM,
-  PROTOCOL_FLYSKY_IBUS,
-  PROTOCOL_MULTIMODULE,
-  PROTOCOL_TELEMETRY_LAST=PROTOCOL_MULTIMODULE
+  PROTOCOL_TELEMETRY_FRSKY_SPORT = PROTOCOL_TELEMETRY_FIRST,
+  PROTOCOL_TELEMETRY_FRSKY_D,
+  PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY,
+  PROTOCOL_TELEMETRY_CROSSFIRE,
+  PROTOCOL_TELEMETRY_SPEKTRUM,
+  PROTOCOL_TELEMETRY_FLYSKY_IBUS,
+  PROTOCOL_TELEMETRY_MULTIMODULE,
+  PROTOCOL_TELEMETRY_LAST=PROTOCOL_TELEMETRY_MULTIMODULE
 };
 
 enum DisplayTrims
@@ -505,8 +475,6 @@ enum DisplayTrims
   DISPLAY_TRIMS_CHANGE,
   DISPLAY_TRIMS_ALWAYS
 };
-
-#define TOTAL_EEPROM_USAGE (sizeof(ModelData)*MAX_MODELS + sizeof(RadioData))
 
 extern RadioData g_eeGeneral;
 extern ModelData g_model;
@@ -518,5 +486,8 @@ PACK(union u_int8int16_t {
   } bytes_t;
   int16_t word;
 });
+
+#define EE_GENERAL                     0x01
+#define EE_MODEL                       0x02
 
 #endif // _MYEEPROM_H_

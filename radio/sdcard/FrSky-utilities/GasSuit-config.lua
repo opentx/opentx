@@ -39,6 +39,7 @@ local margin = 1
 local spacing = 8
 local configFields = {}
 local counter = 0
+local appId = 0
 
 local function drawScreenTitle(title,page, pages)
   if math.fmod(math.floor(getTime()/100),10) == 0 then
@@ -54,7 +55,7 @@ local function drawScreenTitle(title,page, pages)
 end
 
 local interfaceconfig = {
-  {"Sensor group select", VALUE, 0x0d10, nil, 0, 15},
+  {"Sensor group select", VALUE, appId, nil, 0, 15},
 }
 
 local settingsFields = {
@@ -184,7 +185,7 @@ local function redrawFieldsPage()
 end
 
 local function telemetryRead(fieldx)
-  return sportTelemetryPush(0x1b, 0x30, 0x0d10, fieldx)
+  return sportTelemetryPush(0x1b, 0x30, appId, fieldx)
 end
 
 local function telemetryListen(fieldx)
@@ -192,7 +193,7 @@ local function telemetryListen(fieldx)
 end
 
 local function telemetryWrite(fieldx, valuex)
-  return sportTelemetryPush(0x1b, 0x31, 0x0d10, fieldx + valuex*256)
+  return sportTelemetryPush(0x1b, 0x31, appId, fieldx + valuex*256)
 end
 
 local telemetryPopTimeout = 0
@@ -409,6 +410,19 @@ local function init()
     runSettingsPage,
     runTelemetryPage,
   }
+
+  -- Warning : GaSuite tool requires Temp2 to be connected and discovered for script to work
+  for index = 1, 40, 1 do
+    local sensor = model.getSensor(index)
+    if sensor ~= nil and sensor.id >= 0x0d10 and sensor.id <= 0x0d1f then
+      appId = sensor.id
+      break
+    end
+  end
+
+  if appId == 0 then
+    error("No GasSuit sensor in this model!")
+  end
 end
 
 local function background()

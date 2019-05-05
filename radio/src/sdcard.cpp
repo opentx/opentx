@@ -194,6 +194,16 @@ int findNextFileIndex(char * filename, uint8_t size, const char * directory)
   }
 }
 
+const char * getBasename(const char * path)
+{
+  for (int8_t i = strlen(path) - 1; i >= 0; i--) {
+    if (path[i] == '/') {
+      return &path[i + 1];
+    }
+  }
+  return path;
+}
+
 const char * getFileExtension(const char * filename, uint8_t size, uint8_t extMaxLen, uint8_t *fnlen, uint8_t *extlen)
 {
   int len = size;
@@ -275,7 +285,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
     lastpopupMenuOffset = 0;
     memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
   }
-  else if (popupMenuOffset == popupMenuNoItems - MENU_MAX_DISPLAY_LINES) {
+  else if (popupMenuOffset == popupMenuItemsCount - MENU_MAX_DISPLAY_LINES) {
     lastpopupMenuOffset = 0xffff;
     memset(reusableBuffer.modelsel.menu_bss, 0, sizeof(reusableBuffer.modelsel.menu_bss));
   }
@@ -292,14 +302,13 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
     memset(reusableBuffer.modelsel.menu_bss[0], 0, MENU_LINE_LENGTH);
   }
 
-  popupMenuNoItems = 0;
-  POPUP_MENU_SET_BSS_FLAG();
+  popupMenuItemsCount = 0;
 
   FRESULT res = f_opendir(&dir, path);
   if (res == FR_OK) {
 
     if (flags & LIST_NONE_SD_FILE) {
-      popupMenuNoItems++;
+      popupMenuItemsCount++;
       if (selection) {
         lastpopupMenuOffset++;
       }
@@ -338,7 +347,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
         continue;
       }
 
-      popupMenuNoItems++;
+      popupMenuItemsCount++;
 
       if (!(flags & LIST_SD_FILE_EXT)) {
         fno.fname[fnLen] = '\0';  // strip extension
@@ -359,10 +368,9 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
             }
           }
         }
-        for (uint8_t i=0; i<min(popupMenuNoItems, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
+        for (uint8_t i=0; i<min(popupMenuItemsCount, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
           popupMenuItems[i] = reusableBuffer.modelsel.menu_bss[i];
         }
-
       }
       else if (lastpopupMenuOffset == 0xffff) {
         for (int i=MENU_MAX_DISPLAY_LINES-1; i>=0; i--) {
@@ -374,7 +382,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
             break;
           }
         }
-        for (uint8_t i=0; i<min(popupMenuNoItems, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
+        for (uint8_t i=0; i<min(popupMenuItemsCount, (uint16_t)MENU_MAX_DISPLAY_LINES); i++) {
           popupMenuItems[i] = reusableBuffer.modelsel.menu_bss[i];
         }
       }
@@ -399,7 +407,7 @@ bool sdListFiles(const char * path, const char * extension, const uint8_t maxlen
   else
     popupMenuOffset = lastpopupMenuOffset;
 
-  return popupMenuNoItems;
+  return popupMenuItemsCount;
 }
 
 // returns true if current working dir is at the root level

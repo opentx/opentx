@@ -22,8 +22,6 @@
 
 void processFrskyTelemetryData(uint8_t data)
 {
-  static uint8_t dataState = STATE_DATA_IDLE;
-
 #if defined(PCBSKY9X) && defined(BLUETOOTH)
   // TODO if (g_model.bt_telemetry)
   btPushByte(data);
@@ -35,11 +33,19 @@ void processFrskyTelemetryData(uint8_t data)
   }
 #endif
 
-#if defined(BLUETOOTH)
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetoothState == BLUETOOTH_STATE_CONNECTED) {
-    bluetoothForwardTelemetry(data);
+  if (pushFrskyTelemetryData(data)) {
+    if (IS_FRSKY_SPORT_PROTOCOL()) {
+      sportProcessTelemetryPacket(telemetryRxBuffer);
+    }
+    else {
+      frskyDProcessPacket(telemetryRxBuffer);
+    }
   }
-#endif
+}
+
+bool pushFrskyTelemetryData(uint8_t data)
+{
+  static uint8_t dataState = STATE_DATA_IDLE;
 
   switch (dataState) {
     case STATE_DATA_START:
@@ -68,8 +74,8 @@ void processFrskyTelemetryData(uint8_t data)
         }
         else {
           // end of frame detected
-          frskyDProcessPacket(telemetryRxBuffer);
           dataState = STATE_DATA_IDLE;
+          return true;
         }
         break;
       }
@@ -96,9 +102,13 @@ void processFrskyTelemetryData(uint8_t data)
 
 #if defined(TELEMETRY_FRSKY_SPORT)
   if (IS_FRSKY_SPORT_PROTOCOL() && telemetryRxBufferCount >= FRSKY_SPORT_PACKET_SIZE) {
-    sportProcessPacket(telemetryRxBuffer);
+    // end of frame detected
     dataState = STATE_DATA_IDLE;
+    return true;
   }
 #endif
+
+  return false;
 }
+
 

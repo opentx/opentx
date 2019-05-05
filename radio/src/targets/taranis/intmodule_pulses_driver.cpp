@@ -32,59 +32,44 @@ void intmoduleStop()
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 }
 
-void intmoduleNoneStart()
-{
-  INTERNAL_MODULE_OFF();
-
-  GPIO_InitTypeDef GPIO_InitStructure;
-  GPIO_InitStructure.GPIO_Pin = INTMODULE_TX_GPIO_PIN;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-  GPIO_Init(INTMODULE_TX_GPIO, &GPIO_InitStructure);
-  GPIO_SetBits(INTMODULE_TX_GPIO, INTMODULE_TX_GPIO_PIN); // Set high
-
-  INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
-  INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
-  INTMODULE_TIMER->ARR = 36000; // 18mS
-  INTMODULE_TIMER->CCR2 = 32000; // Update time
-  INTMODULE_TIMER->EGR = 1; // Restart
-  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
-  INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  NVIC_EnableIRQ(INTMODULE_TIMER_CC_IRQn);
-  NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
-}
-
 void intmoduleSendNextFrame()
 {
-  if (s_current_protocol[INTERNAL_MODULE] == PROTO_PXX) {
-    INTMODULE_TIMER->CCR2 = *(modulePulsesData[INTERNAL_MODULE].pxx.ptr - 1) - 4000; // 2mS in advance
-    INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
-    INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
-    INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
-    INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(modulePulsesData[INTERNAL_MODULE].pxx.pulses);
-    INTMODULE_DMA_STREAM->NDTR = modulePulsesData[INTERNAL_MODULE].pxx.ptr - modulePulsesData[INTERNAL_MODULE].pxx.pulses;
-    INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
-  }
-#if defined(TARANIS_INTERNAL_PPM)
-  else if (s_current_protocol[INTERNAL_MODULE] == PROTO_PPM) {
-    INTMODULE_TIMER->CCR3 = GET_PPM_DELAY(INTERNAL_MODULE)*2;
-    INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_PPM_POLARITY(INTERNAL_MODULE) ? 0 : TIM_CCER_CC3P);
-    INTMODULE_TIMER->CCR2 = *(modulePulsesData[INTERNAL_MODULE].ppm.ptr - 1) - 4000; // 2mS in advance
-    INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
-    INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
-    INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
-    INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(modulePulsesData[INTERNAL_MODULE].ppm.pulses);
-    INTMODULE_DMA_STREAM->NDTR = modulePulsesData[INTERNAL_MODULE].ppm.ptr - modulePulsesData[INTERNAL_MODULE].ppm.pulses;
-    INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
-  }
+  switch (moduleState[INTERNAL_MODULE].protocol) {
+#if defined(PXX1)
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
+      INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
+      INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+      INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
+      INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
+      INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(intmodulePulsesData.pxx.getData());
+      INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.pxx.getSize();
+      INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+      break;
 #endif
-  else {
-    INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+
+#if defined(TARANIS_INTERNAL_PPM)
+    case PROTOCOL_CHANNELS_PPM:
+      INTMODULE_TIMER->CCR3 = GET_MODULE_PPM_DELAY(INTERNAL_MODULE) * 2;
+      INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_MODULE_PPM_POLARITY(INTERNAL_MODULE) ? 0 : TIM_CCER_CC3P);
+      INTMODULE_TIMER->CCR2 = *(intmodulePulsesData.ppm.ptr - 1) - 4000; // 2mS in advance
+      INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+      INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
+      INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
+      INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(intmodulePulsesData.ppm.pulses);
+      INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.ppm.ptr - intmodulePulsesData.ppm.pulses;
+      INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+      break;
+#endif
+
+    default:
+      INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
+      break;
   }
+}
+
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable)
+{
+  // nothing, the pulses will be sent through telemetry port
 }
 
 void intmodulePxxStart()
@@ -111,9 +96,10 @@ void intmodulePxxStart()
   INTMODULE_TIMER->EGR = 1; // Restart
   INTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2;
+  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  INTMODULE_TIMER->CCR2 = 16000; // The first frame will be sent in 20ms
+  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
-
-  intmoduleSendNextFrame();
 
   NVIC_EnableIRQ(INTMODULE_DMA_STREAM_IRQn);
   NVIC_SetPriority(INTMODULE_DMA_STREAM_IRQn, 7);
@@ -143,9 +129,10 @@ void intmodulePpmStart()
   INTMODULE_TIMER->BDTR = TIM_BDTR_MOE;
   INTMODULE_TIMER->EGR = 1;
   INTMODULE_TIMER->DIER = TIM_DIER_UDE;
+  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+  INTMODULE_TIMER->CCR2 = 40000; // The first frame will be sent in 20ms
+  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
   INTMODULE_TIMER->CR1 = TIM_CR1_CEN;
-
-  intmoduleSendNextFrame();
 
   NVIC_EnableIRQ(INTMODULE_DMA_STREAM_IRQn);
   NVIC_SetPriority(INTMODULE_DMA_STREAM_IRQn, 7);
@@ -169,6 +156,7 @@ extern "C" void INTMODULE_TIMER_CC_IRQHandler()
 {
   INTMODULE_TIMER->DIER &= ~TIM_DIER_CC2IE; // Stop this interrupt
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF;
-  setupPulses(INTERNAL_MODULE);
-  intmoduleSendNextFrame();
+  if (setupPulses(INTERNAL_MODULE)) {
+    intmoduleSendNextFrame();
+  }
 }

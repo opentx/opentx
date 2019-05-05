@@ -27,7 +27,7 @@
 
 #define MENUS_SCROLLBAR_WIDTH          0
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
@@ -40,7 +40,6 @@
 
 #define NUM_BODY_LINES                 (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT             FH
-#define MENU_INIT_VPOS                 0
 
 #define CURVE_SIDE_WIDTH               (LCD_H/2)
 #define CURVE_CENTER_X                 (LCD_W-CURVE_SIDE_WIDTH-2)
@@ -53,45 +52,33 @@ extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
 #define START_NO_HIGHLIGHT()  do { noHighlightCounter = 25; } while(0)
 
-
+void drawSlider(coord_t x, coord_t y, uint8_t width, uint8_t value, uint8_t max, uint8_t attr);
 void drawSlider(coord_t x, coord_t y, uint8_t value, uint8_t max, uint8_t attr);
-
-#if defined(NAVIGATION_POT1)
-extern int16_t p1valdiff;
-#else
-  #define p1valdiff 0
-#endif
-
-#if defined(NAVIGATION_POT2)
-extern int8_t p2valdiff;
-#else
-  #define p2valdiff 0
-#endif
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU               -1
 #define EDIT_SELECT_FIELD              0
 #define EDIT_MODIFY_FIELD              1
 #define EDIT_MODIFY_STRING             2
 extern int8_t s_editMode;       // global editmode
 
 // checkIncDec flags
-#define EE_GENERAL                     0x01
-#define EE_MODEL                       0x02
+
+// we leave room for EE_MODEL and EE_GENERAL
 #define NO_INCDEC_MARKS                0x04
 #define INCDEC_SWITCH                  0x08
 #define INCDEC_SOURCE                  0x10
 #define INCDEC_REP10                   0x40
 #define NO_DBLKEYS                     0x80
 
-  #define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
-  #define INCDEC_SET_FLAG(f)           incdecFlag = (f)
-  #define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
-  #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
+#define INCDEC_DECLARE_VARS(f)       uint8_t incdecFlag = (f); IsValueAvailable isValueAvailable = NULL
+#define INCDEC_SET_FLAG(f)           incdecFlag = (f)
+#define INCDEC_ENABLE_CHECK(fn)      isValueAvailable = fn
+#define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
 // mawrow special values
-#define TITLE_ROW      ((uint8_t)-1)
+#define READONLY_ROW   ((uint8_t)-1)
+#define TITLE_ROW      READONLY_ROW
 #define HIDDEN_ROW     ((uint8_t)-2)
 
 struct CheckIncDecStops {
@@ -125,7 +112,7 @@ extern const CheckIncDecStops &stopsSwitch;
   const CheckIncDecStops &var  = (const CheckIncDecStops&)_ ## var;
 #define CATEGORY_END(val)                                          \
   (val), (val+1)
-int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=NULL, const CheckIncDecStops &stops=stops100);
+int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags=0, IsValueAvailable isValueAvailable=nullptr, const CheckIncDecStops &stops=stops100);
 
 #define checkIncDecModel(event, i_val, i_min, i_max) checkIncDec(event, i_val, i_min, i_max, EE_MODEL)
 #define checkIncDecModelZero(event, i_val, i_max) checkIncDec(event, i_val, 0, i_max, EE_MODEL)
@@ -167,9 +154,9 @@ void check_submenu_simple(event_t event, uint8_t maxrow);
 void title(const char * s);
 #define TITLE(str) title(str)
 
-  #define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
+#define MENU_TAB(...) const uint8_t mstate_tab[] = __VA_ARGS__
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
 #define MENU_CHECK(tab, menu, lines_count) \
   check(event, menu, tab, DIM(tab), mstate_tab, DIM(mstate_tab)-1, lines_count)
 #else
@@ -182,13 +169,12 @@ void title(const char * s);
   MENU_CHECK(tab, menu, lines_count); \
   TITLE(title)
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), lines_count);
-#define SUBMENU_NOTITLE(lines_count, ...) { \
+#define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
-  }
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count);
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
   check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, lines_count); \
@@ -198,10 +184,9 @@ void title(const char * s);
 #else
 #define SIMPLE_MENU_NOTITLE(tab, menu, lines_count) \
   check_simple(event, menu, tab, DIM(tab), (lines_count)-1);
-#define SUBMENU_NOTITLE(lines_count, ...) { \
+#define SUBMENU_NOTITLE(lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
-  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1); \
-  }
+  check(event, 0, NULL, 0, mstate_tab, DIM(mstate_tab)-1, (lines_count)-1);
 
 #define SUBMENU(title, lines_count, ...) \
   MENU_TAB(__VA_ARGS__); \
@@ -210,8 +195,6 @@ void title(const char * s);
 
 #define SIMPLE_SUBMENU_NOTITLE(lines_count) \
   check_submenu_simple(event, (lines_count)-1);
-
-
 
 #endif
 
@@ -232,46 +215,25 @@ int8_t editSwitch(coord_t x, coord_t y, int8_t value, LcdFlags attr, event_t eve
 #define ON_OFF_MENU_ITEM(value, x, y, label, attr, event) value = editCheckBox(value, x, y, label, attr, event)
 
 #if defined(GVARS)
-  #define GVAR_MENU_ITEM(x, y, v, min, max, attr, editflags, event) editGVarFieldValue(x, y, v, min, max, attr, editflags, event)
-#else
-  #define GVAR_MENU_ITEM(x, y, v, min, max, attr, editflags, event) editGVarFieldValue(x, y, v, min, max, attr, event)
-#endif
-
-#if defined(GVARS)
+#define GVAR_MENU_ITEM(x, y, v, min, max, attr, editflags, event) editGVarFieldValue(x, y, v, min, max, attr, editflags, event)
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, uint8_t editflags, event_t event);
 void drawGVarName(coord_t x, coord_t y, int8_t index, LcdFlags flags=0);
 void drawGVarValue(coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags=0);
 void editGVarValue(coord_t x, coord_t y, event_t event, uint8_t gvar, uint8_t flightMode, LcdFlags flags);
-#elif defined(GVARS)
-int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
+#define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
 #else
 int16_t editGVarFieldValue(coord_t x, coord_t y, int16_t value, int16_t min, int16_t max, LcdFlags attr, event_t event);
+#define GVAR_MENU_ITEM(x, y, v, min, max, attr, editflags, event) editGVarFieldValue(x, y, v, min, max, attr, event)
+#define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
 #endif
 
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
-#if defined(GVARS)
-#define displayGVar(x, y, v, min, max) GVAR_MENU_ITEM(x, y, v, min, max, 0, 0, 0)
-#else
-#define displayGVar(x, y, v, min, max) lcdDraw8bitsNumber(x, y, v)
-#endif
-
 void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, uint8_t active, LcdFlags attr=ZCHAR);
-
 void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8_t size, event_t event, uint8_t active);
 
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
 #define EDIT_DELAY(x, y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
-
-#define WARNING_TYPE_ASTERISK          0
-#define WARNING_TYPE_CONFIRM           1
-#define WARNING_TYPE_INPUT             2
-
-extern const char * warningText;
-extern const char * warningInfoText;
-extern uint8_t         warningInfoLength;
-extern uint8_t         warningResult;
-extern uint8_t         warningType;
 
 #define COPY_MODE                      1
 #define MOVE_MODE                      2
@@ -295,24 +257,16 @@ void drawStatusLine();
 #endif
 
 #define TEXT_FILENAME_MAXLEN         40
-  extern char s_text_file[TEXT_FILENAME_MAXLEN];
-  void menuTextView(event_t event);
-  void pushMenuTextView(const char *filename);
-  void pushModelNotes();
-  void readModelNotes();
+extern char s_text_file[TEXT_FILENAME_MAXLEN];
+void menuTextView(event_t event);
+void pushMenuTextView(const char *filename);
+void pushModelNotes();
+void readModelNotes();
 
 #define LABEL(...)                     (uint8_t)-1
 
 #define CURSOR_MOVED_LEFT(event)       (IS_ROTARY_LEFT(event) || EVT_KEY_MASK(event) == KEY_LEFT)
 #define CURSOR_MOVED_RIGHT(event)      (IS_ROTARY_RIGHT(event) || EVT_KEY_MASK(event) == KEY_RIGHT)
-
-#if defined(ROTARY_ENCODERS)
-#define CASE_EVT_ROTARY_BREAK          case EVT_ROTARY_BREAK:
-#define CASE_EVT_ROTARY_LONG           case EVT_ROTARY_LONG:
-#else
-#define CASE_EVT_ROTARY_BREAK
-#define CASE_EVT_ROTARY_LONG
-#endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
   #define IS_ROTARY_LEFT(evt)          (evt == EVT_ROTARY_LEFT)
@@ -335,7 +289,7 @@ void drawStatusLine();
 #endif
 
 // TODO enum
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX3)
 #define EDIT_MODE_INIT                 0
 #else
 #define EDIT_MODE_INIT                 -1
@@ -357,8 +311,6 @@ void onSourceLongEnterPress(const char *result);
 
 uint8_t switchToMix(uint8_t source);
 
-void deleteExpoMix(uint8_t expo, uint8_t idx);
-
 void drawCheckBox(coord_t x, coord_t y, uint8_t value, LcdFlags attr);
 
 extern const unsigned char sticks[] ;
@@ -370,15 +322,12 @@ void drawStick(coord_t centrex, int16_t xval, int16_t yval);
 void drawPotsBars();
 void doMainScreenGraphics();
 
-void drawProgressBar(const char * label, int num, int den);
+void drawProgressScreen(const char * title, const char * message, int num, int den);
 void drawSleepBitmap();
 
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
 
-#if defined(PCBTARANIS)
 void drawAlertBox(const char * title, const char * text, const char * action);
-#endif
-
 void showAlertBox(const char * title, const char * text, const char * action , uint8_t sound);
 
 #define SET_SCROLLBAR_X(x)

@@ -27,13 +27,12 @@ ModelData  g_model;
 Clipboard clipboard;
 #endif
 
-
 uint8_t unexpectedShutdown = 0;
 
-/* AVR: mixer duration in 1/16ms */
+uint16_t vbattRTC;
+
 /* ARM: mixer duration in 0.5us */
 uint16_t maxMixerDuration;
-
 
 uint8_t heartbeat;
 
@@ -70,8 +69,6 @@ const uint8_t modn12x3[]  = {
     0, 2, 1, 3,
     3, 1, 2, 0,
     3, 2, 1, 0 };
-
-volatile tmr10ms_t g_tmr10ms;
 
 volatile uint8_t rtc_count = 0;
 uint32_t watchdogTimeout = 0;
@@ -184,6 +181,8 @@ void per10ms()
   sdPoll10ms();
 #endif
 
+  outputTelemetryBuffer.per10ms();
+
   heartbeat |= HEART_TIMER_10MS;
 }
 
@@ -242,16 +241,22 @@ void generalDefault()
 #elif defined(PCBXLITE)
   g_eeGeneral.potsConfig = 0x0F;    // S1 and S2 = pot without detent
 #elif defined(PCBX7)
-  g_eeGeneral.potsConfig = 0x07;    // S1 = pot without detent, S2 = pot with detent
+  g_eeGeneral.potsConfig = (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+#elif defined(PCBX3)
+  g_eeGeneral.potsConfig = (POT_WITH_DETENT << 0); // S1 = pot with detent
 #elif defined(PCBTARANIS)
   g_eeGeneral.potsConfig = 0x05;    // S1 and S2 = pots with detent
   g_eeGeneral.slidersConfig = 0x03; // LS and RS = sliders with detent
 #endif
 
-#if defined(PCBXLITE)
-  g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0); // 2x3POS, 2x2POS
+#if defined(PCBXLITES)
+  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+#elif defined(PCBXLITE)
+  g_eeGeneral.switchConfig = (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBX7)
   g_eeGeneral.switchConfig = 0x000006ff; // 4x3POS, 1x2POS, 1xTOGGLE
+#elif defined(PCBX3)
+  g_eeGeneral.switchConfig = (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
 #elif defined(PCBTARANIS) || defined(PCBHORUS)
   g_eeGeneral.switchConfig = 0x00007bff; // 6x3POS, 1x2POS, 1xTOGGLE
 #endif
@@ -300,6 +305,12 @@ void generalDefault()
   theme->init();
 #endif
 
+#if defined(PXX2)
+  for (uint8_t i=0; i<PXX2_LEN_REGISTRATION_ID; i++) {
+    g_eeGeneral.ownerRegistrationID[i] = (cpu_uid[1 + i] & 0x3f) - 26;
+  }
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
@@ -331,11 +342,11 @@ void defaultInputs()
     expo->mode = 3; // TODO constant
 #if defined(TRANSLATIONS_CZ)
     for (int c=0; c<4; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_INPUTNAMES[1+4*(stick_index-1)+c]);
+      g_model.inputNames[i][c] = char2zchar(STR_INPUTNAMES[1+4*(stick_index-1)+c]);
     }
 #else
     for (int c=0; c<3; c++) {
-      g_model.inputNames[i][c] = char2idx(STR_VSRCRAW[2+4*stick_index+c]);
+      g_model.inputNames[i][c] = char2zchar(STR_VSRCRAW[2 + 4 * stick_index + c]);
     }
 #if LEN_INPUT_NAME > 3
     g_model.inputNames[i][3] = '\0';
@@ -360,23 +371,26 @@ void applyDefaultTemplate()
 #if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module)
 {
+  if (isModulePXX(module) && IS_D8_RX(module))
+    return;
+
   uint8_t modelId = g_model.header.modelId[module];
   uint8_t additionalOnes = 0;
-  char * name = reusableBuffer.modelsetup.msg;
+  char * name = reusableBuffer.moduleSetup.msg;
 
-  memset(reusableBuffer.modelsetup.msg, 0, sizeof(reusableBuffer.modelsetup.msg));
+  memset(reusableBuffer.moduleSetup.msg, 0, sizeof(reusableBuffer.moduleSetup.msg));
 
   if (modelId != 0) {
     for (uint8_t i = 0; i < MAX_MODELS; i++) {
       if (i != index) {
         if (modelId == modelHeaders[i].modelId[module]) {
-          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.modelsetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
-            if (reusableBuffer.modelsetup.msg[0] != 0) {
+          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.moduleSetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
+            if (reusableBuffer.moduleSetup.msg[0] != '\0') {
               name = strAppend(name, ", ");
             }
             if (modelHeaders[i].name[0] == 0) {
               name = strAppend(name, STR_MODEL);
-              name = strAppendUnsigned(name+strlen(name),i, 2);
+              name = strAppendUnsigned(name+strlen(name), i + 1, 2);
             }
             else {
               name += zchar2str(name, modelHeaders[i].name, LEN_MODEL_NAME);
@@ -393,12 +407,12 @@ void checkModelIdUnique(uint8_t index, uint8_t module)
   if (additionalOnes) {
     name = strAppend(name, " (+");
     name = strAppendUnsigned(name, additionalOnes);
-    name = strAppend(name, ")");
+    strAppend(name, ")");
   }
 
-  if (reusableBuffer.modelsetup.msg[0] != 0) {
+  if (reusableBuffer.moduleSetup.msg[0] != '\0') {
     POPUP_WARNING(STR_MODELIDUSED);
-    SET_WARNING_INFO(reusableBuffer.modelsetup.msg, sizeof(reusableBuffer.modelsetup.msg), 0);
+    SET_WARNING_INFO(reusableBuffer.moduleSetup.msg, sizeof(reusableBuffer.moduleSetup.msg), 0);
   }
 }
 
@@ -447,6 +461,8 @@ void modelDefault(uint8_t id)
 
   applyDefaultTemplate();
 
+  memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
+
 #if defined(LUA) && defined(PCBTARANIS) //Horus uses menuModelWizard() for wizard
   if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
     f_chdir(WIZARD_PATH);
@@ -455,14 +471,14 @@ void modelDefault(uint8_t id)
 #endif
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_XJT;
+  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_XJT2 : MODULE_TYPE_XJT;
   g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
 #elif defined(PCBSKY9X)
   g_model.moduleData[EXTERNAL_MODULE].type = MODULE_TYPE_PPM;
 #endif
 
 #if defined(PCBXLITE)
-  g_model.trainerMode = TRAINER_MODE_MASTER_BLUETOOTH;
+  g_model.trainerData.mode = TRAINER_MODE_MASTER_BLUETOOTH;
 #endif
 
 #if defined(EEPROM)
@@ -479,15 +495,6 @@ void modelDefault(uint8_t id)
     }
   }
 #endif
-
-#if defined(FLIGHT_MODES) && defined(ROTARY_ENCODERS)
-  for (int p=1; p<MAX_FLIGHT_MODES; p++) {
-    for (int i=0; i<ROTARY_ENCODERS; i++) {
-      g_model.flightModeData[p].rotaryEncoders[i] = ROTARY_ENCODER_MAX+1;
-    }
-  }
-#endif
-
 
 #if !defined(EEPROM)
   strcpy(g_model.header.name, "\015\361\374\373\364");
@@ -632,36 +639,6 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim)
   return true;
 }
 
-
-#if defined(ROTARY_ENCODERS)
-uint8_t getRotaryEncoderFlightMode(uint8_t idx)
-{
-  uint8_t phase = mixerCurrentFlightMode;
-  for (uint8_t i=0; i<MAX_FLIGHT_MODES; i++) {
-    if (phase == 0) return 0;
-    int16_t value = flightModeAddress(phase)->rotaryEncoders[idx];
-    if (value <= ROTARY_ENCODER_MAX) return phase;
-    uint8_t result = value-ROTARY_ENCODER_MAX-1;
-    if (result >= phase) result++;
-    phase = result;
-  }
-  return 0;
-}
-
-int16_t getRotaryEncoder(uint8_t idx)
-{
-  return flightModeAddress(getRotaryEncoderFlightMode(idx))->rotaryEncoders[idx];
-}
-
-void incRotaryEncoder(uint8_t idx, int8_t inc)
-{
-  rotencValue[idx] += inc;
-  int16_t *value = &(flightModeAddress(getRotaryEncoderFlightMode(idx))->rotaryEncoders[idx]);
-  *value = limit((int16_t)-RESX, (int16_t)(*value + (inc * 8)), (int16_t)+RESX);
-  storageDirty(EE_MODEL);
-}
-#endif
-
 getvalue_t convert16bitsTelemValue(source_t channel, ls_telemetry_value_t value)
 {
   return value;
@@ -688,6 +665,10 @@ bool inputsMoved()
     sum += anaIn(i) >> INAC_STICKS_SHIFT;
   for (uint8_t i=0; i<NUM_SWITCHES; i++)
     sum += getValue(MIXSRC_FIRST_SWITCH+i) >> INAC_SWITCHES_SHIFT;
+#if defined(GYRO)
+  for (uint8_t i=0; i<2; i++)
+    sum += getValue(MIXSRC_GYRO1+i) >> INAC_STICKS_SHIFT;
+#endif
 
   if (abs((int8_t)(sum-inactivity.sum)) > 1) {
     inactivity.sum = sum;
@@ -702,7 +683,6 @@ void checkBacklight()
 {
   static uint8_t tmr10ms ;
 
-
   uint8_t x = g_blinkTmr10ms;
   if (tmr10ms != x) {
     tmr10ms = x;
@@ -713,13 +693,12 @@ void checkBacklight()
       }
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || lightOffCounter || isFunctionActive(FUNCTION_BACKLIGHT));
+    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) || isFunctionActive(FUNCTION_BACKLIGHT));
     if (flashCounter) backlightOn = !backlightOn;
     if (backlightOn)
       BACKLIGHT_ENABLE();
     else
       BACKLIGHT_DISABLE();
-
   }
 }
 
@@ -795,7 +774,7 @@ void doSplash()
       }
 #endif
 
-#if defined(SPLASH_FRSKY)
+#if defined(FRSKY_RELEASE)
       static uint8_t secondSplash = false;
       if (!secondSplash && get_tmr10ms() >= tgtime-200) {
         secondSplash = true;
@@ -1348,10 +1327,6 @@ void evalTrims()
   }
 }
 
-uint8_t mSwitchDuration[1+NUM_ROTARY_ENCODERS] = { 0 };
-#define CFN_PRESSLONG_DURATION   100
-
-
 uint8_t s_mixer_first_run_done = false;
 
 void doMixerCalculations()
@@ -1484,9 +1459,9 @@ void doMixerCalculations()
     static uint8_t countRangecheck = 0;
     for (uint8_t i=0; i<NUM_MODULES; ++i) {
 #if defined(MULTIMODULE)
-      if (moduleFlag[i] != MODULE_NORMAL_MODE || (i == EXTERNAL_MODULE && multiModuleStatus.isBinding())) {
+      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST || multiModuleStatus.isBinding()) {
 #else
-      if (moduleFlag[i] != MODULE_NORMAL_MODE) {
+      if (moduleState[i].mode >= MODULE_MODE_BEEP_FIRST) {
 #endif
         if (++countRangecheck >= 250) {
           countRangecheck = 0;
@@ -1748,20 +1723,12 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   AUDIO_WARNING2();
 }
 
-#if defined(ROTARY_ENCODERS)
-  volatile rotenc_t rotencValue[ROTARY_ENCODERS] = {0};
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-  volatile rotenc_t rotencValue[1] = {0};
-#endif
-
 #if defined(ROTARY_ENCODER_NAVIGATION)
-uint8_t rotencSpeed;
+  volatile rotenc_t rotencValue = 0;
+  uint8_t rotencSpeed;
 #endif
 
-
-  #define OPENTX_INIT_ARGS
-
-void opentxInit(OPENTX_INIT_ARGS)
+void opentxInit()
 {
   TRACE("opentxInit");
 
@@ -1903,7 +1870,6 @@ void opentxInit(OPENTX_INIT_ARGS)
   init_trainer_capture();
 #endif
 
-
   startPulses();
 
   wdt_enable(WDTO_500MS);
@@ -1915,6 +1881,17 @@ void simuMain()
 int main()
 #endif
 {
+#if defined(STM32)
+  TRACE("reusableBuffer: modelSel=%d, moduleSetup=%d, calib=%d, sdManager=%d, hardwareAndSettings=%d, spectrumAnalyser=%d, usb=%d",
+        sizeof(reusableBuffer.modelsel),
+        sizeof(reusableBuffer.moduleSetup),
+        sizeof(reusableBuffer.calib),
+        sizeof(reusableBuffer.sdManager),
+        sizeof(reusableBuffer.hardwareAndSettings),
+        sizeof(reusableBuffer.spectrumAnalyser),
+        sizeof(reusableBuffer.MSC_BOT_Data));
+#endif
+
   // G: The WDT remains active after a WDT reset -- at maximum clock speed. So it's
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more wdt_reset()s in. But I don't like that approach
@@ -1925,10 +1902,6 @@ int main()
   wdt_disable();
 
   boardInit();
-
-#if defined(PCBX7)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);   //BT is turn on for a brief period to differentiate X7 and X7S
-#endif
 
 #if defined(PCBHORUS)
   loadFonts();
@@ -2031,7 +2004,7 @@ uint32_t pwrCheck()
           lcdRefreshWait();
           lcdClear();
 
-          POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN);
+          POPUP_CONFIRMATION(STR_MODEL_SHUTDOWN, nullptr);
           SET_WARNING_INFO(STR_MODEL_STILL_POWERED, sizeof(TR_MODEL_STILL_POWERED), 0);
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);

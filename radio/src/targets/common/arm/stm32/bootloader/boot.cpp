@@ -22,7 +22,7 @@
 #include "bin_files.h"
 
 #if defined(PCBXLITE)
-#define BOOTLOADER_KEYS                 0x0f
+#define BOOTLOADER_KEYS                 0x0F
 #else
 #define BOOTLOADER_KEYS                 0x42
 #endif
@@ -50,7 +50,7 @@ const uint8_t bootloaderVersion[] __attribute__ ((section(".version"), used)) =
 { 'B', 'O', 'O', 'T', '1', '0' };
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-volatile rotenc_t rotencValue[1] = {0};
+volatile rotenc_t rotencValue = 0;
 #endif
 
 /*----------------------------------------------------------------------------
@@ -86,18 +86,12 @@ void interrupt10ms(void)
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  checkRotaryEncoder();
   static rotenc_t rePreviousValue;
-  rotenc_t reNewValue = (rotencValue[0] / ROTARY_ENCODER_GRANULARITY);
+  rotenc_t reNewValue = (rotencValue / ROTARY_ENCODER_GRANULARITY);
   int8_t scrollRE = reNewValue - rePreviousValue;
   if (scrollRE) {
     rePreviousValue = reNewValue;
-    if (scrollRE < 0) {
-        putEvent(EVT_KEY_FIRST(KEY_UP)); //EVT_ROTARY_LEFT
-    }
-    else {
-        putEvent(EVT_KEY_FIRST(KEY_DOWN)); //EVT_ROTARY_RIGHT
-    }
+    putEvent(scrollRE < 0 ? EVT_KEY_FIRST(KEY_UP) : EVT_KEY_FIRST(KEY_DOWN));
   }
 #endif
 }
@@ -206,6 +200,7 @@ int main()
   uint32_t nameCount = 0;
 
   wdt_reset();
+
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
                          SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
@@ -220,6 +215,10 @@ int main()
 
   keysInit();
 
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotaryEncoderInit();
+#endif
+
   // wait for inputs to stabilize
   for (uint32_t i = 0; i < 50000; i += 1) {
     wdt_reset();
@@ -227,8 +226,8 @@ int main()
 
   // LHR & RHL trims not pressed simultanously
   if (readTrims() != BOOTLOADER_KEYS) {
-      // Start main application
-      jumpTo(APP_START_ADDRESS);
+    // Start main application
+    jumpTo(APP_START_ADDRESS);
   }
 
   pwrInit();
