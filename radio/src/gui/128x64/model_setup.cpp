@@ -498,6 +498,7 @@ void runPopupRegister(event_t event)
 void startRegisterDialog(uint8_t module)
 {
   memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
+  reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = ITEM_REGISTER_BUTTONS;
   moduleState[module].mode = MODULE_MODE_REGISTER;
   s_editMode = 0;
   POPUP_INPUT("", runPopupRegister);

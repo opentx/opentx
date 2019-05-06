@@ -169,7 +169,14 @@ void killEvents(event_t event)
   }
 }
 
-bool clearKeyEvents()
+void killAllEvents()
+{
+  for (uint8_t key = 0; key < DIM(keys); key++) {
+    keys[key].killEvents();
+  }
+}
+
+bool waitKeysReleased()
 {
 #if defined(PCBSKY9X)
   RTOS_WAIT_MS(200); // 200ms
