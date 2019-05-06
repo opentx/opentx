@@ -91,6 +91,7 @@ enum
 
   inline void POPUP_INFORMATION(const char * s)
   {
+    killAllEvents();
     warningText = s;
     warningInfoText = nullptr;
     warningType = WARNING_TYPE_INFO;
@@ -99,6 +100,7 @@ enum
 
   inline void POPUP_WARNING(const char * s)
   {
+    killAllEvents();
     warningText = s;
     warningInfoText = nullptr;
     warningType = WARNING_TYPE_ASTERISK;
@@ -107,6 +109,7 @@ enum
 
   inline void POPUP_CONFIRMATION(const char * s, PopupMenuHandler handler)
   {
+    killAllEvents();
     warningText = s;
     warningInfoText = nullptr;
     warningType = WARNING_TYPE_CONFIRM;
@@ -116,6 +119,7 @@ enum
 
   inline void POPUP_INPUT(const char * s, PopupFunc func)
   {
+    killAllEvents();
     warningText = s;
     warningInfoText = nullptr;
     warningType = WARNING_TYPE_INPUT;

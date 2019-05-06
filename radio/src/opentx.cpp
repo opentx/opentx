@@ -873,7 +873,7 @@ void checkAll()
     readModelNotes();
   }
 
-  if (!clearKeyEvents()) {
+  if (!waitKeysReleased()) {
     showMessageBox(STR_KEYSTUCK);
     tmr10ms_t tgtime = get_tmr10ms() + 500;
     while (tgtime != get_tmr10ms()) {

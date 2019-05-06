@@ -440,8 +440,8 @@ bool menuRadioSetup(event_t event)
         else {
           g_eeGeneral.fai = editCheckBox(g_eeGeneral.fai, RADIO_SETUP_2ND_COLUMN, y, attr, event);
           if (attr && checkIncDec_Ret) {
-              g_eeGeneral.fai = false;
-              POPUP_CONFIRMATION("FAI mode?");
+            g_eeGeneral.fai = false;
+            POPUP_CONFIRMATION("FAI mode?");
           }
         }
         break;
@@ -489,7 +489,7 @@ bool menuRadioSetup(event_t event)
           g_eeGeneral.stickMode = reusableBuffer.generalSettings.stickMode;
           checkTHR();
           resumePulses();
-          clearKeyEvents();
+          waitKeysReleased();
         }
         break;
       }

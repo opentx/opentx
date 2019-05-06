@@ -502,7 +502,7 @@ void menuRadioSetup(event_t event)
           g_eeGeneral.stickMode = reusableBuffer.generalSettings.stickMode;
           checkTHR();
           resumePulses();
-          clearKeyEvents();
+          waitKeysReleased();
         }
         break;
     }
