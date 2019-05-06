@@ -11,12 +11,12 @@ options = {
     "XLITES": {
         "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
-        "GVARS": "NO"
+        "GVARS": "YES"
     },
     "X3": {
         "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
-        "GVARS": "NO"
+        "GVARS": "YES"
     }
 }
 
