@@ -22,9 +22,9 @@
 
 extern uint8_t g_moduleIdx;
 
-void onFailsafeMenu(const char *result)
+void onFailsafeMenu(const char * result)
 {
-  uint8_t sub = menuVerticalPosition + HEADER_LINE;
+  uint8_t sub = menuVerticalPosition;
   int16_t & failsafe = g_model.failsafeChannels[sub];
   int32_t channelValue = channelOutputs[sub];
 
@@ -45,7 +45,7 @@ void onFailsafeMenu(const char *result)
 
 void menuModelFailsafe(event_t event)
 {
-  uint8_t sub = menuVerticalPosition + HEADER_LINE;
+  uint8_t sub = menuVerticalPosition;
   const coord_t x = 1;
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
 
