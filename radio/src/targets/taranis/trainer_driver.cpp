@@ -252,7 +252,7 @@ void init_sbus_on_heartbeat_capture()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
 
   USART_InitStructure.USART_BaudRate = 100000;
   USART_InitStructure.USART_WordLength = USART_WordLength_9b;

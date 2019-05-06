@@ -490,10 +490,11 @@ void menuRadioSdManager(event_t _event)
             popupMenuItems[i] = reusableBuffer.sdManager.otaInformation.candidateReceiversNames[i];
           }
           popupMenuTitle = STR_PXX2_SELECT_RX;
+          CLEAR_POPUP();
           POPUP_MENU_START(onUpdateReceiverSelection);
         }
         else {
-          drawMessageBox("Waiting for RX...");
+          POPUP_WAIT(STR_WAITING_FOR_RX);
         }
       }
     }
