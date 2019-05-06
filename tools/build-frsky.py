@@ -20,6 +20,7 @@ options = {
     }
 }
 
+
 def timestamp():
     return datetime.datetime.now().strftime("%y%m%d")
 
