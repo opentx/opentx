@@ -88,7 +88,9 @@ void onSdFormatConfirm(const char * result)
 void onUpdateConfirmation(const char * result)
 {
   if (result == STR_OK) {
-    // TODO OTA Update
+    OtaUpdateInformation * destination = moduleState[EXTERNAL_MODULE].otaUpdateInformation;
+    Pxx2OtaUpdate otaUpdate(EXTERNAL_MODULE, destination->candidateReceiversNames[destination->selectedReceiverIndex]);
+    otaUpdate.flashFirmware(destination->filename);
   }
   else {
     moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
@@ -97,14 +99,14 @@ void onUpdateConfirmation(const char * result)
 
 void onUpdateStateChanged()
 {
-  if (reusableBuffer.sdManager.otaInformation.step == BIND_INFO_REQUEST) {
-    POPUP_CONFIRMATION(PXX2receiversModels[reusableBuffer.sdManager.otaInformation.receiverInformation.modelID], onUpdateConfirmation);
+  if (reusableBuffer.sdManager.otaUpdateInformation.step == BIND_INFO_REQUEST) {
+    POPUP_CONFIRMATION(PXX2receiversModels[reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.modelID], onUpdateConfirmation);
     char * tmp = strAppend(reusableBuffer.sdManager.otaReceiverVersion, TR_CURRENT_VERSION);
-    tmp = strAppendUnsigned(tmp, 1 + reusableBuffer.sdManager.otaInformation.receiverInformation.swVersion.major);
+    tmp = strAppendUnsigned(tmp, 1 + reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.major);
     *tmp++ = '.';
-    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaInformation.receiverInformation.swVersion.minor);
+    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.minor);
     *tmp++ = '.';
-    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaInformation.receiverInformation.swVersion.revision);
+    tmp = strAppendUnsigned(tmp, reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.swVersion.revision);
     SET_WARNING_INFO(reusableBuffer.sdManager.otaReceiverVersion, tmp - reusableBuffer.sdManager.otaReceiverVersion, 0);
   }
 }
@@ -203,9 +205,9 @@ void onSdManagerMenu(const char * result)
   }
 #endif
   else if (result == STR_FLASH_RECEIVER_OTA) {
-    getSelectionFullPath(lfn);
-    memclear(&reusableBuffer.sdManager.otaInformation, sizeof(BindInformation));
-    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaInformation, onUpdateStateChanged);
+    memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
+    getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
+    moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
   }
 #endif
 #if defined(LUA)
@@ -219,10 +221,10 @@ void onSdManagerMenu(const char * result)
 void onUpdateReceiverSelection(const char * result)
 {
   if (result != STR_EXIT) {
-    reusableBuffer.sdManager.otaInformation.selectedReceiverIndex = (result - reusableBuffer.sdManager.otaInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.sdManager.otaInformation.candidateReceiversNames[0]);
-    reusableBuffer.sdManager.otaInformation.step = BIND_INFO_REQUEST;
+    reusableBuffer.sdManager.otaUpdateInformation.selectedReceiverIndex = (result - reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[0]);
+    reusableBuffer.sdManager.otaUpdateInformation.step = BIND_INFO_REQUEST;
 #if defined(SIMU)
-    reusableBuffer.sdManager.otaInformation.receiverInformation.modelID = 0x01;
+    reusableBuffer.sdManager.otaUpdateInformation.receiverInformation.modelID = 0x01;
     onUpdateStateChanged();
 #endif
   }
@@ -483,11 +485,11 @@ void menuRadioSdManager(event_t _event)
     }
 
     if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
-      if (reusableBuffer.sdManager.otaInformation.step == BIND_INIT) {
-        if (reusableBuffer.sdManager.otaInformation.candidateReceiversCount > 0) {
-          popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
+      if (reusableBuffer.sdManager.otaUpdateInformation.step == BIND_INIT) {
+        if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount > 0) {
+          popupMenuItemsCount = min<uint8_t>(reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount, PXX2_MAX_RECEIVERS_PER_MODULE);
           for (uint8_t i=0; i<popupMenuItemsCount; i++) {
-            popupMenuItems[i] = reusableBuffer.sdManager.otaInformation.candidateReceiversNames[i];
+            popupMenuItems[i] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[i];
           }
           popupMenuTitle = STR_PXX2_SELECT_RX;
           CLEAR_POPUP();
