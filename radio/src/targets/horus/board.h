@@ -116,6 +116,7 @@ extern uint16_t sessionTimer;
 #endif
 
 // Board driver
+void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
 
@@ -142,11 +143,12 @@ void delay_ms(uint32_t ms);
 #endif
 
 // Hardware options
-PACK(typedef struct {
+PACK(typedef struct
+{
 #if NUM_PWMSTICKS > 0
-    uint8_t sticksPwmDisabled:1;
+  uint8_t sticksPwmDisabled:1;
 #endif
-    uint8_t pxx2Enabled:1;
+  uint8_t pxx2Enabled:1;
 }) HardwareOptions;
 
 extern HardwareOptions hardwareOptions;
