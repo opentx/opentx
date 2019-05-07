@@ -219,6 +219,8 @@ int main()
   rotaryEncoderInit();
 #endif
 
+  boardPreInit();
+
   // wait for inputs to stabilize
   for (uint32_t i = 0; i < 50000; i += 1) {
     wdt_reset();
