@@ -112,11 +112,7 @@ void menuRadioSpectrumAnalyser(event_t event)
   uint8_t peak_y = 1;
   uint8_t peak_x = 0;
   for (uint8_t i=0; i<LCD_W; i++) {
-    uint8_t h = min<uint8_t >(reusableBuffer.spectrumAnalyser.bars[i] >> 1, 128);
-    if (h > peak_y) {
-      peak_x = i;
-      peak_y = h;
-    }
+    uint8_t h = min<uint8_t >(reusableBuffer.spectrumAnalyser.bars[i] >> 1, LCD_H);
     lcdDrawSolidVerticalLine(i, LCD_H - h, h);
   }
 
