@@ -105,10 +105,10 @@
 
 #if defined(PCBXLITES) || defined(PCBX3)
 #define LEN_MODULE_PROTOCOLS           "\014"
-#define TR_MODULE_PROTOCOLS            "Vyp\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS\0"
+#define TR_MODULE_PROTOCOLS            "Vyp\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9M Lite PRO""SBUS\0"
 #else
 #define LEN_MODULE_PROTOCOLS           "\014"
-#define TR_MODULE_PROTOCOLS            "Vyp\0        ""PPM\0        ""XJT\0        ""XJT ACCESS\0 ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9MLP ACCESS""SBUS\0"
+#define TR_MODULE_PROTOCOLS            "Vyp\0        ""PPM\0        ""XJT\0        ""XJT ACCESS\0 ""DSM2\0       ""CRSF\0       ""MULT\0       ""R9M\0        ""R9M ACCESS\0 ""R9MLite\0    ""R9ML ACCESS\0""R9M Lite PRO""SBUS\0"
 #endif
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
