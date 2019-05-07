@@ -267,6 +267,13 @@ void Pxx2Pulses::setupResetFrame(uint8_t module)
 
 void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
+  if (moduleState[module].counter > 2500) {
+    moduleState[module].counter = 2502;
+    return;
+  }
+
+  moduleState[module].counter = 2502;
+
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
   Pxx2Transport::addByte(0x00);
   Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
@@ -276,6 +283,13 @@ void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 
 void Pxx2Pulses::setupPowerMeter(uint8_t module)
 {
+  if (moduleState[module].counter > 2500) {
+    moduleState[module].counter = 2502;
+    return;
+  }
+
+  moduleState[module].counter = 2502;
+
   addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_POWER_METER);
   Pxx2Transport::addByte(0x00);
   Pxx2Transport::addWord(reusableBuffer.powerMeter.freq);
