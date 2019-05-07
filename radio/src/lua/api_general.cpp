@@ -454,6 +454,19 @@ static int luaSportTelemetryPush(lua_State * L)
         return 1;
       }
     }
+
+    // sensor not found, we send the frame to the SPORT line
+    {
+      SportTelemetryPacket packet;
+      packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
+      packet.primId = luaL_checkunsigned(L, 2);
+      packet.dataId = dataId;
+      packet.value = luaL_checkunsigned(L, 4);
+      outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+      outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+      lua_pushboolean(L, true);
+      return 1;
+    }
   }
 
   lua_pushboolean(L, false);
