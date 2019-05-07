@@ -85,6 +85,7 @@ void onSdFormatConfirm(const char * result)
   }
 }
 
+#if defined(PXX2)
 void onUpdateConfirmation(const char * result)
 {
   if (result == STR_OK) {
@@ -110,6 +111,7 @@ void onUpdateStateChanged()
     SET_WARNING_INFO(reusableBuffer.sdManager.otaReceiverVersion, tmp - reusableBuffer.sdManager.otaReceiverVersion, 0);
   }
 }
+#endif
 
 void onSdManagerMenu(const char * result)
 {
@@ -218,6 +220,7 @@ void onSdManagerMenu(const char * result)
 #endif
 }
 
+#if defined(PXX2)
 void onUpdateReceiverSelection(const char * result)
 {
   if (result != STR_EXIT) {
@@ -233,6 +236,7 @@ void onUpdateReceiverSelection(const char * result)
     moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
   }
 }
+#endif
 
 void menuRadioSdManager(event_t _event)
 {
@@ -484,6 +488,7 @@ void menuRadioSdManager(event_t _event)
       }
     }
 
+#if defined(PXX2)
     if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND) {
       if (reusableBuffer.sdManager.otaUpdateInformation.step == BIND_INIT) {
         if (reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversCount > 0) {
@@ -500,6 +505,7 @@ void menuRadioSdManager(event_t _event)
         }
       }
     }
+#endif
 
 #if LCD_DEPTH > 1
     const char * ext = getFileExtension(reusableBuffer.sdManager.lines[index]);
