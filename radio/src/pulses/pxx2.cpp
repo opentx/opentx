@@ -287,8 +287,40 @@ void Pxx2Pulses::setupShareMode(uint8_t module)
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
 }
 
+void Pxx2Pulses::sendOtaUpdate(uint8_t module, const char * rxName, uint32_t address, const char * data)
+{
+  initFrame();
+
+  addFrameType(PXX2_TYPE_C_OTA, PXX2_TYPE_ID_OTA);
+
+  if (rxName) {
+    Pxx2Transport::addByte(0x00);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(rxName[i]);
+    }
+  }
+  else if (data) {
+    Pxx2Transport::addByte(0x01);
+    Pxx2Transport::addWord(address);
+    for (uint8_t i=0; i<32; i++) {
+      Pxx2Transport::addByte(data[i]);
+    }
+  }
+  else {
+    Pxx2Transport::addByte(0x02);
+  }
+
+  endFrame();
+
+  if (module == EXTERNAL_MODULE)
+    extmoduleSendNextFrame();
+}
+
 void Pxx2Pulses::setupFrame(uint8_t module)
 {
+  if (moduleState[module].mode == MODULE_MODE_OTA_UPDATE)
+    return;
+
   initFrame();
 
   switch (moduleState[module].mode) {
@@ -335,4 +367,96 @@ void Pxx2Pulses::setupFrame(uint8_t module)
   }
 
   endFrame();
+}
+
+bool Pxx2OtaUpdate::waitStep(uint8_t step, uint8_t timeout)
+{
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+  uint8_t elapsed = 0;
+
+  watchdogSuspend(100);
+
+  while (step != destination->step) {
+    if (elapsed++ > timeout) {
+      return false;
+    }
+    RTOS_WAIT_MS(1);
+    telemetryWakeup();
+  }
+
+  return true;
+}
+
+const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
+{
+  FIL file;
+  uint8_t buffer[32];
+  UINT count = 0;
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+
+  destination->step = OTA_UPDATE_START;
+  extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, 0, nullptr);
+  if (!waitStep(OTA_UPDATE_START_ACK, 10)) {
+    return "OTA start failed";
+  }
+
+  if (f_open(&file, filename, FA_READ) != FR_OK) {
+    return "Opening file failed";
+  }
+
+  uint32_t size = f_size(&file);
+  uint32_t done = 0;
+  while (1) {
+    done += count;
+    drawProgressScreen(getBasename(filename), "OTA update...", done, size);
+    if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
+      f_close(&file);
+      return "Reading file failed";
+    }
+    destination->step = OTA_UPDATE_TRANSFER;
+    extmodulePulsesData.pxx2.sendOtaUpdate(module, nullptr, done, (char *)buffer);
+    if (!waitStep(OTA_UPDATE_TRANSFER_ACK, 10)) {
+      return "OTA transfer failed";
+    }
+    if (count < sizeof(buffer)) {
+      f_close(&file);
+      break;
+    }
+  }
+
+  destination->step = OTA_UPDATE_EOF;
+  extmodulePulsesData.pxx2.sendOtaUpdate(module, nullptr, done, nullptr);
+  if (!waitStep(OTA_UPDATE_END, 10)) {
+    return "OTA end failed";
+  }
+
+  return nullptr;
+}
+
+void Pxx2OtaUpdate::flashFirmware(const char * filename)
+{
+  pausePulses();
+
+  watchdogSuspend(100);
+  RTOS_WAIT_MS(100);
+
+  moduleState[module].mode = MODULE_MODE_OTA_UPDATE;
+  const char * result = doFlashFirmware(filename);
+  moduleState[module].mode = MODULE_MODE_NORMAL;
+
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  BACKLIGHT_ENABLE();
+
+  if (result) {
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
+    SET_WARNING_INFO(result, strlen(result), 0);
+  }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
+
+  watchdogSuspend(100);
+  RTOS_WAIT_MS(100);
+
+  resumePulses();
 }
