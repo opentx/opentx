@@ -66,12 +66,12 @@ void menuRadioSpectrumAnalyser(event_t event)
     reusableBuffer.spectrumAnalyser.freqMax = 2485;
   }
 
-
   if (moduleState[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
     memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
     reusableBuffer.spectrumAnalyser.span = reusableBuffer.spectrumAnalyser.spanDefault * 1000000;
     reusableBuffer.spectrumAnalyser.freq = reusableBuffer.spectrumAnalyser.freqDefault * 1000000;
     reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
+    reusableBuffer.spectrumAnalyser.dirty = true;
     moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
   }
 
@@ -86,6 +86,9 @@ void menuRadioSpectrumAnalyser(event_t event)
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
         if (attr) {
           reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, reusableBuffer.spectrumAnalyser.freqMin, reusableBuffer.spectrumAnalyser.freqMax, 0)) * 1000000;
+          if (checkIncDec_Ret) {
+            reusableBuffer.spectrumAnalyser.dirty = true;
+          }
         }
         break;
       }
@@ -97,6 +100,10 @@ void menuRadioSpectrumAnalyser(event_t event)
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
         if (attr) {
           reusableBuffer.spectrumAnalyser.span = checkIncDec(event, span, 1, reusableBuffer.spectrumAnalyser.spanMax, 0) * 1000000;
+          if (checkIncDec_Ret) {
+            reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
+            reusableBuffer.spectrumAnalyser.dirty = true;
+          }
         }
         break;
     }

@@ -1197,6 +1197,7 @@ union ReusableBuffer
     uint16_t freqDefault;
     uint16_t freqMax;
     uint16_t freqMin;
+    uint8_t dirty;
   } spectrumAnalyser;
 
   struct
@@ -1205,6 +1206,7 @@ union ReusableBuffer
     int16_t power;
     int16_t peak;
     uint8_t attn;
+    uint8_t dirty;
   } powerMeter;
 
   struct
