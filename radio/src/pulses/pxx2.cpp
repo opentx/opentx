@@ -397,7 +397,7 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
 {
   FIL file;
   uint8_t buffer[32];
-  UINT count = 0;
+  UINT count;
   OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
 
   destination->step = OTA_UPDATE_START;
@@ -413,7 +413,6 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
   uint32_t size = f_size(&file);
   uint32_t done = 0;
   while (1) {
-    done += count;
     drawProgressScreen(getBasename(filename), "OTA update...", done, size);
     if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
       f_close(&file);
@@ -428,6 +427,7 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
       f_close(&file);
       break;
     }
+    done += count;
   }
 
   destination->step = OTA_UPDATE_EOF;

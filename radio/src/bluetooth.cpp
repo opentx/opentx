@@ -602,9 +602,14 @@ enum {
   CMD_RET_SUCCESS = 0x40,
 };
 
-#define CC26XX_FLASH_BASE               0x00001000
-#define CC26XX_PAGE_ERASE_SIZE          4096
-#define CC26XX_MAX_BYTES_PER_TRANSFER   252
+constexpr uint32_t CC26XX_FLASH_SIZE = 0x00020000;
+constexpr uint32_t CC26XX_BOOTLOADER_SIZE = 0x00001000;
+constexpr uint32_t CC26XX_DATA_SIZE = 0x00001000;
+constexpr uint32_t CC26XX_FIRMWARE_BASE = CC26XX_BOOTLOADER_SIZE;
+constexpr uint32_t CC26XX_FIRMWARE_SIZE = CC26XX_FLASH_SIZE - CC26XX_DATA_SIZE - CC26XX_BOOTLOADER_SIZE;
+
+constexpr uint32_t CC26XX_PAGE_ERASE_SIZE = 0x1000;
+constexpr uint32_t CC26XX_MAX_BYTES_PER_TRANSFER = 252;
 
 const char * Bluetooth::bootloaderSendData(const uint8_t * data, uint8_t size)
 {
@@ -689,7 +694,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   const char * result;
   FIL file;
   uint8_t buffer[CC26XX_MAX_BYTES_PER_TRANSFER * 4];
-  UINT count = 0;
+  UINT count;
 
   // Dummy command
   bootloaderSendCommand(0);
@@ -714,29 +719,29 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
 
   drawProgressScreen(getBasename(filename), "Flash erase...", 0, 0);
 
-  result = bootloaderEraseFlash(CC26XX_FLASH_BASE, f_size(&file));
+  result = bootloaderEraseFlash(CC26XX_FIRMWARE_BASE, f_size(&file));
   if (result)
     return result;
 
-  uint32_t size = f_size(&file);
+  uint32_t size = min<uint32_t>(CC26XX_FIRMWARE_SIZE, f_size(&file));
   drawProgressScreen(getBasename(filename), "Flash write...", 0, size);
 
-  result = bootloaderStartWriteFlash(CC26XX_FLASH_BASE, size);
+  result = bootloaderStartWriteFlash(CC26XX_FIRMWARE_BASE, size);
   if (result)
     return result;
 
   uint32_t done = 0;
   while (1) {
-    done += count;
     drawProgressScreen(getBasename(filename), "Flash write...", done, size);
-    if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
+    if (f_read(&file, buffer, min<uint32_t>(sizeof(buffer), size - done), &count) != FR_OK) {
       f_close(&file);
       return "Error reading file";
     }
     result = bootloaderWriteFlash(buffer, count);
     if (result)
       return result;
-    if (count < sizeof(buffer)) {
+    done += count;
+    if (done >= size) {
       f_close(&file);
       return nullptr;
     }
