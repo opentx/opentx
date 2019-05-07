@@ -88,6 +88,8 @@ void menuRadioSpectrumAnalyser(event_t event)
           reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, reusableBuffer.spectrumAnalyser.freqMin, reusableBuffer.spectrumAnalyser.freqMax, 0)) * 1000000;
           if (checkIncDec_Ret) {
             reusableBuffer.spectrumAnalyser.dirty = true;
+            memclear(reusableBuffer.spectrumAnalyser.peak, sizeof(reusableBuffer.spectrumAnalyser.peak));
+            memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
           }
         }
         break;
@@ -103,6 +105,8 @@ void menuRadioSpectrumAnalyser(event_t event)
           if (checkIncDec_Ret) {
             reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
             reusableBuffer.spectrumAnalyser.dirty = true;
+            memclear(reusableBuffer.spectrumAnalyser.peak, sizeof(reusableBuffer.spectrumAnalyser.peak));
+            memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
           }
         }
         break;
@@ -114,6 +118,14 @@ void menuRadioSpectrumAnalyser(event_t event)
   for (uint8_t i=0; i<LCD_W; i++) {
     uint8_t h = min<uint8_t >(reusableBuffer.spectrumAnalyser.bars[i] >> 1, LCD_H);
     lcdDrawSolidVerticalLine(i, LCD_H - h, h);
+    h = min<uint8_t >(reusableBuffer.spectrumAnalyser.peak[i] >> 1, LCD_H);
+    if (h) {
+      lcdDrawPoint(i, LCD_H - h, FORCE);
+      if (h > peak_y) {
+        peak_x = i;
+        peak_y = h;
+      }
+    }
   }
 
   int8_t y = max<int8_t>(FH, LCD_H - peak_y - FH);
