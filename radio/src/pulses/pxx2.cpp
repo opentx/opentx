@@ -397,11 +397,11 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
   destination->step = OTA_UPDATE_START;
   extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, 0, nullptr);
   if (!waitStep(OTA_UPDATE_START_ACK, 10)) {
-    return "OTA start failed";
+    return "Transfer failed";
   }
 
   if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return "Opening file failed";
+    return "Open file failed";
   }
 
   uint32_t size = f_size(&file);
@@ -411,12 +411,12 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
     drawProgressScreen(getBasename(filename), "OTA update...", done, size);
     if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
       f_close(&file);
-      return "Reading file failed";
+      return "Read file failed";
     }
     destination->step = OTA_UPDATE_TRANSFER;
     extmodulePulsesData.pxx2.sendOtaUpdate(module, nullptr, done, (char *)buffer);
     if (!waitStep(OTA_UPDATE_TRANSFER_ACK, 10)) {
-      return "OTA transfer failed";
+      return "Transfer failed";
     }
     if (count < sizeof(buffer)) {
       f_close(&file);
@@ -427,7 +427,7 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
   destination->step = OTA_UPDATE_EOF;
   extmodulePulsesData.pxx2.sendOtaUpdate(module, nullptr, done, nullptr);
   if (!waitStep(OTA_UPDATE_END, 10)) {
-    return "OTA end failed";
+    return "Transfer failed";
   }
 
   return nullptr;
