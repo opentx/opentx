@@ -283,15 +283,17 @@ uint16_t RlcFile::readRlc(uint8_t *buf, uint16_t i_len)
     memclear(&buf[i], ln);
     i        += ln;
     m_zeroes -= ln;
-    if (m_zeroes) break;
+    if (m_zeroes)
+      break;
 
     ln = min<uint16_t>(m_bRlc, i_len-i);
     uint8_t lr = read(&buf[i], ln);
     i        += lr ;
     m_bRlc   -= lr;
-    if(m_bRlc) break;
+    if (m_bRlc) break;
 
-    if (read(&m_bRlc, 1) !=1) break; // read how many bytes to read
+    if (read(&m_bRlc, 1) != 1)
+      break; // read how many bytes to read
 
     assert(m_bRlc & 0x7f);
 
@@ -299,7 +301,7 @@ uint16_t RlcFile::readRlc(uint8_t *buf, uint16_t i_len)
       m_zeroes  =(m_bRlc>>4) & 0x7;
       m_bRlc    = m_bRlc & 0x0f;
     }
-    else if(m_bRlc&0x40) {
+    else if (m_bRlc&0x40) {
       m_zeroes  = m_bRlc & 0x3f;
       m_bRlc    = 0;
     }
