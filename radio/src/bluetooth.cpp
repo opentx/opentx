@@ -689,7 +689,7 @@ const char * Bluetooth::doFlashFirmware(const char * filename)
   const char * result;
   FIL file;
   uint8_t buffer[CC26XX_MAX_BYTES_PER_TRANSFER * 4];
-  UINT count;
+  UINT count = 0;
 
   // Dummy command
   bootloaderSendCommand(0);
