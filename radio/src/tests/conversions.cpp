@@ -22,11 +22,13 @@
 #include "storage/conversions/conversions.h"
 #include "location.h"
 
+#if defined(EEPROM_SIZE)
 void loadEEPROMFile(const char * filename)
 {
   FILE * f = fopen(filename, "rb");
   assert(fread(eeprom, 1, EEPROM_SIZE, f) == EEPROM_SIZE);
 }
+#endif
 
 #if defined(PCBX9DP)
 TEST(Eeprom, ConversionX9DPFrom22)
