@@ -244,6 +244,13 @@ void menuRadioSdManager(event_t _event)
   int lastPos = menuVerticalPosition;
 #endif
 
+  if (moduleState[EXTERNAL_MODULE].mode == MODULE_MODE_BIND && EVT_KEY_MASK(_event) == KEY_EXIT) {
+    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    CLEAR_POPUP();
+    killEvents(KEY_EXIT);
+    _event = 0;
+  }
+
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, HEADER_LINE + reusableBuffer.sdManager.count);
 
