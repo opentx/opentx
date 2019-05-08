@@ -5,6 +5,7 @@ import datetime
 import os
 from builtins import NotADirectoryError
 import shutil
+import tempfile
 
 
 options = {
@@ -27,23 +28,23 @@ def timestamp():
 
 def build(board, srcdir):
     cmake_options = " ".join(["-D%s=%s" % (key, value) for key, value in options[board].items()])
-    shutil.rmtree("build", ignore_errors=True)
-    os.mkdir("build")
+    cwd = os.getcwd()
     if not os.path.exists("output"):
         os.mkdir("output")
-    os.chdir("build")
+    path = tempfile.mkdtemp()
+    os.chdir(path)
     os.system("cmake -DPCB=%s %s %s" % (board, cmake_options, srcdir))
     os.system("make firmware -j6")
-    os.chdir("..")
+    os.chdir(cwd)
     index = 0
     while 1:
         suffix = "" if index == 0 else "_%d" % index
         filename = "output/firmware_%s_%s%s.bin" % (board.lower(), timestamp(), suffix)
         if not os.path.exists(filename):
-            os.rename("build/firmware.bin", filename)
+            shutil.copy("%s/firmware.bin" % path, filename)
             break
         index += 1
-    shutil.rmtree("build")
+    shutil.rmtree(path)
 
 
 def dir_path(string):
