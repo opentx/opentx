@@ -314,6 +314,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_TARANIS_X9E(board)) {
     variant |= TARANIS_X9E_VARIANT;
   }
+  else if (IS_TARANIS_X3(board)) {
+    variant |= TARANIS_X3_VARIANT;
+  }
   else if (IS_TARANIS_X7(board)) {
     variant |= TARANIS_X7_VARIANT;
   }
@@ -692,6 +695,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return SIMU_M128_VARIANTS;
       else if (IS_TARANIS_X9E(board))
         return TARANIS_X9E_VARIANT;
+      else if (IS_TARANIS_X3(board))
+        return TARANIS_X3_VARIANT;
       else if (IS_TARANIS_X7(board))
         return TARANIS_X7_VARIANT;
       else if (IS_TARANIS_XLITES(board))
