@@ -1172,6 +1172,11 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
+  /* FrSky X3 board */
+  firmware = new OpenTxFirmware("opentx-x3", Firmware::tr("FrSky Taranis X3"), BOARD_TARANIS_X3);
+  addOpenTxTaranisOptions(firmware, false);
+  registerOpenTxFirmware(firmware);
+
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
   addOpenTxTaranisOptions(firmware, false);
