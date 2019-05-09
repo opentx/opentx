@@ -496,7 +496,7 @@ When called without parameters, it will only return the status of the output buf
 
 @retval boolean  data queued in output buffer or not.
 
-@status current Introduced in 2.2.0
+@status current Introduced in 2.3
 */
 
 static int luaAccessTelemetryPush(lua_State * L)
