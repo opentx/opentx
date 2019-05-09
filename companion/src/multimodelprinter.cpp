@@ -859,7 +859,7 @@ QString MultiModelPrinter::printSensors()
   int count = 0;
   columns.appendSectionTableStart();
   columns.appendRowHeader(QStringList() << tr("Name") << tr("Type") << tr("Parameters"));
-  for (int i=0; i<CPN_MAX_SENSORS; ++i) {
+  for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
     bool tsEmpty = true;
     for (int k=0; k < modelPrinterMap.size(); k++) {
       if (modelPrinterMap.value(k).first->sensorData[i].isAvailable()) {

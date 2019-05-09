@@ -126,8 +126,8 @@ void EEPROMInterface::showEepromWarnings(QWidget *parent, const QString &title, 
 
 // static
 QVector<Firmware *> Firmware::registeredFirmwares;
-Firmware * Firmware::defaultVariant = NULL;
-Firmware * Firmware::currentVariant = NULL;
+Firmware * Firmware::defaultVariant = nullptr;
+Firmware * Firmware::currentVariant = nullptr;
 
 // static
 Firmware * Firmware::getFirmwareForId(const QString & id)

@@ -74,6 +74,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
+    case BOARD_TARANIS_X3:
+      return "OpenTX for FrSky Taranis X3";
     case BOARD_TARANIS_XLITE:
       return "OpenTX for FrSky Taranis X-Lite";
     case BOARD_SKY9X:
@@ -299,6 +301,8 @@ void OpenTxEepromInterface::showErrors(const QString & title, const QStringList 
 int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, uint8_t version, uint32_t variant)
 {
   // TODO QMessageBox::warning should not be called here
+
+  qDebug() << "ICI";
 
   if (version == 0) {
     version = getLastDataVersion(board);
@@ -1261,6 +1265,7 @@ OpenTxEepromInterface * loadFromByteArray(T & dest, const QByteArray & data)
 template <class T, class M>
 bool saveToByteArray(const T & dest, QByteArray & data)
 {
+  qDebug() << "ICI SAVE";
   Board::Type board = getCurrentBoard();
   foreach(OpenTxEepromInterface * eepromInterface, opentxEEpromInterfaces) {
     if (eepromInterface->getBoard() == board) {

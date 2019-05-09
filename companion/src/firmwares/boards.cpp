@@ -231,7 +231,9 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       return 4;
 
     case Pots:
-      if (IS_TARANIS_SMALL(board))
+      if (IS_TARANIS_X3(board))
+        return 1;
+      else if (IS_TARANIS_SMALL(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
