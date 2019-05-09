@@ -81,7 +81,7 @@ void ValueWidget::refresh()
         attrValue = LEFT | MIDSIZE | EXPANDED;
       }
       else {
-        attrValue = LEFT | DBLSIZE;
+        attrValue = LEFT | XXLSIZE;
       }
     }
 #if defined(INTERNAL_GPS)
@@ -90,7 +90,7 @@ void ValueWidget::refresh()
     }
 #endif
     else {
-      attrValue = LEFT | DBLSIZE;
+      attrValue = LEFT | XXLSIZE;
     }
   }
 
@@ -101,7 +101,7 @@ void ValueWidget::refresh()
     }
     drawSource(x+NUMBERS_PADDING, y+2, field, CUSTOM_COLOR);
     drawSource(x+NUMBERS_PADDING + 1, y + 3, field, BLACK);
-    drawTimer(xValue, yValue, abs(timerState.val), attrValue|DBLSIZE|CUSTOM_COLOR);
+    drawTimer(xValue, yValue, abs(timerState.val), attrValue|XXLSIZE|CUSTOM_COLOR);
     return;
   }
 
