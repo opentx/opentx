@@ -269,7 +269,7 @@ void generalDefault()
     g_eeGeneral.vBatMax = BATTERY_MAX - 120;
 
 #if defined(DEFAULT_MODE)
-  g_eeGeneral.stickMode = DEFAULT_MODE-1;
+  g_eeGeneral.stickMode = DEFAULT_MODE - 1;
 #endif
 
 #if defined(PCBTARANIS)

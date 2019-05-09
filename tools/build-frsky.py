@@ -17,7 +17,8 @@ options = {
     "X3": {
         "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
-        "GVARS": "YES"
+        "GVARS": "YES",
+        "DEFAULT_MODE": "2"
     }
 }
 
