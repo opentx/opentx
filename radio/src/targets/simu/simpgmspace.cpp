@@ -667,7 +667,7 @@ void I2C_GenerateSTART(I2C_TypeDef*, FunctionalState) { }
 void I2C_GenerateSTOP(I2C_TypeDef*, FunctionalState) { }
 void I2C_AcknowledgeConfig(I2C_TypeDef*, FunctionalState) { }
 uint8_t I2C_ReceiveData(I2C_TypeDef*) { return 0; }
-ErrorStatus I2C_CheckEvent(I2C_TypeDef*, unsigned int) { return ERROR; }
+ErrorStatus I2C_CheckEvent(I2C_TypeDef*, unsigned int) { return (ErrorStatus) ERROR; }
 
 // I2S fake functions
 void I2S_Init(SPI_TypeDef* SPIx, I2S_InitTypeDef* I2S_InitStruct) { }
