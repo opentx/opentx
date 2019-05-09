@@ -137,7 +137,7 @@ enum PXX2OtaUpdateSteps {
   OTA_UPDATE_TRANSFER,
   OTA_UPDATE_TRANSFER_ACK,
   OTA_UPDATE_EOF,
-  OTA_UPDATE_END
+  OTA_UPDATE_EOF_ACK
 };
 
 enum PXX2ReceiverStatus {
@@ -295,6 +295,7 @@ class Pxx2OtaUpdate {
 
     const char * doFlashFirmware(const char * filename);
     bool waitStep(uint8_t step, uint8_t timeout);
+    const char * nextStep(uint8_t step, const char * rxName, uint32_t address, const uint8_t * buffer);
 };
 
 #endif
