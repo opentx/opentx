@@ -349,7 +349,7 @@
         </widget>
        </item>
        <item row="2" column="1">
-        <widget class="QComboBox" name="downloadVerCB">
+        <widget class="QComboBox" name="boardCB">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -1425,7 +1425,7 @@ Mode 4:
  <tabstops>
   <tabstop>tabWidget</tabstop>
   <tabstop>profileNameLE</tabstop>
-  <tabstop>downloadVerCB</tabstop>
+  <tabstop>boardCB</tabstop>
   <tabstop>sdPath</tabstop>
   <tabstop>sdPathButton</tabstop>
   <tabstop>profilebackupPath</tabstop>
