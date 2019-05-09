@@ -28,7 +28,6 @@
 using namespace Board;
 
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
-#define MAX_POTS(board, version)              (Boards::getCapability(board, Board::Pots))
 #define MAX_SLIDERS(board)                    (IS_HORUS_X10(board) ? 4 : (Boards::getCapability(board, Board::Sliders))) //TODO need to be remove when x10 eeprom gets fixed
 #define MAX_MOUSE_ANALOGS(board)              (IS_HORUS_X10(board) ? 2 : (Boards::getCapability(board, Board::MouseAnalogs))) //TODO need to be remove when x10 eeprom gets fixed
 #define MAX_SWITCHES(board, version)          (Boards::getCapability(board, Board::Switches))
@@ -43,10 +42,10 @@ using namespace Board;
 #define MAX_EXPOS(board, version)             (IS_HORUS_OR_TARANIS(board) ? 64 : 32)
 #define MAX_LOGICAL_SWITCHES(board, version)  (version >= 218 ? 64 : 32)
 #define MAX_CUSTOM_FUNCTIONS(board, version)  64
-#define MAX_CURVES(board, version)            (HAS_LARGE_LCD(board) ? 32 : 16)
+#define MAX_CURVES(board, version)            ((version >= 219 || HAS_LARGE_LCD(board)) ? 32 : 16)
 #define MAX_GVARS(board, version)             9
 #define MAX_SCRIPTS(board)                    (IS_HORUS(board) ? 9 : 7)
-#define MAX_TELEMETRY_SENSORS(board, version) (32)
+#define MAX_TELEMETRY_SENSORS(board, version) (version <= 218 ? 32 : ((IS_HORUS(board) || IS_TARANIS_X9(board)) ? 60 : 40))
 #define NUM_PPM_INPUTS(board, version)        16
 #define ROTENC_COUNT(board, version)          ((IS_STM32(board) && version >= 218) ? 0 : 1)
 #define MAX_AUX_TRIMS(board)                  (IS_HORUS(board) ? 2 : 0)
@@ -84,7 +83,7 @@ class SwitchesConversionTable: public ConversionTable {
       }
 
       if (IS_HORUS_OR_TARANIS(board)) {
-        for (int i=1; i<=MAX_POTS(board, version)*6; i++) {
+        for (int i=1; i<=Boards::getCapability(board, Board::Pots)*6; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_MULTIPOS_POT, i), val++);
         }
@@ -118,7 +117,7 @@ class SwitchesConversionTable: public ConversionTable {
       if (version >= 218) {
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, -1), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), val++);
-        for (int i=1; i<=CPN_MAX_SENSORS; i++) {
+        for (unsigned i=1; i<=CPN_MAX_SENSORS; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
@@ -206,7 +205,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board)+MAX_MOUSE_ANALOGS(board); i++) {
+      for (int i=0; i<CPN_MAX_STICKS+Boards::getCapability(board, Board::Pots)+MAX_SLIDERS(board)+MAX_MOUSE_ANALOGS(board); i++) {
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
       }
 
@@ -248,7 +247,7 @@ class SourcesConversionTable: public ConversionTable {
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 2), val++); // Timer1
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 3), val++); // Timer2
         addConversion(RawSource(SOURCE_TYPE_SPECIAL, 4), val++); // Timer3
-        for (int i=0; i<CPN_MAX_SENSORS*3; ++i) {
+        for (unsigned i=0; i<CPN_MAX_SENSORS*3; ++i) {
           addConversion(RawSource(SOURCE_TYPE_TELEMETRY, i), val++);
         }
       }
@@ -714,7 +713,7 @@ class MixField: public TransformedField {
         internalField.Append(new UnsignedField<8>(this, mix.speedDown));
         if (IS_HORUS(board))
           internalField.Append(new ZCharField<6>(this, mix.name));
-        else if (HAS_LARGE_LCD(board))
+        else if (HAS_LARGE_LCD(board) && version <= 218)
           internalField.Append(new ZCharField<8>(this, mix.name));
         else
           internalField.Append(new ZCharField<6>(this, mix.name));
@@ -851,7 +850,7 @@ class InputField: public TransformedField {
         internalField.Append(new SpareBitsField<1>(this));
         if (IS_HORUS(board))
           internalField.Append(new ZCharField<6>(this, expo.name));
-        else if (HAS_LARGE_LCD(board))
+        else if (HAS_LARGE_LCD(board) && version <= 218)
           internalField.Append(new ZCharField<8>(this, expo.name));
         else
           internalField.Append(new ZCharField<6>(this, expo.name));
@@ -1869,18 +1868,20 @@ class FrskyField: public StructField {
       telemetryVoltsSourceConversionTable(board, version),
       telemetryCurrentSourceConversionTable(board, version)
     {
-      rssiConversionTable[0] = RSSIConversionTable(0);
-      rssiConversionTable[1] = RSSIConversionTable(1);
+      if (version <= 218) {
+        rssiConversionTable[0] = RSSIConversionTable(0);
+        rssiConversionTable[1] = RSSIConversionTable(1);
 
-      if (!IS_HORUS(board)) {
-        Append(new UnsignedField<8>(this, frsky.voltsSource, "Volts Source"));
-        Append(new UnsignedField<8>(this, frsky.altitudeSource, "Altitude Source"));
+        if (!IS_HORUS(board)) {
+          Append(new UnsignedField<8>(this, frsky.voltsSource, "Volts Source"));
+          Append(new UnsignedField<8>(this, frsky.altitudeSource, "Altitude Source"));
 
-        for (int i = 0; i < 4; i++) {
-          Append(new UnsignedField<2>(this, frsky.screens[i].type));
-        }
-        for (int i = 0; i < 4; i++) {
-          Append(new FrskyScreenField(this, frsky.screens[i], board, version, variant));
+          for (int i = 0; i < 4; i++) {
+            Append(new UnsignedField<2>(this, frsky.screens[i].type));
+          }
+          for (int i = 0; i < 4; i++) {
+            Append(new FrskyScreenField(this, frsky.screens[i], board, version, variant));
+          }
         }
       }
 
@@ -1890,11 +1891,13 @@ class FrskyField: public StructField {
       Append(new SignedField<8>(this, frsky.varioCenterMin));
       Append(new SignedField<8>(this, frsky.varioMin));
       Append(new SignedField<8>(this, frsky.varioMax));
-      Append(new BoolField<1>(this, rssiAlarms.disabled));
-      Append(new SpareBitsField<1>(this));
-      Append(new ConversionField<SignedField<6> >(this, rssiAlarms.warning, -45));
-      Append(new SpareBitsField<2>(this));
-      Append(new ConversionField<SignedField<6> >(this, rssiAlarms.critical, -42));
+      if (version <= 218) {
+        Append(new BoolField<1>(this, rssiAlarms.disabled));
+        Append(new SpareBitsField<1>(this));
+        Append(new ConversionField<SignedField<6> >(this, rssiAlarms.warning, -45));
+        Append(new SpareBitsField<2>(this));
+        Append(new ConversionField<SignedField<6> >(this, rssiAlarms.critical, -42));
+      }
     }
 
   protected:
@@ -2033,7 +2036,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 {
   sprintf(name, "Model %s", modelData.name);
 
-  qCDebug(eepromImport) << QString("OpenTxModelData::OpenTxModelData(name: %1, board: %2, ver: %3, var: %4)").arg(name).arg(board).arg(version).arg(variant);
+  qDebug() << QString("OpenTxModelData::OpenTxModelData(name: %1, board: %2, ver: %3, var: %4)").arg(name).arg(board).arg(version).arg(variant);
 
   if (IS_HORUS(board))
     internalField.Append(new ZCharField<15>(this, modelData.name, "Model name"));
@@ -2143,9 +2146,23 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     }
   }
 
+  // TODO rename to VARIO
   internalField.Append(new FrskyField(this, modelData.frsky, modelData.rssiAlarms, board, version, variant));
 
-  if (IS_STM32(board)) {
+  if (version >= 219) {
+    // TODO RSSI SOURCE
+    internalField.Append(new SpareBitsField<8>(this));
+
+    if (IS_TARANIS_X9(board)) {
+      // TODO TOPBAR
+      internalField.Append(new SpareBitsField<16>(this));
+    }
+
+    // TODO RSSI ALARMS
+    internalField.Append(new SpareBitsField<16>(this));
+  }
+
+  if (IS_STM32(board) && version <= 218) {
     internalField.Append(new SpareBitsField<3>(this));
     internalField.Append(new UnsignedField<3>(this, modelData.trainerMode));
     internalField.Append(new UnsignedField<2>(this, modelData.potsWarningMode));
@@ -2155,7 +2172,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<2>(this, modelData.potsWarningMode));
   }
 
-  int modulesCount = 3;
+  int modulesCount = (version <= 218 ? 3 : 2);
   for (int module=0; module<modulesCount; module++) {
     internalField.Append(new ConversionField<SignedField<4> >(this, modelData.moduleData[module].protocol, &protocolsConversionTable, "Protocol", DataField::tr("OpenTX doesn't accept this radio protocol")));
     internalField.Append(new SignedField<4>(this, subprotocols[module]));
@@ -2164,13 +2181,37 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<4>(this, modelData.moduleData[module].failsafeMode));
     internalField.Append(new UnsignedField<3>(this, modelData.moduleData[module].subType));
     internalField.Append(new BoolField<1>(this, modelData.moduleData[module].invertedSerial));
-    for (int i=0; i<32; i++) {
-      internalField.Append(new SignedField<16>(this, modelData.moduleData[module].failsafeChannels[i]));
+    if (version <= 218) {
+      for (int i=0; i<32; i++) {
+        internalField.Append(new SignedField<16>(this, modelData.moduleData[module].failsafeChannels[i]));
+      }
     }
     internalField.Append(new ConversionField< SignedField<6> >(this, modelData.moduleData[module].ppm.delay, exportPpmDelay, importPpmDelay));
     internalField.Append(new BoolField<1>(this, modelData.moduleData[module].ppm.pulsePol));
     internalField.Append(new BoolField<1>(this, modelData.moduleData[module].ppm.outputType));
     internalField.Append(new SignedField<8>(this, modelData.moduleData[module].ppm.frameLength));
+    if (version >= 219) {
+      // TODO ACCESS
+      internalField.Append(new SpareBitsField<(1 + 3 * 8 - 2) * 8>(this));
+    }
+  }
+
+  if (version >= 219) {
+    for (int i = 0; i < 32; i++) {
+      internalField.Append(new SignedField<16>(this, modelData.moduleData[0].failsafeChannels[i]));
+    }
+  }
+
+  if (version >= 219) {
+    // Trainer PPM settings
+    internalField.Append(new SpareBitsField<3>(this)); // TODO mode
+    internalField.Append(new SpareBitsField<5>(this));
+    internalField.Append(new UnsignedField<8>(this, modelData.moduleData[2].channelsStart));
+    internalField.Append(new ConversionField<SignedField<8> >(this, modelData.moduleData[2].channelsCount, -8));
+    internalField.Append(new SignedField<8>(this, modelData.moduleData[2].ppm.frameLength));
+    internalField.Append(new ConversionField<SignedField<6> >(this, modelData.moduleData[2].ppm.delay, exportPpmDelay, importPpmDelay));
+    internalField.Append(new BoolField<1>(this, modelData.moduleData[2].ppm.pulsePol));
+    internalField.Append(new SpareBitsField<1>(this));
   }
 
   if (IS_TARANIS(board) && version < 218) {
@@ -2210,13 +2251,13 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
   }
 
   for (int i=0; i<8; i++) {
-    if (i < MAX_POTS(board, version)+MAX_SLIDERS(board))
+    if (i < Boards::getCapability(board, Board::Pots) + MAX_SLIDERS(board))
       internalField.Append(new BoolField<1>(this, modelData.potsWarningEnabled[i]));
     else
       internalField.Append(new SpareBitsField<1>(this));
   }
 
-  for (int i=0; i < MAX_POTS(board, version)+MAX_SLIDERS(board); i++) {
+  for (int i=0; i < Boards::getCapability(board, Board::Pots) + MAX_SLIDERS(board); i++) {
     internalField.Append(new SignedField<8>(this, modelData.potPosition[i]));
   }
 
@@ -2346,7 +2387,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(CPN_MAX_STICKS+MAX_POTS(board, version)+MAX_SLIDERS(board)+MAX_MOUSE_ANALOGS(board))
+  inputsCount(CPN_MAX_STICKS + Boards::getCapability(board, Board::Pots) + MAX_SLIDERS(board) + MAX_MOUSE_ANALOGS(board))
 {
   qCDebug(eepromImport) << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
 
@@ -2513,7 +2554,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
       }
     }
     for (int i=0; i<4; i++) {
-      if (i < MAX_POTS(board, version))
+      if (i < Boards::getCapability(board, Board::Pots))
         internalField.Append(new UnsignedField<2>(this, generalData.potConfig[i]));
       else
         internalField.Append(new SpareBitsField<2>(this));
@@ -2551,7 +2592,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     for (int i=0; i<CPN_MAX_STICKS; ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.stickName[i], "Stick name"));
     }
-    for (int i=0; i<MAX_POTS(board, version); ++i) {
+    for (int i=0; i<Boards::getCapability(board, Board::Pots); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.potName[i], "Pot name"));
     }
     for (int i=0; i<MAX_SLIDERS(board); ++i) {
@@ -2572,7 +2613,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     for (int i=0; i<CPN_MAX_STICKS; ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.stickName[i], "Stick name"));
     }
-    for (int i=0; i<MAX_POTS(board, version); ++i) {
+    for (int i=0; i<Boards::getCapability(board, Board::Pots); ++i) {
       internalField.Append(new ZCharField<3>(this, generalData.potName[i], "Pot name"));
     }
     for (int i=0; i<MAX_SLIDERS(board); ++i) {
