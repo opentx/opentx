@@ -209,7 +209,7 @@ class OutputTelemetryBuffer {
     {
       size = 0;
       uint16_t crc = 0;
-      sport.physicalId = packet.physicalId; // no bytestuffing, no CRC
+      pushByte(packet.physicalId); // no bytestuffing, no CRC
       for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
         uint8_t byte = packet.raw[i];
         pushByteWithBytestuffing(byte);
