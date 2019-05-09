@@ -248,7 +248,7 @@ void processOtaUpdateFrame(uint8_t module, uint8_t * frame)
   OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
 
   if (destination->step == OTA_UPDATE_START) {
-    if (frame[3] == 0x00 && memcmp(&destination->candidateReceiversNames[destination->selectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+    if (frame[3] == 0x00 && memcmp(destination->candidateReceiversNames[destination->selectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
       destination->step = OTA_UPDATE_START_ACK;
     }
   }
@@ -260,7 +260,7 @@ void processOtaUpdateFrame(uint8_t module, uint8_t * frame)
   }
   else if (destination->step == OTA_UPDATE_EOF) {
     if (frame[3] == 0x02) {
-      destination->step = OTA_UPDATE_END;
+      destination->step = OTA_UPDATE_EOF_ACK;
     }
   }
 }

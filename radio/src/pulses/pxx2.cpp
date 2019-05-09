@@ -393,17 +393,34 @@ bool Pxx2OtaUpdate::waitStep(uint8_t step, uint8_t timeout)
   return true;
 }
 
+const char * Pxx2OtaUpdate::nextStep(uint8_t step, const char * rxName, uint32_t address, const uint8_t * buffer)
+{
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+
+  destination->step = step;
+  destination->address = address;
+
+  for (uint8_t retry = 0;; retry++) {
+    extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
+    if (waitStep(step + 1, 10)) {
+      return nullptr;
+    }
+    else if (retry == 100) {
+      return "Transfer failed";
+    }
+  }
+}
+
 const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
 {
   FIL file;
   uint8_t buffer[32];
   UINT count;
-  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+  const char * result;
 
-  destination->step = OTA_UPDATE_START;
-  extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, 0, nullptr);
-  if (!waitStep(OTA_UPDATE_START_ACK, 10)) {
-    return "Transfer failed";
+  result = nextStep(OTA_UPDATE_START, rxName, 0, nullptr);
+  if (result) {
+    return result;
   }
 
   if (f_open(&file, filename, FA_READ) != FR_OK) {
@@ -418,25 +435,21 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
       f_close(&file);
       return "Read file failed";
     }
-    destination->step = OTA_UPDATE_TRANSFER;
-    extmodulePulsesData.pxx2.sendOtaUpdate(module, nullptr, done, (char *)buffer);
-    if (!waitStep(OTA_UPDATE_TRANSFER_ACK, 10)) {
-      return "Transfer failed";
+
+    result = nextStep(OTA_UPDATE_TRANSFER, nullptr, done, buffer);
+    if (result) {
+      return result;
     }
+
     if (count < sizeof(buffer)) {
       f_close(&file);
       break;
     }
+
     done += count;
   }
 
-  destination->step = OTA_UPDATE_EOF;
-  extmodulePulsesData.pxx2.sendOtaUpdate(module, nullptr, done, nullptr);
-  if (!waitStep(OTA_UPDATE_END, 10)) {
-    return "Transfer failed";
-  }
-
-  return nullptr;
+  return nextStep(OTA_UPDATE_EOF, nullptr, done, nullptr);
 }
 
 void Pxx2OtaUpdate::flashFirmware(const char * filename)
