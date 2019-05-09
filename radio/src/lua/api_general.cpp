@@ -463,7 +463,18 @@ static int luaSportTelemetryPush(lua_State * L)
       packet.dataId = dataId;
       packet.value = luaL_checkunsigned(L, 4);
       outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+#if defined(PXX2)
+      uint8_t destination = (IS_INTERNAL_MODULE_ON() ? INTERNAL_MODULE : EXTERNAL_MODULE);
+
+      if (isModulePXX2(destination)) {
+        outputTelemetryBuffer.setDestination(destination << 2);
+      }
+      else {
+        outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+      }
+#else
       outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+#endif
       lua_pushboolean(L, true);
       return 1;
     }
@@ -497,6 +508,7 @@ When called without parameters, it will only return the status of the output buf
 @retval boolean  data queued in output buffer or not.
 
 @status current Introduced in 2.3
+
 */
 
 static int luaAccessTelemetryPush(lua_State * L)
