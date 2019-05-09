@@ -402,7 +402,7 @@ const char * Pxx2OtaUpdate::nextStep(uint8_t step, const char * rxName, uint32_t
 
   for (uint8_t retry = 0;; retry++) {
     extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
-    if (waitStep(step + 1, 10)) {
+    if (waitStep(step + 1, 20)) {
       return nullptr;
     }
     else if (retry == 100) {
