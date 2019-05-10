@@ -847,6 +847,7 @@
 #define TR_UPDATE_RX_OPTIONS           "Uložit nastavení?"
 #define TR_UPDATE_TX_OPTIONS           "Uložit nastavení?"
 #define TR_MODULES_RX_VERSION          "Verze modulu a RX"
+#define TR_MENU_MODULES_RX_VERSION     "MODULES / RX VERSION"
 #define TR_GYRO                        "Gyro"
 #define TR_STICKS_POTS_SLIDERS         "Páky/Poty/Slidery"
 #define TR_PWM_STICKS_POTS_SLIDERS     "PWM Páky/Poty/Slidery"
