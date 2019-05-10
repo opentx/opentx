@@ -30,6 +30,7 @@ using namespace Board;
 #define MAX_VIEWS(board)                      (HAS_LARGE_LCD(board) ? 2 : 256)
 #define MAX_SLIDERS(board)                    (IS_HORUS_X10(board) ? 4 : (Boards::getCapability(board, Board::Sliders))) //TODO need to be remove when x10 eeprom gets fixed
 #define MAX_MOUSE_ANALOGS(board)              (IS_HORUS_X10(board) ? 2 : (Boards::getCapability(board, Board::MouseAnalogs))) //TODO need to be remove when x10 eeprom gets fixed
+#define MAX_GYRO_ANALOGS(board, version)      (version >= 219 ? Boards::getCapability(board, Board::GyroAnalogs) : 0)
 #define MAX_SWITCHES(board, version)          (Boards::getCapability(board, Board::Switches))
 #define MAX_SWITCH_SLOTS(board, version)      (IS_TARANIS_X9E(board) ? 32 : 8)  // bitsize of swconfig_t / 2 (see radio/src/datastructs.h)
 #define MAX_SWITCHES_POSITION(board, version) (Boards::getCapability(board, Board::SwitchPositions))
@@ -205,7 +206,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS+Boards::getCapability(board, Board::Pots)+MAX_SLIDERS(board)+MAX_MOUSE_ANALOGS(board); i++) {
+      for (int i=0; i<CPN_MAX_STICKS+Boards::getCapability(board, Board::Pots)+MAX_SLIDERS(board)+MAX_MOUSE_ANALOGS(board)+MAX_GYRO_ANALOGS(board, version); i++) {
         addConversion(RawSource(SOURCE_TYPE_STICK, i), val++);
       }
 
