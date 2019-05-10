@@ -751,26 +751,30 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
       case 0:
         switch (proto) {
           case PULSES_OFF:
+            return 1;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return 1;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 0 : 1;
           case PULSES_PXX_XJT_D8:
-            return id.contains("eu") ? 0 : 1;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board) || id.contains("eu")) ? 0 : 1;
           case PULSES_PPM:
             return id.contains("internalppm") ? 1 : 0;
+          case PULSES_ACCESS_ISRM:
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 1 : 0;
           default:
             return 0;
         }
-        break;
+
       case 1:
         switch (proto) {
           case PULSES_OFF:
           case PULSES_PPM:
+            return 1;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 0 : 1;
           case PULSES_PXX_R9M:
-            //case PULSES_PXX_DJT:     // Unavailable for now
           case PULSES_LP45:
           case PULSES_DSM2:
           case PULSES_DSMX:
@@ -779,10 +783,13 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return 1;
           case PULSES_MULTIMODULE:
             return id.contains("multimodule") ? 1 : 0;
+          case PULSES_ACCESS_R9M_LITE:
+          case PULSES_ACCESS_R9M_LITE_PRO:
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 1 : 0;
           default:
             return 0;
         }
-        break;
+
       case -1:
         switch (proto) {
           case PULSES_PPM:
@@ -790,7 +797,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           default:
             return 0;
         }
-        break;
+
       default:
         return 0;
     }
