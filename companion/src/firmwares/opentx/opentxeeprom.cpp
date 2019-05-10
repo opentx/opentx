@@ -117,7 +117,7 @@ class SwitchesConversionTable: public ConversionTable {
       if (version >= 218) {
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, -1), -val+offset);
         addConversion(RawSwitch(SWITCH_TYPE_TELEMETRY, 1), val++);
-        for (unsigned i=1; i<=CPN_MAX_SENSORS; i++) {
+        for (int i=1; i<=CPN_MAX_SENSORS; i++) {
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, -i), -val+offset);
           addConversion(RawSwitch(SWITCH_TYPE_SENSOR, i), val++);
         }
