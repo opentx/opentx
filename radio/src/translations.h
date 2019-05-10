@@ -673,6 +673,11 @@ extern const char STR_ANALOGS_BTN[];
 extern const char STR_CALIB_BTN[];
 
 extern const char STR_NO_TOOLS[];
+extern const char STR_FLEX_915[];
+extern const char STR_FLEX_868[];
+extern const char STR_16CH_WITHOUT_TELEMETRY[];
+extern const char STR_16CH_WITH_TELEMETRY[];
+extern const char STR_8CH_WITH_TELEMETRY[];
 extern const char STR_EXT_ANTENNA[];
 extern const char STR_PIN[];
 extern const char STR_UPDATE_RX_OPTIONS[];
