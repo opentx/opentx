@@ -61,7 +61,6 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
 #ifdef JOYSTICKS
   , joystick(NULL)
 #endif
-
 {
   ui->setupUi(this);
 
@@ -522,6 +521,7 @@ void SimulatorWidget::shutdown()
 
 void SimulatorWidget::setRadioProfileId(int value)
 {
+  Q_ASSERT(value >= 0);
   radioProfileId = value;
   emit simulatorVolumeGainChange(g.profile[radioProfileId].volumeGain());
 }
