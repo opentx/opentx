@@ -70,7 +70,7 @@ void menuModelReceiverOptions(event_t event)
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
       abortPopMenu();
-      POPUP_CONFIRMATION("Update RX options?", onRxOptionsUpdateConfirm);
+      POPUP_CONFIRMATION(STR_UPDATE_RX_OPTIONS, onRxOptionsUpdateConfirm);
     }
     else {
       return;
@@ -123,7 +123,7 @@ void menuModelReceiverOptions(event_t event)
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
             uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
             int32_t channelValue = channelOutputs[channel];
-            lcdDrawText(0, y, "Pin");
+            lcdDrawText(0, y, STR_PIN);
             lcdDrawNumber(lcdLastRightPos + 1, y, pin + 1);
             putsChn(7 * FW, y, channel + 1, attr);
 
@@ -151,6 +151,6 @@ void menuModelReceiverOptions(event_t event)
     }
   }
   else {
-    lcdDrawCenteredText(LCD_H/2, "Waiting for RX...");
+    lcdDrawCenteredText(LCD_H/2, STR_WAITING_FOR_RX);
   }
 }

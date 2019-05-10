@@ -98,7 +98,7 @@ bool menuModelModuleOptions(event_t event)
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
       abortPopMenu();
-      POPUP_CONFIRMATION("Update TX options?", onTxOptionsUpdateConfirm);
+      POPUP_CONFIRMATION(STR_UPDATE_TX_OPTIONS, onTxOptionsUpdateConfirm);
     }
     else {
       return true;
@@ -138,7 +138,7 @@ bool menuModelModuleOptions(event_t event)
 
       switch (i) {
         case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "RF Protocol");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RF_PROTOCOL);
           lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
           if (attr) {
             reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
@@ -149,7 +149,7 @@ bool menuModelModuleOptions(event_t event)
           break;
 
         case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "Ext. antenna");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_EXT_ANTENNA);
           reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
           if (attr && checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
@@ -157,7 +157,7 @@ bool menuModelModuleOptions(event_t event)
           break;
 
         case ITEM_MODULE_SETTINGS_POWER:
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "Power");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_POWER);
           lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
           lcdDrawText(lcdNextPos, y, "dBm(");
           drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
@@ -173,7 +173,7 @@ bool menuModelModuleOptions(event_t event)
     }
   }
   else {
-    lcdDrawCenteredText(LCD_H/2, "Waiting for TX...");
+    lcdDrawCenteredText(LCD_H/2, STR_WAITING_FOR_TX);
   }
   return true;
 }

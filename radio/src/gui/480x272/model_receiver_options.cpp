@@ -70,7 +70,7 @@ bool menuModelReceiverOptions(event_t event)
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.receiverSettings.dirty) {
       abortPopMenu();
-      POPUP_CONFIRMATION("Update RX options?", onRxOptionsUpdateConfirm);
+      POPUP_CONFIRMATION(STR_UPDATE_RX_OPTIONS, onRxOptionsUpdateConfirm);
     }
     else {
       return true;
