@@ -400,12 +400,13 @@ PACK(struct TelemetrySensor {
 
 PACK(struct TrainerModuleData {
   uint8_t mode:3;
-  uint8_t spare:5;
+  uint8_t spare1:5;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
   int8_t frameLength;
   int8_t  delay:6;
   uint8_t pulsePol:1;
+  uint8_t spare2:1;
 });
 
 /*
@@ -598,17 +599,18 @@ PACK(struct ModelData {
   NOBACKUP(VarioData varioData);
   NOBACKUP(uint8_t rssiSource);
 
-  TOPBAR_DATA;
+  TOPBAR_DATA
 
   NOBACKUP(RssiAlarmData rssiAlarms);
 
   NOBACKUP(uint8_t spare1:6);
   NOBACKUP(uint8_t potsWarnMode:2);
+
   ModuleData moduleData[NUM_MODULES];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
   TrainerModuleData trainerData;
 
-  SCRIPT_DATA;
+  SCRIPT_DATA
 
   NOBACKUP(char inputNames[MAX_INPUTS][LEN_INPUT_NAME]);
   NOBACKUP(uint8_t potsWarnEnabled);

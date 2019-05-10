@@ -86,7 +86,7 @@ void readModelNotes()
     strcpy(buf, TEXT_EXT);
   }
 
-  clearKeyEvents();
+  waitKeysReleased();
   event_t event = EVT_ENTRY;
   while (event != EVT_KEY_FIRST(KEY_EXIT)) {
     lcdRefreshWait();

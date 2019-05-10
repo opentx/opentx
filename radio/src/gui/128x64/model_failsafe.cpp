@@ -22,9 +22,9 @@
 
 extern uint8_t g_moduleIdx;
 
-void onFailsafeMenu(const char *result)
+void onFailsafeMenu(const char * result)
 {
-  uint8_t sub = menuVerticalPosition + HEADER_LINE;
+  uint8_t sub = menuVerticalPosition;
   int16_t & failsafe = g_model.failsafeChannels[sub];
   int32_t channelValue = channelOutputs[sub];
 
@@ -45,7 +45,7 @@ void onFailsafeMenu(const char *result)
 
 void menuModelFailsafe(event_t event)
 {
-  uint8_t sub = menuVerticalPosition + HEADER_LINE;
+  uint8_t sub = menuVerticalPosition;
   const coord_t x = 1;
   const int lim = (g_model.extendedLimits ? (512 * LIMIT_EXT_PERCENT / 100) : 512) * 2;
 
@@ -54,9 +54,9 @@ void menuModelFailsafe(event_t event)
   lcdDrawTextAlignedCenter(0, FAILSAFESET);
   lcdInvertLine(0);
 
-  for (uint8_t i=0; i<LCD_LINES-1; i++) {
+  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + i * FH;
-    uint8_t k = i + menuVerticalOffset + HEADER_LINE;
+    uint8_t k = i + menuVerticalOffset;
     LcdFlags attr = (sub == k) ? INVERS : 0;
 
     uint8_t wbar = LCD_W - FW * 4 - FWNUM * 4;
@@ -77,7 +77,7 @@ void menuModelFailsafe(event_t event)
     int32_t failsafeValue = g_model.failsafeChannels[k];
 
     // Channel
-    putsChn(0, y, k, SMLSIZE);
+    putsChn(0, y, k + 1, SMLSIZE);
 
     // Value
     LcdFlags flags = TINSIZE;

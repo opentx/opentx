@@ -54,7 +54,7 @@ uint8_t getRequiredProtocol(uint8_t module)
       protocol = PROTOCOL_CHANNELS_PPM;
       break;
 
-    case MODULE_TYPE_XJT:
+    case MODULE_TYPE_PXX_XJT:
 #if defined(INTMODULE_USART)
       if (module == INTERNAL_MODULE) {
         protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
@@ -63,18 +63,18 @@ uint8_t getRequiredProtocol(uint8_t module)
 #endif
       // no break
 
-    case MODULE_TYPE_R9M:
+    case MODULE_TYPE_PXX_R9M:
       protocol = PROTOCOL_CHANNELS_PXX1_PULSES;
       break;
 
-    case MODULE_TYPE_R9M_LITE:
+    case MODULE_TYPE_PXX_R9M_LITE:
       protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
       break;
 
-    case MODULE_TYPE_XJT2:
-    case MODULE_TYPE_R9M2:
-    case MODULE_TYPE_R9M_LITE2:
-    case MODULE_TYPE_R9M_LITE_PRO2:
+    case MODULE_TYPE_ACCESS_ISRM:
+    case MODULE_TYPE_ACCESS_R9M:
+    case MODULE_TYPE_ACCESS_R9M_LITE:
+    case MODULE_TYPE_ACCESS_R9M_LITE_PRO:
       protocol = PROTOCOL_CHANNELS_PXX2;
       break;
 

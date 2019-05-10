@@ -185,6 +185,12 @@ PACK(typedef struct {
   char     name[LEN_TIMER_NAME_218];
 }) TimerData_v218;
 
+#if defined(PCBSKY9X)
+  #define ROTENC_DATA       int16_t rotaryEncoders[1];
+#else
+  #define ROTENC_DATA
+#endif
+
 PACK(typedef struct {
   trim_t trim[NUM_STICKS];
   char name[LEN_FLIGHT_MODE_NAME_218];
@@ -192,9 +198,7 @@ PACK(typedef struct {
   int16_t spare:7;
   uint8_t fadeIn;
   uint8_t fadeOut;
-#if defined(PCBSKY9X)
-  int16_t rotaryEncoders[1];
-#endif
+  ROTENC_DATA
   gvar_t gvars[MAX_GVARS_218];
 }) FlightModeData_v218;
 
@@ -387,6 +391,12 @@ PACK(struct TelemetrySensor_218 {
   };
 });
 
+#if defined(PCBTARANIS)
+  #define VIEW_DATA   uint8_t view;
+#else
+  #define VIEW_DATA
+#endif
+
 PACK(typedef struct {
   ModelHeader header;
   TimerData_v218 timers[MAX_TIMERS_218];
@@ -430,11 +440,8 @@ PACK(typedef struct {
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
-#if defined(PCBHORUS)
   // TODO conversion for custom screens?
-#elif defined(PCBTARANIS)
-  uint8_t view;
-#endif
+  VIEW_DATA
 }) ModelData_v218;
 
 #if defined(PCBHORUS)

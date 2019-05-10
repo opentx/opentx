@@ -63,7 +63,7 @@ void menuRadioModulesVersion(event_t event)
     return;
   }
 
-  TITLE("MODULES / RX VERSION");
+  TITLE(STR_MENU_MODULES_RX_VERSION);
 
   if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardwareAndSettings.updateTime) {
     // menuVerticalOffset = 0;
@@ -219,7 +219,7 @@ void menuRadioVersion(event_t event)
 #endif
 
 #if defined(PXX2)
-  lcdDrawText(INDENT_WIDTH, y, BUTTON("Modules / RX version"), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
+  lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_MODULES_RX_VERSION), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
   y += FH;
   if (menuVerticalPosition == ITEM_RADIO_MODULES_VERSION && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;

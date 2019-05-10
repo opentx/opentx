@@ -107,7 +107,7 @@ void menuModelModuleOptions(event_t event)
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
       abortPopMenu();
-      POPUP_CONFIRMATION("Update TX options?", onTxOptionsUpdateConfirm);
+      POPUP_CONFIRMATION(STR_UPDATE_TX_OPTIONS, onTxOptionsUpdateConfirm);
     }
     else {
       return;
@@ -132,7 +132,7 @@ void menuModelModuleOptions(event_t event)
   }
 
   int8_t sub = menuVerticalPosition;
-  lcdDrawTextAlignedLeft(0, "Module options");
+  lcdDrawTextAlignedLeft(0, STR_MODULE_OPTIONS);
   lcdDrawText(lcdLastRightPos + 3, 0, PXX2modulesModels[modelId]);
   lcdInvertLine(0);
 
@@ -150,7 +150,7 @@ void menuModelModuleOptions(event_t event)
 
         switch (i) {
           case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
-            lcdDrawText(0, y, "RF Protocol");
+            lcdDrawText(0, y, STR_RF_PROTOCOL);
             lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
             if (attr) {
               reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
@@ -168,7 +168,7 @@ void menuModelModuleOptions(event_t event)
             break;
 
           case ITEM_MODULE_SETTINGS_POWER:
-            lcdDrawText(0, y, "Power");
+            lcdDrawText(0, y, STR_POWER);
             lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
             lcdDrawText(lcdNextPos, y, "dBm(");
             drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
@@ -184,12 +184,12 @@ void menuModelModuleOptions(event_t event)
       }
     }
     else {
-      lcdDrawCenteredText(LCD_H/2, "No TX options");
+      lcdDrawCenteredText(LCD_H/2, STR_NO_TX_OPTIONS);
       s_editMode = 0;
     }
   }
   else {
-    lcdDrawCenteredText(LCD_H/2, "Waiting for TX...");
+    lcdDrawCenteredText(LCD_H/2, STR_WAITING_FOR_TX);
     s_editMode = 0;
   }
 }

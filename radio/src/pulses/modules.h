@@ -50,17 +50,17 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 
 inline bool isModuleXJT(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_XJT;
 }
 
 inline bool isModuleXJT2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_ISRM;
 }
 
 inline bool isModuleXJTVariant(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT || g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_XJT || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_ISRM;
 }
 
 #if defined(PCBFLYSKY)
@@ -115,12 +115,12 @@ inline bool isModulePPM(uint8_t idx)
 
 inline bool isModuleR9M(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_R9M || g_model.moduleData[idx].type == MODULE_TYPE_PXX_R9M_LITE;
 }
 
 inline bool isModuleR9M2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M_LITE || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M_LITE_PRO;
 }
 
 

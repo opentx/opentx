@@ -535,11 +535,11 @@ bool isModuleUSingSport(uint8_t moduleBay, uint8_t moduleType)
     case MODULE_TYPE_PPM:
     case MODULE_TYPE_DSM2:
     case MODULE_TYPE_MULTIMODULE:
-    case MODULE_TYPE_R9M_LITE2:
-    case MODULE_TYPE_R9M_LITE_PRO2:
+    case MODULE_TYPE_ACCESS_R9M_LITE:
+    case MODULE_TYPE_ACCESS_R9M_LITE_PRO:
       return false;
 
-    case MODULE_TYPE_XJT2:
+    case MODULE_TYPE_ACCESS_ISRM:
       if (moduleBay == EXTERNAL_MODULE)
         return false;
 
@@ -559,7 +559,7 @@ bool isInternalModuleAvailable(int moduleType)
     return true;
 
 #if defined(PXX1)
-  if (moduleType == MODULE_TYPE_XJT)
+  if (moduleType == MODULE_TYPE_PXX_XJT)
 #if defined(INTMODULE_NO_PXX1)
     return false;
 #else
@@ -568,7 +568,7 @@ bool isInternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(PXX2)
-  if (moduleType == MODULE_TYPE_XJT2)
+  if (moduleType == MODULE_TYPE_ACCESS_ISRM)
 #if defined(INTMODULE_USART)
     return true;
 #else
@@ -583,17 +583,17 @@ bool isInternalModuleAvailable(int moduleType)
 bool isExternalModuleAvailable(int moduleType)
 {
 #if !defined(PCBXLITE)
-  if (moduleType == MODULE_TYPE_R9M_LITE || moduleType == MODULE_TYPE_R9M_LITE2 || moduleType == MODULE_TYPE_R9M_LITE_PRO2) {
+  if (moduleType == MODULE_TYPE_PXX_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE_PRO) {
     return false;
   }
 #endif
 #if !defined(PXX1)
-  if (moduleType == MODULE_TYPE_XJT || moduleType == MODULE_TYPE_R9M || moduleType == MODULE_TYPE_R9M_LITE) {
+  if (moduleType == MODULE_TYPE_PXX_XJT || moduleType == MODULE_TYPE_PXX_R9M || moduleType == MODULE_TYPE_PXX_R9M_LITE) {
     return false;
   }
 #endif
 #if !defined(PXX2)
-  if (moduleType == MODULE_TYPE_XJT2 || moduleType == MODULE_TYPE_R9M2 || moduleType == MODULE_TYPE_R9M_LITE2 || moduleType == MODULE_TYPE_R9M_LITE_PRO2) {
+  if (moduleType == MODULE_TYPE_ACCESS_ISRM || moduleType == MODULE_TYPE_ACCESS_R9M || moduleType == MODULE_TYPE_ACCESS_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE_PRO) {
     return false;
   }
 #endif
@@ -637,10 +637,10 @@ bool isRfProtocolAvailable(int protocol)
   }
 #endif
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) {
+  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_R9M) {
     return false;
   }
-  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M2) {
+  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_ACCESS_R9M) {
     return false;
   }
 #endif

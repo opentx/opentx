@@ -209,7 +209,7 @@ class OutputTelemetryBuffer {
     {
       size = 0;
       uint16_t crc = 0;
-      sport.physicalId = packet.physicalId; // no bytestuffing, no CRC
+      pushByte(packet.physicalId); // no bytestuffing, no CRC
       for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
         uint8_t byte = packet.raw[i];
         pushByteWithBytestuffing(byte);
@@ -238,7 +238,7 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
 #if defined(STM32)
-#define IS_TELEMETRY_INTERNAL_MODULE() (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT)
+#define IS_TELEMETRY_INTERNAL_MODULE() (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX_XJT)
 #else
 #define IS_TELEMETRY_INTERNAL_MODULE() (false)
 #endif

@@ -737,7 +737,7 @@ void checkSwitches()
 
       lcdRefresh();
       lcdSetContrast();
-      clearKeyEvents();
+      waitKeysReleased();
 
       last_bad_switches = switches_states;
     }

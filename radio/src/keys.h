@@ -110,11 +110,9 @@ inline void putEvent(event_t evt)
 
 void pauseEvents(event_t event);
 void killEvents(event_t event);
-
-bool clearKeyEvents();
+void killAllEvents();
+bool waitKeysReleased();
 event_t getEvent(bool trim=false);
 bool keyDown();
-
-
 
 #endif // _KEYS_H_

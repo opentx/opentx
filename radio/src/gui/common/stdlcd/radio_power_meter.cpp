@@ -60,6 +60,7 @@ void menuRadioPowerMeter(event_t event)
     memclear(&reusableBuffer.powerMeter, sizeof(reusableBuffer.powerMeter));
     reusableBuffer.powerMeter.freq = 2400000000;
     reusableBuffer.powerMeter.attn = 4;
+    reusableBuffer.powerMeter.dirty = true;
     moduleState[g_moduleIdx].mode = MODULE_MODE_POWER_METER;
   }
 
@@ -81,6 +82,7 @@ void menuRadioPowerMeter(event_t event)
           if (checkIncDec_Ret) {
             reusableBuffer.powerMeter.power = 0;
             reusableBuffer.powerMeter.peak = 0;
+            reusableBuffer.powerMeter.dirty = true;
           }
         }
         break;

@@ -248,27 +248,21 @@ void removePXX2ReceiverIfEmpty(uint8_t moduleIdx, uint8_t receiverIdx)
   }
 }
 
-const char * STR_BIND_8CH_WITH_TELEM = TR("8CH with telem.", "8CH with telemetry");
-const char * STR_BIND_16CH_WITH_TELEM = TR("16CH with telem.", "16CH with telemetry");
-const char * STR_BIND_16CH_WITHOUT_TELEM = TR("16CH without telem.", "16CH without telemetry");
-const char * STR_BIND_FLEX_868 = "Flex 868MHz";
-const char * STR_BIND_FLEX_915 = "Flex 915MHz";
-
 void onPXX2R9MBindModeMenu(const char * result)
 {
-  if (result == STR_BIND_8CH_WITH_TELEM) {
+  if (result == STR_8CH_WITH_TELEMETRY) {
     reusableBuffer.moduleSetup.bindInformation.lbtMode = 0;
   }
-  else if (result == STR_BIND_16CH_WITH_TELEM) {
+  else if (result == STR_16CH_WITH_TELEMETRY) {
     reusableBuffer.moduleSetup.bindInformation.lbtMode = 1;
   }
-  else if (result == STR_BIND_16CH_WITHOUT_TELEM) {
+  else if (result == STR_16CH_WITHOUT_TELEMETRY) {
     reusableBuffer.moduleSetup.bindInformation.lbtMode = 2;
   }
-  else if (result == STR_BIND_FLEX_868) {
+  else if (result == STR_FLEX_868) {
     reusableBuffer.moduleSetup.bindInformation.flexMode = 0;
   }
-  else if (result == STR_BIND_FLEX_915) {
+  else if (result == STR_FLEX_915) {
     reusableBuffer.moduleSetup.bindInformation.flexMode = 1;
   }
   else {
@@ -300,15 +294,15 @@ void onPXX2BindMenu(const char * result)
     reusableBuffer.moduleSetup.bindInformation.selectedReceiverIndex = (result - reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]);
     if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_EU) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
-      POPUP_MENU_ADD_ITEM(STR_BIND_8CH_WITH_TELEM);
-      POPUP_MENU_ADD_ITEM(STR_BIND_16CH_WITH_TELEM);
-      POPUP_MENU_ADD_ITEM(STR_BIND_16CH_WITHOUT_TELEM);
+      POPUP_MENU_ADD_ITEM(STR_8CH_WITH_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_16CH_WITH_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_16CH_WITHOUT_TELEMETRY);
       POPUP_MENU_START(onPXX2R9MBindModeMenu);
     }
     else if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_FLEX) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
-      POPUP_MENU_ADD_ITEM(STR_BIND_FLEX_868);
-      POPUP_MENU_ADD_ITEM(STR_BIND_FLEX_915);
+      POPUP_MENU_ADD_ITEM(STR_FLEX_868);
+      POPUP_MENU_ADD_ITEM(STR_FLEX_915);
       POPUP_MENU_START(onPXX2R9MBindModeMenu);
     }
     else {
@@ -498,8 +492,10 @@ void runPopupRegister(event_t event)
 void startRegisterDialog(uint8_t module)
 {
   memclear(&reusableBuffer.moduleSetup.pxx2, sizeof(reusableBuffer.moduleSetup.pxx2));
+  reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = ITEM_REGISTER_BUTTONS;
   moduleState[module].mode = MODULE_MODE_REGISTER;
   s_editMode = 0;
+  killAllEvents();
   POPUP_INPUT("", runPopupRegister);
 }
 
@@ -1025,7 +1021,7 @@ void menuModelSetup(event_t event)
           else if (isModuleXJT(INTERNAL_MODULE)) {
             g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
             if (checkIncDec_Ret) {
-              g_model.moduleData[0].type = MODULE_TYPE_XJT;
+              g_model.moduleData[0].type = MODULE_TYPE_PXX_XJT;
               g_model.moduleData[0].channelsStart = 0;
               g_model.moduleData[0].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
             }
@@ -1227,7 +1223,7 @@ void menuModelSetup(event_t event)
             lcdDrawText(INDENT_WIDTH, y+1, bluetooth.distantAddr, TINSIZE);
           else
             lcdDrawText(INDENT_WIDTH, y, "---");
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, bluetooth.state == BLUETOOTH_STATE_CONNECTED ? "Connected" : "!Connected");
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, bluetooth.state == BLUETOOTH_STATE_CONNECTED ? STR_CONNECTED : STR_NOT_CONNECTED);
         }
         break;
 #endif
@@ -1274,7 +1270,7 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, moduleData.channelsStart, 32-8-moduleData.channelsCount);
                 break;
               case 1:
-                CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), moduleData.type == MODULE_TYPE_XJT2 ? isPXX2ChannelsCountAllowed : nullptr);
+                CHECK_INCDEC_MODELVAR_CHECK(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart), moduleData.type == MODULE_TYPE_ACCESS_ISRM ? isPXX2ChannelsCountAllowed : nullptr);
                 if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }
@@ -1485,7 +1481,7 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, STR_REFRESHRATE);
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)moduleData.ppm.frameLength*5 + 225, (menuHorizontalPosition<=0 ? attr : 0) | PREC1|LEFT);
           lcdDrawText(lcdLastRightPos, y, STR_MS);
-          lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW+2, y, moduleData.sbus.noninverted ? "no inv" : "normal", (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN+5*FW+2, y, moduleData.sbus.noninverted ? STR_NOT_INVERTED : STR_NORMAL, (CURSOR_ON_LINE() || menuHorizontalPosition==1) ? attr : 0);
 
           if (attr && s_editMode>0) {
             switch (menuHorizontalPosition) {
@@ -1731,7 +1727,7 @@ void menuModelSetup(event_t event)
           lcdDrawTextAlignedLeft(y, TR_MULTI_RFPOWER);
           if (isModuleR9M_FCC_VARIANT(moduleIdx)) {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_FCC_POWER_MAX); // Lite FCC has only one setting
-            if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_R9M_LITE) { // R9M lite FCC has only one power value, so displayed for info only
+            if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_PXX_R9M_LITE) { // R9M lite FCC has only one power value, so displayed for info only
               lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_FCC_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT);
               if (attr)
                 REPEAT_LAST_CURSOR_MOVE();
@@ -1742,7 +1738,7 @@ void menuModelSetup(event_t event)
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.moduleData[moduleIdx].pxx.power, R9M_FCC_POWER_MAX);
             }
           }
-          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_R9M_LITE) {
+          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_PXX_R9M_LITE) {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LITE_LBT_POWER_MAX);
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LITE_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr) {
@@ -1755,7 +1751,7 @@ void menuModelSetup(event_t event)
               reusableBuffer.moduleSetup.r9mPower = g_model.moduleData[moduleIdx].pxx.power;
             }
           }
-          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_R9M) {
+          else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_PXX_R9M) {
             g_model.moduleData[moduleIdx].pxx.power = min((uint8_t)g_model.moduleData[moduleIdx].pxx.power, (uint8_t)R9M_LBT_POWER_MAX);
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_R9M_LBT_POWER_VALUES, g_model.moduleData[moduleIdx].pxx.power, LEFT | attr);
             if (attr) {

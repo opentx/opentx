@@ -27,6 +27,7 @@
 #include "pulses/pxx1.h"
 #include "pulses/pxx2.h"
 #include "modules.h"
+#include "ff.h"
 
 #if NUM_MODULES > 1
   #define IS_RANGECHECK_ENABLE()             (moduleState[0].mode == MODULE_MODE_RANGECHECK || moduleState[1].mode == MODULE_MODE_RANGECHECK)
@@ -83,7 +84,8 @@ enum ModuleSettingsMode
   MODULE_MODE_BIND,
   MODULE_MODE_SHARE,
   MODULE_MODE_RANGECHECK,
-  MODULE_MODE_RESET
+  MODULE_MODE_RESET,
+  MODULE_MODE_OTA_UPDATE,
 };
 
 
@@ -110,35 +112,44 @@ PACK(struct ModuleInformation {
   } receivers[PXX2_MAX_RECEIVERS_PER_MODULE];
 });
 
-struct ModuleSettings {
-  uint8_t state;  // 0x00 = READ 0x40 = WRITE
-  tmr10ms_t retryTime;
-  uint8_t rfProtocol;
-  uint8_t externalAntenna;
-  int8_t txPower;
+class ModuleSettings {
+  public:
+    uint8_t state;  // 0x00 = READ 0x40 = WRITE
+    tmr10ms_t retryTime;
+    uint8_t rfProtocol;
+    uint8_t externalAntenna;
+    int8_t txPower;
 };
 
-struct ReceiverSettings {
-  uint8_t state;  // 0x00 = READ 0x40 = WRITE
-  tmr10ms_t timeout;
-  uint8_t receiverId;
-  uint8_t dirty;
-  uint8_t telemetryDisabled;
-  uint8_t pwmRate;
-  uint8_t outputsCount;
-  uint8_t outputsMapping[24];
+class ReceiverSettings {
+  public:
+    uint8_t state;  // 0x00 = READ 0x40 = WRITE
+    tmr10ms_t timeout;
+    uint8_t receiverId;
+    uint8_t dirty;
+    uint8_t telemetryDisabled;
+    uint8_t pwmRate;
+    uint8_t outputsCount;
+    uint8_t outputsMapping[24];
 };
 
-struct BindInformation {
-  uint8_t step;
-  uint32_t timeout;
-  char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
-  uint8_t candidateReceiversCount;
-  uint8_t selectedReceiverIndex;
-  uint8_t rxUid;
-  uint8_t lbtMode;
-  uint8_t flexMode;
-  PXX2HardwareInformation receiverInformation;
+class BindInformation {
+  public:
+    uint8_t step;
+    uint32_t timeout;
+    char candidateReceiversNames[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME + 1];
+    uint8_t candidateReceiversCount;
+    uint8_t selectedReceiverIndex;
+    uint8_t rxUid;
+    uint8_t lbtMode;
+    uint8_t flexMode;
+    PXX2HardwareInformation receiverInformation;
+};
+
+class OtaUpdateInformation: public BindInformation {
+  public:
+    char filename[_MAX_LFN+1];
+    uint32_t address;
 };
 
 typedef void (* ModuleCallback)();
@@ -162,6 +173,7 @@ PACK(struct ModuleState {
     ModuleInformation * moduleInformation;
     ModuleSettings * moduleSettings;
     BindInformation * bindInformation;
+    OtaUpdateInformation * otaUpdateInformation;
   };
   ModuleCallback callback;
 
@@ -407,5 +419,5 @@ enum R9MLBTPowerValues {
 };
 
 #define BIND_CH9TO16_ALLOWED(idx)    (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power != R9M_LBT_POWER_25)
-#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
+#define BIND_TELEM_ALLOWED(idx)      (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_R9M) ? (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LBT_POWER_200)) : (!(IS_TELEMETRY_INTERNAL_MODULE() && moduleIdx == EXTERNAL_MODULE) && (!isModuleR9M_LBT(idx) || g_model.moduleData[idx].pxx.power < R9M_LITE_LBT_POWER_100))
 #endif // _PULSES_H_

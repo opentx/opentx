@@ -239,6 +239,32 @@ void processPowerMeterFrame(uint8_t module, uint8_t * frame)
   }
 }
 
+void processOtaUpdateFrame(uint8_t module, uint8_t * frame)
+{
+  if (moduleState[module].mode != MODULE_MODE_OTA_UPDATE) {
+    return;
+  }
+
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+
+  if (destination->step == OTA_UPDATE_START) {
+    if (frame[3] == 0x00 && memcmp(destination->candidateReceiversNames[destination->selectedReceiverIndex], &frame[4], PXX2_LEN_RX_NAME) == 0) {
+      destination->step = OTA_UPDATE_START_ACK;
+    }
+  }
+  else if (destination->step == OTA_UPDATE_TRANSFER) {
+    uint32_t address = *((uint32_t *)&frame[4]);
+    if (frame[3] == 0x01 && destination->address == address) {
+      destination->step = OTA_UPDATE_TRANSFER_ACK;
+    }
+  }
+  else if (destination->step == OTA_UPDATE_EOF) {
+    if (frame[3] == 0x02) {
+      destination->step = OTA_UPDATE_EOF_ACK;
+    }
+  }
+}
+
 void processModuleFrame(uint8_t module, uint8_t *frame)
 {
   switch (frame[2]) {
@@ -294,6 +320,10 @@ void processPXX2Frame(uint8_t module, uint8_t *frame)
 
     case PXX2_TYPE_C_POWER_METER:
       processToolsFrame(module, frame);
+      break;
+
+    case PXX2_TYPE_C_OTA:
+      processOtaUpdateFrame(module, frame);
       break;
 
     default:
