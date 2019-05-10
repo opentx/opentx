@@ -831,7 +831,7 @@
 #define TR_SDCARD_ERROR                "Chyba SD karty"
 #define TR_NO_SDCARD                   "Není SD karta"
 #define TR_WAITING_FOR_RX              "čekám na RX..."
-#define TR_WAITING_FOR_TX              "Waiting for TX..."
+#define TR_WAITING_FOR_TX              "čekám na TX..."
 #define TR_NO_TOOLS                    "Žádné nástroje k dispozici"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "Not inv"
@@ -842,23 +842,23 @@
 #define TR_16CH_WITHOUT_TELEMETRY      TR("16CH without telem.", "16CH without telemetry")
 #define TR_16CH_WITH_TELEMETRY         TR("16CH with telem.", "16CH with telemetry")
 #define TR_8CH_WITH_TELEMETRY          TR("8CH with telem.", "8CH with telemetry")
-#define TR_EXT_ANTENNA                 "Ext. antenna"
+#define TR_EXT_ANTENNA                 "Ext. anténa"
 #define TR_PIN                         "Pin"
-#define TR_UPDATE_RX_OPTIONS           "Update RX options?"
-#define TR_UPDATE_TX_OPTIONS           "Update TX options?"
-#define TR_MODULES_RX_VERSION          "Modules / RX version"
+#define TR_UPDATE_RX_OPTIONS           "Uložit nastavení?"
+#define TR_UPDATE_TX_OPTIONS           "Uložit nastavení?"
+#define TR_MODULES_RX_VERSION          "Verze modulu a RX"
 #define TR_GYRO                        "Gyro"
-#define TR_STICKS_POTS_SLIDERS         "Sticks/Pots/Sliders"
-#define TR_PWM_STICKS_POTS_SLIDERS     "PWM Sticks/Pots/Sliders"
-#define TR_RF_PROTOCOL                 "RF Protocol"
-#define TR_MODULE_OPTIONS              "Module options"
-#define TR_POWER                       "Power"
-#define TR_NO_TX_OPTIONS               "No TX options"
-#define TR_RTC_BATT                    "RTC Batt"
-#define TR_POWER_METER_EXT             "Power Meter (EXT)"
-#define TR_POWER_METER_INT             "Power Meter (INT)"
-#define TR_SPECTRUM_ANALYSER_EXT       "Spectrum (EXT)"
-#define TR_SPECTRUM_ANALYSER_INT       "Spectrum (INT)"
+#define TR_STICKS_POTS_SLIDERS         "Páky/Poty/Slidery"
+#define TR_PWM_STICKS_POTS_SLIDERS     "PWM Páky/Poty/Slidery"
+#define TR_RF_PROTOCOL                 "RF Protokol"
+#define TR_MODULE_OPTIONS              "Možnosti modulu"
+#define TR_POWER                       "Výkon"
+#define TR_NO_TX_OPTIONS               "žádné možnosti"
+#define TR_RTC_BATT                    "RTC Bat"
+#define TR_POWER_METER_EXT             "Měřák výkonu (EXT)"
+#define TR_POWER_METER_INT             "Měřák výkonu (INT)"
+#define TR_SPECTRUM_ANALYSER_EXT       "Spekt. an. (EXT)"
+#define TR_SPECTRUM_ANALYSER_INT       "Spekt. an. (INT)"
 #define TR_SDCARD_FULL                 "Plná SD karta"
 #define TR_INCOMPATIBLE                "Nekompatibilní"
 #define TR_WARNING                     "KONTROLA"
@@ -952,14 +952,14 @@
 #define TR_PATH_TOO_LONG               "Cesta je moc dlouhá"
 #define TR_VIEW_TEXT                   "Zobrazit text"
 #define TR_FLASH_BOOTLOADER            "Flash BootLoaderu"
-#define TR_FLASH_EXTERNAL_DEVICE       TR("Flash ext. port", "Flash externího port")
+#define TR_FLASH_EXTERNAL_DEVICE       TR("Flash S.Portem", "Flash S.Portem")
 #define TR_FLASH_RECEIVER_OTA          "Flash příjímače OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash modulu BT", "Flash modulu Bluetooth")
 #define TR_CURRENT_VERSION             TR("Současná ver. ", "Současná verze: ")
 #define TR_FLASH_INTERNAL_MODULE       TR("Flash vnitř. modulu", "Flash vnitřního modulu")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. modulu", "Flash externího zařízení")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Chyba zápisu FW", "Chyba zápisu firmware")
-#define TR_FIRMWARE_UPDATE_SUCCESS     "Úspěšný zápis FW"
+#define TR_FIRMWARE_UPDATE_SUCCESS     "úspěšný zápis FW"
 #define TR_WRITING                     TR3("\14Zapisuji..", "\032Zapisuji..", "Zapisuji..")
 #define TR_CONFIRM_FORMAT              "Provést Formát?"
 #define TR_INTERNALRF                  "Vnitřní RF modul"
