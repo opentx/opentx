@@ -331,7 +331,7 @@ void menuRadioHardware(event_t event)
 
 #if defined(STM32)
       case ITEM_RADIO_HARDWARE_RTC_BATTERY:
-        lcdDrawTextAlignedLeft(y, "RTC Batt");
+        lcdDrawTextAlignedLeft(y, STR_RTC_BATT);
         putsVolts(HW_SETTINGS_COLUMN2, y, vbattRTC, PREC2|LEFT);
         break;
 #endif

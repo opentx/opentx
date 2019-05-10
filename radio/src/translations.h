@@ -673,7 +673,25 @@ extern const char STR_ANALOGS_BTN[];
 extern const char STR_CALIB_BTN[];
 
 extern const char STR_NO_TOOLS[];
+extern const char STR_EXT_ANTENNA[];
+extern const char STR_PIN[];
+extern const char STR_UPDATE_RX_OPTIONS[];
+extern const char STR_UPDATE_TX_OPTIONS[];
+extern const char STR_MODULES_RX_VERSION[];
+extern const char STR_GYRO[];
+extern const char STR_STICKS_POTS_SLIDERS[];
+extern const char STR_PWM_STICKS_POTS_SLIDERS[];
+extern const char STR_RF_PROTOCOL[];
+extern const char STR_MODULE_OPTIONS[];
+extern const char STR_POWER[];
+extern const char STR_NO_TX_OPTIONS[];
+extern const char STR_RTC_BATT[];
+extern const char STR_POWER_METER_EXT[];
+extern const char STR_POWER_METER_INT[];
+extern const char STR_SPECTRUM_ANALYSER_EXT[];
+extern const char STR_SPECTRUM_ANALYSER_INT[];
 extern const char STR_WAITING_FOR_RX[];
+extern const char STR_WAITING_FOR_TX[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];
