@@ -357,7 +357,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
 
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
-      const char * name = NULL;
+      const char * name = nullptr;
       if (model)
         name = model->inputNames[index];
       return RadioData::getElementName(tr("I", "as in Input"), index + 1, name);
