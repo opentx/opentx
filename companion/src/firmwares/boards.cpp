@@ -370,6 +370,16 @@ const QString Boards::getAnalogInputName(Board::Type board, int index)
     if (index < DIM(pots))
       return pots[index];
   }
+  else if (IS_TARANIS_XLITE(board)) {
+    const QString pots[] = {
+      "S1",
+      "S2",
+      "GyrX",
+      "GyrY"
+    };
+    if (index < DIM(pots))
+      return pots[index];
+  }
   else if (IS_TARANIS(board)) {
     const QString pots[] = {
       "S1",
