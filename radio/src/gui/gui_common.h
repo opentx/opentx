@@ -160,7 +160,7 @@ const mm_protocol_definition *getMultiProtocolDefinition (uint8_t protocol);
 
 #define EXTERNAL_MODULE_OPTION_ROW    (isModuleR9M(EXTERNAL_MODULE) || isModuleSBUS(EXTERNAL_MODULE)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW)
 
-#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
+#define EXTERNAL_MODULE_POWER_ROW      (isModuleMultimodule(EXTERNAL_MODULE) || isModuleR9M(EXTERNAL_MODULE)) ? (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_R9M_LITE ? TITLE_ROW : (uint8_t) 0) : HIDDEN_ROW
 
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);

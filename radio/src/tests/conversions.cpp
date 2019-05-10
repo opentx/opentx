@@ -47,7 +47,7 @@ TEST(Eeprom, ConversionX9DPFrom22)
   EXPECT_EQ(SWASH_TYPE_120X, g_model.swashR.type);
   EXPECT_EQ(10, g_model.flightModeData[0].gvars[0]);
   EXPECT_ZSTREQ("Tes", g_model.gvars[0].name);
-  EXPECT_EQ(MODULE_TYPE_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
+  EXPECT_EQ(MODULE_TYPE_PXX_R9M, g_model.moduleData[EXTERNAL_MODULE].type);
   EXPECT_EQ(MODULE_SUBTYPE_R9M_FCC, g_model.moduleData[EXTERNAL_MODULE].subType);
   EXPECT_ZSTREQ("Thr", g_model.inputNames[0]);
   EXPECT_ZSTREQ("Tes", g_model.telemetrySensors[0].label);
