@@ -847,6 +847,11 @@
 #define TR_WAITING_FOR_RX              "Waiting for RX..."
 #define TR_WAITING_FOR_TX              "Waiting for TX..."
 #define TR_NO_TOOLS                    "No tools available"
+#define TR_FLEX_915                    "Flex 915MHz"
+#define TR_FLEX_868                    "Flex 868MHz"
+#define TR_16CH_WITHOUT_TELEMETRY      TR("16CH without telem.", "16CH without telemetry")
+#define TR_16CH_WITH_TELEMETRY         TR("16CH with telem.", "16CH with telemetry")
+#define TR_8CH_WITH_TELEMETRY          TR("8CH with telem.", "8CH with telemetry")
 #define TR_EXT_ANTENNA                 "Ext. antenna"
 #define TR_PIN                         "Pin"
 #define TR_UPDATE_RX_OPTIONS           "Update RX options?"
