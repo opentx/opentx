@@ -833,15 +833,15 @@
 #define TR_WAITING_FOR_RX              "čekám na RX..."
 #define TR_WAITING_FOR_TX              "čekám na TX..."
 #define TR_NO_TOOLS                    "Žádné nástroje k dispozici"
-#define TR_NORMAL                      "Normal"
-#define TR_NOT_INVERTED                "Not inv"
-#define TR_NOT_CONNECTED               "!Connected"
-#define TR_CONNECTED                   "Connected"
+#define TR_NORMAL                      "Normální"
+#define TR_NOT_INVERTED                "Neinvert"
+#define TR_NOT_CONNECTED               "Nepřipojen"
+#define TR_CONNECTED                   "P5ipojen"
 #define TR_FLEX_915                    "Flex 915MHz"
 #define TR_FLEX_868                    "Flex 868MHz"
-#define TR_16CH_WITHOUT_TELEMETRY      TR("16CH without telem.", "16CH without telemetry")
-#define TR_16CH_WITH_TELEMETRY         TR("16CH with telem.", "16CH with telemetry")
-#define TR_8CH_WITH_TELEMETRY          TR("8CH with telem.", "8CH with telemetry")
+#define TR_16CH_WITHOUT_TELEMETRY      TR("16k bez telem.", "16k bez telemetrie")
+#define TR_16CH_WITH_TELEMETRY         TR("16k s telem.", "16k s telemetrií")
+#define TR_8CH_WITH_TELEMETRY          TR("8k s telem.", "8k s telemetrií")
 #define TR_EXT_ANTENNA                 "Ext. anténa"
 #define TR_PIN                         "Pin"
 #define TR_UPDATE_RX_OPTIONS           "Uložit nastavení?"
