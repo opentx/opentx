@@ -292,9 +292,9 @@ void onPXX2BindMenu(const char * result)
     reusableBuffer.moduleSetup.bindInformation.selectedReceiverIndex = (result - reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]) / sizeof(reusableBuffer.moduleSetup.bindInformation.candidateReceiversNames[0]);
     if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_EU) {
       reusableBuffer.moduleSetup.bindInformation.step = BIND_RX_NAME_SELECTED;
-      POPUP_MENU_ADD_ITEM(STR_8CH_WITH_TELEM);
-      POPUP_MENU_ADD_ITEM(STR_16CH_WITH_TELEM);
-      POPUP_MENU_ADD_ITEM(STR_16CH_WITHOUT_TELEM);
+      POPUP_MENU_ADD_ITEM(STR_8CH_WITH_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_16CH_WITH_TELEMETRY);
+      POPUP_MENU_ADD_ITEM(STR_16CH_WITHOUT_TELEMETRY);
       POPUP_MENU_START(onPXX2R9MBindModeMenu);
     }
     else if (isModuleR9M2(moduleIdx) && reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant == PXX2_VARIANT_FLEX) {
