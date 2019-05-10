@@ -114,6 +114,7 @@ namespace Board {
     FactoryInstalledPots,
     Sliders,
     MouseAnalogs,
+    GyroAnalogs,
     MaxAnalogs,
     MultiposPots,
     MultiposPotsPositions,
