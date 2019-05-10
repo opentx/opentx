@@ -687,6 +687,7 @@ extern const char STR_PIN[];
 extern const char STR_UPDATE_RX_OPTIONS[];
 extern const char STR_UPDATE_TX_OPTIONS[];
 extern const char STR_MODULES_RX_VERSION[];
+extern const char STR_MENU_MODULES_RX_VERSION[];
 extern const char STR_GYRO[];
 extern const char STR_STICKS_POTS_SLIDERS[];
 extern const char STR_PWM_STICKS_POTS_SLIDERS[];
