@@ -19,7 +19,6 @@
  */
 
 #include "customfunctiondata.h"
-
 #include "eeprominterface.h"
 #include "radiodata.h"
 #include "radiodataconversionstate.h"
