@@ -66,16 +66,16 @@ void menuRadioTools(event_t event)
 
 #if defined(PXX2)
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
-    addRadioTool(index++, "Spectrum (INT)", menuRadioSpectrumAnalyser, INTERNAL_MODULE);
+    addRadioTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-    addRadioTool(index++, "Power Meter (INT)", menuRadioPowerMeter, INTERNAL_MODULE);
+    addRadioTool(index++, STR_POWER_METER_INT, menuRadioPowerMeter, INTERNAL_MODULE);
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
-    addRadioTool(index++, "Spectrum (EXT)", menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
+    addRadioTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
 
   if (isModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-    addRadioTool(index++, "Power Meter (EXT)", menuRadioPowerMeter, EXTERNAL_MODULE);
+    addRadioTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
 #endif
 
   if (index == 0) {
