@@ -673,6 +673,10 @@ extern const char STR_ANALOGS_BTN[];
 extern const char STR_CALIB_BTN[];
 
 extern const char STR_NO_TOOLS[];
+extern const char STR_NORMAL[];
+extern const char STR_NOT_INVERTED[];
+extern const char STR_NOT_CONNECTED[];
+extern const char STR_CONNECTED[];
 extern const char STR_FLEX_915[];
 extern const char STR_FLEX_868[];
 extern const char STR_16CH_WITHOUT_TELEMETRY[];
