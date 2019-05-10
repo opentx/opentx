@@ -293,7 +293,7 @@ void Profile::resetFwVariables()
 
 AppData::AppData() :
   CompStoreObj(),
-  m_sessionId(-1)
+  m_sessionId(0)
 {
   QMetaType::registerComparators<SimulatorOptions>();
   qRegisterMetaTypeStreamOperators<SimulatorOptions>("SimulatorOptions");
