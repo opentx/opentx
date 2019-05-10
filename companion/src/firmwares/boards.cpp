@@ -260,8 +260,14 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 0;
 
+    case GyroAnalogs:
+      if (IS_HORUS_X12S(board) || IS_TARANIS_XLITES(board))
+        return 2;
+      else
+        return 0;
+
     case MaxAnalogs:
-      return getCapability(board, Board::Sticks) + getCapability(board, Board::Pots) + getCapability(board, Board::Sliders) +  getCapability(board, Board::MouseAnalogs);
+      return getCapability(board, Board::Sticks) + getCapability(board, Board::Pots) + getCapability(board, Board::Sliders) + getCapability(board, Board::MouseAnalogs) + getCapability(board, Board::GyroAnalogs);
 
     case MultiposPots:
       return IS_HORUS_OR_TARANIS(board) ? getCapability(board, Board::Pots) : 0;
