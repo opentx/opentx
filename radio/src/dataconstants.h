@@ -403,6 +403,14 @@ enum SwitchSources {
   SWSRC_SH1,
   SWSRC_SH2,
 #endif
+#if defined(PCBX7)
+  SWSRC_SI0,
+  SWSRC_SI1,
+  SWSRC_SI2,
+  SWSRC_SJ0,
+  SWSRC_SJ1,
+  SWSRC_SJ2,
+#endif
 #if defined(PCBX9E)
   SWSRC_SI0,
   SWSRC_SI1,
@@ -634,6 +642,10 @@ enum MixSources {
 #endif
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
+#endif
+#if defined(PCBX7)
+  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
 #endif
 #if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
