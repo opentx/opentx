@@ -2,7 +2,6 @@ option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
 option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
-option(MODULE_R9M_FULLSIZE "xlite option to use full size R9M instead of mini" OFF)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" ON)
 
@@ -162,9 +161,6 @@ if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X3)
   add_definitions(-DINTERNAL_MODULE_SERIAL)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
-  endif()
-  if(MODULE_R9M_FULLSIZE)
-    add_definitions(-DMODULE_R9M_FULLSIZE)
   endif()
   set(TARGET_SRC
     ${TARGET_SRC}
