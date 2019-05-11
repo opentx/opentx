@@ -48,7 +48,7 @@
   #define MAX_TRAINER_CHANNELS         16
   #define MAX_TELEMETRY_SENSORS        60
   #define MAX_CUSTOM_SCREENS           5
-#elif defined(PCBX9)
+#elif defined(PCBX9D) || defined(PCBX9E)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
@@ -383,22 +383,22 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E) || defined(PCBXLITES)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E) || defined(PCBX7)
   SWSRC_SH0,
   SWSRC_SH1,
   SWSRC_SH2,
@@ -623,16 +623,16 @@ enum MixSources {
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E) || defined(PCBXLITES)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9E) || defined(PCBX7)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #endif
 #if defined(PCBX9E)
