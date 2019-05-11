@@ -298,7 +298,7 @@ void menuRadioHardware(event_t event)
 #if NUM_SWITCHES >= 6
       case ITEM_RADIO_HARDWARE_SH:
 #endif
-#if NUM_SWITCHES >= 6
+#if NUM_SWITCHES >= 8
       case ITEM_RADIO_HARDWARE_SI:
       case ITEM_RADIO_HARDWARE_SJ:
 #endif
