@@ -74,7 +74,7 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9E";
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
-    case BOARD_TARANIS_X3:
+    case BOARD_TARANIS_X9LITE:
       return "OpenTX for FrSky Taranis X3";
     case BOARD_TARANIS_XLITE:
       return "OpenTX for FrSky Taranis X-Lite";
@@ -318,7 +318,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_TARANIS_X9E(board)) {
     variant |= TARANIS_X9E_VARIANT;
   }
-  else if (IS_TARANIS_X3(board)) {
+  else if (IS_TARANIS_X9LITE(board)) {
     variant |= TARANIS_X3_VARIANT;
   }
   else if (IS_TARANIS_X7(board)) {
@@ -699,7 +699,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return SIMU_M128_VARIANTS;
       else if (IS_TARANIS_X9E(board))
         return TARANIS_X9E_VARIANT;
-      else if (IS_TARANIS_X3(board))
+      else if (IS_TARANIS_X9LITE(board))
         return TARANIS_X3_VARIANT;
       else if (IS_TARANIS_X7(board))
         return TARANIS_X7_VARIANT;
@@ -754,13 +754,13 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return 1;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 0 : 1;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 0 : 1;
           case PULSES_PXX_XJT_D8:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board) || id.contains("eu")) ? 0 : 1;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || id.contains("eu")) ? 0 : 1;
           case PULSES_PPM:
             return id.contains("internalppm") ? 1 : 0;
           case PULSES_ACCESS_ISRM:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 1 : 0;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
           default:
             return 0;
         }
@@ -773,7 +773,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 0 : 1;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 0 : 1;
           case PULSES_PXX_R9M:
           case PULSES_LP45:
           case PULSES_DSM2:
@@ -785,7 +785,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return id.contains("multimodule") ? 1 : 0;
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X3(board)) ? 1 : 0;
+            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
           default:
             return 0;
         }
@@ -1189,7 +1189,7 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* FrSky X3 board */
-  firmware = new OpenTxFirmware("opentx-x3", Firmware::tr("FrSky Taranis X3"), BOARD_TARANIS_X3);
+  firmware = new OpenTxFirmware("opentx-x3", Firmware::tr("FrSky Taranis X3"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware, false);
   registerOpenTxFirmware(firmware);
 
