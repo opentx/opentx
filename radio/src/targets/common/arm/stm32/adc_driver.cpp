@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -38,7 +38,7 @@
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,1,-1,  1,1,-1,  1,1,  1};
 #elif defined(PCBX7)
   const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1};
-#elif defined(PCBX3)
+#elif defined(PCBX9LITE)
   const int8_t ana_direction[NUM_ANALOGS] = {-1,1,-1,1,  1,1};
 #elif defined(PCBXLITE)
   const int8_t ana_direction[NUM_ANALOGS] = {1,-1,-1,1,  -1,1,  1};
@@ -119,7 +119,7 @@ void adcInit()
   // TODO why do we invert POT1 and POT2 here?
   ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT<<0) + (ADC_CHANNEL_RTC<<5); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<25) + (ADC_CHANNEL_POT2<<20); // conversions 1 to 6
-#elif defined(PCBX3)
+#elif defined(PCBX9LITE)
   ADC_MAIN->SQR2 = (ADC_CHANNEL_RTC<<0); // conversions 7 and more
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH<<0) + (ADC_CHANNEL_STICK_LV<<5) + (ADC_CHANNEL_STICK_RV<<10) + (ADC_CHANNEL_STICK_RH<<15) + (ADC_CHANNEL_POT1<<20) + (ADC_CHANNEL_BATT<<25); // conversions 1 to 6
 #else
@@ -241,7 +241,7 @@ uint16_t getAnalogValue(uint8_t index)
 {
   if (IS_POT(index) && !IS_POT_SLIDER_AVAILABLE(index)) {
     // Use fixed analog value for non-existing and/or non-connected pots.
-    // Non-connected analog inputs will slightly follow the adjacent connected analog inputs, 
+    // Non-connected analog inputs will slightly follow the adjacent connected analog inputs,
     // which produces ghost readings on these inputs.
     return 0;
   }

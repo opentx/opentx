@@ -34,7 +34,7 @@ set(LUA_INCLUDES_STM32F4
   )
 
 if(PYTHONINTERP_FOUND)
-  add_lua_export_target(x3      ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX3 -DPCBX9)
+  add_lua_export_target(x9lite  ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9LITE -DPCBX9)
   add_lua_export_target(x7      ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX7)
   add_lua_export_target(xlite   ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBXLITE)
   add_lua_export_target(xlites  ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBXLITES -DPCBXLITE -DGYRO)

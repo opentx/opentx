@@ -1,5 +1,5 @@
 #include "simulateduiwidget.h"
-#include "ui_simulateduiwidgetX3.h"
+#include "ui_simulateduiwidgetX9LITE.h"
 
 // NOTE: RadioUiAction(NUMBER,...): NUMBER relates to enum EnumKeys in the specific board.h
 
