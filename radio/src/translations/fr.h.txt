@@ -1222,6 +1222,11 @@
 #define TR_BG_VOLUME                   "Volume musique"
 
 #define TR_TOP_BAR                     "Barre titre"
+#define TR_FLASH_ERASE                 "Flash erase..."
+#define TR_FLASH_WRITE                 "Flash write..."
+#define TR_OTA_UPDATE                  "OTA update..."
+#define TR_MODULE_RESET                "Module reset..."
+#define TR_DEVICE_RESET                "Device reset..."
 #define TR_ALTITUDE                    INDENT "Altitude"
 #define TR_SCALE                       "Echelle"
 #define TR_VIEW_CHANNELS               "Voir voies"

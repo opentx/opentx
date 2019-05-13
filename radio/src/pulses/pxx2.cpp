@@ -430,7 +430,7 @@ const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
   uint32_t size = f_size(&file);
   uint32_t done = 0;
   while (1) {
-    drawProgressScreen(getBasename(filename), "OTA update...", done, size);
+    drawProgressScreen(getBasename(filename), STR_OTA_UPDATE, done, size);
     if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
       f_close(&file);
       return "Read file failed";

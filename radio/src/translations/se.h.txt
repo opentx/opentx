@@ -1223,6 +1223,11 @@
 #define TR_BG_VOLUME           "Volym Bg"
 
 #define TR_TOP_BAR             "Titelraden"
+#define TR_FLASH_ERASE                 "Flash erase..."
+#define TR_FLASH_WRITE                 "Flash write..."
+#define TR_OTA_UPDATE                  "OTA update..."
+#define TR_MODULE_RESET                "Module reset..."
+#define TR_DEVICE_RESET                "Device reset..."
 #define TR_ALTITUDE            INDENT "Höjd"
 #define TR_SCALE               "Skala"
 #define TR_VIEW_CHANNELS       "Visa Kanaler"
