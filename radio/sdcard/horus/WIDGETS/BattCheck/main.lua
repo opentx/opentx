@@ -276,12 +276,6 @@ local function refreshZoneMedium(wgt)
   --lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y, string.format("%2.1fV", _mainValue), DBLSIZE + CUSTOM_COLOR + RIGHT + shadowed + _no_telem_blink)
   lcd.drawText(wgt.zone.x, wgt.zone.y + 35, string.format("%2.1fV", _mainValue), DBLSIZE + CUSTOM_COLOR + shadowed + _no_telem_blink)
 
-  --lcd.drawText(wgt.zone.x, wgt.zone.y + 70, string.format("%2.1fV", _mainValue), SMLSIZE + CUSTOM_COLOR + _no_telem_blink)
-  --lcd.drawText(wgt.zone.x, wgt.zone.y + 80, string.format("%2.1fV", _mainValue), SMLSIZE + CUSTOM_COLOR + _no_telem_blink)
-  --lcd.drawText(wgt.zone.x + 60, wgt.zone.y + 60, string.format("%2.1fV", _mainValue), SMLSIZE + CUSTOM_COLOR + _no_telem_blink)
-  --lcd.drawText(wgt.zone.x + 60, wgt.zone.y + 70, string.format("%2.1fV", _mainValue), SMLSIZE + CUSTOM_COLOR + _no_telem_blink)
-  --lcd.drawText(wgt.zone.x + 60, wgt.zone.y + 80, string.format("%2.1fV", _mainValue), SMLSIZE + CUSTOM_COLOR + _no_telem_blink)
-
   -- fill batt
   lcd.setColor(CUSTOM_COLOR, getPercentColor(_cellPercent))
   lcd.drawGauge(wgt.zone.x + myBatt.x, wgt.zone.y + myBatt.y, myBatt.w, myBatt.h, _cellPercent, 100, CUSTOM_COLOR)
@@ -296,45 +290,6 @@ local function refreshZoneMedium(wgt)
     lcd.setColor(CUSTOM_COLOR, WHITE)
     lcd.drawText(wgt.zone.x + pos[i].x + 10, wgt.zone.y + pos[i].y, string.format("%.2f", _cellDataLive[i]), SMLSIZE + CUSTOM_COLOR + shadowed + _no_telem_blink)
     lcd.drawRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y, 59, 15, CUSTOM_COLOR, 1)
-  end
-
-  -- draws bat
-  lcd.setColor(CUSTOM_COLOR, WHITE)
-  lcd.drawRectangle(wgt.zone.x + myBatt.x, wgt.zone.y + myBatt.y, myBatt.w, myBatt.h, CUSTOM_COLOR, 2)
-  lcd.drawFilledRectangle(wgt.zone.x + myBatt.x + myBatt.w, wgt.zone.y + myBatt.h / 2 - myBatt.cath_h / 2, myBatt.cath_w, myBatt.cath_h, CUSTOM_COLOR)
-  lcd.drawText(wgt.zone.x + myBatt.x + 20, wgt.zone.y + myBatt.y + 5, string.format("%2.0f%%", _cellPercent), LEFT + MIDSIZE + CUSTOM_COLOR + shadowed)
-  --for i=1, myBatt.w - myBatt.segments_w, myBatt.segments_w do
-  --  lcd.drawRectangle(wgt.zone.x + myBatt.x + i, wgt.zone.y + myBatt.y, myBatt.segments_w, myBatt.h, CUSTOM_COLOR, 1)
-  --end
-  return
-end
-
---- Size is 225x98 1/4th  (no sliders/trim)
-local function refreshZoneMedium_horizontal(wgt)
-  local myBatt = { ["x"] = 0, ["y"] = 0, ["w"] = 85, ["h"] = 35, ["segments_w"] = 15, ["color"] = WHITE, ["cath_w"] = 6, ["cath_h"] = 20 }
-
-  if _isDataAvailable then
-    lcd.setColor(CUSTOM_COLOR, wgt.options.Color)
-  else
-    lcd.setColor(CUSTOM_COLOR, GREY)
-  end
-
-  -- draw values
-  lcd.drawText(wgt.zone.x + wgt.zone.w, wgt.zone.y, string.format("%2.1fV", _mainValue), DBLSIZE + CUSTOM_COLOR + RIGHT + shadowed + _no_telem_blink)
-
-  -- fill batt
-  lcd.setColor(CUSTOM_COLOR, getPercentColor(_cellPercent))
-  lcd.drawGauge(wgt.zone.x + myBatt.x, wgt.zone.y + myBatt.y, myBatt.w, myBatt.h, _cellPercent, 100, CUSTOM_COLOR)
-  -- draw cells
-  local pos = { { x = 2, y = 38 }, { x = 60, y = 38 }, { x = 118, y = 38 }, { x = 2, y = 57 }, { x = 60, y = 57 }, { x = 118, y = 57 } }
-  for i = 1, _cellCount, 1 do
-    lcd.setColor(CUSTOM_COLOR, getRangeColor(_cellDataLive[i], _cellMax, _cellMax - 0.2))
-    lcd.drawFilledRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y, 58, 20, CUSTOM_COLOR)
-    --lcd.setColor(CUSTOM_COLOR, getPercentColor(cellDataLowest[i]))
-    --lcd.drawFilledRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y+10, 58*getCellPercent(cellDataLowest[i])/100, 10, CUSTOM_COLOR)
-    lcd.setColor(CUSTOM_COLOR, WHITE)
-    lcd.drawText(wgt.zone.x + pos[i].x + 10, wgt.zone.y + pos[i].y, string.format("%.2f", _cellDataLive[i]), CUSTOM_COLOR + shadowed + _no_telem_blink)
-    lcd.drawRectangle(wgt.zone.x + pos[i].x, wgt.zone.y + pos[i].y, 59, 20, CUSTOM_COLOR, 1)
   end
 
   -- draws bat
