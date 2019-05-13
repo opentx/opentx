@@ -403,6 +403,14 @@ enum SwitchSources {
   SWSRC_SH1,
   SWSRC_SH2,
 #endif
+#if defined(PCBX7)
+  SWSRC_SI0,
+  SWSRC_SI1,
+  SWSRC_SI2,
+  SWSRC_SJ0,
+  SWSRC_SJ1,
+  SWSRC_SJ2,
+#endif
 #if defined(PCBX9E)
   SWSRC_SI0,
   SWSRC_SI1,
@@ -436,11 +444,6 @@ enum SwitchSources {
   SWSRC_SR2,
 #endif
   SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + NUM_SWITCHES_POSITIONS - 1,
-#if NUM_SWITCHES >= 8
-  SWSRC_TRAINER = SWSRC_SH2,
-#else
-  SWSRC_TRAINER = SWSRC_LAST_SWITCH,
-#endif
 #else // neither Taranis nor Horus
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -522,6 +525,12 @@ enum SwitchSources {
 
   SWSRC_INVERT = SWSRC_COUNT+1,
 };
+
+#if NUM_SWITCHES >= 8
+  #define SWSRC_TRAINER SWSRC_SH2
+#else
+  #define SWSRC_TRAINER SWSRC_LAST_SWITCH,
+#endif
 
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
 
@@ -635,6 +644,10 @@ enum MixSources {
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
 #endif
+#if defined(PCBX7)
+  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
+#endif
 #if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
   MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
@@ -708,7 +721,9 @@ enum MixSources {
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 };
 
+#if defined(__cplusplus)
 static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+#endif
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)
 #define MIXSRC_LAST         MIXSRC_LAST_CH

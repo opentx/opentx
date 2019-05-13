@@ -367,6 +367,14 @@ enum EnumSwitchesPositions
   SW_SH1,
   SW_SH2,
 #endif
+#if defined(PCBX7)
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+  SW_SJ0,
+  SW_SJ1,
+  SW_SJ2,
+#endif
 #if defined(PCBX9E)
   SW_SI0,
   SW_SI1,
@@ -406,7 +414,7 @@ enum EnumSwitchesPositions
 #elif defined(PCBXLITE)
   #define NUM_SWITCHES                  4
 #elif defined(PCBX7)
-  #define NUM_SWITCHES                  6
+  #define NUM_SWITCHES                  8
 #elif defined(PCBX9LITE)
   #define NUM_SWITCHES                  5
 #elif defined(PCBX9E)
@@ -414,6 +422,11 @@ enum EnumSwitchesPositions
 #else
   #define NUM_SWITCHES                  8
 #endif
+
+#if defined(__cplusplus)
+static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+#endif
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
