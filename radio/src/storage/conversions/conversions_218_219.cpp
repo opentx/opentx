@@ -48,11 +48,13 @@ int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
 
+#if defined(PCBX7)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
 
   if (swtch >= SWSRC_SI0)
     return swtch + 2 * 3;
+#endif
 
   return swtch;
 }
