@@ -75,7 +75,7 @@ const char * OpenTxEepromInterface::getName()
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
     case BOARD_TARANIS_X9LITE:
-      return "OpenTX for FrSky Taranis X3";
+      return "OpenTX for FrSky Taranis X9Lite";
     case BOARD_TARANIS_XLITE:
       return "OpenTX for FrSky Taranis X-Lite";
     case BOARD_SKY9X:
@@ -319,7 +319,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     variant |= TARANIS_X9E_VARIANT;
   }
   else if (IS_TARANIS_X9LITE(board)) {
-    variant |= TARANIS_X3_VARIANT;
+    variant |= TARANIS_X9LITE_VARIANT;
   }
   else if (IS_TARANIS_X7(board)) {
     variant |= TARANIS_X7_VARIANT;
@@ -700,7 +700,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
       else if (IS_TARANIS_X9E(board))
         return TARANIS_X9E_VARIANT;
       else if (IS_TARANIS_X9LITE(board))
-        return TARANIS_X3_VARIANT;
+        return TARANIS_X9LITE_VARIANT;
       else if (IS_TARANIS_X7(board))
         return TARANIS_X7_VARIANT;
       else if (IS_TARANIS_XLITES(board))
@@ -1188,8 +1188,8 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
-  /* FrSky X3 board */
-  firmware = new OpenTxFirmware("opentx-x3", Firmware::tr("FrSky Taranis X3"), BOARD_TARANIS_X9LITE);
+  /* FrSky X9Lite board */
+  firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware, false);
   registerOpenTxFirmware(firmware);
 
