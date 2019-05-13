@@ -721,7 +721,9 @@ enum MixSources {
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 };
 
+#if defined(__cplusplus)
 static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+#endif
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)
 #define MIXSRC_LAST         MIXSRC_LAST_CH
