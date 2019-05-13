@@ -540,7 +540,7 @@ PACK(struct CustomScreenData {
   uint8_t view;
 #endif
 
-#if defined(PCBX9D) || defined(PCBX9E)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   #define TOPBAR_DATA \
     NOBACKUP(uint8_t voltsSource); \
     NOBACKUP(uint8_t altitudeSource);
