@@ -75,7 +75,7 @@ const char * OpenTxEepromInterface::getName()
     case BOARD_TARANIS_X7:
       return "OpenTX for FrSky Taranis X7";
     case BOARD_TARANIS_X9LITE:
-      return "OpenTX for FrSky Taranis X9Lite";
+      return "OpenTX for FrSky Taranis X9-Lite";
     case BOARD_TARANIS_XLITE:
       return "OpenTX for FrSky Taranis X-Lite";
     case BOARD_SKY9X:
@@ -1188,8 +1188,8 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
 
-  /* FrSky X9Lite board */
-  firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9Lite"), BOARD_TARANIS_X9LITE);
+  /* FrSky X9-Lite board */
+  firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware, false);
   registerOpenTxFirmware(firmware);
 
@@ -1198,7 +1198,7 @@ void registerOpenTxFirmwares()
   addOpenTxTaranisOptions(firmware, false);
   registerOpenTxFirmware(firmware);
 
-  /* FrSky X-Lite S board */
+  /* FrSky X-Lite S/PRO board */
   firmware = new OpenTxFirmware("opentx-xlites", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   // firmware->addOption("stdr9m", QCoreApplication::translate("Firmware", "Use JR-sized R9M module"));
   addOpenTxTaranisOptions(firmware);
