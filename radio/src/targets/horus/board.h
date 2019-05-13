@@ -142,14 +142,16 @@ void delay_ms(uint32_t ms);
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
 
-// Hardware options
-PACK(typedef struct
-{
 #if NUM_PWMSTICKS > 0
-  uint8_t sticksPwmDisabled:1;
-#endif
-  uint8_t pxx2Enabled:1;
+PACK(typedef struct {
+  uint8_t sticksPwmDisabled : 1;
+  uint8_t pxx2Enabled : 1;
 }) HardwareOptions;
+#else
+PACK(typedef struct {
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+#endif
 
 extern HardwareOptions hardwareOptions;
 
