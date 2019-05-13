@@ -1209,6 +1209,11 @@
 #define TR_BG_VOLUME           "Volume Sf"
 
 #define TR_TOP_BAR             "Barra sup."
+#define TR_FLASH_ERASE                 "Flash erase..."
+#define TR_FLASH_WRITE                 "Flash write..."
+#define TR_OTA_UPDATE                  "OTA update..."
+#define TR_MODULE_RESET                "Module reset..."
+#define TR_DEVICE_RESET                "Device reset..."
 #define TR_ALTITUDE            INDENT "Altitudine"
 #define TR_SCALE               "Scala"
 #define TR_VIEW_CHANNELS       "Vedi Canali"

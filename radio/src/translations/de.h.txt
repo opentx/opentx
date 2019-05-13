@@ -1213,6 +1213,11 @@
 #define TR_BG_VOLUME           TR("Hintergr-Lautst.", "Hintergrund-Lautstärke")
 
 #define TR_TOP_BAR             "Infozeile"
+#define TR_FLASH_ERASE                 "Flash erase..."
+#define TR_FLASH_WRITE                 "Flash write..."
+#define TR_OTA_UPDATE                  "OTA update..."
+#define TR_MODULE_RESET                "Module reset..."
+#define TR_DEVICE_RESET                "Device reset..."
 #define TR_ALTITUDE            INDENT "Höhenanzeige"
 #define TR_SCALE               "Skalieren"
 #define TR_VIEW_CHANNELS       "Zeige Kanäle"

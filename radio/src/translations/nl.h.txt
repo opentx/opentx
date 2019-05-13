@@ -1215,6 +1215,11 @@ TR_GYR_VSRCRAW
 #define TR_BG_VOLUME           "Achtergr-Volume"
 
 #define TR_TOP_BAR             "Info"
+#define TR_FLASH_ERASE                 "Flash erase..."
+#define TR_FLASH_WRITE                 "Flash write..."
+#define TR_OTA_UPDATE                  "OTA update..."
+#define TR_MODULE_RESET                "Module reset..."
+#define TR_DEVICE_RESET                "Device reset..."
 #define TR_ALTITUDE            INDENT "Hoogte"
 #define TR_SCALE               "Schaal"
 #define TR_VIEW_CHANNELS       "Toon Kanalen"

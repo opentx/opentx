@@ -316,7 +316,7 @@ void DeviceFirmwareUpdate::flashFile(const char * filename)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
 
-  drawProgressScreen(getBasename(filename), "Device reset...", 0, 0);
+  drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   INTERNAL_MODULE_OFF();
   EXTERNAL_MODULE_OFF();

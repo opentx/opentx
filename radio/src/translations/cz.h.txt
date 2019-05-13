@@ -1205,6 +1205,11 @@
 #define TR_BG_VOLUME                   "WAV na pozadí"
 
 #define TR_TOP_BAR                     "Horní lišta"
+#define TR_FLASH_ERASE                 "Flash erase..."
+#define TR_FLASH_WRITE                 "Flash write..."
+#define TR_OTA_UPDATE                  "OTA update..."
+#define TR_MODULE_RESET                "Module reset..."
+#define TR_DEVICE_RESET                "Device reset..."
 #define TR_ALTITUDE                    INDENT "Výška"
 #define TR_SCALE                       "Měřítko"
 #define TR_VIEW_CHANNELS               "Zobrazit kanály"
