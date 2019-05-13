@@ -178,7 +178,9 @@ const SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
       {SWITCH_3POS,   "SC"},
       {SWITCH_3POS,   "SD"},
       {SWITCH_2POS,   "SF"},
-      {SWITCH_TOGGLE, "SH"}
+      {SWITCH_TOGGLE, "SH"},
+      {SWITCH_2POS,   "SI"},
+      {SWITCH_2POS,   "SJ"}
     };
     if (index < DIM(switches))
       return switches[index];
@@ -281,7 +283,7 @@ const int Boards::getCapability(Board::Type board, Board::Capability capability)
       else if (IS_TARANIS_X9LITE(board))
         return 5;
       else if (IS_TARANIS_X7(board))
-        return 6;
+        return 8;
       else if (IS_TARANIS_XLITES(board))
         return 6;
       else if (IS_TARANIS_XLITE(board))
