@@ -41,7 +41,7 @@ else()
   set(TARGET_SRC
     ${TARGET_SRC}
     coproc_driver.cpp
-    rotenc_driver.cpp
+    rotary_encoder_driver.cpp
     rtc_driver.cpp
     )
   set(OPENRC_BOOTLOADER bootflash4.lbm)
