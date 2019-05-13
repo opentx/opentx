@@ -307,3 +307,8 @@ void drawShutdownAnimation(uint32_t index, const char * message)
   lcdRefresh();
   last_index = index;
 }
+
+void runFatalErrorScreen(const char * message)
+{
+#warning "Missing Fatal screen";<
+}
