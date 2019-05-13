@@ -99,7 +99,7 @@ void convertModelData_218_to_219(ModelData &model)
   newModel.varioData.min = oldModel.frsky.varioMin;
   newModel.varioData.max = oldModel.frsky.varioMax;
 
-#if defined(PCBX9D) || defined(PCBX9E)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   newModel.voltsSource = oldModel.frsky.voltsSource;
   newModel.altitudeSource = oldModel.frsky.altitudeSource;
 #endif
