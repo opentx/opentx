@@ -444,11 +444,6 @@ enum SwitchSources {
   SWSRC_SR2,
 #endif
   SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + NUM_SWITCHES_POSITIONS - 1,
-#if NUM_SWITCHES >= 8
-  SWSRC_TRAINER = SWSRC_SH2,
-#else
-  SWSRC_TRAINER = SWSRC_LAST_SWITCH,
-#endif
 #else // neither Taranis nor Horus
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -530,6 +525,12 @@ enum SwitchSources {
 
   SWSRC_INVERT = SWSRC_COUNT+1,
 };
+
+#if NUM_SWITCHES >= 8
+  #define SWSRC_TRAINER SWSRC_SH2
+#else
+  #define SWSRC_TRAINER SWSRC_LAST_SWITCH,
+#endif
 
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
 

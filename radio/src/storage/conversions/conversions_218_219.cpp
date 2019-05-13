@@ -32,6 +32,31 @@
 
 typedef ModelData ModelData_v219;
 
+int convertSource_218_to_219(int source)
+{
+  // on X7: 2 additional switches
+
+#if defined(PCBX7)
+  if (source >= MIXSRC_SI)
+    source += 2;
+#endif
+
+  return source;
+}
+
+int convertSwitch_218_to_219(int swtch)
+{
+  // on X7: 2 additional switches
+
+  if (swtch < 0)
+    return -convertSwitch_218_to_219(-swtch);
+
+  if (swtch >= SWSRC_SI0)
+    return swtch + 2 * 3;
+
+  return swtch;
+}
+
 void convertModelData_218_to_219(ModelData &model)
 {
   static_assert(sizeof(ModelData_v218) <= sizeof(ModelData), "ModelData size has been reduced");
@@ -48,6 +73,8 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_MIXERS_218; i++) {
     memmove(&newModel.mixData[i], &oldModel.mixData[i], sizeof(MixData_v218));
+    newModel.mixData[i].srcRaw = convertSource_218_to_219(newModel.mixData[i].srcRaw); // from newModel to avoid overwrite
+    newModel.mixData[i].swtch = convertSwitch_218_to_219(newModel.mixData[i].swtch); // from newModel to avoid overwrite
   }
 
   for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS_218; i++) {
@@ -56,8 +83,8 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_EXPOS_218; i++) {
     memmove(&newModel.expoData[i], &oldModel.expoData[i], sizeof(ExpoData_v218));
-    newModel.expoData[i].offset = oldModel.expoData[i].offset;
-    newModel.expoData[i].curve = oldModel.expoData[i].curve;
+    newModel.expoData[i].srcRaw = convertSource_218_to_219(newModel.expoData[i].srcRaw); // from newModel to avoid overwrite
+    newModel.expoData[i].swtch = convertSwitch_218_to_219(newModel.expoData[i].swtch); // from newModel to avoid overwrite
   }
 
   for (uint8_t i=0; i<MAX_CURVES_218; i++) {
@@ -70,10 +97,31 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (uint8_t i=0; i<MAX_LOGICAL_SWITCHES_218; i++) {
     memmove(&newModel.logicalSw[i], &oldModel.logicalSw[i], sizeof(LogicalSwitchData_v218));
+    LogicalSwitchData & sw = newModel.logicalSw[i];
+    uint8_t cstate = lswFamily(sw.func);
+    if (cstate == LS_FAMILY_OFS || cstate == LS_FAMILY_COMP || cstate == LS_FAMILY_DIFF) {
+      LogicalSwitchData & sw = newModel.logicalSw[i];
+      sw.v1 = convertSource_218_to_219((uint8_t)sw.v1);
+      if (cstate == LS_FAMILY_COMP) {
+        sw.v2 = convertSource_218_to_219((uint8_t)sw.v2);
+      }
+    }
+    else if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
+      sw.v1 = convertSwitch_218_to_219(sw.v1);
+      sw.v2 = convertSwitch_218_to_219(sw.v2);
+    }
+    else if (cstate == LS_FAMILY_EDGE) {
+      sw.v1 = convertSwitch_218_to_219(sw.v1);
+    }
   }
 
   for (uint8_t i=0; i<MAX_SPECIAL_FUNCTIONS_218; i++) {
     memmove(&newModel.customFn[i], &oldModel.customFn[i], sizeof(CustomFunctionData_v218));
+    CustomFunctionData & cf = newModel.customFn[i];
+    cf.swtch = convertSwitch_218_to_219(cf.swtch);
+    if (cf.func == FUNC_PLAY_VALUE || cf.func == FUNC_VOLUME || (IS_ADJUST_GV_FUNC(cf.func) && cf.all.mode == FUNC_ADJUST_GVAR_SOURCE)) {
+      cf.all.val = convertSource_218_to_219(cf.all.val);
+    }
   }
 
   newModel.swashR = oldModel.swashR;
@@ -168,5 +216,25 @@ void convertModelData_218_to_219(ModelData &model)
   memcpy(newModel.screenData, oldModel.screenData,
           sizeof(newModel.screenData) +
           sizeof(newModel.topbarData))
+#endif
+
+  newModel.screensType = oldModel.frsky.screensType;
+  memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
+#if defined(PCBX7)
+  for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
+    uint8_t screenType = (newModel.screensType >> (2*i)) & 0x03;
+    if (screenType == TELEMETRY_SCREEN_TYPE_VALUES) {
+      for (int j = 0; j < 4; j++) {
+        for (int k = 0; k < NUM_LINE_ITEMS; k++) {
+          newModel.screens[i].lines[j].sources[k] = convertSource_218_to_219(newModel.screens[i].lines[j].sources[k]);
+        }
+      }
+    }
+    else if (screenType == TELEMETRY_SCREEN_TYPE_GAUGES) {
+      for (int j = 0; j < 4; j++) {
+        newModel.screens[i].bars[j].source = convertSource_218_to_219(newModel.screens[i].bars[j].source);
+      }
+    }
+  }
 #endif
 }

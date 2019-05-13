@@ -422,6 +422,9 @@ enum EnumSwitchesPositions
 #else
   #define NUM_SWITCHES                  8
 #endif
+
+static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
