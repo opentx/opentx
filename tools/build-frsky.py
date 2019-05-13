@@ -14,7 +14,7 @@ options = {
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES"
     },
-    "X3": {
+    "X9LITE": {
         "PXX1": "NO",
         "LUA": "NO_MODEL_SCRIPTS",
         "GVARS": "YES",

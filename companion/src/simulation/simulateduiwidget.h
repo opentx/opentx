@@ -104,7 +104,7 @@ class SimulatedUIWidget : public QWidget
 // Each subclass is responsible for its own Ui
 namespace Ui {
   class SimulatedUIWidget9X;
-  class SimulatedUIWidgetX3;
+  class SimulatedUIWidgetX9LITE;
   class SimulatedUIWidgetX7;
   class SimulatedUIWidgetX9;
   class SimulatedUIWidgetXLITE;
@@ -129,16 +129,16 @@ class SimulatedUIWidget9X: public SimulatedUIWidget
 
 };
 
-class SimulatedUIWidgetX3: public SimulatedUIWidget
+class SimulatedUIWidgetX9LITE: public SimulatedUIWidget
 {
   Q_OBJECT
 
   public:
-    explicit SimulatedUIWidgetX3(SimulatorInterface * simulator, QWidget * parent = nullptr);
-    virtual ~SimulatedUIWidgetX3();
+    explicit SimulatedUIWidgetX9LITE(SimulatorInterface * simulator, QWidget * parent = nullptr);
+    virtual ~SimulatedUIWidgetX9LITE();
 
   private:
-    Ui::SimulatedUIWidgetX3 * ui;
+    Ui::SimulatedUIWidgetX9LITE * ui;
 };
 
 class SimulatedUIWidgetX7: public SimulatedUIWidget

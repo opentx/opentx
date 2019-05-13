@@ -452,7 +452,7 @@ const QString Boards::getBoardName(Board::Type board)
     case BOARD_TARANIS_X9E:
       return "Taranis X9E";
     case BOARD_TARANIS_X9LITE:
-      return "Taranis X3";
+      return "Taranis X9Lite";
     case BOARD_SKY9X:
       return "Sky9x";
     case BOARD_9XRPRO:
