@@ -16,10 +16,10 @@ SimulatedUIWidgetX9LITE::SimulatedUIWidgetX9LITE(SimulatorInterface *simulator, 
 
   QPoint ctr(70, 91);
   polygon << polyArc(ctr.x(), ctr.y(), 50, -90, 90) << polyArc(ctr.x(), ctr.y(), 22, -90, 90);
-  act = new RadioUiAction(3, QList<int>() << Qt::Key_PageUp << Qt::Key_Up, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_PAGE);
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_PageUp << Qt::Key_Up, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_PAGE);
   addRadioWidget(ui->leftbuttons->addArea(polygon, "X9LITE/left_page.png", act));
 
-  act = new RadioUiAction(0, QList<int>() << Qt::Key_PageDown << Qt::Key_Down, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_MENU_ICN);
+  act = new RadioUiAction(3, QList<int>() << Qt::Key_PageDown << Qt::Key_Down, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_MENU_ICN);
   addRadioWidget(ui->leftbuttons->addArea(polyArc(ctr.x(), ctr.y(), 20), "X9LITE/left_menu.png", act));
 
   polygon.clear();
@@ -36,7 +36,7 @@ SimulatedUIWidgetX9LITE::SimulatedUIWidgetX9LITE(SimulatorInterface *simulator, 
 
   addRadioWidget(ui->leftbuttons->addArea(QRect(9, 154, 30, 30), "X9LITE/left_scrnshot.png", m_screenshotAction));
 
-  m_backlightColors << QColor(215, 243, 255);  // X3 Blue
+  m_backlightColors << QColor(215, 243, 255);  // X9LITE Blue
   m_backlightColors << QColor(166,247,159);
   m_backlightColors << QColor(247,159,166);
   m_backlightColors << QColor(255,195,151);
