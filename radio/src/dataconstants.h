@@ -623,7 +623,7 @@ enum MixSources {
   MIXSRC_SB,                        LUA_EXPORT("sb", "Switch B")
   MIXSRC_SC,                        LUA_EXPORT("sc", "Switch C")
   MIXSRC_SD,                        LUA_EXPORT("sd", "Switch D")
-#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
 #endif
 #if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
@@ -707,6 +707,8 @@ enum MixSources {
   MIXSRC_FIRST_TELEM,                       LUA_EXPORT_MULTIPLE("telem", "Telemetry sensor %d", MAX_TELEMETRY_SENSORS)
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 };
+
+static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES);
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)
 #define MIXSRC_LAST         MIXSRC_LAST_CH
