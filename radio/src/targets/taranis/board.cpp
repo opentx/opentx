@@ -157,7 +157,7 @@ void boardInit()
                          EXTMODULE_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          SPORT_UPDATE_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
                          HEARTBEAT_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
@@ -175,7 +175,7 @@ void boardInit()
                          SD_RCC_APB1Periph |
                          TRAINER_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
-                         SERIAL_RCC_APB1Periph |
+                         AUX_SERIAL_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          BT_RCC_APB1Periph |
                          GYRO_RCC_APB1Periph,
