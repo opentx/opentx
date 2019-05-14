@@ -301,8 +301,11 @@ extern "C" {
 
 // ADC driver
 #define NUM_POTS                       3
+#define STORAGE_NUM_POTS               3
 #define NUM_SLIDERS                    0
+#define STORAGE_NUM_SLIDERS            0
 #define NUM_XPOTS                      0
+#define STORAGE_NUM_MOUSE_ANALOGS      0
 enum Analogs {
   STICK1,
   STICK2,
@@ -339,7 +342,6 @@ void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
 void setSticksGain(uint8_t gains);
 #define NUM_MOUSE_ANALOGS              0
-#define NUM_DUMMY_ANAS                 0
 
 // Battery driver
 uint16_t getBatteryVoltage();          // returns current battery voltage in 10mV steps
