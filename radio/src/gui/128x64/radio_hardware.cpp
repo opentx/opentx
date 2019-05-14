@@ -96,7 +96,7 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_STICK4,
   ITEM_RADIO_HARDWARE_LABEL_POTS,
   ITEM_RADIO_HARDWARE_POT1,
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
   ITEM_RADIO_HARDWARE_POT2,
 #endif
   ITEM_RADIO_HARDWARE_LABEL_SWITCHES,
@@ -109,6 +109,10 @@ enum MenuRadioHardwareItems {
 #endif
 #if NUM_SWITCHES >= 6
   ITEM_RADIO_HARDWARE_SH,
+#endif
+#if NUM_SWITCHES >= 8
+  ITEM_RADIO_HARDWARE_SI,
+  ITEM_RADIO_HARDWARE_SJ,
 #endif
   ITEM_RADIO_HARDWARE_BATTERY_CALIB,
 #if defined(STM32)
@@ -136,13 +140,15 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_MAX
 };
 
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1
 #else
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #endif
 
-#if NUM_SWITCHES == 6
+#if NUM_SWITCHES == 8
+#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#elif NUM_SWITCHES == 6
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #elif NUM_SWITCHES == 5
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
@@ -150,7 +156,7 @@ enum MenuRadioHardwareItems {
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #endif
 
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
   #define BLUETOOTH_ROWS
 #elif defined(PCBTARANIS)
   #define BLUETOOTH_ROWS                 uint8_t(IS_BLUETOOTH_CHIP_PRESENT() ? 0 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY ? -1 : HIDDEN_ROW), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? HIDDEN_ROW : 0),
@@ -160,14 +166,14 @@ enum MenuRadioHardwareItems {
   #define BLUETOOTH_ROWS
 #endif
 
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
   #define SWITCH_TYPE_MAX(sw)            (sw == MIXSRC_SD-MIXSRC_FIRST_SWITCH ? SWITCH_2POS : SWITCH_3POS)
 #elif defined(PCBXLITES)
   #define SWITCH_TYPE_MAX(sw)            (sw >= MIXSRC_SE-MIXSRC_FIRST_SWITCH ? SWITCH_2POS : SWITCH_3POS)
 #elif defined(PCBXLITE)
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #else
-  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SI-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SJ-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #endif
 
 #if defined(STM32)
@@ -178,7 +184,7 @@ enum MenuRadioHardwareItems {
 
 #if defined(TX_CAPACITY_MEASUREMENT)
   #define TX_CAPACITY_MEASUREMENT_ROWS   0,
-#else 
+#else
   #define TX_CAPACITY_MEASUREMENT_ROWS
 #endif
 
@@ -259,7 +265,7 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_POT1:
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
       case ITEM_RADIO_HARDWARE_POT2:
 #endif
       {
@@ -291,6 +297,10 @@ void menuRadioHardware(event_t event)
 #endif
 #if NUM_SWITCHES >= 6
       case ITEM_RADIO_HARDWARE_SH:
+#endif
+#if NUM_SWITCHES >= 8
+      case ITEM_RADIO_HARDWARE_SI:
+      case ITEM_RADIO_HARDWARE_SJ:
 #endif
       {
         int index = k-ITEM_RADIO_HARDWARE_SA;
@@ -414,7 +424,7 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_RAS:
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
         lcdDrawTextAlignedLeft(y, "Ext. RAS");
         lcdNextPos = HW_SETTINGS_COLUMN2;
 #else

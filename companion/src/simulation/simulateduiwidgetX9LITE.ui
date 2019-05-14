@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SimulatedUIWidgetX3</class>
- <widget class="QWidget" name="SimulatedUIWidgetX3">
+ <class>SimulatedUIWidgetX9LITE</class>
+ <widget class="QWidget" name="SimulatedUIWidgetX9LITE">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -71,7 +71,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/X7/left.png);</string>
+      <string notr="true">background:url(:/images/simulator/X9LITE/left.png);</string>
      </property>
     </widget>
    </item>
@@ -121,7 +121,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/X7/right.png)</string>
+      <string notr="true">background:url(:/images/simulator/X9LITE/right.png)</string>
      </property>
     </widget>
    </item>
@@ -146,7 +146,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/X7/top.png)</string>
+      <string notr="true">background:url(:/images/simulator/X9LITE/top.png)</string>
      </property>
     </widget>
    </item>
@@ -171,7 +171,7 @@
       </size>
      </property>
      <property name="styleSheet">
-      <string notr="true">background:url(:/images/simulator/X7/bottom.png)</string>
+      <string notr="true">background:url(:/images/simulator/X9LITE/bottom.png)</string>
      </property>
     </widget>
    </item>

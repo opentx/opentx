@@ -87,10 +87,10 @@ if [[ " 9XRPRO ARM9X ALL " =~ " ${FLAVOR} " ]] ; then
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}
 fi
 
-if [[ " X3 ALL " =~ " ${FLAVOR} " ]] ; then
-  # OpenTX on X3
+if [[ " X9LITE ALL " =~ " ${FLAVOR} " ]] ; then
+  # OpenTX on X9LITE
   rm -rf *
-  cmake ${COMMON_OPTIONS} -DPCB=X3 -DHELI=YES -DGVARS=YES ${SRCDIR}
+  cmake ${COMMON_OPTIONS} -DPCB=X9LITE -DHELI=YES -DGVARS=YES ${SRCDIR}
   make -j${CORES} ${FIRMARE_TARGET}
   make -j${CORES} libsimulator
   make -j${CORES} gtests ; ./gtests ${TEST_OPTIONS}

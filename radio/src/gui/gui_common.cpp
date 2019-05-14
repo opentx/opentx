@@ -694,7 +694,7 @@ bool isTrainerModeAvailable(int mode)
   else
     return true;
 }
-#elif defined(PCBX9)
+#elif defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
 bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
@@ -702,7 +702,7 @@ bool isTrainerModeAvailable(int mode)
   else
     return true;
 }
-#elif defined(PCBX7) || defined(PCBXLITES) || defined(PCBX3)
+#elif defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITE)
 bool isTrainerModeAvailable(int mode)
 {
   if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))

@@ -548,7 +548,7 @@ PACK(struct CustomScreenData {
   uint8_t view;
 #endif
 
-#if defined(PCBX9)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   #define TOPBAR_DATA \
     NOBACKUP(uint8_t voltsSource); \
     NOBACKUP(uint8_t altitudeSource);
@@ -837,7 +837,7 @@ static inline void check_struct()
 
   CHKSIZE(VarioData, 5);
 
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   CHKSIZE(MixData, 20);
   CHKSIZE(ExpoData, 17);
   CHKSIZE(LimitData, 11);
@@ -925,7 +925,7 @@ static inline void check_struct()
   CHKSIZE(RadioData, 852);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX7)
-  CHKSIZE(RadioData, 858);
+  CHKSIZE(RadioData, 864);
   CHKSIZE(ModelData, 6157);
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);

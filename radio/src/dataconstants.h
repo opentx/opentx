@@ -48,7 +48,7 @@
   #define MAX_TRAINER_CHANNELS         16
   #define MAX_TELEMETRY_SENSORS        60
   #define MAX_CUSTOM_SCREENS           5
-#elif defined(PCBX9)
+#elif defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   #define MAX_MODELS                   60
   #define MAX_OUTPUT_CHANNELS          32 // number of real output channels CH1-CH32
   #define MAX_FLIGHT_MODES             9
@@ -383,25 +383,33 @@ enum SwitchSources {
   SWSRC_SD0,
   SWSRC_SD1,
   SWSRC_SD2,
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBXLITES)
   SWSRC_SE0,
   SWSRC_SE1,
   SWSRC_SE2,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
   SWSRC_SF0,
   SWSRC_SF1,
   SWSRC_SF2,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   SWSRC_SG0,
   SWSRC_SG1,
   SWSRC_SG2,
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   SWSRC_SH0,
   SWSRC_SH1,
   SWSRC_SH2,
+#endif
+#if defined(PCBX7)
+  SWSRC_SI0,
+  SWSRC_SI1,
+  SWSRC_SI2,
+  SWSRC_SJ0,
+  SWSRC_SJ1,
+  SWSRC_SJ2,
 #endif
 #if defined(PCBX9E)
   SWSRC_SI0,
@@ -436,11 +444,6 @@ enum SwitchSources {
   SWSRC_SR2,
 #endif
   SWSRC_LAST_SWITCH = SWSRC_FIRST_SWITCH + NUM_SWITCHES_POSITIONS - 1,
-#if NUM_SWITCHES >= 8
-  SWSRC_TRAINER = SWSRC_SH2,
-#else
-  SWSRC_TRAINER = SWSRC_LAST_SWITCH,
-#endif
 #else // neither Taranis nor Horus
   SWSRC_ID0 = SWSRC_FIRST_SWITCH,
   SWSRC_ID1,
@@ -523,6 +526,12 @@ enum SwitchSources {
   SWSRC_INVERT = SWSRC_COUNT+1,
 };
 
+#if NUM_SWITCHES >= 8
+  #define SWSRC_TRAINER SWSRC_SH2
+#else
+  #define SWSRC_TRAINER SWSRC_LAST_SWITCH,
+#endif
+
 #define SWSRC_LAST_TRIM                 (SWSRC_FIRST_TRIM + 2*NUM_TRIMS - 1)
 
 enum MixSources {
@@ -569,7 +578,7 @@ enum MixSources {
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_POT2,                          LUA_EXPORT("s2", "Potentiometer 2")
   MIXSRC_LAST_POT = MIXSRC_POT2,
-#elif defined(PCBX3)
+#elif defined(PCBX9LITE)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
   MIXSRC_LAST_POT = MIXSRC_POT1,
 #elif defined(PCBTARANIS)
@@ -628,14 +637,18 @@ enum MixSources {
 #if defined(PCBHORUS) || defined(PCBX9) || defined(PCBXLITES)
   MIXSRC_SE,                        LUA_EXPORT("se", "Switch E")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES)
   MIXSRC_SF,                        LUA_EXPORT("sf", "Switch F")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   MIXSRC_SG,                        LUA_EXPORT("sg", "Switch G")
 #endif
-#if defined(PCBHORUS) || defined(PCBX9) || defined(PCBX7)
+#if defined(PCBHORUS) || defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   MIXSRC_SH,                        LUA_EXPORT("sh", "Switch H")
+#endif
+#if defined(PCBX7)
+  MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
+  MIXSRC_SJ,                        LUA_EXPORT("sj", "Switch J")
 #endif
 #if defined(PCBX9E)
   MIXSRC_SI,                        LUA_EXPORT("si", "Switch I")
@@ -709,6 +722,10 @@ enum MixSources {
   MIXSRC_FIRST_TELEM,                       LUA_EXPORT_MULTIPLE("telem", "Telemetry sensor %d", MAX_TELEMETRY_SENSORS)
   MIXSRC_LAST_TELEM = MIXSRC_FIRST_TELEM+3*MAX_TELEMETRY_SENSORS-1
 };
+
+#if defined(__cplusplus)
+static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
+#endif
 
 #define MIXSRC_FIRST        (MIXSRC_NONE + 1)
 #define MIXSRC_LAST         MIXSRC_LAST_CH

@@ -50,7 +50,7 @@ void menuRadioDiagKeys(event_t event)
     }
 
     if (i < TRM_BASE) {
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       if (i >= 2) {
         // hide PLUS and MINUS virtual buttons
@@ -86,7 +86,7 @@ void menuRadioDiagKeys(event_t event)
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
     coord_t y = MENU_HEADER_HEIGHT + FH;
     coord_t x = 6*FW+3;
     lcdDrawTextAtIndex(0, MENU_HEADER_HEIGHT + FH , STR_VRENCODERS, 0, 0);
