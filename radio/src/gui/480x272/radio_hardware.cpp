@@ -46,6 +46,10 @@ enum MenuRadioHardwareItems {
   ITEM_RADIO_HARDWARE_SF,
   ITEM_RADIO_HARDWARE_SG,
   ITEM_RADIO_HARDWARE_SH,
+#if defined(PCBX10)
+  ITEM_RADIO_HARDWARE_GMBL,
+  ITEM_RADIO_HARDWARE_GMBR,
+#endif
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_MODE,
   ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE,
@@ -59,12 +63,15 @@ enum MenuRadioHardwareItems {
 };
 
 #define HW_SETTINGS_COLUMN             150
+
 #if defined(PCBX10)
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #else
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
-#endif
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+#endif
+
 #define BLUETOOTH_ROWS                 0, uint8_t(g_eeGeneral.bluetoothMode != BLUETOOTH_TELEMETRY ? HIDDEN_ROW : -1), uint8_t(g_eeGeneral.bluetoothMode == BLUETOOTH_OFF ? -1 : 0)
 #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF-MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH-MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 
@@ -89,6 +96,7 @@ bool menuRadioHardware(event_t event)
           pushMenu(menuRadioCalibration);
         }
         break;
+
       case ITEM_RADIO_HARDWARE_LABEL_STICKS:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_STICKS);
         break;
@@ -143,9 +151,11 @@ bool menuRadioHardware(event_t event)
         g_eeGeneral.potsConfig |= (potType << shift);
         break;
       }
+
       case ITEM_RADIO_HARDWARE_LABEL_SWITCHES:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_SWITCHES);
         break;
+
       case ITEM_RADIO_HARDWARE_SA:
       case ITEM_RADIO_HARDWARE_SB:
       case ITEM_RADIO_HARDWARE_SC:
@@ -154,8 +164,12 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_SF:
       case ITEM_RADIO_HARDWARE_SG:
       case ITEM_RADIO_HARDWARE_SH:
+#if defined(PCBX10)
+      case ITEM_RADIO_HARDWARE_GMBL:
+      case ITEM_RADIO_HARDWARE_GMBR:
+#endif
       {
-        int index = k-ITEM_RADIO_HARDWARE_SA;
+        int index = k - ITEM_RADIO_HARDWARE_SA;
         int config = SWITCH_CONFIG(index);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH-MIXSRC_Rud+index+1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.switchNames[index]) || (attr && menuHorizontalPosition == 0))

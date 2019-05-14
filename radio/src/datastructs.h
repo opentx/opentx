@@ -665,7 +665,7 @@ PACK(struct TrainerData {
     uint8_t  slidersConfig:4; \
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
-    NOBACKUP(char switchNames[NUM_SWITCHES][LEN_SWITCH_NAME]); \
+    NOBACKUP(char switchNames[STORAGE_SWITCHES][LEN_SWITCH_NAME]); \
     NOBACKUP(char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
     NOBACKUP(uint8_t spare:1); \
@@ -926,7 +926,7 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 855);
+  CHKSIZE(RadioData, 861);
   CHKSIZE(ModelData, 9734);
 #endif
 

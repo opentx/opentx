@@ -300,8 +300,14 @@ enum EnumSwitches
   SW_SF,
   SW_SG,
   SW_SH,
+#if defined(PCBX10)
+  SW_GMBL,
+  SW_GMBR,
+#endif
   NUM_SWITCHES
 };
+
+#define STORAGE_SWITCHES               10
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
 enum EnumSwitchesPositions
@@ -330,8 +336,22 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
+#if defined(PCBX10)
+  SW_GMBL0,
+  SW_GMBL1,
+  SW_GMBL2,
+  SW_GMBR0,
+  SW_GMBR1,
+  SW_GMBR2,
+#endif
   NUM_SWITCHES_POSITIONS
 };
+
+
+#if defined(__cplusplus)
+static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+#endif
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
