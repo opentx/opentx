@@ -203,18 +203,17 @@ end
 -- color for cell
 -- This function returns green at gvalue, red at rvalue and graduate in between
 local function getRangeColor(value, gvalue, rvalue)
-  if gvalue > rvalue and not range == 0 then
-    local range = gvalue - rvalue
+  local range = math.abs(gvalue - rvalue) --only use local variables!!
+  if gvalue > rvalue and not range==0 then
     if value > gvalue then return lcd.RGB(0, 0xdf, 0) end
     if value < rvalue then return lcd.RGB(0xdf, 0, 0) end
-    g = math.floor(0xdf * (value - rvalue) / range)
+    g = math.floor(0xdf * (value-rvalue) / range)
     r = 0xdf - g
     return lcd.RGB(r, g, 0)
   else
-    local range = rvalue - gvalue
     if value > gvalue then return lcd.RGB(0, 0xdf, 0) end
     if value < rvalue then return lcd.RGB(0xdf, 0, 0) end
-    r = math.floor(0xdf * (value - gvalue) / range)
+    r = math.floor(0xdf * (value-gvalue) / range)
     g = 0xdf - r
     return lcd.RGB(r, g, 0)
   end
