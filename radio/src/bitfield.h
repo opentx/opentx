@@ -62,7 +62,11 @@ inline T BF_PREP(T x, uint8_t start, uint8_t len)
 }
 
 //! Extract a bitfield of length 'len' starting at bit 'start' from  'y'.
-#define BF_GET(y, start, len)   ( ((y)>>(start)) & BF_BITMASK(len) )
+template <typename T>
+inline T BF_GET(T y, uint8_t start, uint8_t len)
+{
+  return ((y)>>(start)) & BF_BITMASK<T>(len);
+}
 
 //! Insert 'len' bits of 'x 'into 'y', starting at bit 'start' from  'y'.
 template <class T>
