@@ -663,8 +663,8 @@ enum MixSources {
   MIXSRC_SR,                        LUA_EXPORT("sr", "Switch R")
 #endif
 #if defined(PCBX10)
-  MIXSRC_GMBL,
-  MIXSRC_GMBR,
+  MIXSRC_GMBL,                      LUA_EXPORT("gmbl", "Switch Left gimbal")
+  MIXSRC_GMBR,                      LUA_EXPORT("gmbr", "Switch right gimbal")
 #endif
 #if defined(PCBSKY9X)
   MIXSRC_3POS = MIXSRC_FIRST_SWITCH,
