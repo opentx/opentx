@@ -104,6 +104,7 @@ void menuModelModuleOptions(event_t event)
   }
 
   if (menuEvent) {
+    killEvents(KEY_EXIT);
     moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
     if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
       abortPopMenu();
