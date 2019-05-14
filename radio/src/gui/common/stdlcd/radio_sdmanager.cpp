@@ -91,7 +91,7 @@ void onUpdateConfirmation(const char * result)
   if (result == STR_OK) {
     OtaUpdateInformation * destination = moduleState[EXTERNAL_MODULE].otaUpdateInformation;
     Pxx2OtaUpdate otaUpdate(EXTERNAL_MODULE, destination->candidateReceiversNames[destination->selectedReceiverIndex]);
-    otaUpdate.flashFirmware(destination->filename);
+    otaUpdate.flashFirmware(destination->filename, drawProgressScreen);
   }
   else {
     moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;

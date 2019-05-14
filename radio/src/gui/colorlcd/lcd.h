@@ -32,7 +32,7 @@
 
 #define CENTER
 
-#define lcdint_t                       int32_t
+#define coord_t                       int32_t
 
 #define BSS                            0x00
 
