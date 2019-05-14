@@ -661,10 +661,10 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t  serial2Mode:4); \
-    uint8_t  slidersConfig:4; \
+    NOBACKUP(uint8_t serial2Mode); \
     uint32_t switchConfig; \
-    uint8_t  potsConfig; /* two bits per pot */ \
+    uint16_t potsConfig; /* two bits per pot */ \
+    uint8_t slidersConfig; /* 1 bit per slider */ \
     NOBACKUP(char switchNames[STORAGE_SWITCHES][LEN_SWITCH_NAME]); \
     NOBACKUP(char anaNames[NUM_STICKS + STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS][LEN_ANA_NAME]); \
     NOBACKUP(char currModelFilename[LEN_MODEL_FILENAME+1]); \
@@ -926,7 +926,7 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 879);
+  CHKSIZE(RadioData, 881);
   CHKSIZE(ModelData, 9736);
 #endif
 

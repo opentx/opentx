@@ -153,13 +153,13 @@ bool menuRadioHardware(event_t event)
       {
         int idx = k - ITEM_RADIO_HARDWARE_POT1;
         uint8_t shift = (2*idx);
-        uint8_t mask = (0x03 << shift);
         lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+idx]) || (attr && menuHorizontalPosition == 0))
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
           lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
-        uint8_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
+        uint32_t mask = (0x03 << shift);
+        uint32_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
         potType = editChoice(HW_SETTINGS_COLUMN+50, y, STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
         g_eeGeneral.potsConfig &= ~mask;
         g_eeGeneral.potsConfig |= (potType << shift);
