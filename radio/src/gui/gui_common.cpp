@@ -184,6 +184,11 @@ bool isSourceAvailable(int source)
     return false;
 #endif
 
+#if defined(PCBX12S)
+  if (source >= MIXSRC_EXT1 && source <= MIXSRC_EXT2))
+    return false;
+#endif
+
   if (source>=MIXSRC_FIRST_SWITCH && source<=MIXSRC_LAST_SWITCH) {
     return SWITCH_EXISTS(source-MIXSRC_FIRST_SWITCH);
   }

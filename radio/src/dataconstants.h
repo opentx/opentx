@@ -444,7 +444,8 @@ enum SwitchSources {
   SWSRC_SR1,
   SWSRC_SR2,
 #endif
-#if defined(PCBX10)
+
+#if defined(PCBHORUS)
   SWSRC_GMBL0,
   SWSRC_GMBL1,
   SWSRC_GMBL2,
@@ -479,12 +480,14 @@ enum SwitchSources {
   SWSRC_TrimRudRight,
   SWSRC_TrimEleDown,
   SWSRC_TrimEleUp,
+
 #if NUM_TRIMS > 2
   SWSRC_TrimThrDown,
   SWSRC_TrimThrUp,
   SWSRC_TrimAilLeft,
   SWSRC_TrimAilRight,
 #endif
+
 #if NUM_TRIMS > 4
   SWSRC_TrimT5Down,
   SWSRC_TrimT5Up,
@@ -563,6 +566,7 @@ enum MixSources {
   MIXSRC_S4,                            LUA_EXPORT("s4", "Slider S4")
   MIXSRC_LS,                            LUA_EXPORT("ls", "Left rear slider")
   MIXSRC_RS,                            LUA_EXPORT("rs", "Right rear slider")
+
   MIXSRC_LAST_POT = MIXSRC_RS,
 #elif defined(PCBX9E)
   MIXSRC_POT1 = MIXSRC_FIRST_POT,       LUA_EXPORT("s1", "Potentiometer 1")
@@ -598,6 +602,8 @@ enum MixSources {
 #endif
 
 #if defined(PCBHORUS)
+  MIXSRC_EXT1,                          LUA_EXPORT("ext1", "Ext 1")
+  MIXSRC_EXT2,                          LUA_EXPORT("ext1", "Ext 2")
   MIXSRC_MOUSE1,                        LUA_EXPORT("jsx", "Joystick X")
   MIXSRC_MOUSE2,                        LUA_EXPORT("jsy", "Joystick Y")
 #endif
