@@ -106,8 +106,7 @@ bool eeConvert()
 #if EEPROM_CONVERSIONS < 219
   if (version == 218) {
     version = 219;
-    g_eeGeneral.version = 219;
-    // no conversion needed for now
+    convertRadioData_218_to_219(g_eeGeneral);
   }
 #endif
 

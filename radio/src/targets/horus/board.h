@@ -383,7 +383,13 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
+
+#if defined(PCBX10)
+#define NUM_POTS                       5
+#else
 #define NUM_POTS                       3
+#endif
+
 #define NUM_XPOTS                      NUM_POTS
 #define STORAGE_NUM_POTS               5
 
@@ -406,7 +412,10 @@ enum Analogs {
   POT1 = POT_FIRST,
   POT2,
   POT3,
-  POT_LAST = POT3,
+#if defined(PCBX10)
+  EXT1,
+  EXT2,
+#endif
   SLIDER_FIRST,
   SLIDER1 = SLIDER_FIRST,
   SLIDER2,
@@ -421,16 +430,15 @@ enum Analogs {
 #endif
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
-#if defined(PCBX10)
-  EXT1,
-  EXT2,
-#else
+#if defined(PCBX12S)
   MOUSE1, // TODO why after voltage?
   MOUSE2,
 #endif
   NUM_ANALOGS,
   TX_RTC = NUM_ANALOGS
 };
+
+#define POT_LAST (SLIDER_FIRST - 1)
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,

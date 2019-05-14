@@ -41,6 +41,13 @@ int convertSource_218_to_219(int source)
     source += 2;
 #endif
 
+#if defined(PCBHORUS)
+  if (source >= MIXSRC_EXT1)
+    source += 2;
+  if (source >= MIXSRC_GMBL)
+    source += 2;
+#endif
+
   return source;
 }
 
@@ -48,12 +55,21 @@ int convertSwitch_218_to_219(int swtch)
 {
   // on X7: 2 additional switches
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBHORUS)
   if (swtch < 0)
     return -convertSwitch_218_to_219(-swtch);
+#endif
 
+#if defined(PCBX7)
   if (swtch >= SWSRC_SI0)
-    return swtch + 2 * 3;
+    swtch += 2 * 3;
+#endif
+
+#if defined(PCBHORUS)
+  if (swtch >= SWSRC_GMBL0)
+    swtch += 2 * 3;
+  if (swtch >= SWSRC_FIRST_MULTIPOS_SWITCH + 3 * XPOTS_MULTIPOS_COUNT)
+    swtch += 2 * XPOTS_MULTIPOS_COUNT;
 #endif
 
   return swtch;
@@ -239,4 +255,29 @@ void convertModelData_218_to_219(ModelData &model)
     }
   }
 #endif
+}
+
+void convertRadioData_218_to_219(RadioData & settings)
+{
+  RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
+
+  settings.version = 219;
+
+  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData_v218, serial2Mode) - offsetof(RadioData_v218, chkSum));
+  memcpy(&settings.calib[NUM_STICKS + 5], &settings_v218.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
+  memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
+
+  settings.serial2Mode = settings_v218.serial2Mode;
+  settings.switchConfig = settings_v218.switchConfig;
+  settings.potsConfig = settings_v218.potsConfig;
+  settings.slidersConfig = settings_v218.slidersConfig;
+
+  memcpy(&settings.switchNames[0], &settings_v218.switchNames[0], 8 * LEN_SWITCH_NAME);
+  memclear(&settings.switchNames[8], 2 * LEN_SWITCH_NAME);
+
+  memcpy(&settings.anaNames[0], &settings_v218.anaNames[0], (NUM_STICKS + 3) * LEN_ANA_NAME);
+  memclear(&settings.anaNames[NUM_STICKS + 3], 2 * LEN_SWITCH_NAME);
+  memcpy(&settings.anaNames[NUM_STICKS + 5], &settings_v218.anaNames[NUM_STICKS + 3], STORAGE_NUM_SLIDERS * LEN_ANA_NAME);
+
+  memcpy(&settings.currModelFilename[0], &settings_v218.currModelFilename[0], sizeof(RadioData_v218) - offsetof(RadioData_v218, currModelFilename[0]));
 }
