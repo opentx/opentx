@@ -151,18 +151,15 @@ bool menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_EXT2:
 #endif
       {
-        int idx = k - ITEM_RADIO_HARDWARE_POT1;
-        uint8_t shift = (2*idx);
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+idx+1, menuHorizontalPosition < 0 ? attr : 0);
-        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+idx]) || (attr && menuHorizontalPosition == 0))
-          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+idx], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
+        int index = k - ITEM_RADIO_HARDWARE_POT1;
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, NUM_STICKS+index+1, menuHorizontalPosition < 0 ? attr : 0);
+        if (ZEXIST(g_eeGeneral.anaNames[NUM_STICKS+index]) || (attr && menuHorizontalPosition == 0))
+          editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+index], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
           lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
-        uint32_t mask = (0x03 << shift);
-        uint32_t potType = (g_eeGeneral.potsConfig & mask) >> shift;
+        uint32_t potType = BF_GET<uint32_t>(g_eeGeneral.potsConfig, 2*(index), 2);
         potType = editChoice(HW_SETTINGS_COLUMN+50, y, STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
-        g_eeGeneral.potsConfig &= ~mask;
-        g_eeGeneral.potsConfig |= (potType << shift);
+        g_eeGeneral.potsConfig = BF_SET<uint32_t>(g_eeGeneral.potsConfig, potType, 2*index, 2);
         break;
       }
 
