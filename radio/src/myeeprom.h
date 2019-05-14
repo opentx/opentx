@@ -96,7 +96,7 @@
     SLIDER_NONE,
     SLIDER_WITH_DETENT,
   };
-  #define SWITCH_CONFIG(x)            (BF_GET<uint32_t>(g_eeGeneral.switchConfig, 2*(x), 2))
+  #define SWITCH_CONFIG(x)            (bfGet<uint32_t>(g_eeGeneral.switchConfig, 2*(x), 2))
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_CONFIG_3POS(x)           (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_CONFIG_TOGGLE(x)         (SWITCH_CONFIG(x) == SWITCH_TOGGLE)

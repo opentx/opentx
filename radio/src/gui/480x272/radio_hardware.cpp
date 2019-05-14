@@ -157,9 +157,9 @@ bool menuRadioHardware(event_t event)
           editName(HW_SETTINGS_COLUMN, y, g_eeGeneral.anaNames[NUM_STICKS+index], LEN_ANA_NAME, event, attr && menuHorizontalPosition == 0);
         else
           lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
-        uint32_t potType = BF_GET<uint32_t>(g_eeGeneral.potsConfig, 2*(index), 2);
+        uint32_t potType = bfGet<uint32_t>(g_eeGeneral.potsConfig, 2*(index), 2);
         potType = editChoice(HW_SETTINGS_COLUMN+50, y, STR_POTTYPES, potType, POT_NONE, POT_WITHOUT_DETENT, menuHorizontalPosition == 1 ? attr : 0, event);
-        g_eeGeneral.potsConfig = BF_SET<uint32_t>(g_eeGeneral.potsConfig, potType, 2*index, 2);
+        g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, potType, 2*index, 2);
         break;
       }
 
@@ -189,7 +189,7 @@ bool menuRadioHardware(event_t event)
           lcdDrawMMM(HW_SETTINGS_COLUMN, y, 0);
         config = editChoice(HW_SETTINGS_COLUMN+50, y, STR_SWTYPES, config, SWITCH_NONE, SWITCH_TYPE_MAX(index), menuHorizontalPosition == 1 ? attr : 0, event);
         if (attr && checkIncDec_Ret) {
-          g_eeGeneral.switchConfig = BF_SET<uint32_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
+          g_eeGeneral.switchConfig = bfSet<uint32_t>(g_eeGeneral.switchConfig, config, 2*index, 2);
         }
         break;
       }

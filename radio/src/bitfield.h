@@ -28,51 +28,51 @@
 // A set of bitfield handling macros
 
 template <typename T>
-inline T BF_BIT(uint8_t n)
+inline T bfBit(uint8_t n)
 {
   return T(1) << n;
 }
 
-#define BF_BIT_GET(y, mask)        ( y & (mask) )
-#define BF_BIT_SET(y, mask)        ( y |=  (mask) )
-#define BF_BIT_CLEAR(y, mask)      ( y &= ~(mask) )
-#define BF_BIT_FLIP(y, mask)       ( y ^=  (mask) )
-#define BF_SINGLE_BIT_GET(y, i)    BF_BIT_GET(y, BF_BIT(i))
-#define BF_SINGLE_BIT_SET(y, i)    BF_BIT_SET(y, BF_BIT(i))
+#define BFBIT_GET(y, mask)        ( y & (mask) )
+#define BFBIT_SET(y, mask)        ( y |=  (mask) )
+#define BFBIT_CLEAR(y, mask)      ( y &= ~(mask) )
+#define BFBIT_FLIP(y, mask)       ( y ^=  (mask) )
+#define BF_SINGLE_BIT_GET(y, i)    BFBIT_GET(y, bfBit(i))
+#define BF_SINGLE_BIT_SET(y, i)    BFBIT_SET(y, bfBit(i))
 
 //! Create a bitmask of length 'len'.
 template <typename T>
-inline T BF_BITMASK(uint8_t len)
+inline T bfBitmask(uint8_t len)
 {
-  return BF_BIT<T>(len) - 1;
+  return bfBit<T>(len) - 1;
 }
 
 //! Create a bitfield mask of length 'len' starting at bit 'start'.
 template <typename T>
-inline T BF_MASK(uint8_t start, uint8_t len)
+inline T bfMask(uint8_t start, uint8_t len)
 {
-  return BF_BITMASK<T>(len) << start;
+  return bfBitmask<T>(len) << start;
 }
 
 //! Prepare a bitmask for insertion or combining.
 template <typename T>
-inline T BF_PREP(T x, uint8_t start, uint8_t len)
+inline T bfPrep(T x, uint8_t start, uint8_t len)
 {
-  return (x & BF_BITMASK<T>(len)) << start;
+  return (x & bfBitmask<T>(len)) << start;
 }
 
 //! Extract a bitfield of length 'len' starting at bit 'start' from  'y'.
 template <typename T>
-inline T BF_GET(T y, uint8_t start, uint8_t len)
+inline T bfGet(T y, uint8_t start, uint8_t len)
 {
-  return ((y)>>(start)) & BF_BITMASK<T>(len);
+  return ((y)>>(start)) & bfBitmask<T>(len);
 }
 
 //! Insert 'len' bits of 'x 'into 'y', starting at bit 'start' from  'y'.
 template <class T>
-inline T BF_SET(T to, T from, uint8_t start, uint8_t len)
+inline T bfSet(T to, T from, uint8_t start, uint8_t len)
 {
-  return (to & ~BF_MASK<T>(start, len)) | BF_PREP<T>(from, start, len);
+  return (to & ~bfMask<T>(start, len)) | bfPrep<T>(from, start, len);
 }
 
 #endif //BITFIELD_H
