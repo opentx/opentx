@@ -185,7 +185,7 @@ bool isSourceAvailable(int source)
 #endif
 
 #if defined(PCBX12S)
-  if (source >= MIXSRC_EXT1 && source <= MIXSRC_EXT2))
+  if (source >= MIXSRC_EXT1 && source <= MIXSRC_EXT2)
     return false;
 #endif
 
