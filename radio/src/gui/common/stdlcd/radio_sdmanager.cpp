@@ -206,11 +206,13 @@ void onSdManagerMenu(const char * result)
     bluetooth.flashFirmware(lfn);
   }
 #endif
+#if defined(PXX2)
   else if (result == STR_FLASH_RECEIVER_OTA) {
     memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
     getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
     moduleState[EXTERNAL_MODULE].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
   }
+#endif
 #endif
 #if defined(LUA)
   else if (result == STR_EXECUTE_FILE) {
