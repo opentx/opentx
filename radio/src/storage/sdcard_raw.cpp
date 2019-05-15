@@ -31,7 +31,7 @@ void getModelPath(char * path, const char * filename)
 const char * writeFile(const char * filename, const uint8_t * data, uint16_t size)
 {
   TRACE("writeFile(%s)", filename);
-  
+
   FIL file;
   unsigned char buf[8];
   UINT written;
@@ -107,7 +107,7 @@ const char * loadFile(const char * fullpath, uint8_t * data, uint16_t maxsize)
   uint16_t size;
 
   TRACE("loadFile(%s)", fullpath);
-  
+
   const char* err = openFile(fullpath, &file, &size);
   if (err) return err;
 
@@ -137,7 +137,7 @@ const char * loadModel(const char * filename, bool alarms)
   if (error) {
     TRACE("loadModel error=%s", error);
   }
-  
+
   if (error) {
     modelDefault(0) ;
     storageCheck(true);
@@ -188,19 +188,19 @@ void storageCheck(bool immediately)
 void storageReadAll()
 {
   TRACE("storageReadAll");
-  
-  if (loadRadioSettings() != NULL) {
+
+  if (loadRadioSettings() != nullptr) {
     storageEraseAll(true);
   }
 
-  for (uint8_t i=0; languagePacks[i]!=NULL; i++) {
+  for (uint8_t i = 0; languagePacks[i] != nullptr; i++) {
     if (!strncmp(g_eeGeneral.ttsLanguage, languagePacks[i]->id, 2)) {
       currentLanguagePackIdx = i;
       currentLanguagePack = languagePacks[i];
     }
   }
 
-  if (loadModel(g_eeGeneral.currModelFilename, false) != NULL) {
+  if (loadModel(g_eeGeneral.currModelFilename, false) != nullptr) {
     sdCheckAndCreateDirectory(MODELS_PATH);
     createModel();
   }
