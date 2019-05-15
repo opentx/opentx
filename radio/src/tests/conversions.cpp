@@ -92,7 +92,7 @@ TEST(Conversions, ConversionX7From22)
 }
 #endif
 
-#if defined(PCBHORUS)
+#if defined(PCBX10)
 TEST(Conversions, ConversionHorusFrom22)
 {
   simuFatfsSetPaths(TESTS_PATH "/tests/", TESTS_PATH "/tests/");
