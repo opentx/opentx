@@ -260,11 +260,11 @@ void convertModelData_218_to_219(ModelData &model)
 
 void convertRadioData_218_to_219(RadioData & settings)
 {
-  RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
-
   settings.version = 219;
 
 #if defined(PCBHORUS)
+  RadioData_v218 settings_v218 = (RadioData_v218 &)settings;
+
   memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData, serial2Mode) - offsetof(RadioData, chkSum));
   memcpy(&settings.calib[NUM_STICKS + 5], &settings_v218.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
   memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
