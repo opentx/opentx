@@ -15,7 +15,6 @@ set(SIMU_SRC
   simueeprom.cpp
   simufatfs.cpp
   simudisk.cpp
-
   )
 
 if(SIMU_DISKIO)

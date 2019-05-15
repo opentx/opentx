@@ -198,7 +198,7 @@ void disable_serial(uint8_t module);
 void intmoduleStop();
 void intmodulePxxStart();
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
 void intmodulePpmStart(void);
 #endif
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
