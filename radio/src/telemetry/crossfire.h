@@ -95,5 +95,6 @@ const uint8_t CROSSFIRE_FRAME_PERIODS[] = {
 #define CROSSFIRE_FRAME_PERIOD   4 // 4ms
 #endif
 
+#define CROSSFIRE_TELEM_MIRROR_BAUDRATE   115200
 
 #endif // _CROSSFIRE_H_
