@@ -106,7 +106,7 @@ void menuRadioSpectrumAnalyser(event_t event);
 void menuRadioPowerMeter(event_t event);
 void menuRadioCalibration(event_t event);
 
-static const MenuHandlerFunc menuTabGeneral[]  = {
+static const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT]  = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
 #if defined(PXX2)
