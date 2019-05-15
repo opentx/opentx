@@ -716,9 +716,9 @@ PACK(struct TrainerData {
 #endif
 
 #if defined(BUZZER)
-  #define BUZZER_FIELD int8_t buzzerMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
+  #define BUZZER_FIELD int8_t buzzerMode:2    // -2=quiet, -1=only alarms, 0=no keys, 1=all (only used on AVR radios without audio hardware)
 #else
-  #define BUZZER_FIELD int8_t spareRadio:2;
+  #define BUZZER_FIELD int8_t spareRadio:2
 #endif
 
 PACK(struct RadioData {
@@ -733,19 +733,19 @@ PACK(struct RadioData {
   NOBACKUP(int8_t backlightMode);
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
-  BUZZER_FIELD
+  NOBACKUP(BUZZER_FIELD); /* 2bits */
   NOBACKUP(uint8_t fai:1);
   NOBACKUP(int8_t beepMode:2);      // -2=quiet, -1=only alarms, 0=no keys, 1=all
   NOBACKUP(uint8_t alarmsFlash:1);
   NOBACKUP(uint8_t disableMemoryWarning:1);
   NOBACKUP(uint8_t disableAlarmWarning:1);
   uint8_t stickMode:2;
-  NOBACKUP(int8_t timezone:5);
-  NOBACKUP(uint8_t adjustRTC:1);
+  int8_t timezone:5;
+  uint8_t adjustRTC:1;
   NOBACKUP(uint8_t inactivityTimer);
   uint8_t telemetryBaudrate:3;
   SPLASH_MODE; /* 3bits */
-  NOBACKUP(int8_t hapticMode:2);    // -2=quiet, -1=only alarms, 0=no keys, 1=all
+  int8_t hapticMode:2;    // -2=quiet, -1=only alarms, 0=no keys, 1=all
   int8_t switchesDelay;
   NOBACKUP(uint8_t lightAutoOff);
   NOBACKUP(uint8_t templateSetup);   // RETA order for receiver channels

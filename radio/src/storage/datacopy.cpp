@@ -319,7 +319,6 @@ void copyRadioData(A * dest, B * src)
   for (int i=0; i<13; i++) {
     copyCalibData(&dest->calib[i], &src->calib[i]);
   }
-  dest->spareRadio = src->spareRadio;
   dest->stickMode = src->stickMode;
   dest->telemetryBaudrate = src->telemetryBaudrate;
   dest->splashSpares = src->splashSpares;
