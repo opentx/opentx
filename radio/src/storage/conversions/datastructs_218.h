@@ -191,7 +191,7 @@ PACK(typedef struct {
 #endif
 
 PACK(typedef struct {
-  trim_t trim[NUM_STICKS];
+  trim_t trim[NUM_TRIMS];
   char name[LEN_FLIGHT_MODE_NAME_218];
   int16_t swtch:9;       // swtch of phase[0] is not used
   int16_t spare:7;
@@ -288,7 +288,7 @@ PACK(typedef struct {
   uint8_t active;
 }) CustomFunctionData_v218;
 
-PACK(typedef struct {
+PACK(struct GVarData_v218 {
   char    name[LEN_GVAR_NAME_218];
   uint32_t min:12;
   uint32_t max:12;
@@ -296,7 +296,7 @@ PACK(typedef struct {
   uint32_t prec:1;
   uint32_t unit:2;
   uint32_t spare:4;
-}) GVarData_v218;
+});
 
 #if defined(COLORLCD)
 PACK(struct FrSkyTelemetryData_v217 {
@@ -401,8 +401,20 @@ PACK(struct TelemetrySensor_218 {
   #define VIEW_DATA
 #endif
 
+#if LEN_BITMAP_NAME > 0
+#define MODEL_HEADER_BITMAP_FIELD_218      char bitmap[10];
+#else
+#define MODEL_HEADER_BITMAP_FIELD_218
+#endif
+
+PACK(struct ModelHeader_v218 {
+  char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
+  uint8_t   modelId[NUM_MODULES];
+  MODEL_HEADER_BITMAP_FIELD_218
+});
+
 PACK(struct ModelData_v218 {
-  ModelHeader header;
+  ModelHeader_v218 header;
   TimerData_v218 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
@@ -458,8 +470,7 @@ PACK(struct ModelData_v218 {
 static inline void check_struct_218()
 {
 #if defined(PCBHORUS)
-  #warning "It should be 9380 bytes"
-  CHKSIZE(ModelData_v218, 9348);
+  CHKSIZE(ModelData_v218, 9380);
 #elif defined(PCBX9E)
   CHKSIZE(ModelData_v218, 6520);
 #endif

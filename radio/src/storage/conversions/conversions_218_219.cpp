@@ -42,8 +42,6 @@ int convertSource_218_to_219(int source)
 #endif
 
 #if defined(PCBHORUS)
-  if (source >= MIXSRC_EXT1)
-    source += 2;
   if (source >= MIXSRC_GMBL)
     source += 2;
 #endif
