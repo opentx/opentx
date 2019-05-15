@@ -171,6 +171,7 @@ filename += "-" + language + ext
 path = os.path.join(directory, filename)
 errpath = path + ".err"
 
+
 def build_firmware(path):
     srcdir = os.path.dirname(os.path.realpath(__file__)) + "/../.."
     outpath = path + ".out"
@@ -203,9 +204,9 @@ def build_firmware(path):
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     output, error = proc.communicate()
     if proc.returncode == 0:
-        file(outpath, "a").write(output + error)
+        open(outpath, "a").write(output + error)
     else:
-        file(errpath, "w").write(output + error)
+        open(errpath, "w").write(output + error)
         print(filename)
         exit(COMPILATION_ERROR)
 
@@ -218,6 +219,7 @@ def build_firmware(path):
 
     # Copy binary to the binaries directory
     shutil.move(target, path)
+
 
 if os.path.isfile(errpath):
     print(filename)
