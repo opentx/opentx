@@ -89,6 +89,12 @@ void serial2Init(unsigned int mode, unsigned int protocol)
 
   switch (mode) {
     case UART_MODE_TELEMETRY_MIRROR:
+#if defined(CROSSFIRE)
+      if (protocol == PROTOCOL_PULSES_CROSSFIRE) {
+        uart3Setup(CROSSFIRE_TELEM_MIRROR_BAUDRATE, false);
+        break;
+      }
+#endif
       uart3Setup(FRSKY_SPORT_BAUDRATE, false);
       break;
 #if defined(DEBUG) || defined(CLI)
