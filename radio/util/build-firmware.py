@@ -58,52 +58,66 @@ elif options[optcount] == "ar9x":
     maxsize = 65536 * 4
     board = BOARD_SKY9X
     board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "x9lite":
+    command_options["PCB"] = "X9LITE"
+    command_options["MULTI_SPORT"] = "ON"
+    firmware_options = options_taranis_x9lite
+    maxsize = 65536 * 8
+    board = BOARD_TARANIS
+    board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x7":
     command_options["PCB"] = "X7"
     command_options["MULTI_SPORT"] = "ON"
-    firmware_options = options_taranisplus
+    firmware_options = options_taranis_x9dp
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "xlite":
     command_options["PCB"] = "XLITE"
     command_options["MULTI_SPORT"] = "ON"
-    firmware_options = options_xlite
+    firmware_options = options_taranis_xlite
+    maxsize = 65536 * 8
+    board = BOARD_TARANIS
+    board_family = BOARD_FAMILY_ARM
+elif options[optcount] == "xlites":
+    command_options["PCB"] = "XLITES"
+    command_options["MULTI_SPORT"] = "ON"
+    firmware_options = options_taranis_xlites
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x9d":
     command_options["PCB"] = "X9D"
     command_options["MULTI_SPORT"] = "ON"
-    firmware_options = options_taranis
+    firmware_options = options_taranis_x9d
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x9d+":
     command_options["PCB"] = "X9D+"
     command_options["MULTI_SPORT"] = "ON"
-    firmware_options = options_taranisplus
+    firmware_options = options_taranis_x9dp
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x9e":
     command_options["PCB"] = "X9E"
     command_options["MULTI_SPORT"] = "ON"
-    firmware_options = options_taranisx9e
+    firmware_options = options_taranis_x9e
     maxsize = 65536 * 8
     board = BOARD_TARANIS
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x10":
     command_options["PCB"] = "X10"
     command_options["MULTI_SPORT"] = "ON"
-    firmware_options = options_x10
+    firmware_options = options_horus_x10
     maxsize = 2 * 1024 * 1024
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
 elif options[optcount] == "x12s":
     command_options["PCB"] = "X12S"
     command_options["MULTI_SPORT"] = "ON"
-    firmware_options = options_x12s
+    firmware_options = options_horus_x12s
     maxsize = 2 * 1024 * 1024
     board = BOARD_HORUS
     board_family = BOARD_FAMILY_ARM
