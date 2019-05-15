@@ -36,7 +36,7 @@ TEST(Conversions, ConversionX9DPFrom22)
   loadEEPROMFile(TESTS_PATH "/tests/eeprom_22_x9d+.bin");
 
   eepromOpen();
-  convertModelData(0, 218);
+  eeConvertModel(0, 218);
   eeLoadModel(0);
 
   EXPECT_ZSTREQ("Test", g_model.header.name);
@@ -62,7 +62,7 @@ TEST(Conversions, ConversionX7From22)
   loadEEPROMFile(TESTS_PATH "/tests/eeprom_22_x7.bin");
 
   eepromOpen();
-  convertModelData(0, 218);
+  eeConvertModel(0, 218);
   eeLoadModel(0);
 
   EXPECT_ZSTREQ("Test", g_model.header.name);
