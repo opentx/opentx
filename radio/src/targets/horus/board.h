@@ -279,10 +279,8 @@ enum EnumSwitches
   SW_SF,
   SW_SG,
   SW_SH,
-#if defined(PCBX10)
   SW_GMBL,
   SW_GMBR,
-#endif
   NUM_SWITCHES
 };
 
@@ -315,14 +313,12 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
-#if defined(PCBX10)
   SW_SGMBL0,
   SW_SGMBL1,
   SW_SGMBL2,
   SW_SGMBR0,
   SW_SGMBR1,
   SW_SGMBR2,
-#endif
   NUM_SWITCHES_POSITIONS
 };
 
