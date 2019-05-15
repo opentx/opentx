@@ -256,7 +256,7 @@ union InternalModulePulsesData {
   Pxx2Pulses pxx2;
 #endif
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
   PpmPulsesData<pulse_duration_t> ppm;
 #endif
 } __ALIGNED(4);

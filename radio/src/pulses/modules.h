@@ -88,7 +88,7 @@ inline bool isExtraModule(uint8_t)
 }
 #endif
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
 inline bool isModulePPM(uint8_t idx)
 {
   return (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||

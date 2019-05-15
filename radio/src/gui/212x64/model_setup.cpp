@@ -233,7 +233,7 @@ int getSwitchWarningsCount()
 }
 
 #define IF_INTERNAL_MODULE_ON(x)        (IS_INTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
   #define INTERNAL_MODULE_MODE_ROWS       (isModuleXJT(INTERNAL_MODULE) ? (uint8_t)1 : (uint8_t)0) // Module type + RF protocols
 #else
   #define INTERNAL_MODULE_MODE_ROWS       0 // (OFF / RF protocols)
@@ -666,7 +666,7 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, TR_INTERNALRF);
         break;
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
       case ITEM_MODEL_INTERNAL_MODULE_MODE:
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
@@ -919,7 +919,7 @@ void menuModelSetup(event_t event)
                 break;
               case 1:
                 CHECK_INCDEC_MODELVAR(event, moduleData.channelsCount, -4, min<int8_t>(maxModuleChannels_M8(moduleIdx), 32-8-moduleData.channelsStart));
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
                 if ((k == ITEM_MODEL_EXTERNAL_MODULE_CHANNELS && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_INTERNAL_MODULE_CHANNELS && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) || (k == ITEM_MODEL_TRAINER_LINE1)) {
                   SET_DEFAULT_PPM_FRAME_LENGTH(moduleIdx);
                 }

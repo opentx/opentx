@@ -702,8 +702,8 @@
 
 // Internal Module
 #define HARDWARE_INTERNAL_MODULE
-#if defined(PCBXLITES) || defined(PCBX9LITE)
-  #define INTMODULE_NO_PXX1
+#if !(defined(PCBXLITES) && !defined(PCBX9LITE))
+  #define INTERNAL_MODULE_PXX1
 #endif
 #if defined(PCBXLITE) || defined(PCBX9LITE)
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
