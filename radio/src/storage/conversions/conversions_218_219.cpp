@@ -231,13 +231,14 @@ void convertModelData_218_to_219(ModelData &model)
 #endif
 
 #if defined(PCBHORUS)
-  memcpy(newModel.screenData, oldModel.screenData,
-          sizeof(newModel.screenData) +
-          sizeof(newModel.topbarData))
-#endif
-
+//  memcpy(newModel.screenData, oldModel.screenData,
+//          sizeof(newModel.screenData) +
+//          sizeof(newModel.topbarData))
+#else
   newModel.screensType = oldModel.frsky.screensType;
   memmove(&newModel.screens, &oldModel.frsky.screens, sizeof(newModel.screens));
+#endif
+
 #if defined(PCBX7)
   for (int i=0; i<MAX_TELEMETRY_SCREENS; i++) {
     uint8_t screenType = (newModel.screensType >> (2*i)) & 0x03;
@@ -263,7 +264,7 @@ void convertRadioData_218_to_219(RadioData & settings)
 
   settings.version = 219;
 
-  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData_v218, serial2Mode) - offsetof(RadioData_v218, chkSum));
+  memcpy(&settings.chkSum, &settings_v218.chkSum, offsetof(RadioData, serial2Mode) - offsetof(RadioData, chkSum));
   memcpy(&settings.calib[NUM_STICKS + 5], &settings_v218.calib[NUM_STICKS + 3], sizeof(CalibData) * (STORAGE_NUM_SLIDERS + STORAGE_NUM_MOUSE_ANALOGS));
   memclear(&settings.calib[NUM_STICKS + 3], sizeof(CalibData) * 2);
 

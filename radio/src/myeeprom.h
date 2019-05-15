@@ -114,8 +114,6 @@
   #include "layout.h"
   #include "theme.h"
   #include "topbar.h"
-#else
-  #define THEME_DATA
 #endif
 
 #define SWITCHES_DELAY()            uint8_t(15+g_eeGeneral.switchesDelay)

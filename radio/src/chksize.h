@@ -18,19 +18,14 @@
  * GNU General Public License for more details.
  */
 
-void convertModelData(int version);
+#ifndef CHKSIZE_H
+#define CHKSIZE_H
 
-bool eeConvert();
-void eeConvertModel(int id, int version);
+#include <inttypes.h>
 
-// Conversions 216 to 217
-void convertModelData_216_to_217(ModelData &model);
-void convertRadioData_216_to_217(RadioData &settings);
+template <typename ToCheck, size_t expectedSize, size_t realSize = sizeof(ToCheck)>
+void check_size() {
+  static_assert(expectedSize == realSize, "struct size changed");
+}
 
-// Conversions 217 to 218
-void convertModelData_217_to_218(ModelData &model);
-void convertRadioData_217_to_218(RadioData &settings);
-
-// Conversions 218 to 219
-void convertModelData_218_to_219(ModelData &model);
-void convertRadioData_218_to_219(RadioData &settings);
+#endif

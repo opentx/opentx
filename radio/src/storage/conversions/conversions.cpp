@@ -21,10 +21,8 @@
 #include "opentx.h"
 #include "conversions.h"
 
-void convertModelData(int id, int version)
+void convertModelData(int version)
 {
-  eeLoadModelData(id);
-
 #if EEPROM_CONVERSIONS < 217
   if (version == 216) {
     version = 217;
@@ -45,7 +43,13 @@ void convertModelData(int id, int version)
     convertModelData_218_to_219(g_model);
   }
 #endif
+}
 
+#if defined(EEPROM)
+void eeConvertModel(int id, int version)
+{
+  eeLoadModelData(id);
+  convertModelData(version);
   uint8_t currModel = g_eeGeneral.currModel;
   g_eeGeneral.currModel = id;
   storageDirty(EE_MODEL);
@@ -130,9 +134,10 @@ bool eeConvert()
 #endif
     lcdRefresh();
     if (eeModelExists(id)) {
-      convertModelData(id, conversionVersionStart);
+      eeConvertModel(id, conversionVersionStart);
     }
   }
 
   return true;
 }
+#endif

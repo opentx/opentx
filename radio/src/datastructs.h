@@ -811,15 +811,13 @@ PACK(struct RadioData {
    other than the CPU arch and board type so changes in other
    defines also trigger the struct size changes */
 
-template <typename ToCheck, size_t expectedSize, size_t realSize = sizeof(ToCheck)>
-void check_size() {
-  static_assert(expectedSize == realSize, "struct size changed");
-}
+#include "chksize.h"
+
+#define CHKSIZE(x, y) check_size<struct x, y>()
+#define CHKTYPE(x, y) check_size<x, y>()
 
 static inline void check_struct()
 {
-#define CHKSIZE(x, y) check_size<struct x, y>()
-#define CHKTYPE(x, y) check_size<x, y>()
 
   CHKSIZE(CurveRef, 2);
 
@@ -931,6 +929,5 @@ static inline void check_struct()
 #endif
 
 #undef CHKSIZE
-#undef CHKSIZEUNION
 }
 #endif /* BACKUP */

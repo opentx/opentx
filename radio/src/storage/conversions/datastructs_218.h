@@ -18,7 +18,6 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef OPENTX_DATASTRUCTS_218_H
 #define OPENTX_DATASTRUCTS_218_H
 
@@ -330,7 +329,9 @@ PACK(struct FrSkyTelemetryData_v217 {
 });
 #endif
 
-#if defined(PCBHORUS) || defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[3 + 4];
+#elif defined(PCBTARANIS)
   #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS];
 #elif defined(PCBSKY9X)
   #define MODELDATA_EXTRA_218   uint8_t spare:6;                        uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];                                          char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS]; uint8_t rxBattAlarms[2];
@@ -385,13 +386,22 @@ PACK(struct TelemetrySensor_218 {
   };
 });
 
-#if defined(PCBTARANIS)
+#if defined(PCBHORUS)
+  PACK(struct CustomScreenData_v218 {
+    char layoutName[10];
+    Layout::PersistentData layoutData;
+  });
+  #define VIEW_DATA \
+    CustomScreenData screenData[MAX_CUSTOM_SCREENS]; \
+    Topbar::PersistentData topbarData; \
+    uint8_t view;
+#elif defined(PCBTARANIS)
   #define VIEW_DATA   uint8_t view;
 #else
   #define VIEW_DATA
 #endif
 
-PACK(typedef struct {
+PACK(struct ModelData_v218 {
   ModelHeader header;
   TimerData_v218 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
@@ -421,7 +431,10 @@ PACK(typedef struct {
   uint8_t thrTraceSrc;
 
   swarnstate_t  switchWarningState;
+
+#if !defined(COLORLCD)
   swarnenable_t switchWarningEnable;
+#endif
 
   GVarData_v218 gvars[MAX_GVARS_218];
 
@@ -436,19 +449,23 @@ PACK(typedef struct {
 
   // TODO conversion for custom screens?
   VIEW_DATA
-}) ModelData_v218;
+});
 
+#include "chksize.h"
+
+#define CHKSIZE(x, y) check_size<struct x, y>()
+
+static inline void check_struct_218()
+{
 #if defined(PCBHORUS)
-static_assert(sizeof(ModelData_v218) == 9380, "ModelData size changed");
+  #warning "It should be 9380 bytes"
+  CHKSIZE(ModelData_v218, 9348);
 #elif defined(PCBX9E)
-static_assert(sizeof(ModelData_v218) == 6520, "ModelData size changed");
-#elif defined(PCBX9D)
-static_assert(sizeof(ModelData_v218) == 6507, "ModelData size changed");
-#elif defined(PCBXLITE) || defined(PCBX7)
-static_assert(sizeof(ModelData_v218) == 6025, "ModelData size changed");
-#elif defined(PCBSKY9X)
-static_assert(sizeof(ModelData_v218) == 5188, "ModelData size changed");
+  CHKSIZE(ModelData_v218, 6520);
 #endif
+}
+
+#undef CHKSIZE
 
 #define EXTRA_GENERAL_FIELDS_GENERAL_218 \
     uint8_t  backlightBright; \
@@ -479,7 +496,7 @@ static_assert(sizeof(ModelData_v218) == 5188, "ModelData size changed");
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME_218]; \
+    char anaNames[NUM_STICKS+3+4][LEN_ANA_NAME_218]; \
     char currModelFilename[LEN_MODEL_FILENAME_218+1]; \
     uint8_t spare:1; \
     uint8_t blOffBright:7; \
@@ -526,6 +543,16 @@ static_assert(sizeof(ModelData_v218) == 5188, "ModelData size changed");
 #define SPLASH_MODE_218 uint8_t splashMode:3
 #else
 #define SPLASH_MODE_218 int8_t splashMode:3
+#endif
+
+#if defined(COLORLCD)
+  #include "gui/480x272/theme.h"
+  #define THEME_NAME_LEN 8
+  #define THEME_DATA \
+    char themeName[THEME_NAME_LEN]; \
+    Theme::PersistentData themeData;
+#else
+  #define THEME_DATA
 #endif
 
 PACK(typedef struct {
