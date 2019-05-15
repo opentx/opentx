@@ -1855,7 +1855,7 @@ void opentxInit()
     opentxStart();
   }
 
-	// TODO Horus does not need this
+  // TODO Horus does not need this
   if (!g_eeGeneral.unexpectedShutdown) {
     g_eeGeneral.unexpectedShutdown = 1;
     storageDirty(EE_GENERAL);
