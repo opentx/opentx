@@ -329,8 +329,9 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 ############# Install ####################
 
 # Generate list of simulator plugins, used by all platforms
-file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/Release/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
 message(STATUS "Search plugins GLOB = '${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}'")
+message(STATUS "Au cas ou ... ${INSTALL_DESTINATION}")
 
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
@@ -446,7 +447,6 @@ endif() # WIN32 install
 
 # Create Windows installer with NSIS
 if(WIN32)
-
   find_program(NSIS_EXE makensis.exe PATHS
     "C:/Program Files/NSIS"
     "C:/Program Files (x86)/NSIS"
