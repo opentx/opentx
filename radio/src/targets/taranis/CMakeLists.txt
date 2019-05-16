@@ -1,6 +1,7 @@
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
+option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module replacement" OFF)
 option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" ON)
@@ -271,6 +272,10 @@ endif()
 
 if(INTERNAL_MODULE_PPM)
   add_definitions(-DINTERNAL_MODULE_PPM)
+endif()
+
+if(INTERNAL_MODULE_PXX1)
+  add_definitions(-DINTERNAL_MODULE_PXX1)
 endif()
 
 if(USEHORUSBT)
