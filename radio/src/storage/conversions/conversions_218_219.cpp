@@ -77,7 +77,7 @@ void convertModelData_218_to_219(ModelData &model)
 {
   static_assert(sizeof(ModelData_v218) <= sizeof(ModelData), "ModelData size has been reduced");
 
-#if defined(PCBHORUS)
+#if defined(STM32)
   ModelData_v218 * oldModelAllocated = (ModelData_v218 *)malloc(sizeof(ModelData_v218));
   ModelData_v218 &oldModel = *oldModelAllocated;
 #else
