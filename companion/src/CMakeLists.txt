@@ -330,6 +330,7 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 
 # Generate list of simulator plugins, used by all platforms
 file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+message(STATUS ${simulator_plugins})
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
 string(TOLOWER ${PCB} FLAVOUR)
@@ -342,7 +343,6 @@ if(SIMU_TARGET)
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-
   message(STATUS "install " ${CMAKE_BINARY_DIR} " to " ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${COMPANION_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
   install(TARGETS ${SIMULATOR_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
