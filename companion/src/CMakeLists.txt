@@ -330,8 +330,6 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 
 # Generate list of simulator plugins, used by all platforms
 file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
-message(STATUS "Search simulator plugins in ${CMAKE_BINARY_DIR} ...")
-message(STATUS ${simulator_plugins})
 
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
@@ -341,8 +339,8 @@ if(POLICY CMP0026)
 endif()
 
 if(SIMU_TARGET)
-  #  get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
-  #  list(APPEND simulator_plugins "${current_plugin}")
+  get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
+  list(APPEND simulator_plugins "${current_plugin}")
 endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
