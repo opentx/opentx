@@ -398,6 +398,9 @@ elseif(WIN32)
     set(wdqtopts ${wdqtopts} --no-compiler-runtime)  # --compiler-runtime includes vcredist_x86, but we just copy the required DLLs manually
   endif()
   set(wdqtopts ${wdqtopts} -dir "${INSTALL_DESTINATION}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SIMULATOR_NAME}.exe")
+
+  message(STATUS ${wdqtopts})
+
   # Add installer command to execute windeployqt
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
 
