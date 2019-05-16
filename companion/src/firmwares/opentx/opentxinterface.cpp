@@ -754,9 +754,9 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return 1;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 0 : 1;
+            return 1;
           case PULSES_PXX_XJT_D8:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || id.contains("eu")) ? 0 : 1;
+            return (id.contains("eu") ? 0 : 1);
           case PULSES_PPM:
             return id.contains("internalppm") ? 1 : 0;
           case PULSES_ACCESS_ISRM:
@@ -773,7 +773,7 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_D8:
           case PULSES_PXX_XJT_LR12:
-            return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 0 : 1;
+            return 1;
           case PULSES_PXX_R9M:
           case PULSES_LP45:
           case PULSES_DSM2:
