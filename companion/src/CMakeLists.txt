@@ -330,8 +330,6 @@ target_link_libraries(${SIMULATOR_NAME} PRIVATE ${CPN_COMMON_LIB})
 
 # Generate list of simulator plugins, used by all platforms
 file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/Release/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
-message(STATUS "Search plugins GLOB = '${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}'")
-message(STATUS "Au cas ou ... ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
 
 # the current flavour is not automatically added if build in the current cmake iteration, so always
 # add its library name to be sure
