@@ -459,7 +459,7 @@ if(WIN32)
 
     add_custom_target(installer
       # The 'install' target prepares all the distro files, make sure it has been executed first.
-      COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install
+      COMMAND "${CMAKE_COMMAND}" --build "${CMAKE_BINARY_DIR}" --target install --config Release
       COMMAND "${NSIS_EXE}" "${NSI_FILE}"
       DEPENDS "${NSI_FILE}"
       COMMENT "Building Windows NSIS installer..."
