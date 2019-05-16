@@ -113,8 +113,7 @@ options_taranis_x9lite = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
-    "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "internalpxx1": ("INTERNAL_MODULE_PXX1", "NO", "YES"),
+    "multimodule": ("MULTIMODULE", "YES", "NO")
 }
 
 options_taranis_xlite = {
@@ -145,7 +144,6 @@ options_taranis_xlites = {
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("SUPPORT_D16_EU_ONLY", "YES", "NO"),
     "multimodule": ("MULTIMODULE", "YES", "NO"),
-    "internalpxx1": ("INTERNAL_MODULE_PXX1", "NO", "YES"),
 }
 
 options_taranis_x9e = {
