@@ -397,7 +397,7 @@ elseif(WIN32)
   if(MSVC)
     set(wdqtopts ${wdqtopts} --no-compiler-runtime)  # --compiler-runtime includes vcredist_x86, but we just copy the required DLLs manually
   endif()
-  set(wdqtopts ${wdqtopts} -dir "${INSTALL_DESTINATION}" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${SIMULATOR_NAME}.exe")
+  set(wdqtopts ${wdqtopts} -dir "\"${INSTALL_DESTINATION}\"" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/${SIMULATOR_NAME}.exe")
 
   message(STATUS ${wdqtopts})
 
