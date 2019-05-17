@@ -989,9 +989,7 @@
 #define TR_RECEIVER_RESET              "Reset récept.?"
 #define TR_SHARE                       "Partager"
 #define TR_BIND                        "Bind"
-#define TR_TRANSFER_BUTTON             BUTTON("Transfert")
 #define TR_REGISTER_BUTTON             BUTTON(TR("Enr", "Enregistr."))
-#define TR_RXADD_BUTTON                BUTTON("Ajout")
 #define TR_MODULE_RANGE                BUTTON(TR("Prt", "Port."))
 #define TR_BUTTON_SHARE                BUTTON("Partg")
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
