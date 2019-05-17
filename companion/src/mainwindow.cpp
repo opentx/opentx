@@ -359,7 +359,7 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
 
       if (!fileName.isEmpty()) {
         g.updatesDir(QFileInfo(fileName).dir().absolutePath());
-        downloadDialog * dd = new DownloadDialog(this, getCompanionUpdateBaseUrl() % QString(COMPANION_INSTALLER).arg(version), fileName);
+        DownloadDialog * dd = new DownloadDialog(this, getCompanionUpdateBaseUrl() % QString(COMPANION_INSTALLER).arg(version), fileName);
         installer_fileName = fileName;
         connect(dd, SIGNAL(accepted()), this, SLOT(updateDownloaded()));
         dd->exec();
