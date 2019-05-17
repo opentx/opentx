@@ -36,10 +36,10 @@
   #include <unistd.h>
 #endif
 
-FlashFirmwareDialog::FlashFirmwareDialog(QWidget *parent):
-QDialog(parent),
-ui(new Ui::FlashFirmwareDialog),
-fwName(g.profile[g.id()].fwName())
+FlashFirmwareDialog::FlashFirmwareDialog(QWidget *parent) :
+  QDialog(parent),
+  ui(new Ui::FlashFirmwareDialog),
+  fwName(g.profile[g.id()].fwName())
 {
   ui->setupUi(this);
 
