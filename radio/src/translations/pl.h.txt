@@ -968,7 +968,6 @@
 #define TR_BIND                        "Bind"
 #define TR_REGISTER                    TR("Reg", "Register")
 #define TR_MODULE_RANGE        TR("[Zas]","Zasięg")
-#define TR_BUTTON_SHARE              BUTTON("Share")
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN           "[Reset]"

@@ -976,11 +976,10 @@
 #define TR_WAITING                     "Attente..."
 #define TR_RECEIVER_DELETE             "Suppr récept.?"
 #define TR_RECEIVER_RESET              "Reset récept.?"
-#define TR_SHARE                       "Partager"
+#define TR_SHARE                       "Partg"
 #define TR_BIND                        "Bind"
 #define TR_REGISTER                    TR("Enr", "Enregistr.")
 #define TR_MODULE_RANGE                BUTTON(TR("Prt", "Port."))
-#define TR_BUTTON_SHARE                BUTTON("Partg")
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN                   BUTTON("RAZ")
