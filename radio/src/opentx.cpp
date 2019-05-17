@@ -272,7 +272,7 @@ void generalDefault()
   g_eeGeneral.stickMode = DEFAULT_MODE - 1;
 #endif
 
-#if defined(PCBTARANIS)
+#if defined(FRSKY_RELEASE)
   g_eeGeneral.templateSetup = 17; /* TAER */
 #endif
 
