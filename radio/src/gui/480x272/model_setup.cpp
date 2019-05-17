@@ -983,7 +983,7 @@ bool menuModelSetup(event_t event)
       {
         uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_MODULE);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, STR_REGISTER_BUTTON, (menuHorizontalPosition == 0 ? attr : 0));
+        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, BUTTON(TR_REGISTER), (menuHorizontalPosition == 0 ? attr : 0));
         lcdDrawText(lcdNextPos + 3, y, STR_MODULE_RANGE, (menuHorizontalPosition == 1 ? attr : 0));
         if (attr) {
           if (moduleState[moduleIdx].mode == MODULE_MODE_NORMAL && s_editMode > 0) {
