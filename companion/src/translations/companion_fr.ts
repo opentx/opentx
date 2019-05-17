@@ -3294,7 +3294,7 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../flashfirmwaredialog.cpp" line="329"/>
         <source>Flashing done</source>
-        <translation>Programmation Terminé</translation>
+        <translation>Programmation terminée</translation>
     </message>
 </context>
 <context>

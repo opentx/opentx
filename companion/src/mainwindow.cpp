@@ -184,7 +184,7 @@ MainWindow::~MainWindow()
 {
   if (windowsListActions) {
     delete windowsListActions;
-    windowsListActions = NULL;
+    windowsListActions = nullptr;
   }
 }
 
@@ -293,7 +293,7 @@ void MainWindow::checkForUpdates()
   request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
   QNetworkReply * repl = networkManager->get(request);
   if (downloadDialog_forWait)
-    connect(downloadDialog_forWait, &downloadDialog::rejected, repl, &QNetworkReply::abort);
+    connect(downloadDialog_forWait, &DownloadDialog::rejected, repl, &QNetworkReply::abort);
 }
 
 void MainWindow::onUpdatesError(const QString &err)
@@ -305,7 +305,7 @@ void MainWindow::onUpdatesError(const QString &err)
 void MainWindow::openUpdatesWaitDialog()
 {
   if (!downloadDialog_forWait) {
-    downloadDialog_forWait = new downloadDialog(NULL, tr("Checking for updates"));
+    downloadDialog_forWait = new DownloadDialog(nullptr, tr("Checking for updates"));
     downloadDialog_forWait->show();
   }
 }
@@ -315,7 +315,7 @@ void MainWindow::closeUpdatesWaitDialog()
   if (downloadDialog_forWait) {
     downloadDialog_forWait->close();
     delete downloadDialog_forWait;
-    downloadDialog_forWait = NULL;
+    downloadDialog_forWait = nullptr;
   }
 }
 
@@ -479,7 +479,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
 
     if (currentVersion == 0) {
       QString rn = getCurrentFirmware()->getReleaseNotesUrl();
-      QAbstractButton *rnButton = NULL;
+      QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("Firmware %1 does not seem to have ever been downloaded.\nVersion %2 is available.\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(fullVersionString));
       QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
@@ -508,7 +508,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     }
     else if (version > currentVersion) {
       QString rn = getCurrentFirmware()->getReleaseNotesUrl();
-      QAbstractButton *rnButton = NULL;
+      QAbstractButton *rnButton = nullptr;
       msgBox.setText(tr("A new version of %1 firmware is available:\n  - current is %2\n  - newer is %3\n\nDo you want to download it now?\n\nWe recommend you view the release notes using the button below to learn about any changes that may be important to you.")
                      .arg(Firmware::getCurrentVariant()->getId()).arg(currentVersionString).arg(fullVersionString));
       QAbstractButton *YesButton = msgBox.addButton(trUtf8("Yes"), QMessageBox::YesRole);
@@ -574,7 +574,7 @@ void MainWindow::startFirmwareDownload()
   if (!filename.isEmpty()) {
     g.profile[g.id()].fwName(filename);
     g.flashDir(QFileInfo(filename).dir().absolutePath());
-    downloadDialog * dd = new downloadDialog(this, url, filename);
+    DownloadDialog * dd = new DownloadDialog(this, url, filename);
     connect(dd, SIGNAL(accepted()), this, SLOT(firmwareDownloadAccepted()));
     dd->exec();
   }
@@ -1576,7 +1576,7 @@ void MainWindow::updateWindowActionTitle(const QMdiSubWindow * win, QAction * ac
 
 void MainWindow::onSubwindowTitleChanged()
 {
-  QMdiSubWindow * win = NULL;
+  QMdiSubWindow * win = nullptr;
   if ((win = qobject_cast<QMdiSubWindow *>(sender()->parent())))
     updateWindowActionTitle(win);
 }
@@ -1591,7 +1591,7 @@ void MainWindow::onChangeWindowAction(QAction * act)
   if (!act->isChecked())
     return;
 
-  QMdiSubWindow * win = NULL;
+  QMdiSubWindow * win = nullptr;
   if (act->property("window_ptr").canConvert<QMdiSubWindow *>())
     win = act->property("window_ptr").value<QMdiSubWindow *>();
   if (win)
