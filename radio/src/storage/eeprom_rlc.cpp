@@ -599,7 +599,7 @@ const char * eeRestoreModel(uint8_t i_fileDst, char *model_name)
 #if defined(EEPROM_CONVERSIONS)
   if (version < EEPROM_VER) {
     storageCheck(true);
-    convertModelData(i_fileDst, version);
+    eeConvertModel(i_fileDst, version);
     eeLoadModel(g_eeGeneral.currModel);
   }
 #endif
