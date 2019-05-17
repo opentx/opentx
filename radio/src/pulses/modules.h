@@ -153,13 +153,20 @@ inline bool isModuleDSM2(uint8_t idx)
 {
   return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_DSM2;
 }
+#else
+inline bool isModuleDSM2(uint8_t idx)
+{
+  return false;
+}
+#endif
 
+#if defined(SBUS)
 inline bool isModuleSBUS(uint8_t idx)
 {
   return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_SBUS;
 }
 #else
-inline bool isModuleDSM2(uint8_t idx)
+inline bool isModuleSBUS(uint8_t idx)
 {
   return false;
 }

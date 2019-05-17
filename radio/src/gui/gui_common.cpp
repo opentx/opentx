@@ -591,42 +591,60 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
-#if !defined(PCBXLITE)
-  if (moduleType == MODULE_TYPE_PXX_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE_PRO) {
+#if !defined(PCBXLITE) && !defined(PCBX9LITE)
+  if (moduleType == MODULE_TYPE_PXX_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE_PRO)
     return false;
-  }
 #endif
+
 #if !defined(PXX1)
-  if (moduleType == MODULE_TYPE_PXX_XJT || moduleType == MODULE_TYPE_PXX_R9M || moduleType == MODULE_TYPE_PXX_R9M_LITE) {
+  if (moduleType == MODULE_TYPE_PXX_XJT || moduleType == MODULE_TYPE_PXX_R9M || moduleType == MODULE_TYPE_PXX_R9M_LITE)
     return false;
-  }
 #endif
+
+#if defined(FRSKY_RELEASE)
+  if (moduleType == MODULE_TYPE_PXX_R9M)
+    return false;
+#endif
+
+  if (moduleType == MODULE_TYPE_ACCESS_ISRM || moduleType == MODULE_TYPE_ACCESS_R9M)
+    return false;
+
 #if !defined(PXX2)
-  if (moduleType == MODULE_TYPE_ACCESS_ISRM || moduleType == MODULE_TYPE_ACCESS_R9M || moduleType == MODULE_TYPE_ACCESS_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE_PRO) {
+  if (moduleType == MODULE_TYPE_ACCESS_R9M || moduleType == MODULE_TYPE_ACCESS_R9M_LITE || moduleType == MODULE_TYPE_ACCESS_R9M_LITE_PRO) {
     return false;
   }
 #endif
+
 #if defined(CROSSFIRE)
-  if (moduleType == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE) {
+  if (moduleType == MODULE_TYPE_CROSSFIRE && g_model.moduleData[INTERNAL_MODULE].type != MODULE_TYPE_NONE)
     return false;
-  }
 #else
-  if (moduleType == MODULE_TYPE_CROSSFIRE) {
+  if (moduleType == MODULE_TYPE_CROSSFIRE)
     return false;
-  }
 #endif
+
 #if !defined(DSM2)
-  if (moduleType == MODULE_TYPE_DSM2) {
+  if (moduleType == MODULE_TYPE_DSM2)
      return false;
-  }
 #endif
-#if !defined(MULTIMODULE)
-  if (moduleType == MODULE_TYPE_MULTIMODULE) {
+
+#if !defined(SBUS)
+  if (moduleType == MODULE_TYPE_SBUS)
     return false;
-  }
 #endif
+
+#if !defined(MULTIMODULE)
+  if (moduleType == MODULE_TYPE_MULTIMODULE)
+    return false;
+#endif
+
 #if defined(HARDWARE_INTERNAL_MODULE)
   if (isModuleUSingSport(EXTERNAL_MODULE, moduleType) && isModuleUSingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type))
+    return false;
+#endif
+
+#if !defined(EXTERNAL_MODULE_PPM)
+  if (moduleType == MODULE_TYPE_PPM)
     return false;
 #endif
 
