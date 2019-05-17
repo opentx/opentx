@@ -172,8 +172,10 @@ bool menuStatsAnalogs(event_t event)
 #else
     if (i < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
       lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256);
+#if NUM_MOUSE_ANALOGS > 0
     else if (i >= MOUSE1)
       lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CALIBRATED_MOUSE1+i-MOUSE1]*25/256);
+#endif
 #endif
   }
 
