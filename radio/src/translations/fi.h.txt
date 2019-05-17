@@ -493,7 +493,6 @@
 
 #else
   #define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
-  #define OFS_EXIT                     sizeof(TR_ENTER)
 #endif
 
 #define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " WHEN DONE"
@@ -646,9 +645,7 @@
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "NO DATA"
 #define TR_TOTTM1TM2THRTHP     "\037\146SES\036TM1\037\146TM2\036THR\037\146TH%"
-#define TR_TMR1LATMAXUS        "Tmr1Lat max\037\124us"
-#define STR_US                 (STR_TMR1LATMAXUS+13)
-#define TR_TMR1LATMINUS        "Tmr1Lat min\037\124us"
+#define TR_US                         "us"
 #define TR_TMR1JITTERUS        "Tmr1 Jitter\037\124us"
 
   #define TR_TMIXMAXMS         "Tmix max"
@@ -977,9 +974,7 @@
 #define TR_RECEIVER_RESET              "Reset receiver?"
 #define TR_SHARE                       "Share"
 #define TR_BIND                        "Bind"
-#define TR_TRANSFER_BUTTON             BUTTON("Transfer")
 #define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
-#define TR_RXADD_BUTTON                "BUTTON(Add)"
 #define TR_MODULE_RANGE        "[Range]"
 #define TR_BUTTON_SHARE              BUTTON("Share")
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")

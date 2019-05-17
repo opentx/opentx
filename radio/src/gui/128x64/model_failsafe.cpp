@@ -51,7 +51,7 @@ void menuModelFailsafe(event_t event)
 
   SIMPLE_SUBMENU_NOTITLE(sentModuleChannels(g_moduleIdx));
 
-  lcdDrawTextAlignedCenter(0, FAILSAFESET);
+  lcdDrawTextAlignedCenter(0, TR_FAILSAFESET);
   lcdInvertLine(0);
 
   for (uint8_t i=0; i<NUM_BODY_LINES; i++) {

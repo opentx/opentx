@@ -231,13 +231,17 @@ void enablePulses(uint8_t module, uint8_t protocol)
       break;
 #endif
 
+#if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
       break;
+#endif
 
+#if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       init_ppm(module);
       break;
+#endif
 
     default:
       // TODO some reworking needed here ...

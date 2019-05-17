@@ -81,7 +81,7 @@ void menuModelFailsafe(event_t event)
     }
   }
 
-  lcdDrawTextAlignedCenter(0, FAILSAFESET);
+  lcdDrawTextAlignedCenter(0, TR_FAILSAFESET);
   lcdInvertLine(0);
 
   coord_t x = colW;
