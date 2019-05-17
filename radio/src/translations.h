@@ -699,7 +699,7 @@ extern const char STR_POWERMETER_ATTN_NEEDED[];
 extern const char STR_PXX2_SELECT_RX[];
 extern const char STR_PXX2_DEFAULT[];
 extern const char STR_BT_SELECT_DEVICE[];
-extern const char STR_BUTTON_DISCOVER[];
+extern const char STR_DISCOVER[];
 extern const char STR_BUTTON_INIT[];
 extern const char STR_WAITING[];
 extern const char STR_RECEIVER_DELETE[];
