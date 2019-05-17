@@ -148,7 +148,6 @@ const char STR_NOFREEEXPO[] = TR_NOFREEEXPO;
 const char STR_NOFREEMIXER[] = TR_NOFREEMIXER;
 const char STR_SOURCE[] = TR_SOURCE;
 const char STR_WEIGHT[] = TR_WEIGHT;
-const char STR_EXPO[] = TR_EXPO;
 const char STR_SIDE[] = TR_SIDE;
 const char STR_OFFSET[] = TR_OFFSET;
 const char STR_TRIM[] = TR_TRIM;
@@ -206,7 +205,7 @@ const char STR_SETMIDPOINT[] = TR_SETMIDPOINT;
 const char STR_MOVESTICKSPOTS[] = TR_MOVESTICKSPOTS;
 const char STR_TX[] = TR_TXnRX;
 const char STR_NODATA[] = TR_NODATA;
-const char STR_TMR1LATMAXUS[] = TR_TMR1LATMAXUS;
+const char STR_US[] = TR_US;
 const char STR_TMIXMAXMS[] = TR_TMIXMAXMS;
 const char STR_FREESTACKMINB[] = TR_FREESTACKMINB;
 const char STR_MENUTORESET[] = TR_MENUTORESET;
@@ -565,6 +564,8 @@ const char STR_MENU_OTHER[] = TR_MENU_OTHER;
 const char STR_MENU_INVERT[] = TR_MENU_INVERT;
 const char STR_JITTER_FILTER[] = TR_JITTER_FILTER;
 const char STR_EXIT[] = TR_EXIT;
+const char STR_MODULE_RANGE[] = TR_MODULE_RANGE;
+const char STR_RECEIVER_OPTIONS[] = TR_RECEIVER_OPTIONS;
 
 #if defined(PCBHORUS)
 const char STR_ASSIGN_SPLASH[] = TR_ASSIGN_SPLASH;
@@ -703,11 +704,6 @@ const char * const STR_GVAR_HEADERS[] = TR_GVAR_HEADERS;
 #if MENUS_LOCK == 1
 const char STR_UNLOCKED[] = TR_UNLOCKED;
 const char STR_MODS_FORBIDDEN[] = TR_MODS_FORBIDDEN;
-#endif
-
-#if defined(PCBTARANIS) || defined(DSM2)
-const char STR_MODULE_RANGE[] = TR_MODULE_RANGE;
-const char STR_RECEIVER_OPTIONS[] = TR_RECEIVER_OPTIONS;
 #endif
 
 #if defined(BLUETOOTH)

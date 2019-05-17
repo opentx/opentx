@@ -243,7 +243,6 @@ extern const char STR_NOFREEEXPO[];
 extern const char STR_NOFREEMIXER[];
 extern const char STR_SOURCE[];
 extern const char STR_WEIGHT[];
-extern const char STR_EXPO[];
 extern const char STR_SIDE[];
 extern const char STR_OFFSET[];
 extern const char STR_TRIM[];
@@ -329,8 +328,7 @@ extern const char STR_MOVESTICKSPOTS[];
 extern const char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
 extern const char STR_NODATA[];
-extern const char STR_TMR1LATMAXUS[];
-extern const char STR_TMR1LATMINUS[];
+extern const char STR_US[];
 extern const char STR_TMIXMAXMS[];
 extern const char STR_FREESTACKMINB[];
 extern const char STR_MENUTORESET[];
@@ -831,10 +829,8 @@ extern const char STR_JITTER_FILTER[];
   extern const char STR_MODS_FORBIDDEN[];
 #endif
 
-#if defined(PCBTARANIS) || defined(DSM2)
 extern const char STR_MODULE_RANGE[];
 extern const char STR_RECEIVER_OPTIONS[];
-#endif
 
 extern const char STR_ABOUTUS[];
 extern const char STR_ABOUT_OPENTX_1[];

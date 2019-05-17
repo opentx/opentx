@@ -123,7 +123,7 @@ void lcdDrawText(coord_t x, coord_t y, const char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const char * s);
 
-#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
+#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(s)*FW+FW+1)/2, y, STR_##s)
 
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags=0);
