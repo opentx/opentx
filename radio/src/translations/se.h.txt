@@ -1108,8 +1108,8 @@
 #define TR_SCRIPT              "Programkod"
 #define TR_INPUTS              "Input"
 #define TR_OUTPUTS             "Outputs"
-#define TR_EEBACKUP            "Säkerhetskopiera EEPROM"
-#define TR_FACTORYRESET        "Factory reset"
+#define STR_EEBACKUP            "Säkerhetskopiera EEPROM"
+#define STR_FACTORYRESET        "Factory reset"
 #define TR_CONFIRMRESET        "Erase ALL models and settings?"
 #define TR_TOO_MANY_LUA_SCRIPTS "För många Lua-scripts!"
 
