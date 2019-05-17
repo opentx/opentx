@@ -963,7 +963,6 @@
 #define TR_BIND                        "Párovat"
 #define TR_REGISTER                    TR("Reg", "Registrovat")
 #define TR_MODULE_RANGE                BUTTON(TR("Rng", "Range"))
-#define TR_BUTTON_SHARE                BUTTON("Sdílet")
 #define TR_RECEIVER_OPTIONS            TR("MOŽNOSTI RX", "MOŽNOSTI PŘIJÍMAČE")
 #define TR_DEL_BUTTON                  BUTTON(TR("Smaž", "Smazat"))
 #define TR_RESET_BTN                   BUTTON("Reset")
