@@ -78,6 +78,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for FrSky Taranis X9-Lite";
     case BOARD_TARANIS_XLITE:
       return "OpenTX for FrSky Taranis X-Lite";
+    case BOARD_TARANIS_XLITES:
+      return "OpenTX for FrSky Taranis X-Lite S/Pro";
     case BOARD_SKY9X:
       return "OpenTX for Sky9x board / 9X";
     case BOARD_9XRPRO:
@@ -1205,7 +1207,7 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
 
   /* FrSky X-Lite S/PRO board */
-  firmware = new OpenTxFirmware("opentx-xlites", QCoreApplication::translate("Firmware", "FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
+  firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
   firmware->addOption("internalpxx1", Firmware::tr("Support for PXX1 internal module replacement"));
   registerOpenTxFirmware(firmware);
