@@ -742,16 +742,12 @@
 #else
   #define TR_TRIMS2OFFSETS     "\006Trims => Subtrims"
 #endif
-#if defined(COLORLCD)
-  #define TR_CHANNELS2FAILSAFE  "Channels=>Failsafe"
-#define TR_CHANNEL2FAILSAFE            "Channel=>Failsafe"
-#else
-  #define TR_CHANNELS2FAILSAFE  "\006Outputs => Failsafe"
-#endif
+#define TR_CHANNELS2FAILSAFE   "Channels=>Failsafe"
+#define TR_CHANNEL2FAILSAFE    "Channel=>Failsafe"
 #define TR_MENUMODELSEL        "MODELOS"
 #define TR_MENUSETUP           "SETUP"
-#define TR_MENUFLIGHTMODE     "MODO DE VOO"
-#define TR_MENUFLIGHTMODES    "MODOS DE VOO"
+#define TR_MENUFLIGHTMODE      "MODO DE VOO"
+#define TR_MENUFLIGHTMODES     "MODOS DE VOO"
 #define TR_MENUHELISETUP       "HELI SETUP"
 
 
