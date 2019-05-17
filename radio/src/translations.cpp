@@ -564,10 +564,7 @@ const char STR_MENU_DISPLAY[] = TR_MENU_DISPLAY;
 const char STR_MENU_OTHER[] = TR_MENU_OTHER;
 const char STR_MENU_INVERT[] = TR_MENU_INVERT;
 const char STR_JITTER_FILTER[] = TR_JITTER_FILTER;
-
-#if !defined(OFS_EXIT)
 const char STR_EXIT[] = TR_EXIT;
-#endif
 
 #if defined(PCBHORUS)
 const char STR_ASSIGN_SPLASH[] = TR_ASSIGN_SPLASH;

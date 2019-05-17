@@ -327,7 +327,7 @@ extern const char STR_MENUTOSTART[];
 extern const char STR_SETMIDPOINT[];
 extern const char STR_MOVESTICKSPOTS[];
 extern const char STR_TX[];
-extern const char STR_RX[];
+#define STR_RX (STR_TX+OFS_RX)
 extern const char STR_NODATA[];
 extern const char STR_TMR1LATMAXUS[];
 extern const char STR_TMR1LATMINUS[];
