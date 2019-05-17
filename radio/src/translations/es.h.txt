@@ -972,7 +972,7 @@
 #define TR_RECEIVER_RESET              "Reset receiver?"
 #define TR_SHARE                       "Share"
 #define TR_BIND                        "Bind"
-#define TR_REGISTER_BUTTON             BUTTON(TR("Reg", "Register"))
+#define TR_REGISTER             TR("Reg", "Register")
 #define TR_MODULE_RANGE        "[Limites]"
 #define TR_BUTTON_SHARE              BUTTON("Share")
 #define TR_RECEIVER_OPTIONS            TR("REC. OPTIONS", "RECEIVER OPTIONS")

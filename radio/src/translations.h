@@ -706,7 +706,7 @@ extern const char STR_RECEIVER_DELETE[];
 extern const char STR_RECEIVER_RESET[];
 extern const char STR_SHARE[];
 extern const char STR_BIND[];
-extern const char STR_REGISTER_BUTTON[];
+extern const char STR_REGISTER[];
 extern const char STR_BINDING_1_8_TELEM_ON[];
 extern const char STR_BINDING_1_8_TELEM_OFF[];
 extern const char STR_BINDING_9_16_TELEM_ON[];
