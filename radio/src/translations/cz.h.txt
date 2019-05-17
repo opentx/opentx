@@ -969,7 +969,7 @@
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                    BUTTON(TR("SW","Přepínače"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogy"))
-#define TR_CALIB_BTN                   BUTTON("Kalibrace")
+#define TR_CALIBRATION                 "Kalibrace"
 #define TR_SET                         BUTTON("Nast")
 #define TR_TRAINER                     "Trenér"
 #define TR_ANTENNAPROBLEM              CENTER "Problém s TX anténou!"

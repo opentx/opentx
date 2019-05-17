@@ -971,7 +971,7 @@
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                    BUTTON(TR("Keys", "Switches"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
-#define TR_CALIB_BTN                   BUTTON("Calibration")
+#define TR_CALIBRATION                 "Calibration"
 #define TR_SET                         BUTTON("Set")
 #define TR_TRAINER                     "Trainer"
 #define TR_ANTENNAPROBLEM              CENTER "TX antenna problem!"
