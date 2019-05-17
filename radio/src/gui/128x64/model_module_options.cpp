@@ -152,9 +152,9 @@ void menuModelModuleOptions(event_t event)
         switch (i) {
           case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
             lcdDrawText(0, y, STR_RF_PROTOCOL);
-            lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
+            lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_ACCESS_RF_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, attr);
             if (attr) {
-              reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
+              reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, 0, 2, 0, nullptr);
               if (checkIncDec_Ret) {
                 reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
               }
