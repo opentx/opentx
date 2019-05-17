@@ -180,7 +180,7 @@ void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
       flag0 |= PXX2_TX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
     if (destination->state == PXX2_SETTINGS_WRITE) {
-      uint8_t flag1 = destination->rfProtocol << 4;
+      uint8_t flag1 = destination->rfProtocol << 6;
       if (destination->externalAntenna)
         flag1 |= PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA;
       Pxx2Transport::addByte(flag1);

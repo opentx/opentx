@@ -234,14 +234,14 @@ static const uint8_t moduleOptions[] = {
 #else
   0b00000000, // None = display all options on SIMU
 #endif
-  0b11100010, // XJT
-  0b11100010, // ISRM
-  0b11111010, // ISRM-PRO
-  0b11101010, // ISRM-S
+  0b11100011, // XJT
+  0b11100011, // ISRM
+  0b11111011, // ISRM-PRO
+  0b11101011, // ISRM-S
   0b11100100, // R9M
   0b11100100, // R9MLite
   0b11111100, // R9MLite-PRO
-  0b11101000, // ISRM-N
+  0b11101001, // ISRM-N
 };
 
 inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
