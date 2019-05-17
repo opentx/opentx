@@ -954,7 +954,7 @@
 #define TR_PXX2_SELECT_RX              "Vyber RX..."
 #define TR_PXX2_DEFAULT                "<výchozí>"
 #define TR_BT_SELECT_DEVICE            "Vyberte zařízení..."
-#define TR_BUTTON_DISCOVER             BUTTON("Hledat")
+#define TR_DISCOVER             "Hledat"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Čekám..."
 #define TR_RECEIVER_DELETE             "Smazat přijímač?"

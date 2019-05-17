@@ -956,7 +956,7 @@
 #define TR_PXX2_SELECT_RX              "Select RX..."
 #define TR_PXX2_DEFAULT                "<default>"
 #define TR_BT_SELECT_DEVICE            "Select device..."
-#define TR_BUTTON_DISCOVER             BUTTON("Discover")
+#define TR_DISCOVER                    "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Waiting..."
 #define TR_RECEIVER_DELETE             "Delete receiver?"
