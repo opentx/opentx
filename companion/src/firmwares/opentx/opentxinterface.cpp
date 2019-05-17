@@ -914,9 +914,8 @@ EepromLoadErrors OpenTxEepromInterface::checkVersion(unsigned int version)
       // ACCESS
       // switches add for X7/X10/X12S
       // 60 sensors for X12
-      if (IS_ARM(board)) {
-        return OLD_VERSION;
-      }
+      return OLD_VERSION;
+
     case 219:
       break;
 
