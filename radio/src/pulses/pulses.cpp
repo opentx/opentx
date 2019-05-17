@@ -173,13 +173,18 @@ void disablePulses(uint8_t module, uint8_t protocol)
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
 #endif
+
+#if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       disable_serial(module);
       break;
+#endif
 
+#if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       disable_ppm(module);
       break;
+#endif
   }
 }
 
@@ -303,10 +308,12 @@ void setupPulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
+#if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       setupPulsesSbus();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, SBUS_PERIOD);
       break;
+#endif
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_DSM2_LP45:
@@ -331,10 +338,12 @@ void setupPulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
+#if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMExternalModule();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
       break;
+#endif
 
     default:
       break;
