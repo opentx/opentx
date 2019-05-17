@@ -232,7 +232,6 @@ unsigned long OpenTxEepromInterface::load(RadioData &radioData, const uint8_t * 
   if (version_error == OLD_VERSION) {
     errors.set(version_error);
     errors.set(HAS_WARNINGS);
-    showEepromWarnings(NULL, CPN_STR_TTL_WARNING, errors.to_ulong());
   }
   else if (version_error == NOT_OPENTX) {
     dbg << " not open9x";
