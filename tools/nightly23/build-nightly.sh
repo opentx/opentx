@@ -28,6 +28,7 @@ code/tools/nightly23/build-sdcard.sh
 echo "Build Linux companion"
 docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
 docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
+cp -f  ${workdir}/binaries/stamp-opentx.txt ${output}/firmware
 docker exec companion rm -rf build
 if [ ! -f ${output}/companion/linux/companion23_${version}${suffix}_amd64.deb ]; then
   docker exec companion /opentx/code/tools/build-companion-nightly.sh /opentx/code /opentx/binaries/ ${suffix}
@@ -52,8 +53,7 @@ if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ];
   chmod -Rf g+w opentx-companion-${version}${suffix}.dmg
 fi
 
-echo "Update stamps"
-cp -f  ${workdir}/binaries/stamp-opentx.txt ${output}/firmware
+echo "Update Companion stamps"
 echo "#define VERSION  \"${version}${suffix}\"" > ${output}/companion/companion-windows.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-linux.stamp
 cp -f ${output}/companion/companion-windows.stamp ${output}/companion/companion-macosx.stamp
