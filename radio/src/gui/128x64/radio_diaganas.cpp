@@ -35,7 +35,7 @@ void menuRadioDiagAnalogs(event_t event)
 
   coord_t y = MENU_HEADER_HEIGHT + 1;
 
-  lcdDrawTextAlignedLeft(y, STICKS_PWM_ENABLED() ? "PWM Sticks/Pots/Sliders" : "Sticks/Pots/Sliders");
+  lcdDrawTextAlignedLeft(y, STICKS_PWM_ENABLED() ? STR_PWM_STICKS_POTS_SLIDERS : STR_STICKS_POTS_SLIDERS);
 
   for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
     uint8_t x;
@@ -54,7 +54,7 @@ void menuRadioDiagAnalogs(event_t event)
 
 #if defined(GYRO)
   y += FH;
-  lcdDrawTextAlignedLeft(y, "Gyro");
+  lcdDrawTextAlignedLeft(y, STR_GYRO);
   y += FH;
   uint8_t x = INDENT_WIDTH;
   lcdDrawText(x, y, "X:");
@@ -66,27 +66,5 @@ void menuRadioDiagAnalogs(event_t event)
   lcdDrawNumber(x+3*FW-1, y, gyro.outputs[1] * 180 / 1024);
   lcdDrawChar(lcdNextPos, y, '@');
   lcdDrawNumber(x+10*FW-1, y, gyro.scaledY(), RIGHT);
-#endif
-
-  // RAS
-#if defined(PCBTARANIS)
-  if (isModuleXJT2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
-    y += FH;
-    lcdDrawText(1, y, "RAS:");
-    lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
-  }
-  else if (isModuleXJT(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON()) {
-    y += FH;
-    lcdDrawText(1, y, "RAS:");
-    lcdDrawNumber(1 + 4*FW, y, telemetryData.swr.value, LEFT);
-  }
-#else
-  if (isModuleXJT(EXTERNAL_MODULE)) {
-    y += FH;
-    uint8_t x = ((NUM_STICKS+NUM_POTS+NUM_SLIDERS) & 1) ? (LCD_W/2)+FW : 0;
-
-    lcdDrawText(x, y, "RAS:");
-    lcdDrawNumber(x + 4*FW, y, telemetryData.swr.value, LEFT);
-  }
 #endif
 }

@@ -39,7 +39,9 @@ extern "C" {
 #if defined(STM32F4)
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+  #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_tim.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_adc.h"
   #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
@@ -54,7 +56,9 @@ extern "C" {
 #else
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/CMSIS/Device/ST/STM32F2xx/Include/stm32f2xx.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_rcc.h"
+  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_syscfg.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_gpio.h"
+  #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_exti.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_tim.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_adc.h"
   #include "STM32F2xx_StdPeriph_Lib_V1.1.0/Libraries/STM32F2xx_StdPeriph_Driver/inc/stm32f2xx_spi.h"
@@ -110,6 +114,7 @@ extern "C" {
 extern uint16_t sessionTimer;
 
 // Board driver
+void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
 
@@ -189,12 +194,11 @@ void init_pxx1_pulses(uint8_t module);
 void init_pxx1_serial(uint8_t module);
 void disable_pxx1_pulses(uint8_t module);
 void disable_pxx1_serial(uint8_t module);
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period);
 void disable_serial(uint8_t module);
 void intmoduleStop();
 void intmodulePxxStart();
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
 void intmodulePpmStart(void);
 #endif
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
@@ -205,7 +209,7 @@ void extmodulePpmStart();
 void extmodulePxxPulsesStart();
 void extmodulePxxSerialStart();
 void extmodulePxx2Start();
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
@@ -214,7 +218,7 @@ void extmoduleSendNextFrame();
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #if defined(PCBX9E)
   #define TRAINER_CONNECTED()           (true)
-#elif defined(PCBX7) || defined(PCBX3)
+#elif defined(PCBX7) || defined(PCBX9LITE)
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #elif defined(PCBXLITES)
   enum JackState
@@ -338,30 +342,38 @@ enum EnumSwitchesPositions
   SW_SC0,
   SW_SC1,
   SW_SC2,
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
   SW_SD0,
   SW_SD1,
   SW_SD2,
 #endif
-#if defined(PCBX9) || defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBX9) || defined(PCBXLITES)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBX9) || defined(PCBX7) || defined(PCBXLITES)
   SW_SF0,
   SW_SF1,
   SW_SF2,
 #endif
-#if defined(PCBX9)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
   SW_SG0,
   SW_SG1,
   SW_SG2,
 #endif
-#if defined(PCBX9) || defined(PCBX7)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7)
   SW_SH0,
   SW_SH1,
   SW_SH2,
+#endif
+#if defined(PCBX7)
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+  SW_SJ0,
+  SW_SJ1,
+  SW_SJ2,
 #endif
 #if defined(PCBX9E)
   SW_SI0,
@@ -402,14 +414,19 @@ enum EnumSwitchesPositions
 #elif defined(PCBXLITE)
   #define NUM_SWITCHES                  4
 #elif defined(PCBX7)
-  #define NUM_SWITCHES                  6
-#elif defined(PCBX3)
+  #define NUM_SWITCHES                  8
+#elif defined(PCBX9LITE)
   #define NUM_SWITCHES                  5
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's a lot!
 #else
   #define NUM_SWITCHES                  8
 #endif
+
+#if defined(__cplusplus)
+static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+#endif
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
@@ -418,10 +435,11 @@ uint32_t readTrims(void);
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 
-#if defined(PCBX9E) || defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX9E) || defined(PCBX7) || defined(PCBX9LITE)
 // Rotary Encoder driver
 #define ROTARY_ENCODER_NAVIGATION
-void checkRotaryEncoder(void);
+void rotaryEncoderInit(void);
+void rotaryEncoderCheck(void);
 #endif
 
 // WDT driver
@@ -447,7 +465,7 @@ enum Analogs {
   STICK4,
   POT_FIRST,
   POT1 = POT_FIRST,
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
   POT_LAST = POT1,
 #elif defined(PCBXLITE) || defined(PCBX7)
   POT2,
@@ -475,10 +493,12 @@ enum Analogs {
 
 #define NUM_POTS                        (POT_LAST-POT_FIRST+1)
 #define NUM_XPOTS                       NUM_POTS
+#define STORAGE_NUM_POTS                NUM_POTS
 #define NUM_SLIDERS                     (TX_VOLTAGE-POT_LAST-1)
+#define STORAGE_NUM_SLIDERS             NUM_SLIDERS
 #define NUM_TRIMS                       4
 #define NUM_MOUSE_ANALOGS               0
-#define NUM_DUMMY_ANAS                  0
+#define STORAGE_NUM_MOUSE_ANALOGS       0
 
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
@@ -492,19 +512,23 @@ enum Analogs {
   #define STICKS_PWM_ENABLED()          false
 #endif
 
-PACK(typedef struct {
 #if NUM_PWMSTICKS > 0
+PACK(typedef struct {
   uint8_t sticksPwmDisabled:1;
-#endif
   uint8_t pxx2Enabled:1;
 }) HardwareOptions;
+#else
+PACK(typedef struct {
+  uint8_t pxx2Enabled:1;
+}) HardwareOptions;
+#endif
 
 extern HardwareOptions hardwareOptions;
 
 #if !defined(PXX2)
   #define IS_PXX2_INTERNAL_ENABLED()            (false)
   #define IS_PXX1_INTERNAL_ENABLED()            (true)
-#elif !defined(PXX1) || defined(PCBXLITES) || defined(PCBX3)
+#elif !defined(PXX1) || defined(PCBXLITES) || defined(PCBX9LITE)
   #define IS_PXX2_INTERNAL_ENABLED()            (true)
   #define IS_PXX1_INTERNAL_ENABLED()            (false)
 #else
@@ -562,7 +586,7 @@ uint16_t getBatteryVoltage();   // returns current battery voltage in 10mV steps
   #define BATT_SCALE                    131
 #elif defined(PCBX7)
   #define BATT_SCALE                    123
-#elif defined(PCBX3)
+#elif defined(PCBX9LITE)
   #define BATT_SCALE                    117
 #else
   #define BATT_SCALE                    150
@@ -637,7 +661,7 @@ uint8_t telemetryGetByte(uint8_t * byte);
 extern uint32_t telemetryErrors;
 
 // PCBREV driver
-#if defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBXLITE) || defined(PCBX9LITE)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
   #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
@@ -720,17 +744,20 @@ void serial2Stop(void);
 #endif
 
 // BT driver
+#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_DEFAULT_BAUDRATE      115200
 #if defined(PCBX9E) && !defined(USEHORUSBT)
-#define BLUETOOTH_FACTORY_BAUDRATE     9600
+#define BLUETOOTH_FACTORY_BAUDRATE      9600
 #else
 #define BLUETOOTH_FACTORY_BAUDRATE      57600
 #endif
-void bluetoothInit(uint32_t baudrate);
+#define BT_TX_FIFO_SIZE    64
+#define BT_RX_FIFO_SIZE    128
+void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
-#if defined(PCBX3)
+void bluetoothDisable(void);
+#if defined(PCBX9LITE)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
 #elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
   extern volatile uint8_t btChipPresent;

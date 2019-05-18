@@ -22,7 +22,7 @@
 #include "opentx.h"
 
 // TODO duplicated code
-#if defined(PCBX7) || defined(PCBX9E) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9E) || defined(PCBX9LITE)
 #define EVT_KEY_NEXT_LINE              EVT_ROTARY_RIGHT
 #define EVT_KEY_PREVIOUS_LINE          EVT_ROTARY_LEFT
 #else
@@ -36,11 +36,16 @@
 #if defined(PXX2)
 void drawPXX2Version(coord_t x, coord_t y, PXX2Version version)
 {
-  lcdDrawNumber(x, y, version.major, LEFT);
-  lcdDrawChar(lcdNextPos, y, '.');
-  lcdDrawNumber(lcdNextPos, y, version.minor, LEFT);
-  lcdDrawChar(lcdNextPos, y, '.');
-  lcdDrawNumber(lcdNextPos, y, version.revision, LEFT);
+  if (version.major == 0xFF && version.minor == 0x0F && version.revision == 0x0F) {
+    lcdDrawText(x, y, "---");
+  }
+  else {
+    lcdDrawNumber(x, y, 1 + version.major, LEFT);
+    lcdDrawChar(lcdNextPos, y, '.');
+    lcdDrawNumber(lcdNextPos, y, version.minor, LEFT);
+    lcdDrawChar(lcdNextPos, y, '.');
+    lcdDrawNumber(lcdNextPos, y, version.revision, LEFT);
+  }
 }
 
 void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Version swVersion)
@@ -53,12 +58,12 @@ void drawPXX2FullVersion(coord_t x, coord_t y, PXX2Version hwVersion, PXX2Versio
 void menuRadioModulesVersion(event_t event)
 {
   if (menuEvent) {
-    moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
-    moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleState[INTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
+    moduleState[EXTERNAL_MODULE].mode = MODULE_MODE_NORMAL;
     return;
   }
 
-  TITLE("MODULES / RX VERSION");
+  TITLE(STR_MENU_MODULES_RX_VERSION);
 
   if (event == EVT_ENTRY || get_tmr10ms() >= reusableBuffer.hardwareAndSettings.updateTime) {
     // menuVerticalOffset = 0;
@@ -66,15 +71,11 @@ void menuRadioModulesVersion(event_t event)
     memclear(&reusableBuffer.hardwareAndSettings.modules, sizeof(reusableBuffer.hardwareAndSettings.modules));
 
     if (isModulePXX2(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) {
-      reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
-      reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].maximum = PXX2_MAX_RECEIVERS_PER_MODULE - 1;
-      moduleSettings[INTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+      moduleState[INTERNAL_MODULE].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE], PXX2_HW_INFO_TX_ID, PXX2_MAX_RECEIVERS_PER_MODULE - 1);
     }
 
     if (isModulePXX2(EXTERNAL_MODULE) && IS_EXTERNAL_MODULE_ON()) {
-      reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].current = PXX2_HW_INFO_TX_ID;
-      reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].maximum = PXX2_MAX_RECEIVERS_PER_MODULE - 1;
-      moduleSettings[EXTERNAL_MODULE].mode = MODULE_MODE_GET_HARDWARE_INFO;
+      moduleState[EXTERNAL_MODULE].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE], PXX2_HW_INFO_TX_ID, PXX2_MAX_RECEIVERS_PER_MODULE - 1);
     }
 
     reusableBuffer.hardwareAndSettings.updateTime = get_tmr10ms() + 1000 /* 10s*/;
@@ -107,8 +108,6 @@ void menuRadioModulesVersion(event_t event)
     if (y >= MENU_BODY_TOP && y < MENU_BODY_BOTTOM) {
       lcdDrawText(INDENT_WIDTH, y, "Model");
       uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
-      if (modelId >= DIM(PXX2modulesModels))
-        modelId = 0;
       lcdDrawText(12 * FW, y, PXX2modulesModels[modelId]);
     }
     y += FH;
@@ -129,8 +128,6 @@ void menuRadioModulesVersion(event_t event)
           lcdDrawText(INDENT_WIDTH, y, "Receiver");
           lcdDrawNumber(lcdLastRightPos + 2, y, receiver + 1);
           uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].receivers[receiver].information.modelID;
-          if (modelId >= DIM(PXX2receiversModels))
-            modelId = 0;
           lcdDrawText(12 * FW, y, PXX2receiversModels[modelId]);
         }
         y += FH;
@@ -190,17 +187,19 @@ enum MenuRadioVersionItems
   ITEM_RADIO_VERSION_COUNT
 };
 
-void menuRadioVersion(event_t event)
-{
 #if defined(EEPROM_RLC)
-  if (warningResult) {
-    warningResult = 0;
+void onFactoryResetConfirm(const char * result)
+{
+  if (result == STR_OK) {
     showMessageBox(STR_STORAGE_FORMAT);
     storageEraseAll(false);
     NVIC_SystemReset();
   }
+}
 #endif
 
+void menuRadioVersion(event_t event)
+{
   SIMPLE_MENU(STR_MENUVERSION, menuTabGeneral, MENU_RADIO_VERSION, ITEM_RADIO_VERSION_COUNT);
 
   coord_t y = MENU_HEADER_HEIGHT + 1;
@@ -220,7 +219,7 @@ void menuRadioVersion(event_t event)
 #endif
 
 #if defined(PXX2)
-  lcdDrawText(INDENT_WIDTH, y, BUTTON("Modules / RX version"), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
+  lcdDrawText(INDENT_WIDTH, y, BUTTON(TR_MODULES_RX_VERSION), menuVerticalPosition == ITEM_RADIO_MODULES_VERSION ? INVERS : 0);
   y += FH;
   if (menuVerticalPosition == ITEM_RADIO_MODULES_VERSION && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
@@ -240,7 +239,7 @@ void menuRadioVersion(event_t event)
   // y += FH;
   if (menuVerticalPosition == ITEM_RADIO_FACTORY_RESET && event == EVT_KEY_BREAK(KEY_ENTER)) {
     s_editMode = EDIT_SELECT_FIELD;
-    POPUP_CONFIRMATION(STR_CONFIRMRESET, nullptr);
+    POPUP_CONFIRMATION(STR_CONFIRMRESET, onFactoryResetConfirm);
   }
 #endif
 }

@@ -1,8 +1,10 @@
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
-option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
+option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
+option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module replacement" OFF)
 option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
-option(MODULE_R9M_FULLSIZE "xlite option to use full size R9M instead of mini" OFF)
+option(PXX1 "PXX1 protocol support" ON)
+option(PXX2 "PXX2 protocol support" ON)
 
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
@@ -84,17 +86,18 @@ elseif(PCB STREQUAL X7)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
   set(STATUS_LEDS YES)
-elseif(PCB STREQUAL X3)
+elseif(PCB STREQUAL X9LITE)
   set(PXX_FREQUENCY "HIGH")
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
-  set(LUA_EXPORT lua_export_x3)
-  set(FLAVOUR x3)
-  add_definitions(-DPCBX3 -DSOFTWARE_VOLUME)
-  add_definitions(-DEEPROM_VARIANT=0x4000)
+  set(LUA_EXPORT lua_export_x9lite)
+  set(FLAVOUR x9lite)
+  add_definitions(-DBOARD_NAME="x9lite")
+  add_definitions(-DPCBX9LITE -DPCBX9 -DSOFTWARE_VOLUME)
+  add_definitions(-DEEPROM_VARIANT=0x0800)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(GUI_DIR 128x64)
   set(NAVIGATION_TYPE x7)
@@ -129,7 +132,7 @@ elseif(PCB STREQUAL XLITES)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
   set(HAPTIC YES)
-  set(LUA_EXPORT lua_export_xlite)
+  set(LUA_EXPORT lua_export_xlites)
   set(FLAVOUR xlites)
   add_definitions(-DPCBXLITES -DPCBXLITE -DSOFTWARE_VOLUME -DEXTERNAL_ANTENNA -DSTICKS_PWM)
   add_definitions(-DEEPROM_VARIANT=0x1000)
@@ -155,23 +158,16 @@ if(PCB STREQUAL XLITES)
     )
 endif()
 
-if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X3)
-  option(PXX1 "PXX1 protocol support" OFF)
-  option(PXX2 "PXX2 protocol support" ON)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE)
   add_definitions(-DINTERNAL_MODULE_SERIAL)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
-  endif()
-  if(MODULE_R9M_FULLSIZE)
-    add_definitions(-DMODULE_R9M_FULLSIZE)
   endif()
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/intmodule_serial_driver.cpp
     )
 else()
-  set(PXX1 YES)
-  option(PXX2 "PXX2 protocol support" ON)
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
@@ -186,6 +182,13 @@ if(NOT PCB STREQUAL XLITE)
   set(TARGET_SRC
     ${TARGET_SRC}
     trainer_driver.cpp
+    )
+endif()
+
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X9LITE)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/rotary_encoder_driver.cpp
     )
 endif()
 
@@ -267,8 +270,12 @@ if(LCD_DUAL_BUFFER)
   add_definitions(-DLCD_DUAL_BUFFER)
 endif()
 
-if(TARANIS_INTERNAL_PPM)
-  add_definitions(-DTARANIS_INTERNAL_PPM)
+if(INTERNAL_MODULE_PPM)
+  add_definitions(-DINTERNAL_MODULE_PPM)
+endif()
+
+if(INTERNAL_MODULE_PXX1)
+  add_definitions(-DINTERNAL_MODULE_PXX1)
 endif()
 
 if(USEHORUSBT)

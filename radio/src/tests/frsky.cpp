@@ -44,7 +44,7 @@ TEST(FrSky, TelemetryValueWithMinAveraging)
   uint8_t expected[] = { 10, 12, 17, 25, 35, 45, 55, 65, 75, 85, 92, 97, 100, 100, 100, 100, 100};
   int testPos = 0;
   //test of averaging
-  TelemetryValueWithMin testVal;
+  TelemetryMinDecorator<TelemetryFilterDecorator<TelemetryValue>> testVal;
   testVal.value = 0;
   testVal.set(10);
   EXPECT_EQ(RAW_FRSKY_MINMAX(testVal), 10);
@@ -310,8 +310,8 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   //display test
   lcdClear();
 
-#if !defined(COLORLCD)
-  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
+  g_model.voltsSource = FRSKY_VOLTS_SOURCE_A1;
 #endif
 }
 
@@ -390,8 +390,8 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   //display test
   lcdClear();
 
-#if !defined(COLORLCD)
-  g_model.frsky.voltsSource = FRSKY_VOLTS_SOURCE_A1;
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
+  g_model.voltsSource = FRSKY_VOLTS_SOURCE_A1;
 #endif
 }
 

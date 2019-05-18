@@ -122,7 +122,7 @@ GeneralSettings::GeneralSettings()
   templateSetup = g.profile[g.sessionId()].channelOrder();
   stickMode = g.profile[g.sessionId()].defaultMode();
 
-  QString t_calib; // TODO SEGFAULT = g.profile[g.sessionId()].stickPotCalib();
+  QString t_calib = g.profile[g.sessionId()].stickPotCalib();
   int potsnum = getBoardCapability(getCurrentBoard(), Board::Pots);
   if (!t_calib.isEmpty()) {
     QString t_trainercalib=g.profile[g.sessionId()].trainerCalib();

@@ -66,6 +66,20 @@ void processTelemetryData(uint8_t data)
   processFrskyTelemetryData(data);
 }
 
+inline bool isBadAntennaDetected()
+{
+  if (!isRasValueValid())
+    return false;
+
+  if (telemetryData.swrInternal.isFresh() && telemetryData.swrInternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+    return true;
+
+  if (telemetryData.swrExternal.isFresh() && telemetryData.swrExternal.value > FRSKY_BAD_ANTENNA_THRESHOLD)
+    return true;
+
+  return false;
+}
+
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
@@ -133,8 +147,6 @@ void telemetryWakeup()
   }
 #endif
 
-#define FRSKY_BAD_ANTENNA()            (IS_RAS_VALUE_VALID() && telemetryData.swr.value > 0x33)
-
   static tmr10ms_t alarmsCheckTime = 0;
   #define SCHEDULE_NEXT_ALARMS_CHECK(seconds) alarmsCheckTime = get_tmr10ms() + (100*(seconds))
   if (int32_t(get_tmr10ms() - alarmsCheckTime) > 0) {
@@ -159,7 +171,7 @@ void telemetryWakeup()
     }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-    if ((/*isModulePXX2(INTERNAL_MODULE) || */isModulePXX(INTERNAL_MODULE)/* || isModulePXX2(EXTERNAL_MODULE)*/ || isModulePXX(EXTERNAL_MODULE)) && FRSKY_BAD_ANTENNA()) {
+    if (isBadAntennaDetected()) {
       AUDIO_RAS_RED();
       POPUP_WARNING(STR_WARNING);
       const char * w = STR_ANTENNAPROBLEM;
@@ -254,8 +266,7 @@ void telemetryInit(uint8_t protocol)
     // The DIY Multi module always speaks 100000 baud regardless of the telemetry protocol in use
     telemetryPortInit(MULTIMODULE_BAUDRATE, TELEMETRY_SERIAL_8E2);
 #if defined(LUA)
-    outputTelemetryBuffer.size = 0;
-    outputTelemetryBuffer.trigger = 0x7E;
+    outputTelemetryBuffer.reset();
 #endif
   }
   else if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
@@ -268,8 +279,7 @@ void telemetryInit(uint8_t protocol)
   else if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
 #if defined(LUA)
-    outputTelemetryBufferSize = 0;
-    outputTelemetryBufferTrigger = 0;
+    outputTelemetryBuffer.reset();
 #endif
     telemetryPortSetDirectionOutput();
   }
@@ -282,12 +292,6 @@ void telemetryInit(uint8_t protocol)
   }
 #endif
 
-  else if (protocol == PROTOCOL_TELEMETRY_PXX2) {
-    telemetryPortInit(PXX2_ON_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
-#if defined(LUA)
-    outputTelemetryBuffer.reset();
-#endif
-  }
   else {
     telemetryPortInit(FRSKY_SPORT_BAUDRATE, TELEMETRY_SERIAL_WITHOUT_DMA);
 #if defined(LUA)

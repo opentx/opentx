@@ -20,10 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-uint32_t rotencPosition;
-#endif
-
 uint32_t readKeys()
 {
   uint32_t result = 0;
@@ -114,27 +110,6 @@ bool keyDown()
   return readKeys() || readTrims();
 }
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-void checkRotaryEncoder()
-{
-  uint32_t newpos = ROTARY_ENCODER_POSITION();
-  if (newpos != rotencPosition && !keyState(KEY_ENTER)) {
-    if ((rotencPosition & 0x01) ^ ((newpos & 0x02) >> 1)) {
-      --rotencValue[0];
-    }
-    else {
-      ++rotencValue[0];
-    }
-    rotencPosition = newpos;
-#if !defined(BOOT)
-    if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
-      backlightOn();
-    }
-#endif
-  }
-}
-#endif
-
 /* TODO common to ARM */
 void readKeysAndTrims()
 {
@@ -207,15 +182,15 @@ uint32_t switchState(uint8_t index)
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
     ADD_3POS_CASE(D, 3);
 #endif
-#if defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBXLITES) || defined(PCBX9LITE)
     ADD_2POS_CASE(E);
     ADD_2POS_CASE(F);
-    // no SWG and SWH on XLITES and X3
-#elif defined(PCBXLITE) || defined(PCBX3)
-    // no SWE, SWF, SWG and SWH on X3 and XLITE
+    // no SWG and SWH on XLITES and X9
+#elif defined(PCBXLITE) || defined(PCBX9LITE)
+    // no SWE, SWF, SWG and SWH on X9LITE and XLITE
 #elif defined(PCBX7)
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
@@ -288,9 +263,5 @@ void keysInit()
 #if defined(KEYS_GPIOG_PINS)
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOG_PINS;
   GPIO_Init(GPIOG, &GPIO_InitStructure);
-#endif
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  rotencPosition = ROTARY_ENCODER_POSITION();
 #endif
 }

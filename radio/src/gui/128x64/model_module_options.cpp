@@ -28,10 +28,8 @@ extern uint8_t g_moduleIdx;
 void onTxOptionsUpdateConfirm(const char * result)
 {
   if (result == STR_OK) {
-    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.hardwareAndSettings.moduleSettings.dirty = 2;
-    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
+    reusableBuffer.hardwareAndSettings.moduleSettingsDirty = 2;
+    moduleState[g_moduleIdx].writeModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
   }
   else {
     popMenu();
@@ -46,32 +44,6 @@ enum {
 };
 
 #define IF_MODULE_OPTIONS(option, count) uint8_t(isModuleOptionAvailable(modelId, option) ? count : HIDDEN_ROW)
-
-void drawPower(coord_t x, coord_t y, int8_t dBm)
-{
-  float power_W_PREC1 = pow(10.0, (dBm - 30.0) / 10.0) * 10;
-  if (dBm >= 30) {
-    lcdDrawNumber(x, y, power_W_PREC1, PREC1);
-    lcdDrawText(lcdNextPos, y, "W");
-  }
-  else if (dBm < 10) {
-    uint16_t power_MW_PREC1 = round(power_W_PREC1 * 1000);
-    lcdDrawNumber(x, y, power_MW_PREC1, PREC1);
-    lcdDrawText(lcdNextPos, y, "mW");
-  }
-  else {
-    uint16_t power_MW = round(power_W_PREC1 * 100);
-    if (power_MW >= 50) {
-      power_MW = (power_MW / 5) * 5;
-      lcdDrawNumber(x, y, power_MW);
-      lcdDrawText(lcdNextPos, y, "mW");
-    }
-    else {
-      lcdDrawNumber(x, y, power_MW);
-      lcdDrawText(lcdNextPos, y, "mW");
-    }
-  }
-}
 
 bool isPowerAvailable(int value)
 {
@@ -103,51 +75,53 @@ bool isPowerAvailable(int value)
 
 void menuModelModuleOptions(event_t event)
 {
+  if (event == EVT_ENTRY) {
+    memclear(&reusableBuffer.hardwareAndSettings, sizeof(reusableBuffer.hardwareAndSettings));
+#if defined(SIMU)
+    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
+#else
+    // no need to initialize reusableBuffer.hardwareAndSettings.moduleState.state to PXX2_HARDWARE_INFO
+    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+#endif
+  }
+
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
   // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
+  uint8_t optionsAvailable = moduleOptions[modelId] & ((1 << MODULE_OPTION_RF_PROTOCOL) | (1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
+
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
-    IF_MODULE_OPTIONS(MODULE_OPTION_RF_PROTOCOL, 0),
+    !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_RF_PROTOCOL, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
   });
 
-  if (event == EVT_ENTRY) {
-#if defined(SIMU)
-    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_OK;
-#else
-    // no need to initialize reusableBuffer.hardwareAndSettings.moduleSettings.state to PXX2_HARDWARE_INFO
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].current = PXX2_HW_INFO_TX_ID;
-    reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].maximum = PXX2_HW_INFO_TX_ID;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_GET_HARDWARE_INFO;
-#endif
-  }
-
-  if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleSettings[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
-    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_READ;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
+  if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_HARDWARE_INFO && moduleState[g_moduleIdx].mode == MODULE_MODE_NORMAL) {
+    if (modelId)
+      moduleState[g_moduleIdx].readModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
+    else
+      moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.hardwareAndSettings.modules[g_moduleIdx], PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
   }
 
   if (menuEvent) {
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
+    killEvents(KEY_EXIT);
+    moduleState[g_moduleIdx].mode = MODULE_MODE_NORMAL;
+    if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
       abortPopMenu();
-      POPUP_CONFIRMATION("Update TX options?", onTxOptionsUpdateConfirm);
+      POPUP_CONFIRMATION(STR_UPDATE_TX_OPTIONS, onTxOptionsUpdateConfirm);
     }
     else {
       return;
     }
   }
 
-  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.moduleSettings.dirty) {
+  if (event == EVT_KEY_LONG(KEY_ENTER) && reusableBuffer.hardwareAndSettings.moduleSettingsDirty) {
     killEvents(event);
-    reusableBuffer.hardwareAndSettings.moduleSettings.state = PXX2_SETTINGS_WRITE;
-    reusableBuffer.hardwareAndSettings.moduleSettings.dirty = 0;
-    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = 0;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_MODULE_SETTINGS;
+    reusableBuffer.hardwareAndSettings.moduleSettingsDirty = 0;
+    moduleState[g_moduleIdx].writeModuleSettings(&reusableBuffer.hardwareAndSettings.moduleSettings);
   }
 
-  if (reusableBuffer.hardwareAndSettings.moduleSettings.dirty == 2 && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
+  if (reusableBuffer.hardwareAndSettings.moduleSettingsDirty == 2 && reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
     popMenu();
   }
 
@@ -159,57 +133,64 @@ void menuModelModuleOptions(event_t event)
   }
 
   int8_t sub = menuVerticalPosition;
-  lcdDrawTextAlignedLeft(0, "Module options");
-  lcdDrawText(lcdLastRightPos+ 3, 0, PXX2modulesModels[modelId] );
+  lcdDrawTextAlignedLeft(0, STR_MODULE_OPTIONS);
+  lcdDrawText(lcdLastRightPos + 3, 0, PXX2modulesModels[modelId]);
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_OK) {
-    for (uint8_t k=0; k<LCD_LINES-1; k++) {
-      coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
-      uint8_t i = k + menuVerticalOffset;
-      for (int j=0; j<=i; ++j) {
-        if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
-          ++i;
+    if (optionsAvailable) {
+      for (uint8_t k=0; k<LCD_LINES-1; k++) {
+        coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
+        uint8_t i = k + menuVerticalOffset;
+        for (int j=0; j<=i; ++j) {
+          if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
+            ++i;
+          }
+        }
+        LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+
+        switch (i) {
+          case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
+            lcdDrawText(0, y, STR_RF_PROTOCOL);
+            lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_ACCESS_RF_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, attr);
+            if (attr) {
+              reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, 0, 2, 0, nullptr);
+              if (checkIncDec_Ret) {
+                reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+              }
+            }
+            break;
+
+          case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
+            reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
+            if (attr && checkIncDec_Ret) {
+              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+            }
+            break;
+
+          case ITEM_MODULE_SETTINGS_POWER:
+            lcdDrawText(0, y, STR_POWER);
+            lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
+            lcdDrawText(lcdNextPos, y, "dBm(");
+            drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
+            lcdDrawText(lcdNextPos, y, ")");
+            if (attr) {
+              reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
+              if (checkIncDec_Ret) {
+                reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
+              }
+            }
+            break;
         }
       }
-      LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
-
-      switch (i) {
-        case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
-          lcdDrawText(0, y, "RF Protocol");
-          lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_XJT_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
-          if (attr) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
-            if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
-            }
-          }
-          break;
-
-        case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
-          reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
-          if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
-          }
-          break;
-
-        case ITEM_MODULE_SETTINGS_POWER:
-          lcdDrawText(0, y, "Power");
-          lcdDrawNumber(RECEIVER_OPTIONS_2ND_COLUMN, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, attr);
-          lcdDrawText(lcdNextPos, y, "dBm(");
-          drawPower(lcdNextPos, y, reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
-          lcdDrawText(lcdNextPos, y, ")");
-          if (attr) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.txPower = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.txPower, 0, 30, 0, &isPowerAvailable);
-            if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettings.dirty = true;
-            }
-          }
-          break;
-      }
+    }
+    else {
+      lcdDrawCenteredText(LCD_H/2, STR_NO_TX_OPTIONS);
+      s_editMode = 0;
     }
   }
   else {
-    lcdDrawText(4 * FW, 4 * FH, "Waiting for TX...");
+    lcdDrawCenteredText(LCD_H/2, STR_WAITING_FOR_TX);
+    s_editMode = 0;
   }
 }

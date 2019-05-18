@@ -227,7 +227,7 @@ void displayVoltageOrAlarm()
   #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
@@ -354,13 +354,11 @@ void menuMainView(event_t event)
       break;
 #endif
 
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
       killEvents(event);
       break;
 
-    CASE_EVT_ROTARY_LONG
     case EVT_KEY_GENERAL_MENU:
       pushMenu(menuRadioSetup);
       killEvents(event);
@@ -484,7 +482,7 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-#if defined(PCBX3)
+#if defined(PCBX9LITE)
       static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
       static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
       for (int i=0; i<NUM_SWITCHES; ++i) {
@@ -568,7 +566,7 @@ void menuMainView(event_t event)
 #endif
 
 #if defined(DSM2)
-  if (moduleSettings[0].mode == MODULE_MODE_BIND) {
+  if (moduleState[0].mode == MODULE_MODE_BIND) {
     // Issue 98
     lcdDrawText(15*FW, 0, "BIND", 0);
   }

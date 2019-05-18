@@ -252,7 +252,7 @@ void init_sbus_on_heartbeat_capture()
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
-  GPIO_Init(GPIOC, &GPIO_InitStructure);
+  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
 
   USART_InitStructure.USART_BaudRate = 100000;
   USART_InitStructure.USART_WordLength = USART_WordLength_9b;
@@ -308,7 +308,7 @@ int sbusGetByte(uint8_t * byte)
     case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
       return heartbeatFifo.pop(*byte);
 #endif
-#if !defined(PCBX7) && !defined(PCBX9E) && !defined(PCBX3) && !defined(PCBXLITE)
+#if !defined(PCBX7) && !defined(PCBX9E) && !defined(PCBX9LITE) && !defined(PCBXLITE)
     case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
       return serial2RxFifo.pop(*byte);
 #endif

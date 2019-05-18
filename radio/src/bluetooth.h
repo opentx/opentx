@@ -20,35 +20,77 @@
 
 enum BluetoothStates {
 #if defined(PCBX9E) && !defined(USEHORUSBT)
-    BLUETOOTH_INIT,
-    BLUETOOTH_WAIT_TTM,
-    BLUETOOTH_WAIT_BAUDRATE_CHANGE,
+  BLUETOOTH_INIT,
+  BLUETOOTH_WAIT_TTM,
+  BLUETOOTH_WAIT_BAUDRATE_CHANGE,
 #endif
-    BLUETOOTH_STATE_OFF,
-    BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT,
-    BLUETOOTH_STATE_BAUDRATE_SENT,
-    BLUETOOTH_STATE_BAUDRATE_INIT,
-    BLUETOOTH_STATE_NAME_SENT,
-    BLUETOOTH_STATE_POWER_SENT,
-    BLUETOOTH_STATE_ROLE_SENT,
-    BLUETOOTH_STATE_IDLE,
-    BLUETOOTH_STATE_DISCOVER_REQUESTED,
-    BLUETOOTH_STATE_DISCOVER_SENT,
-    BLUETOOTH_STATE_DISCOVER_START,
-    BLUETOOTH_STATE_DISCOVER_END,
-    BLUETOOTH_STATE_BIND_REQUESTED,
-    BLUETOOTH_STATE_CONNECT_SENT,
-    BLUETOOTH_STATE_CONNECTED,
-    BLUETOOTH_STATE_DISCONNECTED,
+  BLUETOOTH_STATE_OFF,
+  BLUETOOTH_STATE_FACTORY_BAUDRATE_INIT,
+  BLUETOOTH_STATE_BAUDRATE_SENT,
+  BLUETOOTH_STATE_BAUDRATE_INIT,
+  BLUETOOTH_STATE_NAME_SENT,
+  BLUETOOTH_STATE_POWER_SENT,
+  BLUETOOTH_STATE_ROLE_SENT,
+  BLUETOOTH_STATE_IDLE,
+  BLUETOOTH_STATE_DISCOVER_REQUESTED,
+  BLUETOOTH_STATE_DISCOVER_SENT,
+  BLUETOOTH_STATE_DISCOVER_START,
+  BLUETOOTH_STATE_DISCOVER_END,
+  BLUETOOTH_STATE_BIND_REQUESTED,
+  BLUETOOTH_STATE_CONNECT_SENT,
+  BLUETOOTH_STATE_CONNECTED,
+  BLUETOOTH_STATE_DISCONNECTED,
+  BLUETOOTH_STATE_CLEAR_REQUESTED,
+  BLUETOOTH_STATE_FLASH_FIRMWARE
 };
 
 #define LEN_BLUETOOTH_ADDR              16
+#define MAX_BLUETOOTH_DISTANT_ADDR      6
+#define BLUETOOTH_PACKET_SIZE          14
+#define BLUETOOTH_LINE_LENGTH          32
 
-extern volatile uint8_t bluetoothState;
-extern char bluetoothLocalAddr[LEN_BLUETOOTH_ADDR+1];
-extern char bluetoothDistantAddr[LEN_BLUETOOTH_ADDR+1];
+class Bluetooth
+{
+  public:
+    void writeString(const char * str);
+    char * readline(bool error_reset = true);
 
-char * bluetoothReadline(bool error_reset=true);
-void bluetoothWriteString(const char * command);
-void bluetoothForwardTelemetry(const uint8_t * packet);
-void bluetoothWakeup();
+    void forwardTelemetry(const uint8_t * packet);
+    void wakeup();
+    void flashFirmware(const char * filename);
+
+    volatile uint8_t state;
+    char localAddr[LEN_BLUETOOTH_ADDR+1];
+    char distantAddr[LEN_BLUETOOTH_ADDR+1];
+
+  protected:
+    void pushByte(uint8_t byte);
+    uint8_t read(uint8_t * data, uint8_t size, uint8_t timeout=100/*ms*/);
+    void write(const uint8_t * data, uint8_t length);
+    void appendTrainerByte(uint8_t data);
+    void processTrainerFrame(const uint8_t * buffer);
+    void processTrainerByte(uint8_t data);
+    void sendTrainer();
+    void receiveTrainer();
+
+    uint8_t bootloaderChecksum(uint8_t command, const uint8_t * data, uint8_t size);
+    void bootloaderSendCommand(uint8_t command, const void *data = nullptr, uint8_t size = 0);
+    void bootloaderSendCommandResponse(uint8_t response);
+    const char * bootloaderWaitCommandResponse(uint8_t timeout=100/*ms*/);
+    const char * bootloaderWaitResponseData(uint8_t *data, uint8_t size);
+    const char * bootloaderSetAutoBaud();
+    const char * bootloaderReadStatus(uint8_t &status);
+    const char * bootloaderCheckStatus();
+    const char * bootloaderSendData(const uint8_t * data, uint8_t size);
+    const char * bootloaderEraseFlash(uint32_t start, uint32_t size);
+    const char * bootloaderStartWriteFlash(uint32_t start, uint32_t size);
+    const char * bootloaderWriteFlash(const uint8_t * data, uint32_t size);
+    const char * doFlashFirmware(const char * filename);
+
+    uint8_t buffer[BLUETOOTH_LINE_LENGTH+1];
+    uint8_t bufferIndex = 0;
+    tmr10ms_t wakeupTime = 0;
+    uint8_t crc;
+};
+
+extern Bluetooth bluetooth;

@@ -37,7 +37,9 @@ extern "C" {
 
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rcc.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_syscfg.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_gpio.h"
+#include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_exti.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_spi.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_i2c.h"
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_rtc.h"
@@ -105,15 +107,8 @@ extern uint16_t sessionTimer;
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #endif
 
-#if defined(PCBX10)
-  #define NUM_SLIDERS                  2
-  #define NUM_PWMSTICKS                4
-#else
-  #define NUM_SLIDERS                  4
-  #define NUM_PWMSTICKS                0
-#endif
-
 // Board driver
+void boardPreInit(void);
 void boardInit(void);
 void boardOff(void);
 
@@ -138,16 +133,6 @@ void delay_ms(uint32_t ms);
 #else
   #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (!IS_HORUS_PROD())
 #endif
-
-// Hardware options
-PACK(typedef struct {
-#if NUM_PWMSTICKS > 0
-    uint8_t sticksPwmDisabled:1;
-#endif
-    uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-
-extern HardwareOptions hardwareOptions;
 
 // SD driver
 #define BLOCK_SIZE                     512 /* Block Size in Bytes */
@@ -222,16 +207,25 @@ void SDRAM_Init(void);
 void init_ppm(uint8_t module);
 void disable_ppm(uint8_t module);
 void init_pxx1_pulses(uint8_t module);
+void init_pxx1_serial(uint8_t module);
 void disable_pxx1_pulses(uint8_t module);
+void disable_pxx1_serial(uint8_t module);
 void init_pxx2(uint8_t module);
 void disable_pxx2(uint8_t module);
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us);
-void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
 void disable_serial(uint8_t module);
+
 void intmoduleStop();
+void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable);
+void intmodulePxxStart();
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
+
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
 void extmoduleSendNextFrame();
+void extmoduleStop();
+void extmodulePpmStart();
+void extmodulePxxStart();
+void extmodulePxx2Start();
 
 // Trainer driver
 void init_trainer_ppm(void);
@@ -285,8 +279,12 @@ enum EnumSwitches
   SW_SF,
   SW_SG,
   SW_SH,
+  SW_GMBL,
+  SW_GMBR,
   NUM_SWITCHES
 };
+
+#define STORAGE_NUM_SWITCHES           10
 #define IS_3POS(x)                     ((x) != SW_SF && (x) != SW_SH)
 
 enum EnumSwitchesPositions
@@ -315,8 +313,20 @@ enum EnumSwitchesPositions
   SW_SH0,
   SW_SH1,
   SW_SH2,
+  SW_SGMBL0,
+  SW_SGMBL1,
+  SW_SGMBL2,
+  SW_SGMBR0,
+  SW_SGMBR1,
+  SW_SGMBR2,
   NUM_SWITCHES_POSITIONS
 };
+
+
+#if defined(__cplusplus)
+static_assert(NUM_SWITCHES_POSITIONS == NUM_SWITCHES * 3, "Wrong switches positions count");
+#endif
+
 void keysInit(void);
 uint8_t keyState(uint8_t index);
 uint32_t switchState(uint8_t index);
@@ -335,7 +345,8 @@ uint32_t readTrims(void);
 
 // Rotary encoder driver
 #define ROTARY_ENCODER_NAVIGATION
-void checkRotaryEncoder(void);
+void rotaryEncoderInit(void);
+void rotaryEncoderCheck(void);
 
 // WDT driver
 #define WDTO_500MS                              500
@@ -368,8 +379,26 @@ void watchdogInit(unsigned int duration);
 #endif
 
 // ADC driver
+
+#if defined(PCBX10)
+#define NUM_POTS                       5
+#else
 #define NUM_POTS                       3
+#endif
+
 #define NUM_XPOTS                      NUM_POTS
+#define STORAGE_NUM_POTS               5
+
+#if defined(PCBX10)
+  #define NUM_SLIDERS                  2
+  #define NUM_PWMSTICKS                4
+#else
+  #define NUM_SLIDERS                  4
+  #define NUM_PWMSTICKS                0
+#endif
+
+#define STORAGE_NUM_SLIDERS            4
+
 enum Analogs {
   STICK1,
   STICK2,
@@ -379,7 +408,10 @@ enum Analogs {
   POT1 = POT_FIRST,
   POT2,
   POT3,
-  POT_LAST = POT3,
+#if defined(PCBX10)
+  EXT1,
+  EXT2,
+#endif
   SLIDER_FIRST,
   SLIDER1 = SLIDER_FIRST,
   SLIDER2,
@@ -394,11 +426,15 @@ enum Analogs {
 #endif
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
+#if defined(PCBX12S)
   MOUSE1, // TODO why after voltage?
   MOUSE2,
+#endif
   NUM_ANALOGS,
   TX_RTC = NUM_ANALOGS
 };
+
+#define POT_LAST (SLIDER_FIRST - 1)
 
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
@@ -429,12 +465,13 @@ void adcInit(void);
 void adcRead(void);
 uint16_t getRTCBattVoltage();
 uint16_t getAnalogValue(uint8_t index);
-#define NUM_MOUSE_ANALOGS              2
-#if defined(PCBX10)
-  #define NUM_DUMMY_ANAS               2
+
+#if defined(PCBX12S)
+  #define NUM_MOUSE_ANALOGS            2
 #else
-  #define NUM_DUMMY_ANAS               0
+  #define NUM_MOUSE_ANALOGS            0
 #endif
+#define STORAGE_NUM_MOUSE_ANALOGS      2
 
 #if NUM_PWMSTICKS > 0
 #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
@@ -600,12 +637,15 @@ void serial2Stop(void);
 #define USART_FLAG_ERRORS              (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 // BT driver
+#define BT_TX_FIFO_SIZE    64
+#define BT_RX_FIFO_SIZE    128
+#define BLUETOOTH_BOOTLOADER_BAUDRATE   230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200
-void bluetoothInit(uint32_t baudrate);
+void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup(void);
 uint8_t bluetoothIsWriting(void);
-void bluetoothDone(void);
+void bluetoothDisable(void);
 
 extern uint8_t currentTrainerMode;
 void checkTrainerSettings(void);
@@ -617,5 +657,17 @@ extern DMAFifo<512> telemetryFifo;
 extern DMAFifo<32> serial2RxFifo;
 #endif
 
+#if NUM_PWMSTICKS > 0
+PACK(typedef struct {
+  uint8_t sticksPwmDisabled : 1;
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+#else
+PACK(typedef struct {
+  uint8_t pxx2Enabled : 1;
+}) HardwareOptions;
+#endif
+
+extern HardwareOptions hardwareOptions;
 
 #endif // _BOARD_HORUS_H_

@@ -73,13 +73,6 @@ void disable_pxx2(uint8_t module)
 }
 
 #if defined(DSM2)
-void init_serial(uint8_t module, uint32_t baudrate, uint32_t period_half_us)
-{
-  if (module == EXTERNAL_MODULE) {
-    extmoduleSerialStart(baudrate, period_half_us);
-  }
-}
-
 void disable_serial(uint8_t module)
 {
   if (module == EXTERNAL_MODULE) {
@@ -93,7 +86,7 @@ void init_ppm(uint8_t module)
   if (module == EXTERNAL_MODULE) {
     extmodulePpmStart();
   }
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
   else {
     intmodulePpmStart();
   }
@@ -105,7 +98,7 @@ void disable_ppm(uint8_t module)
   if (module == EXTERNAL_MODULE) {
     extmoduleStop();
   }
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
   else {
     intmoduleStop();
   }

@@ -22,6 +22,7 @@
 #define _MYEEPROM_H_
 
 #include "datastructs.h"
+#include "bitfield.h"
 
 #define EEPROM_VER             219
 #define FIRST_CONV_EEPROM_VER  216
@@ -30,7 +31,7 @@
 #define GET_TRAINER_PPM_POLARITY()               g_model.trainerData.pulsePol
 #define GET_SBUS_POLARITY(idx)                   g_model.moduleData[idx].sbus.noninverted
 #define GET_MODULE_PPM_DELAY(idx)                (g_model.moduleData[idx].ppm.delay * 50 + 300)
-#define GET_TRAINER_PPM_DELAY(idx)               (g_model.trainerData.delay * 50 + 300)
+#define GET_TRAINER_PPM_DELAY()                  (g_model.trainerData.delay * 50 + 300)
 #define SET_DEFAULT_PPM_FRAME_LENGTH(idx)        g_model.moduleData[idx].ppm.frameLength = 4 * max((int8_t)0, g_model.moduleData[idx].channelsCount)
 
 #if defined(PCBHORUS)
@@ -95,7 +96,7 @@
     SLIDER_NONE,
     SLIDER_WITH_DETENT,
   };
-  #define SWITCH_CONFIG(x)            ((g_eeGeneral.switchConfig >> (2*(x))) & 0x03)
+  #define SWITCH_CONFIG(x)            (bfGet<uint32_t>(g_eeGeneral.switchConfig, 2*(x), 2))
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_CONFIG_3POS(x)           (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_CONFIG_TOGGLE(x)         (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
@@ -113,8 +114,6 @@
   #include "layout.h"
   #include "theme.h"
   #include "topbar.h"
-#else
-  #define THEME_DATA
 #endif
 
 #define SWITCHES_DELAY()            uint8_t(15+g_eeGeneral.switchesDelay)
@@ -401,16 +400,16 @@ enum DSM2Protocols {
 enum ModuleTypes {
   MODULE_TYPE_NONE = 0,
   MODULE_TYPE_PPM,
-  MODULE_TYPE_XJT,
-  MODULE_TYPE_XJT2,
+  MODULE_TYPE_PXX_XJT,
+  MODULE_TYPE_ACCESS_ISRM,
   MODULE_TYPE_DSM2,
   MODULE_TYPE_CROSSFIRE,
   MODULE_TYPE_MULTIMODULE,
-  MODULE_TYPE_R9M,
-  MODULE_TYPE_R9M2,
-  MODULE_TYPE_R9M_LITE,
-  MODULE_TYPE_R9M_LITE2,
-  MODULE_TYPE_R9M_LITE_PRO2,
+  MODULE_TYPE_PXX_R9M,
+  MODULE_TYPE_ACCESS_R9M,
+  MODULE_TYPE_PXX_R9M_LITE,
+  MODULE_TYPE_ACCESS_R9M_LITE,
+  MODULE_TYPE_ACCESS_R9M_LITE_PRO,
   MODULE_TYPE_SBUS,
   MODULE_TYPE_MAX = MODULE_TYPE_SBUS,
   MODULE_TYPE_COUNT
@@ -466,8 +465,7 @@ enum TelemetryProtocols
   PROTOCOL_TELEMETRY_SPEKTRUM,
   PROTOCOL_TELEMETRY_FLYSKY_IBUS,
   PROTOCOL_TELEMETRY_MULTIMODULE,
-  PROTOCOL_TELEMETRY_LAST=PROTOCOL_TELEMETRY_MULTIMODULE,
-  PROTOCOL_TELEMETRY_PXX2,
+  PROTOCOL_TELEMETRY_LAST=PROTOCOL_TELEMETRY_MULTIMODULE
 };
 
 enum DisplayTrims
@@ -488,7 +486,7 @@ PACK(union u_int8int16_t {
   int16_t word;
 });
 
-#define EE_GENERAL                     0x01
-#define EE_MODEL                       0x02
+constexpr uint8_t EE_GENERAL = 0x01;
+constexpr uint8_t EE_MODEL = 0x02;
 
 #endif // _MYEEPROM_H_

@@ -29,6 +29,7 @@
 
 #define PXX2_ON_SPORT_BAUDRATE             230400
 #define PXX2_PERIOD                        4 // 4ms
+#define PXX2_TOOLS_PERIOD                  1 // 1ms
 #define PXX2_FRAME_MAXLENGTH               64
 
 #define PXX_PULSES_PERIOD                  9/*ms*/
@@ -42,8 +43,6 @@
   #define INTMODULE_PXX_BAUDRATE           115200
   #define INTMODULE_PXX_PERIOD             9/*ms*/
 #endif
-
-#define EXTMODULE_USART_PXX2_BAUDRATE      230400
 
 #if defined(PXX_FREQUENCY_HIGH) && (!defined(INTMODULE_USART) || !defined(EXTMODULE_USART))
 /* PXX uses 20 bytes (as of Rev 1.1 document) with 8 changes per byte + stop bit ~= 162 max pulses */
@@ -120,12 +119,6 @@ class PwmPxxBitTransport: public PulsesBuffer<pulse_duration_t, 200> {
       // rest min value is 18000 - 200 * 48 = 8400 (4.2ms)
       *(ptr - 1) += rest;
     }
-};
-
-template <class PxxTransport>
-class PxxPulses: public PxxTransport {
-  protected:
-    void addChannels(uint8_t port, uint8_t sendFailsafe, uint8_t sendUpperChannels);
 };
 
 #endif

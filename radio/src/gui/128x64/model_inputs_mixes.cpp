@@ -292,7 +292,7 @@ void menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_SIDE:
-        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VSIDE, 4-ed->mode, 1, 3, attr, event);
+        ed->mode = 4 - editChoice(EXPO_ONE_2ND_COLUMN-3*FW, y, STR_SIDE, STR_VCURVEFUNC, 4-ed->mode, 1, 3, attr, event);
         break;
     }
     y += FH;
@@ -382,14 +382,7 @@ void menuModelMixOne(event_t event)
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(lcdLastRightPos+1*FW, 0, md2->destCh+1,0);
 
-#if defined(ROTARY_ENCODERS)
-  if ((menuVerticalPosition == MIX_FIELD_TRIM && md2->srcRaw > NUM_STICKS) || (menuVerticalPosition == MIX_FIELD_CURVE && md2->curveMode == MODE_CURVE))
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 0, 0, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/})
-  else
-    SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 1, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
-#else
   SUBMENU_NOTITLE(MIX_FIELD_COUNT, {0, 0, 0, 0, 1, 1, CASE_FLIGHT_MODES((MAX_FLIGHT_MODES-1) | NAVIGATION_LINE_BY_LINE) 0, 0 /*, ...*/});
-#endif
 
   int8_t sub = menuVerticalPosition;
   int8_t editMode = s_editMode;
@@ -654,7 +647,6 @@ void menuModelExpoMix(uint8_t expo, event_t event)
       }
       // no break
 
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       if (s_copyTgtOfs) {

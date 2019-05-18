@@ -47,7 +47,6 @@ void onModelSelectMenu(const char * result)
   else if (result == STR_RESTORE_MODEL || result == STR_UPDATE_LIST) {
     if (!sdListFiles(MODELS_PATH, MODELS_EXT, MENU_LINE_LENGTH-1, NULL)) {
       POPUP_WARNING(STR_NO_MODELS_ON_SD);
-      POPUP_MENU_UNSET_BSS_FLAG();
     }
   }
 #endif
@@ -113,21 +112,6 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(ROTARY_ENCODERS)
-    case EVT_ROTARY_LONG:
-      killEvents(event);
-      if (s_editMode < 0) {
-        popMenu();
-        break;
-      }
-      else if (!s_copyMode) {
-        menuVerticalPosition = sub = g_eeGeneral.currModel;
-        s_copyMode = 0;
-        s_editMode = EDIT_MODE_INIT;
-      }
-      // no break
-#endif
-
     case EVT_KEY_BREAK(KEY_EXIT):
       if (s_copyMode) {
         sub = menuVerticalPosition = (s_copyMode == MOVE_MODE || s_copySrcRow<0) ? (MAX_MODELS+sub+s_copyTgtOfs) % MAX_MODELS : s_copySrcRow;
@@ -140,15 +124,6 @@ void menuModelSelect(event_t event)
         popMenu();
       }
       break;
-
-#if defined(ROTARY_ENCODERS)
-    case EVT_ROTARY_BREAK:
-      if (s_editMode == -1) {
-        s_editMode = 0;
-        break;
-      }
-      // no break;
-#endif
 
     case EVT_KEY_LONG(KEY_ENTER):
     case EVT_KEY_BREAK(KEY_ENTER):
@@ -223,7 +198,7 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
     case EVT_KEY_LONG(KEY_PAGE):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);
@@ -255,7 +230,7 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif
@@ -296,7 +271,7 @@ void menuModelSelect(event_t event)
   lcdDrawNumber(17*FW, 0, reusableBuffer.modelsel.eepromfree, RIGHT);
 #endif
 
-#if defined(PCBX7) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBX9LITE)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), 0);
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   drawScreenIndex(MENU_MODEL_SELECT, DIM(menuTabModel), (sub == g_eeGeneral.currModel) ? ((IS_ROTARY_ENCODER_NAVIGATION_ENABLE() && s_editMode < 0) ? INVERS|BLINK : INVERS) : 0);

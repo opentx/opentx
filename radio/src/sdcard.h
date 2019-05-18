@@ -68,6 +68,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define FIRMWARE_EXT        ".bin"
 #define EEPROM_EXT          ".bin"
 #define SPORT_FIRMWARE_EXT  ".frk"
+#define BLUETOOTH_FIRMWARE_EXT  ".bin"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
@@ -139,9 +140,9 @@ const char * getBasename(const char * path);
 #elif defined(PCBX7)
   #define OTX_FOURCC 0x3678746F // otx for Taranis X7
   #define O9X_FOURCC 0x3378396F // o9x for Taranis X7
-#elif defined(PCBX3)
-  #define OTX_FOURCC 0x3C78746F // otx for Taranis X3
-  #define O9X_FOURCC 0x3C78396F // o9x for Taranis X3
+#elif defined(PCBX9LITE)
+  #define OTX_FOURCC 0x3C78746F // otx for Taranis X9-Lite
+  #define O9X_FOURCC 0x3C78396F // o9x for Taranis X9-Lite
 #elif defined(PCBX9D) || defined(PCBX9DP)
   #define OTX_FOURCC 0x3378746F // otx for Taranis X9D
   #define O9X_FOURCC 0x3378396F // o9x for Taranis X9D

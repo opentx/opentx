@@ -81,7 +81,7 @@ int zchar2str(char * dest, const char * src, int size)
 bool cmpStrWithZchar(const char * charString, const char * zcharString, int size)
 {
   for (int i=0; i<size; i++) {
-    if (char2zchar(charString[i]) != (int8_t)zcharString[i]) {
+    if (charString[i] != zchar2char(zcharString[i])) {
       return false;
     }
   }
@@ -269,8 +269,8 @@ char * getSwitchString(char * dest, swsrc_t idx)
     else {
       *s++ = 'S';
 #if defined(PCBX7)
-      if (swinfo.quot == 5)
-        *s++ = 'H';
+      if (swinfo.quot >= 5)
+        *s++ = 'H' + swinfo.quot - 5;
       else if (swinfo.quot == 4)
         *s++ = 'F';
       else

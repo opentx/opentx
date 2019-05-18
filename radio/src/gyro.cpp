@@ -19,13 +19,14 @@
  */
 
 #include "opentx.h"
+#define _USE_MATH_DEFINES
 #include <math.h>
 
 #define ACC_LSB_VALUE	0.000488  // 0.488 mg/LSB
 
 Gyro gyro;
 
-void GyroBuffer::read(int32_t values[GYRO_VALUES_COUNT])
+int GyroBuffer::read(int32_t values[GYRO_VALUES_COUNT])
 {
   index = (index + 1) & (GYRO_SAMPLES_COUNT - 1);
 
@@ -33,12 +34,15 @@ void GyroBuffer::read(int32_t values[GYRO_VALUES_COUNT])
     sums[i] -= samples[index].values[i];
   }
 
-  gyroRead(samples[index].raw);
+  if (gyroRead(samples[index].raw) < 0)
+    return -1;
 
   for (uint8_t i = 0; i < GYRO_VALUES_COUNT; i++) {
     sums[i] += samples[index].values[i];
     values[i] = sums[i] >> GYRO_SAMPLES_EXPONENT;
   }
+
+  return 0;
 }
 
 float rad2RESX(float rad)
@@ -51,13 +55,14 @@ void Gyro::wakeup()
   static tmr10ms_t gyroWakeupTime = 0;
 
   tmr10ms_t now = get_tmr10ms();
-  if (now < gyroWakeupTime)
+  if (errors >= 100 || now < gyroWakeupTime)
     return;
 
   gyroWakeupTime = now + 1; /* 10ms default */
 
   int32_t values[GYRO_VALUES_COUNT];
-  gyroBuffer.read(values);
+  if (gyroBuffer.read(values) < 0)
+    ++errors;
 
   float accValues[3]; // m^2 / s
   accValues[0] = -9.81 * float(values[3]) * ACC_LSB_VALUE;

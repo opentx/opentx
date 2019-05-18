@@ -667,7 +667,7 @@ bool luaLoadTelemetryScript(uint8_t index)
   TelemetryScreenType screenType = TELEMETRY_SCREEN_TYPE(index);
 
   if (screenType == TELEMETRY_SCREEN_TYPE_SCRIPT) {
-    TelemetryScriptData & script = g_model.frsky.screens[index].script;
+    TelemetryScriptData & script = g_model.screens[index].script;
     if (ZEXIST(script.file)) {
       if (luaScriptsCount < MAX_SCRIPTS) {
         ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
@@ -943,7 +943,7 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
   else {
 #if defined(PCBTARANIS)
 #if defined(SIMU) || defined(DEBUG)
-    TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
+    TelemetryScriptData & script = g_model.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
     if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuViewTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {

@@ -84,7 +84,7 @@ void extmodulePpmStart()
   NVIC_SetPriority(EXTMODULE_TIMER_CC_IRQn, 7);
 }
 
-void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
+void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us, bool inverted)
 {
   EXTERNAL_MODULE_ON();
 
@@ -101,7 +101,7 @@ void extmoduleSerialStart(uint32_t /*baudrate*/, uint32_t period_half_us)
   EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   EXTMODULE_TIMER->PSC = EXTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS from 30MHz
   EXTMODULE_TIMER->ARR = period_half_us;
-  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | EXTMODULE_TIMER_OUTPUT_POLARITY;
+  EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (inverted ? 0 : EXTMODULE_TIMER_OUTPUT_POLARITY);
   EXTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   EXTMODULE_TIMER->CCR1 = 0;
   EXTMODULE_TIMER->CCMR1 = TIM_CCMR1_OC1M_2 | TIM_CCMR1_OC1M_0; // Force O/P high
@@ -214,7 +214,7 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmodulePxx2Start()
 {
-  extmoduleInvertedSerialStart(EXTMODULE_USART_PXX2_BAUDRATE);
+  extmoduleInvertedSerialStart(g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_ACCESS_R9M_LITE_PRO ? 450000 : 230400);
 }
 #else
 void extmodulePxx2Start()
@@ -269,7 +269,7 @@ void extmodulePxxSerialStart()
 
 void extmoduleSendNextFrame()
 {
-  switch(moduleSettings[EXTERNAL_MODULE].protocol) {
+  switch(moduleState[EXTERNAL_MODULE].protocol) {
     case PROTOCOL_CHANNELS_PPM:
       EXTMODULE_TIMER->CCR1 = GET_MODULE_PPM_DELAY(EXTERNAL_MODULE) * 2;
       EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_MODULE_PPM_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); //     // we are using complementary output so logic has to be reversed here
@@ -312,7 +312,7 @@ void extmoduleSendNextFrame()
 
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_SBUS:
-      EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); // reverse polarity for Sbus if needed
+      EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? 0 : EXTMODULE_TIMER_OUTPUT_POLARITY); // reverse polarity for Sbus if needed
       // no break
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:

@@ -33,8 +33,10 @@
   #include "lua/lua_exports_x9e.inc"
 #elif defined(PCBX7)
   #include "lua/lua_exports_x7.inc"
-#elif defined(PCBX3)
-  #include "lua/lua_exports_x3.inc"
+#elif defined(PCBX9LITE)
+  #include "lua/lua_exports_x9lite.inc"
+#elif defined(PCBXLITES)
+  #include "lua/lua_exports_xlites.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
 #elif defined(PCBTARANIS)
@@ -452,11 +454,86 @@ static int luaSportTelemetryPush(lua_State * L)
         return 1;
       }
     }
+
+    // sensor not found, we send the frame to the SPORT line
+    {
+      SportTelemetryPacket packet;
+      packet.physicalId = getDataId(luaL_checkunsigned(L, 1));
+      packet.primId = luaL_checkunsigned(L, 2);
+      packet.dataId = dataId;
+      packet.value = luaL_checkunsigned(L, 4);
+      outputTelemetryBuffer.pushSportPacketWithBytestuffing(packet);
+#if defined(PXX2)
+      uint8_t destination = (IS_INTERNAL_MODULE_ON() ? INTERNAL_MODULE : EXTERNAL_MODULE);
+
+      if (isModulePXX2(destination)) {
+        outputTelemetryBuffer.setDestination(destination << 2);
+      }
+      else {
+        outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+      }
+#else
+      outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
+#endif
+      lua_pushboolean(L, true);
+      return 1;
+    }
   }
 
   lua_pushboolean(L, false);
   return 1;
 }
+
+#if defined(PXX2)
+/*luadoc
+@function accessTelemetryPush()
+
+This functions allows for sending SPORT / ACCESS telemetry data toward the receiver,
+and more generally, to anything connected SPORT bus on the receiver or transmitter.
+
+When called without parameters, it will only return the status of the output buffer without sending anything.
+
+@param module    module index (0 = internal, 1 = external)
+
+@param rxUid     receiver index
+
+@param sensorId  physical sensor ID
+
+@param frameId   frame ID
+
+@param dataId    data ID
+
+@param value     value
+
+@retval boolean  data queued in output buffer or not.
+
+@status current Introduced in 2.3
+
+*/
+
+static int luaAccessTelemetryPush(lua_State * L)
+{
+  if (lua_gettop(L) == 0) {
+    lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+    return 1;
+  }
+
+  if (outputTelemetryBuffer.isAvailable()) {
+    uint8_t module = luaL_checkunsigned(L, 1);
+    uint8_t rxUid = luaL_checkunsigned(L, 2);
+    outputTelemetryBuffer.sport.physicalId = getDataId(luaL_checkunsigned(L, 3));
+    outputTelemetryBuffer.sport.primId = luaL_checkunsigned(L, 4);
+    outputTelemetryBuffer.sport.dataId = luaL_checkunsigned(L, 5);
+    outputTelemetryBuffer.sport.value = luaL_checkunsigned(L, 6);
+    outputTelemetryBuffer.setDestination((module << 2) + rxUid);
+    lua_pushboolean(L, true);
+    return 1;
+  }
+
+  lua_pushboolean(L, false);
+  return 1;
+}
+#endif
 
 #if defined(CROSSFIRE)
 /*luadoc
@@ -518,21 +595,21 @@ When called without parameters, it will only return the status of the output buf
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
   if (lua_gettop(L) == 0) {
-    lua_pushboolean(L, isCrossfireOutputBufferAvailable());
+    lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
   }
-  else if (isCrossfireOutputBufferAvailable()) {
+  else if (outputTelemetryBuffer.isAvailable()) {
     uint8_t command = luaL_checkunsigned(L, 1);
     luaL_checktype(L, 2, LUA_TTABLE);
     uint8_t length = luaL_len(L, 2);
-    telemetryOutputPushByte(MODULE_ADDRESS);
-    telemetryOutputPushByte(2 + length); // 1(COMMAND) + data length + 1(CRC)
-    telemetryOutputPushByte(command); // COMMAND
+    outputTelemetryBuffer.pushByte(MODULE_ADDRESS);
+    outputTelemetryBuffer.pushByte(2 + length); // 1(COMMAND) + data length + 1(CRC)
+    outputTelemetryBuffer.pushByte(command); // COMMAND
     for (int i=0; i<length; i++) {
       lua_rawgeti(L, 2, i+1);
-      telemetryOutputPushByte(luaL_checkunsigned(L, -1));
+      outputTelemetryBuffer.pushByte(luaL_checkunsigned(L, -1));
     }
-    telemetryOutputPushByte(crc8(outputTelemetryBuffer+2, 1 + length));
-    telemetryOutputSetTrigger(command);
+    outputTelemetryBuffer.pushByte(crc8(outputTelemetryBuffer.data+2, 1 + length));
+    outputTelemetryBuffer.setDestination(TELEMETRY_ENDPOINT_SPORT);
     lua_pushboolean(L, true);
   }
   else {
@@ -672,8 +749,8 @@ This is just a hardware pass/fail measure and does not represent the quality of 
 */
 static int luaGetRAS(lua_State * L)
 {
-  if (IS_RAS_VALUE_VALID()) {
-    lua_pushinteger(L, telemetryData.swr.value);
+  if (isRasValueValid()) {
+    lua_pushinteger(L, telemetryData.swrInternal.value);
   }
   else {
     lua_pushnil(L);
@@ -1328,6 +1405,9 @@ const luaL_Reg opentxLib[] = {
 #if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
 #endif
+#if defined(PXX2)
+  { "accessTelemetryPush", luaAccessTelemetryPush },
+#endif
   { "sportTelemetryPop", luaSportTelemetryPop },
   { "sportTelemetryPush", luaSportTelemetryPush },
   { "setTelemetryValue", luaSetTelemetryValue },
@@ -1364,16 +1444,17 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBX3)
+#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBX9LITE)
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
-#if !defined(PCBXLITE) && !defined(PCBX3)
+#if !defined(PCBXLITE) && !defined(PCBX9LITE)
   { "MIXSRC_SF", MIXSRC_SF },
   { "MIXSRC_SH", MIXSRC_SH },
 #endif
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
+  { "MAX_SENSORS", MAX_TELEMETRY_SENSORS },
 #if defined(COLORLCD)
   { "SHADOWED", SHADOWED },
   { "COLOR", ZoneOption::Color },
@@ -1509,6 +1590,7 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_RADIANS", UNIT_RADIANS },
   {"UNIT_MILLILITERS", UNIT_MILLILITERS },
   {"UNIT_FLOZ", UNIT_FLOZ },
+  {"UNIT_MILLILITERS_PER_MINUTE", UNIT_MILLILITERS_PER_MINUTE },
   {"UNIT_HOURS", UNIT_HOURS },
   {"UNIT_MINUTES", UNIT_MINUTES },
   {"UNIT_SECONDS", UNIT_SECONDS },

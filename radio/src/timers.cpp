@@ -21,6 +21,8 @@
 #include "opentx.h"
 #include "timers.h"
 
+volatile tmr10ms_t g_tmr10ms;
+
 #if TIMERS > MAX_TIMERS
 #error "Timers cannot exceed " .. MAX_TIMERS
 #endif

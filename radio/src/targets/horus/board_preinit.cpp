@@ -18,30 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _XMLINTERFACE_H_
-#define _XMLINTERFACE_H_
+#include "board.h"
 
-#include "eeprominterface.h"
-#include <QTextStream>
-#include <QDomDocument>
-
-class XmlInterface
+void boardPreInit()
 {
-  public:
-
-    XmlInterface(QTextStream & stream);
-
-    bool load(RadioData &);
-    
-    virtual bool loadxml(RadioData & radioData, QDomDocument & doc);
-
-    bool save(RadioData &radioData);
-
-  protected:
-
-    QTextStream & stream;
-
-
-};
-
-#endif // _XMLINTERFACE_H_
+}

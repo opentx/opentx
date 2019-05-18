@@ -18,7 +18,6 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef OPENTX_DATASTRUCTS_218_H
 #define OPENTX_DATASTRUCTS_218_H
 
@@ -60,7 +59,7 @@
   #define LEN_MODEL_NAME_218               15
   #define LEN_TIMER_NAME_218               8
   #define LEN_FLIGHT_MODE_NAME_218         10
-  #define LEN_BITMAP_NAME_218              10  // TODO next EEPROM change: we need 14 here as we have to store the file extension
+  #define LEN_BITMAP_NAME_218              10
   #define LEN_EXPOMIX_NAME_218             6
   #define LEN_CHANNEL_NAME_218             6
   #define LEN_INPUT_NAME_218               4
@@ -73,14 +72,14 @@
   #define LEN_TIMER_NAME_218               8
   #define LEN_FLIGHT_MODE_NAME_218         10
   #define LEN_BITMAP_NAME_218              10
-  #define LEN_EXPOMIX_NAME_218             8   // TODO next EEPROM change: 6 seem enough
+  #define LEN_EXPOMIX_NAME_218             8
   #define LEN_CHANNEL_NAME_218             6
   #define LEN_INPUT_NAME_218               4
   #define LEN_CURVE_NAME_218               3
   #define LEN_FUNCTION_NAME_218            8
   #define MAX_CURVES_218                   32
   #define MAX_CURVE_POINTS_218             512
-#elif defined(CPUARM)
+#else
   #define LEN_MODEL_NAME_218               10
   #define LEN_TIMER_NAME_218               3
   #define LEN_FLIGHT_MODE_NAME_218         6
@@ -89,13 +88,8 @@
   #define LEN_INPUT_NAME_218               3
   #define LEN_CURVE_NAME_218               3
   #define LEN_FUNCTION_NAME_218            6
-  #define MAX_CURVES_218                   16   // TODO next EEPROM check if can be changed to 32 to have all ARM the same
+  #define MAX_CURVES_218                   16
   #define MAX_CURVE_POINTS_218             512
-#else
-  #define LEN_MODEL_NAME_218               10
-  #define LEN_FLIGHT_MODE_NAME_218         6
-  #define MAX_CURVES_218                   8
-  #define MAX_CURVE_POINTS_218             (112-MAX_CURVES_218)
 #endif
 
 #if defined(PCBHORUS)
@@ -166,7 +160,7 @@ PACK(typedef struct {
       uint8_t receiver_telem_off:1;     // false = receiver telem enabled
       uint8_t receiver_channel_9_16:1;  // false = pwm out 1-8, true 9-16
       uint8_t external_antenna:1;       // false = internal antenna, true = external antenna
-      uint8_t fast:1;                   // TODO: to be used later by external module (fast means serial @ high speed)
+      uint8_t fast:1;
       uint8_t spare2;
     } pxx;
     struct {
@@ -190,16 +184,20 @@ PACK(typedef struct {
   char     name[LEN_TIMER_NAME_218];
 }) TimerData_v218;
 
+#if defined(PCBSKY9X)
+  #define ROTENC_DATA       int16_t rotaryEncoders[1];
+#else
+  #define ROTENC_DATA
+#endif
+
 PACK(typedef struct {
-  trim_t trim[NUM_STICKS];
+  trim_t trim[NUM_TRIMS];
   char name[LEN_FLIGHT_MODE_NAME_218];
   int16_t swtch:9;       // swtch of phase[0] is not used
   int16_t spare:7;
   uint8_t fadeIn;
   uint8_t fadeOut;
-#if defined(PCBSKY9X)
-  int16_t rotaryEncoders[1];
-#endif
+  ROTENC_DATA
   gvar_t gvars[MAX_GVARS_218];
 }) FlightModeData_v218;
 
@@ -261,30 +259,36 @@ PACK(typedef struct { // Logical Switches data
   uint8_t  duration;
 }) LogicalSwitchData_v218;
 
+#if defined(PCBTARANIS)
+#define CFN_SPARE_TYPE               int32_t
+#else
+#define CFN_SPARE_TYPE               int16_t
+#endif
+
 PACK(typedef struct {
   int16_t  swtch:9;
   uint16_t func:7;
   PACK(union {
-         PACK(struct {
-                char name[8];
-              }) play;
+    PACK(struct {
+      char name[LEN_FUNCTION_NAME_218];
+    }) play;
 
-         PACK(struct {
-                int16_t val;
-                uint8_t mode;
-                uint8_t param;
-                int32_t spare2;
-              }) all;
+    PACK(struct {
+      int16_t val;
+      uint8_t mode;
+      uint8_t param;
+      CFN_SPARE_TYPE spare2;
+    }) all;
 
-         PACK(struct {
-                int32_t val1;
-                int32_t val2;
-              }) clear;
-       });
+    PACK(struct {
+      int32_t val1;
+      CFN_SPARE_TYPE val2;
+    }) clear;
+  });
   uint8_t active;
 }) CustomFunctionData_v218;
 
-PACK(typedef struct {
+PACK(struct GVarData_v218 {
   char    name[LEN_GVAR_NAME_218];
   uint32_t min:12;
   uint32_t max:12;
@@ -292,22 +296,131 @@ PACK(typedef struct {
   uint32_t prec:1;
   uint32_t unit:2;
   uint32_t spare:4;
-}) GVarData_v218;
+});
 
-#if defined(PCBX12S)
-#define MODELDATA_EXTRA_218  uint8_t spare:3;uint8_t trainerMode:3;uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;
-#elif defined(PCBX10)
-#define MODELDATA_EXTRA_218  uint8_t spare:3;;uint8_t trainerMode:3;;uint8_t potsWarnMode:2;; ModuleData_v218 moduleData[NUM_MODULES+1];ScriptData scriptsData[MAX_SCRIPTS_218];;char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];;uint8_t potsWarnEnabled;;int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];;uint8_t potsWarnSpares[NUM_DUMMY_ANAS];;
-#elif defined(PCBTARANIS)
-#define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS];
-#elif defined(PCBSKY9X)
-#define MODELDATA_EXTRA_218   uint8_t spare:6; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[NUM_POTS+NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+#if defined(COLORLCD)
+PACK(struct FrSkyTelemetryData_v217 {
+  uint8_t varioSource:7;
+  uint8_t varioCenterSilent:1;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+});
 #else
-  #define MODELDATA_EXTRA_218
+union FrSkyScreenData {
+  FrSkyBarData  bars[4];
+  FrSkyLineData lines[4];
+#if defined(PCBTARANIS)
+  TelemetryScriptData script;
+#endif
+};
+PACK(struct FrSkyTelemetryData_v217 {
+  uint8_t voltsSource;
+  uint8_t altitudeSource;
+  uint8_t screensType; // 2bits per screen (None/Gauges/Numbers/Script)
+  FrSkyScreenData screens[MAX_TELEMETRY_SCREENS];
+  uint8_t varioSource:7;
+  uint8_t varioCenterSilent:1;
+  int8_t  varioCenterMax;
+  int8_t  varioCenterMin;
+  int8_t  varioMin;
+  int8_t  varioMax;
+});
 #endif
 
-PACK(typedef struct {
-  ModelHeader header;
+#if defined(PCBHORUS)
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[3 + 4];
+#elif defined(PCBTARANIS)
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS];
+#elif defined(PCBSKY9X)
+  #define MODELDATA_EXTRA_218   uint8_t spare:6;                        uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];                                          char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+#endif
+
+PACK(struct TelemetrySensor_218 {
+  union {
+    uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
+    uint16_t persistentValue;
+  };
+  union {
+    PACK(struct {
+      uint8_t physID:5;
+      uint8_t rxIndex:3; // 1 bit for module index, 2 bits for receiver index
+    }) frskyInstance;
+    uint8_t instance;
+    uint8_t formula;
+  };
+  char     label[TELEM_LABEL_LEN]; // user defined label
+  uint8_t  type:1;                 // 0=custom / 1=calculated
+  uint8_t  unit:5;                 // user can choose what unit to display each value in
+  uint8_t  prec:2;
+  uint8_t  autoOffset:1;
+  uint8_t  filter:1;
+  uint8_t  logs:1;
+  uint8_t  persistent:1;
+  uint8_t  onlyPositive:1;
+  uint8_t  subId:3;
+  union {
+    PACK(struct {
+      uint16_t ratio;
+      int16_t  offset;
+    }) custom;
+    PACK(struct {
+      uint8_t source;
+      uint8_t index;
+      uint16_t spare;
+    }) cell;
+    PACK(struct {
+      int8_t sources[4];
+    }) calc;
+    PACK(struct {
+      uint8_t source;
+      uint8_t spare[3];
+    }) consumption;
+    PACK(struct {
+      uint8_t gps;
+      uint8_t alt;
+      uint16_t spare;
+    }) dist;
+    uint32_t param;
+  };
+});
+
+#if defined(PCBHORUS)
+  PACK(struct CustomScreenData_v218 {
+    char layoutName[10];
+    Layout::PersistentData layoutData;
+  });
+  #define VIEW_DATA \
+    CustomScreenData screenData[MAX_CUSTOM_SCREENS]; \
+    Topbar::PersistentData topbarData; \
+    uint8_t view;
+#elif defined(PCBTARANIS)
+  #define VIEW_DATA   uint8_t view;
+#else
+  #define VIEW_DATA
+#endif
+
+#if LEN_BITMAP_NAME > 0
+#define MODEL_HEADER_BITMAP_FIELD_218      char bitmap[10];
+#else
+#define MODEL_HEADER_BITMAP_FIELD_218
+#endif
+
+PACK(struct ModelHeader_v218 {
+  char      name[LEN_MODEL_NAME]; // must be first for eeLoadModelName
+  uint8_t   modelId[NUM_MODULES];
+  MODEL_HEADER_BITMAP_FIELD_218
+});
+
+#if defined(COLORLCD)
+#define SWITCH_WARNING_DATA_218
+#else
+#define SWITCH_WARNING_DATA_218 swarnenable_t switchWarningEnable;
+#endif
+
+PACK(struct ModelData_v218 {
+  ModelHeader_v218 header;
   TimerData_v218 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
   uint8_t   thrTrim:1;            // Enable Throttle Trim
@@ -316,7 +429,7 @@ PACK(typedef struct {
   uint8_t   ignoreSensorIds:1;
   int8_t    trimInc:3;            // Trim Increments
   uint8_t   disableThrottleWarning:1;
-  uint8_t displayChecklist:1;
+  uint8_t   displayChecklist:1;
   uint8_t   extendedLimits:1;
   uint8_t   extendedTrims:1;
   uint8_t   throttleReversed:1;
@@ -336,25 +449,38 @@ PACK(typedef struct {
   uint8_t thrTraceSrc;
 
   swarnstate_t  switchWarningState;
-  swarnenable_t switchWarningEnable;
+
+  SWITCH_WARNING_DATA_218
 
   GVarData_v218 gvars[MAX_GVARS_218];
 
-  FrSkyTelemetryData frsky;
+  FrSkyTelemetryData_v217 frsky;
   RssiAlarmData rssiAlarms;
 
   MODELDATA_EXTRA_218
 
-  TelemetrySensor telemetrySensors[MAX_TELEMETRY_SENSORS_218];
+  TelemetrySensor_218 telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
-#if defined(PCBHORUS)
   // TODO conversion for custom screens?
-#else
-  uint8_t view;
+  VIEW_DATA
+});
+
+#include "chksize.h"
+
+#define CHKSIZE(x, y) check_size<struct x, y>()
+
+static inline void check_struct_218()
+{
+#if defined(PCBHORUS)
+  CHKSIZE(ModelData_v218, 9380);
+#elif defined(PCBX9E)
+  CHKSIZE(ModelData_v218, 6520);
 #endif
-}) ModelData_v218;
+}
+
+#undef CHKSIZE
 
 #define EXTRA_GENERAL_FIELDS_GENERAL_218 \
     uint8_t  backlightBright; \
@@ -385,7 +511,7 @@ PACK(typedef struct {
     uint32_t switchConfig; \
     uint8_t  potsConfig; /* two bits per pot */ \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
-    char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_DUMMY_ANAS][LEN_ANA_NAME_218]; \
+    char anaNames[NUM_STICKS+3+4][LEN_ANA_NAME_218]; \
     char currModelFilename[LEN_MODEL_FILENAME_218+1]; \
     uint8_t spare:1; \
     uint8_t blOffBright:7; \
@@ -422,12 +548,8 @@ PACK(typedef struct {
     uint8_t  rotarySteps; \
     char switchNames[NUM_SWITCHES_218][LEN_SWITCH_NAME_218]; \
     char anaNames[NUM_STICKS+NUM_POTS+NUM_SLIDERS][LEN_ANA_NAME_218];
-#elif defined(CPUARM)
-  #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
-#elif defined(PXX)
-  #define EXTRA_GENERAL_FIELDS_218 uint8_t countryCode;
 #else
-  #define EXTRA_GENERAL_FIELDS_218
+  #define EXTRA_GENERAL_FIELDS_218  EXTRA_GENERAL_FIELDS_GENERAL_218
 #endif
 
 #if defined(PCBHORUS)
@@ -438,10 +560,20 @@ PACK(typedef struct {
 #define SPLASH_MODE_218 int8_t splashMode:3
 #endif
 
+#if defined(COLORLCD)
+  #include "gui/480x272/theme.h"
+  #define THEME_NAME_LEN 8
+  #define THEME_DATA \
+    char themeName[THEME_NAME_LEN]; \
+    Theme::PersistentData themeData;
+#else
+  #define THEME_DATA
+#endif
+
 PACK(typedef struct {
   uint8_t version;
   uint16_t variant;
-  CalibData calib[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+NUM_DUMMY_ANAS];
+  CalibData calib[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS+STORAGE_NUM_MOUSE_ANALOGS];
   uint16_t chkSum;
   N_HORUS_FIELD(int8_t currModel);
   N_HORUS_FIELD(uint8_t contrast);

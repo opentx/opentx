@@ -96,11 +96,11 @@ bool menuModelFailsafe(event_t event)
       x += (LCD_W/2)-4-MENUS_MARGIN_LEFT-SLIDER_W;
 
       if (failsafeValue == FAILSAFE_CHANNEL_HOLD) {
-        lcdDrawText(x, y+2, "HOLD", flags|SMLSIZE);
+        lcdDrawText(x, y+2, STR_HOLD, flags|SMLSIZE);
         failsafeValue = 0;
       }
       else if (failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
-        lcdDrawText(x, y+2, "NONE", flags|SMLSIZE);
+        lcdDrawText(x, y+2, STR_NONE, flags|SMLSIZE);
         failsafeValue = 0;
       }
       else {
@@ -128,7 +128,7 @@ bool menuModelFailsafe(event_t event)
 
         // draw that menu at the bottom center
         flags = CENTERED | (menuVerticalPosition == ch ? INVERS : 0);
-        lcdDrawSizedText(LCD_W/2, MENU_CONTENT_TOP - FH + 8*(FH+2), STR_OUTPUTS2FAILSAFE, 20, flags);
+        lcdDrawSizedText(LCD_W/2, MENU_CONTENT_TOP - FH + 8*(FH+2), STR_CHANNELS2FAILSAFE, 20, flags);
         break;
       }
     }

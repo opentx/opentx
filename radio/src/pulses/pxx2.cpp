@@ -25,11 +25,11 @@ uint8_t Pxx2Pulses::addFlag0(uint8_t module)
 {
   uint8_t flag0 = g_model.header.modelId[module] & 0x3F;
   if (g_model.moduleData[module].failsafeMode != FAILSAFE_NOT_SET && g_model.moduleData[module].failsafeMode != FAILSAFE_RECEIVER) {
-    if (moduleSettings[module].counter == 0) {
+    if (moduleState[module].counter == 0) {
       flag0 |= PXX2_CHANNELS_FLAG0_FAILSAFE;
     }
   }
-  if (moduleSettings[module].mode == MODULE_MODE_RANGECHECK) {
+  if (moduleState[module].mode == MODULE_MODE_RANGECHECK) {
     flag0 |= PXX2_CHANNELS_FLAG0_RANGECHECK;
   }
   Pxx2Transport::addByte(flag0);
@@ -130,20 +130,22 @@ void Pxx2Pulses::setupTelemetryFrame(uint8_t module)
 
 void Pxx2Pulses::setupHardwareInfoFrame(uint8_t module)
 {
-  if (reusableBuffer.hardwareAndSettings.modules[module].timeout == 0) {
-    if (reusableBuffer.hardwareAndSettings.modules[module].current <= reusableBuffer.hardwareAndSettings.modules[module].maximum) {
+  ModuleInformation * destination = moduleState[module].moduleInformation;
+
+  if (destination->timeout == 0) {
+    if (destination->current <= destination->maximum) {
       addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_HW_INFO);
-      Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.modules[module].current);
-      reusableBuffer.hardwareAndSettings.modules[module].timeout = 60; /* 300ms */
-      reusableBuffer.hardwareAndSettings.modules[module].current++;
+      Pxx2Transport::addByte(destination->current);
+      destination->timeout = 60; /* 300ms */
+      destination->current++;
     }
     else {
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
+      moduleState[module].mode = MODULE_MODE_NORMAL;
       setupChannelsFrame(module);
     }
   }
   else {
-    reusableBuffer.hardwareAndSettings.modules[module].timeout--;
+    destination->timeout--;
     setupChannelsFrame(module);
   }
 }
@@ -169,20 +171,22 @@ void Pxx2Pulses::setupRegisterFrame(uint8_t module)
 
 void Pxx2Pulses::setupModuleSettingsFrame(uint8_t module)
 {
-  if (get_tmr10ms() > reusableBuffer.hardwareAndSettings.moduleSettings.timeout) {
+  ModuleSettings * destination = moduleState[module].moduleSettings;
+
+  if (get_tmr10ms() > destination->retryTime) {
     addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_TX_SETTINGS);
     uint8_t flag0 = 0;
-    if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_WRITE)
+    if (destination->state == PXX2_SETTINGS_WRITE)
       flag0 |= PXX2_TX_SETTINGS_FLAG0_WRITE;
     Pxx2Transport::addByte(flag0);
-    if (reusableBuffer.hardwareAndSettings.moduleSettings.state == PXX2_SETTINGS_WRITE) {
-      uint8_t flag1 = reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol << 4;
-      if (reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna)
+    if (destination->state == PXX2_SETTINGS_WRITE) {
+      uint8_t flag1 = destination->rfProtocol << 6;
+      if (destination->externalAntenna)
         flag1 |= PXX2_TX_SETTINGS_FLAG1_EXTERNAL_ANTENNA;
       Pxx2Transport::addByte(flag1);
-      Pxx2Transport::addByte(reusableBuffer.hardwareAndSettings.moduleSettings.txPower);
+      Pxx2Transport::addByte(destination->txPower);
     }
-    reusableBuffer.hardwareAndSettings.moduleSettings.timeout = get_tmr10ms() + 200/*next try in 2s*/;
+    destination->retryTime = get_tmr10ms() + 200/*next try in 2s*/;
   }
   else {
     setupChannelsFrame(module);
@@ -218,23 +222,31 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
 
 void Pxx2Pulses::setupBindFrame(uint8_t module)
 {
-  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_WAIT) {
-    if (get_tmr10ms() > reusableBuffer.moduleSetup.pxx2.bindWaitTimeout) {
-      moduleSettings[module].mode = MODULE_MODE_NORMAL;
-      reusableBuffer.moduleSetup.pxx2.bindStep = BIND_OK;
-      POPUP_INFORMATION(STR_BIND_OK);
+  BindInformation * destination = moduleState[module].bindInformation;
+
+  if (destination->step == BIND_WAIT) {
+    if (get_tmr10ms() > destination->timeout) {
+      moduleState[module].mode = MODULE_MODE_NORMAL;
+      destination->step = BIND_OK;
+      POPUP_INFORMATION(STR_BIND_OK); // TODO rather use the new callback
     }
     return;
   }
 
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_BIND);
 
-  if (reusableBuffer.moduleSetup.pxx2.bindStep == BIND_RX_NAME_SELECTED) {
+  if (destination->step == BIND_INFO_REQUEST) {
+    Pxx2Transport::addByte(0x02);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
+    }
+  }
+  else if (destination->step == BIND_START) {
     Pxx2Transport::addByte(0x01);
     for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
-      Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindCandidateReceiversNames[reusableBuffer.moduleSetup.pxx2.bindSelectedReceiverIndex][i]);
+      Pxx2Transport::addByte(destination->candidateReceiversNames[destination->selectedReceiverIndex][i]);
     }
-    Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.bindReceiverIndex); // RX_UID is the slot index (which is unique and never moved)
+    Pxx2Transport::addByte((destination->lbtMode << 6) + (destination->flexMode << 4) + destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
     Pxx2Transport::addByte(g_model.header.modelId[module]);
   }
   else {
@@ -250,37 +262,29 @@ void Pxx2Pulses::setupResetFrame(uint8_t module)
   addFrameType(PXX2_TYPE_C_MODULE, PXX2_TYPE_ID_RESET);
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverIndex);
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.resetReceiverFlags);
+  moduleState[module].mode = MODULE_MODE_NORMAL;
 }
 
 void Pxx2Pulses::setupSpectrumAnalyser(uint8_t module)
 {
-  if (moduleSettings[module].counter > 1000) {
-    moduleSettings[module].counter = 1002;
-    return;
+  if (reusableBuffer.spectrumAnalyser.dirty) {
+    reusableBuffer.spectrumAnalyser.dirty = false;
+    addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
+    Pxx2Transport::addByte(0x00);
+    Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
+    Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.span);
+    Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.step);
   }
-
-  moduleSettings[module].counter = 1002;
-
-  addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_SPECTRUM);
-  Pxx2Transport::addByte(0x00);
-  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.freq);
-  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.span);
-  Pxx2Transport::addWord(reusableBuffer.spectrumAnalyser.step);
 }
 
 void Pxx2Pulses::setupPowerMeter(uint8_t module)
 {
-  if (moduleSettings[module].counter > 1000) {
-    moduleSettings[module].counter = 1002;
-    return;
+  if (reusableBuffer.powerMeter.dirty) {
+    reusableBuffer.powerMeter.dirty = false;
+    addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_POWER_METER);
+    Pxx2Transport::addByte(0x00);
+    Pxx2Transport::addWord(reusableBuffer.powerMeter.freq);
   }
-
-  moduleSettings[module].counter = 1002;
-
-  addFrameType(PXX2_TYPE_C_POWER_METER, PXX2_TYPE_ID_POWER_METER);
-  Pxx2Transport::addByte(0x00);
-
-  Pxx2Transport::addWord(reusableBuffer.powerMeter.freq);
 }
 
 void Pxx2Pulses::setupShareMode(uint8_t module)
@@ -289,11 +293,43 @@ void Pxx2Pulses::setupShareMode(uint8_t module)
   Pxx2Transport::addByte(reusableBuffer.moduleSetup.pxx2.shareReceiverIndex);
 }
 
-void Pxx2Pulses::setupFrame(uint8_t module)
+void Pxx2Pulses::sendOtaUpdate(uint8_t module, const char * rxName, uint32_t address, const char * data)
 {
   initFrame();
 
-  switch (moduleSettings[module].mode) {
+  addFrameType(PXX2_TYPE_C_OTA, PXX2_TYPE_ID_OTA);
+
+  if (rxName) {
+    Pxx2Transport::addByte(0x00);
+    for (uint8_t i=0; i<PXX2_LEN_RX_NAME; i++) {
+      Pxx2Transport::addByte(rxName[i]);
+    }
+  }
+  else if (data) {
+    Pxx2Transport::addByte(0x01);
+    Pxx2Transport::addWord(address);
+    for (uint8_t i=0; i<32; i++) {
+      Pxx2Transport::addByte(data[i]);
+    }
+  }
+  else {
+    Pxx2Transport::addByte(0x02);
+  }
+
+  endFrame();
+
+  if (module == EXTERNAL_MODULE)
+    extmoduleSendNextFrame();
+}
+
+void Pxx2Pulses::setupFrame(uint8_t module)
+{
+  if (moduleState[module].mode == MODULE_MODE_OTA_UPDATE)
+    return;
+
+  initFrame();
+
+  switch (moduleState[module].mode) {
     case MODULE_MODE_GET_HARDWARE_INFO:
       setupHardwareInfoFrame(module);
       break;
@@ -310,7 +346,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupBindFrame(module);
       break;
     case MODULE_MODE_RESET:
-      setupRegisterFrame(module);
+      setupResetFrame(module);
       break;
     case MODULE_MODE_SPECTRUM_ANALYSER:
       setupSpectrumAnalyser(module);
@@ -322,7 +358,7 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       setupShareMode(module);
       break;
     default:
-      if (outputTelemetryBuffer.destination == module) {
+      if (outputTelemetryBuffer.isModuleDestination(module)) {
         setupTelemetryFrame(module);
         outputTelemetryBuffer.reset();
       }
@@ -332,11 +368,114 @@ void Pxx2Pulses::setupFrame(uint8_t module)
       break;
   }
 
-  if (moduleSettings[module].counter-- == 0) {
-    moduleSettings[module].counter = 1000;
+  if (moduleState[module].counter-- == 0) {
+    moduleState[module].counter = 2500;
   }
 
   endFrame();
 }
 
-template class PxxPulses<Pxx2Transport>;
+bool Pxx2OtaUpdate::waitStep(uint8_t step, uint8_t timeout)
+{
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+  uint8_t elapsed = 0;
+
+  watchdogSuspend(100);
+
+  while (step != destination->step) {
+    if (elapsed++ > timeout) {
+      return false;
+    }
+    RTOS_WAIT_MS(1);
+    telemetryWakeup();
+  }
+
+  return true;
+}
+
+const char * Pxx2OtaUpdate::nextStep(uint8_t step, const char * rxName, uint32_t address, const uint8_t * buffer)
+{
+  OtaUpdateInformation * destination = moduleState[module].otaUpdateInformation;
+
+  destination->step = step;
+  destination->address = address;
+
+  for (uint8_t retry = 0;; retry++) {
+    extmodulePulsesData.pxx2.sendOtaUpdate(module, rxName, address, (const char *) buffer);
+    if (waitStep(step + 1, 20)) {
+      return nullptr;
+    }
+    else if (retry == 100) {
+      return "Transfer failed";
+    }
+  }
+}
+
+const char * Pxx2OtaUpdate::doFlashFirmware(const char * filename)
+{
+  FIL file;
+  uint8_t buffer[32];
+  UINT count;
+  const char * result;
+
+  result = nextStep(OTA_UPDATE_START, rxName, 0, nullptr);
+  if (result) {
+    return result;
+  }
+
+  if (f_open(&file, filename, FA_READ) != FR_OK) {
+    return "Open file failed";
+  }
+
+  uint32_t size = f_size(&file);
+  uint32_t done = 0;
+  while (1) {
+    drawProgressScreen(getBasename(filename), STR_OTA_UPDATE, done, size);
+    if (f_read(&file, buffer, sizeof(buffer), &count) != FR_OK) {
+      f_close(&file);
+      return "Read file failed";
+    }
+
+    result = nextStep(OTA_UPDATE_TRANSFER, nullptr, done, buffer);
+    if (result) {
+      return result;
+    }
+
+    if (count < sizeof(buffer)) {
+      f_close(&file);
+      break;
+    }
+
+    done += count;
+  }
+
+  return nextStep(OTA_UPDATE_EOF, nullptr, done, nullptr);
+}
+
+void Pxx2OtaUpdate::flashFirmware(const char * filename)
+{
+  pausePulses();
+
+  watchdogSuspend(100);
+  RTOS_WAIT_MS(100);
+
+  moduleState[module].mode = MODULE_MODE_OTA_UPDATE;
+  const char * result = doFlashFirmware(filename);
+  moduleState[module].mode = MODULE_MODE_NORMAL;
+
+  AUDIO_PLAY(AU_SPECIAL_SOUND_BEEP1 );
+  BACKLIGHT_ENABLE();
+
+  if (result) {
+    POPUP_WARNING(STR_FIRMWARE_UPDATE_ERROR);
+    SET_WARNING_INFO(result, strlen(result), 0);
+  }
+  else {
+    POPUP_INFORMATION(STR_FIRMWARE_UPDATE_SUCCESS);
+  }
+
+  watchdogSuspend(100);
+  RTOS_WAIT_MS(100);
+
+  resumePulses();
+}

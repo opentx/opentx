@@ -46,6 +46,7 @@ for i, (s, f) in enumerate([("Voltio","volt0"),
                             ("mililitro", "ml0"),
                             ("onzas", "founce0"),
                             ("hora", "hour0"), ("horas", "hour1"),
+                            ("milliliter per minute", "mlpm0"), ("milliliters per minute", "mlpm1"),
                             ("minuto", "minute0"), ("minutos", "minute1"),
                             ("segundo", "second0"), ("segundos", "second1"),
                             ]):

@@ -233,6 +233,8 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att);
+
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
 extern uint8_t s_curveChan;
@@ -244,11 +246,6 @@ void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8
 
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
 #define EDIT_DELAY(y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
-
-#define WARNING_TYPE_ASTERISK          0
-#define WARNING_TYPE_CONFIRM           1
-#define WARNING_TYPE_INPUT             2
-#define WARNING_TYPE_INFO              4
 
 void copySelection(char * dst, const char * src, uint8_t size);
 

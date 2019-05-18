@@ -22,7 +22,7 @@
 
 extern uint8_t g_moduleIdx;
 
-enum SpektrumFields {
+enum SpectrumFields {
   SPECTRUM_FREQUENCY,
   SPECTRUM_SPAN,
   SPECTRUM_FIELDS_MAX
@@ -30,8 +30,10 @@ enum SpektrumFields {
 
 void menuRadioSpectrumAnalyser(event_t event)
 {
+  SUBMENU(STR_MENU_SPECTRUM_ANALYSER, 1, {1});
+
   if (TELEMETRY_STREAMING()) {
-    lcdDrawCenteredText(15, "Turn off receiver");
+    lcdDrawCenteredText(LCD_H/2, STR_TURN_OFF_RECEIVER);
     if (event == EVT_KEY_FIRST(KEY_EXIT)) {
       killEvents(event);
       popMenu();
@@ -39,33 +41,41 @@ void menuRadioSpectrumAnalyser(event_t event)
     return;
   }
 
-  SUBMENU("SPECTRUM ANALYSER", 1, {1});
-
   if (menuEvent) {
-    const char * message = "Stopping...";
-    lcdDrawText(LCD_W / 2 - getTextWidth(message) / 2, 4*FH, message);
+    lcdDrawCenteredText(LCD_H/2, STR_STOPPING);
     lcdRefresh();
-    pausePulses();
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_NORMAL;
-    /* wait 500ms off */
-    watchdogSuspend(500);
-    RTOS_WAIT_MS(500);
-    resumePulses();
-    /* wait 500ms to resume normal operation before leaving */
-    watchdogSuspend(500);
-    RTOS_WAIT_MS(500);
+    moduleState[g_moduleIdx].readModuleInformation(&reusableBuffer.moduleSetup.pxx2.moduleInformation, PXX2_HW_INFO_TX_ID, PXX2_HW_INFO_TX_ID);
+    /* wait 1s to resume normal operation before leaving */
+    watchdogSuspend(1000);
+    RTOS_WAIT_MS(1000);
     return;
   }
 
-  if (moduleSettings[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
-    memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
-    reusableBuffer.spectrumAnalyser.span = 40000000;  // 40MHz
-    reusableBuffer.spectrumAnalyser.freq = 2440000000;  // 2440MHz
-    reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
-    moduleSettings[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+  if (isModuleR9M2(g_moduleIdx)) {
+    reusableBuffer.spectrumAnalyser.spanDefault = 20;
+    reusableBuffer.spectrumAnalyser.spanMax = 40;
+    reusableBuffer.spectrumAnalyser.freqDefault = 890;
+    reusableBuffer.spectrumAnalyser.freqMin = 850;
+    reusableBuffer.spectrumAnalyser.freqMax = 930;
+  }
+  else {
+    reusableBuffer.spectrumAnalyser.spanDefault = 40;  // 40MHz
+    reusableBuffer.spectrumAnalyser.spanMax = 80;
+    reusableBuffer.spectrumAnalyser.freqDefault = 2440; // 2440MHz
+    reusableBuffer.spectrumAnalyser.freqMin = 2400;
+    reusableBuffer.spectrumAnalyser.freqMax = 2485;
   }
 
-  for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX+1; i++) {
+  if (moduleState[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
+    memclear(reusableBuffer.spectrumAnalyser.bars, sizeof(reusableBuffer.spectrumAnalyser.bars));
+    reusableBuffer.spectrumAnalyser.span = reusableBuffer.spectrumAnalyser.spanDefault * 1000000;
+    reusableBuffer.spectrumAnalyser.freq = reusableBuffer.spectrumAnalyser.freqDefault * 1000000;
+    reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
+    reusableBuffer.spectrumAnalyser.dirty = true;
+    moduleState[g_moduleIdx].mode = MODULE_MODE_SPECTRUM_ANALYSER;
+  }
+
+  for (uint8_t i=0; i<SPECTRUM_FIELDS_MAX; i++) {
     LcdFlags attr = (menuHorizontalPosition == i ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
 
     switch (i) {
@@ -75,7 +85,10 @@ void menuRadioSpectrumAnalyser(event_t event)
         lcdDrawNumber(lcdLastRightPos + 2, 10, frequency, attr);
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
         if (attr) {
-          reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, 2400, 2485, 0)) * 1000000;
+          reusableBuffer.spectrumAnalyser.freq = uint32_t(checkIncDec(event, frequency, reusableBuffer.spectrumAnalyser.freqMin, reusableBuffer.spectrumAnalyser.freqMax, 0)) * 1000000;
+          if (checkIncDec_Ret) {
+            reusableBuffer.spectrumAnalyser.dirty = true;
+          }
         }
         break;
       }
@@ -86,7 +99,11 @@ void menuRadioSpectrumAnalyser(event_t event)
         lcdDrawNumber(lcdLastRightPos + 2, 10, reusableBuffer.spectrumAnalyser.span/1000000, attr);
         lcdDrawText(lcdLastRightPos + 2, 10, "MHz", 0);
         if (attr) {
-          reusableBuffer.spectrumAnalyser.span = checkIncDec(event, span, 1, 80, 0) * 1000000;
+          reusableBuffer.spectrumAnalyser.span = checkIncDec(event, span, 1, reusableBuffer.spectrumAnalyser.spanMax, 0) * 1000000;
+          if (checkIncDec_Ret) {
+            reusableBuffer.spectrumAnalyser.step = reusableBuffer.spectrumAnalyser.span / LCD_W;
+            reusableBuffer.spectrumAnalyser.dirty = true;
+          }
         }
         break;
     }
@@ -95,7 +112,7 @@ void menuRadioSpectrumAnalyser(event_t event)
   uint8_t peak_y = 1;
   uint8_t peak_x = 0;
   for (uint8_t i=0; i<LCD_W; i++) {
-    uint8_t h = min<uint8_t >(reusableBuffer.spectrumAnalyser.bars[i] >> 1, 128);
+    uint8_t h = min<uint8_t >(reusableBuffer.spectrumAnalyser.bars[i] >> 1, LCD_H);
     if (h > peak_y) {
       peak_x = i;
       peak_y = h;

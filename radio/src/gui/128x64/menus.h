@@ -83,7 +83,9 @@ enum MenuRadioIndexes
 {
   MENU_RADIO_SETUP,
   CASE_SDCARD(MENU_RADIO_SD_MANAGER)
+#if defined(PXX2)
   MENU_RADIO_TOOLS,
+#endif
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -104,10 +106,12 @@ void menuRadioSpectrumAnalyser(event_t event);
 void menuRadioPowerMeter(event_t event);
 void menuRadioCalibration(event_t event);
 
-static const MenuHandlerFunc menuTabGeneral[]  = {
+static const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT]  = {
   menuRadioSetup,
   CASE_SDCARD(menuRadioSdManager)
+#if defined(PXX2)
   menuRadioTools,
+#endif
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,

@@ -50,17 +50,17 @@ inline bool isModuleMultimoduleDSM2(uint8_t)
 
 inline bool isModuleXJT(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_XJT;
 }
 
 inline bool isModuleXJT2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_ISRM;
 }
 
 inline bool isModuleXJTVariant(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_XJT || g_model.moduleData[idx].type == MODULE_TYPE_XJT2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_XJT || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_ISRM;
 }
 
 
@@ -88,7 +88,7 @@ inline bool isExtraModule(uint8_t)
 }
 #endif
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
 inline bool isModulePPM(uint8_t idx)
 {
   return (idx == INTERNAL_MODULE && g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PPM) ||
@@ -104,15 +104,15 @@ inline bool isModulePPM(uint8_t idx)
 
 inline bool isModuleR9M(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE;
+  return g_model.moduleData[idx].type == MODULE_TYPE_PXX_R9M || g_model.moduleData[idx].type == MODULE_TYPE_PXX_R9M_LITE;
 }
 
 inline bool isModuleR9M2(uint8_t idx)
 {
-  return g_model.moduleData[idx].type == MODULE_TYPE_R9M2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE2 || g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO2;
+  return g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M_LITE || g_model.moduleData[idx].type == MODULE_TYPE_ACCESS_R9M_LITE_PRO;
 }
 
-#if defined(PCBXLITE)
+
 inline bool isModuleR9M_FCC(uint8_t idx)
 {
   return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_FCC;
@@ -130,39 +130,13 @@ inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
 
 inline bool isModuleR9M_EUPLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_EUPLUS;
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_EUPLUS;
 }
 
 inline bool isModuleR9M_AU_PLUS(uint8_t idx)
 {
-  return isModuleR9M(idx) && g_model.moduleData[idx].subType != MODULE_SUBTYPE_R9M_AUPLUS;
+  return isModuleR9M(idx) && g_model.moduleData[idx].subType == MODULE_SUBTYPE_R9M_AUPLUS;
 }
-#else
-inline bool isModuleR9M_FCC(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FCC;
-}
-
-inline bool isModuleR9M_LBT(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_EU;
-}
-
-inline bool isModuleR9M_FCC_VARIANT(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region != MODULE_R9M_REGION_EU;
-}
-
-inline bool isModuleR9M_EUPLUS(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_868MHZ;
-}
-
-inline bool isModuleR9M_AU_PLUS(uint8_t idx)
-{
-  return isModuleR9M(idx) && g_model.moduleData[idx].r9m.region == MODULE_R9M_REGION_FLEX && g_model.moduleData[idx].r9m.freq == MODULE_R9M_FREQ_915MHZ;
-}
-#endif
 
 inline bool isModulePXX(uint8_t idx)
 {
@@ -179,13 +153,20 @@ inline bool isModuleDSM2(uint8_t idx)
 {
   return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_DSM2;
 }
+#else
+inline bool isModuleDSM2(uint8_t idx)
+{
+  return false;
+}
+#endif
 
+#if defined(SBUS)
 inline bool isModuleSBUS(uint8_t idx)
 {
   return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_SBUS;
 }
 #else
-inline bool isModuleDSM2(uint8_t idx)
+inline bool isModuleSBUS(uint8_t idx)
 {
   return false;
 }
@@ -248,19 +229,29 @@ enum {
  * - Power meter (0x10)
  */
 static const uint8_t moduleOptions[] = {
-  0b11111111, // None = display all options
-  0b11100010, // XJT
-  0b11100010, // IXJT
-  0b11111010, // IXJT-PRO
-  0b11101010, // IXJT-S
+#if defined(SIMU)
+  0b11111111, // None = display all options on SIMU
+#else
+  0b00000000, // None = display all options on SIMU
+#endif
+  0b11100011, // XJT
+  0b11100011, // ISRM
+  0b11111011, // ISRM-PRO
+  0b11101011, // ISRM-S
   0b11100100, // R9M
   0b11100100, // R9MLite
   0b11111100, // R9MLite-PRO
+  0b11101001, // ISRM-N
 };
 
 inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)
 {
   return moduleOptions[modelId] & (1 << option);
+}
+
+inline bool isDefaultModelRegistrationID()
+{
+  return memcmp(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID) == 0;
 }
 
 #endif // _MODULES_H_

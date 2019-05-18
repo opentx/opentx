@@ -142,14 +142,14 @@ void setupPulsesSbus()
   // flags
   uint8_t flags=0;
   if (getChannelValue(EXTERNAL_MODULE, 16) > 0)
-    flags |=SBUS_FLAG_CHANNEL_17;
+    flags |= SBUS_FLAG_CHANNEL_17;
   if (getChannelValue(EXTERNAL_MODULE, 17) > 0)
-    flags |=SBUS_FLAG_CHANNEL_18;
+    flags |= SBUS_FLAG_CHANNEL_18;
 
   sendByteSbus(flags);
 
   // last byte, always 0x0
-  sendByteSbus(0x0);
+  sendByteSbus(0x00);
 
   putDsm2Flush();
 

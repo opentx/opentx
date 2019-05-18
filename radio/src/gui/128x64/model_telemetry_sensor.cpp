@@ -144,12 +144,11 @@ void menuModelSensor(event_t event)
 
       case SENSOR_FILED_RECEIVER_NAME:
         lcdDrawTextAlignedLeft(y, STR_RECEIVER);
-        drawReceiverName(SENSOR_2ND_COLUMN, y, (sensor->instance >> 7) & 0x01, (sensor->instance >> 5) & 0x03, 0);
+        drawReceiverName(SENSOR_2ND_COLUMN, y, sensor->frskyInstance.rxIndex >> 2, sensor->frskyInstance.rxIndex & 0x03, 0);
         break;
 
-
       case SENSOR_FIELD_UNIT:
-        lcdDrawTextAlignedLeft(y, "Unit");
+        lcdDrawTextAlignedLeft(y, STR_UNIT);
         // TODO flash saving with editChoice where I copied those 2 lines?
         lcdDrawTextAtIndex(SENSOR_2ND_COLUMN, y, STR_VTELEMUNIT, sensor->unit, attr);
         if (attr) {

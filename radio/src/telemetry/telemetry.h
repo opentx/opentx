@@ -126,13 +126,6 @@ inline uint8_t modelTelemetryProtocol()
     return g_model.telemetryProtocol;
   }
 
-  if (!IS_INTERNAL_MODULE_ENABLED() && isModulePXX2(EXTERNAL_MODULE)) {
-    return PROTOCOL_TELEMETRY_PXX2;
-  }
-
-  if (!IS_INTERNAL_MODULE_ENABLED() && isModulePXX(EXTERNAL_MODULE)) {
-    return PROTOCOL_TELEMETRY_FRSKY_SPORT;
-  }
 #if defined(MULTIMODULE)
   if (!IS_INTERNAL_MODULE_ENABLED() && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE) {
     return PROTOCOL_TELEMETRY_MULTIMODULE;
@@ -169,6 +162,11 @@ class OutputTelemetryBuffer {
     {
       destination = value;
       timeout = 200; /* 2s */
+    }
+
+    bool isModuleDestination(uint8_t module)
+    {
+      return destination != TELEMETRY_ENDPOINT_NONE && destination != TELEMETRY_ENDPOINT_SPORT && (destination >> 2) == module;
     }
 
     void per10ms()
@@ -211,7 +209,7 @@ class OutputTelemetryBuffer {
     {
       size = 0;
       uint16_t crc = 0;
-      sport.physicalId = packet.physicalId; // no bytestuffing, no CRC
+      pushByte(packet.physicalId); // no bytestuffing, no CRC
       for (uint8_t i=1; i<sizeof(SportTelemetryPacket); i++) {
         uint8_t byte = packet.raw[i];
         pushByteWithBytestuffing(byte);
@@ -240,7 +238,7 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
 #if defined(STM32)
-#define IS_TELEMETRY_INTERNAL_MODULE() (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_XJT)
+#define IS_TELEMETRY_INTERNAL_MODULE() (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_PXX_XJT)
 #else
 #define IS_TELEMETRY_INTERNAL_MODULE() (false)
 #endif

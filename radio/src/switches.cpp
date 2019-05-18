@@ -132,12 +132,12 @@ void getSwitchesPosition(bool startup)
   CHECK_3POS(0, SW_SA);
   CHECK_3POS(1, SW_SB);
   CHECK_3POS(2, SW_SC);
-#if !defined(PCBX3)
+#if !defined(PCBX9LITE)
   CHECK_3POS(3, SW_SD);
 #endif
-#if defined(PCBXLITES) || defined(PCBX3)
+#if defined(PCBXLITES) || defined(PCBX9LITE)
   CHECK_2POS(SW_SE);
-#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // No SE
 #else
   CHECK_3POS(4, SW_SE);
@@ -147,12 +147,12 @@ void getSwitchesPosition(bool startup)
 #else
   CHECK_2POS(SW_SF);
 #endif
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
   // No SG
 #else
   CHECK_3POS(5, SW_SG);
 #endif
-#if defined(PCBXLITE) || defined(PCBX3)
+#if defined(PCBXLITE) || defined(PCBX9LITE)
   // No SH
 #else
   CHECK_2POS(SW_SH);
@@ -452,16 +452,6 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
     idx = (CONVERT_MODE_TRIMS(idx/2) << 1) + (idx & 1);
     result = trimDown(idx);
   }
-#if ROTARY_ENCODERS > 0
-  else if (cs_idx == SWSRC_REa) {
-    result = REA_DOWN();
-  }
-#endif
-#if ROTARY_ENCODERS > 1
-  else if (cs_idx == SWSRC_REb) {
-    result = REB_DOWN();
-  }
-#endif
   else if (cs_idx >= SWSRC_FIRST_SENSOR) {
     result = !telemetryItems[cs_idx-SWSRC_FIRST_SENSOR].isOld();
   }
@@ -747,7 +737,7 @@ void checkSwitches()
 
       lcdRefresh();
       lcdSetContrast();
-      clearKeyEvents();
+      waitKeysReleased();
 
       last_bad_switches = switches_states;
     }

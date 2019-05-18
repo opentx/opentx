@@ -75,9 +75,9 @@ const FrSkySportSensor sportSensors[] = {
   { GASSUIT_SPEED_FIRST_ID, GASSUIT_SPEED_LAST_ID, 0, ZSTR_GASSUIT_RPM, UNIT_RPMS, 0 },
   { GASSUIT_RES_VOL_FIRST_ID, GASSUIT_RES_VOL_LAST_ID, 0, ZSTR_GASSUIT_RES_VOL, UNIT_MILLILITERS, 0 },
   { GASSUIT_RES_PERC_FIRST_ID, GASSUIT_RES_PERC_LAST_ID, 0, ZSTR_GASSUIT_RES_PERC, UNIT_PERCENT, 0 },
-  { GASSUIT_FLOW_FIRST_ID, GASSUIT_FLOW_LAST_ID, 0, ZSTR_GASSUIT_FLOW, UNIT_MILLILITERS, 0 },             //TODO this needs to be changed to ml/min, but need eeprom conversion
-  { GASSUIT_MAX_FLOW_FIRST_ID, GASSUIT_MAX_FLOW_LAST_ID, 0, ZSTR_GASSUIT_MAX_FLOW, UNIT_MILLILITERS, 0 }, //TODO this needs to be changed to ml/min, but need eeprom conversion
-  { GASSUIT_AVG_FLOW_FIRST_ID, GASSUIT_AVG_FLOW_LAST_ID, 0, ZSTR_GASSUIT_AVG_FLOW, UNIT_MILLILITERS, 0 }, //TODO this needs to be changed to ml/min, but need eeprom conversion
+  { GASSUIT_FLOW_FIRST_ID, GASSUIT_FLOW_LAST_ID, 0, ZSTR_GASSUIT_FLOW, UNIT_MILLILITERS_PER_MINUTE, 0 },
+  { GASSUIT_MAX_FLOW_FIRST_ID, GASSUIT_MAX_FLOW_LAST_ID, 0, ZSTR_GASSUIT_MAX_FLOW, UNIT_MILLILITERS_PER_MINUTE, 0 },
+  { GASSUIT_AVG_FLOW_FIRST_ID, GASSUIT_AVG_FLOW_LAST_ID, 0, ZSTR_GASSUIT_AVG_FLOW, UNIT_MILLILITERS_PER_MINUTE, 0 },
   { SBEC_POWER_FIRST_ID, SBEC_POWER_LAST_ID, 0, ZSTR_SBEC_VOLTAGE, UNIT_VOLTS, 2 },
   { SBEC_POWER_FIRST_ID, SBEC_POWER_LAST_ID, 1, ZSTR_SBEC_CURRENT, UNIT_AMPS, 2 },
   { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
@@ -158,8 +158,8 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
   uint32_t data = SPORT_DATA_S32(packet);
 
 #if defined(BLUETOOTH)
-  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetoothState == BLUETOOTH_STATE_CONNECTED) {
-    bluetoothForwardTelemetry(packet);
+  if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+    bluetooth.forwardTelemetry(packet);
   }
 #endif
 
@@ -168,9 +168,9 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     if (dataId == RSSI_ID) {
       telemetryStreaming = TELEMETRY_TIMEOUT10ms; // reset counter only if valid packets are being detected
       data = SPORT_DATA_U8(packet);
-      if (g_model.frsky.rssiSource) {
-        TelemetrySensor * sensor = & g_model.telemetrySensors[g_model.frsky.rssiSource];
-        if (sensor->instance == instance) {
+      if (g_model.rssiSource) {
+        TelemetrySensor * sensor = &g_model.telemetrySensors[g_model.rssiSource - 1];
+        if (sensor->isSameInstance(TELEM_PROTO_FRSKY_SPORT, instance)) {
           telemetryData.rssi.set(data);
         }
       }
@@ -184,15 +184,14 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
     }
     else if (dataId == XJT_VERSION_ID) {
       telemetryData.xjtVersion = HUB_DATA_U16(packet);
-      if (!IS_RAS_VALUE_VALID()) {
-        telemetryData.swr.set(0x00);
+      if (!isRasValueValid()) {
+        telemetryData.setSwr(origin >> 2, 0);
       }
     }
     else if (dataId == RAS_ID) {
-      if (IS_RAS_VALUE_VALID())
-        telemetryData.swr.set(SPORT_DATA_U8(packet));
-      else
-        telemetryData.swr.set(0x00);
+      if (isRasValueValid()) {
+        telemetryData.setSwr(origin >> 2, SPORT_DATA_U8(packet));
+      }
     }
 
     if (TELEMETRY_STREAMING()/* because when Rx is OFF it happens that some old A1/A2 values are sent from the XJT module*/) {

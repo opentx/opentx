@@ -324,16 +324,6 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
-#if defined(PCBSKY9X)
-  else if (i <= MIXSRC_LAST_ROTARY_ENCODER) {
-#if ROTARY_ENCODERS > 0
-    return getRotaryEncoder(i - MIXSRC_REa);
-#else
-    return 0;
-#endif
-  }
-#endif
-
   else if (i == MIXSRC_MAX) {
     return 1024;
   }
@@ -498,14 +488,6 @@ void evalInputs(uint8_t mode)
       calibratedAnalogs[ch] = v;
     }
   }
-
-#if defined(ROTARY_ENCODERS)
-  for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
-    if (getRotaryEncoder(i) == 0) {
-      anaCenter |= ((BeepANACenter)1 << (NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+i));
-    }
-  }
-#endif
 
 #if NUM_MOUSE_ANALOGS > 0
   for (uint8_t i=0; i<NUM_MOUSE_ANALOGS; i++) {

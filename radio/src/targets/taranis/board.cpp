@@ -88,10 +88,6 @@ void interrupt5ms()
     per10ms();
     DEBUG_TIMER_STOP(debugTimerPer10ms);
   }
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  checkRotaryEncoder();
-#endif
 }
 
 #if !defined(SIMU)
@@ -103,7 +99,7 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 }
 #endif
 
-#if defined(PWR_BUTTON_PRESS) && !defined(SIMU)
+#if defined(PWR_BUTTON_PRESS)
   #define PWR_PRESS_DURATION_MIN        100 // 1s
   #define PWR_PRESS_DURATION_MAX        500 // 5s
 #endif
@@ -143,31 +139,56 @@ void sportUpdatePowerOff()
 void boardInit()
 {
 #if !defined(SIMU)
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | PCBREV_RCC_AHB1Periph |
-                         KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph |
-                         AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
-                         ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
-                         SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph |
-                         INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph |
-                         TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph |
-                         HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph | GYRO_RCC_AHB1Periph,
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
+                         PCBREV_RCC_AHB1Periph |
+                         KEYS_RCC_AHB1Periph |
+                         LCD_RCC_AHB1Periph |
+                         AUDIO_RCC_AHB1Periph |
+                         BACKLIGHT_RCC_AHB1Periph |
+                         ADC_RCC_AHB1Periph |
+                         I2C_RCC_AHB1Periph |
+                         SD_RCC_AHB1Periph |
+                         HAPTIC_RCC_AHB1Periph |
+                         INTMODULE_RCC_AHB1Periph |
+                         EXTMODULE_RCC_AHB1Periph |
+                         TELEMETRY_RCC_AHB1Periph |
+                         SPORT_UPDATE_RCC_AHB1Periph |
+                         SERIAL_RCC_AHB1Periph |
+                         TRAINER_RCC_AHB1Periph |
+                         HEARTBEAT_RCC_AHB1Periph |
+                         BT_RCC_AHB1Periph |
+                         GYRO_RCC_AHB1Periph,
                          ENABLE);
 
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | ADC_RCC_APB1Periph |
-                         BACKLIGHT_RCC_APB1Periph | HAPTIC_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
-                         TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
-                         SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
-                         TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph |
-                         INTMODULE_RCC_APB1Periph | BT_RCC_APB1Periph | GYRO_RCC_APB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph |
+                         AUDIO_RCC_APB1Periph |
+                         ADC_RCC_APB1Periph |
+                         BACKLIGHT_RCC_APB1Periph |
+                         HAPTIC_RCC_APB1Periph |
+                         INTERRUPT_xMS_RCC_APB1Periph |
+                         TIMER_2MHz_RCC_APB1Periph |
+                         I2C_RCC_APB1Periph |
+                         SD_RCC_APB1Periph |
+                         TRAINER_RCC_APB1Periph |
+                         TELEMETRY_RCC_APB1Periph |
+                         SERIAL_RCC_APB1Periph |
+                         INTMODULE_RCC_APB1Periph |
+                         BT_RCC_APB1Periph |
+                         GYRO_RCC_APB1Periph,
+                         ENABLE);
 
-  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph |
-                         HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph |
-                         EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph |
-                         BT_RCC_APB2Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG |
+                         BACKLIGHT_RCC_APB2Periph |
+                         ADC_RCC_APB2Periph |
+                         HAPTIC_RCC_APB2Periph |
+                         INTMODULE_RCC_APB2Periph |
+                         EXTMODULE_RCC_APB2Periph |
+                         HEARTBEAT_RCC_APB2Periph |
+                         BT_RCC_APB2Periph,
+                         ENABLE);
 
 #if defined(BLUETOOTH)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 
 #if !defined(PCBX9E)
@@ -181,6 +202,11 @@ void boardInit()
 #endif
 
   keysInit();
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotaryEncoderInit();
+#endif
+
   delaysInit();
 
 #if NUM_PWMSTICKS > 0

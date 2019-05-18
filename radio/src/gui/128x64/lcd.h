@@ -123,7 +123,7 @@ void lcdDrawText(coord_t x, coord_t y, const char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const char * s);
 
-#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
+#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(s)*FW+FW+1)/2, y, s)
 
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawHexChar(coord_t x, coord_t y, uint8_t val, LcdFlags flags=0);
@@ -134,6 +134,7 @@ void lcdDraw8bitsNumber(coord_t x, coord_t y, int8_t val);
 
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, uint8_t idx, LcdFlags att=0);
 void putsModelName(coord_t x, coord_t y, char * name, uint8_t id, LcdFlags att);
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att = 0);
 #if !defined(BOOT) // TODO not here ...
 void drawSwitch(coord_t x, coord_t y, swsrc_t swtch, LcdFlags att=0);
 void drawSource(coord_t x, coord_t y, mixsrc_t idx, LcdFlags att=0);
@@ -143,10 +144,6 @@ void drawTimerMode(coord_t x, coord_t y, int8_t mode, LcdFlags att=0);
 
 void drawTrimMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
 void drawShortTrimMode(coord_t x, coord_t y, uint8_t mode, uint8_t idx, LcdFlags att);
-
-#if defined(ROTARY_ENCODERS)
-  void putsRotaryEncoderMode(coord_t x, coord_t y, uint8_t phase, uint8_t idx, LcdFlags att);
-#endif
 
 #define putsChn(x, y, idx, att) drawSource(x, y, MIXSRC_CH1+idx-1, att)
 void putsChnLetter(coord_t x, coord_t y, uint8_t idx, LcdFlags attr);

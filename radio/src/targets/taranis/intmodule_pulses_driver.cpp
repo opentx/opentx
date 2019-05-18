@@ -34,7 +34,7 @@ void intmoduleStop()
 
 void intmoduleSendNextFrame()
 {
-  switch (moduleSettings[INTERNAL_MODULE].protocol) {
+  switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       INTMODULE_TIMER->CCR2 = intmodulePulsesData.pxx.getLast() - 4000; // 2mS in advance
@@ -47,7 +47,7 @@ void intmoduleSendNextFrame()
       break;
 #endif
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
     case PROTOCOL_CHANNELS_PPM:
       INTMODULE_TIMER->CCR3 = GET_MODULE_PPM_DELAY(INTERNAL_MODULE) * 2;
       INTMODULE_TIMER->CCER = TIM_CCER_CC3E | (GET_MODULE_PPM_POLARITY(INTERNAL_MODULE) ? 0 : TIM_CCER_CC3P);
@@ -107,7 +107,7 @@ void intmodulePxxStart()
   NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
 }
 
-#if defined(TARANIS_INTERNAL_PPM)
+#if defined(INTERNAL_MODULE_PPM)
 void intmodulePpmStart()
 {
   INTERNAL_MODULE_ON();
@@ -139,7 +139,7 @@ void intmodulePpmStart()
   NVIC_EnableIRQ(INTMODULE_TIMER_CC_IRQn);
   NVIC_SetPriority(INTMODULE_TIMER_CC_IRQn, 7);
 }
-#endif // defined(TARANIS_INTERNAL_PPM)
+#endif // defined(INTERNAL_MODULE_PPM)
 
 extern "C" void INTMODULE_DMA_STREAM_IRQHandler()
 {

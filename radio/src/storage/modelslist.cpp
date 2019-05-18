@@ -164,13 +164,13 @@ bool ModelCell::fetchRfData()
   getModelPath(buf, modelFilename);
 
   FIL      file;
-  uint16_t file_size;
+  uint16_t size;
+  uint8_t  version;
 
-  const char* err = openFile(buf,&file,&file_size);
-  if (err) return false;
+  const char * err = openFile(buf, &file, &size, &version);
+  if (err || version != EEPROM_VER) return false;
 
   FSIZE_t start_offset = f_tell(&file);
-
 
   UINT read;
   if ((f_read(&file, buf, LEN_MODEL_NAME, &read) != FR_OK) || (read != LEN_MODEL_NAME))

@@ -29,17 +29,17 @@ void varioWakeup()
     uint8_t varioFlags;
 
     int verticalSpeed = 0;
-    if (g_model.frsky.varioSource) {
-      uint8_t item = g_model.frsky.varioSource-1;
+    if (g_model.varioData.source) {
+      uint8_t item = g_model.varioData.source-1;
       if (item < MAX_TELEMETRY_SENSORS) {
         verticalSpeed = telemetryItems[item].value * g_model.telemetrySensors[item].getPrecMultiplier();
       }
     }
 
-    int varioCenterMin = (int)g_model.frsky.varioCenterMin * 10 - 50;
-    int varioCenterMax = (int)g_model.frsky.varioCenterMax * 10 + 50;
-    int varioMax = (10+(int)g_model.frsky.varioMax) * 100;
-    int varioMin = (-10+(int)g_model.frsky.varioMin) * 100;
+    int varioCenterMin = (int)g_model.varioData.centerMin * 10 - 50;
+    int varioCenterMax = (int)g_model.varioData.centerMax * 10 + 50;
+    int varioMax = (10+(int)g_model.varioData.max) * 100;
+    int varioMin = (-10+(int)g_model.varioData.min) * 100;
 
     if (verticalSpeed > varioMax)
       verticalSpeed = varioMax;
@@ -51,7 +51,7 @@ void varioWakeup()
       varioDuration = 80; // continuous beep: we will enter again here before the tone ends
       varioFlags = PLAY_BACKGROUND|PLAY_NOW;
     }
-    else if (verticalSpeed >= varioCenterMax || !g_model.frsky.varioCenterSilent) {
+    else if (verticalSpeed >= varioCenterMax || !g_model.varioData.centerSilent) {
       varioFreq = VARIO_FREQUENCY_ZERO + (g_eeGeneral.varioPitch*10) + (((VARIO_FREQUENCY_RANGE+(g_eeGeneral.varioRange*10)) * (verticalSpeed-varioCenterMin)) / varioMax);
       int varioPeriod = VARIO_REPEAT_MAX + ((VARIO_REPEAT_ZERO+(g_eeGeneral.varioRepeat*10)-VARIO_REPEAT_MAX) * (varioMax-verticalSpeed) * (varioMax-verticalSpeed)) / ((varioMax-varioCenterMin) * (varioMax-varioCenterMin));
       if (verticalSpeed >= varioCenterMax || varioCenterMin == varioCenterMax)

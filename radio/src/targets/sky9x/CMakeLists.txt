@@ -22,7 +22,7 @@ if(PCB STREQUAL 9XRPRO)
   set(OPENRC_BOOTLOADER bootflash8.lbm)
   set(CPU_TYPE_FULL ATSAM3S8C)  # for size report
 elseif(PCB STREQUAL AR9X)
-  add_definitions(-Dat91sam3s8 -DAR9X -DSOFTWARE_VOLUME)
+  add_definitions(-Dat91sam3s8 -DPCBAR9X -DSOFTWARE_VOLUME)
   set(FLAVOUR ar9x)
   include_directories(${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi)
   set(SRC ${SRC} ${THIRDPARTY_DIR}/xdk-asf-3.31.0/sam/drivers/twi/twi.c)
@@ -41,7 +41,7 @@ else()
   set(TARGET_SRC
     ${TARGET_SRC}
     coproc_driver.cpp
-    rotenc_driver.cpp
+    rotary_encoder_driver.cpp
     rtc_driver.cpp
     )
   set(OPENRC_BOOTLOADER bootflash4.lbm)
