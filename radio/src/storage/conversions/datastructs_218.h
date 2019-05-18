@@ -413,6 +413,12 @@ PACK(struct ModelHeader_v218 {
   MODEL_HEADER_BITMAP_FIELD_218
 });
 
+#if defined(COLORLCD)
+#define SWITCH_WARNING_DATA_218
+#else
+#define SWITCH_WARNING_DATA_218 swarnenable_t switchWarningEnable;
+#endif
+
 PACK(struct ModelData_v218 {
   ModelHeader_v218 header;
   TimerData_v218 timers[MAX_TIMERS_218];
@@ -444,9 +450,7 @@ PACK(struct ModelData_v218 {
 
   swarnstate_t  switchWarningState;
 
-#if !defined(COLORLCD)
-  swarnenable_t switchWarningEnable;
-#endif
+  SWITCH_WARNING_DATA_218
 
   GVarData_v218 gvars[MAX_GVARS_218];
 
