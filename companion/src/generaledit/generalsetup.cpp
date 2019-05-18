@@ -151,12 +151,20 @@ ui(new Ui::GeneralSetup)
     ui->adjustRTC->hide();
   }
 
-  if (IS_STM32(firmware->getBoard())){
+  if (IS_STM32(firmware->getBoard())) {
     ui->usbModeCB->setCurrentIndex(generalSettings.usbMode);
   }
   else {
     ui->usbModeLabel->hide();
     ui->usbModeCB->hide();
+  }
+  
+  if (firmware->getCapability(HasSwitchableJack)) {
+    ui->jackModeCB->setCurrentIndex(generalSettings.jackMode);
+  }
+  else {
+    ui->jackModeLabel->hide();
+    ui->jackModeCB->hide();
   }
 
   if (!firmware->getCapability(OptrexDisplay)) {
@@ -352,6 +360,15 @@ void GeneralSetupPanel::on_usbModeCB_currentIndexChanged(int index)
     emit modified();
   }
 }
+
+void GeneralSetupPanel::on_jackModeCB_currentIndexChanged(int index)
+{
+  if (!lock) {
+    generalSettings.jackMode = ui->jackModeCB->currentIndex();
+    emit modified();
+  }
+}
+
 
 void GeneralSetupPanel::on_backlightColor_SL_valueChanged()
 {

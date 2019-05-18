@@ -60,6 +60,7 @@ enum menuRadioHwItems {
 #endif
   ITEM_RADIO_HARDWARE_UART3_MODE,
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
+  ITEM_RADIO_HARDWARE_DEBUG,
   ITEM_RADIO_HARDWARE_MAX
 };
 
@@ -90,7 +91,7 @@ enum menuRadioHwItems {
 
 void menuRadioHardware(event_t event)
 {
-  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { LABEL(Sticks), 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0 });
+  MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, ITEM_RADIO_HARDWARE_MAX, { 0, 0, 0, 0, 0, LABEL(Pots), POTS_ROWS, LABEL(Switches), SWITCHES_ROWS, BLUETOOTH_ROWS 0, 1 });
 
   uint8_t sub = menuVerticalPosition;
 
@@ -105,6 +106,10 @@ void menuRadioHardware(event_t event)
     switch (k) {
       case ITEM_RADIO_HARDWARE_LABEL_STICKS:
         lcdDrawTextAlignedLeft(y, STR_STICKS);
+        lcdDrawText(HW_SETTINGS_COLUMN, y, BUTTON(TR_CALIBRATION), attr);
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+          pushMenu(menuRadioCalibration);
+        }
         break;
       case ITEM_RADIO_HARDWARE_STICK1:
       case ITEM_RADIO_HARDWARE_STICK2:
@@ -233,6 +238,19 @@ void menuRadioHardware(event_t event)
         g_eeGeneral.jitterFilter = 1 - editCheckBox(b, HW_SETTINGS_COLUMN, y, STR_JITTER_FILTER, attr, event);
         break;
       }
+
+      case ITEM_RADIO_HARDWARE_DEBUG:
+        lcdDrawTextAlignedLeft(y, STR_DEBUG);
+        lcdDrawText(HW_SETTINGS_COLUMN
+          , y, STR_ANALOGS_BTN, menuHorizontalPosition == 0 ? attr : 0);
+        lcdDrawText(lcdLastRightPos + 2, y, STR_KEYS_BTN, menuHorizontalPosition == 1 ? attr : 0);
+        if (attr && event == EVT_KEY_FIRST(KEY_ENTER)) {
+          if (menuHorizontalPosition == 0)
+            pushMenu(menuRadioDiagAnalogs);
+          else
+            pushMenu(menuRadioDiagKeys);
+        }
+        break;
     }
   }
 }

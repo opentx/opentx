@@ -22,6 +22,8 @@
 #define _DEFINITIONS_H_
 
 #include <inttypes.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 #if !defined(UNUSED)
   #define UNUSED(x)           ((void)(x)) /* to avoid warnings */

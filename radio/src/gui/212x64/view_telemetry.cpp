@@ -54,7 +54,7 @@ int barCoord(int value, int min, int max)
     return ((BAR_WIDTH-1) * (value - min)) / (max - min);
 }
 
-void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
+void displayGaugesTelemetryScreen(TelemetryScreenData & screen)
 {
   // Custom Screen with gauges
   int barHeight = 5;
@@ -94,7 +94,7 @@ void displayGaugesTelemetryScreen(FrSkyScreenData & screen)
   displayRssiLine();
 }
 
-bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
+bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
 {
   // Custom Screen with numbers
   const coord_t pos[] = {0, 71, 143, 214};
@@ -159,7 +159,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 
 void displayCustomTelemetryScreen(uint8_t index)
 {
-  FrSkyScreenData & screen = g_model.frsky.screens[index];
+  TelemetryScreenData & screen = g_model.screens[index];
 
   if (IS_BARS_SCREEN(s_frsky_view)) {
     return displayGaugesTelemetryScreen(screen);

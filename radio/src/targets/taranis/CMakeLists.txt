@@ -1,8 +1,10 @@
 option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
-option(TARANIS_INTERNAL_PPM "Taranis internal module hack to output PPM" OFF)
+option(INTERNAL_MODULE_PPM "Support for PPM internal module hack" OFF)
+option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module replacement" OFF)
 option(USEHORUSBT "X9E BT module replaced by Horus BT module" OFF)
-option(MODULE_R9M_FULLSIZE "xlite option to use full size R9M instead of mini" OFF)
+option(PXX1 "PXX1 protocol support" ON)
+option(PXX2 "PXX2 protocol support" ON)
 
 if(PCB STREQUAL X9E)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
@@ -31,6 +33,7 @@ if(PCB STREQUAL X9E)
   set(FONTS_TARGET taranis_fonts)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
+  set(STATUS_LEDS NO)
 elseif(PCB STREQUAL X9D+)
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
@@ -47,6 +50,7 @@ elseif(PCB STREQUAL X9D+)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
+  set(STATUS_LEDS NO)
 elseif(PCB STREQUAL X9D)
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
@@ -63,6 +67,7 @@ elseif(PCB STREQUAL X9D)
   set(LCD_DRIVER lcd_driver_aspi.cpp)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
+  set(STATUS_LEDS NO)
 elseif(PCB STREQUAL X7)
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
@@ -80,8 +85,29 @@ elseif(PCB STREQUAL X7)
   set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
+  set(STATUS_LEDS YES)
+elseif(PCB STREQUAL X9LITE)
+  set(PXX_FREQUENCY "HIGH")
+  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+  set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
+  set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+  set(HAPTIC YES)
+  set(LUA_EXPORT lua_export_x9lite)
+  set(FLAVOUR x9lite)
+  add_definitions(-DBOARD_NAME="x9lite")
+  add_definitions(-DPCBX9LITE -DPCBX9 -DSOFTWARE_VOLUME)
+  add_definitions(-DEEPROM_VARIANT=0x0800)
+  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+  set(GUI_DIR 128x64)
+  set(NAVIGATION_TYPE x7)
+  set(BITMAPS_TARGET 9x_bitmaps)
+  set(FONTS_TARGET 9x_fonts_1bit)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
+  set(GVAR_SCREEN model_gvars.cpp)
+  set(STATUS_LEDS YES)
 elseif(PCB STREQUAL XLITE)
-  set(PXX_FREQUENCY "HIGH" CACHE STRING "PXX frequency (LOW / HIGH)")
+  set(PXX_FREQUENCY "HIGH" CACHE STRING "PXX frequency (LOW / HIGH)") # always use HIGH except on some prototype boards
   set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
@@ -89,7 +115,7 @@ elseif(PCB STREQUAL XLITE)
   set(HAPTIC YES)
   set(LUA_EXPORT lua_export_xlite)
   set(FLAVOUR xlite)
-  add_definitions(-DPCBXLITE -DSOFTWARE_VOLUME)
+  add_definitions(-DPCBXLITE -DSOFTWARE_VOLUME -DEXTERNAL_ANTENNA -DSTICKS_PWM)
   add_definitions(-DEEPROM_VARIANT=0x2000)
   add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
   set(GUI_DIR 128x64)
@@ -98,14 +124,44 @@ elseif(PCB STREQUAL XLITE)
   set(FONTS_TARGET 9x_fonts_1bit)
   set(LCD_DRIVER lcd_driver_spi.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
+  set(STATUS_LEDS YES)
+elseif(PCB STREQUAL XLITES)
+  set(PXX_FREQUENCY "HIGH")
+  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+  set(CPU_TYPE STM32F2)
+  set(CPU_TYPE_FULL STM32F205xE)  # for size report
+  set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+  set(HAPTIC YES)
+  set(LUA_EXPORT lua_export_xlites)
+  set(FLAVOUR xlites)
+  add_definitions(-DPCBXLITES -DPCBXLITE -DSOFTWARE_VOLUME -DEXTERNAL_ANTENNA -DSTICKS_PWM)
+  add_definitions(-DEEPROM_VARIANT=0x1000)
+  add_definitions(-DPWR_BUTTON_${PWR_BUTTON})
+  set(GUI_DIR 128x64)
+  set(NAVIGATION_TYPE xlite)
+  set(BITMAPS_TARGET 9x_bitmaps)
+  set(FONTS_TARGET 9x_fonts_1bit)
+  set(LCD_DRIVER lcd_driver_spi.cpp)
+  set(GVAR_SCREEN model_gvars.cpp)
+  set(STATUS_LEDS YES)
 endif()
 
-if(PCB STREQUAL XLITE)
+if(PCB STREQUAL XLITES)
+  add_definitions(-DGYRO)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/lsm6ds_driver.cpp
+    )
+  set(SRC
+    ${SRC}
+    gyro.cpp
+    )
+endif()
+
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCB STREQUAL X9LITE)
+  add_definitions(-DINTERNAL_MODULE_SERIAL)
   if(PXX_FREQUENCY STREQUAL HIGH)
     add_definitions(-DPXX_FREQUENCY_HIGH)
-  endif()
-  if(MODULE_R9M_FULLSIZE)
-    add_definitions(-DMODULE_R9M_FULLSIZE)
   endif()
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -115,16 +171,28 @@ else()
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp
-    trainer_driver.cpp
     )
-  add_definitions(-DSBUS)
   set(PULSES_SRC
     ${PULSES_SRC}
     ../sbus.cpp
     )
 endif()
 
-if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE)
+if(NOT PCB STREQUAL XLITE)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    trainer_driver.cpp
+    )
+endif()
+
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL X9LITE)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/rotary_encoder_driver.cpp
+    )
+endif()
+
+if(PCB STREQUAL X9E OR PCB STREQUAL X7 OR PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   add_definitions(-DBLUETOOTH)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -149,7 +217,13 @@ endif()
 add_definitions(-DPCBTARANIS)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
 
-set(GUI_SRC ${GUI_SRC}
+set(SRC
+  ${SRC}
+  io/frsky_device_firmware_update.cpp
+  )
+
+set(GUI_SRC
+  ${GUI_SRC}
   model_input_edit.cpp
   model_mix_edit.cpp
   model_display.cpp
@@ -163,7 +237,7 @@ set(GUI_SRC ${GUI_SRC}
   ../screenshot.cpp
   )
 
-if(PCB STREQUAL X7 OR PCB STREQUAL XLITE)
+if(STATUS_LEDS)
   set(LED_DRIVER led_driver.cpp)
 endif()
 
@@ -177,7 +251,7 @@ set(TARGET_SRC
   ../common/arm/stm32/adc_driver.cpp
   )
 
-if(PCB STREQUAL XLITE)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/sticks_pwm_driver.cpp
@@ -196,8 +270,12 @@ if(LCD_DUAL_BUFFER)
   add_definitions(-DLCD_DUAL_BUFFER)
 endif()
 
-if(TARANIS_INTERNAL_PPM)
-  add_definitions(-DTARANIS_INTERNAL_PPM)
+if(INTERNAL_MODULE_PPM)
+  add_definitions(-DINTERNAL_MODULE_PPM)
+endif()
+
+if(INTERNAL_MODULE_PXX1)
+  add_definitions(-DINTERNAL_MODULE_PXX1)
 endif()
 
 if(USEHORUSBT)

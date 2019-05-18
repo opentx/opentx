@@ -9,9 +9,13 @@ set(GUI_SRC
   menu_model.cpp
   model_select.cpp
   model_setup.cpp
+  model_failsafe.cpp
+  model_module_options.cpp
+  model_receiver_options.cpp
   model_logical_switches.cpp
   model_special_functions.cpp
   model_telemetry.cpp
+  model_telemetry_sensor.cpp
   menu_radio.cpp
   radio_setup.cpp
   radio_trainer.cpp

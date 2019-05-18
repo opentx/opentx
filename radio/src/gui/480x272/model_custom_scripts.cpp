@@ -29,7 +29,7 @@ void onModelCustomScriptMenu(const char *result)
       POPUP_WARNING(STR_NO_SCRIPTS_ON_SD);
     }
   }
-  else {
+  else if (result != STR_EXIT) {
     // The user choosed a lua file in the list
     copySelection(sd.file, result, sizeof(sd.file));
     memset(sd.inputs, 0, sizeof(sd.inputs));

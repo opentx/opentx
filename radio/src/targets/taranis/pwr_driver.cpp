@@ -32,10 +32,17 @@ void pwrInit()
   GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = INTMODULE_PWR_GPIO_PIN;
   GPIO_Init(INTMODULE_PWR_GPIO, &GPIO_InitStructure);
-  
-  GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN);
+
+  EXTERNAL_MODULE_PWR_OFF();
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_PWR_GPIO_PIN;
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
+
+#if defined(PCBREV_GPIO_PIN)
+  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+#endif
 
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
@@ -46,12 +53,11 @@ void pwrInit()
   GPIO_Init(TRAINER_DETECT_GPIO, &GPIO_InitStructure);
 #endif
 
-#if defined(PCBREV_GPIO_PIN)
-  // Init PCBREV PIN
-  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+#if defined(INTMODULE_USART) && defined(HEARTBEAT_GPIO_PIN)
+  GPIO_SetBits(HEARTBEAT_GPIO, HEARTBEAT_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = HEARTBEAT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(HEARTBEAT_GPIO, &GPIO_InitStructure);
 #endif
 
   pwrOn();

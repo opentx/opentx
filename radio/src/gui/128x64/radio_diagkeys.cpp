@@ -36,7 +36,7 @@ void displaySwitchState(uint8_t x, uint8_t y, uint8_t sw)
 
 void menuRadioDiagKeys(event_t event)
 {
-  SIMPLE_MENU(STR_MENU_RADIO_SWITCHES, menuTabGeneral, MENU_RADIO_SWITCHES_TEST, 1);
+  SIMPLE_SUBMENU(STR_MENU_RADIO_SWITCHES, 1);
 
   lcdDrawText(14*FW, MENU_HEADER_HEIGHT+2*FH, STR_VTRIM);
 
@@ -50,7 +50,7 @@ void menuRadioDiagKeys(event_t event)
     }
 
     if (i < TRM_BASE) {
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX9LITE)
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       if (i >= 2) {
         // hide PLUS and MINUS virtual buttons
@@ -86,25 +86,17 @@ void menuRadioDiagKeys(event_t event)
   }
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
-  for (uint8_t i=0; i<DIM(rotencValue); i++) {
-
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX9LITE)
     coord_t y = MENU_HEADER_HEIGHT + FH;
     coord_t x = 6*FW+3;
-    lcdDrawTextAtIndex(0, MENU_HEADER_HEIGHT + FH , STR_VRENCODERS, i, 0);
+    lcdDrawTextAtIndex(0, MENU_HEADER_HEIGHT + FH , STR_VRENCODERS, 0, 0);
+    lcdDrawNumber(x, y, rotencValue, RIGHT);
 #else
-    coord_t y = MENU_HEADER_HEIGHT /* ??? + 1 ??? */ + i*FH;
+    coord_t y = MENU_HEADER_HEIGHT;
     coord_t x = 19*FW;
-    lcdDrawTextAtIndex(14*FW, y, STR_VRENCODERS, i, 0);
+    lcdDrawTextAtIndex(14*FW, y, STR_VRENCODERS, 0, 0);
+    lcdDrawNumber(x, y, rotencValue, LEFT);
 #endif
-  #if defined(ROTARY_ENCODERS)
-    lcdDrawNumber(x, y, rotencValue[i], LEFT|(keyState(BTN_REa+i) ? INVERS : 0));
-  #elif defined(PCBX7)
-    lcdDrawNumber(x, y, rotencValue[i], RIGHT);
-  #else
-    lcdDrawNumber(x, y, rotencValue[i], LEFT);
-  #endif
-  }
 #endif
 
 }

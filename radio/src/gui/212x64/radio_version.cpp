@@ -38,14 +38,14 @@ void menuRadioVersion(event_t event)
   lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+4*FH+1, "UID\037\033:");
   lcdDrawText(5*FW+3, MENU_HEADER_HEIGHT+4*FH+1, id);
 
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+5*FH+1, STR_EEBACKUP);
-  lcdDrawTextAlignedLeft(MENU_HEADER_HEIGHT+6*FH+1, STR_FACTORYRESET);
+  lcdDrawText(INDENT_WIDTH, MENU_HEADER_HEIGHT+5*FH+1, "[ENTER Long] " STR_EEBACKUP);
+  lcdDrawText(INDENT_WIDTH, MENU_HEADER_HEIGHT+6*FH+1, "[MENU Long] " STR_FACTORYRESET);
   lcdDrawFilledRect(0, MENU_HEADER_HEIGHT+5*FH, LCD_W, 2*FH+1, SOLID);
 
   if (event == EVT_KEY_LONG(KEY_ENTER)) {
     eepromBackup();
   }
   else if (event == EVT_KEY_LONG(KEY_MENU)) {
-    POPUP_CONFIRMATION(STR_CONFIRMRESET);
+    POPUP_CONFIRMATION(STR_CONFIRMRESET, nullptr);
   }
 }

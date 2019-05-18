@@ -27,14 +27,13 @@
 extern "C++" {
 #endif
 
-#define doNothing()                     do { } while(0)   // seems unused? don't ever use this with SIMU
-
 #if defined(SIMU)
 
   #include <pthread.h>
   #include <semaphore.h>
 
   #define SIMU_SLEEP_OR_EXIT_MS(x)       simuSleep(x)
+  #define RTOS_MS_PER_TICK  1
 
   typedef pthread_t RTOS_TASK_HANDLE;
   typedef pthread_mutex_t RTOS_MUTEX_HANDLE;
@@ -59,7 +58,7 @@ extern "C++" {
 
   static inline void RTOS_WAIT_TICKS(uint32_t x)
   {
-    RTOS_WAIT_MS(x * 2);
+    RTOS_WAIT_MS(x * RTOS_MS_PER_TICK);
   }
 
 #ifdef __cplusplus
@@ -149,7 +148,7 @@ extern "C++" {
   }
 #endif
 
-  #define RTOS_MS_PER_TICK              (CFG_CPU_FREQ / CFG_SYSTICK_FREQ / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
+  #define RTOS_MS_PER_TICK              ((CFG_CPU_FREQ / CFG_SYSTICK_FREQ) / (CFG_CPU_FREQ / 1000))  // RTOS timer tick length in ms (currently 2)
 
   typedef OS_TID RTOS_TASK_HANDLE;
   typedef OS_MutexID RTOS_MUTEX_HANDLE;

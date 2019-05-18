@@ -29,6 +29,8 @@ extern "C" {
 }
 #endif
 
+HardwareOptions hardwareOptions;
+
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555;      // Unlock registers
@@ -86,10 +88,6 @@ void interrupt5ms()
     per10ms();
     DEBUG_TIMER_STOP(debugTimerPer10ms);
   }
-
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  checkRotaryEncoder();
-#endif
 }
 
 #if !defined(SIMU)
@@ -101,7 +99,7 @@ extern "C" void INTERRUPT_xMS_IRQHandler()
 }
 #endif
 
-#if defined(PWR_BUTTON_PRESS) && !defined(SIMU)
+#if defined(PWR_BUTTON_PRESS)
   #define PWR_PRESS_DURATION_MIN        100 // 1s
   #define PWR_PRESS_DURATION_MAX        500 // 5s
 #endif
@@ -141,27 +139,57 @@ void sportUpdatePowerOff()
 void boardInit()
 {
 #if !defined(SIMU)
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | PCBREV_RCC_AHB1Periph |
-                         KEYS_RCC_AHB1Periph | LCD_RCC_AHB1Periph |
-                         AUDIO_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
-                         ADC_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
-                         SD_RCC_AHB1Periph | HAPTIC_RCC_AHB1Periph |
-                         INTMODULE_RCC_AHB1Periph | EXTMODULE_RCC_AHB1Periph |
-                         TELEMETRY_RCC_AHB1Periph | SPORT_UPDATE_RCC_AHB1Periph |
-                         SERIAL_RCC_AHB1Periph | TRAINER_RCC_AHB1Periph |
-                         HEARTBEAT_RCC_AHB1Periph | BT_RCC_AHB1Periph, ENABLE);
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
+                         PCBREV_RCC_AHB1Periph |
+                         KEYS_RCC_AHB1Periph |
+                         LCD_RCC_AHB1Periph |
+                         AUDIO_RCC_AHB1Periph |
+                         BACKLIGHT_RCC_AHB1Periph |
+                         ADC_RCC_AHB1Periph |
+                         I2C_RCC_AHB1Periph |
+                         SD_RCC_AHB1Periph |
+                         HAPTIC_RCC_AHB1Periph |
+                         INTMODULE_RCC_AHB1Periph |
+                         EXTMODULE_RCC_AHB1Periph |
+                         TELEMETRY_RCC_AHB1Periph |
+                         SPORT_UPDATE_RCC_AHB1Periph |
+                         SERIAL_RCC_AHB1Periph |
+                         TRAINER_RCC_AHB1Periph |
+                         HEARTBEAT_RCC_AHB1Periph |
+                         BT_RCC_AHB1Periph |
+                         GYRO_RCC_AHB1Periph,
+                         ENABLE);
 
-  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph | AUDIO_RCC_APB1Periph | ADC_RCC_APB1Periph |
-                         BACKLIGHT_RCC_APB1Periph | HAPTIC_RCC_APB1Periph | INTERRUPT_xMS_RCC_APB1Periph |
-                         TIMER_2MHz_RCC_APB1Periph | I2C_RCC_APB1Periph |
-                         SD_RCC_APB1Periph | TRAINER_RCC_APB1Periph |
-                         TELEMETRY_RCC_APB1Periph | SERIAL_RCC_APB1Periph |
-                         INTMODULE_RCC_APB1Periph | BT_RCC_APB1Periph, ENABLE);
+  RCC_APB1PeriphClockCmd(LCD_RCC_APB1Periph |
+                         AUDIO_RCC_APB1Periph |
+                         ADC_RCC_APB1Periph |
+                         BACKLIGHT_RCC_APB1Periph |
+                         HAPTIC_RCC_APB1Periph |
+                         INTERRUPT_xMS_RCC_APB1Periph |
+                         TIMER_2MHz_RCC_APB1Periph |
+                         I2C_RCC_APB1Periph |
+                         SD_RCC_APB1Periph |
+                         TRAINER_RCC_APB1Periph |
+                         TELEMETRY_RCC_APB1Periph |
+                         SERIAL_RCC_APB1Periph |
+                         INTMODULE_RCC_APB1Periph |
+                         BT_RCC_APB1Periph |
+                         GYRO_RCC_APB1Periph,
+                         ENABLE);
 
-  RCC_APB2PeriphClockCmd(BACKLIGHT_RCC_APB2Periph | ADC_RCC_APB2Periph |
-                         HAPTIC_RCC_APB2Periph | INTMODULE_RCC_APB2Periph |
-                         EXTMODULE_RCC_APB2Periph | HEARTBEAT_RCC_APB2Periph |
-                         BT_RCC_APB2Periph, ENABLE);
+  RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG |
+                         BACKLIGHT_RCC_APB2Periph |
+                         ADC_RCC_APB2Periph |
+                         HAPTIC_RCC_APB2Periph |
+                         INTMODULE_RCC_APB2Periph |
+                         EXTMODULE_RCC_APB2Periph |
+                         HEARTBEAT_RCC_APB2Periph |
+                         BT_RCC_APB2Periph,
+                         ENABLE);
+
+#if defined(BLUETOOTH)
+  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
+#endif
 
 #if !defined(PCBX9E)
   // some X9E boards need that the pwrInit() is moved a little bit later
@@ -174,13 +202,18 @@ void boardInit()
 #endif
 
   keysInit();
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  rotaryEncoderInit();
+#endif
+
   delaysInit();
 
 #if NUM_PWMSTICKS > 0
   sticksPwmInit();
   delay_ms(20);
   if (pwm_interrupt_count < 32) {
-    sticks_pwm_disabled = true;
+    hardwareOptions.sticksPwmDisabled = true;
   }
 #endif
 
@@ -202,8 +235,8 @@ void boardInit()
   hapticInit();
 #endif
 
-#if defined(BLUETOOTH)
-  bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE);
+#if defined(PXX2_PROBE)
+  intmodulePxx2Probe();
 #endif
 
 #if defined(DEBUG)
@@ -272,6 +305,22 @@ void boardInit()
   if (HAS_SPORT_UPDATE_CONNECTOR()) {
     sportUpdateInit();
   }
+
+#if defined(JACK_DETECT_GPIO)
+  initJackDetect();
+#endif
+
+  initSpeakerEnable();
+  enableSpeaker();
+
+  initHeadphoneTrainerSwitch();
+
+  vbattRTC = getRTCBattVoltage();
+
+#if defined(GYRO)
+  gyroInit();
+#endif
+
 #endif // !defined(SIMU)
 }
 
@@ -302,7 +351,7 @@ uint8_t currentTrainerMode = 0xff;
 
 void checkTrainerSettings()
 {
-  uint8_t requiredTrainerMode = g_model.trainerMode;
+  uint8_t requiredTrainerMode = g_model.trainerData.mode;
   if (requiredTrainerMode != currentTrainerMode) {
     switch (currentTrainerMode) {
       case TRAINER_MODE_MASTER_TRAINER_JACK:
@@ -357,3 +406,65 @@ uint16_t getBatteryVoltage()
   instant_vbat += 20; // add 0.2V because of the diode TODO check if this is needed, but removal will beak existing calibrations!!!
   return (uint16_t)instant_vbat;
 }
+
+#if defined(AUDIO_SPEAKER_ENABLE_GPIO)
+void initSpeakerEnable()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = AUDIO_SPEAKER_ENABLE_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(AUDIO_SPEAKER_ENABLE_GPIO, &GPIO_InitStructure);
+}
+
+void enableSpeaker()
+{
+  GPIO_SetBits(AUDIO_SPEAKER_ENABLE_GPIO, AUDIO_SPEAKER_ENABLE_GPIO_PIN);
+}
+
+void disableSpeaker()
+{
+  GPIO_ResetBits(AUDIO_SPEAKER_ENABLE_GPIO, AUDIO_SPEAKER_ENABLE_GPIO_PIN);
+}
+#endif
+
+#if defined(HEADPHONE_TRAINER_SWITCH_GPIO)
+void initHeadphoneTrainerSwitch()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = HEADPHONE_TRAINER_SWITCH_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(HEADPHONE_TRAINER_SWITCH_GPIO, &GPIO_InitStructure);
+}
+
+void enableHeadphone()
+{
+  GPIO_ResetBits(HEADPHONE_TRAINER_SWITCH_GPIO, HEADPHONE_TRAINER_SWITCH_GPIO_PIN);
+}
+
+void enableTrainer()
+{
+  GPIO_SetBits(HEADPHONE_TRAINER_SWITCH_GPIO, HEADPHONE_TRAINER_SWITCH_GPIO_PIN);
+}
+#endif
+
+#if defined(JACK_DETECT_GPIO)
+void initJackDetect(void)
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = JACK_DETECT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(JACK_DETECT_GPIO, &GPIO_InitStructure);
+}
+#endif

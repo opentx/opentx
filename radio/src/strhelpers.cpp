@@ -28,7 +28,7 @@ char hex2zchar(uint8_t hex)
   return (hex >= 10 ? hex-9 : 27+hex);
 }
 
-char idx2char(int8_t idx)
+char zchar2char(int8_t idx)
 {
   if (idx == 0) return ' ';
   if (idx < 0) {
@@ -44,7 +44,7 @@ char idx2char(int8_t idx)
   return ' ';
 }
 
-int8_t char2idx(char c)
+int8_t char2zchar(char c)
 {
   if (c == '_') return 37;
 #if LEN_SPECIAL_CHARS > 0
@@ -63,19 +63,29 @@ void str2zchar(char * dest, const char * src, int size)
 {
   memset(dest, 0, size);
   for (int c=0; c<size && src[c]; c++) {
-    dest[c] = char2idx(src[c]);
+    dest[c] = char2zchar(src[c]);
   }
 }
 
 int zchar2str(char * dest, const char * src, int size)
 {
   for (int c=0; c<size; c++) {
-    dest[c] = idx2char(src[c]);
+    dest[c] = zchar2char(src[c]);
   }
   do {
     dest[size--] = '\0';
   } while (size >= 0 && dest[size] == ' ');
   return size+1;
+}
+
+bool cmpStrWithZchar(const char * charString, const char * zcharString, int size)
+{
+  for (int i=0; i<size; i++) {
+    if (charString[i] != zchar2char(zcharString[i])) {
+      return false;
+    }
+  }
+  return true;
 }
 
 unsigned int effectiveLen(const char * str, unsigned int size)
@@ -122,7 +132,7 @@ char * strcat_zchar(char * dest, const char * name, uint8_t size, const char * d
         len = i+1;
       if (len) {
         if (dest[i])
-          dest[i] = idx2char(dest[i]);
+          dest[i] = zchar2char(dest[i]);
         else
           dest[i] = '_';
       }
@@ -259,14 +269,14 @@ char * getSwitchString(char * dest, swsrc_t idx)
     else {
       *s++ = 'S';
 #if defined(PCBX7)
-      if (swinfo.quot == 5)
-        *s++ = 'H';
+      if (swinfo.quot >= 5)
+        *s++ = 'H' + swinfo.quot - 5;
       else if (swinfo.quot == 4)
         *s++ = 'F';
       else
         *s++ = 'A'+swinfo.quot;
 #else
-      *s++ = 'A'+swinfo.quot;
+      *s++ = 'A' + swinfo.quot;
 #endif
     }
     *s++ = "\300-\301"[swinfo.rem];

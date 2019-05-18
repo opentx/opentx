@@ -106,6 +106,7 @@ extern coord_t lcdNextPos;
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c);
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags mode);
+void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags = 0);
 void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags mode);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s,uint8_t idx, LcdFlags mode);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s,unsigned char len, LcdFlags mode);
@@ -113,7 +114,7 @@ void lcdDrawText(coord_t x, coord_t y, const char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const char * s);
 
-#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(TR_##s)*FW+FW+1)/2, y, STR_##s)
+#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(s)*FW+FW+1)/2, y, s)
 
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode, uint8_t len);

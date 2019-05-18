@@ -143,7 +143,7 @@ void displayTrims(uint8_t phase)
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
+          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir), TINSIZE|VERTICAL);
         }
       }
     }
@@ -165,7 +165,7 @@ void displayTrims(uint8_t phase)
       }
       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
+          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir), TINSIZE);
         }
       }
     }
@@ -227,7 +227,7 @@ void displayVoltageOrAlarm()
   #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(PCBX7)
+#if defined(PCBX7) || defined(PCBX9LITE)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
@@ -258,7 +258,6 @@ void displayVoltageOrAlarm()
 #define EVT_KEY_STATISTICS             EVT_KEY_LONG(KEY_UP)
 #endif
 
-#if defined(NAVIGATION_MENUS)
 void onMainViewMenu(const char *result)
 {
   if (result == STR_RESET_TIMER1) {
@@ -299,7 +298,6 @@ void onMainViewMenu(const char *result)
     chainMenu(menuAboutView);
   }
 }
-#endif
 
 void menuMainView(event_t event)
 {
@@ -334,7 +332,6 @@ void menuMainView(event_t event)
       }
       break;
 
-#if defined(NAVIGATION_MENUS)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
 
@@ -348,7 +345,6 @@ void menuMainView(event_t event)
       POPUP_MENU_ADD_ITEM(STR_ABOUT_US);
       POPUP_MENU_START(onMainViewMenu);
       break;
-#endif
 
 #if MENUS_LOCK != 2 /*no menus*/
 #if defined(EVT_KEY_LAST_MENU)
@@ -358,13 +354,11 @@ void menuMainView(event_t event)
       break;
 #endif
 
-    CASE_EVT_ROTARY_BREAK
     case EVT_KEY_MODEL_MENU:
       pushMenu(menuModelSelect);
       killEvents(event);
       break;
 
-    CASE_EVT_ROTARY_LONG
     case EVT_KEY_GENERAL_MENU:
       pushMenu(menuRadioSetup);
       killEvents(event);
@@ -403,23 +397,12 @@ void menuMainView(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_EXIT):
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
       if (gvarDisplayTimer > 0) {
         gvarDisplayTimer = 0;
       }
 #endif
-#if !defined(NAVIGATION_MENUS)
-      if (view == VIEW_TIMER2) {
-        timerReset(1);
-      }
-#endif
       break;
-
-#if !defined(NAVIGATION_MENUS)
-    case EVT_KEY_LONG(KEY_EXIT):
-      flightReset();
-      break;
-#endif
   }
 
   {
@@ -499,7 +482,17 @@ void menuMainView(event_t event)
       doMainScreenGraphics();
 
       // Switches
-#if defined(PCBTARANIS)
+#if defined(PCBX9LITE)
+      static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
+      static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
+      for (int i=0; i<NUM_SWITCHES; ++i) {
+        if (SWITCH_EXISTS(i)) {
+          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+          getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+          drawSwitch(x[i], y[i], sw, 0);
+        }
+      }
+#elif defined(PCBTARANIS)
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_EXISTS(i)) {
           uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
@@ -556,11 +549,11 @@ void menuMainView(event_t event)
   }
 #endif
 
-#if defined(GVARS) && !defined(PCBSTD)
+#if defined(GVARS)
   if (gvarDisplayTimer > 0) {
     gvarDisplayTimer--;
     warningText = STR_GLOBAL_VAR;
-    drawMessageBox();
+    drawMessageBox(warningText);
     lcdDrawSizedText(16, 5*FH, g_model.gvars[gvarLastChanged].name, LEN_GVAR_NAME, ZCHAR);
     lcdDrawText(16+6*FW, 5*FH, "[", BOLD);
     drawGVarValue(lcdLastRightPos, 5*FH, gvarLastChanged, GVAR_VALUE(gvarLastChanged, getGVarFlightMode(mixerCurrentFlightMode, gvarLastChanged)), LEFT|BOLD);
@@ -573,7 +566,7 @@ void menuMainView(event_t event)
 #endif
 
 #if defined(DSM2)
-  if (moduleFlag[0] == MODULE_BIND) {
+  if (moduleState[0].mode == MODULE_MODE_BIND) {
     // Issue 98
     lcdDrawText(15*FW, 0, "BIND", 0);
   }

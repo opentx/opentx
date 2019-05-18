@@ -110,7 +110,7 @@ void readModelNotes()
   char *buf = strcat_modelname(&s_text_file[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
   strcpy(buf, TEXT_EXT);
 
-  clearKeyEvents();
+  waitKeysReleased();
   event_t event = EVT_ENTRY;
   while (event != EVT_KEY_BREAK(KEY_EXIT)) {
     lcdRefreshWait();

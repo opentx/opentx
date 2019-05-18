@@ -301,7 +301,7 @@ getvalue_t getValue(mixsrc_t i)
     return anas[i-MIXSRC_FIRST_INPUT];
   }
 #if defined(LUA_INPUTS)
-  else if (i < MIXSRC_LAST_LUA) {
+  else if (i <= MIXSRC_LAST_LUA) {
 #if defined(LUA_MODEL_SCRIPTS)
     div_t qr = div(i-MIXSRC_FIRST_LUA, MAX_SCRIPT_OUTPUTS);
     return scriptInputsOutputs[qr.quot].outputs[qr.rem].value;
@@ -311,19 +311,16 @@ getvalue_t getValue(mixsrc_t i)
   }
 #endif
 
-#if defined(LUA_INPUTS)
   else if (i <= MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
-    return calibratedAnalogs[i-MIXSRC_Rud];
+    return calibratedAnalogs[i - MIXSRC_Rud];
   }
-#else
-  else if (i>=MIXSRC_FIRST_STICK && i<=MIXSRC_LAST_POT+NUM_MOUSE_ANALOGS) {
-    return calibratedAnalogs[i-MIXSRC_Rud];
-  }
-#endif
 
-#if defined(PCBGRUVIN9X) || defined(PCBMEGA2560) || defined(ROTARY_ENCODERS)
-  else if (i <= MIXSRC_LAST_ROTARY_ENCODER) {
-    return getRotaryEncoder(i-MIXSRC_REa);
+#if defined(GYRO)
+  else if (i == MIXSRC_GYRO1) {
+    return gyro.scaledX();
+  }
+  else if (i == MIXSRC_GYRO2) {
+    return gyro.scaledY();
   }
 #endif
 
@@ -347,7 +344,7 @@ getvalue_t getValue(mixsrc_t i)
   else if ((i >= MIXSRC_FIRST_SWITCH) && (i <= MIXSRC_LAST_SWITCH)) {
     mixsrc_t sw = i-MIXSRC_FIRST_SWITCH;
     if (SWITCH_EXISTS(sw)) {
-      return (switchState(3*sw) ? -1024 : (switchState(3*sw+1) ? 0 : 1024));
+      return (switchState(3*sw) ? -1024 : (IS_CONFIG_3POS(sw) && switchState(3*sw+1) ? 0 : 1024));
     }
     else {
       return 0;
@@ -377,11 +374,13 @@ getvalue_t getValue(mixsrc_t i)
     return ex_chans[i-MIXSRC_CH1];
   }
 
-#if defined(GVARS)
   else if (i <= MIXSRC_LAST_GVAR) {
+#if defined(GVARS)
     return GVAR_VALUE(i-MIXSRC_GVAR1, getGVarFlightMode(mixerCurrentFlightMode, i - MIXSRC_GVAR1));
-  }
+#else
+    return 0;
 #endif
+  }
 
   else if (i == MIXSRC_TX_VOLTAGE) {
     return g_vbat100mV;
@@ -489,14 +488,6 @@ void evalInputs(uint8_t mode)
       calibratedAnalogs[ch] = v;
     }
   }
-
-#if defined(ROTARY_ENCODERS)
-  for (uint8_t i=0; i<NUM_ROTARY_ENCODERS; i++) {
-    if (getRotaryEncoder(i) == 0) {
-      anaCenter |= ((BeepANACenter)1 << (NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS+i));
-    }
-  }
-#endif
 
 #if NUM_MOUSE_ANALOGS > 0
   for (uint8_t i=0; i<NUM_MOUSE_ANALOGS; i++) {

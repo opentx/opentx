@@ -222,8 +222,8 @@ void displayTopBar()
 
     /* Rx voltage */
     altitude_icon_x = batt_icon_x+7*FW+3;
-    if (g_model.frsky.voltsSource) {
-      uint8_t item = g_model.frsky.voltsSource-1;
+    if (g_model.voltsSource) {
+      uint8_t item = g_model.voltsSource-1;
       if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & voltsItem = telemetryItems[item];
         if (voltsItem.isAvailable()) {
@@ -234,8 +234,8 @@ void displayTopBar()
     }
 
     /* Altitude */
-    if (g_model.frsky.altitudeSource && !IS_FAI_ENABLED()) {
-      uint8_t item = g_model.frsky.altitudeSource-1;
+    if (g_model.altitudeSource && !IS_FAI_ENABLED()) {
+      uint8_t item = g_model.altitudeSource - 1;
       if (item < MAX_TELEMETRY_SENSORS) {
         TelemetryItem & altitudeItem = telemetryItems[item];
         if (altitudeItem.isAvailable()) {

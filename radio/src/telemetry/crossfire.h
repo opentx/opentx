@@ -21,6 +21,9 @@
 #ifndef _CROSSFIRE_H_
 #define _CROSSFIRE_H_
 
+#include <inttypes.h>
+#include "dataconstants.h"
+
 // Device address
 #define BROADCAST_ADDRESS              0x00
 #define RADIO_ADDRESS                  0xEA
@@ -75,7 +78,6 @@ enum CrossfireSensorIndexes {
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
-bool isCrossfireOutputBufferAvailable();
 
 #if SPORT_MAX_BAUDRATE < 400000
 const uint32_t CROSSFIRE_BAUDRATES[] = {
@@ -86,12 +88,13 @@ const uint8_t CROSSFIRE_PERIODS[] = {
   4,
   16,
 };
-#define CROSSFIRE_BAUDRATE             CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
-#define CROSSFIRE_PERIOD         CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate]
+#define CROSSFIRE_BAUDRATE    CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
+#define CROSSFIRE_PERIOD      CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate]
 #else
-#define CROSSFIRE_BAUDRATE             400000
+#define CROSSFIRE_BAUDRATE       400000
 #define CROSSFIRE_PERIOD         4 // 4ms
 #endif
 
+#define CROSSFIRE_TELEM_MIRROR_BAUDRATE   115200
 
 #endif // _CROSSFIRE_H_

@@ -38,10 +38,16 @@ rm -rf build
 mkdir build
 cd build
 
+cmake ${COMMON_OPTIONS} -DPCB=AR9X ${SRCDIR}
+make -j${JOBS} libsimulator
+
 cmake ${COMMON_OPTIONS} -DPCB=SKY9X ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=9XRPRO ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${COMMON_OPTIONS} -DPCB=X9LITE ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=X7 ${SRCDIR}
@@ -54,6 +60,9 @@ cmake ${COMMON_OPTIONS} -DPCB=X9D+ ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=XLITE ${SRCDIR}
+make -j${JOBS} libsimulator
+
+cmake ${COMMON_OPTIONS} -DPCB=XLITES ${SRCDIR}
 make -j${JOBS} libsimulator
 
 cmake ${COMMON_OPTIONS} -DPCB=X9E ${SRCDIR}

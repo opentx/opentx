@@ -39,10 +39,6 @@
   #define KEYS_GPIO_REG_RIGHT           GPIOC->IDR
   #define KEYS_GPIO_PIN_RIGHT           GPIO_Pin_4  // PC.04
 #elif defined(PCBX10)
-  // #define KEYS_GPIO_REG_UNUSED          GPIOH->IDR
-  // #define KEYS_GPIO_PIN_UNUSED          GPIO_Pin_14 // PH.14
-  // #define KEYS_GPIO_REG_UNUSED          GPIOH->IDR
-  // #define KEYS_GPIO_PIN_UNUSED          GPIO_Pin_15 // PH.15
   #define KEYS_GPIO_REG_ENTER           GPIOI->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_8  // PI.08
   #define KEYS_GPIO_REG_PGDN            GPIOI->IDR
@@ -62,6 +58,13 @@
 #define ROTARY_ENCODER_GPIO_PIN_A       GPIO_Pin_11 // PH.11
 #define ROTARY_ENCODER_GPIO_PIN_B       GPIO_Pin_10 // PH.10
 #define ROTARY_ENCODER_POSITION()       ((ROTARY_ENCODER_GPIO->IDR >> 10) & 0x03)
+#define ROTARY_ENCODER_EXTI_LINE1       EXTI_Line11
+#define ROTARY_ENCODER_EXTI_LINE2       EXTI_Line10
+#define ROTARY_ENCODER_EXTI_IRQn1       EXTI15_10_IRQn
+#define ROTARY_ENCODER_EXTI_IRQHandler1 EXTI15_10_IRQHandler
+#define ROTARY_ENCODER_EXTI_PortSource  EXTI_PortSourceGPIOH
+#define ROTARY_ENCODER_EXTI_PinSource1  EXTI_PinSource11
+#define ROTARY_ENCODER_EXTI_PinSource2  EXTI_PinSource10
 
 // Switches
 #define SWITCHES_GPIO_REG_A_H           GPIOH->IDR
@@ -169,7 +172,7 @@
   #define KEYS_GPIOD_PINS               (SWITCHES_GPIO_PIN_C_H | TRIMS_GPIO_PIN_RHL | TRIMS_GPIO_PIN_RHR | TRIMS_GPIO_PIN_LSD)
   #define KEYS_GPIOE_PINS               (SWITCHES_GPIO_PIN_E_L)
   #define KEYS_GPIOG_PINS               (SWITCHES_GPIO_PIN_D_L | SWITCHES_GPIO_PIN_G_H | SWITCHES_GPIO_PIN_G_L | SWITCHES_GPIO_PIN_H | TRIMS_GPIO_PIN_LVD)
-  #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12) // | GPIO_Pin_14 | GPIO_Pin_15)
+  #define KEYS_GPIOH_PINS               (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_9 | GPIO_Pin_10 | GPIO_Pin_11 | GPIO_Pin_12 | GPIO_Pin_14 | GPIO_Pin_15)
   #define KEYS_GPIOI_PINS               (GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_11 | GPIO_Pin_15)
   #define KEYS_GPIOJ_PINS               (SWITCHES_GPIO_PIN_D_H | TRIMS_GPIO_PIN_LVU | TRIMS_GPIO_PIN_RVD | TRIMS_GPIO_PIN_RVU | TRIMS_GPIO_PIN_LSU)
 #endif
@@ -192,11 +195,12 @@
   #define ADC_GPIO_PIN_MOUSE1           GPIO_Pin_8 // PF.08 ADC3_IN6 J5 MOUSE_X
   #define ADC_GPIO_PIN_MOUSE2           GPIO_Pin_9 // PF.09 ADC3_IN7 J6 MOUSE_Y
   #define ADC_GPIO_MOUSE                GPIOF
-  #define ADC_IN_MOUSE1                 6
-  #define ADC_IN_MOUSE2                 7
+  #define ADC_CHANNEL_MOUSE1            6
+  #define ADC_CHANNEL_MOUSE2            7
   #define ADC_DMA                       DMA2
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SAMPTIME                  3
+  #define ADC_CHANNEL_RTC               0 // TODO later ... ADC1_IN18
 #elif defined(PCBX10)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
   #define ADC_RCC_APB1Periph            (RCC_APB1Periph_TIM5)
@@ -221,7 +225,7 @@
   #define PWM_GPIOA_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
   #define ADC_GPIOA_PINS                (STICKS_PWM_ENABLED() ? 0 : (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3))
   #define ADC_GPIOC_PINS                (GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3)
-  #define ADC_GPIOF_PINS                (GPIO_Pin_6 | GPIO_Pin_7) // | GPIO_Pin_8 | GPIO_Pin_9)
+  #define ADC_GPIOF_PINS                (GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9)
   #define ADC_CHANNEL_STICK_LH          ADC_Channel_0   // ADC3_IN0
   #define ADC_CHANNEL_STICK_LV          ADC_Channel_1   // ADC3_IN1
   #define ADC_CHANNEL_STICK_RH          ADC_Channel_2   // ADC3_IN2
@@ -234,6 +238,7 @@
   #define ADC_CHANNEL_BATT              ADC_Channel_5   // ADC3_IN5
   #define ADC_CHANNEL_EXT1              ADC_Channel_6   // ADC3_IN6
   #define ADC_CHANNEL_EXT2              ADC_Channel_7   // ADC3_IN7
+  #define ADC_CHANNEL_RTC               0 // TODO later ... ADC1_IN18
   #define ADC_MAIN                      ADC3
   #define ADC_SAMPTIME                  3
   #define ADC_DMA                       DMA2
@@ -246,11 +251,8 @@
 // Power
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_GPIO                        GPIOJ
-#define PWR_SWITCH_GPIO_REG             PWR_GPIO->IDR
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
-#define PWR_ON_GPIO_MODER               GPIO_MODER_MODER1
-#define PWR_ON_GPIO_MODER_OUT           GPIO_MODER_MODER1_0
 
 // S.Port update connector
 #define SPORT_MAX_BAUDRATE              250000 // < 400000
@@ -512,18 +514,19 @@
 #endif
 
 // Internal Module
+#define HARDWARE_INTERNAL_MODULE
 #define INTMODULE_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
 #define INTMODULE_PWR_GPIO              GPIOA
 #define INTMODULE_PWR_GPIO_PIN          GPIO_Pin_8  // PA.08
-#define INTMODULE_TX_GPIO               GPIOB
+#define INTMODULE_GPIO                  GPIOB
 #define INTMODULE_TX_GPIO_PIN           GPIO_Pin_6  // PB.06
-#define INTMODULE_RX_GPIO               GPIOB
 #define INTMODULE_RX_GPIO_PIN           GPIO_Pin_7  // PB.07
-#define INTMODULE_TX_GPIO_PinSource     GPIO_PinSource6
-#define INTMODULE_RX_GPIO_PinSource     GPIO_PinSource7
+#define INTMODULE_GPIO_PinSource_TX     GPIO_PinSource6
+#define INTMODULE_GPIO_PinSource_RX     GPIO_PinSource7
 #define INTMODULE_USART                 USART1
-#define INTMODULE_TX_GPIO_AF            GPIO_AF_USART1
+#define INTMODULE_GPIO_AF               GPIO_AF_USART1
 #define INTMODULE_USART_IRQn            USART1_IRQn
+#define INTMODULE_USART_IRQHandler      USART1_IRQHandler
 #define INTMODULE_DMA_STREAM            DMA2_Stream7
 #define INTMODULE_DMA_STREAM_IRQ        DMA2_Stream7_IRQn
 #define INTMODULE_DMA_STREAM_IRQHandler DMA2_Stream7_IRQHandler
@@ -634,7 +637,7 @@
 #define BT_USART                        USART6
 #define BT_GPIO_AF                      GPIO_AF_USART6
 #define BT_USART_IRQn                   USART6_IRQn
-#define BT_GPIO_TXRX                    GPIOG
+#define BT_USART_GPIO                   GPIOG
 #define BT_TX_GPIO_PIN                  GPIO_Pin_14 // PG.14
 #define BT_RX_GPIO_PIN                  GPIO_Pin_9  // PG.09
 #define BT_TX_GPIO_PinSource            GPIO_PinSource14

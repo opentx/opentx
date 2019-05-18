@@ -71,7 +71,7 @@ const char * logsOpen()
       len = i+1;
     if (len) {
       if (filename[i])
-        filename[i] = idx2char(filename[i]);
+        filename[i] = zchar2char(filename[i]);
       else
         filename[i] = '_';
     }
@@ -170,6 +170,10 @@ void writeHeader()
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SF,SH"
 #elif defined(PCBXLITE)
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD"
+#elif defined(PCBXLITES)
+  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF"
+#elif defined(PCBX9LITE)
+  #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SE,SF"
 #else
   #define STR_SWITCHES_LOG_HEADER  "SA,SB,SC,SD,SE,SF,SG,SH"
 #endif
@@ -270,7 +274,16 @@ void logsWrite()
       }
 
 // TODO: use hardware config to populate
-#if defined(PCBXLITE)
+#if defined(PCBX9LITE)
+f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
+          GET_3POS_STATE(SA),
+          GET_3POS_STATE(SB),
+          GET_3POS_STATE(SC),
+          GET_2POS_STATE(SE),
+          GET_2POS_STATE(SF),
+          getLogicalSwitchesStates(32),
+          getLogicalSwitchesStates(0));
+#elif defined(PCBXLITE)
       f_printf(&g_oLogFile, "%d,%d,%d,%d,0x%08X%08X,",
           GET_3POS_STATE(SA),
           GET_3POS_STATE(SB),

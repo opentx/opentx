@@ -59,7 +59,7 @@ uint8_t barCoord(int16_t value, int16_t min, int16_t max)
 }
 
 
-bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
+bool displayGaugesTelemetryScreen(TelemetryScreenData & screen)
 {
   // Custom Screen with gauges
   uint8_t barHeight = 5;
@@ -106,7 +106,7 @@ bool displayGaugesTelemetryScreen(FrSkyScreenData & screen)
   return barHeight < 13;
 }
 
-bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
+bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
 {
   // Custom Screen with numbers
   uint8_t fields_count = 0;
@@ -162,7 +162,7 @@ bool displayNumbersTelemetryScreen(FrSkyScreenData & screen)
 
 bool displayCustomTelemetryScreen(uint8_t index)
 {
-  FrSkyScreenData & screen = g_model.frsky.screens[index];
+  TelemetryScreenData & screen = g_model.screens[index];
 
   if (IS_BARS_SCREEN(s_frsky_view)) {
     return displayGaugesTelemetryScreen(screen);

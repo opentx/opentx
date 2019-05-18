@@ -19,6 +19,8 @@
  */
 
 #include "opentx.h"
+#define _USE_MATH_DEFINES
+#include <math.h>
 
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
@@ -33,7 +35,7 @@ bool isFaiForbidden(source_t idx)
 
   switch (telemetryProtocol) {
 
-    case PROTOCOL_FRSKY_SPORT:
+    case PROTOCOL_TELEMETRY_FRSKY_SPORT:
       if (sensor->id == RSSI_ID) {
         return false;
       }
@@ -42,7 +44,7 @@ bool isFaiForbidden(source_t idx)
       }
       break;
 
-    case PROTOCOL_FRSKY_D:
+    case PROTOCOL_TELEMETRY_FRSKY_D:
       if (sensor->id == D_RSSI_ID) {
         return false;
       }
@@ -52,7 +54,7 @@ bool isFaiForbidden(source_t idx)
       break;
 
 #if defined(CROSSFIRE)
-    case PROTOCOL_PULSES_CROSSFIRE:
+    case PROTOCOL_TELEMETRY_CROSSFIRE:
       if (sensor->id == RX_RSSI1_INDEX) {
         return false;
       }
@@ -72,9 +74,9 @@ bool isFaiForbidden(source_t idx)
 uint32_t getDistFromEarthAxis(int32_t latitude)
 {
   uint32_t lat = abs(latitude) / 10000;
-  uint32_t angle2 = (lat*lat) / 10000;
+  uint32_t angle2 = (lat * lat) / 10000;
   uint32_t angle4 = angle2 * angle2;
-  return 139*(((uint32_t)10000000-((angle2*(uint32_t)123370)/81)+(angle4/25))/12500);
+  return 139*(((uint32_t)10000000 - ((angle2*(uint32_t)123370)/81) + (angle4/25))/12500);
 }
 
 void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32_t unit, uint32_t prec)
@@ -334,7 +336,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
     case TELEM_FORMULA_DIST:
       if (sensor.dist.gps) {
         TelemetryItem gpsItem = telemetryItems[sensor.dist.gps-1];
-        TelemetryItem * altItem = NULL;
+        TelemetryItem * altItem = nullptr;
         if (!gpsItem.isAvailable()) {
           return;
         }
@@ -353,19 +355,19 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           }
         }
         uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
-        uint32_t dist = EARTH_RADIUS * angle / 1000000;
-        uint32_t result = dist*dist;
+        uint32_t dist = (EARTH_RADIUS * M_PI / 180) * angle / 1000000;
+        uint32_t result = dist * dist;
 
         angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
         dist = gpsItem.distFromEarthAxis * angle / 1000000;
-        result += dist*dist;
+        result += dist * dist;
 
         // Length on ground (ignoring curvature of the earth)
         result = isqrt32(result);
 
         if (altItem) {
           dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
-          result = dist*dist + result*result;
+          result = (dist * dist) + (result * result);
           result = isqrt32(result);
         }
 
@@ -479,33 +481,13 @@ int lastUsedTelemetryIndex()
   return -1;
 }
 
-bool isValidIdAndInstance(uint16_t id, uint8_t instance)
-{
-  bool sensorFound = false;
-
-  for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
-    TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id)
-    {
-      sensorFound = true;
-      if (telemetrySensor.instance == instance || g_model.ignoreSensorIds)
-        return true;
-    }
-  }
-
-  if (sensorFound)
-    return false;
-
-  return true;
-}
-
 int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
   bool available = false;
 
   for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
-    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.instance == instance || g_model.ignoreSensorIds)) {
+    if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.isSameInstance(protocol, instance) || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
       available = true;
       // we continue search here, because sensors can share the same id and instance

@@ -532,9 +532,11 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
     TRACE_ERROR("luaLoadScriptFileToState(%s, %s): Error loading script: %s\n", filename, lmode, lua_tostring(L, -1));
     if (lstatus == LUA_ERRFILE) {
       ret = SCRIPT_NOFILE;
-    } else if (lstatus == LUA_ERRSYNTAX) {
+    }
+    else if (lstatus == LUA_ERRSYNTAX) {
       ret = SCRIPT_SYNTAX_ERROR;
-    } else {  //  LUA_ERRMEM or LUA_ERRGCMM
+    }
+    else {  //  LUA_ERRMEM or LUA_ERRGCMM
       ret = SCRIPT_PANIC;
     }
   }
@@ -665,16 +667,16 @@ bool luaLoadTelemetryScript(uint8_t index)
   TelemetryScreenType screenType = TELEMETRY_SCREEN_TYPE(index);
 
   if (screenType == TELEMETRY_SCREEN_TYPE_SCRIPT) {
-    TelemetryScriptData & script = g_model.frsky.screens[index].script;
+    TelemetryScriptData & script = g_model.screens[index].script;
     if (ZEXIST(script.file)) {
       if (luaScriptsCount < MAX_SCRIPTS) {
         ScriptInternalData & sid = scriptInternalData[luaScriptsCount++];
         sid.reference = SCRIPT_TELEMETRY_FIRST+index;
         sid.state = SCRIPT_NOFILE;
-        char filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)+sizeof(SCRIPT_EXT)] = SCRIPTS_TELEM_PATH "/";
-        strncpy(filename+sizeof(SCRIPTS_TELEM_PATH), script.file, sizeof(script.file));
-        filename[sizeof(SCRIPTS_TELEM_PATH)+sizeof(script.file)] = '\0';
-        strcat(filename+sizeof(SCRIPTS_TELEM_PATH), SCRIPT_EXT);
+        char filename[sizeof(SCRIPTS_TELEM_PATH) + LEN_SCRIPT_FILENAME + sizeof(SCRIPT_EXT)] = SCRIPTS_TELEM_PATH "/";
+        strncpy(filename + sizeof(SCRIPTS_TELEM_PATH), script.file, LEN_SCRIPT_FILENAME);
+        filename[sizeof(SCRIPTS_TELEM_PATH) + LEN_SCRIPT_FILENAME] = '\0';
+        strcat(filename + sizeof(SCRIPTS_TELEM_PATH), SCRIPT_EXT);
         if (luaLoad(lsScripts, filename, sid) == SCRIPT_PANIC) {
           return false;
         }
@@ -733,7 +735,7 @@ void luaLoadPermanentScripts()
 void displayLuaError(const char * title)
 {
 #if !defined(COLORLCD)
-  DRAW_MESSAGE_BOX(title);
+  drawMessageBox(title);
 #endif
   if (lua_warning_info[0]) {
     char * split = strstr(lua_warning_info, ": ");
@@ -941,7 +943,7 @@ bool luaDoOneRunPermanentScript(event_t evt, int i, uint32_t scriptType)
   else {
 #if defined(PCBTARANIS)
 #if defined(SIMU) || defined(DEBUG)
-    TelemetryScriptData & script = g_model.frsky.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
+    TelemetryScriptData & script = g_model.screens[sid.reference-SCRIPT_TELEMETRY_FIRST].script;
     filename = script.file;
 #endif
     if ((scriptType & RUN_TELEM_FG_SCRIPT) && (menuHandlers[0]==menuViewTelemetryFrsky && sid.reference==SCRIPT_TELEMETRY_FIRST+s_frsky_view)) {

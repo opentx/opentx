@@ -132,6 +132,11 @@ inline void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags attr=0)
   lcd->drawText(x, y, s, attr);
 }
 
+inline void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags attr=0)
+{
+  lcd->drawText(LCD_W/2, y, s, attr | CENTERED);
+}
+
 inline void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags attr=0)
 {
   lcd->drawSizedText(x, y, s, len, attr);
@@ -146,6 +151,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags=0, uint8_t 
 
 void drawRtcTime(coord_t x, coord_t y, LcdFlags att=0);
 void drawTimer(coord_t x, coord_t y, putstime_t tme, LcdFlags att=0);
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags=0);
 
 void putsModelName(coord_t x, coord_t y, char *name, uint8_t id, LcdFlags att);
 void putsStickName(coord_t x, coord_t y, uint8_t idx, LcdFlags att=0);

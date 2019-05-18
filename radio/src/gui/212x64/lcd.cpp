@@ -244,7 +244,7 @@ uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
   for (int i=0; len==0 || i<len; ++i) {
-    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    unsigned char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
     if (!c) {
       break;
     }
@@ -274,7 +274,7 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
 #if defined(BOOT)
     unsigned char c = *s;
 #else
-    unsigned char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    unsigned char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
 #endif
 
     if (setx) {
@@ -345,6 +345,12 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len)
 {
   lcdDrawSizedText(x, y, s, len, 0);
+}
+
+void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags)
+{
+  coord_t x = (LCD_W - getTextWidth(s, flags)) / 2;
+  lcdDrawText(x, y, s, flags);
 }
 
 void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags)

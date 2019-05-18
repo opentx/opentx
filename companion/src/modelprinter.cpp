@@ -1063,7 +1063,7 @@ QString ModelPrinter::printTelemetrySource(int val)
 {
   QStringList strings = QStringList() << tr("None");
 
-  for (int i=1; i<=CPN_MAX_SENSORS; ++i) {
+  for (unsigned i=1; i<=CPN_MAX_SENSORS; ++i) {
     strings << QString("%1").arg(model.sensorData[i-1].label);
   }
 

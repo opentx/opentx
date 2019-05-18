@@ -21,12 +21,6 @@ set(LUA_INCLUDES
   -I${RADIO_SRC_DIRECTORY}/${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc
   )
 
-if(WIN32 AND WIN_INCLUDE_DIRS)
-  foreach(include ${WIN_INCLUDE_DIRS})
-    set(LUA_INCLUDES "${LUA_INCLUDES} -I${include}")
-  endforeach()
-endif()
-
 set(LUA_INCLUDES_STM32F2
   ${LUA_INCLUDES}
   -DSTM32F2
@@ -40,10 +34,12 @@ set(LUA_INCLUDES_STM32F4
   )
 
 if(PYTHONINTERP_FOUND)
+  add_lua_export_target(x9lite  ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9LITE -DPCBX9)
   add_lua_export_target(x7      ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX7)
   add_lua_export_target(xlite   ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBXLITE)
-  add_lua_export_target(x9d     ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9D)
-  add_lua_export_target(x9e     ${LUA_INCLUDES_STM32F4} -DPCBTARANIS -DPCBX9E  -DSTM32F40_41xxx)
+  add_lua_export_target(xlites  ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBXLITES -DPCBXLITE -DGYRO)
+  add_lua_export_target(x9d     ${LUA_INCLUDES_STM32F2} -DPCBTARANIS -DPCBX9D -DPCBX9)
+  add_lua_export_target(x9e     ${LUA_INCLUDES_STM32F4} -DPCBTARANIS -DPCBX9E -DPCBX9 -DSTM32F40_41xxx)
   add_lua_export_target(x10     ${LUA_INCLUDES_STM32F4} -DPCBHORUS   -DPCBX10  -DSTM32F40_41xxx)
   add_lua_export_target(x12s    ${LUA_INCLUDES_STM32F4} -DPCBHORUS   -DPCBX12S -DSTM32F40_41xxx)
 endif()

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -21,6 +21,8 @@
 #ifndef _BOARD_SKY9X_H_
 #define _BOARD_SKY9X_H_
 
+#include <inttypes.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include "board_lowlevel.h"
 #include "audio_driver.h"
@@ -32,15 +34,15 @@ extern uint16_t ResetReason;
 #define FIRMWARE_ADDRESS               0x00400000
 
 // Board driver
+void boardPreInit(void);
 void boardInit(void);
 #define boardOff()  pwrOff()
 
 // Rotary Encoder driver
-void rotencInit();
-void rotencEnd();
+void rotaryEncoderInit();
+void rotaryEncoderEnd();
 
-#if !defined(REVX) && !defined(AR9X)
-  #define ROTARY_ENCODERS              1
+#if !defined(REVX) && !defined(PCBAR9X)
   #define ROTARY_ENCODER_NAVIGATION
   #define REA_DOWN()                   (!(PIOB->PIO_PDSR & 0x40))
 #else
@@ -60,7 +62,7 @@ enum EnumKeys
   KEY_PLUS = KEY_UP,
   KEY_RIGHT,
   KEY_LEFT,
-  
+
   TRM_BASE,
   TRM_LH_DWN = TRM_BASE,
   TRM_LH_UP,
@@ -71,10 +73,6 @@ enum EnumKeys
   TRM_RH_DWN,
   TRM_RH_UP,
   TRM_LAST = TRM_RH_UP,
-
-#if defined(ROTARY_ENCODERS)
-  BTN_REa,
-#endif
 
   NUM_KEYS
 };
@@ -254,13 +252,15 @@ uint32_t readTrims(void);
 
 // Pulses driver
 void init_no_pulses(uint32_t port);
-void disable_no_pulses(uint32_t port);
 void init_ppm(uint32_t port);
 void disable_ppm(uint32_t port);
-void init_pxx(uint32_t port);
-void disable_pxx(uint32_t port);
-void init_serial(uint32_t port, uint32_t baudrate, uint32_t period_half_us);
+void init_pxx1_pulses(uint32_t port);
+void disable_pxx1_pulses(uint32_t port);
 void disable_serial(uint32_t port);
+void init_module_timer( uint32_t module_index, uint32_t period, uint8_t state);
+void disable_module_timer( uint32_t module_index);
+void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleSendNextFrame();
 
 // SD driver
 #if defined(SIMU)
@@ -301,8 +301,11 @@ extern "C" {
 
 // ADC driver
 #define NUM_POTS                       3
+#define STORAGE_NUM_POTS               3
 #define NUM_SLIDERS                    0
+#define STORAGE_NUM_SLIDERS            0
 #define NUM_XPOTS                      0
+#define STORAGE_NUM_MOUSE_ANALOGS      0
 enum Analogs {
   STICK1,
   STICK2,
@@ -333,12 +336,12 @@ enum CalibratedAnalogs {
 };
 #define IS_POT(x)                      ((x)>=POT_FIRST && (x)<=POT_LAST)
 #define IS_SLIDER(x)                   false
+#define STICKS_PWM_ENABLED()           false
 void adcInit();
 void adcRead(void);
 uint16_t getAnalogValue(uint8_t index);
 void setSticksGain(uint8_t gains);
 #define NUM_MOUSE_ANALOGS              0
-#define NUM_DUMMY_ANAS                 0
 
 // Battery driver
 uint16_t getBatteryVoltage();          // returns current battery voltage in 10mV steps
@@ -405,8 +408,9 @@ void debugPutc(const char c);
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 uint32_t telemetryTransmitPending();
-void telemetryTransmitBuffer(uint8_t * buffer, uint32_t size);
+void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
+void sportSendBuffer(const uint8_t * buffer, uint32_t size);
 
 // Second UART driver
 void serial2TelemetryInit(unsigned int protocol);

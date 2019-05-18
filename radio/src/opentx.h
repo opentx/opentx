@@ -25,8 +25,10 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include <math.h>
 #include "definitions.h"
 #include "opentx_types.h"
+
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
@@ -55,6 +57,12 @@
   #define CASE_VARIO(x) x,
 #else
   #define CASE_VARIO(x)
+#endif
+
+#if defined(GYRO)
+#define CASE_GYRO(x) x,
+#else
+#define CASE_GYRO(x)
 #endif
 
 #if defined(LUA)
@@ -123,6 +131,12 @@
   #define CASE_PXX(x)
 #endif
 
+#if defined(PXX2)
+  #define CASE_PXX2(x) x,
+#else
+  #define CASE_PXX2(x)
+#endif
+
 #if defined(SDCARD)
   #define CASE_SDCARD(x) x,
 #else
@@ -165,15 +179,11 @@
   #define CASE_PCBX9E(x)
 #endif
 
-#if defined(PCBSKY9X) && !defined(AR9X) && !defined(REVA)
+#if defined(PCBSKY9X) && !defined(PCBAR9X) && !defined(REVA)
   #define TX_CAPACITY_MEASUREMENT
   #define CASE_CAPACITY(x) x,
 #else
   #define CASE_CAPACITY(x)
-#endif
-
-#if ROTARY_ENCODERS > 0
-  #define ROTARY_ENCODER_NAVIGATION
 #endif
 
 #if defined(FAI)
@@ -190,16 +200,16 @@
 #define IS_FAI_FORBIDDEN(idx) (IS_FAI_ENABLED() && isFaiForbidden(idx))
 
 #if defined(BLUETOOTH)
-#if defined(X9E) && !defined(USEHORUSBT)
-  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
-#else
-  #define IS_BLUETOOTH_TRAINER()       (g_model.trainerMode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE || g_model.trainerMode == TRAINER_MODE_SLAVE_BLUETOOTH)
-#endif
+  #if defined(X9E) && !defined(USEHORUSBT)
+    #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
+  #else
+    #define IS_BLUETOOTH_TRAINER()       (g_model.trainerData.mode == TRAINER_MODE_MASTER_BLUETOOTH || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+    #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE || g_model.trainerData.mode == TRAINER_MODE_SLAVE_BLUETOOTH)
+  #endif
 #else
   #define IS_BLUETOOTH_TRAINER()       false
-  #define IS_SLAVE_TRAINER()           (g_model.trainerMode == TRAINER_MODE_SLAVE)
+  #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #endif
 
 // RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
@@ -210,6 +220,12 @@
 #define RESXl      1024l
 
 #include "board.h"
+
+#if defined(JACK_DETECT_GPIO)
+#define CASE_JACK_DETECT(x) x,
+#else
+#define CASE_JACK_DETECT(x)
+#endif
 
 #if defined(DISK_CACHE)
   #include "disk_cache.h"
@@ -236,7 +252,16 @@
 
 #include "myeeprom.h"
 
-#define memclear(p, s)                 memset(p, 0, s)
+inline void memclear(void * p, size_t size)
+{
+  memset(p, 0, size);
+}
+
+inline bool is_memclear(void * p, size_t size)
+{
+  uint8_t * buf = (uint8_t *)p;
+  return buf[0] == 0 && !memcmp(buf, buf + 1, size - 1);
+}
 
 void memswap(void * a, void * b, uint8_t size);
 
@@ -273,12 +298,6 @@ void memswap(void * a, void * b, uint8_t size);
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
 #define SAVE_POT_POSITION(i)           g_model.potsWarnPosition[i] = GET_LOWRES_POT_POSITION(i)
 
-#if ROTARY_ENCODERS > 0
-  #define IF_ROTARY_ENCODERS(x) x,
-#else
-  #define IF_ROTARY_ENCODERS(x)
-#endif
-
 #define PPM_CENTER                     1500
 
 #if defined(PPM_CENTER_ADJUSTABLE)
@@ -288,13 +307,7 @@ void memswap(void * a, void * b, uint8_t size);
 #endif
 
 #include "fifo.h"
-#include "io/io_arm.h"
-
-extern volatile tmr10ms_t g_tmr10ms;
-static inline tmr10ms_t get_tmr10ms()
-{
-  return g_tmr10ms;
-}
+#include "io/frsky_sport.h"
 
 #if defined(CLI)
 #include "cli.h"
@@ -371,17 +384,10 @@ extern uint8_t channel_order(uint8_t x);
   #define SPLASH_TIMEOUT               (4*100)  // 4 seconds
 #endif
 
-#if defined(ROTARY_ENCODERS)
-  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  g_eeGeneral.reNavigation
-  extern volatile rotenc_t rotencValue[ROTARY_ENCODERS];
-  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[g_eeGeneral.reNavigation - 1]
-#elif defined(ROTARY_ENCODER_NAVIGATION)
-  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
-  extern volatile rotenc_t rotencValue[1];
-  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue[0]
-#endif
-
 #if defined(ROTARY_ENCODER_NAVIGATION)
+  #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
+  extern volatile rotenc_t rotencValue;
+  #define ROTARY_ENCODER_NAVIGATION_VALUE        rotencValue
   extern uint8_t rotencSpeed;
   #define ROTENC_LOWSPEED              1
   #define ROTENC_MIDSPEED              5
@@ -390,12 +396,12 @@ extern uint8_t channel_order(uint8_t x);
   #define ROTENC_DELAY_HIGHSPEED       16
 #endif
 
-#define HEART_TIMER_10MS               1
-#define HEART_TIMER_PULSES             2 // when multiple modules this is the first one
+constexpr uint8_t HEART_TIMER_10MS = 0x01;
+constexpr uint8_t HEART_TIMER_PULSES = 0x02; // when multiple modules this is the first one
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-#define HEART_WDT_CHECK                (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1))
+constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + (HEART_TIMER_PULSES << 0) + (HEART_TIMER_PULSES << 1));
 #else
-#define HEART_WDT_CHECK                (HEART_TIMER_10MS + HEART_TIMER_PULSES)
+constexpr uint8_t HEART_WDT_CHECK = (HEART_TIMER_10MS + HEART_TIMER_PULSES);
 #endif
 extern uint8_t heartbeat;
 
@@ -425,10 +431,11 @@ extern struct t_inactivity inactivity;
 #endif
 
 char hex2zchar(uint8_t hex);
-char idx2char(int8_t idx);
-int8_t char2idx(char c);
+char zchar2char(int8_t idx);
+int8_t char2zchar(char c);
 void str2zchar(char *dest, const char *src, int size);
 int zchar2str(char *dest, const char *src, int size);
+bool cmpStrWithZchar(const char * charString, const char * zcharString, int size);
 
 #include "keys.h"
 #include "pwr.h"
@@ -533,12 +540,7 @@ int getTrimValue(uint8_t phase, uint8_t idx);
 
 bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
-#if defined(ROTARY_ENCODERS)
-  int16_t getRotaryEncoder(uint8_t idx);
-  void incRotaryEncoder(uint8_t idx, int8_t inc);
-#endif
-
-#if   defined(PCBSKY9X)
+#if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
 #elif defined(PCBHORUS)
   #define ROTARY_ENCODER_GRANULARITY (1)
@@ -564,6 +566,8 @@ extern uint8_t trimsDisplayMask;
 void flightReset(uint8_t check=true);
 
 extern uint8_t unexpectedShutdown;
+
+extern uint16_t vbattRTC;
 
 extern uint16_t maxMixerDuration;
 
@@ -651,7 +655,7 @@ uint16_t isqrt32(uint32_t n);
 #define pauseMixerCalculations()
 #define resumeMixerCalculations()
 #else
-#include "tasks_arm.h"
+#include "tasks.h"
 extern RTOS_MUTEX_HANDLE mixerMutex;
 inline void pauseMixerCalculations()
 {
@@ -1034,14 +1038,10 @@ enum AUDIO_SOUNDS {
 };
 
 #if defined(AUDIO)
-#include "audio_arm.h"
+#include "audio.h"
 #endif
 
 #include "buzzer.h"
-
-
-
-
 #include "translations.h"
 #include "fonts.h"
 
@@ -1090,6 +1090,11 @@ void opentxResume();
 #else
 #define SD_SCREEN_FILE_LENGTH          64
 #endif
+
+#if defined(BLUETOOTH)
+#include "bluetooth.h"
+#endif
+
 union ReusableBuffer
 {
   // ARM 334 bytes
@@ -1106,15 +1111,37 @@ union ReusableBuffer
 #endif
   } modelsel;
 
-  // 65 bytes
   struct {
     char msg[64];
     uint8_t r9mPower;
-  } modelsetup;
+    BindInformation bindInformation;
+    struct {
+      union {
+        uint8_t registerStep;
+        uint8_t resetStep;
+      };
+      uint8_t registerPopupVerticalPosition;
+      uint8_t registerPopupHorizontalPosition;
+      int8_t registerPopupEditMode;
+      char registerRxName[PXX2_LEN_RX_NAME];
+      uint8_t registerLoopIndex; // will be removed later
+      union {
+        uint8_t shareReceiverIndex;
+        uint8_t resetReceiverIndex;
+      };
+      uint8_t resetReceiverFlags;
+      ModuleInformation moduleInformation;
+    } pxx2;
+#if defined(BLUETOOTH)
+    struct {
+      char devices[MAX_BLUETOOTH_DISTANT_ADDR][LEN_BLUETOOTH_ADDR+1];
+      uint8_t devicesCount;
+    } bt;
+#endif
+  } moduleSetup;
 
   // 103 bytes
-  struct
-  {
+  struct {
     int16_t midVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t loVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
     int16_t hiVals[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
@@ -1131,20 +1158,61 @@ union ReusableBuffer
 
 #if defined(SDCARD)
   // 274 bytes
-  struct
-  {
+  struct {
     char lines[NUM_BODY_LINES][SD_SCREEN_FILE_LENGTH+1+1]; // the last char is used to store the flags (directory) of the line
     uint32_t available;
     uint16_t offset;
     uint16_t count;
     char originalName[SD_SCREEN_FILE_LENGTH+1];
-  } sdmanager;
+    OtaUpdateInformation otaUpdateInformation;
+    char otaReceiverVersion[sizeof(TR_CURRENT_VERSION) + 12];
+  } sdManager;
 #endif
+
+  struct {
+    ModuleInformation modules[NUM_MODULES];
+    uint32_t updateTime;
+
+    union {
+      ModuleSettings moduleSettings;
+      ReceiverSettings receiverSettings;
+    };
+
+    uint8_t moduleSettingsDirty;
+
+  } hardwareAndSettings;
+
+  struct {
+    uint8_t stickMode;
+  } generalSettings;
 
   struct
   {
-    uint8_t stickMode;
-  } generalSettings;
+    uint8_t bars[LCD_W];
+    uint32_t freq;
+    uint32_t span;
+    uint32_t step;
+    uint8_t spanDefault;
+    uint8_t spanMax;
+    uint16_t freqDefault;
+    uint16_t freqMax;
+    uint16_t freqMin;
+    uint8_t dirty;
+  } spectrumAnalyser;
+
+  struct
+  {
+    uint32_t freq;
+    int16_t power;
+    int16_t peak;
+    uint8_t attn;
+    uint8_t dirty;
+  } powerMeter;
+
+  struct
+  {
+    int8_t preset;
+  } curveEdit;
 
 #if defined(STM32)
   // Data for the USB mass storage driver. If USB mass storage runs no menu is not allowed to be displayed
@@ -1210,8 +1278,7 @@ enum TelemetryViews {
 extern uint8_t s_frsky_view;
 #endif
 
-#define EARTH_RADIUSKM ((uint32_t)6371)
-#define EARTH_RADIUS ((uint32_t)111194) // meters * pi / 180°
+constexpr uint32_t EARTH_RADIUS = 6371009;
 
 void getGpsPilotPosition();
 void getGpsDistance();
@@ -1286,8 +1353,26 @@ extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
   #include "gps.h"
 #endif
 
-#if defined(BLUETOOTH)
-  #include "bluetooth.h"
+#if defined(JACK_DETECT_GPIO)
+enum JackMode {
+  JACK_UNSELECTED_MODE,
+  JACK_HEADPHONE_MODE,
+  JACK_TRAINER_MODE,
+  JACK_MAX_MODE = JACK_TRAINER_MODE
+};
 #endif
+
+#if defined(GYRO)
+#include "gyro.h"
+#endif
+
+inline bool isSimu()
+{
+#if defined(SIMU)
+  return true;
+#else
+  return false;
+#endif
+}
 
 #endif // _OPENTX_H_

@@ -130,7 +130,7 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
   for (int i=0; len==0 || i<len; ++i) {
 
 #if !defined(BOOT)
-    char c = (flags & ZCHAR) ? idx2char(*s) : *s;
+    char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
 #else
     char c = *s;
 #endif
@@ -511,3 +511,11 @@ void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t
   }
 }
 #endif
+
+void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags)
+{
+  if (g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx][0] != '\0')
+    lcdDrawSizedText(x, y, g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], effectiveLen(g_model.moduleData[moduleIdx].pxx2.receiverName[receiverIdx], PXX2_LEN_RX_NAME), flags);
+  else
+    lcdDrawText(x, y, "---", flags);
+}

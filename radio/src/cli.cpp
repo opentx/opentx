@@ -963,7 +963,7 @@ int cliDisplay(const char ** argv)
       serialPrint("[%s] = %s", name, keyState(i) ? "on" : "off");
     }
 #if defined(ROTARY_ENCODER_NAVIGATION)
-    serialPrint("[Enc.] = %d", rotencValue[0] / ROTARY_ENCODER_GRANULARITY);
+    serialPrint("[Enc.] = %d", rotencValue / ROTARY_ENCODER_GRANULARITY);
 #endif
     for (int i=TRM_BASE; i<=TRM_LAST; i++) {
       serialPrint("[Trim%d] = %s", i-TRM_BASE, keyState(i) ? "on" : "off");
@@ -1164,20 +1164,18 @@ int cliBlueTooth(const char ** argv)
 {
   int baudrate = 0;
   if (!strncmp(argv[1], "AT", 2) || !strncmp(argv[1], "TTM", 3)) {
-    char command[32];
-    strAppend(strAppend(command, argv[1]), "\r\n");
-    bluetoothWriteString(command);
-    char * line = bluetoothReadline();
+    bluetooth.writeString(argv[1]);
+    char * line = bluetooth.readline();
     serialPrint("<BT %s", line);
   }
   else if (toInt(argv, 1, &baudrate) > 0) {
     if (baudrate > 0) {
-      bluetoothInit(baudrate);
-      char * line = bluetoothReadline();
+      bluetoothInit(baudrate, true);
+      char * line = bluetooth.readline();
       serialPrint("<BT %s", line);
     }
     else {
-      bluetoothDone();
+      bluetoothDisable();
       serialPrint("BT turned off");
     }
   }

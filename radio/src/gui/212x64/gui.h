@@ -32,7 +32,6 @@
 #define DEFAULT_SCROLLBAR_X            (LCD_W-1)
 #define NUM_BODY_LINES                 (LCD_LINES-1)
 #define MENU_HEADER_HEIGHT             FH
-#define MENU_INIT_VPOS                 0
 
 #define MODEL_BITMAP_WIDTH             64
 #define MODEL_BITMAP_HEIGHT            32
@@ -55,11 +54,6 @@ inline void drawFieldLabel(coord_t x, coord_t y, const char * str)
 extern uint8_t modelBitmap[MODEL_BITMAP_SIZE];
 bool loadModelBitmap(char * name, uint8_t * bitmap);
 
-struct MenuItem {
-  const char * name;
-  const MenuHandlerFunc action;
-};
-
 // Temporary no highlight
 extern uint8_t noHighlightCounter;
 #define NO_HIGHLIGHT()        (noHighlightCounter > 0)
@@ -71,8 +65,6 @@ void drawSplash();
 void drawSecondSplash();
 void drawScreenIndex(uint8_t index, uint8_t count, uint8_t attr);
 void drawVerticalScrollbar(coord_t x, coord_t y, coord_t h, uint16_t offset, uint16_t count, uint8_t visible);
-void displayMenuBar(const MenuItem * menu, int index);
-void drawProgressBar(const char * label, int num, int den);
 void drawGauge(coord_t x, coord_t y, coord_t w, coord_t h, int32_t val, int32_t max);
 void drawColumnHeader(const char * const * headers, uint8_t index);
 void drawStick(coord_t centrex, int16_t xval, int16_t yval);
@@ -86,15 +78,13 @@ typedef uint16_t FlightModesType;
 
 extern int8_t checkIncDec_Ret;  // global helper vars
 
-#define EDIT_SELECT_MENU               -1
 #define EDIT_SELECT_FIELD              0
 #define EDIT_MODIFY_FIELD              1
 #define EDIT_MODIFY_STRING             2
 extern int8_t s_editMode; // global editmode
 
 // checkIncDec flags
-#define EE_GENERAL                     0x01
-#define EE_MODEL                       0x02
+// we leave room for EE_MODEL and EE_GENERAL
 #define NO_INCDEC_MARKS                0x04
 #define INCDEC_SWITCH                  0x08
 #define INCDEC_SOURCE                  0x10
@@ -107,7 +97,8 @@ extern int8_t s_editMode; // global editmode
 #define CHECK_INCDEC_PARAM(event, var, min, max) checkIncDec(event, var, min, max, incdecFlag, isValueAvailable)
 
 // mawrow special values
-#define TITLE_ROW                      ((uint8_t)-1)
+#define READONLY_ROW                   ((uint8_t)-1)
+#define TITLE_ROW                      READONLY_ROW
 #define HIDDEN_ROW                     ((uint8_t)-2)
 
 struct CheckIncDecStops
@@ -242,6 +233,8 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
   #define displayGVar(x, y, v, min, max) lcdDrawNumber(x, y, v)
 #endif
 
+void drawPower(coord_t x, coord_t y, int8_t dBm, LcdFlags att);
+
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
 extern uint8_t s_curveChan;
@@ -254,17 +247,7 @@ void editSingleName(coord_t x, coord_t y, const char * label, char * name, uint8
 uint8_t editDelay(coord_t y, event_t event, uint8_t attr, const char * str, uint8_t delay);
 #define EDIT_DELAY(y, event, attr, str, delay) editDelay(y, event, attr, str, delay)
 
-#define WARNING_TYPE_ASTERISK          0
-#define WARNING_TYPE_CONFIRM           1
-#define WARNING_TYPE_INPUT             2
-
 void copySelection(char * dst, const char * src, uint8_t size);
-
-extern const char * warningText;
-extern const char * warningInfoText;
-extern uint8_t         warningInfoLength;
-extern uint8_t         warningResult;
-extern uint8_t         warningType;
 
 #define COPY_MODE 1
 #define MOVE_MODE 2
