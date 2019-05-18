@@ -47,9 +47,10 @@ namespace Board {
     BOARD_X10,
     BOARD_TARANIS_XLITE,
     BOARD_TARANIS_XLITES,
-    BOARD_TARANIS_X9LITE,
-    BOARD_ENUM_COUNT
+    BOARD_TARANIS_X9LITE
   };
+
+  constexpr int BOARD_TYPE_MAX = BOARD_TARANIS_X9LITE ;
 
   enum PotType
   {

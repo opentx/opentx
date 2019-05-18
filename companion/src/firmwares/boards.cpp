@@ -47,7 +47,7 @@ using namespace Board;
 
 void Boards::setBoardType(const Type & board)
 {
-  if (board >= BOARD_UNKNOWN && board < BOARD_ENUM_COUNT)
+  if (board >= BOARD_UNKNOWN && board <= BOARD_TYPE_MAX)
     m_boardType = board;
   else
     m_boardType = BOARD_UNKNOWN;
@@ -80,9 +80,14 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_MEGA2560:
     case BOARD_GRUVIN9X:
       return 0x3178746F;
-    default:
+    case BOARD_STOCK:
+    case BOARD_M128:
       return 0;
+    case BOARD_UNKNOWN:
+      break;
   }
+
+  return 0;
 }
 
 const int Boards::getEEpromSize(Board::Type board)
@@ -110,9 +115,12 @@ const int Boards::getEEpromSize(Board::Type board)
       return EESIZE_TARANIS;
     case BOARD_UNKNOWN:
       return EESIZE_MAX;
-    default:
-      return 0; // unlimited
+    case BOARD_X12S:
+    case BOARD_X10:
+      return 0;
   }
+
+  return 0;
 }
 
 const int Boards::getFlashSize(Type board)
