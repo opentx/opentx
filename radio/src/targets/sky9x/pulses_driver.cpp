@@ -105,6 +105,8 @@ void init_second_ppm(uint32_t period)
   pwmptr->PWM_CH_NUM[1].PWM_CDTYUPD = GET_MODULE_PPM_DELAY(EXTRA_MODULE)*2;   // Duty
   pwmptr->PWM_ENA = PWM_ENA_CHID1;                                     // Enable channel 1
   pwmptr->PWM_IER1 = PWM_IER1_CHID1;
+
+  setExtraModulePolarity();
 #endif
 }
 
