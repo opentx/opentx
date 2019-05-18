@@ -214,7 +214,6 @@ inline int8_t sentModuleChannels(uint8_t idx)
 }
 
 enum {
-  MODULE_OPTION_RF_PROTOCOL,
   MODULE_OPTION_EXTERNAL_ANTENNA,
   MODULE_OPTION_POWER,
   MODULE_OPTION_SPECTRUM_ANALYSER,
@@ -222,11 +221,10 @@ enum {
 };
 
 /* Options order:
- * - RF Protocol (0x01)
- * - External antenna (0x02)
- * - Power (0x04)
- * - Spektrum analyser (0x08)
- * - Power meter (0x10)
+ * - External antenna (0x01)
+ * - Power (0x02)
+ * - Spektrum analyser (0x04)
+ * - Power meter (0x08)
  */
 static const uint8_t moduleOptions[] = {
 #if defined(SIMU)
@@ -234,14 +232,14 @@ static const uint8_t moduleOptions[] = {
 #else
   0b00000000, // None = display all options on SIMU
 #endif
-  0b11100011, // XJT
-  0b11100011, // ISRM
-  0b11111011, // ISRM-PRO
-  0b11101011, // ISRM-S
-  0b11100100, // R9M
-  0b11100100, // R9MLite
-  0b11111100, // R9MLite-PRO
-  0b11101001, // ISRM-N
+  0b11110001, // XJT
+  0b11110001, // ISRM
+  0b11111101, // ISRM-PRO
+  0b11110101, // ISRM-S
+  0b11110010, // R9M
+  0b11110010, // R9MLite
+  0b11111110, // R9MLite-PRO
+  0b11110100, // ISRM-N
 };
 
 inline bool isModuleOptionAvailable(uint8_t modelId, uint8_t option)

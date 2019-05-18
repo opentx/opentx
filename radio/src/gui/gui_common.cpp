@@ -654,20 +654,20 @@ bool isExternalModuleAvailable(int moduleType)
 bool isRfProtocolAvailable(int protocol)
 {
 #if defined(CROSSFIRE)
-  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
+  if (protocol != ACCST_RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
     return false;
   }
 #endif
 #if defined(MODULE_D16_EU_ONLY_SUPPORT)
-  if (protocol == RF_PROTO_D8) {
+  if (protocol == ACCST_RF_PROTO_D8) {
     return false;
   }
 #endif
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_R9M) {
+  if (protocol != ACCST_RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_PXX_R9M) {
     return false;
   }
-  if (protocol != RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_ACCESS_R9M) {
+  if (protocol != ACCST_RF_PROTO_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_ACCESS_R9M) {
     return false;
   }
 #endif

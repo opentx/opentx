@@ -34,7 +34,6 @@ void onTxOptionsUpdateConfirm(const char * result)
 }
 
 enum {
-  ITEM_MODULE_SETTINGS_RF_PROTOCOL,
   ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA,
   ITEM_MODULE_SETTINGS_POWER,
   ITEM_MODULE_SETTINGS_COUNT
@@ -76,7 +75,6 @@ bool menuModelModuleOptions(event_t event)
   // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
   SUBMENU("Module Options", ICON_RADIO, ITEM_MODULE_SETTINGS_COUNT, {
-    IF_MODULE_OPTIONS(MODULE_OPTION_RF_PROTOCOL, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
   });
@@ -137,17 +135,6 @@ bool menuModelModuleOptions(event_t event)
       LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
       switch (i) {
-        case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
-          lcdDrawText(MENUS_MARGIN_LEFT, y, STR_RF_PROTOCOL);
-          lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_ACCST_RF_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol + 1, attr);
-          if (attr) {
-            reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, 0, nullptr);
-            if (checkIncDec_Ret) {
-              reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
-            }
-          }
-          break;
-
         case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
           lcdDrawText(MENUS_MARGIN_LEFT, y, STR_EXT_ANTENNA);
           reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, attr, event);
