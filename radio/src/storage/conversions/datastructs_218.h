@@ -329,6 +329,14 @@ PACK(struct FrSkyTelemetryData_v217 {
 });
 #endif
 
+#if defined(PCBHORUS)
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[3 + 4];
+#elif defined(PCBTARANIS)
+  #define MODELDATA_EXTRA_218   uint8_t spare:3; uint8_t trainerMode:3; uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1]; ScriptData scriptsData[MAX_SCRIPTS_218]; char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS];
+#elif defined(PCBSKY9X)
+  #define MODELDATA_EXTRA_218   uint8_t spare:6;                        uint8_t potsWarnMode:2; ModuleData_v218 moduleData[NUM_MODULES+1];                                          char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218]; uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS]; uint8_t rxBattAlarms[2];
+#endif
+
 PACK(struct TelemetrySensor_218 {
   union {
     uint16_t id;                   // data identifier, for FrSky we can reuse existing ones. Source unit is derived from type.
@@ -379,10 +387,18 @@ PACK(struct TelemetrySensor_218 {
 });
 
 #if defined(PCBHORUS)
-PACK(struct CustomScreenData_v218 {
-  char layoutName[10];
-  Layout::PersistentData layoutData;
-});
+  PACK(struct CustomScreenData_v218 {
+    char layoutName[10];
+    Layout::PersistentData layoutData;
+  });
+  #define VIEW_DATA \
+    CustomScreenData screenData[MAX_CUSTOM_SCREENS]; \
+    Topbar::PersistentData topbarData; \
+    uint8_t view;
+#elif defined(PCBTARANIS)
+  #define VIEW_DATA   uint8_t view;
+#else
+  #define VIEW_DATA
 #endif
 
 #if LEN_BITMAP_NAME > 0
@@ -397,7 +413,7 @@ PACK(struct ModelHeader_v218 {
   MODEL_HEADER_BITMAP_FIELD_218
 });
 
-PACK(typedef struct {
+PACK(struct ModelData_v218 {
   ModelHeader_v218 header;
   TimerData_v218 timers[MAX_TIMERS_218];
   uint8_t   telemetryProtocol:3;
@@ -437,50 +453,19 @@ PACK(typedef struct {
   FrSkyTelemetryData_v217 frsky;
   RssiAlarmData rssiAlarms;
 
-#if defined(PCBHORUS)
-  uint8_t spare:3;
-  uint8_t trainerMode:3;
-  uint8_t potsWarnMode:2;
-  ModuleData_v218 moduleData[NUM_MODULES+1];
-  ScriptData scriptsData[MAX_SCRIPTS_218];
-  char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];
-  uint8_t potsWarnEnabled;
-  int8_t potsWarnPosition[3 + 4];
-#elif defined(PCBTARANIS)
-  uint8_t spare:3;
-  uint8_t trainerMode:3;
-  uint8_t potsWarnMode:2;
-  ModuleData_v218 moduleData[NUM_MODULES+1];
-  ScriptData scriptsData[MAX_SCRIPTS_218];
-  char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];
-  uint8_t potsWarnEnabled;
-  int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS];
-#elif defined(PCBSKY9X)
-  uint8_t spare:6;
-  uint8_t potsWarnMode:2;
-  ModuleData_v218 moduleData[NUM_MODULES+1];
-  char inputNames[MAX_INPUTS_218][LEN_INPUT_NAME_218];
-  uint8_t potsWarnEnabled; int8_t potsWarnPosition[STORAGE_NUM_POTS + STORAGE_NUM_SLIDERS];
-  uint8_t rxBattAlarms[2];
-#endif
+  MODELDATA_EXTRA_218
 
   TelemetrySensor_218 telemetrySensors[MAX_TELEMETRY_SENSORS_218];
 
   TARANIS_PCBX9E_FIELD(uint8_t toplcdTimer)
 
   // TODO conversion for custom screens?
-#if defined(PCBHORUS)
-  CustomScreenData screenData[MAX_CUSTOM_SCREENS];
-  Topbar::PersistentData topbarData;
-  uint8_t view;
-#elif defined(PCBTARANIS)
-  uint8_t view;
-#endif
-}) ModelData_v218;
+  VIEW_DATA
+});
 
 #include "chksize.h"
 
-#define CHKSIZE(x, y) check_size<x, y>()
+#define CHKSIZE(x, y) check_size<struct x, y>()
 
 static inline void check_struct_218()
 {
