@@ -101,6 +101,9 @@ enum MenuModelSetupItems {
 
 void checkModelIdUnique(uint8_t moduleIdx)
 {
+  if(IS_MODULE_XJT(moduleIdx) && IS_D8_RX(moduleIdx))
+    return;
+
   char* warn_buf = reusableBuffer.modelsetup.msg;
 
   // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
