@@ -480,7 +480,7 @@ PACK(typedef struct {
 
 #include "chksize.h"
 
-#define CHKSIZE(x, y) check_size<struct x, y>()
+#define CHKSIZE(x, y) check_size<x, y>()
 
 static inline void check_struct_218()
 {
