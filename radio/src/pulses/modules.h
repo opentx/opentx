@@ -76,7 +76,7 @@ inline bool isModuleCrossfire(uint8_t idx)
 }
 #endif
 
-#if defined(EXTRA_MODULE)
+#if defined(PCBSKY9X)
 inline bool isExtraModule(uint8_t idx)
 {
   return idx == EXTRA_MODULE);
