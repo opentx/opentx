@@ -110,7 +110,6 @@ class ModuleSettings {
   public:
     uint8_t state;  // 0x00 = READ 0x40 = WRITE
     tmr10ms_t retryTime;
-    uint8_t rfProtocol;
     uint8_t externalAntenna;
     int8_t txPower;
 };

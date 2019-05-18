@@ -37,7 +37,6 @@ void onTxOptionsUpdateConfirm(const char * result)
 }
 
 enum {
-  ITEM_MODULE_SETTINGS_RF_PROTOCOL,
   ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA,
   ITEM_MODULE_SETTINGS_POWER,
   ITEM_MODULE_SETTINGS_COUNT
@@ -88,11 +87,10 @@ void menuModelModuleOptions(event_t event)
   uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.modelID;
   // uint8_t variant = reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].information.variant;
 
-  uint8_t optionsAvailable = moduleOptions[modelId] & ((1 << MODULE_OPTION_RF_PROTOCOL) | (1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
+  uint8_t optionsAvailable = moduleOptions[modelId] & ((1 << MODULE_OPTION_EXTERNAL_ANTENNA) | (1 << MODULE_OPTION_POWER));
 
   SUBMENU_NOTITLE(ITEM_MODULE_SETTINGS_COUNT, {
-    !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_RF_PROTOCOL, 0),
-    IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
+    !optionsAvailable ? (uint8_t)0 : IF_MODULE_OPTIONS(MODULE_OPTION_EXTERNAL_ANTENNA, 0),
     IF_MODULE_OPTIONS(MODULE_OPTION_POWER, 0),
   });
 
@@ -150,17 +148,6 @@ void menuModelModuleOptions(event_t event)
         LcdFlags attr = (sub==i ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
 
         switch (i) {
-          case ITEM_MODULE_SETTINGS_RF_PROTOCOL:
-            lcdDrawText(0, y, STR_RF_PROTOCOL);
-            lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_ACCESS_RF_PROTOCOLS, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, attr);
-            if (attr) {
-              reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol = checkIncDec(event, reusableBuffer.hardwareAndSettings.moduleSettings.rfProtocol, 0, 2, 0, nullptr);
-              if (checkIncDec_Ret) {
-                reusableBuffer.hardwareAndSettings.moduleSettingsDirty = true;
-              }
-            }
-            break;
-
           case ITEM_MODULE_SETTINGS_EXTERNAL_ANTENNA:
             reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna = editCheckBox(reusableBuffer.hardwareAndSettings.moduleSettings.externalAntenna, RECEIVER_OPTIONS_2ND_COLUMN, y, "Ext. antenna", attr, event);
             if (attr && checkIncDec_Ret) {

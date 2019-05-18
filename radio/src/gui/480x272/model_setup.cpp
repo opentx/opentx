@@ -941,7 +941,7 @@ bool menuModelSetup(event_t event)
             }
           }
           else if (isModuleXJT(INTERNAL_MODULE)) {
-            g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+            g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, ACCST_RF_PROTO_D16, ACCST_RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
             if (checkIncDec_Ret) {
               g_model.moduleData[0].type = MODULE_TYPE_PXX_XJT;
               g_model.moduleData[0].channelsStart = 0;
@@ -1189,7 +1189,7 @@ bool menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].subType = newR9MType;
               }
               else {
-                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST);
+                CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, ACCST_RF_PROTO_D16, ACCST_RF_PROTO_LAST);
               }
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
@@ -1394,7 +1394,7 @@ bool menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == RF_PROTO_X16)) {
+                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == ACCST_RF_PROTO_D16)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
                       uint8_t default_selection = 0; // R9M_LBT should default to 0 as available options are variables
                       if (isModuleR9M_LBT(moduleIdx)) {

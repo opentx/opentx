@@ -683,7 +683,7 @@ void menuModelSetup(event_t event)
               }
               break;
             case 1:
-              g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+              g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, ACCST_RF_PROTO_D16, ACCST_RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
               if (checkIncDec_Ret) {
                 g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
                 g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
@@ -696,13 +696,13 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_ACCST_RF_PROTOCOLS, 1+g_model.moduleData[0].rfProtocol, attr);
         if (attr) {
-          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, -1, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+          g_model.moduleData[INTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].rfProtocol, -1, ACCST_RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
 
           if (checkIncDec_Ret) {
             g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_PXX_XJT;
             g_model.moduleData[INTERNAL_MODULE].channelsStart = 0;
             g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-            if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == RF_PROTO_OFF)
+            if (g_model.moduleData[INTERNAL_MODULE].rfProtocol == ACCST_RF_PROTO_OFF)
               g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_NONE;
           }
         }
@@ -802,7 +802,7 @@ void menuModelSetup(event_t event)
                 g_model.moduleData[EXTERNAL_MODULE].subType = newR9MType;
               }
               else {
-                g_model.moduleData[EXTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, RF_PROTO_X16, RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
+                g_model.moduleData[EXTERNAL_MODULE].rfProtocol = checkIncDec(event, g_model.moduleData[EXTERNAL_MODULE].rfProtocol, ACCST_RF_PROTO_D16, ACCST_RF_PROTO_LAST, EE_MODEL, isRfProtocolAvailable);
               }
               if (checkIncDec_Ret) {
                 g_model.moduleData[EXTERNAL_MODULE].channelsStart = 0;
@@ -1004,7 +1004,7 @@ void menuModelSetup(event_t event)
         else {
           horzpos_t l_posHorz = menuHorizontalPosition;
           coord_t xOffsetBind = MODEL_SETUP_BIND_OFS;
-          if (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == RF_PROTO_D8) {
+          if (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == ACCST_RF_PROTO_D8) {
             xOffsetBind = 0;
             lcdDrawTextAlignedLeft(y, STR_RECEIVER);
             if (attr) l_posHorz += 1;
@@ -1043,7 +1043,7 @@ void menuModelSetup(event_t event)
             if (attr && l_posHorz>0) {
               if (s_editMode>0) {
                 if (l_posHorz == 1) {
-                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol== RF_PROTO_X16)) {
+                  if (isModuleR9M(moduleIdx) || (isModuleXJT(moduleIdx) && g_model.moduleData[moduleIdx].rfProtocol == ACCST_RF_PROTO_D16)) {
                     if (event == EVT_KEY_BREAK(KEY_ENTER)) {
                       uint8_t default_selection = 0; // R9M_LBT should default to 0 as available options are variables
                       if (isModuleR9M_LBT(moduleIdx)) {

@@ -236,7 +236,7 @@ class Pxx2Pulses: public Pxx2Transport {
 
     uint8_t addFlag0(uint8_t module);
 
-    void addFlag1();
+    void addFlag1(uint8_t module);
 
     void addPulsesValues(uint16_t low, uint16_t high);
 
