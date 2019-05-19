@@ -27,7 +27,7 @@ code/tools/nightly23/build-sdcard.sh
 
 echo "Delete companion container in case of previous failed atempt"
 if [ "$(docker ps -aq -f name=companion)" ]; then
- docker rm companion
+ docker rm --force companion
 fi
 
 echo "Build firmware stamps"
