@@ -36,8 +36,8 @@ elseif(PCB STREQUAL AR9X)
   set(CPU_TYPE_FULL ATSAM3S8C)  # for size report
 else()
   set(FLAVOUR sky9x)
-  set(PCBREV "REVC" CACHE STRING "PCB Revision (REVA/REVB/REVC)")
-  set_property(CACHE PCBREV PROPERTY STRINGS "REVA" "REVB" "REVC")
+  set(PCBREV "REVC" CACHE STRING "PCB Revision (REVB/REVC)")
+  set_property(CACHE PCBREV PROPERTY STRINGS "REVB" "REVC")
   set(TARGET_SRC
     ${TARGET_SRC}
     coproc_driver.cpp
@@ -45,22 +45,16 @@ else()
     rtc_driver.cpp
     )
   set(OPENRC_BOOTLOADER bootflash4.lbm)
-  if(PCBREV STREQUAL REVA)
-    add_definitions(-DDREVA)
-    set(LINKER_SCRIPT targets/sky9x/sam3s2c_flash.ld)
-    set(CPU_TYPE_FULL ATSAM3S2C)  # for size report
+  if(PCBREV STREQUAL REVB)
+    add_definitions(-DDREVB)
+  elseif(PCBREV STREQUAL REVC)
+    add_definitions(-DDREVC)
   else()
-    if(PCBREV STREQUAL REVB)
-      add_definitions(-DDREVB)
-    elseif(PCBREV STREQUAL REVC)
-      add_definitions(-DDREVC)
-    else()
-      message(SEND_ERROR "Unknown PCB Revision '${PCBREV}'")
-    endif()
-    add_definitions(-DCOPROCESSOR)
-    set(LINKER_SCRIPT targets/sky9x/sam3s4c_flash.ld)
-    set(CPU_TYPE_FULL ATSAM3S4C)  # for size report
+    message(SEND_ERROR "Unknown PCB Revision '${PCBREV}'")
   endif()
+  add_definitions(-DCOPROCESSOR)
+  set(LINKER_SCRIPT targets/sky9x/sam3s4c_flash.ld)
+  set(CPU_TYPE_FULL ATSAM3S4C)  # for size report
 endif()
 
 add_definitions(-DPCBSKY9X -DPPM_PIN_SERIAL -DAUDIO_DUAL_BUFFER)

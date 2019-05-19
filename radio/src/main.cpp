@@ -467,7 +467,7 @@ void perMain()
 {
   DEBUG_TIMER_START(debugTimerPerMain1);
 
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X)
   calcConsumption();
 #endif
   checkSpeakerVolume();

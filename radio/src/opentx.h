@@ -179,11 +179,9 @@
   #define CASE_PCBX9E(x)
 #endif
 
-#if defined(PCBSKY9X) && !defined(PCBAR9X) && !defined(REVA)
+#if defined(PCBSKY9X)
   #define TX_CAPACITY_MEASUREMENT
   #define CASE_CAPACITY(x) x,
-#else
-  #define CASE_CAPACITY(x)
 #endif
 
 #if defined(FAI)
@@ -1279,7 +1277,6 @@ extern uint8_t s_frsky_view;
 #endif
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
-constexpr uint32_t PRECALCULATED_EARTH_RADIUS_CONSTANT = 111194;  // meters * pi / 180°
 
 void getGpsPilotPosition();
 void getGpsDistance();
