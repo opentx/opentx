@@ -2641,7 +2641,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
 
   internalField.Append(new ZCharField<8>(this, generalData.registrationId, "PXX2 Registration ID"));
   
-  if(IS_TARANIS_XLITES(board)) { // TODO add X12S
+  if(IS_TARANIS_XLITES(board) || IS_HORUS(board)) {
     internalField.Append(new SignedField<8>(this, generalData.gyroMax, "Gyro full scale"));
     internalField.Append(new SignedField<8>(this, generalData.gyroOffset, "Gyro Offset"));
   }
