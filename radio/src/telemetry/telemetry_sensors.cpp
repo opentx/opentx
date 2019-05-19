@@ -355,7 +355,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           }
         }
         uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
-        uint32_t dist = ((uint64_t )EARTH_RADIUS * M_PI / 180) * angle) / 1000000;
+        uint32_t dist = ((uint64_t)PRECALCULATED_EARTH_RADIUS_CONSTANT * angle) / 1000000;
         uint32_t result = dist * dist;
 
         angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
