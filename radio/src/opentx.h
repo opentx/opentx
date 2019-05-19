@@ -1279,6 +1279,7 @@ extern uint8_t s_frsky_view;
 #endif
 
 constexpr uint32_t EARTH_RADIUS = 6371009;
+constexpr uint32_t PRECALCULATED_EARTH_RADIUS_CONSTANT = 111194;  // meters * pi / 180°
 
 void getGpsPilotPosition();
 void getGpsDistance();
