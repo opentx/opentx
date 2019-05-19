@@ -26,7 +26,11 @@ echo "Call sdcard generation"
 code/tools/nightly23/build-sdcard.sh
 
 echo "Delete companion container in case of previous failed atempt"
-docker rm -f companion
+RUNNING=$(docker inspect --format="{{ .State.Running }}" companion 2> /dev/null)
+
+if [ $? -ne 1 ]; then
+  docker rm --force companion
+fi
 
 echo "Build firmware stamps"
 docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
