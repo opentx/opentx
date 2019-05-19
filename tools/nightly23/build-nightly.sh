@@ -25,6 +25,9 @@ docker rmi -f new-${docker}
 echo "Call sdcard generation"
 code/tools/nightly23/build-sdcard.sh
 
+echo "Delete companion container in case of previous failed atempt"
+docker rm -f companion
+
 echo "Build firmware stamps"
 docker run -dit --name companion -v /home/opentx/${docker}:/opentx ${docker}
 docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code && cp radio/src/stamp.h /opentx/binaries/stamp-opentx.txt"
