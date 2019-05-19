@@ -31,24 +31,27 @@ docker exec companion sh -c "mkdir -p build && cd build && cmake /opentx/code &&
 cp -f  ${workdir}/binaries/stamp-opentx.txt ${output}/firmware
 docker exec companion rm -rf build
 
-echo "Build Linux companion"
+echo "Check if Linux companion is needed"
 if [ ! -f ${output}/companion/linux/companion23_${version}${suffix}_amd64.deb ]; then
+  echo "Build Linux companion"
   docker exec companion /opentx/code/tools/build-companion-nightly.sh /opentx/code /opentx/binaries/ ${suffix}
   cp -f  binaries/*.deb ${output}/companion/linux/companion23_${version}${suffix}_amd64.deb
 fi
 docker stop companion
 docker rm companion
 
-echo "Request companion compilation on Windows"
+echo "Check if Windows companion is needed"
 if [ ! -f ${output}/companion/windows/companion-windows-${version}${suffix}.exe ]; then
+  echo "Build Windows companion"
   cd ${output}/companion/windows
   wget -qO- http://winbox.open-tx.org/companion-builds/compile23.php?branch=$branch\&suffix=${suffix}
   wget -O companion-windows-${version}${suffix}.exe http://winbox.open-tx.org/companion-builds/companion-windows-${version}${suffix}.exe
   chmod -Rf g+w companion-windows-${version}${suffix}.exe
 fi
 
-echo "Request companion compilation on Mac OS X"
+echo "Check if Macosc companion is needed"
 if [ ! -f ${output}/companion/macosx/opentx-companion-${version}${suffix}.dmg ]; then
+  echo "Build Macosx companion"
   cd ${output}/companion/macosx
   wget -qO- http://opentx.blinkt.de:8080/~opentx/build-opentx.py?branch=${branch}\&suffix=${suffix}
   wget -O opentx-companion-${version}${suffix}.dmg http://opentx.blinkt.de:8080/~opentx/builds/opentx-companion-${version}${suffix}.dmg
@@ -64,5 +67,5 @@ echo "Clean binaries It will be hosting built on demand firmware"
 rm -rf ${workdir}/binaries/*
 rm -rf ${workdir}/binaries/.lock
 
-echo "Released is considered as valid if we get to that point"
+echo "Release $index successfully completed"
 echo $index > ${workdir}/index.txt
