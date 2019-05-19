@@ -179,9 +179,11 @@
   #define CASE_PCBX9E(x)
 #endif
 
-#if defined(PCBSKY9X)
+#if defined(PCBSKY9X) && !defined(PCBAR9X)
   #define TX_CAPACITY_MEASUREMENT
   #define CASE_CAPACITY(x) x,
+#else
+  #define CASE_CAPACITY(x)
 #endif
 
 #if defined(FAI)
