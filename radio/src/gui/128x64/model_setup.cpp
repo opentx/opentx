@@ -117,7 +117,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_2,
   ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_3,
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X)
   ITEM_MODEL_EXTRA_MODULE_LABEL,
   ITEM_MODEL_EXTRA_MODULE_CHANNELS,
   ITEM_MODEL_EXTRA_MODULE_BIND,
@@ -157,7 +157,7 @@ enum MenuModelSetupItems {
 #if defined(PCBTARANIS)
   #define CURRENT_MODULE_EDITED(k)        (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? EXTERNAL_MODULE : INTERNAL_MODULE)
   #define CURRENT_RECEIVER_EDITED(k)      (k - (k >= ITEM_MODEL_EXTERNAL_MODULE_LABEL ? ITEM_MODEL_EXTERNAL_MODULE_PXX2_RECEIVER_1 : ITEM_MODEL_INTERNAL_MODULE_PXX2_RECEIVER_1))
-#elif defined(PCBSKY9X) && !defined(REVA)
+#elif defined(PCBSKY9X)
   #define CURRENT_MODULE_EDITED(k)       (k >= ITEM_MODEL_EXTRA_MODULE_LABEL ? EXTRA_MODULE : EXTERNAL_MODULE)
 #else
   #define CURRENT_MODULE_EDITED(k)       (EXTERNAL_MODULE)
@@ -189,7 +189,7 @@ enum MenuModelSetupItems {
 #define POT_WARN_ITEMS()               ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
 #define TIMER_ROWS                     2, 0, 0, 0, 0
 
-#if defined(PCBSKY9X) && !defined(REVA)
+#if defined(PCBSKY9X)
   #define EXTRA_MODULE_ROWS              LABEL(ExtraModule), 1, 2,
 #else
   #define EXTRA_MODULE_ROWS

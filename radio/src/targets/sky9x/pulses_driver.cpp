@@ -91,7 +91,6 @@ void disable_main_ppm()
 
 void init_second_ppm(uint32_t period)
 {
-#if !defined(REVA)
   // PWM1 for PPM2
   Pwm * pwmptr = PWM;
   configure_pins(PIO_PC15, PIN_PERIPHERAL | PIN_INPUT | PIN_PER_B | PIN_PORTC | PIN_NO_PULLUP);
@@ -107,16 +106,13 @@ void init_second_ppm(uint32_t period)
   pwmptr->PWM_IER1 = PWM_IER1_CHID1;
 
   setExtraModulePolarity();
-#endif
 }
 
 void disable_second_ppm()
 {
-#if !defined(REVA)
   Pio * pioptr = PIOC;
   pioptr->PIO_PER = PIO_PC15;           // Assign C17 to PIO
   PWM->PWM_IDR1 = PWM_IDR1_CHID1;
-#endif
 }
 
 void init_no_pulses(uint32_t port)
@@ -349,7 +345,6 @@ extern "C" void PWM_IRQHandler(void)
     }
   }
 
-#if !defined(REVA)
   if (reason & PWM_ISR1_CHID1) {
     // TODO EXTRA_MODULE will be broken
     /*pwmptr->PWM_CH_NUM[1].PWM_CPDRUPD = *modulePulsesData[EXTRA_MODULE].ppm.ptr++;
@@ -358,6 +353,5 @@ extern "C" void PWM_IRQHandler(void)
       setExtraModulePolarity();
     }*/
   }
-#endif
 }
 #endif

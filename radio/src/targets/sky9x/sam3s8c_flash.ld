@@ -72,21 +72,18 @@ SECTIONS
    .text :
    {
       FILL(0xFFFF)
-      
+
       CREATE_OBJECT_SYMBOLS
 
-      KEEP(*(.bootloader))
+      KEEP(*(.bootloader)) /* Bootloader code */
 
-      . = ALIGN(32768);    /* Align the start of the exidx part */
+      . = 0x8000;          /* Set the start of the main program */
       _stext = .;          /* Provide the name for the start of this section */
+
       KEEP(*(.vectors))
       
       *(.text)
       *(.text.*)
- 
-      . = ALIGN(4);        /* Align the start of the exidx part */
-      *(.ARM.exidx)
-      *(.ARM.exidx.*)
 
       . = ALIGN(4);        /* Align the start of the rodata part */
       *(.rodata)
@@ -99,14 +96,25 @@ SECTIONS
    } > FLASH = 0
    _etext = .;             /* Provide the name for the end of this section */
    
-   
+   .ARM.extab : {
+     *(.ARM.extab* .gnu.linkonce.armextab.*)
+   } > FLASH
+
+   .ARM : {
+     __exidx_start = .;
+     *(.ARM.exidx*)
+     __exidx_end = .;
+   } > FLASH
+
+   _sidata = .;
+
    /*
     * The ".data" section is used for initialized data
     * and for functions (.fastrun) which should be copied 
     * from flash to ram. This functions will later be
     * executed from ram instead of flash.
     */
-   .data : AT (_etext)
+   .data : AT (_sidata)
    {
       . = ALIGN(4);        /* Align the start of the section */
       _sdata = .;          /* Provide the name for the start of this section */
@@ -121,7 +129,6 @@ SECTIONS
       . = ALIGN(4);        /* Align the end of the section */
    } > RAM
    _edata = .;             /* Provide the name for the end of this section */
-   
 
    /*
     * The ".bss" section is used for uninitialized data.
@@ -137,7 +144,7 @@ SECTIONS
       
       . = ALIGN(4);        /* Align the end of the section */
    } > RAM
-   _ebss = .;              /* Provide the name for the end of this section */  
+   _ebss = .;              /* Provide the name for the end of this section */
    
    . = ALIGN(4);           /* Align the end of the section */
    __end = .;
