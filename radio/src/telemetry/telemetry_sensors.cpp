@@ -355,11 +355,19 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           }
         }
         uint32_t angle = abs(gpsItem.gps.latitude - gpsItem.pilotLatitude);
+#if defined(PCBSKY9X)     //TODO remove when sky9x issue is understood
+        uint32_t dist = (PRECALCULATED_EARTH_RADIUS_CONSTANT * angle) / 1000000;
+#else
         uint32_t dist = ((uint64_t)PRECALCULATED_EARTH_RADIUS_CONSTANT * angle) / 1000000;
+#endif
         uint32_t result = dist * dist;
 
         angle = abs(gpsItem.gps.longitude - gpsItem.pilotLongitude);
-        dist = ((uint64_t ) gpsItem.distFromEarthAxis * angle) / 1000000;
+#if defined(PCBSKY9X)
+        dist = (gpsItem.distFromEarthAxis * angle) / 1000000;
+#else
+        dist = ((uint64_t)gpsItem.distFromEarthAxis * angle) / 1000000;
+#endif
         result += dist * dist;
 
         // Length on ground (ignoring curvature of the earth)
