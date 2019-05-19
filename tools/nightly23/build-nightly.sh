@@ -26,10 +26,8 @@ echo "Call sdcard generation"
 code/tools/nightly23/build-sdcard.sh
 
 echo "Delete companion container in case of previous failed atempt"
-RUNNING=$(docker inspect --format="{{ .State.Running }}" companion 2> /dev/null)
-
-if [ $? -ne 1 ]; then
-  docker rm --force companion
+if [ "$(docker ps -aq -f name=companion)" ]; then
+ docker rm companion
 fi
 
 echo "Build firmware stamps"
