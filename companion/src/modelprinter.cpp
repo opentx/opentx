@@ -649,10 +649,17 @@ QString ModelPrinter::printLogicalSwitchLine(int idx)
   return result;
 }
 
-QString ModelPrinter::printCustomFunctionLine(int idx)
+QString ModelPrinter::printCustomFunctionLine(int idx, bool gfunc)
 {
   QString result;
-  const CustomFunctionData & cf = model.customFn[idx];
+  CustomFunctionData cf;
+  if (gfunc) {
+    if (model.noGlobalFunctions)
+      return result;
+    cf = generalSettings.customFn[idx];
+  }
+  else
+    cf = model.customFn[idx];
   if (cf.swtch.type == SWITCH_TYPE_NONE)
     return result;
 

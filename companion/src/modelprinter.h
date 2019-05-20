@@ -75,7 +75,7 @@ class ModelPrinter: public QObject
     QString printInputLine(const ExpoData & ed);
     QString printMixerLine(const MixData & md, bool showMultiplex, int highlightedSource = 0);
     QString printLogicalSwitchLine(int idx);
-    QString printCustomFunctionLine(int idx);
+    QString printCustomFunctionLine(int idx, bool gfunc = false);
     QString printChannelName(int idx);
     QString printCurveName(int idx);
     QString printCurve(int idx);
