@@ -946,7 +946,7 @@ QString MultiModelPrinter::printGlobalFunctions()
       txt = modelPrinter->printCustomFunctionLine(i, true);
       if (!txt.isEmpty()) {
         count++;
-        ROWLABELCOMPARECELL(QString("GF%1").arg(i+1), 20, modelPrinter->printCustomFunctionLine(i, true), 80);
+        ROWLABELCOMPARECELL(tr("GF%1").arg(i+1), 20, modelPrinter->printCustomFunctionLine(i, true), 80);
       }
     }
     columns.appendTableEnd();
