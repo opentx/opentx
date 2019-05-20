@@ -194,14 +194,8 @@ set(FIRMWARE_SRC
 set(PULSES_SRC
   ${PULSES_SRC}
   pulses.cpp
+  ppm.cpp
   )
-
-if(PPM)
-  set(PULSES_SRC
-    ${PULSES_SRC}
-    ppm.cpp
-    )
-endif()
 
 if(DSM2)
   set(PULSES_SRC
