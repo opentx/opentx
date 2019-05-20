@@ -24,11 +24,15 @@
 #include "boards.h"
 #include "helpers_html.h"
 #include "multiprotocols.h"
+#include "appdata.h"
 
 #include <QApplication>
 #include <QPainter>
 #include <QFile>
 #include <QUrl>
+#include <QTextStream>
+
+extern AppData g;
 
 QString changeColor(const QString & input, const QString & to, const QString & from)
 {
@@ -1451,4 +1455,24 @@ QString ModelPrinter::printTelemetryScreen(unsigned int idx, unsigned int line, 
     strl << QString("%1.lua").arg(screen.body.script.filename);
   }
   return (hd.count() > 1 ? doTableRow(hd, width / hd.count(), "left", "", true) : "" ) + doTableRow(strl, width / strl.count());
+}
+
+QString ModelPrinter::printChecklist()
+{
+  QString str;
+  QString filepath = g.profile[g.id()].sdPath() + "/MODELS/";
+  QString name = model.name;
+  name.replace(" ", "_");
+  filepath = QDir::toNativeSeparators(filepath + name + ".txt");
+
+  QFile file(filepath);
+  if (file.open(QFile::ReadOnly | QFile::Text)) {
+    QTextStream in(&file);
+    if (in.status() == QTextStream::Ok)
+      str = in.readAll();
+      str.replace("\n", "<br />");
+      str.remove("\r");
+    file.close();
+  }
+  return str;
 }

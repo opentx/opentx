@@ -272,6 +272,8 @@ QString MultiModelPrinter::print(QTextDocument * document)
     document->setDefaultStyleSheet(css.text());
   QString str = "<table cellspacing='0' cellpadding='3' width='100%'>";   // attributes not settable via QT stylesheet
   str.append(printSetup());
+  if (firmware->getCapability(HasDisplayText))
+    str.append(printChecklist());
   if (firmware->getCapability(Timers)) {
     str.append(printTimers());
   }
@@ -283,7 +285,7 @@ QString MultiModelPrinter::print(QTextDocument * document)
   str.append(printInputs());
   str.append(printMixers());
   str.append(printOutputs());
-  str += printCurves(document);
+  str.append(printCurves(document));
   if (firmware->getCapability(Gvars) && !firmware->getCapability(GvarsFlightModes))
     str.append(printGvars());
   str.append(printLogicalSwitches());
@@ -954,6 +956,29 @@ QString MultiModelPrinter::printGlobalFunctions()
       str.append(printTitle(tr("Global Functions")));
       str.append(columns.print());
     }
+  }
+  return str;
+}
+
+QString MultiModelPrinter::printChecklist()
+{
+  QString str;
+  MultiColumns columns(modelPrinterMap.size());
+  columns.appendSectionTableStart();
+  bool isChecklist = false;
+  for (int k=0; k < modelPrinterMap.size(); k++) {
+    if (modelPrinterMap.value(k).first->displayChecklist) {
+      isChecklist = true;
+      break;
+    }
+  }
+  if (isChecklist) {
+    columns.appendRowStart();
+    columns.appendLabelCell(tr("Checklist"),20);
+    COMPARECELLWIDTH(modelPrinter->printChecklist(), 80);
+    columns.appendRowEnd();
+    columns.appendTableEnd();
+    str.append(columns.print());
   }
   return str;
 }
