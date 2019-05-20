@@ -926,21 +926,19 @@ QString MultiModelPrinter::printGlobalFunctions()
 {
   QString str;
   QString txt;
-  int idx;
-  MultiColumns columns(modelPrinterMap.size());
   int count = 0;
+  int idx = -1;
+  MultiColumns columns(modelPrinterMap.size());
   columns.appendSectionTableStart();
 
-  bool gfUsed = false;
   for (int k=0; k < modelPrinterMap.size(); k++) {
     if (!modelPrinterMap.value(k).first->noGlobalFunctions) {
       idx = k;
-      gfUsed = true;
       break;
     }
   }
 
-  if (gfUsed) {
+  if (idx > -1) {
     ModelPrinter * modelPrinter = modelPrinterMap.value(idx).second;
     (void)(modelPrinter);
 
@@ -964,7 +962,6 @@ QString MultiModelPrinter::printChecklist()
 {
   QString str;
   MultiColumns columns(modelPrinterMap.size());
-  columns.appendSectionTableStart();
   bool isChecklist = false;
   for (int k=0; k < modelPrinterMap.size(); k++) {
     if (modelPrinterMap.value(k).first->displayChecklist) {
@@ -973,10 +970,8 @@ QString MultiModelPrinter::printChecklist()
     }
   }
   if (isChecklist) {
-    columns.appendRowStart();
-    columns.appendLabelCell(tr("Checklist"),20);
-    COMPARECELLWIDTH(modelPrinter->printChecklist(), 80);
-    columns.appendRowEnd();
+    columns.appendSectionTableStart();
+    ROWLABELCOMPARECELL(tr("Checklist"), 20, modelPrinter->printChecklist(), 80);
     columns.appendTableEnd();
     str.append(columns.print());
   }

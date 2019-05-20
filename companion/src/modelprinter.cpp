@@ -1468,10 +1468,11 @@ QString ModelPrinter::printChecklist()
   QFile file(filepath);
   if (file.open(QFile::ReadOnly | QFile::Text)) {
     QTextStream in(&file);
-    if (in.status() == QTextStream::Ok)
+    if (in.status() == QTextStream::Ok) {
       str = in.readAll();
       str.replace("\n", "<br />");
       str.remove("\r");
+    }
     file.close();
   }
   return str;
