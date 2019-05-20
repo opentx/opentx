@@ -24,37 +24,7 @@
 #include "generalsettings.h"
 #include "macros.h"
 #include "radiodataconversionstate.h"
-
-
-QString removeAccents(const QString & str)
-{
-  // UTF-8 ASCII Table
-  static const QHash<QString, QVariant> map = {
-    {"a", QRegularExpression("[áâãàä]")},
-    {"A", QRegularExpression("[ÁÂÃÀÄ]")},
-    {"e", QRegularExpression("[éèêě]")},
-    {"E", QRegularExpression("[ÉÈÊĚ]")},
-    {"o", QRegularExpression("[óôõö]")},
-    {"O", QRegularExpression("[ÓÔÕÖ]")},
-    {"u", QRegularExpression("[úü]")},
-    {"U", QRegularExpression("[ÚÜ]")},
-    {"i", "í"}, {"I", "Í"},
-    {"c", "ç"}, {"C", "Ç"},
-    {"y", "ý"}, {"Y", "Ý"},
-    {"s", "š"}, {"S", "Š"},
-    {"r", "ř"}, {"R", "Ř"}
-  };
-
-  QString result(str);
-  for (QHash<QString, QVariant>::const_iterator it = map.cbegin(), en = map.cend(); it != en; ++it) {
-    if (it.value().canConvert<QRegularExpression>())
-      result.replace(it.value().toRegularExpression(), it.key());
-    else
-      result.replace(it.value().toString(), it.key());
-  }
-  return result;
-}
-
+#include "helpers.h"
 
 /*
  * TimerData
@@ -251,7 +221,7 @@ void ModelData::setDefaultInputs(const GeneralSettings & settings)
       expo->mode = INPUT_MODE_BOTH;
       expo->srcRaw = settings.getDefaultSource(i);
       expo->weight = 100;
-      strncpy(inputNames[i], removeAccents(expo->srcRaw.toString(this)).toLatin1().constData(), sizeof(inputNames[i])-1);
+      strncpy(inputNames[i], Helpers::removeAccents(expo->srcRaw.toString(this)).toLatin1().constData(), sizeof(inputNames[i])-1);
     }
   }
 }
