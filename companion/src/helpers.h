@@ -131,6 +131,7 @@ namespace Helpers
   QString getChecklistsPath();
   QString getChecklistFilename(const ModelData * model);
   QString getChecklistFilePath(const ModelData * model);
+  QString removeAccents(const QString & str);
 
 }  // namespace Helpers
 

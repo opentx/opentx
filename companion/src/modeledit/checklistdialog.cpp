@@ -74,7 +74,7 @@ void ChecklistDialog::update()
     else {
       QTextStream out(&file);
       if (out.status()==QTextStream::Ok) {
-        out << ui->pteCheck->toPlainText();
+        out << Helpers::removeAccents(ui->pteCheck->toPlainText());
         if (!(out.status()==QTextStream::Ok)) {
           QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot write to file %1:\n%2.").arg(mModelChecklist, file.errorString()));
           if (!file.flush()) {
@@ -101,7 +101,7 @@ QString ChecklistDialog::readFile(const QString & filepath, const bool exists)
     else {
       QTextStream in(&file);
       if (in.status()==QTextStream::Ok) {
-        data = in.readAll();
+        data = Helpers::removeAccents(in.readAll());
         if (!(in.status()==QTextStream::Ok)) {
           QMessageBox::critical(this, tr("Model Checklist"), tr("Cannot read file %1:\n%2.").arg(QDir::toNativeSeparators(filepath), file.errorString()));
           data = "";
