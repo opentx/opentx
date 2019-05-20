@@ -51,6 +51,8 @@ elseif(PCB STREQUAL X9D+)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
   set(STATUS_LEDS NO)
+  set(PCBREV 2014 CACHE STRING "PCB Revision")
+  add_definitions(-DPCBREV=${PCBREV})
 elseif(PCB STREQUAL X9D)
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
@@ -196,7 +198,7 @@ if(NOT PCB STREQUAL XLITE)
     )
 endif()
 
-if(PCB STREQUAL X9E OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
+if(PCB STREQUAL X9E OR (PCB STREQUAL X9D+ AND PCBREV STREQUAL 2019) OR (PCB STREQUAL X7 AND NOT (PCBREV STREQUAL T12)) OR PCB STREQUAL X9LITE)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/rotary_encoder_driver.cpp
