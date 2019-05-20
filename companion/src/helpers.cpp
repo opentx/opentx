@@ -36,6 +36,7 @@
 #include <QFileDialog>
 #include <QLabel>
 #include <QMessageBox>
+#include <QDir>
 
 using namespace Helpers;
 
@@ -808,4 +809,51 @@ void TableLayout::pushRowsUp(int row)
   // Push rows upward
   // addDoubleSpring(gridLayout, 5, num_fsw+1);
 
+}
+
+QString Helpers::getChecklistsPath()
+{
+  return QDir::toNativeSeparators(g.profile[g.id()].sdPath() + "/MODELS/");   // TODO : add sub folder to constants
+}
+
+QString Helpers::getChecklistFilename(const ModelData * model)
+{
+  QString name = model->name;
+  name.replace(" ", "_");
+  name.append(".txt");          // TODO : add to constants
+  return name;
+}
+
+QString Helpers::getChecklistFilePath(const ModelData * model)
+{
+  return getChecklistsPath() + getChecklistFilename(model);
+}
+
+QString Helpers::removeAccents(const QString & str)
+{
+  // UTF-8 ASCII Table
+  static const QHash<QString, QVariant> map = {
+    {"a", QRegularExpression("[áâãàä]")},
+    {"A", QRegularExpression("[ÁÂÃÀÄ]")},
+    {"e", QRegularExpression("[éèêě]")},
+    {"E", QRegularExpression("[ÉÈÊĚ]")},
+    {"o", QRegularExpression("[óôõö]")},
+    {"O", QRegularExpression("[ÓÔÕÖ]")},
+    {"u", QRegularExpression("[úü]")},
+    {"U", QRegularExpression("[ÚÜ]")},
+    {"i", "í"}, {"I", "Í"},
+    {"c", "ç"}, {"C", "Ç"},
+    {"y", "ý"}, {"Y", "Ý"},
+    {"s", "š"}, {"S", "Š"},
+    {"r", "ř"}, {"R", "Ř"}
+  };
+
+  QString result(str);
+  for (QHash<QString, QVariant>::const_iterator it = map.cbegin(), en = map.cend(); it != en; ++it) {
+    if (it.value().canConvert<QRegularExpression>())
+      result.replace(it.value().toRegularExpression(), it.key());
+    else
+      result.replace(it.value().toString(), it.key());
+  }
+  return result;
 }

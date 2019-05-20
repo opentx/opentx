@@ -66,6 +66,13 @@
       <enum>QLayout::SetMinimumSize</enum>
      </property>
      <item>
+      <widget class="QLabel" name="lblCursorPos">
+       <property name="text">
+        <string>Line nn, Col nn</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
