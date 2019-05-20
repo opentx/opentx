@@ -779,11 +779,12 @@ int OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_LP45:
           case PULSES_DSM2:
           case PULSES_DSMX:
-          case PULSES_CROSSFIRE:
           case PULSES_SBUS:
             return 1;
           case PULSES_MULTIMODULE:
             return id.contains("multimodule") ? 1 : 0;
+          case PULSES_CROSSFIRE:
+            return id.contains("crossfire") ? 1 : 0;
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
             return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board)) ? 1 : 0;
@@ -1144,6 +1145,7 @@ void addOpenTxFrskyOptions(OpenTxFirmware * firmware)
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
   firmware->addOption("luac", Firmware::tr("Enable Lua compiler"));
+  firmware->addOption("crossfire", Firmware::tr("Support for Crossfire TX Module"));
   addOpenTxRfOptions(firmware);
 }
 
