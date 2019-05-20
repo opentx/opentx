@@ -1459,7 +1459,9 @@ QString ModelPrinter::printTelemetryScreen(unsigned int idx, unsigned int line, 
 
 QString ModelPrinter::printChecklist()
 {
-  QString str;
+  if (!model.displayChecklist)
+    return "";
+  QString str = tr("Error: Unable to open or read file!");
   QString filepath = g.profile[g.id()].sdPath() + "/MODELS/";
   QString name = model.name;
   name.replace(" ", "_");
