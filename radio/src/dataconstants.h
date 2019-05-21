@@ -342,8 +342,8 @@ enum TelemetryScreenType {
 #define TELEMETRY_SCREEN_TYPE(screenIndex) TelemetryScreenType((g_model.screensType >> (2*(screenIndex))) & 0x03)
 #define IS_BARS_SCREEN(screenIndex)        (TELEMETRY_SCREEN_TYPE(screenIndex) == TELEMETRY_SCREEN_TYPE_GAUGES)
 
-#define FAILSAFE_CHANNEL_HOLD          2000
-#define FAILSAFE_CHANNEL_NOPULSE       2001
+constexpr int16_t FAILSAFE_CHANNEL_HOLD = 2000;
+constexpr int16_t FAILSAFE_CHANNEL_NOPULSE = 2001;
 
 #define LEN_SCRIPT_FILENAME            6
 #define LEN_SCRIPT_NAME                6
