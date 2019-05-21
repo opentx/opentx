@@ -25,6 +25,16 @@ options = {
         "DSM2": "NO",
         "SBUS": "NO",
         "DEFAULT_MODE": "2",
+    },
+    "X9D+": {
+        "PXX1": "NO",
+        "PCBREV": "2019",
+        "LUA": "NO_MODEL_SCRIPTS",
+        "GVARS": "YES",
+        "PPM": "NO",
+        "DSM2": "NO",
+        "SBUS": "NO",
+        "DEFAULT_MODE": "2",
     }
 }
 
