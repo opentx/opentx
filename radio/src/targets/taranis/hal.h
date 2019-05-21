@@ -843,7 +843,7 @@
 #if !defined(RADIO_T12)
   #define HARDWARE_INTERNAL_MODULE
 #endif
-#if !(defined(PCBXLITES) && !defined(PCBX9LITE))
+#if !defined(PCBXLITES) && !defined(PCBX9LITE) && !(defined(PCBX9DP) && PCBREV >= 2019)
   #define INTERNAL_MODULE_PXX1
 #endif
 #if defined(PCBXLITE) || defined(PCBX9LITE)
@@ -880,6 +880,26 @@
   // #define INTMODULE_TIMER_IRQn          TIM3_IRQn
   // #define INTMODULE_TIMER_IRQHandler    TIM3_IRQHandler
   // #define INTMODULE_TIMER_FREQ          (PERI1_FREQUENCY * TIMER_MULT_APB1)
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM3
+  #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
+  #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA2)
+  #define INTMODULE_PWR_GPIO            GPIOA
+  #define INTMODULE_PWR_GPIO_PIN        GPIO_Pin_7  // PA.07
+  #define INTMODULE_GPIO                GPIOB
+  #define INTMODULE_TX_GPIO_PIN         GPIO_Pin_6  // PB.06
+  #define INTMODULE_RX_GPIO_PIN         GPIO_Pin_7  // PB.07
+  #define INTMODULE_GPIO_PinSource_TX   GPIO_PinSource6
+  #define INTMODULE_GPIO_PinSource_RX   GPIO_PinSource7
+  #define INTMODULE_USART               USART1
+  #define INTMODULE_GPIO_AF             GPIO_AF_USART1
+  #define INTMODULE_USART_IRQHandler    USART1_IRQHandler
+  #define INTMODULE_USART_IRQn          USART1_IRQn
+  #define INTMODULE_DMA_STREAM          DMA2_Stream7
+  #define INTMODULE_DMA_STREAM_IRQ         DMA2_Stream7_IRQn
+  #define INTMODULE_DMA_STREAM_IRQHandler  DMA2_Stream7_IRQHandler
+  #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF7
+  #define INTMODULE_DMA_CHANNEL         DMA_Channel_4
 #elif defined(PCBX9E) || defined(PCBX9DP) || defined(RADIO_X7)
   #define INTMODULE_PULSES
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
@@ -1107,7 +1127,7 @@
 #endif
 
 // Serial Port
-#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)
+#if defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define SERIAL_RCC_AHB1Periph         0
   #define SERIAL_RCC_APB1Periph         0
 #else
@@ -1391,6 +1411,15 @@
   #define I2C_WP_GPIO_PIN               GPIO_Pin_7  // PD.07
   #define I2C_SCL_GPIO_PinSource        GPIO_PinSource8
   #define I2C_SDA_GPIO_PinSource        GPIO_PinSource9
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define I2C_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOF)
+  #define I2C_SPI_GPIO                  GPIOB
+  #define I2C_SDA_GPIO_PIN              GPIO_Pin_9  // PB.09
+  #define I2C_SCL_GPIO_PIN              GPIO_Pin_8  // PB.08
+  #define I2C_WP_GPIO                   GPIOF
+  #define I2C_WP_GPIO_PIN               GPIO_Pin_0  // PF.00
+  #define I2C_SCL_GPIO_PinSource        GPIO_PinSource8
+  #define I2C_SDA_GPIO_PinSource        GPIO_PinSource9
 #else
   #define I2C_RCC_AHB1Periph            RCC_AHB1Periph_GPIOB
   #define I2C_SPI_GPIO                  GPIOB
@@ -1400,10 +1429,10 @@
   #define I2C_WP_GPIO_PIN               GPIO_Pin_9  // PB.09
   #define I2C_SCL_GPIO_PinSource        GPIO_PinSource6
   #define I2C_SDA_GPIO_PinSource        GPIO_PinSource7
+  #define I2C_ADDRESS_VOLUME            0x5C
 #endif
 #define I2C_SPEED                       400000
 #define I2C_ADDRESS_EEPROM              0xA2
-#define I2C_ADDRESS_VOLUME              0x5C
 #define I2C_FLASH_PAGESIZE              64
 
 // Second I2C Bus: IMU
@@ -1495,6 +1524,20 @@
   #define HAPTIC_CCMR1                  TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2
   #define HAPTIC_CCER                   TIM_CCER_CC2E
   #define BACKLIGHT_BDTR                TIM_BDTR_MOE
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  #define HAPTIC_PWM
+  #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOA
+  #define HAPTIC_RCC_APB2Periph         RCC_APB2Periph_TIM1
+  #define HAPTIC_RCC_APB1Periph         0
+  #define HAPTIC_GPIO_PinSource         GPIO_PinSource10
+  #define HAPTIC_GPIO                   GPIOA
+  #define HAPTIC_GPIO_PIN               GPIO_Pin_10 // PA.10
+  #define HAPTIC_GPIO_AF                GPIO_AF_TIM10
+  #define HAPTIC_TIMER                  TIM1
+  #define HAPTIC_TIMER_FREQ             (PERI2_FREQUENCY * TIMER_MULT_APB2)
+  #define HAPTIC_COUNTER_REGISTER       HAPTIC_TIMER->CCR3
+  #define HAPTIC_CCMR2                  TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2
+  #define HAPTIC_CCER                   TIM_CCER_CC3E
 #elif defined(PCBX9E) || defined(PCBX9DP) || defined(PCBX7)
   #define HAPTIC_PWM
   #define HAPTIC_RCC_AHB1Periph         RCC_AHB1Periph_GPIOB
@@ -1548,14 +1591,20 @@
   #define BT_TX_GPIO_PinSource         GPIO_PinSource14
   #define BT_RX_GPIO_PinSource         GPIO_PinSource9
   #define BT_USART_IRQHandler          USART6_IRQHandler
-#elif defined(PCBX7) || defined(PCBXLITE)
-  #define BT_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE) // RCC_AHB1Periph_DMA1
+#elif defined(PCBX7) || defined(PCBXLITE) || (defined(PCBX9DP) && PCBREV >= 2019)
   #define BT_RCC_APB1Periph             RCC_APB1Periph_USART3
   #define BT_RCC_APB2Periph             0
-  #define BT_EN_GPIO                    GPIOE
-  #if defined(PCBXLITE)
+  #if defined(PCBX9DP)
+    #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB) // RCC_AHB1Periph_DMA1
+    #define BT_EN_GPIO                  GPIOB
+    #define BT_EN_GPIO_PIN              GPIO_Pin_2  // PB.02
+  #elif defined(PCBXLITE)
+    #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE) // RCC_AHB1Periph_DMA1
+    #define BT_EN_GPIO                  GPIOE
     #define BT_EN_GPIO_PIN              GPIO_Pin_15 // PE.15
   #else
+    #define BT_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOE) // RCC_AHB1Periph_DMA1
+    #define BT_EN_GPIO                  GPIOE
     #define BT_EN_GPIO_PIN              GPIO_Pin_12 // PE.12
   #endif
   #define BT_USART_GPIO                 GPIOB
