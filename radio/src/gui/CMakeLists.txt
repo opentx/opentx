@@ -9,6 +9,7 @@ set(GUI_SRC
   menu_model.cpp
   model_select.cpp
   model_setup.cpp
+  model_outputs.cpp
   model_failsafe.cpp
   model_module_options.cpp
   model_receiver_options.cpp
@@ -24,18 +25,6 @@ set(GUI_SRC
   view_main.cpp
   view_statistics.cpp
   )
-
-if(GUI_DIR STREQUAL 128x64)
-   set(GUI_SRC
-      ${GUI_SRC}
-      model_outputs_arm.cpp
-      )
-else()
-  set(GUI_SRC
-    ${GUI_SRC}
-    model_outputs.cpp
-    )
-endif()
 
 set(SRC
   ${SRC}
