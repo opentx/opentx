@@ -917,6 +917,8 @@ static inline void check_struct()
 #elif defined(PCBX9E)
   CHKSIZE(RadioData, 960);
   CHKSIZE(ModelData, 6614);
+#elif defined(PCBX9DP) && PCBREV >= 2019
+  // TODO
 #elif defined(PCBX9D) || defined(PCBX9DP)
   CHKSIZE(RadioData, 880);
   CHKSIZE(ModelData, 6601);
