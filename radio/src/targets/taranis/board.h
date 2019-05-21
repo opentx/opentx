@@ -639,11 +639,7 @@ uint8_t isBacklightEnabled(void);
 #endif
 
 // I2C driver: EEPROM + Audio Volume
-#if defined(REV4a)
-  #define EEPROM_SIZE                   (64*1024)
-#else
-  #define EEPROM_SIZE                   (32*1024)
-#endif
+#define EEPROM_SIZE                   (32*1024)
 
 void i2cInit(void);
 void eepromReadBlock(uint8_t * buffer, size_t address, size_t size);
