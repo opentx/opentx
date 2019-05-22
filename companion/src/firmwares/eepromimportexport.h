@@ -45,7 +45,7 @@ class DataField {
       return name;
     }
 
-    virtual unsigned int size() = 0;
+    virtual unsigned int size() = 0; // size in bits
     virtual void ExportBits(QBitArray & output) = 0;
     virtual void ImportBits(const QBitArray & input) = 0;
 
@@ -81,15 +81,15 @@ class DataField {
     int Import(const QByteArray & input)
     {
       QBitArray bits = bytesToBits(input);
-      if ((unsigned int)bits.size() < size()) {
-        qDebug() << QString("Error importing %1: size to small %2/%3").arg(getName()).arg(input.size()).arg(size());
+      if (unsigned(bits.size()) < size()) {
+        qDebug() << QString("Error importing %1: size too small %2 bits / %3 bits").arg(getName()).arg(bits.size()).arg(size());
         return -1;
       }
       ImportBits(bits);
       return 0;
     }
 
-    virtual int Dump(int level=0, int offset=0)
+    virtual int dump(int level=0, int offset=0)
     {
       QBitArray bits;
       ExportBits(bits);
@@ -521,12 +521,12 @@ class StructField: public DataField {
       return result;
     }
 
-    virtual int Dump(int level=0, int offset=0)
+    virtual int dump(int level=0, int offset=0)
     {
       for (int i=0; i<level; i++) printf("  ");
       printf("%s (%d bytes)\n", getName().toLatin1().constData(), size()/8);
       foreach(DataField *field, fields) {
-        offset = field->Dump(level+1, offset);
+        offset = field->dump(level+1, offset);
       }
       return offset;
     }
@@ -575,10 +575,10 @@ class TransformedField: public DataField {
 
     virtual void afterImport() = 0;
 
-    virtual int Dump(int level=0, int offset=0)
+    virtual int dump(int level=0, int offset=0)
     {
       beforeExport();
-      return field.Dump(level, offset);
+      return field.dump(level, offset);
     }
 
   protected:

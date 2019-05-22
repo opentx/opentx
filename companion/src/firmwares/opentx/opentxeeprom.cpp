@@ -2627,7 +2627,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new UnsignedField<7>(this, generalData.backlightOffBright));
     internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
   }
-  else if (IS_TARANIS_X9E(board) || IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_XLITES(board)) {
+  else if (IS_TARANIS_X9E(board) || (version >= 219 && (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_XLITES(board)))) {
     internalField.Append(new SpareBitsField<8>(this));
     internalField.Append(new ZCharField<10>(this, generalData.bluetoothName, "Bluetooth name"));
   }
@@ -2639,9 +2639,11 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     }
   }
 
-  internalField.Append(new ZCharField<8>(this, generalData.registrationId, "PXX2 Registration ID"));
+  if (version >= 219) {
+    internalField.Append(new ZCharField<8>(this, generalData.registrationId, "PXX2 Registration ID"));
+  }
   
-  if(IS_TARANIS_XLITES(board) || IS_HORUS(board)) {
+  if (version >= 219 && (IS_TARANIS_XLITES(board) || IS_HORUS(board))) {
     internalField.Append(new SignedField<8>(this, generalData.gyroMax, "Gyro full scale"));
     internalField.Append(new SignedField<8>(this, generalData.gyroOffset, "Gyro Offset"));
   }
