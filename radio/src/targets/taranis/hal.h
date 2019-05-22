@@ -368,7 +368,7 @@
   #define SWITCHES_GPIO_PIN_G_L         GPIO_Pin_4  // PF.04
 #elif defined(RADIO_X7) || defined(PCBXLITE) || defined(PCBX9LITE)
 // no SWG
-#elif RADIO_T12
+#elif defined(RADIO_T12)
   #define SWITCHES_GPIO_REG_G           GPIOE->IDR
   #define SWITCHES_GPIO_PIN_G           GPIO_Pin_14 // PE.14
 #else
@@ -763,7 +763,7 @@
   // #define INTMODULE_TIMER_IRQn          TIM3_IRQn
   // #define INTMODULE_TIMER_IRQHandler    TIM3_IRQHandler
   // #define INTMODULE_TIMER_FREQ          (PERI1_FREQUENCY * TIMER_MULT_APB1)
-#elif defined(PCBX9E) || defined(PCBX9DP) ||defined(RADIO_X7)
+#elif defined(PCBX9E) || defined(PCBX9DP) || defined(RADIO_X7)
   #define INTMODULE_PULSES
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
   #define INTMODULE_RCC_APB1Periph      0
@@ -783,7 +783,7 @@
   #define INTMODULE_DMA_STREAM_IRQHandler DMA2_Stream5_IRQHandler
   #define INTMODULE_DMA_FLAG_TC         DMA_IT_TCIF5
   #define INTMODULE_TIMER_FREQ          (PERI2_FREQUENCY * TIMER_MULT_APB2)
-#elif RADIO_T12
+#elif defined(RADIO_T12)
   //left here is somebody will mod the radio for internal module
   #define INTMODULE_PULSES
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
@@ -868,7 +868,7 @@
   #define EXTMODULE_USART_DMA_CHANNEL           DMA_Channel_5
   #define EXTMODULE_USART_DMA_STREAM            DMA2_Stream6
   #define EXTMODULE_USART_DMA_STREAM_IRQn       DMA2_Stream6_IRQn
-#elif RADIO_T12
+#elif defined(RADIO_T12)
   //Jumper T12v2 external module configured
   #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB2Periph      RCC_APB2Periph_TIM8
