@@ -27,6 +27,9 @@
 #include "modelprinter.h"
 #include "multiprotocols.h"
 #include "checklistdialog.h"
+#include "helpers.h"
+
+#include <QDir>
 
 TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawSwitchFilterItemModel * switchModel):
   ModelPanel(parent, model, generalSettings, firmware),
@@ -1355,6 +1358,13 @@ void SetupPanel::onBeepCenterToggled(bool checked)
 
 void SetupPanel::on_editText_clicked()
 {
-  ChecklistDialog *g = new ChecklistDialog(this, model);
-  g->exec();
+  const QString path = Helpers::getChecklistsPath();
+  QDir d(path);
+  if (!d.exists()) {
+    QMessageBox::critical(this, tr("Profile Settings"), tr("SD structure path not specified or invalid"));
+  }
+  else {
+    ChecklistDialog *g = new ChecklistDialog(this, model);
+    g->exec();
+  }
 }
