@@ -400,7 +400,7 @@ void menuRadioHardware(event_t event)
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
         lcdDrawTextAlignedLeft(y, STR_BLUETOOTH_PIN_CODE);
-        lcdDrawText(HW_SETTINGS_COLUMN2, y, "0000");
+        lcdDrawText(HW_SETTINGS_COLUMN2, y, "000000");
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_LOCAL_ADDR:

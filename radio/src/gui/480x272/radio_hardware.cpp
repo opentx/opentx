@@ -207,7 +207,7 @@ bool menuRadioHardware(event_t event)
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:
         lcdDrawText(INDENT_WIDTH, y, STR_BLUETOOTH_PIN_CODE);
-        lcdDrawText(HW_SETTINGS_COLUMN+50, y, "0000", 0);
+        lcdDrawText(HW_SETTINGS_COLUMN+50, y, "000000", 0);
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_NAME:
