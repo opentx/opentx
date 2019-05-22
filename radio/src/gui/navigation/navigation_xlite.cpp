@@ -29,7 +29,7 @@ horzpos_t menuHorizontalPosition;
 
 int8_t  checkIncDec_Ret;
 
-#if (RADIO_T12)
+#if defined(RADIO_T12)
 #define DBLKEYS_PRESSED_RGT_LFT(in)    ((in & ((1<<KEY_UP))) == ((1<<KEY_UP)))
 // set to 0
 #define DBLKEYS_PRESSED_UP_DWN(in)     ((in & ((1<<KEY_DOWN))) ==  ((1<<KEY_DOWN)))

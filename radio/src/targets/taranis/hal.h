@@ -366,7 +366,7 @@
   #define SWITCHES_GPIO_PIN_G_H         GPIO_Pin_3  // PF.03
   #define SWITCHES_GPIO_REG_G_L         GPIOF->IDR
   #define SWITCHES_GPIO_PIN_G_L         GPIO_Pin_4  // PF.04
-#elif (RADIO_X7) || defined(PCBXLITE) || defined(PCBX9LITE)
+#elif defined(RADIO_X7) || defined(PCBXLITE) || defined(PCBX9LITE)
 // no SWG
 #elif RADIO_T12
   #define SWITCHES_GPIO_REG_G           GPIOE->IDR
@@ -763,7 +763,7 @@
   // #define INTMODULE_TIMER_IRQn          TIM3_IRQn
   // #define INTMODULE_TIMER_IRQHandler    TIM3_IRQHandler
   // #define INTMODULE_TIMER_FREQ          (PERI1_FREQUENCY * TIMER_MULT_APB1)
-#elif defined(PCBX9E) || defined(PCBX9DP) || (RADIO_X7)
+#elif defined(PCBX9E) || defined(PCBX9DP) ||defined(RADIO_X7)
   #define INTMODULE_PULSES
   #define INTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_DMA2)
   #define INTMODULE_RCC_APB1Periph      0

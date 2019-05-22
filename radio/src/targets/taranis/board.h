@@ -270,7 +270,7 @@ enum EnumKeys
 #endif
   KEY_EXIT,
   KEY_ENTER,
-#if defined(PCBXLITE) || (RADIO_T12)
+#if defined(PCBXLITE) ||defined(RADIO_T12)
   KEY_DOWN,
   KEY_UP,
   KEY_RIGHT,
@@ -300,7 +300,7 @@ enum EnumKeys
   #define KEY_DOWN                      KEY_PLUS
   #define KEY_RIGHT                     KEY_PLUS
   #define KEY_LEFT                      KEY_MINUS
-#elif defined(PCBXLITE) || (RADIO_T12)
+#elif defined(PCBXLITE) ||defined(RADIO_T12)
   #define KEY_PLUS                      KEY_RIGHT
   #define KEY_MINUS                     KEY_LEFT
 #else

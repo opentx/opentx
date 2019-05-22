@@ -50,14 +50,14 @@ void menuRadioDiagKeys(event_t event)
     }
 
     if (i < TRM_BASE) {
-#if (RADIO_X7) || defined(PCBX9LITE)
+#if defined(RADIO_X7) || defined(PCBX9LITE)
       y = MENU_HEADER_HEIGHT + FH + FH*i;
       if (i >= 2) {
         // hide PLUS and MINUS virtual buttons
         lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
         displayKeyState(5*FW+4, y, KEY_MENU+(TRM_BASE-1-i));
       }
-#elif defined(PCBXLITE) && (RADIO_X7)
+#elif defined(PCBXLITE) &&defined(RADIO_X7)
       y = MENU_HEADER_HEIGHT + FH*i;
       lcdDrawTextAtIndex(0, y, STR_VKEYS, (TRM_BASE-1-i), 0);
       displayKeyState(5*FW+2, y, KEY_SHIFT+(TRM_BASE-1-i));

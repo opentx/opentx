@@ -1532,7 +1532,7 @@ const luaR_value_entry opentxConstants[] = {
   { "FORCE", FORCE },
   { "ERASE", ERASE },
   { "ROUND", ROUND },
-#elif  (RADIO_T12)
+#elif defined(RADIO_T12)
   { "EVT_DOWN_FIRST", EVT_KEY_FIRST(KEY_DOWN) },
   { "EVT_UP_FIRST", EVT_KEY_FIRST(KEY_UP) },
   { "EVT_LEFT_FIRST", EVT_KEY_FIRST(KEY_LEFT) },
